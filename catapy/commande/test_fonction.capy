@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ TEST_FONCTION=PROC(nom="TEST_FONCTION",op= 135,fr="Extraction d une valeur numér
          VALEUR          =FACT(statut='f',max='**',
                                fr="Tester la valeur d une fonction ou d une nappe",
            regles=(UN_PARMI('VALE_REFE','VALE_REFE_C', ),),
-           FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+           FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,fonction_c,nappe_sdaster,formule) ),
            NOM_PARA        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=2),
            VALE_PARA       =SIMP(statut='o',typ='R'  ,validators=NoRepeat(),max=2),
            VALE_REFE       =SIMP(statut='f',typ='R' ),
@@ -42,7 +42,7 @@ TEST_FONCTION=PROC(nom="TEST_FONCTION",op= 135,fr="Extraction d une valeur numér
          ),
          ATTRIBUT        =FACT(statut='f',max='**',
                                fr="Tester la valeur d un attribut d une fonction ou d''une nappe",
-           FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+           FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,fonction_c,nappe_sdaster,formule) ),
            PARA            =SIMP(statut='f',typ='R' ),
            CRIT_PARA       =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
            PREC_PARA       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),

@@ -1,4 +1,4 @@
-#@ MODIF courbes Utilitai  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF courbes Utilitai  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -109,17 +109,9 @@ def COURBES(listcourb,titre=' ',soustitre=' ',legx=' ',legy=' ',bornex=None,born
         legende=courbi[4]
      except :
         # cas d une fonction
-        val=courbi[0].LIST_VALEURS()
-        nb=len(val)/2
-        valx=[None]*nb
-        valy=[None]*nb
-        for i in range(nb):
-           valx[i]=val[2*i]
-           valy[i]=val[2*i+1]           
-        sigi.x=valx
-        sigi.y=valy
+        sigi.x,sigi.y=courbi[0].Valeurs()
         legende=courbi[1]
-        
+
      graphe.Courbe(sigi,legende)
      graphe.Send('WITH G'+repr(graphe.gr_act))
      graphe.Send('S' + str(k) + ' SYMBOL ' + str(k+2))

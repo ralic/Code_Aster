@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF config supervis  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF config supervis  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS */
 /* RESPONSABLE                                 D6BHHJP J.P.LEFEBVRE   */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */

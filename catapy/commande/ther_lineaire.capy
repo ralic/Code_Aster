@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ THER_LINEAIRE=OPER(nom="THER_LINEAIRE",op=25,sd_prod=evol_ther,reentrant='f',
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
          EXCIT           =FACT(statut='o',max='**',
            CHARGE          =SIMP(statut='o',typ=(char_ther,char_cine_ther)),
-           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule)),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
          ),
          INCREMENT       =FACT(statut='f',
            LIST_INST       =SIMP(statut='o',typ=listr8_sdaster ),

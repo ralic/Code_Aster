@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,7 @@ MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          EXCIT           =FACT(statut='o',max='**',
            CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
-           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule)),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),
          ),
          INST            =SIMP(statut='f',typ='R',defaut= 0.E+0 ),

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*4  INTERP(2),INTERF(2)
       CHARACTER*8  K8B, STATUT, NOMRES, NOMPAR,NOMPAF
       CHARACTER*16 NOMCMD, TYPRES
-      CHARACTER*19 NOMFON, NOMFIN, LISTR, LISTF
+      CHARACTER*19 NOMFON, NOMFIN, LISTR, LISTF, TYPCO
       CHARACTER*32 JEXNUM
 C     ------------------------------------------------------------------
 C
@@ -60,6 +60,7 @@ C
       CALL GETCMD ( NOMFON, TYPRES, NOMCMD, STATUT, INUMEX )
 C
       CALL GETVID ( ' ', 'FONCTION', 1,1,1, NOMFIN, N1 )
+      CALL GETTCO ( NOMFIN, TYPCO )
 C
       IF ( STATUT .EQ. 'MODIFIE') THEN
          IF ( NOMFON .NE. NOMFIN ) THEN
@@ -100,21 +101,38 @@ C
          CALL JEVEUO ( LISTR//'.VALE', 'L', LVAL)
          CALL JELIRA ( LISTR//'.VALE', 'LONUTI', NBVAL, K8B )
       ENDIF
-C                 
-C --- FORMULE COMPLEXE OU REEL
-C
-      CALL FITYPF ( NOMFIN(1:8), ITYPFO )
-      IF ( ITYPFO .EQ. 35 ) THEN
-         COMPL = .TRUE.
-      ELSE
-         COMPL = .FALSE.
-      ENDIF
 C      
 C --- NAPPE OU FONCTION
 C
-      CALL JEVEUO ( NOMFIN//'.NOVA', 'L', LNOVA )
-      CALL JELIRA ( NOMFIN//'.NOVA', 'LONUTI', NBNOVA, K8B )
-C      
+      IF (TYPCO(1:7).EQ.'FORMULE') THEN
+C                 
+C ---    FORMULE COMPLEXE OU REEL
+C
+         CALL FITYPF ( NOMFIN(1:8), ITYPFO )
+         IF ( ITYPFO .EQ. 35 ) THEN
+            COMPL = .TRUE.
+         ELSE
+            COMPL = .FALSE.
+         ENDIF
+         CALL JEVEUO ( NOMFIN//'.NOVA', 'L', LNOVA )
+         CALL JELIRA ( NOMFIN//'.NOVA', 'LONUTI', NBNOVA, K8B )
+      ELSEIF (TYPCO(1:8).EQ.'FONCTION') THEN
+         CALL JEVEUO ( NOMFIN//'.PROL', 'L', LPROL )
+         NBNOVA=1
+         CALL WKVECT ( '&&OP0134.NOVA', 'V V K8', NBNOVA, LNOVA )
+         ZK8(LNOVA)=ZK16(LPROL+3-1)(1:8)
+         IF (TYPCO(1:10).EQ.'FONCTION_C') THEN
+            COMPL = .TRUE.
+         ELSE
+            COMPL = .FALSE.
+         ENDIF
+      ELSEIF (TYPCO(1:5).EQ.'NAPPE') THEN
+         CALL JEVEUO ( NOMFIN//'.PROL', 'L', LPROL )
+         NBNOVA=2
+         CALL WKVECT ( '&&OP0134.NOVA', 'V V K8', NBNOVA, LNOVA )
+         COMPL = .FALSE.
+      ENDIF
+C
       IF (NBNOVA.EQ.1) THEN
 C ------------------------------------------------------------------    
 C                 FONCTION  
@@ -163,12 +181,9 @@ C
       CALL TITRE
       IF (NIV.GT.1) CALL FOIMPR (NOMFON,NIV,IFM,0,LISTR)      
 C
-      IF (NBVALR.NE.0) THEN
-        CALL JEDETR('&&OP0134.VALE') 
-      ENDIF
-      IF (N1.EQ.0) THEN
-        CALL JEDETR('&&OP0134.VALF') 
-      ENDIF                                      
+      CALL JEDETR('&&OP0134.NOVA') 
+      CALL JEDETR('&&OP0134.VALE') 
+      CALL JEDETR('&&OP0134.VALF') 
 C        
       CALL JEDEMA()
       END

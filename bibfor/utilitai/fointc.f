@@ -5,7 +5,7 @@
       CHARACTER*(*)       NOMF,       NOMPU(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -103,9 +103,7 @@ C
          CALL FIINTC ( 'F', NOMF, NBPF, IPAR, VALPU, RESU, IER )
 C
       ELSE
-C
-         CALL UTMESS('F','FOINTC','"'//ZK16(LPROL)//
-     +                            '" TYPE DE FONCTION NON TRAITE')
+         CALL FOINRI ( NOMF, NBPU, NOMPU, VALPU, RESU(1), RESU(2),IER )
       ENDIF
 C
 9999  CONTINUE

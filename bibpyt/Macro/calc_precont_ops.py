@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 19/01/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF calc_precont_ops Macro  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,7 +70,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   
   __prec = dIncrement['PRECISION']
   __L0   = dIncrement['LIST_INST']
-  __L1   = __L0.LIST_VALEURS();
+  __L1   = __L0.Valeurs()
      
   # Traitement de l'etat initial
   if ETAT_INIT:

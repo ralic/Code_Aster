@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,12 +67,12 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
                    ),
            VECT_ASSE       =SIMP(statut='f',typ=cham_no_depl_r ),
            CHARGE          =SIMP(statut='f',typ=char_meca ),
-           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            COEF_MULT       =SIMP(statut='f',typ='R' ),
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),
-           ACCE            =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
-           VITE            =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
-           DEPL            =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+           ACCE            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           VITE            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           DEPL            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            MULT_APPUI      =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
            DIRECTION       =SIMP(statut='f',typ='R',max='**'),
            NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
@@ -94,7 +94,7 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
          INCREMENT       =FACT(statut='o',max='**',
            regles=(UN_PARMI('LIST_INST','FONC_INST','PAS'),),
            LIST_INST       =SIMP(statut='f',typ=listr8_sdaster ), 
-           FONC_INST       =SIMP(statut='f',typ=(fonction_sdaster,formule) ),       
+           FONC_INST       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),       
            PAS             =SIMP(statut='f',typ='R' ),
            b_pas           =BLOC(condition = "PAS != None",
                INST_INIT       =SIMP(statut='f',typ='R' ),

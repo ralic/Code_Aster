@@ -1,4 +1,4 @@
-# MODIF  DATE 25/05/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE DURAND C.DURAND
 # TITRE  SUPERVISEUR : POURSUITE, espace de noms, acces python-jeveux
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-DEBUT(CODE=_F( NOM = 'EFICA02A',NIV_PUB_WEB='INTERNET'),PAR_LOT="NON")
+DEBUT(CODE=_F( NOM = 'EFICA02A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT="NON")
 
 #######################################################################
 # cas test du superviseur dedie a l appel de la methode getvectjev    #
@@ -46,15 +46,19 @@ FO3=DEFI_FONCTION(  NOM_PARA='X',
                     NOM_RESU='Y',
                     VALE=TUP )
 
-#
-# on teste la methode LIST_VALEURS de la SD fonction : on doit retrouver TUP3
-# et F04 est une fonction identique a F03
-# LIST_VALEURS fait appel a getvectjev (voir sa definition dans accas.capy)
-#
+# on teste la methode Valeurs de la SD fonction
+# (on fait un traitement pour retrouver l'ordre du VALE)
+# Valeurs fait appel a getvectjev (voir sa definition dans accas.capy)
+lx,ly=FO3.Valeurs()
+lv=[]
+for i in range(len(lx)):
+   lv.append(lx[i])
+   lv.append(ly[i])
 
+# F04 est une fonction identique a F03
 FO4=DEFI_FONCTION(  NOM_PARA='X',
                     NOM_RESU='Y',
-                    VALE=FO3.LIST_VALEURS() )
+                    VALE=lv )
 
 TEST_FONCTION(VALEUR=( 
                _F(  FONCTION  = FO4,  PRECISION = 1.E-08,
@@ -63,6 +67,10 @@ TEST_FONCTION(VALEUR=(
                _F(  FONCTION  = FO4,  PRECISION = 1.E-08,
                     VALE_PARA = 12.,  VALE_REFE = 13.,
                     REFERENCE = 'NON_REGRESSION'      ), ) )
+
+# on passe dans la programmation de la methode Parametres de la SD fonction
+# on ne teste pas les valeurs retournees
+dicpara=FO4.Parametres()
 
 xxx=34.5
 

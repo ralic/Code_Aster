@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,10 +62,10 @@ MACR_CABRI_CALC=MACRO(nom="MACR_CABRI_CALC",
                       
                       DEFI_CHAR_THER = FACT(statut ='d',
                         TEMP_INIT     = SIMP(statut='d',typ='R',defaut= 25.,),
-                        COEF_H_FLUI   = SIMP(statut='f',typ=fonction_sdaster,),
-                        TEMP_EXT_FLUI = SIMP(statut='f',typ=fonction_sdaster,),
-                        COEF_H_AIR    = SIMP(statut='f',typ=fonction_sdaster,),
-                        TEMP_EXT_AIR  = SIMP(statut='f',typ=fonction_sdaster,),
+                        COEF_H_FLUI   = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster),),
+                        TEMP_EXT_FLUI = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster),),
+                        COEF_H_AIR    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster),),
+                        TEMP_EXT_AIR  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster),),
                         LIST_INST     = SIMP(statut='f',typ=listr8_sdaster),
                       ),                      
                       
@@ -82,9 +82,9 @@ MACR_CABRI_CALC=MACRO(nom="MACR_CABRI_CALC",
                       MODELE_MECA= SIMP(statut = 'f',typ=(modele_sdaster,CO),),
 
                       DEFI_CHAR_MECA   = FACT(statut='o',
-                        PRETENS    = SIMP(statut='f',typ=fonction_sdaster,),
-                        PRES_REP   = SIMP(statut='f',typ=fonction_sdaster,),
-                        EFFE_FOND  = SIMP(statut='f',typ=fonction_sdaster,),
+                        PRETENS    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster),),
+                        PRES_REP   = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster),),
+                        EFFE_FOND  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster),),
                       ),                                                             
 
                       CHAR_MECA  = FACT(statut = 'f',max=11,

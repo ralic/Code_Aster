@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ANNEAU AVEC RAIDISSEUR SOUS PRESSION EXTERNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -155,7 +155,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=.9,
                                     PAS=0.1,),
                                   _F(JUSQU_A=1.21,
-                                    PAS=0.01,),),
+                                    PAS=0.01,),
+                                    ),
                     );
 
 LISTPILO=DEFI_LIST_REEL(DEBUT=0.0,
@@ -212,6 +213,7 @@ TABDX=POST_RELEVE_T(ACTION=_F(INTITULE='F',
 FETA=RECU_FONCTION(TABLE=TABDX,INTERPOL='LIN',PROL_GAUCHE='CONSTANT',PROL_DROITE='CONSTANT',
                   PARA_X='INST',
                   PARA_Y='DX',);
+FIN()
 
 #FETA=RECU_FONCTION(RESULTAT=NONLIN,
 #                   NOM_PARA_RESU='ETA_PILOTAGE',);
@@ -303,21 +305,9 @@ MAXINCA=CALC_FONCTION( MAX=_F(  FONCTION = INCA)    )
 
 IMPR_TABLE(TABLE=MAXINCA)
 
-liste1=[]
-liste2=[]
-valINCA=INCA.LIST_VALEURS()
-print 'INCA=',valINCA
-nbval=len(valINCA)/2
-valmax1=0.0
-for i in range(0,nbval-1):
-   i2=2*i
-   inst1=valINCA[i2]
-   forc1=valINCA[i2+1]
-   liste1.append(inst1)
-   liste2.append(forc1)
-   ordo1=abs(forc1)
-   valmax1=max(ordo1,valmax1)
-   
+liste1,liste2=INCA.Valeurs()
+valmax1=max([abs(v) for v in liste2])
+
 TINCA=CREA_TABLE(LISTE=(_F(LISTE_R=tuple(liste1),
                          PARA='INST'),
                       _F(LISTE_R=tuple(liste2),
@@ -325,39 +315,21 @@ TINCA=CREA_TABLE(LISTE=(_F(LISTE_R=tuple(liste1),
                          
 IMPR_TABLE(TABLE=TINCA)
 
-liste01=[]
-liste02=[]
-valaster=FETA.LIST_VALEURS()
-print 'valaster=',valaster
-nbval=len(valaster)/2
-valmax0=0.0
-for i in range(0,nbval-1):
-   i2=2*i
-   inst0=valaster[i2]
-   forc0=valaster[i2+1]
-   ordo0=abs(forc0)
-   valmax0=max(ordo0,valmax0)
-   liste01.append(inst0)
-   liste02.append(forc0)
-   
+
+liste01,liste02=FETA.Valeurs()
+
 TFETA=CREA_TABLE(LISTE=(_F(LISTE_R=tuple(liste01),
                          PARA='INST'),
                       _F(LISTE_R=tuple(liste02),
                          PARA='DX'))); 
 IMPR_TABLE(TABLE=TFETA)
+IMPR_CO(CO='TFETA',UNITE=6)
 
 # calcul de l ecart maxi entre les deux courbes
 
-valdiff=DIFF.LIST_VALEURS()
-print 'diff=',valdiff
-nbval=len(valdiff)/2
-valmax2=0.0
-for i in range(0,nbval-1):
-   i2=2*i
-   ordo=valdiff[i2+1]
-   ordo2=abs(ordo)
-   valmax2=max(ordo2,valmax2)
-   
+lbid,lordo=DIFF.Valeurs()
+valmax2=max([abs(v) for v in lordo])
+
 valmax=valmax2/valmax1
 print 'Valeur maxi fonction reference ',valmax1
 print 'Valeur maxi fonction difference ',valmax2
@@ -454,19 +426,19 @@ _F(FONCTION=FETAS,REFERENCE='NON_REGRESSION', VALE_PARA =9.50000E-01,VALE_REFE=-
 _F(FONCTION=FETAS,REFERENCE='NON_REGRESSION', VALE_PARA =9.60000E-01,VALE_REFE=-2.95708E-02 ),
 ),)
 
-from Utilitai.courbes import COURBES
-
-courb1=(TFETA,'DX',TFETA,'INST','ASTER')
-courb2=(TINCA,'TOUTRESU',TINCA,'INST','INCA')
-courb3=(TABDXS,'DX',TABDXS,'INST','ASTER PRESSION SUIVEUSE')
-listcourb=(courb1,courb2,courb3)
-
-if interactif==1 :
-   COURBES(listcourb,titre='SSNS101',legx='INST',legy='DX')
-else :
-# postscript
-   COURBES(listcourb,titre='SSNS101',legx='INST',legy='DX',fichier='./fort.24')
-
+# from Utilitai.courbes import COURBES
+# 
+# courb1=(TFETA,'DX',TFETA,'INST','ASTER')
+# courb2=(TINCA,'TOUTRESU',TINCA,'INST','INCA')
+# courb3=(TABDXS,'DX',TABDXS,'INST','ASTER PRESSION SUIVEUSE')
+# listcourb=(courb1,courb2,courb3)
+# 
+# if interactif==1 :
+#    COURBES(listcourb,titre='SSNS101',legx='INST',legy='DX')
+# else :
+# # postscript
+#    COURBES(listcourb,titre='SSNS101',legx='INST',legy='DX',fichier='./fort.24')
+# 
 
 
 FIN();

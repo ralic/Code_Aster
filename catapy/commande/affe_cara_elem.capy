@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +64,7 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
              VARI_SECT       =SIMP(statut='f',typ='TXM',into=("HOMOTHETIQUE",) ),
              MODI_METRIQUE   =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
            ),
-           FCX             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+           FCX             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
 
          BARRE           =FACT(statut='f',max='**',
@@ -84,7 +84,7 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
              CARA            =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=2,into=("R","EP") ),
              VALE            =SIMP(statut='o',typ='R',max=2 ),
            ),
-           FCX             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+           FCX             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
 
          COQUE           =FACT(statut='f',max='**',
@@ -108,7 +108,7 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            N_INIT          =SIMP(statut='f',typ='R',defaut= 5000. ),
            SECTION         =SIMP(statut='f',typ='R' ),
-           FCX             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+           FCX             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
 
          DISCRET         =FACT(statut='f',max='**',
@@ -218,7 +218,7 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
                    UN_PARMI('COOR_CENTRE','NOEUD_CENTRE','GROUP_NO_CENTRE'),),
            GROUP_MA        =SIMP(statut='o',typ=ma,validators=NoRepeat(),max='**'),
            GROUP_MA_POI1   =SIMP(statut='f',typ=ma),
-           FONC_GROUP      =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+           FONC_GROUP      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            COEF_GROUP      =SIMP(statut='f',typ='R',max='**'),
            REPERE          =SIMP(statut='f',typ='TXM',into=("LOCAL","GLOBAL") ),
            CARA            =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=("K_TR_D_N","A_TR_D_N") ),

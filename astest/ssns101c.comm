@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE CLAQUAGE  CALOTTE CYLINDRIQUE SHB8  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -250,25 +250,11 @@ IMPR_TABLE(TABLE=TFETA)
 
 # calcul de l ecart maxi entre les deux courbes
 
-valINCA=INCA.LIST_VALEURS()
-nbval=len(valINCA)/2
-valmax1=0.0
-for i in range(0,nbval-1):
-   i2=2*i
-   inst1=valINCA[i2]
-   forc1=valINCA[i2+1]
-   ordo1=abs(forc1)
-   valmax1=max(ordo1,valmax1)
+liste1,liste2=INCA.Valeurs()
+valmax1=max([abs(v) for v in liste2])
 
-valdiff=DIFF.LIST_VALEURS()
-print 'diff=',valdiff
-nbval=len(valdiff)/2
-valmax2=0.0
-for i in range(0,nbval-1):
-   i2=2*i
-   ordo=valdiff[i2+1]
-   ordo2=abs(ordo)
-   valmax2=max(ordo2,valmax2)
+lbid,lordo=DIFF.Valeurs()
+valmax2=max([abs(v) for v in lordo])
    
 valmax=valmax2/valmax1
 print 'Valeur maxi fonction reference ',valmax1
@@ -276,18 +262,18 @@ print 'Valeur maxi fonction difference ',valmax2
 
 INCLUDE(UNITE=10)
 
-courb1=(TFETA,'INST',TFETA,'ETA_PILO','ASTER')
-courb2=(TINCA,'INST',TINCA,'TOUTRESU','INCA')
-listcourb=(courb1,courb2,)
-#COURBES(listcourb,titre='SSNS101',legx='INST',legy='FORCE')
-
-courb1f=(FETA,'ASTER')
-courb2f=(INCA,'INCA')
-listcourb2=(courb1f,courb2f,)
-#COURBES(listcourb2,titre='SSNS101',legx='INST',legy='FORCE')
-
-
-COURBES(listcourb,titre='SSNS101',legx='INST',legy='FORCE',fichier='./fort.24')
+# courb1=(TFETA,'INST',TFETA,'ETA_PILO','ASTER')
+# courb2=(TINCA,'INST',TINCA,'TOUTRESU','INCA')
+# listcourb=(courb1,courb2,)
+# #COURBES(listcourb,titre='SSNS101',legx='INST',legy='FORCE')
+# 
+# courb1f=(FETA,'ASTER')
+# courb2f=(INCA,'INCA')
+# listcourb2=(courb1f,courb2f,)
+# #COURBES(listcourb2,titre='SSNS101',legx='INST',legy='FORCE')
+# 
+# 
+# COURBES(listcourb,titre='SSNS101',legx='INST',legy='FORCE',fichier='./fort.24')
 
 DEFI_FICHIER(FICHIER='GMSH',UNITE=37)
 IMPR_RESU(MODELE=MODMECA,

@@ -1,0 +1,126 @@
+#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE MCOURTOI M.COURTOIS
+from Macro.impr_fonction_ops import impr_fonction_ops
+
+IMPR_FONCTION=MACRO(nom="IMPR_FONCTION",op=impr_fonction_ops,sd_prod=None,
+                 fr="Impression de fonctions sur fichiers, les valeurs ayant été récupérées par RECU_FONCTION/RECU_TABLE",
+            UIinfo={"groupes":("Fonction",)},
+         FORMAT          =SIMP(statut='o',typ='TXM',position='global',
+                               into=("TABLEAU","AGRAF","XMGRACE",),),
+         b_pilote = BLOC(condition = "FORMAT == 'XMGRACE'",
+                        fr="Mots-clés propres à XMGRACE",
+           PILOTE          =SIMP(statut='f',typ='TXM',defaut='',
+                                 into=('','POSTSCRIPT','EPS','MIF','SVG','PNM','PNG','JPEG','PDF','INTERACTIF'),
+                            fr="Pilote de sortie, PNG/JPEG/PDF ne sont pas disponibles sur toutes les installations de xmgrace"),
+           UNITE           =SIMP(statut='f',typ='I',val_min=10,val_max=90,
+                                 fr="Unité logique définissant le fichier (fort.N) dans lequel on écrit"),
+         ),
+         b_unite = BLOC(condition = "FORMAT != 'XMGRACE'",
+                        fr="Mots-clés propres à XMGRACE",
+           UNITE           =SIMP(statut='o',typ='I',val_min=10,val_max=90,
+                                 fr="Unité logique définissant le fichier (fort.N) dans lequel on écrit"),
+         ),
+
+         COURBE          =FACT(statut='o',max='**',fr="Définition de la fonction à tracer",
+           regles=(UN_PARMI('FONCTION','LIST_RESU','FONC_X'),),
+           FONCTION        =SIMP(statut='f',typ=(fonction_sdaster, formule, fonction_c, nappe_sdaster),
+                                 fr="Fonction réelle ou complexe", ),
+           LIST_RESU       =SIMP(statut='f',typ=listr8_sdaster,
+                                 fr="Liste des ordonnees d une fonction réelle définie par deux listes", ),
+           FONC_X          =SIMP(statut='f',typ=(fonction_sdaster,formule),
+                                 fr="Fonction abscisses d une fonction paramétrique",),
+           b_fonction      =BLOC(condition = "FONCTION != None",
+             LIST_PARA       =SIMP(statut='f',typ=listr8_sdaster ),
+           ),
+           b_fonction_c  =BLOC(condition = "AsType(FONCTION) == fonction_c",
+                                 fr="Fonction complexe définie par le mot-clé fonction",
+             PARTIE          =SIMP(statut='f',typ='TXM',into=("REEL","IMAG") ),
+           ),
+           b_list_resu     =BLOC(condition = "LIST_RESU != None",
+             LIST_PARA       =SIMP(statut='o',typ=listr8_sdaster ),
+           ),
+           b_fonc_x        =BLOC(condition = "FONC_X != None",
+             FONC_Y          =SIMP(statut='o',typ=(fonction_sdaster,formule),fr="Fonction ordonnées d une fonction paramétrique" ),
+             LIST_PARA       =SIMP(statut='f',typ=listr8_sdaster ),
+           ),
+
+           b_forme         =BLOC(condition = "FORMAT != 'TABLEAU'",
+                                 fr="Données de mise en forme de la fonction (cf. doc)",
+           ),
+              LEGENDE         =SIMP(statut='f',typ='TXM',
+                                    fr="Légende associée à la fonction" ),
+              STYLE           =SIMP(statut='f',typ='I',val_min=0,
+                                    fr="Style de la ligne représentant la fonction",),
+              COULEUR         =SIMP(statut='f',typ='I',val_min=0,
+                                    fr="Couleur associée à la fonction",),
+              MARQUEUR        =SIMP(statut='f',typ='I',val_min=0,
+                                    fr="Type du marqueur associé à la fonction",),
+              FREQ_MARQUEUR   =SIMP(statut='f',typ='I',defaut=0,
+                                    fr="Fréquence d impression du marqueur associé à la fonction", ),
+         ),
+         # Mise en page du tableau ou du graphique
+         b_tableau = BLOC(condition = "FORMAT == 'TABLEAU'",
+                          fr="Mots-clés propres au format Tableau",
+           TITRE           =SIMP(statut='f',typ='TXM',
+                                 fr="Titre associé au graphique" ),
+           SOUS_TITRE      =SIMP(statut='f',typ='TXM',
+                                 fr="Sous-titre du graphique" ),
+           SEPARATEUR      =SIMP(statut='f',typ='TXM',defaut=' ',
+                                 fr="Séparateur des colonnes du tableau (ex : ' ', ';'...)"),
+           COMMENTAIRE     =SIMP(statut='f',typ='TXM',defaut='#',
+                                 fr="Caractère indiquant au traceur de fonction que la ligne peut etre ignorée"),
+           DEBUT_LIGNE     =SIMP(statut='f',typ='TXM',defaut='',
+                                 fr="Caractère de debut de ligne"),
+           FIN_LIGNE       =SIMP(statut='f',typ='TXM',defaut='\n',
+                                 fr="Caractère de fin de ligne"),
+         ),
+         b_agraf = BLOC(condition = "FORMAT == 'AGRAF'",
+                        fr="Mots-clés propres à AGRAF",
+           UNITE_DIGR      =SIMP(statut='o',typ='I',val_min=10,val_max=90,
+                                 fr="Unité logique définissant le fichier dans lequel on écrit les directives Agraf"),
+         ),
+         b_graphique = BLOC(condition = "FORMAT != 'TABLEAU'",
+                        fr="Mise en page du graphique",
+           TITRE           =SIMP(statut='f',typ='TXM',
+                                 fr="Titre associé au graphique" ),
+           SOUS_TITRE      =SIMP(statut='f',typ='TXM',
+                                 fr="Sous-titre du graphique" ),
+           BORNE_X         =SIMP(statut='f',typ='R',min=2,max=2,
+                                 fr="Intervalles de variation des abscisses"),
+           BORNE_Y         =SIMP(statut='f',typ='R',min=2,max=2,
+                                 fr="Intervalles de variation des ordonnées"),
+           ECHELLE_X       =SIMP(statut='f',typ='TXM',defaut="LIN",into=("LIN","LOG"),
+                                 fr="Type d'échelle pour les abscisses" ),
+           ECHELLE_Y       =SIMP(statut='f',typ='TXM',defaut="LIN",into=("LIN","LOG"),
+                                 fr="Type d'échelle pour les ordonnées" ),
+           GRILLE_X        =SIMP(statut='f',typ='R',max=1,val_min=0.,
+                                 fr="Pas du quadrillage vertical" ),
+           GRILLE_Y        =SIMP(statut='f',typ='R',max=1,val_min=0.,
+                                 fr="Pas du quadrillage horizontal" ),
+           LEGENDE_X       =SIMP(statut='f',typ='TXM',
+                                 fr="Légende associée à l'axe des abscisses" ),
+           LEGENDE_Y       =SIMP(statut='f',typ='TXM',
+                                 fr="Légende associée à l'axe des ordonnées" ),
+           TRI             =SIMP(statut='f',typ='TXM',defaut="N",
+                                 fr="Choix du tri effectué sur les abscisses ou sur les ordonnées",
+                                 into=("N","X","Y","XY","YX") ),
+         ),
+         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
+)  ;

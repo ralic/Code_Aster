@@ -1,0 +1,366 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mcourtoi M.COURTOIS   DATE  le 30/06/2004 a 22:30:43
+
+REALISATION EL 2003-087
+   INTERET_UTILISATEUR : NON
+   TITRE
+      Refonte de la commande de IMPR_COURBE ==> IMPR_FONCTION
+   FONCTIONNALITE
+      Formats :
+      =========
+      Les formats de sortie RESULTAT, COMMANDE et SEISME sont supprimés.
+
+      Le format EXCEL devient TABLEAU (avec choix du séparateur),
+      formats dédiés à des traceurs particuliers : AGRAF, XMGRACE.
+
+      Mot-clé PILOTE si FORMAT=='XMGRACE' :
+         par défaut PILOTE='', donc on produit le fichier .agr
+         si PILOTE='POSTSCRIPT', on produit le fichier .ps,
+         si PILOTE='INTERACTIF', on affiche la courbe en interactif (X11),
+         autres valeurs de PILOTE : on passe cette valeur à xmgrace sous la
+         forme :
+            xmgrace -hardcopy -hdevice PILOTE -printfile XXXX fichier.agr
+         et on retourne le fichier XXXX à l'utilisateur.
+
+         Possible dans xmgrace :
+         'POSTSCRIPT','EPS','MIF','SVG','PNM','PNG','JPEG','PDF','INTERACTIF'
+                                               ---   ----   ---
+         Les 5 premiers sont en standard dans xmgrace, les 3 soulignés
+         dépendent des librairies disponibles sur la machine.
+         On récupère le code retour d'xmgrace, s'il est non nul ("Unsupported
+         driver"), on relance avec le format POSTSCRIPT.
+         Remarque : POSTSCRIPT est corrigé en PostScript par la macro.
+
+         Pilote "INTERACTIF" : format XMGRACE + appel en interactif de xmgrace.
+
+      Pour les traceurs de courbes (FORMAT!='TABLEAU'), on peut définir les
+      paramètres de chaque fonction :
+         STYLE, COULEUR, MARQUEUR : entiers (correspondance dans la doc)
+         LEGENDE : chaine de caractères de la légende de la fonction
+
+         STYLE=0 par défaut : ligne continue
+         COULEUR et MARQUEUR par défaut, on alterne pour chaque fonction
+         LEGENDE par défaut : nom du concept fonction
+
+
+      Modifications pour les utilisateurs de IMPR_COURBE format AGRAF :
+         UNITE remplace FICHIER : fichier .dogr
+         UNITE_DIGR (nouveau) : fichier .digr
+         TITRE rempace TITRE_GRAPHIQUE
+         GRILLE_X/Y remplacent par FREQ_GRILLE_X/Y (car agraf attend une
+         "fréquence" de quadrillage, et xmgrace un pas de grille)
+         FREQ_MARQUEUR déplacé sous le mot-clé facteur COURBE
+         SOUS_TITRE remplace COMMENTAIRE
+
+      Modifications pour les utilisateurs de IMPR_COURBE format POSTSCRIPT :
+      les mots-clés sont ceux du format XMGRACE.
+
+
+      TABLE :
+      =======
+      On supprime le tracé d'une fonction extraite d'une table aster.
+         --> C'est le boulot de IMPR_TABLE
+
+      RESU_GENE :
+      ===========
+      On ne traite plus les tran_gene dans IMPR_COURBE, il faut passer par
+      RECU_TABLE (étendre ce dernier si besoin).
+
+      CALC_FONC_INTERP :
+      ==================
+      Extension aux fonctions, fonctions complexes et aux nappes pour interpoler
+      les fonctions sur une liste de valeurs fournie en entrée (LIST_PARA).
+      Modification de fointc pour gérer (comme c'est le cas pour fointe) le
+      cas des fonctions comme celui des formules. (évaluation de fonction
+      complexe de la variable réelle).
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.33.01 IMPR_COURBE / IMPR_FONCTION
+       EXPL_ : nouveau format
+     DOC_U : U4.32.01 CALC_FONC_INTERP
+       EXPL_ : extension aux fonctions et aux nappes
+     DOC_U : U7.51.01 Notice d'utilisation de xmgrace pour Code_Aster
+       EXPL_ : yapuka
+
+   VALIDATION
+      tests existants pour les formats AGRAF, POSTSCRIPT
+      + essais en interactif
+      + ajout de quelques TEST_FICHIER dans
+   DETAILS
+      impr_fonction_ops.py :
+      ======================
+         Corps de la macro
+
+      accas.capy :
+      ============
+         Les méthodes 'LIST_VALEURS' sont renommées 'Valeurs'.
+         listr8_sdaster.Valeurs() retourne une liste de réels
+         fonction_sdaster.Valeurs()  "     deux listes (abscisses et ordonnées)
+         fonction_c.Valeurs()        "     trois listes (abs, réel, imag)
+         nappe_sdaster.Valeurs()     "     deux listes (paramètre, (les 2 listes
+         de chaque fonction))
+
+         Remarque : pour une fonction, LIST_VALEURS retournait (x1,y1,...,xn,yn)
+         La plupart du temps, on s'empressait de découper cette liste en abscisses
+         et ordonnées.
+
+         Nouvelles méthodes pour fonction_sdaster, fonction_c et nappe_sdaster :
+         'Parametres' qui retourne un dictionnaire des paramètres de la fonction
+         (.PROL) que l'on peut passer directement en argument de
+         CALC_FONC_INTERP.
+         Pour une nappe, on retourne une liste : (dict des paramètres de la
+         , liste des dictionnaires de chaque fonction)
+
+      calc_precont_ops.py, courbes.py :
+      =================================
+         On appelle Valeurs au lieu de LIST_VALEURS.
+
+      Graph.py :
+      ==========
+
+    class Graph
+     |  Cette classe définit l'objet Graph pour Code_Aster.
+     |
+     |  Important :  Utiliser les méthodes dédiées à la manipulation des données
+     |     (AjoutCourbe, ...) car elles tiennent à jour les attributs "privés"
+     |     relatifs aux données : NbCourbe, les extrema...
+     |
+     |  Attributs :
+     |  - Données de chaque courbe :
+     |     .Valeurs   : liste des valeurs de chaque courbe, pour chaque courbe :
+     |        (paramètres, parties réelles [, parties imaginaires])
+     |     .Legendes  : liste des noms de chaque courbe
+     |     .Labels    : liste des noms des colonnes de chaque courbe
+     |     .Styles    : liste des infices de styles de ligne
+     |     .Couleurs  : liste des indices de couleurs
+     |     .Marqueurs : liste des indices de symboles/marqueurs
+     |     .FreqMarq  : liste des fréquences des marqueurs
+     |    Pour Lignes, Couleurs, Marqueurs, FreqMarq, -1 signifie valeur par défaut
+     |    du traceur.
+     |
+     |  - Propriétés :
+     |     .Titre : titre du graphique
+     |     .SousTitre : sous-titre (appelé commentaire dans agraf)
+     |  - Axes :
+     |     .Min_X, .Max_X, .Min_Y, .Max_Y : bornes du tracé (une méthode permet de
+     |        renseigner automatiquement ces valeurs avec les extréma globaux)
+     |     .Legende_X, .Legende_Y : légende des axes
+     |     .Echelle_X, .Echelle_Y : type d'échelle (LIN, LOG)
+     |     .Grille_X, .Grille_Y : paramètre de la grille (pas ou fréquence au choix
+     |        de l'utilisateur en fonction du traceur qu'il veut utiliser)
+     |     .Tri      : tri à effectuer sur les données
+     |
+     |  Attributs privés (modifiés uniquement par les méthodes de la classe) :
+     |     .NbCourbe : nombre de courbes
+     |     .BBXmin, BBXmax, BBYmin, BBYmax : extrema globaux (bounding box)
+     |
+     |  Methods defined here:
+     |
+     |  AjoutCourbe(self, Val, Lab, Leg='', Sty=-1, Coul=-1, Marq=-1, FreqM=-1)
+     |      Ajoute une courbe dans les données
+     |         Val   : liste de 2 listes (ou 3 si complexe) : abs, ord[, imag]
+     |         Leg   : une chaine
+     |         Lab   : liste de 2 chaines (ou 3 si complexe)
+     |         Sty   : un entier
+     |         Coul  : un entier
+     |         Marq  : un entier
+     |         FreqM : un entier
+     |      Met à jour les attributs : NbCourbe, BBXmin/Xmax/Ymin/Ymax
+     |
+     |  AutoBB(self, debut=-1)
+     |      Met à jour automatiquement la "bounding box"
+     |      (extrema toutes courbes confondues)
+     |      Appelé par les méthodes de manipulation des données
+     |
+     |  Courbe(self, n)
+     |      Permet de récupérer les données de la courbe d'indice n sous forme
+     |      d'un dictionnaire.
+     |
+     |  Error(self, msg)
+     |      Gère l'affichage d'un message d'erreur et lève une exception aster
+     |
+     |  SetExtrema(self)
+     |      Remplit les limites du tracé (Min/Max_X/Y) avec les valeurs de la
+     |      bounding box
+     |
+     |  __init__(self)
+     |      Construction + valeurs par défaut des attributs
+     |
+     |  __repr__(self)
+     |      Affichage du contenu d'un Graph
+
+    class ImprGraph
+     |  Cette classe définit l'impression d'un objet Graph dans un fichier.
+     |
+     |  Attributs :
+     |     .NomFich : liste de noms de fichier de sortie
+     |
+     |  Attributs privés (modifiés uniquement par les méthodes de la classe) :
+     |     .Fich    : liste des objets 'fichier'
+     |     .Graph   : objet Graph que l'on veut tracer
+     |     .DicForm : dictionnaire des formats de base (séparateur, format des réels...)
+     |
+     |  Les méthodes Entete, DescrCourbe, Trace (définition de l'entete, partie descriptive
+     |  d'une courbe, méthode de tracé/impressiion) sont définies dans une classe dérivée.
+     |
+     |  Methods defined here:
+     |
+     |  DescrCourbe(self, **args)
+     |      Retourne la chaine de caractères décrivant les paramètres de la courbe.
+     |
+     |  Entete(self)
+     |      Retourne l'entete
+     |
+     |  Trace(self)
+     |      Méthode pour 'tracer' l'objet Graph dans un fichier.
+     |      Met en page l'entete, la description des courbes et les valeurs selon
+     |      le format et ferme le fichier.
+     |
+     |  __del__(self)
+     |      Fermeture du(des) fichier(s) à la destruction
+     |
+     |  __init__(self, graph, nomfich, dform=None)
+     |      Construction, ouverture du fichier, surcharge éventuelle du formatage
+
+    class ImprTableau(ImprGraph)
+     |  Impression d'un objet Graph sous forme d'un tableau de colonnes,
+     |  on suppose que les courbes partagent la meme liste d'abscisse.
+
+    class ImprXmgrace(ImprGraph)
+     |  Impression d'un objet Graph au format XMGRACE.
+     |  Attribut supplémentaire : .Pilote
+
+    class ImprAgraf(ImprGraph)
+     |  Impression d'un objet Graph au format AGRAF.
+
+
+   Cas-tests utilisant LIST_VALEURS():
+   ===================================
+      efica02a.comm  ssns101a.comm  ssns101c.10    ssns102a.comm
+      ssnp118a.comm  ssns101b.comm  ssns101c.comm
+      --> il s'agit toujours de fonction_sdaster.Valeurs()
+
+
+   Modification du type 'fonction' :
+   =================================
+   Avant : para_sensi, fonction_c, nappe_sdaster dérivaient de fonction_sdaster
+   (donc une nappe était une fonction_sdaster...)
+   Après : classe chapeau fonction_class dont sont dérivés fonction_sdaster,
+   fonction_c, nappe_sdaster. para_sensi dérive toujours de fonction_sdaster.
+   Dans les catalogues, là où il y avait "typ=fonction_sdaster", on remplace par
+   "typ=(fonction_sdaster,fonction_c,nappe_sdaster)".
+
+   Pour les commandes qui produisaient une fonction_sdaster, j'ai vérifié que
+   l'on produisait bien une fonction réelle (et pas une fonction_c ou une
+   nappe).
+
+   Dans calc_fonction, le type du concept produit dépend des arguments en entrée
+   de la commande. De plus, pour les arguments d'entrée, j'ai verrouillé sur
+   le(s) type(s) réellement traité(s) par CALC_FONCTION.
+
+   Restitution (sans modif) de python.c et astermodule.c pour supprimer le
+   'RuntimeWarning: Python C API version mismatch for module aster'.
+
+
+   Python 2.3 : je restitue les .c qui utilisent un include de Python car
+   il y a un décalage de version (2.1/2.3).
+
+   NB_JOURS_TRAV  : 5.5
+------------------------------------------------------------------------------
+CORRECTION AO 2003-109
+   INTERET_UTILISATEUR : NON
+   TITRE
+      Qualité des IMPR_COURBE au format POSTSCRIPT --> IMPR_FONCTION
+   FONCTIONNALITE
+      Voir EL 2003-087, elle devrait y répondre
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+   NB_JOURS_TRAV  : 0.5
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF supervis/astermodule         mcourtoi M.COURTOIS        4246      1      1
+       C MODIF supervis/python              mcourtoi M.COURTOIS          48      1      1
+ CASTEST MODIF efica02a                     mcourtoi M.COURTOIS          77     16      8
+ CASTEST MODIF ssnp118a                     mcourtoi M.COURTOIS         231      2      2
+ CASTEST MODIF ssns101a                     mcourtoi M.COURTOIS         383      6     40
+ CASTEST MODIF ssns101b                     mcourtoi M.COURTOIS         266     16     50
+ CASTEST MODIF ssns101c                     mcourtoi M.COURTOIS         291     17     31
+ CASTEST MODIF ssns102a                     mcourtoi M.COURTOIS         444     24     52
+CATALOPY AJOUT commande/impr_fonction       mcourtoi M.COURTOIS         126    126      0
+CATALOPY MODIF commande/affe_cara_elem      mcourtoi M.COURTOIS         285      5      5
+CATALOPY MODIF commande/affe_char_cine_f    mcourtoi M.COURTOIS          59     14     14
+CATALOPY MODIF commande/affe_char_meca_f    mcourtoi M.COURTOIS         482    100    100
+CATALOPY MODIF commande/affe_char_ther_f    mcourtoi M.COURTOIS         195     27     27
+CATALOPY MODIF commande/calc_amor_modal     mcourtoi M.COURTOIS          59      3      3
+CATALOPY MODIF commande/calc_cham_elem      mcourtoi M.COURTOIS          86      2      2
+CATALOPY MODIF commande/calc_elem           mcourtoi M.COURTOIS         512      6      6
+CATALOPY MODIF commande/calc_fatigue        mcourtoi M.COURTOIS          78      2      2
+CATALOPY MODIF commande/calc_fonc_interp    mcourtoi M.COURTOIS          51     23     17
+CATALOPY MODIF commande/calc_fonction       mcourtoi M.COURTOIS         206     33     28
+CATALOPY MODIF commande/calc_g_local_t      mcourtoi M.COURTOIS         126      4      4
+CATALOPY MODIF commande/calc_g_theta_t      mcourtoi M.COURTOIS         104      2      2
+CATALOPY MODIF commande/calc_inte_spec      mcourtoi M.COURTOIS          31      2      2
+CATALOPY MODIF commande/calc_no             mcourtoi M.COURTOIS         101      2      2
+CATALOPY MODIF commande/calc_theta          mcourtoi M.COURTOIS          65      4      4
+CATALOPY MODIF commande/comb_sism_modal     mcourtoi M.COURTOIS         114      4      4
+CATALOPY MODIF commande/crea_champ          mcourtoi M.COURTOIS         148      2      2
+CATALOPY MODIF commande/defi_fiss_xfem      mcourtoi M.COURTOIS          42      3      3
+CATALOPY MODIF commande/defi_flui_stru      mcourtoi M.COURTOIS         101      6      6
+CATALOPY MODIF commande/defi_materiau       mcourtoi M.COURTOIS        2669    678    678
+CATALOPY MODIF commande/defi_nappe          mcourtoi M.COURTOIS          44      2      2
+CATALOPY MODIF commande/defi_spec_turb      mcourtoi M.COURTOIS         108      7      7
+CATALOPY MODIF commande/dyna_line_harm      mcourtoi M.COURTOIS          68      2      2
+CATALOPY MODIF commande/dyna_line_tran      mcourtoi M.COURTOIS         128      6      6
+CATALOPY MODIF commande/dyna_non_line       mcourtoi M.COURTOIS         299      5      5
+CATALOPY MODIF commande/dyna_tran_expli     mcourtoi M.COURTOIS         259      5      5
+CATALOPY MODIF commande/dyna_tran_modal     mcourtoi M.COURTOIS         208     10     10
+CATALOPY MODIF commande/impr_courbe         mcourtoi M.COURTOIS         127      5      4
+CATALOPY MODIF commande/impr_miss_3d        mcourtoi M.COURTOIS          45      3      3
+CATALOPY MODIF commande/macr_ascouf_calc    mcourtoi M.COURTOIS         205      5      5
+CATALOPY MODIF commande/macr_aspic_calc     mcourtoi M.COURTOIS         217      7      7
+CATALOPY MODIF commande/macr_cabri_calc     mcourtoi M.COURTOIS         155      8      8
+CATALOPY MODIF commande/meca_statique       mcourtoi M.COURTOIS          85      2      2
+CATALOPY MODIF commande/post_fatigue        mcourtoi M.COURTOIS          78     18     18
+CATALOPY MODIF commande/post_zac            mcourtoi M.COURTOIS          44      2      2
+CATALOPY MODIF commande/proj_mesu_modal     mcourtoi M.COURTOIS          60      2      2
+CATALOPY MODIF commande/rest_base_phys      mcourtoi M.COURTOIS          72      2      2
+CATALOPY MODIF commande/stat_non_line       mcourtoi M.COURTOIS         266      2      2
+CATALOPY MODIF commande/test_fonction       mcourtoi M.COURTOIS          86      3      3
+CATALOPY MODIF commande/ther_lineaire       mcourtoi M.COURTOIS          87      2      2
+CATALOPY MODIF commande/ther_non_line       mcourtoi M.COURTOIS         109      2      2
+CATALOPY MODIF commande/ther_non_line_mo    mcourtoi M.COURTOIS          67      2      2
+CATALOPY MODIF entete/accas                 mcourtoi M.COURTOIS         530     91     24
+ FORTRAN MODIF utilitai/fointc              mcourtoi M.COURTOIS         111      2      4
+ FORTRAN MODIF utilitai/op0134              mcourtoi M.COURTOIS         189     24      9
+  PYTHON AJOUT Macro/impr_fonction_ops      mcourtoi M.COURTOIS         357    357      0
+  PYTHON AJOUT Utilitai/Graph               mcourtoi M.COURTOIS         950    950      0
+  PYTHON MODIF Macro/calc_precont_ops       mcourtoi M.COURTOIS         483      2      2
+  PYTHON MODIF Utilitai/courbes             mcourtoi M.COURTOIS         132      2     10
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    3        1433      1433             +1433
+ MODIF :   55       15762      1228    1246       -18
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   58       17195      2661    1246     +1415 

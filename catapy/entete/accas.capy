@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF ENTETE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -92,8 +92,10 @@ class type_flui_stru  (ASSD):pass
 # liste :
 #--------------------------------
 class listr8_sdaster   (ASSD):
-  def LIST_VALEURS(self) :
-    """ retourne la liste des valeurs [ val1, ...] """
+  def Valeurs(self) :
+    """
+    Retourne la liste des valeurs : [val1, ..., valN]
+    """
     vale=string.ljust(self.get_name(),19)+'.VALE'
     return list(aster.getvectjev(vale))
 
@@ -348,32 +350,97 @@ class mode_meca(resultat_sdaster):pass
 class mode_meca_c(mode_meca):pass
 
 
-# fonction_sdaster :
+# types 'fonction' :
 #--------------------------------
-class fonction_sdaster(ASSD):
-  def LIST_VALEURS(self) :
-    """ retourne la liste des valeurs [ val1, ...] """
-    vale=string.ljust(self.get_name(),19)+'.VALE'
-    lbl=list(aster.getvectjev(vale))
-    lbr=[]
-    for i in range(len(lbl)/2):
-        lbr.append(lbl[i])
-        lbr.append(lbl[len(lbl)/2+i])
-    return lbr
-class para_sensi(fonction_sdaster):pass
-class fonction_c(fonction_sdaster):
-  def LIST_VALEURS(self) :
-    """ retourne la liste des valeurs [ val1, ...] """
-    vale=string.ljust(self.get_name(),19)+'.VALE'
-    lbl=list(aster.getvectjev(vale))
-    lbr=[]
-    for i in range(len(lbl)/3):
-        lbr.append(lbl[i])
-        lbr.append(lbl[len(lbl)/3+i*2])
-        lbr.append(lbl[len(lbl)/3+i*2+1])
-    return lbr
-class nappe_sdaster(fonction_sdaster):pass
-
+class fonction_class(ASSD):
+   def Valeurs(self):pass
+   def Parametres(self):
+      """
+      Retourne un dictionnaire contenant les paramètres de la fonction ;
+      le type jeveux (FONCTION, FONCT_C, NAPPE) n'est pas retourné,
+      le dictionnaire peut ainsi etre fourni à CALC_FONC_INTERP tel quel.
+      """
+      TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT' }
+      prol=aster.getvectjev(string.ljust(self.get_name(),19)+'.PROL')
+      dico={
+         'INTERPOL'    : [prol[1][0:3],prol[1][4:7]],
+         'NOM_PARA'    : prol[2][0:4],
+         'NOM_RESU'    : prol[3][0:4],
+         'PROL_DROITE' : TypeProl[prol[4][0]],
+         'PROL_GAUCHE' : TypeProl[prol[4][1]],
+      }
+      return dico
+class fonction_sdaster(fonction_class):
+   def Valeurs(self) :
+      """
+      Retourne deux listes de valeurs : abscisses et ordonnées
+      """
+      vale=string.ljust(self.get_name(),19)+'.VALE'
+      lbl=list(aster.getvectjev(vale))
+      dim=len(lbl)/2
+      lx=lbl[0:dim]
+      ly=lbl[dim:2*dim]
+      return [lx,ly]
+class para_sensi(fonction_sdaster):
+   def Parametres(self):pass
+class fonction_c(fonction_class):
+   def Valeurs(self) :
+      """
+      Retourne trois listes de valeurs : abscisses, parties réelles et imaginaires.
+      """
+      vale=string.ljust(self.get_name(),19)+'.VALE'
+      lbl=list(aster.getvectjev(vale))
+      dim=len(lbl)/3
+      lx=lbl[0:dim]
+      lr=[]
+      li=[]
+      for i in range(dim):
+         lr.append(lbl[dim+2*i])
+         li.append(lbl[dim+2*i+1])
+      return [lx,lr,li]
+class nappe_sdaster(fonction_class):
+   def Valeurs(self):
+      """
+      Retourne la liste des valeurs du paramètre,
+      et une liste de couples (abscisses,ordonnées) de chaque fonction.
+      """
+      nsd=string.ljust(self.get_name(),19)
+      dicv=aster.getcolljev(nsd+'.VALE')
+      # les clés de dicv sont 1,...,N (indice du paramètre)
+      lpar=aster.getvectjev(nsd+'.PARA')
+      lval=[]
+      for k in range(len(dicv)):
+         lbl=dicv[k+1]
+         dim=len(lbl)/2
+         lval.append([lbl[0:dim],lbl[dim:2*dim]])
+      return [lpar,lval]
+   def Parametres(self):
+      """
+      Retourne un dictionnaire contenant les paramètres de la nappe,
+      le type jeveux (NAPPE) n'est pas retourné,
+      le dictionnaire peut ainsi etre fourni à CALC_FONC_INTERP tel quel,
+      et une liste de dictionnaire des paramètres de chaque fonction.
+      """
+      TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT' }
+      prol=aster.getvectjev(string.ljust(self.get_name(),19)+'.PROL')
+      dico={
+         'INTERPOL'      : [prol[1][0:3],prol[1][4:7]],
+         'NOM_PARA'      : prol[2][0:4],
+         'NOM_RESU'      : prol[3][0:4],
+         'PROL_DROITE'   : TypeProl[prol[4][0]],
+         'PROL_GAUCHE'   : TypeProl[prol[4][1]],
+         'NOM_PARA_FONC' : prol[5][0:4],
+      }
+      lparf=[]
+      nbf=(len(prol)-6)/2
+      for i in range(nbf):
+         dicf={
+            'INTERPOL_FONC'    : [prol[6+i*2][0:3],prol[6+i*2][4:7]],
+            'PROL_DROITE_FONC' : TypeProl[prol[7+i*2][0]],
+            'PROL_GAUCHE_FONC' : TypeProl[prol[7+i*2][1]],
+         }
+         lparf.append(dicf)
+      return [dico,lparf]
 
 # matr_asse :
 #--------------------------------

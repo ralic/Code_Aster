@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,10 +32,10 @@ DYNA_TRAN_EXPLI=OPER(nom="DYNA_TRAN_EXPLI",op= 69,sd_prod=evol_noli,reentrant='f
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",
                                  into=("FIXE_CSTE","FIXE_PILO","SUIV","DIDI")),
            CHARGE          =SIMP(statut='o',typ=char_meca),
-           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule)),
-           DEPL            =SIMP(statut='f',typ=(fonction_sdaster,formule)),
-           ACCE            =SIMP(statut='f',typ=(fonction_sdaster,formule)),
-           VITE            =SIMP(statut='f',typ=(fonction_sdaster,formule)),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+           DEPL            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+           ACCE            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+           VITE            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
            MULT_APPUI      =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
            DIRECTION       =SIMP(statut='f',typ='R',max=3),
            NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,8 +26,8 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='f'
       regles              =(UN_PARMI('GROUP_MA_FISS','FONC_LT'),
                             ENSEMBLE('FONC_LT','FONC_LN'),
                             ENSEMBLE('GROUP_MA_FISS','GROUP_MA_FOND')),
-      FONC_LT             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
-      FONC_LN             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+      FONC_LT             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+      FONC_LN             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
       GROUP_MA_FISS       =SIMP(statut='f',typ=grma,max=01),
       GROUP_MA_FOND       =SIMP(statut='f',typ=grma),
     ),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,7 +74,7 @@ CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=calc_cham_elem_prod,
          EXCIT           =FACT(statut='f',max='**',
                regles=(EXCLUS('FONC_MULT','COEF_MULT', ),),
                CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou)),
-               FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule)),
+               FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                COEF_MULT       =SIMP(statut='f',typ='R'), ),
 
          INST            =SIMP(statut='f',typ='R',defaut= 0.E+0),

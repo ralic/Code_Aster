@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE CLAQUAGE  CALOTTE CYLINDRIQUE SHB8  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -337,23 +337,9 @@ _F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA = 2.00000E+01,VALE_REFE=0
 #TINCA=CREA_TABLE(FONCTION=_F(FONCTION=INCA))
 #TFETA=CREA_TABLE(FONCTION=_F(FONCTION=FETA))
 
-# On passe donc par une boucle python
+liste1,liste2=INCA.Valeurs()
+valmax1=max([abs(v) for v in liste2])
 
-liste1=[]
-liste2=[]
-valINCA=INCA.LIST_VALEURS()
-print 'INCA=',valINCA
-nbval=len(valINCA)/2
-valmax1=0.0
-for i in range(0,nbval-1):
-   i2=2*i
-   inst1=valINCA[i2]
-   forc1=valINCA[i2+1]
-   liste1.append(inst1)
-   liste2.append(forc1)
-   ordo1=abs(forc1)
-   valmax1=max(ordo1,valmax1)
-   
 TINCA=CREA_TABLE(LISTE=(_F(LISTE_R=tuple(liste1),
                          PARA='INST'),
                       _F(LISTE_R=tuple(liste2),
@@ -361,21 +347,8 @@ TINCA=CREA_TABLE(LISTE=(_F(LISTE_R=tuple(liste1),
                          
 IMPR_TABLE(TABLE=TINCA)
 
-liste01=[]
-liste02=[]
-valaster=FETA.LIST_VALEURS()
-print 'valaster=',valaster
-nbval=len(valaster)/2
-valmax0=0.0
-for i in range(0,nbval-1):
-   i2=2*i
-   inst0=valaster[i2]
-   forc0=valaster[i2+1]
-   ordo0=abs(forc0)
-   valmax0=max(ordo0,valmax0)
-   liste01.append(inst0)
-   liste02.append(forc0)
-   
+liste01,liste02=FETA.Valeurs()
+
 TFETA=CREA_TABLE(LISTE=(_F(LISTE_R=tuple(liste01),
                          PARA='INST'),
                       _F(LISTE_R=tuple(liste02),
@@ -384,15 +357,8 @@ IMPR_TABLE(TABLE=TFETA)
 
 # calcul de l ecart maxi entre les deux courbes
 
-valdiff=DIFF.LIST_VALEURS()
-print 'diff=',valdiff
-nbval=len(valdiff)/2
-valmax2=0.0
-for i in range(0,nbval-1):
-   i2=2*i
-   ordo=valdiff[i2+1]
-   ordo2=abs(ordo)
-   valmax2=max(ordo2,valmax2)
+lbid,lordo=DIFF.Valeurs()
+valmax2=max([abs(v) for v in lordo])
    
 valmax=valmax2/valmax1
 print 'Valeur maxi fonction reference ',valmax1

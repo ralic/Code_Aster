@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,9 +23,9 @@ DEFI_FLUI_STRU=OPER(nom="DEFI_FLUI_STRU",op= 143,sd_prod=type_flui_stru,
          FAISCEAU_TRANS  =FACT(statut='f',max='**',
            COUPLAGE        =SIMP(statut='f',typ='TXM',into=("OUI","NON") ),
            CARA_ELEM       =SIMP(statut='f',typ=cara_elem ),
-           PROF_VITE_FLUI  =SIMP(statut='o',typ=(fonction_sdaster,formule) ),
-           PROF_RHO_F_INT  =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
-           PROF_RHO_F_EXT  =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+           PROF_VITE_FLUI  =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           PROF_RHO_F_INT  =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           PROF_RHO_F_EXT  =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            NOM_CMP         =SIMP(statut='f',typ='TXM',into=("DX","DY","DZ") ),
            COEF_MASS_AJOU  =SIMP(statut='f',typ='R' ),
            TYPE_PAS        =SIMP(statut='f',typ='TXM',into=("CARRE_LIGN","TRIA_LIGN") ),
@@ -61,8 +61,8 @@ DEFI_FLUI_STRU=OPER(nom="DEFI_FLUI_STRU",op= 143,sd_prod=type_flui_stru,
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            TRI_GROUP_MA    =SIMP(statut='f',typ='TXM' ),
            VECT_X          =SIMP(statut='f',typ='R',max=3),
-           PROF_RHO_FLUI   =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
-           PROF_VISC_CINE  =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+           PROF_RHO_FLUI   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           PROF_VISC_CINE  =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            CARA_ELEM       =SIMP(statut='f',typ=cara_elem ),
            RAYON_TUBE      =SIMP(statut='f',typ='R' ),
            COOR_TUBE       =SIMP(statut='f',typ='R',max='**'),

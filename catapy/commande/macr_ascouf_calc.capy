@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,12 +65,12 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op=macr_ascouf_calc_ops,sd_prod=ma
            PRES            =SIMP(statut='o',typ='R' ),
            EFFE_FOND_P1    =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            PRES_LEVRE      =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
-           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
 
          ECHANGE         =FACT(statut='f',
-           COEF_H          =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
-           TEMP_EXT        =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+           COEF_H          =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           TEMP_EXT        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
 
          TORS_P1         =FACT(statut='f',max=6,
@@ -81,7 +81,7 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op=macr_ascouf_calc_ops,sd_prod=ma
            MX              =SIMP(statut='f',typ='R' ),
            MY              =SIMP(statut='f',typ='R' ),
            MZ              =SIMP(statut='f',typ='R' ),
-           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
 
          COMP_INCR       =FACT(statut='f',

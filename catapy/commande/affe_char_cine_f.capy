@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,16 +34,16 @@ AFFE_CHAR_CINE_F=OPER(nom="AFFE_CHAR_CINE_F",op= 108,sd_prod=affe_char_cine_f_pr
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
            NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-           DX              =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
-           DY              =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
-           DZ              =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
-           DRX             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
-           DRY             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
-           DRZ             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
-           GRX             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
-           PRES            =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
-           TEMP            =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
-           PHI             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+           DX              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           DY              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           DZ              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           DRX             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           DRY             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           DRZ             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           GRX             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           PRES            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           TEMP            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           PHI             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
          THER_IMPO       =FACT(statut='f',max='**',
            regles=(UN_PARMI('TOUT','GROUP_NO','NOEUD'),
@@ -51,9 +51,9 @@ AFFE_CHAR_CINE_F=OPER(nom="AFFE_CHAR_CINE_F",op= 108,sd_prod=affe_char_cine_f_pr
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
            NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-           TEMP_SUP        =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
-           TEMP            =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
-           TEMP_INF        =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+           TEMP_SUP        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           TEMP            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           TEMP_INF        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
 )  ;

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ CALC_INTE_SPEC=OPER(nom="CALC_INTE_SPEC",op= 120,sd_prod=tabl_intsp,
          DUREE_ANALYSE   =SIMP(statut='f',typ='R' ),
          DUREE_DECALAGE  =SIMP(statut='f',typ='R' ),
          NB_POIN         =SIMP(statut='o',typ='I' ),
-         FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,formule),max='**' ),
+         FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule),max='**' ),
          TITRE           =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
 )  ;

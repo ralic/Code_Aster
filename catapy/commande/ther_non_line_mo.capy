@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ THER_NON_LINE_MO=OPER(nom="THER_NON_LINE_MO",op= 171,sd_prod=evol_ther,
          CARA_ELEM       =SIMP(statut='c',typ=cara_elem ),
          EXCIT           =FACT(statut='o',max='**',
            CHARGE          =SIMP(statut='o',typ=char_ther ),
-           FONC_MULT       =SIMP(statut='c',typ=(fonction_sdaster,formule) ),
+           FONC_MULT       =SIMP(statut='c',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
          TEMP_INIT       =FACT(statut='f',
            EVOL_THER       =SIMP(statut='f',typ=evol_ther ),

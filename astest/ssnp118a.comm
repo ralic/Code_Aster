@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE FISSURATION PLANE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -165,7 +165,7 @@ STAT_NON_LINE(reuse = U,
 
   
 # RECUPERATION DU DERNIER INSTANT  
-l_inst = L_INST.LIST_VALEURS()
+l_inst = L_INST.Valeurs()
 tinter = l_inst[1]
 
 dico_t = U.LIST_VARI_ACCES()

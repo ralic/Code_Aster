@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,7 +47,7 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
                                      "TAHERI_MIXTE",) ),
            MATER           =SIMP(statut='o',typ=(mater_sdaster) ),
            TAHERI_NAPPE    =SIMP(statut='f',typ=(nappe_sdaster,formule) ),
-           TAHERI_FONC     =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+           TAHERI_FONC     =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
 
          b_fatigue_multi   =BLOC(condition = "TYPE_CALCUL == 'FATIGUE_MULTI'",

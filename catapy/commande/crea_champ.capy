@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,7 +73,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                 VALE            =SIMP(statut='f',typ='R',max='**' ),
                 VALE_I          =SIMP(statut='f',typ='I',max='**' ),
                 VALE_C          =SIMP(statut='f',typ='C',max='**' ),
-                VALE_F          =SIMP(statut='f',typ=(fonction_sdaster,formule),max='**'),
+                VALE_F          =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),max='**'),
                                    ),
                              ),
          b_asse          =BLOC(condition = "OPERATION == 'ASSE'",
