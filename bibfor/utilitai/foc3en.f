@@ -5,7 +5,7 @@
       CHARACTER*1                                               BASE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      IP(2) , LTP(2)
       REAL*8       EPS
-      CHARACTER*8  PRO(5)
+      CHARACTER*16 PRO(5)
       CHARACTER*24 PROL , VALE, NOMTEM(2)
       CHARACTER*32 JEXNUM
       CHARACTER*1 K1BID
@@ -94,10 +94,10 @@ C     --- SUPERPOSITION DES VALEURS ---
       IOCC = 1
       PROL(1:19) = NOMFON(IOCC)
       CALL JEVEUO(PROL,'L',LPRO)
-      PRO(2) = ZK8(LPRO+5+2*IEME(IOCC)-1)
-      PRO(3) = ZK8(LPRO+5)
-      PRO(4) = ZK8(LPRO+3)
-      PRO(5) = ZK8(LPRO+5+2*IEME(IOCC)  )
+      PRO(2) = ZK16(LPRO+5+2*IEME(IOCC)-1)
+      PRO(3) = ZK16(LPRO+5)
+      PRO(4) = ZK16(LPRO+3)
+      PRO(5) = ZK16(LPRO+5+2*IEME(IOCC)  )
       VALE(1:19) = NOMFON(IOCC)
       CALL JELIRA(JEXNUM(VALE,IEME(IOCC)),'LONUTI',NBVAL,K1BID)
       CALL JEVEUO(JEXNUM(VALE,IEME(IOCC)),'L',LVAR)
@@ -115,10 +115,10 @@ C
       DO 400 IOCC = 2, NBFON
          PROL(1:19) = NOMFON(IOCC)
          CALL JEVEUO(PROL,'L',LPRO)
-         PRO(2) = ZK8(LPRO+5+2*IEME(IOCC)-1)
-         PRO(3) = ZK8(LPRO+5)
-         PRO(4) = ZK8(LPRO+3)
-         PRO(5) = ZK8(LPRO+5+2*IEME(IOCC)  )
+         PRO(2) = ZK16(LPRO+5+2*IEME(IOCC)-1)
+         PRO(3) = ZK16(LPRO+5)
+         PRO(4) = ZK16(LPRO+3)
+         PRO(5) = ZK16(LPRO+5+2*IEME(IOCC)  )
          VALE(1:19) = NOMFON(IOCC)
          CALL JELIRA(JEXNUM(VALE,IEME(IOCC)),'LONUTI',NBVAL,K1BID)
          CALL JEVEUO(JEXNUM(VALE,IEME(IOCC)),'L',LVAR)

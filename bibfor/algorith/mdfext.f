@@ -7,7 +7,7 @@
       CHARACTER*16                    TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/02/99   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,8 @@ C
       INTEGER       IPAR(MXPARA), I, J, K, IPT, NBPF, NBPT
       REAL*8        UN, T, ALPHA
       CHARACTER*1   COLI
-      CHARACTER*8   K8B, INTERP, PROLGD
+      CHARACTER*8   K8B
+      CHARACTER*16  INTERP, PROLGD
       CHARACTER*16  NOMCMD, NOMP(MXPARA)
       CHARACTER*19  CHANNO, FONCT
       LOGICAL       LFORC
@@ -113,7 +114,7 @@ C
          ENDIF
          IF (N1.NE.0) THEN
             CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-            CALL FONBPA(FONCT,ZK8(LPROL),K8B,MXPARA,NBPF,NOMP)
+            CALL FONBPA(FONCT,ZK16(LPROL),K8B,MXPARA,NBPF,NOMP)
             IPAR(1) = 0
             DO 22 I1 = 1,NBPF
                IF (NOMP(I1).EQ.'INST') THEN
@@ -141,7 +142,7 @@ C
             ENDIF
 C
 C           --- FONCTION FORMULE ---
-            IF (ZK8(LPROL).EQ.'INTERPRE') THEN
+            IF (ZK16(LPROL).EQ.'INTERPRE') THEN
                DO 30 K = 1,NBPAS
                   CALL FIINTE('F',FONCT,NBPF,IPAR,T,ALPHA,IER)
                   IF (LFORC) THEN
@@ -155,13 +156,13 @@ C           --- FONCTION FORMULE ---
  30            CONTINUE
 C
 C           --- FONCTION CLASSIQUE ---
-            ELSEIF (ZK8(LPROL).EQ.'FONCTION') THEN
+            ELSEIF (ZK16(LPROL).EQ.'FONCTION') THEN
                CALL JEVEUO(FONCT//'.VALE','L',LVAR)
                CALL JELIRA(FONCT//'.VALE','LONUTI',NBPT,K1BID)
                NBPT   = NBPT / 2
                LFON   = LVAR + NBPT
-               INTERP = ZK8(LPROL+1)
-               PROLGD = ZK8(LPROL+4)
+               INTERP = ZK16(LPROL+1)
+               PROLGD = ZK16(LPROL+4)
                IPT = 1
                DO 40 K = 1,NBPAS
                   CALL FOLOCX(ZR(LVAR),NBPT,T,PROLGD,IPT,EPSI,COLI,IRET)
@@ -175,7 +176,7 @@ C           --- FONCTION CLASSIQUE ---
                   ENDIF
                   CALL FOCOLI ( IPT,COLI,INTERP,ZR(LVAR),ZR(LFON),
      +                                          T , ALPHA , IER ,
-     +                   FONCT,ZK8(LPROL),MXPARA,NOMP,IPAR,'INST',1,T )
+     +                   FONCT,ZK16(LPROL),MXPARA,NOMP,IPAR,'INST',1,T )
                   IF (IER.NE.0) GOTO 9999
                   IF (LFORC) THEN
                      FEXT(NUMOR,K) = ALPHA

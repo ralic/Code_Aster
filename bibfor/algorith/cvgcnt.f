@@ -7,19 +7,19 @@
       CHARACTER*24 DEPDEL
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2002   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 07/01/2003   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
 C (AT YOUR OPTION) ANY LATER VERSION.
-
+C
 C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-
+C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
@@ -27,13 +27,17 @@ C ======================================================================
 C ======================================================================
 C BUT : CONVERGENCE LIEE A LA REACTUALISATION GEOMETRIQUE DU CONTACT ---
 C ======================================================================
-C IN --- : ITEMAX : .TRUE. SI ITERATION MAXIMUM ATTEINTE ---------------
-C IN/OUT : VECONT : INDICE 1 = NOMBRE DE REACTUALISATION GEOMETRIQUE ---
-C ------ : ------ : ------- A EFFECTUER / -1 SI AUTOMATIQUE ------------
-C ------ : ------ : ------------------- /  0 SI PAS DE REACTUALISATION -
-C ------ : ------ : ------------------- /  N REACTUALISATIONS ----------
-C OUT--- : LREAC  : TRUE  SI REACTUALISATION A FAIRE -------------------
-C ------ : ------ : FALSE SI NON ---------------------------------------
+C IN     : ITEMAX : .TRUE. SI ITERATION MAXIMUM ATTEINTE                
+C IN/OUT : VECONT : (1) = NOMBRE DE REACTUALISATION GEOMETRIQUE    
+C        :        :       A EFFECTUER / -1 SI AUTOMATIQUE             
+C        :        :                   /  0 SI PAS DE REACTUALISATION  
+C        :        :                   /  N REACTUALISATIONS  
+C        :        : (2) = NOMBRE DE REACTUALISATIONS GEOMETRIQUES    
+C                         EFFECTUEES
+C OUT    : LREAC  : (1) = TRUE  SI REACTUALISATION A FAIRE  
+C        :        : (2) = TRUE  SI ATTENTE POINT FIXE CONTACT
+C        :        : (3) = TRUE  SI METHODE CONTINUE
+C        :        : (4) = TRUE  SI MODELISATION DU CONTACT
 C ======================================================================
 C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
       CHARACTER*32 JEXNUM,JEXNOM
@@ -59,6 +63,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 
       LREAC(1) = .TRUE.
       LREAC(3) = .TRUE.
+C --- CONVERGENCE GEOMETRIQUE MAIS ATTENTE POINT FIXE CONTACT
       IF (LREAC(2)) THEN
         CALL NMIMPR('IMPR','CONV_OK',' ',0.D0,0)
         CALL NMIMPR('IMPR','FIXE_NON',' ',0.D0,0)
@@ -66,6 +71,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
         LREAC(3) = .FALSE.
       ELSE
         VECONT(2) = VECONT(2) + 1
+C --- CORRESPOND A REAC_GEOM = AUTOMATIQUE
         IF (VECONT(1).LT.0) THEN
           TOLERA = 1.0D-1
           TEMP1 = 0.D0
@@ -96,11 +102,13 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
           ELSE
             LREAC(3) = .FALSE.
           END IF
+C --- CORRESPOND A REAC_GEOM = SANS
         ELSE IF (VECONT(1).EQ.0) THEN
           CALL NMIMPR('IMPR','CONV_OK',' ',0.D0,0)
           CALL NMIMPR('IMPR','GEOM_MIN',' ',0.D0,0)
           LREAC(1) = .FALSE.
         ELSE
+C --- CORRESPOND A REAC_GEOM = CONTROLE
           IF (VECONT(2).EQ.VECONT(1)) THEN
             CALL NMIMPR('IMPR','CONV_OK',' ',0.D0,0)
             CALL NMIMPR('IMPR','AUTO_GEO',' ',0.D0,VECONT(1))

@@ -4,7 +4,7 @@
       CHARACTER*(*)       MCF,       QNT, OPT, OPR, REP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,9 +69,6 @@ C
          MESS(PT:80) = 'TENSEUR CONTRAINTE'
       ELSE IF ( OPT(1:4) .EQ. 'EPSI' ) THEN
          MESS(PT:80) = 'TENSEUR DEFORMATION'
-      ELSE IF ( OPT(1:4) .EQ. 'DPGE' ) THEN
-         MESS(PT:80) = 'TENSEURS VARIATION_COURBURE '//
-     +              'DEFORMATION_MEMBRANNAIRE'
       ELSE IF ( OPT(1:4) .EQ. 'EFGE' ) THEN
          MESS(PT:80) = 'TENSEURS MOMENT_FLECHISSANT EFFORT_GENERALISE'
       ELSE IF ( OPT(1:4) .EQ. 'DEPL' ) THEN

@@ -3,7 +3,7 @@
       CHARACTER*(*)       TABRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/10/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,10 +95,10 @@ C
       CALL GETVTX ( ' ', 'REPERE', 0,1,1, REPERE, N2 )
       IF ( REPERE .EQ. 'GLOBAL' ) THEN
          CALL JEVEUO ( NOMFON//'.PROL', 'E', LPRO )
-         IF ( ZK8(LPRO+2) .NE. 'THETA   ' ) GOTO 9999
-         IF ( ZK8(LPRO+3) .NE. 'R       ' ) GOTO 9999
-         ZK8(LPRO+2) = 'X'
-         ZK8(LPRO+3) = 'Y'
+         IF ( ZK16(LPRO+2) .NE. 'THETA   ' ) GOTO 9999
+         IF ( ZK16(LPRO+3) .NE. 'R       ' ) GOTO 9999
+         ZK16(LPRO+2) = 'X'
+         ZK16(LPRO+3) = 'Y'
          CALL JEVEUO ( NOMFON//'.VALE', 'E', LVAL )
          CALL JELIRA ( NOMFON//'.VALE', 'LONMAX', NBVAL, K8B )
          NBVAL = NBVAL / 2

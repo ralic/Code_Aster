@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,11 +42,13 @@ C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       LOGICAL       LATTR, LCONT
       CHARACTER*1   BASE
-      CHARACTER*8   NOMCO, NOMFI
+      CHARACTER*8   NOMCO
+      CHARACTER*16  NOMFI
       CHARACTER*72  CHAINE
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
+      CALL INFMAJ()
 C
       NIVO = 0
       CALL GETVIS ( ' ', 'NIVEAU', 1,1,1, NIVO, N3 )

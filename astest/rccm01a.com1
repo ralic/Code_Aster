@@ -2049,6 +2049,7 @@ L_INST=DEFI_LIST_REEL(  DEBUT=1.,
                            INTERVALLE=_F(  JUSQU_A = 1000., PAS = 1.) )
                            
 WOHLER2=CALC_FONC_INTERP( FONCTION=COURFATA, LIST_PARA=L_INST,INFO=2,
+				NOM_PARA = 'SIGM',
                                PROL_DROITE='LINEAIRE',
                               PROL_GAUCHE='CONSTANT',
                                NOM_RESU='NADM'       )

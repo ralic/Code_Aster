@@ -1,0 +1,457 @@
+# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+# TITRE TUBE DE BREE (METHODE ZAC)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# CYLINDRE INFINI SOUS PRESSION INTERNE ET GRADIENT TEMPERATURE
+# CALCUL 2D AXI - MODELE ECROUISSAGE CINEMATIQUE LINEAIRE
+# MAILLAGE ; ELEMENTS 3D
+# ==================================================================
+# METHODE ZAC - TUBE DE BREE AVEC DELTA-T = 120 (CAS D'ACCOMODATION)
+# METHODE ZAC - TUBE DE BREE AVEC DELTA-T =  30 (CAS D'ADAPTATION)
+# ==================================================================
+
+DEBUT(   CODE=_F(  NOM = 'SSNA100B',NIV_PUB_WEB='INTERNET') )
+
+PRE_GIBI()
+
+MA=LIRE_MAILLAGE( VERI_MAIL=_F(VERIF='NON'),)
+
+DEFI_GROUP( reuse=MA,  MAILLAGE=MA,CREA_GROUP_NO=(
+         _F(  GROUP_MA = ('FACE0', 'FACEMOY',)),
+                    _F(  GROUP_MA = 'VTOT'))
+                #  CREA_GROUP_NO : ( GROUP_MA : (L1, L10))
+
+)
+
+MO=AFFE_MODELE(
+                MAILLAGE=MA,
+                AFFE=_F(  GROUP_MA = 'VTOT',
+                       PHENOMENE = 'MECANIQUE',
+                       MODELISATION = '3D')  )
+
+MODI_MAILLAGE( reuse=MA,  MAILLAGE=MA,   MODELE=MO,
+                    ORIE_PEAU_3D=_F(  GROUP_MA = 'FACEPRES'))
+
+MAT=DEFI_MATERIAU(
+                          ELAS=_F(  E = 200000.,
+                                NU = 0.3,
+                             ALPHA = 1.E-4),
+                     ECRO_LINE=_F(  D_SIGM_EPSI = 18181.,
+                                          SY = 200.)
+                     )
+
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,
+            AFFE=_F(  TOUT = 'OUI',  MATER = MAT,
+                   TEMP_REF = 0.)
+                        )
+
+TP0=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
+MAILLAGE=MA,
+                            AFFE=_F(  GROUP_NO = 'VTOT',
+                                NOM_CMP = 'TEMP',
+                                 VALE = 0.)   )
+
+# FONC1 = DEFI_FONCTION  ( NOM_PARA : 'X'
+#                                VALE : (
+#                                       10.      +60.
+#                                       10.12    -60.
+#                                       )
+#                         PROL_GAUCHE : 'CONSTANT'
+#                         PROL_DROITE  : 'CONSTANT'
+#                          );
+
+FONC1 = FORMULE(REEL="""(REEL:X,REEL:Y) =
+(-(SQRT(X*X+Y*Y)-10.06)*1.D3) """)
+
+TP1=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
+MAILLAGE=MA,
+                            AFFE=_F(  GROUP_NO = 'VTOT',
+                                NOM_CMP = 'TEMP',
+                               VALE_F = FONC1)   )
+
+LISTEL=DEFI_LIST_REEL(    DEBUT=1.,
+                           INTERVALLE=_F(  JUSQU_A = 3.,  NOMBRE = 1)
+                         )
+
+LISTPL=DEFI_LIST_REEL(    DEBUT=0.,INTERVALLE=(
+                           _F(  JUSQU_A = 1.,  NOMBRE = 1),
+                                      _F(  JUSQU_A = 3.,  NOMBRE = 1))
+                         )
+
+TEMPE=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',    NOM_CHAM='TEMP',AFFE=(
+                      _F(  CHAM_GD = TP0,   INST = 1.),
+                      _F(  CHAM_GD = TP1,   INST = 3.))  )
+
+VARPRESS=DEFI_FONCTION(    NOM_PARA='INST',
+                           PROL_GAUCHE='LINEAIRE',
+                            PROL_DROITE='CONSTANT',
+                           VALE=( 0., 0.,
+                                  1., 1., )  )
+
+CHPRES=AFFE_CHAR_MECA(    MODELE=MO,
+                 PRES_REP=_F(  GROUP_MA = 'FACEPRES',
+                             PRES = 2.)
+                        )
+
+CHCL=AFFE_CHAR_MECA(    MODELE=MO,DDL_IMPO=(
+                 _F(  GROUP_NO = 'FACEMOY',  DZ = 0.),
+             #  DDL_IMPO : ( GROUP_NO : FACEINF  DZ : 0. )
+                 _F(  GROUP_NO = 'FACE0',    DY = 0.)),
+                 FACE_IMPO=_F( GROUP_MA = 'FACE10',   DNOR = 0.)
+             #  LIAISON_UNIF : (GROUP_MA : FACESUP  DDL : 'DZ')
+                        )
+
+CHME=AFFE_CHAR_MECA(    MODELE=MO,
+                 TEMP_CALCULEE=TEMPE
+                        )
+
+SOLPL=STAT_NON_LINE(
+             MODELE=MO,
+             CHAM_MATER=CHMAT,EXCIT=(
+             _F(    CHARGE = CHPRES, FONC_MULT = VARPRESS),
+             _F(    CHARGE = CHCL),
+             _F(    CHARGE = CHME)),
+         COMP_INCR=_F(  RELATION = 'VMIS_CINE_LINE'),
+         INCREMENT=_F(  LIST_INST = LISTPL),
+            NEWTON=_F(  REAC_ITER = 1)
+                             )
+
+CALC_ELEM( reuse=SOLPL,    MODELE=MO,   CHAM_MATER=CHMAT,
+              OPTION=( 'EPSP_ELNO', ),
+             EXCIT=_F(    CHARGE = CHME),
+               RESULTAT=SOLPL
+             )
+
+CALC_NO( reuse=SOLPL,   RESULTAT=SOLPL, OPTION=('EPSP_NOEU', ))
+
+#COMPARAISON DES EPSP_NOEU A CELLES DE SSNA100A AXIS
+# REFERENCE ASTER 5.4.7
+TEST_RESU(RESU=(
+        _F(  RESULTAT = SOLPL,  NUME_ORDRE = 2,
+               NOM_CHAM = 'EPSP_NOEU',  GROUP_NO = 'C',
+               REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-5,
+               NOM_CMP = 'EPXX',    VALE = 6.342285E-04),
+        _F(  RESULTAT = SOLPL,  NUME_ORDRE = 2,
+               NOM_CHAM = 'EPSP_NOEU',  GROUP_NO = 'C',
+               REFERENCE = 'NON_REGRESSION',  PRECISION = 1.E-5,
+               NOM_CMP = 'EPYY',    VALE = -1.28991664E-03),
+        _F(  RESULTAT = SOLPL,  NUME_ORDRE = 2,
+               NOM_CHAM = 'EPSP_NOEU',  GROUP_NO = 'C',
+               REFERENCE = 'NON_REGRESSION',  PRECISION = 1.E-5,
+               NOM_CMP = 'EPZZ',    VALE = 6.55688E-04),
+        _F(  RESULTAT = SOLPL,  NUME_ORDRE = 2,
+               NOM_CHAM = 'EPSP_NOEU',  GROUP_NO = 'F',
+               REFERENCE = 'NON_REGRESSION',  PRECISION = 1.E-5,
+               NOM_CMP = 'EPXX',    VALE = -3.860775E-03),
+        _F(  RESULTAT = SOLPL,  NUME_ORDRE = 2,
+               NOM_CHAM = 'EPSP_NOEU',  GROUP_NO = 'F',
+               REFERENCE = 'NON_REGRESSION',  PRECISION = 1.E-5,
+               NOM_CMP = 'EPYY',    VALE = 7.663486E-03),
+        _F(  RESULTAT = SOLPL,  NUME_ORDRE = 2,
+               NOM_CHAM = 'EPSP_NOEU',  GROUP_NO = 'F',
+               REFERENCE = 'NON_REGRESSION',  PRECISION = 1.E-5,
+               NOM_CMP = 'EPZZ',    VALE = -3.802711E-03))
+             )
+
+
+SOLSTA=MECA_STATIQUE(
+              MODELE=MO,
+              LIST_INST=LISTEL,
+              CHAM_MATER=CHMAT,EXCIT=(
+              _F(    CHARGE = CHPRES),
+              _F(    CHARGE = CHCL),
+              _F(    CHARGE = CHME)),
+             )
+
+CALC_ELEM( reuse= SOLSTA ,RESULTAT= SOLSTA ,
+              MODELE=MO,
+              LIST_INST=LISTEL,
+              CHAM_MATER=CHMAT,EXCIT=(
+              _F(    CHARGE = CHPRES),
+              _F(    CHARGE = CHCL),
+              _F(    CHARGE = CHME)),
+             OPTION=(
+             'EPSI_ELGA_DEPL',  )
+                         )
+
+CHZAC1=POST_ZAC(
+                     MODELE=MO,
+                     CHAM_MATER=CHMAT,EXCIT=(
+             _F(    CHARGE = CHPRES),
+             _F(    CHARGE = CHCL),
+             _F(    CHARGE = CHME)),
+                     EVOL_ELAS=SOLSTA,
+                     LIST_INST=LISTEL
+                   )
+
+CHZAC2=POST_ZAC(
+                     MODELE=MO,
+                     CHAM_MATER=CHMAT,EXCIT=(
+             _F(    CHARGE = CHPRES),
+             _F(    CHARGE = CHCL),
+             _F(    CHARGE = CHME)),
+                     EVOL_NOLI=SOLPL,
+                     INST_MAX=3.,
+                     EVOL_ELAS=SOLSTA,
+                     LIST_INST=LISTEL
+                   )
+
+#ADAPTATION
+
+#FONC2 = DEFI_FONCTION  ( NOM_PARA : 'X'
+
+#                               VALE : (
+
+#                                      10.      +15.
+
+#                                      10.12    -15.
+
+#                                     )
+
+#                        PROL_GAUCHE : 'CONSTANT'
+
+#                       PROL_DROITE  : 'CONSTANT'
+
+#                        );
+
+FONC2 = FORMULE(REEL="""(REEL:X,REEL:Y) =
+(-(SQRT(X*X+Y*Y)-10.06)*250.) """)
+
+TP2=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
+MAILLAGE=MA,
+                            AFFE=_F(  TOUT = 'OUI',
+                                NOM_CMP = 'TEMP',
+                               VALE_F = FONC2)   )
+
+TEMPE2=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',    NOM_CHAM='TEMP',AFFE=(
+                      _F(  CHAM_GD = TP0,   INST = 1.),
+                      _F(  CHAM_GD = TP2,   INST = 3.))  )
+
+CHME2=AFFE_CHAR_MECA(    MODELE=MO,
+                 TEMP_CALCULEE=TEMPE2
+                         )
+
+SOLPL2=STAT_NON_LINE(
+             MODELE=MO,
+             CHAM_MATER=CHMAT,EXCIT=(
+             _F(    CHARGE = CHPRES, FONC_MULT = VARPRESS),
+             _F(    CHARGE = CHME2),
+             _F(    CHARGE = CHCL)),
+         COMP_INCR=_F(  RELATION = 'VMIS_CINE_LINE'),
+         INCREMENT=_F(  LIST_INST = LISTPL),
+            NEWTON=_F(  REAC_ITER = 1)
+                             )
+
+
+SOLSTA2=MECA_STATIQUE(
+              MODELE=MO,
+              LIST_INST=LISTEL,
+              CHAM_MATER=CHMAT,EXCIT=(
+              _F(    CHARGE = CHPRES),
+              _F(    CHARGE = CHME2),
+              _F(    CHARGE = CHCL)),
+            )
+
+CALC_ELEM( reuse= SOLSTA2 ,RESULTAT= SOLSTA2 ,
+              MODELE=MO,
+              LIST_INST=LISTEL,
+              CHAM_MATER=CHMAT,EXCIT=(
+              _F(    CHARGE = CHPRES),
+              _F(    CHARGE = CHME2),
+              _F(    CHARGE = CHCL)),
+             OPTION=(
+              'EPSI_ELGA_DEPL',  )
+                         )
+
+CHZAC3=POST_ZAC(
+                     MODELE=MO,
+                     CHAM_MATER=CHMAT,EXCIT=(
+             _F(    CHARGE = CHPRES),
+             _F(    CHARGE = CHME2),
+             _F(    CHARGE = CHCL)),
+                     EVOL_ELAS=SOLSTA2,
+                     LIST_INST=LISTEL
+                   )
+
+CHZAC4=POST_ZAC(
+                     MODELE=MO,
+                     CHAM_MATER=CHMAT,EXCIT=(
+             _F(    CHARGE = CHPRES),
+             _F(    CHARGE = CHME2),
+             _F(    CHARGE = CHCL)),
+                     EVOL_NOLI=SOLPL2,
+                     INST_MAX=3.,
+                     EVOL_ELAS=SOLSTA2,
+                     LIST_INST=LISTEL
+                   )
+
+CALC_NO( reuse=CHZAC1,   RESULTAT=CHZAC1,
+OPTION=('SIGM_NOEU_ZAC', 'EPSP_NOEU_ZAC',)
+)
+
+CALC_NO( reuse=CHZAC2,   RESULTAT=CHZAC2,
+OPTION=('SIGM_NOEU_ZAC', 'EPSP_NOEU_ZAC',)
+)
+
+CALC_NO( reuse=CHZAC3,   RESULTAT=CHZAC3,
+OPTION=('SIGM_NOEU_ZAC', 'EPSP_NOEU_ZAC',)
+)
+
+CALC_NO( reuse=CHZAC4,   RESULTAT=CHZAC4,
+OPTION=('SIGM_NOEU_ZAC', 'EPSP_NOEU_ZAC',)
+)
+
+TEST_RESU(RESU=(
+
+# ADAPTATION :
+#_____________
+#
+# DT = 30 - VALEURS MOYENNES - ETAT INITIAL NUL
+#
+# PEAU INTERNE
+        _F(  RESULTAT = CHZAC3,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 1,
+               NOM_CHAM = 'EPSP_NOEU_ZAC',  GROUP_NO = 'C',
+               NOM_CMP = 'EPYY',    VALE = 1.7898E-3, PRECISION = 5.5E-1),
+# PEAU EXTERNE
+        _F(  RESULTAT = CHZAC3,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 1,
+               NOM_CHAM = 'EPSP_NOEU_ZAC',   GROUP_NO = 'F',
+               NOM_CMP = 'EPYY',    VALE = 3.10317E-3, PRECISION = 2.6E-1),
+#
+# DT = 30 - VALEURS MOYENNES - AVEC DEMI-CYCLE ELASTOPLASTIQUE
+#
+# PEAU INTERNE
+        _F(  RESULTAT = CHZAC4,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 1,
+               NOM_CHAM = 'EPSP_NOEU_ZAC',  GROUP_NO = 'C',
+               NOM_CMP = 'EPYY',    VALE = 1.7898E-3, PRECISION = 1.E-2),
+# PEAU EXTERNE
+        _F(  RESULTAT = CHZAC4,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 1,
+               NOM_CHAM = 'EPSP_NOEU_ZAC',   GROUP_NO = 'F',
+               NOM_CMP = 'EPYY',    VALE = 3.10317E-3, PRECISION = 1.E-2),
+ #
+
+# ACCOMODATION :
+#_______________
+
+# DT = 120 - VALEURS MOYENNES - ETAT INITIAL NUL
+#
+# PEAU INTERNE
+        _F(  RESULTAT = CHZAC1,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 1,
+               NOM_CHAM = 'EPSP_NOEU_ZAC',  GROUP_NO = 'C',
+               NOM_CMP = 'EPYY',    VALE = 4.141E-3, PRECISION = 1.E-1),
+        _F(  RESULTAT = CHZAC1,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 1,
+               NOM_CHAM = 'SIGM_NOEU_ZAC',  GROUP_NO = 'C',
+               NOM_CMP = 'SIYY',    VALE = 91.819,   PRECISION = 1.E-1),
+# PEAU EXTERNE
+        _F(  RESULTAT = CHZAC1,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 1,
+               NOM_CHAM = 'EPSP_NOEU_ZAC',   GROUP_NO = 'F',
+               NOM_CMP = 'EPYY',    VALE = 9.5936E-3, PRECISION = 2.E-2),
+        _F(  RESULTAT = CHZAC1,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 1,
+               NOM_CHAM = 'SIGM_NOEU_ZAC',   GROUP_NO = 'F',
+               NOM_CMP = 'SIYY',    VALE = 191.909, PRECISION = 2.E-2),
+#
+# DT = 120 - DELTA INFERIEUR - ETAT INITIAL NUL
+#
+# PEAU INTERNE
+        _F(  RESULTAT = CHZAC1,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 2,
+               NOM_CHAM = 'EPSP_NOEU_ZAC',  GROUP_NO = 'C',
+               NOM_CMP = 'EPYY',    VALE = 3.6363E-3, PRECISION = 1.E-2),
+        _F(  RESULTAT = CHZAC1,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 2,
+               NOM_CHAM = 'SIGM_NOEU_ZAC',  GROUP_NO = 'C',
+               NOM_CMP = 'SIYY',    VALE = 472.727, PRECISION = 1.E-2),
+# PEAU EXTERNE
+        _F(  RESULTAT = CHZAC1,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 2,
+               NOM_CHAM = 'EPSP_NOEU_ZAC',   GROUP_NO = 'F',
+               NOM_CMP = 'EPYY',    VALE = 3.6328E-3, PRECISION = 1.E-2),
+        _F(  RESULTAT = CHZAC1,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 2,
+               NOM_CHAM = 'SIGM_NOEU_ZAC',   GROUP_NO = 'F',
+               NOM_CMP = 'SIYY',    VALE = 472.727, PRECISION = 1.E-2),
+#
+# DT = 120 - DELTA SUPERIEUR - ETAT INITIAL NUL
+#
+# PEAU INTERNE
+        _F(  RESULTAT = CHZAC1,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 3,
+               NOM_CHAM = 'EPSP_NOEU_ZAC',  GROUP_NO = 'C',
+               NOM_CMP = 'EPYY',    VALE = 3.6363E-3, PRECISION = 1.E-2),
+        _F(  RESULTAT = CHZAC1,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 3,
+               NOM_CHAM = 'SIGM_NOEU_ZAC',  GROUP_NO = 'C',
+               NOM_CMP = 'SIYY',    VALE = 472.727, PRECISION = 1.E-2),
+# PEAU EXTERNE
+        _F(  RESULTAT = CHZAC1,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 3,
+               NOM_CHAM = 'EPSP_NOEU_ZAC',   GROUP_NO = 'F',
+               NOM_CMP = 'EPYY',    VALE = 3.6328E-3, PRECISION = 1.E-2),
+        _F(  RESULTAT = CHZAC1,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 3,
+               NOM_CHAM = 'SIGM_NOEU_ZAC',   GROUP_NO = 'F',
+               NOM_CMP = 'SIYY',    VALE = 472.727, PRECISION = 1.E-2),
+#
+# DT = 120 - VALEURS MOYENNES - AVEC DEMI-CYCLE ELASTOPLASTIQUE
+#
+# PEAU INTERNE
+        _F(  RESULTAT = CHZAC2,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 1,
+               NOM_CHAM = 'EPSP_NOEU_ZAC',  GROUP_NO = 'C',
+               NOM_CMP = 'EPYY',    VALE = 4.141E-3, PRECISION = 2.E-2),
+        _F(  RESULTAT = CHZAC2,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 1,
+               NOM_CHAM = 'SIGM_NOEU_ZAC',  GROUP_NO = 'C',
+               NOM_CMP = 'SIYY',    VALE = 91.819, PRECISION = 1.E-1),
+# PEAU EXTERNE
+        _F(  RESULTAT = CHZAC2,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 1,
+               NOM_CHAM = 'EPSP_NOEU_ZAC',   GROUP_NO = 'F',
+               NOM_CMP = 'EPYY',    VALE = 9.5936E-3, PRECISION = 1.E-2),
+        _F(  RESULTAT = CHZAC2,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 1,
+               NOM_CHAM = 'SIGM_NOEU_ZAC',   GROUP_NO = 'F',
+               NOM_CMP = 'SIYY',    VALE = 191.909, PRECISION = 1.E-2),
+#
+# DT = 120 - DELTA INFERIEUR - AVEC DEMI-CYCLE ELASTOPLASTIQUE
+#
+# PEAU INTERNE
+        _F(  RESULTAT = CHZAC2,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 2,
+               NOM_CHAM = 'EPSP_NOEU_ZAC',  GROUP_NO = 'C',
+               NOM_CMP = 'EPYY',    VALE = 3.6363E-3, PRECISION = 1.E-2),
+        _F(  RESULTAT = CHZAC2,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 2,
+               NOM_CHAM = 'SIGM_NOEU_ZAC',  GROUP_NO = 'C',
+               NOM_CMP = 'SIYY',    VALE = 472.727,  PRECISION = 1.E-2),
+# PEAU EXTERNE
+        _F(  RESULTAT = CHZAC2,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 2,
+               NOM_CHAM = 'EPSP_NOEU_ZAC',   GROUP_NO = 'F',
+               NOM_CMP = 'EPYY',    VALE = 3.6328E-3, PRECISION = 1.E-2),
+        _F(  RESULTAT = CHZAC2,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 2,
+               NOM_CHAM = 'SIGM_NOEU_ZAC',   GROUP_NO = 'F',
+               NOM_CMP = 'SIYY',    VALE = 472.727,   PRECISION = 1.E-2),
+#
+# DT = 120 - DELTA SUPERIEUR - AVEC DEMI-CYCLE ELASTOPLASTIQUE
+#
+# PEAU INTERNE
+        _F(  RESULTAT = CHZAC2,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 3,
+               NOM_CHAM = 'EPSP_NOEU_ZAC',  GROUP_NO = 'C',
+               NOM_CMP = 'EPYY',    VALE = 3.6363E-3, PRECISION = 1.E-2),
+        _F(  RESULTAT = CHZAC2,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 3,
+               NOM_CHAM = 'SIGM_NOEU_ZAC',  GROUP_NO = 'C',
+               NOM_CMP = 'SIYY',    VALE = 472.727,  PRECISION = 1.E-2),
+# PEAU EXTERNE
+        _F(  RESULTAT = CHZAC2,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 3,
+               NOM_CHAM = 'EPSP_NOEU_ZAC',   GROUP_NO = 'F',
+               NOM_CMP = 'EPYY',    VALE = 3.6328E-3, PRECISION = 1.E-2),
+        _F(  RESULTAT = CHZAC2,  REFERENCE = 'AUTRE_ASTER', NUME_ORDRE = 3,
+               NOM_CHAM = 'SIGM_NOEU_ZAC',   GROUP_NO = 'F',
+               NOM_CMP = 'SIYY',    VALE = 472.727,   PRECISION = 1.E-2))
+
+             )
+
+FIN()
+#
+#
+#

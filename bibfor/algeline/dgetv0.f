@@ -3,7 +3,7 @@
      &     IPNTR, WORKD, IERR, ALPHA)
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/09/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ALGELINE  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -345,7 +345,7 @@ C     %--------------------------------------%
       ENDIF
       IF (RNORM .GT. ALPHA*RNORM0) GO TO 50
       ITER = ITER + 1
-      IF (ITER .LE. 1) THEN
+      IF (ITER .LE. 5) THEN
 
 C        %-----------------------------------%
 C        | PERFORM ITERATIVE REFINEMENT STEP |

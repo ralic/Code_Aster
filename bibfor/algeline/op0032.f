@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,13 +52,14 @@ C
      &             LPROD, IFR, IRET, ICOMP, IERX, NBFREQ
       CHARACTER*1  TYPE
       CHARACTER*19 MASSE , RAIDE
-      CHARACTER*8  CBID  , FICHIE
-      CHARACTER*16 CONCEP, NOMCMD, TYPRES
+      CHARACTER*8  CBID
+      CHARACTER*16 CONCEP, NOMCMD, TYPRES, FICHIE
       CHARACTER*19 DYNAM
       PARAMETER   ( MXDDL=1 )
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
+      CALL INFMAJ()
 C
 C
       FMIN = 0.D0

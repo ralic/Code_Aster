@@ -7,7 +7,7 @@
       REAL*8        LINLIN, LINLOG, LOGLOG, LOGLIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON/KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
       CHARACTER*1   COLI, CBID
-      CHARACTER*8   INTERP, PROLGD
+      CHARACTER*16  INTERP, PROLGD
       CHARACTER*19  NOMFON
       CHARACTER*24  CHPROL, CHVALE
       CHARACTER*1 K1BID
@@ -62,13 +62,13 @@ C     ------------------------------------------------------------------
          CHVALE = NOMFON//'.VALE'
          CHPROL = NOMFON//'.PROL'
          CALL JEVEUO(CHPROL,'L',LPROL)
-         CALL FOPRO1(ZK8(LPROL),INUME,PROLGD,INTERP)
+         CALL FOPRO1(ZK16(LPROL),INUME,PROLGD,INTERP)
          CALL JEVEUO(JEXNUM(CHVALE,INUME),'L',LVAR)
          CALL JELIRA(JEXNUM(CHVALE,INUME),'LONMAX',NBPT,K1BID)
       ELSE
          JPRO   = ZI(IPIF+1)
-         PROLGD = ZK8(JPRO+5+ (2*INUME))
-         INTERP = ZK8(JPRO+5+ (2*INUME-1))
+         PROLGD = ZK16(JPRO+5+ (2*INUME))
+         INTERP = ZK16(JPRO+5+ (2*INUME-1))
          NBPCUM = 0
          DO 10 I = 1,INUME - 1
             NBPCUM = NBPCUM + ZI(ZI(IPIF+3)+I) - ZI(ZI(IPIF+3)+I-1)

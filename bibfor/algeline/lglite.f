@@ -7,7 +7,7 @@ C
       REAL*8        DEVG(*), DEVGII, TRACEG, DY(*)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C ======================================================================
 C ======================================================================
 C --- BUT : CALCUL DES DIFFERENTS INCREMENTS ---------------------------
 C ======================================================================
-C IN  : YF     : (SIG, GAMP, EPSD(3)) A L'INSTANT COURANT --------------
+C IN  : YF     : (SIG, I1, GAMP, EVP, DELTA) A L'INSTANT COURANT -------
 C --- : NR     : DIMENSION DE YD ---------------------------------------
 C --- : NBMAT  : NOMBRE DE PARAMETRES MATERIAU -------------------------
 C --- : MATER  : PARAMETRES MATERIAU -----------------------------------
@@ -37,7 +37,7 @@ C --- : F0     : VALEUR SEUIL A L'INSTANT 0 ----------------------------
 C --- : DEVG   : DEVIATEUR DU TENSEUR G --------------------------------
 C --- : DEVGII : NORME DU DEVIATEUR DU TENSEUR G -----------------------
 C --- : TRACEG : TRACE DU TENSEUR G ------------------------------------
-C OUT : DY     : INCREMENTS (SIG, I1, GAMP, DELTA) ---------------------
+C OUT : DY     : INCREMENTS (DSIG, DI1, DGAMP, DEVP, DDELTA) -----------
 C ======================================================================
 C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
       INTEGER ZI
@@ -59,7 +59,7 @@ C ======================================================================
       INTEGER       JPARA, JDERIV
       REAL*8        PREF, EPSSIG, GAMCJS, MU, K, SNII, RN, GN, UCN
       REAL*8        RCOS3T, COS3T, HLODE, GDEV, UCRITP
-      REAL*8        DFDL, SN(6), INVN, GAMPN, DELTAN, Q(6)
+      REAL*8        DFDL, SN(6), INVN, GAMPN, EVPN, DELTAN, Q(6)
       CHARACTER*16  PARECR, DERIVE
 C ======================================================================
 C --- INITIALISATION DE PARAMETRES -------------------------------------
@@ -84,7 +84,8 @@ C ======================================================================
       CALL     LCEQVN(NDT, YF(1)    , SN(1)  )
       CALL     LCEQVN(  1, YF(NDT+1), INVN   )
       CALL     LCEQVN(  1, YF(NDT+2), GAMPN  )
-      CALL     LCEQVN(  1, YF(NDT+3), DELTAN )
+      CALL     LCEQVN(  1, YF(NDT+3), EVPN   )
+      CALL     LCEQVN(  1, YF(NDT+4), DELTAN )
 C ======================================================================
 C --- CALCUL DES VARIABLES D'ECROUISSAGES ET DE SES DERIVEES -----------
 C ======================================================================

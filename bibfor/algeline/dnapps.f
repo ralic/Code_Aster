@@ -3,7 +3,7 @@
      &     WORKL, WORKD)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/09/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ALGELINE  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -426,7 +426,7 @@ C              %----------------------------------------------------%
 C              | ACCUMULATE THE ROTATION IN THE MATRIX Q,  Q <- Q*G |
 C              %----------------------------------------------------%
 
-               DO 70 J = 1, MIN( J+JJ, KPLUSP )
+               DO 70 J = 1, MIN( I+JJ, KPLUSP )
                   T        =   C*Q(J,I) + S*Q(J,I+1)
                   Q(J,I+1) = - S*Q(J,I) + C*Q(J,I+1)
                   Q(J,I)   = T

@@ -1,8 +1,6 @@
-      SUBROUTINE IRMDES ( IDFIMD,
-     >                    TITRE,
-     >                    INFMED )
+      SUBROUTINE IRMDES ( IDFIMD, TITRE, NBTITR, INFMED )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/03/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,9 +33,9 @@ C
 C 0.1. ==> ARGUMENTS
 C
       INTEGER IDFIMD 
-      INTEGER INFMED
+      INTEGER INFMED,NBTITR
 C
-      CHARACTER*(*) TITRE
+      CHARACTER*(*) TITRE(*)
 C
 C 0.2. ==> COMMUNS
 C
@@ -61,7 +59,7 @@ C
 C
       LOGICAL BENVO, BDVP, LEXP
 C
-      INTEGER ISENVO, LXLGUT
+      INTEGER ISENVO, LXLGUT, LTIT, IDEB, IT
 C
 C====
 C 1. PREALABLES
@@ -126,6 +124,7 @@ C====
 C
 C 3.1. ==> CREATION
 C
+      DESCRI  = ' '
       DESCRI (1:13) = 'CODE_ASTER - '
 C                      1234567890123
       DESCRI (14:21) = CVERS
@@ -149,14 +148,17 @@ C
 C
       DESCRI (99:116) = LADATE(1:15)//' - '
 C
-      IAUX = LXLGUT(TITRE)
-      IF ( IAUX.GT.0 ) THEN
-        IAUX = MIN(IAUX,84)
-        DESCRI(117:116+IAUX) = TITRE(1:IAUX)
-      ENDIF
-      DO 31 , JAUX = 117+IAUX , 200
-        DESCRI(JAUX:JAUX) = ' '
-   31 CONTINUE
+      LTIT = 0
+      IDEB = 117
+      DO 30 IT = 1 , NBTITR
+         IAUX = LXLGUT(TITRE(IT))
+         LTIT = LTIT + IAUX + 1
+         IF ( LTIT.GT.84 ) GOTO 32
+         DESCRI(IDEB:IDEB+IAUX) = TITRE(IT)(1:IAUX)//'-'
+         IDEB = IDEB + IAUX + 1
+         IF ( IDEB.GT.200 ) GOTO 32
+   30 CONTINUE
+   32 CONTINUE
 C
 C 3.2. ==> ECRITURE
 C

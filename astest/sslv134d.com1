@@ -1,0 +1,309 @@
+# AJOUT
+# TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
+# QUART DE FISSURE. TEST DE POST_K1_K2_K3. MAILLAGE BARSOUM
+# TORSION
+
+POURSUITE(   CODE=_F(  NOM = 'SSLV134D') )
+
+K1=1.595769E6
+GLOC1REF=11.58648
+
+# --------------------------------------------------------------------
+
+DEP_SUP=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB_SUP',
+                                  GROUP_NO = 'LEVINFS',
+                                  RESULTAT = RESU1,
+                                  NOM_CHAM = 'DEPL',
+                                  NOM_CMP = ('DX', 'DY', 'DZ',),
+                                  OPERATION = 'EXTRACTION')
+                                )
+
+DEP_INF=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB_INF',
+                                  GROUP_NO = 'LEVINF1',
+                                  RESULTAT = RESU1,
+                                  NOM_CHAM = 'DEPL',
+                                  NOM_CMP = ('DX', 'DY', 'DZ',),
+                                  OPERATION = 'EXTRACTION')
+                                )
+
+# --------------------------------------------------------------------
+
+TABK1K3=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
+                        FOND_FISS=FISS,
+                        MAILLAGE=MA,
+                        SANS_NOEUD =  ( 'N84', 'N91' , 'N98',),
+                        MATER=MAT,
+                        TABL_DEPL_SUP=DEP_SUP,
+                        TABL_DEPL_INF=DEP_INF,
+                        ABSC_CURV_MAXI=0.539,
+                        VECT_K1=(0., 0., 1.,)
+                      )
+
+TEST_TABLE(    TABLE=TABK1K3,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.010           )
+
+TEST_TABLE(    TABLE=TABK1K3,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=K1,
+                      PRECISION=0.007           )
+
+TEST_TABLE(    TABLE=TABK1K3,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC1REF,
+                      PRECISION=0.015           )
+
+TEST_TABLE(    TABLE=TABK1K3,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC1REF,
+                      PRECISION=0.01           )
+
+TEST_TABLE(    TABLE=TABK1K3,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.003           )
+
+TEST_TABLE(    TABLE=TABK1K3,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=K1,
+                      PRECISION=0.08           )
+
+TEST_TABLE(    TABLE=TABK1K3,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC1REF,
+                      PRECISION=0.005           )
+
+TEST_TABLE(    TABLE=TABK1K3,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC1REF,
+                      PRECISION=0.14           )
+
+# --------------------------------------------------------------------
+
+K_N49=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
+                        FOND_FISS=FISS,
+                        MAILLAGE=MA,
+                        NOEUD =  ( 'N49',),
+                        MATER=MAT,
+                        TABL_DEPL_SUP=DEP_SUP,
+                        TABL_DEPL_INF=DEP_INF,
+                        ABSC_CURV_MAXI=0.539,
+                        VECT_K1=(0., 0., 1.,)
+                      )
+
+TEST_TABLE(    TABLE=K_N49,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.010           )
+
+TEST_TABLE(    TABLE=K_N49,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=K1,
+                      PRECISION=0.007           )
+
+TEST_TABLE(    TABLE=K_N49,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC1REF,
+                      PRECISION=0.015           )
+
+TEST_TABLE(    TABLE=K_N49,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC1REF,
+                      PRECISION=0.01           )
+
+TEST_TABLE(    TABLE=K_N49,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.003           )
+
+TEST_TABLE(    TABLE=K_N49,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=K1,
+                      PRECISION=0.08           )
+
+TEST_TABLE(    TABLE=K_N49,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC1REF,
+                      PRECISION=0.005           )
+
+TEST_TABLE(    TABLE=K_N49,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC1REF,
+                      PRECISION=0.14           )
+
+#
+# --------------------------------------------------------------------
+
+T_K1K3=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
+                        MATER=MAT,
+                        MAILLAGE=MA,
+                        RESULTAT = RESU1,
+                        FOND_FISS=FISS,
+                        SANS_NOEUD =  ( 'N84', 'N91' , 'N98',),
+                        ABSC_CURV_MAXI=0.539,
+                        VECT_K1=(0., 0., 1.,)
+                      )
+
+TEST_TABLE(    TABLE=T_K1K3,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.010           )
+
+TEST_TABLE(    TABLE=T_K1K3,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=K1,
+                      PRECISION=0.007           )
+
+TEST_TABLE(    TABLE=T_K1K3,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC1REF,
+                      PRECISION=0.015           )
+
+TEST_TABLE(    TABLE=T_K1K3,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC1REF,
+                      PRECISION=0.01           )
+
+TEST_TABLE(    TABLE= T_K1K3,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.003           )
+
+TEST_TABLE(    TABLE=T_K1K3,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=K1,
+                      PRECISION=0.08           )
+
+TEST_TABLE(    TABLE=T_K1K3,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC1REF,
+                      PRECISION=0.005           )
+
+TEST_TABLE(    TABLE=T_K1K3,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC1REF,
+                      PRECISION=0.14           )
+
+FIN()
+#

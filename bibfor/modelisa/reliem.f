@@ -7,7 +7,7 @@
       CHARACTER*(*) LITROZ,TYPEM,MOTFAZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 07/01/2003   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,10 +135,21 @@ C     --- CREATION DES TABLEAUX DE TRAVAIL ---
       CALL DISMOI('F','NB_NO_MAILLA',MA,'MAILLAGE',NBNO,K8B,IRET)
       CALL WKVECT('&&RELIEM.INDIC_NOEUD','V V I',NBNO,ITRNO)
 
+      DO 11 K=1,NBMA
+        ZI(ITRMA-1+K)=0
+   11 CONTINUE
+      DO 12 K=1,NBNO
+        ZI(ITRNO-1+K)=0
+   12 CONTINUE
+
 
 
 C     --- CONSTITUTION DES LISTES DES MAILLES ET DES NOEUDS
 C         PAR MARQUAGE DANS LES TABLEAUX DE TRAVAIL         ---
+
+      IF (MODELE.NE.' ') THEN
+        CALL JEVEUO(MODELE//'.MAILLE','L',JMODEL)
+      ENDIF
 
       DO 70 IMO = 1,NBMOCL
         MOTCLE = LIMOCL(IMO)
@@ -151,7 +162,13 @@ C        -----------------
           IF (NTOU.GT.0) THEN
             IF (TYPE2.EQ.'MAILLE') THEN
               DO 20,K = 1,NBMA
-                ZI(ITRMA-1+K) = 1
+                IF (MODELE.NE.' ') THEN
+                  IF (ZI(JMODEL-1+K).NE.0) THEN
+                    ZI(ITRMA-1+K) = 1
+                  ENDIF
+                ELSE 
+                  ZI(ITRMA-1+K) = 1
+                ENDIF
    20         CONTINUE
             END IF
             IF (TYPE2.EQ.'NOEUD') THEN
@@ -262,7 +279,6 @@ C           --- RANGEMENT DES NOMS DE MAILLES ---
 C       -- ON VERIFIE QUE LES MAILLES FONT PARTIE DU MODELE :
 C       ----------------------------------------------------
         IF (MODELE.NE.' ') THEN
-          CALL JEVEUO(MODELE//'.MAILLE','L',JMODEL)
           IER=0
           DO 121 IMA = 1,NBMA
             IF (ZI(ITRMA-1+IMA).NE.0) THEN
@@ -273,7 +289,7 @@ C       ----------------------------------------------------
               END IF
             END IF
   121     CONTINUE
-          IF (IER.NE.0) CALL UTMESS('A','RELIEM','LES MAILLES IMPRIMEES'
+          IF (IER.NE.0) CALL UTMESS('F','RELIEM','LES MAILLES IMPRIMEES'
      & //' CI-DESSUS N''APPARTIENNENT PAS AU MODELE ET POURTANT ELLES'
      & //' ONT ETE AFFECTEES DANS LE MOT-CLE FACTEUR :'//MOTFAC)
         END IF

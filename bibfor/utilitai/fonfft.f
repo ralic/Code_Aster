@@ -4,7 +4,7 @@
       CHARACTER*(1)                               BASE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/06/2000   AUTEUR ACBHHCD G.DEVESA 
+C MODIF UTILITAI  DATE 31/03/2003   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*8   CBID, NOMRES
+      CHARACTER*8   CBID
+      CHARACTER*16  NOMRES
       CHARACTER*19  NOMFI, NOMFS
       CHARACTER*24  VALE, PROL
       REAL*8        PAS,PASFRQ
@@ -47,6 +48,14 @@ C     ----------------------------------------------------------------
       CALL JEMARQ()
       NOMFI = NOMFON
       NOMFS = SORTIE
+C
+C     --- AFFECTATION DU .PROL ---
+      PROL = NOMFI//'.PROL'
+      CALL JEVEUO(PROL,'L',LPRO)
+      IF (ZK16(LPRO).NE.'FONCTION'.AND.ZK16(LPRO).NE.'FONCT_C') THEN
+         CALL UTMESS('F','FONFFT',
+     +      'SEULE LE CALCUL DE LA FFT D UNE FONCTION EST IMPLEMENTE')
+      ENDIF
 C
 C     ---  NOMBRE DE POINTS ----
       VALE = NOMFI//'.VALE'
@@ -113,10 +122,7 @@ C     --- SENS INVERSE
   203    CONTINUE
       ENDIF
 C
-C     --- AFFECTATION DU .PROL ---
-      PROL = NOMFI//'.PROL'
-      CALL JEVEUO(PROL,'L',LPRO)
-      NOMRES = ZK8(LPRO+3)
+      NOMRES = ZK16(LPRO+3)
       IF ( NOMRES(1:4) .EQ. 'DEPL' ) THEN
          NOMRES = 'VITE'
       ELSEIF ( NOMRES(1:4) .EQ. 'VITE' ) THEN
@@ -125,24 +131,24 @@ C     --- AFFECTATION DU .PROL ---
          NOMRES      = 'TOUTRESU'
       ENDIF
       PROL = NOMFS//'.PROL'
-      CALL WKVECT(PROL,'G V K8',5,LPROS)
+      CALL WKVECT(PROL,'G V K16',5,LPROS)
       IF (NSENS.EQ.1) THEN
-         ZK8(LPROS  ) = 'FONCT_C'
-         ZK8(LPROS+2) = 'FREQ'
+         ZK16(LPROS  ) = 'FONCT_C'
+         ZK16(LPROS+2) = 'FREQ'
       ELSEIF (NSENS.EQ.-1) THEN
-         ZK8(LPROS  ) = 'FONCTION'
-         ZK8(LPROS+2) = 'INST'
+         ZK16(LPROS  ) = 'FONCTION'
+         ZK16(LPROS+2) = 'INST'
       ENDIF
-      IF (ZK8(LPRO+1)(1:3).EQ.'INT') THEN
-         ZK8(LPROS+1) = 'LIN LIN '
+      IF (ZK16(LPRO+1)(1:3).EQ.'INT') THEN
+         ZK16(LPROS+1) = 'LIN LIN '
       ELSE
-         ZK8(LPROS+1) = ZK8(LPRO+1)
+         ZK16(LPROS+1) = ZK16(LPRO+1)
       ENDIF
-      ZK8(LPROS+3) = NOMRES
-      IF (ZK8(LPRO+4)(1:1).EQ.'I' .OR. ZK8(LPRO+4)(2:2).EQ.'I') THEN
-         ZK8(LPROS+4) = 'EE      '
+      ZK16(LPROS+3) = NOMRES
+      IF (ZK16(LPRO+4)(1:1).EQ.'I' .OR. ZK16(LPRO+4)(2:2).EQ.'I') THEN
+         ZK16(LPROS+4) = 'EE      '
       ELSE
-         ZK8(LPROS+4) = ZK8(LPRO+4)
+         ZK16(LPROS+4) = ZK16(LPRO+4)
       ENDIF
 C
       CALL JEDETC('V','&&',1)      

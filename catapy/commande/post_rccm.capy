@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # RESPONSABLE JMBHH01 J.M.PROIX
 POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=tabl_post_rccm,
                fr="Vérification des critères de niveau 0 et certains critères de niveau A du RCC-M-B3200 (Edition 1991)",
-               docu="U4.83.11-d1",reentrant='n',
+               docu="U4.83.11-d",reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
          TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="VALE_MAX",into=("VALE_MAX","VALE_INST") ),
          INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
@@ -67,6 +67,8 @@ POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=tabl_post_rccm,
 
      b_3200  =BLOC(condition="(OPTION == 'FATIGUE_B3200')",
          MATER           =SIMP(statut='o',typ=mater ),
+         TYPE_KE         =SIMP(statut='f',typ='TXM',defaut="KE_MECA",into=("KE_MECA","KE_MIXTE"),
+                               fr="Ke meca seul ou partition mecanique + thermique" ),
          CHAR_MECA   =FACT(statut='o',min=1,max='**',fr="Chargements mécaniques",
            NUME_CHAR     =SIMP(statut='o',typ='I',max=1,fr="numéro du chargement" ),
            NOM_CHAR      =SIMP(statut='f',typ='TXM',max=1,fr="nom du chargement" ),
@@ -118,6 +120,8 @@ POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=tabl_post_rccm,
                       ),
      b_3600  =BLOC(condition="(OPTION == 'FATIGUE_B3600')",
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
+         TYPE_KE         =SIMP(statut='f',typ='TXM',defaut="KE_MECA",into=("KE_MECA","KE_MIXTE"),
+                               fr="Ke meca seul ou partition mecanique + thermique" ),
          MODELE          =SIMP(statut='o',typ=modele),
          CARA_ELEM       =SIMP(statut='o',typ=cara_elem),
          ZONE_ANALYSE =FACT(statut='o',min=1,max=1,fr="liste des mailles ou des noeuds analysés",

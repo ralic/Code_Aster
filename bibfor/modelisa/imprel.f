@@ -1,6 +1,6 @@
       SUBROUTINE IMPREL (MOTFAC,NBTERM,COEF,LISDDL,LISNO,BETA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/08/98   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF MODELISA  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,12 +23,10 @@ C ======================================================================
       CHARACTER*8 LISDDL(NBTERM),LISNO(NBTERM)
       REAL*8 COEF(NBTERM),BETA
 C
-      CALL GETVIS(' ','INFO',1,1,1,INFO,IBID)
+      CALL INFNIV(IFM,INFO)
       IF(INFO.NE.2) THEN
          GOTO 9999
       ENDIF
-C
-      IFM = IUNIFI('MESSAGE')
 C
 10    FORMAT(2X,'    COEF    ','*','   DDL  ','(',' NOEUD  ',')')
 20    FORMAT(2X,1PE12.5,' * ',A8,'(',A8,')','+')

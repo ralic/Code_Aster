@@ -3,7 +3,7 @@
       INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C
       CHARACTER*24 FSIC, FSVR, PROL, VALE
 C     ------------------------------------------------------------------
       CALL JEMARQ()
+      CALL INFMAJ()
 C
       CALL GETRES(NOMFON,TYPFON,CMD)
       CALL GETVID(' ','TYPE_FLUI_STRU',0,1,1,TYPFLU,IBID)
@@ -69,12 +70,12 @@ C --- VERIFICATION A L EXECUTION
 C
 C --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL
       PROL = NOMFON//'.PROL'
-      CALL WKVECT(PROL,'G V K8',5,LPROL)
-      ZK8(LPROL)   = 'CONSTANT'
-      ZK8(LPROL+1) = 'LIN LIN '
-      ZK8(LPROL+2) = 'ABSC    '
-      ZK8(LPROL+3) = 'COEF_MAS'
-      ZK8(LPROL+4) = 'CC      '
+      CALL WKVECT(PROL,'G V K16',5,LPROL)
+      ZK16(LPROL)   = 'CONSTANT'
+      ZK16(LPROL+1) = 'LIN LIN '
+      ZK16(LPROL+2) = 'ABSC    '
+      ZK16(LPROL+3) = 'COEF_MAS'
+      ZK16(LPROL+4) = 'CC      '
 C
 C --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.VALE
       FSVR = TYPFLU//'.FSVR'

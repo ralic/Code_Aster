@@ -3,7 +3,7 @@
       INTEGER IER
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
 C     -----------------------------------------------------------------
 
       CALL JEMARQ()
+      CALL INFMAJ()
       CALL GETRES(RESU,CONCEP,NOMCMD)
 
 C     LECTURE DE LA NUMEROTATION DES DDL

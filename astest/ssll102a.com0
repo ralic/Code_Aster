@@ -1,0 +1,152 @@
+# AJOUT
+# TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
+#       UNITAIRES SUR SON AUTRE EXTREMITE.
+# MODELISATION POU_D_E
+#
+#       VALIDATION DE DDL_POUTRE
+#
+#======================================================================
+
+
+POURSUITE( CODE=_F(  NOM = 'SSLL102A')) ;
+
+# ------ TRACTION SIMPLE GX : ------------------------------------------
+
+
+CHARG1B=AFFE_CHAR_MECA(  MODELE=MO,
+      DDL_IMPO  =_F( GROUP_NO = 'A',  DX = 0.,  DY = 0.,  DZ = 0.,
+                                      DRX = 0., DRY = 0., DRZ = 0.),
+      DDL_POUTRE=_F( NOEUD = 'N3',  DX = 5.00000E-10,  
+                     VECT_Y = ( 0., 1., 0., ) ,),
+                     )
+
+MEST1B=MECA_STATIQUE(  MODELE=MO,
+                       CHAM_MATER=CHMAT,  CARA_ELEM=CAREL,
+                       EXCIT=_F( CHARGE = CHARG1B)   )
+
+MEST1B=CALC_ELEM( reuse=MEST1B,  MODELE=MO,   CHAM_MATER=CHMAT,   CARA_ELEM=CAREL,
+                      RESULTAT=MEST1B, EXCIT=_F(  CHARGE = CHARG1B),
+                      OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
+
+TEST_RESU(RESU=(
+# SECTION RECTANGLE
+ _F(  RESULTAT = MEST1B, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+      REFERENCE='ANALYTIQUE',
+        NOEUD = 'N3', NOM_CMP = 'DX', VALE = 2.8867514E-10,
+        PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+ _F(  RESULTAT = MEST1B, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+      REFERENCE='ANALYTIQUE',
+        NOEUD = 'N3', NOM_CMP = 'DY', VALE = 2.8867514E-10,
+        PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+ _F(  RESULTAT = MEST1B, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+      REFERENCE='ANALYTIQUE',
+        NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 2.8867514E-10,
+        PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+ _F(  RESULTAT = MEST1B, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+      REFERENCE='ANALYTIQUE',
+        NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 0.0,
+        PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+ _F(  RESULTAT = MEST1B, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+      REFERENCE='ANALYTIQUE',
+        NOEUD = 'N3', NOM_CMP = 'DRY', VALE = 0.0,
+        PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+ _F(  RESULTAT = MEST1B, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+      REFERENCE='ANALYTIQUE',
+        NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 0.0,
+        PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+         )   )
+
+TEST_RESU(RESU=(
+      _F(  RESULTAT = MEST1B,     NOM_CHAM = 'EFGE_ELNO_DEPL',
+           REFERENCE='ANALYTIQUE',
+           NUME_ORDRE = 1,        MAILLE = 'S11',  NOEUD = 'N1',
+           NOM_CMP = 'N',       VALE = 1.0 ),
+      _F(  RESULTAT = MEST1B,     NOM_CHAM = 'EFGE_ELNO_DEPL',
+           REFERENCE='ANALYTIQUE',
+           NUME_ORDRE = 1,        MAILLE = 'S12',  NOEUD = 'N3',
+           NOM_CMP = 'N',       VALE = 1.0 ),
+         )   )
+
+
+TEST_RESU(RESU=(
+      _F(  RESULTAT = MEST1B,     NOM_CHAM = 'SIGM_ELNO_DEPL',
+           REFERENCE='ANALYTIQUE',
+           NUME_ORDRE = 1,        MAILLE = 'S11',  NOEUD = 'N1',
+           NOM_CMP = 'SIXX',       VALE = 50.0 ),
+      _F(  RESULTAT = MEST1B,     NOM_CHAM = 'SIGM_ELNO_DEPL',
+           REFERENCE='ANALYTIQUE',
+           NUME_ORDRE = 1,        MAILLE = 'S12',  NOEUD = 'N3',
+           NOM_CMP = 'SIXX',       VALE = 50.0 ),
+         )   )
+
+# ------ TRACTION SIMPLE GX : ------------------------------------------
+
+
+CHARG1T=AFFE_CHAR_MECA(  MODELE=MO,
+      DDL_IMPO  =_F( GROUP_NO = 'A',  DX = 0.,  DY = 0.,  DZ = 0.,
+                                      DRX = 0., DRY = 0., DRZ = 0.),
+      DDL_POUTRE=_F( NOEUD = 'N3',  DX = 5.00000E-10,  
+                     ANGL_VRIL = 0., ),
+                     )
+
+MEST1T=MECA_STATIQUE(  MODELE=MO,
+                       CHAM_MATER=CHMAT,  CARA_ELEM=CAREL,
+                       EXCIT=_F( CHARGE = CHARG1T)   )
+
+MEST1T=CALC_ELEM( reuse=MEST1T,  MODELE=MO,   CHAM_MATER=CHMAT,   CARA_ELEM=CAREL,
+                      RESULTAT=MEST1T, EXCIT=_F(  CHARGE = CHARG1T),
+                      OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
+
+TEST_RESU(RESU=(
+# SECTION RECTANGLE
+ _F(  RESULTAT = MEST1T, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+      REFERENCE='ANALYTIQUE',
+        NOEUD = 'N3', NOM_CMP = 'DX', VALE = 2.8867514E-10,
+        PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+ _F(  RESULTAT = MEST1T, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+      REFERENCE='ANALYTIQUE',
+        NOEUD = 'N3', NOM_CMP = 'DY', VALE = 2.8867514E-10,
+        PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+ _F(  RESULTAT = MEST1T, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+      REFERENCE='ANALYTIQUE',
+        NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 2.8867514E-10,
+        PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+ _F(  RESULTAT = MEST1T, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+      REFERENCE='ANALYTIQUE',
+        NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 0.0,
+        PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+ _F(  RESULTAT = MEST1T, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+      REFERENCE='ANALYTIQUE',
+        NOEUD = 'N3', NOM_CMP = 'DRY', VALE = 0.0,
+        PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+ _F(  RESULTAT = MEST1T, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+      REFERENCE='ANALYTIQUE',
+        NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 0.0,
+        PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+         )   )
+
+TEST_RESU(RESU=(
+      _F(  RESULTAT = MEST1T,     NOM_CHAM = 'EFGE_ELNO_DEPL',
+           REFERENCE='ANALYTIQUE',
+           NUME_ORDRE = 1,        MAILLE = 'S11',  NOEUD = 'N1',
+           NOM_CMP = 'N',       VALE = 1.0 ),
+      _F(  RESULTAT = MEST1T,     NOM_CHAM = 'EFGE_ELNO_DEPL',
+           REFERENCE='ANALYTIQUE',
+           NUME_ORDRE = 1,        MAILLE = 'S12',  NOEUD = 'N3',
+           NOM_CMP = 'N',       VALE = 1.0 ),
+         )   )
+
+
+TEST_RESU(RESU=(
+      _F(  RESULTAT = MEST1T,     NOM_CHAM = 'SIGM_ELNO_DEPL',
+           REFERENCE='ANALYTIQUE',
+           NUME_ORDRE = 1,        MAILLE = 'S11',  NOEUD = 'N1',
+           NOM_CMP = 'SIXX',       VALE = 50.0 ),
+      _F(  RESULTAT = MEST1T,     NOM_CHAM = 'SIGM_ELNO_DEPL',
+           REFERENCE='ANALYTIQUE',
+           NUME_ORDRE = 1,        MAILLE = 'S12',  NOEUD = 'N3',
+           NOM_CMP = 'SIXX',       VALE = 50.0 ),
+         )   )
+
+FIN( )
+#

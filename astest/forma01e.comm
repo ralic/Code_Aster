@@ -1,9 +1,12 @@
-# MODIF  DATE 29/05/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+
+# MODIF  DATE 10/02/2003   AUTEUR JMBHH01 J.M.PROIX 
 # RESPONSABLE JMBHH01 J.M.PROIX
+#
 #
 
 
-DEBUT(CODE=_F(NOM='FORMA01E',NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NOM='FORMA01E',
+              NIV_PUB_WEB='INTERNET',),);
 # TITRE TRAVAUX PRATIQUES FORMATION DE BASE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,6 +31,7 @@ DEBUT(CODE=_F(NOM='FORMA01E',NIV_PUB_WEB='INTERNET'),);
 #     -------------------------------------
 #
 #
+#
 
 RC = 0.6;
 
@@ -41,13 +45,15 @@ LG = 3.0;
 # INTERFACE AVEC GIBI ET LECTURE DU MAILLAGE
 #
 #
+#
 
 
 PRE_GIBI();
 
-MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),);
+MAIL=LIRE_MAILLAGE();
 #
 # DEFINITION DES ELEMENTS FINIS UTILISES
+#
 #
 #
 
@@ -60,9 +66,10 @@ MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
 # DEFINITION DU MATERIAU UTILISE
 #
 #
+#
 
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=2.04000000000E11,
+ACIER=DEFI_MATERIAU(ELAS=_F(E=204000000000.0,
                             NU=0.3,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
@@ -72,19 +79,21 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
 # CARACTERISTIQUES DES POUTRES
 #
 #
+#
 
 
 CARA_POU=AFFE_CARA_ELEM(MODELE=MODMECA,
                         POUTRE=_F(GROUP_MA='TUYAU',
                                   SECTION='CERCLE',
-                                  CARA=('R','EP'),
-                                  VALE=(REXT,EPTUB),
+                                  CARA=('R','EP',),
+                                  VALE=(REXT,EPTUB,),
                                   MODI_METRIQUE='OUI',),);
 #
 # DEFINITION DES CONDITIONS AUX LIMITES ET DU CHARGEMENT
 #   AU POINT A : ENCASTREMENT
 #   AU POINT B : FORCE IMPOSEE
 #                FY = 100000. N (FX,FZ,MX,MY,MZ NULLES)
+#
 #
 #
 
@@ -100,9 +109,10 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODMECA,
 
 CHARGT=AFFE_CHAR_MECA(MODELE=MODMECA,
                       FORCE_NODALE=_F(GROUP_NO='PB',
-                                      FY=1.E5,),);
+                                      FY=100000.0,),);
 #
 # RESOLUTION DU PROBLEME ELASTIQUE
+#
 #
 #
 
@@ -116,13 +126,14 @@ RESU1=MECA_STATIQUE(MODELE=MODMECA,
 # CALCUL DES EFFORTS
 #
 #
+#
 
 
 RESU1=CALC_ELEM(reuse =RESU1,
                 MODELE=MODMECA,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARA_POU,
-                OPTION=('EFGE_ELNO_DEPL'),
+                OPTION='EFGE_ELNO_DEPL',
                 RESULTAT=RESU1,);
 
 RMOY=DEFI_VALEUR(R8=EVAL("""REXT-(EPTUB/2)"""),);
@@ -134,7 +145,6 @@ SINT=DEFI_VALEUR(R8=EVAL("""PI*(RINT*RINT)"""),);
 SEXT=DEFI_VALEUR(R8=EVAL("""PI*(REXT*REXT)"""),);
 
 SURF=DEFI_VALEUR(R8=EVAL("""SEXT-SINT"""),);
-
 PINT = 15000000.0;
 
 
@@ -152,10 +162,11 @@ RESU2=CALC_ELEM(reuse =RESU2,
                 MODELE=MODMECA,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARA_POU,
-                OPTION=('EFGE_ELNO_DEPL'),
+                OPTION='EFGE_ELNO_DEPL',
                 RESULTAT=RESU2,
                 NIVE_COUCHE='SUP',);
 # ECRITURE DES RESULTATS AU FORMAT RESULTAT
+#
 #
 #
 
@@ -170,24 +181,30 @@ IMPR_RESU(MODELE=MODMECA,
 # VALEURS MIN ET MAX 
 #
 #
+#
 
 
 IMPR_RESU(MODELE=MODMECA,
           RESU=_F(RESULTAT=RESU1,
-                  NOM_CHAM=('EFGE_ELNO_DEPL','DEPL'),
+                  NOM_CHAM=('EFGE_ELNO_DEPL','DEPL',),
                   VALE_MAX='OUI',
-                  VALE_MIN='OUI'
-           ));
+                  VALE_MIN='OUI',),);
 
 IMPR_RESU(MODELE=MODMECA,
           RESU=(_F(FORMAT='CASTEM',
                    MAILLAGE=MAIL,),
                 _F(FORMAT='CASTEM',
-                   NOM_CHAM = ('EFGE_ELNO_DEPL','DEPL'),
-                   RESULTAT=RESU1,),
+                   RESULTAT=RESU1,
+                   NOM_CHAM=('EFGE_ELNO_DEPL','DEPL',),),
                 _F(FORMAT='CASTEM',
-                   NOM_CHAM=('EFGE_ELNO_DEPL','DEPL'),
-                   RESULTAT=RESU2,),),);
+                   RESULTAT=RESU2,
+                   NOM_CHAM=('EFGE_ELNO_DEPL','DEPL',),),),);
+
+IMPR_RESU(MODELE=MODMECA,
+          RESU=_F(FORMAT='GMSH',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',
+                  FICHIER='IDEAS',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NUME_ORDRE=1,
@@ -236,3 +253,5 @@ FIN();
 #
 #
 #
+#
+

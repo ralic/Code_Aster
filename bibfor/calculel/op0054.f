@@ -3,7 +3,7 @@
       INTEGER             IER 
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2002   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF CALCULEL  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,12 +45,12 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER       NBV, NBR8, NBNO, IRET, NOCC2D, NOCC3D, IADRT1
       INTEGER       IADRNO, IMPR, IADRCO, IADRMA, IADRT2, IADRT3,
-     +              IADRT4, IADRT5, ICODE, NOCCTB,NFON
+     +              IADRT4, IADRT5, ICODE, NOCCTB
       REAL*8        R8B, DIR(3), RINF, RSUP, ABSC
       LOGICAL       DIREC
       CHARACTER*3   OUINON
-      CHARACTER*8   K8B, NOMA, MODELE, FOND, RESU, NOEUD, FORMAT, FICHIE
-      CHARACTER*16  TYPE, OPER
+      CHARACTER*8   K8B, NOMA, MODELE, FOND, RESU, NOEUD, FORMAT
+      CHARACTER*16  TYPE, OPER, FICHIE
       CHARACTER*19  OPTION, METHOD
       CHARACTER*24  TRAV1, TRAV2, TRAV3, TRAV4, STOK4
       CHARACTER*24  OBJ1, NOMNO, COORN, OBJ2 
@@ -58,6 +58,7 @@ C
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
+      CALL INFMAJ()
 C
       OPTION = ' '
 C
@@ -73,20 +74,6 @@ C
       CALL GETFAC ( 'THETA_2D' , NOCC2D )
       CALL GETFAC ( 'THETA_BANDE' , NOCCTB )
       CALL GETFAC ( 'IMPRESSION' , IMPR )
-      CALL GETVID ( ' ', 'FOND_3D', 1,1,1, FOND, NFON )
-      IF (NFON.NE.0) THEN
-          CALL UTDEBM('A','CALC_THETA','LE MOT ')
-          CALL UTIMPK('S','CLE ',1,'FOND_3D')
-          CALL UTIMPK('S',' EST APPELE A DISPARAITRE EN 6.4 ET SERA'//
-     +                     ' REMPLACE PAR ',1,'FOND_FISS')
-          CALL UTFINM()
-       ELSE  
-         CALL GETVID ( ' ', 'FOND_FISS', 1,1,1, FOND, NFON )
-       ENDIF
-        IF ((NOCC3D.NE.0).AND.(NFON.EQ.0)) THEN
-          CALL UTMESS('F','CALC_THETA','SI LE MOT CLE THETA_3D '//
-     +     'EST RENSEIGNE IL FAUT FOND_3D OU FOND_FISS')
-        ENDIF
 C
       IF ( IMPR .NE. 0 ) THEN
          CALL GETVTX ( 'IMPRESSION', 'FICHIER', 1,1,1, FICHIE, NBV )
@@ -136,16 +123,7 @@ C     ==================================================================
 C 
       IF ( NOCC3D .NE. 0 ) THEN
 C
-         CALL GETVID (' ', 'FOND_3D', 0, 1, 1, FOND, NBV)
-         IF (NBV.NE.0) THEN
-          CALL UTDEBM('A','CALC_THETA','LE MOT ')
-          CALL UTIMPK('S','CLE ',1,'FOND_3D')
-          CALL UTIMPK('S',' EST APPELE A DISPARAITRE EN 6.4 ET SERA'//
-     +                     ' REMPLACE PAR ',1,'FOND_FISS')
-          CALL UTFINM()
-         ELSE  
-          CALL GETVID ( ' ', 'FOND_FISS', 0,1,1, FOND, NBV )
-         ENDIF
+         CALL GETVID ( ' ', 'FOND_FISS', 0,1,1, FOND, NBV )
 C
          CALL GETVR8 ( ' ', 'DIRECTION', 0, 1, 0, R8B, NBR8)
 C

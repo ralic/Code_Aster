@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,15 +40,16 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      VERSIO
-      CHARACTER*8  K8B, FORMAT, FICHIE
+      CHARACTER*8  K8B, FORMAT
+      CHARACTER*16 FICHIE
 C     ------------------------------------------------------------------
       CALL JEMARQ()
+      CALL INFMAJ()
 C
       CALL GETVTX (' ','FORMAT' ,1,1,1,FORMAT,N1)
 C
-      FICHIE = '        '
+      FICHIE = FORMAT
       CALL GETVTX (' ','FICHIER',1,1,1,FICHIE,N2)
-      IF ( FICHIE .EQ. '        ' ) FICHIE = FORMAT
 C
       CALL GETVIS (' ','VERSION',1,1,1,VERSIO,N3)
 C

@@ -11,7 +11,7 @@ C
      +                  NUMORD,NCMP,NUCMP(*),NIVE
       LOGICAL           LCOR,LSUP,LINF,LMAX,LMIN,LRESU
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 02/12/2002   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -256,13 +256,13 @@ C ---------------------------------------------------------------------
      +                  ZR(JCELV),NOMGD,ZK8(IAD),TITRE,ZK8(JNOEL),LOC,
      +                  ZI(JCELD),ZI(JNBNM),ZI(JPERM),MAXNOD,
      +                  ZI(JTYPM),NOMSD,NOMSYM,NUMORD,NBMAT,NUMMAI,
-     +                  LMASU)
+     +                  LMASU,NCMP,NUCMP)
          ELSE IF (ITYPE.EQ.2) THEN
             CALL IRCECS(IFI,NBEL,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
      +                  ZC(JCELV),NOMGD,ZK8(IAD),TITRE,ZK8(JNOEL),LOC,
      +                  ZI(JCELD),ZI(JNBNM),ZI(JPERM),MAXNOD,
      +                  ZI(JTYPM),NOMSD,NOMSYM,NUMORD,NBMAT,NUMMAI,
-     +                  LMASU)
+     +                  LMASU,NCMP,NUCMP)
          ENDIF
          CALL JEDETR('&&IRADHS.PERMUTA')
          CALL JEDETR('&&IRADHS.CODEGRA')

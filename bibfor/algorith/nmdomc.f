@@ -1,6 +1,6 @@
       SUBROUTINE NMDOMC (MODELE,MATE,CARELE,FOMULT,INFCHA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/03/98   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -229,23 +229,23 @@ C
            CALL GETVC8('EXCIT','COEF_MULT_C',ICH,1,1,CCOEF,N2)
            IF ( N2 .EQ. 0 ) THEN
               CALL GETVR8('EXCIT','COEF_MULT',ICH,1,1,COEF,N3)
-              CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K8',5,JPRO)
-              ZK8(JPRO)   = 'CONSTANT'
-              ZK8(JPRO+1) = 'LIN LIN '
-              ZK8(JPRO+2) = 'TOUTPARA'
-              ZK8(JPRO+3) = 'TOUTRESU'
-              ZK8(JPRO+4) = 'CC      '
+              CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K16',5,JPRO)
+              ZK16(JPRO)   = 'CONSTANT'
+              ZK16(JPRO+1) = 'LIN LIN '
+              ZK16(JPRO+2) = 'TOUTPARA'
+              ZK16(JPRO+3) = 'TOUTRESU'
+              ZK16(JPRO+4) = 'CC      '
               CALL WKVECT(NOMFCT(1:19)//'.VALE','V V R',3,JVAL)
               ZR(JVAL)   = 1.0D0
               ZR(JVAL+1) = COEF
               ZR(JVAL+2) = COEF
            ELSE
-              CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K8',5,JPRO)
-              ZK8(JPRO)   = 'CONSTANT'
-              ZK8(JPRO+1) = 'LIN LIN '
-              ZK8(JPRO+2) = 'TOUTPARA'
-              ZK8(JPRO+3) = 'TOUTRESU'
-              ZK8(JPRO+4) = 'CC      '
+              CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K16',5,JPRO)
+              ZK16(JPRO)   = 'CONSTANT'
+              ZK16(JPRO+1) = 'LIN LIN '
+              ZK16(JPRO+2) = 'TOUTPARA'
+              ZK16(JPRO+3) = 'TOUTRESU'
+              ZK16(JPRO+4) = 'CC      '
               CALL WKVECT(NOMFCT(1:19)//'.VALE','V V R',3,JVAL)
               ZR(JVAL)   = 1.0D0
               ZR(JVAL+1) = DBLE( CCOEF )

@@ -1,6 +1,6 @@
       SUBROUTINE MLTFMJ(N,P,FRONT,FRN,ADPER,TRAV,AD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/01/2002   AUTEUR JFBHHUC C.ROSE 
+C MODIF ALGELINE  DATE 16/12/2002   AUTEUR ROSE C.ROSE 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ C ======================================================================
       INTEGER N,P,ADPER(*),AD(*)
       REAL*8 FRONT(*),FRN(*)
       INTEGER NBB,DECAL,ADD,IND,NMB,I,J,L,KB,IA,IB,RESTM
-      PARAMETER (NBB=32)
+      PARAMETER (NBB=96)
       CHARACTER*1 TRANSA, TRANSB
       INTEGER I1,J1,K,M,IT,NB,NUMPRC,MLNUMP
       REAL*8 S,TRAV(P,NBB,*)

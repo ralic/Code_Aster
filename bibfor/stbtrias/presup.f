@@ -1,6 +1,9 @@
-      SUBROUTINE PRESUP
+      SUBROUTINE PRESUP ( LGRCOU )
+      IMPLICIT REAL*8 (A-H,O-Z)
+      LOGICAL             LGRCOU
+C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 10/12/2001   AUTEUR VABHHTS J.PELLET 
+C MODIF STBTRIAS  DATE 02/12/2002   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,8 +20,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-C     =================
 CA PRESUPER
 C  =============================================================
 C  !                                                           !
@@ -139,7 +140,7 @@ C  -->   LECTURE ET ECRITURE DES  MAILLES
          LARRET=.FALSE.
          CALL ECRELT(MAXNOD,NBTYMA,NOMAIL,NBMAIL,MINT,MANT,
      &               LIMAIL,NBMTOT)
-         CALL SLECOL(NBMTOT)
+         IF ( LGRCOU )  CALL SLECOL(NBMTOT)
 C
       ELSE IF (DATSET.EQ.752.OR.DATSET.EQ.2417.
      &          OR.DATSET.EQ.2429.OR.DATSET.EQ.2430.

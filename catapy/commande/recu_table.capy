@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE VABHHTS J.PELLET
 RECU_TABLE=OPER(nom="RECU_TABLE",op= 174,sd_prod=table,
-                fr=" ",docu="U4.71.02-b2",reentrant='n',
+                fr=" ",docu="U4.71.02-b",reentrant='n',
             UIinfo={"groupes":("Résultats et champs",)},
          CO              =SIMP(statut='o',typ=assd),
          regles=(UN_PARMI('NOM_TABLE','NOM_PARA')),

@@ -9,7 +9,7 @@ C
       CHARACTER*8   MOD
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,9 +55,10 @@ C --- : IRTET  : CONTROLE DU REDECOUPAGE DU PAS DE TEMPS ---------------
 C ======================================================================
       LOGICAL       PRJSOM, LGLCOV
       INTEGER       II, NDT, NDI, ITER, IRTETI
-      REAL*8        SIGE(6), LGLEPS, GAMP, SE(6), SIIE, INVARE, YD(9)
-      REAL*8        GAMPS, INVARS, B, S(6), DELTA, TRACE, DY(9), YF(9)
-      REAL*8        FITER, DKOOH(6,6), EPSF(6), SIGC, I1, TRACEG, TROIS
+      REAL*8        SIGE(6), LGLEPS, GAMP, SE(6), SIIE, INVARE, YD(10)
+      REAL*8        GAMPS, INVARS, B, S(6), DELTA, TRACE, DY(10), YF(10)
+      REAL*8        FITER, DKOOH(6,6), EPSF(6), I1, TRACEG, TROIS
+      REAL*8        EVP, EVPS
       CHARACTER*10  CTOL, CITER
 C ======================================================================
 C --- INITIALISATION DE PARAMETRE --------------------------------------
@@ -74,24 +75,25 @@ C ======================================================================
       IRTETI = 0
       DELTA  = 0.0D0
       GAMP   = VIND  ( 1 )
-      SIGC   = MATER (9,2)
+      EVP    = VIND  ( 2 )
       CALL     LCEQVN(NDT,SIGF,SIGE)
       CALL     LCDEVI(SIGE,SE)
       CALL     PSCAL (NDT,SE,SE,SIIE)
       SIIE   = SQRT  (SIIE)
       INVARE = TRACE (NDI,SIGE)
 C ======================================================================
-C --- INITIALISATION YD = (SIG, GAMP, EPSD(3)) -------------------------
+C --- INITIALISATION YD = (SIG, INVAR, GAMP, EVP, DELTA) ---------------
 C ======================================================================
       CALL LCEQVN (NDT, SE    , YD       )
       CALL LCEQVN (  1, INVARE, YD(NDT+1))
       CALL LCEQVN (  1, GAMP  , YD(NDT+2))
-      CALL LCEQVN (  1, DELTA , YD(NDT+3))
+      CALL LCEQVN (  1, EVP   , YD(NDT+3))
+      CALL LCEQVN (  1, DELTA , YD(NDT+4))
 C ======================================================================
 C --- CALCUL A PRIORI DE LA PROJECTION AU SOMMET -----------------------
 C ======================================================================
-      CALL CALCPJ(NDT, NDI, NBMAT, MATER, GAMP, SIGD, SIGE, LGLEPS,
-     +            GAMPS, INVARS, B)
+      CALL CALCPJ(NDT, NDI, NBMAT, MATER, GAMP, EVP, SIGD, SIGE, LGLEPS,
+     +            INVARE, GAMPS, EVPS, INVARS, B)
 C ======================================================================
 C --- FAUT-IL FAIRE UNE PROJECTION AU SOMMET DU DOMAINE ? --------------
 C ======================================================================
@@ -115,7 +117,7 @@ C ======================================================================
      +                DKOOH(3,4) * SIGF(4)
          ENDIF
          CALL LCEQVN (  1, GAMPS  , VINF(1) )
-         CALL LCEQVN (NDT, EPSF(1), VINF(2) )
+         CALL LCEQVN (  1, EVPS   , VINF(2) )
          VINF(NVI) = 1.0D0
          IRTETI = 0
       ELSE
@@ -137,7 +139,7 @@ C ======================================================================
 C ======================================================================
 C --- VERIFICATION DE LA COHERENCE DE GAMP -----------------------------
 C ======================================================================
-         IF (YF(NR-1).LT.0.0D0) THEN
+         IF (YF(NDT+2).LT.0.0D0) THEN
 C ======================================================================
 C --- GAMP < 0 ---------------------------------------------------------
 C --- PEUT-ON FAIRE UN DECOUPAGE DE L'INCREMENT DE DEPLACEMENT ? -------
@@ -170,7 +172,7 @@ C ======================================================================
 C ======================================================================
 C --- A-T-ON CONVERGE ? ------------------------------------------------
 C ======================================================================
-         IF (LGLCOV(FITER,SIGC,TOLER)) THEN
+         IF (LGLCOV(FITER,TOLER)) THEN
 C ======================================================================
 C --- IL Y A CONVERGENCE -----------------------------------------------
 C ======================================================================
@@ -179,6 +181,7 @@ C ======================================================================
             CALL LCEQVN (NDT, YF(1)    , S(1) )
             CALL LCEQVN (  1, YF(NDT+1), I1   )
             CALL LCEQVN (  1, YF(NDT+2), GAMP )
+            CALL LCEQVN (  1, YF(NDT+3), EVP  )
             DO 30 II=1,NDT
                SIGF(II) = S(II)
  30         CONTINUE
@@ -193,8 +196,8 @@ C ======================================================================
      +                   DKOOH(3,2) * SIGF(2) +
      +                   DKOOH(3,4) * SIGF(4)
             ENDIF
-            CALL LCEQVN (  1, GAMP   , VINF(1) )
-            CALL LCEQVN (NDT, EPSF(1), VINF(2) )
+            CALL LCEQVN (  1, GAMP, VINF(1) )
+            CALL LCEQVN (  1, EVP , VINF(2) )
             VINF(NVI) = 1.0D0
             IRTETI = 0
          ELSE
@@ -259,8 +262,8 @@ C ======================================================================
      +                         DKOOH(3,2) * SIGF(2) +
      +                         DKOOH(3,4) * SIGF(4)
                   ENDIF
-                  CALL LCEQVN (  1, GAMPS  , VINF(1) )
-                  CALL LCEQVN (NDT, EPSF(1), VINF(2) )
+                  CALL LCEQVN (  1, GAMPS, VINF(1) )
+                  CALL LCEQVN (  1, EVP  , VINF(2) )
                   VINF(NVI) = 1.0D0
                   IRTETI = 0
                ELSE

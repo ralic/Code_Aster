@@ -1,7 +1,7 @@
       SUBROUTINE FLASY2( LTRANL, LTRANR, ISGN, N1, N2, TL, LDTL, TR,
      &                   LDTR, B, LDB, SCALE, X, LDX, XNORM, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 20/09/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF UTILIFOR  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================

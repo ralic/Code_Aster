@@ -6,7 +6,7 @@
       CHARACTER*24        NCNCIN, CHINDI, CHCARA, CHRESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -95,12 +95,13 @@ C
      +             IOCS, JSEIGR, IOC2, JCINL, JCCAL
       REAL*8       R8B, PPI, PPJ, SNMAX, SAMAX, UTOT, SALTIJ, UG, NADM,
      +             MPI(3), MPJ(3), SM, SN, SP, C(3), K(3), CARA(3),
-     +             MATPI(13), MATPJ(13), MSE(3), SNB, SAB, SMM
-      LOGICAL      SEISME
+     +             MATPI(14), MATPJ(14), MSE(3), SNB, SAB, SMM
+      LOGICAL      SEISME,ENDUR
       CHARACTER*2  CODRET
       CHARACTER*8  K8B, NOMMAT, NOEUD
       CHARACTER*24 MOMEPI, MOMEPJ, NOMMAI, NOMNOE, CONNEX, 
      +             MATEPI, MATEPJ
+      REAL*8       TYPEKE,SPMECA,SPTHER
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -334,14 +335,19 @@ C
 C
 C ----------- CALCUL DU SP
 C
+              TYPEKE=MATPI(14)
               SP = 0.D0
+        SPMECA = 0.D0
+        SPTHER = 0.D0
               CALL RC36SP ( NBM, ZI(ADRM), IPT, C, K, CARA, MATPI, PPI,
      +                      MPI, MATPJ, PPJ, MPJ, MSE, NBTH1, ZI(JTH1),
-     +                            NBTH2, ZI(JTH2),IOC1,IOC2, SP )
+     +                            NBTH2, ZI(JTH2),IOC1,IOC2, SP 
+     +               ,TYPEKE,SPMECA,SPTHER )
 C
 C ----------- CALCUL DU SALT
 C
-              CALL RC36SA ( NOMMAT, MATPI, MATPJ, SN, SP, SALTIJ, SMM )
+              CALL RC36SA ( NOMMAT, MATPI, MATPJ, SN, SP
+     +               ,TYPEKE,SPMECA,SPTHER, SALTIJ, SMM )
 C
               IF ( SALTIJ .GT. SAMAX ) THEN
                  SAMAX = SALTIJ
@@ -350,10 +356,15 @@ C
 C
 C ----------- CALCUL DU FACTEUR D'USAGE
 C
-              CALL RCVALE ( NOMMAT, 'FATIGUE', 1, 'SIGM', SALTIJ, 1,
+              CALL LIMEND( NOMMAT,SALTIJ,ENDUR)
+              IF (ENDUR) THEN
+                  UG=0.D0
+              ELSE
+                 CALL RCVALE ( NOMMAT, 'FATIGUE', 1, 'SIGM', SALTIJ, 1,
      +                                   'WOHLER', NADM, CODRET, 'F ' )
 C
-              UG = DBLE( NOCC ) / NADM
+                 UG = DBLE( NOCC ) / NADM
+              ENDIF
               UTOT = UTOT + UG
 C
  210        CONTINUE

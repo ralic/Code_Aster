@@ -1,0 +1,267 @@
+# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+# TITRE REPONSE TRANSITOIRE D'UN POTEAU ENCASTRE LIBRE (ACCELERA. IMPO)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# ----------------------------------------------------------------------
+#  SFM.VPCS  SDLL06 / A
+#  REPONSE TRANSITOIRE D'UN POTEAU ENCASTRE-LIBRE
+#  SOUS ACCELERATION IMPOSEE
+#  1 RESSORT  1 MASSE  --   K = 3.942E+7   M = 43.8E+3
+# ----------------------------------------------------------------------
+#
+DEBUT( CODE=_F(  NOM = 'SDLL06A',NIV_PUB_WEB='INTERNET') )
+
+MAILLAGE=LIRE_MAILLAGE( )
+
+MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
+                _F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_TR',
+                       GROUP_MA = 'LIAI_NOE'),
+                     _F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_TR',
+                       GROUP_NO = 'MASSES'))                    )
+
+#
+CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
+                _F(  NOEUD = 'N02',  CARA = 'M_TR_D_N',
+                          VALE = ( 43.8E+3, 0., 0., 0., 0., 0.,
+                                  0., 0., 0., 0., )),
+                        _F(  GROUP_MA = 'RLN_1',  CARA = 'K_TR_D_L',
+                          VALE = ( 0., 3.942E+7, 0., 0., 0., 0., ),
+                          REPERE = 'LOCAL')) )
+
+#
+CON_LIM=AFFE_CHAR_MECA( MODELE=MODELE,DDL_IMPO=(
+               _F(  GROUP_NO = 'ENCASTRE',  DX = 0.,  DY = 0.,  DZ = 0.,
+                                              DRX = 0.,  DRY = 0.,  DRZ = 0.),
+                        _F(  GROUP_NO = 'DY',   DY = 0.),
+                        _F(  GROUP_NO = 'DZ',   DZ = 0.),
+                        _F(  GROUP_NO = 'DRX',  DRX = 0.),
+                        _F(  GROUP_NO = 'DRY',  DRY = 0.),
+                        _F(  GROUP_NO = 'DRZ',  DRZ = 0.))    )
+
+#
+RIGI_ELE=CALC_MATR_ELEM(  MODELE=MODELE,  OPTION='RIGI_MECA',
+                            CARA_ELEM=CARA_ELE,  CHARGE=CON_LIM   )
+
+MASS_ELE=CALC_MATR_ELEM( MODELE=MODELE,  OPTION='MASS_MECA',
+                            CARA_ELEM=CARA_ELE,  CHARGE=CON_LIM   )
+
+NUME_DDL=NUME_DDL(  MATR_RIGI=RIGI_ELE )
+
+RIGIDITE=ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,  NUME_DDL=NUME_DDL  )
+
+MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,  NUME_DDL=NUME_DDL  )
+
+#
+# CALCUL DES MODES AVEC BLOCAGE DES ANCRAGES:
+#---------------------------------------------
+MODE_MEC=MODE_ITER_INV(  MATR_A=RIGIDITE,  MATR_B=MASSE,
+            CALC_FREQ=_F(  OPTION = 'PROCHE', FREQ = ( 4.77, )),
+              TITRE='CAS TEST &CODE   COMMANDE &COMMANDE SANS L_TX !!'
+                        )
+
+#
+# DESCRIPTION DE L ACCELEROGRAMMES:
+#---------------------------------
+ACCELERO=DEFI_FONCTION(  NOM_PARA='INST',  NOM_RESU='ACCE',
+                           VALE=( 0., 0.,  0.025, 9.81,  0.05, 0.,  10., 0., )
+                        )
+
+#
+MONO_X=CALC_CHAR_SEISME(   MATR_MASS=MASSE,   DIRECTION=( 1., 0., 0.,),
+                  TITRE=( 'CAS TEST &CODE','&RL COMMANDE &COMMANDE', ),
+                 MONO_APPUI='OUI'                     )
+
+#
+# PROJECTION DES MATRICES M ET K SUR LA BASE MODALE
+#---------------------------------------------------
+MACRO_PROJ_BASE( BASE=MODE_MEC,MATR_ASSE_GENE=(
+                _F(  MATRICE = CO("MASS_GEN"),  MATR_ASSE = MASSE),
+                _F(  MATRICE = CO("RIGI_GEN"),  MATR_ASSE = RIGIDITE)),
+                VECT_ASSE_GENE=_F(  VECTEUR = CO("VECT_X"),  VECT_ASSE = MONO_X) 
+               )
+
+#
+# CALCUL TRANSITOIRE PAR SUPERPOSITION MODALE
+# -------------------------------------------
+TRAN_GEN=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
+             TITRE=( ' CAS TEST &CODE','&RL COMMANDE &COMMANDE', ),
+                     EXCIT=_F( VECT_GENE = VECT_X,  FONC_MULT = ACCELERO),
+                      INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 0.15,
+                                 PAS = 0.0005)  )
+
+#
+# RESTITUTION DU DEPLACEMENT RELATIF
+# ----------------------------------
+L_RECU=DEFI_LIST_REEL(  DEBUT=0.,
+                      INTERVALLE=_F(  JUSQU_A = 0.1,  PAS = 0.001) )
+
+RESUR=REST_BASE_PHYS(  RESU_GENE=TRAN_GEN,
+                         INTERPOL='LIN',   LIST_INST=L_RECU,
+                        TOUT_CHAM='OUI',
+                      )
+
+# RECUPERATION DES DEPLACEMENTS RELATIFS CALCULES
+# -----------------------------------------------
+N02DXR=RECU_FONCTION(  NOEUD='N02',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                           RESU_GENE=TRAN_GEN,  
+                         INTERP_NUME='LIN',      INTERPOL='LIN',
+                           LIST_INST=L_RECU    )
+
+#
+# CALCUL ANALYTIQUE DES DEPLACEMENTS
+# ----------------------------------
+
+OMEGA=DEFI_VALEUR( R8=EVAL("""SQRT(3.942E7/43.8E+3) """))
+
+# CALCUL ANALYTIQUE DU DEPLACEMENT RELATIF
+# ----------------------------------------
+T0=0.025
+
+P0=9.81
+
+P2=DEFI_VALEUR( R8=EVAL("""- P0/OMEGA """))
+
+#
+# --- T<T0=0.025 ---
+XRN1a = FORMULE(REEL="""(REEL:INST) =
+P2/(OMEGA*T0)*(INST-SIN(OMEGA*INST)/OMEGA)
+        """)
+
+L_RECU1=DEFI_LIST_REEL(  DEBUT=0.,
+                      INTERVALLE=_F(  JUSQU_A = 0.025, PAS = 0.001) )
+
+XR1=DEFI_VALEUR(  TX='XRN1'  )
+
+XRN1=CALC_FONC_INTERP(      FONCTION=XRN1a,  
+                            NOM_RESU=XR1,   LIST_PARA=L_RECU1,
+                            NOM_PARA = 'INST', )
+
+XR1010=DEFI_VALEUR( R8=EVAL("""XRN1a(0.01)"""))
+
+XR1015=DEFI_VALEUR( R8=EVAL("""XRN1a(0.015)"""))
+
+XR1020=DEFI_VALEUR( R8=EVAL("""XRN1a(0.02)"""))
+
+XR1024=DEFI_VALEUR( R8=EVAL("""XRN1a(0.024)"""))
+
+# --- T0<T<2.T0 ---
+XRN2a = FORMULE(REEL="""(REEL:INST) =
+P2/(OMEGA*T0)*(2*T0-INST+(2*SIN(OMEGA*(INST-T0))-SIN(OMEGA*INST))
+                    /OMEGA)
+        """)
+
+L_RECU2=DEFI_LIST_REEL(  DEBUT=0.025,
+                      INTERVALLE=_F(  JUSQU_A = 0.05, PAS = 0.001) )
+
+XR2=DEFI_VALEUR(  TX='XRN2'  )
+
+XRN2=CALC_FONC_INTERP(      FONCTION=XRN2a,  
+                            NOM_RESU=XR2,   LIST_PARA=L_RECU2,
+                            NOM_PARA = 'INST', )
+
+XR2026=DEFI_VALEUR( R8=EVAL("""XRN1a(0.026)"""))
+
+XR2030=DEFI_VALEUR( R8=EVAL("""XRN2a(0.03)"""))
+
+XR2035=DEFI_VALEUR( R8=EVAL("""XRN2a(0.035)"""))
+
+XR2040=DEFI_VALEUR( R8=EVAL("""XRN2a(0.04)"""))
+
+XR2045=DEFI_VALEUR( R8=EVAL("""XRN2a(0.045)"""))
+
+XR2049=DEFI_VALEUR( R8=EVAL("""XRN2a(0.049)"""))
+
+# --- T>2.T0 ---
+XRN3a = FORMULE(REEL="""(REEL:INST) =
+P2/(OMEGA*OMEGA*T0)
+           *(2*SIN(OMEGA*(INST-T0))-SIN(OMEGA*(INST-2*T0))
+                 -SIN(OMEGA*INST))
+        """)
+
+L_RECU3=DEFI_LIST_REEL(  DEBUT=0.05,
+                      INTERVALLE=_F(  JUSQU_A = 0.1, PAS = 0.001) )
+
+XR3=DEFI_VALEUR(  TX='XRN3'  )
+
+XRN3=CALC_FONC_INTERP(      FONCTION=XRN3a,  
+                            NOM_RESU=XR3,   LIST_PARA=L_RECU3,
+                            NOM_PARA = 'INST', )
+
+XR3051=DEFI_VALEUR( R8=EVAL("""XRN3a(0.051)"""))
+
+XR3055=DEFI_VALEUR( R8=EVAL("""XRN3a(0.055)"""))
+
+XR3060=DEFI_VALEUR( R8=EVAL("""XRN3a(0.06)"""))
+
+XR3065=DEFI_VALEUR( R8=EVAL("""XRN3a(0.065)"""))
+
+XR3070=DEFI_VALEUR( R8=EVAL("""XRN3a(0.07)"""))
+
+XR3075=DEFI_VALEUR( R8=EVAL("""XRN3a(0.075)"""))
+
+XR3080=DEFI_VALEUR( R8=EVAL("""XRN3a(0.08)"""))
+
+XR3085=DEFI_VALEUR( R8=EVAL("""XRN3a(0.085)"""))
+
+#
+# COMPARAISON DES RESULTATS NUMERIQUES/ RESULTATS ANALYTIQUES
+# -----------------------------------------------------------
+
+TEST_FONCTION(VALEUR=(
+    _F(  FONCTION = N02DXR, VALE_PARA = 0.01, VALE_REFE = XR1010,
+             CRITERE = 'ABSOLU', PRECISION = 1.7E-07,
+             REFERENCE = 'ANALYTIQUE'),
+    _F(  FONCTION = N02DXR, VALE_PARA = 0.015, VALE_REFE = XR1015,
+             CRITERE = 'ABSOLU', PRECISION = 2.4E-07,
+             REFERENCE = 'ANALYTIQUE'),
+    _F(  FONCTION = N02DXR, VALE_PARA = 0.02, VALE_REFE = XR1020,
+             REFERENCE = 'ANALYTIQUE'),
+    _F(  FONCTION = N02DXR, VALE_PARA = 0.024,  VALE_REFE = XR1024,
+             REFERENCE = 'ANALYTIQUE'),
+    _F(  FONCTION = N02DXR, VALE_PARA = 0.026,  VALE_REFE = XR2026,
+             REFERENCE = 'ANALYTIQUE'),
+    _F(  FONCTION = N02DXR, VALE_PARA = 0.03,   VALE_REFE = XR2030, 
+             REFERENCE = 'ANALYTIQUE'),
+    _F(  FONCTION = N02DXR, VALE_PARA = 0.035,  VALE_REFE = XR2035,
+             REFERENCE = 'ANALYTIQUE'),
+    _F(  FONCTION = N02DXR, VALE_PARA = 0.04,   VALE_REFE = XR2040,
+             REFERENCE = 'ANALYTIQUE'),
+    _F(  FONCTION = N02DXR, VALE_PARA = 0.045,  VALE_REFE = XR2045,
+             REFERENCE = 'ANALYTIQUE'),
+    _F(  FONCTION = N02DXR, VALE_PARA = 0.049,  VALE_REFE = XR2049,
+             REFERENCE = 'ANALYTIQUE'),
+    _F(  FONCTION = N02DXR, VALE_PARA = 0.051,  VALE_REFE = XR3051,
+             REFERENCE = 'ANALYTIQUE'),
+    _F(  FONCTION = N02DXR, VALE_PARA = 0.055,  VALE_REFE = XR3055,
+             REFERENCE = 'ANALYTIQUE'),
+    _F(  FONCTION = N02DXR, VALE_PARA = 0.06,   VALE_REFE = XR3060,
+             REFERENCE = 'ANALYTIQUE'),
+    _F(  FONCTION = N02DXR, VALE_PARA = 0.065,  VALE_REFE = XR3065,
+             REFERENCE = 'ANALYTIQUE'),
+    _F(  FONCTION = N02DXR, VALE_PARA = 0.07,   VALE_REFE = XR3070,
+             REFERENCE = 'ANALYTIQUE'),
+    _F(  FONCTION = N02DXR, VALE_PARA = 0.075,  VALE_REFE = XR3075,
+             REFERENCE = 'ANALYTIQUE'),
+    _F(  FONCTION = N02DXR, VALE_PARA = 0.08,   VALE_REFE = XR3080,
+             REFERENCE = 'ANALYTIQUE'),
+    _F(  FONCTION = N02DXR, VALE_PARA = 0.085,  VALE_REFE = XR3085,
+             REFERENCE = 'ANALYTIQUE'))
+             )
+
+FIN( )
+#

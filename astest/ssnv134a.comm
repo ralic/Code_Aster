@@ -1,4 +1,4 @@
-# MODIF  DATE 20/03/2001   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -161,7 +161,8 @@ F = FORMULE(REEL="""(REEL :INST) =
 - COEF2(INST) / 2.0 """)
 
 COEF3=CALC_FONC_INTERP(    FONCTION=F,
-                             LIST_PARA=TEMPS2 )
+                             LIST_PARA=TEMPS2,
+NOM_PARA='INST', )
 
 #***********************************************************************
 #    CALCUL DE LA SOLUTION

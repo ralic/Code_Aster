@@ -1,4 +1,4 @@
-#@ MODIF nommage Noyau  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF nommage Noyau  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,7 +40,7 @@ import linecache
 # Modules EFICAS
 import N_utils
 
-regex1='=\s*%s\s*\('
+regex1='=?\s*%s\s*\('
 
 def GetNomConceptResultat(ope):
   """
@@ -82,7 +82,8 @@ def GetNomConceptResultat(ope):
       # isole en tete de la ligne de source
       m=evalnom(string.strip(l[0]),f.f_locals)
       #print "NOMS ",m
-      return m[-1]
+      if m!=[] :  return m[-1]
+      else : return ''
     lineno=lineno-1
     line = linecache.getline(filename, lineno)
     list.append(line)

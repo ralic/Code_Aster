@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 DEFI_CONSTANTE=OPER(nom="DEFI_CONSTANTE",op=   2,sd_prod=fonction,
                     fr="Définition d une fonction constante",
-                    docu="U4.31.01-f",reentrant='n',
+                    docu="U4.31.01-g",reentrant='n',
             UIinfo={"groupes":("Fonction",)},
          NOM_RESU        =SIMP(statut='f',typ='TXM',defaut="TOUTRESU"),
          VALE            =SIMP(statut='o',typ='R',max=1 ),

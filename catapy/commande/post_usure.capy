@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,12 +16,13 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-POST_USURE=OPER(nom="POST_USURE",op=153,sd_prod=tabl_post_usur,docu="U4.84.05-d1",reentrant='f',
+POST_USURE=OPER(nom="POST_USURE",op=153,sd_prod=tabl_post_usur,docu="U4.84.05-d",reentrant='f',
             UIinfo={"groupes":("Post traitements",)},
                 fr="Calcul des volumes d'usure et des profondeurs d'usure",
-         regles=(UN_PARMI('RESU_GENE','PUIS_USURE'),
-                 PRESENT_PRESENT('RESU_GENE','NOEUD'),
-                 UN_PARMI('INST','LIST_INST'),),
+         regles=(UN_PARMI('TUBE_NEUF','RESU_GENE','PUIS_USURE'),
+                 PRESENT_PRESENT('RESU_GENE','NOEUD','LOI_USURE'),
+                 PRESENT_PRESENT('PUIS_USURE','LOI_USURE'),),
+         TUBE_NEUF       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          ETAT_INIT       =FACT(statut='f',min=1,max=1,
            TABL_USURE      =SIMP(statut='f',typ=tabl_post_usur),
            INST_INIT       =SIMP(statut='f',typ='R'),  
@@ -32,7 +33,7 @@ POST_USURE=OPER(nom="POST_USURE",op=153,sd_prod=tabl_post_usur,docu="U4.84.05-d1
          INST_FIN        =SIMP(statut='f',typ='R'),  
          NB_BLOC         =SIMP(statut='f',typ='I',defaut= 1 ),  
          PUIS_USURE      =SIMP(statut='f',typ='R'),  
-         LOI_USURE       =SIMP(statut='o',typ='TXM',into=("ARCHARD","KWU_EPRI","EDF_MZ")),
+         LOI_USURE       =SIMP(statut='f',typ='TXM',into=("ARCHARD","KWU_EPRI","EDF_MZ")),
          b_archard       =BLOC(condition = "LOI_USURE == 'ARCHARD'",
            regles=(UN_PARMI('MOBILE','MATER_USURE','SECTEUR'), 
                    EXCLUS('MATER_USURE','OBSTACLE'),
@@ -96,6 +97,10 @@ POST_USURE=OPER(nom="POST_USURE",op=153,sd_prod=tabl_post_usur,docu="U4.84.05-d1
            ),   
            MATER_USURE     =SIMP(statut='f',typ='TXM'),  
            USURE_OBST      =SIMP(statut='f',typ='TXM',into=("OUI",)),
+         ),
+         b_tube_neuf       =BLOC(condition = "TUBE_NEUF == 'OUI'",
+            TABL_USURE      =SIMP(statut='o',typ=tabl_post_usur),
+            INST            =SIMP(statut='f',typ='R'),
          ),
          CONTACT         =SIMP(statut='f',typ='TXM',into=("TUBE_BAV","TUBE_ALESAGE","TUBE_4_ENCO",    
                                                           "GRAPPE_ALESAGE","TUBE_3_ENCO","TUBE_TUBE",        

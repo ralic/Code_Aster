@@ -1,10 +1,10 @@
       SUBROUTINE NMPIPE(MODELE, LIGRPI, CARTYP, CARETA, MATE  , COMPOR,
      &                  VALMOI, DEPDEL, DDEPL0, DDEPL1, PROFCH, TAU   ,
-     &                  NBATTE, NBEFFE, ETA   , LICCVG, BORNE, TYPILO)
+     &                  NBEFFE, ETA   , LICCVG, BORNE, TYPILO)
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 31/01/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,8 +25,8 @@ C PROPRIETAIRE E.LORENTZ
 
       IMPLICIT NONE
 
-      INTEGER      NBATTE, LICCVG(NBATTE), NBEFFE
-      REAL*8       TAU, ETA(NBATTE),BORNE(2),TPS(6)
+      INTEGER      LICCVG(2), NBEFFE
+      REAL*8       TAU, ETA(2),BORNE(2),TPS(6)
       CHARACTER*16 TYPILO
       CHARACTER*19 DDEPL0, DDEPL1, PROFCH, LIGRPI, CARTYP, CARETA
       CHARACTER*24 MODELE, MATE, COMPOR, VALMOI, DEPDEL
@@ -45,7 +45,6 @@ C IN  DDEPL0 K19 VARIATION DE DEPLACEMENT K-1.F0
 C IN  DDEPL1 K19 VARIATION DE DEPLACEMENT K-1.F1
 C IN  PROFCH K19 PROF_CHNO (POUR DETERMINER LES DDL PHYSIQUES)
 C IN  TAU    R8  SECOND MEMBRE DE L'EQUATION DE PILOTAGE
-C IN  NBATTE  I  NOMBRE DE SOLUTIONS ATTENDUES
 C IN  BORNE   R8 BORNE(1) = ETAMAX ; BORNE(2) = ETAMIN ; R8VIDE SI NC
 C IN  TYPILO K16 TYPE PILOTAGE : PRED_ELAS OU DEFORMATION
 C OUT NBEFFE  I  NOMBRE DE SOLUTIONS EFFECTIVES
@@ -242,47 +241,13 @@ C    UNE SOLUTION
 
 C    DEUX SOLUTIONS
         ELSE IF (NSOL .EQ. 2) THEN
-
-
-C      SI ON EN ATTEND 2 : OK
-          IF (NBATTE.EQ.2) THEN
-            NBEFFE    = 2
-            ETA(1)    = PROETA(1)
-            ETA(2)    = PROETA(2)
-            LICCVG(1) = 0
-            LICCVG(2) = 0
-
-
-C      SI ON EN ATTEND 1, CHOIX DU MINIMUM D(UN,U(ETA))
-          ELSE
-            NBEFFE    = 1
-            LICCVG(1) = 0
-
-            NRM1 = 0.D0
-            NRM2 = 0.D0
-
-            CALL JEVEUO(PROFCH // '.DEEQ','L',IDEEQ)
-            CALL JEVEUO(DEPDEL(1:19) // '.VALE','L',JDEPDE)
-            CALL JEVEUO(DDEPL0       // '.VALE','L',JDEP0)
-            CALL JEVEUO(DDEPL1       // '.VALE','L',JDEP1)
-            CALL JELIRA(DDEPL1       // '.VALE','LONMAX',NDDL, K8BID)
-            DO 30 I = 0, NDDL-1
-              IF (ZI(IDEEQ-1 + 2*I + 2).GT.0) THEN
-                NRM1=NRM1+(ZR(JDEPDE+I)+ZR(JDEP0+I)+PROETA(1)*
-     &                  ZR(JDEP1+I))**2
-                NRM2=NRM2+(ZR(JDEPDE+I)+ZR(JDEP0+I)+PROETA(2)*
-     &                  ZR(JDEP1+I))**2
-              END IF
- 30         CONTINUE
-
-            IF (NRM1 .LE. NRM2) THEN
-              ETA(1) = PROETA(1)
-            ELSE
-              ETA(1) = PROETA(2)
-            END IF
-
-          END IF
+          NBEFFE    = 2
+          ETA(1)    = PROETA(1)
+          ETA(2)    = PROETA(2)
+          LICCVG(1) = 0
+          LICCVG(2) = 0
         END IF
+
       ELSE
         NBEFFE    = 1
         LICCVG(1) = 1

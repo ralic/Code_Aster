@@ -1,11 +1,11 @@
       SUBROUTINE LRCNME ( CHANOM, NOCHMD, NOMAMD,
      >                    NOMAAS, NOMGD,
-     >                    NUMPT, NUMORD, NBCMPV, NCMPVA, NCMPVM,
-     >                    NROFIC, CODRET )
+     >                    NUMPT,  NUMORD, NBCMPV, NCMPVA, NCMPVM,
+     >                    NROFIC, NOMPRN, CODRET )
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/03/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 14/04/2003   AUTEUR DURAND C.DURAND 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,7 +50,7 @@ C
 C 0.1. ==> ARGUMENTS
 C
       CHARACTER*(*) CHANOM
-      CHARACTER*(*) NCMPVA, NCMPVM
+      CHARACTER*(*) NCMPVA, NCMPVM, NOMPRN
       CHARACTER*8 NOMAAS, NOMGD
       CHARACTER*32 NOCHMD, NOMAMD
 C
@@ -82,16 +82,10 @@ C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'LRCNME' )
 C
-      INTEGER EDNOEU
-      PARAMETER (EDNOEU=3)
-      INTEGER TYPNOE
-      PARAMETER (TYPNOE=0)
-C
       INTEGER IAUX
       INTEGER NBNOE
       INTEGER JCNSD,JCNSV,JCNSL
       INTEGER JNOCMP, NCMPRF
-      INTEGER TYPENT, TYPGEO
 C
       CHARACTER*1 SAUX01
       CHARACTER*8 CHAMN
@@ -101,6 +95,7 @@ C====
 C 1. ALLOCATION D'UN CHAM_NO_S  (CHAMNS)
 C====
 C
+      CALL JEMARQ ( )
 C 1.1. ==> REPERAGE DES CARACTERISTIQUES DE CETTE GRANDEUR
 C
       CALL JENONU ( JEXNOM ( '&CATA.GD.NOMGD', NOMGD ) , IAUX )
@@ -129,13 +124,10 @@ C====
 C 2. LECTURE
 C====
 C
-      TYPENT = EDNOEU
-      TYPGEO = TYPNOE
-C
-      CALL LRCAME ( NROFIC, NOCHMD, NOMAMD,
-     >              NBNOE, TYPENT, TYPGEO,
-     >              NUMPT, NUMORD, NBCMPV, NCMPVA, NCMPVM,
-     >              NOMGD, NCMPRF, JNOCMP, JCNSL, JCNSV,
+      CALL LRCAME ( NROFIC, NOCHMD, NOMAMD, NOMAAS,
+     >              NBNOE,  'NOEU',
+     >              NUMPT,  NUMORD, NBCMPV, NCMPVA, NCMPVM,
+     >              NOMGD,  NCMPRF, JNOCMP, JCNSL, JCNSV, JCNSD,
      >              CODRET )
 C
 C====
@@ -144,7 +136,7 @@ C====
 C
       CHAMN = CHANOM(1:8)
 C
-      CALL CNSCNO ( CHAMNS, ' ', 'G', CHAMN )
+      CALL CNSCNO ( CHAMNS, NOMPRN, 'G', CHAMN )
 C
       CALL DETRSD ( 'CHAM_NO_S', CHAMNS )
 C
@@ -157,5 +149,6 @@ C
      > ( 'A' , NOMPRO, 'LECTURE IMPOSSIBLE POUR '//CHAMN//
      >   ' AU FORMAT MED' )
       ENDIF
+      CALL JEDEMA ( )
 C
       END

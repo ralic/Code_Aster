@@ -3,7 +3,7 @@
       CHARACTER*8        CHMAT, MATERI
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -219,11 +219,11 @@ C --- DES FONCTIONS SONT CREEES SUR LA VOLATILE (ROUTINE ALFINT) ---
 
              ZI(IPIF+7) = 1
              ZI(IPIF+8) = 1
-             IF ( ZK8(ZI(IPIF+1))(1:1) .EQ. 'C' .OR.
-     &           ZK8(ZI(IPIF+1))(1:1) .EQ. 'F' ) THEN
+             IF ( ZK16(ZI(IPIF+1))(1:1) .EQ. 'C' .OR.
+     &           ZK16(ZI(IPIF+1))(1:1) .EQ. 'F' ) THEN
                 CALL JELIRA ( CH19//'.VALE', 'LONMAX', NBPTS, K8B )
                 ZI(IPIF) = NBPTS/2
-             ELSEIF ( ZK8(ZI(IPIF+1))(1:1) .EQ. 'N' ) THEN
+             ELSEIF ( ZK16(ZI(IPIF+1))(1:1) .EQ. 'N' ) THEN
                 CALL JEVEUT ( JEXATR(CH19//'.VALE','LONCUM'), 'L',
      &                                                   ZI(IPIF+3))
                 CALL JEVEUT ( CH19//'.PARA', 'L', ZI(IPIF+4) )

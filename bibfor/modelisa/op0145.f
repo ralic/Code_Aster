@@ -1,7 +1,7 @@
       SUBROUTINE OP0145 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C
      &            'SPEC_FONC_FORME','SPEC_EXCI_POINT'/
 C ----------------------------------------------------------------------
       CALL JEMARQ()
+      CALL INFMAJ()
 C
       CALL GETRES(NOMU,CONCEP,CMD)
 C

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 13/02/2001   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 13/01/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,8 +48,8 @@ C     --- VARIABLES LOCALES --------------------------------------------
 C
 C     --- VALEURS PAR DEFAUTS DES BASES --------------------------------
       INTEGER      PRESBA(MXBASE)
-      CHARACTER*8  NOMBA(MXBASE)  , NOM
       CHARACTER*8  CALCBA(MXBASE) , CALCUL
+      CHARACTER*16 NOMBA (MXBASE) , NOM
       CHARACTER*16 STIN  (MXBASE) , STOUT  (MXBASE) , STATUT
       CHARACTER*16 CASBA (MXBASE) , CAS
       CHARACTER*32 TITRBA(MXBASE)

@@ -1,6 +1,6 @@
       SUBROUTINE INMAT3(NDIM,NNO,NNOS,NBFPG,ELREFE,X,NBPG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/10/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 05/12/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -98,8 +98,9 @@ C DEB ------------------------------------------------------------------
 
 
 C     ------------------------------------------------------------------
-      IF ((ELREFE.EQ.'TETRA4'.OR.ELREFE.EQ.'TETRA10'.OR.
-     &    ELREFE.EQ.'TETRI4'.OR.ELREFE.EQ.'TETRI10')) THEN
+      IF ((ELREFE.EQ.'TETRA4' .OR. ELREFE.EQ.'TETRA10' .OR.
+     &     ELREFE.EQ.'TETRI4' .OR. ELREFE.EQ.'TETRI10' .OR.
+     &     ELREFE.EQ.'TETRA4L')) THEN
 
         NBPG1 = NBPG(1)
         DIMB = NNOS*NBPG1 + 2
@@ -115,15 +116,29 @@ C     ------------------------------------------------------------------
         ZR(JMATSI-1+2) = NBPG1
         JMATSI = JMATSI + 2
 
-        AA = (1.D0-SQRT(5.D0))/4.D0
-        BB = (1.D0+3.D0*SQRT(5.D0))/4.D0
-        DO 10 I = 1,16
-          ZR(JMAT-1+I) = AA
-   10   CONTINUE
-        ZR(JMAT+2) = BB
-        ZR(JMAT+5) = BB
-        ZR(JMAT+8) = BB
-        ZR(JMAT+15) = BB
+        IF (ELREFE.NE.'TETRA4L') THEN
+          AA = (1.D0-SQRT(5.D0))/4.D0
+          BB = (1.D0+3.D0*SQRT(5.D0))/4.D0
+          DO 10 I = 1,16
+            ZR(JMAT-1+I) = AA
+   10     CONTINUE
+          ZR(JMAT+2) = BB
+          ZR(JMAT+5) = BB
+          ZR(JMAT+8) = BB
+          ZR(JMAT+15) = BB
+        ELSE
+          AA = 1.D0
+          BB = 0.D0
+          DO 11 I = 1,NNOS
+            DO 12 J = 1,NNOS
+              IF (I.EQ.J) THEN
+                ZR(JMAT+NNOS*(I-1)+J-1) = AA
+              ELSE
+                ZR(JMAT+NNOS*(I-1)+J-1) = BB
+              ENDIF
+   12       CONTINUE
+   11     CONTINUE
+        ENDIF
 
         IF (ELREFE.EQ.'TETRA10' .OR. ELREFE.EQ.'TETRI10') THEN
           CALL ELRFGF(ELREFE,1,NBPG,3,COOPG,27,POIPG)
@@ -157,7 +172,7 @@ C     ------------------------------------------------------------------
         END IF
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'PENTA6') THEN
+      ELSE IF (ELREFE.EQ.'PENTA6' .OR. ELREFE.EQ.'PENTA6L') THEN
 
         NBPG1 = NBPG(1)
         DIMB = NNOS*NBPG1 + 2
@@ -173,42 +188,55 @@ C     ------------------------------------------------------------------
         JMAT = JMAT + 2
         JMATSI = JMATSI + 2
 
-        AA = (1.D0+SQRT(3.D0))/2.D0
-        BB = 1.D0 - AA
-        DO 90 I = 1,3
-          DO 80 J = 1,3
-            PP(I,J) = AA
-   80     CONTINUE
-   90   CONTINUE
-        PP(1,2) = -AA
-        PP(2,3) = -AA
-        PP(3,1) = -AA
-        DO 110 I = 4,6
-          DO 100 J = 1,3
-            PP(I,J) = BB
-  100     CONTINUE
-  110   CONTINUE
-        PP(4,2) = -BB
-        PP(5,3) = -BB
-        PP(6,1) = -BB
-        DO 130 I = 1,3
-          DO 120 J = 4,6
-            PP(I,J) = PP(I+3,J-3)
-  120     CONTINUE
-  130   CONTINUE
-        DO 150 I = 4,6
-          DO 140 J = 4,6
-            PP(I,J) = PP(I-3,J-3)
-  140     CONTINUE
-  150   CONTINUE
+        IF (ELREFE.NE.'PENTA6L') THEN
+          AA = (1.D0+SQRT(3.D0))/2.D0
+          BB = 1.D0 - AA
+          DO 90 I = 1,3
+            DO 80 J = 1,3
+              PP(I,J) = AA
+   80       CONTINUE
+   90     CONTINUE
+          PP(1,2) = -AA
+          PP(2,3) = -AA
+          PP(3,1) = -AA
+          DO 110 I = 4,6
+            DO 100 J = 1,3
+              PP(I,J) = BB
+  100       CONTINUE
+  110     CONTINUE
+          PP(4,2) = -BB
+          PP(5,3) = -BB
+          PP(6,1) = -BB
+          DO 130 I = 1,3
+            DO 120 J = 4,6
+              PP(I,J) = PP(I+3,J-3)
+  120       CONTINUE
+  130     CONTINUE
+          DO 150 I = 4,6
+            DO 140 J = 4,6
+              PP(I,J) = PP(I-3,J-3)
+  140       CONTINUE
+  150     CONTINUE
 
-        DO 170 I = 1,NNOS
-          L = (I-1)*NNOS
-          DO 160 J = 1,NNOS
-            ZR(JMAT-1+L+J) = PP(I,J)
-  160     CONTINUE
-  170   CONTINUE
-
+          DO 170 I = 1,NNOS
+            L = (I-1)*NNOS
+            DO 160 J = 1,NNOS
+              ZR(JMAT-1+L+J) = PP(I,J)
+  160       CONTINUE
+  170     CONTINUE
+        ELSE
+          AA = 1.D0
+          BB = 0.D0
+          DO 171 I = 1,NNOS
+            DO 172 J = 1,NNOS
+              IF (I.EQ.J) THEN
+                ZR(JMAT+NNOS*(I-1)+J-1) = AA
+              ELSE
+                ZR(JMAT+NNOS*(I-1)+J-1) = BB
+              ENDIF
+  172       CONTINUE
+  171     CONTINUE
+        ENDIF
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFE.EQ.'PENTA15') THEN
@@ -279,9 +307,10 @@ C    BOUCLE   SUR LES POINTS DE GAUSS
 
 
 C     ------------------------------------------------------------------
-      ELSE IF ((ELREFE.EQ.'HEXA8'.OR.ELREFE.EQ.'HEXA20'.OR.
-     &         ELREFE.EQ.'HEXS20'.OR.ELREFE.EQ.'HEXI20'.OR.
-     &         ELREFE.EQ.'HEXI8'.OR.ELREFE.EQ.'HEXA27')) THEN
+      ELSE IF ((ELREFE.EQ.'HEXA8 ' .OR. ELREFE.EQ.'HEXA20' .OR.
+     &          ELREFE.EQ.'HEXS20' .OR. ELREFE.EQ.'HEXI20' .OR.
+     &          ELREFE.EQ.'HEXI8 ' .OR. ELREFE.EQ.'HEXA27' .OR.
+     &          ELREFE.EQ.'HEXA8L')) THEN
 
         NBPG1 = NBPG(1)
         DIMB = NNOS*NBPG1 + 2
@@ -297,75 +326,89 @@ C     ------------------------------------------------------------------
         ZR(JMATSI-1+2) = NBPG1
         JMATSI = JMATSI + 2
 
-        AA = (5.D0+3.D0*SQRT(3.D0))/4.D0
-        BB = (-1.D0-SQRT(3.D0))/4.D0
-        CC = (-1.D0+SQRT(3.D0))/4.D0
-        DD = (5.D0-3.D0*SQRT(3.D0))/4.D0
+        IF (ELREFE.NE.'HEXA8L') THEN
+          AA = (5.D0+3.D0*SQRT(3.D0))/4.D0
+          BB = (-1.D0-SQRT(3.D0))/4.D0
+          CC = (-1.D0+SQRT(3.D0))/4.D0
+          DD = (5.D0-3.D0*SQRT(3.D0))/4.D0
 
-        ZR(JMAT-1+1) = AA
-        ZR(JMAT-1+2) = BB
-        ZR(JMAT-1+3) = BB
-        ZR(JMAT-1+4) = CC
-        ZR(JMAT-1+5) = BB
-        ZR(JMAT-1+6) = CC
-        ZR(JMAT-1+7) = CC
-        ZR(JMAT-1+8) = DD
-        ZR(JMAT-1+9) = BB
-        ZR(JMAT-1+10) = CC
-        ZR(JMAT-1+11) = CC
-        ZR(JMAT-1+12) = DD
-        ZR(JMAT-1+13) = AA
-        ZR(JMAT-1+14) = BB
-        ZR(JMAT-1+15) = BB
-        ZR(JMAT-1+16) = CC
-        ZR(JMAT-1+17) = CC
-        ZR(JMAT-1+18) = DD
-        ZR(JMAT-1+19) = BB
-        ZR(JMAT-1+20) = CC
-        ZR(JMAT-1+21) = BB
-        ZR(JMAT-1+22) = CC
-        ZR(JMAT-1+23) = AA
-        ZR(JMAT-1+24) = BB
-        ZR(JMAT-1+25) = BB
-        ZR(JMAT-1+26) = CC
-        ZR(JMAT-1+27) = AA
-        ZR(JMAT-1+28) = BB
-        ZR(JMAT-1+29) = CC
-        ZR(JMAT-1+30) = DD
-        ZR(JMAT-1+31) = BB
-        ZR(JMAT-1+32) = CC
-        ZR(JMAT-1+33) = BB
-        ZR(JMAT-1+34) = AA
-        ZR(JMAT-1+35) = CC
-        ZR(JMAT-1+36) = BB
-        ZR(JMAT-1+37) = CC
-        ZR(JMAT-1+38) = BB
-        ZR(JMAT-1+39) = DD
-        ZR(JMAT-1+40) = CC
-        ZR(JMAT-1+41) = CC
-        ZR(JMAT-1+42) = BB
-        ZR(JMAT-1+43) = DD
-        ZR(JMAT-1+44) = CC
-        ZR(JMAT-1+45) = BB
-        ZR(JMAT-1+46) = AA
-        ZR(JMAT-1+47) = CC
-        ZR(JMAT-1+48) = BB
-        ZR(JMAT-1+49) = DD
-        ZR(JMAT-1+50) = CC
-        ZR(JMAT-1+51) = CC
-        ZR(JMAT-1+52) = BB
-        ZR(JMAT-1+53) = CC
-        ZR(JMAT-1+54) = BB
-        ZR(JMAT-1+55) = BB
-        ZR(JMAT-1+56) = AA
-        ZR(JMAT-1+57) = CC
-        ZR(JMAT-1+58) = BB
-        ZR(JMAT-1+59) = BB
-        ZR(JMAT-1+60) = AA
-        ZR(JMAT-1+61) = DD
-        ZR(JMAT-1+62) = CC
-        ZR(JMAT-1+63) = CC
-        ZR(JMAT-1+64) = BB
+          ZR(JMAT-1+1) = AA
+          ZR(JMAT-1+2) = BB
+          ZR(JMAT-1+3) = BB
+          ZR(JMAT-1+4) = CC
+          ZR(JMAT-1+5) = BB
+          ZR(JMAT-1+6) = CC
+          ZR(JMAT-1+7) = CC
+          ZR(JMAT-1+8) = DD
+          ZR(JMAT-1+9) = BB
+          ZR(JMAT-1+10) = CC
+          ZR(JMAT-1+11) = CC
+          ZR(JMAT-1+12) = DD
+          ZR(JMAT-1+13) = AA
+          ZR(JMAT-1+14) = BB
+          ZR(JMAT-1+15) = BB
+          ZR(JMAT-1+16) = CC
+          ZR(JMAT-1+17) = CC
+          ZR(JMAT-1+18) = DD
+          ZR(JMAT-1+19) = BB
+          ZR(JMAT-1+20) = CC
+          ZR(JMAT-1+21) = BB
+          ZR(JMAT-1+22) = CC
+          ZR(JMAT-1+23) = AA
+          ZR(JMAT-1+24) = BB
+          ZR(JMAT-1+25) = BB
+          ZR(JMAT-1+26) = CC
+          ZR(JMAT-1+27) = AA
+          ZR(JMAT-1+28) = BB
+          ZR(JMAT-1+29) = CC
+          ZR(JMAT-1+30) = DD
+          ZR(JMAT-1+31) = BB
+          ZR(JMAT-1+32) = CC
+          ZR(JMAT-1+33) = BB
+          ZR(JMAT-1+34) = AA
+          ZR(JMAT-1+35) = CC
+          ZR(JMAT-1+36) = BB
+          ZR(JMAT-1+37) = CC
+          ZR(JMAT-1+38) = BB
+          ZR(JMAT-1+39) = DD
+          ZR(JMAT-1+40) = CC
+          ZR(JMAT-1+41) = CC
+          ZR(JMAT-1+42) = BB
+          ZR(JMAT-1+43) = DD
+          ZR(JMAT-1+44) = CC
+          ZR(JMAT-1+45) = BB
+          ZR(JMAT-1+46) = AA
+          ZR(JMAT-1+47) = CC
+          ZR(JMAT-1+48) = BB
+          ZR(JMAT-1+49) = DD
+          ZR(JMAT-1+50) = CC
+          ZR(JMAT-1+51) = CC
+          ZR(JMAT-1+52) = BB
+          ZR(JMAT-1+53) = CC
+          ZR(JMAT-1+54) = BB
+          ZR(JMAT-1+55) = BB
+          ZR(JMAT-1+56) = AA
+          ZR(JMAT-1+57) = CC
+          ZR(JMAT-1+58) = BB
+          ZR(JMAT-1+59) = BB
+          ZR(JMAT-1+60) = AA
+          ZR(JMAT-1+61) = DD
+          ZR(JMAT-1+62) = CC
+          ZR(JMAT-1+63) = CC
+          ZR(JMAT-1+64) = BB
+        ELSE
+          AA = 1.D0
+          BB = 0.D0
+          DO 241 I = 1,NNOS
+            DO 242 J = 1,NNOS
+              IF (I.EQ.J) THEN
+                ZR(JMAT+NNOS*(I-1)+J-1) = AA
+              ELSE
+                ZR(JMAT+NNOS*(I-1)+J-1) = BB
+              ENDIF
+  242       CONTINUE
+  241     CONTINUE
+        ENDIF
 
         IF ((ELREFE.EQ.'HEXA20'.OR.ELREFE.EQ.'HEXA27'.OR.
      &      ELREFE.EQ.'HEXI20')) THEN

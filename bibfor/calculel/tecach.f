@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/01/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,12 +79,7 @@ C ITAB(2)   : LONGUEUR DU CHAMP_LOCAL DANS LE CATALOGUE
 C             (NE TIENT PAS COMPTE DE NCDYN ET NBSPT
 C              VOIR CI-DESSOUS ITAB(6) ET ITAB(7) )
 C ITAB(3)   : NOMBRE DE POINTS DE LOCALISATION DU CHAMP
-C ITAB(4)   : TYPE DU CHAMP :
-C             1 --> CARTE
-C             2 --> CHAM_NO
-C             3 --> CHAM_ELEM
-C             4 --> RESUELEM (VECTEUR)
-C             5 --> RESUELEM (MATRICE)
+C ITAB(4)   : 9999 (INUTILISE)
 C ITAB(5)   : TYPE_SCALAIRE DU CHAMP :
 C             1 --> REEL
 C             2 --> COMPLEXE
@@ -278,13 +273,7 @@ C     ITAB(3) : NOMBRE DE POINTS (CATALOGUE) :
 C     -----------------------------------------------------
         ITAB(3) = ZI(IAWLOC-1+7* (IPARG-1)+6)
         IF (NVAL.LT.4) GO TO 10
-
-
-C     ITAB(4) : TYPE DU CHAMP LOCAL  :
-C         CARTE/CHAM_NO/CHAM_ELEM/VECTEUR/MATRICE
-C          1   /  2    /     3   /   4   / 5
-C     ------------------------------------------------------------
-        ITAB(4) = ZI(IAWLOC-1+7* (IPARG-1)+5)
+        ITAB(4) = 9999
         IF (NVAL.LT.5) GO TO 10
 
 

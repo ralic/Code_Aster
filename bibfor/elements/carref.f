@@ -5,7 +5,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/10/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 05/12/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,8 @@ C DEB ------------------------------------------------------------------
       UNTIER = 1.0D0/3.0D0
       ZERO = 0.0D0
 C     ------------------------------------------------------------------
-      IF (ELREFE.EQ.'HEXA8' .OR. ELREFE.EQ.'HEXI8') THEN
+      IF (ELREFE.EQ.'HEXA8' .OR. ELREFE.EQ.'HEXI8' .OR.
+     &    ELREFE.EQ.'HEXA8L') THEN
         NDIM = 3
         NNO = 8
         NNOS = NNO
@@ -223,7 +224,8 @@ C    NOEUDS MILIEUX DES FACES ET BARYCENTRE
         ZIN(26) = +1.D0
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'TETRA4' .OR. ELREFE.EQ.'TETRI4') THEN
+      ELSE IF (ELREFE.EQ.'TETRA4' .OR. ELREFE.EQ.'TETRI4' .OR.
+     &         ELREFE.EQ.'TETRA4L') THEN
 
         NDIM = 3
         NNO = 4
@@ -285,7 +287,7 @@ C     ------------------------------------------------------------------
         ZIN(9) = +0.5D0
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'PENTA6') THEN
+      ELSE IF (ELREFE.EQ.'PENTA6' .OR. ELREFE.EQ.'PENTA6L') THEN
 
         NDIM = 3
         NNO = 6

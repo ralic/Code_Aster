@@ -1,16 +1,17 @@
       SUBROUTINE IRCECS(IFI,NBEL,LIGREL,NBGREL,LONGR,NCMPMX,VALE,NOMGD,
      &   NOMCMP,TITR,NOMEL,LOC,CELD,NBNOMA,PERMUT,MAXNOD,TYPMA,
-     &   NOMSD,NOMSYM,IR,NBMAT,NUMMAI,LMASU)
+     &   NOMSD,NOMSYM,IR,NBMAT,NUMMAI,LMASU,NCMPU,NUCMP)
       IMPLICIT REAL*8 (A-H,O-Z)
 C
-      INTEGER IFI,NBEL,LIGREL(*),NBGREL,LONGR(*),NCMPMX,CELD(*)
-      INTEGER       NBNOMA(*),PERMUT(MAXNOD,*),TYPMA(*),NBMAT,NUMMAI(*)
+      INTEGER       IFI, NBEL, LIGREL(*), NBGREL, LONGR(*), NCMPMX,
+     +              CELD(*), NBNOMA(*), PERMUT(MAXNOD,*), TYPMA(*),
+     +              NBMAT, NUMMAI(*), NCMPU, NUCMP(*)
       CHARACTER*(*) NOMGD,NOMCMP(*),NOMEL(*),LOC,TITR,NOMSYM,NOMSD
       COMPLEX*16                                 VALE(*)
       LOGICAL       LMASU
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 01/12/2000   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF PREPOST  DATE 02/12/2002   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,9 +86,9 @@ C
 C
       CALL WKVECT('&&IRCECS.NOMGDS','V V K8',NCMPMX,INOGDS)
       CALL WKVECT('&&IRCECS.NOMCHS','V V K8',NCMPMX,INOCHS)
-      CALL WKVECT('&&IRCECS.NBCMPS','V V I',NCMPMX,IBCMPS)
-      CALL WKVECT('&&IRCECS.IPCMPS','V V I',NCMPMX*NCMPMX,ICMPS)
-      CALL WKVECT('&&IRCECS.LTABL','V V L',NCMPMX,ITABL)
+      CALL WKVECT('&&IRCECS.NBCMPS','V V I' ,NCMPMX,IBCMPS)
+      CALL WKVECT('&&IRCECS.IPCMPS','V V I' ,NCMPMX*NCMPMX,ICMPS)
+      CALL WKVECT('&&IRCECS.LTABL' ,'V V L' ,NCMPMX,ITABL)
 C
       NOMST= '&&IRECRI.SOUS_TITRE.TITR'
       CALL JEVEUO(NOMST,'L',JTITR)
@@ -107,6 +108,11 @@ C --- DETERMINATION DU NOMBRE MAXIMUM DE SOUS-POINTS ---
          IF (ICOEF.GT.ICOMAX) ICOMAX=ICOEF
    8  CONTINUE
       ICOMM = 6
+      IF ( NCMPU .EQ. 0 ) THEN
+         ICMAX0 = ICOMAX
+      ELSE
+         ICMAX0 = NCMPU
+      ENDIF
 C
 C -- ALLOCATION DES TABLEAUX DE TRAVAIL ---
 C
@@ -140,11 +146,11 @@ C --- GROUPEMENT DES VARIABLES SCALAIRES 6 PAR 6 ----
 C  ---  DETERMINATION DU NOMBRE DE DATASETS SUPERTAB A IMPRIMER --
 C
         IF(ZI(IBCMPS-1+ICHS).EQ.1.AND.ICOMAX.GT.1) THEN
-          DO 42 I=1,ICOMAX
+          DO 42 I=1,ICMAX0
             ZI(JSPT-1+I)=6
 42        CONTINUE
-          ILIG=ICOMAX/6
-          IRES=ICOMAX-ILIG*6
+          ILIG=ICMAX0/6
+          IRES=ICMAX0-ILIG*6
           IF(IRES.EQ.0) THEN
             NBDATS=ILIG
           ELSE
@@ -184,7 +190,11 @@ C
           DO 5 ICP=1,ZI(IBCMPS-1+ICHS)
             IF (ZI(IBCMPS-1+ICHS).EQ.1.AND.ICOMAX.GT.1) THEN
               DO 6 ISPT=1,NBSPT
-                ENTIER=(IDA-1)*6+ISPT
+                IF ( NCMPU .EQ. 0 ) THEN
+                   ENTIER=(IDA-1)*6+ISPT
+                ELSE
+                   ENTIER=NUCMP((IDA-1)*6+ISPT)
+                ENDIF
                 NOCMP = NOMCMP(ZI(ICMPS-1+(ICHS-1)*NCMPMX+ICP))
                 IUTIL=LXLGUT(NOCMP)
                 CALL CODENT (ENTIER,'G',TOTO)
@@ -228,7 +238,11 @@ C
             NSCAL = DIGDEL(MODE)
             ICOEF=MAX(1,CELD(4))
             IF(ZI(IBCMPS-1+ICHS).EQ.1.AND.ICOMAX.GT.1) THEN
-              ICO=(IDA-1)*6+1
+              IF ( NCMPU .EQ. 0 ) THEN
+                ICO = (IDA-1)*6+1
+              ELSE
+                ICO = 1
+              ENDIF
             ELSE
               ICO=IDA
             ENDIF
@@ -361,12 +375,17 @@ C
                      IF(ICMP.EQ.ICMSUP) THEN
                        IMPRE=1
                        DO 36 ISP=1,ZI(JSPT-1+IDA)
+                         IF ( NCMPU .EQ. 0 ) THEN
+                            IS0 = ISP
+                         ELSE
+                            IS0 = NUCMP((IDA-1)*6+ISP)
+                         ENDIF
                          DO 17 IPG =1,NBPG
                            J=IACHML-1+NCMPP*ICOEF*(IPG-1)+NCMPP*(ICO-1)
                            ZR(IRVG-1+ICMS-1+ISP)= ZR(IRVG-1+ICMS-1+ISP)+
-     &                              DBLE(VALE(J+IC+NCMPP*(ISP-1)))
+     &                              DBLE(VALE(J+IC+NCMPP*(IS0-1)))
                            ZR(ICVG-1+ICMS-1+ISP)= ZR(ICVG-1+ICMS-1+ISP)+
-     &                             DIMAG(VALE(J+IC+NCMPP*(ISP-1)))
+     &                             DIMAG(VALE(J+IC+NCMPP*(IS0-1)))
    17                    CONTINUE
                          ZR(IRVG-1+ICMS-1+ISP)=ZR(IRVG-1+ICMS-1+ISP)
      &                                               / NBPG

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 01/04/2003   AUTEUR DURAND C.DURAND 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION ET PESANTEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,6 +26,25 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
                     CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
+MAILLAGE = DEFI_GROUP( reuse=MAILLAGE, MAILLAGE=MAILLAGE, INFO=2,
+                CREA_GROUP_NO=(_F( NOM = 'GRNO1',
+                                   OPTION = 'TUNNEL',
+                                   GROUP_MA = 'VOILE',
+                                   GROUP_MA_AXE = 'CABLE001',
+#                                   NOEUD_ORIG = 'NC001001',
+                                   RAYON = 3. ,
+                                 ),
+                               _F( NOM = 'GRNO2',
+                                   OPTION = 'TUNNEL',
+                                   MAILLE = 'TOTO1',
+                                   MAILLE_AXE = ('SG001001','SG001002'),
+                                   GROUP_NO_ORIG = 'NC1',
+                                   LONGUEUR = 0.75 ,
+                                   RAYON = 3. ,
+                                 ),
+                               ),
+               ) ;
+
 MODELE=AFFE_MODELE(AFFE=(_F(GROUP_MA='VOILE',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='3D',),
@@ -41,7 +60,9 @@ CARAELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                                  VALE=(0.00015),),);
 
 BETON=DEFI_MATERIAU(BPEL_BETON=_F(),
+                    THER=_F(LAMBDA=1.00,RHO_CP=1),
                     ELAS=_F(NU=0.0,
+                            ALPHA=1.E-05,
                             RHO=3.0,
                             E=3.E10,),);
 
@@ -50,6 +71,7 @@ ACIER=DEFI_MATERIAU(BPEL_ACIER=_F(FROT_LINE=0.0,
                                   FROT_COURB=0.0,),
                     ELAS=_F(NU=0.0,
                             RHO=2.E4,
+                            ALPHA=1.E-05,
                             E=2.10000000000E11,),);
 
 CHMATER=AFFE_MATERIAU(AFFE=(_F(MATER=BETON,
@@ -60,25 +82,22 @@ CHMATER=AFFE_MATERIAU(AFFE=(_F(MATER=BETON,
 
 CABLEPR=DEFI_CABLE_BP(CHAM_MATER=CHMATER,
                       MODELE=MODELE,
-                      DEFI_CABLE=_F(TYPE_ANCRAGE=('ACTIF','ACTIF'),
-                                    NOEUD_ANCRAGE=('NC001001','NC001005'),
+                      DEFI_CABLE=_F(NOEUD_ANCRAGE=('NC001001','NC001005'),
                                     GROUP_MA='CABLE001',),
+                      TYPE_ANCRAGE=('ACTIF','ACTIF'),
                       GROUP_MA_BETON='VOILE',
                       TENSION_INIT=2.E5,
                       RECUL_ANCRAGE=0.0,
-                      CARA_ELEM=CARAELEM,);
+                      CARA_ELEM=CARAELEM,
+                      INFO=1,);
 
-CHARMECA=AFFE_CHAR_MECA(DDL_IMPO=(_F(NOEUD='NB001001',
+CHARMECA=AFFE_CHAR_MECA(MODELE=MODELE,
+                        DDL_IMPO=(_F(NOEUD='NB001001',
                                      DY=0.0,),
                                   _F(DX=0.0,
                                      GROUP_NO='VGAUCH',),
                                   _F(DZ=0.0,
-                                     GROUP_NO='VINF',),),
-                        INFO=2,
-                        MODELE=MODELE,
-                        RELA_CINE_BP=_F(RELA_CINE='OUI',
-                                        SIGM_BPEL='OUI',
-                                        CABLE_BP=CABLEPR,),);
+                                     GROUP_NO='VINF',),),)                                     
 
 CHARMEZ=AFFE_CHAR_MECA(MODELE=MODELE,
                        PESANTEUR=(10.0,0.0,0.0,-1.0),);
@@ -88,10 +107,7 @@ CHARMEX=AFFE_CHAR_MECA(MODELE=MODELE,
 
 LINST=DEFI_LIST_REEL(VALE=(0.0,1.0),);
 
-F=DEFI_FONCTION(NOM_PARA='INST',
-                VALE=(0.0,0.0,1.0,1.0),);
-
-EVOLNOLI=STAT_NON_LINE(CHAM_MATER=CHMATER,
+EVOLNOLI=CALC_PRECONT( CHAM_MATER=CHMATER,
                        MODELE=MODELE,
                        CONVERGENCE=_F(ITER_GLOB_MAXI=10,
                                       RESI_GLOB_RELA=1.E-05,),
@@ -101,9 +117,11 @@ EVOLNOLI=STAT_NON_LINE(CHAM_MATER=CHMATER,
                        INCREMENT=_F(LIST_INST=LINST,),
                        CARA_ELEM=CARAELEM,
                        SOLVEUR=_F(METHODE='MULT_FRONT',),
-                       EXCIT=(_F(CHARGE=CHARMECA,),
+                       EXCIT=(
+                              _F(CHARGE=CHARMECA,),
                               _F(CHARGE=CHARMEZ,
-                                 FONC_MULT=F,),),
+                                 ),),
+                       CABLE_BP=( CABLEPR ,),          
                        INFO=2,);
 
 EVOLNOLI=CALC_NO(reuse =EVOLNOLI,
@@ -113,10 +131,10 @@ EVOLNOLI=CALC_NO(reuse =EVOLNOLI,
                  RESULTAT=EVOLNOLI,
                  EXCIT=(_F(CHARGE=CHARMECA,),
                         _F(CHARGE=CHARMEZ,
-                           FONC_MULT=F,),),
+                           ),),
                  MODELE=MODELE,);
 
-EVOLNO2=STAT_NON_LINE(CHAM_MATER=CHMATER,
+EVOLNO2=CALC_PRECONT(CHAM_MATER=CHMATER,
                       MODELE=MODELE,
                       CONVERGENCE=_F(ITER_GLOB_MAXI=10,
                                      RESI_GLOB_RELA=1.E-05,),
@@ -126,9 +144,11 @@ EVOLNO2=STAT_NON_LINE(CHAM_MATER=CHMATER,
                       INCREMENT=_F(LIST_INST=LINST,),
                       CARA_ELEM=CARAELEM,
                       SOLVEUR=_F(METHODE='MULT_FRONT',),
-                      EXCIT=(_F(CHARGE=CHARMECA,),
+                      EXCIT=(
+                           _F(CHARGE=CHARMECA,),
                              _F(CHARGE=CHARMEX,
-                                FONC_MULT=F,),),
+                                ),),
+                       CABLE_BP=( CABLEPR ,),          
                       INFO=2,);
 
 EVOLNO2=CALC_NO(reuse =EVOLNO2,
@@ -138,7 +158,7 @@ EVOLNO2=CALC_NO(reuse =EVOLNO2,
                 RESULTAT=EVOLNO2,
                 EXCIT=(_F(CHARGE=CHARMECA,),
                        _F(CHARGE=CHARMEX,
-                          FONC_MULT=F,),),
+                          ),),
                 MODELE=MODELE,);
 
 FORC_DZ=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -180,5 +200,141 @@ TEST_TABLE(TABLE=FORC2_DZ,
 TEST_TABLE(TABLE=FORC2_DX,
            NOM_PARA='DX',
            VALE=132.0,);
+
+
+# CALCUL THERMOMECANIQUE
+
+MODTHER1=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                    AFFE=(_F(TOUT='OUI',
+                             PHENOMENE='THERMIQUE',
+                             MODELISATION='3D',),
+                          ),);
+
+CHTHER=AFFE_CHAR_THER(MODELE=MODTHER1,
+                      TEMP_IMPO=_F(GROUP_MA='VOILE',
+                                   TEMP=100,),);
+
+TEMPE1=THER_LINEAIRE(MODELE=MODTHER1,
+                    CHAM_MATER=CHMATER,
+                    INCREMENT=_F(LIST_INST=LINST,),
+                    CARA_ELEM=CARAELEM,
+                     TEMP_INIT=_F(VALE=0.0,),
+                    EXCIT=_F(CHARGE=CHTHER,),);
+
+
+#IMPR_RESU(RESU=_F(RESULTAT=TEMPE1),)
+
+TEMPE2=PROJ_CHAMP(METHODE='ELEM',
+                   RESULTAT=TEMPE1,
+                   MODELE_1=MODTHER1,
+                   MODELE_2=MODELE,
+                   TOUT_ORDRE='OUI',);
+
+IMPR_RESU(RESU=_F(RESULTAT=TEMPE2),)
+
+CHTT100=AFFE_CHAR_MECA(MODELE=MODELE,
+                       TEMP_CALCULEE=TEMPE2,);
+
+NLTT100=CALC_PRECONT( MODELE=MODELE,
+                      CHAM_MATER=CHMATER,
+                      CARA_ELEM=CARAELEM,
+                      EXCIT=(
+                             _F(CHARGE=CHARMECA,),
+                             _F(CHARGE=CHTT100,),),
+                      COMP_INCR=_F(RELATION='ELAS',
+                                   DEFORMATION='PETIT',
+                                   TOUT='OUI',),
+                      INCREMENT=_F(LIST_INST=LINST,),
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1.0000000000000001E-05,
+                                     ITER_GLOB_MAXI=10,),
+                      SOLVEUR=_F(METHODE='MULT_FRONT',),
+                      CABLE_BP=( CABLEPR ,),          
+
+                      INFO=2,);
+                      
+NLTT100=CALC_ELEM(reuse =NLTT100,
+                   MODELE=MODELE,
+                      CARA_ELEM=CARAELEM,
+                   CHAM_MATER=CHMATER,
+                   OPTION=('EPSI_ELNO_DEPL',),
+                   RESULTAT=NLTT100,);
+
+IMPR_RESU(RESU=_F(RESULTAT=NLTT100,),);
+
+NLTT101 = MODI_REPERE (
+                        RESULTAT = NLTT100,
+                        NUME_ORDRE = 1,
+                        MODI_CHAM = (_F(NOM_CHAM = 'SIEF_ELGA',
+                                    GROUP_MA='VOILE',
+                     NOM_CMP = ('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),
+                      TYPE_CHAM = 'TENS_3D',),),
+                                      DEFI_REPERE = _F(
+                                          REPERE = 'UTILISATEUR',
+                                          ANGL_NAUT = (90.,0.,0.),
+                                          ),
+                        INFO=2,
+                        )
+
+IMPR_RESU(RESU=_F(RESULTAT=NLTT101,),);
+                                         
+
+
+# POUR COMPARER AVEC lA SOLUTION SANS THERMIQUE
+
+EVOLNOT=CALC_PRECONT( CHAM_MATER=CHMATER,
+                      MODELE=MODELE,
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=10,
+                                     RESI_GLOB_RELA=1.E-05,),
+                      COMP_INCR=_F(TOUT='OUI',
+                                   RELATION='ELAS',
+                                   DEFORMATION='PETIT',),
+                      INCREMENT=_F(LIST_INST=LINST,),
+                      CARA_ELEM=CARAELEM,
+                      SOLVEUR=_F(METHODE='MULT_FRONT',),
+                      EXCIT=_F(CHARGE=CHARMECA,),
+                      CABLE_BP=( CABLEPR ,),   )       
+
+EVOLNOT=CALC_ELEM(reuse =EVOLNOT,
+                   MODELE=MODELE,
+                      CARA_ELEM=CARAELEM,
+                   CHAM_MATER=CHMATER,
+                   OPTION=('EPSI_ELNO_DEPL',),
+                   RESULTAT=EVOLNOT,);
+                   
+IMPR_RESU(RESU=_F(RESULTAT=EVOLNOT,),);
+
+# CONTRAINTES IDENTIQUES PUISQUE DILATATION THERMIQUE LIBRE
+TEST_RESU(RESU=(
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE='NON_REGRESSION',
+         RESULTAT = EVOLNOT,   NOM_CHAM = 'SIEF_ELGA',     NUME_ORDRE = 1,  
+         MAILLE='TOTO1',POINT=1,   NOM_CMP = 'SIXX',      VALE = -1.66521E+05     ),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE='NON_REGRESSION',
+         RESULTAT = EVOLNOT,   NOM_CHAM = 'SIEF_ELGA',     NUME_ORDRE = 1,  
+         MAILLE='SG001001',POINT=1,   NOM_CMP = 'N',      VALE = 1.99825E+05     ),
+         ),)
+
+TEST_RESU(RESU=(
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE='AUTRE_ASTER',
+         RESULTAT = NLTT100,   NOM_CHAM = 'SIEF_ELGA',     NUME_ORDRE = 1,  
+         MAILLE='TOTO1',POINT=1,   NOM_CMP = 'SIXX',      VALE = -1.66521E+05     ),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE='AUTRE_ASTER',
+         RESULTAT = NLTT100,   NOM_CHAM = 'SIEF_ELGA',     NUME_ORDRE = 1,  
+         MAILLE='SG001001',POINT=1,   NOM_CMP = 'N',      VALE = 1.99825E+05     ),
+         ),)
+
+
+# DEFORMATION DIFFERENTES
+
+TEST_RESU(RESU=(
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE='NON_REGRESSION',
+         RESULTAT = EVOLNOT,   NOM_CHAM = 'EPSI_ELNO_DEPL',     NUME_ORDRE = 1,  
+         MAILLE='TOTO1',NOEUD='NB001001',   NOM_CMP = 'EPXX',      VALE = -5.55070E-06    ),
+         ),)
+
+TEST_RESU(RESU=(
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE='NON_REGRESSION',
+         RESULTAT = NLTT100,   NOM_CHAM = 'EPSI_ELNO_DEPL',     NUME_ORDRE = 1,  
+         MAILLE='TOTO1',NOEUD='NB001001',   NOM_CMP = 'EPXX',      VALE = 9.94449E-04    ),
+         ),)
 
 FIN();

@@ -7,7 +7,7 @@
       CHARACTER*19        RESU, NOMTAB
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 15/01/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -324,12 +324,12 @@ C
       CALL GCNCON ( '_' , K8B )
       NOMFON = RESU(1:8)//K8B
 C
-      CALL WKVECT ( NOMFON//'.PROL', 'G V K8', 5, LPRO )
-      ZK8(LPRO)   = 'FONCTION'
-      ZK8(LPRO+1) = 'LIN LIN '
-      ZK8(LPRO+2) = 'THETA   '
-      ZK8(LPRO+3) = 'R       '
-      ZK8(LPRO+4) = 'EE      '
+      CALL WKVECT ( NOMFON//'.PROL', 'G V K16', 5, LPRO )
+      ZK16(LPRO)   = 'FONCTION'
+      ZK16(LPRO+1) = 'LIN LIN '
+      ZK16(LPRO+2) = 'THETA   '
+      ZK16(LPRO+3) = 'R       '
+      ZK16(LPRO+4) = 'EE      '
 C
       CALL WKVECT ( NOMFON//'.VALE', 'G V R8', 2*NV, LVAL )
 C

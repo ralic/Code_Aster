@@ -1,6 +1,6 @@
       SUBROUTINE OP0084(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,6 +28,7 @@ C     ------------------------------------------------------------------
       REAL*8         EPS
 C     ------------------------------------------------------------------
 
+      CALL INFMAJ()
       CALL GETRES(VECSOL,TYPSOL,NOMCMD)
 C----------------------------------------------------------------------
       CALL GETVIS(' ','NMAX_ITER',0,1,1,MXITER,IBID)

@@ -1,21 +1,21 @@
-# MODIF  DATE 16/05/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
 # TITRE (NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE - COQUE_3D TRIA7
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -23,7 +23,7 @@ DEBUT(CODE=_F(  NOM = 'SSLS114A',NIV_PUB_WEB='INTERNET'))
 
 M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),   )
 
-M=DEFI_GROUP( reuse=M,   MAILLAGE=M,
+DEFI_GROUP( reuse=M,   MAILLAGE=M,
                        CREA_GROUP_MA=_F(  NOM = 'CYLINDRE',
                                        UNION = ('CYL1',  'CYL2',))
                    )
@@ -39,7 +39,7 @@ MO=AFFE_MODELE(            MAILLAGE=MAIL,
                                          MODELISATION = 'COQUE_3D')
                        )
 
-MAIL=MODI_MAILLAGE( reuse=MAIL,  MAILLAGE=MAIL,    MODELE=MO,
+MODI_MAILLAGE( reuse=MAIL,  MAILLAGE=MAIL,    MODELE=MO,
                            ORIE_NORM_COQUE=_F(  VECT_NORM = (1., 0., 0.,),
                                              GROUP_NO = 'PB',
                                              GROUP_MA = 'CYLINDRE'),
@@ -61,7 +61,7 @@ CA=AFFE_CARA_ELEM(        MODELE=MO,
                        )
 
 CH=AFFE_CHAR_MECA(         MODELE=MO,DDL_IMPO=(
-                             
+
                                 _F(  GROUP_MA = 'AB',  DY = 0., DRX = 0.,
                                                          DRZ = 0.),
                                 _F(  GROUP_MA = 'CD',  DX = 0., DRY = 0.,
@@ -72,11 +72,11 @@ CH=AFFE_CHAR_MECA(         MODELE=MO,DDL_IMPO=(
 #____________________ MODELISATION PRES_REP REEL _______________
 
 
-F_PRES=DEFI_CONSTANTE(   NOM_RESU='PRES', 
+F_PRES=DEFI_CONSTANTE(   NOM_RESU='PRES',
                                 VALE=0.     )
 
 CHP_F=AFFE_CHAR_MECA_F(     MODELE=MO,
-                              PRES_REP=_F(  GROUP_MA = 'CYLINDRE',  
+                              PRES_REP=_F(  GROUP_MA = 'CYLINDRE',
                                          PRES = F_PRES)
                        )
 
@@ -84,65 +84,74 @@ CHP=AFFE_CHAR_MECA(         MODELE=MO,
                               PRES_REP=_F(  GROUP_MA = 'CYLINDRE',  PRES = 10.)
                        )
 
-RESP=MECA_STATIQUE(       MODELE=MO,
-                           CARA_ELEM=CA,        CHAM_MATER=CM,EXCIT=(
-                           _F(  CHARGE = CH),
-                                 _F(  CHARGE = CHP),
-                                 _F(  CHARGE = CHP_F)),
-                            OPTION='SIGM_ELNO_DEPL'
-                       )
 
-RESP=CALC_NO( reuse=RESP,   RESULTAT=RESP,
+RESP=MECA_STATIQUE(       MODELE=MO,
+                            CARA_ELEM=CA,        CHAM_MATER=CM,EXCIT=(
+                            _F(  CHARGE = CH),
+                                  _F(  CHARGE = CHP),
+                                  _F(  CHARGE = CHP_F)),
+
+                        )
+
+CALC_ELEM( reuse= RESP ,RESULTAT= RESP ,        MODELE=MO,
+                            CARA_ELEM=CA,        CHAM_MATER=CM,EXCIT=(
+                            _F(  CHARGE = CH),
+                                  _F(  CHARGE = CHP),
+                                  _F(  CHARGE = CHP_F)),
+                             OPTION='SIGM_ELNO_DEPL'
+                        )
+
+CALC_NO( reuse=RESP,   RESULTAT=RESP,
                       OPTION='SIGM_NOEU_DEPL'
                   )
 
 RESPINF=CALC_ELEM(    MODELE=MO,   CHAM_MATER=CM,
                           CARA_ELEM=CA,
                           RESULTAT=RESP,
-                           OPTION='SIGM_ELNO_DEPL', 
-                          NIVE_COUCHE='INF' 
+                           OPTION='SIGM_ELNO_DEPL',
+                          NIVE_COUCHE='INF'
                       )
 
-RESPINF=CALC_NO(   reuse=RESPINF,   RESULTAT=RESPINF,
+CALC_NO(   reuse=RESPINF,   RESULTAT=RESPINF,
                            OPTION='SIGM_NOEU_DEPL'
                       )
 
 RESPSUP=CALC_ELEM(    MODELE=MO,   CHAM_MATER=CM,
                           CARA_ELEM=CA,
                           RESULTAT=RESP,
-                           OPTION='SIGM_ELNO_DEPL', 
-                          NIVE_COUCHE='SUP' 
+                           OPTION='SIGM_ELNO_DEPL',
+                          NIVE_COUCHE='SUP'
                       )
 
-RESPSUP=CALC_NO(   reuse=RESPSUP,   RESULTAT=RESPSUP,
+CALC_NO(   reuse=RESPSUP,   RESULTAT=RESPSUP,
                            OPTION='SIGM_NOEU_DEPL'
                       )
 
 TEST_RESU(RESU=(
-   
+
      # DEPLACEMENTS FEUILLET MOYEN
      # A
-            _F(  RESULTAT = RESP,             NUME_ORDRE = 1,     
+            _F(  RESULTAT = RESP,             NUME_ORDRE = 1,
               NOM_CHAM = 'DEPL',           REFERENCE = 'ANALYTIQUE',
-              CRITERE = 'RELATIF',        PRECISION = 0.033,       
+              CRITERE = 'RELATIF',        PRECISION = 0.033,
               GROUP_NO = 'PA',         NOM_CMP = 'DX',    VALE = -9.81907E-10),
      # B
-            _F(  RESULTAT = RESP,             NUME_ORDRE = 1,     
+            _F(  RESULTAT = RESP,             NUME_ORDRE = 1,
               NOM_CHAM = 'DEPL',           REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.033,
               GROUP_NO = 'PB',         NOM_CMP = 'DX',    VALE = -9.81907E-10),
      # C
-            _F(  RESULTAT = RESP,             NUME_ORDRE = 1,     
+            _F(  RESULTAT = RESP,             NUME_ORDRE = 1,
               NOM_CHAM = 'DEPL',           REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.033,
               GROUP_NO = 'PC',         NOM_CMP = 'DY',    VALE = -9.81907E-10),
      # D
-            _F(  RESULTAT = RESP,             NUME_ORDRE = 1,     
+            _F(  RESULTAT = RESP,             NUME_ORDRE = 1,
               NOM_CHAM = 'DEPL',           REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.033,
               GROUP_NO = 'PD',         NOM_CMP = 'DY',    VALE = -9.81907E-10),
 
-   
+
      # CONTRAINTES
      # FEUILLET_MOYEN SIGMA THETA THETA
      # A
@@ -165,7 +174,7 @@ TEST_RESU(RESU=(
               NOM_CHAM = 'SIGM_NOEU_DEPL', REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.008,
               GROUP_NO = 'PD',         NOM_CMP = 'SIXX',  VALE = 194.93754),
-     # 
+     #
      #FEUILLET_SUP SIGMA THETA THETA
      # A
             _F(  RESULTAT = RESPSUP,          NUME_ORDRE = 1,
@@ -187,7 +196,7 @@ TEST_RESU(RESU=(
               NOM_CHAM = 'SIGM_NOEU_DEPL', REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.25,
               GROUP_NO = 'PD',         NOM_CMP = 'SIXX',  VALE = 200.125),
-     # 
+     #
      # FEUILLET_INF SIGMA THETA THETA
      # A
             _F(  RESULTAT = RESPINF,          NUME_ORDRE = 1,
@@ -218,64 +227,72 @@ CHF=AFFE_CHAR_MECA(         MODELE=MO,
                            FORCE_COQUE=_F(  GROUP_MA = 'CYLINDRE',  PRES = 10.)
                        )
 
-RESF=MECA_STATIQUE(    MODELE=MO,           CHAM_MATER=CM,EXCIT=(
-                           _F(  CHARGE = CH),
-                                 _F(  CHARGE = CHF)),
-                           CARA_ELEM=CA,
-                              OPTION='SIGM_ELNO_DEPL'
-                       )
 
-RESF=CALC_NO( reuse=RESF,   RESULTAT=RESF,
+RESF=MECA_STATIQUE(    MODELE=MO,           CHAM_MATER=CM,EXCIT=(
+                            _F(  CHARGE = CH),
+                                  _F(  CHARGE = CHF)),
+                            CARA_ELEM=CA,
+
+                        )
+
+CALC_ELEM( reuse= RESF ,RESULTAT= RESF ,     MODELE=MO,           CHAM_MATER=CM,EXCIT=(
+                            _F(  CHARGE = CH),
+                                  _F(  CHARGE = CHF)),
+                            CARA_ELEM=CA,
+                               OPTION='SIGM_ELNO_DEPL'
+                        )
+
+CALC_NO( reuse=RESF,   RESULTAT=RESF,
                       OPTION='SIGM_NOEU_DEPL'
                   )
 
 RESFINF=CALC_ELEM(    MODELE=MO,   CHAM_MATER=CM,
                           CARA_ELEM=CA,
                           RESULTAT=RESF,
-                           OPTION='SIGM_ELNO_DEPL', 
-                          NIVE_COUCHE='INF' 
+                           OPTION='SIGM_ELNO_DEPL',
+                          NIVE_COUCHE='INF'
                       )
 
-RESFINF=CALC_NO(   reuse=RESFINF,   RESULTAT=RESFINF,
+CALC_NO(   reuse=RESFINF,   RESULTAT=RESFINF,
                            OPTION='SIGM_NOEU_DEPL'
                       )
 
 RESFSUP=CALC_ELEM(    MODELE=MO,   CHAM_MATER=CM,
                           CARA_ELEM=CA,
                           RESULTAT=RESF,
-                           OPTION='SIGM_ELNO_DEPL', 
-                          NIVE_COUCHE='SUP' 
+                           OPTION='SIGM_ELNO_DEPL',
+                          NIVE_COUCHE='SUP'
                       )
 
-RESFSUP=CALC_NO(   reuse=RESFSUP,   RESULTAT=RESFSUP,
+CALC_NO(   reuse=RESFSUP,   RESULTAT=RESFSUP,
                            OPTION='SIGM_NOEU_DEPL'
                       )
 
 TEST_RESU(RESU=(
-   
+
      # DEPLACEMENTS FEUILLET MOYEN
      # A
-            _F(  RESULTAT = RESF,             NUME_ORDRE = 1,     
+            _F(  RESULTAT = RESF,             NUME_ORDRE = 1,
               NOM_CHAM = 'DEPL',           REFERENCE = 'ANALYTIQUE',
-              CRITERE = 'RELATIF',        PRECISION = 0.033,       
+              CRITERE = 'RELATIF',        PRECISION = 0.033,
               GROUP_NO = 'PA',         NOM_CMP = 'DX',    VALE = -9.81907E-10),
      # B
-            _F(  RESULTAT = RESF,             NUME_ORDRE = 1,     
+            _F(  RESULTAT = RESF,             NUME_ORDRE = 1,
               NOM_CHAM = 'DEPL',           REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.033,
               GROUP_NO = 'PB',         NOM_CMP = 'DX',    VALE = -9.81907E-10),
      # C
-            _F(  RESULTAT = RESF,             NUME_ORDRE = 1,     
+            _F(  RESULTAT = RESF,             NUME_ORDRE = 1,
               NOM_CHAM = 'DEPL',           REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.033,
               GROUP_NO = 'PC',         NOM_CMP = 'DY',    VALE = -9.81907E-10),
      # D
-            _F(  RESULTAT = RESF,             NUME_ORDRE = 1,     
+            _F(  RESULTAT = RESF,             NUME_ORDRE = 1,
               NOM_CHAM = 'DEPL',           REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.033,
               GROUP_NO = 'PD',         NOM_CMP = 'DY',    VALE = -9.81907E-10),
-          
-   
+
+
      # CONTRAINTES
      # FEUILLET_MOYEN SIGMA THETA THETA
      # A
@@ -298,7 +315,7 @@ TEST_RESU(RESU=(
               NOM_CHAM = 'SIGM_NOEU_DEPL', REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.008,
               GROUP_NO = 'PD',         NOM_CMP = 'SIXX',  VALE = 194.93754),
-     # 
+     #
      #FEUILLET_SUP SIGMA THETA THETA
      # A
             _F(  RESULTAT = RESFSUP,          NUME_ORDRE = 1,
@@ -320,7 +337,7 @@ TEST_RESU(RESU=(
               NOM_CHAM = 'SIGM_NOEU_DEPL', REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.25,
               GROUP_NO = 'PD',         NOM_CMP = 'SIXX',  VALE = 200.125),
-     # 
+     #
      # FEUILLET_INF SIGMA THETA THETA
      # A
             _F(  RESULTAT = RESFINF,          NUME_ORDRE = 1,
@@ -360,64 +377,72 @@ CHG=AFFE_CHAR_MECA_F(         MODELE=MO,
                                           PRES = FM10)
                          )
 
-RESG=MECA_STATIQUE(    MODELE=MO,        CHAM_MATER=CM,
-                                           CARA_ELEM=CA,EXCIT=(
-                           _F(  CHARGE = CH),
-                                 _F(  CHARGE = CHG)),
-                            OPTION='SIGM_ELNO_DEPL'
-                       )
 
-RESG=CALC_NO( reuse=RESG,   RESULTAT=RESG,
+RESG=MECA_STATIQUE(    MODELE=MO,        CHAM_MATER=CM,
+                                            CARA_ELEM=CA,EXCIT=(
+                            _F(  CHARGE = CH),
+                                  _F(  CHARGE = CHG)),
+
+                        )
+
+CALC_ELEM( reuse= RESG ,RESULTAT= RESG ,     MODELE=MO,        CHAM_MATER=CM,
+                                            CARA_ELEM=CA,EXCIT=(
+                            _F(  CHARGE = CH),
+                                  _F(  CHARGE = CHG)),
+                             OPTION='SIGM_ELNO_DEPL'
+                        )
+
+CALC_NO( reuse=RESG,   RESULTAT=RESG,
                       OPTION='SIGM_NOEU_DEPL'
                   )
 
 RESGINF=CALC_ELEM(    MODELE=MO,   CHAM_MATER=CM,
                           CARA_ELEM=CA,
                           RESULTAT=RESG,
-                           OPTION='SIGM_ELNO_DEPL', 
-                          NIVE_COUCHE='INF' 
+                           OPTION='SIGM_ELNO_DEPL',
+                          NIVE_COUCHE='INF'
                       )
 
-RESGINF=CALC_NO(   reuse=RESGINF,   RESULTAT=RESGINF,
+CALC_NO(   reuse=RESGINF,   RESULTAT=RESGINF,
                            OPTION='SIGM_NOEU_DEPL'
                       )
 
 RESGSUP=CALC_ELEM(    MODELE=MO,   CHAM_MATER=CM,
                           CARA_ELEM=CA,
                           RESULTAT=RESG,
-                           OPTION='SIGM_ELNO_DEPL', 
-                          NIVE_COUCHE='SUP' 
+                           OPTION='SIGM_ELNO_DEPL',
+                          NIVE_COUCHE='SUP'
                       )
 
-RESGSUP=CALC_NO(   reuse=RESGSUP,   RESULTAT=RESGSUP,
+CALC_NO(   reuse=RESGSUP,   RESULTAT=RESGSUP,
                            OPTION='SIGM_NOEU_DEPL'
                       )
 
 TEST_RESU(RESU=(
-   
+
      # DEPLACEMENTS FEUILLET MOYEN
      # A
-            _F(  RESULTAT = RESG,             NUME_ORDRE = 1,     
+            _F(  RESULTAT = RESG,             NUME_ORDRE = 1,
               NOM_CHAM = 'DEPL',           REFERENCE = 'ANALYTIQUE',
-              CRITERE = 'RELATIF',        PRECISION = 0.033,       
+              CRITERE = 'RELATIF',        PRECISION = 0.033,
               GROUP_NO = 'PA',         NOM_CMP = 'DX',    VALE = -9.81907E-10),
      # B
-            _F(  RESULTAT = RESG,             NUME_ORDRE = 1,     
+            _F(  RESULTAT = RESG,             NUME_ORDRE = 1,
               NOM_CHAM = 'DEPL',           REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.033,
               GROUP_NO = 'PB',         NOM_CMP = 'DX',    VALE = -9.81907E-10),
      # C
-            _F(  RESULTAT = RESG,             NUME_ORDRE = 1,     
+            _F(  RESULTAT = RESG,             NUME_ORDRE = 1,
               NOM_CHAM = 'DEPL',           REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.033,
               GROUP_NO = 'PC',         NOM_CMP = 'DY',    VALE = -9.81907E-10),
      # D
-            _F(  RESULTAT = RESG,             NUME_ORDRE = 1,     
+            _F(  RESULTAT = RESG,             NUME_ORDRE = 1,
               NOM_CHAM = 'DEPL',           REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.033,
               GROUP_NO = 'PD',         NOM_CMP = 'DY',    VALE = -9.81907E-10),
 
-   
+
      # CONTRAINTES
      # FEUILLET_MOYEN SIGMA THETA THETA
      # A
@@ -440,7 +465,7 @@ TEST_RESU(RESU=(
               NOM_CHAM = 'SIGM_NOEU_DEPL', REFERENCE = 'ANALYTIQUE',
               CRITERE = 'RELATIF',        PRECISION = 0.008,
               GROUP_NO = 'PD',         NOM_CMP = 'SIXX',  VALE = 194.93754),
-     # 
+     #
      #FEUILLET_SUP SIGMA THETA THETA
      # A
             _F(  RESULTAT = RESGSUP,          NUME_ORDRE = 1,

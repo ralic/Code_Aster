@@ -1,4 +1,4 @@
-# MODIF  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 # TITRE RESSORT NON LINEAIRE INCLUANT DU FROTTEMENT DE COULOMB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,6 +46,7 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.,
                            INTERVALLE=_F(  JUSQU_A = 9., PAS = 0.5) )
 
 UNIT=CALC_FONC_INTERP(    FONCTION=FRIGBIS,  LIST_PARA=L_INST,
+NOM_PARA='INST',
                              PROL_DROITE='LINEAIRE',
                             PROL_GAUCHE='LINEAIRE',
                              NOM_RESU='ACCE',    

@@ -2,10 +2,10 @@
      &                  COMPOR, LISCHA, MEDIRI, METHOD, SOLVEU,
      &                  PARMET, CARCRI, PILOTE, PARTPS, NUMINS,
      &                  DEPOLD, VALMOI, POUGD , VALPLU, SECMBR,
-     &                  DEPDEL, ETA   , LICCVG)
+     &                  DEPDEL, LICCVG)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/07/2001   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 11/02/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,17 +22,17 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C RESPONSABLE ADBHHVV V.CANO
+C RESPONSABLE PBADEL P.BADEL
 C TOLE CRP_21
 
       IMPLICIT NONE
       INTEGER      NUMINS, LICCVG(*)
-      REAL*8       PARMET(*), ETA
+      REAL*8       PARMET(*)
       CHARACTER*14 PILOTE
       CHARACTER*16 METHOD(*)
       CHARACTER*19 LISCHA, PARTPS, SOLVEU
       CHARACTER*24 MODELE, NUMEDD, MATE, CARELE, COMREF, COMPOR
-      CHARACTER*24 MEDIRI, VALMOI, DEPOLD, DEPDEL, CARCRI
+      CHARACTER*24 MEDIRI, VALMOI, DEPOLD, DEPDEL(2), CARCRI
       CHARACTER*24 POUGD , VALPLU, SECMBR
 
 C ======================================================================
@@ -87,12 +87,12 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       INTEGER      JEST, JDEPM, JDEPDE, JDDEPL, JOLD, NEQ, JNUM, I
       LOGICAL      LBID
-      REAL*8       INSTAA, INSTAM, INSTAP, DINST, COEF, X(2)
+      REAL*8       INSTAA, INSTAM, INSTAP, COEF, X(2)
       REAL*8       CODONN(2), COPILO(1), DIINST, R8BID
       CHARACTER*8  VEDIRI(2), K8BID
       CHARACTER*16 K16BID
       CHARACTER*19 MATRIX(2), CNDONN(2), CNPILO(1)
-      CHARACTER*24 DEPMOI, DEPEST, DDEPLA, BUEST
+      CHARACTER*24 DEPMOI, DEPEST, DDEPLA(2), BUEST
       CHARACTER*24 CNDIDO, CNDIPI, CNCINE, K24BID
 
       DATA VEDIRI /'&&VEBUDI', '&&VEDIRI'/
@@ -107,7 +107,8 @@ C ----------------------------------------------------------------------
       CALL DESAGG (SECMBR, K24BID, K24BID, CNDIDO, CNDIPI,
      &                     K24BID, K24BID, K24BID, CNCINE)
       DEPEST = '&&CNPART.CHP1'
-      DDEPLA = '&&CNPART.CHP2'
+      DDEPLA(1) = '&&CNPART.CHP2'
+      DDEPLA(2) = '&&CNPART.CHP2'
 
 
 C ======================================================================
@@ -119,7 +120,7 @@ C -- INITIALISATION DU DEPLACEMENT ESTIME
 
       CALL JEVEUO(DEPEST(1:19) // '.VALE','E',JEST)
       CALL JEVEUO(DEPMOI(1:19) // '.VALE','E',JDEPM)
-      CALL JEVEUO(DEPDEL(1:19) // '.VALE','E',JDEPDE)
+      CALL JEVEUO(DEPDEL(1)(1:19) // '.VALE','E',JDEPDE)
       CALL JELIRA(DEPMOI(1:19) // '.VALE','LONMAX',NEQ,K8BID)
       CALL R8COPY(NEQ,ZR(JDEPM),1,ZR(JEST),1)
       CALL R8INIR(NEQ,0.D0,ZR(JDEPDE),1)
@@ -177,11 +178,9 @@ C -- RESOLUTION EN TENANT COMPTE DU PILOTAGE
       CODONN(2) = -1
       CNPILO(1) = CNDIPI
       COPILO(1) =  1
-      DINST  = INSTAP - INSTAM
       CALL NMRESO (PILOTE, 2     , CODONN, CNDONN, 1     ,
      &             COPILO, CNPILO, CNCINE, SOLVEU, MATRIX,
-     &             DEPDEL, DINST , DEPOLD, MODELE, MATE  ,
-     &             COMPOR, VALMOI, DDEPLA, ETA   , LICCVG(1))
+     &             DDEPLA)
 
 
 C ======================================================================
@@ -191,11 +190,17 @@ C ======================================================================
 C    DISTINCTION DDL PHYSIQUE / LAGRANGE
       CALL JEVEUO(NUMEDD(1:14) // '.NUME.DELG','L',JNUM)
 
-      CALL JEVEUO(DDEPLA(1:19) // '.VALE','L',JDDEPL)
-      CALL JEVEUO(DEPDEL(1:19) // '.VALE','E',JDEPDE)
+      CALL JEVEUO(DDEPLA(1)(1:19) // '.VALE','L',JDDEPL)
+      CALL JEVEUO(DEPDEL(1)(1:19) // '.VALE','E',JDEPDE)
       DO 10 I = 0, NEQ-1
         IF (ZI(JNUM+I).EQ.0) ZR(JDEPDE+I) = ZR(JDEPDE+I) + ZR(JDDEPL+I)
  10   CONTINUE
+
+      CALL JEVEUO(DDEPLA(2)(1:19) // '.VALE','L',JDDEPL)
+      CALL JEVEUO(DEPDEL(2)(1:19) // '.VALE','E',JDEPDE)
+      DO 11 I = 0, NEQ-1
+        IF (ZI(JNUM+I).EQ.0) ZR(JDEPDE+I) = ZR(JDDEPL+I)
+ 11   CONTINUE
 
 9999  CONTINUE
 

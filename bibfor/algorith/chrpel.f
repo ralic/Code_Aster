@@ -1,6 +1,6 @@
       SUBROUTINE CHRPEL(CHAMP1, REPERE, NBCMP, ICHAM, TYPE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 31/01/2003   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,6 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
       IMPLICIT      NONE
       INTEGER       NBCMP , ICHAM
       CHARACTER*(*) CHAMP1, REPERE, TYPE
@@ -28,7 +29,7 @@ C     ARGUMENTS :
 C     CHAMP1   IN  K16  : NOM DU CHAMP A TRAITER
 C     REPERE   IN  K8   : TYPE DE REPERE (UTILISATEUR OU CYLINDRIQUE)
 C     NBCMP    IN  I    : NOMBRE DE COMPOSANTES A TRAITER
-C     ICHAM    IN  I    : NUMERO DE CHAMP
+C     ICHAM    IN  I    : NUMERO D'OCCURRENCE
 C ----------------------------------------------------------------------
 C ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------------
       INTEGER           ZI
@@ -53,18 +54,23 @@ C
       INTEGER      JCESD , JCESV , JCESL , NBPT  , AXYZM , NCMP
       INTEGER      JCONX1, JCONX2, NBSP  , INEL  , JCMP  , IPT2
       INTEGER      IBID  , NBMA  , JCESK , IRET  , INOT
-      INTEGER      NDIM  , LICMPU(6)
+      INTEGER      NDIM  , LICMPU(6), NBM, IDMAIL, NBMAIL, IMAI
       LOGICAL      TEST
       REAL*8       ANGNOT(3), PGL(3,3), VALER(6), VALED(6)
       REAL*8       VALET(6) , EPSI    , XNORMR  , PROSCA,  R8DGRD
       REAL*8       ORIG(3)  , AXEZ(3) , AXER(3) , AXET(3),PGL2(3,3)
-      CHARACTER*8  MA    , K8B
-      CHARACTER*16 OPTION
+      CHARACTER*8  MA    , K8B, TYPMCL(2)
+      CHARACTER*16 OPTION,MOTCLE(2)
       CHARACTER*19 CHAMS1,CHAMS0
-      CHARACTER*24 LIGREL
+      CHARACTER*24 LIGREL,MESMAI
 C
       CALL JEMARQ()
       EPSI = 1.0D-6
+      MOTCLE(1) = 'GROUP_MA'
+      TYPMCL(1) = 'GROUP_MA'
+      MOTCLE(2) = 'MAILLE'
+      TYPMCL(2) = 'MAILLE'
+      MESMAI = '&&CHRPEL.MES_MAILLES'
 C
       IF (NBCMP.GT.0) THEN
          CALL WKVECT('&&CHRPEL.NOM_CMP','V V K8',NBCMP,JCMP)
@@ -90,6 +96,14 @@ C
       CALL DISMOI ('F','Z_CST',MA,'MAILLAGE',NDIM,K8B,IRET)
       NDIM = 3
       IF (K8B.EQ.'OUI') NDIM = 2
+      CALL RELIEM(' ',MA,'NU_MAILLE','MODI_CHAM',ICHAM,2,MOTCLE,TYPMCL,
+     +                                                   MESMAI,NBM)
+      IF (NBM.GT.0) THEN
+        NBMAIL = NBM
+        CALL JEVEUO(MESMAI,'L',IDMAIL)
+      ELSE
+        NBMAIL = NBMA
+      ENDIF
 
       CALL JEEXIN(MA//'.CONNEX',IRET)
       IF (IRET.EQ.0) CALL UTMESS('F','CHRPEL','STOP')
@@ -140,13 +154,18 @@ C
          ANGNOT(3) = ANGNOT(3)*R8DGRD()
          CALL MATROT(ANGNOT,PGL)
          IF (TYPE(1:4).EQ.'TENS') THEN
-            DO 10 INEL=1,NBMA
-               NBPT = ZI(JCESD-1+5+4* (INEL-1)+1)
-               NBSP = ZI(JCESD-1+5+4* (INEL-1)+2)
+            DO 10 INEL=1,NBMAIL
+               IF (NBM.NE.0) THEN
+                 IMAI = ZI(IDMAIL+INEL-1)
+               ELSE
+                 IMAI = INEL
+               ENDIF
+               NBPT = ZI(JCESD-1+5+4* (IMAI-1)+1)
+               NBSP = ZI(JCESD-1+5+4* (IMAI-1)+2)
                DO 11,IPT = 1,NBPT
                   DO 12,ISP = 1,NBSP
                      DO 13 II=1,NCMP
-                        CALL CESEXI('C',JCESD,JCESL,INEL,IPT,ISP,II,IAD)
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,II,IAD)
                         IF (IAD.GT.0) THEN
                            VALET(II)=ZR(JCESV-1+IAD)
                         ELSE
@@ -167,7 +186,7 @@ C
                      VALER(5) = VALET(4)
                      VALER(6) = VALET(5)
                      DO 14 II=1,NBCMP
-                        CALL CESEXI('C',JCESD,JCESL,INEL,IPT,ISP,
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,
      +                              II,IAD)
                         IF (IAD.GT.0) THEN
                            ZR(JCESV-1+IAD) = VALER(II)
@@ -179,13 +198,18 @@ C
  11            CONTINUE
  10         CONTINUE
          ELSE
-            DO 15 INEL=1,NBMA
-               NBPT = ZI(JCESD-1+5+4* (INEL-1)+1)
-               NBSP = ZI(JCESD-1+5+4* (INEL-1)+2)
+            DO 15 INEL=1,NBMAIL
+               IF (NBM.NE.0) THEN
+                 IMAI = ZI(IDMAIL+INEL-1)
+               ELSE
+                 IMAI = INEL
+               ENDIF
+               NBPT = ZI(JCESD-1+5+4* (IMAI-1)+1)
+               NBSP = ZI(JCESD-1+5+4* (IMAI-1)+2)
                DO 16,IPT = 1,NBPT
                   DO 17,ISP = 1,NBSP
                      DO 18 II=1,NCMP
-                        CALL CESEXI('C',JCESD,JCESL,INEL,IPT,ISP,II,IAD)
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,II,IAD)
                         IF (IAD.GT.0) THEN
                            VALED(II) = ZR(JCESV-1+IAD)
                         ELSE
@@ -198,7 +222,7 @@ C
                         CALL UT2VGL(1,NCMP,PGL,VALED,VALER)
                      ENDIF
                      DO 19 II=1,NBCMP
-                        CALL CESEXI('C',JCESD,JCESL,INEL,IPT,ISP,II,IAD)
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,II,IAD)
                         IF (IAD.GT.0) THEN
                            ZR(JCESV-1+IAD) = VALER(II)
                         ELSE
@@ -249,20 +273,25 @@ C
                LICMPU(3)=3
                LICMPU(4)=5
             ENDIF
-            DO 20 INEL = 1, NBMA
-               NBPT = ZI(JCESD-1+5+4* (INEL-1)+1)
-               NBSP = ZI(JCESD-1+5+4* (INEL-1)+2)
+            DO 20 INEL = 1, NBMAIL
+               IF (NBM.NE.0) THEN
+                 IMAI = ZI(IDMAIL+INEL-1)
+               ELSE
+                 IMAI = INEL
+               ENDIF
+               NBPT = ZI(JCESD-1+5+4* (IMAI-1)+1)
+               NBSP = ZI(JCESD-1+5+4* (IMAI-1)+2)
                DO 21,IPT = 1,NBPT
                   DO 22,ISP = 1,NBSP
                      TEST = .TRUE.
                      DO 23 II=1,NCMP
-                        CALL CESEXI('C',JCESD,JCESL,INEL,IPT,ISP,II,IAD)
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,II,IAD)
                         IF (IAD.GT.0) THEN
                            TEST = .FALSE.
                         ENDIF
  23                  CONTINUE
                      IF(TEST) GOTO 20
-                     INO = ZI(JCONX1-1+ZI(JCONX2+INEL-1)+IPT-1)
+                     INO = ZI(JCONX1-1+ZI(JCONX2+IMAI-1)+IPT-1)
                      AXER(1) = ZR(AXYZM+3*(INO-1)  ) - ORIG(1)
                      AXER(2) = ZR(AXYZM+3*(INO-1)+1) - ORIG(2)
                      IF (NDIM.EQ.3) THEN
@@ -289,7 +318,7 @@ C
                         AXER(2) = 0.0D0
                         AXER(3) = 0.0D0
                         DO 24 IPT2 = 1,NBPT
-                           INOT = ZI(JCONX1-1+ZI(JCONX2+INEL-1)+IPT2-1)
+                           INOT = ZI(JCONX1-1+ZI(JCONX2+IMAI-1)+IPT2-1)
                            AXER(1) = AXER(1) + ZR(AXYZM+3*(INOT-1)  )
                            AXER(2) = AXER(2) + ZR(AXYZM+3*(INOT-1)+1)
                            IF (NDIM.EQ.3) THEN
@@ -326,7 +355,7 @@ C
                         PGL(3,I) = AXET(I)
  26                  CONTINUE
                      DO 27 II=1,NCMP
-                        CALL CESEXI('C',JCESD,JCESL,INEL,IPT,ISP,II,IAD)
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,II,IAD)
                         IF (IAD.GT.0) THEN
                            VALET(II)=ZR(JCESV-1+IAD)
                         ELSE
@@ -347,7 +376,7 @@ C
                      VALER(5) = VALET(4)
                      VALER(6) = VALET(5)
                      DO 28 II=1,NBCMP
-                        CALL CESEXI('C',JCESD,JCESL,INEL,IPT,ISP,
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,
      +                              II,IAD)
                         IF (IAD.GT.0) THEN
                            ZR(JCESV-1+IAD) = VALER(LICMPU(II))
@@ -364,20 +393,25 @@ C
                LICMPU(2)=3
                LICMPU(3)=2
             ENDIF
-            DO 29 INEL=1,NBMA
-               NBPT = ZI(JCESD-1+5+4* (INEL-1)+1)
-               NBSP = ZI(JCESD-1+5+4* (INEL-1)+2)
+            DO 29 INEL=1,NBMAIL
+               IF (NBM.NE.0) THEN
+                 IMAI = ZI(IDMAIL+INEL-1)
+               ELSE
+                 IMAI = INEL
+               ENDIF
+               NBPT = ZI(JCESD-1+5+4* (IMAI-1)+1)
+               NBSP = ZI(JCESD-1+5+4* (IMAI-1)+2)
                DO 30,IPT = 1,NBPT
                   DO 31,ISP = 1,NBSP
                      TEST = .TRUE.
                      DO 32 II=1,NCMP
-                        CALL CESEXI('C',JCESD,JCESL,INEL,IPT,ISP,II,IAD)
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,II,IAD)
                         IF (IAD.GT.0) THEN
                            TEST = .FALSE.
                         ENDIF
  32                  CONTINUE
                      IF(TEST) GOTO 29
-                     INO = ZI(JCONX1-1+ZI(JCONX2+INEL-1)+IPT-1)
+                     INO = ZI(JCONX1-1+ZI(JCONX2+IMAI-1)+IPT-1)
                      AXER(1) = ZR(AXYZM+3*(INO-1)  ) - ORIG(1)
                      AXER(2) = ZR(AXYZM+3*(INO-1)+1) - ORIG(2)
                      IF (NDIM.EQ.3) THEN
@@ -404,7 +438,7 @@ C
                         AXER(2) = 0.0D0
                         AXER(3) = 0.0D0
                         DO 33 IPT2 = 1,NBPT
-                           INOT = ZI(JCONX1-1+ZI(JCONX2+INEL-1)+IPT2-1)
+                           INOT = ZI(JCONX1-1+ZI(JCONX2+IMAI-1)+IPT2-1)
                            AXER(1) = AXER(1) + ZR(AXYZM+3*(INOT-1)  )
                            AXER(2) = AXER(2) + ZR(AXYZM+3*(INOT-1)+1)
                            IF (NDIM.EQ.3) THEN
@@ -441,7 +475,7 @@ C
                         PGL(3,I) = AXET(I)
  35                  CONTINUE
                      DO 36 II=1,NCMP
-                        CALL CESEXI('C',JCESD,JCESL,INEL,IPT,ISP,II,IAD)
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,II,IAD)
                         IF (IAD.GT.0) THEN
                            VALED(II)=ZR(JCESV-1+IAD)
                         ELSE
@@ -454,7 +488,7 @@ C
                         CALL UT2VGL(1,3,PGL,VALED,VALER)
                      ENDIF
                      DO 37 II=1,NBCMP
-                        CALL CESEXI('C',JCESD,JCESL,INEL,IPT,ISP,
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,
      +                              II,IAD)
                         IF (IAD.GT.0) THEN
                            ZR(JCESV-1+IAD) = VALER(LICMPU(II))
@@ -474,6 +508,7 @@ C
       CALL CESCEL(CHAMS1,LIGREL,OPTION,' ','OUI','G',CHAMP1)
       CALL DETRSD('CHAM_ELEM_S',CHAMS1)
       CALL JEDETR('&&CHRPEL.NOM_CMP')
+      CALL JEDETR(MESMAI)
  9999 CONTINUE
       CALL JEDEMA( )
 C

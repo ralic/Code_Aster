@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -571,13 +571,13 @@ C
               ENDIF
 C
               CALL WKVECT(NOMFON//'.VALE','G V R8',2*NBPOIN,IADVIJ)
-              CALL WKVECT(NOMFON//'.PROL','G V K8',5,IADPRO)
+              CALL WKVECT(NOMFON//'.PROL','G V K16',5,IADPRO)
 C
-              ZK8(IADPRO  ) = 'FONCTION'
-              ZK8(IADPRO+1) = 'LIN LIN '
-              ZK8(IADPRO+2) = 'PARAM   '
-              ZK8(IADPRO+3) = 'PROBA/PICS'
-              ZK8(IADPRO+4) = 'EL      '
+              ZK16(IADPRO  ) = 'FONCTION'
+              ZK16(IADPRO+1) = 'LIN LIN '
+              ZK16(IADPRO+2) = 'PARAM   '
+              ZK16(IADPRO+3) = 'PROBA/PICS'
+              ZK16(IADPRO+4) = 'EL      '
 C
 C---3.2.3-LOIS STATISTIQUES
 C

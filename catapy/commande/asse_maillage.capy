@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 # RESPONSABLE VABHHTS J.PELLET
 ASSE_MAILLAGE=OPER(nom="ASSE_MAILLAGE",op= 105,sd_prod=maillage,
                    fr="Assembler deux maillages sous un seul nom",
-                   docu="U4.23.03-e",reentrant='n',
+                   docu="U4.23.03-f",reentrant='n',
             UIinfo={"groupes":("Maillage",)},
          MAILLAGE        =SIMP(statut='o',typ=maillage,min=2,max=2 ),
 )  ;

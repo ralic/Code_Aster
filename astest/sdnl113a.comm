@@ -1,0 +1,228 @@
+# MODIF  DATE 26/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+# CREE DATE 07/04/2000   AUTEUR E. CHAMPAIN 
+# TITRE TUYAUTERIE EN FORME DE LYRE (ELSA) SOUS CHARGEMENT SISMIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# MODELISATION TUYAU 4 NOEUDS
+# REFERENCE : ESSAIS ELSA 
+# RESPONSABLE JMBHH01 J.M.PROIX
+#------------------------------------------------------------------
+
+DEBUT( CODE=_F(  NOM = 'SDNL113A',NIV_PUB_WEB='INTERNET') )
+
+PRE_GIBI()
+
+M1=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
+
+M1=DEFI_GROUP(reuse=M1,  MAILLAGE=M1,CREA_GROUP_NO=(
+   _F( GROUP_MA = 'ENC1'),
+   _F( GROUP_MA = 'ENC2'),
+   _F( GROUP_MA = 'ENCBIS1'),
+   _F( GROUP_MA = 'ENCBIS2'),
+   _F( GROUP_MA = 'PATBIELA'),
+   _F( GROUP_MA = 'PATBIELB'),
+   _F( GROUP_MA = 'PATBIELC'),
+   _F( GROUP_MA = 'PATVAN'),
+   _F( GROUP_MA = 'VANNE'),
+   _F( GROUP_MA = 'BIELA'),
+   _F( GROUP_MA = 'BIELB'),
+   _F( GROUP_MA = 'BIELC'))
+  )
+
+MA=CREA_MAILLAGE(     MAILLAGE=M1,
+                     MODI_MAILLE=_F(  OPTION = 'SEG3_4', 
+                                   GROUP_MA = ('POUTRES', 'COUDES',))
+                   )
+
+MO=AFFE_MODELE(   MAILLAGE=MA,AFFE=(
+           _F( GROUP_MA = ('PATBIELA', 'PATBIELC',
+                    'PATVAN', 'BIELA', 'BIELB', 'BIELC',),
+           PHENOMENE = 'MECANIQUE', MODELISATION = 'POU_D_T'),
+     _F( GROUP_MA = ('POUTRES', 'COUDES',),
+           PHENOMENE = 'MECANIQUE', MODELISATION = 'TUYAU_3M'),
+     _F( GROUP_MA = 'CDGVAN',
+         PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_TR'),
+     _F( GROUP_MA = 'PATBIELB',
+         PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T'))
+                  )
+
+CAREL=AFFE_CARA_ELEM(   MODELE=MO,POUTRE=(
+      _F( GROUP_MA = ('POUTRES', 'COUDES',), SECTION = 'CERCLE',
+              CARA = ('R', 'EP',), VALE = ( 8.485E-2,  7.345E-3,),
+              TUYAU_NCOU=1,TUYAU_NSEC=16),  
+      _F( GROUP_MA = 'PATVAN', SECTION = 'CERCLE',
+              CARA = ('R', 'EP',), VALE = (8.485E-2, 7.345E-3,)),
+      _F( GROUP_MA = 'PATBIELA', SECTION = 'CERCLE',
+              CARA = ('R1', 'R2',), VALE = (8.6E-2, 4.55E-2,)),
+      _F( GROUP_MA = 'PATBIELC', SECTION = 'CERCLE',
+              CARA = 'R', VALE = 4.55E-2),
+      _F( GROUP_MA = 'BIELA', SECTION = 'CERCLE',
+              CARA = ('R', 'EP',), VALE = (38.05E-3, 4.5E-3,)),
+      _F( GROUP_MA = 'BIELB', SECTION = 'CERCLE',
+              CARA = ('R', 'EP',), VALE = (38.05E-3, 4.5E-3,)),
+      _F( GROUP_MA = 'BIELC', SECTION = 'CERCLE',
+              CARA = ('R', 'EP',), VALE = (38.05E-3, 4.5E-3,))),            
+       ORIENTATION=_F( GROUP_NO = 'B', CARA = 'GENE_TUYAU', 
+                   VALE = (0., 1., 0.,)),DISCRET=(
+       _F( GROUP_MA = 'CDGVAN', CARA = 'M_TR_D_N',
+            VALE = (275., 2.696123, 3.81480, 0.9166667, 
+                    0., 0., 0., 0., 0., 0.,)),
+       _F( GROUP_MA = 'PATBIELB', CARA = 'M_T_D_N', VALE = 2.46))
+                        )
+
+MATTUB=DEFI_MATERIAU(  ELAS=_F( E = 1.9E11, NU = 0.3, RHO = 13027.3)
+                        )
+
+MATCD=DEFI_MATERIAU(   ELAS=_F( E = 1.9E11, NU = 0.3, RHO = 1.47373E4),
+              ECRO_LINE=_F( D_SIGM_EPSI = 7.67E9, SY = 242.4E6),
+        PRAGER=_F( C = 5.328434E9)
+   )
+
+MATVAN=DEFI_MATERIAU(  ELAS=_F( E = 1.9E11, NU = 0.3, RHO = 0.)
+   )
+
+MATPATBA=DEFI_MATERIAU(  ELAS=_F( E = 1.8E11, NU = 0.3, RHO = 4.43E3)
+   )
+
+MATPATBC=DEFI_MATERIAU(  ELAS=_F( E = 1.8E11, NU = 0.3, RHO = 6.92E3)
+   )
+
+MATBIEL=DEFI_MATERIAU(  ELAS=_F( E = 1.8E11, NU = 0.3, RHO = 6.86E3)
+   )
+
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,AFFE=(
+             _F( TOUT = 'OUI', MATER = MATTUB),
+      _F( GROUP_MA = ('COUDE1', 'COUDE2', 'COUDE3', 'COUDE4',),
+     MATER = MATCD),
+      _F( GROUP_MA = 'PATVAN', MATER = MATVAN),
+      _F( GROUP_MA = 'PATBIELA', MATER = MATPATBA),
+      _F( GROUP_MA = 'PATBIELC', MATER = MATPATBC),
+      _F( GROUP_MA = ('BIELA', 'BIELB', 'BIELC',),
+            MATER = MATBIEL))
+     )
+
+CHART=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
+     _F( GROUP_NO = ('ENC1', 'ENCBIS1',), 
+               DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),
+     _F( GROUP_NO = ('ENC2', 'ENCBIS2',),
+               DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),
+#--------- ENCASTREMENT DE LA BIELLE
+     _F( GROUP_NO = 'PATBIEL4', DX = 0., DY = 0., DZ = 0., DRZ = 0.),
+     _F( GROUP_NO = 'PATBIEL3', DRZ = 0.)),
+
+#--------- MODELISATION DE LA ROTULE DE BIELLE
+     LIAISON_UNIF=_F( GROUP_NO = ('PATBIEL3', 'PATBIEL2',),
+     DDL = ('DX', 'DY', 'DZ',)),LIAISON_SOLIDE=(
+#--------- DEFINITION DES CORPS RIGIDES
+     _F( GROUP_NO = 'PATVAN'),
+     _F( GROUP_NO = 'VANNE'))
+ )
+
+CHART3=AFFE_CHAR_MECA(   MODELE=MO,
+      FORCE_TUYAU=_F(  GROUP_MA = ('COUDES', 'POUTRES',), PRES = 120.E5)
+                  )
+
+#--------- ACCELEROGRAMMES EXCITATION ----------------
+INCLUDE(UNITE=22)
+
+FONCPRE=DEFI_FONCTION(  NOM_PARA='INST',
+                      VALE=(0., 0., 0.2, 1.0, 20., 1.0,)
+   )
+
+MACRO_MATR_ASSE( MODELE=MO, CHARGE=CHART, CARA_ELEM=CAREL,
+       CHAM_MATER=CHMAT, NUME_DDL=CO("NU"),MATR_ASSE=(
+       _F( MATRICE = CO("MATRRIGI"), OPTION = 'RIGI_MECA'),
+   _F( MATRICE = CO("MATRMASS"), OPTION = 'MASS_MECA'))
+  )
+
+CHARSEI=CALC_CHAR_SEISME(  MATR_MASS=MATRMASS,
+       DIRECTION=(1., 0., 0.,), MONO_APPUI='OUI'
+      )
+
+
+
+CHART2=AFFE_CHAR_MECA( MODELE=MO, VECT_ASSE=CHARSEI
+   )
+
+TMIN=0.00
+
+TMAX=1.10
+
+LINST=DEFI_LIST_REEL(    DEBUT=TMIN,
+           INTERVALLE=_F( JUSQU_A = TMAX, PAS = 0.01)
+    )
+
+RESULT=DYNA_NON_LINE(
+       MODELE=MO,
+       SOLVEUR=_F(  METHODE = 'MULT_FRONT'),
+       CHAM_MATER=CHMAT,
+       CARA_ELEM=CAREL,
+       EXCIT=(
+          _F( CHARGE = CHART),
+          _F( CHARGE = CHART3, FONC_MULT = FONCPRE),
+          _F( CHARGE = CHART2, FONC_MULT = ACCEL)),
+       COMP_INCR=(
+          _F( RELATION = 'ELAS',
+              GROUP_MA = ('PATBIELA', 'PATBIELB', 'PATBIELC',
+                'PATVAN', 'CDGVAN', 'BIELA', 'BIELB', 'BIELC',)),
+          _F( RELATION = 'VMIS_ECMI_LINE',
+              GROUP_MA = 'COUDES'),
+          _F( RELATION = 'ELAS',
+              GROUP_MA = 'POUTRES')),
+#      ETAT_INIT=_F( INST_INIT = TMIN),
+       INCREMENT=_F( LIST_INST = LINST,INST_FIN=0.01),
+       NEWMARK=_F(),
+       NEWTON=_F( MATRICE = 'TANGENTE', REAC_ITER = 1,
+                  PREDICTION = 'ELASTIQUE'),
+                  OPTION=('SANS',),
+       CONVERGENCE=_F( ITER_GLOB_MAXI = 100,
+                           RESI_INTE_RELA = 1.E-6,
+                           RESI_GLOB_RELA = 1.E-6,
+                           ITER_INTE_MAXI = 100), 
+       ARCHIVAGE=_F( PAS_ARCH = 1)
+    )
+
+D_XVAN=RECU_FONCTION( RESULTAT=RESULT, NOM_CHAM='DEPL',
+   NOEUD='N160', NOM_CMP='DX', INTERPOL='LIN'
+    )
+
+
+TEST_FONCTION(VALEUR=(
+ _F( FONCTION = D_XVAN,
+         VALE_PARA = 0.01,  VALE_REFE = 4.3038E-06,
+         REFERENCE = 'NON_REGRESSION'),),
+            )
+
+RESULT = CALC_NO (reuse=RESULT, RESULTAT=RESULT,MODELE = MO,TOUT_ORDRE ='OUI',
+                 OPTION   = 'REAC_NODA',CHAM_MATER=CHMAT,   CARA_ELEM=CAREL,
+                 EXCIT=(
+       _F( CHARGE = CHART),
+       _F( CHARGE = CHART3, FONC_MULT = FONCPRE),
+       _F( CHARGE = CHART2, FONC_MULT = ACCEL),),
+                )
+                
+TEST_RESU(RESU=_F(NOM_CHAM='REAC_NODA',
+                  RESULTAT=RESULT,
+                  INST=0.01,
+                  VALE=4.03802E+03,REFERENCE='NON_REGRESSION',VERSION='6.2.8',
+                  NOEUD='N73',
+                  NOM_CMP='DX',),);
+
+FIN()
+
+

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 01/04/2003   AUTEUR DURAND C.DURAND 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 #-----------------------------------------------------------------------
 #
 
-DEBUT(   CODE=_F(  NOM = 'SSNP108A',NIV_PUB_WEB='INTERNET') )
+DEBUT(   CODE=_F(  NOM = 'SSNP108A',NIV_PUB_WEB='INTERNET'),);
 
 #
 
@@ -81,8 +81,8 @@ CABLEPR=DEFI_CABLE_BP(            MODELE=MODELE,
                               GROUP_MA_BETON='VOILE',
                                   DEFI_CABLE=_F(
                                GROUP_MA = 'CABLE001',
-                               NOEUD_ANCRAGE = ( 'NC001001',  'NC001005', ),
-                               TYPE_ANCRAGE = ( 'ACTIF',   'ACTIF',  )),
+                               NOEUD_ANCRAGE = ( 'NC001001',  'NC001005', ),),
+                               TYPE_ANCRAGE = ( 'ACTIF',   'ACTIF',  ),
                                 TENSION_INIT=2.0E+5,
                                RECUL_ANCRAGE=0. )
 

@@ -1,5 +1,5 @@
-      SUBROUTINE I3IQGS(EPSI,K,F,DESC,DESCTM,CONEXK,COORDO,
-     +                  SGT,ATRV,BTRV,NBPT,LSTPT,FINK,FIND)
+      SUBROUTINE I3IQGS ( EPSI, K, F, DESC, DESCTM, CONEXK, COORDO,
+     +                    SGT, ATRV, BTRV, NBPT, LSTPT, FINK, FIND )
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       INTEGER K,DESC(*),DESCTM(*),CONEXK(*),NBPT,LSTPT(*),F
@@ -8,7 +8,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 07/01/98   AUTEUR CIBHHLB L.BOURHRARA 
+C MODIF POSTRELE  DATE 17/12/2002   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,28 +45,28 @@ C            :   : CONVENTION NBPT = -2 <=> CARD(INTER) = INFINI
 C            :   : DANS CE CAS OUT = EXTREMITES
 C OUT LSTPT  : I : OBJ LISTE_POINT
 C     ------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16            ZK16
+      CHARACTER*24                    ZK24
+      CHARACTER*32                            ZK32
+      CHARACTER*80                                    ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER         ZI
-      COMMON /IVARJE/ ZI(1)
-      REAL*8          ZR
-      COMMON /RVARJE/ ZR(1)
-      COMPLEX*16      ZC
-      COMMON /CVARJE/ ZC(1)
-      LOGICAL         ZL
-      COMMON /LVARJE/ ZL(1)
-      CHARACTER*8     ZK8
-      CHARACTER*16    ZK16
-      CHARACTER*24    ZK24
-      CHARACTER*32    ZK32
-      CHARACTER*80    ZK80
-      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C
-      CHARACTER*32 JEXNUM,JEXNOM
-C
-      INTEGER I,J,DS1,DECF,ADESCM,NBS,IRET,NPT,TF,IPOS1,IPOS2
-      REAL*8  ZERO,UNSUR2,UN,SEUIL,EPS,LCARA
+      INTEGER I,J,DS1,DECF,ADESCM,IRET,NPT,TF,IPOS1,IPOS2
+      REAL*8  ZERO,UNSUR2,UN,SEUIL,LCARA,TOLE
       REAL*8  A(3,3),FK(4,3),C,R1,S1,T1,R2,S2,T2,NORMAB,X1,X2,SGTF(6)
-      REAL*8  E1(3),E2(3),E3(3),CSF(3,4),SGTP(6),X(3),R(3),S(3),T(3)
+      REAL*8  E1(3),E2(3),E3(3),CS(3,4),SGTP(6),X(3),R(3),S(3),T(3)
+      REAL*8  E1I(3),E2I(3)
       LOGICAL PB,DJALA1,DJALA2
 C
 C======================================================================
@@ -80,26 +80,48 @@ C
       SEUIL  =  0.2D0
       UN     =  1.0D0
       NORMAB =  ZERO
+C
+C --- RECUPERATION DES NOEUDS SOMMET DE LA FACE ET DE SES COORDONNEES
+C
       DO 10, I = 1, 4, 1
          DS1     = CONEXK(ZI(ADESCM-1 + DECF + (I-1)*6))
          DO 11, J = 1, 3, 1
-            CSF(J,I) = COORDO(3*(DS1-1) + J)
+            CS(J,I) = COORDO(3*(DS1-1) + J)
 11       CONTINUE
 10    CONTINUE
-      R1    = CSF(1,1)+CSF(1,2)-CSF(1,3)-CSF(1,4)
-      S1    = CSF(2,1)+CSF(2,2)-CSF(2,3)-CSF(2,4)
-      T1    = CSF(3,1)+CSF(3,2)-CSF(3,3)-CSF(3,4)
-      LCARA = SQRT(R1*R1 + S1*S1 + T1*T1)
-      R1    = CSF(1,1)+CSF(1,4)-CSF(1,3)-CSF(1,2)
-      S1    = CSF(2,1)+CSF(2,4)-CSF(2,3)-CSF(2,2)
-      T1    = CSF(3,1)+CSF(3,4)-CSF(3,3)-CSF(3,2)
-      LCARA = UNSUR2*(SQRT(R1*R1 + S1*S1 + T1*T1) + LCARA)
-      EPS   = MAX(EPSI/LCARA,EPSI)
+C
+C --- LCARA : LONGUEUR DE LA PLUS PETITE ARETE
+C     AFIN DE DEFINIR UNE PRECISION RELATIVE
+C
+      LCARA = 1.D+50
+      DO 20, J = 1, 3, 1
+         C = ZERO
+         DO 22, I = 1, 3, 1
+            S1 = CS(I,J+1) - CS(I,J)
+            C = C + S1*S1
+ 22      CONTINUE
+         C = SQRT( C ) 
+         LCARA = MIN ( C, LCARA ) 
+ 20   CONTINUE
+      C = ZERO
+      DO 24, I = 1, 3, 1
+         S1 = CS(I,4) - CS(I,1)
+         C = C + S1*S1
+ 24   CONTINUE
+      C = SQRT( C ) 
+      LCARA = MIN ( C, LCARA ) 
+      TOLE = LCARA * EPSI
+C
+C --- DEFINITION DU REPERE LOCAL DE LA FACE
+C     E1 : DEFINIT PAR L'ARETE N1 N2
+C     E2 : DEFINIT PAR L'ARETE N1 N4
+C     E3 : PERPENDICULAIRE A E1 E2
+C
       C     = ZERO
       T1    = ZERO
       DO 15, I = 1, 3, 1
-         S1    = CSF(I,2) - CSF(I,1)
-         R1    = CSF(I,4) - CSF(I,1)
+         S1    = CS(I,2) - CS(I,1)
+         R1    = CS(I,4) - CS(I,1)
          E1(I) = S1
          E2(I) = R1
          C     = C  + S1*S1
@@ -107,7 +129,7 @@ C
 15    CONTINUE
       C  = SQRT(C)
       T1 = SQRT(T1)
-      IF ( (C .LE. CSF(1,1)*EPSI) .OR. (T1 .LE. CSF(1,1)*EPSI) ) THEN
+      IF ( (C.LE.EPSI) .OR. (T1.LE.EPSI) ) THEN
          PB = .TRUE.
       ELSE
          C  = UN/C
@@ -122,12 +144,12 @@ C
          C     = ZERO
          DO 17, I = 1, 3, 1
             C      = C + E3(I)*E3(I)
-            X(I)   = CSF(I,1)
+            X(I)   = CS(I,1)
             A(I,1) = SGT(I)
             A(I,2) = SGT(I+3)
 17       CONTINUE
          C = SQRT(C)
-         IF ( C .LE. E1(1)*EPSI ) THEN
+         IF ( C.LE.EPSI ) THEN
             PB = .TRUE.
          ELSE
             C     =  UN/C
@@ -141,72 +163,118 @@ C
             E2(1) =  E2(1)*C
             E2(2) =  E2(2)*C
             E2(3) =  E2(3)*C
-            IF ( ABS(ABS(E1(1))-UN) .LE. EPSI) THEN
-               E1(1) = SIGN(UN,E1(1))
-               E1(2) = ZERO
-               E1(3) = ZERO
-            ELSE IF ( ABS(ABS(E1(2))-UN) .LE. EPSI) THEN
-               E1(2) = SIGN(UN,E1(2))
-               E1(1) = ZERO
-               E1(3) = ZERO
-            ELSE IF ( ABS(ABS(E1(3))-UN) .LE. EPSI) THEN
-               E1(3) = SIGN(UN,E1(3))
-               E1(1) = ZERO
-               E1(2) = ZERO
-            ELSE
-            ENDIF
-            IF ( ABS(ABS(E2(1))-UN) .LE. EPSI) THEN
-               E2(1) = SIGN(UN,E2(1))
-               E2(2) = ZERO
-               E2(3) = ZERO
-            ELSE IF ( ABS(ABS(E2(2))-UN) .LE. EPSI) THEN
-               E2(2) = SIGN(UN,E2(2))
-               E2(1) = ZERO
-               E2(3) = ZERO
-            ELSE IF ( ABS(ABS(E2(3))-UN) .LE. EPSI) THEN
-               E2(3) = SIGN(UN,E2(3))
-               E2(1) = ZERO
-               E2(2) = ZERO
-            ELSE
-            ENDIF
-            IF ( ABS(ABS(E3(1))-UN) .LE. EPSI) THEN
-               E3(1) = SIGN(UN,E3(1))
-               E3(2) = ZERO
-               E3(3) = ZERO
-            ELSE IF ( ABS(ABS(E3(2))-UN) .LE. EPSI) THEN
-               E3(2) = SIGN(UN,E3(2))
-               E3(1) = ZERO
-               E3(3) = ZERO
-            ELSE IF ( ABS(ABS(E3(3))-UN) .LE. EPSI) THEN
-               E3(3) = SIGN(UN,E3(3))
-               E3(1) = ZERO
-               E3(2) = ZERO
-            ELSE
-            ENDIF
+C
+C --- UN TOUR DE PASSE-PASSE POUR AVOIR DES VECTEURS AVEC DES 1 ET 0
+C     AFIN DE SUPPRIMER LES ERREURS NUMERIQUES
+C
+      IF ( ABS(ABS(E3(1))-UN) .LE. TOLE) THEN
+         E3(1) = SIGN(UN,E3(1))
+         E3(2) = ZERO
+         E3(3) = ZERO
+      ELSE IF ( ABS(ABS(E3(2))-UN) .LE. TOLE) THEN
+         E3(2) = SIGN(UN,E3(2))
+         E3(1) = ZERO
+         E3(3) = ZERO
+      ELSE IF ( ABS(ABS(E3(3))-UN) .LE. TOLE) THEN
+         E3(3) = SIGN(UN,E3(3))
+         E3(1) = ZERO
+         E3(2) = ZERO
+      ENDIF
+C
+      IF ( (ABS(ABS(E1(1))-UN) .LE. TOLE) .AND. 
+     +         ((E1(2) .NE. ZERO) .OR. (E1(3) .NE. ZERO)) ) THEN 
+         IF (ABS(E1(1)) .NE. UN) THEN
+            E1I(1) = SIGN(UN,E1(1))
+            E1I(2) = ZERO
+            E1I(3) = ZERO
+            CALL I3SL3R ( E1, E1I, E3, CS ) 
+            E1(1) = SIGN(UN,E1(1))
+            E1(3) = ZERO
+            E1(2) = ZERO
+         ENDIF         
+       ELSE IF ( (ABS(ABS(E1(2))-UN) .LE. TOLE) .AND. 
+     +         ((E1(1) .NE. ZERO) .OR. (E1(3) .NE. ZERO)) ) THEN 
+         IF (ABS(E1(2)) .NE. UN) THEN
+            E1I(2) = SIGN(UN,E1(2))
+            E1I(1) = ZERO
+            E1I(3) = ZERO
+            CALL I3SL3R ( E1, E1I, E3, CS ) 
+            E1(2) = SIGN(UN,E1(2))
+            E1(1) = ZERO
+            E1(3) = ZERO
+         ENDIF         
+      ELSE IF ( (ABS(ABS(E1(3))-UN) .LE. TOLE) .AND. 
+     +         ((E1(2) .NE. ZERO) .OR. (E1(1) .NE. ZERO)) ) THEN 
+         IF (ABS(E1(3)) .NE. UN) THEN
+            E1I(3) = SIGN(UN,E1(3))
+            E1I(1) = ZERO
+            E1I(2) = ZERO
+            CALL I3SL3R ( E1, E1I, E3, CS ) 
+            E1(3) = SIGN(UN,E1(3))
+            E1(1) = ZERO
+            E1(2) = ZERO
+         ENDIF         
+      ENDIF
+C
+      IF ( (ABS(ABS(E2(1))-UN) .LE. TOLE) .AND. 
+     +         ((E2(2) .NE. ZERO) .OR. (E2(3) .NE. ZERO)) ) THEN 
+         IF (ABS(E2(1)) .NE. UN) THEN
+            E2I(1) = SIGN(UN,E2(1))
+            E2I(3) = ZERO
+            E2I(2) = ZERO
+            CALL I3SL3R ( E2, E2I, E3, CS ) 
+            E2(1) = SIGN(UN,E2(1))
+            E2(3) = ZERO
+            E2(2) = ZERO
+         ENDIF         
+      ELSE IF ( (ABS(ABS(E2(2))-UN) .LE. TOLE) .AND. 
+     +         ((E2(1) .NE. ZERO) .OR. (E2(3) .NE. ZERO)) ) THEN 
+         IF (ABS(E2(2)) .NE. UN) THEN
+            E2I(2) = SIGN(UN,E2(2))
+            E2I(1) = ZERO
+            E2I(3) = ZERO
+            CALL I3SL3R ( E2, E2I, E3, CS ) 
+            E2(2) = SIGN(UN,E2(2))
+            E2(1) = ZERO
+            E2(3) = ZERO
+         ENDIF         
+      ELSE IF ( (ABS(ABS(E2(3))-UN) .LE. TOLE) .AND. 
+     +         ((E2(1) .NE. ZERO) .OR. (E2(2) .NE. ZERO)) ) THEN 
+         IF (ABS(E2(3)) .NE. UN) THEN
+            E2I(3) = SIGN(UN,E2(3))
+            E2I(1) = ZERO
+            E2I(2) = ZERO
+            CALL I3SL3R ( E2, E2I, E3, CS ) 
+            E2(3) = SIGN(UN,E2(3))
+            E2(1) = ZERO
+            E2(2) = ZERO
+         ENDIF         
+      ENDIF
+C
 C
             CALL I3RPQP(X,E1,E2,E3,A,2)
-            CALL I3RPQP(X,E1,E2,E3,CSF(1,2),3)
+            CALL I3RPQP(X,E1,E2,E3,CS(1,2),3)
             DO 18, I = 1, 2, 1
                C         = A(I,2) - A(I,1)
                SGTP(I)   = A(I,1)
                SGTP(I+3) = A(I,2)
                SGTF(I)   = A(I,1)
                SGTF(I+3) = A(I,2)
-               CSF(I,1)  = ZERO
+               CS(I,1)   = ZERO
                NORMAB    = NORMAB + C*C
 18          CONTINUE
             SGTP(3)  = ZERO
             SGTF(3)  = A(3,1)
             SGTP(6)  = ZERO
             SGTF(6)  = A(3,2)
-            CSF(3,1) = ZERO
+            CS(3,1) = ZERO
             NORMAB = SQRT(NORMAB)
-            CALL I3AFK2(EPSI,CSF,FK,IRET)
+            CALL I3AFK2(EPSI,CS,FK,IRET)
             PB = ( IRET .EQ. -1 )
             IF ( .NOT. PB ) THEN
                IF ( NORMAB .GT. EPSI*SGT(6) ) THEN
 C              /* SGT PROJETE NON REDUIT A UN POINT */
-                  CALL I3QPSP(EPSI,K,F,DESC,DESCTM,SGTP,CSF,A,NPT)
+                  CALL I3QPSP(TOLE,K,F,DESC,DESCTM,SGTP,CS,A,NPT)
                   IF ( NPT .EQ. 2 ) THEN
                      R1 = A(1,1)
                      R2 = A(1,2)
@@ -214,10 +282,10 @@ C              /* SGT PROJETE NON REDUIT A UN POINT */
                      S2 = A(2,2)
                      T1 = A(3,1)
                      T2 = A(3,2)
-                     DO 20, I = 1,2, 1
+                     DO 42, I = 1,2, 1
                         R(I) = A(1,I)
                         S(I) = A(2,I)
-20                   CONTINUE
+ 42                  CONTINUE
                      CALL I3EFK2(FK,2,R,S,A)
                      DO 40, I = 1, 3, 1
                         A(I,3) = (A(I,1)+A(I,2))*UNSUR2
@@ -229,12 +297,12 @@ C              /* SGT PROJETE NON REDUIT A UN POINT */
                      IF ( (ABS(R1-R2) .LE. EPSI)  .OR.
      +                    (ABS(S1-S2) .LE. EPSI) ) THEN
 C                    /* COUPE DE LA FACE = SGT */
-                        CALL I3ICFS(EPSI,A,SGTF,R,S,NPT,IRET)
+                        CALL I3ICFS(TOLE,A,SGTF,R,S,NPT,IRET)
                      ELSE
 C                    /* COUPE DE LA FACE = ARC PARABOLE */
                         X1 = A(1,3)
                         X2 = A(2,3)
-                        CALL I3CRQP(EPSI,SEUIL,CSF,X1,X2,X,IRET)
+                        CALL I3CRQP(EPSI,SEUIL,CS,X1,X2,X,IRET)
                         PB = ( IRET .EQ. -1 )
                         IF ( .NOT. PB ) THEN
                            T(1) = X(2)
@@ -257,12 +325,12 @@ C                    /* COUPE DE LA FACE = ARC PARABOLE */
                      IF ( (NPT .GE. 1) .AND. (.NOT. PB)) THEN
                         C  = R(1)
                         T1 = R(2)
-                        CALL I3PTRV(EPS,LSTPT,NBPT,T1,DJALA1,IPOS1)
+                        CALL I3PTRV(TOLE,LSTPT,NBPT,T1,DJALA1,IPOS1)
                         X1 =   C* (A(1,2)-A(1,1))*UNSUR2+A(1,3)
                         X1 = C*C*((A(1,2)+A(1,1))*UNSUR2-A(1,3))+X1
                         X2 =   C* (A(2,2)-A(2,1))*UNSUR2+A(2,3)
                         X2 = C*C*((A(2,2)+A(2,1))*UNSUR2-A(2,3))+X2
-                        CALL I3CRQP(EPSI,SEUIL,CSF,X1,X2,X,IRET)
+                        CALL I3CRQP(EPSI,SEUIL,CS,X1,X2,X,IRET)
                         R1 = X(1)
                         S1 = X(2)
                         PB = ( IRET .EQ. -1 )
@@ -270,12 +338,12 @@ C                    /* COUPE DE LA FACE = ARC PARABOLE */
                      IF ( (NPT .GE. 2) .AND. (.NOT. PB)) THEN
                         C  = S(1)
                         T2 = S(2)
-                        CALL I3PTRV(EPS,LSTPT,NBPT,T2,DJALA2,IPOS2)
+                        CALL I3PTRV(TOLE,LSTPT,NBPT,T2,DJALA2,IPOS2)
                         X1 =   C* (A(1,2)-A(1,1))*UNSUR2+A(1,3)
                         X1 = C*C*((A(1,2)+A(1,1))*UNSUR2-A(1,3))+X1
                         X2 =   C* (A(2,2)-A(2,1))*UNSUR2+A(2,3)
                         X2 = C*C*((A(2,2)+A(2,1))*UNSUR2-A(2,3))+X2
-                        CALL I3CRQP(EPSI,SEUIL,CSF,X1,X2,X,IRET)
+                        CALL I3CRQP(EPSI,SEUIL,CS,X1,X2,X,IRET)
                         R2 = X(1)
                         S2 = X(2)
                         PB = ( IRET .EQ. -1 )
@@ -287,7 +355,7 @@ C                    /* COUPE DE LA FACE = ARC PARABOLE */
 C              /* SGT PROJETE REDUIT A UN POINT */
                   X1 = (SGTP(4)+SGTP(1))*UNSUR2
                   X2 = (SGTP(5)+SGTP(2))*UNSUR2
-                  CALL I3CRQP(EPSI,SEUIL,CSF,X1,X2,X,IRET)
+                  CALL I3CRQP(EPSI,SEUIL,CS,X1,X2,X,IRET)
                   R1 = X(1)
                   S1 = X(2)
                   PB = ( IRET .EQ. -1 )
@@ -303,7 +371,7 @@ C              /* SGT PROJETE REDUIT A UN POINT */
 30                   CONTINUE
                      T2  = UN/SQRT(T2)
                      T1  = T1*T2
-                     CALL I3PTRV(EPS,LSTPT,NBPT,T1,DJALA1,IPOS1)
+                     CALL I3PTRV(TOLE,LSTPT,NBPT,T1,DJALA1,IPOS1)
                      NPT = 1
                      TF  = 0
                   ENDIF
@@ -311,55 +379,53 @@ C              /* SGT PROJETE REDUIT A UN POINT */
             ENDIF
          ENDIF
       ENDIF
+C
       IF ( PB ) THEN
-            CALL UTDEBM('F','I3IQGS','FACE DEGENEREE')
-            CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
-            CALL UTIMPI('S',' FACE : ',1,F)
-            CALL UTFINM()
-      ELSE
-         IF ( FINK ) THEN
-            NBPT = 0
-         ENDIF
-         IF ( NPT .GE. 1 ) THEN
-            IF ( .NOT. DJALA1 ) THEN
-               ZR(LSTPT(1) +   NBPT)     = T1
-               ZI(LSTPT(2) +   NBPT)     = F
-               ZI(LSTPT(3) +   NBPT)     = 0
-               ZI(LSTPT(4) +   NBPT)     = TF
-               ZR(LSTPT(5) + 2*NBPT+1-1) = R1
-               ZR(LSTPT(5) + 2*NBPT+2-1) = S1
-               ZI(LSTPT(6) +   NBPT)     = NBPT + 1
-               NBPT                      = NBPT + 1
-            ELSE
-               ZR(LSTPT(1) +   IPOS1-1      ) = T1
-               ZI(LSTPT(2) +   IPOS1-1      ) = F
-               ZI(LSTPT(3) +   IPOS1-1      ) = 0
-               ZI(LSTPT(4) +   IPOS1-1      ) = TF
-               ZR(LSTPT(5) + 2*(IPOS1-1)+1-1) = R1
-               ZR(LSTPT(5) + 2*(IPOS1-1)+2-1) = S1
-            ENDIF
-         ENDIF
-         IF ( NPT .GE. 2 ) THEN
-            IF ( .NOT. DJALA2 ) THEN
-               ZR(LSTPT(1) +   NBPT)     = T2
-               ZI(LSTPT(2) +   NBPT)     = F
-               ZI(LSTPT(3) +   NBPT)     = 0
-               ZI(LSTPT(4) +   NBPT)     = TF
-               ZR(LSTPT(5) + 2*NBPT+1-1) = R2
-               ZR(LSTPT(5) + 2*NBPT+2-1) = S2
-               ZI(LSTPT(6) +   NBPT)     = NBPT + 1
-               NBPT                      = NBPT + 1
-            ELSE
-               ZR(LSTPT(1) +    IPOS2-1     ) = T2
-               ZI(LSTPT(2) +    IPOS2-1     ) = F
-               ZI(LSTPT(3) +    IPOS2-1     ) = 0
-               ZI(LSTPT(4) +    IPOS2-1     ) = TF
-               ZR(LSTPT(5) + 2*(IPOS2-1)+1-1) = R2
-               ZR(LSTPT(5) + 2*(IPOS2-1)+2-1) = S2
-            ENDIF
-         ENDIF
-         IF ( FINK ) THEN
-            NBPT = -2
+         CALL UTDEBM('F','I3IQGS','FACE DEGENEREE')
+         CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
+         CALL UTIMPI('S',' FACE : ',1,F)
+         CALL UTFINM()
+      ENDIF
+C
+      IF ( FINK )  NBPT = 0
+      IF ( NPT .GE. 1 ) THEN
+         IF ( .NOT. DJALA1 ) THEN
+            ZR(LSTPT(1) +   NBPT)     = T1
+            ZI(LSTPT(2) +   NBPT)     = F
+            ZI(LSTPT(3) +   NBPT)     = 0
+            ZI(LSTPT(4) +   NBPT)     = TF
+            ZR(LSTPT(5) + 2*NBPT+1-1) = R1
+            ZR(LSTPT(5) + 2*NBPT+2-1) = S1
+            ZI(LSTPT(6) +   NBPT)     = NBPT + 1
+            NBPT                      = NBPT + 1
+         ELSE
+            ZR(LSTPT(1) +   IPOS1-1      ) = T1
+            ZI(LSTPT(2) +   IPOS1-1      ) = F
+            ZI(LSTPT(3) +   IPOS1-1      ) = 0
+            ZI(LSTPT(4) +   IPOS1-1      ) = TF
+            ZR(LSTPT(5) + 2*(IPOS1-1)+1-1) = R1
+            ZR(LSTPT(5) + 2*(IPOS1-1)+2-1) = S1
          ENDIF
       ENDIF
+      IF ( NPT .GE. 2 ) THEN
+         IF ( .NOT. DJALA2 ) THEN
+            ZR(LSTPT(1) +   NBPT)     = T2
+            ZI(LSTPT(2) +   NBPT)     = F
+            ZI(LSTPT(3) +   NBPT)     = 0
+            ZI(LSTPT(4) +   NBPT)     = TF
+            ZR(LSTPT(5) + 2*NBPT+1-1) = R2
+            ZR(LSTPT(5) + 2*NBPT+2-1) = S2
+            ZI(LSTPT(6) +   NBPT)     = NBPT + 1
+            NBPT                      = NBPT + 1
+         ELSE
+            ZR(LSTPT(1) +    IPOS2-1     ) = T2
+            ZI(LSTPT(2) +    IPOS2-1     ) = F
+            ZI(LSTPT(3) +    IPOS2-1     ) = 0
+            ZI(LSTPT(4) +    IPOS2-1     ) = TF
+            ZR(LSTPT(5) + 2*(IPOS2-1)+1-1) = R2
+            ZR(LSTPT(5) + 2*(IPOS2-1)+2-1) = S2
+         ENDIF
+      ENDIF
+      IF ( FINK )  NBPT = -2
+C
       END

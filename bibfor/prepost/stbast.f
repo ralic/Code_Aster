@@ -1,7 +1,10 @@
-      SUBROUTINE STBAST(NFIE,NFIS,IFM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      SUBROUTINE STBAST ( NFIE, NFIS, IFM, LGRCOU )
+      IMPLICIT  NONE
+      INTEGER             NFIE, NFIS, IFM
+      LOGICAL             LGRCOU
+C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 21/09/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF PREPOST  DATE 02/12/2002   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,21 +34,14 @@ C  !   REMARQUE : TOUTE ALTERATION DANS UN COMMON ENTRAINE UNE     !
 C  !              ALTERATION DANS L'AUTRE COMMON                   !
 C  !                                                               !
 C  =================================================================
-C  !                                                               !
-C  !                   ROUTINE PRINCIPALE                          !
-C  !                   ******************                          !
-C  !                                                               !
-C  !    ROUTINES APPELEES : DEFUFI                                 !
-C  !                              PRESUP                           !
-C  !                                                               !
-C  =================================================================
 C
 C
-      CALL DEFUFI(NFIE,'UNIVERSEL')
-      CALL DEFUFI(NFIS,'FICHIER-MODELE')
+      CALL DEFUFI ( NFIE, 'UNIVERSEL'      )
+      CALL DEFUFI ( NFIS, 'FICHIER-MODELE' )
 C
-      CALL PRESUP
+      CALL PRESUP ( LGRCOU )
 C
       WRITE(NFIS,*) 'FIN'
       REWIND NFIS
+C
       END

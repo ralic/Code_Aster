@@ -6,7 +6,7 @@
       CHARACTER*19                SORTIE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/03/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 18/03/2003   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,8 +54,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       LOGICAL        LTOUT, LMAX, LARIAS, LPDES, LCAV, LPHFOR,
      +               LISPEC,LASURV
       CHARACTER*1    K1BID
-      CHARACTER*8    K8B, NATURE, CRIT, NOMRES, TYPIND(15)
-      CHARACTER*16   NOPIND(15)
+      CHARACTER*8    K8B, NATURE, CRIT, TYPIND(15)
+      CHARACTER*16   NOPIND(15), NOMRES
       CHARACTER*19   NOMFON, LISTFR, NOMVIT, NOMDEP
       CHARACTER*24   VALE,PROL
 C
@@ -152,7 +152,7 @@ C
        IF ( L .GT. 0 ) THEN
          PROL = NOMFON//'.PROL'
          CALL JEVEUO(PROL,'L',LPRO)
-         NOMRES = ZK8(LPRO+3)
+         NOMRES = ZK16(LPRO+3)
          IF (NOMRES(1:4).EQ.'ACCE') THEN
         
 C
@@ -230,7 +230,7 @@ C        --- INTENSITE ARIAS D'UN SIGNAL TEMPOREL ---
 C
 C            --- CALCUL DE LA MOYENNE QUADRATIQUE ---           
              CALL FOCRMS('TRAPEZE',NOMFON,CRIT,EPSI,TINI,LTINI,
-     &                                         TFIN,LTFIN,RMS)
+     &                                         TFIN,LTFIN,0.D0,RMS)
 C
              DEUXG=2.D0*PESA
              ARIAS = RMS**2*PI/(DEUXG)*(TFIN-TINI)
@@ -264,7 +264,7 @@ C
 C          --- ALORS ON PEUT CACULER LA RMS DE V(T) COMME ---
 C          --- INTERMEDIAIRE DE CALCUL                    ---
             CALL FOCRMS('TRAPEZE',NOMVIT,CRIT,EPSI,TINI,LTINI,
-     &                                          TFIN,LTFIN,RMS)
+     &                                          TFIN,LTFIN,0.D0,RMS)
 C
 C          --- ENFIN ON EN DEDUIT LE POUVOIR DESTRUCTEUR --
 C
@@ -322,7 +322,7 @@ C           --- L'ACCELEROGRAMME                         ---
 C
 C              --- CALCUL DE LA MOYENNE QUADRATIQUE ("RMS") ---
             CALL FOCRMS('TRAPEZE',NOMFON,CRIT,EPSI,TINI,LTINI,
-     &                                        TFIN,LTFIN,RMS)
+     &                                        TFIN,LTFIN,0.D0,RMS)
 C
             DEUXG=2.D0*PESA
 C
@@ -410,7 +410,7 @@ C
           CALL GETVID(NOMOPE,'SPEC_OSCI',1,1,1,NOMFON,L)
           PROL = NOMFON//'.PROL'
           CALL JEVEUO(PROL,'L',LPRO)
-          NOMRES = ZK8(LPRO+3)
+          NOMRES = ZK16(LPRO+3)
           IF (NOMRES(1:4).EQ.'ACCE') THEN
 C
 C        --------------------------------

@@ -5,7 +5,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -406,6 +406,8 @@ C
        IF ( LOI(1:7) .EQ. 'NADAI_B') THEN
           CALL INSTEF ( IMAT, NMAT, MATERF, SIGD, SIGF, VIND, VINF,
      1    ETATF, EPSD, DEPS, DSDE, JFIS1, NVI, MOD )
+       ELSE IF ( LOI(1:6) .EQ. 'LAIGLE') THEN
+          CALL LGLDCM( NMAT, MATERF, SIGF, NVI, VINF )
        ENDIF
    10  CONTINUE
 C

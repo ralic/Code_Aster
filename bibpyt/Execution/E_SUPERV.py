@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 03/09/2002   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF E_SUPERV Execution  DATE 01/04/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,10 +89,10 @@ class SUPERV:
             self.CHEMIN=sys.argv[k+1]
             if not os.path.isdir(self.CHEMIN):
                self.MESSAGE('Ce chemin est introuvable : "'+self.CHEMIN+"'")
-               sys.exit(1)
+               return 1
             if  "Accas" not in os.listdir( self.CHEMIN ) :
                self.MESSAGE( "Ce chemin d'Eficas est ERRONE : '"+`self.CHEMIN`+"'" )
-               sys.exit(1)
+               return 1
          elif sys.argv[k] == '-commandes' :
             self.nomFichierCommandes=sys.argv[k+1]
             #self.nomFichierCommandes=os.path.abspath(sys.argv[k+1])
@@ -113,12 +113,12 @@ class SUPERV:
          print """JDC.py. Il faut passer un chemin en argument : 
                            python JDC.py -eficas_path chemin"""
          print self.usage
-         sys.exit(1)
+         return 1
       elif self.nomFichierCommandes==None :
          print """JDC.py. Il faut passer un nom de fichier de commandes en argument : 
                           python JDC.py -commandes nom_fichier"""
          print self.usage
-         sys.exit(1)
+         return 1
 
    def imports(self):
       sys.path[:0] = [ "." ]
@@ -133,7 +133,7 @@ class SUPERV:
          CONTEXT.unset_current_step()
       except :
          print traceback.print_exc()
-         sys.exit(1)
+         return 1
 
    def testeCata(self):
       """
@@ -145,7 +145,7 @@ class SUPERV:
          print ">> Catalogue de commandes : DEBUT RAPPORT"
          print cr
          print ">> Catalogue de commandes : FIN RAPPORT"
-         sys.exit(1)
+         return 1
 
    def Execute(self):
       """
@@ -161,9 +161,11 @@ class SUPERV:
       f.close()
       args={}
       if self.rep_mat:args['rep_mat']=self.rep_mat
+
       j=self.JdC(procedure=text,cata=self.cata,nom=self.nomFichierCommandes,
              **args      
            )
+
       # On compile le texte Python
       j.compile()
       if not j.cr.estvide(): 
@@ -172,11 +174,13 @@ class SUPERV:
          print j.cr
          print ">> JDC.py : FIN RAPPORT"
          j.supprime()
-         sys.exit(0)
+         return 0
 
       j.exec_compile()
+      ier=0
       if not j.cr.estvide(): 
          self.MESSAGE("ERREUR A L'INTERPRETATION DANS ACCAS - INTERRUPTION")
+         ier=1
          print ">> JDC.py : DEBUT RAPPORT"
          print j.cr
          print ">> JDC.py : FIN RAPPORT"
@@ -187,16 +191,18 @@ class SUPERV:
 
       if j.par_lot == 'NON':
          print "FIN EXECUTION"
-         sys.exit()
+         if j.fico!=None :
+            os.system('cat ./fort.15 ./ficode >> ./fort.15')
+         return ier
 
+      # Verification de la validite du jeu de commande
       cr=j.report()
       if not cr.estvide(): 
          self.MESSAGE("ERREUR A LA VERIFICATION SYNTAXIQUE - INTERRUPTION")
          print ">> JDC.py : DEBUT RAPPORT"
          print cr
          print ">> JDC.py : FIN RAPPORT"
-         sys.exit()
-         
+         return 1
 
       if self.verif:return
       
@@ -222,7 +228,13 @@ class SUPERV:
           j = new_j
       else :
         self.MESSAGE("ERREUR AU DECODAGE DES SENSIBILITES - INTERRUPTION")
-        sys.exit()
+        return 1
+      #ier= self.ParLot( j )
+      ier= self.ParLotMixte( j )
+      return ier
+
+
+   def ParLot(self,j):
 
       try:
          ier=j.Build()
@@ -231,11 +243,11 @@ class SUPERV:
             print ">> JDC.py : DEBUT RAPPORT"
             print j.cr
             print ">> JDC.py : FIN RAPPORT"
-            sys.exit()
+            return 1
       except :
          self.MESSAGE("ERREUR INOPINEE - INTERRUPTION")
          traceback.print_exc()
-         sys.exit()
+         return 1
 
       cr=j.report()
       if not cr.estvide():
@@ -243,36 +255,73 @@ class SUPERV:
          print ">> JDC.py : DEBUT RAPPORT"
          print cr
          print ">> JDC.py : FIN RAPPORT"
-         sys.exit()
+         return 1   
 
 
       j.setmode(1)
       ier=j.Exec()
       if ier :
          self.MESSAGE("ERREUR A LA VERIFICATION FORTRAN - INTERRUPTION")
-         sys.exit()
+         return 1   
 
       j.setmode(2)
       try:
          ier=j.Exec()
          if ier : 
             self.MESSAGE("ERREUR A L'EXECUTION - INTERRUPTION")
-            sys.exit()
+            return 1   
+      except EOFError:
+         if j.fico!=None :
+            os.system('cat ./fort.15 ./ficode >> ./fort.15')
+         return 0
       except :
          self.MESSAGE("ERREUR INOPINEE - INTERRUPTION")
          traceback.print_exc()
-         sys.exit()
+         return 1   
+
+
+   def ParLotMixte(self,j):
+
+      j.set_par_lot("NON")
+      try:
+         ier=j.BuildExec()
+         if ier : 
+            self.MESSAGE("ERREUR A L'EXECUTION - INTERRUPTION")
+            return 1   
+      except EOFError:
+         ier=0
+         if not j.cr.estvide(): 
+            self.MESSAGE("ERREUR A L'EXECUTION - INTERRUPTION")
+            ier=1
+            print ">> JDC.py : DEBUT RAPPORT"
+            print j.cr
+            print ">> JDC.py : FIN RAPPORT"
+
+         if j.fico!=None :
+            os.system('cat ./fort.15 ./ficode >> ./fort.15')
+         return ier
+      except :
+         self.MESSAGE("ERREUR INOPINEE - INTERRUPTION")
+         traceback.print_exc()
+         return 1   
+
 
    def main(self):
       """
            Programme principal. Appelle les methodes internes qui realisent les
            divers traitements
       """
-      self.getargs()
-      self.imports()
-      #self.testeCata()
-      self.Execute()
+      ier=self.getargs()
+      if ier:return ier
+
+      ier=self.imports()
+      if ier:return ier
+
+      #ier=self.testeCata();if ier:return ier
+
+      return self.Execute()
       
 if __name__ == '__main__':
    appli=SUPERV()
-   appli.main()
+   ier=appli.main()
+   sys.exit(ier)

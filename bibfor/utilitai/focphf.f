@@ -7,7 +7,7 @@
       CHARACTER*(*)       METHOD, NOMFON, CRIT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/03/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 18/03/2003   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,7 +113,7 @@ C           --- L'INSTANT FINAL POUR LE CALCUL DE "ARIASK" ---
 C
 C             --- CALCUL DE LA MOYENNE QUADRATIQUE ---           
               CALL FOCRMS(METHOD,NOMFON,CRIT,EPSI,TINI,LTINI,
-     &                                           TFI2,1,RMS)
+     &                                           TFI2,1,0.D0,RMS)
               ARIASK = RMS**2*PI/DEUXG*(TFI2-TINI)
          
 C             --- COMPARAISON ENTRE ARIASK ET VALINF ---
@@ -142,7 +142,7 @@ C           --- L'INSTANT FINAL POUR LE CALCUL DE "ARIASK" ---
 C
 C             --- CALCUL DE LA MOYENNE QUADRATIQUE ---           
               CALL FOCRMS(METHOD,NOMFON,CRIT,EPSI,TINI,LTINI,
-     &                                           TFI2,1,RMS)
+     &                                           TFI2,1,0.D0,RMS)
               ARIASK = RMS**2*PI/DEUXG*(TFI2-TINI)
          
 C             --- COMPARAISON ENTRE ARIASK ET VALSUP ---

@@ -2,11 +2,11 @@
       IMPLICIT NONE
       INTEGER             NBFON 
       CHARACTER*1         BASE
-      CHARACTER*8         SURCHG, INTERP, PROLGD     
-      CHARACTER*(*)       LNOMF(*), SORTIE 
+      CHARACTER*8         SURCHG     
+      CHARACTER*(*)       LNOMF(*), SORTIE , PROLGD, INTERP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/04/2000   AUTEUR CIBHHAB N.RAHNI 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C
       DO 20 I = 1 , NBFON
          PROL(1:19)  = LNOMF(I)        
          CALL JEVEUO ( PROL, 'L', LPRO1 )
-         IF ( ZK8(LPRO1) .NE. 'FONCTION' ) THEN
+         IF ( ZK16(LPRO1) .NE. 'FONCTION' ) THEN
             CALL UTMESS('F','FOCAAS','FONCTION NON REELLE')
          ENDIF
  20   CONTINUE
@@ -181,12 +181,12 @@ C
       PROL(1:19)  = LNOMF(1)
       CALL JEVEUO ( PROL, 'L', LPRO1 )
       PROL(1:19)  = SORTIE 
-      CALL WKVECT ( PROL, BASE//' V K8', 5, LPROS )
-      ZK8(LPROS  ) = 'FONCTION'
-      ZK8(LPROS+1) = INTERP
-      ZK8(LPROS+2) = ZK8(LPRO1+2)
-      ZK8(LPROS+3) = ZK8(LPRO1+3)
-      ZK8(LPROS+4) = PROLGD
+      CALL WKVECT ( PROL, BASE//' V K16', 5, LPROS )
+      ZK16(LPROS  ) = 'FONCTION'
+      ZK16(LPROS+1) = INTERP
+      ZK16(LPROS+2) = ZK16(LPRO1+2)
+      ZK16(LPROS+3) = ZK16(LPRO1+3)
+      ZK16(LPROS+4) = PROLGD
 C      
 C     ------ DEBUT DU REMPLISSAGE ------
 C

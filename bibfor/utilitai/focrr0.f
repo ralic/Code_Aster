@@ -2,12 +2,12 @@
      &                  NPOINT,NUSP,IVARI,NBORDR,LORDR)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER NBORDR,LORDR(*),NPOINT,IVARI
-      CHARACTER*1 BASE
-      CHARACTER*8 INTERP,MAILLE,NOEUD,CMP
-      CHARACTER*16 NOMCHA
-      CHARACTER*19 NOMFON,RESU
+      CHARACTER*1   BASE
+      CHARACTER*8   INTERP,MAILLE,NOEUD,CMP
+      CHARACTER*16  NOMCHA
+      CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 28/08/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 07/01/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,16 +74,16 @@ C     ------------------------------------------------------------------
       NOMACC = ZK16(LVACC)
 
 C     --- REMPLISSAGE DU .PROL ---
-      CALL WKVECT(NOMFON//'.PROL',BASE//' V K8',5,LPRO)
+      CALL WKVECT(NOMFON//'.PROL',BASE//' V K16',5,LPRO)
       IF (TYPRES(1:10).EQ.'DYNA_HARMO') THEN
-        ZK8(LPRO) = 'FONCT_C'
+        ZK16(LPRO) = 'FONCT_C'
       ELSE
-        ZK8(LPRO) = 'FONCTION'
+        ZK16(LPRO) = 'FONCTION'
       END IF
-      ZK8(LPRO+1) = INTERP
-      ZK8(LPRO+2) = NOMACC(1:8)
-      ZK8(LPRO+3) = CMP
-      ZK8(LPRO+4) = 'EE      '
+      ZK16(LPRO+1) = INTERP
+      ZK16(LPRO+2) = NOMACC(1:8)
+      ZK16(LPRO+3) = CMP
+      ZK16(LPRO+4) = 'EE      '
 
       IF (TYPRES(1:10).EQ.'DYNA_HARMO') THEN
         CALL WKVECT(NOMFON//'.VALE',BASE//' V R',3*NBORDR,LVAR)

@@ -1,6 +1,6 @@
       SUBROUTINE ATASMO(AZ,NUMEDZ,RTBLOC,ATAZ,BASEZ,NBLIG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/07/2002   AUTEUR ADBHHPM P.MASSIN 
+C MODIF MODELISA  DATE 24/03/2003   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -192,11 +192,13 @@ C     TRAITEMENT DE LA PREMIERE COLONNE DE A
       K = 1     
       SOM = ZERO 
       IF (ZI(ID2 +1 -1) .EQ. 0) THEN
-         SOM = ZERO
+         SOM  = ZERO
+         ICUM = 0
       ELSE           
          DO 60 L =1,ZI(ID2 +1 -1) 
             SOM = SOM + ZR(IDCOL +L -1)*ZR(IDCOL +L -1) 
   60     CONTINUE
+         ICUM = ZI(ID2 +1 -1) 
       ENDIF
       ZR(IDVALE +K -1) = SOM
       ZI(IHCOL +K -1) = 1
@@ -204,7 +206,7 @@ C     TRAITEMENT DE LA PREMIERE COLONNE DE A
 C
 C     INDIC EST LE NOMBRE DE TERMES STOCKES PAR LIGNE DE ATA    
       CALL WKVECT('&&ATASMO.INDIC','V V I',NEQ,ID3)
-      ICUM = 0
+C      ICUM = 0
       K1 = 2
       DO 70 I = 2 , NEQ
         INDIC = 0

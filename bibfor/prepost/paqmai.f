@@ -1,7 +1,7 @@
       SUBROUTINE PAQMAI(NOMSD, NOMU, NOMMET, NOMCRI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 09/04/2003   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,12 +50,12 @@ C---- COMMUNS NORMALISES  JEVEUX
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C-----------------------------------------------------------------------
-      INTEGER       JCERD, JCERL, JCERV
-      INTEGER       IBID, IERD, LORDR(10), NBORDR, NDIM, IRET, JCESD
-      INTEGER       NBMA, JNBPG, IMA, TDISP, JRWORK, TPAQ, NBPAQ, NUMPAQ
-      INTEGER       NMAPAQ, BORMAX, NBPMAX, JNBPAQ
-      INTEGER       NMAINI, NBMAP, TSPAQ, IORDR, LOR8EM, LOISEM 
-      INTEGER       JSIG, K, IMAP, NBPG, SOMPG, IPG, ICMP
+      INTEGER       IBID, IERD, LORDR, JORDR, NBORDR, NDIM, IRET, JCESD
+      INTEGER       NBMA, NBPGT, NBPGMX, JNBPG, IMA, TDISP, JRWORK, TPAQ
+      INTEGER       NBPAQ, NUMPAQ, NMAPAQ, BORMAX, NBPMAX, JNBPAQ
+      INTEGER       NMAINI, NBMAP, TSPAQ, IORDR, LOR8EM, LOISEM, JAD
+      INTEGER       JSIGV, JSIGD, JSIGL, K, IMAP, NBPG, SOMPG, IPG, ICMP
+      INTEGER       I
 C
       REAL*8        R8B, VAL1, VRESU(18)
 C
@@ -65,7 +65,6 @@ C
       CHARACTER*8   K8B, LICMP(22)
       CHARACTER*16  TYPRES
       CHARACTER*19  CESR, LIGRE, CELBID, CHSIG, CHSIGS, CES1, CES2
-      CHARACTER*24  TEXTE
 C
 C-----------------------------------------------------------------------
 C234567                                                              012
@@ -75,17 +74,7 @@ C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
 
-C CONSTRUCTION DU CHAMP SIMPLE DESTINE A RECEVOIR LES RESULTATS :
-C DTAUM,....
-C
-      CALL RSEXCH( NOMSD, 'SIEF_ELGA', 1, CHSIG, IRET )     
-      CALL DISMOI('F','NOM_LIGREL',CHSIG,'CHAM_ELEM',IBID,LIGRE,IERD)
-      CESR = '&&PAQMAI.FACY'
-      CELBID = '&&PAQMAI.BID'
-      CALL ALCHML(LIGRE,'TOU_INI_ELGA','PFACY_R','V',CELBID,IERD,' ')
-      CALL CELCES( CELBID, 'V', CESR )      
-
-C RECUPERATION DES CONTRAINTES AUX POINTS DE GAUSS
+C RECUPERATION DU TYPE DE CALCUL MECANIQUE EFFECTUE
 C
       CALL DISMOI('F','TYPE_RESU',NOMSD,'RESULTAT',IBID,TYPRES,IERD)
       IF ( (TYPRES(1:9) .NE. 'EVOL_ELAS') .AND.
@@ -94,6 +83,20 @@ C
      &                ' N''EST NI EVOL_ELAS, NI EVOL_NOLI.')
       ENDIF
 
+C CONSTRUCTION DU CHAMP SIMPLE DESTINE A RECEVOIR LES RESULTATS :
+C DTAUM,....
+C
+      IF ( TYPRES .EQ. 'EVOL_ELAS' ) THEN
+         CALL RSEXCH( NOMSD, 'SIEF_ELGA_DEPL', 1, CHSIG, IRET )     
+      ELSEIF ( TYPRES .EQ. 'EVOL_NOLI' ) THEN
+         CALL RSEXCH( NOMSD, 'SIEF_ELGA', 1, CHSIG, IRET )     
+      ENDIF
+      CALL DISMOI('F','NOM_LIGREL',CHSIG,'CHAM_ELEM',IBID,LIGRE,IERD)
+      CESR = '&&PAQMAI.FACY'
+      CELBID = '&&PAQMAI.BID'
+      CALL ALCHML(LIGRE,'TOU_INI_ELGA','PFACY_R','V',CELBID,IERD,' ')
+      CALL CELCES( CELBID, 'V', CESR )      
+C
 C RECUPERATION DU NOMBRE DE NUMEROS D'ORDRE ET DE LA LISTE 
 C DES NUMEROS D'ORDRE
 C
@@ -106,22 +109,42 @@ C
          NDIM = NBORDR
       ENDIF
 C
+      CALL WKVECT('&&PAQMAI.NUME_ORDRE','V V I',NDIM,JORDR)
       CALL RSORAC( NOMSD, 'TOUT_ORDRE', IBID, R8B, K8B, C16B, R8B, K8B,
-     &             LORDR, NDIM, NBORDR )
-
+     &             ZI(JORDR), NDIM, NBORDR )
+C
 C RECUPERATION DU NOMBRE DE MAILLES ET DU NOMBRE DE POINTS DE GAUSS 
 C PAR MAILLE
 C
-      CALL RSEXCH( NOMSD, 'SIEF_ELGA', 1, CHSIG, IRET )      
+      IF ( TYPRES .EQ. 'EVOL_ELAS' ) THEN
+         CALL RSEXCH( NOMSD, 'SIEF_ELGA_DEPL', 1, CHSIG, IRET )     
+      ELSEIF ( TYPRES .EQ. 'EVOL_NOLI' ) THEN
+         CALL RSEXCH( NOMSD, 'SIEF_ELGA', 1, CHSIG, IRET )     
+      ENDIF
       CHSIGS = '&&PAQMAI.SIELGA'
       CALL CELCES( CHSIG, 'V', CHSIGS )
       CALL JEVEUO(CHSIGS(1:19)//'.CESD','L',JCESD)
       NBMA = ZI(JCESD-1+1)
       CALL WKVECT( '&&PAQMAI.NBPG', 'V V I', NBMA, JNBPG )
-
+C
+C  NBPGMX : NOMBRE DE POINTS DE GAUSS DANS LES ELEMENTS
+C           QUI EN ONT LE PLUS, (EX : ELEMENT 3D = 27)
+C  NBPGT  : NOMBRE TOTAL DE POINTS DE GAUSS DANS LE MAILLAGE
+C
+      NBPGMX = 0
+      NBPGT = 0
       DO 50 IMA=1, NBMA
          ZI(JNBPG - 1 + IMA) = ZI(JCESD-1 + 5 + 4*(IMA-1) + 1)
+         NBPGT = NBPGT + ZI(JCESD-1 + 5 + 4*(IMA-1) + 1)
+         IF ( ZI(JCESD-1 + 5 + 4*(IMA-1) + 1) .GT. NBPGMX ) THEN
+            NBPGMX = ZI(JCESD-1 + 5 + 4*(IMA-1) + 1)
+         ENDIF
  50   CONTINUE
+C
+      WRITE(6,*)'NOMBRE TOTAL DE POINTS DE GAUSS A TRAITER ==>',NBPGT
+      WRITE(6,*)' '
+      WRITE(6,*)'NUMERO DU PAQUET DE MAILLES  -  ' //
+     &           'NOMBRE DE POINTS DE GAUSS TRAITES'
 C
 C CONSTRUCTION DES PAQUETS DE MAILLES.
 C
@@ -134,8 +157,9 @@ C    DES FONCTIONS ENVIMA POUR ALLOUER UN TABLEAU DE REELS
       TDISP = INT(0.5D0*TDISP)
       CALL WKVECT( '&&PAQMAI.RWORK', 'V V R', TDISP, JRWORK )
 C
-      BORMAX = NBMA*27*NBORDR*6
+      BORMAX = NBMA*NBPGMX*NBORDR*6
       VAL1 = DBLE(TDISP)/DBLE(BORMAX)
+C
       IF (VAL1 .LT. 1.0D0) THEN
          NBPMAX = INT(1.0D0/VAL1) + 1
       ELSE
@@ -150,20 +174,41 @@ C
       DO 100 IMA=1, NBMA
          TPAQ = TPAQ + ZI(JNBPG - 1 + IMA)*NBORDR*6
          NMAPAQ = NMAPAQ + 1
-
+C
          IF ( TPAQ .LT. TDISP ) THEN
             IF (IMA .EQ. NBMA) THEN
                NUMPAQ = NUMPAQ + 1
                ZI(JNBPAQ + (NUMPAQ-1)*4) = NUMPAQ
-               ZI(JNBPAQ + (NUMPAQ-1)*4 + 1) = TPAQ
-               NBPAQ = NUMPAQ
-               IF (IMA .EQ. 1) THEN
-                  ZI(JNBPAQ + (NUMPAQ-1)*4 + 2) = 1
-                  ZI(JNBPAQ + (NUMPAQ-1)*4 + 3) = 1
+C CAS OU LA TAILLE DU PAQUET EST TOUT JUSTE INFERIEURE A LA TAILLE
+C MEMOIRE DISPONIBLE
+               IF ((TDISP-TPAQ) .LT. 
+     &             (ZI(JNBPG - 1 + IMA)*NBORDR*6)) THEN
+C
+                 TPAQ = TPAQ - ZI(JNBPG-1 + IMA)*NBORDR*6
+                 ZI(JNBPAQ + (NUMPAQ-1)*4 + 1) = TPAQ
+                 ZI(JNBPAQ + (NUMPAQ-1)*4 + 2) = (IMA - NMAPAQ + 1)
+                 ZI(JNBPAQ + (NUMPAQ-1)*4 + 3) = NMAPAQ - 1
+                 NBPAQ = NUMPAQ
+                 TPAQ = ZI(JNBPG - 1 + IMA)*NBORDR*6
+                 NMAPAQ = 1
+C
+                 NUMPAQ = NUMPAQ + 1
+                 ZI(JNBPAQ + (NUMPAQ-1)*4) = NUMPAQ
+                 ZI(JNBPAQ + (NUMPAQ-1)*4 + 1) = TPAQ
+                 ZI(JNBPAQ + (NUMPAQ-1)*4 + 2) = IMA
+                 ZI(JNBPAQ + (NUMPAQ-1)*4 + 3) = NMAPAQ
+                 NBPAQ = NUMPAQ
                ELSE
-                  ZI(JNBPAQ + (NUMPAQ-1)*4 + 2) = (IMA - NMAPAQ + 1)
-                  ZI(JNBPAQ + (NUMPAQ-1)*4 + 3) = NMAPAQ
-               ENDIF           
+                 ZI(JNBPAQ + (NUMPAQ-1)*4 + 1) = TPAQ
+                 NBPAQ = NUMPAQ
+                 IF (IMA .EQ. 1) THEN
+                    ZI(JNBPAQ + (NUMPAQ-1)*4 + 2) = 1
+                    ZI(JNBPAQ + (NUMPAQ-1)*4 + 3) = 1
+                 ELSE
+                    ZI(JNBPAQ + (NUMPAQ-1)*4 + 2) = (IMA - NMAPAQ + 1)
+                    ZI(JNBPAQ + (NUMPAQ-1)*4 + 3) = NMAPAQ
+                 ENDIF
+               ENDIF
             ENDIF
 
          ELSEIF ( ( TPAQ .GT. TDISP ) .AND. (NMAPAQ .EQ. 1) ) THEN
@@ -181,16 +226,26 @@ C    DU NUMERO DE LA PREMIERE MAILLE DE CHAQUE PAQUET DE MAILLES,
 C    DU NOMBRE DE MAILLE DE CHAQUE PAQUET ET DU NOMBRE DE PAQUET. 
 
          ELSEIF ( ( TPAQ .GE. TDISP ) .AND. (NMAPAQ .GT. 1) ) THEN
+C ON RECULE DE DEUX MAILLES POUR NE PAS DEBORDER DU VECTEUR DE TRAVAIL
+C (JRWORK). CECI PEUT SE PRODUIRE QUAND 
+C  ( TDISP - TPAQ + ZI(JNBPG-1 + IMA)*NBORDR*6 ) < NBPG*6
+C OU NBPG EST LE NOMBRE DE POINTS DE GAUSS DE LA MAILLE COURANTE.
             TPAQ = TPAQ - ZI(JNBPG-1 + IMA)*NBORDR*6
+            TPAQ = TPAQ - ZI(JNBPG-1 + IMA-1)*NBORDR*6
+            IF ( (TDISP - TPAQ) .LT. (ZI(JNBPG-1 + IMA-1)*6) ) THEN
+              CALL UTMESS('F', 'PAQMAI.3', 'DEBORDEMENT PROBABLE '//
+     &                    'DU VECTEUR DE TRAVAIL (JRWORK).')
+            ENDIF
             NUMPAQ = NUMPAQ + 1
             ZI(JNBPAQ + (NUMPAQ-1)*4) = NUMPAQ
             ZI(JNBPAQ + (NUMPAQ-1)*4 + 1) = TPAQ
             ZI(JNBPAQ + (NUMPAQ-1)*4 + 2) = (IMA - NMAPAQ + 1)
-            ZI(JNBPAQ + (NUMPAQ-1)*4 + 3) = NMAPAQ - 1
+            ZI(JNBPAQ + (NUMPAQ-1)*4 + 3) = NMAPAQ - 2
             NBPAQ = NUMPAQ
 C
             TPAQ = ZI(JNBPG - 1 + IMA)*NBORDR*6
-            NMAPAQ = 1
+            TPAQ = TPAQ + ZI(JNBPG-1 + IMA-1)*NBORDR*6
+            NMAPAQ = 2
             IF (IMA .EQ. NBMA) THEN
                NUMPAQ = NUMPAQ + 1
                ZI(JNBPAQ + (NUMPAQ-1)*4) = NUMPAQ
@@ -200,7 +255,7 @@ C
                NBPAQ = NUMPAQ
             ENDIF
             IF (NBPAQ .GT. (NBPMAX-1)) THEN
-               CALL UTMESS('F', 'PAQMAI.3', 'LA TAILLE DU VECTEUR ' //
+               CALL UTMESS('F', 'PAQMAI.4', 'LA TAILLE DU VECTEUR ' //
      &                     'CONTENANT LES CARACTERISTIQUES DES ' //
      &                     'PAQUETS DE MAILLES EST TROP PETITE.' //
      &                     'ERREUR FORTRAN, EMETTRE UNE AL.')
@@ -208,7 +263,6 @@ C
          ENDIF
 
  100  CONTINUE
-
 C
 C TRAITEMENT DES PAQUETS DE MAILLES.
 C
@@ -222,24 +276,24 @@ C
          TSPAQ = TPAQ/NBORDR
 C
          DO 220 IORDR=1, NBORDR
-            CALL RSEXCH( NOMSD, 'SIEF_ELGA', IORDR, CHSIG, IRET )
+            IF ( TYPRES .EQ. 'EVOL_ELAS' ) THEN
+               CALL RSEXCH(NOMSD, 'SIEF_ELGA_DEPL', IORDR, CHSIG, IRET)
+            ELSEIF ( TYPRES .EQ. 'EVOL_NOLI' ) THEN
+               CALL RSEXCH( NOMSD, 'SIEF_ELGA', IORDR, CHSIG, IRET )
+            ENDIF
             CES1 = '&&PAQMAI.SIG_S1'
             CES2 = '&&PAQMAI.SIG_ORDO'
-            TEXTE = CHSIG(1:19)//'.CELV'
-            CALL UTIMSD('MESSAGE',2,.TRUE.,.TRUE.,TEXTE,1,' ')
             CALL CELCES(CHSIG, 'V', CES1)
-            TEXTE = CES1(1:19)//'.CESV'
-            CALL UTIMSD('MESSAGE',2,.TRUE.,.TRUE.,TEXTE,1,' ')
             CALL CESRED(CES1, 0, IBID, 6, LSIG, 'V', CES2)
-            TEXTE = CES2(1:19)//'.CESV'
-            CALL UTIMSD('MESSAGE',2,.TRUE.,.TRUE.,TEXTE,1,' ')
             CALL JEEXIN(CES2(1:19)//'.CESV', IRET)
             IF (IRET .EQ. 0) THEN
-               CALL UTMESS('F', 'PAQMAI.4', 'LES CHAMPS DE '//
+               CALL UTMESS('F', 'PAQMAI.5', 'LES CHAMPS DE '//
      &                 ' CONTRAINTES AUX POINTS DE GAUSS ' //
      &                 'N''EXISTENT PAS.')
             ENDIF
-            CALL JEVEUO(CES2(1:19)//'.CESV', 'L', JSIG)
+            CALL JEVEUO(CES2(1:19)//'.CESD', 'L', JSIGD)
+            CALL JEVEUO(CES2(1:19)//'.CESL', 'L', JSIGL)
+            CALL JEVEUO(CES2(1:19)//'.CESV', 'L', JSIGV)
 C
             SOMPG = 0
             K = 0
@@ -247,42 +301,57 @@ C
             DO 240 IMAP=NMAINI, NMAINI+(NBMAP-1)
                IF (IMAP .GT. NMAINI) THEN
                   K = 1
+                  SOMPG = SOMPG + ZI(JNBPG + IMAP-2)
                ENDIF
                NBPG = ZI(JNBPG + IMAP-1)
-               SOMPG = SOMPG + NBPG
 C
                DO 260 IPG=1, NBPG
                   DO 280 ICMP=1, 6
-                     ZR( JRWORK + (ICMP-1) + (IPG-1)*6 + 
-     &                  K*SOMPG*6 + (IORDR-1)*TSPAQ ) =
-     &               ZR( JSIG + (ICMP-1) + (IPG-1)*6 + K*SOMPG*6 )
+                     CALL CESEXI('C',JSIGD,JSIGL,IMAP,IPG,1,ICMP,JAD)
+                     IF (JAD .LE. 0) THEN
+                       CALL UTMESS('F', 'PAQMAI.6', 'LE CHAMP SIMPLE '//
+     &                     'QUI CONTIENT LES VALEURS DES CONTRAINTES '//
+     &                     'N EXISTE PAS.')
+                     ELSE
+                       ZR( JRWORK + (ICMP-1) + (IPG-1)*6 + 
+     &                       K*SOMPG*6 + (IORDR-1)*TSPAQ ) =
+     &                 ZR( JSIGV + (ICMP-1) + (IPG-1)*6 + K*SOMPG*6 )
+                     ENDIF
  280              CONTINUE
  260           CONTINUE
  240        CONTINUE
 C
             IF (IORDR .EQ. NBORDR) THEN
-               CALL DELTAU (JRWORK, JNBPG, NBORDR, NMAINI, NBMAP,
-     &                      TSPAQ, NOMMET, NOMCRI, CESR)
+               CALL DELTAU (JRWORK, JNBPG, NBPGT, NBORDR, NMAINI, NBMAP,
+     &                      NUMPAQ, TSPAQ, NOMMET, NOMCRI, CESR)
             ENDIF
  220     CONTINUE   
  200  CONTINUE
 C
+      WRITE(6,*)' '
+C
 C TRANSFORMATION D'UN CHAM_ELEM SIMPLE EN CHAM_ELEM
 C
-      CALL RSEXCH( NOMSD, 'SIEF_ELGA', 1, CHSIG, IRET )
+      IF ( TYPRES .EQ. 'EVOL_ELAS' ) THEN
+         CALL RSEXCH( NOMSD, 'SIEF_ELGA_DEPL', 1, CHSIG, IRET )     
+      ELSEIF ( TYPRES .EQ. 'EVOL_NOLI' ) THEN
+         CALL RSEXCH( NOMSD, 'SIEF_ELGA', 1, CHSIG, IRET )
+      ENDIF
       CALL DISMOI('F','NOM_LIGREL',CHSIG,'CHAM_ELEM',IBID,LIGRE,IERD)
       CALL CESCEL(CESR,LIGRE,'TOU_INI_ELGA',' ','NON','G',NOMU)
 C
 C MENAGE
 C
-      CALL DETRSD('CHAM_ELEM_S',CHSIGS)
+      CALL DETRSD('CHAM_ELEM',CELBID)
       CALL DETRSD('CHAM_ELEM_S',CESR)
+      CALL DETRSD('CHAM_ELEM_S',CHSIGS)
       CALL DETRSD('CHAM_ELEM_S',CES1)
       CALL DETRSD('CHAM_ELEM_S',CES2)
 C
+      CALL JEDETR('&&PAQMAI.NUME_ORDRE')
+      CALL JEDETR('&&PAQMAI.NBPG')
       CALL JEDETR('&&PAQMAI.RWORK')
       CALL JEDETR('&&PAQMAI.PAQMA')
-      CALL JEDETR('&&PAQMAI.NBPG')
 C
       CALL JEDEMA()
       END

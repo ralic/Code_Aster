@@ -4,7 +4,7 @@
       CHARACTER*19       NOMFON,        FONRES
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/02/99   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8         VALPU(8)
-      CHARACTER*8    K8B, NOMPU(2)
+      CHARACTER*8    K8B
+      CHARACTER*16   NOMPU(2)
       CHARACTER*19   NOMF1
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -59,7 +60,7 @@ C     ------------------------------------------------------------------
       LF = LXLGUT(NOMF1)
 C
       CALL JEVEUO(NOMFON//'.PROL','L',LPRO)
-      IF ( ZK8(LPRO) .EQ. 'INTERPRE' )  THEN
+      IF ( ZK16(LPRO) .EQ. 'INTERPRE' )  THEN
          CALL JEVEUO(NOMFON//'.NOVA','L',LNOVA)
          CALL JEVEUO(FONRES//'.VALE','L',JVAL)
          CALL JELIRA(FONRES//'.VALE','LONUTI',NBVAL,K8B)
@@ -69,10 +70,10 @@ C
             WRITE(IUL,1040) ZR(JVAL+IVAL), XRESU
  10      CONTINUE
 C
-      ELSEIF ( ZK8(LPRO) .EQ. 'FONCTION' )  THEN
+      ELSEIF ( ZK16(LPRO) .EQ. 'FONCTION' )  THEN
          WRITE(IUL,1000) NOMF1
          IF ( IND.NE.0 ) THEN
-            NOMPU(1) = ZK8(LPRO+2)
+            NOMPU(1) = ZK16(LPRO+2)
             CALL JEVEUO(FONRES//'.VALE','L',JVAL)
             CALL JELIRA(FONRES//'.VALE','LONUTI',NBVAL,K8B)
             DO 20 IVAL = 0, NBVAL-1
@@ -89,11 +90,11 @@ C
  22         CONTINUE
          ENDIF
 C
-      ELSEIF ( ZK8(LPRO) .EQ. 'NAPPE' )  THEN
+      ELSEIF ( ZK16(LPRO) .EQ. 'NAPPE' )  THEN
          CALL JEVEUO(NOMFON//'.PARA','L',JPAR)
          CALL JELIRA(NOMFON//'.PARA','LONMAX',NBAMOR,K8B)
-         NOMPU(1) = ZK8(LPRO+2)
-         NOMPU(2) = ZK8(LPRO+5)
+         NOMPU(1) = ZK16(LPRO+2)
+         NOMPU(2) = ZK16(LPRO+5)
          LA = LXLGUT(NOMPU(1))
          IF ( IND.NE.0 ) THEN
             CALL JEVEUO(FONRES//'.VALE','L',JVAL)

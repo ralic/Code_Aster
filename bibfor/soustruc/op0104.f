@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF SOUSTRUC  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,7 @@ C
       CHARACTER*24  GRPMAV, NOMGNV, GRPNOV
 C     ------------------------------------------------------------------
 C
+      CALL INFMAJ()
       CALL GETRES ( MA2, TYPCON, NOMCMD )
       CALL GETVID(' ','MAILLAGE',1,1,1,MA,N1)
       IF ( MA .NE. MA2 ) THEN

@@ -4,7 +4,7 @@
       CHARACTER*(*)       CHELEZ, NOMJV
       REAL*8              PGL(3,3)
 C ----------------------------------------------------------------------
-C MODIF POSTRELE  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,14 +71,12 @@ C
 C
       CALL DISMOI('F','NOM_OPTION', CHELEZ, 'CHAM_ELEM',IBID,OPTION,IER)
       IF  ( OPTION(1:14) .EQ. 'SIGM_ELNO_DEPL'  .OR.
-     +      OPTION(1:14) .EQ. 'SIEF_ELNO_ELGA'  .OR.
-     +      OPTION(1:14) .EQ. 'SIGM_ELNO_DPGE'  )THEN
+     +      OPTION(1:14) .EQ. 'SIEF_ELNO_ELGA'  )THEN
 C         COMPOSANTE:  SIXX SIYY SIZZ SIXY SIXZ SIYZ
       ELSEIF ( OPTION(1:14) .EQ. 'EPSI_ELNO_DEPL'  .OR.
      +         OPTION(1:14) .EQ. 'EPSG_ELNO_DEPL'  .OR.
      +         OPTION(1:14) .EQ. 'EPME_ELNO_DEPL'  .OR.
-     +         OPTION(1:14) .EQ. 'EPMG_ELNO_DEPL'  .OR.
-     +         OPTION(1:14) .EQ. 'EPSI_ELNO_DPGE'  )THEN
+     +         OPTION(1:14) .EQ. 'EPMG_ELNO_DEPL'  )THEN
 C         COMPOSANTE:  EPXX EPYY EPZZ EPXY EPXZ EPYZ
       ELSE IF ( OPTION(1:14) .EQ. 'EFGE_ELNO_DEPL' ) THEN
 C         COMPOSANTE:  NXX NYY NXY MXX MYY MXY

@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/03/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,13 @@ C     ------------------------------------------------------------------
       REAL*8     ETA, PGL(3,3), MATV(78), MATP(12,12)
       COMPLEX*16 HYST
       CHARACTER*1 K1BID
+      CHARACTER*2 CODRET(3)
+      CHARACTER*8 NOMRES(3)
+      REAL*8     MATA1(78), MATA2(78), VALRES(3)
 C     ------------------------------------------------------------------
+      ZERO = 0.D0
+      VALPAR = 0.D0
+      
       IF (NOMTE.EQ.'MECA_DIS_TR_L') THEN
          N    = 78
          NNO  = 2
@@ -92,7 +98,13 @@ C     ------------------------------------------------------------------
          NDIM = 2
       ENDIF
       NDDL = NNO * NC
+      
 C
+      DO 5 I = 1,N
+         MATA1(I) = ZERO
+         MATA2(I) = ZERO
+         MATV(I) = ZERO
+  5   CONTINUE
       IF (OPTION.EQ.'RIGI_MECA_HYST') THEN
          CALL JEVECH('PCADISK','L',JDC)
          CALL JEVECH('PRIGIEL','L',JDR)
@@ -105,6 +117,8 @@ C
          GOTO 9999
       ENDIF
 C
+      CALL JEVECH('PCAORIE','L',LORIEN)
+      CALL MATROT ( ZR(LORIEN) , PGL )
       IF (OPTION.EQ.'RIGI_MECA'.OR.OPTION.EQ.'RIGI_MECA_TANG'
      .     .OR.OPTION.EQ.'RIGI_FLUI_STRU') THEN
          CALL JEVECH('PCADISK','L',JDC)
@@ -116,6 +130,42 @@ C
       ELSEIF (OPTION.EQ.'AMOR_MECA') THEN
          CALL JEVECH('PCADISA','L',JDC)
          CALL JEVECH('PMATUUR','E',JDM)
+         IF (NDIM.NE.3) GOTO 6
+         CALL TECACH(.TRUE.,.FALSE.,'PRIGIEL',1,JDR)
+         IF (JDR.EQ.0) GOTO 6
+CCC         CALL TECACH(.TRUE.,.FALSE.,'PMATERC',1,JMA)
+         CALL TECAC2('NNN','PMATERC',1,JMA,IRET)
+         IF ((JMA.EQ.0) .OR.(IRET.NE.0)) GOTO 6
+         NOMRES(1) = 'RIGI_NOR'
+         NOMRES(2) = 'AMOR_NOR'
+         NOMRES(3) = 'AMOR_TAN'
+         VALRES(1) = ZERO
+         VALRES(2) = ZERO
+         VALRES(3) = ZERO 
+         CALL UTPSGL ( NNO, NC, PGL, ZR(JDR), MATV )
+         CALL RCVALA ( ZI(JMA),'DIS_CONTACT',0,' ',VALPAR,3,
+     &                            NOMRES,VALRES,CODRET, ' ' )
+         IF (CODRET(1).EQ.'OK'.AND.VALRES(1).NE.ZERO) THEN 
+           IF (CODRET(2).EQ.'OK') MATA1(1)=MATV(1)*VALRES(2)/VALRES(1)
+           IF (CODRET(3).EQ.'OK') MATA1(3)=MATV(1)*VALRES(3)/VALRES(1)
+           MATA1(6) = MATA1(3)
+         ENDIF
+         IF (NNO.EQ.2.AND.NC.EQ.3) THEN
+           MATA1(7) = -MATA1(1)
+           MATA1(10) = MATA1(1)
+           MATA1(15) = MATA1(3)
+           MATA1(21) = MATA1(3)
+           MATA1(12) = -MATA1(3)
+           MATA1(18) = -MATA1(3)
+         ELSEIF (NNO.EQ.2.AND.NC.EQ.6) THEN
+           MATA1(22) = -MATA1(1)
+           MATA1(28) = MATA1(1)
+           MATA1(36) = MATA1(3)
+           MATA1(45) = MATA1(3)
+           MATA1(30) = -MATA1(3)
+           MATA1(39) = -MATA1(3)
+         ENDIF
+  6      CONTINUE
       ELSEIF (OPTION.EQ.'M_GAMMA') THEN
          CALL JEVECH('PCADISM','L',JDC)
          CALL JEVECH('PDEPLAR','L',IACCE)
@@ -124,7 +174,7 @@ C
          CALL UTMESS('F','ELEMENT DISCRET (TE0041)',
      +                   '"'//OPTION//'"    : OPTION NON TRAITEE')
       ENDIF
-      CALL JEVECH('PCAORIE','L',LORIEN)
+      IF (NDIM.EQ.3) CALL UTPSLG ( NNO, NC, PGL, MATA1, MATA2 )
       IREP = NINT(ZR(JDC+N))
       IF (IREP.EQ.1) THEN
 C
@@ -135,6 +185,8 @@ C        --- REPERE GLOBAL ==> PAS DE ROTATION ---
          ELSE
             DO 20 I = 1,N
                ZR(JDM+I-1) = ZR(JDC+I-1)
+               IF (OPTION.EQ.'AMOR_MECA') 
+     +           ZR(JDM+I-1) = ZR(JDM+I-1) + MATA2(I) 
  20         CONTINUE
          ENDIF
 C
@@ -150,11 +202,13 @@ C           --- ANGLES NULS  ===>  PAS DE ROTATION ---
             ELSE
                DO 30 I = 1,N
                   ZR(JDM+I-1) = ZR(JDC+I-1)
+                  IF (OPTION.EQ.'AMOR_MECA') 
+     +             ZR(JDM+I-1) = ZR(JDM+I-1) + MATA2(I) 
  30            CONTINUE
             ENDIF
          ELSE
 C           --- ANGLES NON NULS  ===>  ROTATION ---
-            CALL MATROT ( ZR(LORIEN) , PGL )
+C            CALL MATROT ( ZR(LORIEN) , PGL )
             IF (OPTION.EQ.'M_GAMMA') THEN
                IF (NDIM.EQ.3) THEN
                  CALL UTPSLG ( NNO, NC, PGL, ZR(JDC), MATV )
@@ -166,9 +220,14 @@ C           --- ANGLES NON NULS  ===>  ROTATION ---
             ELSE
               IF (NDIM.EQ.3) THEN
                 CALL UTPSLG ( NNO, NC, PGL, ZR(JDC), ZR(JDM) )
-               ELSEIF (NDIM.EQ.2) THEN
+                IF (OPTION.EQ.'AMOR_MECA') THEN
+                 DO 25 I = 1,N
+                   ZR(JDM+I-1) = ZR(JDM+I-1) + MATA2(I)
+ 25              CONTINUE
+                ENDIF 
+              ELSEIF (NDIM.EQ.2) THEN
                 CALL UT2MLG ( NNO, NC, PGL, ZR(JDC), ZR(JDM) )
-               ENDIF
+              ENDIF
             ENDIF
          ENDIF
       ENDIF

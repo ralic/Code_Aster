@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2002   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,7 @@ C
 CDEB
 C
       CALL JEMARQ ( ) 
+      CALL INFMAJ()
 C
 C --- RECUPERATION DE LA BASE DE PROJECTION ---
 C

@@ -7,7 +7,7 @@ C
       REAL*8        DEVG(*), DEVGII, TRACEG, DY(*)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C ======================================================================
 C ======================================================================
 C --- BUT : CALCUL INITIAL POUR LE PREMIER MULTIPLICATEUR PLASTIQUE ----
 C ======================================================================
-C IN  : YD     : (DEVIATEUR,1ER INVAVRIANT,GAMP,DELTA) A L'ITERATION 0 -
+C IN  : YD     : (DEVIATEUR,1ER INVAVRIANT,GAMP,EVP,DELTA) ITERATION 0 -
 C --- : NR     : DIMENSION DE YD ---------------------------------------
 C --- : NBMAT  : NOMBRE DE PARAMETRES MATERIAU -------------------------
 C --- : MATER  : PARAMETRES MATERIAU -----------------------------------
@@ -39,7 +39,7 @@ C --- : DEPS   : TENSEUR D'ACCROISSEMENT DES DEFORMATIONS --------------
 C OUT : DEVG   : DEVIATEUR DU TENSEUR G --------------------------------
 C --- : DEVGII : NORME DU DEVIATEUR DE G -------------------------------
 C --- : TRACEG : TRACE DE G --------------------------------------------
-C --- : DY     : INCREMENTS (DEVIATEUR, 1ER INVAVRIANT, GAMP, DELTA) ---
+C --- : DY     : INCREMENTS (DEVIATEUR, 1ER INVARIANT, GAMP, EVP, DELTA)
 C ======================================================================
 C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
       INTEGER ZI
@@ -86,7 +86,7 @@ C ======================================================================
       CALL     LCEQVN (NDT, YD(1)    , SE(1) )
       CALL     LCEQVN (  1, YD(NDT+1), IE    )
       CALL     LCEQVN (  1, YD(NDT+2), GAMP  )
-      CALL     LCEQVN (  1, YD(NDT+3), DELTA )
+      CALL     LCEQVN (  1, YD(NDT+4), DELTA )
 C ======================================================================
 C --- CALCUL DES VARIABLES D'ECROUISSAGES ------------------------------
 C ======================================================================

@@ -1,6 +1,6 @@
       SUBROUTINE CESCEL(CESZ,LIGREZ,OPTINI,NOMPAZ,PROL0,BASEZ,CELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C     ------------------------------------------------------------------
       INTEGER ICMP,NEC,JCESK,JCESD,JCESV,JCESL,GD
       INTEGER IRET,IBID,JNUCMP,JNUCM1,JCESC
       INTEGER NCMPMX,NCMP1,JCMPGD,ICMP1,K,IOPT,IADG
-      INTEGER JCELV,INDIK8,JDESCO,JPARAO,NBIN,NBOUT,NEQ,NBTROU
+      INTEGER JCELV,INDIK8,NEQ
       INTEGER IGR,IEL,IALIEL,ILLIEL,JCELD,NBGR,IMOLO,JMOLO
       INTEGER NBPT,ICO,IPT,NUMA,IAD,IEQ,NUMAIL,NBELEM,IAD2
       INTEGER JDCELD,JDCELL,JDCELV,IMA,NBMA,NBSPT,ISPT,ICMPMX
@@ -79,7 +79,7 @@ C     ------------------------------------------------------------------
       INTEGER NBSP,NBCMP,ISP,NBPT2
       LOGICAL EXISDG,DIFF,PROL,PROL2
       CHARACTER*1 BASE,KBID
-      CHARACTER*8 MA,NOMGD,NOMCMP,NOMPAR,NOMMA,LICMP(2)
+      CHARACTER*8 MA,NOMGD,NOMCMP,NOMPAR,NOMMA,LICMP(2),NOPAR2
       CHARACTER*3 TSCA
       CHARACTER*4 TYPCES
       CHARACTER*16 OPTION
@@ -177,27 +177,8 @@ C     -------------------------------------------
 
 
 C     2.2 DETERMINATION DE NOMPAR SI NECESSAIRE :
-C     --------------------------------------
-      IF (NOMPAR.EQ.' ') THEN
-        CALL JEVEUO(JEXNUM('&CATA.OP.DESCOPT',IOPT),'L',JDESCO)
-        CALL JEVEUO(JEXNUM('&CATA.OP.OPTPARA',IOPT),'L',JPARAO)
-        NBIN = ZI(JDESCO-1+2)
-        NBOUT = ZI(JDESCO-1+3)
-        NBTROU = 0
-        DO 20,K = 1,NBOUT
-          IF (ZI(JDESCO-1+4+NBIN+K).NE.GD) GO TO 20
-          NBTROU = NBTROU + 1
-          NOMPAR = ZK8(JPARAO-1+NBIN+K)
-   20   CONTINUE
-        IF (NBTROU.EQ.0) CALL UTMESS('F','CESCEL','IL N Y A PAS '//
-     &                       'DE PARAMETRE "OUT" ASSOCIE A LA GRANDEUR:'
-     &                               //NOMGD//' DANS '//'L OPTION:'//
-     &                               OPTION)
-        IF (NBTROU.GT.1) CALL UTMESS('F','CESCEL','IL Y A PLUSIEURS '//
-     &                        'PARAMETRES "OUT" ASSOCIES A LA GRANDEUR:'
-     &                               //NOMGD//' DANS '//'L OPTION:'//
-     &                               OPTION)
-      END IF
+C     -------------------------------------------
+      IF (NOMPAR.EQ.' ')  NOMPAR=NOPAR2(OPTION,NOMGD,'OUT')
 
 
 C     2.3 CREATION DE DCEL :

@@ -1,4 +1,4 @@
-#@ MODIF N_CR Noyau  DATE 29/05/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF N_CR Noyau  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -190,7 +190,7 @@ class CR :
 
 
 
-def justify_text(texte='',cesure=50):
+def justify_text_old(texte='',cesure=50):
   """
       Prend la chaine de caractères 'texte' et la retourne avec un retour chariot
       tous les 'cesure' caractères s'il y a lieu (le retour chariot est placé dans un blanc
@@ -219,7 +219,7 @@ def justify_text(texte='',cesure=50):
     texte_justifie = texte_justifie + string.strip(new_text) + '\n'
   return texte_justifie[0:-1]
 
-def encadre_message(texte,motif):
+def encadre_message_old(texte,motif):
   """ 
      Retourne la chaine de caractères texte entourée d'un cadre formés
      d'éléments 'motif'
@@ -228,6 +228,53 @@ def encadre_message(texte,motif):
   lignes = string.split(texte,'\n')
   longueur = 0
   for ligne in lignes :
+    if len(ligne)> longueur : longueur = len(ligne)
+  longueur = longueur + 4
+  txt = motif*longueur+'\n'
+  for ligne in lignes :
+    txt = txt + motif + ' '+ligne+' '*(longueur-len(motif+ligne)-2)+motif+'\n'
+  txt = txt + motif*longueur+'\n'
+  return txt
+
+
+
+
+separateurs=(' ',',','/')
+def split(ligne,cesure):
+       ligne= string.rstrip(ligne)
+       if len(ligne) <= cesure :
+          return ligne
+       else:
+          coupure=cesure
+          while ligne[coupure] not in separateurs and coupure > 0:
+             coupure = coupure - 1
+          if coupure == 0:
+             # Il faut augmenter la cesure
+             coupure =cesure
+             while ligne[coupure] not in separateurs and coupure < len(ligne)-1 :
+                coupure = coupure + 1
+          if coupure == len(ligne)-1:
+             return ligne
+          else:
+             return ligne[:coupure+1]+ '\n' + split(ligne[coupure+1:],cesure)
+
+def justify_text(texte='',cesure=50):
+       texte = string.strip(texte)
+       liste_lignes = string.split(texte,'\n')
+       l=[split(l,cesure) for l in liste_lignes]
+       texte_justifie=string.join(l,'\n')
+       return texte_justifie
+
+def encadre_message(texte,motif):
+  """
+     Retourne la chaine de caractères texte entourée d'un cadre formés
+     d'éléments 'motif'
+  """
+  texte = justify_text(texte,cesure=80)
+  lignes = string.split(texte,'\n')
+  longueur = 0
+  for ligne in lignes :
+    ligne=string.rstrip(ligne)
     if len(ligne)> longueur : longueur = len(ligne)
   longueur = longueur + 4
   txt = motif*longueur+'\n'

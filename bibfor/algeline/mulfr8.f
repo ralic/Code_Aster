@@ -7,7 +7,7 @@
       LOGICAL PILMEM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/01/2002   AUTEUR JFBHHUC C.ROSE 
+C MODIF ALGELINE  DATE 16/12/2002   AUTEUR ROSE C.ROSE 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,8 +94,8 @@ C     -------------------------------------------------- VARIABLES
       INTEGER IB,DESC,IT(5),MI,MA,MXBLOC,IER,SBLOC,LTEMPR,NB
       REAL*8 TEMPS(6)
       INTEGER NPROC,IFM,NIV,LPMAX,IADIGS,MLNBPR
-      PARAMETER(NB=32)
-
+C     96 EST OPTIMUM POUR EV68
+      PARAMETER(NB=96)
 C     ------------------------------------------------------------------
       DATA NOMPR1/'&&MULFR8.PROVISOI.REELS1'/
       DATA NOMPR2/'&&MULFR8.PROVISOI.REELS2'/

@@ -3,7 +3,7 @@
      &   IPARAM, IPNTR, WORKD, WORKL, LWORKL, INFO, NEQACT, ALPHA)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/09/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ALGELINE  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -511,7 +511,7 @@ C        %--------------------------------------------%
            IERR = -6
          ELSE IF (LWORKL .LT. 3*NCV**2 + 6*NCV) THEN
            IERR = -7
-         ELSE IF (MODE .LT. 1 .OR. MODE .GT. 5) THEN
+         ELSE IF (MODE .LT. 1 .OR. MODE .GT. 4) THEN
            IERR = -10
          ELSE IF (MODE .EQ. 1 .AND. BMAT .EQ. 'G') THEN
            IERR = -11

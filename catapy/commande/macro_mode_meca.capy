@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ def macro_mode_meca_prod(self,MATR_A,MATR_B,**args ):
   return mode_meca
 
 MACRO_MODE_MECA=MACRO(nom="MACRO_MODE_MECA",op=macro_mode_meca_ops,sd_prod=macro_mode_meca_prod,
-                     docu="U4.52.02-d1",reentrant='n',
+                     docu="U4.52.02-d",reentrant='n',
             UIinfo={"groupes":("Résolution",)},
          MATR_A          =SIMP(statut='o',typ=(CO,matr_asse_depl_r) ),
          MATR_B          =SIMP(statut='o',typ=(CO,matr_asse_depl_r) ),

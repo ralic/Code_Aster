@@ -1,9 +1,9 @@
-      SUBROUTINE IRGMPF ( IFI )
+      SUBROUTINE IRGMPF ( IFI, VERSIO )
       IMPLICIT NONE
-      INTEGER             IFI
+      INTEGER             IFI, VERSIO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/02/2002   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF PREPOST  DATE 09/12/2002   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,13 @@ C       IFI    : NUMERO D'UNITE LOGIQUE DU FICHIER GMSH
 C     ------------------------------------------------------------------
 C
       WRITE(IFI,101) '$PostFormat'
-      WRITE(IFI,102)  1.D0 , 0, 8
+C
+      IF (VERSIO.EQ.1) THEN
+        WRITE(IFI,102)  1.0D0 , 0, 8
+      ELSEIF (VERSIO.EQ.2) THEN
+        WRITE(IFI,102)  1.2D0 , 0, 8
+      ENDIF
+C
       WRITE(IFI,103) '$EndPostFormat'      
 C
   101 FORMAT(A11)

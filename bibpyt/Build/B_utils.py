@@ -1,4 +1,4 @@
-#@ MODIF B_utils Build  DATE 20/06/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+#@ MODIF B_utils Build  DATE 07/01/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -103,16 +103,29 @@ def ReorganisationDe( texte , LongueurSousChaine=80 ) :
                        Chaque caractere '\n', de texte, est supprime et eventuellement
                        la sous-chaine (utile) qui le contient est completee par
                        des espaces blancs pour faire une longueur de LongueurSousChaine.
-           AUTEUR : AY sur la base d'un developpement de CCar
         """
         assert(type(texte)==types.StringType)
 
         # conversion de texte en une liste de sous-chaines
         liste=string.split('('+string.strip(texte)+')','\n')
+        # dans le cas d'une chaine trop longue (>LongueurSousChaine) :
+        # on eclate suivant les separateurs de la liste l_separ
+        l_separ=['+','-','/']
+        for separ in l_separ :
+          liste2=[]
+          for sous_chaine in liste :
+              uneChaine = string.strip( sous_chaine) # elimination des blancs inutiles.
+              if ( len(uneChaine) > LongueurSousChaine ) :
+                     liste3=string.split(uneChaine,separ)
+                     for i in range(1,len(liste3),2) :
+                         liste3[i]=separ+liste3[i]
+                     liste2=liste2+liste3
+              else : liste2.append(sous_chaine)
+          liste=liste2
 
         # Construction dans apres de texte modifie.
         apres = ''
-        for sous_chaine in liste :
+        for sous_chaine in liste2 :
                 uneChaine = string.strip( sous_chaine) # elimination des blancs inutiles.
                 if ( len(uneChaine) > LongueurSousChaine ) :
                         sys.stderr.write("ERREUR detectee dans Decoupe\n" )

@@ -1,7 +1,7 @@
       SUBROUTINE OP0129 (IER)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C 1. PREALABLES
 C====
 C
       CALL JEMARQ()
+      CALL INFMAJ()
 C
 C               12   345678   9012345678901234
       LIMOCL = '&&'//NOMPRO//'_MOT_CLE        '

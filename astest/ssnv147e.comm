@@ -1,4 +1,4 @@
-# MODIF  DATE 16/05/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/03/2003   AUTEUR GODARD V.GODARD 
 # TITRE TRACTION D'UN BARREAU FRAGILE - PRED_ELAS - ENDO_ISOT_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,8 +44,8 @@ CALCAIRE=DEFI_MATERIAU(
                     ELAS=_F( 
                 E = 20000.,
                 NU = 0.),
-               ECRO_LINE=_F( 
-                SY = 6.,
+               BETON_ECRO_LINE=_F( 
+                SYT = 6.,
                 D_SIGM_EPSI = -10000.)
                )
 
@@ -53,8 +53,8 @@ CAL_FAIB=DEFI_MATERIAU(
                     ELAS=_F( 
                 E = 20000.,
                 NU = 0.),
-               ECRO_LINE=_F( 
-                SY = 5.,
+               BETON_ECRO_LINE=_F( 
+                SYT = 5.,
                 D_SIGM_EPSI = -10000.)
                )
 
@@ -130,6 +130,7 @@ REPONSE=STAT_NON_LINE( reuse=REPONSE,
                PILOTAGE=_F( 
                 TYPE = 'PRED_ELAS',
                 ETA_PILO_MIN = 0.50,
+                ETA_PILO_R_MIN = 0.,
                 ETA_PILO_MAX = 10.),
                      NEWTON=_F( 
                 MATRICE = 'TANGENTE',
@@ -156,6 +157,7 @@ REPONSE=STAT_NON_LINE( reuse=REPONSE,
                 SUBD_PAS_MINI = 1.E-6),
                PILOTAGE=_F( 
                 TYPE = 'PRED_ELAS',
+                ETA_PILO_R_MIN = 0.,
                 ETA_PILO_MIN = 0.50,
                 ETA_PILO_MAX = 10.),
                      NEWTON=_F( 

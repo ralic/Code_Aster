@@ -1,4 +1,4 @@
-#@ MODIF macro_miss_3d_ops Macro  DATE 11/06/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_miss_3d_ops Macro  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,8 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
   FERMER        =self.get_cmd('FERMER')
   EXEC_LOGICIEL =self.get_cmd('EXEC_LOGICIEL')
   # La macro compte pour 1 dans la numerotation des commandes
-  self.icmd=1
+  #self.icmd=1
+  self.set_icmd(1)
 
   FERMER(UNITE=UNITE_IMPR_ASTER)
 
@@ -42,8 +43,8 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
 
   if OPTION['TOUT']!=None:
       MODUL2='COMPLET'
-  elif OPTION['MODULE']=='CALC_IMPE':
-      MODUL2='CALC_IMPE'
+  elif OPTION['MODULE']=='MISS_IMPE':
+      MODUL2='MISS_IMPE'
   elif OPTION['MODULE']=='MISS_EVOL':
       MODUL2='MISS_PTAS'
   elif OPTION['MODULE']=='PRE_MISS':

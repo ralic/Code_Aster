@@ -1,6 +1,6 @@
       SUBROUTINE JXVERI ( CUNIT , CMESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/06/2000   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/03/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,6 +88,24 @@ C DEB ------------------------------------------------------------------
             CALL JVMESS ('F','JXVERI03',
      &                     ' CHAINAGE CASSE APRES L''OBJET : '//NOM32)
           END IF
+          IF ( IZ .EQ. 1 ) THEN
+            IF ( IDINIT(2) .EQ. 0 ) THEN
+              IF ( ID .NE. LISZON-3 ) THEN
+                CALL JVMESS ('F','JXVERI04',
+     &                       ' CHAINAGE CASSE APRES L''OBJET : '//NOM32)
+              ENDIF
+            ELSE
+              IF ( ID .NE. IDINIT(2)-8 ) THEN
+                CALL JVMESS ('F','JXVERI05',
+     &                       ' CHAINAGE CASSE APRES L''OBJET : '//NOM32)
+              ENDIF
+            ENDIF
+          ELSE
+            IF ( ID .NE. LISZON-3 ) THEN
+              CALL JVMESS ('F','JXVERI06',
+     &                     ' CHAINAGE CASSE APRES L''OBJET : '//NOM32)
+            ENDIF
+          ENDIF
         ENDIF
  100  CONTINUE
       IERR = 0

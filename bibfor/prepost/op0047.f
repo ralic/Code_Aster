@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       INTEGER             IERR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,24 +27,37 @@ C   - OUT :
 C       IERR   : NON UTILISE
 C     ------------------------------------------------------------
       INTEGER      NFIE, NFIS, N, IFM, IUNIFI
-      CHARACTER*8  K8BID
-      CHARACTER*16 K16BID, CMD
+      LOGICAL      LGRCOU
+      CHARACTER*8  K8B
+      CHARACTER*16 K16B, CMD
 C
-      CALL GETRES(K8BID,K16BID,CMD)
+      CALL INFMAJ()
+      CALL GETRES ( K8B, K16B, CMD )
 C
       IF (CMD(5:9).EQ.'IDEAS') THEN
-        CALL GETVIS(' ','UNITE_IDEAS'    ,0,1,1, NFIE, N)
+         LGRCOU = .FALSE.
+         CALL GETVIS ( ' ', 'UNITE_IDEAS'    , 1,1,1, NFIE, N )
+         CALL GETVTX ( ' ', 'CREA_GROUP_COUL', 1,1,1,  K8B, N )
+         IF ( K8B(1:3).EQ.'OUI' )  LGRCOU = .TRUE.
+
       ELSEIF (CMD(5:8).EQ.'GMSH') THEN
-        CALL GETVIS(' ','UNITE_GMSH'    ,0,1,1, NFIE, N)
+         CALL GETVIS ( ' ', 'UNITE_GMSH'   , 1,1,1, NFIE, N )
+
       ENDIF
-      CALL GETVIS(' ','UNITE_MAILLAGE' ,0,1,1, NFIS, N)
+C
+      CALL GETVIS ( ' ', 'UNITE_MAILLAGE' , 1,1,1, NFIS, N )
+C
       CALL ASOPEN ( NFIE, ' ' )
       CALL ASOPEN ( NFIS, ' ' )
+C
       IFM = IUNIFI('MESSAGE')
+C
       IF (CMD(5:9).EQ.'IDEAS') THEN
-        CALL STBAST ( NFIE, NFIS, IFM )
+         CALL STBAST ( NFIE, NFIS, IFM, LGRCOU )
+C
       ELSEIF (CMD(5:8).EQ.'GMSH') THEN
-        CALL GMSAST ( NFIE, NFIS, IFM )
+         CALL GMSAST ( NFIE, NFIS, IFM )
+C
       ENDIF
 C
       END

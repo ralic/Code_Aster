@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 09/10/2002   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 25/03/2003   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,8 +18,8 @@
 % ======================================================================
 GENER_THPLD1
 TYPE_GENE__
-ENTETE__  ELEMENT__   THPLSL2           MAILLE__  SEG2      NUM_INIT__ 02   ELREFE__ SEG2 NB_GAUSS__  NELGA =4
-ENTETE__  ELEMENT__   THPLSL3           MAILLE__  SEG3      NUM_INIT__ 02   ELREFE__ SEG2 NB_GAUSS__  NELGA =4
+ENTETE__ ELEMENT__ THPLSL2          MAILLE__ SEG2     ELREFE__  SEG2 NB_GAUSS__ NELGA=FPG2
+ENTETE__ ELEMENT__ THPLSL3          MAILLE__ SEG3     ELREFE__  SEG3 SEG2 NB_GAUSS__ NELGA=FPG2
     OPTION__             CHAR_THER_ACCE_R          -1
     OPTION__             CHAR_THER_ACCE_X          -1
     OPTION__             CHAR_THER_ACCE_Y          -1
@@ -98,9 +98,6 @@ OPTION__
     CHAR_THER_RAYO_F    73    IN__   NGEOMER  PGEOMER  CRAYONF  PRAYONF  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
                               OUT__  MVECTTR  PVECTTR
     CHAR_THER_RAYO_R    72    IN__   NGEOMER  PGEOMER  CRAYONR  PRAYONR  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
-                              OUT__  MVECTTR  PVECTTR
-    CHAR_THER_TEXT_F    73    IN__   CCOEFHF  PCOEFHF  NGEOMER  PGEOMER  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
-                                     CT_EXTF  PT_EXTF
                               OUT__  MVECTTR  PVECTTR
     CHAR_THER_TEXT_F    73    IN__   CCOEFHF  PCOEFHF  NGEOMER  PGEOMER  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
                                      CT_EXTF  PT_EXTF

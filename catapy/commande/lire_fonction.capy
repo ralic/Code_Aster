@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 LIRE_FONCTION=OPER(nom="LIRE_FONCTION",op=  83,sd_prod=fonction,
                    fr="Lecture d une fonction dans un fichier ",
-                   docu="U4.32.02-f1",reentrant='n',
+                   docu="U4.32.02-f",reentrant='n',
             UIinfo={"groupes":("Fonction",)},
          UNITE           =SIMP(statut='o',typ='I' ),
          NOM_PARA        =SIMP(statut='f',typ='TXM',

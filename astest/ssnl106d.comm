@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,7 +95,7 @@ REST=STAT_NON_LINE(
               )
 
 REST=CALC_ELEM( reuse=REST,
-                            OPTION=(
+                            OPTION=('EPSI_ELGA_DEPL',
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=REST,
                             MODELE=MO,
@@ -119,6 +119,29 @@ REST=CALC_ELEM( reuse=REST,
                        ANGLE=90,
                       RESULTAT=REST
                    )
+REST=CALC_ELEM( reuse=REST,
+                      MODELE=MO,
+                      CHAM_MATER=CHMAT1,
+                      CARA_ELEM=CAREL,
+                      TOUT_ORDRE='OUI',
+                      EXCIT=_F(
+                            CHARGE = CHART,
+                            FONC_MULT = FONCT),
+                     OPTION=('EPSI_ELNO_TUYO',
+                     'EPEQ_ELNO_TUYO',
+                     'SIEQ_ELNO_TUYO',),
+                      NUME_COUCHE=3,
+                     NIVE_COUCHE='SUP',
+                       ANGLE=90,
+                      RESULTAT=REST
+                   )
+
+IMPR_RESU(  MODELE=MO,
+                 RESU=_F( GROUP_NO = ('A', 'B',),
+                       RESULTAT = REST, 
+                       NOM_CHAM =( 'EPSI_ELNO_TUYO', 'EPEQ_ELNO_TUYO',
+                     'SIEQ_ELNO_TUYO',))
+            )
 
 REST=CALC_ELEM( reuse=REST,
                       MODELE=MO,
@@ -263,6 +286,7 @@ IMPR_RESU(  MODELE=MO,
                        RESULTAT = RESM, NUME_ORDRE = 1,
                        NOM_CHAM = 'SIGM_ELNO_TUYO')
             )
+
 
 RESM=CALC_ELEM( reuse=RESM,
                       MODELE=MO,

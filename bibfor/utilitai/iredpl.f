@@ -3,7 +3,7 @@
       CHARACTER*(*)       MACR, FICH
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/12/2001   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF UTILITAI  DATE 24/03/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER KNOEU, KMASS, KRIGI,JPAMI
       INTEGER NBNOEU, NBMODT, NBMODE, NBMODS
       REAL*8 ZERO
-      LOGICAL      F,LMOD
+      LOGICAL      F,LMOD,LBID
       INTEGER IUNIFI,VERSIO
 C     ------------------------------------------------------------------
 C
@@ -182,11 +182,11 @@ C         CALL JENONU(JEXNOM(MANONO,ZK16(JNOEU+I-1)(1:8)),INOE)
           WRITE (IFC,'(A)') '    -1'
           TITRE = 'MODE STATIQUE: '//K10B//' '//CMP//'+++++++'
           CALL IRECRI  ( BASEMO,NOSIMP,NOPASE,'IDEAS',FICH,TITRE,
-     >                  1,'DEPL',IERO,K8B, 1,IORD,
+     >                  LBID,1,'DEPL',IERO,K8B, 1,IORD,
      >                  .TRUE.,B,IERO,B,CECR,F,IERO,
      >                  IBID,IERO,IBID,IERO,K8B,
      >                  F,ZERO,F,ZERO,F,F,FORMAR,LMOD,
-     >                  NIVE)
+     >                  NIVE,VERSIO)
         ELSE
           WRITE (IFC,'(A)') '    -1'
           WRITE (IFC,'(A)') '   481'
@@ -195,11 +195,11 @@ C         CALL JENONU(JEXNOM(MANONO,ZK16(JNOEU+I-1)(1:8)),INOE)
           WRITE (IFC,'(A)') '    -1'
           TITRE = 'MODE DYNAMIQUE'
           CALL IRECRI ( BASEMO,NOSIMP,NOPASE,'IDEAS',FICH,TITRE,
-     >                  1,'DEPL',IERO,K8B, 1,IORD,
+     >                  LBID,1,'DEPL',IERO,K8B, 1,IORD,
      >                  .TRUE.,B,IERO,B,CECR,F,IERO,
      >                  IBID,IERO,IBID,IERO,K8B,
      >                  F,ZERO,F,ZERO,F,F,FORMAR,LMOD,
-     >                  NIVE)
+     >                  NIVE,VERSIO)
         ENDIF
  100  CONTINUE
       CALL JEDETR ( '&&IREDSU.MODE_STAT' )

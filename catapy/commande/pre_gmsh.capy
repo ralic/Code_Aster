@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,12 +17,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 
-from Macro.pre_gmsh_ops import pre_gmsh_ops
-
-PRE_GMSH=MACRO(nom="PRE_GMSH",op=pre_gmsh_ops,docu="U7.01.01-f",
+PRE_GMSH=PROC(nom="PRE_GMSH",op=47,docu="U7.01.01-g",
             UIinfo={"groupes":("Gestion du travail",)},
                fr="Conversion d un fichier universel GMSH au format Aster",
          UNITE_GMSH      =SIMP(statut='f',typ='I',defaut=19),  
          UNITE_MAILLAGE  =SIMP(statut='f',typ='I',defaut=20),  
-         MODI_QUAD       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
 )  ;

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
+      CALL INFMAJ()
       IMESS = IUNIFI('MESSAGE')
       CALL GETRES( NOMRES , CONCEP , NOMCMD )
       WRITE(IMESS,'(''TYPE DE RESULTAT :'',1X,A16)') CONCEP

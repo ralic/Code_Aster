@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 31/03/2003   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C     ----------------------------------------------------------------
 C
 C     --- VERIFICATION SUPPLEMENTAIRE ---
       CALL JEMARQ()
+      CALL INFMAJ()
 C
       CALL GETRES(K8B,K8B,NOMCMD)
       INTERP = 'NON NON '
@@ -93,16 +94,16 @@ C     PARTIE IMPRESSION DES DIRECTIVES
             IF (NF.NE.0) THEN
                CALL GETVID('COURBE','FONCTION',IC,1,1,NOMFX ,N)
                CALL JEVEUO(NOMFX//'.PROL','L',LPROX)
-               IF (ZK8(LPROX).EQ.'FONCT_C ') THEN
+               IF (ZK16(LPROX).EQ.'FONCT_C ') THEN
                   CALL GETVTX('COURBE','PARTIE',IC,1,1,PARTIE,N)
                   IF (N.EQ.0) PARTIE = 'REEL'
                   NOMFON = '&&PARTIE_'//PARTIE
-                  CALL WKVECT(NOMFON//'.PROL','V V K8',5,LPRO)
-                  ZK8(LPRO)   = 'FONCTION'
-                  ZK8(LPRO+1) = ZK8(LPROX+1)
-                  ZK8(LPRO+2) = ZK8(LPROX+2)
-                  ZK8(LPRO+3) = ZK8(LPROX+3)
-                  ZK8(LPRO+4) = ZK8(LPROX+4)
+                  CALL WKVECT(NOMFON//'.PROL','V V K16',5,LPRO)
+                  ZK16(LPRO)   = 'FONCTION'
+                  ZK16(LPRO+1) = ZK16(LPROX+1)
+                  ZK16(LPRO+2) = ZK16(LPROX+2)
+                  ZK16(LPRO+3) = ZK16(LPROX+3)
+                  ZK16(LPRO+4) = ZK16(LPROX+4)
                ELSE
                   NOMFON = NOMFX
                ENDIF
@@ -118,40 +119,40 @@ C     PARTIE IMPRESSION DES DIRECTIVES
                CALL JEVEUO(NOMFX//'.PROL','L',LPROX)
                CALL JEVEUO(NOMFY//'.PROL','L',LPROY)
                NOMFON = '&&COURBE_'//KIOCC
-               CALL WKVECT(NOMFON//'.PROL','V V K8',5,LPRO)
-               ZK8(LPRO)   = 'FONCTION'
-               ZK8(LPRO+1) = INTERP
-               ZK8(LPRO+2) = ZK8(LPROX+2)
-               ZK8(LPRO+3) = ZK8(LPROY+3)
-               ZK8(LPRO+4) = PROLGD
+               CALL WKVECT(NOMFON//'.PROL','V V K16',5,LPRO)
+               ZK16(LPRO)   = 'FONCTION'
+               ZK16(LPRO+1) = INTERP
+               ZK16(LPRO+2) = ZK16(LPROX+2)
+               ZK16(LPRO+3) = ZK16(LPROY+3)
+               ZK16(LPRO+4) = PROLGD
             ELSEIF (NT.NE.0) THEN
                CALL GETVTX('COURBE','PARA_X'  ,IC,1,1,PARAX ,N)
                CALL GETVTX('COURBE','PARA_Y'  ,IC,1,1,PARAY ,N)
                NOMFON = '&&COURBE_'//KIOCC
-               CALL WKVECT(NOMFON//'.PROL','V V K8',5,LPRO)
-               ZK8(LPRO)   = 'FONCTION'
-               ZK8(LPRO+1) = INTERP
-               ZK8(LPRO+2) = PARAX
-               ZK8(LPRO+3) = PARAY
-               ZK8(LPRO+4) = PROLGD
+               CALL WKVECT(NOMFON//'.PROL','V V K16',5,LPRO)
+               ZK16(LPRO)   = 'FONCTION'
+               ZK16(LPRO+1) = INTERP
+               ZK16(LPRO+2) = PARAX
+               ZK16(LPRO+3) = PARAY
+               ZK16(LPRO+4) = PROLGD
             ELSEIF (NR.NE.0) THEN
                CALL GETVTX('COURBE','PARA_X'  ,IC,1,1,PARAX ,N)
                CALL GETVTX('COURBE','PARA_Y'  ,IC,1,1,PARAY ,N)
                NOMFON = '&&COURBE_'//KIOCC
-               CALL WKVECT(NOMFON//'.PROL','V V K8',5,LPRO)
-               ZK8(LPRO)   = 'FONCTION'
-               ZK8(LPRO+1) = 'LIN LIN '
-               ZK8(LPRO+2) = PARAX
-               ZK8(LPRO+3) = PARAY
-               ZK8(LPRO+4) = PROLGD
+               CALL WKVECT(NOMFON//'.PROL','V V K16',5,LPRO)
+               ZK16(LPRO)   = 'FONCTION'
+               ZK16(LPRO+1) = 'LIN LIN '
+               ZK16(LPRO+2) = PARAX
+               ZK16(LPRO+3) = PARAY
+               ZK16(LPRO+4) = PROLGD
             ELSE
                NOMFON = '&&COURBE_'//KIOCC
-               CALL WKVECT(NOMFON//'.PROL','V V K8',5,LPRO)
-               ZK8(LPRO)   = 'FONCTION'
-               ZK8(LPRO+1) = INTERP
-               ZK8(LPRO+2) = '  '
-               ZK8(LPRO+3) = '  '
-               ZK8(LPRO+4) = PROLGD
+               CALL WKVECT(NOMFON//'.PROL','V V K16',5,LPRO)
+               ZK16(LPRO)   = 'FONCTION'
+               ZK16(LPRO+1) = INTERP
+               ZK16(LPRO+2) = '  '
+               ZK16(LPRO+3) = '  '
+               ZK16(LPRO+4) = PROLGD
             ENDIF
             IF ( FORMAT.EQ.'AGRAF'   ) THEN
                CALL FOECAG('COURBE',NBCOUR,IC,NOMFON,IUL,IPS,IND,IRET)
@@ -177,7 +178,7 @@ C
             CALL GETVID('COURBE','FONCTION' ,IC,1,1,NOMFX ,N)
             CALL GETVTX('COURBE','PARTIE'   ,IC,1,1,PARTIE,NPA)
             CALL JEVEUO(NOMFX//'.PROL','L',LPROX)
-            IF (ZK8(LPROX).EQ.'FONCT_C ') THEN
+            IF (ZK16(LPROX).EQ.'FONCT_C ') THEN
                IF (NPA.EQ.0) THEN
                   IF ( FORMAT.EQ.'GNUPLOT'    .OR.
      +                 FORMAT.EQ.'AGRAF'      .OR.
@@ -191,12 +192,12 @@ C
                ELSE
                   NOMFON = '&&PARTIE_'//PARTIE
                ENDIF
-               CALL WKVECT(NOMFON//'.PROL','V V K8',5,LPRO)
-               ZK8(LPRO)   = 'FONCTION'
-               ZK8(LPRO+1) = ZK8(LPROX+1)
-               ZK8(LPRO+2) = ZK8(LPROX+2)
-               ZK8(LPRO+3) = ZK8(LPROX+3)
-               ZK8(LPRO+4) = ZK8(LPROX+4)
+               CALL WKVECT(NOMFON//'.PROL','V V K16',5,LPRO)
+               ZK16(LPRO)   = 'FONCTION'
+               ZK16(LPRO+1) = ZK16(LPROX+1)
+               ZK16(LPRO+2) = ZK16(LPROX+2)
+               ZK16(LPRO+3) = ZK16(LPROX+3)
+               ZK16(LPRO+4) = ZK16(LPROX+4)
                CALL JELIRA(NOMFX//'.VALE' ,'LONMAX',NBCOUP,K1BID)
                NBINST = NBCOUP / 3
                NBVAL = 2 * NBINST
@@ -233,12 +234,12 @@ C
             CALL GETVID('COURBE','LIST_RESU',IC,1,1,LISTRS,N)
             CALL GETVID('COURBE','LIST_PARA',IC,1,1,LISTR ,IND)
             NOMFON = '&&COURBE_'//KIOCC
-            CALL WKVECT(NOMFON//'.PROL','V V K8',5,LPRO)
-            ZK8(LPRO)   = 'FONCTION'
-            ZK8(LPRO+1) = INTERP
-            ZK8(LPRO+2) = ' '
-            ZK8(LPRO+3) = ' '
-            ZK8(LPRO+4) = PROLGD
+            CALL WKVECT(NOMFON//'.PROL','V V K16',5,LPRO)
+            ZK16(LPRO)   = 'FONCTION'
+            ZK16(LPRO+1) = INTERP
+            ZK16(LPRO+2) = ' '
+            ZK16(LPRO+3) = ' '
+            ZK16(LPRO+4) = PROLGD
             CALL JELIRA(LISTR//'.VALE' ,'LONMAX',NBCOUP,K1BID)
             CALL JELIRA(LISTRS//'.VALE','LONMAX',NBCOU2,K1BID)
             IF (NBCOU2.NE.NBCOUP) THEN

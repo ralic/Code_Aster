@@ -13,7 +13,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 04/10/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -173,12 +173,10 @@ C        ENDIF
       ELSE IF ( (NIN .NE. 0) .OR. (NEP .NE. 0) ) THEN
          IF  ((OPTION(1:14) .EQ. 'SIGM_ELNO_DEPL').OR.
      +        (OPTION(1:14) .EQ. 'SIEF_ELNO_ELGA') .OR.
-     +        (OPTION(1:14) .EQ. 'SIGM_ELNO_DPGE') .OR.
      +        (OPTION(1:14) .EQ. 'EPSI_ELNO_DEPL') .OR.
      +        (OPTION(1:14) .EQ. 'EPSG_ELNO_DEPL') .OR.
      +        (OPTION(1:14) .EQ. 'EPME_ELNO_DEPL') .OR.
-     +        (OPTION(1:14) .EQ. 'EPMG_ELNO_DEPL') .OR.
-     +        (OPTION(1:14) .EQ. 'EPSI_ELNO_DPGE'))THEN
+     +        (OPTION(1:14) .EQ. 'EPMG_ELNO_DEPL'))THEN
             CALL WKVECT(NOMOJB,'V V K8',6,AVK8)
             DO 20, I = 1, 6, 1
                ZK8(AVK8 + I-1) = ZK8(ACPGD + I-1)
@@ -202,7 +200,6 @@ C        ENDIF
             CALL UTIMPK('L','LES INVARIANTS TENSORIELS NE SONT '//
      +                  'CALCULES QUE POUR LES OPTIONS : ',1,' ')
             CALL UTIMPK('L','      ',1,'SIGM_ELNO_DEPL')
-            CALL UTIMPK('L','      ',1,'SIGM_ELNO_DPGE')
             CALL UTIMPK('L','      ',1,'SIEF_ELNO_ELGA')
             CALL UTIMPK('L','      ',1,'EPSI_ELNO_DEPL')
             CALL UTIMPK('L','      ',1,'EPSG_ELNO_DEPL')
@@ -225,12 +222,10 @@ C
 32          CONTINUE
          ELSE IF  ((OPTION(1:14) .EQ. 'SIGM_ELNO_DEPL').OR.
      +             (OPTION(1:14) .EQ. 'SIEF_ELNO_ELGA') .OR.
-     +             (OPTION(1:14) .EQ. 'SIGM_ELNO_DPGE') .OR.
      +             (OPTION(1:14) .EQ. 'EPSI_ELNO_DEPL') .OR.
      +             (OPTION(1:14) .EQ. 'EPSG_ELNO_DEPL') .OR.
      +             (OPTION(1:14) .EQ. 'EPME_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EPMG_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EPSI_ELNO_DPGE'))THEN
+     +             (OPTION(1:14) .EQ. 'EPMG_ELNO_DEPL'))THEN
             CALL WKVECT(NOMOJB,'V V K8',5,AVK8)
             ZK8(AVK8 + 1-1) = ZK8(ACPGD + 1-1)
             ZK8(AVK8 + 2-1) = ZK8(ACPGD + 2-1)
@@ -256,13 +251,11 @@ C
             CALL UTIMPK('L','LES TRACES NORMALES SONT CALCULEES '//
      +                  'POUR LES OPTIONS : ',1,' ')
             CALL UTIMPK('L','      ',1,'SIGM_ELNO_DEPL')
-            CALL UTIMPK('L','      ',1,'SIGM_ELNO_DPGE')
             CALL UTIMPK('L','      ',1,'SIEF_ELNO_ELGA')
             CALL UTIMPK('L','      ',1,'EPSI_ELNO_DEPL')
             CALL UTIMPK('L','      ',1,'EPSG_ELNO_DEPL')
             CALL UTIMPK('L','      ',1,'EPME_ELNO_DEPL')
             CALL UTIMPK('L','      ',1,'EPMG_ELNO_DEPL')
-            CALL UTIMPK('L','      ',1,'EPSI_ELNO_DPGE')
             CALL UTIMPK('L','      ',1,'DEGE_ELNO_DEPL')
             CALL UTIMPK('L','      ',1,'EFFE_ELNO_DEPL')
             CALL UTIMPK('L','OU POUR LES GRANDEURS',1,' ')
@@ -324,12 +317,10 @@ C
             ENDIF
          ELSE IF ( (OPTION(1:14) .EQ. 'SIGM_ELNO_DEPL') .OR.
      +             (OPTION(1:14) .EQ. 'SIEF_ELNO_ELGA') .OR.
-     +             (OPTION(1:14) .EQ. 'SIGM_ELNO_DPGE') .OR.
      +             (OPTION(1:14) .EQ. 'EPSI_ELNO_DEPL') .OR.
      +             (OPTION(1:14) .EQ. 'EPSG_ELNO_DEPL') .OR.
      +             (OPTION(1:14) .EQ. 'EPME_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EPMG_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EPSI_ELNO_DPGE')) THEN
+     +             (OPTION(1:14) .EQ. 'EPMG_ELNO_DEPL')) THEN
             CALL WKVECT(NOMNEW,'V V I',3,AVINEW)
             IF ( DIRX ) THEN
                ZI(AVINEW + 1-1) = 1
@@ -401,7 +392,6 @@ C
             CALL UTIMPK('L','LES TRACES DIRECTIONNELLES SONT '//
      +                  'CALCULEES POUR LES OPTIONS : ',1,' ')
             CALL UTIMPK('L','      ',1,'SIGM_ELNO_DEPL')
-            CALL UTIMPK('L','      ',1,'SIGM_ELNO_DPGE')
             CALL UTIMPK('L','      ',1,'SIEF_ELNO_ELGA')
             CALL UTIMPK('L','      ',1,'EPSI_ELNO_DEPL')
             CALL UTIMPK('L','      ',1,'EPSG_ELNO_DEPL')
@@ -521,8 +511,6 @@ C          /* CHGT DE REPERE POUR SIGMA, EPSI, (N,M) OU (E,K) */
                  IF ( (N2 + N3) .NE. 0 ) THEN
                     IF ( NOMGD .EQ. 'SIEF_R' ) THEN
                        OPTION(1:4) = 'EFGE'
-                    ELSE
-                       OPTION(1:4) = 'DPGE'
                     ENDIF
                     IF ( DOCU .EQ. 'CHNO' ) THEN
                        OPTION(5:14) = '_NOEU_DEPL'

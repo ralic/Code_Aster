@@ -3,7 +3,7 @@
       CHARACTER*8       MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,15 +47,23 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER       NBCMP, NBPA, NBPB, IOCC, NBSITU, NA, NB, NDIM,
-     +              JVALA, JVALB, I
-      PARAMETER    ( NBCMP = 7 )
-      REAL*8        PARA(NBCMP), TEMPA, TEMPB
+     +              JVALA, JVALB, I,NBCMP2
+      PARAMETER    ( NBCMP = 7, NBCMP2=NBCMP+1 )
+      REAL*8        PARA(NBCMP), TEMPA, TEMPB,TKE
       CHARACTER*2   CODRET(NBCMP)
-      CHARACTER*8   NOPA, NOPB
+      CHARACTER*8   NOPA, NOPB, TYPEKE
       CHARACTER*16  PHENOM, MOTCLF, NOCMP(NBCMP)
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
+C    RECUP TYPE KE
+      CALL GETVTX (' ', 'TYPE_KE', 0,1,1, TYPEKE, NB )
+      IF (TYPEKE.EQ.'KE_MECA')THEN
+         TKE=-1.D0
+      ELSE
+         TKE=1.D0
+      ENDIF   
+      
       MOTCLF = 'SITUATION'
       CALL GETFAC ( MOTCLF, NBSITU )
 C
@@ -88,7 +96,7 @@ C
 C --- ON STOCKE 7 VALEURS : E, NU, ALPHA, E_REFE, SM, M_KE, N_KE
 C     POUR LES 2 ETATS STABILISES DE CHAQUE SITUATION
 C
-      NDIM = NBCMP * NBSITU
+      NDIM = NBCMP2 * NBSITU
       CALL WKVECT ( '&&RC3200.MATERIAU_A', 'V V R8', NDIM, JVALA )
       CALL WKVECT ( '&&RC3200.MATERIAU_B', 'V V R8', NDIM, JVALB )
 C
@@ -117,8 +125,9 @@ C
      +                              NOCMP(5), PARA(5), CODRET, 'F ' )
 C
          DO 12 I = 1 , NBCMP
-            ZR(JVALA-1+NBCMP*(IOCC-1)+I) = PARA(I)
+            ZR(JVALA-1+NBCMP2*(IOCC-1)+I) = PARA(I)
  12      CONTINUE
+         ZR(JVALA-1+NBCMP2*(IOCC-1)+8) = TKE
 C
 C ------ ETAT STABILISE "B"
 C        ------------------
@@ -143,8 +152,9 @@ C
      +                              NOCMP(5), PARA(5), CODRET, 'F ' )
 C
          DO 14 I = 1 , NBCMP
-            ZR(JVALB-1+NBCMP*(IOCC-1)+I) = PARA(I)
+            ZR(JVALB-1+NBCMP2*(IOCC-1)+I) = PARA(I)
  14      CONTINUE
+         ZR(JVALB-1+NBCMP2*(IOCC-1)+8) = TKE
 C
  10   CONTINUE
 C

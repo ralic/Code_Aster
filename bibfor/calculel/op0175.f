@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER IER
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C TOLE CRP_20
 C     COMMANDE :  POST_ZAC
 C        METHODE ZARKA-CASIER
@@ -118,6 +118,7 @@ C    POUR LA PARTIE LOI DE COMPORTEMENT ZAC
       DATA TYPESE/0/
 C ----------------------------------------------------------------------
       CALL JEMARQ()
+      CALL INFMAJ()
 
 C               12   345678   90123
       INPSCO = '&&'//NOMPRO//'_PSCO'

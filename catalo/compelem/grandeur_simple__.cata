@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 02/10/2002   AUTEUR ASSIRE A.ASSIRE 
+%& MODIF COMPELEM  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -262,7 +262,7 @@ GRANDEUR_SIMPLE__
                     IXZ      IYZ      IXR2     IYR2
     MATE_F   = K8   MATE
     META_R   = R    ZF       ZP       ZB       ZM       MS       TPG      P
-    MINMAX_R = R    MIN      MAX      NCOUMIN  NCOUMAX  NSECMIN  NSECMAX  NPCOUMIN NPCOUMAX
+    SPMA_R   = R    MIN      MAX      NCOUMIN  NCOUMAX  NSECMIN  NSECMAX  NPCOUMIN NPCOUMAX
                     NPSECMIN NPSECMAX
     NBSP_I   = I    NBFIBR   COQ_NCOU   GRI_NCOU   TUY_NCOU   TUY_NSEC
     NEUT_F   = K8   X1       X2       X3       X4       X5       X6       X7       X8
@@ -284,8 +284,7 @@ GRANDEUR_SIMPLE__
     PILO_K   = K16  TYPE
     PILO_R   = R    A0       A1       A2       A3       ETA
     POSI     = I    POS
-    PREC     = R    PREC
-
+    PREC     = R    PREC     SIGM     EPSI     FTHERM   FHYDR1   FHYDR2
 <<  PRES_C/_F/_R : PRESSION
     PRES : PRESSION (NORMALE A LA SURFACE).
          SI C'EST UN CHARGEMENT: P>0 EST APPLIQUEE SELON L'OPPOSE DE LA NORMALE.
@@ -320,11 +319,13 @@ GRANDEUR_SIMPLE__
     EP : EPAISSEUR DE LA TUYAUTERIE
     SN : AMPLITUDE DE VARIARTION DES CONTRAINTES LINEARISEES
     SALT : AMPLITUDE DE CONTRAINTE
-    U_TOTAL : FACTEUR D'USAGE   >>
+    U_TOTAL : FACTEUR D'USAGE  
+    TYPEKE : TYPE DE CALCUL DE KE : SOIT KE_MECA, SOIT KE_MIXTE  
+     >>
     RCCM_R   = R    C1     C2       C3       K1       K2       K3       TYPE
                     E      E_AMBI   NU       ALPHA    E_REFE   SM       M_KE
                     N_KE   IY       IZ       D        EP
-                    SN     SN_3SM   SALT     U_TOTAL
+                    SN     SN_3SM   SALT     U_TOTAL  TYPEKE
 <<  RCCM_K : GRANDEURS POUR LE RCCM B3600
     TB_TEMP : TABLE DE RELEVE DE TEMPERATURE
     TB_MOYE : TABLE DE RELEVE DE MOYENNE  >>

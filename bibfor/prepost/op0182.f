@@ -2,7 +2,7 @@
       IMPLICIT  REAL*8  ( A-H,O-Z )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 02/12/2002   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,15 +133,6 @@ C            REMPLACEMENT DU TUBE PERCE PAR UN TUBE NEUF
 C     ------------------------------------------------------------------
 C
       CALL GETVR8 ( ' ', 'PERCEMENT', 1,1,1, PERCE, NIS )
-C
-C     ------------------------------------------------------------------
-C            REMPLACEMENT DU TUBE PERCE PAR UN TUBE NEUF
-C     ------------------------------------------------------------------
-C
-      CALL GETVTX ( ' ', 'TUBE_NEUF', 1,1,1, K8B, NTN )
-      IF ( NTN .NE. 0 ) THEN
-         CALL MOTUBN ( TABPUS, DINST, NS, VOLTUB )
-      ENDIF
 C
 C     ------------------------------------------------------------------
 C          PARAMETRES POUR L'USURE DES OBSTACLES EN FONCTION DE LA 

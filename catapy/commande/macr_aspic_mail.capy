@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE F1BHHAJ J.ANGLES
 MACR_ASPIC_MAIL=MACRO(nom="MACR_ASPIC_MAIL",op= -16,sd_prod=maillage,reentrant='n',
-                    fr=" ",docu="U4.PC.10-b1",
+                    fr=" ",docu="U4.pc.10-b",
             UIinfo={"groupes":("Outils métier",)},
 
          EXEC_MAILLAGE   =FACT(statut='o',min=1,max=1,

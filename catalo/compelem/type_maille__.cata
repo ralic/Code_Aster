@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 13/08/2002   AUTEUR ADBHHPM P.MASSIN 
+%& MODIF COMPELEM  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -7,32 +7,149 @@
 % ======================================================================
 TYPE_MAILLE__
 
-   POI1       1    DIM__  0  CODE__ 'POI'
-   SEG2       2    DIM__  1  CODE__ 'SE2'
-   SEG22      4    DIM__  1  CODE__ 'S22'
-   SEG3       3    DIM__  1  CODE__ 'SE3'
-   SEG33      6    DIM__  1  CODE__ 'S33'
-   SEG4       4    DIM__  1  CODE__ 'SE4'
-   TRIA3      3    DIM__  2  CODE__ 'TR3'
-   TRIA33     6    DIM__  2  CODE__ 'T33'
-   TRIA6      6    DIM__  2  CODE__ 'TR6'
-   TRIA66     12   DIM__  2  CODE__ 'T66'
-   TRIA7      7    DIM__  2  CODE__ 'TR7'
-   QUAD4      4    DIM__  2  CODE__ 'QU4'
-   QUAD44     8    DIM__  2  CODE__ 'Q44'
-   QUAD8      8    DIM__  2  CODE__ 'QU8'
-   QUAD88     16   DIM__  2  CODE__ 'Q88'
-   QUAD9      9    DIM__  2  CODE__ 'QU9'
-   QUAD99     18   DIM__  2  CODE__ 'Q99'
-   TETRA4     4    DIM__  3  CODE__ 'TE4'
-   TETRA10    10   DIM__  3  CODE__ 'T10'
-   PENTA6     6    DIM__  3  CODE__ 'PE6'
-   PENTA15    15   DIM__  3  CODE__ 'P15'
-   PYRAM5     5    DIM__  3  CODE__ 'PY5'
-   PYRAM13    13   DIM__  3  CODE__ 'P13'
-   HEXA8      8    DIM__  3  CODE__ 'HE8'
-   HEXA20     20   DIM__  3  CODE__ 'H20'
-   HEXA27     27   DIM__  3  CODE__ 'H27'
-   TR3QU4     7    DIM__  2  CODE__ 'TQ7'
-   QU4TR3     7    DIM__  2  CODE__ 'QT7'
+%%%%%%%%  ATTENTION : %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% IL NE FAUT PAS MODIFIER LE NOMBRE OU L'ORDRE DES TYPE_MAILLE
+% SANS METTRE A JOUR LA ROUTINE LRMTYP
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+MAILLE__     POI1       1    DIM__  0  CODE__ 'POI'
+   ELREFE__ V_POI1     FAMILLE__   FPG1 1
+
+MAILLE__     SEG2       2    DIM__  1  CODE__ 'SE2'
+   ELREFE__ CABPOU     FAMILLE__   FPG1 1
+   ELREFE__ SEG2       FAMILLE__   FPG1 2
+   ELREFE__ SEG2       FAMILLE__   FPG2 4
+   ELREFE__ THCOSE2    FAMILLE__   FPG1 3
+   ELREFE__ V_SEG2     FAMILLE__   FPG1 1
+   ELREFE__ V_SEG2     FAMILLE__   FPG2 2
+   ELREFE__ V_SEG2     FAMILLE__   FPG3 3
+
+MAILLE__     SEG22      4    DIM__  1  CODE__ 'S22'
+   ELREFE__ V_SEG22    FAMILLE__   FPG1 4
+
+MAILLE__     SEG3       3    DIM__  1  CODE__ 'SE3'
+   ELREFE__ MET3SEG3   FAMILLE__   FPG1 3
+   ELREFE__ MET6SEG3   FAMILLE__   FPG1 3
+   ELREFE__ SEG3       FAMILLE__   FPG1 3
+   ELREFE__ SEG3       FAMILLE__   FPG2 4
+   ELREFE__ THCOSE3    FAMILLE__   FPG1 3
+   ELREFE__ V_SEG3     FAMILLE__   FPG1 3
+
+MAILLE__     SEG33      6    DIM__  1  CODE__ 'S33'
+   ELREFE__ V_SEG33    FAMILLE__   FPG1 6
+
+MAILLE__     SEG4       4    DIM__  1  CODE__ 'SE4'
+   ELREFE__ MET3SEG4   FAMILLE__   FPG1 4
+
+MAILLE__     TRIA3      3    DIM__  2  CODE__ 'TR3'
+   ELREFE__ FACE3      FAMILLE__   FPG1 3
+   ELREFE__ MEDKTR3    FAMILLE__   FPG1 3
+   ELREFE__ MEDSTR3    FAMILLE__   FPG1 3
+   ELREFE__ MEGRDKT    FAMILLE__   FPG1 3
+   ELREFE__ TRIA3      FAMILLE__   FPG1 1
+   ELREFE__ TRIA3      FAMILLE__   FPG2 3
+   ELREFE__ TRIA3D     FAMILLE__   FPG1 3
+   ELREFE__ TRIA3H     FAMILLE__   FPG1 3
+   ELREFE__ TRIA3L     FAMILLE__   FPG1 3
+
+MAILLE__     TRIA33     6    DIM__  2  CODE__ 'T33'
+   ELREFE__ V_TRIA33   FAMILLE__   FPG1 6
+
+MAILLE__     TRIA6      6    DIM__  2  CODE__ 'TR6'
+   ELREFE__ FACE6      FAMILLE__   FPG1 4
+   ELREFE__ FACE6      FAMILLE__   FPG2 6
+   ELREFE__ TRIA6      FAMILLE__   FPG1 3
+   ELREFE__ TRIA6      FAMILLE__   FPG2 6
+   ELREFE__ TRIA6D     FAMILLE__   FPG1 3
+   ELREFE__ TRIA6H     FAMILLE__   FPG1 6
+   ELREFE__ TRII6      FAMILLE__   FPG1 3
+   ELREFE__ TRII6      FAMILLE__   FPG2 6
+   ELREFE__ TRIL6      FAMILLE__   FPG1 3
+
+MAILLE__     TRIA66     12   DIM__  2  CODE__ 'T66'
+   ELREFE__ V_TRIA66   FAMILLE__   FPG1 12
+
+MAILLE__     TRIA7      7    DIM__  2  CODE__ 'TR7'
+   ELREFE__ MEC3TR7H   FAMILLE__   FPG1 7
+   ELREFE__ TRIA7      FAMILLE__   FPG1 3
+
+MAILLE__     QUAD4      4    DIM__  2  CODE__ 'QU4'
+   ELREFE__ FACE4      FAMILLE__   FPG1 4
+   ELREFE__ MEDKQU4    FAMILLE__   FPG1 4
+   ELREFE__ MEDSQU4    FAMILLE__   FPG1 4
+   ELREFE__ MEQ4QU4    FAMILLE__   FPG1 4
+   ELREFE__ QUAD4      FAMILLE__   FPG1 4
+   ELREFE__ QUAD4D     FAMILLE__   FPG1 4
+   ELREFE__ QUAD4L     FAMILLE__   FPG1 4
+   ELREFE__ QUAD4_FI   FAMILLE__   FPG1 1
+
+MAILLE__     QUAD44     8    DIM__  2  CODE__ 'Q44'
+   ELREFE__ V_QUAD44   FAMILLE__   FPG1 8
+
+MAILLE__     QUAD8      8    DIM__  2  CODE__ 'QU8'
+   ELREFE__ FACE8      FAMILLE__   FPG1 9
+   ELREFE__ QUA8D      FAMILLE__   FPG1 4
+   ELREFE__ QUAD8      FAMILLE__   FPG1 8
+   ELREFE__ QUAD8      FAMILLE__   FPG2 9
+   ELREFE__ QUAI8      FAMILLE__   FPG1 9
+   ELREFE__ QUAS8      FAMILLE__   FPG1 4
+   ELREFE__ QUAS8      FAMILLE__   FPG2 9
+
+MAILLE__     QUAD88     16   DIM__  2  CODE__ 'Q88'
+   ELREFE__ V_QUAD88   FAMILLE__   FPG1 16
+
+MAILLE__     QUAD9      9    DIM__  2  CODE__ 'QU9'
+   ELREFE__ FACE9      FAMILLE__   FPG1 9
+   ELREFE__ MEC3QU9H   FAMILLE__   FPG1 9
+   ELREFE__ QUAD9      FAMILLE__   FPG1 4
+   ELREFE__ QUAD9      FAMILLE__   FPG2 9
+
+MAILLE__     QUAD99     18   DIM__  2  CODE__ 'Q99'
+   ELREFE__ V_QUAD99   FAMILLE__   FPG1 18
+
+MAILLE__     TETRA4     4    DIM__  3  CODE__ 'TE4'
+   ELREFE__ TETRA4     FAMILLE__   FPG1 4
+   ELREFE__ TETRA4L    FAMILLE__   FPG1 4
+
+MAILLE__     TETRA10    10   DIM__  3  CODE__ 'T10'
+   ELREFE__ TETRA10    FAMILLE__   FPG1 15
+   ELREFE__ TETRA10D   FAMILLE__   FPG1 4
+   ELREFE__ TETRI10    FAMILLE__   FPG1 4
+
+MAILLE__     PENTA6     6    DIM__  3  CODE__ 'PE6'
+   ELREFE__ PENTA6     FAMILLE__   FPG1 6
+   ELREFE__ PENTA6L    FAMILLE__   FPG1 6
+
+MAILLE__     PENTA15    15   DIM__  3  CODE__ 'P15'
+   ELREFE__ PENTA15    FAMILLE__   FPG1 21
+   ELREFE__ PENTA15D   FAMILLE__   FPG1 6
+   ELREFE__ PENTI15    FAMILLE__   FPG1 6
+
+MAILLE__     PYRAM5     5    DIM__  3  CODE__ 'PY5'
+   ELREFE__ PYRAM5     FAMILLE__   FPG1 5
+
+MAILLE__     PYRAM13    13   DIM__  3  CODE__ 'P13'
+   ELREFE__ PYRAI13    FAMILLE__   FPG1 5
+   ELREFE__ PYRAM13    FAMILLE__   FPG1 27
+   ELREFE__ PYRAM13D   FAMILLE__   FPG1 5
+
+MAILLE__     HEXA8      8    DIM__  3  CODE__ 'HE8'
+   ELREFE__ HEXA8      FAMILLE__   FPG1 8
+   ELREFE__ HEXA8L     FAMILLE__   FPG1 8
+
+MAILLE__     HEXA20     20   DIM__  3  CODE__ 'H20'
+   ELREFE__ HEXA20     FAMILLE__   FPG1 27
+   ELREFE__ HEXD20     FAMILLE__   FPG1 8
+   ELREFE__ HEXI20     FAMILLE__   FPG1 27
+   ELREFE__ HEXI20     FAMILLE__   FPG2 8
+   ELREFE__ HEXS20     FAMILLE__   FPG1 8
+
+MAILLE__     HEXA27     27   DIM__  3  CODE__ 'H27'
+   ELREFE__ HEXA27     FAMILLE__   FPG1 27
+
+MAILLE__     TR3QU4     7    DIM__  2  CODE__ 'TQ7'
+   ELREFE__ V_TR3QU4   FAMILLE__   FPG1 1
+
+MAILLE__     QU4TR3     7    DIM__  2  CODE__ 'QT7'
+   ELREFE__ V_QU4TR3   FAMILLE__   FPG1 1
 

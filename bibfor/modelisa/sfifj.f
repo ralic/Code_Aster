@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/02/99   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -197,9 +197,9 @@ C
         METHOD=ZK16(IVATE+4)(1:8)
         FONCT =ZK16(IVATE+1)
         CALL JEVEUO(FONCT//'.PROL','L',LPRESS)
-        CALL FONBPA(FONCT,ZK8(LPRESS),K8B,MXPARA,NBPF,NOMP)
+        CALL FONBPA(FONCT,ZK16(LPRESS),K8B,MXPARA,NBPF,NOMP)
         IPARA(1) = 1
-        IF (ZK8(LPRESS).EQ.'FONCTION') THEN
+        IF (ZK16(LPRESS).EQ.'FONCTION') THEN
            CALL JEVEUO(FONCT//'.VALE','L',LVAR)
            CALL JELIRA(FONCT//'.VALE','LONUTI',NBPT,K1BID)
            NBPT   = NBPT / 2
@@ -281,13 +281,13 @@ C
      +                            IVAL, 0.D0, C16B, NOMFON, 0 )
 C
             CALL WKVECT ( NOMFON(1:19)//'.VALE','G V R ',3*NBPOIN,LVALE)
-            CALL WKVECT ( NOMFON(1:19)//'.PROL','G V K8',5       ,LPROL)
+            CALL WKVECT ( NOMFON(1:19)//'.PROL','G V K16',5      ,LPROL)
 C
-            ZK8(LPROL  ) = 'FONCT_C '
-            ZK8(LPROL+1) = 'LIN LIN '
-            ZK8(LPROL+2) = 'FREQ    '
-            ZK8(LPROL+3) = 'DSP     '
-            ZK8(LPROL+4) = 'LL      '
+            ZK16(LPROL  ) = 'FONCT_C '
+            ZK16(LPROL+1) = 'LIN LIN '
+            ZK16(LPROL+2) = 'FREQ    '
+            ZK16(LPROL+3) = 'DSP     '
+            ZK16(LPROL+4) = 'LL      '
 C
 C BOUCLE SUR LES FREQUENCES ET REMPLISSAGE DU .VALE 
 C IE VALEURS DES INTERSPECTRS
@@ -301,10 +301,10 @@ C
                  PRS = 0.D0
               ELSEIF(ZK16(IVATE).EQ.'SPEC_CORR_CONV_2') THEN
                  PULS = DEUXPI*F
-                 IF (ZK8(LPRESS).EQ.'INTERPRE') THEN
+                 IF (ZK16(LPRESS).EQ.'INTERPRE') THEN
                     CALL FIINTE('F',FONCT,NBPF,IPARA,PULS,PRS,IER)
-                 ELSEIF (ZK8(LPRESS).EQ.'FONCTION') THEN
-                    CALL FOLOCX(ZR(LVAR),NBPT,PULS,ZK8(LPRESS+4),IPT,
+                 ELSEIF (ZK16(LPRESS).EQ.'FONCTION') THEN
+                    CALL FOLOCX(ZR(LVAR),NBPT,PULS,ZK16(LPRESS+4),IPT,
      +                          EPSI,COLI,IRET)
                     IF (IRET.NE.0) THEN
                        IER = IER + 1
@@ -314,9 +314,9 @@ C
                        CALL UTFINM()
                        GOTO 9999
                     ENDIF
-                    CALL FOCOLI (IPT,COLI,ZK8(LPRESS+1),ZR(LVAR),
+                    CALL FOCOLI (IPT,COLI,ZK16(LPRESS+1),ZR(LVAR),
      +                           ZR(LFON),PULS,PRS,IER,
-     +                           FONCT,ZK8(LPRESS),MXPARA,NOMP,IPARA,
+     +                           FONCT,ZK16(LPRESS),MXPARA,NOMP,IPARA,
      +                           'INST',1,PULS)
  
                     IF (IER.NE.0) GOTO 9999

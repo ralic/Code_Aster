@@ -1,4 +1,4 @@
-#@ MODIF N_PROC_ETAPE Noyau  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF N_PROC_ETAPE Noyau  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -103,7 +103,6 @@ class PROC_ETAPE(N_ETAPE.ETAPE):
         raise AsException("Etape ",self.nom,'ligne : ',self.appel[0],
                               'fichier : ',self.appel[1],e)
       except EOFError:
-        self.reset_current_step()
         raise
       except :
         l=traceback.format_exception(sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2])

@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,
      &                   PHASM,PHASP,OPTION,SIGP,VIP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/06/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 11/02/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,7 +91,7 @@ C
       REAL*8             DZ(4),DZ1(4),DZ2(4),DVIN(5),A,THETA(8)
       REAL*8             SIGMP(6),SIG0(6),SIMOEQ,SIELEQ,SIGEPS
       REAL*8             DT,N(5),N0(5),C(5),M(5),UNSURN(5),CR,ETA(5)
-      REAL*8             KPT(3),TRANS,ZVARIM,ZVARIP,DELTAZ
+      REAL*8             KPT(4),TRANS,ZVARIM,ZVARIP,DELTAZ
       REAL*8             RBID,HALPHA,RALPHA,CM,MM
       REAL*8             HPLUS(5),H(5),RPLUS(5),SY(5),ECRO(5)
       REAL*8             DH(5)
@@ -662,7 +662,7 @@ C       --MATRICE ELASTIQUE
           COEF2 =0.D0
           COEF3=0.D0
           IF (COMPOR(1)(1:4) .EQ. 'META') THEN
-            IF (PLASTI .GE. 0.5D0) THEN            
+            IF (PLASTI .GE. 0.5D0) THEN
               SIGEPS = 0.D0
               DO 170 K = 1,NDIMSI
                 SIGEPS = SIGEPS + SIGDV(K)*DEPSDV(K)
@@ -717,7 +717,7 @@ C       --MATRICE ELASTIQUE
              DSIDEP(K,L) = DSIDEP(K,L)+TROISK/3.D0
  193        CONTINUE
  192       CONTINUE
-           DO 180 K=1,NDIMSI
+          DO 180 K=1,NDIMSI
                DO 181 L=1,NDIMSI
                   DSIDEP(K,L) = DSIDEP(K,L)- COEF3 *SIG0(K)*SIG0(L)
  181           CONTINUE

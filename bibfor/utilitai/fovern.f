@@ -4,7 +4,7 @@
       CHARACTER*(*)     VECNOM(NBFONC),    VECPRO(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,15 +52,15 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER      I,JPROF,NBPF
       CHARACTER*24 CHNOM
-      CHARACTER*8  PROLGD,INTERP,TYPFON,NOMPF(10)
+      CHARACTER*16 PROLGD,INTERP,TYPFON,NOMPF(10)
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       CHNOM(20:24) = '.PROL'
       DO 1 I=1,NBFONC
          CHNOM(1:19) = VECNOM(I)
          CALL JEVEUO(CHNOM,'L',JPROF)
-         CALL FOPRO1(ZK8(JPROF),0,PROLGD,INTERP)
-         CALL FONBPA(CHNOM(1:19),ZK8(JPROF),TYPFON,10,NBPF,NOMPF)
+         CALL FOPRO1(ZK16(JPROF),0,PROLGD,INTERP)
+         CALL FONBPA(CHNOM(1:19),ZK16(JPROF),TYPFON,10,NBPF,NOMPF)
          CALL JELIBE(CHNOM)
          IF (NOMPF(1).NE.'TOUTPARA') THEN
             VECPRO(6)=NOMPF(1)
@@ -75,8 +75,8 @@ C     ------------------------------------------------------------------
       DO 3 I=1,NBFONC
          CHNOM(1:19) = VECNOM(I)
          CALL JEVEUO(CHNOM,'L',JPROF)
-         CALL FOPRO1(ZK8(JPROF),0,PROLGD,INTERP)
-         CALL FONBPA(CHNOM(1:19),ZK8(JPROF),TYPFON,10,NBPF,NOMPF)
+         CALL FOPRO1(ZK16(JPROF),0,PROLGD,INTERP)
+         CALL FONBPA(CHNOM(1:19),ZK16(JPROF),TYPFON,10,NBPF,NOMPF)
          CALL JELIBE(CHNOM)
          IF (NOMPF(1).NE.VECPRO(6).AND.NOMPF(1).NE.'TOUTPARA') THEN
             CALL UTDEBM('E','FOVERN','PARAMETRES DIFFERENTS')

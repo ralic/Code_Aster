@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -220,13 +220,13 @@ C
                CALL WKVECT ( NOMCOD//'.VALE',
      &                             'G V R8',6,ZI(ILFOR1-1+IJ1))
             ENDIF
-            CALL WKVECT(NOMCOD//'.PROL','G V K8',5,ZI(ILAPRL-1+IJ1))
+            CALL WKVECT(NOMCOD//'.PROL','G V K16',5,ZI(ILAPRL-1+IJ1))
             IBID1=ZI(ILAPRL-1+IJ1)
-            ZK8(IBID1  ) = 'FONCT_C '
-            ZK8(IBID1+1) = 'LIN LIN '
-            ZK8(IBID1+2) = NOCHAM
-            ZK8(IBID1+3) = 'DSP     '
-            ZK8(IBID1+4) = 'EE      '
+            ZK16(IBID1  ) = 'FONCT_C '
+            ZK16(IBID1+1) = 'LIN LIN '
+            ZK16(IBID1+2) = NOCHAM
+            ZK16(IBID1+3) = 'DSP     '
+            ZK16(IBID1+4) = 'EE      '
  402     CONTINUE
  401  CONTINUE
 C

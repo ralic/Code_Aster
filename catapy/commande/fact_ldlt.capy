@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,7 @@ def fact_ldlt_prod(MATR_ASSE,**args):
   raise AsException("type de concept resultat non prevu")
 
 FACT_LDLT=OPER(nom="FACT_LDLT",op=14,sd_prod=fact_ldlt_prod,fr="Factorisation en place ou hors place",
-               docu="U4.55.01-f",reentrant='f',
+               docu="U4.55.01-g",reentrant='f',
             UIinfo={"groupes":("Résolution",)},
          regles=(EXCLUS('BLOC_DEBUT','DDL_DEBUT'),
                  EXCLUS('BLOC_FIN','DDL_FIN'),),

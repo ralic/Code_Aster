@@ -1,16 +1,17 @@
       SUBROUTINE STATIM ( NBOBST, NBPT, TEMPS, DLOC, FCHO, VGLI, 
      +                    DEFPLA,  WK1, WK2, WK3, TDEBUT, TFIN,
-     +                    NBLOC, OFFSET,TREPOS, NBCLAS, NOECHO, NOMRES )
+     +                    NBLOC, OFFSET,TREPOS, NBCLAS, NOECHO, 
+     +                    INTITU, NOMRES )
       IMPLICIT     REAL*8 (A-H,O-Z)
       INTEGER       NBOBST, NBPT, NBLOC
       REAL*8        TEMPS(*), DLOC(*), FCHO(*), VGLI(*), TDEBUT, TFIN
       REAL*8        WK1(*), WK2(*), WK3(*), FNMAXA, FNMETY, FNMMOY
       REAL*8        OFFSET, TREPOS, DEFPLA(*)
-      CHARACTER*8   NOECHO(*)
+      CHARACTER*8   NOECHO(*), INTITU(*)
       CHARACTER*(*) NOMRES
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/10/1999   AUTEUR SABJLMA P.LATRUBESSE 
+C MODIF ALGORITH  DATE 24/03/2003   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,25 +59,25 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      IBID, NBPARA, NPARG, NPARP, NPARF
-      PARAMETER    ( NPARG = 5 , NPARP = 6 , NPARI = 9 , NBPARA = 19 )
-      PARAMETER    ( NPARF = 6 )
+      PARAMETER    ( NPARG = 6 , NPARP = 7 , NPARI = 10 , NBPARA = 20 )
+      PARAMETER    ( NPARF = 7 )
       REAL*8       PARA(3)
       COMPLEX*16   C16B
       CHARACTER*4  TPARA(NBPARA)
       CHARACTER*8  K8B, NOEUD
       CHARACTER*16 TVAR(4), LPARI(NPARI), LPARG(NPARG), LPARP(NPARP)
-      CHARACTER*16 VALEK(3), NPARA(NBPARA), LPARF(NPARF)
+      CHARACTER*16 VALEK(4), NPARA(NBPARA), LPARF(NPARF)
 C
       DATA TVAR  / 'IMPACT' , 'GLOBAL' , 'PROBA'  , 'FLAMBAGE' /
 C
-      DATA NPARA / 'NOEUD'         , 'CALCUL'        , 'CHOC'         ,
+      DATA NPARA / 'INTITULE','NOEUD', 'CALCUL'       , 'CHOC'         ,
      +             'INSTANT'       , 'F_MAX'         , 'IMPULSION'    , 
      +             'T_CHOC'        , 'V_IMPACT'      , 'NB_IMPACT'    ,
      +             'F_MAX_ABS'     , 'F_MAX_MOY'     , 'F_MAX_ETYPE'  ,
      +             'CLASSE'        , 'DEBUT'         , 'FIN'          ,
      +             'PROBA'         , 'FLAMBAGE'      , 'ECRAS_RESI'   ,
      +             'INST_FLAMB'    /
-      DATA TPARA / 'K8'            , 'K16'           , 'I'            , 
+      DATA TPARA / 'K8', 'K8'      , 'K16'           , 'I'            , 
      +             'R'             , 'R'             , 'R'            ,
      +             'R'             , 'R'             , 'I'            ,
      +             'R'             , 'R'             , 'R'            ,
@@ -84,16 +85,16 @@ C
      +             'R'             , 'K8'            , 'R'            ,
      +             'R'             /
 C
-      DATA LPARI / 'NOEUD'         , 'CALCUL'        , 'CHOC'         ,
+      DATA LPARI / 'INTITULE','NOEUD', 'CALCUL'      , 'CHOC'         ,
      +             'INSTANT'       , 'F_MAX'         , 'IMPULSION'    , 
      +             'T_CHOC'        , 'V_IMPACT'      , 'NB_IMPACT'    /
 C
-      DATA LPARG / 'NOEUD'         , 'CALCUL'        ,
+      DATA LPARG / 'INTITULE'      ,'NOEUD'          ,'CALCUL'      ,
      +             'F_MAX_ABS'     , 'F_MAX_MOY'     , 'F_MAX_ETYPE'  /
 C
-      DATA LPARP / 'NOEUD'         , 'CALCUL'        , 'CLASSE'        ,
+      DATA LPARP / 'INTITULE','NOEUD','CALCUL'       , 'CLASSE'        ,
      +             'DEBUT'         , 'FIN'           , 'PROBA'         /
-      DATA LPARF / 'NOEUD'         , 'CALCUL'        , 'CHOC'         , 
+      DATA LPARF / 'INTITULE','NOEUD','CALCUL'       , 'CHOC'         , 
      +             'FLAMBAGE'      , 'ECRAS_RESI'    , 'INST_FLAMB'    /
 C-----------------------------------------------------------------------
 C
@@ -120,8 +121,9 @@ C     BOUCLE SUR LES NOEUDS DE CHOC
 C
       DO 10 I = 1,NBOBST
         NOEUD = NOECHO(I)
-        VALEK(1) = NOEUD
-        VALEK(2) = TVAR(1)
+        VALEK(1) = INTITU(I)
+        VALEK(2) = NOEUD
+        VALEK(3) = TVAR(1)
 C
         NBCHOC = 0
         CALL R8COPY ( NBPAS, FCHO(3*(I-1)+1), 3*NBOBST, WK1, 1 )
@@ -130,7 +132,7 @@ C
      +                OFFSET, TEMPS(IDEBUT), TREPOS, NBCHOC, FNMAXA,
      +                FNMMOY, FNMETY, NPARI, LPARI, VALEK )
 C
-        VALEK(2) = TVAR(2)
+        VALEK(3) = TVAR(2)
         PARA(1) = FNMAXA
         PARA(2) = FNMMOY
         PARA(3) = FNMETY
@@ -142,7 +144,7 @@ C
         FMAX = -FMIN
         CALL HISTOG ( NBCHOC, WK3, FMIN, FMAX, WK2, WK1, NDEC )
 C
-        VALEK(2) = TVAR(3)
+        VALEK(3) = TVAR(3)
         DO 30 IDEC = 1 , NDEC
            IF (IDEC.EQ.1) THEN
               PARA(1) = FMIN
@@ -157,8 +159,8 @@ C
 C
 C       --- AJOUT FLAMBAGE SI CELUI-CI A EU LIEU ---
         IF (DEFPLA(NBOBST*(NBPAS-1)+I) .GT. 0.D0) THEN
-           VALEK(2) = TVAR(4)
-           VALEK(3) = 'OUI'
+           VALEK(3) = TVAR(4)
+           VALEK(4) = 'OUI'
            PARA(1) = DEFPLA(NBOBST*(NBPAS-1)+I)
            IPAS = 1
  40        CONTINUE
@@ -174,7 +176,8 @@ C          --- CAS CHOC ENTRE 2 NOEUDS : ON REPARTIT DEFPLA ---
 C             --- 1ER NOEUD ---
               CALL TBAJLI(NOMRES, NPARF, LPARF, I, PARA, C16B, VALEK, 0)
 C             --- 2EME NOEUD ---
-              VALEK(1) = NOECHO(NBOBST+I)
+              VALEK(1) = INTITU(NBOBST+I)
+              VALEK(2) = NOECHO(NBOBST+I)
               CALL TBAJLI(NOMRES, NPARF, LPARF, I, PARA, C16B, VALEK, 0)
            ELSE
               CALL TBAJLI(NOMRES, NPARF, LPARF, I, PARA, C16B, VALEK, 0)

@@ -1,22 +1,21 @@
       SUBROUTINE RAYCIR(JVECPG, JDTAU, JVECN, NBORDR, NBVEC, NOMMET)
+C MODIF PREPOST  DATE 08/04/2003   AUTEUR F1BHHAJ J.ANGLES 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/06/2002   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE F1BHHAJ
 C TOLE  CRP_20
@@ -141,6 +140,37 @@ C
             ENDIF
  40      CONTINUE
 C
+C-----------------------------------------------------------------------
+C   ------------------------------------
+C  |  TRAITEMENT DES CAS PARTICULIERS  |
+C  ------------------------------------
+C
+C 1/ CAS OU TOUS LES POINTS SONT DANS UNE BOITE DONT LES DEUX COTES
+C    SONT INFERIEURS A EPSILO.
+C
+         IF ( (ABS(CVMAX-CVMIN) .LT. EPSILO) .AND.
+     &        (ABS(CUMAX-CUMIN) .LT. EPSILO) ) THEN
+            ZR(JDTAU + (IVECT-1)) = 0.0D0
+            ZI(JVECN + (IVECT-1)) = IVECT
+            GOTO 30
+C
+C 2/ CAS OU TOUS LES POINTS SONT ALIGNES HORIZONTALEMENT
+C
+         ELSEIF ( ABS(CVMAX-CVMIN) .LT. EPSILO ) THEN
+            ZR(JDTAU + (IVECT-1)) = ABS(CUMAX-CUMIN)/2.0D0
+            ZI(JVECN + (IVECT-1)) = IVECT
+            GOTO 30
+C
+C 3/ CAS OU TOUS LES POINTS SONT ALIGNES VERTICALEMENT
+C
+         ELSEIF ( ABS(CUMAX-CUMIN) .LT. EPSILO ) THEN
+            ZR(JDTAU + (IVECT-1)) = ABS(CVMAX-CVMIN)/2.0D0
+            ZI(JVECN + (IVECT-1)) = IVECT
+            GOTO 30
+         ENDIF
+C
+C-----------------------------------------------------------------------
+C
          IF ((CUMAX - CUMIN) .GE. (CVMAX - CVMIN)) THEN
             DIAMIN = CUMAX - CUMIN
             RAYMIN = (CUMAX - CUMIN)/2.0D0
@@ -160,21 +190,6 @@ C
             ETIR   = (CUMAX - CUMIN)/(CVMAX - CVMIN)
             ORICAD = 'VERTI'
          ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C TRAITEMENT DES CAS PARTICULIERS
-C
-C CAS OU TOUS LES POINTS SONT ALIGNES HORIZONTALEMENT OU
-C VERTICALEMENT.
-C
-         IF ( (ABS(CVMAX-CVMIN) .LT. EPSILO) .OR.
-     &        (ABS(CUMAX-CUMIN) .LT. EPSILO) ) THEN
-            ZR(JDTAU + (IVECT-1)) = DIAMIN/2.0D0
-            ZI(JVECN + (IVECT-1)) = IVECT
-            GOTO 30
-         ENDIF
-C-----------------------------------------------------------------------
 C
          CUO1 = CUMIN + (CUMAX - CUMIN)/2.0D0
          CVO1 = CVMIN + (CVMAX - CVMIN)/2.0D0
@@ -215,7 +230,7 @@ C
                         ZR(JSEC3 + NBPTS3*2 +1) = CVI
                         NBPTS3 = NBPTS3 + 1
                         INDSEC = 1
-              ENDIF
+                     ENDIF
                   ELSE
                      IF (CVI .GE. CVO1) THEN
                         ZR(JSEC1 + NBPTS1*2) = CUI
@@ -265,52 +280,56 @@ C
          DO 80 I=1, 24
             COORPT(I) = 0.0D0
  80      CONTINUE
-         IF ( NBPTS1 .GT. 0 ) THEN
-            IF ( NBPTS2 .GT. 0 ) THEN
+         IF (( NBPTS1 .GT. 0 ) .AND. ( NBPTS2 .GT. 0 )) THEN
+            IF ((ORICAD .EQ. 'HORIZ') .OR.
+     &          ((ORICAD .EQ. 'VERTI') .AND. (ETIR .GE. CETIR))) THEN
                CALL DIMAX1 (JSEC1, JSEC2, NBPTS1, NBPTS2, DMAXI(1),
      &                      COORPT(1), COORPT(2), COORPT(3), COORPT(4))
             ELSE
                DMAXI(1) = 0.0D0
             ENDIF
+         ENDIF
 C
-            IF ( NBPTS3 .GT. 0 ) THEN
-               CALL DIMAX1 (JSEC1, JSEC3, NBPTS1, NBPTS3, DMAXI(2),
-     &                      COORPT(5), COORPT(6), COORPT(7), COORPT(8))
-            ELSE
-               DMAXI(2) = 0.0D0
-            ENDIF
+         IF (( NBPTS1 .GT. 0 ) .AND. ( NBPTS3 .GT. 0 )) THEN
+            CALL DIMAX1 (JSEC1, JSEC3, NBPTS1, NBPTS3, DMAXI(2),
+     &                   COORPT(5), COORPT(6), COORPT(7), COORPT(8))
+         ELSE
+            DMAXI(2) = 0.0D0
+         ENDIF
 C
-            IF (( NBPTS4 .GT. 0 ) .AND. ( ETIR .GE. CETIR )) THEN
+         IF (( NBPTS1 .GT. 0 ) .AND. ( NBPTS4 .GT. 0 )) THEN
+            IF ((ORICAD .EQ. 'VERTI') .OR.
+     &          ((ORICAD .EQ. 'HORIZ') .AND. (ETIR .GE. CETIR))) THEN
                CALL DIMAX1 (JSEC1, JSEC4, NBPTS1, NBPTS4, DMAXI(3),
      &                      COORPT(9), COORPT(10), COORPT(11),
      &                      COORPT(12))
             ELSE
-               DMAXI(3) = 0.0D0
+              DMAXI(3) = 0.0D0
             ENDIF        
          ENDIF
 C
-         IF ( NBPTS2 .GT. 0 ) THEN
-            IF (( NBPTS3 .GT. 0 ) .AND. ( ETIR .GE. CETIR )) THEN
+         IF (( NBPTS2 .GT. 0 ) .AND. ( NBPTS3 .GT. 0 )) THEN
+            IF ((ORICAD .EQ. 'VERTI') .OR.
+     &          ((ORICAD .EQ. 'HORIZ') .AND. (ETIR .GE. CETIR))) THEN
                CALL DIMAX1 (JSEC2, JSEC3, NBPTS2, NBPTS3, DMAXI(4),
      &                      COORPT(13), COORPT(14), COORPT(15),
      &                      COORPT(16))
             ELSE
-               DMAXI(4) = 0.0D0
+              DMAXI(4) = 0.0D0
             ENDIF
          ENDIF
 C
-         IF ( NBPTS2 .GT. 0 ) THEN
-            IF ( NBPTS4 .GT. 0 ) THEN
-               CALL DIMAX1 (JSEC2, JSEC4, NBPTS2, NBPTS4, DMAXI(5),
-     &                      COORPT(17), COORPT(18), COORPT(19),
-     &                      COORPT(20))
-            ELSE
-               DMAXI(5) = 0.0D0
-            ENDIF
+         IF (( NBPTS2 .GT. 0 ) .AND. ( NBPTS4 .GT. 0 )) THEN
+            CALL DIMAX1 (JSEC2, JSEC4, NBPTS2, NBPTS4, DMAXI(5),
+     &                   COORPT(17), COORPT(18), COORPT(19),
+     &                   COORPT(20))
+         ELSE
+            DMAXI(5) = 0.0D0
          ENDIF
 C
-         IF ( NBPTS3 .GT. 0 ) THEN
-            IF ( NBPTS4 .GT. 0 ) THEN
+         IF (( NBPTS3 .GT. 0 ) .AND. ( NBPTS4 .GT. 0 )) THEN
+            IF ((ORICAD .EQ. 'HORIZ') .OR.
+     &          ((ORICAD .EQ. 'VERTI') .AND. (ETIR .GE. CETIR))) THEN
                CALL DIMAX1 (JSEC3, JSEC4, NBPTS3, NBPTS4, DMAXI(6),
      &                      COORPT(21), COORPT(22), COORPT(23),
      &                      COORPT(24))
@@ -531,7 +550,6 @@ C
                   CALL DIMAX2(JCOORP, 4, CUOI, CVOI, RMIN3P,
      &                        CUPN, CVPN, IRET3P)
 C
-                  WRITE(6,*)'IRET3P = ', IRET3P
                   IF ((RMIN3P .LT. RAY3PT) .AND. (IRET3P .EQ. 0)) THEN
                      RAY3PT = RMIN3P
                      CUON = CUOI
@@ -605,7 +623,6 @@ C
      &                       (IVECT-1)*NBORDR*2 )
             CVO1 = CVO1 + ZR( JVECPG + (IORDR-1)*2 +
      &                       (IVECT-1)*NBORDR*2 + 1 )
-         WRITE(6,*)CUO1, CVO1
  210     CONTINUE
 C
       CUO1 = CUO1/NBORDR
@@ -631,7 +648,6 @@ C
 C
          DIST = SQRT((CUTAU - CUON)**2 + (CVTAU - CVON)**2)
          P = DIST - RAYON
-         WRITE(6,*)N, NBR, CUTAU, CVTAU, CUON, CVON, RAYON, DIST, P
 C
          IF (P .GT. EPSILO) THEN
             NBR = 0

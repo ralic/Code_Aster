@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ def norm_mode_prod(MODE,**args ):
 
 NORM_MODE=OPER(nom="NORM_MODE",op=  37,sd_prod=norm_mode_prod,
                fr="Normalisation de modes propres",
-               docu="U4.52.11-e",reentrant='f',
+               docu="U4.52.11-f",reentrant='f',
             UIinfo={"groupes":("Résolution",)},
          regles=(UN_PARMI('NORME','NOEUD','AVEC_CMP','SANS_CMP'),),
          MODE       =SIMP(statut='o',typ=(mode_meca,mode_flamb) ),

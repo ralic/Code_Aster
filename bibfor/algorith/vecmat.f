@@ -4,7 +4,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -163,7 +163,7 @@ C
             IF (ZK8(IVALK+IL-1)(1:3).EQ.'K_D') THEN
               IPIF=IPI+LMAT-1+LFCT*(IL-1)
               JPRO=ZI(IPIF+1)
-              IF (ZK8(JPRO).EQ.'NAPPE') THEN
+              IF (ZK16(JPRO).EQ.'NAPPE') THEN
                 MATCST = 'NAP'
               ENDIF
             ENDIF

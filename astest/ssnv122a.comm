@@ -1,0 +1,350 @@
+# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+# TITRE ROTATION ET PRESSION 3D GRANDES DEFORMATIONS (LOI LINEAIRE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+
+DEBUT(CODE=_F( NOM = 'SSNV122A',NIV_PUB_WEB='INTERNET'))
+
+MA=LIRE_MAILLAGE()
+
+MO=AFFE_MODELE(
+              
+                MAILLAGE=MA,
+                   VERIF='MAILLE',
+              
+                AFFE=_F( 
+                TOUT = 'OUI',
+                PHENOMENE = 'MECANIQUE',
+                MODELISATION = '3D')
+              )
+
+ACIER=DEFI_MATERIAU(
+              
+               ELAS=_F( E = 200000.,  NU = 0.3)
+              )
+
+CHP_MATE=AFFE_MATERIAU(
+              
+                MAILLAGE=MA,
+                   
+                AFFE=_F( 
+                TOUT = 'OUI',
+                MATER = ACIER)
+              )
+
+CHR_PLAN=AFFE_CHAR_MECA(
+              
+               MODELE=MO,
+               
+                DDL_IMPO=_F( NOEUD = ('NO1', 'NO2', 'NO3', 'NO4', 'NO5', 'NO6', 'NO7', 'NO8',), DZ = 0.)
+              )
+
+INSTANTS=DEFI_LIST_REEL(
+              
+               DEBUT=0.0,INTERVALLE=(
+               
+                _F( JUSQU_A = 1.,   NOMBRE = 5),
+                _F( JUSQU_A = 2.,   NOMBRE = 2))
+              )
+
+# CALCUL DE LA ROTATION RIGIDE
+
+ROT_Xa = FORMULE(REEL="""(REEL:INST) =
+- 1000. * SIN(INST*PI/2.)
+            """)
+
+ROT_Ya = FORMULE(REEL="""(REEL:INST) =
+- 1000. * (1. - COS(INST*PI/2.))
+            """)
+
+ROT_X=CALC_FONC_INTERP(
+                 FONCTION=ROT_Xa,
+                LIST_PARA=INSTANTS,
+              NOM_PARA='INST',
+              PROL_GAUCHE='EXCLU',
+               PROL_DROITE='EXCLU',
+                 INTERPOL='NON'
+             )
+
+ROT_Y=CALC_FONC_INTERP(
+                 FONCTION=ROT_Ya,
+                LIST_PARA=INSTANTS,
+              NOM_PARA='INST',
+              PROL_GAUCHE='EXCLU',
+               PROL_DROITE='EXCLU',
+                 INTERPOL='NON'
+             )
+
+ZERO=DEFI_CONSTANTE(
+             
+              VALE=0.
+             )
+
+CHR_ROTA=AFFE_CHAR_MECA_F(
+             
+               MODELE=MO,DDL_IMPO=(
+              
+               _F( NOEUD = ('NO3', 'NO7',),  DX = ZERO,     DY = ZERO),
+               _F( NOEUD = ('NO1', 'NO5',),  DX = ROT_X,    DY = ROT_Y))
+             )
+
+V=STAT_NON_LINE( 
+                            MODELE=MO,
+                        CHAM_MATER=CHP_MATE,EXCIT=(
+                             _F( 
+                CHARGE = CHR_PLAN), _F( 
+                CHARGE = CHR_ROTA)),
+                         COMP_ELAS=_F( 
+                RELATION = 'ELAS',
+                DEFORMATION = 'GREEN'),
+                         INCREMENT=_F( 
+                LIST_INST = INSTANTS,
+                INST_FIN = 1.),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 1),
+                       CONVERGENCE=_F( 
+                RESI_GLOB_MAXI = 1.E-3,
+                ITER_GLOB_MAXI = 50),
+                     RECH_LINEAIRE=_F( 
+                ITER_LINE_MAXI = 4)
+              )
+
+# CHARGEMENT DE PRESSION DANS LA CONFIGURATION DEFORMEE
+
+
+F_CHAR=DEFI_FONCTION(
+              
+                  NOM_PARA='INST',
+               PROL_GAUCHE='CONSTANT',
+                PROL_DROITE='CONSTANT',
+                      VALE=(1.,0.,  2.,1.,)
+              )
+
+CHR_PRES=AFFE_CHAR_MECA(
+              
+                 MODELE=MO,
+               PRES_REP=_F( MAILLE = 'MA2',  PRES = -26610.31)
+              )
+
+LIAISON=AFFE_CHAR_MECA(
+              
+                 MODELE=MO,DDL_IMPO=(
+              
+                _F( NOEUD = ('NO3', 'NO7',),  DX = 0., DY = 0.),
+                _F( NOEUD = ('NO1', 'NO5',),  DY = 0.))
+              )
+
+V=STAT_NON_LINE( reuse=V,
+                            MODELE=MO,
+                        CHAM_MATER=CHP_MATE,EXCIT=(
+                             _F( 
+                CHARGE = CHR_PLAN), _F( 
+                CHARGE = LIAISON,
+                TYPE_CHARGE = 'DIDI'), _F( 
+                CHARGE = CHR_PRES,
+                TYPE_CHARGE = 'SUIV',
+                FONC_MULT = F_CHAR)),
+                         ETAT_INIT=_F( 
+                EVOL_NOLI = V),
+                         COMP_ELAS=_F( 
+                RELATION = 'ELAS',
+                DEFORMATION = 'GREEN'),
+                         INCREMENT=_F( 
+                LIST_INST = INSTANTS,
+                INST_FIN = 1.5),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 1),
+                       CONVERGENCE=_F( 
+                RESI_GLOB_RELA = 1.E-5,
+                ITER_GLOB_MAXI = 20),
+                     RECH_LINEAIRE=_F( 
+                ITER_LINE_MAXI = 5)
+              )
+
+# REPRISE POUR VERIFIER LE MOT-CLE GEOMETRIE: 'DEFORMEE'
+# S'IL N'EST PAS PRESENT, IL FAUT 11 ITERATIONS POUR CV.
+# AVEC ITER_GLOB_MAXI: 7, ON TESTE EFFECTIVEMENT.
+
+V=STAT_NON_LINE( reuse=V,
+                            MODELE=MO,
+                        CHAM_MATER=CHP_MATE,EXCIT=(
+                             _F( 
+                CHARGE = CHR_PLAN), _F( 
+                CHARGE = LIAISON,
+                TYPE_CHARGE = 'DIDI'), _F( 
+                CHARGE = CHR_PRES,
+                TYPE_CHARGE = 'SUIV',
+                FONC_MULT = F_CHAR)),
+                         ETAT_INIT=_F( 
+                EVOL_NOLI = V),
+                         COMP_ELAS=_F( 
+                RELATION = 'ELAS',
+                DEFORMATION = 'GREEN'),
+                         INCREMENT=_F( 
+                LIST_INST = INSTANTS),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 1),
+                       CONVERGENCE=_F( 
+                RESI_GLOB_RELA = 1.E-5,
+                ITER_GLOB_MAXI = 10),
+                     RECH_LINEAIRE=_F( 
+                ITER_LINE_MAXI = 5)
+              )
+
+# POST-TRAITEMENT
+
+V=CALC_NO(
+             reuse=V,
+                RESULTAT=V,  MODELE=MO,
+                  OPTION='REAC_NODA',
+             )
+
+V=CALC_ELEM(
+             reuse=V,
+                  MODELE=MO,
+              CHAM_MATER=CHP_MATE,
+                RESULTAT=V,
+                 OPTION='EPSG_ELNO_DEPL'
+             )
+
+IMPR_RESU(
+               MODELE=MO,
+                
+             RESU=_F( 
+             FORMAT = 'RESULTAT',
+             RESULTAT = V,
+             NOM_CHAM = (
+               'DEPL',
+               'SIEF_ELGA',
+               'REAC_NODA',
+               'EPSG_ELNO_DEPL',
+               ),
+             INST = (1., 2.,),
+             PRECISION = 1.E-5,
+             TOUT = 'OUI')
+           )
+
+TEST_RESU(RESU=(
+             
+               _F( 
+               RESULTAT = V,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 7,
+               NOEUD = 'NO2',   NOM_CMP = 'DX',
+               PRECISION = 1.E-3,
+               VALE = -1953.94),
+             
+               _F( 
+               RESULTAT = V,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 7,
+               NOEUD = 'NO2',   NOM_CMP = 'DY',
+               PRECISION = 1.E-3,
+               VALE = 100.),
+#
+             
+               _F( 
+               RESULTAT = V,   NOM_CHAM = 'SIEF_ELGA',  NUME_ORDRE = 7,
+               MAILLE = 'MA1',  POINT = 1,               NOM_CMP = 'SIXX',
+               PRECISION = 1.,
+               CRITERE = 'ABSOLU',
+               VALE = 0.),
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'SIEF_ELGA',  NUME_ORDRE = 7,
+               MAILLE = 'MA1',  POINT = 1,               NOM_CMP = 'SIYY',
+               PRECISION = 1.E-3,
+               VALE = 26610.31),
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'SIEF_ELGA',  NUME_ORDRE = 7,
+               MAILLE = 'MA1',  POINT = 1,               NOM_CMP = 'SIZZ',
+               PRECISION = 1.E-3,
+               VALE = 6597.6),
+              _F( 
+               RESULTAT = V,     NOM_CHAM = 'SIEF_ELGA',  NUME_ORDRE = 7,
+               MAILLE = 'MA1',    POINT = 1,               NOM_CMP = 'SIXY',
+               PRECISION = 1.,
+               CRITERE = 'ABSOLU',
+               VALE = 0.),
+              _F( 
+               RESULTAT = V,     NOM_CHAM = 'SIEF_ELGA',  NUME_ORDRE = 7,
+               MAILLE = 'MA1',    POINT = 1,               NOM_CMP = 'SIXZ',
+               PRECISION = 1.,
+               CRITERE = 'ABSOLU',
+               VALE = 0.),
+              _F( 
+               RESULTAT = V,     NOM_CHAM = 'SIEF_ELGA',  NUME_ORDRE = 7,
+               MAILLE = 'MA1',    POINT = 1,               NOM_CMP = 'SIYZ',
+               PRECISION = 1.,
+               CRITERE = 'ABSOLU',
+               VALE = 0.),
+#
+             
+               _F( 
+               RESULTAT = V,   NOM_CHAM = 'REAC_NODA',  NUME_ORDRE = 7,
+               NOEUD = 'NO3',   NOM_CMP = 'DX',
+               PRECISION = 1.E6,
+               CRITERE = 'ABSOLU',
+               VALE = 0.),
+             
+               _F( 
+               RESULTAT = V,   NOM_CHAM = 'REAC_NODA',  NUME_ORDRE = 7,
+               NOEUD = 'NO3',   NOM_CMP = 'DY',
+               PRECISION = 1.E-3,
+               VALE = -6.3462E9),
+             
+               _F( 
+               RESULTAT = V,   NOM_CHAM = 'REAC_NODA',  NUME_ORDRE = 7,
+               NOEUD = 'NO3',   NOM_CMP = 'DZ',
+               PRECISION = 1.E-3,
+               VALE = -1.7307E9),
+#
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'EPSG_ELNO_DEPL',  NUME_ORDRE = 7,
+               MAILLE = 'MA1',  NOEUD = 'NO8',   NOM_CMP = 'EPXX',
+               PRECISION = 1.E-3,
+               VALE = 0.105),
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'EPSG_ELNO_DEPL',  NUME_ORDRE = 7,
+               MAILLE = 'MA1',  NOEUD = 'NO8',   NOM_CMP = 'EPYY',
+               PRECISION = 1.E-3,
+               VALE = -0.045),
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'EPSG_ELNO_DEPL',  NUME_ORDRE = 7,
+               MAILLE = 'MA1',  NOEUD = 'NO8',   NOM_CMP = 'EPZZ',
+               PRECISION = 1.E-5,  CRITERE = 'ABSOLU',
+               VALE = 0.),
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'EPSG_ELNO_DEPL',  NUME_ORDRE = 7,
+               MAILLE = 'MA1',  NOEUD = 'NO8',   NOM_CMP = 'EPXY',
+               PRECISION = 1.E-5,  CRITERE = 'ABSOLU',
+               VALE = 0.),
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'EPSG_ELNO_DEPL',  NUME_ORDRE = 7,
+               MAILLE = 'MA1',  NOEUD = 'NO8',   NOM_CMP = 'EPXZ',
+               PRECISION = 1.E-5,  CRITERE = 'ABSOLU',
+               VALE = 0.),
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'EPSG_ELNO_DEPL',  NUME_ORDRE = 7,
+               MAILLE = 'MA1',  NOEUD = 'NO8',   NOM_CMP = 'EPYZ',
+               PRECISION = 1.E-5,  CRITERE = 'ABSOLU',
+               VALE = 0.))
+             )
+
+FIN()
+#
+#

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -348,14 +348,14 @@ C      --- CREATION DES OBJETS NOMFON EN GLOBALE ---
           VALE = NOMFON//'.VALE'
           PROL = NOMFON//'.PROL'
           CALL WKVECT(VALE,'G V R',LVECT,LPARA)
-          CALL WKVECT(PROL,'G V K8',5,LPRO)
+          CALL WKVECT(PROL,'G V K16',5,LPRO)
 C
 C      --- REMPLISSAGE DE L'OBJET NOMFON//'.PROL' ---
-          ZK8(LPRO)   = 'FONCT_C '
-          ZK8(LPRO+1) = 'LIN LIN '
-          ZK8(LPRO+2) = 'FREQ    '
-          ZK8(LPRO+3) = 'DSP     '
-          ZK8(LPRO+4) = 'EC      '
+          ZK16(LPRO)   = 'FONCT_C '
+          ZK16(LPRO+1) = 'LIN LIN '
+          ZK16(LPRO+2) = 'FREQ    '
+          ZK16(LPRO+3) = 'DSP     '
+          ZK16(LPRO+4) = 'EC      '
 C
 C      --- REMPLISSAGE DE L'OBJET NOMFON//'.VALE' ---
           DO 50 KL = 1,NBFREQ

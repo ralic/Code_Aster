@@ -1,4 +1,4 @@
-# MODIF  DATE 24/09/2002   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+# MODIF  DATE 03/03/2003   AUTEUR DURAND C.DURAND 
 # TITRE VALIDATION DE PROJ_MESU_MODAL: CAS DISCRET, BASE (MODE_MECA)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,9 +107,8 @@ MODLMESU=AFFE_MODELE(   MAILLAGE=MAILMESU,AFFE=(
                                     MODELISATION = 'DIS_T'))        )
 
 #
-MESURE=LIRE_RESU(FORMAT='IDEAS',
+MESURE=LIRE_RESU(FORMAT='IDEAS_DS58',
                  UNITE=33,
-                 DATASET_58='OUI',
                  MAILLAGE=MAILMESU,
                  TYPE_RESU='DYNA_TRANS',
                  NOM_CHAM='DEPL',

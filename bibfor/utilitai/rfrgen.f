@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 24/03/2003   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,12 +93,12 @@ C
 C
 C     --- REMPLISSAGE DU .PROL ---
 C
-      CALL WKVECT(NOMFON//'.PROL','G V K8',5,LPRO)
-      ZK8(LPRO)   = 'FONCTION'
-      ZK8(LPRO+1) = INTERP(1)//INTERP(2)
-      ZK8(LPRO+2) = NOMACC(1:8)
-      ZK8(LPRO+3) = NOMCHA(1:4)
-      ZK8(LPRO+4) = 'EE      '
+      CALL WKVECT(NOMFON//'.PROL','G V K16',5,LPRO)
+      ZK16(LPRO)   = 'FONCTION'
+      ZK16(LPRO+1) = INTERP(1)//INTERP(2)
+      ZK16(LPRO+2) = NOMACC(1:8)
+      ZK16(LPRO+3) = NOMCHA(1:4)
+      ZK16(LPRO+4) = 'EE      '
 C
 C----------------------------------------------------------------------
 C                            P T E M
@@ -191,9 +191,9 @@ C           --- ACCE_MONO_APPUI COMPATIBLE UNIQUEMENT AVEC ACCELERATION
      +                    'UNIQUEMENT AVEC UN CHAMP DE TYPE : ACCE ')
                GOTO 9999
             ENDIF
-            ZK8(LPRO+3)(5:8) = '_ABS'
+            ZK16(LPRO+3)(5:8) = '_ABS'
             CALL JEVEUO(FONCT//'.PROL','L',JPROL)
-            CALL FONBPA(FONCT,ZK8(JPROL),K8B,MXPARA,NBPF,NOMP)
+            CALL FONBPA(FONCT,ZK16(JPROL),K8B,MXPARA,NBPF,NOMP)
             IPAR(1) = 0
             DO 20 I1 = 1,NBPF
                IF (NOMP(I1).EQ.'INST') THEN
@@ -216,7 +216,7 @@ C           --- ACCE_MONO_APPUI COMPATIBLE UNIQUEMENT AVEC ACCELERATION
                CALL UTIMPK('L',' PARAMETRES RECUS   :',NBPF,NOMP)
                CALL UTFINM()
             ENDIF
-            IF (ZK8(JPROL).EQ.'FONCTION') THEN
+            IF (ZK16(JPROL).EQ.'FONCTION') THEN
                CALL JEVEUO(FONCT//'.VALE','L',JVAR)
                CALL JELIRA(FONCT//'.VALE','LONUTI',NBPT,K1BID)
                NBPT   = NBPT / 2
@@ -252,7 +252,7 @@ C
          NOMMOT = 'NON'
          CALL GETVTX(' ','MULT_APPUI',1,1,1,MONMOT(1),N1)
          CALL GETVTX(' ','CORR_STAT',1,1,1,MONMOT(2),N2)
-         IF ( N1.NE.0 .OR. N2.NE.0 ) NOMMOT = 'OUI'
+         IF ( MONMOT(1).EQ.'OUI' .OR. MONMOT(2).EQ.'OUI' ) NOMMOT='OUI'
          IF ( NOMMOT(1:3) .EQ. 'OUI' ) THEN
             CALL JEVEUO(RESU//'.F'//NOMCHA(1:3),'L',JFON)
             CALL JEVEUO(RESU//'.IPSD','L',IPSDEL)
@@ -270,11 +270,11 @@ C        --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT ---
          IF (NFONCT.NE.0) THEN
             DO 110 I = 0, NBORDR-1
                IRET = 0
-               IF (ZK8(JPROL).EQ.'INTERPRE') THEN
+               IF (ZK16(JPROL).EQ.'INTERPRE') THEN
                   CALL FIINTE('F',FONCT,NBPF,IPAR,ZR(JINST+I),ALPHA,IER)
-               ELSEIF (ZK8(JPROL).EQ.'FONCTION') THEN
+               ELSEIF (ZK16(JPROL).EQ.'FONCTION') THEN
                   CALL FOLOCX(ZR(JVAR),NBPT,ZR(JINST+I),
-     +                        ZK8(JPROL+4),IPT,EPSI,COLI,IRET)
+     +                        ZK16(JPROL+4),IPT,EPSI,COLI,IRET)
                   IF (IRET.NE.0) THEN
                      CALL UTDEBM('F','RFRGEN',
      +                           'PROBLEME RENCONTRE DANS FOLOCX')
@@ -282,9 +282,9 @@ C        --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT ---
                      CALL UTIMPI('L',' CODE RETOUR: ',1,IRET)
                      CALL UTFINM()
                   ENDIF
-                  CALL FOCOLI (IPT,COLI,ZK8(JPROL+1),ZR(JVAR),
+                  CALL FOCOLI (IPT,COLI,ZK16(JPROL+1),ZR(JVAR),
      +                         ZR(JFON),ZR(JINST+I),ALPHA,IRET,
-     +                         FONCT,ZK8(JPROL),MXPARA,NOMP,IPAR,
+     +                         FONCT,ZK16(JPROL),MXPARA,NOMP,IPAR,
      +                         'INST',1,ZR(JINST+I))
                   IF (IRET.NE.0) THEN
                      CALL UTDEBM('F','RFRGEN',

@@ -1,23 +1,27 @@
       SUBROUTINE TE0583(OPTION,NOMTE)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 03/07/2002   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 03/02/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-C              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
-C              REDISTRIBUTION OF THIS FILE.
-C ======================================================================
-      CHARACTER*16 OPTION,NOMTE
-C ......................................................................
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C ======================================================================
+C TOLE CRP_20
+      CHARACTER*16 OPTION,NOMTE
 C    - FONCTION REALISEE:  CALCUL DU SECOND MEMBRE : TRAVAIL DE LA
 C                          PRESSION ET FORCES LINEIQUES TUYAUX
-C                          OPTIONS :'CHAR_MECA_PESA_R'
-C                          OPTIONS :'CHAR_MECA_FR1D1D'
-C                          OPTIONS :'CHAR_MECA_PRES_R'
-C    - ARGUMENTS:
-C        DONNEES:      OPTION       -->  OPTION DE CALCUL
-C                      NOMTE        -->  NOM DU TYPE ELEMENT
+C     OPTIONS :'CHAR_MECA_PESA_R' 'CHAR_MECA_FR1D1D''CHAR_MECA_PRES_R'
 C ......................................................................
       INTEGER NBRDDM
       PARAMETER (NBRDDM=156)
@@ -32,11 +36,11 @@ C ......................................................................
       REAL*8 R8B,REXT,SEC,RHO,XXX,R,TIME,VALPAR(4)
       CHARACTER*2 CODRES
       CHARACTER*8 NOMPAR(4)
-      CHARACTER*8  ELREFE
+      CHARACTER*8 ELREFE
       CHARACTER*16 PHENOM,CH16
       CHARACTER*24 CARAC,FF
       INTEGER NNO,NPG,NBCOU,NBSEC,M,ICARAC,LORIEN,ICOUDE
-      INTEGER IPOIDS,IVF,I,ICOU,IBLOC,INO,NBPAR
+      INTEGER IPOIDS,IVF,I,ICOU,IBLOC,INO,NBPAR,ICOMPX,NITER,ITER
       INTEGER ICAGEP,IGEOM,LMATER,JPESA,JOUT,LFORC
       INTEGER IGAU,ISECT,IPRES,IFF,K,IVECT,NBRDDL,INDIC0
       INTEGER INDIC1,INDIC2,INDIC3,INDIC4,INDIC5,J
@@ -61,6 +65,13 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CALL ELREF1(ELREFE)
+      IF (OPTION.EQ.'CHAR_MECA_FC1D1D') THEN
+        ICOMPX = 1
+        NITER = 2
+      ELSE
+        ICOMPX = 0
+        NITER = 1
+      END IF
       PI = R8PI()
       DEUXPI = 2.D0*PI
       CALL JEVECH('PNBSP_I','L',JNBSPI)
@@ -81,26 +92,20 @@ C     -- CALCUL DES POIDS DES COUCHES ET DES SECTEURS:
    20 CONTINUE
       POISEC(2*NBSEC) = 4.D0/3.D0
       POISEC(2*NBSEC+1) = 1.D0/3.D0
-
       CARAC = '&INEL.'//ELREFE//'.CARAC'
       CALL JEVETE(CARAC,'L',ICARAC)
       FF = '&INEL.'//ELREFE//'.FF'
       CALL JEVETE(FF,'L',IFF)
-
       NNO = ZI(ICARAC)
       NPG1 = ZI(ICARAC+2)
       NPG2 = ZI(ICARAC+3)
       M = ZI(ICARAC+6)
 C     ON INTEGRE INEXACTEMENT LES TERMES DE PRESSION
-C         NPG = NPG1
-C         IXF= IFF
       NPG = NPG2
       IXF = IFF + 2*NPG1 + 3*NPG1*NNO
-
       DO 30 I = 1,NPG
         XPG(I) = ZR(IXF-1+I)
    30 CONTINUE
-
       IPOIDS = IXF + NPG
       IVF = IPOIDS + NPG
       NBRDDL = NNO* (6+3+6* (M-1))
@@ -122,26 +127,20 @@ C         IXF= IFF
       ELSE
         CALL UTMESS('F','TUYAU','NOM DE TYPE ELEMENT INATTENDU')
       END IF
-
       CALL JEVECH('PCAORIE','L',LORIEN)
       CALL CARCOU(ZR(LORIEN),L,PGL,RAYON,THETA,PGL1,PGL2,PGL3,PGL4,NNO,
      &            OMEGA,ICOUDE)
       IF (ICOUDE.GE.10) THEN
         ICOUDE = ICOUDE - 10
       END IF
-
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PCAGEPO','L',ICAGEP)
-
       H = ZR(ICAGEP+1)
       A = ZR(ICAGEP) - H/2.D0
       RINT = A - H/2.D0
       REXT = A + H/2.D0
       SEC = PI* (REXT**2-RINT**2)
-C      RINT  = A
-C A= RMOY, H = EPAISSEUR
-C RINT = RAYON INTERIEUR
-C CALCUL DE L = LONGUEUR DU COUDE
+C A= RMOY, H = EPAISSEUR RINT = RAYON INTERIEUR
       IF (NNO.EQ.3) THEN
         TK(1) = 0.D0
         TK(2) = THETA
@@ -152,14 +151,12 @@ C CALCUL DE L = LONGUEUR DU COUDE
         TK(3) = THETA/3.D0
         TK(4) = 2.D0*THETA/3.D0
       END IF
-C  CALCUL DU TRAVAIL DE LA PRESSION
 C  LA PRESSION NE TRAVAILLE QUE SUR LE TERME WO
       IF (OPTION.EQ.'CHAR_MECA_PRES_R') THEN
         CALL JEVECH('PPRESSR','L',IPRES)
         DO 40 I = 1,NNO
           PRESNO(I) = ZR(IPRES-1+I)
    40   CONTINUE
-C  PASSAGE DE LA PRESSION DES NOEUDS AUX POINT DE GAUSS
         DO 60,IGAU = 1,NPG
           PRESPG(IGAU) = 0.D0
           DO 50,K = 1,NNO
@@ -221,112 +218,134 @@ C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
         END IF
 C CAS PESANTEUR ET FORCE LINEIQUE
       ELSE IF ((OPTION.EQ.'CHAR_MECA_PESA_R') .OR.
-     &         (OPTION.EQ.'CHAR_MECA_FR1D1D')) THEN
-
-        IF (OPTION.EQ.'CHAR_MECA_PESA_R') THEN
-          CALL JEVECH('PMATERC','L',LMATER)
-          CALL RCCOMA(ZI(LMATER),'ELAS',PHENOM,CODRES)
-          IF (PHENOM.EQ.'ELAS' .OR. PHENOM.EQ.'ELAS_FO' .OR.
-     &        PHENOM.EQ.'ELAS_ISTR' .OR. PHENOM.EQ.'ELAS_ISTR_FO' .OR.
-     &        PHENOM.EQ.'ELAS_ORTH' .OR. PHENOM.EQ.'ELAS_ORTH_FO') THEN
-            CALL RCVALA(ZI(LMATER),PHENOM,0,' ',R8B,1,'RHO',RHO,CODRES,
-     &                  'FM')
+     &         (OPTION.EQ.'CHAR_MECA_FR1D1D') .OR.
+     &         (OPTION.EQ.'CHAR_MECA_FC1D1D')) THEN
+        DO 250 ITER = 1,NITER
+          IF (OPTION.EQ.'CHAR_MECA_PESA_R') THEN
+            CALL JEVECH('PMATERC','L',LMATER)
+            CALL RCCOMA(ZI(LMATER),'ELAS',PHENOM,CODRES)
+            IF (PHENOM.EQ.'ELAS' .OR. PHENOM.EQ.'ELAS_FO' .OR.
+     &          PHENOM.EQ.'ELAS_ISTR' .OR. PHENOM.EQ.'ELAS_ISTR_FO' .OR.
+     &          PHENOM.EQ.'ELAS_ORTH' .OR.
+     &          PHENOM.EQ.'ELAS_ORTH_FO') THEN
+              CALL RCVALA(ZI(LMATER),PHENOM,0,' ',R8B,1,'RHO',RHO,
+     &                    CODRES,'FM')
+            ELSE
+              CALL UTMESS('F','TE0583','COMP. ELASTIQUE INEXISTANT')
+            END IF
+            CALL JEVECH('PPESANR','L',JPESA)
+            PESAN = ZR(JPESA)
+            DO 100 I = 1,3
+              VPESAN(I) = RHO*PESAN*ZR(JPESA+I)
+  100       CONTINUE
+            DO 110 I = 4,6
+              VPESAN(I) = 0.D0
+  110       CONTINUE
           ELSE
-            CALL UTMESS('F','TE0583','COMP. ELASTIQUE INEXISTANT')
-          END IF
-          CALL JEVECH('PPESANR','L',JPESA)
-          PESAN = ZR(JPESA)
-          DO 100 I = 1,3
-            VPESAN(I) = RHO*PESAN*ZR(JPESA+I)
-  100     CONTINUE
-          DO 110 I = 4,6
-            VPESAN(I) = 0.D0
-  110     CONTINUE
-        ELSE
-          CALL JEVECH('PFR1D1D','L',LFORC)
-          XXX = ABS(ZR(LFORC+6))
-          NORMAL = XXX .GT. 1.001D0
-          IF (NORMAL) THEN
-            CH16 = OPTION
-            CALL UTMESS('F','PFR1D1D','L''OPTION "'//CH16//
-     &                  '" EST INCONNUE')
-          END IF
-          DO 120 I = 1,3
-            VPESAN(I) = ZR(LFORC-1+I)/SEC
-            XXX = ABS(ZR(LFORC-1+3+I))
-            IF (XXX.GT.1.D-20) CALL UTMESS('F','ELEMENTS DE TUYAU',
-     &                              'ON NE TRAITE PAS LES MOMENTS')
-  120     CONTINUE
-          DO 130 I = 4,6
-            VPESAN(I) = 0.D0
-  130     CONTINUE
-        END IF
-        DO 140 I = 1,NBRDDL
-          F(I) = 0.D0
-  140   CONTINUE
-        IF (ICOUDE.EQ.0) THEN
-          CALL UTPVGL(1,6,PGL,VPESAN(1),FPESAN(1))
-        ELSE
-          CALL UTPVGL(1,6,PGL1,VPESAN(1),FPESA1(1))
-          CALL UTPVGL(1,6,PGL2,VPESAN(1),FPESA2(1))
-          CALL UTPVGL(1,6,PGL3,VPESAN(1),FPESA3(1))
-          IF (NNO.EQ.4) THEN
-            CALL UTPVGL(1,6,PGL4,VPESAN(1),FPESA4(1))
-          END IF
-        END IF
-C BOUCLE SUR LES POINTS DE GAUSS DANS LA LONGUEUR
-        DO 190 IGAU = 1,NPG
-C BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
-          DO 180 ICOU = 1,2*NBCOU + 1
-            R = A + (ICOU-1)*H/ (2.D0*NBCOU) - H/2.D0
-C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
-            DO 170 ISECT = 1,2*NBSEC + 1
-              IF (ICOUDE.EQ.0) THEN
-                POIDS = ZR(IPOIDS-1+IGAU)*POICOU(ICOU)*POISEC(ISECT)*
-     &                  (L/2.D0)*H*DEUXPI/ (4.D0*NBCOU*NBSEC)*R
-                DO 150 K = 1,NNO
-                  HK = ZR(IVF-1+NNO* (IGAU-1)+K)
-                  IBLOC = (9+6* (M-1))* (K-1)
-                  F(IBLOC+1) = F(IBLOC+1) + POIDS*HK*FPESAN(1)
-                  F(IBLOC+2) = F(IBLOC+2) + POIDS*HK*FPESAN(2)
-                  F(IBLOC+3) = F(IBLOC+3) + POIDS*HK*FPESAN(3)
-  150           CONTINUE
-              ELSE IF (ICOUDE.EQ.1) THEN
-                FI = (ISECT-1)*DEUXPI/ (2.D0*NBSEC)
-                COSFI = COS(FI)
-                SINFI = SIN(FI)
-                L = THETA* (RAYON+R*SINFI)
-                POIDS = ZR(IPOIDS-1+IGAU)*POICOU(ICOU)*POISEC(ISECT)*
-     &                  (L/2.D0)*H*DEUXPI/ (4.D0*NBCOU*NBSEC)*R
-                DO 160 K = 1,3
-                  HK = ZR(IVF-1+NNO* (IGAU-1)+1)
-                  IBLOC = (9+6* (M-1))* (1-1)
-                  F(IBLOC+K) = F(IBLOC+K) + POIDS*HK*FPESA1(K)
-                  HK = ZR(IVF-1+NNO* (IGAU-1)+2)
-                  IBLOC = (9+6* (M-1))* (2-1)
-                  F(IBLOC+K) = F(IBLOC+K) + POIDS*HK*FPESA2(K)
-                  HK = ZR(IVF-1+NNO* (IGAU-1)+3)
-                  IBLOC = (9+6* (M-1))* (3-1)
-                  F(IBLOC+K) = F(IBLOC+K) + POIDS*HK*FPESA3(K)
-
-                  IF (NNO.EQ.4) THEN
-                    IBLOC = (9+6* (M-1))* (4-1)
-                    F(IBLOC+K) = F(IBLOC+K) + POIDS*HK*FPESA4(K)
-                  END IF
-  160           CONTINUE
+            IF (ICOMPX.EQ.0) THEN
+              CALL JEVECH('PFR1D1D','L',LFORC)
+            ELSE
+              CALL JEVECH('PFC1D1D','L',LFORC)
+            END IF
+            IF (ICOMPX.EQ.1) THEN
+              IF (ITER.EQ.1) THEN
+                DO 120 I = 1,3
+                  VPESAN(I) = DBLE(ZC(LFORC-1+I))/SEC
+  120           CONTINUE
+              ELSE
+                DO 130 I = 1,3
+                  VPESAN(I) = DIMAG(ZC(LFORC-1+I))/SEC
+  130           CONTINUE
               END IF
-  170       CONTINUE
-  180     CONTINUE
-  190   CONTINUE
-        IF (ICOUDE.EQ.0) THEN
-          CALL VLGGL(NNO,NBRDDL,PGL,F,'LG',PASS,VTEMP)
-        ELSE
-          CALL VLGGLC(NNO,NBRDDL,PGL1,PGL2,PGL3,PGL4,F,'LG',PASS,VTEMP)
-        END IF
-        CALL JEVECH('PVECTUR','E',JOUT)
-        DO 200,I = 1,NBRDDL
-          ZR(JOUT-1+I) = F(I)
-  200   CONTINUE
+            ELSE
+              DO 140 I = 1,3
+                VPESAN(I) = ZR(LFORC-1+I)/SEC
+  140         CONTINUE
+            END IF
+            DO 150 I = 4,6
+              VPESAN(I) = 0.D0
+  150       CONTINUE
+          END IF
+          DO 160 I = 1,NBRDDL
+            F(I) = 0.D0
+  160     CONTINUE
+          IF (ICOUDE.EQ.0) THEN
+            CALL UTPVGL(1,6,PGL,VPESAN(1),FPESAN(1))
+          ELSE
+            CALL UTPVGL(1,6,PGL1,VPESAN(1),FPESA1(1))
+            CALL UTPVGL(1,6,PGL2,VPESAN(1),FPESA2(1))
+            CALL UTPVGL(1,6,PGL3,VPESAN(1),FPESA3(1))
+            IF (NNO.EQ.4) THEN
+              CALL UTPVGL(1,6,PGL4,VPESAN(1),FPESA4(1))
+            END IF
+          END IF
+C BOUCLE SUR LES POINTS DE GAUSS DANS LA LONGUEUR
+          DO 210 IGAU = 1,NPG
+C BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
+            DO 200 ICOU = 1,2*NBCOU + 1
+              R = A + (ICOU-1)*H/ (2.D0*NBCOU) - H/2.D0
+C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
+              DO 190 ISECT = 1,2*NBSEC + 1
+                IF (ICOUDE.EQ.0) THEN
+                  POIDS = ZR(IPOIDS-1+IGAU)*POICOU(ICOU)*POISEC(ISECT)*
+     &                     (L/2.D0)*H*DEUXPI/ (4.D0*NBCOU*NBSEC)*R
+                  DO 170 K = 1,NNO
+                    HK = ZR(IVF-1+NNO* (IGAU-1)+K)
+                    IBLOC = (9+6* (M-1))* (K-1)
+                    F(IBLOC+1) = F(IBLOC+1) + POIDS*HK*FPESAN(1)
+                    F(IBLOC+2) = F(IBLOC+2) + POIDS*HK*FPESAN(2)
+                    F(IBLOC+3) = F(IBLOC+3) + POIDS*HK*FPESAN(3)
+  170             CONTINUE
+                ELSE IF (ICOUDE.EQ.1) THEN
+                  FI = (ISECT-1)*DEUXPI/ (2.D0*NBSEC)
+                  COSFI = COS(FI)
+                  SINFI = SIN(FI)
+                  L = THETA* (RAYON+R*SINFI)
+                  POIDS = ZR(IPOIDS-1+IGAU)*POICOU(ICOU)*POISEC(ISECT)*
+     &                     (L/2.D0)*H*DEUXPI/ (4.D0*NBCOU*NBSEC)*R
+                  DO 180 K = 1,3
+                    HK = ZR(IVF-1+NNO* (IGAU-1)+1)
+                    IBLOC = (9+6* (M-1))* (1-1)
+                    F(IBLOC+K) = F(IBLOC+K) + POIDS*HK*FPESA1(K)
+                    HK = ZR(IVF-1+NNO* (IGAU-1)+2)
+                    IBLOC = (9+6* (M-1))* (2-1)
+                    F(IBLOC+K) = F(IBLOC+K) + POIDS*HK*FPESA2(K)
+                    HK = ZR(IVF-1+NNO* (IGAU-1)+3)
+                    IBLOC = (9+6* (M-1))* (3-1)
+                    F(IBLOC+K) = F(IBLOC+K) + POIDS*HK*FPESA3(K)
+                    IF (NNO.EQ.4) THEN
+                      IBLOC = (9+6* (M-1))* (4-1)
+                      F(IBLOC+K) = F(IBLOC+K) + POIDS*HK*FPESA4(K)
+                    END IF
+  180             CONTINUE
+                END IF
+  190         CONTINUE
+  200       CONTINUE
+  210     CONTINUE
+          IF (ICOUDE.EQ.0) THEN
+            CALL VLGGL(NNO,NBRDDL,PGL,F,'LG',PASS,VTEMP)
+          ELSE
+            CALL VLGGLC(NNO,NBRDDL,PGL1,PGL2,PGL3,PGL4,F,'LG',PASS,
+     &                  VTEMP)
+          END IF
+          IF (ICOMPX.EQ.1) THEN
+            CALL JEVECH('PVECTUC','E',JOUT)
+            IF (ITER.EQ.1) THEN
+              DO 220 J = 1,NBRDDL
+                ZC(JOUT-1+J) = F(J)
+  220         CONTINUE
+            ELSE
+              DO 230 J = 1,NBRDDL
+                ZC(JOUT-1+J) = DCMPLX(DBLE(ZC(JOUT-1+J)),DBLE(F(J)))
+  230         CONTINUE
+            END IF
+          ELSE
+            CALL JEVECH('PVECTUR','E',JOUT)
+            DO 240 I = 1,NBRDDL
+              ZR(JOUT-1+I) = F(I)
+  240       CONTINUE
+          END IF
+  250   CONTINUE
 C CAS FORCE LINEIQUE FONCTION
       ELSE IF ((OPTION.EQ.'CHAR_MECA_FF1D1D')) THEN
         CALL JEVECH('PFF1D1D','L',LFORC)
@@ -355,52 +374,52 @@ C CAS FORCE LINEIQUE FONCTION
         END IF
 C        NOEUDS 1 A 3
         INO = 1
-        DO 210 I = 1,3
+        DO 260 I = 1,3
           VALPAR(I) = ZR(IGEOM-1+3* (INO-1)+I)
-  210   CONTINUE
-        DO 220 I = 1,3
+  260   CONTINUE
+        DO 270 I = 1,3
           CALL FOINTE('FM',ZK8(LFORC+I-1),NBPAR,NOMPAR,VALPAR,VPESA1(I),
      &                IER)
           VPESA1(I) = VPESA1(I)/SEC
-  220   CONTINUE
+  270   CONTINUE
         INO = 2
-        DO 230 I = 1,3
+        DO 280 I = 1,3
           VALPAR(I) = ZR(IGEOM-1+3* (INO-1)+I)
-  230   CONTINUE
-        DO 240 I = 1,3
+  280   CONTINUE
+        DO 290 I = 1,3
           CALL FOINTE('FM',ZK8(LFORC+I-1),NBPAR,NOMPAR,VALPAR,VPESA2(I),
      &                IER)
           VPESA2(I) = VPESA2(I)/SEC
-  240   CONTINUE
+  290   CONTINUE
         INO = 3
-        DO 250 I = 1,3
+        DO 300 I = 1,3
           VALPAR(I) = ZR(IGEOM-1+3* (INO-1)+I)
-  250   CONTINUE
-        DO 260 I = 1,3
+  300   CONTINUE
+        DO 310 I = 1,3
           CALL FOINTE('FM',ZK8(LFORC+I-1),NBPAR,NOMPAR,VALPAR,VPESA3(I),
      &                IER)
           VPESA3(I) = VPESA3(I)/SEC
-  260   CONTINUE
+  310   CONTINUE
         IF (NNO.EQ.4) THEN
           INO = 4
-          DO 270 I = 1,3
+          DO 320 I = 1,3
             VALPAR(I) = ZR(IGEOM-1+3* (INO-1)+I)
-  270     CONTINUE
-          DO 280 I = 1,3
+  320     CONTINUE
+          DO 330 I = 1,3
             CALL FOINTE('FM',ZK8(LFORC+I-1),NBPAR,NOMPAR,VALPAR,
      &                  VPESA4(I),IER)
             VPESA4(I) = VPESA4(I)/SEC
-  280     CONTINUE
+  330     CONTINUE
         END IF
-        DO 290 I = 4,6
+        DO 340 I = 4,6
           VPESA1(I) = 0.D0
           VPESA2(I) = 0.D0
           VPESA3(I) = 0.D0
           VPESA4(I) = 0.D0
-  290   CONTINUE
-        DO 300 I = 1,NBRDDL
+  340   CONTINUE
+        DO 350 I = 1,NBRDDL
           F(I) = 0.D0
-  300   CONTINUE
+  350   CONTINUE
         IF (ICOUDE.EQ.0) THEN
           CALL UTPVGL(1,6,PGL,VPESA1(1),FPESA1(1))
           CALL UTPVGL(1,6,PGL,VPESA2(1),FPESA2(1))
@@ -417,16 +436,16 @@ C        NOEUDS 1 A 3
           END IF
         END IF
 C BOUCLE SUR LES POINTS DE GAUSS DANS LA LONGUEUR
-        DO 350 IGAU = 1,NPG
+        DO 400 IGAU = 1,NPG
 C BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
-          DO 340 ICOU = 1,2*NBCOU + 1
+          DO 390 ICOU = 1,2*NBCOU + 1
             R = A + (ICOU-1)*H/ (2.D0*NBCOU) - H/2.D0
 C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
-            DO 330 ISECT = 1,2*NBSEC + 1
+            DO 380 ISECT = 1,2*NBSEC + 1
               IF (ICOUDE.EQ.0) THEN
                 POIDS = ZR(IPOIDS-1+IGAU)*POICOU(ICOU)*POISEC(ISECT)*
      &                  (L/2.D0)*H*DEUXPI/ (4.D0*NBCOU*NBSEC)*R
-                DO 310 K = 1,3
+                DO 360 K = 1,3
                   HK = ZR(IVF-1+NNO* (IGAU-1)+1)
                   IBLOC = (9+6* (M-1))* (1-1)
                   F(IBLOC+K) = F(IBLOC+K) + POIDS*HK*FPESA1(K)
@@ -436,12 +455,11 @@ C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
                   HK = ZR(IVF-1+NNO* (IGAU-1)+3)
                   IBLOC = (9+6* (M-1))* (3-1)
                   F(IBLOC+K) = F(IBLOC+K) + POIDS*HK*FPESA3(K)
-
                   IF (NNO.EQ.4) THEN
                     IBLOC = (9+6* (M-1))* (4-1)
                     F(IBLOC+K) = F(IBLOC+K) + POIDS*HK*FPESA4(K)
                   END IF
-  310           CONTINUE
+  360           CONTINUE
               ELSE IF (ICOUDE.EQ.1) THEN
                 FI = (ISECT-1)*DEUXPI/ (2.D0*NBSEC)
                 COSFI = COS(FI)
@@ -449,7 +467,7 @@ C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
                 L = THETA* (RAYON+R*SINFI)
                 POIDS = ZR(IPOIDS-1+IGAU)*POICOU(ICOU)*POISEC(ISECT)*
      &                  (L/2.D0)*H*DEUXPI/ (4.D0*NBCOU*NBSEC)*R
-                DO 320 K = 1,3
+                DO 370 K = 1,3
                   HK = ZR(IVF-1+NNO* (IGAU-1)+1)
                   IBLOC = (9+6* (M-1))* (1-1)
                   F(IBLOC+K) = F(IBLOC+K) + POIDS*HK*FPESA1(K)
@@ -459,25 +477,23 @@ C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
                   HK = ZR(IVF-1+NNO* (IGAU-1)+3)
                   IBLOC = (9+6* (M-1))* (3-1)
                   F(IBLOC+K) = F(IBLOC+K) + POIDS*HK*FPESA3(K)
-
                   IF (NNO.EQ.4) THEN
                     IBLOC = (9+6* (M-1))* (4-1)
                     F(IBLOC+K) = F(IBLOC+K) + POIDS*HK*FPESA4(K)
                   END IF
-
-  320           CONTINUE
+  370           CONTINUE
               END IF
-  330       CONTINUE
-  340     CONTINUE
-  350   CONTINUE
+  380       CONTINUE
+  390     CONTINUE
+  400   CONTINUE
         IF (ICOUDE.EQ.0) THEN
           CALL VLGGL(NNO,NBRDDL,PGL,F,'LG',PASS,VTEMP)
         ELSE
           CALL VLGGLC(NNO,NBRDDL,PGL1,PGL2,PGL3,PGL4,F,'LG',PASS,VTEMP)
         END IF
         CALL JEVECH('PVECTUR','E',JOUT)
-        DO 360,I = 1,NBRDDL
+        DO 410,I = 1,NBRDDL
           ZR(JOUT-1+I) = F(I)
-  360   CONTINUE
+  410   CONTINUE
       END IF
       END

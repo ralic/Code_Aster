@@ -2,7 +2,7 @@
      >                    NOMGD, NCMPRF, NOMCMR,
      >                    NCMPVE, NUMCMP, NTNCMP, NTUCMP )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 25/01/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,6 @@ C
 C     RECUPERATION DU NIVEAU D'IMPRESSION
 C     -----------------------------------
 C
-      CALL INFMAJ
       CALL INFNIV ( IFM, NIVINF )
 C
 C====

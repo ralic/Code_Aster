@@ -1,0 +1,268 @@
+# MODIF  DATE 26/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+# TITRE 'FLAMBEMENT' D'UNE CORNIERE ELASTIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# CORNIERE 120 X 120 X 8 D'UNE LONGUEUR DE 1200
+# MODELISATION B : POU_D_T
+#=======================================================================
+
+# ************                    ATTENTION                 ************
+# LA MATRICE SECOND MEMBRE AYANT DES LIGNES ET COLONNES NULLES EN PLUS
+# DE CELLES ASSOCIEES AUX LAGRANGES, LA DIMENSION DU SOUS ESPACE DOIT
+# ETRE DIMINUE PAR RAPPORT AU NOMBRE DE DEGRES DE LIBERTE ACTIF
+#***********************************************************************
+
+
+DEBUT( CODE=_F(  NOM = 'SSLL103B',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE()
+
+MAT=DEFI_MATERIAU(ELAS=_F( E = 2.1E5,NU = 0.3,))
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F( TOUT = 'OUI',MATER = MAT,))
+
+MO=AFFE_MODELE( MAILLAGE=MA,   AFFE=_F( TOUT = 'OUI',  
+       PHENOMENE = 'MECANIQUE',     MODELISATION = 'POU_D_T',))
+
+CARAC=AFFE_CARA_ELEM( MODELE=MO,POUTRE=(
+         _F( MAILLE = ( 'S1', 'S2', 'S3', 'S4', ),  SECTION = 'GENERALE',
+        CARA = (  'A',         'IY',           'IZ',            
+                'AY',        'AZ',           'EY',            
+                'EZ',        'JX',           'JG',            
+                'IYR2',      'IZR2',                          ),
+        VALE = (1856.,       4167339.,       1045547.,          
+                 0.,       0.,             41.012,            
+               # 0.      , 39595.        , 44398819.         ,
+                 0.,       39595.,         0.,         
+              84948392.,   0.,                                ), ),
+         _F( MAILLE = ( 'S5', 'S6', 'S7', 'S8', ),  SECTION = 'GENERALE',
+        CARA = (  'A1',        'IY1',          'IZ1',           
+                'AY1',       'AZ1',          'EY1',           
+                'EZ1',       'JX1',          'JG1',           
+                'IYR21',     'IZR21',     
+                'A2',        'IY2',          'IZ2',           
+                'AY2',       'AZ2',          'EY2',           
+                'EZ2',       'JX2',          'JG2',           
+                'IYR22',     'IZR22',                         ),
+        VALE = (1856.,       4167339.,       1045547.,          
+                 0.,       0.,             41.012,            
+               # 0.      , 39595.        , 44398819.         ,
+                 0.,       39595.,         0.,         
+              84948392.,   0.,            
+              1856.,       4167339.,       1045547.,          
+                 0.,       0.,             41.012,            
+               # 0.      , 39595.        , 44398819.         ,
+                 0.,       39595.,         0.,         
+              84948392.,   0.,                                ), ))
+      )
+
+BLOQ=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
+          _F( NOEUD = 'A1',    DX = 0., DY = 0., DZ = 0., DRX = 0.,       ),
+          _F( NOEUD = 'A2',          DY = 0., DZ = 0., DRX = 0.,       )) )
+
+RIGEL=CALC_MATR_ELEM(MODELE=MO,    OPTION='RIGI_MECA',
+          CHAM_MATER=CHMAT,  CARA_ELEM=CARAC, CHARGE=BLOQ )
+
+NU=NUME_DDL( MATR_RIGI=RIGEL,  METHODE='LDLT',  RENUM='SANS')
+
+RIGAS=ASSE_MATRICE(MATR_ELEM=RIGEL,NUME_DDL=NU)
+
+RIGASF=FACT_LDLT( MATR_ASSE=RIGAS)
+
+# 'FLAMBEMENT' CAS 1  (FORCE EN G)
+# ------------------------------
+
+CHFORC_1=AFFE_CHAR_MECA(MODELE=MO,
+                       FORCE_NODALE=_F( NOEUD = 'A2',   FX = -1.,      ))
+
+VECEL_1=CALC_VECT_ELEM(CARA_ELEM=CARAC,CHAM_MATER=CHMAT,
+                            OPTION='CHAR_MECA',CHARGE=(BLOQ,CHFORC_1,))
+
+VECAS_1=ASSE_VECTEUR( VECT_ELEM=VECEL_1,   NUME_DDL=NU)
+
+VECAS_1=RESO_LDLT(reuse=VECAS_1, MATR_FACT=RIGASF, CHAM_NO=VECAS_1)
+
+SIGMA_1=CALC_CHAM_ELEM(MODELE=MO,CHAM_MATER=CHMAT,DEPL=VECAS_1,
+                            CARA_ELEM=CARAC, OPTION='SIEF_ELGA_DEPL')
+
+RIGELG_1=CALC_MATR_ELEM( MODELE=MO, OPTION='RIGI_GEOM',
+                             CARA_ELEM=CARAC,  SIEF_ELGA=SIGMA_1 )
+
+RIGASG_1=ASSE_MATRICE(MATR_ELEM=RIGELG_1,NUME_DDL=NU)
+
+#
+# NE PAS METTRE PLUS DE 39 POUR DIM_SOUS_ESPACE
+# CAR LIGNES ET COLONNES NULLES POUR MATRICE SECOND MEMBRE
+#
+
+MOD_1=MODE_ITER_SIMULT(   MATR_A=RIGAS,
+                              MATR_B=RIGASG_1,
+                              TYPE_RESU='MODE_FLAMB',
+                            CALC_FREQ=_F(  NMAX_FREQ = 10,
+
+                            DIM_SOUS_ESPACE = 30,   )
+                            )
+
+#
+
+TEST_RESU(RESU=(
+   _F( RESULTAT = MOD_1, NUME_MODE = 10,  PARA = 'CHAR_CRIT', VALE = -6.7960E5,
+    PRECISION = 1.E-2,),
+   _F( RESULTAT = MOD_1, NUME_MODE = 3,  PARA = 'CHAR_CRIT', VALE = -1.5050E6,
+    PRECISION = 1.E-2,),
+   _F( RESULTAT = MOD_1, NUME_MODE = 1,  PARA = 'CHAR_CRIT', VALE = -1.0050E7,
+    PRECISION = 1.E-2,)))
+
+# 'FLAMBEMENT' CAS 2  (FORCE EN C)
+# ------------------------------
+
+CHFORC_2=AFFE_CHAR_MECA(MODELE=MO,FORCE_NODALE=(
+                       _F( NOEUD = 'A1',          MZ = +41.012, ),
+                       _F( NOEUD = 'A2',   FX = -1., MZ = -41.012, )))
+
+VECEL_2=CALC_VECT_ELEM(CARA_ELEM=CARAC,CHAM_MATER=CHMAT,
+                            OPTION='CHAR_MECA',CHARGE=(BLOQ,CHFORC_2,))
+
+VECAS_2=ASSE_VECTEUR( VECT_ELEM=VECEL_2,   NUME_DDL=NU)
+
+VECAS_2=RESO_LDLT(reuse=VECAS_2, MATR_FACT=RIGASF, CHAM_NO=VECAS_2)
+
+SIGMA_2=CALC_CHAM_ELEM(MODELE=MO,CHAM_MATER=CHMAT,DEPL=VECAS_2,
+                            CARA_ELEM=CARAC, OPTION='SIEF_ELGA_DEPL')
+
+RIGELG_2=CALC_MATR_ELEM( MODELE=MO, OPTION='RIGI_GEOM',
+                             CARA_ELEM=CARAC,  SIEF_ELGA=SIGMA_2 )
+
+RIGASG_2=ASSE_MATRICE(MATR_ELEM=RIGELG_2,NUME_DDL=NU)
+
+#
+# NE PAS METTRE PLUS DE 39 POUR DIM_SOUS_ESPACE
+# CAR LIGNES ET COLONNES NULLES POUR MATRICE SECOND MEMBRE
+#
+
+IMPR_STURM(   MATR_A=RIGAS,
+                MATR_B=RIGASG_2,
+                    TYPE_RESU='MODE_FLAMB',
+                CHAR_CRIT_MIN=-9.97E+6, 
+                 CHAR_CRIT_MAX=-1.E6 
+                            )
+
+MOD_2=MODE_ITER_SIMULT(   MATR_A=RIGAS,
+                              MATR_B=RIGASG_2,
+                              TYPE_RESU='MODE_FLAMB',
+                            CALC_FREQ=_F(  NMAX_FREQ = 10,
+                            DIM_SOUS_ESPACE = 30,   ),
+                              VERI_MODE=_F( STOP_ERREUR = 'OUI',  )
+                            )
+
+#
+
+TEST_RESU(RESU=(
+   _F( RESULTAT = MOD_2, NUME_MODE = 10,  PARA = 'CHAR_CRIT', VALE = -1.5050E6,
+    PRECISION = 1.E-2,),
+   _F( RESULTAT = MOD_2, NUME_MODE = 2,  PARA = 'CHAR_CRIT', VALE = -5.9980E6,
+    PRECISION = 1.E-2,)))
+
+# 'FLAMBEMENT' CAS 3  (FORCE EN A)
+# ------------------------------
+
+CHFORC_3=AFFE_CHAR_MECA(MODELE=MO,FORCE_NODALE=(
+                       _F( NOEUD = 'A1',          MY = -41.012, ),
+                       _F( NOEUD = 'A2',   FX = -1., MY = +41.012, )))
+
+VECEL_3=CALC_VECT_ELEM(CARA_ELEM=CARAC,CHAM_MATER=CHMAT,
+                            OPTION='CHAR_MECA',CHARGE=(BLOQ,CHFORC_3,))
+
+VECAS_3=ASSE_VECTEUR( VECT_ELEM=VECEL_3,   NUME_DDL=NU)
+
+VECAS_3=RESO_LDLT(reuse=VECAS_3, MATR_FACT=RIGASF, CHAM_NO=VECAS_3)
+
+SIGMA_3=CALC_CHAM_ELEM(MODELE=MO,CHAM_MATER=CHMAT,DEPL=VECAS_3,
+                            CARA_ELEM=CARAC, OPTION='SIEF_ELGA_DEPL')
+
+RIGELG_3=CALC_MATR_ELEM( MODELE=MO, OPTION='RIGI_GEOM',
+                             CARA_ELEM=CARAC,  SIEF_ELGA=SIGMA_3 )
+
+RIGASG_3=ASSE_MATRICE(MATR_ELEM=RIGELG_3,NUME_DDL=NU)
+
+#
+# NE PAS METTRE PLUS DE 39 POUR DIM_SOUS_ESPACE
+# CAR LIGNES ET COLONNES NULLES POUR MATRICE SECOND MEMBRE
+#
+
+
+MOD_3=MODE_ITER_SIMULT(   MATR_A=RIGAS,
+                              MATR_B=RIGASG_3,
+                              TYPE_RESU='MODE_FLAMB',
+                            CALC_FREQ=_F(  NMAX_FREQ = 10,
+                            DIM_SOUS_ESPACE = 30,   )
+                            )
+
+#
+
+TEST_RESU(RESU=(
+   _F( RESULTAT = MOD_3, NUME_MODE = 10,  PARA = 'CHAR_CRIT', VALE = -5.6380E5,
+    PRECISION = 1.E-2,),
+   _F( RESULTAT = MOD_3, NUME_MODE = 3,  PARA = 'CHAR_CRIT', VALE = -2.4530E6,
+    PRECISION = 1.E-2,),
+   _F( RESULTAT = MOD_3, NUME_MODE = 1,  PARA = 'CHAR_CRIT', VALE = -1.8525E7,
+    PRECISION = 5.E-2,)))
+
+# 'FLAMBEMENT' CAS 4  (MOMENT SUIVANT OY)
+# -------------------------------------
+
+CHFORC_4=AFFE_CHAR_MECA(MODELE=MO,FORCE_NODALE=(
+                       _F( NOEUD = 'A1',   MY = -1.,      ),
+                       _F( NOEUD = 'A2',   MY = +1.,      )))
+
+VECEL_4=CALC_VECT_ELEM(CARA_ELEM=CARAC,CHAM_MATER=CHMAT,
+                            OPTION='CHAR_MECA',CHARGE=(BLOQ,CHFORC_4,))
+
+VECAS_4=ASSE_VECTEUR( VECT_ELEM=VECEL_4,   NUME_DDL=NU)
+
+VECAS_4=RESO_LDLT(reuse=VECAS_4, MATR_FACT=RIGASF, CHAM_NO=VECAS_4)
+
+SIGMA_4=CALC_CHAM_ELEM(MODELE=MO,CHAM_MATER=CHMAT,DEPL=VECAS_4,
+                            CARA_ELEM=CARAC, OPTION='SIEF_ELGA_DEPL')
+
+RIGELG_4=CALC_MATR_ELEM( MODELE=MO, OPTION='RIGI_GEOM',
+                             CARA_ELEM=CARAC,  SIEF_ELGA=SIGMA_4 )
+
+RIGASG_4=ASSE_MATRICE(MATR_ELEM=RIGELG_4,NUME_DDL=NU)
+
+#
+# NE PAS METTRE PLUS DE 23 POUR DIM_SOUS_ESPACE
+# CAR LIGNES ET COLONNES NULLES POUR MATRICE SECOND MEMBRE
+#
+
+MOD_4=MODE_ITER_SIMULT(   MATR_A=RIGAS,
+                              MATR_B=RIGASG_4,
+                              TYPE_RESU='MODE_FLAMB',
+                            CALC_FREQ=_F(  NMAX_FREQ = 4,
+                            DIM_SOUS_ESPACE = 20,   )
+                            )
+
+#
+
+TEST_RESU(
+   RESU=_F( RESULTAT = MOD_4, NUME_MODE = 3,  PARA = 'CHAR_CRIT', VALE = +6.9376E7,
+    PRECISION = 1.E-2,))
+
+# --------------------------------------------------------------------
+FIN()
+#

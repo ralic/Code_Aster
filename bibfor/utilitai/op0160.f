@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,15 +22,16 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     OPERATEUR   IMPR_MACR_ELEM
 C     ------------------------------------------------------------------
-      INTEGER      VERSIO, N1
-      CHARACTER*8  FORMAT, FICHIE, MACREL
+      INTEGER       VERSIO, N1
+      CHARACTER*8   FORMAT, MACREL
+      CHARACTER*16  FICHIE
 C     ------------------------------------------------------------------
+      CALL INFMAJ()
 C
       CALL GETVTX (' ','FORMAT',1,1,1,FORMAT,N1)
 C
-      FICHIE = '        '
+      FICHIE = FORMAT
       CALL GETVTX (' ','FICHIER',1,1,1,FICHIE,N1)
-      IF ( FICHIE .EQ. '        ' ) FICHIE = FORMAT
 C
       CALL GETVIS (' ','VERSION',1,1,1,VERSIO,N1)
 C

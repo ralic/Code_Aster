@@ -3,7 +3,7 @@
       CHARACTER*(*)       SORTIE, NOMFON
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/02/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,8 @@ C
       REAL*8        VALER(3)
       COMPLEX*16    C16B
       LOGICAL       EXIST
-      CHARACTER*8   K8B, NOPARN, NOPARF, NOPARA(4)
+      CHARACTER*8   K8B 
+      CHARACTER*16  NOPARN, NOPARF, NOPARA(4)
       CHARACTER*24  PROL, VALE, PARA
 C     ------------------------------------------------------------------
 C
@@ -61,12 +62,12 @@ C
       CALL JELIRA ( PARA, 'LONMAX', NBPARA, K8B )
       CALL JEVEUO ( PARA, 'L', LPAREF )
 C
-      NOPARN = ZK8(LPRORF+2)
+      NOPARN = ZK16(LPRORF+2)
       CALL TBEXIP ( SORTIE, NOPARN, EXIST, K8B )
       IF ( .NOT. EXIST ) THEN
          CALL TBAJPA ( SORTIE, 1, NOPARN, 'R' )
       ENDIF
-      NOPARF = ZK8(LPRORF+5)
+      NOPARF = ZK16(LPRORF+5)
       CALL TBEXIP ( SORTIE, NOPARF, EXIST, K8B )
       IF ( .NOT. EXIST ) THEN
          CALL TBAJPA ( SORTIE, 1, NOPARF, 'R' )

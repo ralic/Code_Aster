@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-CALC_THETA=OPER(nom="CALC_THETA",op=54,sd_prod=theta_geom,docu="U4.82.02-d",reentrant='n',
+CALC_THETA=OPER(nom="CALC_THETA",op=54,sd_prod=theta_geom,docu="U4.82.02-e",reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
                 fr="Affectation d un champ sur le maillage (mécanique de la rupture)",
          regles=(UN_PARMI('THETA_2D','THETA_3D','THETA_BANDE'),
@@ -24,8 +24,6 @@ CALC_THETA=OPER(nom="CALC_THETA",op=54,sd_prod=theta_geom,docu="U4.82.02-d",reen
                  EXCLUS('DIRECTION','DIRE_THETA'),),
          OPTION          =SIMP(statut='f',typ='TXM',defaut="COURONNE",into=("COURONNE","BANDE") ),
          MODELE          =SIMP(statut='o',typ=(modele) ),
-         FOND_FISS       =SIMP(statut='f',typ=fond_fiss),
-         FOND_3D         =SIMP(statut='f',typ=(fond_fiss) ),
          THETA_3D        =FACT(statut='f',min=1,max='**',
            regles=(UN_PARMI('TOUT','GROUP_NO','NOEUD'),
                    UN_PARMI('MODULE','MODULE_FO'),
@@ -37,10 +35,12 @@ CALC_THETA=OPER(nom="CALC_THETA",op=54,sd_prod=theta_geom,docu="U4.82.02-d",reen
            MODULE          =SIMP(statut='f',typ='R'),
            R_INF           =SIMP(statut='f',typ='R'),
            R_SUP           =SIMP(statut='f',typ='R'),
-           MODULE_FO       =SIMP(statut='f',typ=fonction),
-           R_INF_FO        =SIMP(statut='f',typ=fonction),
-           R_SUP_FO        =SIMP(statut='f',typ=fonction),
+           MODULE_FO       =SIMP(statut='f',typ=(fonction,formule)),
+           R_INF_FO        =SIMP(statut='f',typ=(fonction,formule)),
+           R_SUP_FO        =SIMP(statut='f',typ=(fonction,formule)),
                          ),
+         b_theta_3d     =BLOC(condition="THETA_3D != None",
+           FOND_FISS       =SIMP(statut='f',typ=fond_fiss),),
          DIRE_THETA      =SIMP(statut='f',typ=(cham_no_depl_r) ),
          DIRECTION       =SIMP(statut='f',typ='R',max='**'),
          THETA_2D        =FACT(statut='f',min=1,max='**',
@@ -57,7 +57,6 @@ CALC_THETA=OPER(nom="CALC_THETA",op=54,sd_prod=theta_geom,docu="U4.82.02-d",reen
            R_SUP           =SIMP(statut='o',typ='R'),
          ),
          GRAD_NOEU_THETA =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
-         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
          IMPRESSION      =FACT(statut='f',min=1,max=1,
            FICHIER         =SIMP(statut='f',typ='TXM',defaut="RESULTAT",into=("RESULTAT",) ),
            FORMAT          =SIMP(statut='f',typ='TXM',defaut="EXCEL",into=("EXCEL","AGRAF") ),

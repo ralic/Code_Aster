@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/10/2002   AUTEUR UFBHHLL C.CHAVANT 
+C MODIF CALCULEL  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,7 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       DATA TPS/0,2*1.0D0,3*0/
 
       CALL JEMARQ()
+      CALL INFMAJ()
       VFONO = ' '
       VAFONO = ' '
 

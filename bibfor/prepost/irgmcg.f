@@ -1,16 +1,21 @@
-      SUBROUTINE IRGMCG(CHAMSY,IFI,NOMCON,ORDR,NBORDR,COORD,CONNX,POINT,
-     &                  NJVPOI,NJVSEG,NJVTRI,NJVTET,NBPOI,NBSEG,NBTRI,
-     &                  NBTET,NBCMPI,NOMCMP,LRESU,PARA,NOMAOU,NOMAIN)
+      SUBROUTINE IRGMCG ( CHAMSY, IFI, NOMCON, ORDR, NBORDR, COORD,
+     &                    CONNX, POINT, NJVPOI, NJVSEG, NJVTRI, NJVQUA,
+     &                    NJVTET, NJVPYR, NJVPRI, NJVHEX,
+     &                    NBPOI, NBSEG, NBTRI, NBQUA, NBTET, NBPYR, 
+     &                    NBPRI, NBHEX, NBCMPI, NOMCMP, LRESU, PARA,
+     &                    NOMAOU, NOMAIN, VERSIO)
       IMPLICIT NONE
-      CHARACTER*(*) NOMCON,CHAMSY,NJVPOI,NJVSEG,NJVTRI,NJVTET,NOMCMP(*)
+      CHARACTER*(*)  NOMCON,CHAMSY,NJVPOI,NJVSEG,NJVTRI,NJVTET,NOMCMP(*)
+     &              ,NJVQUA,NJVPYR,NJVPRI,NJVHEX
       CHARACTER*8 NOMAOU,NOMAIN
       REAL*8 COORD(*),PARA(*)
       LOGICAL LRESU
-      INTEGER NBPOI,NBSEG,NBTRI,NBTET,NBCMPI,IFI,NBORDR
+      INTEGER        NBPOI, NBSEG, NBTRI, NBTET, IFI, NBORDR, NBCMPI
+      INTEGER        NBQUA, NBPYR, NBPRI, NBHEX, VERSIO
       INTEGER ORDR(*),CONNX(*),POINT(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 09/12/2002   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +32,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
 C TOLE CRP_21
 C
 C        IMPRESSION D'UN CHAM_ELEM DE TYPE "ELGA","ELEM" AU FORMAT GMSH
@@ -42,16 +48,25 @@ C        POINT  : VECTEUR DU NOMBRE DE NOEUDS DES MAILLES DU MAILLAGE
 C        NJVPOI : NOM JEVEUX DEFINISSANT LES ELEMENTS POI1 DU MAILLAGE
 C        NJVSEG : NOM JEVEUX DEFINISSANT LES ELEMENTS SEG2 DU MAILLAGE
 C        NJVTRI : NOM JEVEUX DEFINISSANT LES ELEMENTS TRI3 DU MAILLAGE
+C        NJVQUA : NOM JEVEUX DEFINISSANT LES ELEMENTS QUA4 DU MAILLAGE
 C        NJVTET : NOM JEVEUX DEFINISSANT LES ELEMENTS TET4 DU MAILLAGE
+C        NJVPYR : NOM JEVEUX DEFINISSANT LES ELEMENTS PYR5 DU MAILLAGE
+C        NJVPRI : NOM JEVEUX DEFINISSANT LES ELEMENTS PRI6 DU MAILLAGE
+C        NJVHEX : NOM JEVEUX DEFINISSANT LES ELEMENTS HEX8 DU MAILLAGE
 C        NBPOI  : NOMBRE D'ELEMENTS POI1 DU MAILLAGE
 C        NBSEG  : NOMBRE D'ELEMENTS SEG2 DU MAILLAGE
 C        NBTRI  : NOMBRE D'ELEMENTS TRI3 DU MAILLAGE
+C        NBQUA  : NOMBRE D'ELEMENTS QUA4 DU MAILLAGE
 C        NBTET  : NOMBRE D'ELEMENTS TET4 DU MAILLAGE
+C        NBPYR  : NOMBRE D'ELEMENTS PYR5 DU MAILLAGE
+C        NBPRI  : NOMBRE D'ELEMENTS PRI6 DU MAILLAGE
+C        NBHEX  : NOMBRE D'ELEMENTS HEXA8 DU MAILLAGE
 C        NBCMPI : NOMBRE DE COMPOSANTES DEMANDEES A IMPRIMER
 C        NOMCMP : NOMS DES COMPOSANTES DEMANDEES A IMPRIMER
 C        LRESU  : LOGIQUE INDIQUANT SI NOMCON EST UNE SD RESULTAT
 C        PARA   : VALEURS DES VARIABLES D'ACCES (INST, FREQ)
 C        NOMAOU : NOM DU MAILLAGE REDECOUPE
+C        VERSIO : NUMERO DE LA VERSION GMSH UTILISEE (1 OU 2 )
 
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -71,13 +86,15 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER      IOR,J,K,INOE,IMA,LISTNO(4),IX,NBNO
+      INTEGER      IOR,J,K,INOE,IMA,LISTNO(8),IX,NBNO
       INTEGER      IPOI,ISEG,ITRI,ITET,JPOI,JSEG,JTRI,JTET
+      INTEGER      IQUA,IPYR,IPRI,IHEX,JQUA,JPYR,JPRI,JHEX
       INTEGER      IBID,NBCMP,IPOIN,IRET,JCESC,JCESL
       INTEGER      JTABC,JTABD,JTABV,JTABL,JCESK,JCESD
       INTEGER      ICMP,JNCMP,IPT,ISP,NBPT,NBSP,JNUMOL
       INTEGER      NBMA,NCMPU,IAD,NBCMPD,NBORD2,IADMAX,IADMM
-      INTEGER      NBPOI2,NBSEG2,NBTRI2,NBTET2
+      INTEGER      NBPOI2,NBSEG2,NBTRI2,NBQUA2,NBTET2
+      INTEGER      NBPYR2,NBPRI2,NBHEX2
       LOGICAL      IWRI
       CHARACTER*1  TSCA
       CHARACTER*8  K8B,NOMGD,TYPE,NOCMP
@@ -165,7 +182,11 @@ C     ***************
       NBPOI2 = 0
       NBSEG2 = 0
       NBTRI2 = 0
+      NBQUA2 = 0
       NBTET2 = 0
+      NBPYR2 = 0
+      NBPRI2 = 0
+      NBHEX2 = 0
 
 C --- BOUCLE SUR LE NOMBRE DE COMPOSANTES DU CHAM_ELEM
 C     *************************************************
@@ -242,6 +263,23 @@ C       --------------------------------------
           IF (IADMM.GT.0)  NBTRI2 = NBTRI
         END IF
 
+C ----- BOUCLE SUR LES ELEMENTS DE TYPES QUA4
+C       -------------------------------------
+        IF (VERSIO.EQ.2) THEN
+          IF (NBQUA.NE.0) THEN
+            IADMM = 0
+            NBNO  = 4
+            CALL JEVEUO(NJVQUA,'L',JQUA)
+            DO 300 IQUA = 1,NBQUA
+              IMA = ZI(JQUA-1+IQUA)
+              CALL IRGMG1(ZI(JNUMOL),IMA,NBORD2,ZI(JTABD),ZI(JTABL),
+     &                    ZI(JTABV),NBNO,ICMP,IFI,IWRI,IADMAX)
+              IADMM = MAX(IADMAX,IADMM)
+  300       CONTINUE
+            IF (IADMM.GT.0)  NBQUA2 = NBQUA
+          END IF
+        END IF
+
 C ----- BOUCLE SUR LES ELEMENTS DE TYPES TETRA4
 C       ---------------------------------------
         IF (NBTET.NE.0) THEN
@@ -256,12 +294,64 @@ C       ---------------------------------------
   150     CONTINUE
           IF (IADMM.GT.0)  NBTET2 = NBTET
         END IF
+
+C ----- BOUCLE SUR LES ELEMENTS DE TYPES PYRAM5
+C       ---------------------------------------
+        IF (VERSIO.EQ.2) THEN
+          IF (NBPYR.NE.0) THEN
+            IADMM = 0
+            NBNO  = 5
+            CALL JEVEUO(NJVPYR,'L',JPYR)
+            DO 310 IPYR = 1,NBPYR
+              IMA = ZI(JPYR-1+IPYR)
+              CALL IRGMG1(ZI(JNUMOL),IMA,NBORD2,ZI(JTABD),ZI(JTABL),
+     &                    ZI(JTABV),NBNO,ICMP,IFI,IWRI,IADMAX)
+              IADMM = MAX(IADMAX,IADMM)
+  310       CONTINUE
+            IF (IADMM.GT.0)  NBPYR2 = NBPYR
+          END IF
+        END IF
+
+C ----- BOUCLE SUR LES ELEMENTS DE TYPES PENTA6
+C       ---------------------------------------
+        IF (VERSIO.EQ.2) THEN
+          IF (NBPRI.NE.0) THEN
+            IADMM = 0
+            NBNO  = 6
+            CALL JEVEUO(NJVPRI,'L',JPRI)
+            DO 320 IPRI = 1,NBPRI
+              IMA = ZI(JPRI-1+IPRI)
+              CALL IRGMG1(ZI(JNUMOL),IMA,NBORD2,ZI(JTABD),ZI(JTABL),
+     &                    ZI(JTABV),NBNO,ICMP,IFI,IWRI,IADMAX)
+              IADMM = MAX(IADMAX,IADMM)
+  320       CONTINUE
+            IF (IADMM.GT.0)  NBPRI2 = NBPRI
+          END IF
+        END IF
+
+C ----- BOUCLE SUR LES ELEMENTS DE TYPES HEXA8
+C       --------------------------------------
+        IF (VERSIO.EQ.2) THEN
+          IF (NBHEX.NE.0) THEN
+            IADMM = 0
+            NBNO  = 8
+            CALL JEVEUO(NJVHEX,'L',JHEX)
+            DO 330 IHEX = 1,NBHEX
+              IMA = ZI(JHEX-1+IHEX)
+              CALL IRGMG1(ZI(JNUMOL),IMA,NBORD2,ZI(JTABD),ZI(JTABL),
+     &                    ZI(JTABV),NBNO,ICMP,IFI,IWRI,IADMAX)
+              IADMM = MAX(IADMAX,IADMM)
+  330       CONTINUE
+            IF (IADMM.GT.0)  NBHEX2 = NBHEX
+          END IF
+        END IF
 C
 C ----- ECRITURE DE L'ENTETE DE View
 C       ****************************
 C
         CALL IRGMPV(IFI,LRESU,NOMCON,CHAMSY,NBORD2,PARA,NOCMP,NBPOI2,
-     &              NBSEG2,NBTRI2,NBTET2,.TRUE.,.FALSE.,.FALSE.)
+     &              NBSEG2,NBTRI2,NBQUA2,NBTET2,NBPYR2,NBPRI2,NBHEX2,
+     &              .TRUE.,.FALSE.,.FALSE.,VERSIO)
 C
         IWRI = .TRUE.
 C
@@ -326,6 +416,27 @@ C       --------------------------------------
   230     CONTINUE
         END IF
 
+C ----- BOUCLE SUR LES ELEMENTS DE TYPES QUA4
+C       --------------------------------------
+        IF (NBQUA2.NE.0) THEN
+          CALL JEVEUO(NJVQUA,'L',JQUA)
+          NBNO = 4
+          DO 450 IQUA = 1,NBQUA
+            IMA = ZI(JQUA-1+IQUA)
+            IPOIN = POINT(IMA)
+            DO 340 INOE = 1,NBNO
+              LISTNO(INOE) = CONNX(IPOIN-1+INOE)
+  340       CONTINUE
+            DO 350 J = 1,3
+              WRITE(IFI,1000) (COORD(3*(LISTNO(INOE)-1)+J),INOE=1,NBNO)
+  350       CONTINUE
+
+            CALL IRGMG1(ZI(JNUMOL),IMA,NBORD2,ZI(JTABD),ZI(JTABL),
+     &                  ZI(JTABV),NBNO,ICMP,IFI,IWRI,IADMAX)
+
+  450     CONTINUE
+        END IF
+
 C ----- BOUCLE SUR LES ELEMENTS DE TYPES TETRA4
 C       ---------------------------------------
         IF (NBTET2.NE.0) THEN
@@ -345,6 +456,69 @@ C       ---------------------------------------
      &                  ZI(JTABV),NBNO,ICMP,IFI,IWRI,IADMAX)
 
   260     CONTINUE
+        END IF
+
+C ----- BOUCLE SUR LES ELEMENTS DE TYPES PYRAM5
+C       ---------------------------------------
+        IF (NBPYR2.NE.0) THEN
+          CALL JEVEUO(NJVPYR,'L',JPYR)
+          NBNO = 5
+          DO 360 IPYR = 1,NBPYR
+            IMA = ZI(JPYR-1+IPYR)
+            IPOIN = POINT(IMA)
+            DO 370 INOE = 1,NBNO
+              LISTNO(INOE) = CONNX(IPOIN-1+INOE)
+  370       CONTINUE
+            DO 380 J = 1,3
+              WRITE(IFI,1000) (COORD(3*(LISTNO(INOE)-1)+J),INOE=1,NBNO)
+  380       CONTINUE
+
+            CALL IRGMG1(ZI(JNUMOL),IMA,NBORD2,ZI(JTABD),ZI(JTABL),
+     &                  ZI(JTABV),NBNO,ICMP,IFI,IWRI,IADMAX)
+
+  360     CONTINUE
+        END IF
+
+C ----- BOUCLE SUR LES ELEMENTS DE TYPES PENTA6
+C       ---------------------------------------
+        IF (NBPRI2.NE.0) THEN
+          CALL JEVEUO(NJVPRI,'L',JPRI)
+          NBNO = 6
+          DO 390 IPRI = 1,NBPRI
+            IMA = ZI(JPRI-1+IPRI)
+            IPOIN = POINT(IMA)
+            DO 400 INOE = 1,NBNO
+              LISTNO(INOE) = CONNX(IPOIN-1+INOE)
+  400       CONTINUE
+            DO 410 J = 1,3
+              WRITE(IFI,1000) (COORD(3*(LISTNO(INOE)-1)+J),INOE=1,NBNO)
+  410       CONTINUE
+
+            CALL IRGMG1(ZI(JNUMOL),IMA,NBORD2,ZI(JTABD),ZI(JTABL),
+     &                  ZI(JTABV),NBNO,ICMP,IFI,IWRI,IADMAX)
+
+  390     CONTINUE
+        END IF
+
+C ----- BOUCLE SUR LES ELEMENTS DE TYPES HEXA8
+C       --------------------------------------
+        IF (NBHEX2.NE.0) THEN
+          CALL JEVEUO(NJVHEX,'L',JHEX)
+          NBNO = 8
+          DO 420 IHEX = 1,NBHEX
+            IMA = ZI(JHEX-1+IHEX)
+            IPOIN = POINT(IMA)
+            DO 430 INOE = 1,NBNO
+              LISTNO(INOE) = CONNX(IPOIN-1+INOE)
+  430       CONTINUE
+            DO 440 J = 1,3
+              WRITE(IFI,1000) (COORD(3*(LISTNO(INOE)-1)+J),INOE=1,NBNO)
+  440       CONTINUE
+
+            CALL IRGMG1(ZI(JNUMOL),IMA,NBORD2,ZI(JTABD),ZI(JTABL),
+     &                  ZI(JTABV),NBNO,ICMP,IFI,IWRI,IADMAX)
+
+  420     CONTINUE
         END IF
 
 C ----- FIN D'ECRITURE DE View

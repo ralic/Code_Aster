@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ def crea_resu_prod(TYPE_RESU,**args):
   if TYPE_RESU == "EVOL_VARC"    : return evol_varc
   raise AsException("type de concept resultat non prevu")
 
-CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,docu="U4.44.12-e3",reentrant='f',
+CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,docu="U4.44.12-e",reentrant='f',
             UIinfo={"groupes":("Modélisation",)},
                fr="Engendrer ou enrichir une structure de donnees en affectant les cham_gd associes",
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE DE LAIGLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -77,7 +77,6 @@ SOL=DEFI_MATERIAU(    ELAS=_F(  E     = 1500.E6,
                                    KSI       =    0.25    ,
                                    GAMMA_CJS =    0.7     ,
                                    SIGMA_P1  =    9.09E+6 ,
-                                   SIGMA_P2  =   23.05E+6 ,
                                    PA        =     1.0E+5 ,  ),
                                THM_LIQU=_F(  
                                 RHO = 1000.,  
@@ -258,7 +257,7 @@ U2=STAT_NON_LINE(
                 ),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-6,    
-                ITER_GLOB_MAXI = 10,    
+                ITER_GLOB_MAXI = 20,    
                 )
               )
 
@@ -320,7 +319,7 @@ TEST_RESU(RESU=(
                        PRECISION = 1.E-5,   
                        REFERENCE='NON_REGRESSION',
                        VERSION = '6.2.24',
-                       VALE = -2.6497819831054E+06,        
+                       VALE = -3.2770892106632E+06,
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
@@ -330,7 +329,7 @@ TEST_RESU(RESU=(
                        PRECISION = 1.E-5,   
                        REFERENCE='NON_REGRESSION',
                        VERSION = '6.2.24',
-                       VALE = -8.6854436742834E+06,        
+                       VALE = -7.0493154023008E+06,
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
@@ -340,7 +339,7 @@ TEST_RESU(RESU=(
                        PRECISION = 1.E-5,   
                        REFERENCE='NON_REGRESSION',
                        VERSION = '6.2.24',
-                       VALE = -1.2248129822327E+07,        
+                       VALE = -9.5908410511583E+06,
                      ),
 #
 
@@ -383,7 +382,7 @@ TEST_RESU(RESU=(
                        PRECISION = 1.E-5,   
                        REFERENCE='NON_REGRESSION',
                        VERSION = '6.2.24',
-                       VALE = -2.6497819830716E+06,        
+                       VALE = -3.2770892107893E+06,
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
@@ -393,7 +392,7 @@ TEST_RESU(RESU=(
                        PRECISION = 1.E-5,   
                        REFERENCE='NON_REGRESSION',
                        VERSION = '6.2.24',
-                       VALE = -8.6854436733656E+06,        
+                       VALE = -7.0493154022119E+06,
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
@@ -403,7 +402,7 @@ TEST_RESU(RESU=(
                        PRECISION = 1.E-5,   
                        REFERENCE='NON_REGRESSION',
                        VERSION = '6.2.24',
-                       VALE = -1.2248164165275E+07,        
+                       VALE = -9.6143327553915E+06,
                      ),
 
 # CONTRAINTE SIZZ
@@ -445,7 +444,7 @@ TEST_RESU(RESU=(
                        PRECISION = 1.E-5,   
                        REFERENCE='NON_REGRESSION',
                        VERSION = '6.2.24',
-                       VALE = -1.8740613872848E+07,        
+                       VALE = -1.7642515501263E+07,
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
@@ -455,7 +454,7 @@ TEST_RESU(RESU=(
                        PRECISION = 1.E-5,   
                        REFERENCE='NON_REGRESSION',
                        VERSION = '6.2.24',
-                       VALE = -3.2130678993061E+07,        
+                       VALE = -2.4946678736471E+07,
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
@@ -465,7 +464,7 @@ TEST_RESU(RESU=(
                        PRECISION = 1.E-5,   
                        REFERENCE='NON_REGRESSION',
                        VERSION = '6.2.24',
-                       VALE = -3.6744440953289E+07,        
+                       VALE = -2.8806241234300E+07,
                      ),
 
 # PRESSION PRE1

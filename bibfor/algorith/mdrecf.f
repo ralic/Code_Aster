@@ -13,7 +13,7 @@
       CHARACTER*16       TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 24/03/2003   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,12 +111,12 @@ CC
         CALL GETVID('EXCIT','ACCE',I,1,1,FACCE,NA)
         CALL GETVTX('EXCIT','MULT_APPUI',I,1,1,MONMOT(1),N2)
         CALL GETVTX('EXCIT','CORR_STAT',I,1,1,MONMOT(2),N3)
-        IF (N2.NE.0 .OR. N3.NE.0) NOMMOT = 'OUI'
+        IF (MONMOT(1).EQ.'OUI'.OR.MONMOT(2).EQ.'OUI') NOMMOT = 'OUI'
         IF (N1.NE.0) THEN
 C         CAS D'UNE FONC_MULT
           NOMFON(I) = FONCT
           CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-          NOMFON(I+NBEXCI) = ZK8(LPROL)
+          NOMFON(I+NBEXCI) = ZK16(LPROL)
           IF (L1.NE.0) THEN
 C           CAS D'UN VECT_GENE
             CALL JEVEUT(CHANNO//'.VALE','L',JVALE)
@@ -145,8 +145,8 @@ C         CAS D'UN ACCELEROGRAMME
           NOMFON(I) = FACCE
           FONACC(I) = FACCE
           CALL JEVEUO(FACCE//'.PROL','L',LPROL)
-          NOMFON(I+NBEXCI) = ZK8(LPROL)
-          FONACC(I+NBEXCI) = ZK8(LPROL)
+          NOMFON(I+NBEXCI) = ZK16(LPROL)
+          FONACC(I+NBEXCI) = ZK16(LPROL)
           IF (L1.NE.0) THEN
 C           CAS D'UN VECT_GENE
             CALL JEVEUT(CHANNO//'.VALE','L',JVALE)
@@ -170,11 +170,11 @@ C           CAS D'UN NUME_ORDR
            CALL GETVID('EXCIT','VITE',I,1,1,FONVIT(I),N3)
            FONCT = FONVIT(I)
            CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-           FONVIT(I+NBEXCI) = ZK8(LPROL)
+           FONVIT(I+NBEXCI) = ZK16(LPROL)
            CALL GETVID('EXCIT','DEPL',I,1,1,FONDEP(I),N4)
            FONCT = FONDEP(I)
            CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-           FONDEP(I+NBEXCI) = ZK8(LPROL)
+           FONDEP(I+NBEXCI) = ZK16(LPROL)
         ENDIF
         IF (MONMOT(2)(1:3).EQ.'OUI') THEN
            CALL GETVID(' ','MODE_CORR',1,1,1,MODCOR,NBV)
@@ -187,11 +187,11 @@ C           CAS D'UN NUME_ORDR
            CALL GETVID('EXCIT','D_FONC_DT',I,1,1,FONVIT(I),N3)
            FONCT = FONVIT(I)
            CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-           FONVIT(I+NBEXCI) = ZK8(LPROL)
+           FONVIT(I+NBEXCI) = ZK16(LPROL)
            CALL GETVID('EXCIT','D_FONC_DT2',I,1,1,FONACC(I),N4)
            FONCT = FONACC(I)
            CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-           FONACC(I+NBEXCI) = ZK8(LPROL)
+           FONACC(I+NBEXCI) = ZK16(LPROL)
            FONDEP(I) = NOMFON(I)
            FONDEP(I+NBEXCI) = NOMFON(I+NBEXCI) 
 C

@@ -1,6 +1,6 @@
       SUBROUTINE ATALC2(AZ,NUMEDZ,RTBLOC,ATAZ,BASEZ,NBLIG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/07/2002   AUTEUR ADBHHPM P.MASSIN 
+C MODIF MODELISA  DATE 24/03/2003   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -173,6 +173,7 @@ C
 C     INDIC EST LE NOMBRE DE TERMES STOCKES PAR LIGNE DE ATA
 C     ITOT EST LE NOMBRE TOTAL DE TERMES STOCKES    
       ICUM = 0
+      ICUM = ZI(ID2 +1 -1) 
       ITOT = 1
       DO 50 I = 2 , NEQ
         INDIC = 0
@@ -244,15 +245,17 @@ C     ------------------------------------
       SOM = ZERO 
       IF (ZI(ID2 +1 -1) .EQ. 0) THEN
          SOM = ZERO
+         ICUM = 0
       ELSE           
          DO 90 L =1,ZI(ID2 +1 -1) 
             SOM = SOM + ZR(IDCOL +L -1)*ZR(IDCOL +L -1) 
   90     CONTINUE
+         ICUM = ZI(ID2 +1 -1) 
       ENDIF
       ZR(IVALE +K -1) = SOM
 C
       K = K + 1
-      ICUM = 0
+C      ICUM = 0
       DO 100 I = 2 , NEQ
         INDIC = 0
         IREP = 0

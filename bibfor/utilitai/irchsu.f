@@ -1,10 +1,11 @@
       SUBROUTINE IRCHSU ( NBCHAR, CHARG , FICH , VERSIO )
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER             NBCHAR,                 VERSIO
-      CHARACTER*8                 CHARG(*) , FICH
+      CHARACTER*8                 CHARG(*)
+      CHARACTER*(*)                       FICH
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/04/97   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/01/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

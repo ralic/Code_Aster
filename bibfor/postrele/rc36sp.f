@@ -1,12 +1,14 @@
       SUBROUTINE RC36SP ( NBM, IMA, IPT, C, K, CARA, MATI, PI, MI,  
-     +    MATJ, PJ, MJ, MSE, NBTHP, CHTHP, NBTHQ, CHTHQ,IOC1,IOC2,SPIJ )
+     +    MATJ, PJ, MJ, MSE, NBTHP, CHTHP, NBTHQ, CHTHQ,IOC1,IOC2,SPIJ
+     +                  ,TYPEKE,SPMECA,SPTHER )
       IMPLICIT   NONE
       INTEGER             NBM,IMA(*),IPT,NBTHP,CHTHP(*),NBTHQ,CHTHQ(*)
       REAL*8              C(*), K(*), CARA(*), MATI(*), MATJ(*), PI,
-     +                    MI(*), PJ, MJ(*), MSE(*), SPIJ
+     +           MI(*), PJ, MJ(*), MSE(*), SPIJ,TYPEKE, SPMECA, SPTHER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
+C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -83,6 +85,12 @@ C
       INERT = CARA(1)
       D0    = CARA(2)
       EP    = CARA(3)
+      
+C CAS DE KE_MECA (PAS DE PARTITION MECANIQUE - THERMIQUE)
+      
+      IF (TYPEKE.LT.0.D0) THEN
+      
+      
 C
 C --- CALCUL DU SP:
 C     ------------- 
@@ -110,5 +118,48 @@ C
 C
       SPIJ = MAX ( SPP, SPQ )
 C
+
+
+C CAS DE KE_MIXTE (PARTITION MECANIQUE - THERMIQUE)
+      
+      
+      
+      ELSEIF (TYPEKE.GT.0.D0) THEN
+      
+      
+C
+C --- CALCUL DU SP:
+C     ------------- 
+      SP1 = K(1)*C(1)*PIJ*D0 / 2 / EP
+      SP2 = K(2)*C(2)*D0*MIJ / 2 / INERT
+
+      SPMECA=SP1+SP2
+
+      SP3 = K(3)*E*ALPHA / 2 / (1.D0-NU)
+      SP4 = K(3)*C(3)*EAB
+      SP5 = E*ALPHA / (1.D0-NU)
+C
+C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
+C
+      CALL RCSP01 ( NBM, IMA, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB, 
+     +              NBTHP, CHTHP, IOC1, SP6 )
+C
+      SPP = SP6
+      SPTHER=MAX(SPTHER,SPP)
+C
+C
+C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
+C
+      CALL RCSP01 ( NBM, IMA, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB, 
+     +              NBTHQ, CHTHQ, IOC2, SP6 )
+C
+      SPQ = SP6
+      SPTHER=MAX(SPTHER,SPQ)
+      
+      ELSE
+      CALL UTMESS('F','RC32SP','PB AVEC TYPEKE')
+      
+      END IF
+
       CALL JEDEMA( )
       END

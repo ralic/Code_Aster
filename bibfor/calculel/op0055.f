@@ -3,7 +3,7 @@
       INTEGER             IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 11/03/2003   AUTEUR ASSIRE A.ASSIRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C
 C-----------------------------------------------------------------------
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -44,12 +43,12 @@ C
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER       NBV, I, IFM, IRET, IRETEX, IRETNO, IRETOR, JEXTR,
+      INTEGER       NBV, IFM, IRET, IRETEX, IRETNO, IRETOR, JEXTR,
      +              JNORM, JORIG, NIV, N1, N2, IOC
       REAL*8        PS1, PS2, R8PREM, ZERO
       LOGICAL       CODE, LBID
       CHARACTER*8   K8B, RESU, NOMA, ENTIT1, ENTIT2
-      CHARACTER*16  TYPE, OPER, TYPFON
+      CHARACTER*16  TYPE, OPER, TYPFON, MOTCLE(2), TYPMCL(2)
 C DEB-------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -81,7 +80,12 @@ C
          CALL GVERIF ( RESU, NOMA, TYPFON, ENTIT2, CODE )
       ELSE
          IOC = 1
-         CALL FONFIS ( RESU, NOMA, TYPFON, IOC, 'G' )
+         MOTCLE(1) = 'GROUP_MA'
+         MOTCLE(2) = 'MAILLE'
+         TYPMCL(1) = 'GROUP_MA'
+         TYPMCL(2) = 'MAILLE'
+         CALL FONFIS ( RESU, NOMA, TYPFON, IOC,  
+     +                    2, MOTCLE, TYPMCL, 'G' )
       ENDIF
       CALL GVERIF(RESU,NOMA,TYPFON,ENTIT1,CODE)
 C

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 24/03/2003   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,14 +40,16 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      IFR, IUNIFI, N1, NPARFI, NBTRI, NPARIM, NPARPG,
-     +             JPAIM, JPAPG
+     +             JPAIM, JPAPG, NTI
       CHARACTER*3  IMPRFO
-      CHARACTER*8  FICHIE, FORMAR, FORMAC
-      CHARACTER*16 FORMAT
+      CHARACTER*8  FORMAR, FORMAC
+      CHARACTER*16 FICHIE, FORMAT
       CHARACTER*19 TABLE, NEWTAB, NEWTA1, NEWTA2
       CHARACTER*24 PARIM, PARPG
+      CHARACTER*80 TITRE
 C     ------------------------------------------------------------------
       CALL JEMARQ()
+      CALL INFMAJ()
 C     ------------------------------------------------------------------
 C
 C                    --- LE FICHIER D'IMPRESSION ---
@@ -64,6 +66,9 @@ C     ------------------------------------------------------------------
      +             ' ECRITES SUR LE FICHIER DE TYPE DIGR DANS ASTERIX')
       ENDIF
       WRITE(IFR,1000)
+C
+      CALL GETVTX(' ','TITRE_TABLE',1,1,1,TITRE,NTI)
+      IF (NTI.NE.0) WRITE(IFR,'(''TITRE:'',/A80)') TITRE
 C     ------------------------------------------------------------------
 C  
 C                        --- LA TABLE ---

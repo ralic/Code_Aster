@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,7 +37,7 @@ def post_elem_prod( MASS_INER,ENER_POT,ENER_CIN,TRAV_EXT,WEIBULL,
   if AIRE_INTERNE != None  : return tabl_aire_int
   raise AsException("type de concept resultat non prevu")
 
-POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=post_elem_prod,docu="U4.81.22-e3",reentrant='f',
+POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=post_elem_prod,docu="U4.81.22-e",reentrant='f',
             UIinfo={"groupes":("Post traitements",)},
                fr="Calcul de quantités globales (masse, inerties, énergie, ...) sur tout ou partie du modèle",
 

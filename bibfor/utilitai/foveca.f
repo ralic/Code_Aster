@@ -4,7 +4,7 @@
       INTEGER                   NBF,     IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/05/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,8 +63,8 @@ C
       NOMFON = NOMF
       PROL = NOMFON//'.PROL'
       CALL JEVEUO(PROL,'L',LPRO)
-      TYPFON = ZK8(LPRO  )
-      NOMPAR = ZK8(LPRO+2)
+      TYPFON = ZK16(LPRO  )
+      NOMPAR = ZK16(LPRO+2)
 C
       CALL GETRES(CBID,CBID,NOMCMD)
       CBID   = NOMOPE

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2002   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 24/02/2003   AUTEUR DURAND C.DURAND 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL EN TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,7 +160,7 @@ MACR_ADAP_MAIL(
               MAJ_CHAM=_F( 
                        RESULTAT   = RETHZERO,
                        NOM_CHAM   = 'TEMP',
-                       TYPE_CHAM  = 'CHAM_NO_TEMP_R',
+                       TYPE_CHAM  = 'NOEU_TEMP_R',
                        NUME_ORDRE = 2,
                        CHAM_MAJ   = CO("TEMPUN")),
               QUALITE='OUI',
@@ -295,7 +295,7 @@ MACR_ADAP_MAIL(
               MAJ_CHAM=_F( 
                        RESULTAT   = RETHUN,
                        NOM_CHAM   = 'TEMP',
-                       TYPE_CHAM  = 'CHAM_NO_TEMP_R',
+                       TYPE_CHAM  = 'NOEU_TEMP_R',
                        NUME_ORDRE = 2,
                        CHAM_MAJ   = CO("TEMPDEUX")),
               QUALITE='OUI',

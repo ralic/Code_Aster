@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,16 +17,29 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 CALC_FONC_INTERP=OPER(nom="CALC_FONC_INTERP",op= 134,sd_prod=fonction,
-                      docu="U4.32.01-e1",reentrant='f',
-            UIinfo={"groupes":("Fonction",)},
-         regles=(UN_PARMI('VALE_R','LIST_PARA'),),
-         FONCTION        =SIMP(statut='o',typ=fonction ),
+                      docu="U4.32.01-e",reentrant='n',
+           UIinfo={"groupes":("Fonction",)},
+         regles=(UN_PARMI('VALE_PARA','LIST_PARA'),
+         EXCLUS('VALE_PARA_FONC','LIST_PARA_FONC'),),
+         FONCTION        =SIMP(statut='o',typ=formule ),
          NOM_RESU        =SIMP(statut='f',typ='TXM',defaut="TOUTRESU"),
-         VALE_R          =SIMP(statut='f',typ='R',max='**'),
+         NOM_PARA        =SIMP(statut='o',typ='TXM'),
+         VALE_PARA       =SIMP(statut='f',typ='R',max='**'),
          LIST_PARA       =SIMP(statut='f',typ=listr8 ),
-         INTERPOL        =SIMP(statut='f',typ='TXM',max=2,defaut="LIN",into=("NON","LIN","LOG","INT") ),
-         PROL_DROITE     =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("EXCLU","CONSTANT","LINEAIRE","INTERPRE") ),
-         PROL_GAUCHE     =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("EXCLU","CONSTANT","LINEAIRE","INTERPRE") ),
+         NOM_PARA_FONC   =SIMP(statut='f',typ='TXM'),
+         VALE_PARA_FONC  =SIMP(statut='f',typ='R',max='**'),
+         LIST_PARA_FONC  =SIMP(statut='f',typ=listr8 ),
+         INTERPOL        =SIMP(statut='f',typ='TXM',max=2,defaut="LIN",
+                              into=("NON","LIN","LOG") ),
+         PROL_DROITE     =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("EXCLU","CONSTANT",
+                              "LINEAIRE") ),
+         PROL_GAUCHE     =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("EXCLU","CONSTANT",
+                              "LINEAIRE") ),
+         INTERPOL_FONC   =SIMP(statut='f',typ='TXM',max=2,into=("NON","LIN","LOG") ),
+         PROL_DROITE_FONC=SIMP(statut='f',typ='TXM',
+                               into=("EXCLU","CONSTANT","LINEAIRE") ),
+         PROL_GAUCHE_FONC=SIMP(statut='f',typ='TXM',into=("EXCLU",
+                              "CONSTANT","LINEAIRE") ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2 ) ),
 )  ;

@@ -9,7 +9,7 @@ C ----------------------------------------------------------------------
       REAL*8  VARMO(7),VARPL(7)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/03/2000   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,14 +81,14 @@ C
      &                            NOMRE1,VALRE1,CODRE1, ' ' )
       RIGNOR = VALRE1(1)
       RIGTAN = VALRE1(2)
-      AMONOR = VALRE1(3)
-      AMOTAN = VALRE1(4)
+C      AMONOR = VALRE1(3)
+C      AMOTAN = VALRE1(4)
       COULOM = VALRE1(5)
       DIST12 = VALRE1(6)+VALRE1(7)
 C
       DULY = DUL(1+NC)-DUL(1)
       UTOT = UTL(1+NC)-UTL(1)
-      VITN = DVL(1+NC)-DVL(1)
+C      VITN = DVL(1+NC)-DVL(1)
       VIT2 = DVL(2+NC)-DVL(2)
       VIT3 = DVL(3+NC)-DVL(3)
       CALL VDIFF(3,XL(4),XL(1),XD)
@@ -100,12 +100,12 @@ C
       DEPZ = XD(3) + UTL(3+NC) - UTL(3) + DIRL(6) - DIRL(3)
       CALL R8COPY(3,DVE(1),1,DIRL,1)
       CALL R8COPY(3,DVE(1+NC),1,DIRL(4),1)
-      VITX = VITN + DIRL(4) - DIRL(1)
+C      VITX = VITN + DIRL(4) - DIRL(1)
       VITY = VIT2 + DIRL(5) - DIRL(2)
       VITZ = VIT3 + DIRL(6) - DIRL(3)
       IF (DEPX.LE.ZERO) THEN
          KTY = RIGNOR
-         KTY2 = RIGNOR*DEPX + AMONOR*VITX
+         KTY2 = RIGNOR*DEPX
          IF (KTY2.GT.ZERO) KTY2 = ZERO
          PSCA = VARMO(5)*VITY + VARMO(6)*VITZ
          IF (PSCA.GE.ZERO.AND.VARMO(7).EQ.1.D0) THEN
@@ -118,8 +118,8 @@ C
            ENDIF
            VARPL(7) = 1.D0
          ELSE
-           FOR2 = RIGTAN*(DEPY-VARMO(1)) + AMOTAN*VITY + VARMO(5)
-           FOR3 = RIGTAN*(DEPZ-VARMO(2)) + AMOTAN*VITZ + VARMO(6)
+           FOR2 = RIGTAN*(DEPY-VARMO(1)) + VARMO(5)
+           FOR3 = RIGTAN*(DEPZ-VARMO(2)) + VARMO(6)
            VARPL(7) = ZERO
            FORT = (FOR2**2 + FOR3**2)**0.5D0
            IF (FORT.GT.ABS(COULOM*KTY2)) THEN
@@ -179,15 +179,15 @@ C
      &                            NOMRE1,VALRE1,CODRE1, ' ' )
       RIGNOR = VALRE1(1)
       RIGTAN = VALRE1(2)
-      AMONOR = VALRE1(3)
-      AMOTAN = VALRE1(4)
+C      AMONOR = VALRE1(3)
+C      AMOTAN = VALRE1(4)
       COULOM = VALRE1(5)
       DIST12 = VALRE1(6)
       DIST0 = VALRE1(8)
 C
 C
       DULY = DUL(1)
-      VITN = DVL(1)
+C      VITN = DVL(1)
       VIT2 = DVL(2)
       VIT3 = DVL(3)
       CALL R8COPY(3,DPE(1),1,DIRL,1)
@@ -195,12 +195,12 @@ C
       DEPY = UTL(2) + DIRL(2)
       DEPZ = UTL(3) + DIRL(3)
       CALL R8COPY(3,DVE(1),1,DIRL,1)
-      VITX = VITN + DIRL(1)
+C      VITX = VITN + DIRL(1)
       VITY = VIT2 + DIRL(2)
       VITZ = VIT3 + DIRL(3)
       IF (DEPX.GE.ZERO) THEN
          KTY = RIGNOR
-         KTY2 = RIGNOR*DEPX + AMONOR*VITX
+         KTY2 = RIGNOR*DEPX
          IF (KTY2.LT.ZERO) KTY2 = ZERO
          PSCA = VARMO(5)*VITY + VARMO(6)*VITZ
          IF (PSCA.GE.ZERO.AND.VARMO(7).EQ.1.D0) THEN
@@ -213,8 +213,8 @@ C
            ENDIF
            VARPL(7) = 1.D0
          ELSE
-           FOR2 = RIGTAN*(DEPY-VARMO(1)) + AMOTAN*VITY + VARMO(5)
-           FOR3 = RIGTAN*(DEPZ-VARMO(2)) + AMOTAN*VITZ + VARMO(6)
+           FOR2 = RIGTAN*(DEPY-VARMO(1)) + VARMO(5)
+           FOR3 = RIGTAN*(DEPZ-VARMO(2)) + VARMO(6)
            VARPL(7) = ZERO
            FORT = (FOR2**2 + FOR3**2)**0.5D0
            IF (FORT.GT.ABS(COULOM*KTY2)) THEN

@@ -12,7 +12,7 @@
       LOGICAL LAMORT,LIMPED,LCREA,LMODST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 24/03/2003   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -242,7 +242,7 @@ C     --- VECTEURS DE TRAVAIL SUR BASE VOLATILE ---
         DO 30 I = 1,NBEXCI
 C     --- CAS D'UN ACCELEROGRAMME
           CALL GETVTX('EXCIT','MULT_APPUI',I,1,1,K8B,ND)
-          IF (ND.NE.0) THEN
+          IF (K8B.EQ.'OUI') THEN
             ZI(JMLTAP+I-1) = 1
 C              CALL GETVID('EXCIT','ACCE',I,1,1,KBID,NA)
 C              CALL GETVID('EXCIT','FONC_MULT',I,1,1,KBID,NF)

@@ -1,12 +1,15 @@
       SUBROUTINE IRGMM2 ( NOMAIN, NOMAOU, NBMAT, NUMMAI, BASZ, NJVPOI,
-     +            NJVSEG, NJVTRI, NJVTET, NBPOI, NBSEG, NBTRI, NBTET )
+     +             NJVSEG, NJVTRI, NJVQUA, NJVTET, NJVPYR, NJVPRI, 
+     +             NJVHEX, NBPOI, NBSEG, NBTRI, NBQUA, NBTET, NBPYR,
+     +             NBPRI, NBHEX )
       IMPLICIT   NONE
       INTEGER             NBPOI, NBSEG, NBTRI, NBTET, NBMAT, NUMMAI(*)
-      INTEGER             NBGRM
+      INTEGER             NBQUA, NBPYR, NBPRI, NBHEX
       CHARACTER*8         NOMAIN, NOMAOU
-      CHARACTER*(*)       BASZ, NJVPOI, NJVSEG, NJVTRI, NJVTET
+      CHARACTER*(*)       BASZ, NJVPOI, NJVSEG, NJVTRI, NJVQUA, NJVTET,
+     +                    NJVPYR, NJVPRI, NJVHEX
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/06/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ALGELINE  DATE 18/02/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,9 +27,9 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C TOLE CRP_20
+C TOLE CRP_21
 C     TRANSFORME LE MAILLAGE "NOMAIN" EN UN MAILLAGE "NOMAOU"
-C     LE MAILLAGE "NOMAOU" NE POSSEDE QUE DES MAILLES DE TYPE
-C     POI1, SEG2, TRIA3, TETRA4
+C     LE MAILLAGE "NOMAOU" NE POSSEDE QUE DES MAILLES LINEAIRES
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER         ZI
@@ -46,18 +49,18 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      I, IMA, NBMA, NBMAIL, TYPPOI, TYPSEG, TYPTRI, TYPTET,
+     +             TYPQUA, TYPPYR, TYPPRI, TYPHEX,
      +             NBNOMX, NBPT, INO, IMA2, IMAV, IATYMA, JREFE, JTITR
       INTEGER      JTYPM, JDIME, JPOI, JSEG, JTRI, JTET, JOPT, JNPT,
-     +             NBMAC, JMAIL, IM, JNUMOL, JNBNUN, IDLIMA
+     +             NBMAC, JMAIL, IM, JNUMOL, JQUA, JPYR, JPRI, JHEX 
       INTEGER      TSEG3(2,2), TSEG4(3,2), TTRI6(4,3), TTRI7(6,3),
-     +             TQUA4(2,3), TQUA8(6,3), TQUA9(8,3), TTET10(8,4),
-     +             TPEN6(3,4), TPEN15(16,4), TPYR5(2,4), THEX8(6,4),
+     +             TQUA8(6,3), TQUA9(8,3), TTET10(8,4), TPEN15(16,4),
      +             THEX20(24,4), THEX27(48,4)
       LOGICAL      LOGIC
       CHARACTER*1  BASE
       CHARACTER*8  K8B, NOMG, TYPM
       CHARACTER*24 NOMMAI, TYPMAI, CONNEX, NODIME, NOMNOE,
-     &             COOVAL, COODSC, COOREF, TITRE, NUMOLD, NBNUNE
+     &             COOVAL, COODSC, COOREF, TITRE, NUMOLD
       CHARACTER*24 TYPMAV, CONNEV, NODIMV, NOMNOV,
      &             COOVAV, COODSV, COOREV
 C     ------------------------------------------------------------------
@@ -111,14 +114,6 @@ C --- ECLATEMENT TRIA7 EN 6 TRIA3
       TTRI7(6,1) = 6
       TTRI7(6,2) = 1
       TTRI7(6,3) = 7
-C
-C --- ECLATEMENT QUAD4 EN 2 TRIA3
-      TQUA4(1,1) = 1
-      TQUA4(1,2) = 2
-      TQUA4(1,3) = 3
-      TQUA4(2,1) = 1
-      TQUA4(2,2) = 3
-      TQUA4(2,3) = 4
 C
 C --- ECLATEMENT QUAD8 EN 6 TRIA3
       TQUA8(1,1) = 1
@@ -199,20 +194,7 @@ C --- ECLATEMENT TETRA10 EN 8 TETRA4
       TTET10(8,2) = 7
       TTET10(8,3) = 9
       TTET10(8,4) = 10
-C
-C --- ECLATEMENT PENTA6 EN 3 TETRA4
-      TPEN6(1,1) = 1
-      TPEN6(1,2) = 2
-      TPEN6(1,3) = 3
-      TPEN6(1,4) = 5
-      TPEN6(2,1) = 1
-      TPEN6(2,2) = 3
-      TPEN6(2,3) = 6
-      TPEN6(2,4) = 5
-      TPEN6(3,1) = 1
-      TPEN6(3,2) = 6
-      TPEN6(3,3) = 4
-      TPEN6(3,4) = 5
+
 C
 C --- ECLATEMENT PENTA15 EN 16 TETRA4
       TPEN15(1,1) = 4
@@ -279,42 +261,7 @@ C --- ECLATEMENT PENTA15 EN 16 TETRA4
       TPEN15(16,2) = 13
       TPEN15(16,3) = 15
       TPEN15(16,4) = 9
-C
-C --- ECLATEMENT PYRAM5 EN 2 TETRA4
-      TPYR5(1,1) = 1
-      TPYR5(1,2) = 2
-      TPYR5(1,3) = 4
-      TPYR5(1,4) = 5
-      TPYR5(2,1) = 2
-      TPYR5(2,2) = 3
-      TPYR5(2,3) = 4
-      TPYR5(2,4) = 5
-C
-C --- ECLATEMENT HEXA8 EN 6 TETRA4
-      THEX8(1,1) = 1
-      THEX8(1,2) = 2
-      THEX8(1,3) = 3
-      THEX8(1,4) = 5
-      THEX8(2,1) = 2
-      THEX8(2,2) = 3
-      THEX8(2,3) = 5
-      THEX8(2,4) = 7
-      THEX8(3,1) = 6
-      THEX8(3,2) = 2
-      THEX8(3,3) = 5
-      THEX8(3,4) = 7
-      THEX8(4,1) = 2
-      THEX8(4,2) = 4
-      THEX8(4,3) = 3
-      THEX8(4,4) = 7
-      THEX8(5,1) = 4
-      THEX8(5,2) = 2
-      THEX8(5,3) = 6
-      THEX8(5,4) = 7
-      THEX8(6,1) = 8
-      THEX8(6,2) = 4
-      THEX8(6,3) = 6
-      THEX8(6,4) = 7
+
 C
 C --- ECLATEMENT HEXA20 EN 24 TETRA4
       THEX20(1,1) = 1
@@ -629,7 +576,6 @@ C
       COOREF = NOMAOU//'.COORDO    .REFE'
       TITRE  = NOMAOU//'           .TITR'
       NUMOLD = NOMAOU//'.NUMOLD         '
-      NBNUNE = NOMAOU//'.NBNUNE'
 C
       CALL WKVECT ( TITRE, BASE//' V K80', 1, JTITR )
       ZK80(JTITR) = 'MAILLAGE CREE PAR IRGMMA POUR GMSH'
@@ -642,7 +588,11 @@ C
       NBPOI = 0
       NBSEG = 0
       NBTRI = 0
+      NBQUA = 0
       NBTET = 0
+      NBPYR = 0
+      NBPRI = 0
+      NBHEX = 0
 C
       IF ( NBMAT .NE. 0 ) THEN
          NBMAC = NBMAT
@@ -685,7 +635,7 @@ C
             NBTRI = NBTRI + 6
 C
          ELSE IF (TYPM .EQ. 'QUAD4') THEN
-            NBTRI = NBTRI + 2
+            NBQUA = NBQUA + 1
 C
          ELSE IF (TYPM .EQ. 'QUAD8') THEN
             NBTRI = NBTRI + 6
@@ -700,19 +650,19 @@ C
             NBTET = NBTET + 8
 C
          ELSE IF (TYPM .EQ. 'PENTA6') THEN 
-            NBTET = NBTET + 3
+            NBPRI = NBPRI + 1
 C
          ELSE IF (TYPM .EQ. 'PENTA15') THEN 
             NBTET = NBTET + 16
 C
          ELSE IF (TYPM .EQ. 'PYRAM5') THEN 
-            NBTET = NBTET + 2
+            NBPYR = NBPYR + 1
 C
          ELSE IF (TYPM .EQ. 'PYRAM13') THEN 
             CALL UTMESS ('A','IRGMMA','ELEMENT '//TYPM//' NON TRAITE')
 C
          ELSE IF (TYPM .EQ. 'HEXA8') THEN 
-            NBTET = NBTET + 6
+            NBHEX = NBHEX + 1
 C
          ELSE IF (TYPM .EQ. 'HEXA20') THEN 
             NBTET = NBTET + 24
@@ -726,14 +676,18 @@ C
          ENDIF
  10   CONTINUE
 C
-      NBMAIL = NBPOI + NBSEG + NBTRI + NBTET
+      NBMAIL = NBPOI + NBSEG + NBTRI + NBQUA + NBTET +
+     +         NBPYR + NBPRI + NBHEX
 C
       CALL WKVECT ( NJVPOI, 'V V I', MAX(1,NBPOI), JPOI )
       CALL WKVECT ( NJVSEG, 'V V I', MAX(1,NBSEG), JSEG )
       CALL WKVECT ( NJVTRI, 'V V I', MAX(1,NBTRI), JTRI )
+      CALL WKVECT ( NJVQUA, 'V V I', MAX(1,NBQUA), JQUA )
       CALL WKVECT ( NJVTET, 'V V I', MAX(1,NBTET), JTET )
+      CALL WKVECT ( NJVPYR, 'V V I', MAX(1,NBPYR), JPYR )
+      CALL WKVECT ( NJVPRI, 'V V I', MAX(1,NBPRI), JPRI )
+      CALL WKVECT ( NJVHEX, 'V V I', MAX(1,NBHEX), JHEX )
       CALL WKVECT ( NUMOLD, 'V V I', MAX(1,NBMAIL), JNUMOL )
-      CALL WKVECT ( NBNUNE, 'V V I', NBMAC        , JNBNUN )
 C
       CALL JEDUPO ( NODIMV, BASE, NODIME, LOGIC )
       CALL JEDUPO ( NOMNOV, BASE, NOMNOE, LOGIC )
@@ -751,11 +705,15 @@ C ----------------------------------------------------------------------
 C     LE '.NOMMAI' ET LE '.CONNEX'
 C ----------------------------------------------------------------------
 
-      NBNOMX = 4
+      NBNOMX = 8
       CALL JENONU ( JEXNOM('&CATA.TM.NOMTM', 'POI1'   ), TYPPOI )
       CALL JENONU ( JEXNOM('&CATA.TM.NOMTM', 'SEG2'   ), TYPSEG )
       CALL JENONU ( JEXNOM('&CATA.TM.NOMTM', 'TRIA3'  ), TYPTRI )
+      CALL JENONU ( JEXNOM('&CATA.TM.NOMTM', 'QUAD4'  ), TYPQUA )
       CALL JENONU ( JEXNOM('&CATA.TM.NOMTM', 'TETRA4' ), TYPTET )
+      CALL JENONU ( JEXNOM('&CATA.TM.NOMTM', 'PYRAM5' ), TYPPYR )
+      CALL JENONU ( JEXNOM('&CATA.TM.NOMTM', 'PENTA6' ), TYPPRI )
+      CALL JENONU ( JEXNOM('&CATA.TM.NOMTM', 'HEXA8' ) , TYPHEX )
 
       CALL JECREO ( NOMMAI, BASE//' N K8' )
       CALL JEECRA ( NOMMAI, 'NOMMAX', NBMAIL, ' ' )
@@ -766,16 +724,14 @@ C ----------------------------------------------------------------------
      +                                                    NBMAIL )
       CALL JEECRA ( CONNEX, 'LONT', NBNOMX*NBMAIL, ' ' )
 
-      CALL JEDETC('V','&&IRGMMA.LISMA',1)
-      CALL JECREC ( '&&IRGMMA.LISMA', 'V V I', 'NU', 'CONTIG', 
-     +                                       'VARIABLE', NBMAIL )
-
-      CALL JEECRA ( '&&IRGMMA.LISMA', 'LONT', NBMAIL, K8B) 
-
       NBPOI = 0
       NBSEG = 0
       NBTRI = 0
+      NBQUA = 0
       NBTET = 0
+      NBPYR = 0
+      NBPRI = 0
+      NBHEX = 0
       IMAV  = 0
 C
       DO 100 IM = 1 , NBMAC
@@ -791,17 +747,11 @@ C             ----------------
             NOMG = 'MA      '
             CALL CODENT ( IMAV, 'G', NOMG(3:8) )
             CALL JECROC ( JEXNOM( NOMMAI, NOMG ) )
-            CALL JECROC ( JEXNUM( '&&IRGMMA.LISMA', IMA ) )
-            CALL JEECRA ( JEXNUM( '&&IRGMMA.LISMA', IMA ), 'LONMAX',
-     +                    1, K8B )
-            CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', IMA), 'E', IDLIMA )
 C
             CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-            ZI(IDLIMA) = IMA2
             ZI(IATYMA-1+IMA2) = TYPPOI
 C       STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
                ZI(JNUMOL-1+IMA2)=IMA
-               ZI(JNBNUN-1+IMA )=1
 C
             CALL JEECRA ( JEXNUM(CONNEX,IMA2), 'LONMAX', NBPT, K8B )
             CALL JEVEUO ( JEXNUM(CONNEX,IMA2), 'E', JNPT )
@@ -818,18 +768,11 @@ C                 ----------------
             NOMG = 'MA      '
             CALL CODENT ( IMAV, 'G', NOMG(3:8) )
             CALL JECROC ( JEXNOM( NOMMAI, NOMG ) )
-            CALL JECROC ( JEXNUM( '&&IRGMMA.LISMA', IMA ) )
-            CALL JEECRA ( JEXNUM( '&&IRGMMA.LISMA', IMA ), 'LONMAX',
-     +                    1, K8B )
-            CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', IMA), 'E', IDLIMA )
 C
             CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-            ZI(IDLIMA) = IMA2
-C
             ZI(IATYMA-1+IMA2) = TYPSEG
 C       STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
                ZI(JNUMOL-1+IMA2)=IMA
-               ZI(JNBNUN-1+IMA )=1
 C
             CALL JEECRA ( JEXNUM(CONNEX,IMA2), 'LONMAX', NBPT, K8B )
             CALL JEVEUO ( JEXNUM(CONNEX,IMA2), 'E', JNPT )
@@ -842,11 +785,6 @@ C
          ELSEIF ( TYPM .EQ. 'SEG3' ) THEN 
 C                 ----------------
             NBPT = 2
-            CALL JECROC ( JEXNUM( '&&IRGMMA.LISMA', IMA ) )
-            CALL JEECRA ( JEXNUM( '&&IRGMMA.LISMA', IMA ), 'LONMAX',
-     +                    2, K8B )
-            CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', IMA), 'E', IDLIMA )
-C
             DO 206 I = 1 , 2
                IMAV = IMAV + 1
                NOMG = 'MA      '
@@ -854,7 +792,6 @@ C
                CALL JECROC ( JEXNOM( NOMMAI, NOMG ) )
 C
                CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-               ZI(IDLIMA+I-1) = IMA2
                ZI(IATYMA-1+IMA2) = TYPSEG
 C       STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
                ZI(JNUMOL-1+IMA2)=IMA
@@ -867,16 +804,10 @@ C
                NBSEG = NBSEG + 1
                ZI(JSEG-1+NBSEG) = IMAV
  206        CONTINUE
-            ZI(JNBNUN-1+IMA )=2
 C
          ELSEIF ( TYPM .EQ. 'SEG4' ) THEN 
 C                 ----------------
             NBPT = 2
-            CALL JECROC ( JEXNUM( '&&IRGMMA.LISMA', IMA ) )
-            CALL JEECRA ( JEXNUM( '&&IRGMMA.LISMA', IMA ), 'LONMAX',
-     +                    3, K8B )
-            CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', IMA), 'E', IDLIMA )
-C
             DO 208 I = 1 , 3
                IMAV = IMAV + 1
                NOMG = 'MA      '
@@ -884,7 +815,6 @@ C
                CALL JECROC ( JEXNOM( NOMMAI, NOMG ) )
 C
                CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-               ZI(IDLIMA+I-1) = IMA2
                ZI(IATYMA-1+IMA2) = TYPSEG
 C       STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
                ZI(JNUMOL-1+IMA2)=IMA
@@ -897,26 +827,19 @@ C
                NBSEG = NBSEG + 1
                ZI(JSEG-1+NBSEG) = IMAV
  208        CONTINUE
-            ZI(JNBNUN-1+IMA )=3
 C
          ELSEIF ( TYPM .EQ. 'TRIA3' ) THEN
 C                 -----------------
             NBPT = 3
-            CALL JECROC ( JEXNUM( '&&IRGMMA.LISMA', IMA ) )
-            CALL JEECRA ( JEXNUM( '&&IRGMMA.LISMA', IMA ), 'LONMAX',
-     +                    1, K8B )
-            CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', IMA), 'E', IDLIMA )
             IMAV = IMAV + 1
             NOMG = 'MA      '
             CALL CODENT ( IMAV, 'G', NOMG(3:8) )
             CALL JECROC ( JEXNOM( NOMMAI, NOMG ) )
 C
              CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-             ZI(IDLIMA+1-1) = IMA2
-             ZI(IATYMA-1+IMA2) = TYPTRI
+            ZI(IATYMA-1+IMA2) = TYPTRI
 C       STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
                ZI(JNUMOL-1+IMA2)=IMA
-               ZI(JNBNUN-1+IMA) =1
 C
             CALL JEECRA ( JEXNUM(CONNEX,IMA2), 'LONMAX', NBPT, K8B )
             CALL JEVEUO ( JEXNUM(CONNEX,IMA2), 'E', JNPT )
@@ -929,11 +852,6 @@ C
          ELSEIF ( TYPM .EQ. 'TRIA6' ) THEN
 C                 -----------------
             NBPT = 3
-            CALL JECROC ( JEXNUM( '&&IRGMMA.LISMA', IMA ) )
-            CALL JEECRA ( JEXNUM( '&&IRGMMA.LISMA', IMA ), 'LONMAX',
-     +                    4, K8B )
-            CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', IMA), 'E', IDLIMA )
-C
             DO 212 I = 1 , 4
                IMAV = IMAV + 1
                NOMG = 'MA      '
@@ -941,7 +859,6 @@ C
                CALL JECROC ( JEXNOM( NOMMAI, NOMG ) )
 C
                CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-               ZI(IDLIMA+I-1) = IMA2
                ZI(IATYMA-1+IMA2) = TYPTRI
 C       STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
                ZI(JNUMOL-1+IMA2)=IMA
@@ -954,16 +871,10 @@ C
                NBTRI = NBTRI + 1
                ZI(JTRI-1+NBTRI) = IMAV
  212        CONTINUE
-            ZI(JNBNUN-1+IMA )=4
 C
          ELSEIF ( TYPM .EQ. 'TRIA7' ) THEN
 C                 -----------------
             NBPT = 3
-            CALL JECROC ( JEXNUM( '&&IRGMMA.LISMA', IMA ) )
-            CALL JEECRA ( JEXNUM( '&&IRGMMA.LISMA', IMA ), 'LONMAX',
-     +                    6, K8B )
-            CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', IMA), 'E', IDLIMA )
-C
             DO 214 I = 1 , 6
                IMAV = IMAV + 1
                NOMG = 'MA      '
@@ -971,7 +882,6 @@ C
                CALL JECROC ( JEXNOM( NOMMAI, NOMG ) )
 C
                CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-               ZI(IDLIMA+I-1) = IMA2
                ZI(IATYMA-1+IMA2) = TYPTRI
 C       STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
                ZI(JNUMOL-1+IMA2)=IMA
@@ -984,46 +894,31 @@ C
                NBTRI = NBTRI + 1
                ZI(JTRI-1+NBTRI) = IMAV
  214        CONTINUE
-            ZI(JNBNUN-1+IMA )=6
 C
          ELSEIF ( TYPM .EQ. 'QUAD4' ) THEN
 C                 -----------------
-            NBPT = 3
-            CALL JECROC ( JEXNUM( '&&IRGMMA.LISMA', IMA ) )
-            CALL JEECRA ( JEXNUM( '&&IRGMMA.LISMA', IMA ), 'LONMAX',
-     +                    2, K8B )
-            CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', IMA), 'E', IDLIMA )
-C
-            DO 216 I = 1 , 2
+               NBPT = 4
                IMAV = IMAV + 1
                NOMG = 'MA      '
                CALL CODENT ( IMAV, 'G', NOMG(3:8) )
                CALL JECROC ( JEXNOM( NOMMAI, NOMG ) )
 C
                CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-               ZI(IDLIMA+I-1) = IMA2
-               ZI(IATYMA-1+IMA2) = TYPTRI
+               ZI(IATYMA-1+IMA2) = TYPQUA
 C       STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
                ZI(JNUMOL-1+IMA2)=IMA
 C
                CALL JEECRA ( JEXNUM(CONNEX,IMA2), 'LONMAX', NBPT, K8B )
                CALL JEVEUO ( JEXNUM(CONNEX,IMA2), 'E', JNPT )
                DO 116 INO = 1 , NBPT
-                  ZI(JNPT-1+INO) = ZI(JOPT-1+TQUA4(I,INO))
+                  ZI(JNPT-1+INO) = ZI(JOPT-1+INO)
  116           CONTINUE
-               NBTRI = NBTRI + 1
-               ZI(JTRI-1+NBTRI) = IMAV
- 216        CONTINUE
-            ZI(JNBNUN-1+IMA )=2
+               NBQUA = NBQUA + 1
+               ZI(JQUA-1+NBQUA) = IMAV
 C
          ELSEIF ( TYPM .EQ. 'QUAD8' ) THEN
 C                 -----------------
             NBPT = 3
-            CALL JECROC ( JEXNUM( '&&IRGMMA.LISMA', IMA ) )
-            CALL JEECRA ( JEXNUM( '&&IRGMMA.LISMA', IMA ), 'LONMAX',
-     +                    6, K8B )
-            CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', IMA), 'E', IDLIMA )
-C
             DO 218 I = 1 , 6
                IMAV = IMAV + 1
                NOMG = 'MA      '
@@ -1031,7 +926,6 @@ C
                CALL JECROC ( JEXNOM( NOMMAI, NOMG ) )
 C
                CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-               ZI(IDLIMA+I-1) = IMA2
                ZI(IATYMA-1+IMA2) = TYPTRI
 C       STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
                ZI(JNUMOL-1+IMA2)=IMA
@@ -1044,16 +938,10 @@ C
                NBTRI = NBTRI + 1
                ZI(JTRI-1+NBTRI) = IMAV
  218        CONTINUE
-            ZI(JNBNUN-1+IMA )=6
 C
          ELSEIF ( TYPM .EQ. 'QUAD9' ) THEN
 C                 -----------------
             NBPT = 3
-            CALL JECROC ( JEXNUM( '&&IRGMMA.LISMA', IMA ) )
-            CALL JEECRA ( JEXNUM( '&&IRGMMA.LISMA', IMA ), 'LONMAX',
-     +                    8, K8B )
-            CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', IMA), 'E', IDLIMA )
-C
             DO 220 I = 1 , 8
                IMAV = IMAV + 1
                NOMG = 'MA      '
@@ -1061,7 +949,6 @@ C
                CALL JECROC ( JEXNOM( NOMMAI, NOMG ) )
 C
                CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-               ZI(IDLIMA+I-1) = IMA2
                ZI(IATYMA-1+IMA2) = TYPTRI
 C       STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
                ZI(JNUMOL-1+IMA2)=IMA
@@ -1074,27 +961,19 @@ C
                NBTRI = NBTRI + 1
                ZI(JTRI-1+NBTRI) = IMAV
  220        CONTINUE
-            ZI(JNBNUN-1+IMA )=8
 C
          ELSEIF ( TYPM .EQ. 'TETRA4' ) THEN 
 C                 ------------------
             NBPT = 4
-            CALL JECROC ( JEXNUM( '&&IRGMMA.LISMA', IMA ) )
-            CALL JEECRA ( JEXNUM( '&&IRGMMA.LISMA', IMA ), 'LONMAX',
-     +                    1, K8B )
-            CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', IMA), 'E', IDLIMA )
-C
             IMAV = IMAV + 1
             NOMG = 'MA      '
             CALL CODENT ( IMAV, 'G', NOMG(3:8) )
             CALL JECROC ( JEXNOM( NOMMAI, NOMG ) )
 C
             CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-            ZI(IDLIMA+1-1) = IMA2
             ZI(IATYMA-1+IMA2) = TYPTET
 C       STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
                ZI(JNUMOL-1+IMA2)=IMA
-               ZI(JNBNUN-1+IMA) =1
 C
             CALL JEECRA ( JEXNUM(CONNEX,IMA2), 'LONMAX', NBPT, K8B )
             CALL JEVEUO ( JEXNUM(CONNEX,IMA2), 'E', JNPT )
@@ -1107,11 +986,6 @@ C
          ELSEIF ( TYPM .EQ. 'TETRA10' ) THEN 
 C                 -------------------
             NBPT = 4
-            CALL JECROC ( JEXNUM( '&&IRGMMA.LISMA', IMA ) )
-            CALL JEECRA ( JEXNUM( '&&IRGMMA.LISMA', IMA ), 'LONMAX',
-     +                    8, K8B )
-            CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', IMA), 'E', IDLIMA )
-C
             DO 224 I = 1 , 8
                IMAV = IMAV + 1
                NOMG = 'MA      '
@@ -1119,7 +993,6 @@ C
                CALL JECROC ( JEXNOM( NOMMAI, NOMG ) )
 C
                CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-               ZI(IDLIMA+I-1) = IMA2
                ZI(IATYMA-1+IMA2) = TYPTET
 C       STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
                ZI(JNUMOL-1+IMA2)=IMA
@@ -1132,46 +1005,31 @@ C
                NBTET = NBTET + 1
                ZI(JTET-1+NBTET) = IMAV
  224        CONTINUE
-            ZI(JNBNUN-1+IMA )=8
 C
          ELSEIF ( TYPM .EQ. 'PENTA6' ) THEN 
 C                 ------------------
-            NBPT = 4
-            CALL JECROC ( JEXNUM( '&&IRGMMA.LISMA', IMA ) )
-            CALL JEECRA ( JEXNUM( '&&IRGMMA.LISMA', IMA ), 'LONMAX',
-     +                    3, K8B )
-            CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', IMA), 'E', IDLIMA )
-C
-            DO 226 I = 1 , 3
+               NBPT = 6
                IMAV = IMAV + 1
                NOMG = 'MA      '
                CALL CODENT ( IMAV, 'G', NOMG(3:8) )
                CALL JECROC ( JEXNOM( NOMMAI, NOMG ) )
 C
                CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-               ZI(IDLIMA+I-1) = IMA2
-               ZI(IATYMA-1+IMA2) = TYPTET
+               ZI(IATYMA-1+IMA2) = TYPPRI
 C       STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
                ZI(JNUMOL-1+IMA2)=IMA
 C
                CALL JEECRA ( JEXNUM(CONNEX,IMA2), 'LONMAX', NBPT, K8B )
                CALL JEVEUO ( JEXNUM(CONNEX,IMA2), 'E', JNPT )
                DO 126 INO = 1 , NBPT
-                  ZI(JNPT-1+INO) = ZI(JOPT-1+TPEN6(I,INO))
+                  ZI(JNPT-1+INO) = ZI(JOPT-1+INO)
  126           CONTINUE
-               NBTET = NBTET + 1
-               ZI(JTET-1+NBTET) = IMAV
- 226        CONTINUE
-            ZI(JNBNUN-1+IMA )=3
+               NBPRI = NBPRI + 1
+               ZI(JPRI-1+NBPRI) = IMAV
 C
          ELSEIF ( TYPM .EQ. 'PENTA15' ) THEN 
 C                 -------------------
             NBPT = 4
-            CALL JECROC ( JEXNUM( '&&IRGMMA.LISMA', IMA ) )
-            CALL JEECRA ( JEXNUM( '&&IRGMMA.LISMA', IMA ), 'LONMAX',
-     +                    16, K8B )
-            CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', IMA), 'E', IDLIMA )
-C
             DO 228 I = 1 , 16
                IMAV = IMAV + 1
                NOMG = 'MA      '
@@ -1179,7 +1037,6 @@ C
                CALL JECROC ( JEXNOM( NOMMAI, NOMG ) )
 C
                CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-               ZI(IDLIMA+I-1) = IMA2
                ZI(IATYMA-1+IMA2) = TYPTET
 C       STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
                ZI(JNUMOL-1+IMA2)=IMA
@@ -1192,76 +1049,52 @@ C
                NBTET = NBTET + 1
                ZI(JTET-1+NBTET) = IMAV
  228        CONTINUE
-            ZI(JNBNUN-1+IMA )=16
 C
          ELSEIF ( TYPM .EQ. 'PYRAM5' ) THEN 
 C                 ------------------
-            NBPT = 4
-            CALL JECROC ( JEXNUM( '&&IRGMMA.LISMA', IMA ) )
-            CALL JEECRA ( JEXNUM( '&&IRGMMA.LISMA', IMA ), 'LONMAX',
-     +                    2, K8B )
-            CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', IMA), 'E', IDLIMA )
-C
-            DO 230 I = 1 , 2
+               NBPT = 5
                IMAV = IMAV + 1
                NOMG = 'MA      '
                CALL CODENT ( IMAV, 'G', NOMG(3:8) )
                CALL JECROC ( JEXNOM( NOMMAI, NOMG ) )
 C
                CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-               ZI(IDLIMA+I-1) = IMA2
-               ZI(IATYMA-1+IMA2) = TYPTET
+               ZI(IATYMA-1+IMA2) = TYPPYR
 C       STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
                ZI(JNUMOL-1+IMA2)=IMA
 C
                CALL JEECRA ( JEXNUM(CONNEX,IMA2), 'LONMAX', NBPT, K8B )
                CALL JEVEUO ( JEXNUM(CONNEX,IMA2), 'E', JNPT )
                DO 130 INO = 1 , NBPT
-                  ZI(JNPT-1+INO) = ZI(JOPT-1+TPYR5(I,INO))
+                  ZI(JNPT-1+INO) = ZI(JOPT-1+INO)
  130           CONTINUE
-               NBTET = NBTET + 1
-               ZI(JTET-1+NBTET) = IMAV
- 230        CONTINUE
-            ZI(JNBNUN-1+IMA )=2
+               NBPYR = NBPYR + 1
+               ZI(JPYR-1+NBPYR) = IMAV
 C
          ELSEIF ( TYPM .EQ. 'HEXA8' ) THEN 
 C                 -----------------
-            NBPT = 4
-            CALL JECROC ( JEXNUM( '&&IRGMMA.LISMA', IMA ) )
-            CALL JEECRA ( JEXNUM( '&&IRGMMA.LISMA', IMA ), 'LONMAX',
-     +                    6, K8B )
-            CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', IMA), 'E', IDLIMA )
-C
-            DO 232 I = 1 , 6
+               NBPT = 8
                IMAV = IMAV + 1
                NOMG = 'MA      '
                CALL CODENT ( IMAV, 'G', NOMG(3:8) )
                CALL JECROC ( JEXNOM( NOMMAI, NOMG ) )
 C
                CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-               ZI(IDLIMA+I-1) = IMA2
-               ZI(IATYMA-1+IMA2) = TYPTET
+               ZI(IATYMA-1+IMA2) = TYPHEX
 C       STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
                ZI(JNUMOL-1+IMA2)=IMA
 C
                CALL JEECRA ( JEXNUM(CONNEX,IMA2), 'LONMAX', NBPT, K8B )
                CALL JEVEUO ( JEXNUM(CONNEX,IMA2), 'E', JNPT )
                DO 132 INO = 1 , NBPT
-                  ZI(JNPT-1+INO) = ZI(JOPT-1+THEX8(I,INO))
+                  ZI(JNPT-1+INO) = ZI(JOPT-1+INO)
  132           CONTINUE
-               NBTET = NBTET + 1
-               ZI(JTET-1+NBTET) = IMAV
- 232        CONTINUE
-            ZI(JNBNUN-1+IMA )=6
+               NBHEX = NBHEX + 1
+               ZI(JHEX-1+NBHEX) = IMAV
 C
          ELSEIF ( TYPM .EQ. 'HEXA20' ) THEN 
 C                 ------------------
             NBPT = 4
-            CALL JECROC ( JEXNUM( '&&IRGMMA.LISMA', IMA ) )
-            CALL JEECRA ( JEXNUM( '&&IRGMMA.LISMA', IMA ), 'LONMAX',
-     +                    24, K8B )
-            CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', IMA), 'E', IDLIMA )
-C
             DO 234 I = 1 , 24
                IMAV = IMAV + 1
                NOMG = 'MA      '
@@ -1269,7 +1102,6 @@ C
                CALL JECROC ( JEXNOM( NOMMAI, NOMG ) )
 C
                CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-               ZI(IDLIMA+I-1) = IMA2
                ZI(IATYMA-1+IMA2) = TYPTET
 C       STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
                ZI(JNUMOL-1+IMA2)=IMA
@@ -1282,16 +1114,10 @@ C
                NBTET = NBTET + 1
                ZI(JTET-1+NBTET) = IMAV
  234        CONTINUE
-            ZI(JNBNUN-1+IMA )=24
 C
          ELSEIF ( TYPM .EQ. 'HEXA27' ) THEN 
 C                 ------------------
             NBPT = 4
-            CALL JECROC ( JEXNUM( '&&IRGMMA.LISMA', IMA ) )
-            CALL JEECRA ( JEXNUM( '&&IRGMMA.LISMA', IMA ), 'LONMAX',
-     +                    24, K8B )
-            CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', IMA), 'E', IDLIMA )
-C
             DO 236 I = 1 , 24
                IMAV = IMAV + 1
                NOMG = 'MA      '
@@ -1299,7 +1125,6 @@ C
                CALL JECROC ( JEXNOM( NOMMAI, NOMG ) )
 C
                CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-               ZI(IDLIMA+I-1) = IMA2
                ZI(IATYMA-1+IMA2) = TYPTET
 C       STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
                ZI(JNUMOL-1+IMA2)=IMA
@@ -1312,7 +1137,6 @@ C
                NBTET = NBTET + 1
                ZI(JTET-1+NBTET) = IMAV
  236        CONTINUE
-            ZI(JNBNUN-1+IMA )=24
 C
          ENDIF
  100  CONTINUE

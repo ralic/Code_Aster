@@ -1,4 +1,4 @@
-#@ MODIF macro_mode_meca_ops Macro  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+#@ MODIF macro_mode_meca_ops Macro  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +36,8 @@ def macro_mode_meca_ops(self,MATR_A,MATR_B,INFO,METHODE,OPTION,CALC_FREQ,
   IMPR_RESU         =self.get_cmd('IMPR_RESU')
   EXTR_MODE         =self.get_cmd('EXTR_MODE')
   # La macro compte pour 1 dans la numerotation des commandes
-  self.icmd=1
+  #self.icmd=1
+  self.set_icmd(1)
 
   nompro=None
   iocc=0

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,7 +42,7 @@ def calc_matr_elem_prod(OPTION,**args):
   raise AsException("type de concept resultat non prevu")
 
 CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
-                    ,fr="Calcul des matrices élémentaires",docu="U4.61.01-g1",reentrant='n',
+                    ,fr="Calcul des matrices élémentaires",docu="U4.61.01-g",reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
          OPTION          =SIMP(statut='o',typ='TXM',
                                into=("RIGI_MECA","MASS_MECA","RIGI_GEOM",
@@ -125,7 +125,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
 
          b_rigi_meca_hyst  =BLOC( condition = "OPTION=='RIGI_MECA_HYST'",
            MODELE            =SIMP(statut='o',typ=modele ),
-           CHARGE            =SIMP(statut='o',typ=char_meca ,max='**' ),
+           CHARGE            =SIMP(statut='f',typ=char_meca ,max='**' ),
            CHAM_MATER        =SIMP(statut='f',typ=cham_mater ),
            CARA_ELEM         =SIMP(statut='f',typ=cara_elem ),
            RIGI_MECA         =SIMP(statut='o',typ=matr_elem_depl_r ),

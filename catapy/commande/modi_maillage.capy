@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -8,7 +8,7 @@
 # RESPONSABLE G8BHHXD X.DESROCHES
 MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage,
                    fr="Modification de la connectivité de groupes de mailles 2D ou 3D affectées à la modélisation de contact",
-                   docu="U4.23.04-d1",reentrant='o',
+                   docu="U4.23.04-d",reentrant='o',
             UIinfo={"groupes":("Maillage",)},
       regles=(AU_MOINS_UN('ORIE_CONTACT','DEFORME','EQUE_PIQUA','ORIE_PEAU_2D',
                        'ORIE_PEAU_3D','ORIE_NORM_COQUE','PLAQ_TUBE','MODI_MAILLE',

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER IER
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,6 +63,7 @@ C     ------------------------------------------------------------------
       LOGICAL EXITIM
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
+      CALL INFMAJ()
       BASE = 'G'
       TYPCOE = ' '
       ZERO = 0.0D0

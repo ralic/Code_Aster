@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ def calc_no_prod(RESULTAT,**args):
    if AsType(RESULTAT) != None : return AsType(RESULTAT)
    raise AsException("type de concept resultat non prevu")
 
-CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,docu="U4.81.02-f3",reentrant='o',
+CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,docu="U4.81.02-f",reentrant='o',
             UIinfo={"groupes":("Post traitements",)},
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,acou_harmo,mode_meca,
                                                mode_acou,mode_stat,mode_stat_depl,mode_stat_acce,
@@ -59,13 +59,12 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,docu="U4.81.02-f3",reent
                                      "ENEL_NOEU_ELGA",
                                      "EPMG_NOEU_DEPL",
                                      "EPSA_NOEU",
-                                     "EPSG_NOEU"     ,"EPSG_NOEU_DEPL",
-                                     "EPSI_NOEU_DEPL","EPSI_NOEU_DPGE",
+                                     "EPSG_NOEU_DEPL",
+                                     "EPSI_NOEU_DEPL",
                                      "EPSP_NOEU"     ,"EPSP_NOEU_ZAC",
                                      "EQUI_NOEU_EPME","EQUI_NOEU_EPSI","EQUI_NOEU_SIGM",
                                      "ERRE_NOEU_ELGA",
                                      "FLUX_NOEU_TEMP",
-                                     "GRAD_NOEU_THETA",
                                      "HYDR_NOEU_ELGA",
                                      "INTE_NOEU_ACTI","INTE_NOEU_REAC",
                                      "META_NOEU_TEMP",
@@ -73,8 +72,8 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,docu="U4.81.02-f3",reent
                                      "PRES_NOEU_DBEL","PRES_NOEU_IMAG","PRES_NOEU_REEL",
                                      "RADI_NOEU_SIGM",
                                      "SIEF_NOEU"     ,"SIEF_NOEU_ELGA",
-                                     "SIGM_NOEU_CART","SIGM_NOEU_COQU","SIGM_NOEU_DEPL","SIGM_NOEU_DPGE",
-                                     "SIGM_NOEU_SIEF","SIGM_NOEU_VARI","SIGM_NOEU_ZAC",
+                                     "SIGM_NOEU_CART","SIGM_NOEU_COQU","SIGM_NOEU_DEPL",
+                                     "SIGM_NOEU_SIEF","SIGM_NOEU_ZAC",
                                      "SIPO_NOEU_DEPL","SIPO_NOEU_SIEF",
                                      "SIRE_NOEU_DEPL",
                                      "VARI_NOEU"     ,"VARI_NOEU_ELGA",) ),
@@ -88,7 +87,7 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,docu="U4.81.02-f3",reent
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
          EXCIT           =FACT(statut='f',min=1,max='**',
            CHARGE          =SIMP(statut='f',typ=(char_meca,char_ther,char_acou) ),
-           FONC_MULT       =SIMP(statut='f',typ=fonction),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",
                                  into=("FIXE_CSTE","FIXE_PILO","SUIV") ),
          ),

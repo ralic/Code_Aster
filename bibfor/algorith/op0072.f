@@ -1,7 +1,7 @@
       SUBROUTINE OP0072(IERR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
+      CALL INFMAJ()
 C
 C --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
 C

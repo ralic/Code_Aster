@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 DYNA_SPEC_MODAL=OPER(nom="DYNA_SPEC_MODAL",op= 147,sd_prod=tabl_intsp,
                      fr="Calcul de la réponse par recombinaison modale d'une structure linéaire pour une excitation aléatoire",
-                     docu="U4.53.23-c",reentrant='n',
+                     docu="U4.53.23-d",reentrant='n',
             UIinfo={"groupes":("Résolution",)},
          BASE_ELAS_FLUI  =SIMP(statut='o',typ=melasflu ),
          EXCIT           =FACT(statut='o',max=1,

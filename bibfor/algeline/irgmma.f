@@ -6,7 +6,7 @@
       CHARACTER*(*)       BASZ, NJVPOI, NJVSEG, NJVTRI, NJVTET
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/09/2002   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGELINE  DATE 03/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -151,7 +151,7 @@ C --- ECLATEMENT QUAD9 EN 8 TRIA3
       TQUA9(3,2) = 9
       TQUA9(3,3) = 7
       TQUA9(4,1) = 8
-      TQUA9(4,2) = 8
+      TQUA9(4,2) = 7
       TQUA9(4,3) = 4
       TQUA9(5,1) = 5
       TQUA9(5,2) = 2

@@ -3,7 +3,7 @@
       INTEGER    IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -53,6 +53,7 @@ C
 C DEB ------------------------------------------------------------------
 C
       CALL JEMARQ()
+      CALL INFMAJ()
 C
       IER=0
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,7 +69,9 @@ MODES=MODE_ITER_INV(   MATR_A=MATASSR,  MATR_B=MATASSM,
                          FREQ = (5.,10.,15.,20.,24.,27.,30.,32.,))  )
 
 MACRO_PROJ_BASE( BASE=MODES,
-                    NB_VECT=8,MATR_ASSE_GENE=(
+                 PROFIL = 'PLEIN',
+                 NB_VECT=8,
+                 MATR_ASSE_GENE=(
                    _F( 
                                    MATRICE = CO("MASSEGEN"),
                                    MATR_ASSE = MATASSM),
@@ -78,11 +80,10 @@ MACRO_PROJ_BASE( BASE=MODES,
                                    MATR_ASSE = MATASSR),
                    _F( 
                                    MATRICE = CO("AMORTGEN"),
-                                   MATR_ASSE = MATASSC,
-                                   PROFIL = 'PLEIN')),
+                                   MATR_ASSE = MATASSC,),),
                    VECT_ASSE_GENE=_F( 
                                    VECTEUR = CO("EFFOGENE"),
-                                   VECT_ASSE = VECTASS) )
+                                   VECT_ASSE = VECTASS), )
 
 LIFREQ=DEFI_LIST_REEL(DEBUT=5., INTERVALLE=_F( JUSQU_A = 40., NOMBRE = 70))
 

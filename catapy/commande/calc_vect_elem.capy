@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ def calc_vect_elem_prod(OPTION,**args):
   if OPTION == "FORC_NODA" :      return vect_elem_depl_r
   raise AsException("type de concept resultat non prevu")
 
-CALC_VECT_ELEM=OPER(nom="CALC_VECT_ELEM",op=8,sd_prod=calc_vect_elem_prod,docu="U4.61.02-f",reentrant='n',
+CALC_VECT_ELEM=OPER(nom="CALC_VECT_ELEM",op=8,sd_prod=calc_vect_elem_prod,docu="U4.61.02-g",reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
                     fr="Calcul des seconds membres élémentaires",
          OPTION          =SIMP(statut='o',typ='TXM',into=("CHAR_MECA","CHAR_THER","CHAR_ACOU",

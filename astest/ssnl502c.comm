@@ -1,0 +1,463 @@
+# MODIF  DATE 31/01/2003   AUTEUR PBADEL P.BADEL 
+# RESPONSABLE ADBHHPM P.MASSIN 
+# DATE   : 23/07/2001
+# AUTEUR : F. LEBOUVIER (DELTACAD) 
+# TITRE  : POUTRE EN FLAMBEMENT 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#---------------------------------------------------------------------
+#- CALCUL DE LA STABILITE D'UNE POUTRE CONSOLE SOUMISE A UN EFFORT DE 
+#  COMPRESSION A UNE EXTREMITE. 
+#- VALIDATION DANS LE DOMAINE QUASI-STATIQUE NON-LINEAIRE GEOMETRIQUE 
+#  EN GRANDS DEPLACEMENTS ET GRANDES ROTATIONS EN PRESENCE 
+#  D'INSTABILITE (FLAMBEMENT D'EULER) 
+#- MODELISATION AVEC DES ELEMENTS 'POU_D_T_GD' (SEG2) 
+#---------------------------------------------------------------------
+#
+DEBUT( CODE=_F( NOM = 'SSNL502C',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON')
+
+#
+import aster
+
+PRE_GIBI ();
+
+MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
+
+
+MAIL=DEFI_GROUP(reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
+                   _F( GROUP_MA = 'TOUT_ELT'),         
+                 ))
+
+#
+MO=AFFE_MODELE(   MAILLAGE=MAIL,
+                        AFFE=(_F(GROUP_MA='TOUT_ELT',
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'POU_D_T_GD'),)
+                  )
+
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES ELEMENTAIRES 
+#---------------------------------------------------------------------
+#
+CAREL=AFFE_CARA_ELEM(   MODELE=MO,
+                  ORIENTATION =_F( GROUP_MA = 'TOUT_ELT',
+                     CARA='ANGL_NAUT', VALE=(0., 0., 0.,),),
+                     POUTRE=_F( GROUP_MA = 'TOUT_ELT' ,
+ SECTION = 'GENERALE',
+                CARA = ( 'A',   'IY',    'IZ',    'AY',    'AZ',    'JX', ),
+VALE = (  0.0003375, 5.69531E-10,  1.58203E-07, 0.01, 0.01,  2.19201E-09,  ),),
+               INFO=2,
+                        )
+
+CAREL2=AFFE_CARA_ELEM(   MODELE=MO,
+                  ORIENTATION =_F( GROUP_MA = 'TOUT_ELT',
+                     CARA='ANGL_NAUT', VALE=(0., 0., 0.,),),
+                     POUTRE=_F( GROUP_MA = 'TOUT_ELT' ,
+                    SECTION = 'RECTANGLE',
+                CARA = ( 'HY',   'HZ',    ),
+                VALE = (  0.075, 0.0045  ),),
+               INFO=2,
+                        )
+#
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES MATERIAUX 
+#---------------------------------------------------------------------
+#
+MAT=DEFI_MATERIAU(   ELAS=_F( E = 2.E+11,
+                             NU = 0.3 ,  ALPHA = 0.)
+                     )
+
+#
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MAIL,
+                             AFFE=_F( TOUT = 'OUI', MATER = MAT)
+                       )
+
+#
+#---------------------------------------------------------------------
+#                        CHARGEMENTS 
+#---------------------------------------------------------------------
+#
+CON_LIM=AFFE_CHAR_MECA(     MODELE=MO,
+                            DDL_IMPO=(_F( GROUP_NO = 'A',
+                                      DX = 0., DZ = 0.,
+                                      DRX = 0., DRY = 0., DRZ = 0.),
+                           _F( GROUP_NO = 'TOUT_ELT',
+                                      DY = 0.),
+                               ),
+                          )
+
+#
+CHARGE=AFFE_CHAR_MECA(         MODELE=MO,
+                            FORCE_NODALE=_F( GROUP_NO = 'B',
+                                         FZ = -1124.21)
+                          )
+
+PERTUR=AFFE_CHAR_MECA(         MODELE=MO,
+                            FORCE_NODALE=_F( GROUP_NO = 'B',
+#                                         FX = 1.12421)
+                                         FX = 0.112421)
+                          )
+
+F_PERT2=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                          PROL_GAUCHE='EXCLU',
+                                 VALE=( 0.,     0.,
+                                        0.84,   0.,
+                                        0.85,   1.,
+                                        0.95,  1.,
+                                        0.96,  0.,
+                                        2.,     0.,
+                                       )
+                        )
+F_PERT=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                          PROL_GAUCHE='EXCLU',
+                                 VALE=( 0.,     0.,
+                                        0.94,   0.,
+                                        0.95,   1.,
+                                        1.009,   1.,
+                                        1.01,   0.,
+                                        2.,     0.,
+                                       )
+                        )
+
+F_CHARGE=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                          PROL_GAUCHE='EXCLU',
+                                 VALE=( 0.,   0.,
+                                        2.,   2.,
+                                       )
+                        )
+
+#
+#---------------------------------------------------------------------
+#                        RESOLUTION 
+#---------------------------------------------------------------------
+#
+LIS_INST=DEFI_LIST_REEL(       DEBUT=0.0,INTERVALLE=(
+                           _F( JUSQU_A = 0.94, NOMBRE = 1), 
+                           _F( JUSQU_A = 0.95, NOMBRE = 1), 
+                           _F( JUSQU_A = 1.009, NOMBRE = 10), 
+                           _F( JUSQU_A = 1.01, NOMBRE = 1), 
+#
+# DEPLACEMENT IMPOSE U=0.015 : ON COMPLETE LE DEPLACEMENT OBTENU 
+# PRECEDEMMENT QUI EST DE W =-1.01816E-02
+                          _F( JUSQU_A = 2., NOMBRE = 198),
+)
+                           )
+
+#
+RESULT=STAT_NON_LINE(       MODELE=MO,
+                          CHAM_MATER=CHMAT,
+                           CARA_ELEM=CAREL,EXCIT=(
+                               _F( CHARGE = CON_LIM),
+                                     _F( CHARGE = CHARGE,
+                                      FONC_MULT = F_CHARGE),
+                                     _F( CHARGE = PERTUR,
+                                      FONC_MULT = F_PERT)),
+                           COMP_ELAS=_F( RELATION = 'ELAS_POUTRE_GR',
+                                      DEFORMATION = 'GREEN_GR',),
+                           INCREMENT=_F( LIST_INST = LIS_INST,
+                                      NUME_INST_FIN = 5),
+                              NEWTON=_F( REAC_ITER = 1,
+                                      MATRICE = 'TANGENTE'),
+                         CONVERGENCE=_F( 
+                                      ITER_GLOB_MAXI = 30,
+                                      RESI_INTE_RELA = 1.E-6,
+                                      RESI_GLOB_RELA = 1.E-6)
+                        )
+
+# premiere valeur de ETA_PILOTAGE de reference
+RESULT=STAT_NON_LINE(reuse=RESULT,      MODELE=MO,
+                          CHAM_MATER=CHMAT,
+                           CARA_ELEM=CAREL,EXCIT=(
+                               _F( CHARGE = CON_LIM),
+                                     _F( CHARGE = PERTUR,
+                                      FONC_MULT = F_PERT),
+                                     _F( CHARGE = CHARGE,
+                                      TYPE_CHARGE = 'FIXE_PILO')),
+                           COMP_ELAS=_F( RELATION = 'ELAS_POUTRE_GR',
+                                      DEFORMATION = 'GREEN_GR',),
+                           INCREMENT=_F( LIST_INST = LIS_INST,
+                                     SUBD_PAS=4,
+                                     SUBD_PAS_MINI=0.000001,
+                                      ),
+                              NEWTON=_F( REAC_ITER = 1,
+                                      MATRICE = 'TANGENTE'),
+                             SOLVEUR=_F( STOP_SINGULIER='DECOUPE'),
+                         CONVERGENCE=_F( 
+                                      ITER_GLOB_MAXI = 40,
+                                      RESI_INTE_RELA = 1.E-6,
+                                      RESI_GLOB_RELA = 1.E-6),
+                           ETAT_INIT=_F( EVOL_NOLI = RESULT), 
+                            PILOTAGE=_F( TYPE = 'LONG_ARC', 
+                                      SELECTION='ANGL_INCR_DEPL',
+                                      GROUP_NO = 'TOUT_ELT',
+                                      NOM_CMP = ('DX','DZ',),
+                                      COEF_MULT = -1.,
+                                      ETA_PILO_MAX=1.015,
+                                      
+                                      )
+                        )
+# derniere valeur de ETA_PILOTAGE de reference
+RESULT=STAT_NON_LINE(reuse=RESULT,      MODELE=MO,
+                          CHAM_MATER=CHMAT,
+                           CARA_ELEM=CAREL,EXCIT=(
+                               _F( CHARGE = CON_LIM),
+                                     _F( CHARGE = PERTUR,
+                                      FONC_MULT = F_PERT),
+                                     _F( CHARGE = CHARGE,
+                                      TYPE_CHARGE = 'FIXE_PILO')),
+                           COMP_ELAS=_F( RELATION = 'ELAS_POUTRE_GR',
+                                      DEFORMATION = 'GREEN_GR',),
+                           INCREMENT=_F( LIST_INST = LIS_INST,
+                                     SUBD_PAS=4,
+                                     SUBD_PAS_MINI=0.000001,
+                                      ),
+                             SOLVEUR=_F( STOP_SINGULIER='DECOUPE'),
+                              NEWTON=_F( REAC_ITER = 1,
+                                      MATRICE = 'TANGENTE'),
+                         CONVERGENCE=_F( 
+                                      ITER_GLOB_MAXI = 40,
+                                      RESI_INTE_RELA = 1.E-6,
+                                      RESI_GLOB_RELA = 1.E-6),
+                           ETAT_INIT=_F( EVOL_NOLI = RESULT), 
+                            PILOTAGE=_F( TYPE = 'LONG_ARC',
+                                      SELECTION='ANGL_INCR_DEPL',
+                                      GROUP_NO = 'TOUT_ELT',
+                                      NOM_CMP = ('DX','DZ',),
+                                      COEF_MULT = -1.,
+                                      ETA_PILO_MAX=9.116,
+                                      
+                                      )
+                        )
+#
+
+#
+
+RESULT= CALC_ELEM (reuse=RESULT ,
+                  OPTION     ='SIEF_ELNO_ELGA',
+                  RESULTAT   = RESULT,
+                  MODELE     = MO,
+                  CHAM_MATER = CHMAT,
+                  CARA_ELEM  = CAREL,
+                  TOUT_ORDRE = 'OUI',
+                                  );
+
+RESULT= CALC_ELEM (reuse=RESULT ,
+                  OPTION     ='EFGE_ELNO_CART',
+                  RESULTAT   = RESULT,
+                  MODELE     = MO,
+                  CHAM_MATER = CHMAT,
+                  CARA_ELEM  = CAREL,
+                  TOUT_ORDRE = 'OUI',
+                             );
+
+RESULT= CALC_NO   (reuse=RESULT ,
+                  OPTION     ='FORC_NODA',
+                  RESULTAT   = RESULT,
+                  MODELE     = MO,
+                  CHAM_MATER = CHMAT,
+                  CARA_ELEM  = CAREL,
+                  TOUT_ORDRE = 'OUI',
+                             );
+
+
+ETA=RECU_FONCTION (   RESULTAT = RESULT,
+                          NOM_PARA_RESU = 'ETA_PILOTAGE',
+                          TOUT_ORDRE = 'OUI') 
+                          
+DEPZ=RECU_FONCTION (   RESULTAT = RESULT,
+                          NOM_CMP = 'DZ',
+                          NOM_CHAM = 'DEPL',
+                          GROUP_NO = 'B',
+                          TOUT_ORDRE = 'OUI')
+                            
+DEPX=RECU_FONCTION (   RESULTAT = RESULT,
+                          NOM_CMP = 'DX',
+                          NOM_CHAM = 'DEPL',
+                          GROUP_NO = 'B',
+                          TOUT_ORDRE = 'OUI')
+                          
+MYY=RECU_FONCTION (   RESULTAT = RESULT,
+                          NOM_CMP = 'MY',
+                          MAILLE = 'M1',
+                          NOM_CHAM = 'EFGE_ELNO_CART',
+                          GROUP_NO = 'A',
+                          TOUT_ORDRE = 'OUI')
+               
+MDEPZ=CALC_FONCTION(COMB= _F(  FONCTION = DEPZ, COEF = -1.)  )
+
+IMPR_COURBE ( FICHIER='AGRAF',FORMAT='AGRAF',
+              COURBE=(_F(FONC_Y=ETA, FONC_X = MDEPZ),
+                      _F(FONC_Y=ETA, FONC_X = DEPX),),
+              TITRE_GRAPHIQUE='Dx et Dz en fonction de P/Pcr'
+               )
+              
+IMPR_COURBE (FICHIER='AGRAF',FORMAT='AGRAF',
+               COURBE=(_F(FONC_Y=ETA, FONC_X = MYY),
+                       ),
+    TITRE_GRAPHIQUE='Moment MY en fonction du temps'
+              )
+              
+
+
+
+tupeta = aster.getvectjev('ETA                .VALE')
+tupdex = aster.getvectjev('DEPX               .VALE')
+tupdez = aster.getvectjev('DEPZ               .VALE')
+tupmyy = aster.getvectjev('MYY                .VALE')
+
+lieta=list(tupeta)
+lidex=list(tupdex)
+lidez=list(tupdez)
+limyy=list(tupmyy)
+#print lieta
+#print lidex
+nb= len(lieta)
+nb2=nb/2
+dxeta=[0.,0.]
+dzeta=[0.,0.]
+myeta=[0.,0.]
+for i in range(5,nb2) :
+   eta=lieta[i+nb2]
+   dx=lidex[i+nb2]
+   dz=lidez[i+nb2]
+   my=limyy[i+nb2]
+   print i,eta,dx,dz,my
+   dxeta.append(eta)
+   dzeta.append(eta)
+   myeta.append(eta)
+   dxeta.append(dx)
+   dzeta.append(dz)
+   myeta.append(my)
+#print dxeta
+tdxeta=tuple(dxeta)
+tdzeta=tuple(dzeta)
+tmyeta=tuple(myeta)
+#print tdxeta
+
+DX_ETA=DEFI_FONCTION(      NOM_PARA='META',
+                           PROL_DROITE='CONSTANT',
+                          PROL_GAUCHE='CONSTANT',
+                                 VALE=tdxeta
+                        )
+   
+DZ_ETA=DEFI_FONCTION(      NOM_PARA='META',
+                           PROL_DROITE='CONSTANT',
+                          PROL_GAUCHE='CONSTANT',
+                                 VALE=tdzeta
+                        )
+   
+MY_ETA=DEFI_FONCTION(      NOM_PARA='META',
+                           PROL_DROITE='CONSTANT',
+                          PROL_GAUCHE='CONSTANT',
+                                 VALE=tmyeta
+                        )
+   
+IMPR_COURBE ( COURBE= _F(FONCTION=DX_ETA,),)
+
+IMPR_COURBE ( COURBE= _F(FONCTION=DZ_ETA,),)
+
+IMPR_COURBE ( COURBE= _F(FONCTION=MY_ETA,),)
+
+   
+# 3 PREMIERES VALEURS ELOIGNEES DE LA SOLUTION ANALYTIQUE A CAUSE DE LA PERTURBATION
+TEST_FONCTION(VALEUR=(
+_F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.015, VALE_REFE=0.1100,PRECISION=0.45,),
+_F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.063, VALE_REFE=0.2110,PRECISION=0.10,),
+_F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.152, VALE_REFE=0.2965,PRECISION=0.03,),
+_F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.293, VALE_REFE=0.3595,PRECISION=0.01,),
+_F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.518, VALE_REFE=0.3960,PRECISION=0.01,),
+_F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.884, VALE_REFE=0.4015,PRECISION=0.01,),
+_F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=2.541, VALE_REFE=0.3750,PRECISION=0.01,),
+_F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=4.029, VALE_REFE=0.3125,PRECISION=0.01,),
+_F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=9.116, VALE_REFE=0.2105,PRECISION=0.01,),
+                        ),)
+
+   
+# 3 PREMIERES VALEURS ELOIGNEES DE LA SOLUTION ANALYTIQUE A CAUSE DE LA PERTURBATION
+TEST_FONCTION(VALEUR=(
+_F(FONCTION=DZ_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.015, VALE_REFE=-0.015,PRECISION=0.7,),
+_F(FONCTION=DZ_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.063, VALE_REFE=-0.0595,PRECISION=0.20,),
+_F(FONCTION=DZ_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.152, VALE_REFE=-0.1295,PRECISION=0.07,),
+_F(FONCTION=DZ_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.293, VALE_REFE=-0.2200,PRECISION=0.04,),
+_F(FONCTION=DZ_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.518, VALE_REFE=-0.3255,PRECISION=0.02,),
+_F(FONCTION=DZ_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.884, VALE_REFE=-0.4385,PRECISION=0.01,),
+_F(FONCTION=DZ_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=2.541, VALE_REFE=-0.5535,PRECISION=0.01,),
+_F(FONCTION=DZ_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=4.029, VALE_REFE=-0.6700,PRECISION=0.01,),
+_F(FONCTION=DZ_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=9.116, VALE_REFE=-0.7885,PRECISION=0.01,),
+                        ),)
+
+# 3 PREMIERES VALEURS ELOIGNEES DE LA SOLUTION ANALYTIQUE A CAUSE DE LA PERTURBATION
+TEST_FONCTION(VALEUR=(
+_F(FONCTION=MY_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.015, VALE_REFE=127.58,PRECISION=0.46,),
+_F(FONCTION=MY_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.063, VALE_REFE=248.32,PRECISION=0.10,),
+_F(FONCTION=MY_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.152, VALE_REFE=380.45,PRECISION=0.03,),
+_F(FONCTION=MY_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.293, VALE_REFE=519.41,PRECISION=0.01,),
+_F(FONCTION=MY_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.518, VALE_REFE=674.33,PRECISION=0.01,),
+_F(FONCTION=MY_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=1.884, VALE_REFE=849.74,PRECISION=0.01,),
+_F(FONCTION=MY_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=2.541, VALE_REFE=1070.72,PRECISION=0.01,),
+_F(FONCTION=MY_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=4.029, VALE_REFE=1412.44,PRECISION=0.01,),
+_F(FONCTION=MY_ETA,CRITERE='RELATIF',REFERENCE='ANALYTIQUE',VALE_PARA=9.116, VALE_REFE=2150.55,PRECISION=0.01,),
+                        ),)
+
+
+
+TEST_FONCTION(VALEUR=(
+#_F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=1.015, VALE_REFE=6.1431923116697E-02),
+#_F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=1.063, VALE_REFE=1.9198033403456E-01),
+_F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=1.152, VALE_REFE=2.8917495672386E-01),
+_F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=1.293, VALE_REFE=3.5728437647233E-01),
+_F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=1.518, VALE_REFE=3.9652111449687E-01),
+_F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=1.884, VALE_REFE=4.0370032669024E-01),
+_F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=2.541, VALE_REFE=3.7746659319611E-01),
+_F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=4.029, VALE_REFE=3.1388012093726E-01),
+                        ),)
+
+
+   
+# 3 PREMIERES VALEURS ELOIGNEES DE LA SOLUTION ANALYTIQUE A CAUSE DE LA PERTURBATION
+TEST_FONCTION(VALEUR=(
+#_F(FONCTION=DZ_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=1.015, VALE_REFE=-4.6712642639552E-03),
+#_F(FONCTION=DZ_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=1.063, VALE_REFE=-4.8093997969311E-02),
+_F(FONCTION=DZ_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=1.152, VALE_REFE=-1.2069152989605E-01),
+_F(FONCTION=DZ_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=1.293, VALE_REFE=-2.1301792258052E-01),
+_F(FONCTION=DZ_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=1.518, VALE_REFE=-3.2099386668351E-01),
+_F(FONCTION=DZ_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=1.884, VALE_REFE=-4.3606679629265E-01),
+_F(FONCTION=DZ_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=2.541, VALE_REFE=-5.5271952584609E-01),
+_F(FONCTION=DZ_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=4.029, VALE_REFE=-6.7016641766478E-01),
+_F(FONCTION=DZ_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=9.116, VALE_REFE=-7.8826850709346E-01),
+                        ),)
+
+# 3 PREMIERES VALEURS ELOIGNEES DE LA SOLUTION ANALYTIQUE A CAUSE DE LA PERTURBATION
+TEST_FONCTION(VALEUR=(
+#_F(FONCTION=MY_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=1.015, VALE_REFE=7.0134092683199E+01),
+#_F(FONCTION=MY_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=1.063, VALE_REFE=2.2922157684485E+02),
+_F(FONCTION=MY_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=1.152, VALE_REFE=3.7431202875136E+02),
+_F(FONCTION=MY_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=1.293, VALE_REFE=5.1907371690130E+02),
+_F(FONCTION=MY_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=1.518, VALE_REFE=6.7633377993926E+02),
+_F(FONCTION=MY_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=1.884, VALE_REFE=8.5453775374926E+02),
+_F(FONCTION=MY_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=2.541, VALE_REFE=1.0774321634438E+03),
+_F(FONCTION=MY_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=4.029, VALE_REFE=1.4200618202884E+03),
+_F(FONCTION=MY_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='7.0.7',VALE_PARA=9.116, VALE_REFE=2.1624848976680E+03),
+                        ),)
+
+
+
+FIN()

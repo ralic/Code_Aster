@@ -1,6 +1,6 @@
       SUBROUTINE TE0008 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*8        MODELI,ELREFE
       CHARACTER*24       CARAC,FF
-      REAL*8             NHARM, BSIGM(18),GEO(18)
+      REAL*8             NHARM, BSIGM(18),GEO(18),SIGTMP(36),FTEMP(18)
       INTEGER            NBSIGM
 C DEB ------------------------------------------------------------------
       CALL ELREF1(ELREFE)
@@ -86,34 +86,66 @@ C         CHAMPS POUR LA REACTUALISATION DE LA GEOMETRIE
       DO 30 I = 1,NDIM*NNO
          GEO(I)  =ZR(IGEOM-1+I)
 30    CONTINUE
-      CALL TECACH(.TRUE.,.FALSE.,'PDEPLMR',1,IDEPL)
-      CALL TECACH(.TRUE.,.FALSE.,'PCOMPOR',1,ICOMP)
-      IF ((IDEPL.GT.0).AND.(ICOMP.GT.0)) THEN
-         IF (ZK16(ICOMP+2)(1:6).NE.'PETIT ') THEN
-            DO 20 I = 1,NDIM*NNO
-               GEO(I)  =GEO(I)  + ZR(IDEPL-1+I)
-20          CONTINUE
-         ENDIF
-      ENDIF
 
-C ----     CONTRAINTES AUX POINTS D'INTEGRATION
-      CALL JEVECH('PCONTMR','L',ICONTM)
 C
 C ---- PARAMETRES EN SORTIE
 C      --------------------
 C ----     VECTEUR DES FORCES INTERNES (BT*SIGMA)
       CALL JEVECH('PVECTUR','E',IVECTU)
+
+C ---- CALCUL DE FORC_NODA
+
+      IF (OPTION(1:9).EQ.'FORC_NODA') THEN
+C      --------------------
+ 
+        CALL TECACH(.TRUE.,.FALSE.,'PDEPLMR',1,IDEPL)
+        CALL TECACH(.TRUE.,.FALSE.,'PCOMPOR',1,ICOMP)
+        IF ((IDEPL.GT.0).AND.(ICOMP.GT.0)) THEN
+           IF (ZK16(ICOMP+2)(1:6).NE.'PETIT ') THEN
+              DO 20 I = 1,NDIM*NNO
+                 GEO(I)  =GEO(I)  + ZR(IDEPL-1+I)
+20            CONTINUE
+           ENDIF
+        ENDIF
+
+C ----     CONTRAINTES AUX POINTS D'INTEGRATION
+        CALL JEVECH('PCONTMR','L',ICONTM)
 C
 C ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA) :
 C      --------------------------------------------------
-      CALL BSIGMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),ZR(IDFDK)
-     +            ,BIDON,ZR(IPOIDS),GEO,NHARM,ZR(ICONTM),BSIGM)
+        CALL BSIGMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
+     +            ZR(IDFDK),BIDON,ZR(IPOIDS),GEO,NHARM,ZR(ICONTM),BSIGM)
 C
 C ---- AFFECTATION DU VECTEUR EN SORTIE :
 C      ----------------------------------
-       DO 10 I=1,NDIM*NNO
-          ZR(IVECTU+I-1) = BSIGM(I)
-10     CONTINUE
+         DO 10 I=1,NDIM*NNO
+            ZR(IVECTU+I-1) = BSIGM(I)
+10       CONTINUE
+
+      ELSE IF (OPTION.EQ.'REFE_FORC_NODA') THEN
+
+        CALL JEVECH('PREFCO','L',ICONTM)
+
+        CALL R8INIR(NBSIG*NPG1,0.D0,SIGTMP,1)
+        CALL R8INIR(NDIM*NNO,0.D0,FTEMP,1)
+        DO 200 I=1,NBSIG*NPG1
+          
+          SIGTMP(I)=ZR(ICONTM)
+          CALL BSIGMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
+     &                ZR(IDFDK),BIDON,ZR(IPOIDS),GEO,NHARM,
+     &                SIGTMP,BSIGM)
+          
+          DO 21 J=1,NDIM*NNO
+            FTEMP(J) = FTEMP(J)+ABS(BSIGM(J))
+21        CONTINUE
+   
+          SIGTMP(I)=0.D0
+          
+200      CONTINUE
+
+         CALL R8AXPY(NDIM*NNO,1.D0/NPG1,FTEMP,1,ZR(IVECTU),1)
+
+      ENDIF
 C
 C FIN ------------------------------------------------------------------
       END

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE VABHHTS J.PELLET
-IMPR_TABLE=PROC(nom="IMPR_TABLE",op=155,docu="U4.91.03-d2",
+IMPR_TABLE=PROC(nom="IMPR_TABLE",op=155,docu="U4.91.03-d",
             UIinfo={"groupes":("Impression",)},
                 fr="Impression d un concept de type table",
          TABLE           =SIMP(statut='o',typ=table),
@@ -53,4 +53,5 @@ IMPR_TABLE=PROC(nom="IMPR_TABLE",op=155,docu="U4.91.03-d2",
          NOM_PARA        =SIMP(statut='f',typ='TXM',max='**'),
          TOUT_PARA       =SIMP(statut='f',typ='TXM',into=("OUI",)),
          IMPR_FONCTION   =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
+         TITRE_TABLE     =SIMP(statut='f',typ='TXM',max='**'),
 )  ;

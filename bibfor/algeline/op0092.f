@@ -3,7 +3,7 @@
       INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 MONMOT
 C     ------------------------------------------------------------------
+C
+      CALL INFMAJ()
 C
       CALL GETVR8(' ','DIRECTION',0,1,0,DEPL,NBD)
       NBDIR = -NBD

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 CALC_G_THETA_T=OPER(nom="CALC_G_THETA_T",op=53,sd_prod=tabl_calc_g_th,
                     fr="Calcul du taux de restitution d énergie par la méthode theta en thermo-élasticité en 2D ou en 3D",
-                    docu="U4.82.03-f2",reentrant='n',
+                    docu="U4.82.03-f",reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
          regles=(UN_PARMI('RESULTAT','DEPL'),
                  EXCLUS('COMP_ELAS','COMP_INCR'),),
@@ -84,9 +84,7 @@ CALC_G_THETA_T=OPER(nom="CALC_G_THETA_T",op=53,sd_prod=tabl_calc_g_th,
                                 ),
          ),
          b_calc_k_g      =BLOC(condition="OPTION=='CALC_K_G'",
-             regles=(UN_PARMI('FOND','FOND_FISS' ),),
-           FOND            =SIMP(statut='f',typ=fond_fiss),
-           FOND_FISS       =SIMP(statut='f',typ=fond_fiss),
+           FOND_FISS       =SIMP(statut='o',typ=fond_fiss),
          ),
          b_calc_g_lagr   =BLOC(condition="OPTION=='CALC_G_LAGR'",
            PROPAGATION     =SIMP(statut='o',typ='R'),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE G8BHHXD X.DESROCHES
-INTE_MAIL_3D=OPER(nom="INTE_MAIL_3D",op=96,sd_prod=surface,docu="U4.81.12-e",
+INTE_MAIL_3D=OPER(nom="INTE_MAIL_3D",op=96,sd_prod=surface,docu="U4.81.12-f",
             UIinfo={"groupes":("Post traitements",)},
                   fr="Définition d un chemin sur un maillage 3D",reentrant='n',
          MAILLAGE        =SIMP(statut='o',typ=maillage),

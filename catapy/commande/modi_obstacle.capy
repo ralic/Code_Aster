@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,12 +17,10 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 MODI_OBSTACLE=OPER(nom="MODI_OBSTACLE",op=182,sd_prod=obstacle,
-                   fr=" ",docu="U4.44.22-a",reentrant='f',
+                   fr=" ",docu="U4.44.22-b",reentrant='f',
             UIinfo={"groupes":("Modélisation",)},
       regles=(PRESENT_ABSENT('R_MOBILE','CRAYON'),
-              PRESENT_PRESENT('TUBE_NEUF','TABL_USURE'),
               PRESENT_PRESENT('V_USUR_TUBE','V_USUR_OBST'),),
-         TUBE_NEUF       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          V_USUR_TUBE     =SIMP(statut='f',typ='R',max='**'),
          V_USUR_OBST     =SIMP(statut='f',typ='R',max='**'),
          TABL_USURE      =SIMP(statut='f',typ=tabl_post_usur),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,14 +18,14 @@
 # ======================================================================
 THER_NON_LINE_MO=OPER(nom="THER_NON_LINE_MO",op= 171,sd_prod=evol_ther,
                      fr="Thermique non lineaire en repere mobile",
-                     docu="U4.54.03-b",reentrant='f',
+                     docu="U4.54.03-c",reentrant='f',
             UIinfo={"groupes":("Résolution",)},
          MODELE          =SIMP(statut='o',typ=modele ),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
          CARA_ELEM       =SIMP(statut='c',typ=cara_elem ),
          EXCIT           =FACT(statut='o',min=1,max='**',
            CHARGE          =SIMP(statut='o',typ=char_ther ),
-           FONC_MULT       =SIMP(statut='c',typ=fonction ),
+           FONC_MULT       =SIMP(statut='c',typ=(fonction,formule) ),
          ),
          TEMP_INIT       =FACT(statut='f',min=1,max=1,
            EVOL_THER       =SIMP(statut='f',typ=evol_ther ),
@@ -51,13 +51,12 @@ THER_NON_LINE_MO=OPER(nom="THER_NON_LINE_MO",op= 171,sd_prod=evol_ther,
              STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            ),
            b_gcpc          =BLOC(condition = "METHODE == 'GCPC' ", fr="Paramètres de la méthode du gradient conjugué",
-             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC","SANS","DIAG") ),
+             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC",),defaut="LDLT_INC" ),
              NIVE_REMPLISSAGE=SIMP(statut='f',typ='I',defaut= 0 ),
              RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
            ),
-           EPS             =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
            SYME            =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**' ),

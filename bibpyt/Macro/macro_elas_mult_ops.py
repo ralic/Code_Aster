@@ -1,4 +1,4 @@
-#@ MODIF macro_elas_mult_ops Macro  DATE 11/06/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_elas_mult_ops Macro  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,7 +41,8 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
   CALC_ELEM       =self.get_cmd('CALC_ELEM')
   CALC_NO         =self.get_cmd('CALC_NO')
   # La macro compte pour 1 dans la numerotation des commandes
-  self.icmd=1
+  #self.icmd=1
+  self.set_icmd(1)
 
   # Le concept sortant (de type mult_elas ou fourier_elas) est nommé
   # 'nomres' dans le contexte de la macro
@@ -211,13 +212,13 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
               for chargt in m['CHAR_CINE'] : motscles['EXCIT'].append(_F(CHARGE=chargt))
            if   CHAR_MECA_GLOBAL:            motscles['EXCIT'].append(_F(CHARGE=CHAR_MECA_GLOBAL))
            elif CHAR_CINE_GLOBAL:            motscles['EXCIT'].append(_F(CHARGE=CHAR_CINE_GLOBAL))
-           nomres=CALC_ELEM(reuse=nomres,
-                            RESULTAT=nomres,
-                            MODELE=MODELE,
-                            NIVE_COUCHE=m['NIVE_COUCHE'],
-                            NUME_COUCHE=m['NUME_COUCHE'],
-                            OPTION=tuple(liste_el),
-                            **motscles)
+           CALC_ELEM(reuse=nomres,
+                     RESULTAT=nomres,
+                     MODELE=MODELE,
+                     NIVE_COUCHE=m['NIVE_COUCHE'],
+                     NUME_COUCHE=m['NUME_COUCHE'],
+                     OPTION=tuple(liste_el),
+                     **motscles)
         if nbno:
            motscles={}
            if   CHAM_MATER : motscles['CHAM_MATER'] =CHAM_MATER
@@ -233,11 +234,11 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
               for chargt in m['CHAR_CINE'] : motscles['EXCIT'].append(_F(CHARGE=chargt))
            if   CHAR_MECA_GLOBAL:            motscles['EXCIT'].append(_F(CHARGE=CHAR_MECA_GLOBAL))
            elif CHAR_CINE_GLOBAL:            motscles['EXCIT'].append(_F(CHARGE=CHAR_CINE_GLOBAL))
-           nomres=CALC_NO(reuse=nomres,
-                          RESULTAT=nomres,
-                          MODELE=MODELE,
-                          OPTION=tuple(liste_no),
-                          **motscles)
+           CALC_NO(reuse=nomres,
+                   RESULTAT=nomres,
+                   MODELE=MODELE,
+                   OPTION=tuple(liste_no),
+                   **motscles)
 
 # fin de la boucle sur les items de CAS_CHARGE
 #####################################################################

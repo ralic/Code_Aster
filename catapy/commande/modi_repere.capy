@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ def modi_repere_prod(RESULTAT,**args):
   if AsType(RESULTAT) == base_modale  : return base_modale
   raise AsException("type de concept resultat non prevu")
 
-MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,docu="U4.74.01-a3",reentrant='n',
+MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,docu="U4.74.01-a",reentrant='n',
             UIinfo={"groupes":("Résultats et champs",)},
                     fr="Impression des resultats dans un repere cylindrique",
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,mode_meca,
@@ -52,6 +52,10 @@ MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,docu="U4.74.0
          CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
 
          MODI_CHAM       =FACT(statut='o',min=1,max='**',
+           GROUP_MA        =SIMP(statut='f',typ=grma,max='**'),
+           GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
+           MAILLE          =SIMP(statut='f',typ=ma,max='**'),
+           NOEUD           =SIMP(statut='f',typ=no,max='**'),
            TYPE_CHAM       =SIMP(statut='o',typ='TXM', max=1,    
                                  into=("VECT_2D","VECT_3D","TORS_3D","TENS_2D","TENS_3D"),),
            NOM_CHAM        =SIMP(statut='o',typ='TXM',max=1 ),  

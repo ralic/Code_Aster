@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ def defi_valeur_prod(self,IS=None,R8=None,TX=None,C8=None,LS=None):
 
 DEFI_VALEUR=MACRO(nom="DEFI_VALEUR",op=-4,sd_prod=defi_valeur_prod,
                  fr="Affectation d une valeur à une variable Superviseur",
-                 docu="U4.31.04-f1",reentrant='f',
+                 docu="U4.31.04-f",reentrant='f',
             UIinfo={"groupes":("Fonction",)},
          regles=(UN_PARMI('IS','R8','TX','C8','LS'),),
          IS              =SIMP(statut='f',typ='I',max='**'),

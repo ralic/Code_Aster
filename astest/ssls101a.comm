@@ -1,21 +1,21 @@
-# MODIF  DATE 13/06/2002   AUTEUR PBBHHPB P.BADEL 
+# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(    CODE=_F(  NOM = 'SSLS101A',NIV_PUB_WEB='INTERNET')    )
@@ -41,7 +41,7 @@ MATER=DEFI_MATERIAU(  ELAS=_F(  E = 1.,      NU = 0.3) )
 
 MAILL=LIRE_MAILLAGE(   )
 
-MAILL=DEFI_GROUP( reuse=MAILL,   MAILLAGE=MAILL,
+DEFI_GROUP( reuse=MAILL,   MAILLAGE=MAILL,
                           CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
 CHMAT=AFFE_MATERIAU(   MAILLAGE=MAILL,
@@ -65,20 +65,26 @@ CARELEM=AFFE_CARA_ELEM(   MODELE=MODEL,
                        COQUE=_F(  GROUP_MA = 'TOUT', COQUE_NCOU=9,
                                EPAIS = T,  ANGL_REP = (0., 0.,)))
 
+
 RESU=MECA_STATIQUE(    MODELE=MODEL,       CHAM_MATER=CHMAT,
-                         SOLVEUR=_F( STOP_SINGULIER = 'NON'),
-                               CARA_ELEM=CARELEM,
-                               EXCIT=_F(  CHARGE = CHARGE),
-                               OPTION=( 'EFGE_ELNO_DEPL',
-                                        'EPOT_ELEM_DEPL', )
-                            )
+                          SOLVEUR=_F( STOP_SINGULIER = 'NON'),
+                                CARA_ELEM=CARELEM,
+                                EXCIT=_F(  CHARGE = CHARGE),
+                             )
+
+CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,     MODELE=MODEL,       CHAM_MATER=CHMAT,
+                                CARA_ELEM=CARELEM,
+                                EXCIT=_F(  CHARGE = CHARGE),
+                                OPTION=( 'EFGE_ELNO_DEPL',
+                                         'EPOT_ELEM_DEPL', )
+                             )
 
 #
 #--------------------------------------------------------
 #
 # TEST DE L'OPTION EQUI_ELNO_SIGM EN ELASTICITE
 #
-RESU=CALC_ELEM( reuse=RESU,       MODELE=MODEL,
+CALC_ELEM( reuse=RESU,       MODELE=MODEL,
                       CHAM_MATER=CHMAT,
                        CARA_ELEM=CARELEM,
                       TOUT_ORDRE='OUI',
@@ -87,7 +93,7 @@ RESU=CALC_ELEM( reuse=RESU,       MODELE=MODEL,
                      NIVE_COUCHE='INF')
 
 #
-RESU=CALC_ELEM( reuse=RESU,       MODELE=MODEL,
+CALC_ELEM( reuse=RESU,       MODELE=MODEL,
                       CHAM_MATER=CHMAT,
                        CARA_ELEM=CARELEM,
                       TOUT_ORDRE='OUI',
@@ -451,7 +457,7 @@ TEST_RESU(RESU=(
              CRITERE = 'ABSOLU',        PRECISION = 2.E+00))
            )
 
-U3=STAT_NON_LINE( reuse=U3,
+STAT_NON_LINE( reuse=U3,
                             MODELE=MODEL,
                         CHAM_MATER=CHMAT,
                            SOLVEUR=_F(
@@ -476,7 +482,7 @@ U3=STAT_NON_LINE( reuse=U3,
                 RESI_INTE_RELA = 1.E-8)
               )
 
-U3=CALC_ELEM( reuse=U3,
+CALC_ELEM( reuse=U3,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=U3,
@@ -489,7 +495,7 @@ U3=CALC_ELEM( reuse=U3,
 #
 # TEST DE L'OPTION EQUI_ELNO_SIGM EN PLASTICITE
 
-U3=CALC_ELEM( reuse=U3,        MODELE=MODEL,
+CALC_ELEM( reuse=U3,        MODELE=MODEL,
                        CHAM_MATER=CHMAT,
                         CARA_ELEM=CARELEM,
                        NUME_ORDRE=4,
@@ -498,7 +504,7 @@ U3=CALC_ELEM( reuse=U3,        MODELE=MODEL,
                       NUME_COUCHE=1,
                       NIVE_COUCHE='INF'                )
 
-U3=CALC_ELEM( reuse=U3,       MODELE=MODEL,
+CALC_ELEM( reuse=U3,       MODELE=MODEL,
                        CHAM_MATER=CHMAT,
                         CARA_ELEM=CARELEM,
                        NUME_ORDRE=4,

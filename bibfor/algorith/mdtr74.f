@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/11/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,6 +88,7 @@ C-----------------------------------------------------------------------
       JPSID = 1
       MONMOT = 'NON'
       LISINS = ' '
+      CALL INFNIV(IFM,INFO)
 
       LAMOR = .FALSE.
       LFLU = .FALSE.
@@ -96,8 +97,6 @@ C-----------------------------------------------------------------------
 C     --- RECUPERATION DES ARGUMENTS DE LA COMMANDE ---
 
       CALL GETVTX(' ','METHODE',0,1,1,METHOD,N1)
-      CALL INFNIV(IFM,INFO)
-      CALL GETVIS(' ','INFO'     ,0,1,1,INFO  ,N1)
       CALL GETVIS(' ','NMAX_ITER',0,1,1,ITEMAX,N1)
       CALL GETVR8(' ','RESI_RELA',0,1,1,PREC,N1)
       CALL GETVR8(' ','LAMBDA',0,1,1,XLAMBD,N1)

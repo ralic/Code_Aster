@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/10/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 21/03/2003   AUTEUR ASSIRE A.ASSIRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,8 @@ C  -----------   APPELANT : OP0180 , OPERATEUR DEFI_CABLE_BP
 C
 C                EN SORTIE ON AJOUTE DES LIGNES DANS LA TABLE RESULTAT
 C                LES CASES RENSEIGNEES CORRESPONDENT AUX PARAMETRES
-C                <NUME_CABLE> ET <NOEUD_CABLE>
+C                <NUME_CABLE>, <NOEUD_CABLE>, <MAILLE_CABLE>, 
+C                <NOM_CABLE>, <NOM_ANCRAGE1> ET <NOM_ANCRAGE2>
 C
 C  IN     : TABLCA : CHARACTER*19
 C                    NOM DE LA TABLE DECRIVANT LES CABLES
@@ -76,7 +77,7 @@ C -----------------
      +              JCXMA, JNOMAD, JNONO1, JNONO2, JNONOD, JNUMA1,
      +              JNUMA2, JNUMAC, JNUMAD, JTYMA, LONUTI, NBCHEM,
      +              NBMAIL, NBNO1, NBNO2, NBSUIV, NO1, NO2, NTSEG,
-     +              NUMAIL
+     +              NUMAIL, N1
       REAL*8        RBID
       COMPLEX*16    CBID
       LOGICAL       OK1, OK2
@@ -84,11 +85,15 @@ C -----------------
       CHARACTER*3   K3B
       CHARACTER*8   K8B, NOANCR(2), NOGRMA, NOGRNA(2), NOCOUR, NOPREC,
      +              NOSUI1, NOSUI2, NOSUIV, NOVOIS, TYANCR(2)
+      CHARACTER*8   VK(4), NOGRNO(2), PRESEN(2)
       CHARACTER*24  CONXMA, GRMAMA, NOMAMA, NONOMA, TYMAMA
-C
-      CHARACTER*24  PARAM(2)
+      CHARACTER*24  PARAM(5)
       DATA          PARAM /'NUME_CABLE              ',
-     +                     'NOEUD_CABLE             '/
+     +                     'NOEUD_CABLE             ',
+     +                     'NOM_CABLE               ',
+     +                     'NOM_ANCRAGE1            ',
+     +                     'NOM_ANCRAGE2            '/
+
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
@@ -158,7 +163,21 @@ C
          CALL JENUNO(JEXNUM(NONOMA,NO2),ZK8(JNONOD+2*(IMAIL-1)+1))
   20  CONTINUE
 C
-C 1.3 SAISIE DES NOEUDS D'ANCRAGE DU CABLE
+C 1.3 SAISIE DU GROUP_NO D'ANCRAGE DU CABLE EVENTUELLEMENT
+C ---
+      NOGRNO(1) = '        '
+      NOGRNO(2) = '        '
+      CALL GETVTX ('DEFI_CABLE','GROUP_NO_FUT',ICABL,1,2,NOGRNO,N1)
+      IF ( N1.EQ.1 ) THEN
+        CALL GETVTX ('CONE','PRESENT',1,1,2,PRESEN,N1)
+        IF (PRESEN(2)(1:3).EQ.'OUI') THEN
+          NOGRNO(2) = NOGRNO(1)
+          NOGRNO(1) = '        '
+        ENDIF
+      ENDIF
+
+C
+C 1.4 SAISIE DES NOEUDS D'ANCRAGE DU CABLE
 C ---
       CALL GETVEM(MAILLA,'NOEUD','DEFI_CABLE','NOEUD_ANCRAGE',
      +                  ICABL,1,0,K8B,IBID)
@@ -199,7 +218,7 @@ C
 C
       ENDIF
 C
-      CALL GETVTX('DEFI_CABLE','TYPE_ANCRAGE' ,ICABL,1,2,TYANCR(1),IBID)
+      CALL GETVTX(' ','TYPE_ANCRAGE' ,ICABL,1,2,TYANCR(1),IBID)
       NBF0 = 0
       IF ( TYANCR(1)(1:5).EQ.'ACTIF' ) NBF0 = NBF0 + 1
       IF ( TYANCR(2)(1:5).EQ.'ACTIF' ) NBF0 = NBF0 + 1
@@ -416,8 +435,15 @@ C
             ENDIF
 C
             DO 120 INO = 1, NBNO1
-               CALL TBAJLI(TABLCA,2,PARAM,
-     +                     ICABL,RBID,CBID,ZK8(JNONO1+INO-1),0)
+C                CALL TBAJLI(TABLCA,2,PARAM,
+C      +                     ICABL,RBID,CBID,ZK8(JNONO1+INO-1),0)
+
+               VK(1) = ZK8(JNONO1+INO-1)
+               VK(2) = NOGRMA
+               VK(3) = NOGRNO(1)
+               VK(4) = NOGRNO(2)
+               CALL TBAJLI(TABLCA,5,PARAM,ICABL,RBID,CBID,VK,0)
+
  120        CONTINUE
 C
 C 3.2.2  CAS OU LE SECOND CHEMIN POSSIBLE EST VALIDE
@@ -442,8 +468,15 @@ C
             ENDIF
 C
             DO 150 INO = 1, NBNO2
-               CALL TBAJLI(TABLCA,2,PARAM,
-     +                     ICABL,RBID,CBID,ZK8(JNONO2+INO-1),0)
+C                CALL TBAJLI(TABLCA,2,PARAM,
+C      +                     ICABL,RBID,CBID,ZK8(JNONO2+INO-1),0)
+
+               VK(1) = ZK8(JNONO2+INO-1)
+               VK(2) = NOGRMA
+               VK(3) = NOGRNO(1)
+               VK(4) = NOGRNO(2)
+               CALL TBAJLI(TABLCA,5,PARAM,ICABL,RBID,CBID,VK,0)
+
  150        CONTINUE
 C
 C 3.2.3  AUCUN CHEMIN CONTINU VALIDE

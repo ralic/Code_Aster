@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ def extr_mode_prod(FILTRE_MODE,**args):
   raise AsException("type de concept resultat non prevu")
 
 EXTR_MODE=OPER(nom="EXTR_MODE",op= 168,sd_prod=extr_mode_prod,
-               docu="U4.52.12-c",reentrant='n',
+               docu="U4.52.12-d",reentrant='n',
             UIinfo={"groupes":("Résolution",)},
          FILTRE_MODE     =FACT(statut='o',min=1,max='**',
            regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE','NUME_MODE','NUME_MODE_EXCLU','FREQ_MIN','CRIT_EXTR',),),

@@ -1,33 +1,33 @@
-      SUBROUTINE RC32SP ( LIEU, SEISME, NUMSIP, PI, MI, NUMSIQ, PJ, MJ,
-     +                    MSE, SPIJ )
+      SUBROUTINE RC32SP(LIEU,SEISME,NUMSIP,PI,MI,NUMSIQ,PJ,MJ,MSE,SPIJ,
+     &                  TYPEKE,SPMECA,SPTHER)
       IMPLICIT   NONE
-      INTEGER             NUMSIP, NUMSIQ
-      REAL*8              PI, MI(*), PJ, MJ(*), MSE(*), SPIJ
-      LOGICAL             SEISME
-      CHARACTER*4         LIEU
+      INTEGER NUMSIP,NUMSIQ
+      REAL*8 PI,MI(*),PJ,MJ(*),MSE(*),SPIJ,TYPEKE,SPMECA,SPTHER
+      LOGICAL SEISME
+      CHARACTER*4 LIEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 16/10/2002   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF POSTRELE  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
 C     CALCUL DU SP
-C
+
 C     ------------------------------------------------------------------
 C IN  : LIEU   : ='ORIG' : ORIGINE DU SEGEMNT, ='EXTR' : EXTREMITE
 C IN  : SEISME : =.FALSE. SI PAS DE SEISME, =.TRUE. SINON
@@ -39,6 +39,8 @@ C IN  : PJ     : PRESSION ASSOCIEE A L'ETAT STABILISE J
 C IN  : MJ     : EFFORTS ASSOCIEES A L'ETAT STABILISE J
 C IN  : MSE    : EFFORTS DUS AU SEISME
 C OUT : SPIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES TOTALES
+C OUT : SPMECA   : AMPLITUDE DE VARIATION DES CONTRAINTES MECANIQUES
+C OUT : SPTHER   : AMPLITUDE DE VARIATION DES CONTRAINTES THERMIQUES
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -57,118 +59,190 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNOM,JEXNUM,JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
-      INTEGER      ICMP, JSIGU, ICMPS, LONG, NBINST, IRET,
-     +             NBTHER, JTHER, ITH, NUMTH, JTHUN
-      REAL*8       PIJ, MIJ(6), SP, SIJ(6), SIJS(6), SIGU
-      CHARACTER*8 K8B, KNUMES, KNUMET 
+      INTEGER ICMP,JSIGU,ICMPS,LONG,NBINST,NBTHER,JTHER,ITH,NUMTH,JTHUN
+      REAL*8 PIJ,MIJ(6),SP,SIJ(6),SIJS(6),SIGU,SIJ0(6)
+      CHARACTER*8 K8B,KNUMES,KNUMET
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
-C
+
 C --- CONTRAINTES LINEAIRISEES DUES AUX CHARGEMENTS UNITAIRES
-C
-      CALL JEVEUO ( '&&RC3200.MECA_UNIT .'//LIEU, 'L', JSIGU )
-C
+
+      CALL JEVEUO('&&RC3200.MECA_UNIT .'//LIEU,'L',JSIGU)
+
 C --- DIFFERENCE DE PRESSION ENTRE LES ETATS I ET J
-C
+
 CC      PIJ = ABS( PI - PJ )
       PIJ = PJ - PI
-C
+
 C --- VARIATION DE MOMENT RESULTANT
-C
-      DO 10 ICMP = 1 , 6
-         MIJ(ICMP) = MJ(ICMP) - MI(ICMP)
+
+      DO 10 ICMP = 1,6
+        MIJ(ICMP) = MJ(ICMP) - MI(ICMP)
    10 CONTINUE
-C
-C
+
+
 C --- CALCUL DES CONTRAINTES EN PEAU PAR COMBINAISON LINEAIRE
 C     POUR LE CHARGEMENT PIJ, MIJ
-C
-      DO 30 ICMPS = 1 , 6
-         SIJ(ICMPS) = 0.D0
-         DO 20 ICMP = 1 , 6
-            SIGU = ZR(JSIGU-1+6*(ICMP-1)+ICMPS)
-            SIJ(ICMPS) = SIJ(ICMPS) + MIJ(ICMP)*SIGU
-   20    CONTINUE
+
+      DO 30 ICMPS = 1,6
+        SIJ(ICMPS) = 0.D0
+        SIJ0(ICMPS) = 0.D0
+        DO 20 ICMP = 1,6
+          SIGU = ZR(JSIGU-1+6* (ICMP-1)+ICMPS)
+          SIJ(ICMPS) = SIJ(ICMPS) + MIJ(ICMP)*SIGU
+   20   CONTINUE
 C ------ PRESSION
-         SIGU = ZR(JSIGU-1+36+ICMPS)
-         SIJ(ICMPS) = SIJ(ICMPS) + PIJ*SIGU
+        SIGU = ZR(JSIGU-1+36+ICMPS)
+        SIJ(ICMPS) = SIJ(ICMPS) + PIJ*SIGU
    30 CONTINUE
-C
-C
+
+
 C --- CALCUL DES CONTRAINTES LINEAIRISEES PAR COMBINAISON LINEAIRE
 C     POUR LE CHARGEMENT MSE (SEISME)
-C
-      IF ( SEISME ) THEN
-         DO 50 ICMPS = 1,6
-            SIJS(ICMPS) = 0.D0
-            DO 40 ICMP = 1,6
-               SIGU = ZR(JSIGU-1+6*(ICMP-1)+ICMPS)
-               SIJS(ICMPS) = SIJS(ICMPS) + MSE(ICMP)*SIGU
-   40       CONTINUE
-   50    CONTINUE
+
+      IF (SEISME) THEN
+        DO 50 ICMPS = 1,6
+          SIJS(ICMPS) = 0.D0
+          DO 40 ICMP = 1,6
+            SIGU = ZR(JSIGU-1+6* (ICMP-1)+ICMPS)
+            SIJS(ICMPS) = SIJS(ICMPS) + MSE(ICMP)*SIGU
+   40     CONTINUE
+   50   CONTINUE
       END IF
-C
-C
+
+C CAS DE KE_MECA (PAS DE PARTITION MECANIQUE - THERMIQUE)
+
+C      IF (TYPEKE.LT.0.D0) THEN
+
+
 C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
-C
-      IF ( NUMSIP .NE. 0 ) THEN
-         KNUMES = 'S       '
-         CALL CODENT ( NUMSIP , 'D0' , KNUMES(2:8)  )
-         CALL JELIRA ( JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),
-     &                                          'LONUTI', NBTHER, K8B )
-         IF ( NBTHER .EQ. 0 ) THEN
+
+        IF (NUMSIP.NE.0) THEN
+          KNUMES = 'S       '
+          CALL CODENT(NUMSIP,'D0',KNUMES(2:8))
+          CALL JELIRA(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'LONUTI',
+     &                NBTHER,K8B)
+          IF (NBTHER.EQ.0) THEN
             NBINST = 0
             JTHUN = 1
-            CALL RC32ST ( SIJ, NBINST, ZR(JTHUN), SEISME, SIJS, SP )
-            SPIJ = MAX( SPIJ , SP )
-         ELSE
-            CALL JEVEUO ( JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),
-     &                                                     'L', JTHER )
-            DO 100 ITH = 1 , NBTHER
-               NUMTH = ZI(JTHER+ITH-1)
-               KNUMET = 'T       '
-               CALL CODENT ( NUMTH , 'D0' , KNUMET(2:8)  )
-             CALL JELIRA ( JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
-     &                                            'LONUTI', LONG, K8B )
-             CALL JEVEUO ( JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
-     &                                                     'L', JTHUN )
-               NBINST = LONG / 12
-               CALL RC32ST ( SIJ, NBINST, ZR(JTHUN), SEISME, SIJS, SP)
-               SPIJ = MAX( SPIJ , SP )
- 100        CONTINUE
-         END IF
-      END IF
-C
-C
+            CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+            SPIJ = MAX(SPIJ,SP)
+          ELSE
+            CALL JEVEUO(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'L',
+     &                  JTHER)
+            DO 60 ITH = 1,NBTHER
+              NUMTH = ZI(JTHER+ITH-1)
+              KNUMET = 'T       '
+              CALL CODENT(NUMTH,'D0',KNUMET(2:8))
+              CALL JELIRA(JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
+     &                    'LONUTI',LONG,K8B)
+              CALL JEVEUO(JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
+     &                    'L',JTHUN)
+              NBINST = LONG/12
+              CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+              SPIJ = MAX(SPIJ,SP)
+   60       CONTINUE
+          END IF
+        END IF
+
+
 C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
-C
-      IF ( NUMSIQ .NE. 0 ) THEN
-         KNUMES = 'S       '
-         CALL CODENT ( NUMSIQ , 'D0' , KNUMES(2:8)  )
-         CALL JELIRA ( JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),
-     &                                          'LONUTI', NBTHER, K8B )
-         IF ( NBTHER .EQ. 0 ) THEN
+
+        IF (NUMSIQ.NE.0) THEN
+          KNUMES = 'S       '
+          CALL CODENT(NUMSIQ,'D0',KNUMES(2:8))
+          CALL JELIRA(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'LONUTI',
+     &                NBTHER,K8B)
+          IF (NBTHER.EQ.0) THEN
             NBINST = 0
             JTHUN = 1
-            CALL RC32ST ( SIJ, NBINST, ZR(JTHUN), SEISME, SIJS, SP )
-            SPIJ = MAX( SPIJ , SP )
-         ELSE
-            CALL JEVEUO ( JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),
-     &                                                     'L', JTHER )
-            DO 110 ITH = 1 , NBTHER
-               NUMTH = ZI(JTHER+ITH-1)
-               KNUMET = 'T       '
-               CALL CODENT ( NUMTH , 'D0' , KNUMET(2:8)  )
-             CALL JELIRA ( JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
-     &                                            'LONUTI', LONG, K8B )
-             CALL JEVEUO ( JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
-     &                                                     'L', JTHUN )
-               NBINST = LONG / 12
-               CALL RC32ST ( SIJ, NBINST, ZR(JTHUN), SEISME, SIJS, SP )
-               SPIJ = MAX( SPIJ , SP )
- 110        CONTINUE
-         END IF
+            CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+            SPIJ = MAX(SPIJ,SP)
+          ELSE
+            CALL JEVEUO(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'L',
+     &                  JTHER)
+            DO 70 ITH = 1,NBTHER
+              NUMTH = ZI(JTHER+ITH-1)
+              KNUMET = 'T       '
+              CALL CODENT(NUMTH,'D0',KNUMET(2:8))
+              CALL JELIRA(JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
+     &                    'LONUTI',LONG,K8B)
+              CALL JEVEUO(JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
+     &                    'L',JTHUN)
+              NBINST = LONG/12
+              CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+              SPIJ = MAX(SPIJ,SP)
+   70       CONTINUE
+          END IF
+        END IF
+
+
+C CAS DE KE_MIXTE (PARTITION MECANIQUE - THERMIQUE)
+
+C      ELSE IF (TYPEKE.GT.0.D0) THEN
+      IF (TYPEKE.GT.0.D0) THEN
+
+C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
+
+        IF (NUMSIP.NE.0) THEN
+          KNUMES = 'S       '
+          CALL CODENT(NUMSIP,'D0',KNUMES(2:8))
+          CALL JELIRA(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'LONUTI',
+     &                NBTHER,K8B)
+          NBINST = 0
+          JTHUN = 1
+          CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+
+          SPMECA = MAX(SPMECA,SP)
+
+          IF (NBTHER.NE.0) THEN
+            CALL JEVEUO(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'L',
+     &                  JTHER)
+            DO 80 ITH = 1,NBTHER
+              NUMTH = ZI(JTHER+ITH-1)
+              KNUMET = 'T       '
+              CALL CODENT(NUMTH,'D0',KNUMET(2:8))
+              CALL JELIRA(JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
+     &                    'LONUTI',LONG,K8B)
+              CALL JEVEUO(JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
+     &                    'L',JTHUN)
+              NBINST = LONG/12
+              CALL RC32ST(SIJ0,NBINST,ZR(JTHUN),SEISME,SIJ0,SP)
+              SPTHER = MAX(SPTHER,SP)
+   80       CONTINUE
+          END IF
+        END IF
+
+
+C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
+
+        IF (NUMSIQ.NE.0) THEN
+          KNUMES = 'S       '
+          CALL CODENT(NUMSIQ,'D0',KNUMES(2:8))
+          CALL JELIRA(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'LONUTI',
+     &                NBTHER,K8B)
+          IF (NBTHER.NE.0) THEN
+            CALL JEVEUO(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'L',
+     &                  JTHER)
+            DO 90 ITH = 1,NBTHER
+              NUMTH = ZI(JTHER+ITH-1)
+              KNUMET = 'T       '
+              CALL CODENT(NUMTH,'D0',KNUMET(2:8))
+              CALL JELIRA(JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
+     &                    'LONUTI',LONG,K8B)
+              CALL JEVEUO(JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
+     &                    'L',JTHUN)
+              NBINST = LONG/12
+              CALL RC32ST(SIJ0,NBINST,ZR(JTHUN),SEISME,SIJ0,SP)
+              SPTHER = MAX(SPTHER,SP)
+   90       CONTINUE
+          END IF
+        END IF
+
+C      ELSE
+C        CALL UTMESS('F','RC32SP','PB AVEC TYPEKE')
       END IF
-C
+
+
       CALL JEDEMA()
       END

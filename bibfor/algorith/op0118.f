@@ -3,7 +3,7 @@
       INTEGER             IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,13 +144,13 @@ C
      +             ZI(LNUOR-1+KF), R8B, C16B, NOMFON, 0 )
 C
          CALL WKVECT ( NOMFON//'.VALE', 'G V R', LN4, LFO   )
-         CALL WKVECT ( NOMFON//'.PROL', 'G V K8', 5 , LPROF )
+         CALL WKVECT ( NOMFON//'.PROL', 'G V K16', 5 , LPROF )
          ZI(LY+KF-1)  = LFO
-         ZK8(LPROF  ) = 'FONCTION'
-         ZK8(LPROF+1) = 'LIN LIN '
-         ZK8(LPROF+2) = 'INST    '
-         ZK8(LPROF+3) = 'TOUTRESU'
-         ZK8(LPROF+4) = 'EC      '
+         ZK16(LPROF  ) = 'FONCTION'
+         ZK16(LPROF+1) = 'LIN LIN '
+         ZK16(LPROF+2) = 'INST    '
+         ZK16(LPROF+3) = 'TOUTRESU'
+         ZK16(LPROF+4) = 'EC      '
    60 CONTINUE
 C
       LN42 = LN4/2

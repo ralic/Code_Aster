@@ -1,10 +1,21 @@
       SUBROUTINE OP0060(IERR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/07/2002   AUTEUR CAMBIER S.CAMBIER 
+C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-C              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
-C              REDISTRIBUTION OF THIS FILE.
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C RESPONSABLE S.CAMBIER
 C TOLE CRP_20
@@ -78,7 +89,7 @@ C
       
       CHARACTER*1   TYPRES, TYPMAT(3), TYPCST(4), ROUC(2), BL
       CHARACTER*8   NOMDDL, NOMSYM(3), PARA, LISTAM, NOPASE
-      CHARACTER*14  NUMDDL
+      CHARACTER*14  NUMDDL,NUMDL1,NUMDL2,NUMDL3
       CHARACTER*16  TYPCON, NOMCMD
       CHARACTER*19  LIFREQ, MASSE, RAIDE, AMOR, DYNAM, IMPE, CHAMNO
       CHARACTER*19  AMORT, INFCHA, DYNAM2
@@ -97,6 +108,7 @@ C====
 C 1.0  ==> STANDARD
 C====
       CALL JEMARQ()
+      CALL INFMAJ()
 
 C====
 C 1.1  ==> INITIALISATIONS DIVERSES
@@ -283,8 +295,30 @@ C====
       CALL GETVID(' ','LIST_AMOR',0,1,0,K8BID,N2)
       IF (N1.NE.0.OR.N2.NE.0)    LAMOR1 = 1
 
+C ---------------------------------------------------------------
+C     TEST POUR VERIFIER QUE LES MATRICES SONT TOUTES BASEES SUR 
+C     LA MEME NUMEROTATION
+C ---------------------------------------------------------------
+      NUMDL1=BL
+      NUMDL2=BL
+      NUMDL3=BL
+      CALL DISMOI('F','NOM_NUME_DDL',RAIDE,'MATR_ASSE',IBID,
+     &                                                   NUMDL1,IE)
       CALL DISMOI('F','NOM_NUME_DDL',MASSE,'MATR_ASSE',IBID,
-     &                                                   NUMDDL,IE)
+     &                                                   NUMDL2,IE)
+      IF (LAMOR.NE.0) THEN
+        CALL DISMOI('F','NOM_NUME_DDL',AMOR,'MATR_ASSE',IBID,
+     &                                                   NUMDL3,IE)
+      ELSE
+        NUMDL3=NUMDL2
+      ENDIF
+      IF ((NUMDL1.NE.NUMDL2).OR.(NUMDL1.NE.NUMDL3).OR.
+     & (NUMDL2.NE.NUMDL3)) THEN
+        CALL UTMESS('F',NOMCMD,'LES MATRICES NE POSSEDENT PAS TOUTES' 
+     &   //' LA MEME NUMEROTATION ')
+      ELSE
+         NUMDDL=NUMDL2 
+      ENDIF
 
 C============================================
 C 3. ==> ALLOCATION DES RESULTATS
@@ -381,7 +415,7 @@ C
               ELSE
                 CALL JEVEUO(ZK24(LFON+IVECT-1)(:19)//'.PROL','L',
      &                                                      LPRO)
-                IF (ZK8(LPRO).EQ.'FONCT_C') THEN
+                IF (ZK16(LPRO).EQ.'FONCT_C') THEN
                   CALL FOINRI(ZK24(LFON+IVECT-1),1,'FREQ',FREQ,
      .                   RESURE,RESUIM,IER)
                   CALP=DCMPLX(RESURE,RESUIM)

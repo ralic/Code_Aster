@@ -3,7 +3,7 @@ C ----------------------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
       REAL*8 NMCRI4
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/12/2002   AUTEUR F6BHHBO P.DEBONNIERES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C
       IF ((ABS(SIGE)-YOU*DP).LE.0.D0) THEN
          T1 = 0.D0
       ELSE
-         T1 =( (ABS(SIGE)-YOU*DP)*CFLUAG(2) ) ** CFLUAG(1)
+         T1 = (ABS(SIGE)-YOU*DP) ** CFLUAG(1)
       ENDIF
       P1 = CFLUAG(1)*CFLUAG(3)
       IF ((PMM+DP).LE.0.D0) THEN

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE G8BHHXD X.DESROCHES
 COMB_FOURIER=OPER(nom="COMB_FOURIER",op= 161,sd_prod=comb_fourier,
-                  docu="U4.83.31-c",reentrant='n',
+                  docu="U4.83.31-d",reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
          RESULTAT        =SIMP(statut='o',typ=fourier_elas ),
          ANGL            =SIMP(statut='o',typ='R',max='**'),

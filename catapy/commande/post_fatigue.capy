@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=tabl_post_fatig,docu="U4.83.01-d1",reentrant='n',
+POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=tabl_post_fatig,docu="U4.83.01-d",reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
                   fr="Calcul du dommage subi par une structure soumise à une histoire de chargement",
 
@@ -28,8 +28,8 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=tabl_post_fatig,docu="U4.83.
                               PRESENT_PRESENT('DOMMAGE','MATER'),),
              HISTOIRE       = FACT(statut='o',min=1,max=1,
                                  regles=(UN_PARMI('SIGM','EPSI'),),
-                                 SIGM  = SIMP(statut='f',typ=fonction),
-                                 EPSI  = SIMP(statut='f',typ=fonction),),
+                                 SIGM  = SIMP(statut='f',typ=(fonction,formule)),
+                                 EPSI  = SIMP(statut='f',typ=(fonction,formule)),),
              COMPTAGE       = SIMP(statut='o',typ='TXM',into=("RAINFLOW","RCCM","NATUREL")),
              DELTA_OSCI     = SIMP(statut='f',typ='R',defaut= 0.0E+0),  
              COEF_MULT      = FACT(statut='f',min=1,max=1,
@@ -39,19 +39,19 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=tabl_post_fatig,docu="U4.83.
                                                               "TAHERI_MANSON","TAHERI_MIXTE")),
              MATER          = SIMP(statut='f',typ=mater),
              CORR_SIGM_MOYE = SIMP(statut='f',typ='TXM',into=("GOODMAN","GERBER")),
-             TAHERI_NAPPE   = SIMP(statut='f',typ=fonction),
-             TAHERI_FONC    = SIMP(statut='f',typ=fonction),
+             TAHERI_NAPPE   = SIMP(statut='f',typ=(nappe,formule)),
+             TAHERI_FONC    = SIMP(statut='f',typ=(fonction,formule)),
              CUMUL          = SIMP(statut='f',typ='TXM',into=("LINEAIRE",)),
          ),
 
          b_periodique = BLOC( condition = "CHARGEMENT=='PERIODIQUE'",
              HISTOIRE       = FACT(statut='o',min=1,max=1,
-                                 SIGM_XX  = SIMP(statut='o',typ=fonction),
-                                 SIGM_YY  = SIMP(statut='o',typ=fonction),
-                                 SIGM_ZZ  = SIMP(statut='o',typ=fonction),
-                                 SIGM_XY  = SIMP(statut='o',typ=fonction),
-                                 SIGM_XZ  = SIMP(statut='f',typ=fonction),
-                                 SIGM_YZ  = SIMP(statut='f',typ=fonction),),
+                                 SIGM_XX  = SIMP(statut='o',typ=(fonction,formule)),
+                                 SIGM_YY  = SIMP(statut='o',typ=(fonction,formule)),
+                                 SIGM_ZZ  = SIMP(statut='o',typ=(fonction,formule)),
+                                 SIGM_XY  = SIMP(statut='o',typ=(fonction,formule)),
+                                 SIGM_XZ  = SIMP(statut='f',typ=(fonction,formule)),
+                                 SIGM_YZ  = SIMP(statut='f',typ=(fonction,formule)),),
              CRITERE        = SIMP(statut='o',typ='TXM',into=("CROSSLAND","PAPADOPOULOS")),
              DOMMAGE        = SIMP(statut='f',typ='TXM',into=("WOHLER",)),
              MATER          = SIMP(statut='o',typ=mater),
@@ -60,14 +60,14 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=tabl_post_fatig,docu="U4.83.
 
          b_quelconque = BLOC( condition = "CHARGEMENT=='QUELCONQUE'",
              HISTOIRE       = FACT(statut='o',min=1,max=1,
-                                 SIGM_XX  = SIMP(statut='o',typ=fonction),
-                                 SIGM_YY  = SIMP(statut='o',typ=fonction),
-                                 SIGM_ZZ  = SIMP(statut='o',typ=fonction),
-                                 SIGM_XY  = SIMP(statut='o',typ=fonction),
-                                 SIGM_XZ  = SIMP(statut='f',typ=fonction),
-                                 SIGM_YZ  = SIMP(statut='f',typ=fonction),
-                                 EPSP     = SIMP(statut='o',typ=fonction),
-                                 TEMP     = SIMP(statut='o',typ=fonction),),
+                                 SIGM_XX  = SIMP(statut='o',typ=(fonction,formule)),
+                                 SIGM_YY  = SIMP(statut='o',typ=(fonction,formule)),
+                                 SIGM_ZZ  = SIMP(statut='o',typ=(fonction,formule)),
+                                 SIGM_XY  = SIMP(statut='o',typ=(fonction,formule)),
+                                 SIGM_XZ  = SIMP(statut='f',typ=(fonction,formule)),
+                                 SIGM_YZ  = SIMP(statut='f',typ=(fonction,formule)),
+                                 EPSP     = SIMP(statut='o',typ=(fonction,formule)),
+                                 TEMP     = SIMP(statut='o',typ=(fonction,formule)),),
              DOMMAGE        = SIMP(statut='f',typ='TXM',into=("LEMAITRE",),defaut="LEMAITRE"),
              MATER          = SIMP(statut='o',typ=mater),
              CUMUL          = SIMP(statut='f',typ='TXM',into=("LINEAIRE",)),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ def macr_aspic_calc_prod(self,MODELE,CHAM_MATER,CARA_ELEM,FOND_FISS_1,FOND_FISS_
   return evol_noli
 
 MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=-17,sd_prod=macr_aspic_calc_prod,
-                    fr=" ",docu="U4.PC.20-b2",reentrant='n',
+                    fr=" ",docu="U4.pc.20-b",reentrant='n',
             UIinfo={"groupes":("Outils métier",)},
          regles=(UN_PARMI('COMP_INCR','COMP_ELAS'),),
 
@@ -66,13 +66,13 @@ MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=-17,sd_prod=macr_aspic_calc_prod,
            NOEUD           =SIMP(statut='f',typ=no),
            EFFE_FOND       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
            PRES_LEVRE      =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
-           FONC_MULT       =SIMP(statut='f',typ=fonction),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
          ),
 
          ECHANGE         =FACT(statut='f',min=1,max=1,
-           COEF_H_TUBU     =SIMP(statut='o',typ=fonction),
-           COEF_H_CORP     =SIMP(statut='o',typ=fonction),
-           TEMP_EXT        =SIMP(statut='o',typ=fonction),
+           COEF_H_TUBU     =SIMP(statut='o',typ=(fonction,formule)),
+           COEF_H_CORP     =SIMP(statut='o',typ=(fonction,formule)),
+           TEMP_EXT        =SIMP(statut='o',typ=(fonction,formule)),
          ),
 
          TORS_CORP       =FACT(statut='f',min=1,max=6,
@@ -84,7 +84,7 @@ MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=-17,sd_prod=macr_aspic_calc_prod,
            MX              =SIMP(statut='f',typ='R'),
            MY              =SIMP(statut='f',typ='R'),
            MZ              =SIMP(statut='f',typ='R'),
-           FONC_MULT       =SIMP(statut='f',typ=fonction),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
          ),
 
          TORS_TUBU       =FACT(statut='f',min=1,max=6,
@@ -95,7 +95,7 @@ MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=-17,sd_prod=macr_aspic_calc_prod,
            MX              =SIMP(statut='f',typ='R'),
            MY              =SIMP(statut='f',typ='R'),
            MZ              =SIMP(statut='f',typ='R'),
-           FONC_MULT       =SIMP(statut='f',typ=fonction),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
          ),
 
          COMP_INCR       =FACT(statut='f',min=1,max=1,
@@ -135,14 +135,12 @@ MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=-17,sd_prod=macr_aspic_calc_prod,
              STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            ),
            b_gcpc          =BLOC(condition = "METHODE == 'GCPC' ", fr="Paramètres de la méthode du gradient conjugué",
-             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC","SANS","DIAG") ),
+             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC",),defaut="LDLT_INC" ),
              NIVE_REMPLISSAGE=SIMP(statut='f',typ='I',defaut= 0 ),
              RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
            ),
-#  A quoi sert eps
-           EPS             =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
            SYME            =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          ),
 

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 24/03/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER      IBID, NEQ, LMATR, LMATM, IFM, NIV
-      INTEGER      NIVE
+      INTEGER      NIVE, VERSIO
       REAL*8       R8B, ZERO, UN, COEF(3)
       CHARACTER*8  K8B, RESU, NOMMA, MONAXE, FORMAR
       CHARACTER*8  NOMNOE, NOMCMP, KNUM, NOMDIR,FICNAM
@@ -53,7 +53,7 @@ C     ------------------------------------------------------------------
       CHARACTER*19 CHAMNO, RAIDE, RAILDL, MASSE, AMOR
       CHARACTER*24  VALE
       LOGICAL      DEPLIM, FORCIM, ACCUNI, ACCDDL, DIRECT
-      LOGICAL      LMOD
+      LOGICAL      LMOD,LBID
       COMPLEX*16   C16B
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -63,6 +63,7 @@ C
       RAIDE  = ' '
       ZERO = 0.D0
       UN = 1.D0
+      VERSIO = 0
       LMOD = .FALSE.
       NIVE = 3
       NOSIMP = '        '
@@ -481,11 +482,11 @@ C     --- ECRITURE EVENTUELLE DES VALEURS ET DES VECTEURS PROPRES ---
          IBID = 0
          K8B = ' '
          CALL IRECRI ( RESU,NOSIMP,NOPASE, 'RESULTAT', FICNAM, K8B,
-     >                 IBID, K8B, NBPAR,
+     >                 LBID,IBID, K8B, NBPAR,
      >                 ZK16(JPARA), NBMODE, ZI(LRES), .TRUE., K8B,
      >                 IBID, K8B, 'T', .FALSE., IBID, IBID, IBID, IBID,
      >                 IBID, K8B, .FALSE., R8B, .FALSE., R8B, .FALSE.,
-     >                 .FALSE., FORMAR,LMOD,NIVE)
+     >                 .FALSE., FORMAR,LMOD,NIVE,VERSIO)
       ENDIF
 C     ------------------------------------------------------------------
       CALL JEDETC(' ','&&OP0093',1)

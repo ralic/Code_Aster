@@ -9,7 +9,7 @@ C
       REAL*8        TRACEG, DY(*)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C --- : DELTA  : INCREMENT DU LAMBDA -----------------------------------
 C OUT : DEVG   : DEVIATEUR DU TENSEUR DE G -----------------------------
 C --- : DEVGII : NORME DU DEVIATEUR DE G -------------------------------
 C --- : TRACEG : TRACE DE G --------------------------------------------
-C --- : DY     : INCREMENTS (SIG, I1, GAMP, DELTA) ---------------------
+C --- : DY     : INCREMENTS (SIG, I1, GAMP, EVP, DELTA) ----------------
 C ======================================================================
       REAL*8        MU, K, SIGC, GAMCJS, H0, HLODE, MUN
       REAL*8        DUDS(6), DUDG, DFDS(6), DFDG, DFDL, G(6)

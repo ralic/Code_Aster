@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 28/08/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -76,7 +76,7 @@ def crea_mail_lig_coup(lignes):
       nbp_lig_coupe = lignes[i][2]
       for j in range(nbp_lig_coupe-1):
           nbma=nbma+1
-          resu=resu+'  M'+str(nbma)
+          resu=resu+'  M'+str(nbma)+'\n'
       resu=resu+'\n'
       resu=resu+'FINSF\n'
     resu=resu+'FIN\n'
@@ -105,7 +105,8 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,MODELE,
   POST_RELEVE_T  =self.get_cmd('POST_RELEVE_T')
 
   # La macro compte pour 1 dans la numerotation des commandes
-  self.icmd=1
+  #self.icmd=1
+  self.set_icmd(1)
 
   lignes=[]
   for m in LIGN_COUPE :

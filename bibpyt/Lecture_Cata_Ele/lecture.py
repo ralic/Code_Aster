@@ -1,20 +1,20 @@
-#@ MODIF lecture Lecture_Cata_Ele  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+#@ MODIF lecture Lecture_Cata_Ele  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 import string,copy
 from Lecture_Cata_Ele import spark
@@ -217,11 +217,9 @@ class MonParser(GenericASTBuilder):
         cata        ::=  cata_ph
         cata_op     ::=  cmodif ident  OPTION__  IN__      l_opin1    OUT__      l_opou1
         cata_op     ::=  cmodif ident  comlibr   OPTION__  IN__       l_opin1    OUT__     l_opou1
-        cata_tm     ::=  cmodif TYPE_MAILLE__  l_tyma
+        cata_tm     ::=  cmodif TYPE_MAILLE__ l_tyma
         cata_gd     ::=  cmodif GRANDEUR_SIMPLE__  l_gdsimp GRANDEUR_ELEMENTAIRE__  l_gdelem
         cata_tg     ::=  cmodif ident TYPE_GENE__  l_entetg  modes_locaux options
-        cata_tg     ::=  cmodif ident TYPE_GENE__  l_entetg  modes_locaux options
-        cata_te     ::=  cmodif ident TYPE_ELEM__  entete    modes_locaux options
         cata_te     ::=  cmodif ident TYPE_ELEM__  entete    modes_locaux options
         cata_ph     ::=  cmodif PHENOMENE_MODELISATION__ l_pheno
         '''
@@ -235,9 +233,18 @@ class MonParser(GenericASTBuilder):
         l_ident     ::=  ident
         l_entier    ::=  l_entier  entier
         l_entier    ::=  entier
+        '''
+
+#   définition supplémentaires pour les cata_tm :
+#   ----------------------------------------------
+    def p_cata0(self, args):
+        '''
         l_tyma      ::=  l_tyma tyma
         l_tyma      ::=  tyma
-        tyma        ::=  ident entier  DIM__ entier  CODE__ chaine
+        l_elrefe    ::=  l_elrefe elrefe
+        l_elrefe    ::=  elrefe
+        elrefe      ::=  ELREFE__  ident  FAMILLE__  ident  entier
+        tyma        ::=  MAILLE__ ident entier  DIM__ entier  CODE__ chaine  l_elrefe
         '''
 
 #   définitions supplémentaires pour les cata_gd  :
@@ -281,9 +288,7 @@ class MonParser(GenericASTBuilder):
 #   ---------------------------------------------------------
     def p_cata3(self, args):
         '''
-        initia      ::=  NUM_INIT__ entier
-        initia      ::=  NUM_INIT__ entier   ELREFE__  l_ident
-        entet1      ::=  ENTETE__  ELEMENT__ ident MAILLE__ ident  initia
+        entet1      ::=  ENTETE__  ELEMENT__ ident MAILLE__ ident  ELREFE__  l_ident
         entete      ::=  entet1    l_decl_npg  l_decl_en
         entete      ::=  entet1    l_decl_en
         entete      ::=  entet1    l_decl_npg
@@ -297,7 +302,7 @@ class MonParser(GenericASTBuilder):
         decl_opt    ::=  OPTION__  ident   entier
         l_decl_npg  ::=  l_decl_npg  decl_npg
         l_decl_npg  ::=  decl_npg
-        decl_npg    ::=  NB_GAUSS__  ident = entier
+        decl_npg    ::=  NB_GAUSS__  ident = ident
         l_decl_en   ::=  l_decl_en   decl_en
         l_decl_en   ::=  decl_en
         decl_en     ::=  ENS_NOEUD__  ident = l_entier
@@ -510,6 +515,9 @@ class creer_capy(GenericASTTraversal):
            node.l_entier.append(int(node[0].attr))
         del node._kids
 
+
+#   pour construire le catalogue de TYPE_MAILLE__ :
+#   ---------------------------------------------------------
     def n_l_tyma(self, node):
         #    l_tyma      ::=  l_tyma tyma
         #    l_tyma      ::=  tyma
@@ -522,16 +530,30 @@ class creer_capy(GenericASTTraversal):
         del node._kids
 
     def n_tyma(self, node):
-        #  tyma      ::=  ident entier  DIM__ entier  CODE__ chaine
-           node.tyma=(node[0].attr,node[1].attr,node[3].attr,node[5].attr)
-           if len(node[5].attr) != 5 :
+        #                     0           1      2      3     4       5       6      7
+        #  tyma      ::=  MAILLE__  ident entier  DIM__ entier  CODE__ chaine  l_elrefe
+           node.tyma=(node[1].attr,node[2].attr,node[4].attr,node[6].attr,node[7].l_elrefe)
+           if len(node[6].attr) != 5 :
               ERR.mess('E',"le code d'un type de maille doit avoir 3 caractères exactement."+node.code)
 
+    def n_l_elrefe(self, node):
+        #    l_elrefe      ::=  l_elrefe elrefe
+        #    l_elrefe      ::=  elrefe
+        node.l_elrefe=[]
+        if len(node) == 2 :
+           node.l_elrefe.extend(node[0].l_elrefe)
+           node.l_elrefe.append(node[1].elrefe)
+        else :
+           node.l_elrefe.append(node[0].elrefe)
+        del node._kids
 
-#   pour construire le catalogue de TYPE_MAILLE__ :
-#   ---------------------------------------------------------
+    def n_elrefe(self, node):
+        #                     0         1       2        3     4
+        #  elrefe      ::=  ELREFE__  ident FAMILLE__  ident entier
+           node.elrefe=(node[1].attr,node[3].attr,node[4].attr)
+
     def n_cata_tm(self, node):
-#         cata_tm     ::=  cmodif TYPE_MAILLE__  l_tyma
+        #   cata_tm     ::=  cmodif  TYPE_MAILLE__ l_tyma
         ERR.contexte("Définition des types de maille.")
         node.cmodif=node[0].attr
         node.ltm=node[2].l_tyma
@@ -543,8 +565,20 @@ class creer_capy(GenericASTTraversal):
            if dico_code.has_key(node.ltm[k][3]) : ERR.mess('E',"erreur : le type de maille: "+node.ltm[k][0]+" a un CODE__ déjà utilisé:"+node.ltm[k][3])
            dico[node.ltm[k][0]]=1
            dico_code[node.ltm[k][3]]=1
-        ERR.contexte("","RAZ")
 
+        # vérification de l'unicité des noms des ELREFE :
+        dico={}
+        for tm in node.ltm :
+           nom_tm=tm[0]
+           for elrefe in tm[4] :
+              nom_elrefe=elrefe[0]
+              if not dico.has_key(nom_elrefe) :
+                 dico[nom_elrefe]=nom_tm
+              else :
+                 if dico[nom_elrefe]!=nom_tm :
+                    ERR.mess('E',"erreur : le nom d'ELREFE__ "+nom_elrefe+\
+                    " est défini dans plusieurs MAILLE__ : "+nom_tm+" "+dico[nom_elrefe])
+        ERR.contexte("","RAZ")
 
 
 #   pour construire le catalogue de PHENOMENE_MODELISATION__ :
@@ -847,7 +881,7 @@ class creer_capy(GenericASTTraversal):
             node.l_decl_opt.append(node[1].decl_opt)
 
     def n_decl_npg(self, node):
-#       decl_npg     ::=  NB_GAUSS__  ident = entier
+#       decl_npg     ::=  NB_GAUSS__  ident = ident
         node.decl_npg=(node[1].attr,node[3].attr)
         if node[1].attr[0:5] != "NELGA" : ERR.mess('E',"Les variables désignant les nombres de points de Gauss doivent commencer par la chaine: 'NELGA'. "+node[1].attr+" est donc invalide.")
 
@@ -873,19 +907,10 @@ class creer_capy(GenericASTTraversal):
             node.l_decl_en.extend(node[0].l_decl_en)
             node.l_decl_en.append(node[1].decl_en)
 
-
-    def n_initia(self, node):
-#                          0         1         2         3
-#       initia      ::=  NUM_INIT__ entier
-#       initia      ::=  NUM_INIT__ entier   ELREFE__  l_ident
-        if len(node)==4:  node.initia=(node[1].attr,node[3].l_ident,)
-        if len(node)==2:  node.initia=(node[1].attr,None,)
-
-
     def n_entet1(self, node):
-#                          0         1         2      3       4       5
-#       entet1      ::=  ENTETE__  ELEMENT__ ident MAILLE__ ident  initia
-        node.entet1=(node[2].attr,node[4].attr,node[5].initia)
+#                          0         1         2      3       4       5         6
+#       entet1      ::=  ENTETE__  ELEMENT__ ident MAILLE__ ident  ELREFE__  l_ident
+        node.entet1=(node[2].attr,node[4].attr,node[6].l_ident)
 
 
     def n_entete(self, node):

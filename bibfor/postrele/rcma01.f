@@ -5,7 +5,7 @@
       CHARACTER*24        CHMATE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -236,6 +236,20 @@ C
          CALL UTFINM
       ENDIF
       VALE(13) = ZR(JCESV-1+IAD)
+C
+C
+C --- TYPE DE KE
+C
+      ICMP = 9
+      IAD = DECMA + (IPT-1)*NBCMP + ICMP
+      IF ( .NOT. ZL(JCESL-1+IAD) ) THEN
+         CALL UTDEBM('F','RCMA01','ERREUR DONNEES ')
+         CALL UTIMPI('L','POUR LA MAILLE ',1,IMA)
+         CALL UTIMPI('S',' ET LE NOEUD ',1,IPT)
+         CALL UTIMPK('L','IL MANQUE LE ',1,'TYPEKE')
+         CALL UTFINM
+      ENDIF
+      VALE(14) = ZR(JCESV-1+IAD)
 C
       CALL JEDEMA( )
       END

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/10/2002   AUTEUR BOYERE E.BOYERE 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 DYNA_ALEA_MODAL=OPER(nom="DYNA_ALEA_MODAL",op= 131,sd_prod=tabl_intsp
                     ,fr="Calcule la réponse spectrale d une structure linéaire sous une excitation connue par sa DSP",
-                     docu="U4.53.22-d",reentrant='n',
+                     docu="U4.53.22-e",reentrant='n',
             UIinfo={"groupes":("Résolution",)},
          BASE_MODALE     =FACT(statut='o',min=1,max=1,
            regles=(UN_PARMI('NUME_ORDRE','BANDE'),),
@@ -29,37 +29,61 @@ DYNA_ALEA_MODAL=OPER(nom="DYNA_ALEA_MODAL",op= 131,sd_prod=tabl_intsp
              AMOR_UNIF       =SIMP(statut='o',typ='R' ),
            ),
            b_nume_ordre =BLOC(condition = "NUME_ORDRE != None",
-             AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
+             AMOR_REDUIT     =SIMP(statut='o',typ='R',max='**'),
            ),
          ),
          MODE_STAT       =SIMP(statut='f',typ=(mode_stat_depl,mode_stat_acce,mode_stat_forc,)),
+# MODE_STAT devrait etre dans EXCIT car est utile et obligatoire que si NOM_CMP=depl_r, on pourrait
+# ainsi rajouter un bloc du genre  b_mod_stat= BLOC(condition = "(GRANDEUR == None) or (GRANDEUR == 'DEPL_R')",        
          EXCIT           =FACT(statut='o',min=1,max=1,
-           regles=(UN_PARMI('NOEUD_I','NUME_ORDRE_I'), 
-                   EXCLUS('CHAM_NO','NOEUD'),),
-           DERIVATION      =SIMP(statut='f',typ='I',defaut= 0,into=( 0 , 1 , 2 ) ),
-           MODAL           =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
-#  dans la doc U il y a plus de choix pour GRANDEUR
-           GRANDEUR        =SIMP(statut='f',typ='TXM',defaut="DEPL_R",
-                                 into=("DEPL_R","EFFO","SOUR_DEBI_VOLU","SOUR_DEBI_MASS","SOUR_PRESS","SOUR_FORCE")),
            INTE_SPEC       =SIMP(statut='o',typ=tabl_intsp ),
            NUME_VITE_FLUI  =SIMP(statut='f',typ='I' ),
            OPTION          =SIMP(statut='f',typ='TXM',defaut="TOUT",into=("TOUT","DIAG",) ),
-#  Toutes les regles ne semblent pas avoir été ecrites dans la doc U
-           NUME_ORDRE_I    =SIMP(statut='f',typ='I',max='**'),
-           NOEUD_I         =SIMP(statut='f',typ=no,max='**'),
-           b_nume_ordre_i  =BLOC(condition = "NUME_ORDRE_I != None",
+           MODAL           =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
+           b_modal_non = BLOC(condition = "(MODAL == None) or (MODAL == 'NON')",           
+             regles=(UN_PARMI('NOEUD_I','NUME_ORDRE_I'),),
+             NUME_ORDRE_I    =SIMP(statut='f',typ='I',max='**'),
+             NOEUD_I         =SIMP(statut='f',typ=no,max='**'),
+             b_nume_ordre_i  =BLOC(condition = "NUME_ORDRE_I != None",
+               regles=(EXCLUS('CHAM_NO','NOEUD'),),
+# on devrait rajouter EXCLUS('GRANDEUR','CHAM_NO') pour eviter ambiguite car CHAM_NO => GRANDEUR='EFFO'
+# cela impliquerait d'enlever la valeur par defaut a GRANDEUR            
+               NUME_ORDRE_J    =SIMP(statut='o',typ='I',max='**'),
+               CHAM_NO         =SIMP(statut='f',typ=cham_no),
+               NOEUD           =SIMP(statut='f',typ=no,max='**'),
+               b_noeud         =BLOC(condition = "NOEUD != None",
+                  NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),
+                ),  
+               GRANDEUR        =SIMP(statut='f',typ='TXM',defaut="DEPL_R",
+                           into=("DEPL_R","EFFO","SOUR_DEBI_VOLU","SOUR_DEBI_MASS","SOUR_PRESS","SOUR_FORCE")),
+# que se passe-t-il en cas d'incompatibilite entre GRANDEUR et NOM_CMP  
+               DERIVATION      =SIMP(statut='f',typ='I',defaut= 0,into=( 0 , 1 , 2 ) ),
+             ),           
+             b_noeud_i       =BLOC(condition = "NOEUD_I != None",
+               NOEUD_J         =SIMP(statut='o',typ=no,max='**'),
+               NOM_CMP_I       =SIMP(statut='o',typ='TXM',max='**'),
+               NOM_CMP_J       =SIMP(statut='o',typ='TXM',max='**'),
+               NOEUD           =SIMP(statut='o',typ=no,max='**'),
+               NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),
+# ne serait-il pas bien que NOEUD et NOM_CMP soient facultatifs, car l'information peut etre contenue dans
+# NOEUD_I, NOM_CMP_I ...  => modif. du Fortran
+               GRANDEUR        =SIMP(statut='f',typ='TXM',defaut="DEPL_R",
+                           into=("DEPL_R","EFFO","SOUR_DEBI_VOLU","SOUR_DEBI_MASS","SOUR_PRESS","SOUR_FORCE")),
+# que se passe-t-il en cas d'incompatibilite entre GRANDEUR et NOM_CMP_I  
+               DERIVATION      =SIMP(statut='f',typ='I',defaut= 0,into=( 0 , 1 , 2 ) ),
+             ),
+           ),  
+           b_modal_oui = BLOC(condition = "(MODAL == 'OUI')",
+# dans ce cas, y-a-t-il vraiment la possibilite d'une matrice interspectrale avec plusieurs termes
+             NUME_ORDRE_I    =SIMP(statut='o',typ='I',max='**'),
              NUME_ORDRE_J    =SIMP(statut='o',typ='I',max='**'),
-           ),
-           b_noeud_i       =BLOC(condition = "NOEUD_I != None",
-             NOEUD_J         =SIMP(statut='o',typ=no,max='**'),
-             NOM_CMP_I       =SIMP(statut='o',typ='TXM',max='**'),
-             NOM_CMP_J       =SIMP(statut='o',typ='TXM',max='**'),
-           ),
-           CHAM_NO         =SIMP(statut='f',typ=cham_no),
-           NOEUD           =SIMP(statut='f',typ=no,max='**'),
-           b_noeud         =BLOC(condition = "NOEUD != None",
-             NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),
-           ),           
+             GRANDEUR        =SIMP(statut='f',typ='TXM',defaut="DEPL_R",
+                           into=("DEPL_R","EFFO","SOUR_DEBI_VOLU","SOUR_DEBI_MASS","SOUR_PRESS","SOUR_FORCE")),
+             DERIVATION      =SIMP(statut='f',typ='I',defaut= 0,into=( 0 , 1 , 2 ) ),
+# dans le cas MODAL=OUI, GRANDEUR peut-il etre different de EFFO et doit il etre impose a EFFO   On devrait
+# pouvoir supprimer GRANDEUR et DERIVATION ici   
+           ),  
+                    
          ),
          REPONSE         =FACT(statut='f',min=1,max=1,
            regles=( ENSEMBLE('FREQ_MIN','FREQ_MAX'),),

@@ -1,12 +1,9 @@
-      SUBROUTINE ASENAP(MASSE,NBSUP,NSUPP,
-     +                  NOMSUP,NDIR,DEPSUP,TCOSUP)
+      SUBROUTINE ASENAP(MASSE)
       IMPLICIT  REAL*8 (A-H,O-Z)
-      INTEGER           NDIR(*),NSUPP(*),TCOSUP(NBSUP,*)
-      REAL*8            DEPSUP(NBSUP,*)
-      CHARACTER*8       MASSE,NOMSUP(NBSUP,*)
+      CHARACTER*8       MASSE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/06/2002   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,17 +26,12 @@ C        VERIFIE QUE LES MODES STATIQUES SONT DEFINIS AUX SUPPORTS,
 C                    OPTION REAC_NODA CALCULEE DANS LES MODES MECANIQUES
 C        RECUPERATION DES TYPES DE COMBINAISON DES SUPPORTS,
 C                     DES DEPLACEMENTS DES SUPPORTS
+C   DANS CETTE ROUTINE ON CREE UN SERIE DE COLLECTIONS
+C   - LISTE_CAS : 
+C      
+C	
 C     ------------------------------------------------------------------
 C IN  : MASSE  : MATRICE DE MASSE DE LA STRUCTURE
-C IN  : NBSUP  : NOMBRE DE SUPPORTS DE LA STRUCTURE
-C IN  : NSUPP  : MAX DU NOMBRE DE SUPPORT PAR DIRECTION
-C IN  : NOMSUP : VECTEUR DES NOMS DES SUPPORTS
-C IN  : NDIR   : DIRECTION DES EXCITATIONS
-C OUT : DEPSUP : VECTEUR DES DEPLACEMENTS DES SUPPORTS
-C OUT : TCOSUP : VECTEUR DES TYPES DE RECOMBINAISON DES SUPPORTS
-C                TCOSUP(I) = 1 : COMBINAISON QUADRATIQUE
-C                TCOSUP(I) = 2 : COMBINAISON LINEAIRE
-C                TCOSUP(I) = 3 : COMBINAISON ABSOLUE
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI
@@ -59,14 +51,19 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32       JEXNOM, JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*4  CTYP
-      CHARACTER*8  K8B, RESU, NOMA, GRNOEU, NOEU, CMP, NOEREF
-      CHARACTER*15 MOTFAC,MOTFA2
-      CHARACTER*16 NOMSY, CONCEP, NOMCMD, MONACC, MONPAR
+      CHARACTER*8  K8B, RESU, NOMA, GRNOEU, NOEU, CMP, NOREF
+      CHARACTER*8  KNUM,KDIR,STAT,MOTCLE(2),TYMOCL(2),KREF
+      CHARACTER*15 MOTFAC
+      CHARACTER*16 NOMSY, CONCEP, NOMCMD, MONACC, MONPAR,MESNOE
       CHARACTER*19 CHAM19
       CHARACTER*24 OBJ1, OBJ2
       CHARACTER*8  K8BID
       CHARACTER*1  K1BID
+      REAL*8       R8VIDE
 C     ------------------------------------------------------------------
+
+
+      EPSIMA =R8VIDE()
 
       CALL JEMARQ()
       CALL GETRES(RESU,CONCEP,NOMCMD)
@@ -77,252 +74,182 @@ C
       IER = 0
 C
 C     --- RECUPERATION DES DEPLACEMENTS DES SUPPORTS ---
-      MOTFAC = 'DEPL_MULT_APPUI'
-      CALL GETFAC(MOTFAC,NBOCC)
-      IF (NBOCC.EQ.0) THEN
-         IER = IER + 1
-        CALL UTMESS('E',NOMCMD,'IL MANQUE LES DEPLACEMENTS DES APPUIS.')
-         GOTO 9999
-      ENDIF
-      INORF = 0
 C
-C MISE A ZERO DE DEPSUP POUR LE CAS OU IL N'Y A PAS DE NOEUD_REFE
-C 
-      DO 5 II = 1,3
-       DO 6 IS  = 1,NSUPP(II)
-         DEPSUP(IS,II) = 0.0D0
- 6     CONTINUE
- 5    CONTINUE
-C
-      DO 20 IOC = 1,NBOCC
-         CALL GETVID(MOTFAC,'NOEUD_REFE',IOC,1,1,NOEREF,NNR)
-         IF (NNR.NE.0) INORF = 1
-         CALL GETVID(MOTFAC,'NOEUD',IOC,1,0,NOEU,NN)
-         IF (NN.NE.0) THEN
-            NNO = -NN
-            CALL WKVECT('ASENAP.NOEUD','V V K8',NNO,JNOE)
-            CALL GETVID(MOTFAC,'NOEUD',IOC,1,NNO,ZK8(JNOE),NN)
-            CALL GETVR8(MOTFAC,'DX',IOC,1,1,DX,NX)
-            CALL GETVR8(MOTFAC,'DY',IOC,1,1,DY,NY)
-            CALL GETVR8(MOTFAC,'DZ',IOC,1,1,DZ,NZ)
-            DO 22 INO = 1, NNO
-               NOEU = ZK8(JNOE+INO-1)
-               CALL JENONU(JEXNOM(OBJ2,NOEU),IRET)
-               IF (IRET.EQ.0) THEN
-                  IER = IER + 1
-                  CALL UTMESS('E',MOTFAC,'LE NOEUD '//NOEU//
-     +                        ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
-                  GOTO 22
-               ENDIF
-               IF (NX.NE.0) THEN
-                  DO 72 IS = 1,NSUPP(1)
-                     IF (NOMSUP(IS,1).EQ.NOEU) DEPSUP(IS,1) = DX
- 72               CONTINUE
-               ENDIF
-               IF (NY.NE.0) THEN
-                  DO 74 IS = 1,NSUPP(2)
-                     IF (NOMSUP(IS,2).EQ.NOEU) DEPSUP(IS,2) = DY
- 74               CONTINUE
-               ENDIF
-               IF (NZ.NE.0) THEN
-                  DO 76 IS = 1,NSUPP(3)
-                     IF (NOMSUP(IS,3).EQ.NOEU) DEPSUP(IS,3) = DZ
- 76               CONTINUE
-               ENDIF
- 22         CONTINUE
-            CALL JEDETR('ASENAP.NOEUD')
-         ELSE
-           CALL GETVID(MOTFAC,'GROUP_NO',IOC,1,0,K8BID,NG)
-           IF (NG.NE.0) THEN
-            NGR = -NG
-            CALL WKVECT('ASENAP.GROUP_NO','V V K8',NGR,JGRN)
-            CALL GETVID(MOTFAC,'GROUP_NO',IOC,1,NGR,ZK8(JGRN),NG)
-            CALL GETVR8(MOTFAC,'DX',IOC,1,1,DX,NX)
-            CALL GETVR8(MOTFAC,'DY',IOC,1,1,DY,NY)
-            CALL GETVR8(MOTFAC,'DZ',IOC,1,1,DZ,NZ)
-            DO 26 IGR = 1, NGR
-               GRNOEU = ZK8(JGRN+IGR-1)
-               CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)
-               IF (IRET .EQ. 0) THEN
-                  IER = IER + 1
-                  CALL UTMESS('E',MOTFAC,'LE GROUPE '//GRNOEU//
-     +                        ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
-                  GOTO 26
-               ELSE
-                  CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONMAX',NN,K1BID)
-                  CALL JEVEUO(JEXNOM(OBJ1,GRNOEU),'L',JDGN)
-                  DO 28 INO = 1, NN
-                     CALL JENUNO(JEXNUM(OBJ2,ZI(JDGN+INO-1)),NOEU)
-                     IF (NX.NE.0) THEN
-                        DO 82 IS = 1,NSUPP(1)
-                           IF (NOMSUP(IS,1).EQ.NOEU) DEPSUP(IS,1) = DX
- 82                     CONTINUE
-                     ENDIF
-                     IF (NY.NE.0) THEN
-                        DO 84 IS = 1,NSUPP(2)
-                           IF (NOMSUP(IS,2).EQ.NOEU) DEPSUP(IS,2) = DY
- 84                     CONTINUE
-                     ENDIF
-                     IF (NZ.NE.0) THEN
-                        DO 86 IS = 1,NSUPP(3)
-                           IF (NOMSUP(IS,3).EQ.NOEU) DEPSUP(IS,3) = DZ
- 86                     CONTINUE
-                     ENDIF
- 28               CONTINUE
-               ENDIF
- 26         CONTINUE
-            CALL JEDETR('ASENAP.GROUP_NO')
-          ENDIF
-         ENDIF
- 20   CONTINUE
-      IF (INORF.EQ.0) THEN
-         CALL UTMESS('A',NOMCMD,' PAS DE NOEUD DE REFERENCE.')
-      ELSE
-         CALL JENONU(JEXNOM(OBJ2,NOEREF),IRE1)
-         CALL JEEXIN(JEXNOM(OBJ1,NOEREF),IRE2)
-         IF ((IRE1+IRE2).EQ.0) THEN
-            IER = IER + 1
-            CALL UTMESS('E',MOTFAC,'LE NOEUD '//NOEREF//
-     +                        ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
-            GOTO 9999
-         ENDIF
-         IF (IRE2.NE.0) THEN
-            CALL JEVEUO(JEXNOM(OBJ1,NOEREF),'L',JDGN)
-            CALL JENUNO(JEXNUM(OBJ2,ZI(JDGN)),NOEREF)
-         ENDIF
-         DO 90 ID = 1,3
-            IF (NDIR(ID).EQ.1) THEN
-               DO 92 IS = 1,NSUPP(ID)
-                  IF (NOMSUP(IS,ID).EQ.NOEREF) THEN
-                      DO 94 IN = 1,NSUPP(ID)
-                         DEPSUP(IN,ID) = DEPSUP(IN,ID) - DEPSUP(IS,ID)
- 94                   CONTINUE
-                      GOTO 90
-                  ENDIF
- 92            CONTINUE
-               IER = IER + 1
-               CALL UTMESS('E',MOTFAC,'LE NOEUD '//NOEREF//
-     +                             ' N''EST PAS UN NOEUD SUPPORT.')
-               GOTO 9999
-            ENDIF
- 90      CONTINUE
-      ENDIF
-C
-C     --- RECUPERATION DES COMBINAISONS DES SUPPORTS ---
-      DO 39 ID = 1,3
-         DO 40 IS = 1,NBSUP
-            TCOSUP(IS,ID) = 1
- 40      CONTINUE
- 39   CONTINUE
       MOTFAC = 'COMB_DEPL_APPUI'
       CALL GETFAC(MOTFAC,NBOCC)
-      DO 42 IOC = 1,NBOCC
-         CTYP = ' '
-         CALL GETVTX(MOTFAC,'TYPE'      ,IOC,1,1,CTYP,NC)
-         IF (NC.NE.0) THEN
-           CALL UTDEBM('A',NOMCMD,'LE MOT ')
-           CALL UTIMPK('S','CLE ',1,'TYPE')
-           CALL UTIMPK('S',' EST APPELE A DISPARAITRE EN 6.4 ET SERA'//
-     +                     ' REMPLACE PAR ',1,'TYPE_COMBI')
-           CALL UTFINM()
-         ENDIF
-         CALL GETVTX(MOTFAC,'TYPE_COMBI',IOC,1,1,CTYP,NC)
-         CALL GETVTX(MOTFAC,'TOUT',IOC,1,1,K8B ,NT)
-         IF (CTYP.NE.'QUAD') THEN
-C RECUPERATION DES CAS A TRAITER TOUT_CAS OU LIST_CAS
-            IF (NT.NE.0)  THEN 
-              CALL GETFAC('DEPL_MULT_APPUI',NCAS)
-              DO 2 II = 1,NCAS
-               CALL GETVIS('DEPL_MULT_APPUI','NUME_CAS',II,1,1,NUCAS,NC)
-               ZI(JCAS+II-1) = NUCAS
- 2           CONTINUE
-            ENDIF
-            CALL GETVIS(MOTFAC,'LIST_CAS',IOC,1,0,IBID,NC)
-            IF (NC.NE.0) NCAS = -NC
-            CALL WKVECT('ASENAP.LISTE','V V I',NCAS,JCAS)
-            CALL GETVIS(MOTFAC,'LIST_CAS',IOC,1,NCAS,ZI(JCAS),NC)
-C BOUCLE SUR TOUS LES CAS TRAITES
-            DO 67 ICAS = 1, NCAS    
-            LCAS = ZI(JCAS+ICAS-1) 
-            MOTFA2 = 'DEPL_MULT_APPUI'
-            CALL GETFAC(MOTFA2,NBOC2)
-            DO 68 II =1, NBOC2   
-             CALL GETVIS(MOTFA2,'NUME_CAS',II,1,1,NUCAS,NC)
-C ON PARCOURT LES NUME_CAS DE DEPL_MULT_APPUI POUR TROUVER CEUX 
-C CONCERNES PAS COMB_MULT_APPUI
-             IF (NUCAS.EQ.LCAS) THEN
-              CALL GETVID(MOTFA2,'NOEUD',II,1,0,NOEU,NN)
-              IF (NN.NE.0) THEN
-               NNO = -NN
-               CALL WKVECT('ASENAP.NOEUD','V V K8',NNO,JNOE)
-               CALL GETVID(MOTFA2,'NOEUD',II,1,NNO,ZK8(JNOE),NN)
-               DO 56 INO = 1, NNO
-                 NOEU = ZK8(JNOE+INO-1)
-                 CALL JENONU(JEXNOM(OBJ2,NOEU),IRET)
-                 IF (IRET.EQ.0) THEN
-                  IER = IER + 1
-                  CALL UTMESS('E',MOTFA2,'LE NOEUD '//NOEU//
-     +            ' NE FAIT PAS PARTI DU MAILLAGE : '//NOMA)
-                  GOTO 56
-                 ENDIF
-                 DO 58 IS = 1,NBSUP
-                  DO 59 ID = 1,3
-                   IF (NOMSUP(IS,ID).EQ.NOEU) THEN
-                    IF (CTYP.EQ.'LINE') THEN
-                      TCOSUP(IS,ID) = 2
-                    ELSE
-                      TCOSUP(IS,ID) = 3
-                    ENDIF
-                   ENDIF
- 59               CONTINUE
- 58              CONTINUE
- 56             CONTINUE
-                CALL JEDETR('ASENAP.NOEUD')
-               ELSE
-                CALL GETVID(MOTFA2,'GROUP_NO',II,1,0,K8BID,NG)
-                IF (NG.NE.0) THEN
-                 NGR = -NG
-                 CALL WKVECT('ASENAP.GROUP_NO','V V K8',NGR,JGRN)
-                 CALL GETVID(MOTFA2,'GROUP_NO',II,1,NGR,
-     +              ZK8(JGRN),NG)
-                 DO 70 IGR = 1, NGR
-                  GRNOEU = ZK8(JGRN+IGR-1)
-                  CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)
-                  IF (IRET .EQ. 0) THEN
-                   IER = IER + 1
-                   CALL UTMESS('E',MOTFA2,'LE GROUPE '//GRNOEU//
-     +             ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
-                    GOTO 70
-                   ELSE
-                    CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONMAX',NN,
-     +              K1BID)
-                    CALL JEVEUO(JEXNOM(OBJ1,GRNOEU),'L',JDGN)
-                    DO 102 INO = 1, NN
-                     CALL JENUNO(JEXNUM(OBJ2,ZI(JDGN+INO-1)),NOEU)
-                     DO 104 IS = 1,NBSUP
-                      DO 65 ID = 1,3
-                       IF (NOMSUP(IS,ID).EQ.NOEU) THEN
-                        IF (CTYP.EQ.'LINE') THEN
-                          TCOSUP(IS,ID) = 2
-                        ELSE
-                          TCOSUP(IS,ID) = 3
-                        ENDIF  
-                       ENDIF
- 65                   CONTINUE
- 104                 CONTINUE
- 102                CONTINUE
-                   ENDIF
- 70               CONTINUE
-                  CALL JEDETR('ASENAP.GROUP_NO')
-                 ENDIF
-                ENDIF
-               ENDIF
- 68           CONTINUE
- 67          CONTINUE  
-             CALL JEDETR('ASENAP.LISTE')
-        ENDIF
- 42   CONTINUE
 C
+C -- CREATION DE LA COLLECTION LIST_CAS DE TOUTES LES OCCURRENCES
+C -- DE COMB_DEPL_APPUI
+C
+      NCAS = 0
+      CALL JECREC('&&ASENAP.LISTCAS', 'V V I', 'NU',
+     +                               'DISPERSE', 'VARIABLE', NBOCC )
+C
+      DO 10 IOCC = 1,NBOCC
+        CALL GETVTX(MOTFAC,'TOUT',IOCC,1,0,K8B,NT)
+        IF (NT.NE.0) THEN
+          CALL GETFAC('DEPL_MULT_APPUI',NCAS)
+          IF (NCAS.LT.2) THEN 
+           CALL UTMESS('F',NOMCMD,'LE NOMBRE DE CAS ' //
+     +      ' DOIT ETRE SUPERIEUR A DEUX POUR ETRE ' //
+     +           ' COMBINE ')
+           CALL UTFINM()
+          ENDIF
+          CALL JECROC(JEXNUM('&&ASENAP.LISTCAS',IOCC))
+          CALL JEECRA(JEXNUM('&&ASENAP.LISTCAS',IOCC),'LONMAX',
+     +                                                   NCAS,' ')
+          CALL JEVEUO(JEXNUM('&&ASENAP.LISTCAS',IOCC),'E',JCAS)
+          DO 12 ICAS = 1,NCAS
+           CALL GETVIS('DEPL_MULT_APPUI','NUME_CAS',ICAS,1,1,NUCAS,IBID)
+           ZI(JCAS+ICAS-1) = NUCAS
+ 12       CONTINUE
+        ELSE
+          CALL GETVIS(MOTFAC,'LIST_CAS',IOCC,1,0,IBID,NC)
+          NC=-NC
+          IF (NC.LT.2) THEN 
+          CALL UTMESS('F',NOMCMD,'LE NOMBRE DE CAS ' //
+     +           ' DOIT ETRE SUPERIEUR A DEUX POUR ETRE ' //
+     +           ' COMBINE ')
+          ENDIF
+          CALL JECROC(JEXNUM('&&ASENAP.LISTCAS',IOCC))
+          CALL JEECRA(JEXNUM('&&ASENAP.LISTCAS',IOCC),'LONMAX',
+     +                                                   NC,' ')
+          CALL JEVEUO(JEXNUM('&&ASENAP.LISTCAS',IOCC),'E',JCAS)
+          CALL GETVIS(MOTFAC,'LIST_CAS',IOCC,1,NC,ZI(JCAS),NC)
+          NCAS =NCAS+NC
+        ENDIF
+ 10   CONTINUE
+
+C
+C -- CREATION DU VECTEUR TYPE_COMBI DE TOUTES LES OCCURRENCES
+C -- DE COMB_DEPL_APPUI 
+C
+      CALL WKVECT('&&ASENAP.TYPE','V V I',NBOCC,JTYP)
+
+      DO 20 IOCC =1, NBOCC
+        CALL GETVTX(MOTFAC,'TYPE_COMBI',IOCC,1,1,CTYP,NC)
+        IF (CTYP.EQ.'QUAD') ZI(JTYP+IOCC-1) = 1
+        IF (CTYP.EQ.'LINE') ZI(JTYP+IOCC-1) = 2
+        IF (CTYP.EQ.'ABS')  ZI(JTYP+IOCC-1) = 3
+
+ 20   CONTINUE
+
+C 
+C -- CREATION DE LA COLLECTION QUI CONTIENT LES NOEUDS 
+C -- DES DIFFERENTES OCCURRENCES DE DEPL_MULT_APPUI TRAITEES
+C
+      MOTFAC = 'DEPL_MULT_APPUI'
+      CALL GETFAC(MOTFAC,NOCAS)
+      CALL JECREC('&&ASENAP.LINOEU ', 'V V K8', 'NO',
+     +                               'DISPERSE', 'VARIABLE',NOCAS )
+
+      CALL JECREC('&&ASENAP.LIDIR ', 'V V R', 'NO',
+     +                               'DISPERSE', 'VARIABLE',NOCAS )
+C VECTEUR MODE_STATIQUE
+      CALL WKVECT('&&ASENAP.STAT','V V K8',NOCAS,JSTA)
+C
+C VECTERUS RELATIFS AU NOEUD_REFE
+C
+      CALL WKVECT('&&ASENAP.NOREF','V V K8',NOCAS,JNREF)
+      CALL WKVECT('&&ASENAP.NREF','V V I',NOCAS,JREF)
+      CALL WKVECT('&&ASENAP.DREF','V V R',3*NOCAS,JDREF)
+
+      MESNOE = '&&ASENAP.NOEUDS'
+      DO 30 ICAS =1, NOCAS
+        CALL GETVIS(MOTFAC,'NUME_CAS',ICAS,1,1,NUCAS,NC)
+C
+C INITIALISATION DU DEPLACEMENT DE  NOEUD_REFE
+C
+C
+C -- STOCKAGE MODE STATIQUE DU NUME_CAS TRAITE
+         CALL GETVID(MOTFAC,'MODE_STAT',ICAS,1,1,STAT,NS)    
+         ZK8(JSTA+ICAS-1)=STAT  
+C -- STOCKAGE DES NOEUD 
+         KNUM = 'N       '
+         CALL CODENT(NUCAS, 'D0' , KNUM(2:8) )
+         NBMC=2
+         MOTCLE(1) = 'NOEUD'
+         TYMOCL(1) = 'NOEUD'
+         MOTCLE(2) = 'GROUP_NO'
+         TYMOCL(2) = 'GROUP_NO'
+         CALL RELIEM(' ',NOMA,'NO_NOEUD',MOTFAC,ICAS,NBMC,MOTCLE,
+     &                TYMOCL,MESNOE,NBNO)
+         CALL JEVEUO(MESNOE,'L',JNOEU)
+C
+         CALL JECROC(JEXNOM('&&ASENAP.LINOEU',KNUM))
+         CALL JEECRA(JEXNOM('&&ASENAP.LINOEU',KNUM),'LONMAX',NBNO,' ')
+         CALL JEECRA(JEXNOM('&&ASENAP.LINOEU',KNUM),'LONUTI',NBNO,' ')
+         CALL JEVEUO(JEXNOM('&&ASENAP.LINOEU',KNUM), 'E', JNO )
+         DO 34 INO =1,NBNO
+           ZK8(JNO+INO-1) = ZK8(JNOEU+INO-1)
+ 34      CONTINUE
+C -- STOCKAGE DES NOEUD REFE
+         ZI(JREF+ICAS-1)= 0
+C
+         ZR(JDREF+ICAS-1) = 0.0D0
+         ZR(JDREF+ICAS+1-1) = 0.0D0
+         ZR(JDREF+ICAS+2-1) = 0.0D0
+         CALL GETVID(MOTFAC,'NOEUD_REFE',ICAS,1,1,NOREF,IREF)    
+         IF (IREF.NE.0) THEN
+           CALL JENONU(JEXNOM(OBJ2,NOREF),IRE1)
+           CALL JEEXIN(JEXNOM(OBJ1,NOREF),IRE2)
+           IF ((IRE1+IRE2).EQ.0) THEN
+             IER = IER + 1
+             CALL UTMESS('E',MOTFAC,'LE NOEUD '//NOREF//
+     +                        ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
+             GOTO 9999
+           ENDIF
+           IF (IRE2.NE.0) THEN
+             CALL JEVEUO(JEXNOM(OBJ1,NOREF),'L',JDGN)
+             CALL JENUNO(JEXNUM(OBJ2,ZI(JDGN)),NOREF)
+           ENDIF
+
+C               IER = IER + 1
+C               CALL UTMESS('E',MOTFAC,'LE NOEUD '//NOEREF//
+C     +                             ' N''EST PAS UN NOEUD SUPPORT.')
+C               GOTO 9999
+C          ENDIF
+C 90      CONTINUE
+          ZK8(JNREF+ICAS-1) = NOREF 
+          ZI(JREF+ICAS-1)= 1
+        ENDIF
+C -- STOCKAGE DES DIRECTIONS D''ANCRAGE
+
+          KDIR = 'D       '
+          CALL CODENT(NUCAS, 'D0' , KDIR(2:8) )
+          CALL JECROC(JEXNOM('&&ASENAP.LIDIR',KDIR))
+          CALL JEECRA(JEXNOM('&&ASENAP.LIDIR',KDIR),'LONMAX',3*NBNO,' ')
+          CALL JEECRA(JEXNOM('&&ASENAP.LIDIR',KDIR),'LONUTI',3*NBNO,' ')
+          CALL JEVEUO(JEXNOM('&&ASENAP.LIDIR',KDIR), 'E', JDIR )
+          DO 36 INO =1,3*NBNO
+            ZR(JDIR+INO-1)= EPSIMA
+ 36       CONTINUE
+           CALL GETVR8(MOTFAC,'DX',ICAS,1,1,DX,NX)
+           CALL GETVR8(MOTFAC,'DY',ICAS,1,1,DY,NY)
+           CALL GETVR8(MOTFAC,'DZ',ICAS,1,1,DZ,NZ)
+C
+          DO 38 INO =1,NBNO
+            IF (NX.NE.0)  ZR(JDIR+3*(INO-1))= DX
+            IF (NY.NE.0)  ZR(JDIR+3*(INO-1)+1) = DY
+            IF (NZ.NE.0)  ZR(JDIR+3*(INO-1)+2)= DZ
+C
+          IF (ZK8(JNO+INO-1).EQ.NOREF) THEN
+            ZR(JDREF+ICAS-1) = DX
+            ZR(JDREF+ICAS+1-1) = DY
+            ZR(JDREF+ICAS+2-1) = DZ
+          ENDIF
+          IF (ZI(JREF+ICAS-1).EQ.1) THEN
+           ZR(JDIR+3*(INO-1))=ZR(JDIR+3*(INO-1))-ZR(JDREF+ICAS-1)
+           ZR(JDIR+3*(INO-1)+1)=ZR(JDIR+3*(INO-1)+1)-ZR(JDREF+ICAS+1-1)
+           ZR(JDIR+3*(INO-1)+2)=ZR(JDIR+3*(INO-1)+2)-ZR(JDREF+ICAS+2-1)
+          ENDIF
+
+ 38       CONTINUE
+ 30   CONTINUE
+C
+                 
+      CALL JEDETR ( MESNOE )
+
  9999 CONTINUE
       IF (IER.NE.0) CALL UTMESS('F',NOMCMD,'DONNEES INCOMPATIBLES.')
 C

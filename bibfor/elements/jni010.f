@@ -3,7 +3,7 @@
       CHARACTER*8 ELREFE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/10/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 05/12/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,7 +81,9 @@ C     ------------------------------------------------------------------
      &    ELREFE.EQ.'TETRA10 ' .OR. ELREFE.EQ.'TETRI10 ' .OR.
      &    ELREFE.EQ.'PENTA6  ' .OR. ELREFE.EQ.'PENTA15 ' .OR.
      &    ELREFE.EQ.'PENTA15D' .OR. ELREFE.EQ.'PYRAM13D' .OR.
-     &    ELREFE.EQ.'PYRAM5  ' .OR. ELREFE.EQ.'PYRAM13 ') THEN
+     &    ELREFE.EQ.'PYRAM5  ' .OR. ELREFE.EQ.'PYRAM13 ' .OR.
+     &    ELREFE.EQ.'HEXA8L  ' .OR. ELREFE.EQ.'TETRA4L ' .OR.
+     &    ELREFE.EQ.'PENTA6L ') THEN
 
         CALL WKVECT('&INEL.'//ELREFE//'.TRAVAIL','G V R',
      &              NNO* (133+36*NNO),ITRAV)

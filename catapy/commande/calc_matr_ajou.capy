@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 CALC_MATR_AJOU=OPER(nom="CALC_MATR_AJOU",op= 152,sd_prod=matr_asse_gene_r,
                     fr="Calcul des matrices de masse, d amortissement ou de raideur ajoutées",
-                    docu="U4.66.01-c",reentrant='n',
+                    docu="U4.66.01-d",reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
          regles=(EXCLUS('MODE_MECA','CHAM_NO','MODELE_GENE'),
                  PRESENT_ABSENT('NUME_DDL_GENE','CHAM_NO'),
@@ -53,13 +53,11 @@ CALC_MATR_AJOU=OPER(nom="CALC_MATR_AJOU",op= 152,sd_prod=matr_asse_gene_r,
              STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            ),
            b_gcpc          =BLOC (condition = "METHODE == 'GCPC' ", fr="Paramètres de la méthode du gradient conjugué",
-             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC","SANS","DIAG") ),
+             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC",),defaut="LDLT_INC" ),
              NIVE_REMPLISSAGE=SIMP(statut='f',typ='I',defaut=0),
              RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
            ),
-#  A quoi sert eps
-           EPS             =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
          ),
 )  ;

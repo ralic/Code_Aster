@@ -1,7 +1,7 @@
-      SUBROUTINE DELTAU(JRWORK, JNBPG, NBORDR, NMAINI, NBMAP, TSPAQ,
-     &                  NOMMET, NOMCRI, CESR)
+      SUBROUTINE DELTAU(JRWORK, JNBPG, NBPGT, NBORDR, NMAINI, NBMAP,
+     &                  NUMPAQ, TSPAQ, NOMMET, NOMCRI, CESR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 08/04/2003   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,8 @@ C ======================================================================
 C RESPONSABLE F1BHHAJ
 C TOLE  CRP_20
       IMPLICIT     NONE
-      INTEGER      JRWORK, JNBPG, NBORDR, NMAINI, NBMAP, TSPAQ
+      INTEGER      JRWORK, JNBPG, NBPGT, NBORDR, NMAINI, NUMPAQ, NBMAP 
+      INTEGER      TSPAQ
       CHARACTER*16 NOMCRI, NOMMET
       CHARACTER*19 CESR
 C ---------------------------------------------------------------------
@@ -35,12 +36,14 @@ C                       ATTACHES A CHAQUE POINT DE GAUSS DES MAILLES
 C                       DU <<PAQUET>> DE MAILLES.
 C JNBPG      IN    I  : ADRESSE DU VECTEUR CONTENANT LE NOMBRE DE
 C                       POINT DE GAUSS DE CHAQUE MAILLE DU MAILLAGE.
+C NBPGT      IN    I  : NOMBRE TOTAL DE POINTS DE GAUSS A TRAITER.
 C NBORDR     IN    I  : NOMBRE DE NUMERO D'ORDRE STOCKE DANS LA
 C                       STRUCTURE DE DONNEES RESULTAT.
 C NMAINI     IN    I  : NUMERO DE LA 1ERE MAILLE DU <<PAQUET>> DE
 C                       MAILLES COURANT.
 C NBMAP      IN    I  : NOMBRE DE MAILLES DANS LE <<PAQUET>> DE
 C                       MAILLES COURANT.
+C NUMPAQ     IN    I  : NUMERO DU PAQUET DE MAILLES COURANT.
 C TSPAQ      IN    I  : TAILLE DU SOUS-PAQUET DU <<PAQUET>> DE MAILLES
 C                       COURANT.
 C NOMMET     IN    K16: NOM DE LA METHODE DE CALCUL DU CERCLE
@@ -74,8 +77,8 @@ C     ------------------------------------------------------------------
       INTEGER      IRET, IMAP, ICESD, ICESL, ICESV, IAD
       INTEGER      IPG, IVECT, IORDR, TNECES, TDISP, JVECPG, JVECTN
       INTEGER      JVECTU, JVECTV, NBVEC, NGAM, TAB2(18)
-      INTEGER      NBPG, JDTAUM, JRESUN, MNMAX(2)
-      INTEGER      JVPG1, JVPG2
+      INTEGER      NBPG, NBPGP, L, JDTAUM, JRESUN, MNMAX(2)
+      INTEGER      JVPG1, JVPG2, LOR8EM, LOISEM
       INTEGER      JVECN2, JVECU2, JVECV2, JVECN1, JVECU1, JVECV1
       INTEGER      NBPAR, ICMP
 C
@@ -87,12 +90,15 @@ C
       REAL*8       NORM(2), NORMAX(2), SNORM(2), EPSXM(2), EPSYM(2)
       REAL*8       EPSZM(2), EPNORM(2), EPNMAX(2), SEPNMX(2), NORMOY(2)
       REAL*8       EPNMOY(2), R8B, VALE, VALNU, C1, C2, VALA, VALB
-      REAL*8       ENDUFT, SIGEQ(2), NRUPT(2), DOM(2), VRESU(22)
+      REAL*8       PHYDRO, PHYDRM
+      REAL*8       COEFPA, SIGEQ(2), NRUPT(2), DOM(2), VRESU(22)
+      REAL*8       R8MAEM
 C
       CHARACTER*2  CODRET, CODWO
       CHARACTER*8  NOMPAR, NOMRES, CHMAT1, NOMMAT
       CHARACTER*16 PHENOM
       CHARACTER*19 CHMAT, CESMAT
+      LOGICAL      ENDUR
 C
 C-----------------------------------------------------------------------
 C234567                                                              012
@@ -154,8 +160,9 @@ C
 C
       TNECES = 209*NBORDR*2
       CALL JEDISP(1, TDISP)
+      TDISP =  (TDISP * LOISEM()) / LOR8EM() 
       IF (TDISP .LT. TNECES ) THEN
-         CALL UTDEBM('F', 'DELTAU', 'LA TAILLE MEMOIRE '//
+         CALL UTDEBM('F', 'DELTAU.1', 'LA TAILLE MEMOIRE '//
      &       ' NECESSAIRE AU VECTEUR DE TRAVAIL DANS '//
      &       ' LEQUEL NOUS STOCKONS LES COMPOSANTES '//
      &       ' u ET v DU VECTEUR TAU EST TROP IMPORTANTE '//
@@ -165,7 +172,7 @@ C
          CALL UTFINM( )
       ELSE
          CALL WKVECT( '&&DELTAU.VECTPG', 'V V R', TNECES, JVECPG )
-         CALL JERAZO('&&DELTAU.VECTPG', TNECES, 1)
+         CALL JERAZO( '&&DELTAU.VECTPG', TNECES, 1 )
       ENDIF
 C
       DGAM = 10.0D0
@@ -196,51 +203,96 @@ C
 C
 C CONSTRUCTION DU VECTEUR : CONTRAINTE = F(NUMERO D'ORDRE) EN CHAQUE
 C POINT DE GAUSS DU PAQUET DE MAILLES.
-
+      L = 1
+      NBPG = 0
+      NBPGP = 0
       DO 400 IMAP=NMAINI, NMAINI+(NBMAP-1)
          NBPG = ZI(JNBPG + IMAP-1)
+C SI LA MAILLE COURANTE N'A PAS DE POINTS DE GAUSS, LE PROGRAMME
+C PASSE DIRECTEMENT A LA MAILLE SUIVANTE.
+         IF (NBPG .EQ. 0) THEN
+           GOTO 400
+         ENDIF
+C
+         NBPGP = NBPGP + NBPG
+         IF ( (L*INT(NBPGT/10.0D0)) .LT. NBPGP ) THEN
+           WRITE(6,*)NUMPAQ,'   ',(NBPGP-NBPG)
+           L = L + 1
+         ENDIF
 C
 C RECUPERATION DU NOM DU MATERIAU AFFECTE A LA MAILLE COURANTE
          CALL CESEXI('C',ICESD,ICESL,IMAP,1,1,1,IAD)
          IF (IAD .LE. 0) THEN
-            CALL UTMESS('F', 'DELTAU.1', 'HORS BORNES DEFINIES DANS '//
+            CALL UTMESS('F', 'DELTAU.2', 'HORS BORNES DEFINIES DANS '//
      &                       'CESMAT OU CMP NON AFFECTEE.')
          ELSE
             NOMMAT = ZK8(ICESV - 1 + IAD)
          ENDIF
 C
-C RECUPERATION DES PARAMETRE ASSOCIES AU CRITERE DE MATAKE POUR
+C RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE DE MATAKE POUR
 C LA MAILLE COURANTE
          CALL RCCOME (NOMMAT,'CISA_PLAN_CRIT',PHENOM,CODRET)
-         IF(CODRET(1:2) .EQ. 'NO') CALL UTMESS('F','DELTAU',
-     &     'POUR CALCULER LE CISAILLEMENT MAX ET LE PLAN CRITIQUE IL'//
-     &     ' FAUT RENSEIGNER CISA_PLAN_CRIT DANS DEFI_MATERIAU')
-C
-         CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,'ENDU_FT',
-     &                                             ENDUFT,CODRET,'F')
-         IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL UTMESS('F', 'DELTAU.2', 'NOUS NE POUVONS '//
-     &         ' PAS RECUPERER LA VALEUR DU COEFFICIENT'//
-     &         ' D ENDURANCE, cf. COMMANDE: '//
-     &         ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
+         IF(CODRET(1:2) .EQ. 'NO') THEN
+           CALL UTMESS('F','DELTAU.3',
+     &    'POUR CALCULER LE CISAILLEMENT MAX ET LE PLAN CRITIQUE IL'//
+     &    ' FAUT RENSEIGNER CISA_PLAN_CRIT DANS DEFI_MATERIAU')
          ENDIF
 C
          IF (NOMCRI(1:6) .EQ. 'MATAKE') THEN
             CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
-     &                                    'MATAKE_A',VALA,CODRET,'F')
+     &                                    'MATAKE_A',VALA,CODRET,'  ')
             IF (CODRET(1:2) .EQ. 'NO') THEN
-               CALL UTMESS('F', 'DELTAU.3', 'NOUS NE POUVONS '//
+               CALL UTMESS('F', 'DELTAU.4', 'NOUS NE POUVONS '//
      &             ' PAS RECUPERER LA VALEUR DU PARAMETRE A DU'//
      &             ' CRITERE DE MATAKE, cf. COMMANDE: '//
      &             ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
             ENDIF
             CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
-     &                                    'MATAKE_B',VALB,CODRET,'F')
+     &                                    'MATAKE_B',VALB,CODRET,'  ')
             IF (CODRET(1:2) .EQ. 'NO') THEN
-               CALL UTMESS('F', 'DELTAU.4', 'NOUS NE POUVONS '//
+               CALL UTMESS('F', 'DELTAU.5', 'NOUS NE POUVONS '//
      &             ' PAS RECUPERER LA VALEUR DU PARAMETRE B DU'//
      &             ' CRITERE DE MATAKE, cf. COMMANDE: '//
      &             ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
+            ENDIF
+C
+            CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
+     &                           'COEF_FLE',COEFPA,CODRET,'  ')
+            IF (CODRET(1:2) .EQ. 'NO') THEN
+               CALL UTMESS('F', 'DELTAU.6', 'NOUS NE POUVONS'//
+     &            ' PAS RECUPERER LA VALEUR DU COEFFICIENT DE'//
+     &            ' PASSAGE FLEXION-TORSION, cf. COMMANDE: '//
+     &            ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
+            ENDIF
+C
+C RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE DE DANG VAN POUR
+C LA MAILLE COURANTE
+         ELSEIF (NOMCRI(1:8) .EQ. 'DANG_VAN') THEN
+            CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
+     &                                 'D_VAN_A',VALA,CODRET,'  ')
+            IF (CODRET(1:2) .EQ. 'NO') THEN
+               CALL UTMESS('F', 'DELTAU.7', 'NOUS NE POUVONS '//
+     &             ' PAS RECUPERER LA VALEUR DU PARAMETRE A DU'//
+     &             ' CRITERE DE DANG_VAN, cf. COMMANDE: '//
+     &             ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
+            ENDIF
+C
+            CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
+     &                                 'D_VAN_B',VALB,CODRET,'  ')
+            IF (CODRET(1:2) .EQ. 'NO') THEN
+               CALL UTMESS('F', 'DELTAU.8', 'NOUS NE POUVONS '//
+     &             ' PAS RECUPERER LA VALEUR DU PARAMETRE B DU'//
+     &             ' CRITERE DE DANG_VAN, cf. COMMANDE: '//
+     &             ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
+            ENDIF
+C
+            CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
+     &                           'COEF_CIS',COEFPA,CODRET,'  ')
+            IF (CODRET(1:2) .EQ. 'NO') THEN
+               CALL UTMESS('F', 'DELTAU.9', 'NOUS NE POUVONS '//
+     &            ' PAS RECUPERER LA VALEUR DU COEFFICIENT DE'//
+     &            ' PASSAGE CISAILLEMENT-TRACTION, cf. COMMANDE: '//
+     &            ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
             ENDIF
          ENDIF
 C
@@ -269,11 +321,12 @@ C 3/ CALCUL DU 1ER MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
 C
             DTAUM(1) = 0.0D0
             DTAUM(2) = 0.0D0
-            MNMAX(1) = 0
-            MNMAX(2) = 0
+            MNMAX(1) = 1
+            MNMAX(2) = 1
 C
             DO 430 I=1, NBVEC
-               IF ( ZR(JDTAUM + (I-1)) .GT. DTAUM(1)) THEN
+               IF ( (ABS(ZR(JDTAUM + (I-1)) - DTAUM(1)) .GT. EPSILO)
+     &               .AND. ( ZR(JDTAUM + (I-1)) .GT. DTAUM(1)) ) THEN
                   DTAUM(2) = DTAUM(1)
                   MNMAX(2) = MNMAX(1)
                   DTAUM(1) = ZR(JDTAUM + (I-1))
@@ -289,6 +342,9 @@ C 4/ PREMIER RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
 C    ET DU MAX DES DELTA_TAU (DETERMINATION DU VECTEUR NORMAL A 2
 C    DEGRES PRES).
 C
+            PHYDRO = 0.0D0
+            PHYDRM = 0.0D0
+C
             DO 440 K=1, 2
                NORM(K) = 0.0D0
                NORMAX(K) = 0.0D0
@@ -303,9 +359,15 @@ C
                IF (GAMMAM .LT. 0.0D0) THEN
                   GAMMAM = GAMMAM + PI
                ENDIF
-               PHIM = ATAN2(ABS(NYM(K)),NXM(K))
+C
+               IF ((ABS(NYM(K)) .LT. EPSILO) .AND.
+     &             (ABS(NXM(K)) .LT. EPSILO)) THEN
+                 PHIM = 0.0D0
+               ELSE
+                 PHIM = ATAN2(ABS(NYM(K)),NXM(K))
+               ENDIF
                IF (PHIM .LT. 0.0D0) THEN
-                  PHIM = PHIM + PI
+                 PHIM = PHIM + PI
                ENDIF
 C
                IF (ABS(GAMMAM) .LT. EPSILO) THEN
@@ -390,7 +452,7 @@ C
 C 4-3/ CALCUL DU 2EME MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
 C
                DTAUM(K) = 0.0D0
-               MNMAX(K) = 0
+               MNMAX(K) = 1
 C
                DO 480 I=1, NBVEC
                   IF ( ZR(JDTAUM + (I-1)) .GT. DTAUM(K)) THEN
@@ -410,9 +472,15 @@ C
                IF (GAMMAM .LT. 0.0D0) THEN
                   GAMMAM = GAMMAM + PI
                ENDIF
-               PHIM = ATAN2(ABS(NYM(K)),NXM(K))
+C
+               IF ((ABS(NYM(K)) .LT. EPSILO) .AND.
+     &             (ABS(NXM(K)) .LT. EPSILO)) THEN
+                 PHIM = 0.0D0
+               ELSE
+                 PHIM = ATAN2(ABS(NYM(K)),NXM(K))
+               ENDIF
                IF (PHIM .LT. 0.0D0) THEN
-                  PHIM = PHIM + PI
+                 PHIM = PHIM + PI
                ENDIF
 C
                IF (ABS(GAMMAM) .LT. EPSILO) THEN
@@ -497,7 +565,7 @@ C
 C 5-3/ CALCUL DU 2EME MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
 C
                DTAUM(K) = 0.0D0
-               MNMAX(K) = 0
+               MNMAX(K) = 1
 C
                DO 530 I=1, NBVEC
                   IF ( ZR(JDTAUM + (I-1)) .GT. DTAUM(K)) THEN
@@ -513,9 +581,15 @@ C
                IF (GAMMAM .LT. 0.0D0) THEN
                   GAMMAM = GAMMAM + PI
                ENDIF
-               PHIM = ATAN2(ABS(NYM(K)),NXM(K))
+C
+               IF ((ABS(NYM(K)) .LT. EPSILO) .AND.
+     &             (ABS(NXM(K)) .LT. EPSILO)) THEN
+                 PHIM = 0.0D0
+               ELSE
+                 PHIM = ATAN2(ABS(NYM(K)),NXM(K))
+               ENDIF
                IF (PHIM .LT. 0.0D0) THEN
-                  PHIM = PHIM + PI
+                 PHIM = PHIM + PI
                ENDIF
 C
 C CALCUL DE LA CONTRAINTE NORMALE MAXIMALE SUR LE PLAN CRITIQUE,
@@ -524,16 +598,16 @@ C DE LA DEFORMATION NORMALE MAXIMALE SUR LE PLAN CRITIQUE,
 C DE LA DEFORMATION NORMALE MOYENNE SUR LE PLAN CRITIQUE.
 C
                CALL RCVALE(NOMMAT,'ELAS',0,' ',R8B,1,'E',VALE,CODRET,
-     &                     'F')
+     &                     '  ')
                IF (CODRET(1:2) .EQ. 'NO') THEN
-                  CALL UTMESS('F', 'DELTAU.5', 'NOUS NE POUVONS PAS '//
+                  CALL UTMESS('F', 'DELTAU.10', 'NOUS NE POUVONS PAS'//
      &                   ' RECUPERER LA VALEUR DU MODULE D''YOUNG : E.')
                ENDIF
                CALL RCVALE(NOMMAT,'ELAS',0,' ',R8B,1,'NU',VALNU,CODRET,
-     &                     'F')
+     &                     '  ')
                IF (CODRET(1:2) .EQ. 'NO') THEN
-                  CALL UTMESS('F', 'DELTAU.6', 'NOUS NE POUVONS PAS '//
-     &                    'RECUPERER LA VALEUR DU COEFFICIENT DE ' //
+                  CALL UTMESS('F', 'DELTAU.11', 'NOUS NE POUVONS PAS'//
+     &                    ' RECUPERER LA VALEUR DU COEFFICIENT DE ' //
      &                    'POISSON : NU.')
                ENDIF
                C1 = (1+VALNU)/VALE
@@ -547,21 +621,35 @@ C
                   SIXZ = ZR(JRWORK + 4 + (I-1)*TSPAQ + (IPG-1)*6)
                   SIYZ = ZR(JRWORK + 5 + (I-1)*TSPAQ + (IPG-1)*6)
 C
+C CALCUL DE LA PRESSION IDROSTATIQUE MAXIMALE = Max_t(1/3 Tr[SIG])
+C
+                  IF ( K .LT. 2 ) THEN
+C
+C ON CALCULE PHYDRM QU'UNE FOIS, PARCE QUE LA PRESSION IDROSTATIQUE
+C EST INVARIANT PAR RAPPORT AU vect_n.
+C
+                     PHYDRO = (SIXX + SIYY + SIZZ)/3.0D0
+C
+                     IF (PHYDRO .GT. PHYDRM) THEN
+                        PHYDRM = PHYDRO
+                     ENDIF
+                  ENDIF
+C
                   EPSXX = C1*SIXX - C2*(SIXX + SIYY + SIZZ)
                   EPSYY = C1*SIYY - C2*(SIXX + SIYY + SIZZ)
                   EPSZZ = C1*SIZZ - C2*(SIXX + SIYY + SIZZ)
                   EPSXY = C1*SIXY
                   EPSXZ = C1*SIXZ
                   EPSYZ = C1*SIYZ
-
+C
 C CALCUL DE vect_F = [SIG].vect_n
-
+C
                   FXM(K) = SIXX*NXM(K) + SIXY*NYM(K) + SIXZ*NZM(K)
                   FYM(K) = SIXY*NXM(K) + SIYY*NYM(K) + SIYZ*NZM(K)
                   FZM(K) = SIXZ*NXM(K) + SIYZ*NYM(K) + SIZZ*NZM(K)
-
+C
 C CALCUL DE NORM = vect_F.vect_n
-
+C
                   NORM(K) = FXM(K)*NXM(K) + FYM(K)*NYM(K) +
      &                      FZM(K)*NZM(K)
 C
@@ -602,20 +690,36 @@ C
 C 1/ CRITERE DE MATAKE
                IF (NOMCRI(1:6) .EQ. 'MATAKE') THEN
                   SIGEQ(K) = DTAUM(K) + (VALA*NORMAX(K))
-                  SIGEQ(K) = SIGEQ(K)*ENDUFT
+                  SIGEQ(K) = SIGEQ(K)*COEFPA
+               ENDIF
+C
+C 2/ CRITERE DE DANG VAN
+               IF (NOMCRI(1:8) .EQ. 'DANG_VAN') THEN
+                  IF ( (VALA*PHYDRM) .GT. 0.0D0 ) THEN
+                     SIGEQ(K) = DTAUM(K) + (VALA*PHYDRM)
+                     SIGEQ(K) = SIGEQ(K)*COEFPA
+                  ELSE
+                     SIGEQ(K) = DTAUM(K)
+                     SIGEQ(K) = SIGEQ(K)*COEFPA
+                  ENDIF
                ENDIF
 C
 C CALCUL DU NOMBRE DE CYCLES A LA RUPTURE ET DU DOMMAGE
 C
                CALL RCCOME ( NOMMAT, 'FATIGUE', PHENOM, CODRET )
-               IF ( CODRET .EQ. 'NO' ) CALL UTMESS('F','DELTAU.7',
+               IF ( CODRET .EQ. 'NO' ) CALL UTMESS('F','DELTAU.12',
      &            'POUR CALCULER LE DOMMAGE IL FAUT DEFINIR LE '//
      &            'COMPORTEMENT "FATIGUE" DANS DEFI_MATERIAU' )
 C
                CALL RCPARE( NOMMAT, 'FATIGUE', 'WOHLER', CODWO )
                IF ( CODWO .EQ. 'OK' ) THEN
+                  CALL LIMEND( NOMMAT,SIGEQ(K),ENDUR)
+                  IF (ENDUR) THEN
+                     NRUPT(K)=R8MAEM()
+                  ELSE
                   CALL RCVALE(NOMMAT,'FATIGUE',1,'SIGM',SIGEQ(K),1,
      &                        'WOHLER',NRUPT(K),CODRET,'F')
+                  ENDIF
                ENDIF
 C
                DOM(K) = 1.D0/NRUPT(K)
@@ -656,7 +760,7 @@ C
                CALL CESEXI('C',JCERD,JCERL,IMAP,IPG,1,ICMP,JAD)
 
                IF (JAD .EQ. 0) THEN
-                  CALL UTMESS('F', 'DELTAU.7', 'HORS BORNES '//
+                  CALL UTMESS('F', 'DELTAU.13', 'HORS BORNES '//
      &                             ' DEFINIES DANS CESCRE.')
                ELSE
                   JAD = ABS(JAD)

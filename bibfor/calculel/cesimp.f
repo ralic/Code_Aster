@@ -1,6 +1,6 @@
       SUBROUTINE CESIMP(CESZ,UNITE,NBMAT,NUMMAI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 25/03/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,7 +115,7 @@ C     ------------------------------------------------------------
 C     1- ALLOCATION D'UN TABLEAU DE K16 QUI CONTIENDRA LES VALEURS
 C        D'UNE LIGNE A ECRIRE
 C     ------------------------------------------------------------
-      CALL WKVECT('&&CESIMP.LVALEURS','V V K16',NCMPU,JLVAL)
+      CALL WKVECT('&&CESIMP.LVALEURS','V V K16',MAX(NCMPU,1),JLVAL)
 
 
 C     2- FORMAT DES LIGNES :

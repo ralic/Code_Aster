@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 01/04/2003   AUTEUR DURAND C.DURAND 
 # TITRE CABLE DE PRECONTRAINTE DANS UNE POUTRE DROITE EN BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 #-----------------------------------------------------------------------
 #
 
-DEBUT(   CODE=_F(  NOM = 'SSNV137A',NIV_PUB_WEB='INTERNET') )
+DEBUT(   CODE=_F(  NOM = 'SSNV137A',NIV_PUB_WEB='INTERNET'),);
 
 #
 
@@ -79,8 +79,8 @@ CABLEPR=DEFI_CABLE_BP(            MODELE=MODELE,
                               GROUP_MA_BETON='POUTRE',
                                   DEFI_CABLE=_F( 
                                GROUP_MA = 'CABLE',
-                               NOEUD_ANCRAGE = ( 'NC000001',  'NC000031', ),
-                               TYPE_ANCRAGE = ( 'PASSIF',  'ACTIF',  )),
+                               NOEUD_ANCRAGE = ( 'NC000001',  'NC000031', ),),
+                               TYPE_ANCRAGE = ( 'PASSIF',  'ACTIF',  ),
                                 TENSION_INIT=1.0E+6,
                                RECUL_ANCRAGE=0. )
 

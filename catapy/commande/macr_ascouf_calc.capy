@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ def macr_ascouf_calc_prod(self,MODELE,CHAM_MATER,CARA_ELEM,FOND_FISS,CHARGE,RESU
 
 MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op= -20,sd_prod=macr_ascouf_calc_prod,
                       fr=" ",
-                      docu="U4.CF.20-b1",reentrant='n',
+                      docu="U4.cf.20-b",reentrant='n',
             UIinfo={"groupes":("Outils métier",)},
          regles=(UN_PARMI('COMP_INCR','COMP_ELAS'),),
 
@@ -64,12 +64,12 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op= -20,sd_prod=macr_ascouf_calc_p
            PRES            =SIMP(statut='o',typ='R' ),
            EFFE_FOND_P1    =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            PRES_LEVRE      =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
-           FONC_MULT       =SIMP(statut='f',typ=fonction ),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction,formule) ),
          ),
 
          ECHANGE         =FACT(statut='f',min=1,max=1,
-           COEF_H          =SIMP(statut='f',typ=fonction ),
-           TEMP_EXT        =SIMP(statut='f',typ=fonction ),
+           COEF_H          =SIMP(statut='f',typ=(fonction,formule) ),
+           TEMP_EXT        =SIMP(statut='f',typ=(fonction,formule) ),
          ),
 
          TORS_P1         =FACT(statut='f',min=1,max=6,
@@ -80,7 +80,7 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op= -20,sd_prod=macr_ascouf_calc_p
            MX              =SIMP(statut='f',typ='R' ),
            MY              =SIMP(statut='f',typ='R' ),
            MZ              =SIMP(statut='f',typ='R' ),
-           FONC_MULT       =SIMP(statut='f',typ=fonction ),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction,formule) ),
          ),
 
          COMP_INCR       =FACT(statut='f',min=1,max=1,
@@ -108,14 +108,12 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op= -20,sd_prod=macr_ascouf_calc_p
              STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            ),
            b_gcpc         =BLOC(condition = "METHODE == 'GCPC' ", fr="Paramètres de la méthode du gradient conjugué",
-             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC","SANS","DIAG") ),
+             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC",),defaut="LDLT_INC" ),
              NIVE_REMPLISSAGE=SIMP(statut='f',typ='I',defaut= 0 ),
              RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
            ),
-#  A quoi sert eps
-           EPS             =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
            SYME            =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          ),
 

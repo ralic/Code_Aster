@@ -1,6 +1,6 @@
-# MODIF  DATE 16/10/2002   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 01/04/2003   AUTEUR DURAND C.DURAND 
 # RESPONSABLE GNICOLAS G.NICOLAS
-# TITRE ESSAI MED POUR DIFFERENTS TYPES D'ELEMENTS
+# TITRE ESSAI MED POUR DIFFERENTS TYPES D ELEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,10 +24,10 @@ DEBUT(CODE=_F( NOM = 'ZZZZ161A',NIV_PUB_WEB='INTERNET'))
 # 1. Definition des materiaux
 #
 MATER1=DEFI_MATERIAU( 
-           ELAS=_F(  E = 180000., NU = 0.30, ALPHA = 15.E-6, RHO = 7700.) )
+           ELAS=_F(  E = 180000., NU = 0.30, ALPHA = 1.5E-7, RHO = 7700.) )
 #
 MATER2=DEFI_MATERIAU( 
-           ELAS=_F(  E = 220000., NU = 0.33, ALPHA = 16.E-6, RHO = 8300.) )
+           ELAS=_F(  E = 220000., NU = 0.33, ALPHA = 1.6E-7, RHO = 8300.) )
 #
 # 2. Lecture du maillage
 #
@@ -37,9 +37,10 @@ MAILTRQU=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), );
 # 3. Calcul
 # 3.1. Modele mecanique
 #
-MODETRQU=AFFE_MODELE(    MAILLAGE=MAILTRQU,
-                           AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
-                                  MODELISATION = 'D_PLAN') );
+MODETRQU=AFFE_MODELE(  MAILLAGE=MAILTRQU,
+                       AFFE=_F(  TOUT         = 'OUI',
+                                 PHENOMENE    = 'MECANIQUE',
+                                 MODELISATION = 'D_PLAN') );
 
 #
 # 3.2. Orientation des mailles de bord
@@ -50,17 +51,21 @@ MAILTRQU=MODI_MAILLAGE( reuse=MAILTRQU,   MAILLAGE=MAILTRQU,
 #
 # 3.3. Mise en place des materiaux
 #
-MATETEST=AFFE_MATERIAU(    MAILLAGE=MAILTRQU,AFFE=(
-       _F(  GROUP_MA = 'TRIA',  MATER = MATER1, TEMP_REF = 20.),
-       _F(  GROUP_MA = 'QUAD',  MATER = MATER2, TEMP_REF = 20.))
-                         );
+MATETEST=AFFE_MATERIAU( MAILLAGE=MAILTRQU,
+                        AFFE=(_F(  GROUP_MA = 'TRIA', 
+                                   MATER    = MATER1,
+                                   TEMP_REF = 20.    ),
+                              _F(  GROUP_MA = 'QUAD',
+                                   MATER    = MATER2,
+                                   TEMP_REF = 20.))
+                      );
 
 #
 # 3.4. Chargements
 #
 CHARTRQU=AFFE_CHAR_MECA(    MODELE=MODETRQU,
-                  DDL_IMPO=_F(  GROUP_NO = 'ORIGINE',     DY = 0.,),
-                  PRES_REP=_F(  GROUP_MA = 'BORD_SUP',    PRES = 1000.,),
+                  DDL_IMPO =_F(  GROUP_NO = 'ORIGINE',     DY = 0.,),
+                  PRES_REP =_F(  GROUP_MA = 'BORD_SUP',    PRES = 1000.,),
                   FACE_IMPO=_F(  GROUP_MA = 'BORD_GAU',    DNOR = 0.,)
                           );
 #
@@ -68,19 +73,43 @@ CHARTRQU=AFFE_CHAR_MECA(    MODELE=MODETRQU,
 #
 RESUTRQU=MECA_STATIQUE( MODELE=MODETRQU,
                         CHAM_MATER=MATETEST,
-                        EXCIT=_F(  CHARGE = CHARTRQU),
+                        EXCIT  =_F( CHARGE = CHARTRQU),
                         SOLVEUR=_F( METHODE='LDLT', ),
                        )
+
 #
-# 3.6. Calculs d'autres champs
+# 3.5. Ecriture relecture du resultat complet au format MED
 #
-RESUTRQU=CALC_ELEM( reuse=RESUTRQU,   RESULTAT=RESUTRQU,
+
+DEFUFI(IMPRESSION=_F( NOM = 'MED_70',
+                      UNITE = 70))
+
+IMPR_RESU(RESU=_F(FORMAT='MED',
+                  RESULTAT=RESUTRQU,
+                  FICHIER='MED_70',),);
+
+
+RESUTRQ2=LIRE_RESU(
+              MAILLAGE=MAILTRQU,
+              TYPE_RESU='EVOL_ELAS',
+              FORMAT='MED',
+              FORMAT_MED=_F( NOM_CHAM_MED='RESUTRQUDEPL____________________',
+                             NOM_CMP_IDEM='OUI',
+                             NOM_CHAM  ='DEPL' ),
+              UNITE=70,
+              NOM_CHAM   ='DEPL',
+              TOUT_ORDRE ='OUI',);
+
+#
+# 3.6. Calculs d autres champs
+#
+RESUTRQ2=CALC_ELEM( reuse=RESUTRQ2,   RESULTAT=RESUTRQ2,
                     MODELE=MODETRQU,
                     CHAM_MATER=MATETEST,
                     EXCIT=_F(  CHARGE = CHARTRQU),
-              OPTION=( 'SIEF_ELGA_DEPL', 
-                       'SIGM_ELNO_DEPL', 
-                       'ERRE_ELGA_NORE', )
+                    OPTION=( 'SIGM_ELNO_DEPL',
+                             'EPSI_ELNO_DEPL',
+                             'ERRE_ELGA_NORE', )
                      )
 
 #
@@ -88,54 +117,117 @@ RESUTRQU=CALC_ELEM( reuse=RESUTRQU,   RESULTAT=RESUTRQU,
 #
 REQT_GD=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    OPERATION='EXTR',
-                   RESULTAT=RESUTRQU,
+                   RESULTAT=RESUTRQ2,
                    NOM_CHAM = 'DEPL',);
 #
 # 4. Impressions
 #
 IMPR_RESU ( RESU=_F( MAILLAGE=MAILTRQU, IMPR_COOR = 'OUI', ) ) ;
-IMPR_RESU ( RESU=_F( CHAM_GD=REQT_GD, ) ) ;
-IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQU, ) ) ;
-IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQU,
+IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQ2, ) ) ;
+IMPR_RESU ( RESU=_F( CHAM_GD =REQT_GD, ) ) ;
+IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQ2,
                      NOM_CHAM = ('ERRE_ELGA_NORE',),
                      GROUP_MA = 'MILIEU' ),
             INFO=2 ) ;
 #
-IMPR_RESU ( RESU=_F( CHAM_GD=REQT_GD, FORMAT='MED', ),
+IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQ2,
+                     FORMAT='MED',
+                     NOM_CHAM = ('DEPL',) ),
             INFO=2 ) ;
-IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQU, FORMAT='MED',
-                     NOM_CHAM = ('DEPL', 'SIEF_ELGA_DEPL',) ),
+IMPR_RESU ( RESU=_F( CHAM_GD=REQT_GD,
+                     FORMAT='MED', ),
             INFO=2 ) ;
-IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQU, FORMAT='MED',
-                     NOM_CHAM = ('SIGM_ELNO_DEPL',),NOM_CMP=('SIYY', 'SIXY',) ),
+IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQ2,
+                     FORMAT='MED',
+                     NOM_CHAM = ('SIGM_ELNO_DEPL',),),
             INFO=2 ) ;
-IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQU, FORMAT='MED',
+IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQ2,
+                     FORMAT='MED',
                      NOM_CHAM = ('ERRE_ELGA_NORE',),
                      GROUP_MA = 'MILIEU' ),
             INFO=2 ) ;
 #
 # 5. Relecture
 #
+################## CHAM_NO ##################
+#
 DEPLRELU=LIRE_CHAMP(MAILLAGE=MAILTRQU,
                 FORMAT='MED',
                 UNITE=80,
-                NOM_MED='RESUTRQUDEPL____________________',
+                NOM_MED='RESUTRQ2DEPL____________________',
                 NOM_CMP_IDEM='OUI',
                 NUME_ORDRE=1,NUME_PT=1,
-                TYPE_CHAM='CHAM_NO_DEPL_R',
+                TYPE_CHAM='NOEU_DEPL_R',
                 INFO=2
                ) ;
 IMPR_RESU ( RESU=_F( CHAM_GD=DEPLRELU, ) ) ;
 #
-# 5. Test de non-regression
+################## CHAM_ELEM ELNO ##################
+#
+SIGMRELU=LIRE_CHAMP(MAILLAGE=MAILTRQU,
+                MODELE=MODETRQU,
+                FORMAT='MED',
+                UNITE=80,
+                NOM_MED='RESUTRQ2SIGM_ELNO_DEPL__________',
+                NOM_CMP_IDEM='OUI',
+                NUME_ORDRE=1,NUME_PT=1,
+                TYPE_CHAM='ELNO_SIEF_R',
+                INFO=2
+               ) ;
+IMPR_RESU ( RESU=_F( CHAM_GD=SIGMRELU, ) ) ;
+#
+################## CHAM_ELEM ELEM ##################
+#
+ERRERELU=LIRE_CHAMP(MAILLAGE=MAILTRQU,
+                MODELE=MODETRQU,
+                FORMAT='MED',
+                UNITE=80,
+                NOM_MED='RESUTRQ2ERRE_ELGA_NORE__________',
+                NOM_CMP_IDEM='OUI',
+                NUME_ORDRE=1,NUME_PT=1,
+                TYPE_CHAM='ELEM_ERREUR',
+                INFO=2
+               ) ;
+IMPR_RESU ( RESU=_F( CHAM_GD=ERRERELU, ) ) ;
+#
+# 6. Test de non-regression
 #
 TEST_RESU(CHAM_NO=(
-      _F( CHAM_GD=DEPLRELU, CRITERE = 'RELATIF',  PRECISION = 1.E-6,
-          GROUP_NO='OPPOSE',
-          NOM_CMP = 'DX',       VALE =  3.565654E-01, REFERENCE = 'NON_REGRESSION' ),
-      _F( CHAM_GD=DEPLRELU, CRITERE = 'RELATIF',  PRECISION = 1.E-6,
-          GROUP_NO='OPPOSE',
-          NOM_CMP = 'DY',       VALE = -1.335815E+00, REFERENCE = 'NON_REGRESSION' ),
+                 _F( CHAM_GD=DEPLRELU,
+                     CRITERE = 'RELATIF',
+                     PRECISION = 1.E-6,
+                     GROUP_NO='OPPOSE',
+                     NOM_CMP = 'DX',
+                     VALE =  4.183044E-01,
+                     REFERENCE = 'NON_REGRESSION' ),
+                 _F( CHAM_GD=DEPLRELU,
+                     CRITERE = 'RELATIF',
+                     PRECISION = 1.E-6,
+                     GROUP_NO='OPPOSE',
+                     NOM_CMP = 'DY',
+                     VALE = -1.639849E+00,
+                     REFERENCE = 'NON_REGRESSION' ),
+                   ),
+          )
+
+#
+TEST_RESU(CHAM_ELEM=(
+                 _F( CHAM_GD=SIGMRELU,
+                     CRITERE = 'RELATIF',
+                     PRECISION = 1.E-4,
+                     MAILLE='MA43',
+                     GROUP_NO='OPPOSE',
+                     NOM_CMP = 'SIYY',
+                     VALE =  -3.25565E+02,
+                     REFERENCE = 'NON_REGRESSION' ),
+                 _F( CHAM_GD=SIGMRELU,
+                     CRITERE = 'RELATIF',
+                     PRECISION = 1.E-4,
+                     MAILLE='MA43',
+                     GROUP_NO='OPPOSE',
+                     NOM_CMP = 'SIXY',
+                     VALE = -1.20895E+02,
+                     REFERENCE = 'NON_REGRESSION' ),
                    ),
           )
 

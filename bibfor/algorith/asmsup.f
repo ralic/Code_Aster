@@ -1,14 +1,14 @@
       SUBROUTINE ASMSUP(MASSE,MECA,STAT,NBMODE,NEQ,NBSUP,NSUPP,
-     +                  NOMSUP,NDIR,PSMO,DEPSUP,REASUP,TCOSUP,
+     +                  NOMSUP,NDIR,PSMO,REASUP,TCOSUP,
      +                  NUME,LORDR)
       IMPLICIT  REAL*8 (A-H,O-Z)
       INTEGER           NDIR(*),NSUPP(*),TCOSUP(NBSUP,*),LORDR(*)
-      REAL*8            DEPSUP(NBSUP,*),REASUP(NBSUP,NBMODE,*)
+      REAL*8            REASUP(NBSUP,NBMODE,*)
       CHARACTER*8       MASSE,MECA,STAT,PSMO,NOMSUP(NBSUP,*)
       CHARACTER*14      NUME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/06/2002   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,6 @@ C IN  : NSUPP  : MAX DU NOMBRE DE SUPPORT PAR DIRECTION
 C IN  : NOMSUP : VECTEUR DES NOMS DES SUPPORTS
 C IN  : NDIR   : DIRECTION DES EXCITATIONS
 C IN  : PSMO   : PSEUDO-MODES STATIQUES DE LA STRUCTURE
-C OUT : DEPSUP : VECTEUR DES DEPLACEMENTS DES SUPPORTS
 C OUT : REASUP : VECTEUR DES REACTIONS MODALES AUX SUPPORTS
 C OUT : TCOSUP : VECTEUR DES TYPES DE RECOMBINAISON DES SUPPORTS
 C                TCOSUP(I) = 1 : COMBINAISON QUADRATIQUE
@@ -148,32 +147,20 @@ C     --- RECUPERATION DES COMBINAISONS DES SUPPORTS ---
       CALL GETFAC(MOTFAC,NBOCC)
       DO 42 IOC = 1,NBOCC
          CTYP = ' '
-         CALL GETVTX(MOTFAC,'TYPE'      ,IOC,1,1,CTYP,NC)
-         IF (NC.NE.0) THEN
-           CALL UTDEBM('A',NOMCMD,'LE MOT ')
-           CALL UTIMPK('S','CLE ',1,'TYPE')
-           CALL UTIMPK('S',' EST APPELE A DISPARAITRE EN 6.4 ET SERA'//
-     +                     ' REMPLACE PAR ',1,'TYPE_COMBI')
-           CALL UTFINM()
-         ENDIF
          CALL GETVTX(MOTFAC,'TYPE_COMBI',IOC,1,1,CTYP,NC)
          CALL GETVTX(MOTFAC,'TOUT',IOC,1,1,K8B ,NT)
          IF (CTYP.NE.'QUAD') THEN
           IF (NT.NE.0) THEN
            DO 44 ID = 1,3
             DO 45 IS = 1,NBSUP
-             IF (CTYP.EQ.'LINE') THEN
-              TCOSUP(IS,ID) = 2
-             ELSE
-              TCOSUP(IS,ID) = 3
-             ENDIF
+             IF (CTYP.EQ.'LINE')  TCOSUP(IS,ID) = 2
  45         CONTINUE
  44        CONTINUE
           ELSE
            CALL GETVID(MOTFAC,'NOEUD',IOC,1,0,NOEU,NN)
            IF (NN.NE.0) THEN
             NNO = -NN
-            CALL WKVECT('ASMSUP.NOEUD','V V K8',NNO,JNOE)
+            CALL WKVECT('&&ASMSUP.NOEUD','V V K8',NNO,JNOE)
             CALL GETVID(MOTFAC,'NOEUD',IOC,1,NNO,ZK8(JNOE),NN)
             DO 46 INO = 1, NNO
              NOEU = ZK8(JNOE+INO-1)
@@ -187,21 +174,17 @@ C     --- RECUPERATION DES COMBINAISONS DES SUPPORTS ---
              DO 48 IS = 1,NBSUP
               DO 49 ID = 1,3
                IF (NOMSUP(IS,ID).EQ.NOEU) THEN
-                IF (CTYP.EQ.'LINE') THEN
-                  TCOSUP(IS,ID) = 2
-                ELSE
-                  TCOSUP(IS,ID) = 3
-                ENDIF
+                IF (CTYP.EQ.'LINE')  TCOSUP(IS,ID) = 2
                ENDIF
  49           CONTINUE
  48          CONTINUE
  46         CONTINUE
-            CALL JEDETR('ASMSUP.NOEUD')
+            CALL JEDETR('&&ASMSUP.NOEUD')
            ELSE
             CALL GETVID(MOTFAC,'GROUP_NO',IOC,1,0,K8BID,NG)
             IF (NG.NE.0) THEN
              NGR = -NG
-             CALL WKVECT('ASMSUP.GROUP_NO','V V K8',NGR,JGRN)
+             CALL WKVECT('&&ASMSUP.GROUP_NO','V V K8',NGR,JGRN)
              CALL GETVID(MOTFAC,'GROUP_NO',IOC,1,NGR,ZK8(JGRN),NG)
              DO 50 IGR = 1, NGR
               GRNOEU = ZK8(JGRN+IGR-1)
@@ -220,18 +203,14 @@ C     --- RECUPERATION DES COMBINAISONS DES SUPPORTS ---
                 DO 54 IS = 1,NBSUP
                  DO 55 ID = 1,3
                   IF (NOMSUP(IS,ID).EQ.NOEU) THEN
-                   IF (CTYP.EQ.'LINE') THEN
-                    TCOSUP(IS,ID) = 2
-                   ELSE
-                    TCOSUP(IS,ID) = 3
-                   ENDIF
+                   IF (CTYP.EQ.'LINE')   TCOSUP(IS,ID) = 2
                   ENDIF
  55              CONTINUE
  54             CONTINUE
  52            CONTINUE
               ENDIF
  50          CONTINUE
-             CALL JEDETR('ASMSUP.GROUP_NO')
+             CALL JEDETR('&&ASMSUP.GROUP_NO')
             ENDIF
            ENDIF
           ENDIF      

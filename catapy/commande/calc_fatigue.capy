@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -12,7 +12,7 @@ def calc_fatigue_prod(TYPE_CALCUL,**args):
 
 CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant='n',
                   fr="Calcul d un cham de dommage ou d un cisaillement maximal dans le plan critique.",
-                  docu="U4.83.02-c",
+                  docu="U4.83.02-d",
             UIinfo={"groupes":("Post traitements",)},
 
          TYPE_CALCUL = SIMP(statut='o',typ='TXM',
@@ -35,15 +35,15 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
                                into=("WOHLER","MANSON_COFFIN","TAHERI_MANSON",
                                      "TAHERI_MIXTE",) ),
            MATER           =SIMP(statut='o',typ=(mater) ),
-           TAHERI_NAPPE    =SIMP(statut='f',typ=(fonction) ),
-           TAHERI_FONC     =SIMP(statut='f',typ=(fonction) ),
+           TAHERI_NAPPE    =SIMP(statut='f',typ=(nappe,formule) ),
+           TAHERI_FONC     =SIMP(statut='f',typ=(fonction,formule) ),
          ),
 
          b_fatigue_multi   =BLOC(condition = "TYPE_CALCUL == 'FATIGUE_MULTI'",
                                  fr="Plan critique dans le cas de la fatigue multiaxiale a grand nombre de cycles.",
            RESULTAT      =SIMP(statut='o',typ=(evol_elas, evol_noli) ),
            CHAM_MATER    =SIMP(statut='o',typ=(cham_mater) ),
-           CRITERE       =SIMP(statut='o',typ='TXM',into=("MATAKE",) ),
+           CRITERE       =SIMP(statut='o',typ='TXM',into=("MATAKE","DANG_VAN") ),
            METHODE       =SIMP(statut='o',typ='TXM',into=("CERCLE_EXACT",) ),
          ),
 

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 14/10/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 21/03/2003   AUTEUR ASSIRE A.ASSIRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
 C ----------------------------------------------------------------------
 C     BUT: TRAITER LE MOT CLEF CREA_GROUP_MA
 C          DE L'OPERATEUR: DEFI_GROUP
@@ -47,6 +48,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CHARACTER*8 MA,NOMA,NOGMA,KBID,NOGMA2,KPOS,OPTION,NOM1,NOM2,TOUT
+      CHARACTER*8 ALARM
       CHARACTER*16 CONCEP,CMD
       CHARACTER*24 LISMA
       CHARACTER*132 CARD
@@ -66,6 +68,8 @@ C     -----------------------------------
       CALL WKVECT('&&SSCGMA.LIK8','V V K8',NBK8,IALIK8)
       CALL WKVECT('&&SSCGMA.LII1','V V I',NBIS,IALII1)
       CALL WKVECT('&&SSCGMA.LII2','V V I',NBIS,IALII2)
+
+      CALL GETVTX(' ','ALARME',1,1,1,ALARM,NALAR)
 
       NBGNAJ = 0
       DO 210,IOCC = 1,NBGMP
@@ -244,8 +248,10 @@ C       -------------------
    80     CONTINUE
 
           IF (N.EQ.0) THEN
-            CALL UTMESS('A','SSCGMA','LE GROUP_MA :'//NOGMA//
+            IF (ALARM.EQ.'OUI') THEN
+              CALL UTMESS('A','SSCGMA','LE GROUP_MA :'//NOGMA//
      &                  'EST VIDE. ON NE LE CREE PAS.')
+            END IF
           ELSE
             CALL JECROC(JEXNOM(MA//'.GROUPEMA',NOGMA))
             CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOGMA),'LONMAX',N,KBID)
@@ -310,8 +316,10 @@ C       -------------------
   130     CONTINUE
 
           IF (N.EQ.0) THEN
-            CALL UTMESS('A','SSCGMA','LE GROUP_MA :'//NOGMA//
+            IF (ALARM.EQ.'OUI') THEN
+              CALL UTMESS('A','SSCGMA','LE GROUP_MA :'//NOGMA//
      &                  'EST VIDE. ON NE LE CREE PAS.')
+            END IF
           ELSE
             CALL JECROC(JEXNOM(MA//'.GROUPEMA',NOGMA))
             CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOGMA),'LONMAX',N,KBID)
@@ -366,8 +374,10 @@ C       -------------------
   180     CONTINUE
 
           IF (N.EQ.0) THEN
-            CALL UTMESS('A','SSCGMA','LE GROUP_MA :'//NOGMA//
+            IF (ALARM.EQ.'OUI') THEN
+              CALL UTMESS('A','SSCGMA','LE GROUP_MA :'//NOGMA//
      &                  'EST VIDE. ON NE LE CREE PAS.')
+            END IF
           ELSE
             CALL JECROC(JEXNOM(MA//'.GROUPEMA',NOGMA))
             CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOGMA),'LONMAX',N,KBID)
@@ -411,8 +421,10 @@ C               ----------------------------
 C        -- CREATION ET AFFECTATION DU GROUP_MA :
 C            ----------------------------------
           IF (NBMA.EQ.0) THEN
-            CALL UTMESS('A','SSCGMA','LE GROUP_MA :'//NOGMA//
+            IF (ALARM.EQ.'OUI') THEN
+              CALL UTMESS('A','SSCGMA','LE GROUP_MA :'//NOGMA//
      &                  'EST VIDE. ON NE LE CREE PAS.')
+            END IF
           ELSE
             CALL JEVEUO(LISMA,'L',IDLIMA)
 

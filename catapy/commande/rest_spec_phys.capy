@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 REST_SPEC_PHYS=OPER(nom="REST_SPEC_PHYS",op= 148,sd_prod=tabl_intsp,
-                    docu="U4.63.22-c",reentrant='n',
+                    docu="U4.63.22-d",reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
          regles=(AU_MOINS_UN('BASE_ELAS_FLUI','MODE_MECA'),),
          BASE_ELAS_FLUI  =SIMP(statut='f',typ=melasflu ),

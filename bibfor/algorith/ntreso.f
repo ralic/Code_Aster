@@ -6,7 +6,7 @@
      &                  COMPOR,LNUAR,JARCH,NUMFIN,NUMORD,PARA)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,7 +104,6 @@ C====
 
 C-----RECUPERATION DU NIVEAU D'IMPRESSION
 
-      CALL INFMAJ
       CALL INFNIV(IFM,NIV)
 
 C 1.2. ==> NOM DES STRUCTURES

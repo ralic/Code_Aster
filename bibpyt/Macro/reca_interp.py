@@ -1,4 +1,4 @@
-#@ MODIF reca_interp Macro  DATE 24/09/2002   AUTEUR PABHHHH N.TARDIEU 
+#@ MODIF reca_interp Macro  DATE 13/01/2003   AUTEUR PABHHHH N.TARDIEU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -118,10 +118,11 @@ class Sim_exp :
             L_J[i] = L_J[i]/L_J_init[i]
          except ZeroDivisionError:
             fic=open(os.getcwd()+'/fort.'+str(unite_resu),'a')
-            fic.write('\012 Problème de division par zéro dans la normalisation de la fonctionnelle.')
-            fic.write('\012 Une des valeurs de  la fonctionnelle initiale est nulle ou inférieure à la précision machine :'+ str(L_J_init))
+            fic.write('\n Problème de division par zéro dans la normalisation de la fonctionnelle.')
+            fic.write('\n Une des valeurs de la fonctionnelle initiale est nulle ou inférieure à la précision machine :'+ str(L_J_init))
             fic.close()
-            FIN()
+            self.cr.fatal("Problème de division par zéro dans la normalisation de la fonctionnelle.\nUne des valeurs de la fonctionnelle initiale est nulle ou inférieure à la précision machine :"+ str(L_J_init))
+            return
             
       J = Numeric.sum(L_J)
       J = J/len(L_J)
@@ -134,7 +135,7 @@ class Sim_exp :
          L_A.append(Numeric.zeros((len(self.resu_exp[i]),len(val)),Numeric.Float) )
       #calcul de la sensibilité 
       fic=open(os.getcwd()+'/fort.'+str(unite_resu),'a')
-      fic.write('\012Calcul de la sensibilité par rapport à :')
+      fic.write('\nCalcul de la sensibilité par rapport à :')
       fic.close() 
       for k in range(len(val)): #pour une colone de A
          h = val[k]*pas
@@ -151,10 +152,11 @@ class Sim_exp :
                   L_A[j][i,k] = -1*(F_interp[j][i] - F_perturbe_interp[j][i])/h
                except ZeroDivisionError:
                   fic=open(os.getcwd()+'/fort.'+str(unite_resu),'a')
-                  fic.write('\012 Probleme de division par zéro dans le calcul de la matrice de sensiblité')
-                  fic.write('\012 Le parametre '+para[k]+'est nul ou plus petit que la précision machine')
+                  fic.write('\n Probleme de division par zéro dans le calcul de la matrice de sensiblité')
+                  fic.write('\n Le parametre '+para[k]+'est nul ou plus petit que la précision machine')
                   fic.close() 
-                  FIN()
+                  self.cr.fatal("Probleme de division par zéro dans le calcul de la matrice de sensiblité.\n Le parametre "+para[k]+"est nul ou plus petit que la précision machine")
+                  return
       #on construit la matrice de sensiblité sous forme d'un tab num
       dim =[]
       for i in range(len(L_A)):

@@ -2,10 +2,10 @@
       IMPLICIT NONE
       INTEGER                    NBFON
       CHARACTER*(*)      NOMFON(*)
-      CHARACTER*8                       NOPARA, NORESU, INTERP, PROLGD
+      CHARACTER*16                      NOPARA, NORESU, INTERP, PROLGD
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/07/96   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,8 +54,8 @@ C
 C
       PROL(1:19) = NOMFON(1)
       CALL JEVEUO(PROL,'L',LPRO)
-      NOPARA = ZK8(LPRO+2)
-      NORESU = ZK8(LPRO+3)
+      NOPARA = ZK16(LPRO+2)
+      NORESU = ZK16(LPRO+3)
 C
       INTNON = .FALSE.
       INTLIN = .FALSE.
@@ -65,17 +65,17 @@ C
       DO 10 IOCC = 1, NBFON
          PROL(1:19) = NOMFON(IOCC)
          CALL JEVEUO(PROL,'L',LPRO)
-         IF ( ZK8(LPRO+1)(1:3) .EQ. 'NON' ) THEN
+         IF ( ZK16(LPRO+1)(1:3) .EQ. 'NON' ) THEN
             INTNON = .TRUE.
-         ELSEIF ( ZK8(LPRO+1)(1:3) .EQ. 'INT' ) THEN
+         ELSEIF ( ZK16(LPRO+1)(1:3) .EQ. 'INT' ) THEN
             INTNON = .TRUE.
-         ELSEIF ( ZK8(LPRO+1) .EQ. 'LIN LIN ' ) THEN
+         ELSEIF ( ZK16(LPRO+1) .EQ. 'LIN LIN ' ) THEN
             INTLIN = .TRUE.
-         ELSEIF ( ZK8(LPRO+1) .EQ. 'LIN LOG ' ) THEN
+         ELSEIF ( ZK16(LPRO+1) .EQ. 'LIN LOG ' ) THEN
             INTLIL = .TRUE.
-         ELSEIF ( ZK8(LPRO+1) .EQ. 'LOG LOG ' ) THEN
+         ELSEIF ( ZK16(LPRO+1) .EQ. 'LOG LOG ' ) THEN
             INTLOG = .TRUE.
-         ELSEIF ( ZK8(LPRO+1) .EQ. 'LOG LIN ' ) THEN
+         ELSEIF ( ZK16(LPRO+1) .EQ. 'LOG LIN ' ) THEN
             INTLOL = .TRUE.
          ENDIF
  10   CONTINUE
@@ -108,18 +108,18 @@ C
       DO 20 IOCC = 1, NBFON
          PROL(1:19) = NOMFON(IOCC)
          CALL JEVEUO(PROL,'L',LPRO)
-         IF ( ZK8(LPRO+4)(1:1) .EQ. 'E' ) THEN
+         IF ( ZK16(LPRO+4)(1:1) .EQ. 'E' ) THEN
             PROLGE = .TRUE.
-         ELSEIF ( ZK8(LPRO+4)(1:1) .EQ. 'C' ) THEN
+         ELSEIF ( ZK16(LPRO+4)(1:1) .EQ. 'C' ) THEN
             PROLGC = .TRUE.
-         ELSEIF ( ZK8(LPRO+4)(1:1) .EQ. 'L' ) THEN
+         ELSEIF ( ZK16(LPRO+4)(1:1) .EQ. 'L' ) THEN
             PROLGL = .TRUE.
          ENDIF
-         IF ( ZK8(LPRO+4)(2:2) .EQ. 'E' ) THEN
+         IF ( ZK16(LPRO+4)(2:2) .EQ. 'E' ) THEN
             PROLDE = .TRUE.
-         ELSEIF ( ZK8(LPRO+4)(2:2) .EQ. 'C' ) THEN
+         ELSEIF ( ZK16(LPRO+4)(2:2) .EQ. 'C' ) THEN
             PROLDC = .TRUE.
-         ELSEIF ( ZK8(LPRO+4)(2:2) .EQ. 'L' ) THEN
+         ELSEIF ( ZK16(LPRO+4)(2:2) .EQ. 'L' ) THEN
             PROLDL = .TRUE.
          ENDIF
  20   CONTINUE

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +35,7 @@ def comb_matr_asse_prod(COMB_R,COMB_C,CALC_AMOR_GENE,**args):
 
 COMB_MATR_ASSE=OPER(nom="COMB_MATR_ASSE",op=  31,sd_prod=comb_matr_asse_prod,
                     fr="Combinaison linéaire de matrices assemblées",
-                    docu="U4.72.01-g1",reentrant='f',
+                    docu="U4.72.01-g",reentrant='f',
             UIinfo={"groupes":("Résultats et champs",)},
          regles=(UN_PARMI('COMB_R','COMB_C','CALC_AMOR_GENE' ),),
          COMB_R          =FACT(statut='f',min=1,max='**',

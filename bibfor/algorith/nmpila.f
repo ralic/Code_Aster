@@ -1,9 +1,9 @@
       SUBROUTINE NMPILA(NEQ   , DU    , DU0   , DU1   , C     ,
-     &                  DTAU  , DUREF , NBATTE, NBEFFE, ETA   ,
+     &                  DTAU  , DUREF , NBEFFE, ETA   ,
      &                  LICCVG)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/09/2001   AUTEUR PBBHHPB P.BADEL 
+C MODIF ALGORITH  DATE 11/02/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,12 +20,12 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C RESPONSABLE ADBHHVV V.CANO
+C RESPONSABLE PBADEL P.BADEL
 
       IMPLICIT NONE
-      INTEGER  NEQ, NBATTE, LICCVG(NBATTE), NBEFFE
+      INTEGER  NEQ, LICCVG(2), NBEFFE
       REAL*8   DU(NEQ), DU0(NEQ), DU1(NEQ), DUREF(NEQ)
-      REAL*8   C(NEQ), DTAU, ETA(NBATTE)
+      REAL*8   C(NEQ), DTAU, ETA(2)
 
 C ----------------------------------------------------------------------
 C        PILOTAGE PAR LONGUEUR D'ARC :   P(U) = SQR(U.C.U) = DTAU
@@ -82,38 +82,11 @@ C    RACINE DOUBLE
 
 C    DEUX RACINES
       ELSE
-
-C      SI ON ATTEND 2 SOLUTIONS, OK
-        IF (NBATTE.EQ.2) THEN
-          NBEFFE    = 2
-          LICCVG(1) = 0
-          LICCVG(2) = 0
-          ETA(1)    = RAC(1)
-          ETA(2)    = RAC(2)
-      
-C      SI ON ATTEND 1 SOLUTION, CHOIX PAR MAX COS(DUREF,DU+DU0+DETA*DU1)
-        ELSE
-          NBEFFE    = 1
-          LICCVG(1) = 0
-          
-          SCA1   = 0.D0
-          SCA2   = 0.D0
-          NODUP1 = 0.D0
-          NODUP2 = 0.D0
-          DO 20 I = 1,NEQ
-            SCA1   = SCA1   + DUREF(I)*(DU(I)+DU0(I)+RAC(1)*DU1(I))
-            SCA2   = SCA2   + DUREF(I)*(DU(I)+DU0(I)+RAC(2)*DU1(I))
-            NODUP1 = NODUP1 + (DU(I)+DU0(I)+RAC(1)*DU1(I))**2
-            NODUP2 = NODUP2 + (DU(I)+DU0(I)+RAC(2)*DU1(I))**2
- 20       CONTINUE
-          CO1 = SCA1 / SQRT(NODUP1)
-          CO2 = SCA2 / SQRT(NODUP2)
-          IF (CO1.GE.CO2) THEN
-            ETA(1) = RAC(1)
-          ELSE
-            ETA(1) = RAC(2)
-          END IF
-        END IF
-        
+        NBEFFE    = 2
+        LICCVG(1) = 0
+        LICCVG(2) = 0
+        ETA(1)    = RAC(1)
+        ETA(2)    = RAC(2)
+              
       END IF
       END

@@ -1,13 +1,14 @@
       SUBROUTINE IRGMSH ( NOMCON, IFI, NBCHAM, CHAM, LRESU, NBORDR,
-     +                    ORDR, NBCMP, NOMCMP, NBMAT, NUMMAI,IOCC )
+     +                    ORDR, NBCMP, NOMCMP, NBMAT, NUMMAI, VERSIO,
+     +                    IOCC,LGMSH )
       IMPLICIT NONE
       INTEGER           IFI, NBCHAM, NBORDR, NBCMP, ORDR(*), NBMAT,
-     +                  NUMMAI(*),IOCC
-      LOGICAL           LRESU
+     +                  NUMMAI(*),IOCC,VERSIO
+      LOGICAL           LRESU,LGMSH
       CHARACTER*(*)     NOMCON, CHAM(*),NOMCMP(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/05/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 24/03/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +40,8 @@ C     NBCMP  : I   : NOMBRE DE COMPOSANTES A IMPRIMER
 C     NOMCMP : K*  : NOMS DES COMPOSANTES A IMPRIMER
 C     NBMAT  : I   : NOMBRE DE MAILLES A IMPRIMER
 C     NUMMAI : I   : NUMEROS DES MAILLES A IMPRIMER
+C     VERSIO : I   : =1 SI TOUTES LES MAILLES SONT DES TRIA3 OU DES TET4
+C                    =2 SINON ( LES MAILLLES SONT LINEAIRES)
 C     IOCC   : I   : NUM OCCURRENCE MOT CLE FACTERU RESU
 C
 C     ------------------------------------------------------------------
@@ -60,10 +63,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32      JEXNUM, JEXNOM, JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       IOR, ICH, IRET, IBID, IERD, NBMA
-      INTEGER       NBPOI, NBSEG, NBTRI, NBTET
+      INTEGER       NBPOI, NBSEG, NBTRI, NBQUA, NBTET, NBPYR, NBPRI, 
+     +              NBHEX
       INTEGER       JCOOR, JCONX, JPOIN, JPARA, IAD
       CHARACTER*8   TYCH, NOMA, K8B, NOMAOU
-      CHARACTER*24  NJVPOI, NJVSEG, NJVTRI, NJVTET
+      CHARACTER*24  NJVPOI, NJVSEG, NJVTRI, NJVQUA, NJVTET, NJVPYR,
+     +              NJVPRI, NJVHEX
       CHARACTER*19  NOCH19
 C
 C     ------------------------------------------------------------------
@@ -72,8 +77,9 @@ C
 C
 C --- ECRITURE DE L'ENTETE DU FICHIER AU FORMAT GMSH
 C
-      IF (IOCC.EQ.1) THEN
-          CALL IRGMPF ( IFI )
+      IF (.NOT.LGMSH) THEN
+          CALL IRGMPF ( IFI, VERSIO )
+          LGMSH = .TRUE.
       ENDIF
 C
 C
@@ -115,11 +121,31 @@ C
       NJVPOI = '&&OP0001_POI'
       NJVSEG = '&&OP0001_SEG'
       NJVTRI = '&&OP0001_TRI'
+      NJVQUA = '&&OP0001_QUA'
       NJVTET = '&&OP0001_TET'
+      NJVPYR = '&&OP0001_PYR'
+      NJVPRI = '&&OP0001_PRI'
+      NJVHEX = '&&OP0001_HEX'
       NOMAOU = '&&MAILLA'
 C
-      CALL IRGMMA ( NOMA, NOMAOU, NBMAT, NUMMAI, 'V', NJVPOI, NJVSEG,
-     +              NJVTRI, NJVTET, NBPOI, NBSEG, NBTRI, NBTET )
+      NBPOI = 0
+      NBSEG = 0
+      NBTRI = 0
+      NBQUA = 0
+      NBTET = 0
+      NBPYR = 0
+      NBPRI = 0
+      NBHEX = 0
+C
+      IF (VERSIO.EQ.1) THEN
+        CALL IRGMMA ( NOMA, NOMAOU, NBMAT, NUMMAI, 'V', NJVPOI, NJVSEG,
+     +                NJVTRI, NJVTET, NBPOI, NBSEG, NBTRI, NBTET )
+      ELSEIF (VERSIO.EQ.2) THEN
+        CALL IRGMM2 ( NOMA, NOMAOU, NBMAT, NUMMAI, 'V', NJVPOI, NJVSEG,
+     +                NJVTRI, NJVQUA, NJVTET, NJVPYR, NJVPRI, NJVHEX,
+     +                NBPOI, NBSEG, NBTRI, NBQUA, NBTET, NBPYR, NBPRI,
+     +                NBHEX )
+      ENDIF
 C
       CALL JEVEUO(NOMAOU//'.COORDO    .VALE'        ,'L',JCOOR)
       CALL JEVEUO(NOMAOU//'.CONNEX'                 ,'L',JCONX)
@@ -149,16 +175,20 @@ C
          IF (TYCH(1:4).EQ.'NOEU' ) THEN
             CALL IRGMCN (CHAM(ICH),IFI,NOMCON,ORDR,NBORDR,ZR(JCOOR),
      +                   ZI(JCONX),ZI(JPOIN),NJVPOI,NJVSEG,NJVTRI,
-     +                   NJVTET,NBPOI,NBSEG,NBTRI,NBTET,NBCMP,NOMCMP,
-     +                   LRESU,ZR(JPARA))
+     +                   NJVQUA,NJVTET,NJVPYR,NJVPRI,NJVHEX,NBPOI,
+     +                   NBSEG,NBTRI,NBQUA,NBTET,NBPYR,NBPRI,NBHEX,
+     +                   NBCMP,NOMCMP,LRESU,ZR(JPARA),VERSIO)
 C
 C ------ TRAITEMENT DU CAS CHAM_ELEM AUX NOEUDS:
 C
          ELSE IF (TYCH(1:4).EQ.'ELNO' ) THEN
             CALL IRGMCE (CHAM(ICH),IFI,NOMCON,ORDR,NBORDR,ZR(JCOOR),
      +                   ZI(JCONX),ZI(JPOIN),NJVPOI,NJVSEG,NJVTRI,
-     +                   NJVTET,NBPOI,NBSEG,NBTRI,NBTET,NBCMP,NOMCMP,
-     +                   LRESU,ZR(JPARA),NOMAOU,NOMA)
+     +                   NJVQUA,NJVTET,NJVPYR,NJVPRI,NJVHEX,NBPOI,
+     +                   NBSEG,NBTRI,NBQUA,NBTET,NBPYR,NBPRI,NBHEX,
+     +                   NBCMP,NOMCMP,LRESU,ZR(JPARA),NOMAOU,NOMA,
+     +                   VERSIO)
+
 C
 C ------ TRAITEMENT DU CAS CHAM_ELEM AUX GAUSS:
 C
@@ -166,8 +196,10 @@ C
      +            TYCH(1:4).EQ.'ELEM' ) THEN
             CALL IRGMCG (CHAM(ICH),IFI,NOMCON,ORDR,NBORDR,ZR(JCOOR),
      +                   ZI(JCONX),ZI(JPOIN),NJVPOI,NJVSEG,NJVTRI,
-     +                   NJVTET,NBPOI,NBSEG,NBTRI,NBTET,NBCMP,NOMCMP,
-     +                   LRESU,ZR(JPARA),NOMAOU,NOMA)
+     +                   NJVQUA,NJVTET,NJVPYR,NJVPRI,NJVHEX,NBPOI,
+     +                   NBSEG,NBTRI,NBQUA,NBTET,NBPYR,NBPRI,NBHEX,
+     +                   NBCMP,NOMCMP,LRESU,ZR(JPARA),NOMAOU,NOMA,
+     +                   VERSIO)
 C
 C ------ AUTRE: PAS D'IMPRESSION
 C
@@ -180,7 +212,11 @@ C
       CALL JEDETR ( NJVPOI )
       CALL JEDETR ( NJVSEG )
       CALL JEDETR ( NJVTRI )
+      CALL JEDETR ( NJVQUA )
       CALL JEDETR ( NJVTET )
+      CALL JEDETR ( NJVPYR )
+      CALL JEDETR ( NJVPRI )
+      CALL JEDETR ( NJVHEX )
       CALL JEDETR ( '&&IRGMSH.PARA' )
       CALL JEDETC ( 'V', NOMAOU, 1 )
 C

@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/09/2002   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF ELEMENTS  DATE 31/03/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,9 +77,9 @@ C
       CHARACTER*4        NOMPAR(4)
       CHARACTER*8        K8B, MA, TYPEMA, TYPMAV, ELREFE
 
-      CHARACTER*8        PRF,  FXF, FYF, FZF, ELREF2
+      CHARACTER*8        PRF,  FXF, FYF, FZF, ELREF2, NOMGD2
       CHARACTER*16       PHENOM
-      CHARACTER*19       MO, SIGMA, CARTE1, NOMGD1, CARTE2, NOMGD2
+      CHARACTER*19       MO, SIGMA, CARTE1, NOMGD1, CARTE2
       CHARACTER*24       CARAC, CARAC2, CHVAL, CHVAL2
 
 
@@ -99,11 +99,13 @@ C    PENTAEDRES A 6 ET 15 NOEUDS
      &         9*0,                    9*0/
 C    TETRAEDRES A 4 ET 10 NOEUDS
 C
-      FAUX = .FALSE.
-      ZERO = 0.D0
-C
+C     ------------------------------------------------------------------
       CALL JEMARQ()
       CALL ELREF1(ELREFE)
+C
+      FAUX = .FALSE.
+      ZERO = 0.D0
+      NOMGD2 = ' '
 C
       CARAC = '&INEL.'//ELREFE//'.CARACTE'
       CALL JEVETE(CARAC,'L',JIN)
@@ -353,8 +355,6 @@ C
         NORSIG = NORSIG + NOR * POID
   200 CONTINUE
 C
-
-
 C
 C ----------- CALCUL DU DEUXIEME ET TROISIEME TERME DE L'ERREUR ------
 C
@@ -644,7 +644,7 @@ C            LA CARTE A ETE ETENDUE
                CALL JEVEUO (CARTE2//'.PTMA','L',IAPTMA)
                IENT2 = ZI(IAPTMA -1 +IMAV)
             ENDIF
-            NOMGD2 = ZK24(IREF2+4)
+            NOMGD2 = ZK24(IREF2+4)(1:8)
           ENDIF
 C
             PRES = .FALSE.
@@ -698,6 +698,7 @@ C
             PRES = .TRUE.
             PRF = ZK8(IAVA2-1+(IENT2-1)*NCMPM2+1)
 C
+            PR(IPG) = 0.D0
             IF (PRF .NE. '&FOZERO' ) THEN
               NOMPAR(1) = 'X'
               NOMPAR(2) = 'Y'
@@ -731,6 +732,9 @@ C
              FYF = ZK8(IAVA1-1+(IENT1-1)*NCMPM1+2)
              FZF = ZK8(IAVA1-1+(IENT1-1)*NCMPM1+3)
 C
+             FX(IPG) = 0.D0
+             FY(IPG) = 0.D0
+             FZ(IPG) = 0.D0
            IF (FXF .NE. '&FOZERO' .OR. FYF .NE. '&FOZERO'
      &         .OR.FZF .NE. '&FOZERO' ) THEN
 C
@@ -770,8 +774,6 @@ C
 C
          IF(NORM.LT.0.D0) NORM=-NORM
          TER3 = TER3 + SQRT(HF)*SQRT(NORM)
-
-
 C
 C
 C ---------- CALCUL DU DEUXIEME TERME ----------------------------------
@@ -877,5 +879,6 @@ C
       ZR(IERR) = ERREST
       ZR(IERR+1) = NUEST
       ZR(IERR+2) = SIGCAL
+C
       CALL JEDEMA()
       END

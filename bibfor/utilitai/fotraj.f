@@ -5,7 +5,7 @@
       CHARACTER*19             NOMFX,NOMFY,NOMFON,    LISTR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/08/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,8 +43,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER        IRET, LFX, LFY, LPRO, NBNOVA, LNOVA, JVAL, NBVAL,
      +               NBV, LVAR, LFON, IVAL, LXLGUT, LTIT
-      CHARACTER*8    K8B, NOMPAR, NOPARX, NORESY
-      CHARACTER*16   NOMCMD
+      CHARACTER*8    K8B
+      CHARACTER*16   NOMCMD, NOMPAR, NOPARX, NORESY
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -57,7 +57,7 @@ C
 C     --- FONCTION DEFINISSANT LES X ---
 C
       CALL JEVEUO ( NOMFX//'.PROL', 'L', LPRO )
-      IF ( ZK8(LPRO) .EQ. 'INTERPRE' )  THEN
+      IF ( ZK16(LPRO) .EQ. 'INTERPRE' )  THEN
          CALL JEEXIN ( NOMFX//'.NOVA', IRET )
          IF ( IRET .EQ. 0 ) THEN
             IER = IER + 1
@@ -90,8 +90,8 @@ C
             NOPARX = 'INST'
          ENDIF
 C
-      ELSEIF ( ZK8(LPRO) .EQ. 'FONCTION' )  THEN
-         NOMPAR = ZK8(LPRO+2)
+      ELSEIF ( ZK16(LPRO) .EQ. 'FONCTION' )  THEN
+         NOMPAR = ZK16(LPRO+2)
          IF ( IND.NE.0 ) THEN
             CALL JEVEUO ( LISTR//'.VALE', 'L', JVAL)
             CALL JELIRA ( LISTR//'.VALE', 'LONUTI', NBVAL, K8B )
@@ -113,7 +113,7 @@ C
                   ZR(LVAR+IVAL) = ZR(JVAL+NBVAL+IVAL)
  22            CONTINUE
             ELSE
-               NOMPAR = ZK8(LPRO+2)
+               NOMPAR = ZK16(LPRO+2)
                CALL JELIRA ( NOMFY//'.VALE', 'LONMAX', NBVAL, K8B )
                CALL JEVEUO ( NOMFY//'.VALE', 'L', JVAL )
                CALL WKVECT ( NOMFON//'.VALE', 'V V R8', NBVAL, LVAR )
@@ -125,7 +125,7 @@ C
  24            CONTINUE
             ENDIF
          ENDIF
-         NOPARX = ZK8(LPRO+3)
+         NOPARX = ZK16(LPRO+3)
       ELSE
          IER = IER + 1
          CALL UTMESS('A',NOMCMD,'ON NE TRAITE QUE LES FONCTIONS.')
@@ -135,7 +135,7 @@ C
 C     --- FONCTION DEFINISSANT LES Y ---
 C      
       CALL JEVEUO ( NOMFY//'.PROL', 'L', LPRO )
-      IF ( ZK8(LPRO) .EQ. 'INTERPRE' )  THEN
+      IF ( ZK16(LPRO) .EQ. 'INTERPRE' )  THEN
          CALL JEEXIN(NOMFY//'.NOVA',IRET)
          IF ( IRET.EQ.0 ) THEN
             IER = IER + 1
@@ -163,9 +163,9 @@ C
  30         CONTINUE
             NORESY = 'TOUTRESU'
          ENDIF
-      ELSEIF ( ZK8(LPRO) .EQ. 'FONCTION' )  THEN
-         NOMPAR = ZK8(LPRO+2)
-         NORESY = ZK8(LPRO+3)
+      ELSEIF ( ZK16(LPRO) .EQ. 'FONCTION' )  THEN
+         NOMPAR = ZK16(LPRO+2)
+         NORESY = ZK16(LPRO+3)
          IF ( IND .NE. 0 ) THEN
             CALL JEVEUO ( LISTR//'.VALE', 'L', JVAL)
             DO 40 IVAL = 0, NBVAL-1
@@ -192,12 +192,12 @@ C
          GOTO 9999
       ENDIF
 C
-      CALL WKVECT ( NOMFON//'.PROL', 'V V K8', 5, LPRO )
-      ZK8(LPRO+0) = 'FONCTION'
-      ZK8(LPRO+1) = 'LIN LIN '
-      ZK8(LPRO+2) =  NOPARX
-      ZK8(LPRO+3) =  NORESY
-      ZK8(LPRO+4) = 'EE      '
+      CALL WKVECT ( NOMFON//'.PROL', 'V V K16', 5, LPRO )
+      ZK16(LPRO+0) = 'FONCTION'
+      ZK16(LPRO+1) = 'LIN LIN '
+      ZK16(LPRO+2) =  NOPARX
+      ZK16(LPRO+3) =  NORESY
+      ZK16(LPRO+4) = 'EE      '
 C
       CALL WKVECT ( NOMFON//'.TITR', 'V V K80', 1, LTIT )
       ZK80(LTIT) =

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ def fact_grad_prod(MATR_ASSE,**args):
   if AsType(MATR_ASSE) == matr_asse_pres_r : return matr_asse_pres_r
   raise AsException("type de concept resultat non prevu")
 
-FACT_GRAD=OPER(nom="FACT_GRAD",op=85,sd_prod=fact_grad_prod,docu="U4.55.03-e",
+FACT_GRAD=OPER(nom="FACT_GRAD",op=85,sd_prod=fact_grad_prod,docu="U4.55.03-f",
             UIinfo={"groupes":("Résolution",)},
                fr="Préconditionnement pour résolution par gradient conjugué",
                reentrant='n',

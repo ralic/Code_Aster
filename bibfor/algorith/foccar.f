@@ -5,7 +5,7 @@
       CHARACTER*19        NOMFON, SORTIE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,7 +52,8 @@ C
       INTEGER       INI,I,K,LPRO,NBPARF,LPAREF, NBVAL, LONVAL
       INTEGER       LVAL,LVAR,LPARA,LPROL,LONPAR,LONT
       REAL*8        SUM, INIT
-      CHARACTER*8   CBID, TYPREF
+      CHARACTER*8   CBID
+      CHARACTER*16  TYPREF
       CHARACTER*24  PROL, PARA, VALE
 C DEB ------------------------------------------------------------------
 C
@@ -67,7 +68,7 @@ C
       PARA( 1:19) = NOMFON
       VALE( 1:19) = NOMFON
       CALL JEVEUO(PROL,'L',LPRO)
-      TYPREF =  ZK8(LPRO)
+      TYPREF =  ZK16(LPRO)
  
 C     -- ON TRAITE UNE NAPPE ----
  
@@ -86,9 +87,9 @@ C        -- INITIALISATION DE LA NAPPE RESULTAT SI INI=1
 10          CONTINUE
             PROL(1:19)=SORTIE
             LONPAR=6+2*NBPARF
-            CALL WKVECT(PROL,BASE//' V K8',LONPAR,LPROL)
+            CALL WKVECT(PROL,BASE//' V K16',LONPAR,LPROL)
             DO 11 I=0,LONPAR-1
-                ZK8(LPROL+I)   = ZK8(LPRO+I)
+                ZK16(LPROL+I)   = ZK16(LPRO+I)
 11          CONTINUE
             VALE( 1:19) = SORTIE
             CALL JECREC(VALE,BASE//' V R','NU','CONTIG',

@@ -1,7 +1,7 @@
       SUBROUTINE RCTYPE(IMATE,NBPU,NOMPU,VALPU,RESU,TYPE)
 C -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/02/99   AUTEUR CIBHHME R.MEDDOURI 
+C MODIF MODELISA  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,20 +82,20 @@ C DEB ------------------------------------------------------------------
 C
       JPRO = ZI(IPIF+1)
 C
-      IF (ZK8(JPRO).EQ.'NAPPE') THEN
+      IF (ZK16(JPRO).EQ.'NAPPE') THEN
         NBPARA = 2
-        NOMPF(1) = ZK8(JPRO+2)
-        NOMPF(2) = ZK8(JPRO+5)
+        NOMPF(1) = ZK16(JPRO+2)
+        NOMPF(2) = ZK16(JPRO+5)
       ELSE
         NBPARA = 1
-        NOMPF(1) = ZK8(JPRO+2)
+        NOMPF(1) = ZK16(JPRO+2)
         IF(NOMPF(1).EQ.'EPSI') THEN
            RESU = VALPU(1)
            TYPE = NOMPU(1)
            GOTO 9999
         ELSE
            CALL UTDEBM('F','RCTYPE','ERREUR DE PROGRAMMATION')
-           CALL UTIMPK('L','TYPE DE FONCTION NON VALIDE',1,ZK8(JPRO))
+           CALL UTIMPK('L','TYPE DE FONCTION NON VALIDE',1,ZK16(JPRO))
            CALL UTFINM()
         ENDIF
       ENDIF

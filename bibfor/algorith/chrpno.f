@@ -1,6 +1,6 @@
       SUBROUTINE CHRPNO( CHAMP1, REPERE, NBCMP, ICHAM, TYPE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/01/2002   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 31/01/2003   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C     ARGUMENTS :
 C     CHAMP1   IN  K16  : NOM DU CHAMP A TRAITER
 C     REPERE   IN  K8   : TYPE DE REPERE (UTILISATEUR OU CYLINDRIQUE)
 C     NBCMP    IN  I    : NOMBRE DE COMPOSANTES A TRAITER
-C     ICHAM    IN  I    : NUMERO DE CHAMP
+C     ICHAM    IN  I    : NUMERO D'OCCURRENCE
 C ----------------------------------------------------------------------
 C ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------------
       INTEGER           ZI
@@ -53,15 +53,23 @@ C
       INTEGER      AXYZM , II    , NBMA  , IPT2  , IER   , INEL
       INTEGER      JCNSD , JCNSK , JCNSV , JCONX1, JCONX2, NBPT
       INTEGER      IPT   , INOT  , NDIM  , LICMPU(6), JCNSL
+      INTEGER      NBN, IDNOEU, NBNOEU, INOE
       REAL*8       ANGNOT(3), PGL(3,3), VALER(6), VALED(6)
       REAL*8       ORIG(3)  , AXEZ(3) , AXER(3) , AXET(3)
       REAL*8       EPSI     , PROSCA  , XNORMR  , VALET(6)
       REAL*8       R8DGRD, PGL2(3,3)
-      CHARACTER*8  MA    , K8B
+      CHARACTER*8  MA    , K8B, TYPMCL(2)
+      CHARACTER*16 MOTCLE(2)
       CHARACTER*19 CHAMS1,CHAMS0
+      CHARACTER*24 MESNOE
 
       CALL JEMARQ()
       EPSI = 1.0D-6
+      MOTCLE(1) = 'GROUP_NO'
+      TYPMCL(1) = 'GROUP_NO'
+      MOTCLE(2) = 'NOEUD'
+      TYPMCL(2) = 'NOEUD'
+      MESNOE = '&&CHRPEL.MES_NOEUDS'
 C
       IF (NBCMP.GT.0) THEN
          CALL WKVECT('&&CHRPNO.NOM_CMP','V V K8',NBCMP,JCMP)
@@ -90,17 +98,31 @@ C
       IF (K8B.EQ.'OUI') NDIM = 2
       CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMA,K8B,IER)
 C
+      CALL RELIEM(' ',MA,'NU_NOEUD','MODI_CHAM',ICHAM,2,MOTCLE,TYPMCL,
+     +                                                  MESNOE,NBN)
+      IF (NBN.GT.0) THEN
+        NBNOEU = NBN
+        CALL JEVEUO(MESNOE,'L',IDNOEU)
+      ELSE
+        NBNOEU = NBNO
+      ENDIF
+C
 C    SI UNE DES COMPOSANTES EST ABSENTE SUR UN NOEUD 
 C    IL EST IGNORE
 C
-      DO 110 INO=1,NBNO
+      DO 110 INO=1,NBNOEU
+         IF (NBN.NE.0) THEN
+            INOE = ZI(IDNOEU+INO-1)
+         ELSE
+            INOE = INO
+         ENDIF
          DO 111 II=1,NBCMP
-            IF (.NOT.ZL(JCNSL-1+(INO-1)*NBCMP+II)) GOTO 112
+            IF (.NOT.ZL(JCNSL-1+(INOE-1)*NBCMP+II)) GOTO 112
 111      CONTINUE
          GOTO 110
 112      CONTINUE
          DO 114 II=1,NBCMP
-            ZL(JCNSL-1+(INO-1)*NBCMP+II)=.FALSE.
+            ZL(JCNSL-1+(INOE-1)*NBCMP+II)=.FALSE.
 114      CONTINUE
 110   CONTINUE
 C
@@ -147,9 +169,14 @@ C
          CALL MATROT(ANGNOT,PGL)
          IF (TYPE(1:4).EQ.'TENS') THEN
             DO 10 INO=1,NBNO
-               IF (.NOT.ZL(JCNSL-1+(INO-1)*NBCMP+1)) GOTO 10
+               IF (NBN.NE.0) THEN
+                 INOE = ZI(IDNOEU+INO-1)
+               ELSE
+                 INOE = INO
+               ENDIF
+               IF (.NOT.ZL(JCNSL-1+(INOE-1)*NBCMP+1)) GOTO 10
                DO 11 II=1,NBCMP
-                  VALET(II)=ZR(JCNSV-1+(INO-1)*NBCMP+II)
+                  VALET(II)=ZR(JCNSV-1+(INOE-1)*NBCMP+II)
  11            CONTINUE
                VALED(1) = VALET(1)
                VALED(2) = VALET(4)
@@ -165,16 +192,21 @@ C
                VALER(5) = VALET(4)
                VALER(6) = VALET(5)
                DO 12 II=1,NBCMP
-                  ZR(JCNSV-1+(INO-1)*NBCMP+II) = VALER(II)
+                  ZR(JCNSV-1+(INOE-1)*NBCMP+II) = VALER(II)
  12            CONTINUE
  
  10         CONTINUE
          ELSE
 C VECTEUR
             DO 13 INO=1,NBNO
-               IF (.NOT.ZL(JCNSL-1+(INO-1)*NBCMP+1)) GOTO 13
+               IF (NBN.NE.0) THEN
+                 INOE = ZI(IDNOEU+INO-1)
+               ELSE
+                 INOE = INO
+               ENDIF
+               IF (.NOT.ZL(JCNSL-1+(INOE-1)*NBCMP+1)) GOTO 13
                DO 14 II=1,NBCMP
-                  VALED(II)=ZR(JCNSV-1+(INO-1)*NBCMP+II)
+                  VALED(II)=ZR(JCNSV-1+(INOE-1)*NBCMP+II)
  14            CONTINUE
                IF (NDIM.EQ.3) THEN
                   CALL UTPVGL(1,NBCMP,PGL,VALED,VALER)
@@ -182,7 +214,7 @@ C VECTEUR
                   CALL UT2VGL(1,NBCMP,PGL,VALED,VALER)
                ENDIF
                DO 15 II=1,NBCMP
-                  ZR(JCNSV-1+(INO-1)*NBCMP+II) = VALER(II)
+                  ZR(JCNSV-1+(INOE-1)*NBCMP+II) = VALER(II)
  15            CONTINUE
  13         CONTINUE
          ENDIF
@@ -226,10 +258,15 @@ C REPERE CYLINDRIQUE
             ENDIF
             
             DO 16 INO = 1 , NBNO
-               AXER(1) = ZR(AXYZM+3*(INO-1)  ) - ORIG(1)
-               AXER(2) = ZR(AXYZM+3*(INO-1)+1) - ORIG(2)
+               IF (NBN.NE.0) THEN
+                 INOE = ZI(IDNOEU+INO-1)
+               ELSE
+                 INOE = INO
+               ENDIF
+               AXER(1) = ZR(AXYZM+3*(INOE-1)  ) - ORIG(1)
+               AXER(2) = ZR(AXYZM+3*(INOE-1)+1) - ORIG(2)
                IF (NDIM.EQ.3) THEN
-                  AXER(3) = ZR(AXYZM+3*(INO-1)+2) - ORIG(3)
+                  AXER(3) = ZR(AXYZM+3*(INOE-1)+2) - ORIG(3)
                ELSE
                   AXER(3) = 0.0D0
                ENDIF
@@ -244,7 +281,7 @@ C REPERE CYLINDRIQUE
                XNORMR = 0.0D0
                CALL NORMEV(AXER,XNORMR)
                IF (XNORMR .LT. EPSI) THEN
-                  CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),K8B)
+                  CALL JENUNO(JEXNUM(MA//'.NOMNOE',INOE),K8B)
                   CALL UTMESS('A',K8B,'LE NOEUD SE TROUVE SUR L AXE'
      +            //' DU REPERE CYLINDRIQUE. ON PREND LE NOEUD'
      +            //' MOYEN DE L ELEMENT.')
@@ -255,7 +292,7 @@ C REPERE CYLINDRIQUE
                      NBPT = ZI(JCONX2-1+INEL+1)-ZI(JCONX2-1+INEL)
                      DO 18 IPT = 1, NBPT
                         INOT = ZI(JCONX1-1+ZI(JCONX2-1+INEL)+IPT-1)
-                        IF (INOT.EQ.INO) THEN
+                        IF (INOT.EQ.INOE) THEN
                            AXER(1) = 0.0D0
                            AXER(2) = 0.0D0
                            AXER(3) = 0.0D0
@@ -280,7 +317,7 @@ C REPERE CYLINDRIQUE
 C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                   IF (IPT2.EQ.0) THEN
                      DO 117 II=1,NBCMP
-                        ZL(JCNSL-1+(INO-1)*NBCMP+II)=.FALSE.
+                        ZL(JCNSL-1+(INOE-1)*NBCMP+II)=.FALSE.
 117                  CONTINUE
                      GOTO 16
                   ENDIF
@@ -299,7 +336,7 @@ C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                   XNORMR = 0.0D0
                   CALL NORMEV(AXER,XNORMR)
                   IF (XNORMR .LT. EPSI) THEN
-                     CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),K8B)
+                     CALL JENUNO(JEXNUM(MA//'.NOMNOE',INOE),K8B)
                      CALL UTDEBM('F','CHRPNO','NOEUD SUR L''AXE_Z')
                      CALL UTIMPK('L',' NOEUD : ',1,K8B)
                      CALL UTFINM()
@@ -313,9 +350,9 @@ C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                   PGL(2,I) = AXEZ(I)
                   PGL(3,I) = AXET(I)
  20            CONTINUE
-               IF (.NOT.ZL(JCNSL-1+(INO-1)*NBCMP+1)) GOTO 16
+               IF (.NOT.ZL(JCNSL-1+(INOE-1)*NBCMP+1)) GOTO 16
                DO 21 II=1,NBCMP
-                  VALET(II)=ZR(JCNSV-1+(INO-1)*NBCMP+II)
+                  VALET(II)=ZR(JCNSV-1+(INOE-1)*NBCMP+II)
  21            CONTINUE
                VALED(1) = VALET(1)
                VALED(2) = VALET(4)
@@ -331,7 +368,7 @@ C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                VALER(5) = VALET(4)
                VALER(6) = VALET(5)
                DO 22 II=1,NBCMP
-                  ZR(JCNSV-1+(INO-1)*NBCMP+II)=VALER(LICMPU(II))
+                  ZR(JCNSV-1+(INOE-1)*NBCMP+II)=VALER(LICMPU(II))
  22            CONTINUE
  16         CONTINUE
          ELSE
@@ -342,10 +379,15 @@ C VECTEUR
                LICMPU(3)=2
             ENDIF
             DO 23 INO = 1 , NBNO
-               AXER(1) = ZR(AXYZM+3*(INO-1)  ) - ORIG(1)
-               AXER(2) = ZR(AXYZM+3*(INO-1)+1) - ORIG(2)
+               IF (NBN.NE.0) THEN
+                 INOE = ZI(IDNOEU+INO-1)
+               ELSE
+                 INOE = INO
+               ENDIF
+               AXER(1) = ZR(AXYZM+3*(INOE-1)  ) - ORIG(1)
+               AXER(2) = ZR(AXYZM+3*(INOE-1)+1) - ORIG(2)
                IF (NDIM.EQ.3) THEN
-                  AXER(3) = ZR(AXYZM+3*(INO-1)+2) - ORIG(3)
+                  AXER(3) = ZR(AXYZM+3*(INOE-1)+2) - ORIG(3)
                ELSE
                   AXER(3) = 0.0D0
                ENDIF
@@ -360,7 +402,7 @@ C VECTEUR
                XNORMR = 0.0D0
                CALL NORMEV(AXER,XNORMR)
                IF (XNORMR .LT. EPSI) THEN
-                  CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),K8B)
+                  CALL JENUNO(JEXNUM(MA//'.NOMNOE',INOE),K8B)
                   CALL UTMESS('A',K8B,'LE NOEUD SE TROUVE SUR L AXE'
      +            //' DU REPERE CYLINDRIQUE. ON PREND LE NOEUD'
      +            //' MOYEN DE L ELEMENT.')
@@ -371,7 +413,7 @@ C VECTEUR
                      NBPT = ZI(JCONX2-1+INEL+1)-ZI(JCONX2-1+INEL)
                      DO 25 IPT = 1, NBPT
                         INOT = ZI(JCONX1-1+ZI(JCONX2-1+INEL)+IPT-1)
-                        IF (INOT.EQ.INO) THEN
+                        IF (INOT.EQ.INOE) THEN
                            AXER(1) = 0.0D0
                            AXER(2) = 0.0D0
                            AXER(3) = 0.0D0
@@ -396,7 +438,7 @@ C VECTEUR
 C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                   IF (IPT2.EQ.0) THEN
                      DO 124 II=1,NBCMP
-                        ZL(JCNSL-1+(INO-1)*NBCMP+II)=.FALSE.
+                        ZL(JCNSL-1+(INOE-1)*NBCMP+II)=.FALSE.
 124                  CONTINUE
                      GOTO 23
                   ENDIF
@@ -415,7 +457,7 @@ C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                   XNORMR = 0.0D0
                   CALL NORMEV(AXER,XNORMR)
                   IF (XNORMR .LT. EPSI) THEN
-                     CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),K8B)
+                     CALL JENUNO(JEXNUM(MA//'.NOMNOE',INOE),K8B)
                      CALL UTDEBM('F','CHRPNO','NOEUD SUR L''AXE_Z')
                      CALL UTIMPK('L',' NOEUD : ',1,K8B)
                      CALL UTFINM()
@@ -427,9 +469,9 @@ C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                   PGL(2,I) = AXEZ(I)
                   PGL(3,I) = AXET(I)
  27            CONTINUE
-               IF (.NOT.ZL(JCNSL-1+(INO-1)*NBCMP+1)) GOTO 23
+               IF (.NOT.ZL(JCNSL-1+(INOE-1)*NBCMP+1)) GOTO 23
                DO 28 II=1,NBCMP
-                  VALED(II)=ZR(JCNSV-1+(INO-1)*NBCMP+II)
+                  VALED(II)=ZR(JCNSV-1+(INOE-1)*NBCMP+II)
  28            CONTINUE
                IF (NDIM.EQ.3) THEN
                   CALL UTPVGL(1,NBCMP,PGL,VALED,VALER)
@@ -437,7 +479,7 @@ C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                   CALL UT2VGL(1,NBCMP,PGL,VALED,VALER)
                ENDIF
                DO 29 II=1,NBCMP
-                  ZR(JCNSV-1+(INO-1)*NBCMP+II)=VALER(LICMPU(II))
+                  ZR(JCNSV-1+(INOE-1)*NBCMP+II)=VALER(LICMPU(II))
  29            CONTINUE
  23         CONTINUE
          ENDIF
@@ -445,6 +487,7 @@ C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
       CALL CNSCNO(CHAMS1,' ','G',CHAMP1)
       CALL DETRSD('CHAM_NO_S',CHAMS1)
       CALL JEDETR('&&CHRPNO.NOM_CMP')
+      CALL JEDETR(MESNOE)
  9999 CONTINUE
       CALL JEDEMA( )
 C

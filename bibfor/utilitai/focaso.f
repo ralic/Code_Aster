@@ -8,7 +8,7 @@
       CHARACTER*1                                                BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/04/97   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,13 +132,13 @@ C
 C     --- CREATION DES TABLEAUX DES VALEURS DE FONCTION DE LA NAPPE ---
       PROL( 1:19) = SPECTR
       PROL(20:24) = '.PROL'
-      CALL WKVECT(PROL,BASE//' V K8',6+2*NBAMOR,LPROL)
-      ZK8(LPROL)   = 'NAPPE   '
-      ZK8(LPROL+1) = 'LIN LOG '
-      ZK8(LPROL+2) = 'AMOR    '
-      ZK8(LPROL+3) = NATURE(1:4)
-      ZK8(LPROL+4) = 'EE      '
-      ZK8(LPROL+5) = 'FREQ    '
+      CALL WKVECT(PROL,BASE//' V K16',6+2*NBAMOR,LPROL)
+      ZK16(LPROL)   = 'NAPPE   '
+      ZK16(LPROL+1) = 'LIN LOG '
+      ZK16(LPROL+2) = 'AMOR    '
+      ZK16(LPROL+3) = NATURE(1:4)
+      ZK16(LPROL+4) = 'EE      '
+      ZK16(LPROL+5) = 'FREQ    '
 C
       VALE( 1:19) = SPECTR
       VALE(20:24) = '.VALE'
@@ -153,8 +153,8 @@ C
       ENDIF
       DO 100 IAMOR =1,NBAMOR
 C
-         ZK8(LPROL+5+2*IAMOR-1) = 'LOG LOG '
-         ZK8(LPROL+5+2*IAMOR  ) = 'EC      '
+         ZK16(LPROL+5+2*IAMOR-1) = 'LOG LOG '
+         ZK16(LPROL+5+2*IAMOR  ) = 'EC      '
 C
          CALL JECROC(JEXNUM(VALE,IAMOR))
          CALL JEECRA(JEXNUM(VALE,IAMOR),'LONMAX',2*NBFREQ,' ')

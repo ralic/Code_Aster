@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ def macro_matr_ajou_prod(self,MATR_AMOR_AJOU,MATR_MASS_AJOU,MATR_RIGI_AJOU,FORC_
 
   return None
 
-MACRO_MATR_AJOU=MACRO(nom="MACRO_MATR_AJOU",op=-13,docu="U4.66.11-c1",sd_prod=macro_matr_ajou_prod,
+MACRO_MATR_AJOU=MACRO(nom="MACRO_MATR_AJOU",op=-13,docu="U4.66.11-c",sd_prod=macro_matr_ajou_prod,
             UIinfo={"groupes":("Matrices/vecteurs",)},
       regles=(AU_MOINS_UN('MODE_MECA','DEPL_IMPO','MODELE_GENE'),
               AU_MOINS_UN('MATR_MASS_AJOU','MATR_AMOR_AJOU','MATR_RIGI_AJOU'),
@@ -88,14 +88,12 @@ MACRO_MATR_AJOU=MACRO(nom="MACRO_MATR_AJOU",op=-13,docu="U4.66.11-c1",sd_prod=ma
              STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            ),
            b_gcpc          =BLOC(condition = "METHODE == 'GCPC' ", fr="Paramètres de la méthode du gradient conjugué",
-             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC","SANS","DIAG") ),
+             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC",),defaut="LDLT_INC" ),
              NIVE_REMPLISSAGE=SIMP(statut='f',typ='I',defaut= 0 ),
              RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
            ),
-#  A quoi sert eps
-           EPS             =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
          ),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
          NOEUD_DOUBLE    =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),

@@ -4,7 +4,7 @@
       INTEGER                   IUNI , IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/03/2001   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,12 +74,12 @@ C     --- ECRITURE DU TITRE ----
 C
 C     --- INFORMATIONS COMPLEMENTAIRES POUR L'EDITION ---
       CALL JEVEUO(PROL,'L',LPROL)
-      TYPFON = ZK8(LPROL)
+      TYPFON = ZK16(LPROL)
       IF (TYPFON .EQ. 'CONSTANT ')  TYPFON = 'CONSTANTE'
-      NOMPAR = ZK8(LPROL+2)
-      NOMRES = ZK8(LPROL+3)
-      PRGC   = ZK8(LPROL+4)(1:1)
-      PRDR   = ZK8(LPROL+4)(2:2)
+      NOMPAR = ZK16(LPROL+2)
+      NOMRES = ZK16(LPROL+3)
+      PRGC   = ZK16(LPROL+4)(1:1)
+      PRDR   = ZK16(LPROL+4)(2:2)
 C
       WRITE(IUNI,'(9A)') NOMF,' = ',' DEFI_',TYPFON,'('
 C
@@ -137,7 +137,7 @@ C     --- ECRITURE DES VALEURS ---
          ENDIF
          WRITE(IUNI,'(10X,9A)') '     )'
       ELSE
-         NOMPAR = ZK8(LPROL+5)
+         NOMPAR = ZK16(LPROL+5)
          LG = LXLGUT(NOMPAR)
          WRITE(IUNI,'(10X,9A)')
      +                 'NOM_PARA_FONC= ',QUOTE,NOMPAR(1:LG),QUOTE,','
@@ -156,8 +156,8 @@ C
             LFON = LVAR + NBVAL
 C            WRITE(IUNI,'(10X,20A)') 'DEFI_FONCTION = _F( '
             WRITE(IUNI,'(11X,3A)') '_F( '
-            PRGC   = ZK8(LPROL+5+2*IPARA)(1:1)
-            PRDR   = ZK8(LPROL+5+2*IPARA)(2:2)
+            PRGC   = ZK16(LPROL+5+2*IPARA)(1:1)
+            PRDR   = ZK16(LPROL+5+2*IPARA)(2:2)
             IF (PRGC.EQ.'E') THEN
                WRITE(IUNI,'(14X,9A)') 'PROL_GAUCHE= ''EXCLU'','
             ELSEIF (PRGC.EQ.'C') THEN

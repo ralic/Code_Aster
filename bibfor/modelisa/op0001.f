@@ -1,7 +1,7 @@
       SUBROUTINE OP0001 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 24/02/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,7 @@ C       CONNEX          NOM DE L OBJET CONNECTIVITES
 C       NOMMAI          NOM DE L OBJET REPERTOIRE DES MAILLES
 C       NOMNOE          NOM DE L OBJET REPERTOIRE DES NOEUDS
 C       TITRE           NOM DE L OBJET TITRE
+C       FORMM           NOM DE L OBJET FORMAT
 C
 C-----------------------------------------------------------------------
 C
@@ -74,7 +75,7 @@ C
       CHARACTER*8     NOMU, NOMG, TOTM, FMT, VERI
       CHARACTER*16    CONCEP
       CHARACTER*24    COOVAL, COODSC, COOREF, GRPNOE, GRPMAI, CONNEX
-      CHARACTER*24    TITRE, NOMMAI, NOMNOE, TYPMAI
+      CHARACTER*24    FORMM, TITRE, NOMMAI, NOMNOE, TYPMAI
       CHARACTER*24    ADAPMA
       CHARACTER*32    NOMAMD
       REAL*8          DTOL
@@ -116,6 +117,7 @@ C               123456789012345678901234
       GRPMAI  = NOMU// '.GROUPEMA       '
       CONNEX  = NOMU// '.CONNEX         '
       TITRE   = NOMU// '           .TITR'
+      FORMM   = NOMU// '           .FORM'
       TYPMAI  = NOMU// '.TYPMAIL        '
       ADAPMA  = NOMU// '.ADAPTATION     '
 C
@@ -131,8 +133,9 @@ C
       ELSEIF (FMT(1:3) .EQ. 'MED' ) THEN
           CALL LRMHDF ( NOMAMD,
      >                  NOMU,NOMMAI,NOMNOE,COOVAL,COODSC,COOREF,
-     >                  GRPNOE,GRPMAI,CONNEX,TITRE,TYPMAI,ADAPMA,
-     >                  IFM,IFL,NIV,INFMED,NBNOEU,NBMAIL,NBCOOR )
+     >                  GRPNOE,GRPMAI,CONNEX,TITRE,FORMM,TYPMAI,
+     >                  ADAPMA,IFM,IFL,NIV,INFMED,NBNOEU,NBMAIL,
+     >                  NBCOOR )
       ENDIF
 C
 C       CALCUL D'UNE ABSCISSE CURVILIGNE SUR LE MAILLAGE

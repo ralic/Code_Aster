@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 DEFI_BASE_MODALE=OPER(nom="DEFI_BASE_MODALE",op=  99,sd_prod=base_modale,
-                     docu="U4.64.02-f1",reentrant='f',
+                     docu="U4.64.02-f",reentrant='f',
             UIinfo={"groupes":("Matrices/vecteurs",)},
          regles=(UN_PARMI('CLASSIQUE','RITZ','DIAG_MASS'),),
          CLASSIQUE       =FACT(statut='f',min=1,max=1,

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ def calc_char_seisme_prod(MATR_MASS,**args ):
   raise AsException("type de concept resultat non prevu")
 
 CALC_CHAR_SEISME=OPER(nom="CALC_CHAR_SEISME",op=  92,sd_prod=calc_char_seisme_prod,
-                      docu="U4.63.01-e",reentrant='n',
+                      docu="U4.63.01-f",reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
          regles=(UN_PARMI('MONO_APPUI','MODE_STAT' ),),
          MATR_MASS       =SIMP(statut='o',typ=matr_asse_depl_r,fr="Matrice de masse" ),

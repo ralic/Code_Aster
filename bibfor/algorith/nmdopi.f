@@ -1,6 +1,6 @@
       SUBROUTINE NMDOPI (MODELZ, NUMEDD, PILOTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/03/2002   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 11/02/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C RESPONSABLE ADBHHVV V.CANO
+C RESPONSABLE PBADEL P.BADEL
       IMPLICIT NONE
       CHARACTER*(*)      MODELZ
       CHARACTER*8        MODELE
@@ -30,17 +30,20 @@ C IN     MODELE K8  : MODELE
 C IN     NUMEDD K24 : NUME_DDL
 C OUT SD PILOTE K14 : PILOTAGE
 C                      .PLTK K24
-C                         (1) = TYPE DE PILOTAGE
-C                         (2) = LIGREL POUR LES PILOTAGES PAR ELEMENTS
-C                         (3) = NOM DE LA CARTE DU TYPE (PILO_K)
-C                         (4) = NOM DE LA CARTE DU TYPE (PILO_R) MIN/MAX
-C                      .PL0R K19 VECTEUR DE DESCENTE DU0
-C                      .PL1R K19 VECTEUR DE DESCENTE DU1
+C                       (1) = TYPE DE PILOTAGE
+C                       (2) = LIGREL POUR LES PILOTAGES PAR ELEMENTS
+C                       (3) = NOM DE LA CARTE DU TYPE (PILO_K)
+C                       (4) = NOM DE LA CARTE DU TYPE (PILO_R) MIN/MAX
+C                       (5) = PROJECTION 'OUI' OU 'NON' SUR LES BORNES
+C                       (6) = TYPE DE SELECTION : 'RESIDU', 
+C                               'NORM_INCR_DEPL' OU 'ANGL_INCR_DEPL'
 C                      .PLCR K19 COEFFICIENTS DU PILOTAGE
 C                      .PLIR R8  PARAMETRES DU PILOTAGE
-C                         (1) = COEF_PILO
-C                         (2) = ETA_PILO_MAX
-C                         (3) = ETA_PILO_MIN
+C                       (1) = COEF_PILO
+C                       (2) = ETA_PILO_MAX
+C                       (3) = ETA_PILO_MIN
+C                       (4) = ETA_PILO_R_MAX
+C                       (5) = ETA_PILO_R_MIN
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
@@ -66,12 +69,12 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER       NOCC, NBG,JVALE,NBNO,NUMNOE, NUMEQU, NDDL, I, N
       INTEGER       JGRO, JLICMP, JDDL, JEQU, JINFO, JTYPE
       INTEGER       IBID, IER, N1, N2, NEQ
-      REAL*8        COEF, MX, MI, R8VIDE, R8BID, LM(2)
+      REAL*8        COEF, MX, MI, R8VIDE, R8BID, LM(2), R8GAEM
       COMPLEX*16    CBID
       CHARACTER*8   K8BID,NOMA,NOMNOE,NOMDDL,NOMGRP,RESULT,LBORN(2)
       CHARACTER*16  CONCEP, NOMCMD, COMP
-      CHARACTER*24  GRNO, LISCMP, LISDDL, LISEQU, TYPE
-      CHARACTER*19  CHAPIL, LIGREL, LIGRMO, CARTE, CARTE2, DU0, DU1
+      CHARACTER*24  GRNO, LISCMP, LISDDL, LISEQU, TYPE,PROJ
+      CHARACTER*19  CHAPIL, LIGREL, LIGRMO, CARTE, CARTE2
 
 
       CALL JEMARQ()
@@ -85,33 +88,46 @@ C -- PAS DE PILOTAGE
 
 C -- LECTURE DU TYPE ET DE LA ZONE
 
-      CALL WKVECT (PILOTE // '.PLTK','V V K24',4,JTYPE)
+      CALL WKVECT (PILOTE // '.PLTK','V V K24',6,JTYPE)
       CALL GETVTX('PILOTAGE','TYPE',1,1,1,TYPE,N1)
       ZK24(JTYPE) = TYPE
+      CALL GETVTX('PILOTAGE','PROJ_BORNES',1,1,1,PROJ,N1)
+      ZK24(JTYPE+4) = PROJ
+      CALL GETVTX('PILOTAGE','SELECTION',1,1,1,PROJ,N1)
+      ZK24(JTYPE+5) = PROJ
 
 
 C -- PARAMETRES COEF_MULT ET ETA_PILO_MAX
 
-      CALL WKVECT(PILOTE // '.PLIR','V V R8',3,JINFO)
+      CALL WKVECT(PILOTE // '.PLIR','V V R8',5,JINFO)
       CALL GETVR8 ('PILOTAGE','COEF_MULT',1,1,1,COEF  , N1)
       ZR(JINFO) = COEF
 
+      CALL GETVR8('PILOTAGE','ETA_PILO_R_MAX',1,1,1,MX,N1)
+      IF (N1.NE.1)  MX = R8GAEM()
+      ZR(JINFO+3) = MX
+
+      CALL GETVR8('PILOTAGE','ETA_PILO_R_MIN',1,1,1,MI,N2)
+      IF (N2.NE.1)  MI = -R8GAEM()
+      ZR(JINFO+4) = MI
+
       CALL GETVR8('PILOTAGE','ETA_PILO_MAX',1,1,1,MX,N1)
-      IF (N1.NE.1)  MX = R8VIDE()
+      IF (N1.NE.1)  THEN 
+        MX = R8VIDE()
+      ELSE
+        IF (MX.GT.ZR(JINFO+3)) CALL UTMESS('F','NMDOPI',
+     & 'ETA_PILO_MAX DOIT ETRE INFERIEUR A ETA_PILO_R_MAX')
+      END IF
       ZR(JINFO+1) = MX
 
       CALL GETVR8('PILOTAGE','ETA_PILO_MIN',1,1,1,MI,N2)
-      IF (N2.NE.1)  MI = R8VIDE()
+      IF (N2.NE.1) THEN
+        MI = R8VIDE()
+      ELSE
+        IF (MI.LT.ZR(JINFO+4)) CALL UTMESS('F','NMDOPI',
+     & 'ETA_PILO_MIN DOIT ETRE SUPERIEUR A ETA_PILO_R_MIN')
+      END IF
       ZR(JINFO+2) = MI
-
-
-C -- ESPACE D'ARCHIVAGE DE DU0 ET DU1 (DIRECTIONS DE DESCENTE)
-
-        DU0 = PILOTE // '.PL0R'
-        DU1 = PILOTE // '.PL1R'
-        CALL VTCREB(DU0,NUMEDD,'V','R',NEQ)
-        CALL VTCREB(DU1,NUMEDD,'V','R',NEQ)
-
 
 
 C ======================================================================

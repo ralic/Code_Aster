@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       REAL*8  XM0,XM2,XM4,DOM
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/07/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 28/02/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C
       REAL*8       DELTA,RVKE,ALPHA,PI,SALT,X,VAL(6),RE
       REAL*8       VALNR,VALMIN,VALMAX,PAS,XIREG,RUNDF,NRUPT
       INTEGER      IBASK,IFONC,IHOSIN,IAWHO2,IOCC,MXPARA,NBPF,NBVAL
+      LOGICAL ENDUR
 C
 C     ----------------------------------------------------------------
       IFONC  = 0
@@ -183,9 +184,14 @@ C
            NOMPAR    = 'SIGM'
            DO  307  IPOINT = 1,NBPOIN
              DELTA = ZR(IAPICS-1+IPOINT)
-             CALL RCVALE(NOMMAT,PHENO,NBPAR,NOMPAR,DELTA,1,NOMRES(1),
+             CALL LIMEND( NOMMAT,DELTA,ENDUR)
+             IF (ENDUR) THEN
+                ZR(IAWHO2+IPOINT-1) = 0.D0
+             ELSE
+               CALL RCVALE(NOMMAT,PHENO,NBPAR,NOMPAR,DELTA,1,NOMRES(1),
      +                                           NRUPT,CODRET(1),'F ')
-             ZR(IAWHO2+IPOINT-1)  = 1.D0 / NRUPT
+               ZR(IAWHO2+IPOINT-1)  = 1.D0 / NRUPT
+             ENDIF
   307     CONTINUE
         ELSEIF(IBASK.NE.0) THEN
           NOMPAR = ' '

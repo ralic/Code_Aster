@@ -1,7 +1,7 @@
       SUBROUTINE DLASET( UPLO, M, N, ALPHA, BETA, A, LDA )
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/02/2000   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================

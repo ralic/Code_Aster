@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 # TITRE REPONSE TRANSITOIRE D'UN SYSTEME A UNE ACCELERATION IMPOSEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -541,7 +541,8 @@ ACCE_R_1=RECU_FONCTION(   RESU_GENE=TRAN_GEN,
                              )
 
 ACCE_ENT=CALC_FONC_INTERP(    FONCTION=ACCELERO,
-                                   LIST_PARA=LISTINST  )
+                                   LIST_PARA=LISTINST,
+                                NOM_PARA = 'INST',  )
 
 ACCE_A_1=CALC_FONCTION( COMB=(  _F( FONCTION = ACCE_R_1, COEF = 1.),
                                 _F( FONCTION = ACCE_ENT, COEF = 1.))

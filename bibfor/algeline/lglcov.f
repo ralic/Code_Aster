@@ -1,11 +1,11 @@
-      FUNCTION LGLCOV (SEUIL,SIGC,TOLER)
+      FUNCTION LGLCOV (SEUIL,TOLER)
 C
       IMPLICIT NONE
       LOGICAL  LGLCOV
-      REAL*8   SEUIL, SIGC, TOLER
+      REAL*8   SEUIL, TOLER
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/03/2002   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGELINE  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,7 @@ C ------------ : .FALSE.  SINON ----------------------------------------
 C ======================================================================
 C --- INITIALISATION ---------------------------------------------------
 C ======================================================================
-      IF (ABS(SEUIL/SIGC).LE.TOLER) THEN
+      IF (ABS(SEUIL).LE.TOLER) THEN
          LGLCOV = .TRUE.
       ELSE
          LGLCOV = .FALSE.

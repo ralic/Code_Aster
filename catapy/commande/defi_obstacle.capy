@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 DEFI_OBSTACLE=OPER(nom="DEFI_OBSTACLE",op=  73,sd_prod=obstacle
                     ,fr="Définition d un obstacle plan perpendiculaire à une structure filaire",
-                     docu="U4.44.21-e",reentrant='n',
+                     docu="U4.44.21-f",reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
          TYPE            =SIMP(statut='o',typ='TXM',defaut="CERCLE",
                              into=("CERCLE","PLAN_Y","PLAN_Z","DISCRET",

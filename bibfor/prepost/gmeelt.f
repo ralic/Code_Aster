@@ -1,6 +1,6 @@
       SUBROUTINE  GMEELT(NBTYMA, NOMAIL, NBMAIL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/12/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 31/03/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -189,8 +189,36 @@ C
         WRITE(IMOD,'(A)') 'FINSF'
         WRITE(IMOD,'(A)') '%'
 C
+C --- DANS LE CAS D'UN POINT ECRITURE D'UN GROUPNO
+C ---  LE GROUPE DE MAILLE CONTIENT ALORS UNE SEULE MAILLE POI1
+
+        IF (ZI(JNBMAG+I-1).EQ.1) THEN
+           CALL JEVEUO(JEXNUM('&&PREGMS.LISTE.GROUP_MA',I),'E',JGR)
+           IMA1=ZI(JGR)
+           IJ=0
+           DO 80 IMA = 1, NBMAIL
+              INUM = ZI(JNUMA+IMA-1)
+              NBNO = ZI(JNBNMA+IMA-1)
+              IF (INUM.EQ.IMA1) THEN
+                 IF (NBNO.EQ.1) THEN
+                    WRITE(IMOD,'(A,4X,2A)') 'GROUP_NO','NOM=',CHGROU
+                    NEU2(INO) = ZI(JNOMA+IJ)
+                    CALL CODNOP(CHTAB(INO),PRFNOE,1,1)
+                    CALL CODENT(NEU2(INO),'G',CHTAB(INO)(2:8))
+                    WRITE(IMOD,'((2X,A))') CHTAB(INO)
+                    WRITE(IMOD,'(A)') 'FINSF'
+                    WRITE(IMOD,'(A)') '%'
+                    GOTO 90
+                 ENDIF
+              ENDIF
+            IJ = IJ + NBNO
+  80       CONTINUE
+        ENDIF
+  90    CONTINUE
+
   60  CONTINUE
-C
+  
+  
       IF ( IER .NE. 0 ) THEN
          CALL UTMESS('F','GMEELT','ARRET SUR ERREUR(S)')
       ENDIF

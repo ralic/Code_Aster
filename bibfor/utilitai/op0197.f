@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/08/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,6 +81,7 @@ C
       DATA CHCOP2/ '&&OPTIW2' /
 C     ------------------------------------------------------------------
       CALL JEMARQ()
+      CALL INFMAJ()
 C     ------------------------------------------------------------------
       CALL GETRES (NOMRES,CONCEP,NOMCMD)
 C

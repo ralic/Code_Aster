@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,13 +40,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*3  TOUCHA, TOUCMP, TOUPAR, INTERP
       CHARACTER*4  MOTFAC
-      CHARACTER*8  K8B, FORM, FICH
-      CHARACTER*16 NOMCMD, TYPCON, CRIT, K16BID
+      CHARACTER*8  K8B, FORM
+      CHARACTER*16 NOMCMD, TYPCON, CRIT, K16BID, FICH
       CHARACTER*19 GENE, KNUM, KINST, KRANG
       CHARACTER*80 TITRE
       LOGICAL      LHIST
 C     ------------------------------------------------------------------
       CALL JEMARQ()
+      CALL INFMAJ()
       CALL GETRES(K8B,K8B,NOMCMD)
       MOTFAC = 'GENE'
       CALL GETFAC(MOTFAC,NOCC)
@@ -59,9 +60,8 @@ C
 C
 C        --- FICHIER ---
 C
-         FICH = '        '
+         FICH = FORM
          CALL GETVTX(MOTFAC,'FICHIER',IOCC,1,1,FICH,N)
-         IF ( FICH .EQ. '        ' ) FICH = FORM
          IFI = IUNIFI(FICH)
 C
 C        --- SEPARATION DES DIFFERENTES OCCURENCES---

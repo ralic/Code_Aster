@@ -1,0 +1,110 @@
+      SUBROUTINE LIMEND( NOMMAZ,SALT,ENDUR)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 28/02/2003   AUTEUR JMBHH01 J.M.PROIX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+      IMPLICIT NONE
+      LOGICAL            ENDUR
+      CHARACTER*(*)      NOMMAZ
+      REAL*8              SALT
+C ----------------------------------------------------------------------
+C     TEST PERMETTANT DE SAVOIR SI ON ESTEN DESSOUS DE LA LIMITE
+C     D'ENDURANCE POUR LA COURBE DE FATIGUE DEFINIE PAR LE
+C     COMPORTEMENT FATIGUE ET LE MOT CLE WOHLER
+C
+C     ARGUMENTS D'ENTREE:
+C        NOMMAT : NOM UTILISATEUR DU MATERIAU
+C        SALT   :  VALEUR DE LA CONTRAINTE ALTERNEE A TESTER
+C     ARGUMENTS DE SORTIE:
+C        ENDUR : = .TRUE. SI SALT < LIMITE D'ENDURANCE = 
+C                PREMIERE ABSCISSE DE LA COURBE DE WOHLER
+C                = .FALSE. SINON
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      CHARACTER*32       JEXNUM , JEXNOM  , JEXATR
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
+      INTEGER       I, IRET,IVALR,NBR,NBC,IVALK,NBK,NBF,IK,IVALF,IPROL
+      REAL*8              VALLIM
+      CHARACTER*10       NOMPHE
+      CHARACTER*8        NOMFON,K8BID,NOMRES
+      CHARACTER*8        NOMMAT
+
+      CALL JEMARQ()
+      
+      NOMMAT = NOMMAZ
+      NOMPHE = 'FATIGUE   '
+      ENDUR=.FALSE.
+C
+C    DANS CE CAS ON SAIT QUE LE MOT CLE EST WOHLER
+      NOMRES='WOHLER'
+      
+      CALL JEEXIN (NOMMAT//'.'//NOMPHE//'.VALR',IRET)
+      IF ( IRET .EQ. 0 ) THEN
+          CALL UTMESS ('F','LIMEND','PB LECTURE COURBE DE WOHLER')
+      ENDIF
+      CALL JEVEUS (NOMMAT//'.'//NOMPHE//'.VALR', 'L', IVALR)
+      CALL JELIRA (NOMMAT//'.'//NOMPHE//'.VALR', 'LONUTI', NBR,
+     &               K8BID)
+
+      CALL JELIRA (NOMMAT//'.'//NOMPHE//'.VALC', 'LONUTI', NBC,
+     &               K8BID)
+      CALL JEEXIN (NOMMAT//'.'//NOMPHE//'.VALK',IRET)
+      CALL JEVEUS (NOMMAT//'.'//NOMPHE//'.VALK', 'L', IVALK)
+      CALL JELIRA (NOMMAT//'.'//NOMPHE//'.VALK', 'LONUTI', NBK,
+     &               K8BID)
+C    NOMBRE DE FOCNTIONS PRESENTES
+      NBF = (NBK-NBR-NBC)/2
+      DO 10 IK = 1, NBF
+         IF (NOMRES .EQ. ZK8(IVALK-1+NBR+NBC+IK)) THEN
+C         NOM DE LA FONCTION REPRESENTANT LA COURBE DE WOHLER         
+            NOMFON = ZK8(IVALK-1+NBR+NBC+NBF+IK)
+C         VALEURS DE LA FONCTION REPRESENTANT LA COURBE DE WOHLER
+            CALL JEVEUO(NOMFON//'           .VALE','L',IVALF)
+C         PROLONGEMENT DE LA FONCTION REPRESENTANT LA COURBE DE WOHLER
+            CALL JEVEUO(NOMFON//'           .PROL','L',IPROL)
+C         PROLONGEMENT A GAUCHE DE LA COURBE DE WOHLER EXCLU
+            IF (ZK16(IPROL-1+5)(1:1).EQ.'E') THEN
+               VALLIM=ZR(IVALF)
+               IF (SALT.LT.VALLIM) THEN
+                  ENDUR=.TRUE.
+               ENDIF
+            ENDIF
+            GOTO 20
+         ENDIF
+  10  CONTINUE
+      CALL UTMESS ('F','LIMEND','MOT CLE WOHLER NON TROUVE')
+  20  CONTINUE
+C
+      CALL JEDEMA()
+      END

@@ -6,7 +6,7 @@
       REAL*8                         VAR(*),FON(*),VARRES(*),FONRES(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 18/03/2003   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,9 +133,8 @@ C
          ELSEIF ( CHPROL(5)(1:1) .EQ. 'L' ) THEN
 C           --- EXTRAPOLATION LINEAIRE ---
             DO 130 JRES=1,IRES-1
-               FONRES(JRES) = FON(IVAR) + ( VARRES(JRES)-VAR(IVAR) )
-     +                                  * ( FON(IVAR+1) -FON(IVAR) )
-     +                                  / ( VAR(IVAR+1) -VAR(IVAR) )
+               FONRES(JRES)=LINLIN(VARRES(JRES),VAR(IVAR),FON(IVAR),
+     &                             VAR(IVAR+1),FON(IVAR+1))
   130          CONTINUE
 C
          ELSEIF ( CHPROL(5)(1:1) .EQ. 'I' ) THEN
@@ -231,9 +230,8 @@ C           --- EXTRAPOLATION CONSTANTE ---
  310        CONTINUE
          ELSEIF ( CHPROL(5)(2:2) .EQ. 'L' ) THEN
             DO 320 JRES=IRES,NBRES
-               FONRES(JRES) = FON(NBVAR-1) + (VARRES(JRES)-VAR(NBVAR))
-     +                                     * ( FON(NBVAR) -FON(NBVAR-1))
-     +                                     / ( VAR(NBVAR) -VAR(NBVAR-1))
+             FONRES(JRES)=LINLIN(VARRES(JRES),VAR(NBVAR-1),FON(NBVAR-1),
+     &                  VAR(NBVAR),FON(NBVAR))
  320        CONTINUE
          ELSEIF ( CHPROL(5)(2:2) .EQ. 'I' ) THEN
 C           --- EXTRAPOLATION INTERPRETEE ----

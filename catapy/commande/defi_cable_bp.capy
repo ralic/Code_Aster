@@ -1,25 +1,60 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 21/03/2003   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-DEFI_CABLE_BP=OPER(nom="DEFI_CABLE_BP",op= 180,sd_prod=cabl_precont,
+
+from Macro.defi_cable_bp_ops import defi_cable_bp_ops
+
+# ===========================================================================
+#           CATALOGUE DE LA MACRO "DEFI_CABLE_BP"
+#           -----------------------------------------
+#
+# USAGE :
+# Entrée :
+#  - MAILLAGE
+#  - MODELE
+#  - CABLE
+#  - CHAM_MATER
+#  - CARA_ELEM
+#  - GROUP_MA_BETON
+#  - DEFI_CABLE
+#  - TENSION_INIT
+#  - RECUL_ANCRAGE
+#  - RELAXATION
+#  - CONE
+#      RAYON
+#      LONGUEUR
+#      PRESENT          OUI ou NON deux fois
+#  - TITRE
+#  - INFO               1 / 2
+#
+# ===========================================================================
+
+
+def defi_cable_bp_prod(self,MAILLAGE,**args ):
+  if MAILLAGE!= None : self.type_sdprod(MAILLAGE,maillage)
+  return cabl_precont
+  raise AsException("type de concept resultat non prevu")
+
+DEFI_CABLE_BP=MACRO(nom="DEFI_CABLE_BP",op=defi_cable_bp_ops,sd_prod=defi_cable_bp_prod,
                    fr=" ",
                    docu="U4.42.04-a",reentrant='n',
-            UIinfo={"groupes":("Modélisation",)},
+         regles=(PRESENT_PRESENT('MAILLAGE','CONE'),),
+         MAILLAGE        =SIMP(statut='f',typ=(maillage,CO)),
          MODELE          =SIMP(statut='o',typ=modele ),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
          CARA_ELEM       =SIMP(statut='o',typ=cara_elem ),
@@ -31,13 +66,20 @@ DEFI_CABLE_BP=OPER(nom="DEFI_CABLE_BP",op= 180,sd_prod=cabl_precont,
            GROUP_MA        =SIMP(statut='f',typ=grma),
            NOEUD_ANCRAGE   =SIMP(statut='f',typ=no,max=2),
            GROUP_NO_ANCRAGE=SIMP(statut='f',typ=grno,max=2),
-           TYPE_ANCRAGE    =SIMP(statut='o',typ='TXM',min=2,max=2,     
-                                 into=("ACTIF","PASSIF") ),
          ),
+         TYPE_ANCRAGE    =SIMP(statut='o',typ='TXM',min=2,max=2,     
+                                 into=("ACTIF","PASSIF") ),
          TENSION_INIT    =SIMP(statut='o',typ='R',val_min=0.E+0 ),  
          RECUL_ANCRAGE   =SIMP(statut='o',typ='R',val_min=0.E+0 ),  
          RELAXATION      =FACT(statut='f',min=0,max=1,
            R_J             =SIMP(statut='o',typ='R',val_min=0.E+0 ),  
          ),
+         CONE            =FACT(statut='f',min=0,max=1,
+           RAYON             =SIMP(statut='o',typ='R',val_min=0.E+0 ),  
+           LONGUEUR          =SIMP(statut='o',typ='R',val_min=0.E+0 ),  
+           PRESENT           =SIMP(statut='o',typ='TXM',min=2,max=2,     
+                                 into=("OUI","NON") ),
+         ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**' ),  
+         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
 )  ;

@@ -1,10 +1,10 @@
       SUBROUTINE IRMHDF ( FICH, NDIM,NBNOEU,COORDO,NBMAIL,CONNEX,
-     >                    POINT,NOMAST,TYPMA, TYPEL,TITRE,
+     >                    POINT,NOMAST,TYPMA, TYPEL,TITRE,NBTITR,
      >                    NBGRNO,NOMGNO,NBGRMA,NOMGMA,NOMMAI,NOMNOE,
      >                    INFMED )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/09/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,10 +52,10 @@ C 0.1. ==> ARGUMENTS
 C
       INTEGER      CONNEX(*),TYPMA(*),POINT(*),TYPEL(*)
       INTEGER      NDIM,NBNOEU,NBMAIL,NBGRNO,NBGRMA
-      INTEGER      INFMED
+      INTEGER      INFMED,NBTITR
 C
       CHARACTER*(*) FICH
-      CHARACTER*80 TITRE
+      CHARACTER*80 TITRE(*)
       CHARACTER*8  NOMGNO(*),NOMGMA(*),NOMMAI(*),NOMNOE(*),NOMAST
 C
       REAL*8       COORDO(*)
@@ -118,7 +118,6 @@ C====
 C
 C 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
 C
-      CALL INFMAJ
       CALL INFNIV ( IFM, NIVINF )
 C
 C 1.2. ==> NOM DU FICHIER MED
@@ -195,7 +194,7 @@ C 3. LA DESCRIPTION
 C====
 C
       CALL IRMDES ( FID,
-     >              TITRE,
+     >              TITRE, NBTITR,
      >              INFMED )
 C
 C====

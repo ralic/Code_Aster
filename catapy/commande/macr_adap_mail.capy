@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/10/2002   AUTEUR GNICOLAS G.NICOLAS 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,14 +25,14 @@ def macr_adap_mail_prod(self,MAJ_CHAM,ADAPTATION,**args):
   if MAJ_CHAM == None:return None
   for ch in MAJ_CHAM:
     t=ch['TYPE_CHAM']
-    if t == 'CHAM_NO_TEMP_R':self.type_sdprod(ch['CHAM_MAJ'],cham_no_temp_r)
-    if t == 'CHAM_NO_DEPL_R':self.type_sdprod(ch['CHAM_MAJ'],cham_no_depl_r)
+    if t == 'NOEU_TEMP_R':self.type_sdprod(ch['CHAM_MAJ'],cham_no_temp_r)
+    if t == 'NOEU_DEPL_R':self.type_sdprod(ch['CHAM_MAJ'],cham_no_depl_r)
   return None
 
 MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=-24,sd_prod=macr_adap_mail_prod,
                      fr="Adapter un maillage avec le logiciel HOMARD.",
                      ang="Mesh adaptation with HOMARD software.",
-                     docu="U7.03.01-b2",
+                     docu="U7.03.01-b",
 #
 # 1. Le niveau d'information
 #
@@ -216,7 +216,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=-24,sd_prod=macr_adap_mail_prod,
 # 5.5. LE TYPE DU CHAMP QUI CONTIENDRA LE RESULTAT DE LA MISE A JOUR
 #
            TYPE_CHAM      = SIMP(statut='o',typ='TXM',     
-                                 into=("CHAM_NO_TEMP_R","CHAM_NO_DEPL_R"),
+                                 into=("NOEU_TEMP_R","NOEU_DEPL_R"),
                            fr="Type du champ qui contiendra le champ mis à jour",
                            ang="Type of the field for the updated field" ),
          ),

@@ -3,7 +3,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 16/10/2002   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF POSTRELE  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -78,8 +78,9 @@ C
      +             JNSITU, NSITUP, NSITUQ
       REAL*8       PPI, PPJ, SNMAX, SPMAX, SAMAX, UTOT, SALTIJ,  
      +             UG, NADM, MPI(6), MPJ(6), SM, SN, SP, SMM,
-     +             MATPI(7), MATPJ(7), MSE(6)
-      LOGICAL      SEISME
+     +             MATPI(8), MATPJ(8), MSE(6),TYPEKE,SPMECA,SPTHER,
+     +             SPTHEM,SPMECM,KEMECA,KETHER
+      LOGICAL      SEISME,ENDUR
       CHARACTER*2  CODRET
       CHARACTER*4  LIEU(2)
       CHARACTER*8  K8B
@@ -115,6 +116,8 @@ C
          SM    = 0.D0
          SNMAX = 0.D0
          SPMAX = 0.D0
+         SPMECM = 0.D0
+         SPTHEM = 0.D0
          SAMAX = 0.D0
          UTOT  = 0.D0
 C
@@ -138,7 +141,7 @@ C
             ENDIF
 C
             CALL RC3201 ( LIEU(IM), NUMGR, IOCS, SEISME, NPASS,
-     +                    MATER, SNMAX, SPMAX, SAMAX, UTOT, SM )
+     +          MATER, SNMAX, SPMAX,SPMECM,SPTHEM, SAMAX, UTOT, SM )
 C
  100     CONTINUE
 C
@@ -195,13 +198,15 @@ C
 C ----------- CALCUL DU SP
 C
               SP = 0.D0
+              TYPEKE=MATPI(8)
               CALL RC32SP ( LIEU(IM), SEISME, NSITUP, PPI, MPI, 
-     +                      NSITUQ, PPJ, MPJ, MSE, SP )
+     +                NSITUQ, PPJ, MPJ, MSE, SP, TYPEKE,SPMECA,SPTHER)
               SPMAX = MAX ( SPMAX , SP )
 C
 C ----------- CALCUL DU SALT
 C
-              CALL RC32SA ( MATER, MATPI, MATPJ, SN, SP, SALTIJ, SMM )
+              CALL RC32SA ( MATER, MATPI, MATPJ, SN, SP,
+     &           TYPEKE, SPMECA, SPTHER,KEMECA,KETHER,SALTIJ, SMM )
 C
               IF ( SALTIJ .GT. SAMAX ) THEN
                  SAMAX = SALTIJ
@@ -210,10 +215,15 @@ C
 C
 C ----------- CALCUL DU FACTEUR D'USAGE
 C
-              CALL RCVALE ( MATER, 'FATIGUE', 1, 'SIGM', SALTIJ, 1,
+              CALL LIMEND( MATER,SALTIJ,ENDUR)
+              IF (ENDUR) THEN
+                  UG=0.D0
+              ELSE
+                 CALL RCVALE ( MATER, 'FATIGUE', 1, 'SIGM', SALTIJ, 1,
      +                                   'WOHLER', NADM, CODRET, 'F ' )
 C
-              UG = DBLE( NOCC ) / NADM
+                 UG = DBLE( NOCC ) / NADM
+              ENDIF
               UTOT = UTOT + UG
 C
  210        CONTINUE
@@ -246,7 +256,7 @@ C
               NPASS = ZI(JNBOCC+2*IOC1-2)
 C
               CALL RC3203 ( LIEU(IM), NUM1, NUM2, NPASS,
-     +                      MATER, SNMAX, SPMAX, SAMAX, UTOT, SM )
+     +              MATER, SNMAX, SPMAX,SPMECM,SPTHEM, SAMAX, UTOT, SM )
 C
  320        CONTINUE
 C

@@ -8,7 +8,7 @@ C
       CHARACTER*24  DEFICO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 07/01/2003   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,12 +29,16 @@ C ======================================================================
 C BUT : INITIALISATION DES PARAMETRES DE CONTACT -----------------------
 C ======================================================================
 C IN  : DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA) --
-C OUT : VECONT : INDICE 1 = NOMBRE DE REACTUALISATION GEOMETRIQUE ------
-C --- : ------ : ---------- A EFFECTUER / -1 SI AUTOMATIQUE ------------
-C --- : ------ : ---------------------- /  0 SI PAS DE REACTUALISATION -
-C --- : ------ : ---------------------- /  N REACTUALISATIONS ----------
-C --- : LREAC  : TRUE  SI REACTUALISATION A FAIRE ----------------------
-C --- : ------ : FALSE SI NON ------------------------------------------
+C IN/OUT : VECONT : (1) = NOMBRE DE REACTUALISATION GEOMETRIQUE    
+C        :        :       A EFFECTUER / -1 SI AUTOMATIQUE             
+C        :        :                   /  0 SI PAS DE REACTUALISATION  
+C        :        :                   /  N REACTUALISATIONS  
+C        :        : (2) = NOMBRE DE REACTUALISATIONS GEOMETRIQUES    
+C                         EFFECTUEES
+C OUT    : LREAC  : (1) = TRUE  SI REACTUALISATION A FAIRE 
+C        :        : (2) = TRUE  SI ATTENTE POINT FIXE CONTACT
+C        :        : (3) = TRUE  SI METHODE CONTINUE
+C        :        : (4) = TRUE  SI MODELISATION DU CONTACT
 C ======================================================================
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
       CHARACTER*32       JEXNUM , JEXNOM
@@ -53,24 +57,14 @@ C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
-C ======================================================================
       INTEGER       II, IBID, JAUTO1, JAUTO2, JMETH
       CHARACTER*24  METHCO
-C ======================================================================
+
       CALL JEMARQ ()
-C ======================================================================
+
       LREAC(4)  =  FONACT(4)
       IF (LREAC(4)) THEN
          METHCO    = DEFICO (1:16)//'.METHCO'
-C ======================================================================
-C --- SI LA METHODE DE CONTACT EST LIAISON_UNIL_NO ON SORT -------------
-C ======================================================================
-         CALL  JEEXIN(METHCO, IBID)
-         IF (IBID.EQ.0) THEN
-            LREAC(3) = .TRUE.
-            LREAC(4) = .FALSE.
-            GOTO 9999
-         ENDIF
          CALL  JEVEUO (METHCO,'L',JMETH)
 C ======================================================================
 C --- SI LA METHODE DE CONTACT EST LA METHODE CONTINUE ON SORT ---------
@@ -115,8 +109,9 @@ C ======================================================================
       ELSE
          LREAC(3) = .TRUE.
       ENDIF
+
 C ======================================================================
  9999 CONTINUE
       CALL JEDEMA ()
-C ======================================================================
+
       END

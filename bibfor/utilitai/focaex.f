@@ -4,7 +4,7 @@
       CHARACTER*1   BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/03/2000   AUTEUR CIBHHPD P.DAVID 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*24 PROL , VALE
-      CHARACTER*8  NOPARA, NORESU, INTERP, PROLGD
+      CHARACTER*16 NOPARA, NORESU, INTERP, PROLGD
       CHARACTER*1  K1BID
 C     ----------------------------------------------------------------
 C
@@ -95,12 +95,12 @@ C
 C
 C     --- CREATION DU .PROL ---
       PROL(1:19) = SORTIE
-      CALL WKVECT(PROL,BASE//' V K8',5,LPROS)
-      ZK8(LPROS  ) = 'FONCTION'
-      ZK8(LPROS+1) = INTERP
-      ZK8(LPROS+2) = NOPARA
-      ZK8(LPROS+3) = NORESU
-      ZK8(LPROS+4) = PROLGD
+      CALL WKVECT(PROL,BASE//' V K16',5,LPROS)
+      ZK16(LPROS  ) = 'FONCTION'
+      ZK16(LPROS+1) = INTERP
+      ZK16(LPROS+2) = NOPARA
+      ZK16(LPROS+3) = NORESU
+      ZK16(LPROS+4) = PROLGD
 C
       CALL JEDEMA()
       END

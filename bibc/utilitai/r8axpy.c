@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF R8AXPY UTILITAI  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF R8AXPY UTILITAI  DATE 16/12/2002   AUTEUR ROSE C.ROSE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -33,12 +33,11 @@ extern void SAXPY(long *n, float *sa, float *sx, long *incx, float *sy, long *in
 SAXPY(n,sa,sx,incx,sy,incy);
 
 #elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
-extern void blaxpy_(long *n, float *sa, double *sx, long *incx, double *sy, long *incy);
-blaxpy_(n,sa,sx,incx,sy,incy);
+extern void daxpy_(long *n, float *sa, double *sx, long *incx, double *sy, long *incy);
+daxpy_(n,sa,sx,incx,sy,incy);
 
 #elif defined HPUX
-extern void blaxpy(long *n, float *sa, double *sx, long *incx, double *sy, long *incy);
-blaxpy(n,sa,sx,incx,sy,incy);
+extern void blaxpy(long *n, float *sa, double *sx, long *incx, double *sy, long *incy);blaxpy(n,sa,sx,incx,sy,incy);
 
 #elif defined PPRO_NT
 extern void __stdcall BLAXPY(long *n,double *sa, double *sx, long *incx, double *sy, long *incy);

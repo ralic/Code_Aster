@@ -1,4 +1,4 @@
-#@ MODIF V_MCSIMP Validation  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF V_MCSIMP Validation  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -235,6 +235,9 @@ class MCSIMP:
         else:
           print "Objet non reconnu dans is_complexe %s" %`valeur`
           return 0
+      # Pour permettre l'utilisation de complexes Python
+      #elif type(valeur) == types.ComplexType:
+        #return 1
       elif type(valeur) != types.TupleType :
         return 0
       else:

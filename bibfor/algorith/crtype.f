@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C
       LOGICAL       LNCAS
       CHARACTER*6   TYPEGD
       CHARACTER*8   K8B, RESU, NOMF, NOMA, TYPMOD, CRITER
-      CHARACTER*16  NOMP(MXPARA), TYPE, OPER, ACCES
+      CHARACTER*16  NOMP(MXPARA), TYPE, OPER, ACCES, K16B
       CHARACTER*24  CHAMP, NOMCH, K24, LINST, NSYMB, TYPRES,
      &              LISTR8, TYPCHF, TYPCHR, LCPT
 C
@@ -268,7 +268,7 @@ C
               NOMF = ZK8(JNOMF+L-1)
               IF ( NOMF .EQ. ' ' ) GOTO 300
               CALL JEVEUO ( NOMF//'           .PROL', 'L', LPROL )
-              CALL FONBPA ( NOMF, ZK8(LPROL), K8B, MXPARA, NBPF, NOMP )
+              CALL FONBPA ( NOMF, ZK16(LPROL), K16B, MXPARA, NBPF, NOMP)
               INO = ZI(JDEEQ+2*(L-1))
               IF ( INO .EQ. 0 ) GOTO 300
               DO 310 IP = 1,NBPF
@@ -285,7 +285,7 @@ C
                 ENDIF
                 IPAR(IP) = IP
  310          CONTINUE
-              IF (ZK8(LPROL).EQ.'INTERPRE') THEN
+              IF (ZK16(LPROL).EQ.'INTERPRE') THEN
                  CALL FIINTE('F',NOMF,NBPF,IPAR,VALPU,ZR(JC+L-1),IER)
               ELSE
                  CALL FOINTE('F',NOMF,NBPF,NOMP,VALPU,ZR(JC+L-1),IER)

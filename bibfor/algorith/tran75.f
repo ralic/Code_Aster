@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 24/03/2003   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,7 @@ C
  12      CONTINUE
 C
          CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-         CALL FONBPA(FONCT,ZK8(LPROL),K8B,MXPARA,NBPF,NOMP)
+         CALL FONBPA(FONCT,ZK16(LPROL),K8B,MXPARA,NBPF,NOMP)
          IPAR(1) = 0
          DO 140 I1 = 1,NBPF
             IF (NOMP(I1).EQ.'INST') THEN
@@ -121,7 +121,7 @@ C
             CALL UTIMPK('L',' PARAMETRES RECUS   :',NBPF,NOMP)
             CALL UTFINM()
          ENDIF
-         IF (ZK8(LPROL).EQ.'FONCTION') THEN
+         IF (ZK16(LPROL).EQ.'FONCTION') THEN
             CALL JEVEUO(FONCT//'.VALE','L',LVAR)
             CALL JELIRA(FONCT//'.VALE','LONUTI',NBPT,K1BID)
             NBPT   = NBPT / 2
@@ -206,7 +206,7 @@ C
       CALL GETVTX ( ' ','MULT_APPUI',1,1,1, MONMOT(1), N1 )
       CALL GETVTX ( ' ','CORR_STAT' ,1,1,1, MONMOT(2), N2 )
 
-      IF ( N1.NE.0 .OR. N2.NE.0 ) MULTAP = .TRUE.
+      IF ( MONMOT(1).EQ.'OUI' .OR. MONMOT(2).EQ.'OUI' ) MULTAP = .TRUE.
 C
 C     ---   RECUPERATION DES VECTEURS DEPLACEMENT, VITESSE ET   ---
 C     --- ACCELERATION GENERALISES SUIVANT LES CHAMPS SOUHAITES ---
@@ -451,12 +451,12 @@ C
 C              --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
                IF ( TYPE(ICH) .EQ. 'ACCE_ABSOLU'.AND.NFONCT.NE.0 ) THEN
                   IRET = 0
-                  IF (ZK8(LPROL).EQ.'INTERPRE') THEN
+                  IF (ZK16(LPROL).EQ.'INTERPRE') THEN
                      CALL FIINTE('F',FONCT,NBPF,IPAR,ZR(JINST+I),ALPHA,
      +                              IER)
-                  ELSEIF (ZK8(LPROL).EQ.'FONCTION') THEN
+                  ELSEIF (ZK16(LPROL).EQ.'FONCTION') THEN
                      CALL FOLOCX(ZR(LVAR),NBPT,ZR(JINST+I),
-     +                              ZK8(LPROL+4),IPT,EPSI,COLI,IRET)
+     +                              ZK16(LPROL+4),IPT,EPSI,COLI,IRET)
                      IF (IRET.NE.0) THEN
                         CALL UTDEBM('F','TRAN75',
      +                                 'PROBLEME RENCONTRE DANS FOLOCX')
@@ -464,9 +464,9 @@ C              --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
                         CALL UTIMPI('L',' CODE RETOUR: ',1,IRET)
                         CALL UTFINM()
                      ENDIF
-                     CALL FOCOLI (IPT,COLI,ZK8(LPROL+1),ZR(LVAR),
+                     CALL FOCOLI (IPT,COLI,ZK16(LPROL+1),ZR(LVAR),
      +                               ZR(LFON),ZR(JINST+I),ALPHA,IRET,
-     +                               FONCT,ZK8(LPROL),MXPARA,NOMP,IPAR,
+     +                               FONCT,ZK16(LPROL),MXPARA,NOMP,IPAR,
      +                               'INST',1,ZR(JINST+I))
                      IF (IRET.NE.0) THEN
                         CALL UTDEBM('F','TRAN75',
@@ -625,11 +625,11 @@ C
 C              --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
                IF ( TYPE(ICH) .EQ. 'ACCE_ABSOLU'.AND.NFONCT.NE.0 ) THEN
                   IRET = 0
-                  IF (ZK8(LPROL).EQ.'INTERPRE') THEN
+                  IF (ZK16(LPROL).EQ.'INTERPRE') THEN
                   CALL FIINTE('F',FONCT,NBPF,IPAR,ZR(JINST+I),ALPHA,IER)
-                  ELSEIF (ZK8(LPROL).EQ.'FONCTION') THEN
+                  ELSEIF (ZK16(LPROL).EQ.'FONCTION') THEN
                      CALL FOLOCX(ZR(LVAR),NBPT,ZR(JINST+I),
-     +                           ZK8(LPROL+4),IPT,EPSI,COLI,IRET)
+     +                           ZK16(LPROL+4),IPT,EPSI,COLI,IRET)
                      IF (IRET.NE.0) THEN
                         CALL UTDEBM('E','TRAN75',
      +                              'PROBLEME RENCONTRE DANS FOLOCX')
@@ -637,9 +637,9 @@ C              --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
                         CALL UTIMPI('L',' CODE RETOUR: ',1,IRET)
                         CALL UTFINM()
                      ENDIF
-                     CALL FOCOLI (IPT,COLI,ZK8(LPROL+1),ZR(LVAR),
+                     CALL FOCOLI (IPT,COLI,ZK16(LPROL+1),ZR(LVAR),
      +                            ZR(LFON),ZR(JINST+I),ALPHA,IRET,
-     +                            FONCT,ZK8(LPROL),MXPARA,NOMP,IPAR,
+     +                            FONCT,ZK16(LPROL),MXPARA,NOMP,IPAR,
      +                            'INST',1,ZR(JINST+I))
                      IF (IRET.NE.0) THEN
                         CALL UTDEBM('F','TRAN75',

@@ -3,7 +3,7 @@
       CHARACTER*(*)       SORTIE, NOMFON
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/02/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,8 @@ C
       REAL*8        VALER(2)
       COMPLEX*16    C16B
       LOGICAL       EXIST
-      CHARACTER*8   K8B, NOPARA, PARA(3)
+      CHARACTER*8   K8B, PARA(3)
+      CHARACTER*16  NOPARA
       CHARACTER*24  PROL , VALE
 C     ------------------------------------------------------------------
 C
@@ -53,7 +54,7 @@ C
       PROL(20:24) = '.PROL'
       CALL JEVEUO ( PROL, 'L', LPRO )
 C
-      IF ( ZK8(LPRO) .EQ. 'FONCTION' ) THEN
+      IF ( ZK16(LPRO) .EQ. 'FONCTION' ) THEN
          VALE(20:24) = '.VALE'
          VALE(1:19) = NOMFON
          CALL JELIRA ( VALE, 'LONUTI', NBVAL, K8B )
@@ -64,7 +65,7 @@ C
          CALL FOC1MA ( NBPTS, ZR(LVAR), ZR(LFON),
      +                              NBMAX, ZR(LTEMP), ZR(LTEMP+NBPTS) )
 C
-         NOPARA = ZK8(LPRO+2)
+         NOPARA = ZK16(LPRO+2)
          CALL TBEXIP ( SORTIE, NOPARA, EXIST, K8B )
          IF ( .NOT. EXIST ) THEN
             CALL TBAJPA ( SORTIE, 1, NOPARA, 'R' )
@@ -80,11 +81,11 @@ C        --- RECOPIE DES VALEURS  ---
  510     CONTINUE
          CALL JEDETR ( '&&FOCAMA.VALE' )
 C
-      ELSEIF ( ZK8(LPRO) .EQ. 'NAPPE' ) THEN
+      ELSEIF ( ZK16(LPRO) .EQ. 'NAPPE' ) THEN
          CALL FOC2MA ( SORTIE, NOMFON )
 C
       ELSE
-         CALL UTMESS('F','FOCAMA', ZK8(LPRO)//' SOUS TYPE INCONNU DE '//
+         CALL UTMESS('F','FOCAMA',ZK16(LPRO)//' SOUS TYPE INCONNU DE '//
      +                   'FONCTION.')
       ENDIF
 C

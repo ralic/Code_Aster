@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C MODIF CALCULEL  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C     COMMANDE:  CALC_MATR_ELEM
 C
 C ----------------------------------------------------------------------
@@ -55,6 +55,7 @@ C     ------------------------------------------------------------------
       DATA TPS    /0.D0,2*1,3*0.D0/
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
+      CALL INFMAJ()
 C
       BASE = 'G'
 C

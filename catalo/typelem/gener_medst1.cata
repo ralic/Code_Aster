@@ -1,26 +1,26 @@
-%& MODIF TYPELEM  DATE 09/10/2002   AUTEUR VABHHTS J.PELLET 
-%            CONFIGURATION MANAGEMENT OF EDF VERSION
-% ======================================================================
-% COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-% THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-% IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-% THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-% (AT YOUR OPTION) ANY LATER VERSION.
-%
-% THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-% WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-% MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-% GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-%
-% YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-% ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-%    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-% ======================================================================
+%& MODIF TYPELEM  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+%            CONFIGURATION MANAGEMENT OF EDF VERSION                        
+% ======================================================================    
+% COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
+% THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY      
+% IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY      
+% THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR         
+% (AT YOUR OPTION) ANY LATER VERSION.                                       
+%                                                                           
+% THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT       
+% WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF                
+% MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU          
+% GENERAL PUBLIC LICENSE FOR MORE DETAILS.                                  
+%                                                                           
+% YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE         
+% ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,             
+%    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.            
+% ======================================================================    
 GENER_MEDST1
 TYPE_GENE__
-ENTETE__  ELEMENT__   MEBODST           MAILLE__  SEG2      NUM_INIT__ 02   ELREFE__ SEG2
+ENTETE__ ELEMENT__ MEBODST          MAILLE__ SEG2     ELREFE__  SEG2
 
-MODE_LOCAL__
+MODE_LOCAL__ 
     CCACOQU  = CACOQU   ELEM__         (EP       ALPHA    BETA     CTOR     )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     MFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       MX       MY       MZ       )
@@ -28,21 +28,21 @@ MODE_LOCAL__
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     MGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     MTEMPSR  = INST_R   ELEM__         (INST     )
-    ECASECT  = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
+    ECASECT  = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6       
                                         X7       X8       X9       X10      )
 
-VECTEUR__
+VECTEUR__ 
     MVECTUR = VDEP_R DDL_MECA
 
-MATRICE__
+MATRICE__ 
 
-OPTION__
-    CARA_SECT_POUT3     570   IN__   CCACOQU  PCACOQU  CGEOMER  PCAORIE  MGEOMER  PGEOMER
-                              OUT__  ECASECT  PCASECT
-    CARA_SECT_POUT4     570   IN__   CCACOQU  PCACOQU  CGEOMER  PCAORIE  MGEOMER  PGEOMER  CGEOMER  PORIGIN
-                              OUT__  MVECTUR  PVECTU1  MVECTUR  PVECTU2
-    CHAR_MECA_FF1D3D    34    IN__   MFORCEF  PFF1D3D  MGEOMER  PGEOMER  MTEMPSR  PTEMPSR
-                              OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_FR1D3D    34    IN__   MFORCER  PFR1D3D  MGEOMER  PGEOMER
-                              OUT__  MVECTUR  PVECTUR
+OPTION__ 
+    CARA_SECT_POUT3     570   IN__   CCACOQU  PCACOQU  CGEOMER  PCAORIE  MGEOMER  PGEOMER  
+                              OUT__  ECASECT  PCASECT  
+    CARA_SECT_POUT4     570   IN__   CCACOQU  PCACOQU  CGEOMER  PCAORIE  MGEOMER  PGEOMER  CGEOMER  PORIGIN  
+                              OUT__  MVECTUR  PVECTU1  MVECTUR  PVECTU2  
+    CHAR_MECA_FF1D3D    34    IN__   MFORCEF  PFF1D3D  MGEOMER  PGEOMER  MTEMPSR  PTEMPSR  
+                              OUT__  MVECTUR  PVECTUR  
+    CHAR_MECA_FR1D3D    34    IN__   MFORCER  PFR1D3D  MGEOMER  PGEOMER  
+                              OUT__  MVECTUR  PVECTUR  
 

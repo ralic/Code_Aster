@@ -1,7 +1,7 @@
       SUBROUTINE OP0106 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/10/2002   AUTEUR UFBHHLL C.CHAVANT 
+C MODIF PREPOST  DATE 31/03/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,33 +60,29 @@ C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'OP0106' )
 C
-      INTEGER NBPASE, NRPASS, NBPASS, TYPESE
-      INTEGER ADRECG
-      INTEGER IAUX, JAUX, IBID
-      INTEGER      I, IACHAR, IAD, IBD, IC, ICHAR, IE, IND, INUME,
+      INTEGER      NBPASE, NRPASS, NBPASS, TYPESE, ADRECG
+      INTEGER      IAUX, JAUX, IBID, NBNO1, NCMP1, JCNSL
+      INTEGER      I, IACHAR, IAD, IBD, IC, ICHAR, IE, IND, INUME, K,
      >             IOPT, IORDR, IRET, IRET1, IRET2, J, JCGMP, JCHMP,
      >             JDDL, JDDR, JFO, JFONO, JFPIP, JINFC, JNMO, JNOCH,
      >             JOPT, JORDR, JRE, JRENO, LACCE, LDEPL, LMAT, LONC2,
-     >             LONCH, LREF, LTRAV, LVAFON, N0, N2, NBCHAR,
-     >             NBDDL, NBOPT, NBORDR, NC, NEQ, NH, NP
+     >             LONCH, LREF, LTRAV, LVAFON, N0, N2, NBCHAR, JCNSD,
+     >             NBDDL, NBOPT, NBORDR, NC, NEQ, NH, NP, NBNO, JNOE
       REAL*8       TIME, OMEGA2, PREC, COEF(3), PARTPS(3), ETAN
       CHARACTER*4  TYPCAL
       CHARACTER*8  K8BID, RESUC1, CTYP, CRIT, NOMCMP(3)
-      CHARACTER*8 NOPASE
+      CHARACTER*8  NOPASE, NOMA
       CHARACTER*13 INPSCO
-      CHARACTER*16 OPTION, OPTIO2, TYSD, TYPE, OPER
-      CHARACTER*19 LERES0
-      CHARACTER*19 RESUCO, KNUM, INFCHA,LIGREL
-      CHARACTER*19 CHDEP2
+      CHARACTER*16 OPTION, OPTIO2,TYSD,TYPE,OPER,TYPMCL(2),MOTCLE(2)
+      CHARACTER*19 LERES0, RESUCO, KNUM, INFCHA,LIGREL
+      CHARACTER*19 CHDEP2, CHAMS0
       CHARACTER*24 CHAMNO, NUME, VFONO, VAFONO, SIGMA, CHDEPL
       CHARACTER*24 MODELE, MATER, CARAC, CHARGE, FOMULT, INFOCH
-      CHARACTER*24 VECHMP,VACHMP,CNCHMP,VEFPIP,VAFPIP,CNFPIP,MASSE
-      CHARACTER*24 VECGMP,VACGMP,CNCGMP, BIDON,CHTREF,CHTEMP
+      CHARACTER*24 VECHMP, VACHMP, CNCHMP, VEFPIP,VAFPIP,CNFPIP,MASSE
+      CHARACTER*24 VECGMP, VACGMP, CNCGMP, BIDON, CHTREF,CHTEMP
       CHARACTER*24 K24BID, CHELEM, CHACCE, VRENO, VARENO
-      CHARACTER*24 COMPOR, CHVIVE, CHACVE
-      CHARACTER*24 NORECG
-      CHARACTER*24 VAPRIN
-      CHARACTER*24 STYPSE
+      CHARACTER*24 COMPOR, CHVIVE, CHACVE, MESNOE
+      CHARACTER*24 NORECG, VAPRIN, STYPSE
 C
       LOGICAL      EXITIM
 C     ------------------------------------------------------------------
@@ -97,6 +93,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 
       CALL JEMARQ ( )
+      CALL INFMAJ()
 C
       CALL INFMUE ( )
       CNFPIP = ' '
@@ -261,6 +258,37 @@ C INFO. RELATIVE AUX CHARGES
              CALL EXLIMA(' ','G',MODELE,LERES0,LIGREL)
            ENDIF
          ENDIF
+C
+C ------ EVENTUELLEMENT, ON REDUIT LE CHAM_NO AUX MAILLES
+C        POUR LES OPTIONS "XXXX_NOEU_XXXX
+C
+        IF (NRPASS.EQ.1) THEN
+          NBNO = 0
+          JNOE = 1
+          CALL GETVID ( ' ','MAILLE'  , 1,1,0, K8BID, N0)
+          CALL GETVID ( ' ','GROUP_MA', 1,1,0, K8BID, N2)
+          IF ( N0+N2 .NE. 0 ) THEN
+            DO 72 IOPT = 1 , NBOPT
+              OPTION = ZK16(JOPT+IOPT-1)
+              IF ( OPTION(6:9) .EQ. 'NOEU')  GOTO 74
+ 72         CONTINUE
+            GOTO 777
+ 74         CONTINUE
+            OPTIO2 = OPTION(1:5)//'ELNO'//OPTION(10:16)
+            CALL RSEXCH ( LERES0, OPTIO2, ZI(JORDR), CHELEM, IRET)
+            CALL DISMOI('F','NOM_MAILLA',CHELEM,'CHAM_ELEM',IBD,NOMA,IE)
+            MESNOE = '&&OP0106.MES_NOEUDS'
+            MOTCLE(1) = 'GROUP_MA'
+            MOTCLE(2) = 'MAILLE'
+            TYPMCL(1) = 'GROUP_MA'
+            TYPMCL(2) = 'MAILLE'
+            CALL RELIEM(' ', NOMA, 'NU_NOEUD', ' ', 1, 2,
+     +                                  MOTCLE, TYPMCL, MESNOE, NBNO )
+            CALL JEVEUO ( MESNOE, 'L', JNOE )
+          ENDIF
+ 777      CONTINUE
+        ENDIF
+C
 C============ DEBUT DE LA BOUCLE SUR LES OPTIONS A CALCULER ============
       DO 10 IOPT = 1 , NBOPT
         OPTION = ZK16(JOPT+IOPT-1)
@@ -342,6 +370,35 @@ C       ================================================================
                CALL DETRSD ( 'PROF_CHNO', CHAMNO(1:19) )
             ENDIF
             CALL PASNOE ( CHELEM , CHAMNO , 'G' )
+            IF ( NBNO .NE. 0 ) THEN
+               CHAMS0 = '&&OP0106.CHAMS0'
+               CALL CNOCNS ( CHAMNO, 'V', CHAMS0 )
+               CALL CNSRED ( CHAMS0,NBNO,ZI(JNOE),0,K8BID,'G',CHAMS0)
+               CALL JEVEUO ( CHAMS0//'.CNSD', 'L', JCNSD )
+               CALL JEVEUO ( CHAMS0//'.CNSL', 'L', JCNSL )
+               NBNO1 = ZI(JCNSD-1+1)
+               NCMP1 = ZI(JCNSD-1+2)
+               NEQ = 0
+               DO 102, K = 1 , NBNO1*NCMP1
+                  IF (ZL(JCNSL-1+K)) NEQ = NEQ + 1
+ 102           CONTINUE
+               IF (NEQ.EQ.0) THEN
+                  CALL UTDEBM('A',OPER,' ON NE PEUT PAS REDUIRE LE '//
+     +                                 'CHAMP SUR LES NOEUDS DEMANDES')
+                  CALL UTIMPI('L',' NUME_ORDRE ',1,IORDR)
+                  CALL UTIMPK('S',' OPTION ',1,OPTION)
+                  CALL UTIMPK('L',' OPTION ',1,OPTIO2)
+                  CALL UTIMPK('S',' NON CALCULEE SUR LES NOEUDS '//
+     +                            'DEMANDES',0,OPTIO2)
+                  CALL UTFINM
+                  CALL DETRSD ( 'CHAM_NO'  ,CHAMNO  )
+                  CALL DETRSD ( 'PROF_CHNO',CHAMNO  )
+                  CALL DETRSD ( 'CHAM_NO_S', CHAMS0 )
+                  GOTO 100
+               ENDIF
+               CALL CNSCNO ( CHAMS0, ' ', 'G', CHAMNO )
+               CALL DETRSD ( 'CHAM_NO_S', CHAMS0 )
+            ENDIF
             CALL RSNOCH ( LERES0, OPTION, IORDR, ' ' )
  100      CONTINUE
 
@@ -634,9 +691,9 @@ C               --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
                 CALL ASASVE (VRENO, NUME, 'R', VARENO)
                 CALL JEVEUO (VARENO, 'L', JRE)
                 CALL JEVEUO (ZK24(JRE)(1:19)//'.VALE', 'L', JRENO)
-                DO 102 J = 0,LONCH-1
+                DO 204 J = 0,LONCH-1
                   ZR(JNOCH+J) = ZR(JNOCH+J) - ZR(JRENO+J)
- 102            CONTINUE
+ 204            CONTINUE
               ENDIF
             ENDIF
 
@@ -670,6 +727,7 @@ C============= FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =============
    30 CONTINUE
 C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
 C
+      IF ( NBNO .NE. 0 ) CALL JEDETR(MESNOE)
       CALL JEDETR(KNUM)
       CALL DETRSD ('CHAMP_GD', BIDON)
 C     A CAUSE DES && SUIVIS DE NOMS DE MATERIAUX

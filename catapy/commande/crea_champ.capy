@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -132,10 +132,11 @@ def crea_champ_prod(TYPE_CHAM,**args):
   if TYPE_CHAM == "ELEM_IRRA_R" : return cham_elem_irra_r
   if TYPE_CHAM == "ELNO_IRRA_R" : return cham_elem_irra_r
   if TYPE_CHAM == "ELGA_IRRA_R" : return cham_elem_irra_r
+  if TYPE_CHAM == "ELEM_SPMA_R" : return cham_elem_spma_r
   raise AsException("type de concept resultat non prevu")
 
 CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
-                fr="  ",docu="U4.72.04-b1",reentrant='n',
+                fr="  ",docu="U4.72.04-b",reentrant='n',
             UIinfo={"groupes":("Résultats et champs",)},
          TYPE_CHAM       =SIMP(statut='o',typ='TXM',
                         into=("CART_DBEL_R","NOEU_DBEL_R","ELEM_DBEL_R",
@@ -179,13 +180,18 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                              "ELGA_VARI_R","CART_VNOR_C","NOEU_VNOR_C",
                              "ELEM_VNOR_C","ELNO_VNOR_C","ELGA_VNOR_C",
                              "CART_IRRA_R","NOEU_IRRA_R","ELEM_IRRA_R",
-                             "ELNO_IRRA_R","ELGA_IRRA_R",) ),
+                             "ELNO_IRRA_R","ELGA_IRRA_R","ELEM_SPMA_R",) ),
 
 #        SI CREATION D'UN CHAM_NO, POUR IMPOSER LA NUMEROTATION DES DDLS :
 #        ------------------------------------------------------------------
          regles=(EXCLUS('NUME_DDL','CHAM_NO',)),
          NUME_DDL        =SIMP(statut='f',typ=(nume_ddl) ),
          CHAM_NO         =SIMP(statut='f',typ=(cham_no) ),
+
+#        SI CREATION D'UN CHAM_ELEM, POUR aider a l'allocation du champ :
+#        (PAR DEFAUT : TOU_INI_ELNO/_ELGA/_ELEM)
+#        ------------------------------------------------------------------
+         OPTION         =SIMP(statut='f',typ='TXM'),
 
          OPERATION       =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","EVAL","EXTR","DISC",) ),
 
@@ -207,7 +213,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                 VALE            =SIMP(statut='f',typ='R',max='**' ),
                 VALE_I          =SIMP(statut='f',typ='I',max='**' ),
                 VALE_C          =SIMP(statut='f',typ='C',max='**' ),
-                VALE_F          =SIMP(statut='f',typ=fonction,max='**'),
+                VALE_F          =SIMP(statut='f',typ=(fonction,formule),max='**'),
                                    ),
                              ),
          b_asse          =BLOC(condition = "OPERATION == 'ASSE'",
@@ -250,9 +256,9 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
              b_extr_resultat =BLOC(condition = "RESULTAT != None",
                  regles=(EXCLUS('TYPE_MAXI','NUME_ORDRE','INST','FREQ','NUME_MODE',
                                 'NOEUD_CMP','NOM_CAS','ANGL', ),),
-                 SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),max='**',
-                                   fr="Liste des paramètres de sensibilité.",
-                                   ang="List of sensitivity parameters"),
+                 SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),
+                                   fr="Paramètre de sensibilité.",
+                                   ang="Sensitivity parameter"),
                  NOM_CHAM        =SIMP(statut='o',typ='TXM',
                            into=("DEPL","VITE","ACCE",
                              "DEPL_ABSOLU","VITE_ABSOLU",
@@ -292,12 +298,12 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                              "ENDO_ELNO_SINO","ENDO_ELNO_SIGM",
                              "SIGM_ELNO_VARI","SIGM_NOEU_VARI",
                              "EPME_ELNO_DEPL","EPME_ELGA_DEPL",
-                             "EPME_ELNO_DPGE","EPMG_ELNO_DEPL",
+                             "EPMG_ELNO_DEPL",
                              "EPMG_ELGA_DEPL","GRAD_ELGA_THETA",
                              "GTHE_ELNO_ELGA","GRAD_NOEU_THETA",
                              "HYDR_ELGA","HYDR_ELNO_ELGA","HYDR_NOEU_ELGA",
                              "THETA","SIGM_ELNO_SIEF","SIPO_ELNO_SIEF",
-                             "VALE_CONT",) ),
+                             "VALE_CONT","VALE_NCOU_MAXI") ),
                  TYPE_MAXI       =SIMP(statut='f',typ='TXM',into=("MAXI","MINI","MAXI_ABS","MINI_ABS","NORM_TRAN",) ),
                  TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="VALE",into=("VALE","INST",) ),
                  TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),

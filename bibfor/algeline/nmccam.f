@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,PCRM,
      &                   OPTION,SIGP,PCRP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 25/10/2002   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGELINE  DATE 20/01/2003   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,12 +80,13 @@ C
       REAL*8      DEPSMO,SIGMMO,E,NU,E0,XK0,XK,FONC
       REAL*8      SIELEQ,SIMOEL,H,A(6),AA(6),SIEQM, TOTO, TOTO1
       REAL*8      KRON(6),DEPSDV(6),SIGMDV(6),SIGPDV(6),TPLUS(6)
-      REAL*8      SIGPMO,F1,F2,F3,F4,F5,F6,F,FP,COEF,DIFF,PORO1,PORO2
+      REAL*8      SIGPMO,F1,F2,F3,F4,F5,F6,F,FP,COEF,PORO1,PORO2
       REAL*8      DEPPMO,DELTAP,DELTAS(6),SPARDS,HP,XC,XD
       REAL*8      XLAM,XA,XU,XG,XH,XE,XF,XV,XI,RAP,CC(6,6),FV(6),FF(6)
-      REAL*8      C(6,6),BB(6,6),CT,XB,V0,V0EST,SEUIL,D(3,3),DD(3,3)
-      REAL*8      SIGEL(6),XINF,XSUP,DET,TOL,FFI(6,6),EE(6,6)
-      REAL*8      NUL,RAC2,DEUX
+      REAL*8      C(6,6),CT,XB,V0,V0EST,SEUIL,D(3,3),DD(3,3)
+      REAL*8      SIGEL(6),XINF,XSUP,DET,TOL,TOL1,FFI(6,6),EE(6,6)
+      REAL*8      V(6,6),S(6,6),T(6,6),VV(6,6),SS(6,6),TT(6,6)
+      REAL*8      NUL,DEUX,DIFF,DIFF1
       INTEGER     NDIMSI
       INTEGER     K,L,ITER, MATR
       CHARACTER*2 BL2, FB2, CODRET(9)
@@ -93,14 +94,13 @@ C
       CHARACTER*8 NOMPAR(9),TYPE
       REAL*8      VALPAM(3)
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-      DATA        TOL/1.D-10/NUL/0.D0/DEUX/2.D0/
+      DATA        TOL/1.D-10/TOL1/1.D-8/NUL/0.D0/DEUX/2.D0/
 C DEB ------------------------------------------------------------------
 C
 C     -- 1 INITIALISATIONS :
 C     ----------------------
       CPLAN =  TYPMOD(1) .EQ. 'C_PLAN'
       NDIMSI = 2*NDIM
-      RAC2 = SQRT(DEUX)
       LOGIC = .TRUE.
 C
       BL2 = '  '
@@ -275,7 +275,8 @@ C     -- PLASTIFICATION : CALCUL DE LA DEFORMATION
 C     -- VOLUMIQUE PLASTIQUE : DEPPMO 
          PCRP(2) = 1.D0
 C     -- TRAITEMENT DU CAS GENERAL
-           IF (SIGMMO.NE.PCRM(1)) THEN
+         DIFF1 = (SIGMMO-PCRM(1))/PCRM(1)
+         IF (DIFF1.GT.TOL1) THEN
 C     -- CALCUL DE LA BORNE
        XB = 1.D0/(XK+XK0)*LOG(SIMOEL/PCRM(1))
        XINF = 0.D0
@@ -449,7 +450,7 @@ C      -- 7.3.1 CALCUL DES INCREMENTS DE P ET DE S
               DELTAS(K)=SIGPDV(K)-SIGMDV(K)
  140  CONTINUE
 C           
-C     -- 7.3.2 CALCUL DES TERMES INTERMEDIAIRES 
+C     -- 7.3.2 CALCUL DE VECTEURS INTERMEDIAIRES 
         SPARDS = 0.D0
            DO 141 K = 1,NDIMSI
                SPARDS = SPARDS+DELTAS(K)*SIGPDV(K)
@@ -459,7 +460,7 @@ C     -- 7.3.2 CALCUL DES TERMES INTERMEDIAIRES
                TPLUS(K) = SIGPDV(K) + DELTAS(K)
  142  CONTINUE              
 C
-C      -- MODULE PLASTIQUE               
+C      -- TERMES NECESSAIRES A LA PARTIE DEVIATORIQUE              
         HP = 4.D0*M**4*XK*SIGPMO*PCRP(1)*(SIGPMO-PCRP(1))
 C
         XC = 9.D0*SPARDS/HP
@@ -473,7 +474,7 @@ C
      &      (SIGPMO-PCRP(1))/((1.D0/2.D0/XK/PCRP(1))+M**2*XLAM)
         RAP = XI/(HP+XA)
 C
-C     -- CALCUL DES TERMES D'UNE MATRICE INTERMEDIAIRE CC
+C     -- CALCUL DE LA MATRICE CC-SYMETRISATION DE TPLUS.I
 C
        CALL R8INIR(6*6,0.D0,CC,1)
           DO 172 K=1,3
@@ -501,32 +502,15 @@ C
                C(K,K) = C(K,K)+1.D0/DEUXMU+XC+XD
  149  CONTINUE
 C 
-C     -- PARTIE DEVIATORIQUE
+C     -- ASSEMBLAGE DES TERMES POUR LA PARTIE DEVIATORIQUE
        CALL R8INIR(6*6,0.D0,EE,1)
-         IF (NDIM.EQ.3) THEN
            DO 180 K=1,NDIMSI
            DO 181 L=1,NDIMSI
                EE(K,L) = C(K,L) - RAP*CC(K,L)
   181   CONTINUE
   180   CONTINUE
-            ELSE
-         IF (NDIM.EQ.2) THEN
-           DO 280 K=1,NDIMSI
-           DO 281 L=1,NDIMSI
-               EE(K,L) = C(K,L) - RAP*CC(K,L)
-  281   CONTINUE
-  280   CONTINUE
-           EE(5,5) = 1.D0
-           EE(6,6) = 1.D0
-           ENDIF
-           ENDIF             
-C     -- INVERSE DE LA MATRICE EE
-       CALL R8INIR(6*6,0.D0,BB,1)
-           DO 150 K=1,6
-               BB(K,K)=1.D0
- 150  CONTINUE  
-        CALL MGAUSS(EE,BB,6,6,6,NUL,LOGIC)
 C            
+C      -- TERMES NECESSAIRES A LA PARTIE HYDROSTATIQUE             
         XU = 2.D0*M**2*XK*PCRP(1)
         XG = XLAM*XU/(1.D0+XLAM*XU)
         XH = XU*(SIGPMO-PCRP(1))/(1.D0+XLAM*XU)
@@ -539,56 +523,67 @@ C
         CT = (1.D0+2.D0*M**2*XK0*SIGPMO*(XLAM-XG*XLAM-
      &       XLAM*XF*XH/XE+XF/XE*(SIGPMO-PCRP(1))))/(XK0*SIGPMO)
 
-C     --  PARTIE HYDROSTATQUE 
+C     --  VECTEUR INTERMEDIAIRE
        CALL R8INIR(6,0.D0,FV,1)
        DO 190 K=1,NDIMSI
            FV(K)=3.D0*XF/XE*SIGPDV(K)-CT*KRON(K)/3.D0
  190  CONTINUE
- 
-       CALL R8INIR(3*3,0.D0,D,1)
-       D(1,1) = FV(1)
-       D(1,2) = FV(4)/RAC2
-       D(1,3) = FV(6)/RAC2
-       D(2,1)=D(1,2)
-       D(2,2)=FV(2)
-       D(2,3)=FV(5)/RAC2
-       D(3,1)=D(1,3)
-       D(3,2)=D(2,3)
-       D(3,3)=FV(3)
-C     -- INVERSE DE LA MATRICE D
-       CALL R8INIR(3*3,0.D0,DD,1)
-           DO 191 K=1,3
-               DD(K,K)=1.D0
- 191  CONTINUE  
-        CALL MGAUSS(D,DD,3,3,3,NUL,LOGIC)
-C 
-       CALL R8INIR(6,0.D0,FF,1)
-       FF(1) = DD(1,1)
-       FF(2) = DD(2,2)
-       FF(3) = DD(3,3) 
-       FF(4) = DD(1,2)*RAC2
-       FF(5) = DD(2,3)*RAC2
-       FF(6) = DD(1,3)*RAC2      
-C     -- MATRICE SYMETRIQUE FFI
+C     -- SYMMETRISATION DEFV ET SA PROJECTION SUR L'ESPACE
+C     -- DES CONTRAINTES HYDROSTATIQUES
        CALL R8INIR(6*6,0.D0,FFI,1)
         DO 195 K=1,3
         DO 196 L=1,3
-             FFI(K,L) = (FF(K)+FF(L))/2.D0
+             FFI(K,L) = -(1.D0/3.D0)*(FV(K)+FV(L))/2.D0
  196  CONTINUE
  195  CONTINUE
         DO 197 K=1,3
         DO 198 L=4,NDIMSI
-             FFI(K,L) = FF(L)/2.D0
+             FFI(K,L) = -(1.D0/3.D0)*FV(L)/2.D0
              FFI(L,K) = FFI(K,L)
  198  CONTINUE
  197  CONTINUE
+C     --  MATRICE DE PROJECTION SUR L'ESPACE DES CONTRAINTES
+C     -- DEVIATORIQUES
+       CALL R8INIR(6*6,0.D0,V,1)    
+       DO 185 K = 1,3
+       DO 186 L = 1,3
+         V(K,L) = -1.D0/3.D0
+         V(L,K) = V(K,L)
+ 186  CONTINUE
+ 185  CONTINUE
+      DO 187 K= 1,NDIMSI
+         V(K,K) = V(K,K) + 1.D0
+ 187  CONTINUE
+C     -- PROJECTION DE EE SUR L'ESPACE DES CONTRAINTES
+C     -- DEVIATORIQUES 
+       CALL R8INIR(6*6,0.D0,S,1)
+       CALL PROMAT(EE,6,NDIMSI,NDIMSI,V,6,NDIMSI,NDIMSI,S)
+C       
+C     -- COMBINAISON DES DEUX PARTIES DEVIATORIQUE ET 
+C     -- HYDROSTATIQUE
+       CALL R8INIR(6*6,0.D0,T,1)
+        DO 204 K = 1,NDIMSI
+        DO 205 L = 1,NDIMSI
+           T(K,L) =  S(K,L)+ FFI(K,L)
+ 205  CONTINUE
+ 204  CONTINUE
+         IF (NDIM.EQ.2) THEN
+           T(5,5) = 1.D0
+           T(6,6) = 1.D0
+         ENDIF
+C     -- INVERSE DE LA MATRICE T
+       CALL R8INIR(6*6,0.D0,VV,1)
+           DO 108 K=1,6
+               VV(K,K)=1.D0
+ 108  CONTINUE  
+       CALL MGAUSS(T,VV,6,6,6,NUL,LOGIC)
 C     --  7.3.3 CALCUL DES TERMES DSIDEP L'OPERATEUR TANGENT
        CALL R8INIR(6*6,0.D0,DSIDEP,1)
-        DO 155 K=1,NDIMSI
-        DO 156 L=1,NDIMSI
-              DSIDEP(K,L)=BB(K,L)-FFI(K,L)
- 156  CONTINUE
- 155  CONTINUE                  
+        DO 106 K = 1,6
+        DO 107 L = 1,6
+        DSIDEP(K,L) = VV(K,L)
+ 107  CONTINUE
+ 106  CONTINUE  
       ENDIF
 C FIN ---------------------------------------------------------
       ENDIF

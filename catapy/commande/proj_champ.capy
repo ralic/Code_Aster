@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,7 @@ def proj_champ_prod(RESULTAT=None,CHAM_NO_REFE=None,**args ):
     if AsType(CHAM_NO_REFE) == cham_no_flux_r : return cham_no_flux_r
     raise AsException("type de concept resultat non prevu")
 
-PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,docu="U4.72.05-d2",reentrant='n',
+PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,docu="U4.72.05-d",reentrant='n',
             UIinfo={"groupes":("Résultats et champs",)},
                 fr="Projection d'un champ aux noeuds sur les noeuds d'un autre maillage",
 #

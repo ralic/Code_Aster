@@ -1,0 +1,229 @@
+# MODIF  DATE 26/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+# TITRE CALCUL D'UNE BASE MODALE AVEC MATRICE DE MASSE DIAGONALE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# ET IMPRESSION AU FORMAT PLEXUS.
+
+# L'OBJET DE CE TEST EST DE TESTER L'OPTION DIAG_MASS DE
+# DEFI_BASE_MODALE PERMETTANT UNE RECOMBINAISON DES MODES STATIQUES
+# LA MATRICE DE MASSE GENERALISEE EST ALORS DIAGONALE.
+# ON TESTE LE FORMAT PLEXUS DE LA COMMANDE IMPR_MACR_ELEM.
+# CE FORMAT PERMET UNE IMPRESSION DANS UN .UNV DES MODES STATIQUES 
+# ET DYNAMIQUES, ET DES MATRICES DE MASSES ET DE RIGIDITES
+# GENERALISEES PAR BLOCS (STATIQUES-DYNAMIQUES ET COUPLAGE
+# STATIQUES/DYNAMIQUE)
+
+DEBUT(CODE=_F(NOM = 'SDLS110A',NIV_PUB_WEB='INTERNET'))
+
+PRE_GIBI()
+
+MA =LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),)
+
+MA = DEFI_GROUP( reuse =MA,
+                 MAILLAGE = MA,
+                 CREA_GROUP_NO =_F(GROUP_MA = 'DCB'))
+
+MO = AFFE_MODELE(MAILLAGE = MA,
+                 AFFE=_F(GROUP_MA ='DOM2',
+                         PHENOMENE = 'MECANIQUE',
+                         MODELISATION ='C_PLAN'))
+
+MAT = DEFI_MATERIAU(  ELAS =_F(E = 2.E8, NU = 0.3, RHO =1.))
+
+CHMAT = AFFE_MATERIAU( MODELE = MO,
+                       MAILLAGE = MA,
+                       AFFE=_F( GROUP_MA = 'DOM2',
+                                MATER = MAT))
+
+CHARG = AFFE_CHAR_MECA ( MODELE = MO,
+                         FORCE_NODALE =_F(GROUP_NO ='F', FY=2.))
+
+CONLI = AFFE_CHAR_MECA ( MODELE = MO,
+                         DDL_IMPO =(_F(GROUP_NO='DCB', DY=1.),
+                                    _F(GROUP_NO='DCB', DX=0.))
+                         )
+
+RIGI_ELE = CALC_MATR_ELEM(  MODELE=MO,        OPTION='RIGI_MECA',
+                             CHARGE=CONLI,CHAM_MATER =CHMAT)
+
+MASS_ELE=CALC_MATR_ELEM( MODELE=MO,    OPTION='MASS_MECA',
+                         CHARGE=CONLI,CHAM_MATER =CHMAT  )
+
+VECT_ELE =CALC_VECT_ELEM(  OPTION = 'CHAR_MECA',
+                           CHARGE = CHARG,CHAM_MATER =CHMAT)
+
+NUME_DDL=NUME_DDL(  MATR_RIGI=RIGI_ELE )
+
+RIGIDITE = ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,   NUME_DDL=NUME_DDL  )
+
+
+MASSE =ASSE_MATRICE(  MATR_ELEM=MASS_ELE,   NUME_DDL=NUME_DDL  )
+
+
+VECT =ASSE_VECTEUR ( VECT_ELEM = VECT_ELE ,NUME_DDL=NUME_DDL  )
+
+MODE_MEC = MODE_ITER_SIMULT(  MATR_A=RIGIDITE,  MATR_B=MASSE,
+                CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',  NMAX_FREQ = 3)
+                           )
+
+MODE_MEC = NORM_MODE( reuse = MODE_MEC,
+                       MODE = MODE_MEC,
+                       NORME ='MASS_GENE')
+
+
+
+MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
+                          MODE_STAT=_F(  TOUT = 'OUI', AVEC_CMP = 'DX') )
+
+
+
+BAMO = DEFI_BASE_MODALE( 
+                      DIAG_MASS =_F( MODE_MECA = MODE_MEC, 
+                                     MODE_STAT = MODE_STA, ),
+                     )
+
+
+TEST_RESU(RESU=(_F(RESULTAT = BAMO,
+                  NUME_ORDRE = 4,
+                  NOM_CHAM ='DEPL',
+                  NOEUD = 'N2',
+                  NOM_CMP ='DX',
+                  VALE = 2.00233,
+                  REFERENCE = 'ANALYTIQUE'),
+                _F(RESULTAT = BAMO,
+                  NUME_ORDRE = 4,
+                  NOM_CHAM ='DEPL',
+                  NOEUD = 'N2',
+                  NOM_CMP ='DY',
+                  VALE = 0.,
+                  CRITERE ='ABSOLU',
+                  REFERENCE = 'ANALYTIQUE'),
+                _F(RESULTAT = BAMO,
+                  NUME_ORDRE = 4,
+                  NOM_CHAM ='DEPL',
+                  NOEUD = 'N3',
+                  NOM_CMP ='DX',
+                  VALE = 0.,
+                  CRITERE ='ABSOLU',
+                  REFERENCE = 'ANALYTIQUE'),
+                _F(RESULTAT = BAMO,
+                  NUME_ORDRE = 4,
+                  NOM_CHAM ='DEPL',
+                  NOEUD = 'N3',
+                  NOM_CMP ='DY',
+                  VALE = 0.,
+                  CRITERE ='ABSOLU',
+                  REFERENCE = 'ANALYTIQUE'),
+                _F(RESULTAT = BAMO,
+                  NUME_ORDRE = 4,
+                  NOM_CHAM ='DEPL',
+                  NOEUD = 'N5',
+                  NOM_CMP ='DX',
+                  VALE = -6.69776E-1,
+                  REFERENCE = 'ANALYTIQUE'),
+                _F(RESULTAT = BAMO,
+                  NUME_ORDRE = 4,
+                  NOM_CHAM ='DEPL',
+                  NOEUD = 'N5',
+                  NOM_CMP ='DY',
+                  VALE = -1.07867,
+                  REFERENCE = 'ANALYTIQUE'),
+                _F(RESULTAT = BAMO,
+                  NUME_ORDRE = 4,
+                  NOM_CHAM ='DEPL',
+                  NOEUD = 'N6',
+                  NOM_CMP ='DX',
+                  VALE = 3.31391E-01,
+                  REFERENCE = 'ANALYTIQUE'),
+                _F(RESULTAT = BAMO,
+                  NUME_ORDRE = 4,
+                  NOM_CHAM ='DEPL',
+                  NOEUD = 'N6',
+                  NOM_CMP ='DY',
+                  VALE = 1.07867,
+                  REFERENCE = 'ANALYTIQUE'),
+_F(RESULTAT = BAMO,
+                  NUME_ORDRE = 5,
+                  NOM_CHAM ='DEPL',
+                  NOEUD = 'N2',
+                  NOM_CMP ='DX',
+                  VALE = -1.78718,
+                  REFERENCE = 'ANALYTIQUE'),
+                _F(RESULTAT = BAMO,
+                  NUME_ORDRE = 5,
+                  NOM_CHAM ='DEPL',
+                  NOEUD = 'N2',
+                  NOM_CMP ='DY',
+                  VALE = 0.,
+                  CRITERE ='ABSOLU',
+                  REFERENCE = 'ANALYTIQUE'),
+                _F(RESULTAT = BAMO,
+                  NUME_ORDRE = 5,
+                  NOM_CHAM ='DEPL',
+                  NOEUD = 'N3',
+                  NOM_CMP ='DX',
+                  VALE = 2.68391,
+                  REFERENCE = 'ANALYTIQUE'),
+                _F(RESULTAT = BAMO,
+                  NUME_ORDRE = 5,
+                  NOM_CHAM ='DEPL',
+                  NOEUD = 'N3',
+                  NOM_CMP ='DY',
+                  VALE = 0.,
+                  CRITERE ='ABSOLU',
+                  REFERENCE = 'ANALYTIQUE'),
+                _F(RESULTAT = BAMO,
+                  NUME_ORDRE = 5,
+                  NOM_CHAM ='DEPL',
+                  NOEUD = 'N5',
+                  NOM_CMP ='DX',
+                  VALE = 1.042,
+                  REFERENCE = 'ANALYTIQUE'),
+                _F(RESULTAT = BAMO,
+                  NUME_ORDRE = 5,
+                  NOM_CHAM ='DEPL',
+                  NOEUD = 'N5',
+                  NOM_CMP ='DY',
+                  VALE = -4.83073E-1,
+                  REFERENCE = 'ANALYTIQUE'),
+                _F(RESULTAT = BAMO,
+                  NUME_ORDRE = 5,
+                  NOM_CHAM ='DEPL',
+                  NOEUD = 'N6',
+                  NOM_CMP ='DX',
+                  VALE = -1.19354,
+                  REFERENCE = 'ANALYTIQUE'),
+                _F(RESULTAT = BAMO,
+                  NUME_ORDRE = 5,
+                  NOM_CHAM ='DEPL',
+                  NOEUD = 'N6',
+                  NOM_CMP ='DY',
+                  VALE = 4.83073E-1,
+                  REFERENCE = 'ANALYTIQUE'),
+)
+          
+          )
+
+MAEL = MACR_ELEM_DYNA(  BASE_MODALE=BAMO,
+                        OPTION ='DIAG_MASS')
+
+
+IMPR_MACR_ELEM (MACR_ELEM_DYNA= MAEL,
+                FORMAT = 'PLEXUS')
+
+FIN()

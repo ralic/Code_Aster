@@ -1,0 +1,318 @@
+# MODIF  DATE 26/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+# TITRE VALIDATION DES IMPR_XXX
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# SUR LA BASE DU SSLL100A: STRUCTURE SYMETRIQUE AVEC UN COUDE
+# MODELISATION POU_D_T  DIS_T  POU_C_T
+#=======================================================================
+
+
+DEBUT( CODE=_F(  NOM = 'ZZZZ128A',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE(  )
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MOD=AFFE_MODELE(   MAILLAGE=MA,AFFE=(
+            _F(  PHENOMENE = 'MECANIQUE',
+                   GROUP_MA = 'POU_D_T',   MODELISATION = 'POU_D_T'),
+                 _F(  GROUP_MA = 'POU_C_T',   
+                 PHENOMENE = 'MECANIQUE', MODELISATION = 'POU_C_T'),
+                 _F(  GROUP_MA = 'LIAI_NOE', 
+                 PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T')) )
+
+CARLEM=AFFE_CARA_ELEM(   MODELE=MOD,
+            POUTRE=_F(  SECTION = 'GENERALE',
+
+       GROUP_MA = 'TOUT',
+
+                     CARA = (    'A',           'IY',          'IZ',
+                               'AY',          'AZ',          'JX',       ),
+                     VALE = ( 0.11780973E-2, 0.125172834E-6, 0.125172834E-6,
+                            1.3096094,     1.3096094,   0.250345668E-6, )),DEFI_ARC=(
+
+            _F(  MAILLE = 'CD',   ORIE_ARC = 90.,  RAYON = 2.82800),
+                     _F(  MAILLE = 'DE',   ORIE_ARC = 90.,  RAYON = 2.82800)),
+
+            ORIENTATION=_F(  MAILLE = ( 'AB',  'FG', ),
+                          CARA = 'VECT_Y',   VALE = ( -1., 0., 0.,)),
+
+            DISCRET=_F(  MAILLE = ( 'AB',  'FG', ),   REPERE = 'LOCAL',
+                      CARA = 'K_T_D_L',     VALE = ( 1.E5, 0., 1.E5,))
+
+                        )
+
+#======================================================================
+#               MATERIAU  FONCTION  DE  LA  TEMPERATURE
+#======================================================================
+
+
+T = FORMULE(REEL="""(REEL:INST,REEL:Y,REEL:Z) =
+2. * INST * ( 3. + ( 4. * Y * Z ) +
+                 ( 5. * Y * Y )  + ( 5. * Z * Z ) )
+                   """)
+
+T1=5.
+
+T2=500.
+
+T3=1000.
+
+A_F=DEFI_CONSTANTE(   NOM_RESU='TEMP',
+                                VALE=0.     )
+
+E1=1.8E+11
+
+E2=2.3E+11
+
+E3=2.9E+11
+
+E_F=DEFI_FONCTION(  NOM_PARA='TEMP',
+                        VALE=( T1, E1,  T2, E2,  T3, E3, )  )
+
+NU1=0.3
+
+NU2=0.33
+
+NU3=0.35
+
+NU_F=DEFI_FONCTION(  NOM_PARA='TEMP',
+                         VALE=( T1, NU1,  T2, NU2,  T3, NU3, )  )
+
+MATER_F=DEFI_MATERIAU(  ELAS_FO=_F(  E = E_F,      NU = NU_F,
+                                     ALPHA = A_F, TEMP_DEF_ALPHA=0.0) )
+
+CHMAT_F=AFFE_MATERIAU(  MAILLAGE=MA,
+                  AFFE=_F(  TOUT = 'OUI',      MATER = MATER_F)  )
+
+CHT1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MA,
+                        AFFE=_F(  TOUT = 'OUI',
+                               NOM_CMP = 'TEMP',  VALE_F = T)  )
+
+CHT2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
+                        AFFE=_F(  TOUT = 'OUI',
+                               NOM_CMP = 'TEMP',  VALE = T2)  )
+
+CHT3=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
+                        AFFE=_F(  TOUT = 'OUI',
+                               NOM_CMP = 'TEMP',  VALE = T3)  )
+
+LINST=DEFI_LIST_REEL( VALE=( 1.,  2.,  3.,  )  )
+
+L_1=DEFI_LIST_REEL( VALE=( 1.,   1.5, )  )
+
+L_2=DEFI_LIST_REEL( VALE=( 1.8,  2.,  )  )
+
+TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',      
+                 NOM_CHAM='TEMP',
+                 AFFE=(_F(  LIST_INST = L_1,  CHAM_GD = CHT1),
+                       _F(  LIST_INST = L_2,  CHAM_GD = CHT2),
+                       _F(       INST = 3.,   CHAM_GD = CHT3)) )
+
+CHG1=AFFE_CHAR_MECA(   MODELE=MOD,
+                           TEMP_CALCULEE=TEMP,
+                       FORCE_NODALE=_F(  NOEUD = ('C','E',),   FZ = -1000.),DDL_IMPO=(
+            _F(  NOEUD = ('B','C','D','E','F',),  DX = 0., DRY = 0., DRZ = 0.),
+                     _F(  NOEUD = ('A','G',),        DX = 0., DY = 0.,  DZ = 0.))
+                        )
+
+U2=MECA_STATIQUE(       MODELE=MOD,
+                         CHAM_MATER=CHMAT_F,     CARA_ELEM=CARLEM,
+                          LIST_INST=LINST,
+                              EXCIT=_F(   CHARGE = CHG1)        )
+
+D1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+RESULTAT=U2, NOM_CHAM='DEPL', NUME_ORDRE=1 )
+
+# IL FAUT AU MOINS 1 TEST_RESU
+
+TEST_RESU( 
+            CHAM_NO=_F(  CHAM_GD = D1,  NOEUD = 'F',  NOM_CMP = 'DZ',  VALE = -1.00000E-02)
+           )
+
+TT=POST_RELEVE_T(   ACTION=_F(  INTITULE = 'RESU_U2',
+                                 NOEUD = ( 'B', 'C', 'D', 'E', 'F', ),
+                                 RESULTAT = U2,
+                                 NOM_CHAM = 'DEPL',
+                                 TOUT_ORDRE = 'OUI',
+                                 TOUT_CMP = 'OUI',
+                                 OPERATION = 'EXTRACTION')
+                      )
+
+#-----------------------------------------------------------------------
+#               IMPR_TABLE  AU  FORMAT  'EXCEL'
+#-----------------------------------------------------------------------
+
+IMPR_TABLE(      TABLE=TT,
+                   FORMAT='EXCEL'
+             )
+
+IMPR_TABLE(      TABLE=TT,
+                   FORMAT='EXCEL',
+                 NOM_PARA=( 'NOEUD', 'INST', 'ABSC_CURV',
+                            'DX',  'DY',  'DZ',  'DRX',    )
+             )
+
+IMPR_TABLE(      TABLE=TT,
+                   FORMAT='EXCEL',
+                      TRI=_F(  NOM_PARA = 'ABSC_CURV',
+                            ORDRE = 'DECROISSANT'),
+                 NOM_PARA=( 'NOEUD', 'INST', 'ABSC_CURV',
+                            'DX',  'DY',  'DZ',  'DRX',    )
+             )
+
+IMPR_TABLE(      TABLE=TT,
+                   FORMAT='EXCEL',FILTRE=(
+                   _F(  NOM_PARA = 'NUME_ORDRE',
+                            VALE_I = 1),
+                   _F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'B')),
+                 NOM_PARA=( 'NOEUD',
+                            'DX',  'DY',  'DZ',  'DRX',    )
+             )
+
+IMPR_TABLE(      TABLE=TT,
+                   FORMAT='EXCEL',
+                 PAGINATION='NUME_ORDRE',
+                      TRI=_F(  NOM_PARA = 'ABSC_CURV',
+                            ORDRE = 'DECROISSANT'),
+                 NOM_PARA=( 'NUME_ORDRE', 'NOEUD', 'INST', 'ABSC_CURV',
+                            'DX',  'DY',  'DZ',  'DRX',    )
+             )
+
+IMPR_TABLE(      TABLE=TT,
+                   FORMAT='EXCEL',FILTRE=(
+                   _F(  NOM_PARA = 'ABSC_CURV',
+                            CRIT_COMP = 'LE',
+                            VALE = 5.),
+                   _F(  NOM_PARA = 'ABSC_CURV',
+                            CRIT_COMP = 'GE',
+                            VALE = 2.)),
+                 PAGINATION=( 'NUME_ORDRE', 'NOEUD', ),
+                 NOM_PARA=( 'NUME_ORDRE', 'NOEUD', 'INST',
+                            'DX',  'DY',  'DZ',  'DRX',    )
+             )
+
+#-----------------------------------------------------------------------
+#               IMPR_TABLE  AU  FORMAT  'MOT_CLE'
+#-----------------------------------------------------------------------
+
+IMPR_TABLE(      TABLE=TT,
+                   FORMAT='MOT_CLE',
+                 NOM_PARA=( 'NOEUD', 'INST',  'DY',  'DZ',  'DRX',  )
+             )
+
+IMPR_TABLE(      TABLE=TT,
+                   FORMAT='MOT_CLE',FILTRE=(
+                   _F(  NOM_PARA = 'ABSC_CURV',
+                            CRIT_COMP = 'LE',
+                            VALE = 5.),
+                   _F(  NOM_PARA = 'ABSC_CURV',
+                            CRIT_COMP = 'GE',
+                            VALE = 2.)),
+                 PAGINATION=( 'INST', 'NOEUD', ),
+                   NOM_PARA=( 'NOEUD', 'INST',  'DY',  'DZ',  'DRX',  )
+             )
+
+#-----------------------------------------------------------------------
+#               IMPR_TABLE  AU  FORMAT  'TABLEAU'
+#-----------------------------------------------------------------------
+
+IMPR_TABLE(      TABLE=TT,
+                   FORMAT='TABLEAU',
+                 NOM_PARA=( 'NOEUD', 'INST',  'DY',  )
+             )
+
+IMPR_TABLE(      TABLE=TT,
+                   FORMAT='TABLEAU',FILTRE=(
+                   _F(  NOM_PARA = 'ABSC_CURV',
+                            CRIT_COMP = 'LE',
+                            VALE = 5.),
+                   _F(  NOM_PARA = 'ABSC_CURV',
+                            CRIT_COMP = 'GE',
+                            VALE = 2.)),
+                 PAGINATION='NUME_ORDRE',
+                   NOM_PARA=( 'INST',  'NOEUD',  'DZ',  'NUME_ORDRE', )
+             )
+
+
+#-----------------------------------------------------------------------
+#               IMPR_TABLE  AU  FORMAT  'ASTER'
+#-----------------------------------------------------------------------
+
+DEFUFI(IMPRESSION=_F(NOM='unite.37', 
+                     UNITE=37))
+                     
+IMPR_TABLE(      FICHIER='unite.37',
+                 TABLE=TT,
+                 FORMAT='ASTER'),
+
+IMPR_TABLE(      FICHIER='unite.37',
+                 TABLE=TT,
+                 FORMAT='ASTER',
+                 NOM_PARA=( 'NOEUD', 'INST', 'ABSC_CURV',
+                            'DX',  'DY',  'DZ',  'DRX',    )
+             )
+
+IMPR_TABLE(      FICHIER='unite.37',
+                 TABLE=TT,
+                 FORMAT='ASTER',
+                 TRI=_F(  NOM_PARA = 'ABSC_CURV',
+                          ORDRE = 'DECROISSANT'),
+                 NOM_PARA=( 'NOEUD', 'INST', 'ABSC_CURV',
+                            'DX',  'DY',  'DZ',  'DRX',    )
+             )
+
+IMPR_TABLE(      FICHIER='unite.37',
+                 TABLE=TT,
+                 FORMAT='ASTER',
+                 FILTRE=(
+                   _F(  NOM_PARA = 'NUME_ORDRE',
+                            VALE_I = 1),
+                   _F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'B')),
+                 NOM_PARA=( 'NOEUD',
+                            'DX',  'DY',  'DZ',  'DRX',    )
+             )
+
+IMPR_TABLE(     FICHIER='unite.37',
+                TABLE=TT,
+                FORMAT='ASTER',
+                PAGINATION='NUME_ORDRE',
+                      TRI=_F(  NOM_PARA = 'ABSC_CURV',
+                            ORDRE = 'DECROISSANT'),
+                 NOM_PARA=( 'NUME_ORDRE', 'NOEUD', 'INST', 'ABSC_CURV',
+                            'DX',  'DY',  'DZ',  'DRX',    )
+             )
+
+IMPR_TABLE(      TABLE=TT,
+                   FORMAT='ASTER',FILTRE=(
+                   _F(  NOM_PARA = 'ABSC_CURV',
+                            CRIT_COMP = 'LE',
+                            VALE = 5.),
+                   _F(  NOM_PARA = 'ABSC_CURV',
+                            CRIT_COMP = 'GE',
+                            VALE = 2.)),
+                 PAGINATION=( 'NUME_ORDRE', 'NOEUD', ),
+                 NOM_PARA=( 'NUME_ORDRE', 'NOEUD', 'INST',
+                            'DX',  'DY',  'DZ',  'DRX',    )
+             )
+
+FIN( )
+#

@@ -7,7 +7,7 @@ C
       REAL*8        DFDL, DELTA, DY(*)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C --- : DELTA  : DELTA LAMBDA INITIAL ----------------------------------
 C OUT : DY     : INCREMENTS DE L'ITERATION COURANTE --------------------
 C ======================================================================
       INTEGER  II
-      REAL*8   DDELTA, DGAMP, DSN(6), DINV, MUN, DEUX, TROIS
+      REAL*8   DDELTA, DGAMP, DSN(6), DINV, DEVP, MUN, DEUX, TROIS
 C ======================================================================
 C --- INITIALISATION DE PARAMETRES -------------------------------------
 C ======================================================================
@@ -61,13 +61,15 @@ C ======================================================================
          DSN(II) = MUN * DEUX * MU * DELTA * DEVG(II)
  10   CONTINUE
       DINV   = MUN * TROIS * K * DELTA * TRACEG
+      DEVP   = DELTA * TRACEG
 C ======================================================================
 C --- STOCKAGE ---------------------------------------------------------
 C ======================================================================
       CALL     LCEQVN (NDT, DSN(1) , DY(1)    )
       CALL     LCEQVN (  1, DINV   , DY(NDT+1))
       CALL     LCEQVN (  1, DGAMP  , DY(NDT+2))
-      CALL     LCEQVN (  1, DDELTA , DY(NDT+3))
+      CALL     LCEQVN (  1, DEVP   , DY(NDT+3))
+      CALL     LCEQVN (  1, DDELTA , DY(NDT+4))
 C ======================================================================
       CALL JEDEMA ()
 C ======================================================================

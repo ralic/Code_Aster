@@ -1,6 +1,6 @@
       SUBROUTINE FODERI(NOMFON,TEMP,F,DF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,13 +77,13 @@ C
       CHPRO=CH19//'.PROL'
       CHVAL=CH19//'.VALE'
       CALL JEVEUS(CHPRO,'L',JPRO)
-      IF (ZK8(JPRO)(1:1).EQ.'I') THEN
+      IF (ZK16(JPRO)(1:1).EQ.'I') THEN
 C
 C --- FONCTION INTERPRETEE NON-UTILISABLE
 C
         CALL UTMESS ('F','FODERI_01','LES FONCTIONS INTERPRETEES '
      &             //'DOIVENT ETRE TABULEES AUPARAVANT ')
-      ELSE IF (ZK8(JPRO)(1:1).EQ.'N') THEN
+      ELSE IF (ZK16(JPRO)(1:1).EQ.'N') THEN
 C
 C --- NAPPE - IMPOSSIBLE
 C
@@ -105,25 +105,25 @@ C
       IF (TESINF) THEN
         JV = JVALF+NBVF
         JP = JVALF
-        IF (ZK8(JPRO+4)(2:2).EQ.'C') THEN
+        IF (ZK16(JPRO+4)(2:2).EQ.'C') THEN
           DF = 0.0D0
            F = ZR(JV)
-        ELSE IF (ZK8(JPRO+4)(1:1).EQ.'L') THEN
+        ELSE IF (ZK16(JPRO+4)(1:1).EQ.'L') THEN
           DF = (ZR(JV+1)-ZR(JV))/(ZR(JP+1)-ZR(JP))
            F = DF*(TEMP-ZR(JP))+ZR(JV)
-        ELSE IF (ZK8(JPRO+4)(1:1).EQ.'E') THEN
+        ELSE IF (ZK16(JPRO+4)(1:1).EQ.'E') THEN
           CALL UTMESS ('F','FODERI_03',' ON DEBORDE A GAUCHE')
         END IF
       ELSE IF (TESSUP) THEN
         JV = JVALF + 2*NBVF - 1
         JP = JVALF + NBVF - 1
-        IF (ZK8(JPRO+4)(2:2).EQ.'C') THEN
+        IF (ZK16(JPRO+4)(2:2).EQ.'C') THEN
           DF = 0.0D0
            F = ZR(JV)
-        ELSE IF (ZK8(JPRO+4)(2:2).EQ.'L') THEN
+        ELSE IF (ZK16(JPRO+4)(2:2).EQ.'L') THEN
           DF = (ZR(JV)-ZR(JV-1))/(ZR(JP)-ZR(JP-1))
            F = DF*(TEMP-ZR(JP-1))+ZR(JV-1)
-        ELSE IF (ZK8(JPRO+4)(2:2).EQ.'E') THEN
+        ELSE IF (ZK16(JPRO+4)(2:2).EQ.'E') THEN
           CALL UTMESS ('F','FODERI_04',' ON DEBORDE A DROITE')
         END IF
       ELSE

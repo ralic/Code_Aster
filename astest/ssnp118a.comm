@@ -1,4 +1,4 @@
-# MODIF  DATE 16/05/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 11/02/2003   AUTEUR DURAND C.DURAND 
 # TITRE FISSURATION PLANE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,6 +23,7 @@
 
 DEBUT(CODE=_F( NOM = 'SSNP118A',NIV_PUB_WEB='INTERNET'), PAR_LOT='NON')
 
+import aster
 
 
 MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
@@ -129,8 +130,12 @@ U=STAT_NON_LINE(
   CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
-  
-U=STAT_NON_LINE(reuse = U,
+
+l_gma = MA.LIST_GROUP_MA()
+gma = l_gma[0][0]
+
+
+STAT_NON_LINE(reuse = U,
   ETAT_INIT  = _F(EVOL_NOLI = U), 
   MODELE     = MO,
   CHAM_MATER = CM,
@@ -139,36 +144,60 @@ U=STAT_NON_LINE(reuse = U,
     _F(CHARGE = TRACTION, TYPE_CHARGE = 'FIXE_PILO'),
   ),
   PILOTAGE   = _F(
+    SELECTION = 'RESIDU',
     TYPE = 'PRED_ELAS',
     MAILLE = 'CUBEDEG',
     COEF_MULT = 1,
+    ETA_PILO_R_MIN = 0.,
     ETA_PILO_MAX = 1
     ),
   COMP_INCR  = (
           _F(RELATION = 'BARENBLATT',
              MAILLE = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
-             MAILLE = 'CUBE',),
+             GROUP_MA = gma,),
           ),               
   INCREMENT  = _F(LIST_INST = L_INST),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 5),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
-  RECH_LINEAIRE = _F(ITER_LINE_MAXI = 0),
   ARCHIVAGE  = _F(LIST_INST = L_INST2)
   )
 
   
 # RECUPERATION DU DERNIER INSTANT  
-ind = 1
-while 1:
-  try :
-    tfin = U['INST',ind]
-    ind = ind + 1
-  except :
-    break
-    
+l_inst = L_INST.LIST_VALEURS()
+tinter = l_inst[1]
+
+dico_t = U.LIST_VARI_ACCES()
+tfin  = dico_t['INST'][-1]
   
+dico_ch = U.LIST_CHAMPS()
+pos = dico_ch.keys().index('DEPL')
+depl = dico_ch.keys()[pos]
+  
+  
+l_gno = MA.LIST_GROUP_NO()
+l_gno.sort()
+gno = l_gno[1]
+print l_gno
+print aster.getcolljev("MA      .GROUPENO       ")
     
+
+
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U,
+      NOM_CHAM  = 'DEPL',
+      NOM_CMP   = 'DX',
+      VALE      = 2.167302E-8,
+      GROUP_NO  = 'TOUTSEUL',
+      INST      = 0
+      ),
+    )
+  )
+  
 TEST_RESU (
   RESU = (
     _F(
@@ -179,7 +208,7 @@ TEST_RESU (
       VALE      = 0.075,
       MAILLE    = 'CUBE',
       POINT     = 1,
-      INST      = tfin
+      INST      = tfin,
       ),
     )
   )

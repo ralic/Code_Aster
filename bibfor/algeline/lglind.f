@@ -7,7 +7,7 @@ C
       REAL*8        DEPS(*), DEVG(*), DEVGII, TRACEG, DY(*)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,11 +43,12 @@ C --- : DEPS   : INCREMENT DE DEFORMATIONS DEPUIS L'INSTANT PRECEDENT --
 C OUT : DEVG   : DEVIATEUR DE G ----------------------------------------
 C --- : DEVGII : NORME DU DEVIATEUR DE G -------------------------------
 C --- : TRACEG : TRACE DU TENSEUR G ------------------------------------
-C --- : DY     : INCREMENTS (SIG, I1, GAMP, DELTA) ---------------------
+C --- : DY     : INCREMENTS (SIG, I1, GAMP, EVP, DELTA) ----------------
 C ======================================================================
       INTEGER II
       REAL*8  GAMMAX, MU, K, GAMCJS, SIGC, H0, HLODE, DGAMP, DDELTA
       REAL*8  DUDS(6), DFDS(6), G(6), DS(6), DINV, MUN, DEUX, TROIS, DIX
+      REAL*8  DEVP
 C ======================================================================
 C --- INITIALISATION DE PARAMETRES -------------------------------------
 C ======================================================================
@@ -103,12 +104,17 @@ C --- CALCUL DU PREMIER INCREMENT DU PREMIER INVARIANT DES CONTRAINTES -
 C ======================================================================
       DINV = MUN * TROIS * K * DDELTA * TRACEG
 C ======================================================================
+C --- CALCUL DU PREMIER INCREMENT DE EVP -------------------------------
+C ======================================================================
+      DEVP = DDELTA * TRACEG
+C ======================================================================
 C --- STOCKAGE ---------------------------------------------------------
 C ======================================================================
       CALL     LCEQVN (NDT, DS(1)  , DY(1)    )
       CALL     LCEQVN (  1, DINV   , DY(NDT+1))
       CALL     LCEQVN (  1, DGAMP  , DY(NDT+2))
-      CALL     LCEQVN (  1, DDELTA , DY(NDT+3))
+      CALL     LCEQVN (  1, DEVP   , DY(NDT+3))
+      CALL     LCEQVN (  1, DDELTA , DY(NDT+4))
 C ======================================================================
       CALL JEDEMA ()
 C ======================================================================

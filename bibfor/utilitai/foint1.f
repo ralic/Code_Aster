@@ -4,7 +4,7 @@
       CHARACTER*(*)                   NOMPU(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 25/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C     ------------------------------------------------------------------
       JPRO = ZI(IPIF+1)
       JPAR = ZI(IPIF+2)
 C
-      IF (ZK8(JPRO).EQ.'CONSTANT') THEN
+      IF (ZK16(JPRO).EQ.'CONSTANT') THEN
 C
 C ----- CAS PARTICULIER DES CONSTANTES
 C
@@ -88,17 +88,17 @@ C
 C
 C --- VERIFICATION DE LA VALIDITE DES PARAMETRES
 C
-      IF (ZK8(JPRO).EQ.'FONCTION') THEN
+      IF (ZK16(JPRO).EQ.'FONCTION') THEN
         NBPARA = 1
-        NOMPF(1) = ZK8(JPRO+2)
-      ELSE IF (ZK8(JPRO).EQ.'NAPPE') THEN
+        NOMPF(1) = ZK16(JPRO+2)
+      ELSE IF (ZK16(JPRO).EQ.'NAPPE') THEN
         NBPARA = 2
-        NOMPF(1) = ZK8(JPRO+2)
-        NOMPF(2) = ZK8(JPRO+5)
+        NOMPF(1) = ZK16(JPRO+2)
+        NOMPF(2) = ZK16(JPRO+5)
       ELSE
         IER = 100
         CALL UTDEBM('F','FOINT1','ERREUR DE PROGRAMMATION')
-        CALL UTIMPK('L','TYPE DE FONCTION NON VALIDE',1,ZK8(JPRO))
+        CALL UTIMPK('L','TYPE DE FONCTION NON VALIDE',1,ZK16(JPRO))
         CALL UTFINM()
         GOTO 9999
       ENDIF
@@ -139,71 +139,71 @@ C =====================================================================
 C                          F O N C T I O N
 C =====================================================================
 C
-      IF ( ZK8(JPRO) .EQ. 'FONCTION') THEN
+      IF ( ZK16(JPRO) .EQ. 'FONCTION') THEN
         NBPT = ZI(IPIF)
         JVAL = JPAR + NBPT
         RVAR = VALPU(NPAR(1))
-        CALL FOLOCX ( ZR(JPAR), NBPT, RVAR, ZK8(JPRO+4),
+        CALL FOLOCX ( ZR(JPAR), NBPT, RVAR, ZK16(JPRO+4),
      +                          ZI(IPIF+INDFCT), EPSI, COLI, IER )
         IF ( IER .NE. 0 ) GOTO 9999
-        CALL FOCOLI ( ZI(IPIF+INDFCT),COLI,ZK8(JPRO+1),ZR(JPAR),
+        CALL FOCOLI ( ZI(IPIF+INDFCT),COLI,ZK16(JPRO+1),ZR(JPAR),
      +                                ZR(JVAL), RVAR, RESU , IER ,
-     +              NOMF,ZK8(JPRO),MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
+     +              NOMF,ZK16(JPRO),MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
         IF ( IER .NE. 0 ) GOTO 9999
 C
 C =====================================================================
 C                            N A P P E
 C =====================================================================
 C
-      ELSE IF ( ZK8(JPRO) .EQ. 'NAPPE   ') THEN
+      ELSE IF ( ZK16(JPRO) .EQ. 'NAPPE   ') THEN
         RPAR   = VALPU(NPAR(1))
         RVAR   = VALPU(NPAR(2))
         LPARA = ZI(IPIF+4)
         NBVN  = ZI(IPIF+5)
-        CALL FOLOCX ( ZR(LPARA), NBVN, RPAR, ZK8(JPRO+4),
+        CALL FOLOCX ( ZR(LPARA), NBVN, RPAR, ZK16(JPRO+4),
      +                          ZI(IPIF+INDFCT), EPSI, COLI, IER )
         IF ( IER .NE. 0 ) GOTO 9999
         INUME = ZI(IPIF+INDFCT)
 C
         IF (COLI.EQ.'C') THEN
           CALL FOINTN ( IPIF, RVAR, INUME, EPSI, RESU, IER ,
-     +              NOMF,ZK8(JPRO),MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
+     +              NOMF,ZK16(JPRO),MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
           IF ( IER .NE. 0 ) GOTO 9999
 C
         ELSE IF (COLI.EQ.'I') THEN
-          IF (ZK8(JPRO+1)(1:3).EQ.'NON') THEN
+          IF (ZK16(JPRO+1)(1:3).EQ.'NON') THEN
             CALL UTMESS('A','FOINTA_08','INTERPOLATION SUR PARAMETRES'
      +                  //' NON PERMISE')
             IER = 170
             GOTO 9999
           ENDIF
           CALL FOINTN ( IPIF, RVAR, INUME, EPSI, TAB(3), IER ,
-     +              NOMF,ZK8(JPRO),MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
+     +              NOMF,ZK16(JPRO),MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
           IF ( IER .NE. 0 ) GOTO 9999
           CALL FOINTN ( IPIF, RVAR, INUME+1, EPSI, TAB(4), IER ,
-     +              NOMF,ZK8(JPRO),MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
+     +              NOMF,ZK16(JPRO),MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
           IF ( IER .NE. 0 ) GOTO 9999
 C
 C ------- INTERPOLATION FINALE SUR LES PARAMETRES
 C
           TAB(1) = ZR(LPARA+INUME-1)
           TAB(2) = ZR(LPARA+INUME  )
-          IF (ZK8(JPRO+1).EQ.'LIN LIN ') THEN
+          IF (ZK16(JPRO+1).EQ.'LIN LIN ') THEN
             RESU = LINLIN(RPAR,TAB(1),TAB(3),TAB(2),TAB(4))
-          ELSE IF (ZK8(JPRO+1).EQ.'LIN LOG ') THEN
+          ELSE IF (ZK16(JPRO+1).EQ.'LIN LOG ') THEN
             RESU = LINLOG(RPAR,TAB(1),TAB(3),TAB(2),TAB(4))
-          ELSE IF (ZK8(JPRO+1).EQ.'LOG LOG ') THEN
+          ELSE IF (ZK16(JPRO+1).EQ.'LOG LOG ') THEN
             RESU = LOGLOG(RPAR,TAB(1),TAB(3),TAB(2),TAB(4))
-          ELSE IF (ZK8(JPRO+1).EQ.'LOG LIN ') THEN
+          ELSE IF (ZK16(JPRO+1).EQ.'LOG LIN ') THEN
             RESU = LOGLIN(RPAR,TAB(1),TAB(3),TAB(2),TAB(4))
           ENDIF
 C
         ELSE IF (COLI.EQ.'E') THEN
           CALL FOINTN ( IPIF, RVAR, INUME, EPSI, TAB(3), IER ,
-     +              NOMF,ZK8(JPRO),MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
+     +              NOMF,ZK16(JPRO),MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
           IF ( IER .NE. 0 ) GOTO 9999
           CALL FOINTN ( IPIF, RVAR, INUME+1, EPSI, TAB(4), IER ,
-     +              NOMF,ZK8(JPRO),MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
+     +              NOMF,ZK16(JPRO),MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
           IF ( IER .NE. 0 ) GOTO 9999
           TAB(1) = ZR(LPARA+INUME-1)
           TAB(2) = ZR(LPARA+INUME  )
@@ -218,7 +218,7 @@ C
 C
       ELSE
         IER = 150
-        CALL UTMESS('A','FOINT1','"'//ZK8(JPRO)//
+        CALL UTMESS('A','FOINT1','"'//ZK16(JPRO)//
      +                              '" TYPE DE FONCTION INCONNU')
         GOTO 9999
       ENDIF

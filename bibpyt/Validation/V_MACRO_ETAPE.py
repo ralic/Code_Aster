@@ -1,4 +1,4 @@
-#@ MODIF V_MACRO_ETAPE Validation  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF V_MACRO_ETAPE Validation  DATE 06/01/2003   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -157,11 +157,12 @@ class MACRO_ETAPE(V_ETAPE.ETAPE):
         if AsType(self.reuse) != sd_prod:
           if cr == 'oui' : self.cr.fatal('Type de concept reutilise incompatible avec type produit')
           valid=0
-        if self.sdnom[0] != '_' and self.reuse.nom != self.sdnom:
-          # Le nom de la variable de retour (self.sdnom) doit etre le meme que celui du concept reutilise (self.reuse.nom)
-          if cr == 'oui' :
-             self.cr.fatal('Concept reutilise : le nom de la variable de retour devrait etre %s et non %s' %(self.reuse.nom,self.sdnom))
-          valid= 0
+        if self.sdnom!='':
+           if self.sdnom[0] != '_' and self.reuse.nom != self.sdnom:
+             # Le nom de la variable de retour (self.sdnom) doit etre le meme que celui du concept reutilise (self.reuse.nom)
+             if cr == 'oui' :
+                self.cr.fatal('Concept reutilise : le nom de la variable de retour devrait etre %s et non %s' %(self.reuse.nom,self.sdnom))
+             valid= 0
         if valid:self.sd=self.reuse
       else:
         if sd_prod == None:# Pas de concept retourné

@@ -4,7 +4,7 @@
       INTEGER                IMPR,       IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/02/99   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 28/01/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,8 +57,8 @@ C     ------------------------------------------------------------------
          CALL GETRES(K8B,K8B,NOMCMD)
          LG = MAX(1,LXLGUT(FILE))
          CALL UTMESS('A',NOMCMD//' (ERREUR 01)',
-     +                   'LE FICHIER "'//FILE(1:LG)//'" N''EST RELIE '//
-     +                   'A AUCUNE UNITE LOGIQUE.')
+     +               'LE FICHIER "'//FILE(1:LG)//'" N''EST RELIE '//
+     +               'A AUCUNE UNITE LOGIQUE.')
          GOTO 9999
       ENDIF
       LISTR = FONINS
@@ -102,20 +102,20 @@ C     --- CAS D'UNE FONCTION "FORMULE" ---
      +                                           ZR(LFON+IVAL),IRET)
  100     CONTINUE
 C
-         CALL WKVECT(NOMF1//'.PROL','V V K8',5,LPROL)
-         ZK8(LPROL)   = 'FONCTION'
-         ZK8(LPROL+1) = 'LIN LIN '
-         ZK8(LPROL+2) = ZK8(LNOVA)
-         ZK8(LPROL+3) = 'TOUTRESU'
-         ZK8(LPROL+4) = 'EE'
+         CALL WKVECT(NOMF1//'.PROL','V V K16',5,LPROL)
+         ZK16(LPROL)   = 'FONCTION'
+         ZK16(LPROL+1) = 'LIN LIN '
+         ZK16(LPROL+2) = ZK8(LNOVA)
+         ZK16(LPROL+3) = 'TOUTRESU'
+         ZK16(LPROL+4) = 'EE'
 C
-         CALL FOEC1F(IUL,NOMFON,ZK8(LPROL),NBVAL,'RIEN')
+         CALL FOEC1F(IUL,NOMFON,ZK16(LPROL),NBVAL,'RIEN')
          IF (IMPR.GE.2) THEN
             IDEB = 1
             IFIN = MIN( 10 ,NBVAL )
             IF (IMPR.GE.3)  IFIN = NBVAL
-            NOMPAR = ZK8(LPROL+2)
-            NOMRES = ZK8(LPROL+3)
+            NOMPAR = ZK16(LPROL+2)
+            NOMRES = ZK16(LPROL+3)
             CALL FOEC2F(IUL,ZR(LVAL),NBVAL,IDEB,IFIN,NOMPAR,NOMRES)
          ENDIF
          CALL JEDETR(NOMF1//'.PROL')
@@ -125,10 +125,10 @@ C
 C
 C     --- INFORMATIONS COMPLEMENTAIRES POUR L'EDITION ---
       CALL JEVEUO(PROL,'L',LPROL)
-      NOMPAR = ZK8(LPROL+2)
-      NOMRES = ZK8(LPROL+3)
+      NOMPAR = ZK16(LPROL+2)
+      NOMRES = ZK16(LPROL+3)
 C
-      IF (ZK8(LPROL).EQ.'CONSTANT'.OR.ZK8(LPROL).EQ.'FONCTION') THEN
+      IF (ZK16(LPROL).EQ.'CONSTANT'.OR.ZK16(LPROL).EQ.'FONCTION') THEN
 C
 C        --- NOMBRE DE VALEURS DE LA FONCTION ---
          IF (IND.NE.0) THEN
@@ -138,7 +138,7 @@ C        --- NOMBRE DE VALEURS DE LA FONCTION ---
             NBVAL= NBVAL/2
          ENDIF
 C
-         CALL FOEC1F(IUL,NOMFON,ZK8(LPROL),NBVAL,'RIEN')
+         CALL FOEC1F(IUL,NOMFON,ZK16(LPROL),NBVAL,'RIEN')
          IF (IMPR.GE.2) THEN
             CALL JEVEUO(VALE,'L',LVAL)
             IF (IND.NE.0) THEN
@@ -162,25 +162,25 @@ C
             ENDIF
          ENDIF
 C
-      ELSEIF ( ZK8(LPROL) .EQ. 'NAPPE   ' ) THEN
+      ELSEIF ( ZK16(LPROL) .EQ. 'NAPPE   ' ) THEN
 C
          PARA = NOMFON//'.PARA'
          CALL JELIRA(PARA,'LONMAX',NBFONC,K8B)
-         CALL FOEC1N(IUL,NOMFON,ZK8(LPROL),NBFONC,'RIEN')
+         CALL FOEC1N(IUL,NOMFON,ZK16(LPROL),NBFONC,'RIEN')
          IF (IMPR.GE.2) THEN
             CALL JEVEUO(PARA,'L',LVAL)
             IF (IND.NE.0) THEN
                CALL UTMESS('E','FOIMPR','DEVELOPPEMENT NON IMPLANTE.')
             ELSE
-               CALL FOEC2N(IUL,ZK8(LPROL),ZR(LVAL),VALE,NBFONC,IMPR)
+               CALL FOEC2N(IUL,ZK16(LPROL),ZR(LVAL),VALE,NBFONC,IMPR)
             ENDIF
          ENDIF
 C
-      ELSEIF (ZK8(LPROL).EQ.'FONCT_C ' ) THEN
+      ELSEIF (ZK16(LPROL).EQ.'FONCT_C ' ) THEN
 C
          CALL JELIRA(VALE,'LONUTI',NBVAL,K8B)
          NBVAL= NBVAL/3
-         CALL FOEC1C(IUL,NOMFON,ZK8(LPROL),NBVAL,'RIEN')
+         CALL FOEC1C(IUL,NOMFON,ZK16(LPROL),NBVAL,'RIEN')
          IF (IMPR.GE.2) THEN
             CALL JEVEUO(VALE,'L',LVAL)
             IF (IND.NE.0) THEN
@@ -210,17 +210,17 @@ C
             ENDIF
           ENDIF
 C
-      ELSEIF (ZK8(LPROL).EQ.'INTERPRE' ) THEN
+      ELSEIF (ZK16(LPROL).EQ.'INTERPRE' ) THEN
          CALL GETRES(K8B,K8B,NOMCMD)
          CALL UTMESS('A',NOMCMD//' (ALARME 01)',
      +               'ON N''IMPRIME PAS ENCORE DE FONCTION DE TYPE "'//
-     +               ZK8(LPROL)//'"      DESOLE. ')
+     +               ZK16(LPROL)//'"      DESOLE. ')
 C
       ELSE
          CALL GETRES(K8B,K8B,NOMCMD)
          CALL UTMESS('A',NOMCMD//' (ALARME 01)',
      +               'ON NE SAIT PAS IMPRIMER UNE FONCTION DE TYPE "'//
-     +               ZK8(LPROL)//'"      DESOLE. ')
+     +               ZK16(LPROL)//'"      DESOLE. ')
 C
       ENDIF
  9999 CONTINUE

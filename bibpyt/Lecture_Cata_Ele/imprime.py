@@ -1,20 +1,20 @@
-#@ MODIF imprime Lecture_Cata_Ele  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+#@ MODIF imprime Lecture_Cata_Ele  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 # --------------------------------------------------------------------------------
@@ -105,10 +105,13 @@ def imprime_cata(file2,capy,seq,format):
            if seq=="non": file = open(file2+"/type_maille__.cata","w")
            file.write( cata.cmodif+"\n")
            imprime_copyright(file)
-           file.write( "TYPE_MAILLE__ " +"\n")
+           file.write("TYPE_MAILLE__\n")
            for k in range(len(cata.ltm)):
-               file.write( "   %-8s   %-5s   DIM__  %-3s   CODE__  %-5s\n" % (cata.ltm[k][0],str(cata.ltm[k][1]),
-                           cata.ltm[k][2],cata.ltm[k][3]) )
+               file.write( "\nMAILLE__ %-8s   %-5s   DIM__  %-3s   CODE__  %-5s\n" %
+                         (cata.ltm[k][0],str(cata.ltm[k][1]), cata.ltm[k][2],cata.ltm[k][3]) )
+               for elrefe in cata.ltm[k][4]:
+                    file.write( "   ELREFE__ %-8s  FAMILLE__ %-8s    %-3s\n" %
+                              (elrefe[0],elrefe[1],str(elrefe[2])) )
            file.write( "\n")
 
 
@@ -168,11 +171,10 @@ def imprime_cata(file2,capy,seq,format):
                file.write( "ENTETE__ ")
                file.write( "%s %-16s " %("ELEMENT__",entete[0]))
                file.write( "%s %-8s " %("MAILLE__",entete[1]))
-               file.write( "%s %-3s " %("NUM_INIT__",entete[2][0]))
-               if entete[2][1] :
-                   str1=''
-                   for k in entete[2][1]: str1=str1+"  "+str(k)
-                   file.write( "%-s%s" %("ELREFE__",str1))
+
+               str1=''
+               for k in entete[2]: str1=str1+"  "+str(k)
+               file.write( "%-s%s" %("ELREFE__",str1))
 
                if l_decl_npg :
                    for decl in l_decl_npg :
@@ -207,11 +209,10 @@ def imprime_cata(file2,capy,seq,format):
            file.write( "ENTETE__ ")
            file.write( "%s %-16s " %("ELEMENT__",entete[0]))
            file.write( "%s %-8s " %("MAILLE__",entete[1]))
-           file.write( "%s %-3s " %("NUM_INIT__",entete[2][0]))
-           if entete[2][1] :
-               str1=''
-               for k in entete[2][1]: str1=str1+"  "+str(k)
-               file.write( "%-s%s" %("ELREFE__",str1))
+
+           str1=''
+           for k in entete[2]: str1=str1+"  "+str(k)
+           file.write( "%-s%s" %("ELREFE__",str1))
 
            if l_decl_npg :
                for decl in l_decl_npg :
@@ -395,19 +396,51 @@ def imprime_ojb(file,capy):
          nblig=0
       return (nblig,indice+1)
 
+   def elrefe_npg(cata_tm,nofpg,elrf,f):
+     # retourne le nombre de points de la famille f de l'elrefe elrf et le numéro de la famille
+     for tm in cata_tm.ltm :
+       for elrefe in tm[4] :
+          if elrefe[0]==elrf and elrefe[1]==f :
+             ifpg=nofpg.jenonu(elrf+(8-len(elrf))*' '+f)
+             return (int(elrefe[2]),ifpg)
+     ERR.mess('E'," famille de Points de Gauss inconnue: "+f+" pour ELREFE: "+elrf)
+
 
    #  catalogue des TYPE_MAILLE :
    #-----------------------------------------
    ERR.contexte("Examen du catalogue de TYPE_MAILLE__")
    cata=capy.tm
    nomtm=ut.cree_pn(d,nom='&CATA.TM.NOMTM',tsca='K8')
+   noelrf=ut.cree_pn(d,nom='&CATA.TM.NOELRF',tsca='K8')
+   nofpg=ut.cree_pn(d,nom='&CATA.TM.NOFPG',tsca='K16')
    nbno=ut.cree_co(d,nom='&CATA.TM.NBNO',tsca='I',tsca_pn='K8',contig='CONTIG',acces='NO',longv=1)
    nbtm=len(cata.ltm)
 
+   nb_elrf=0; nb_fpg=0
    for k in range(nbtm):
-       num=nomtm.ajout_nom(cata.ltm[k][0])
+       nomtm.ajout_nom(cata.ltm[k][0])
        nbno.cree_oc(nom=cata.ltm[k][0],long=1)
        nbno.ecri_co(nom=cata.ltm[k][0],indice=1,valeur=int(cata.ltm[k][1]))
+       for elrf in cata.ltm[k][4] :
+          nom=elrf[0]
+          if not noelrf.dico.has_key(nom) :
+             nb_elrf=nb_elrf+1
+             noelrf.ajout_nom(nom)
+          nom=nom+(8-len(nom))*' '
+          nofpg.ajout_nom(nom+elrf[1])
+          nb_fpg=nb_fpg+1
+
+   tmelrf=ut.cree_os(d,nom='&CATA.TM.TMELRF',tsca='I',long=nb_elrf)
+   tmfpg=ut.cree_os(d,nom='&CATA.TM.TMFPG',tsca='I',long=nb_fpg)
+   ifpg=0;
+   for k in range(nbtm):
+       nutyma=nomtm.jenonu(cata.ltm[k][0])
+       for elrf in cata.ltm[k][4] :
+          nom=elrf[0]; ifpg=ifpg+1
+          ielrf=noelrf.jenonu(nom)
+          tmelrf.ecri_os(indice=ielrf,valeur=nutyma)
+          tmfpg.ecri_os(indice=ifpg,valeur=int(elrf[2]))
+
    del cata
 
 
@@ -570,7 +603,7 @@ def imprime_ojb(file,capy):
       nb=0
       for cata in capy.te:
           entete=cata.cata_te[0]
-          if entete[2][1] : nb=nb+len(entete[2][1])
+          nb=nb+len(entete[2])
       return nb
 
 
@@ -579,7 +612,6 @@ def imprime_ojb(file,capy):
 
    nomte=ut.cree_pn(d,nom='&CATA.TE.NOMTE',tsca='K16')
    typema=ut.cree_os(d,nom='&CATA.TE.TYPEMA',tsca='K8',long=nbte)
-   numinit=ut.cree_co(d,nom='&CATA.TE.NUMINIT',tsca='I',tsca_pn='K16',contig='CONTIG',acces='NU',longv=1)
    nommoloc=ut.cree_pn(d,nom='&CATA.TE.NOMMOLOC',tsca='K24')
    modeloc=ut.cree_co(d,nom='&CATA.TE.MODELOC',tsca='I',tsca_pn='K24',contig='CONTIG',acces='NU',longv=0)
    nbelrefe=ut.cree_os(d,nom='&CATA.TE.NBELREFE',tsca='I',long=2*nbte)
@@ -607,9 +639,6 @@ def imprime_ojb(file,capy):
        ERR.contexte("Examen du catalogue de TYPE_ELEM__: "+note)
        ERR.contexte("  rubrique: ENTETE__","AJOUT")
 
-       if l_decl_npg and len(l_decl_npg) > 1 : ERR.mess('A','Le TYPE_ELEM: '+note+
-                                               ' utilise plusieurs nombres de points de Gauss (NELGA).')
-
        nomte.ajout_nom(note)
        nute=nomte.jenonu(nom=note)
        if nute != k :  ERR.mess('F',"bizarre !")
@@ -622,20 +651,14 @@ def imprime_ojb(file,capy):
 
 
        typema.ecri_os(indice=nute,valeur=entete[1])
-       numinit.cree_oc(nom=note,long=1)
-       numinit.ecri_co(nom=note,indice=1,valeur=int(entete[2][0]))
 
        # objets noelrefe et nbelrefe :
-       if entete[2][1] :
-         kelrefe=0
-         for elrefe in entete[2][1] :
-           kelrefe=kelrefe+1;ielrefe=ielrefe+1
-           noelrefe.ecri_os(indice=ielrefe,valeur=elrefe)
-         nbelrefe.ecri_os(indice=2*(nute-1)+1,valeur=kelrefe)
-         nbelrefe.ecri_os(indice=2*(nute-1)+2,valeur=ielrefe-kelrefe+1)
-       else :
-         nbelrefe.ecri_os(indice=2*(nute-1)+1,valeur=0)
-         nbelrefe.ecri_os(indice=2*(nute-1)+2,valeur=0)
+       kelrefe=0
+       for elrefe in entete[2] :
+         kelrefe=kelrefe+1;ielrefe=ielrefe+1
+         noelrefe.ecri_os(indice=ielrefe,valeur=elrefe)
+       nbelrefe.ecri_os(indice=2*(nute-1)+1,valeur=kelrefe)
+       nbelrefe.ecri_os(indice=2*(nute-1)+2,valeur=ielrefe-kelrefe+1)
 
 
        # modes locaux :
@@ -660,7 +683,7 @@ def imprime_ojb(file,capy):
            if typept == "ELGA__"  :
               nbpt=-999
               for decl in l_decl_npg :
-                 if decl[0]== moloc[3] : nbpt=int(decl[1])
+                 if decl[0]== moloc[3] : (nbpt,ifpg)=elrefe_npg(capy.tm,nofpg,entete[2][0],decl[1])
            if nbpt == -999 : ERR.mess('E',"Utilisation d'un nombre de points de Gauss indéfini.")
 
            if diff == "IDEN" :
@@ -670,12 +693,17 @@ def imprime_ojb(file,capy):
               nbpt2=nbpt+10000
               nbpt3=nbpt
 
-           modeloc.cree_oc(nom=nomolo2,long=4+nec*nbpt3)
+           if typept == "ELGA__"  :
+              modeloc.cree_oc(nom=nomolo2,long=4+nec*nbpt3+1)
+           else:
+              modeloc.cree_oc(nom=nomolo2,long=4+nec*nbpt3)
+
            if typept == "ELEM__"  :  modeloc.ecri_co(nom=nomolo2,indice=1,valeur=1)
            if typept == "ELNO__"  :  modeloc.ecri_co(nom=nomolo2,indice=1,valeur=2)
            if typept == "ELGA__"  :  modeloc.ecri_co(nom=nomolo2,indice=1,valeur=3)
            modeloc.ecri_co(nom=nomolo2,indice=2,valeur=igd)
            modeloc.ecri_co(nom=nomolo2,indice=4,valeur=nbpt2)
+           if typept == "ELGA__"  :  modeloc.ecri_co(nom=nomolo2,indice=4+nec*nbpt3+1,valeur=ifpg)
 
            if diff == "IDEN" :
               point = moloc[5]
@@ -774,12 +802,12 @@ def imprime_ojb(file,capy):
    phenomene=ut.cree_pn(d,nom='&CATA.PHENOMENE',tsca='K16')
 
    for (ph,lmod,codph) in cata.l_pheno:
-       phenomene.ajout_nom(nom=ph)
+       phenomene.ajout_nom(ph)
        modeli=ut.cree_co(d,nom='&CATA.'+ph,tsca='I',tsca_pn='K16',contig='CONTIG',acces='NU',longv=nbtm)
        nommodeli=ut.cree_pn(d,nom='&CATA.'+ph+" "*(19-6-len(ph))+'.MODL',tsca='K16')
        for (mod,laffe,codmod) in lmod:
            mod=mod[1:len(mod)-1]
-           nommodeli.ajout_nom(nom=mod)
+           nommodeli.ajout_nom(mod)
            modeli.cree_oc(nom=mod,long=nbtm)
            for (tyma,tyel) in laffe:
                modeli.ecri_co(nom=mod,indice=nomtm.jenonu(nom=tyma),valeur=nomte.jenonu(nom=tyel))

@@ -1,11 +1,11 @@
       SUBROUTINE LRMHDF ( NOMAMD,
      >                    NOMU,NOMMAI,NOMNOE,COOVAL,COODSC,COOREF,
-     >                    GRPNOE,GRPMAI,CONNEX,TITRE,TYPMAI,ADAPMA,
-     >                    IFM,NROFIC,NIVINF,INFMED,
+     >                    GRPNOE,GRPMAI,CONNEX,TITRE,FORMM,TYPMAI,
+     >                    ADAPMA,IFM,NROFIC,NIVINF,INFMED,
      >                    NBNOEU, NBMAIL, NBCOOR )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/10/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF MODELISA  DATE 24/02/2003   AUTEUR DURAND C.DURAND 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,6 +23,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C TOLE CRP_21
 C     LECTURE DU MAILLAGE - FORMAT MED
 C     -    -     -                 ---
 C-----------------------------------------------------------------------
@@ -46,7 +47,7 @@ C
       INTEGER NROFIC, INFMED
       CHARACTER*32 NOMAMD
       CHARACTER*24 COOVAL, COODSC, COOREF, GRPNOE, GRPMAI, CONNEX
-      CHARACTER*24 TITRE,  NOMMAI, NOMNOE, TYPMAI 
+      CHARACTER*24 FORMM,  TITRE,  NOMMAI, NOMNOE, TYPMAI 
       CHARACTER*24 ADAPMA
       CHARACTER*8 NOMU 
 C
@@ -171,8 +172,8 @@ C====
 C 3. DESCRIPTION
 C====
 C
-      CALL LRMDES ( FID,
-     >              NBLTIT, DESCFI, TITRE )
+      CALL LRMDES ( FID, NOMAMD,
+     >              NBLTIT, DESCFI, TITRE, FORMM )
 C
 C====
 C 4. DIMENSIONNEMENT

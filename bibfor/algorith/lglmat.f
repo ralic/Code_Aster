@@ -8,7 +8,7 @@ C
         CHARACTER*8  MOD
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,10 +56,11 @@ C --- : NR     : NOMBRE D'EQUATION DU SYSTEME NL ------------------
 C --- : NVI    : NB DE VARIABLES INTERNES -------------------------
 C =================================================================
       INTEGER         II
-      REAL*8          E, NU, MU, K, GAMMA, KSI
-      REAL*8          UN, DEUX, TROIS
-      CHARACTER*2     CERR(18)
-      CHARACTER*8     NOMC(18)
+      REAL*8          E, NU, MU, K, GAMMA, KSI, SIGC, MULT, ME, AE
+      REAL*8          UN, DEUX, TROIS, SIGMP2, SIGMP1, APIC, MPIC
+      REAL*8          COHERE
+      CHARACTER*2     CERR(17)
+      CHARACTER*8     NOMC(17)
 C =================================================================
 C --- INITIALISATION DE PARAMETRES --------------------------------
 C =================================================================
@@ -75,7 +76,7 @@ C =================================================================
 C =================================================================
 C - NOMBRE DE CONDITIONS NON-LINEAIRES ----------------------------
 C =================================================================
-      NR  = NDT + 3
+      NR  = NDT + 4
 C =================================================================
 C --- DEFINITION DES CHAMPS ---------------------------------------
 C =================================================================
@@ -95,14 +96,14 @@ C =================================================================
       NOMC(14) = 'KSI      '
       NOMC(15) = 'GAMMA_CJS'
       NOMC(16) = 'SIGMA_P1 '
-      NOMC(17) = 'SIGMA_P2 '
-      NOMC(18) = 'PA       '
+C      NOMC(17) = 'SIGMA_P2 '
+      NOMC(17) = 'PA       '
 C =================================================================
 C --- RECUPERATION DES PARAMETRES MATERIAU ------------------------
 C =================================================================
       CALL RCVALA ( IMAT, 'ELAS', 1, 'TEMP', TEMPD, 3,
      +               NOMC(1),  MATERD(1,1),  CERR(1), ' ')
-      CALL RCVALA ( IMAT, 'LAIGLE', 1, 'TEMP', TEMPD, 15,
+      CALL RCVALA ( IMAT, 'LAIGLE', 1, 'TEMP', TEMPD, 14,
      +               NOMC(4),  MATERD(1,2),  CERR(4), ' ' )
 C =================================================================
 C - CALCUL DES MODULES DE CISAILLEMENT ET DE DEFORMATION VOLUMIQUE-
@@ -114,8 +115,8 @@ C =================================================================
 C =================================================================
 C - VERIFICATIONS -------------------------------------------------
 C =================================================================
-      GAMMA = MATERD(13,2)
-      KSI   = MATERD(14,2)
+      GAMMA = MATERD(10,2)
+      KSI   = MATERD(11,2)
       IF ((GAMMA/KSI).GT.UN) THEN
          CALL UTMESS('F','LGLMAT','LA CONDITION GAMMA/KSI <= 1'//
      +               ' N EST PAS RESPECTEE')
@@ -125,6 +126,29 @@ C --- STOCKAGE DES MODULES CALCULES COMME PARAMETRES MATERIAU -----
 C =================================================================
       MATERD(4,1) = MU
       MATERD(5,1) = K
+C =================================================================
+C --- CALCUL DE SIGMA_P2 ET DECALAGE DE PA ------------------------
+C =================================================================
+      MATERD(15,2) = MATERD(14,2)
+      SIGC         = MATERD( 9,2)
+      MULT         = MATERD( 3,2)
+      ME           = MATERD( 4,2)
+      AE           = MATERD( 5,2)
+      SIGMP2       = SIGC*((MULT/ME**AE)**(1/(AE-1)))
+      MATERD(14,2) = SIGMP2
+C =================================================================
+C --- VERIFICATION DE LA COHERENCE DES PARAMETRES : ---------------
+C --- SIGMA_C, SIGMA_P1, M_PIC, A_PIC, A_E ET M_E -----------------
+C =================================================================
+      MPIC   = MATERD( 6,2)
+      APIC   = MATERD( 7,2)
+      SIGMP1 = MATERD(13,2)
+      COHERE =
+     +        ABS(SIGC/SIGMP1*((MPIC*SIGMP1/SIGC+1)**(APIC/AE))-ME)
+      IF (COHERE.GT.1.0D-2) THEN
+         CALL UTMESS('F','LGLMAT','INCOHERENCE DES RELATIONS '//
+     +     'SIGMA_C SIGMA_P1 M_PIC A_PIC A_E ET M_E')
+      ENDIF
 C =================================================================
 C --- DEFINITION D'UN MATERIAU FINAL ------------------------------
 C =================================================================

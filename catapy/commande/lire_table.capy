@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ def lire_table_prod(TYPE_TABLE,**args):
   if TYPE_TABLE == "TABL_POST_ALEA" : return tabl_post_alea
   raise AsException("type de concept resultat non prevu")
 LIRE_TABLE=OPER(nom="LIRE_TABLE",op=29,sd_prod=lire_table_prod,
-                docu="U7.02.03",fr="Lecture d un concept de type table",
+                docu="U7.02.03-a",fr="Lecture d un concept de type table",
             UIinfo={"groupes":("Maillage",)},
          UNITE           =SIMP(statut='o',typ='I' ),
          FORMAT          =SIMP(statut='f',typ='TXM',into=("ASTER",),defaut="ASTER"),

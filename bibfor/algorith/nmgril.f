@@ -3,7 +3,7 @@
 C TOLE CRP_6
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/01/2001   AUTEUR CIBHHAB N.RAHNI 
+C MODIF ALGORITH  DATE 07/01/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,6 +117,8 @@ C
       REAL*8        SIGMG(3),SIGML(3)
       REAL*8        DH(3,3),SIGL(3),DEPSG(3),DEPSL(3)
       REAL*8        PGL(3,3),ROT(3,3), XAB1(3,3)
+      REAL*8        EM,EP,ALPHAM,ALPHAP
+      CHARACTER*2  CODRES
       LOGICAL       CINE,ISOT,PINTO,PCTNZR
 C     ------------------------------------------------------------------
       RAC2=SQRT(2.D0)
@@ -232,14 +234,34 @@ C
 C     CALCUL DES CONTRAINTES PLUS DANS REPERE LOCAL
 C     ET VARIABLES INTERNES
 C
+C --- CARACTERISTIQUES ELASTIQUES A TMOINS
+
+      CALL RCVALA(IMATE,'ELAS',1,'TEMP',TM,1,'E',EM,CODRES,'FM')
+      CALL RCVALA(IMATE,'ELAS',1,'TEMP',TM,1,'ALPHA',ALPHAM,
+     &            CODRES,' ')
+      IF (CODRES.NE.'OK') ALPHAM = 0.D0
+
+C --- CARACTERISTIQUES ELASTIQUES A TPLUS
+
+      CALL RCVALA(IMATE,'ELAS',1,'TEMP',TP,1,'E',EP,CODRES,'FM')
+      CALL RCVALA(IMATE,'ELAS',1,'TEMP',TP,1,'ALPHA',ALPHAP,
+     &            CODRES,' ')
+      IF (CODRES.NE.'OK') ALPHAP = 0.D0
+
       IF ( ISOT) THEN
-       CALL NM1DIS(TM,TP,E,ET,ALPH,SIGY,
-     >              SIGML(1),DEPSL(1),VIM(1),VIM(2),
-     >              SIGL(1),VIP(1),VIP(2),DSDEM1,DSDEP1)
+C       CALL NM1DIS(TM,TP,E,ET,ALPH,SIGY,
+C     >              SIGML(1),DEPSL(1),VIM(1),VIM(2),OPTION,
+C     >              SIGL(1),VIP(1),VIP(2),DSDEM1,DSDEP1)
+        CALL NM1DIS(IMATE,TM,TP,TREF,EM,EP,ALPHAM,ALPHAP,SIGML(1),
+     &            DEPSL(1),VIM(1),OPTION,COMPOR,SIGL(1),VIP(1),DSDEP1)
+        DSDEM1=DSDEP1
        IF (PCTNZR) THEN
-       CALL NM1DIS(TM,TP,E,ET,ALPH,SIGY,
-     >              SIGML(2),DEPSL(2),VIM(3),VIM(4),
-     >              SIGL(2),VIP(3),VIP(4),DSDEM2,DSDEP2)
+C       CALL NM1DIS(TM,TP,E,ET,ALPH,SIGY,
+C     >              SIGML(2),DEPSL(2),VIM(3),VIM(4),OPTION,
+C     >              SIGL(2),VIP(3),VIP(4),DSDEM2,DSDEP2)
+        CALL NM1DIS(IMATE,TM,TP,TREF,EM,EP,ALPHAM,ALPHAP,SIGML(2),
+     &            DEPSL(2),VIM(3),OPTION,COMPOR,SIGL(2),VIP(3),DSDEP2)
+        DSDEM2=DSDEP2
        ELSE
         SIGL(2) = 0.D0
         VIP(3)  = 0.D0
@@ -249,13 +271,19 @@ C
        ENDIF
       ENDIF
       IF ( CINE) THEN
-       CALL NM1DCI(TM,TP,E,ET,ALPH,SIGY,
-     >              SIGML(1),DEPSL(1),VIM(1),VIM(2),
-     >              SIGL(1),VIP(1),VIP(2),DSDEM1,DSDEP1)
+C       CALL NM1DCI(TM,TP,E,ET,ALPH,SIGY,
+C     >              SIGML(1),DEPSL(1),VIM(1),VIM(2),OPTION,
+C     >              SIGL(1),VIP(1),VIP(2),DSDEM1,DSDEP1)
+        CALL NM1DCI(IMATE,TM,TP,TREF,EM,EP,ALPHAM,ALPHAP,SIGML(1),
+     &            DEPSL(1),VIM(1),OPTION,SIGL(1),VIP(1),DSDEP1)
+        DSDEM1=DSDEP1
        IF (PCTNZR) THEN
-       CALL NM1DCI(TM,TP,E,ET,ALPH,SIGY,
-     >              SIGML(2),DEPSL(2),VIM(3),VIM(4),
-     >              SIGL(2),VIP(3),VIP(4),DSDEM2,DSDEP2)
+C       CALL NM1DCI(TM,TP,E,ET,ALPH,SIGY,
+C     >              SIGML(2),DEPSL(2),VIM(3),VIM(4),OPTION,
+C     >              SIGL(2),VIP(3),VIP(4),DSDEM2,DSDEP2)
+        CALL NM1DCI(IMATE,TM,TP,TREF,EM,EP,ALPHAM,ALPHAP,SIGML(2),
+     &            DEPSL(2),VIM(3),OPTION,SIGL(2),VIP(3),DSDEP2)
+        DSDEM2=DSDEP2
        ELSE
         SIGL(2) = 0.D0
         VIP(3)  = 0.D0

@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,11 +41,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER I,LGNO,LGNU,NBECLA,NBMC,IRET,IAD,NUME
+      INTEGER I,LGNO,LGNU,NBECLA,NBMC,IRET,IAD,NUME,NBMA
       PARAMETER (NBMC=5)
       CHARACTER*1 K1B
       CHARACTER*4 CDIM
-      CHARACTER*8 K8B,NOMAIN,NOMAOU,NEWMAI,NOGMA
+      CHARACTER*8 K8B,NOMAIN,NOMAOU,NEWMAI,NOGMA, PREFIX
       CHARACTER*8 NOMG,NOMORI,KNUME
       CHARACTER*16 TYPCON,NOMCMD
       CHARACTER*16 MOTFAC,TYMOCL(NBMC),MOTCLE(NBMC)
@@ -60,6 +60,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
+      CALL INFMAJ()
 
       CALL TITRE()
 
@@ -72,6 +73,39 @@ C ----------------------------------------------------------------------
       IF (NBECLA.GT.0) THEN
         CALL ECLPGM()
         GO TO 300
+      END IF
+
+
+C ----------------------------------------------------------------------
+C          TRAITEMENT DU MOT CLE "LINE_QUAD"
+C ----------------------------------------------------------------------
+
+      CALL GETFAC('LINE_QUAD',NBMOMA)
+      IF (NBMOMA.GT.0) THEN
+
+        CALL GETRES(NOMAOU,TYPCON,NOMCMD)
+        CALL GETVID(' ','MAILLAGE',1,1,1,NOMAIN,N1)
+
+        CALL GETVTX('LINE_QUAD','PREF_NOEUD',1,1,1,PREFIX,N1)
+        CALL GETVIS('LINE_QUAD','PREF_NUME' ,1,1,1,NDINIT,N1)
+
+        MOTCLE(1) = 'MAILLE'
+        MOTCLE(2) = 'GROUP_MA'
+        MOTCLE(3) = 'TOUT'
+        NOMJV          = '&&OP0167.LISTE_MA'
+        CALL RELIEM(' ',NOMAIN,'NU_MAILLE','LINE_QUAD',1,3,MOTCLE,
+     &    MOTCLE,NOMJV,NBMA)
+        CALL JEVEUO(NOMJV,'L',JLIMA)
+        CALL JEEXIN(NOMAIN//'.NOMACR',IRET)
+        IF (IRET.NE.0) CALL UTMESS('F','OP0167','CREA_MAILLAGE : '
+     &  // 'L''OPTION LIN_QUAD NE TRAITE PAS LES MACROS MAILLES')
+        CALL JEEXIN(NOMAIN//'.ABS_CURV',IRET)
+        IF (IRET.NE.0) CALL UTMESS('F','OP0167','CREA_MAILLAGE : '
+     &  //  'L''OPTION LIN_QUAD NE TRAITE PAS LES ABS_CURV')
+
+        CALL CMLQLQ(NOMAIN, NOMAOU, NBMA, ZI(JLIMA), PREFIX, NDINIT)
+
+       GOTO 300
       END IF
 
 

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 21/03/2003   AUTEUR ASSIRE A.ASSIRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,22 +61,21 @@ C -----------------
       CHARACTER*1   K1B
       CHARACTER*3   K3B
       CHARACTER*8   CAELEM, CHMAT, GRMABE, K8B, MAILLA, MODELE,
-     &              NOANCR(2), NOMU
+     &               NOANCR(2), NOMU, TYPANC(2)
       CHARACTER*16  CMD, CONCEP
       CHARACTER*19  CARSIG, CARTE, LIGRMO, LIRELA, NUMACA, NUNOBE,
      &              XNOCA, YNOCA, ZNOCA, NOMT19
       CHARACTER*24  CADESC,NCNCIN,NMABET
-C
-      CHARACTER*8   AIRE, EFFNOR
+      CHARACTER*8   AIRE, EFFNOR, GNO(2)
       INTEGER       NBPAR
-      PARAMETER    (NBPAR=10)
+      PARAMETER    (NBPAR=13)
       CHARACTER*2   TYPPAR(NBPAR)
       CHARACTER*24  NOMPAR(NBPAR)
 C
       DATA          AIRE  /'A1      '/
       DATA          EFFNOR/'N       '/
       DATA          TYPPAR /'I ','K8','R ','R ','R ',
-     &                      'K8','K8','I ','I ','R '/
+     &                      'K8','K8','I ','I ','R ','K8','K8','K8'/
       DATA          NOMPAR /'NUME_CABLE              ',
      &                      'NOEUD_CABLE             ',
      &                      'ABSC_CURV               ',
@@ -86,11 +85,15 @@ C
      &                      'NOEUD_BETON_VOISIN      ',
      &                      'INDICE_IMMERSION        ',
      &                      'INDICE_PROJECTION       ',
-     &                      'EXCENTRICITE            '/
+     &                      'EXCENTRICITE            ',
+     &                      'NOM_CABLE               ',
+     &                      'NOM_ANCRAGE1            ',
+     &                      'NOM_ANCRAGE2            '/
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
       CALL JEMARQ()
+      CALL INFMAJ()
 C
       CALL GETRES(NOMU,CONCEP,CMD)
 C
@@ -113,6 +116,7 @@ C
       ELSE
          RELAX = .FALSE.
       ENDIF
+
 C
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C 2   VERIFICATION DES ARGUMENTS AVANT EXECUTION
@@ -158,6 +162,31 @@ C
            ENDIF
         ENDIF
 C
+C TEST DU TYPE D'ANCRAGE
+C    LE CATALOGUE ASSURE QU'IL Y A DEUX OCCURENCES DE CE MOT-CLE
+        CALL GETVID(' ','TYPE_ANCRAGE',ICABL,1,2,TYPANC(1),IBID)
+
+C    SI TYPES D'ANCRAGE SONT TOUS LES DEUX PASSIFS     
+        IF ((TYPANC(1).EQ.'PASSIF').AND.(TYPANC(2).EQ.'PASSIF')) THEN
+          WRITE(K3B,'(I3)') ICABL
+C    SI LA TENSION EST NULLE : SIMPLE ALARME
+          IF (F0.EQ.0.D0) THEN 
+            CALL UTMESS('A',CMD,'MOT-CLE <DEFI_CABLE>, '//
+     &                    'OCCURENCE NO '//K3B//', OPERANDE '//
+     &                    'TYPE ANCRAGE : LES 2 EXTREMITES SONT '//
+     &                    'PASSIVES -> ARMATURE PASSIVE')
+          ELSE
+            CALL UTMESS('F',CMD,'MOT-CLE <DEFI_CABLE>, '//
+     &                    'OCCURENCE NO '//K3B//', OPERANDE '//
+     &                    'TYPE ANCRAGE : LES 2 EXTREMITES SONT '//
+     &                    'PASSIVES ET LA TENSION QUE VOUS VOULEZ' //
+     &                    'IMPOSER EST NON-NULLE : IMPOSSIBLE !')
+          
+          ENDIF
+        ENDIF
+C    SI LA TENSION EST NON-NULLE : ARRET FATAL          
+        
+C 
   10  CONTINUE
 C
 C
@@ -263,6 +292,8 @@ C ---
       CALL JEEXIN ( NOMT19//'.TBBA', IRET )
       IF (IRET.EQ.0) CALL TBCRSD ( NOMT19, 'G' )
       CALL TBAJPA ( NOMT19, NBPAR, NOMPAR, TYPPAR )
+
+
 C
 C 4.5 CREATION ET INITIALISATION DE LA CARTE ELEMENTAIRE
 C --- DES CONTRAINTES INITIALES

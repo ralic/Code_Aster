@@ -1,15 +1,15 @@
       SUBROUTINE STATCH(NBOBST,NBPT,TEMPS,DLOC,FCHO,VGLI,IADH,WK1,WK2,
      &                  WK3,IWK4,TDEBUT,TFIN,NBLOC,OFFSET,TREPOS,NOECHO,
-     &                  NOMRES)
+     &                  INTITU,NOMRES)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER NBOBST,NBPT,NBLOC,IADH(*),IWK4(*)
       REAL*8 TEMPS(*),DLOC(*),FCHO(*),VGLI(*),TREPOS,WK1(*),WK2(*),
      &       WK3(*),TDEBUT,TFIN,OFFSET
       CHARACTER*(*) NOMRES
-      CHARACTER*8 NOECHO(*)
+      CHARACTER*8 NOECHO(*), INTITU(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/01/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 24/03/2003   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,33 +40,33 @@ C     IADH         : VECTEUR INDICATEUR D ADHERENCE
 
 C-----------------------------------------------------------------------
       INTEGER IBID,VALEI(3),NBPARA,NDEPL,NUSUR,NFORN,NSTCH
-      PARAMETER (NBPARA=19,NDEPL=7,NUSUR=3,NFORN=7,NSTCH=9)
+      PARAMETER (NBPARA=20,NDEPL=8,NUSUR=4,NFORN=8,NSTCH=10)
       REAL*8 PARA(7)
       CHARACTER*8 K8B,NOEUD,TPARA(NBPARA)
       CHARACTER*16 TDEPL(NDEPL),TFORN(NFORN),TSTCH(NSTCH),TUSUR(NUSUR),
-     &             TVAR(10),NPARA(NBPARA),VALEK(2)
+     &             TVAR(10),NPARA(NBPARA),VALEK(3)
       COMPLEX*16 C16B
 
       DATA TVAR/'DEPL_X','DEPL_Y','DEPL_Z','DEPL_RADIAL',
      &     'DEPL_ANGULAIRE','FORCE_NORMALE','FORCE_TANG_1',
      &     'FORCE_TANG_2','STAT_CHOC','PUIS_USURE'/
 
-      DATA NPARA/'NOEUD','CALCUL','MOYEN','ECART_TYPE','RMS','MAXI',
-     &     'MINI','MOYEN_T_TOTAL','MOYEN_T_CHOC','RMS_T_TOTAL',
+      DATA NPARA/'INTITULE','NOEUD','CALCUL','MOYEN','ECART_TYPE','RMS',
+     &     'MAXI','MINI','MOYEN_T_TOTAL','MOYEN_T_CHOC','RMS_T_TOTAL',
      &     'RMS_T_CHOC','NB_CHOC_S','NB_REBON_CHOC','T_CHOC_MOYEN',
      &     'T_CHOC_MAXI','T_CHOC_MINI','T_REBON_MOYEN','%_T_CHOC',
      &     'PUIS_USURE'/
-      DATA TPARA/'K8','K16','R','R','R','R','R','R','R','R','R','I','I',
-     &     'R','R','R','R','I','R'/
+      DATA TPARA/'K8','K8','K16','R','R','R','R','R','R','R','R','R',
+     &     'I','I','R','R','R','R','I','R'/
 
-      DATA TDEPL/'NOEUD','CALCUL','MOYEN','ECART_TYPE','RMS','MAXI',
-     &     'MINI'/
-      DATA TFORN/'NOEUD','CALCUL','MOYEN_T_TOTAL','MOYEN_T_CHOC',
-     &     'RMS_T_TOTAL','RMS_T_CHOC','MAXI'/
-      DATA TSTCH/'NOEUD','CALCUL','NB_CHOC_S','NB_REBON_CHOC',
-     &     'T_CHOC_MOYEN','T_CHOC_MAXI','T_CHOC_MINI','T_REBON_MOYEN',
-     &     '%_T_CHOC'/
-      DATA TUSUR/'NOEUD','CALCUL','PUIS_USURE'/
+      DATA TDEPL/'INTITULE','NOEUD','CALCUL','MOYEN','ECART_TYPE','RMS',
+     &     'MAXI','MINI'/
+      DATA TFORN/'INTITULE','NOEUD','CALCUL','MOYEN_T_TOTAL',
+     &     'MOYEN_T_CHOC','RMS_T_TOTAL','RMS_T_CHOC','MAXI'/
+      DATA TSTCH/'INTITULE','NOEUD','CALCUL','NB_CHOC_S',
+     &     'NB_REBON_CHOC','T_CHOC_MOYEN','T_CHOC_MAXI','T_CHOC_MINI',
+     &     'T_REBON_MOYEN','%_T_CHOC'/
+      DATA TUSUR/'INTITULE','NOEUD','CALCUL','PUIS_USURE'/
 C-----------------------------------------------------------------------
 
       ZERO = 0.0D0
@@ -101,7 +101,8 @@ C     BOUCLE SUR LES NOEUDS DE CHOC
 
       DO 120 I = 1,NBOBST
         NOEUD = NOECHO(I)
-        VALEK(1) = NOEUD
+        VALEK(1) = INTITU(I)
+        VALEK(2) = NOEUD
 
         IF (IMPR.EQ.2) THEN
           WRITE (IFIRES,*) '   '
@@ -115,7 +116,7 @@ C     BOUCLE SUR LES NOEUDS DE CHOC
 
         DO 30 J = 1,3
 
-          VALEK(2) = TVAR(J)
+          VALEK(3) = TVAR(J)
           DXMOYT = ZERO
           DXETYT = ZERO
           DXRMST = ZERO
@@ -154,7 +155,9 @@ C     BOUCLE SUR LES NOEUDS DE CHOC
           PARA(3) = DXRMST
           PARA(4) = DXMAXT
           PARA(5) = DXMINT
+
           CALL TBAJLI(NOMRES,NDEPL,TDEPL,IBID,PARA,C16B,VALEK,0)
+
    30   CONTINUE
 
 C       --------------------------------------------------------
@@ -196,7 +199,7 @@ C       --------------------------------------------------------
           IF (IMPR.EQ.2) CALL IMPDEP(IFIRES,4,IBL,DXMOYT,DXETYT,DXRMST,
      &                               DXMAXT,DXMINT)
         END IF
-        VALEK(2) = TVAR(4)
+        VALEK(3) = TVAR(4)
         PARA(1) = DXMOYT
         PARA(2) = DXETYT
         PARA(3) = DXRMST
@@ -245,7 +248,7 @@ C       ----------------------------------
           IF (IMPR.EQ.2) CALL IMPDEP(IFIRES,5,IBL,DXMOYT,DXETYT,DXRMST,
      &                               DXMAXT,DXMINT)
         END IF
-        VALEK(2) = TVAR(5)
+        VALEK(3) = TVAR(5)
         PARA(1) = DXMOYT
         PARA(2) = DXETYT
         PARA(3) = DXRMST
@@ -293,7 +296,7 @@ C       ------------------------------------------------------------
         FXRMSC = SQRT(FXRMSC/NBLOC)
         IF (IBL.GT.1 .AND. IMPR.EQ.2) CALL IMPFN0(IFIRES,0,0,FXMOYT,
      &      FXMOYC,FXRMST,FXRMSC,FXMAXT)
-        VALEK(2) = TVAR(6)
+        VALEK(3) = TVAR(6)
         PARA(1) = FXMOYT
         PARA(2) = FXMOYC
         PARA(3) = FXRMST
@@ -334,7 +337,7 @@ C       ----------------------------------------------------------------
           FYRMST = SQRT(FYRMST/NBLOC)
           IF (IBL.GT.1 .AND. IMPR.EQ.2) CALL IMPFT0(IFIRES,INDIC,0,
      &        FYMOYT,FYETYT,FYRMST,FYMAXT,FYMINT)
-          VALEK(2) = TVAR(5+J)
+          VALEK(3) = TVAR(5+J)
           PARA(1) = FYMOYT
           PARA(2) = FYETYT
           PARA(3) = FYRMST
@@ -390,7 +393,7 @@ C       -------------------------------------------------------
           CALL IMPC0(IFIRES,0,0,NBCHOT,TCHOMY,TCHOMA,TCHOMI,NBREBT,
      &               TREBMY,TCHOCG,TEMPS,NBLOC*NBVAL)
         END IF
-        VALEK(2) = TVAR(9)
+        VALEK(3) = TVAR(9)
         TACQUI = DT*NBLOC*NBVAL
         IF (NBCHOT.NE.0) THEN
           NREPC = NBREBT/NBCHOT
@@ -412,7 +415,7 @@ C       --------------------------------------------------------
 
         CALL STATPU(NBOBST,NBPT,TEMPS,FCHO,VGLI,IADH,WK1,WK2,WK3,IWK4,
      &              IDEBUT,NBLOC,NBVAL,IFIRES,I,IMPR,PUSURN)
-        VALEK(2) = TVAR(10)
+        VALEK(3) = TVAR(10)
         CALL TBAJLI(NOMRES,NUSUR,TUSUR,IBID,PUSURN,C16B,VALEK,0)
 
   120 CONTINUE

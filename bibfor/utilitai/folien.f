@@ -6,7 +6,8 @@
       CHARACTER*19                SORTIE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,17 +47,18 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER       N1, I, LPRO, NBCREU, JFCREU, LAMOR, LVAR, LFON, 
-     +              NBVAL, JVAL, NBPAR, LPAR, IPARA, NBFR, IRET, IF, 
-     +              JPROS, JPARS, JVALS, JABSC, JORDO, NBFLIS, LONT,
-     +              NBFONC, LNOMF, LONUTI
+      INTEGER       N1, I, LPRO, NBCREU, JFCREU, LAMOR, LVAR, LFON,
+     +              NBVAL, JVAL, NBPAR, LPAR, IPARA, NBFR, IRET, IF,
+     +              JPROS, JPARS, JVALS, NBFLIS, LONT, LONMAX, 
+     +              NBFONC, LNOMF, LONUTI, NFMI, NFMA, IDEB, IFIN,
+     +              NBFR0, IDEB1, IFIN1, NBFR1, JENV, JRESU, NBFLIM
       LOGICAL       NAPP, FONC, ECHLIF, ECHAMF
-      REAL*8        FMIN, FMAX, F1, F2, LISS, LARG, VALTG, VALTD,
+      REAL*8        FMIN, FMAX, F1, F2, LISS, VALTG, VALTD,
      +              AMOR, R8B, AMOECH, TOLE, VALINT(2)
-      CHARACTER*8   K8B, TYPFON, ELARG, ECHFR, NOPAR1, NOPAR2, NOPAR3,
-     +              NPAINT(2)
+      CHARACTER*8   K8B, ELARG, ECHFR
+      CHARACTER*16  TYPFON, NOPAR1, NOPAR2, NOPAR3, NPAINT(2)
       CHARACTER*19  NOMFON, LFECH
-      CHARACTER*24  PROL, VALE, PARA, NOMF
+      CHARACTER*24  PROL, VALE, PARA, NOMF, NOMC
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -75,7 +77,7 @@ C
       PROL = NOMFON//'.PROL'
       VALE = NOMFON//'.VALE'
       CALL JEVEUO ( PROL, 'L', LPRO )
-      TYPFON = ZK8(LPRO)
+      TYPFON = ZK16(LPRO)
       FONC = .FALSE.
       NAPP = .FALSE.
 C
@@ -84,9 +86,9 @@ C
          NBFONC = 1
       ELSEIF (TYPFON.EQ.'NAPPE   ') THEN
          NAPP = .TRUE.
-         NOPAR1 = ZK8(LPRO+2)
-         NOPAR2 = ZK8(LPRO+3)
-         NOPAR3 = ZK8(LPRO+5)
+         NOPAR1 = ZK16(LPRO+2)
+         NOPAR2 = ZK16(LPRO+3)
+         NOPAR3 = ZK16(LPRO+5)
          PARA = NOMFON//'.PARA'
          CALL JELIRA ( PARA, 'LONUTI', NBPAR, K8B )
          CALL JEVEUO ( PARA, 'L', LPAR )
@@ -112,8 +114,8 @@ C
 C
 C --- PLAGE DE FREQUENCE DU SPECTRE LISSE ---
 C
-      CALL GETVR8 ( NOMOPE, 'FREQ_MIN', 1,1,1, FMIN, N1 )
-      CALL GETVR8 ( NOMOPE, 'FREQ_MAX', 1,1,1, FMAX, N1 )
+      CALL GETVR8 ( NOMOPE, 'FREQ_MIN', 1,1,1, FMIN, NFMI )
+      CALL GETVR8 ( NOMOPE, 'FREQ_MAX', 1,1,1, FMAX, NFMA )
 C
 C --- LISTE DES FREQUENCES DE CREUX A GARDER ---
 C
@@ -139,15 +141,33 @@ C
       ENDIF
 C
       CALL GETVR8 ( NOMOPE, 'GAUCHE',1,1,1, VALTG, N1 )
+      IF ( VALTG .LT. 0.D0 ) THEN
+         CALL UTMESS('F','FOLIEN','GAUCHE < 0% ')
+      ENDIF
+      IF ( VALTG .GT. 100.D0 ) THEN
+         CALL UTMESS('F','FOLIEN','GAUCHE > 100% ')
+      ENDIF
+      VALTG = VALTG / 100.D0
+C
       CALL GETVR8 ( NOMOPE, 'DROITE',1,1,1, VALTD, N1 )
+      IF ( VALTD .LT. 0.D0 ) THEN
+         CALL UTMESS('F','FOLIEN','DROITE < 0% ')
+      ENDIF
+      IF ( VALTD .GT. 100.D0 ) THEN
+         CALL UTMESS('F','FOLIEN','DROITE > 100% ')
+      ENDIF
+      VALTD = VALTD / 100.D0
 C
 C --- CRITERE POUR L'ELIMINATION DES POINTS DE LISSAGE ---
 C
       CALL GETVR8 ( NOMOPE, 'TOLE_LISS', 1,1,1, LISS, N1 )
-C
-C --- SEUIL EN LARGEUR POUR SELECTIONNER LES PLATEAUX ---
-C
-      CALL GETVR8 ( NOMOPE, 'LARG_PLAT', 1,1,1, LARG, N1 )
+      IF ( LISS .LT. 0.D0 ) THEN
+         CALL UTMESS('F','FOLIEN','TOLE_LISS < 0% ')
+      ENDIF
+      IF ( LISS .GT. 100.D0 ) THEN
+         CALL UTMESS('F','FOLIEN','TOLE_LISS > 100% ')
+      ENDIF
+      LISS = LISS / 100.D0
 C
 C --- ECHANTILLONNAGE EN FREQUENCE DU SPECTRE LISSE---
 C
@@ -203,23 +223,101 @@ C
          ENDIF
          NBFR = NBVAL / 2
 C
-         CALL WKVECT ( '&&FOLIEN.ABSC', 'V V R8', NBFR, JABSC )
-         CALL WKVECT ( '&&FOLIEN.ORDO', 'V V R8', NBFR, JORDO )
+         NBFR0 = NBFR
+         IDEB  = 1
+         IF ( NFMI .NE. 0 ) THEN
+            DO 120 I = 1 , NBFR
+               IF ( ZR(JVAL+I-1) .GE. FMIN ) THEN
+                  IDEB = I
+                  GOTO 122
+               ENDIF
+ 120        CONTINUE      
+ 122        CONTINUE      
+         ENDIF
+         IFIN = NBFR
+         IF ( NFMA .NE. 0 ) THEN
+            DO 130 I = NBFR , 1, -1
+               IF ( ZR(JVAL+I-1) .LE. FMAX ) THEN
+                  IFIN = I
+                  GOTO 132
+               ENDIF
+ 130        CONTINUE      
+ 132        CONTINUE      
+         ENDIF
+         NBFR0 = NBFR - IDEB + 1 - ( NBFR - IFIN )
 C
-         CALL FOLIE1 ( NBFR, ZR(JVAL), ZR(JVAL+NBFR), NBCREU, 
-     +                 ZR(JFCREU), ELARG, VALTG, VALTD, F1, F2, LISS,
-     +                 LARG, NBFLIS, ZR(JABSC), ZR(JORDO) )
+         IF ( ELARG .EQ. 'GLOBAL' ) THEN
 C
-         LONT = LONT + NBFLIS
+            CALL FOLIE1 ( NBFR0, ZR(JVAL+IDEB-1), ZR(JVAL+NBFR+IDEB-1),
+     +                    NBCREU, ZR(JFCREU), VALTG, VALTD,
+     +                    LISS, NOMF )
 C
-         CALL WKVECT ( NOMF, 'V V R', 2*NBFLIS, JVALS )
-         DO 112 I = 1 , NBFLIS
-            ZR(JVALS       +I-1) = ZR(JABSC+I-1)
-            ZR(JVALS+NBFLIS+I-1) = ZR(JORDO+I-1)
- 112     CONTINUE      
+         ELSEIF ( ELARG .EQ. 'LOCAL' ) THEN
+C
+            IDEB1  = 1
+            DO 150 I = 1 , NBFR
+               IF ( ZR(JVAL+I-1) .GE. F1 ) THEN
+                  IDEB1 = I
+                  GOTO 152
+               ENDIF
+ 150        CONTINUE      
+ 152        CONTINUE      
+            IFIN1 = NBFR
+            DO 154 I = NBFR , 1, -1
+               IF ( ZR(JVAL+I-1) .LE. F2 ) THEN
+                  IFIN1 = I
+                  GOTO 156
+               ENDIF
+ 154        CONTINUE      
+ 156        CONTINUE      
+            NBFR1 = NBFR - IDEB1 + 1 - ( NBFR - IFIN1 )
+C
+            NOMC = '&&FOLIEN.RESU'
+C
+            CALL FOLIE1 ( NBFR1,ZR(JVAL+IDEB1-1),ZR(JVAL+NBFR+IDEB1-1),
+     +                    NBCREU, ZR(JFCREU), VALTG, VALTD,
+     +                    LISS, NOMC )
+C
+            CALL JELIRA ( NOMC, 'LONUTI', NBFLIS, K8B )
+            CALL JELIRA ( NOMC, 'LONMAX', NBFLIM, K8B )
+            NBFLIS = NBFLIS / 2
+            NBFLIM = NBFLIM / 2
+            CALL JEVEUO ( NOMC, 'L', JENV )
+C
+            CALL WKVECT ( NOMF , 'V V R', 2*NBFR0, JRESU )
+            NBVAL = 0
+            DO 200 I = IDEB , IDEB1
+               NBVAL =  NBVAL + 1
+               ZR(JRESU+NBVAL-1) = ZR(JVAL+I-1)
+               ZR(JRESU+NBFR0+NBVAL-1) = ZR(JVAL+NBFR+I-1)
+ 200        CONTINUE  
+C
+            DO 202 I = 2 , NBFLIS
+               NBVAL =  NBVAL + 1
+               ZR(JRESU+NBVAL-1) = ZR(JENV+I-1)
+               ZR(JRESU+NBFR0+NBVAL-1) = ZR(JENV+NBFLIM+I-1)
+ 202        CONTINUE  
+C
+            DO 204 I = IFIN1+1 , IFIN
+               NBVAL =  NBVAL + 1
+               ZR(JRESU+NBVAL-1) = ZR(JVAL+I-1)
+               ZR(JRESU+NBFR0+NBVAL-1) = ZR(JVAL+NBFR+I-1)
+ 204        CONTINUE  
+C
+            CALL JEECRA ( NOMF , 'LONUTI', 2*NBVAL, ' ' )
+            CALL JEDETR ( NOMC )
+C
+         ELSE
+            CALL UTMESS('F','FOLIEN',' ELARGISSEMENT INCONNU '//ELARG)
+         ENDIF
+C
+         CALL JELIRA ( NOMF, 'LONUTI', NBVAL, K8B )
+         LONT = LONT + ( NBVAL / 2 )
 C
          CALL JEDETR ( '&&FOLIEN.ABSC' )
          CALL JEDETR ( '&&FOLIEN.ORDO' )
+         CALL JEDETR ( '&&FOLIEN.ABSC1' )
+         CALL JEDETR ( '&&FOLIEN.ORDO1' )
 C
  110  CONTINUE
 C
@@ -234,25 +332,25 @@ C
       PROL = SORTIE//'.PROL'
 C
       IF ( FONC ) THEN
-         CALL WKVECT ( PROL, BASE//' V K8', 5, JPROS )
-         ZK8(JPROS  ) = 'FONCTION'
-         ZK8(JPROS+1) = 'LOG LOG '
-         ZK8(JPROS+2) = 'FREQ    '
-         ZK8(JPROS+3) = 'ACCE    '
-         ZK8(JPROS+4) = 'EE      '
+         CALL WKVECT ( PROL, BASE//' V K16', 5, JPROS )
+         ZK16(JPROS  ) = 'FONCTION'
+         ZK16(JPROS+1) = 'LOG LOG '
+         ZK16(JPROS+2) = 'FREQ    '
+         ZK16(JPROS+3) = 'ACCE    '
+         ZK16(JPROS+4) = 'EE      '
          CALL JELIBE ( PROL )
 C
       ELSEIF ( NAPP ) THEN
          CALL WKVECT ( PROL, BASE//' V K8', 6+2*NBFONC, JPROS )
-         ZK8(JPROS  ) = 'NAPPE   '
-         ZK8(JPROS+1) = 'LOG LOG '
-         ZK8(JPROS+2) = NOPAR1
-         ZK8(JPROS+3) = NOPAR2
-         ZK8(JPROS+4) = 'EE      '
-         ZK8(JPROS+5) = NOPAR3
+         ZK16(JPROS  ) = 'NAPPE   '
+         ZK16(JPROS+1) = 'LOG LOG '
+         ZK16(JPROS+2) = NOPAR1
+         ZK16(JPROS+3) = NOPAR2
+         ZK16(JPROS+4) = 'EE      '
+         ZK16(JPROS+5) = NOPAR3
          DO 20 IF = 1 , NBFONC
-            ZK8(JPROS+5+2*IF-1) = 'LOG LOG '
-            ZK8(JPROS+5+2*IF  ) = 'EE      '
+            ZK16(JPROS+5+2*IF-1) = 'LOG LOG '
+            ZK16(JPROS+5+2*IF  ) = 'EE      '
  20      CONTINUE 
          CALL JELIBE ( PROL )
 C
@@ -274,9 +372,14 @@ C
 C
       IF ( FONC ) THEN
          CALL WKVECT ( VALE, BASE//' V R', 2*LONT, JVALS )
-         DO 30 I = 1 , LONT
-            ZR(JVALS     +I-1) = ZR(JABSC+I-1)
-            ZR(JVALS+LONT+I-1) = ZR(JORDO+I-1)
+         CALL JEVEUO ( ZK24(LNOMF), 'L', JVAL )
+         CALL JELIRA ( ZK24(LNOMF), 'LONMAX', LONMAX, K8B )
+         CALL JELIRA ( ZK24(LNOMF), 'LONUTI', LONUTI, K8B )
+         LONMAX = LONMAX / 2
+         LONUTI = LONUTI / 2
+         DO 30 I = 1 , LONUTI
+            ZR(JVALS+I-1) = ZR(JVAL+I-1)
+            ZR(JVALS+LONUTI+I-1) = ZR(JVAL+LONMAX+I-1)
  30      CONTINUE      
          CALL JELIBE ( VALE )
       ELSEIF ( NAPP ) THEN
@@ -285,12 +388,16 @@ C
          DO 32 IF = 1 , NBFONC
             CALL JECROC ( JEXNUM(VALE,IF) )
             CALL JELIRA ( ZK24(LNOMF+IF-1), 'LONUTI', LONUTI, K8B )
+            CALL JELIRA ( ZK24(LNOMF+IF-1), 'LONMAX', LONMAX, K8B )
             CALL JEECRA ( JEXNUM(VALE,IF) , 'LONMAX', LONUTI, ' ' )
             CALL JEECRA ( JEXNUM(VALE,IF) , 'LONUTI', LONUTI, ' ' )
             CALL JEVEUO ( JEXNUM(VALE,IF), 'E', JVALS )
             CALL JEVEUO ( ZK24(LNOMF+IF-1), 'L', JVAL )
+            LONMAX = LONMAX / 2
+            LONUTI = LONUTI / 2
             DO 34 I = 1 , LONUTI
                ZR(JVALS+I-1) = ZR(JVAL+I-1)
+               ZR(JVALS+LONUTI+ I-1) = ZR(JVAL+LONMAX+I-1)
  34        CONTINUE
  32     CONTINUE
       ENDIF
@@ -383,13 +490,17 @@ C
          ENDIF
       ENDIF
 C
+C --- VERIFICATION QUE L'ENVELOPPE EST SUPERIEURE AU BRUTE
+C
+      CALL FOLIE5 ( NOMFON, SORTIE )
+C
  9999 CONTINUE
 C
       CALL JEDETR ( '&&FOLIEN.ELIME'     )
       CALL JEDETR ( '&&FOLIEN.LISS'      )
       CALL JEDETR ( '&&FOLIEN.MAX'       )
       CALL JEDETR ( '&&FOLIEN.ENVELOP'   )
-      CALL JEDETR ( '&&FOLIEN.FREQ_PLAT' )
+      CALL JEDETR ( '&&FOLIEN.FREQ_CREU' )
       CALL JEDETR ( '&&FOLIEN.ELARM'     )
       CALL JEDETR ( '&&FOLIEN.ELARP'     )
       IF ( ECHAMF )  CALL JEDETR ( LFECH )

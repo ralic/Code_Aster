@@ -10,7 +10,7 @@
       CHARACTER*(*) TYPE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/03/2000   AUTEUR CIBHHPD P.DAVID 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C
       INTEGER      IP(2) , LTP(2)
       REAL*8       EPS
       CHARACTER*24 PROL , VALE , NOMTEM(2)
-      CHARACTER*8  NOPARA, NORESU, INTERP, PROLGD
+      CHARACTER*16 NOPARA, NORESU, INTERP, PROLGD
       CHARACTER*1  K1BID
 C     ----------------------------------------------------------------
       DATA     NOMTEM/'&&FOC1SU.TEMPORAIRE1', '&&FOC1SU.TEMPORAIRE2'/
@@ -150,7 +150,7 @@ C
          ZR(LRESF+2*I-1) = ZR(LRESF+2*I-1) + AIM
   405    CONTINUE
          ELSE
-         CALL FOINTR(NOMFON(IOCC),ZK8(LPRO),NBPTS,ZR(LVAR) ,ZR(LFON),
+         CALL FOINTR(NOMFON(IOCC),ZK16(LPRO),NBPTS,ZR(LVAR),ZR(LFON),
      +               NBINST,ZR(LRES),ZR(LTRES),IER)
          IF (CCPLX(IOCC)) THEN
          DO 420 I = 1, NBINST
@@ -176,12 +176,12 @@ C
 C
 C     --- CREATION DU .PROL ---
       PROL(1:19) = SORTIE
-      CALL WKVECT(PROL,BASE//' V K8',5,LPROS)
-      ZK8(LPROS  ) = TYPE
-      ZK8(LPROS+1) = INTERP
-      ZK8(LPROS+2) = NOPARA
-      ZK8(LPROS+3) = NORESU
-      ZK8(LPROS+4) = PROLGD
+      CALL WKVECT(PROL,BASE//' V K16',5,LPROS)
+      ZK16(LPROS  ) = TYPE
+      ZK16(LPROS+1) = INTERP
+      ZK16(LPROS+2) = NOPARA
+      ZK16(LPROS+3) = NORESU
+      ZK16(LPROS+4) = PROLGD
 C
       CALL JEDEMA()
       END

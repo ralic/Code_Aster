@@ -1,6 +1,6 @@
       REAL*8 FUNCTION BLPDOT(N,DX,INDX,DY)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 08/07/97   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF UTILIFOR  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LINPACK
 C ======================================================================

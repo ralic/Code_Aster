@@ -1,5 +1,5 @@
       SUBROUTINE CESRED(CES1Z,NBMA,LIMA,NBCMP,LICMP,BASE,CES2Z)
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 25/03/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -204,6 +204,14 @@ C               -- RECOPIE DE LA VALEUR:
                   ZL(JCE2V-1-IAD2) = ZL(JCE1V-1+IAD1)
                 ELSE IF (TSCA.EQ.'K8') THEN
                   ZK8(JCE2V-1-IAD2) = ZK8(JCE1V-1+IAD1)
+                ELSE IF (TSCA.EQ.'K16') THEN
+                  ZK16(JCE2V-1-IAD2) = ZK16(JCE1V-1+IAD1)
+                ELSE IF (TSCA.EQ.'K24') THEN
+                  ZK24(JCE2V-1-IAD2) = ZK24(JCE1V-1+IAD1)
+                ELSE IF (TSCA.EQ.'K32') THEN
+                  ZK32(JCE2V-1-IAD2) = ZK32(JCE1V-1+IAD1)
+                ELSE IF (TSCA.EQ.'K80') THEN
+                  ZK80(JCE2V-1-IAD2) = ZK80(JCE1V-1+IAD1)
                 ELSE
                   CALL UTMESS('F','CESRED','TYPE SCALAIRE INCONNU')
                 END IF

@@ -1,28 +1,34 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage,
-                     docu="U4.23.02-d1",reentrant='n',
+                     docu="U4.23.02-d",reentrant='n',
             UIinfo={"groupes":("Maillage",)},
          regles=(EXCLUS('ECLA_PG','CREA_MAILLE'),
                  EXCLUS('ECLA_PG','CREA_GROUP_MA'),
                  EXCLUS('ECLA_PG','DETR_GROUP_MA'),
-                 EXCLUS('ECLA_PG','MODI_MAILLE'),),
+                 EXCLUS('ECLA_PG','MODI_MAILLE'),
+                 EXCLUS('ECLA_PG','LINE_QUAD'),
+                 EXCLUS('LINE_QUAD','MODI_MAILLE'),
+                 EXCLUS('LINE_QUAD','CREA_MAILLE'),
+                 EXCLUS('LINE_QUAD','CREA_GROUP_MA'),
+                 EXCLUS('LINE_QUAD','DETR_GROUP_MA'),
+                 ),
          MAILLAGE        =SIMP(statut='o',typ=maillage ),
          CREA_POI1       =FACT(statut='f',min=1,max='**',fr="Création de mailles de type POI1 à partir de noeuds",
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD' ),),
@@ -53,7 +59,7 @@ CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage,
          DETR_GROUP_MA   =FACT(statut='f',min=1,max=1,fr="Destruction de groupes de mailles",
            GROUP_MA        =SIMP(statut='f',typ=grma,max='**'),
            NB_MAILLE       =SIMP(statut='f',typ='I',defaut= 0,
-                                 fr="Nombre minimal de mailles que doit contenir le groupe pour etre détruit",  ),  
+                                 fr="Nombre minimal de mailles que doit contenir le groupe pour etre détruit",  ),
          ),
          MODI_MAILLE     =FACT(statut='f',min=1,max='**',fr="Modification du type de mailles",
            regles=(AU_MOINS_UN('TOUT','MAILLE','GROUP_MA' ),),
@@ -64,12 +70,20 @@ CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage,
            PREF_NOEUD      =SIMP(statut='f',typ='TXM',defaut="NS"),
            PREF_NUME       =SIMP(statut='f',typ='I',defaut= 1 ),
          ),
+         LINE_QUAD     =FACT(statut='f',min=01,max=1,fr="Passage linéaire -> quadratique",
+           regles=(AU_MOINS_UN('TOUT','MAILLE','GROUP_MA' ),),
+           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           MAILLE          =SIMP(statut='f',typ=grma,max='**'),
+           GROUP_MA        =SIMP(statut='f',typ=ma,max='**'),
+           PREF_NOEUD      =SIMP(statut='f',typ='TXM',defaut="NS"),
+           PREF_NUME       =SIMP(statut='f',typ='I',defaut= 1 ),
+         ),
          REPERE          =FACT(statut='f',min=1,max='**',
                                fr="changement de repère servant à déterminer les caractéristiques d une section de poutre",
            TABLE           =SIMP(statut='o',typ=tabl_cara_geom,
                                  fr="Nom de la table contenant les caractéristiques de la section de poutre" ),
            NOM_ORIG        =SIMP(statut='f',typ='TXM',into=("CDG","TORSION"),fr="Origine du nouveau repère" ),
-           NOM_ROTA        =SIMP(statut='f',typ='TXM',into=("INERTIE",),fr="Direction du repére"  ),   
+           NOM_ROTA        =SIMP(statut='f',typ='TXM',into=("INERTIE",),fr="Direction du repére"  ),
            b_cdg =BLOC(condition = "NOM_ORIG == 'CDG'",
              GROUP_MA        =SIMP(statut='f',typ=grma,
                                    fr="Nom du groupe de mailles dont le centre de gravité sera l origine du nouveau repère"),

@@ -1,12 +1,12 @@
       SUBROUTINE FOCRR2(INTERP,NOMFON,RESU,BASE,NOMCHA,MAILLE,NOEUD,CMP,
      &                  NPOINT,NUSP,IVARI,IER)
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*1 BASE
-      CHARACTER*8 INTERP,MAILLE,NOEUD,CMP
-      CHARACTER*16 NOMCHA
-      CHARACTER*19 NOMFON,RESU
+      CHARACTER*1   BASE
+      CHARACTER*8   MAILLE,NOEUD,INTERP,CMP
+      CHARACTER*16  NOMCHA
+      CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 28/08/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -120,16 +120,16 @@ C     ------------------------------------------------------------------
       END IF
 
 C     --- REMPLISSAGE DU .PROL ---
-      CALL WKVECT(NOMFON//'.PROL',BASE//' V K8',5,LPRO)
+      CALL WKVECT(NOMFON//'.PROL',BASE//' V K16',5,LPRO)
       IF (TYPRES(1:10).EQ.'DYNA_HARMO') THEN
-        ZK8(LPRO) = 'FONCT_C'
+        ZK16(LPRO) = 'FONCT_C'
       ELSE
-        ZK8(LPRO) = 'FONCTION'
+        ZK16(LPRO) = 'FONCTION'
       END IF
-      ZK8(LPRO+1) = 'NON     '
-      ZK8(LPRO+2) = NOMACC
-      ZK8(LPRO+3) = CMP
-      ZK8(LPRO+4) = 'EE      '
+      ZK16(LPRO+1) = 'NON     '
+      ZK16(LPRO+2) = NOMACC
+      ZK16(LPRO+3) = CMP
+      ZK16(LPRO+4) = 'EE      '
 
       IF (TYPRES(1:10).EQ.'DYNA_HARMO') THEN
         CALL WKVECT(NOMFON//'.VALE',BASE//' V R',3*NBINST,LVAR)

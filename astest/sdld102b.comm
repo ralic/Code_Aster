@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 24/02/2003   AUTEUR NICOLAS O.NICOLAS 
 # TITRE SOUS-STRUCT. TRANS. (MNEAL) : SYSTEME 3 MASSES - 4 RESSORTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -476,26 +476,6 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN4,
                   VALE = 3.3749E-01))
 
 #------------------------------------------------------------------
-
-
-MACRO_MADMACS(      FICHIER='RESULTAT',
-
-                     MAILLAGE=MAILLA,
-
-                     NUME_DDL=NUMDDL1,
-
-                       CHARGE=( CHARGE,  CHARG1, ),
-
-                   MATR_ELEM_RIGI=K_ELEM1,
-                   MATR_ELEM_MASS=M_ELEM1,
-
-                    MODE_MECA=MODES1,
-                    NMAX_MODE=1,
-
-                   INTERFACE=_F(  NOM = 'DROITE',
-                               NOEUD = 'NO3',
-                               MASQUE = ('DY', 'DZ', 'DRX', 'DRY', 'DRZ',))
-               )
 
 FIN( )
 #

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/10/2002   AUTEUR GNICOLAS G.NICOLAS 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE GNICOLAS G.NICOLAS
-MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",op=-24,docu="U7.03.02-b2",
+MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",op=-24,docu="U7.03.02-b",
                      fr="Donner des informations sur un maillage.",
                      ang="To give information about a mesh.",
 #

@@ -1,4 +1,4 @@
-#@ MODIF B_ENTITE Build  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF B_ENTITE Build  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -173,4 +173,18 @@ class ENTITE:
           l.append(B_utils.Typast(v.type))
       return l
 
-
+   def get_mc(self):
+      """
+          Cette methode retourne la liste des mots cles de la commande
+      """
+      motcles=[]
+      for k,v in self.entites.items():
+          if  v.label == 'BLOC' :
+              motcles.append(k)
+              motcles=motcles+v.get_mc()
+          elif v.label == 'SIMP' :
+              motcles.append(k)
+          elif v.label == 'FACT' :
+              motcles.append(k)
+              motcles=motcles+v.get_mc()
+      return motcles

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 IMPR_MISS_3D=PROC(nom="IMPR_MISS_3D",op= 162,
-                  docu="U7.04.11-c",
+                  docu="U7.04.11-d",
             UIinfo={"groupes":("Impression",)},
          regles=(UN_PARMI('INST_INIT','FREQ_INIT'),
                  PRESENT_PRESENT('INST_INIT','INST_FIN'),
@@ -26,12 +26,12 @@ IMPR_MISS_3D=PROC(nom="IMPR_MISS_3D",op= 162,
          EXCIT           =FACT(statut='f',min=1,max='**',
            regles=(UN_PARMI('FONC_MULT','COEF_MULT' ),),
            VECT_ASSE       =SIMP(statut='f',typ=cham_no_depl_r ),
-           FONC_MULT       =SIMP(statut='f',typ=fonction ),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction,formule) ),
            COEF_MULT       =SIMP(statut='f',typ='R' ),
          ),
          EXCIT_SOL       =FACT(statut='f',min=1,max='**',
            DIRECTION       =SIMP(statut='o',typ='R',max='**'),
-           FONC_SIGNAL     =SIMP(statut='f',typ=fonction ),
+           FONC_SIGNAL     =SIMP(statut='f',typ=(fonction,formule) ),
            NOM_CHAM        =SIMP(statut='f',typ='TXM',defaut="DEPL",
                                  into=("DEPL","VITE","ACCE","FORC",) ),
          ),

@@ -1,7 +1,7 @@
       SUBROUTINE OP0045(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/09/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ALGELINE  DATE 03/03/2003   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,16 +26,18 @@ C        - POUR LE PROBLEME GENERALISE AUX VALEURS PROPRES :
 C                         2
 C                        L (M) Y  + (K) Y = 0
 C
-C          LES MATRICES (K), (C) ET (M) SONT REELLES SYMETRIQUES
+C          LES MATRICES (C) ET (M) SONT REELLES SYMETRIQUES
+C          LA MATRICE (K) EST REELLE OU COMPLEXE SYMETRIQUE
 C          LES VALEURS PROPRES ET DES VECTEURS PROPRES SONT REELS
 C
 C        - POUR LE PROBLEME QUADRATIQUE AUX VALEURS PROPRES :
 C                         2
 C                        L (M) Y  + L (C) Y + (K) Y = 0
 C
-C          LES MATRICES (K), (C) ET (M) SONT REELLES SYMETRIQUES
+C          LES MATRICES (C) ET (M) SONT REELLES SYMETRIQUES
+C          LA MATRICE (K) EST REELLE OU COMPLEXE SYMETRIQUE
 C          LES VALEURS PROPRES ET DES VECTEURS PROPRES SONT REELS OU
-C          COMPLEXES CONJUGUEES
+C          COMPLEXES CONJUGUEES OU NON
 C     ------------------------------------------------------------------
 C     APPLICATION DE LA METHODE DE LANCZOS (VARIANTE DE NEUMANN-PIPANO)
 C     POUR CONSTRUIRE UNE MATRICE TRIDIAGONALE D'ORDRE REDUIT DE MEME
@@ -119,6 +121,8 @@ C VARIABLES LOCALES
      &  NBORTO, NFREQ, NITV, NPARR, NBCINE, NEQ, NITQRM,
      &  NBRSS, NITBAT, NIV, NNCRIT, MXRESF, NBLAGR, NPERM,
      &  NITJAC, NNFREQ, NPREC, N1, NSTOC, NCONV, IEXIN
+      CHARACTER*1 KTYP
+      INTEGER  LWORKR, LAUR, LAUC, LAUL
       REAL*8 PRORTO, OMEGA2, FMIN, FMAX, RAUX, ALPHA, TOLSOR,
      &  UNDF, R8VIDE, FREQOM, R8PREM, OMEMIN, OMEMAX, OMESHI, OMECOR,
      &  FCORIG, PRECDC, SEUIL, VPINF, PRECSH, TOL, VPMAX, PRSUDG,
@@ -162,13 +166,15 @@ C     ------------------------------------------------------------------
 
 C     --- RECUPERATION DU RESULTAT  ---
       CALL GETRES(MODES,TYPCON,NOMCMD)
-
 C     --- RECUPERATION DES ARGUMENTS MATRICIELS ---
       CALL GETVID(' ','MATR_A',1,1,1,RAIDE,L)
       CALL GETVID(' ','MATR_B',1,1,1,MASSE,L)
       AMOR = ' '
       CALL GETVID(' ','MATR_C',1,1,1,AMOR,LAMOR)
-
+C     --- TEST DU TYPE (COMPLEXE OU REELLE) DE LA MATRICE DE RAIDEUR ---
+      IF (IER.EQ.0) THEN
+        CALL JELIRA(RAIDE//'.VALE','TYPE',IBID,KTYP)
+      ENDIF  
 C     --- METHODE DE RESOLUTION CHOISIE ---
 C     METHOD : 'TRI_DIAG','JACOBI' OU 'SORENSEN'
       CALL GETVTX(' ','METHODE',1,1,1,METHOD,LMET)
@@ -283,9 +289,10 @@ C     --- REGLES D'EXCLUSION ---
             CALL UTMESS('F','OP0045.18','OPTION BANDE NON AUTORISEE'
      +                // ' POUR UN PROBLEME AVEC AMORTISSEMENT')
          ENDIF
-         IF ((APPR.EQ.'I') .AND. (ZR(LBORFR).EQ.0.D0)) THEN
-            CALL UTMESS('F','OP0045.19','APPROCHE IMAGINAIRE ET '//
-     +                  'FREQUENCE NULLE INCOMPATIBLE')
+         IF (((APPR.EQ.'I').OR.(APPR.EQ.'C')).AND.(ZR(LBORFR).EQ.0.D0)) 
+     +    THEN
+            CALL UTMESS('F','OP0045.19','APPROCHE IMAGINAIRE OU'//
+     +      ' COMPLEXE ET FREQUENCE NULLE INCOMPATIBLE')
          ENDIF
          IF (MODRIG.EQ.'MODE_RIGIDE') THEN
            CALL UTMESS('F','OP0045.06',' OPTION MODES DE CORPS '//
@@ -295,11 +302,27 @@ C     --- REGLES D'EXCLUSION ---
            CALL UTMESS('F','OP0045.04','CALCUL DE FLAMBEMENT ET '//
      +            'MATRICE D''AMORTISSEMENT NE SONT PAS COMPATIBLES')
          ENDIF
-         IF (METHOD .NE. 'TRI_DIAG') THEN
-           CALL UTMESS('F','OP0045.20','POUR LE PROBLEME QUADRA'//
-     +           'TIQUE ON UTILISE SEULEMENT L''ALGORITHME TRI_DIAG')
+      ENDIF
+      IF (KTYP.EQ.'C') THEN
+        IF (METHOD .NE. 'SORENSEN') THEN
+           CALL UTMESS('F','OP0045.21','POUR LE PROBLEME'// 
+     +    ' GENERALISE OU QUADRATIQUE COMPLEXE'//
+     +    ' ON UTILISE SEULEMENT L''ALGORITHME DE SORENSEN')
+        ENDIF
+        IF (OPTIOF.EQ.'BANDE') THEN
+            CALL UTMESS('F','OP0045.18','OPTION BANDE NON AUTORISEE'
+     +                // ' POUR UN PROBLEME AVEC AMORTISSEMENT')
+        ENDIF
+         IF (ZR(LBORFR).EQ.0.D0) THEN
+            CALL UTMESS('F','OP0045.19','PROBLEME COMPLEXE ET '//
+     +                  'FREQUENCE NULLE INCOMPATIBLE')
          ENDIF
       ENDIF
+      IF ((METHOD.EQ.'SORENSEN').AND.(ZR(LBORFR).EQ.0.D0).AND. 
+     +   (LAMOR.NE.0)) THEN
+            CALL UTMESS('F','OP0045.19','CALCUL QUADRATIQUE PAR '//
+     +       'LA METHODE DE SORENSEN ET FREQUENCE NULLE INCOMPATIBLE')
+         ENDIF
 
 
 C     --- COMPATIBILITE DES MODES (DONNEES ALTEREES) ---
@@ -354,7 +377,7 @@ C     ------------------------------------------------------------------
 
       CALL WKVECT('&&OP0045.POSITION.DDL','V V I',NEQ*MXDDL,LDDL)
       CALL WKVECT('&&OP0045.DDL.BLOQ.CINE','V V I',NEQ,LPROD)
-      IF (LAMOR.NE.0) THEN
+      IF ((KTYP.EQ.'C').OR.(LAMOR.NE.0)) THEN
         TYPE = 'C'
       ELSE
         TYPE = 'R'
@@ -404,7 +427,6 @@ C     --- ARRET SI PAS DE FREQUENCE DANS L'INTERVALLE DONNE  ---
 
 C     --- CREATION / AFFECTATION DES MATRICES DYNAMIQUES  ---
 
-
 C     ------------------------------------------------------------------
 C     ----  DETETECTION DES MODES DE CORPS RIGIDE                 ------
 C     ------------------------------------------------------------------
@@ -422,7 +444,8 @@ C     ------------------------------------------------------------------
       IF (LAMOR.EQ.0) THEN
 
 C     --- PROBLEME GENERALISE ---
-
+C      - CAS REEL
+        IF (KTYP.EQ.'R') THEN
          CALL MTDEFS(MATPSC,RAIDE,'V','R')
          CALL MTDEFS(MATOPA,RAIDE,'V','R')
          CALL MTDSCR(MATPSC)
@@ -443,11 +466,18 @@ C     --- PROBLEME GENERALISE ---
             ENDIF
          ENDIF
          CALL VPSHIF(LRAIDE,OMESHI,LMASSE,LMTPSC)
-
+        ELSE
+C     - CAS COMPLEXE
+         CALL VPFOPC(LMASSE,LRAIDE,FMIN,SIGMA,
+     +               MATOPA,RAIDE,NPREC)
+         CALL JEVEUO(MATOPA(1:19)//'.&INT','L',LMATRA)
+        ENDIF
       ELSE
 
-C        --- PROBLEME QUADRATIQUE ---
-         CALL VPFOPC(LMASSE,LAMOR,LRAIDE,APPR,FMIN,SIGMA,
+C     --- PROBLEME QUADRATIQUE  ---
+C     - CAS REEL
+        IF (KTYP.EQ.'R') THEN
+         CALL WPFOPR(LMASSE,LAMOR,LRAIDE,APPR,FMIN,SIGMA,
      +               MATOPA,MATPSC,RAIDE,NPREC)
          CALL JEVEUO(MATOPA(1:19)//'.&INT','L',LMATRA)
          CALL JEEXIN(MATPSC(1:19)//'.&INT',IEXIN)
@@ -456,9 +486,15 @@ C        --- PROBLEME QUADRATIQUE ---
          ELSE
            CALL JEVEUO(MATPSC(1:19)//'.&INT','L',LMTPSC)
          ENDIF
-
-      ENDIF
-
+C     - CAS COMPLEXE
+        ELSE
+         CALL WPFOPC(LMASSE,LAMOR,LRAIDE,FMIN,SIGMA,
+     +               MATOPA,RAIDE,NPREC)
+         CALL JEVEUO(MATOPA(1:19)//'.&INT','L',LMATRA)
+         CALL JEEXIN(MATPSC(1:19)//'.&INT',IEXIN)
+         LMTPSC = 0
+        ENDIF
+       ENDIF
 C     ------------------------------------------------------------------
 C     ----  DETERMINATION DE LA DIMENSION DU SOUS ESPACE NBVECT   ------
 C     ------------------------------------------------------------------
@@ -562,9 +598,11 @@ C     --- INITIALISATION A UNDEF DE LA STRUCTURE DE DONNEES RESUF --
          ZI(LRESUI+IEQ-1) = INDF
   22  CONTINUE
 
-      IF (LAMOR.EQ.0) THEN
+C     --- CAS REEL ET GENERALISE ---
+      IF ((KTYP.EQ.'R').AND.(LAMOR.EQ.0)) THEN
          CALL WKVECT('&&OP0045.VECTEUR_PROPRE','V V R',NEQ*NBVECT,LVEC)
       ELSE
+C     --- CAS COMPLEXE OU QUADRATIQUE ---
          CALL WKVECT('&&OP0045.VECTEUR_PROPRE','V V C',NEQ*NBVECT,LVEC)
       ENDIF
 
@@ -591,23 +629,62 @@ C     --- INITIALISATION A UNDEF DE LA STRUCTURE DE DONNEES RESUF --
          CALL WKVECT('&&OP0045.VALPRO','V V R',NBVECT,LVALPR)
 
       ELSE IF (METHOD .EQ. 'SORENSEN') THEN
-
-         CALL WKVECT('&&OP0045.RESID','V V R',NEQ,LRESID)
-         CALL WKVECT('&&OP0045.VECT.WORKD','V V R',3*NEQ,LWORKD)
          LONWL = 3*NBVECT*NBVECT+6*NBVECT
-         CALL WKVECT('&&OP0045.VECT.WORKL','V V R',LONWL,LWORKL)
-         CALL WKVECT('&&OP0045.VECT.WORKV','V V R',3*NBVECT,LWORKV)
          CALL WKVECT('&&OP0045.SELECT','V V L',NBVECT,LSELEC)
-         CALL WKVECT('&&OP0045.VAL.PRO','V V R',2*(NFREQ+1),LDSOR)
-         CALL WKVECT('&&OP0045.VECT.AUX','V V R',NEQ,LAUX)
-
+C     --- CAS REEL GENERALISE ---
+         IF ((KTYP.EQ.'R').AND.(LAMOR.EQ.0)) THEN
+          CALL WKVECT('&&OP0045.RESID','V V R',NEQ,LRESID)
+          CALL WKVECT('&&OP0045.VECT.WORKD','V V R',3*NEQ,LWORKD)
+          CALL WKVECT('&&OP0045.VECT.WORKL','V V R',LONWL,LWORKL)
+          CALL WKVECT('&&OP0045.VECT.WORKV','V V R',3*NBVECT,LWORKV)
+          CALL WKVECT('&&OP0045.VAL.PRO','V V R',2*(NFREQ+1),LDSOR)
+          CALL WKVECT('&&OP0045.VECT.AUX','V V R',NEQ,LAUX)
+C     --- CAS COMPLEXE GENERALISE ---
+         ELSEIF ((KTYP.EQ.'C').AND.(LAMOR.EQ.0)) THEN
+          CALL WKVECT('&&OP0045.RESID','V V C',NEQ,LRESID)
+          CALL WKVECT('&&OP0045.VECT.WORKD','V V C',3*NEQ,LWORKD)
+          CALL WKVECT('&&OP0045.VECT.WORKL','V V C',LONWL,LWORKL)
+          CALL WKVECT('&&OP0045.VECT.WORKV','V V C',3*NBVECT,LWORKV)
+          CALL WKVECT('&&OP0045.VAL.PRO','V V C',(NFREQ+1),LDSOR)
+          CALL WKVECT('&&OP0045.VECT.AUX','V V C',NEQ,LAUX)
+          CALL WKVECT('&&OP0045.VECT.AUR','V V R',NBVECT,LWORKR)
+C     --- CAS REEL QUADRATIQUE ---
+         ELSEIF ((KTYP.EQ.'R').AND.(LAMOR.NE.0)) THEN
+           CALL WKVECT('&&OP0045.RESID','V V R',2*NEQ,LRESID)
+           CALL WKVECT('&&OP0045.VECT.WORKD','V V R',6*NEQ,LWORKD)
+           CALL WKVECT('&&OP0045.VECT.AUX','V V R',2*NEQ,LAUX)
+           CALL WKVECT('&&OP0045.VECT.AUR','V V R',2*NEQ*(NBVECT+1),
+     &     LAUR)
+           CALL WKVECT('&&OP0045.VECT.AUC','V V C',2*NEQ*(NBVECT+1),
+     &     LAUC)
+           CALL WKVECT('&&OP0045.VECT.AUL','V V C',NEQ*(NBVECT+1),
+     &     LAUL)
+           CALL WKVECT('&&OP0045.VAL.PR','V V R',NBVECT+1,LDIAGR)
+           CALL WKVECT('&&OP0045.VAL.PI','V V R',NBVECT+1,LSURDR)
+           CALL WKVECT('&&OP0045.VAL.PRO','V V R',2*(NBVECT+1),LDSOR)
+           CALL WKVECT('&&OP0045.VECT.WORKL','V V R',LONWL,LWORKL)
+           CALL WKVECT('&&OP0045.VECT.WORKV','V V R',3*NBVECT,LWORKV)
+C     --- CAS COMPLEXE QUADRATIQUE ---
+         ELSEIF ((KTYP.EQ.'C').AND.(LAMOR.NE.0)) THEN
+           CALL WKVECT('&&OP0045.RESID','V V C',2*NEQ,LRESID)
+           CALL WKVECT('&&OP0045.VECT.WORKD','V V C',6*NEQ,LWORKD)
+           CALL WKVECT('&&OP0045.VECT.WORKL','V V C',LONWL,LWORKL)
+           CALL WKVECT('&&OP0045.VECT.WORKV','V V C',3*NBVECT,LWORKV)
+           CALL WKVECT('&&OP0045.VAL.PRO','V V C',2*(NFREQ+1),LDSOR)
+           CALL WKVECT('&&OP0045.VECT.AUX','V V C',2*NEQ,LAUX)
+           CALL WKVECT('&&OP0045.VECT.AUC','V V C',2*NEQ*(NBVECT+1),
+     &     LAUC)
+           CALL WKVECT('&&OP0045.VECT.AUR','V V R',2*NEQ*(NBVECT+1),
+     &     LAUR)
+         ENDIF
       ENDIF
 
 C     ------------------------------------------------------------------
 C     -------  CALCUL DES VALEURS PROPRES ET VECTEURS PROPRES   --------
 C     ------------------------------------------------------------------
 
-      IF (LAMOR.EQ.0) THEN
+      IF (METHOD.NE.'SORENSEN') THEN
+        IF (LAMOR.EQ.0) THEN
 
 C        --- CAS SANS AMORTISSEMENT : PROBLEME GENERALISE ---
 
@@ -635,7 +712,7 @@ C        --- CAS SANS AMORTISSEMENT : PROBLEME GENERALISE ---
                  ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
                  ZI(LRESUI-1+IMET) = IMET
  31           CONTINUE
-            ENDIF
+           ENDIF
 C NOMBRE DE MODES CONVERGES
            NCONV = NFREQ
 
@@ -674,56 +751,11 @@ C NOMBRE DE MODES CONVERGES
                  ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
                  ZI(LRESUI-1+IMET) = IMET
  33           CONTINUE
-            ENDIF
+           ENDIF
 C NOMBRE DE MODES CONVERGES
            NCONV = NFREQ
-
-         ELSE  IF (METHOD.EQ.'SORENSEN') THEN
-           IF (NIV.EQ.2) THEN
-             PRIRAM(1) = 2
-             PRIRAM(2) = 2
-             PRIRAM(3) = 2
-             PRIRAM(4) = 2
-             PRIRAM(5) = 0
-             PRIRAM(6) = 0
-             PRIRAM(7) = 0
-             PRIRAM(8) = 2
-           ELSE
-             DO 35 I = 1,8
-               PRIRAM(I) = 0
-  35         CONTINUE
            ENDIF
-C CALCUL DES MODES PROPRES
-           CALL VPSORN (LMASSE, LMATRA, NEQ, NBVECT, NFREQ, TOLSOR,
-     &       ZR(LVEC), ZR(LRESID), ZR(LWORKD), ZR(LWORKL), LONWL,
-     &       ZL(LSELEC), ZR(LDSOR), OMESHI, ZR(LAUX), ZR(LWORKV),
-     &       ZI(LPROD), ZI(LDDL), NEQACT, MAXITR, IFM, NIV, PRIRAM,
-     &       ALPHA, OMECOR, NCONV, FLAGE)
-C TRI DE CES MODES
-           CALL RECTFR(NCONV, NCONV, NEQ, OMESHI, NPIVOT, NBLAGR,
-     &       ZR(LDSOR), NFREQ+1, ZI(LRESUI), ZR(LRESUR), NFREQ)
-           CALL VPBOST (TYPRES, NCONV, NCONV, OMESHI, ZR(LDSOR),
-     &       NFREQ+1, VPINF, VPMAX, PRECDC, METHOD, OMECOR, STURM)
-           DO 37 IMET = 1,NCONV
-                 ZI(LRESUI-1+  MXRESF+IMET) = 0
-                 ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
-                 ZR(LRESUR-1+2*MXRESF+IMET) = 0.0D0
-                 ZK24(LRESUK-1+  MXRESF+IMET) = 'SORENSEN'
- 37         CONTINUE
-            IF (TYPRES .NE. 'DYNAMIQUE') THEN
-              ITYP = 0
-              IORDRE = 0
-              CALL VPORDO (ITYP,IORDRE,NCONV,ZR(LRESUR+MXRESF),
-     &                     ZR(LVEC),NEQ)
-              DO 38 IMET = 1,NCONV
-                 ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
-                 ZI(LRESUI-1+IMET) = IMET
- 38           CONTINUE
-            ENDIF
-
-         ENDIF
-
-      ELSE
+         ELSE
 
 C        --- CAS AVEC AMORTISSEMENT : PROBLEME QUADRATIQUE ---
 
@@ -746,8 +778,129 @@ C        --- CAS AVEC AMORTISSEMENT : PROBLEME QUADRATIQUE ---
  36      CONTINUE
 C NOMBRE DE MODES CONVERGES
          NCONV = NFREQ
-
-      ENDIF
+         ENDIF
+         
+       ELSE IF (METHOD.EQ.'SORENSEN') THEN
+           IF (NIV.EQ.2) THEN
+             PRIRAM(1) = 2
+             PRIRAM(2) = 2
+             PRIRAM(3) = 2
+             PRIRAM(4) = 2
+             PRIRAM(5) = 0
+             PRIRAM(6) = 0
+             PRIRAM(7) = 0
+             PRIRAM(8) = 2
+           ELSE
+             DO 35 I = 1,8
+               PRIRAM(I) = 0
+  35         CONTINUE
+           ENDIF
+C     --- SORENSEN : CAS REEL GENERALISE ---
+           IF ((KTYP.EQ.'R').AND.(LAMOR.EQ.0)) THEN
+C     CALCUL DES MODES PROPRES
+           CALL VPSORN (LMASSE, LMATRA, NEQ, NBVECT, NFREQ, TOLSOR,
+     &       ZR(LVEC), ZR(LRESID), ZR(LWORKD), ZR(LWORKL), LONWL,
+     &       ZL(LSELEC), ZR(LDSOR), OMESHI, ZR(LAUX), ZR(LWORKV),
+     &       ZI(LPROD), ZI(LDDL), NEQACT, MAXITR, IFM, NIV, PRIRAM,
+     &       ALPHA, OMECOR, NCONV, FLAGE)
+C     TRI DE CES MODES
+           CALL RECTFR(NCONV, NCONV, NEQ, OMESHI, NPIVOT, NBLAGR,
+     &       ZR(LDSOR), NFREQ+1, ZI(LRESUI), ZR(LRESUR), NFREQ)
+           CALL VPBOST (TYPRES, NCONV, NCONV, OMESHI, ZR(LDSOR),
+     &       NFREQ+1, VPINF, VPMAX, PRECDC, METHOD, OMECOR, STURM)
+           DO 37 IMET = 1,NCONV
+                 ZI(LRESUI-1+  MXRESF+IMET) = 0
+                 ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
+                 ZR(LRESUR-1+2*MXRESF+IMET) = 0.0D0
+                 ZK24(LRESUK-1+  MXRESF+IMET) = 'SORENSEN'
+ 37         CONTINUE
+            IF (TYPRES .NE. 'DYNAMIQUE') THEN
+              ITYP = 0
+              IORDRE = 0
+              CALL VPORDO (ITYP,IORDRE,NCONV,ZR(LRESUR+MXRESF),
+     &                     ZR(LVEC),NEQ)
+              DO 38 IMET = 1,NCONV
+                 ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
+                 ZI(LRESUI-1+IMET) = IMET
+ 38           CONTINUE
+            ENDIF
+C     --- SORENSEN : CAS COMPLEXE GENERALISE ---
+          ELSE IF ((KTYP.EQ.'C').AND.(LAMOR.EQ.0)) THEN
+           CALL VPSORC (LMASSE, LMATRA, NEQ, NBVECT, NFREQ, TOLSOR,
+     &       ZC(LVEC), ZC(LRESID), ZC(LWORKD), ZC(LWORKL), LONWL,
+     &       ZL(LSELEC), ZC(LDSOR), SIGMA,
+     &       ZC(LAUX), ZC(LWORKV), ZR(LWORKR),
+     &       ZI(LPROD), ZI(LDDL), NEQACT, MAXITR, IFM, NIV, PRIRAM,
+     &       ALPHA, NCONV, FLAGE)
+C     TRI DE CES MODES
+           NPIVOT = NBLAGR
+           CALL RECTFC(NCONV, NCONV, SIGMA, NPIVOT, NBLAGR,
+     &       ZC(LDSOR), NFREQ+1, ZI(LRESUI), ZR(LRESUR), NFREQ)
+           CALL VPBOSC (TYPRES, NCONV, NCONV, SIGMA, ZC(LDSOR),
+     &       NFREQ+1, VPINF, VPMAX, PRECDC, METHOD, OMECOR, STURM)
+           DO 377 IMET = 1,NCONV
+                 ZI(LRESUI-1+  MXRESF+IMET) = 0
+                 ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
+                 ZK24(LRESUK-1+  MXRESF+IMET) = 'SORENSEN'
+ 377         CONTINUE
+C     --- SORENSEN : CAS REEL QUADRATIQUE ---
+C     - APPROCHE EN ARITHMETIQUE RELLE -
+          ELSE IF ((KTYP.EQ.'R').AND.(LAMOR.NE.0)) THEN
+            IF ((APPR.EQ.'R').OR.(APPR.EQ.'I')) THEN
+C CALCUL DES MODES PROPRES
+              CALL WPSORN (APPR, OPTIOF, LMASSE, LAMOR, LMATRA,
+     &         NEQ, NBVECT, NFREQ, TOLSOR, ZC(LVEC), ZR(LRESID),
+     &         ZR(LWORKD), ZR(LWORKL), LONWL, ZL(LSELEC), ZR(LDSOR),
+     &         ZR(LSURDR),ZR(LDIAGR), 
+     &         SIGMA, ZR(LAUX), ZR(LWORKV), ZI(LPROD), ZI(LDDL),  
+     &         NEQACT,MAXITR, IFM, NIV, PRIRAM, ALPHA, NCONV, FLAGE,
+     &         ZR(LAUR), ZC(LAUC), ZC(LAUL))
+C TRI DE CES MODES
+              NFREQ = NCONV / 2
+              CALL WP3VEC(APPR,OPTIOF,NFREQ,NCONV,NEQ,SIGMA,
+     &          ZR(LSURDR),ZR(LDIAGR),ZC(LVEC),LMASSE,MXRESF,
+     &          ZI(LRESUI),ZR(LRESUR),ZI(LPROD),ZC(LAUC))
+            ELSE
+C     - APPROCHE EN ARITHMETIQUE COMPLEXE -
+              CALL WPSORC (LMASSE, LAMOR, LMATRA,
+     &         NEQ, NBVECT, NFREQ, TOLSOR, ZC(LVEC), ZC(LRESID),
+     &         ZC(LWORKD), ZC(LWORKL), LONWL, ZL(LSELEC), ZC(LDSOR), 
+     &         SIGMA, ZC(LAUX), ZC(LWORKV), ZI(LPROD), ZI(LDDL), 
+     &         NEQACT,MAXITR, IFM, NIV, PRIRAM, ALPHA, NCONV, FLAGE,
+     &         ZC(LAUC),ZR(LAUR))
+              NFREQ = NCONV / 2
+              CALL WP4VEC(APPR,OPTIOF,NFREQ,NCONV,NEQ,SIGMA,
+     &         ZC(LDSOR),ZC(LVEC),LMASSE,MXRESF,
+     &         ZI(LRESUI),ZR(LRESUR),ZI(LPROD),ZC(LAUC)) 
+            ENDIF           
+            DO 378 IMET = 1,NFREQ
+              ZI(LRESUI-1+MXRESF+IMET) = 0
+              ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
+              ZK24(LRESUK-1+MXRESF+IMET) = 'SORENSEN'
+ 378        CONTINUE
+C NOMBRE DE MODES CONVERGES
+            NCONV = NFREQ 
+C     --- SORENSEN : CAS COMPLEXE QUADRATIQUE ---
+          ELSE IF ((KTYP.EQ.'C').AND.(LAMOR.NE.0)) THEN          
+              CALL WPSORC (LMASSE, LAMOR, LMATRA,
+     &         NEQ, NBVECT, NFREQ, TOLSOR, ZC(LVEC), ZC(LRESID),
+     &         ZC(LWORKD), ZC(LWORKL), LONWL, ZL(LSELEC), ZC(LDSOR), 
+     &         SIGMA, ZC(LAUX), ZC(LWORKV), ZI(LPROD), ZI(LDDL), 
+     &         NEQACT,MAXITR, IFM, NIV, PRIRAM, ALPHA, NCONV, FLAGE,
+     &         ZC(LAUC),ZR(LAUR))
+              NFREQ = NCONV / 2
+              CALL WP5VEC(APPR,OPTIOF,NFREQ,NCONV,NEQ,SIGMA,
+     &         ZC(LDSOR),ZC(LVEC),LMASSE,MXRESF,
+     &         ZI(LRESUI),ZR(LRESUR),ZI(LPROD),ZC(LAUC)) 
+           DO 379 IMET = 1,NFREQ
+              ZI(LRESUI-1+MXRESF+IMET) = 0
+              ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
+              ZK24(LRESUK-1+MXRESF+IMET) = 'SORENSEN'
+ 379       CONTINUE
+C NOMBRE DE MODES CONVERGES
+             NCONV = NFREQ        
+          ENDIF
+         ENDIF
 
 C     ------------------------------------------------------------------
 C     -------------------- CORRECTION : OPTION BANDE -------------------
@@ -781,24 +934,22 @@ C     POSITION MODALE NEGATIVE DES MODES INTERDITE
 
       NPARR = NBPARR
       IF (TYPCON.EQ.'MODE_ACOU') NPARR = 7
-
-      IF (LAMOR.EQ.0) THEN
+      IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R')) THEN
          CALL VPPARA(MODES,TYPCON,KNEGA,LRAIDE,LMASSE,LAMOR,
      &               MXRESF,NEQ,NCONV,OMECOR,ZI(LDDL),ZI(LPROD),
      &               ZR(LVEC),CBID, NBPARI, NPARR, NBPARK, NOPARA,
-     &               ZI(LRESUI), ZR(LRESUR), ZK24(LRESUK) )
+     &               ZI(LRESUI), ZR(LRESUR), ZK24(LRESUK),KTYP )
       ELSE
          CALL VPPARA(MODES,TYPCON,KNEGA,LRAIDE,LMASSE,LAMOR,
      &               MXRESF,NEQ,NCONV,OMECOR,ZI(LDDL),ZI(LPROD),
      &               RBID,ZC(LVEC), NBPARI, NPARR, NBPARK, NOPARA,
-     &               ZI(LRESUI), ZR(LRESUR), ZK24(LRESUK) )
-
+     &               ZI(LRESUI), ZR(LRESUR), ZK24(LRESUK),KTYP )
       ENDIF
 
 C     --- IMPRESSIONS LIEES A LA METHODE ---
-
+      
       CALL VPWECF (' ', TYPRES, NCONV, MXRESF, ZI(LRESUI), ZR(LRESUR),
-     &  ZK24(LRESUK), LAMOR)
+     &  ZK24(LRESUK), LAMOR,KTYP)
 
       CALL TITRE
 
@@ -820,7 +971,7 @@ C     ------------------------------------------------------------------
          OPTIOV = ' '
       ELSE
          OPTIOV = OPTIOF
-         IF (LAMOR.NE.0) THEN
+         IF ((LAMOR.NE.0).OR.(KTYP.EQ.'C')) THEN
             OPTIOV = ' '
             CALL UTMESS('I','OP0045.23','PAS DE VERIFICATION PAR '//
      +                  'STURM POUR LE PROBLEME QUADRATIQUE')
@@ -836,7 +987,7 @@ C     ------------------------------------------------------------------
      &   ZR(LRESUR+3*MXRESF), ZR(LRESUR+MXRESF), TYPRES, STURM, NBLAGR)
       CALL GETVTX('VERI_MODE','STOP_ERREUR',1,1,1,OPTIOV,LMF)
       IF ((OPTIOV.EQ.'OUI').AND.(IERX.NE.0)) THEN
-         CALL UTMESS('F','OP0045','ERREUR')
+         CALL UTMESS('F','OP0045',' ERREUR DE VERIFICATION ')
       ENDIF
 
       IF (FLAGE)
@@ -857,4 +1008,7 @@ C     ------------------------------------------------------------------
       CALL JEDETR(CBORFR)
       CALL JEDETR(CBORCR)
       CALL JEDEMA()
+C
+C     FIN DE OP0045
+C
       END

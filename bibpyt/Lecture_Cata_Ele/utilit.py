@@ -1,20 +1,20 @@
-#@ MODIF utilit Lecture_Cata_Ele  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+#@ MODIF utilit Lecture_Cata_Ele  DATE 01/04/2003   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 import string,sys,cPickle,copy,os
 
@@ -506,6 +506,90 @@ def surch_capy(capy1,capy2):
     capy1.tg=liste2 ; capy1.dictg=dico2
 
     ERR.mess('I',"Fin de la surcharge des catalogues")
+    return 0
+
+
+def cata_split(nomfic,prefix,nblig):
+#=============================================
+#   spliter 1 fichier .cata en plusieurs morceaux
+   file=open(nomfic,"r")
+   t=file.readlines()
+
+   # on note le numéro des lignes correspondant au découpage
+   # ----------------------------------------------------------
+   num_lig=[0]
+   ico=0
+   for i in range(len(t)):
+      t1=string.split(t[i])
+      if len(t1) > 1 :
+         if t1[0]=="%&" and (t1[1]=="MODIF" or t1[1]=="AJOUT") :
+           ico=ico+(i-num_lig[len(num_lig)-1])
+           if ico > nblig :
+              ico=0
+              num_lig.append(i)
+   num_lig.append(len(t))
+
+   # on écrit les différents fichiers :
+   #------------------------------------
+   liste_fic=[]
+   for ific in range(len(num_lig)-1) :
+      nomfic=prefix+'_'+str(ific)+'.cata'
+      liste_fic.append(nomfic)
+      fil2=open(nomfic,"w")
+      for k in range(num_lig[ific+1]-num_lig[ific]):
+         fil2.write(t[num_lig[ific]+k])
+   return liste_fic
+
+
+def concat_capy(capy1,capy2):
+#==================================
+#   ajouter  capy2 à capy1
+#   Attention : cette fonction modifie capy1 (enrichissement + remplacement)
+
+    if capy2 is None : return 0
+
+    ERR.mess('I',"Début de la concaténation des catalogues")
+
+    if capy2.gd : capy1.gd=capy2.gd
+    if capy2.ph : capy1.ph=capy2.ph
+    if capy2.tm : capy1.tm=capy2.tm
+    if capy2.mp : capy1.mp=capy2.mp
+
+    for cata in capy2.op :
+       nom =cata.cata_op[0]
+       num2=capy2.dicop[nom]
+       if capy1.dicop.has_key(nom):
+          num3=capy1.dicop[nom]
+          capy1.op[num3]=copy.deepcopy(capy2.op[num2])
+       else:
+          num3=len(capy1.dicop)
+          capy1.dicop[nom]=num3
+          capy1.op.append(copy.deepcopy(capy2.op[num2]))
+
+    for cata in capy2.te :
+       nom =cata.cata_te[0][0]
+       num2=capy2.dicte[nom]
+       if capy1.dicte.has_key(nom):
+          num3=capy1.dicte[nom]
+          capy1.te[num3]=copy.deepcopy(capy2.te[num2])
+       else:
+          num3=len(capy1.dicte)
+          capy1.dicte[nom]=num3
+          capy1.te.append(copy.deepcopy(capy2.te[num2]))
+
+    for cata in capy2.tg :
+       nom =cata.cata_tg[0]
+       num2=capy2.dictg[nom]
+       if capy1.dictg.has_key(nom):
+          num3=capy1.dictg[nom]
+          capy1.tg[num3]=copy.deepcopy(capy2.tg[num2])
+       else:
+          num3=len(capy1.dictg)
+          capy1.dictg[nom]=num3
+          capy1.tg.append(copy.deepcopy(capy2.tg[num2]))
+
+
+    ERR.mess('I',"Fin de la concaténation des catalogues")
     return 0
 
 

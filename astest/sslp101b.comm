@@ -1,4 +1,4 @@
-# MODIF  DATE 03/07/2002   AUTEUR CIBHHPD D.NUNEZ 
+# MODIF  DATE 28/01/2003   AUTEUR DEBOST I.DEBOST 
 # TITRE PLAQUE FISSUREE EN TRACTION (CALCUL DE G, K1 ET K2)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -222,8 +222,8 @@ TEST_TABLE(       TABLE=GK1,
 
 TEST_TABLE(       TABLE=GK1,
                        NOM_PARA='K1',
-                           VALE=2.2529E+1,
-                      PRECISION=5.E-2     )
+                           VALE=2.1491E+1,
+                      PRECISION=5.E-3     )
 
 TEST_TABLE(       TABLE=GK1,
                        NOM_PARA='K2',
@@ -248,8 +248,8 @@ TEST_TABLE(       TABLE=GK2,
 
 TEST_TABLE(       TABLE=GK2,
                        NOM_PARA='K1',
-                           VALE=2.2529E+1,
-                      PRECISION=5.E-2     )
+                           VALE=2.1491E+1,
+                      PRECISION=5.E-3     )
 
 TEST_TABLE(       TABLE=GK2,
                        NOM_PARA='K2',
@@ -274,8 +274,8 @@ TEST_TABLE(       TABLE=GK3,
 
 TEST_TABLE(       TABLE=GK3,
                        NOM_PARA='K1',
-                           VALE=2.2529E+1,
-                      PRECISION=5.E-2     )
+                           VALE=2.1491E+1,
+                      PRECISION=5.E-3     )
 
 TEST_TABLE(       TABLE=GK3,
                        NOM_PARA='K2',
@@ -300,8 +300,8 @@ TEST_TABLE(       TABLE=GK4,
 
 TEST_TABLE(       TABLE=GK4,
                        NOM_PARA='K1',
-                           VALE=2.2529E+1,
-                      PRECISION=5.E-2     )
+                           VALE=2.1491E+1,
+                      PRECISION=5.E-3     )
 
 TEST_TABLE(       TABLE=GK4,
                        NOM_PARA='K2',
@@ -326,8 +326,8 @@ TEST_TABLE(       TABLE=GK5,
 
 TEST_TABLE(       TABLE=GK5,
                        NOM_PARA='K1',
-                           VALE=2.2529E+1,
-                      PRECISION=5.E-2      )
+                           VALE=2.1491E+1,
+                      PRECISION=5.E-3      )
 
 TEST_TABLE(       TABLE=GK5,
                        NOM_PARA='K2',
@@ -352,8 +352,8 @@ TEST_TABLE(       TABLE=GK6,
 
 TEST_TABLE(       TABLE=GK6,
                        NOM_PARA='K1',
-                           VALE=2.2529E+1,
-                      PRECISION=5.1E-2     )
+                           VALE=2.1491E+1,
+                      PRECISION=5.E-3    )
 
 TEST_TABLE(       TABLE=GK6,
                        NOM_PARA='K2',

@@ -2,7 +2,7 @@
        IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 02/10/96   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,25 +35,12 @@ C
        COMMON / INF001 / NIVUTI , NIVPGM , UNITE
 C-----FIN DE INF001-----------------------------------------------------
 C
-       INTEGER    INFO, IMPR, NBVAL, IUNIFI
-       LOGICAL    LIMPR, LINFO, GETEXM
+       INTEGER    INFO, NBVAL, IUNIFI
+       LOGICAL    LINFO, GETEXM
 C
-       IMPR = 0
        INFO = 1
 C
-       LIMPR = GETEXM ( ' ' , 'IMPR' )
        LINFO = GETEXM ( ' ' , 'INFO' )
-C
-       IF ( LIMPR ) THEN
-          CALL GETVIS ( ' ', 'IMPR', 0,1,1, IMPR, NBVAL )
-          IF ( NBVAL .NE. 0 ) THEN
-             CALL UTMESS('A','INFMAJ','LE MOT CLE IMPR EST APPELLE A '//
-     *            'DISPARAITRE CONFORMEMENT A LA REUNION DU CLUB DES '//
-     *            'UTILISATEURS DU 22 FEVRIER 1996') 
-C                  
-             IF ( IMPR .GT. 1 ) INFO = 2
-          ENDIF           
-       ENDIF           
 C
        IF ( LINFO ) CALL GETVIS ( ' ', 'INFO', 0,1,1, INFO, NBVAL )
 C

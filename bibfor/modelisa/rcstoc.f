@@ -8,7 +8,7 @@
       CHARACTER*16       NOMRC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -238,7 +238,7 @@ C
                IF ( TYPECO(1:8) .EQ. 'FONCTION' ) THEN
                   CH19 = VALCH
                   CALL JEVEUO ( CH19//'.PROL', 'L', JPRO )
-                  CALL FONBPA ( CH19,ZK8(JPRO),TYPFON,10,NF,NOMPF)
+                  CALL FONBPA ( CH19,ZK16(JPRO),TYPFON,10,NF,NOMPF)
                   DO 130 J = 1 , NF
                     DO 140 K = 1 , NBPAR
                      IF ( NOMPF(J) .EQ. ZK8(JPARA+K-1) ) GOTO 130
@@ -288,7 +288,7 @@ C
  151    CONTINUE
 
         CALL JEVEUO(NOMFCT//'.PROL','L',JFCT)
-        IF (ZK8(JFCT)(1:1) .EQ. 'F' ) THEN
+        IF (ZK16(JFCT)(1:1) .EQ. 'F' ) THEN
          CALL JELIRA(NOMFCT//'.VALE','LONMAX',NBPTM,K8BID)
         IF ( NOMRC(1:8)  .EQ. 'TRACTION') THEN
           IF ( NBPTM .LT. 4 ) THEN
@@ -354,8 +354,8 @@ C        VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
          IF ( IRET .NE. 0 ) THEN
           CALL UTMESS('F','RCSTOC_06','ERREURS RENCONTREES.')
          ENDIF
-         CPROL = ZK8(JFCT+1)
-        ELSE IF ( ZK8(JFCT)(1:1) .EQ. 'N' ) THEN
+         CPROL = ZK16(JFCT+1)
+        ELSE IF ( ZK16(JFCT)(1:1) .EQ. 'N' ) THEN
          CALL JELIRA(NOMFCT//'.VALE','NUTIOC',NBFCT,K8BID)
          NBPTM = 0
          DO 160 K=1,NBFCT
@@ -417,7 +417,7 @@ C         VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
            CALL UTMESS('F','RCSTOC_14','ERREURS RENCONTREES.')
           ENDIF
  160     CONTINUE
-         CPROL = ZK8(JFCT+7)
+         CPROL = ZK16(JFCT+7)
         ELSE
          CALL UTMESS('F','RCSTOC_08',' ERREUR LORS DE LA DEFINITION DE'
      &         //'LA COURBE DE TRACTION: FONCTION OU NAPPE ! ')
@@ -425,12 +425,12 @@ C         VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
  149   CONTINUE
 
        RDEP = NOMMAT//'.&&RDEP'
-       CALL WKVECT (RDEP//'.PROL','G V K8',6*NPES,JPROL)
+       CALL WKVECT (RDEP//'.PROL','G V K16',6*NPES,JPROL)
        DO 300 ICOUNT=1,NPES
-        ZK8(JPROL  +(ICOUNT-1)*6 ) = 'FONCTION'
-        ZK8(JPROL+1+(ICOUNT-1)*6 ) = 'LIN LIN '
-       ZK8(JPROL+2+(ICOUNT-1)*6 ) = 'EPSI    '
-        ZK8(JPROL+3+(ICOUNT-1)*6 ) = ZK8(JFCT+3)
+        ZK16(JPROL  +(ICOUNT-1)*6 ) = 'FONCTION'
+        ZK16(JPROL+1+(ICOUNT-1)*6 ) = 'LIN LIN '
+       ZK16(JPROL+2+(ICOUNT-1)*6 ) = 'EPSI    '
+        ZK16(JPROL+3+(ICOUNT-1)*6 ) = ZK16(JFCT+3)
  300   CONTINUE
        NBPTMS=NBPTM
        CALL WKVECT (RDEP//'.VALE','G V R',2*NBMAX*NPES,JVALE)
@@ -451,7 +451,7 @@ C
  451    CONTINUE
         IF (IEXIST .EQ. 2) THEN
         CALL JEVEUO(NOMFCT//'.PROL','L',JFCT)
-        IF ( ZK8(JFCT)(1:1) .EQ. 'F' ) THEN
+        IF ( ZK16(JFCT)(1:1) .EQ. 'F' ) THEN
           CALL JELIRA(NOMFCT//'.VALE','LONMAX',NBPTM,K8BID)
           IF ( NBPTM .LT. 4 ) THEN
             CALL UTMESS('F','RCSTOC_09','ERREUR LORS DE LA DEFINITION '
@@ -504,8 +504,8 @@ C         VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
           IF ( IRET .NE. 0 ) THEN
             CALL UTMESS('F','RCSTOC_13','ERREURS RENCONTREES.')
           ENDIF
-          CPROL = ZK8(JFCT+1)
-        ELSE IF ( ZK8(JFCT)(1:1) .EQ. 'N' ) THEN
+          CPROL = ZK16(JFCT+1)
+        ELSE IF ( ZK16(JFCT)(1:1) .EQ. 'N' ) THEN
           CALL JELIRA(NOMFCT//'.VALE','NUTIOC',NBFCT,K8BID)
           NBPTM = 0
           DO 470 K=1,NBFCT
@@ -561,19 +561,19 @@ C           VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
             ENDIF
             NBPTM = MAX(NBPTM,NBPTS)
  470      CONTINUE
-          CPROL = ZK8(JFCT+7)
+          CPROL = ZK16(JFCT+7)
         ELSE
           CALL UTMESS('F','RCSTOC_15',' ERREUR LORS DE LA DEFINITION DE'
      &              //'LA COURBE RELA_MZ: FONCTION ! ')
         ENDIF
         MZP = NOMMAT//'.&&MZP'
 C
-        CALL WKVECT (MZP//'.PROL','G V K8',6*NPES,JPROL)
+        CALL WKVECT (MZP//'.PROL','G V K16',6*NPES,JPROL)
         DO 490 ICOUNT=1,NPES
-           ZK8(JPROL  +(ICOUNT-1)*6 ) = 'FONCTION'
-           ZK8(JPROL+1+(ICOUNT-1)*6 ) = CPROL
-           ZK8(JPROL+2+(ICOUNT-1)*6 ) = ZK8(JFCT+2)
-           ZK8(JPROL+3+(ICOUNT-1)*6 ) = ZK8(JFCT+3)
+           ZK16(JPROL  +(ICOUNT-1)*6 ) = 'FONCTION'
+           ZK16(JPROL+1+(ICOUNT-1)*6 ) = CPROL
+           ZK16(JPROL+2+(ICOUNT-1)*6 ) = ZK16(JFCT+2)
+           ZK16(JPROL+3+(ICOUNT-1)*6 ) = ZK16(JFCT+3)
  490    CONTINUE
         NBPTMS=NBPTM
         CALL WKVECT (MZP//'.VALE','G V R',NBPTM*NPES,JVALE)
@@ -610,8 +610,8 @@ C
         CALL JEVEUO(PROL1,'L',LPRO1)
         PROL2 = NOMINT//'.PROL'
         CALL JEVEUO(PROL2,'E',LPRO2)
-        IF (ZK8(LPRO1+4)(1:1).EQ.'C') ZK8(LPRO2+4)(1:1)='L'
-        IF (ZK8(LPRO1+4)(2:2).EQ.'C') ZK8(LPRO2+4)(2:2)='L'
+        IF (ZK16(LPRO1+4)(1:1).EQ.'C') ZK16(LPRO2+4)(1:1)='L'
+        IF (ZK16(LPRO1+4)(2:2).EQ.'C') ZK16(LPRO2+4)(2:2)='L'
 C
         DO 670 I=NBK,1,-1
           VALK(NBR+NBC+NBK+I+1) = VALK(NBR+NBC+NBK+I)

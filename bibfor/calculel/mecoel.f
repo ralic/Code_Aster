@@ -1,7 +1,7 @@
       SUBROUTINE MECOEL()
 C TOLE CRS_230
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/10/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/01/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -177,12 +177,7 @@ C                       (LUE DANS LE CATALOGUE). CETTE LONGUEUR NE
 C                       TIENT PAS COMPTE DE NBSPT ET NCDYN.
 C             =-1 <=> LE PARAMETRE N'EXISTE PAS DANS LE CATALOGUE
 C                     DU TYPE_ELEMENT
-C   V(7*(IPAR-1)+5) --> TYPE DE CHAMP_LOCAL :
-C                      1 : ELEM
-C                      2 : ELNO
-C                      3 : ELGA
-C                      4 : VECTEUR (2ND MEMBRE)
-C                      5 : MATRICE
+C   V(7*(IPAR-1)+5) --> INUTILISE
 C   V(7*(IPAR-1)+6) --> NOMBRE DE POINTS DE DISCRETIS. DU CHAMP_LOCAL
 C                      (0 SI VECTEUR OU MATRICE)
 C   V(7*(IPAR-1)+7) --> ICH : NUMERO DU CHAMP ASSOCIE AU PARAMETRE.

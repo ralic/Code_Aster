@@ -1,7 +1,7 @@
       SUBROUTINE GCPC(M,IN,IP,AC,INPC,IPPC,ACPC,BF,XP,R,RR,P,TW,IREP,
      &                PREC,NITER,EPSI,CRITER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/05/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 10/03/2003   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,12 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER IN(M),IP(*),INPC(M),IPPC(*)
-      REAL*8 AC(M),ACPC(M),BF(M),XP(M)
-      REAL*8 R(M),RR(M),P(M),TW(M)
-      CHARACTER*4 PREC
-      CHARACTER*24 CRITER
+
 C    -------------------------------------------------------------------
 C     RESOLUTION D'UN SYSTEME LINEAIRE SYMETRIQUE PAR UNE METHODE DE
 C     GRADIENT CONJUGUE PRECONDITIONNE
@@ -54,7 +49,20 @@ C                              DIAG PRECONDITIONNEMENT DIADONAL
 C     ----------------- ------------------------------------------------
 C     - PRECAUTIONS D'EMPLOI:  XP PEUT ETRE EVENTUELLEMENT CONFONDU
 C                              AVEC BF SI MEME ARGUMENT
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       07/03/03 (OB): MODIF. CALCUL DE RAU, TOILETTAGE FORTRAN (IMPLI
+C         CIT NONE...), MODIFS. AFFICHAGE, DESACTIVATION PREC.
 C     ----------------- ------------------------------------------------
+C CORPS DU PROGRAMME
+      IMPLICIT NONE
+
+C DECLARATION PARAMETRES D'APPELS
+      INTEGER M,IN(M),IP(*),INPC(M),IPPC(*),IREP,NITER
+      REAL*8 AC(M),ACPC(M),BF(M),XP(M),R(M),RR(M),P(M),TW(M),EPSI
+      CHARACTER*4 PREC
+      CHARACTER*24 CRITER
+            
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -72,26 +80,36 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32 JEXNOM,JEXNUM,JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      REAL*8 ZERO
 
+C DECLARATION VARIABLES LOCALES
+      REAL*8 ZERO,BNORM,R8NRM2,ANORM,EPSIX,ANORMX,RRRI,GAMA,RRRIM1,
+     &       PARAAF,ANORXX,RAU,R8DOT
+      INTEGER IFM,NIV,I,JCRI,JCRR,JCRK,ITER,INIGPC,IRET
+           
 C-----RECUPERATION DU NIVEAU D'IMPRESSION
-
       CALL INFNIV(IFM,NIV)
-C----------------------------------------------------------------------
+      
+C-----PARAMETRE D'AFFICHAGE DE LA DECROISSANCE DU RESIDU
+C (SI ON GAGNE PARAAF * 100%)      
+      PARAAF = 0.1D0
+      
+C-----INITS DIVERS      
       ZERO = 0.D0
-
       IF (IREP.NE.0 .AND. IREP.NE.1) THEN
         CALL UTDEBM('F','GCPC_1',' ')
         CALL UTIMPI('S','INIGPC',1,INIGPC)
         CALL UTFINM()
-      END IF
-C    ----     CALCULS PRELIMINAIRES
-C    ---- CALCUL DE NORME DE BF
+      ENDIF
+      
+C-----CALCULS PRELIMINAIRES
+
+C      ---- CALCUL DE NORME DE BF
       BNORM = R8NRM2(M,BF,1)
       IF (BNORM.EQ.ZERO) THEN
         DO 10 I = 1,M
           XP(I) = ZERO
    10   CONTINUE
+        WRITE (IFM,*)'>>>>>>> SECOND MEMBRE = 0 DONC SOLUTION = 0 '
         GO TO 80
       END IF
 
@@ -102,7 +120,8 @@ C       ---- INITIALISATION X1 = 0    ===>   CALCUL DE R1 = A*X0 - B
           R(I) = -BF(I)
    20   CONTINUE
         ANORM = BNORM
-        IF (NIV.EQ.2) WRITE (IFM,1010) ANORM,EPSI
+        EPSIX = EPSI*ANORM
+        IF (NIV.EQ.2) WRITE (IFM,1010) ANORM,EPSIX,EPSI
       ELSE
 C       ---- INITIALISATION PAR X PRECEDENT: CALCUL DE R1 = A*X1 - B
         CALL GCAX(M,IN,IP,AC,XP,R)
@@ -110,7 +129,8 @@ C       ---- INITIALISATION PAR X PRECEDENT: CALCUL DE R1 = A*X1 - B
           R(I) = R(I) - BF(I)
    30   CONTINUE
         ANORM = R8NRM2(M,R,1)
-        IF (NIV.EQ.2) WRITE (IFM,1020) ANORM,EPSI
+        EPSIX = EPSI*ANORM
+        IF (NIV.EQ.2) WRITE (IFM,1020) ANORM,EPSIX,EPSI
       END IF
 
       CALL JEEXIN(CRITER(1:19)//'.CRTI',IRET)
@@ -124,23 +144,31 @@ C       ---- INITIALISATION PAR X PRECEDENT: CALCUL DE R1 = A*X1 - B
       CALL JEVEUO(CRITER(1:19)//'.CRTI','E',JCRI)
       CALL JEVEUO(CRITER(1:19)//'.CRTR','E',JCRR)
 
-C     ---- ITERATIONS
+C ---- ITERATIONS
       ANORMX = ANORM
-
-      EPSIX = EPSI*ANORM
-
+      ANORXX = ANORM
+      
       DO 70 ITER = 1,NITER
-C       -------  PRECONDITIONNEMENT DU RESIDU
-        IF (PREC.EQ.'DIAG') THEN
-          DO 40 I = 1,M
-            RR(I) = R(I)*ACPC(I)
-   40     CONTINUE
-        ELSE IF (PREC.EQ.'LDLT') THEN
+C       ---- PRECONDITIONNEMENT DU RESIDU:              
+C                                             ZK = (LDLT)-1. RK
+C                                                   RK <--- R()
+C                                                  ZK <--- RR()
+C PREC DIAGONAL DESACTIVE, IC(N) PAR DEFAUT
+C        IF (PREC.EQ.'DIAG') THEN
+C          DO 40 I = 1,M
+C            RR(I) = R(I)*ACPC(I)
+C   40     CONTINUE
+C        ELSE IF (PREC.EQ.'LDLT') THEN
           CALL GCLDM1(M,INPC,IPPC,ACPC,R,RR)
-        END IF
+C        END IF
 
+C                                             RRRI <--- (RK,ZK)
         RRRI = R8DOT(M,R,1,RR,1)
-C       ------- NOUVELLE DIRECTION DE DESCENTE
+C       ---- NOUVELLE DIRECTION DE DESCENTE:
+C                                    BETAK = (RK,ZK)/(RK-1,ZK-1)
+C                                               BETAK <--- GAMA
+C                                        PK = BETAK * PK-1 + ZK 
+C                                                   PK <--- P()
         IF (ITER.GT.1) THEN
           GAMA = RRRI/RRRIM1
           DO 50 I = 1,M
@@ -152,24 +180,29 @@ C       ------- NOUVELLE DIRECTION DE DESCENTE
    60     CONTINUE
         END IF
         RRRIM1 = RRRI
-C       ------- DEPLACEMENT DE XP  ( RR=A*P )
-        CALL GCAX(M,IN,IP,AC,P,RR)
-        RAU = -R8DOT(M,R,1,P,1)/R8DOT(M,P,1,RR,1)
 
+C       ---- NOUVEAUX RESIDU ET DEPLACEMENT:
+C                       ZZK = A.PK ET ALPHAK = -(RK,ZK)/(PK,ZZK)
+C                                       XK+1 = XK + ALPHAK * PK
+C                                      RK+1 = RK + ALPHAK * ZZK
+C                                                 ZZK <--- RR()
+C                                                 XK  <--- XP()
+        CALL GCAX(M,IN,IP,AC,P,RR) 
+        RAU = -RRRI/R8DOT(M,P,1,RR,1)
         CALL R8AXPY(M,RAU,P,1,XP,1)
-C       ------- NOUVEAU RESIDU
         CALL R8AXPY(M,RAU,RR,1,R,1)
 
+C       ---- CALCUL TEST D'ARRET ET AFFICHAGE
         ANORM = R8NRM2(M,R,1)
-        IF (ANORM.LE.ANORMX*0.1D0) THEN
-          IF (NIV.EQ.2) WRITE (*,1040) ITER,ANORM
+        IF (ANORM.LE.ANORMX*PARAAF) THEN
+          IF (NIV.EQ.2) WRITE (*,1041) ITER,ANORM,ANORM/ANORXX
           ANORMX = ANORM
         END IF
-        IF (NIV.EQ.3) WRITE (IFM,1040) ITER,ANORM
-C       ------- TEST DE CONVERGENCE
+        IF (NIV.EQ.3) WRITE (IFM,1041) ITER,ANORM,ANORM/ANORXX
 
+C       --- TEST DE CONVERGENCE
         IF (ANORM.LT.EPSIX) THEN
-          IF (NIV.EQ.2) WRITE (IFM,1040) ITER,ANORM
+          IF (NIV.EQ.2) WRITE (IFM,1040) ANORXX,ANORM,ANORM/ANORXX
           IF (NIV.EQ.2) WRITE (IFM,1050) ITER
           ZI(JCRI) = ITER
           ZR(JCRR) = ANORM
@@ -177,20 +210,25 @@ C       ------- TEST DE CONVERGENCE
         END IF
    70 CONTINUE
 
-C    ---> NON CONVERGENCE
-
+C        ---  NON CONVERGENCE
       CALL UTDEBM('F','GCPC','NON CONVERGENCE')
       CALL UTIMPI('L','  NOMBRE D''ITERATIONS: ',1,ITER)
-      CALL UTIMPR('L','  NORME DU RESIDU: ',1,ANORM)
+      CALL UTIMPR('L','  NORME DU RESIDU ABS: ',1,ANORM)
+      CALL UTIMPR('L','  NORME DU RESIDU REL: ',1,ANORM/ANORXX)
       CALL UTFINM()
 C    -----------
  1010 FORMAT (/'   * GCPC   NORME DU RESIDU =',D11.4,
      &       '  (INITIALISATION PAR X = ZERO)',/,
-     &       '   *        NORME DU RESIDU A ATTEINDRE =',D11.4,/)
+     &'   *        NORME DU RESIDU A ATTEINDRE EN ABS/RELA=',
+     &D11.4,D11.4,/)
  1020 FORMAT (/'   * GCPC   NORME DU RESIDU =',D11.4,
      &       '  (INITIALISATION PAR X PRECEDENT)',/,
-     &       '   *        NORME DU RESIDU A ATTEINDRE =',D11.4)
- 1040 FORMAT ('   * ITERATION',I5,' NORME DU RESIDU =',D11.4)
+     & '   *        NORME DU RESIDU A ATTEINDRE EN ABS/RELA=',
+     & D11.4,D11.4)
+ 1040 FORMAT ('   * NORME DU RESIDU INITIAL/FINAL/RELATIF=',
+     &         D11.4,D11.4,D11.4)
+ 1041 FORMAT ('   * ITERATION',I5,' NORME DU RESIDU EN ABS/RELA =',
+     &         D11.4,D11.4)     
  1050 FORMAT (1X,/,2X,32 ('*')/'  * CONVERGENCE EN ',I4,
      &       ' ITERATIONS'/2X,32 ('*'),/)
 C    -----------

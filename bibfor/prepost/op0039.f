@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF PREPOST  DATE 14/10/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 24/03/2003   AUTEUR CIBHHPD D.NUNEZ 
 C TOLE CRP_20
 C     PROCEDURE IMPR_RESU
 C     ------------------------------------------------------------------
@@ -71,9 +71,9 @@ C
 C
       INTEGER LXLGUT, IUNIFI
 C
-      REAL*8 PREC, BORSUP, BORINF
+      REAL*8 PREC, BORSUP, BORINF, VERSI2, EPS
 C
-      LOGICAL LRESU,LCOR,LMAX,LMIN,LINF,LSUP,LCASTS,LMOD
+      LOGICAL LRESU,LCOR,LMAX,LMIN,LINF,LSUP,LCASTS,LMOD,LGMSH
 C     ------------------------------------------------------------------
       CHARACTER*1  CECR,K1BID
       CHARACTER*3  INFRES,TOUPAR,TOUCHA,COOR,TMAX,TMIN, SAUX03
@@ -88,6 +88,7 @@ C     ------------------------------------------------------------------
 C
 C     ------------------------------------------------------------------
       CALL JEMARQ()
+      CALL INFMAJ()
 C
       NORECG = '&&OP0039_RESULTA_GD'
 
@@ -127,6 +128,18 @@ C
 C        --- FORMAT ---
          CALL GETVTX ( 'RESU', 'FORMAT'  ,IOCC,1,1, FORM , N )
 C
+        IF ( FORM(1:4) .EQ. 'GMSH' ) THEN
+          VERSIO = 1
+          VERSI2 = 1.0D0
+          EPS    = 1.0D-6
+          CALL GETVR8 ( 'RESU', 'VERSION', IOCC,1,1, VERSI2, N )
+          IF (VERSI2.GT.1.0D0-EPS.AND.VERSI2.LT.1.0D0+EPS) THEN
+            VERSIO =1
+          ELSEIF (VERSI2.GT.1.2D0-EPS.AND.VERSI2.LT.1.2D0+EPS) THEN
+            VERSIO =2
+          ENDIF
+          
+        ENDIF
 C        --- FICHIER ---
          FICH = ' '
          CALL GETVTX ( 'RESU', 'FICHIER', IOCC,1,1, FICH, N )
@@ -164,9 +177,11 @@ C            ---  IMPRESSION DU MAILLAGE -----
      >               //' INTRODUITS NE SONT PAS COHERENTS')
                ENDIF
               ENDIF
-              CALL IRMAIL ( FORM,FICH,VERSIO,NOMA,LMOD,MODELE,NIVE,
-     >                      INFMAI )
-              NUMEMO = NUMEMO + 1
+              IF (FORM(1:4).NE.'GMSH'.OR.NR.EQ.0) THEN
+                CALL IRMAIL ( FORM,FICH,VERSIO,NOMA,LMOD,MODELE,NIVE,
+     >                        INFMAI )
+                NUMEMO = NUMEMO + 1
+              ENDIF
             ENDIF
          ENDIF
  200  CONTINUE
@@ -180,6 +195,7 @@ C
 C     -------------------------------------------
 C
       LCASTS = .FALSE.
+      LGMSH = .FALSE.
 C     --- BOUCLE SUR LE NOMBRE DE MISES EN FACTEUR ---
       DO 10 IOCC = 1,NOCC
          NBNOS = 0
@@ -236,6 +252,17 @@ C        --- VERSION D'ECRITURE DU FICHIER IDEAS ----
          IF ( FORM(1:5) .EQ. 'IDEAS' ) THEN
             CALL GETVIS ( 'RESU', 'VERSION', IOCC,1,1, VERSIO, N )
          ENDIF
+        IF ( FORM(1:4) .EQ. 'GMSH' ) THEN
+          VERSIO = 1
+          VERSI2 = 1.0D0
+          EPS    = 1.0D-6
+          CALL GETVR8 ( 'RESU', 'VERSION', IOCC,1,1, VERSI2, N )
+          IF (VERSI2.GT.1.0D0-EPS.AND.VERSI2.LT.1.0D0+EPS) THEN
+            VERSIO =1
+          ELSEIF (VERSI2.GT.1.2D0-EPS.AND.VERSI2.LT.1.2D0+EPS) THEN
+            VERSIO =2
+          ENDIF
+        ENDIF
 C
 C        --- IMPRESSION DES COORDONNEES------
 C            (ECRITURE VARIABLES DE TYPE RESULTAT AU FORMAT 'RESULTAT')
@@ -314,8 +341,10 @@ C          --- TEST PRESENCE DU MOT CLE INFO_MAILLAGE (FORMAT 'MED')
      >                 //'EST RESERVE AU FORMAT MED')
              ENDIF
            ENDIF
-           CALL IRMAIL ( FORM, FICH, VERSIO, NOMA, LMOD, MODELE, NIVE,
-     >                   INFMAI )
+           IF (FORM(1:4).NE.'GMSH'.OR.NR.EQ.0) THEN
+             CALL IRMAIL ( FORM, FICH, VERSIO, NOMA, LMOD, MODELE, NIVE,
+     >                     INFMAI )
+           ENDIF
          ENDIF
 C
 C        --- ECRITURE D'UN CHAM_GD ---
@@ -714,10 +743,11 @@ C        ---- CHOIX DES COMPOSANTES AUX FORMATS ----
 C        ---- RESULTAT, ENSIGHT, CASTEM, MED ET GMSH  ----
 C        ********************************************
          IF((NC.NE.0.OR.NR.NE.0).AND.
-     >        ( FORM.EQ.'RESULTAT' .OR.
-     >          FORM(1:4).EQ.'GMSH' .OR.
-     >          FORM(1:3).EQ.'MED' .OR.
+     >        ( FORM.EQ.'RESULTAT'     .OR.
+     >          FORM(1:4).EQ.'GMSH'    .OR.
+     >          FORM(1:3).EQ.'MED'     .OR.
      >          FORM(1:7).EQ.'ENSIGHT' .OR.
+     >          FORM(1:5).EQ.'IDEAS'   .OR.
      >          FORM(1:6).EQ.'CASTEM' ) ) THEN
            CALL GETVTX('RESU','NOM_CMP',IOCC,1,0,K8B,N)
            IF(N.LT.0) THEN
@@ -742,11 +772,11 @@ C          - VERIFICATION DES PARAMETRES (FORMAT 'RESULTAT')
            ENDIF
 C
 C          - ECRITURE DU CONCEPT LERESU SUR FICHIER FICH AU FORMAT FORM
-           CALL IRECRI(LERESU,RESU,NOPASE,FORM,FICH,TITRE,
+           CALL IRECRI(LERESU,RESU,NOPASE,FORM,FICH,TITRE,LGMSH,
      >       NBNOSY,ZK16(JNOSY),NBPARA,ZK16(JPARA),NBORDR,ZI(JORDR),
      >       LRESU,'RESU',IOCC,MODELE,CECR,
      >       LCOR,NBNOT,ZI(JNUNOT),NBMAT,ZI(JNUMA),NBCMP,ZK8(JCMP),
-     >       LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,FORMR,LMOD,NIVE )
+     >       LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,FORMR,LMOD,NIVE,VERSIO )
          ENDIF
 C        **********************
 C        --- FIN IMPRESSION ---

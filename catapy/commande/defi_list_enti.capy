@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 # RESPONSABLE VABHHTS J.PELLET
 DEFI_LIST_ENTI=OPER(nom="DEFI_LIST_ENTI",op=22,sd_prod=listis,
                     fr="Définition d une suite croissante d entiers",
-                    docu="U4.34.02-f",reentrant='n',
+                    docu="U4.34.02-g",reentrant='n',
             UIinfo={"groupes":("Fonction",)},
          regles=(UN_PARMI('VALE','DEBUT'),
                  EXCLUS('VALE','INTERVALLE'),),

@@ -1,9 +1,9 @@
       SUBROUTINE IRECRI(NOMCON,NOSIMP,NOPASE,FORM,FICH,TITRE,
-     >     NBCHAM,CHAM,NBPARA,PARA,NBORDR,ORDR,
+     >     LGMSH,NBCHAM,CHAM,NBPARA,PARA,NBORDR,ORDR,
      >     LRESU,MOTFAC,IOCC,MODELE,CECR,LCOR,NBNOT,
      >     NUMNOE,NBMAT,NUMMAI,NBCMP,NOMCMP,
      >     LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,FORMR,LMOD,
-     >     NIVE )
+     >     NIVE,VERSIO )
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       CHARACTER*(*)     NOMCON,NOSIMP,NOPASE
@@ -11,13 +11,13 @@ C
       CHARACTER*(*)                       MOTFAC,     MODELE,CECR
       CHARACTER*(*)     NOMCMP(*), FORMR
       REAL*8            BORSUP,BORINF
-      INTEGER           NIVE,              NBCHAM, NBPARA
+      INTEGER           NIVE, VERSIO,           NBCHAM, NBPARA
       INTEGER           NBORDR,ORDR(*),NBCMP,IOCC
       INTEGER           NBNOT,NUMNOE(*),NBMAT,NUMMAI(*)
       LOGICAL                                   LRESU,LCOR
-      LOGICAL           LSUP,LINF,              LMAX,LMIN,LMOD
+      LOGICAL           LSUP,LINF,              LMAX,LMIN,LMOD,LGMSH
 C-----------------------------------------------------------------------
-C MODIF PREPOST  DATE 15/10/2002   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 24/03/2003   AUTEUR CIBHHPD D.NUNEZ 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,6 +75,7 @@ C IN  LMIN   : L   : =.TRUE. INDIQUE IMPRESSION VALEUR MINIMALE
 C IN  FORMR  : K   : FORMAT D'ECRITURE DES REELS SUR "RESULTAT"
 C IN  LMOD   : L   : INDIQUE SI UN MODELE A ETE INDIQUE
 C IN  NIVE   : I   : NIVEAU IMPRESSION CASTEM 3 OU 10
+C IN  VERSIO : I   : NIVEAU VERSION GMSH 1 OU 2
 C     ------------------------------------------------------------------
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -304,7 +305,7 @@ C
       IF (FORM .EQ. 'GMSH') THEN
       
          CALL IRGMSH ( NOMCON, IFI, NBCHAM, CHAM, LRESU, NBORDR, ORDR,
-     +                 NBCMP, NOMCMP, NBMAT, NUMMAI,IOCC )
+     +         NBCMP, NOMCMP, NBMAT, NUMMAI, VERSIO, IOCC, LGMSH )
 C
 C     -----------------------------
 C     TRAITEMENT DES AUTRES FORMATS

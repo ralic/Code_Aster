@@ -1,12 +1,12 @@
       SUBROUTINE FOCRMS ( METHOD,NOMFON,CRIT,EPSI,TINI,LTINI,
-     &                                            TFIN,LTFIN,RMS )
+     &                                            TFIN,LTFIN,CENT,RMS )
       IMPLICIT  NONE
       INTEGER             LTINI, LTFIN
-      REAL*8              EPSI, TINI, TFIN, RMS
+      REAL*8              EPSI, TINI, TFIN, CENT, RMS
       CHARACTER*(*)       METHOD, NOMFON, CRIT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2001   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 31/03/2003   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,9 @@ C                      ET DIFFERENTE DE 0 DANS LE CAS CONTRAIRE.
 C IN_OUT  TFIN   : R : BORNE SUPERIEURE DE L'INTEGRATION
 C IN      LTFIN  : I : VAUT 0 SI T1 EST DONNEE PAR L'UTILISATEUR 
 C                      ET DIFFERENTE DE 0 DANS LE CAS CONTRAIRE.
+C IN      CENT   : R : PERMET DE "DECENTRER" LE CALCUL
+C                      CENT=0 : MOYENNE QUADRATIQUE
+C                      CENT=MOYENNE DE LA FONCTION INITIALE : ECART-TYPE
 C OUT RMS    : R : MOYENNE QUADRATIQUE DE LA FONCTION
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -58,18 +61,25 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER        NBVAL, LVAR, LFON, NBPTS, IER
+      INTEGER        NBVAL, LVAR, LFON, LPRO, NBPTS, IER
       INTEGER        INTRP0, INTRP1, IDEB, IFIN, IABSS
-      INTEGER        NBVALU, LABSS, LORDO , LRMS   
+      INTEGER        NBVALU, LABSS, LORDO , LRMS , I
       REAL*8         T0, T1, FT0, FT1
       REAL*8         SIGN, AUX, CSTE
       CHARACTER*1    K1BID  
       CHARACTER*19   NOMFI
-      CHARACTER*24   VALE
+      CHARACTER*24   VALE,PROL
 C     ----------------------------------------------------------------
 C
       CALL JEMARQ()
       NOMFI = NOMFON
+C
+      PROL = NOMFI//'.PROL'
+      CALL JEVEUO(PROL,'L',LPRO)
+      IF ( ZK16(LPRO) .NE. 'FONCTION' ) THEN
+         CALL UTMESS('F','FONFFT',
+     +      'SEULE LE CALCUL DU RMS D UNE FONCTION EST IMPLEMENTE')
+      ENDIF
 C
 C     ---  NOMBRE DE POINTS ----
       VALE = NOMFI//'.VALE'
@@ -117,23 +127,24 @@ C
 C
 C        --- STOKAGE DES CARRES DES VALEURS DE LA FONCTION POUR  ---
 C        --- LES INSTANTS COMPRIS ENTRE T0 ET T1                 ---
+C            EVENTUELLEMENT DECENTRER DE 'CENT'
 C
          DO 66 IABSS = 2, NBVALU-1
-            ZR(LORDO+IABSS-1) = ZR(LFON+IDEB+IABSS-2)**2 
+            ZR(LORDO+IABSS-1) = (ZR(LFON+IDEB+IABSS-2)-CENT)**2 
   66     CONTINUE
          IF(INTRP0 .EQ. 0) THEN
              FT0 =  ZR(LFON+IDEB-1)    
          ELSE
              CALL FOINTE('F ',NOMFON, 1, 'INST', T0, FT0, IER )
          ENDIF
-         ZR(LORDO) = FT0**2
+         ZR(LORDO) = (FT0-CENT)**2
 C
          IF(INTRP1 .EQ. 0) THEN
              FT1 =  ZR(LFON+IFIN-1)   
          ELSE
              CALL FOINTE('F ',NOMFON, 1, 'INST', T1, FT1, IER )
          ENDIF
-         ZR(LORDO+NBVALU-1) = FT1**2
+         ZR(LORDO+NBVALU-1) = (FT1-CENT)**2
 C
 C        -- CALCUL DE LA RMS --
 C

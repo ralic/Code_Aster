@@ -3,7 +3,7 @@
       INTEGER    IER
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF PREPOST  DATE 07/04/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,13 +48,19 @@ C ======================================================================
       REAL*8       DKMA, DKMB, KAL, KBL, K1A, K1B, TEMPA, TEMPB, K1BCP
       REAL*8       RNOM(7)
       COMPLEX*16   C16B
-      CHARACTER*8  RESULT, K8B, NOMA, MATREV, ORIDEF, KNOM
-      CHARACTER*8  TABREV, TABMDB, TABTHR
+      CHARACTER*8  RESULT, K8B, NOMA, MATREV, ORIDEF
+      CHARACTER*8  TABREV, TABMDB, TABTHR, TYPPAR(8)
       CHARACTER*10 NOMTAB(8)
       CHARACTER*16 NOMCMD, NMGRNO
       CHARACTER*19 TBINST, TBSCRV, TBSCMB, SIGMRV, SIGMDB, TBINTH
+      CHARACTER*32 KNOM
+C
+      DATA  NOMTAB / 'GROUP_NO', 'INST', 'K1_REV', 'KCP_REV',  
+     +               'TEMPPF_REV', 'K1_MDB',  'KCP_MDB', 'TEMPPF_MDB' /
+      DATA  TYPPAR / 'K32', 'R', 'R', 'R', 'R', 'R', 'R', 'R' /
 C ======================================================================
       CALL JEMARQ()
+      CALL INFMAJ()
 C ======================================================================
       IER = 0
       CALL GETRES ( RESULT, K8B, NOMCMD )
@@ -76,17 +82,6 @@ C ======================================================================
       KAL    =  1.D0/R8MIEM()
       KBL    =  1.D0/R8MIEM()
 C ======================================================================
-C --- INITIALISATIONS DES VARIABLES DE LA TABLE RESULTAT ---------------
-C ======================================================================
-      NOMTAB(1)  =  'GROUP_NO'
-      NOMTAB(2)  =  'INST'
-      NOMTAB(3)  =  'K1_REV'
-      NOMTAB(4)  =  'KCP_REV'
-      NOMTAB(5)  =  'TEMPPF_REV'
-      NOMTAB(6)  =  'K1_MDB'
-      NOMTAB(7)  =  'KCP_MDB'
-      NOMTAB(8)  =  'TEMPPF_MDB'
-C ======================================================================
 C --- RECUPERATION DES DONNEES AUTRE QUE K1D ---------------------------
 C ======================================================================
       CALL RECUPE( NOMA, NDIM, NK1D, LREV, MATREV, DEKLAG, PRODEF,
@@ -105,18 +100,11 @@ C ======================================================================
 C --- CREATION DE LA TABLE RESULTAT ------------------------------------
 C ======================================================================
       CALL TBCRSD ( RESULT, 'G' )
-      CALL TBAJPA ( RESULT, 1, NOMTAB(1), 'K8' )
-      CALL TBAJPA ( RESULT, 1, NOMTAB(2), 'R'  )
-      CALL TBAJPA ( RESULT, 1, NOMTAB(3), 'R'  )
-      CALL TBAJPA ( RESULT, 1, NOMTAB(4), 'R'  )
-      CALL TBAJPA ( RESULT, 1, NOMTAB(5), 'R'  )
-      CALL TBAJPA ( RESULT, 1, NOMTAB(6), 'R'  )
-      CALL TBAJPA ( RESULT, 1, NOMTAB(7), 'R'  )
-      CALL TBAJPA ( RESULT, 1, NOMTAB(8), 'R'  )
+      CALL TBAJPA ( RESULT, 8, NOMTAB, TYPPAR )
 C ======================================================================
 C --- CREATION DES VECTEURS NECESSAIRES --------------------------------
 C ======================================================================
-      CALL WKVECT ( NMGRNO, 'V V K8', NK1D , JNOGN  )
+      CALL WKVECT ( NMGRNO, 'V V K32', NK1D , JNOGN  )
       CALL JEVEUO ( TBINST , 'L', JTBINT )
 C ======================================================================
 C --- ITERATIONS SUR LES DIFFERENTES OCCURENCES DE K1D -----------------
@@ -134,7 +122,7 @@ C ======================================================================
 C ======================================================================
 C --- RECUPERATION DES DONNEES ASSOCIEES A LA IK1D OCCURENCE DE K1D ----
 C ======================================================================
-         CALL RECUTB ( IK1D, ZK8(JNOGN-1+IK1D), TABREV, TABMDB, TABTHR )
+         CALL RECUTB (IK1D, ZK32(JNOGN-1+IK1D), TABREV, TABMDB, TABTHR )
 C ======================================================================
 C --- ITERATIONS SUR LES INSTANTS MECANIQUES ---------------------------
 C ======================================================================
@@ -172,7 +160,7 @@ C ======================================================================
             RNOM(5)   = K1B
             RNOM(6)   = K1BCP
             RNOM(7)   = TEMPB
-            KNOM      = ZK8(JNOGN+IK1D-1)
+            KNOM      = ZK32(JNOGN+IK1D-1)
             CALL TBAJLI (RESULT,8,NOMTAB,IBID,RNOM,C16B,KNOM,0)
 C ======================================================================
 C --- DESTRUCTION DES CHAMPS DE CONTRAINTES ----------------------------
@@ -182,6 +170,7 @@ C ======================================================================
  20      CONTINUE
  10   CONTINUE
 C ======================================================================
+      CALL JEDETC('V','&&',1)
       CALL JEDEMA()
 C ======================================================================
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/05/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 # TITRE FORMATION DE BASE A L'UTILISATION D'ASTER - TP DYNAMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -193,7 +193,8 @@ L_INTERP=DEFI_LIST_REEL(DEBUT=0.0,
 
 EVINT_FY=CALC_FONC_INTERP(FONCTION=EVOL_FY,
                           NOM_RESU='EVOL_FY',
-                          LIST_PARA=L_INTERP,);
+                          LIST_PARA=L_INTERP,
+                          NOM_PARA = 'INST',);
 #
 #
 #

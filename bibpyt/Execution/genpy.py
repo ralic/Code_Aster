@@ -1,4 +1,4 @@
-#@ MODIF genpy Execution  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF genpy Execution  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,8 +30,9 @@ import types,string,sys
 import E_utils
 
 class genpy:
-  def __init__(self,defaut='sans',indent=2):
+  def __init__(self,defaut='sans',simp='tous',indent=2):
     self._defaut=defaut
+    self._simp=simp
     self.l=[]
     self.l_jdc=[]
     self.indent=[indent]
@@ -42,19 +43,22 @@ class genpy:
     for e in node.etapes:
       self.l=[]
       e.accept(self)
-      self.l_jdc.append(self.l,self.args)
+#      self.l_jdc.append(self.l,self.args)
+      self.l_jdc.append(self.l)
 
   def visitETAPE_NIVEAU(self,node):
     if node.etapes_niveaux == []:
       for etape in node.etapes:
         self.l=[]
         etape.accept(self)
-        self.l_jdc.append(self.l,self.args)
+#        self.l_jdc.append(self.l,self.args)
+        self.l_jdc.append(self.l)
     else:
       for etape in node.etapes_niveaux:
         self.l=[]
         etape.accept(self)
-        self.l_jdc.append(self.l,self.args)
+#        self.l_jdc.append(self.l,self.args)
+        self.l_jdc.append(self.l)
 
   def visitASSD(self,node):
     self.sdname=node.get_name()
@@ -200,7 +204,10 @@ class genpy:
       st='"""'+node.val+'"""'
     else :
       st=`node.valeur`
-    self._result=st
+    if (node.definition.into==None and self._simp=='into') :
+      self._result=''
+    else :
+      self._result=st
 
   def visitMCList(self,node):
     l=[]

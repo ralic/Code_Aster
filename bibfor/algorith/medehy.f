@@ -1,7 +1,7 @@
       SUBROUTINE MEDEHY(MODELE,NCHAR,LCHAR,MATE,EXITIM,TIME,CHHYDR,
      &                  CHSECH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 16/12/2002   AUTEUR YLEPAPE Y.LEPAPE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -239,6 +239,23 @@ C --------- RECUPERATION DU CHAMP SECHAGE DANS SECH
             CALL UTMESS('F','MEDEHY_05',' LE CONCEPT EVOL_THER : '//
      &                  SECH//' NE CONTIENT AUCUN CHAMP SECHAGE')
           END IF
+
+         ELSE IF ((TYSD(1:14).EQ.'CHAM_NO_TEMP_R') .OR.
+     +            (TYSD(1:12).EQ.'CARTE_TEMP_R') .OR.
+     +            (TYSD(1:16).EQ.'CHAM_ELEM_TEMP_R')) THEN
+C           ----------------------------------------------
+            CALL UTMESS('I','MEDEHY','LE CHAMP DE SECHAGE UTILISE'//
+     +                  ' EST INDEPENDANT DU TEMPS.')
+            CH19 = SECH(1:8)
+            CALL COPISD('CHAMP_GD','V',CH19,CHSECH(1:19))
+            CALL JEDETR(CHSECH(1:19)//'.TITR')
+
+         ELSE IF (TYSD(1:12).EQ.'CARTE_TEMP_F') THEN
+C           ----------------------------------------------
+            CH19 = SECH(1:8)
+            CALL COPISD('CHAMP_GD','V',CH19,CHSECH(1:19))
+            CALL JEDETR(CHSECH(1:19)//'.TITR')
+
         ELSE
           CALL UTMESS('F','MEDEHY_06','ERREUR DE TYPE SUR LA CHARGE '//
      &                'SECHAGE '//SECH)

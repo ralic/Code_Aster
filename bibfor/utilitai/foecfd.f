@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOMFON,           FONINS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/08/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,13 +77,13 @@ C     --- INFORMATIONS DU .PROL ---
       WRITE(IUL,'(A)')  '             '
       WRITE(IUL,'(A)')  '  FONCTION   '
       WRITE(IUL,'(A)')  '    ORIGINE = ''ASTER - IMPR_COURBE'' '
-      WRITE(IUL,'(2A)') '    NATURE   = ',ZK8(LPROL)
-      WRITE(IUL,'(2A)') '    NOM_PARA = ',ZK8(LPROL+2)
-      WRITE(IUL,'(2A)') '    NOM_RESU = ',ZK8(LPROL+3)
+      WRITE(IUL,'(2A)') '    NATURE   = ',ZK16(LPROL)
+      WRITE(IUL,'(2A)') '    NOM_PARA = ',ZK16(LPROL+2)
+      WRITE(IUL,'(2A)') '    NOM_RESU = ',ZK16(LPROL+3)
 C
-      IF ( ZK8(LPROL) .EQ. 'NAPPE' ) THEN
+      IF ( ZK16(LPROL) .EQ. 'NAPPE' ) THEN
 C
-         WRITE(IUL,'(2A)') '    NOM_VAR  = ',ZK8(LPROL+5)
+         WRITE(IUL,'(2A)') '    NOM_VAR  = ',ZK16(LPROL+5)
          CALL JELIRA ( PARA, 'LONUTI', NBPARA, K1BID )
          WRITE(IUL,'(A,I6)') '    NB_PARA  = ',NBPARA
          CALL JELIRA ( JEXNUM(VALE,1), 'LONUTI', NPS, K1BID )
@@ -101,7 +101,7 @@ C
          NPS = NPS / 2
          WRITE(IUL,'(A,I6)') '    NPS      = ',NPS
 C
-      ELSEIF ( ZK8(LPROL) .EQ. 'FONCTION' ) THEN
+      ELSEIF ( ZK16(LPROL) .EQ. 'FONCTION' ) THEN
          WRITE(IUL,'(A,A)')    '    ORG      = ', ORG
          WRITE(IUL,'(A,A)')    '    FVA      = ', 'R08'
          WRITE(IUL,'(A,A)')    '    FFO      = ', 'R08'
@@ -117,7 +117,7 @@ C
       WRITE(IUL,'(A)') ' VALEUR ='
 C
 C
-      IF ( ZK8(LPROL) .EQ. 'FONCTION' ) THEN
+      IF ( ZK16(LPROL) .EQ. 'FONCTION' ) THEN
          PAS = 0.D0
          IF ( IND .EQ. 0 ) THEN
             CALL JEVEUO ( VALE, 'L', LVAR )
@@ -130,14 +130,14 @@ C
             LFON = LVAR + NPS
             DO 20 IVAL = 0, NPS-1
                ZR(LVAR+IVAL) = ZR(JVAL+IVAL)
-               CALL FOINTE ( 'F ',NOMFON,1,ZK8(LPROL+2),ZR(LVAR+IVAL),
-     +                                      ZR(LFON+IVAL),IRET)
+               CALL FOINTE ('F ',NOMFON,1,ZK16(LPROL+2),ZR(LVAR+IVAL),
+     +                                    ZR(LFON+IVAL),IRET)
  20         CONTINUE
          ENDIF
          CALL FOECFF ( IUL, ORG, PAS, NPS, ZR(LVAR), ZR(LFON), IRET )
          WRITE(IUL,'(A)') '   FINSF    '
 C
-      ELSEIF ( ZK8(LPROL) .EQ. 'NAPPE' ) THEN
+      ELSEIF ( ZK16(LPROL) .EQ. 'NAPPE' ) THEN
          CALL JEVEUO ( PARA, 'L', LPARA )
          CALL JEVEUO ( JEXNUM(VALE,1), 'L', LSPECT )
          CALL FOECFN ( IUL, NPS, NBPARA, ZR(LPARA), ZR(LSPECT), IRET )
@@ -146,7 +146,7 @@ C
       ELSE
          CALL UTMESS('A',NOMCMD//' (ALARME 01)',
      +               'ON NE SAIT PAS IMPRIMER UNE FONCTION DE TYPE "'//
-     +               ZK8(LPROL)//'"      DESOLE. ')
+     +               ZK16(LPROL)//'"      DESOLE. ')
 C
       ENDIF
 C

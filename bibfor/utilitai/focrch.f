@@ -9,7 +9,7 @@
       CHARACTER*19        NOMFON, RESU,                   LISTR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/02/99   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -237,12 +237,12 @@ C
  22   CONTINUE
 C
       IF (IND.EQ.0) THEN
-         CALL WKVECT(NOMFON//'.PROL',BASE//' V K8',5,LPRO)
-         ZK8(LPRO) = 'FONCTION'
-         ZK8(LPRO+1) = 'LIN LIN '
-         ZK8(LPRO+2) = PARAX
-         ZK8(LPRO+3) = PARAY
-         ZK8(LPRO+4) = 'EE'
+         CALL WKVECT(NOMFON//'.PROL',BASE//' V K16',5,LPRO)
+         ZK16(LPRO) = 'FONCTION'
+         ZK16(LPRO+1) = 'LIN LIN '
+         ZK16(LPRO+2) = PARAX
+         ZK16(LPRO+3) = PARAY
+         ZK16(LPRO+4) = 'EE'
 C
          NBVAL = NBINST * 2
          CALL WKVECT(NOMFON//'.VALE',BASE//' V R',NBVAL,LVAL)
@@ -255,12 +255,12 @@ C
 C
       ELSE
          FONCT1 = '&&FOCRCH.FONCT1'
-         CALL WKVECT(FONCT1//'.PROL','V V K8',5,LPRO)
-         ZK8(LPRO) = 'FONCTION'
-         ZK8(LPRO+1) = 'LIN LIN '
-         ZK8(LPRO+2) = 'INST'
-         ZK8(LPRO+3) = PARAX
-         ZK8(LPRO+4) = 'EE'
+         CALL WKVECT(FONCT1//'.PROL','V V K16',5,LPRO)
+         ZK16(LPRO) = 'FONCTION'
+         ZK16(LPRO+1) = 'LIN LIN '
+         ZK16(LPRO+2) = 'INST'
+         ZK16(LPRO+3) = PARAX
+         ZK16(LPRO+4) = 'EE'
          NBVAL = NBINST * 2
          CALL WKVECT(FONCT1//'.VALE','V V R',NBVAL,LVAL)
          LFON = LVAL + NBINST
@@ -270,12 +270,12 @@ C
  100     CONTINUE
 C
          FONCT2 = '&&FOCRCH.FONCT2'
-         CALL WKVECT(FONCT2//'.PROL','V V K8',5,LPRO)
-         ZK8(LPRO) = 'FONCTION'
-         ZK8(LPRO+1) = 'LIN LIN '
-         ZK8(LPRO+2) = 'INST'
-         ZK8(LPRO+3) = PARAY
-         ZK8(LPRO+4) = 'EE'
+         CALL WKVECT(FONCT2//'.PROL','V V K16',5,LPRO)
+         ZK16(LPRO) = 'FONCTION'
+         ZK16(LPRO+1) = 'LIN LIN '
+         ZK16(LPRO+2) = 'INST'
+         ZK16(LPRO+3) = PARAY
+         ZK16(LPRO+4) = 'EE'
          NBVAL = NBINST * 2
          CALL WKVECT(FONCT2//'.VALE','V V R',NBVAL,LVAL)
          LFON = LVAL + NBINST
@@ -287,12 +287,12 @@ C
          CALL JEVEUO(LISTR//'.VALE','L',JVAL)
          CALL JELIRA(LISTR//'.VALE','LONUTI',NBPARA,K8B)
 C
-         CALL WKVECT(NOMFON//'.PROL',BASE//' V K8',5,LPRO)
-         ZK8(LPRO) = 'FONCTION'
-         ZK8(LPRO+1) = 'LIN LIN '
-         ZK8(LPRO+2) = PARAX
-         ZK8(LPRO+3) = PARAY
-         ZK8(LPRO+4) = 'EE'
+         CALL WKVECT(NOMFON//'.PROL',BASE//' V K16',5,LPRO)
+         ZK16(LPRO) = 'FONCTION'
+         ZK16(LPRO+1) = 'LIN LIN '
+         ZK16(LPRO+2) = PARAX
+         ZK16(LPRO+3) = PARAY
+         ZK16(LPRO+4) = 'EE'
 C
          NBVAL = NBPARA * 2
          CALL WKVECT(NOMFON//'.VALE',BASE//' V R',NBVAL,LVAL)

@@ -2,24 +2,22 @@
      &                   VIM, OPTION, SIG, VIP,  DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/03/2002   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 07/01/2003   AUTEUR GJBHHEL E.LORENTZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C                                                                       
-C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
 
@@ -66,8 +64,8 @@ C ----------------------------------------------------------------------
 
       REAL*8      R8DOT
 
-      REAL*8      DMAX
-      PARAMETER  (DMAX = 0.999D0)
+      REAL*8      DMAX, FMIN
+      PARAMETER  (DMAX = 1.D0, FMIN = 1.D-5)
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 C ----------------------------------------------------------------------
 
@@ -115,8 +113,8 @@ C -- DEFORMATIONS
 
       CALL R8COPY(NDIMSI, EPSM,1, EPS,1)
       IF (RAPH .OR. FULL) CALL R8AXPY(NDIMSI, 1.D0, DEPS,1, EPS,1)
-      
-      
+
+
 
 C ======================================================================
 C                         CONTRAINTES ELASTIQUES
@@ -154,8 +152,8 @@ C -- POINT DEJA SATURE
 
        IF (ETAT.EQ.2) THEN
          D = DM
-         
-         
+
+
 C -- CALCUL DE L'ETAT D'ENDOMMAGEMENT
         ELSE
           IF (ENER .LE. WY*((1+GAMMA)/(1+GAMMA-DM))**2) THEN
@@ -194,14 +192,14 @@ C ======================================================================
 C                            MATRICE TANGENTE
 C ======================================================================
 
-       
+
       IF (FULL .OR. TANG .OR. ELAS) THEN
 
 
 C -- RIGI_MECA_ELAS : MATRICE ELASTIQUE IMPOSEE
 
         IF (ELAS) NONLIN = .FALSE.
-       
+
 
 C -- RIGI_MECA_TANG : MATRICE ELASTIQUE FONCTION DU PAS PRECEDENT
 
@@ -217,6 +215,7 @@ C -- CONTRIBUTION ELASTIQUE
 
         CALL R8INIR(36, 0.D0, DSIDEP, 1)
         FD = 1-D
+        FD = MAX(FMIN, FD)
         DO 100 K = 1,3
           DO 110 L = 1,3
             DSIDEP(K,L) = FD*LAMBDA

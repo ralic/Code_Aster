@@ -1,7 +1,7 @@
       SUBROUTINE OP0070 (IER)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C RESPONSABLE ADBHHVV V.CANO
+C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_20
 C
       IMPLICIT NONE
@@ -73,28 +73,27 @@ C
 C
       LOGICAL      ECHLDC, ITEMAX, CONVER, FINPAS, FINTPS, FONACT(4)
       LOGICAL      DIDERN, ECHCON(2), REAROT, LAMORT, LBID,   LIMPED
-      LOGICAL      RGENCE, PREMIE, CGENCE, LONDE,  ECHEQU, LOBSER
+      LOGICAL      PREMIE, LONDE,  ECHEQU, LOBSER
       LOGICAL      LREAC(4)
 C
       INTEGER      LICCVG(5), MAXB(4), VECONT(2)
       INTEGER      IFM,    NIV,    NEQ,    IRET,   IBID,   I 
-      INTEGER      NUMINS, ITERAT, ICONTA, KNOEU,  KMAIL,  KPOIN
-      INTEGER      JDEPM,  JDEPDE, JDEPP,  JDDEPL, IECPCO, INCOCA
+      INTEGER      NUMINS, ITERAT, KNOEU,  KMAIL,  KPOIN
+      INTEGER      JDEPDE, JDEPP,  JDDEPL, IECPCO
       INTEGER      JARCH,  JDEPEN, JVITEN, JACCEN
       INTEGER      COMGEO, CSEUIL, COBCA,  INDRO,  ISNNEM, NBMODS
-      INTEGER      NMODAM, NREAVI, NONDP,  KKKMA,  KCHAM,  KCOMP
-      INTEGER      KNUCM,  NBOBSE, JOBSE,  NUINS0, NOINS2, NLISIN
-      INTEGER      NBOBAR, JINST,  NUOBSE
-      INTEGER      NBPASE
+      INTEGER      NMODAM, NREAVI, NONDP,  KCHAM,  KCOMP
+      INTEGER      KNUCM,  NBOBSE, NUINS0
+      INTEGER      NBOBAR, NUOBSE, NBPASE, NIVEAU
 C
       REAL*8       PARMET(30), PARCRI(11), CONV(21), ETA, ETAN, R8VIDE
       REAL*8       DIINST,     INSTAM,     INSTAP,   INST(3),   ALPHA
       REAL*8       V0VIT,      V0ACC,      A0VIT,    A0ACC,     COEVIT
       REAL*8       COEACC,     DELTA,      TPS1(4),  TPS2(4),   TPS3(4)
-      REAL*8       EPSI,       R8PREM
+      REAL*8       PARCON(5)
 C
       CHARACTER*8  RESULT, MODEDE, MAILLA, SCONEL, MCONEL, K8BID
-      CHARACTER*8  MAILL2
+      CHARACTER*8  MAILL2, BASENO
 C
       CHARACTER*13 INPSCO
       CHARACTER*14 PILOTE
@@ -102,7 +101,7 @@ C
       CHARACTER*16 METHOD(6), OPTION, CMD, K16BID
 C
       CHARACTER*19 LISCHA, SOLVEU, SOLVDE, PARTPS, CRITNL
-      CHARACTER*19 CNRESI, CNDIRI, CNVCFO, CNFEXT, K19BLA
+      CHARACTER*19 CNRESI, CNDIRI, CNVCFO, CNFEXT, CNVFRE
       CHARACTER*19 NURO,   CARTCF, LIGRCF, CNSINR, FOINER
       CHARACTER*19 MAPREC, LISOBS, NOMTAB, AUTOC1, AUTOC2
 C
@@ -110,7 +109,7 @@ C
       CHARACTER*24 NUMEDE, DEFICO, RESOCO, K24BLA, K24BID, TEMPLU
       CHARACTER*24 DEPMOI, SIGMOI, VARMOI, VARDEM, LAGDEM, MEMASS
       CHARACTER*24 DEPPLU, SIGPLU, VARPLU, VARDEP, LAGDEP, DEPDEL
-      CHARACTER*24 COMMOI, COMPLU, COMREF, DDEPLA, DEPOLD
+      CHARACTER*24 COMMOI, COMPLU, COMREF, DDEPLA, DEPOLD, DEPPIL(2)
       CHARACTER*24 CNFEDO, CNFEPI, CNDIDO, CNDIPI, CNFSDO, CNFSPI
       CHARACTER*24 CNDIDI, CNCINE, MEDIRI, DEPENT, VITENT, ACCENT
       CHARACTER*24 VITMOI, ACCMOI, DEPENM, VITENM, ACCENM
@@ -129,6 +128,7 @@ C ----------------------------------------------------------------------
       DATA PILOTE, RESOCO    /'&&OP0070.PILOT',  '&&OP0070.RESOC'/
       DATA DEPMOI, DEPPLU    /'&&OP0070.DEPMOI', '&&OP0070.DEPPLU'/
       DATA DEPDEL, DDEPLA    /'&&OP0070.DEPDEL', '&&OP0070.DDEPLA'/
+      DATA DEPPIL            /'&&OP0070.DEPPIL0','&&OP0070.DEPPIL1'/
       DATA DEPOLD, DEFICO    /'&&OP0070.DEPOLD', '&&OP0070.DEFIC'/
       DATA VITPLU, ACCPLU    /'&&OP0070.VITPLU', '&&OP0070.ACCPLU'/
       DATA VITMOI, ACCMOI    /'&&OP0070.VITMOI', '&&OP0070.ACCMOI'/
@@ -155,7 +155,7 @@ C ----------------------------------------------------------------------
       DATA CNDIDI, CNCINE    /'&&OP0070.CNDIDI', '&&OP0070.CNCINE'/
       DATA CNRESI, CNDIRI    /'&&OP0070.CNRESI', '&&OP0070.CNDIRI'/
       DATA CNFEXT, MEDIRI    /'&&OP0070.CNFEXT', '&&MEDIRI.LISTE_RESU'/
-      DATA CNVCFO            /'&&OP0070.CNVCFO'/
+      DATA CNVCFO, CNVFRE    /'&&OP0070.CNVCFO', '&&OP0070.CNVFRE'/
       DATA MEMASS, FOINER    /'&&OP0070.MEMASS', '&&OP0070.FOINER'/
       DATA AMORT , MASSE     /'&&OP0070.MAMORT', '&&OP0070.MMASSE'/
       DATA STADYN            /'&&OP0070.STA_DYN'/
@@ -165,7 +165,7 @@ C ----------------------------------------------------------------------
       DATA MULTAP, VALMOD    /'&&MULTAP', '&&VALMOD'/
       DATA BASMOD            /'&&BASMOD'/
       DATA AUTOC1, AUTOC2  /'&&OP0070.REAC.AUTO1','&&OP0070.REAC.AUTO2'/
-      DATA K19BLA, K24BLA    /2*' '/
+      DATA K24BLA    /' '/
 
 C ----------------------------------------------------------------------
       CALL JEMARQ()
@@ -187,9 +187,9 @@ C -- TITRE
       CALL INFMAJ
       CALL INFNIV (IFM,NIV)
 
-C **********************************************************************
+C ======================================================================
 C               RECUPERATION DES OPERANDES ET INITIALISATION
-C **********************************************************************
+C ======================================================================
 
 C -- QUELLE COMMANDE APPELLE CETTE OP (STA OU DYN)
 
@@ -218,13 +218,12 @@ C      MULTIA : INFOS MULTI-APPUI
 C
 C -- LECTURE DES OPERANDES DE LA COMMANDE
 C
-C              12   345678
-      K8BID = '&&'//NOMPRO
-C
+
+      BASENO = '&&'//NOMPRO
       CALL NMLECT (RESULT, MODELE, MATE  , CARELE, COMPOR,
      &             LISCHA, METHOD, SOLVEU, PARMET, PARCRI,
-     &             CARCRI, MODEDE, SOLVDE,
-     &             NBPASE, K8BID, INPSCO )
+     &             CARCRI, MODEDE, SOLVDE, NBPASE, BASENO,
+     &             INPSCO, PARCON )
 C
       IF (CMD(1:4).EQ.'DYNA') 
      &   CALL NDLECT(MODELE, MATE,  LISCHA, STADYN, LAMORT,
@@ -249,52 +248,30 @@ C -- ETAT INITIAL ET CREATION DES STRUCTURES DE DONNEES
      &            ACCPLU, MAPREC, SOLVEU, CARCRI, PARTPS,
      &            NURO,   REAROT, VARDEM, LAGDEM, CNDIDI,
      &            PILOTE, DEFICO, RESOCO, CRITNL, FONACT,
-     &            CMD,    DEPENT, VITENT, ACCENT, NBMODS)
+     &            CMD,    DEPENT, VITENT, ACCENT, NBMODS,
+     &            CNVFRE, PARCON, PARCRI(6))
      
       INSTAM = DIINST(PARTPS, 0)
      
+C -- SAISIE DE LA LISTE DES INSTANTS D'OBSERVATION
+
+      CALL INIOBS(NBOBSE, NUINS0, LOBSER, INSTAM, RESULT,
+     &            NUOBSE, NOMTAB, KCHAM,  KCOMP,  KNUCM, 
+     &            KNOEU,  KMAIL,  KPOIN,  MAILL2, NBOBAR, 
+     &            LISINS, LISOBS)
 
 C -- PARAMETRES D'IMPRESSION
 
       CALL NMIMPR('INIT',' ',' ',0.D0,0)
 
-C **********************************************************************
-C     SAISIE DE LA LISTE DES INSTANTS D'OBSERVATION
-C     DUPLICATION DE LA PARTIE DYARCH + PARTIE RECU_FONCTION
-C **********************************************************************
-
-      NBOBSE = 0
-      NUINS0 = 1      
-      LOBSER = .FALSE.
-      CALL GETVID('INCREMENT','LIST_INST',1,1,1,LISINS,NLISIN)
-      IF (NLISIN.NE.0) THEN
-         CALL JEVEUO(LISINS(1:19)//'.VALE','L',JINST)
-         CALL JELIRA(LISINS(1:19)//'.VALE','LONUTI',NOINS2,K8BID)
-         EPSI = 1.D-4
-         CALL RNLIR8(LISINS,INSTAM,EPSI,NUINS0)
-         LISOBS = '&&OP0070.OBSERVATIO'
-         CALL DYOBSE (NOINS2,LISINS,LISOBS,NBOBSE,RESULT)
-         CALL JEVEUO ( LISOBS, 'L', JOBSE )
-      ENDIF
-      IF ( NBOBSE .NE. 0 ) THEN
-         NUOBSE = 0
-         NOMTAB = ' '
-         CALL LTNOTB ( RESULT, 'OBSERVATION', NOMTAB )
-         CALL JEVEUO ( '&&DYOBSE.MAILLA'   , 'L' , KKKMA )
-         CALL JEVEUO ( '&&DYOBSE.NOM_CHAM' , 'L' , KCHAM )
-         CALL JEVEUO ( '&&DYOBSE.NOM_CMP ' , 'L' , KCOMP )
-         CALL JEVEUO ( '&&DYOBSE.NUME_CMP' , 'L' , KNUCM )
-         CALL JEVEUO ( '&&DYOBSE.NOEUD'    , 'L' , KNOEU )
-         CALL JEVEUO ( '&&DYOBSE.MAILLE'   , 'L' , KMAIL )
-         CALL JEVEUO ( '&&DYOBSE.POINT'    , 'L' , KPOIN )
-         MAILL2 = ZK8(KKKMA)
-         CALL JELIRA('&&DYOBSE.NOM_CHAM','LONUTI',NBOBAR,K8BID)
-      ENDIF
+C -- CREATION DES VECTEURS D'INCONNUS 
 
       CALL VTCREB(DEPPLU,NUMEDD,'V','R',NEQ)
       CALL VTCREB(DEPDEL,NUMEDD,'V','R',NEQ)
       CALL VTCREB(DEPOLD,NUMEDD,'V','R',NEQ)
       CALL VTCREB(DDEPLA,NUMEDD,'V','R',NEQ)
+      CALL VTCREB(DEPPIL(1),NUMEDD,'V','R',NEQ)
+      CALL VTCREB(DEPPIL(2),NUMEDD,'V','R',NEQ)
       CALL VTCREB(DEPGEO,NUMEDD,'V','R',NEQ)
       CALL VTCREB(DEPLAM,NUMEDD,'V','R',NEQ)
       CALL VTCREB(DEPKM1,NUMEDD,'V','R',NEQ)
@@ -307,10 +284,10 @@ C **********************************************************************
       CALL VTCREB(VITENT,NUMEDD,'V','R',NEQ)
       CALL VTCREB(ACCENT,NUMEDD,'V','R',NEQ)
 
-CC -- VECTEUR POUR LA DYNAMIQUE A L INSTANT MOINS
-CC    UTIL UNIQUEMENT AFIN D ARCHIVER LE DERNIER INSTANT CALCULE
-CC    SI PLANTE POUR LE NOUVEAU PAS DE TEMPS DANS
-CC    LES ITERATIONS DE NEWTON
+C -- VECTEUR POUR LA DYNAMIQUE A L INSTANT MOINS
+C -- UTILE UNIQUEMENT AFIN D ARCHIVER LE DERNIER INSTANT CALCULE
+C -- SI PLANTE POUR LE NOUVEAU PAS DE TEMPS DANS
+C -- LES ITERATIONS DE NEWTON
 
       IF (CMD(1:4).EQ.'DYNA') THEN
        CALL VTCREB(DEPENM,NUMEDD,'V','R',NEQ)
@@ -352,6 +329,9 @@ C         CNTMPX : NE TRANSITENT PAS D'UNE ROUTINE A L'AUTRE
       CALL VTCREB ('&&CNREPL.CHP2',NUMEDD,'V','R',NEQ)
       CALL VTCREB ('&&CNREPL.CHP3',NUMEDD,'V','R',NEQ)
       CALL VTCREB ('&&CNREPL.CHP4',NUMEDD,'V','R',NEQ)
+      CALL VTCREB ('&&CNCETA.CHP0',NUMEDD,'V','R',NEQ)
+      CALL VTCREB ('&&CNCETA.CHP1',NUMEDD,'V','R',NEQ)
+      CALL VTCREB ('&&CNCETA.CHP2',NUMEDD,'V','R',NEQ)
       
 C -- TRAITEMENT DES VARIABLES DE COMMANDE
 
@@ -375,9 +355,9 @@ C -- INITIALISATION DES INDICATEURS DE CONVERGENCE DU CONTACT
       LICCVG(4) = 0
       LICCVG(5) = 0
 
-C **********************************************************************
+C ======================================================================
 C                   BOUCLE SUR LES PAS DE TEMPS
-C **********************************************************************
+C ======================================================================
 
       CALL UTTCPU (1,'INIT',4,TPS1)
       CALL UTTCPU (2,'INIT',4,TPS2)
@@ -385,34 +365,30 @@ C **********************************************************************
 
       NUMINS = 1
 C ======================================================================
-C -- REPRISE DE LA BOUCLE EN TEMPS -------------------------------------
+C                REPRISE DE LA BOUCLE EN TEMPS 
 C ======================================================================
       PREMIE = .TRUE.
  200  CONTINUE
 C
       CALL UTTCPU (1,'DEBUT',4,TPS1)
       INSTAP = DIINST(PARTPS, NUMINS)
-      LOBSER = .FALSE.
-      IF (NBOBSE.NE.0) THEN
-         IF ((INSTAP+R8PREM( )).GE.ZR(JINST+NUINS0)) THEN
-            NUINS0 = NUINS0 + 1
-            IF (ZI(JOBSE-1+NUINS0).EQ.1) THEN
-               LOBSER = .TRUE.
-               NUOBSE = NUOBSE + 1            
-            ENDIF
-         ENDIF
-      ENDIF
-      
+
+C -- DOIT-ON FAIRE UNE OBSERVATION
+
+      CALL LOBS(NBOBSE, NUINS0, LOBSER, INSTAM, INSTAP,
+     &          NUOBSE, LISINS, LISOBS)
+
       CALL MISAZL(DEPMOI,DEFICO)      
       CALL NMIMPR('TITR',' ',' ',INSTAP,0)
       DO 10 I = 1 , 21
          CONV(I) = R8VIDE()
  10   CONTINUE
-C ======================================================================
-C --- INITIALISATION DU CONTACT POUR LE NOUVEAU PAS DE TEMPS -----------
-C ======================================================================
+
+C -- INITIALISATION DU CONTACT POUR LE NOUVEAU PAS DE TEMPS 
+
       CALL INICNT(NUMINS, NEQ, DEFICO, FONACT, VECONT, LREAC,
-     +                                                   AUTOC1, AUTOC2)
+     &                                                  AUTOC1, AUTOC2)
+
 C ======================================================================
 C        EVALUATION DES CHAMPS POUR LE NOUVEAU PAS DE TEMPS
 C ======================================================================
@@ -431,7 +407,7 @@ C -- INITIALISATION DES DEPLACEMENTS, VITESSES
       CALL JEVEUO (DEPDEL(1:19)//'.VALE','E',JDEPDE)
       CALL JEVEUO (DEPPLU(1:19)//'.VALE','E',JDEPP )
       CALL JEVEUO (DDEPLA(1:19)//'.VALE','E',JDDEPL)
-      CALL INITIA (NEQ,REAROT,ZI(INDRO),ZR(JDEPP),ZR(JDEPDE))
+       CALL INITIA (NEQ,REAROT,ZI(INDRO),ZR(JDEPP),ZR(JDEPDE))
       IF (CMD(1:4).EQ.'DYNA') 
      &    CALL DINIT (NEQ,V0VIT,V0ACC,A0VIT,A0ACC,ALPHA,DELTA,INSTAM,
      &                 INSTAP,COEVIT,COEACC,DEPPLU,POUGD,DEPENT,VITENT,
@@ -441,11 +417,11 @@ C -- INITIALISATION DES DEPLACEMENTS, VITESSES
 C -- LECTURE DES VARIABLES DE COMMANDE A L'INSTANT COURANT
       CALL NMVCLE(MODELE(1:8), MATE  , LISCHA, INSTAP, COMPLU)
 
-C    ESTIMATION D'UNE FORCE DE REFERENCE LIEE AUX VAR. COMMANDES EN T+
+C -- ESTIMATION D'UNE FORCE DE REFERENCE LIEE AUX VAR. COMMANDES EN T+
       CALL NMVCFO(MODELE(1:8), NUMEDD, MATE  , CARELE, COMREF,
      &            COMPLU, CNVCFO)
 
-C    ADHERENCE DES POUTRES
+C -- ADHERENCE DES POUTRES
       CALL NMVCEX('TEMP',COMPLU,TEMPLU)
 
 C -- PARAMETRES DE L'INSTANT DE CALCUL (SUIVANT SCHEMA D'INTEGRATION)
@@ -465,43 +441,29 @@ C -- CALCUL DES CHARGEMENTS EXTERIEURS
 
 
 C -- CALCUL DU CONTACT FROTTEMENT AVEC LA METHODE CONTACT ECP
+C -- LES BOUCLES NECESSAIRES SONT TRAITEES PAR
+C --      NMICBLE AVANT NEWTON-RAPHSON
+C --      NMTBLE  APRES NEWTON-RAPHSON
+C -- ET COMMUNIQUENT PAR LA VARIABLE NIVEAU
 
       MAESCL = DEFICO(1:16)//'.MAESCL'
       CALL JEEXIN(MAESCL,IECPCO)
-      IF (IECPCO.EQ.0)  GOTO 110
-      CALL DONNCO(MAILLA,OLDGEO,NEWGEO,DEPMOI,DEFICO,DEPGEO,MAXB)
+      IF (IECPCO.EQ.0) THEN
+        NIVEAU = -1
+      ELSE
+        NIVEAU=4
+      ENDIF
+      
+  101 CONTINUE
+  
+      CALL NMIBLE(NIVEAU, 
+     &            PREMIE, MAILLA, DEFICO, OLDGEO, NEWGEO,
+     &            DEPMOI, DEPGEO, MAXB,   DEPLAM,
+     &            COMGEO, CSEUIL, COBCA, 
+     &            NEQ   , DEPDEL, DDEPLA, DEPPLU, LIGRCF,
+     &            CARTCF, MODELE, LISCHA, SOLVEU, NUMEDD, 
+     &            MCONEL, SCONEL)
 
-C -- BOUCLE GEOMETRIQUE (CONTACT ECP)
-
-      COMGEO = 0
-      INCOCA = 0
-   80 CONTINUE
-      COMGEO = COMGEO + 1
-C
-      CALL MAPPAR(PREMIE,MAILLA,DEFICO,OLDGEO,NEWGEO,COMGEO,DEPGEO)
-
-C -- BOUCLE SUR LES SEUILLS DE FROTTEMENT (CONTACT ECP)
-
-      CSEUIL = 0
-      IF (MAXB(4).EQ.1) GOTO 107
-      CALL COPISD('CHAMP_GD','V',DEPMOI,DEPLAM)
- 90   CONTINUE
-      CSEUIL = CSEUIL + 1
-      CALL NMIMPR('IMPR','BCL_SEUIL',' ',0.D0,CSEUIL)
-
-C -- BOUCLE DE CONTRAINTES ACTIVES (CONTACT ECP)
-
- 107  CONTINUE
-      COBCA = 0
- 103  CONTINUE
-      COBCA = COBCA + 1
-      CALL NMIMPR('IMPR','BCL_CTACT',' ',0.D0,COBCA)
-      CALL CONLIG(NEQ,   JDEPDE, JDDEPL, DEPMOI, DEPPLU,
-     &           DEFICO, MAILLA, LIGRCF, CARTCF, MODELE,
-     &           LISCHA, SOLVEU, NUMEDD, DEPDEL, MCONEL,
-     &           SCONEL)
-
-  110 CONTINUE
 
 C ======================================================================
 C   PHASE DE PREDICTION : INTERPRETEE COMME UNE DIRECTION DE DESCENTE
@@ -509,15 +471,15 @@ C ======================================================================
 
 C -- PREDICTION D'UNE DIRECTION DE DESCENTE
 
-      CALL NMPRED(MODELE, NUMEDD, MATE,   CARELE,    COMREF,
-     &            COMPOR, LISCHA, MEDIRI, METHOD,    SOLVEU,
-     &            PARMET, CARCRI, PILOTE, PARTPS,    NUMINS,
-     &            INST  , DEPOLD, VALMOI, POUGD ,    VALPLU,
-     &            SECMBR, DDEPLA, ETA ,   LICCVG,    STADYN,
-     &            LAMORT, VITPLU, ACCPLU, MASSE,     AMORT,
-     &            CMD,    PREMIE, MEMASS, DEPENT,    VITENT,
-     &            COEVIT, COEACC, VITKM1, NMODAM,    VALMOD,
-     &            BASMOD, NREAVI, LIMPED, LONDE,     NONDP,
+      CALL NMPRED(MODELE, NUMEDD, MATE,   CARELE,  COMREF,
+     &            COMPOR, LISCHA, MEDIRI, METHOD,  SOLVEU,
+     &            PARMET, CARCRI, PILOTE, PARTPS,  NUMINS,
+     &            INST  , DEPOLD, VALMOI, POUGD ,  VALPLU,
+     &            SECMBR, DEPPIL, LICCVG, STADYN,
+     &            LAMORT, VITPLU, ACCPLU, MASSE,   AMORT,
+     &            CMD,    PREMIE, MEMASS, DEPENT,  VITENT,
+     &            COEVIT, COEACC, VITKM1, NMODAM,  VALMOD,
+     &            BASMOD, NREAVI, LIMPED, LONDE,   NONDP,
      &            CHONDP)
 
       PREMIE = .FALSE.
@@ -532,35 +494,29 @@ C -- REPRISE DE LA BOUCLE D'ITERATIONS DE NEWTON-RAPHSON
  300  CONTINUE
       CALL UTTCPU (2,'DEBUT',4,TPS2)
 
-C -- TRAITEMENT EVENTUEL DU CONTACT ET/OU DU FROTTEMENT
 
-      IF (IECPCO.GT.0) GOTO 67
-      IF (FONACT(4)) THEN
-         CALL NMCOFR (INSTAP, MAILLA, DEPPLU, DEPDEL, DDEPLA,
-     &               DEFICO, RESOCO, CNCINE, ITERAT, SOLVEU,
-     &               CONV ,  LICCVG, LREAC)
-      END IF
-67    CONTINUE
 
-C -- MISE A JOUR DES DEPLACEMENTS
+C -- CALCUL PROPREMENT DIT DE L'INCREMENT DE DEPLACEMENT
+C -- EN CORRIGEANT LA (LES) DIRECTIONS DE DESCENTE
+C -- SI CONTACT OU PILOTAGE OU RECHERCHE LINEAIRE
+C -- DES FORCES INTERIEURES (RHO SI RL, ETA SI PILOTAGE)
+C -- DES RIGI_ELEM (SI DEMANDE)
 
-      CALL JEVEUO (DEPMOI(1:19)//'.VALE','L',JDEPM )
-      CALL JEVEUO (DEPDEL(1:19)//'.VALE','E',JDEPDE)
-      CALL JEVEUO (DEPPLU(1:19)//'.VALE','E',JDEPP )
-      CALL JEVEUO (DDEPLA(1:19)//'.VALE','L',JDDEPL)
-
-      IF (CMD(1:4).EQ.'STAT') THEN 
-         CALL MAJOUR (NEQ,REAROT,ZI(INDRO),ZR(JDEPDE ),ZR(JDDEPL),1.D0,
-     &                ZR(JDEPDE ))
-         CALL MAJOUR (NEQ,REAROT,ZI(INDRO),ZR(JDEPP ),ZR(JDDEPL),1.D0,
-     &                ZR(JDEPP ))
-      ELSE
-         CALL MAJDVA(NEQ,    REAROT, NURO,   COEVIT, COEACC,
-     &               DEPMOI, DDEPLA, DEPDEL, DEPKM1, VITKM1, 
-     &               ACCKM1, DEPPLU, VITPLU, ACCPLU, ROMKM1,
-     &               ROMK)
-      ENDIF
-
+      ETAN = ETA
+      CALL NMDEPL(MODELE, NUMEDD, MATE  , CARELE, COMREF,
+     &            COMPOR, LISCHA, CNFEXT, PARMET, CARCRI,
+     &            MODEDE, NUMEDE, SOLVDE, PARCRI, POUGD ,
+     &            ITERAT, VALMOI, RESOCO, VALPLU, CNRESI,
+     &            CNDIRI, REAROT, NURO  , METHOD, NUMINS,
+     &            OPTION, CONV,   STADYN, DEPENT, VITENT,
+     &            LAMORT, MEMASS, MASSE,  AMORT,  COEVIT, 
+     &            COEACC, INDRO , SECMBR, INSTAP, INSTAM,
+     &            CMD,    ETAN  , PARTPS, PREMIE, FONACT, 
+     &            DEPKM1, VITKM1, ACCKM1, VITPLU, ACCPLU,
+     &            ROMKM1, ROMK,   PILOTE, DEPDEL, DEPPIL,
+     &            DEPOLD, IECPCO, LIGRCF, CARTCF, MCONEL,
+     &            SCONEL, MAILLA, DEPPLU, DEFICO, CNCINE,
+     &            SOLVEU, LREAC,  ETA   , LICCVG, DDEPLA) 
 
 C -- CALCUL DES FORCES SUIVEUSES
 
@@ -581,29 +537,6 @@ C -- CALCUL DES FORCES SUIVEUSES
       ENDIF
 
 
-C -- CALCUL FORCES INTERIEURES ET REACTIONS D'APPUI SI NECESSAIRE
-
-      CALL NMMATR('FORCES_INT', K24BLA, K24BLA, K24BLA, K24BLA,
-     &                  K24BLA, K24BLA, K19BLA, K24BLA, ' '   ,
-     &                  METHOD, K19BLA, PARMET, K24BLA, PARTPS,
-     &                  NUMINS, ITERAT, K24BLA, K24BLA, K24BLA,
-     &                  K24BLA, K19BLA, OPTION, K24BLA, STADYN,
-     &                  PREMIE, CMD,    DEPENT, VITENT, LAMORT,
-     &                  MEMASS, MASSE,  AMORT,  COEVIT, COEACC, 
-     &                  IBID)
-
-      IF (IECPCO.GT.0) CALL MMCMEM(MODELE,DEPMOI,DEPDEL,LIGRCF,CARTCF,
-     &  MCONEL, SCONEL)
-
-      IF (OPTION.EQ.'FULL_MECA' .OR. ITERAT.EQ.0 .OR.
-     &    .NOT. FONACT(1) .OR. FONACT(3) .OR. FONACT(4))
-     &    CALL NMFINT (MODELE, NUMEDD, MATE  , CARELE, COMREF,
-     &                 COMPOR, LISCHA, CARCRI, POUGD , ITERAT,
-     &                 MODEDE, NUMEDE, SOLVDE, PARMET, PARCRI,
-     &                 VALMOI, DEPDEL, RESOCO, VALPLU, CNRESI,
-     &                 CNDIRI, LICCVG(2), OPTION, CONV, STADYN,
-     &                 DEPENT, VITENT)
- 
 C -- FORCES D'INERTIE POUR L'ESTIMATION DE LA CONVERGENCE
 
       CALL NDINER(MASSE,VITPLU,FOINER,CMD,INST,A0VIT)
@@ -611,71 +544,44 @@ C -- FORCES D'INERTIE POUR L'ESTIMATION DE LA CONVERGENCE
 
 C -- ESTIMATION DE LA CONVERGENCE ET SUIVI DU CALCUL (IMPRESSION)
 
-C ======================================================================
       CALL NMFEXT (NUMEDD, ETA , SECMBR,RESOCO,DEFICO,CNFEXT)
-C ======================================================================
+
       IF (IECPCO.GT.0)  LREAC(4) = .FALSE.
       CALL NMCONV (CNRESI, CNDIRI, CNFEXT, CNVCFO, PARCRI,
      &             ITERAT, ETA   , CONV  , LICCVG, ITEMAX,
      &             CONVER, ECHLDC, ECHEQU, ECHCON, FINPAS,
      &             CRITNL, NUMINS, FOINER, PARTPS, PARMET,
-     &             NEQ, DEPDEL, AUTOC1, AUTOC2, VECONT, LREAC)
-C ======================================================================
-C --- ON SORT DU PAS DE TEMPS SI : -------------------------------------
-C --- 1 - ON A CONVERGE ------------------------------------------------
-C --- 2 - LE NOMBRE D'ITERATIONS MAXIMAL EST ATTEINT -------------------
-C --- 3 - SI LA MATRICE EST SINGULIERE ---------------------------------
-C --- 4 - S'IL Y A ECHEC DANS L'INTEGRATION DE LA LOI DE COMPORTEMENT --
-C --- 5 - S'IL Y A ECHEC DANS LE TRAITEMENT DU CONTACT -----------------
-C ======================================================================
+     &             NEQ,    DEPDEL, AUTOC1, AUTOC2, VECONT,
+     &             LREAC,  CNVFRE)
+
+C -- ON SORT DU PAS DE TEMPS SI : 
+C -- 1 - ON A CONVERGE 
+C -- 2 - LE NOMBRE D'ITERATIONS MAXIMAL EST ATTEINT 
+C -- 3 - SI LA MATRICE EST SINGULIERE 
+C -- 4 - S'IL Y A ECHEC DANS L'INTEGRATION DE LA LOI DE COMPORTEMENT 
+C -- 5 - S'IL Y A ECHEC DANS LE TRAITEMENT DU CONTACT 
+
       IF ( CONVER    .OR.
-     +     ITEMAX    .OR.
-     +     ECHEQU    .OR.
-     +     ECHLDC    .OR.
-     +     ECHCON(1) .OR. ECHCON(2) )  GOTO 500
+     &     ITEMAX    .OR.
+     &     ECHEQU    .OR.
+     &     ECHLDC    .OR.
+     &     ECHCON(1) .OR. ECHCON(2) )  GOTO 500
+
+C -- SINON ON CONTINUE LES ITERATIONS DE NEWTON 
+
 C ======================================================================
-C --- SINON ON CONTINUE LES ITERATIONS DE NEWTON -----------------------
+C              CALCUL DE LA DIRECTION DE DESCENTE 
 C ======================================================================
-C ======================================================================
-C -- CALCUL DE LA DIRECTION DE DESCENTE --------------------------------
-C ======================================================================
-      ETAN = ETA
+
       CALL NMDESC(MODELE, NUMEDD, MATE  , CARELE, COMREF,
      &            COMPOR, LISCHA, MEDIRI, RESOCO, METHOD,
      &            SOLVEU, PARMET, CARCRI, PILOTE, PARTPS,
-     &            NUMINS, ITERAT, DEPOLD, VALMOI, POUGD ,
-     &            DEPDEL, VALPLU, SECMBR, CNRESI, DDEPLA,
-     &            ETA   , LICCVG, DEFICO, STADYN, PREMIE,
-     &            CMD,    DEPENT, VITENT, LAMORT, MEMASS, 
-     &            MASSE,  AMORT,  COEVIT, COEACC)
+     &            NUMINS, ITERAT, VALMOI, POUGD , DEPDEL,
+     &            VALPLU, SECMBR, CNRESI, DEPPIL ,ETA   ,
+     &            LICCVG, DEFICO, STADYN, PREMIE, CMD,
+     &            DEPENT, VITENT, LAMORT, MEMASS, MASSE,
+     &            AMORT,  COEVIT, COEACC)
 
-C -- RECHERCHE LINEAIRE
-
-      IF (FONACT(1)) THEN
-        IF (FONACT(2)) THEN
-
-C        AVEC PILOTAGE        
-
-          CALL NMREPL (MODELE, NUMEDD, MATE  , CARELE, COMREF,
-     &                 COMPOR, LISCHA, CNFEXT, PARMET, CARCRI,
-     &                 MODEDE, NUMEDE, SOLVDE, PARCRI,
-     &                 INST  , ITERAT, VALMOI, POUGD , DEPDEL,
-     &                 RESOCO, DDEPLA, VALPLU, CNRESI, CNDIRI,
-     &                 CONV  , LICCVG, REAROT, INDRO, SECMBR,
-     &                 INSTAP-INSTAM , PILOTE, ETAN, ETA, DEPOLD)
-
-
-        ELSE
-
-C        SANS PILOTAGE
-          CALL NMRECH (MODELE, NUMEDD, MATE  , CARELE, COMREF,
-     &                 COMPOR, LISCHA, CNFEXT, PARMET, CARCRI,
-     &                 MODEDE, NUMEDE, SOLVDE, PARCRI,
-     &                 INST  , ITERAT, VALMOI, POUGD , DEPDEL,
-     &                 RESOCO, DDEPLA, VALPLU, CNRESI, CNDIRI,
-     &                 CONV  , LICCVG(2), REAROT, INDRO)
-        END IF
-      END IF
 
 C -- TEMPS DISPONIBLE POUR FAIRE UNE NOUVELLE ITERATION DE NEWTON ?
 
@@ -735,44 +641,21 @@ C    ECHEC DANS LE DEROULEMENT DU CALCUL
      &    CALL UTMESS('S',NOMPRO,'ARRET : ABSENCE DE CONVERGENCE '
      &                // 'AVEC LE NOMBRE D''ITERATIONS REQUIS')
 
-C -- FIN DE BOUCLE DE CONTRAINTES ACTIVES (CONTACT ECP)
+C -- FIN DE BOUCLE DE CONTACT ECP
 
-      IF (IECPCO.EQ.0) GOTO 3333
-      CALL MMMBCA(MAILLA,DEFICO,OLDGEO,DEPPLU,DEPMOI,INCOCA,NEQ)
-      IF (COBCA.GE.MAXB(1)) THEN
-        IF (MAXB(4).EQ.1) CALL UTMESS('F', NOMPRO,'ECHEC DANS LE
-     &     TRAITEMENT DU CONTACT, AUGMENTER ITER_MAXI_CONT')
-        GOTO 140
-      END IF
-      IF (INCOCA.EQ.0) GOTO 103
-  140 CONTINUE
-
-      CALL NMIMPR('IMPR','CNV_CTACT',' ',0.D0,COBCA)
-
-C -- FIN BOUCLE SUR LES SEUILS (CONTACT ECP)
-
-      IF (MAXB(4).EQ.1) GOTO 150
-      CALL MMMCRI(DEPPLU,DEPLAM,CGENCE)
-      CALL REACLM(MAILLA,DEPPLU,DEPMOI,NEWGEO,DEFICO)
-      IF ( CGENCE .OR. (CSEUIL.GE.MAXB(2)) ) GOTO 150
-      CALL COPISD('CHAMP_GD','V',DEPPLU,DEPLAM)
-      GOTO 90
-  150 CONTINUE
-
-      IF (MAXB(4).NE.1) CALL NMIMPR('IMPR','CNV_SEUIL',' ',0.D0,CSEUIL)
-
-C -- FIN BOUCLE GEOMETRIQUE (CONTACT ECP)
-
-       CALL MMMCRI(DEPPLU,DEPGEO,RGENCE)
-       IF ( RGENCE .OR. (COMGEO.EQ.(MAXB(3)+1)) ) GOTO 160
-       CALL COPISD('CHAMP_GD','V',DEPPLU,DEPGEO)
-       GOTO 80
-160   CONTINUE
-
-      CALL NMIMPR('IMPR','CNV_GEOME',' ',0.D0,COMGEO)
-
-3333   CONTINUE
-
+      IF (IECPCO.NE.0) THEN
+        CALL NMTBLE(NIVEAU, 
+     &              MAILLA, DEFICO, OLDGEO, NEWGEO,
+     &              DEPMOI, DEPGEO, MAXB,   DEPLAM,
+     &              COMGEO, CSEUIL, COBCA, 
+     &              DEPPLU)
+      ELSE 
+        NIVEAU = 0
+      ENDIF 
+      
+      IF (NIVEAU.GT.0) GOTO 101
+      
+      
 C     TEMPS DISPONIBLE
       CALL UTTCPU (1,'FIN',4,TPS1)
       FINTPS = TPS1(4) .GT. 0.90D0*TPS1(1)
@@ -793,10 +676,10 @@ C -- SELON OU L'ON DOIT OBSERVER OU NON
 
       IF ( LOBSER ) THEN   
          CALL DYOBAR ( NOMTAB, MAILL2, NBOBAR, NUOBSE, INSTAP, 
-     +                 ZK16(KCHAM), ZK8(KCOMP), ZI(KNUCM),
-     +                 ZK8(KNOEU), ZK8(KMAIL), ZI(KPOIN), 
-     +                 VALPLU, VITPLU, ACCPLU, NBMODS,
-     +                 DEPENT,VITENT,ACCENT)
+     &                 ZK16(KCHAM), ZK8(KCOMP), ZI(KNUCM),
+     &                 ZK8(KNOEU), ZK8(KMAIL), ZI(KPOIN), 
+     &                 VALPLU, VITPLU, ACCPLU, NBMODS,
+     &                 DEPENT,VITENT,ACCENT)
       ENDIF      
 
 C -- ARCHIVAGE DES RESULTATS
@@ -856,9 +739,9 @@ C -- TEMPS DISPONIBLE POUR FAIRE UN NOUVEAU PAS DE TEMPS ?
 
       GOTO 200
 
-C **********************************************************************
+C ======================================================================
 C                   FIN DE LA BOUCLE SUR LES PAS DE TEMPS
-C **********************************************************************
+C ======================================================================
 
  900  CONTINUE
       CALL JEDETC ('V','.CODI',20)

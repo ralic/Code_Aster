@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/09/98   AUTEUR KXBADNG F.BEAUD 
+C MODIF MODELISA  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -168,13 +168,13 @@ C
             VALE = NOMCOD(1:19)//'.VALE'
             PROL = NOMCOD(1:19)//'.PROL'
             CALL WKVECT(VALE,'G V R ',3*NBPF,LVALE)
-            CALL WKVECT(PROL,'G V K8',5     ,LPROL)
+            CALL WKVECT(PROL,'G V K16',5     ,LPROL)
 C
-            ZK8(LPROL)   = 'FONCT_C '
-            ZK8(LPROL+1) = 'LIN LIN '
-            ZK8(LPROL+2) = 'FREQ    '
-            ZK8(LPROL+3) = 'DSP     '
-            ZK8(LPROL+4) = 'LL      '
+            ZK16(LPROL)   = 'FONCT_C '
+            ZK16(LPROL+1) = 'LIN LIN '
+            ZK16(LPROL+2) = 'FREQ    '
+            ZK16(LPROL+3) = 'DSP     '
+            ZK16(LPROL+4) = 'LL      '
 C
             CALL JEVEUO ( NOMFON(1:19)//'.VALE', 'L', IFONC )
 C

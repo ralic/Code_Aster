@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ def affe_char_cine_f_prod(MECA_IMPO,THER_IMPO,**args):
 
 AFFE_CHAR_CINE_F=OPER(nom="AFFE_CHAR_CINE_F",op= 108,sd_prod=affe_char_cine_f_prod
                     ,fr="Affectation de conditions aux limites cinématiques pour traitement sans dualisation",
-                     docu="U4.44.03-e",reentrant='n',
+                     docu="U4.44.03-f",reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
          regles=(AU_MOINS_UN('MECA_IMPO','THER_IMPO'),
                  EXCLUS('MECA_IMPO','THER_IMPO'),),
@@ -34,16 +34,16 @@ AFFE_CHAR_CINE_F=OPER(nom="AFFE_CHAR_CINE_F",op= 108,sd_prod=affe_char_cine_f_pr
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
            NOEUD           =SIMP(statut='f',typ=no,max='**'),
-           DX              =SIMP(statut='f',typ=fonction ),
-           DY              =SIMP(statut='f',typ=fonction ),
-           DZ              =SIMP(statut='f',typ=fonction ),
-           DRX             =SIMP(statut='f',typ=fonction ),
-           DRY             =SIMP(statut='f',typ=fonction ),
-           DRZ             =SIMP(statut='f',typ=fonction ),
-           GRX             =SIMP(statut='f',typ=fonction ),
-           PRES            =SIMP(statut='f',typ=fonction ),
-           TEMP            =SIMP(statut='f',typ=fonction ),
-           PHI             =SIMP(statut='f',typ=fonction ),
+           DX              =SIMP(statut='f',typ=(fonction,formule) ),
+           DY              =SIMP(statut='f',typ=(fonction,formule) ),
+           DZ              =SIMP(statut='f',typ=(fonction,formule) ),
+           DRX             =SIMP(statut='f',typ=(fonction,formule) ),
+           DRY             =SIMP(statut='f',typ=(fonction,formule) ),
+           DRZ             =SIMP(statut='f',typ=(fonction,formule) ),
+           GRX             =SIMP(statut='f',typ=(fonction,formule) ),
+           PRES            =SIMP(statut='f',typ=(fonction,formule) ),
+           TEMP            =SIMP(statut='f',typ=(fonction,formule) ),
+           PHI             =SIMP(statut='f',typ=(fonction,formule) ),
          ),
          THER_IMPO       =FACT(statut='f',min=1,max='**',
            regles=(UN_PARMI('TOUT','GROUP_NO','NOEUD'),
@@ -51,9 +51,9 @@ AFFE_CHAR_CINE_F=OPER(nom="AFFE_CHAR_CINE_F",op= 108,sd_prod=affe_char_cine_f_pr
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
            NOEUD           =SIMP(statut='f',typ=no,max='**'),
-           TEMP_SUP        =SIMP(statut='f',typ=fonction ),
-           TEMP            =SIMP(statut='f',typ=fonction ),
-           TEMP_INF        =SIMP(statut='f',typ=fonction ),
+           TEMP_SUP        =SIMP(statut='f',typ=(fonction,formule) ),
+           TEMP            =SIMP(statut='f',typ=(fonction,formule) ),
+           TEMP_INF        =SIMP(statut='f',typ=(fonction,formule) ),
          ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
 )  ;

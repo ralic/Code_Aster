@@ -1,4 +1,4 @@
-# MODIF  DATE 02/09/2002   AUTEUR UFBHHLL C.CHAVANT 
+# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,6 +108,7 @@ SLO = FORMULE(REEL = '''(REEL:PCAP) =
 
 SATUBO=CALC_FONC_INTERP(FONCTION=SLO,
                         LIST_PARA=LI2,
+NOM_PARA='PCAP',
                         PROL_GAUCHE='LINEAIRE',
                         PROL_DROITE='LINEAIRE',
                         INFO=2,);
@@ -122,6 +123,7 @@ PERMO = FORMULE(REEL = '''(REEL:SAT) =
              (1.+(0.5*(-1.+SAT**(-16.667))**0.940)**2)**(-0.5)''');
 
 PERM11BO=CALC_FONC_INTERP(FONCTION=PERMO,
+NOM_PARA='SAT',
                           LIST_PARA=LI1,
                           PROL_GAUCHE='CONSTANT',
                           PROL_DROITE='CONSTANT',
@@ -136,7 +138,8 @@ DPERMO = FORMULE(REEL =  '''(REEL:SAT) =
 
 
 DPR11BO=CALC_FONC_INTERP(FONCTION=DPERMO,
-                         LIST_PARA=LI1,
+LIST_PARA=LI1,
+NOM_PARA='SAT',
                          PROL_GAUCHE='CONSTANT',
                          PROL_DROITE='CONSTANT',
                          INFO=2,);

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,9 +45,9 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*1  CBID
       CHARACTER*3  OUINON
       CHARACTER*4  TESTOK
-      CHARACTER*8  K8B, NOMPU(2), CRIT, NOMFIC, ATTR
+      CHARACTER*8  K8B, NOMPU(2), CRIT, ATTR
       CHARACTER*12 K12
-      CHARACTER*16 ATT
+      CHARACTER*16 ATT, NOMFIC
       CHARACTER*17 LABEL
       CHARACTER*19 NOMFON, SPECTR
       CHARACTER*24 CHPROL, CHPARA
@@ -57,6 +57,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
+      CALL INFMAJ()
 C
       ZERO   = 0.D0
       ZEROC  = DCMPLX(0.D0,0.D0)
@@ -100,20 +101,20 @@ C
             NBPU = -N4
             CALL GETVTX('VALEUR','NOM_PARA',IOCC,1,NBPU,NOMPU,N4)
          ELSE
-            IF (ZK8(LPROL).EQ.'INTERPRE') THEN
-              CALL FONBPA(NOMFON,ZK8(LPROL),CBID,2,NBPU,NOMPU)
+            IF (ZK16(LPROL).EQ.'INTERPRE') THEN
+              CALL FONBPA(NOMFON,ZK16(LPROL),CBID,2,NBPU,NOMPU)
             ELSE
               NBPU = 1
-              NOMPU(1) = ZK8(LPROL+2)
+              NOMPU(1) = ZK16(LPROL+2)
             ENDIF
          ENDIF
-         IF (ZK8(LPROL).EQ.'NAPPE   ' .AND. NBPU.EQ.1) THEN
+         IF (ZK16(LPROL).EQ.'NAPPE   ' .AND. NBPU.EQ.1) THEN
             CALL UTMESS('A','TEST_FONCTION','IL FAUT DEFINIR DEUX PAR'//
      +                                        'AMETRES POUR UNE NAPPE.')
             GOTO 10
          ENDIF
 C
-         IF (ZK8(LPROL).EQ. 'FONCT_C') THEN
+         IF (ZK16(LPROL).EQ. 'FONCT_C') THEN
            CALL GETVR8('VALEUR','VALE_PARA'  ,IOCC,1,1,VALPU,N5)
            CALL GETVC8('VALEUR','VALE_REFE_C',IOCC,1,1,REFC,N7)
          ELSE
@@ -121,7 +122,7 @@ C
            CALL GETVR8('VALEUR','VALE_REFE' ,IOCC,1,1   ,REFR ,N6)
          ENDIF
 C
-         IF (ZK8(LPROL).EQ.'NAPPE   ') THEN
+         IF (ZK16(LPROL).EQ.'NAPPE   ') THEN
             L1 = MAX(1,LXLGUT(NOMFON))
             L2 = MAX(1,LXLGUT(NOMPU(1)))
             WRITE(IFIC,*)'---- NAPPE: ',NOMFON(1:L1),
@@ -133,10 +134,10 @@ C
          LABEL = ' '
          WRITE(LABEL(6:17),'(1P,E12.5)' ) VALPU(NBPU)
 C
-         IF (ZK8(LPROL).EQ. 'FONCT_C') THEN
+         IF (ZK16(LPROL).EQ. 'FONCT_C') THEN
            CALL FOINT3(NOMFON,1,K8B,VALPU(1),EPSIF,RESURE,RESUIM,IRET)
            IF ( OUINON .EQ. 'OUI' ) THEN
-              K12 = ZK8(LPROL+2)
+              K12 = ZK16(LPROL+2)
               TESTOK = ' OK '
               IF ( IRET .EQ. 0 ) THEN
                 VALC = DCMPLX(RESURE,RESUIM)
@@ -230,7 +231,7 @@ C
                WRITE(IFIC,1300) TESTOK, TEXTE
              ELSE
                VALC = DCMPLX(RESURE,RESUIM)
-               CALL UTITES(ZK8(LPROL+2),LABEL,'C',REFI,REFR,REFC,
+               CALL UTITES(ZK16(LPROL+2),LABEL,'C',REFI,REFR,REFC,
      +                                  VALI,VALR,VALC,EPSI,CRIT,IFIC)
              ENDIF
            ENDIF
@@ -344,7 +345,7 @@ C
 C
          CHPROL = NOMFON//'.PROL'
          CALL JEVEUO(CHPROL,'L',LPROL)
-         IF (ZK8(LPROL).EQ.'NAPPE   ') THEN
+         IF (ZK16(LPROL).EQ.'NAPPE   ') THEN
             CALL GETVR8('ATTRIBUT','PARA'      ,IOCC,1,1,PARA,N2)
             IF (N2.EQ.0) GOTO 26
             CALL GETVR8('ATTRIBUT','PREC_PARA' ,IOCC,1,1,EPSI,N3)
@@ -376,27 +377,27 @@ C
          TESTOK = 'NOOK'
          IND = 8
          IF (ATT(1:13).EQ.'INTERPOL_FONC') THEN
-            NOMPU(1) = ZK8(LPROL+5+2*(IFONC-1)+1)
+            NOMPU(1) = ZK16(LPROL+5+2*(IFONC-1)+1)
          ELSEIF (ATT(1:8).EQ.'INTERPOL') THEN
-            NOMPU(1) = ZK8(LPROL+1)
+            NOMPU(1) = ZK16(LPROL+1)
          ELSEIF (ATT(1:13).EQ.'NOM_PARA_FONC') THEN
-            NOMPU(1) = ZK8(LPROL+5)
+            NOMPU(1) = ZK16(LPROL+5)
          ELSEIF (ATT(1:8).EQ.'NOM_PARA') THEN
-            NOMPU(1) = ZK8(LPROL+2)
+            NOMPU(1) = ZK16(LPROL+2)
          ELSEIF (ATT(1:8).EQ.'NOM_RESU') THEN
-            NOMPU(1) = ZK8(LPROL+3)
+            NOMPU(1) = ZK16(LPROL+3)
          ELSEIF (ATT(1:16).EQ.'PROL_GAUCHE_FONC') THEN
             IND = 1
-            NOMPU(1) = ZK8(LPROL+5+2*(IFONC-1)+2)(1:1)
+            NOMPU(1) = ZK16(LPROL+5+2*(IFONC-1)+2)(1:1)
          ELSEIF (ATT(1:11).EQ.'PROL_GAUCHE') THEN
             IND = 1
-            NOMPU(1) = ZK8(LPROL+4)(1:1)
+            NOMPU(1) = ZK16(LPROL+4)(1:1)
          ELSEIF (ATT(1:16).EQ.'PROL_DROITE_FONC') THEN
             IND = 1
-            NOMPU(1) = ZK8(LPROL+5+2*(IFONC-1)+2)(2:2)
+            NOMPU(1) = ZK16(LPROL+5+2*(IFONC-1)+2)(2:2)
          ELSEIF (ATT(1:11).EQ.'PROL_DROITE') THEN
             IND = 1
-            NOMPU(1) = ZK8(LPROL+4)(2:2)
+            NOMPU(1) = ZK16(LPROL+4)(2:2)
          ENDIF
          IF ( NOMPU(1)(1:IND).EQ.ATTR(1:IND) ) TESTOK = ' OK '
 C
@@ -408,11 +409,11 @@ C
             ENDIF
          ENDIF
 C
-         IF (ZK8(LPROL).EQ.'NAPPE   ') THEN
+         IF (ZK16(LPROL).EQ.'NAPPE   ') THEN
             L1 = MAX(1,LXLGUT(NOMFON))
-            L2 = MAX(1,LXLGUT(ZK8(LPROL+2)))
+            L2 = MAX(1,LXLGUT(ZK16(LPROL+2)))
             WRITE(IFIC,*)'---- NAPPE: ',NOMFON(1:L1),
-     +            ', NOM_PARA: ',ZK8(LPROL+2)(1:L2),', PARA: ',PARA
+     +            ', NOM_PARA: ',ZK16(LPROL+2)(1:L2),', PARA: ',PARA
          ELSE
             WRITE(IFIC,*)'---- FONCTION: ',NOMFON
          ENDIF
@@ -447,7 +448,7 @@ C
          ELSE
             VALC = DCMPLX(RESURE,RESUIM)
 C
-            CALL UTITES(ZK8(LPROL+2),LABEL,'C',REFI,REFR,REFC,
+            CALL UTITES(ZK16(LPROL+2),LABEL,'C',REFI,REFR,REFC,
      +                                   VALI,VALR,VALC,EPSI,CRIT,IFIC)
          ENDIF
 C

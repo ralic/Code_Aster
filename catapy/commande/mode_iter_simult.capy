@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,15 +20,16 @@ def mode_iter_simult_prod(MATR_A,MATR_C,TYPE_RESU,**args ):
   if TYPE_RESU == "MODE_FLAMB" : return mode_flamb
   if AsType(MATR_C) == matr_asse_depl_r : return mode_meca_c
   if AsType(MATR_A) == matr_asse_depl_r : return mode_meca
+  if AsType(MATR_A) == matr_asse_depl_c : return mode_meca_c
   if AsType(MATR_A) == matr_asse_pres_r : return mode_acou
   if AsType(MATR_A) == matr_asse_gene_r : return mode_gene
   raise AsException("type de concept resultat non prevu")
 
 MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45,sd_prod=mode_iter_simult_prod,
                       fr="Modes propres par itérations simultanées ; valeurs propres et modes propres réels ou complexes",
-                      docu="U4.52.03-f2",reentrant='n',
+                      docu="U4.52.03-f",reentrant='n',
             UIinfo={"groupes":("Résolution",)},
-         MATR_A          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
+         MATR_A          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_gene_r,matr_asse_pres_r ) ),
          MATR_B          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
          MATR_C          =SIMP(statut='f',position='global',typ=matr_asse_depl_r ),
          METHODE         =SIMP(statut='f',position='global',typ='TXM',defaut="SORENSEN",
@@ -104,7 +105,7 @@ MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45,sd_prod=mode_iter_simult_pr
                FREQ            =SIMP(statut='o',typ='R',min=2,max=2,
                                      fr="Valeur des deux fréquences délimitant la bande de recherche"),
              ),           
-             APPROCHE        =SIMP(statut='f',typ='TXM',defaut="REEL",into=("REEL","IMAG"),
+             APPROCHE        =SIMP(statut='f',typ='TXM',defaut="REEL",into=("REEL","IMAG","COMPLEXE"),
                                    fr="Choix du pseudo-produit scalaire pour la résolution du problème quadratique" ),           
              regles=(EXCLUS('DIM_SOUS_ESPACE','COEF_DIM_ESPACE'),),
              DIM_SOUS_ESPACE =SIMP(statut='f',typ='I' ),

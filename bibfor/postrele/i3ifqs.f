@@ -7,7 +7,7 @@
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/11/96   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF POSTRELE  DATE 17/12/2002   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,12 +45,12 @@ C            :   : DANS CE CAS OUT = EXTREMITES
 C OUT LSTPT  : I : OBJ LISTE_POINT
 C     ------------------------------------------------------------------
 C
-      REAL*8     EPSI2
-      LOGICAL    GAUCHE
+      LOGICAL      GAUCHE
 C
 C======================================================================
 C
-      CALL I3TSTF ( K, F, DESC, DESCTM, CONEXK, COORDO, GAUCHE, EPSI2 )
+      CALL I3TSTF ( K, F, DESC, DESCTM, CONEXK, COORDO, GAUCHE, EPSI )
+C
       IF ( GAUCHE ) THEN
          CALL I3IQGS ( EPSI, K, F, DESC, DESCTM, CONEXK, COORDO,
      +                 SGT, ATRV, BTRV, NBPT, LSTPT, FINK, FIND )
@@ -58,4 +58,5 @@ C
          CALL I3IQPS ( EPSI, K, F, DESC, DESCTM, CONEXK, COORDO,
      +                 SGT, ATRV, BTRV, NBPT, LSTPT, FINK, FIND )
       ENDIF
+C
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2002   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 03/12/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -222,6 +222,17 @@ for k in range(1,10):
                  )
 #
 # 5. fin de la boucle sur k
+#
+   TCPU=INFO_EXEC_ASTER(LISTE_INFO='CPU_RESTANT')
+   
+   valcpu=TCPU['CPU_RESTANT',1]
+   
+   if valcpu< 5.0:
+     break
+
+   DETRUIRE(CONCEPT=(_F(NOM=TCPU),))
+#
+# 6. fin de la boucle sur k
 #
 TEST_RESU(RESU=(
        _F(  RESULTAT = RESU[4],   NUME_ORDRE = 1,  

@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 02/10/2002   AUTEUR ASSIRE A.ASSIRE 
+%& MODIF OPTIONS  DATE 24/01/2003   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,5 +36,5 @@ OPTION__
         PNOMCMP  NEUT_K24
        <<  NOM DE LA COMPOSANTE CHOISIE >>
    OUT__
-        PMINMAX  MINMAX_R  ELGA__
+        PMINMAX  SPMA_R  ELGA__
 

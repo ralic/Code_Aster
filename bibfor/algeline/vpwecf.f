@@ -1,8 +1,8 @@
       SUBROUTINE VPWECF (OPTION,TYPRES,NFREQ,MXFREQ,RESUFI,RESUFR,
-     +                   RESUFK,LAMOR)
+     +                   RESUFK,LAMOR,KTYP)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/09/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ALGELINE  DATE 24/02/2003   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,11 +40,12 @@ C PARAMETRES D'APPEL
       INTEGER           NFREQ, MXFREQ, RESUFI(MXFREQ,*), LAMOR
       REAL*8            RESUFR(MXFREQ,*)
       CHARACTER*(*)     OPTION, RESUFK(MXFREQ,*),TYPRES
+      CHARACTER*1       KTYP
 
 C VARIABLES LOCALES
       INTEGER IFM, IFREQ, IRESO, ITERB, ITERJ, ITERQ, ITERA, INDF,
      &  ISNNEM,NIV
-      REAL*8 FFF, AM, ERR, PREC, UNDF, R8VIDE, CHA, AM2
+      REAL*8 FFF, AM, ERR, PREC, UNDF, R8VIDE, CHA, AM2, ERC
 C     ------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
       UNDF = R8VIDE()
@@ -104,21 +105,42 @@ C     ------------------------------------------------------------------
         WRITE(IFM,7777)
 
       ELSEIF ( RESUFK(NFREQ,2) .EQ. 'SORENSEN' ) THEN
-         IF (TYPRES .EQ. 'DYNAMIQUE') THEN
-           WRITE(IFM,2200)
-         ELSE
-           WRITE(IFM,2201)
-         ENDIF
+        IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R')) THEN
+          IF (TYPRES .EQ. 'DYNAMIQUE') THEN
+            WRITE(IFM,2200)
+          ELSE
+            WRITE(IFM,2201)
+          ENDIF
+        ELSE
+          IF (TYPRES .EQ. 'DYNAMIQUE') THEN
+            WRITE(IFM,2202)
+          ELSE
+            WRITE(IFM,2203)
+          ENDIF
+        ENDIF
          DO 35 IFREQ = 1, NFREQ
             IRESO = RESUFI(IFREQ,1)
             FFF   = RESUFR(IFREQ,1)
             CHA   = RESUFR(IFREQ,2)
-            AM    = RESUFR(IFREQ,4)
+            IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R')) THEN
+              AM  = RESUFR(IFREQ,4)
+            ELSE
+              AM  = RESUFR(IFREQ,3)
+              ERC = RESUFR(IFREQ,4)
+            ENDIF
+        IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R')) THEN
             IF (TYPRES .EQ. 'DYNAMIQUE') THEN
               WRITE(IFM,2210) IRESO,FFF,AM
             ELSE
               WRITE(IFM,2210) IRESO,CHA,AM
             ENDIF
+        ELSE
+            IF (TYPRES .EQ. 'DYNAMIQUE') THEN
+              WRITE(IFM,2211) IRESO,FFF,AM,ERC
+            ELSE
+              WRITE(IFM,2211) IRESO,CHA,AM,ERC
+            ENDIF
+        ENDIF
  35      CONTINUE
          WRITE(IFM,7777)
 
@@ -281,7 +303,16 @@ C     ------------------------------------------------------------------
  2201 FORMAT ( 7X,'CALCUL MODAL:  METHODE D''ITERATION SIMULTANEE',/,
      +        22X,'METHODE DE SORENSEN',/,/,
      +        4X,'NUMERO',4X,'CHARGE CRITIQUE',4X,'NORME D''ERREUR')
+ 2202 FORMAT ( 7X,'CALCUL MODAL:  METHODE D''ITERATION SIMULTANEE',/,
+     +        22X,'METHODE DE SORENSEN',/,/,
+     +        4X,'NUMERO',4X,'FREQUENCE (HZ)',4X,'AMORTISSEMENT',4X,
+     +        'NORME D''ERREUR')
+ 2203 FORMAT ( 7X,'CALCUL MODAL:  METHODE D''ITERATION SIMULTANEE',/,
+     +        22X,'METHODE DE SORENSEN',/,/,
+     +        4X,'NUMERO',4X,'CHARGE CRITIQUE',4X,'AMORTISSEMENT',4X,
+     +        'NORME D''ERREUR')
  2210 FORMAT (1P,6X,I4,5X,E12.5,6X,E12.5)
+ 2211 FORMAT (1P,6X,I4,5X,E12.5,6X,E12.5,6X,E12.5)
 
  4000 FORMAT ( 7X,'CALCUL MODAL:  METHODE D''ITERATION INVERSE',/,
      +        54X,'INVERSE',/,

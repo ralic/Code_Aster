@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,17 +53,18 @@ C     ----------- FIN COMMUNS NORMALISES  JEVEUX -----------------------
       CHARACTER*24 CHPRO,CHVAL,NOMRES
 C     ------------------------------------------------------------------
       CALL JEMARQ()
+      CALL INFMAJ()
 
 C     CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL
       CALL GETRES(NOMFON,TYPFON,CONSTA)
       CHPRO = NOMFON//'.PROL'
-      CALL WKVECT(CHPRO,'G V K8',5,JPRO)
-      ZK8(JPRO) = 'CONSTANT'
-      ZK8(JPRO+1) = 'LIN LIN '
+      CALL WKVECT(CHPRO,'G V K16',5,JPRO)
+      ZK16(JPRO) = 'CONSTANT'
+      ZK16(JPRO+1) = 'LIN LIN '
       CALL GETVTX(' ','NOM_RESU',0,1,1,NOMRES,NBVAL)
-      ZK8(JPRO+2) = 'TOUTPARA'
-      ZK8(JPRO+3) = NOMRES(1:8)
-      ZK8(JPRO+4) = 'CC      '
+      ZK16(JPRO+2) = 'TOUTPARA'
+      ZK16(JPRO+3) = NOMRES(1:8)
+      ZK16(JPRO+4) = 'CC      '
 
 C     CREATION ET REMPLISSAGE DE L'OBJET NOMFON.VALE
 

@@ -1,21 +1,21 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F( NOM = 'HPLA100J',NIV_PUB_WEB='INTERNET'))
@@ -121,7 +121,7 @@ G22_FO=DEFI_FONCTION(NOM_PARA='TEMP',
 
 MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),  )
 
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
 MO=AFFE_MODELE(  MAILLAGE=MA,
@@ -129,7 +129,7 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
                            MODELISATION = 'DKT'))
 
 CARE=AFFE_CARA_ELEM( MODELE=MO,
-       COQUE=_F( 
+       COQUE=_F(
        GROUP_MA = 'TOUT',
 EPAIS = 1.0, ANGL_REP = (0.,0.,)) )
 
@@ -173,33 +173,33 @@ CHMATHE=AFFE_MATERIAU(  MAILLAGE=MA,
                         AFFE=_F(  TOUT = 'OUI', MATER = MATHER))
 
 CARETHE=AFFE_CARA_ELEM(   MODELE=MOTHER,
-                           COQUE=_F( 
+                           COQUE=_F(
        GROUP_MA = 'TOUT',
    EPAIS = 1.0)       )
 
-CHTHE=AFFE_CHAR_THER( 
+CHTHE=AFFE_CHAR_THER(
             MODELE=MOTHER,
         TEMP_IMPO=_F( TOUT = 'OUI', TEMP_INF = -0.5,   TEMP_SUP = 0.5)
                        )
 
-CHTH2=AFFE_CHAR_THER( 
+CHTH2=AFFE_CHAR_THER(
             MODELE=MOTHER,
         TEMP_IMPO=_F( TOUT = 'OUI', TEMP_INF = 0.1,   TEMP_SUP = 0.1))
 
 TEMPHOM=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                MAILLAGE=MA,AFFE=(
-              
-                _F( 
+
+                _F(
                 TOUT = 'OUI',
                 NOM_CMP = 'TEMP_INF',
                 VALE = 0.),
-              
-                _F( 
+
+                _F(
                 TOUT = 'OUI',
                 NOM_CMP = 'TEMP',
                 VALE = 0.),
-              
-                _F( 
+
+                _F(
                 TOUT = 'OUI',
                 NOM_CMP = 'TEMP_SUP',
                 VALE = 0.))
@@ -219,7 +219,7 @@ TEMPLI2=THER_LINEAIRE(
                   EXCIT=_F( CHARGE = CHTH2)
                          )
 
-TEMPLI2=CREA_RESU(reuse=TEMPLI2,  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+CREA_RESU(reuse=TEMPLI2,  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                       NOM_CHAM='TEMP',
                        AFFE=_F(  CHAM_GD = TEMPHOM,
                                  INST = -1.)
@@ -258,59 +258,113 @@ CHDI2=AFFE_CHAR_MECA(  MODELE=MO,
                                                             )
 
 # ------------------------------------------------------------------
+
 DEPLPES=MECA_STATIQUE(
-                 MODELE=MO,
-              CARA_ELEM=CARE,
-             CHAM_MATER=CHMAT,
-                  EXCIT=_F( CHARGE = CHPES),
-                 OPTION=('EFGE_ELNO_DEPL',),
-            NUME_COUCHE=1,
-            NIVE_COUCHE='INF'
-                        )
+                  MODELE=MO,
+               CARA_ELEM=CARE,
+              CHAM_MATER=CHMAT,
+                   EXCIT=_F( CHARGE = CHPES),
+
+             NUME_COUCHE=1,
+             NIVE_COUCHE='INF'
+                         )
+
+CALC_ELEM( reuse= DEPLPES ,RESULTAT= DEPLPES ,
+                  MODELE=MO,
+               CARA_ELEM=CARE,
+              CHAM_MATER=CHMAT,
+                   EXCIT=_F( CHARGE = CHPES),
+                  OPTION=('EFGE_ELNO_DEPL',),
+             NUME_COUCHE=1,
+             NIVE_COUCHE='INF'
+                         )
+
 
 DEPLDIL=MECA_STATIQUE(
-                 MODELE=MO,
-             CHAM_MATER=CHMAT,
-              CARA_ELEM=CARE,
-                  EXCIT=_F( CHARGE = CHDIL),
-                 OPTION=('EFGE_ELNO_DEPL',),
-             NUME_COUCHE=1,
-            NIVE_COUCHE='INF'
-                      )
+                  MODELE=MO,
+              CHAM_MATER=CHMAT,
+               CARA_ELEM=CARE,
+                   EXCIT=_F( CHARGE = CHDIL),
+
+              NUME_COUCHE=1,
+             NIVE_COUCHE='INF'
+                       )
+
+CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
+                  MODELE=MO,
+              CHAM_MATER=CHMAT,
+               CARA_ELEM=CARE,
+                   EXCIT=_F( CHARGE = CHDIL),
+                  OPTION=('EFGE_ELNO_DEPL',),
+              NUME_COUCHE=1,
+             NIVE_COUCHE='INF'
+                       )
+
 
 DEPLDILT=MECA_STATIQUE(
-                 MODELE=MO,
-             CHAM_MATER=CHMATH,
-              CARA_ELEM=CARE,
-                  EXCIT=_F( CHARGE = CHDIL),
-                 OPTION=('EFGE_ELNO_DEPL',),
-            NUME_COUCHE=1,
-            NIVE_COUCHE='INF'
-                        )  
+                  MODELE=MO,
+              CHAM_MATER=CHMATH,
+               CARA_ELEM=CARE,
+                   EXCIT=_F( CHARGE = CHDIL),
+
+             NUME_COUCHE=1,
+             NIVE_COUCHE='INF'
+                         )
+
+CALC_ELEM( reuse= DEPLDILT ,RESULTAT= DEPLDILT ,
+                  MODELE=MO,
+              CHAM_MATER=CHMATH,
+               CARA_ELEM=CARE,
+                   EXCIT=_F( CHARGE = CHDIL),
+                  OPTION=('EFGE_ELNO_DEPL',),
+             NUME_COUCHE=1,
+             NIVE_COUCHE='INF'
+                         )
+
 
 DEPLDI2=MECA_STATIQUE(
-                 MODELE=MO,
-             CHAM_MATER=CHMAT,
-              CARA_ELEM=CARE,
-                  EXCIT=_F( CHARGE = CHDI2),
-                 OPTION=('EFGE_ELNO_DEPL',),
-            NIVE_COUCHE='INF'
-                        )
+                  MODELE=MO,
+              CHAM_MATER=CHMAT,
+               CARA_ELEM=CARE,
+                   EXCIT=_F( CHARGE = CHDI2),
+
+             NIVE_COUCHE='INF'
+                         )
+
+CALC_ELEM( reuse= DEPLDI2 ,RESULTAT= DEPLDI2 ,
+                  MODELE=MO,
+              CHAM_MATER=CHMAT,
+               CARA_ELEM=CARE,
+                   EXCIT=_F( CHARGE = CHDI2),
+                  OPTION=('EFGE_ELNO_DEPL',),
+             NIVE_COUCHE='INF'
+                         )
+
 
 DEPLDI2T=MECA_STATIQUE(
-                 MODELE=MO,
-             CHAM_MATER=CHMATH,
-              CARA_ELEM=CARE,
-                  EXCIT=_F( CHARGE = CHDI2),
-                 OPTION=('EFGE_ELNO_DEPL',),
-            NUME_COUCHE=1,
-            NIVE_COUCHE='INF'
-                        )
+                  MODELE=MO,
+              CHAM_MATER=CHMATH,
+               CARA_ELEM=CARE,
+                   EXCIT=_F( CHARGE = CHDI2),
+
+             NUME_COUCHE=1,
+             NIVE_COUCHE='INF'
+                         )
+
+CALC_ELEM( reuse= DEPLDI2T ,RESULTAT= DEPLDI2T ,
+                  MODELE=MO,
+              CHAM_MATER=CHMATH,
+               CARA_ELEM=CARE,
+                   EXCIT=_F( CHARGE = CHDI2),
+                  OPTION=('EFGE_ELNO_DEPL',),
+             NUME_COUCHE=1,
+             NIVE_COUCHE='INF'
+                         )
 #---------------------------------------------------------------------
 
 
 TEST_RESU(RESU=(
-              
+
       # DEPLACEMENTS
              _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 4.E-2,
               NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',

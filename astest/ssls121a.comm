@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE  : PLAQUE STRATIFIEE SOUMISE A 4 CHARGEMETNS ELEMENTAIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -6,16 +6,16 @@
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #---------------------------------------------------------------------
@@ -34,7 +34,7 @@ DEBUT( CODE=_F( NOM = 'SSLS121A',NIV_PUB_WEB='INTERNET'))
 PRE_GIBI();
 #
 MA = LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
-MA = DEFI_GROUP( reuse=MA,
+DEFI_GROUP( reuse=MA,
                  MAILLAGE=MA,
                  CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'),
                )
@@ -46,7 +46,7 @@ MO = AFFE_MODELE( MAILLAGE=MA,
                            MODELISATION = 'DST')
                  )
 #
-MA = MODI_MAILLAGE( reuse =MA,
+MODI_MAILLAGE( reuse =MA,
                     MAILLAGE=MA,
                     ORIE_NORM_COQUE=_F( GROUP_MA='TOUT_ELT',
                                         VECT_NORM=(0.0,1.0,0.0),
@@ -59,7 +59,7 @@ MA = MODI_MAILLAGE( reuse =MA,
 #---------------------------------------------------------------------
 #
 CAR_ELE = AFFE_CARA_ELEM( MODELE=MO,
-                          COQUE=_F( 
+                          COQUE=_F(
                           GROUP_MA =( 'TOUT_ELT','COTE_AB','COTE_CD','COTE_DA','COTE_BC',),
                           EPAIS = 1.,
                           ANGL_REP = (0.,-48.5,))
@@ -94,7 +94,6 @@ MULTI = DEFI_COQU_MULT( COUCHE=( _F( EPAIS = 0.25,
                                  _F( EPAIS = 0.25,
                                      MATER = MAT,
                                      ORIENTATION = 0.),),
-                        INFO=2,
                         IMPRESSION=_F(FICHIER='RESULTAT')
                         )
 #
@@ -109,9 +108,9 @@ ALPHA=DEFI_VALEUR(  R8=EVAL("""AD*PI/180.""") )
 MX1=DEFI_VALEUR(  R8=EVAL("""SIN(ALPHA)""") )
 MZ1=DEFI_VALEUR(  R8=EVAL("""-COS(ALPHA)""") )
 
-                      
+
 CHA1=AFFE_CHAR_MECA( MODELE=MO,
-                     DDL_IMPO=( 
+                     DDL_IMPO=(
                                _F( GROUP_MA = 'TOUT_ELT',DRY=0.),
                               ),
                      LIAISON_OBLIQUE=(
@@ -140,35 +139,42 @@ CHA1=AFFE_CHAR_MECA( MODELE=MO,
 #                         RESOLUTION
 #---------------------------------------------------------------------
 #
-RESU1=MECA_STATIQUE( MODELE=MO,
-                     CHAM_MATER=CHAM_MAT,
-                     CARA_ELEM=CAR_ELE,
-                     EXCIT=_F(CHARGE = CHA1),
-                     OPTION=(
-                             'EFGE_ELNO_DEPL',
-                             'DEGE_ELNO_DEPL'),
-                    )
-                    
 
-#                    
+RESU1=MECA_STATIQUE( MODELE=MO,
+                      CHAM_MATER=CHAM_MAT,
+                      CARA_ELEM=CAR_ELE,
+                      EXCIT=_F(CHARGE = CHA1),
+                       )
+
+CALC_ELEM( reuse= RESU1 ,RESULTAT= RESU1 ,  MODELE=MO,
+                      CHAM_MATER=CHAM_MAT,
+                      CARA_ELEM=CAR_ELE,
+                      EXCIT=_F(CHARGE = CHA1),
+                      OPTION=(
+                              'EFGE_ELNO_DEPL',
+                              'DEGE_ELNO_DEPL'),
+                     )
+
+
+#
 # ON TESTE QUE LES EFFORTS SONT UNIFORMES
 
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='MXX',RESULTAT=RESU1,
            TYPE_TEST='MAX',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
-                  
+
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='MXX',RESULTAT=RESU1,
            TYPE_TEST='MIN',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
-                  
+
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='DEGE_ELNO_DEPL',NOM_CMP='KXX',RESULTAT=RESU1,
            NOEUD='N1',MAILLE='M1',REFERENCE='NON_REGRESSION',VALE=0.544,PRECISION=0.001,),);
-                  
+
 #---------------------------------------------------------------------
 #                       CALCUL DES GRANDEURS DE RUPTURE
 #---------------------------------------------------------------------
 # CALCUL DES CONTRANTES DE RUPTURE A PARTIR DES LIMITES DE RUPTURE
 # DEFINIES DANS DEFI_MATERIAU
 #
-RESU1 = CALC_ELEM(   reuse = RESU1,
+CALC_ELEM(   reuse = RESU1,
                      MODELE=MO,
                      CHAM_MATER=CHAM_MAT,
                      CARA_ELEM=CAR_ELE,
@@ -190,16 +196,16 @@ IMPR_RESU ( MODELE=MO,
                                  'CRIT','CRITP',
                                  'CRILT','CRITH')
                       ),
-           )   
-#                  
+           )
+#
 IMPR_RESU ( MODELE=MO,
             RESU =_F( RESULTAT = RESU1,
                       NOEUD = ('N10'),
                       NOM_CHAM = 'SIGM_ELNO_DEPL',
                       NOM_CMP = ('SIXX','SIYY','SIXY')
-                      ),           
+                      ),
            ),
-                             
+
 
 R1S1INF = CALC_ELEM( MODELE=MO,
                      CHAM_MATER=CHAM_MAT,
@@ -211,7 +217,7 @@ R1S1INF = CALC_ELEM( MODELE=MO,
                    )
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO_DEPL',NOM_CMP='SIXX',RESULTAT=RESU1,
            NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=-6.82,PRECISION=0.001,),);
-                  
+
 R1S2INF=CALC_ELEM( MODELE=MO,
                    CHAM_MATER=CHAM_MAT,
                    CARA_ELEM=CAR_ELE,
@@ -222,12 +228,12 @@ R1S2INF=CALC_ELEM( MODELE=MO,
 
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO_DEPL',NOM_CMP='SIXX',RESULTAT=R1S2INF,
            NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=-0.135,PRECISION=0.011,),);
-                  
+
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EPSI_ELNO_DEPL',NOM_CMP='EPXX',RESULTAT=R1S1INF,
            NOEUD='N1',MAILLE='M1',REFERENCE='NON_REGRESSION',VALE=-0.272,PRECISION=0.001,),);
-                  
 
-          
+
+
 #
 #---------------------------------------------------------------------
 #                         CHARGEMENT 2
@@ -271,18 +277,24 @@ CHA2=AFFE_CHAR_MECA(  MODELE=MO,
 #                         RESOLUTION
 #---------------------------------------------------------------------
 #
+
 RESU2=MECA_STATIQUE( MODELE=MO,
-                     CHAM_MATER=CHAM_MAT,
-                     CARA_ELEM=CAR_ELE,
-                     EXCIT=_F( CHARGE = CHA2),
-                     OPTION=('SANS',
-                             'EFGE_ELNO_DEPL'),
-                      )
+                      CHAM_MATER=CHAM_MAT,
+                      CARA_ELEM=CAR_ELE,
+                      EXCIT=_F( CHARGE = CHA2),
+                       )
+
+CALC_ELEM( reuse= RESU2 ,RESULTAT= RESU2 ,  MODELE=MO,
+                      CHAM_MATER=CHAM_MAT,
+                      CARA_ELEM=CAR_ELE,
+                      EXCIT=_F( CHARGE = CHA2),
+                      OPTION=( 'EFGE_ELNO_DEPL'),
+                       )
 # ON TESTE QUE LES EFFORTS SONT UNIFORMES
 
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='MYY',RESULTAT=RESU2,
            TYPE_TEST='MAX',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
-                  
+
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='MYY',RESULTAT=RESU2,
            TYPE_TEST='MIN',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
 
@@ -305,11 +317,11 @@ R2S2INF=CALC_ELEM( MODELE=MO,
 
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO_DEPL',NOM_CMP='SIYY',RESULTAT=R2S1INF,
            NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=-1.5,PRECISION=0.001,),);
-                  
+
 
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO_DEPL',NOM_CMP='SIYY',RESULTAT=R2S2INF,
            NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=-18.76,PRECISION=0.001,),);
-                  
+
 
 #
 #---------------------------------------------------------------------
@@ -352,21 +364,27 @@ CHA3=AFFE_CHAR_MECA(        MODELE=MO,
 #                         RESOLUTION
 #---------------------------------------------------------------------
 #
+
 RESU3=MECA_STATIQUE(       MODELE=MO,
-                        CHAM_MATER=CHAM_MAT,
-                         CARA_ELEM=CAR_ELE,
-                             EXCIT=_F( CHARGE = CHA3),
-                        OPTION=('SANS',
-                                'EFGE_ELNO_DEPL',)
-                      )
+                         CHAM_MATER=CHAM_MAT,
+                          CARA_ELEM=CAR_ELE,
+                              EXCIT=_F( CHARGE = CHA3),
+                          )
+
+CALC_ELEM( reuse= RESU3 ,RESULTAT= RESU3 ,        MODELE=MO,
+                         CHAM_MATER=CHAM_MAT,
+                          CARA_ELEM=CAR_ELE,
+                              EXCIT=_F( CHARGE = CHA3),
+                         OPTION=('EFGE_ELNO_DEPL',)
+                       )
 # ON TESTE QUE LES EFFORTS SONT UNIFORMES
 
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='QY',RESULTAT=RESU3,
            TYPE_TEST='MAX',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
-                  
+
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='QY',RESULTAT=RESU3,
            TYPE_TEST='MIN',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
-           
+
 R3S2INF=CALC_ELEM( MODELE=MO,
                 CHAM_MATER=CHAM_MAT,
                 CARA_ELEM=CAR_ELE,
@@ -381,7 +399,7 @@ R3S2MOY=CALC_ELEM( MODELE=MO,
 
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO_DEPL',NOM_CMP='SIYZ',RESULTAT=R3S2INF,
            NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=0.281,PRECISION=0.001,),);
-                  
+
 
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO_DEPL',NOM_CMP='SIYZ',RESULTAT=R3S2MOY,
            NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=2.626,PRECISION=0.001,),);
@@ -427,21 +445,27 @@ CHA4=AFFE_CHAR_MECA(        MODELE=MO,
 #                         RESOLUTION
 #---------------------------------------------------------------------
 #
+
 RESU4=MECA_STATIQUE(       MODELE=MO,
-                        CHAM_MATER=CHAM_MAT,
-                         CARA_ELEM=CAR_ELE,
-                             EXCIT=_F( CHARGE = CHA4),
-                        OPTION=('SANS',
-                                'EFGE_ELNO_DEPL',)
-                      )
+                         CHAM_MATER=CHAM_MAT,
+                          CARA_ELEM=CAR_ELE,
+                              EXCIT=_F( CHARGE = CHA4),
+                         )
+
+CALC_ELEM( reuse= RESU4 ,RESULTAT= RESU4 ,        MODELE=MO,
+                         CHAM_MATER=CHAM_MAT,
+                          CARA_ELEM=CAR_ELE,
+                              EXCIT=_F( CHARGE = CHA4),
+                         OPTION=('EFGE_ELNO_DEPL',)
+                       )
 # ON TESTE QUE LES EFFORTS SONT UNIFORMES
 
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='QX',RESULTAT=RESU4,
            TYPE_TEST='MAX',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
-                  
+
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='QX',RESULTAT=RESU4,
            TYPE_TEST='MIN',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
-           
+
 R4S2INF=CALC_ELEM( MODELE=MO,
                 CHAM_MATER=CHAM_MAT,
                 CARA_ELEM=CAR_ELE,
@@ -454,18 +478,18 @@ R4S2MOY=CALC_ELEM( MODELE=MO,
                 OPTION='SIGM_ELNO_DEPL',NUME_COUCHE=2,NIVE_COUCHE='MOY',
                 RESULTAT=RESU4,);
 
-                  
+
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO_DEPL',NOM_CMP='SIXZ',RESULTAT=R4S2INF,
            NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=1.279,PRECISION=0.001,),);
-                  
+
 
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO_DEPL',NOM_CMP='SIXZ',RESULTAT=R4S2MOY,
            NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=1.2966,PRECISION=0.001,),);
-                  
+
 
 #
 
 
 FIN()
 #
-# 
+#

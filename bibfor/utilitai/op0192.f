@@ -2,7 +2,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 01/04/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,9 +67,9 @@ C
       INTEGER NUMPT, NUMORD
       INTEGER NBCMPV, JCMPVA, JCMPVM
 C
-      CHARACTER*8 CHANOM, NOMAAS, NOMO
-      CHARACTER*8 TYCH, NOMGD
-      CHARACTER*16 TYPECH, NOMCMD, FORMAT
+      CHARACTER*8 CHANOM, NOMAAS, NOMO, NOMGD, CHATMP
+      CHARACTER*8 TYPECH
+      CHARACTER*16 NOMCMD, FORMAT, TYCH
       CHARACTER*32 NOCHMD, NOMAMD
       CHARACTER*72 REP
 C
@@ -106,13 +106,9 @@ C
 C
 C 2.2. ==> TYPE DE CHAMP A LIRE
 C
+      CALL GETVTX ( ' ', 'TYPE_CHAM', 0, 1, 1, TYCH, IAUX )
       CALL GETRES ( CHANOM, TYPECH, NOMCMD )
-      IF ( TYPECH(1:8).EQ.'CHAM_NO_' ) THEN
-        NOMGD = TYPECH(9:16)
-        TYCH = 'NOEU    '
-      ELSE
-        CALL UTMESS ( 'F', NOMPRO, 'TYPE '//TYPECH//' NON DISPONIBLE' )
-      ENDIF
+      NOMGD=TYCH(6:14)
 C
 C 2.3. ==> NOM DES COMPOSANTES VOULUES
 C
@@ -199,18 +195,26 @@ C 3. APPEL DE LA LECTURE AU FORMAT MED
 C====
       IF ( FORMAT.EQ.'MED' ) THEN
 C
-        CALL LRCHME ( CHANOM, NOCHMD, NOMAMD,
-     >                NOMAAS, TYCH, NOMGD,
+      
+        CHATMP = '&&CHATMP'
+        CALL LRCHME ( CHATMP, NOCHMD, NOMAMD,
+     >                NOMAAS, TYCH(1:8), NOMGD,
      >                NUMPT, NUMORD, NBCMPV, NCMPVA, NCMPVM,
-     >                UNITE, CODRET )
+     >                UNITE, ' ',CODRET )
 C
+        CALL COPISD('CHAMP_GD','G',CHATMP,CHANOM)
+        IF (TYCH(1:2).EQ.'NO') THEN
+            CALL DETRSD('CHAM_NO',CHATMP)
+        ELSE
+            CALL DETRSD('CHAM_ELEM',CHATMP)
+        ENDIF
       ENDIF
 C
 C====
 C 4. LA FIN
 C====
 C
-      CALL JEDETC('V','&&'//NOMPRO,1)
+      CALL JEDETC('V','&&',1)
 C
       CALL JEDEMA()
 C FIN ------------------------------------------------------------------

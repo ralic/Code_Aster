@@ -4,7 +4,7 @@
       REAL*8              COOR(*), VECNOR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/08/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 04/02/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C
-C     OPERATEUR POST_K1_K2_K3 : TRAITEMENT DU MOT CLE "FOND_3D"
+C     OPERATEUR POST_K1_K2_K3 : TRAITEMENT DU MOT CLE "FOND_FISS"
 C     ------------------------------------------------------------------
       REAL*8       D, X1, X2, Y1, Y2, Z1, Z2
 C DEB ------------------------------------------------------------------

@@ -2,10 +2,11 @@
      &                   ITERAT, ETA   , CONV  , LICCVG, ITEMAX,
      &                   CONVER, ECHLDC, ECHEQU, ECHCON, FINPAS, 
      &                   CRITNL, NUMINS, FOINER, PARTPS, PARMET,
-     &                   NEQ, DEPDEL, AUTOC1, AUTOC2, VECONT, LREAC)
+     &                   NEQ,    DEPDEL, AUTOC1, AUTOC2, VECONT,
+     &                   LREAC,  CNVFRE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/07/2002   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,14 +24,14 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CRP_21
-C RESPONSABLE ADBHHVV V.CANO
+C RESPONSABLE PBADEL P.BADEL
 C ======================================================================
       IMPLICIT      NONE
       LOGICAL       ITEMAX, CONVER, ECHLDC, FINPAS, ECHCON(2), ECHEQU
       LOGICAL       LREAC(4)
       INTEGER       ITERAT, LICCVG(*), NUMINS, NEQ, VECONT(2)
       REAL*8        ETA, CONV(*), PARCRI(*), PARMET(*)
-      CHARACTER*19  CRITNL, CNRESI, CNDIRI, CNFEXT, CNVCFO
+      CHARACTER*19  CRITNL, CNRESI, CNDIRI, CNFEXT, CNVCFO, CNVFRE
       CHARACTER*19  FOINER, PARTPS, AUTOC1, AUTOC2
       CHARACTER*24  DEPDEL
 C ----------------------------------------------------------------------
@@ -46,7 +47,9 @@ C IN       PARCRI  : CRITERES DE CONVERGENCE
 C                     1 : ITER_GLOB_MAXI
 C                     2 : RESI_GLOB_RELA
 C                     3 : RESI_GLOB_MAXI
+C                     4 : ARRET
 C                     5 : ITER_GLOB_ELAS
+C                     6 : RESI_REFE_RELA
 C                    10 : RESI_PRIM_ABSO (LAGRANGIEN)
 C                    11 : RESI_DUAL_ABSO (LAGRANGIEN)
 C IN       ITERAT  : NUMERO D'ITERATION
@@ -112,23 +115,26 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       INTEGER            NBCOL
-      PARAMETER        ( NBCOL=9 )
+      PARAMETER        ( NBCOL=10 )
 
       LOGICAL            TEST(NBCOL), MAXREL
       INTEGER            LONCH, JRESI, JFEXT, JDIRI, JCRR, K, I, JFOINE
-      INTEGER            JVCFO, IND(NBCOL)
-      REAL*8             VMAX1, VMAX2, INFO(NBCOL), R8VIDE
+      INTEGER            JVCFO, IND(NBCOL), JREFE
+      INTEGER            IBID,  IER,   IDEEQ
+      REAL*8             VMAX1, VMAX2, VMAX3, INFO(NBCOL), R8VIDE
       REAL*8             INSTAM, INSTAP, DIINST, PASMIN
       CHARACTER*1        MARQ(NBCOL)
       CHARACTER*8        K8BID
+      CHARACTER*19       PROFCH
 
 C     IND : INDIRECTION DANS PARCRI
 C   2 -> 2  PARCRI(2)  : RESI_GLOB_RELA
 C   3 -> 3  PARCRI(3)  : RESI_GLOB_MAXI
+C   4 -> 6  PARCRI(6)  : RESI_REFE_RELA
 C   7 -> 11 PARCRI(11) : RESI_DUAL_ABSO
 C   8 -> 10 PARCRI(10) : RESI_PRIM_ABSO
 
-      DATA               IND  / 0, 2, 3, 0, 0, 0, 11, 10, 0 /
+      DATA               IND  / 0, 2, 3, 6, 0, 0, 0, 11, 10, 0/
 C ----------------------------------------------------------------------
 
 
@@ -213,19 +219,33 @@ C -- EVALUATION DES RESIDUS ABSOLU ET RELATIF
       CALL JEVEUO(CNDIRI//'.VALE','L',JDIRI)
       CALL JEVEUO(CNFEXT//'.VALE','L',JFEXT)
       CALL JEVEUO(CNVCFO//'.VALE','L',JVCFO)
+      IF (TEST(4)) CALL JEVEUO(CNVFRE//'.VALE','L',JREFE)
       CALL JEVEUO(FOINER//'.VALE','L',JFOINE)
+      CALL DISMOI('F','PROF_CHNO',CNRESI,'CHAM_NO',IBID, PROFCH,IER)
+      CALL JEVEUO(PROFCH // '.DEEQ','L',IDEEQ)
 
       VMAX1 = 0.D0
       VMAX2 = 0.D0
+      VMAX3 = 0.D0
             
       DO 20 I=0,LONCH-1
         VMAX1 = MAX(ABS(ZR(JRESI+I)-ZR(JFEXT+I)),VMAX1)
         VMAX2 = MAX(ABS(ZR(JDIRI+I)-ZR(JFEXT+I))
      &             +ABS(ZR(JVCFO+I)) , VMAX2)
         VMAX2 = MAX(ABS(ZR(JFOINE+I)),VMAX2)
+C       SI CONVERGENCE EN CONTRAINTE ACTIVE
+        IF (TEST(4)) THEN
+C         SI C'EST UN DDL PHYSIQUE
+          IF (ZI(IDEEQ-1 + 2*I + 2).GT.0) THEN
+            VMAX3 = MAX(ABS(ZR(JRESI+I)-ZR(JFEXT+I))/ZR(JREFE+I),VMAX3)
+          ENDIF
+C         SI C'EST UN DDL DE LAGRANGE : LA CONVERGENCE EST IMMEDIATE 
+C        (PAS DE LIAISON NON LINEAIRE DANS ASTER) : ON NE LA TESTE PAS
+        ENDIF  
  20   CONTINUE
       
       INFO(3) = VMAX1
+      INFO(4) = VMAX3
       IF (VMAX2.GT.0.D0) THEN
         INFO(2) = VMAX1/VMAX2
       END IF
@@ -233,8 +253,8 @@ C -- EVALUATION DES RESIDUS ABSOLU ET RELATIF
 
 C -- CRITERES DU LAGRANGIEN AUGMENTE
 
-      INFO(7) = CONV(1)
-      INFO(8) = CONV(2)
+      INFO(8) = CONV(1)
+      INFO(9) = CONV(2)
 
 
 C -- CRITERES D'ARRET
@@ -290,12 +310,12 @@ C -- IMPRESSIONS
 
 C    ITERATIONS RECHERCHE LINEAIRE ET RHO
       IF (ITERAT.EQ.0) CONV(10)=0
-      INFO(4) = CONV(10)
-      INFO(5) = CONV(11)
-      IF (NINT(INFO(4)).EQ.0) INFO(5) = 1.D0
+      INFO(5) = CONV(10)
+      INFO(6) = CONV(11)
+      IF (NINT(INFO(5)).EQ.0) INFO(6) = 1.D0
 
-      INFO(6) = ETA
-      INFO(9) = CONV(3)
+      INFO(7) = ETA
+      INFO(10) = CONV(3)
       CALL NMIMPR('IMPR','ETAT_CONV',MARQ,INFO,0)
 C ======================================================================
       IF (CONVER) THEN
@@ -352,7 +372,7 @@ C -- PREPARATION DES PARAMETRES ARCHIVEES ------------------------------
 C ======================================================================
       CALL JEVEUO(CRITNL //'.CRTR','E',JCRR)
       ZR(JCRR+0) = ITERAT
-      ZR(JCRR+1) = INFO(4)
+      ZR(JCRR+1) = INFO(5)
       ZR(JCRR+2) = INFO(2)
       ZR(JCRR+3) = INFO(3)
       ZR(JCRR+4) = ETA

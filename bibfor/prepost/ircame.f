@@ -6,7 +6,7 @@
      >                    SUPNOE, CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/10/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -124,7 +124,7 @@ C
 C
       INTEGER IDFIMD
       INTEGER IAUX, JAUX, LETYPE
-      INTEGER EXISTC, NBCMFI
+      INTEGER EXISTC, NBCMFI, NBVAL
 C
       LOGICAL LGAUX
       LOGICAL EXISTM
@@ -139,7 +139,6 @@ C====
 C
 C 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
 C
-      CALL INFMAJ
       CALL INFNIV ( IFM, NIVINF )
 C
 C 1.2. ==> NOMS DES TABLEAUX DE TRAVAIL
@@ -255,10 +254,12 @@ C
             TYGEOM = TYPGEO(IAUX)
           ENDIF
 C
+          CALL JEDETC('V',NMCMFI,1)
+
           CALL MDEXCH ( NOFIMD,
      >                  NOCHMD, NUMPT, NUMORD, NCMPVE, NTNCMP,
      >                  NVALEC, TYPENT, TYGEOM,
-     >                  JAUX, NBCMFI, NMCMFI, CODRET )
+     >                  JAUX, NBCMFI, NMCMFI, NBVAL, CODRET )
 C
           EXISTC = MAX ( EXISTC, JAUX )
 C
@@ -292,9 +293,7 @@ C====
 C
       SAUX08 = '        '
 C
-      CALL IRMDES ( IDFIMD,
-     >              SAUX08,
-     >              NIVINF )
+      CALL IRMDES ( IDFIMD, SAUX08, 1, NIVINF )
 C
 C====
 C 6. CREATION DU CHAMP

@@ -5,7 +5,7 @@
       CHARACTER*(*)                         CARTZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/01/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32     JEXNOM, JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      INTEGER       GD,IBID,IED,NOCC,NBAPNO,NBE,NCMPMX,NBTOU
+      INTEGER       GD,IBID,IED,NOCC,NBAPNO,NBE,NCMPMX,NBTOU,N1
       INTEGER       IAD,JNCMP,JVALV,JMAIL,NBCMP,K,IOCC,NBMAIL,NBVAR
       REAL*8        RBID
       COMPLEX*16    CBID
@@ -94,9 +94,17 @@ C
 C     2- BOUCLE SUR LES OCCURENCES DU MOT CLE AFFE
 C     --------------------------------------------
       DO 30 IOCC = 1,NOCC
-C
+
+        CALL GETVID ( MOTCLF,'NOEUD',IOCC,1,0,K8B,N1)
+        IF (N1.NE.0) CALL UTMESS('F','CARAFF',
+     &      'MOT CLE AFFE/NOEUD INTERDIT ICI.')
+
+        CALL GETVID ( MOTCLF,'GROUP_NO',IOCC,1,0,K8B,N1)
+        IF (N1.NE.0) CALL UTMESS('F','CARAFF',
+     &      'MOT CLE AFFE/GROUP_NO INTERDIT ICI.')
+  
         CALL GETVTX ( MOTCLF, 'NOM_CMP', IOCC,1,0, K8B, NBCMP)
-C
+  
         IF (TSCA.EQ.'R') THEN
           CALL GETVR8 ( MOTCLF, 'VALE'  ,IOCC,1,0, RBID, NBVAR)
         ELSE IF (TSCA.EQ.'I') THEN

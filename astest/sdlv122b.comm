@@ -1,0 +1,250 @@
+# MODIF  DATE 03/03/2003   AUTEUR DURAND C.DURAND 
+# TITRE VALIDATION DE PROJ_MESU_MODAL : CAS 3D, BASE : BASE_MODALE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+######################################################################
+#
+#         *** VALIDATION DE LA COMMANDE PROJ_MESU_MODAL ***
+#
+# POUTRE DE SAINT-VENANT EN 3D ENCASTREE-LIBRE AVEC EFFORT AXIAL
+#    - L=4 M, R=0.1 M
+#    - E=2.1E+11 PA, NU=0.3, RHO=7800. KG/M3
+#    - 2667 NOEUDS, 3328 ELEMENTS
+#
+# REPONSE TRANSITOIRE A UN EFFORT ECHELON APPLIQUE A L'EXTREMITE LIBRE
+#    - PAS D'AMORTISSEMENT
+#    - FX = 1.E+6 AU NOEUD2 (EXTENSION)
+#
+# PROJECTION SUR UN CONCEPT BASE_MODALE CREE PAR DEFI_BASE_MODAL
+#
+######################################################################
+#
+DEBUT(  CODE=_F( NOM = 'SDLV122B',NIV_PUB_WEB='INTERNET') )
+
+#
+# DEFINITION DU MODELE NUMERIQUE
+# ==============================
+
+PRE_IDEAS()
+
+#
+MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),)
+
+#
+MODELE=AFFE_MODELE(   MAILLAGE=MAIL,AFFE=(
+                            _F( TOUT = 'OUI',
+                                  PHENOMENE = 'MECANIQUE',
+                                  MODELISATION = '3D'),
+                            _F( GROUP_NO = ('NPOINT1', 'NPOINT2',),
+                                  PHENOMENE = 'MECANIQUE',
+                                  MODELISATION = 'DIS_TR'))           )
+
+#
+ACIER=DEFI_MATERIAU(   ELAS=_F( E = 2.1E+11,  NU = 0.3,  RHO = 7800.)         )
+
+#
+MATER=AFFE_MATERIAU(   MAILLAGE=MAIL,
+                             AFFE=_F( TOUT = 'OUI',
+                                   MATER = ACIER)                    )
+
+#
+CARAELEM=AFFE_CARA_ELEM(    MODELE=MODELE,
+                             DISCRET=_F( GROUP_NO = ('NPOINT1', 'NPOINT2',),
+                                      CARA = 'K_TR_D_N',
+                                      VALE = (0., 0., 0., 0., 0., 0.,)))
+
+#
+# BLOQUAGE DE L'EXTREMITE 1
+BLOQUAGE=AFFE_CHAR_MECA(     MODELE=MODELE,DDL_IMPO=(
+                             _F( GROUP_NO = 'NPOINT1',
+                                       DX = 0.,  DY = 0.,  DZ = 0.,
+                                       DRX = 0., DRY = 0., DRZ = 0.),
+#
+                             _F( GROUP_NO = 'N3INF',
+                                        DX = 0.),
+#
+# ON NE CHERCHE QUE LES MOUVEMENTS DE TRACTION-COMPRESSION
+                             _F( GROUP_NO = ('NSUP',  'NFIBRE',),
+                                       DY = 0.,  DZ = 0.)),LIAISON_ELEM=(
+#
+# AFFECTATION DES CONDITIONS DE RACCORD 3D-POUTRE AUX EXTREMITES
+                             _F( OPTION = '3D_POU',
+                                           GROUP_MA_1 = 'ESURF1',
+                                           GROUP_NO_2 = 'NPOINT1'),
+#
+                             _F( OPTION = '3D_POU',
+                                           GROUP_MA_1 = 'ESURF2',
+                                           GROUP_NO_2 = 'NPOINT2'))     )
+
+#
+RIGIELEM=CALC_MATR_ELEM(       MODELE=MODELE,
+                              CARA_ELEM=CARAELEM,
+                             CHAM_MATER=MATER,
+                                 CHARGE=BLOQUAGE,
+                                 OPTION='RIGI_MECA'                  )
+
+#
+MASSELEM=CALC_MATR_ELEM(       MODELE=MODELE,
+                              CARA_ELEM=CARAELEM,
+                             CHAM_MATER=MATER,
+                                 CHARGE=BLOQUAGE,
+                                 OPTION='MASS_MECA'                  )
+
+#
+NU=NUME_DDL(   MATR_RIGI=RIGIELEM                                  )
+
+#
+RIGIASSE=ASSE_MATRICE(   MATR_ELEM=RIGIELEM,
+                            NUME_DDL=NU                              )
+
+#
+MASSASSE=ASSE_MATRICE(   MATR_ELEM=MASSELEM,
+                            NUME_DDL=NU                              )
+
+#
+MODES=MODE_ITER_SIMULT(      MATR_A=RIGIASSE,
+                               MATR_B=MASSASSE,
+                            CALC_FREQ=_F( NMAX_FREQ = 2),
+                                      )
+
+#
+INTERF=DEFI_INTERF_DYNA(    NUME_DDL=NU,
+                             INTERFACE=_F( NOM = 'NINTERF',
+                                        TYPE = 'CRAIGB',
+                                        GROUP_NO = 'N3INF',
+                                        MASQUE = ('DY', 'DZ',))      )
+
+#
+BASE=DEFI_BASE_MODALE(   CLASSIQUE=_F( INTERF_DYNA = INTERF,
+                                      MODE_MECA = MODES)           )
+
+#
+BASE=CALC_ELEM( reuse=BASE,    RESULTAT=BASE,
+                         MODELE=MODELE,
+                     CHAM_MATER=MATER,
+                         OPTION='SIGM_ELNO_DEPL'                     )
+
+#
+BASE=CALC_NO( reuse=BASE,    RESULTAT=BASE,
+                       OPTION='SIGM_NOEU_DEPL'                       )
+
+#
+# DEFINITION DU MAILLAGE DE MESURE
+# ================================
+#
+MAILMESU=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),  UNITE=21        )
+
+#
+MODLMESU=AFFE_MODELE(   MAILLAGE=MAILMESU,AFFE=(
+                              _F( MAILLE = ('P3','P4','P5',),
+                                    PHENOMENE = 'MECANIQUE',
+                                    MODELISATION = 'DIS_T'),
+                              _F( NOEUD = ('N3','N4','N5',),
+                                    PHENOMENE = 'MECANIQUE',
+                                    MODELISATION = 'DIS_T'))          )
+
+#
+MESURE=LIRE_RESU(FORMAT='IDEAS_DS58',
+                 UNITE=33,
+                 MAILLAGE=MAILMESU,
+                 TYPE_RESU='DYNA_TRANS',
+                 NOM_CHAM='SIEF_NOEU',
+                 TOUT_ORDRE='OUI',)
+#
+# PROJECTION DES MESURES SUR LA BASE MODALE DU MODELE
+# ===================================================
+#
+REPGENE=PROJ_MESU_MODAL(  
+                         MODELE_CALCUL=_F( MODELE = MODELE,
+                                    BASE = BASE,),
+                         MODELE_MESURE=_F( MODELE = MODLMESU,
+                                    MESURE = MESURE,
+                                       NOM_PARA = 'INST', 
+                                    NOM_CHAM = 'SIEF_NOEU',),
+                         CORR_MANU=_F( NOEU_MESURE = 'N4',
+                                    NOEU_CALCUL = 'NO75',),)
+
+#
+# RESTITUTION DES RESULTATS 
+# =========================
+#
+#DEPLACE = REST_BASE_PHYS (RESU_GENE : REPGENE
+#                          NOM_CHAM  : 'DEPL'                        );
+#
+#VITESSE = REST_BASE_PHYS (RESU_GENE : REPGENE
+#                          NOM_CHAM  : 'VITE'                        );
+#
+#ACCELER = REST_BASE_PHYS (RESU_GENE : REPGENE
+#                          NOM_CHAM  : 'ACCE'                        );
+#
+REPONSE=REST_BASE_PHYS(   RESU_GENE=REPGENE,
+                            TOUT_CHAM='OUI'                          )
+
+#
+LTEMPS=DEFI_LIST_REEL(   VALE=(9.E-4,  17.E-4,  25.E-4,)              )
+
+#
+REPONSE=CALC_ELEM( reuse=REPONSE,    RESULTAT=REPONSE,
+                            MODELE=MODELE,
+                        CHAM_MATER=MATER,
+                         LIST_INST=LTEMPS,
+                            OPTION='SIGM_ELNO_DEPL'                  )
+
+#
+REPONSE=CALC_NO( reuse=REPONSE,   RESULTAT=REPONSE,
+                      LIST_INST=LTEMPS,
+                         OPTION='SIGM_NOEU_DEPL'                     )
+
+#
+# TEST DES RESULTATS 
+# ==================
+TEST_RESU(RESU=(
+         _F( RESULTAT = REPONSE,          GROUP_NO = 'NRES3',
+               NOM_CHAM = 'SIGM_NOEU_DEPL', NOM_CMP = 'SIXX',
+               CRITERE = 'RELATIF',        PRECISION = 1.E-2,
+               NUME_ORDRE = 90,               VALE = 3.41647E+07),
+#
+         _F( RESULTAT = REPONSE,          GROUP_NO = 'NRES3',
+               NOM_CHAM = 'SIGM_NOEU_DEPL', NOM_CMP = 'SIXX',
+               CRITERE = 'RELATIF',        PRECISION = 1.E-2,
+               NUME_ORDRE = 170,              VALE = 8.04567E+07),
+#
+         _F( RESULTAT = REPONSE,          GROUP_NO = 'NRES3',
+               NOM_CHAM = 'SIGM_NOEU_DEPL', NOM_CMP = 'SIXX',
+               CRITERE = 'RELATIF',        PRECISION = 1.E-2,
+               NUME_ORDRE = 250,              VALE = 4.25077E+07),
+#
+         _F( RESULTAT = REPONSE,          GROUP_NO = 'NRES4',
+               NOM_CHAM = 'SIGM_NOEU_DEPL', NOM_CMP = 'SIXX',
+               CRITERE = 'RELATIF',        PRECISION = 1.E-2,
+               NUME_ORDRE = 90,               VALE = 4.64966E+07),
+#
+         _F( RESULTAT = REPONSE,          GROUP_NO = 'NRES4',
+               NOM_CHAM = 'SIGM_NOEU_DEPL', NOM_CMP = 'SIXX',
+               CRITERE = 'RELATIF',        PRECISION = 1.E-2,
+               NUME_ORDRE = 170,              VALE = 6.67109E+07),
+#
+         _F( RESULTAT = REPONSE,          GROUP_NO = 'NRES4',
+               NOM_CHAM = 'SIGM_NOEU_DEPL', NOM_CMP = 'SIXX',
+               CRITERE = 'RELATIF',        PRECISION = 1.E-2,
+               NUME_ORDRE = 250,              VALE = 4.29307E+07)))
+
+#
+FIN()
+#

@@ -1,7 +1,7 @@
       SUBROUTINE NMIMPR(PHASE,NATURZ,ARGZ, ARGR, ARGI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C RESPONSABLE ADBHHVV V.CANO
+C RESPONSABLE PBADEL P.BADEL
 C TOLE CRP_20
       IMPLICIT NONE
 
@@ -86,7 +86,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       INTEGER      NBCOL, NBAFF
-      PARAMETER   (NBCOL = 10, NBAFF=9)
+      PARAMETER   (NBCOL = 11, NBAFF=10)
 
       LOGICAL       DELOCA, PILOTA, RECHLI, AFF(NBCOL)
       INTEGER       NOCC, MESS, IUNIFI, LARGE, POS, I, K, IFONC
@@ -113,6 +113,7 @@ C ----------------------------------------------------------------------
      &   / '   ITERATIONS   ','                ','                ',
      &     '     RESIDU     ','    RELATIF     ',' RESI_GLOB_RELA ',
      &     '     RESIDU     ','     ABSOLU     ',' RESI_GLOB_MAXI ',
+     &     '     RESIDU     ','  PAR REFERENCE ','  CONTRAINTES   ',
      &     '   ITERATIONS   ','   RECH. LIN.   ','                ',
      &     '  COEFFICIENT   ','   RECH. LIN.   ','      RHO       ',
      &     '   PARAMETRE    ','    PILOTAGE    ','  ETA_PILOTAGE  ',
@@ -121,7 +122,7 @@ C ----------------------------------------------------------------------
      &     '   ITERATIONS   ','   LAGRANGIEN   ','                ',
      &     '     OPTION     ','   ASSEMBLAGE   ','                '/
 
-      DATA  TYPE   /'I','R','R','I','R','R','R','R','I','K'/
+      DATA  TYPE   /'I','R','R','R','I','R','R','R','R','I','K'/
 C ----------------------------------------------------------------------
 
 
@@ -151,13 +152,14 @@ C      COLONNES A AFFICHER
         AFF(1) = .TRUE.
         AFF(2) = .TRUE.
         AFF(3) = .TRUE.
-        AFF(4) = ZL(IFONC)
+        AFF(4) = ZL(IFONC+3) 
         AFF(5) = ZL(IFONC)
-        AFF(6) = ZL(IFONC+1)
-        AFF(7) = ZL(IFONC+2)
+        AFF(6) = ZL(IFONC)
+        AFF(7) = ZL(IFONC+1)
         AFF(8) = ZL(IFONC+2)
         AFF(9) = ZL(IFONC+2)
-        AFF(10)= .TRUE.
+        AFF(10) = ZL(IFONC+2)
+        AFF(11)= .TRUE.
 
 C      LARGEUR TOTALE DE L'AFFICHAGE
         LARGE = 1

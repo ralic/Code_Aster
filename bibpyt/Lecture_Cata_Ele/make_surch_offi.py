@@ -1,20 +1,20 @@
-#@ MODIF make_surch_offi Lecture_Cata_Ele  DATE 02/07/2001   AUTEUR VABHHTS J.PELLET 
+#@ MODIF make_surch_offi Lecture_Cata_Ele  DATE 01/04/2003   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 ####################################################################################################
 # script pour surcharger les catalogues officiels
@@ -90,7 +90,16 @@ try :
       from Lecture_Cata_Ele import lecture, imprime , utilit
 
       if os.path.isfile(surch) :
-         capy_surch =lecture.lire_cata(surch)
+         # pour ne pas utiliser trop de mémoire, on splite le fichier pour la lecture :
+         liste_morceaux=utilit.cata_split(surch,"morceau",5000)
+         print "ajaco",liste_morceaux
+
+         capy_surch =lecture.lire_cata(liste_morceaux[0])
+         for k in range(len(liste_morceaux)-1) :
+            print "ajaco",liste_morceaux[k]
+            capy_surc2 =lecture.lire_cata(liste_morceaux[k+1])
+            utilit.concat_capy(capy_surch,capy_surc2)
+
       else:
          capy_surch =None
 

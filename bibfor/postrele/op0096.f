@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,6 +75,7 @@ C
 C===================================================================
 C
       CALL JEMARQ()
+      CALL INFMAJ()
 C
       IFM   =  IUNIFI('MESSAGE')
       ZERO  =  0.0D0
@@ -212,6 +213,7 @@ C
             CALL JEVEUO (JEXNUM(NOMAIL//'.CONNEX',IMA),'L',ADRMC)
             CALL JELIRA (JEXNUM(NOMAIL//'.CONNEX',IMA),'LONMAX',NBN,K8B)
             CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(IATYMA-1+IMA)),TYPM)
+            CALL JENUNO(JEXNUM(NOMMAI,IMA),NOMM1)
 
             IF ( TYPM(1:5) .EQ. 'TETRA' .OR.
      +           TYPM(1:5) .EQ. 'PENTA' .OR.
@@ -382,13 +384,18 @@ C           --- DETERMINATION DU CMP_CNX ---
             IF1 = ZI(ASDS6)
             IAO1 = ZI(ASDS9)
             IAE1 = ZI(ASDS10)
+            ABSCE = ZR(ASDS2)
             DO 150, I = 2, N, 1
                CALL JEVEUO(JEXNUM(NSDS4,I),'L',ASDS4)
                IM2  = ZI(ASDS4)
                IF2  = ZI(ASDS5+I-1)
                IAO2 = ZI(ASDS9+I-1)
+               ABSCO = ZR(ASDS1+I-1)
                EGFAC = I3EGFA( ZI(ADESC), ZI(ADESCM), ZI(ACONEC),
      +                ZI(ADRVLC), IM1, IF1, IAO1, IAE1, IM2, IF2, IAO2 )
+               IF ( .NOT. EGFAC ) THEN
+                  IF ( ABS(ABSCE-ABSCO) .LE. PREC )  EGFAC = .TRUE.
+               ENDIF
                IF ( .NOT. EGFAC ) THEN
                   M = M + 1
                   ZI(AINDIR + M-1) = I
@@ -397,6 +404,7 @@ C           --- DETERMINATION DU CMP_CNX ---
                IAE1 = ZI(ASDS10+I-1)
                IF1  = ZI(ASDS6+I-1)
                IM1  = IM2
+               ABSCE = ZR(ASDS2+I-1)
  150        CONTINUE
             ZI(AINDIR + M) = N + 1
 C

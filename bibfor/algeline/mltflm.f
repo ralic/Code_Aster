@@ -1,6 +1,6 @@
       SUBROUTINE MLTFLM(N,P,FRONT,ADPER,T1,AD,EPS,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/01/2002   AUTEUR JFBHHUC C.ROSE 
+C MODIF ALGELINE  DATE 16/12/2002   AUTEUR ROSE C.ROSE 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ C ======================================================================
       INTEGER N,P,ADPER(*),AD(*),IER
       REAL*8 FRONT(*),T1(*),EPS
       INTEGER NB,I,KB,ADK,ADKI,DECAL,L
-      PARAMETER (NB=32)
+      PARAMETER (NB=96)
       INTEGER   M,LL,  K, IND,IA,IB,J,RESTP,NPB
       INTEGER RESTL,NLLB
        COMMON/TEMPS/TT1,TT2,TT3,TT4

@@ -1,6 +1,6 @@
       SUBROUTINE ISDECO (ICOD,IDEC,NDIM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/03/2000   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 05/12/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,37 +20,32 @@ C ======================================================================
 C***********************************************************************
 C    P. RICHARD     DATE 06/11/90
 C-----------------------------------------------------------------------
-C  BUT: DECODER UN ENTIER CODER SUR LES 30  PREMIERES PUISSANCES
-      IMPLICIT REAL*8 (A-H,O-Z)
-C          DE DEUX
+C  BUT: DECODER UN ENTIER CODE SUR LES 30 PREMIERES PUISSANCES
+C          DE DEUX ( PAS DE PUISSANCE 0)
+      IMPLICIT NONE
+C-----------------------------------------------------------------------
 C
-C***********************************************************************
-C  ATTENTION LE TERME I DU VECTEUR IDEC CORRESPOND A LA PUISSANCE I
-C   PAS DE DECODAGE SUR PUISSANCE 0
-C **********************************************************************
+C  ICOD(*)  /I/: ENTIER CODE :
+C                ICOD(1) : 30 1ERES CMPS CODE SUR LES PUISS DE 2:1 A 30
+C                ICOD(2) : 30 CMPS SUIV CODE SUR LES PUISS DE 2:1 A 30
+C                ...
+C  IDEC     /O/: VECTEUR DES NDIM PREMIERES CMPS
+C  NDIM     /I/: NOMBRE DE CMPS A DECODER
 C
 C-----------------------------------------------------------------------
 C
-C NOM----- / /: DEFINITION
-C
-C  ICOD    /I/: ENTIER A DECODER
-C  IDEC    /O/: VECTEUR PREMIERES PUISSANCES DE DEUX
-C  NEC     /I/: NOMBRE D'ENTIERS COES SUR LESQUELS TIENT LA GRANDEUR
-C  NDIM    /I/: NOMBRE DE PUISSANEC A DECODER
-C
-C-----------------------------------------------------------------------
-C
-      INTEGER ICOD(1)
-      INTEGER IDEC(NDIM)
-      PARAMETER (NBECMX = 10)
-      INTEGER IFIN(NBECMX)
+      INTEGER NDIM, NECMAX
+      INTEGER IDEC(NDIM), ICOD(*)
+      INTEGER NEC, IEC, I, IPUI, K
+      PARAMETER (NECMAX = 10)
+      INTEGER IFIN(NECMAX)
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
        NEC = (NDIM-1)/30 + 1
 C
-C --- IFIN DONNE POUR CHAQUE ENTIER CODE LE NOMBRE MAX DE DDLS
+C --- IFIN DONNE POUR CHAQUE ENTIER CODE LE NOMBRE MAX DE CMPS
 C --- QUE L'ON PEUT TROUVER SUR CET ENTIER :
 C     ------------------------------------
       DO 10 IEC = 1, NEC-1
@@ -59,19 +54,16 @@ C     ------------------------------------
       IFIN(NEC) = NDIM - 30*(NEC-1)
 C
       K = 0
-      DO 20 IEC = 1, NEC
-        XCOU=ICOD(IEC)
-        X=XCOU/2.D0
-        IE=INT(X)
-        V=X-IE
-        XCOU=X-V
+      DO 20 IEC = 1,NEC
+        IPUI = 1
         DO 30 I=1,IFIN(IEC)
-          K = K + 1
-          X=XCOU/2.D0
-          IE=INT(X)
-          V=X-IE
-          IDEC(K)=INT(V*2+1.D-2)
-          XCOU=X-V
+          K = K+1
+          IPUI = IPUI*2
+          IF (IAND(ICOD(IEC),IPUI).EQ.IPUI) THEN
+            IDEC(K)=1
+          ELSE
+            IDEC(K)=0
+          ENDIF
  30     CONTINUE
  20   CONTINUE
 C

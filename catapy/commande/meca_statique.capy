@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -7,7 +7,7 @@
 # ======================================================================
 # RESPONSABLE VABHHTS J.PELLET
 MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
-                   fr="Analyse mécanique statique linéaire",docu="U4.51.01-g1",reentrant='n',
+                   fr="Analyse mécanique statique linéaire",docu="U4.51.01-g",reentrant='n',
             UIinfo={"groupes":("Résolution",)},
                    regles=(EXCLUS("INST","LIST_INST"),
                            AU_MOINS_UN('CHAM_MATER','CARA_ELEM',), ),
@@ -21,7 +21,7 @@ MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          EXCIT           =FACT(statut='o',min=1,max='**',
            CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
-           FONC_MULT       =SIMP(statut='f',typ=fonction),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),
          ),
          INST            =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
@@ -31,7 +31,9 @@ MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
                                      "EPSI_ELNO_DEPL","EPSI_ELGA_DEPL","EPME_ELNO_DEPL","EPME_ELGA_DEPL",
                                      "EQUI_ELNO_SIGM","EQUI_ELGA_SIGM","EQUI_ELNO_EPSI","EQUI_ELGA_EPSI",
                                      "EQUI_ELNO_EPME","EQUI_ELGA_EPME","DEGE_ELNO_DEPL","EPOT_ELEM_DEPL",
-                                     "ENEL_ELGA","ENEL_ELNO_ELGA") ),
+                                     "ENEL_ELGA","ENEL_ELNO_ELGA"),
+                               fr="Attention: le mot clé OPTION sera supprimé en version 7.3",
+                          ),
          NUME_COUCHE     =SIMP(statut='f',typ='I',defaut=1),
          NIVE_COUCHE     =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY") ),
          ANGLE           =SIMP(statut='f',typ='I',defaut=0),
@@ -53,14 +55,12 @@ MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
              STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            ),
            b_gcpc         =BLOC(condition = "METHODE == 'GCPC' ", fr="Paramètres de la méthode du gradient conjugué",
-             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC","SANS","DIAG") ),
+             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC",),defaut="LDLT_INC" ),
              NIVE_REMPLISSAGE=SIMP(statut='f',typ='I',defaut= 0 ),
              RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.E-6),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
            ),
-#  A quoi sert eps
-           EPS             =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
          ),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 )  ;

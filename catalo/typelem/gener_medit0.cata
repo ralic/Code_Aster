@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+%& MODIF TYPELEM  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 % ======================================================================
 GENER_MEDIT0
 TYPE_GENE__
-ENTETE__  ELEMENT__   MECA_DIS_T_N      MAILLE__  POI1      NUM_INIT__  1    NB_GAUSS__  NELGA =1
+ENTETE__ ELEMENT__ MECA_DIS_T_N     MAILLE__ POI1     ELREFE__  V_POI1 NB_GAUSS__ NELGA=FPG1
 
 MODE_LOCAL__
     CABSCUR  = ABSC_R   ELEM__         (ABSC1    ABSC2    )
@@ -62,7 +62,7 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
-    AMOR_MECA           41    IN__   CCADISA  PCADISA  CCAORIE  PCAORIE
+    AMOR_MECA           41    IN__   CCADISA  PCADISA  CCAORIE  PCAORIE  MMATUUR  PRIGIEL  CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
     CHAR_MECA_PESA_R    43    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  CPESANR  PPESANR
                               OUT__  MVECTUR  PVECTUR

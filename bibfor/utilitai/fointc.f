@@ -5,7 +5,7 @@
       CHARACTER*(*)       NOMF,       NOMPU(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -71,8 +71,8 @@ C
 C
 C --- CALCUL DE LA FONCTION INTERPRETEE ---
 C
-      IF ( ZK8(LPROL) .EQ. 'INTERPRE' ) THEN
-         CALL FONBPA ( NOMFON, ZK8(LPROL), CBID, MXPARA, NBPF, NOMP )
+      IF ( ZK16(LPROL) .EQ. 'INTERPRE' ) THEN
+         CALL FONBPA ( NOMFON, ZK16(LPROL), CBID, MXPARA, NBPF, NOMP )
          DO 70 I1 = 1,NBPF
             IPAR(I1) = 0
             DO 72 NUPAR = 1,NBPU
@@ -104,7 +104,7 @@ C
 C
       ELSE
 C
-         CALL UTMESS('F','FOINTC','"'//ZK8(LPROL)//
+         CALL UTMESS('F','FOINTC','"'//ZK16(LPROL)//
      +                            '" TYPE DE FONCTION NON TRAITE')
       ENDIF
 C

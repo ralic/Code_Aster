@@ -1,0 +1,265 @@
+# MODIF  DATE 26/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+# TITRE NON-REGRESSION THERMO-ELASTICITE POUR TOUTES COQUES SURFACIQUES
+# RESPONSABLE VABHHTS J.PELLET
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+DEBUT(CODE=_F( NOM = 'SSLS200A',NIV_PUB_WEB='INTERNET') )
+
+M1=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),  )
+
+M1=DEFI_GROUP( reuse=M1,   MAILLAGE=M1,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MA=CREA_MAILLAGE(     MAILLAGE=M1,MODI_MAILLE=(
+       _F(  OPTION = 'QUAD8_9', MAILLE = 'Q9'),
+       _F(  OPTION = 'TRIA6_7', MAILLE = 'T7')))
+
+MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
+    _F(  MAILLE = 'S1',  PHENOMENE = 'MECANIQUE', MODELISATION = 'DKT'),
+    _F(  MAILLE = 'Q1',  PHENOMENE = 'MECANIQUE', MODELISATION = 'DKT'),
+    _F(  MAILLE = 'T1',  PHENOMENE = 'MECANIQUE', MODELISATION = 'DKT'),
+    _F(  MAILLE = 'T2',  PHENOMENE = 'MECANIQUE', MODELISATION = 'DKT'),
+
+    _F(  MAILLE = 'Q2',  PHENOMENE = 'MECANIQUE', MODELISATION = 'Q4G'),
+
+    _F(  MAILLE = 'Q3',  PHENOMENE = 'MECANIQUE', MODELISATION = 'DST'),
+    _F(  MAILLE = 'T3',  PHENOMENE = 'MECANIQUE', MODELISATION = 'DST'),
+
+    _F(  MAILLE = 'Q9',  PHENOMENE = 'MECANIQUE', MODELISATION = 'COQUE_3D'),
+    _F(  MAILLE = 'T7',  PHENOMENE = 'MECANIQUE', MODELISATION = 'COQUE_3D'))
+                           )
+
+F1=DEFI_FONCTION(    NOM_PARA='TEMP',
+           VALE=( -1000.,  -1200.,
+                   1000.,   1200., ),
+            PROL_DROITE='LINEAIRE',   PROL_GAUCHE='CONSTANT' )
+
+F2=DEFI_CONSTANTE(  VALE=0.3)
+
+MAT=DEFI_MATERIAU(
+             ELAS_FO=_F( E = F1,  NU = F2, RHO = 8.1, ALPHA = F1,
+                         TEMP_DEF_ALPHA  = 1.5))
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+             AFFE=_F(  TOUT = 'OUI', MATER = MAT, TEMP_REF = 1.5))
+
+CARA=AFFE_CARA_ELEM(   MODELE=MO,
+                       COQUE=_F( GROUP_MA = 'TOUT',
+                                 EPAIS = 0.7,
+                                 A_CIS = 0.6,
+                                 ANGL_REP = (10.,-20.,))       )
+
+TEMPLIN=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
+MAILLAGE=MA,
+             AFFE=_F( TOUT = 'OUI',
+                   NOM_CMP = ('TEMP_INF','TEMP','TEMP_SUP',),
+                   VALE = (12., 18.,  26.,)))
+
+# ------------------------------------------------------------------
+
+CHPES=AFFE_CHAR_MECA(  MODELE=MO,
+                               PESANTEUR=(9.8,  0.3,  0.1, -0.4,),
+                      #  ROTATION      : (0.2  0.5 -0.2  0.2)
+                           TEMP_CALCULEE=TEMPLIN,
+         FORCE_ARETE=_F(  MAILLE = 'S1',      FZ = 8.),
+         FORCE_COQUE=_F(  TOUT = 'OUI',   F1 = 5., F2 = 8., F3 = 9., MF1 = 5.),DDL_IMPO=(
+          _F(  NOEUD = 'N1',  DX = 1.,  DY = 2.,  DZ = 3.,
+                                 DRX = 1., DRY = 2., DRZ = 3.),
+          _F(  NOEUD = 'N6',  DX = 2.,  DY = 3.,  DZ = 4.,
+                                 DRX = 1., DRY = 2., DRZ = 5.))
+                                                            )
+
+CHME2=AFFE_CHAR_MECA(  MODELE=MO,
+         FORCE_COQUE=_F(  TOUT = 'OUI',   PRES = 5.))
+
+# ------------------------------------------------------------------
+MESTAT=MECA_STATIQUE(       MODELE=MO,
+              CARA_ELEM=CARA,    CHAM_MATER=CHMAT,EXCIT=(
+                  _F( CHARGE = CHPES),
+                  _F( CHARGE = CHME2))
+           )
+
+TEST_RESU( RESU=_F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
+                     NOM_CHAM = 'DEPL',
+                     TYPE_TEST = 'SOMM_ABS',
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-12, VERSION = '5.03.14',
+              VALE = 4.6891508740240E+04)
+            )
+
+MESTAT=CALC_ELEM( reuse=MESTAT,      RESULTAT=MESTAT,        MODELE=MO,
+                  CHAM_MATER=CHMAT,     CARA_ELEM=CARA,
+                       EXCIT=_F(  CHARGE = CHPES),
+                      OPTION=( 'SIEF_ELGA_DEPL', 'SIGM_ELNO_DEPL',
+                               'EPSI_ELNO_DEPL', 'EFGE_ELNO_DEPL', )
+                     )
+
+TEST_RESU(RESU=( _F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
+                     NOM_CHAM = 'SIEF_ELGA_DEPL',
+                     TYPE_TEST = 'SOMM_ABS',
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-12, VERSION = '5.03.14',
+              VALE = 5.5415945920828E+05),
+                   _F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
+                     NOM_CHAM = 'SIGM_ELNO_DEPL',
+                     TYPE_TEST = 'SOMM_ABS',
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-12, VERSION = '5.03.14',
+              VALE = 2.4121491382487E+05),
+                   _F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
+                     NOM_CHAM = 'EPSI_ELNO_DEPL',
+                     TYPE_TEST = 'SOMM_ABS',
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-12, VERSION = '5.03.14',
+              VALE = 3.0361531518501E+04),
+                   _F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
+                     NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     TYPE_TEST = 'SOMM_ABS',
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-12, VERSION = '5.03.14',
+              VALE = 1.8660521476424E+05))
+            )
+
+MESTAT=CALC_ELEM( reuse=MESTAT,      RESULTAT=MESTAT,        MODELE=MO,
+                MAILLE=('Q1','T1','Q2','Q3','T3',),
+                  CHAM_MATER=CHMAT,     CARA_ELEM=CARA,
+                       EXCIT=_F(  CHARGE = CHPES),
+                      OPTION='DEGE_ELNO_DEPL'        )
+
+TEST_RESU( RESU=_F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
+                     NOM_CHAM = 'DEGE_ELNO_DEPL',
+                     TYPE_TEST = 'SOMM_ABS',
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-12, VERSION = '5.03.14',
+              VALE = 2.6755379426528E+04)
+            )
+
+MESTAT=CALC_NO( reuse=MESTAT,    RESULTAT=MESTAT,     CARA_ELEM=CARA,
+                     CHAM_MATER=CHMAT,
+                          EXCIT=_F(  CHARGE = CHPES),
+                         OPTION=( 'EPSI_NOEU_DEPL', 'SIGM_NOEU_DEPL',
+                                 )
+                   )
+
+TEST_RESU(RESU=( _F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
+                     NOM_CHAM = 'EPSI_NOEU_DEPL',
+                     TYPE_TEST = 'SOMM_ABS',
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-12, VERSION = '5.03.14',
+              VALE = 9.7561016801060E+03),
+                   _F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
+                     NOM_CHAM = 'SIGM_NOEU_DEPL',
+                     TYPE_TEST = 'SOMM_ABS',
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-12, VERSION = '5.03.14',
+              VALE = 6.0574940591445E+04))
+            )
+
+MASS2=POST_ELEM(  MODELE=MO, CHAM_MATER=CHMAT,  CARA_ELEM=CARA,
+                   CHARGE=CHPES,
+                    RESULTAT=MESTAT,
+                     ENER_POT=_F( MAILLE = ('Q1','T1','Q2','Q3','T3',)))
+
+TEST_TABLE(      TABLE=MASS2,       NOM_PARA='TOTALE',
+                TYPE_TEST='SOMM_ABS',
+       REFERENCE='NON_REGRESSION', PRECISION=1.E-12, VERSION='5.03.14',
+                VALE=2.1389833945710E+07     )
+
+TEST_TABLE(      TABLE=MASS2,       NOM_PARA='POUR_CENT',
+                TYPE_TEST='SOMM_ABS',
+       REFERENCE='NON_REGRESSION', PRECISION=1.E-11, VERSION='5.03.14',
+                VALE=1.8713731513867E+03     )
+
+MASS3=POST_ELEM(  MODELE=MO, CHAM_MATER=CHMAT,  CARA_ELEM=CARA,
+                   CHARGE=CHPES,
+                    RESULTAT=MESTAT,   MASS_INER=_F( TOUT = 'OUI') )
+
+TEST_TABLE(      TABLE=MASS3,       NOM_PARA='MASSE',
+                TYPE_TEST='SOMM_ABS',
+       REFERENCE='NON_REGRESSION', PRECISION=1.E-12, VERSION='6.02.26',
+                VALE=8.8749538026964E+01     )
+
+TEST_TABLE(      TABLE=MASS3,       NOM_PARA='CDG_X',
+                TYPE_TEST='SOMM_ABS',
+       REFERENCE='NON_REGRESSION', PRECISION=1.E-12, VERSION='6.02.26',
+                VALE=7.6190476190477E-01     )
+
+TEST_TABLE(      TABLE=MASS3,       NOM_PARA='CDG_Y',
+                TYPE_TEST='SOMM_ABS',
+       REFERENCE='NON_REGRESSION', PRECISION=1.E-12, VERSION='6.02.26',
+                VALE=4.2857142857143E-01     )
+
+TEST_TABLE(      TABLE=MASS3,       NOM_PARA='CDG_Z',
+                TYPE_TEST='SOMM_ABS',
+       REFERENCE='NON_REGRESSION', PRECISION=1.E-12, VERSION='6.02.26',
+                VALE=8.5714285714285E-01     )
+
+TEST_TABLE(      TABLE=MASS3,       NOM_PARA='IX_G',
+                TYPE_TEST='SOMM_ABS',
+       REFERENCE='NON_REGRESSION', PRECISION=1.E-12, VERSION='6.02.26',
+                VALE=3.8338894820118E+01     )
+
+TEST_TABLE(      TABLE=MASS3,       NOM_PARA='IY_G',
+                TYPE_TEST='SOMM_ABS',
+       REFERENCE='NON_REGRESSION', PRECISION=1.E-12, VERSION='6.02.26',
+                VALE=4.6709525851169E+01     )
+
+TEST_TABLE(      TABLE=MASS3,       NOM_PARA='IZ_G',
+                TYPE_TEST='SOMM_ABS',
+       REFERENCE='NON_REGRESSION', PRECISION=1.E-12, VERSION='6.02.26',
+                VALE=2.8054916322420E+01     )
+
+TEST_TABLE(      TABLE=MASS3,       NOM_PARA='IXY_G',
+                TYPE_TEST='SOMM_ABS',
+       REFERENCE='NON_REGRESSION', PRECISION=1.E-12, VERSION='6.02.26',
+                VALE=2.5658880041810E+00     )
+
+TEST_TABLE(      TABLE=MASS3,       NOM_PARA='IXZ_G',
+                TYPE_TEST='SOMM_ABS',
+       REFERENCE='NON_REGRESSION', PRECISION=1.E-12, VERSION='6.02.26',
+                VALE=5.1317760083619E+00     )
+
+TEST_TABLE(      TABLE=MASS3,       NOM_PARA='IYZ_G',
+                TYPE_TEST='SOMM_ABS',
+       REFERENCE='NON_REGRESSION', PRECISION=1.E-12, VERSION='6.02.26',
+                VALE=1.2436406352500E+01     )
+
+TEST_TABLE(      TABLE=MASS3,       NOM_PARA='IX_PRIN_G',
+                TYPE_TEST='SOMM_ABS',
+       REFERENCE='NON_REGRESSION', PRECISION=1.E-12, VERSION='6.02.26',
+                VALE=2.0037957902233E+01     )
+
+TEST_TABLE(      TABLE=MASS3,       NOM_PARA='IY_PRIN_G',
+                TYPE_TEST='SOMM_ABS',
+       REFERENCE='NON_REGRESSION', PRECISION=1.E-12, VERSION='6.02.26',
+                VALE=4.0137650064054E+01     )
+
+TEST_TABLE(      TABLE=MASS3,       NOM_PARA='IZ_PRIN_G',
+                TYPE_TEST='SOMM_ABS',
+       REFERENCE='NON_REGRESSION', PRECISION=1.E-12, VERSION='6.02.26',
+                VALE=5.2927729027419E+01     )
+
+TEST_TABLE(      TABLE=MASS3,       NOM_PARA='ALPHA',
+                TYPE_TEST='SOMM_ABS',
+       REFERENCE='NON_REGRESSION', PRECISION=1.E-12, VERSION='6.02.26',
+                VALE=1.2503147008953E+02      )
+
+TEST_TABLE(      TABLE=MASS3,       NOM_PARA='BETA',
+                TYPE_TEST='SOMM_ABS',
+       REFERENCE='NON_REGRESSION', PRECISION=1.E-12, VERSION='6.02.26',
+                VALE=5.8590833306414E+01     )
+
+TEST_TABLE(      TABLE=MASS3,       NOM_PARA='GAMMA',
+                TYPE_TEST='SOMM_ABS',
+       REFERENCE='NON_REGRESSION', PRECISION=1.E-12, VERSION='6.02.26',
+                VALE=1.4910778168762E+02     )
+
+FIN( )
+#

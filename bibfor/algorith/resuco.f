@@ -2,7 +2,7 @@
      &                  DDEPLA,NOMA,CNSINR,ITERAT)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/10/2002   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 12/02/2003   AUTEUR PABHHHH N.TARDIEU 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,17 +26,18 @@ C ======================================================================
       CHARACTER*8 NOMA
       CHARACTER*19 CNSINR
       CHARACTER*24 DEFICO,RESOCO,DEPTOT,DEPDEL,DDEPLA
-C ----------------------------------------------------------------------
+C ======================================================================
 C COMMANDE STAT_NON_LINE / CONTACT UNILATERAL
 C ECRITURE DANS LE FICHIER MESSAGE DES COUPLES NOEUD / MAILLE (OU NOEUD)
 C EFFECTIVEMENT EN CONTACT A CONVERGENCE DE NEWTON (FIN DU PAS DE TEMPS)
-C ----------------------------------------------------------------------
+C ======================================================================
 C     IN   NUMORD : NUMERO DU PAS DE CHARGE
 C     IN   INSTAP : INSTANT DE CALCUL
 C     IN   DEFICO : SD DE DEFINITION DU CONTACT
 C     IN   RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 C     IN   NOMA   : NOM DU MAILLAGE
 C     OUT  CNSINR : CHAM_NO_S POUR L'ARCHIVAGE DU CONTACT
+C ======================================================================
 C ------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
       INTEGER ZI
@@ -54,23 +55,24 @@ C ------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------
+C ======================================================================
       INTEGER IFM,NIV,ICONTA,POS1,POS2,NUM1,NUM2,NDIM,II,JJ,KK
       INTEGER JAPPAR,JCOCO,JLIAC,NBLIAC,JNOCO,JMACO,LLIAC,NBLIAI,NESCL
-      INTEGER JAPJEU,JDEPDE,JDDEPL
+      INTEGER JAPJEU,JDEPDE,JDDEPL,IPENA
       INTEGER IBID,JCNSVR,JCNSLR,JDIM
       INTEGER JATMU,JAFMU,JMU,JDECAL,JAPPTR,JAPCOE,JAPDDL,NBDDL,NEQ,LMAT
       INTEGER JAPJFY,JAPJFX,JAPCOF,JMETH,JJIAC,LLF,LLF1,LLF2,NESMAX
-      REAL*8   AJEUFX,AJEUFY,AJEUFT,RN,RNN,RT1,RT2,RT,COE
-      REAL*8   VAL1,VAL2,VARC,R8BID,RT11,RT12,RT21,RT22
-      LOGICAL  LBID
-      CHARACTER*7  CHAIN
-      CHARACTER*8  NOM1,NOM2,LICMPR(11)
+      REAL*8 AJEUFX,AJEUFY,AJEUFT,RN,RNN,RT1,RT2,RT,COE,TESTMU,TESTCF
+      REAL*8 VAL1,VAL2,VARC,R8BID,RT11,RT12,RT21,RT22,R8PREM,R8MIEM
+      LOGICAL LBID
+      CHARACTER*7 CHAIN
+      CHARACTER*8 NOM1,NOM2,LICMPR(11)
       CHARACTER*16 K16BID
       CHARACTER*19 COCO,LIAC,ATMU,AFMU,MU,MATASS
       CHARACTER*19 K19BID,MATRIX(2)
       CHARACTER*24 APPARI,NDIMCO,METHCO,CONTNO,CONTMA,APPOIN,APCOEF
-      CHARACTER*24 APDDL,APJEU,APCOFR,APJEFX,APJEFY,K24BID
-C ----------------------------------------------------------------------
+      CHARACTER*24 APDDL,APJEU,APCOFR,APJEFX,APJEFY,K24BID,PENAL
+C ======================================================================
       CNSINR = '&&RESUCO.CNSINR'
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
@@ -115,6 +117,7 @@ C --- FORCER LA RECHERCHE DU NOM DE LA MATRASS
         CONTMA = DEFICO(1:16)//'.MAILCO'
         METHCO = DEFICO(1:16)//'.METHCO'
         NDIMCO = DEFICO(1:16)//'.NDIMCO'
+        PENAL = DEFICO(1:16)//'.PENAL'
         APPOIN = RESOCO(1:14)//'.APPOIN'
         APCOEF = RESOCO(1:14)//'.APCOEF'
         APCOFR = RESOCO(1:14)//'.APCOFR'
@@ -141,6 +144,7 @@ C --- FORCER LA RECHERCHE DU NOM DE LA MATRASS
         CALL JEVEUO(AFMU,'L',JAFMU)
         CALL JEVEUO(MU,'L',JMU)
         CALL JEVEUO(NDIMCO,'L',JDIM)
+        CALL JEVEUO(PENAL,'L',IPENA)
 
         NESMAX = ZI(JDIM+8)
 
@@ -184,7 +188,7 @@ C --- CREATION DU CHAM_NO_S POUR LE CONTACT
         CALL JEVEUO(CNSINR//'.CNSV','E',JCNSVR)
         CALL JEVEUO(CNSINR//'.CNSL','E',JCNSLR)
 
-        DO 90 II = 1,NBLIAI
+        DO 60 II = 1,NBLIAI
           VARC = 0.D0
           RN = 0.D0
           RNN = 0.D0
@@ -210,7 +214,7 @@ C  ---    RECUPERATION DE (ASG)T.MUSG
 C  ---    RECUPERATION DE (AG)T.MUG
             CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),ZI(JAPDDL+JDECAL),
      &                  ZR(JAFMU),RT12)
-            RT1=RT11+RT12
+            RT1 = RT11 + RT12
             IF (NDIM.EQ.3) THEN
 C  ---      RECUPERATION DE (ASG)T.MUSG
               CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
@@ -218,7 +222,7 @@ C  ---      RECUPERATION DE (ASG)T.MUSG
 C  ---      RECUPERATION DE (AG)T.MUG
               CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
      &                    ZI(JAPDDL+JDECAL),ZR(JAFMU),RT22)
-              RT2=RT21+RT22
+              RT2 = RT21 + RT22
             END IF
           END IF
           CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),ZI(JAPDDL+JDECAL),
@@ -233,30 +237,57 @@ C  ---      RECUPERATION DE (AG)T.MUG
      &                  ZI(JAPDDL+JDECAL),ZR(JDDEPL),VAL2)
             AJEUFY = VAL1 + VAL2
           END IF
-
-          DO 70 KK = 1,NBLIAC
-            LLIAC = ZI(JLIAC+KK-1)
-            IF (LLIAC.EQ.II) THEN
-              DO 60 JJ = 1,LLF + LLF1 + LLF2
-                JJIAC = ZI(JLIAC+NBLIAC+JJ-1)
-                IF (JJIAC.EQ.II) THEN
-                  VARC = 1.0D0
-                  RNN = ZR(JMU+KK-1)
-                  IF ((JJ.GT.LLF) .AND. (JJ.LE. (LLF+LLF1))) THEN
-                    RT2 = 0.D0
-                  ELSE IF (JJ.GT. (LLF+LLF1) .AND.
-     &                     (JJ.LE. (LLF+LLF1+LLF2))) THEN
-                    RT1 = 0.D0
-                  END IF
-                  GO TO 80
+C ======================================================================
+C --- METHODE PENALISATION --------------------------------------------
+C ======================================================================
+          IF (ZI(JMETH+6).EQ.3 .OR. ZI(JMETH+6).EQ.5) THEN
+             DO 10 KK = 1,NBLIAC
+                LLIAC = ZI(JLIAC+KK-1)
+                IF (LLIAC.EQ.II) THEN
+                   TESTMU = ZR(JMU-1+3*NBLIAI+LLIAC)
+                   TESTCF = SQRT(ZR(IPENA-1+2*LLIAC))
+                   IF (TESTCF.GT.R8MIEM()) THEN
+                      IF (ABS((TESTMU-TESTCF)/TESTCF).GT.R8PREM()) THEN
+                         VARC = 1.0D0
+                      ELSE
+                         VARC = 2.0D0
+                      END IF
+                   ELSE
+                      VARC = 2.0D0
+                   END IF
+                   RNN = ZR(JMU+KK-1)
+                   GO TO 20
                 END IF
-   60         CONTINUE
-              VARC = 2.0D0
-              RNN = ZR(JMU+KK-1)
-              GO TO 80
-            END IF
-   70     CONTINUE
-   80     CONTINUE
+   10        CONTINUE
+   20        CONTINUE
+C ======================================================================
+C --- AUTRES METHODES -------------------------------------------------
+C ======================================================================
+          ELSE
+            DO 40 KK = 1,NBLIAC
+              LLIAC = ZI(JLIAC+KK-1)
+              IF (LLIAC.EQ.II) THEN
+                DO 30 JJ = 1,LLF + LLF1 + LLF2
+                  JJIAC = ZI(JLIAC+NBLIAC+JJ-1)
+                  IF (JJIAC.EQ.II) THEN
+                    VARC = 1.0D0
+                    RNN = ZR(JMU+KK-1)
+                    IF ((JJ.GT.LLF) .AND. (JJ.LE. (LLF+LLF1))) THEN
+                      RT2 = 0.D0
+                    ELSE IF (JJ.GT. (LLF+LLF1) .AND.
+     &                       (JJ.LE. (LLF+LLF1+LLF2))) THEN
+                      RT1 = 0.D0
+                    END IF
+                    GO TO 50
+                  END IF
+   30           CONTINUE
+                VARC = 2.0D0
+                RNN = ZR(JMU+KK-1)
+                GO TO 50
+              END IF
+   40       CONTINUE
+   50       CONTINUE
+          END IF
 
           RN = RN/2.D0
           RT1 = RT1/2.D0
@@ -325,7 +356,7 @@ C --- RECUPERATION DES VALEURS DU CONTACT
           ZL(JCNSLR-1+ (NUM1-1)*11+9) = .TRUE.
           ZL(JCNSLR-1+ (NUM1-1)*11+10) = .TRUE.
           ZL(JCNSLR-1+ (NUM1-1)*11+11) = .TRUE.
-   90   CONTINUE
+   60   CONTINUE
 
         IF (NIV.EQ.2) THEN
           WRITE (IFM,'(''<CONTACT_2> '',10X,169(''*''))')

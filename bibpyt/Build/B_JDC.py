@@ -1,4 +1,4 @@
-#@ MODIF B_JDC Build  DATE 03/09/2002   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF B_JDC Build  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,10 +31,15 @@ from B_CODE import CODE
 
 class JDC(CODE):
   """
+  Cette classe implémente les méthodes de l'objet JDC pour la phase de construction (Build).
+
+  Les méthodes principales sont :
+     - Build, qui réalise la construction de toutes les étapes du jeu de commandes
   """
 
   def __init__(self):
      self.ini=0
+     self.icmd=0
      self.actif_status=0
 
   def register(self,etape):
@@ -63,16 +68,15 @@ class JDC(CODE):
 
   def Build(self):
     """ 
-        Fonction : Construction des étapes du jeu de commandes
-           Toutes les étapes n'ont pas besoin d'etre construites
-           En général, seules les macros implémentées en Fortran
-            nécessitent d'etre construites
-           Cependant, on demande à toutes les étapes de se construire
-            cette phase pouvant etre réduite à sa plus simple expression
-           Il faut prendre garde (à implémenter plus tard) que en cas
-           d'exécution en mode commande par commande, la construction
-           doit etre suivie immédiatement par l'exécution éventuellement
-           précédée par la vérification
+    Fonction : Construction des étapes du jeu de commandes
+
+    Toutes les étapes n'ont pas besoin d'etre construites.
+    En général, seules certaines macros nécessitent d'etre construites.
+    Cependant, on demande à toutes les étapes de se construire,
+    cette phase pouvant etre réduite à sa plus simple expression.
+    Il faut prendre garde que en cas d'exécution en mode commande par 
+    commande, la construction doit etre immédiatement suivie par l'exécution 
+    éventuellement précédée par la vérification
     """
     # Pour etre sur de ne pas se planter sur l appel a set_context on le met d abord a blanc
     CONTEXT.unset_current_step()
@@ -107,7 +111,6 @@ class JDC(CODE):
          JDC lui meme
      """
      if CONTEXT.debug : print "Build_JDC ",self.nom
-     self.icmd=0
      self.initexec()
      return 0
 

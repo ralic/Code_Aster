@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 GENE_MATR_ALEA=OPER(nom="GENE_MATR_ALEA",op=  27,sd_prod=matr_asse_gene_r,
                fr="Generateur de matrice aleatoire",
-               docu="U4.36.06",reentrant='n',
+               docu="U4.36.06-a",reentrant='n',
             UIinfo={"groupes":("Fonction",)},
    MATR_MOYEN   = SIMP(statut='o', typ=matr_asse_gene_r),
    DELTA        = SIMP(statut='f', typ='R', defaut=0.1),

@@ -1,6 +1,6 @@
       SUBROUTINE CBONDP(CHAR,LIGRMO,NOMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/07/99   AUTEUR ACBHHCD G.DEVESA 
+C MODIF MODELISA  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,12 +67,12 @@ C --- CREATION DES FONCTIONS NECESSAIRES
  
       DO 10 I = 1,6
          IF (I.NE.5) THEN
-            CALL WKVECT(ONDP(I)(1:19)//'.PROL','G V K8',5,JPRO)
-            ZK8(JPRO)   = 'CONSTANT'
-            ZK8(JPRO+1) = 'LIN LIN '
-            ZK8(JPRO+2) = 'TOUTPARA'
-            ZK8(JPRO+3) = 'TOUTRESU'
-            ZK8(JPRO+4) = 'CC      '
+            CALL WKVECT(ONDP(I)(1:19)//'.PROL','G V K16',5,JPRO)
+            ZK16(JPRO)   = 'CONSTANT'
+            ZK16(JPRO+1) = 'LIN LIN '
+            ZK16(JPRO+2) = 'TOUTPARA'
+            ZK16(JPRO+3) = 'TOUTRESU'
+            ZK16(JPRO+4) = 'CC      '
          ENDIF
 10    CONTINUE
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ POST_ZAC=OPER(nom="POST_ZAC",op= 175,sd_prod=mult_elas,docu="U4.83.21-b",reentra
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          EXCIT           =FACT(statut='o',min=1,max='**',
            CHARGE          =SIMP(statut='o',typ=char_meca),
-           FONC_MULT       =SIMP(statut='f',typ=fonction),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",into=("FIXE_CSTE",)),
          ),
          EVOL_ELAS       =SIMP(statut='o',typ=evol_elas),

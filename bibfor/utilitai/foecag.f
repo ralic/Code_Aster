@@ -5,7 +5,7 @@
       CHARACTER*(*)      MOTFAC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/02/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER        ICOURB
       REAL*8          BORNE(2),RBID
       CHARACTER*2     TRI
-      CHARACTER*8    K8B, TYPFON
+      CHARACTER*8    K8B
+      CHARACTER*16   TYPFON
       INTEGER LF,LXLGUT,LPRO,IRET,LNOVA,NBNOVA,NTI,LG,IFGX,NGR
       INTEGER IFGY,NEX,NEY,NBX,NBY,NLX,NLY,ISTYLE,NST,ICOL,NCO,IMAR,NMA
       INTEGER IFMA,NLE,NTR,LPAR,NBAMOR,IA
@@ -76,7 +77,7 @@ C
       LF = LXLGUT(NOMF1)
 C
       CALL JEVEUO(NOMFON//'.PROL','L',LPRO)
-      IF ( ZK8(LPRO) .EQ. 'INTERPRE' )  THEN
+      IF ( ZK16(LPRO) .EQ. 'INTERPRE' )  THEN
          CALL JEEXIN(NOMFON//'.NOVA',IRET)
          IF ( IRET.EQ.0 ) THEN
             IER = IER + 1
@@ -100,13 +101,13 @@ C
             TYPFON = 'FONCTION'
          ENDIF
 C
-      ELSEIF ( ZK8(LPRO) .EQ. 'FONCTION' )  THEN
-         TYPFON = ZK8(LPRO  )
+      ELSEIF ( ZK16(LPRO) .EQ. 'FONCTION' )  THEN
+         TYPFON = ZK16(LPRO  )
 C
-      ELSEIF ( ZK8(LPRO) .EQ. 'NAPPE' )  THEN
-         TYPFON = ZK8(LPRO  )
+      ELSEIF ( ZK16(LPRO) .EQ. 'NAPPE' )  THEN
+         TYPFON = ZK16(LPRO  )
 C
-      ELSEIF ( ZK8(LPRO) .EQ. 'CONSTANTE' ) THEN
+      ELSEIF ( ZK16(LPRO) .EQ. 'CONSTANTE' ) THEN
          IER = IER + 1
          CALL UTMESS('A',NOMCMD,'NE TRACE LA FONCTION "CONSTANTE"')
          GOTO 9999

@@ -3,7 +3,7 @@
       CHARACTER*16       OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 11/02/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -807,6 +807,10 @@ C
 C ---   DETERMINATION DE LA MATRICE MATN DONT LE TERME GENERIQUE
 C ---   EST MATN(I,J) = SOMME_LONGUEUR (H*NI(X,Y)*NJ(X,Y).DX.DY) :
 C       --------------------------------------------------------
+        IPOIDS=IFF
+        IVF   =IPOIDS+NPG1
+        IDFDE =IVF   +NPG1*NNO
+        IDFDK =IDFDE +NPG1*NNO
         DO 250 KP=1,NPG1
            K=(KP-1)*NNO
 C

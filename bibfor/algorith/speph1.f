@@ -8,7 +8,7 @@
       CHARACTER*8         NOMU, TABLE, NNOE(*), NOMCMP(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/97   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,13 +106,13 @@ C
             VALE = NOMCOD(1:19)//'.VALE'
             PROL = NOMCOD(1:19)//'.PROL'
             CALL WKVECT ( VALE, 'G V R ', 3*NBPF, LVALE )
-            CALL WKVECT ( PROL, 'G V K8', 5, LPROL )
+            CALL WKVECT ( PROL, 'G V K16', 5, LPROL )
 C
-            ZK8(LPROL  ) = 'FONCT_C '
-            ZK8(LPROL+1) = 'LIN LIN '
-            ZK8(LPROL+2) = 'FREQ    '
-            ZK8(LPROL+3) = 'DSP     '
-            ZK8(LPROL+4) = 'LL      '
+            ZK16(LPROL  ) = 'FONCT_C '
+            ZK16(LPROL+1) = 'LIN LIN '
+            ZK16(LPROL+2) = 'FREQ    '
+            ZK16(LPROL+3) = 'DSP     '
+            ZK16(LPROL+4) = 'LL      '
 C
             DO 80 IL = 1,NBPF
               ZR(LVALE+IL-1) = DISC(IL)

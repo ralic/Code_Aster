@@ -1,16 +1,15 @@
       SUBROUTINE STCHPV ( NBOBST, NBPT, TEMPS, DLOC, FCHO, VGLI,IADH,
-     &                    WK1, WK2, WK3, IWK4,
-     +                    TDEBUT, TFIN, NBLOC, OFFSET,
-     +                    TREPOS, NOECHO, NOMRES )
+     &                    WK1, WK2, WK3, IWK4, TDEBUT, TFIN, NBLOC, 
+     +                    OFFSET, TREPOS, NOECHO, INTITU, NOMRES )
       IMPLICIT     REAL*8 (A-H,O-Z)
       INTEGER         NBOBST, NBPT, NBLOC, IADH(*),IWK4(*)
       REAL*8          TEMPS(*), DLOC(*), FCHO(*), VGLI(*), TREPOS,
      +                WK1(*), WK2(*), WK3(*), TDEBUT, TFIN, OFFSET
       CHARACTER*(*)   NOMRES
-      CHARACTER*8     NOECHO(*)
+      CHARACTER*8     NOECHO(*), INTITU(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/12/98   AUTEUR ACBHHJA G.JACQUART 
+C MODIF ALGORITH  DATE 24/03/2003   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,40 +39,39 @@ C     VGLI         : VECTEUR DES VITESSES DE GLISSEMENT
 C     IADH         : VECTEUR INDICATEUR D ADHERENCE
 C-----------------------------------------------------------------------
       INTEGER        IBID, VALEI(3), NBPARA, NDEPL, NUSUR, NFORN, NSTCH
-      PARAMETER     ( NBPARA = 19 , NDEPL = 7 , NUSUR = 3 , NFORN = 7 ,
-     +                NSTCH = 9 ) 
+      PARAMETER     ( NBPARA=20, NDEPL=8, NUSUR=4, NFORN=8, NSTCH=10 ) 
       REAL*8        PARA(7)
       CHARACTER*8   K8B, NOEUD, TPARA(NBPARA)
       CHARACTER*16  TDEPL(NDEPL), TFORN(NFORN), TSTCH(NSTCH), 
-     +              TUSUR(NUSUR), TVAR(10), NPARA(NBPARA), VALEK(2)
+     +              TUSUR(NUSUR), TVAR(10), NPARA(NBPARA), VALEK(3)
       COMPLEX*16    C16B
       DATA TVAR  / 'DEPL_X' , 'DEPL_Y' , 'DEPL_Z' , 'DEPL_RADIAL',
      +             'DEPL_ANGULAIRE' , 'FORCE_NORMALE' , 'FORCE_TANG_1',
      +             'FORCE_TANG_2' , 'STAT_CHOC' , 'PUIS_USURE' /
-      DATA NPARA / 'NOEUD'         , 'CALCUL'        , 'MOYEN'        , 
+      DATA NPARA / 'INTITU','NOEUD', 'CALCUL'        , 'MOYEN'        , 
      +             'ECART_TYPE'    , 'RMS'           , 'MAXI'         ,
      +             'MINI'          , 'MOYEN_T_TOTAL' , 'MOYEN_T_CHOC' ,
      +             'RMS_T_TOTAL'   , 'RMS_T_CHOC'    , 'NB_CHOC_S'    , 
      +             'NB_REBON_CHOC' , 'T_CHOC_MOYEN'  , 'T_CHOC_MAXI'  ,
      +             'T_CHOC_MINI'   , 'T_REBON_MOYEN' , '%_T_CHOC'     ,
      +             'PUIS_USURE'    /
-      DATA TPARA / 'K8'            , 'K16'           , 'R'            , 
+      DATA TPARA / 'K8', 'K8'      , 'K16'           , 'R'            , 
      +             'R'             , 'R'             , 'R'            ,
      +             'R'             , 'R'             , 'R'            ,
      +             'R'             , 'R'             , 'I'            ,
      +             'I'             , 'R'             , 'R'            ,
      +             'R'             , 'R'             , 'I'            ,
      +             'R'             /
-      DATA TDEPL / 'NOEUD'         , 'CALCUL'        , 'MOYEN'        , 
+      DATA TDEPL / 'INTITU','NOEUD', 'CALCUL'        , 'MOYEN'        , 
      +             'ECART_TYPE'    , 'RMS'           , 'MAXI'         ,
      +             'MINI'          /
-      DATA TFORN / 'NOEUD'         , 'CALCUL'        , 'MOYEN_T_TOTAL',
+      DATA TFORN / 'INTITU','NOEUD', 'CALCUL'        , 'MOYEN_T_TOTAL',
      +             'MOYEN_T_CHOC'  , 'RMS_T_TOTAL'   , 'RMS_T_CHOC'   ,
      +             'MAXI'          /
-      DATA TSTCH / 'NOEUD'         , 'CALCUL'        , 'NB_CHOC_S'    ,
+      DATA TSTCH / 'INTITU','NOEUD', 'CALCUL'        , 'NB_CHOC_S'    ,
      +             'NB_REBON_CHOC' , 'T_CHOC_MOYEN'  , 'T_CHOC_MAXI'  ,
      +             'T_CHOC_MINI'   , 'T_REBON_MOYEN' , '%_T_CHOC'     /
-      DATA TUSUR / 'NOEUD'         , 'CALCUL'        , 'PUIS_USURE'   /
+      DATA TUSUR / 'INTITU','NOEUD', 'CALCUL'        , 'PUIS_USURE'   /
 C-----------------------------------------------------------------------
 C
       ZERO   =  0.0D0
@@ -119,7 +117,8 @@ C
 C
       DO 10 I = 1 , NBOBST
         NOEUD = NOECHO(I)
-        VALEK(1) = NOEUD
+        VALEK(1) = INTITU(I)
+        VALEK(2) = NOEUD
 C
         IF ( IMPR .EQ. 2 ) THEN
           WRITE(IFIRES,*) '   '
@@ -137,7 +136,7 @@ C       --------------------------------
 C
         DO 11 J = 1,3
 C
-          VALEK(2) = TVAR(J)
+          VALEK(3) = TVAR(J)
           DXMOYT = ZERO
           DXETYT = ZERO
           DXRMST = ZERO
@@ -183,8 +182,7 @@ C
           PARA(3) = DXRMST
           PARA(4) = DXMAXT
           PARA(5) = DXMINT
-          CALL TBAJLI ( NOMRES, NDEPL, TDEPL, 
-     +                          IBID, PARA, C16B, VALEK, 0 )
+          CALL TBAJLI(NOMRES, NDEPL, TDEPL, IBID, PARA, C16B, VALEK, 0 )
  11     CONTINUE
 C
 C       --------------------------------------------------------
@@ -232,14 +230,13 @@ C
           IF (IMPR.EQ.2) CALL IMPDEP( IFIRES, 4, IBL, DXMOYT, DXETYT,
      +                                DXRMST, DXMAXT, DXMINT)
         ENDIF
-        VALEK(2) = TVAR(4)
+        VALEK(3) = TVAR(4)
         PARA(1) = DXMOYT
         PARA(2) = DXETYT
         PARA(3) = DXRMST
         PARA(4) = DXMAXT
         PARA(5) = DXMINT
-        CALL TBAJLI ( NOMRES, NDEPL, TDEPL, 
-     +                          IBID, PARA, C16B, VALEK, 0 )
+        CALL TBAJLI ( NOMRES, NDEPL, TDEPL, IBID, PARA, C16B, VALEK, 0 )
 C
 C       ----------------------------------
 C       --- ANALYSE DE L ANGLE POLAIRE ---
@@ -288,14 +285,13 @@ C
           IF (IMPR.EQ.2) CALL IMPDEP( IFIRES, 5, IBL, DXMOYT, DXETYT,
      +                                DXRMST, DXMAXT, DXMINT )
         ENDIF
-        VALEK(2) = TVAR(5)
+        VALEK(3) = TVAR(5)
         PARA(1) = DXMOYT
         PARA(2) = DXETYT
         PARA(3) = DXRMST
         PARA(4) = DXMAXT
         PARA(5) = DXMINT
-        CALL TBAJLI ( NOMRES, NDEPL, TDEPL, 
-     +                          IBID, PARA, C16B, VALEK, 0 )
+        CALL TBAJLI ( NOMRES, NDEPL, TDEPL, IBID, PARA, C16B, VALEK, 0 )
 C
 C       ------------------------------------------------------------
 C       CALCUL DE LA MOYENNE,ECART TYPE,RMS, MAX DE LA FORCE NORMALE
@@ -346,14 +342,13 @@ C
         ENDIF
         IF (IBL.GT.1 .AND. IMPR.EQ.2) CALL IMPFN0( IFIRES, 0, 0, FXMOYT,
      +                                  FXMOYC, FXRMST, FXRMSC, FXMAXT )
-        VALEK(2) = TVAR(6)
+        VALEK(3) = TVAR(6)
         PARA(1) = FXMOYT
         PARA(2) = FXMOYC
         PARA(3) = FXRMST
         PARA(4) = FXRMSC
         PARA(5) = FXMAXT
-        CALL TBAJLI ( NOMRES, NFORN, TFORN, 
-     +                          IBID, PARA, C16B, VALEK, 0 )
+        CALL TBAJLI ( NOMRES, NFORN, TFORN, IBID, PARA, C16B, VALEK, 0 )
 C
 C       ----------------------------------------------------------------
 C       CALCUL DE LA MOYENNE,ECART TYPE,RMS,MAX DE LA FORCE TANGENTIELLE
@@ -406,14 +401,13 @@ C
           IF (IBL.GT.1 .AND. IMPR.EQ.2) CALL IMPFTV( IFIRES, INDIC, 0,
      +                         FYMOYT, FYETYT, FYRMST,
      +                         FYMOYC, FYETYC, FYRMSC, FYMAXT, FYMINT )
-          VALEK(2) = TVAR(5+J)
+          VALEK(3) = TVAR(5+J)
           PARA(1) = FYMOYT
           PARA(2) = FYETYT
           PARA(3) = FYRMST
           PARA(4) = FYMAXT
           PARA(5) = FYMINT
-          CALL TBAJLI ( NOMRES, NDEPL, TDEPL, 
-     +                          IBID, PARA, C16B, VALEK, 0 )
+          CALL TBAJLI (NOMRES, NDEPL, TDEPL, IBID, PARA, C16B, VALEK, 0)
  40     CONTINUE
 C
 C       -------------------------------------------------------
@@ -463,7 +457,7 @@ C
           CALL IMPC0 ( IFIRES,0,0,NBCHOT,TCHOMY,TCHOMA,TCHOMI,NBREBT,
      &                 TREBMY,TCHOCG,TEMPS,NBLOC*NBVAL )
         ENDIF
-        VALEK(2) = TVAR(9)
+        VALEK(3) = TVAR(9)
         IF ( NBCHOT .NE. 0 ) THEN
            NREPC = NBREBT / NBCHOT
         ELSE
@@ -476,8 +470,7 @@ C
         PARA(3)  = TCHOMI
         PARA(4)  = TREBMY
         VALEI(3) = INT( 100.D0 * TCHOCG / TTOT )
-        CALL TBAJLI ( NOMRES, NSTCH, TSTCH, 
-     +                          VALEI, PARA, C16B, VALEK, 0 )
+        CALL TBAJLI (NOMRES, NSTCH, TSTCH, VALEI, PARA, C16B, VALEK, 0)
 C
 C       --------------------------------------------------------
 C       --- CALCUL DE LA PUISSANCE D'USURE AU SENS D'ARCHARD ---
@@ -486,9 +479,8 @@ C
         CALL STATPU ( NBOBST,NBPT,TEMPS,FCHO,VGLI,IADH,
      &                WK1,WK2,WK3,IWK4,
      &                IDEBUT,NBLOC,NBVAL,IFIRES,I,IMPR, PUSURN )
-        VALEK(2) = TVAR(10)
-        CALL TBAJLI ( NOMRES, NUSUR, TUSUR, 
-     +                           IBID, PUSURN, C16B, VALEK, 0 )
+        VALEK(3) = TVAR(10)
+        CALL TBAJLI (NOMRES, NUSUR, TUSUR, IBID, PUSURN, C16B, VALEK, 0)
 C
  10   CONTINUE
 C

@@ -1,16 +1,20 @@
       SUBROUTINE IRGMCN ( CHAMSY, IFI, NOMCON, ORDR, NBORDR, COORD,
-     +                    CONNX, POINT, NJVPOI, NJVSEG, NJVTRI, 
-     +                    NJVTET, NBPOI, NBSEG, NBTRI, NBTET,
-     +                    NBCMPI, NOMCMP, LRESU, PARA )
+     +                    CONNX, POINT, NJVPOI, NJVSEG, NJVTRI, NJVQUA,
+     +                    NJVTET, NJVPYR, NJVPRI, NJVHEX,
+     +                    NBPOI, NBSEG, NBTRI, NBQUA, NBTET, NBPYR, 
+     +                    NBPRI, NBHEX, NBCMPI, NOMCMP, LRESU, PARA,
+     +                    VERSIO )
       IMPLICIT NONE
       INTEGER        NBPOI, NBSEG, NBTRI, NBTET, IFI, NBORDR, NBCMPI
+      INTEGER        NBQUA, NBPYR, NBPRI, NBHEX, VERSIO
       INTEGER        ORDR(*), CONNX(*), POINT(*)
       REAL*8         COORD(*), PARA(*)
       LOGICAL        LRESU
       CHARACTER*(*)  NOMCON,CHAMSY,NJVPOI,NJVSEG,NJVTRI,NJVTET,NOMCMP(*)
+     +              ,NJVQUA,NJVPYR,NJVPRI,NJVHEX
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/02/2002   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF PREPOST  DATE 07/01/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +31,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C TOLE CRP_21
 C
 C        IMPRESSION D'UN CHAM_NO AU FORMAT GMSH
 C
@@ -41,11 +46,19 @@ C        POINT  : VECTEUR DU NOMBRE DE NOEUDS DES MAILLES DU MAILLAGE
 C        NJVPOI : NOM JEVEUX DEFINISSANT LES ELEMENTS POI1 DU MAILLAGE
 C        NJVSEG : NOM JEVEUX DEFINISSANT LES ELEMENTS SEG2 DU MAILLAGE
 C        NJVTRI : NOM JEVEUX DEFINISSANT LES ELEMENTS TRI3 DU MAILLAGE
+C        NJVQUA : NOM JEVEUX DEFINISSANT LES ELEMENTS QUA4 DU MAILLAGE
 C        NJVTET : NOM JEVEUX DEFINISSANT LES ELEMENTS TET4 DU MAILLAGE
+C        NJVPYR : NOM JEVEUX DEFINISSANT LES ELEMENTS PYR5 DU MAILLAGE
+C        NJVPRI : NOM JEVEUX DEFINISSANT LES ELEMENTS PRI6 DU MAILLAGE
+C        NJVHEX : NOM JEVEUX DEFINISSANT LES ELEMENTS HEX8 DU MAILLAGE
 C        NBPOI  : NOMBRE D'ELEMENTS POI1 DU MAILLAGE
 C        NBSEG  : NOMBRE D'ELEMENTS SEG2 DU MAILLAGE
 C        NBTRI  : NOMBRE D'ELEMENTS TRI3 DU MAILLAGE
+C        NBQUA  : NOMBRE D'ELEMENTS QUA4 DU MAILLAGE
 C        NBTET  : NOMBRE D'ELEMENTS TET4 DU MAILLAGE
+C        NBPYR  : NOMBRE D'ELEMENTS PYR5 DU MAILLAGE
+C        NBPRI  : NOMBRE D'ELEMENTS PRI6 DU MAILLAGE
+C        NBHEX  : NOMBRE D'ELEMENTS HEXA8 DU MAILLAGE
 C        NBCMPI : NOMBRE DE COMPOSANTES DEMANDEES A IMPRIMER
 C        NOMCMP : NOMS DES COMPOSANTES DEMANDEES A IMPRIMER
 C        LRESU  : LOGIQUE INDIQUANT SI NOMCON EST UNE SD RESULTAT
@@ -131,6 +144,14 @@ C
                VECT = .TRUE.
             ELSEIF ( NOCMP .EQ. 'DZ' ) THEN
                VECT = .TRUE.
+            ELSEIF ( CHAMSY(1:2) .EQ. 'SI' ) THEN
+               IF (VERSIO.EQ.2) THEN
+                 TENS = .TRUE.
+               ENDIF
+            ELSEIF ( CHAMSY(1:2) .EQ. 'EP' ) THEN
+               IF (VERSIO.EQ.2) THEN
+                 TENS = .TRUE.
+               ENDIF
             ELSE
                SCAL = .TRUE.
                NCMPU = NCMPU + 1
@@ -140,24 +161,81 @@ C
       ELSE
          DO 210 K = 1 , NBCMPI
             NOCMP = NOMCMP(K)
-            IF ( NOCMP .EQ. 'DX' ) THEN
-               VECT = .TRUE.
-            ELSEIF ( NOCMP .EQ. 'DY' ) THEN
-               VECT = .TRUE.
-            ELSEIF ( NOCMP .EQ. 'DZ' ) THEN
-               VECT = .TRUE.
-            ELSE
-               SCAL = .TRUE.
-               NCMPU = NCMPU + 1
-               ZK8(JNCMP+NCMPU-1) = NOCMP
-            ENDIF
+            SCAL = .TRUE.
+            NCMPU = NCMPU + 1
+            ZK8(JNCMP+NCMPU-1) = NOCMP
  210     CONTINUE
       ENDIF
 C
 C ----------------------------------------------------------------------
+C          IMPRESSION D'UN CHAMP TENSORIEL 
+C ----------------------------------------------------------------------
+      IF ( TENS ) THEN
+         IF (VERSIO.EQ.2) THEN
+            CALL UTMESS('A','IMPR_RESU','ATTENTION, IL FAUT SPECIFIER '
+     &     //'LES NOMS DES COMPOSANTES DU TENSEUR POUR POUVOIR LES '
+     &     //'VISUALISER SEPAREMENT AVEC GMSH (VERSION 1.36)')
+         ENDIF
+C
+C        ECRITURE DE L'ENTETE DE View
+C        **************************** 
+C      
+         NOCMP = 'TENSEUR '
+         CALL IRGMPV ( IFI, LRESU, NOMCON, CHAMSY, NBORD2, PARA, NOCMP,
+     +                 NBPOI, NBSEG, NBTRI, NBQUA, NBTET, NBPYR, NBPRI,
+     +                 NBHEX, .FALSE., .FALSE., TENS, VERSIO )
+
+         IF ( NBPOI .NE. 0 ) THEN
+          CALL IRGNTE ( IFI, NBORD2, COORD, CONNX, POINT, NJVPOI, NBPOI,
+     +                  ZI(JTABV), ZI(JTABD) )
+         ENDIF
+C
+         IF ( NBSEG .NE. 0 ) THEN
+          CALL IRGNTE ( IFI, NBORD2, COORD, CONNX, POINT, NJVSEG, NBSEG,
+     +                  ZI(JTABV), ZI(JTABD) )
+         ENDIF
+
+         IF ( NBTRI .NE. 0 ) THEN
+          CALL IRGNTE ( IFI, NBORD2, COORD, CONNX, POINT, NJVTRI, NBTRI,
+     +                  ZI(JTABV), ZI(JTABD) )
+         ENDIF
+
+         IF ( NBQUA .NE. 0 ) THEN
+          CALL IRGNTE ( IFI, NBORD2, COORD, CONNX, POINT, NJVQUA, NBQUA,
+     +                  ZI(JTABV), ZI(JTABD) )
+         ENDIF
+
+         IF ( NBTET .NE. 0 ) THEN
+          CALL IRGNTE ( IFI, NBORD2, COORD, CONNX, POINT, NJVTET, NBTET,
+     +                  ZI(JTABV), ZI(JTABD) )
+         ENDIF
+
+         IF ( NBPYR .NE. 0 ) THEN
+          CALL IRGNTE ( IFI, NBORD2, COORD, CONNX, POINT, NJVPYR, NBPYR,
+     +                  ZI(JTABV), ZI(JTABD) )
+         ENDIF
+
+         IF ( NBPRI .NE. 0 ) THEN
+          CALL IRGNTE ( IFI, NBORD2, COORD, CONNX, POINT, NJVPRI, NBPRI,
+     +                  ZI(JTABV), ZI(JTABD) )
+         ENDIF
+
+         IF ( NBHEX .NE. 0 ) THEN
+          CALL IRGNTE ( IFI, NBORD2, COORD, CONNX, POINT, NJVHEX, NBHEX,
+     +                  ZI(JTABV), ZI(JTABD) )
+         ENDIF
+C
+C        FIN D'ECRITURE DE View
+C        ********************** 
+C      
+         WRITE(IFI,1000) '$EndView'
+C
+      ENDIF
+C
+C
+C ----------------------------------------------------------------------
 C          IMPRESSION D'UN CHAMP VECTORIEL ( CMP = DX, DY, DZ )
 C ----------------------------------------------------------------------
-C
       IF ( VECT ) THEN
 C
 C        ECRITURE DE L'ENTETE DE View
@@ -165,7 +243,8 @@ C        ****************************
 C      
          NOCMP = 'VECTEUR '
          CALL IRGMPV ( IFI, LRESU, NOMCON, CHAMSY, NBORD2, PARA, NOCMP,
-     +                 NBPOI, NBSEG, NBTRI, NBTET, .FALSE., VECT, TENS )
+     +                 NBPOI, NBSEG, NBTRI, NBQUA, NBTET, NBPYR, NBPRI,
+     +                 NBHEX, .FALSE., VECT, TENS, VERSIO )
 C
 C
 C        BOUCLE SUR LES ELEMENTS DE TYPES POI1
@@ -189,10 +268,38 @@ C        --------------------------------------
      +                 ZI(JTABC), ZI(JTABL), ZI(JTABV), ZI(JTABD) )
          ENDIF
 C
+C        BOUCLE SUR LES ELEMENTS DE TYPES QUA4
+C        --------------------------------------
+         IF ( NBQUA .NE. 0 ) THEN
+          CALL IRGNQ1 ( IFI, NBORD2, COORD, CONNX, POINT, NJVQUA, NBQUA,
+     +                 ZI(JTABC), ZI(JTABL), ZI(JTABV), ZI(JTABD) )
+         ENDIF
+C
 C        BOUCLE SUR LES ELEMENTS DE TYPES TETRA4
 C        ---------------------------------------
          IF ( NBTET .NE. 0 ) THEN
           CALL IRGNE1 ( IFI, NBORD2, COORD, CONNX, POINT, NJVTET, NBTET,
+     +                 ZI(JTABC), ZI(JTABL), ZI(JTABV), ZI(JTABD) )
+         ENDIF
+C
+C        BOUCLE SUR LES ELEMENTS DE TYPES PYRAM5
+C        ---------------------------------------
+         IF ( NBPYR .NE. 0 ) THEN
+          CALL IRGNY1 ( IFI, NBORD2, COORD, CONNX, POINT, NJVPYR, NBPYR,
+     +                 ZI(JTABC), ZI(JTABL), ZI(JTABV), ZI(JTABD) )
+         ENDIF
+C
+C        BOUCLE SUR LES ELEMENTS DE TYPES PRI6
+C        -------------------------------------
+         IF ( NBPRI .NE. 0 ) THEN
+          CALL IRGNR1 ( IFI, NBORD2, COORD, CONNX, POINT, NJVPRI, NBPRI,
+     +                 ZI(JTABC), ZI(JTABL), ZI(JTABV), ZI(JTABD) )
+         ENDIF
+C
+C        BOUCLE SUR LES ELEMENTS DE TYPES HEXA8
+C        --------------------------------------
+         IF ( NBHEX .NE. 0 ) THEN
+          CALL IRGNH1 ( IFI, NBORD2, COORD, CONNX, POINT, NJVHEX, NBHEX,
      +                 ZI(JTABC), ZI(JTABL), ZI(JTABV), ZI(JTABD) )
          ENDIF
 C
@@ -215,7 +322,8 @@ C        ECRITURE DE L'ENTETE DE View
 C        **************************** 
 C      
          CALL IRGMPV ( IFI, LRESU, NOMCON, CHAMSY, NBORD2, PARA, NOCMP,
-     +                 NBPOI, NBSEG, NBTRI, NBTET, SCAL, .FALSE., TENS )
+     +                 NBPOI, NBSEG, NBTRI ,NBQUA, NBTET, NBPYR, NBPRI,
+     +                 NBHEX, SCAL, .FALSE., TENS, VERSIO )
 C
 C
 C        BOUCLE SUR LES ELEMENTS DE TYPES POI1
@@ -239,12 +347,41 @@ C        --------------------------------------
      +              NBTRI, ZI(JTABC), ZI(JTABL), ZI(JTABV), ZI(JTABD) )
          ENDIF
 C
+C        BOUCLE SUR LES ELEMENTS DE TYPES QUA4
+C        --------------------------------------
+         IF ( NBQUA .NE. 0 ) THEN
+          CALL IRGNQ2 ( IFI, NBORD2, COORD, CONNX, POINT, NOCMP, NJVQUA,
+     +              NBQUA, ZI(JTABC), ZI(JTABL), ZI(JTABV), ZI(JTABD) )
+         ENDIF
+C
 C        BOUCLE SUR LES ELEMENTS DE TYPES TETRA4
 C        ---------------------------------------
          IF ( NBTET .NE. 0 ) THEN
           CALL IRGNE2 ( IFI, NBORD2, COORD, CONNX, POINT, NOCMP, NJVTET,
      +              NBTET, ZI(JTABC), ZI(JTABL), ZI(JTABV), ZI(JTABD) )
          ENDIF
+C
+C        BOUCLE SUR LES ELEMENTS DE TYPES PYRAM5
+C        ---------------------------------------
+         IF ( NBPYR .NE. 0 ) THEN
+          CALL IRGNY2 ( IFI, NBORD2, COORD, CONNX, POINT, NOCMP, NJVPYR,
+     +              NBPYR, ZI(JTABC), ZI(JTABL), ZI(JTABV), ZI(JTABD) )
+         ENDIF
+C
+C        BOUCLE SUR LES ELEMENTS DE TYPES PRI6
+C        -------------------------------------
+         IF ( NBPRI .NE. 0 ) THEN
+          CALL IRGNR2 ( IFI, NBORD2, COORD, CONNX, POINT, NOCMP, NJVPRI,
+     +              NBPRI,ZI(JTABC), ZI(JTABL), ZI(JTABV), ZI(JTABD) )
+         ENDIF
+C
+C        BOUCLE SUR LES ELEMENTS DE TYPES HEXA8
+C        --------------------------------------
+         IF ( NBHEX .NE. 0 ) THEN
+          CALL IRGNH2 ( IFI, NBORD2, COORD, CONNX, POINT, NOCMP, NJVHEX,
+     +              NBHEX, ZI(JTABC), ZI(JTABL), ZI(JTABV), ZI(JTABD) )
+         ENDIF
+
 C
 C        FIN D'ECRITURE DE View
 C        ********************** 

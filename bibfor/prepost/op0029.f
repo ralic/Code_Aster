@@ -3,7 +3,7 @@
       INTEGER    IER
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/07/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+C MODIF PREPOST  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -60,6 +60,7 @@ C
       CHARACTER*2000    TAB
 C ======================================================================
       CALL JEMARQ()
+      CALL INFMAJ()
 C ======================================================================
       IER = 0  
       CALL GETRES ( RESULT, K8B, NOMCMD )        

@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/09/1999   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C ----------------------------------------------------------------------
       INTEGER       IPAR(*)
       REAL*8        X(*), Y(*), VALPU(*)
       CHARACTER*1   COLI, CBID
-      CHARACTER*8   INTERP
+      CHARACTER*16  INTERP
       CHARACTER*19  NOMFON
       CHARACTER*(*) NOMF, NOMP(*), NOMPU(*), PROL(*)
       REAL*8        LINLIN, LINLOG, LOGLOG, LOGLIN

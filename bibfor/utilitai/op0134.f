@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/10/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,15 +39,16 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      IFM, NIV, INUMEX, N1, LNOVA, NBNOVA, ITYPFO, NBVALR,
-     +             NBVAL, LVAL, NBVAL2, LVALE, LFON, IVAL, LPROL, 
-     +             LFITA
+     +             NBVAL, LVAL, NBVAL2, LVALE, LFON, IVAL, LPROL,JPFI,
+     +             LFITA, N2, NBVALF, LPARA, LVALF,LONT, I, JVALS,N3
       REAL*8       RVAL
       LOGICAL      COMPL
-      CHARACTER*2  PROLGD
-      CHARACTER*4  INTERP(2)
-      CHARACTER*8  K8B, STATUT, NOMRES
+      CHARACTER*2  PROLGD,PROGDF
+      CHARACTER*4  INTERP(2),INTERF(2)
+      CHARACTER*8  K8B, STATUT, NOMRES, NOMPAR,NOMPAF
       CHARACTER*16 NOMCMD, TYPRES
-      CHARACTER*19 NOMFON, NOMFIN, LISTR
+      CHARACTER*19 NOMFON, NOMFIN, LISTR, LISTF
+      CHARACTER*32 JEXNUM
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -71,18 +72,36 @@ C
          ENDIF
       ENDIF
 C
+C --- RECUPERATIONS DES MOTS CLES
 C
+      CALL GETVTX ( ' ', 'NOM_PARA'   , 1,1,1, NOMPAR     , N1 ) 
       CALL GETVTX ( ' ', 'PROL_GAUCHE', 1,1,1, PROLGD(1:1), N1 )
       CALL GETVTX ( ' ', 'PROL_DROITE', 1,1,1, PROLGD(2:2), N1 )
       CALL GETVTX ( ' ', 'NOM_RESU'   , 1,1,1, NOMRES     , N1 )
       CALL GETVTX ( ' ', 'INTERPOL'   , 1,1,2, INTERP     , N1 )
       IF ( N1 .EQ. 1 ) INTERP(2) = INTERP(1)
+C 
+      CALL GETVTX ( ' ', 'NOM_PARA_FONC'   , 1,1,1, NOMPAF    , N1 )
+      CALL GETVTX ( ' ', 'PROL_GAUCHE_FONC', 1,1,1, PROGDF(1:1), N1 )
+      CALL GETVTX ( ' ', 'PROL_DROITE_FONC', 1,1,1, PROGDF(2:2), N1 )
+      CALL GETVTX ( ' ', 'INTERPOL_FONC'   , 1,1,2, INTERF     , N1 )
+      IF ( N1 .EQ. 1 ) INTERF(2) = INTERF(1)
+C       
+C --- ACCES AU PARAMETRE POUR LES NAPPES ET A LA VARIABLE
+C     POUR LES FONCTIONS      
 C
-      CALL JEVEUO ( NOMFIN//'.NOVA', 'L', LNOVA )
-      CALL JELIRA ( NOMFIN//'.NOVA', 'LONUTI', NBNOVA, K8B )
-      IF ( NBNOVA .NE. 1 ) THEN
-         CALL UTMESS('F',NOMCMD,'FONCTION A UNE SEULE VARIABLE ADMIS')
+      CALL GETVR8 ( ' ', 'VALE_PARA', 1,1,0, RVAL, NBVALR )
+      IF ( NBVALR .NE. 0 ) THEN 
+         NBVAL  = - NBVALR
+         CALL WKVECT ( '&&OP0134.VALE', 'V V R', NBVAL, LVAL )
+         CALL GETVR8 ( ' ', 'VALE_PARA', 1,1,NBVAL, ZR(LVAL), N1 )
+      ELSE 
+         CALL GETVID ( ' ', 'LIST_PARA', 1,1,1, LISTR, N1 )
+         CALL JEVEUO ( LISTR//'.VALE', 'L', LVAL)
+         CALL JELIRA ( LISTR//'.VALE', 'LONUTI', NBVAL, K8B )
       ENDIF
+C                 
+C --- FORMULE COMPLEXE OU REEL
 C
       CALL FITYPF ( NOMFIN(1:8), ITYPFO )
       IF ( ITYPFO .EQ. 35 ) THEN
@@ -90,93 +109,66 @@ C
       ELSE
          COMPL = .FALSE.
       ENDIF
+C      
+C --- NAPPE OU FONCTION
 C
-C --- ACCES PAR "VALE_R"
+      CALL JEVEUO ( NOMFIN//'.NOVA', 'L', LNOVA )
+      CALL JELIRA ( NOMFIN//'.NOVA', 'LONUTI', NBNOVA, K8B )
+C      
+      IF (NBNOVA.EQ.1) THEN
+C ------------------------------------------------------------------    
+C                 FONCTION  
+C ------------------------------------------------------------------   
+         ZK8(LNOVA)=NOMPAR
+         CALL CALCFO(COMPL,NBVAL,NOMFON,LVAL,NOMFIN,STATUT,
+     +               INTERP,LNOVA,NOMRES,PROLGD,NOMCMD,NBNOVA )
 C
-      CALL GETVR8 ( ' ', 'VALE_R', 1,1,0, RVAL, NBVALR )
-      IF ( NBVALR .NE. 0 ) THEN
-         NBVAL  = - NBVALR
-         CALL WKVECT ( '&&OP0134.VALE', 'V V R', NBVAL, LVAL )
-         CALL GETVR8 ( ' ', 'VALE_R', 1,1,NBVAL, ZR(LVAL), N1 )
+      ELSE IF (NBNOVA.EQ.2) THEN
+C ------------------------------------------------------------------    
+C                 NAPPE  
+C ------------------------------------------------------------------ 
+
+         ZK8(LNOVA)=NOMPAF
+         ZK8(LNOVA+1)=NOMPAR
 C
-         IF ( COMPL ) THEN
-            NBVAL2 = 3 * NBVAL
-            CALL WKVECT ( NOMFON//'.VALE', 'G V R', NBVAL2, LVALE )
-            LFON = LVALE + NBVAL
-            DO 10 IVAL = 0, NBVAL-1
-               ZR(LVALE+IVAL) = ZR(LVAL+IVAL)
-               CALL FOINTC( NOMFIN, NBNOVA, ZK8(LNOVA),
-     +                      ZR(LVALE+IVAL), ZR(LFON+2*IVAL), IER )
- 10         CONTINUE
-            CALL JEDETR('&&OP0134.VALE')
+C --- ACCES A L'ABSCISSE DES FONCTIONS DE LA NAPPE
+C         
+         CALL GETVID ( ' ', 'LIST_PARA_FONC', 1,1,1, LISTF, N1 )
+         IF (N1.EQ.0) THEN
+            CALL GETVR8 ( ' ', 'VALE_PARA_FONC', 1,1,0, RVAL, NBVALF )
+            NBVALF=-NBVALF
+            CALL WKVECT ( '&&OP0134.VALF', 'V V R', NBVALF, LVALF )
+            CALL GETVR8 ( ' ', 'VALE_PARA_FONC', 1,1,NBVALF, 
+     +                    ZR(LVALF),N3 )
          ELSE
-            NBVAL2 = 2 * NBVAL
-            CALL WKVECT(NOMFON//'.VALE','G V R',NBVAL2,LVALE)
-            LFON = LVALE + NBVAL
-            DO 12 IVAL = 0, NBVAL-1
-               ZR(LVALE+IVAL) = ZR(LVAL+IVAL)
-               CALL FOINTE ( 'F ', NOMFIN, NBNOVA, ZK8(LNOVA),
-     +                      ZR(LVALE+IVAL), ZR(LFON+IVAL), IER )
- 12         CONTINUE
-            CALL JEDETR('&&OP0134.VALE')
+             CALL JEVEUO ( LISTF//'.VALE', 'L', LVALF)
+            CALL JELIRA ( LISTF//'.VALE', 'LONUTI', NBVALF, K8B )
          ENDIF
-      ENDIF
 C
-C --- ACCES PAR "LIST_PARA"
-C
-      CALL GETVID ( ' ', 'LIST_PARA', 1,1,1, LISTR, N1 )
-      IF ( N1 .NE. 0 ) THEN
-         CALL JEVEUO ( LISTR//'.VALE', 'L', LVAL)
-         CALL JELIRA ( LISTR//'.VALE', 'LONUTI', NBVAL, K8B )
-C
-         IF ( COMPL ) THEN
-            NBVAL2 = 3 * NBVAL
-            CALL WKVECT ( NOMFON//'.VALE', 'G V R', NBVAL2, LVALE )
-            LFON = LVALE + NBVAL
-            DO 20 IVAL = 0, NBVAL-1
-               ZR(LVALE+IVAL) = ZR(LVAL+IVAL)
-               CALL FOINTC( NOMFIN, NBNOVA, ZK8(LNOVA),
-     +                      ZR(LVALE+IVAL), ZR(LFON+2*IVAL), IER )
- 20         CONTINUE
-         ELSE
-            NBVAL2 = 2 * NBVAL
-            CALL WKVECT ( NOMFON//'.VALE', 'G V R', NBVAL2, LVALE )
-            LFON = LVALE + NBVAL
-            DO 22 IVAL = 0, NBVAL-1
-               ZR(LVALE+IVAL) = ZR(LVAL+IVAL)
-               CALL FOINTE ( 'F ', NOMFIN, NBNOVA, ZK8(LNOVA),
-     +                             ZR(LVALE+IVAL), ZR(LFON+IVAL), IER )
- 22        CONTINUE
-         ENDIF
-      ENDIF
-C
-C     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
-      IF (STATUT .EQ. 'NOUVEAU' ) THEN
-         CALL WKVECT ( NOMFON//'.PROL', 'G V K8', 6, LPROL )
+         CALL CALCNA( COMPL,NBVAL,NBVALF,NOMFON,LVAL,NOMFIN,
+     +                   STATUT,INTERF,INTERP,LNOVA,PROGDF,PROLGD,
+     +                   LVALF,NOMCMD,NOMRES,NBNOVA )
+C         
       ELSE
-         CALL JEVEUO ( NOMFON//'.PROL', 'E', LPROL )
+C      
+         CALL UTMESS('F',NOMCMD,'FONCTION A UNE OU DEUX VARIABLES 
+     +                                 ADMISE')
+C     
       ENDIF
-      IF ( COMPL ) THEN
-         ZK8(LPROL)   = 'FONCT_C '
-      ELSE
-         ZK8(LPROL)   = 'FONCTION'
-      ENDIF
-      ZK8(LPROL+1) = INTERP(1)//INTERP(2)
-      ZK8(LPROL+2) = ZK8(LNOVA)
-      ZK8(LPROL+3) = NOMRES
-      ZK8(LPROL+4) = PROLGD
-C
-C     CREATION ET REMPLISSAGE DES OBJETS POUR UNE INTERPOLATION
-C     INTERPRETEE.
-      CALL WKVECT ( NOMFON//'.FITA', 'G V K24', 1, LFITA )
-      ZK24(LFITA) = NOMFIN
 C
 C     --- VERIFICATION QU'ON A BIEN CREER UNE FONCTION ---
 C         ET REMISE DES ABSCISSES EN ORDRE CROISSANT
       CALL ORDONN(NOMFON,NOMCMD,0)
 C
       CALL TITRE
-      IF (NIV.GT.1) CALL FOIMPR ( NOMFON, NIV, 'MESSAGE', 0, LISTR )
+      IF (NIV.GT.1) CALL FOIMPR (NOMFON,NIV,'MESSAGE',0,LISTR)      
 C
+      IF (NBVALR.NE.0) THEN
+        CALL JEDETR('&&OP0134.VALE') 
+      ENDIF
+      IF (N1.EQ.0) THEN
+        CALL JEDETR('&&OP0134.VALF') 
+      ENDIF                                      
+C        
       CALL JEDEMA()
       END

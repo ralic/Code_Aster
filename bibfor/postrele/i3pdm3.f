@@ -5,7 +5,7 @@
       LOGICAL           DEDANS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 25/07/2001   AUTEUR RATEAU G.RATEAU 
+C MODIF POSTRELE  DATE 17/12/2002   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,9 +82,8 @@ C
 110      CONTINUE
          IF ( NBS . EQ. 3 ) THEN
             GAUCHE = .FALSE.
-            EPSI2 = EPSI
          ELSE
-            CALL I3TSTF (K,F,DESC,DESCTM,CONEXK,COORDO,GAUCHE,EPSI2)
+            CALL I3TSTF (K,F,DESC,DESCTM,CONEXK,COORDO,GAUCHE,EPSI)
          ENDIF
          IF ( GAUCHE ) THEN
             DO 10, J = 1, 10, 1
@@ -174,8 +173,7 @@ C
             B(3) =  (CS(1,2)-CS(1,1))*(CS(2,3)-CS(2,1))
             B(3) = -(CS(1,3)-CS(1,1))*(CS(2,2)-CS(2,1)) + B(3)
             VAL1 = SQRT(B(1)*B(1)+B(2)*B(2)+B(3)*B(3))
-            IF ( ABS(VAL1) .LE. EPSI   .AND.
-     +           ABS(VAL1) .LE. EPSI2  ) THEN
+            IF ( ABS(VAL1) .LE. EPSI ) THEN
                IRET = -1
             ELSE
                VAL1 = UN/VAL1

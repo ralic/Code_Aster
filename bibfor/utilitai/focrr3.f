@@ -6,7 +6,7 @@
       CHARACTER*19        NOMFON, RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/11/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,12 +118,12 @@ C
 C     --- CREATION DE LA FONCTION SORTIE ---
 C
 C     --- REMPLISSAGE DU .PROL ---
-      CALL WKVECT ( NOMFON//'.PROL', BASE//' V K8', 5, LPRO )
-      ZK8(LPRO  ) = 'FONCTION'
-      ZK8(LPRO+1) = 'NON NON '
-      ZK8(LPRO+2) = NOMACC(1:8)
-      ZK8(LPRO+3) = NOPARA(1:8)
-      ZK8(LPRO+4) = 'EE      '
+      CALL WKVECT ( NOMFON//'.PROL', BASE//' V K16', 5, LPRO )
+      ZK16(LPRO  ) = 'FONCTION'
+      ZK16(LPRO+1) = 'NON NON '
+      ZK16(LPRO+2) = NOMACC(1:8)
+      ZK16(LPRO+3) = NOPARA(1:8)
+      ZK16(LPRO+4) = 'EE      '
 C
 C     --- REMPLISSAGE DU .VALE ---
       CALL WKVECT ( NOMFON//'.VALE', BASE//' V R', 2*NBORDR, LVAR )

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 09/10/2002   AUTEUR DURAND C.DURAND */
+/* MODIF astermodule supervis  DATE 01/04/2003   AUTEUR DURAND C.DURAND */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,15 +20,10 @@
 /* RESPONSABLE                                 D6BHHJP J.P.LEFEBVRE   */
 /* ------------------------------------------------------------------ */
 
-#if defined HPUX
-#define R8PI   r8pi
-        extern double R8PI();
-#elif defined PPRO_NT
-        extern double __stdcall R8PI();
-#elif defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
-#define R8PI    r8pi_
-        extern double R8PI();
-#endif
+#include <stdio.h>
+#include "Python.h"
+#include <math.h>
+#include <ctype.h>
 
 
 #ifndef min
@@ -37,19 +32,12 @@
 
 #define VARIABLE_LEN 16
 
-#include <stdio.h>
-#include "Python.h"
-#include <math.h>
-#include <ctype.h>
 
 
 
 #ifndef UTILITES_H        /*{*/
 #define UTILITES_H
 
-/* FORTRAN_TRUE = -1 sur HP-UX avec l'option de compilation +DAportable +apollo */
-enum ENUM_LOGICAL { FORTRAN_TRUE=-1, FORTRAN_FALSE=0} ;
-#define FORTRAN_LOGICAL enum ENUM_LOGICAL
 
 /* pour indiquer le  statut des arguments des fonctions. */
 
@@ -73,10 +61,177 @@ enum ENUM_LOGICAL { FORTRAN_TRUE=-1, FORTRAN_FALSE=0} ;
 #endif
 #define _UNUSED
 
+/* Pour définir les appels et signatures de fonctions appelables en Fortran 
+ * On utilise l'operateur de concatenation ## du préprocesseur C (cpp) pour ajouter l'underscore
+ * au nom en majuscule ou minuscule de la fonction à définir ou à appeler.
+ * Pour les anciens compilateurs non ANSI, utiliser un commentaire vide à la place.
+ * Pour appeler une subroutine Fortran de nom SUB avec un argument string et 2 arguments autres, faire:
+ * #define CALL_SUB(a,b,c) CALLSPP(SUB,sub,a,b,c)
+ * puis : CALL_SUB(a,b,c)
+ * Pour définir une fonction C de nom SUB avec un argument string et 2 arguments autres, 
+ * appelable depuis le fortran, faire:
+ * void DEFSPP(SUB,sub,char * nomobj,int lnom,double *d,INTEGER *i)
+ * {
+ * }
+ * ici, lnom est l'entier qui indique la longueur de la chaine Fortran nomobj
+ * Les macros définies ici ne servent qu'à former le nom de la fonction et à
+ * mettre les arguments dans le bon ordre. On utilise l'ordre de Visual comme
+ * base (pointeur char suivi d'un int) et on reordonne pour les autres compilateurs.
+ */
 
+/* Operateur de concatenation */
+#define  _(A,B)   A##B
 
+#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
+#define F_FUNC(UN,LN)                            _(LN,_)
 
-/* pour representer les entiers sur toutes les stations. */
+#elif defined HPUX
+#define F_FUNC(UN,LN)                            LN
+
+#elif defined PPRO_NT
+#define F_FUNC(UN,LN)                            UN
+
+#endif
+
+#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX || HPUX
+#define STDCALL(UN,LN)                           F_FUNC(UN,LN)
+
+#define CALLSS(UN,LN,a,b)                        F_FUNC(UN,LN)(a,b,strlen(a),strlen(b))
+#define CALLSSP(UN,LN,a,b,c)                        F_FUNC(UN,LN)(a,b,c,strlen(a),strlen(b))
+#define CALLSSPP(UN,LN,a,b,c,d)                        F_FUNC(UN,LN)(a,b,c,d,strlen(a),strlen(b))
+#define CALLSSPPP(UN,LN,a,b,c,d,e)                        F_FUNC(UN,LN)(a,b,c,d,e,strlen(a),strlen(b))
+#define CALLS(UN,LN,a)                     F_FUNC(UN,LN)(a,strlen(a))
+#define CALLSP(UN,LN,a,b)                     F_FUNC(UN,LN)(a,b,strlen(a))
+#define CALLSPP(UN,LN,a,b,c)                     F_FUNC(UN,LN)(a,b,c,strlen(a))
+#define CALLSPPP(UN,LN,a,b,c,d)                     F_FUNC(UN,LN)(a,b,c,d,strlen(a))
+#define CALLSPPPP(UN,LN,a,b,c,d,e)                     F_FUNC(UN,LN)(a,b,c,d,e,strlen(a))
+
+#define CALLSPPPPS(UN,LN,a,b,c,d,e,f)                     F_FUNC(UN,LN)(a,b,c,d,e,f,strlen(a),strlen(f))
+#define CALLPPPSP(UN,LN,a,b,c,d,e)                        F_FUNC(UN,LN)(a,b,c,d,e,strlen(d))
+#define DEFPPPSP(UN,LN,a,b,c,d,ld,e)                        STDCALL(UN,LN)(a,b,c,d,e,ld)
+
+#define DEFS(UN,LN,a,la)                      STDCALL(UN,LN)(a,la)
+#define DEFSP(UN,LN,a,la,b)                      STDCALL(UN,LN)(a,b,la)
+#define DEFSPP(UN,LN,a,la,b,c)                   STDCALL(UN,LN)(a,b,c,la)
+#define DEFSPPP(UN,LN,a,la,b,c,d)                   STDCALL(UN,LN)(a,b,c,d,la)
+#define DEFSPPPP(UN,LN,a,la,b,c,d,e)                   STDCALL(UN,LN)(a,b,c,d,e,la)
+
+#define DEFSPPPPS(UN,LN,a,la,b,c,d,e,f,lf)          STDCALL(UN,LN)(a,b,c,d,e,f,la,lf)
+#define DEFSSPPPPP(UN,LN,a,la,b,lb,c,d,e,f,g)    STDCALL(UN,LN)(a,b,c,d,e,f,g,la,lb)
+#define DEFSSPPPP(UN,LN,a,la,b,lb,c,d,e,f)    STDCALL(UN,LN)(a,b,c,d,e,f,la,lb)
+#define DEFSSPPP(UN,LN,a,la,b,lb,c,d,e)    STDCALL(UN,LN)(a,b,c,d,e,la,lb)
+#define DEFSSPP(UN,LN,a,la,b,lb,c,d)    STDCALL(UN,LN)(a,b,c,d,la,lb)
+#define DEFSSP(UN,LN,a,la,b,lb,c)    STDCALL(UN,LN)(a,b,c,la,lb)
+#define DEFSS(UN,LN,a,la,b,lb)    STDCALL(UN,LN)(a,b,la,lb)
+
+#define DEFSSSPPPPS(UN,LN,a,la,b,lb,c,lc,d,e,f,g,h,lh)    STDCALL(UN,LN)(a,b,c,d,e,f,g,h,la,lb,lc,lh)
+#define CALLSSSPPPPS(UN,LN,a,b,c,d,e,f,g,h)    F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,strlen(a),strlen(b),strlen(c),strlen(h))
+
+#define DEFSSPPPSP(UN,LN,a,la,b,lb,c,d,e,f,lf,g)             STDCALL(UN,LN)(a,b,c,d,e,f,g,la,lb,lf)
+#define CALLSSPPPSP(UN,LN,a,b,c,d,e,f,g)                     F_FUNC(UN,LN)(a,b,c,d,e,f,g,strlen(a),strlen(b),strlen(f))
+#define CALLSSPPPPP(UN,LN,a,b,c,d,e,f,g)                     F_FUNC(UN,LN)(a,b,c,d,e,f,g,strlen(a),strlen(b))
+#define DEFSPSP(UN,LN,a,la,b,c,lc,d)                      STDCALL(UN,LN)(a,b,c,d,la,lc)
+#define DEFSPSPP(UN,LN,a,la,b,c,lc,d,e)                      STDCALL(UN,LN)(a,b,c,d,e,la,lc)
+#define DEFSPSSP(UN,LN,a,la,b,c,lc,d,ld,e)                      STDCALL(UN,LN)(a,b,c,d,e,la,lc,ld) 
+#define DEFSSS(UN,LN,a,la,b,lb,c,lc)    STDCALL(UN,LN)(a,b,c,la,lb,lc)
+#define CALLSSS(UN,LN,a,b,c)    F_FUNC(UN,LN)(a,b,c,strlen(a),strlen(b),strlen(c))
+#define DEFPS(UN,LN,a,b,lb)                      STDCALL(UN,LN)(a,b,lb)
+#define DEFPSP(UN,LN,a,b,lb,c)                      STDCALL(UN,LN)(a,b,c,lb)
+#define DEFPSSP(UN,LN,a,b,lb,c,lc,d)    STDCALL(UN,LN)(a,b,c,d,lb,lc)
+#define CALLPPS(UN,LN,a,b,c)    F_FUNC(UN,LN)(a,b,c,strlen(c))
+#define DEFPPS(UN,LN,a,b,c,lc)    STDCALL(UN,LN)(a,b,c,lc)
+#define DEFSSSSP(UN,LN,a,la,b,lb,c,lc,d,ld,e)    STDCALL(UN,LN)(a,b,c,d,e,la,lb,lc,ld)
+#define DEFSSPSPP(UN,LN,a,la,b,lb,c,d,ld,e,f)    STDCALL(UN,LN)(a,b,c,d,e,f,la,lb,ld)
+#define FCALLSSPSPP(UN,LN,a,la,b,lb,c,d,ld,e,f)    F_FUNC(UN,LN)(a,b,c,d,e,f,la,lb,ld)
+#define DEFSPSPPPS(UN,LN,a,la,b,c,lc,d,e,f,g,lg)    STDCALL(UN,LN)(a,b,c,d,e,f,g,la,lc,lg)
+#define FCALLSPSPPPS(UN,LN,a,la,b,c,lc,d,e,f,g,lg)    F_FUNC(UN,LN)(a,b,c,d,e,f,g,la,lc,lg)
+#define DEFSPSSPPP(UN,LN,a,la,b,c,lc,d,ld,e,f,g)    STDCALL(UN,LN)(a,b,c,d,e,f,g,la,lc,ld)
+#define CALLSPSSPPP(UN,LN,a,b,c,d,e,f,g)    F_FUNC(UN,LN)(a,b,c,d,e,f,g,strlen(a),strlen(c),strlen(d))
+#define FCALLSSS(UN,LN,a,la,b,lb,c,lc)    F_FUNC(UN,LN)(a,b,c,la,lb,lc)
+#define FCALLPSSP(UN,LN,a,b,lb,c,lc,d)    F_FUNC(UN,LN)(a,b,c,d,lb,lc)
+
+#elif defined PPRO_NT
+#define STDCALL(UN,LN)                           __stdcall F_FUNC(UN,LN)
+
+#define CALLSS(UN,LN,a,b)                        F_FUNC(UN,LN)(a,strlen(a),b,strlen(b))
+#define CALLSSP(UN,LN,a,b,c)                        F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c)
+#define CALLSSPP(UN,LN,a,b,c,d)                        F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d)
+#define CALLSSPPP(UN,LN,a,b,c,d,e)                        F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,e)
+#define CALLS(UN,LN,a)                     F_FUNC(UN,LN)(a,strlen(a))
+#define CALLSP(UN,LN,a,b)                     F_FUNC(UN,LN)(a,strlen(a),b)
+#define CALLSPP(UN,LN,a,b,c)                     F_FUNC(UN,LN)(a,strlen(a),b,c)
+#define CALLSPPP(UN,LN,a,b,c,d)                     F_FUNC(UN,LN)(a,strlen(a),b,c,d)
+#define CALLSPPPP(UN,LN,a,b,c,d,e)                     F_FUNC(UN,LN)(a,strlen(a),b,c,d,e)
+
+#define CALLSPPPPS(UN,LN,a,b,c,d,e,f)                     F_FUNC(UN,LN)(a,strlen(a),b,c,d,e,f,strlen(f))
+#define CALLPPPSP(UN,LN,a,b,c,d,e)                        F_FUNC(UN,LN)(a,b,c,d,strlen(d),e)
+#define DEFPPPSP(UN,LN,a,b,c,d,ld,e)                        STDCALL(UN,LN)(a,b,c,d,ld,e)
+
+#define DEFS(UN,LN,a,la)                      STDCALL(UN,LN)(a,la)
+#define DEFSP(UN,LN,a,la,b)                      STDCALL(UN,LN)(a,la,b)
+#define DEFSPP(UN,LN,a,la,b,c)                      STDCALL(UN,LN)(a,la,b,c)
+#define DEFSPPP(UN,LN,a,la,b,c,d)                   STDCALL(UN,LN)(a,la,b,c,d)
+#define DEFSPPPP(UN,LN,a,la,b,c,d,e)                   STDCALL(UN,LN)(a,la,b,c,d,e)
+
+#define DEFSPPPPS(UN,LN,a,la,b,c,d,e,f,lf)           STDCALL(UN,LN)(a,la,b,c,d,e,f,lf)
+#define DEFSSPPPPP(UN,LN,a,la,b,lb,c,d,e,f,g)    STDCALL(UN,LN)(a,la,b,lb,c,d,e,f,g)
+#define DEFSSPPPP(UN,LN,a,la,b,lb,c,d,e,f)    STDCALL(UN,LN)(a,la,b,lb,c,d,e,f)
+#define DEFSSPPP(UN,LN,a,la,b,lb,c,d,e)    STDCALL(UN,LN)(a,la,b,lb,c,d,e)
+#define DEFSSPP(UN,LN,a,la,b,lb,c,d)    STDCALL(UN,LN)(a,la,b,lb,c,d)
+#define DEFSSP(UN,LN,a,la,b,lb,c)    STDCALL(UN,LN)(a,la,b,lb,c)
+#define DEFSS(UN,LN,a,la,b,lb)    STDCALL(UN,LN)(a,la,b,lb)
+
+#define DEFSSSPPPPS(UN,LN,a,la,b,lb,c,lc,d,e,f,g,h,lh)    STDCALL(UN,LN)(a,la,b,lb,c,lc,d,e,f,g,h,lh)
+#define CALLSSSPPPPS(UN,LN,a,b,c,d,e,f,g,h)    F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,strlen(c),d,e,f,g,h,strlen(h))
+
+#define DEFSSPPPSP(UN,LN,a,la,b,lb,c,d,e,f,lf,g)    STDCALL(UN,LN)(a,la,b,lb,c,d,e,f,lf,g)
+#define CALLSSPPPSP(UN,LN,a,b,c,d,e,f,g)                     F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,e,f,strlen(f),g)
+#define CALLSSPPPPP(UN,LN,a,b,c,d,e,f,g)                     F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,e,f,g)
+#define DEFSPSP(UN,LN,a,la,b,c,lc,d)                      STDCALL(UN,LN)(a,la,b,c,lc,d) 
+#define DEFSPSPP(UN,LN,a,la,b,c,lc,d,e)                      STDCALL(UN,LN)(a,la,b,c,lc,d,e) 
+#define DEFSPSSP(UN,LN,a,la,b,c,lc,d,ld,e)                      STDCALL(UN,LN)(a,la,b,c,lc,d,ld,e) 
+#define DEFSSS(UN,LN,a,la,b,lb,c,lc)    STDCALL(UN,LN)(a,la,b,lb,c,lc)
+#define CALLSSS(UN,LN,a,b,c)    F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,strlen(c))
+#define DEFPS(UN,LN,a,b,lb)                      STDCALL(UN,LN)(a,b,lb)
+#define DEFPSP(UN,LN,a,b,c,lb)                      STDCALL(UN,LN)(a,b,c,lb)
+#define DEFPSSP(UN,LN,a,b,lb,c,lc,d)    STDCALL(UN,LN)(a,b,lb,c,lc,d)
+#define CALLPPS(UN,LN,a,b,c)    F_FUNC(UN,LN)(a,b,c,strlen(c))
+#define DEFPPS(UN,LN,a,b,c,lc)    STDCALL(UN,LN)(a,b,c,lc)
+#define DEFSSSSP(UN,LN,a,la,b,lb,c,lc,d,ld,e)    STDCALL(UN,LN)(a,la,b,lb,c,lc,d,ld,e)
+#define DEFSSPSPP(UN,LN,a,la,b,lb,c,d,ld,e,f)    STDCALL(UN,LN)(a,la,b,lb,c,d,ld,e,f)
+#define FCALLSSPSPP(UN,LN,a,la,b,lb,c,d,ld,e,f)    F_FUNC(UN,LN)(a,la,b,lb,c,d,ld,e,f)
+#define DEFSPSPPPS(UN,LN,a,la,b,c,lc,d,e,f,g,lg)    STDCALL(UN,LN)(a,la,b,c,lc,d,e,f,g,lg)
+#define FCALLSPSPPPS(UN,LN,a,la,b,c,lc,d,e,f,g,lg)    F_FUNC(UN,LN)(a,la,b,c,lc,d,e,f,g,lg)
+#define DEFSPSSPPP(UN,LN,a,la,b,c,lc,d,ld,e,f,g)    STDCALL(UN,LN)(a,la,b,c,lc,d,ld,e,f,g)
+#define CALLSPSSPPP(UN,LN,a,b,c,d,e,f,g)    F_FUNC(UN,LN)(a,strlen(a),b,c,strlen(c),d,strlen(d),e,f,g)
+#define FCALLSSS(UN,LN,a,la,b,lb,c,lc)    F_FUNC(UN,LN)(a,la,b,lb,c,lc)
+#define FCALLPSSP(UN,LN,a,b,lb,c,lc,d)    F_FUNC(UN,LN)(a,b,lb,c,lc,d)
+
+#endif
+
+#define CALLP(UN,LN,a)                        F_FUNC(UN,LN)(a)
+#define CALLPP(UN,LN,a,b)                        F_FUNC(UN,LN)(a,b)
+#define CALLPPPP(UN,LN,a,b,c,d)                        F_FUNC(UN,LN)(a,b,c,d)
+#define DEFP(UN,LN,a)                            STDCALL(UN,LN)(a)
+#define DEFPP(UN,LN,a,b)                            STDCALL(UN,LN)(a,b)
+#define DEFPPP(UN,LN,a,b,c)                            STDCALL(UN,LN)(a,b,c)
+#define DEFPPPP(UN,LN,a,b,c,d)                            STDCALL(UN,LN)(a,b,c,d)
+
+/* FIN DE pour définir les appels et signatures de fonctions appelables en Fortran */
+
+/* Fonction retournant PI en R8 */
+#define R8PI() F_FUNC(R8PI,r8pi)()
+extern double STDCALL(R8PI,r8pi)();
+
+/* pour representer les logical sur toutes les stations {*/
+
+/* FORTRAN_TRUE = -1 sur HP-UX avec l'option de compilation +DAportable +apollo */
+enum ENUM_LOGICAL { FORTRAN_TRUE=-1, FORTRAN_FALSE=0} ;
+#define FORTRAN_LOGICAL enum ENUM_LOGICAL
+
+/*                                                      }*/
+
+/* pour representer les entiers sur toutes les stations. {*/
 
 #if defined(SOLARIS) || defined(P_LINUX) || defined(PPRO_NT) || defined(HPUX)
 #define INTEGER long
@@ -88,12 +243,14 @@ enum ENUM_LOGICAL { FORTRAN_TRUE=-1, FORTRAN_FALSE=0} ;
 #endif
 #endif
 
+/*                                                       }*/
 
 
 
 /* pour preciser quel fichier affiche les  messages et les valeurs */
 
 #define INTERRUPTION(code) { ICI ; fprintf(stderr,"INTERRUPTION - code retour %d\n",code) ;abort() ; }
+
 #ifdef _DEBUT
 #error _DEBUT est deja definie
 #endif
@@ -113,8 +270,15 @@ enum ENUM_LOGICAL { FORTRAN_TRUE=-1, FORTRAN_FALSE=0} ;
 #define TAB fflush(stdout);fprintf( stderr, "\t" );ICI
 #define RES fflush(stdout);fprintf( stderr, "\t RESULTAT >> " );ICI
 #define ISCRUTE(entier) TAB ; fprintf(stderr,"%s = %ld\n",#entier,(INTEGER)entier) ; fflush(stderr);
+#define TISCRUTE(n,entier) TAB ; fprintf(stderr,"%s = %ld",#n,(INTEGER)n) ; \
+                           if(n>0) fprintf(stderr,", %s[0] = %ld",#entier,(INTEGER)entier[0]) ; \
+                           fprintf(stderr,"\n");fflush(stderr);
 #define REFSCRUTE(objet) ISCRUTE(objet->ob_refcnt) ;
 #define DSCRUTE(reel) TAB ; fprintf(stderr,"%s = %f\n",#reel,reel) ; fflush(stderr);
+#define TDSCRUTE(n,reel) TAB ; fprintf(stderr,"%s = %ld",#n,(INTEGER)n) ; \
+                           if(n>0) fprintf(stderr,", %s[0] = %f",#reel,reel[0]) ; \
+                           fprintf(stderr,"\n");fflush(stderr);
+#define OBSCRUTE(obj) TAB ; fprintf(stderr,"%s = ",#obj) ; PyObject_Print(obj, stderr, 0); fprintf(stderr,"\n");fflush(stderr);
 #define SSCRUTE(chaine) TAB ; fprintf(stderr,"%s = ",#chaine) ; if (chaine){fprintf(stderr,"\"%s\"\n",chaine);}else{fprintf(stderr,"(char*)0\n");} ; fflush(stderr);
 #define FSSCRUTE(chaine,longueur) TAB ; fprintf(stderr,"%s = ",#chaine) ; fflush(stderr) ; AfficheChaineFortran(chaine,longueur) ;
 #define _DEBUT(nom) fprintf( stderr , "\n\n\n") ; ICI ; fprintf( stderr , "{ DEBUT %s\n" , #nom ) ; fflush(stderr) ;
@@ -127,7 +291,10 @@ enum ENUM_LOGICAL { FORTRAN_TRUE=-1, FORTRAN_FALSE=0} ;
 #define RES
 #define MESSAGE(chaine)
 #define ISCRUTE(entier)
+#define TISCRUTE(n,entier)
 #define DSCRUTE(reel)
+#define TDSCRUTE(n,reel)
+#define OBSCRUTE(obj) 
 #define SSCRUTE(chaine)
 #define REFSCRUTE(objet)
 #define FSSCRUTE(chaine,longueur)
@@ -161,7 +328,6 @@ int EstPret( _IN char *chaine , _IN int longueur ) ;
 long FindLength( _IN char *chaineFortran , _IN INTEGER longueur ) ;
 void AfficheChaineFortran( _IN char *chaine , _IN int longueur ) ;
 void TraiteMessageErreur( _IN char* ) ;
-void (*myabort)( char* ) = TraiteMessageErreur ;
 void PRE_myabort( _IN const char *nomFichier , _IN const int numeroLigne , _IN const char *message ) ;
 #define MYABORT(message) PRE_myabort( __FILE__ , __LINE__ , message )
 
@@ -188,44 +354,77 @@ void TraitementFinAster( _IN int val ) ;
 
 
 
-
-
-#define _FORT15_        /* La definition de cette macro conditionne la production d'un fichier fort.15 */
-
-#ifdef _FORT15_        /*{*/
-
-char *Pour_fort15            = (char*)0 ;      /* voir ConstruitFort15() et Fort15() */
-const int Taille_fort15      = 256 ;
-int ConstruitFort15( _IN char *motcle , _IN char *motfac ) ;
-void Fort15( void ) ;
-
-#endif                        /*}*/ /* # ifdef _FORT15_ */
-
-
-
-
-
-
 #define _UTILISATION_SETJMP_
+/*
+ *   Emulation d'exceptions en C : on utilise le couple de fonctions systemes setjmp/longjmp
+ *   pour reproduire le comportement des exceptions en C.
+ *   Pour initier une exception, le Fortran doit appeler la fonction XFINI 
+ *   avec en argument le code de l'exception.
+ *   La fonction XFINI fait appel à longjmp pour effectuer le debranchement necessaire.
+ *
+ *   La variable exception_flag indique comment toute anomalie intervenant pendant
+ *   le try doit etre traitée :  par une exception (si try(1)) ou par un abort (si try(0))
+ */
+
+#define CodeFinAster       19 
+#define CodeAbortAster     20 
+
+int exception_status=-1;
+#define NIVMAX 10
+static int niveau=0;
+
 #ifdef _UTILISATION_SETJMP_
 #include <setjmp.h>
 
-#define try(val) exception_flag=val;if((exception_status = setjmp(env)) == 0)
+static jmp_buf env[NIVMAX+1] ;           /* utilise par longjmp, le type jmp_buf est defini dans setjmp.h */
+static int exception_flag[NIVMAX+1];
+
+#define try(val) exception_flag[niveau]=val;if((exception_status = setjmp(env[niveau])) == 0)
 #define catch(val) else if (exception_status == val)
-#define throw(val) longjmp(env,val)
+#define throw(val) longjmp(env[niveau],val)
 #define finally else
 
-int exception_status=-1;
-int exception_flag=0;
+void STDCALL(XFINI,xfini)(_IN INTEGER *code)
+{
+   _DEBUT("XFINI");
+   ISCRUTE(exception_flag[niveau]);
+   ISCRUTE(*code);
+   if(exception_flag[niveau]==1) {
+       exception_flag[niveau]=0;
+       throw(*code);
+   }
+   else abort();
+   _FIN("XFINI");
+}
 
-jmp_buf env ;                        /* utilise par longjmp, le type jmp_buf est defini dans setjmp.h */
-const int CodeFinAster=19 ;
-const int CodeAbortAster=20 ;
+#else
+#define try(val) if(1)
+#define catch(val) else if (0)
+#define throw(val)
+#define finally else
 
+void STDCALL(XFINI,xfini)(_IN INTEGER *code)
+{
+   _DEBUT("XFINI");
+        switch( *code ){
+        case CodeFinAster :
+                exit(0);
+                break ;
+        case CodeAbortAster :
+                abort();
+                break ;
+        default :
+                MESSAGE("code erreur INCONNU !!!!") ;
+                ISCRUTE(*code) ;
+                INTERRUPTION(1) ;
+                break ;
+        }
+   _FIN("XFINI");
+}
 
 #endif                /* #ifdef _UTILISATION_SETJMP_ */
 
-
+/* Fin emulation exceptions en C */
 
 
 
@@ -241,11 +440,54 @@ static PyObject *pile_commandes = (PyObject*)0 ;
 /* NomCas est initialise a blanc pour permettre la recuperation de la
    trace des commandes lors de l'appel a debut ou poursuite. On ne connait
    pas encore NomCas qui sera initialise lors de l'appel a RecupNomCas */
-static char *NomCas          = "        " ;
+static char *NomCas          = "        ";
 
 static PyObject *ErrorObject = (PyObject*)0 ;
-static char * blan="                                                                                                                                                                                    ";
+/* Pour initialiser statiquement une chaine avec des blancs d'une longueur suffisante */
+static char * blan="                                                                                                            \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                \
+                                                                                                                                ";
 
+
+/*
+#define STRING_FCPY(dest,taille,src,longueur) \
+   strncpy(dest,blan,taille);strncpy(dest,src,longueur);
+*/
+
+#define BLANK(dest,taille) memset(dest,' ',taille)
+#define STRING_FCPY(dest,taille,src,longueur) \
+   memcpy(dest,src,min(taille,longueur));taille>longueur?memset(dest+longueur,' ',taille-longueur):0;
+#define CSTRING_FCPY(dest,taille,src) STRING_FCPY(dest,taille,src,strlen(src))
+
+#define PRINTERR if(PyErr_Occurred()){ \
+            fprintf(stderr,"Warning: une exception n'a pas ete traitée\n"); \
+            PyErr_Print(); \
+            fprintf(stderr,"Warning: on l'annule pour continuer mais elle aurait du etre traitée avant\n"); \
+            PyErr_Clear(); \
+        } 
 
 
 static char nom_fac[256];        /* utilise par fstr1 */
@@ -256,6 +498,26 @@ static char nom_cmd[256];        /* utilise par fstr3 */
 /*}*/ /* --- FIN liste des variables globales au fonctions  de ce fichier --- */
 
 
+/*
+ *   Ce module crée de nombreux objets Python. Il doit respecter les règles
+ *   générales de création des objets et en particulier les règles sur le
+ *   compteur de références associé à chaque objet.
+ *   Tous les objets sont partagés. Seules des références à des objets peuvent
+ *   etre acquises.
+ *   Si une fonction a acquis une référence sur un objet elle doit la traiter 
+ *   proprement, soit en la transférant (habituellement à l'appelant), soit en
+ *   la relachant (par appel à Py_DECREF ou Py_XDECREF).
+ *   Quand une fonction transfere la propriété d'une référence, l'appelant recoit
+ *   une nouvelle référence. Quand la propriété n'est pas transférée, l'appelant
+ *   emprunte la référence.
+ *   Dans l'autre sens, quand un appelant passe une référence à une fonction, il y a
+ *   deux possibilités : la fonction vole une référence à l'objet ou elle ne le fait
+ *   pas. Peu de fonctions (de l'API Python) volent des références : les deux exceptions
+ *   les plus notables sont PyList_SetItem() et PyTuple_SetItem() qui volent une 
+ *   référence à l'item qui est inséré dans la liste ou dans le tuple.
+ *   Ces fonctions qui volent des références existent, en général, pour alléger
+ *   la programmation.
+ */
 
 
 
@@ -265,7 +527,8 @@ void TraiteMessageErreur( _IN char * message )
 {
         printf("%s\n",message);
         if(PyErr_Occurred())PyErr_Print();
-        if(exception_flag==1){
+        if(exception_flag[niveau]==1){
+          exception_flag[niveau]=0;
           throw(CodeAbortAster);
         }
         else{
@@ -283,11 +546,11 @@ void PRE_myabort( _IN const char *nomFichier , _IN const int numeroLigne , _IN c
         /*
         Procedure : PRE_myabort
         Intention
-                Cette procedure prepare la chaine de caracteres affichee par myabort()
+                Cette procedure prepare la chaine de caracteres affichee par TraiteMessageErreur()
                 en ajoutant devant cette chaine, le nom du fichier source et le numero
                 de la ligne a partir desquels PRE_myabort a ete appelee.
-                Puis elle appelle elle-meme myabort().
-                Voir aussi la macro MYABORT qui permet de generer automaitquement le nom
+                Puis elle appelle elle-meme TraiteMessageErreur().
+                Voir aussi la macro MYABORT qui permet de generer automatiquement le nom
                 du fichier et le numero de la ligne.
         */
 
@@ -309,26 +572,15 @@ void PRE_myabort( _IN const char *nomFichier , _IN const int numeroLigne , _IN c
                                                         ASSERT(chaine!=(char*)0);
 
         sprintf( chaine , "%s %u : %s" , nomFichier , numeroLigne , message ) ;
-        myabort( chaine ) ;
+        TraiteMessageErreur( chaine ) ;
 
         free( chaine )   ;
         chaine=(char*)0 ;
         longueur = 0     ;
 }
 
-
-
-
-
-#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
-#define GETLTX getltx_
-void getltx_( _IN char *motfac, _IN char *motcle, _IN INTEGER *iocc, _IN INTEGER *iarg, _IN INTEGER *mxval, _OUT INTEGER *isval, _OUT INTEGER *nbval, _IN int lfac, _IN int lcle )
-#elif defined HPUX
-#define GETLTX getltx
-void getltx ( _IN char *motfac, _IN char *motcle, _IN INTEGER *iocc, _IN INTEGER *iarg, _IN INTEGER *mxval, _OUT INTEGER *isval, _OUT INTEGER *nbval, _IN int lfac, _IN int lcle )
-#elif defined PPRO_NT
-void __stdcall GETLTX ( _IN char *motfac, _IN int lfac, _IN char *motcle, _IN int lcle , _IN INTEGER *iocc, _IN INTEGER *iarg, _IN INTEGER *mxval, _OUT INTEGER *isval, _OUT INTEGER *nbval )
-#endif
+void DEFSSPPPPP(GETLTX,getltx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
+                              _IN INTEGER *iarg,_IN INTEGER *mxval,_OUT INTEGER *isval, _OUT INTEGER *nbval )
 {
         /*
         Procedure : getltx_ (appelee par le fortran sous le nom GETLTX)
@@ -343,7 +595,7 @@ void __stdcall GETLTX ( _IN char *motfac, _IN int lfac, _IN char *motcle, _IN in
         int nval      = 0 ;
 
         _DEBUT("getltx_") ;
-        FSSCRUTE(motfac,lfac) ; FSSCRUTE(motcle,lcle) ; ISCRUTE(*iocc) ;
+                                                        FSSCRUTE(motfac,lfac) ; FSSCRUTE(motcle,lcle) ; ISCRUTE(*iocc) ;
 
         mfc=fstr1(motfac,lfac);
                                                         ASSERT(mfc!=(char*)0);
@@ -366,14 +618,8 @@ void __stdcall GETLTX ( _IN char *motfac, _IN int lfac, _IN char *motcle, _IN in
         nval=*nbval;
         if(*nbval < 0)nval=*mxval;
         convert(nval,tup,isval);
-
-#ifdef _DEBOG_
-        if(nval > 0){
-                ICI ; printf("\tGETLTX : *nbval %ld\n",*nbval);
-                ICI ; printf("\tGETLTX : isval %ld\n",isval[0]);
-        }
-#endif
-
+                                                        ISCRUTE(nbval);
+                                                        TISCRUTE(nval,isval);
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         _FIN(getltx_) ;
         return ;
@@ -434,20 +680,7 @@ char * fstr3( _IN char *s, _IN int l)
 
 
 
-
-
-
-
-
-
-
-#if defined HPUX
-void getfac ( _IN char *nomfac, _OUT INTEGER *occu, _IN int lfac)
-#elif defined PPRO_NT
-void __stdcall GETFAC ( _IN char *nomfac, _IN int lfac, _OUT INTEGER *occu)
-#else
-void getfac_( _IN char *nomfac, _OUT INTEGER *occu, _IN int lfac)
-#endif
+void DEFSP(GETFAC,getfac,_IN char *nomfac, _IN int lfac, _OUT INTEGER *occu)
 {
         /*
           Procedure GETFAC pour le FORTRAN : emule le fonctionnement
@@ -461,7 +694,7 @@ void getfac_( _IN char *nomfac, _OUT INTEGER *occu, _IN int lfac)
         PyObject *res  = (PyObject*)0 ;
 
         _DEBUT(getfac_) ;
-
+                                                        FSSCRUTE(nomfac,lfac) ; 
                                                         ASSERT(EstPret(nomfac,lfac)!=0);
                                                         ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"getfac","s",fstr1(nomfac,lfac));
@@ -471,6 +704,7 @@ void getfac_( _IN char *nomfac, _OUT INTEGER *occu, _IN int lfac)
         if (res == NULL)MYABORT("erreur dans la partie Python");
 
         *occu=PyInt_AsLong(res);
+                                                        ISCRUTE(*occu);
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         _FIN(getfac_) ;
@@ -492,13 +726,13 @@ void convc8( _IN int nval, _IN PyObject *tup, _OUT double *val)
         int    k = 0 ;
         int conv_un_c8( _IN PyObject *tup, _OUT double *val) ;
 
-        ASSERT(PyTuple_Check(tup)) ;
-
+                                                                    ASSERT(PyTuple_Check(tup)) ;
+                                                                    OBSCRUTE(tup) ;
         if(nval != 0){
                 PyObject *v = (PyObject*)0 ;
-                ASSERT(nval>0) ;
+                                                                    ASSERT(nval>0) ;
                 for(i=0;i<nval;i++){
-                        ISCRUTE(i) ;
+                                                                    ISCRUTE(i) ;
                         v=PyTuple_GetItem(tup,i);
                         k += conv_un_c8( v , val+k ) ;
                 }
@@ -512,37 +746,41 @@ int conv_un_c8( _IN PyObject *tup, _OUT double *val)
 
         char *repres = (char*)0 ; /* representation "RI" (reelle/imaginaire) ou "MP" (module phase) */
 
-
         double x = 0.0 ;
         double y = 0.0 ;
         double *rho = &x ;
         double *theta = &y ;
-
-        ASSERT(PyTuple_Check(tup)) ;
-
-        if(!PyArg_ParseTuple(tup,"sdd",&repres,&x,&y)) MYABORT("erreur dans la partie Python");
-        SSCRUTE(repres) ;
-        ASSERT((strcmp(repres,"RI")==0)||(strcmp(repres,"MP")==0)) ;
-        DSCRUTE(x) ;
-        DSCRUTE(y) ;
-        ISCRUTE(strcmp(repres,"RI"))
-
-
-        if (strcmp(repres,"RI")==0){
-
+                                                                    OBSCRUTE(tup) ;
+        if(PyComplex_Check(tup)){
+           /* On est dans le cas d'un objet Python complexe */
+           /* representation : partie reelle/partie imaginaire */
+           *val    =PyComplex_RealAsDouble(tup)  ;
+           *(val+1)=PyComplex_ImagAsDouble(tup)  ;
+                                                               DSCRUTE(*val);DSCRUTE(*(val+1));
+        }
+        else if(PyTuple_Check(tup)){
+           /* On est dans le cas d'un complexe représenté par un triplet : "RI" ou "MP",x,y */
+           if(!PyArg_ParseTuple(tup,"sdd",&repres,&x,&y)) 
+                     MYABORT("erreur dans la partie Python");
+                                                                                     SSCRUTE(repres) ;
+                                                                                     ASSERT((strcmp(repres,"RI")==0)||(strcmp(repres,"MP")==0)) ;
+                                                                                     DSCRUTE(x) ;
+                                                                                     DSCRUTE(y) ;
+                                                                                     ISCRUTE(strcmp(repres,"RI"))
+           if (strcmp(repres,"RI")==0){
                 /* representation : partie reelle/partie imaginaire */
-
                 *val    =x ;
                 *(val+1)=y ;
-        }
-        else{
-
+           }
+           else{
                 /* representation RHO,THETA (les angles sont fournis en degres) */
-
                 *val    =*rho * cos( *theta /180. * R8PI()) ;
                 *(val+1)=*rho * sin( *theta /180. * R8PI()) ;
+           }
         }
-
+        else {
+           MYABORT("erreur dans la partie Python");
+        }
         return 2 ;
 }
 
@@ -603,16 +841,23 @@ void convertxt( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN int taille)
         /*
         Convertit un Tuple en tableau de chaines
         Pour retour au Fortran : le tableau existe deja (val)
+           nval   : indique le nombre d'elements du tuple a convertir
+           tup    : est le tuple Python a convertir
+           val    : est le tableau de chaines Fortran a remplir
+           taille : indique la taille des chaines
         */
-        ASSERT(PyTuple_Check(tup)) ;
+                                                                   ASSERT(PyTuple_Check(tup)) ;
+                                                                   ISCRUTE(nval) ;
+                                                                   ISCRUTE(taille) ;
+                                                                   OBSCRUTE(tup) ;
         if(nval != 0){
                 PyObject *v  = (PyObject*)0 ;
                 int i;
                 char *s      = (char*)0 ;
+                char *val_i      = (char*)0 ;
                 int longueur = 0 ;
-
-                ASSERT(nval>0) ;
-                ASSERT(taille>0) ;
+                                                                   ASSERT(nval>0) ;
+                                                                   ASSERT(taille>0) ;
                 if (!PyTuple_Check(tup)){
                         printf("tup : ");
                         PyObject_Print(tup, stdout, 0);
@@ -631,13 +876,9 @@ void convertxt( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN int taille)
                         }
 
                         /* le fortran attend des chaines de caracteres completees par des blancs */
-
-                        strncpy(&val[i*taille],blan,taille);        /* initialisation a blanc */
-                                                        ASSERT(PyString_Size(v)==strlen(s));
-                        longueur=min(taille,PyString_Size(v)) ; /* pour tronquer */
-                        ASSERT(longueur<=taille) ;                /* troncature interdite */
-
-                        strncpy(&val[i*taille],s,longueur);        /* copie des caracteres */
+                        longueur=strlen(s);
+                        val_i=&val[i*taille];
+                        STRING_FCPY(val_i,taille,s,longueur);
                 }
         }
 }
@@ -655,6 +896,7 @@ void converltx( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN int taille)
         PyObject *v = (PyObject*)0 ;
         int i;
         char *s = (char*)0 ;
+        char *val_i      = (char*)0 ;
         int longueur=0 ;
 
         if(nval != 0){
@@ -676,26 +918,16 @@ void converltx( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN int taille)
                         }
 
                         /* le fortran attend des chaines de caracteres completees par des blancs */
-
-                        strncpy(&val[i*taille],blan,taille);        /* initialisation a blanc */
-                                                        ASSERT(PyString_Size(v)==strlen(s));
-                        longueur=min(taille,PyString_Size(v)) ;
-                        strncpy(&val[i*taille],s,longueur);        /* copie des caracteres */
+                        longueur=strlen(s);
+                        val_i=&val[i*taille];
+                        STRING_FCPY(val_i,taille,s,longueur);
                 }
         }
         return ;
 }
 
 
-
-
-#if defined HPUX
-    void getran (_OUT double *rval)
-#elif defined PPRO_NT
-    void __stdcall GETRAN (_OUT double *rval)
-#else
-    void getran_(_OUT double *rval)
-#endif
+void STDCALL(GETRAN,getran)(_OUT double *rval)
 {
         /*
           Procedure GETRAN pour le FORTRAN : recupere un réel aleatoire (loi uniforme 0-1) du module python Random
@@ -722,9 +954,6 @@ void converltx( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN int taille)
         ok = PyArg_ParseTuple(res,"O",&val);
         if(!ok)MYABORT("erreur dans la partie Python");
 
-        printf("val : ");
-        PyObject_Print(val, stdout, 0);
-        printf("\n ");
         *rval=PyFloat_AsDouble(val);
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
@@ -734,15 +963,7 @@ void converltx( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN int taille)
 
 
 
-
-
-#if defined HPUX
-    void iniran ()
-#elif defined PPRO_NT
-    void __stdcall INIRAN ()
-#else
-    void iniran_()
-#endif
+void STDCALL(INIRAN,iniran)()
 {
         /*
           Procedure INIRAN pour le FORTRAN : recupere un réel aleatoire (loi uniforme 0-1) du module python Random
@@ -758,15 +979,7 @@ void converltx( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN int taille)
 
 
 
-
-
-#if defined HPUX
-void gettco ( _IN char *nomobj, _OUT char *typobj, _IN int lnom, _IN int ltyp)
-#elif defined PPRO_NT
-void __stdcall GETTCO ( _IN char *nomobj, _IN int lnom, _OUT char *typobj, _IN int ltyp)
-#else
-void gettco_( _IN char *nomobj, _OUT char *typobj, _IN int lnom, _IN int ltyp)
-#endif
+void DEFSS(GETTCO,gettco,_IN char *nomobj, _IN int lnom, _OUT char *typobj, _IN int ltyp)
 {
         /*
         Procedure gettco_
@@ -788,30 +1001,28 @@ void gettco_( _IN char *nomobj, _OUT char *typobj, _IN int lnom, _IN int ltyp)
         int k          = 0 ;
 
         _DEBUT("gettco_") ;
-        ASSERT(lnom>0) ;
-        FSSCRUTE(nomobj,lnom);
+                                                              ASSERT(lnom>0) ;
+                                                              FSSCRUTE(nomobj,lnom);
         mcs=fstr2(nomobj,lnom);
 
         /*
         recherche dans le jeu de commandes python du nom du type de
          du concept Aster de nom nomobj
         */
-                                                        ASSERT(commande!=(PyObject*)0);
-        SSCRUTE(mcs) ;
+                                                              ASSERT(commande!=(PyObject*)0);
+                                                              SSCRUTE(mcs) ;
         res=PyObject_CallMethod(commande,"gettco","s",mcs);
         if (res == (PyObject*)0)MYABORT("erreur dans la partie Python (gettco)");
-
-                                                         ASSERT( PyString_Check(res) )
+                                                              OBSCRUTE(res);
+                                                              ASSERT( PyString_Check(res) )
         nomType=PyString_AsString(res);
-                                                        ASSERT(nomType!=(char*)0) ;
+                                                              SSCRUTE(nomType);
+                                                              ASSERT(nomType!=(char*)0) ;
         longueur = strlen(nomType) ;
-                                                        ASSERT(longueur>0) ;
-                                                        ASSERT(longueur<=ltyp) ;
-        strncpy( typobj , nomType , longueur ) ;
-                                                        ASSERT(EstPret(typobj,longueur)) ;
-        for (k=longueur ; k<ltyp ; k++ ) typobj[k]=' ' ; /* complete typobj[k] par des blancs pour le fortran */
-
-                                                        ASSERT(EstPret(typobj,ltyp)) ;
+                                                              ASSERT(longueur>0) ;
+                                                              ASSERT(longueur<=ltyp) ;
+        STRING_FCPY(typobj,ltyp,nomType,longueur);
+                                                              ASSERT(EstPret(typobj,ltyp)) ;
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         _FIN("gettco_") ;
@@ -819,16 +1030,7 @@ void gettco_( _IN char *nomobj, _OUT char *typobj, _IN int lnom, _IN int ltyp)
 }
 
 
-
-
-
-#if defined HPUX
-void getmnb (_OUT INTEGER *nbmfac,_OUT INTEGER *nbobm)
-#elif defined PPRO_NT
-void __stdcall GETMNB (_OUT INTEGER *nbmfac,_OUT INTEGER *nbobm)
-#else
-void getmnb_(_OUT INTEGER *nbmfac,_OUT INTEGER *nbobm)
-#endif
+void DEFPP(GETMNB,getmnb,_OUT INTEGER *nbmfac,_OUT INTEGER *nbobm)
 {
         /*
           Procedure GETMNB : emule la procedure equivalente ASTER
@@ -853,24 +1055,15 @@ void getmnb_(_OUT INTEGER *nbmfac,_OUT INTEGER *nbobm)
         if(!PyArg_ParseTuple(res,"lll",nbmfac,&nbmc,nbobm)) MYABORT("erreur dans la partie Python");
 
 
-        ISCRUTE(*nbmfac) ;
-        ISCRUTE(*nbobm) ;
+                                                        ISCRUTE(*nbmfac) ;
+                                                        ISCRUTE(*nbobm) ;
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         _FIN(getmnb_) ;
         return ;
 }
 
 
-
-
-
-#if defined HPUX
-void getmfa (_IN char *nomcmd,_IN INTEGER *irc,_OUT char *nomrc,_OUT INTEGER *nbmocl,_IN int lcmd,_IN int lrc)
-#elif defined PPRO_NT
-void __stdcall GETMFA (_IN char *nomcmd,_IN int lcmd,_IN INTEGER *irc,_OUT char *nomrc,_IN int lrc,_OUT INTEGER *nbmocl)
-#else
-void getmfa_(_IN char *nomcmd,_IN INTEGER *irc,_OUT char *nomrc,_OUT INTEGER *nbmocl,_IN int lcmd,_IN int lrc)
-#endif
+void DEFSPSP(GETMFA,getmfa,_IN char *nomcmd,_IN int lcmd,_IN INTEGER *irc,_OUT char *nomrc,_IN int lrc,_OUT INTEGER *nbmocl)
 {
         /*
           Procedure GETMFA : emule la procedure equivalente ASTER
@@ -888,29 +1081,21 @@ void getmfa_(_IN char *nomcmd,_IN INTEGER *irc,_OUT char *nomrc,_OUT INTEGER *nb
         PyObject *res  = (PyObject*)0 ;
         char *ss1;
 
-
-
         _DEBUT(getmfa_) ;
-        FSSCRUTE(nomcmd,lcmd) ;
-        ISCRUTE(*irc) ;
-
-
-
+                                                        FSSCRUTE(nomcmd,lcmd) ;
+                                                        ISCRUTE(*irc) ;
                                                         ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"getmfa","si",fstr1(nomcmd,lcmd),*irc);
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
 
-        strncpy(nomrc,blan,lrc);
         if(!PyArg_ParseTuple(res,"sll",&ss1 ,nbmocl,&nbarg)) MYABORT("erreur dans la partie Python");
                                                         ASSERT(ss1!=(char*)0) ;
-        strncpy(nomrc,ss1,(size_t)min(strlen(ss1),lrc));
-
-
+        STRING_FCPY(nomrc,lrc,ss1,strlen(ss1));
+                                                        FSSCRUTE(nomrc,lrc) ;
+                                                        ISCRUTE(*nbmocl) ;
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
-        FSSCRUTE(nomrc,lrc) ;
-        ISCRUTE(*nbmocl) ;
         _FIN(getmfa_) ;
         return ;
 }
@@ -918,16 +1103,8 @@ void getmfa_(_IN char *nomcmd,_IN INTEGER *irc,_OUT char *nomrc,_OUT INTEGER *nb
 
 
 
-#if defined HPUX
-void getmfm (_IN char *nomfac,_IN INTEGER *nbval,_OUT char *motcle,_OUT char *type,_OUT INTEGER *nbarg,
-             _IN int lfac,_IN int lcle,_IN int ltyp)
-#elif defined PPRO_NT
-void __stdcall GETMFM (_IN char *nomfac,_IN int lfac,_IN INTEGER *nbval,_OUT char *motcle,
-                       _IN int lcle,_OUT char *type,_IN int ltyp,_OUT INTEGER *nbarg)
-#else
-void getmfm_(_IN char *nomfac,_IN INTEGER *nbval,_OUT char *motcle,_OUT char *type,_OUT INTEGER *nbarg,
-             _IN int lfac,_IN int lcle,_IN int ltyp)
-#endif
+void DEFSPSSP(GETMFM,getmfm,_IN char *nomfac,_IN int lfac,_IN INTEGER *nbval,_OUT char *motcle,
+                       _IN int lcle,_OUT char *type,_IN int ltyp, _OUT INTEGER *nbarg)
 {
 
         /*
@@ -954,13 +1131,13 @@ void getmfm_(_IN char *nomfac,_IN INTEGER *nbval,_OUT char *motcle,_OUT char *ty
 
 
         _DEBUT(getmfm_) ;
-        ISCRUTE(*nbval);
-        FSSCRUTE(nomfac,lfac) ; ISCRUTE(ltyp);
+                                                                        ISCRUTE(*nbval);
+                                                                        FSSCRUTE(nomfac,lfac) ; ISCRUTE(ltyp);
                                                                         ASSERT(ltyp>0);
         for ( k=0 ;k<ltyp ; k++ ) type[k]=' ' ;
                                                                         ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"getmfm","si",fstr2(nomfac,lfac),*nbval);
-        ISCRUTE(*nbval);
+                                                                        ISCRUTE(*nbval);
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
@@ -970,14 +1147,14 @@ void getmfm_(_IN char *nomfac,_IN INTEGER *nbval,_OUT char *motcle,_OUT char *ty
         if(!PyArg_ParseTuple(res,"OO",&lnom,&lty)) MYABORT("erreur dans la partie Python");
         nval=PyList_Size(lnom);
 
-        ISCRUTE(nval) ; ISCRUTE(*nbval) ;
+                                                                        ISCRUTE(nval) ; ISCRUTE(*nbval) ;
 
         *nbarg = (nval > *nbval) ? -nval : nval ;
-        ISCRUTE(*nbarg) ;
-        ASSERT(((nval<=*nbval)&&(*nbarg==nval))||(*nbarg==-nval)) ;
+                                                                        ISCRUTE(*nbarg) ;
+                                                                        ASSERT(((nval<=*nbval)&&(*nbarg==nval))||(*nbarg==-nval)) ;
 
         if(*nbarg < 0)nval=*nbval;
-        ISCRUTE(nval) ;
+                                                                        ISCRUTE(nval) ;
 
         if ( nval > 0 ){
                 converltx(nval,lnom,motcle,lcle); /* conversion  */
@@ -1006,24 +1183,12 @@ void getmfm_(_IN char *nomfac,_IN INTEGER *nbval,_OUT char *motcle,_OUT char *ty
                 }
         }
 
-
-
-
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         _FIN("getmfm_") ;
         return ;
 }
 
-
-
-
-#if defined HPUX
-FORTRAN_LOGICAL getexm (_IN char *motfac,_IN char *motcle,_IN int lfac,_IN int lcle)
-#elif defined PPRO_NT
-FORTRAN_LOGICAL __stdcall GETEXM (_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle)
-#else
-FORTRAN_LOGICAL getexm_(_IN char *motfac,_IN char *motcle,_IN int lfac,_IN int lcle)
-#endif
+FORTRAN_LOGICAL DEFSS( GETEXM ,getexm, _IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle)
 {
         /*
           Procedure GETEXM pour le FORTRAN : emule le fonctionnement
@@ -1040,45 +1205,26 @@ FORTRAN_LOGICAL getexm_(_IN char *motfac,_IN char *motcle,_IN int lfac,_IN int l
         FORTRAN_LOGICAL presence     = FORTRAN_FALSE;
 
         _DEBUT(getexm_) ;
-        FSSCRUTE(motfac,lfac) ; FSSCRUTE(motcle,lcle) ;
-
+                                                                        FSSCRUTE(motfac,lfac) ; FSSCRUTE(motcle,lcle) ;
                                                                         ASSERT(motcle!=(char*)0);
                                                                         ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"getexm","ss",
-            fstr1(motfac,lfac),fstr2(motcle,lcle));
+                                fstr1(motfac,lfac),fstr2(motcle,lcle));
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
-#ifdef _DEBOG_
-        /*  si non impression du retour */
-            PyObject_Print(res, stdout, 0);
-            printf("\n");
-#endif
+                                                                        OBSCRUTE(res);
         presence=PyInt_AsLong(res) ? FORTRAN_TRUE : FORTRAN_FALSE ;
         /*  decrement sur le refcount du retour */
-
-#ifdef _DEBOG_
-        RES ; printf("\tGETEXM : presence %d\n",presence); FSSCRUTE(motcle,lcle) ;
-#endif
-
-
+                                                                        ISCRUTE(presence) ;
+                                                                        FSSCRUTE(motcle,lcle) ;
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         _FIN(getexm_) ;
         return presence;
 }
 
 
-
-
-#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
-#define GETRES getres_
-void getres_( _OUT char *nomres, _OUT char *concep, _OUT char *nomcmd, _IN int lres, _IN int lconc, _IN int lcmd)
-#elif defined HPUX
-#define GETRES getres
-void getres ( _OUT char *nomres, _OUT char *concep, _OUT char *nomcmd, _IN int lres, _IN int lconc, _IN int lcmd)
-#elif defined PPRO_NT
-void __stdcall GETRES ( _OUT char *nomres, _IN int lres, _OUT char *concep, _IN int lconc, _OUT char *nomcmd, _IN int lcmd)
-#endif
+void DEFSSS( GETRES ,getres, _OUT char *nomres, _IN int lres, _OUT char *concep, _IN int lconc, _OUT char *nomcmd, _IN int lcmd)
 {
         /*
           Procedure GETRES pour le FORTRAN : emule le fonctionnement
@@ -1092,18 +1238,14 @@ void __stdcall GETRES ( _OUT char *nomres, _IN int lres, _OUT char *concep, _IN 
         int ok;
         int s1,s2,s3;
         char *ss1,*ss2,*ss3;
-        int k=0 ;
 
         _DEBUT(getres_) ;
-        ISCRUTE(lres) ; ISCRUTE(lconc) ; ISCRUTE(lcmd) ;
-
-        nomcmd[lcmd-1] =  ( nomcmd[lcmd-1]==' ' ) ? '\0' : nomcmd[lcmd-1] ;
-
+                                                       ISCRUTE(lres) ; ISCRUTE(lconc) ; ISCRUTE(lcmd) ;
         if(commande == (PyObject*)0){
           /* Aucune commande n'est active on retourne des chaines blanches */
-          strncpy(nomres,blan,lres);
-          strncpy(concep,blan,lconc);
-          strncpy(nomcmd,blan,lcmd);
+          BLANK(nomres,lres);
+          BLANK(concep,lconc);
+          BLANK(nomcmd,lcmd);
           return ;
         }
                                                         ASSERT(commande!=(PyObject*)0);
@@ -1117,56 +1259,25 @@ void __stdcall GETRES ( _OUT char *nomres, _IN int lres, _OUT char *concep, _IN 
 
 
         /* le fortran attend des chaines de caracteres completees par des blancs */
+                                                       ISCRUTE(s1) ; SSCRUTE(ss1) ;
+        STRING_FCPY(nomres,lres,ss1,s1);
+                                                       FSSCRUTE(nomres,lres) ;
 
-        s1=min(s1,lres) ;
-        ISCRUTE(s1) ; SSCRUTE(ss1) ;
-        strncpy(nomres,blan,lres);
-        if( s1 ) strncpy(nomres,ss1,s1);
-        /*for( k=s1 ; k<lres ; k++) nomres[k]=' ' ;*/
-        FSSCRUTE(nomres,lres) ;
+                                                       ISCRUTE(s2) ; SSCRUTE(ss2) ;
+        STRING_FCPY(concep,lconc,ss2,s2);
+                                                       FSSCRUTE(concep,lconc) ;
 
-
-        ISCRUTE(lconc) ; ISCRUTE(s2) ;
-        s2=min(s2,lconc) ;
-        ISCRUTE(lconc) ; ISCRUTE(s2) ; SSCRUTE(ss2) ;
-        strncpy(concep,blan,lconc);
-        if( s2 ) strncpy(concep,ss2,s2);
-        /*for( k=s2 ; k<lconc ; k++) concep[k]=' ' ;*/
-        FSSCRUTE(concep,lconc) ;
-
-
-        s3=min(s3,lcmd) ;
-        ISCRUTE(s3) ; SSCRUTE(ss3) ;
-        strncpy(nomcmd,blan,lcmd);
-        if( s3 ) strncpy(nomcmd,ss3,s3);
-        /*for( k=s3 ; k<lcmd ; k++) nomcmd[k]=' ' ;*/
-        FSSCRUTE(nomcmd,lcmd) ;
-
+                                                       ISCRUTE(s3) ; SSCRUTE(ss3) ;
+        STRING_FCPY(nomcmd,lcmd,ss3,s3);
+                                                       FSSCRUTE(nomcmd,lcmd) ;
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         _FIN(getres_) ;
         return ;
 }
 
-
-
-
-
-#if defined HPUX
-void getvc8 ( _IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *iarg,_IN INTEGER *mxval,
-              _INOUT double *val,_OUT INTEGER *nbval,
-              _IN int lfac,_IN int lcle
-            )
-#elif defined PPRO_NT
-void __stdcall GETVC8 ( _IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
-                        _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT double *val,_OUT INTEGER *nbval
-            )
-#else
-void getvc8_( _IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *iarg,_IN INTEGER *mxval,
-              _INOUT double *val,_OUT INTEGER *nbval,
-              _IN int lfac,_IN int lcle
-            )
-#endif
+void DEFSSPPPPP(GETVC8,getvc8,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
+                              _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT double *val,_OUT INTEGER *nbval)
 {
         /*
           Procedure GETVC8 pour le FORTRAN : emule le fonctionnement
@@ -1193,8 +1304,8 @@ void getvc8_( _IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *i
         char *mcs      = (char*)0 ;
 
         _DEBUT(getvc8_)
-        SSCRUTE(PyString_AsString(PyObject_CallMethod(commande,"retnom",""))) ;
-        FSSCRUTE(motfac,lfac) ; FSSCRUTE(motcle,lcle) ; ISCRUTE(*iocc) ;
+                                                        SSCRUTE(PyString_AsString(PyObject_CallMethod(commande,"retnom",""))) ;
+                                                        FSSCRUTE(motfac,lfac) ; FSSCRUTE(motcle,lcle) ; ISCRUTE(*iocc) ;
                                                         ASSERT(EstPret(motcle,lcle)!=0);
 
         mfc=fstr1(motfac,lfac);
@@ -1224,68 +1335,26 @@ void getvc8_( _IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *i
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
-        ASSERT(PyTuple_Check(res)) ;
+                                                        ASSERT(PyTuple_Check(res)) ;
 
 
         ok = PyArg_ParseTuple(res,"lO",nbval,&tup);
         if(!ok)MYABORT("erreur dans la partie Python");
-        ISCRUTE(*nbval) ;
-
 
         nval=*nbval;
         if(*nbval < 0)nval=*mxval;
-        ISCRUTE(nval) ;
 
         convc8(nval,tup,val);
+                                                        ISCRUTE(*nbval) ;
+                                                        TDSCRUTE(nval,val) ;
 
-
-
-#ifdef _FORT15_        /*{*/
-
-        /* --- construction du message pour fort.15 --- */
-
-        if ( nval > 0 ){
-                int taille  = 0 ;
-                if ( (taille=ConstruitFort15( mcs , mfc )) ){
-                        char s[16] ;
-                        int k       = 0 ;
-                        for(k=0;k<2*nval && k<10;k++){
-                                sprintf( s , " %12.5E" , val[k] ) ;
-                                AjoutChaineA( &Pour_fort15 , s ) ;
-
-                                                        ASSERT(s!=(char*)0) ;
-                                taille += strlen(s) ;
-                                ASSERT(taille==strlen(Pour_fort15)) ;
-                        }
-                }
-        }
-
-        /* --- FIN construction du message pour fort.15 --- */
-
-        if ( Pour_fort15 != (char*)0 ) Fort15() ;
-
-#endif                        /*}*/ /* # ifdef _FORT15_ */
-
-
-
-        Py_DECREF(res);                /*  decrement sur le refcount du retour */
+        Py_DECREF(res);    
         _FIN(getvc8_) ;
         return ;
 }
 
-
-
-
-
-#if defined HPUX
-    void getvr8 (_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *iarg,_IN INTEGER *mxval,
-                 _INOUT double *val,_OUT INTEGER *nbval,_IN int lfac,_IN int lcle )
-#elif defined PPRO_NT
-    void __stdcall GETVR8 (_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
-                           _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT double *val,_OUT INTEGER *nbval )
-#else
-void getvr8_(_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT double *val,_OUT INTEGER *nbval,_IN int lfac,_IN int lcle )
-#endif
+void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
+                              _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT double *val,_OUT INTEGER *nbval)
 {
         /*
           Procedure GETVR8 pour le FORTRAN : emule le fonctionnement
@@ -1312,11 +1381,9 @@ void getvr8_(_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *ia
         char *mcs      = (char*)0 ;
 
         _DEBUT(getvr8) ;
-        SSCRUTE(PyString_AsString(PyObject_CallMethod(commande,"retnom",""))) ;
-        FSSCRUTE(motfac,lfac) ; FSSCRUTE(motcle,lcle) ; ISCRUTE(*iocc) ;
+                                                        SSCRUTE(PyString_AsString(PyObject_CallMethod(commande,"retnom",""))) ;
+                                                        FSSCRUTE(motfac,lfac) ; FSSCRUTE(motcle,lcle) ; ISCRUTE(*iocc) ;
                                                         ASSERT(EstPret(motcle,lcle)!=0);
-
-
         mfc=fstr1(motfac,lfac); /* conversion chaine fortran en chaine C */
                                                         ASSERT(mfc!=(char*)0);
         mcs=fstr2(motcle,lcle);
@@ -1340,14 +1407,12 @@ void getvr8_(_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *ia
 
                                                         ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"getvr8","ssiii",
-            mfc,mcs,*iocc,*iarg,*mxval);
-
+                                                  mfc,mcs,*iocc,*iarg,*mxval);
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
-
-        ASSERT(PyTuple_Check(res)) ;
-
+                                                       OBSCRUTE(res);
+                                                       ASSERT(PyTuple_Check(res)) ;
         ok = PyArg_ParseTuple(res,"lO",nbval,&tup);
         if(!ok)MYABORT("erreur dans la partie Python");
 
@@ -1356,54 +1421,16 @@ void getvr8_(_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *ia
         if ( nval>0 ){
                 convr8(nval,tup,val);
         }
-
-
-
-#ifdef _FORT15_        /*{*/
-
-        /* --- construction du message pour fort.15 --- */
-
-        if ( nval > 0 ){
-                int taille  = 0 ;
-                if ( (taille=ConstruitFort15( mcs , mfc )) ){
-                        char s[16] ;
-                        int k       = 0 ;
-                        for(k=0;k<nval && k<5;k++){
-                                sprintf( s , " %12.5E" , val[k] ) ;
-                                AjoutChaineA( &Pour_fort15 , s ) ;
-                                                        ASSERT(s!=(char*)0) ;
-                                taille += strlen(s) ;
-                                                        ASSERT(Pour_fort15!=(char*)0) ;
-                                                        ASSERT(taille==strlen(Pour_fort15)) ;
-                        }
-                }
-        }
-
-        /* --- FIN construction du message pour fort.15 --- */
-
-        if ( Pour_fort15 != (char*)0 ) Fort15() ;
-
-#endif                        /*}*/ /* # ifdef _FORT15_ */
-
+                                                        ISCRUTE(*nbval) ;
+                                                        TDSCRUTE(nval,val) ;
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         _FIN(getvr8) ;
         return ;
 }
 
-
-
-
-#if defined HPUX
-void getvis (_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *iarg,_IN INTEGER *mxval,
-             _INOUT INTEGER *val,_OUT INTEGER *nbval,_IN int lfac,_IN int lcle )
-#elif defined PPRO_NT
-void __stdcall GETVIS (_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
-                       _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT INTEGER *val,_OUT INTEGER *nbval )
-#else
-void getvis_(_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *iarg,_IN INTEGER *mxval,
-             _INOUT INTEGER *val,_OUT INTEGER *nbval,_IN int lfac,_IN int lcle )
-#endif
+void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
+                              _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT INTEGER *val,_OUT INTEGER *nbval )
 {
         /*
           Procedure GETVIS pour le FORTRAN : emule le fonctionnement
@@ -1429,7 +1456,7 @@ void getvis_(_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *ia
         char *mcs      = (char*)0 ;
 
         _DEBUT(getvis_) ;
-        FSSCRUTE(motfac,lfac) ; FSSCRUTE(motcle,lcle) ;
+                                                        FSSCRUTE(motfac,lfac) ; FSSCRUTE(motcle,lcle) ;
                                                         ASSERT((*iocc>0)||(FindLength(motfac,lfac)==0));
                                                         ASSERT(EstPret(motcle,lcle)!=0);
 
@@ -1456,12 +1483,13 @@ void getvis_(_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *ia
 
                                                         ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"getvis","ssiii",
-            mfc,mcs,*iocc,*iarg,*mxval);
+                                mfc,mcs,*iocc,*iarg,*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
 
+                                                        OBSCRUTE(res) ;
         ok = PyArg_ParseTuple(res,"lO",nbval,&tup);
         if (!ok)MYABORT("erreur dans la partie Python");
 
@@ -1469,38 +1497,8 @@ void getvis_(_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *ia
         if(*nbval < 0)nval=*mxval;
         convert(nval,tup,val);
 
-#ifdef _DEBOG_
-        if(nval > 0)printf("\tGETVIS : val %ld\n",val[0]);
-#endif
-
-
-
-#ifdef _FORT15_        /*{*/
-
-        /* --- construction du message pour fort.15 --- */
-
-        if ( nval > 0 ){
-                int taille  = 0 ;
-                if ( (taille=ConstruitFort15( mcs , mfc )) ){
-                        char s[9] ;
-                        int k       = 0 ;
-                        for(k=0;k<nval && k<5;k++){
-                                sprintf( s , " %d" , val[k] ) ;
-                                AjoutChaineA( &Pour_fort15 , s ) ;
-                                                        ASSERT(s!=(char*)0) ;
-                                taille += strlen(s) ;
-                                                        ASSERT(Pour_fort15!=(char*)0) ;
-                                                        ASSERT(taille==strlen(Pour_fort15)) ;
-                        }
-                }
-        }
-
-        /* --- FIN construction du message pour fort.15 --- */
-
-        if ( Pour_fort15 != (char*)0 ) Fort15() ;
-
-#endif                        /*}*/ /* # ifdef _FORT15_ */
-
+                                                        ISCRUTE(*nbval) ;
+                                                        TISCRUTE(nval,val) ;
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         _FIN(getvis_) ;
@@ -1508,36 +1506,23 @@ void getvis_(_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *ia
 }
 
 
-#if defined HPUX
-void getvli( _OUT INTEGER *unite , _OUT char *cas , _IN int lcas )
-#elif defined PPRO_NT
-void __stdcall GETVLI( _OUT INTEGER *unite , _OUT char *cas , _IN int lcas )
-#else
-void getvli_ ( _OUT INTEGER *unite , _OUT char *cas , _IN int lcas )
-#endif
+void DEFPS(GETVLI,getvli,_OUT INTEGER *unite , _OUT char *cas , _IN int lcas )
 {
         /*
         Cette fonction est destinee a etre utilisee pour le fichier "*.code" (fort.15)
         */
-        int k=0 ;
-
-        *unite = 15 ;
-        for ( k=0 ; k<lcas ; k++ ) cas[k] = ' ' ;
+        _DEBUT(getvli) ;
+                                                        ISCRUTE(lcas);
                                                         ASSERT(NomCas!=(char*)0) ;
-        strncpy( cas , NomCas , (size_t)min(lcas,strlen(NomCas)) ) ;
+        *unite = 15 ;
+        CSTRING_FCPY(cas,lcas,NomCas);
+                                                        FSSCRUTE(cas,lcas);
+        _FIN(getvli) ;
         return ;
 }
 
-
-
-
-#if defined HPUX
-void getvls (char *motfac,char *motcle,INTEGER *iocc,INTEGER *iarg,INTEGER *mxval,INTEGER *val,INTEGER *nbval,int lfac,int lcle )
-#elif defined PPRO_NT
-void __stdcall GETVLS (char *motfac,int lfac,char *motcle,int lcle,INTEGER *iocc,INTEGER *iarg,INTEGER *mxval,INTEGER *val,INTEGER *nbval )
-#else
-void getvls_(char *motfac,char *motcle,INTEGER *iocc,INTEGER *iarg,INTEGER *mxval,INTEGER *val,INTEGER *nbval,int lfac,int lcle )
-#endif
+void DEFSSPPPPP(GETVLS,getvls,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
+                              _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT INTEGER *val,_OUT INTEGER *nbval )
 {
         /*
           Procedure GETVLS pour le FORTRAN : emule le fonctionnement
@@ -1564,7 +1549,7 @@ void getvls_(char *motfac,char *motcle,INTEGER *iocc,INTEGER *iarg,INTEGER *mxva
         char *mcs      = (char*)0 ;
 
         _DEBUT(getvls_) ;
-        FSSCRUTE(motfac,lfac) ; FSSCRUTE(motcle,lcle) ;
+                                                        FSSCRUTE(motfac,lfac) ; FSSCRUTE(motcle,lcle) ;
                                                         ASSERT((*iocc>0)||(FindLength(motfac,lfac)==0));
                                                         ASSERT(EstPret(motcle,lcle)!=0);
 
@@ -1603,59 +1588,16 @@ void getvls_(char *motfac,char *motcle,INTEGER *iocc,INTEGER *iarg,INTEGER *mxva
         nval=*nbval;
         if(*nbval < 0)nval=*mxval;
         convert(nval,tup,val);
-
-#ifdef _DEBOG_
-        if(nval > 0)printf("\tGETVLS : val %ld\n",val[0]);
-#endif
-
-
-
-#ifdef _FORT15_        /*{*/
-
-        /* --- construction du message pour fort.15 --- */
-
-        if ( nval > 0 ){
-                int taille  = 0 ;
-                if ( (taille=ConstruitFort15( mcs , mfc )) ){
-                        char s[9] ;
-                        int k       = 0 ;
-                        for(k=0;k<nval && k<5;k++){
-                                sprintf( s , " %d" , val[k] ) ;
-                                AjoutChaineA( &Pour_fort15 , s ) ;
-                                                        ASSERT(s!=(char*)0) ;
-                                taille += strlen(s) ;
-                                                        ASSERT(Pour_fort15!=(char*)0) ;
-                                                        ASSERT(taille==strlen(Pour_fort15)) ;
-                        }
-                }
-        }
-
-        /* --- FIN construction du message pour fort.15 --- */
-
-        if ( Pour_fort15 != (char*)0 ) Fort15() ;
-
-#endif                        /*}*/ /* # ifdef _FORT15_ */
-
+                                                        ISCRUTE(*nbval) ;
+                                                        TISCRUTE(nval,val) ;
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         _FIN(getvls_) ;
         return ;
 }
 
-
-
-
-#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
-#define GETVTX getvtx_
-void getvtx_(_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT char *txval,_OUT INTEGER *nbval, _IN int lfac, _IN int lcle, _IN int ltx)
-#elif defined HPUX
-#define GETVTX getvtx
-void getvtx (_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *iarg,_IN INTEGER *mxval,
-             _INOUT char *txval,_OUT INTEGER *nbval, _IN int lfac, _IN int lcle, _IN int ltx)
-#elif defined PPRO_NT
-void __stdcall GETVTX (_IN char *motfac,_IN int lfac,_IN char *motcle, _IN int lcle,_IN INTEGER *iocc,
-                       _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT char *txval,_IN int ltx,_OUT INTEGER *nbval)
-#endif
+void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
+                              _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT char *txval,_IN int ltx,_OUT INTEGER *nbval)
 {
         /*
           Procedure GETVTX pour le FORTRAN : emule le fonctionnement
@@ -1684,8 +1626,8 @@ void __stdcall GETVTX (_IN char *motfac,_IN int lfac,_IN char *motcle, _IN int l
         char *mcs      = (char*)0 ;
 
         _DEBUT(getvtx_) ;
-        SSCRUTE(PyString_AsString(PyObject_CallMethod(commande,"retnom",""))) ;
-        FSSCRUTE(motfac,lfac) ; FSSCRUTE(motcle,lcle) ; ISCRUTE(ltx) ; ISCRUTE(*iocc) ;
+                                                        SSCRUTE(PyString_AsString(PyObject_CallMethod(commande,"retnom",""))) ;
+                                                        FSSCRUTE(motfac,lfac) ; FSSCRUTE(motcle,lcle) ; ISCRUTE(ltx) ; ISCRUTE(*iocc) ;
                                                         /*ASSERT((*iocc>0)||(FindLength(motfac,lfac)==0));*/
 
 
@@ -1716,92 +1658,36 @@ void __stdcall GETVTX (_IN char *motfac,_IN int lfac,_IN char *motcle, _IN int l
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
 
-#ifdef _DEBOG_
-        /*  si non impression du retour */
-        TAB ; PyObject_Print(res, stdout, 0); printf("\n");
-#endif
+                                                        OBSCRUTE(res);
 
         ok = PyArg_ParseTuple(res,"lO",nbval,&tup);
         if (!ok)MYABORT("erreur au decodage d'une chaine dans le module C aster.getvtx");
 
-#ifdef _DEBOG_
-         printf("\tGETVTX : nbval %ld : ",*nbval);
-         PyObject_Print(tup, stdout, 0);
-         printf("\n");
-#endif
+                                                        ISCRUTE(*nbval);
+                                                        ISCRUTE(*mxval);
+                                                        ISCRUTE(ltx);
+                                                        OBSCRUTE(tup);
         nval=*nbval;
         if(*nbval < 0)nval=*mxval;
 
         if( nval > 0 ){
                 convertxt(nval,tup,txval,ltx);
-                RES ; FSSCRUTE(txval,ltx) ;
+                                                        FSSCRUTE(txval,nval*ltx) ;
         }
 
-
-#ifdef _FORT15_        /*{*/
-
-        /* --- construction du message pour fort.15 --- */
-
-        if ( nval > 0 ){
-                int taille  = 0 ;
-                if ( (taille=ConstruitFort15( mcs , mfc )) ){
-                        PyObject* v = (PyObject*)0 ;
-                        char *s     = (char*)0 ;
-                                                        ASSERT(Pour_fort15!=(char*)0) ;
-                                                        ASSERT(taille==strlen(Pour_fort15)) ;
-                        for(k=0;k<nval && k<5 ;k++){
-
-                                AjoutChaineA( &Pour_fort15 , " '" ) ;
-                                taille += 2 ;
-                                                        ASSERT(taille==strlen(Pour_fort15)) ;
-
-
-                                v=PyTuple_GetItem(tup,k);
-                                s=PyString_AsString(v);
-                                                        ASSERT(s!=(char*)0) ;
-
-                                AjoutChaineA( &Pour_fort15 , s ) ;
-                                                        ASSERT(s!=(char*)0) ;
-                                taille += strlen(s) ;
-                                                        ASSERT(taille==strlen(Pour_fort15)) ;
-
-
-                                AjoutChaineA( &Pour_fort15 , "'" ) ;
-                                taille += 1 ;
-                                                        ASSERT(taille==strlen(Pour_fort15)) ;
-                        }
-                }
-        }
-
-        /* --- FIN construction du message pour fort.15 --- */
-
-        if ( Pour_fort15 != (char*)0 ) Fort15() ;
-
-#endif                        /*}*/ /* # ifdef _FORT15_ */
-
-#ifdef _DEBOG_
-        if( *iocc <= 0 ){
-                ISCRUTE(*nbval) ;
-        }
-#endif
-
+        /* ATTENTION : il ne faut decrementer le compteur de references de res
+         *             qu'apres en avoir fini avec l'utilisation de tup.
+         *             NE PAS decrementer le compteur de references de tup car
+         *             la disparition de res entrainera un decrement automatique 
+         *             du compteur de tup (res=(nbval,tup))
+         */
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         _FIN(getvtx_) ;
         return ;
 }
 
-
-
-
-#if defined HPUX
-void getftx (_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *iarg,_IN INTEGER *mxval,
-             _INOUT char *txval,_OUT INTEGER *nbval, _IN int lfac, _IN int lcle, _IN int ltx)
-#elif defined PPRO_NT
-void __stdcall GETFTX (_IN char *motfac, _IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
-                       _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT char *txval,_IN int ltx,_OUT INTEGER *nbval)
-#else
-void getftx_(_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT char *txval,_OUT INTEGER *nbval, _IN int lfac, _IN int lcle, _IN int ltx)
-#endif
+void DEFSSPPPSP(GETFTX,getftx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
+                              _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT char *txval,_IN int ltx,_OUT INTEGER *nbval)
 {
         /*
 
@@ -1832,8 +1718,9 @@ void getftx_(_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *ia
         char *mcs      = (char*)0 ;
 
         _DEBUT(getftx_) ;
-        SSCRUTE(PyString_AsString(PyObject_CallMethod(commande,"retnom",""))) ;
-        FSSCRUTE(motfac,lfac); FSSCRUTE(motcle,lcle); ISCRUTE(*mxval);ISCRUTE(ltx) ; ISCRUTE(*iocc);
+                                                        SSCRUTE(PyString_AsString(PyObject_CallMethod(commande,"retnom",""))) ;
+                                                        FSSCRUTE(motfac,lfac); FSSCRUTE(motcle,lcle); 
+                                                        ISCRUTE(*mxval);ISCRUTE(ltx) ; ISCRUTE(*iocc);
                                                         /*ASSERT((*iocc>0)||(FindLength(motfac,lfac)==0));*/
 
         mfc=fstr1(motfac,lfac);
@@ -1845,19 +1732,13 @@ void getftx_(_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *ia
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
 
-#ifdef _DEBOG_
-        /*  si non impression du retour */
-        TAB ; PyObject_Print(res, stdout, 0); printf("\n");
-#endif
+                                                        OBSCRUTE(res);
 
         ok = PyArg_ParseTuple(res,"lO",nbval,&tup);
         if (!ok)MYABORT("erreur au decodage d'une chaine dans le module C aster.getftx");
 
-#ifdef _DEBOG_
-         printf("\tGETFTX : nbval %ld : ",*nbval);
-         PyObject_Print(tup, stdout, 0);
-         printf("\n");
-#endif
+                                                        ISCRUTE(*nbval) ;
+                                                        OBSCRUTE(tup);
         nval=*nbval;
         if(*nbval < 0)nval=*mxval;
 
@@ -1866,17 +1747,13 @@ void getftx_(_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *ia
                 le tableau de mxval chaines et interprete comme une chaine de mxval*ltx
                 caracteres.
                 */
-                ISCRUTE(PyString_Size(PyTuple_GetItem(tup,0))) ;
-                ASSERT(PyString_Size(PyTuple_GetItem(tup,0))<=(*mxval)*ltx) ;
+                                                        ISCRUTE(PyString_Size(PyTuple_GetItem(tup,0))) ;
+                                                        ASSERT(PyString_Size(PyTuple_GetItem(tup,0))<=(*mxval)*ltx) ;
                 convertxt(1,tup,txval,(*mxval)*ltx);
-                FSSCRUTE(txval,(*mxval)*ltx) ;
+                                                        ISCRUTE((*mxval)*ltx) ;
+                                                        FSSCRUTE(txval,(*mxval)*ltx) ;
         }
 
-#ifdef _DEBOG_
-        if( *iocc <= 0 ){
-                ISCRUTE(*nbval) ;
-        }
-#endif
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         _FIN(getftx_) ;
@@ -1885,162 +1762,8 @@ void getftx_(_IN char *motfac,_IN char *motcle,_IN INTEGER *iocc,_IN INTEGER *ia
 
 
 
-
-
-#ifdef _FORT15_        /*{*/
-
-
-int ConstruitFort15( _IN char *motcle , _IN char *motfac )
-{
-        /*
-        INTENTION : initialiser la chaine de caracteres affichee dans le fichier Aster : fort.15
-                    avec :
-                       - le nom du cas (NomCas)
-                       - le nom de la commande courante
-                       - le nom du mot-cle simple passe en argument
-                       - le nom du mot-cle facteur passe en argument (ou les caracteres "__")
-
-                    la chaine sera affichee par le sous programme fortran AFCHAI par
-                    l'intermediaire de la fonction C Fort15() definie dans le present fichier.
-        */
-
-        int taille = 0 ;
-        char *ptrChaine = (char*)0 ;
-
-
-        if( NomCas ){
-
-                PyObject *res = (PyObject*)0 ;
-                char *nomCommande = (char*)0 ;
-
-                int ll = -1 ;
-                int k ;
-                const int format    = 20 ;
-                                                                ASSERT(motcle!=(char*)0);
-                                                                ASSERT(motfac!=(char*)0);
-                                                                ASSERT(Pour_fort15==(char*)0);
-
-
-                /*---------------------------- nom du cas ------------------------------*/
-
-                AjoutChaineA( &Pour_fort15 , NomCas ) ;
-                taille = (Pour_fort15!=(char*)0) ? strlen(Pour_fort15) : 0 ;
-                                                                ASSERT(taille==strlen(Pour_fort15));
-                                                                ASSERT((taille+2)<=Taille_fort15);
-                AjoutChaineA( &Pour_fort15 , "  " ) ; taille += 2 ;
-                                                                ASSERT(taille==strlen(Pour_fort15));
-
-
-
-                /*------------------------- nom de la commande  -------------------------*/
-
-                res=PyObject_CallMethod(commande,"retnom","");
-                if (res == NULL)MYABORT("erreur dans la partie Python");
-                ASSERT(PyString_Check(res)) ;
-                nomCommande=PyString_AsString(res);
-                ASSERT(nomCommande!=(char*)0) ;
-
-                AjoutChaineA( &Pour_fort15 , nomCommande ) ;
-                taille += strlen(nomCommande) ;                        ASSERT(taille==strlen(Pour_fort15));
-                for( k=strlen(nomCommande) ; k<format ; k++ ){
-                        AjoutChaineA( &Pour_fort15 , " " ) ;
-                        taille++ ;                                ASSERT(taille==strlen(Pour_fort15));
-                }
-
-
-
-                /*--------------------------- nom du mot-cle simple ----------------------------*/
-
-                AjoutChaineA( &Pour_fort15 , motcle ) ;
-                taille += strlen(motcle) ;                        ASSERT(taille==strlen(Pour_fort15));
-                for( k=strlen(motcle) ; k<format ; k++ ){
-                        AjoutChaineA( &Pour_fort15 , " " ) ;
-                        taille++ ;                                ASSERT(taille==strlen(Pour_fort15));
-                }
-
-
-
-                /*--------------------------- nom du mot-cle facteur ----------------------------*/
-
-                                                                ASSERT((taille+2)<=Taille_fort15);
-                AjoutChaineA( &Pour_fort15 , "  " ) ; taille += 2 ;
-                if( motfac[0]==' ' ){
-                        ll=2 ;                                        ASSERT((taille+ll)<=Taille_fort15);
-                        AjoutChaineA( &Pour_fort15 , "__" )  ;
-                }
-                else{
-                        ll=strlen(motfac) ;                        ASSERT((taille+ll)<=Taille_fort15);
-                        AjoutChaineA( &Pour_fort15 , motfac )  ;
-                }
-                taille += ll ;
-                                                                ASSERT(taille==strlen(Pour_fort15));
-
-                for( k=ll ; k<format ; k++ ){
-                                                                ASSERT((taille+1)<=Taille_fort15);
-                        AjoutChaineA( &Pour_fort15 , " " ) ;
-                        taille++ ;                                ASSERT(taille==strlen(Pour_fort15));
-                }
-                ptrChaine=(char*)Pour_fort15 ;
-                                                                ASSERT((taille+4)<=Taille_fort15);
-                AjoutChaineA( &Pour_fort15 , "      " ) ;
-                taille += 6 ;
-                ASSERT(taille==strlen(Pour_fort15));
-
-        }
-        return taille ;
-}
-
-
-
-
-void Fort15( void )
-{
-
-        /*
-        INTENTION : ecrire dans fort.15 la chaine de caracteres (Pour_fort15) reservee et
-                    initialisee par ConstruitFort15,
-                    en appelant la routine fortran AFCHAI (afchai_).
-
-                    la chaine globale Pour_fort15 est declaree au debut du fichier courant.
-        */
-
-#if defined PPRO_NT
-void __stdcall AFCHAI ( char * , int , long* ) ; /* sous-programme fortran */
-#elif defined HPUX
-#define AFCHAI afchai
-void afchai( char * , long* , int ) ;
-#else
-#define AFCHAI afchai_
-void afchai_( char * , long* , int ) ;
-#endif
-        int longueur ;
-        long lu = 15 ;
-
-                                                        ASSERT(Pour_fort15!=(char*)0)
-        longueur = strlen(Pour_fort15) ;
-        ISCRUTE(longueur) ;
-                                                        ASSERT(longueur>=0)
-#if defined PPRO_NT
-        if ( longueur>0 ) AFCHAI ( Pour_fort15 , longueur , &lu ) ; /* voir afchai.f */
-#else
-        if ( longueur>0 ) AFCHAI ( Pour_fort15 , &lu , longueur ) ;
-#endif
-        free(Pour_fort15) ;
-        Pour_fort15 = (char*)0 ;
-}
-
-#endif                        /*}*/ /* # ifdef _FORT15_ */
-
-
-
-
-#if defined HPUX
-void getvid (char *motfac,char *motcle,INTEGER *iocc,INTEGER *iarg,INTEGER *mxval,char *txval,INTEGER *nbval,int lfac,int lcle ,int ltx)
-#elif defined PPRO_NT
-void __stdcall GETVID (char *motfac,int lfac,char *motcle,int lcle,INTEGER *iocc,INTEGER *iarg,INTEGER *mxval,char *txval,int ltx,INTEGER *nbval)
-#else
-void getvid_(char *motfac,char *motcle,INTEGER *iocc,INTEGER *iarg,INTEGER *mxval,char *txval,INTEGER *nbval,int lfac,int lcle,int ltx)
-#endif
+void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
+                              _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT char *txval,_IN int ltx,_OUT INTEGER *nbval)
 {
         /*
           Procedure GETVID pour le FORTRAN : emule le fonctionnement
@@ -2066,8 +1789,8 @@ void getvid_(char *motfac,char *motcle,INTEGER *iocc,INTEGER *iarg,INTEGER *mxva
 
 
         _DEBUT(getvid_) ;
-        SSCRUTE(PyString_AsString(PyObject_CallMethod(commande,"retnom",""))) ;
-        FSSCRUTE(motfac,lfac) ; FSSCRUTE(motcle,lcle) ;
+                                                        SSCRUTE(PyString_AsString(PyObject_CallMethod(commande,"retnom",""))) ;
+                                                        FSSCRUTE(motfac,lfac) ; FSSCRUTE(motcle,lcle) ;
                                                         ASSERT((*iocc>0)||(FindLength(motfac,lfac)==0));
 
 
@@ -2101,62 +1824,22 @@ void getvid_(char *motfac,char *motcle,INTEGER *iocc,INTEGER *iarg,INTEGER *mxva
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
 
-#ifdef _DEBOG_
-        /*  si non impression du retour */
-        TAB ;
-        PyObject_Print(res, stdout, 0);
-        printf("\n");
-#endif
+                                                        OBSCRUTE(res);
+
         ok = PyArg_ParseTuple(res,"lO",nbval,&tup);
         if (!ok)MYABORT("erreur dans la partie Python");
 
-        ISCRUTE((INTEGER)*nbval) ;
-
+                                                        ISCRUTE((INTEGER)*nbval) ;
 
         nval=*nbval;
         if(*nbval < 0)nval=*mxval;
-        ISCRUTE(nval) ;
+                                                        ISCRUTE(nval) ;
         if ( nval > 0 ){
                 convertxt(nval,tup,txval,ltx);
-                ISCRUTE(ltx) ;
-                ISCRUTE(nval*ltx) ;
-                FSSCRUTE(txval,nval*ltx) ;
+                                                        ISCRUTE(ltx) ;
+                                                        ISCRUTE(nval*ltx) ;
+                                                        FSSCRUTE(txval,nval*ltx) ;
         }
-
-#ifdef _FORT15_        /*{*/
-
-        /* --- construction du message pour fort.15 --- */
-
-        if ( nval > 0 ){
-                int taille  = 0 ;
-                if ( (taille=ConstruitFort15( mcs , mfc )) ){
-                        PyObject* v = (PyObject*)0 ;
-                        char *s     = (char*)0 ;
-                        int k       = 0 ;
-                        for(k=0;k<nval && k<5;k++){
-                                v=PyTuple_GetItem(tup,k);
-                                s=PyString_AsString(v);
-                                ASSERT(s!=(char*)0) ;
-
-                                AjoutChaineA( &Pour_fort15 , " " ) ;
-                                taille += 1 ;
-                                ASSERT(taille==strlen(Pour_fort15)) ;
-
-                                AjoutChaineA( &Pour_fort15 , s ) ;
-                                                        ASSERT(s!=(char*)0) ;
-                                taille += strlen(s) ;
-                                                        ASSERT(Pour_fort15!=(char*)0) ;
-                                                        ASSERT(taille==strlen(Pour_fort15)) ;
-                        }
-                }
-        }
-
-        /* --- FIN construction du message pour fort.15 --- */
-
-        if ( Pour_fort15 != (char*)0 ) Fort15() ;
-
-#endif                        /*}*/ /* # ifdef _FORT15_ */
-
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         _FIN(getvid_) ;
@@ -2164,15 +1847,7 @@ void getvid_(char *motfac,char *motcle,INTEGER *iocc,INTEGER *iarg,INTEGER *mxva
 }
 
 
-
-
-#if defined HPUX
-void smcdel (INTEGER *iold,INTEGER *inew,INTEGER *ierusr)
-#elif defined PPRO_NT
-void __stdcall SMCDEL (INTEGER *iold,INTEGER *inew,INTEGER *ierusr)
-#else
-void smcdel_(INTEGER *iold,INTEGER *inew,INTEGER *ierusr)
-#endif
+void DEFPPP(SMCDEL,smcdel,INTEGER *iold,INTEGER *inew,INTEGER *ierusr)
 {
         /*
           Entrees:
@@ -2201,13 +1876,7 @@ void smcdel_(INTEGER *iold,INTEGER *inew,INTEGER *ierusr)
 }
 
 
-#if defined HPUX
-void smdcmd (INTEGER *jcmd,char *result,char *comman,INTEGER *ierusr,int lresult,int lcomman)
-#elif defined PPRO_NT
-void __stdcall SMDCMD (INTEGER *jcmd,char *result,int lresult,char *comman,int lcomman,INTEGER *ierusr)
-#else
-void smdcmd_(INTEGER *jcmd,char *result,char *comman,INTEGER *ierusr,int lresult,int lcomman)
-#endif
+void DEFPSSP(SMDCMD ,smdcmd,INTEGER *jcmd,char *result,int lresult,char *comman,int lcomman,INTEGER *ierusr)
 {
         /*
           Entrees:
@@ -2218,8 +1887,9 @@ void smdcmd_(INTEGER *jcmd,char *result,char *comman,INTEGER *ierusr,int lresult
           Sorties:
             ierusr code retour d erreur incremente
         */
-        _DEBUT("smdcmd_"){
-        PyObject * res = PyObject_CallMethod(commande,"smdcmd","ls#s#",*jcmd,result,lresult,comman,lcomman);
+        PyObject * res;
+        _DEBUT("smdcmd_");
+        res = PyObject_CallMethod(commande,"smdcmd","ls#s#",*jcmd,result,lresult,comman,lcomman);
         /*
             Si le retour est NULL : une exception a ete levee dans le code Python appele
             Cette exception est a transferer normalement a l appelant mais FORTRAN ???
@@ -2229,17 +1899,11 @@ void smdcmd_(INTEGER *jcmd,char *result,char *comman,INTEGER *ierusr,int lresult
            MYABORT("erreur a l appel de smdcmd dans la partie Python");
         *ierusr=*ierusr+PyInt_AsLong(res);
         Py_DECREF(res);
-        }_FIN("smdcmd_") ;
+        _FIN("smdcmd_") ;
 }
 
 
-#if defined HPUX
-void smfcmd(INTEGER *ierusr)
-#elif defined PPRO_NT
-void __stdcall SMFCMD(INTEGER *ierusr)
-#else
-void smfcmd_(INTEGER *ierusr)
-#endif
+void DEFP(SMFCMD,smfcmd,INTEGER *ierusr)
 {
         /*
           Entrees:
@@ -2247,8 +1911,9 @@ void smfcmd_(INTEGER *ierusr)
           Sorties:
             ierusr code retour d erreur incremente
         */
-        _DEBUT("smfcmd_"){
-        PyObject *res = PyObject_CallMethod(commande,"smfcmd","");
+        PyObject * res;
+        _DEBUT("smfcmd_");
+        res = PyObject_CallMethod(commande,"smfcmd","");
         /*
             Si le retour est NULL : une exception a ete levee dans le code Python appele
             Cette exception est a transferer normalement a l appelant mais FORTRAN ???
@@ -2256,19 +1921,14 @@ void smfcmd_(INTEGER *ierusr)
         */
         if (res == NULL)
            MYABORT("erreur a l appel de smfcmd dans la partie Python");
+
         *ierusr=*ierusr+PyInt_AsLong(res);
         Py_DECREF(res);
-        }_FIN("smfcmd_" ) ;
+        _FIN("smfcmd_" ) ;
 }
 
 
-#if defined HPUX
-void smdmcf (char * motf,INTEGER *ierusr,int lmotf)
-#elif defined PPRO_NT
-void __stdcall SMDMCF (char * motf,int lmotf,INTEGER *ierusr)
-#else
-void smdmcf_(char * motf,INTEGER *ierusr,int lmotf)
-#endif
+void DEFSP( SMDMCF ,smdmcf,char * motf,int lmotf,INTEGER *ierusr)
 {
         /*
           Entrees:
@@ -2277,8 +1937,9 @@ void smdmcf_(char * motf,INTEGER *ierusr,int lmotf)
           Sorties:
             ierusr code retour d erreur incremente
         */
-        _DEBUT("smdmcf_"){
-        PyObject * res = PyObject_CallMethod(commande,"smdmcf","s#",motf,lmotf);
+        PyObject * res;
+        _DEBUT("smdmcf_");
+        res = PyObject_CallMethod(commande,"smdmcf","s#",motf,lmotf);
         /*
             Si le retour est NULL : une exception a ete levee dans le code Python appele
             Cette exception est a transferer normalement a l appelant mais FORTRAN ???
@@ -2286,19 +1947,14 @@ void smdmcf_(char * motf,INTEGER *ierusr,int lmotf)
         */
         if (res == NULL)
            MYABORT("erreur a l appel de smdmcf dans la partie Python");
+
         *ierusr=*ierusr+PyInt_AsLong(res);
         Py_DECREF(res);
-        }_FIN("smdmcf_") ;
+        _FIN("smdmcf_") ;
 }
 
 
-#if defined HPUX
-void smfmcf (INTEGER *ierusr)
-#elif defined PPRO_NT
-void __stdcall SMFMCF (INTEGER *ierusr)
-#else
-void smfmcf_(INTEGER *ierusr)
-#endif
+void DEFP(SMFMCF,smfmcf,INTEGER *ierusr)
 {
         /*
           Entrees:
@@ -2306,8 +1962,9 @@ void smfmcf_(INTEGER *ierusr)
           Sorties:
             ierusr code retour d erreur incremente
         */
-        _DEBUT("smfmcf_"){
-        PyObject * res = PyObject_CallMethod(commande,"smfmcf","");
+        PyObject * res ;
+        _DEBUT("smfmcf_");
+        res = PyObject_CallMethod(commande,"smfmcf","");
         /*
             Si le retour est NULL : une exception a ete levee dans le code Python appele
             Cette exception est a transferer normalement a l appelant mais FORTRAN ???
@@ -2315,9 +1972,10 @@ void smfmcf_(INTEGER *ierusr)
         */
         if (res == NULL)
            MYABORT("erreur a l appel de smfmcf dans la partie Python");
+
         *ierusr=*ierusr+PyInt_AsLong(res);
         Py_DECREF(res);
-        }_FIN("smfmcf_") ;
+        _FIN("smfmcf_") ;
 }
 
 long FindLength( _IN char *chaineFortran , _IN INTEGER longueur )
@@ -2372,7 +2030,6 @@ PyObject * MakeTupleString_pour_putvid(long nbval,char *kval,int lkval)
                     nbval nombre de chaines dans kval
                     kval  tableau de nbval chaines FORTRAN
                     lkval longueur des chaines FORTRAN (compilateur)
-                    lval  longueur des chaines FORTRAN (utilisateur)
                   Sorties:
                     RETOUR fonction : tuple de string Python de longueur nbval
                   Fonction:
@@ -2399,7 +2056,7 @@ PyObject * MakeTupleInt(long nbval,long* kval)
 {
         /*
                   Entrees:
-                    nbval nombre de chaines dans kval
+                    nbval nombre d'entiers dans kval
                     kval  tableau de nbval long FORTRAN
                   Sorties:
                     RETOUR fonction : tuple de int Python de longueur nbval
@@ -2423,7 +2080,7 @@ PyObject * MakeTupleFloat(long nbval,double * kval)
 {
         /*
                   Entrees:
-                    nbval nombre de chaines dans kval
+                    nbval nombre de reels dans kval
                     kval  tableau de nbval double FORTRAN
                   Sorties:
                     RETOUR fonction : tuple de float Python de longueur nbval
@@ -2444,13 +2101,7 @@ PyObject * MakeTupleFloat(long nbval,double * kval)
 }
 
 
-#if defined HPUX
-void putvid (char *motcle,INTEGER *nbval,char *kval,INTEGER *ierusr,int lmotcle,int lkval)
-#elif defined PPRO_NT
-void __stdcall PUTVID (char *motcle,int lmotcle,INTEGER *nbval,char *kval,int lkval,INTEGER *ierusr)
-#else
-void putvid_(char *motcle,INTEGER *nbval,char *kval,INTEGER *ierusr,int lmotcle,int lkval)
-#endif
+void DEFSPSP(PUTVID,putvid,char *motcle,int lmotcle,INTEGER *nbval,char *kval,int lkval,INTEGER *ierusr)
 {
         /*
                   Entrees:
@@ -2470,11 +2121,11 @@ void putvid_(char *motcle,INTEGER *nbval,char *kval,INTEGER *ierusr,int lmotcle,
                 if (t == NULL)
                         MYABORT("erreur a l appel de putvid : impossible de creer un tuple");
 
-                ASSERT(motcle!=NULL) ;
-                ASSERT(lmotcle>0) ;
+                                                                                     ASSERT(motcle!=NULL) ;
+                                                                                     ASSERT(lmotcle>0) ;
                 res = PyObject_CallMethod(commande,"putvid","s#lO",motcle,FindLength(motcle,lmotcle),*nbval,t);
                 Py_DECREF(t);
-                ISCRUTE(t->ob_refcnt) ;
+                                                                                     REFSCRUTE(t) ;
                 /*
                             Si le retour est NULL : une exception a ete levee dans le code Python appele
                             Cette exception est a transferer normalement a l appelant mais FORTRAN ???
@@ -2483,7 +2134,7 @@ void putvid_(char *motcle,INTEGER *nbval,char *kval,INTEGER *ierusr,int lmotcle,
                 if (res == NULL)
                         MYABORT("erreur a l appel de putvid dans la partie Python");
 
-                REFSCRUTE(t);
+                                                                                     REFSCRUTE(t);
                 *ierusr=*ierusr+PyInt_AsLong(res);
                 Py_DECREF(res);
         }
@@ -2491,13 +2142,7 @@ void putvid_(char *motcle,INTEGER *nbval,char *kval,INTEGER *ierusr,int lmotcle,
 }
 
 
-#if defined HPUX
-void putvis (char *motcle,INTEGER *nbval,INTEGER *ival,INTEGER *ierusr,int lmotcle)
-#elif defined PPRO_NT
-void __stdcall PUTVIS (char *motcle,int lmotcle,INTEGER *nbval,INTEGER *ival,INTEGER *ierusr)
-#else
-void putvis_(char *motcle,INTEGER *nbval,INTEGER *ival,INTEGER *ierusr,int lmotcle)
-#endif
+void DEFSPPP(PUTVIS,putvis,char *motcle,int lmotcle,INTEGER *nbval,INTEGER *ival,INTEGER *ierusr)
 {
         /*
                   Entrees:
@@ -2525,7 +2170,7 @@ void putvis_(char *motcle,INTEGER *nbval,INTEGER *ival,INTEGER *ierusr,int lmotc
         if (res == NULL)
                 MYABORT("erreur a l appel de putvis dans la partie Python");
 
-        REFSCRUTE(t);
+                                                                                    REFSCRUTE(t);
 
         *ierusr=*ierusr+PyInt_AsLong(res);
         Py_DECREF(res);
@@ -2534,13 +2179,7 @@ void putvis_(char *motcle,INTEGER *nbval,INTEGER *ival,INTEGER *ierusr,int lmotc
 
 
 
-#if defined HPUX
-void putvr8 (char *motcle,INTEGER *nbval,double *rval,INTEGER *ierusr,int lmotcle)
-#elif defined PPRO_NT
-void __stdcall PUTVR8 (char *motcle,int lmotcle,INTEGER *nbval,double *rval,INTEGER *ierusr)
-#else
-void putvr8_(char *motcle,INTEGER *nbval,double *rval,INTEGER *ierusr,int lmotcle)
-#endif
+void DEFSPPP(PUTVR8,putvr8,char *motcle,int lmotcle,INTEGER *nbval,double *rval,INTEGER *ierusr)
 {
         /*
                   Entrees:
@@ -2568,7 +2207,7 @@ void putvr8_(char *motcle,INTEGER *nbval,double *rval,INTEGER *ierusr,int lmotcl
         if (res == NULL)
                 MYABORT("erreur a l appel de putvr8 dans la partie Python");
 
-        REFSCRUTE(t);
+                                                                                    REFSCRUTE(t);
 
         *ierusr=*ierusr+PyInt_AsLong(res);
         Py_DECREF(res);
@@ -2576,15 +2215,7 @@ void putvr8_(char *motcle,INTEGER *nbval,double *rval,INTEGER *ierusr,int lmotcl
 }
 
 
-
-
-#if defined HPUX
-void putvtx (char *motcle,INTEGER *nbval,char *kval,INTEGER *ival,INTEGER *ierusr,int lmotcle,int lkval)
-#elif defined PPRO_NT
-void __stdcall PUTVTX (char *motcle,int lmotcle,INTEGER *nbval,char *kval,int lkval,INTEGER *ival,INTEGER *ierusr)
-#else
-void putvtx_(char *motcle,INTEGER *nbval,char *kval,INTEGER *ival,INTEGER *ierusr,int lmotcle,int lkval)
-#endif
+void DEFSPSPP(PUTVTX,putvtx,char *motcle,int lmotcle,INTEGER *nbval,char *kval,int lkval,INTEGER *ival,INTEGER *ierusr)
 {
         /*
                   Entrees:
@@ -2614,23 +2245,14 @@ void putvtx_(char *motcle,INTEGER *nbval,char *kval,INTEGER *ival,INTEGER *ierus
         if (res == NULL)
                 MYABORT("erreur a l appel de putvtx dans la partie Python");
 
-        REFSCRUTE(t);
+                                                                                                 REFSCRUTE(t);
         *ierusr=*ierusr+PyInt_AsLong(res);
         Py_DECREF(res);
         }_FIN("putvtx_") ;
 }
 
 
-#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
-#define GCUCON gcucon_
-void gcucon_(INTEGER *icmd, char *resul, char *concep, INTEGER *ier, int lresul, int lconcep)
-#elif defined HPUX
-#define GCUCON gcucon
-void gcucon (INTEGER *icmd, char *resul, char *concep, INTEGER *ier, int lresul, int lconcep)
-#elif defined PPRO_NT
-void __stdcall GCUCON (INTEGER *icmd, char *resul, int lresul, char *concep, int lconcep, INTEGER *ier)
-#else
-#endif
+void DEFPSSP(GCUCON,gcucon,INTEGER *icmd, char *resul, int lresul, char *concep, int lconcep, INTEGER *ier)
 {
         /*
                   Entrees:
@@ -2647,8 +2269,8 @@ void __stdcall GCUCON (INTEGER *icmd, char *resul, int lresul, char *concep, int
         */
         PyObject * res = (PyObject*)0 ;
         _DEBUT("gcucon_") ;
-        ASSERT(lresul) ;
-        ASSERT(lconcep) ;
+                                                                                    ASSERT(lresul) ;
+                                                                                    ASSERT(lconcep) ;
         res = PyObject_CallMethod(commande,"gcucon","ls#s#",*icmd,resul,lresul,concep,lconcep);
         /*
                     Si le retour est NULL : une exception a ete levee dans le code Python appele
@@ -2664,13 +2286,7 @@ void __stdcall GCUCON (INTEGER *icmd, char *resul, int lresul, char *concep, int
 }
 
 
-#if defined HPUX
-void gcucdt (INTEGER *icmd,char *resul,INTEGER *ier,int lresul)
-#elif defined PPRO_NT
-void __stdcall GCUCDT (INTEGER *icmd,char *resul,int lresul,INTEGER *ier)
-#else
-void gcucdt_(INTEGER *icmd,char *resul,INTEGER *ier,int lresul)
-#endif
+void DEFPSP(GCUCDT,gcucdt,INTEGER *icmd,char *resul,int lresul,INTEGER *ier)
 {
         /*
         Emulation de la fonction ASTER correspondante
@@ -2703,24 +2319,17 @@ void gcucdt_(INTEGER *icmd,char *resul,INTEGER *ier,int lresul)
 
         *ier = PyInt_AsLong(res);
         /*
-                -1 indique que le concept existe mais d'un autre type. On doit donc
+                ier= -1 indique que le concept existe mais d'un autre type. On doit donc
                 retourner 1
         */
         if(*ier==-1)*ier=1;
-        ICI; ISCRUTE(*ier);
-
+                                                                                     ISCRUTE(*ier);
         Py_DECREF(res);
         _FIN("gcucdt_") ;
 }
 
 
-#if defined HPUX
-void gettvc (char * nom,char *ctyp,INTEGER *ival,double *rval,INTEGER *ier,int lnom,int lctyp)
-#elif defined PPRO_NT
-void __stdcall GETTVC (char * nom,int lnom,char *ctyp,int lctyp,INTEGER *ival,double *rval,INTEGER *ier)
-#else
-void gettvc_(char * nom,char *ctyp,INTEGER *ival,double *rval,INTEGER *ier,int lnom,int lctyp)
-#endif
+void DEFSSPPP(GETTVC,gettvc,char * nom,int lnom,char *ctyp,int lctyp,INTEGER *ival,double *rval,INTEGER *ier)
 {
         /*
                   Entrees:
@@ -2752,8 +2361,7 @@ void gettvc_(char * nom,char *ctyp,INTEGER *ival,double *rval,INTEGER *ier,int l
 
         ok=PyArg_ParseTuple(res, "lO",ier,&valeur);
         if(!ok)MYABORT("erreur dans gettvc_ ");
-
-        ISCRUTE(valeur->ob_refcnt) ;
+                                                                              REFSCRUTE(valeur) ;
         if(PyInt_Check(valeur)){
           *ival=PyInt_AsLong(valeur);
           strncpy(ctyp,"IS  ",4);
@@ -2766,19 +2374,12 @@ void gettvc_(char * nom,char *ctyp,INTEGER *ival,double *rval,INTEGER *ier,int l
           *ier=0;
         }
 
-        Py_DECREF(res);
+        Py_DECREF(res); /* le compteur de references de valeur sera automatiquement decremente */
         _FIN("gettvc_") ;
 }
 
 
-#if defined HPUX
-#define gcecdu_ gcecdu
-void gcecdu_(INTEGER *ul,INTEGER *icmdu, INTEGER *numint)
-#elif defined PPRO_NT
-void __stdcall GCECDU (INTEGER *ul,INTEGER *icmdu, INTEGER *numint)
-#else
-void gcecdu_(INTEGER *ul,INTEGER *icmdu, INTEGER *numint)
-#endif
+void DEFPPP(GCECDU,gcecdu,INTEGER *ul,INTEGER *icmdu, INTEGER *numint)
 {
         /*
           Entrees:
@@ -2834,18 +2435,32 @@ void gcncon2_(char *type,char *resul,int ltype,int lresul)
         MYABORT("Cette procedure n est pas implementee");
 }
 
+/*
+ * Pour conserver le lien entre le code de calcul en Fortran et le superviseur
+ * en Python, on memorise la commande courante.
+ * Cette commande est celle que le fortran interroge lors de ses appels à l'API
+ * GETXXX. 
+ * Cette commande courante est enregistrée dans une pile de commandes car avec le
+ * mécanisme des macros, une commande peut avoir des sous commandes qui sont
+ * appelées pendant l'exécution de la commande principale.
+ * La fonction empile doit etre appelée avant l'exécution d'une commande (appel à oper,
+ * par exemple) et la fonction depile doit etre appelée après l'exécution de cette 
+ * commande.
+ */
 static PyObject * empile(PyObject *c)
 {
         _DEBUT(empile) ;
-#ifdef _DEBOG_
-        /*  impression de la commande courante */
-        PyObject_Print(c, stdout, 0);
-        printf("\n");
-#endif
-        REFSCRUTE(c) ;
-        /* PyList_Append incremente de 1 le compteur de ref de c */
+                                                               OBSCRUTE(c) ; /*  impression de la commande courante */
+                                                               REFSCRUTE(c) ; /*  impression du compteur de references de la commande courante */
+        /* PyList_Append incremente de 1 le compteur de references de c (commande courante) */
         PyList_Append(pile_commandes,c);
-        REFSCRUTE(c) ;
+        niveau=niveau+1;
+                                                               ISCRUTE(niveau);
+        if(NIVMAX < niveau){
+          printf("Le nombre de niveau max prevus %d est insuffisant pour le nombre demande %d\n",NIVMAX,niveau);
+          abort();
+        }
+                                                               REFSCRUTE(c) ;
         _FIN(empile) ;
         return c;
 }
@@ -2855,7 +2470,9 @@ static PyObject * depile()
         PyObject * com;
         int l=PyList_Size(pile_commandes);
         _DEBUT(depile) ;
-        ISCRUTE(l) ;
+        niveau=niveau-1;
+                                                               ISCRUTE(niveau);
+                                                               ISCRUTE(l) ;
         if(l == 0){
           /* Pile vide */
           Py_INCREF( Py_None ) ;
@@ -2865,11 +2482,11 @@ static PyObject * depile()
         /* Derniere commande dans la pile */
         com = PyList_GetItem(pile_commandes,l-1);
         /* PyList_GetItem n incremente pas le compteur de ref de com */
-        REFSCRUTE(com) ;
+                                                               REFSCRUTE(com) ;
         /* On tronque la liste a la dimension l-1 */
         PyList_SetSlice(pile_commandes,l-1,l,NULL);
         /* Le compteur de ref de com est decremente de 1 */
-        REFSCRUTE(com) ;
+                                                               REFSCRUTE(com) ;
         if(l == 1){
           /* La pile tronquee est vide */
           Py_INCREF( Py_None ) ;
@@ -2880,79 +2497,543 @@ static PyObject * depile()
          * en mode commande par commande */
         /* On retourne la derniere commande de la pile */
         com = PyList_GetItem(pile_commandes,l-2);
-        REFSCRUTE(com) ;
+                                                               REFSCRUTE(com) ;
         _FIN(depile) ;
         return com;
 }
 
+#define CALL_GETCON(nomsd,iob,ctype,lcon,iaddr,nomob) CALLSPPPPS(GETCON,getcon,nomsd,iob,ctype,lcon,iaddr,nomob)
+void DEFSPPPPS(GETCON,getcon,char *,int,INTEGER *,INTEGER *,INTEGER *,char **,char *,int);
 
-static PyObject* aster_getpara(self, args)
+static char getvectjev_doc[]=
+"getvectjev(nomsd)->valsd      \n\
+\n\
+Retourne la valeur du concept nomsd \n\
+dans un tuple.";
+
+static PyObject* aster_getvectjev(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-        char *nomsd,*nompa,*typsd;
-        double rval[2];
-        INTEGER ival;
-        INTEGER iordr;
+        char *nomsd;
+        char nomob[8];
+        double *f;
+        INTEGER *l;
+        char *kvar;
+        PyObject *tup;
+        INTEGER lcon, iob;
         INTEGER ctype=0;
-        char kval[80];
+        int i;
+        char *iaddr;
 
-#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
-#define CALL_SDVAPA(nomsd,typsd,nompa,iordr,itype,rval,ival,kval) \
-  sdvapa_(nomsd,typsd,nompa,iordr,itype,rval,ival,kval,strlen(nomsd),strlen(typsd),strlen(nompa),80)
-  void sdvapa_(char *,char *,char *,INTEGER *,INTEGER *,double *,INTEGER *,char *,int,int,int,int);
-#elif defined HPUX
-#define CALL_SDVAPA(nomsd,typsd,nompa,iordr,itype,rval,ival,kval) \
-  sdvapa(nomsd,typsd,nompa,iordr,itype,rval,ival,kval,strlen(nomsd),strlen(typsd),strlen(nompa),80)
-  void sdvapa(char *,char *,char *,INTEGER *,INTEGER *,double *,INTEGER *,char *,int,int,int,int);
-#elif defined PPRO_NT
-#define CALL_SDVAPA(nomsd,typsd,nompa,iordr,itype,rval,ival,kval) \
-  SDVAPA(nomsd,strlen(nomsd),typsd,strlen(typsd),nompa,strlen(nompa),iordr,itype,rval,ival,kval,80)
-  void __stdcall SDVAPA(char *,int,char *,int,char *,int,INTEGER *,INTEGER *,double *,INTEGER *,char *,int);
-#endif
-        if (!PyArg_ParseTuple(args, "sssl",&nomsd,&typsd,&nompa,&iordr)) return NULL;
+        _DEBUT(aster_getvectjev) ;
+
+        if (!PyArg_ParseTuple(args, "s:getvectjev",&nomsd)) return NULL;
+
         try(1){
-          CALL_SDVAPA(nomsd,typsd,nompa,&iordr,&ctype,rval,&ival,kval);
-          if(ctype == 0){
+          iob=0 ;
+                                   SSCRUTE(nomsd);
+                                   ISCRUTE(iob);
+          CALL_GETCON(nomsd,&iob,&ctype,&lcon,&iaddr,nomob);
+                                   ISCRUTE(lcon);
+                                   ISCRUTE(ctype);
+                                   ISCRUTE(iaddr);
+                                   SSCRUTE(nomob);
+          if(ctype < 0){
+            /* Erreur */
+            PyErr_SetString(PyExc_KeyError, "Concept inexistant");
+            _FIN(aster_getvectjev) ;
+            return NULL;
+          }
+          else if(ctype == 0){
             Py_INCREF( Py_None ) ;
+            _FIN(aster_getvectjev) ;
             return Py_None;
           }
           else if(ctype == 1){
-            return PyFloat_FromDouble(rval[0]);
+            /* REEL */
+            f = (double *)iaddr;
+            tup = PyTuple_New( lcon ) ;
+            for(i=0;i<lcon;i++){
+               PyTuple_SetItem( tup, i, PyFloat_FromDouble(f[i]) ) ;
+            }
+            _FIN(aster_getvectjev) ;
+            return tup;
           }
           else if(ctype == 2){
-            return PyInt_FromLong(ival);
+            /* ENTIER */
+            l = (INTEGER*)iaddr;
+            tup = PyTuple_New( lcon ) ;
+            for(i=0;i<lcon;i++){
+               PyTuple_SetItem( tup, i, PyInt_FromLong(l[i]) ) ;
+            }
+            _FIN(aster_getvectjev) ;
+            return tup;
           }
           else if(ctype == 3){
-            return PyComplex_FromDoubles(rval[0],rval[1]);
+            /* COMPLEXE */
+            f = (double *)iaddr;
+            tup = PyTuple_New( lcon ) ;
+            for(i=0;i<lcon;i++){
+               PyTuple_SetItem( tup, i, PyComplex_FromDoubles(f[2*i],f[2*i+1]) ) ;
+            }
+            _FIN(aster_getvectjev) ;
+            return tup;
           }
           else if(ctype == 4){
-            return PyString_FromStringAndSize(kval,8);
+            /* CHAINE K8 */
+            tup = PyTuple_New( lcon ) ;
+            for(i=0;i<lcon;i++){
+                                        OBSCRUTE(tup);
+               kvar = iaddr + i*8;
+               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,8) ) ;
+            }
+            _FIN(aster_getvectjev) ;
+            return tup;
           }
           else if(ctype == 5){
-            return PyString_FromStringAndSize(kval,16);
+            /* CHAINE K16 */
+            tup = PyTuple_New( lcon ) ;
+            for(i=0;i<lcon;i++){
+                                        OBSCRUTE(tup);
+               kvar = iaddr + i*16;
+               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,16) ) ;
+            }
+            _FIN(aster_getvectjev) ;
+            return tup;
           }
           else if(ctype == 6){
-            return PyString_FromStringAndSize(kval,24);
+            /* CHAINE K24 */
+            tup = PyTuple_New( lcon ) ;
+            for(i=0;i<lcon;i++){
+                                        OBSCRUTE(tup);
+               kvar = iaddr + i*24;
+               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,24) ) ;
+            }
+            _FIN(aster_getvectjev) ;
+            return tup;
           }
           else if(ctype == 7){
-            return PyString_FromStringAndSize(kval,32);
+            /* CHAINE K32 */
+            tup = PyTuple_New( lcon ) ;
+            for(i=0;i<lcon;i++){
+                                        OBSCRUTE(tup);
+               kvar = iaddr + i*32;
+               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,32) ) ;
+            }
+            _FIN(aster_getvectjev) ;
+            return tup;
           }
           else if(ctype == 8){
-            return PyString_FromStringAndSize(kval,80);
-          }
-          else{
-            PyErr_SetString(PyExc_KeyError, "Parametre inexistant");
-            return NULL;
+            /* CHAINE K80 */
+            tup = PyTuple_New( lcon ) ;
+            for(i=0;i<lcon;i++){
+                                        OBSCRUTE(tup);
+               kvar = iaddr + i*80;
+               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,80) ) ;
+            }
+            _FIN(aster_getvectjev) ;
+            return tup;
           }
         }
         catch(CodeAbortAster){
           /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
-          PyErr_SetString(PyExc_KeyError, "Type SD probablement inexistant");
+          PyErr_SetString(PyExc_KeyError, "Concept inexistant");
+          _FIN(aster_getvectjev) ;
           return NULL;
         }
 }
 
+#define CALL_TAILSD(nom, nomsd, val, nbval) CALLSSPP(TAILSD,tailsd,nom, nomsd, val, nbval)
+void DEFSSPP(TAILSD,tailsd,char *,int,char *,int,INTEGER *, INTEGER *);
+
+static char getcolljev_doc[]=
+"getcolljev(nomsd)->valsd      \n\
+\n\
+Retourne la valeur du concept nomsd \n\
+dans un tuple.";
+
+static PyObject* aster_getcolljev(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+        char *nomsd, *nom;
+        char nomob[8];
+        double *f;
+        INTEGER *l;
+        char *kvar;
+        PyObject *tup, *dico, *key;
+        INTEGER iob,j;
+        INTEGER lcon;
+        INTEGER ctype=0;
+        INTEGER *val, nbval;
+        int i;
+        char *iaddr;
+
+        _DEBUT(aster_getcolljev) ;
+
+        if (!PyArg_ParseTuple(args, "s:getcolljev",&nomsd)) return NULL;
+
+/* Taille de la collection */     
+        nbval = 1;
+        val = (INTEGER *)malloc((nbval)*sizeof(INTEGER));
+        nom = (char *)malloc(24*sizeof(char));
+        strcpy(nom, "LIST_COLLECTION");
+        CALL_TAILSD(nom, nomsd, val, &nbval);
+        iob=val[0];
+
+        dico = PyDict_New();
+        try(1){
+          for(j=1;j<iob+1;j++){
+                                   SSCRUTE(nomsd);
+                                   ISCRUTE(j);
+          CALL_GETCON(nomsd,&j,&ctype,&lcon,&iaddr,nomob);
+                                   ISCRUTE(lcon);
+                                   ISCRUTE(ctype);
+                                   ISCRUTE(iaddr);
+                                   SSCRUTE(nomob);
+          if(nomob[1] == ' '){
+             key=PyInt_FromLong(j);
+          }
+          else {
+             key=PyString_FromStringAndSize(nomob,8);
+          }
+          if(ctype < 0){
+            /* Erreur */
+            PyErr_SetString(PyExc_KeyError, "Concept inexistant");
+            _FIN(aster_getcolljev) ;
+            return NULL;
+          }
+          else if(ctype == 0){
+            Py_INCREF( Py_None );
+            PyDict_SetItem(dico,key,Py_None);
+          }
+          else if(ctype == 1){
+            /* REEL */
+            f = (double *)iaddr;
+            tup = PyTuple_New( lcon ) ;
+            for(i=0;i<lcon;i++){
+               PyTuple_SetItem( tup, i, PyFloat_FromDouble(f[i]) ) ;
+            }
+            PyDict_SetItem(dico,key,tup);
+          }
+          else if(ctype == 2){
+            /* ENTIER */
+            l = (INTEGER*)iaddr;
+            tup = PyTuple_New( lcon ) ;
+            for(i=0;i<lcon;i++){
+               PyTuple_SetItem( tup, i, PyInt_FromLong(l[i]) ) ;
+            }
+            PyDict_SetItem(dico,key,tup);
+          }
+          else if(ctype == 3){
+            /* COMPLEXE */
+            f = (double *)iaddr;
+            tup = PyTuple_New( lcon ) ;
+            for(i=0;i<lcon;i++){
+               PyTuple_SetItem( tup, i, PyComplex_FromDoubles(f[2*i],f[2*i+1]) ) ;
+            }
+            PyDict_SetItem(dico,key,tup);
+          }
+          else if(ctype == 4){
+            /* CHAINE K8 */
+            tup = PyTuple_New( lcon ) ;
+            for(i=0;i<lcon;i++){
+                                        OBSCRUTE(tup);
+               kvar = iaddr + i*8;
+               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,8) ) ;
+            }
+            PyDict_SetItem(dico,key,tup);
+          }
+          else if(ctype == 5){
+            /* CHAINE K16 */
+            tup = PyTuple_New( lcon ) ;
+            for(i=0;i<lcon;i++){
+                                        OBSCRUTE(tup);
+               kvar = iaddr + i*16;
+               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,16) ) ;
+            }
+            PyDict_SetItem(dico,key,tup);
+          }
+          else if(ctype == 6){
+            /* CHAINE K24 */
+            tup = PyTuple_New( lcon ) ;
+            for(i=0;i<lcon;i++){
+                                        OBSCRUTE(tup);
+               kvar = iaddr + i*24;
+               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,24) ) ;
+            }
+            PyDict_SetItem(dico,key,tup);
+          }
+          else if(ctype == 7){
+            /* CHAINE K32 */
+            tup = PyTuple_New( lcon ) ;
+            for(i=0;i<lcon;i++){
+                                        OBSCRUTE(tup);
+               kvar = iaddr + i*32;
+               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,32) ) ;
+            }
+            PyDict_SetItem(dico,key,tup);
+          }
+          else if(ctype == 8){
+            /* CHAINE K80 */
+            tup = PyTuple_New( lcon ) ;
+            for(i=0;i<lcon;i++){
+                                        OBSCRUTE(tup);
+               kvar = iaddr + i*80;
+               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,80) ) ;
+            }
+            PyDict_SetItem(dico,key,tup);
+          }
+         }
+         return dico;
+         _FIN(aster_getcolljev) ;
+       }
+        catch(CodeAbortAster){
+          /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
+          PyErr_SetString(PyExc_KeyError, "Concept inexistant");
+          _FIN(aster_getcolljev) ;
+          return NULL;
+        }
+}
+
+void DEFSSPP(TAILSD,tailsd,char *,int,char *,int,INTEGER *, INTEGER *);
+void DEFSSPSPP(LIMAGP,limagp,char *, int, char *, int, INTEGER *, char *, int, INTEGER *, INTEGER *);
+void DEFSPSPPPS(RSACCH,rsacch,char *, int, INTEGER *, char *,int,INTEGER *, INTEGER *, INTEGER *, char *,int);
+void DEFSPSSPPP(RSACVA,rsacva,char *, int,INTEGER *, char *,int,char *,int,INTEGER *, double *,INTEGER *);
+
+#define CALL_TAILSD(nom, nomsd, val, nbval) CALLSSPP(TAILSD,tailsd,nom, nomsd, val, nbval)
+#define CALL_LIMAGP(noma, ligrno, linbno, ligrma, linbma, lidima) \
+                  FCALLSSPSPP(LIMAGP,limagp,noma,strlen(noma),ligrno,8,linbno,ligrma,8,linbma,lidima)
+#define CALL_RSACCH(nomsd, numch, nomch, nbord, liord, nbcmp, liscmp) \
+                  FCALLSPSPPPS(RSACCH,rsacch,nomsd,strlen(nomsd),numch, nomch,16,nbord, liord, nbcmp, liscmp,8)
+#define CALL_RSACVA(nomsd, numva, nomva, ctype, ival, rval, ier) \
+                  CALLSPSSPPP(RSACVA,rsacva,nomsd, numva, nomva, ctype, ival, rval, ier)
+
+
+
+static PyObject* aster_GetMaillage(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+
+/* Retourne les informations relatives a une SD maillage
+
+   Arguments :
+     IN Nom du maillage
+     IN Nature des informations recherchees
+          GROUP_MA   -> Liste des groupes de mailles 
+          GROUP_NO   -> Liste des groupes de noeuds
+          
+     OUT liste
+       'GROUP_MA' -> Liste des groupes de mailles
+       'GROUP_NO' -> Liste des groupes de noeuds
+
+*/
+
+{
+
+   INTEGER *val, nbval, nbgpno, nbgpma;
+   char *noma, *nom, *nomsd, *mode;
+        int i, nb, lo;
+        char *ligpno, *ligpma;
+        INTEGER *linbma, *linbno, *lidima;
+   PyObject *liste, *tuple;
+        
+   if (!PyArg_ParseTuple(args, "ss",&noma, &mode)) return NULL;
+
+/* Identifiant de la SD Maillage */     
+   nbval = 2;
+   val = (INTEGER *)malloc((nbval)*sizeof(INTEGER));
+   nom = (char *)malloc(24*sizeof(char));
+   strcpy(nom, "LIST_GROUP");
+
+/* Taille de la SD maillage : nbr GROUP_NO, nbr GROUP_MA */     
+        CALL_TAILSD(nom, noma, val, &nbval);
+
+   nbgpno = val[0];
+   nbgpma = val[1];
+        ligpno = (char *)malloc((1+nbgpno)*8*sizeof(char));
+        ligpma = (char *)malloc((1+nbgpma)*8*sizeof(char));
+   linbno = (INTEGER *)malloc((1+nbgpno)*sizeof(INTEGER));
+   linbma = (INTEGER *)malloc((1+nbgpma)*sizeof(INTEGER));
+   lidima = (INTEGER *)malloc((1+nbgpma)*sizeof(INTEGER));
+   CALL_LIMAGP(noma, ligpno, linbno, ligpma, linbma, lidima);
+
+   liste = PyList_New(0);
+
+/* Liste des GROUP_MA */
+        
+     if (strcmp(mode,"GROUP_MA") == 0)  
+          {
+          for (i=0; i<nbgpma; i++)
+          {
+       tuple = PyTuple_New(3);
+            nom = &(ligpma[i*8]);
+       lo = 8; while (nom[lo-1] == ' ')  lo--;
+            PyTuple_SetItem(tuple, 0, PyString_FromStringAndSize(nom,lo));
+            PyTuple_SetItem(tuple, 1, PyInt_FromLong(linbma[i]));
+            PyTuple_SetItem(tuple, 2, PyInt_FromLong(lidima[i]));
+            PyList_Append(liste,tuple);
+            };
+          }
+
+/* Liste des GROUP_NO */
+        
+        if (strcmp(mode,"GROUP_NO") == 0)       
+          {
+          for (i=0; i<nbgpno; i++)
+     {
+       tuple = PyTuple_New(2);
+            nom = &(ligpno[i*8]);
+       lo = 8; while (nom[lo-1] == ' ')  lo--;
+            PyTuple_SetItem(tuple, 0, PyString_FromStringAndSize(nom,lo));
+            PyTuple_SetItem(tuple, 1, PyInt_FromLong(linbno[i]));
+            PyList_Append(liste,tuple);
+            };
+          }
+
+          free(ligpno);
+          free(linbno);
+          free(ligpma);
+          free(linbma);
+          free(lidima);
+          return liste;
+        
+}
+
+static PyObject* aster_GetResu(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+
+/* Construit sous forme d'un dictionnaire Python l'architecture d'une SD resultat
+
+   Arguments :
+     IN Nom de la SD resultat
+     IN Nature des informations recherchees
+          CHAMPS      -> Champs de resultats
+          COMPOSANTES -> Liste des composantes des champs
+          VARI_ACCES  -> Variables d'acces
+          
+          
+     OUT dico
+       Si 'CHAMPS'
+       dico['NOM_CHAM'] -> [] si le champ n'est pas calcule
+                        -> Liste des numeros d'ordre ou le champ est calcule
+
+       Si 'COMPOSANTES'
+       dico['NOM_CHAM'] -> [] si le champ n'est pas calcule
+                        -> Liste des composantes du champ (enveloppe sur tous les instants)
+
+       Si 'VARI_ACCES'
+       dico['NOM_VA']   -> Liste des valeurs de la variable d'acces
+       
+*/
+
+{
+   INTEGER nbchmx, nbpamx, nbord, numch, numva, ier, nbcmp ;
+   INTEGER *liord, *ival;
+   INTEGER *val, nbval ;
+   double *rval;
+   char *nomsd, *mode, *liscmp, *nom ;
+   char nomch[16], ctype, nomva[16];
+   int i, lo, nb;
+   PyObject *dico, *liste, *key;
+        
+   if (!PyArg_ParseTuple(args, "ss",&nomsd, &mode)) return NULL;
+        
+/* Identifiant de la SD resultat */	
+   nbval = 1;
+   val = (INTEGER *)malloc((nbval)*sizeof(INTEGER));
+   nom = (char *)malloc(24*sizeof(char));
+   strcpy(nom, "LIST_RESULTAT");
+
+/* Taille de la SD resultat : nbr champs, nbr paras, nbr numeros d'ordre */     
+	CALL_TAILSD(nom, nomsd, val, &nbval);
+   nbchmx = val[0];
+   nbpamx = val[1];
+   nbord  = val[2];
+
+   if (strcmp(mode,"CHAMPS") == 0 || strcmp(mode,"COMPOSANTES") == 0)   
+
+/* Construction du dictionnaire : cle d'acces = nom du champ */
+        
+          {
+     liord  = (INTEGER *)malloc(nbord*sizeof(INTEGER));
+     liscmp = (char *)malloc(500*8*sizeof(char));
+     dico = PyDict_New();
+     for (numch=1; numch<=nbchmx; numch++)
+            {
+       CALL_RSACCH(nomsd, &numch, nomch, &nbord, liord, &nbcmp, liscmp);
+
+       lo = 16;
+       while (nomch[lo-1] == ' ')  lo--;
+       key = PyString_FromStringAndSize(nomch,lo);
+          
+       liste = PyList_New(0);
+
+       if (strcmp(mode,"CHAMPS") == 0)
+              { 
+              for (i=0; i<nbord; i++)
+              PyList_Append(liste,PyInt_FromLong(liord[i]));
+              }
+              
+            if (strcmp(mode,"COMPOSANTES") == 0)
+              { 
+              for (i=0; i<nbcmp; i++)
+                {
+                nom = &(liscmp[i*8]);
+                lo = 8; while (nom[lo-1] == ' ')  lo--;
+                PyList_Append(liste,PyString_FromStringAndSize(nom,lo));
+                }
+              }     
+              
+            PyDict_SetItem(dico,key,liste);
+            };
+          
+          free(liord);
+          }
+
+        
+        else
+        
+/* Extraction des variables d'acces */
+
+          {
+          ival  = (INTEGER *)malloc(nbord*sizeof(INTEGER));
+          rval  = (double * )malloc(nbord*sizeof(double) );
+          
+          dico = PyDict_New();
+          for (numva=0; numva<=nbpamx; numva++)
+            {
+            CALL_RSACVA(nomsd, &numva, nomva, &ctype, ival, rval, &ier);
+            if (ier != 0) continue; 
+            
+            lo = 16;
+            while (nomva[lo-1] == ' ') lo--;
+            key = PyString_FromStringAndSize(nomva,lo);
+          
+            liste = PyList_New(0);
+            if (ctype == 'I')
+              for (i=0; i<nbord; i++)
+                PyList_Append(liste,PyInt_FromLong(ival[i]));
+            else
+              for (i=0; i<nbord; i++)
+                PyList_Append(liste,PyFloat_FromDouble(rval[i]));
+                  
+            PyDict_SetItem(dico,key,liste);
+            };
+          
+          free(ival);
+          free(rval);
+          };
+
+        return dico;
+          
+}
+
+
+#define CALL_EXPASS(a,b,c,d)  F_FUNC(EXPASS,expass)(a,b,c,d)
+extern void STDCALL(EXPASS,expass)(INTEGER* , INTEGER* , INTEGER* , INTEGER*);
 
 static PyObject* aster_oper(self, args)
 PyObject *self; /* Not used */
@@ -2963,16 +3044,7 @@ PyObject *args;
         INTEGER iertot=0 ;
         INTEGER icmd=0 ;
         INTEGER ipass=0 ;
-        int val=-1 ;
-#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
-#define EXPASS expass_
-        void expass_( INTEGER* , INTEGER* , INTEGER* , INTEGER* ) ;
-#elif defined PPRO_NT
-        void __stdcall EXPASS( INTEGER* , INTEGER* , INTEGER* , INTEGER* ) ;
-#elif defined HPUX
-#define EXPASS expass
-        void expass( INTEGER* , INTEGER* , INTEGER* , INTEGER* ) ;
-#endif
+
         _DEBUT(aster_oper) ;
 
         if (!PyArg_ParseTuple(args, "Olll",&temp,&lot,&ipass,&icmd)) return NULL;
@@ -2980,45 +3052,43 @@ PyObject *args;
         /* On empile le nouvel appel */
         commande=empile(temp);
 
-        PyErr_Clear() ;
+        if(PyErr_Occurred()){
+            fprintf(stderr,"Warning: une exception n'a pas ete traitée\n");
+            PyErr_Print();
+            fprintf(stderr,"Warning: on l'annule pour continuer mais elle aurait\n\
+                            etre traitée avant\n");
+            PyErr_Clear();
+        }
+
         fflush(stderr) ;
         fflush(stdout) ;
 
-#ifdef _UTILISATION_SETJMP_
-
-        if ( (val=setjmp(env)) == 0 ){
+        try(1){
 
                 /*  appel du sous programme expass pour verif ou exec */
-
-
-                EXPASS (&lot,&ipass,&icmd,&iertot);
-
-                _FIN(aster_oper) ;
+                CALL_EXPASS (&lot,&ipass,&icmd,&iertot);
 
                 /* On depile l appel */
                 commande = depile();
+
+                                                                                 ISCRUTE(iertot) ;
+                _FIN(aster_oper) ;
                 return PyInt_FromLong(iertot); /*  retour de la fonction oper sous la forme d un entier */
         }
-        else{
-                /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
-
-                TraitementFinAster( val ) ;
-                _FIN(aster_oper) ;
-
+        finally{
                 /* On depile l appel */
                 commande = depile();
+
+                /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
+                TraitementFinAster( exception_status ) ;
+
+                _FIN(aster_oper) ;
                 return NULL;
         }
-#else                /* #ifdef _UTILISATION_SETJMP_ */
-
-                EXPASS (&lot,&ipass,&icmd,&iertot);
-                /* On depile l appel */
-                commande = depile();
-
-#endif                /* #ifdef _UTILISATION_SETJMP_ */
 }
 
-
+#define CALL_OPSEXE(a,b,c,d,e)  CALLPPPSP(OPSEXE,opsexe,a,b,c,d,e)
+extern void DEFPPPSP(OPSEXE,opsexe,INTEGER* , INTEGER* , INTEGER* , char *,int ,INTEGER* ) ;
 
 static PyObject* aster_opsexe(self, args)
 PyObject *self; /* Not used */
@@ -3031,17 +3101,6 @@ PyObject *args;
         INTEGER ipass=0 ;
         char *cmdusr="                                                                          ";
 
-        int val=-1 ;
-#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
-#define OPSEXE opsexe_
-        void opsexe_( INTEGER* , INTEGER* , INTEGER* , char *,INTEGER* ,int) ;
-#elif defined HPUX
-#define OPSEXE opsexe
-        void opsexe_( INTEGER* , INTEGER* , INTEGER* , char *,INTEGER* ,int) ;
-#elif defined PPRO_NT
-        void __stdcall OPSEXE ( INTEGER* , INTEGER* , INTEGER* , char *,int ,INTEGER* ) ;
-#endif
-
         _DEBUT(aster_opsexe) ;
 
         if (!PyArg_ParseTuple(args, "Olll",&temp,&icmd,&ipass,&oper)) return NULL;
@@ -3049,45 +3108,43 @@ PyObject *args;
         /* On empile le nouvel appel */
         commande=empile(temp);
 
-        PyErr_Clear() ;
+        if(PyErr_Occurred()){
+            fprintf(stderr,"Warning: une exception n'a pas ete traitée\n");
+            PyErr_Print();
+            fprintf(stderr,"Warning: on l'annule pour continuer mais elle aurait\n\
+                            etre traitée avant\n");
+            PyErr_Clear();
+        }
 
-#ifdef _UTILISATION_SETJMP_
-        if ( (val=setjmp(env)) == 0 ){
+        fflush(stderr) ;
+        fflush(stdout) ;
 
+        try(1){
                 /*  appel du sous programme opsexe */
-#if defined PPRO_NT
-                OPSEXE (&icmd,&ipass,&oper,cmdusr,32,&ier);
-#else
-                OPSEXE (&icmd,&ipass,&oper,cmdusr,&ier,32);
-#endif
+                CALL_OPSEXE (&icmd,&ipass,&oper,cmdusr,&ier);
+
                 /* On depile l appel */
                 commande = depile();
+                                                                                 ISCRUTE(ier) ;
+                                                                                 PRINTERR ;
                 _FIN(aster_opsexe) ;
                 return PyInt_FromLong(ier); /*  retour de la fonction oper sous la forme d un entier */
         }
-        else{
-                /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
-
+        finally{
                 /* On depile l appel */
                 commande = depile();
-                TraitementFinAster( val ) ;
+
+                /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
+                TraitementFinAster( exception_status ) ;
+
                 _FIN(aster_opsexe) ;
                 return NULL;
         }
-#else                /* #ifdef _UTILISATION_SETJMP_ */
-
-#if defined PPRO_NT
-                OPSEXE (&icmd,&ipass,&oper,cmdusr,32,&ier);
-#else
-                OPSEXE (&icmd,&ipass,&oper,cmdusr,&ier,32);
-#endif
-                /* On depile l appel */
-                commande = depile();
-
-#endif                /* #ifdef _UTILISATION_SETJMP_ */
 }
 
 
+void DEFPPS(REPOUT,repout,INTEGER *,INTEGER *,char *,int);
+#define CALL_REPOUT(a,b,c) CALLPPS(REPOUT,repout,a,b,c)
 
 
 static PyObject * aster_repout(self, args)
@@ -3097,27 +3154,25 @@ PyObject *args;
         PyObject *temp = (PyObject*)0 ;
         INTEGER maj=1 ;
         INTEGER lnom=0;
-        unsigned long ll=129 ;
-        char toto[129], *nom ;
-#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
-#define REPOUT repout_
-        void repout_(INTEGER *,INTEGER *,char *,int);
-#elif defined HPUX
-#define REPOUT repout
-        void repout(INTEGER *,INTEGER *,char *,int);
-#elif defined PPRO_NT
-        void __stdcall REPOUT(INTEGER *,INTEGER *,char *,int);
-#endif
+        char nom[129];
+
         _DEBUT(aster_repout) ;
-        nom=&toto[0] ;
         if (!PyArg_ParseTuple(args, "")) return NULL;
-
-        REPOUT (&maj,&lnom,nom,ll);
-
+                                                       ISCRUTE(maj);
+        BLANK(nom,128);
+        nom[128]='\0';
+                                                       SSCRUTE(nom);
+        CALL_REPOUT (&maj,&lnom,nom);
+                                                       ISCRUTE(lnom);
+                                                       FSSCRUTE(nom,128);
+        temp= PyString_FromStringAndSize(nom,FindLength(nom,lnom));
+                                                       OBSCRUTE(temp);
         _FIN(aster_repout)
-        return PyString_FromStringAndSize(nom,FindLength(nom,lnom));
+        return temp;
 }
 
+#define CALL_MYEVAL(a,b,c,d,e)  CALLSPPPP(MYEVAL,myeval,a,b,c,d,e)
+extern void DEFSPPPP(MYEVAL,myeval,char* ,int , INTEGER* , INTEGER* , double *,INTEGER* ) ;
 
 static PyObject* aster_myeval(self, args)
 PyObject *self; /* Not used */
@@ -3130,43 +3185,35 @@ PyObject *args;
         double rval[2] ; /* contient un nombre reel ou un nombre complexe */
         char *cmdusr="                                                                          ";
 
-        int val=-1 ;
-#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
-#define MYEVAL myeval_
-        void myeval_( char* , INTEGER* , INTEGER* , double *,INTEGER* ,int) ;
-#elif defined HPUX
-#define MYEVAL myeval
-        void myeval ( char* , INTEGER* , INTEGER* , double *,INTEGER* ,int) ;
-#elif defined PPRO_NT
-        void __stdcall MYEVAL ( char* ,int , INTEGER* , INTEGER* , double *,INTEGER* ) ;
-#endif
         _DEBUT(aster_myeval) ;
         if (!PyArg_ParseTuple(args, "Os",&temp,&cmdusr)) return NULL;
 
         /* On empile le nouvel appel */
         commande=empile(temp);
 
-        PyErr_Clear() ;
+        if(PyErr_Occurred()){
+            fprintf(stderr,"Warning: une exception n'a pas ete traitée\n");
+            PyErr_Print();
+            fprintf(stderr,"Warning: on l'annule pour continuer mais elle aurait\n\
+                            etre traitée avant\n");
+            PyErr_Clear();
+        }
 
-        if ( (val=setjmp(env)) == 0 ){
+        fflush(stderr) ;
+        fflush(stdout) ;
 
+        try(1){
                 /*  appel du sous programme myeval */
-#if defined PPRO_NT
-                MYEVAL (cmdusr,strlen(cmdusr),&iclass,&ival,rval,&ier);
-#else
-                MYEVAL (cmdusr,&iclass,&ival,rval,&ier,strlen(cmdusr));
-#endif
+                CALL_MYEVAL (cmdusr,&iclass,&ival,rval,&ier);
+
                 /* On depile l appel */
                 commande = depile();
                 if(ier != 0){
-                        ISCRUTE(ier) ;
+                                                                                 ISCRUTE(ier) ;
                         PyErr_SetString(PyExc_ValueError, "erreur evaluation ASTER");
                         return NULL;
                 }
-                if(iclass == 1){
-                        return PyInt_FromLong(ival);
-                }
-                else if(iclass == 2){
+                if(iclass == 1 || iclass == 2){
                         return PyFloat_FromDouble(rval[0]);
                 }
                 else if(iclass == 5){
@@ -3175,7 +3222,7 @@ PyObject *args;
                         PyObject *objet     = (PyObject*)0 ;
                         const char *repr    = "RI" ; /* type de representation */
 
-                        DSCRUTE(rval[0]) ; DSCRUTE(rval[1]) ;
+                                                                                 DSCRUTE(rval[0]) ; DSCRUTE(rval[1]) ;
 
                         /* ici, rval contient la partie reelle et la partie imaginaire  du  */
                         /* complexe a stocker dans un tuple                                 */
@@ -3188,8 +3235,8 @@ PyObject *args;
                         complexe = PyTuple_New( 3 ) ;
 
                         PyTuple_SetItem( complexe, 0, (objet=PyString_FromString(repr)) ) ;
-                        REFSCRUTE(objet) ;
-                        ASSERT(objet->ob_refcnt==1) ;
+                                                                                 REFSCRUTE(objet) ;
+                                                                                 ASSERT(objet->ob_refcnt==1) ;
                         PyTuple_SetItem( complexe, 1, PyFloat_FromDouble(rval[0]) ) ;
                         PyTuple_SetItem( complexe, 2, PyFloat_FromDouble(rval[1]) ) ;
 
@@ -3199,17 +3246,18 @@ PyObject *args;
                         return PyInt_FromLong(ival);
                 }
                 else{
+                                                                                 ISCRUTE(iclass) ;
                         PyErr_SetString(PyExc_ValueError, "erreur evaluation ASTER");
-                        ISCRUTE(iclass) ;
                         return NULL;
                 }
         }
-        else{
-                /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
-
+        finally{
                 /* On depile l appel */
                 commande = depile();
-                TraitementFinAster( val ) ;
+
+                /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
+                TraitementFinAster( exception_status ) ;
+
                 _FIN(aster_myeval) ;
                 return NULL;
         }
@@ -3220,14 +3268,12 @@ PyObject *args;
 void TraitementFinAster( _IN int val )
 {
         _DEBUT("TraitementFinAster") ;
-        ISCRUTE(val) ;
-        ASSERT(CodeFinAster==19) ;
-        ASSERT(CodeAbortAster==20) ;
+                             ISCRUTE(val) ;
         switch( val ){
-        case 19 :
-                PyErr_SetString(PyExc_ValueError, "exit ASTER");
+        case CodeFinAster :
+                PyErr_SetString(PyExc_EOFError, "exit ASTER");
                 break ;
-        case 20 :
+        case CodeAbortAster :
                 PyErr_SetString(PyExc_ValueError, "abort ASTER");
                 break ;
         default :
@@ -3240,6 +3286,8 @@ void TraitementFinAster( _IN int val )
         return ;
 }
 
+#define CALL_GETLTX(a,b,c,d,e,f,g) CALLSSPPPPP(GETLTX,getltx,a,b,c,d,e,f,g)
+#define CALL_GETVTX(a,b,c,d,e,f,g) CALLSSPPPSP(GETVTX,getvtx,a,b,c,d,e,f,g)
 
 int RecupNomCas(void)
 {
@@ -3253,39 +3301,36 @@ int RecupNomCas(void)
                 int ltx       = 8 ;
                 INTEGER longueur[1] ;
                                                                 ASSERT(commande!=(PyObject*)0);
-#if defined PPRO_NT
-                GETLTX ( "CODE",4,"NOM",3,iocc,iarg,mxval, longueur ,&nbval) ;
-#else
-                GETLTX ( "CODE","NOM",iocc,iarg,mxval, longueur ,&nbval,4,3) ;
-#endif
+                CALL_GETLTX ( "CODE","NOM",iocc,iarg,mxval, longueur ,&nbval) ;
                 if(nbval == 0){
                   /* Le mot cle NOM n'a pas ete fourni on donne un nom
                    * par defaut au nom du cas */
                   NomCas = strdup("??????");
                 }
                 else if(nbval > 0){
-                  ISCRUTE(longueur[0]) ;
+                                                                ISCRUTE(longueur[0]) ;
                                                                 ASSERT(longueur[0]>0);
                   NomCas = (char*)(malloc((longueur[0]+1)*sizeof(char))) ;
-                  strncpy(NomCas,blan,longueur[0]);        /* initialisation a blanc */
-                  NomCas[longueur[0]]='\0'; /*  Ne pas oublier la fin de chaine pour Construire_Fort15 */
+                  BLANK(NomCas,longueur[0]); /* initialisation a blanc */
+                  NomCas[longueur[0]]='\0'; 
                                                                 ASSERT(NomCas!=(char*)0);
                   ltx = longueur[0];
-#if defined PPRO_NT
-                  GETVTX ( "CODE",4,"NOM",3,iocc,iarg,mxval, NomCas, ltx ,&nbval) ;
-#else
-                  GETVTX ( "CODE","NOM",iocc,iarg,mxval, NomCas ,&nbval,4,3,ltx) ;
-#endif
+                  CALL_GETVTX ( "CODE","NOM",iocc,iarg,mxval, NomCas ,&nbval) ;
                 }
                 else{
                   /* Erreur  */
                   PyErr_SetString(PyExc_KeyError, "Erreur a la recuperation du nom du cas");
                   return -1;
                 }
-                SSCRUTE(NomCas) ;
+                                                                SSCRUTE(NomCas) ;
                 return 0;
 }
 
+void DEFPPPP(POURSU,poursu,INTEGER* , INTEGER* , INTEGER* ,INTEGER*) ;
+void DEFS(GCCPTS,gccpts,char *, int );
+
+#define CALL_POURSU(a,b,c,d) CALLPPPP(POURSU,poursu,a,b,c,d)
+#define CALL_GCCPTS(a,la) F_FUNC(GCCPTS,gccpts)(a,la)
 
 static PyObject * aster_poursu(self, args)
 PyObject *self; /* Not used */
@@ -3301,27 +3346,10 @@ PyObject *args;
         INTEGER lot=1 ; /* FORTRAN_TRUE */
         INTEGER ier=0 ;
         INTEGER lonuti=0 ;
-        int val ;
         static int nbPassages=0 ;
 
-        void poursu_( INTEGER* , INTEGER* , INTEGER* ,INTEGER*) ;
-#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
-#define POURSU poursu_
-#define GCCPTS gccpts_
-        void poursu_( INTEGER* , INTEGER* , INTEGER* ,INTEGER*) ;
-        void gccpts_( char *, int );
-#elif defined HPUX
-#define POURSU poursu
-#define GCCPTS gccpts
-        void poursu ( INTEGER* , INTEGER* , INTEGER* ,INTEGER*) ;
-        void gccpts ( char *, int );
-#elif defined PPRO_NT
-        void __stdcall POURSU ( INTEGER* , INTEGER* , INTEGER* ,INTEGER*) ;
-        void __stdcall GCCPTS ( char *, int );
-#endif
-
         _DEBUT(aster_poursu) ;
-        SSCRUTE(aster_ident()) ;
+                                                                SSCRUTE(aster_ident()) ;
                                                                 ASSERT((nbPassages==1)||(commande==(PyObject*)0));
         nbPassages++ ;
         if (!PyArg_ParseTuple(args, "Ol",&temp,&ipass)) return NULL;
@@ -3329,54 +3357,58 @@ PyObject *args;
         /* On empile le nouvel appel */
         commande=empile(temp);
 
-        PyErr_Clear() ;
+        if(PyErr_Occurred()){
+            fprintf(stderr,"Warning: une exception n'a pas ete traitée\n");
+            PyErr_Print();
+            fprintf(stderr,"Warning: on l'annule pour continuer mais elle aurait\n\
+                            etre traitée avant\n");
+            PyErr_Clear();
+        }
 
+        fflush(stderr) ;
+        fflush(stdout) ;
 
-#ifdef _UTILISATION_SETJMP_
-        if ( (val=setjmp(env)) == 0 ){
-
+        try(1){
                 /*  appel de la commande debut (effectue dans POURSU) */
                 /*  La routine fortran POURSU traite aussi le cas     */
                 /*  de la poursuite de calcul (en retour lonuti       */
                 /*  contient le nombre de concepts crees dans le      */
                 /*  calcul precedent)                                 */
 
-                POURSU (&lot,&ipass,&ier,&lonuti);
+                CALL_POURSU (&lot,&ipass,&ier,&lonuti);
 
 
                 /* recuperation de la liste des concepts dans une     */
                 /* string python                                      */
 
                 concepts=PyString_FromStringAndSize(NULL,lonuti*80);
-                GCCPTS (PyString_AsString(concepts),80);
+                CALL_GCCPTS (PyString_AsString(concepts),80);
         }
-        else{
-                /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
-
+        finally{
                 /* On depile l appel */
                 commande = depile();
+
+                /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
+                TraitementFinAster( exception_status ) ;
+
                 _FIN(aster_poursu) ;
-                TraitementFinAster( val ) ;
                 return NULL;
         }
-#else                /* #ifdef _UTILISATION_SETJMP_ */
-                POURSU (&lot,&ipass,&ier,&lonuti);
-                concepts=PyString_FromStringAndSize(NULL,lonuti*80);
-                GCCPTS (PyString_AsString(concepts),80);
-#endif                /* #ifdef _UTILISATION_SETJMP_ */
-
 
         /* On recupere le nom du cas */
         if(RecupNomCas() == -1){
           /* Erreur a la recuperation */
+
           /* On depile l appel */
           commande = depile();
+
           _FIN(aster_poursu) ;
           return NULL;
         }
         else{
           /* On depile l appel */
           commande = depile();
+
           /*  retour de la fonction poursu sous la forme
            *  d'un tuple de trois entiers et un objet */
           _FIN(aster_poursu) ;
@@ -3384,6 +3416,8 @@ PyObject *args;
         }
 }
 
+#define CALL_DEBUT(a,b,c)  F_FUNC(DEBUT,debut)(a,b,c)
+extern void STDCALL(DEBUT,debut)(INTEGER* , INTEGER* , INTEGER* );
 
 static PyObject * aster_debut(self, args)
 PyObject *self; /* Not used */
@@ -3393,20 +3427,10 @@ PyObject *args;
         INTEGER ipass=0;
         INTEGER lot=1 ; /* FORTRAN_TRUE */
         INTEGER ier=0 ;
-        int val ;
         static int nbPassages=0 ;
-#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
-#define  DEBUT    debut_
-        void  DEBUT ( INTEGER* , INTEGER* , INTEGER* ) ;
-#elif HPUX
-#define  DEBUT    debut
-        void  DEBUT ( INTEGER* , INTEGER* , INTEGER* ) ;
-#elif defined PPRO_NT
-        void  __stdcall DEBUT ( INTEGER* , INTEGER* , INTEGER* ) ;
-#endif
 
         _DEBUT(aster_debut) ;
-        SSCRUTE(aster_ident()) ;
+                                                                SSCRUTE(aster_ident()) ;
                                                                 ASSERT((nbPassages==1)||(commande==(PyObject*)0));
         nbPassages++ ;
         if (!PyArg_ParseTuple(args, "Ol",&temp,&ipass)) return NULL;
@@ -3414,30 +3438,30 @@ PyObject *args;
         /* On empile le nouvel appel */
         commande=empile(temp);
 
-        PyErr_Clear() ;
-
-
-#ifdef _UTILISATION_SETJMP_
-        if ( (val=setjmp(env)) == 0 ){
-
-                /*  appel de la commande debut */
-
-                DEBUT (&lot,&ipass,&ier);
+        if(PyErr_Occurred()){
+            fprintf(stderr,"Warning: une exception n'a pas ete traitée\n");
+            PyErr_Print();
+            fprintf(stderr,"Warning: on l'annule pour continuer mais elle aurait\n\
+                            etre traitée avant\n");
+            PyErr_Clear();
         }
-        else{
-                /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
 
+        fflush(stderr) ;
+        fflush(stdout) ;
+
+        try(1){
+                /*  appel de la commande debut */
+                CALL_DEBUT (&lot,&ipass,&ier);
+        }
+        finally{
                 /* On depile l appel */
                 commande = depile();
+
+                /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
                 _FIN(aster_debut) ;
-                TraitementFinAster( val ) ;
+                TraitementFinAster( exception_status ) ;
                 return NULL;
         }
-#else                /* #ifdef _UTILISATION_SETJMP_ */
-                DEBUT (&lot,&ipass,&ier);
-#endif                /* #ifdef _UTILISATION_SETJMP_ */
-
-
 
         /* On recupere le nom du cas */
         if(RecupNomCas() == -1){
@@ -3456,6 +3480,8 @@ PyObject *args;
         }
 }
 
+#define CALL_IBMAIN(a,b,c)  F_FUNC(IBMAIN,ibmain)(a,b,c)
+extern void STDCALL(IBMAIN,ibmain)(INTEGER* , INTEGER* , INTEGER* );
 
 static PyObject *
 aster_init(self, args)
@@ -3465,20 +3491,14 @@ PyObject *args;
         INTEGER lot=1 ; /* FORTRAN_TRUE */
         INTEGER ier=0 ;
         INTEGER dbg=0 ; /* FORTRAN_FALSE */
-#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
-#define IBMAIN ibmain_
-   void ibmain_(INTEGER * lot , INTEGER * ier , INTEGER * dbg) ;
-#elif defined HPUX
-#define IBMAIN ibmain
-   void ibmain (INTEGER * lot , INTEGER * ier , INTEGER * dbg) ;
-#elif defined PPRO_NT
-   void __stdcall IBMAIN (INTEGER * lot , INTEGER * ier , INTEGER * dbg) ;
-#endif
 
         _DEBUT(aster_init)
         if (!PyArg_ParseTuple(args, "l",&dbg)) return NULL;
 
-        IBMAIN (&lot,&ier,&dbg);
+        fflush(stderr) ;
+        fflush(stdout) ;
+
+        CALL_IBMAIN (&lot,&ier,&dbg);
 
         _FIN(aster_init)
         return PyInt_FromLong(ier);
@@ -3517,14 +3537,14 @@ static PyObject *aster_argv( _UNUSED  PyObject *self, _IN PyObject *args )
            PyArg_ParseTuple.
         */
 
-        ISCRUTE((INTEGER)PyTuple_Size(args)) ;
+                                                                ISCRUTE((INTEGER)PyTuple_Size(args)) ;
         if (!PyArg_ParseTuple(args, "O" , &liste )) return NULL;
 
 
         /*  Allocation dynamique de argv : on ajoute un argument NULL */
 
         argc=PyList_GET_SIZE(liste) ;
-        ISCRUTE((INTEGER)argc) ;
+                                                                ISCRUTE((INTEGER)argc) ;
 
         argv = (char**)malloc(1+argc*sizeof(char*)) ;
         argv[argc]=(char*)0 ;
@@ -3551,7 +3571,7 @@ static PyObject *aster_argv( _UNUSED  PyObject *self, _IN PyObject *args )
         asterm(argc,argv) ;
 
 
-        ASSERT(argv) ;
+                                                                ASSERT(argv) ;
         free(argv);
         argv=(char**)0 ;
 
@@ -3559,39 +3579,6 @@ static PyObject *aster_argv( _UNUSED  PyObject *self, _IN PyObject *args )
         _FIN("aster_argv") ;
         return Py_None;
 }
-
-
-
-
-#ifdef _UTILISATION_SETJMP_
-#if defined HPUX
-void xfini ( _IN INTEGER *codeRetour )
-#elif defined PPRO_NT
-void __stdcall XFINI ( _IN INTEGER *codeRetour )
-#else
-void xfini_( _IN INTEGER *codeRetour )
-#endif
-{
-        /* cette fonction est appelee par la routine fortran JEFINI */
-
-        int retour ;
-
-        _DEBUT("xfini_") ;
-        switch( *codeRetour ){
-        case 0 : retour=CodeFinAster ; break ;
-        default : retour=CodeAbortAster ; break ;
-        }
-
-        longjmp( env , retour ) ;
-
-        /* passage INTERDIT */
-        _FIN("xfini_") ;
-        INTERRUPTION(1);
-}
-#endif                /* #ifdef _UTILISATION_SETJMP_ */
-
-
-
 
 
 /* List of functions defined in the module */
@@ -3605,7 +3592,10 @@ static PyMethodDef aster_methods[] = {
                 {"repout" ,     aster_repout ,            METH_VARARGS},
                 {"myeval" ,     aster_myeval ,            METH_VARARGS},
                 {"argv" ,       aster_argv ,              METH_VARARGS},
-                {"getpara" ,    aster_getpara ,           METH_VARARGS},
+                {"getvectjev" , aster_getvectjev ,        METH_VARARGS, getvectjev_doc},
+                {"getcolljev" , aster_getcolljev ,        METH_VARARGS, getcolljev_doc},
+                {"GetResu",     aster_GetResu,            METH_VARARGS},
+                {"GetMaillage", aster_GetMaillage,        METH_VARARGS},
                 {NULL,                NULL}/* sentinel */
 };
 
@@ -3660,6 +3650,7 @@ void AfficheChaineFortran( _IN char *chaine , _IN int longueur )
         }
         return ;
 }
+
 int EstPret( _IN char *chaine , _IN int longueur )
 {
         /*
@@ -3675,7 +3666,7 @@ int EstPret( _IN char *chaine , _IN int longueur )
         int taille   = 0 ;
 
         taille = ( longueur < 1024 ) ? FindLength( chaine , longueur ) : 1024 ;
-        ASSERT(taille <= longueur ) ;
+                                                                                        ASSERT(taille <= longueur ) ;
 
         if ( taille >= 0 ){
                 pret = 1 ;
@@ -3691,7 +3682,7 @@ int EstPret( _IN char *chaine , _IN int longueur )
                         fprintf( stderr , "PREMIER CARACTERE INVALIDE '%c' %d\n" , chaine[0] , (int)chaine[0]) ;
                 }
                 if ( pret != 1 ){
-                        FSSCRUTE(chaine,longueur) ;
+                                                                                        FSSCRUTE(chaine,longueur) ;
                 }
         }
         return pret ;
@@ -3770,18 +3761,7 @@ const char *aster_ident()
 }
 
 
-
-
-
-#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
-#define GETCMC getcmc_
-void getcmc_(INTEGER *icmc)
-#elif defined HPUX
-#define GETCMC getcmc
-void getcmc (INTEGER *icmc)
-#elif defined PPRO_NT
-void __stdcall GETCMC (INTEGER *icmc)
-#endif
+void DEFP(GETCMC,getcmc,INTEGER *icmc)
 {
         /*
           Procedure GETCMC : emule la procedure equivalente ASTER
@@ -3805,26 +3785,19 @@ void __stdcall GETCMC (INTEGER *icmc)
                 MYABORT("erreur a l appel de getcmc dans la partie Python");
 
         *icmc = PyInt_AsLong(res);
-        ISCRUTE(*icmc) ;
+                                                                                   ISCRUTE(*icmc) ;
         Py_DECREF(res);
         _FIN("getcmc_") ;
 }
 
 
+#define CALL_GETRES(a,la,b,lb,c,lc) FCALLSSS(GETRES,getres,a,la,b,lb,c,lc)
+#define CALL_GCUCON(a,b,lb,c,lc,d) FCALLPSSP(GCUCON,gcucon,a,b,lb,c,lc,d)
+#define CALL_GETCMC(a) CALLP(GETCMC,getcmc,a)
 
 
-
-
-#if defined HPUX
-void getcmd ( _OUT char *nomres, _OUT char *concep, _OUT char *nomcmd,
-              _OUT char *statu, _OUT INTEGER *inum,int lres,int lconc,int lcmd,int lstat)
-#elif defined PPRO_NT
-void __stdcall GETCMD ( _OUT char *nomres,int lres,_OUT char *concep,int lconc, _OUT char *nomcmd,
+void DEFSSSSP(GETCMD,getcmd,_OUT char *nomres,int lres,_OUT char *concep,int lconc, _OUT char *nomcmd,
                        int lcmd,_OUT char *statu,int lstat, _OUT INTEGER *inum)
-#else
-void getcmd_( _OUT char *nomres, _OUT char *concep, _OUT char *nomcmd,
-              _OUT char *statu, _OUT INTEGER *inum,int lres,int lconc,int lcmd,int lstat)
-#endif
 {
         /*
           Procedure GETCMD : emule la procedure equivalente ASTER
@@ -3854,44 +3827,32 @@ void getcmd_( _OUT char *nomres, _OUT char *concep, _OUT char *nomcmd,
 
         _DEBUT("getcmd_") ;
 
-#if defined SOLARIS || HPUX || IRIX || TRU64 || SOLARIS64 || P_LINUX
-        GETRES ( nomres , concep , nomcmd , lres ,  lconc , lcmd ) ;
-        GETCMC ( inum ) ;
-        GCUCON ( inum , nomres , concep , &ier , lres , lconc ) ;
-#elif defined PPRO_NT
-        GETRES ( nomres , lres , concep ,  lconc , nomcmd , lcmd ) ;
-        GETCMC ( inum ) ;
-        GCUCON ( inum , nomres , lres , concep , lconc , &ier ) ;
-#endif
-
-        ISCRUTE(ier) ;
+        CALL_GETRES(nomres,lres,concep ,  lconc , nomcmd , lcmd ) ;
+        CALL_GETCMC ( inum ) ;
+        CALL_GCUCON ( inum , nomres , lres , concep , lconc , &ier ) ;
+                                                         ISCRUTE(ier) ;
         switch( ier )
         {
         case 0 :
                 {
-                        strncpy(statu,"NOUVEAU",min(7,lstat)) ;
-                        for(k=7;k<lstat;k++) statu[k] =  ' ' ;
+                        STRING_FCPY(statu,lstat,"NOUVEAU",7);
                 }
                 break ;
         default :
                 if ( ier>0 ){
-                        strncpy(statu,"MODIFIE",min(7,lstat)) ;
-                        for(k=7;k<lstat;k++) statu[k] =  ' ' ;
+                        STRING_FCPY(statu,lstat,"MODIFIE",7);
 
                 }
                 else{
-                        strncpy(statu,"ERRONE",min(6,lstat)) ;
-                        for(k=6;k<lstat;k++) statu[k] =  ' ' ;
+                        STRING_FCPY(statu,lstat,"ERRONE",6);
                 }
                 break ;
         }
-
-
-        FSSCRUTE(nomres,lres) ;
-        FSSCRUTE(concep,lconc) ;
-        FSSCRUTE(nomcmd,lcmd) ;
-        FSSCRUTE(statu,lstat) ;
-        ISCRUTE(*inum) ;
+                                                         FSSCRUTE(nomres,lres) ;
+                                                         FSSCRUTE(concep,lconc) ;
+                                                         FSSCRUTE(nomcmd,lcmd) ;
+                                                         FSSCRUTE(statu,lstat) ;
+                                                         ISCRUTE(*inum) ;
         _FIN("getcmd_") ;
         return ;
 }

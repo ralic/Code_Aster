@@ -1,0 +1,1310 @@
+# MODIF  DATE 26/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+# TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# QUART DE FISSURE. TEST DE POST_K1_K2_K3. MAILLAGE BARSOUM
+# TORSION
+
+DEBUT(   CODE=_F(  NOM = 'SSLV134D',NIV_PUB_WEB='INTERNET') )
+
+PRE_GIBI()
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),)
+
+MA=MODI_MAILLAGE( reuse=MA,   MAILLAGE=MA,
+                        MODI_MAILLE=_F(  OPTION = 'NOEUD_QUART',
+                                      GROUP_MA_FOND = 'LFF1')
+                      )
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA, 
+                     CREA_GROUP_NO=_F( 
+        GROUP_MA = ('SLA2_I', 'SLA2_S', 'SAV_I', 'SAV_S', 'SSUP_1',))
+                 )
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,CREA_GROUP_NO=(
+                   _F(  GROUP_MA = ( 'LEVINF1', 'LEVINFS', )),
+                   _F(  NOM = 'N1',
+                                   OPTION = 'PLAN',
+                                   POINT = (0., 0., 0.,),
+                                   VECT_NORMALE = (0., 1., 0.,),
+                                   PRECISION = 1.E-4),
+                   _F(  NOM = 'L1INF1',
+                                   INTERSEC = ('LEVINF1', 'N1', )),
+                   _F(  NOM = 'L1SUP1',
+                                   INTERSEC = ('LEVINFS', 'N1', )),
+                   _F(  NOM = 'N2',
+                                   OPTION = 'PLAN',
+                                   POINT = (0., 0., 0.,),
+                                   VECT_NORMALE = (1., 0., 0.,),
+                                   PRECISION = 1.E-4),
+                   _F(  NOM = 'L2INF1',
+                                   INTERSEC = ('LEVINF1', 'N2', )),
+                   _F(  NOM = 'L2SUP1',
+                                   INTERSEC = ('LEVINFS', 'N2', )),
+                   _F(  NOM = 'N3',
+                                   OPTION = 'PLAN',
+                                   POINT = ( 0., 0., 0.,),
+                                   VECT_NORMALE = (-1., 1., 0.,),
+                                   PRECISION = 1.E-4),
+                   _F(  NOM = 'L3INF1',
+                                   INTERSEC = ('LEVINF1', 'N3', )),
+                   _F(  NOM = 'L3SUP1',
+                                   INTERSEC = ('LEVINFS', 'N3', )))
+                   )
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,CREA_GROUP_NO=(
+                   _F(  NOM = 'L1INF',
+                                   OPTION = 'SEGM_DROI_ORDO',
+                                   PRECISION = 1.E-3,
+                                   CRITERE = 'ABSOLU',
+                                   GROUP_NO = 'L1INF1',
+                                   NOEUD_ORIG = 'N49',
+                                   NOEUD_EXTR = 'N3751'),
+                   _F(  NOM = 'L1SUP',
+                                   OPTION = 'SEGM_DROI_ORDO',
+                                   PRECISION = 1.E-3,
+                                   CRITERE = 'ABSOLU',
+                                   GROUP_NO = 'L1SUP1',
+                                   NOEUD_ORIG = 'N49',
+                                   NOEUD_EXTR = 'N3791'),
+                   _F(  NOM = 'L2INF',
+                                   OPTION = 'SEGM_DROI_ORDO',
+                                   PRECISION = 1.E-3,
+                                   CRITERE = 'ABSOLU',
+                                   GROUP_NO = 'L2INF1',
+                                   NOEUD_ORIG = 'N1710',
+                                   NOEUD_EXTR = 'N3751'),
+                   _F(  NOM = 'L2SUP',
+                                   OPTION = 'SEGM_DROI_ORDO',
+                                   PRECISION = 1.E-3,
+                                   CRITERE = 'ABSOLU',
+                                   GROUP_NO = 'L2SUP1',
+                                   NOEUD_ORIG = 'N1710',
+                                   NOEUD_EXTR = 'N3791'),
+                   _F(  NOM = 'L3INF',
+                                   OPTION = 'SEGM_DROI_ORDO',
+                                   PRECISION = 1.E-3,
+                                   CRITERE = 'ABSOLU',
+                                   GROUP_NO = 'L3INF1',
+                                   NOEUD_ORIG = 'N77',
+                                   NOEUD_EXTR = 'N3751'),
+                   _F(  NOM = 'L3SUP',
+                                   OPTION = 'SEGM_DROI_ORDO',
+                                   PRECISION = 1.E-3,
+                                   CRITERE = 'ABSOLU',
+                                   GROUP_NO = 'L3SUP1',
+                                   NOEUD_ORIG = 'N77',
+                                   NOEUD_EXTR = 'N3791'))
+                                   )
+
+MO=AFFE_MODELE(  MAILLAGE=MA,
+                      AFFE=_F(  TOUT = 'OUI',
+                             PHENOMENE = 'MECANIQUE',
+                             MODELISATION = '3D') )
+
+E=2.E11
+
+NU=0.3
+
+MAT=DEFI_MATERIAU(ELAS=_F(  E = E,
+                             NU = NU,
+                             ALPHA = 0.) )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+                       AFFE=_F(  TOUT = 'OUI',
+                              MATER = MAT) )
+
+FISS=DEFI_FOND_FISS(    MAILLAGE=MA,
+                          FOND=_F(  GROUP_MA = 'LFF1',
+                                 GROUP_NO_ORIG = 'NFF1',
+                                 GROUP_NO_EXTR = 'NFF2'),
+                          LEVRE_SUP=_F(  GROUP_MA = 'LEVINFS'),
+                          LEVRE_INF=_F(  GROUP_MA = 'LEVINF1'),
+                          DTAN_ORIG=(  1.,  0.,  0., ),
+                          DTAN_EXTR=(  0.,  1., 0., )
+                       )
+
+RSUP=0.5
+
+RINF=0.2
+
+RAY_INF1=DEFI_CONSTANTE(   VALE=RINF)
+
+RAY_SUP1=DEFI_CONSTANTE(   VALE=RSUP)
+
+MOD_T1=DEFI_CONSTANTE(   VALE=1.    )
+
+THETA1=CALC_THETA(      OPTION='COURONNE',
+                          MODELE=MO,
+                         FOND_FISS=FISS,
+                        THETA_3D=_F(  TOUT = 'OUI',
+                                   MODULE_FO = MOD_T1,
+                                   R_INF_FO = RAY_INF1,
+                                   R_SUP_FO = RAY_SUP1)
+                    )
+
+# CAS DE CHARGE : TRACTION => MODE 1
+
+SYMETRIE=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
+     _F(  GROUP_NO = 'D',               DZ = 0.),
+              _F(  GROUP_NO = ('SLA2_I', 'SLA2_S',), DX = 0.),
+              _F(  GROUP_NO = ('SAV_I', 'SAV_S',),   DY = 0.))
+                        )
+
+PRESSION=AFFE_CHAR_MECA(    MODELE=MO,FORCE_FACE=(
+        _F(  GROUP_MA = 'SINF_S', FZ = 1.E6),
+        _F(  GROUP_MA = 'SINF_1', FZ = -1.E6))
+                         )
+
+RESU1=MECA_STATIQUE(        MODELE=MO,
+                              CHAM_MATER=CHMAT,EXCIT=(
+                              _F( CHARGE = PRESSION),
+                              _F( CHARGE = SYMETRIE))
+                           )
+
+DEP1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+RESULTAT=RESU1,
+                       NOM_CHAM='DEPL',
+                     NUME_ORDRE=1       )
+
+# VALEUR DE REFERENCE MILIEU INFINI :
+
+GLOC1REF=11.58648
+
+GLOC1=CALC_G_LOCAL_T(    MODELE=MO,
+                          DEPL=DEP1,
+                        CHARGE=PRESSION,
+                        CHAM_MATER=CHMAT,
+                         FOND_FISS=FISS,
+                        R_SUP=RSUP,
+                        R_INF=RINF
+                    )
+
+TEST_TABLE(       TABLE=GLOC1,
+                 NOM_PARA='G_LOCAL',
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N49'),
+                     VALE=GLOC1REF,
+                PRECISION=0.03,
+                REFERENCE='ANALYTIQUE'       )
+
+TEST_TABLE(       TABLE=GLOC1,
+                 NOM_PARA='G_LOCAL',
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N1710'),
+                     VALE=GLOC1REF,
+                PRECISION=0.02,
+                REFERENCE='ANALYTIQUE'       )
+
+TEST_TABLE(       TABLE=GLOC1,
+                 NOM_PARA='G_LOCAL',
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N77'),
+                     VALE=GLOC1REF,
+                PRECISION=0.03,
+                REFERENCE='ANALYTIQUE'       )
+
+GGLOB1=CALC_G_THETA_T(        MODELE=MO,
+                                 DEPL=DEP1,
+                                THETA=THETA1,
+                               CHARGE=PRESSION,
+                           CHAM_MATER=CHMAT
+                       )
+
+# VALEUR DE REFERENCE MILIEU INFINI : G=145.6
+# POUR UN QUART DE FISSURE G=36.4
+
+
+TEST_TABLE(       TABLE=GGLOB1,
+                  NOM_PARA='G',
+                      VALE=36.4,
+                 PRECISION=0.012        )
+
+DEP1B1=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB1',
+      # NOEUD : (N49 N245 N609 N2559 N3034 N3384 N617 N876 N618  )
+                                GROUP_NO = 'L1INF',
+                                RESULTAT = RESU1,
+                                NOM_CHAM = 'DEPL',
+                                NOM_CMP = ('DX', 'DY', 'DZ',),
+                                OPERATION = 'EXTRACTION')
+                              )
+
+DEP1H1=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB2',
+      # NOEUD : (N49 N449 N728 N2867 N3112 N3675 N736 N1064 N737 )
+                                GROUP_NO = 'L1SUP',
+                                RESULTAT = RESU1,
+                                NOM_CHAM = 'DEPL',
+                                NOM_CMP = ('DX', 'DY', 'DZ',),
+                                OPERATION = 'EXTRACTION')
+                              )
+
+TABK1A1=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
+                        MATER=MAT,
+                        TABL_DEPL_SUP=DEP1H1,
+                        TABL_DEPL_INF=DEP1B1,
+                        ABSC_CURV_MAXI=0.539,
+                        VECT_K1=(0., 0., 1.,)
+                      )
+
+DEP1B2=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB3',
+                                GROUP_NO = 'L2INF',
+                                RESULTAT = RESU1,
+                                NOM_CHAM = 'DEPL',
+                                NOM_CMP = ('DX', 'DY', 'DZ',),
+                                OPERATION = 'EXTRACTION')
+                              )
+
+DEP1H2=POST_RELEVE_T(   ACTION=_F(  INTITULE = 'TAB4',
+                                GROUP_NO = 'L2SUP',
+                                RESULTAT = RESU1,
+                                NOM_CHAM = 'DEPL',
+                                NOM_CMP = ('DX', 'DY', 'DZ',),
+                                OPERATION = 'EXTRACTION')
+                              )
+
+TABK1A2=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
+                        MATER=MAT,
+                        TABL_DEPL_SUP=DEP1H2,
+                        TABL_DEPL_INF=DEP1B2,
+                        ABSC_CURV_MAXI=0.539,
+                        VECT_K1=(0., 0., 1.,)
+                      )
+
+DEP1B3=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB5',
+                                GROUP_NO = 'L3INF',
+                                RESULTAT = RESU1,
+                                NOM_CHAM = 'DEPL',
+                                NOM_CMP = ('DX', 'DY', 'DZ',),
+                                OPERATION = 'EXTRACTION')
+                              )
+
+DEP1H3=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB6',
+                                GROUP_NO = 'L3SUP',
+                                RESULTAT = RESU1,
+                                NOM_CHAM = 'DEPL',
+                                NOM_CMP = ('DX', 'DY', 'DZ',),
+                                OPERATION = 'EXTRACTION')
+                              )
+
+TABK1A3=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
+                        MATER=MAT,
+                        TABL_DEPL_SUP=DEP1H3,
+                        TABL_DEPL_INF=DEP1B3,
+                        ABSC_CURV_MAXI=0.539,
+                        VECT_K1=(0., 0., 1.,)
+                      )
+
+K1=1.595769E6
+
+# ---------------
+
+TEST_TABLE(       TABLE=TABK1A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.010           )
+
+TEST_TABLE(       TABLE=TABK1A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=K1,
+                      PRECISION=0.007           )
+
+TEST_TABLE(       TABLE=TABK1A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC1REF,
+                      PRECISION=0.015           )
+
+TEST_TABLE(       TABLE=TABK1A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC1REF,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=TABK1A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.003           )
+
+TEST_TABLE(       TABLE=TABK1A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=K1,
+                      PRECISION=0.08           )
+
+TEST_TABLE(       TABLE=TABK1A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC1REF,
+                      PRECISION=0.005           )
+
+TEST_TABLE(       TABLE=TABK1A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC1REF,
+                      PRECISION=0.14           )
+
+# ---------------
+
+TEST_TABLE(       TABLE=TABK1A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=TABK1A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=K1,
+                      PRECISION=0.004           )
+
+TEST_TABLE(       TABLE=TABK1A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC1REF,
+                      PRECISION=0.015           )
+
+TEST_TABLE(       TABLE=TABK1A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC1REF,
+                      PRECISION=0.008           )
+
+TEST_TABLE(       TABLE=TABK1A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.003           )
+
+TEST_TABLE(       TABLE=TABK1A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=K1,
+                      PRECISION=0.08           )
+
+TEST_TABLE(       TABLE=TABK1A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC1REF,
+                      PRECISION=0.005           )
+
+TEST_TABLE(       TABLE=TABK1A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC1REF,
+                      PRECISION=0.14           )
+
+# ---------------
+
+TEST_TABLE(       TABLE=TABK1A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.007           )
+
+TEST_TABLE(       TABLE=TABK1A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=K1,
+                      PRECISION=0.004           )
+
+TEST_TABLE(       TABLE=TABK1A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC1REF,
+                      PRECISION=0.015           )
+
+TEST_TABLE(       TABLE=TABK1A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC1REF,
+                      PRECISION=0.011           )
+
+TEST_TABLE(       TABLE=TABK1A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.008           )
+
+TEST_TABLE(       TABLE=TABK1A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=K1,
+                      PRECISION=0.08           )
+
+TEST_TABLE(       TABLE=TABK1A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC1REF,
+                      PRECISION=0.005           )
+
+TEST_TABLE(       TABLE=TABK1A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC1REF,
+                      PRECISION=0.14           )
+
+# EMPLOI DE FORMULE POUR DEFINIR LA TORSION
+
+TAU=1.E6
+
+A=2.
+
+TX = FORMULE(REEL="""(REEL:X,REEL:Y) =
+-TAU*Y/A""")
+TY = FORMULE(REEL="""(REEL:X,REEL:Y) =
+TAU*X/A""")
+MTX = FORMULE(REEL="""(REEL:X,REEL:Y) =
+TAU*Y/A""")
+MTY = FORMULE(REEL="""(REEL:X,REEL:Y) =
+-TAU*X/A""")
+
+TORSION=AFFE_CHAR_MECA_F(    MODELE=MO,FORCE_FACE=(
+        _F(  GROUP_MA = 'LEVINF1', FX = TX, FY = TY),
+        _F(  GROUP_MA = 'LEVINFS', FX = MTX, FY = MTY))
+                         )
+
+ANTISYM=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
+     _F(  GROUP_NO = 'SSUP_1',          DX = 0.,  DY = 0.),
+              _F(  GROUP_NO = ('SLA2_I', 'SLA2_S',), DY = 0.,  DZ = 0.),
+              _F(  GROUP_NO = ('SAV_I', 'SAV_S',),   DX = 0.,  DZ = 0.))
+                        )
+
+RESU3=MECA_STATIQUE(        MODELE=MO,
+                              CHAM_MATER=CHMAT,EXCIT=(
+                              _F( CHARGE = TORSION),
+                              _F( CHARGE = ANTISYM))
+                           )
+
+DEP3=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+RESULTAT=RESU3,
+                       NOM_CHAM='DEPL',
+                     NUME_ORDRE=1       )
+
+# VALEUR DE REFERENCE MILIEU INFINI :
+
+GLOC3REF=7.356495
+
+GLOC3=CALC_G_LOCAL_T(    MODELE=MO,
+                          DEPL=DEP3,
+                        CHARGE=TORSION,
+                        CHAM_MATER=CHMAT,
+                         FOND_FISS=FISS,
+                        R_SUP=RSUP,
+                        R_INF=RINF
+                    )
+
+TEST_TABLE(       TABLE=GLOC3,
+                 NOM_PARA='G_LOCAL',
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N49'),
+                     VALE=GLOC3REF,
+                PRECISION=0.03,
+                REFERENCE='ANALYTIQUE'       )
+
+TEST_TABLE(       TABLE=GLOC3,
+                 NOM_PARA='G_LOCAL',
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N1710'),
+                     VALE=GLOC3REF,
+                PRECISION=0.02,
+                REFERENCE='ANALYTIQUE'       )
+
+TEST_TABLE(       TABLE=GLOC3,
+                 NOM_PARA='G_LOCAL',
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N77'),
+                     VALE=GLOC3REF,
+                PRECISION=0.03,
+                REFERENCE='ANALYTIQUE'       )
+
+GGLOB3=CALC_G_THETA_T(        MODELE=MO,
+                                 DEPL=DEP3,
+                                THETA=THETA1,
+                               CHARGE=TORSION,
+                           CHAM_MATER=CHMAT
+                       )
+
+# VALEUR DE REFERENCE MILIEU INFINI :
+# POUR UN QUART DE FISSURE G=23.11
+
+
+TEST_TABLE(       TABLE=GGLOB3,
+                  NOM_PARA='G',
+                      VALE=23.11,
+                 PRECISION=0.012        )
+
+# POST_K1_K2_K3
+
+
+
+DEP3B1=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB1',
+      # NOEUD : (N49 N245 N609 N2559 N3034 N3384 N617 N876 N618  )
+                                GROUP_NO = 'L1INF',
+                                RESULTAT = RESU3,
+                                NOM_CHAM = 'DEPL',
+                                NOM_CMP = ('DX', 'DY', 'DZ',),
+                                OPERATION = 'EXTRACTION')
+                              )
+
+DEP3H1=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB2',
+                                GROUP_NO = 'L1SUP',
+                                RESULTAT = RESU3,
+                                NOM_CHAM = 'DEPL',
+                                NOM_CMP = ('DX', 'DY', 'DZ',),
+                                OPERATION = 'EXTRACTION')
+                              )
+
+TABK3A1=POST_K1_K2_K3(  MODELISATION='3D',
+                        MATER=MAT,
+                        TABL_DEPL_SUP=DEP3H1,
+                        TABL_DEPL_INF=DEP3B1,
+                        ABSC_CURV_MAXI=0.2,
+                        VECT_K1=(0., 0., 1.,),
+                        INFO=2
+                      )
+
+DEP3B2=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB3',
+                                GROUP_NO = 'L2INF',
+                                RESULTAT = RESU3,
+                                NOM_CHAM = 'DEPL',
+                                NOM_CMP = ('DX', 'DY', 'DZ',),
+                                OPERATION = 'EXTRACTION')
+                              )
+
+DEP3H2=POST_RELEVE_T(   ACTION=_F(  INTITULE = 'TAB4',
+                                GROUP_NO = 'L2SUP',
+                                RESULTAT = RESU3,
+                                NOM_CHAM = 'DEPL',
+                                NOM_CMP = ('DX', 'DY', 'DZ',),
+                                OPERATION = 'EXTRACTION')
+                              )
+
+TABK3A2=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
+                        MATER=MAT,
+                        TABL_DEPL_SUP=DEP3H2,
+                        TABL_DEPL_INF=DEP3B2,
+                        ABSC_CURV_MAXI=0.2,
+                        VECT_K1=(0., 0., 1.,)
+                      )
+
+DEP3B3=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB5',
+                                GROUP_NO = 'L3INF',
+                                RESULTAT = RESU3,
+                                NOM_CHAM = 'DEPL',
+                                NOM_CMP = ('DX', 'DY', 'DZ',),
+                                OPERATION = 'EXTRACTION')
+                              )
+
+DEP3H3=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB6',
+                                GROUP_NO = 'L3SUP',
+                                RESULTAT = RESU3,
+                                NOM_CHAM = 'DEPL',
+                                NOM_CMP = ('DX', 'DY', 'DZ',),
+                                OPERATION = 'EXTRACTION')
+                              )
+
+TABK3A3=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
+                        MATER=MAT,
+                        TABL_DEPL_SUP=DEP3H3,
+                        TABL_DEPL_INF=DEP3B3,
+                        ABSC_CURV_MAXI=0.2,
+                        VECT_K1=(0., 0., 1.,)
+                      )
+
+K3=-1.063846E6
+
+# ---------------
+
+TEST_TABLE(       TABLE=TABK3A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MAX',
+                           VALE=K3,
+                      PRECISION=0.010           )
+
+TEST_TABLE(       TABLE=TABK3A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MIN',
+                           VALE=K3,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=TABK3A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC3REF,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=TABK3A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC3REF,
+                      PRECISION=0.015           )
+
+TEST_TABLE(       TABLE=TABK3A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MAX',
+                           VALE=K3,
+                      PRECISION=0.025           )
+
+TEST_TABLE(       TABLE=TABK3A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MIN',
+                           VALE=K3,
+                      PRECISION=0.12           )
+
+TEST_TABLE(       TABLE=TABK3A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC3REF,
+                      PRECISION=0.05           )
+
+TEST_TABLE(       TABLE=TABK3A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC3REF,
+                      PRECISION=0.22           )
+
+# ---------------
+
+TEST_TABLE(       TABLE=TABK3A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MAX',
+                           VALE=K3,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=TABK3A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MIN',
+                           VALE=K3,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=TABK3A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC3REF,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=TABK3A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC3REF,
+                      PRECISION=0.015           )
+
+TEST_TABLE(       TABLE=TABK3A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MAX',
+                           VALE=K3,
+                      PRECISION=0.03           )
+
+TEST_TABLE(       TABLE=TABK3A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MIN',
+                           VALE=K3,
+                      PRECISION=0.12           )
+
+TEST_TABLE(       TABLE=TABK3A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC3REF,
+                      PRECISION=0.05           )
+
+TEST_TABLE(       TABLE=TABK3A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC3REF,
+                      PRECISION=0.22           )
+
+# ---------------
+
+TEST_TABLE(       TABLE=TABK3A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MAX',
+                           VALE=K3,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=TABK3A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MIN',
+                           VALE=K3,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=TABK3A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC3REF,
+                      PRECISION=0.01          )
+
+TEST_TABLE(       TABLE=TABK3A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC3REF,
+                      PRECISION=0.015           )
+
+TEST_TABLE(       TABLE=TABK3A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MAX',
+                           VALE=K3,
+                      PRECISION=0.025           )
+
+TEST_TABLE(       TABLE=TABK3A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MIN',
+                           VALE=K3,
+                      PRECISION=0.12           )
+
+TEST_TABLE(       TABLE=TABK3A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC3REF,
+                      PRECISION=0.05           )
+
+TEST_TABLE(       TABLE=TABK3A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC3REF,
+                      PRECISION=0.22           )
+
+DEP13=COMB_CHAM_NO( COMB_R=( _F( CHAM_NO = DEP1, COEF_R = 1.),
+                               _F( CHAM_NO = DEP3, COEF_R = 1.))
+                      )
+
+# VALEUR DE REFERENCE MILIEU INFINI MODES 1 ET 3 :
+
+GL13REF=DEFI_VALEUR(  R8=EVAL("""(1.-NU*NU)*K1*K1/E + (1.+NU)*K3*K3/E """))
+
+GLOC13=CALC_G_LOCAL_T(    MODELE=MO,
+                          DEPL=DEP13,
+                        CHARGE=TORSION,
+                        CHAM_MATER=CHMAT,
+                         FOND_FISS=FISS,
+                        R_SUP=RSUP,
+                        R_INF=RINF
+                    )
+
+TEST_TABLE(       TABLE=GLOC13,
+                 NOM_PARA='G_LOCAL',
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N49'),
+                     VALE=GL13REF,
+                PRECISION=0.03,
+                REFERENCE='ANALYTIQUE'       )
+
+TEST_TABLE(       TABLE=GLOC13,
+                 NOM_PARA='G_LOCAL',
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N1710'),
+                     VALE=GL13REF,
+                PRECISION=0.02,
+                REFERENCE='ANALYTIQUE'       )
+
+TEST_TABLE(       TABLE=GLOC13,
+                 NOM_PARA='G_LOCAL',
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N77'),
+                     VALE=GL13REF,
+                PRECISION=0.03,
+                REFERENCE='ANALYTIQUE'       )
+
+GGLOB13=CALC_G_THETA_T(        MODELE=MO,
+                                 DEPL=DEP13,
+                                THETA=THETA1,
+                               CHARGE=TORSION,
+                           CHAM_MATER=CHMAT
+                       )
+
+GG13REF=DEFI_VALEUR(  R8=EVAL("""GL13REF*PI*A/2. """) )
+
+TEST_TABLE(       TABLE=GGLOB13,
+                  NOM_PARA='G',
+                      VALE=GG13REF,
+                 PRECISION=0.012        )
+
+# POST_K1_K2_K3
+
+DEP13B1=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB1',
+                                GROUP_NO = 'L1INF',
+                                CHAM_GD = DEP13,
+                                NOM_CMP = ('DX', 'DY', 'DZ',),
+                                OPERATION = 'EXTRACTION')
+                              )
+
+DEP13H1=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB2',
+                                GROUP_NO = 'L1SUP',
+                                CHAM_GD = DEP13,
+                                NOM_CMP = ('DX', 'DY', 'DZ',),
+                                OPERATION = 'EXTRACTION')
+                              )
+
+TABK13A1=POST_K1_K2_K3(  MODELISATION='3D',
+                         MATER=MAT,
+                         TABL_DEPL_SUP=DEP13H1,
+                         TABL_DEPL_INF=DEP13B1,
+                         ABSC_CURV_MAXI=0.2,
+                         VECT_K1=(0., 0., 1.,),
+                         INFO=2
+                       )
+
+DEP13B2=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB3',
+                                GROUP_NO = 'L2INF',
+                                CHAM_GD = DEP13,
+                                NOM_CMP = ('DX', 'DY', 'DZ',),
+                                OPERATION = 'EXTRACTION')
+                              )
+
+DEP13H2=POST_RELEVE_T(   ACTION=_F(  INTITULE = 'TAB4',
+                                GROUP_NO = 'L2SUP',
+                                CHAM_GD = DEP13,
+                                NOM_CMP = ('DX', 'DY', 'DZ',),
+                                OPERATION = 'EXTRACTION')
+                              )
+
+TABK13A2=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
+                         MATER=MAT,
+                         TABL_DEPL_SUP=DEP13H2,
+                         TABL_DEPL_INF=DEP13B2,
+                         ABSC_CURV_MAXI=0.2,
+                         VECT_K1=(0., 0., 1.,)
+                      )
+
+DEP13B3=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB5',
+                                GROUP_NO = 'L3INF',
+                                CHAM_GD = DEP13,
+                                NOM_CMP = ('DX', 'DY', 'DZ',),
+                                OPERATION = 'EXTRACTION')
+                              )
+
+DEP13H3=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB6',
+                                GROUP_NO = 'L3SUP',
+                                CHAM_GD = DEP13,
+                                NOM_CMP = ('DX', 'DY', 'DZ',),
+                                OPERATION = 'EXTRACTION')
+                              )
+
+TABK13A3=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
+                         MATER=MAT,
+                         TABL_DEPL_SUP=DEP13H3,
+                         TABL_DEPL_INF=DEP13B3,
+                         ABSC_CURV_MAXI=0.2,
+                         VECT_K1=(0., 0., 1.,)
+                       )
+
+# ---------------
+
+TEST_TABLE(       TABLE=TABK13A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.010           )
+
+TEST_TABLE(       TABLE=TABK13A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=K1,
+                      PRECISION=0.007           )
+
+TEST_TABLE(       TABLE=TABK13A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.003           )
+
+TEST_TABLE(       TABLE=TABK13A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=K1,
+                      PRECISION=0.08           )
+
+# TEST DE K1
+
+# ---------------
+
+TEST_TABLE(       TABLE=TABK13A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=TABK13A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=K1,
+                      PRECISION=0.004           )
+
+TEST_TABLE(       TABLE=TABK13A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.003           )
+
+TEST_TABLE(       TABLE=TABK13A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=K1,
+                      PRECISION=0.08           )
+
+# ---------------
+
+TEST_TABLE(       TABLE=TABK13A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.007           )
+
+TEST_TABLE(       TABLE=TABK13A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=K1,
+                      PRECISION=0.004           )
+
+TEST_TABLE(       TABLE=TABK13A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.008           )
+
+TEST_TABLE(       TABLE=TABK13A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=K1,
+                      PRECISION=0.08           )
+
+# TEST DE K3 ET G
+
+# ---------------
+
+TEST_TABLE(       TABLE=TABK13A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MAX',
+                           VALE=K3,
+                      PRECISION=0.010           )
+
+TEST_TABLE(       TABLE=TABK13A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MIN',
+                           VALE=K3,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=TABK13A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GL13REF,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=TABK13A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GL13REF,
+                      PRECISION=0.015           )
+
+TEST_TABLE(       TABLE=TABK13A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MAX',
+                           VALE=K3,
+                      PRECISION=0.025           )
+
+TEST_TABLE(       TABLE=TABK13A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MIN',
+                           VALE=K3,
+                      PRECISION=0.12           )
+
+TEST_TABLE(       TABLE=TABK13A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GL13REF,
+                      PRECISION=0.05           )
+
+TEST_TABLE(       TABLE=TABK13A1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GL13REF,
+                      PRECISION=0.22           )
+
+# ---------------
+
+TEST_TABLE(       TABLE=TABK13A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MAX',
+                           VALE=K3,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=TABK13A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MIN',
+                           VALE=K3,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=TABK13A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GL13REF,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=TABK13A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GL13REF,
+                      PRECISION=0.015           )
+
+TEST_TABLE(       TABLE=TABK13A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MAX',
+                           VALE=K3,
+                      PRECISION=0.03           )
+
+TEST_TABLE(       TABLE=TABK13A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MIN',
+                           VALE=K3,
+                      PRECISION=0.12           )
+
+TEST_TABLE(       TABLE=TABK13A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GL13REF,
+                      PRECISION=0.05           )
+
+TEST_TABLE(       TABLE=TABK13A2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GL13REF,
+                      PRECISION=0.22           )
+
+# ---------------
+
+TEST_TABLE(       TABLE=TABK13A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MAX',
+                           VALE=K3,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=TABK13A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MIN',
+                           VALE=K3,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=TABK13A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GL13REF,
+                      PRECISION=0.01          )
+
+TEST_TABLE(       TABLE=TABK13A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GL13REF,
+                      PRECISION=0.015           )
+
+TEST_TABLE(       TABLE=TABK13A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MAX',
+                           VALE=K3,
+                      PRECISION=0.025           )
+
+TEST_TABLE(       TABLE=TABK13A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K3_MIN',
+                           VALE=K3,
+                      PRECISION=0.12           )
+
+TEST_TABLE(       TABLE=TABK13A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GL13REF,
+                      PRECISION=0.05           )
+
+TEST_TABLE(       TABLE=TABK13A3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=GL13REF,
+                      PRECISION=0.22           )
+
+#
+FIN()
+#

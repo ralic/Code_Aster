@@ -1,4 +1,4 @@
-# MODIF  DATE 20/03/2001   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 18/02/2003   AUTEUR PBADEL P.BADEL 
 # RESPONSABLE JMBHH01 J.M.PROIX
 
 # TITRE FORMATION  THERMO-PLASTICITE DANS LE CODE_ASTER ENONCE DU TP1
@@ -165,6 +165,26 @@ IMPR_RESU(
                        NOM_CHAM = 'EPSI_ELNO_DEPL',
                        NOM_CMP = ('EPXX', 'EPXY',))
            )
+
+#===========================================
+# IMPR_RESU FORMAT GMSH
+#===========================================
+
+DEFUFI(IMPRESSION=_F(NOM='POST',
+                     UNITE=55,),);
+
+IMPR_RESU(MODELE=MO,
+          RESU=(
+               _F(FORMAT='GMSH',
+                  NOM_CHAM=('DEPL'),
+                  VERSION=1.2,
+                  FICHIER='POST',
+                  RESULTAT=U,),
+                   )
+                  );
+
+
+FERMER(UNITE=55)
 
 TEST_RESU(RESU=( 
            _F(  RESULTAT = U,       INST = 3.,

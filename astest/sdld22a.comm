@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 # TITRE SYSTEME MAS RES A 8 DDL (AMORTISSEMENT VISQ. PROPORTION.)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -106,7 +106,9 @@ FONCTIO1=DEFI_FONCTION(  NOM_PARA='INST',  NOM_RESU='ALPHA',
                           VALE=( 0., 1.,  1., 1.,  1.0000001, 0., ),
                           PROL_DROITE='CONSTANT'               )
 
-MACRO_PROJ_BASE(  BASE=MODES,MATR_ASSE_GENE=(
+MACRO_PROJ_BASE(  BASE=MODES,
+                  PROFIL = 'PLEIN',
+                  MATR_ASSE_GENE=(
                    _F( 
                                    MATRICE = CO("MASSEGEN"),
                                    MATR_ASSE = MATRMASS), 
@@ -115,8 +117,7 @@ MACRO_PROJ_BASE(  BASE=MODES,MATR_ASSE_GENE=(
                                    MATR_ASSE = MATRRIGI),
                    _F( 
                                    MATRICE = CO("AMORTGEN"), 
-                                   MATR_ASSE = MATRAMOR,
-                                   PROFIL = 'PLEIN')),
+                                   MATR_ASSE = MATRAMOR,)),
                    VECT_ASSE_GENE=_F( 
                                    VECTEUR = CO("EFFOGENE"),
                                    VECT_ASSE = VECTASS) )

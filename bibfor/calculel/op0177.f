@@ -3,7 +3,7 @@
       INTEGER             IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,14 +30,16 @@ C ----------------------------------------------------------------------
       COMPLEX*16   CBID, VALC, REFC
       CHARACTER*1  TYPR
       CHARACTER*4  TESTOK
-      CHARACTER*8  K8B, NOMFI, CRIT, CTYPE, TYPTES, TABLE
+      CHARACTER*8  K8B, CRIT, CTYPE, TYPTES, TABLE
       CHARACTER*12 LABEL
+      CHARACTER*16 NOMFI
       CHARACTER*19 NEWTAB, NEWTA1
       CHARACTER*24 PARA
       CHARACTER*80 VALK
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
+      CALL INFMAJ()
       TESTOK = 'NOOK'
       LABEL  = ' '
 C

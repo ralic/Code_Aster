@@ -2,7 +2,7 @@
       IMPLICIT  REAL*8  ( A-H,O-Z )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C     ---- DEBUT DES COMMUNS JEVEUX ------------------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
       PARAMETER    ( NBPAR = 16, NBPAR2 = 12, NBPMR = 5 )
-      REAL*8       PMOYE,INSDEB,EPSIL    
+      REAL*8       PMOYE, INSDEB, EPSIL, DINST   
       CHARACTER*8  K8B
       CHARACTER*8  TYPAR(NBPAR), TYPPMR(NBPMR)
       REAL*8       VALER(NBPAR)
@@ -71,11 +71,48 @@ C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
 C     ------------------------------------------------------------------
 C 
       CALL JEMARQ()
+      CALL INFMAJ()
+C
       INDIC = 0
-      CALL GETRES (RESU,CONCEP,NOMCMD)
       IFIRES = IUNIFI('RESULTAT')
       KFORN = '&&OP0153.FORC_N'
       KVGLI = '&&OP0153.VITE_G'
+C
+      CALL GETRES ( RESU, CONCEP, NOMCMD )
+C
+C     ------------------------------------------------------------------
+C            REMPLACEMENT DU TUBE PERCE PAR UN TUBE NEUF
+C     ------------------------------------------------------------------
+C
+      DINST = 0.D0
+      CALL GETVTX ( ' ', 'TUBE_NEUF', 1,1,1, K8B, NTN )
+      IF ( NTN .NE. 0 ) THEN
+         CALL EXISD ( 'TABLE', RESU, IRET )
+         IF ( IRET .EQ. 0 ) THEN
+            CALL UTMESS('F','USURE','"TUBE_NEUF" N''A DE SENS QUE '//
+     +                             'POUR UNE TABLE D''USURE EXISTANTE')
+         ENDIF
+         CALL GETVID ( ' ', 'TABL_USURE', 1,1,1, K8B, N1 )
+         IF ( K8B .NE. RESU(1:8) ) THEN
+            CALL UTMESS('F','USURE','"TUBE_NEUF" N''A DE SENS QUE '//
+     +                             'POUR UNE TABLE D''USURE EXISTANTE')
+         ENDIF
+         CALL GETVR8 ( ' ', 'INST', 1,1,1, DINST, NIS )
+         IF ( NIS .EQ. 0 ) THEN
+            CALL TBEXV1 ( RESU, 'INST', '&&OP0153.INST','V',NBV,K8B)
+            CALL JEVEUO ('&&OP0153.INST', 'L', JINST )
+            DINST = ZR(JINST+NBV-1)
+            CALL JEDETR ( '&&OP0153.INST' ) 
+         ENDIF
+         CALL TBEXV1 ( RESU, 'SECTEUR', '&&OP0153.SECT','V',NBV,K8B)
+         CALL JEVEUO ('&&OP0153.SECT', 'L', JSECT )
+         NBSECT = ZI(JSECT+NBV-1)
+         CALL JEDETR ( '&&OP0153.SECT' ) 
+         CALL MOTUBN ( RESU, DINST, NBSECT )
+         GOTO 888
+      ENDIF
+C
+C     ------------------------------------------------------------------
       CALL GETVIS(' ','INFO',1,1,1,INFO,N0)
       IF (INFO.GT.1) THEN
         WRITE(IFIRES,1000)

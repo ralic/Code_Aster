@@ -1,5 +1,5 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
-# TITRE VALIDATION DE MACRO_CARA_POUTRE
+# MODIF  DATE 13/01/2003   AUTEUR DURAND C.DURAND 
+# TITRE VALIDATION DE MACR_CARA_POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ DEBUT( CODE=_F(  NOM = 'SSLL107G',NIV_PUB_WEB='INTERNET') )
 
 MATER=DEFI_MATERIAU(   ELAS=_F(  E = 1234567.890,  NU = 0.3) )
 
-TCARS=MACRO_CARA_POUTRE(   GROUP_MA_BORD='LR1',
+TCARS=MACR_CARA_POUTRE(   GROUP_MA_BORD='LR1',
                                 NOEUD='N64' )
 
 #
@@ -163,7 +163,7 @@ TEST_TABLE(     TABLE=TCARS,
                  CRITERE='ABSOLU',
                      VALE=0.               )
 
-TCAR2=MACRO_CARA_POUTRE(     GROUP_MA_BORD=('LGR1', 'LGR2',),
+TCAR2=MACR_CARA_POUTRE(     GROUP_MA_BORD=('LGR1', 'LGR2',),
                                       GROUP_MA=('GR1','GR2',),
                                 UNITE_MAILLAGE=38,
                                          NOEUD=('N64', 'N64',),
@@ -291,7 +291,7 @@ TEST_TABLE(     TABLE=TCAR2,
 
 # AVEC UN SEUL GROUPE ON DOIT RETROUVER LES MEMES RESULTATS
 
-TCAR3=MACRO_CARA_POUTRE(     GROUP_MA_BORD='LR1',
+TCAR3=MACR_CARA_POUTRE(     GROUP_MA_BORD='LR1',
                                       GROUP_MA='RECTANG',
                                 UNITE_MAILLAGE=39,
                                    NOEUD='N64',

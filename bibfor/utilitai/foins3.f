@@ -5,7 +5,7 @@
       REAL*8              FINI, FFIN, ISPEC, AMOR, EPSI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/03/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C
       CALL JEVEUO ( PROL, 'L', LPRORF )
 C
 C
-      IF ( ZK8(LPRORF) .EQ. 'NAPPE' ) THEN
+      IF ( ZK16(LPRORF) .EQ. 'NAPPE' ) THEN
 C
          VALE(20:24) = '.VALE'
          VALE(1:19)  = NOMFON
@@ -171,7 +171,7 @@ C
          CALL JEDETR('&&FOINS3.ISPEC')
 C
       ELSE
-         CALL UTMESS('F','FOINS3', ZK8(LPRORF)//'LE (LES) SPECTRE(S)'
+         CALL UTMESS('F','FOINS3', ZK16(LPRORF)//'LE (LES) SPECTRE(S)'
      +             //' DOIT (DOIVENT) ETRE SOUS FORME D UNE NAPPE.')
       ENDIF
 C

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 17/02/99   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,8 +81,9 @@ C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
       CHARACTER*1 TYPVAL
-      CHARACTER*8 NOMMA,KBID,GD,NOMF,NOMFA,NOMP
+      CHARACTER*8 NOMMA,KBID,GD,NOMF,NOMFA
       CHARACTER*14 NU
+      CHARACTER*16 NOMP
       CHARACTER*19 VCINE,CHARCI,PRCHNO
       CHARACTER*24 VVALE,CDEFI,CVALE,CVALF,NPROL
       DATA NPROL/'                   .PROL'/
@@ -142,7 +143,7 @@ C --- REMPLISSAGE DU .VALE
               IF (NOMF.NE.NOMFA) THEN
                 NPROL(1:8) = NOMF
                 CALL JEVEUO(NPROL,'L',IPROL)
-                NOMP = ZK8(IPROL+2)
+                NOMP = ZK16(IPROL+2)
                 NOMFA = NOMF
               ENDIF
               IF ( NOMP.EQ.'INST') THEN

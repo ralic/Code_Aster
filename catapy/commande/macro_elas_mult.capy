@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ def macro_elas_mult_prod(self,NUME_DDL,CAS_CHARGE,**args ):
   if CAS_CHARGE[0]['MODE_FOURIER'] != None : return fourier_elas
   raise AsException("type de concept resultat non prevu")
 
-MACRO_ELAS_MULT=MACRO(nom="MACRO_ELAS_MULT",op=macro_elas_mult_ops,sd_prod=macro_elas_mult_prod,docu="U4.51.02-d2",reentrant='f',
+MACRO_ELAS_MULT=MACRO(nom="MACRO_ELAS_MULT",op=macro_elas_mult_ops,sd_prod=macro_elas_mult_prod,docu="U4.51.02-d",reentrant='f',
             UIinfo={"groupes":("Résolution",)},
          regles=(UN_PARMI('CHAR_MECA_GLOBAL','CHAR_CINE_GLOBAL','LIAISON_DISCRET', ),),
          MODELE          =SIMP(statut='o',typ=modele),

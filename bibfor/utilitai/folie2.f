@@ -1,0 +1,191 @@
+      SUBROUTINE FOLIE2 ( NBFR, FREQ, ACCE, VALTG, VALTD, SORTIE )
+      IMPLICIT  NONE
+      INTEGER             NBFR
+      REAL*8              FREQ(*), ACCE(*), VALTG, VALTD
+      CHARACTER*(*)       SORTIE
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C     FONCTION ENVELOPPE AVEC UN ELARGISSEMENT A GAUCHE ET A DROITE
+C
+C  IN : NBFR   : NOMBRE DE FREQUENCES DE LA FONCTION A TRAITER
+C  IN : FREQ   : LISTE DES ABSCISSES DE LA FONCTION A TRAITER
+C  IN : ACCE   : LISTE DES ORDONNEES DE LA FONCTION A TRAITER
+C  IN : VALTG  : VALEUR DE L'ELARGISSEMENT A GAUCHE
+C  IN : VALTD  : VALEUR DE L'ELARGISSEMENT A DROITE
+C OUT : SORTIE : FONCTION ENVELOPPE
+C     ------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16            ZK16
+      CHARACTER*24                    ZK24
+      CHARACTER*32                            ZK32
+      CHARACTER*80                                    ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER       JVAL1, JVAL2, JVAL3, JPRO1, JPRO2, JPRO3, I, J,
+     +              NBFINF, NBFSUP, JVMIN, JVMAX
+      REAL*8        TOMOIN, TOPLUS, FRMI, FRMA
+      CHARACTER*1   BASE
+      CHARACTER*8   CRITER
+      CHARACTER*16  PROL(5)
+      CHARACTER*19  NOMFON(3)
+C
+      DATA PROL / 'FONCTION' , 'LOG LOG ' , 'FREQ    ' , 'ACCE    ' ,
+     +            'CC      ' /
+C     ------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+      CRITER = 'SUP'
+      BASE = 'V'
+C
+      NOMFON(1) = '&&FOLIE2.ENVELOPE_G'
+      NOMFON(2) = '&&FOLIE2.ENVELOPE_M'
+      NOMFON(3) = '&&FOLIE2.ENVELOPE_D'
+C
+      CALL WKVECT ( NOMFON(1)//'.PROL', 'V V K16', 5, JPRO1 )
+      CALL WKVECT ( NOMFON(2)//'.PROL', 'V V K16', 5, JPRO2 )
+      CALL WKVECT ( NOMFON(3)//'.PROL', 'V V K16', 5, JPRO3 )
+C
+      DO 10 I = 1 , 5
+         ZK16(JPRO1+I-1) = PROL(I)
+         ZK16(JPRO2+I-1) = PROL(I)
+         ZK16(JPRO3+I-1) = PROL(I)
+ 10   CONTINUE
+C
+C --- ELARGISSEMENT A GAUCHE
+C
+      CALL WKVECT ( '&&FOLIE2.FREQ_MIN', 'V V R', 2*NBFR, JVMIN )
+      TOMOIN = (1.0D0-VALTG)
+      NBFINF = 1
+      ZR(JVMIN+NBFINF-1) = FREQ(1)
+      ZR(JVMIN+NBFR+NBFINF-1) = ACCE(1)
+      DO 20 I = 2 , NBFR
+         FRMI = FREQ(I) * TOMOIN
+         IF ( FRMI .LT. FREQ(1) ) GOTO 20
+C ------ RECHERCHE DE LA FREQUENCE INFERIEURE
+         DO 22 J = I , 2, -1
+            IF ( FRMI.LT.FREQ(J) .AND. FRMI.GE.FREQ(J-1) ) THEN
+               FRMI = FREQ(J-1)
+               GOTO 24
+            ENDIF
+ 22      CONTINUE
+         CALL UTMESS('F','FOLIE2','BUG SUR FREQUENCE INFERIEURE')
+ 24      CONTINUE
+C ------ EST-CE UNE FREQUENCE DEJA STOCKEE :
+C           SI NON ON STOCKE
+C           SI OUI ON RECUPERE LE MAX DES ACCELERATIONS
+         DO 26 J = 1 , NBFINF
+            IF ( FRMI .EQ. ZR(JVMIN+J-1) ) THEN
+               ZR(JVMIN+NBFR+J-1) = MAX( ZR(JVMIN+NBFR+J-1) , ACCE(I) )
+               GOTO 28
+            ENDIF
+ 26      CONTINUE
+         NBFINF = NBFINF + 1
+         ZR(JVMIN+NBFINF-1) = FRMI
+         ZR(JVMIN+NBFR+NBFINF-1) = ACCE(I)
+ 28      CONTINUE
+ 20   CONTINUE
+C
+C --- ELARGISSEMENT A DROITE
+C
+      CALL WKVECT ( '&&FOLIE2.FREQ_MAX', 'V V R', 2*NBFR, JVMAX )
+      TOPLUS = (1.0D0+VALTD)
+      NBFSUP = 0
+      DO 30 I = 1 , NBFR
+         FRMA = FREQ(I) * TOPLUS
+         IF ( FRMA .GT. FREQ(NBFR) ) GOTO 30
+C ------ RECHERCHE DE LA FREQUENCE SUPERIEURE
+         DO 32 J = I , NBFR-1, 1
+            IF ( FRMA.GT.FREQ(J) .AND. FRMA.LE.FREQ(J+1) ) THEN
+               FRMA = FREQ(J+1)
+               GOTO 34
+            ENDIF
+ 32      CONTINUE
+         CALL UTMESS('F','FOLIE2','BUG SUR FREQUENCE SUPERIEURE')
+ 34      CONTINUE
+C ------ EST-CE UNE FREQUENCE DEJA STOCKEE :
+C           SI NON ON STOCKE
+C           SI OUI ON RECUPERE LE MAX DES ACCELERATIONS
+         DO 36 J = 1 , NBFSUP
+            IF ( FRMA .EQ. ZR(JVMAX+J-1) ) THEN
+               ZR(JVMAX+NBFR+J-1) = MAX( ZR(JVMAX+NBFR+J-1) , ACCE(I) )
+               GOTO 38
+            ENDIF
+ 36      CONTINUE
+         NBFSUP = NBFSUP + 1
+         ZR(JVMAX+NBFSUP-1) = FRMA
+         ZR(JVMAX+NBFR+NBFSUP-1) = ACCE(I)
+ 38      CONTINUE
+ 30   CONTINUE
+C
+      IF ( NBFSUP .EQ. 0 ) THEN
+         CALL UTMESS('F','FOLIE2','LES FREQUENCES ELARGIES A DROITE '//
+     +               'DEPASSENT L''INTERVALLE D''ETUDE. DIMINUER LA '//
+     +               'TOLERANCE DE LISSAGE')
+      ENDIF
+C
+      CALL WKVECT ( NOMFON(1)//'.VALE', 'V V R', 2*NBFINF, JVAL1 )
+      CALL WKVECT ( NOMFON(2)//'.VALE', 'V V R', 2*NBFR  , JVAL2 )
+      CALL WKVECT ( NOMFON(3)//'.VALE', 'V V R', 2*NBFSUP, JVAL3 )
+C
+CCC      WRITE(6,*)'-->> FONCTION ELARGIE A GAUCHE'
+      DO 40 I = 1 , NBFINF
+         ZR(JVAL1+I-1) = ZR(JVMIN+I-1)
+         ZR(JVAL1+NBFINF+I-1) = ZR(JVMIN+NBFR+I-1)
+CCC         WRITE(6,1000) I, ZR(JVAL1+I-1), ZR(JVAL1+NBFINF+I-1)
+ 40   CONTINUE
+C
+CCC      WRITE(6,*)'-->> FONCTION BRUTE'
+      DO 42 I = 1 , NBFR
+         ZR(JVAL2+I-1) = FREQ(I)
+         ZR(JVAL2+NBFR+I-1) = ACCE(I)
+CCC         WRITE(6,1000) I, ZR(JVAL2+I-1), ZR(JVAL2+NBFR+I-1)
+ 42   CONTINUE
+C
+CCC      WRITE(6,*)'-->> FONCTION ELARGIE A DROITE'
+      DO 44 I = 1 , NBFSUP
+         ZR(JVAL3+I-1) = ZR(JVMAX+I-1)
+         ZR(JVAL3+NBFSUP+I-1) = ZR(JVMAX+NBFR+I-1)
+CCC       WRITE(6,1000) I, ZR(JVAL3+I-1), ZR(JVAL3+NBFSUP+I-1)
+ 44   CONTINUE
+C
+C --- CALCUL DU SPECTRE ENVELOPPE
+C
+      CALL FOC1EN ( SORTIE , 3 , NOMFON , CRITER , BASE )
+C
+      CALL JEDETR ( '&&FOLIE2.FREQ_MIN' )
+      CALL JEDETR ( '&&FOLIE2.FREQ_MAX' )
+      CALL DETRSD ( 'FONCTION', NOMFON(1) )
+      CALL DETRSD ( 'FONCTION', NOMFON(2) )
+      CALL DETRSD ( 'FONCTION', NOMFON(3) )
+C
+CCC 1000 FORMAT ( 1P,' POINT ',I3,1X,E12.5,1X,E12.5 )
+C
+      CALL JEDEMA()
+      END

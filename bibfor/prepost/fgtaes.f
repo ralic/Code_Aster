@@ -6,7 +6,7 @@
       INTEGER                  NBCYCL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/07/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 28/02/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,7 @@ C
       CHARACTER*10 PHENO
       REAL*8       NRUPT,DELTA,DNAP,EPMAX,VALP(2),VAL(10)
       REAL*8       SALT,X,RE,SLMODI,Y
+      LOGICAL ENDUR
       DATA ZERO /1.D-13/
 C
       CALL JEMARQ()
@@ -123,9 +124,14 @@ C
           IF(MODE.EQ.'FONC') THEN
             NBPAR = 1
             NOMPAR = 'SIGM'
-            CALL RCVALE(NOMMAT,PHENO,NBPAR,NOMPAR,DNAP,1,NOMRE2,
+            CALL LIMEND( NOMMAT,DNAP,ENDUR)
+            IF (ENDUR) THEN
+                DOM(I) = 0.D0
+            ELSE
+                CALL RCVALE(NOMMAT,PHENO,NBPAR,NOMPAR,DNAP,1,NOMRE2,
      +                                            NRUPT,CODRET(1),'F ')
-            DOM(I) = 1.D0/NRUPT
+                DOM(I) = 1.D0/NRUPT
+            ENDIF
           ELSEIF(MODE.EQ.'BASQ') THEN
             DOM(I) = VAL(2)* DNAP**VAL(3)
           ELSEIF(MODE.EQ.'ZONE') THEN

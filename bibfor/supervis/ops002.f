@@ -3,7 +3,7 @@
       INTEGER            ICMD , ICOND, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 16/06/2000   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,20 @@ C     DE MATERIAU DEVANT PREFIXER LES CONCEPTS INCLUS DANS LE FICHIER
       COMMON /INCMAI/ LPRFXC  
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
+      IF (ICOND .EQ. 1 ) THEN
+C     --- DESACTIVATION DU PREFIXE CONCEPT
+        PRFXCO='?'
+        LPRFXC=1
+        GOTO 9999
+      ENDIF
+
+      IF (ICOND .EQ. 0 ) THEN
+C     --- DESACTIVATION DU PREFIXE CONCEPT
+        PRFXCO='?'
+        LPRFXC=1
+        GOTO 9999
+      ENDIF
+
       IF (ICOND .NE. -1) THEN
         CALL UTMESS('E','SUPERVISEUR','ERREUR FATALE  **** '//
      +                                'APPEL A COMMANDE "SUPERVISEUR".')
@@ -60,8 +74,12 @@ C     --- IMPRESSION DE LA MARQUE DE FIN ---
       IF ( IWRITE .EQ. 0 ) THEN
          IWR = IUNIFI('MESSAGE')
          IF ( IWR .GT. 0 ) THEN
-            WRITE(IWR,*) ' --- FIN INCLUDE : ',NAME(IFILE),
+            IF(NOMSYM.EQ.'INCMAT')THEN
+                  WRITE(IWR,*) ' --- FIN INCLUDE_MATERIAU '
+            ELSE
+                  WRITE(IWR,*) ' --- FIN INCLUDE : ',
      +                      ' SUR UNITE:',IREAD
+            ENDIF
          ENDIF
          WRITE(IWR,*)
       ELSE

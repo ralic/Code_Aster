@@ -5,7 +5,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/08/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,10 +60,10 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 SEC, REP, TOU, REPDIS(NRD), CONCEP, CMD
       CHARACTER*19 CARTDK, CARTDM, CARTDA, CART(3), LIGMO
       CHARACTER*24 TMPNDM, TMPVDM, TMPNDA, TMPVDA, TMPNDK, TMPVDK
-      CHARACTER*24 TMPDIS, MLGNNO
+      CHARACTER*24 TMPDIS, MLGNNO, MLGNMA
       CHARACTER*24 MODNEM
       CHARACTER*1 K1BID
-      CHARACTER*8  NOMNOE
+      CHARACTER*8  NOMNOE, NOGP, NOMMAI
       DATA REPDIS  /'GLOBAL          ','LOCAL           '/
       DATA KMA     /'K','M','A'/
 C     ------------------------------------------------------------------
@@ -72,6 +72,7 @@ C
       CALL GETRES(NOMU,CONCEP,CMD)
       TMPDIS = NOMU//'.DISCRET'
       MLGNNO = NOMA//'.NOMNOE'
+      MLGNMA = NOMA//'.NOMMAI'
       LIGMO  = NOMO//'.MODELE    '
       MODNEM = NOMO//'.MODELE    .NEMA'
       CALL JEEXIN(MODNEM,IXNW)
@@ -86,6 +87,7 @@ C
       CALL WKVECT('&&TMPRIGNO','V V R',6*LMAX,IRGNO)
       CALL WKVECT('&&TMPRIGTO','V V R',6*NOEMAF,IRGTO)
       CALL WKVECT('&&TMPAMOTO','V V R',6*NOEMAF,IAMTO)
+      CALL WKVECT('&&TMPTABMP','V V K8',LMAX,ITBMP)
       IFM = IUNIFI('MESSAGE')
 C
 C --- RECUPERATION DE LA DIMENSION DU MAILLAGE
@@ -134,6 +136,7 @@ C --- BOUCLE SUR LES OCCURENCES DE DISCRET
          CALL GETVTX('RIGI_PARASOL','CARA'    ,IOC,1,NBCAR,CAR,NCAR)
          CALL GETVR8('RIGI_PARASOL','VALE'    ,IOC,1,NBVAL,VAL,NVAL)
          CALL GETVTX('RIGI_PARASOL','REPERE'  ,IOC,1,1,REP,NREP)
+         CALL GETVID('RIGI_PARASOL','GROUP_MA_POI1',IOC,1,1,NOGP,NGP)
          IF (IOC.EQ.1 .AND. NREP.EQ.0) REP = REPDIS(1)
          DO 32 I = 1 , NRD
             IF (REP.EQ.REPDIS(I)) IREP = I
@@ -168,7 +171,7 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
               CALL UTMESS('F','ACEARP.01',
      +        'CARACTERISTIQUE NON ADMISE ACTUELLEMENT')
             ENDIF
-            IF (IXNW.NE.0) THEN
+            IF (IXNW.NE.0.AND.NGP.EQ.0) THEN
               DO 39 I = 1,NBNO
                ITROU = 0
                DO 100 K = 1 , NBMTRD
@@ -183,9 +186,27 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
                IF (ITROU.EQ.0) CALL UTMESS('F','ACEARP.02',
      +     'LE NOEUD '//ZK8(ITBNO+I-1)//' NON MODELISE PAR UN DISCRET') 
  39           CONTINUE
-            ELSE
+            ELSEIF (IXNW.EQ.0.AND.NGP.EQ.0) THEN
               CALL UTMESS('F','ACEARP.03',
      +        'PAS DE NOEUDS DU RADIER MODELISES PAR DES DISCRETS')
+            ENDIF
+            IF (NGP.NE.0) THEN
+              CALL JELIRA(JEXNOM(NOMA//'.GROUPEMA',NOGP),'LONMAX',
+     +                    NMA,K8B)
+              CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',NOGP),'L',LDGM)
+              DO 22 IN = 0,NMA-1
+               CALL JEVEUO(JEXNUM(NOMA//'.CONNEX',ZI(LDGM+IN)),'L',LDNM)
+               INOE = ZI(LDNM)
+               CALL JENUNO(JEXNUM(MLGNMA,ZI(LDGM+IN)),NOMMAI)
+               CALL JENUNO(JEXNUM(MLGNNO,INOE),NOMNOE)
+               DO 24 INO = 1, NBNO
+                IF (ZK8(ITBNO+INO-1).EQ.NOMNOE) THEN
+                 ZK8(ITBMP+INO-1) = NOMMAI
+                 GOTO 22
+                ENDIF
+ 24            CONTINUE
+ 22           CONTINUE
+              GOTO 40
             ENDIF
             DO 36 I = 1,NBNO
               IV = 1
@@ -197,6 +218,17 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
               CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
      +                                                       LIGMO,NCMP)
  36         CONTINUE
+            GOTO 34
+ 40         CONTINUE
+            DO 41 I = 1,NBNO
+              IV = 1
+              JD = ITBMP + I - 1
+C             CALL CRLINU ('NOM', MLGNNO, 1, IBID, ZK8(JD),
+C     +                      NBMTRD, ZI(JDNW), ZI(JDDI), KK )
+              CALL AFFDIS(NDIM,IREP,ETA,CAR(NC),ZR(IRGNO+6*I-6),JDC,
+     +                    JDV,IVR,IV,KMA,NCMP,L,IFM)
+              CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP)
+ 41         CONTINUE
  34        CONTINUE
          ENDIF
 C

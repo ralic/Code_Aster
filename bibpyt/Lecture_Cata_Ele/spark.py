@@ -1,4 +1,4 @@
-#@ MODIF spark Lecture_Cata_Ele  DATE 23/11/2001   AUTEUR VABHHTS J.PELLET 
+#@ MODIF spark Lecture_Cata_Ele  DATE 13/01/2003   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 #  Copyright (c) 1998-2000 John Aycock
 #
@@ -33,7 +33,8 @@ def _namelist(instance):
         for c in classlist:
                 for b in c.__bases__:
                         classlist.append(b)
-                for name in dir(c):
+                # for name in dir(c):   # dir()  change de comportement en 2.2
+                for name in c.__dict__.keys():
                         if not namedict.has_key(name):
                                 namelist.append(name)
                                 namedict[name] = 1

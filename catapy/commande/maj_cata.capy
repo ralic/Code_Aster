@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-MAJ_CATA=PROC(nom="MAJ_CATA",op=20,docu="U4.15.01-e1",
+MAJ_CATA=PROC(nom="MAJ_CATA",op=20,docu="U4.15.01-e",
             UIinfo={"groupes":("Gestion du travail",)},
               fr="Compilation des catalogues de commandes et d éléments",
 

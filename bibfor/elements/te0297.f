@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/04/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,19 +101,6 @@ C
       ENDIF
 C
       NCMP = 4
-      IF (OPTION.EQ.'SIGM_ELNO_DPGE'.OR.
-     &    OPTION.EQ.'SIEF_ELGA_DPGE') THEN
-         CALL JEVECH('PDEFORM','L',IDEFOR)
-         NCMP = 6
-        DDZDZ = ZR(IDEFOR)
-       DDRXDZ = ZR(IDEFOR+1)
-       DDRYDZ = ZR(IDEFOR+2)
-           VX = ZR(IDEFOR+3)
-           VY = ZR(IDEFOR+4)
-           MT = ZR(IDEFOR+5)
-            S = ZR(IDEFOR+6)
-           JJ = ZR(IDEFOR+7)
-      ENDIF
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -254,18 +241,6 @@ C
         CONTPG(NCMP*(KP-1)+3) = (LA+DEMU)*EPS(3)+
      &               LA*(EPS(1)+EPS(2))-(3.D0*LA+DEMU)*VALRES(3)*TPG
         CONTPG(NCMP*(KP-1)+4) = DEMU*(EPS(4)+EPS(5))/2.D0
-        IF (OPTION(11:14).EQ.'DPGE') THEN
-          CONTPG(NCMP*(KP-1)+3) = CONTPG(NCMP*(KP-1)+3)
-     &                            + (LA+DEMU)*(DDZDZ+DDRXDZ*Y-DDRYDZ*X)
-          CONTPG(NCMP*(KP-1)+5) = CONTPG(NCMP*(KP-1)+5)
-     &                            + VX/S-MT/JJ*Y
-          CONTPG(NCMP*(KP-1)+6) = CONTPG(NCMP*(KP-1)+6)
-     &                            + VY/S+MT/JJ*X
-          CONTPG(NCMP*(KP-1)+1) = CONTPG(NCMP*(KP-1)+1)
-     &                            + LA*(DDZDZ+DDRXDZ*Y-DDRYDZ*X)
-          CONTPG(NCMP*(KP-1)+2) = CONTPG(NCMP*(KP-1)+2)
-     &                            + LA*(DDZDZ+DDRXDZ*Y-DDRYDZ*X)
-        ENDIF
 101   CONTINUE
 C
       IF (OPTION(6:9).EQ.'ELGA') THEN
@@ -274,10 +249,6 @@ C
           ZR(ICONT+NCMP*(KP-1)+1) = CONTPG(NCMP*(KP-1)+2)
           ZR(ICONT+NCMP*(KP-1)+2) = CONTPG(NCMP*(KP-1)+3)
           ZR(ICONT+NCMP*(KP-1)+3) = CONTPG(NCMP*(KP-1)+4)
-          IF (OPTION(11:14).EQ.'DPGE') THEN
-            ZR(ICONT+NCMP*(KP-1)+4) = CONTPG(NCMP*(KP-1)+5)
-            ZR(ICONT+NCMP*(KP-1)+5) = CONTPG(NCMP*(KP-1)+6)
-          ENDIF
 105     CONTINUE
 C
       ELSE

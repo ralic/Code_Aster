@@ -4,7 +4,7 @@
       CHARACTER*19        NOMFO1, SORTIE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,8 +50,8 @@ C
       INTEGER      NBPARF,NBVECT,I,LVAL,LPRO,LONVAL,NBVAL,IADR,IBID
       REAL*8       NORME
       COMPLEX*16   CBID
-      CHARACTER*8  TYPREF, K8B, TYPARA
-      CHARACTER*16 PARAM
+      CHARACTER*8  K8B, TYPARA
+      CHARACTER*16 PARAM, TYPREF
       CHARACTER*24 PARA, PROL, VALE
 C DEB ------------------------------------------------------------------
 C
@@ -66,7 +66,7 @@ C
       VALE( 1:19) = NOMFO1
 C
       CALL JEVEUO ( PROL, 'L', LPRO )
-      TYPREF = ZK8(LPRO)
+      TYPREF = ZK16(LPRO)
 
 C     --- ON TRAITE UNE NAPPE ----
 

@@ -1,7 +1,7 @@
       SUBROUTINE NMDOMT (METHOD, PARMET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/09/2001   AUTEUR PBBHHPB P.BADEL 
+C MODIF ALGORITH  DATE 11/02/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C RESPONSABLE ADBHHVV V.CANO
+C RESPONSABLE PBADEL P.BADEL
 
       IMPLICIT NONE
       CHARACTER*16 METHOD(6)
@@ -39,11 +39,16 @@ C                 1 : REAC_INCR
 C                 2 : REAC_ITER
 C                10 : ITER_LINE_MAXI
 C                11 : RESI_LINE_RELA
+C                12 : ITER_LINE_CRIT
+C                13 : PAS_MINI_CRIT
+C                14 : RHO_MIN
+C                15 : RHO_MAX
+C                16 : RHO_EXCL
 C                20 : RHO (LAGRANGIEN)
 C                21 : ITER_GLOB_MAXI (LAGRANGIEN)
 C                22 : ITER_INTE_MAXI (LAGRANGIEN)
 C ----------------------------------------------------------------------
-      INTEGER            IRET, REINCR, REITER, ITEREC, NOCC
+      INTEGER            IRET, ITMP,REINCR, REITER, NOCC
       REAL*8             PASMIN
 C ----------------------------------------------------------------------
 
@@ -88,11 +93,18 @@ C ----------------------------------------------------------------------
       IF (NOCC.NE.0) THEN
         CALL GETVR8('RECH_LINEAIRE','RESI_LINE_RELA',1,1,1,PARMET(11),
      &             IRET)
-        CALL GETVIS('RECH_LINEAIRE','ITER_LINE_MAXI',1,1,1,ITEREC,
+        CALL GETVIS('RECH_LINEAIRE','ITER_LINE_MAXI',1,1,1,ITMP,IRET)
+        PARMET(10) = ITMP
+        CALL GETVIS('RECH_LINEAIRE','ITER_LINE_CRIT',1,1,1,ITMP,IRET)
+        PARMET(12) = ITMP
+        CALL GETVR8('RECH_LINEAIRE','PAS_MINI_CRIT',1,1,1,PARMET(13),
      &             IRET)
+        CALL GETVR8('RECH_LINEAIRE','RHO_MIN' ,1,1,1,PARMET(14),IRET)
+        CALL GETVR8('RECH_LINEAIRE','RHO_MAX' ,1,1,1,PARMET(15),IRET)
+        CALL GETVR8('RECH_LINEAIRE','RHO_EXCL',1,1,1,PARMET(16),IRET)
+
       ELSE
-        ITEREC = 0
+        PARMET(10) = 0
       END IF
-      PARMET(10) = ITEREC
 
       END

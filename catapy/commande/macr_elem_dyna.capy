@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 MACR_ELEM_DYNA=OPER(nom="MACR_ELEM_DYNA",op=  81,sd_prod=macr_elem_dyna,
                     fr="Définition d un macro élément pour analyse modale ou harmonique par sous structuration dynamique",
-                    docu="U4.65.01-e1",reentrant='n',
+                    docu="U4.65.01-e",reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
          regles=(EXCLUS('MATR_AMOR','AMOR_REDUIT' ),),
          BASE_MODALE     =SIMP(statut='o',typ=base_modale ),

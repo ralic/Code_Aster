@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/04/2002   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 21/03/2003   AUTEUR ASSIRE A.ASSIRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,14 +95,22 @@ C -----------------
       INTEGER       IDECA, IMMER, INOB1, INOB2, INOBE, INOCA, IPARA,
      &              ITETRA, JCOOR, JCXMA, JD2, JNOCA, JNOD2, JNUNOB,
      &              JTBLP, JTBNP, JXCA, JXYZMA, JYCA, JZCA, NBCNX,
-     &              NBLIGN, NBNO, NBPARA, NNOMAX, NOE, NOEBE, NUMAIL
+     &              NBLIGN, NBNO, NBPARA, NNOMAX, NOE, NOEBE, NUMAIL,
+     &              INOBE0,NBVAL,NBVAL2
       REAL*8        D2, D2MIN, DX, DY, DZ, RBID, X3DCA(3), XBAR(4)
+      REAL*8        X3DCA2(3),AXE(3),XNORM,XNORM2,ZERO,UN,X0(3),X(3)
+      REAL*8        XX0(3),XNOXX2,ANG,DIST,RAYON,R8PREM
+      REAL*8        XNOXX0,PSCA,PSCA1,PSCA2,LONG,LONGCY,LONGCA
+      REAL*8        VDIR(6),VCOEFR(2)
+      INTEGER       VNDIM(2),ICYL,IFM,NIV
+      CHARACTER*8   VDDL(2), NOEUD(2)
+      CHARACTER*8   NNOEC2, K8B, PRESEN(2),K8VIDE
       COMPLEX*16    CBID
       CHARACTER*3   K3B
       CHARACTER*8   NNOECA, VOISIN(2)
       CHARACTER*24  COORNO, NOMAMA, NONOCA, NONOMA, NCONEC
       CHARACTER*1   K1BID
-      INTEGER       NBTMA, JLISTE, N2, JLIMAB, NBMABE
+      INTEGER       NBTMA, JLISTE, N2, JLIMAB, NBMABE, N1
 C
       CHARACTER*24  PARAM(3), PARCR
       DATA          PARAM /'MAILLE_BETON_VOISINE    ',
@@ -112,7 +120,16 @@ C
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
+      CALL INFMAJ()
       CALL JEMARQ()
+      CALL INFNIV(IFM,NIV)
+
+      ZERO = 0.0D0
+      LONGCY  = ZERO
+      LONGCA = ZERO
+      K8VIDE = '        '
+
+      
 C
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C 1   ACCES AUX DONNEES
@@ -124,6 +141,21 @@ C ---
       CALL JEVEUO(COORNO,'L',JCOOR)
       NOMAMA = MAILLA//'.NOMMAI'
       NONOMA = MAILLA//'.NOMNOE'
+ 
+
+C RECUPERATION DES MOTS-CLES
+
+      CALL GETVR8 ('CONE','RAYON',1,1,1,RAYON,NBVAL)
+      CALL GETVR8 ('CONE','LONGUEUR',1,1,1,LONG,NBVAL2)
+      IF (NBVAL .EQ. 0) then
+        RAYON = ZERO
+      ENDIF
+      IF (NBVAL2 .EQ. 0) then
+        LONG = ZERO
+      ENDIF
+      PRESEN(1) = K8VIDE
+      PRESEN(2) = K8VIDE
+      CALL GETVTX ('CONE','PRESENT',1,1,2,PRESEN,N1)
 
 C
 C 1.2 DONNEES RELATIVES AU CABLE
@@ -176,15 +208,135 @@ C
 C
       CALL WKVECT('&&IMMECA.D2_MIN_MAX','V V R',NBNOBE  ,JD2   )
       CALL WKVECT('&&IMMECA.NO_MIN_MAX','V V I',NBNOBE  ,JNOD2 )
+
+C.... CALCUL DE LA LONGUEUR TOTALE DU CABLE
+
+      DO 101 INOCA = 1, (NBNO-1)
+
+        NNOECA = ZK8(JNOCA+IDECA+INOCA-1)
+        X3DCA(1) = ZR(JXCA+IDECA+INOCA-1)
+        X3DCA(2) = ZR(JYCA+IDECA+INOCA-1)
+        X3DCA(3) = ZR(JZCA+IDECA+INOCA-1)
+
+        NNOEC2 = ZK8(JNOCA+IDECA+INOCA-1+1)
+        X3DCA2(1) = ZR(JXCA+IDECA+INOCA-1+1)
+        X3DCA2(2) = ZR(JYCA+IDECA+INOCA-1+1)
+        X3DCA2(3) = ZR(JZCA+IDECA+INOCA-1+1)
+
+        AXE(1) = (X3DCA2(1) - X3DCA(1))
+        AXE(2) = (X3DCA2(2) - X3DCA(2))
+        AXE(3) = (X3DCA2(3) - X3DCA(3))
+        XNORM2 = AXE(1)*AXE(1) + AXE(2)*AXE(2) + AXE(3)*AXE(3)
+
+        if (XNORM2 .eq. ZERO) then
+          call UTMESS('F','IMMECA',
+     &             'ERREUR : DEUX NOEUDS DU CABLE SONT CONFONDUS '//
+     &             'ON NE PEUT PAS DEFINIR LE CYLINDRE.')
+        end if
+
+        XNORM = SQRT(XNORM2)
+        LONGCA = LONGCA + XNORM
+
+101   CONTINUE
+
+      IF (NIV.EQ.2) THEN
+        WRITE(IFM,*) '------------------------------------------'
+        WRITE(IFM,*) ' DEFINITION DES RELATIONS CINEMATIQUES'     
+        IF (RAYON .EQ. ZERO) THEN
+          WRITE(IFM,*) '  CONE : PAS DE CONE'
+        ELSE 
+          WRITE(IFM,*) '  RAYON DU CONE : ',RAYON
+          WRITE(IFM,*) '  LONGUEUR DU CONE : ',LONG
+        END IF
+        WRITE(IFM,*) '  LONGUEUR DU CABLE : ',LONGCA
+        WRITE(IFM,*) ' '
+      END IF
+
 C
 C 2.2 BOUCLE SUR LE NOMBRE DE NOEUDS DU CABLE
 C ---
       DO 100 INOCA = 1, NBNO
 C
+C
          NNOECA = ZK8(JNOCA+IDECA+INOCA-1)
          X3DCA(1) = ZR(JXCA+IDECA+INOCA-1)
          X3DCA(2) = ZR(JYCA+IDECA+INOCA-1)
          X3DCA(3) = ZR(JZCA+IDECA+INOCA-1)
+
+         NNOEC2 = ZK8(JNOCA+IDECA+INOCA-1+1)
+         X3DCA2(1) = ZR(JXCA+IDECA+INOCA-1+1)
+         X3DCA2(2) = ZR(JYCA+IDECA+INOCA-1+1)
+         X3DCA2(3) = ZR(JZCA+IDECA+INOCA-1+1)
+
+         IF (NIV.EQ.2) THEN
+           WRITE(IFM,*) ' '
+           WRITE(IFM,*) ' '
+           WRITE(IFM,*) 'NOEUDS CABLE : ',NNOECA,' - ',NNOEC2
+         END IF
+
+C
+C 2.2.0  CREATION DU VECTEUR AXE, RELIANT DEUX NOEUDS CABLES CONSECUTIFS
+C .....  POUR LE CALCUL DES DISTANCES AU CYLINDRE
+C
+         AXE(1) = (X3DCA2(1) - X3DCA(1))
+         AXE(2) = (X3DCA2(2) - X3DCA(2))
+         AXE(3) = (X3DCA2(3) - X3DCA(3))
+         XNORM2 = AXE(1)*AXE(1) + AXE(2)*AXE(2) + AXE(3)*AXE(3)
+
+         if (XNORM2 .eq. ZERO) then
+           call UTMESS('F','IMMECA',
+     &             'ERREUR : DEUX NOEUDS DU CABLE SONT CONFONDUS '//
+     &             'ON NE PEUT PAS DEFINIR LE CYLINDRE.')
+         end if
+
+         XNORM = SQRT(XNORM2)
+
+C ... CHOIX DU TRAITEMENT :
+
+C  SI LA LONGUEUR (OU LE RAYON) DU CONE EST NULLE (PAS DE CONE)
+         IF ( (LONG.EQ.ZERO).OR.(RAYON.EQ.ZERO) ) GO TO 112
+
+C  TESTE SI ON EST EN DEHORS DES ZONES DE DEFINITIONS DES TUNNELS
+         IF ( (LONGCY.GT.LONG).AND.(LONGCY.LT.(LONGCA-LONG))
+     &      ) GO TO 112
+
+C  SINON TESTE SI ON A DEMANDE DES TUNNELS
+
+         IF ((LONGCY.LT.LONG).AND.(PRESEN(1)(1:3).EQ.'NON')) GO TO 112
+         
+         IF ((LONGCY.GT.(LONGCA-LONG)).AND.(PRESEN(2)(1:3).EQ.'NON'))
+     &                                                       GO TO 112
+
+C  SINON ON DEFINI LE CONE
+
+C     --------------------------------------------------------
+C     CAS 1 : ON DEFINIT LE CONE POUR ATTACHER LES NOEUDS
+C     --------------------------------------------------------
+C      Note : on ne fait rien au niveau du fortran 
+C      (voir la macrocommande DEFI_CABLE_BP)
+
+
+        IF (NIV.EQ.2) THEN
+          WRITE(IFM,*) '-> ON DEFINIT LE CYLINDRE D''AXE ',
+     &                     NNOECA,' - ',NNOEC2
+        END IF
+
+        LONGCY = LONGCY + XNORM
+        GO TO 100
+
+
+C     ---------------------------------------------------------
+C     CAS 2 : ON ATTACHE UN SEUL NOEUD DU BETON AU NOEUD CABLE
+C     ---------------------------------------------------------
+
+112     CONTINUE
+        IF (NIV.EQ.2) THEN
+          WRITE(IFM,*) '-> ON ATTACHE LE NOEUD OU LA MAILLE BETON '//
+     &             'LA PLUS PROCHE'
+        END IF
+
+        LONGCY = LONGCY + XNORM
+
 C
 C 2.2.1  DETERMINATION DU NOEUD DE LA STRUCTURE BETON LE PLUS PROCHE
 C .....  DU NOEUD CABLE COURANT
@@ -209,6 +361,11 @@ C
             ZR(JD2+INOBE-1) = D2
             ZI(JNOD2+INOBE-1) = NOE
  110     CONTINUE
+
+         IF (NIV.EQ.2) THEN
+           WRITE(IFM,*) '   INFOS : DISTANCE MINIMALE : ',SQRT(D2MIN)
+         END IF
+
 C
 C 2.2.2  TENTATIVE D'IMMERSION DU NOEUD CABLE DANS LES MAILLES
 C .....  AUXQUELLES APPARTIENT LE NOEUD BETON LE PLUS PROCHE
@@ -216,6 +373,7 @@ C
          CALL IMMENO(NCNCIN,NMABET,MAILLA,X3DCA(1),NOEBE,
      &               NUMAIL,NBCNX,ZI(JCXMA),ZR(JXYZMA),
      &               ITETRA,XBAR(1),IMMER)
+
 C
 C 2.2.3  EN CAS D'ECHEC DE LA TENTATIVE PRECEDENTE
 C .....
@@ -244,13 +402,17 @@ C
                   ZI(JNOD2+INOBE-1) = NOE
                ENDIF
  120        CONTINUE
+
+         IF (NIV.EQ.2) THEN
+           WRITE(IFM,*) '   INFOS : DISTANCE MINIMALE : ',SQRT(D2)
+         END IF
+
 C
 C.......... LA TENTATIVE D'IMMERSION DANS LES MAILLES AUXQUELLES
 C.......... APPARTIENT LE NOEUD BETON LE PLUS PROCHE A DEJA ETE
 C.......... EFFECTUEE, SANS SUCCES
 C.......... ON EFFECTUE DE NOUVELLES TENTATIVES EN UTILISANT LES NOEUDS
 C.......... DE LA LISTE ORDONNEE PRECEDENTE, DU SECOND JUSQU'AU DERNIER
-C
 C.......... REPETER
             DO 130 INOBE = 2, NBNOBE
                NOEBE = ZI(JNOD2+INOBE-1)
@@ -265,6 +427,8 @@ C............. SORTIE DU BLOC REPETER EN CAS DE SUCCES
  131        CONTINUE
 C
          ENDIF
+
+
 C
 C 2.2.4  SORTIE EN ERREUR FATALE SI ECHEC PERSISTANT
 C .....
@@ -286,10 +450,12 @@ C .....
          CALL JENUNO(JEXNUM(NONOMA,NOEBE) ,VOISIN(2))
          CALL TBAJLI(TABLCA,3,PARAM,
      &               IMMER,RBID,CBID,VOISIN(1),IDECA+INOCA)
-C
+
  100  CONTINUE
-C
+
  9999 CONTINUE
+
+      CALL JEDETC('V','&&RECI3D',1)
       CALL JEDETC('V','&&IMMECA',1)
       CALL JEDEMA()
 C

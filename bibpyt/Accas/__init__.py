@@ -1,4 +1,4 @@
-#@ MODIF __init__ Accas  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF __init__ Accas  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +59,7 @@ from A_A_CLASSER import A_CLASSER
 from Noyau.N_ASSD import ASSD,assd
 from Noyau.N_GEOM import GEOM,geom
 from Noyau.N_FONCTION import FONCTION
-from Noyau.N_FONCTION import fonction
+from Noyau.N_FONCTION import formule
 from Noyau.N_CO import CO
 from Noyau.N__F import _F
 

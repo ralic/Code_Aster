@@ -13,7 +13,7 @@ C
       LOGICAL TRIDIM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 04/10/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,7 +142,7 @@ C======================================================================
       K1 = QUANT(1:1)
       IF ((K4.EQ.'SIGM') .OR. (K4.EQ.'EPSI') .OR. (K4.EQ.'SIEF')) THEN
         TQ = 'T3'
-      ELSE IF ((K4.EQ.'DPGE') .OR. (K4.EQ.'EFGE')) THEN
+      ELSE IF (K4.EQ.'EFGE') THEN
         TQ = 'T2'
       ELSE IF ((K4.EQ.'FLUX') .OR. (K4.EQ.'DEPL') .OR.
      &         (K4.EQ.'FORC')) THEN

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2002   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D C_PLAN
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,7 +36,7 @@ DEBUT(CODE=_F( NOM = 'SSLP201B',NIV_PUB_WEB='INTERNET'))
 # ----------------------------------------------------------------------
 MA=LIRE_MAILLAGE(  )
 
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
 #      TRIA3  QUAD4  TRIA6  QUAD8  QUAD9
@@ -422,19 +422,28 @@ MATELEM2=CALC_MATR_ELEM(        OPTION='MASS_MECA',
 # ----------------------------------------------------------------------
 #   COMMANDES GLOBALES DE MECANIQUE : STATIQUE LINEAIRE
 # ----------------------------------------------------------------------
+
 MSLIN=MECA_STATIQUE(        MODELE=MO,
-                          CHAM_MATER=CHMAT,
-                           CARA_ELEM=CARA1,
-                          EXCIT=_F(  CHARGE = CHMEC,
-                                  FONC_MULT = FO11),
-                          LIST_INST=LR1,
-                          OPTION=(
-                          'SIGM_ELNO_DEPL',
-                                  'EPME_ELNO_DEPL', 'EPME_ELGA_DEPL',
-                                  'EPOT_ELEM_DEPL', 'EPSI_ELGA_DEPL',
-                                  'EPSI_ELNO_DEPL', 'EQUI_ELNO_SIGM',
-                                  'EQUI_ELGA_SIGM', 'EQUI_ELNO_EPSI',
-                                  'EQUI_ELGA_EPSI',  ) )
+                           CHAM_MATER=CHMAT,
+                            CARA_ELEM=CARA1,
+                           EXCIT=_F(  CHARGE = CHMEC,
+                                   FONC_MULT = FO11),
+                           LIST_INST=LR1,
+                         )
+
+CALC_ELEM( reuse= MSLIN ,RESULTAT= MSLIN ,         MODELE=MO,
+                           CHAM_MATER=CHMAT,
+                            CARA_ELEM=CARA1,
+                           EXCIT=_F(  CHARGE = CHMEC,
+                                   FONC_MULT = FO11),
+                           LIST_INST=LR1,
+                           OPTION=(
+                           'SIGM_ELNO_DEPL',
+                                   'EPME_ELNO_DEPL', 'EPME_ELGA_DEPL',
+                                   'EPOT_ELEM_DEPL', 'EPSI_ELGA_DEPL',
+                                   'EPSI_ELNO_DEPL', 'EQUI_ELNO_SIGM',
+                                   'EQUI_ELGA_SIGM', 'EQUI_ELNO_EPSI',
+                                   'EQUI_ELGA_EPSI',  ) )
 
 TEST_RESU(RESU=( _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'DEPL',
@@ -650,7 +659,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
 # ----------------------------------------------------------------------
 #   POST_TRAITEMENT DU CALCUL
 # ----------------------------------------------------------------------
-MSLI2=CALC_ELEM( reuse=MSLI2,       MODELE=MO,
+CALC_ELEM( reuse=MSLI2,       MODELE=MO,
                        CHAM_MATER=CHMAT,
                         CARA_ELEM=CARA1,
                            OPTION=( 'EPME_ELGA_DEPL', 'SIGM_ELNO_DEPL',
@@ -832,7 +841,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                       VALE = 1.1810681277852E+04))
             )
 
-MSLI2=CALC_NO( reuse=MSLI2,       OPTION=( 'EPSI_NOEU_DEPL', 'EQUI_NOEU_SIGM',
+CALC_NO( reuse=MSLI2,       OPTION=( 'EPSI_NOEU_DEPL', 'EQUI_NOEU_SIGM',
                                   'EQUI_NOEU_EPSI', 'SIGM_NOEU_DEPL', ),
                        RESULTAT=MSLI2,
                      CHAM_MATER=CHMAT,

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
                     fr="Réponse temporelle d un système à une excitation transitoire",
-                    docu="U4.53.02-g1",reentrant='f',
+                    docu="U4.53.02-g",reentrant='f',
             UIinfo={"groupes":("Résolution",)},
 #         regles=(UN_PARMI('WILSON','DIFF_CENTRE','ADAPT'),),
          regles=(UN_PARMI('NEWMARK','WILSON','DIFF_CENTRE','ADAPT'),),
@@ -66,12 +66,12 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
                    PRESENT_ABSENT('MULT_APPUI','FONC_MULT'),),
            VECT_ASSE       =SIMP(statut='f',typ=cham_no_depl_r ),
            CHARGE          =SIMP(statut='f',typ=char_meca ),
-           FONC_MULT       =SIMP(statut='f',typ=fonction ),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction,formule) ),
            COEF_MULT       =SIMP(statut='f',typ='R' ),
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),
-           ACCE            =SIMP(statut='f',typ=fonction ),
-           VITE            =SIMP(statut='f',typ=fonction ),
-           DEPL            =SIMP(statut='f',typ=fonction ),
+           ACCE            =SIMP(statut='f',typ=(fonction,formule) ),
+           VITE            =SIMP(statut='f',typ=(fonction,formule) ),
+           DEPL            =SIMP(statut='f',typ=(fonction,formule) ),
            MULT_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            DIRECTION       =SIMP(statut='f',typ='R',max='**'),
            NOEUD           =SIMP(statut='f',typ=no,max='**'),
@@ -85,7 +85,6 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
          ),
 #  ce n est pas le mot clesolveur standard
          SOLVEUR         =FACT(statut='d',min=1,max=1,
-           EPS             =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
            NPREC           =SIMP(statut='f',typ='I',defaut= 8 ),
            STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
@@ -94,7 +93,7 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
          INCREMENT       =FACT(statut='o',min=1,max='**',
            regles=(UN_PARMI('LIST_INST','FONC_INST','PAS'),),
            LIST_INST       =SIMP(statut='f',typ=listr8 ), 
-           FONC_INST       =SIMP(statut='f',typ=fonction ),       
+           FONC_INST       =SIMP(statut='f',typ=(fonction,formule) ),       
            PAS             =SIMP(statut='f',typ='R' ),
            b_pas           =BLOC(condition = "PAS != None",
                INST_INIT       =SIMP(statut='f',typ='R' ),

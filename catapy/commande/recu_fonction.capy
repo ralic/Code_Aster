@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,7 +37,7 @@ def recu_fonction_prod(RESULTAT=None,TABLE=None,OBSTACLE=None,
 
 RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
                    fr="Extraire sous forme d une fonction, l évolution temporelle d une composante d un champ ou d une table",
-                   docu="U4.32.03-f2",reentrant='n',
+                   docu="U4.32.03-f",reentrant='n',
             UIinfo={"groupes":("Fonction",)},
          regles=(UN_PARMI('CHAM_GD','RESULTAT','RESU_GENE','TABLE','BASE_ELAS_FLUI','OBSTACLE'),),
 
@@ -58,7 +58,7 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
                     EXCLUS('MULT_APPUI','CORR_STAT'),),
              MULT_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              CORR_STAT       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-             ACCE_MONO_APPUI =SIMP(statut='f',typ=fonction),
+             ACCE_MONO_APPUI =SIMP(statut='f',typ=(fonction,formule)),
              PARA_X          =SIMP(statut='f',typ='TXM' ),
              PARA_Y          =SIMP(statut='f',typ='TXM' ),
              SOUS_STRUC      =SIMP(statut='f',typ='TXM' ),

@@ -1,13 +1,13 @@
-      SUBROUTINE CALCPJ(NDT, NDI, NBMAT, MATER, GAMP, SIGD, SIGE, 
-     +                  EPSSIG, GAMPS, INVARS, B)
+      SUBROUTINE CALCPJ(NDT, NDI, NBMAT, MATER, GAMP, EVP, SIGD, SIGE, 
+     +                  EPSSIG, INVARE, GAMPS, INVARS, EVPS, B)
 C
       IMPLICIT      NONE
       INTEGER       NBMAT, NDT, NDI
-      REAL*8        MATER(NBMAT,2), GAMP, SIGD(*), SIGE(*), EPSSIG
-      REAL*8        GAMPS, INVARS, B
+      REAL*8        MATER(NBMAT,2), GAMP, EVP, SIGD(*), SIGE(*), EPSSIG
+      REAL*8        INVARE, GAMPS, INVARS, EVPS, B
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,10 +34,13 @@ C --- : NDI    : NOMBRE DE COMPOSANTES DIAGONALES DU TENSEUR -----------
 C --- : NBMAT  : NOMBRE DE PARAMETRES MATERIAU -------------------------
 C --- : MATER  : PARAMETRES MATERIAU -----------------------------------
 C --- : GAMP   : DEFORMATION DEVIATOIRE PLASTIQUE CUMULEE --------------
+C --- : EVP    : DEFORMATION VOLUMIQUE PLASTIQUE CUMULEE ---------------
 C --- : SIIE   : NORME DU TENSEUR --------------------------------------
 C --- : EPSSIG : EPSILON -----------------------------------------------
+C --- : INVARE : PREMIER INVARIANT DU TENSEUR DES CONTRAINTES ELASTIQUE-
 C OUT : GAMPS  : DEFORMATION DEVIATOIRE PLASTIQUE CUMULEE AU SOMMET ----
 C --- : INVARS : PREMIER INVARIANT DU TENSEUR DES CONTRAINTES AU SOMMET-
+C --- : EVPS   : DEFORMATION VOLUMIQUE PLASTIQUE CUMULEE AU SOMMET -----
 C --- : B      : PARAMETRE CONTROLANT LE COMPORTEMENT VOLUMIQUE --------
 C ------------ : DU MATERIAU -------------------------------------------
 C ======================================================================
@@ -61,7 +64,7 @@ C ======================================================================
       INTEGER       JPARA, JPARA2
       REAL*8        MU, SIGC, SIG(6), SD(6), SGAMP, MGAMP, BPRIME
       REAL*8        ZERO, UN, DEUX, TROIS, SE(6), TRACE
-      REAL*8        SIGII, SIIE, INVAR, EPSULT, GAMULT
+      REAL*8        SIGII, SIIE, INVAR, EPSULT, GAMULT, K
       CHARACTER*16  PARECR, PAREC2
 C ======================================================================
 C --- INITIALISATION DE PARAMETRE --------------------------------------
@@ -77,6 +80,7 @@ C ======================================================================
 C --- RECUPERATION DE PARAMETRES DU MODELE -----------------------------
 C ======================================================================
       MU     = MATER(4,1)
+      K      = MATER(5,1)
       GAMULT = MATER(1,2)
       SIGC   = MATER(9,2)
 C ======================================================================
@@ -97,6 +101,7 @@ C ======================================================================
       SGAMP  = ZR(JPARA-1+1)
       MGAMP  = ZR(JPARA-1+4)
       INVARS = TROIS*SIGC*SGAMP/MGAMP
+      EVPS   = EVP + (INVARE - INVARS)/(TROIS * K)
 C ======================================================================
 C --- CALCUL DU PARAMETRE DE DILATANCE B A L'INSTANT MOINS -------------
 C ======================================================================

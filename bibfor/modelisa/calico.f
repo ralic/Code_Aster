@@ -1,7 +1,7 @@
       SUBROUTINE CALICO(CHARZ,NOMAZ,NOMOZ,NDIM,MOTFAZ)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/10/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF MODELISA  DATE 07/01/2003   AUTEUR PABHHHH N.TARDIEU 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -636,7 +636,7 @@ C ======================================================================
 C ======================================================================
 C --- LECTURE DES MAILLES ET NOEUDS DE LA ZONE IOC ---------------------
 C ======================================================================
-        CALL LISTCO(MOTFAC,NOMA,IOC,NTRAV,NBMA,NBNO,NBNOQU,
+        CALL LISTCO(MOTFAC,NOMO,NOMA,IOC,NTRAV,NBMA,NBNO,NBNOQU,
      &              ZI(JMACO+JDECMA-1),ZI(JNOCO+JDECNO-1),
      &              ZI(JNOQU-1+3* (JDECNQ-1)+1),CHAR)
 C ======================================================================

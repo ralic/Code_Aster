@@ -1,0 +1,474 @@
+# MODIF  DATE 26/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+# TITRE THERMO-HYDRATATION EN ADIABATIQUE 2D AXI QUAD4
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+DEBUT( CODE=_F( NOM = 'TTNL03B',NIV_PUB_WEB='INTERNET')
+       )
+
+MAIL=LIRE_MAILLAGE( )
+
+MODTHER=AFFE_MODELE( 
+                           MAILLAGE=MAIL,
+                           AFFE=_F(  TOUT = 'OUI',
+                                  PHENOMENE = 'THERMIQUE',
+                                  MODELISATION = 'AXIS')
+                        )
+
+#
+# DEFINITION DE L'AFFINITE FONCTION DU DEGRE D'HYDRATATION
+
+
+
+AFF=DEFI_FONCTION( 
+                             NOM_PARA='HYDR',
+                             VALE=(   0.,    6510.,
+                                      0.008,   6360.,
+                                      0.016,   2485.,
+                                      0.019,   2460.,
+                                      0.022,   2440.,
+                                      0.0258,   6050.,
+                                      0.038,  9520.,
+                                      0.047,   21800.,
+                                      0.08,   37600.,
+                                      0.138,   51600.,
+                                      0.232,   51400.,
+                                      0.351,   28200.,
+                                      0.44,   16100.,
+                                      0.50,   11700.,
+                                      0.55,   7530.,
+                                      0.594,   6320.,
+                                      0.63,   5570.,
+                                      0.66,   5160.,
+                                      0.697,   4790.,
+                                      0.73,   4240.,
+                                      0.76,   3370.,
+                                      0.79,   2160.,
+                                      0.81,   1780.,
+                                      0.83,   1380.,
+                                      0.84,   894.,
+                                      0.87,   848.,
+                                      0.88,   302.,
+                                      0.89,   201.,
+                                      0.90,   198.,
+                                      0.906,   196.,
+                                      0.91,   144.,
+                                      0.95,   70.,
+                                      0.97,   50.,
+                                      0.98,   30.,
+                                      0.99,   15.,
+                                      1.,  0., ),
+                             PROL_GAUCHE='EXCLU',
+                              PROL_DROITE='CONSTANT'
+                            )
+
+#
+#CONDUCTION EN KJ/H/M/K
+#
+
+COND=DEFI_FONCTION( 
+                           NOM_PARA='TEMP',
+                           VALE=(   0.,   6.,
+                                  300.,   6.,   ),
+                           PROL_GAUCHE='LINEAIRE',
+                            PROL_DROITE='LINEAIRE'
+                         )
+
+#
+# ENTHALPIE EN KJ/H/M
+#
+
+
+ENTH=DEFI_FONCTION( 
+                             NOM_PARA='TEMP',
+                             VALE=(   0.,    6.55E05,
+                                      20.,   7.03E05,
+                                      50.,   7.75E05,
+                                      70.,   8.23E05, ),
+                             PROL_GAUCHE='LINEAIRE',
+                              PROL_DROITE='LINEAIRE'
+                            )
+
+#
+# CONSTANTE D'ARRHENIUS EN DEGRE KELVIN
+#
+
+
+
+
+
+MATHYDR=DEFI_MATERIAU( 
+                           THER_HYDR=_F(  LAMBDA = COND,
+                                       BETA = ENTH,
+                                      AFFINITE = AFF,
+                                    CHALHYDR = 1.4904E05,
+                                      QSR_K = 4000.)
+                           )
+
+CHMATNL=AFFE_MATERIAU( 
+                             MAILLAGE=MAIL,
+                             AFFE=_F(  TOUT = 'OUI',
+                                    MATER = MATHYDR,
+                                    TEMP_REF = 25.)
+                          )
+
+#
+# CHARGEMENT
+# ----------
+#
+
+TEMPEXT=DEFI_VALEUR(   R8=25. )
+
+TEMPINI=DEFI_VALEUR(   R8=20.9 )
+
+#COEFF D'ECHANGE EN KJ/H/M**2/K NUL EN ADIABATIQUE
+
+COEFH=DEFI_VALEUR(   R8=0.0  )
+
+CHATHER=AFFE_CHAR_THER( 
+                              MODELE=MODTHER,
+                                ECHANGE=_F(  MAILLE = 'M2',
+                                                COEF_H = COEFH,
+                                                TEMP_EXT = TEMPEXT)
+
+
+                           )
+
+#
+#
+# =====================================================================
+#                            LISTE D'INSTANTS
+# =====================================================================
+#
+
+LINST=DEFI_LIST_REEL( 
+                            DEBUT=0.0,INTERVALLE=(
+                            _F(  JUSQU_A = 5.,  NOMBRE = 40),
+                            _F(  JUSQU_A = 15.,  NOMBRE = 80),
+                            _F(  JUSQU_A = 20.,  NOMBRE = 40),
+                            _F(  JUSQU_A = 60.,  NOMBRE = 40))
+                         )
+
+#
+# =====================================================================
+#   CALCUL TRANSITOIRE THERMO-HYDRATANT
+# =====================================================================
+#
+
+TEMPINIT=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
+MAILLAGE=MAIL,
+                             AFFE=_F(  TOUT = 'OUI',
+                                    NOM_CMP = 'TEMP',
+                                    VALE = TEMPINI)
+                          )
+
+RESUTHYD=THER_NON_LINE( 
+                              MODELE=MODTHER,
+                              CHAM_MATER=CHMATNL,
+                              EXCIT=_F(  CHARGE = CHATHER),
+                               COMP_THER_NL=_F( RELATION = 'THER_HYDR'),
+                              TEMP_INIT=_F(  CHAM_NO = TEMPINIT),
+                              PARM_THETA=0.57,
+                              INCREMENT=_F(  LIST_INST = LINST),
+                              CONVERGENCE=_F( RESI_GLOB_MAXI = 1.E-5)
+                           )
+
+##############################
+# TESTS DES RESULTATS
+##############################
+
+# VALIDATION
+# VALEURS DE REFENCE DU CAS TEST: C.F. DOC DU CAS TEST TTNL03A
+
+T05=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+RESULTAT=RESUTHYD, NOM_CHAM='TEMP', NUME_ORDRE=40 )
+
+T15=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+RESULTAT=RESUTHYD, NOM_CHAM='TEMP', NUME_ORDRE=120)
+
+T60=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+RESULTAT=RESUTHYD, NOM_CHAM='TEMP', NUME_ORDRE=200)
+
+H05=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_HYDR_R',
+RESULTAT=RESUTHYD, NOM_CHAM='HYDR_ELGA',
+  NUME_ORDRE=40 )
+
+H15=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_HYDR_R',
+RESULTAT=RESUTHYD, NOM_CHAM='HYDR_ELGA',
+ NUME_ORDRE=120 )
+
+H60=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_HYDR_R',
+RESULTAT=RESUTHYD, NOM_CHAM='HYDR_ELGA',
+  NUME_ORDRE=200 )
+
+TEST_RESU(CHAM_NO=( 
+_F(  CHAM_GD = T05, NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 22.5,
+  PRECISION = 1.E-2),
+_F(  CHAM_GD = T15, NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 57.8,
+  PRECISION = 2.E-2),
+_F(  CHAM_GD = T60, NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 79.1,
+  PRECISION = 4.E-2))
+           )
+
+TEST_RESU(CHAM_ELEM=( 
+_F(  CHAM_GD = H05, MAILLE = 'M1', POINT = 1, NOM_CMP = 'HYDR', VALE = 2.58E-02,
+  PRECISION = 3.E-2),
+_F(  CHAM_GD = H15, MAILLE = 'M1', POINT = 1, NOM_CMP = 'HYDR', VALE = 0.594,
+  PRECISION = 2.E-2),
+_F(  CHAM_GD = H60, MAILLE = 'M1', POINT = 1, NOM_CMP = 'HYDR', VALE = 0.94,
+  PRECISION = 2.E-2))
+           )
+
+# NON REGRESSION
+# VALEURS DE REFERENCE ASTER DE LA VERSION 5.01.10
+
+
+TEST_RESU(CHAM_NO=( 
+_F(  CHAM_GD = T05, NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 22.5,
+  PRECISION = 1.E-2),
+_F(  CHAM_GD = T15, NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 57.8,
+  PRECISION = 2.E-2),
+_F(  CHAM_GD = T60, NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 79.1,
+  PRECISION = 4.E-2))
+           )
+
+TEST_RESU(CHAM_ELEM=( 
+_F(  CHAM_GD = H05, MAILLE = 'M1', POINT = 1, NOM_CMP = 'HYDR', VALE = 2.58E-02,
+  PRECISION = 3.E-2),
+_F(  CHAM_GD = H15, MAILLE = 'M1', POINT = 1, NOM_CMP = 'HYDR', VALE = 0.594,
+  PRECISION = 2.E-2),
+_F(  CHAM_GD = H60, MAILLE = 'M1', POINT = 1, NOM_CMP = 'HYDR', VALE = 0.94,
+  PRECISION = 2.E-2))
+           )
+
+# TESTS DE HYDR_ELNO_ELGA ET HYDR_NOEU_ELGA
+
+RESUTHYD=CALC_ELEM(  reuse=RESUTHYD,
+                     OPTION=('HYDR_ELNO_ELGA'),
+                     RESULTAT=RESUTHYD,
+                     MODELE=MODTHER,
+                     CHAM_MATER=CHMATNL
+              )
+              
+RESUTHYD=CALC_NO  (  reuse=RESUTHYD,
+                     OPTION=('HYDR_NOEU_ELGA'),
+                     RESULTAT=RESUTHYD,
+                   #  CHAM_MATER=CHMATNL
+              )
+
+HYDRELNO=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_HYDR_R',
+RESULTAT=RESUTHYD, NOM_CHAM='HYDR_ELNO_ELGA',
+ NUME_ORDRE=120 )
+
+HYDRNOEU=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_HYDR_R',
+RESULTAT=RESUTHYD, NOM_CHAM='HYDR_NOEU_ELGA',
+ NUME_ORDRE=120 )
+
+TEST_RESU(CHAM_ELEM=( 
+_F(  CHAM_GD = HYDRELNO, MAILLE = 'M1', POINT = 1, NOM_CMP = 'HYDR', 
+     VALE = 0.594,
+     REFERENCE = 'NON_REGRESSION',  VERSION = '6.0.28',PRECISION = 2.E-2),
+           ))
+TEST_RESU(CHAM_NO=( 
+_F(  CHAM_GD = HYDRNOEU, NOEUD = 'N1', NOM_CMP = 'HYDR', 
+     VALE = 0.594,
+     REFERENCE = 'NON_REGRESSION',  VERSION = '6.0.28',PRECISION = 2.E-2),
+                     )
+           )
+
+           
+###################
+# CALCUL MECANIQUE
+###################
+
+#
+# DONNEES DE MODELISATION
+#
+
+MOMECA=AFFE_MODELE(   MAILLAGE=MAIL,
+                            AFFE=_F( TOUT = 'OUI',
+                                  MODELISATION = 'AXIS',
+                                  PHENOMENE = 'MECANIQUE')
+                        )
+
+FCT1=DEFI_FONCTION(   NOM_PARA='EPSI',  PROL_DROITE='LINEAIRE',
+                                          PROL_GAUCHE='LINEAIRE',
+                       VALE=(0.200E-2,      400.,
+                             0.400E-2,      500.,)
+                                                    )
+
+#
+
+FCT2=DEFI_FONCTION(   NOM_PARA='EPSI',  PROL_DROITE='LINEAIRE',
+                                          PROL_GAUCHE='LINEAIRE',
+                       VALE=(0.100E-2,      200.,
+                             0.300E-2,      300.,)
+                                                    )
+
+#
+
+E=DEFI_FONCTION(       NOM_PARA='HYDR',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                                 VALE=(
+                                            0.0,   32.E+3,
+                                         1000.0,   32.E+3,
+                                     )    )
+
+#
+
+NU=DEFI_FONCTION(       NOM_PARA='HYDR',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                                 VALE=(
+                                            0.0,  0.3E0,
+                                         1000.0,  0.3E0,
+                                     )    )
+
+#
+
+ALPHA=DEFI_FONCTION(       NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                                 VALE=(
+                                            0.0,  10.0E-6,
+                                         1000.0,  10.0E-6,
+                                     )    )
+
+#
+
+CTRACB=DEFI_NAPPE(   NOM_PARA='HYDR',  PROL_DROITE='LINEAIRE',
+                                        PROL_GAUCHE='LINEAIRE',
+                          PARA=(0.,50.,),
+                          FONCTION=(FCT1,FCT2,)            )
+
+#
+
+MAT=DEFI_MATERIAU(             THER=_F( RHO_CP = 0.0E-3,
+                                        LAMBDA = 1.0E-3),
+                               ELAS_FO=_F( E = E,
+                                        NU = NU,
+                                        ALPHA = ALPHA,
+                                        RHO = 2400.,
+                                        TEMP_DEF_ALPHA=0.0,
+                                        B_ENDOGE = 1.50E-6),
+                              TRACTION=_F( SIGM = CTRACB)
+                                )
+
+#
+
+CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
+                            AFFE=_F( TOUT = 'OUI',
+                                  MATER = MAT,
+                                  TEMP_REF = 0.)       )
+
+#
+
+CHMECA=AFFE_CHAR_MECA( 
+                            MODELE=MOMECA,
+                          DDL_IMPO=_F( GROUP_NO = 'A',
+                                    DY = 0.),
+                     TEMP_CALCULEE=RESUTHYD,
+                     HYDR_CALCULEE=RESUTHYD
+                            )
+
+#
+LISTMECA=DEFI_LIST_REEL( 
+                            DEBUT=1.0,INTERVALLE=(
+                            _F(  JUSQU_A = 5.,   NOMBRE = 5),
+                            _F(  JUSQU_A = 15.,  NOMBRE = 5),
+                            _F(  JUSQU_A = 20.,  NOMBRE = 5),
+                            _F(  JUSQU_A = 60.,  NOMBRE = 5))
+                         )
+
+#
+
+RESUMECA=STAT_NON_LINE( 
+                            MODELE=MOMECA,
+                        CHAM_MATER=CM,
+                             EXCIT=_F( 
+                CHARGE = CHMECA),
+                         COMP_INCR=_F( 
+                RELATION = 'VMIS_ISOT_TRAC'),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE'),
+                         INCREMENT=_F( 
+                LIST_INST = LISTMECA),
+                       CONVERGENCE=_F( 
+                ITER_GLOB_MAXI = 40),
+                           SOLVEUR=_F( 
+                METHODE = 'LDLT',
+                RENUM = 'RCMK')
+              )
+
+RESUMECA=CALC_ELEM( reuse=RESUMECA,
+                    OPTION=('SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                    EXCIT=_F(CHARGE = CHMECA),
+                    RESULTAT=RESUMECA,
+                    MODELE=MOMECA,
+                    CHAM_MATER=CM
+              )
+
+#
+
+CHU1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+RESULTAT=RESUMECA,
+                            NOM_CHAM='DEPL',
+                          NUME_ORDRE=20          )
+
+#
+
+TEST_RESU(
+    CHAM_NO=_F(  CHAM_GD = CHU1,
+              GROUP_NO = 'B',
+              NOM_CMP = 'DX',
+              VALE = 5.74E-04,
+              PRECISION = 1.E-3)
+            )
+
+#
+
+RESUSTAT=MECA_STATIQUE( 
+                          MODELE=MOMECA,
+                      CHAM_MATER=CM,
+                           EXCIT=_F(  CHARGE = CHMECA),
+                       LIST_INST=LISTMECA,
+                         SOLVEUR=_F(  METHODE = 'LDLT',
+                                   RENUM = 'RCMK')
+                       )
+
+#
+
+CHV1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+RESULTAT=RESUSTAT,
+                            NOM_CHAM='DEPL',
+                          NUME_ORDRE=20        )
+
+#
+
+TEST_RESU(
+    CHAM_NO=_F(  CHAM_GD = CHV1,
+              GROUP_NO = 'B',
+              NOM_CMP = 'DX',
+              VALE = 7.82E-04,
+              PRECISION = 1.E-3)
+            )
+
+#
+FIN()
+#

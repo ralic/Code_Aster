@@ -1,16 +1,17 @@
       SUBROUTINE IRGMPV ( IFI, LRESU, NOMCON, CHAMSY, NBORDR, PARA,  
-     +                    NOCMP, NBPOI, NBSEG, NBTRI, NBTET,
-     +                    SCAL, VECT, TENS )
+     +                    NOCMP, NBPOI, NBSEG, NBTRI, NBQUA, NBTET, 
+     +                    NBPYR, NBPRI, NBHEX, SCAL, VECT, TENS, VERSIO)
       IMPLICIT NONE
 C
       INTEGER        NBPOI, NBSEG, NBTRI, NBTET, IFI, NBORDR, LCH,ICH
+      INTEGER        NBQUA, NBPYR, NBPRI, NBHEX, VERSIO
       REAL*8         PARA(*)
       LOGICAL        LRESU, SCAL, VECT, TENS
       CHARACTER*8    NOCMP
       CHARACTER*(*)  NOMCON, CHAMSY
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/09/2002   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 18/02/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,18 +71,46 @@ C
          WRITE(IFI,1030) NBPOI, 0, 0
          WRITE(IFI,1030) NBSEG, 0, 0
          WRITE(IFI,1030) NBTRI, 0, 0
+         IF (VERSIO.EQ.2) THEN
+           WRITE(IFI,1030) NBQUA, 0, 0
+         ENDIF
          WRITE(IFI,1030) NBTET, 0, 0
+         IF (VERSIO.EQ.2) THEN
+           WRITE(IFI,1030) NBHEX, 0, 0
+           WRITE(IFI,1030) NBPRI, 0, 0
+           WRITE(IFI,1030) NBPYR, 0, 0
+         ENDIF
       ELSEIF ( VECT ) THEN 
          WRITE(IFI,1030) 0, NBPOI, 0
          WRITE(IFI,1030) 0, NBSEG, 0
          WRITE(IFI,1030) 0, NBTRI, 0
+         IF (VERSIO.EQ.2) THEN
+           WRITE(IFI,1030) 0, NBQUA, 0
+         ENDIF
          WRITE(IFI,1030) 0, NBTET, 0
+         IF (VERSIO.EQ.2) THEN
+           WRITE(IFI,1030) 0, NBHEX, 0
+           WRITE(IFI,1030) 0, NBPRI, 0
+           WRITE(IFI,1030) 0, NBPYR, 0
+         ENDIF
       ELSEIF ( TENS ) THEN 
          WRITE(IFI,1030) 0, 0, NBPOI
          WRITE(IFI,1030) 0, 0, NBSEG
          WRITE(IFI,1030) 0, 0, NBTRI
+         IF (VERSIO.EQ.2) THEN
+           WRITE(IFI,1030) 0, 0, NBQUA
+         ENDIF
          WRITE(IFI,1030) 0, 0, NBTET
+         IF (VERSIO.EQ.2) THEN
+           WRITE(IFI,1030) 0, 0, NBHEX
+           WRITE(IFI,1030) 0, 0, NBPRI
+           WRITE(IFI,1030) 0, 0, NBPYR
+         ENDIF
       ELSE
+      ENDIF
+
+      IF (VERSIO.EQ.2) THEN
+        WRITE(IFI,1050) 0,0,0,0
       ENDIF
 C
 C     ECRITURE DE LA LIGNE 5 (time_step_values)
@@ -93,5 +122,6 @@ C
  1022 FORMAT(A,1X,I4)
  1030 FORMAT(3(I6,1X))
  1040 FORMAT(1P,10(E15.8,1X))
+ 1050 FORMAT(4(I6,1X))
 C
       END

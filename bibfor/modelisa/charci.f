@@ -5,7 +5,7 @@
       INTEGER NOC,NDDL
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/04/99   AUTEUR CIBHHPD P.DAVID 
+C MODIF MODELISA  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -192,12 +192,12 @@ C
           DO 130 I = 1,NBDDL
             NPROL(1:8) = ZK8(IDVDDL-1+I)
             CALL JEVEUO(NPROL,'L',IDPROL)
-            IF ( ZK8(IDPROL+2).EQ.'INST') THEN
+            IF ( ZK16(IDPROL+2).EQ.'INST') THEN
               CALL JEVEUO(CHCI(1:8)//'.TYPE','E',IDTYPE)
               ZK8(IDTYPE)(5:7) = '_FT'
               GOTO 131
-            ELSE IF (( ZK8(IDPROL).EQ.'NAPPE').AND.
-     +               ( ZK8(IDPROL+5).EQ.'INST')) THEN
+            ELSE IF (( ZK16(IDPROL).EQ.'NAPPE').AND.
+     +               ( ZK16(IDPROL+5).EQ.'INST')) THEN
               CALL JEVEUO(CHCI(1:8)//'.TYPE','E',IDTYPE)
               ZK8(IDTYPE)(5:7) = '_FT'
               GOTO 131

@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 23/10/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF B_ETAPE Build  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,15 +38,28 @@ import B_OBJECT
 
 class ETAPE(B_OBJECT.OBJECT,CODE):
    """
-       Description de la classe
+   Cette classe implémente les méthodes relatives à la phase de construction d'une étape.
    """
 
-   NOCMDOPER= (
-            -1  # INCLUDE
-           ,-2  # RETOUR
-           ,-3  # PROCEDURE
-           ,-14 # INCLUDE_MATERIAU
-           )
+   def affiche_cmd(self):
+      """
+      Permet d'afficher une information apres avoir affecte le numero de commande.
+   
+      N'est pas utilisée par défaut.
+      """
+      pass
+
+   def set_icmd(self,icmd):
+      """
+      Demande au jdc un numero de commande unique.
+
+      @param icmd: entier indiquant l'incrément de numero de commande demandé (en général 1)
+      """
+      if icmd is not None:
+          self.icmd=self.jdc.icmd=self.jdc.icmd+icmd
+      else:
+          self.icmd=None
+      self.affiche_cmd()
 
    def Build(self):
       """ 
@@ -54,8 +67,6 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
            En général, il n'y a pas de construction à faire
       """
       ier= self._Build()
-      if self.icmd != None:
-        self.icmd=self.jdc.icmd=self.jdc.icmd+self.icmd
       return ier
 
    def _Build(self):
@@ -64,13 +75,8 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
          l'objet lui meme
       """
       if CONTEXT.debug : print "ETAPE._Build ",self.nom
-      if self.definition.op in self.NOCMDOPER:
-        # On n incremente pas le compteur des commandes
-        # On met le compteur de la commande a None (pas d execution)
-        self.icmd=None
-      else:
-        # On demande d incrementer le compteur de la commande de 1
-        self.icmd=1
+      # On demande d incrementer le compteur de la commande de 1
+      self.set_icmd(1)
 
       if self.definition.op == 9999:
         # Il s'agit de la commande FIN
@@ -317,6 +323,8 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       assert(type(leType)==types.StringType)
       assert(leType=="IS" or leType=="R8" or leType=="TX" or leType=="C8" or leType=="LS")
 
+      if valeur[0] == 0:return valeur
+
       tup_avant=valeur[1]
       list_apres=[]
       for k in tup_avant :
@@ -325,13 +333,31 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
               if CONTEXT.debug : print "valeur evaluee: ",k
           elif isinstance(k,N_ASSD.ASSD):
               if not k.etape:
-                 raise AsException("Probleme (bug identifie) dans Traite_DEFI_VALEUR: %s utilise DEFI_VALEUR %s en POURSUITE" % (self.nom,k.nom))
-              k=k.etape[leType]
+                 # Il s'agit d'un concept issu d'une poursuite, on l'evalue
+                 k=self.codex.getvectjev(k.get_name())
+                 #k=self.codex.myeval(self,'('+k.get_name()+')')
+              else:
+                 k=k.etape[leType]
               if isinstance(k,N_EVAL.EVAL):k=k(self)
+             
               if CONTEXT.debug : print "valeur evaluee: ",k
-          list_apres.append( k )
+          if type(k) in ( types.TupleType ,types.ListType) :
+              if leType == "C8" and k[0] in ("MP","RI") :
+                 # on est en presence d'un complexe isolé
+                 list_apres.append( k )
+              else:
+                 # on est en presence d'une liste de (R8,IS,TX,LS)
+                 list_apres.extend( k )
+          else:
+              # on est en presence d'un (R8,IS,TX,LS) isolé
+              list_apres.append( k )
 
-      valeur_apres=( valeur[0] , tuple(list_apres,) ) ;
+      if valeur[0] < 0:
+         # la longueur initiale etait superieure a mxval. 
+         # Elle ne peut qu'augmenter
+         valeur_apres=( -len(list_apres) , tuple(list_apres) ) 
+      else:
+         valeur_apres=( len(list_apres) , tuple(list_apres) ) 
 
       return valeur_apres
 
@@ -387,6 +413,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       """ Toutes classes : ETAPE, PROC_ETAPE, MACRO_ETAPE
            retourne le numero de l operateur
       """
+      if self.definition.op is None : raise "Numero (attribut op) de la commande non defini"
       return self.definition.op
 
    def getran(self,):

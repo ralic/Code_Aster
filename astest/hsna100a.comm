@@ -1,4 +1,4 @@
-# MODIF  DATE 16/05/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 # TITRE SECHAGE EN 2D AXISYMETRIQUE  - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -149,37 +149,45 @@ LIST0=DEFI_LIST_REEL(  DEBUT=0.,INTERVALLE=(
 
 HU_INT05=CALC_FONC_INTERP(     FONCTION=FL_INT05,
                                 LIST_PARA=LIST0,
+                               NOM_PARA = 'TEMP',
                                  NOM_RESU='FL_INT05',
                               PROL_GAUCHE='LINEAIRE',
                                PROL_DROITE='LINEAIRE',
-                                 INTERPOL='INT',
+#                                 INTERPOL='INT',
+                                 INTERPOL='LIN',
                                     TITRE='FLUX D HUMIDITE'
                             )
 
 HU_EXT05=CALC_FONC_INTERP(     FONCTION=FL_EXT05,
                                 LIST_PARA=LIST0,
+                               NOM_PARA = 'TEMP',
                                  NOM_RESU='FL_EXT05',
                               PROL_GAUCHE='LINEAIRE',
                                PROL_DROITE='LINEAIRE',
-                                 INTERPOL='INT',
+#                                 INTERPOL='INT',
+                                 INTERPOL='LIN',
                                     TITRE='FLUX D HUMIDITE'
                             )
 
 HU_INT10=CALC_FONC_INTERP(     FONCTION=FL_INT10,
                                 LIST_PARA=LIST0,
+                                  NOM_PARA = 'TEMP',
                                  NOM_RESU='FL_INT10',
                               PROL_GAUCHE='LINEAIRE',
                                PROL_DROITE='LINEAIRE',
-                                 INTERPOL='INT',
+#                                 INTERPOL='INT',
+                                INTERPOL='LIN',
                                     TITRE='FLUX D HUMIDITE'
                             )
 
 HU_EXT10=CALC_FONC_INTERP(     FONCTION=FL_EXT10,
                                 LIST_PARA=LIST0,
+                                 NOM_PARA = 'TEMP',
                                  NOM_RESU='FL_EXT10',
                               PROL_GAUCHE='LINEAIRE',
                                PROL_DROITE='LINEAIRE',
-                                 INTERPOL='INT',
+#                                 INTERPOL='INT',
+                                 INTERPOL='LIN',
                                     TITRE='FLUX D HUMIDITE'
                             )
 

@@ -5,7 +5,7 @@ C
         CHARACTER*8  MOD
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/03/2002   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,13 @@ C IN  : MOD    : TYPE DE MODELISATION -----------------------------
 C OUT : NDT    : NOMBRE TOTAL DE COMPOSANTES DU TENSEUR -----------
 C --- : NDI    : NOMBRE DE COMPOSANTES DIRECTES DU TENSEUR --------
 C --- : NVI    : NB DE VARIABLES INTERNES -------------------------
+C =================================================================
+C --- LES VARIABLES INTERNES --------------------------------------
+C -----------------------------------------------------------------
+C --- VIN(1)          : GAMP --------------------------------------
+C --- VIN(2)          : DEFORMATION VOLUMIQUE PLASTIQUE CUMULEE ---
+C --- VIN(3)          : DOMAINE DE COMPORTEMENT DU MATERIAU -------
+C --- VIN(4)          : ETAT DU MATERIAU --------------------------
 C =================================================================
       CALL JEMARQ ()
 C =================================================================
@@ -67,7 +74,7 @@ C =================================================================
 C =================================================================
 C - NOMBRE DE VARIABLES INTERNES ET DES CONDITIONS NON-LINEAIRES --
 C =================================================================
-      NVI = NDT + 2
+      NVI = 4
 C =================================================================
       CALL JEDEMA ()
 C =================================================================

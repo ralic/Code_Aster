@@ -3,7 +3,7 @@
       INTEGER            IER
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/10/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -397,21 +397,21 @@ C           --- CREATION DE LA NAPPE RESULTAT ---
 C           1/ LE .PARA ... C'EST FAIT
 C
 C           2/ LE .PROL
-            CALL WKVECT(PROL,'G V K8',6+2*NBPARA,LPROL)
-            ZK8(LPROL)   = 'NAPPE   '
+            CALL WKVECT(PROL,'G V K16',6+2*NBPARA,LPROL)
+            ZK16(LPROL)   = 'NAPPE   '
             IF ( N13 .EQ. 0 ) THEN
-               ZK8(LPROL+1) = 'LIN LIN '
+               ZK16(LPROL+1) = 'LIN LIN '
             ELSE
-               ZK8(LPROL+1) = INTERF(1)//INTERF(2)
+               ZK16(LPROL+1) = INTERF(1)//INTERF(2)
             ENDIF
-            ZK8(LPROL+2) = NOMPAR
-            ZK8(LPROL+3) = NOMRES
+            ZK16(LPROL+2) = NOMPAR
+            ZK16(LPROL+3) = NOMRES
             IF ( N14 .EQ. 0 .AND. N15 .EQ. 0 ) THEN
-               ZK8(LPROL+4) = 'EE'
+               ZK16(LPROL+4) = 'EE'
             ELSE
-               ZK8(LPROL+4) = PROFGD
+               ZK16(LPROL+4) = PROFGD
             ENDIF
-            ZK8(LPROL+5) = NOMVAR
+            ZK16(LPROL+5) = NOMVAR
 C
 C           3/ LE .VALE
             CALL JECREC(VALE,'G V R','NU','CONTIG','VARIABLE',NBPARA)
@@ -420,14 +420,14 @@ C
 C           4/ REMPLISSAGE DU .PROL DE LA NAPPE
             DO 299 IPARA =1,NBPARA
               IF ( N3 .EQ. 0 ) THEN
-                ZK8(LPROL+5+2*IPARA-1) = 'LIN LIN '
+                ZK16(LPROL+5+2*IPARA-1) = 'LIN LIN '
               ELSE
-                ZK8(LPROL+5+2*IPARA-1) = INTERP(1)//INTERP(2)
+                ZK16(LPROL+5+2*IPARA-1) = INTERP(1)//INTERP(2)
               ENDIF
               IF ( N4 .EQ. 0 .AND. N5 .EQ. 0 ) THEN
-                ZK8(LPROL+5+2*IPARA  ) = 'EE'
+                ZK16(LPROL+5+2*IPARA  ) = 'EE'
               ELSE
-                ZK8(LPROL+5+2*IPARA  ) = PROLGD
+                ZK16(LPROL+5+2*IPARA  ) = PROLGD
               ENDIF
   299       CONTINUE
 C
@@ -448,7 +448,7 @@ C
             CALL JEDETR('&&OP0083.NOMBRE.DE.PT')
             CALL JEDETR('&&OP0083.SPECTRE     ')
             IF (IFM .GT. 0 ) THEN
-              CALL FOEC2N(IFM,ZK8(LPROL),ZR(LPARA),VALE,NBPARA,2)
+              CALL FOEC2N(IFM,ZK16(LPROL),ZR(LPARA),VALE,NBPARA,2)
             ENDIF
             IF ( NORME .NE. 0 ) THEN
                DO 350 IPARA = 1, NBPARA
@@ -467,13 +467,13 @@ C
             CALL FOLEFO(IFSIG,ORG,PAS,IDENT,NPS,FVA,FFO,NOMCMD,
      +                  ZR(LVAR),ZR(LFON),IER)
             IF (IER .GT. IERMAX ) GOTO 999
-            CALL WKVECT(PROL,'G V K8',5, LPROL )
+            CALL WKVECT(PROL,'G V K16',5, LPROL )
             CALL JEECRA(PROL,'LONUTI',5,' ')
-            ZK8(LPROL  ) = NAT
-            ZK8(LPROL+1) = 'LIN LIN '
-            ZK8(LPROL+2) = NOMPAR
-            ZK8(LPROL+3) = NOMRES
-            ZK8(LPROL+4) = 'EE      '
+            ZK16(LPROL  ) = NAT
+            ZK16(LPROL+1) = 'LIN LIN '
+            ZK16(LPROL+2) = NOMPAR
+            ZK16(LPROL+3) = NOMRES
+            ZK16(LPROL+4) = 'EE      '
             IF (IFM .GT. 0 ) THEN
                IVAL1 = 1
                IVAL2 = 10

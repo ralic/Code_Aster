@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,15 +41,15 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32      JEXNOM, JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      VERSIO, NBELEM
-      CHARACTER*8  K8B, FORMAT, FICHIE, MATRIC, MODEL1, NOMMAI
-      CHARACTER*8  GRAIN
+      CHARACTER*8  K8B, FORMAT, MATRIC, MODEL1, NOMMAI, GRAIN
       CHARACTER*9  TYPSD
-      CHARACTER*16 OPTION, OPTIO2, OPTIO3
+      CHARACTER*16 OPTION, OPTIO2, OPTIO3, FICHIE
       CHARACTER*19 MATR, LIGRE1, LIGREL
       CHARACTER*24 NOLI, DESC, RESU
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
+      CALL INFMAJ()
 C
       EPS    = 0.0D0
       NBEL   = 0
@@ -67,9 +67,8 @@ C
         CALL GETVID ('MATR_ELEM','MATRICE',1,1,1,MATRIC,N4)
         CALL GETVTX ('MATR_ELEM','FORMAT' ,1,1,1,FORMAT,N1)
         CALL GETVIS ('MATR_ELEM','VERSION',1,1,1,VERSIO,N3)
-        FICHIE = '        '
+        FICHIE = FORMAT
         CALL GETVTX ('MATR_ELEM','FICHIER',1,1,1,FICHIE,N2)
-        IF ( FICHIE .EQ. '        ' ) FICHIE = FORMAT
         IFC = IUNIFI(FICHIE)
         IF ( FORMAT .EQ. 'IDEAS'  .AND.  VERSIO .EQ. 5 ) THEN
         CALL DISMOI('F','NOM_MODELE',MATRIC,'MATR_ELEM',IBID,MODEL1,IE)
@@ -138,9 +137,8 @@ C
 C
       DO 100 I = 1 , NBMAEL
          CALL GETVTX ('MATR_ELEM','FORMAT' ,I,1,1,FORMAT,N1)
-         FICHIE = '        '
+         FICHIE = FORMAT
          CALL GETVTX ('MATR_ELEM','FICHIER',I,1,1,FICHIE,N2)
-         IF ( FICHIE .EQ. '        ' ) FICHIE = FORMAT
          CALL GETVIS ('MATR_ELEM','VERSION',I,1,1,VERSIO,N3)
          CALL GETVID ('MATR_ELEM','MATRICE',I,1,1,MATRIC,N4)
 C

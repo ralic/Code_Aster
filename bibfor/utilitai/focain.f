@@ -5,7 +5,7 @@
       REAL*8                              CSTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*8  NOMRES
+      CHARACTER*16 NOMRES
       CHARACTER*19 NOMFI, NOMFS
       CHARACTER*24 VALE, PROL
       CHARACTER*1 K1BID
@@ -106,7 +106,7 @@ C
 C     --- AFFECTATION DU .PROL ---
       PROL = NOMFI//'.PROL'
       CALL JEVEUO(PROL,'L',LPRO)
-      NOMRES = ZK8(LPRO+3)
+      NOMRES = ZK16(LPRO+3)
       IF ( NOMRES(1:4) .EQ. 'ACCE' ) THEN
          NOMRES = 'VITE'
       ELSEIF ( NOMRES(1:4) .EQ. 'VITE' ) THEN
@@ -115,19 +115,19 @@ C     --- AFFECTATION DU .PROL ---
          NOMRES      = 'TOUTRESU'
       ENDIF
       PROL = NOMFS//'.PROL'
-      CALL WKVECT(PROL,'G V K8',5,LPROS)
-      ZK8(LPROS  ) = 'FONCTION'
-      IF (ZK8(LPRO+1)(1:3).EQ.'INT') THEN
-         ZK8(LPROS+1) = 'LIN LIN '
+      CALL WKVECT(PROL,'G V K16',5,LPROS)
+      ZK16(LPROS  ) = 'FONCTION'
+      IF (ZK16(LPRO+1)(1:3).EQ.'INT') THEN
+         ZK16(LPROS+1) = 'LIN LIN '
       ELSE
-         ZK8(LPROS+1) = ZK8(LPRO+1)
+         ZK16(LPROS+1) = ZK16(LPRO+1)
       ENDIF
-      ZK8(LPROS+2) = ZK8(LPRO+2)
-      ZK8(LPROS+3) = NOMRES
-      IF (ZK8(LPRO+4)(1:1).EQ.'I' .OR. ZK8(LPRO+4)(2:2).EQ.'I') THEN
-         ZK8(LPROS+4) = 'EE      '
+      ZK16(LPROS+2) = ZK16(LPRO+2)
+      ZK16(LPROS+3) = NOMRES
+      IF (ZK16(LPRO+4)(1:1).EQ.'I' .OR. ZK16(LPRO+4)(2:2).EQ.'I') THEN
+         ZK16(LPROS+4) = 'EE      '
       ELSE
-         ZK8(LPROS+4) = ZK8(LPRO+4)
+         ZK16(LPROS+4) = ZK16(LPRO+4)
       ENDIF
 C
       CALL JEDEMA()

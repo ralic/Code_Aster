@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,6 +39,5 @@ POST_K_BETA=OPER(nom="POST_K_BETA",op=198,sd_prod=tabl_post_beta,
             TABL_THER      = SIMP(statut='o',typ=(tabl_post_rele)),
             INTITULE       = SIMP(statut='o',typ='TXM' ), 
          ),
-         INFO          = SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
          TITRE         = SIMP(statut='f',typ='TXM',max='**'),  
 );

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/06/2002   AUTEUR F1BHHAJ J.ANGLES 
+#& MODIF ENTETE  DATE 18/03/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,6 +19,7 @@
 import Accas
 from Accas import *
 from Accas import _F
+import string
 
 import ops
 
@@ -40,8 +41,8 @@ JdC = JDC_CATA(code='ASTER',
 class entier  (ASSD):pass
 class reel    (ASSD):pass
 class complexe(ASSD):pass
-class liste   (ASSD):pass
 class chaine  (ASSD):pass
+
 
 # Type geometriques
 class no  (GEOM):pass
@@ -68,7 +69,7 @@ class fond_fiss       (ASSD):pass
 class interf_dyna_clas(ASSD):pass
 class interspfact     (ASSD):pass
 class listis          (ASSD):pass
-class listr8          (ASSD):pass
+class liste           (ASSD):pass
 class macr_elem_dyna  (ASSD):pass
 class macr_elem_stat  (ASSD):pass
 class mater           (ASSD):pass
@@ -84,9 +85,30 @@ class tran_gene       (ASSD):pass
 class type_flui_stru  (ASSD):pass
 class valeur          (ASSD):pass
 
+
+# liste :
+#--------------------------------
+class listr8   (ASSD):
+  def LIST_VALEURS(self) :
+    """ retourne la liste des valeurs [ val1, ...] """
+    vale=string.ljust(self.get_name(),19)+'.VALE'
+    return list(aster.getvectjev(vale))
+   
+
+
 # maillage :
 #--------------------------------
-class maillage(ASSD):pass
+class maillage(ASSD):
+  def LIST_GROUP_NO(self) :
+    """ retourne la liste des groupes de noeuds sous la forme :
+        [ (gno1, nb noeuds  gno1), ...] """
+    return aster.GetMaillage(self.get_name(), "GROUP_NO")
+  def LIST_GROUP_MA(self) :
+    """ retourne la liste des groupes de mailles sous la forme :
+        [ (gma1, nb mailles gma1, dime max des mailles gma1), ...] """
+    return aster.GetMaillage(self.get_name(), "GROUP_MA")
+    
+    
 class squelette     (maillage):pass
 
 
@@ -154,6 +176,7 @@ class cham_elem_pres_r(cham_elem):pass
 class cham_elem_sief_c(cham_elem):pass
 class cham_elem_sief_r(cham_elem):pass
 class cham_elem_sour_r(cham_elem):pass
+class cham_elem_spma_r(cham_elem):pass
 class cham_elem_temp_f(cham_elem):pass
 class cham_elem_temp_r(cham_elem):pass
 class cham_elem_vari_r(cham_elem):pass
@@ -185,6 +208,7 @@ class cham_no_pres_c   (cham_no):pass
 class cham_no_pres_r   (cham_no):pass
 class cham_no_sief_r   (cham_no):pass
 class cham_no_sour_r   (cham_no):pass
+class cham_no_spma_r   (cham_no):pass
 class cham_no_temp_c   (cham_no):pass
 class cham_no_temp_f   (cham_no):pass
 class cham_no_temp_r   (cham_no):pass
@@ -197,8 +221,12 @@ class cham_no_vnor_c   (cham_no):pass
 #--------------------------------
 
 class resultat(ASSD):
-  def __getitem__(self,key):
-    return aster.getpara(self.get_name(),"RESULTAT",key[0],key[1])
+  def LIST_CHAMPS (self) :
+    return aster.GetResu(self.get_name(), "CHAMPS")
+  def LIST_NOM_CMP (self) :
+    return aster.GetResu(self.get_name(), "COMPOSANTES")
+  def LIST_VARI_ACCES (self) :
+    return aster.GetResu(self.get_name(), "VARI_ACCES")
 
 class acou_harmo    (resultat):pass
 class base_modale     (resultat):pass
@@ -239,8 +267,29 @@ class mode_meca_c(mode_meca):pass
 
 # fonction :
 #--------------------------------
+class fonction(ASSD):
+  def LIST_VALEURS(self) :
+    """ retourne la liste des valeurs [ val1, ...] """
+    vale=string.ljust(self.get_name(),19)+'.VALE'
+    lbl=list(aster.getvectjev(vale))
+    lbr=[]
+    for i in range(len(lbl)/2):
+        lbr.append(lbl[i])
+        lbr.append(lbl[len(lbl)/2+i])
+    return lbr
 class para_sensi(fonction):pass
-class fonction_c(fonction):pass
+class fonction_c(fonction):
+  def LIST_VALEURS(self) :
+    """ retourne la liste des valeurs [ val1, ...] """
+    vale=string.ljust(self.get_name(),19)+'.VALE'
+    lbl=list(aster.getvectjev(vale))
+    lbr=[]
+    for i in range(len(lbl)/3):
+        lbr.append(lbl[i])
+        lbr.append(lbl[len(lbl)/3+i*2])
+        lbr.append(lbl[len(lbl)/3+i*2+1])
+    return lbr
+class nappe(fonction):pass
 
 
 # matr_asse :
@@ -266,12 +315,19 @@ class matr_elem_temp_r(matr_elem):pass
 
 
 
-# table : (tabl_fonc)
+# table :
 #--------------------------------
 
 class table(ASSD):
   def __getitem__(self,key):
-    return aster.getpara(self.get_name(),"TABLE",key[0],key[1])
+      requete=string.ljust(key[0],24)
+      tblp=string.ljust(self.get_name(),19)+'.TBLP'
+      tabnom=list(aster.getvectjev(tblp))
+      for i in range(len(tabnom)) : 
+         if tabnom[i]==requete: break
+      resu=aster.getvectjev(tabnom[i+2])
+      if key[1]>len(resu) : raise KeyError
+      else                : return resu[key[1]-1]
 
 class tabl_aire_int   (table):pass
 class tabl_calc_g_loca(table):pass
@@ -303,13 +359,6 @@ class tabl_rice_tracey(table):pass
 class tabl_texture    (table):pass
 class tabl_trc        (table):pass
 class tabl_weibull    (table):pass
-
-# table/tabl_fonc
-#--------------------------------
-class tabl_fonc       (table):pass
-class tabl_fonc_max   (tabl_fonc):pass
-class tabl_fonc_noci  (tabl_fonc):pass
-class tabl_fonc_rms   (tabl_fonc):pass
 
 
 # vect_asse :

@@ -1,4 +1,4 @@
-# MODIF  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 21/03/2003   AUTEUR ASSIRE A.ASSIRE 
 # TITRE VALIDATION DE L'OPERATEUR DEFI_CABLE_BP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,20 +87,21 @@ CABLEPR=DEFI_CABLE_BP(            MODELE=MODELE,
                               GROUP_MA_BETON='VOILE',DEFI_CABLE=(
                                   _F( 
                                GROUP_MA = 'CABLE001',
-                               NOEUD_ANCRAGE = ( 'NC001001',  'NC001129', ),
-                               TYPE_ANCRAGE = ( 'ACTIF',   'ACTIF',  )),
+                               NOEUD_ANCRAGE = ( 'NC001001',  'NC001129', ),),
+#                               TYPE_ANCRAGE = ( 'ACTIF',   'ACTIF',  )),
                                   _F( 
                                GROUP_MA = 'CABLE002',
-                               NOEUD_ANCRAGE = ( 'NC002001',  'NC002129', ),
-                               TYPE_ANCRAGE = ( 'ACTIF',   'ACTIF',  )),
+                               NOEUD_ANCRAGE = ( 'NC002001',  'NC002129', ),),
+#                               TYPE_ANCRAGE = ( 'ACTIF',   'ACTIF',  )),
                                   _F( 
                                GROUP_MA = 'CABLE003',
-                            GROUP_NO_ANCRAGE = ( 'NC003001',  'NC003129', ),
-                               TYPE_ANCRAGE = ( 'ACTIF',   'ACTIF',  )),
+                            GROUP_NO_ANCRAGE = ( 'NC003001',  'NC003129', ),),
+#                               TYPE_ANCRAGE = ( 'ACTIF',   'ACTIF',  )),
                                   _F( 
                                GROUP_MA = 'CABLE004',
-                               NOEUD_ANCRAGE = ( 'NC004001',  'NC004129', ),
-                               TYPE_ANCRAGE = ( 'ACTIF',   'ACTIF',  ))),
+                               NOEUD_ANCRAGE = ( 'NC004001',  'NC004129', ),)),
+#                               TYPE_ANCRAGE = ( 'ACTIF',   'ACTIF',  ))),
+                               TYPE_ANCRAGE = ( 'ACTIF',   'ACTIF',  ),
                                 TENSION_INIT=2.0E+5,
                                RECUL_ANCRAGE=5.0E-4,
                                   RELAXATION=_F(  R_J = 0.7970032677),

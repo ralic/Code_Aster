@@ -1,4 +1,4 @@
-#@ MODIF macro_matr_asse_ops Macro  DATE 15/10/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_matr_asse_ops Macro  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,8 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
   NUME_DDL      =self.get_cmd('NUME_DDL')
   ASSE_MATRICE  =self.get_cmd('ASSE_MATRICE')
   # La macro compte pour 1 dans la numerotation des commandes
-  self.icmd=1
+  #self.icmd=1
+  self.set_icmd(1)
 
   if SOLVEUR:
     methode=SOLVEUR['METHODE']

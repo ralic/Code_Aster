@@ -8,7 +8,7 @@
       LOGICAL           LHAIGH,                     LKE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/07/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 28/02/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,8 @@ C
       CHARACTER*2  CODRET
       CHARACTER*8  NOMRES,NOMPAR,NOMP,K8BID
       CHARACTER*10 PHENO
-      REAL*8       NRUPT,DELTA
+      REAL*8        NRUPT,DELTA
+      LOGICAL       ENDUR
 C
       CALL JEMARQ()
       DO 10 I=1,NBCYCL
@@ -70,9 +71,14 @@ C
          NBPAR     = 1
          PHENO     = 'FATIGUE   '
          NOMPAR    = 'SIGM    '
-         CALL RCVALE(NOMMAT,PHENO,NBPAR,NOMPAR,DELTA,1,NOMRES,
+         CALL LIMEND( NOMMAT,DELTA,ENDUR)
+         IF (ENDUR) THEN
+            DOM(I) = 0.D0
+         ELSE
+            CALL RCVALE(NOMMAT,PHENO,NBPAR,NOMPAR,DELTA,1,NOMRES,
      +                                         NRUPT,CODRET,'F ')
-         DOM(I) = 1.D0/NRUPT
+            DOM(I) = 1.D0/NRUPT
+         ENDIF
  10   CONTINUE
 C
       CALL JEDEMA()

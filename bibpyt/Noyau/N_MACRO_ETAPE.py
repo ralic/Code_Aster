@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 23/10/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 06/01/2003   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -380,7 +380,7 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
          # En effet une commande avec reutilisation d'un concept verifie que le nom de 
          # la variable a gauche du signe = est le meme que celui du concept reutilise.
          # Lorsqu'une telle commande apparait dans une macro, on supprime cette verification.
-         if etape.sdnom[0] == '_':
+         if (etape.sdnom == '' or etape.sdnom[0] == '_'):
             etape.sdnom=sd.nom
       else:
          # On est dans le cas de la creation d'un nouveau concept

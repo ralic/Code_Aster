@@ -5,7 +5,7 @@
       CHARACTER*(*)      MOTFAC
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/02/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C
       LF = LXLGUT(NOMF1)
 C
       CALL JEVEUO(NOMFON//'.PROL','L',LPRO)
-      IF ( ZK8(LPRO) .EQ. 'INTERPRE' )  THEN
+      IF ( ZK16(LPRO) .EQ. 'INTERPRE' )  THEN
          CALL JEEXIN(NOMFON//'.NOVA',IRET)
          IF ( IRET.EQ.0 ) THEN
             IER = IER + 1
@@ -100,17 +100,17 @@ C
             NOMRES = 'TOUTRESU'
          ENDIF
 C
-      ELSEIF ( ZK8(LPRO) .EQ. 'FONCTION' )  THEN
-         TYPFON = ZK8(LPRO  )
-         NOMPAR = ZK8(LPRO+2)
-         NOMRES = ZK8(LPRO+3)
+      ELSEIF ( ZK16(LPRO) .EQ. 'FONCTION' )  THEN
+         TYPFON = ZK16(LPRO  )
+         NOMPAR = ZK16(LPRO+2)
+         NOMRES = ZK16(LPRO+3)
 C
-      ELSEIF ( ZK8(LPRO) .EQ. 'NAPPE' )  THEN
-         TYPFON = ZK8(LPRO  )
-         NOMPAR = ZK8(LPRO+2)
-         NOMRES = ZK8(LPRO+3)
+      ELSEIF ( ZK16(LPRO) .EQ. 'NAPPE' )  THEN
+         TYPFON = ZK16(LPRO  )
+         NOMPAR = ZK16(LPRO+2)
+         NOMRES = ZK16(LPRO+3)
 C
-      ELSEIF ( ZK8(LPRO) .EQ. 'CONSTANTE' ) THEN
+      ELSEIF ( ZK16(LPRO) .EQ. 'CONSTANTE' ) THEN
          IER = IER + 1
          CALL UTMESS('A',NOMCMD,'NE TRACE LA FONCTION "CONSTANTE"')
          GOTO 9999
@@ -333,7 +333,7 @@ C
       ELSE
          CALL JEVEUO(NOMFON//'.PARA','L',LPAR)
          CALL JELIRA(NOMFON//'.PARA','LONMAX',NBAMOR,K8B)
-         NOMAMO = ZK8(LPRO+2)
+         NOMAMO = ZK16(LPRO+2)
          IF (NLE.NE.0) NOMAMO = LEGEND
          LG = MAX(1,LXLGUT(NOMAMO))
          IF (NBAMOR.EQ.1) THEN

@@ -3,7 +3,7 @@
       INTEGER           IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -172,12 +172,12 @@ C
          CALL GETVTX('KANAI_TAJIMI','PROL_GAUCHE',IFONC,1,1,PROLG ,L)
          CALL GETVTX('KANAI_TAJIMI','PROL_DROITE',IFONC,1,1,PROLD ,L)
 C
-         CALL WKVECT(NOMCOD//'.PROL','G V K8',5,IADPRL)
-         ZK8(IADPRL  ) = 'FONCT_C '
-         ZK8(IADPRL+1) = INTERP(1)//INTERP(2)
-         ZK8(IADPRL+2) = 'FREQ    '
-         ZK8(IADPRL+3) = 'DSP     '
-         ZK8(IADPRL+4) = PROLG(1:1)//PROLD(1:1)//'      '
+         CALL WKVECT(NOMCOD//'.PROL','G V K16',5,IADPRL)
+         ZK16(IADPRL  ) = 'FONCT_C '
+         ZK16(IADPRL+1) = INTERP(1)//INTERP(2)
+         ZK16(IADPRL+2) = 'FREQ    '
+         ZK16(IADPRL+3) = 'DSP     '
+         ZK16(IADPRL+4) = PROLG(1:1)//PROLD(1:1)//'      '
 C
          CALL GETVR8('KANAI_TAJIMI','FREQ_MIN'   ,IFONC,1,1, FRQMIN, L)
          CALL GETVR8('KANAI_TAJIMI','FREQ_MAX'   ,IFONC,1,1, FRQMAX, L)
@@ -224,12 +224,12 @@ C
          CALL GETVTX('CONSTANT','PROL_GAUCHE',IFONC,1,1,PROLG ,L)
          CALL GETVTX('CONSTANT','PROL_DROITE',IFONC,1,1,PROLD ,L)
 C
-         CALL WKVECT(NOMCOD//'.PROL','G V K8',5,IADPRL)
-         ZK8(IADPRL  ) = 'FONCT_C '
-         ZK8(IADPRL+1) = INTERP(1)//INTERP(2)
-         ZK8(IADPRL+2) = 'FREQ    '
-         ZK8(IADPRL+3) = 'DSP     '
-         ZK8(IADPRL+4) = PROLG(1:1)//PROLD(1:1)//'      '
+         CALL WKVECT(NOMCOD//'.PROL','G V K16',5,IADPRL)
+         ZK16(IADPRL  ) = 'FONCT_C '
+         ZK16(IADPRL+1) = INTERP(1)//INTERP(2)
+         ZK16(IADPRL+2) = 'FREQ    '
+         ZK16(IADPRL+3) = 'DSP     '
+         ZK16(IADPRL+4) = PROLG(1:1)//PROLD(1:1)//'      '
 C
          CALL GETVR8('CONSTANT','FREQ_MIN',IFONC,1,1, FRQMIN, L)
          CALL GETVR8('CONSTANT','FREQ_MAX',IFONC,1,1, FRQMAX, L)

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE G8BHHXD X.DESROCHES
-INTE_MAIL_2D=OPER(nom="INTE_MAIL_2D",op=50,sd_prod=courbe,docu="U4.81.11-e",
+INTE_MAIL_2D=OPER(nom="INTE_MAIL_2D",op=50,sd_prod=courbe,docu="U4.81.11-f",
             UIinfo={"groupes":("Post traitements",)},
                   fr="Définition d une courbe sur un maillage 2D",reentrant='n',
 

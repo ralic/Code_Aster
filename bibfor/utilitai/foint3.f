@@ -5,7 +5,7 @@
       CHARACTER*(*)     NOMF,     NOMPU(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/09/1999   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,14 +51,15 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       REAL*8       LINLIN, LINLOG, LOGLOG, LOGLIN
       CHARACTER*1  COLI
-      CHARACTER*8  K8B, INTERP, PROLGD
+      CHARACTER*8  K8B
+      CHARACTER*16 INTERP, PROLGD
       CHARACTER*19 NOMFON
       CHARACTER*24 CHPROL, CHVALE, CHPARA
 C     ------------------------------------------------------------------
       PARAMETER   (MXSAVE=4)
       INTEGER      ISVNXT,NEXTSV(MXSAVE),ISVIND
       CHARACTER*2  SVPRGD(MXSAVE)
-      CHARACTER*8  SVINTE(MXSAVE)
+      CHARACTER*16 SVINTE(MXSAVE)
       CHARACTER*19 SVNOMF(MXSAVE)
       CHARACTER*1 K1BID
       SAVE         SVNOMF,SVPRGD,SVINTE
@@ -98,8 +99,8 @@ C
       ISVNXT = NEXTSV(ISVNXT)
       ISAVE  = ISVNXT
       CALL JEVEUO(CHPROL,'L',LPROL)
-      SVINTE(ISAVE) = ZK8(LPROL+1)
-      SVPRGD(ISAVE) = ZK8(LPROL+4)
+      SVINTE(ISAVE) = ZK16(LPROL+1)
+      SVPRGD(ISAVE) = ZK16(LPROL+4)
 C
    11 CONTINUE
       INTERP   = SVINTE(ISAVE)

@@ -5,7 +5,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/10/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 05/12/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,10 +59,10 @@ C DEB ------------------------------------------------------------------
       NPG = NBPG(NUFAPG)
 
 C     ------------------------------------------------------------------
-      IF (ELREFE.EQ.'HEXA8' .OR. ELREFE.EQ.'HEXI8' .OR.
-     &    ELREFE.EQ.'HEXA20' .OR. ELREFE.EQ.'HEXS20' .OR.
-     &    ELREFE.EQ.'HEXD20' .OR. ELREFE.EQ.'HEXI20' .OR.
-     &    ELREFE.EQ.'HEXA27') THEN
+      IF (ELREFE.EQ.'HEXA8 ' .OR. ELREFE.EQ.'HEXA8L' .OR.
+     &    ELREFE.EQ.'HEXI8 ' .OR. ELREFE.EQ.'HEXA20' .OR.
+     &    ELREFE.EQ.'HEXS20' .OR. ELREFE.EQ.'HEXD20' .OR.
+     &    ELREFE.EQ.'HEXI20' .OR. ELREFE.EQ.'HEXA27') THEN
 
         NCMP = 3
 
@@ -104,8 +104,9 @@ C           DIRECTION ( ORDRE 5 )
    20     CONTINUE
    30   CONTINUE
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'PENTA6' .OR. ELREFE.EQ.'PENTA15' .OR.
-     &         ELREFE.EQ.'PENTA15D' .OR. ELREFE.EQ.'PENTA18') THEN
+      ELSE IF (ELREFE.EQ.'PENTA6  ' .OR. ELREFE.EQ.'PENTA6L ' .OR.
+     &         ELREFE.EQ.'PENTA15 ' .OR. ELREFE.EQ.'PENTA15D' .OR.
+     &         ELREFE.EQ.'PENTA18 ') THEN
 
         NCMP = 3
 
@@ -211,9 +212,9 @@ C --------- FORMULE DE HAMMER
    50   CONTINUE
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'TETRA4' .OR. ELREFE.EQ.'TETRA10' .OR.
-     &         ELREFE.EQ.'TETRA10D' .OR. ELREFE.EQ.'TETRI4' .OR.
-     &         ELREFE.EQ.'TETRI10') THEN
+      ELSE IF (ELREFE.EQ.'TETRA4  ' .OR. ELREFE.EQ.'TETRA4L ' .OR.
+     &         ELREFE.EQ.'TETRI4  ' .OR. ELREFE.EQ.'TETRA10 ' .OR.
+     &         ELREFE.EQ.'TETRA10D' .OR. ELREFE.EQ.'TETRI10 ') THEN
 
         NCMP = 3
 

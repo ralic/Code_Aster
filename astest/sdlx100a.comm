@@ -1,5 +1,5 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
-# TITRE REPONSE TRANSITOIRE D'UNE PLAQUE A UNE PRESSION ISSUE DE ENSIGHT
+# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+# TITRE REPONSE TRANSITOIRE D UNE PLAQUE A UNE PRESSION ISSUE DE ENSIGHT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,14 +29,18 @@ DEBUT( CODE=_F(  NOM = 'SDLX100A',NIV_PUB_WEB='INTERNET') )
 
 #
 
-MAILLAGE=LIRE_MAILLAGE( )
+MAIL0=LIRE_MAILLAGE()
+MAILLAGE = CREA_MAILLAGE(MAILLAGE=MAIL0,
+                         CREA_POI1 =_F(NOM_GROUP_MA = 'NPRESS',
+                                       GROUP_NO = 'NPRESS'), 
+                     )
 
 #
 
 MODELE=AFFE_MODELE(   MAILLAGE=MAILLAGE,AFFE=(
                         _F(  MAILLE = 'MA1', PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'DST'),
-                             _F(  GROUP_NO = 'NPRESS', PHENOMENE = 'MECANIQUE',
+                             _F(  GROUP_MA = 'NPRESS', PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'DIS_TR'))
                       )
 
@@ -62,7 +66,8 @@ ACIER=DEFI_MATERIAU(  ELAS=_F( E = 2.1E+11, NU = 0.3, RHO = 7800.))
 #
 
 CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
-                           AFFE=_F( MAILLE = 'MA1', MATER = ACIER))
+                           AFFE=(_F( MAILLE    = 'MA1',    MATER = ACIER),
+                                 _F( GROUP_MA  = 'NPRESS', MATER = ACIER)) )
 
 #
 
@@ -70,12 +75,12 @@ ELEMNT=AFFE_CARA_ELEM(  MODELE=MODELE,
                             COQUE=_F(  MAILLE = 'MA1',
                                     ANGL_REP = (90., 0.,),
                                     EPAIS = 1.282E-04),DISCRET=(
-                            _F(  GROUP_NO = 'NPRESS',
+                            _F(  GROUP_MA = 'NPRESS',
                                       CARA = 'K_TR_D_N',
                                       VALE = ( 9.8696E4, 0., 0.,
                                               0., 0., 0.,
                                              )),
-                                    _F(  GROUP_NO = 'NPRESS',
+                                    _F(  GROUP_MA = 'NPRESS',
                                       CARA = 'A_TR_D_N',
                                       VALE = ( 3.14159, 0., 0.,
                                               0., 0., 0.,

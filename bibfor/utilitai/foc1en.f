@@ -5,7 +5,7 @@
       CHARACTER*1                                        BASE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,7 +96,7 @@ C
       CALL JEVEUO(VALE,'L',LVAR)
       NBPTS = NBVAL/2
       LFON  = LVAR + NBPTS
-      CALL FOINTR(NOMFON(IOCC),ZK8(LPRO),NBPTS,ZR(LVAR) ,ZR(LFON),
+      CALL FOINTR(NOMFON(IOCC),ZK16(LPRO),NBPTS,ZR(LVAR) ,ZR(LFON),
      +                         NBINST,ZR(LRES),ZR(LTRES),IER)
       DO 500 I = 0, NBINST-1
          ZR(LRESF+I) = ZR(LTRES+I)
@@ -112,7 +112,7 @@ C
          CALL JEVEUO(VALE,'L',LVAR)
          NBPTS = NBVAL/2
          LFON  = LVAR + NBPTS
-         CALL FOINTR(NOMFON(IOCC),ZK8(LPRO),NBPTS,ZR(LVAR) ,ZR(LFON),
+         CALL FOINTR(NOMFON(IOCC),ZK16(LPRO),NBPTS,ZR(LVAR) ,ZR(LFON),
      +                         NBINST,ZR(LRES),ZR(LTRES),IER)
          IF ( CRITER .EQ. 'SUP' ) THEN
             DO 410 I = 0, NBINST-1
@@ -135,14 +135,14 @@ C     FIN DU REMPLISSAGE
 C
 C     --- CREATION DU .PROL ---
       PROL(1:19) = SORTIE
-      CALL WKVECT(PROL,BASE//' V K8',5,LPROS)
+      CALL WKVECT(PROL,BASE//' V K16',5,LPROS)
       PROL(1:19) = NOMFON(1)
       CALL JEVEUO(PROL,'L',LPRO)
-      ZK8(LPROS  ) = 'FONCTION'
-      ZK8(LPROS+1) = 'LIN LIN '
-      ZK8(LPROS+2) = ZK8(LPRO+2)
-      ZK8(LPROS+3) = ZK8(LPRO+3)
-      ZK8(LPROS+4) = 'CC      '
+      ZK16(LPROS  ) = 'FONCTION'
+      ZK16(LPROS+1) = 'LIN LIN '
+      ZK16(LPROS+2) = ZK16(LPRO+2)
+      ZK16(LPROS+3) = ZK16(LPRO+3)
+      ZK16(LPROS+4) = 'CC      '
       CALL JELIBE(PROL)
       PROL(1:19) = SORTIE
       CALL JELIBE(PROL)

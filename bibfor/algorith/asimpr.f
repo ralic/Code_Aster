@@ -1,10 +1,10 @@
-      SUBROUTINE ASIMPR(NBSUP,MASSE,TCOSUP,TCOSAP,NOMSUP)
+      SUBROUTINE ASIMPR(NBSUP,MASSE,TCOSUP,NOMSUP)
       IMPLICIT  REAL*8 (A-H,O-Z)
-      INTEGER          IOC,NBSUP,TCOSUP(NBSUP,*),TCOSAP(NBSUP,*)
+      INTEGER          IOC,NBSUP,TCOSUP(NBSUP,*)
       CHARACTER*(*)    MASSE
       CHARACTER*8      NOMSUP(NBSUP,*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/06/2002   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,428 +46,184 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       LOGICAL      PRIM,SECON
       CHARACTER*4  TYPDIR
       CHARACTER*1  DIREC
-      CHARACTER*8  K8BID, NOEU, CMP,NOMA,GRNOEU,TYPCOM,NOREF
+      CHARACTER*8  K8B, NOEU, CMP,NOMA,GRNOEU,TYPCOM,NOREF
+      CHARACTER*8  KNUM,KDIR,OCCUR
       CHARACTER*16 MONACC
-      CHARACTER*19 CHEXTR,MOTFAC,KNOEU,DIDI
+      CHARACTER*19 CHEXTR,MOTFAC,KNOEU,DIDI,LNORE,NBNOR,ORDR
       CHARACTER*24 OBJ1, OBJ2
-      CHARACTER*80 NOMCAS
+      CHARACTER*80 NOMCAS,CHAINQ,CHAINL,CHAINA
       COMPLEX*16   CBID
+      REAL*8       R8VIDE
 C
+      EPSIMA = R8VIDE()
       CALL JEMARQ()
-      IFM    = IUNIFI('RESULTAT')
+      IFM    = IUNIFI('MESSAGE')
       KNOEU  = '&&OP0109.NOM_SUPPOR'
       DIDI   = '&&OP0109.DIRECTION'
+      LNORE = '&&ASENAP.NOREF'
+      NBNOR = '&&ASENAP.NREF'
+      ORDR ='&&ASECON.NORD'
 C
-      CALL GETFAC ( 'COMB_DEPL_APPUI', NDEPL )
       WRITE(IFM,1167)
       WRITE(IFM,1170)
       CALL JEVEUO(KNOEU,'L',JKNO)
       CALL JEVEUO(DIDI,'L',JDIR)
+      CALL JEVEUO(LNORE,'L',JNREF)
+      CALL JEVEUO(NBNOR,'L',JREF)
+      CALL JEVEUO(ORDR,'L',JORD)
 C
 C  CAS DES IMPRESSIONS POUR LA REPONSE PRIMAIRE
 C
-      DO 57 IS = 1,NBSUP
-       DO 56 ID = 1,3
-        IF (TCOSUP(IS,ID).EQ.1) TYPDIR = 'QUAD'
-        IF (TCOSUP(IS,ID).EQ.2) TYPDIR = 'LINE'
-        IF (TCOSUP(IS,ID).EQ.3) TYPDIR = 'ABS '
-        WRITE(IFM,1180) NOMSUP(IS,ID),TYPDIR
-        GOTO 57
- 56    CONTINUE
- 57   CONTINUE
+      CHAINQ = ' ' 
+      CHAINL = ' ' 
+      CHAINA = ' ' 
+
+      CHAINQ(1 : 4) ='QUAD'
+      CHAINL(1 : 4) ='LINE'
+      CHAINA(1 : 4) ='ABS '
+      IQ = 1
+      IL = 1
+      IA = 1
+      CALL WKVECT('&&ASIMPR.NOEUDS','V V K8',3*NBSUP,JNOE)
+      INO = 1
+      DO 40 ID =1,3
+        DO 42 IS = 1,NBSUP
+          IF (TCOSUP(IS,1).EQ.1) THEN
+            DO 44 II=1,INO
+            IF (NOMSUP(IS,ID).EQ.ZK8(JNOE+II-1)) THEN
+             GOTO 42
+            ENDIF
+ 44         CONTINUE
+            ZK8(JNOE+INO-1) = NOMSUP(IS,ID)
+            CHAINQ(IQ+5 : IQ+12)= ZK8(JNOE+INO-1)
+            INO = INO+1
+            IQ = IQ+9
+          ELSE IF (TCOSUP(IS,1).EQ.2) THEN
+            DO 46 II=1,INO
+            IF (NOMSUP(IS,ID).EQ.ZK8(JNOE+INO-1)) GOTO 42
+ 46         CONTINUE
+            ZK8(JNOE+INO-1)= NOMSUP(IS,ID)
+            CHAINL(IL+5 : IL+12)= NOMSUP(IS,ID)
+            INO = INO+1
+            IL = IL+9
+          ELSE IF (TCOSUP(IS,1).EQ.3) THEN
+            DO 48 II=1,INO
+            IF (NOMSUP(IS,ID).EQ.ZK8(JNOE+INO-1)) GOTO 42
+ 48         CONTINUE
+            CHAINA(IA+5 : IA+12)= NOMSUP(IS,ID)
+            ZK8(JNOE+INO-1)= NOMSUP(IS,ID)
+            INO = INO+1
+            IA = IA+9
+          ENDIF
+ 42     CONTINUE
+ 40   CONTINUE
+
+      IF (IQ.NE.1) 
+     +   WRITE(IFM,1180) CHAINQ
+      IF (IL.NE.1) 
+     +    WRITE(IFM,1180) CHAINL
+      IF (IA.NE.1) 
+     +   WRITE(IFM,1180) CHAINA
+
+
 C
 C  CAS DES IMPRESSIONS POUR LA REPONSE SECONDAIRE
 C
-        CALL DISMOI('F','NOM_MAILLA',MASSE,'MATR_ASSE',IBID,NOMA,IRET)
-        OBJ1 = NOMA//'.GROUPENO'
-        OBJ2 = NOMA//'.NOMNOE'
-        NT = 0 
-        NTOU = 0
-        NCAS = 0 
-        NR = 0
-        NC = 0
-        NG = 0
-        NN = 0 
-        NNO = 0
-        NGR = 0
-        NBNOGR = 0 
-        ICOGN = 0
-        ICONO = 0 
-        WRITE(IFM,1190)
-        WRITE(IFM,1200)
-        DO 3 IOC = 1,NDEPL
-          CALL GETVTX('COMB_DEPL_APPUI','TOUT',IOC,1,0,K8BID ,NT)
-          NTOU = NTOU - NT
-          CALL GETVIS('COMB_DEPL_APPUI','LIST_CAS',IOC,1,0,IBID,NC)
-          IF (NC.NE.0) NCAS = NCAS-NC
- 3      CONTINUE
-C
-C ON RECUPERE TOUS LES CAS A TRAITER DANS LE CAS OU UNE LISTE
-C DE CAS EST RENSEIGNEE
-        IF (NTOU.EQ.0) THEN
-          CALL WKVECT('ASIMPR.LISTE','V V I',NCAS,JCAS)
-          JLCAS = JCAS
-          DO 4 IOC = 1,NDEPL
-            CALL GETVIS('COMB_DEPL_APPUI','LIST_CAS',IOC,1,0,IBID,NC)
-            IF (NC.NE.0) THEN
-              NC = -NC
-              CALL GETVIS('COMB_DEPL_APPUI','LIST_CAS',IOC,1,NC,
-     &                    ZI(JLCAS),NC)
-              JLCAS = JLCAS + NC
-            ENDIF
- 4        CONTINUE
-C
-          DO 18 ICAS = 1, NCAS    
-            LCAS = ZI(JCAS+ICAS-1)  
-            MOTFAC = 'DEPL_MULT_APPUI'
-            CALL GETFAC(MOTFAC,NBOC2)
-            DO 20 II =1, NBOC2   
-             CALL GETVIS(MOTFAC,'NUME_CAS',II,1,1,NUCAS,NC)
-             IF (NUCAS.EQ.LCAS) THEN
-               CALL GETVID(MOTFAC,'NOEUD',II,1,0,NOEU,NN)
-C RECUPERATION DES DIMENSIONS DES DIFFERENTS TABLEAUX DE 
-C STOCKAGE DE NOEUDS ET GRNO
-               IF (NN.NE.0) THEN
-                 NNO = NNO-NN
-               ELSE
-                 CALL GETVID(MOTFAC,'GROUP_NO',II,1,0,K8BID,NG)
-                 IF (NG.NE.0) NGR = NGR -NG
-               ENDIF
-             ENDIF
- 20        CONTINUE
- 18      CONTINUE
-        ELSE
-          MOTFAC = 'DEPL_MULT_APPUI'
-          CALL GETFAC(MOTFAC,NBOC2)
-          DO 35 II =1, NBOC2   
-            CALL GETVIS(MOTFAC,'NUME_CAS',II,1,1,NUCAS,NC)
-            CALL GETVID(MOTFAC,'NOEUD',II,1,0,K8BID,NN)
-C RECUPERATION DES DIMENSIONS DES DIFFERENTS TABLEAUX DE 
-C STOCKAGE DE NOEUDS ET GRNO
-            IF (NN.NE.0) THEN
-               NNO = NNO-NN
-             ELSE
-               CALL GETVID(MOTFAC,'GROUP_NO',II,1,0,K8BID,NG)
-               IF (NG.NE.0) NGR = NGR -NG
-             ENDIF
- 35        CONTINUE
-        ENDIF
-        CALL WKVECT('ASIMPR.DDLV','V V R',NBOC2,JVALE)
-        CALL WKVECT('ASIMPR.DDLC','V V K8',NBOC2,JCMP)
-C       
-        IF (NNO.NE.0) CALL WKVECT('ASIMPR.NOEUD','V V K8',NNO,JNOE)
-        IF (NGR.NE.0) THEN
-          CALL WKVECT('ASIMPR.GROUP_NO','V V K8',NGR,JGRN)
-          CALL WKVECT('ASIMPR.TRAVLIST','V V I',NGR,JTRAV)
-          CALL WKVECT('ASIMPR.LIST_GR','V V I',NGR,IDN)
-        ENDIF
-C
-        ICOGN = JGRN
-        ICONO = JNOE
-        JTRAV1 = JTRAV
-        JVAL1  =JVALE
-        JCMP1 = JCMP
-C
-        IF (NTOU.EQ.0) THEN
-          DO 19 ICAS = 1, NCAS   
-             DO 30 II = 1, NBOC2   
-               CALL GETVIS(MOTFAC,'NUME_CAS',II,1,1,NUCAS,NC)
-               IF (NUCAS.EQ.ZI(JCAS+ICAS-1 )) THEN
-                 CALL GETVTX(MOTFAC,'NOM_CAS',II,1,1,NOMCAS,NC)
-                 CALL GETVID(MOTFAC,'NOEUD_REFE',II,1,1,NOREF,NR)
-                 IF (NR.EQ.0) NOREF = '-'
-                 CALL GETVR8(MOTFAC,'DX',II,1,0,DX,NX)
-                 CALL GETVR8(MOTFAC,'DY',II,1,0,DY,NY)
-                 CALL GETVR8(MOTFAC,'DZ',II,1,0,DZ,NZ)
-                 IF (NNO.NE.0) THEN
-                 IF (NX.NE.0) THEN 
-                   CALL GETVR8(MOTFAC,'DX',II,1,1,ZR(JVAL1),NX)
-                   ZK8(JCMP1) = 'DX'
-                   JVAL1 = JVAL1 + 1
-                   JCMP1 = JCMP1 + 1
+      CALL GETFAC('COMB_DEPL_APPUI',NBOC)
+      CALL GETFAC('DEPL_MULT_APPUI',NDEP)
+      CALL JEVEUO('&&ASENAP.TYPE','L',JTYP)
+      NOREF = '-'
+      WRITE(IFM,1190)
+      WRITE(IFM,1200)
+      DO 10 IOCC =1,NBOC
+        CALL JELIRA(JEXNUM('&&ASENAP.LISTCAS',IOCC),'LONMAX',
+     +                                                   NCAS,K8B)
+        CALL JEVEUO(JEXNUM('&&ASENAP.LISTCAS',IOCC),'L',JCAS)
+        DO 20 ICAS = 1,NCAS
+          NUCAS = ZI(JCAS+ICAS-1)
+          DO 30 IDEP = 1,NDEP
+           CALL GETVIS('DEPL_MULT_APPUI','NUME_CAS',IDEP,1,1,NUME,IBID)
+            IF (NUME.EQ.NUCAS) THEN
+               CALL GETVTX('DEPL_MULT_APPUI','NOM_CAS',
+     +                IDEP,1,1,NOMCAS,IBID)
+               KNUM = 'N       '     
+               CALL CODENT(NUCAS, 'D0' , KNUM(2:8) )
+               KDIR = 'D       '
+               CALL CODENT(NUCAS, 'D0' , KDIR(2:8) )
+               CALL JELIRA (JEXNOM('&&ASENAP.LINOEU',KNUM),
+     &              'LONMAX',NBNO,K8B)
+               CALL JEVEUO (JEXNOM('&&ASENAP.LINOEU',KNUM),
+     &              'L', JNO )
+               LNOD =3*NBNO
+               CALL JELIRA (JEXNOM('&&ASENAP.LIDIR',KDIR),'LONMAX',
+     &             LNOD,K8B)
+               CALL JEVEUO (JEXNOM('&&ASENAP.LIDIR',KDIR), 'L', JDIR )
+               IF (ZI(JREF+ICAS-1).EQ.1)  NOREF = ZK8(JNREF+ICAS-1)
+               DO 12 INO = 1,NBNO
+                 NOEU =ZK8(JNO+INO-1)
+                 IF (ZR(JDIR+3*(INO-1)).NE.EPSIMA) THEN
+                     CMP = 'DX'
+                     VALE = ZR(JDIR+3*(INO-1))  
+                     WRITE(IFM,1210)NUCAS,NOEU,
+     +           CMP,VALE,NOREF,NOMCAS
                  ENDIF
-                 IF (NY.NE.0) THEN 
-                   CALL GETVR8(MOTFAC,'DY',II,1,1,ZR(JVAL1),NY)
-                   ZK8(JCMP1) = 'DY'
-                   JVAL1 = JVAL1 + 1
-                   JCMP1 = JCMP1 + 1
+                 IF (ZR(JDIR+3*(INO-1)+1).NE.EPSIMA) THEN
+                     CMP = 'DY'
+                     VALE = ZR(JDIR+3*(INO-1)+1)  
+                     WRITE(IFM,1210)NUCAS,NOEU,
+     +           CMP,VALE,NOREF,NOMCAS
                  ENDIF
-                 IF (NZ.NE.0) THEN 
-                   CALL GETVR8(MOTFAC,'DZ',II,1,1,ZR(JVAL1),NZ)
-                   ZK8(JCMP1) = 'DZ'
-                   JVAL1 = JVAL1 + 1
-                   JCMP1 = JCMP1 + 1
+                 IF (ZR(JDIR+3*(INO-1)+2).NE.EPSIMA) THEN
+                     CMP = 'DZ'
+                     VALE = ZR(JDIR+3*(INO-1)+2)  
+                      WRITE(IFM,1210)NUCAS,NOEU,
+     +           CMP,VALE,NOREF,NOMCAS
                  ENDIF
-                 NJJ = JVAL1-JVALE
-                   CALL GETVID(MOTFAC,'NOEUD',II,1,0,K8BID,NN)
-                   IF (NN.NE.0) THEN
-                    CALL GETVID(MOTFAC,'NOEUD',II,1,NN,ZK8(ICONO),NNI)
-                    DO 111 INO = 1,NN 
-                      NOEU = ZK8(ICONO+INO-1)
-                      DO 211 JJ = 1,NJJ
-                        DO 311 IS = 1,NBSUP
-                         DO 411 ID = 1,3
-                          IF (TCOSAP(IS,ID).EQ.1) TYPDIR = 'QUAD'
-                          IF (TCOSAP(IS,ID).EQ.2) TYPDIR = 'LINE'
-                          IF (TCOSAP(IS,ID).EQ.3) TYPDIR = 'ABS '
-                          IF (NOMSUP(IS,ID).EQ.NOEU) THEN
-                            WRITE(IFM,1210)NUCAS,TYPDIR,NOEU,
-     +                     ZK8(JCMP+JJ-1),ZR(JVALE+JJ-1),NOREF,NOMCAS
-                            GOTO 311
-                          ENDIF
- 411                    CONTINUE
- 311                  CONTINUE
- 211                 CONTINUE
- 111                CONTINUE
-                    JVALE = JVAL1
-                    JCMP = JCMP1
-                    ICONO = ICONO+NN
-                  ENDIF
-                ENDIF 
-                IF (NGR.NE.0) THEN
-                  CALL GETVID(MOTFAC,'GROUP_NO',II,1,0,K8BID,NG)
-                  IF (NG.NE.0) THEN
-                    NNG = -NG
-                    CALL GETVID(MOTFAC,'GROUP_NO',II,1,NNG,
-     &                       ZK8(ICOGN),NG)
-                    ICOGN = ICOGN+NNG
-                    DO 121 ITR= 1,NNG
-                       ZI(JTRAV1+ITR-1) = NUCAS
- 121               CONTINUE
-                   JTRAV1 = JTRAV1 +NNG
-                  ENDIF
-                ENDIF
-             ENDIF 
- 30        CONTINUE
- 19       CONTINUE
-       ELSE IF (NTOU.NE.0) THEN
-         DO 36 II =1, NBOC2   
-           CALL GETVIS(MOTFAC,'NUME_CAS',II,1,1,NUCAS,NC)
-           CALL GETVTX(MOTFAC,'NOM_CAS',II,1,1,NOMCAS,NC)
-           CALL GETVID(MOTFAC,'NOEUD_REFE',II,1,1,NOREF,NR)
-           IF (NR.EQ.0) NOREF = '-'
-           CALL GETVR8(MOTFAC,'DX',II,1,0,DX,NX)
-           CALL GETVR8(MOTFAC,'DY',II,1,0,DY,NY)
-           CALL GETVR8(MOTFAC,'DZ',II,1,0,DZ,NZ)
-           IF (NNO.NE.0) THEN 
-            CALL GETVID(MOTFAC,'NOEUD',II,1,0,K8BID,NN) 
-            IF (NN.NE.0) THEN 
-                NNN = -NN
-                CALL GETVID(MOTFAC,'NOEUD',II,1,NNN,ZK8(ICONO),NN)
-                ICONO = ICONO +NNN
-            IF (NX.NE.0) THEN 
-              CALL GETVR8(MOTFAC,'DX',II,1,1,ZR(JVAL1),NX)
-              ZK8(JCMP1) = 'DX'
-              JVAL1 = JVAL1 + 1
-              JCMP1 = JCMP1 + 1
-           ENDIF
-           IF (NY.NE.0) THEN 
-              CALL GETVR8(MOTFAC,'DY',II,1,1,ZR(JVAL1),NY)
-              ZK8(JCMP1) = 'DY'
-              JVAL1 = JVAL1 + 1
-              JCMP1 = JCMP1 + 1
+ 12          CONTINUE
             ENDIF
-            IF (NZ.NE.0) THEN 
-              CALL GETVR8(MOTFAC,'DZ',II,1,1,ZR(JVAL1),NZ)
-              ZK8(JCMP1) = 'DZ'
-              JVAL1 = JVAL1 + 1
-              JCMP1 = JCMP1 + 1
-           ENDIF
-           NJJ = JVAL1-JVALE
-           DO 112 INO = 1,NNN
-             NOEU = ZK8(ICONO+INO-1)
-             DO 212 JJ = 1, NJJ
-               DO 412 IS = 1,NBSUP
-                 DO 312 ID = 1,3
-                   IF (TCOSAP(IS,ID).EQ.1) TYPDIR = 'QUAD'
-                   IF (TCOSAP(IS,ID).EQ.2) TYPDIR = 'LINE'
-                   IF (TCOSAP(IS,ID).EQ.3) TYPDIR = 'ABS '
-                   IF (NOMSUP(IS,ID).EQ.NOEU) THEN
-                       WRITE(IFM,1210)NUCAS,TYPDIR,NOEU,
-     +                 ZK8(JCMP+JJ-1),ZR(JVALE+JJ-1),NOREF,NOMCAS
-                       GOTO 412
-                    ENDIF
- 312              CONTINUE
- 412            CONTINUE
- 212           CONTINUE
- 112         CONTINUE
-             JVALE = JVAL1
-             JCMP = JCMP1
-             ICONO = ICONO+NN
-           ENDIF
-           ENDIF 
-           IF (NGR.NE.0) THEN
-             CALL GETVID(MOTFAC,'GROUP_NO',II,1,0,K8BID,NG)
-             IF (NG.NE.0) THEN
-               NNG = -NG
-               CALL GETVID(MOTFAC,'GROUP_NO',II,1,NNG,
-     &                     ZK8(ICOGN),NG)
-                ICOGN = ICOGN+NNG
-                DO 113 ITR= 1,NNG
-                  ZI(JTRAV1+ITR-1) = NUCAS
- 113            CONTINUE
-                JTRAV1 = JTRAV1 +NNG
-              ENDIF
-            ENDIF              
- 36      CONTINUE
-      ENDIF
-      IF ((NTOU.EQ.0).AND.(NGR.NE.0)) THEN
-        DO 39 ICAS = 1, NCAS   
-          DO 50 II =1, NBOC2   
-           CALL GETVIS(MOTFAC,'NUME_CAS',II,1,1,NUCAS,NC)
-           IF (NUCAS.EQ.ZI(JCAS+ICAS-1)) THEN        
-            DO 70 IGR = 1, NGR
-              GRNOEU = ZK8(JGRN+IGR-1)
-              CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONMAX',NN,K8BID)
-              ZI(IDN-1+IGR) = NN
-              NBNOGR = NBNOGR+NN
- 70         CONTINUE
-           ENDIF
- 50      CONTINUE
- 39     CONTINUE
-      ENDIF
+ 30       CONTINUE
+ 20     CONTINUE     
+ 10   CONTINUE
+      DO 50 IOCC = 1,NBOC
+        CALL JELIRA(JEXNUM('&&ASENAP.LISTCAS',IOCC),'LONMAX',
+     +                                                   NCAS,K8B)
+        CALL JEVEUO(JEXNUM('&&ASENAP.LISTCAS',IOCC),'L',JCAS)
+        WRITE(IFM,1220) 
+        IF (ZI(JTYP+IOCC-1).EQ.1) TYPDIR = 'QUAD'
+        IF (ZI(JTYP+IOCC-1).EQ.2) TYPDIR = 'LINE'
+        IF (ZI(JTYP+IOCC-1).EQ.3) TYPDIR = 'ABS'
+        IORDR = ZI(JORD+IOCC-1)
+        WRITE(IFM,1230)
+        WRITE(IFM,1240)IORDR,TYPDIR,( ZI(JCAS+IC-1),IC=1,NCAS)   
+ 50   CONTINUE 
+      IORDR = ZI(JORD+NBOC)
+      TYPDIR ='QUAD'
+      WRITE(IFM,1250)
+      WRITE(IFM,1260)
+      WRITE(IFM,1270)IORDR,TYPDIR
 C
-      IF ((NTOU.NE.0).AND.(NGR.NE.0)) THEN
-        DO 51 II =1, NBOC2   
-          DO 71 IGR = 1, NGR
-            GRNOEU = ZK8(JGRN+IGR-1)
-            CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONMAX',NN,K8BID)
-            ZI(IDN-1+IGR) = NN
-            NBNOGR = NBNOGR+NN
- 71       CONTINUE
- 51     CONTINUE
-      ENDIF
-
-      IF (NBNOGR.NE.0) 
-     &  CALL WKVECT('ASIMPR.NOEUDGR','V V K8',NBNOGR,INOE)
+C ----LISTE DES FORMATS D IMPRESSIONS 
 C
-      IF ((NTOU.EQ.0).AND.(NGR.NE.0)) THEN
-        DO 40 II =1, NGR
-         DO 140 ICAS = 1,NBOC2
-         NUCAS = ZI(JTRAV+II-1)
-         CALL GETVIS(MOTFAC,'NUME_CAS',ICAS,1,1,NUCAS1,NC)
-         IF (NUCAS .EQ. NUCAS1) THEN
-         CALL GETVTX(MOTFAC,'NOM_CAS',ICAS,1,1,NOMCAS,NC)
-         CALL GETVID(MOTFAC,'NOEUD_REFE',ICAS,1,1,NOREF,NR)
-         IF (NR.EQ.0) NOREF = '-'
-         CALL GETVR8(MOTFAC,'DX',ICAS,1,0,DX,NX)
-         CALL GETVR8(MOTFAC,'DY',ICAS,1,0,DY,NY)
-         CALL GETVR8(MOTFAC,'DZ',ICAS,1,0,DZ,NZ)
-         IF (NX.NE.0) THEN 
-            CALL GETVR8(MOTFAC,'DX',ICAS,1,1,ZR(JVAL1),NX)
-            ZK8(JCMP1) = 'DX'
-            JVAL1 = JVAL1 + 1
-            JCMP1 = JCMP1 + 1
-         ENDIF
-         IF (NY.NE.0) THEN 
-           CALL GETVR8(MOTFAC,'DY',ICAS,1,1,ZR(JVAL1),NY)
-           ZK8(JCMP1) = 'DY'
-           JVAL1 = JVAL1 + 1
-           JCMP1 = JCMP1 + 1
-         ENDIF
-         IF (NZ.NE.0) THEN 
-           CALL GETVR8(MOTFAC,'DZ',ICAS,1,1,ZR(JVAL1),NZ)
-           ZK8(JCMP1) = 'DZ'
-           JVAL1 = JVAL1 + 1
-           JCMP1 = JCMP1 + 1
-         ENDIF
-           NJJ = JVAL1-JVALE
-         IF (NBNOGR.GT.0) THEN
-            CALL JEVEUO(JEXNOM(OBJ1,ZK8(JGRN+II-1)),'L',JDGN)
-            DO 90 J = 1,ZI(IDN+II-1)
-              CALL JENUNO(JEXNUM(OBJ2,ZI(JDGN-1+J)),NOEU)
-              DO 790 JJ = 1, NJJ
-               DO 490 IS = 1,NBSUP
-                 DO 590 ID = 1,3
-                   IF (TCOSAP(IS,ID).EQ.1) TYPDIR = 'QUAD'
-                   IF (TCOSAP(IS,ID).EQ.2) TYPDIR = 'LINE'
-                   IF (TCOSAP(IS,ID).EQ.3) TYPDIR = 'ABS '
-                   IF (NOMSUP(IS,ID).EQ.NOEU) THEN
-                     WRITE(IFM,1210)NUCAS,TYPDIR,NOEU,
-     +                ZK8(JCMP+JJ-1),ZR(JVALE+JJ-1),NOREF,NOMCAS
-                       GOTO 490
-                    ENDIF
- 590             CONTINUE
- 490           CONTINUE
- 790         CONTINUE
- 90        CONTINUE
-             JVALE = JVAL1
-             JCMP = JCMP1
-          ENDIF
-          ENDIF
- 140     CONTINUE
- 40     CONTINUE
- 29    CONTINUE
-      ELSE IF ((NTOU.NE.0).AND.(NGR.NE.0)) THEN
-        DO 45 II =1, NGR
-         DO 145 ICAS = 1,NBOC2
-           NUCAS = ZI(JTRAV+II-1)
-           CALL GETVIS(MOTFAC,'NUME_CAS',ICAS,1,1,NUCAS1,NC)
-         IF (NUCAS .EQ. NUCAS1) THEN
-           CALL GETVTX(MOTFAC,'NOM_CAS',ICAS,1,1,NOMCAS,NC)
-           CALL GETVID(MOTFAC,'NOEUD_REFE',ICAS,1,1,NOREF,NR)
-           IF (NR.EQ.0) NOREF = '-'
-           CALL GETVR8(MOTFAC,'DX',ICAS,1,0,DX,NX)
-           CALL GETVR8(MOTFAC,'DY',ICAS,1,0,DY,NY)
-           CALL GETVR8(MOTFAC,'DZ',ICAS,1,0,DZ,NZ)
-           IF (NX.NE.0) THEN 
-            CALL GETVR8(MOTFAC,'DX',ICAS,1,1,ZR(JVAL1),NX)
-            ZK8(JCMP1) = 'DX'
-            JVAL1 = JVAL1 + 1
-            JCMP1 = JCMP1 + 1
-           ENDIF
-           IF (NY.NE.0) THEN 
-            CALL GETVR8(MOTFAC,'DY',ICAS,1,1,ZR(JVAL1),NY)
-            ZK8(JCMP1) = 'DY'
-            JVAL1 = JVAL1 + 1
-            JCMP1 = JCMP1 + 1
-           ENDIF
-           IF (NZ.NE.0) THEN 
-            CALL GETVR8(MOTFAC,'DZ',ICAS,1,1,ZR(JVAL1),NZ)
-            ZK8(JCMP1) = 'DZ'
-            JVAL1 = JVAL1 + 1
-            JCMP1 = JCMP1 + 1
-           ENDIF
-           
-           NJJ = JVAL1-JVALE
-           IF (NBNOGR.GT.0) THEN
-             CALL JEVEUO(JEXNOM(OBJ1,ZK8(JGRN+II-1)),'L',JDGN)
-             DO 190 J = 1,ZI(IDN+II-1)
-               CALL JENUNO(JEXNUM(OBJ2,ZI(JDGN-1+J)),NOEU)
-               DO  290 JJ = 1, NJJ
-                DO 390 IS = 1,NBSUP
-                 DO 690 ID = 1,3
-                   IF (TCOSAP(IS,ID).EQ.1) TYPDIR = 'QUAD'
-                   IF (TCOSAP(IS,ID).EQ.2) TYPDIR = 'LINE'
-                   IF (TCOSAP(IS,ID).EQ.3) TYPDIR = 'ABS '
-                   IF (NOMSUP(IS,ID).EQ.NOEU) THEN 
-                       WRITE(IFM,1210)NUCAS,TYPDIR,NOEU,
-     +                 ZK8(JCMP+JJ-1),ZR(JVALE+JJ-1),NOREF,NOMCAS
-                       GOTO 390
-                   ENDIF
- 690             CONTINUE
- 390           CONTINUE
- 290          CONTINUE
- 190         CONTINUE
-             JVALE = JVAL1
-             JCMP = JCMP1
-            ENDIF
-            ENDIF
- 145        CONTINUE
- 45      CONTINUE
-        ENDIF
-
 
  1167 FORMAT(/,1X,'--- COMPOSANTE PRIMAIRE ---')
  1170 FORMAT(1X,
-     +      'SUPPORT  COMBINAISON')
- 1180 FORMAT(A10,A10)
+     +      'COMBI SUPPORT')
+ 1180 FORMAT(2X,A80)
  1190 FORMAT(/,1X,' --- COMPOSANTE SECONDAIRE ---')
  1200 FORMAT(1X,
-     + '  CAS   COMBINAISON   SUPPORT     CMP        VALEUR       '
+     + '  CAS      SUPPORT     CMP        VALEUR       '//
      +  ' NOEUD_REFE  NOM_CAS')
- 1210 FORMAT(1P,1X,I5,5X,A8,5X,A8,3X,A8,2X,D12.5,3X,A8,3X,A80)
+ 1210 FORMAT(1P,1X,I5,5X,A8,3X,A8,5X,D12.5,3X,A8,3X,A80)
+ 1220 FORMAT(1X,
+     +      'GROUPE DE CAS')
+ 1230 FORMAT(1X,'NUME_ORDRE     COMBI     LIST_CAS')
+ 1240 FORMAT(1P,1X,I5,8X,A8,5X,100(I3,1X))
+ 1250 FORMAT(/,1X,' SOMME QUADRATIQUE DES OCCURENCES '//
+     +   ' DE COMB_DEPL_APPUI    ')
+ 1260 FORMAT(/,1X,'NUME_ORDRE     CUMUL     ')
+ 1270 FORMAT(1P,1X,I5,8X,A8)
 C
-      CALL JEDETC('V','ASIMPR',1)
+      CALL JEDETC('V','&&ASECON',1)
+      CALL JEDETC('V','&&ASIMPR',1)
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/05/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE CALCUL DE G POUR UN PB ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -130,7 +130,9 @@ UP=STAT_NON_LINE(
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
                        CONVERGENCE=_F( 
-                RESI_GLOB_RELA = 1.E-8,
+                RESI_REFE_RELA=1.,
+                SIGM_REFE     =4.8E-3,
+             #   RESI_GLOB_RELA = 1.E-8,
                 ITER_GLOB_MAXI = 8)
               )
 
@@ -167,8 +169,10 @@ UP2=STAT_NON_LINE(
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
-                       CONVERGENCE=_F( 
-                RESI_GLOB_RELA = 1.E-8,
+                       CONVERGENCE=_F(
+                RESI_REFE_RELA=1.,
+                SIGM_REFE     =4.8E-3,                        
+         #       RESI_GLOB_RELA = 1.E-8,
                 ITER_GLOB_MAXI = 8)
               )
 

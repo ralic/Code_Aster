@@ -1,4 +1,4 @@
-#@ MODIF codex Build  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF codex Build  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -158,6 +158,7 @@ def ops14(cmd):
 
 ops={
      1:ops1,
+     2:ops1,
      4:ops4,
      5:ops5,
      12:ops12,

@@ -5,7 +5,7 @@
      >                    CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/10/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,6 @@ C====
 C
 C 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
 C
-      CALL INFMAJ
       CALL INFNIV ( IFM, NIVINF )
 C
 CGN      IF ( NIVINF.GT.1 ) THEN

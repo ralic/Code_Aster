@@ -1,11 +1,11 @@
-      SUBROUTINE MOTUBN ( TABPUS, DINST, NBSECT, VOLTUB )
+      SUBROUTINE MOTUBN ( TABPUS, DINST, NBSECT )
       IMPLICIT  NONE
       INTEGER             NBSECT
-      REAL*8              DINST, VOLTUB(*)
+      REAL*8              DINST
       CHARACTER*(*)       TABPUS
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/07/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 02/12/2002   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C
-C     OPERATEUR  "MODI_OBSTACLE"
+C     OPERATEUR  "POST_USURE"
 C     REMPLACEMENT DU TUBE PERCE PAR UN TUBE NEUF
 C
 C ----------------------------------------------------------------------
@@ -60,10 +60,6 @@ C
       LCRIT(1) = 'RELATIF '
       LCRIT(2) = 'RELATIF '
       ZERO = 0.0D0
-C
-      DO 10 I = 1 , NBSECT
-         VOLTUB(I) = ZERO
- 10   CONTINUE
 C
 C --- LES PARAMETRES A REMETTRE A 0.
 C        POUR L'INSTANT TRAITE:

@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 24/09/2002   AUTEUR PABHHHH N.TARDIEU 
+#@ MODIF recal Macro  DATE 31/01/2003   AUTEUR PABHHHH N.TARDIEU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,10 +30,13 @@ from Accas import _F
 import os
 
 
-#===========================================================================================
+#_____________________________________________
+#
 # DIVERS UTILITAIRES POUR LA MACRO
+#_____________________________________________
 
-#transforme_list_Num tranforme transforme les donneés entrées par l'utilsateur en tableau Numeric
+
+# Transforme les donneés entrées par l'utilsateur en tableau Numeric
 def transforme_list_Num(parametres,res_exp):
    dim_para = len(parametres)  #donne le nb de parametres
    val_para = Numeric.zeros(dim_para,Numeric.Float)
@@ -45,7 +48,6 @@ def transforme_list_Num(parametres,res_exp):
       val_para[i] = parametres[i][1]
       borne_inf[i] = parametres[i][2]
       borne_sup[i] = parametres[i][3]
-      
    return para,val_para,borne_inf,borne_sup
 
 def mes_concepts(list_concepts=[],base=None):
@@ -60,16 +62,16 @@ def mes_concepts(list_concepts=[],base=None):
    return tuple(list_concepts)
 
 
-def detr_concepts(objet):
-     liste_concepts=mes_concepts(base=objet.parent)
+def detr_concepts(self):
+     liste_concepts=mes_concepts(base=self.parent)
      for e in liste_concepts:
         nom = string.strip(e)
-        DETRUIRE( CONCEPT =objet.g_context['_F'](NOM = nom))
-        if objet.jdc.g_context.has_key(nom) : del objet.jdc.g_context[nom]
+        DETRUIRE( CONCEPT =self.g_context['_F'](NOM = nom))
+        if self.jdc.g_context.has_key(nom) : del self.jdc.g_context[nom]
      del(liste_concepts)
 
 
-def calcul_F(objet,UL,para,val,reponses):
+def calcul_F(self,UL,para,val,reponses):
       fic = open('fort.'+str(UL),'r')
       #On stocke le contenu de fort.UL dans la variable fichier qui est un string 
       fichier=fic.read()
@@ -77,19 +79,19 @@ def calcul_F(objet,UL,para,val,reponses):
       fichiersauv=copy.copy(fichier)
       fic.close()
 
-      #L est une liste ou l'on va stocker le fichier modifié
+      #Fichier_Resu est une liste ou l'on va stocker le fichier modifié
       #idée générale :on délimite des 'blocs' dans fichier
       #on modifie ou non ces blocs suivant les besoins 
-      #on ajoute ces blocs dans la liste L
-      L=[]                      
+      #on ajoute ces blocs dans la liste Fichier_Resu
+      Fichier_Resu=[]                      
       
       try: 
          #cherche l'indice de DEBUT()
          index_deb=string.index(fichier,'DEBUT(')
-         while( fichier[index_deb]!='\012'):
+         while( fichier[index_deb]!='\n'):
             index_deb=index_deb+1
+         #on restreind fichier en enlevant 'DEBUT();'
          fichier = fichier[index_deb+1:]   
-                  #on restreind fichier en enlevant 'DEBUT();'
       except :
          #on va dans l'except si on a modifié le fichier au moins une fois
          pass 
@@ -97,8 +99,8 @@ def calcul_F(objet,UL,para,val,reponses):
       try:
          #cherche l'indice de FIN()
          index_fin = string.index(fichier,'FIN(')
+         #on restreind fichier en enlevant 'FIN();'
          fichier = fichier[:index_fin]   
-                  #on restreind fichier en enlevant 'FIN();'
       except :
          #on va dans l'except si on a modifié le fichier au moins une fois 
          index_retour = string.index(fichier,'RETOUR')
@@ -119,17 +121,17 @@ def calcul_F(objet,UL,para,val,reponses):
       
       
       #on va délimiter les blocs intermédiaires entre chaque para "utiles" à l'optimsation
-      bloc_inter ='\012'
+      bloc_inter ='\n'
       for i in range(len(para)-1):
          j = index_para[i]
          k = index_para[i+1]
-         while(fichier[j]!= '\012'):
+         while(fichier[j]!= '\n'):
             j=j+1
-         bloc_inter=bloc_inter + fichier[j:k] + '\012'
+         bloc_inter=bloc_inter + fichier[j:k] + '\n'
          
       #on veut se placer sur le premier retour chariot que l'on trouve sur la ligne du dernier para
       i = index_last_para 
-      while(fichier[i] != '\012'):
+      while(fichier[i] != '\n'):
          i = i + 1
       index_last_para  = i
       #on délimite les blocs suivants:
@@ -137,44 +139,44 @@ def calcul_F(objet,UL,para,val,reponses):
       post_bloc = fichier[ index_last_para+ 1:]    #fichier après dernier parametre
       
       #on ajoute dans L tous ce qui est avant le premier paramètre 
-      L.append(pre_bloc)
-      #On ajoute à L tous ce qui est entre les parametres
-      L.append(bloc_inter)
+      Fichier_Resu.append(pre_bloc)
       #On ajoute la nouvelle valeur des parametres
       dim_para=len(para)
       for j in range(dim_para):
-         L.append(para[j]+'='+str(val[j]) + ';' + '\012')
+         Fichier_Resu.append(para[j]+'='+str(val[j]) + ';' + '\n')
+      #On ajoute à Fichier_Resu tous ce qui est entre les parametres
+      Fichier_Resu.append(bloc_inter)
       
-      L.append(post_bloc)
+      Fichier_Resu.append(post_bloc)
       #--------------------------------------------------------------------------------
       #on va ajouter la fonction EXTRACT 
       #et on stocke les réponses calculées dans la liste Lrep
       #qui va etre retournée par la fonction calcul_F
-      objet.g_context['Lrep'] = []
-      L.append('Lrep=[]'+'\012')
+      self.g_context['Lrep'] = []
+      Fichier_Resu.append('Lrep=[]'+'\n')
       for i in range(len(reponses)):
-         L.append('F = EXTRACT('+str(reponses[i][0])+','+"'"+str(reponses[i][1])+"'"+','+"'"+str(reponses[i][2])+"'"+')'+'\012')
-         L.append('Lrep.append(F)'+'\012')
+         Fichier_Resu.append('F = EXTRACT('+str(reponses[i][0])+','+"'"+str(reponses[i][1])+"'"+','+"'"+str(reponses[i][2])+"'"+')'+'\n')
+         Fichier_Resu.append('Lrep.append(F)'+'\n')
       #on ajoute à RETOUR
-      L.append('RETOUR();\012')
+      Fichier_Resu.append('RETOUR();\n')
       
       #ouverture du fichier fort.3 et mise a jour de celui ci
       x=open('fort.'+str(UL),'w')
-      x.writelines('from Accas import _F \012from Cata.cata import * \012')
-      x.writelines(L)
+      x.writelines('from Accas import _F \nfrom Cata.cata import * \n')
+      x.writelines(Fichier_Resu)
       x.close()
-      del(L)
+      del(Fichier_Resu)
       del(pre_bloc)
       del(post_bloc)
       del(fichier)
       
-      INCLUDE(UNITE = str(UL))
-      detr_concepts(objet)
+      INCLUDE(UNITE = UL)
+      detr_concepts(self)
       # on remet le fichier dans son etat initial
       x=open('fort.'+str(UL),'w')
       x.writelines(fichiersauv)
       x.close()
-      return objet.g_context['Lrep']
+      return self.g_context['Lrep']
 
 #----------------------------------------------------------
 
@@ -210,7 +212,11 @@ def EXTRACT(Table,Para,Champ):
   return F
   
 
-#-------------------------------------------
+#_____________________________________________
+#
+# IMPRESSIONS GRAPHIQUES
+#_____________________________________________
+
 def graphique(L_F,res_exp,reponses,iter,UL_out,interactif):
    graphe=[]
    impr=Gnuplot.Gnuplot()
@@ -238,8 +244,10 @@ def graphique(L_F,res_exp,reponses,iter,UL_out,interactif):
          impr.plot(Gnuplot.Data(L_F[i],title='Calcul'),Gnuplot.Data(res_exp[i],title='Experimental'))
 
 
-#===========================================================================================
+#_____________________________________________
+#
 # CONTROLE DES ENTREES UTILISATEUR
+#_____________________________________________
 
 def erreur_de_type(code_erreur,X):
    #code_erreur ==0 --> X est une liste
@@ -249,13 +257,13 @@ def erreur_de_type(code_erreur,X):
    txt=""
    if(code_erreur == 0 ):
       if type(X) is not types.ListType:
-         txt="\012Cette entrée: " +str(X)+" n'est pas une liste valide"
+         txt="\nCette entrée: " +str(X)+" n'est pas une liste valide"
    if(code_erreur == 1 ):
       if type(X) is not types.StringType:
-         txt="\012Cette entrée: " +str(X)+" n'est pas une chaine de caractère valide ; Veuillez la ressaisir en lui appliquant le type char de python"
+         txt="\nCette entrée: " +str(X)+" n'est pas une chaine de caractère valide ; Veuillez la ressaisir en lui appliquant le type char de python"
    if(code_erreur == 2 ):
       if type(X) is not types.FloatType:
-         txt="\012Cette entrée:  " +str(X)+" n'est pas une valeur float valide ; Veuillez la ressaisir en lui appliquant le type float de python"
+         txt="\nCette entrée:  " +str(X)+" n'est pas une valeur float valide ; Veuillez la ressaisir en lui appliquant le type float de python"
    return txt
    
    
@@ -265,10 +273,10 @@ def erreur_dimension(PARAMETRES,REPONSES):
    txt=""
    for i in range(len(PARAMETRES)):
       if (len(PARAMETRES[i]) != 4):
-         txt=txt + "\012La sous-liste de la variable paramètre numéro " + str(i+1)+" n'est pas de longueur 4"
+         txt=txt + "\nLa sous-liste de la variable paramètre numéro " + str(i+1)+" n'est pas de longueur 4"
    for i in range(len(REPONSES)):
       if (len(REPONSES[i]) != 3):
-         txt=txt + "\012La sous-liste de la variable réponse numéro " + str(i+1)+" n'est pas de longueur 3"
+         txt=txt + "\nLa sous-liste de la variable réponse numéro " + str(i+1)+" n'est pas de longueur 3"
    return txt
 
 
@@ -277,7 +285,7 @@ def compare__dim_rep__dim_RESU_EXP(REPONSES,RESU_EXP):
    # pour éviter l'arret du programme
    txt=""
    if( len(REPONSES) != len(RESU_EXP)):
-      txt="\012Vous avez entré " +str(len(REPONSES))+ " réponses et "+str(len(RESU_EXP))+ " expériences ; On doit avoir autant de réponses que de résultats expérimentaux"
+      txt="\nVous avez entré " +str(len(REPONSES))+ " réponses et "+str(len(RESU_EXP))+ " expériences ; On doit avoir autant de réponses que de résultats expérimentaux"
    return txt
 
 
@@ -289,10 +297,10 @@ def verif_fichier(UL,PARAMETRES,REPONSES):
    fic=fichier.read()
    for i in range(len(PARAMETRES)):
       if((string.find(fic,PARAMETRES[i][0])==-1) or ((string.find(fic,PARAMETRES[i][0]+'=')==-1) and (string.find(fic,PARAMETRES[i][0]+' ')==-1))):
-         txt=txt + "\012Le paramètre "+PARAMETRES[i][0]+" que vous avez entré pour la phase d'optimisation n'a pas été trouvé dans votre fichier de commandes ASTER"
+         txt=txt + "\nLe paramètre "+PARAMETRES[i][0]+" que vous avez entré pour la phase d'optimisation n'a pas été trouvé dans votre fichier de commandes ASTER"
    for i in range(len(REPONSES)):
       if((string.find(fic,REPONSES[i][0])==-1) or ((string.find(fic,REPONSES[i][0]+'=')==-1) and (string.find(fic,REPONSES[i][0]+' ')==-1))):
-         txt=txt + "\012La réponse  "+REPONSES[i][0]+" que vous avez entrée pour la phase d optimisation n'a pas été trouvée dans votre fichier de commandes ASTER"
+         txt=txt + "\nLa réponse  "+REPONSES[i][0]+" que vous avez entrée pour la phase d'optimisation n'a pas été trouvée dans votre fichier de commandes ASTER"
    return txt
 
 
@@ -300,27 +308,46 @@ def verif_valeurs_des_PARAMETRES(PARAMETRES):
 #On verifie que pour chaque PARAMETRES de l'optimisation
 # les valeurs entrées par l'utilisateur sont telles que :
 #              val_inf<val_sup
-#              val_init appartient à [val_inf, val_sup] 
+#              val_init appartient à [borne_inf, borne_sup] 
 #              val_init!=0         
-   #verification des bornes
+#              borne_sup!=0         
+#              borne_inf!=0         
    txt=""
+   #verification des bornes
    for i in range(len(PARAMETRES)):
       if( PARAMETRES[i][2] >PARAMETRES[i][3]):
-         txt=txt + "\012La borne inférieure "+str(PARAMETRES[i][2])+" de  "+PARAMETRES[i][0]+ "est plus grande que sa borne supérieure"+str(PARAMETRES[i][3])
+         txt=txt + "\nLa borne inférieure "+str(PARAMETRES[i][2])+" de  "+PARAMETRES[i][0]+ "est plus grande que sa borne supérieure"+str(PARAMETRES[i][3])
    #verification de l'encadrement de val_init 
    for i in range(len(PARAMETRES)):
       if( (PARAMETRES[i][1] < PARAMETRES[i][2]) or (PARAMETRES[i][1] > PARAMETRES[i][3])):
-         txt=txt + "\012La valeur initiale "+str(PARAMETRES[i][1])+" de "+PARAMETRES[i][0]+ " n'est pas dans l'intervalle [borne_inf,born_inf]=["+str(PARAMETRES[i][2])+" , "+str(PARAMETRES[i][3])+"]"
+         txt=txt + "\nLa valeur initiale "+str(PARAMETRES[i][1])+" de "+PARAMETRES[i][0]+ " n'est pas dans l'intervalle [borne_inf,born_inf]=["+str(PARAMETRES[i][2])+" , "+str(PARAMETRES[i][3])+"]"
    #verification que val_init !=0
    for  i in range(len(PARAMETRES)):
       if (PARAMETRES[i][1] == 0. ):
-         txt=txt + "\012Problèmes de valeurs initiales pour le paramètre "+PARAMETRES[i][0]+" : ne pas donner de valeur initiale nulle mais un ordre de grandeur."
+         txt=txt + "\nProblème de valeurs initiales pour le paramètre "+PARAMETRES[i][0]+" : ne pas donner de valeur initiale nulle mais un ordre de grandeur."
+   #verification que borne_sup !=0
+   for  i in range(len(PARAMETRES)):
+      if (PARAMETRES[i][3] == 0. ):
+         txt=txt + "\nProblème de borne supérieure pour le paramètre "+PARAMETRES[i][0]+" : ne pas donner de valeur strictement nulle."
+   #verification que borne_inf !=0
+   for  i in range(len(PARAMETRES)):
+      if (PARAMETRES[i][2] == 0. ):
+         txt=txt + "\nProblème de borne inférieure pour le paramètre "+PARAMETRES[i][0]+" : ne pas donner de valeur strictement nulle."
+   return txt
+
+
+def verif_UNITE(GRAPHIQUE,UNITE_RESU):
+   # On vérifie que les unités de résultat et 
+   # de graphique sont différentes
+   txt=""
+   GRAPHE_UL_OUT=GRAPHIQUE['UNITE']
+   if (GRAPHE_UL_OUT==UNITE_RESU):
+       txt=txt + "\nLes unités logiques des fichiers de résultats graphiques et de résultats d'optimisation sont les memes."
    return txt
 
 
 
-
-def gestion(UL,PARAMETRES,REPONSES,RESU_EXP):
+def gestion(UL,PARAMETRES,REPONSES,RESU_EXP,GRAPHIQUE,UNITE_RESU):
    #Cette methode va utiliser les methodes de cette classe declarée ci_dessus
    #test  est un boolean: test=0 -> pas d'erreur
    #                      test=1 -> erreur détectée
@@ -367,6 +394,9 @@ def gestion(UL,PARAMETRES,REPONSES,RESU_EXP):
 
    #verifiaction des valeurs des PARAMETRES entrées par l'utilisteur 
    texte = texte + verif_valeurs_des_PARAMETRES(PARAMETRES)
+
+   #verifiaction des unités logiques renseignées par l'utilisateur
+   texte = texte + verif_UNITE(GRAPHIQUE,UNITE_RESU)
 
    return texte
    

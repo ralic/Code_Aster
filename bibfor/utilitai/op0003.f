@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/10/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,23 +132,23 @@ C
       CALL GETVTX(' ','PROL_DROITE',0,1,1,PROLGD(2:2),N5)
 
 C
-      CALL WKVECT(NOMFON//'.PROL','G V K8',5,LPRO)
+      CALL WKVECT(NOMFON//'.PROL','G V K16',5,LPRO)
       IF ( NBLN .NE. 0) THEN
-         ZK8(LPRO) = 'FONCTION'
-         ZK8(LPRO+1) = INTERP(1)//INTERP(2)
-         ZK8(LPRO+2) = NOMPAR
-         ZK8(LPRO+3) = NOMRES
-         ZK8(LPRO+4) = PROLGD
+         ZK16(LPRO) = 'FONCTION'
+         ZK16(LPRO+1) = INTERP(1)//INTERP(2)
+         ZK16(LPRO+2) = NOMPAR
+         ZK16(LPRO+3) = NOMRES
+         ZK16(LPRO+4) = PROLGD
       ELSE
         IF ( NBVC.NE.0 ) THEN
-         ZK8(LPRO) = 'FONCT_C '
+         ZK16(LPRO) = 'FONCT_C '
         ELSE
-         ZK8(LPRO) = 'FONCTION'
+         ZK16(LPRO) = 'FONCTION'
         ENDIF
-        ZK8(LPRO+1) = INTERP(1)//INTERP(2)
-        ZK8(LPRO+2) = NOMPAR
-        ZK8(LPRO+3) = NOMRES
-        ZK8(LPRO+4) = PROLGD
+        ZK16(LPRO+1) = INTERP(1)//INTERP(2)
+        ZK16(LPRO+2) = NOMPAR
+        ZK16(LPRO+3) = NOMRES
+        ZK16(LPRO+4) = PROLGD
       ENDIF
 C
 C     MINI DES ABSCISSES

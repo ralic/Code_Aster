@@ -3,11 +3,23 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/10/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 18/03/2003   AUTEUR MCOURTOI M.COURTOIS 
+C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-C              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
-C              REDISTRIBUTION OF THIS FILE.
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C RESPONSABLE MCOURTOI M.COURTOIS
 C     MODULE "MEDISIS" :  OPERATIONS SUR DES FONCTIONS
@@ -16,6 +28,7 @@ C     OPERATIONS  DISPONIBLES       SUR FONCTION    NAPPE
 C       -  SPECTRE D'OSCILLATEUR        OUI         NON
 C       -  DERIVATION                   OUI         NON
 C       -  INTEGRATION                  OUI         NON
+C       -  ECART_TYPE                   OUI         NON
 C       -  MAXIMUM D'UNE FONCTION       OUI         OUI
 C       -  COMBINAISON LINEAIRE         OUI         OUI
 C       -  COMBINAISON COMPLEXE         OUI         NON
@@ -28,6 +41,7 @@ C       -  FFT                          OUI         NON
 C       -  INDICES NOCIVITE D'UN SEISME OUI         OUI
 C       -  CORRECTION DERIVE ACCELERO   OUI         NON
 C       -  LISSAGE D'ENVELOPPE SPECTRE  OUI         OUI
+C       -  INVERSE                      OUI         NON
 C     ------------------------------------------------------------------
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -48,32 +62,36 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     ------------------------------------------------------------------
-      REAL*8         COEF, RBID, Q0, V0, NORME
+      REAL*8         COEF, RBID, Q0, V0, NORME, MOY
       CHARACTER*8    K8B, LISTR, NATURE, NATURF, LPARA
       CHARACTER*16   CONCEP, NOMCMD, NOMOPE, METHOD, CRITER,PARTIE
       CHARACTER*19   SORTIE, NOMFON, LISTFR
-      CHARACTER*24   NOMTEM(5)
+      CHARACTER*24   NOMTEM(5), PROL, VALE
       INTEGER        LF, L, K, NBAMOR, LAMOR, NBFREQ, LFREQ, LNOMF
       INTEGER        I,NBFON,NBVAL,LTINI,LTFIN,LFINI,LFFIN,LCOEF
       INTEGER        L1, L2, NBMAX, NBPTS, LFON
       CHARACTER*19   NOMFO1, NOMFO2,NOMFI
       INTEGER        N1, N2, N3, N4, N5, N6 , N7, N8, N9, N10, N11,
-     +               N12, N13, N14, N15, N16, IOCC, IBID
-      INTEGER        NBPRMS, NBPMAX, IFM,NIV,EXPO1
-      PARAMETER    ( NBPRMS = 5, NBPMAX = 2 )
+     +               N12, N13, N14, N15, N16, N17, N18, N19, IOCC, IBID
+      INTEGER        NBPRMS, NBPMAX, NBPETY, IFM,NIV,EXPO1
+      PARAMETER    ( NBPRMS=5, NBPMAX=2, NBPETY=6 )
       REAL*8         TINI, TFIN, BINF, BSUP, FINI, FFIN, EPSI, RMS,
-     +               VALRMS(3),VALINF, VALSUP
+     +               VALRMS(3),VALINF, VALSUP,VALTYP(4)
       COMPLEX*16     C16B
       CHARACTER*1    BASE, K1BID
-      CHARACTER*8    CRIT, INTERP, PROLGD, SURCHG,NOMRES
-      CHARACTER*19   NOMRMS(2)
-      CHARACTER*16   NOPRMS(NBPRMS), NOPMAX(NBPMAX)
-      CHARACTER*8    TYPRMS(NBPRMS), TYPMAX(NBPMAX)
+      CHARACTER*8    CRIT, SURCHG, NOMRES
+      CHARACTER*19   NOMRMS(2),NOMTYP(2)
+      CHARACTER*16   NOPRMS(NBPRMS), NOPMAX(NBPMAX), NOPETY(NBPETY),
+     +               PROLGD, INTERP
+      CHARACTER*8    TYPRMS(NBPRMS), TYPMAX(NBPMAX), TYPETY(NBPETY)
 C
       DATA NOPRMS/'FONCTION','METHODE','INST_INIT','INST_FIN' , 'RMS'/
       DATA TYPRMS/'K8'      ,'K8'     ,'R'        ,'R'        , 'R'  /
       DATA NOPMAX/'FONCTION','MAXI'/
       DATA TYPMAX/'K8'      ,'R' /
+      DATA NOPETY/'FONCTION','METHODE','INST_INIT','INST_FIN' ,
+     +'ECART_TYPE','MOYENNE'/
+      DATA TYPETY/'K8'      ,'K8'     ,'R'        ,'R'        ,'R','R'/
 C
       DATA     NOMTEM/'&&OP0091.TEMPORAIRE1', '&&OP0091.TEMPORAIRE2',
      .                '&&OP0091.TEMPORAIRE3', '&&OP0091.TEMPORAIRE4',
@@ -111,6 +129,8 @@ C     --- NOM DU MOT CLE FACTEUR ---
       CALL GETFAC ( 'NORME'        , N15)
       CALL GETFAC ( 'PUISSANCE'    , N16)
       CALL GETFAC ( 'LISS_ENVELOP' , N17)
+      CALL GETFAC ( 'ECART_TYPE'   , N19)
+      CALL GETFAC ( 'INVERSE'      , N18)
       IF (N1.GT. 0) NOMOPE = 'ENVELOPPE       '
       IF (N2.GT. 0) NOMOPE = 'SPEC_OSCI       '
       IF (N3.GT. 0) NOMOPE = 'DERIVE          '
@@ -128,6 +148,8 @@ C     --- NOM DU MOT CLE FACTEUR ---
       IF (N15.GT.0) NOMOPE = 'NORME           '
       IF (N16.GT.0) NOMOPE = 'PUISSANCE       '
       IF (N17.GT.0) NOMOPE = 'LISS_ENVELOP    ' 
+      IF (N18.GT.0) NOMOPE = 'INVERSE         ' 
+      IF (N19.GT.0) NOMOPE = 'ECART_TYPE      ' 
 C
 C     ------------------------------------------------------------------
 C     ------------------- EXECUTION DE L'OPERATION DEMANDEE -----------
@@ -250,6 +272,72 @@ C        --- INTEGRATION ---
          CALL FOCAIN(METHOD,NOMFON,COEF,SORTIE,BASE)
 C
 C     ------------------------------------------------------------------
+      ELSEIF( NOMOPE .EQ. 'INVERSE    ' ) THEN
+C
+C        --- CALCUL DE L INVERSE D'UNE FONCTION ---
+C
+         CALL GETVID(NOMOPE,'FONCTION',1,1,1,NOMFO1,L1)
+         CALL FOCINV(NOMFO1,SORTIE,BASE)
+C
+C     ------------------------------------------------------------------
+      ELSEIF( NOMOPE .EQ. 'ECART_TYPE' ) THEN
+C
+C        --- CALCUL L'ECART_TYPE D'UNE FONCTION ---
+         CALL TBCRSD ( SORTIE , BASE )
+         CALL TBAJPA ( SORTIE, NBPETY, NOPETY, TYPETY )
+C
+         DO 60 IOCC = 1 , N19
+            CALL GETVID ( NOMOPE, 'FONCTION', IOCC,1,1, NOMFON, L )
+
+C           --- CALCUL DE LA MOYENNE ---           
+            PROL(1:19)  = NOMFON
+            PROL(20:24) = '.PROL'
+            CALL JEVEUO ( PROL, 'L', LPRO )
+C
+            IF ( ZK16(LPRO) .EQ. 'FONCTION' ) THEN
+               VALE(20:24) = '.VALE'
+               VALE(1:19) = NOMFON
+               CALL JELIRA ( VALE, 'LONUTI', NBVAL, K8B )
+               CALL JEVEUO ( VALE, 'L', LVAR )
+               NBPTS = NBVAL / 2
+               LFON  = LVAR + NBPTS
+
+               MOY=0.D0
+               DO 100 I = 1, NBPTS-1
+                  MOY = MOY + (ZR(LVAR+I)-ZR(LVAR+I-1))
+     &                   * (ZR(LFON+I)+ZR(LFON+I-1))*0.5D0
+ 100           CONTINUE
+               MOY=MOY/(ZR(LVAR+NBPTS-1)-ZR(LVAR))
+
+C              ---L'INSTANT INITIAL ET L'INSTANT FINAL ---
+               CALL GETVR8(NOMOPE,'INST_INIT', IOCC,1,1, TINI,  LTINI)
+               CALL GETVR8(NOMOPE,'INST_FIN',  IOCC,1,1, TFIN,  LTFIN)
+               CALL GETVTX(NOMOPE,'METHODE',   IOCC,1,1, METHOD,L)
+               CALL GETVTX(NOMOPE,'CRITERE',   IOCC,1,1, CRIT,  L)
+               CALL GETVR8(NOMOPE,'PRECISION', IOCC,1,1, EPSI,  L)
+C
+C              --- CALCUL DE LA MOYENNE QUADRATIQUE ---
+               CALL FOCRMS(METHOD,NOMFON,CRIT,EPSI,TINI,LTINI,
+     &                                              TFIN,LTFIN,MOY,SIG)
+C
+               VALTYP(1) = TINI
+               VALTYP(2) = TFIN
+               VALTYP(3) = SIG
+               VALTYP(4) = MOY
+               NOMTYP(1) = NOMFON
+               NOMTYP(2) = METHOD
+               CALL TBAJLI(SORTIE,NBPETY,NOPETY,IBID,VALTYP,C16B,
+     &            NOMTYP,0)
+            ELSEIF ( ZK16(LPRO) .EQ. 'NAPPE' ) THEN
+               CALL UTMESS('F','FOCETY',ZK16(LPRO)//' NON DISPONIBLE.')
+C
+            ELSE
+               CALL UTMESS('F','FOCETY',ZK16(LPRO)//
+     &                  ' SOUS TYPE INCONNU DE FONCTION.')
+            ENDIF
+  60     CONTINUE 
+C
+C     ------------------------------------------------------------------
       ELSEIF( NOMOPE .EQ. 'RMS' ) THEN
          CALL TBCRSD ( SORTIE , BASE )
          CALL TBAJPA ( SORTIE, NBPRMS, NOPRMS, TYPRMS )
@@ -269,7 +357,7 @@ C           ---L'INSTANT INITIAL ET L'INSTANT FINAL ---
 C
 C           --- CALCUL DE LA MOYENNE QUADRATIQUE ---           
             CALL FOCRMS(METHOD,NOMFON,CRIT,EPSI,TINI,LTINI,
-     &                                           TFIN,LTFIN,RMS)
+     &                                           TFIN,LTFIN,0.D0,RMS)
 C
             VALRMS(1) = TINI
             VALRMS(2) = TFIN  
@@ -298,9 +386,9 @@ C        --- FONCTION A TRANSFORMER ---
          CALL GETVID(NOMOPE,'FONCTION',1,1,1,NOMFON,L)
 C        --- SENS DE LA TRANSFORMATION
          CALL JEVEUO(NOMFON//'.PROL','L',LPRO)
-         IF (ZK8(LPRO+2).EQ.'INST') THEN
+         IF (ZK16(LPRO+2).EQ.'INST') THEN
             NSENS = 1
-         ELSEIF(ZK8(LPRO+2).EQ.'FREQ') THEN
+         ELSEIF(ZK16(LPRO+2).EQ.'FREQ') THEN
             NSENS = -1
          ENDIF
          CALL FONFFT(NSENS,NOMFON,SORTIE,'G')
@@ -442,6 +530,7 @@ C     ON NE LE FAIT PAS POUR LES TABL_FONC
       IF( NOMOPE .NE. 'RMS             ' .AND.
      +    NOMOPE .NE. 'NOCI_SEISME     ' .AND.
      +    NOMOPE .NE. 'MAX             ' .AND.
+     +    NOMOPE .NE. 'ECART_TYPE      ' .AND.
      +    NOMOPE .NE. 'PUISSANCE       ' .AND.
      +    NOMOPE .NE. 'NORME           ' ) THEN
          CALL FOATTR(' ',1,SORTIE)

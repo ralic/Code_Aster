@@ -12,7 +12,7 @@
       CHARACTER*24        SDM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/02/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -332,7 +332,11 @@ C
 C
                DO 222, IM = 1, NBMAIL, 1
 C
-                  VALEK(IK+IKK+1) = ZK8(JAM+L+IM-1)
+                  IF ( DOCU .EQ. 'LSTN' ) THEN
+                     VALEK(IK+IKK+1) = ZK8(JAM+L+IM-1)
+                  ELSE
+                     VALEK(IK+IKK+1) = '   -    '
+                  ENDIF
 C
                   DO 224, IC = 1, NBCMP, 1
                      VALER(IR+4+IC) =

@@ -5,7 +5,7 @@
       INTEGER      IRET
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,7 +66,7 @@ C
       IMES=0
       CHVAL=NOMFON//'.VALE'
       CALL JEVEUO(NOMFON//'.PROL','L',LPROL)
-      TYPFON = ZK8(LPROL)
+      TYPFON = ZK16(LPROL)
 C
 C     --------------------------------------------
       IF(TYPFON.EQ.'CONSTANT')THEN

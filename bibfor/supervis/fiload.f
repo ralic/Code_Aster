@@ -6,7 +6,7 @@
       COMPLEX*16                                         MC(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 01/04/96   AUTEUR GIBHHCM C.MASSERET 
+C MODIF SUPERVIS  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,7 +89,7 @@ C  LA FONCTION EST DE TYPE INTERPRETEE
       ELSE IF (IRET .EQ. 0 .AND. IRE2 .NE. 0) THEN
 C  LA FONCTION EST DE TYPE TABULEE
          CALL JEVEUO(KVAL//'.PROL','L',LPROL)
-         CALL FITABU(KVAL,1,ZK8(LPROL+2),MR(LPILE),RESU,IER)
+         CALL FITABU(KVAL,1,ZK16(LPROL+2),MR(LPILE),RESU,IER)
          MR(LPILE) = RESU
       ENDIF
       CALL JEDEMA()

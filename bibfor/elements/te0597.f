@@ -1,17 +1,28 @@
       SUBROUTINE TE0597(OPTION,NOMTE)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 03/07/2002   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-C              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
-C              REDISTRIBUTION OF THIS FILE.
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 
-C    - FONCTION REALISEE:  CALCUL DES OPTIONS SIGM_ELNO_TUYO
-C                          ET VARI_ELNO_TUYO POUR UN TUYAU DROIT
+C    - FONCTION REALISEE:  CALCUL DES OPTIONS ESPI_ELNO_TUYO
+C                          SIGM_ELNO_TUYO ET VARI_ELNO_TUYO
+C                          POUR UN TUYAU DROIT
 C                          ELEMENT: METUSEG3 MET6SEG3
 
 C    - ARGUMENTS:
@@ -163,7 +174,7 @@ C        BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
 
         DO 100 I = ISECT,ISECT + 1
 
-       IF ((NNO.EQ.3).AND.(NPG.EQ.1113)) THEN
+        IF ((NNO.EQ.3).AND.(NPG.EQ.1113)) THEN
 C      POUR NE PAS SUPPRIMER LA SAVANTE PROGRAMMATION DE PATRICK
 
             KPGS = ((2*NBSEC+1)* (ICOU-1)+ (I-1))*NBVARI
@@ -228,14 +239,25 @@ C      POUR NE PAS SUPPRIMER LA SAVANTE PROGRAMMATION DE PATRICK
 
   100   CONTINUE
 
-      ELSE IF (OPTION(1:14).EQ.'SIGM_ELNO_TUYO') THEN
+      ELSE IF ((OPTION(1:14).EQ.'EPSI_ELNO_TUYO').OR.
+     +     (OPTION(1:14).EQ.'SIGM_ELNO_TUYO')) THEN
+C
+         IF ((OPTION(1:14).EQ.'EPSI_ELNO_TUYO')) THEN
+
+C ======== RAPPEL DES DEFORMATIONS ====================
+
+             CALL JEVECH('PDEFORR','L',JIN)
+
+             CALL JEVECH('PDEFONO','E',JCONN)
+          ELSE IF (OPTION(1:14).EQ.'SIGM_ELNO_TUYO') THEN
 
 C ======== RAPPEL DES CONTRAINTES ====================
 
-        CALL JEVECH('PCONTRR','L',JIN)
+            CALL JEVECH('PCONTRR','L',JIN)
 
-        CALL JEVECH('PSIGNOD','E',JCONN)
-
+            CALL JEVECH('PSIGNOD','E',JCONN)
+        ENDIF
+C
         LGPG = (2*NBSEC+1)* (2*NBCOU+1)*6
         DO 170 I = ISECT,ISECT + 1
 
@@ -297,10 +319,88 @@ C      POUR NE PAS SUPPRIMER LA SAVANTE PROGRAMMATION DE PATRICK
   150         CONTINUE
   160       CONTINUE
 
-
           END IF
 
   170   CONTINUE
+
+      ELSE IF ((OPTION(1:14).EQ.'EPEQ_ELNO_TUYO').OR.
+     +     (OPTION(1:14).EQ.'SIEQ_ELNO_TUYO')) THEN
+           
+           IF (OPTION(1:14).EQ.'EPEQ_ELNO_TUYO') THEN
+
+C ======== RAPPEL DES CONTRAINTES ====================
+
+             CALL JEVECH('PDEFOEQ','L',JIN)
+
+             CALL JEVECH('PDENOEQ','E',JCONN)
+C
+          ELSE IF (OPTION(1:14).EQ.'SIEQ_ELNO_TUYO') THEN
+
+C ======== RAPPEL DES CONTRAINTES ====================
+
+            CALL JEVECH('PCONTEQ','L',JIN)
+
+           CALL JEVECH('PCOEQNO','E',JCONN)
+        ENDIF
+
+        LGPG = (2*NBSEC+1)* (2*NBCOU+1)
+        DO 210 I = ISECT,ISECT + 1
+
+       IF ((NNO.EQ.3).AND.(NPG.EQ.3)) THEN
+C      POUR NE PAS SUPPRIMER LA SAVANTE PROGRAMMATION DE PATRICK
+
+            KPGS = ((2*NBSEC+1)* (ICOU-1)+ (I-1))
+            DO 180 INO = 1,NNO
+              IF (INO.EQ.1) THEN
+                IH = 2
+                I1 = 1
+                I2 = 3
+                J1 = KPGS
+                J2 = 2*LGPG + KPGS
+                J3 = LGPG + KPGS
+              ELSE IF (INO.EQ.2) THEN
+                IH = 1
+                I1 = 3
+                I2 = 1
+                J1 = 2*LGPG + KPGS
+                J2 = KPGS
+                J3 = LGPG + KPGS
+              ELSE
+                K2 = 2
+                ZR(JCONN-1+K2+1) = ZR(JCONN-1+K2+1) +
+     +                                   ZR(JIN-1+LGPG+KPGS+1)*
+     +                                   POI(I-ISECT+1)
+                GO TO 180
+              END IF
+              K2 =(INO-1)
+              ZR(JCONN-1+K2+1) = ZR(JCONN-1+K2+1) +
+     +                                 (HK(IH,I2)*ZR(JIN-1+J1+1)-
+     +                                 HK(IH,I1)*ZR(JIN-1+J2+1)-
+     +                                 ZR(JIN-1+J3+1)*
+     +                                 (HK(3,I1)*HK(IH,I2)-HK(3,
+     +                                 I2)*HK(IH,I1)))/
+     +                                 (HK(1,1)*HK(2,3)-
+     +                                 HK(1,3)*HK(2,1))*POI(I-ISECT+1)
+  180       CONTINUE
+
+       ELSE
+            KPGS = ((2*NBSEC+1)* (ICOU-1)+ (I-1))
+              DO 190 KP = 1,NPG
+                J2 = LGPG*(KP-1) + KPGS + 1
+                VPG(KP) = ZR(JIN-1+J2)*POI(I-ISECT+1)
+  190         CONTINUE
+              NNOS = 2
+              NLIG=NINT(ZR(JMAT))
+              NCOL=NINT(ZR(JMAT+1))
+              CALL TUGANO(ZR(JMAT+2),NLIG,NCOL,NNOS,NNO,NPG,VPG,VNO)
+              DO 200 INO = 1,NNO
+                K2 = (INO-1)
+                ZR(JCONN-1+K2+1) = ZR(JCONN-1+K2+1)+VNO(INO)
+  200         CONTINUE
+
+          END IF
+
+  210   CONTINUE
 
 C     FIN STOCKAGE
 
@@ -309,5 +409,5 @@ C     FIN STOCKAGE
      +              '" EST NON PREVUE')
       END IF
 
-  180 CONTINUE
+ 250  CONTINUE
       END

@@ -1,7 +1,7 @@
       SUBROUTINE FLAHQR( WANTT, WANTZ, N, ILO, IHI, H, LDH, WR, WI,
      &                   ILOZ, IHIZ, Z, LDZ, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 20/09/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF UTILIFOR  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================

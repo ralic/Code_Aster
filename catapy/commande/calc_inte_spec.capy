@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,14 +18,14 @@
 # ======================================================================
 CALC_INTE_SPEC=OPER(nom="CALC_INTE_SPEC",op= 120,sd_prod=tabl_intsp,
                     fr="Calcul d une matrice interspectrale d une fonction du temps",
-                    docu="U4.36.03-e",reentrant='n',
+                    docu="U4.36.03-f",reentrant='n',
             UIinfo={"groupes":("Fonction",)},
          INST_INIT       =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
          INST_FIN        =SIMP(statut='o',typ='R' ),
          DUREE_ANALYSE   =SIMP(statut='f',typ='R' ),
          DUREE_DECALAGE  =SIMP(statut='f',typ='R' ),
          NB_POIN         =SIMP(statut='o',typ='I' ),
-         FONCTION        =SIMP(statut='o',typ=fonction,max='**' ),
+         FONCTION        =SIMP(statut='o',typ=(fonction,formule),max='**' ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
 )  ;

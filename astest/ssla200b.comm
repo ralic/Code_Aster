@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2002   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE AXISYMETRIQUE
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,10 +36,10 @@ DEBUT(CODE=_F( NOM = 'SSLA200B',NIV_PUB_WEB='INTERNET'))
 # ----------------------------------------------------------------------
 MA=LIRE_MAILLAGE(  )
 
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
                      CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
-MA=DEFI_GROUP( reuse=MA, MAILLAGE=MA,
+DEFI_GROUP( reuse=MA, MAILLAGE=MA,
                    CREA_GROUP_MA=_F(  NOM = 'GMX1', MAILLE = 'M95'),
                    CREA_GROUP_NO=_F(  NOM = 'GNX1', NOEUD = 'N198') )
 
@@ -444,26 +444,35 @@ MATELEM2=CALC_MATR_ELEM(        OPTION='MASS_MECA',
 # ----------------------------------------------------------------------
 #   COMMANDES GLOBALES DE MECANIQUE : STATIQUE LINEAIRE
 # ----------------------------------------------------------------------
-MSLIN=MECA_STATIQUE(        MODELE=MO,
-                          CHAM_MATER=CHMAT,
-                           CARA_ELEM=CARA1,
-                          EXCIT=_F(  CHARGE = CHMEC,
-                                  FONC_MULT = FO11),
-                          LIST_INST=LR1,
-                          OPTION=(
-                           'SIGM_ELNO_DEPL',
-                                   'EPME_ELNO_DEPL', 'EPME_ELGA_DEPL',
-                                   'EPOT_ELEM_DEPL', 'EPSI_ELGA_DEPL',
-                                   'EPSI_ELNO_DEPL',
-                                   'EQUI_ELNO_SIGM',
-                                   'EQUI_ELGA_SIGM', 'EQUI_ELNO_EPSI',
-                                  'EQUI_ELGA_EPSI', 'EQUI_ELNO_EPME',
-                                  'EQUI_ELGA_EPME',
-                                  'EPOT_ELEM_DEPL', 'ENEL_ELGA',
-                                    'ENEL_ELNO_ELGA',
-                                    ) )
 
-MSLIN=CALC_NO( reuse=MSLIN,       OPTION=(
+MSLIN=MECA_STATIQUE(        MODELE=MO,
+                           CHAM_MATER=CHMAT,
+                            CARA_ELEM=CARA1,
+                           EXCIT=_F(  CHARGE = CHMEC,
+                                   FONC_MULT = FO11),
+                           LIST_INST=LR1,
+                         )
+
+CALC_ELEM( reuse= MSLIN ,RESULTAT= MSLIN ,         MODELE=MO,
+                           CHAM_MATER=CHMAT,
+                            CARA_ELEM=CARA1,
+                           EXCIT=_F(  CHARGE = CHMEC,
+                                   FONC_MULT = FO11),
+                           LIST_INST=LR1,
+                           OPTION=(
+                            'SIGM_ELNO_DEPL',
+                                    'EPME_ELNO_DEPL', 'EPME_ELGA_DEPL',
+                                    'EPOT_ELEM_DEPL', 'EPSI_ELGA_DEPL',
+                                    'EPSI_ELNO_DEPL',
+                                    'EQUI_ELNO_SIGM',
+                                    'EQUI_ELGA_SIGM', 'EQUI_ELNO_EPSI',
+                                   'EQUI_ELGA_EPSI', 'EQUI_ELNO_EPME',
+                                   'EQUI_ELGA_EPME',
+                                   'EPOT_ELEM_DEPL', 'ENEL_ELGA',
+                                     'ENEL_ELNO_ELGA',
+                                     ) )
+
+CALC_NO( reuse=MSLIN,       OPTION=(
                                   'EQUI_NOEU_EPSI',
                                   'EQUI_NOEU_EPME',),
                        RESULTAT=MSLIN,
@@ -723,7 +732,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
 # ----------------------------------------------------------------------
 #   POST_TRAITEMENT DU CALCUL
 # ----------------------------------------------------------------------
-MSLI2=CALC_ELEM( reuse=MSLI2,       MODELE=MO,
+CALC_ELEM( reuse=MSLI2,       MODELE=MO,
                        CHAM_MATER=CHMAT,
                         CARA_ELEM=CARA1,
                            OPTION=(  'SIGM_ELNO_DEPL',
@@ -942,7 +951,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                    VALE = 3.6128541270505E+06))
             )
 
-MSLI2=CALC_NO( reuse=MSLI2,       OPTION=( 'EPSI_NOEU_DEPL', 'EQUI_NOEU_SIGM',
+CALC_NO( reuse=MSLI2,       OPTION=( 'EPSI_NOEU_DEPL', 'EQUI_NOEU_SIGM',
                                   'EQUI_NOEU_EPSI', 'SIGM_NOEU_DEPL',
                                   'EQUI_NOEU_EPME',),
                        RESULTAT=MSLI2,
@@ -986,7 +995,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    INST = 11.5,
 # --------------------------------------------------------------------
 # POUR TESTER LE CALCUL DE REAC_NODA SUR UN GROUP_MA :
 # ----------------------------------------------------
-MSLI2=CALC_ELEM( reuse=MSLI2,       MODELE=MO,    CHAM_MATER=CHMAT,
+CALC_ELEM( reuse=MSLI2,       MODELE=MO,    CHAM_MATER=CHMAT,
                         CARA_ELEM=CARA1,    OPTION='SIEF_ELGA_DEPL',
                           RESULTAT=MSLI2,
                             EXCIT=_F(  CHARGE = CHMEC,
@@ -1010,7 +1019,7 @@ CHME2=AFFE_CHAR_MECA(           MODELE=MO,
                            TEMP_CALCULEE=THLIN,
                                PESANTEUR=(9.8,  0.3,  0.1, -0.4,))
 
-MSLI2=CALC_NO( reuse=MSLI2,       OPTION='REAC_NODA',
+CALC_NO( reuse=MSLI2,       OPTION='REAC_NODA',
                        RESULTAT=MSLI2,  MODELE=MO,
                      CHAM_MATER=CHMAT,      CARA_ELEM=CARA1,
                           EXCIT=_F(  CHARGE = CHME2,

@@ -4,7 +4,7 @@
       CHARACTER*(*)      TRANGE, NOMRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/10/1999   AUTEUR SABJLMA P.LATRUBESSE 
+C MODIF PREPOST  DATE 24/03/2003   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C
       CALL JEVEUO(NOMK19//'.VCHO','L', IDVGLI)
       CALL JEVEUO(NOMK19//'.ICHO','L', IDIADH)
       CALL JEVEUO(NOMK19//'.NCHO','L', IDNCHO)
-C      CALL JEVEUO(NOMK19//'.INTI','L', IDNINT)
+      CALL JEVEUO(NOMK19//'.INTI','L', IDNINT)
       CALL JEVEUO(NOMK19//'.VINT','L', IDVINT)
 C
       CALL WKVECT('&&OP0130.WK1','V V R',NBPT,IDWK1)
@@ -85,11 +85,13 @@ C
      +            ZR(IDFCHO),ZR(IDVGLI),ZI(IDIADH),
      +            ZR(IDWK1),ZR(IDWK2),ZR(IDWK3),ZI(IDWK4),
      +            TDEBUT,TFIN,NBBLOC,OFFSET,TREPOS,ZK8(IDNCHO),
+     +            ZK8(IDNINT),
      +            NOMRES )
       ELSE
       CALL STATIM(NBCHOC,NBPT,ZR(IDINST),ZR(IDDLOC),ZR(IDFCHO),
      +            ZR(IDVGLI),ZR(IDVINT),ZR(IDWK1),ZR(IDWK2),ZR(IDWK3),
      +            TDEBUT,TFIN,NBBLOC,OFFSET,TREPOS,NBCLAS,ZK8(IDNCHO),
+     +            ZK8(IDNINT),
      +            NOMRES )
       ENDIF
       CALL JEDETR('&&OP0130.WK1')

@@ -1,7 +1,7 @@
       SUBROUTINE LCDSBE (NDIM, TYPMOD, IMATE, EPSTM, DEPST,
      &                    VIM, OPTION, SIG, VIP,  DSIDPT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2003   AUTEUR GODARD V.GODARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,24 +50,21 @@ C ----------------------------------------------------------------------
 C LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
       LOGICAL     RIGI, RESI,ELAS,MTG
       INTEGER     NDIMSI, K, L, I, J, M, N, P,T(3,3)
-      INTEGER     NPERM, NITJAC, TTRIJ, OTRIJ
       REAL*8      EPS(6), EPSR(6), TREPS, SIGEL(6), SIGELR(6)
       REAL*8      RAC2,COEF
       REAL*8      RIGMIN, FD, D, ENER, TROISK, G
-      REAL*8      TR(6), TU(6), RTEMP2
+      REAL*8      TR(6),RTEMP2
       REAL*8      EPSP(3), VECP(3,3), DSPDEP(3,3),VECP2(3,3)
       REAL*8      DSIDEP(6,6),DSIDPR(6,6)
       REAL*8      DEUMUD(3), LAMBDD, SIGP(3),RTEMP,RTEMP3,RTEMP4
       REAL*8      EPSM(6), EPSRM(6), DEPS(6), DEPSR(6)
-      REAL*8      E, NU, ALPHA, LAMBDA, DEUXMU, GAMMA, SEUIL
-      REAL*8      TOL,TOLDYN,JACAUX(3)
+      REAL*8      E, NU, ALPHA, LAMBDA, DEUXMU, GAMMA, SEUIL,TREPSM
+      REAL*8      K0,K1,SICR
       CHARACTER*2 CODRET(3)
       CHARACTER*8 NOMRES(3)
       REAL*8      VALRES(3)
       REAL*8      R8DOT
       PARAMETER  (RIGMIN = 1.D-3)
-      DATA   NPERM ,TOL,TOLDYN    /12,1.D-10,1.D-2/
-      DATA   TTRIJ,OTRIJ  /2,2/
 C ----------------------------------------------------------------------
 C ======================================================================
 C                            INITIALISATION
@@ -96,13 +93,46 @@ C    LECTURE DES CARACTERISTIQUES DU MATERIAU
       LAMBDA = E * NU / (1.D0+NU) / (1.D0 - 2.D0*NU)
       DEUXMU = E/(1.D0+NU)
 C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
-      NOMRES(1) = 'SY'
-      NOMRES(2) = 'D_SIGM_EPSI'
-      CALL RCVALA(IMATE,'ECRO_LINE',0,' ',0.D0,2,
-     &            NOMRES,VALRES,CODRET,'FM')
-      GAMMA  = - E/VALRES(2)
-      SEUIL  = VALRES(1)**2 * (1.D0+GAMMA) / (2.D0*E)      
-C      
+      NOMRES(1) = 'D_SIGM_EPSI'
+      NOMRES(2) = 'SYT'
+      NOMRES(3) = 'SYC'
+      CALL RCVALA(IMATE,'BETON_ECRO_LINE',0,' ',0.D0,3,
+     &            NOMRES,VALRES,CODRET,' ')
+      GAMMA  = - E/VALRES(1)
+      K0=VALRES(2)**2 *(1.D0+GAMMA)/(2.D0*E)
+     &               *(1.D0+NU-2.D0*NU**2)/(1.D0+NU)
+      IF (NU.EQ.0) THEN
+        IF (CODRET(3).EQ.'OK') THEN
+          CALL UTMESS('F','LCDBSE',' SYC NE DOIT PAS ETRE
+     & VALORISE POUR NU NUL DANS DEFI_MATERIAU')
+        ELSE
+          SEUIL=K0
+        ENDIF
+      ELSE
+        SICR=SQRT((1.D0+NU-2.D0*NU**2)/(2.D0*NU**2))*VALRES(2)
+        IF (CODRET(3).EQ.'NO') THEN
+          SEUIL=K0
+        ELSE
+          IF (VALRES(3).LT.SICR) THEN        
+            CALL UTMESS('F','LCDBSE',' SYC DOIT ETRE
+     &  SUPERIEUR A SQRT((1+NU-2*NU*NU)/(2.D0*NU*NU))*SYT
+     &  DANS DEFI_MATERIAU POUR PRENDRE EN COMPTE LE 
+     &  CONFINEMENT')
+          ELSE
+            K1=VALRES(3)*(1.D0+GAMMA)*NU**2/(1.D0+NU)/(1.D0-2.D0*NU)
+     &        -K0*E/(1.D0-2.D0*NU)/VALRES(3)
+            TREPSM=0.D0
+            DO 1 I=1,NDIM
+              TREPSM=TREPSM+EPSTM(I)
+ 1          CONTINUE
+            IF (TREPSM.GT.0.D0) THEN
+              TREPSM=0.D0
+            ENDIF
+            SEUIL  = K0-K1*TREPSM
+          ENDIF
+        ENDIF
+      ENDIF
+
 C -- SEPARATION DE EPSM/EPSRM, DEPS/DEPSR DANS EPSTM,DEPST
 
       DO 312 I=1,NDIMSI
@@ -141,7 +171,7 @@ C - ON MET DANS EPS LES DEFORMATIONS REELLES
           EPSR(K)=0.D0
 46      CONTINUE
       ENDIF
-C     MATRICE TR = (XX XY XZ YY YZ ZZ) (POUR JACOBI)
+C     MATRICE TR = (XX XY XZ YY YZ ZZ) 
 C
       TR(1) = EPS(1)
       TR(2) = EPS(4)
@@ -149,19 +179,7 @@ C
       TR(4) = EPS(2)
       TR(5) = EPS(6)
       TR(6) = EPS(3)
-C
-C     MATRICE UNITE = (1 0 0 1 0 1) (POUR JACOBI)
-C
-      TU(1) = 1.D0
-      TU(2) = 0.D0
-      TU(3) = 0.D0
-      TU(4) = 1.D0
-      TU(5) = 0.D0
-      TU(6) = 1.D0
-C - ON PASSE EN REPERE PROPRE DE EPSR
-C
-      CALL JACOBI(3,NPERM,TOL,TOLDYN,TR,TU,VECP,EPSP,JACAUX,
-     &       NITJAC,TTRIJ,OTRIJ)
+       CALL DIAGP3(TR,VECP,EPSP)
 C -   CALCUL DES CONTRAINTES ELASTIQUES ASSOCIEE AUX DEFO GENERALISEES
       TREPS = EPS(1)+EPS(2)+EPS(3)
       IF (TREPS.GT.0.D0) THEN
@@ -184,19 +202,7 @@ C -   CALCUL DES CONTRAINTES ELASTIQUES ASSOCIEE AUX DEFO GENERALISEES
       TR(4) = EPSR(2)
       TR(5) = EPSR(6)
       TR(6) = EPSR(3)
-C
-C     MATRICE UNITE = (1 0 0 1 0 1) (POUR JACOBI)
-C
-      TU(1) = 1.D0
-      TU(2) = 0.D0
-      TU(3) = 0.D0
-      TU(4) = 1.D0
-      TU(5) = 0.D0
-      TU(6) = 1.D0
-C - ON PASSE EN REPERE PROPRE DE EPSR
-C
-      CALL JACOBI(3,NPERM,TOL,TOLDYN,TR,TU,VECP,EPSP,JACAUX,
-     &       NITJAC,TTRIJ,OTRIJ)
+       CALL DIAGP3(TR,VECP,EPSP)
 C -   CALCUL DES CONTRAINTES ELASTIQUES ASSOCIEE AUX DEFO GENERALISEES
       TREPS = EPSR(1)+EPSR(2)+EPSR(3)
       IF (TREPS.GT.0.D0) THEN
@@ -236,7 +242,7 @@ C    CALCUL DE L'ETAT D'ENDOMMAGEMENT
         END IF
       ENDIF
 C -   CALCUL DES CONTRAINTES
-C     MATRICE TR = (XX XY XZ YY YZ ZZ) (POUR JACOBI)
+C     MATRICE TR = (XX XY XZ YY YZ ZZ) 
 C
       TR(1) = EPS(1)
       TR(2) = EPS(4)
@@ -244,19 +250,7 @@ C
       TR(4) = EPS(2)
       TR(5) = EPS(6)
       TR(6) = EPS(3)
-C
-C     MATRICE UNITE = (1 0 0 1 0 1) (POUR JACOBI)
-C
-      TU(1) = 1.D0
-      TU(2) = 0.D0
-      TU(3) = 0.D0
-      TU(4) = 1.D0
-      TU(5) = 0.D0
-      TU(6) = 1.D0
-C - ON PASSE EN REPERE PROPRE DE EPS
-C
-      CALL JACOBI(3,NPERM,TOL,TOLDYN,TR,TU,VECP,EPSP,JACAUX,
-     &       NITJAC,TTRIJ,OTRIJ)
+       CALL DIAGP3(TR,VECP,EPSP)
 
       IF ((EPSP(1)+EPSP(2)+EPSP(3)).GT.0.D0) THEN
         LAMBDD=LAMBDA * FD
@@ -299,6 +293,9 @@ C      ON REPASSE DANS LE REPERE INITIAL LES CONTRAINTES
 C - CALCUL DE LA MATRICE TANGENTE       
       
       IF (RIGI) THEN
+        CALL R8INIR(9, 0.D0, DSPDEP, 1)
+        CALL R8INIR(36, 0.D0, DSIDEP, 1)
+        CALL R8INIR(36,0.D0,DSIDPR,1)
         TR(1) = SIGEL(1)
         TR(2) = SIGEL(2)
         TR(3) = SIGEL(3)
@@ -324,89 +321,93 @@ C -- CONTRIBUTION ELASTIQUE
         RTEMP=ABS(EPSP(1))
         IF (ABS(EPSP(2)).GT.RTEMP) RTEMP=ABS(EPSP(2))
         IF (ABS(EPSP(3)).GT.RTEMP) RTEMP=ABS(EPSP(3))
-        DO 500 I=1,2
-          DO 501 J=(I+1),3
-            IF (ABS(EPSP(I)-EPSP(J)).LT.1D-12) THEN
-              EPSP(I)=EPSP(I)+RIGMIN*RTEMP
-              EPSP(J)=EPSP(J)-RIGMIN*RTEMP
-              MTG = .FALSE.
-            ENDIF
-501       CONTINUE
-500     CONTINUE
-        IF (.NOT. MTG) THEN
-          SIGP(1)=LAMBDD*TREPS+DEUMUD(1)*EPSP(1)
-          SIGP(2)=LAMBDD*TREPS+DEUMUD(2)*EPSP(2)
-          SIGP(3)=LAMBDD*TREPS+DEUMUD(3)*EPSP(3)
-        ENDIF
-        MTG = .TRUE.
-        CALL R8INIR(9, 0.D0, DSPDEP, 1)
-        CALL R8INIR(36, 0.D0, DSIDEP, 1)
-        CALL R8INIR(36,0.D0,DSIDPR,1)
-C        IF (.NOT. ELAS) THEN
-        DO 100 K = 1,3
-          DO 110 L = 1,3
-            DSPDEP(K,L) = LAMBDD
- 110      CONTINUE
- 100    CONTINUE
-        DO 120 K = 1,3
-          DSPDEP(K,K) = DSPDEP(K,K) + DEUMUD(K)
- 120    CONTINUE
-        DO 20 I=1,3
-          DO 21 J=I,3
-            DO 22 K=1,3
-              DO 23 L=1,3
-                DO 24 M=1,3
-                  DO 25 N=1,3
-                    IF (I.EQ.J) THEN
-                      RTEMP3=1.D0
-                    ELSE
-                      RTEMP3=RAC2
-                    ENDIF
+        IF ((RTEMP*RIGMIN).LT.1.D-12) MTG=.FALSE. 
+        IF (MTG) THEN
+          DO 500 I=1,2
+            DO 501 J=(I+1),3
+              IF (ABS(EPSP(I)-EPSP(J)).LT.1D-12) THEN
+                EPSP(I)=EPSP(I)+RIGMIN*RTEMP
+                EPSP(J)=EPSP(J)-RIGMIN*RTEMP
+                MTG = .FALSE.
+              ENDIF
+501         CONTINUE
+500       CONTINUE
+          IF (.NOT. MTG) THEN
+            SIGP(1)=LAMBDD*TREPS+DEUMUD(1)*EPSP(1)
+            SIGP(2)=LAMBDD*TREPS+DEUMUD(2)*EPSP(2)
+            SIGP(3)=LAMBDD*TREPS+DEUMUD(3)*EPSP(3)
+          ENDIF
+          MTG = .TRUE.
+C          IF (.NOT. ELAS) THEN
+          DO 100 K = 1,3
+            DO 110 L = 1,3
+              DSPDEP(K,L) = LAMBDD
+ 110        CONTINUE
+ 100      CONTINUE
+          DO 120 K = 1,3
+            DSPDEP(K,K) = DSPDEP(K,K) + DEUMUD(K)
+ 120      CONTINUE
+          DO 20 I=1,3
+            DO 21 J=I,3
+              IF (I.EQ.J) THEN
+                RTEMP3=1.D0
+              ELSE
+                RTEMP3=RAC2
+              ENDIF
+              DO 22 K=1,3
+                DO 23 L=1,3
+                  IF (T(I,J).GE.T(K,L)) THEN
                     IF (K.EQ.L) THEN
-                      RTEMP4=1.D0
+                      RTEMP4=RTEMP3
                     ELSE
-                      RTEMP4=1.D0/RAC2
+                      RTEMP4=RTEMP3/RAC2
                     ENDIF
-        DSIDEP(T(I,J),T(K,L))=DSIDEP(T(I,J),T(K,L))+VECP(K,M)*
-     &        VECP(I,N)*VECP(J,N)*VECP(L,M)*DSPDEP(N,M)*RTEMP3*RTEMP4
-        RTEMP=ABS(EPSP(M)-EPSP(N))
-                   IF ((M.NE.N)) THEN
-                     IF ((RTEMP.GT.1.D-12)) THEN
-       RTEMP2=(VECP(K,M)*VECP(L,N))/(EPSP(N)-EPSP(M))
-       RTEMP2=RTEMP2*VECP(I,M)*VECP(J,N)*SIGP(N)*RTEMP3*RTEMP4
-       DSIDEP(T(I,J),T(K,L))=DSIDEP(T(I,J),T(K,L))+RTEMP2
-       RTEMP2=(VECP(K,N)*VECP(L,M))/(EPSP(N)-EPSP(M))
-       RTEMP2=RTEMP2*VECP(J,M)*VECP(I,N)*SIGP(N)*RTEMP3*RTEMP4
-       DSIDEP(T(I,J),T(K,L))=DSIDEP(T(I,J),T(K,L))+RTEMP2
-                      ELSE
-                        MTG= .FALSE.
-                      ENDIF
-                    ENDIF
-25                CONTINUE
-24              CONTINUE
-23            CONTINUE
-22          CONTINUE
-21        CONTINUE
-20      CONTINUE
-       IF (.NOT.MTG) THEN
-         DO 70 K=1,6
-           DO 71 L=1,6
-             DSIDEP(K,L)=0.D0
-71         CONTINUE
-70       CONTINUE
-         DSIDEP(1,1)=LAMBDA+DEUXMU
-         DSIDEP(2,2)=LAMBDA+DEUXMU
-         DSIDEP(3,3)=LAMBDA+DEUXMU
-         DSIDEP(1,2)=LAMBDA
-         DSIDEP(2,1)=LAMBDA
-         DSIDEP(1,3)=LAMBDA
-         DSIDEP(3,1)=LAMBDA
-         DSIDEP(2,3)=LAMBDA
-         DSIDEP(3,2)=LAMBDA
-         DSIDEP(4,4)=DEUXMU
-         DSIDEP(5,5)=DEUXMU
-         DSIDEP(6,6)=DEUXMU
-       ENDIF
+                    RTEMP2=0.D0                
+                    DO 24 M=1,3
+                      DO 25 N=1,3
+                        RTEMP2=RTEMP2+VECP(K,M)*VECP(I,N)*VECP(J,N)
+     &                         *VECP(L,M)*DSPDEP(N,M)
+                        RTEMP=EPSP(N)-EPSP(M)
+                        IF ((M.NE.N)) THEN
+                          RTEMP=SIGP(N)/RTEMP
+                          RTEMP2=RTEMP2+VECP(K,M)*VECP(L,N)*VECP(I,M)
+     &                             *VECP(J,N)*RTEMP
+                          RTEMP2=RTEMP2+VECP(K,N)*VECP(L,M)*VECP(J,M)
+     &                             *VECP(I,N)*RTEMP
+                        ENDIF
+25                    CONTINUE
+24                  CONTINUE
+                  DSIDEP(T(I,J),T(K,L))=DSIDEP(T(I,J),T(K,L))
+     &                                  +RTEMP2*RTEMP4
+                  ENDIF
+23              CONTINUE
+22            CONTINUE
+21          CONTINUE
+20        CONTINUE
+          DO 26 I=1,6 
+            DO 27 J=I+1,6
+              DSIDEP(I,J)=DSIDEP(J,I)
+27          CONTINUE
+26        CONTINUE
+        ELSE
+          DO 70 K=1,6
+            DO 71 L=1,6
+              DSIDEP(K,L)=0.D0
+71          CONTINUE
+70        CONTINUE
+          DSIDEP(1,1)=LAMBDA+DEUXMU
+          DSIDEP(2,2)=LAMBDA+DEUXMU
+          DSIDEP(3,3)=LAMBDA+DEUXMU
+          DSIDEP(1,2)=LAMBDA
+          DSIDEP(2,1)=LAMBDA
+          DSIDEP(1,3)=LAMBDA
+          DSIDEP(3,1)=LAMBDA
+          DSIDEP(2,3)=LAMBDA
+          DSIDEP(3,2)=LAMBDA
+          DSIDEP(4,4)=DEUXMU
+          DSIDEP(5,5)=DEUXMU
+          DSIDEP(6,6)=DEUXMU
+        ENDIF
 C -- CONTRIBUTION DISSIPATIVE
         IF ((.NOT. ELAS).AND.(ENER.GT.0.D0)) THEN
           COEF = (1+GAMMA)/(2*GAMMA*(1+GAMMA*D)*ENER)
@@ -416,19 +417,19 @@ C -- CONTRIBUTION DISSIPATIVE
  210        CONTINUE
  200      CONTINUE
         END IF
-         DO 313 I=1,6
-           DO 314 J=1,6
-           DSIDPT(I,J)=DSIDEP(I,J)
-           DSIDPT(I+6,J)=DSIDPR(I,J)
- 314       CONTINUE
- 313     CONTINUE
-      END IF
+        DO 313 I=1,6
+          DO 314 J=1,6
+            DSIDPT(I,J)=DSIDEP(I,J)
+            DSIDPT(I+6,J)=DSIDPR(I,J)
+ 314      CONTINUE
+ 313    CONTINUE
 C -- REUNION DE EPSM/EPSRM,DEPS/DEPSR,DSIDEP/DSIDPR POUR NMCOMP
-
-         DO 311 I=1,NDIMSI
-          EPSTM(I)=EPSM(I)
-          EPSTM(I+6)=EPSRM(I)       
-          DEPST(I)=DEPS(I)
-          DEPST(I+6)=DEPSR(I)       
- 311    CONTINUE
+      ENDIF
+      DO 311 I=1,NDIMSI
+        EPSTM(I)=EPSM(I)
+        EPSTM(I+6)=EPSRM(I)       
+        DEPST(I)=DEPS(I)
+        DEPST(I+6)=DEPSR(I)       
+ 311  CONTINUE
+ 
       END

@@ -4,7 +4,7 @@
       CHARACTER*(*)       MACR, FORM, FICH
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 25/09/2001   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF UTILITAI  DATE 24/03/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER KNOEU, KMASS, KRIGI
       INTEGER NBNOEU, NBMODT, NBMODE, NBMODS
       REAL*8 ZERO
-      LOGICAL      F,LMOD
+      LOGICAL      F,LMOD,LBID
       INTEGER IUNIFI
 C     ------------------------------------------------------------------
 C
@@ -178,10 +178,10 @@ C          CALL JENONU(JEXNOM(MANONO,ZK16(JNOEU+I-1)(1:8)),INOE)
 C          CALL CODENT(INOE,'D',K10B)
 C          CMP = ZK16(JNOEU+I-1)(9:16)
 C          TITRE = 'MODE STATIQUE: '//K10B//' '//CMP//'+++++++'
-C          CALL IRECRI ( NOCH19,FORM,FICH,TITRE,1,NOCH19,IERO,K8B,
+C      CALL IRECRI ( NOCH19,FORM,FICH,TITRE,1,NOCH19,LBID,IERO,K8B,
 C     >                  1,IIOO,F,B,IERO,B,CECR,F,IERO,IBID,
 C     >                  IERO,IBID,IERO,K8B,F,ZERO,F,ZERO,F,F,FORMAR,
-C     >                  LMOD,NIVE)
+C     >                  LMOD,NIVE,VERSIO)
         ELSE
           WRITE (IFC,'(A)') '    -1'
           WRITE (IFC,'(A)') '   481'
@@ -190,11 +190,11 @@ C     >                  LMOD,NIVE)
           WRITE (IFC,'(A)') '    -1'
           TITRE = 'MODE DYNAMIQUE'
           CALL IRECRI ( BASEMO,NOSIMP,NOPASE,FORM,FICH,TITRE,
-     >                  1,'DEPL',IERO,K8B, 1,IORD,
+     >                 LBID,1,'DEPL',IERO,K8B, 1,IORD,
      >                  .TRUE.,B,IERO,B,CECR,F,IERO,
      >                  IBID,IERO,IBID,IERO,K8B,
      >                  F,ZERO,F,ZERO,F,F,FORMAR,LMOD,
-     >                  NIVE)
+     >                  NIVE,VERSIO)
         ENDIF
  100  CONTINUE
       IF ( NSTAT .NE. 0 ) THEN

@@ -5,7 +5,7 @@
      +                    PROLGD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,12 +133,12 @@ C     VERIF QU'ON A TROUVE QUELQUE CHOSE
      +      'ON N A PAS TROUVE DE LIGNE CONTENANT LES DEUX PARAMETRES.')
       ENDIF
 C
-      CALL WKVECT ( NOMFON//'.PROL', BASE//' V K8', 5, LPRO )
-      ZK8(LPRO)   = 'FONCTION'
-      ZK8(LPRO+1) = INTERP
-      ZK8(LPRO+2) = PARAX
-      ZK8(LPRO+3) = PARAY
-      ZK8(LPRO+4) = PROLGD
+      CALL WKVECT ( NOMFON//'.PROL', BASE//' V K16', 5, LPRO )
+      ZK16(LPRO)   = 'FONCTION'
+      ZK16(LPRO+1) = INTERP
+      ZK16(LPRO+2) = PARAX
+      ZK16(LPRO+3) = PARAY
+      ZK16(LPRO+4) = PROLGD
 C
       NBFON = NBVAL
       NBVAL = 2 * NBVAL

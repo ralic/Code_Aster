@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2002   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF PREPOST  DATE 04/02/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,19 +81,10 @@ C                           FOND_FISS
 C     ------------------------------------------------------------------
 C
         CALL GETVID ( ' ', 'RESULTAT', 1,1,1,K8B, NRE )
-        CALL GETVID ( ' ', 'FOND_3D', 1,1,1, FOND, NFON )
-        IF (NFON.NE.0) THEN
-          CALL UTDEBM('A','POST_K1_K2_K3','LE MOT ')
-          CALL UTIMPK('S','CLE ',1,'FOND_3D')
-          CALL UTIMPK('S',' EST APPELE A DISPARAITRE EN 6.4 ET SERA'//
-     +                     ' REMPLACE PAR ',1,'FOND_FISS')
-          CALL UTFINM()
-        ELSE  
-         CALL GETVID ( ' ', 'FOND_FISS', 1,1,1, FOND, NFON )
-        ENDIF
+        CALL GETVID ( ' ', 'FOND_FISS', 1,1,1, FOND, NFON )
         IF ((NRE.NE.0).AND.(NFON.EQ.0)) THEN
           CALL UTMESS('F','POST_K1_K2_K3','SI LE MOT CLE RESULTAT  '//
-     +     'EST RENSEIGNE IL FAUT FOND_3D OU FOND_FISS')
+     +     'EST RENSEIGNE IL FAUT FOND_FISS')
         ENDIF
         IF ( NFON .NE. 0 ) THEN
            CALL PKFOND ( FOND )

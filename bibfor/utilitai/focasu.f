@@ -9,7 +9,7 @@
       CHARACTER*1                                                BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/03/2000   AUTEUR CIBHHPD P.DAVID 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*8  PROREF, CBID, TYPREF, VARREF
+      CHARACTER*8   CBID
+      CHARACTER*16  PROREF, TYPREF, VARREF
       CHARACTER*16 NOMCMD
       CHARACTER*24 PROL, PARA
 C     ----------------------------------------------------------------
@@ -63,11 +64,11 @@ C
       PROL( 1:19) = NOMFON(1)
       PARA( 1:19) = NOMFON(1)
       CALL JEVEUO(PROL,'L',LPRO)
-      TYPREF =  ZK8(LPRO)
-      PROREF =  ZK8(LPRO+2)
-      FCPLX(1)=ZK8(LPRO).EQ.'FONCT_C'
+      TYPREF =  ZK16(LPRO)
+      PROREF =  ZK16(LPRO+2)
+      FCPLX(1)=ZK16(LPRO).EQ.'FONCT_C'
       IF ( TYPREF .EQ. 'NAPPE' ) THEN
-         VARREF = ZK8(LPRO+5)
+         VARREF = ZK16(LPRO+5)
          CALL JELIRA(PARA,'LONMAX',NBPARF,CBID)
          CALL JEVEUO(PARA,'L',LPAREF)
       ENDIF
@@ -76,30 +77,30 @@ C
       DO 100 IOCC = 2, NBFON
          PROL(1:19) = NOMFON(IOCC)
          CALL JEVEUO(PROL,'L',LPRO)
-         IF ( ZK8(LPRO+2) .NE. PROREF ) THEN
+         IF ( ZK16(LPRO+2) .NE. PROREF ) THEN
             IER = IER + 1
             CALL GETRES(CBID,CBID,NOMCMD)
             CALL UTMESS('E',NOMCMD//'.FOCASU',
      +                      'LA FONCTION "'//PROL(1:19)//'" A POUR '//
-     +                      '"NOM_PARA": "'//ZK8(LPRO+2)//'" ALORS '//
+     +                      '"NOM_PARA": "'//ZK16(LPRO+2)//'" ALORS '//
      +                      'QUE L''ON ATTENDAIT "'//PROREF//'".   ')
          ENDIF
-         FCPLX(IOCC)=ZK8(LPRO).EQ.'FONCT_C'
-         IF ( ZK8(LPRO)(:5) .NE. TYPREF(:5) ) THEN
+         FCPLX(IOCC)=ZK16(LPRO).EQ.'FONCT_C'
+         IF ( ZK16(LPRO)(:5) .NE. TYPREF(:5) ) THEN
             IER = IER + 1
             CALL GETRES(CBID,CBID,NOMCMD)
             CALL UTMESS('E',NOMCMD//'.FOCASU',
      +                      'LA FONCTION "'//PROL(1:19)//'" A POUR '//
-     +                      '"TYPE": "'//ZK8(LPRO)//'" ALORS '//
+     +                      '"TYPE": "'//ZK16(LPRO)//'" ALORS '//
      +                'QUE L''ON ATTENDAIT "'//TYPREF(:5)//'...".   ')
          ENDIF
          IF ( TYPREF .EQ. 'NAPPE' ) THEN
-            IF ( ZK8(LPRO+5) .NE. VARREF ) THEN
+            IF ( ZK16(LPRO+5) .NE. VARREF ) THEN
                IER = IER + 1
                CALL GETRES(CBID,CBID,NOMCMD)
                CALL UTMESS('E',NOMCMD//'.FOCASU',
      +                      'LA FONCTION "'//PROL(1:19)//'" A POUR '//
-     +                      '"VARIABLE": "'//ZK8(LPRO+5)//'" ALORS '//
+     +                      '"VARIABLE": "'//ZK16(LPRO+5)//'" ALORS '//
      +                      'QUE L''ON ATTENDAIT "'//VARREF//'".   ')
             ENDIF
             PARA( 1:19) = NOMFON(1)

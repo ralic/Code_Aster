@@ -1,4 +1,4 @@
-#@ MODIF N_FONCTION Noyau  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF N_FONCTION Noyau  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,4 +22,4 @@ from N_ASSD import ASSD
 
 class FONCTION(ASSD):pass
 
-class fonction(FONCTION) : pass
+class formule(FONCTION) : pass

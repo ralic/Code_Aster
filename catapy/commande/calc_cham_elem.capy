@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,7 +61,7 @@ def calc_cham_elem_prod(OPTION,**args):
 
 CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=calc_cham_elem_prod,
                     fr="Calcul de champs par éléments à partir de champs solution ou de champs par éléments",
-                    docu="U4.81.03-g1",reentrant='n',
+                    docu="U4.81.03-g",reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
          MODELE          =SIMP(statut='o',typ=modele),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
@@ -192,7 +192,7 @@ CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=calc_cham_elem_prod,
          EXCIT           =FACT(statut='f',min=1,max='**',
                regles=(EXCLUS('FONC_MULT','COEF_MULT', ),),
                CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou)),
-               FONC_MULT       =SIMP(statut='f',typ=fonction),
+               FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
                COEF_MULT       =SIMP(statut='f',typ='R'), ),
 
          INST            =SIMP(statut='f',typ='R',defaut= 0.E+0),

@@ -3,7 +3,7 @@
       REAL*8    T0
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/07/97   AUTEUR A2BHHWS A.C.LEGER 
+C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,7 +116,7 @@ C
             IF (N2.NE.0) THEN
               CALL GETVIS('INCREMENT','PAS_CALCUL',1,1,1,IPC,N3)
               CALL JEVEUO(LI//'           .PROL','L',LPROL)
-              IF (ZK8(LPROL).NE.'FONCTION') CALL UTMESS('F',NOMCMD,
+              IF (ZK16(LPROL).NE.'FONCTION') CALL UTMESS('F',NOMCMD,
      +                     'FONC_INST: ON ATTEND UNE FONCTION.')
               CALL JEVEUO(LI//'           .VALE','L',LVAR)
      

@@ -6,7 +6,7 @@
       COMPLEX*16 VECT(*),XSOL(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 01/02/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 28/11/2002   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,7 +113,7 @@ C             MATRICE COMPLEXE SYMETRIQUE
       CALL MTDSC2(ZK24(ZI(LMAT+1)),'ABLO','L',JJABLO)
       CALL MTDSC2(ZK24(ZI(LMAT+1)),'ADIA','L',JJADIA)
       CALL MCMPVC(CUMUL,ZK24(ZI(LMAT+1)),ZI(JJADIA),ZI(IDHCOL),
-     &            ZI(ZI(LMAT+12)),ZI(LMAT+02),ZI(LMAT+13),VECT,XSOL,
+     &            ZI(JJABLO),ZI(LMAT+02),ZI(LMAT+13),VECT,XSOL,
      &            NBVECT)
       GO TO 110
 C             ----------------------------------------------------------

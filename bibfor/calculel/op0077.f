@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2002   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF CALCULEL  DATE 04/02/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,16 +83,7 @@ C      END IF
 
 C- FOND DE FISSURE : POUR AFFECTATION DE R_INF, R_SUP ET MODULE DE THETA
 
-      CALL GETVID(' ','FOND',0,1,1,FOND,IFOND)
-      IF (IFOND.NE.0) THEN
-          CALL UTDEBM('A','CALC_G_LOCAL_T','LE MOT ')
-          CALL UTIMPK('S','CLE ',1,'FOND')
-          CALL UTIMPK('S',' EST APPELE A DISPARAITRE EN 6.4 ET SERA'//
-     +                     ' REMPLACE PAR ',1,'FOND_FISS')
-          CALL UTFINM()
-        ELSE  
-          CALL GETVID ( ' ', 'FOND_FISS', 1,1,1, FOND, IFOND )
-        ENDIF
+      CALL GETVID ( ' ', 'FOND_FISS', 1,1,1, FOND, IFOND )
       CHFOND = FOND//'.FOND      .NOEU'
       CALL JELIRA(CHFOND,'LONMAX',LNOFF,K1BID)
 

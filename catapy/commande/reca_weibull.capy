@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 RECA_WEIBULL=OPER(nom="RECA_WEIBULL",op= 197,sd_prod=tabl_reca_weib,
-                     fr=" ",docu="U4.82.06-a",reentrant='n',
+                     fr=" ",docu="U4.82.06-b",reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
          LIST_PARA       =SIMP(statut='o',typ='TXM',max='**',into=("SIGM_REFE","M",) ),
          RESU            =FACT(statut='o',min=1,max='**',

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -8,7 +8,7 @@
 # RESPONSABLE JMBHH01 J.M.PROIX
 AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
                     fr="Affectation de caractéristiques à des éléments de structure",
-                    docu="U4.42.01-g3",reentrant='n',
+                    docu="U4.42.01-g",reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
          regles=(AU_MOINS_UN('POUTRE','BARRE','COQUE','CABLE','DISCRET','MASSIF',
                              'ASSE_GRIL','GRILLE','AFFE_SECT','AFFE_FIBRE'),),
@@ -53,7 +53,7 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
              VARI_SECT       =SIMP(statut='f',typ='TXM',into=("HOMOTHETIQUE",) ),
              MODI_METRIQUE   =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
            ),
-           FCX             =SIMP(statut='f',typ=(fonction) ),
+           FCX             =SIMP(statut='f',typ=(fonction,formule) ),
          ),
 
          BARRE           =FACT(statut='f',min=1,max='**',
@@ -73,7 +73,7 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
              CARA            =SIMP(statut='o',typ='TXM',max=2,into=("R","EP") ),
              VALE            =SIMP(statut='o',typ='R',max=2 ),
            ),
-           FCX             =SIMP(statut='f',typ=(fonction) ),
+           FCX             =SIMP(statut='f',typ=(fonction,formule) ),
          ),
 
          COQUE           =FACT(statut='f',min=1,max='**',
@@ -92,14 +92,12 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
          ),
 
          CABLE           =FACT(statut='f',min=1,max='**',
-           regles=(UN_PARMI('MAILLE','GROUP_MA'),
-                   UN_PARMI('A','SECTION') ),
+           regles=(UN_PARMI('MAILLE','GROUP_MA'),),
            MAILLE          =SIMP(statut='f',typ=ma,max='**'),
            GROUP_MA        =SIMP(statut='f',typ=grma,max='**'),
            N_INIT          =SIMP(statut='f',typ='R',defaut= 5000. ),
-           A               =SIMP(statut='f',typ='R' ),
            SECTION         =SIMP(statut='f',typ='R' ),
-           FCX             =SIMP(statut='f',typ=(fonction) ),
+           FCX             =SIMP(statut='f',typ=(fonction,formule) ),
          ),
 
          DISCRET         =FACT(statut='f',min=1,max='**',
@@ -211,7 +209,8 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
            regles=(UN_PARMI('COEF_GROUP','FONC_GROUP'),
                    UN_PARMI('COOR_CENTRE','NOEUD_CENTRE','GROUP_NO_CENTRE'),),
            GROUP_MA        =SIMP(statut='o',typ=ma,max='**'),
-           FONC_GROUP      =SIMP(statut='f',typ=(fonction) ),
+           GROUP_MA_POI1   =SIMP(statut='f',typ=ma),
+           FONC_GROUP      =SIMP(statut='f',typ=(fonction,formule) ),
            COEF_GROUP      =SIMP(statut='f',typ='R',max='**'),
            REPERE          =SIMP(statut='f',typ='TXM',into=("LOCAL","GLOBAL") ),
            CARA            =SIMP(statut='o',typ='TXM',max='**',into=("K_TR_D_N","A_TR_D_N") ),

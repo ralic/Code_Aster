@@ -1,4 +1,4 @@
-# MODIF  DATE 09/10/2002   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
 # TITRE PLAQUE FISSUREE EN THERMOELASTICITE: CALCUL DE DG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,12 +118,20 @@ CH=AFFE_CHAR_MECA(       MODELE=MO,
                            _F(  GROUP_NO = 'GRNM4',      DY = 0.),
                            _F(  NOEUD = 'N695',       DX = 0.)))
 
+
 OUTMES=MECA_STATIQUE(
-             SENSIBILITE=(THETAS,),
-                 MODELE=MO,
-             CHAM_MATER=CM,
-             OPTION=('SIGM_ELNO_DEPL', ),
-                  EXCIT=_F( CHARGE = CH))
+              SENSIBILITE=(THETAS,),
+                  MODELE=MO,
+              CHAM_MATER=CM,
+
+                   EXCIT=_F( CHARGE = CH))
+
+CALC_ELEM( reuse= OUTMES ,RESULTAT= OUTMES ,
+              SENSIBILITE=(THETAS,),
+                  MODELE=MO,
+              CHAM_MATER=CM,
+              OPTION=('SIGM_ELNO_DEPL', ),
+                   EXCIT=_F( CHARGE = CH))
 
 # CREATION DE CHAMPS DE CONTRAINTES INITIALES
 # SIXX=FONC1, SIYY=FONC2 ET SIZZ=FONC3
@@ -209,7 +217,7 @@ DEPL2=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',
                    MAILLAGE=MA,
          ASSE=_F( TOUT = 'OUI', CHAM_GD = DEPL1, CUMUL = 'OUI', COEF_R = 1.E-3))
 
-MA=MODI_MAILLAGE(reuse=MA, MAILLAGE=MA,
+MODI_MAILLAGE(reuse=MA, MAILLAGE=MA,
                     DEFORME=_F( OPTION = 'TRAN', DEPL = DEPL2))
 
 # DEFINITION DES MODELES, DES MATERIAUX, DU CHARGEMENT THERMIQUE
@@ -254,11 +262,18 @@ CH1=AFFE_CHAR_MECA(        MODELE=MO1,
                            _F(  GROUP_NO = 'GRNM4',      DY = 0.),
                            _F(  NOEUD = 'N695',       DX = 0.)))
 
+
 OUTMES1=MECA_STATIQUE(
-                 MODELE=MO1,
-             CHAM_MATER=CM1,
-             OPTION=('SIGM_ELNO_DEPL',),
-                  EXCIT=_F( CHARGE = CH1))
+                  MODELE=MO1,
+              CHAM_MATER=CM1,
+
+                   EXCIT=_F( CHARGE = CH1))
+
+CALC_ELEM( reuse= OUTMES1 ,RESULTAT= OUTMES1 ,
+                  MODELE=MO1,
+              CHAM_MATER=CM1,
+              OPTION=('SIGM_ELNO_DEPL',),
+                   EXCIT=_F( CHARGE = CH1))
 
 # CREATION DE CHAMPS DE CONTRAINTES INITIALES
 # SIXX=FONC1, SIYY=FONC2 ET SIZZ=FONC3

@@ -1,11 +1,11 @@
       SUBROUTINE LRCHME ( CHANOM, NOCHMD, NOMAMD,
      >                    NOMAAS, TYPECH, NOMGD,
-     >                    NUMPT, NUMORD, NBCMPV, NCMPVA, NCMPVM,
-     >                    NROFIC, CODRET )
+     >                    NUMPT,  NUMORD, NBCMPV, NCMPVA, NCMPVM,
+     >                    NROFIC, NOMPRN, CODRET )
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/03/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 14/04/2003   AUTEUR DURAND C.DURAND 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C        AU FORMAT MED
 C     LECTURE D'UN CHAMP NOEUD/ELEMENT - FORMAT MED
 C     -    -       --                           --
 C-----------------------------------------------------------------------
@@ -52,8 +51,9 @@ C
 C 0.1. ==> ARGUMENTS
 C
       CHARACTER*(*) CHANOM
-      CHARACTER*(*) NCMPVA, NCMPVM
-      CHARACTER*8 NOMAAS, TYPECH, NOMGD
+      CHARACTER*(*) NCMPVA, NCMPVM, NOMPRN
+      CHARACTER*8 NOMAAS
+      CHARACTER*8  NOMGD, TYPECH
       CHARACTER*32 NOCHMD, NOMAMD
 C
       INTEGER NROFIC
@@ -67,7 +67,8 @@ C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'LRCHME' )
 C
-      CHARACTER*8 CHAMN
+      CHARACTER*8 CHAMN, NOMMOD
+      INTEGER     IAUX
 C
 C====
 C 1. LECTURE DANS LE FICHIER MED
@@ -75,10 +76,20 @@ C====
 C
       CHAMN = CHANOM(1:8)
 C
-      IF ( TYPECH(1:4).EQ.'NOEU' ) THEN
-        CALL LRCNME ( CHAMN, NOCHMD, NOMAMD,
+      IF ( TYPECH(1:2).EQ.'NO' ) THEN
+        CALL LRCNME ( CHAMN,  NOCHMD, NOMAMD,
      >                NOMAAS, NOMGD,
-     >                NUMPT, NUMORD, NBCMPV, NCMPVA, NCMPVM,
+     >                NUMPT,  NUMORD, NBCMPV, NCMPVA, NCMPVM,
+     >                NROFIC, NOMPRN, CODRET )
+      ELSEIF ( TYPECH(1:2).EQ.'EL' ) THEN
+        CALL GETVID ( ' ', 'MODELE', 0, 1, 1, NOMMOD, IAUX )
+        IF ( IAUX.EQ.0 ) THEN
+          CALL UTMESS
+     >    ( 'F' , NOMPRO, 'MODELE OBLIGATOIRE POUR LIRE UN CHAM_ELEM' )
+        ENDIF
+        CALL LRCEME ( CHAMN,  NOCHMD, TYPECH(1:4), NOMAMD,
+     >                NOMAAS, NOMMOD, NOMGD,
+     >                NUMPT,  NUMORD, NBCMPV, NCMPVA, NCMPVM,
      >                NROFIC, CODRET )
       ELSE
         CODRET = 1

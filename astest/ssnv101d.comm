@@ -1,4 +1,4 @@
-# MODIF  DATE 18/06/2002   AUTEUR F6BHHBO P.DEBONNIERES 
+# MODIF  DATE 02/12/2002   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN DEFORMATIONS PLANES (CHABOCHE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -506,5 +506,37 @@ TEST_RESU(RESU=(
                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'V1',  VALE = 3.7160E-2,   ))
                                                                      )
 
+# 
+#  validation de IMPR_RESU au format IDEAS sur un nombre limite de
+#  variables internes
+# 
+
+IMPR_RESU(MODELE=DPLAN,
+          RESU=(_F( FORMAT='IDEAS',
+                    RESULTAT=SOLNL2,
+                    NOM_CHAM='VARI_ELGA',
+                    NUME_ORDRE = 7 ,
+                  ),
+                _F( FORMAT='IDEAS',
+                    RESULTAT=SOLNL2,
+                    NOM_CHAM='VARI_ELGA',
+                    NOM_CMP = ('V1','V3','V5') ,
+                    NUME_ORDRE = 7 ,
+                  ),
+                _F( FORMAT='IDEAS',
+                    RESULTAT=SOLNL2,
+                    NOM_CHAM='VARI_ELGA',
+                    NOM_CMP = ('V1','V3','V5','V2','V7','V1','V2') ,
+                    NUME_ORDRE = 7 ,
+                  ),
+               ),
+          );
+
+IMPR_RESU(RESU= _F( FORMAT='RESULTAT',
+                    RESULTAT=SOLNL2,
+                    NOM_CHAM='VARI_ELGA',
+                    NUME_ORDRE = 7 ,
+                  ),
+          );
 FIN()
 #

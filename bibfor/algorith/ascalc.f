@@ -1,21 +1,32 @@
       SUBROUTINE ASCALC(RESU,MASSE,MOME,PSMO,STAT,NBMODE,NEQ,NORDR,
      +                  KNOMSY,NBOPT,NDIR,MONOAP,NBSUP,NSUPP,TYPCMO,
      +                  TEMPS,COMDIR,TYPCDI,TRONC,AMORT,SPECTR,
-     +                  ASSPEC,NOMSUP,REASUP,DEPSUP,TCOSUP,TCOSAP,
+     +                  ASSPEC,NOMSUP,REASUP,DEPSUP,TCOSUP,
      +                  CORFRE,IMPR)
       IMPLICIT  REAL*8 (A-H,O-Z)
-      INTEGER       NDIR(*),TCOSUP(*),NORDR(*),NSUPP(*),TCOSAP(NBSUP,*)
+      INTEGER       NDIR(*),TCOSUP(*),NORDR(*),NSUPP(*)
       REAL*8        AMORT(*),SPECTR(*),ASSPEC(*),DEPSUP(*),REASUP(*)
       CHARACTER*(*) RESU,MASSE,MOME,PSMO,STAT,TYPCMO,TYPCDI,
      +              KNOMSY(*),NOMSUP(*)
       LOGICAL       MONOAP, COMDIR, TRONC, CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/06/2002   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-C              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
-C              REDISTRIBUTION OF THIS FILE.
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CRP_21
 C     ------------------------------------------------------------------
@@ -113,6 +124,7 @@ C     --- BOUCLE SUR LES OPTIONS DE CALCUL "NOMSY" ---
          CALL WKVECT('&&ASCALC.C_REP_MOD','V V R',3*NEQ*NBSUP,JCREP)
          CALL WKVECT('&&ASCALC.REP_DIR','V V R',3*NEQ,JDIR)
          CALL WKVECT('&&ASCALC.TABS','V V R',NBSUP*NEQ,JTABS)
+
 C
 C        ---------------------------------------------------------------
 C                        REPONSE PRIMAIRE OU GLOBAL
@@ -138,8 +150,8 @@ C              --- PRISE EN COMPTE DES EFFETS D'ENTRAINEMENT ---
 C              --- DANS LE CAS DE CALCUL DE REPONSE GLOBALE  ---
 C
                IF ( (.NOT.MONOAP) .AND. GLOB ) THEN
-                  CALL ASEFEN (GLOB,NOMSY,MASSE,ID,STAT,NEQ,NBSUP,
-     +                              NSUPP,NOMSUP,DEPSUP,ZR(JCREP))
+                  CALL ASEFEN (NOMSY,ID,STAT,NEQ,NBSUP,NDIR,
+     +                  NSUPP,MASSE,NOMSUP,DEPSUP,ZR(JCREP))
                ENDIF
 C
 C              ----CALCUL DE L ACCELERATION ABSOLUE
@@ -172,32 +184,15 @@ C        ---------------------------------------------------------------
 C                            REPONSE SECONDAIRE
 C        ---------------------------------------------------------------
          IF ( SECON ) THEN
-          ZERO =0.0D0
-          DO 2 IS = 1,3*NBSUP*NEQ
-            ZR(JCREP+IS-1) = ZERO
- 2        CONTINUE
 C
 C        --- BOUCLE SUR LES DIRECTIONS ----
-          DO 30 ID = 1,3
-            IF (NDIR(ID).EQ.1) THEN
 C
 C              --- PRISE EN COMPTE DES EFFETS D'ENTRAINEMENT ---
 C              --- DANS LE CAS DE CALCUL DE REPONSE GLOBALE  ---
 C
-               CALL ASEFEN (GLOB,NOMSY,MASSE,ID,STAT,NEQ,NBSUP,
-     +                              NSUPP,NOMSUP,DEPSUP,ZR(JCREP))
-C
-C              --- CALCUL DES RECOMBINAISONS PAR DIRECTIONS---
-
-               CALL ASDIR (MONOAP,ID,NEQ,NBSUP,NSUPP,
-     +                     TCOSAP,ZR(JCREP),ZR(JDIR))
-            ENDIF
- 30      CONTINUE
-C
-C        --- STOCKAGE ---
-C
-         CALL ASSTOC(MOME,RESU,KNOMSY(IN),NEQ,ZR(JDIR),NDIR,
-     +               .FALSE.,TYPCDI,.FALSE.,.FALSE.,.TRUE.)
+         IF (KNOMSY(IN).NE.'ACCE_ABSOLU') THEN 
+           CALL ASECON (KNOMSY(IN),NEQ,MOME,RESU)
+         ENDIF
 C
          ENDIF
 C
@@ -207,6 +202,7 @@ C
          CALL JEDETR('&&ASCALC.C_REP_MOD')
          CALL JEDETR('&&ASCALC.REP_DIR')
          CALL JEDETR('&&ASCALC.TABS')
+
  10   CONTINUE
 C
       CALL JEDEMA()

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 FACT_INTE_SPEC=OPER(nom="FACT_INTE_SPEC",op= 117,sd_prod=interspfact,
                     fr="Factorisation d une matrice interspectrale hermitienne",
-                    docu="U4.36.04-e",reentrant='n',
+                    docu="U4.36.04-f",reentrant='n',
             UIinfo={"groupes":("Fonction",)},
          regles=(ENSEMBLE('FREQ_FIN','NB_POIN'),),
 #  regle non indiquée dans la doc U         

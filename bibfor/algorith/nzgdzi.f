@@ -3,7 +3,7 @@
      &                   PHASM,PHASP,OPTION,SIGP,VIP,DSIGDF,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/11/2002   AUTEUR ADBHHVV V.CANO 
+C MODIF ALGORITH  DATE 07/01/2003   AUTEUR ADBHHVV V.CANO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -840,7 +840,7 @@ C DEFINITION DE DIFFERENTS COEFFICIENTS POUR CALCULER DSIGDF
             N0(I) = (1-N(I))/N(I)
  178       CONTINUE
            IF (DP .GT. 0.D0) THEN
-             DV= (1-FMELP)*ZBETAP*(ETA(NZ)/N(NZ)/DT)*((DP/DT)**N0(NZ))
+             DV= (1-FMELP)*(ETA(NZ)/N(NZ)/DT)*((DP/DT)**N0(NZ))
              DO 179 I=1,NZ-1
                IF (PHASP(I) .GT. 0.D0)
      &           DV= DV+FMELP*(PHASP(I)/ZALPHP)*(ETA(I)/N(I)/DT)*

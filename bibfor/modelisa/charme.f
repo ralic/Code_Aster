@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*4         FONREE
 C ----------------------------------------------------------------------
-C MODIF MODELISA  DATE 18/09/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 10/02/2003   AUTEUR CIBHHLV L.VIVAN 
 C
 C      OPERATEURS :     AFFE_CHAR_MECA ET AFFE_CHAR_MECA_C
 C                                      ET AFFE_CHAR_MECA_F
@@ -232,6 +232,10 @@ C
 C --- ONDE_FLUI ---
 C
          CALL CBONDE ( CHAR, NOMA, LIGRMO, FONREE )
+C
+C --- DDL_POUTRE ---
+C
+         CALL CADDLP ( FONREE, CHAR )
 C
       ENDIF
 C

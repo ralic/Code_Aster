@@ -6,7 +6,7 @@
       CHARACTER*1                                               BASE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/02/97   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,23 +76,24 @@ C     1/ LE .PARA
 C
 C     2/ LE .PROL
       PROL( 1:19) = SORTIE
-      CALL WKVECT(PROL,BASE//' V K8',6+2*NBPARA,LPROL)
+      CALL WKVECT(PROL,BASE//' V K16',6+2*NBPARA,LPROL)
       PROL( 1:19) = NOMFON(1)
       CALL JEVEUO(PROL,'L',LPRORF)
-      ZK8(LPROL)   = 'NAPPE   '
-      IF (ZK8(LPRORF+1)(1:3).EQ.'INT') THEN
-         ZK8(LPROL+1) = 'LIN LIN '
+      ZK16(LPROL)   = 'NAPPE   '
+      IF (ZK16(LPRORF+1)(1:3).EQ.'INT') THEN
+         ZK16(LPROL+1) = 'LIN LIN '
       ELSE
-         ZK8(LPROL+1) = ZK8(LPRORF+1)
+         ZK16(LPROL+1) = ZK16(LPRORF+1)
       ENDIF
-      ZK8(LPROL+2) = ZK8(LPRORF+2)
-      ZK8(LPROL+3) = ZK8(LPRORF+3)
-      IF (ZK8(LPRORF+4)(1:1).EQ.'I' .OR. ZK8(LPRORF+4)(2:2).EQ.'I') THEN
-         ZK8(LPROL+4) = 'EE      '
+      ZK16(LPROL+2) = ZK16(LPRORF+2)
+      ZK16(LPROL+3) = ZK16(LPRORF+3)
+      IF (ZK16(LPRORF+4)(1:1).EQ.'I' .OR. ZK16(LPRORF+4)(2:2).EQ.'I') 
+     +THEN
+         ZK16(LPROL+4) = 'EE      '
       ELSE
-         ZK8(LPROL+4) = ZK8(LPRORF+4)
+         ZK16(LPROL+4) = ZK16(LPRORF+4)
       ENDIF
-      ZK8(LPROL+5) = ZK8(LPRORF+5)
+      ZK16(LPROL+5) = ZK16(LPRORF+5)
 C
       VALE( 1:19) = SORTIE
       VALE(20:24) = '.VALE'
@@ -109,8 +110,8 @@ C     --- DETERMINATION DES LONGUEURS ---
 C
       DO 300 IPARA =1,NBPARA
 C
-         ZK8(LPROL+5+2*IPARA-1) = 'LIN LIN '
-         ZK8(LPROL+5+2*IPARA  ) = 'EE      '
+         ZK16(LPROL+5+2*IPARA-1) = 'LIN LIN '
+         ZK16(LPROL+5+2*IPARA  ) = 'EE      '
 C
          CALL JECROC(JEXNUM(VALE,IPARA))
          CALL JELIRA(ZK24(LNOMF+IPARA-1),'LONUTI',LONUTI,CBID)

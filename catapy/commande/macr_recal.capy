@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from Macro.macr_recal_ops import macr_recal_ops
 def macr_recal_prod(self,**args ):
   return listr8
 
-MACR_RECAL = MACRO(nom="MACR_RECAL",op=macr_recal_ops,docu="U4.73.02",
+MACR_RECAL = MACRO(nom="MACR_RECAL",op=macr_recal_ops,docu="U4.73.02-a",
             UIinfo={"groupes":("Résultats et champs",)},
                       sd_prod=macr_recal_prod,
                       fr="Réalise le recalage de modèles Aster",

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE MCOURTOI M.COURTOIS
 IMPR_COURBE=PROC(nom="IMPR_COURBE",op= 141,fr="Impression, sur fichiers",
-                 docu="U4.33.01-e2",
+                 docu="U4.33.01-e",
             UIinfo={"groupes":("Fonction",)},
          FICHIER         =SIMP(statut='f',typ='TXM',defaut="RESULTAT"),
          FORMAT          =SIMP(statut='f',typ='TXM',position='global'
@@ -57,14 +57,14 @@ IMPR_COURBE=PROC(nom="IMPR_COURBE",op= 141,fr="Impression, sur fichiers",
          ),  
          COURBE          =FACT(statut='o',min=1,max='**',fr="Définition de la courbe à tracer",
            regles=(UN_PARMI('FONCTION','LIST_RESU','TABLE','FONC_X','RESU_GENE'),),
-           FONCTION        =SIMP(statut='f',typ=(fonction, fonction_c),
+           FONCTION        =SIMP(statut='f',typ=(fonction, formule, fonction_c),
                                  fr="Fonction réelle ou complexe", ),
            LIST_RESU       =SIMP(statut='f',typ=listr8,
                                  fr="Liste des ordonnees d une fonction réelle définie par deux listes", ),
 #  creer le type table            
            TABLE           =SIMP(statut='f',typ=table,
                                  fr="Nom de la table dont 2 colonnes définissent la fonction",),
-           FONC_X          =SIMP(statut='f',typ=fonction,
+           FONC_X          =SIMP(statut='f',typ=(fonction,formule),
                                  fr="Fonction abscisses d une fonction paramétrique",),
            RESU_GENE       =SIMP(statut='f',typ=tran_gene, ), 
            b_fonction      =BLOC(condition = "FONCTION != None",                          
@@ -84,7 +84,7 @@ IMPR_COURBE=PROC(nom="IMPR_COURBE",op= 141,fr="Impression, sur fichiers",
                                    fr="Paramètre de la table associé aux ordonnées de la fonction à tracer" ),        
            ), 
            b_fonc_x        =BLOC(condition = "FONC_X != None",                                          
-             FONC_Y          =SIMP(statut='o',typ=fonction,fr="Fonction ordonnées d une fonction paramétrique" ),
+             FONC_Y          =SIMP(statut='o',typ=(fonction,formule),fr="Fonction ordonnées d une fonction paramétrique" ),
              PARA            =SIMP(statut='f',typ='TXM',defaut="FONC_X",into=("FONC_X","FONC_Y"),
                                    fr="Permutation des roles des deux fonctions" ),
              LIST_PARA       =SIMP(statut='f',typ=listr8 ),                

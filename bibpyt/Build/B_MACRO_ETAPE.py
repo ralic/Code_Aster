@@ -1,4 +1,4 @@
-#@ MODIF B_MACRO_ETAPE Build  DATE 26/06/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF B_MACRO_ETAPE Build  DATE 01/04/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,73 +31,36 @@ from Noyau import N__F
 from Noyau.N_utils import AsType
 import B_utils
 
-def build_formule(self):
-  for mc in self.mc_liste:
-    if mc.nom in ('REEL','ENTIER','COMPLEXE'):
-      texte= self.sd.get_name()+ string.strip(mc.valeur)
-      mc.valeur=B_utils.ReorganisationDe(texte,80)
-  # ATTENTION : FORMULE est une des rares commandes qui a besoin de
-  # connaitre son numero d execution avant d etre construite
-  # heureusement il est facile a calculer
-  self.icmd=self.jdc.icmd+1
-  ier=self.codex.opsexe(self,self.icmd,-1,-self.definition.op)
-  # Il faut cependant mettre self.icmd a 1 pour dire au superviseur
-  # que cette commande compte pour 1 dans la numerotation
-  self.icmd=1
-  return ier
-
-def build_debut(self):
-  """
-     Cette fonction est utilisee pour les commandes DEBUT et POURSUITE
-  """
-  if self.jdc.par_lot == 'NON' :
-    self.jdc._Build()
-  if self.definition.nom == "DEBUT":
-    # Il s agit de la commande DEBUT
-    # On l execute ce qui initialise les bases
-    # Cette execution est indispensable avant toute autre action sur ASTER
-    lot,ier=self.codex.debut(self,1)
-    self.icmd=1
-    return ier
-  else:
-    # Pour POURSUITE on ne modifie pas la valeur initialisee dans ops.POURSUITE
-    # Il n y a pas besoin d executer self.codex.poursu (deja fait dans ops.POURSUITE)
-    return 0
-
-
 class MACRO_ETAPE(B_ETAPE.ETAPE):
    """
-      Description de la classe
+   Cette classe implémente les méthodes relatives à la phase de construction
+   d'une macro-etape.
    """
-   macros={-5:build_formule,0:build_debut}
-   NOCMDOPER= (
-            -1  # INCLUDE
-           ,-2  # RETOUR
-           ,-3  # PROCEDURE
-           ,-14 # INCLUDE_MATERIAU
-           )
+   macros={}
 
    def __init__(self):
       pass
 
    def Build(self):
       """ 
-          Fonction : Construction d'une étape de type MACRO
-                     La construction n'est à faire que pour les macros
-                     implémentées en Fortran
-                     Ensuite on boucle sur les sous étapes construites
-                     en leur demandant de se construire selon le meme processus
+      Fonction : Construction d'une étape de type MACRO
+
+      La construction n'est à faire que pour certaines macros.
+      Ensuite on boucle sur les sous étapes construites
+      en leur demandant de se construire selon le meme processus
       """
       self.set_current_step()
       self.building=None
-      # Chaque macro_etape doit avoir un attribut cr du type CR (compte-rendu) pour
-      # stocker les erreurs eventuelles
-      # et ajoute au cr de l'etape parent pour avoir un compte-rendu hierarchique
+      # Chaque macro_etape doit avoir un attribut cr du type CR 
+      # (compte-rendu) pour stocker les erreurs eventuelles
+      # et doit l'ajouter au cr de l'etape parent pour construire un 
+      # compte-rendu hierarchique
       self.cr=self.CR(debut='Etape : '+self.nom + '    ligne : '+`self.appel[0]` + '    fichier : '+`self.appel[1]`,
                        fin = 'Fin Etape : '+self.nom)
 
       self.parent.cr.add(self.cr)
       ret = self._Build()
+
       ier=ret
       if ret == 0 and self.jdc.par_lot == 'OUI':
         # Traitement par lot
@@ -106,9 +69,17 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
           ret=e.Build()
           ier=ier+ret
 
-      if self.icmd != None:
-        self.icmd=self.jdc.icmd=self.jdc.icmd+self.icmd
       self.reset_current_step()
+      return ier
+
+   def Build_alone(self):
+      """
+          Construction d'une étape de type MACRO.
+
+          On ne construit pas les sous commandes et le 
+          current step est supposé correctement initialisé
+      """
+      ier = self._Build()
       return ier
 
    def _Build(self):
@@ -118,12 +89,14 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
       """
       if CONTEXT.debug : print "MACRO_ETAPE._Build ",self.nom,self.definition.op
 
-      if self.definition.op is None:
-        # On est dans le cas d'une macro en Python. On evalue la fonction self.definition.proc
-        # dans le contexte des valeurs de mots clés (d)
+      if self.definition.proc is not None:
+        # On est dans le cas d'une macro en Python. On evalue la fonction 
+        # self.definition.proc dans le contexte des valeurs de mots clés (d)
+        # La fonction proc doit demander la numerotation de la commande (appel de set_icmd)
         try:
           d=self.cree_dict_valeurs(self.mc_liste)
           ier= apply(self.definition.proc,(self,),d)
+          if ier:self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+'ligne : '+str(self.appel[0])+' fichier : '+self.appel[1])
           return ier
         except AsException,e:
           ier=1
@@ -139,31 +112,43 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
 
       elif self.macros.has_key(self.definition.op):
         try:
-          return self.macros[self.definition.op](self)
+          ier= self.macros[self.definition.op](self)
+          if ier:self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+'ligne : '+str(self.appel[0])+' fichier : '+self.appel[1])
+          return ier
         except AsException,e:
-          raise AsException("impossible de construire la macro "+self.nom+'\n',e)
+          ier=1
+          self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+str(e))
+          return ier
         except EOFError:
           raise
         except:
+          ier=1
           l=traceback.format_exception(sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2])
-          raise AsException("impossible de construire la macro "+self.nom+'\n',
-                                 string.join(l),
-                                )
+          self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+string.join(l))
+          return ier
       else:
         # Pour presque toutes les commandes (sauf FORMULE et POURSUITE)
         # le numero de la commande n est pas utile en phase de construction
-        # On le met donc a 0
-        self.icmd=0
-        ier=self.codex.opsexe(self,self.icmd,-1,-self.definition.op)
-        # On indique au superviseur s il faut numeroter la commande
-        # et quel increment il faut utiliser
-        # En general on donne 1 ou None pour ne pas numeroter
-        #  Le numero de la commande est utile en phase d execution
-        if self.definition.op in self.NOCMDOPER:
-          self.icmd=None
-        else:
-          # On demande d incrementer le compteur de la commande de 1
-          self.icmd=1
+        # Néanmoins, on le calcule en appelant la methode set_icmd avec un
+        # incrément de 1
+        # un incrément de 1 indique que la commande compte pour 1 dans 
+        # la numérotation globale
+        # un incrément de None indique que la commande ne sera pas numérotée.
+        self.set_icmd(1)
+        try:
+          ier=self.codex.opsexe(self,self.icmd,-1,-self.definition.op)
+          if ier:self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+'ligne : '+str(self.appel[0])+' fichier : '+self.appel[1])
+        except AsException,e:
+          ier=1
+          self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+str(e))
+          return ier
+        except EOFError:
+          raise
+        except:
+          ier=1
+          l=traceback.format_exception(sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2])
+          self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+string.join(l))
+          return ier
         return ier
 
    def setmode(self,mode):

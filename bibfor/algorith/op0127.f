@@ -1,6 +1,6 @@
       SUBROUTINE OP0127 (IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/07/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C
 C-----------------------------------------------------------------------
       DATA PGC /'OP0127'/
 C-----------------------------------------------------------------------
+      CALL INFMAJ()
 C
 C-----RECUPERATION DU MODELE AMONT
 C

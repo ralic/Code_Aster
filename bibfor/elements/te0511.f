@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/01/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 C     -----------------------------------------------
 C
       CALL JEVECH ( 'PMATERC', 'L', IMATE  )
-      CALL TECACH(.FALSE.,.FALSE.,'PTEMPPR',1,ITEMPE)
+      CALL TECACH(.FALSE.,.FALSE.,'PTEMPER',1,ITEMPE)
 C
 C
 C --- RECUPERATION DU TYPE DU MATERIAU DANS PHENOM

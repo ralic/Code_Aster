@@ -5,7 +5,7 @@ C
 C     THERMIQUE - DONNEES EN THERMIQUE
 C     *           **         **
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/06/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -255,12 +255,12 @@ C 3.2.5. ==> FONCTIONS MULTIPLICATIVES DES CHARGES
           NOMFCT = '&&'//NOMPRO
           CALL JEEXIN(NOMFCT(1:19)//'.PROL',IRET)
           IF ( IRET .EQ. 0 ) THEN
-            CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K8',5,JPRO)
-            ZK8(JPRO)   = 'CONSTANT'
-            ZK8(JPRO+1) = 'CONSTANT'
-            ZK8(JPRO+2) = 'TOUTPARA'
-            ZK8(JPRO+3) = 'TOUTRESU'
-            ZK8(JPRO+4) = 'CC      '
+            CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K16',5,JPRO)
+            ZK16(JPRO)   = 'CONSTANT'
+            ZK16(JPRO+1) = 'CONSTANT'
+            ZK16(JPRO+2) = 'TOUTPARA'
+            ZK16(JPRO+3) = 'TOUTRESU'
+            ZK16(JPRO+4) = 'CC      '
 
             CALL WKVECT(NOMFCT(1:19)//'.VALE','V V R',2,JVAL)
             ZR(JVAL)  = 1.0D0

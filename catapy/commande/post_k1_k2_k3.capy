@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,18 +19,18 @@
 # RESPONSABLE JMBHH01 J.M.PROIX
 POST_K1_K2_K3=OPER(nom="POST_K1_K2_K3",op=188,sd_prod=tabl_post_k,
                    fr="Calcul des FIC par extrapolation du champ de déplacements sur les lèvres de la fissure",
-                   docu="U4.82.05-b2",reentrant='n',
+                   docu="U4.82.05-b",reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
 
            regles=(UN_PARMI('RESULTAT','TABL_DEPL_SUP'),
-                   PRESENT_PRESENT('TABL_DEPL_SUP','TABL_DEPL_INF'),),
+                   PRESENT_PRESENT('TABL_DEPL_SUP','TABL_DEPL_INF'),
+                   PRESENT_PRESENT('RESULTAT','FOND_FISS'),),
 
          MODELISATION  =SIMP(statut='o',typ='TXM',
                              into=("3D","AXIS","D_PLAN","C_PLAN"),
                              fr="Modélisation cohérente avec celle utilisée pour le calcul des déplacements"),
-           FOND_3D         =SIMP(statut='f',typ=fond_fiss),
-           FOND_FISS       =SIMP(statut='f',typ=fond_fiss),
-         b_fond_3d     =BLOC (condition="(FOND_3D != None) or (FOND_FISS!= None)",
+         FOND_FISS     =SIMP(statut='f',typ=fond_fiss),
+         b_fond_fiss   =BLOC (condition="(FOND_FISS!= None)",
                          MAILLAGE      = SIMP(statut='o',typ=maillage),
                          PRECISION     = SIMP(statut='f',typ='R',defaut=0.001),
                          NOEUD         = SIMP(statut='f',typ=no,max='**'),

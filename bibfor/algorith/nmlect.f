@@ -1,10 +1,10 @@
       SUBROUTINE NMLECT (RESULT, MODELE, MATE  , CARELE, COMPOR,
      &                   LISCHA, METHOD, SOLVEU, PARMET, PARCRI,
-     &                   CARCRI, MODEDE, SOLVDE,
-     &                   NBPASE, BASENO, INPSCO )
+     &                   CARCRI, MODEDE, SOLVDE, NBPASE, BASENO,
+     &                   INPSCO, PARCON )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/06/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ALGORITH  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,13 +21,13 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C RESPONSABLE ADBHHVV V.CANO
+C RESPONSABLE PBADEL P.BADEL
 C
       IMPLICIT NONE
 C
       INTEGER      NBPASE
 C
-      REAL*8       PARMET(*), PARCRI(*)
+      REAL*8       PARMET(*), PARCRI(*), PARCON(*)
 C
       CHARACTER*8  MODEDE, RESULT
       CHARACTER*8 BASENO
@@ -71,8 +71,11 @@ C                     1 : ITER_GLOB_MAXI
 C                     2 : RESI_GLOB_RELA
 C                     3 : RESI_GLOB_MAXI
 C                     4 : ARRET (0=OUI, 1=NON)
+C                     5 : ITER_GLOB_ELAS
+C                     6 : RESI_REFE_RELA
 C                    10 : INCO_GLOB_ABSO (LAGRANGIEN)
 C                    11 : DIFF_GLOB_ABSO (LAGRANGIEN)
+C                    
 C IN/JXOUT CARCRI : CARTE DES CRITERES DE CONVERGENCE LOCAUX
 C                     0 : ITER_INTE_MAXI
 C                     1 : TYPE_MATR_COMP (0: VIT, 1: INC)
@@ -85,6 +88,13 @@ C      OUT SOLVDE : PARAMETRE DU SOLVEUR POUR LOIS NON LOCALES
 C      OUT NBPASE : NOMBRE DE PARAMETRES SENSIBLES
 C      IN  BASENO : BASE DU NOM DES STRUCTURES DERIVEES
 C      OUT INPSCO : SD CONTENANT LA LISTE DES NOMS POUR LA SENSIBILITE
+C      OUT PARCON : PARAMETRES DU CRITERE DE CONVERGENCE EN CONTRAINTE
+C                   SI PARCRI(6)=RESI_CONT_RELA != R8VIDE()
+C                     1 : SIGM_REFE
+C                     2 : EPSI_REFE
+C                     3 : FLUX_THER_REFE
+C                     4 : FLUX_HYD1_REFE
+C                     5 : FLUX_HYD2_REFE
 C ----------------------------------------------------------------------
       LOGICAL EXI
       INTEGER IBID, IAUX, IRET
@@ -125,7 +135,7 @@ C -- RELATION DE COMPORTEMENT
 C
 C -- CRITERES DE CONVERGENCE
 C
-        CALL NMDOCN (MODELE, PARCRI, CARCRI)
+        CALL NMDOCN (MODELE, PARCRI, CARCRI, PARCON)
 C
 C -- NOM ET PARAMETRES DE LA METHODE DE RESOLUTION
 C

@@ -7,7 +7,7 @@ C
       CHARACTER*8   MATREV
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF PREPOST  DATE 13/01/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,8 +72,8 @@ C ======================================================================
       REAL*8       TEMPDI, LAMB1, LAMB2, TEMPD, COEF1, COEF2, RYA, PI
       REAL*8       BETAA, BETAB, R8PI, VAL1, VAL2
       CHARACTER*1  K1BID
-      CHARACTER*8  PROLG, PROLN, K8B
-      CHARACTER*16 PHENOM
+      CHARACTER*8  PROLN, K8B
+      CHARACTER*16 PHENOM, PROLG
       CHARACTER*19 VALNOM, ROMNOM, TRANOM, FONCT
       CHARACTER*24 NOMCMP, TYPNOM, TY2NOM, AUTNOM, VAENOM, COCNOM,PARNOM
       CHARACTER*24 NATNOM, PRONOM
@@ -112,7 +112,7 @@ C ======================================================================
                       CALL JELIRA(VAENOM,'LONUTI',LDIM,K1BID)
                       LDIM = LDIM / 2
                       IF (TEMPA.LT.ZR(INEUT3)) THEN
-                         PROLG = ZK8(INEUT4+4)
+                         PROLG = ZK16(INEUT4+4)
                          IF (PROLG(1:1).EQ.'E') THEN
                             CALL UTMESS('F','COPLAS_2','PROLONGEMENT'//
      +                                  ' A GAUCHE EXCLU')
@@ -128,7 +128,7 @@ C ======================================================================
                             SIGMA = PENT*TEMPA + REST
                          ENDIF
                       ELSE IF (TEMPA.GT.ZR(INEUT3+LDIM-1)) THEN
-                         PROLG = ZK8(INEUT4+4)
+                         PROLG = ZK16(INEUT4+4)
                          IF (PROLG(2:2).EQ.'E') THEN
                             CALL UTMESS('F','COPLAS_3','PROLONGEMENT'//
      +                                  ' A DROITE EXCLU')
@@ -170,7 +170,7 @@ C ======================================================================
             CALL JEVEUO(PARNOM,'L',INEUT5)
             PRONOM = TRANOM//'.PROL'
             CALL JEVEUO(PRONOM,'L',INEUT8)
-            PROLN = ZK8(INEUT8+4)
+            PROLN = ZK16(INEUT8+4)
             NATNOM = TRANOM//'.VALE'
             CALL JELIRA(NATNOM,'NUTIOC',NVALE,K1BID)
             VALP = 0

@@ -1,23 +1,23 @@
 
-# MODIF  DATE 12/11/2002   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TP THERMOPLASTICITE : TUBE SOUMIS A UN CHOC FROID
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 #
@@ -26,19 +26,19 @@
 DEBUT(CODE=_F(NOM='FORMA09B',NIV_PUB_WEB='INTERNET'),);
 #......................................................................
 #
-# MODELISATION 2D_AXIS:   
+# MODELISATION 2D_AXIS:
 #......................................................................
 #
 #        INTERNE       HAUT            EXTERNE
 #               D -----+----- C
 # !               !    J    !
 #                 !         !
-# !               !         !  
+# !               !         !
 #                 !         !        10 MM
 # !               !         !
 #                 !         !
 # !               !    F    !
-#     19.5 MM   P1 -----+-----  P2                          
+#     19.5 MM   P1 -----+-----  P2
 # !-------------->   1.0 MM
 #                 <--------->
 #======================================================================
@@ -54,7 +54,7 @@ PRE_GIBI();
 
 MA=LIRE_MAILLAGE();
 
-MA=DEFI_GROUP(reuse =MA,
+DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
@@ -123,7 +123,7 @@ IMPR_RESU(RESU=_F(RESULTAT=TEMPE,
                   INST=(0.0,0.10000000000000001,4.0,10.0,100.0,),
                   VALE_MAX='OUI',
                   VALE_MIN='OUI',),);
-# 
+#
 # DEUXIEME CALCUL AVEC AXIS_DIAG
 # ON VERIFE LE PRINCIPE DU MAXIMUM
 #
@@ -269,11 +269,18 @@ CHDIL=AFFE_CHAR_MECA(MODELE=MO,
 
 INSTMECA=DEFI_LIST_REEL(VALE=(0.0,11.0,),);
 
+
 DEPLDIL=MECA_STATIQUE(MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      EXCIT=_F(CHARGE=CHDIL,),
-                      LIST_INST=INSTMECA,
-                      OPTION='EPSI_ELGA_DEPL',);
+                       CHAM_MATER=CHMAT,
+                       EXCIT=_F(CHARGE=CHDIL,),
+                       LIST_INST=INSTMECA,
+                       );
+
+CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL , MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                       EXCIT=_F(CHARGE=CHDIL,),
+                       LIST_INST=INSTMECA,
+                       OPTION='EPSI_ELGA_DEPL',);
 
 IMPR_RESU(RESU=_F(RESULTAT=DEPLDIL,
                   VALE_MAX='OUI',
@@ -305,7 +312,7 @@ IMPR_RESU(RESU=_F(RESULTAT=DEPLBRID,
 # MAIS AVEC STAT_NON_LINE EN INCREMENTAL
 # LES CONTRAINTES DE BRIDAGE, ON NE RETROUVE COMME MECA_STATIQUE
 # CAR L'INSTANT T=0 (INSTANT INITAL NON CALCULE) ON SUPPOSE
-# QU'IL N'Y A PAS DE CONTRAINTE. 
+# QU'IL N'Y A PAS DE CONTRAINTE.
 # AU PREMIER INSTANT CALCULE, T=11, ON NE CALCULE QUE LES CONTRAINTES
 # DUES A L'INCREMENT DE DILATATION ENTRE T=0 ET T=11
 #
@@ -325,7 +332,7 @@ IMPR_RESU(RESU=_F(RESULTAT=SNLBRID,
 # TOUJOURS AVEC STAT_NON_LINE EN INCREMENTAL
 # POUR PRENDRE EN COMPTE LA DILATATION A T=0, ON DEFINIT TOUTE
 # L'HISTOIRE, C'EST A DIRE UN CHAMP T=TREF=0, POUR UN INSTANT INITIAL T=-1
-# ALORS L'INSTANT T=0 EST CALCULE, ET ON PREND EN COMPTE L'INCREMENT 
+# ALORS L'INSTANT T=0 EST CALCULE, ET ON PREND EN COMPTE L'INCREMENT
 # DE DILATATION ENTRE T=-1 ET T=0
 # ON RETROUVE ALORS COMME MECA_STATIQUE, A T=0 ET A T=11
 #
@@ -339,7 +346,7 @@ CHTEMP0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                            NOM_CMP='TEMP',
                            VALE=0.0,),);
 
-TEMPE2=CREA_RESU(reuse =TEMPE2,
+CREA_RESU(reuse =TEMPE2,
                  OPERATION='AFFE',
                  TYPE_RESU='EVOL_THER',
                  NOM_CHAM='TEMP',

@@ -1,7 +1,7 @@
       SUBROUTINE RCTRAC(IMATE,NOMRC,NOMCL,TEMP,JPROL,JVALE,NBVALE,E)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/04/2002   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -190,13 +190,13 @@ C ETENDU SONT MODIFIES PAR RCTRAC
 
       JPRO   = ZI(IPIF+1)
 
-      IF (ZK8(JPRO)(1:1).EQ.'C') THEN
+      IF (ZK16(JPRO)(1:1).EQ.'C') THEN
 C
 C ----- FONCTION CONSTANTE - IMPOSSIBLE
 C
         CALL UTMESS ('F','RCTRAC_08','FONCTION CONSTANTE INTERDITE POUR'
      &             //' LA COURBE DE TRACTION' // NOMCL2)
-      ELSE IF (ZK8(JPRO)(1:1).EQ.'F') THEN
+      ELSE IF (ZK16(JPRO)(1:1).EQ.'F') THEN
 C
 C ----- FONCTION D'UNE SEULE VARIABLE
 C
@@ -208,9 +208,9 @@ C
           ZR(JVALE+K-1)       = ZR(JVALF1+K-1)
           ZR(JVALE+K-1+NBVF1) = ZR(JVALF1+K-1+NBVF1)
  50     CONTINUE
-        ZK8(JPROL+4) = ZK8(JPRO+4)
+        ZK16(JPROL+4) = ZK16(JPRO+4)
 
-      ELSE IF (ZK8(JPRO)(1:1).EQ.'N') THEN
+      ELSE IF (ZK16(JPRO)(1:1).EQ.'N') THEN
 C
 C ----- NAPPE : FONCTION DE DEUX VARIABLES, DETERMINATION DE I TEL QUE
 C ----- ZR(JVALN+I) < TEMP < ZR(JVALN+I+1)
@@ -219,22 +219,22 @@ C
         NBVN  = ZI(IPIF+5)
         PROCON = .FALSE.
         IF (TEMP .LT. ZR(JVALN)) THEN
-          IF (ZK8(JPRO+4)(1:1) .EQ. 'C') THEN
+          IF (ZK16(JPRO+4)(1:1) .EQ. 'C') THEN
             I=1
             PROCON = .TRUE.
-          ELSE IF (ZK8(JPRO+4)(1:1) .EQ. 'L') THEN
+          ELSE IF (ZK16(JPRO+4)(1:1) .EQ. 'L') THEN
             I=1
-          ELSE IF (ZK8(JPRO+4)(1:1) .EQ. 'E') THEN
+          ELSE IF (ZK16(JPRO+4)(1:1) .EQ. 'E') THEN
          CALL UTMESS('F','RCTRAC_09','PROLONGEMENT A GAUCHE EXCLU POUR'
      &         //' LA COURBE ' // NOMCL2)
           END IF
         ELSE IF (TEMP .GT. ZR(JVALN+NBVN-1)) THEN
-          IF (ZK8(JPRO+4)(2:2) .EQ. 'C') THEN
+          IF (ZK16(JPRO+4)(2:2) .EQ. 'C') THEN
             I=NBVN
             PROCON = .TRUE.
-          ELSE IF (ZK8(JPRO+4)(2:2) .EQ. 'L') THEN
+          ELSE IF (ZK16(JPRO+4)(2:2) .EQ. 'L') THEN
             I=NBVN-1
-          ELSE IF (ZK8(JPRO+4)(2:2) .EQ. 'E') THEN
+          ELSE IF (ZK16(JPRO+4)(2:2) .EQ. 'E') THEN
          CALL UTMESS('F','RCTRAC_10','PROLONGEMENT A DROITE EXCLU POUR'
      &               //' LA COURBE ' // NOMCL2)
           END IF
@@ -275,27 +275,27 @@ C
             ZR(JVALE+K-1)       = ZR(JVALF1+K-1)
             ZR(JVALE+K-1+NBVF1) = ZR(JVALF1+K-1+NBVF1)
  100      CONTINUE
-          ZK8(JPROL+4) = ZK8(JPRO+5+2*I)
+          ZK16(JPROL+4) = ZK16(JPRO+5+2*I)
           NBVF2 = NBVF1
           NBVALE  = NBVF1
         ELSE
 C
 C ------- INTERPOLATION POUR LA FONCTION ENTRE I ET I+1
 C
-          ZK8(JPROL+4)(1:2) = 'CC'
-          IF ( ZK8(JPRO+5+2*I  )(1:1) .EQ. 'E' .OR.
-     &         ZK8(JPRO+5+2*I+2)(1:1) .EQ. 'E' ) THEN
-            ZK8(JPROL+4)(1:1) = 'E'
-          ELSE IF ( ZK8(JPRO+5+2*I  )(1:1) .EQ. 'L' .OR.
-     &              ZK8(JPRO+5+2*I+2)(1:1) .EQ. 'L' ) THEN
-            ZK8(JPROL+4)(1:1) = 'L'
+          ZK16(JPROL+4)(1:2) = 'CC'
+          IF ( ZK16(JPRO+5+2*I  )(1:1) .EQ. 'E' .OR.
+     &         ZK16(JPRO+5+2*I+2)(1:1) .EQ. 'E' ) THEN
+            ZK16(JPROL+4)(1:1) = 'E'
+          ELSE IF ( ZK16(JPRO+5+2*I  )(1:1) .EQ. 'L' .OR.
+     &              ZK16(JPRO+5+2*I+2)(1:1) .EQ. 'L' ) THEN
+            ZK16(JPROL+4)(1:1) = 'L'
           ENDIF
-          IF ( ZK8(JPRO+5+2*I  )(2:2) .EQ. 'E' .OR.
-     &         ZK8(JPRO+5+2*I+2)(2:2) .EQ. 'E' ) THEN
-            ZK8(JPROL+4)(2:2) = 'E'
-          ELSE IF ( ZK8(JPRO+5+2*I  )(2:2) .EQ. 'L' .OR.
-     &              ZK8(JPRO+5+2*I+2)(2:2) .EQ. 'L' ) THEN
-            ZK8(JPROL+4)(2:2) = 'L'
+          IF ( ZK16(JPRO+5+2*I  )(2:2) .EQ. 'E' .OR.
+     &         ZK16(JPRO+5+2*I+2)(2:2) .EQ. 'E' ) THEN
+            ZK16(JPROL+4)(2:2) = 'E'
+          ELSE IF ( ZK16(JPRO+5+2*I  )(2:2) .EQ. 'L' .OR.
+     &              ZK16(JPRO+5+2*I+2)(2:2) .EQ. 'L' ) THEN
+            ZK16(JPROL+4)(2:2) = 'L'
           ENDIF
           JVALF2= ZI(IPIF+2)+ZI(ZI(IPIF+3)+I)-1
           NBVF2 = ZI(ZI(IPIF+3)+I+1)-ZI(ZI(IPIF+3)+I)
@@ -319,8 +319,8 @@ C
           ZR(JVALE) = 0.D0
           ZR(JVALE+NBVALE) = ZR(JVALF1+NBVF1) +
      &                       COEF*(ZR(JVALF2+NBVF2)-ZR(JVALF1+NBVF1))
-          PRO1 = ZK8(JPRO+5+2*I)(2:2)
-          PRO2 = ZK8(JPRO+5+2*I+2)(2:2)
+          PRO1 = ZK16(JPRO+5+2*I)(2:2)
+          PRO2 = ZK16(JPRO+5+2*I+2)(2:2)
           K1 = 1
           K2 = 1
           NAR = 0
@@ -440,7 +440,7 @@ C
           ENDIF
         ENDIF
       ELSE
-        CALL UTMESS ('F','RCTRAC_11','CONCEPT DE TYPE : '//ZK8(JPRO)
+        CALL UTMESS ('F','RCTRAC_11','CONCEPT DE TYPE : '//ZK16(JPRO)
      &             //' INTERDIT POUR LA COURBE DE TRACTION' // NOMCL2)
       ENDIF
 C
@@ -450,10 +450,10 @@ C --- PAS LA PEINE EN METALLURGIE CAR ON DONNE DIRECTEMENT
 C --- LA COURBE R(P) OU PLUS EXACTEMENT LA COURBE R(R)
 C
       IF(NOMRC(1:8).EQ.'TRACTION') THEN
-        IF (ZK8(JPRO)(1:1).EQ.'N') THEN
+        IF (ZK16(JPRO)(1:1).EQ.'N') THEN
           IF (.NOT.(PROCON)) GOTO 310
         ELSE
-          IF (ZK8(JPRO)(1:1).NE.'F') GOTO 310
+          IF (ZK16(JPRO)(1:1).NE.'F') GOTO 310
         ENDIF
         E = ZR(JVALE+NBVALE)/ZR(JVALE)
         ZR(JVALE) = 0.D0
