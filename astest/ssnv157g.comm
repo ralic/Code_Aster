@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
 # TITRE LOIS NON LOCALES A DEFO REGULARISEES SUR BARREAU 2D DPLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,14 +38,13 @@ CHMAT=AFFE_MATERIAU(AFFE=_F(MATER=MAT1,
                             TOUT='OUI',),
                     MAILLAGE=TOTO,);
 
-MO=AFFE_MODELE(AFFE=(_F(GROUP_MA=('GMA10',),
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN_GRAD_EPSI',),
-                    _F(GROUP_MA=('GMA7','GMA8','GMA9',),
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN',),),
-               MAILLAGE=TOTO,
-               INFO=2,);
+MO=AFFE_MODELE(AFFE=_F(TOUT='OUI',
+                                              PHENOMENE='MECANIQUE',
+                                              MODELISATION='D_PLAN_GRAD_EPSI',),
+                               MAILLAGE=TOTO,
+                               INFO=2,);
+
+
 
 CL1=AFFE_CHAR_MECA(DDL_IMPO=_F(DY=0,
                                GROUP_NO='GMA7',),

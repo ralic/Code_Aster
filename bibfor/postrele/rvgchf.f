@@ -13,7 +13,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,12 +125,6 @@ C     /* ACCES A TOUS LES NUMEROS D' ORDRES */
                CALL UTIMPI('L',' NUME_ORDRE= ',1,IORDR)
                CALL UTFINM()
                ZK24(ALSCHP + 1-1) = '&&CHAMP_EFF_NON_EXISTANT'
-            ELSE
-               IF ( CA .EQ. 'N' ) THEN
-                  IF ( CHPSYM(6:14) .EQ. 'ELNO_DEPL' ) THEN
-                     CALL RVGCH1 ( ZK24(ALSCHP))
-                  ENDIF
-               ENDIF
             ENDIF
 100      CONTINUE
       ELSE
@@ -169,12 +163,6 @@ C        /* CAS D' UNE LISTE DE NUMERO ORDRE */
                   CALL UTIMPI('L',' NUME_ORDRE= ',1,ZI(AVALAC + J-1))
                   CALL UTFINM()
                   ZK24(ALSCHP + 1-1) = '&&CHAMP_EFF_NON_EXISTANT'
-               ELSE
-                  IF ( CA .EQ. 'N' ) THEN
-                     IF ( CHPSYM(6:14) .EQ. 'ELNO_DEPL' ) THEN
-                        CALL RVGCH1 ( ZK24(ALSCHP))
-                     ENDIF
-                  ENDIF
                ENDIF
 410         CONTINUE
             CALL JEDETR('&&OP0051.LISTE.IS')
@@ -212,12 +200,6 @@ C        /* CAS D' UNE LISTE DE NUMERO DE MODE */
                       CALL UTIMPI('L',' NUME_ORDRE= ',1,ZI(ALISTE+J-1))
                         CALL UTFINM()
                         ZK24(ALSCHP + J-1) = '&&CHAMP_EFF_NON_EXISTANT'
-                     ELSE
-                        IF ( CA .EQ. 'N' ) THEN
-                           IF ( CHPSYM(6:14) .EQ. 'ELNO_DEPL' ) THEN
-                              CALL RVGCH1 ( ZK24(ALSCHP+J-1))
-                           ENDIF
-                        ENDIF
                      ENDIF
 810               CONTINUE
                   CALL JEDETR('&&OP0051.LISTE.ORDRE')
@@ -264,12 +246,6 @@ C        /* CAS D' UNE LISTE DE REELS */
                       CALL UTIMPI('L',' NUME_ORDRE= ',1,ZI(ALISTE+J-1))
                         CALL UTFINM()
                         ZK24(ALSCHP + J-1) = '&&CHAMP_EFF_NON_EXISTANT'
-                     ELSE
-                        IF ( CA .EQ. 'N' ) THEN
-                           IF ( CHPSYM(6:14) .EQ. 'ELNO_DEPL' ) THEN
-                              CALL RVGCH1 ( ZK24(ALSCHP+J-1) )
-                           ENDIF
-                        ENDIF
                      ENDIF
 610               CONTINUE
                   CALL JEDETR('&&OP0051.LISTE.ORDRE')

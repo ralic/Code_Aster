@@ -1,7 +1,7 @@
       SUBROUTINE MLNFMJ
      %           (NB,N,P,FRONTL,FRONTU,FRNL,FRNU,ADPER,T1,T2,CL,CU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/05/2004   AUTEUR ROSE C.ROSE 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE ROSE C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,29 +20,28 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C
-C     VERSION AVEC APPEL A DGEMV POUR LES PRODUITS MATRICE-VECTEUR
-C     AU DELA D' UN CERTAIN SEUIL
-C     DGEMV EST APPEL A T1ERS LA FONCTION C DGEMW POUR CAR DGEMV
-C     NECESSITE  DES ARGUMENTS ENTIER INTEGER*4 REFUSES PAR ASTER
-C
       IMPLICIT NONE
-C      IMPLICIT REAL*8 (A-H,O-Z)
+C
       INTEGER N,P,ADPER(*),RESTM,DECAL
       REAL*8 FRONTL(*),FRONTU(*),FRNL(*),FRNU(*)
       INTEGER SEUIN,SEUIK,LDA,NMB
-      CHARACTER*1 TRANSA, TRANSB
+      CHARACTER*1 TRA, TRB
       INTEGER I1,J1,K,M,IT,NB,NUMPRC,MLNUMP
-      REAL*8 T1(P,NB,*),T2(P,NB,*)
+      REAL*8 T1(P,NB,*),T2(P,NB,*),ALPHA,BETA
       REAL*8  CL(NB, NB, *),CU(NB, NB, *)
       INTEGER SNI,I,KB,J,IB,IA,IND,ADD
       M=N-P
       NMB=M/NB
       RESTM = M -(NB*NMB)
       DECAL = ADPER(P+1) - 1
+      TRA='N'
+      TRB='N'
+      ALPHA=-1.D0
+      BETA=0.D0
 C
 C$OMP PARALLEL DO DEFAULT(PRIVATE)
 C$OMP+SHARED(N,M,P,NMB,NB,RESTM,FRONTL,FRONTU,ADPER,DECAL,FRNL,FRNU)
-C$OMP+SHARED(T1,T2,CL,CU)
+C$OMP+SHARED(T1,T2,CL,CU,TRA,TRB,ALPHA,BETA)
 C$OMP+SCHEDULE(STATIC,1)
       DO 1000 KB = 1,NMB
       NUMPRC=MLNUMP()
@@ -64,10 +63,10 @@ C
          DO 500 IB = KB,NMB
             IA = K + NB*(IB-KB)
             IT=1
-            CALL DGEMX( NB,NB,P,FRONTL(IA),N, T1(IT,1,NUMPRC), P,
-     %                   CL(1,1,NUMPRC), NB)
-            CALL DGEMX( NB,NB,P,FRONTU(IA),N, T2(IT,1,NUMPRC), P,
-     %                   CU(1,1,NUMPRC), NB)
+            CALL DGEMM( TRA,TRB,NB,NB,P,ALPHA,FRONTL(IA),N,
+     &                  T1(IT,1,NUMPRC), P,BETA,CL(1,1,NUMPRC), NB)
+            CALL DGEMM( TRA,TRB,NB,NB,P,ALPHA,FRONTU(IA),N,
+     &                  T2(IT,1,NUMPRC), P,BETA,CU(1,1,NUMPRC), NB)
 C     RECOPIE
 
 C
@@ -93,10 +92,10 @@ C
             IB = NMB + 1
             IA = K + NB*(IB-KB)
             IT=1
-            CALL DGEMX( RESTM,NB,P,FRONTL(IA),N, T1(IT,1,NUMPRC), P,
-     %                   CL(1,1,NUMPRC), NB)
-            CALL DGEMX( RESTM,NB,P,FRONTU(IA),N, T2(IT,1,NUMPRC), P,
-     %                   CU(1,1,NUMPRC), NB)
+            CALL DGEMM( TRA,TRB,RESTM,NB,P,ALPHA,FRONTL(IA),N,
+     &                  T1(IT,1,NUMPRC), P,BETA, CL(1,1,NUMPRC), NB)
+            CALL DGEMM( TRA,TRB,RESTM,NB,P,ALPHA,FRONTU(IA),N,
+     &                  T2(IT,1,NUMPRC), P,BETA, CU(1,1,NUMPRC), NB)
 C     RECOPIE
 
 C
@@ -134,10 +133,10 @@ C     BLOC DIAGONAL
          IB = KB
          IA = K + NB*(IB-KB)
          IT=1
-           CALL DGEMX( RESTM,RESTM,P,FRONTL(IA),N, T1(IT,1,1),P,
-     %                   CL(1,1,NUMPRC), NB)
-           CALL DGEMX( RESTM,RESTM,P,FRONTU(IA),N, T2(IT,1,1),P,
-     %                   CU(1,1,NUMPRC), NB)
+           CALL DGEMM( TRA,TRB,RESTM,RESTM,P,ALPHA,FRONTL(IA),N,
+     &                 T1(IT,1,1),P,BETA,CL(1,1,NUMPRC),NB)
+           CALL DGEMM( TRA,TRB,RESTM,RESTM,P,ALPHA,FRONTU(IA),N,
+     &                 T2(IT,1,1),P,BETA,CU(1,1,NUMPRC),NB)
 C     RECOPIE
 
 C

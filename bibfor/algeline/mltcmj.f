@@ -1,6 +1,6 @@
       SUBROUTINE MLTCMJ(NB,N,P,FRONT,FRN,ADPER,TRAV,C)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/06/2004   AUTEUR ROSE C.ROSE 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,17 +22,22 @@ C ======================================================================
       INTEGER N,P,ADPER(*)
       COMPLEX*16 FRONT(*),FRN(*)
       INTEGER NB,DECAL,ADD,IND,NMB,I,J,L,KB,IA,IB,RESTM
-      CHARACTER*1 TRANSA, TRANSB
+      CHARACTER*1 TRA, TRB
       INTEGER I1,J1,K,M,IT,NUMPRO,MLNUMP
       COMPLEX*16 S,TRAV(P,NB,*)
-      COMPLEX*16  C(NB, NB,*)
+      COMPLEX*16  C(NB, NB,*),ALPHA,BETA
       M=N-P
       NMB=M/NB
       RESTM = M -(NB*NMB)
       DECAL = ADPER(P+1) - 1
+      TRA='N'
+      TRB='N'
+      ALPHA=DCMPLX(-1.D0,0.D0)
+      BETA =DCMPLX( 0.D0,0.D0)
 C
 C$OMP PARALLEL DO DEFAULT(PRIVATE)
 C$OMP+SHARED(N,M,P,NMB,NB,RESTM,FRONT,ADPER,DECAL,FRN,TRAV,C)
+C$OMP+SHARED(TRA,TRB,ALPHA,BETA)
 C$OMP+SCHEDULE(STATIC,1)
       DO 1000 KB = 1,NMB
       NUMPRO=MLNUMP()
@@ -54,8 +59,8 @@ C
          DO 500 IB = KB,NMB
             IA = K + NB*(IB-KB)
             IT=1
-            CALL CGEMX( NB,NB,P,FRONT(IA),N, TRAV(IT,1,NUMPRO), P,
-     %                   C(1,1,NUMPRO), NB)
+            CALL ZGEMM( TRA,TRB,NB,NB,P,ALPHA,FRONT(IA),N,
+     &                  TRAV(IT,1,NUMPRO), P,BETA,C(1,1,NUMPRO), NB)
 C     RECOPIE
 
 C
@@ -79,8 +84,8 @@ C     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
             IB = NMB + 1
             IA = K + NB*(IB-KB)
             IT=1
-            CALL CGEMX( RESTM,NB,P,FRONT(IA),N, TRAV(IT,1,NUMPRO), P,
-     %                   C(1,1,NUMPRO), NB)
+            CALL ZGEMM( TRA,TRB,RESTM,NB,P,ALPHA,FRONT(IA),N,
+     &                  TRAV(IT,1,NUMPRO), P,BETA,C(1,1,NUMPRO), NB)
 
 C     RECOPIE
 
@@ -115,8 +120,8 @@ C     BLOC DIAGONAL
          IB = KB
          IA = K + NB*(IB-KB)
          IT=1
-           CALL CGEMX( RESTM,RESTM,P,FRONT(IA),N, TRAV(IT,1,1),P,
-     %                   C(1,1,1), NB)
+           CALL ZGEMM(TRA,TRB,RESTM,RESTM,P,ALPHA,FRONT(IA),N,
+     &                TRAV(IT,1,1),P,BETA,C(1,1,1), NB)
 C     RECOPIE
 
 C

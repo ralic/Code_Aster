@@ -4,7 +4,7 @@
      &                   TOL  , RESID , NCV   , V     ,
      &                   LDV  , IPARAM, IPNTR , WORKD ,
      &                   WORKL, LWORKL, RWORK , INFO  )
-C MODIF ALGELINE  DATE 11/01/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -250,16 +250,16 @@ C\ROUTINES CALLED:
 C     IVOUT   ARPACK UTILITY ROUTINE THAT PRINTS INTEGERS.
 C     ZMOUT    ARPACK UTILITY ROUTINE THAT PRINTS MATRICES
 C     ZVOUT    ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
-C     GGEQR2   LAPACK ROUTINE THAT COMPUTES THE QR FACTORIZATION OF
+C     ZGEQR2   LAPACK ROUTINE THAT COMPUTES THE QR FACTORIZATION OF
 C             A MATRIX.
-C     GLACPY   LAPACK MATRIX COPY ROUTINE.
+C     ZLACPY   LAPACK MATRIX COPY ROUTINE.
 C     ZLAHQR   LAPACK ROUTINE THAT COMPUTES THE SCHUR FORM OF A
 C             UPPER HESSENBERG MATRIX.
-C     GLASET   LAPACK MATRIX INITIALIZATION ROUTINE.
+C     ZLASET   LAPACK MATRIX INITIALIZATION ROUTINE.
 C     GTREVC   LAPACK ROUTINE TO COMPUTE THE EIGENVECTORS OF A MATRIX
 C             IN UPPER TRIANGULAR FORM.
 C     GTRSEN   LAPACK ROUTINE THAT RE-ORDERS THE SCHUR FORM.
-C     GUNM2R   LAPACK ROUTINE THAT APPLIES AN ORTHOGONAL MATRIX IN
+C     ZUNM2R   LAPACK ROUTINE THAT APPLIES AN ORTHOGONAL MATRIX IN
 C             FACTORED FORM.
 C     ZTRMM    LEVEL 3 BLAS MATRIX TIMES AN UPPER TRIANGULAR MATRIX.
 C     ZGERU    LEVEL 2 BLAS RANK ONE UPDATE TO A MATRIX.
@@ -360,7 +360,7 @@ C     %--------------------%
 C     | EXTERNAL FUNCTIONS |
 C     %--------------------%
 C
-      REAL*8     DZNRM2 , FLAPY2 , R8MIEM, R8PREM
+      REAL*8     DZNRM2 , DLAPY2 , R8MIEM, R8PREM
 C
       COMPLEX*16 ZDOTC
 C
@@ -559,11 +559,11 @@ C
          NUMCNV = 0
          DO 11 J = 1,NCV
             RTEMP = MAX(EPS23,
-     &                 FLAPY2  ( DBLE (WORKL(IRZ+NCV-J)),
+     &                 DLAPY2  ( DBLE (WORKL(IRZ+NCV-J)),
      &                          DIMAG (WORKL(IRZ+NCV-J)) ))
             JJ = WORKL(BOUNDS + NCV - J)
             IF (NUMCNV .LT. NCONV .AND.
-     &          FLAPY2 ( DBLE (WORKL(IBD+JJ-1)),
+     &          DLAPY2 ( DBLE (WORKL(IBD+JJ-1)),
      &          DIMAG (WORKL(IBD+JJ-1)) )
      &          .LE. TOL*RTEMP) THEN
                SELECT(JJ) = .TRUE.
@@ -599,7 +599,7 @@ C        | INITIALIZE THE SCHUR VECTOR MATRIX Q TO THE IDENTITY. |
 C        %-------------------------------------------------------%
 C
          CALL ZCOPY (LDH*NCV, WORKL(IH), 1, WORKL(IUPTRI), 1)
-         CALL GLASET ('A', NCV, NCV          ,
+         CALL ZLASET ('A', NCV, NCV          ,
      &                ZERO , ONE, WORKL(INVSUB),
      &                LDQ)
          CALL ZLAHQR (.TRUE., .TRUE.       , NCV          ,
@@ -682,12 +682,13 @@ C        | THE WANTED INVARIANT SUBSPACE LOCATED IN THE FIRST NCONV |
 C        | COLUMNS OF WORKL(INVSUB,LDQ).                            |
 C        %----------------------------------------------------------%
 C
-         CALL GGEQR2 (NCV , NCONV , WORKL(INVSUB),
+         CALL ZGEQR2 (NCV , NCONV , WORKL(INVSUB),
      &                LDQ , WORKEV, WORKEV(NCV+1),
-     &                IERR)
+     &                IERR4)
+         IERR=IERR4
 C
 C        %--------------------------------------------------------%
-C        | * POSTMULTIPLY V BY Q USING GUNM2R .                    |
+C        | * POSTMULTIPLY V BY Q USING ZUNM2R .                    |
 C        | * COPY THE FIRST NCONV COLUMNS OF VQ INTO Z.           |
 C        | * POSTMULTIPLY Z BY R.                                 |
 C        | THE N BY NCONV MATRIX Z IS NOW A MATRIX REPRESENTATION |
@@ -698,11 +699,12 @@ C        | ASSOCIATED WITH THE UPPER TRIANGULAR MATRIX OF ORDER   |
 C        | NCONV IN WORKL(IUPTRI).                                |
 C        %--------------------------------------------------------%
 C
-         CALL GUNM2R ('R', 'N', N            ,
+         CALL ZUNM2R ('R', 'N', N            ,
      &                NCV    , NCONV        , WORKL(INVSUB),
      &                LDQ    , WORKEV       , V            ,
-     &                LDV    , WORKD(N+1)   , IERR)
-         CALL GLACPY ('A', N, NCONV, V, LDV, Z, LDZ)
+     &                LDV    , WORKD(N+1)   , IERR4)
+         IERR=IERR4
+         CALL ZLACPY ('A', N, NCONV, V, LDV, Z, LDZ)
 C
          DO 20 J=1, NCONV
 C

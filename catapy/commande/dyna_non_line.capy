@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/11/2004   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
                    ),
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",
                                  into=("FIXE_CSTE","FIXE_PILO","SUIV","DIDI")),
-           CHARGE          =SIMP(statut='o',typ=char_meca),
+           CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
            FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
            DEPL            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
            ACCE            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -216,7 +216,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
            EPSI_REFE       =SIMP(statut='f',typ='R'),
            FLUX_THER_REFE  =SIMP(statut='f',typ='R'),
            FLUX_HYD1_REFE  =SIMP(statut='f',typ='R'),
-           FLUX_HYD2_REFE  =SIMP(statut='f',typ='R'),           
+           FLUX_HYD2_REFE  =SIMP(statut='f',typ='R'),
            RESI_REFE_RELA  =SIMP(statut='f',typ='R'),
            RESI_GLOB_MAXI  =SIMP(statut='f',typ='R'),
            RESI_GLOB_RELA  =SIMP(statut='f',typ='R'),

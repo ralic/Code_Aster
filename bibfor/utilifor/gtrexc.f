@@ -1,7 +1,7 @@
       SUBROUTINE GTREXC( COMPQ, N, T, LDT, Q, LDQ, IFST, ILST, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 17/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -83,15 +83,15 @@ C     .. LOCAL SCALARS ..
       COMPLEX*16         SN, T11, T22, TEMP
 C     ..
 C     .. EXTERNAL FUNCTIONS ..
-      LOGICAL            LLSAME
+      LOGICAL            LSAME
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
 C
 C     DECODE AND TEST THE INPUT PARAMETERS.
 C
       INFO = 0
-      WANTQ = LLSAME( COMPQ, 'V' )
-      IF( .NOT.LLSAME( COMPQ, 'N' ) .AND. .NOT.WANTQ ) THEN
+      WANTQ = LSAME( COMPQ, 'V' )
+      IF( .NOT.LSAME( COMPQ, 'N' ) .AND. .NOT.WANTQ ) THEN
          INFO = -1
       ELSE IF( N.LT.0 ) THEN
          INFO = -2
@@ -144,9 +144,9 @@ C
 C        APPLY TRANSFORMATION TO THE MATRIX T.
 C
          IF( K+2.LE.N )
-     $      CALL GROT( N-K-1, T( K, K+2 ), LDT, T( K+1, K+2 ), LDT, CS,
+     $      CALL ZROT( N-K-1, T( K, K+2 ), LDT, T( K+1, K+2 ), LDT, CS,
      $                 SN )
-         CALL GROT( K-1, T( 1, K ), 1, T( 1, K+1 ), 1, CS,
+         CALL ZROT( K-1, T( 1, K ), 1, T( 1, K+1 ), 1, CS,
      $              DCONJG( SN ) )
 C
          T( K, K ) = T22
@@ -156,7 +156,7 @@ C
 C
 C           ACCUMULATE TRANSFORMATION IN THE MATRIX Q.
 C
-            CALL GROT( N, Q( 1, K ), 1, Q( 1, K+1 ), 1, CS,
+            CALL ZROT( N, Q( 1, K ), 1, Q( 1, K+1 ), 1, CS,
      $                 DCONJG( SN ) )
          END IF
 C

@@ -2,7 +2,7 @@
      $                   LDC, SCALE, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -113,8 +113,8 @@ C     .. LOCAL ARRAYS ..
       REAL*8             DUM
 C     ..
 C     .. EXTERNAL FUNCTIONS ..
-      LOGICAL            LLSAME
-      REAL*8             GLANGE, R8PREM, R8MIEM
+      LOGICAL            LSAME
+      REAL*8             ZLANGE, R8PREM, R8MIEM
       COMPLEX*16         ZDOTC, ZDOTU
       INTEGER            IDAMAX, ISBAEM
 C     ..
@@ -122,16 +122,16 @@ C     .. EXECUTABLE STATEMENTS ..
 C
 C     DECODE AND TEST INPUT PARAMETERS
 C
-      NOTRNA = LLSAME( TRANA, 'N' )
-      NOTRNB = LLSAME( TRANB, 'N' )
+      NOTRNA = LSAME( TRANA, 'N' )
+      NOTRNB = LSAME( TRANB, 'N' )
 C
       INFO = 0
       DUM = 0.0D0
-      IF( .NOT.NOTRNA .AND. .NOT.LLSAME( TRANA, 'T' ) .AND. .NOT.
-     $    LLSAME( TRANA, 'C' ) ) THEN
+      IF( .NOT.NOTRNA .AND. .NOT.LSAME( TRANA, 'T' ) .AND. .NOT.
+     $    LSAME( TRANA, 'C' ) ) THEN
          INFO = -1
-      ELSE IF( .NOT.NOTRNB .AND. .NOT.LLSAME( TRANB, 'T' ) .AND. .NOT.
-     $         LLSAME( TRANB, 'C' ) ) THEN
+      ELSE IF( .NOT.NOTRNB .AND. .NOT.LSAME( TRANB, 'T' ) .AND. .NOT.
+     $         LSAME( TRANB, 'C' ) ) THEN
          INFO = -2
       ELSE IF( ISGN.NE.1 .AND. ISGN.NE.-1 ) THEN
          INFO = -3
@@ -163,8 +163,8 @@ C DUE TO CRS512      OVFL = ONE / UNFL
       ULP = R8PREM() * 0.5D0 * ISBAEM()
       SMLNUM = EPS*( N / ULP )
       BIGNUM = ( ONE-ULP ) / SMLNUM
-      SMIN = MAX( SMLNUM, EPS*GLANGE( 'M', M, M, A, LDA, DUM ),
-     $       EPS*GLANGE( 'M', N, N, B, LDB, DUM ) )
+      SMIN = MAX( SMLNUM, EPS*ZLANGE( 'M', M, M, A, LDA, DUM ),
+     $       EPS*ZLANGE( 'M', N, N, B, LDB, DUM ) )
       SCALE = ONE
       SGN = ISGN
 C

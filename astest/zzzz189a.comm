@@ -1,0 +1,299 @@
+# MODIF  DATE 31/01/2005   AUTEUR PABHHHH N.TARDIEU 
+# TITRE ORIENTATION DE MAILLES PAR UNE BOUCLE PYTHON       
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ==================================================================================================
+#
+#
+#   La fonction LIST_CARA_CIRCONF est formellement equivalente a la
+#   commande Aster suivante :
+#
+#      LIST_CARA_CIRCONF=(
+#              GROUP_MA   =SIMP(statut='o',typ=grma,max='**'),
+#              AXE         =SIMP(statut='o',typ='R',max=3,min=3),
+#              MODELE         =SIMP(statut='o',typ=modele_sdaster ),
+#              GRILLE         =FACT(statut='f',max=1,
+#                SECTION         =SIMP(statut='o',typ='R'),
+#                EXCENTREMENT    =SIMP(statut='f',typ='R'),
+#                COEF_RIGI_DRZ   =SIMP(statut='f',typ='R'),
+#                GRILLE_NCOU     =SIMP(statut='f',typ='I'),
+#                              ),
+#                    )  ;
+#
+#
+#    Elle produit une liste que l'on transmet ensuite a AFFE_CARA_ELEM
+#
+#
+# ==================================================================================================
+
+
+
+def crossprod(x,y):
+   z=Numeric.ones(3,Numeric.Float)
+   z[0]=x[1]*y[2]-x[2]*y[1]
+   z[1]=x[2]*y[0]-x[0]*y[2]
+   z[2]=x[0]*y[1]-x[1]*y[0]
+   return z
+
+def norm(x):
+   tmp = Numeric.sqrt(Numeric.dot(x,x))
+   return tmp
+
+
+def LIST_CARA_CIRCONF(GROUP_MA,AXE,MODELE,**args):
+
+
+  """
+     Produit une liste de commandes pour orienter circonferentiellement un groupe de mailles par AFFE_CARA_ELEM
+  """
+
+  import copy,Numeric
+  
+  # Commandes de la macro
+  MAIL=aster.getvectjev(MODELE.nom.ljust(8)+".MODELE    .NOMA")[0]
+  
+
+  # On recupere les coordonnees des noeuds du maillage
+  coordo=Numeric.array(aster.getvectjev(MAIL.ljust(8)+".COORDO    .VALE"))
+  # On le met en forme : matrice 3 colonnes
+  coordo=Numeric.reshape(coordo,[len(coordo)/3,3])
+  # On recupere chacune des coordonnees
+  X=coordo[:,0]
+  Y=coordo[:,1]
+  Z=coordo[:,2]
+  # On recupere la connectivite, les noms des mailles,
+  # les noms des noeuds et des groupes de mailles
+  connex =aster.getcolljev(MAIL.ljust(8)+".CONNEX")
+  nommai =aster.getvectjev(MAIL.ljust(8)+".NOMMAI")
+  nomnoe =aster.getvectjev(MAIL.ljust(8)+".NOMNOE")
+  groupma=aster.getcolljev(MAIL.ljust(8)+".GROUPEMA")
+
+  n1n2=Numeric.ones(3,Numeric.Float)
+  n1n3=Numeric.ones(3,Numeric.Float)
+  vecX=Numeric.array([1.,0.,0.])
+  vecY=Numeric.array([0.,1.,0.])
+  vecAxe=Numeric.array(AXE)
+  normale=Numeric.ones(3,Numeric.Float)
+  vrep=Numeric.ones(3,Numeric.Float)
+
+
+  LISTE_CARA=[]
+  # On boucle sur les mailles du groupe de mailles GROUP_MA
+  # (on le reduit a 8 caracteres s'il est trop long)
+  for ima in groupma[GROUP_MA.ljust(8)]:
+     lnoeu=connex[ima]
+     # On ne traite les elements que s'ils sont des triangles!
+     if (len(lnoeu)==3) :
+         # ATTENTION : dans Python, les tableaux commencent a 0
+         # mais dans la connectivite, les noeuds commencent a 1!
+         n1=lnoeu[0]-1
+         n2=lnoeu[1]-1
+         n3=lnoeu[2]-1
+         n1n2[0]=X[n2]-X[n1]
+         n1n2[1]=Y[n2]-Y[n1]
+         n1n2[2]=Z[n2]-Z[n1]
+         n1n3[0]=X[n3]-X[n1]
+         n1n3[1]=Y[n3]-Y[n1]
+         n1n3[2]=Z[n3]-Z[n1]
+         # On calcule la nomale a l'element
+         normale=crossprod(n1n2,n1n3)
+         # On calcule le vecteur donnant l'axe des armatures
+         vecV=crossprod(normale,vecAxe)
+         # On fait une copie de ce vecteur pour y mettre une composante a 0
+         vecX1=copy.copy(vecV)
+         vecX1[2]=0.
+
+         # On calcule les angles de ANGL_REP pour obtenir le vecteur vecV
+         alpha=Numeric.arctan2(vecX1[1],vecX1[0])*180./Numeric.pi
+         beta=Numeric.arctan2(vecV[2],norm(vecX1))*180./Numeric.pi
+
+         # Meme remarque que precedemment sur les listes Python
+         nom_maille=nommai[ima-1]
+       
+         # On boucle sur les arguments de la fonction pour 
+         # creer une liste de mots-cle facteurs que l'on va 
+         # retourner pour l'utiliser dans AFFE_CARA_ELEM
+         # Noter que comme GRILLE est un mot-cle facteur, il 
+         # contient un dictionnaire
+         mon_dico={}
+         for cle in args["GRILLE"].keys():
+            mon_dico[cle]=args["GRILLE"][cle]
+         mon_dico["MAILLE"]=nom_maille
+         mon_dico["ANGL_REP"]=(alpha,beta)
+
+         LISTE_CARA.append(mon_dico)
+  
+  return LISTE_CARA
+
+# ==================================================================================================
+
+
+# ATTENTION : PAR_LOT='NON' est necessaire car ce test
+# utilise des commandes Python
+DEBUT(CODE=_F(NOM='ZZZZ189A',
+              NIV_PUB_WEB='INTERNET',),PAR_LOT='NON');
+#
+
+MATER=DEFI_MATERIAU(ELAS=_F(E=200000.0,
+                            NU=0.3,),);
+
+MAIL1=LIRE_MAILLAGE();
+
+MAIL1=DEFI_GROUP(reuse =MAIL1,
+                 MAILLAGE=MAIL1,
+                 CREA_GROUP_MA=(_F(NOM='PLAQUE',
+                                   TOUT='OUI',))
+       );
+
+MAILL=CREA_MAILLAGE(MAILLAGE= MAIL1,
+                    CREA_GROUP_MA=_F(NOM='GRILLE',
+                                            GROUP_MA='PLAQUE',
+                                            PREF_MAILLE='B'));
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAILL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATER,),);
+
+MODEL=AFFE_MODELE(MAILLAGE=MAILL,
+                  VERIF='MAILLE',
+                  AFFE=(_F(GROUP_MA='PLAQUE',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='DKT',),
+                        _F(GROUP_MA='GRILLE',
+                           PHENOMENE = 'MECANIQUE',
+                           MODELISATION = 'GRILLE_MEMBRANE',),
+                        )
+              );
+
+# On cree les caracteristiques
+LIST_GRI=LIST_CARA_CIRCONF(GROUP_MA='GRILLE',
+                           AXE=(0.,0.,1.),
+                         MODELE=MODEL,
+                           GRILLE=_F(SECTION=20.,EXCENTREMENT=0.,));
+
+
+CARA_COQ=AFFE_CARA_ELEM(MODELE=MODEL,
+                        INFO=1,
+                     COQUE=_F(GROUP_MA='PLAQUE',
+                              EPAIS=40.,
+                              COEF_RIGI_DRZ=0.,),
+                     GRILLE=LIST_GRI,
+                             );
+
+
+CHARGE=AFFE_CHAR_MECA(MODELE=MODEL,
+                      DDL_IMPO=(_F(GROUP_NO='BCSANSBC',
+                                   DX=0.0,
+                                   DRY=0.0,
+                                   DRZ=0.0,),
+                                _F(GROUP_NO='ACSANSAC',
+                                   DY=0.0,
+                                   DRX=0.0,
+                                   DRZ=0.0,),
+                                _F(GROUP_NO='A',
+                                   DY=0.0,
+                                   DRX=0.0,
+                                   DRZ=0.0,),
+                                _F(GROUP_NO='B',
+                                   DX=0.0,
+                                   DRY=0.0,
+                                   DRZ=0.0,),
+                                _F(GROUP_NO='C',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   DRX=0.0,
+                                   DRY=0.0,
+                                   DRZ=0.0,),),
+                                   );
+
+FORCE=AFFE_CHAR_MECA(MODELE=MODEL,
+                     FORCE_COQUE=_F(TOUT='OUI',
+                                    PRES=10.));
+
+
+
+TEMPS1=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(  JUSQU_A = 1.0, NOMBRE = 1));
+
+RESU=STAT_NON_LINE(MODELE=MODEL,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARA_COQ,
+                   EXCIT=(_F( CHARGE = CHARGE),
+                          _F( CHARGE = FORCE),
+                          ),
+                   COMP_INCR=_F(RELATION = 'ELAS',
+                               ALGO_1D='DEBORST'),
+                   INCREMENT=_F(LIST_INST = TEMPS1)
+              );
+
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                      NOM_CHAM='DEPL',
+                      NOEUD='NO30',
+                      VALE=0.,
+                      PRECISION=1.e-16,
+                      CRITERE='ABSOLU',
+                      NOM_CMP='DX',
+                      INST=1.,
+                      REFERENCE='NON_REGRESSION'),
+                   _F(RESULTAT=RESU,
+                      NOM_CHAM='DEPL',
+                      NOEUD='NO30',
+                      VALE=3.1392885337581E-05,
+                      PRECISION=1.E-6,
+                      NOM_CMP='DY',
+                      INST=1.,
+                      REFERENCE='NON_REGRESSION'),
+                   _F(RESULTAT=RESU,
+                      NOM_CHAM='DEPL',
+                      NOEUD='NO30',
+                      VALE=1.5356429239344E-05,
+                      PRECISION=1.E-6,
+                      NOM_CMP='DZ',
+                      INST=1.,
+                      REFERENCE='NON_REGRESSION'),
+                   _F(RESULTAT=RESU,
+                      NOM_CHAM='DEPL',
+                      NOEUD='NO700',
+                      VALE=4.4873398127688E-06,
+                      PRECISION=1.E-6,
+                      NOM_CMP='DX',
+                      INST=1.,
+                      REFERENCE='NON_REGRESSION'),
+                   _F(RESULTAT=RESU,
+                      NOM_CHAM='DEPL',
+                      NOEUD='NO700',
+                      VALE=3.3210448836551E-05,
+                      PRECISION=1.E-6,
+                      NOM_CMP='DY',
+                      INST=1.,
+                      REFERENCE='NON_REGRESSION'),
+                   _F(RESULTAT=RESU,
+                      NOM_CHAM='DEPL',
+                      NOEUD='NO700',
+                      VALE=1.5155123546576E-05,
+                      PRECISION=1.E-6,
+                      NOM_CMP='DZ',
+                      INST=1.,
+                      REFERENCE='NON_REGRESSION'),
+              ));
+
+
+FIN();
+

@@ -1,14 +1,14 @@
       SUBROUTINE PKCALC ( NDIM, NBVAL, ABSSUP, DXSUP, DYSUP,  
-     +                    DZSUP, ABSINF, DXINF, DYINF, DZINF, 
+     +                    DZSUP, DXINF, DYINF, DZINF, 
      +                    COEFD, COEFD3, COEFG, COEFG3,KG1,KG2,KG3)
       IMPLICIT   NONE
       INTEGER             NDIM,NBVAL
       REAL*8              COEFD,COEFD3,COEFG,COEFG3,KG1(*),KG2(*),KG3(*)
       CHARACTER*24        ABSSUP, DXSUP, DYSUP, DZSUP, 
-     +                    ABSINF, DXINF, DYINF, DZINF
+     +                     DXINF, DYINF, DZINF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/09/2004   AUTEUR GALENNE E.GALENNE 
+C MODIF PREPOST  DATE 01/02/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,6 @@ C
       CALL JEVEUO ( DYSUP  , 'L', JDYS   )
       CALL JEVEUO ( DZSUP  , 'L', JDZS   )
 C
-      CALL JEVEUO ( ABSINF , 'L', JABSCI )
       CALL JEVEUO ( DXINF  , 'L', JDXI   )
       CALL JEVEUO ( DYINF  , 'L', JDYI   )
       CALL JEVEUO ( DZINF  , 'L', JDZI   )

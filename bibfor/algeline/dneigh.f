@@ -2,7 +2,7 @@
      &  (RNORM, N, H, LDH, RITZR, RITZI, BOUNDS, Q, LDQ, WORKL, IERR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -66,8 +66,8 @@ C     DLAQRB  ARPACK ROUTINE TO COMPUTE THE REAL SCHUR FORM OF AN
 C             UPPER HESSENBERG MATRIX AND LAST ROW OF THE SCHUR VECTORS.
 C     DMOUT   ARPACK UTILITY ROUTINE THAT PRINTS MATRICES
 C     DVOUT   ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
-C     FLACPY  LAPACK MATRIX COPY ROUTINE.
-C     FLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
+C     DLACPY  LAPACK MATRIX COPY ROUTINE.
+C     DLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
 C     FTREVC  LAPACK ROUTINE TO COMPUTE THE EIGENVECTORS OF A MATRIX
 C             IN UPPER QUASI-TRIANGULAR FORM
 C     DGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
@@ -147,7 +147,7 @@ C     %-----------%
 C     | FUNCTIONS |
 C     %-----------%
 
-      REAL*8 FLAPY2, DNRM2
+      REAL*8 DLAPY2, DNRM2
 
 C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
@@ -172,8 +172,8 @@ C     |    OF THE CURRENT UPPER HESSENBERG MATRIX H.              |
 C     | DLAQRB RETURNS THE FULL SCHUR FORM OF H IN WORKL(1:N**2)  |
 C     | AND THE LAST COMPONENTS OF THE SCHUR VECTORS IN BOUNDS.   |
 C     %-----------------------------------------------------------%
-C DUE TO CRP_102 CALL FLACPY ('ALL', N, N, H, LDH, WORKL, N)
-      CALL FLACPY ('A', N, N, H, LDH, WORKL, N)
+C DUE TO CRP_102 CALL DLACPY ('ALL', N, N, H, LDH, WORKL, N)
+      CALL DLACPY ('A', N, N, H, LDH, WORKL, N)
       CALL DLAQRB (.TRUE., N, 1, N, WORKL, N, RITZR, RITZI, BOUNDS,
      &             IERR)
       IF (IERR .NE. 0) GO TO 9000
@@ -227,7 +227,7 @@ C           | SQUARE ROOT OF TWO.                       |
 C           %-------------------------------------------%
 
             IF (ICONJ .EQ. 0) THEN
-               TEMP = FLAPY2( DNRM2( N, Q(1,I), 1 ),
+               TEMP = DLAPY2( DNRM2( N, Q(1,I), 1 ),
      &                        DNRM2( N, Q(1,I+1), 1 ) )
                CALL DSCAL ( N, ONE / TEMP, Q(1,I), 1 )
                CALL DSCAL ( N, ONE / TEMP, Q(1,I+1), 1 )
@@ -269,7 +269,7 @@ C           | OF THE LAST COMPONENTS OF THE TWO VECTORS |
 C           %-------------------------------------------%
 
             IF (ICONJ .EQ. 0) THEN
-               BOUNDS(I) = RNORM * FLAPY2( WORKL(I), WORKL(I+1) )
+               BOUNDS(I) = RNORM * DLAPY2( WORKL(I), WORKL(I+1) )
                BOUNDS(I+1) = BOUNDS(I)
                ICONJ = 1
             ELSE

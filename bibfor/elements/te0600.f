@@ -1,8 +1,10 @@
       SUBROUTINE TE0600(OPTION,NOMTE)
       IMPLICIT NONE
       CHARACTER*16 OPTION,NOMTE,PHENOM
+C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/01/2005   AUTEUR CIBHHPD L.SALMONA 
+C =====================================================================
+C MODIF ELEMENTS  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C =====================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,20 +24,20 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C =====================================================================
 C TOLE CRP_20
 C TOLE CRP_21
-C ......................................................................
+C =====================================================================
 C    - FONCTION REALISEE:  CALCUL DES OPTIONS NON-LINEAIRES MECANIQUES
 C                          ELEMENTS THHM  ET HM
 C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
-C ......................................................................
-
+C =====================================================================
       INTEGER JGANO,NNO,IMATUU,NDIM,IMATE,IINSTM,IFORC,JCRET
       INTEGER RETLOI,IRET,IRETP,IRETM
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IDEFO
       INTEGER IINSTP,IDEPLM,IDEPLP,IDEPLA,ICOMPO,ICARCR,IPESA
       INTEGER ICONTM,IVARIP,IVARIM,ITREF,IVECTU,ICONTP
       CHARACTER*8 ALIAS
+C =====================================================================
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -52,36 +54,30 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-
+C =====================================================================
       INTEGER MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5)
       INTEGER DIMDEF,DIMCON,NBVARI,NDDL,II,KPG,N,INO
       INTEGER NMEC,NP1,NP2,NT,I,NPGU,NCMP,NNOS,ICHG,ICHN
-      INTEGER JTAB(7),IGAU,ISIG
+      INTEGER JTAB(7),IGAU,ISIG,DIMETE,LXLGUT
       REAL*8 DEFGEP(21),DEFGEM(21)
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS
       REAL*8 DFDI(20,3),B(21,120),EPSM(162),EPSNO(162)
       REAL*8 DRDE(21,21),DRDS(21,31),DSDE(31,21),R(21)
       CHARACTER*8 TYPMOD(2)
-C
+C =====================================================================
       INTEGER NNOMAX,NVOMAX,NSOMAX
       PARAMETER (NNOMAX=20,NVOMAX=4,NSOMAX=8)
       INTEGER VOISIN(NVOMAX,NNOMAX)
       INTEGER NBVOS(NSOMAX)
-      INTEGER     ISMAEM,LI,KP,J,L,K,NSOM
+      INTEGER     ISMAEM,LI,KP,J,L,K
       REAL*8      R8BID,RHO,COEF,RX
       CHARACTER*2 CODRET
-      LOGICAL     AXI,DPLAN,TRAITE,P2P1,LUMPED
-      LOGICAL     VOL2,BORD2,VOL3,BORD3
-      LOGICAL     ISTHT3,ISTHQ4,ISTHT6,ISTHQ8,ISTHS2,ISTHS3
-      LOGICAL     ISTHF8,ISTHF6,ISTH10,ISTH13,ISTH15,ISTH20
-      LOGICAL     ISTHF4,ISTHF3,ISTH4,ISTH6,ISTH8
-
-C     -----------------------------------------------------------------
-C
+      LOGICAL     AXI,P2P1,LUMPED
+C =====================================================================
 C  CETTE ROUTINE FAIT UN CALCUL EN THHM , HM , HHM , THH
 C  21 = 9 DEF MECA + 4 POUR P1 + 4 POUR P2 + 4 POUR T
 C  31 = 7 MECA + 2*5 POUR P1 + 2*5 POUR P2 + 4 POUR T
-
+C =====================================================================
 C  POUR LES TABLEAUX DEFGEP ET DEFGEM ON A DANS L ORDRE :
 C                                      DX DY DZ
 C                                      EPXX EPYY EPZZ EPXY EPXZ EPYZ
@@ -89,7 +85,7 @@ C                                      PRE1 P1DX P1DY P1DZ
 C                                      PRE2 P2DX P2DY P2DZ
 C                                      TEMP TEDX TEDY TEDZ
 C            EPSXY = RAC2/2*(DU/DY+DV/DX)
-
+C =====================================================================
 C    POUR LES CHAMPS DE CONTRAINTE
 C                                      SIXX SIYY SIZZ SIXY SIXZ SIYZ
 C                                      SIP
@@ -104,7 +100,7 @@ C                                      ENT22
 C                                      QPRIM FHTX FHTY FHTZ
 C        SIXY EST LE VRAI DE LA MECANIQUE DES MILIEUX CONTINUS
 C        DANS EQUTHM ON LE MULITPLIER PAR RAC2
-
+C =====================================================================
 C   POUR L OPTION FORCNODA
 C  SI LES TEMPS PLUS ET MOINS SONT PRESENTS
 C  C EST QUE L ON APPELLE DEPUIS STAT NON LINE  : FNOEVO = VRAI
@@ -113,44 +109,13 @@ C  ET ALORS LES TERMES DEPENDANT DE DT SONT EVALUES
 C  SI LES TEMPS PLUS ET MOINS NE SONT PAS PRESENTS
 C  C EST QUE L ON APPELLE DEPUIS CALCNO  : FNOEVO = FAUX
 C  ET ALORS LES TERMES DEPENDANT DE DT SONT PAS EVALUES
-
+C =====================================================================
       LOGICAL FNOEVO
       REAL*8 DT
-C *********************************************************************
-
+C =====================================================================
 C  SUIVANT ELEMENT, DEFINITION DE CARACTERISTIQUES
-C 
-C
-
-C  ON APPELLE CAETHM AVEC POUR LES ELEMENTS VOLUMIQUES
-C  2D EN METTANT VOL2 SACHANT QUE ALORS POUR LES ELEMENTS
-C  3D IL NE FERA RIEN CE DONT ON S APERCEVRA PAR L ARGUMENT
-C     TRAITE
-
-      BORD2 = .FALSE.
-      BORD3 = .FALSE.
-      VOL2 = .TRUE.
-      VOL3 = .TRUE.
-       
-      CALL CAETHM(NOMTE,VOL2,BORD2,VOL3,BORD3,ALIAS,AXI,DPLAN,TRAITE,
-     &            ISTHS2,ISTHS3,ISTHF8,ISTHF6,ISTH10,ISTH13,ISTH15,
-     &            ISTH20,ISTHT3,ISTHQ4,ISTHT6,ISTHQ8,NNOMAX,NVOMAX,
-     &            NSOMAX,NSOM,VOISIN,NBVOS,P2P1,LUMPED,
-     &            ISTHF4,ISTHF3,ISTH4,ISTH6,ISTH8)
-
-      IF ( TRAITE ) THEN
-        IF (AXI) THEN
-          TYPMOD(1) = 'AXIS    '
-        ELSE IF (DPLAN) THEN
-          TYPMOD(1) = 'D_PLAN  '
-        ELSE
-          TYPMOD(1) = '3D      '
-        END IF
-      ELSE
-        CALL UTMESS('F','TE0600','ELEM INCONNU DE CAETHM')
-      END IF
-      TYPMOD(2) = '        '
-
+C =====================================================================
+      CALL LUMTHM(NOMTE,LUMPED)
       IF ( LUMPED ) THEN
          CALL ELREF4(' ','NOEU_S',NDIM,NNO,NNOS,NPGU,IPOIDS,IVF,IDFDE,
      &               JGANO)
@@ -158,7 +123,10 @@ C     TRAITE
          CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPGU,IPOIDS,IVF,IDFDE,
      &               JGANO)
       ENDIF
-C
+      
+      CALL CAETHM(NOMTE,AXI,TYPMOD,NNOS,NNOMAX,NVOMAX,NSOMAX,VOISIN,
+     +                                                    NBVOS,P2P1)
+
 C SI MODELISATION = THHM
 
       IF (NOMTE(1:4).EQ.'THHM') THEN
@@ -217,7 +185,6 @@ C POSSIBLE DE N'EN REMPLIR QUE DEUX EN LAISSANT LE DERNIER A ZERO
         PRESS2(2) = 2
       END IF
 
-
 C SI MODELISATION = THH
 
       IF (NOMTE(1:4).EQ.'THH_') THEN
@@ -249,7 +216,6 @@ C SI MODELISATION = THV
         PRESS2(2) = 0
       END IF
 
-
 C SI MODELISATION = THM
 
       IF (NOMTE(1:4).EQ.'THM_') THEN
@@ -261,11 +227,10 @@ C SI MODELISATION = THM
         PRESS2(2) = 0
       END IF
 
-C **********************************************************************
-
-
+C =====================================================================
 C   LES AUTRES VALEURS DES TABLEAUX MECA,PRESS1,PRESS2,TEMPE
 C   SE DEFINISSENT AUTOMATIQUEMENT :
+C =====================================================================
 
 C NOMBRE DE DEFORMATIONS ET DE CONTRAINTES DE CHAQUE PROBLEME
       IF (MECANI(1).EQ.1) THEN
@@ -309,6 +274,7 @@ C NOMBRE DE DEFORMATIONS ET DE CONTRAINTES DE CHAQUE PROBLEME
         TEMPE(5) = 0
         NT = 0
       END IF
+
 C NOMBRE DE DEGRES DE LIBERTE DE CHAQUE NOEUD
 
       NDDL = NMEC + NP1 + NP2 + NT
@@ -347,12 +313,10 @@ C AUTRES GRANDEURS A METTRE DANS ASSTHM
       DIMDEF = MECANI(4) + PRESS1(6) + PRESS2(6) + TEMPE(4)
       DIMCON = MECANI(5) + PRESS1(2)*PRESS1(7) + PRESS2(2)*PRESS2(7) +
      &         TEMPE(5)
-C
-C***********************************************************************
+
+C =====================================================================
 C  DEBUT DES DIFFERENTES OPTIONS
-
-
-C***********************************************************************
+C =====================================================================
 
 C  OPTIONS : RIGI_MECA_TANG , FULL_MECA , RAPH_MECA
 
@@ -443,12 +407,9 @@ C - PARAMETRES EN SORTIE
         END IF
       END IF
 
-C***********************************************************************
-C***********************************************************************
-
+C =====================================================================
 C   OPTION : 'CHAR_MECA_PESA_R '
-
-C***********************************************************************
+C =====================================================================
       IF (OPTION.EQ.'CHAR_MECA_PESA_R') THEN
 
         CALL JEVECH('PGEOMER','L',IGEOM)
@@ -515,10 +476,9 @@ C  CAS 2D
 
       END IF
 
-C***********************************************************************
-C***********************************************************************
+C =====================================================================
 C  OPTION : CHAR_MECA_FR3D3D
-C***********************************************************************
+C =====================================================================
 
       IF (OPTION.EQ.'CHAR_MECA_FR3D3D') THEN
         CALL JEVECH('PGEOMER','L',IGEOM)

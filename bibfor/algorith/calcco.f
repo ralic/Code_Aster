@@ -10,7 +10,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,7 +61,6 @@ C ======================================================================
       REAL*8       INSTAM,INSTAP
       CHARACTER*8  TYPMOD(2)
       CHARACTER*16  COMPOR
-C
 C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_SATU ----------------------
 C ======================================================================
@@ -131,8 +130,7 @@ C ======================================================================
      +                  CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,P1,P2,
      +                  DP1,DP2,T,DT,PHI,PAD,PVP,H11,H12,H21,H22,KH,
      +                  RHO11,PHI0,PVP0,SAT,RETCOM,THMC)
-C
+C ======================================================================
       ENDIF
- 9001  FORMAT(A10,2X,A20,2X,A20,2X,A8)
-C
+C ======================================================================
       END

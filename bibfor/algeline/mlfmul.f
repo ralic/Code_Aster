@@ -1,7 +1,7 @@
       SUBROUTINE MLFMUL(B,F,Y,LDB,N,P,L,OPTA,OPTB)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/12/2002   AUTEUR ROSE C.ROSE 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,9 +26,15 @@ C     B = B - F*Y PAR BLOCS
       PARAMETER(NB=96)
       INTEGER M,NMB,RESTM,NLB,RESTL
       INTEGER I,J,K,IB,JB
-      REAL*8 BETA
+      REAL*8 ALPHA,BETA
       INTEGER  OPTA,OPTB
+      CHARACTER*1 TRA,TRB
 C     
+      TRA='T'
+      IF(OPTA.EQ.1)TRA='N'
+      TRB='T'
+      IF(OPTB.EQ.1)TRB='N'
+      ALPHA = -1.D0     
       BETA= 1.D0
       M=N-P
       NMB=M/NB
@@ -40,26 +46,26 @@ C
          IB= NB*(I-1)+1
          DO 500 J=1,NLB
             JB= NB*(J-1)+1
-           CALL DGEMY(NB,NB,P,F(IB,1),N,Y(1,JB),LDB,B(IB,JB),LDB,BETA
-     +                 ,OPTA,OPTB)
+           CALL DGEMM(TRA,TRB,NB,NB,P,ALPHA,F(IB,1),N,Y(1,JB),LDB,
+     &                BETA,B(IB,JB),LDB)
  500     CONTINUE
          IF(RESTL.GT.0) THEN
             JB=NB*NLB+1
-          CALL DGEMY(NB,RESTL,P,F(IB,1),N,Y(1,JB),LDB,B(IB,JB),LDB,BETA
-     +                 ,OPTA,OPTB)
+          CALL DGEMM(TRA,TRB,NB,RESTL,P,ALPHA,F(IB,1),N,Y(1,JB),LDB,
+     &               BETA,B(IB,JB),LDB)
          ENDIF
  600  CONTINUE
       IF(RESTM.GT.0) THEN
             IB=NB*NMB+1
          DO 1000 J=1,NLB
             JB= NB*(J-1)+1
-          CALL DGEMY(RESTM,NB,P,F(IB,1),N,Y(1,JB),LDB,B(IB,JB),LDB,BETA
-     +                 ,OPTA,OPTB)
+          CALL DGEMM(TRA,TRB,RESTM,NB,P,ALPHA,F(IB,1),N,Y(1,JB),LDB,
+     &               BETA,B(IB,JB),LDB)
  1000     CONTINUE
          IF(RESTL.GT.0) THEN
             JB=NB*NLB+1
-       CALL DGEMY(RESTM,RESTL,P,F(IB,1),N,Y(1,JB),LDB,B(IB,JB),LDB,BETA
-     +                 ,OPTA,OPTB)
+       CALL DGEMM(TRA,TRB,RESTM,RESTL,P,ALPHA,F(IB,1),N,Y(1,JB),LDB,
+     &            BETA,B(IB,JB),LDB)
          ENDIF
       ENDIF
       END

@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF ENTETE  DATE 31/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,7 +59,6 @@ class grma(GEOM):pass
 
 class cabl_precont    (ASSD):pass
 class cara_elem       (ASSD):pass
-class cara_pout       (ASSD):pass
 class cham_mater      (ASSD):pass
 class char_acou       (ASSD):pass
 class char_cine_acou  (ASSD):pass

@@ -1,7 +1,7 @@
       SUBROUTINE NSDRPR(OPTION,TYPMOD,COMPOR,NDIM,IMATE,IMATSE,DEPS,
      &    DEDT,SIGMS,VARMS,VARM,SIGM,VARP,SIPAS,SIGP,SIGPS,VARPS,STYPSE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/11/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 31/01/2005   AUTEUR F6BHHBO P.DEBONNIERES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,10 +39,14 @@ C --- CARACTERISTIQUES MATERIAUX SENSIBLES
       REAL*8 DDEUMU,DTROIK,DALPHA,DSY,DPULTM,DH,DSYULT
       REAL*8 DELTAP,DEPSMO,DEPSDV(6),DSIEEQ
       REAL*8 DPPHI,DPSIG(6),DPP
-      REAL*8 SIGMMO,SIGMDV(6),SIGEL(6),SIELEQ,SIELDV(6)
+      REAL*8 SIGMMO,SIGMDV(6),SIGE(6),SIELEQ,SIELDV(6)
       REAL*8 DSIDEP(6,6),SIGPMO,SIPSMO,SIGPEQ, SIPEQS, SIEEQS, SIMSMO
       REAL*8 KRON(6),SOUTO1,SOUTO2,DPMIN
+      REAL*8 RP,TRSIGP,A,COEF,RPRIM,SIGY
+      REAL*8 MATERF(4,2),SE(6),SIIE,SEQ,I1E,DP,PLAS,DPDENO
+      REAL*8 DEUX,TROIS,TRACE,DPLITG,DPPATG
       INTEGER NDIMSI,K,L,IRET
+      INTEGER NDT,NDI,NVI,TYPGDP
       PARAMETER (DPMIN = 1.D-15)
       CHARACTER*24 BLAN24
       PARAMETER ( BLAN24 = '                        ' )
@@ -50,6 +54,8 @@ C --- CARACTERISTIQUES MATERIAUX SENSIBLES
 C ----------------------------------------------------------------------
 C --- INITIALISATIONS --------------------------------------------------
 C ----------------------------------------------------------------------
+      DEUX = 2.D0
+      TROIS = 3.D0
       NDIMSI = 2*NDIM
       DELTAP = VARP(1) - VARM(1)
       DDEUMU = 0.D0
@@ -485,8 +491,28 @@ C ------- CALCUL DE VARPS(1)
 C ----------------------------------------------------------------------
 C ----- DEUXIEME CAS : ELASTOPLASTICITE DRUCKER PRAGER -----------------
 C ----------------------------------------------------------------------
+
 C ------- CALCUL DE L'OPERATEUR TANGENT DSIDEP
-          CALL REDRPR(TYPMOD(1),IMATE,SIGP,VARP,DSIDEP,IRET)
+          DO 141 K = 1,NDIMSI
+            SIGE(K) = SIGM(K) + DEUXMU*DEDT(K)
+  141     CONTINUE
+
+          CALL DPMATE(TYPMOD(1),IMATE,MATERF,NDT,NDI,NVI,TYPGDP)
+          CALL     LCDEVI(SIGE,SE)
+          CALL     PSCAL (NDT,SE,SE,SIIE)
+          SEQ    = SQRT  (TROIS*SIIE/DEUX)
+          I1E    = TRACE (NDI,SIGE)
+          IF (TYPGDP.EQ.1) THEN
+            CALL RESDP1( MATERF, SEQ, I1E,VARM(1), DP, PLAS)
+            DPDENO = DPLITG( MATERF, VARP(1), PLAS )
+          ELSE IF (TYPGDP.EQ.2) THEN
+            CALL RESDP2( MATERF, SEQ, I1E,VARM(1), DP, PLAS)
+            DPDENO = DPPATG( MATERF, VARP(1), PLAS )
+          ENDIF
+
+          CALL DPMATA(TYPMOD(1),MATERF,ALPHA,DELTAP,DPDENO,
+     +                     VARP(1),SE, SEQ, PLAS, DSIDEP)
+
 
 C ------- CALCUL DE SIGPS
           DO 900 K = 1,NDIMSI

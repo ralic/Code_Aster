@@ -1,6 +1,6 @@
       SUBROUTINE FGEQR2( M, N, A, LDA, TAU, WORK, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -119,7 +119,7 @@ C           APPLY H(I) TO A(I:M,I+1:N) FROM THE LEFT
 C
             AII = A( I, I )
             A( I, I ) = ONE
-            CALL FLARF( 'L', M-I+1, N-I, A( I, I ), 1, TAU( I ),
+            CALL DLARF( 'L', M-I+1, N-I, A( I, I ), 1, TAU( I ),
      &                  A( I, I+1 ), LDA, WORK )
             A( I, I ) = AII
          END IF

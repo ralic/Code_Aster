@@ -3,7 +3,7 @@ C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -1,9 +1,11 @@
       SUBROUTINE OP0188 ( IER )
       IMPLICIT   NONE
       INTEGER             IER
+
+C RESPONSABLE GALENNE E.GALENNE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 01/02/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +53,7 @@ C
       COMPLEX*16   CBID
       LOGICAL      EXIST
       CHARACTER*2  TYPPA1(NBPAR1), TYPPA2(NBPAR2)
-      CHARACTER*8  K8B, NOMRES, FOND, DEPSUP, CRIT
+      CHARACTER*8  K8B, NOMRES, FOND, DEPSUP, CRIT, SYMECH
       CHARACTER*16 NOMCMD, CONCEP, MOTFAC,
      +             NOMPA1(NBPAR1), NOMPA2(NBPAR2)
       CHARACTER*19 DEPSU2, DEPIN2
@@ -98,17 +100,6 @@ C             LA TABLE DE DEPLACEMENT DE LA LEVRE SUPERIEURE
 C     ------------------------------------------------------------------
 C
       CALL GETVID ( ' ', 'TABL_DEPL_SUP', 1,1,1, DEPSUP, N1 )
-C
-C     ------------------------------------------------------------------
-C             LA TABLE DE DEPLACEMENT DE LA LEVRE INFERIEURE
-C     ------------------------------------------------------------------
-C
-      CALL GETVID ( ' ', 'TABL_DEPL_INF', 1,1,1, DEPINF, N2 )
-C
-      IF ( N1*N2 .EQ. 0 ) THEN
-         CALL UTMESS('F',NOMCMD,'LES MOTS CLES "TABL_DEPL_SUP" ET '//
-     +                    '"TABL_DEPL_INF" SONT OBLIGATOIRES')
-      ENDIF
 C
 C     ------------------------------------------------------------------
 C                     CHOIX DE ABSC_CURV_MAXI
@@ -161,7 +152,30 @@ C     ------------------------------------------------------------------
             CALL TBAJPA ( NOMRES, NBPAR2-1, NOMPA2(2), TYPPA2(2) )
          ENDIF
       ENDIF
+
 C
+C --- SYMETRIE DU CHARGEMENT --------------------------
+C
+
+      CALL GETVTX(' ','SYME_CHAR',0,1,1,SYMECH,IBID)
+      IF (SYMECH .NE. 'SANS' ) THEN
+           CALL PKSYME (NOMRES,DEPSUP, RMAX, VECTY, NDIM, COEFD, 
+     +                COEFD3,COEFG,COEFG3,JINST,NBINST,EXIST,SYMECH)
+           GOTO 8888
+       ENDIF
+C
+C     ------------------------------------------------------------------
+C             LA TABLE DE DEPLACEMENT DE LA LEVRE INFERIEURE
+C     ------------------------------------------------------------------
+C
+      CALL GETVID ( ' ', 'TABL_DEPL_INF', 1,1,1, DEPINF, N2 )
+C
+      IF ( N1*N2 .EQ. 0 ) THEN
+         CALL UTMESS('F',NOMCMD,'LES MOTS CLES "TABL_DEPL_SUP" ET '//
+     +                    '"TABL_DEPL_INF" SONT OBLIGATOIRES')
+      ENDIF
+C
+
 C     ------------------------------------------------------------------
 C
       ABSSUP = '&&OP0188.ABSC_CURV_SUP'
@@ -180,7 +194,6 @@ C
       COORZI = '&&OP0188.COOR_Z_INF'
       DEPSU2 = '&&OP0188.DEPL_SUP'
       DEPIN2 = '&&OP0188.DEPL_INF'
-C
 C     ------------------------------------------------------------------
 C
 C     --- BOUCLE SUR LES INSTANTS ---
@@ -236,7 +249,8 @@ C
          VE(3) = ( ZR(JCOZS) + ZR(JCOZI) ) / 2
 C
          CALL PKCHGR ( VO, VE, VECTY, NBVAL, ZR(JDXS), ZR(JDYS), 
-     +             ZR(JDZS), ZR(JDXI), ZR(JDYI), ZR(JDZI), ZR(JABSCS))
+     +             ZR(JDZS), ZR(JDXI), ZR(JDYI), ZR(JDZI), ZR(JABSCS),
+     +            SYMECH)
 C
 C     ------------------------------------------------------------------
 C                       CALCUL DES K1, K2, K3
@@ -246,7 +260,7 @@ C
          KG2(1) = DINST
          KG3(1) = DINST
          CALL PKCALC ( NDIM, NBVAL, ABSSUP, DXSUP, DYSUP,  
-     +                 DZSUP, ABSINF, DXINF, DYINF, DZINF, 
+     +                 DZSUP, DXINF, DYINF, DZINF, 
      +                 COEFD,COEFD3,COEFG,COEFG3,KG1(2),KG2(2),KG3(2))
 C
          IF ( NDIM .EQ. 3 ) THEN

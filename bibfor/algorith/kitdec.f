@@ -2,11 +2,11 @@
      +                   HYDR, IMATE, DEFGEM, DEFGEP, ADDEME, ADDEP1,
      +                   ADDEP2, ADDETE, NDIM, T0, P10, P20, PHI0, PVP0,
      +                   DEPSV, EPSV, DEPS, T, P1, P2, DT, DP1, DP2,
-     +                   GRAT, GRAP1, GRAP2)
+     +                   GRAT, GRAP1, GRAP2, CERMES, NVITH, RETCOM)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 28/09/2004   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,8 +27,9 @@ C ======================================================================
 C TOLE CRP_21
 C ======================================================================
       IMPLICIT      NONE
-      INTEGER       YAMEC, YATE, YAP1, YAP2, IMATE
-      INTEGER       ADDEME, ADDEP1, ADDEP2, ADDETE, NDIM
+      LOGICAL       CERMES
+      INTEGER       YAMEC, YATE, YAP1, YAP2, IMATE, NVITH
+      INTEGER       ADDEME, ADDEP1, ADDEP2, ADDETE, NDIM, RETCOM
       REAL*8        T0, P10, P20, PHI0, PVP0, DEPSV, EPSV, DEPS(6), T
       REAL*8        P1, P2, GRAT(3), GRAP1(3), GRAP2(3), DP1, DP2, DT
       REAL*8        DEFGEM(*), DEFGEP(*) 
@@ -46,6 +47,18 @@ C ======================================================================
       REAL*8        RBID39, RBID40, RBID41, RBID42, RBID43, RBID44
       REAL*8        RBID45,RBID46,RBID47,RBID48,RBID49,RBID50,RBID51
       REAL*8        RBID52
+C ======================================================================
+C --- INITIALISATION DE CERMES -----------------------------------------
+C ======================================================================
+      CERMES =  (  (MECA.EQ.'ELAS_THM')       .OR.
+     +             (MECA.EQ.'CAM_CLAY_THM')   .OR.
+     +             (MECA.EQ.'SURF_ETAT_SATU') .OR.
+     +             (MECA.EQ.'SURF_ETAT_NSAT') .OR.
+     +             (THMC.EQ.'LIQU_SATU_GAT')  .OR.
+     +             (THMC.EQ.'LIQU_NSAT_GAT')       ) 
+      IF (CERMES) THEN
+         NVITH = 4
+      ENDIF
 C ======================================================================
       CALL THMRCP( 'INITIALI', IMATE, THMC, MECA, HYDR, THER,
      +           T0, P10, P20, PHI0, PVP0, RBID1, RBID2, 
@@ -65,6 +78,6 @@ C ======================================================================
       CALL CALCVA(  YAMEC, YATE, YAP1, YAP2, DEFGEM, DEFGEP,
      +              ADDEME, ADDEP1, ADDEP2, ADDETE, NDIM,
      +              T0, P10, P20, DEPSV, EPSV, DEPS, T, P1, P2,
-     +              GRAT, GRAP1, GRAP2, DP1, DP2, DT )
+     +              GRAT, GRAP1, GRAP2, DP1, DP2, DT, RETCOM )
 C ======================================================================
       END

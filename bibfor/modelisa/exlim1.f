@@ -1,9 +1,10 @@
-      SUBROUTINE EXLIM1 (LISMAZ, LONLIS, MODELZ, BASEZ, LIGREZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)      LISMAZ, MODELZ, BASEZ, LIGREZ
+      SUBROUTINE EXLIM1 (LISMAI, NBMAIL, MODELZ, BASEZ, LIGREZ)
+      IMPLICIT NONE
+      INTEGER            LISMAI(*), NBMAIL
+      CHARACTER*(*)      MODELZ, BASEZ, LIGREZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/01/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF MODELISA  DATE 31/01/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,9 +21,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C IN  : LISMAZ : NOM DE LA LISTE DES MAILLES CONSTITUANT LE
+C IN  : LISMAI : LISTE DES NUMEROS DE MAILLES CONSTITUANT LE
 C                LIGREL A CREER
-C IN  : LONLIS : LONGUEUR DE LA LISTE DES MAILLES
+C IN  : NBMAIL : LONGUEUR DE LA LISTE DES MAILLES
 C IN  : MODELZ : NOM DU MODELE REFERENCANT LES MAILLES DE LISMAI
 C                DES GRELS
 C IN  : BASEZ  : BASE SUR-LAQUELLE ON CREE LE LIGREL
@@ -47,82 +48,114 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*32       JEXNOM,        JEXNUM
+      CHARACTER*32       JEXNOM, JEXNUM, JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CHARACTER*1     BASE,K1BID
-      CHARACTER*8     MODELE,NOMA
+      CHARACTER*8     MODELE,NOMA,NOMAIL
       CHARACTER*16    PHENO
       CHARACTER*19    LIGREL,LIGRMO
-      CHARACTER*24    NOMMAI,CPTLIE,LISMAI
-      INTEGER     IBID
+      CHARACTER*24    CPTLIE
+      INTEGER         I,J,IB,IE,LONT,NUMVEC,NUMAIL,IGREL,NBMAM
+      INTEGER         LCLIEL,ADLIEL,JREPE,JDNB,JDNM,IADM,JDLI
+      INTEGER         JTYP,JNEL,TYPELE,TYPEL1,NBTYEL,ITYPE,NMEL
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
       
       BASE   = BASEZ
-      LISMAI = LISMAZ
       MODELE = MODELZ
       LIGREL = LIGREZ
-
-      NBGREL = LONLIS
-
-C --- RECUPERATION DE LA LISTE DE MAILLES
-C     -----------------------------------
-      CALL JEVEUO(LISMAI,'L',ILISMA)
 
 C --- MAILLAGE ASSOCIE AU MODELE
 C     --------------------------
       CALL DISMOI('F','NOM_MAILLA',MODELE,'MODELE',IB,NOMA  ,IE)
-      NOMMAI = NOMA//'.NOMMAI'
 
 C --- LIGREL DU MODELE
 C     ----------------
       CALL DISMOI('F','NOM_LIGREL',MODELE,'MODELE',IB,LIGRMO,IE)
+C
       CALL JEVEUO(LIGRMO//'.REPE','L',JREPE)
+      CALL JEVEUO(JEXATR(LIGRMO//'.LIEL','LONCUM'),'L',LCLIEL)
+      CALL JEVEUO(LIGRMO//'.LIEL','L',ADLIEL)
 
-C     --- OBJET NBNO
-C         ----------
+C --- OBJET NBNO
+C     ----------
       CALL WKVECT(LIGREL//'.NBNO',BASE//' V I',1,JDNB)
       ZI(JDNB) = 0
 
-C     --- OBJET NOMA
-C         ----------
+C --- OBJET NOMA
+C     ----------
       CALL WKVECT(LIGREL//'.NOMA',BASE//' V K8',1,JDNM)
       ZK8(JDNM) = NOMA
-C                               9012345678901234    
-      CALL JELIRA(MODELE(1:8)//'.MODELE    .NOMA','DOCU',IBID,PHENO)
-      CALL JEECRA(LIGREL//'.NOMA','DOCU',IBID,PHENO)      
+C 
+      CALL JELIRA(MODELE(1:8)//'.MODELE    .NOMA','DOCU',IB,PHENO)
+      CALL JEECRA(LIGREL//'.NOMA','DOCU',IB,PHENO)      
 
-C     --- OBJET LIEL
-C         ----------
+C --- TYPE D'ELEMENT ET NOMBRE DE MAILLES PAR TYPE
+C     --------------------------------------------
+      CALL WKVECT ( '&&EXLIM1.TYPE_NOMBRE', 'V V I', 2*NBMAIL, JTYP )
+      JNEL = JTYP + NBMAIL
+
+      TYPEL1 = 0
+      NBTYEL = 0
+      ITYPE = 0
+      DO 10 I = 1 , NBMAIL
+         NUMAIL = LISMAI(I)
+         IGREL = ZI(JREPE+2*(NUMAIL-1))
+         IF (IGREL.EQ.0) THEN
+           CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAIL),NOMAIL)
+           CALL UTMESS('F','EXLIM1','LA MAILLE : '//NOMAIL//
+     &                 ' N''EST PAS AFFECTEE PAR UN ELEMENT FINI.')
+         END IF
+         IADM = ZI(LCLIEL+IGREL)
+         TYPELE = ZI(ADLIEL-1+IADM-1)
+         IF ( TYPELE .EQ. TYPEL1 ) THEN
+            ZI(JNEL-1+ITYPE) = ZI(JNEL-1+ITYPE) + 1
+         ELSE
+            NBTYEL = NBTYEL + 1
+            ITYPE = NBTYEL
+            TYPEL1 = TYPELE
+            ZI(JNEL-1+ITYPE) = 1
+            ZI(JTYP-1+NBTYEL) = TYPELE
+         ENDIF
+ 10   CONTINUE 
+           
+      NBMAM = 0
+      DO 12 I = 1 , NBTYEL
+         NBMAM = MAX ( NBMAM, ZI(JNEL-1+I) )
+ 12   CONTINUE 
+
+C --- OBJET LIEL
+C     ----------
       CPTLIE = LIGREL//'.LIEL'
-      LONT = 2 * NBGREL
-      CALL JECREC(CPTLIE,BASE//' V I','NU','CONTIG','VARIABLE',NBGREL)
+      LONT = NBTYEL * (NBMAM+1)
+      CALL JECREC(CPTLIE,BASE//' V I','NU','CONTIG','VARIABLE',NBTYEL)
       CALL JEECRA(CPTLIE,'LONT',LONT,' ')
       CALL JEVEUO(CPTLIE,'E',JDLI)
 
-C     --- STOCKAGE DES GROUPES ELEMENTS DANS LIEL
-C         ---------------------------------------
+C --- STOCKAGE DES GROUPES ELEMENTS DANS LIEL
+C     ---------------------------------------
       NUMVEC = 0
-      NMGREL = 2
-      DO 10 I = 1 , NBGREL
-         CALL JENONU(JEXNOM(NOMMAI,ZK8(ILISMA+I-1)),NUMAIL)
+      NUMAIL = 0
+      DO 20 I = 1 , NBTYEL
+         NMEL = ZI(JNEL-1+I)
+
          CALL JECROC(JEXNUM(CPTLIE,I))
-         CALL JEECRA(JEXNUM(CPTLIE,I),'LONMAX',NMGREL,' ')
-         NUMVEC = NUMVEC + 1
-         ZI(JDLI+NUMVEC-1) = NUMAIL
-         IGREL = ZI(JREPE+2*(NUMAIL-1))
-         IF (IGREL.EQ.0) THEN
-           CALL UTMESS('F','EXLIM1','LA MAILLE : '//ZK8(ILISMA+I-1)
-     &     //' N''EST PAS AFFECTEE PAR UN ELEMENT FINI.')
-         END IF
-         CALL JEVEUO(JEXNUM(LIGRMO//'.LIEL',IGREL),'L',IALIEL)
-         CALL JELIRA(JEXNUM(LIGRMO//'.LIEL',IGREL),'LONMAX',NEL,K1BID)
-         NUMVEC = NUMVEC + 1
-         ZI(JDLI+NUMVEC-1) = ZI(IALIEL+NEL-1)
- 10   CONTINUE            
+         CALL JEECRA(JEXNUM(CPTLIE,I),'LONMAX',NMEL+1,' ')
+
+         DO 22 J = 1 , NMEL
+            NUMVEC = NUMVEC + 1
+            NUMAIL = NUMAIL + 1
+            ZI(JDLI+NUMVEC-1) = LISMAI(NUMAIL)
+ 22      CONTINUE 
  
+         NUMVEC = NUMVEC + 1
+         ZI(JDLI+NUMVEC-1) = ZI(JTYP-1+I)
+
+ 20   CONTINUE            
+ 
+      CALL JEDETR ( '&&EXLIM1.TYPE_NOMBRE' )
 
 C     ---  ADAPTATION DE LA TAILLE DES GRELS
 C          ---------------------------------

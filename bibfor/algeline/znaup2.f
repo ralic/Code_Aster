@@ -5,7 +5,7 @@
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -166,7 +166,7 @@ C     IVOUT   ARPACK UTILITY ROUTINE THAT PRINTS INTEGERS.
 C     ZMOUT    ARPACK UTILITY ROUTINE THAT PRINTS MATRICES
 C     ZVOUT    ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
 C     DVOUT    ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
-C     FLAPY2   LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
+C     DLAPY2   LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
 C     ZCOPY    LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
 C     ZDOTC    LEVEL 1 BLAS THAT COMPUTES THE SCALAR PRODUCT OF TWO 
 C               VECTORS. 
@@ -264,7 +264,7 @@ C     | EXTERNAL FUNCTIONS |
 C     %--------------------%
 C
       COMPLEX*16  ZDOTC 
-      REAL*8      DZNRM2 , FLAPY2 , R8PREM
+      REAL*8      DZNRM2 , DLAPY2 , R8PREM
 C
 C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
@@ -513,9 +513,9 @@ C
          NCONV  = 0
 C
          DO 25 I = 1, NEV
-            RTEMP = MAX( EPS23, FLAPY2 ( DBLE (RITZ(NP+I)),
+            RTEMP = MAX( EPS23, DLAPY2 ( DBLE (RITZ(NP+I)),
      &                                  DIMAG (RITZ(NP+I)) ) ) 
-            IF ( FLAPY2 (DBLE (BOUNDS(NP+I)),DIMAG (BOUNDS(NP+I))) 
+            IF ( DLAPY2 (DBLE (BOUNDS(NP+I)),DIMAG (BOUNDS(NP+I))) 
      &                 .LE. TOL*RTEMP ) THEN
                NCONV = NCONV + 1
             END IF
@@ -599,7 +599,7 @@ C           | BY 1 / MAX(EPS23, MAGNITUDE OF THE RITZ VALUE).  |
 C           %--------------------------------------------------%
 C
             DO 35 J = 1, NEV0 
-                RTEMP = MAX( EPS23, FLAPY2 ( DBLE (RITZ(J)),
+                RTEMP = MAX( EPS23, DLAPY2 ( DBLE (RITZ(J)),
      &                                       DIMAG (RITZ(J)) ) )
                 BOUNDS(J) = BOUNDS(J)/RTEMP
  35         CONTINUE
@@ -620,7 +620,7 @@ C           | VALUE.                                       |
 C           %----------------------------------------------%
 C
             DO 40 J = 1, NEV0
-                RTEMP = MAX( EPS23, FLAPY2 ( DBLE (RITZ(J)),
+                RTEMP = MAX( EPS23, DLAPY2 ( DBLE (RITZ(J)),
      &                                       DIMAG (RITZ(J)) ) )
                 BOUNDS(J) = BOUNDS(J)*RTEMP
  40         CONTINUE
@@ -775,7 +775,7 @@ C
 C 
          IF (BMAT .EQ. 'G') THEN         
             CPNORM = ZDOTC  (N, RESID, 1, WORKD, 1)
-            RNORM = SQRT(FLAPY2 (DBLE (CPNORM),DIMAG (CPNORM)))
+            RNORM = SQRT(DLAPY2 (DBLE (CPNORM),DIMAG (CPNORM)))
          ELSE IF (BMAT .EQ. 'I') THEN
             RNORM = DZNRM2 (N, RESID, 1)
          END IF

@@ -4,7 +4,7 @@
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -157,11 +157,11 @@ C     ZGETV0  ARPACK ROUTINE TO GENERATE THE INITIAL VECTOR.
 C     IVOUT   ARPACK UTILITY ROUTINE THAT PRINTS INTEGERS.
 C     ZMOUT   ARPACK UTILITY ROUTINE THAT PRINTS MATRICES
 C     ZVOUT   ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
-C     HLANHS  LAPACK ROUTINE THAT COMPUTES VARIOUS NORMS OF A MATRIX.
-C     GLASCL  LAPACK ROUTINE FOR CAREFUL SCALING OF A MATRIX.
+C       LAPACK ROUTINE THAT COMPUTES VARIOUS NORMS OF A MATRIX.
+C     ZLASCL  LAPACK ROUTINE FOR CAREFUL SCALING OF A MATRIX.
 C     DLABAD  LAPACK ROUTINE FOR DEFINING THE UNDERFLOW AND OVERFLOW
 C             LIMITS.
-C     FLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
+C     DLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
 C     ZGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
 C     ZAXPY   LEVEL 1 BLAS THAT COMPUTES A VECTOR TRIAD.
 C     ZCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
@@ -228,6 +228,7 @@ C
 C\ENDLIB
 C
 C-----------------------------------------------------------------------
+C TOLE CRP_4
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 C
@@ -280,10 +281,11 @@ C     | LOCAL SCALARS |
 C     %---------------%
 C
       LOGICAL    FIRST, ORTH1, ORTH2, RSTART, STEP3, STEP4
-      INTEGER    IERR, I, INFOL, IPJ, IRJ, IVJ, ITER, ITRY, J, MSGLVL,
+      INTEGER*4  INFOL4
+      INTEGER    IERR, I, IPJ, IRJ, IVJ, ITER, ITRY, J, MSGLVL,
      &           JJ
       REAL*8     OVFL, SMLNUM, TST1, ULP, UNFL, BETAJ,
-     &           TEMP1, RNORM1, WNORM
+     &           TEMP1, RNORM1, WNORM, RBID
       COMPLEX*16 CNORM
 C
       SAVE       FIRST, ORTH1, ORTH2, RSTART, STEP3, STEP4,
@@ -296,7 +298,7 @@ C     %--------------------%
 C
       INTEGER ISBAEM
       COMPLEX*16 ZDOTC 
-      REAL*8     DZNRM2, HLANHS, FLAPY2, R8PREM, R8MIEM
+      REAL*8     DZNRM2, ZLANHS, DLAPY2, R8PREM, R8MIEM
 C
 C     %-----------------%
 C     | DATA STATEMENTS |
@@ -308,6 +310,7 @@ C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
 C     %-----------------------%
 C
+      RBID=0.D0
       IF (FIRST) THEN
 C
 C        %-----------------------------------------%
@@ -464,13 +467,13 @@ C
 C
 C            %-----------------------------------------%
 C            | TO SCALE BOTH V_{J} AND P_{J} CAREFULLY |
-C            | USE LAPACK ROUTINE GLASCL               |
+C            | USE LAPACK ROUTINE ZLASCL               |
 C            %-----------------------------------------%
 C
-             CALL GLASCL ('G', I, I, RNORM, RONE,
-     &                    N, 1, V(1,J), N, INFOL)
-             CALL GLASCL ('G', I, I, RNORM, RONE,  
-     &                    N, 1, WORKD(IPJ), N, INFOL)
+             CALL ZLASCL ('G', I, I, RNORM, RONE,
+     &                    N, 1, V(1,J), N, INFOL4)
+             CALL ZLASCL ('G', I, I, RNORM, RONE,  
+     &                    N, 1, WORKD(IPJ), N, INFOL4)
          END IF
 C
 C        %------------------------------------------------------%
@@ -544,7 +547,7 @@ C        %-------------------------------------%
 C
          IF (BMAT .EQ. 'G') THEN  
              CNORM = ZDOTC (N, RESID, 1, WORKD(IPJ), 1)
-             WNORM = SQRT( FLAPY2(DBLE(CNORM),DIMAG(CNORM)) )
+             WNORM = SQRT( DLAPY2(DBLE(CNORM),DIMAG(CNORM)) )
          ELSE IF (BMAT .EQ. 'I') THEN
              WNORM = DZNRM2(N, RESID, 1)
          END IF
@@ -609,7 +612,7 @@ C        %------------------------------%
 C
          IF (BMAT .EQ. 'G') THEN         
             CNORM = ZDOTC (N, RESID, 1, WORKD(IPJ), 1)
-            RNORM = SQRT( FLAPY2(DBLE(CNORM),DIMAG(CNORM)) )
+            RNORM = SQRT( DLAPY2(DBLE(CNORM),DIMAG(CNORM)) )
          ELSE IF (BMAT .EQ. 'I') THEN
             RNORM = DZNRM2(N, RESID, 1)
          END IF
@@ -703,7 +706,7 @@ C        %-----------------------------------------------------%
 C 
          IF (BMAT .EQ. 'G') THEN         
              CNORM  = ZDOTC (N, RESID, 1, WORKD(IPJ), 1)
-             RNORM1 = SQRT( FLAPY2(DBLE(CNORM),DIMAG(CNORM)) )
+             RNORM1 = SQRT( DLAPY2(DBLE(CNORM),DIMAG(CNORM)) )
          ELSE IF (BMAT .EQ. 'I') THEN
              RNORM1 = DZNRM2(N, RESID, 1)
          END IF
@@ -786,11 +789,11 @@ C              | USE A STANDARD TEST AS IN THE QR ALGORITHM |
 C              | REFERENCE: LAPACK SUBROUTINE ZLAHQR        |
 C              %--------------------------------------------%
 C     
-               TST1 = FLAPY2(DBLE(H(I,I)),DIMAG(H(I,I)))
-     &              + FLAPY2(DBLE(H(I+1,I+1)), DIMAG(H(I+1,I+1)))
+               TST1 = DLAPY2(DBLE(H(I,I)),DIMAG(H(I,I)))
+     &              + DLAPY2(DBLE(H(I+1,I+1)), DIMAG(H(I+1,I+1)))
                IF( TST1.EQ.DBLE(ZERO) )
-     &              TST1 = HLANHS( '1', K+NP, H, LDH, WORKD(N+1) )
-               IF( FLAPY2(DBLE(H(I+1,I)),DIMAG(H(I+1,I))) .LE. 
+     &              TST1 = ZLANHS( '1', K+NP, H, LDH, RBID )
+               IF( DLAPY2(DBLE(H(I+1,I)),DIMAG(H(I+1,I))) .LE. 
      &                    MAX( ULP*TST1, SMLNUM ) ) 
      &             H(I+1,I) = ZERO
  110        CONTINUE

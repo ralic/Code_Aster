@@ -1,11 +1,11 @@
-      SUBROUTINE XDIVTE(TYPMAD,TYPMAA,CONNEC)
+      SUBROUTINE XDIVTE(ELREFP,CONNEC,NIT)
       IMPLICIT NONE 
 
-      INTEGER       CONNEC(6,4)
-      CHARACTER*8   TYPMAD,TYPMAA
+      INTEGER       CONNEC(6,4),NIT
+      CHARACTER*8   ELREFP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2004   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,14 +22,17 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C                      CONNECTIVITÉ DES SOUS ELEMENTS TETRAS D'UN HEXA
+C
+C                      CONNECTIVITÉ DES ÉLÉMENTS TETRAS À PARTIR 
+C                               D'UN ÉLÉMENT PARENT X-FEM
+C                          (VOIR BOOK III 19/04/04)
 C
 C     ENTREE
-C       TYPMAD  : TYPE DE MAILLE PARENT
-C       TYPMAA  : TYPE DE MAILLE ENFANT
+C       ELREFP  : TYPE D'ÉLÉMENT DE RÉFÉRENCE PARENT
 C
 C     SORTIE
-C       CONNEC  : CONNECTIVITÉ DES NOEUDS DE L'ELEMENT ENFANT
+C       CONNEC  : CONNECTIVITÉ DES NOEUDS DE L'ÉLÉMENT ENFANT
+C       NIT     : NOMBRE DE SOUS-TÉTRAS
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -59,7 +62,7 @@ C ----------------------------------------------------------------------
  110    CONTINUE
  100  CONTINUE    
 
-      IF (TYPMAD.EQ.'HEXA8'.AND.TYPMAA.EQ.'TETRA4') THEN
+      IF (ELREFP.EQ.'HE8'.OR.ELREFP.EQ.'X20') THEN
 C       CONNECTIVITÉ DES NOEUDS
         CONNEC(1,1)=6
         CONNEC(1,2)=3
@@ -85,9 +88,31 @@ C       CONNECTIVITÉ DES NOEUDS
         CONNEC(6,2)=8
         CONNEC(6,3)=4
         CONNEC(6,4)=6  
-      
+        NIT=6
+      ELSEIF (ELREFP.EQ.'PE6'.OR.ELREFP.EQ.'X15') THEN
+C       CONNECTIVITÉ DES NOEUDS
+        CONNEC(1,1)=5
+        CONNEC(1,2)=4
+        CONNEC(1,3)=6
+        CONNEC(1,4)=1
+        CONNEC(2,1)=1
+        CONNEC(2,2)=2
+        CONNEC(2,3)=3
+        CONNEC(2,4)=6
+        CONNEC(3,1)=6
+        CONNEC(3,2)=2
+        CONNEC(3,3)=5
+        CONNEC(3,4)=1
+        NIT=3
+      ELSEIF (ELREFP.EQ.'TE4') THEN
+C       CONNECTIVITÉ DES NOEUDS
+        CONNEC(1,1)=1
+        CONNEC(1,2)=2
+        CONNEC(1,3)=3
+        CONNEC(1,4)=4
+        NIT=1
       ELSE
-        CALL UTMESS('F','XDIVTE','TYPE DE MAILLE PAS TRAITE')
+        CALL UTMESS('F','XDIVTE','TYPE D''ELEMENT FINI PAS TRAITE')
       ENDIF
 
       CALL JEDEMA()

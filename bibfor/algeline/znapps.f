@@ -4,7 +4,7 @@
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -124,14 +124,14 @@ C     IVOUT   ARPACK UTILITY ROUTINE THAT PRINTS INTEGERS.
 C     SECOND  ARPACK UTILITY ROUTINE FOR TIMING.
 C     ZMOUT   ARPACK UTILITY ROUTINE THAT PRINTS MATRICES
 C     ZVOUT   ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
-C     GLACPY  LAPACK MATRIX COPY ROUTINE.
-C     HLANHS  LAPACK ROUTINE THAT COMPUTES VARIOUS NORMS OF A MATRIX.
+C     ZLACPY  LAPACK MATRIX COPY ROUTINE.
+C     ZLANHS  LAPACK ROUTINE THAT COMPUTES VARIOUS NORMS OF A MATRIX.
 C     GLARTG  LAPACK GIVENS ROTATION CONSTRUCTION ROUTINE.
-C     GLASET  LAPACK MATRIX INITIALIZATION ROUTINE.
+C     ZLASET  LAPACK MATRIX INITIALIZATION ROUTINE.
 C     DLABAD  LAPACK ROUTINE FOR DEFINING THE UNDERFLOW AND OVERFLOW
 C             LIMITS.
 C     DLAMCH  LAPACK ROUTINE THAT DETERMINES MACHINE CONSTANTS.
-C     FLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
+C     DLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
 C     ZGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
 C     ZAXPY   LEVEL 1 BLAS THAT COMPUTES A VECTOR TRIAD.
 C     ZCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER.
@@ -201,7 +201,7 @@ C
       INTEGER    I, IEND, ISTART, J, JJ, KPLUSP, MSGLVL
       LOGICAL    FIRST
       COMPLEX*16 CDUM, F, G, H11, H21, R, S, SIGMA, T
-      REAL*8     C,  OVFL, SMLNUM, ULP, UNFL, TST1
+      REAL*8     C,  OVFL, SMLNUM, ULP, UNFL, TST1, RBID
       SAVE       FIRST, OVFL, SMLNUM, ULP, UNFL 
 C
 C
@@ -210,7 +210,7 @@ C     | EXTERNAL FUNCTIONS |
 C     %--------------------%
 C
       INTEGER ISBAEM
-      REAL*8  HLANHS, FLAPY2, R8PREM, R8MIEM
+      REAL*8  ZLANHS, DLAPY2, R8PREM, R8MIEM
 C
 C     %---------------------%
 C     | STATEMENT FUNCTIONS |
@@ -229,6 +229,7 @@ C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
 C     %-----------------------%
 C
+      RBID=0.D0
       IF (FIRST) THEN
 C
 C        %-----------------------------------------------%
@@ -260,7 +261,7 @@ C     | INITIALIZE Q TO THE IDENTITY TO ACCUMULATE |
 C     | THE ROTATIONS AND REFLECTIONS              |
 C     %--------------------------------------------%
 C
-      CALL GLASET ('A', KPLUSP, KPLUSP, ZERO, ONE, Q, LDQ)
+      CALL ZLASET ('A', KPLUSP, KPLUSP, ZERO, ONE, Q, LDQ)
 C
 C     %----------------------------------------------%
 C     | QUICK RETURN IF THERE ARE NO SHIFTS TO APPLY |
@@ -297,7 +298,8 @@ C           %----------------------------------------%
 C
             TST1 = ZABS1( H( I, I ) ) + ZABS1( H( I+1, I+1 ) )
             IF( TST1.EQ.RZERO )
-     &         TST1 = HLANHS( '1', KPLUSP-JJ+1, H, LDH, WORKL )
+     &         TST1 = ZLANHS( '1', KPLUSP-JJ+1, H, LDH, RBID)
+               
             IF ( ABS(DBLE(H(I+1,I))) 
      &           .LE. MAX(ULP*TST1, SMLNUM) )  THEN
                IF (MSGLVL .GT. 0) THEN
@@ -416,7 +418,7 @@ C
       DO 120 J=1,KEV
          IF ( DBLE( H(J+1,J) ) .LT. RZERO .OR.
      &        DIMAG( H(J+1,J) ) .NE. RZERO ) THEN
-            T = H(J+1,J) / FLAPY2(DBLE(H(J+1,J)),DIMAG(H(J+1,J)))
+            T = H(J+1,J) / DLAPY2(DBLE(H(J+1,J)),DIMAG(H(J+1,J)))
             CALL ZLSCAL( KPLUSP-J+1, DCONJG(T), H(J+1,J), LDH )
             CALL ZLSCAL( MIN(J+2, KPLUSP), T, H(1,J+1), 1 )
             CALL ZLSCAL( MIN(J+NP+1,KPLUSP), T, Q(1,J+1), 1 )
@@ -437,7 +439,7 @@ C        %--------------------------------------------%
 C
          TST1 = ZABS1( H( I, I ) ) + ZABS1( H( I+1, I+1 ) )
          IF( TST1 .EQ. RZERO )
-     &       TST1 = HLANHS( '1', KEV, H, LDH, WORKL )
+     &       TST1 = ZLANHS( '1', KEV, H, LDH, RBID)
          IF( DBLE( H( I+1,I ) ) .LE. MAX( ULP*TST1, SMLNUM ) ) 
      &       H(I+1,I) = ZERO
  130  CONTINUE
@@ -469,7 +471,7 @@ C     %-------------------------------------------------%
 C     |  MOVE V(:,KPLUSP-KEV+1:KPLUSP) INTO V(:,1:KEV). |
 C     %-------------------------------------------------%
 C
-      CALL GLACPY ('A', N, KEV, V(1,KPLUSP-KEV+1), LDV, V, LDV)
+      CALL ZLACPY ('A', N, KEV, V(1,KPLUSP-KEV+1), LDV, V, LDV)
 C 
 C     %--------------------------------------------------------------%
 C     | COPY THE (KEV+1)-ST COLUMN OF (V*Q) IN THE APPROPRIATE PLACE |

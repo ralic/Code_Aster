@@ -1,7 +1,7 @@
       SUBROUTINE FLAHQR( WANTT, WANTZ, N, ILO, IHI, H, LDH, WR, WI,
      &                   ILOZ, IHIZ, Z, LDZ, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -129,7 +129,7 @@ C     .. LOCAL ARRAYS ..
 C     ..
 C     .. EXTERNAL FUNCTIONS ..
       INTEGER ISBAEM
-      REAL*8 FLANHS, R8PREM, R8MIEM
+      REAL*8 DLANHS, R8PREM, R8MIEM
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
 C
@@ -194,7 +194,7 @@ C
          DO 20 K = I, L + 1, -1
             TST1 = ABS( H( K-1, K-1 ) ) + ABS( H( K, K ) )
             IF( TST1.EQ.ZERO )
-     &         TST1 = FLANHS( '1', I-L+1, H( L, L ), LDH, WORK )
+     &         TST1 = DLANHS( '1', I-L+1, H( L, L ), LDH, WORK )
             IF( ABS( H( K, K-1 ) ).LE.MAX( ULP*TST1, SMLNUM ) )
      &         GO TO 30
    20    CONTINUE

@@ -4,7 +4,7 @@
       CHARACTER*(*) ELREFZ
       INTEGER NBPG,NDIM
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,7 +116,7 @@ C     -----------------------------------------
 
 C     ------------------------------------------------------------------
       IF (ELREFA.EQ.'HE8' .OR. ELREFA.EQ.'H20' .OR.
-     &    ELREFA.EQ.'H27') THEN
+     &    ELREFA.EQ.'H27' .OR. ELREFA.EQ.'X20') THEN
 
         NPAR = 0
 
@@ -178,7 +178,8 @@ C         IL FAUT MULTIPLIER LES POIDS PAR 4 POUR OBTENIR VOL=8
 
         END IF
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFA.EQ.'PE6' .OR. ELREFA.EQ.'P15') THEN
+      ELSE IF (ELREFA.EQ.'PE6' .OR. ELREFA.EQ.'P15' .OR.
+     &         ELREFA.EQ.'X15') THEN
 
         IF (FAPG.EQ.'FPG6') THEN
           NPX = 2
@@ -281,7 +282,8 @@ C --------- FORMULE DE HAMMER
    90   CONTINUE
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFA.EQ.'TE4' .OR. ELREFA.EQ.'T10') THEN
+      ELSE IF (ELREFA.EQ.'TE4' .OR. ELREFA.EQ.'T10' .OR. 
+     &         ELREFA.EQ.'X10') THEN
 
         IF (FAPG.EQ.'FPG4') THEN
 
@@ -691,6 +693,50 @@ C     ------------------------------------------------------------------
           HPG(5) = P2
           HPG(6) = P2
           HPG(7) = P2
+        ELSEIF (FAPG.EQ.'FPG12') THEN
+          A1=0.063089014491502D0
+          B1=0.249286745170910D0
+          C1=0.310352451033785D0
+          D1=0.053145049844816D0
+          XPG(1) = A1
+          YPG(1) = A1
+          XPG(2) = UN - DEUX*A1
+          YPG(2) = A1
+          XPG(3) = A1
+          YPG(3) = UN - DEUX*A1
+          XPG(4) = B1
+          YPG(4) = B1
+          XPG(5) = UN - DEUX*B1
+          YPG(5) = B1
+          XPG(6) = B1
+          YPG(6) = UN - DEUX*B1
+          XPG(7) = C1
+          YPG(7) = D1
+          XPG(8) = D1
+          YPG(8) = C1
+          XPG(9) = UN - C1 - D1
+          YPG(9) = C1
+          XPG(10) = UN - C1 - D1
+          YPG(10) = D1
+          XPG(11) = C1
+          YPG(11) = UN - C1 - D1
+          XPG(12) = D1
+          YPG(12) = UN - C1 - D1
+          P1=0.025422453185103D0
+          P2=0.058393137863189D0
+          P3=0.041425537809187D0
+          HPG(1) = P1
+          HPG(2) = P1
+          HPG(3) = P1
+          HPG(4) = P2
+          HPG(5) = P2
+          HPG(6) = P2
+          HPG(7) = P3
+          HPG(8) = P3
+          HPG(9) = P3
+          HPG(10) = P3
+          HPG(11) = P3
+          HPG(12) = P3
         ELSE
           CALL ASSERT(.FALSE.)
         END IF

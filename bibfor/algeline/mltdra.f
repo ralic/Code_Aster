@@ -2,7 +2,7 @@
      +                  ADRESS,GLOBAL,LGSN,FACTOL,FACTOU,SM,X,
      +                  INVP,PERM,AD,TRAV,TYPSYM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/01/2002   AUTEUR JFBHHUC C.ROSE 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,15 +47,22 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER IB,NC,ISND,LONG,L,I,NDJ
 C
-      INTEGER ADFAC1,DEB1
+      INTEGER ADFAC1,DEB1,INCX,INCY
       INTEGER SNI,K,J,DEB,FIN,ADFAC,NDK,GJ,DEBNDK,IFAC
       INTEGER SEUIN,SEUIK
       PARAMETER(SEUIN=1500,SEUIK=300)
       INTEGER LDA,NN,KK
-      REAL*8 S
+      REAL*8 S,ALPHA,BETA
+      CHARACTER*1 TRA
 
       CALL JEMARQ()
-
+C
+      TRA='N'
+      ALPHA=-1.D0
+      BETA=1.D0
+      INCX=1
+      INCY=1
+C
       DO 110 J = 1,NBND
           X(INVP(J)) = SM(J)
   110 CONTINUE
@@ -106,7 +113,8 @@ C                 RANGEMENT DU TERME DIAGONAL
                  IF(NN.LT.SEUIN.OR.KK.LT.SEUIK) THEN
                  CALL SSPMVA((LONG-L),L,ZR(IFAC),AD,TRAV,TRAV(L+1))
                  ELSE
-                 CALL DGEMW(NN,KK,ZR(IFAC+AD(1)-1),LDA,TRAV,TRAV(L+1))
+                 CALL DGEMV(TRA,NN,KK,ALPHA,ZR(IFAC+AD(1)-1),LDA,TRAV,
+     &                      INCX,BETA,TRAV(L+1),INCY)
                  ENDIF
 C CHANGTSGEMV                 CALL SSPMVA(LONG-L,L,ZR(IFAC),AD,TRAV,
 C     +                         TRAV(L+1))

@@ -1,6 +1,6 @@
       SUBROUTINE GCAX ( M , IN , IP , AC , X , Y )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/03/99   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ C     _____________ ____ ______________________________________________
          KDEB = IN(I-1)+1
          KFIN = IN(I)-1
          KLONG = IN(I)-KDEB
-         Y(I) = R8PDOT (KLONG+1,X,IP(KDEB),AC(KDEB))
+         Y(I) = SPDOT (KLONG+1,X,IP(KDEB),AC(KDEB))
 CCDIR$ IVDEP
          DO 20 KI = KDEB , KFIN
             Y(IP(KI)) = Y(IP(KI)) + AC(KI)*X(I)

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/09/2004   AUTEUR F6BHHBO P.DEBONNIERES 
+# MODIF  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE ROMEO R.FERNANDES
 # ======================================================================
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE NON LOCAL
@@ -44,16 +44,10 @@ CHMAT    = AFFE_MATERIAU(  MAILLAGE = MAILLAGE,
                         );
 
 MODELE   = AFFE_MODELE(    MAILLAGE = MAILLAGE,
-                           AFFE     = (_F( MAILLE       = 'M1'              ,
-                                           PHENOMENE    = 'MECANIQUE'       ,
-                                           MODELISATION = 'D_PLAN_GRAD_EPSI',),
-                                       _F( MAILLE       =('M2',
-                              'M3',
-         'M4',
-         'M5',)     ,
-                                           PHENOMENE    = 'MECANIQUE',
-                                           MODELISATION = 'D_PLAN',),),
-                      );
+                                               AFFE     = _F( TOUT='OUI' ,
+                                                                     PHENOMENE    = 'MECANIQUE' ,
+                                                                     MODELISATION = 'D_PLAN_GRAD_EPSI',),
+                                            );
 
 #***********************************************************************
 # *** CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES ********

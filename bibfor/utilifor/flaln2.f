@@ -1,7 +1,7 @@
       SUBROUTINE FLALN2( LTRANS, NA, NW, SMIN, CA, A, LDA, D1, D2, B,
      &                   LDB, WR, WI, X, LDX, SCALE, XNORM, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -263,7 +263,7 @@ C
 C
 C           COMPUTE X
 C
-            CALL FLADIV( SCALE*B( 1, 1 ), SCALE*B( 1, 2 ), CSR, CSI,
+            CALL DLADIV( SCALE*B( 1, 1 ), SCALE*B( 1, 2 ), CSR, CSI,
      &                   X( 1, 1 ), X( 1, 2 ) )
             XNORM = ABS( X( 1, 1 ) ) + ABS( X( 1, 2 ) )
          END IF
@@ -495,7 +495,7 @@ C
                END IF
             END IF
 C
-            CALL FLADIV( BR2, BI2, UR22, UI22, XR2, XI2 )
+            CALL DLADIV( BR2, BI2, UR22, UI22, XR2, XI2 )
             XR1 = UR11R*BR1 - UI11R*BI1 - UR12S*XR2 + UI12S*XI2
             XI1 = UI11R*BR1 + UR11R*BI1 - UI12S*XR2 - UR12S*XI2
             IF( ZSWAP( ICMAX ) ) THEN

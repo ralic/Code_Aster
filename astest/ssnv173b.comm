@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BARREAU FISSURE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,11 +33,13 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     CREA_GROUP_NO=_F(GROUP_MA='VOL',),   
                     );
 
-
-MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
+MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAGE,
+                       LINE_QUAD=_F(GROUP_MA='VOL',),);
+                       
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                    AFFE=_F(GROUP_MA=('VOL',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),
+                            MODELISATION='3D_XFEM',),
                      );        
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-12.5 ');
@@ -52,6 +54,18 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     ORIE_FOND=_F(PFON_INI= (2.5 ,0. ,12.5 ),
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(-0.5,0.,1.5 ),),
+                   CONTACT=_F(INTEGRATION='GAUSS',
+                               COEF_REGU_CONT=100., 
+                               ITER_CONT_MAXI=4,   
+                               CONTACT_INIT='NON',    
+                               FROTTEMENT='SANS',
+#                               FROTTEMENT='COULOMB',
+#                               COULOMB=1.0,
+#                               ITER_FROT_MAXI=6,
+#                               COEF_REGU_FROT=1000.,
+#                               SEUIL_INIT=-1.E11,
+                               ),
+
                     INFO=3,
                     );
 
@@ -66,7 +80,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
                             RHO=7800.0,),);
 
-CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=(_F(GROUP_MA=('VOL',),
                                 MATER=ACIER,

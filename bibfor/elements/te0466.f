@@ -1,9 +1,10 @@
       SUBROUTINE TE0466 ( OPTION , NOMTE )
       IMPLICIT   NONE
       CHARACTER*16        OPTION , NOMTE
-C
+C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/09/2004   AUTEUR ROMEO R.FERNANDES 
+C =====================================================================
+C MODIF ELEMENTS  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,49 +64,23 @@ C
       CHARACTER*24       CHVAL,CHCTE
       INTEGER            NDLNO,IPRES,IPRESF
       REAL*8             PRES,PRESF
-      LOGICAL            AXI,DPLAN,TRAITE
-C
-      LOGICAL VOL2,BORD2,VOL3,BORD3
-      LOGICAL ISTHT3
-      LOGICAL ISTHQ4
-      LOGICAL ISTHT6
-      LOGICAL ISTHQ8
-      LOGICAL ISTHS2
-      LOGICAL ISTHS3
-      LOGICAL ISTHF8,ISTHF6,ISTHF4,ISTHF3
-C
-      LOGICAL ISTH10,ISTH13,ISTH15,ISTH20
-      LOGICAL ISTH4,ISTH6,ISTH8
+      LOGICAL            AXI,P2P1
 C
       INTEGER NNOMAX,NVOMAX,NSOMAX
       PARAMETER(NNOMAX=20,NVOMAX=4,NSOMAX=8)
       INTEGER VOISIN(NVOMAX,NNOMAX)
       INTEGER NBVOS(NSOMAX)
-C
-      LOGICAL P2P1,LUMPED
       INTEGER NNOS,IM,IS,LS,LM,IDLTHM,NDLTHM,DEBTHM
+      CHARACTER*8 TYPMOD(2)
 C     ------------------------------------------------------------------
 C  CETTE ROUTINE FAIT UN CALCUL EN THHM , HM , HHM , THH ,THM
 C     ------------------------------------------------------------------
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDX,JGANO)
 C
-      AXI = .FALSE.
-      TRAITE = .FALSE.
-      DPLAN = .FALSE.
-      BORD2 = .FALSE.
-      VOL2  = .FALSE.
-      BORD3 = .TRUE.
-      VOL3  = .FALSE.
+      CALL CAETHM(NOMTE,AXI,TYPMOD,NNOS,NNOMAX,NVOMAX,NSOMAX,VOISIN,
+     +                                                    NBVOS,P2P1)
 C
-      CALL CAETHM(NOMTE,VOL2,BORD2,VOL3,BORD3,
-     > ALIAS,AXI,DPLAN,TRAITE,
-     > ISTHS2,ISTHS3,ISTHF8,ISTHF6,ISTH10,ISTH13,ISTH15,ISTH20,
-     > ISTHT3,ISTHQ4,ISTHT6,ISTHQ8,
-     > NNOMAX,NVOMAX,NSOMAX,
-     > NNOS,VOISIN,NBVOS,P2P1,LUMPED,ISTHF4,ISTHF3,ISTH4,ISTH6,ISTH8)
-C
-      IF ( ISTHF8.OR.ISTHF6.OR.ISTHF4.OR.ISTHF3) THEN
 C       SI MODELISATION = THHM
         IF (NOMTE(1:4).EQ.'THHM') THEN
            NDLNO = 6
@@ -134,11 +109,7 @@ C
             CALL UTMESS('F','TE0472','ELEMENT '
      +        // 'NON TRAITE')
          ENDIF
-C
-      ELSE
-         CALL UTMESS('F','TE0472',' SEULE LA MODELISATION '
-     +     // '3D EST TRAITEE')
-      ENDIF
+
 C
       CALL JEVECH ( 'PGEOMER', 'L', IGEOM )
       CALL JEVECH ( 'PVECTUR', 'E', IRES  )

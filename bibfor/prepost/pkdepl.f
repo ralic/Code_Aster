@@ -1,10 +1,10 @@
-      SUBROUTINE PKDEPL ( NOMA, FOND, DEPSUP, DEPINF )
+      SUBROUTINE PKDEPL ( NOMA, FOND, DEPSUP, DEPINF, SYMECH )
       IMPLICIT   NONE
-      CHARACTER*8         NOMA, FOND
+      CHARACTER*8         NOMA, FOND, SYMECH
       CHARACTER*24        DEPSUP, DEPINF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 01/02/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,18 +66,16 @@ C DEB ------------------------------------------------------------------
       CALL GETRES ( NOMRES , CONCEP , NOMCMD )
 
 C     ------------------------------------------------------------------
-C             LA TABLE DE DEPLACEMENT DE LA LEVRE SUPERIEURE
+C             LES TABLES DE DEPLACEMENT 
 C     ------------------------------------------------------------------
 
       CALL GETVID ( ' ', 'TABL_DEPL_SUP', 1,1,1, DEPSUP, N1 )
 
-C     ------------------------------------------------------------------
-C             LA TABLE DE DEPLACEMENT DE LA LEVRE INFERIEURE
-C     ------------------------------------------------------------------
+      IF (SYMECH .EQ. 'SANS' ) THEN
+        CALL GETVID ( ' ', 'TABL_DEPL_INF', 1,1,1, DEPINF, N2 )
+      ENDIF
 
-      CALL GETVID ( ' ', 'TABL_DEPL_INF', 1,1,1, DEPINF, N2 )
-
-      IF ( N1*N2 .NE. 0 )  GOTO 9999
+      IF ( N1 .NE. 0 )  GOTO 9999
 
 C     ------------------------------------------------------------------
 C                  RECUPERATION D'UN RESULTAT
@@ -101,7 +99,6 @@ C     ------------------------------------------------------------------
 
       CALL WKVECT ( '&&PKDEPL_LIST_NOEUD'  , 'V V I', NBNOE, IDLINO )
       CALL WKVECT ( '&&PKDEPL_NOEU_LEV_SUP', 'V V I', NBNOE, JNOLS  )
-      CALL WKVECT ( '&&PKDEPL_NOEU_LEV_INF', 'V V I', NBNOE, JNOLI  )
 
 C --- GROUP_MA LEVRE_SUP --> GROUP_NO LEVRE_SUP
 
@@ -118,16 +115,21 @@ C --- GROUP_MA LEVRE_SUP --> GROUP_NO LEVRE_SUP
 
 C --- GROUP_MA LEVRE_INF --> GROUP_NO LEVRE_INF
 C
-      FONLIN = FOND//'.LEVREINF  .MAIL'
-      CALL JELIRA ( FONLIN, 'LONMAX', NBMA, K8B )
-      CALL JEVEUO ( FONLIN, 'L', IADRMA )
-      CALL WKVECT ( '&&PKDEPL_MAILLE_LEV_INF', 'V V I', NBMA, JLIMA )
-      DO 20 IM = 1 , NBMA
-         CALL JENONU(JEXNOM(NOMA//'.NOMMAI',ZK8(IADRMA+IM-1)),
+      IF (SYMECH .EQ. 'SANS' ) THEN
+        CALL WKVECT ( '&&PKDEPL_NOEU_LEV_INF', 'V V I', NBNOE, JNOLI  )
+      
+        FONLIN = FOND//'.LEVREINF  .MAIL'
+        CALL JELIRA ( FONLIN, 'LONMAX', NBMA, K8B )
+        CALL JEVEUO ( FONLIN, 'L', IADRMA )
+        CALL WKVECT ( '&&PKDEPL_MAILLE_LEV_INF', 'V V I', NBMA, JLIMA )
+        DO 20 IM = 1 , NBMA
+           CALL JENONU(JEXNOM(NOMA//'.NOMMAI',ZK8(IADRMA+IM-1)),
      +                                                 ZI(JLIMA+IM-1) )
- 20   CONTINUE
-      CALL GMGNRE ( NOMA, NBNOE, ZI(IDLINO), ZI(JLIMA), NBMA,
+ 20     CONTINUE
+        CALL GMGNRE ( NOMA, NBNOE, ZI(IDLINO), ZI(JLIMA), NBMA,
      +                           ZI(JNOLI), NBNOLI, 'TOUS' )
+     
+      ENDIF
 
 C     ------------------------------------------------------------------
 
@@ -138,9 +140,12 @@ C
 
       CALL TBCRSD ( DEPSUP, 'V' )
       CALL TBAJPA ( DEPSUP, NBPAR, NOMPAR, TYPPAR )
-
-      CALL TBCRSD ( DEPINF, 'V' )
-      CALL TBAJPA ( DEPINF, NBPAR, NOMPAR, TYPPAR )
+      
+      IF (SYMECH .EQ. 'SANS' ) THEN
+        DEPINF = '&&PKDEPL.DEPL_INF       '
+        CALL TBCRSD ( DEPINF, 'V' )
+        CALL TBAJPA ( DEPINF, NBPAR, NOMPAR, TYPPAR )
+      ENDIF
 
       DO 30 IORD = 1, NBORDR
          NORDR = ZI(JORDR+IORD-1)
@@ -208,52 +213,54 @@ C
      +                       NOEUD, 0 )
  32      CONTINUE
 
-         DO 34 IN = 1, NBNOLI
-            INO = ZI(JNOLI+IN-1)
-            CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO), NOEUD )
-            LDX = .FALSE.
-            LDY = .FALSE.
-            LDZ = .FALSE.
-            DO 341 ICP = 1,NCMP
-               NOCMP = ZK8(JCNSC-1+ICP)
-               IF ( NOCMP .EQ. 'DX' ) THEN
-                  IF (ZL(JCNSL-1+(INO-1)*NCMP+ICP)) THEN
-                     LDX = .TRUE.
-                     DX = ZR(JCNSV-1+(INO-1)*NCMP+ICP)
-                  ENDIF
-               ELSEIF ( NOCMP .EQ. 'DY' ) THEN
-                  IF (ZL(JCNSL-1+(INO-1)*NCMP+ICP)) THEN
-                     LDY = .TRUE.
-                     DY = ZR(JCNSV-1+(INO-1)*NCMP+ICP)
-                  ENDIF
-               ELSEIF ( NOCMP .EQ. 'DZ' ) THEN
-                  IF (ZL(JCNSL-1+(INO-1)*NCMP+ICP)) THEN
-                     LDZ = .TRUE.
-                     DZ = ZR(JCNSV-1+(INO-1)*NCMP+ICP)
-                  ENDIF
-               ENDIF
- 341        CONTINUE
-            IF ( .NOT. LDX ) THEN
+         IF (SYMECH .EQ. 'SANS' ) THEN
+           DO 34 IN = 1, NBNOLI
+              INO = ZI(JNOLI+IN-1)
+              CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO), NOEUD )
+              LDX = .FALSE.
+              LDY = .FALSE.
+              LDZ = .FALSE.
+              DO 341 ICP = 1,NCMP
+                 NOCMP = ZK8(JCNSC-1+ICP)
+                 IF ( NOCMP .EQ. 'DX' ) THEN
+                    IF (ZL(JCNSL-1+(INO-1)*NCMP+ICP)) THEN
+                      LDX = .TRUE.
+                      DX = ZR(JCNSV-1+(INO-1)*NCMP+ICP)
+                    ENDIF
+                 ELSEIF ( NOCMP .EQ. 'DY' ) THEN
+                    IF (ZL(JCNSL-1+(INO-1)*NCMP+ICP)) THEN
+                      LDY = .TRUE.
+                      DY = ZR(JCNSV-1+(INO-1)*NCMP+ICP)
+                    ENDIF
+                 ELSEIF ( NOCMP .EQ. 'DZ' ) THEN
+                    IF (ZL(JCNSL-1+(INO-1)*NCMP+ICP)) THEN
+                      LDZ = .TRUE.
+                      DZ = ZR(JCNSV-1+(INO-1)*NCMP+ICP)
+                    ENDIF
+                 ENDIF
+ 341          CONTINUE
+              IF ( .NOT. LDX ) THEN
                CALL UTMESS('F',NOMCMD,'MANQUE LA COMPOSANTE "DX" '//
      +                                ' POUR LE NOEUD '//NOEUD)
-            ELSE
+              ELSE
                VALE(2) = DX
-            ENDIF
-            IF ( .NOT. LDY ) THEN
+              ENDIF
+              IF ( .NOT. LDY ) THEN
                CALL UTMESS('F',NOMCMD,'MANQUE LA COMPOSANTE "DY" '//
      +                                ' POUR LE NOEUD '//NOEUD)
-            ELSE
+              ELSE
                VALE(3) = DY
-            ENDIF
-            IF ( .NOT. LDZ ) THEN
+              ENDIF
+              IF ( .NOT. LDZ ) THEN
                CALL UTMESS('F',NOMCMD,'MANQUE LA COMPOSANTE "DZ" '//
      +                                ' POUR LE NOEUD '//NOEUD)
-            ELSE
+              ELSE
                VALE(4) = DZ
-            ENDIF
-            CALL TBAJLI ( DEPINF, NBPAR, NOMPAR, IBID, VALE, CBID,
+              ENDIF
+              CALL TBAJLI ( DEPINF, NBPAR, NOMPAR, IBID, VALE, CBID,
      +                       NOEUD, 0 )
- 34      CONTINUE
+ 34        CONTINUE
+         ENDIF
 
          CALL DETRSD ( 'CHAM_NO_S', CHAMS )
 
@@ -264,9 +271,10 @@ C
       CALL JEDETR ( KNUM )
       CALL JEDETR ( '&&PKDEPL_LIST_NOEUD'   )
       CALL JEDETR ( '&&PKDEPL_NOEU_LEV_SUP' )
-      CALL JEDETR ( '&&PKDEPL_NOEU_LEV_INF' )
       CALL JEDETR ( '&&PKDEPL_MAILLE_LEV_SUP' )
-      CALL JEDETR ( '&&PKDEPL_MAILLE_LEV_INF' )
- 
+      IF (SYMECH .EQ. 'SANS' ) THEN
+        CALL JEDETR ( '&&PKDEPL_NOEU_LEV_INF' )
+        CALL JEDETR ( '&&PKDEPL_MAILLE_LEV_INF' )
+      ENDIF
       CALL JEDEMA ( )
       END

@@ -3,7 +3,7 @@
      &     IPNTR, WORKD, IERR, ALPHA)
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -96,7 +96,7 @@ C     TR95-13, DEPARTMENT OF COMPUTATIONAL AND APPLIED MATHEMATICS.
 C
 C ROUTINES CALLED:
 C     DVOUT   ARPACK UTILITY ROUTINE FOR VECTOR OUTPUT.
-C     FLARNV  LAPACK ROUTINE FOR GENERATING A RANDOM VECTOR.
+C     DLARNV  LAPACK ROUTINE FOR GENERATING A RANDOM VECTOR.
 C     DGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
 C     DCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER.
 C     DDOT    LEVEL 1 BLAS THAT COMPUTES THE SCALAR PRODUCT .
@@ -124,6 +124,7 @@ C            MODIFICATION DES APPELS BLAS (ROUTINE ASTER BL...),
 C            IMPLICIT NONE.
 C ENDLIB
 C-----------------------------------------------------------------------
+C TOLE CRP_4
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 
@@ -168,6 +169,7 @@ C     | LOCAL SCALARS & ARRAYS |
 C     %------------------------%
 
       LOGICAL FIRST, INITS, ORTH
+      INTEGER*4 ISEED4(4)
       INTEGER IDIST, ISEED(4), ITER, MSGLVL, JJ
       REAL*8 RNORM0
       SAVE FIRST, ISEED, INITS, ITER, MSGLVL, ORTH, RNORM0
@@ -225,7 +227,15 @@ C        %-----------------------------------------------------%
 
          IF (.NOT.INITV) THEN
             IDIST = 2
-            CALL FLARNV (IDIST, ISEED, N, RESID)
+            ISEED4(1)=ISEED(1)
+            ISEED4(2)=ISEED(2)
+            ISEED4(3)=ISEED(3)
+            ISEED4(4)=ISEED(4)
+            CALL DLARNV (IDIST, ISEED4, N, RESID)
+            ISEED(1)=ISEED4(1)
+            ISEED(2)=ISEED4(2)
+            ISEED(3)=ISEED4(3)
+            ISEED(4)=ISEED4(4)
          END IF
 
 C        %----------------------------------------------------------%

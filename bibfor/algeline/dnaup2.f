@@ -4,7 +4,7 @@
      &     Q, LDQ, WORKL, IPNTR, WORKD, INFO, NEQACT, ALPHA)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -150,7 +150,7 @@ C     DSORTC  ARPACK SORTING ROUTINE.
 C     IVOUT   ARPACK UTILITY ROUTINE THAT PRINTS INTEGERS.
 C     DMOUT   ARPACK UTILITY ROUTINE THAT PRINTS MATRICES
 C     DVOUT   ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
-C     FLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
+C     DLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
 C     DCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
 C     DDOT    LEVEL 1 BLAS THAT COMPUTES THE SCALAR PRODUCT.
 C     DNRM2   LEVEL 1 BLAS THAT COMPUTES THE NORM OF A VECTOR.
@@ -246,7 +246,7 @@ C     %-----------%
 C     | FUNCTIONS |
 C     %-----------%
 
-      REAL*8 DDOT, DNRM2, FLAPY2, R8PREM
+      REAL*8 DDOT, DNRM2, DLAPY2, R8PREM
 
 C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
@@ -589,7 +589,7 @@ C           | BY 1 / MAX(EPS23,MAGNITUDE OF THE RITZ VALUE).   |
 C           %--------------------------------------------------%
 
             DO 35 J = 1, NEV0
-                TEMP = MAX(EPS23,FLAPY2(RITZR(J),
+                TEMP = MAX(EPS23,DLAPY2(RITZR(J),
      &                                   RITZI(J)))
                 BOUNDS(J) = BOUNDS(J)/TEMP
  35         CONTINUE
@@ -610,7 +610,7 @@ C           | VALUE.                                       |
 C           %----------------------------------------------%
 
             DO 40 J = 1, NEV0
-                TEMP = MAX(EPS23, FLAPY2(RITZR(J),
+                TEMP = MAX(EPS23, DLAPY2(RITZR(J),
      &                                   RITZI(J)))
                 BOUNDS(J) = BOUNDS(J)*TEMP
  40         CONTINUE

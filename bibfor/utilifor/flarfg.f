@@ -1,6 +1,6 @@
       SUBROUTINE FLARFG( N, ALPHA, X, INCX, TAU )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -86,7 +86,7 @@ C     .. LOCAL SCALARS ..
       REAL*8   BETA, RSAFMN, SAFMIN, XNORM
 C     ..
 C     .. EXTERNAL FUNCTIONS ..
-      REAL*8   R8PREM, R8MIEM, FLAPY2, DNRM2
+      REAL*8   R8PREM, R8MIEM, DLAPY2, DNRM2
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
 C
@@ -106,7 +106,7 @@ C
 C
 C        GENERAL CASE
 C
-         BETA = -SIGN( FLAPY2( ALPHA, XNORM ), ALPHA )
+         BETA = -SIGN( DLAPY2( ALPHA, XNORM ), ALPHA )
          SAFMIN = R8MIEM() / (R8PREM()*0.5D0)
          IF( ABS( BETA ).LT.SAFMIN ) THEN
 C
@@ -125,7 +125,7 @@ C
 C           NEW BETA IS AT MOST 1, AT LEAST SAFMIN
 C
             XNORM = DNRM2( N-1, X, INCX )
-            BETA = -SIGN( FLAPY2( ALPHA, XNORM ), ALPHA )
+            BETA = -SIGN( DLAPY2( ALPHA, XNORM ), ALPHA )
             TAU = ( BETA-ALPHA ) / BETA
             CALL DSCAL( N-1, ONE / ( ALPHA-BETA ), X, INCX )
 C

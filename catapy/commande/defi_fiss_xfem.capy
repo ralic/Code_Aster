@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,8 +26,8 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='f'
       regles              =(UN_PARMI('GROUP_MA_FISS','FONC_LT'),
                             ENSEMBLE('FONC_LT','FONC_LN'),
                             ENSEMBLE('GROUP_MA_FISS','GROUP_MA_FOND')),
-      FONC_LT             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-      FONC_LN             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+      FONC_LT             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+      FONC_LN             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
       GROUP_MA_FISS       =SIMP(statut='f',typ=grma,max=01),
       GROUP_MA_FOND       =SIMP(statut='f',typ=grma),
     ),
@@ -37,6 +37,19 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='f'
       VECT_ORIE           =SIMP(statut='o',typ='R',max=03),
       PT_ORIGIN           =SIMP(statut='o',typ='R',max=03),
     ),
+    CONTACT               =FACT(statut='f',max=01,
+      NOM_CHAM            =SIMP(statut='f',typ='TXM',defaut="DEPL",into=("DEPL",) ),
+      FROTTEMENT          =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","COULOMB",) ), 
+      INTEGRATION         =SIMP(statut='f',typ='TXM',defaut="GAUSS",into=("GAUSS",) ),
+      COEF_REGU_CONT      =SIMP(statut='f',typ='R',defaut=100.E+0),
+      MODL_AXIS           =SIMP(statut='f',typ='TXM',into=("NON",)),
+      ITER_CONT_MAXI      =SIMP(statut='f',typ='I',defaut=30),
+      CONTACT_INIT        =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
+      b_frottement    =BLOC(condition = "FROTTEMENT == 'COULOMB' ",fr="Paramètres du frottement de Coulomb",
+           COULOMB        =SIMP(statut='o',typ='R',),
+           ITER_FROT_MAXI =SIMP(statut='f',typ='I',defaut=2),
+           COEF_REGU_FROT =SIMP(statut='f',typ='R',defaut=100.E+0),
+           SEUIL_INIT     =SIMP(statut='f',typ='R',defaut=0.E+0),),
+    ),
     INFO                  =SIMP(statut='f',typ='I',defaut= 1,into=(1,2,3,) ),
-
 )  ;

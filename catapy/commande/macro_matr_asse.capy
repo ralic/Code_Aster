@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 from Macro.macro_matr_asse_ops import macro_matr_asse_ops
@@ -47,31 +47,48 @@ MACRO_MATR_ASSE=MACRO(nom="MACRO_MATR_ASSE",op=macro_matr_asse_ops,
                       fr="Calcul des matrices assemblées (matr_asse_gd) par exemple de rigidité, de masse ",
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
+         INST            =SIMP(statut='f',typ='R',defaut=0.),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
          CHARGE          =SIMP(statut='f',typ=(char_meca,char_ther,char_acou),validators=NoRepeat(),max='**'),
-         INST            =SIMP(statut='f',typ='R'),
          NUME_DDL        =SIMP(statut='o',typ=(nume_ddl_sdaster,CO)),
          SOLVEUR         =FACT(statut='d',
            METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",
                                  into=("LDLT","MULT_FRONT","GCPC")),
            RENUM           =SIMP(statut='f',typ='TXM',into=("SANS","RCMK","MD","MDA","METIS")),
          ),
+
          MATR_ASSE       =FACT(statut='o',max='**',
-           MATRICE         =SIMP(statut='o',typ=(matr_asse,CO)),
-           OPTION          =SIMP(statut='o',typ='TXM',
-                                 into=("RIGI_MECA","MASS_MECA","MASS_MECA_DIAG",
-                                       "AMOR_MECA","RIGI_MECA_HYST","IMPE_MECA",
-                                       "ONDE_FLUI","RIGI_FLUI_STRU","MASS_FLUI_STRU",
-                                       "RIGI_ROTA","RIGI_GEOM","RIGI_MECA_LAGR",
-                                       "RIGI_THER","MASS_THER",
-                                       "RIGI_ACOU","MASS_ACOU","AMOR_ACOU",
-                                       "MASS_ID_MTEM_R","MASS_ID_MTNS_R","MASS_ID_MDEP_R","MASS_ID_MDNS_R",)
-                                 ),
-           SIEF_ELGA       =SIMP(statut='f',typ=cham_elem_sief_r),
-           MODE_FOURIER    =SIMP(statut='f',typ='I'),
-           THETA           =SIMP(statut='f',typ=theta_geom),
-           PROPAGATION     =SIMP(statut='f',typ='R'),
-         ),
+             MATRICE         =SIMP(statut='o',typ=(matr_asse,CO)),
+             OPTION          =SIMP(statut='o',typ='TXM',
+                                   into=("RIGI_MECA","MASS_MECA","MASS_MECA_DIAG",
+                                         "AMOR_MECA","RIGI_MECA_HYST","IMPE_MECA",
+                                         "ONDE_FLUI","RIGI_FLUI_STRU","MASS_FLUI_STRU",
+                                         "RIGI_ROTA","RIGI_GEOM","RIGI_MECA_LAGR",
+                                         "RIGI_THER","MASS_THER",
+                                         "RIGI_ACOU","MASS_ACOU","AMOR_ACOU",
+                                         "MASS_ID_MTEM_R","MASS_ID_MTNS_R","MASS_ID_MDEP_R","MASS_ID_MDNS_R",)
+                                   ),
+
+             b_rigi_meca = BLOC( condition = "OPTION=='RIGI_MECA'",
+               MODE_FOURIER    =SIMP(statut='f',typ='I',defaut= 0),
+             ),
+
+             b_rigi_geom = BLOC( condition = "OPTION=='RIGI_GEOM'",
+               SIEF_ELGA       =SIMP(statut='o',typ=cham_elem_sief_r),
+               MODE_FOURIER    =SIMP(statut='f',typ='I',defaut= 0),
+             ),
+
+             b_rigi_meca_lagr = BLOC( condition = "OPTION=='RIGI_MECA_LAGR'",
+               THETA           =SIMP(statut='o',typ=theta_geom),
+               PROPAGATION     =SIMP(statut='f',typ='R'),
+             ),
+
+             b_rigi_ther = BLOC( condition = "OPTION=='RIGI_THER'",
+               MODE_FOURIER    =SIMP(statut='f',typ='I',defaut= 0),
+             ),
+
+         ), # fin MATR_ASSE
+
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
 )  ;

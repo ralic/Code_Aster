@@ -3,7 +3,7 @@
       CHARACTER*8         FOND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 15/11/2004   AUTEUR GALENNE E.GALENNE 
+C MODIF PREPOST  DATE 01/02/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,7 +15,7 @@ C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
 C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
 C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
-C
+CS
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
@@ -60,7 +60,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       COMPLEX*16   CBID
       LOGICAL      EXTGOR, EXTGEX, EXIST, TYPLIN, TYPQUA
       CHARACTER*2  TYPPA1(NBPAR1)
-      CHARACTER*8  K8B, NOMRES, NOMA, CRITI, CRITN, TYPM
+      CHARACTER*8  K8B, NOMRES, NOMA, CRITI, CRITN, TYPM, SYMECH
       CHARACTER*16 NOMCMD, CONCEP,NOMPA1(NBPAR1), MOTFAC
       CHARACTER*19 DEPSU2, DEPIN2
       CHARACTER*24 NOESUP, ABSSUP, DXSUP, DYSUP, DZSUP, NOEINF, ABSINF,
@@ -75,11 +75,14 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
      +               'R', 'R', 'R' /
 C DEB ------------------------------------------------------------------
       CALL JEMARQ ( )
+            
       CRITN = 'RELATIF'
       CALL INFNIV ( IFM , NIV )
 
       CALL GETRES ( NOMRES , CONCEP , NOMCMD )
 
+      CALL GETVTX(' ','SYME_CHAR',0,1,1,SYMECH,IBID)
+      
       FONNOE = FOND//'.FOND      .TYPE'
       CALL JEEXIN ( FONNOE, IRET )
       IF (IRET.EQ.0) CALL UTMESS('F',NOMCMD,'BUG: MANQUE .TYPE')
@@ -107,9 +110,11 @@ C DEB ------------------------------------------------------------------
       CALL JEEXIN ( FONLSU, IRET )
       IF (IRET.EQ.0) CALL UTMESS('F',NOMCMD,'BUG: MANQUE .LEV_SUP')
 
-      FONLIN = FOND//'.LEVREINF  .MAIL'
-      CALL JEEXIN ( FONLIN, IRET )
-      IF (IRET.EQ.0) CALL UTMESS('F',NOMCMD,'BUG: MANQUE .LEV_INF')
+      IF (SYMECH .EQ. 'SANS' ) THEN
+        FONLIN = FOND//'.LEVREINF  .MAIL'
+        CALL JEEXIN ( FONLIN, IRET )
+        IF (IRET.EQ.0) CALL UTMESS('F',NOMCMD,'BUG: MANQUE .LEV_INF')
+      ENDIF
 
       FONTOR = FOND//'.DTAN_ORIGINE'
       CALL JEEXIN ( FONTOR, IRET )
@@ -181,7 +186,7 @@ C     ------------------------------------------------------------------
 C             DEPLACEMENT DE LA LEVRE SUPERIEURE ET INFERIEURE
 C     ------------------------------------------------------------------
 
-      CALL PKDEPL ( NOMA, FOND, DEPSUP, DEPINF )
+      CALL PKDEPL ( NOMA, FOND, DEPSUP, DEPINF,SYMECH)
 
 C     ------------------------------------------------------------------
 C                   LES NOEUDS DE POST-TRAITEMENT
@@ -201,7 +206,6 @@ C --- VECTEURS DE TRAVAIL
 
       CALL WKVECT ( '&&PKFOND_LIST_NOEUD'  , 'V V I', NBNOE, IDLINO )
       CALL WKVECT ( '&&PKFOND_NOEU_LEV_SUP', 'V V I', NBNOE, JNOLS  )
-      CALL WKVECT ( '&&PKFOND_NOEU_LEV_INF', 'V V I', NBNOE, JNOLI  )
 
 C --- GROUP_MA LEVRE_SUP --> GROUP_NO LEVRE_SUP
 
@@ -214,6 +218,7 @@ C --- GROUP_MA LEVRE_SUP --> GROUP_NO LEVRE_SUP
  10   CONTINUE
       CALL GMGNRE ( NOMA, NBNOE, ZI(IDLINO), ZI(JLIMA), NBMA,
      +                           ZI(JNOLS), NBNOLS, 'TOUS' )
+      
       CALL WKVECT ('&&PKFOND_COOR_LEV_SUP', 'V V R', 3*NBNOLS, JCOORS )
       DO 12 IN = 1 , NBNOLS
          ZR(JCOORS-1+3*(IN-1)+1) = ZR(IDCOOR-1+3*(ZI(JNOLS+IN-1)-1)+1)
@@ -221,27 +226,31 @@ C --- GROUP_MA LEVRE_SUP --> GROUP_NO LEVRE_SUP
          ZR(JCOORS-1+3*(IN-1)+3) = ZR(IDCOOR-1+3*(ZI(JNOLS+IN-1)-1)+3)
  12   CONTINUE
 
+      IF (SYMECH .NE. 'SYME' ) THEN
+      
 C --- GROUP_MA LEVRE_INF --> GROUP_NO LEVRE_INF
+      
+        CALL WKVECT ( '&&PKFOND_NOEU_LEV_INF', 'V V I', NBNOE, JNOLI  )
 
-      CALL JELIRA ( FONLIN, 'LONMAX', NBMA, K8B )
-      CALL JEVEUO ( FONLIN, 'L', IADRMA )
-      CALL WKVECT ( '&&PKFOND_MAILLE_LEV_INF', 'V V I', NBMA, JLIMA )
-      DO 20 IM = 1 , NBMA
-         CALL JENONU(JEXNOM(NOMA//'.NOMMAI',ZK8(IADRMA+IM-1)),
+        CALL JELIRA ( FONLIN, 'LONMAX', NBMA, K8B )
+        CALL JEVEUO ( FONLIN, 'L', IADRMA )
+        CALL WKVECT ( '&&PKFOND_MAILLE_LEV_INF', 'V V I', NBMA, JLIMA )
+        DO 20 IM = 1 , NBMA
+           CALL JENONU(JEXNOM(NOMA//'.NOMMAI',ZK8(IADRMA+IM-1)),
      +                                                 ZI(JLIMA+IM-1) )
- 20   CONTINUE
-      CALL GMGNRE ( NOMA, NBNOE, ZI(IDLINO), ZI(JLIMA), NBMA,
+ 20     CONTINUE
+        CALL GMGNRE ( NOMA, NBNOE, ZI(IDLINO), ZI(JLIMA), NBMA,
      +                           ZI(JNOLI), NBNOLI, 'TOUS' )
-      CALL WKVECT ('&&PKFOND_COOR_LEV_INF', 'V V R', 3*NBNOLI, JCOORI )
-      DO 22 IN = 1 , NBNOLI
-         ZR(JCOORI-1+3*(IN-1)+1) = ZR(IDCOOR-1+3*(ZI(JNOLI+IN-1)-1)+1)
-         ZR(JCOORI-1+3*(IN-1)+2) = ZR(IDCOOR-1+3*(ZI(JNOLI+IN-1)-1)+2)
-         ZR(JCOORI-1+3*(IN-1)+3) = ZR(IDCOOR-1+3*(ZI(JNOLI+IN-1)-1)+3)
- 22   CONTINUE
+        CALL WKVECT ('&&PKFOND_COOR_LEV_INF','V V R',3*NBNOLI, JCOORI)
+        DO 22 IN = 1 , NBNOLI
+           ZR(JCOORI-1+3*(IN-1)+1) = ZR(IDCOOR-1+3*(ZI(JNOLI+IN-1)-1)+1)
+           ZR(JCOORI-1+3*(IN-1)+2) = ZR(IDCOOR-1+3*(ZI(JNOLI+IN-1)-1)+2)
+           ZR(JCOORI-1+3*(IN-1)+3) = ZR(IDCOOR-1+3*(ZI(JNOLI+IN-1)-1)+3)
+ 22     CONTINUE
+      ENDIF
 C     -----------------------------------------------------------------
 C
       DEPSU2 = '&&PKFOND.DEPL_SUP'
-      DEPIN2 = '&&PKFOND.DEPL_INF'
 
       NOESUP = '&&PKFOND.ABSC_NOEUD_SUP'
       NUMSUP = '&&PKFOND.ABSC_NUME_SUP'
@@ -250,9 +259,12 @@ C
       DYSUP  = '&&PKFOND.DY_SUP'
       DZSUP  = '&&PKFOND.DZ_SUP'
 
-      NOEINF = '&&PKFOND.ABSC_NOEUD_INF'
-      NUMINF = '&&PKFOND.ABSC_NUME_INF'
-      ABSINF = '&&PKFOND.ABSC_CURV_INF'
+      IF (SYMECH .NE. 'SYME' ) THEN
+        DEPIN2 = '&&PKFOND.DEPL_INF'
+        NOEINF = '&&PKFOND.ABSC_NOEUD_INF'
+        NUMINF = '&&PKFOND.ABSC_NUME_INF'
+        ABSINF = '&&PKFOND.ABSC_CURV_INF'
+      ENDIF
       DXINF  = '&&PKFOND.DX_INF'
       DYINF  = '&&PKFOND.DY_INF'
       DZINF  = '&&PKFOND.DZ_INF'
@@ -287,13 +299,16 @@ C     --- BOUCLE SUR LES INSTANTS ---
             DINST = ZR(JINST+IIN-1)
             CALL TBEXTB ( DEPSUP, 'V', DEPSU2, 1, 'INST', 'EQ',
      +                    IBID, DINST, CBID, K8B, PRECI, CRITI )
-
-            CALL TBEXTB ( DEPINF, 'V', DEPIN2, 1, 'INST', 'EQ',
+            IF (SYMECH .NE. 'SYME' ) THEN
+              CALL TBEXTB ( DEPINF, 'V', DEPIN2, 1, 'INST', 'EQ',
      +                    IBID, DINST, CBID, K8B, PRECI, CRITI )
+            ENDIF
          ELSE
             DINST = 0.D0
             DEPSU2 = DEPSUP
-            DEPIN2 = DEPINF
+            IF (SYMECH .NE. 'SYME' ) THEN
+              DEPIN2 = DEPINF
+            ENDIF
          ENDIF
          IF ( NIV .EQ. 2 )  WRITE(IFM,1100) DINST
 
@@ -407,14 +422,16 @@ C        DEFINISSANT LA LEVRE SUPERIEURE
 C ------ CALCUL DE L'INTERSECTION DU PLAN AVEC LES NOEUDS DES MAILLES
 C        DEFINISSANT LA LEVRE INFERIEURE
 
-         CALL WKVECT ( '&&PKFOND_INTERS_INF', 'V V I', NBNOE, JINTI )
+         IF (SYMECH .NE. 'SYME' ) THEN
+           CALL WKVECT ( '&&PKFOND_INTERS_INF', 'V V I', NBNOE, JINTI )
 
-         CALL CGNOP0 ( NBNOLI, ZR(JCOORI), X0, VECNOR, PREC, NBTRLI,
+           CALL CGNOP0 ( NBNOLI, ZR(JCOORI), X0, VECNOR, PREC, NBTRLI,
      +                 ZI(JINTI))
-         DO 220 IN = 1 , NBTRLI
-            ZI(JINTI+IN-1) = ZI(JNOLI+ZI(JINTI+IN-1)-1)
- 220     CONTINUE
-
+           DO 220 IN = 1 , NBTRLI
+              ZI(JINTI+IN-1) = ZI(JNOLI+ZI(JINTI+IN-1)-1)
+ 220       CONTINUE
+         ENDIF
+         
          PREC = 10.D0 * PREC
 
 C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
@@ -478,73 +495,77 @@ C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
 
  114     CONTINUE
 
-         IF ( NBTRLI .LT. 3 ) THEN
-            CALL UTDEBM('A',NOMCMD,'IL MANQUE DES POINTS DANS LE PLAN'//
-     +    ' DEFINI PAR LA LEVRE INFERIEURE ET PERPENDICULAIRE AU NOEUD')
-            CALL UTIMPK('S',' DU FOND DE FISSURE ',1,ZK8(JNOFO+INF-1))
-            CALL UTIMPK('L',' AUGMENTER ',1,'PREC_VIS_A_VIS')
-            CALL UTFINM
-            GOTO 202
-         ELSE
-            NBVAI = 1
-            DMAX  = 0.D0
-            NUMEXT = NUMORI
-            X1 = ZR(IDCOOR-1+3*(NUMORI-1)+1)
-            Y1 = ZR(IDCOOR-1+3*(NUMORI-1)+2)
-            Z1 = ZR(IDCOOR-1+3*(NUMORI-1)+3)
-            CALL WKVECT ( NUMINF , 'V V I' , NBTRLI, KNULI )
-            ZI(KNULI) = NUMORI
-            DO 120 IN = 1 , NBTRLI
-              IF ( ZI(JINTI+IN-1) .EQ. NUMORI ) GOTO 120
-               X2 = ZR(IDCOOR-1+3*(ZI(JINTI+IN-1)-1)+1)
-               Y2 = ZR(IDCOOR-1+3*(ZI(JINTI+IN-1)-1)+2)
-               Z2 = ZR(IDCOOR-1+3*(ZI(JINTI+IN-1)-1)+3)
-               D = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
-               IF ( D .LE. RMAX ) THEN
-                  DO 122 II = 1 , NBVAI
-                     IF ( ZI(KNULI+II-1) .EQ. ZI(JINTI+IN-1) ) GOTO 120
- 122              CONTINUE
-                  NBVAI = NBVAI + 1
-                  ZI(KNULI+NBVAI-1)  = ZI(JINTI+IN-1)
-                  IF ( D .GT. DMAX ) THEN
-                     DMAX = D
-                     NUMEXT = ZI(JINTI+IN-1)
-                  ENDIF
-               ENDIF
- 120        CONTINUE
-         ENDIF
-         CALL OREINO ( NOMA, ZI(KNULI), NBVAI, NUMORI, NUMEXT,
+         IF (SYMECH .NE. 'SYME' ) THEN
+           IF ( NBTRLI .LT. 3 ) THEN
+              CALL UTDEBM('A',NOMCMD,'IL MANQUE DES POINTS DANS LE '//
+     +      'PLAN DEFINI PAR LA LEVRE INFERIEURE ET PERPENDICULAIRE '//
+     +      'AU NOEUD')
+              CALL UTIMPK('S',' DU FOND DE FISSURE ',1,ZK8(JNOFO+INF-1))
+              CALL UTIMPK('L',' AUGMENTER ',1,'PREC_VIS_A_VIS')
+              CALL UTFINM
+              GOTO 202
+           ELSE
+              NBVAI = 1
+              DMAX  = 0.D0
+              NUMEXT = NUMORI
+              X1 = ZR(IDCOOR-1+3*(NUMORI-1)+1)
+              Y1 = ZR(IDCOOR-1+3*(NUMORI-1)+2)
+              Z1 = ZR(IDCOOR-1+3*(NUMORI-1)+3)
+              CALL WKVECT ( NUMINF , 'V V I' , NBTRLI, KNULI )
+              ZI(KNULI) = NUMORI
+              DO 120 IN = 1 , NBTRLI
+                IF ( ZI(JINTI+IN-1) .EQ. NUMORI ) GOTO 120
+                 X2 = ZR(IDCOOR-1+3*(ZI(JINTI+IN-1)-1)+1)
+                 Y2 = ZR(IDCOOR-1+3*(ZI(JINTI+IN-1)-1)+2)
+                 Z2 = ZR(IDCOOR-1+3*(ZI(JINTI+IN-1)-1)+3)
+                 D = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
+                 IF ( D .LE. RMAX ) THEN
+                    DO 122 II = 1 , NBVAI
+                      IF (ZI(KNULI+II-1) .EQ. ZI(JINTI+IN-1)) GOTO 120
+ 122                CONTINUE
+                    NBVAI = NBVAI + 1
+                    ZI(KNULI+NBVAI-1)  = ZI(JINTI+IN-1)
+                    IF ( D .GT. DMAX ) THEN
+                       DMAX = D
+                       NUMEXT = ZI(JINTI+IN-1)
+                    ENDIF
+                 ENDIF
+ 120          CONTINUE
+           ENDIF
+           CALL OREINO ( NOMA, ZI(KNULI), NBVAI, NUMORI, NUMEXT,
      +                       ZR(IDCOOR), CRITN, PREC,IERA, IRET )
-         IF ( IRET .NE. 0 ) GOTO 202
+           IF ( IRET .NE. 0 ) GOTO 202
 
-         CALL WKVECT ( NOEINF , 'V V K8', NBVAI, KNOLI  )
-         CALL WKVECT ( ABSINF , 'V V R8', NBVAI, JABSCI )
-         CALL JENUNO(JEXNUM(NOMNOE,ZI(KNULI)), ZK8(KNOLI) )
-         ZR(JABSCI) = 0.0D0
-         X1 = ZR(IDCOOR-1+3*(ZI(KNULI)-1)+1)
-         Y1 = ZR(IDCOOR-1+3*(ZI(KNULI)-1)+2)
-         Z1 = ZR(IDCOOR-1+3*(ZI(KNULI)-1)+3)
-         IF ( NIV .EQ. 2 ) WRITE(IFM,1020) ZK8(KNOLI), ZR(JABSCI)
-         DO 124 IN = 2 , NBVAI
-            X2 = ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+1)
-            Y2 = ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+2)
-            Z2 = ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+3)
-          ZR(JABSCI+IN-1) = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
-            CALL JENUNO(JEXNUM(NOMNOE,ZI(KNULI+IN-1)),ZK8(KNOLI+IN-1))
-            IF ( NIV .EQ. 2 ) THEN
-              WRITE(IFM,1020) ZK8(KNOLI+IN-1), ZR(JABSCI+IN-1)
-            ENDIF
+           CALL WKVECT ( NOEINF , 'V V K8', NBVAI, KNOLI  )
+           CALL WKVECT ( ABSINF , 'V V R8', NBVAI, JABSCI )
+           CALL JENUNO(JEXNUM(NOMNOE,ZI(KNULI)), ZK8(KNOLI) )
+           ZR(JABSCI) = 0.0D0
+           X1 = ZR(IDCOOR-1+3*(ZI(KNULI)-1)+1)
+           Y1 = ZR(IDCOOR-1+3*(ZI(KNULI)-1)+2)
+           Z1 = ZR(IDCOOR-1+3*(ZI(KNULI)-1)+3)
+           IF ( NIV .EQ. 2 ) WRITE(IFM,1020) ZK8(KNOLI), ZR(JABSCI)
+           DO 124 IN = 2 , NBVAI
+              X2 = ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+1)
+              Y2 = ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+2)
+              Z2 = ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+3)
+              ZR(JABSCI+IN-1) = SQRT((X2-X1)**2+(Y2-Y1)**2+(Z2-Z1)**2)
+              CALL JENUNO(JEXNUM(NOMNOE,ZI(KNULI+IN-1)),ZK8(KNOLI+IN-1))
+              IF ( NIV .EQ. 2 ) THEN
+                WRITE(IFM,1020) ZK8(KNOLI+IN-1), ZR(JABSCI+IN-1)
+              ENDIF
 
- 124     CONTINUE
+ 124       CONTINUE
 
-         IF ( NBVAS .NE. NBVAI ) THEN
-            CALL UTDEBM('A',NOMCMD,'DIFFERENCE DE POINTS ENTRE LA '//
+           IF ( NBVAS .NE. NBVAI ) THEN
+              CALL UTDEBM('A',NOMCMD,'DIFFERENCE DE POINTS ENTRE LA '//
      +          ' LEVRE INFERIEURE ET SUPERIEURE POUR TRAITER LE NOEUD')
-            CALL UTIMPK('S',' DU FOND DE FISSURE ',1,ZK8(JNOFO+INF-1))
-            CALL UTIMPI('L',' NOMBRE DE POINTS SUPERIEURE ',1,NBVAS)
-            CALL UTIMPI('L',' NOMBRE DE POINTS INFERIEURE ',1,NBVAI)
-            CALL UTFINM
-            GOTO 202
+              CALL UTIMPK('S',' DU FOND DE FISSURE ',1,ZK8(JNOFO+INF-1))
+              CALL UTIMPI('L',' NOMBRE DE POINTS SUPERIEURE ',1,NBVAS)
+              CALL UTIMPI('L',' NOMBRE DE POINTS INFERIEURE ',1,NBVAI)
+              CALL UTFINM
+              GOTO 202
+           ENDIF
+         
          ENDIF
 
          NBVAL = NBVAS
@@ -601,81 +622,100 @@ C ------ EXTRAIRE DANS LA TABLE LES DEPLACEMENTS AUX NOEUDS
                CALL UTFINM
                GOTO 202
             ENDIF
-            CALL TBLIVA ( DEPIN2, 1, 'NOEUD', IBID, R8B, CBID,
+ 130     CONTINUE
+
+      
+         IF (SYMECH .NE. 'SYME' ) THEN
+           DO 140 IN = 1 , NBVAL
+             CALL TBLIVA ( DEPIN2, 1, 'NOEUD', IBID, R8B, CBID,
      +                    ZK8(KNOLI+IN-1), 'RELATIF', EPSI, 'DX', K8B,
      +                    IBID, ZR(JDXI+IN-1), CBID, K8B, IRET )
-            IF (IRET.NE.0) THEN
+             IF (IRET.NE.0) THEN
                CALL UTDEBM('A',NOMCMD,'PROBLEME POUR RECUPERER ')
                CALL UTIMPK('S','LA COMPOSANTE ',1,'DX')
                CALL UTIMPK('S','POUR LE NOEUD ',1,ZK8(KNOLI+IN-1))
                CALL UTIMPK('S',' DANS LA TABLE ',1,DEPINF)
                CALL UTFINM
                GOTO 202
-            ENDIF
-            CALL TBLIVA ( DEPIN2, 1, 'NOEUD', IBID, R8B, CBID,
+             ENDIF
+             CALL TBLIVA ( DEPIN2, 1, 'NOEUD', IBID, R8B, CBID,
      +                    ZK8(KNOLI+IN-1), 'RELATIF', EPSI, 'DY', K8B,
      +                    IBID, ZR(JDYI+IN-1), CBID, K8B, IRET )
-            IF (IRET.NE.0) THEN
+             IF (IRET.NE.0) THEN
                CALL UTDEBM('A',NOMCMD,'PROBLEME POUR RECUPERER ')
                CALL UTIMPK('S','LA COMPOSANTE ',1,'DY')
                CALL UTIMPK('S','POUR LE NOEUD ',1,ZK8(KNOLI+IN-1))
                CALL UTIMPK('S',' DANS LA TABLE ',1,DEPINF)
                CALL UTFINM
                GOTO 202
-            ENDIF
-            CALL TBLIVA ( DEPIN2, 1, 'NOEUD', IBID, R8B, CBID,
+             ENDIF
+             CALL TBLIVA ( DEPIN2, 1, 'NOEUD', IBID, R8B, CBID,
      +                    ZK8(KNOLI+IN-1), 'RELATIF', EPSI, 'DZ', K8B,
      +                    IBID, ZR(JDZI+IN-1), CBID, K8B, IRET )
-            IF (IRET.NE.0) THEN
+             IF (IRET.NE.0) THEN
                CALL UTDEBM('A',NOMCMD,'PROBLEME POUR RECUPERER ')
                CALL UTIMPK('S','LA COMPOSANTE ',1,'DZ')
                CALL UTIMPK('S','POUR LE NOEUD ',1,ZK8(KNOLI+IN-1))
                CALL UTIMPK('S',' DANS LA TABLE ',1,DEPINF)
                CALL UTFINM
                GOTO 202
-            ENDIF
- 130     CONTINUE
+             ENDIF
+ 140       CONTINUE
 
 C        --- ON VERIFIE QUE LES NOEUDS SONT EN VIS_A_VIS ---
 
-         PRECN = PRECV / DMAX
-         DO 50 IN = 2 , NBVAL
-            D = ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+1) -
+           PRECN = PRECV / DMAX
+           DO 50 IN = 2 , NBVAL
+             D = ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+1) -
      +            ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+1) ) ** 2
-            D = D + ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+2) -
+             D = D + ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+2) -
      +                ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+2) ) ** 2
-            D = D + ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+3) -
+             D = D + ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+3) -
      +                ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+3) ) ** 2
-            IF ( SQRT(D) .GT. PRECN ) THEN
+             IF ( SQRT(D) .GT. PRECN ) THEN
                CALL UTMESS('A',NOMCMD,
      +                     'LES NOEUDS NE SONT PAS EN VIS_A_VIS')
                GOTO 202
-            ENDIF
- 50      CONTINUE
+             ENDIF
+ 50        CONTINUE
 
 C        --- REPERE LOCAL ---
 
-         IN = NBVAL
-         VO(1) = ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+1) +
-     +             ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+1) ) / 2
-         VO(2) = ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+2) +
-     +             ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+2) ) / 2
-         VO(3) = ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+3) +
-     +             ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+3) ) / 2
-         IN = 1
-         VE(1) = ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+1) +
-     +             ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+1) ) / 2
-         VE(2) = ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+2) +
-     +             ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+2) ) / 2
-         VE(3) = ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+3) +
-     +             ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+3) ) / 2
+           IN = NBVAL
+           VO(1) = ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+1) +
+     +              ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+1) ) / 2
+           VO(2) = ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+2) +
+     +              ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+2) ) / 2
+           VO(3) = ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+3) +
+     +              ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+3) ) / 2
+           IN = 1
+           VE(1) = ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+1) +
+     +              ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+1) ) / 2
+           VE(2) = ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+2) +
+     +              ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+2) ) / 2
+           VE(3) = ( ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+3) +
+     +              ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+3) ) / 2
+
+         ELSE
+C        --- CAS SYMETRIQUE ---
+           IN = NBVAL
+           VO(1) =  ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+1) 
+           VO(2) =  ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+2) 
+           VO(3) =  ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+3) 
+           IN = 1
+           VE(1) =  ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+1) 
+           VE(2) =  ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+2) 
+           VE(3) =  ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+3) 
+         ENDIF
+         
          CALL PKCHGR ( VO, VE, VECTY, NBVAL, ZR(JDXS), ZR(JDYS),
-     +            ZR(JDZS), ZR(JDXI), ZR(JDYI), ZR(JDZI), ZR(JABSCS) )
+     +            ZR(JDZS), ZR(JDXI), ZR(JDYI), ZR(JDZI), ZR(JABSCS),
+     +            SYMECH)
 
 C ------ ON CALCULE LES K1, K2, K3
 
          CALL PKCALC ( NDIM, NBVAL, ABSSUP, DXSUP, DYSUP, DZSUP,
-     +                 ABSINF, DXINF, DYINF, DZINF,
+     +                 DXINF, DYINF, DZINF,
      +                 COEFD,COEFD3,COEFG,COEFG3,KG1(3),KG2(3),KG3(3))
 
          IF ( INF .EQ. 1 ) THEN
@@ -704,25 +744,29 @@ C ------ ON CALCULE LES K1, K2, K3
  202     CONTINUE
 
          CALL JEDETR ( '&&PKFOND_INTERS_SUP' )
-         CALL JEDETR ( '&&PKFOND_INTERS_INF' )
          CALL JEDETR ( NOESUP )
          CALL JEDETR ( NUMSUP )
          CALL JEDETR ( ABSSUP )
-         CALL JEDETR ( NOEINF )
-         CALL JEDETR ( NUMINF )
-         CALL JEDETR ( ABSINF )
          CALL JEDETR ( DXSUP )
          CALL JEDETR ( DYSUP )
          CALL JEDETR ( DZSUP )
          CALL JEDETR ( DXINF )
          CALL JEDETR ( DYINF )
          CALL JEDETR ( DZINF )
-
+         IF (SYMECH .NE. 'SYME' ) THEN
+           CALL JEDETR ( '&&PKFOND_INTERS_INF' )
+           CALL JEDETR ( NOEINF )
+           CALL JEDETR ( NUMINF )
+           CALL JEDETR ( ABSINF )
+         ENDIF 
+         
  200  CONTINUE
 
          IF ( EXIST ) THEN
             CALL DETRSD ( 'TABLE', DEPSU2 )
-            CALL DETRSD ( 'TABLE', DEPIN2 )
+            IF (SYMECH .NE. 'SYME' ) THEN
+              CALL DETRSD ( 'TABLE', DEPIN2 )
+            ENDIF
          ENDIF
 
          CALL JEDEMA()
@@ -735,11 +779,13 @@ C ------ ON CALCULE LES K1, K2, K3
       IF (IRET.NE.0)  CALL DETRSD ( 'TABLE', '&&PKDEPL.DEPL_INF' )
       CALL JEDETR ( '&&PKFOND_LIST_NOEUD'     )
       CALL JEDETR ( '&&PKFOND_NOEU_LEV_SUP'   )
-      CALL JEDETR ( '&&PKFOND_NOEU_LEV_INF'   )
       CALL JEDETR ( '&&PKFOND_COOR_LEV_SUP'   )
-      CALL JEDETR ( '&&PKFOND_COOR_LEV_INF'   )
       CALL JEDETR ( '&&PKFOND_MAILLE_LEV_SUP' )
-      CALL JEDETR ( '&&PKFOND_MAILLE_LEV_INF' )
+      IF (SYMECH .NE. 'SYME' ) THEN
+        CALL JEDETR ( '&&PKFOND_NOEU_LEV_INF'   )
+        CALL JEDETR ( '&&PKFOND_COOR_LEV_INF'   )
+        CALL JEDETR ( '&&PKFOND_MAILLE_LEV_INF' )
+      ENDIF
       IF ( EXIST )  CALL JEDETR ( '&&PKFOND.INSTANT' )
 
  1000 FORMAT(/,'--> TRAITEMENT DU NOEUD DU FOND DE FISSURE: ',A8)

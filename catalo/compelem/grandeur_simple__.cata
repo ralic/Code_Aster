@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+%& MODIF COMPELEM  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -196,40 +196,49 @@ GRANDEUR_SIMPLE__
        D3 : PROJECTION DU CHAMP SUIVANT LE VECTEUR DIRECTEUR (D3X,D3Y,D3Z) >>
     DEPL_C   = C    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
-                    H1X      H1Y      H1Z      E1X      E1Y      E1Z      LAGR     LAGS_C   
-                    LAGS_F1  LAGS_F2  UI2      VI2      WI2      UI3      VI3      WI3      
-                    UI4      VI4      WI4      UI5      VI5      WI5      UI6      VI6      
-                    WI6      UO2      VO2      WO2      UO3      VO3      WO3      UO4      
-                    VO4      WO4      UO5      VO5      WO5      UO6      VO6      WO6      
-                    WO       WI1      WO1      GONF     EPXX     EPYY     EPZZ     EPXY     
-                    EPXZ     EPYZ     D1       D1X      D1Y      D1Z      D2       D2X      
-                    D2Y      D2Z      D3       D3X      D3Y      D3Z
+                    H1X      H1Y      H1Z      LAGR     LAGS_C   LAGS_F1  LAGS_F2  UI2      
+                    VI2      WI2      UI3      VI3      WI3      UI4      VI4      WI4      
+                    UI5      VI5      WI5      UI6      VI6      WI6      UO2      VO2
+                    WO2      UO3      VO3      WO3      UO4      VO4      WO4      UO5
+                    VO5      WO5      UO6      VO6      WO6      WO       WI1      WO1
+                    GONF     EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     D1
+                    D1X      D1Y      D1Z      D2       D2X      D2Y      D2Z      D3
+                    D3X      D3Y      D3Z      E1X      E1Y      E1Z      E2X      E2Y    
+                    E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
     DEPL_F   = K8   DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
-                    H1X      H1Y      H1Z      E1X      E1Y      E1Z      LAGR     LAGS_C   
-                    LAGS_F1  LAGS_F2  UI2      VI2      WI2      UI3      VI3      WI3      
-                    UI4      VI4      WI4      UI5      VI5      WI5      UI6      VI6      
-                    WI6      UO2      VO2      WO2      UO3      VO3      WO3      UO4      
-                    VO4      WO4      UO5      VO5      WO5      UO6      VO6      WO6      
-                    WO       WI1      WO1      GONF     EPXX     EPYY     EPZZ     EPXY     
-                    EPXZ     EPYZ     D1       D1X      D1Y      D1Z      D2       D2X      
-                    D2Y      D2Z      D3       D3X      D3Y      D3Z
+                    H1X      H1Y      H1Z      LAGR     LAGS_C   LAGS_F1  LAGS_F2  UI2      
+                    VI2      WI2      UI3      VI3      WI3      UI4      VI4      WI4      
+                    UI5      VI5      WI5      UI6      VI6      WI6      UO2      VO2
+                    WO2      UO3      VO3      WO3      UO4      VO4      WO4      UO5
+                    VO5      WO5      UO6      VO6      WO6      WO       WI1      WO1
+                    GONF     EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     D1
+                    D1X      D1Y      D1Z      D2       D2X      D2Y      D2Z      D3
+                    D3X      D3Y      D3Z      E1X      E1Y      E1Z      E2X      E2Y    
+                    E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
 <<  DEPL_R : DEPLACEMENT REEL AUX NOEUDS
        DX, DY, DZ : TRANSLATION SUIVANT X, Y ET Z (REPERE GLOBAL)
        DRX, DRY, DRZ : ROTATION AUTOUR DE X, Y ET Z (REPERE GLOBAL)
        D1 : PROJECTION DU CHAMP SUIVANT LE VECTEUR DIRECTEUR (D1X,D1Y,D1Z)
        D2 : PROJECTION DU CHAMP SUIVANT LE VECTEUR DIRECTEUR (D2X,D2Y,D2Z)
-       D3 : PROJECTION DU CHAMP SUIVANT LE VECTEUR DIRECTEUR (D3X,D3Y,D3Z) >>
+       D3 : PROJECTION DU CHAMP SUIVANT LE VECTEUR DIRECTEUR (D3X,D3Y,D3Z)
+       DCX,DCY,DCZ : DDLS CLASSIQUES X-FEM
+       H1X,H1Y,H1Z : DDLS HEAVYSIDE X-FEM
+       E1X,E1Y,E1Z : DDLS ENRICHIS (CRACKTIP1) X-FEM 
+       E2X,E2Y,E2Z : DDLS ENRICHIS (CRACKTIP2) X-FEM        
+       E3X,E3Y,E3Z : DDLS ENRICHIS (CRACKTIP3) X-FEM        
+       E4X,E4Y,E4Z : DDLS ENRICHIS (CRACKTIP4) X-FEM  >>
     DEPL_R   = R    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
-                    H1X      H1Y      H1Z      E1X      E1Y      E1Z      LAGR     LAGS_C   
-                    LAGS_F1  LAGS_F2  UI2      VI2      WI2      UI3      VI3      WI3      
-                    UI4      VI4      WI4      UI5      VI5      WI5      UI6      VI6      
-                    WI6      UO2      VO2      WO2      UO3      VO3      WO3      UO4      
-                    VO4      WO4      UO5      VO5      WO5      UO6      VO6      WO6      
-                    WO       WI1      WO1      GONF     EPXX     EPYY     EPZZ     EPXY     
-                    EPXZ     EPYZ     D1       D1X      D1Y      D1Z      D2       D2X      
-                    D2Y      D2Z      D3       D3X      D3Y      D3Z
+                    H1X      H1Y      H1Z      LAGR     LAGS_C   LAGS_F1  LAGS_F2  UI2      
+                    VI2      WI2      UI3      VI3      WI3      UI4      VI4      WI4      
+                    UI5      VI5      WI5      UI6      VI6      WI6      UO2      VO2
+                    WO2      UO3      VO3      WO3      UO4      VO4      WO4      UO5
+                    VO5      WO5      UO6      VO6      WO6      WO       WI1      WO1
+                    GONF     EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     D1
+                    D1X      D1Y      D1Z      D2       D2X      D2Y      D2Z      D3
+                    D3X      D3Y      D3Z      E1X      E1Y      E1Z      E2X      E2Y    
+                    E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
 
 <<  DOMMAG   : DOMMAGE
        DOMA     :
@@ -395,14 +404,27 @@ GRANDEUR_SIMPLE__
     NEUT_I   = I    X1       X2       X3       X4       X5       X6       X7       X8
                     X9       X10      X11      X12      X13      X14      X15      X16
                     X17      X18      X19      X20      X21      X22      X23      X24
-                    X25      X26      X27      X28      X29      X30
+                    X25      X26      X27      X28      X29      X30      X31      X32
+                    X33      X34      X35      X36      X37      X38      X39      X40
+                    X41      X42      X43      X44      X45      X46      X47      X48
+                    X49      X50      X51      X52      X53      X54      X55      X56
+                    X57      X58      X59      X60      X61      X62      X63      X64
+                    X65      X66      X67      X68      X69      X70      X71      X72
+                    X73      X74      X75      X76      X77      X78      X79      X80
+                    X81      X82      X83      X84      X85      X86      X87      X88
+                    X89      X90      X91      X92      X93      X94      X95      X96
+                    X97      X98      X99      X100     X101     X102     X103     X104
+                    X105     X106     X107     X108     X109     X110     X111     X112
     NEUT_K24 = K24  Z1       Z2       Z3       Z4       Z5       Z6       Z7       Z8
                     Z9       Z10      Z11      Z12      Z13      Z14      Z15      Z16
                     Z17      Z18      Z19      Z20      Z21      Z22      Z23      Z24
     NEUT_R   = R    X1       X2       X3       X4       X5       X6       X7       X8
                     X9       X10      X11      X12      X13      X14      X15      X16
                     X17      X18      X19      X20      X21      X22      X23      X24
-                    X25      X26      X27      X28      X29      X30
+                    X25      X26      X27      X28      X29      X30      X31      X32
+                    X33      X34      X35      X36      X37      X38      X39      X40
+                    X41      X42      X43      X44      X45      X46      X47      X48
+                    X49      X50      X51      X52      X53      X54      X55      X56
     NUMC_I   = I    NUMC     ORDO     ANGL
     NUMMOD   = I    NUM
     ONDE_F   = K8   PRES
@@ -512,7 +534,14 @@ GRANDEUR_SIMPLE__
     VOISIN   = I    V0       V1       V2       V3       V4       V5       V6       T0
                     T1       T2       T3       T4       T5       T6
     WEIBULL  = R    DSIGWB
-
+<<  XCONTAC : CONTACT AVEC X-FEM
+       RHON   : COEF_REGU_CONT
+       MU     : COEFFICIENT DE FROTTEMENT DE COULOMB
+       RHOTK  : COEF_REGU_FROT/DELTAT
+                OU DELTAT EST L INCREMENT DE TEMPS POUR 
+                LA DISCRETISATION EULERIENNE DES VITESSES
+>>
+    XCONTAC  = R    RHON     MU       RHOTK
 GRANDEUR_ELEMENTAIRE__
    MDEP_C 2 DEPL_C   DEPL_C   MS
    MDEP_R 2 DEPL_R   DEPL_R   MS

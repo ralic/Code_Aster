@@ -3,7 +3,7 @@
       CHARACTER*(*)       MOTFAZ, BASE, MODELZ, RESUZ, LIGRE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 31/01/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,11 +41,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  -------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  -------------------------
 C
-      INTEGER         I, IB, NMOFAC, N1, N2, INDMOT, LONLIS, INUM, IRET,
+      INTEGER         I, IB, NMOFAC, N1, N2, JMA, NBMA, INUM, IRET,
      +                LG, LXLGUT
       CHARACTER*6     KNUM
       CHARACTER*8     MODELE, NOMA, K8BID
-      CHARACTER*16    MOTFAC, MO16BL
+      CHARACTER*16    MOTFAC, MO16BL, MOTCLE(2), TYPMCL(2)
       CHARACTER*19    LIGREL, LIGRMO
       CHARACTER*24    LISMAI,NOOJB
 C     -----------------------------------------------------------------
@@ -64,8 +64,6 @@ C     --------------------------
       LISMAI = '&&EXLIMA.LISTE_MAILLES'
       MO16BL = '                '
 C
-      INDMOT = 0
-C
 C --- SI ON N'UTILISE PAS GROUP_MA OU MAILLE, LIGREL=LIGRMO :
 C     ------------------------------------------------------
       IF ( MOTFAC .NE. MO16BL ) THEN
@@ -76,15 +74,13 @@ C     ------------------------------------------------------
             GOTO 9999
          ELSE
             DO 10 I = 1 , NMOFAC
-               CALL GETVTX ( MOTFAC(1:LG), 'TOUT' , I,1,0, K8BID, N1 )
+               CALL GETVTX ( MOTFAC, 'TOUT' , I,1,0, K8BID, N1 )
                IF ( N1 .NE. 0 ) THEN
                   LIGREL = LIGRMO
                   GOTO 9999
                ENDIF
-               CALL GETVEM(NOMA,'GROUP_MA',MOTFAC(1:LG),'GROUP_MA',
-     +                      I,1,0,K8BID,N1)
-               CALL GETVEM(NOMA,'MAILLE',MOTFAC(1:LG),'MAILLE',
-     +                    I,1,0,K8BID,N2)
+               CALL GETVID ( MOTFAC, 'GROUP_MA', I,1,0, K8BID, N1 )
+               CALL GETVID ( MOTFAC, 'MAILLE',   I,1,0, K8BID, N2 )
                IF ( N1+N2 .EQ. 0 ) THEN
                   LIGREL = LIGRMO
                   GOTO 9999
@@ -92,43 +88,46 @@ C     ------------------------------------------------------
  10         CONTINUE
          ENDIF
       ELSE
-         CALL GETVTX ( ' ', 'TOUT' , I,1,0, K8BID, N1 )
+         CALL GETVTX ( ' ', 'TOUT' , 1,1,0, K8BID, N1 )
          IF (N1.NE.0)  THEN
             LIGREL = LIGRMO
             GOTO 9999
          ENDIF
-         CALL GETVEM(NOMA,'GROUP_MA',' ','GROUP_MA',
-     +       1,1,0,K8BID,N1)
-         CALL GETVEM(NOMA,'MAILLE',' ','MAILLE',
-     +     1,1,0,K8BID,N2)
+         CALL GETVID ( ' ', 'GROUP_MA', 1,1,0, K8BID, N1 )
+         CALL GETVID ( ' ', 'MAILLE',   1,1,0, K8BID, N2 )
          IF ( N1+N2 .EQ. 0 ) THEN
             LIGREL = LIGRMO
             GOTO 9999
          ENDIF
       ENDIF
 C
+      LISMAI = '&&EXLIMA.MAILLES_INTE'
+      MOTCLE(1) = 'GROUP_MA'
+      MOTCLE(2) = 'MAILLE'
+      TYPMCL(1) = 'GROUP_MA'
+      TYPMCL(2) = 'MAILLE'
+C
 C --- CREATION ET AFFECTATION DU VECTEUR DE K8 DE NOM LISMAI
 C     CONTENANT LES NOMS DES MAILLES FORMANT LE LIGREL A CREER
 C     --------------------------------------------------------
-      CALL RECMAI ( MOTFAC, 1, INDMOT, NOMA, LISMAI, LONLIS)
+      CALL RELIEM ( MODELE, NOMA, 'NU_MAILLE', MOTFAC,1, 2, MOTCLE(1),
+     &              TYPMCL(1), LISMAI, NBMA )
+      CALL JEVEUO ( LISMAI, 'L', JMA )
 C
 C --- TRAITEMENT DU CAS OU L'ON N'A AUCUN DES MOTS-CLES :
 C     MAILLE OU GROUP_MA,  ON SORT AVEC UNE LONGUEUR DE LISTE
 C     LONLIS = 0
 C     -------------------------------------------------------
-      IF ( LONLIS .EQ. 0 ) THEN
+      IF ( NBMA .EQ. 0 ) THEN
          LIGREL = LIGRMO
       ELSE
          NOOJB='12345678.LIGR000000.LIEL'
          CALL GNOMSD ( NOOJB,14,19 )
          LIGREL=NOOJB(1:19)
 C
-C  ---   RECUPERATION DE LA TAILLE DES GRELS
-C        -----------------------------------
-C
 C ---    CREATION ET AFFECTATION DU LIGREL
 C        ---------------------------------
-         CALL EXLIM1 ( LISMAI, LONLIS, MODELE, BASE, LIGREL)
+         CALL EXLIM1 ( ZI(JMA), NBMA, MODELE, BASE, LIGREL)
       ENDIF
       CALL JEDETR ( LISMAI )
 C

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/09/2004   AUTEUR MJBHHPE J.L.FLEJOU 
+#& MODIF COMMANDE  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,8 +65,10 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
            LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
            FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
            LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
-           DISTANCE_MAX    =SIMP(statut='f',typ='R',max=1,
-            fr="Distance maximale entre le noeud et l'élément le plus proche, lorsque le noeud n'est dans aucun élément."),
+           DISTANCE_MAX    =SIMP(statut='f',typ='R',
+                fr="Distance maximale entre le noeud et l'élément le plus proche, lorsque le noeud n'est dans aucun élément."),
+           TYPE_CHAM       =SIMP(statut='f',typ='TXM',into=("NOEU",),
+                fr="Pour forcer le type des champs projetés. NOEU -> cham_no"),
          ),
 
          VIS_A_VIS       =FACT(statut='f',max='**',

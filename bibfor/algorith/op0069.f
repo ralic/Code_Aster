@@ -1,6 +1,6 @@
       SUBROUTINE OP0069 (IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -85,7 +85,7 @@ C
       INTEGER      NMODAM, NREAVI, NONDP,  KCHAM,  KCOMP
       INTEGER      KNUCM,  NBOBSE, NUINS0
       INTEGER      NBOBAR, NUOBSE, NBPASE, NIVEAU
-      INTEGER      NRPASE, IAUX,   JAUX
+      INTEGER      NRPASE, IAUX,   JAUX,ICONTX
 C
       REAL*8       PARMET(30), PARCRI(11), CONV(21), ETA, ETAN, R8VIDE
       REAL*8       DIINST,     INSTAM,     INSTAP,   INST(3),   ALPHA
@@ -284,7 +284,7 @@ C -- ETAT INITIAL ET CREATION DES STRUCTURES DE DONNEES
      &            NURO,   REAROT, VARDEM, LAGDEM, CNDIDI,
      &            PILOTE, DEFICO, RESOCO, CRITNL, FONACT,
      &            CMD,    DEPENT, VITENT, ACCENT, NBMODS,
-     &            CNVFRE, PARCON, PARCRI(6), 
+     &            CNVFRE, PARCON, PARCRI(6), ICONTX,  
      &            NBPASE, INPSCO, LISCH2)
      
       INSTAM = DIINST(PARTPS, 0)
@@ -470,8 +470,9 @@ C -- ET COMMUNIQUENT PAR LA VARIABLE NIVEAU
      &            NEQ   , DEPDEL, DDEPLA, DEPPLU, LIGRCF,
      &            CARTCF, MODELE, LISCHA, SOLVEU, NUMEDD, 
      &            MCONEL, SCONEL, K24BID, K24BID, K24BID,
-     &            K24BID, K24BID, K24BID, K16BID, INST)
-
+     &            K24BID, K24BID, K24BID, K16BID, INST,
+     &            ICONTX)
+     
 C ======================================================================
 C CALCUL DU SECOND MEMBRE (Fext - Fint)
 C ======================================================================
@@ -535,8 +536,8 @@ C -- FIN DE BOUCLE DE CONTACT ECP
         CALL NMTBLE(NIVEAU, 
      &              MAILLA, DEFICO, OLDGEO, NEWGEO,
      &              DEPMOI, DEPGEO, MAXB,   DEPLAM,
-     &              COMGEO, CSEUIL, COBCA, 
-     &              DEPPLU, INST,   LOGBID)
+     &              COMGEO, CSEUIL, COBCA,  ICONTX, 
+     &              DEPPLU, INST,   LOGBID, MODELE)
       ELSE 
         NIVEAU = 0
       ENDIF 

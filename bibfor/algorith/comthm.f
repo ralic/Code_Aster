@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 28/09/2004   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -99,11 +99,11 @@ C ======================================================================
       CHARACTER*8   TYPMOD(2)
       CHARACTER*16  COMPOR(*),OPTION
 C ======================================================================
-C VARIABLES LOCALES
+C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
       LOGICAL       CERMES 
-      INTEGER       I,NVIM,NVIT,NVIH,NVIC,ADVIME,ADVITH,ADVIHY,ADVICO
-      INTEGER       VIHRHO,VICPHI,VICPVP,VICSAT,NVITH
+      INTEGER       NVIM,NVITH,ADVIME,ADVITH,ADVIHY,ADVICO
+      INTEGER       VIHRHO,VICPHI,VICPVP,VICSAT,NVIH,NVIC,NVIT
       REAL*8        P1,DP1,GRAP1(3),P2,DP2,GRAP2(3),T,DT,GRAT(3)
       REAL*8        PHI,PVP,PAD,H11,H12,H21,H22,RHO11,EPSV,DEPS(6),DEPSV
       REAL*8        T0,P10,P20,PHI0,PVP0,SAT,RV0
@@ -126,22 +126,13 @@ C ======================================================================
 C ======================================================================
 C --- RECUPERATION DES DONNEES INITIALES -------------------------------
 C ======================================================================
-      CALL KITDEC(YAMEC, YATE, YAP1, YAP2, MECA, THMC, THER,
-     +                   HYDR, IMATE, DEFGEM, DEFGEP, ADDEME, ADDEP1,
-     +                   ADDEP2, ADDETE, NDIM, T0, P10, P20, PHI0, PVP0,
+      CALL KITDEC(YAMEC, YATE, YAP1, YAP2, MECA, THMC, THER, HYDR,
+     +                   IMATE, DEFGEM, DEFGEP, ADDEME, ADDEP1, ADDEP2,
+     +                   ADDETE, NDIM, T0, P10, P20, PHI0, PVP0, 
      +                   DEPSV, EPSV, DEPS, T, P1, P2, DT, DP1, DP2,
-     +                   GRAT, GRAP1, GRAP2)
-C ======================================================================
-C --- INITIALISATION DE CERMES -----------------------------------------
-C ======================================================================
-      CERMES =  (  (MECA.EQ.'ELAS_THM')       .OR.
-     +             (MECA.EQ.'CAM_CLAY_THM')   .OR.
-     +             (MECA.EQ.'SURF_ETAT_SATU') .OR.
-     +             (MECA.EQ.'SURF_ETAT_NSAT') .OR.
-     +             (THMC.EQ.'LIQU_SATU_GAT')  .OR.
-     +             (THMC.EQ.'LIQU_NSAT_GAT')       ) 
-      IF (CERMES) THEN
-         NVITH = NVIT + NVIH + NVIC
+     +                   GRAT, GRAP1, GRAP2, CERMES, NVITH, RETCOM)
+      IF (RETCOM.NE.0) THEN
+         GOTO 9000
       ENDIF
 C ======================================================================
 C --- CALCUL DES RESIDUS ET DES MATRICES TANGENTES ---------------------
@@ -154,7 +145,7 @@ C ======================================================================
      +               DP1,DP2,T,DT,PHI,PVP,H11,H12,H21,RHO11,PHI0,PVP0,
      +               P10,P20,T0,SAT,RV0,G1D,G1F,G1C,J1D,J1F,J1C,J2,J3,
      +               G2,G3)
-      ELSE    
+      ELSE
          CALL CALCCO(OPTION,MECA,THMC,THER,HYDR,IMATE,
      +                    NDIM,DIMDEF,DIMCON,NBVARI,YAMEC,YAP1,
      +                    NBPHA1,YAP2,NBPHA2,YATE,ADDEME,ADCOME,ADVIHY,

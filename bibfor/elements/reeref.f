@@ -8,7 +8,7 @@
       LOGICAL      GRAND
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/07/2004   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -131,7 +131,6 @@ C     CALCUL DE L'ERREUR
 
  999  CONTINUE
 
-C           write(6,*)'xe ',XE
 
 C     2) CALCUL DES QUANTITÉS DE RÉFÉRENCE EN XE   
 C     -------------------------------------
@@ -169,8 +168,6 @@ C     CALCUL DES GRADIENTS : GRAD(U) ET F
 
       DO 402 N=1,NNO
         DO 403 I=1,3
-C        write(6,*)' ',DEPR(I,N)
-C        write(6,*)' ',DFDI(N,I)
           DO 404 J=1,3
             GRAD(I,J) = GRAD(I,J) + DFDI(N,J)*DEPR(I,N)
  404      CONTINUE

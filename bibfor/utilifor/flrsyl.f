@@ -1,7 +1,7 @@
       SUBROUTINE FLRSYL( TRANA, TRANB, ISGN, M, N, A, LDA, B, LDB, C,
      &                   LDC, SCALE, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -124,9 +124,9 @@ C     .. LOCAL ARRAYS ..
       REAL*8   DUM( 1 ), VEC( 2, 2 ), X( 2, 2 )
 C     ..
 C     .. EXTERNAL FUNCTIONS ..
-      LOGICAL LLSAME
+      LOGICAL LSAME
       INTEGER ISBAEM
-      REAL*8 DDOT, FLANGE, R8MIEM, R8PREM
+      REAL*8 DDOT, DLANGE, R8MIEM, R8PREM
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
 C
@@ -135,15 +135,15 @@ C DUE TO CRS513
 
 C     DECODE AND TEST INPUT PARAMETERS
 C
-      NOTRNA = LLSAME( TRANA, 'N' )
-      NOTRNB = LLSAME( TRANB, 'N' )
+      NOTRNA = LSAME( TRANA, 'N' )
+      NOTRNB = LSAME( TRANB, 'N' )
 C
       INFO = 0
-      IF( .NOT.NOTRNA .AND. .NOT.LLSAME( TRANA, 'T' ) .AND. .NOT.
-     &    LLSAME( TRANA, 'C' ) ) THEN
+      IF( .NOT.NOTRNA .AND. .NOT.LSAME( TRANA, 'T' ) .AND. .NOT.
+     &    LSAME( TRANA, 'C' ) ) THEN
          INFO = -1
-      ELSE IF( .NOT.NOTRNB .AND. .NOT.LLSAME( TRANB, 'T' ) .AND. .NOT.
-     &         LLSAME( TRANB, 'C' ) ) THEN
+      ELSE IF( .NOT.NOTRNB .AND. .NOT.LSAME( TRANB, 'T' ) .AND. .NOT.
+     &         LSAME( TRANB, 'C' ) ) THEN
          INFO = -2
       ELSE IF( ISGN.NE.1 .AND. ISGN.NE.-1 ) THEN
          INFO = -3
@@ -176,8 +176,8 @@ C
       SMLNUM = SMLNUM*DBLE( M*N ) / EPS
       BIGNUM = ONE / SMLNUM
 C
-      SMIN = MAX( SMLNUM, EPS*FLANGE( 'M', M, M, A, LDA, DUM ),
-     &       EPS*FLANGE( 'M', N, N, B, LDB, DUM ) )
+      SMIN = MAX( SMLNUM, EPS*DLANGE( 'M', M, M, A, LDA, DUM ),
+     &       EPS*DLANGE( 'M', N, N, B, LDB, DUM ) )
 C
       SCALE = ONE
       SGN = ISGN

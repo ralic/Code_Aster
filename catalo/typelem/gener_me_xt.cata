@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+%& MODIF TYPELEM  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,6 +24,7 @@ ENTETE__ ELEMENT__ MECA_XT_HEXA8       MAILLE__ HEXA8
    ELREFE__  TE4       GAUSS__  RIGI=FPG4   MASS=FPG4   GANO=FPG4   NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
 ENTETE__ ELEMENT__ MECA_XT_PENTA6      MAILLE__ PENTA6
    ELREFE__  PE6       GAUSS__  RIGI=FPG6   MASS=FPG6   GANO=FPG6   NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  TE4       GAUSS__  RIGI=FPG4   MASS=FPG4   GANO=FPG4   NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
 ENTETE__ ELEMENT__ MECA_XT_TETRA4      MAILLE__ TETRA4
    ELREFE__  TE4       GAUSS__  RIGI=FPG4   MASS=FPG4    GANO=FPG4   NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
 
@@ -44,12 +45,14 @@ MODE_LOCAL__
                                         Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
-    DDL_MECA = DEPL_R   ELNO__ IDEN__  (DCX      DCY      DCZ      )
-    E1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
-    E3NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       )   
-    E9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       
+    DDL_MECA = DEPL_R   ELNO__ IDEN__  (DCX      DCY      DCZ      E1X      E1Y      E1Z     
+                                        E2X      E2Y      E2Z      E3X      E3Y      E3Z      
+                                        )
+    N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
+    N3NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       )   
+    N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       
                                         X7       X8       X9       )
-    E27NEUTR = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       
+    G27NEUTR = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       
                                         X7       X8       X9       X10      X11      X12      
                                         X13      X14      X15      X16      X17      X18       
                                         X19      X20      X21      X22      X23      X24      
@@ -93,7 +96,7 @@ OPTION__
     CALC_K_G            295   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PTHETAR  CMATERC  PMATERC
                                      NTEMPER  PTEMPER  CTEREFE  PTEREF   NFORCER  PFRVOLU  CPESANR  PPESANR
                                      CROTATR  PROTATR  CEPSINR  PEPSINR  CCOMPOR  PCOMPOR  ECONTNO  PSIGINR
-                                     DDL_MECA PDEPINR  EGNEUT9R PBASLOR  E27NEUTR PCOURB
+                                     DDL_MECA PDEPINR  EGNEUT9R PBASLOR  G27NEUTR PCOURB
                               OUT__  EKTHETA  PGTHETA
     FORC_NODA           9     IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
@@ -104,13 +107,13 @@ OPTION__
                                      EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR
                                      CTEREFE  PSECREF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF   
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  ECORR_R  PCORRMR  ECORR_R  PCORRPR
-                                     E1NEUT_R PLEVSET
+                                     N1NEUT_R PLEVSET  EGNEUT9R PBASLOR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
-    GRAD_NEUT_R         24    IN__   NGEOMER  PGEOMER  E1NEUT_R PNEUTER
-                              OUT__  E3NEUT_R PGNEUTR
-    GRAD_NEUT9_R        398   IN__   NGEOMER  PGEOMER  E9NEUT_R PNEUTER
-                              OUT__  E27NEUTR PGNEUTR
+    GRAD_NEUT_R         24    IN__   NGEOMER  PGEOMER  N1NEUT_R PNEUTER
+                              OUT__  N3NEUT_R PGNEUTR
+    GRAD_NEUT9_R        398   IN__   NGEOMER  PGEOMER  N9NEUT_R PNEUTER
+                              OUT__  G27NEUTR PGNEUTR
     MATR_NO_PG          119   IN__   NGEOMER  PGEOMER
                               OUT__  ZVARI1   PMANOPG
     NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR
@@ -122,7 +125,7 @@ OPTION__
                                      EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR
                                      CTEREFE  PSECREF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF   
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  ECORR_R  PCORRMR  ECORR_R  PCORRPR
-                                     E1NEUT_R PLEVSET
+                                     N1NEUT_R PLEVSET  EGNEUT9R PBASLOR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      -1    IN__   XXXXXXX  XXXXXXX
                               OUT__  XXXXXXX  XXXXXXX
@@ -136,7 +139,7 @@ OPTION__
                                      EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR
                                      CTEREFE  PSECREF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF   
                                      ZVARIPG  PVARIMR  ECORR_R  PCORRMR  ECORR_R  PCORRPR
-                                     E1NEUT_R PLEVSET
+                                     N1NEUT_R PLEVSET  EGNEUT9R PBASLOR
                               OUT__  MMATUUR  PMATUUR
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGGA  PDOMMAG  EFACY_R  PFACY_R  EGGEOM_R PGEOM_R  EHYDRER  PHYDR_R

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 01/02/2005   AUTEUR GALENNE E.GALENNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,14 +16,14 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-# RESPONSABLE JMBHH01 J.M.PROIX
+# RESPONSABLE GALENNE E.GALENNE
+
 POST_K1_K2_K3=OPER(nom="POST_K1_K2_K3",op=188,sd_prod=tabl_post_k,
                    fr="Calcul des FIC par extrapolation du champ de déplacements sur les lèvres de la fissure",
                    reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
 
            regles=(UN_PARMI('RESULTAT','TABL_DEPL_SUP'),
-                   PRESENT_PRESENT('TABL_DEPL_SUP','TABL_DEPL_INF'),
                    PRESENT_PRESENT('RESULTAT','FOND_FISS'),),
 
          MODELISATION  =SIMP(statut='o',typ='TXM',
@@ -32,7 +32,6 @@ POST_K1_K2_K3=OPER(nom="POST_K1_K2_K3",op=188,sd_prod=tabl_post_k,
          FOND_FISS     =SIMP(statut='f',typ=fond_fiss),
          b_fond_fiss   =BLOC (condition="(FOND_FISS!= None)",
                          MAILLAGE      = SIMP(statut='o',typ=maillage_sdaster),
-                         PRECISION     = SIMP(statut='f',typ='R',defaut=0.001),
                          NOEUD         = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                          GROUP_NO      = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                          SANS_NOEUD    = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
@@ -59,6 +58,7 @@ POST_K1_K2_K3=OPER(nom="POST_K1_K2_K3",op=188,sd_prod=tabl_post_k,
                PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-6),
                CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
              ),
+         SYME_CHAR       =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","SANS") ),
          INFO          =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
          VECT_K1       =SIMP(statut='o',typ='R',max=3,
                              fr="Vecteur normal au plan de fissure, orienté de la lèvre inférieure vers la lèvre supérieure"),  

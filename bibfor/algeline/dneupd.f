@@ -4,7 +4,7 @@
      &   WORKD, WORKL, LWORKL, INFO)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -237,12 +237,12 @@ C     DMOUT   ARPACK UTILITY ROUTINE THAT PRINTS MATRICES
 C     DVOUT   ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
 C     FGEQR2  LAPACK ROUTINE THAT COMPUTES THE QR FACTORIZATION OF
 C             A MATRIX.
-C     FLACPY  LAPACK MATRIX COPY ROUTINE.
+C     DLACPY  LAPACK MATRIX COPY ROUTINE.
 C     FLAHQR  LAPACK ROUTINE TO COMPUTE THE REAL SCHUR FORM OF AN
 C             UPPER HESSENBERG MATRIX.
-C     FLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
-C     FLASET  LAPACK MATRIX INITIALIZATION ROUTINE.
-C     FORM2R  LAPACK ROUTINE THAT APPLIES AN ORTHOGONAL MATRIX IN
+C     DLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
+C     DLASET  LAPACK MATRIX INITIALIZATION ROUTINE.
+C     DORM2R  LAPACK ROUTINE THAT APPLIES AN ORTHOGONAL MATRIX IN
 C             FACTORED FORM.
 C     FTREVC  LAPACK ROUTINE TO COMPUTE THE EIGENVECTORS OF A MATRIX
 C             IN UPPER QUASI-TRIANGULAR FORM.
@@ -317,6 +317,7 @@ C            MODIFICATION DES APPELS BLAS (ROUTINE ASTER BL...),
 C            IMPLICIT NONE.
 C ENDLIB
 C-----------------------------------------------------------------------
+C TOLE CRP_4
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 
@@ -361,6 +362,7 @@ C     | LOCAL SCALARS |
 C     %---------------%
 
       CHARACTER*6 TYPE
+      INTEGER*4 IERR4
       INTEGER BOUNDS, IERR, IH, IHBDS, IHEIGR, IHEIGI, ICONJ, NCONV,
      &  INVSUB, IUPTRI, IWORK(1), J, K, KTRORD,
      &  LDH, LDQ, MODE, MSGLVL, OUTNCV, RITZR, RITZI, IRR, IRI, IBD
@@ -372,7 +374,7 @@ C     %--------------------%
 C     | EXTERNAL FUNCTIONS |
 C     %--------------------%
 
-      REAL*8 FLAPY2, DNRM2, R8MIEM, R8PREM
+      REAL*8 DLAPY2, DNRM2, R8MIEM, R8PREM
 
 C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
@@ -539,7 +541,7 @@ C        | WHICH SELECTION CRITERION.                |
 C        %-------------------------------------------%
 
          IF (WHICH .EQ. 'LM' .OR. WHICH .EQ. 'SM') THEN
-            THRES = FLAPY2( WORKL(RITZR), WORKL(RITZI) )
+            THRES = DLAPY2( WORKL(RITZR), WORKL(RITZI) )
          ELSE IF (WHICH .EQ. 'LR' .OR. WHICH .EQ. 'SR') THEN
             THRES = WORKL(RITZR)
          ELSE IF (WHICH .EQ. 'LI' .OR. WHICH .EQ. 'SI') THEN
@@ -576,46 +578,46 @@ C        %----------------------------------------------------------%
          DO 10 J = 0, NCV-1
             SELECT(J+1) = .FALSE.
             IF (WHICH .EQ. 'LM') THEN
-               IF (FLAPY2(WORKL(IRR+J), WORKL(IRI+J))
+               IF (DLAPY2(WORKL(IRR+J), WORKL(IRI+J))
      &            .GE. THRES) THEN
                   TEMP1 = MAX( EPS23,
-     &                         FLAPY2( WORKL(IRR+J), WORKL(IRI+J) ) )
+     &                         DLAPY2( WORKL(IRR+J), WORKL(IRI+J) ) )
                   IF (WORKL(IBD+J) .LE. TOL*TEMP1)
      &               SELECT(J+1) = .TRUE.
                END IF
             ELSE IF (WHICH .EQ. 'SM') THEN
-               IF (FLAPY2(WORKL(IRR+J), WORKL(IRI+J))
+               IF (DLAPY2(WORKL(IRR+J), WORKL(IRI+J))
      &            .LE. THRES) THEN
                   TEMP1 = MAX( EPS23,
-     &                         FLAPY2( WORKL(IRR+J), WORKL(IRI+J) ) )
+     &                         DLAPY2( WORKL(IRR+J), WORKL(IRI+J) ) )
                   IF (WORKL(IBD+J) .LE. TOL*TEMP1)
      &               SELECT(J+1) = .TRUE.
                END IF
             ELSE IF (WHICH .EQ. 'LR') THEN
                IF (WORKL(IRR+J) .GE. THRES) THEN
                   TEMP1 = MAX( EPS23,
-     &                         FLAPY2( WORKL(IRR+J), WORKL(IRI+J) ) )
+     &                         DLAPY2( WORKL(IRR+J), WORKL(IRI+J) ) )
                   IF (WORKL(IBD+J) .LE. TOL*TEMP1)
      &               SELECT(J+1) = .TRUE.
                END IF
             ELSE IF (WHICH .EQ. 'SR') THEN
                IF (WORKL(IRR+J) .LE. THRES) THEN
                   TEMP1 = MAX( EPS23,
-     &                         FLAPY2( WORKL(IRR+J), WORKL(IRI+J) ) )
+     &                         DLAPY2( WORKL(IRR+J), WORKL(IRI+J) ) )
                   IF (WORKL(IBD+J) .LE. TOL*TEMP1)
      &               SELECT(J+1) = .TRUE.
                END IF
             ELSE IF (WHICH .EQ. 'LI') THEN
                IF (ABS(WORKL(IRI+J)) .GE. THRES) THEN
                   TEMP1 = MAX( EPS23,
-     &                         FLAPY2( WORKL(IRR+J), WORKL(IRI+J) ) )
+     &                         DLAPY2( WORKL(IRR+J), WORKL(IRI+J) ) )
                   IF (WORKL(IBD+J) .LE. TOL*TEMP1)
      &               SELECT(J+1) = .TRUE.
                END IF
             ELSE IF (WHICH .EQ. 'SI') THEN
                IF (ABS(WORKL(IRI+J)) .LE. THRES) THEN
                   TEMP1 = MAX( EPS23,
-     &                         FLAPY2( WORKL(IRR+J), WORKL(IRI+J) ) )
+     &                         DLAPY2( WORKL(IRR+J), WORKL(IRI+J) ) )
                   IF (WORKL(IBD+J) .LE. TOL*TEMP1)
      &               SELECT(J+1) = .TRUE.
                END IF
@@ -639,9 +641,9 @@ C        | INITIALIZE THE SCHUR VECTOR MATRIX Q TO THE IDENTITY.     |
 C        %-----------------------------------------------------------%
 
          CALL DCOPY (LDH*NCV, WORKL(IH), 1, WORKL(IUPTRI), 1)
-C DUE TO CRP_102 CALL FLASET ('ALL', NCV, NCV, ZERO, ONE,
+C DUE TO CRP_102 CALL DLASET ('ALL', NCV, NCV, ZERO, ONE,
 C WORKL(INVSUB), LDQ)
-         CALL FLASET ('A', NCV, NCV, ZERO, ONE, WORKL(INVSUB), LDQ)
+         CALL DLASET ('A', NCV, NCV, ZERO, ONE, WORKL(INVSUB), LDQ)
          CALL FLAHQR (.TRUE., .TRUE., NCV, 1, NCV, WORKL(IUPTRI), LDH,
      &        WORKL(IHEIGR), WORKL(IHEIGI), 1, NCV,
      &        WORKL(INVSUB), LDQ, IERR)
@@ -721,7 +723,7 @@ C        %----------------------------------------------------------%
      &        WORKEV(NCV+1), IERR)
 
 C        %---------------------------------------------------------%
-C        | * POSTMULTIPLY V BY Q USING FORM2R.                     |
+C        | * POSTMULTIPLY V BY Q USING DORM2R.                     |
 C        | * COPY THE FIRST NCONV COLUMNS OF VQ INTO Z.            |
 C        | * POSTMULTIPLY Z BY R.                                  |
 C        | THE N BY NCONV MATRIX Z IS NOW A MATRIX REPRESENTATION  |
@@ -731,11 +733,12 @@ C        | THE FIRST NCONV COLUMNS OF V ARE NOW APPROXIMATE SCHUR  |
 C        | VECTORS ASSOCIATED WITH THE REAL UPPER QUASI-TRIANGULAR |
 C        | MATRIX OF ORDER NCONV IN WORKL(IUPTRI)                  |
 C        %---------------------------------------------------------%
-C DUE TO CRP_102 CALL FORM2R ('RIGHT', 'NOTRANSPOSE', N, NCV, NCONV,
+C DUE TO CRP_102 CALL DORM2R ('RIGHT', 'NOTRANSPOSE', N, NCV, NCONV,
 C
-         CALL FORM2R ('R', 'N', N, NCV, NCONV,
-     &        WORKL(INVSUB), LDQ, WORKEV, V, LDV, WORKD(N+1), IERR)
-         CALL FLACPY ('A', N, NCONV, V, LDV, Z, LDZ)
+         CALL DORM2R ('R', 'N', N, NCV, NCONV,
+     &        WORKL(INVSUB), LDQ, WORKEV, V, LDV, WORKD(N+1), IERR4)
+         IERR=IERR4
+         CALL DLACPY ('A', N, NCONV, V, LDV, Z, LDZ)
 
          DO 20 J=1, NCONV
 
@@ -811,7 +814,7 @@ C                 | SQUARE ROOT OF TWO.                       |
 C                 %-------------------------------------------%
 
                  IF (ICONJ .EQ. 0) THEN
-                   TEMP = FLAPY2( DNRM2( NCV, WORKL(INVSUB+(J-1)*LDQ),
+                   TEMP = DLAPY2( DNRM2( NCV, WORKL(INVSUB+(J-1)*LDQ),
      &                    1 ), DNRM2( NCV, WORKL(INVSUB+J*LDQ),  1) )
                    CALL DSCAL ( NCV, ONE / TEMP,
      &                    WORKL(INVSUB+(J-1)*LDQ), 1 )
@@ -840,7 +843,7 @@ C                 | THE EIGENVECTOR ARE STORED IN CONSECUTIVE |
 C                 %-------------------------------------------%
 
                   IF (ICONJ .EQ. 0) THEN
-                     WORKEV(J) = FLAPY2(WORKEV(J), WORKEV(J+1))
+                     WORKEV(J) = DLAPY2(WORKEV(J), WORKEV(J+1))
                      WORKEV(J+1) = WORKEV(J)
                      ICONJ = 1
                   ELSE
@@ -883,10 +886,11 @@ C           | RITZ VECTORS ASSOCIATED WITH THE RITZ VALUES |
 C           | IN WORKL(IHEIGR) AND WORKL(IHEIGI).          |
 C           %----------------------------------------------%
 C DUE TO CRP102
-C          CALL FORM2R ('RIGHT', 'NOTRANSPOSE', N, NCV, NCONV,
+C          CALL DORM2R ('RIGHT', 'NOTRANSPOSE', N, NCV, NCONV,
 C     &         WORKL(INVSUB), LDQ, WORKEV, Z, LDZ, WORKD(N+1), IERR)
-            CALL FORM2R ('R', 'N', N, NCV, NCONV,
-     &           WORKL(INVSUB), LDQ, WORKEV, Z, LDZ, WORKD(N+1), IERR)
+            CALL DORM2R ('R', 'N', N, NCV, NCONV,
+     &           WORKL(INVSUB), LDQ, WORKEV, Z, LDZ, WORKD(N+1), IERR4)
+            IERR=IERR4
 
 C DUE TO CRP102 CALL DTRMM('RIGHT','UPPER','NO TRANSPOSE','NON-UNIT',
             CALL DTRMM ('R', 'U', 'N', 'N',
@@ -933,7 +937,7 @@ C        %---------------------------------------%
      &         CALL DSCAL (NCV, RNORM, WORKL(IHBDS), 1)
 
             DO 50 K=1, NCV
-              TEMP = FLAPY2( WORKL(IHEIGR+K-1),
+              TEMP = DLAPY2( WORKL(IHEIGR+K-1),
      &                       WORKL(IHEIGI+K-1) )
 
               IF (TEMP * TEMP .LE. EPS) THEN
@@ -979,7 +983,7 @@ C        %-----------------------------------------------------------%
          IF (TYPE .EQ. 'SHIFTI') THEN
 C
             DO 80 K=1, NCV
-               TEMP = FLAPY2( WORKL(IHEIGR+K-1),
+               TEMP = DLAPY2( WORKL(IHEIGR+K-1),
      &                        WORKL(IHEIGI+K-1) )
                IF (TEMP * TEMP.LE.EPS) THEN
                  WORKL(IHEIGR+K-1) = WORKL(IHEIGR+K-1) / EPS
@@ -1074,7 +1078,7 @@ C        %------------------------------------------------%
                ENDIF
 
             ELSE IF (ICONJ .EQ. 0) THEN
-               TEMP = FLAPY2( WORKL(IHEIGR+J-1), WORKL(IHEIGI+J-1) )
+               TEMP = DLAPY2( WORKL(IHEIGR+J-1), WORKL(IHEIGI+J-1) )
 
                IF (TEMP * TEMP.LE.EPS) THEN
                  WORKEV(J) = ( WORKL(INVSUB+(J-1)*LDQ+NCV-1) *

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 31/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,6 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
            regles=(UN_PARMI('MAILLE','GROUP_MA'),),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           CARA_SECT       =SIMP(statut='f',typ=(cara_pout) ),
            SECTION         =SIMP(statut='o',typ='TXM' ,into=("GENERALE","RECTANGLE","CERCLE") ),
            PREC_AIRE       =SIMP(statut='f',typ='R',defaut=0.01),
            PREC_INERTIE    =SIMP(statut='f',typ='R',defaut=0.1),

@@ -1,21 +1,21 @@
-#@ MODIF macro_matr_asse_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macro_matr_asse_ops Macro  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -81,7 +81,7 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
   lrigel = 0
   lmasel = 0
 
-# decalage eventuel en premiere position dans la liste de l occurence de MATR_ASSE contenant 
+# decalage eventuel en premiere position dans la liste de l occurence de MATR_ASSE contenant
 # l option de rigidite
   try :
     for m in MATR_ASSE:
@@ -103,20 +103,6 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
       self.cr.fatal("<F> <MACRO_MATR_ASSE> UNE DES OPTIONS DOIT ETRE RIGI_MECA OU RIGI_THER OU RIGI_ACOU OU RIGI_MECA_LAGR")
       return ier
 
-    if m['SIEF_ELGA']!=None and option!='RIGI_GEOM':
-      ier=ier+1
-      self.cr.fatal("<F> <MACRO_MATR_ASSE> SIEF_ELGA N EST ADMIS QU AVEC L OPTION RIGI_GEOM")
-      return ier
-
-    if m['MODE_FOURIER']!=None and option not in ('RIGI_MECA','RIGI_FLUI_STRU','RIGI_THER'):
-      ier=ier+1
-      self.cr.fatal("<F> <MACRO_MATR_ASSE> MODE_FOURIER N EST ADMIS QU AVEC UNE DES OPTIONS RIGI_MECA RIGI_FLUI_STRU RIGI_THER")
-      return ier
-
-    if (m['THETA']!=None or m['PROPAGATION']!=None) and option!='RIGI_MECA_LAGR':
-      ier=ier+1
-      self.cr.fatal("<F> <MACRO_MATR_ASSE> PROPAGATION ET,OU THETA NE SONT ADMIS QU AVEC L OPTION RIGI_MECA_LAGR")
-      return ier
 
     motscles={'OPTION':option}
     if option == 'AMOR_MECA':
@@ -134,11 +120,19 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
     if CHAM_MATER != None: motscles['CHAM_MATER']  =CHAM_MATER
     if CARA_ELEM  != None: motscles['CARA_ELEM']   =CARA_ELEM
     if INST       != None: motscles['INST']        =INST
-    if m['SIEF_ELGA']   :  motscles['SIEF_ELGA']   =m['SIEF_ELGA']
-    if m['MODE_FOURIER']:  motscles['MODE_FOURIER']=m['MODE_FOURIER']
-    if m['THETA']       :  motscles['THETA']       =m['THETA']
-    if m['PROPAGATION'] :  motscles['PROPAGATION'] =m['PROPAGATION']
 
+    try : motscles['SIEF_ELGA']   =m['SIEF_ELGA']
+    except IndexError : pass
+
+    try : motscles['MODE_FOURIER']   =m['MODE_FOURIER']
+    except IndexError : pass
+
+    try : motscles['THETA']   =m['THETA']
+    except IndexError : pass
+
+    try : motscles['PROPAGATION']   =m['PROPAGATION']
+    except IndexError : pass
+    print motscles
     __a=CALC_MATR_ELEM(MODELE=MODELE,**motscles)
 
     if option == 'RIGI_MECA':

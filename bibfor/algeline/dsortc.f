@@ -2,7 +2,7 @@
      &  (WHICH, APPLY, N, XREAL, XIMAG, Y)
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/09/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C     %--------------------%
 C     | EXTERNAL FUNCTIONS |
 C     %--------------------%
 
-      REAL*8 FLAPY2
+      REAL*8 DLAPY2
 
 C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
@@ -128,8 +128,8 @@ C        %------------------------------------------------------%
 
             IF (J.LT.0) GO TO 30
 
-            TEMP1 = FLAPY2(XREAL(J),XIMAG(J))
-            TEMP2 = FLAPY2(XREAL(J+IGAP),XIMAG(J+IGAP))
+            TEMP1 = DLAPY2(XREAL(J),XIMAG(J))
+            TEMP2 = DLAPY2(XREAL(J+IGAP),XIMAG(J+IGAP))
 
             IF (TEMP1.GT.TEMP2) THEN
                 TEMP = XREAL(J)
@@ -169,8 +169,8 @@ C        %------------------------------------------------------%
 
             IF (J .LT. 0) GO TO 60
 
-            TEMP1 = FLAPY2(XREAL(J),XIMAG(J))
-            TEMP2 = FLAPY2(XREAL(J+IGAP),XIMAG(J+IGAP))
+            TEMP1 = DLAPY2(XREAL(J),XIMAG(J))
+            TEMP2 = DLAPY2(XREAL(J+IGAP),XIMAG(J+IGAP))
 
             IF (TEMP1.LT.TEMP2) THEN
                TEMP = XREAL(J)

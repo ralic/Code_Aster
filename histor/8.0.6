@@ -1,0 +1,1679 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 31/01/2005 a 13:20:14
+
+--------------------------------------------------------------------------
+REALISATION EL 2005-029
+   NB_JOURS_TRAV  : 2.5
+   POUR_LE_COMPTE_DE   : J.PELLET
+   INTERET_UTILISATEUR : NON
+   TITRE : amélioration des performances de la routine EXLIM1
+   FONCTIONNALITE
+     La  routine EXLIM1 est très couteuse en fonctions JEVEUX.
+     Les 5 appels à jeveux doivent etre retirés de la boucle sur les
+     mailles en utilisant les adresses du LONCUM des 2 objets .LIEL
+     obtenus en dehors de la boucle.
+      DO 10 I = 1 , NBGREL
+         CALL JENONU(JEXNOM(NOMMAI,ZK8(ILISMA+I-1)),NUMAIL)
+         CALL JECROC(JEXNUM(CPTLIE,I))
+         CALL JEECRA(JEXNUM(CPTLIE,I),'LONMAX',NMGREL,' ')
+  ...
+         CALL JEVEUO(JEXNUM(LIGRMO//'.LIEL',IGREL),'L',IALIEL)
+         CALL JELIRA(JEXNUM(LIGRMO//'.LIEL',IGREL),'LONMAX',NEL,K1BID)
+ ...
+ 10   CONTINUE
+
+   DETAIL
+     Changement d'un argument de la routine EXLIM1:
+       LISMAI : contient les numéros de maille et non plus les noms
+                de maille (=> suppression du JENONU)
+     Modification des appelants de EXLIM1 :
+       cafond.f, exlima.f, numero.f, rapo3d.f, rapoco.f
+     On en profite pour changer RECMAI par RELIEM
+     Suppression de RECMAI et FETCRL
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR f6bhhbo P.DEBONNIERES   DATE  le 31/01/2005 a 18:03:04
+
+CORRECTION AL 2005-025
+   INTERET_UTILISATEUR : OUI
+   TITRE Correction du calcul de sensibilite en mecanique
+         non-lineaire dans le cas de la loi Drucker-Prager
+   FONCTIONNALITE  STAT_NON_LINE  -  Mot-cle SENSIBILITE
+   RESU_FAUX_VERSION_EXPLOITATION : OUI   DEPUIS : 7.3.21
+   RESU_FAUX_VERSION_DEVELOPPEMENT : OUI   DEPUIS : 7.3.21
+   RESTITUTION_VERSION_EXPLOITATION  : OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+   On traite un bug detecte par Antoine Brodin (lors de son
+   stage) qu'il n'avait pas eu le temps de corriger. Un nouveau
+   test qu'il avait developpe est ajoute pour valider cette
+   correction.
+   VALIDATION
+   Ajout du cas-test SENSM14A :
+     SENSM14A : CALCUL DE SENSIBILITE 2D (LOI DRUCKER-PRAGER)
+   DOC_V : V1.01.191
+   EXPL_ : Ajout d'un cas-test (calcul de cavite 2D)
+   NB_JOURS_TRAV : 12.
+   DETAILS
+   Le probleme venait de l'appel au calcul de l'operateur
+   tangent de Drucker-Prager dans NSDRPR. Cet appel etait
+   fait via REDRPR, qui n'etait pas adaptee. J'ai remplace
+   cet appel par un appel direct a DPMATA, avec une prepa-
+   ration ad hoc.
+   Modification de la routine FORTRAN : nsdrpr
+
+
+-----------------------------------------------------------------------
+--- AUTEUR galenne E.GALENNE   DATE  le 01/02/2005 a 16:00:29
+
+   REALISATION EL 2005-024
+   INTERET_UTILISATEUR : OUI
+   TITRE : Calcul de K sur maillage symétrique avec POST_K1_K2_K3
+   FONCTIONNALITE
+   Dans le cas où la fissure est située dans le plan de symétrie, on ne peut jusqu'à
+   présent pas calculer les facteurs d'intensité des contraintes (déplacements uniquement
+   sur une lèvre). Il est cependant possible de calculer le taux de restitution de
+   l'énergie G avec calc_g* (option SYME_CHAR) et en déduire ensuite K1 par la formule
+   d'Irwin.
+   Il est cependant intéressant de pouvoir comparer les résultats des deux méthodes. On
+   ajoute donc l'option SYME_CHAR dans POST_K1_K2_K3. Le calcul se fait en supposant
+   que le déplacement normal des lèvres est opposé et que les déplacements tangentiels
+   sont égaux.
+   DETAILS
+   Modification du catalogue post_k1_k2_k3.capy (mot clé facteur SYME_CHAR facultatif,
+   valeur par défaut 'SANS')
+   Ajout de la routine pksyme et pkrec2 pour le cas où les déplacements sont fournis dans
+   des tables. Modification des routines pkfond et pkdepl dans le cas où fond_fiss est
+   présent.
+   Modification des routines pkcalc et pkchgr.
+   VALIDATION
+   SSLV134a : Ajout du calcul de K par interpolation des sauts de déplacement sur un
+              maillage 3D symétrique
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.82.05
+       EXPL_ : introduction du mot clé SYME_CHAR
+     DOC_V : V3.04.134
+       EXPL_ : ajout du calcul de K dans la modélisation A
+   NB_JOURS_TRAV  : 2.5
+
+---------------------------------------------------------------------------
+   CORRECTION AL 2004-039
+   INTERET_UTILISATEUR : NON
+   TITRE Cas test ascou18a et ascou19a sous Linux
+   FONCTIONNALITE
+   Les cas test ascou18a et ascou19a s'arretent en erreur sous Linux, dans la commande
+   TEST_TABLE : la ligne à tester dans un tableau résultat de l'opératuer calc_g_local_t
+   n'est pas trouvée. La ligne est désignée par le numéro d'un noeud du fond de fissure.
+
+   Le problème provient d'une numérotation différente entre les maillages générés par la
+   macro-commande sous Linux ou sur clayatsr. La numérotation est différente dès la sortie
+   de la procédure gibi. Les deux maillages semblent cependant identiques : même nombre de
+   noeuds, de mailles, même abscisses curvilignes le long du fond de fissure. De plus les
+   résultats de g_local sont identiques (10-4% d'écart).
+   On se contente donc de modifier le test_table, en extrayant la ligne du tableau par son
+   abscisse curviligne et non plus par son numéro de noeud.
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      ascou18a et ascou19a sous Linux/clayastr
+   DETAILS
+   NB_JOURS_TRAV  : 1
+
+---------------------------------------------------------------------------
+   RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : OUI
+   FONCTIONNALITE : Syntaxe de POST_K1_K2_K3
+   DETAILS
+   Le mot clé (facultatif) PRECISION de l'opérateur POST_K1_K2_K3 ne sert à rien (il n'est
+   jamais appelé dans les routines), on le supprime du catalogue de la commande.
+
+   On rappelle que le mot clé à utiliser pour définir la précision avec laquelle on choisit
+   les noeuds sur lesquels on interpole les déplacements est PREC_VIS_A_VIS : un noeud est
+   sélectionné si sa distance d à la droite perpendiculaire au fond de fissure vérifie la
+   propriété : d < epsi.L où L est égal à ABSC_CURV_MAXI, et epsi est la précision fournie
+   dans PREC_VIS_A_VIS.
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      Suppression de PRECISION dans les cas test ssnv166a/b
+   NB_JOURS_TRAV  : 0.5
+
+
+-----------------------------------------------------------------------
+--- AUTEUR geniaut S.GENIAUT   DATE  le 25/01/2005 a 14:59:52
+   REALISATION EL 2004-196
+   NB_JOURS_TRAV  : 55
+   INTERET_UTILISATEUR : OUI
+   TITRE :    CONTACT AVEC X-FEM
+   FONCTIONNALITE
+   DETAILS
+
+   Cette restitution constitue la 2ème étape de l'implémentation de la
+   méthode X-FEM dans le Code_Aster. Elle adapte la méthode continue
+   pour le traitement du contact au cadre X-FEM. Ainsi, la fissure n'est
+   plus maillée, et les points de contact sont les intersections de
+   l'iso-zéro de la "level set" normale avec les aretes des éléments.
+   De plus, on archive les données topologiques concernant la découpe des
+   sous-éléments (pour l'intégration et pour le post-traitement) et les
+   facettes de contact. Avant, on recalculait tout à chaque fois que l'on en
+   avait besoin.
+
+          Méthode de Contact Frottant dans le cadre d'X-FEM
+          --------------------------------------------------
+
+   But : prise en compte du contact sur les lèvres de la fissure
+
+   Originalité : pas d'appariement
+   car les points de la surface de fissure peuvent se « dédoubler »
+   suivant que l'on se place d'un côté de la fissure ou de l'autre.
+   En clair, un point de la surface « vue d'un côté » est directement
+   associé au même point physique de la surface « vue de l'autre côté ».
+   Le saut de déplacement ou gap est alors exprimé en fonction des
+   ddls d'enrichissement introduits par X-FEM.
+
+   1) Vocabulaire
+
+   Nouveau mot clé facteur CONTACT dans l'opérateur DEFI_FISS_XFEM.
+   (mot clé facultatif). Les arguments sont les memes que ceux de la
+   méthode continue. 2 nouveautés :
+    - STAT_CONTACT_INIT qui permet de choisir le statut des points de
+   contact initial (pour la 1er itération des contraintes actives).
+   STAT_CONTACT_INIT=0 : hypothèse de points non contactants
+   STAT_CONTACT_INIT=1 : hypothèse de points contactants
+    - SEUIL_INIT (qui permet de choisir le seuil de frottement initial)
+    peut etre une valeur réelle (en non plus entière).
+
+
+   FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
+                    DEFI_FISS=_F(
+                                 FONC_LT=LT,
+                                 FONC_LN=LN,
+                                 ),
+                    GROUP_MA_ENRI='VOL',
+                    ORIE_FOND=_F(PFON_INI=(2.5 ,0. ,2.5 ),
+                                 VECT_ORIE=(0. ,0. ,1. ),
+                                 PT_ORIGIN=(-0.5,0.,1.5 ),),
+                     CONTACT=_F(INTEGRATION='GAUSS',
+                               COEF_REGU_CONT=100.,
+                               ITER_CONT_MAXI=4,
+                               CONTACT_INIT='OUI',
+                               FROTTEMENT='COULOMB',
+                    				 COULOMB=0.1,
+                               ITER_FROT_MAXI=6,
+                               COEF_REGU_FROT=1000.,
+                               SEUIL_INIT=-1.E11,
+                               ),
+                    INFO=1,
+                    );
+
+
+   2) Structures de Données sur le contact
+
+   Dans le meme esprit que celles de la méthode continue.
+   FISS//'.CONTACT.CARACF' et FISS//'.CONTACT.ECPDON' pour les
+   données utilisateurs.
+
+   Informations concernant la géométrie des facettes de contact :
+   A la différence des méthodes classiques de contact, ici l'utilisateur
+   ne spécifie aucune surface de contact (pas de GROUP_MA_MAIT...).
+   La recherche des points de contact et la création des facettes se
+   fait automatiquement.
+   Ce calcul est réalisé une fois que le modèle X-FEM est affecté, par
+   l'appel à la routine calcul avec l'option TOPOFA (pour TOPOlogie
+   des FAcettes de contact). 5 cham_elem sont alors créés :
+      - FISS//'.TOPOFAC.PINTER'
+      - FISS//'.TOPOFAC.AINTER'
+      - FISS//'.TOPOFAC.CFACE'
+      - FISS//'.TOPOFAC.LONCHAM'
+      - FISS//'.TOPOFAC.BASECO'
+
+      2.a) PINTER
+      Il contient la liste des coordonnées des points d'intersection
+   des aretes avec la fissure. Ainsi, pour chaque élément fini X-FEM,
+   on boucle sur ses aretes et on détermine les points où LSN = 0.
+   On peut avoir 1, 2, 3, 4, 5, ou  6 points d'intersection suivant le
+   type de maille et la position de la fissure.
+   PINTER = cham_elem IDEN à 18 composantes pour chaque elt fini
+
+      2.b) AINTER
+      Ce champ contient des indicateurs pour savoir si le point
+   d'intersection trouvé est sur une arete (et laqeulle) ou sur un noeud
+   (et lequel) et sa position sur l'arete.
+   AINTER = cham_elem IDEN à (4*ninter) composantes pour chaque elt fini.
+
+      2.c) CFACE
+      A partir de 3 points d'intersection, on peut définir une surface
+   de contact intérieure à l'élément.
+   3 points -> triangle
+   4 points -> quadrangle
+   5 points -> pentagone
+   6 points -> hexagone
+   Puisque ces deux derniers polygones ne sont associés à aucun élément
+   fini connu, il a été nécessaire de découper la surface de contact
+   (pas nécessaireemnt un plan dans un HEXA) en facettes triangulaires.
+
+   Comment découper ?
+   On calcule la moyenne des normales aux noeuds à la surface.
+   On projette les points sur le plan orthogonal à cette normale.
+   On détermine le barycentre.
+   On numérote les points dans le sens trigonométrique autour du
+   barycentre en commençant par le 1er point de la liste.
+   Une fois les points numérotés, le découpage arbitraire est contenu
+   dans la matrice CFACE : nb ligne = nb de facettes
+   3 points : CFACE =  [1 2 3] -> 1 facette
+   4 points : CFAFE =  [1 2 3;
+                        1 3 4] -> 2 facettes
+   5 points : CFAFE =  [1 2 3;
+                        1 3 4; -> 3 facettes
+                        1 4 5]
+   6 points : CFAFE =  [1 2 3;
+                        1 3 5; -> 4 facettes
+                        1 5 6;
+                        3 4 5]
+
+   On aurait aussi pu introduire un découpage en étoile centré sur le
+   barycentre, et cela obligeait à considérer le barycentre comme
+   un point de contact. Malgré un découpage mieux réparti, cette idée
+   a été écartée car elle aboutissait à trop grand nombre de points
+   de contact si ce point était sur une face de l'élément.
+   (voir schémas)
+
+      2.d) LONCHAM
+      Ce champ contient deux entiers : le nombre de points d'intersection
+   (ninter) et le nombre de facettes (nface).
+
+      2.e) BASECO
+      Ce champ contient les vecteurs de la base covariante à la surface
+   de contact. La base est stockée pour chaque points de contact.
+
+
+   3) Architecture d'un calcul de contact
+
+   C'est la même architecture qu'un calcul utilisant la méthode continue.
+   La prise en compte du contact se fait au niveau d'ajout de contributions
+   élémentaires dans la matrice de rigidité et du second membre dans
+   STAT_NON_LINE. La seule particuliarité est qu'il n'y pas d'appariement
+   donc pas de boucle sur la réactualisation de la géométrie. En effet, à
+   l'état initial, on connait les points "en vis-à-vis" puisque se sont en
+   fait qu'un seul et même point. Et puisque la méthode X-FEM n'est
+   actuellement disponible qu'en petites transformations, ces points resteront
+   en vis-à-vis tout au long du calcul.
+
+   C'est au niveau élémentaire que résident les spécificités de la méthode.
+
+
+   4) Calculs au niveau élémentaire
+
+   On rappelle que les inconnues de contact (pression de contact et
+   semi-multiplicateur de frottement) sont les valeurs aux points
+   d'intersection entre les arêtes des éléments et la surface de la fissure.
+   Ces points d'intersection définissent un polygone non nécessairement plan
+   au sein d'un élément. La méthode retenue a été celle qui consiste à découper
+   ce polygone en facettes triangulaire dont les sommets sont les points
+   d'intersection.
+   Les inconnues du contact (LAGS_C, LAGS_F1 et LAGS_F2) sont discrétisées
+   sur chaque facette avec les fonctions de formes du TRIA3. L'intégration
+   des termes élémentaires se fait sur les facettes. Pour l'intégration
+   numérique, il faut donc évaluer les quantités à intégrer aux points de
+   Gauss des facettes 2D. Or ces quantités sont parfois liées à l'élément 3D.
+
+   Par exemple le jacobien qui intervient est celui de la transformation
+   facette 2D réelle -> facette 2D de référence.
+   Pour cela, on calcule les coordonnées des sommets de la facette dans le
+   repère local 2D, on calcule le JAC avec la routine dfdm2d.
+
+   Il faut aussi évaluer les fonctions de forme de l'élément volumique
+   aux points de Gauss des facettes.
+   Pour cela, on calcule les coordonnées réelles 2D du point de Gauss,
+   puis ses coordonnées réelles 3D et on évalue les fonctions de forme en ce
+   point avec la routine reeref.
+
+
+   5) Eléments finis
+
+   La discrétisation des inconnues de contact, les inconnues discrétisées
+   sont associées à des points qui ne font par partie du maillage. Pour
+   retrouver un cadre éléments finis classique, nous avons décidé de les
+   associer aux nouds milieux des arêtes considérées (même si les points
+   d'intersection ne sont pas au milieu des arêtes). Cet artifice est seulement
+   destiné à une implémentation simple dans le Code_ASter, qui n'accepte que
+   des inconnues nodales.
+
+   Il faut donc transformer les mailles 3D en mailles quadratiques.
+   On crée donc un nouveau maillage avec CREA_MAILLAGE, mot clé LINE_QUAD
+   pour transformer les TETRA4 en TETRA10, PENTA6 en PENTA15 et HEXA8 en HEXA20
+   mais comme les fonctions de formes et les schémas d'intégration de ces
+   "pseudo" éléments quadratiques sont en fait ceux de l'élément linéaire,
+   on a introduit des nouveaux elref : X10, X15 et X20 qui ont la géométrie
+   du TETRA10, PENTA15, HEXA20, avec des caractéristiques EF du TETRA4, PENTA6,
+   HEXA8 et une nouvelle modélisation : '3D_XFEM'.
+   De plus, ces éléments peuvent etre enrichis avec X-FEM.
+
+   Comme tous les noeuds milieux portent des LAG par défaut, ils faut éliminer
+   ceux où les LAG ne sont pas actifs. Cela est fait dans AFFE_CHAR_MECA avec
+   LIAISON_XFEM='OUI'.
+   On aurait pu mettre des 1 sur la diagonales directement dans le TE, mais
+   la méthode des doubles Lagranges permet normalement un meilleur
+   conditionnement (coefficent alpha qui prend en compte le max et le min des
+   termes diagonaux).
+
+   Si la surface de contact coïncide avec une face d'un élément, alors les
+   points de contact sont des nouds du maillage et les degrés de liberté de
+   contact sont alors portés par des nouds sommet des éléments finis.
+   Il faut donc les prendre en compte dans le catalogue :
+
+   ------------------------------------------------------------------------------
+  |                                                                              |
+  |  Pour les élts non enrichis :                                                |
+  |    - DDL sur les noeuds sommet {DX, DY, DZ}                                  |
+  |    - DDL sur les noeuds milieu { }                                           |
+  |                                                                              |
+  |  Pour les élts enrichis avec X-FEM:                                          |
+  |    - DDL sur les noeuds sommet {DCX, DCY, DCZ, H1X, H1Y, H1Z,                |
+  |                                                 LAGS_C, LAGS_F1 et LAGS_F2}  |
+  |    - DDL sur les noeuds milieu {LAGS_C, LAGS_F1 et LAGS_F2}                  |
+  |                                                                              |
+   ------------------------------------------------------------------------------
+
+   6) Ajout de routines et catalogues
+
+   calcul du contact
+   -----------------
+
+   - sdconx.f : création de la sd contact X-FEM
+   - xdelco.f : suppression des noeuds de contact inactifs
+   - xconli.f : préparation du calcul de la rigidité et 2nd membre
+   - xmmcme.f : lancement du calcul de la rigidité et 2nd membre
+   - te0533.f : calcul des options RIGI_CONT et RIFI_FROTT
+   - te0534.f : calcul des options CHAR_MECA_CONT et CHAR_MECA_FROTT
+   - xmmbca.f : lancement de la vérification des contraintes actives
+   - te0532.f : routine élémentaire associée
+   - xreacl.f : lancement de la vérification du seuil de frottement
+   - te0548.f : routine élémentaire associée
+
+   routines annexes :
+   - xjacff.f : jacobien et fonctions de forme des facettes de contact
+   - xadher.f : test de l'adhérence
+   - xmafr1.f : calcul de l'opérateur de projection du frottement
+   - xmafr2.f : calcul de matrices utiles au frottement
+
+   catalogues pour imposer des CL sur les ddls de contact :
+   d_depl_r_lags_c.cata, d_depl_r_lags_f1.cata, d_depl_r_lags_f2.cata
+
+   xcvbca.cata : option de vérification des contraintes actives
+   xreacl.cata : option de vérification du seuil de frottement
+
+   stockage données
+   ----------------
+
+   - xtopoi.f : calcul des données topologiques pour l'intégration
+   - te0514.f : routine élémentaire associée
+   - xtopoc.f : calcul des données topologiques pour le contact
+   - te0510.f : routine élémentaire associée
+
+   - topose.cata : option du calcul des données topologiques pour l'intégration
+   - topofa.cata : option du calcul des données topologiques pour le contact
+
+   forces nodales
+   --------------
+   te0542.f, xbsigm.f, xibsig.f
+
+   utilitaires divers
+   ------------------
+   - loncar.f : calcul d'une longueur caractéristique d'une maille
+   - nomil.f :  correspondance numéro d'arete -  numéro du noeud milieu porté par l'arete
+   - xoula.f :  correspondance sommet des facettes - numéro du lambda
+   - xplmat.f : place dans la matrice élémentaire de rigidité du lambda
+
+   nouveaux type d'éléments
+   ------------------------
+   - gener_me_x.cata
+
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.82.08    DEFI_FISS_FEM
+       EXPL_ : ajout du mot clé CONTACT
+     DOC_U : U4.44.01    AFFE_CHAR_MECA
+       EXPL_ : LIAISON_XFEM permet aussi de supprimer les ddls de contact "en trop"
+     DOC_D : D4.04.02    RÉCAPUTULATIF DES GRANDEURS
+       EXPL_ : On renseigne la signification des ddls rajoutés :
+               ... dans DEPL_R
+     DOC_D : D4.06.14    STRUCTURES DE DONNÉES LIÉES AU CONTACT-FROTTEMENT
+       EXPL_ : On renseigne les sd réutilisées.
+     DOC_V : V6.04.182   BLOC AVEC INTERFACE EN CONTACT FROTTANT
+                         AVEC X-FEM
+     DOC_R : R3.01.01    FONCTIONS DE FORME ET POINTS D'INTÉGRATION DES
+                         ÉLÉMENTS ISOPARAMÉTRIQUES
+       EXPL_ : Le nombre de noeuds rendu par ELREF4 est le nombre de
+               noeuds portant des fonctions de formes.
+     DOC_R : R5.03.52    ÉLÉMENTS DE CONTACTS DÉRIVÉS D'UNE FORMULATION
+                         HYBRIDE CONTINUE
+     DOC_R : R7.02.12    MÉTHODE X-FEM
+
+  VALIDATION :
+      SSNV182A, SSNV173A, SSNV173B
+------------------------------------------------------------------------
+
+CORRECTION AL 2004-457
+   INTERET_UTILISATEUR : NON
+   POUR_LE_COMPTE_DE   : V.GODARD
+   TITRE : probleme de C_PLAN_GRAD_EPSI, simplification de l'affectation du modele au maille de bord pour *GRAD_EPSI
+   FONCTIONNALITE : Simplification dans AFFE_MODELE pour GRAD_EPSI
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+
+   VALIDATION: ssla103d, ssnp124c, ssnp124d, ssnp127a, ssnp127b
+                        ssnv157a, ssnv157b, ssnv157c, ssnv157d, ssnv157e
+                        ssnv157f, ssnv157g, ssnv175a
+
+   DETAILS: Le catalogue gener_mecpg2.cata, éléments relatifs à la modélisation
+            C_PLAN_GRAD_EPSI,ne permet pas d'utiliser l'option RIGI_MECA_ELAS
+            (il est redondant pour RIGI_MECA_TANG).Il faut donc changer un
+            RIGI_MECA_TANG en RIGI_MECA_ELAS. Catalogue à modifier : gener_mecpg2.cata
+            De plus, l'utilisation des modélisations non locales à gradient de déformation *_GRAD_EPSI
+            est rendu pénible par le fait qu'on doit différencier les mailles de bords, auxquelles on affecte
+            le chargement ou les conditions limites, du reste du maillage. pour un calcul 3D par exemple,
+            il fallait affecter la modélisation 3D_GRAD_EPSI aux mailles volumiques et
+            la modélisation 3D aux mailles de bords que l'on chargeait.
+            Je propose de résoudre le problème en ajoutant des éléments de bord
+            (qui ne prennent pas en compte les déformations régularisées) dans le catalogue des modélisations
+            (3D_GRAD_EPSI, D_PLAN_GRAD_EPSI, C_PLAN_GRAD_EPSI). Il n'y aura alors plus de distinction
+            à faire dans AFFE_MODELE pour les mailles de bord (plus simple pour l'utilisateur).
+            catalogue à modifier: phenomene_modelisation.cata
+
+   NB_JOURS_TRAV  : 0.5
+-----------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+--- AUTEUR lebouvie F.LEBOUVIER   DATE  le 31/01/2005 a 14:21:59
+
+-------------------------------------------------------------------------------
+REALISATION EL 2005-010
+   POUR LE COMPTE DE : J.L. FLEJOU
+   INTERET_UTILISATEUR : NON
+   TITRE : résorber CARA_SECT de affe_cara_elem.capy
+   FONCTIONNALITE :
+   DETAIL :
+   Dans le catalogue de la commande AFFE_CARA_ELEM, on note la présence du
+   mot-clé CARA_SECT qui n'a jamais été documenté. L'objectif de ce mot clé
+   était de pouvoir affecter à des mailles des caractéristiques directement
+   issues de la macro commande MACR_CARA_POUTRE. Aster se plante quand on essaie
+   d'utiliser ce mot-clé, en faisant par exemple :
+   CARA_ELE=AFFE_CARA_ELEM(
+       MODELE=MODELE,
+       POUTRE=(    _F(GROUP_MA = 'SEC_1', CARA_SECT= SECTION, ), ) )
+   On supprime donc ce mot-clé. Les valeurs produites par la MACR_CARA_POUTRE et
+   contenues dans une table peuvent être introduite directement (via python),
+   dans la commande AFFE_CARA_ELEM pour un calcul de type poutre.
+   Modifications:
+    - suppression dans l'op0019 de l'appel a la routine jssect
+    - suppression de la routine fortran jssect
+    - suppression dans le catalogue affe_cara_elem.capy du mot clé CARA_SECT
+    - Suppression dans le fichier accas.capy de la classe cara_pout
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   VALIDATION :
+      Passage des cas-tests utilisants AFFE_CARA_ELEM
+   IMPACT_DOCUMENTAIRE : NON
+   NB_JOURS_TRAV : 0.5
+
+
+-----------------------------------------------------------------------
+--- AUTEUR pabhhhh N.TARDIEU   DATE  le 31/01/2005 a 13:55:52
+
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 4
+   INTERET_UTILISATEUR : OUI
+   TITRE : Orientation de mailles par une boucle Python
+   FONCTIONNALITE
+     Dans certains cas, il n'est pas possible d'orienter des
+     mailles à l'aide d'AFFE_CARA_ELEM comme on le voudrait.
+     Prenons le cas d'une enceinte de centrale  avec béton
+     et armatues. Le béton est modélisé par des DKT tandis
+     que les grilles le sont pas des grilles membranes.
+     Si les grilles ont une orientation circonférentielle, on ne
+     sait pas les orienter par AFFE_CARA_ELEM dans la partie
+     du dôme.
+     On propose donc une fonction Python qui fait cette opération :
+
+    # On crée la liste de groupes de mailles à  orienter
+    # circonférentiellement
+      LIST_GRI=LIST_CARA_CIRCONF(GROUP_MA='GRILLE',
+                                 AXE=(0.,0.,1.),
+                                 MODELE=MODEL,
+                                 GRILLE=_F(SECTION=20.,
+                                 EXCENTREMENT=0.,));
+
+    # On affecte l'orientation
+      CARA_COQ=AFFE_CARA_ELEM(MODELE=MODEL,
+                              INFO=1,
+                              COQUE=_F(GROUP_MA='PLAQUE',
+                              EPAIS=40.,
+                              COEF_RIGI_DRZ=0.,),
+                              GRILLE=LIST_GRI,
+                              );
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V :  V1.01.189
+   VALIDATION
+     passage du nouveau test ZZZZ189A
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR rezette C.REZETTE   DATE  le 31/01/2005 a 14:21:21
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-255
+   POUR_LE_COMPTE_DE : J.PELLET
+   INTERET_UTILISATEUR : NON
+   TITRE : Resorption routines lapack (suite)
+   FONCTIONNALITE
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : liste restreinte
+   NB_JOURS_TRAV  : 8.0
+   DETAILS :
+
+   1ere Restitution
+   ----------------
+
+   Cette fiche fait suite à  EL 2004-016 et EL2003-057.
+
+   Le but de cette fiche est d'examiner la liste (ci-dessous) composée de
+   routines aster issues de la librairie lapack afin de déterminer celles qui
+   peuvent etre remplacées par une routine de la librairie système lapack.
+
+   Le critère de comparaison a été le suivant:
+    - s'il s'agit d'une simple copie d'une routine lapack, alors on supprime la
+    routine aster et on appelle son équivalent lapack.
+    - s'il s'agit d'une copie d'une routine lapack volontairement modifiée,
+    alors on la conserve.
+
+   Liste de routines aster issues de la lib lapack:
+    dgetv0 dlaqrb dnaitr dnapps dnaup2 dnaupd dnconv dneigh dneupd fgeqr2
+    flacon flacpy fladiv flaexc flahqr flaln2 flange flanhs flanv2 flapy2
+    flarf  flarfg flarfx flarnv flartg flaruv flascl flaset flassq flasy2
+    flrsyl form2r ftrevc ftrexc ftrsen ggeqr2        glacpy gladiv glange
+    glanhs glapy3               glarnv glartg glascl glaset glassq
+    grot   gtrevc gtrexc gtrsen gtrsyl gunm2r gzmax1 gzsum1 hlanhs llsame
+    zgetv0 znaitr znapps zaup2  znaupd zneigh zneupd zsortc
+
+   La liste ci-dessus a été décomposée en 2 listes car parmis ces routines,
+   certaines sont issues de la librairie ARPACK bien qu'elles aient le
+   copyright LAPACK.
+   - Liste de routines ARPACK (liste 1): 17 routines
+     dgetv0 dlaqrb dnaitr dnapps dnaup2 dnaupd dnconv dneigh dneupd
+     zgetv0 znaitr znapps zaup2  znaupd zneigh zneupd zsortc
+   - Liste de routines LAPACK (liste 2): 47 routines
+     fgeqr2 flacon flacpy fladiv flaexc flahqr flaln2 flange flanhs flanv2
+     flapy2 flarf  flarfg flarfx flarnv flartg flaruv flascl flaset flassq
+     flasy2 flrsyl form2r ftrevc ftrexc ftrsen ggeqr2 glacpy gladiv glange
+     glanhs glapy3 glarnv glartg glascl glaset glassq grot   gtrevc gtrexc
+     gtrsen gtrsyl gunm2r gzmax1 gzsum1 hlanhs llsame
+
+   Nous avons analysé ces 2 listes, mais nous n'avons traité que les
+   routines de la liste 2 pour cette 1ere restitution.
+   Parmis celles-ci, nous avons identifié 29 routines aster à supprimer et à
+   remplacer par une routine système équivalente:
+         llsame  -->  lsame
+         hlanhs  -->  zlanhs
+         gzsum1  --> (gzsum1 n'est jamais utilisée dans le code, nous
+                      l'avons donc supprimée sans la remplacer)
+         gzmax1  --> (gzmax1 n'est jamais utilisée dans le code, nous
+                      l'avons donc supprimée sans la remplacer)
+         gunm2r  -->  zunm2r
+         grot    -->  zrot
+         glassq  -->  zlassq
+         glaset  -->  zlaset
+         glascl  -->  zlascl
+         glarnv  -->  zlarnv
+         glapy3  --> (glapy3 n'est jamais utilisée dans le code, nous
+                      l'avons donc supprimée sans la remplacer)
+         glanhs  --> (glanhs n'est jamais utilisée dans le code, nous
+                      l'avons donc supprimée sans la remplacer)
+         glange  -->  zlange
+         gladiv  --> (gladiv n'est jamais utilisée dans le code, nous
+                      l'avons donc supprimée sans la remplacer)
+         glacpy  -->  zlacpy
+         ggeqr2  -->  zgeqr2
+         form2r  -->  dorm2r
+         flassq  -->  dlassq
+         flaset  -->  dlaset
+         flascl  -->  dlascl
+         flaruv  -->  dlaruv
+         flarnv  -->  dlarnv
+         flarfx  -->  dlarfx
+         flarf   -->  dlarf
+         flapy2  -->  dlapy2
+         flanhs  -->  dlanhs
+         flange  -->  dlange
+         fladiv  -->  dladiv
+         flacpy  -->  dlacpy
+
+   Nous avons modifié leurs appelants:
+   dgetv0  dnaup2  dsortc  flaln2  ftrevc  gtrexc  znaitr  zneupd
+   dlaqrb  dnconv  fgeqr2  flanv2  ftrexc  gtrsen  znapps  zsortc
+   dnaitr  dneigh  flaexc  flarfg  ftrsen  gtrsyl  znaup2
+   dnapps  dneupd  flahqr  flrsyl  gtrevc  zgetv0  zneigh
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-022
+   POUR_LE_COMPTE_DE : J.PELLET
+   INTERET_UTILISATEUR : NON
+   TITRE : Résorption routines BLAS
+   FONCTIONNALITE
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : liste restreinte
+   NB_JOURS_TRAV  : 2.5
+   DETAILS :
+   L'objectif est de remplacer les routines chapeau C
+   cgemw,cgemx,dgemw,dgemx,dgemy par des blas équivalentes,
+   puis de faire le ménage.
+   Les modifications sont les suivantes:
+   - remplacement de:
+                 cgemw --> zgemv
+                 cgemx --> zgemm
+                 dgemx --> dgemm
+                 dgemy --> dgemm
+                 dgemw --> dgemv
+   - modification des 22 appelants:
+           mlfmlt, mlfmul, mlnclj, mlnclm, mlncmg, mlncmj, mlnfld, mlnflj,
+           mlnflm, mlnfmg, mlnfmj, mltcld, mltclj, mltclm, mltcmj, mltdca,
+           mltdra, mltfld, mltflj, mltflm, mltfmj, mlncld
+   - destruction des chapeaux C:
+           cgemw, cgemx,dgemx,dgemy,dgemw
+   - destruction des routines fortran orphelines
+           blacmm, blacmv, bladmv, bladmn, bladmm, bladmv
+------------------------------------------------------------------------------
+REALISATION EL 2005-023
+   POUR_LE_COMPTE_DE : J.PELLET
+   INTERET_UTILISATEUR : NON
+   TITRE : Resorption de R8PDOT
+   FONCTIONNALITE
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : liste restreinte
+   NB_JOURS_TRAV  : 0.5
+   DETAILS :
+   La routine chapeau R8PDOT permet à la précompilation d'orienter le choix vers
+   la blas SPDOT (pour les machines dont la lib BLAS est présente) ou vers la
+   routine aster équivalente BLPDOT.
+   Cependant, la routine SPDOT n'est pas présente dans la liste de BLAS
+   (indiquée dans l'histor 8.0.1 EL2004-016 J.Pellet) ni dans la bibliothèque
+   CXML de l'alphaserveur. Nous considèrons donc la routine aster BLPDOT.
+   La réalisation de cette fiche a consisté à:
+     - détruire le chapeau C : R8PDOT
+     - renommer la routine fortran : BLPDOT -> SPDOT
+     - modifier l'appelant GCAX : R8PDOT -> SPDOT
+   Sources modifiées  :
+     suppression de : blpdot.f, r8pdot.c
+     ajout de       : spdot.f
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV : 0.5 (JPL)
+   INTERET_UTILISATEUR : NON
+
+   FONCTIONNALITE
+   Indirectement, la compilation de Code_Aster sur le nouveau serveur "debian" a montré
+   que j'avais eu tort de supprimer la routine XERBLA de Code_Aster.
+
+   En effet, la routine BLAS XERBLA émet un message d'erreur et fait ensuite "STOP".
+
+   Dans Code_Aster, on préfère faire un "CALL ABORT()" pour provoquer la fabrication
+   d'un "core file" qui aide le développeur à comprendre le plantage (via un debogueur
+   post-mortem).
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+
+
+-----------------------------------------------------------------------
+--- AUTEUR romeo R.FERNANDES   DATE  le 31/01/2005 a 12:49:18
+
+RESTITUTION HORS AREX
+   EL 2004-249 (partielle)
+   NB_JOURS_TRAV  : 5.0
+   INTERET_UTILISATEUR : OUI
+   TITRE  : Nouvelle modelisation THM : Etape preliminaire.
+
+   FONCTIONNALITE
+   Le but de cette premiere etape etait de faciliter l'integration d'une
+   prochaine modelisation dans le cadre des calculs de couplage THM.
+
+   Cette evolution preliminaire devrait donc permettre, d'une part,
+   une simplification informatique et par consequent une simplification
+   de maintenance et de recuperation des routines de calculs, et d'autre part,
+   une optimisation dans les etapes de calcul.
+
+   La mise a jour effectue concerne l'ensemble des routines de couplage
+   pour le calcul :
+   - des contraintes generalisees suivantes :
+                                             + contraintes mecaniques
+                                             + contraintes de pression
+                                             + apports massiques
+                                             + enthalpies
+                                             + chaleur
+   - des variables internes hydrauliques et de couplages :
+                                             + masse volumique de l'eau
+                                             + porosite
+                                             + pression de vapeur
+                                             + saturation en eau
+   - des derivees des contraintes generalisees precedentes par rapport :
+                                             + pression capillaire
+                                             + pression de gaz
+                                             + deformation volumique
+                                             + temperature
+   Ne sont pas pris en compte dans cette evolution partielle le calcul des
+   contraintes generalisees de flux hydriques et thermiques et leurs derivees.
+
+   Corrections des erreurs constatees suivantes :
+   ----------------------------------------------
+   - Dans le cas avec AIR DISSOUS (modelisation LIQU_AD_GAZ_VAPE) le calcul
+     de l'enthalpie etait faux (la doc R etant correcte).
+     => Les resultats pourraient donc etre faux en presence de thermique.
+     Cependant Pas de resultats NOOK sur les cas-tests de la base aster,
+     Mais pas de reference sur le calcul des enthalpies.
+   - Dans le cas avec AIR DISSOUS (modelisation LIQU_AD_GAZ_VAPE) le calcul
+     de la derivee de l'apport massique d'air dissous par rapport a la
+     temperature etait faux dans les cas non-satures.
+     => Erreur possible dans le calcul de l'operateur tangent dans les cas
+     non satures : Pas de consequence sur les resultats.
+   - Dans le cas avec vapeur (modelisation LIQU_VAPE) le calcul de la porosite
+     etait faux.
+     => Les resultats pourraient donc etre faux en presence de mecanique.
+     Pas de cas-tests avec la modelisation LIQU_VAPE et en presence de mecanique
+     disponible sur la base aster.
+   - Erreur dans la definition de la temperature finale pour la recuperation
+     des donnees materiaux dans le cas mecanique pour toutes les lois de
+     couplages.
+     => Les donnees materiaux sont fausses pour la partie mecanique des lors
+     qu'elles dependent de la thermique. Il n'y a pas de tests dont les donnees
+     materiaux mecanique dependent de la temperature dans la base aster. Cas
+     non testes aujourd'hui.
+
+   DETAIL
+   L'evolution a consiste a cree une routine commune de calcul pour chacune
+   des contraintes generalisees, variables internes ou derivees citees ci-dessus.
+
+   Cette evolution permet de supprimer 9 cartes de tolerances CRP_20 et CRP_21
+   (suppressions precisees ci-dessous) et ajoute 2 cartes CRP_21 (dans les
+   nouvelles routines dplvga et vipvp1).
+
+   On cree pour cela les 51 routines suivantes :
+   ---------------------------------------------
+   appmas.f : calcul des apports massiques (contrainte generalisee)
+   calor.f  : calcul de la chaleur (contrainte generalisee)
+   capaca.f : calcul de la capacite calorifique
+   dhdt.f   : fonction qui calcule la derivee de l'enthalpie par rapport a la temperature
+   dhw2dt.f : fonction qui calcule la derivee de l'enthalpie de l'eau par rapport
+              a la temperature dans le cas avec air dissous
+   dhw2p1.f : fonction qui calcule la derivee de l'enthalpie de l'eau par rapport
+              a la pression capillaire dans le cas avec air dissous
+   dhw2p2.f : fonction qui calcule la derivee de l'enthalpie de l'eau par rapport
+              a la pression de gaz dans le cas avec air dissous
+   dhwdp1.f : fonction qui calcule la derivee de l'enthalpie de l'eau par rapport
+              a la pression capillaire dans le cas sans air dissous
+   dhwdp2.f : fonction qui calcule la derivee de l'enthalpie de l'eau par rapport
+              a la pression de gaz dans le cas sans air dissous
+   dileau.f : fonction qui calcule le coefficient de dilatation de l'eau
+   dilgaz.f : fonction qui calcule le coefficient de dilatation de gaz
+   dmadp1.f : fonction qui calcule la derivee de l'apport massique d'air dissous
+              par rapport a la pression capillaire
+   dmadp2.f : fonction qui calcule la derivee de l'apport massique d'air dissous
+              par rapport a la pression de gaz
+   dmadt.f  : fonction qui calcule la derivee de l'apport massique d'air dissous
+              par rapport a la temperature
+   dmasdt.f : fonction qui calcule la derivee de l'apport massique d'air sec
+              par rapport a la temperature
+   dmasp1.f : fonction qui calcule la derivee de l'apport massique d'air sec
+              par rapport a la pression capillaire
+   dmasp2.f : fonction qui calcule la derivee de l'apport massique d'air sec
+              par rapport a la pression de gaz
+   dmdepv.f : fonction qui calcule la derivee d'apport massique par rapport
+              a la deformation volumique
+   dmvdp1.f : fonction qui calcule la derivee de l'apport massique de vapeur
+              par rapport a la pression capillaire
+   dmvdp2.f : fonction qui calcule la derivee de l'apport massique de vapeur
+              par rapport a la pression de gaz
+   dmvpd2.f : fonction qui calcule la derivee de l'apport massique de vapeur
+              par rapport a la pression de gaz dans le cas liqu_vape
+   dmvpdt.f : fonction qui calcule la derivee de l'apport massique de vapeur
+              par rapport a la temperature
+   dmvpp1.f : fonction qui calcule la derivee de l'apport massique de vapeur
+              par rapport a la pression capillaire dans le cas liqu_vape
+   dmwdp1.f : fonction qui calcule la derivee de l'apport massique d'eau
+              par rapport a la pression capillaire
+   dmwdp2.f : fonction qui calcule la derivee de l'apport massique d'eau
+              par rapport a la pression de gaz
+   dmwdt2.f : fonction qui calcule la derivee de l'apport massique d'eau
+              par rapport a la temperature dans le cas liqu_vape
+   dmwdt.f  : fonction qui calcule la derivee de l'apport massique d'eau
+              par rapport a la temperature
+   dmwp1v.f : fonction qui calcule la derivee de l'apport massique d'eau
+              par rapport a la temperature dans le cas liqu_vape
+   dplvga.f : fonction qui calcule la derivee de l'apport massique d'eau
+              par rapport a la temperature
+   dqdeps.f : calcule des derivees partielles des pressions dans le cas
+              avec air dissous
+   dqdp.f   : fonction qui calcule la derivee de la chaleur par rapport aux pressions
+   dqdt.f   : fonction qui calcule la derivee de la chaleur par rapport a la temperature
+   dqvpdp.f : fonction qui calcule la derivee de la chaleur par rapport aux pressions
+              dans le cas liqu_vape
+   dqvpdt.f : fonction qui calcule la derivee de la chaleur par rapport a la temperature
+              dans le cas liqu_vape
+   dsipdt.f : fonction qui calcule la derivee de la contrainte de pressions par rapport
+              a la temperature
+   dspdlq.f : fonction qui calcule la derivee de la contrainte de pressions par rapport
+              a la pression de liquide dans le cas liqu_vape
+   dspdp1.f : fonction qui calcule la derivee de la contrainte de pressions par rapport
+              a la pression capillaire
+   dspdp2.f : fonction qui calcule la derivee de la contrainte de pressions par rapport
+              a la pression de gaz
+   enteau.f : fonction qui calcule l'enthalpie de l'eau
+   entgaz.f : fonction qui calcule l'enthalpie du gaz
+   inithm.f : calcul des termes mecaniques initiaux
+   lumthm.f : routine qui determine si la modelisation est lumpee ou non
+   majpad.f : mise a jour de la pression d'air dissous
+   majpas.f : mise a jour de la pression d'air sec
+   masvol.f : fonction qui calcule la masse volumique
+   sigmap.f : fonction qui calcule la contrainte de pressions
+   viporo.f : calcul de la variable interne de porosite
+   vipvp1.f : calcul de la variable interne de pression de vapeur
+   vipvp2.f : calcul de la variable interne enrichie de pression de vapeur dans le cas
+              avec air dissous
+   virhol.f : calcul de la variable interne de masse volumique de l'eau
+   visatu.f : calcul de la variable interne de saturation
+
+   On modifie les 16 routines suivantes :
+   --------------------------------------
+   caethm.f : affectation du type de modelisation et adaptation aux elements P2P1,
+              suppression des cartes CRP_20 et CRP_21
+   calcco.f : switcher adaptatif selon la modelisation de la loi de couplage
+   calcme.f : routine de calcul pour la partie mecanique
+   calcva.f : mise a jour des variables de deplacements
+   comthm.f : calcul des contraintes generalisees
+   hmgazp.f : routine adaptee au cas gaz
+              suppression des cartes CRP_20
+   hmlgat.f : routine adaptee au cas liqu_gaz_atm
+              suppression des cartes CRP_20
+   hmliga.f : routine adaptee au cas liqu_gaz
+              suppression des cartes CRP_20
+   hmlisa.f : routine adaptee au cas liqu_satu
+              suppression des cartes CRP_20
+   hmliva.f : routine adaptee au cas liqu_vape
+              suppression des cartes CRP_20
+   hmlvag.f : routine adaptee au cas liqu_vape_gaz
+              suppression des cartes CRP_20
+   hmlvga.f : routine adaptee au cas liqu_ad_gaz_vape
+              suppression des cartes CRP_20
+   kitdec.f : initialisations pour le calcul couple
+   te0466.f : calcul des vecteurs elemetaires pour un flux THM en 3D
+   te0472.f : calcul des vecteurs elemetaires pour un flux THM en 2D
+   te0600.f : calcul des options non lineaires en THM
+
+   VALIDATION
+   Tests de la base aster. On constate que les temps de calculs
+   sont a peu pres les memes pour les deux developpements ou plus courts
+   pour le nouveau.
+
+   Mise a jour des 90 fichiers .para :
+   dev128M_3m  : 70
+   dev256M_2h  : 18
+   dev2G_5h    :  2
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   OUI DEPUIS : 7.0.0
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   OUI DEPUIS : 8.0.0
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+
+   IMPACT_DOCUMENTAIRE : NON
+
+
+-----------------------------------------------------------------------
+--- AUTEUR vabhhts J.PELLET   DATE  le 28/01/2005 a 14:47:39
+
+------------------------------------------------------------------------------
+   CORRECTION AL 2005-018
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE  "defi_fichier + op0026 /ops026"
+   FONCTIONNALITE
+   Destruction de la routine op0026.f et des autres routines inutiles.
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+
+   Apparemment les routines suivantes ne sont plus utilisées (ni dans le fortran
+   ni dans le C). Je les détruis donc.
+
+   adff3d adinma althlu arlaph arlfac arlmtr ascfdo bgtobp
+   cobloc cocmat cocomp cocvec codfdm cohelp cojacb copchn decou2 dr3glm dvdrqr
+   dxelas elref3 findiv frotte gg1vil gladiv glanhs glapy3 grilb
+   gzmax1 gzsum1 inimtu jelino lbord  mecal2 mefor1 mpmail mpmesu
+   nbpgau noarel op0026 op0187 pasnoe pipemi pospan ppgano prediv qcondt rc3207
+   tophy2 vp1vil xgrael
+
+    (NDLR : MATPRS est malheureusement utilisée dans la restitution de S.Geniaut,
+     elle est donc conservée lors de la maj et le fichier unigest associé à la
+     restitution de J.Pellet est modifié manuellement)
+------------------------------------------------------------------------------
+   REALISATION EL 2004-231
+   NB_JOURS_TRAV : 4 (JP+PB)
+   INTERET_UTILISATEUR : OUI
+   TITRE  "permettre l'usage des charges cinématiques (AFFE_CHAR_CINE)
+           dans les commandes STAT_NON_LINE et DYNA_NON_LINE"
+   FONCTIONNALITE
+   On permet d'utiliser dans STAT_NON_LINE et DYNA_NON_LINE des charges cinématiques
+   issues des commandes AFFE_CHAR_CINE(_F).
+   Question : ces charges cinématiques peuvent-elles être de type "DIDI" ?
+   Pierre Badel pense que oui mais si j'essaye (test hsnv121e), je suis arrêté
+   par la routine NMDOME avec le message très clair :
+   " LA CHARGE CHR_TRAC NE PEUT ETRE DIFFERENTIELLE"
+   Il faudra donc que quelqu'un de compétent se penche sur ce problème si on veut
+   accepter les charges cinématiques "DIDI"
+   Au passage, on assouplit la syntaxe de AFFE_CHAR_CINE pour que l'utilisateur
+   puisse utiliser les mots cles GROUP_MA et MAILLE (désignation des zones
+   à contraindre). Ces mots clés sont en effet recommandés pour pouvoir utiliser
+   le raffinement de maillage (Homard).
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+     DOC_U : U4.51.03 (STAT_NON_LINE et DYNA_NON_LINE)
+     EXPL_: dire que le mot clé CHARGE attend maintenant des concepts
+            de type char_meca ou char_cine_meca.
+     DOC_U : U4.44.03 (AFFE_CHAR_CINE/_FO)
+     EXPL_: dire que les mots clés GROUP_MA et MAILLE sont maintenant autorisés
+            pour préciser les noeuds à contraindre.
+   VALIDATION
+     J'ajoute un nouveau test : zzzz191a qui vérifie que charges dualisées et charges
+     cinématiques donnent le même résultat.
+     Ce test dure 2 secondes et peut etre ajouté à la liste restreinte.
+   DETAILS
+   Liste des fichiers modifiés:
+  ascavc.f  calvci.f  charci.f  nmchar.f  nmconv.f  nmcvci.f op0102.f
+  affe_char_cine.capy    affe_char_cine_f.capy  dyna_non_line.capy     stat_non_line.capy
+  zzzz191a.comm
+
+------------------------------------------------------------------------------
+   RESTITUTION HORS AREX   (H1)
+   NB_JOURS_TRAV : 0
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+   une petite amélioration dans la routine dbgobj.f :
+     le format I8 pour imprimer LONUTI et LONMAX est changé en I12
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+------------------------------------------------------------------------------
+   RESTITUTION HORS AREX   (H2)
+   NB_JOURS_TRAV : 0
+   INTERET_UTILISATEUR : NON
+
+   FONCTIONNALITE
+   Suite à la relecture par Nicolas Tadieu de la doc U de MACRO_MATR_ASSE,
+   on améliore un peu son catalogue :
+     - INST : O. par défaut
+     - SIEF_ELGA obligatoire si RIGI_GEOM
+     - THETA obligatoire si RIGI_MECA_LAGR
+
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+   Suite à cette amélioration du catalogue, on doit supprimer 3 petits blocs
+   de programme dans macro_matr_asse_ops.py (vérifications devenues inutiles).
+------------------------------------------------------------------------------
+   RESTITUTION HORS AREX   (H3)
+   NB_JOURS_TRAV : 0.3
+   INTERET_UTILISATEUR : NON
+
+   FONCTIONNALITE
+   Suite à un appel à l'assistance, je corrige un message d'erreur dans
+   la routine CHPREC (CREA_CHAMP).
+
+   J'améliore aussi le catalogue de CREA_CHAMP pour distinguer les 2 cas de figure :
+     si TYPE_MAXI : il faut autoriser une sélection de plusieurs numéros d'ordre
+     sinon : il ne faut pas autoriser une sélection de plusieurs numéros d'ordre
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_D : D5.01.01   "introduire une nouvelle commande"
+       EXPL_:   ajouter la nouvelle REGLE : AU_PLUS_UN
+     DOC_U : U4.72.04
+       EXPL_: CREA_CHAMP + EXTR :
+            préciser le choix des numéros d'ordre  (TYPE_MAXI présent ou non)
+   VALIDATION
+   DETAILS
+     - ajout d'une nouvelle règle de validation pour les catalogues de commandes :
+       AU_PLUS_UN(m1,m2,...)
+       Cette règle est utile pour écrire le catalogue correspondant par exemple
+       à la doc U suivante :
+           /   TOUT='OUI'      (défaut)
+           /   A=...
+           /   B=...
+
+       regle AU_PLUS_UN("A","B")
+       b_tout=BLOC(condition="A==None and B==None",
+                   TOUT=SIMP(... into=("OUI"), defaut="OUI",),)
+
+------------------------------------------------------------------------------
+   RESTITUTION HORS AREX   (H5)
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+
+   FONCTIONNALITE
+   Suite à la relecture de la doc de CALC_MATR_ELEM, je précise un peu le
+   catalogue de la commande pour que le mot clé charge accepte une liste
+   de charge (ou une seule charge) selon l'option calculée.
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+
+   Finalement, je suis obligé d'assouplir quand même un peu le catalogue de CALC_MATR_ELEM :
+   Pour les options MASS_MECA* et MASS_FLUI_STRU j'accepte une liste de charges alors
+   que la seule charge thermique est nécessaire.
+   De même, pour les options ne nécessiatnt pas de charge, j'ajoute le mot clé CHARGE
+   à cause de MACRO_MATR_ASSE.
+
+   Si on ne fait pas cela, on ne peut pas faire :
+   MACRO_MATR_ASSE(
+      CHARGE=(chbloc,chtemp),
+      NUME_DDL=CO("NDDL"),
+      MATR_ASSE=(
+               _F(  MATRICE = CO("MATK"), OPTION = 'RIGI_MECA'),
+               _F(  MATRICE = CO("MATM"), OPTION = 'MASS_MECA'),
+                )
+  car la macro MACRO_MATR_ASSE n'a aucun  moyen de distinguer dans la liste des chages celle
+  sui contient le chargement thermique.
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-020
+   NB_JOURS_TRAV : 2
+   INTERET_UTILISATEUR : OUI
+
+   TITRE  "MACR_LIGN_COUP pour dépouiller des champs CHAM_ELEM /ELNO (ou /ELEM)"
+
+   FONCTIONNALITE
+   Pour pouvoir utiliser MACR_LIGN_COUP sur des CHAM_ELEM (ELNO et ELEM pour
+   l'instant), il faut que PROJ_CHAMP puisse projeter des cham_elem (2D, 3D, ...)
+   et en faire des cham_no sur le maillage filaire car les cham_no ne sont pas
+   "contraints" par les éléments du modèle (puisqu'ils sont portés par les noeuds
+   du maillage).
+   On introduit donc un nouveau mot clé pour forcer PROJ_CHAMP à créer des
+   cham_no même si les champs projetés sont des cham_elem : TYPE_CHAM='NOEU'
+   Dans la macro MACR_LIGN_COUPE, on utilise systématiquement ce nouveau mot clé.
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.81.13    MACR_LIGNE_COUP
+       EXPL_: dire que l'on peut maintenant traiter les cham_elem ELNO et ELEM
+     DOC_U : U4.72.05    PROJ_CHAMP
+       EXPL_: parler du nouveau mot clé TYPE_CHAM='NOEU'
+
+   VALIDATION : je modifie le test sslv07a pour qu'il fasse MACR_LIGN_COUP
+                sur un champ SIEF_ELNO_ELGA
+   DETAILS
+   On détruit la routine rvgch1 qui ne sert à rien : tout a été mis en commentaire !
+
+   Liste des fichiers modifiés:
+    cescns.f  op0051.f  op0106.f  pjefch.f  pjefpr.f  rvgchf.f
+    macr_lign_coupe_ops.py
+    proj_champ.capy
+    sslv07a.comm
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sensm14a                      f6bhhbo P.DEBONNIERES      644    644      0
+ CASTEST AJOUT ssnv182a                      geniaut S.GENIAUT          261    261      0
+ CASTEST AJOUT zzzz189a                      pabhhhh N.TARDIEU          299    299      0
+ CASTEST AJOUT zzzz191a                      vabhhts J.PELLET           115    115      0
+ CASTEST MODIF ascou18a                      galenne E.GALENNE          302      4     19
+ CASTEST MODIF ascou19a                      galenne E.GALENNE          400      7      7
+ CASTEST MODIF hplv102a                      vabhhts J.PELLET           248      3      5
+ CASTEST MODIF ssla103d                      geniaut S.GENIAUT          206      3      5
+ CASTEST MODIF sslv07a                       vabhhts J.PELLET           493     14      1
+ CASTEST MODIF sslv134a                      galenne E.GALENNE          299     89      1
+ CASTEST MODIF ssnp124c                      geniaut S.GENIAUT          294      2      8
+ CASTEST MODIF ssnp124d                      geniaut S.GENIAUT          294      2      8
+ CASTEST MODIF ssnp127a                      geniaut S.GENIAUT          151      2      5
+ CASTEST MODIF ssnp127b                      geniaut S.GENIAUT          151      2      5
+ CASTEST MODIF ssnv157a                      geniaut S.GENIAUT          135      2      5
+ CASTEST MODIF ssnv157b                      geniaut S.GENIAUT          135      3      6
+ CASTEST MODIF ssnv157c                      geniaut S.GENIAUT          135      3      5
+ CASTEST MODIF ssnv157d                      geniaut S.GENIAUT          136      3      5
+ CASTEST MODIF ssnv157e                      geniaut S.GENIAUT          139      3      5
+ CASTEST MODIF ssnv157f                      geniaut S.GENIAUT          142      5      5
+ CASTEST MODIF ssnv157g                      geniaut S.GENIAUT          139      4      5
+ CASTEST MODIF ssnv166a                      galenne E.GALENNE          409      8     11
+ CASTEST MODIF ssnv166b                      galenne E.GALENNE          428      1      4
+ CASTEST MODIF ssnv173a                      geniaut S.GENIAUT          334     22     10
+ CASTEST MODIF ssnv173b                      geniaut S.GENIAUT          643     18      4
+ CASTEST MODIF ssnv175a                      geniaut S.GENIAUT          146      4      5
+ CASTEST MODIF wtna100a                        romeo R.FERNANDES        524      1      1
+ CASTEST MODIF wtna101a                        romeo R.FERNANDES        359      1      1
+ CASTEST MODIF wtna101b                        romeo R.FERNANDES        360      1      1
+ CASTEST MODIF wtna102a                        romeo R.FERNANDES        300      1      1
+ CASTEST MODIF wtna103a                        romeo R.FERNANDES        268      1      1
+ CASTEST MODIF wtna104a                        romeo R.FERNANDES        264      1      1
+ CASTEST MODIF wtnl100a                        romeo R.FERNANDES        466      1      1
+ CASTEST MODIF wtnl100b                        romeo R.FERNANDES        268      1      1
+ CASTEST MODIF wtnl101a                        romeo R.FERNANDES        314      1      1
+ CASTEST MODIF wtnl102a                        romeo R.FERNANDES        215      1      1
+ CASTEST MODIF wtnl103b                        romeo R.FERNANDES        359      1      1
+ CASTEST MODIF wtnp100a                        romeo R.FERNANDES        307      1      1
+ CASTEST MODIF wtnp100b                        romeo R.FERNANDES        319      1      1
+ CASTEST MODIF wtnp101a                        romeo R.FERNANDES        327      1      1
+ CASTEST MODIF wtnp102a                        romeo R.FERNANDES        347      1      1
+ CASTEST MODIF wtnp102b                        romeo R.FERNANDES        352      1      1
+ CASTEST MODIF wtnp103a                        romeo R.FERNANDES        276      1      1
+ CASTEST MODIF wtnp104a                        romeo R.FERNANDES        266      1      1
+ CASTEST MODIF wtnp105a                        romeo R.FERNANDES        261      1      1
+ CASTEST MODIF wtnp106a                        romeo R.FERNANDES        264      1      1
+ CASTEST MODIF wtnp107a                        romeo R.FERNANDES        371      1      1
+ CASTEST MODIF wtnp109a                        romeo R.FERNANDES        143      1      1
+ CASTEST MODIF wtnp110a                        romeo R.FERNANDES        196      1      1
+ CASTEST MODIF wtnp111a                        romeo R.FERNANDES        153      1      1
+ CASTEST MODIF wtnp112a                        romeo R.FERNANDES        259      4      2
+ CASTEST MODIF wtnp112b                        romeo R.FERNANDES        259      3     18
+ CASTEST MODIF wtnp112c                        romeo R.FERNANDES        269      3     18
+ CASTEST MODIF wtnp112d                        romeo R.FERNANDES        247      3     18
+ CASTEST MODIF wtnp113a                        romeo R.FERNANDES        437      1      1
+ CASTEST MODIF wtnp113b                        romeo R.FERNANDES        452      1      1
+ CASTEST MODIF wtnp114a                        romeo R.FERNANDES        258      1      1
+ CASTEST MODIF wtnv100a                        romeo R.FERNANDES        502      1      1
+ CASTEST MODIF wtnv100b                        romeo R.FERNANDES        649      1      1
+ CASTEST MODIF wtnv100c                        romeo R.FERNANDES        436      1      1
+ CASTEST MODIF wtnv101a                        romeo R.FERNANDES        478      1      1
+ CASTEST MODIF wtnv102a                        romeo R.FERNANDES        344      1      1
+ CASTEST MODIF wtnv102b                        romeo R.FERNANDES        354      1      1
+ CASTEST MODIF wtnv107a                        romeo R.FERNANDES        133      1      1
+ CASTEST MODIF wtnv109a                        romeo R.FERNANDES        235      1      1
+ CASTEST MODIF wtnv109b                        romeo R.FERNANDES        200      1      1
+ CASTEST MODIF wtnv109c                        romeo R.FERNANDES        209      1      1
+ CASTEST MODIF wtnv109d                        romeo R.FERNANDES        263      1      1
+ CASTEST MODIF wtnv110a                        romeo R.FERNANDES        195      1      1
+ CASTEST MODIF wtnv110b                        romeo R.FERNANDES        184      1      1
+ CASTEST MODIF wtnv110c                        romeo R.FERNANDES        194      1      1
+ CASTEST MODIF wtnv111a                        romeo R.FERNANDES        210      1      1
+ CASTEST MODIF wtnv111b                        romeo R.FERNANDES        196      1      1
+ CASTEST MODIF wtnv111c                        romeo R.FERNANDES        213      1      1
+ CASTEST MODIF wtnv112a                        romeo R.FERNANDES        441      1      1
+ CASTEST MODIF wtnv112b                        romeo R.FERNANDES        448      1      1
+ CASTEST MODIF wtnv112c                        romeo R.FERNANDES        429      1      1
+ CASTEST MODIF wtnv112d                        romeo R.FERNANDES        430      1      1
+ CASTEST MODIF wtnv113a                        romeo R.FERNANDES        295      1      1
+ CASTEST MODIF wtnv113b                        romeo R.FERNANDES        314      1      1
+ CASTEST MODIF wtnv113c                        romeo R.FERNANDES        309      1      1
+ CASTEST MODIF wtnv113d                        romeo R.FERNANDES        312      1      1
+ CASTEST MODIF wtnv113e                        romeo R.FERNANDES        288      1      1
+ CASTEST MODIF wtnv113f                        romeo R.FERNANDES        307      1      1
+ CASTEST MODIF wtnv113g                        romeo R.FERNANDES        301      1      1
+ CASTEST MODIF wtnv113h                        romeo R.FERNANDES        304      1      1
+ CASTEST MODIF wtnv113i                        romeo R.FERNANDES        286      1      1
+ CASTEST MODIF wtnv113j                        romeo R.FERNANDES        305      1      1
+ CASTEST MODIF wtnv113k                        romeo R.FERNANDES        286      1      1
+ CASTEST MODIF wtnv113l                        romeo R.FERNANDES        305      1      1
+ CASTEST MODIF wtnv114a                        romeo R.FERNANDES        270      1      1
+ CASTEST MODIF wtnv114b                        romeo R.FERNANDES        278      1      1
+ CASTEST MODIF wtnv114c                        romeo R.FERNANDES        269      1      1
+ CASTEST MODIF wtnv114d                        romeo R.FERNANDES        278      1      1
+ CASTEST MODIF wtnv114e                        romeo R.FERNANDES        301      1      1
+ CASTEST MODIF wtnv115a                        romeo R.FERNANDES        308      1      1
+ CASTEST MODIF wtnv115b                        romeo R.FERNANDES        307      1      1
+ CASTEST MODIF wtnv116a                        romeo R.FERNANDES        293      1      1
+ CASTEST MODIF wtnv116b                        romeo R.FERNANDES        294      1      1
+ CASTEST MODIF wtnv116c                        romeo R.FERNANDES        296      1      1
+ CASTEST MODIF wtnv117a                        romeo R.FERNANDES        406      1      1
+ CASTEST MODIF wtnv118a                        romeo R.FERNANDES        312      1      1
+ CASTEST MODIF wtnv118b                        romeo R.FERNANDES        311      1      1
+ CASTEST MODIF wtnv118c                        romeo R.FERNANDES        288      1      1
+ CASTEST MODIF wtnv121a                        romeo R.FERNANDES        378      1      1
+ CASTEST MODIF wtnv121b                        romeo R.FERNANDES        355      1      1
+ CASTEST MODIF wtnv122a                        romeo R.FERNANDES        441      1      1
+ CASTEST MODIF wtnv122b                        romeo R.FERNANDES        448      1      1
+ CASTEST MODIF wtnv122c                        romeo R.FERNANDES        450      1      1
+ CASTEST MODIF wtnv123a                        romeo R.FERNANDES        445      1      1
+ CASTEST MODIF wtnv123b                        romeo R.FERNANDES        454      1      1
+ CASTEST MODIF wtnv123c                        romeo R.FERNANDES        741      1      1
+ CASTEST MODIF wtnv124a                        romeo R.FERNANDES        552      1      1
+ CASTEST MODIF wtnv125a                        romeo R.FERNANDES        481      1      1
+ CASTEST MODIF wtnv126a                        romeo R.FERNANDES        791      1      1
+ CASTEST MODIF wtnv126b                        romeo R.FERNANDES        774      1      1
+CATALOGU AJOUT options/topofa                geniaut S.GENIAUT           36     36      0
+CATALOGU AJOUT options/topose                geniaut S.GENIAUT           33     33      0
+CATALOGU AJOUT options/xcvbca                geniaut S.GENIAUT           33     33      0
+CATALOGU AJOUT options/xreacl                geniaut S.GENIAUT           28     28      0
+CATALOGU AJOUT typelem/d_depl_r_lags_c       geniaut S.GENIAUT           64     64      0
+CATALOGU AJOUT typelem/d_depl_r_lags_f1      geniaut S.GENIAUT           64     64      0
+CATALOGU AJOUT typelem/d_depl_r_lags_f2      geniaut S.GENIAUT           64     64      0
+CATALOGU AJOUT typelem/gener_me_x            geniaut S.GENIAUT          563    563      0
+CATALOGU MODIF compelem/grandeur_simple__    geniaut S.GENIAUT          559     58     29
+CATALOGU MODIF compelem/phenomene_modelisation__    geniaut S.GENIAUT          772     13      3
+CATALOGU MODIF compelem/type_maille__        geniaut S.GENIAUT          346     30      1
+CATALOGU MODIF options/char_meca_cont        geniaut S.GENIAUT           39     10      1
+CATALOGU MODIF options/char_meca_frot        geniaut S.GENIAUT           39     10      1
+CATALOGU MODIF options/forc_noda             geniaut S.GENIAUT           83      9      1
+CATALOGU MODIF options/full_meca             geniaut S.GENIAUT           87      6      1
+CATALOGU MODIF options/raph_meca             geniaut S.GENIAUT           85      6      1
+CATALOGU MODIF options/rigi_cont             geniaut S.GENIAUT           38     11      1
+CATALOGU MODIF options/rigi_frot             geniaut S.GENIAUT           38     11      1
+CATALOGU MODIF options/rigi_meca_tang        geniaut S.GENIAUT           88      6      1
+CATALOGU MODIF typelem/gener_me3d_3          geniaut S.GENIAUT          578     46     11
+CATALOGU MODIF typelem/gener_me_xh           geniaut S.GENIAUT          245    127     25
+CATALOGU MODIF typelem/gener_me_xht          geniaut S.GENIAUT          145     14     13
+CATALOGU MODIF typelem/gener_me_xt           geniaut S.GENIAUT          147     17     14
+CATALOGU MODIF typelem/gener_mecpg2          geniaut S.GENIAUT          361      2      2
+CATALOPY MODIF commande/affe_cara_elem      lebouvie F.LEBOUVIER        425      1      2
+CATALOPY MODIF commande/affe_char_cine       vabhhts J.PELLET            76     10      4
+CATALOPY MODIF commande/affe_char_cine_f     vabhhts J.PELLET            63      7      3
+CATALOPY MODIF commande/affe_modele          geniaut S.GENIAUT          178      2      1
+CATALOPY MODIF commande/calc_matr_elem       vabhhts J.PELLET           180     27     17
+CATALOPY MODIF commande/crea_champ           vabhhts J.PELLET           177     40      9
+CATALOPY MODIF commande/defi_fiss_xfem       geniaut S.GENIAUT           55     17      4
+CATALOPY MODIF commande/dyna_non_line        vabhhts J.PELLET           304      2      2
+CATALOPY MODIF commande/macro_matr_asse      vabhhts J.PELLET            94     22      5
+CATALOPY MODIF commande/post_k1_k2_k3        galenne E.GALENNE           66      4      4
+CATALOPY MODIF commande/proj_champ           vabhhts J.PELLET            91      4      2
+CATALOPY MODIF commande/stat_non_line        vabhhts J.PELLET           267      2      2
+CATALOPY MODIF entete/accas                 lebouvie F.LEBOUVIER        651      1      2
+ FORTRAN AJOUT algeline/xerbla               rezette C.REZETTE           60     60      0
+ FORTRAN AJOUT algorith/appmas                 romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/calor                  romeo R.FERNANDES         33     33      0
+ FORTRAN AJOUT algorith/capaca                 romeo R.FERNANDES         82     82      0
+ FORTRAN AJOUT algorith/dhdt                   romeo R.FERNANDES         28     28      0
+ FORTRAN AJOUT algorith/dhw2dt                 romeo R.FERNANDES         28     28      0
+ FORTRAN AJOUT algorith/dhw2p1                 romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/dhw2p2                 romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/dhwdp1                 romeo R.FERNANDES         28     28      0
+ FORTRAN AJOUT algorith/dhwdp2                 romeo R.FERNANDES         28     28      0
+ FORTRAN AJOUT algorith/dileau                 romeo R.FERNANDES         28     28      0
+ FORTRAN AJOUT algorith/dilgaz                 romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/dmadp1                 romeo R.FERNANDES         31     31      0
+ FORTRAN AJOUT algorith/dmadp2                 romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/dmadt                  romeo R.FERNANDES         30     30      0
+ FORTRAN AJOUT algorith/dmasdt                 romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/dmasp1                 romeo R.FERNANDES         31     31      0
+ FORTRAN AJOUT algorith/dmasp2                 romeo R.FERNANDES         30     30      0
+ FORTRAN AJOUT algorith/dmdepv                 romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/dmvdp1                 romeo R.FERNANDES         31     31      0
+ FORTRAN AJOUT algorith/dmvdp2                 romeo R.FERNANDES         30     30      0
+ FORTRAN AJOUT algorith/dmvpd2                 romeo R.FERNANDES         30     30      0
+ FORTRAN AJOUT algorith/dmvpdt                 romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/dmvpp1                 romeo R.FERNANDES         30     30      0
+ FORTRAN AJOUT algorith/dmwdp1                 romeo R.FERNANDES         32     32      0
+ FORTRAN AJOUT algorith/dmwdp2                 romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/dmwdt                  romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/dmwdt2                 romeo R.FERNANDES         30     30      0
+ FORTRAN AJOUT algorith/dmwp1v                 romeo R.FERNANDES         30     30      0
+ FORTRAN AJOUT algorith/dplvga                 romeo R.FERNANDES         50     50      0
+ FORTRAN AJOUT algorith/dqdeps                 romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/dqdp                   romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/dqdt                   romeo R.FERNANDES         28     28      0
+ FORTRAN AJOUT algorith/dqvpdp                 romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/dqvpdt                 romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/dsipdt                 romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/dspdlq                 romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/dspdp1                 romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/dspdp2                 romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/enteau                 romeo R.FERNANDES         28     28      0
+ FORTRAN AJOUT algorith/entgaz                 romeo R.FERNANDES         28     28      0
+ FORTRAN AJOUT algorith/inithm                 romeo R.FERNANDES         64     64      0
+ FORTRAN AJOUT algorith/loncar               geniaut S.GENIAUT           89     89      0
+ FORTRAN AJOUT algorith/lumthm                 romeo R.FERNANDES         35     35      0
+ FORTRAN AJOUT algorith/majpad                 romeo R.FERNANDES         67     67      0
+ FORTRAN AJOUT algorith/majpas                 romeo R.FERNANDES         28     28      0
+ FORTRAN AJOUT algorith/masvol                 romeo R.FERNANDES         28     28      0
+ FORTRAN AJOUT algorith/nmcvci               vabhhts J.PELLET           125    125      0
+ FORTRAN AJOUT algorith/nomil                geniaut S.GENIAUT          101    101      0
+ FORTRAN AJOUT algorith/sdconx               geniaut S.GENIAUT          120    120      0
+ FORTRAN AJOUT algorith/sigmap                 romeo R.FERNANDES         28     28      0
+ FORTRAN AJOUT algorith/viporo                 romeo R.FERNANDES         74     74      0
+ FORTRAN AJOUT algorith/vipvp1                 romeo R.FERNANDES         91     91      0
+ FORTRAN AJOUT algorith/vipvp2                 romeo R.FERNANDES         81     81      0
+ FORTRAN AJOUT algorith/virhol                 romeo R.FERNANDES         75     75      0
+ FORTRAN AJOUT algorith/visatu                 romeo R.FERNANDES         29     29      0
+ FORTRAN AJOUT algorith/xadher               geniaut S.GENIAUT          149    149      0
+ FORTRAN AJOUT algorith/xcface               geniaut S.GENIAUT          285    285      0
+ FORTRAN AJOUT algorith/xconli               geniaut S.GENIAUT          228    228      0
+ FORTRAN AJOUT algorith/xibsig               geniaut S.GENIAUT          146    146      0
+ FORTRAN AJOUT algorith/xjacff               geniaut S.GENIAUT          124    124      0
+ FORTRAN AJOUT algorith/xmafr1               geniaut S.GENIAUT           67     67      0
+ FORTRAN AJOUT algorith/xmafr2               geniaut S.GENIAUT           92     92      0
+ FORTRAN AJOUT algorith/xmmbca               geniaut S.GENIAUT          151    151      0
+ FORTRAN AJOUT algorith/xmmcme               geniaut S.GENIAUT          157    157      0
+ FORTRAN AJOUT algorith/xoula                geniaut S.GENIAUT           77     77      0
+ FORTRAN AJOUT algorith/xplmat               geniaut S.GENIAUT           70     70      0
+ FORTRAN AJOUT algorith/xreacl               geniaut S.GENIAUT          113    113      0
+ FORTRAN AJOUT algorith/xtopoc               geniaut S.GENIAUT          106    106      0
+ FORTRAN AJOUT algorith/xtopoi               geniaut S.GENIAUT          100    100      0
+ FORTRAN AJOUT elements/te0510               geniaut S.GENIAUT          162    162      0
+ FORTRAN AJOUT elements/te0514               geniaut S.GENIAUT          178    178      0
+ FORTRAN AJOUT elements/te0532               geniaut S.GENIAUT          210    210      0
+ FORTRAN AJOUT elements/te0533               geniaut S.GENIAUT          433    433      0
+ FORTRAN AJOUT elements/te0534               geniaut S.GENIAUT          369    369      0
+ FORTRAN AJOUT elements/te0542               geniaut S.GENIAUT          101    101      0
+ FORTRAN AJOUT elements/te0548               geniaut S.GENIAUT          127    127      0
+ FORTRAN AJOUT elements/xbsigm               geniaut S.GENIAUT          124    124      0
+ FORTRAN AJOUT modelisa/xdelco               geniaut S.GENIAUT          185    185      0
+ FORTRAN AJOUT prepost/pkrec2                galenne E.GALENNE          116    116      0
+ FORTRAN AJOUT prepost/pksyme                galenne E.GALENNE          213    213      0
+ FORTRAN AJOUT utilifor/spdot                rezette C.REZETTE           34     34      0
+ FORTRAN MODIF algeline/dgetv0               rezette C.REZETTE          397     13      3
+ FORTRAN MODIF algeline/dlaqrb               rezette C.REZETTE          517      4      4
+ FORTRAN MODIF algeline/dnaitr               rezette C.REZETTE          804     15     12
+ FORTRAN MODIF algeline/dnapps               rezette C.REZETTE          640     19     19
+ FORTRAN MODIF algeline/dnaup2               rezette C.REZETTE          819      5      5
+ FORTRAN MODIF algeline/dnconv               rezette C.REZETTE          128      4      4
+ FORTRAN MODIF algeline/dneigh               rezette C.REZETTE          296      8      8
+ FORTRAN MODIF algeline/dneupd               rezette C.REZETTE         1133     34     30
+ FORTRAN MODIF algeline/dsortc               rezette C.REZETTE          354      6      6
+ FORTRAN MODIF algeline/gcax                 rezette C.REZETTE           46      2      2
+ FORTRAN MODIF algeline/mlfmlt               rezette C.REZETTE           73     17     11
+ FORTRAN MODIF algeline/mlfmul               rezette C.REZETTE           71     16     10
+ FORTRAN MODIF algeline/mlncld               rezette C.REZETTE           69     14      9
+ FORTRAN MODIF algeline/mlnclj               rezette C.REZETTE          249     32     27
+ FORTRAN MODIF algeline/mlnclm               rezette C.REZETTE          128     17      7
+ FORTRAN MODIF algeline/mlncmg               rezette C.REZETTE          144     14     15
+ FORTRAN MODIF algeline/mlncmj               rezette C.REZETTE          162     20     16
+ FORTRAN MODIF algeline/mlnfld               rezette C.REZETTE           67     13     10
+ FORTRAN MODIF algeline/mlnflj               rezette C.REZETTE          248     33     29
+ FORTRAN MODIF algeline/mlnflm               rezette C.REZETTE          122     18     12
+ FORTRAN MODIF algeline/mlnfmg               rezette C.REZETTE          145     15     16
+ FORTRAN MODIF algeline/mlnfmj               rezette C.REZETTE          158     21     22
+ FORTRAN MODIF algeline/mltcld               rezette C.REZETTE           64     12      9
+ FORTRAN MODIF algeline/mltclj               rezette C.REZETTE          227     20     15
+ FORTRAN MODIF algeline/mltclm               rezette C.REZETTE          108     13      6
+ FORTRAN MODIF algeline/mltcmj               rezette C.REZETTE          140     14      9
+ FORTRAN MODIF algeline/mltdca               rezette C.REZETTE          224     13      5
+ FORTRAN MODIF algeline/mltdra               rezette C.REZETTE          222     13      5
+ FORTRAN MODIF algeline/mltfld               rezette C.REZETTE           65     13      8
+ FORTRAN MODIF algeline/mltflj               rezette C.REZETTE          227     20     15
+ FORTRAN MODIF algeline/mltflm               rezette C.REZETTE          107     13      6
+ FORTRAN MODIF algeline/mltfmj               rezette C.REZETTE          140     14      9
+ FORTRAN MODIF algeline/zgetv0               rezette C.REZETTE          415     16      6
+ FORTRAN MODIF algeline/znaitr               rezette C.REZETTE          827     22     19
+ FORTRAN MODIF algeline/znapps               rezette C.REZETTE          516     14     12
+ FORTRAN MODIF algeline/znaup2               rezette C.REZETTE          813      8      8
+ FORTRAN MODIF algeline/zneigh               rezette C.REZETTE          269      5      5
+ FORTRAN MODIF algeline/zneupd               rezette C.REZETTE          932     17     15
+ FORTRAN MODIF algeline/zsortc               rezette C.REZETTE          337      7      7
+ FORTRAN MODIF algorith/ascavc               vabhhts J.PELLET           153     12      6
+ FORTRAN MODIF algorith/calcco                 romeo R.FERNANDES        136      3      5
+ FORTRAN MODIF algorith/calcme                 romeo R.FERNANDES        861     16     16
+ FORTRAN MODIF algorith/calcva                 romeo R.FERNANDES        119     36      7
+ FORTRAN MODIF algorith/chrpel               rezette C.REZETTE          548      2      2
+ FORTRAN MODIF algorith/comthm                 romeo R.FERNANDES        252     10     19
+ FORTRAN MODIF algorith/conare               geniaut S.GENIAUT          132     10      9
+ FORTRAN MODIF algorith/hmgazp                 romeo R.FERNANDES        263    146    229
+ FORTRAN MODIF algorith/hmlgat                 romeo R.FERNANDES        264    146    274
+ FORTRAN MODIF algorith/hmliga                 romeo R.FERNANDES        327    182    310
+ FORTRAN MODIF algorith/hmlisa                 romeo R.FERNANDES        264    151    272
+ FORTRAN MODIF algorith/hmliva                 romeo R.FERNANDES        368    205    360
+ FORTRAN MODIF algorith/hmlvag                 romeo R.FERNANDES        353    199    379
+ FORTRAN MODIF algorith/hmlvga                 romeo R.FERNANDES        369    250    471
+ FORTRAN MODIF algorith/kitdec                 romeo R.FERNANDES         83     18      5
+ FORTRAN MODIF algorith/merimo               geniaut S.GENIAUT          466     38     19
+ FORTRAN MODIF algorith/nmchar               vabhhts J.PELLET           455      4     12
+ FORTRAN MODIF algorith/nmconv               vabhhts J.PELLET           429     13      3
+ FORTRAN MODIF algorith/nmdepl               geniaut S.GENIAUT          267     10      5
+ FORTRAN MODIF algorith/nmfext               geniaut S.GENIAUT          105      4      3
+ FORTRAN MODIF algorith/nmible               geniaut S.GENIAUT          147     18      3
+ FORTRAN MODIF algorith/nminit               geniaut S.GENIAUT          376     13      5
+ FORTRAN MODIF algorith/nmmatr               geniaut S.GENIAUT          440      5      3
+ FORTRAN MODIF algorith/nmtble               geniaut S.GENIAUT          140     27      5
+ FORTRAN MODIF algorith/nsdrpr               f6bhhbo P.DEBONNIERES      593     29      3
+ FORTRAN MODIF algorith/op0041               geniaut S.GENIAUT          181     26      3
+ FORTRAN MODIF algorith/op0069               geniaut S.GENIAUT          656      7      6
+ FORTRAN MODIF algorith/op0070               geniaut S.GENIAUT          833     11      8
+ FORTRAN MODIF algorith/op0113               geniaut S.GENIAUT          324     38     14
+ FORTRAN MODIF algorith/vefnme               geniaut S.GENIAUT          232     31      6
+ FORTRAN MODIF algorith/xajpin               geniaut S.GENIAUT           92     14      8
+ FORTRAN MODIF algorith/xdecou               geniaut S.GENIAUT          156     29     18
+ FORTRAN MODIF algorith/xdecov               geniaut S.GENIAUT          296     12     12
+ FORTRAN MODIF algorith/xdivte               geniaut S.GENIAUT          119     36     11
+ FORTRAN MODIF algorith/xenrch               geniaut S.GENIAUT          376     20      6
+ FORTRAN MODIF algorith/xinils               geniaut S.GENIAUT          422      7      6
+ FORTRAN MODIF algorith/xmel3d               geniaut S.GENIAUT          160     71     82
+ FORTRAN MODIF algorith/xstano               geniaut S.GENIAUT          190      7      4
+ FORTRAN MODIF algorith/xxel3d               geniaut S.GENIAUT          318     65     73
+ FORTRAN MODIF assembla/numero               cibhhlv L.VIVAN            319      3      9
+ FORTRAN MODIF calculel/calcul               geniaut S.GENIAUT          329      3      2
+ FORTRAN MODIF calculel/calvci               vabhhts J.PELLET           198     30     44
+ FORTRAN MODIF calculel/cescns               vabhhts J.PELLET           187      9      8
+ FORTRAN MODIF calculel/dbgobj               vabhhts J.PELLET            81      4      4
+ FORTRAN MODIF calculel/merifs               vabhhts J.PELLET           142      2      2
+ FORTRAN MODIF calculel/meriro               vabhhts J.PELLET           158      7      7
+ FORTRAN MODIF calculel/nuelrf               geniaut S.GENIAUT           82      3      3
+ FORTRAN MODIF calculel/op0009               vabhhts J.PELLET           197      1     22
+ FORTRAN MODIF calculel/op0102               vabhhts J.PELLET            95      2      7
+ FORTRAN MODIF calculel/pjefch               vabhhts J.PELLET           105     20      3
+ FORTRAN MODIF calculel/pjefpr               vabhhts J.PELLET           152      1      1
+ FORTRAN MODIF elements/caethm                 romeo R.FERNANDES        334    104    957
+ FORTRAN MODIF elements/elraca               geniaut S.GENIAUT          833     11      5
+ FORTRAN MODIF elements/elraga               geniaut S.GENIAUT          851     50      4
+ FORTRAN MODIF elements/elrfdf               geniaut S.GENIAUT          808      4      4
+ FORTRAN MODIF elements/elrfvf               geniaut S.GENIAUT          429      4      4
+ FORTRAN MODIF elements/reeref               geniaut S.GENIAUT          207      1      4
+ FORTRAN MODIF elements/te0119               geniaut S.GENIAUT           74     16      2
+ FORTRAN MODIF elements/te0466                 romeo R.FERNANDES        547      8     37
+ FORTRAN MODIF elements/te0472                 romeo R.FERNANDES        481     11     38
+ FORTRAN MODIF elements/te0539               geniaut S.GENIAUT          320     56     16
+ FORTRAN MODIF elements/te0600                 romeo R.FERNANDES        671     33     73
+ FORTRAN MODIF modelisa/cafond               cibhhlv L.VIVAN            225     24     23
+ FORTRAN MODIF modelisa/caxfem               geniaut S.GENIAUT          104     12      4
+ FORTRAN MODIF modelisa/charci               vabhhts J.PELLET           150     22     88
+ FORTRAN MODIF modelisa/chprec               vabhhts J.PELLET           226      5      5
+ FORTRAN MODIF modelisa/exlim1               cibhhlv L.VIVAN            169     70     37
+ FORTRAN MODIF modelisa/exlima               cibhhlv L.VIVAN            138     20     21
+ FORTRAN MODIF modelisa/op0019              lebouvie F.LEBOUVIER        518      1      6
+ FORTRAN MODIF modelisa/rapo3d               cibhhlv L.VIVAN            767     13      8
+ FORTRAN MODIF modelisa/rapoco               cibhhlv L.VIVAN            798     12      7
+ FORTRAN MODIF modelisa/veripl               cibhhlv L.VIVAN            125     11     12
+ FORTRAN MODIF modelisa/xdeldl               geniaut S.GENIAUT          219     45     19
+ FORTRAN MODIF postrele/i2segm               cibhhlv L.VIVAN            560     12     14
+ FORTRAN MODIF postrele/op0051               vabhhts J.PELLET           391      1      6
+ FORTRAN MODIF postrele/rvgchf               vabhhts J.PELLET           258      1     25
+ FORTRAN MODIF postrele/rvouex               cibhhlv L.VIVAN            263     13     16
+ FORTRAN MODIF prepost/op0106                vabhhts J.PELLET           813      1      4
+ FORTRAN MODIF prepost/op0188                galenne E.GALENNE          332     30     16
+ FORTRAN MODIF prepost/pkcalc                galenne E.GALENNE          336      3      4
+ FORTRAN MODIF prepost/pkchgr                galenne E.GALENNE          135     18      5
+ FORTRAN MODIF prepost/pkdepl                galenne E.GALENNE          280     20     12
+ FORTRAN MODIF prepost/pkfond                galenne E.GALENNE          797     67     21
+ FORTRAN MODIF utilifor/fgeqr2               rezette C.REZETTE          131      2      2
+ FORTRAN MODIF utilifor/flaexc               rezette C.REZETTE          367     26     26
+ FORTRAN MODIF utilifor/flahqr               rezette C.REZETTE          425      3      3
+ FORTRAN MODIF utilifor/flaln2               rezette C.REZETTE          534      3      3
+ FORTRAN MODIF utilifor/flanv2               rezette C.REZETTE          185      3      3
+ FORTRAN MODIF utilifor/flarfg               rezette C.REZETTE          149      4      4
+ FORTRAN MODIF utilifor/flrsyl               rezette C.REZETTE          928     11     11
+ FORTRAN MODIF utilifor/ftrevc               rezette C.REZETTE          998      8      8
+ FORTRAN MODIF utilifor/ftrexc               rezette C.REZETTE          355      4      4
+ FORTRAN MODIF utilifor/ftrsen               rezette C.REZETTE          433     12     12
+ FORTRAN MODIF utilifor/gtrevc               rezette C.REZETTE          389      8      8
+ FORTRAN MODIF utilifor/gtrexc               rezette C.REZETTE          169      7      7
+ FORTRAN MODIF utilifor/gtrsen               rezette C.REZETTE          341     12     12
+ FORTRAN MODIF utilifor/gtrsyl               rezette C.REZETTE          375     11     11
+ FORTRAN SUPPR algeline/blacmm               rezette C.REZETTE           35      0     35
+ FORTRAN SUPPR algeline/blacmv               rezette C.REZETTE           29      0     29
+ FORTRAN SUPPR algeline/bladmm               rezette C.REZETTE           35      0     35
+ FORTRAN SUPPR algeline/bladmn               rezette C.REZETTE           72      0     72
+ FORTRAN SUPPR algeline/bladmv               rezette C.REZETTE           29      0     29
+ FORTRAN SUPPR algorith/bgtobp               vabhhts J.PELLET            64      0     64
+ FORTRAN SUPPR algorith/frotte               vabhhts J.PELLET            88      0     88
+ FORTRAN SUPPR algorith/gg1vil               vabhhts J.PELLET            90      0     90
+ FORTRAN SUPPR algorith/mpmail               vabhhts J.PELLET           148      0    148
+ FORTRAN SUPPR algorith/mpmesu               vabhhts J.PELLET           650      0    650
+ FORTRAN SUPPR algorith/pipemi               vabhhts J.PELLET           149      0    149
+ FORTRAN SUPPR algorith/qcondt               vabhhts J.PELLET            69      0     69
+ FORTRAN SUPPR algorith/tophy2               vabhhts J.PELLET            85      0     85
+ FORTRAN SUPPR algorith/vp1vil               vabhhts J.PELLET            89      0     89
+ FORTRAN SUPPR algorith/xgrael               vabhhts J.PELLET           127      0    127
+ FORTRAN SUPPR calculel/adff3d               vabhhts J.PELLET            50      0     50
+ FORTRAN SUPPR calculel/althlu               vabhhts J.PELLET            94      0     94
+ FORTRAN SUPPR calculel/decou2               vabhhts J.PELLET           250      0    250
+ FORTRAN SUPPR calculel/findiv               vabhhts J.PELLET            62      0     62
+ FORTRAN SUPPR calculel/lbord                vabhhts J.PELLET           255      0    255
+ FORTRAN SUPPR calculel/mecal2               vabhhts J.PELLET           272      0    272
+ FORTRAN SUPPR calculel/mefor1               vabhhts J.PELLET            75      0     75
+ FORTRAN SUPPR calculel/noarel               vabhhts J.PELLET           190      0    190
+ FORTRAN SUPPR calculel/pasnoe               vabhhts J.PELLET           123      0    123
+ FORTRAN SUPPR calculel/pospan               vabhhts J.PELLET            85      0     85
+ FORTRAN SUPPR calculel/prediv               vabhhts J.PELLET            98      0     98
+ FORTRAN SUPPR elements/cobloc               vabhhts J.PELLET            23      0     23
+ FORTRAN SUPPR elements/cocmat               vabhhts J.PELLET            23      0     23
+ FORTRAN SUPPR elements/cocomp               vabhhts J.PELLET            23      0     23
+ FORTRAN SUPPR elements/cocvec               vabhhts J.PELLET            23      0     23
+ FORTRAN SUPPR elements/codfdm               vabhhts J.PELLET            23      0     23
+ FORTRAN SUPPR elements/cohelp               vabhhts J.PELLET            23      0     23
+ FORTRAN SUPPR elements/cojacb               vabhhts J.PELLET            23      0     23
+ FORTRAN SUPPR elements/dr3glm               vabhhts J.PELLET            47      0     47
+ FORTRAN SUPPR elements/dvdrqr               vabhhts J.PELLET            40      0     40
+ FORTRAN SUPPR elements/dxelas               vabhhts J.PELLET           132      0    132
+ FORTRAN SUPPR elements/elref3               vabhhts J.PELLET            58      0     58
+ FORTRAN SUPPR elements/fetcrl               cibhhlv L.VIVAN             93      0     93
+ FORTRAN SUPPR elements/grilb                vabhhts J.PELLET           104      0    104
+ FORTRAN SUPPR elements/inimtu               vabhhts J.PELLET            58      0     58
+ FORTRAN SUPPR elements/nbpgau               vabhhts J.PELLET            98      0     98
+ FORTRAN SUPPR elements/ppgano               vabhhts J.PELLET           245      0    245
+ FORTRAN SUPPR jeveux/jelino                 vabhhts J.PELLET           137      0    137
+ FORTRAN SUPPR modelisa/arlaph               vabhhts J.PELLET           313      0    313
+ FORTRAN SUPPR modelisa/arlfac               vabhhts J.PELLET           269      0    269
+ FORTRAN SUPPR modelisa/arlmtr               vabhhts J.PELLET           251      0    251
+ FORTRAN SUPPR modelisa/jssect              lebouvie F.LEBOUVIER         99      0     99
+ FORTRAN SUPPR modelisa/recmai               cibhhlv L.VIVAN            248      0    248
+ FORTRAN SUPPR postrele/op0187               vabhhts J.PELLET           192      0    192
+ FORTRAN SUPPR postrele/rc3207               vabhhts J.PELLET           120      0    120
+ FORTRAN SUPPR prepost/ascfdo                vabhhts J.PELLET           106      0    106
+ FORTRAN SUPPR prepost/copchn                vabhhts J.PELLET            86      0     86
+ FORTRAN SUPPR utilifor/blpdot               rezette C.REZETTE           28      0     28
+ FORTRAN SUPPR utilifor/flacpy               rezette C.REZETTE           98      0     98
+ FORTRAN SUPPR utilifor/fladiv               rezette C.REZETTE           72      0     72
+ FORTRAN SUPPR utilifor/flange               rezette C.REZETTE          151      0    151
+ FORTRAN SUPPR utilifor/flanhs               rezette C.REZETTE          148      0    148
+ FORTRAN SUPPR utilifor/flapy2               rezette C.REZETTE           64      0     64
+ FORTRAN SUPPR utilifor/flarf                rezette C.REZETTE          128      0    128
+ FORTRAN SUPPR utilifor/flarfx               rezette C.REZETTE          654      0    654
+ FORTRAN SUPPR utilifor/flarnv               rezette C.REZETTE          124      0    124
+ FORTRAN SUPPR utilifor/flaruv               rezette C.REZETTE          379      0    379
+ FORTRAN SUPPR utilifor/flascl               rezette C.REZETTE          276      0    276
+ FORTRAN SUPPR utilifor/flaset               rezette C.REZETTE          124      0    124
+ FORTRAN SUPPR utilifor/flassq               rezette C.REZETTE           98      0     98
+ FORTRAN SUPPR utilifor/form2r               rezette C.REZETTE          208      0    208
+ FORTRAN SUPPR utilifor/ggeqr2               rezette C.REZETTE          128      0    128
+ FORTRAN SUPPR utilifor/glacpy               rezette C.REZETTE          100      0    100
+ FORTRAN SUPPR utilifor/gladiv               rezette C.REZETTE           52      0     52
+ FORTRAN SUPPR utilifor/glange               rezette C.REZETTE          153      0    153
+ FORTRAN SUPPR utilifor/glanhs               rezette C.REZETTE          149      0    149
+ FORTRAN SUPPR utilifor/glapy3               rezette C.REZETTE           64      0     64
+ FORTRAN SUPPR utilifor/glarnv               rezette C.REZETTE          137      0    137
+ FORTRAN SUPPR utilifor/glascl               rezette C.REZETTE          274      0    274
+ FORTRAN SUPPR utilifor/glaset               rezette C.REZETTE          124      0    124
+ FORTRAN SUPPR utilifor/glassq               rezette C.REZETTE          112      0    112
+ FORTRAN SUPPR utilifor/grot                 rezette C.REZETTE          103      0    103
+ FORTRAN SUPPR utilifor/gunm2r               rezette C.REZETTE          208      0    208
+ FORTRAN SUPPR utilifor/gzmax1               rezette C.REZETTE          106      0    106
+ FORTRAN SUPPR utilifor/gzsum1               rezette C.REZETTE           92      0     92
+ FORTRAN SUPPR utilifor/hlanhs               rezette C.REZETTE          148      0    148
+ FORTRAN SUPPR utilifor/llsame               rezette C.REZETTE          100      0    100
+ FORTRAN SUPPR utilitai/adinma               vabhhts J.PELLET            91      0     91
+ FORTRAN SUPPR utilitai/op0026               vabhhts J.PELLET            82      0     82
+  PYTHON AJOUT Accas/A_AU_PLUS_UN            vabhhts J.PELLET            29     29      0
+  PYTHON AJOUT Validation/V_AU_PLUS_UN       vabhhts J.PELLET            49     49      0
+  PYTHON MODIF Accas/__init__                vabhhts J.PELLET            79      2      1
+  PYTHON MODIF Macro/macr_lign_coupe_ops     vabhhts J.PELLET           174      2      1
+  PYTHON MODIF Macro/macro_matr_asse_ops     vabhhts J.PELLET           154     13     19
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   96        8740      8740             +8740
+ MODIF :  280       88430      4228    5301     -1073
+ SUPPR :   84       10945             10945    -10945
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  460      108115     12968   16246     -3278 

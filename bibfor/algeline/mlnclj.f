@@ -3,7 +3,7 @@
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/06/2004   AUTEUR ROSE C.ROSE 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,11 +24,15 @@ C ======================================================================
       INTEGER N,P,ADPER(*)
       COMPLEX*16  FRONTL(*),FRNL(*), FRONTU(*),FRNU(*)
       INTEGER NB,DECAL,ADD,ADF,IND,NMB,I,J,L,KB,IA,IB,NLB,LL
-      CHARACTER*1 TRANSA, TRANSB
+      CHARACTER*1 TRA, TRB
       INTEGER   M,  K, LDC,KI,I1,IT,JB,J1,RESTM,RESTL,NBL
       INTEGER NPROC,NUMPRO,MLNUMP,MLNBPR
       COMPLEX*16    S,TRAVL(P,NB,*),TRAVU(P,NB,*)
-      COMPLEX*16  CL(NB,NB, *),CU(NB,NB, *)
+      COMPLEX*16  CL(NB,NB, *),CU(NB,NB, *),ALPHA,BETA
+      TRA='N'
+      TRB='N'
+      ALPHA=DCMPLX(-1.D0,0.D0)
+      BETA =DCMPLX( 0.D0,0.D0)   
       NBL = P-IT+1
       NMB=M/NB
       NLB = LL/NB
@@ -41,6 +45,7 @@ C ======================================================================
 C$OMP PARALLEL DO DEFAULT(PRIVATE)
 C$OMP+SHARED(N,M,P,NMB,NBL,NLB,NB,RESTM,RESTL,CL,CU)
 C$OMP+SHARED(FRONTL,FRONTU,ADPER,DECAL,FRNL,FRNU,TRAVL,TRAVU,IT)
+C$OMP+SHARED(TRA,TRB,ALPHA,BETA)
 C$OMP+SCHEDULE(STATIC,1)
       DO 1000 KB = 1,NMB
       NUMPRO=MLNUMP()
@@ -62,10 +67,10 @@ C
 
          DO 500 IB = KB,NLB
             IA = N*(IT-1)  + K + NB*(IB-KB)
-            CALL CGEMX( NB,NB,NBL,FRONTL(IA),N, TRAVU(IT,1,NUMPRO), P,
-     %                   CL(1,1,NUMPRO), NB)
-            CALL CGEMX( NB,NB,NBL,FRONTU(IA),N, TRAVL(IT,1,NUMPRO), P,
-     %                   CU(1,1,NUMPRO), NB)
+            CALL ZGEMM( TRA,TRB,NB,NB,NBL,ALPHA,FRONTL(IA),N,
+     &                  TRAVU(IT,1,NUMPRO), P,BETA,CL(1,1,NUMPRO), NB)
+            CALL ZGEMM( TRA,TRB,NB,NB,NBL,ALPHA,FRONTU(IA),N,
+     &                  TRAVL(IT,1,NUMPRO), P,BETA,CU(1,1,NUMPRO), NB)
 C     RECOPIE
 
 C
@@ -89,10 +94,10 @@ C              IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
          IF(RESTL.GT.0) THEN
             IB = NLB + 1
             IA =   N*(IT-1)  +K + NB*(IB-KB)
-            CALL CGEMX( RESTL,NB,NBL,FRONTL(IA),N,TRAVU(IT,1,NUMPRO),P,
-     %                   CL(1,1,NUMPRO), NB)
-            CALL CGEMX( RESTL,NB,NBL,FRONTU(IA),N,TRAVL(IT,1,NUMPRO),P,
-     %                   CU(1,1,NUMPRO), NB)
+            CALL ZGEMM( TRA,TRB,RESTL,NB,NBL,ALPHA,FRONTL(IA),N,
+     &                  TRAVU(IT,1,NUMPRO),P,BETA,CL(1,1,NUMPRO), NB)
+            CALL ZGEMM( TRA,TRB,RESTL,NB,NBL,ALPHA,FRONTU(IA),N,
+     &                  TRAVL(IT,1,NUMPRO),P,BETA,CU(1,1,NUMPRO), NB)
 C           RECOPIE
 
 C
@@ -128,10 +133,10 @@ C
 
          DO 2500 IB = KB,NLB
             IA = N*(IT-1)  + K + NB*(IB-KB)
-            CALL CGEMX( NB,NB,NBL,FRONTL(IA),N, TRAVU(IT,1,1), P,
-     %                   CL(1,1,1), NB)
-            CALL CGEMX( NB,NB,NBL,FRONTU(IA),N, TRAVL(IT,1,1), P,
-     %                   CU(1,1,1), NB)
+            CALL ZGEMM( TRA,TRB,NB,NB,NBL,ALPHA,FRONTL(IA),N,
+     &                  TRAVU(IT,1,1),P,BETA,CL(1,1,1),NB)
+            CALL ZGEMM( TRA,TRB,NB,NB,NBL,ALPHA,FRONTU(IA),N,
+     &                  TRAVL(IT,1,1),P,BETA,CU(1,1,1),NB)
 C     RECOPIE
 
 C
@@ -154,10 +159,10 @@ C
          IF(RESTL.GT.0) THEN
             IB = NLB + 1
             IA =   N*(IT-1)  +K + NB*(IB-KB)
-            CALL CGEMX( RESTL,NB,NBL,FRONTL(IA),N, TRAVU(IT,1,1), P,
-     %                   CL(1,1,1), NB)
-            CALL CGEMX( RESTL,NB,NBL,FRONTU(IA),N, TRAVL(IT,1,1), P,
-     %                   CU(1,1,1), NB)
+            CALL ZGEMM( TRA,TRB,RESTL,NB,NBL,ALPHA,FRONTL(IA),N,
+     &                  TRAVU(IT,1,1),P,BETA,CL(1,1,1),NB)
+            CALL ZGEMM( TRA,TRB,RESTL,NB,NBL,ALPHA,FRONTU(IA),N,
+     &                  TRAVL(IT,1,1),P,BETA,CU(1,1,1),NB)
 C           RECOPIE
 
 C
@@ -194,10 +199,10 @@ C     2EME ESSAI : DES PRODUITS DE LONGUEUR NB
 C
          DO 600 IB = KB,NLB
             IA =   N*(IT-1 ) + K + NB*(IB-KB)
-            CALL CGEMX( NB,RESTM,NBL,FRONTL(IA),N, TRAVU(IT,1,1), P,
-     %                   CL(1,1,1), NB)
-            CALL CGEMX( NB,RESTM,NBL,FRONTU(IA),N, TRAVL(IT,1,1), P,
-     %                   CU(1,1,1), NB)
+            CALL ZGEMM(TRA,TRB,NB,RESTM,NBL,ALPHA,FRONTL(IA),N,
+     &                 TRAVU(IT,1,1), P, BETA,CL(1,1,1), NB)
+            CALL ZGEMM(TRA,TRB,NB,RESTM,NBL,ALPHA,FRONTU(IA),N,
+     &                 TRAVL(IT,1,1), P, BETA,CU(1,1,1), NB)
 C     RECOPIE
 
 C
@@ -221,10 +226,10 @@ C     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
          IF(RESTL.GT.0) THEN
             IB = NLB + 1
             IA =   N*(IT-1) + K + NB*(IB-KB)
-            CALL CGEMX( RESTL,RESTM,NBL,FRONTL(IA),N, TRAVU(IT,1,1), P,
-     %                   CL(1,1,1), NB)
-            CALL CGEMX( RESTL,RESTM,NBL,FRONTU(IA),N, TRAVL(IT,1,1), P,
-     %                   CU(1,1,1), NB)
+            CALL ZGEMM( TRA,TRB,RESTL,RESTM,NBL,ALPHA,FRONTL(IA),N,
+     &                  TRAVU(IT,1,1), P,BETA,CL(1,1,1), NB)
+            CALL ZGEMM( TRA,TRB,RESTL,RESTM,NBL,ALPHA,FRONTU(IA),N,
+     &                  TRAVL(IT,1,1), P,BETA,CU(1,1,1), NB)
 C     RECOPIE
 
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/11/2004   AUTEUR GODARD V.GODARD 
+# MODIF  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
 # TITRE LOIS NON LOCALES A DEFORMATIONS REGULARISEES SUR BARREAU 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,13 +43,12 @@ CHMAT=AFFE_MATERIAU(AFFE=_F(MATER=MAT1,
                             TOUT='OUI',),
                     MAILLAGE=TOTO,);
 
-MO=AFFE_MODELE(AFFE=(_F(GROUP_MA=('GMA34',),
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='3D_GRAD_EPSI',),
-                    _F(GROUP_MA=('GMA29','GMA30','GMA31',),
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),),
-               MAILLAGE=TOTO,);
+MO=AFFE_MODELE(AFFE=_F(TOUT='OUI',
+                                               PHENOMENE='MECANIQUE',
+                                               MODELISATION='3D_GRAD_EPSI',),
+                               MAILLAGE=TOTO,);
+
+
 
 CL1=AFFE_CHAR_MECA(DDL_IMPO=_F(DY=0,
                                GROUP_NO='GMA30',),

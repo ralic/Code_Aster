@@ -8,7 +8,7 @@
 
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/08/2004   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -110,7 +110,7 @@ C     ATTENTION, MAFIS EST LIMITÉ À NXMAFI MAILLES
           WRITE(6,*)' ',ZI(JMAFIS-1+IMAE)
  110    CONTINUE
       ENDIF
-
+      
 C--------------------------------------------------------------------
 C    2°) ON ATTRIBUE LE STATUT DES NOEUDS DE GROUP_ENRI
 C--------------------------------------------------------------------
@@ -145,6 +145,16 @@ C--------------------------------------------------------------------
 
       WRITE(IFM,*)'XENRCH-3) ATTRIBUTION DU STATUT DES MAILLES'
 
+      IF (NMAFIS.EQ.0) THEN
+        CALL UTMESS('A','XENRCH','AUCUNE MAILLE DE FISSURE N''A ETE '//
+     &              'TROUVEE. SUITE DES CALCULS RISQUEE.')
+        NMAFON=0
+        NMAEN1=0
+        NMAEN2=0
+        NMAEN3=0
+        GOTO 333
+      ENDIF
+
       CALL WKVECT('&&XENRCH.MAFOND','V V I',NMAFIS,JMAFON)
       CALL WKVECT('&&XENRCH.MAENR1','V V I',NBMA,JMAEN1)      
       CALL WKVECT('&&XENRCH.MAENR2','V V I',NBMA,JMAEN2)      
@@ -163,8 +173,9 @@ C     BOUCLE SUR LES MAILLES DU MAILLAGE
         ITYPMA=ZI(JMA-1+IMA)
         CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
 C       SI MAILLE NON VOLUMIQUE ON CONTINUE À 310
-        IF (TYPMA.NE.'HEXA8'.AND.TYPMA.NE.'PENTA6'.
-     &       AND.TYPMA.NE.'TETRA4') GOTO 310          
+        IF (TYPMA(1:4).NE.'HEXA'.AND.TYPMA(1:5).NE.'PENTA'.
+     &       AND.TYPMA(1:5).NE.'TETRA') GOTO 310          
+
         EM=0
         EM1=0
         EM2=0
@@ -202,21 +213,24 @@ C       ON RÉCUPÈRE LES NUMEROS DES MAILLES ENRICHIES
       NMAEN2=IM2
       NMAEN3=IM3
 
+C     REPRISE SI NMAFIS=0
+ 333  CONTINUE
+
       IF (NIV.GT.2) THEN
         WRITE(IFM,*)'NOMBRE DE MAILLES DE MAFON :',NMAFON
         DO 320 IMA=1,NMAFON
           WRITE(IFM,*)'MAILLE NUMERO ',ZI(JMAFON-1+IMA)
  320    CONTINUE
         WRITE(IFM,*)'NOMBRE DE MAILLES DE MAENR1 :',NMAEN1     
-        DO 321 IMA=1,IM1
+        DO 321 IMA=1,NMAEN1
           WRITE(IFM,*)'MAILLE NUMERO ',ZI(JMAEN1-1+IMA)
  321    CONTINUE
         WRITE(IFM,*)'NOMBRE DE MAILLES DE MAENR2 :',NMAEN2    
-        DO 322 IMA=1,IM2
+        DO 322 IMA=1,NMAEN2
           WRITE(IFM,*)'MAILLE NUMERO ',ZI(JMAEN2-1+IMA)
  322    CONTINUE
         WRITE(IFM,*)'NOMBRE DE MAILLES DE MAENR3 :',NMAEN3      
-        DO 323 IMA=1,IM3
+        DO 323 IMA=1,NMAEN3
           WRITE(IFM,*)'MAILLE NUMERO ',ZI(JMAEN3-1+IMA)
  323    CONTINUE
       ENDIF

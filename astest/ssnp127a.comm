@@ -1,4 +1,4 @@
-# MODIF  DATE 09/11/2004   AUTEUR GODARD V.GODARD 
+# MODIF  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
 # TITRE LOI ENDO_ORTHO_BETON NON LOCALE A DEFO REGULARISEES SUR BARREAU 2D CPLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,13 +40,10 @@ CHMAT=AFFE_MATERIAU(AFFE=_F(MATER=MAT1,
                             TOUT='OUI',),
                     MAILLAGE=TOTO,);
 
-MO=AFFE_MODELE(AFFE=(_F(GROUP_MA=('GMA10',),
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN_GRAD_EPSI',),
-                    _F(GROUP_MA=('GMA7','GMA8','GMA9',),
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN',),),
-               MAILLAGE=TOTO,);
+MO=AFFE_MODELE(AFFE=_F(TOUT='OUI',
+                                              PHENOMENE='MECANIQUE',
+                                              MODELISATION='C_PLAN_GRAD_EPSI',),
+                               MAILLAGE=TOTO,);
 
 CL1=AFFE_CHAR_MECA(DDL_IMPO=_F(DY=0,
                                GROUP_NO='GMA7',),

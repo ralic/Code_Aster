@@ -2,7 +2,7 @@
      +                  ADRESS,GLOBAL,LGSN,FACTOL,FACTOU,SM,X,
      +                  INVP,PERM,AD,TRAV,TYPSYM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/01/2002   AUTEUR JFBHHUC C.ROSE 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,11 +51,18 @@ C
       INTEGER SEUIN,SEUIK
       PARAMETER(SEUIN=1500,SEUIK=300)
       INTEGER LDA,NN,KK
-      INTEGER ADFAC1,DEB1
+      INTEGER ADFAC1,DEB1,INCX,INCY
       INTEGER SNI,K,J,DEB,FIN,ADFAC,NDK,GJ,DEBNDK,IFAC
-      COMPLEX*16 S
+      COMPLEX*16 S,ALPHA,BETA
+      CHARACTER*1 TRA
+C
       CALL JEMARQ()
-
+C
+      TRA='N'
+      ALPHA= DCMPLX(-1.D0,0.D0)
+      BETA = DCMPLX( 1.D0,0.D0)
+      INCX = 1
+      INCY = 1
       DO 110 J = 1,NBND
           X(INVP(J)) = SM(J)
   110 CONTINUE
@@ -109,7 +116,8 @@ C     +                         TRAV(L+1))
                  IF(NN.LT.SEUIN.OR.KK.LT.SEUIK) THEN
                     CALL SSPMVC(NN,KK,ZC(IFAC),AD,TRAV,TRAV(L+1))
                  ELSE
-                   CALL CGEMW(NN,KK,ZC(IFAC+AD(1)-1),LDA,TRAV,TRAV(L+1))
+                   CALL ZGEMV(TRA,NN,KK,ALPHA,ZC(IFAC+AD(1)-1),LDA,
+     &                        TRAV,INCX,BETA,TRAV(L+1),INCY)
                   ENDIF
               END IF
               K = 1

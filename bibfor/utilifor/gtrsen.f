@@ -2,7 +2,7 @@
      $                   SEP, WORK, LWORK, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -204,17 +204,17 @@ C     .. LOCAL ARRAYS ..
       REAL*8             RWORK
 C     ..
 C     .. EXTERNAL FUNCTIONS ..
-      LOGICAL            LLSAME
-      REAL*8             GLANGE
+      LOGICAL            LSAME
+      REAL*8             ZLANGE
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
 C
 C     DECODE AND TEST THE INPUT PARAMETERS.
 C
-      WANTBH = LLSAME( JOB, 'B' )
-      WANTS = LLSAME( JOB, 'E' ) .OR. WANTBH
-      WANTSP = LLSAME( JOB, 'V' ) .OR. WANTBH
-      WANTQ = LLSAME( COMPQ, 'V' )
+      WANTBH = LSAME( JOB, 'B' )
+      WANTS = LSAME( JOB, 'E' ) .OR. WANTBH
+      WANTSP = LSAME( JOB, 'V' ) .OR. WANTBH
+      WANTQ = LSAME( COMPQ, 'V' )
 C
 C     SET M TO THE NUMBER OF SELECTED EIGENVALUES.
 C
@@ -231,10 +231,10 @@ C
       NN = N1*N2
 C
       INFO = 0
-      IF( .NOT.LLSAME( JOB, 'N' ) .AND. .NOT.WANTS .AND. .NOT.WANTSP )
+      IF( .NOT.LSAME( JOB, 'N' ) .AND. .NOT.WANTS .AND. .NOT.WANTSP )
      $     THEN
          INFO = -1
-      ELSE IF( .NOT.LLSAME( COMPQ, 'N' ) .AND. .NOT.WANTQ ) THEN
+      ELSE IF( .NOT.LSAME( COMPQ, 'N' ) .AND. .NOT.WANTQ ) THEN
          INFO = -2
       ELSE IF( N.LT.0 ) THEN
          INFO = -4
@@ -257,7 +257,7 @@ C
          IF( WANTS )
      $      S = ONE
          IF( WANTSP )
-     $      SEP = GLANGE( '1', N, N, T, LDT, RWORK )
+     $      SEP = ZLANGE( '1', N, N, T, LDT, RWORK )
          GO TO 40
       END IF
 C
@@ -281,14 +281,14 @@ C        SOLVE THE SYLVESTER EQUATION FOR R:
 C
 C           T11*R - R*T22 = SCALE*T12
 C
-         CALL GLACPY( 'F', N1, N2, T( 1, N1+1 ), LDT, WORK, N1 )
+         CALL ZLACPY( 'F', N1, N2, T( 1, N1+1 ), LDT, WORK, N1 )
          CALL GTRSYL( 'N', 'N', -1, N1, N2, T, LDT, T( N1+1, N1+1 ),
      $                LDT, WORK, N1, SCALE, IERR )
 C
 C        ESTIMATE THE RECIPROCAL OF THE CONDITION NUMBER OF THE CLUSTER
 C        OF EIGENVALUES.
 C
-         RNORM = GLANGE( 'F', N1, N2, WORK, N1, RWORK )
+         RNORM = ZLANGE( 'F', N1, N2, WORK, N1, RWORK )
          IF( RNORM.EQ.ZERO ) THEN
             S = ONE
          ELSE

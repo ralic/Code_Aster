@@ -1,6 +1,6 @@
       SUBROUTINE MLTFLM(NB,N,P,FRONT,ADPER,T1,AD,EPS,IER,C)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/05/2004   AUTEUR ROSE C.ROSE 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE ROSE C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,13 +20,19 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER N,P,ADPER(*),AD(*),IER
-      REAL*8 FRONT(*),T1(*),EPS,C(NB,NB,*)
+      REAL*8 FRONT(*),T1(*),EPS,C(NB,NB,*),ALPHA,BETA
       INTEGER NB,I,KB,ADK,ADKI,DECAL,L
       INTEGER   M,LL,  K, IND,IA,IB,J,RESTP,NPB
-      INTEGER RESTL,NLLB
+      INTEGER RESTL,NLLB,INCX,INCY
+      CHARACTER*1 TRA
       NPB=P/NB
       RESTP = P -(NB*NPB)
       LL = N
+      TRA='N'
+      ALPHA=-1.D0
+      BETA=1.D0
+      INCX=1
+      INCY=1
 C
       DO 1000 KB = 1,NPB
 C     K : INDICE (DANS LA MATRICE FRONTALE ( DE 1 A P)),
@@ -48,8 +54,8 @@ C
                      T1(L) = FRONT(ADPER(K+L-1))*FRONT(N*(K+L-2)+K+I-1)
  51                  CONTINUE
                      ENDIF
-               CALL DGEMW(LL,I-1,FRONT(IA),N,T1,FRONT(IND))
-
+               CALL DGEMV(TRA,LL,I-1,ALPHA,FRONT(IA),N,T1,INCX,BETA,
+     &                    FRONT(IND),INCY)
                ADKI = ADPER(K+I-1)
                DO 53 J=1,LL
                   FRONT(IND) = FRONT(IND)/FRONT(ADKI)
@@ -85,7 +91,8 @@ C
                      T1(L) = FRONT(ADPER(K+L-1))*FRONT(N*(K+L-2)+K+I-1)
  59               CONTINUE
                      ENDIF
-               CALL DGEMW(LL,I-1,FRONT(IA),N,T1,FRONT(IND))
+               CALL DGEMV(TRA,LL,I-1,ALPHA,FRONT(IA),N,T1,INCX,BETA,
+     &                    FRONT(IND),INCY)
                ADKI = ADPER(K+I-1)
                DO 63 J=1,LL
                   FRONT(IND) = FRONT(IND)/FRONT(ADKI)

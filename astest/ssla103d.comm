@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CALCUL DU RETRAIT DE DESSICCATION SUR UN CYLINDRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,12 +27,10 @@ DEBUT(CODE=_F(NOM='SSLA103D',
 M=LIRE_MAILLAGE();
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               AFFE=(_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='3D_GRAD_EPSI',),
-                     _F(GROUP_MA=('FACEXY','FACEXZ','FACEYZ'), 
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',), ),);
+               AFFE=_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D_GRAD_EPSI',),
+                              );
 
 E=DEFI_FONCTION(NOM_PARA='SECH',
                 VALE=( 80.,  3.E10,

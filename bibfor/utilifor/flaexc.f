@@ -1,7 +1,7 @@
       SUBROUTINE FLAEXC( WANTQ, N, T, LDT, Q, LDQ, J1, N1, N2, WORK,
      &                   INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -109,7 +109,7 @@ C     .. LOCAL ARRAYS ..
 C     ..
 C     .. EXTERNAL FUNCTIONS ..
       INTEGER ISBAEM
-      REAL*8 FLANGE, R8MIEM, R8PREM
+      REAL*8 DLANGE, R8MIEM, R8PREM
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
 C
@@ -162,10 +162,10 @@ C        COPY THE DIAGONAL BLOCK OF ORDER N1+N2 TO THE LOCAL ARRAY D
 C        AND COMPUTE ITS NORM.
 C
          ND = N1 + N2
-C DUE TO CRP102 CALL FLACPY( 'FULL', ND, ND, T( J1, J1 ), LDT, D, LDD )
-         CALL FLACPY( 'F', ND, ND, T( J1, J1 ), LDT, D, LDD )
-C DUE TO CRP102 DNORM = FLANGE( 'MAX', ND, ND, D, LDD, WORK )
-         DNORM = FLANGE( 'M', ND, ND, D, LDD, WORK )
+C DUE TO CRP102 CALL DLACPY( 'FULL', ND, ND, T( J1, J1 ), LDT, D, LDD )
+         CALL DLACPY( 'F', ND, ND, T( J1, J1 ), LDT, D, LDD )
+C DUE TO CRP102 DNORM = DLANGE( 'MAX', ND, ND, D, LDD, WORK )
+         DNORM = DLANGE( 'M', ND, ND, D, LDD, WORK )
 C
 C        COMPUTE MACHINE-DEPENDENT THRESHOLD FOR TEST FOR ACCEPTING
 C        SWAP.
@@ -200,8 +200,8 @@ C
 C
 C        PERFORM SWAP PROVISIONALLY ON DIAGONAL BLOCK IN D.
 C
-         CALL FLARFX( 'L', 3, 3, U, TAU, D, LDD, WORK )
-         CALL FLARFX( 'R', 3, 3, U, TAU, D, LDD, WORK )
+         CALL DLARFX( 'L', 3, 3, U, TAU, D, LDD, WORK )
+         CALL DLARFX( 'R', 3, 3, U, TAU, D, LDD, WORK )
 C
 C        TEST WHETHER TO REJECT SWAP.
 C
@@ -210,8 +210,8 @@ C
 C
 C        ACCEPT SWAP: APPLY TRANSFORMATION TO THE ENTIRE MATRIX T.
 C
-         CALL FLARFX( 'L', 3, N-J1+1, U, TAU, T( J1, J1 ), LDT, WORK )
-         CALL FLARFX( 'R', J2, 3, U, TAU, T( 1, J1 ), LDT, WORK )
+         CALL DLARFX( 'L', 3, N-J1+1, U, TAU, T( J1, J1 ), LDT, WORK )
+         CALL DLARFX( 'R', J2, 3, U, TAU, T( 1, J1 ), LDT, WORK )
 C
          T( J3, J1 ) = ZERO
          T( J3, J2 ) = ZERO
@@ -221,7 +221,7 @@ C
 C
 C           ACCUMULATE TRANSFORMATION IN THE MATRIX Q.
 C
-            CALL FLARFX( 'R', N, 3, U, TAU, Q( 1, J1 ), LDQ, WORK )
+            CALL DLARFX( 'R', N, 3, U, TAU, Q( 1, J1 ), LDQ, WORK )
          END IF
          GO TO 40
 C
@@ -242,8 +242,8 @@ C
 C
 C        PERFORM SWAP PROVISIONALLY ON DIAGONAL BLOCK IN D.
 C
-         CALL FLARFX( 'L', 3, 3, U, TAU, D, LDD, WORK )
-         CALL FLARFX( 'R', 3, 3, U, TAU, D, LDD, WORK )
+         CALL DLARFX( 'L', 3, 3, U, TAU, D, LDD, WORK )
+         CALL DLARFX( 'R', 3, 3, U, TAU, D, LDD, WORK )
 C
 C        TEST WHETHER TO REJECT SWAP.
 C
@@ -252,8 +252,8 @@ C
 C
 C        ACCEPT SWAP: APPLY TRANSFORMATION TO THE ENTIRE MATRIX T.
 C
-         CALL FLARFX( 'R', J3, 3, U, TAU, T( 1, J1 ), LDT, WORK )
-         CALL FLARFX( 'L', 3, N-J1, U, TAU, T( J1, J2 ), LDT, WORK )
+         CALL DLARFX( 'R', J3, 3, U, TAU, T( 1, J1 ), LDT, WORK )
+         CALL DLARFX( 'L', 3, N-J1, U, TAU, T( J1, J2 ), LDT, WORK )
 C
          T( J1, J1 ) = T33
          T( J2, J1 ) = ZERO
@@ -263,7 +263,7 @@ C
 C
 C           ACCUMULATE TRANSFORMATION IN THE MATRIX Q.
 C
-            CALL FLARFX( 'R', N, 3, U, TAU, Q( 1, J1 ), LDQ, WORK )
+            CALL DLARFX( 'R', N, 3, U, TAU, Q( 1, J1 ), LDQ, WORK )
          END IF
          GO TO 40
 C
@@ -292,10 +292,10 @@ C
 C
 C        PERFORM SWAP PROVISIONALLY ON DIAGONAL BLOCK IN D.
 C
-         CALL FLARFX( 'L', 3, 4, U1, TAU1, D, LDD, WORK )
-         CALL FLARFX( 'R', 4, 3, U1, TAU1, D, LDD, WORK )
-         CALL FLARFX( 'L', 3, 4, U2, TAU2, D( 2, 1 ), LDD, WORK )
-         CALL FLARFX( 'R', 4, 3, U2, TAU2, D( 1, 2 ), LDD, WORK )
+         CALL DLARFX( 'L', 3, 4, U1, TAU1, D, LDD, WORK )
+         CALL DLARFX( 'R', 4, 3, U1, TAU1, D, LDD, WORK )
+         CALL DLARFX( 'L', 3, 4, U2, TAU2, D( 2, 1 ), LDD, WORK )
+         CALL DLARFX( 'R', 4, 3, U2, TAU2, D( 1, 2 ), LDD, WORK )
 C
 C        TEST WHETHER TO REJECT SWAP.
 C
@@ -304,10 +304,10 @@ C
 C
 C        ACCEPT SWAP: APPLY TRANSFORMATION TO THE ENTIRE MATRIX T.
 C
-         CALL FLARFX( 'L', 3, N-J1+1, U1, TAU1, T( J1, J1 ), LDT, WORK )
-         CALL FLARFX( 'R', J4, 3, U1, TAU1, T( 1, J1 ), LDT, WORK )
-         CALL FLARFX( 'L', 3, N-J1+1, U2, TAU2, T( J2, J1 ), LDT, WORK )
-         CALL FLARFX( 'R', J4, 3, U2, TAU2, T( 1, J2 ), LDT, WORK )
+         CALL DLARFX( 'L', 3, N-J1+1, U1, TAU1, T( J1, J1 ), LDT, WORK )
+         CALL DLARFX( 'R', J4, 3, U1, TAU1, T( 1, J1 ), LDT, WORK )
+         CALL DLARFX( 'L', 3, N-J1+1, U2, TAU2, T( J2, J1 ), LDT, WORK )
+         CALL DLARFX( 'R', J4, 3, U2, TAU2, T( 1, J2 ), LDT, WORK )
 C
          T( J3, J1 ) = ZERO
          T( J3, J2 ) = ZERO
@@ -318,8 +318,8 @@ C
 C
 C           ACCUMULATE TRANSFORMATION IN THE MATRIX Q.
 C
-            CALL FLARFX( 'R', N, 3, U1, TAU1, Q( 1, J1 ), LDQ, WORK )
-            CALL FLARFX( 'R', N, 3, U2, TAU2, Q( 1, J2 ), LDQ, WORK )
+            CALL DLARFX( 'R', N, 3, U1, TAU1, Q( 1, J1 ), LDQ, WORK )
+            CALL DLARFX( 'R', N, 3, U2, TAU2, Q( 1, J2 ), LDQ, WORK )
          END IF
 C
    40    CONTINUE

@@ -3,7 +3,7 @@
      &     WORKL, WORKD)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -100,14 +100,14 @@ C ROUTINES CALLED:
 C     IVOUT   ARPACK UTILITY ROUTINE THAT PRINTS INTEGERS.
 C     DMOUT   ARPACK UTILITY ROUTINE THAT PRINTS MATRICES.
 C     DVOUT   ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
-C     FLACPY  LAPACK MATRIX COPY ROUTINE.
-C     FLANHS  LAPACK ROUTINE THAT COMPUTES VARIOUS NORMS OF A MATRIX.
-C     FLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
-C     FLARF   LAPACK ROUTINE THAT APPLIES HOUSEHOLDER REFLECTION TO
+C     DLACPY  LAPACK MATRIX COPY ROUTINE.
+C     DLANHS  LAPACK ROUTINE THAT COMPUTES VARIOUS NORMS OF A MATRIX.
+C     DLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
+C     DLARF   LAPACK ROUTINE THAT APPLIES HOUSEHOLDER REFLECTION TO
 C             A MATRIX.
 C     FLARFG  LAPACK HOUSEHOLDER REFLECTION CONSTRUCTION ROUTINE.
 C     FLARTG  LAPACK GIVENS ROTATION CONSTRUCTION ROUTINE.
-C     FLASET  LAPACK MATRIX INITIALIZATION ROUTINE.
+C     DLASET  LAPACK MATRIX INITIALIZATION ROUTINE.
 C     DGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
 C     DAXPY   LEVEL 1 BLAS THAT COMPUTES A VECTOR TRIAD.
 C     DCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
@@ -199,7 +199,7 @@ C     | EXTERNAL FUNCTIONS |
 C     %--------------------%
 
       INTEGER ISBAEM
-      REAL*8 FLANHS, FLAPY2, R8PREM, R8MIEM
+      REAL*8 DLANHS, DLAPY2, R8PREM, R8MIEM
 
 C     %----------------%
 C     | DATA STATMENTS |
@@ -240,9 +240,9 @@ C     | INITIALIZE Q TO THE IDENTITY TO ACCUMULATE |
 C     | THE ROTATIONS AND REFLECTIONS              |
 C     %--------------------------------------------%
 
-C DUE TO CRP_102 CALL FLASET ('ALL', KPLUSP, KPLUSP, ZERO,
+C DUE TO CRP_102 CALL DLASET ('ALL', KPLUSP, KPLUSP, ZERO,
 C ONE, Q, LDQ)
-      CALL FLASET ('A', KPLUSP, KPLUSP, ZERO, ONE, Q, LDQ)
+      CALL DLASET ('A', KPLUSP, KPLUSP, ZERO, ONE, Q, LDQ)
 
 C     %----------------------------------------------%
 C     | QUICK RETURN IF THERE ARE NO SHIFTS TO APPLY |
@@ -328,7 +328,7 @@ C           %----------------------------------------%
 
             TST1 = ABS( H( I, I ) ) + ABS( H( I+1, I+1 ) )
             IF( TST1.EQ.ZERO )
-     &         TST1 = FLANHS( '1', KPLUSP-JJ+1, H, LDH, WORKL )
+     &         TST1 = DLANHS( '1', KPLUSP-JJ+1, H, LDH, WORKL )
             IF( ABS( H( I+1,I ) ).LE.MAX( ULP*TST1, SMLNUM ) ) THEN
                IF (MSGLVL .GT. 0) THEN
                    CALL IVOUT (LOGFIL, 1, I, NDIGIT,
@@ -461,7 +461,7 @@ C           | COMPUTE 1ST COLUMN OF (H - SHIFT*I)*(H - CONJ(SHIFT)*I) |
 C           %---------------------------------------------------------%
 
             S    = DEUX*SIGMAR
-            T = FLAPY2 ( SIGMAR, SIGMAI )
+            T = DLAPY2 ( SIGMAR, SIGMAI )
             U(1) = ( H11 * (H11 - S) + T * T ) / H21 + H12
             U(2) = H11 + H22 - S
             U(3) = H32
@@ -487,8 +487,8 @@ C              %-----------------------------------------------------%
 C              %--------------------------------------%
 C              | APPLY THE REFLECTOR TO THE LEFT OF H |
 C              %--------------------------------------%
-C DUE TO CRP_102 CALL FLARF ('LEFT', NR, KPLUSP-I+1, U, 1, TAU,
-               CALL FLARF ('L', NR, KPLUSP-I+1, U, 1, TAU,
+C DUE TO CRP_102 CALL DLARF ('LEFT', NR, KPLUSP-I+1, U, 1, TAU,
+               CALL DLARF ('L', NR, KPLUSP-I+1, U, 1, TAU,
      &                     H(I,I), LDH, WORKL)
 
 C              %---------------------------------------%
@@ -496,16 +496,16 @@ C              | APPLY THE REFLECTOR TO THE RIGHT OF H |
 C              %---------------------------------------%
 
                IR = MIN ( I+3, IEND )
-C DUE TO CRP_102 CALL FLARF ('RIGHT', IR, NR, U, 1, TAU,
-               CALL FLARF ('R', IR, NR, U, 1, TAU,
+C DUE TO CRP_102 CALL DLARF ('RIGHT', IR, NR, U, 1, TAU,
+               CALL DLARF ('R', IR, NR, U, 1, TAU,
      &                     H(1,I), LDH, WORKL)
 
 C              %-----------------------------------------------------%
 C              | ACCUMULATE THE REFLECTOR IN THE MATRIX Q,  Q <- Q*G |
 C              %-----------------------------------------------------%
 
-C DUE TO CRP_102 CALL FLARF ('RIGHT', KPLUSP, NR, U, 1, TAU,
-               CALL FLARF ('R', KPLUSP, NR, U, 1, TAU,
+C DUE TO CRP_102 CALL DLARF ('RIGHT', KPLUSP, NR, U, 1, TAU,
+               CALL DLARF ('R', KPLUSP, NR, U, 1, TAU,
      &                     Q(1,I), LDQ, WORKL)
 
 C              %----------------------------%
@@ -565,7 +565,7 @@ C        %--------------------------------------------%
 
          TST1 = ABS( H( I, I ) ) + ABS( H( I+1, I+1 ) )
          IF( TST1.EQ.ZERO )
-     &       TST1 = FLANHS( '1', KEV, H, LDH, WORKL )
+     &       TST1 = DLANHS( '1', KEV, H, LDH, WORKL )
          IF( H( I+1,I ) .LE. MAX( ULP*TST1, SMLNUM ) )
      &       H(I+1,I) = ZERO
  130  CONTINUE
@@ -597,7 +597,7 @@ C     %-------------------------------------------------%
 C     |  MOVE V(:,KPLUSP-KEV+1:KPLUSP) INTO V(:,1:KEV). |
 C     %-------------------------------------------------%
 
-      CALL FLACPY ('A', N, KEV, V(1,KPLUSP-KEV+1), LDV, V, LDV)
+      CALL DLACPY ('A', N, KEV, V(1,KPLUSP-KEV+1), LDV, V, LDV)
 
 C     %--------------------------------------------------------------%
 C     | COPY THE (KEV+1)-ST COLUMN OF (V*Q) IN THE APPROPRIATE PLACE |

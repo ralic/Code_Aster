@@ -6,7 +6,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 28/09/2004   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_20
 C TOLE CRP_21
 C ======================================================================
 C ROUTINE HMLGAT : CETTE ROUTINE CALCULE LES CONTRAINTES GENERALISEE
@@ -49,38 +48,14 @@ C ======================================================================
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
-      INTEGER      I,IADZI,IAZK24
+      INTEGER      I
       REAL*8       SATM,EPSVM,PHIM,RHO11M,RHO110,YOUNG,NU,BIOT,K0,CS
       REAL*8       ALPHA0,ALPLIQ,CLIQ,CP11,SAT,DSATP1,RHO0,C0EPS,CSIGM
       REAL*8       VARIA,ALP11,UMPRHS,RHO12,RHO21,MASRT,VARBIO,VARLQ
       REAL*8       VARVP,EM
-      CHARACTER*8  NOMAIL
-C ======================================================================
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-C ======================================================================
-      INTEGER    UMESS,IUNIFI
-      REAL*8     EXPMAX
-      PARAMETER (EXPMAX=5.D0)
 C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 C ======================================================================
-      INTEGER      NELAS
-      PARAMETER  ( NELAS = 4 )
       REAL*8       RBID1, RBID2, RBID3, RBID4, RBID5, RBID6, RBID7
       REAL*8       RBID8, RBID9, RBID10, RBID11, RBID12, RBID13, RBID14
       REAL*8       RBID15, RBID16, RBID17, RBID18, RBID19, RBID20
@@ -89,24 +64,9 @@ C ======================================================================
       REAL*8       RBID33, RBID34, RBID35, RBID36, RBID37, RBID38
       REAL*8       RBID39, RBID40,RBID45,RBID46,RBID47,RBID48,RBID49
       REAL*8       RBID50,RBID51
-      REAL*8       ELAS(NELAS)
-      CHARACTER*2  CODRET(NELAS)
-      CHARACTER*8  NCRA1(NELAS)
-C ======================================================================
-C --- DONNEES POUR RECUPERER LES CARACTERISTIQUES MECANIQUES -----------
-C ======================================================================
-      DATA NCRA1/'E','NU','RHO','ALPHA'/
-C ======================================================================
-C --- POUR EVITER DES PB AVEC OPTIMISEUR ON MET UNE VALEUR DANS CES ----
-C --- VARIABES POUR QU ELLES AIENT UNE VALEUR MEME DANS LES CAS OU -----
-C --- ELLES NE SONT THEOTIQUEMENT PAS UTILISEES ------------------------
-C ======================================================================
-      CSIGM  = 0.D0
-      RHO0   = 0.D0
-      RETCOM = 0
-      UMESS  = IUNIFI('MESSAGE')
-      CALL TECAEL(IADZI,IAZK24)
-      NOMAIL = ZK24(IAZK24-1+3) (1:8)
+      REAL*8       DP2,SIGNE,DPAD,COEPS,CP21,M11M,RHO22,ALP12,CP12
+      REAL*8       DMWDP1,DQDEPS,DQDP,DQDT,DMWDT,DHDT,DHWDP1,DMDEPV
+      REAL*8       DSPDP1,APPMAS,SIGMAP,CALOR,ENTEAU,DILEAU,CP22
 C =====================================================================
 C --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 C =====================================================================
@@ -120,273 +80,185 @@ C =====================================================================
      +             RBID29, RBID30, RBID31,RBID32, RBID33, RBID34, 
      +             RBID35, RBID36, RBID37,RBID38, RBID39,RBID45,RBID46,
      +             RBID47,RBID48,RBID49,EM,RBID50,RBID51)
+C ======================================================================
+C --- POUR EVITER DES PB AVEC OPTIMISEUR ON MET UNE VALEUR DANS CES ----
+C --- VARIABES POUR QU ELLES AIENT UNE VALEUR MEME DANS LES CAS OU -----
+C --- ELLES NE SONT THEOTIQUEMENT PAS UTILISEES ------------------------
+C ======================================================================
+      CP12   = 0.0D0
+      CP21   = 0.0D0
+      CP22   = 0.0D0
+      ALP11  = 0.0D0
+      ALP12  = 0.0D0
+      RHO12  = 0.0D0
+      RHO21  = 0.0D0
+      RHO22  = 0.0D0
+      SIGNE  = 1.0D0
+      DP2    = 0.0D0
+      DPAD   = 0.0D0
+      RETCOM = 0
+      M11M   = CONGEM(ADCP11)
+      RHO11  = VINTM(ADVIHY+VIHRHO) + RHO110
+      RHO11M = VINTM(ADVIHY+VIHRHO) + RHO110
+      PHI    = VINTM(ADVICO+VICPHI) + PHI0
+      PHIM   = VINTM(ADVICO+VICPHI) + PHI0
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
-      IF (YAMEC.EQ.1) THEN
-          CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,NCRA1,ELAS,
-     +                                    CODRET,      'FM')
-          YOUNG  = ELAS(1)
-          NU     = ELAS(2)
-          ALPHA0 = ELAS(4)
-          K0     = YOUNG/3.D0/ (1.D0-2.D0*NU)
-          CS     = (1.D0-BIOT)/K0
-      ELSE
-C =====================================================================
-C --- EN ABSENCE DE MECA ALPHA0 = 0 et 1/KS = 0 -----------------------
-C =====================================================================
-         ALPHA0 = 0.D0
-         CS     = EM
-         BIOT   = PHI0
-         PHI    = PHI0
-         PHIM   = PHI0
-         EPSV   = 0.D0
-         DEPSV  = 0.D0
-      ENDIF
-C =====================================================================
-C --- CALCUL EPSV AU TEMPS MOINS --------------------------------------
-C =====================================================================
-      EPSVM = EPSV - DEPSV
-C =====================================================================
-C --- RECUPERATION DE LA VARIABLE SAT ---------------------------------
-C =====================================================================
+      CALL INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,
+     +                                                EPSV,DEPSV,EPSVM)
+
+C *********************************************************************
+C *** LES VARIABLES INTERNES ******************************************
+C *********************************************************************
       IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
      &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
-         VINTP(ADVICO+VICSAT) = SAT
-      ENDIF
 C =====================================================================
-C --- CALCUL DES ARGUMENTS D EXP --------------------------------------
+C --- CALCUL DE LA VARIABLE INTERNE DE POROSITE SELON FORMULE DOCR ----
+C =====================================================================
+         IF (YAMEC.EQ.1) THEN
+            CALL VIPORO(NBVARI,VINTM,VINTP,ADVICO,VICPHI,PHI0,
+     +       DEPSV,ALPHA0,DT,DP1,DP2,SIGNE,SAT,CS,BIOT,PHI,PHIM,RETCOM)
+         ENDIF
+C =====================================================================
+C --- CALCUL DE LA VARIABLE INTERNE DE MASSE VOLUMIQUE DU FLUIDE ------
+C --- SELON FORMULE DOCR ----------------------------------------------
+C =====================================================================
+         CALL VIRHOL(NBVARI,VINTM,VINTP,ADVIHY,VIHRHO,RHO110,
+     +           DP1,DP2,DPAD,CLIQ,DT,ALPLIQ,SIGNE,RHO11,RHO11M,RETCOM)
+C =====================================================================
+C --- RECUPERATION DE LA VARIABLE INTERNE DE SATURATION ---------------
+C =====================================================================
+         CALL VISATU(NBVARI,VINTP,ADVICO,VICSAT,SAT)
+C =====================================================================
+C --- PROBLEME DANS LE CALCUL DES VARIABLES INTERNES ? ----------------
+C =====================================================================
+         IF (RETCOM.NE.0) THEN
+            GO TO 30
+         ENDIF
+      ENDIF
+
+C **********************************************************************
+C *** LES CONTRAINTES GENERALISEES *************************************
+C **********************************************************************
+C =====================================================================
+C --- CALCULS UNIQUEMENT SI PRESENCE DE THERMIQUE ---------------------
 C =====================================================================
       IF (YATE.EQ.1) THEN
-         IF (T.LE.0.D0) THEN
-            WRITE (UMESS,9001) 'CALCCO_LIQ_GAZ_ATM',' T <0  ',
-     +                                           'A LA MAILLE: ',NOMAIL
-            RETCOM = 1
+C =====================================================================
+C --- CALCUL DES COEFFICIENTS DE DILATATIONS ALPHA SELON FORMULE DOCR -
+C =====================================================================
+         ALP11 = DILEAU(SAT,BIOT,PHI,ALPHA0,ALPLIQ)
+C ======================================================================
+C --- CALCUL DE LA CAPACITE CALORIFIQUE SELON FORMULE DOCR -------------
+C ======================================================================
+         CALL CAPACA(RHO0,RHO11,RHO12,RHO21,RHO22,SAT,PHI,
+     +              CSIGM,CP11,CP12,CP21,CP22,K0,ALPHA0,T,COEPS,RETCOM)
+C =====================================================================
+C --- PROBLEME LORS DU CALCUL DE COEPS --------------------------------
+C =====================================================================
+         IF (RETCOM.NE.0) THEN
             GO TO 30
          ENDIF
+C ======================================================================
+C --- CALCUL DES ENTHALPIES SELON FORMULE DOCR -------------------------
+C ======================================================================
+         IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
+     +       (OPTION(1:9).EQ.'FULL_MECA')) THEN
+            CONGEP(ADCP11+NDIM+1) = CONGEP(ADCP11+NDIM+1)
+     +               + ENTEAU(DT,ALPLIQ,T,RHO11,DP2,DP1,DPAD,SIGNE,CP11)
+C ======================================================================
+C --- CALCUL DE LA CHALEUR REDUITE Q' SELON FORMULE DOCR ---------------
+C ======================================================================
+            CONGEP(ADCOTE) = CONGEP(ADCOTE)
+     +     + CALOR(ALPHA0,K0,T,DT,DEPSV,DP1,DP2,SIGNE,ALP11,ALP12,COEPS)
+         ENDIF
       ENDIF
-C =====================================================================
-C --- DIFFERENTS TESTS D'ESTIMATIONS ----------------------------------
-C =====================================================================
+C ======================================================================
+C --- CALCUL SI PAS RIGI_MECA_TANG -------------------------------------
+C ======================================================================
       IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
-     &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
-         VARVP = 0.D0
+     +    (OPTION(1:9).EQ.'FULL_MECA')) THEN
+C ======================================================================
+C --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------
+C ======================================================================
          IF (YAMEC.EQ.1) THEN
-            VARBIO = DEPSV
-            IF (YATE.EQ.1) THEN
-              VARBIO = VARBIO - 3.D0*ALPHA0*DT
-            ENDIF
-            VARBIO = VARBIO + CS* (-SAT*DP1)
-         ENDIF
-         VARLQ = 0.D0
-         IF (YATE.EQ.1) THEN
-            VARLQ = -3.D0*ALPLIQ*DT
-         ELSE
-            VARLQ = 0.D0
-         ENDIF
-         VARLQ = VARLQ - DP1*CLIQ
-C =====================================================================
-C --- TESTS SUR LES ESTIMATIONS DE COEF D EXPONENTIELLES --------------
-C =====================================================================
-         IF (YAMEC.EQ.1) THEN
-            IF (-VARBIO.GT.EXPMAX) THEN
-               WRITE (UMESS,9001) 'CALCCO_LIQ_GAZ_ATM',
-     &                      '-VARBIO > EXPMAX  ','A LA MAILLE: ',NOMAIL
-               RETCOM = 1
-               GO TO 30
-            ENDIF
-        ENDIF
-        IF (VARLQ.NE.0.D0) THEN
-          IF (VARLQ.GT.EXPMAX) THEN
-            WRITE (UMESS,9001) 'CALCCO_LIQ_GAZ_ATM','VARLQ > EXPMAX  ',
-     &        'A LA MAILLE: ',NOMAIL
-            RETCOM = 1
-            GO TO 30
-          END IF
-          IF (VARLQ.LT.-EXPMAX) THEN
-            WRITE (UMESS,9001) 'CALCCO_LIQ_GAZ_ATM',
-     &        'VARLQ <- EXPMAX  ','A LA MAILLE: ',NOMAIL
-            RETCOM = 1
-            GO TO 30
-          END IF
-        END IF
-        IF (VARVP.GT.EXPMAX) THEN
-          WRITE (UMESS,9001) 'CALCCO_LIQ_GAZ_ATM','VARVP > EXPMAX  ',
-     &      'A LA MAILLE: ',NOMAIL
-          RETCOM = 1
-          GO TO 30
-        END IF
-        IF (VARVP.LT.-EXPMAX) THEN
-          WRITE (UMESS,9001) 'CALCCO_LIQ_GAZ_ATM','VARVP <- EXPMAX  ',
-     &      'A LA MAILLE: ',NOMAIL
-          RETCOM = 1
-          GO TO 30
-        END IF
-      END IF
-C =====================================================================
-C --- CALCUL DE LA VARIABLE INTERNE PHI A L'INSTANT PLUS --------------
-C =====================================================================
-      IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
-     &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
-         IF (YAMEC.EQ.1) THEN
-            VARIA = DEPSV
-            IF (YATE.EQ.1) THEN
-               VARIA = VARIA - 3.D0*ALPHA0*DT
-            ENDIF
-            VARIA = VARIA + CS* (-SAT*DP1)
-            VINTP(ADVICO+VICPHI) = BIOT - PHI0 -
-     &                     (BIOT-VINTM(ADVICO+VICPHI)-PHI0)*EXP(-VARIA)
-         ENDIF
+            CONGEP(ADCOME+6)=CONGEP(ADCOME+6)
+     +                                  + SIGMAP(SAT,SIGNE,BIOT,DP2,DP1)
+         END IF
+C ======================================================================
+C --- CALCUL DES APPORTS MASSIQUES SELON FORMULE DOCR ------------------
+C ======================================================================
+         CONGEP(ADCP11) = APPMAS(M11M,PHI,PHIM,SAT,SATM,RHO11,
+     +                                                RHO11M,EPSV,EPSVM)
       ENDIF
-C =====================================================================
-C --- CALCUL DE LA VARIABLE INTERNE RHO11 A L'INSTANT PLUS SI LIQUIDE -
-C =====================================================================
-      IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
-     &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
-         VARIA = -DP1*CLIQ
-         IF (YATE.EQ.1) THEN
-            VARIA = VARIA - 3.D0*ALPLIQ*DT
-         ENDIF
-         VINTP(ADVIHY+VIHRHO) =
-     +                 -RHO110+(VINTM(ADVIHY+VIHRHO)+RHO110)*EXP(VARIA)
-      ENDIF
-C =====================================================================
-C --- CALCUL DE PHI ET DE RHO11 (SI LIQ) A L'INSTANT COURANT ----------
-C =====================================================================
-      IF (OPTION(1:9).EQ.'RIGI_MECA') THEN
-         IF (YAMEC.EQ.1) THEN
-            PHI = VINTM(ADVICO+VICPHI) + PHI0
-         ELSE
-            PHI = PHI0
-         ENDIF
-         RHO11 = VINTM(ADVIHY+VIHRHO) + RHO110
-         RHO11M = VINTM(ADVIHY+VIHRHO) + RHO110
-      ELSE
-         IF (YAMEC.EQ.1) THEN
-            PHI = VINTP(ADVICO+VICPHI) + PHI0
-            PHIM = VINTM(ADVICO+VICPHI) + PHI0
-         ELSE
-            PHI = PHI0
-         ENDIF
-         RHO11 = VINTP(ADVIHY+VIHRHO) + RHO110
-         RHO11M = VINTM(ADVIHY+VIHRHO) + RHO110
-      ENDIF
-C =====================================================================
-C --- CALCUL DES AUTRES COEFFICIENTS DEDUITS : DILATATIONS ALPHA ------
-C --- ET C0EPS DANS LE CAS D'UN SEUL FLUIDE ---------------------------
-C =====================================================================
-      IF (YATE.EQ.1) THEN
-         ALP11 = ALPLIQ*PHI
-         UMPRHS = (RHO0-RHO11*SAT*PHI)
-         IF (UMPRHS.LE.0.D0) THEN
-          WRITE (UMESS,9001) 'CALCCO_LIQ_GAZ_ATM',' RHOS(1-PHI) <=0  ',
-     &      ' A LA MAILLE: ',NOMAIL
-          RETCOM = 1
-          GO TO 30
-         ENDIF
-         IF (YAMEC.EQ.1) THEN
-            ALP11 = ALP11 + ALPHA0* (BIOT-PHI)
-         ENDIF
-         C0EPS = UMPRHS*CSIGM + PHI*SAT*RHO11*CP11
-         IF (YAMEC.EQ.1) THEN
-            C0EPS = C0EPS - 9.D0*T*K0*ALPHA0*ALPHA0
-         ENDIF
-         IF (C0EPS.LE.0.D0) THEN
-            WRITE (UMESS,9001) 'CALCCO_LIQ_GAZ_ATM','C0EPS <=0  ',
-     +                                          'A LA MAILLE: ',NOMAIL
-            RETCOM = 1
-            GO TO 30
-         ENDIF
-      ENDIF
-C =====================================================================
-C --- CALCUL ENTHALPIES ET DERIVEES DES ENTHALPIES --------------------
-C --- CALCUL FAIT EN AVANCE CAR ON A BESOIN DE H11 ET H12 POUR PVP ----
-C =====================================================================
-      IF ((YATE.EQ.1)) THEN
-        IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
-     &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
-          DSDE(ADCP11+NDIM+1,ADDEP1) = DSDE(ADCP11+NDIM+1,ADDEP1) -
-     &                                 (1.D0-3.D0*ALPLIQ*T)/RHO11
-          DSDE(ADCP11+NDIM+1,ADDETE) = DSDE(ADCP11+NDIM+1,ADDETE) + CP11
-        END IF
-        IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
-     &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
-          CONGEP(ADCP11+NDIM+1) = CONGEP(ADCP11+NDIM+1) -
-     &                            (1.D0-3.D0*ALPLIQ*T)/RHO11*DP1 +
-     &                            CP11*DT
-        END IF
-      END IF
-C =====================================================================
-C --- CALCUL DE SIGMAP ------------------------------------------------
-C =====================================================================
-      IF (YAMEC.EQ.1) THEN
-        IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
-     &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
-          DSDE(ADCOME+6,ADDEP1) = DSDE(ADCOME+6,ADDEP1) + BIOT*SAT
-        END IF
-        IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
-     &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
-          CONGEP(ADCOME+6) = CONGEP(ADCOME+6) + BIOT*SAT*DP1
-        END IF
-      END IF
-C =====================================================================
-C --- CALCUL DES APPORTS MASSIQUES ------------------------------------
-C =====================================================================
+
+C **********************************************************************
+C *** CALCUL DES DERIVEES **********************************************
+C **********************************************************************
+C ======================================================================
+C --- CALCUL DES DERIVEES PARTIELLES DES PRESSIONS SELON FORMULES DOCR -
+C --- UNIQUEMENT POUR LES OPTIONS RIGI_MECA ET FULL_MECA ---------------
+C ======================================================================
       IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
-     &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
-        DSDE(ADCP11,ADDEP1) = DSDE(ADCP11,ADDEP1) +
-     &                        RHO11* (DSATP1*PHI-SAT*PHI*CLIQ-
-     &                        SAT*SAT* (BIOT-PHI)*CS)
-        IF (YATE.EQ.1) THEN
-          DSDE(ADCP11,ADDETE) = DSDE(ADCP11,ADDETE) - 3.D0*RHO11*ALP11
-        END IF
-        IF (YAMEC.EQ.1) THEN
-          DO 10 I = 1,3
-            DSDE(ADCP11,ADDEME+NDIM-1+I) = DSDE(ADCP11,
-     &        ADDEME+NDIM-1+I) + RHO11*BIOT*SAT
- 10       CONTINUE
-        END IF
-      END IF
-      IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
-     &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
-        CONGEP(ADCP11) = CONGEM(ADCP11) + PHI*SAT*RHO11* (1.D0+EPSV) -
-     &                   PHIM*SATM*RHO11M* (1.D0+EPSVM)
-      END IF
+     +    (OPTION(1:9).EQ.'FULL_MECA')) THEN
+         IF (YAMEC.EQ.1) THEN
+C ======================================================================
+C --- CALCUL UNIQUEMENT EN PRESENCE DE MECANIQUE -----------------------
+C ======================================================================
+C --- CALCUL DES DERIVEES DE SIGMAP ------------------------------------
+C ======================================================================
+            DSDE(ADCOME+6,ADDEP1)=DSDE(ADCOME+6,ADDEP1)
+     +                                          + DSPDP1(SIGNE,BIOT,SAT)
+C ======================================================================
+C --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
+C --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
+C ======================================================================
+            DO 10 I = 1,3
+               DSDE(ADCP11,ADDEME+NDIM-1+I) =
+     +             DSDE(ADCP11,ADDEME+NDIM-1+I) + DMDEPV(RHO11,SAT,BIOT)
+ 10         CONTINUE
+         ENDIF
+         IF (YATE. EQ.1) THEN
+C ======================================================================
+C --- CALCUL UNIQUEMENT EN PRESENCE DE THERMIQUE -----------------------
+C ======================================================================
+C --- CALCUL DES DERIVEES DES ENTHALPIES -------------------------------
+C ======================================================================
+            DSDE(ADCP11+NDIM+1,ADDEP1)=DSDE(ADCP11+NDIM+1,ADDEP1)
+     +                                    + DHWDP1(SIGNE,ALPLIQ,T,RHO11)
+            DSDE(ADCP11+NDIM+1,ADDETE)=DSDE(ADCP11+NDIM+1,ADDETE)
+     +                                                      + DHDT(CP11)
+C ======================================================================
+C --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
+C --- UNIQUEMENT POUR LA PARTIR THERMIQUE ------------------------------
+C ======================================================================
+            DSDE(ADCP11,ADDETE) = DSDE(ADCP11,ADDETE)
+     +                           + DMWDT(RHO11,PHI,SAT,CLIQ,0.0D0,ALP11)
+C ======================================================================
+C --- CALCUL DE LA DERIVEE DE LA CHALEUR REDUITE Q' --------------------
+C ======================================================================
+            DSDE(ADCOTE,ADDETE)=DSDE(ADCOTE,ADDETE)+DQDT(COEPS)
+            DSDE(ADCOTE,ADDEP1)=DSDE(ADCOTE,ADDEP1)+DQDP(SIGNE,ALP11,T)
+C ======================================================================
+C --- CALCUL DE LA DERIVEE DE LA CHALEUR REDUITE Q' --------------------
+C --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
+C ======================================================================
+            IF (YAMEC.EQ.1) THEN
+               DO 20 I = 1,3
+                  DSDE(ADCOTE,ADDEME+NDIM-1+I) =
+     +            DSDE(ADCOTE,ADDEME+NDIM-1+I) + DQDEPS(ALPHA0,K0,T)
+   20          CONTINUE
+            ENDIF
+         ENDIF
+C ======================================================================
+C --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
+C --- POUR LES AUTRES CAS ----------------------------------------------
+C ======================================================================
+         DSDE(ADCP11,ADDEP1) = DSDE(ADCP11,ADDEP1)
+     +           + DMWDP1(RHO11,SIGNE,SAT,DSATP1,BIOT,PHI,CS,CLIQ,1.0D0)
+      ENDIF
 C =====================================================================
-C --- CALCUL DE LA CHALEUR REDUITE Q' ---------------------------------
-C =====================================================================
-      IF (YATE.EQ.1) THEN
-        IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
-     &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
-C =====================================================================
-C --- TERME SUIVANT EST SANS CONTROLE, TOUT LE MONDE Y PASSE DQ/DT ----
-C =====================================================================
-          DSDE(ADCOTE,ADDETE) = DSDE(ADCOTE,ADDETE) + C0EPS
-          IF (YAMEC.EQ.1) THEN
-              DO 20 I = 1,3
-                DSDE(ADCOTE,ADDEME+NDIM-1+I) = DSDE(ADCOTE,
-     &            ADDEME+NDIM-1+I) + ALPHA0*YOUNG/ (1.D0-2.D0*NU)*T
- 20           CONTINUE
-          END IF
-          DSDE(ADCOTE,ADDEP1) = DSDE(ADCOTE,ADDEP1) + 3.D0*ALP11*T
-        END IF
-C =====================================================================
-        IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
-     &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
-C =====================================================================
-C --- TERME SUIVANTE  EST SANS CONTROLE, TOUT LE MONDE Y PASSE --------
-C =====================================================================
-          CONGEP(ADCOTE) = CONGEP(ADCOTE) + C0EPS*DT
-          IF (YAMEC.EQ.1) THEN
-              CONGEP(ADCOTE) = CONGEP(ADCOTE) +
-     &                         ALPHA0*YOUNG/ (1.D0-2.D0*NU)* (T-DT/2)*
-     &                         DEPSV
-          END IF
-          CONGEP(ADCOTE) = CONGEP(ADCOTE) + 3.D0*ALP11* (T-DT/2)*DP1
-        END IF
-      END IF
  30   CONTINUE
-C =====================================================================
- 9001 FORMAT (A10,2X,A20,2X,A20,2X,A8)
 C =====================================================================
       END

@@ -2,7 +2,7 @@
      $                   LDVR, MM, M, WORK, RWORK, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -161,7 +161,7 @@ C     .. LOCAL SCALARS ..
       COMPLEX*16         CDUM
 C     ..
 C     .. EXTERNAL FUNCTIONS ..
-      LOGICAL            LLSAME
+      LOGICAL            LSAME
       INTEGER            IZAMAX, ISBAEM
       REAL*8             DZASUM, R8PREM, R8MIEM
 C     ..
@@ -175,13 +175,13 @@ C     .. EXECUTABLE STATEMENTS ..
 C
 C     DECODE AND TEST THE INPUT PARAMETERS
 C
-      BOTHV = LLSAME( SIDE, 'B' )
-      RIGHTV = LLSAME( SIDE, 'R' ) .OR. BOTHV
-      LEFTV = LLSAME( SIDE, 'L' ) .OR. BOTHV
+      BOTHV = LSAME( SIDE, 'B' )
+      RIGHTV = LSAME( SIDE, 'R' ) .OR. BOTHV
+      LEFTV = LSAME( SIDE, 'L' ) .OR. BOTHV
 C
-      ALLV = LLSAME( HOWMNY, 'A' )
-      OVER = LLSAME( HOWMNY, 'B' ) .OR. LLSAME( HOWMNY, 'O' )
-      SOMEV = LLSAME( HOWMNY, 'S' )
+      ALLV = LSAME( HOWMNY, 'A' )
+      OVER = LSAME( HOWMNY, 'B' ) .OR. LSAME( HOWMNY, 'O' )
+      SOMEV = LSAME( HOWMNY, 'S' )
 C
 C     SET M TO THE NUMBER OF COLUMNS REQUIRED TO STORE THE SELECTED
 C     EIGENVECTORS.

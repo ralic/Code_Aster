@@ -2,7 +2,7 @@
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -64,7 +64,7 @@ C
 C\BEGINLIB
 C
 C\ROUTINES CALLED:
-C     FLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
+C     DLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
 C
 C\AUTHOR
 C     DANNY SORENSEN               PHUONG VU
@@ -111,7 +111,7 @@ C     %--------------------%
 C     | EXTERNAL FUNCTIONS |
 C     %--------------------%
 C
-      REAL*8  FLAPY2
+      REAL*8  DLAPY2
 C
 C
 C     %-----------------------%
@@ -135,8 +135,8 @@ C
 C
             IF (J.LT.0) GO TO 30
 C
-            TEMP1 = FLAPY2(DBLE(X(J)),DIMAG(X(J)))
-            TEMP2 = FLAPY2(DBLE(X(J+IGAP)),DIMAG(X(J+IGAP)))
+            TEMP1 = DLAPY2(DBLE(X(J)),DIMAG(X(J)))
+            TEMP2 = DLAPY2(DBLE(X(J+IGAP)),DIMAG(X(J+IGAP)))
 C
             IF (TEMP1.GT.TEMP2) THEN
                 TEMP = X(J)
@@ -172,8 +172,8 @@ C
 C
             IF (J .LT. 0) GO TO 60
 C
-            TEMP1 = FLAPY2(DBLE(X(J)),DIMAG(X(J)))
-            TEMP2 = FLAPY2(DBLE(X(J+IGAP)),DIMAG(X(J+IGAP)))
+            TEMP1 = DLAPY2(DBLE(X(J)),DIMAG(X(J)))
+            TEMP2 = DLAPY2(DBLE(X(J+IGAP)),DIMAG(X(J+IGAP)))
 C
             IF (TEMP1.LT.TEMP2) THEN
                TEMP = X(J)

@@ -2,7 +2,7 @@
      &  (N, RITZR, RITZI, BOUNDS, TOL, NCONV)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -37,7 +37,7 @@ C-----------------------------------------------------------------------
 C BEGINLIB
 C
 C ROUTINES CALLED:
-C   FLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
+C   DLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
 C
 C INTRINSIC FUNCTIONS:
 C   MAX.
@@ -91,7 +91,7 @@ C     %-----------%
 C     | FUNCTIONS |
 C     %-----------%
 
-      REAL*8 FLAPY2, R8PREM
+      REAL*8 DLAPY2, R8PREM
 
 C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
@@ -117,7 +117,7 @@ C
 C
       NCONV  = 0
       DO 20 I = 1, N
-         TEMP = MAX( EPS23, FLAPY2( RITZR(I), RITZI(I) ) )
+         TEMP = MAX( EPS23, DLAPY2( RITZR(I), RITZI(I) ) )
          IF (BOUNDS(I) .LE. TOL*TEMP)   NCONV = NCONV + 1
    20 CONTINUE
 

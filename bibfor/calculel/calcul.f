@@ -3,7 +3,7 @@
 
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 13/09/2004   AUTEUR GREFFET N.GREFFET 
+C MODIF CALCULEL  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -178,7 +178,7 @@ C     2- ON REND PROPRES LES LISTES : LPAIN,LCHIN,LPAOU,LCHOU :
 C        EN NE GARDANT QUE LES PARAMETRES DU CATALOGUE DE L'OPTION
 C        QUI SERVENT A AU MOINS UN TYPE_ELEMENT
 C     ---------------------------------------------------------
-      IF (NIN.GT.51) CALL UTMESS('F','CALCUL',
+      IF (NIN.GT.80) CALL UTMESS('F','CALCUL',
      &                        'ERREUR PROGRAMMEUR : TROP DE CHAMPS "IN"'
      &                           )
       NIN3 = ZI(IAOPDS-1+2)
@@ -324,5 +324,6 @@ C     ----------------------------------------------------
 
   120 CONTINUE
       IACTIF = 0
+      
       CALL JEDEMA()
       END

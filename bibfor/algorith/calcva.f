@@ -1,10 +1,10 @@
         SUBROUTINE CALCVA(  YAMEC, YATE, YAP1, YAP2, DEFGEM, DEFGEP,
      +                      ADDEME, ADDEP1, ADDEP2, ADDETE, NDIM,
      +                      T0, P10, P20, DEPSV, EPSV, DEPS, T, P1, P2,
-     +                      GRAT, GRAP1, GRAP2, DP1, DP2, DT )
+     +                      GRAT, GRAP1, GRAP2, DP1, DP2, DT, RETCOM )
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,14 +27,33 @@ C TOLE CRP_21
 C ======================================================================
 C --- CALCUL DE VARIABLES (MECANIQUES, HYDRAULIQUES, THERMIQUES) -------
 C ======================================================================
-      IMPLICIT  NONE
-      INTEGER   YAMEC, YATE, YAP1, YAP2
-      INTEGER   ADDEME, ADDEP1, ADDEP2, ADDETE, NDIM
-      REAL*8    DEFGEM(*), DEFGEP(*), T0, P10, P20
-      REAL*8    DEPSV, EPSV, DEPS(6), T, P1, P2, DT, DP1, DP2
-      REAL*8    GRAT(NDIM), GRAP1(NDIM), GRAP2(NDIM)
+      IMPLICIT      NONE
+      INTEGER       YAMEC, YATE, YAP1, YAP2
+      INTEGER       ADDEME, ADDEP1, ADDEP2, ADDETE, NDIM, RETCOM
+      REAL*8        DEFGEM(*), DEFGEP(*), T0, P10, P20
+      REAL*8        DEPSV, EPSV, DEPS(6), T, P1, P2, DT, DP1, DP2
+      REAL*8        GRAT(NDIM), GRAP1(NDIM), GRAP2(NDIM)
 C ======================================================================
-      INTEGER   I
+      INTEGER       I,IADZI,IAZK24,UMESS,IUNIFI
+      REAL*8        VARBIO
+      CHARACTER*8   NOMAIL
+C ======================================================================
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C ======================================================================
 C --- CALCUL DES DIFFERENTES VARIABLES QUELLE QUE SOIT L'OPTION --------
 C ======================================================================
@@ -56,8 +75,10 @@ C ======================================================================
 C ======================================================================
 C --- VARIABLES HYDRAULIQUES -------------------------------------------
 C ======================================================================
-      P1 = P10
-      P2 = P20
+      P1  = P10
+      DP1 = 0.0D0
+      P2  = P20
+      DP2 = 0.0D0
       IF (YAP1.EQ.1) THEN
          P1=DEFGEP(ADDEP1)+P10
          DP1=DEFGEP(ADDEP1)-DEFGEM(ADDEP1)
@@ -75,16 +96,24 @@ C ======================================================================
 C ======================================================================
 C --- VARIABLES THERMIQUES ---------------------------------------------
 C ======================================================================
-      T = T0
+      T  = T0
+      DT = 0.0D0
       IF (YATE.EQ.1) THEN
          DT=DEFGEP(ADDETE)-DEFGEM(ADDETE)
          T=DEFGEP(ADDETE)+T0
          DO 105 I=1,NDIM
             GRAT(I)=DEFGEP(ADDETE+I)
  105     CONTINUE
-      ELSE
-         T  = T0
-         DT = 0.D0
+         IF (T.LE.0.D0) THEN
+            UMESS  = IUNIFI('MESSAGE')
+            CALL TECAEL(IADZI,IAZK24)
+            NOMAIL = ZK24(IAZK24-1+3) (1:8)
+            WRITE (UMESS,9001) 'CALCVA','TEMPERATURE < 0 A LA MAILLE: ',
+     +                                                            NOMAIL
+            RETCOM = 1
+         ENDIF
       ENDIF
+C =====================================================================
+ 9001 FORMAT (A8,2X,A30,2X,A8)
 C ======================================================================
       END

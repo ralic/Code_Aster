@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/01/2005   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -107,15 +107,47 @@ MODE_LOCAL__
                                         IZZ      IXY      IXZ      IYZ      )
     EGNEUT_F = NEUT_F   ELGA__ RIGI     (X1       X2       X3       X4       X5       X6       )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
-    E1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
+    N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     E3NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       )   
-    E9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       
+    E8NEUTI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6       
+                                        X7       X8       )
+    N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       
                                         X7       X8       X9       )
-    E27NEUTR = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       
+    E27NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6       
                                         X7       X8       X9       X10      X11      X12      
                                         X13      X14      X15      X16      X17      X18       
                                         X19      X20      X21      X22      X23      X24      
                                         X25      X26      X27       )
+    G27NEUTR = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       
+                                        X7       X8       X9       X10      X11      X12      
+                                        X13      X14      X15      X16      X17      X18       
+                                        X19      X20      X21      X22      X23      X24      
+                                        X25      X26      X27       )
+    E36NEUTI = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6       
+                                        X7       X8       X9       X10      X11      X12      
+                                        X13      X14      X15      X16      X17      X18       
+                                        X19      X20      X21      X22      X23      X24      
+                                        X25      X26      X27      X28      X29      X30
+                                        X31      X32      X33      X34      X35      X36      )
+    E112NEUI = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6       
+                                        X7       X8       X9       X10      X11      X12      
+                                        X13      X14      X15      X16      X17      X18
+                                        X19      X20      X21      X22      X23      X24
+                                        X25      X26      X27      X28      X29      X30
+                                        X31      X32      X33      X34      X35      X36
+                                        X37      X38      X39      X40      X41      X42
+                                        X43      X44      X45      X46      X47      X48
+                                        X49      X50      X51      X52      X53      X54
+                                        X55      X56      X57      X58      X59      X60
+                                        X61      X62      X63      X64      X65      X66
+                                        X67      X68      X69      X70      X71      X72
+                                        X73      X74      X75      X76      X77      X78
+                                        X79      X80      X81      X82      X83      X84
+                                        X85      X86      X87      X88      X89      X90
+                                        X91      X92      X93      X94      X95      X96
+                                        X97      X98      X99      X100     X101     X102
+                                        X103     X104     X105     X106     X107     X108
+                                        X109     X110     X111     X112      )
     CREFERE  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       X10      X11      X12      )
     CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
@@ -236,7 +268,7 @@ OPTION__
     CALC_K_G            295   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PTHETAR  CMATERC  PMATERC
                                      NTEMPER  PTEMPER  CTEREFE  PTEREF   NFORCER  PFRVOLU  CPESANR  PPESANR
                                      CROTATR  PROTATR  CEPSINR  PEPSINR  CCOMPOR  PCOMPOR  ECONTNO  PSIGINR
-                                     DDL_MECA PDEPINR  EGNEUT9R PBASLOR  E27NEUTR PCOURB
+                                     DDL_MECA PDEPINR  EGNEUT9R PBASLOR  G27NEUTR PCOURB
                               OUT__  EKTHETA  PGTHETA
     CHAR_ALPH_ZAC       567   IN__   EDEFOPG  PALPHAR  NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER
                               OUT__  MVECTUR  PVECTUR
@@ -383,7 +415,7 @@ OPTION__
                                      EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR
                                      CTEREFE  PSECREF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF   
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  ECORR_R  PCORRMR  ECORR_R  PCORRPR
-                                     E1NEUT_R PLEVSET
+                                     E27NEUTR PPINTTO  E112NEUI PCNSETO  E36NEUTI PHEAVTO  E8NEUTI  PLONCHA
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  MMATUNS  PMATUNS
                                      ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     FULL_MECA_ELAS      139   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
@@ -395,10 +427,10 @@ OPTION__
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  ECORR_R  PCORRMR  ECORR_R  PCORRPR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  MMATUNS  PMATUNS
                                      ZVARIPG  PVARIPR  MVECTUR  PVECTUR
-    GRAD_NEUT_R         24    IN__   NGEOMER  PGEOMER  E1NEUT_R PNEUTER
+    GRAD_NEUT_R         24    IN__   NGEOMER  PGEOMER  N1NEUT_R PNEUTER
                               OUT__  E3NEUT_R PGNEUTR
-    GRAD_NEUT9_R        398   IN__   NGEOMER  PGEOMER  E9NEUT_R PNEUTER
-                              OUT__  E27NEUTR PGNEUTR
+    GRAD_NEUT9_R        398   IN__   NGEOMER  PGEOMER  N9NEUT_R PNEUTER
+                              OUT__  G27NEUTR PGNEUTR
     INDIC_ENER          491   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  DDL_MECA PDEPLR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF   ZVARIPG  PVARIPR
                               OUT__  EENEDNO  PENERD1  EENEDNO  PENERD2
@@ -459,7 +491,7 @@ OPTION__
                                      EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR
                                      CTEREFE  PSECREF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF   
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  ECORR_R  PCORRMR  ECORR_R  PCORRPR
-                                     E1NEUT_R PLEVSET
+                                     E27NEUTR PPINTTO  E112NEUI PCNSETO  E36NEUTI PHEAVTO  E8NEUTI  PLONCHA
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      9     IN__   NGEOMER  PGEOMER  EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
@@ -498,7 +530,8 @@ OPTION__
                                      CTEMPSR  PINSTPR  NIRRAER  PIRRAMR  NIRRAER  PIRRAPR  CMATERC  PMATERC
                                      EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR
                                      CTEREFE  PSECREF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF  
-                                     ZVARIPG  PVARIMR  ECORR_R  PCORRMR  ECORR_R  PCORRPR  E1NEUT_R PLEVSET
+                                     ZVARIPG  PVARIMR  ECORR_R  PCORRMR  ECORR_R  PCORRPR  E27NEUTR PPINTTO  
+                                     E112NEUI PCNSETO  E36NEUTI PHEAVTO  E8NEUTI  PLONCHA
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     SIEF_ELGA_DEPL      22    IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      NTEMPER  PTEMPER  CTEREFE  PTEREF   NTEMPER  PSECHER  CTEREFE  PSECREF 
@@ -526,6 +559,8 @@ OPTION__
                               OUT__  ECONTNO  PCONTRR
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
+    TOPOSE              99    IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET  
+                              OUT__  E27NEUTR PPINTTO  E112NEUI PCNSETO  E36NEUTI PHEAVTO  E8NEUTI  PLONCHA
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGGA  PDOMMAG  EFACY_R  PFACY_R  EGGEOM_R PGEOM_R  EHYDRER  PHYDR_R
                                      EGINST_R PINST_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R

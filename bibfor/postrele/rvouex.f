@@ -4,7 +4,7 @@
       CHARACTER*(*)     MCF,     NCHPT
       INTEGER               IOCC,                            IRET
 C**********************************************************************
-C MODIF POSTRELE  DATE 12/11/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 31/01/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,8 +75,9 @@ C  -----------------
       CHARACTER*4  DOCU
       CHARACTER*8  NMAILA,COURBE,K8B,NOMGD
       CHARACTER*15 NCONEC
+      CHARACTER*16 MOTCLE(2),TYPMCL(2)
       CHARACTER*19 NCHP19
-      CHARACTER*24 NCNCIN,NREPE,LISMAI,NOMMAI,MALIST
+      CHARACTER*24 NCNCIN,NREPE,LISMAI,MALIST
 C**********************************************************************
 C
       CALL JEMARQ()
@@ -117,7 +118,6 @@ C          -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
          END IF
 C
          CALL DISMOI('F','NOM_MAILLA',NCHP19,'CHAMP',IBID,NMAILA,IE)
-         NOMMAI = NMAILA//'.NOMMAI         '
          NCONEC = NMAILA//'.CONNEX'
          NCNCIN = '&&OP0051.CONNECINVERSE  '
 C
@@ -150,22 +150,19 @@ C
 C
                CALL RVGNOE ( MCF, IOCC, NMAILA, LSTNAC, 0, IBID )
 C
-               CALL GETVEM(NMAILA,'GROUP_MA',MCF,'GROUP_MA',
-     +                                            IOCC,1,0,K8B,N1)
-               CALL GETVEM(NMAILA,'MAILLE',MCF,'MAILLE',
-     +                                            IOCC,1,0,K8B,N2)
+               CALL GETVID ( MCF, 'GROUP_MA', IOCC,1,0, K8B, N1 )
+               CALL GETVID ( MCF, 'MAILLE',   IOCC,1,0, K8B, N2 )
                IF ( (N1+N2) .EQ. 0 ) THEN
                   NBMALU = 0
                ELSE
-                  LISMAI = 'RVOUEX.NOM_MAIL'
-                  INDMOT = 0
-               CALL RECMAI ( MCF, IOCC, INDMOT, NMAILA, LISMAI, NBMALU)
-                  CALL JEVEUO ( LISMAI, 'L', ILISMA )
-               CALL WKVECT('&&RVOUEX.NUME_MAIL','V V I', NBMALU, JNUMA )
-                  DO 400, I = 1, NBMALU, 1
-               CALL JENONU(JEXNOM(NOMMAI,ZK8(ILISMA+I-1)),ZI(JNUMA+I-1))
- 400              CONTINUE
-                  CALL JEDETR ( LISMAI )
+                  LISMAI = '&&RVOUEX.NUME_MAIL'
+                  MOTCLE(1) = 'GROUP_MA'
+                  MOTCLE(2) = 'MAILLE'
+                  TYPMCL(1) = 'GROUP_MA'
+                  TYPMCL(2) = 'MAILLE'
+                  CALL RELIEM(' ',NMAILA,'NU_MAILLE',MCF,IOCC,2,
+     &                        MOTCLE,TYPMCL,LISMAI,NBMALU)
+                  CALL JEVEUO(LISMAI,'L',JNUMA)
                ENDIF
 C
                CALL JEEXIN(NCNCIN,N2)

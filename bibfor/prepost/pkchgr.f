@@ -1,12 +1,13 @@
       SUBROUTINE PKCHGR ( VO, VE, VECTY, NBVAL, DXS, DYS, DZS, DXI,
-     +                    DYI, DZI, ABSC )
+     +                    DYI, DZI, ABSC, SYMECH )
       IMPLICIT   NONE
-      INTEGER             NBVAL
+      INTEGER             NBVAL      
+      CHARACTER*8        SYMECH
       REAL*8              VO(3), VE(3), VECTY(3), DXS(*), DYS(*), 
      +                    DZS(*), DXI(*), DYI(*), DZI(*), ABSC(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/07/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 01/02/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,32 +86,44 @@ C
          OLDS(1) = DXS(I)
          OLDS(2) = DYS(I)
          OLDS(3) = DZS(I)
-         OLDI(1) = DXI(I)
-         OLDI(2) = DYI(I)
-         OLDI(3) = DZI(I)
          NEWS(1) = 0.D0
          NEWS(2) = 0.D0
          NEWS(3) = 0.D0
-         NEWI(1) = 0.D0
-         NEWI(2) = 0.D0
-         NEWI(3) = 0.D0
+         IF (SYMECH .EQ. 'SANS' ) THEN
+           OLDI(1) = DXI(I)
+           OLDI(2) = DYI(I)
+           OLDI(3) = DZI(I)
+           NEWI(1) = 0.D0
+           NEWI(2) = 0.D0
+           NEWI(3) = 0.D0
+         ENDIF
          DO 22 J = 1 , 3
             DO 24 K = 1 , 3
                NEWS(K) = NEWS(K) + PGL(K,J) * OLDS(J)
-               NEWI(K) = NEWI(K) + PGL(K,J) * OLDI(J)
+               IF (SYMECH .EQ. 'SANS' ) THEN
+                 NEWI(K) = NEWI(K) + PGL(K,J) * OLDI(J)
+               ENDIF
  24         CONTINUE
  22      CONTINUE
          DXS(I) = NEWS(1)
          DYS(I) = NEWS(2)
          DZS(I) = NEWS(3)
-         DXI(I) = NEWI(1)
-         DYI(I) = NEWI(2)
-         DZI(I) = NEWI(3)
+         IF (SYMECH .EQ. 'SANS' ) THEN
+           DXI(I) = NEWI(1)
+           DYI(I) = NEWI(2)
+           DZI(I) = NEWI(3)
+         ELSE
+           DXI(I) = -1*NEWS(1)
+           DYI(I) = NEWS(2)
+           DZI(I) = NEWS(3)
+         ENDIF
          IF ( NIV .EQ. 2 ) THEN
             WRITE(IFM,1040) ABSC(I), OLDS(1), OLDS(2), OLDS(3)
             WRITE(IFM,1042) NEWS(1), NEWS(2), NEWS(3)
-            WRITE(IFM,1044) OLDI(1), OLDI(2), OLDI(3)
-            WRITE(IFM,1042) NEWI(1), NEWI(2), NEWI(3)
+            IF (SYMECH .EQ. 'SANS' ) THEN
+              WRITE(IFM,1044) OLDI(1), OLDI(2), OLDI(3)
+              WRITE(IFM,1042) NEWI(1), NEWI(2), NEWI(3)
+            ENDIF
          ENDIF
  20   CONTINUE
 C

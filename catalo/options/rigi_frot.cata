@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 30/01/2002   AUTEUR VABHHTS J.PELLET 
+%& MODIF OPTIONS  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,6 +23,16 @@ OPTION__
         PDEPL_M  DEPL_R
         PDEPL_P  DEPL_R
         PCONFR   NEUT_R
+        PINDCOI  NEUT_I
+        PDONCO   XCONTAC
+        PLEVSET  NEUT_R
+        PSTANO   NEUT_I
+        PPINTER  NEUT_R
+        PAINTER  NEUT_R
+        PCFACE   NEUT_I
+        PLONCHA  NEUT_I
+        PBASECO  NEUT_R
+        PSEUIL   NEUT_R
    OUT__
 PMATUUR MDEP_R RESL__
 

@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 29/11/2004   AUTEUR KBBHHDB G.DEBRUYNE 
+C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,7 +60,7 @@ C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
       INTEGER       I,J,NELAS,NRESMA
-      REAL*8        DEPS(6),DEPSV,T,DT,TF,P1,P2
+      REAL*8        DEPS(6),DEPSV,T,DT,TINI,P1,P2
       REAL*8        PHI,YOUNG,NU,ALPHA0,PHI0,CRIT(*),INSTAM,INSTAP,TREF
       PARAMETER (NELAS = 4  )
       PARAMETER (NRESMA = 18)
@@ -195,10 +195,10 @@ C ======================================================================
       MECTRU = .FALSE.
       IF (MECA.EQ.'CJS') THEN
         MECTRU = .TRUE.
-        TF = T + DT
+        TINI = T - DT
         CALL NMCJS(  TYPMOD,  IMATE, COMPOR, CRIT,
      &                      INSTAM, INSTAP, 
-     >                      T,TF, TREF, 
+     >                      TINI,T, TREF, 
      >                      DEFGEM(ADDEME+NDIM),DEPS, 
      >                      CONGEM(ADCOME), VINTM, OPTION, 
      >                      CONGEP(ADCOME), VINTP, 
@@ -207,18 +207,18 @@ C ======================================================================
       IF (MECA.EQ.'LAIGLE') THEN
         COMPLG = 'LAIGLE'
         MECTRU = .TRUE.
-        TF = T + DT
+        TINI = T - DT
         CALL REDECE(NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM, INSTAP, 
-     >              T,TF,TREF,0.0D0,0.0D0,0.0D0,0.0D0,0.0D0,
+     >              TINI,T,TREF,0.0D0,0.0D0,0.0D0,0.0D0,0.0D0,
      >              DEFGEM(ADDEME+NDIM),DEPS,CONGEM(ADCOME),
      >              VINTM,OPTION,R8BID,ANGMAS,CONGEP(ADCOME),VINTP, 
      >              DSDEME)
       ENDIF
       IF (MECA.EQ.'DRUCKER_PRAGER') THEN
          MECTRU = .TRUE.
-         TF = T + DT
+         TINI = T - DT
          CALL LCDRPR(TYPMOD,OPTION,IMATE,CONGEM(ADCOME),
-     +               T,TF,TREF,DEPS,VINTM,VINTP,
+     +               TINI,T,TREF,DEPS,VINTM,VINTP,
      +               CONGEP(ADCOME),DSDEME,RETCOM)
       ENDIF
       IF (MECTRU) THEN
@@ -247,10 +247,10 @@ C ======================================================================
 C --- LOI CAM_CLAY -----------------------------------------------------
 C ======================================================================
       IF (MECA.EQ.'CAM_CLAY') THEN
-        TF = T + DT
+        TINI = T - DT
         CALL NMCCAM(  NDIM, TYPMOD,  IMATE, COMPOR, CRIT,
      &                      INSTAM, INSTAP, 
-     >                      T,TF, TREF, 
+     >                      TINI,T, TREF, 
      >                      DEPS, 
      >                      CONGEM(ADCOME), VINTM, OPTION, 
      >                      CONGEP(ADCOME), VINTP, 
@@ -280,11 +280,11 @@ C ======================================================================
 C --- LOI BARCELONE ----------------------------------------------------
 C ======================================================================
       IF (MECA.EQ.'BARCELONE') THEN
-        TF = T + DT
+        TINI = T - DT
         SIPM=CONGEM(ADCOME+6)
         SIPP=CONGEP(ADCOME+6)
          CALL NMBARC(  NDIM, IMATE, CRIT, SAT, BIOT,
-     &                      T,TF,
+     &                      TINI,T,
      >                      DEPS,
      >                      CONGEM(ADCOME), VINTM, OPTION,
      >                      CONGEP(ADCOME), VINTP,
@@ -315,9 +315,9 @@ C ======================================================================
 C --- LOI MAZARS -------------------------------------------------------
 C ======================================================================
       IF (MECA.EQ.'MAZARS') THEN
-        TF = T + DT
+        TINI = T - DT
         CALL LCMAZA(  NDIM, TYPMOD,  IMATE, COMPOR,DEFGEM(ADDEME+NDIM),
-     >                      DEPS, VINTM, T, TF, TREF, 
+     >                      DEPS, VINTM, TINI, T, TREF, 
      >                      0.D0,0.D0,0.D0,0.D0,0.D0,
      >                      OPTION, CONGEP(ADCOME), VINTP, DSDEME)
      
@@ -346,11 +346,11 @@ C ======================================================================
 C --- LOI ENDO_ISOT_BETON ----------------------------------------------
 C ======================================================================
       IF (MECA.EQ.'ENDO_ISOT_BETON') THEN
-        TF = T + DT
+        TINI = T - DT
         CALL LCLDSB(  NDIM, TYPMOD,  IMATE, COMPOR,
      &                      DEFGEM(ADDEME+NDIM), 
      >                      DEPS, 
-     >                      VINTM, T, TF, TREF,0.D0,0.D0,0.D0,0.D0,0.D0,
+     >                      VINTM,TINI,T,TREF,0.D0,0.D0,0.D0,0.D0,0.D0,
      >                      OPTION, CONGEP(ADCOME), VINTP, 
      >                      DSDEME)
         IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.

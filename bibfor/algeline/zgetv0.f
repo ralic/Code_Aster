@@ -4,7 +4,7 @@
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -114,7 +114,7 @@ C     PP 357-385.
 C
 C\ROUTINES CALLED:
 C   ZVOUT   ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
-C   GLARNV  LAPACK ROUTINE FOR GENERATING A RANDOM VECTOR. 
+C   ZLARNV  LAPACK ROUTINE FOR GENERATING A RANDOM VECTOR. 
 C   ZGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
 C   ZCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER.
 C   ZDOTC   LEVEL 1 BLAS THAT COMPUTES THE SCALAR PRODUCT OF TWO 
@@ -135,6 +135,7 @@ C
 C\ENDLIB
 C
 C-----------------------------------------------------------------------
+C TOLE CRP_4
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 C 
@@ -181,6 +182,7 @@ C     | LOCAL SCALARS & ARRAYS |
 C     %------------------------%
 C
       LOGICAL    FIRST, INITS, ORTH
+      INTEGER*4  ISEED4(4)
       INTEGER    IDIST, ISEED(4), ITER, MSGLVL, JJ
       REAL*8     RNORM0
       COMPLEX*16 CNORM
@@ -190,7 +192,7 @@ C     %--------------------%
 C     | EXTERNAL FUNCTIONS |
 C     %--------------------%
 C
-      REAL*8  DZNRM2, FLAPY2
+      REAL*8  DZNRM2, DLAPY2
       COMPLEX*16 ZDOTC
 C
 C     %-----------------%
@@ -241,7 +243,15 @@ C        %-----------------------------------------------------%
 C
          IF (.NOT.INITV) THEN
             IDIST = 2
-            CALL GLARNV (IDIST, ISEED, N, RESID)
+            ISEED4(1)=ISEED(1)
+            ISEED4(2)=ISEED(2)
+            ISEED4(3)=ISEED(3)
+            ISEED4(4)=ISEED(4)
+            CALL ZLARNV (IDIST, ISEED4, N, RESID)
+            ISEED(1)=ISEED4(1)
+            ISEED(2)=ISEED4(2)
+            ISEED(3)=ISEED4(3)
+            ISEED(4)=ISEED4(4)            
          END IF
 C 
 C        %----------------------------------------------------------%
@@ -293,7 +303,7 @@ C
       FIRST = .FALSE.
       IF (BMAT .EQ. 'G') THEN
           CNORM  = ZDOTC (N, RESID, 1, WORKD, 1)
-          RNORM0 = SQRT(FLAPY2(DBLE(CNORM),DIMAG(CNORM)))
+          RNORM0 = SQRT(DLAPY2(DBLE(CNORM),DIMAG(CNORM)))
       ELSE IF (BMAT .EQ. 'I') THEN
            RNORM0 = DZNRM2(N, RESID, 1)
       END IF
@@ -344,7 +354,7 @@ C
 C 
       IF (BMAT .EQ. 'G') THEN
          CNORM = ZDOTC (N, RESID, 1, WORKD, 1)
-         RNORM = SQRT(FLAPY2(DBLE(CNORM),DIMAG(CNORM)))
+         RNORM = SQRT(DLAPY2(DBLE(CNORM),DIMAG(CNORM)))
       ELSE IF (BMAT .EQ. 'I') THEN
          RNORM = DZNRM2(N, RESID, 1)
       END IF

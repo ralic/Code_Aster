@@ -3,7 +3,7 @@
      &    IPNTR, WORKD, INFO, ALPHA)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -133,8 +133,8 @@ C     DGETV0  ARPACK ROUTINE TO GENERATE THE INITIAL VECTOR.
 C     IVOUT   ARPACK UTILITY ROUTINE THAT PRINTS INTEGERS.
 C     DMOUT   ARPACK UTILITY ROUTINE THAT PRINTS MATRICES
 C     DVOUT   ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
-C     FLASCL  LAPACK ROUTINE FOR CAREFUL SCALING OF A MATRIX.
-C     FLANHS  LAPACK ROUTINE THAT COMPUTES VARIOUS NORMS OF A MATRIX.
+C     DLASCL  LAPACK ROUTINE FOR CAREFUL SCALING OF A MATRIX.
+C     DLANHS  LAPACK ROUTINE THAT COMPUTES VARIOUS NORMS OF A MATRIX.
 C     DGEMV  LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
 C     DAXPY  LEVEL 1 BLAS THAT COMPUTES A VECTOR TRIAD.
 C     DSCAL  LEVEL 1 BLAS THAT SCALES A VECTOR.
@@ -213,6 +213,7 @@ C            MODIFICATION DES APPELS BLAS (ROUTINE ASTER BL...),
 C            IMPLICIT NONE.
 C ENDLIB
 C-----------------------------------------------------------------------
+C TOLE CRP_4
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 
@@ -256,7 +257,8 @@ C     | LOCAL SCALARS |
 C     %---------------%
 
       LOGICAL FIRST, ORTH1, ORTH2, RSTART, STEP3, STEP4
-      INTEGER IERR, I, INFOL, IPJ, IRJ, IVJ, ITER, ITRY, J, MSGLVL,
+      INTEGER*4 INFOL4
+      INTEGER IERR, I, IPJ, IRJ, IVJ, ITER, ITRY, J, MSGLVL,
      &  JJ
       REAL*8 BETAJ, TEMP1, RNORM1, SMLNUM, TST1, ULP, UNFL,
      &  WNORM
@@ -279,7 +281,7 @@ C     | FUNCTIONS |
 C     %-----------%
 
       INTEGER ISBAEM
-      REAL*8 DDOT, DNRM2, FLANHS, R8PREM, R8MIEM
+      REAL*8 DDOT, DNRM2, DLANHS, R8PREM, R8MIEM
 
 C     %-----------------%
 C     | DATA STATEMENTS |
@@ -450,12 +452,13 @@ C            | TO SCALE BOTH V_(J) AND P_(J) CAREFULLY |
 C            | USE LAPACK ROUTINE SLASCL               |
 C            %-----------------------------------------%
 
-C DUE TO CRP_102 CALL FLASCL ('GENERAL', I, I, RNORM, ONE, N, 1,
-             CALL FLASCL ('G', I, I, RNORM, ONE, N, 1,
-     &                    V(1,J), N, INFOL)
-C DUE TO CRP_102 CALL FLASCL ('GENERAL', I, I, RNORM, ONE, N, 1,
-             CALL FLASCL ('G', I, I, RNORM, ONE, N, 1,
-     &                    WORKD(IPJ), N, INFOL)
+C DUE TO CRP_102 CALL DLASCL ('GENERAL', I, I, RNORM, ONE, N, 1,
+             CALL DLASCL ('G', I, I, RNORM, ONE, N, 1,
+     &                    V(1,J), N, INFOL4)
+C DUE TO CRP_102 CALL DLASCL ('GENERAL', I, I, RNORM, ONE, N, 1,
+             CALL DLASCL ('G', I, I, RNORM, ONE, N, 1,
+     &                    WORKD(IPJ), N, INFOL4)
+             
          END IF
 
 C        %------------------------------------------------------%
@@ -767,7 +770,7 @@ C              %--------------------------------------------%
 
                TST1 = ABS( H( I, I ) ) + ABS( H( I+1, I+1 ) )
                IF( TST1.EQ.ZERO )
-     &              TST1 = FLANHS( '1', K+NP, H, LDH, WORKD(N+1) )
+     &              TST1 = DLANHS( '1', K+NP, H, LDH, WORKD(N+1) )
                IF( ABS( H( I+1,I ) ).LE.MAX( ULP*TST1, SMLNUM ) )
      &              H(I+1,I) = ZERO
  110        CONTINUE

@@ -1,6 +1,6 @@
       SUBROUTINE FLANV2( A, B, C, D, RT1R, RT1I, RT2R, RT2I, CS, SN )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -72,7 +72,7 @@ C     .. LOCAL SCALARS ..
      &                   TAU, TEMP
 C     ..
 C     .. EXTERNAL FUNCTIONS ..
-      REAL*8   FLAPY2
+      REAL*8   DLAPY2
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
 C
@@ -106,7 +106,7 @@ C
          TEMP = A - D
          P = HALF*TEMP
          SIGMA = B + C
-         TAU = FLAPY2( SIGMA, TEMP )
+         TAU = DLAPY2( SIGMA, TEMP )
          CS1 = SQRT( HALF*( ONE+ABS( SIGMA ) / TAU ) )
          SN1 = -( P / ( TAU*CS1 ) )*SIGN( ONE, SIGMA )
 C

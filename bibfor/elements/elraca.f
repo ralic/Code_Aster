@@ -6,7 +6,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C     ------------------------------------------------------------------
 C LES ELEMENTS 3D
 C     ------------------------------------------------------------------
 
-      IF (ELREFA.EQ.'HE8') THEN
+      IF (ELREFA.EQ.'HE8'.OR.ELREFA.EQ.'X20') THEN
         NDIM = 3
         NNO = 8
         NNOS = 8
@@ -234,7 +234,7 @@ C    NOEUDS MILIEUX DES FACES ET BARYCENTRE
         ZIN(26) = +1.D0
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFA.EQ.'TE4') THEN
+      ELSE IF (ELREFA.EQ.'TE4'.OR.ELREFA.EQ.'X10') THEN
         NDIM = 3
         NNO = 4
         NNOS = 4
@@ -303,7 +303,7 @@ C     ------------------------------------------------------------------
         ZIN(9) = +0.5D0
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFA.EQ.'PE6') THEN
+      ELSE IF (ELREFA.EQ.'PE6'.OR.ELREFA.EQ.'X15') THEN
         NDIM = 3
         NNO = 6
         NNOS = 6
@@ -502,18 +502,24 @@ C     ------------------------------------------------------------------
         NNOS = 3
         VOL = 1.D0/2.D0
 
-        NBFPG = 5
+        NBFPG = 8
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 3
         NBPG(5) = 3
+        NBPG(6) = 4        
+        NBPG(7) = 6 
+        NBPG(8) = 12 
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
         FAPG(4) = 'FPG3'
         FAPG(5) = 'COT3'
+        FAPG(6) = 'FPG4'
+        FAPG(7) = 'FPG6'
+        FAPG(8) = 'FPG12'
 
         XIN(1) = 0.D0
         YIN(1) = 0.D0

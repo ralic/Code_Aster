@@ -1,9 +1,10 @@
       SUBROUTINE TE0472(OPTION,NOMTE)
       IMPLICIT   NONE
       CHARACTER*16 OPTION,NOMTE
-
+C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/09/2004   AUTEUR ROMEO R.FERNANDES 
+C ======================================================================
+C MODIF ELEMENTS  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,8 +34,7 @@ C          OPTION : 'CHAR_MECA_FLUX_F'
 C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
-C ......................................................................
-
+C ======================================================================
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -51,8 +51,8 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-
-      CHARACTER*8 NOMPAR(3),KBID
+C ======================================================================
+      CHARACTER*8 NOMPAR(3)
       REAL*8 POIDS,R,Z,TX,TY,NX,NY,VALPAR(3),DELTAT,TPLUS
       REAL*8 PRES,PRESF
 
@@ -65,44 +65,19 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER IS,IM,LS,LM
       INTEGER IDLTHM,NDLTHM,DEBTHM
       INTEGER IFLUXF,IRET,NDLNO
-      LOGICAL AXI,DPLAN,TRAITE
-
-      LOGICAL VOL2,BORD2,VOL3,BORD3
-      LOGICAL ISTHT3
-      LOGICAL ISTHQ4
-      LOGICAL ISTHT6
-      LOGICAL ISTHQ8
-      LOGICAL ISTHS2
-      LOGICAL ISTHS3
-      LOGICAL ISTHF8,ISTHF6,ISTHF4,ISTHF3
-
-      LOGICAL ISTH10,ISTH13,ISTH15,ISTH20
-      LOGICAL ISTH4,ISTH6,ISTH8
+      LOGICAL AXI,P2P1
 
       INTEGER NNOMAX,NVOMAX,NSOMAX
       PARAMETER (NNOMAX=20,NVOMAX=4,NSOMAX=8)
       INTEGER VOISIN(NVOMAX,NNOMAX)
       INTEGER NBVOS(NSOMAX)
-
-      LOGICAL P2P1,LUMPED
+      CHARACTER*8 TYPMOD(2)
 C     ------------------------------------------------------------------
 
-      AXI = .FALSE.
-      TRAITE = .FALSE.
-      DPLAN = .FALSE.
-      BORD2 = .TRUE.
-      VOL2 = .FALSE.
-      BORD3 = .FALSE.
-      VOL3 = .FALSE.
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
-      CALL CAETHM(NOMTE,VOL2,BORD2,VOL3,BORD3,KBID,AXI,DPLAN,TRAITE,
-     &            ISTHS2,ISTHS3,ISTHF8,ISTHF6,ISTH10,ISTH13,ISTH15,
-     &            ISTH20,ISTHT3,ISTHQ4,ISTHT6,ISTHQ8,NNOMAX,NVOMAX,
-     &            NSOMAX,NNOS,VOISIN,NBVOS,P2P1,LUMPED,
-     &            ISTHF4,ISTHF3,ISTH4,ISTH6,ISTH8)
-
-
-
+      CALL CAETHM(NOMTE,AXI,TYPMOD,NNOS,NNOMAX,NVOMAX,NSOMAX,VOISIN,
+     +                                                    NBVOS,P2P1)
 
 C     ------------------------------------------------------------------
 C  CETTE ROUTINE FAIT UN CALCUL EN THHM ,THH2M , HM , HHM , THH THH2 THM
@@ -145,8 +120,6 @@ C SI MODELISATION = THM
         CALL UTMESS('F','TE0472','ELEMENT '//'NON TRAITE')
       END IF
 
-
-      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PVECTUR','E',IRES)

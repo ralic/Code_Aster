@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C     ----------
       CHARACTER*8 MODELE,LCHAR(*),MATEL
       CHARACTER*24 MATE
       REAL*8 TIME
-      LOGICAL EXITIM,EXITRO
+      LOGICAL EXITIM
       INTEGER NCHAR
 C ----------------------------------------------------------------------
 
@@ -81,18 +81,18 @@ C     -- ON VERIFIE LA PRESENCE PARFOIS NECESSAIRE DE CHAM_MATER
 
       CALL MEGEOM(MODELE,LCHAR(1),EXIGEO,CHGEOM)
 
-      EXITRO = .FALSE.
+      NBRO = 0
       DO 10 ICHA = 1,NCHAR
         CALL EXISD('CHAMP_GD',LCHAR(ICHA)//'.CHME.ROTAT',IRET)
         IF (IRET.NE.0) THEN
           CHROTA = LCHAR(ICHA)//'.CHME.ROTAT.DESC'
-          EXITRO = .TRUE.
+          NBRO = NBRO + 1
         END IF
    10 CONTINUE
 
-      IF (.NOT.EXITRO) THEN
-        CALL UTMESS('F','MERIRO','IL N''Y A PAS DE CHARGEMENT ROTATION '
-     &              //'! LE CALCUL EST IMPOSSIBLE ')
+      IF (NBRO.NE.1) THEN
+        CALL UTMESS('F','MERIRO','IL FAUT 1 CHARGEMENT DE ROTATION '
+     &              //'ET UN SEUL. ')
       END IF
 
       TEMPE = ' '

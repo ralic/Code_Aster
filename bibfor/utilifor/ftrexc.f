@@ -1,7 +1,7 @@
       SUBROUTINE FTREXC( COMPQ, N, T, LDT, Q, LDQ, IFST, ILST, WORK,
      &                   INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -106,15 +106,15 @@ C     .. LOCAL SCALARS ..
       INTEGER            HERE, NBF, NBL, NBNEXT
 C     ..
 C     .. EXTERNAL FUNCTIONS ..
-      LOGICAL            LLSAME
+      LOGICAL            LSAME
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
 C
 C     DECODE AND TEST THE INPUT ARGUMENTS.
 C
       INFO = 0
-      WANTQ = LLSAME( COMPQ, 'V' )
-      IF( .NOT.WANTQ .AND. .NOT.LLSAME( COMPQ, 'N' ) ) THEN
+      WANTQ = LSAME( COMPQ, 'V' )
+      IF( .NOT.WANTQ .AND. .NOT.LSAME( COMPQ, 'N' ) ) THEN
          INFO = -1
       ELSE IF( N.LT.0 ) THEN
          INFO = -2
