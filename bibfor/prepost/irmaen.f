@@ -9,7 +9,7 @@ C
       REAL*8      COORDO(*)
       LOGICAL     LMASU,LMOD
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/09/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,7 @@ C       ENSIGHT, POUR LE MAILLAGE (NBMATY), LES GPES DE MAILLES (NMTGM)
       PARAMETER (NBTYME=11)
       INTEGER NBMATY(NBTYME),NBMTGM(NBTYME),NBMTMX
 C     - NOMS DES TYPES DE MAILLES ENSIGHT, NBRE DE NOEUDS/MAILLE ASSOCIE
-      LOGICAL LPEN15,LQUAD9
+      LOGICAL LPEN15,LQUAD9,LTRIA7
       CHARACTER*8 NOTYMA(NBTYME)
       DATA NOTYMA/'bar2','bar3','tria3','tria6','quad4','quad8',
      +            'tetra4','tetra10','hexa8','hexa20','penta6'/
@@ -88,6 +88,7 @@ C ---------------------------------------------------------------------
 C
 C     --- ECRITURE DES COORDONNEES DES NOEUDS
       CALL JEMARQ()
+      LTRIA7=.FALSE.
       LQUAD9=.FALSE.
       LPEN15=.FALSE.
       NDIM=3
@@ -145,8 +146,10 @@ C         => SI OUI LA MAILLE SERA IMPRIMEE SINON ELLE SERA IGNOREE
           NBMATY( 2)=NBMATY( 2)+1
         ELSEIF(NOMENS.EQ.'tria3') THEN
           NBMATY( 3)=NBMATY( 3)+1
-        ELSEIF(NOMENS.EQ.'tria6') THEN
+C        ELSEIF(NOMENS.EQ.'tria6') THEN
+        ELSEIF((NOMENS.EQ.'tria6').OR.(NOMENS.EQ.'tria7')) THEN
           NBMATY( 4)=NBMATY( 4)+1
+          IF(NOMENS.EQ.'tria7') LTRIA7=.TRUE.
         ELSEIF(NOMENS.EQ.'quad4') THEN
           NBMATY( 5)=NBMATY( 5)+1
         ELSEIF((NOMENS.EQ.'quad8').OR.(NOMENS.EQ.'quad9')) THEN
@@ -165,6 +168,10 @@ C         => SI OUI LA MAILLE SERA IMPRIMEE SINON ELLE SERA IGNOREE
           IF(NOMENS.EQ.'penta15') LPEN15=.TRUE.
         ENDIF
    10 CONTINUE
+      IF(LTRIA7) THEN
+        CALL UTMESS('A','IRMAEN', 'LES ELEMENTS TRIA7 SERONT'//
+     +        ' REDUITS A DES TRIA6')
+      ENDIF
       IF(LQUAD9) THEN
         CALL UTMESS('A','IRMAEN', 'LES ELEMENTS QUAD9 SERONT'//
      +        ' REDUITS A DES QUAD8')
@@ -214,7 +221,8 @@ C         LE NOMBRE MAX DE MAILLES DE MEME TYPE EST EN FIN DE VECTEUR
           ELSEIF(NOMENS.EQ.'tria3') THEN
             ITRI3 =ITRI3 +1
             ZI(JTRIMA-1+ 2*NBMTMX+ITRI3 )=IMA
-          ELSEIF(NOMENS.EQ.'tria6') THEN
+C          ELSEIF(NOMENS.EQ.'tria6') THEN
+          ELSEIF((NOMENS.EQ.'tria6').OR.(NOMENS.EQ.'tria7')) THEN
             ITRI4 =ITRI4 +1
             ZI(JTRIMA-1+ 3*NBMTMX+ITRI4 )=IMA
           ELSEIF(NOMENS.EQ.'quad4') THEN
@@ -336,7 +344,8 @@ C           - ON IGNORE LES MAILLES NON EXISTANTES POUR ENSIGHT
               NBMTGM( 2)=NBMTGM( 2)+1
             ELSEIF(NOMENS.EQ.'tria3') THEN
               NBMTGM( 3)=NBMTGM( 3)+1
-            ELSEIF(NOMENS.EQ.'tria6') THEN
+C            ELSEIF(NOMENS.EQ.'tria6') THEN
+            ELSEIF((NOMENS.EQ.'tria6').OR.(NOMENS.EQ.'tria7')) THEN
               NBMTGM( 4)=NBMTGM( 4)+1
             ELSEIF(NOMENS.EQ.'quad4') THEN
               NBMTGM( 5)=NBMTGM( 5)+1
@@ -393,7 +402,8 @@ C           MAILLES EST MIS EN FIN DE VECTEUR
             ELSEIF(NOMENS.EQ.'tria3') THEN
               ITRI3 =ITRI3 +1
               ZI(JTRIGM-1+ 2*NBMTMX+ITRI3 )=IMAGM
-            ELSEIF(NOMENS.EQ.'tria6') THEN
+C            ELSEIF(NOMENS.EQ.'tria6') THEN
+            ELSEIF((NOMENS.EQ.'tria6').OR.(NOMENS.EQ.'tria7')) THEN
               ITRI4 =ITRI4 +1
               ZI(JTRIGM-1+ 3*NBMTMX+ITRI4 )=IMAGM
             ELSEIF(NOMENS.EQ.'quad4') THEN

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,10 +17,12 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 def proj_mesu_modal_prod(MODELE_MESURE,**args):
-     vale=MODELE_MESURE['NOM_PARA']
-     if  vale == 'INST'   : return tran_gene
-     if  vale == 'FREQ'   : return harm_gene
-     if  vale == 'DEFORMEE'   : return mode_gene
+     vale=MODELE_MESURE['MESURE']
+     if  AsType(vale) == dyna_trans   : return tran_gene
+     if  AsType(vale) == dyna_harmo   : return harm_gene
+     if  AsType(vale) == mode_meca    : return mode_gene
+#     if  AsType(vale) == mode_meca_c  : return mode_gene_c
+     if  AsType(vale) == base_modale  : return mode_gene
      raise AsException("type de concept resultat non prevu")
 
 PROJ_MESU_MODAL=OPER(nom="PROJ_MESU_MODAL",op= 193,
@@ -35,8 +37,7 @@ PROJ_MESU_MODAL=OPER(nom="PROJ_MESU_MODAL",op= 193,
                          ),
          MODELE_MESURE   =FACT(statut='o',
            MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
-           MESURE          =SIMP(statut='o',typ=(dyna_trans,dyna_harmo,base_modale,) ),
-           NOM_PARA        =SIMP(statut='f',typ='TXM',defaut="INST",into=("INST","FREQ","DEFORMEE",),),
+           MESURE          =SIMP(statut='o',typ=(dyna_trans,dyna_harmo,base_modale,mode_meca,mode_meca_c,) ),
            NOM_CHAM        =SIMP(statut='f',typ='TXM',defaut="DEPL",into=("DEPL","VITE","ACCE","SIEF_NOEU","EPSI_NOEU_DEPL",) ),
                          ),
          CORR_MANU       =FACT(statut='f',max='**',

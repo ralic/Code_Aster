@@ -14,7 +14,7 @@ C ----------------------------------------------------------------------
       REAL*8     COECYR(NBCCYR),COEEPR(NBCEPR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,11 +55,8 @@ C
       INTEGER      NBPAR, NBRES, K
       REAL*8       VALPAR(2)
       CHARACTER*8  NOMPAR(2)
-      REAL*8       VALVIL(NBCVIL)
       REAL*8       VALCYR(NBCCYR),VALEPR(NBCEPR)
-      CHARACTER*2  CODVIL(NBCVIL)
       CHARACTER*2  CODCYR(NBCCYR),CODEPR(NBCEPR)
-      CHARACTER*8  NOMVIL(NBCVIL) 
       CHARACTER*8  NOMCYR(NBCCYR),NOMEPR(NBCEPR)
 C
 C *********** FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
@@ -67,7 +64,6 @@ C
 C ****************************** DATA  *********************************
 C
 
-      DATA NOMVIL / 'A', 'B', 'CSTE_TPS', 'ENER_ACT', 'FLUX_PHI'/
       DATA NOMCYR / 'EPSI_FAB', 'TEMP_RECUIT', 'FLUX_PHI'/
       DATA NOMEPR / 'FLUX_PHI', 'R_P', 'THETA_MAX'/
 
@@ -78,17 +74,12 @@ C
 C --- INITIALISATIONS
 C
 
-      CALL R8INIR (NBCVIL,0.D0,COEVIL,1)
       CALL R8INIR (NBCCYR,0.D0,COECYR,1)
       CALL R8INIR (NBCEPR,0.D0,COEEPR,1)
 
-      CALL R8INIR (NBCVIL,0.D0,VALVIL,1) 
       CALL R8INIR (NBCCYR,0.D0,VALCYR,1) 
       CALL R8INIR (NBCEPR,0.D0,VALEPR,1) 
 
-      DO 1 K = 1,NBCVIL
-        CODVIL(K) = 'NN'
- 1    CONTINUE
       DO 2 K = 1,NBCCYR
         CODCYR(K) = 'NN'
  2    CONTINUE
@@ -122,10 +113,6 @@ C LECTURE
         NBRES = NBCEPR
         CALL RCVALA(ICODMA,' ','ZIRC_EPRI',NBPAR,NOMPAR,VALPAR,
      &              NBRES,NOMEPR(1),VALEPR(1),CODEPR(1), BL2 )
-      ELSE IF (COMPOR(1:10).EQ.'VISC_IRRA_') THEN
-        NBRES = NBCVIL
-        CALL RCVALA(ICODMA,' ','VISC_IRRA_',NBPAR,NOMPAR,VALPAR,
-     &              NBRES,NOMVIL(1),VALVIL(1),CODVIL(1), BL2 )
       ELSE
          CALL UTMESS ('F','NMVPCA',
      &  'COMPORTEMENT DE FLUAGE SOUS IRRADIATION INCONNU')
@@ -133,18 +120,12 @@ C LECTURE
 
 
 C          
-      IF (CODVIL(1).EQ.'OK'.AND.
-     &    CODCYR(1).NE.'OK'.AND.
-     &    CODEPR(1).NE.'OK') THEN      
-         CALL DCOPY (NBCVIL,VALVIL,1,COEVIL,1)
-   
-      ELSEIF (CODVIL(1).NE.'OK'.AND.
-     &    CODCYR(1).EQ.'OK'.AND.
+      IF (CODCYR(1).EQ.'OK'.AND.
      &    CODEPR(1).NE.'OK') THEN    
          CALL DCOPY (NBCCYR,VALCYR,1,COECYR,1)
-      ELSEIF (CODVIL(1).NE.'OK'.AND.
-     &    CODCYR(1).NE.'OK'.AND.
-     &    CODEPR(1).EQ.'OK') THEN    
+
+      ELSEIF (CODCYR(1).NE.'OK'.AND.
+     &        CODEPR(1).EQ.'OK') THEN    
          CALL DCOPY (NBCEPR,VALEPR,1,COEEPR,1)   
       ELSE
          CALL UTMESS ('F','NMVPCA',

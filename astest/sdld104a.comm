@@ -1,4 +1,4 @@
-# MODIF  DATE 03/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
 # TITRE VALIDATION DE PROJ_MESU_MODAL: CAS DISCRET, BASE (MODE_MECA)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,7 +40,7 @@ DEBUT(  CODE=_F( NOM = 'SDLD104A',NIV_PUB_WEB='INTERNET') )
 # DEFINITION DU MODELE NUMERIQUE
 # ==============================
 #
-MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),  UNITE=20)
+MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), UNITE=20)
 
 #
 MODEL=AFFE_MODELE(   MAILLAGE=MAIL,
@@ -125,7 +125,7 @@ REPGENE=PROJ_MESU_MODAL(
                                     BASE = MODES,),
                          MODELE_MESURE=_F( MODELE = MODLMESU,
                                     MESURE = MESURE,
-                                    NOM_PARA = 'INST',
+#                                    NOM_PARA = 'INST',
                                     NOM_CHAM = 'DEPL',),
                          RESOLUTION=_F( REGUL = 'NORM_MIN',
                                     COEF_PONDER = 0.,),       )

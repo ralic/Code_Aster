@@ -4,7 +4,7 @@
       CHARACTER*(*)       CHAM19 , NOMOBJ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 31/08/1999   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,12 +41,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM
+      CHARACTER*32     JEXNUM, JEXNOM,JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER       IBID, IE, JPRNO, GD, NBEC, NEC, TABEC(10), J,
      +              INO, IEC, ICMP, NCMPMX, JCMP, IAD, KCMP, IGR, MODE,
-     +              NNOE, JCELD, NBGREL, IREPE, IMAIL, NBEL, JMOD
+     +              NNOE, JCELD, NBGREL, IREPE, IMAIL, NBEL, JMOD, 
+     +              IMODEL,ILONG,IDESCR
       CHARACTER*4   TYCH
       CHARACTER*8   K8B, NOMA
       CHARACTER*19  CH19, PRNO, NOLIGR
@@ -61,7 +62,8 @@ C
       CALL DISMOI ( 'F', 'NOM_MAILLA', CH19, 'CHAMP', IBID, NOMA, IE )
       CALL DISMOI ( 'F', 'NUM_GD'    , CH19, 'CHAMP', GD  , K8B , IE )
 C
-      NEC  = NBEC( GD )
+      CALL JEVEUO('&CATA.GD.DESCRIGD','L',IDESCR)
+      NEC  = NBEC( GD)
       IF ( NEC .GT. 10 ) CALL UTMESS('F','UTNCMP','NEC TROP GRAND')
       CALL JELIRA ( JEXNUM('&CATA.GD.NOMCMP',GD), 'LONMAX', NCMPMX, K8B)
       CALL JEVEUO ( JEXNUM('&CATA.GD.NOMCMP',GD), 'L', IAD )
@@ -98,14 +100,14 @@ C     ==================================================================
          CALL DISMOI ( 'F', 'NB_GREL', NOLIGR, 'LIGREL', NBGREL,K8B,IE)
          CALL JEVEUO ( CH19//'.CELD', 'L', JCELD )
          CALL JEVEUO ( NOLIGR//'.REPE', 'L', IREPE )
-         DO 20 IMAIL = 1 , NBEL
-            IGR = ZI(IREPE+2*(IMAIL-1)+1-1)
-            IF ( IGR .EQ. 0 ) GOTO 20
+         CALL JEVEUO ('&CATA.TE.MODELOC', 'L', IMODEL )
+         CALL JEVEUO (JEXATR('&CATA.TE.MODELOC','LONCUM'),'L',ILONG)
+         DO 20 IGR = 1 , NBGREL
             MODE=ZI(JCELD-1+ZI(JCELD-1+4+IGR) +2)
             IF ( MODE .EQ. 0 ) GOTO 20
-            CALL JEVEUO ( JEXNUM('&CATA.TE.MODELOC',MODE), 'L', JMOD )
-            NEC = NBEC( ZI(JMOD-1+2) )
-            CALL DGMODE ( MODE, NEC, TABEC )
+            JMOD = IMODEL+ZI(ILONG-1+MODE)-1
+            NEC = NBEC( ZI(JMOD-1+2))
+            CALL DGMODE ( MODE, IMODEL, ILONG, NEC, TABEC )
             DO 22 ICMP = 1, NCMPMX
                IF ( EXISDG( TABEC , ICMP ) ) THEN
                   DO 24 J = 1 , NCMP

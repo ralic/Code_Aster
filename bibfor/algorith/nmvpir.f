@@ -9,7 +9,7 @@
      &                   ANGMAS,
      &                   SIGP,VIP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -116,21 +116,25 @@ C ELASTIQUES
       REAL*8            ALPHAP,EP,NUP,TROIKP,DEUMUP
       REAL*8            ALPHAM,EM,NUM,TROIKM,DEUMUM   
 C AUTRES 
-      INTEGER    NBCLMA, NBCLEM, NBCVIL, NBCCYR, NBCEPR, NBCINT
-      PARAMETER (NBCLMA=12, NBCLEM=7, NBCVIL=5, NBCCYR=3, NBCEPR=3,
-     &           NBCINT=2)
-      REAL*8     COELMA(NBCLMA),COELEM(NBCLEM),COEVIL(NBCVIL)
-      REAL*8     COECYR(NBCCYR),COEEPR(NBCEPR), COEINT(NBCINT)
+      INTEGER   NBCLEM, NBCVIL, NBCCYR, NBCEPR, NBCINT
+      PARAMETER (NBCLEM=7, NBCVIL=5, NBCCYR=3, NBCEPR=3, NBCINT=2)
+      REAL*8     COELEM(NBCLEM),COEVIL(NBCVIL)
+      REAL*8     COECYR(NBCCYR), COEEPR(NBCEPR), COEINT(NBCINT)
+      CHARACTER*8  NOMLEM(NBCLEM),NOMVIL(NBCVIL) 
+      CHARACTER*8  NOMINT(NBCINT)
+      CHARACTER*2  K2B,CODVIL(NBCVIL)
 C GRANDISSEMENT
       INTEGER    NBCLGR
       PARAMETER (NBCLGR=3)
       REAL*8     COEFGR(NBCLGR)
+      CHARACTER*8 NOMGRD(NBCLGR)
+      CHARACTER*2 CODGRA(NBCLGR)
 C
       REAL*8            T1,T2
       INTEGER           IULMES,IUNIFI
       REAL*8            RAC2,TABS,R8T0,R8VIDE
       INTEGER           K,L
-      INTEGER           NDIMSI,ICAS,IRET
+      INTEGER           NDIMSI,IRET
       REAL*8            ALPHA,BETA,CAA,SAA,CBA,SBA
       REAL*8            DEPSGR
       REAL*8            DEGRAN(6)
@@ -145,6 +149,11 @@ C
       EXTERNAL          VPALEM,VPACYR,VPAEPR,VPAVIL
       REAL*8            KRON(6)
       DATA              KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
+      DATA NOMLEM / 'N', 'UN_SUR_K', 'UN_SUR_M', 'QSR_K',
+     &              'BETA','PHI_ZERO','L'/     
+      DATA NOMVIL / 'A', 'B', 'CSTE_TPS', 'ENER_ACT', 'FLUX_PHI'/
+      DATA NOMINT / 'A',         'S'/
+      DATA NOMGRD / 'GRAN_A','GRAN_B','GRAN_S' /
 C DEB ------------------------------------------------------------------
 C
       THETA = CRIT(4)
@@ -156,17 +165,18 @@ C
       ENDIF
 C
       IF (TYPMOD(1).EQ.'C_PLAN') THEN
-        IULMES = IUNIFI('MESSAGE')
-        WRITE (IULMES,*) 'COMPORTEMENT ',COMPOR(1)(1:10),' NON PROGRAMME
-     & POUR DES ELEMENTS DE CONTRAINTES PLANES'
-        CALL UTMESS('F','NMVPIR_1','PAS DE CONTRAINTES PLANES')
-        GO TO 299
+         IULMES = IUNIFI('MESSAGE')
+         WRITE (IULMES,*) 'COMPORTEMENT ',COMPOR(1)(1:10),' NON 
+     & PROGRAMME POUR DES ELEMENTS DE CONTRAINTES PLANES'
+         CALL UTMESS('F','NMVPIR_1','PAS DE CONTRAINTES PLANES')
+         GO TO 299
       ENDIF
       TABS = R8T0()
       RAC2 = SQRT(2.D0)
 
 C DEFORMATIONS DE GRANDISSEMENT
       CALL R8INIR(6,0.D0,DEGRAN,1)    
+      CALL R8INIR(3,0.D0,COEFGR,1)
       DEPSGR = 0.D0  
 C TEMPERATURE AU MILIEU DU PAS DE TEMPS      
       TSCHEM = TM*(1.D0-THETA)+TP*THETA
@@ -177,19 +187,19 @@ C INCREMENT DE TEMPS
 C            
       DO 100 K=1,6
       DO 100 L=1,6
-        DSIDEP(K,L) = 0.D0
+         DSIDEP(K,L) = 0.D0
  100  CONTINUE
       IF(NDIM.EQ.2) THEN
-        NDIMSI=4
+         NDIMSI=4
       ELSE
-        NDIMSI=6
+         NDIMSI=6
       ENDIF
 C
 C MISE AU FORMAT DES TERMES NON DIAGONAUX
 C
       DO 105 K=4,NDIMSI
-        DEFAM(K) = DEFAM(K)*RAC2
-        DEFAP(K) = DEFAP(K)*RAC2
+         DEFAM(K) = DEFAM(K)*RAC2
+         DEFAP(K) = DEFAP(K)*RAC2
  105  CONTINUE
 C
 C CARACTERISTIQUES ELASTIQUES VARIABLES
@@ -209,210 +219,220 @@ C       LOIS DE COMPORTEMENT DISPONIBLES :
 C        - LEMAITRE MODIFIEE POUR L'IRRADIATION AVEC GRANDISSEMENT
 C        - VISC_IRRA_LOG AVEC GRANDISSEMENT 
 C ----------------------------------------------------------------------
-      IF (COMPOR(1)(1:10).EQ.'ASSE_COMBU') THEN
+      IF (COMPOR(1)(1:13).EQ.'LEMAITRE_IRRA') THEN
 
 C       RECUPERATION DES CARACTERISTIQUES DES LOIS DE FLUAGE  
-           CALL NMASSC(IMATE,'  ',R8VIDE(),R8VIDE(),'  ',
-     &              COELMA,COELEM,COEVIL,COECYR,COEEPR,COEINT,ICAS)
 
-        IF ((IRRAM.LT.0.D0).OR.(IRRAP.LT.0.D0)) THEN
-           CALL UTMESS('F','NMVPIR',
-     &   'LE FLUX NEUTRONIQUE N EST PAS RENSEIGNE'//
-     &   ' DANS LA VARIABLE VARI_COMM!')
-        ENDIF
-C       RECUPERATION DES CARACTERISTIQUES DE GRANDISSEMENT 
-C       ET CALCUL DU FLUX
-        IF (ICAS.EQ.6) THEN
-           CALL R8INIR(3,0.D0,COEFGR,1)
+         CALL RCVALA(IMATE,' ','LEMAITRE_IRRA',0,' ',0.D0,
+     &                 7,NOMLEM,COELEM,K2B, 'FM' )
+
+         IF ((IRRAM.LT.0.D0).OR.(IRRAP.LT.0.D0)) THEN
+            CALL UTMESS('F','NMVPIR',
+     &      'LE FLUX NEUTRONIQUE N EST PAS RENSEIGNE'//
+     &      ' DANS LA VARIABLE VARI_COMM!')
+         ENDIF
+         CALL RCVALA(IMATE,' ','LEMAITRE_IRRA',0,' ',0.D0,
+     &                 3,NOMGRD,COEFGR,K2B, 'FM' )
 C          FLUX NEUTRONIQUE        
-           FLUPHI=IRRAP
-        ELSE
-           CALL NMASSG(IMATE,'  ',R8VIDE(),R8VIDE(),COEFGR)
-C          FLUX NEUTRONIQUE        
-           FLUPHI = (IRRAP-IRRAM)/DELTAT
-        ENDIF
+         FLUPHI = (IRRAP-IRRAM)/DELTAT
 
 C       TRAITEMENT DES PARAMETRES DE LA LOI DE FLUAGE 
-        IF (ICAS.EQ.2) THEN       
-C         LOI DE TYPE LEMAITRE AVEC IRRADIATION       
-C         IRRADIATION AU POINT CONSIDERE        
-          IF (COELEM(2).EQ.0.D0) THEN
+         IF (COELEM(2).EQ.0.D0) THEN
             FLUPHI = 1.D0
-          ENDIF 
+         ENDIF 
 C         PARAMETRES DE LA LOI DE FLUAGE 
-          VALDEN = COELEM(1)
-          IF (COELEM(6).LE.0.D0) THEN
+         VALDEN = COELEM(1)
+         IF (COELEM(6).LE.0.D0) THEN
             CALL UTMESS('F','LEMAITRE3D','PHI_ZERO < OU = A ZERO')
-          ENDIF
-          IF (FLUPHI.LT.0.D0) THEN
+         ENDIF
+         IF (FLUPHI.LT.0.D0) THEN
             CALL UTMESS('F','LEMAITRE3D','FLUENCE DECROISSANTE(PHI<0)')
-          ENDIF
-          XNUMER = EXP(-1.D0*COELEM(4)/(VALDEN*(TSCHEM+TABS)))
-          UNSURK = COELEM(2)*FLUPHI/COELEM(6) + COELEM(7)
-          IF (UNSURK.LT.0.D0) THEN
+         ENDIF
+         XNUMER = EXP(-1.D0*COELEM(4)/(VALDEN*(TSCHEM+TABS)))
+         UNSURK = COELEM(2)*FLUPHI/COELEM(6) + COELEM(7)
+         IF (UNSURK.LT.0.D0) THEN
             CALL UTMESS('F','LEMAITRE3D','1/K ET L DOIVENT ETRE >=0')
-          ENDIF
-          IF (UNSURK.EQ.0.D0) THEN
+         ENDIF
+         IF (UNSURK.EQ.0.D0) THEN
             IF (COELEM(5).EQ.0.D0) UNSURK=1.D0
             IF (COELEM(5).LT.0.D0) THEN
-              CALL UTMESS('F','LEMAITRE3D','PHI/KPHI0+L=0 ET BETA<0')
+               CALL UTMESS('F','LEMAITRE3D','PHI/KPHI0+L=0 ET BETA<0')
             ENDIF
-          ENDIF
-          IF (UNSURK.GT.0.D0) THEN
+         ENDIF
+         IF (UNSURK.GT.0.D0) THEN
             UNSURK = UNSURK**(COELEM(5)/VALDEN)
-          ENDIF
-          UNSURK = UNSURK * XNUMER
-          UNSURM = COELEM(3)
-        ELSE IF (ICAS.EQ.3) THEN 
-C         LOI DE TYPE VISC_IRRA_LOG         
-C         PARAMETRES DE LA LOI DE FLUAGE 
+         ENDIF
+         UNSURK = UNSURK * XNUMER
+         UNSURM = COELEM(3)
 
-          A       = COEVIL(1)
-          B       = COEVIL(2) 
-          CTPS    = COEVIL(3)
-          ENER    = COEVIL(4)
+      ELSE IF (COMPOR(1)(1:10).EQ.'VISC_IRRA_') THEN
+C        PARAMETRES DE LA LOI DE FLUAGE 
+         CALL RCVALA(IMATE,' ','VISC_IRRA_',1,'TEMP',TSCHEM,
+     &           5,NOMVIL(1),COEVIL(1),CODVIL, 'FM' )
+         A         = COEVIL(1)
+         B         = COEVIL(2) 
+         CTPS      = COEVIL(3)
+         ENER      = COEVIL(4)
+         FLUPHI=COEVIL(5)
 
-          IF (COEVIL(5).NE.1.D0) THEN
-              CALL UTMESS('A','VISC_IRRA_LOG',
-     *        'FLUENCE COMMANDEE ET FLUX_PHI DIFFERENT DE 1')
-          ENDIF 
-          IF(ABS(FLUPHI).LE.1.D-10) FLUPHI=0.D0 
-          IF (FLUPHI.LT.0.D0) THEN
-            CALL UTMESS('F','VISC_IRRA_LOG',
-     *      'FLUENCE DECROISSANTE (PHI<0)')
-          ENDIF  
-        ELSE IF (ICAS.EQ.6) THEN
-          UNSURM=0.D0
-          VALDEN=1.D0
-          UNSURK = (COEINT(1)*FLUPHI*2.D0)/SQRT(3.D0)
-          IF (UNSURK.LT.0.D0) THEN
-             CALL UTMESS('F','LEMA_SEUIL',
+      ELSE IF (COMPOR(1)(1:10).EQ.'GRAN_IRRA_') THEN
+C        PARAMETRES DE LA LOI DE FLUAGE 
+         CALL RCVALA(IMATE,' ','GRAN_IRRA_',1,' ',0.D0,
+     &           5,NOMVIL(1),COEVIL(1),CODVIL, 'FM' )
+         CALL RCVALA(IMATE,' ','GRAN_IRRA_',0,' ',0.D0,
+     &                 3,NOMGRD,COEFGR,CODGRA, 'FM' )
+         IF (CODGRA(3).NE.'OK') THEN 
+            COEFGR(3) = 1.D0
+         ENDIF 
+         IF (IRRAM.EQ.-1.D0) THEN
+             CALL UTMESS('F','GRAN_IRRA_LOG',
+     *       'FLUENCE NON RENSEIGNEE')
+         ELSE
+            IF (COEVIL(5).NE.1.D0) THEN
+               CALL UTMESS('A','GRAN_IRRA_LOG',
+     *         'FLUENCE COMMANDEE ET FLUX_PHI DIFFERENT DE 1')
+               FLUPHI=COEVIL(5)
+            ELSE
+               FLUPHI = (IRRAP-IRRAM)/DELTAT
+            ENDIF 
+            IF(ABS(FLUPHI).LE.1.D-10) FLUPHI=0.D0 
+            IF (FLUPHI.LT.0.D0) THEN
+               CALL UTMESS('F','GRAN_IRRA_LOG',
+     *         'FLUENCE DECROISSANTE (PHI<0)')
+            ENDIF
+         ENDIF
+         A     = COEVIL(1)
+         B     = COEVIL(2) 
+         CTPS  = COEVIL(3)
+         ENER  = COEVIL(4)
+
+      ELSE IF (COMPOR(1)(1:10).EQ.'LEMA_SEUIL') THEN
+         CALL RCVALA(IMATE,' ','LEMA_SEUIL',1,'TEMP',TSCHEM,
+     &              2,NOMINT(1),COEINT(1),K2B, 'FM' )
+         UNSURM=0.D0
+         VALDEN=1.D0
+         UNSURK = (COEINT(1)*FLUPHI*2.D0)/SQRT(3.D0)
+         FLUPHI=IRRAP
+         IF ((IRRAM.LT.0.D0).OR.(IRRAP.LT.0.D0)) THEN
+            CALL UTMESS('F','NMVPIR',
+     &      'LE FLUX NEUTRONIQUE N EST PAS RENSEIGNE'//
+     &      ' DANS LA VARIABLE VARI_COMM!')
+         ENDIF
+         IF (UNSURK.LT.0.D0) THEN
+            CALL UTMESS('F','LEMA_SEUIL',
      &                  'LE PARAMETRE A DOIT ETRE >=0')
-          ENDIF
-        ELSE
-          CALL UTMESS('F','NMVPIR',
-     *        'RELATION ASSE_COMBU SANS LOI DE FLUENCE APPROPRIEE')
-        ENDIF
-
+         ENDIF
+C ------------------------- ZIRC_CYRA2 ---------------------------------
+C       LOI DE COMPORTEMENT ZIRC_CYRA2
+C ----------------------------------------------------------------------
+      ELSE IF (COMPOR(1)(1:10).EQ.'ZIRC_CYRA2')THEN
+         CALL NMVPCA(IMATE,COMPOR(1),'T ',INSTAP,R8VIDE(),'F ',
+     &              COEVIL,COECYR,COEEPR)
+         EPSFAB = COECYR(1)
+         TPREC  = COECYR(2)
+         FLUPHI = COECYR(3)
+C ------------------------- ZIRC_EPRI ---------------------------------
+C       LOI DE COMPORTEMENT ZIRC_EPRI
+C ---------------------------------------------------------------------
+      ELSE IF (COMPOR(1)(1:9).EQ.'ZIRC_EPRI')THEN  
+         CALL NMVPCA(IMATE,COMPOR(1),' T',R8VIDE(),TSCHEM,'F ',
+     &              COEVIL,COECYR,COEEPR)
+         FLUPHI = COEEPR(1)
+         VALDRP = COEEPR(2)
+         TTAMAX = COEEPR(3) 
+      ELSE IF (COMPOR(1)(1:10).EQ.'LMARC_IRRA') THEN
+         CALL UTMESS ('F','NMVPIR','LA LOI LMARC_IRRA'// 
+     &   'N''EST COMPATIBLE QU''AVEC UNE MODELISATION POUTRE')
+      
+      ENDIF     
 C
 C       TRAITEMENT DES PARAMETRES DE LA LOI DE GRANDISSEMENT 
 C       
-        IF ((COEFGR(1).NE.0.D0).OR.(COEFGR(2).NE.0.D0)) THEN
-C        DEFORMATION DE GRANDISSEMENT UNIDIMENSIONNEL    
+      IF ((COEFGR(1).NE.0.D0).OR.(COEFGR(2).NE.0.D0)) THEN
+C      DEFORMATION DE GRANDISSEMENT UNIDIMENSIONNEL    
          DEPSGR = (COEFGR(1)*TP+COEFGR(2))*(IRRAP**COEFGR(3))-
      *            (COEFGR(1)*TM+COEFGR(2))*(IRRAM**COEFGR(3))
-C        RECUPERATION DU REPERE POUR LE GRANDISSEMENT 
+C      RECUPERATION DU REPERE POUR LE GRANDISSEMENT 
          IF (ANGMAS(1).NE.R8VIDE()) THEN
-           ALPHA = ANGMAS(1)
-           IF (NDIM.EQ.2) THEN
-             BETA = 0.D0
-           ELSE
-             IF (ANGMAS(2).EQ.R8VIDE()) THEN
-               CALL UTMESS('F','NMVPCY_2','ERREUR DIR. GRANDISSEMENT')
-             ENDIF
-             BETA = ANGMAS(2)
-           ENDIF
-           CAA = COS(ALPHA)
-           SAA = SIN(ALPHA)
-           CBA = COS(BETA)
-           SBA = SIN(BETA)
+            ALPHA = ANGMAS(1)
+            IF (NDIM.EQ.2) THEN
+               BETA = 0.D0
+            ELSE
+               IF (ANGMAS(2).EQ.R8VIDE()) THEN
+                  CALL UTMESS('F','NMVPCY_2','ERREUR DIR. '//
+     *            'GRANDISSEMENT')
+               ENDIF
+            BETA = ANGMAS(2)
+            ENDIF
+            CAA = COS(ALPHA)
+            SAA = SIN(ALPHA)
+            CBA = COS(BETA)
+            SBA = SIN(BETA)
          ELSE
-           CAA = 1.D0
-           SAA = 0.D0
-           CBA = 1.D0
-           SBA = 0.D0
+            CAA = 1.D0
+            SAA = 0.D0
+            CBA = 1.D0
+            SBA = 0.D0
          ENDIF
-C        DEFORMATIONS DE GRANDISSEMENT DANS LE REPERE    
+C      DEFORMATIONS DE GRANDISSEMENT DANS LE REPERE    
          DEGRAN(1) =  DEPSGR*CAA*CAA*CBA*CBA
          DEGRAN(2) =  DEPSGR*SAA*SAA*SBA*SBA
          DEGRAN(3) =  DEPSGR*SBA*SBA
          DEGRAN(4) =  DEPSGR*SAA*CAA*CBA*CBA*RAC2
          DEGRAN(5) = -DEPSGR*CAA*SBA*CBA*RAC2
          DEGRAN(6) = -DEPSGR*SAA*SBA*CBA*RAC2
-        ENDIF
-C ------------------------- ZIRC_CYRA2 ---------------------------------
-C       LOI DE COMPORTEMENT ZIRC_CYRA2
-C ----------------------------------------------------------------------
-      ELSE IF (COMPOR(1)(1:10).EQ.'ZIRC_CYRA2')THEN
-        CALL NMVPCA(IMATE,COMPOR(1),'T ',INSTAP,R8VIDE(),'F ',
-     &              COEVIL,COECYR,COEEPR)
-        EPSFAB = COECYR(1)
-        TPREC  = COECYR(2)
-        FLUPHI = COECYR(3)
-C ------------------------- ZIRC_EPRI ---------------------------------
-C       LOI DE COMPORTEMENT ZIRC_EPRI
-C ---------------------------------------------------------------------
-      ELSE IF (COMPOR(1)(1:9).EQ.'ZIRC_EPRI')THEN  
-        CALL NMVPCA(IMATE,COMPOR(1),' T',R8VIDE(),TSCHEM,'F ',
-     &              COEVIL,COECYR,COEEPR)
-        FLUPHI = COEEPR(1)
-        VALDRP = COEEPR(2)
-        TTAMAX = COEEPR(3) 
-C ------------------------- VISC_IRRA_ ---------------------------------
-C       LOI DE COMPORTEMENT VISC_IRRA_LOG
-C ----------------------------------------------------------------------
-      ELSE IF (COMPOR(1)(1:10).EQ.'VISC_IRRA_')THEN
-        CALL NMVPCA(IMATE,COMPOR(1),' T',R8VIDE(),TSCHEM,'F ',
-     &              COEVIL,COECYR,COEEPR)
-        A       = COEVIL(1)
-        B       = COEVIL(2) 
-        CTPS    = COEVIL(3)                    
-        FLUPHI  = COEVIL(5)
-        ENER    = COEVIL(4)
-      ENDIF     
-      
-    
+      ENDIF
 C
       EPSMO = 0.D0
 
       DO 110 K=1,3
-        DEPSTH(K)   = DEPS(K)
+         DEPSTH(K)   = DEPS(K)
      &                -(ALPHAP*(TP-TREF)-ALPHAM*(TM-TREF))
      &                -(DEFAP(K)-DEFAM(K))
-        DEPSTH(K) = DEPSTH(K) - DEGRAN(K)
-        DEPSTH(K)   = DEPSTH(K) * THETA
+         DEPSTH(K) = DEPSTH(K) - DEGRAN(K)
+         DEPSTH(K)   = DEPSTH(K) * THETA
 
-        IF ((K.EQ.1).OR.(NDIMSI.EQ.6)) THEN
-          DEPSTH(K+3) = DEPS(K+3)-(DEFAP(K+3)-DEFAM(K+3))
-          DEPSTH(K+3) = DEPSTH(K+3) - DEGRAN(K+3)
-          DEPSTH(K+3) = DEPSTH(K+3) * THETA
-        ENDIF
+         IF ((K.EQ.1).OR.(NDIMSI.EQ.6)) THEN
+            DEPSTH(K+3) = DEPS(K+3)-(DEFAP(K+3)-DEFAM(K+3))
+            DEPSTH(K+3) = DEPSTH(K+3) - DEGRAN(K+3)
+            DEPSTH(K+3) = DEPSTH(K+3) * THETA
+         ENDIF
 
-        EPSMO = EPSMO + DEPSTH(K)
+         EPSMO = EPSMO + DEPSTH(K)
  110  CONTINUE
 C
       EPSMO = EPSMO/3.D0
   
       DO 111 K=1,NDIMSI
-        DEPSDV(K)   = DEPSTH(K) - EPSMO * KRON(K)
+         DEPSDV(K)   = DEPSTH(K) - EPSMO * KRON(K)
  111  CONTINUE
       SIGMO = 0.D0
       DO 113 K =1,3
-        SIGMO = SIGMO + SIGM(K)
+         SIGMO = SIGMO + SIGM(K)
  113  CONTINUE
       SIGMO = SIGMO /3.D0
 
       SIEQM=0.D0
       DO 114 K=1,NDIMSI
-        SIGDV(K) = SIGM(K) - SIGMO * KRON(K)
-        SIEQM   = SIEQM   + SIGDV(K)**2
-        SIGMP(K)=((DEUMUP+DEUMUM)/DEUMUM*(SIGM(K)-SIGMO*KRON(K))+
-     &           (TROIKP+TROIKM)/TROIKM*SIGMO*KRON(K))*0.5D0
+         SIGDV(K) = SIGM(K) - SIGMO * KRON(K)
+         SIEQM   = SIEQM   + SIGDV(K)**2
+         SIGMP(K)=((DEUMUP+DEUMUM)/DEUMUM*(SIGM(K)-SIGMO*KRON(K))+
+     &            (TROIKP+TROIKM)/TROIKM*SIGMO*KRON(K))*0.5D0
 114   CONTINUE
       SIEQM=SQRT(1.5D0*SIEQM)
       SIGMO = 0.D0
       DO 116 K =1,3
-        SIGMO = SIGMO + SIGMP(K)
+         SIGMO = SIGMO + SIGMP(K)
 116   CONTINUE
       SIGMO = SIGMO /3.D0
  
 
-      IF(ICAS.EQ.6) THEN
+      IF (COMPOR(1)(1:10).EQ.'LEMA_SEUIL') THEN
          SIEQP=0.D0
          DO 117 K = 1,NDIMSI
-           SIGDV(K) = SIGMP(K) - SIGMO * KRON(K)
-           SIGEL(K) = SIGDV(K) + DEUMUP * DEPSDV(K)/THETA
-           SIEQP   = SIEQP   + SIGEL(K)**2
+            SIGDV(K) = SIGMP(K) - SIGMO * KRON(K)
+            SIGEL(K) = SIGDV(K) + DEUMUP * DEPSDV(K)/THETA
+            SIEQP   = SIEQP   + SIGEL(K)**2
         
  117     CONTINUE
          SIEQP=SQRT(1.5D0*SIEQP)
@@ -420,9 +440,9 @@ C
 
       SIELEQ = 0.D0
       DO 118 K = 1,NDIMSI
-        SIGDV(K) = SIGMP(K) - SIGMO * KRON(K)
-        SIGEL(K) = SIGDV(K) + DEUMUP * DEPSDV(K)
-        SIELEQ   = SIELEQ   + SIGEL(K)**2
+         SIGDV(K) = SIGMP(K) - SIGMO * KRON(K)
+         SIGEL(K) = SIGDV(K) + DEUMUP * DEPSDV(K)
+         SIELEQ   = SIELEQ   + SIGEL(K)**2
         
  118  CONTINUE
       SIELEQ       = SQRT(1.5D0*SIELEQ)
@@ -435,139 +455,130 @@ C
       A0 = - SIELEQ
 C
 
-      IF(COMPOR(1)(1:10).EQ.'ASSE_COMBU') THEN
-        IF (ICAS.EQ.2) THEN
-           XAP = SIELEQ
-           XAP = XAP - SIELEQ*1.D-12
-           IF (ABS(A0).LE.PREC) THEN
-             X = 0.D0
-           ELSE
-             CALL ZEROF2(VPALEM,A0,XAP,PREC,INT(NITER),X)
-           ENDIF
-           CALL GGPLEM(X,DPC+(SIELEQ-X)/(1.5D0*DEUMUP),VALDEN,
-     *        UNSURK,UNSURM,THETA,DEUMUP,FG,FDGDST,FDGDEV)
-        ELSE IF (ICAS.EQ.3) THEN
-           XAP = 0.99D0 * SIELEQ
-           IF (ABS(A0).LE.PREC.OR.FLUPHI.LE.1.D-15) THEN
-             X = 0.D0
-           ELSE
-
-            CALL ZEROF2(VPAVIL,A0,XAP,PREC,INT(NITER),X)
-
-
-
-           ENDIF
-
-
-           CALL GGPVIL(X,DPC+(SIELEQ-X)/(1.5D0*DEUMUP),TSCHEM,
-     *              FLUPHI,A,B,CTPS,ENER,THETA,DEUMUP,PREC,INT(NITER),
-     *              FG,FDGDST,FDGDEV) 
-
-        ELSE IF (ICAS.EQ.6) THEN
-           D=VIM(2)+(DELTAT*(SIEQM+SIEQP)/(2*COEINT(2)))
-           XAP = SIELEQ
-           XAP = XAP - SIELEQ*1.D-12
-           IF (ABS(A0).LE.PREC) THEN
-             X = 0.D0
-C -----LE COMPORTEMENT EST PUREMENT ELASTIQUE EN DESSOUS DU SEUIL
-           ELSE IF (D.LE.1.D0) THEN
-             X=SIELEQ
-           ELSE
-             CALL ZEROF2(VPALEM,A0,XAP,PREC,INT(NITER),X)
-           ENDIF
-C -----LE COMPORTEMENT EST PUREMENT ELASTIQUE EN DESSOUS DU SEUIL
-           IF (D.LE.1.D0) THEN
-              FG=0.D0
-              FDGDST=0.D0
-              FDGDEV=0.D0
-           ELSE 
-              CALL GGPLEM(X,1.D0,VALDEN,
-     *        UNSURK,UNSURM,THETA,DEUMUP,FG,FDGDST,FDGDEV)
-     
-           ENDIF
-                   
-        ELSE
-          CALL UTMESS('F','NMVPIR',
-     *            'COMPORTEMENT INUTILISABLE AVEC ASSE_COMBU')
-        ENDIF
-      ELSE IF (COMPOR(1)(1:10).EQ.'ZIRC_CYRA2')THEN
-        XAP = 0.99D0 * SIELEQ
-        IF (ABS(A0).LE.PREC) THEN
-          X = 0.D0
-        ELSE
-          CALL ZEROF2(VPACYR,A0,XAP,PREC,INT(NITER),X)
-        ENDIF
-        CALL GGPCYR(X,DPC+(SIELEQ-X)/(1.5D0*DEUMUP),TSCHEM,
-     *   EPSFAB,TPREC,FLUPHI,THETA,DEUMUP,PREC,INT(NITER),FG,FDGDST,
-     *   FDGDEV)
-      ELSE IF (COMPOR(1)(1:9).EQ.'ZIRC_EPRI')THEN
-        XAP = 0.99D0 * SIELEQ
-        IF (ABS(A0).LE.PREC) THEN
-          X = 0.D0
-        ELSE
-          CALL ZEROF2(VPAEPR,A0,XAP,PREC,INT(NITER),X)
-        ENDIF
-        CALL GGPEPR(X,DPC+(SIELEQ-X)/(1.5D0*DEUMUP),TSCHEM,
-     *   FLUPHI,VALDRP,TTAMAX,THETA,DEUMUP,PREC,INT(NITER),
-     *   FG,FDGDST,FDGDEV)
-      ELSE IF (COMPOR(1)(1:10).EQ.'VISC_IRRA_')THEN
-        XAP = 0.99D0 * SIELEQ
-        IF (ABS(A0).LE.PREC) THEN
-          X = 0.D0
-        ELSE
+      IF (COMPOR(1)(1:13).EQ.'LEMAITRE_IRRA') THEN
+         XAP = SIELEQ
+         XAP = XAP - SIELEQ*1.D-12
+         IF (ABS(A0).LE.PREC) THEN
+            X = 0.D0
+         ELSE
+            CALL ZEROF2(VPALEM,A0,XAP,PREC,INT(NITER),X)
+         ENDIF
+         CALL GGPLEM(X,DPC+(SIELEQ-X)/(1.5D0*DEUMUP),VALDEN,
+     *          UNSURK,UNSURM,THETA,DEUMUP,FG,FDGDST,FDGDEV)
+      ELSE IF (COMPOR(1)(1:10).EQ.'VISC_IRRA_') THEN
+         XAP = 0.99D0 * SIELEQ
+         IF (ABS(A0).LE.PREC.OR.FLUPHI.LE.1.D-15) THEN
+            X = 0.D0
+         ELSE
           CALL ZEROF2(VPAVIL,A0,XAP,PREC,INT(NITER),X)
-        ENDIF
-        CALL GGPVIL(X,DPC+(SIELEQ-X)/(1.5D0*DEUMUP),TSCHEM,
-     *              FLUPHI,A,B,CTPS,ENER,THETA,DEUMUP,PREC,INT(NITER),
-     *              FG,FDGDST,FDGDEV)
+         ENDIF
+         CALL GGPVIL(X,DPC+(SIELEQ-X)/(1.5D0*DEUMUP),TSCHEM,
+     *            FLUPHI,A,B,CTPS,ENER,THETA,DEUMUP,PREC,INT(NITER),
+     *            FG,FDGDST,FDGDEV) 
+
+      ELSE IF (COMPOR(1)(1:10).EQ.'GRAN_IRRA_') THEN
+         XAP = 0.99D0 * SIELEQ
+         IF (ABS(A0).LE.PREC.OR.FLUPHI.LE.1.D-15) THEN
+            X = 0.D0
+         ELSE
+          CALL ZEROF2(VPAVIL,A0,XAP,PREC,INT(NITER),X)
+         ENDIF
+         CALL GGPVIL(X,DPC+(SIELEQ-X)/(1.5D0*DEUMUP),TSCHEM,
+     *            FLUPHI,A,B,CTPS,ENER,THETA,DEUMUP,PREC,INT(NITER),
+     *            FG,FDGDST,FDGDEV) 
+
+      ELSE IF (COMPOR(1)(1:10).EQ.'LEMA_SEUIL') THEN
+         D=VIM(2)+(DELTAT*(SIEQM+SIEQP)/(2*COEINT(2)))
+         XAP = SIELEQ
+         XAP = XAP - SIELEQ*1.D-12
+         IF (ABS(A0).LE.PREC) THEN
+            X = 0.D0
+C -----LE COMPORTEMENT EST PUREMENT ELASTIQUE EN DESSOUS DU SEUIL
+         ELSE IF (D.LE.1.D0) THEN
+            X=SIELEQ
+         ELSE
+            CALL ZEROF2(VPALEM,A0,XAP,PREC,INT(NITER),X)
+         ENDIF
+C -----LE COMPORTEMENT EST PUREMENT ELASTIQUE EN DESSOUS DU SEUIL
+         IF (D.LE.1.D0) THEN
+            FG=0.D0
+            FDGDST=0.D0
+            FDGDEV=0.D0
+         ELSE 
+            CALL GGPLEM(X,1.D0,VALDEN,
+     *      UNSURK,UNSURM,THETA,DEUMUP,FG,FDGDST,FDGDEV)
+     
+         ENDIF
+
+      ELSE IF (COMPOR(1)(1:10).EQ.'ZIRC_CYRA2')THEN
+         XAP = 0.99D0 * SIELEQ
+         IF (ABS(A0).LE.PREC) THEN
+            X = 0.D0
+         ELSE
+            CALL ZEROF2(VPACYR,A0,XAP,PREC,INT(NITER),X)
+         ENDIF
+         CALL GGPCYR(X,DPC+(SIELEQ-X)/(1.5D0*DEUMUP),TSCHEM,
+     *     EPSFAB,TPREC,FLUPHI,THETA,DEUMUP,PREC,INT(NITER),FG,FDGDST,
+     *     FDGDEV)
+      ELSE IF (COMPOR(1)(1:9).EQ.'ZIRC_EPRI')THEN
+         XAP = 0.99D0 * SIELEQ
+         IF (ABS(A0).LE.PREC) THEN
+            X = 0.D0
+         ELSE
+            CALL ZEROF2(VPAEPR,A0,XAP,PREC,INT(NITER),X)
+         ENDIF
+         CALL GGPEPR(X,DPC+(SIELEQ-X)/(1.5D0*DEUMUP),TSCHEM,
+     *        FLUPHI,VALDRP,TTAMAX,THETA,DEUMUP,PREC,INT(NITER),
+     *        FG,FDGDST,FDGDEV)
       ENDIF
 C
       IF (X.NE.0.D0) THEN
-        COEF1 = 1.D0/(1.D0+1.5D0*DEUXMU*DELTAT*FG/X)
+         COEF1 = 1.D0/(1.D0+1.5D0*DEUXMU*DELTAT*FG/X)
       ELSE
-        COEF1 = 1.D0/(1.D0+1.5D0*DEUXMU*DELTAT*FDGDST)
+         COEF1 = 1.D0/(1.D0+1.5D0*DEUXMU*DELTAT*FDGDST)
       ENDIF
 C
       IF ( OPTION(1:9) .EQ. 'RAPH_MECA' .OR.
      &     OPTION(1:9) .EQ. 'FULL_MECA' ) THEN
-        DELTP2 = 0.D0
-        DO 170 K = 1,NDIMSI
-          SIGDV(K) = SIGEL(K) * COEF1
-          SIGP(K)  = SIGDV(K) + (SIGMO + TROIKP*EPSMO)*KRON(K)
-          SIGP(K)  = (SIGP(K) - SIGM(K))/THETA + SIGM(K)
-          DELTEV   = (SIGEL(K)-SIGDV(K))/(DEUMUP*THETA)
-          DELTP2   = DELTP2   + DELTEV**2   
- 170    CONTINUE
-        VIP(1) = VIM(1) + SQRT(2.D0*DELTP2/3.D0)
+         DELTP2 = 0.D0
+         DO 170 K = 1,NDIMSI
+            SIGDV(K) = SIGEL(K) * COEF1
+            SIGP(K)  = SIGDV(K) + (SIGMO + TROIKP*EPSMO)*KRON(K)
+            SIGP(K)  = (SIGP(K) - SIGM(K))/THETA + SIGM(K)
+            DELTEV   = (SIGEL(K)-SIGDV(K))/(DEUMUP*THETA)
+            DELTP2   = DELTP2   + DELTEV**2   
+ 170     CONTINUE
+         VIP(1) = VIM(1) + SQRT(2.D0*DELTP2/3.D0)
 
-        IF (ICAS.EQ.6) THEN
-           IF (D.LE.1.D0) THEN
-              VIP(2) = VIM(2)+ ((SIEQP+SIEQM)*DELTAT)/(2*COEINT(2))
-           ELSE
-              VIP(2) = VIM(2)+ ((X/THETA+SIEQM)*DELTAT)/(2*COEINT(2))
-           ENDIF
+         IF (COMPOR(1)(1:10).EQ.'LEMA_SEUIL') THEN
+            IF (D.LE.1.D0) THEN
+               VIP(2) = VIM(2)+ ((SIEQP+SIEQM)*DELTAT)/(2*COEINT(2))
+            ELSE
+               VIP(2) = VIM(2)+ ((X/THETA+SIEQM)*DELTAT)/(2*COEINT(2))
+            ENDIF
 
-        ENDIF
+         ENDIF
       ENDIF
 C
       IF  ( OPTION(1:9) .EQ. 'FULL_MECA'.OR.
      &      OPTION(1:14) .EQ. 'RIGI_MECA_TANG' ) THEN
-       IF (X.NE.0.D0) THEN
-        COEF2=SIELEQ*(1.D0 - DELTAT*FDGDEV)
-        COEF2=COEF2/(1.D0+1.5D0*DEUXMU*DELTAT*FDGDST)
-        COEF2=COEF2 - X
-        COEF2=COEF2*1.5D0/(SIELEQ**3)
-       ELSE
-        COEF2 = 0.D0
-       ENDIF
-       DO 135 K=1,NDIMSI
-         DO 135 L=1,NDIMSI
-           DELTKL = 0.D0
-           IF (K.EQ.L) DELTKL = 1.D0
-           DSIDEP(K,L) = COEF1*(DELTKL-KRON(K)*KRON(L)/3.D0)
-           DSIDEP(K,L) = DEUMUP*(DSIDEP(K,L)+COEF2*SIGEL(K)*SIGEL(L))
-           DSIDEP(K,L) = DSIDEP(K,L) + TROIKP*KRON(K)*KRON(L)/3.D0
- 135   CONTINUE
+         IF (X.NE.0.D0) THEN
+            COEF2=SIELEQ*(1.D0 - DELTAT*FDGDEV)
+            COEF2=COEF2/(1.D0+1.5D0*DEUXMU*DELTAT*FDGDST)
+            COEF2=COEF2 - X
+            COEF2=COEF2*1.5D0/(SIELEQ**3)
+         ELSE
+         COEF2 = 0.D0
+         ENDIF
+         DO 135 K=1,NDIMSI
+            DO 135 L=1,NDIMSI
+               DELTKL = 0.D0
+               IF (K.EQ.L) DELTKL = 1.D0
+                  DSIDEP(K,L) = COEF1*(DELTKL-KRON(K)*KRON(L)/3.D0)
+               DSIDEP(K,L) = DEUMUP*(DSIDEP(K,L)+
+     &                       COEF2*SIGEL(K)*SIGEL(L))
+               DSIDEP(K,L) = DSIDEP(K,L) + TROIKP*KRON(K)*KRON(L)/3.D0
+ 135     CONTINUE
       ENDIF
 C
  9999 CONTINUE

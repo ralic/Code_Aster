@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,6 +22,9 @@ def proj_champ_prod(RESULTAT=None,CHAM_NO_REFE=None,**args ):
     if AsType(RESULTAT)     == evol_elas      : return evol_elas
     if AsType(RESULTAT)     == evol_noli      : return evol_noli
     if AsType(RESULTAT)     == evol_char      : return evol_char
+    if AsType(RESULTAT)     == mode_meca      : return mode_meca
+    if AsType(RESULTAT)     == mode_stat_depl : return mode_stat_depl
+    if AsType(RESULTAT)     == base_modale    : return base_modale
     if AsType(CHAM_NO_REFE) == cham_no_depl_r : return cham_no_depl_r
     if AsType(CHAM_NO_REFE) == cham_no_depl_c : return cham_no_depl_c
     if AsType(CHAM_NO_REFE) == cham_no_pres_c : return cham_no_pres_c
@@ -48,7 +51,7 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
                               fr="Utilisation des fonctions de forme du maillage initial",
            regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','LIST_INST','LIST_FREQ','LIST_ORDRE'),
                    EXCLUS('TOUT_CHAM','NOM_CHAM',), ),
-           RESULTAT        =SIMP(statut='o',typ=(evol_ther,evol_elas,evol_noli,evol_char) ),
+           RESULTAT        =SIMP(statut='o',typ=(evol_ther,evol_elas,evol_noli,evol_char,mode_meca,mode_stat_depl,base_modale) ),
            SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
                                fr="Liste des paramètres de sensibilité.",
                                ang="List of sensitivity parameters",),
@@ -65,10 +68,17 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
            LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
            FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
            LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
+           NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),
+           NOEUD_CMP       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
            DISTANCE_MAX    =SIMP(statut='f',typ='R',
                 fr="Distance maximale entre le noeud et l'élément le plus proche, lorsque le noeud n'est dans aucun élément."),
            TYPE_CHAM       =SIMP(statut='f',typ='TXM',into=("NOEU",),
                 fr="Pour forcer le type des champs projetés. NOEU -> cham_no"),
+           b_modele_gene     =BLOC(condition = "AsType(RESULTAT)     == mode_meca",
+             RIGI_MECA          =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_gene_r,matr_asse_pres_r ) ),
+             MASS_MECA          =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
+             AMOR_MECA          =SIMP(statut='f',position='global',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
+                                    ),
          ),
 
          VIS_A_VIS       =FACT(statut='f',max='**',

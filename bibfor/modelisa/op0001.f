@@ -1,7 +1,7 @@
       SUBROUTINE OP0001 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 14/02/2005   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -181,6 +181,9 @@ C     ---------------------------------
       IF (VERI.EQ.'OUI') THEN
         CALL GETVR8('VERI_MAIL','APLAT',1,1,1,DTOL,IRET)
         CALL CHCKMA(NOMU,CMD,DTOL)
+      ELSE
+         CALL UTMESS('A',CMD,'- PHASE DE VERIFICATION DU'
+     &   //' MAILLAGE DESACTIVEE')
       ENDIF
 
   

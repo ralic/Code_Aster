@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 15/02/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -161,7 +161,13 @@ C
      &                  NUMINI,1,NBTROU)
           NUMINI = NUMINI + 1
           CALL RSEXCH ( RESU, NSYMB, NUMINI, NOMCH, IRET )
-          IF ( IRET .EQ. 110 ) THEN
+          IF ( IRET .EQ. 0 ) THEN
+             CALL UTDEBM('A',OPER,'*** CHAMP DEJA EXISTANT ***')
+             CALL UTIMPK('L','IL SERA REMPLACE PAR LE CHAMP',1,
+     +                                                     CHAMP(1:8) )
+             CALL UTIMPI('S',' POUR LE NUME_ORDRE ',1,NUMINI)
+             CALL UTFINM()
+          ELSEIF ( IRET .EQ. 110 ) THEN
              CALL RSAGSD ( RESU, 0 )
              CALL RSEXCH ( RESU, NSYMB, NUMINI, NOMCH, IRET )
           ELSEIF ( IRET .EQ. 100 ) THEN
@@ -288,7 +294,13 @@ C
           ICOMPT = ZI(JCPT + J - 1)
           TPS    = ZR(JINST+ J - 1)
           CALL RSEXCH ( RESU, NSYMB, ICOMPT, NOMCH, IRET )
-          IF ( IRET .EQ. 110 ) THEN
+          IF ( IRET .EQ. 0 ) THEN
+             CALL UTDEBM('A',OPER,'*** CHAMP DEJA EXISTANT ***')
+             CALL UTIMPK('L','IL SERA REMPLACE PAR LE CHAMP',1,
+     +                                                     CHAMP(1:8) )
+             CALL UTIMPR('S',' POUR L''INSTANT ',1,TPS)
+             CALL UTFINM()
+          ELSEIF ( IRET .EQ. 110 ) THEN
             CALL RSAGSD ( RESU, 0 )
             CALL RSEXCH ( RESU, NSYMB, ICOMPT, NOMCH, IRET )
           ENDIF

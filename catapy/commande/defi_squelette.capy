@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,12 +20,18 @@ DEFI_SQUELETTE=OPER(nom="DEFI_SQUELETTE",op= 110,sd_prod=squelette,
                     fr="Définition d un maillage de visualisation",
                     reentrant='n',
             UIinfo={"groupes":("Maillage",)},
-         regles=(UN_PARMI('MODE_CYCL','MODELE_GENE','MAILLAGE'),
-                 PRESENT_PRESENT('MODE_CYCL','SECTEUR'),
+         regles=(UN_PARMI('CYCLIQUE','MODELE_GENE','MAILLAGE'),
+                 PRESENT_PRESENT('CYCLIQUE','SECTEUR'),
                  EXCLUS('SOUS_STRUC','SECTEUR'),
                  PRESENT_PRESENT('NOM_GROUP_MA','MODELE_GENE'),
                  PRESENT_PRESENT('NOM_GROUP_MA','SOUS_STRUC'),),
-         MODE_CYCL       =SIMP(statut='f',typ=mode_cycl ),
+         CYCLIQUE    =FACT(statut='f',max='**',
+           regles=(UN_PARMI('MODE_CYCL','MAILLAGE'),
+                   PRESENT_PRESENT('NB_SECTEUR','MAILLAGE'),),
+           MODE_CYCL       =SIMP(statut='f',typ=mode_cycl ),
+           NB_SECTEUR      =SIMP(statut='f',typ='I',validators=NoRepeat(),max=1 ),
+           MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster ),
+         ),
          MODELE_GENE     =SIMP(statut='f',typ=modele_gene ),
          SQUELETTE       =SIMP(statut='f',typ=squelette ),
          RECO_GLOBAL     =FACT(statut='f',max='**',

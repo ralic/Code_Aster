@@ -4,7 +4,7 @@
       CHARACTER*(*)       CHELEZ, NOMJV
       REAL*8              ORIG(3), AXEZ(3)
 C ----------------------------------------------------------------------
-C MODIF POSTRELE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF POSTRELE  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,7 +47,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      +              NSCAL, ICOEF, NSCA, NNOE, NCMPP, ICMP, NPCALC, IEL,
      +              NCOU, IACHML, ICOU, INO, ICMPT, NBGREL, IER, DIGDEL,
      +              NUMXX, NUMYY, NUMZZ, NUMXY, NUMXZ, NUMYZ, NUDDL, I,
-     +              JLONGR, JLIGR, JPNT, IPOIN, IANOMA, NUNOE,AXYZM,JCNX
+     +              JLONGR, JLIGR, JPNT, IPOIN, IANOMA, NUNOE,AXYZM,
+     +              JCNX,IMODEL,ILONG
       REAL*8        SG(6), SL(6), PGL(3,3), PSCAL
       REAL*8        XNORMR, EPSI, AXER(3), AXET(3)
       CHARACTER*8   K8B, NOMCMP, NOMMA
@@ -67,6 +68,8 @@ C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
       GD = ZI(JCELD-1+1)
       CALL JEVEUO ( JEXNUM('&CATA.GD.NOMCMP',GD), 'L', IAD )
       CALL JELIRA ( JEXNUM('&CATA.GD.NOMCMP',GD),'LONMAX',NCMPMX,K8B)
+      CALL JEVEUO ('&CATA.TE.MODELOC', 'L', IMODEL )
+      CALL JEVEUO (JEXATR('&CATA.TE.MODELOC','LONCUM'),'L',ILONG)
 C
       NEC  = NBEC( GD )
       IF ( NEC .GT. 10 ) CALL UTMESS('F','RVCHE2','NEC TROP GRAND')
@@ -114,7 +117,7 @@ C
          IF ( IGREL .EQ. 0 ) GOTO 20
          MODE=ZI(JCELD-1+ZI(JCELD-1+4+IGREL) +2)
          IF ( MODE .EQ. 0 ) GOTO 20
-         CALL DGMODE ( MODE, NEC, TABEC )
+         CALL DGMODE ( MODE, IMODEL, ILONG, NEC, TABEC )
          NSCAL = DIGDEL( MODE )
          ICOEF=MAX(1,ZI(JCELD-1+4))
          IF (ICOEF.GT.1) CALL UTMESS('F','RVCHE2','ICOEF TROP GRAND')

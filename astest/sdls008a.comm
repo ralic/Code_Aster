@@ -1,0 +1,253 @@
+# MODIF  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
+# TITRE EXTRAPOLATION DE MESURES SUR UN MODELE 2D
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#       TEST DU GARTEUR
+
+DEBUT(CODE=_F(NOM='SDLS008A',
+              NIV_PUB_WEB='INTRANET',),);
+
+
+#********************************
+# CALCUL DE LA BASE DE PROJECTION
+#********************************
+
+MAYAFEM=LIRE_MAILLAGE(UNITE=20);
+
+MAYAFEM=DEFI_GROUP(reuse =MAYAFEM,
+                   MAILLAGE=MAYAFEM,
+                   CREA_GROUP_MA=_F(NOM='ALL_EL',
+                                    TOUT='OUI',),
+                   CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+
+MATER1=DEFI_MATERIAU(ELAS=_F(E=72000000000.0,
+                             NU=0.34,
+                             RHO=2700.0,),);
+
+MATER2=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
+                             NU=0.29,
+                             RHO=7800.0,),);
+
+MODFEM=AFFE_MODELE(MAILLAGE=MAYAFEM,
+                   AFFE=(_F(GROUP_MA=('GROUP1','GROUP2','GROUP3','GROUP4','GROUP5','GROUP6','GROUP7','GROUP8',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DKT',),
+                         _F(GROUP_MA='GROUP9',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_TR',),
+                         _F(GROUP_NO='GROUP10',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_T',),),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAYAFEM,
+                    AFFE=(_F(GROUP_MA=('GROUP1','GROUP2','GROUP3','GROUP4','GROUP5','GROUP6','GROUP7','GROUP9',),
+                             MATER=MATER1,),
+                          _F(GROUP_MA='GROUP8',
+                             MATER=MATER2,),),);
+
+CHCAR=AFFE_CARA_ELEM(MODELE=MODFEM,
+                     COQUE=(_F(GROUP_MA=('GROUP2','GROUP3','GROUP4','GROUP5','GROUP7',),
+                               EPAIS=0.01,),
+                            _F(GROUP_MA='GROUP8',
+                               EPAIS=0.016,),
+                            _F(GROUP_MA='GROUP1',
+                               EPAIS=0.05,),
+                            _F(GROUP_MA='GROUP6',
+                               EPAIS=0.011,),),
+                     DISCRET=(_F(GROUP_MA='GROUP9',
+                                 REPERE='GLOBAL',
+                                 CARA='K_TR_D_L',
+                                 VALE=(1e+12,1e+12,1e+12,100000000.0,100000000.0,100000000.0,),),
+                              _F(GROUP_NO='GROUP10',
+                                 CARA='M_T_D_N',
+                                 VALE=0.5,),),);
+
+CHARGE=AFFE_CHAR_MECA(MODELE=MODFEM,
+                      DDL_IMPO=_F(NOEUD='NO58',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,
+                                  DRX=0.0,
+                                  DRY=0.0,
+                                  DRZ=0.0,),);
+
+KELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                     MODELE=MODFEM,
+                     CHAM_MATER=CHMAT,
+                     CARA_ELEM=CHCAR,
+                     CHARGE=CHARGE,
+                     );
+
+MELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                     MODELE=MODFEM,
+                     CHAM_MATER=CHMAT,
+                     CARA_ELEM=CHCAR,
+                     CHARGE=CHARGE,
+                     );
+
+NUME=NUME_DDL(MATR_RIGI=KELEM,);
+
+KASS=ASSE_MATRICE(MATR_ELEM=KELEM,
+                  NUME_DDL=NUME,);
+
+MASS=ASSE_MATRICE(MATR_ELEM=MELEM,
+                  NUME_DDL=NUME,);
+
+MASSE=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
+                MODELE=MODFEM,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CHCAR,
+                CHARGE=CHARGE,);
+
+MODES=MODE_ITER_SIMULT(MATR_A=KASS,
+                       MATR_B=MASS,
+                       METHODE='TRI_DIAG',
+                       OPTION='MODE_RIGIDE',
+                       CALC_FREQ=_F(OPTION='BANDE',
+                                   FREQ=(0.0,280.0,),),
+                      VERI_MODE=_F(STOP_ERREUR='NON',),);
+                       
+MODES=NORM_MODE(reuse =MODES,
+                MODE=MODES,
+                NORME='TRAN_ROTA',
+               );                
+
+          
+#**********************************
+# CREATION DU MODELE EXPERIMENTALE
+#**********************************
+
+MAYAEXP=LIRE_MAILLAGE(UNITE=22,
+                      VERI_MAIL=_F(VERIF='NON',),);
+
+MAYAEXP=DEFI_GROUP(reuse =MAYAEXP,
+                   MAILLAGE=MAYAEXP,
+                   CREA_GROUP_MA=_F(NOM='ALL_EXP',
+                                    TOUT='OUI',),
+                   CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+                   
+                   
+MODEXP=AFFE_MODELE(MAILLAGE=MAYAEXP,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='DIS_T',),);
+
+CHCAREXP=AFFE_CARA_ELEM(MODELE=MODEXP,
+                     DISCRET=_F(GROUP_MA='ALL_EXP',
+                                 REPERE='GLOBAL',
+                                 CARA='K_T_D_L',
+                                 VALE=(1e+12,1e+12,1e+12,),
+                                ),);
+
+KELEXP=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                     MODELE=MODEXP,
+                     CARA_ELEM=CHCAREXP,
+                     );
+
+MELEXP=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                     MODELE=MODEXP,
+                     CARA_ELEM=CHCAREXP,
+                     );
+
+
+NUMEXP=NUME_DDL(MATR_RIGI=KELEXP,
+                METHODE='MULT_FRONT',
+                );
+
+KASSEXP=ASSE_MATRICE(MATR_ELEM=KELEXP,
+                  NUME_DDL=NUMEXP,);
+
+MASSEXP=ASSE_MATRICE(MATR_ELEM=MELEXP,
+                  NUME_DDL=NUMEXP,);
+
+
+
+# lecture des modes experimentaux
+MODMES=LIRE_RESU(TYPE_RESU='MODE_MECA',
+                 FORMAT='IDEAS',
+                 MODELE=MODEXP,
+                 UNITE=21,
+                 NOM_CHAM='DEPL',
+                 MATR_A =KASSEXP,
+                 MATR_B =MASSEXP,                 
+                 FORMAT_IDEAS=_F(NOM_CHAM='DEPL',
+                                 NUME_DATASET=55,
+                                 RECORD_6=(1,2,3,8,2,6,),
+                                 POSI_ORDRE=(7,4,),
+                                 POSI_NUME_MODE=(7,4),
+                                 POSI_FREQ=(8,1,),
+                                 POSI_MASS_GENE=(8,2),
+                                 NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ'),),
+                 TOUT_ORDRE='OUI',);
+
+# projection des modes experimentaux sur les modes numeriques
+PROJ=PROJ_MESU_MODAL(MODELE_CALCUL=_F(MODELE=MODFEM,
+                                      BASE=MODES,),
+                     MODELE_MESURE=_F(MODELE=MODEXP,
+                                      MESURE=MODMES,
+                                      NOM_CHAM='DEPL',),
+                     RESOLUTION=_F(METHODE='SVD',
+                                   EPS=1.E-5),
+                     );
+
+RES=REST_BASE_PHYS(RESU_GENE=PROJ,
+                   MODE_MECA=MODES,
+                   TOUT_ORDRE='OUI',
+                   NOM_CHAM   ='DEPL');
+
+# Restriction des modes mesures etendus sur le maillage capteur
+MODINTS1=PROJ_CHAMP(METHODE='ELEM',
+                RESULTAT=RES,
+                MODELE_1=MODFEM,
+                MODELE_2=MODEXP,
+                NOM_CHAM='DEPL',
+                TOUT_ORDRE='OUI',
+                RIGI_MECA=KASSEXP,
+                MASS_MECA=MASSEXP,
+                VIS_A_VIS=_F(GROUP_MA_1='ALL_EL',
+                             GROUP_NO_2='ALL_EXP',),);
+
+TEST_RESU(RESU=(
+               _F(RESULTAT=MODINTS1,
+                  NUME_MODE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  NOEUD='NO1011',
+                  VALE=3.38287E-01,
+                  PRECISION=0.01,
+                  REFERENCE='AUTRE_ASTER',),
+               _F(RESULTAT=MODINTS1,
+                  NUME_MODE=2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                 NOEUD='NO1112',
+                  VALE=1.34575E-05,
+                  PRECISION=0.01,
+                  REFERENCE='AUTRE_ASTER',),
+               _F(RESULTAT=MODINTS1,
+                  NUME_MODE=3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='NO1205',
+                  VALE=1.59589E-006,
+                  PRECISION=0.01,
+                  REFERENCE='AUTRE_ASTER',),
+                  ),
+                  );
+
+FIN();

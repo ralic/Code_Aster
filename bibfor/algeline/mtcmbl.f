@@ -8,7 +8,7 @@
       REAL*8           CONST(NBCOMB)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,6 +90,8 @@ C     -----------------------------------------------------------------
       CHARACTER*8   K8BID
       CHARACTER*19  MATRES,MATI,MAT1
 C     -----------------------------------------------------------------
+      INTEGER JREFA,JREFI
+
 C
 C --- VERIFICATION DE LA COHERENCE DES MATRICES A COMBINER
 C
@@ -111,20 +113,26 @@ C
         CALL JEVEUO(LIMAT(I)(1:19)//'.&INT','E',ZI(IDLIMA+I-1))
    10 CONTINUE
 C
-      CALL JELIRA(LIMAT(1)(1:19)//'.REFA','DOCU',IBID,ETAMA1)
+      CALL JELIRA(LIMAT(1)(1:19)//'.REFA','DOCU',IBID,ETAMAT)
+      CALL JEVEUO(LIMAT(1)(1:19)//'.REFA','L',JREFA)
 C
       IER1 = 0
       DO 20 I = 2, NBCOMB
-         CALL VRREFE (LIMAT(1), LIMAT(I), IER)
-         IF (IER.NE.0) THEN
-           IER1 = 1
-         ENDIF
+
          CALL JELIRA(LIMAT(I)(1:19)//'.REFA','DOCU',IBID,
      +               ETAMAT)
-         IF (ETAMAT.NE.ETAMA1) THEN
+         CALL JEVEUO(LIMAT(I)(1:19)//'.REFA','L',JREFI)
+         IF (ZK24(JREFA+1).NE.ZK24(JREFI+1)) THEN
+            IER1=1
+         ENDIF
+         IF (ZK24(JREFA).NE.ZK24(JREFI)) THEN
+              CALL UTMESS('F','MTCMB2','LES MATRICES A COMBINER NE '//
+     +                     'SONT PAS CONSTRUITE SUR LE MEME MAILLAGE')
+         ENDIF
+
+         IF (ETAMAT.NE.'ASSE') THEN
               CALL UTMESS('F','MTCMB2','LES MATRICES A COMBINER'//
-     +                     ' NE SONT PAS DANS LE MEME ETAT'//
-     +                     ' REFERENCE PAR LE CHAMP DOCU DU .REFA')
+     +                     ' NE SONT PAS DE TYPE ASSE')
          ENDIF
   20  CONTINUE
 C

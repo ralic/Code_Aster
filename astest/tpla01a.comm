@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 14/02/2005   AUTEUR DURAND C.DURAND 
 # TITRE CYLINDRE CREUX EN THERMIQUE STATIONNAIRE (TRIA3/QUAD4 AXIS)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -161,37 +161,42 @@ TEST_RESU(RESU=(
        REFERENCE = 'ANALYTIQUE'),)
       )
 
-MACR_LIGN_COUPE(   RESULTAT    = TEMPE,
-                   MODELE      = MOTH,
+TABTE1=MACR_LIGN_COUPE(   RESULTAT    = TEMPE,
                    LIGN_COUPE  = ( _F( NB_POINTS  = 10,
                                        COOR_ORIG  = (3.000E-01,0.00E+00),
                                        COOR_EXTR  = (3.500E-01,1.00E-01),
-                                       TABLE      = CO("TABTE1")  ),
+                                       INTITULE   = 'ligne1',),
                                    _F( NB_POINTS  = 12,
                                        COOR_ORIG  = (3.500E-01,0.00E+00),
                                        COOR_EXTR  = (3.000E-01,1.00E-01),
-                                       TABLE      = CO("TABTE2")  ),
-                                 )
-                     )
+                                       INTITULE   = 'ligne2',),
+                                   ) )
 
 TEST_TABLE(    TABLE=TABTE1, 
-               FILTRE=(_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N5'),
+               FILTRE=(
+                       _F(  NOM_PARA = 'INTITULE',
+                            VALE_K = 'ligne1'),
                        _F(  NOM_PARA = 'NUME_ORDRE',
-                           VALE = 1),     ),
+                            VALE_I = 2),
+                       _F(  NOM_PARA = 'ABSC_CURV',
+                            VALE =0.111803,CRITERE='ABSOLU',PRECISION=0.001), 
+              ),
                NOM_PARA='TEMP',
-               VALE=62.9116 ,
+               VALE=20.0045 ,
                REFERENCE = 'NON_REGRESSION',
                VERSION='6.3.14'
           )
 
-TEST_TABLE(    TABLE=TABTE2, 
-               FILTRE=(_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N14'),
+TEST_TABLE(    TABLE=TABTE1, 
+               FILTRE=(_F(  NOM_PARA = 'INTITULE',
+                            VALE_K = 'ligne2'),
                        _F(  NOM_PARA = 'NUME_ORDRE',
-                           VALE = 2),     ),
+                           VALE_I = 1),
+                       _F(  NOM_PARA = 'ABSC_CURV',
+                           VALE = 5.08197E-02,CRITERE='ABSOLU',PRECISION=0.0001), 
+                      ),
                NOM_PARA='TEMP',
-               VALE=40.6253 ,
+               VALE=54.84 ,
                REFERENCE = 'NON_REGRESSION',
                VERSION='6.3.14'
           )

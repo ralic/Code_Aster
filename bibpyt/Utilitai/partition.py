@@ -1,4 +1,4 @@
-#@ MODIF partition Utilitai  DATE 07/02/2005   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF partition Utilitai  DATE 10/02/2005   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -413,7 +413,7 @@ class PARTITION:
                             'exe_metis'   : aster.repout() + 'pmetis',
                             'fichier_in'  : 'fort.66',
                             'fichier_out' : 'fort.68',
-                            'elimine_bords': 'NON',
+                            'elimine_bords': 'OUI',
                              }
 
     self.Creation_Dico_Correspondance_Type_Maille()

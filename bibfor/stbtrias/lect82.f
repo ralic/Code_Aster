@@ -1,7 +1,7 @@
       SUBROUTINE LECT82(NODE,NBNODE,INUM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 10/02/2004   AUTEUR NICOLAS O.NICOLAS 
+C MODIF STBTRIAS  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -64,9 +64,9 @@ C
 C  --> DECLARATION DES ARGUMENTS
 C     ============================================================
 C
-      INTEGER NODE(NBNODE),NBNODE,INUM,IPO,IDRO,IUNV
+      INTEGER NODE(*),NBNODE,INUM,IDRO,IUNIFI,IUNV
 C  --> DECLARATION DES VARIABLES LOCALES
-      INTEGER NODLU(10000),NOD82(10000)
+      INTEGER NODLU(NBNODE)
 C  --> DECLARATION DES INDICES DE BOUCLES
       INTEGER I,J
 C
@@ -74,30 +74,25 @@ C     ---------- FIN DECLARATIONS -----------
 C
       IUNV = IUNIFI('IDEAS')
       READ (IUNV,'(8I10)') (NODLU(J),J=1,NBNODE)
-      IPO=0
-      DO  667 I=1,NBNODE
-        DO 668 J=1,2
-          NOD82(IPO+J) = NODLU(I-1+J)
-  668   CONTINUE
-        IPO=IPO+2
-  667 CONTINUE
       IDRO=1
       INUM=1
-      DO  669 I=1,NBNODE*2,2
-        IF ((NOD82(I).NE.0)) THEN 
-          NODE(IDRO)=NOD82(I)
-          NODE(IDRO+1)=NOD82(I+1)
+      DO  669 I=1,NBNODE
+        IF ((NODLU(I).NE.0).AND.(I.LT.NBNODE)) THEN 
+          NODE(IDRO)=NODLU(I)
+          NODE(IDRO+1)=NODLU(I+1)
           IDRO=IDRO+2
           INUM = INUM + 1
-        ELSE
-          IF ((NOD82(I).EQ.0).AND.(I.GE.2*(NBNODE)-1)) THEN
-          IDRO=IDRO-3
-          INUM = INUM - 2
-          GOTO 669
-        ELSE
+C cas ou on commence par un 0          
+        ELSEIF ((NODLU(I).EQ.0).AND.(I.EQ.1)) THEN
+          IDRO=IDRO
+          INUM = INUM
+        ELSEIF ((NODLU(I).EQ.0).AND.(I.LT.NBNODE)) THEN
           IDRO=IDRO-2
           INUM = INUM - 1
-        ENDIF  
-      ENDIF  
+        ELSEIF ((NODLU(I).EQ.0).AND.(I.GE.NBNODE)) THEN
+          IDRO=IDRO-2
+          INUM = INUM - 1
+          GOTO 669
+        ENDIF 
   669 CONTINUE
       END

@@ -11,7 +11,7 @@ C
       LOGICAL       LMASU
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8  ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
-      CHARACTER*32 ZK32,JEXNUM,JEXNOM
+      CHARACTER*32 ZK32,JEXNUM,JEXNOM,JEXATR
       CHARACTER*80 ZK80
 C     ------------------------------------------------------------------
       CHARACTER*3  TOTO
@@ -75,7 +75,7 @@ C     ------------------------------------------------------------------
       CHARACTER*80 ENTETE(10),TITRE,TEXTE
       CHARACTER*24 NOMST
       INTEGER      NBCHS,NBCMPT,ENTIER,NBSPT,NNOE
-      INTEGER      IMPRE,IENTE,IMPEL
+      INTEGER      IMPRE,IENTE,IMPEL,ILONG,IMODEL
       LOGICAL      AFAIRE,LCMP
 C
 C  --- INITIALISATIONS ----
@@ -90,6 +90,8 @@ C
 C
       NOMST= '&&IRECRI.SOUS_TITRE.TITR'
       CALL JEVEUO(NOMST,'L',JTITR)
+      CALL JEVEUO ('&CATA.TE.MODELOC', 'L', IMODEL )
+      CALL JEVEUO (JEXATR('&CATA.TE.MODELOC','LONCUM'),'L',ILONG)
       TITRE = ZK80(JTITR)
       DO 1 I=1,NCMPMX
         ZL(ITABL-1+I)=.FALSE.
@@ -228,11 +230,11 @@ C
             IPOIN2=LONGR(IGREL+1)
             NBELGR=IPOIN2-IPOIN1-1
             IF (MODE.EQ.0) GO TO 12
-            CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',MODE),'L',JMOD)
+            JMOD = IMODEL+ZI(ILONG-1+MODE)-1
             NEC = NBEC (ZI(JMOD-1+2))
             CALL JEDETR('&&IRCECS.ENT_COD')
             CALL WKVECT('&&IRCECS.ENT_COD','V V I',NEC,IAEC)
-            CALL DGMODE(MODE,NEC,ZI(IAEC))
+            CALL DGMODE(MODE,IMODEL,ILONG,NEC,ZI(IAEC))
             IAD=CELD(CELD(4+IGREL)+8)
             NSCAL = DIGDEL(MODE)
             ICOEF=MAX(1,CELD(4))

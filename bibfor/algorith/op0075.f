@@ -3,7 +3,7 @@
       INTEGER            IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,12 +45,12 @@ C
 C
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
 C
-      CHARACTER*8  K8B, NOMRES, RESIN, NOMSST, MAILSK, MATGEN, MODE
+      CHARACTER*8  K8B, NOMRES, RESIN, NOMSST, MAILSK, MATGEN, MODE 
       CHARACTER*8  K8BID,BID,RESULT,BLANC
       CHARACTER*14 NUMGEN
       CHARACTER*16 CONCEP, NOMCMD, TYPRES, TYPMAT, TYPREP, CHAMP(4)
       CHARACTER*19 PROFNO
-      LOGICAL PROMES
+      LOGICAL      PROMES
 C
 C     -----------------------------------------------------------------
       DATA K8B    /'        '/
@@ -109,13 +109,17 @@ C      --- PROJECTION RESULTAT SUR UN SQUELETTE ENRICHI ---
 
 C INDICATEUR CALCUL SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
       PROMES = .FALSE.
-      
-      IF ( (CONCEP(1:9).EQ.'TRAN_GENE') .OR.
-     &     (CONCEP(1:9).EQ.'HARM_GENE') .OR.
-     &     (CONCEP(1:9).EQ.'MODE_GENE') ) THEN
+      IF (CONCEP(1:9).EQ.'TRAN_GENE') THEN
         CALL JEVEUO(RESIN//'           .REFE','L',J1REFE)
         MATGEN = ZK24(J1REFE+1)
-        IF (MATGEN(1:8) .EQ. BLANC) PROMES = .TRUE.
+        IF (MATGEN(1:8) .EQ. BLANC)
+     &       PROMES = .TRUE.
+      ELSEIF ((CONCEP(1:9).EQ.'MODE_GENE') .OR.
+     &     (CONCEP(1:9).EQ.'HARM_GENE')) THEN
+        CALL JEVEUO(RESIN//'           .REFE','L',J1REFE)
+        MATGEN = ZK24(J1REFE)
+        IF (MATGEN(1:8) .EQ. BLANC)
+     &       PROMES = .TRUE.
       ENDIF
 C
 C     --- DYNAMIQUE TRANSITOIRE ---
@@ -187,28 +191,33 @@ C
       ELSEIF(CONCEP(1:9).EQ.'MODE_GENE') THEN
         CALL JEVEUO(RESIN//'           .REFE','L',J1REFE)
         MATGEN = ZK24(J1REFE)
-        CALL GETTCO(MATGEN,TYPMAT)
-        CALL JEVEUO(MATGEN//'           .REFA','L',J2REFE)
-        NUMGEN = ZK24(J2REFE+1)(1:14)
-        CALL JEVEUO(NUMGEN//'.NUME.REFN','L',J3REFE)
-        CALL GETTCO(ZK24(J3REFE),TYPREP)
-        IF (TYPREP.EQ.'MODELE_GENE     ') THEN
-           CALL GETVID(' ','SQUELETTE',1,1,0,K8B,ISK)
-           IF (ISK.EQ.0) THEN
-              CALL GETVTX(' ','SOUS_STRUC',1,1,1,NOMSST,IBID)
-              CALL REGEEC(NOMRES,RESIN,NOMSST)
-           ELSE
-              CALL GETVID(' ','SQUELETTE',1,1,1,MAILSK,IBID)
-              PROFNO = NOMRES//'.PROFC.NUME'
-              CALL REGEGL(NOMRES,RESIN,MAILSK,PROFNO)
-              CALL JEVEUO(PROFNO(1:19)//'.REFN','E',LDREFB)
-              ZK24(LDREFB) = MAILSK
-              ZK24(LDREFB+1) = 'DEPL_R'
-           ENDIF
+        IF (PROMES) THEN
+          TYPMAT = ' '
+          CALL REGENE(NOMRES,RESIN)
         ELSE
+          CALL GETTCO(MATGEN,TYPMAT)
+          CALL JEVEUO(MATGEN//'           .REFA','L',J2REFE)
+          NUMGEN = ZK24(J2REFE+1)(1:14)
+          CALL JEVEUO(NUMGEN//'.NUME.REFN','L',J3REFE)
+          CALL GETTCO(ZK24(J3REFE),TYPREP)
+          IF (TYPREP.EQ.'MODELE_GENE     ') THEN
+             CALL GETVID(' ','SQUELETTE',1,1,0,K8B,ISK)
+             IF (ISK.EQ.0) THEN
+                CALL GETVTX(' ','SOUS_STRUC',1,1,1,NOMSST,IBID)
+                CALL REGEEC(NOMRES,RESIN,NOMSST)
+             ELSE
+                CALL GETVID(' ','SQUELETTE',1,1,1,MAILSK,IBID)
+                PROFNO = NOMRES//'.PROFC.NUME'
+                CALL REGEGL(NOMRES,RESIN,MAILSK,PROFNO)
+                CALL JEVEUO(PROFNO(1:19)//'.REFN','E',LDREFB)
+                ZK24(LDREFB) = MAILSK
+                ZK24(LDREFB+1) = 'DEPL_R'
+             ENDIF
+          ELSE
 C     --- CALCUL MODAL SANS SOUS-STRUCTURATION ---
-           CALL REGENE(NOMRES,RESIN)
-        ENDIF
+             CALL REGENE(NOMRES,RESIN)
+          ENDIF
+        ENDIF    
 C
 C     --- CALCUL MODAL PAR SOUS-STYRUCTURATION CYCLIQUE ---
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 14/02/2005   AUTEUR DURAND C.DURAND 
 # TITRE TEST DE NON-REGRESSION D'ASTER : MECANIQUE LINEAIRE 3D
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -747,12 +747,10 @@ CALC_NO(reuse =MSLIN,
               RESULTAT=MSLIN,
               OPTION='SIGM_NOEU_DEPL',);
 
-MACR_LIGN_COUPE(   RESULTAT    = MSLIN,
-                   MODELE      = MO,
+TABME0=MACR_LIGN_COUPE(   RESULTAT    = MSLIN,
                    LIGN_COUPE  =   _F( NB_POINTS  = 10,
                                        COOR_ORIG  = (0.53531E+01,0.77826E+01,0.99437E+00),
-                                       COOR_EXTR  = (0.22327E+01,0.69743E+01,0.18483E+01),
-                                       TABLE      = CO("TABME0")  ),
+                                       COOR_EXTR  = (0.22327E+01,0.69743E+01,0.18483E+01), ),
                      )
 
 IMPR_TABLE ( TABLE = TABME0,
@@ -768,14 +766,13 @@ TABME1=LIRE_TABLE( UNITE=39,
                    TYPE_TABLE='TABLE',
                    SEPARATEUR=' ',)
 
-
 TEST_TABLE(    TABLE=TABME1,
-               FILTRE=(_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N5'),
+               FILTRE=(_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 1.48204),
                        _F(  NOM_PARA = 'INST',
                             VALE = 5.50E+00),     ),
                NOM_PARA='SIXX',
-      VALE=  3.5956648600629E+04   ,
+      VALE=  3.5955E+04   ,
                REFERENCE = 'NON_REGRESSION',
           )
 

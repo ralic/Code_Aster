@@ -11,7 +11,7 @@ C
       LOGICAL       LRESU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,10 +63,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                ZK32
       CHARACTER*80                                         ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32      JEXNUM, JEXNOM
+      CHARACTER*32      JEXNUM, JEXNOM,JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER      NBCMPT,ENTIER,NBSPT,NBVAR,IAD,UTIL,ITYPE,IZERO,IUN
       INTEGER      NBCMPC,MODSAV,NBELT,JTYPE,DIGDEL,TABEC(10)
+      INTEGER      IMODEL,ILONG
       CHARACTER*3  TOTO
       CHARACTER*8  NOMVAR(40),NOMCO,GTYPE,KTYPE,MTYPE,K8B
       CHARACTER*16 CTYPE
@@ -89,6 +90,8 @@ C
       CALL WKVECT ('&&IRCECA.NBRCMP','V V I',NBGREL  ,JNBR)
       CALL WKVECT ('&&IRCECA.ENTETE','V V I',NBGREL*7,JENT)
       CALL JEVEUO ( JEXNUM('&&OP0039.LIGREL',IMODL), 'E', JLI )
+      CALL JEVEUO ('&CATA.TE.MODELOC', 'L', IMODEL )
+      CALL JEVEUO (JEXATR('&CATA.TE.MODELOC','LONCUM'),'L',ILONG)
 C     ------------------------------------------------------------------
 C
 C     --- DETERMINATION DU NOMBRE MAXIMUM DE SOUS-POINTS ---
@@ -141,7 +144,7 @@ C
           CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',MODE),'L',JMOD)
           NEC = NBEC (ZI(JMOD-1+2))
           IF ( NEC .GT. 10 ) CALL UTMESS('F','IRCECA','NEC TROP GRAND')
-          CALL DGMODE ( MODE, NEC, TABEC )
+          CALL DGMODE ( MODE, IMODEL, ILONG, NEC, TABEC )
           IF ( NBCPUT .NE. 0 ) THEN
             DO 18 ICM = 1,NBCPUT
               DO 20 I = 1,NCMPMX
@@ -341,10 +344,10 @@ C
                IELT = IELT + NBELGR
                GO TO 202
             ENDIF
-            CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',MODE),'L',JMOD)
+            JMOD = IMODEL+ZI(ILONG-1+MODE)-1
             NEC = NBEC (ZI(JMOD-1+2))
             IF (NEC .GT. 10) CALL UTMESS('F','IRCECA','NEC TROP GRAND')
-            CALL DGMODE ( MODE, NEC, TABEC )
+            CALL DGMODE ( MODE,IMODEL, ILONG, NEC, TABEC )
             IAD=CELD(CELD(4+IGREL)+8)
             NSCAL = DIGDEL(MODE)
             ICOEF=MAX(1,CELD(4))

@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 24/01/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF ops Cata  DATE 14/02/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,6 +27,7 @@ import pickle
 # Modules Eficas
 import Accas
 from Accas import ASSD
+from Utilitai.Utmess import UTMESS
 
 try:
    import aster
@@ -128,18 +129,19 @@ def POURSUITE(self,PAR_LOT,CODE,**args):
      # etre le cas des concepts non executés, placés après FIN.
      pickle_context=get_pickled_context()
      if pickle_context==None :
-        self.jdc.cr.fatal("<F> Erreur a la relecture du fichier pick.1 : aucun objet sauvegardé ne sera récupéré")
+        UTMESS('F','Poursuite',"Erreur a la relecture du fichier pick.1 : aucun objet sauvegardé ne sera récupéré")
         return
+     from Cata.cata import ASSD
      for elem in pickle_context.keys():
          if type(pickle_context[elem])==types.InstanceType :
             pickle_class=pickle_context[elem].__class__
             if elem in self.g_context.keys():
                poursu_class=self.g_context[elem].__class__
                if poursu_class!=pickle_class :
-                  self.jdc.cr.fatal("<F> types incompatibles entre glob.1 et pick.1 pour concept de nom "+elem)
+                  UTMESS('F','Poursuite',"Types incompatibles entre glob.1 et pick.1 pour concept de nom "+elem)
                   return
-            else: 
-               self.jdc.cr.fatal("<F> concept de nom "+elem+" et de type "+str(pickle_class)+" introuvable dans la base globale")
+            elif isinstance(pickle_context[elem],ASSD): 
+               UTMESS('F','Poursuite',"Concept de nom "+elem+" et de type "+str(pickle_class)+" introuvable dans la base globale")
                return
          if pickle_context[elem]==None : del pickle_context[elem]
      self.g_context.update(pickle_context)

@@ -1,4 +1,4 @@
-      SUBROUTINE CYC110 ( NOMRES, RESCYC )
+      SUBROUTINE CYC110 ( NOMRES, MAILLA, NBSECT )
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
 C
 C  BUT:  CREATION D'UN MAILLAGE SQUELETTE POUR LA SOUS-STRUCTURATION
 C        CYCLIQUE
@@ -26,7 +26,8 @@ C
 C-----------------------------------------------------------------------
 C
 C NOMRES   /I/: NOM UT DU RESULTAT OPERATEUR COURANT
-C RESCYC   /I/: NOM DU RESULTAT CYCLIQUE EN AMONT
+C NOMA    /I/: NOM DU MAILLAGE
+C RESCYC   /I/: NOMBRE DE SECTEUR
 C
 C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
@@ -60,10 +61,6 @@ C
       CALL JEMARQ()
       DEPI = R8DEPI()
 C
-C--------------RECUPERATION DU MAILLAGE DU SECTEUR DE BASE--------------
-C
-      CALL JEVEUO(RESCYC//'      .CYCL.REFE','L',LLREF)
-      MAILLA = ZK24(LLREF)
 C
 C--------------INITIALISATION DES DIVERS MOTS-CLE FACTEUR---------------
 C
@@ -174,9 +171,6 @@ C----------------RECUPERATION DU NOMBRE DE SECTEURS---------------------
 C           ET CALCUL TAILLE CONNECTIVITE TOTALE
 C
 C
-      CALL JEVEUO(RESCYC//'      .CYCL.NBSC','L',LLNBS)
-      NBSECT = ZI(LLNBS)
-C
       NTACON = NTACON*NBSECT
 C
 C
@@ -227,7 +221,7 @@ C------------------REMPLISSAGE .REFE ET .DESC ET TITRE -----------------
 C
       ZK80(LLTITR) = 'MAILLAGE SQUELETTE SOUS-STRUCTURATION CYCLIQUE'
 C
-C     ZK24(LDREF) = MAILLA
+      ZK24(LDREF) = MAILLA
       ZK24(LDREF) = NOMRES
 C
 C

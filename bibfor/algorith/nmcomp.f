@@ -16,7 +16,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -512,7 +512,9 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
      &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
      &         DEPS,  SIGM,   VIM,  OPTION,ANGMAS,SIGP, VIP, DSIDEP)
           ENDIF
-        ELSEIF ( COMPOR(1)(1:10) .EQ. 'ASSE_COMBU' .OR.
+        ELSEIF ( COMPOR(1)(1:13) .EQ. 'LEMAITRE_IRRA' .OR.
+     &           COMPOR(1)(1:10) .EQ. 'LEMA_SEUIL' .OR.
+     &           COMPOR(1)(1:10) .EQ. 'GRAN_IRRA_' .OR.
      &           COMPOR(1)(1:10) .EQ. 'ZIRC_CYRA2' .OR.
      &           COMPOR(1)(1:9)  .EQ. 'ZIRC_EPRI'  .OR.
      &           COMPOR(1)(1:10) .EQ. 'VISC_IRRA_' ) THEN

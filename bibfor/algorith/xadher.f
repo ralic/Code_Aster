@@ -2,7 +2,7 @@
      &                            PBOUL,KN,PTKNP,IK)
      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 14/02/2005   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -137,7 +137,7 @@ C     CALCUL DE PT.KN.P
 C     CALCUL DE Id-KN
       DO 50 I = 1,NDIM
         DO 51 J = 1,NDIM
-          IK= -1.D0 * KN
+          IK(I,J)= -1.D0 * KN(I,J)
  51     CONTINUE
  50   CONTINUE
       DO 52 I = 1,NDIM

@@ -1,6 +1,6 @@
       SUBROUTINE CHARME ( FONREE )
 
-C MODIF MODELISA  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,6 +57,7 @@ C        LIAISON_ELEM
 C        LIAISON_CHAMNO
 C        LIAISON_COQUE
 C        LIAISON_MAIL
+C        LIAISON_CYCL
 C ----------------------------------------------------------------------
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER           ZI
@@ -278,6 +279,10 @@ C --- LIAISON_MAIL ---
 C
          CALL CALIRC ( CHAR )
 C
+C --- LIAISON_CYCL ---
+C
+         CALL CALYRC ( CHAR )
+C
 C --- LIAISON_ELEM ---
 C
          CALL CALIEL ( FONREE, CHAR )
@@ -294,6 +299,11 @@ C --- ARLEQUIN ---
 C
          CALL CAARLE (CHAR)
 C
+C
+C --- CHAMNO_IMPO ---
+C
+         CALL CAIMCH ( CHAR )
+
       ENDIF
 C
       IF (FONREE.NE.'COMP') THEN
@@ -310,7 +320,7 @@ C
 C --- LIAISON_GROUP ---
 C
          CALL CALIAG ( FONREE, CHAR )
-C
+CLIAISON_CYC
 C --- LIAISON_UNIF ---
 C
          CALL CAGROU ( FONREE, CHAR )

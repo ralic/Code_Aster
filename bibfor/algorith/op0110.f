@@ -3,7 +3,7 @@
       INTEGER             IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,8 @@ C
 C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER       IOC1, IOC2, IOC3, IOC4, NBMA, NBMAIL, JNUM, JNOM
+      INTEGER       IOC1,IOC2, IOC3, IOC4, NBMA, NBMAIL, JNUM, JNOM,
+     &              IOC11,LLREF,LLNBS,NBSECT,IOC12,IBID
       REAL*8        TRANS(3),ANGL(3)
       CHARACTER*8   K8B, MODELG, RESCYC, NOMRES, NOMA, NOMSQU
       CHARACTER*16  NOMOPE, NOMCMD
@@ -54,15 +55,27 @@ C
       CALL INFMAJ()
 C
       CALL GETRES ( NOMRES, NOMCMD, NOMOPE )
-      CALL GETVID ( ' ', 'MODE_CYCL'  , 1,1,1, RESCYC, IOC1 )
+      CALL GETFAC('CYCLIQUE',IOC1)
       CALL GETVID ( ' ', 'MODELE_GENE', 1,1,1, MODELG, IOC2 )
       CALL GETVID ( ' ', 'MAILLAGE'   , 1,1,1, NOMA  , IOC3 )
       CALL GETVID ( ' ', 'SQUELETTE'  , 1,1,1, NOMSQU, IOC4 )
 C
 C------------------------CAS CYCLIQUE-----------------------------------
 C
-      IF ( IOC1 .NE. 0 ) THEN
-         CALL CYC110( NOMRES , RESCYC )
+C------------------------CAS CYCLIQUE-----------------------------------
+C
+      IF ( IOC1 .GT. 0 ) THEN
+        CALL GETVID ('CYCLIQUE','MODE_CYCL' ,1,1,1,RESCYC,IOC11)
+        IF (IOC11.GT.0) THEN
+          CALL JEVEUO(RESCYC//'      .CYCL.REFE','L',LLREF)
+          NOMA = ZK24(LLREF)
+          CALL JEVEUO(RESCYC//'      .CYCL.NBSC','L',LLNBS)
+          NBSECT = ZI(LLNBS)
+        ELSE
+          CALL GETVID ('CYCLIQUE','MAILLAGE', 1,1,1,NOMA,IOC12)
+          CALL GETVIS('CYCLIQUE','NB_SECTEUR',1,1,1,NBSECT,IBID)
+        ENDIF
+        CALL CYC110( NOMRES , NOMA, NBSECT)
 C
 C--------------------------CAS CLASSIQUE--------------------------------
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
 # TITRE VALIDATION DE PROJ_MESU_MODAL : CAS 3D, BASE : BASE_MODALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -175,7 +175,7 @@ REPGENE=PROJ_MESU_MODAL(
                                     BASE = BASE,),
                          MODELE_MESURE=_F( MODELE = MODLMESU,
                                     MESURE = MESURE,
-                                       NOM_PARA = 'INST', 
+#                                       NOM_PARA = 'INST', 
                                     NOM_CHAM = 'SIEF_NOEU',),
                          CORR_MANU=_F( NOEU_MESURE = 'N4',
                                     NOEU_CALCUL = 'NO75',),)

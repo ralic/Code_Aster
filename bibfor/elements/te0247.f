@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*(*)     OPTION,NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/11/2004   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF ELEMENTS  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,14 +57,17 @@ C
       REAL*8       A   ,  XIY ,  XIZ ,  ALFAY ,  ALFAZ ,  XJX ,  EZ,  EY
       REAL*8       A2  ,  XIY2,  XIZ2,  ALFAY2,  ALFAZ2,  XJX2,  XL
 C AUTRES 
-      INTEGER    NBCLMA, NBCLEM, NBCVIL, NBCCYR,NBCEPR, NBCINT
-      PARAMETER (NBCLMA=12,NBCLEM=7,NBCVIL=5,NBCCYR=3,NBCEPR=3,NBCINT=2)
-      REAL*8     COELMA(NBCLMA),COELEM(NBCLEM),COEVIL(NBCVIL)
-      REAL*8     COECYR(NBCCYR),COEEPR(NBCEPR),COEINT(NBCINT)
+      INTEGER    NBCLMA, NBCLEM
+      PARAMETER (NBCLMA=12,NBCLEM=7)
+      REAL*8     COELMA(NBCLMA),COELEM(NBCLEM)
+      CHARACTER*2  CODLMA(NBCLMA),CODLEM(NBCLEM),K2B
+      CHARACTER*8  NOMLMA(NBCLMA),NOMLEM(NBCLEM)
+
 C GRANDISSEMENT
       INTEGER    NBCLGR
       PARAMETER (NBCLGR=3)
       REAL*8     COEFGR(NBCLGR)
+      CHARACTER*8 NOMGRD(NBCLGR)
 
       REAL*8       PGL(3,3), FL(ND), KLV(NK), KLS(NK), FLC, EFFNOC
       REAL*8       EFFNOM, TEMPM, TEMPP, U(ND), DU(ND), SIGP(ND)
@@ -72,8 +75,14 @@ C GRANDISSEMENT
       REAL*8       XUG(6),UTG(12),XD(3),XL2,TET1,TET2,ALFA1,BETA1,GAMMA
       REAL*8       GAMMA1,ANG1(3),R8VIDE
       LOGICAL      REACTU
+
+      DATA NOMLMA / 'K','N','DE_0','P','P1','P2','M','RM',
+     &              'A_0','Y_0','Y_I','B'/
+      DATA NOMLEM / 'N', 'UN_SUR_K', 'UN_SUR_M', 'QSR_K',
+     &              'BETA','PHI_ZERO','L'/     
+      DATA NOMGRD / 'GRAN_A' , 'GRAN_B' , 'GRAN_S' / 
 C     ------------------------------------------------------------------
-C
+
       CALL JEVECH ('PGEOMER', 'L', IGEOM)
       CALL JEVECH ('PCOMPOR', 'L', ICOMPO)
       CALL JEVECH ('PMATERC', 'L', IMATE)
@@ -191,7 +200,8 @@ C
      +         FL,ZR(ICONTP))
          ENDIF
 C
-      ELSEIF (ZK16(ICOMPO).EQ.'ASSE_COMBU') THEN
+      ELSEIF ((ZK16(ICOMPO).EQ.'LMARC_IRRA').OR.
+     &        (ZK16(ICOMPO).EQ.'LEMAITRE_IRRA')) THEN
 
         CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
         LGPG = MAX(JTAB(6),1)*JTAB(7)
@@ -214,14 +224,14 @@ C-- RECUPERATION DES CARACTERISTIQUES ELASTIQUES
 C
 C-- RECUPERATION DES CARACTERISTIQUES DE FLUAGE ET DE GRANDISSEMENT
 C
+         IF (ZK16(ICOMPO).EQ.'LMARC_IRRA') THEN
+            CALL RCVALA(ZI(IMATE),' ','LMARC_IRRA',0,' ',0.D0,
+     &          3,NOMGRD,COEFGR,K2B, 'FM' )
+         ELSE
+            CALL RCVALA(ZI(IMATE),' ','LEMAITRE_IRRA',0,' ',0.D0,
+     &          3,NOMGRD,COEFGR,K2B, 'FM' )
+         ENDIF   
 
-        CALL NMASSG(ZI(IMATE),'  ',R8VIDE(),R8VIDE(),COEFGR)   
-
-        CALL NMASSC(ZI(IMATE),
-     &            '  ',R8VIDE(),R8VIDE(),'  ',
-     &            COELMA,COELEM,COEVIL,COECYR,COEEPR,COEINT,
-     &            ICAS)
-C
 C        --- CALCUL DES MATRICES ELEMENTAIRES ELASTIQUES ----
 C
          IF ( ITYPE .EQ. 0 ) THEN
@@ -257,7 +267,9 @@ C
      &             'NOEUDS CONFONDUS POUR UN ELEMENT DE POUTRE')
             ENDIF
             EFFNOM = ZR(ICONTM)
-            IF (ICAS.EQ.1)THEN
+            IF (ZK16(ICOMPO).EQ.'LMARC_IRRA') THEN
+               CALL RCVALA(ZI(IMATE),' ','LMARC_IRRA',0,' ',0.D0,
+     &              12,NOMLMA(1),COELMA(1),CODLMA(1), 'FM' )
                CALL NMLMAB(PGL,NNO,NC,ZR(IDEPLP),EFFNOM,TEMPM,
      &                  TEMPP,ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
      &                   XL,E,A,ALPHAP,COELMA,COEFGR,ZR(IIRRAM),
@@ -270,7 +282,9 @@ C
                 ZR(IVARIP+5-1)         = ZR(IIRRAP)
                 ZR(IVARIP+LGPG+5-1)    = ZR(IIRRAP)
                 ZR(IVARIP+2*LGPG+5-1)  = ZR(IIRRAP)                
-            ELSEIF (ICAS.EQ.2)THEN
+            ELSEIF (ZK16(ICOMPO).EQ.'LEMAITRE_IRRA') THEN
+               CALL RCVALA(ZI(IMATE),' ','LEMAITRE_IRRA',0,' ',0.D0,
+     &               7,NOMLEM(1),COELEM(1),CODLEM(1), 'FM' )
              CALL NMFGAS(PGL,NNO,NC,ZR(IDEPLP),EFFNOM,ZR(IVARIM),TEMPM,
      &               TEMPP,ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
      &               ZR(ITREF),XL,E,A,ALPHAP,COELEM,COEFGR,ZR(IIRRAM),
@@ -280,9 +294,6 @@ C
              ZR(IVARIP+LGPG+1)   = ZR(IIRRAP)             
              ZR(IVARIP+2*LGPG)   = ZR(IVARIP)
              ZR(IVARIP+2*LGPG+1) = ZR(IIRRAP)       
-            ELSE
-               CALL UTMESS ('F','TE0247',
-     &      'VISC_IRRA_LOG INDISPONIBLE POUR LES MECA_POU_D_E/D_T')
             ENDIF
 C
             DO 55 I = 1,ND
@@ -314,6 +325,9 @@ C
      &               ZR(IVARIM),ITEMP,ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
      &               HOEL,HOTA,D1B,WORK,RG0,
      &               ZR(IVARIP),ZR(ICONTP),FL,KLV)
+       ELSE
+          CALL UTMESS ('F','TE0247','LOI '//ZK16(ICOMPO)// 
+     &    ' INDISPONIBLE POUR LES POU_D_E/D_T')
       ENDIF
 C
 C        --- PASSAGE DU REPERE LOCAL AU REPERE GLOBAL ---

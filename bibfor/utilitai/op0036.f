@@ -3,7 +3,7 @@
       INTEGER             IER
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 14/02/2005   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,9 +37,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER IOCC,JF,IBID,NI,NR,NK,I,J,IR,JJJ,JP,NDIM,NDIM1,JT,JPROL,JD
-      INTEGER NOCC,IL,NOCC2,NINDI,III,DIMMAX,JY,JWORK
-      INTEGER COMPT,NBLIGN
-      REAL*8  RBID,VR(2),IND,DIM
+      INTEGER NOCC,IL,NOCC2,NINDI,III,DIMMAX,JY,JLNG
+      INTEGER NBLIGN
+      REAL*8  RBID,VR(2)
       COMPLEX*16 CBID 
       CHARACTER*1 KBID
       CHARACTER*3 NTYP
@@ -69,13 +69,10 @@ C     ==========
 
       IF(NOCC.NE.0)THEN
 
-         CALL WKVECT(WORK,'V V I',1000,JWORK)
+         CALL WKVECT(WORK,'V V I'  ,NOCC,JLNG)
          CALL WKVECT(LDBL,'V V K16',NOCC,JD)
-         CALL WKVECT(LTYP,'V V K8',NOCC,JY)
-         DIM=0.D0
-         IND=0.D0
+         CALL WKVECT(LTYP,'V V K8' ,NOCC,JY)
          DIMMAX=0
-         COMPT=1
          NBLIGN=0
          
          DO 50 IOCC=1,NOCC
@@ -92,16 +89,18 @@ C     ==========
                CALL UTMESS('F','OP0036','LES LISTES NUME_LIGN'//
      &         ' ET LISTE_X DOIVENT CONTENIR LE MEME NOMBRE DE TERMES')
               ENDIF
+              CALL WKVECT(INDIC,'V V I',-NINDI,III)
+              DIMMAX=0
+              CALL GETVIS('LISTE','NUME_LIGN',IOCC,1,-NINDI,ZI(III),IR)
+              DO 55 I=1,-NINDI
+                 DIMMAX=MAX(DIMMAX,ZI(III+I-1))
+ 55           CONTINUE
+              CALL JEDETR(INDIC)
+              ZI(JLNG+IOCC-1)=DIMMAX
             ELSE
-              DIM=DIM-NI-NR-NK
-              IND=IND+1.D0
-              DIMMAX=MAX(DIMMAX,(-NI-NR-NK))
+              ZI(JLNG+IOCC-1)=-NI-NR-NK
             ENDIF
 
-            NINDI=-NINDI
-            CALL GETVIS('LISTE','NUME_LIGN',IOCC,1,NINDI,
-     &           ZI(JWORK+500-1+COMPT),IR)
-            COMPT=COMPT+NINDI
             IF ( NI.NE.0 ) THEN
                ZK8(JY+IOCC-1)='I'
             ELSE IF (NR.NE.0) THEN
@@ -118,27 +117,12 @@ C     ==========
 
  50      CONTINUE
 
-        IF(INT(IND).NE.0) THEN   
-           IF (INT(DIM/IND).NE.DIMMAX) THEN
-              CALL UTMESS('F','OP0036','LES LISTES DES DONNEES'//
-     &         ' SONT INCOMPATIBLES.')
-           ENDIF
-        ENDIF 
-
 C       ---DIMENSIONNEMENT DE LA TABLE
 
-         DO 70 I=1,DIMMAX
-            ZI(JWORK-1+I)= 1
+         NBLIGN=0
+         DO 70 I=1,NOCC
+            NBLIGN=MAX(NBLIGN,ZI(JLNG+I-1))
  70      CONTINUE
-
-         DO 80 I=1,500
-            ZI(JWORK+ZI(JWORK+500+I-1)-1)= 1
- 80      CONTINUE
- 
- 
-         DO 90 I=1,500
-            NBLIGN= NBLIGN+ZI(JWORK+I-1)
- 90      CONTINUE
          
 C        ---CREATION DE LA TABLE
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 14/02/2005   AUTEUR DURAND C.DURAND 
 # TITRE VALIDATION DE LA LOI D ENDOMMAGEMENT FRAGILE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -180,19 +180,13 @@ EVOL = CALC_NO (reuse = EVOL,
 # -----------------------------------------------------
 
 
-RESU = CO('RESU')
 
-MACR_LIGN_COUPE(
-  RESULTAT   = EVOL,
-  MODELE     = MO,
-  NOM_CHAM   = 'VARI_NOEU_ELGA',
-  LIGN_COUPE = _F(
-    NB_POINTS = 2,
-    COOR_ORIG = (0,-1),
-    COOR_EXTR = (0, 1),
-    TABLE     = RESU,
-    )
-  )
+RESU=MACR_LIGN_COUPE( RESULTAT   = EVOL,
+                      NOM_CHAM   = 'VARI_NOEU_ELGA',
+                      LIGN_COUPE = _F( NB_POINTS = 2,
+                                       COOR_ORIG = (0,-1),
+                                       COOR_EXTR = (0, 1), )
+                    )
 
 
 # -----------------------------------------------------

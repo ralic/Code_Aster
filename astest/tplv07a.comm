@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 14/02/2005   AUTEUR DURAND C.DURAND 
 # TITRE CUBE ORTHOTROPE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -153,15 +153,12 @@ TEMPE=CALC_ELEM(reuse=TEMPE,RESULTAT=TEMPE,
                 OPTION=('FLUX_ELNO_TEMP','FLUX_ELGA_TEMP'),
                 );
 
-MACR_LIGN_COUPE(   RESULTAT    = TEMPE,
-                   MODELE      = MOTH,
-                   LIGN_COUPE  = ( _F( NB_POINTS  = 11,
+TABTE1=MACR_LIGN_COUPE(   RESULTAT    = TEMPE,
+                   LIGN_COUPE  =  _F( NB_POINTS  = 11,
                                        COOR_ORIG  = (-0.1,-0.1,-0.1),
-                                       COOR_EXTR  = ( 0.1, 0.1, 0.1),
-                                       TABLE      = CO("TABTE1")  ),
-                                 )
+                                       COOR_EXTR  = ( 0.1, 0.1, 0.1), )
                      )
-IMPR_TABLE(TABLE=TABTE1)
+
 TEST_RESU(RESU=(
 #
 # TEMPERATURES ----------------------------
@@ -355,24 +352,25 @@ _F( RESULTAT = TEMPE, MAILLE = 'M129', NUME_ORDRE=0, NOM_CHAM='FLUX_ELGA_TEMP',
 #
 # TESTS DE MACR_LIGN_COUPE
 #
+
 TEST_TABLE( TABLE=TABTE1,
-              FILTRE=_F(  NOM_PARA = 'NOEUD',VALE_K = 'N1'),
+              FILTRE=_F(  NOM_PARA = 'ABSC_CURV',VALE = 0.),
               NOM_PARA='TEMP', CRITERE='RELATIF',PRECISION=1.0E-3,VALE=41.0,
               REFERENCE='ANALYTIQUE',)
 TEST_TABLE( TABLE=TABTE1,
-              FILTRE=_F(  NOM_PARA = 'NOEUD',VALE_K = 'N3'),
+              FILTRE=_F(  NOM_PARA = 'ABSC_CURV',VALE = 6.92820E-02),
               NOM_PARA='TEMP', CRITERE='RELATIF',PRECISION=1.0E-3,VALE=33.6,
               REFERENCE='ANALYTIQUE',)
 TEST_TABLE( TABLE=TABTE1,
-              FILTRE=_F(  NOM_PARA = 'NOEUD',VALE_K = 'N6'),
+              FILTRE=_F(  NOM_PARA = 'COOR_X',VALE = 0.),
               NOM_PARA='TEMP', CRITERE='RELATIF',PRECISION=1.0E-3,VALE=22.5,
               REFERENCE='ANALYTIQUE',)
 TEST_TABLE( TABLE=TABTE1,
-              FILTRE=_F(  NOM_PARA = 'NOEUD',VALE_K = 'N8'),
+              FILTRE=_F(  NOM_PARA = 'COOR_X',VALE = 0.04),
               NOM_PARA='TEMP', CRITERE='RELATIF',PRECISION=1.0E-3,VALE=15.1,
               REFERENCE='ANALYTIQUE',)
 TEST_TABLE( TABLE=TABTE1,
-              FILTRE=_F(  NOM_PARA = 'NOEUD',VALE_K = 'N11'),
+              FILTRE=_F(  NOM_PARA = 'COOR_X',VALE = 0.1),
               NOM_PARA='TEMP', CRITERE='RELATIF',PRECISION=1.0E-3,VALE= 4.0,
               REFERENCE='ANALYTIQUE',)
 #

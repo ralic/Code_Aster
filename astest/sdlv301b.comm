@@ -1,0 +1,184 @@
+# MODIF  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
+# TITRE SOUS-STRUCTURATION CYCLIQUE : ROUET DE POMPE   
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#       MODELE AVEC 160 ELEMENTS DANS LE SECTEUR DE BASE 
+#       SOUMIS A UNE ROTATION DE 2000 RAD/SEC.
+# VALIDATION INDEPENDANTE PAR SAMTECH (H.DRION)    
+# CAS_TEST__: SDLV301B
+#################################################################
+#
+DEBUT(CODE=_F( NOM = 'SDLV301B',NIV_PUB_WEB='INTERNET'))
+
+#
+MAT=DEFI_MATERIAU(  ELAS=_F( RHO = 7.8E03,  NU = 0.3,  E = 2.1E11))
+
+#
+MAYA=LIRE_MAILLAGE( UNITE=20)
+
+#
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAYA, 
+                              AFFE=_F( TOUT = 'OUI', 
+                                    MATER = MAT))
+
+#
+ROUET=AFFE_MODELE(  MAILLAGE=MAYA,
+                              AFFE=_F( TOUT = 'OUI', 
+                                  MODELISATION = '3D', 
+                                  PHENOMENE = 'MECANIQUE'))
+
+#
+# CONDITIONS AUX LIMITES 
+#
+#
+LIMIT=AFFE_CHAR_MECA(    MODELE=ROUET,DDL_IMPO=( 
+                 _F(  GROUP_NO = 'FIXAT',  DX = 0.,  DY = 0., DZ = 0.),
+#
+#  INTERFACE DE CRAIG BAMPTON --> FIXATION DE L'INTERFACE
+#                                 POUR CALCUL DYNAMIQUE
+#
+                 _F(  GROUP_NO = 'GAUCHE',  DX = 0., DY = 0., DZ = 0.),
+                 _F(  GROUP_NO = 'DROITE',  DX = 0., DY = 0., DZ = 0.)),
+                 ROTATION=( 2000., 0., 0., 1., ))
+
+#
+# CALCUL DE LA MATRICE DE RIGIDITE ELEMENTAIRE SOUS CHARGE STATIQUE
+#
+K_ELEM=CALC_MATR_ELEM(      MODELE=ROUET, 
+                            CHAM_MATER=CHMAT, 
+                               OPTION='RIGI_MECA', 
+                                CHARGE=( LIMIT,  ))
+
+#   
+# CALCUL DE LA MATRICE DE RAIDEUR CENTRIFUGE ELEMENTAIRE SOUS
+# CHARGE STATIQUE    
+#
+C_ELEM=CALC_MATR_ELEM(      MODELE=ROUET, 
+                            CHAM_MATER=CHMAT,
+                               OPTION='RIGI_ROTA', 
+                                CHARGE=( LIMIT, ))
+
+#
+# CALCUL DE LA MATRICE DE MASSES ELEMENTAIRE
+#
+M_ELEM=CALC_MATR_ELEM(      MODELE=ROUET,
+                            CHAM_MATER=CHMAT,
+                               OPTION='MASS_MECA',
+                                CHARGE=( LIMIT, ))
+
+#
+# NUMEROTATION
+#
+NUM=NUME_DDL(  MATR_RIGI=(K_ELEM, C_ELEM,),
+                       METHODE='MULT_FRONT',
+                          RENUM='MD'      )
+
+#
+# ASSEMBLAGE DES MATRICES DE RIGIDITE ET DE RAIDEUR CENTRIFUGE  
+#
+K_ASSE=ASSE_MATRICE(  MATR_ELEM=K_ELEM, 
+                           NUME_DDL=NUM )
+
+#
+C_ASSE=ASSE_MATRICE(  MATR_ELEM=C_ELEM, 
+                           NUME_DDL=NUM )
+
+#
+#  RECOMBINAISON DES MATRISSES ASSEMBLEES  
+#
+R_COMB=COMB_MATR_ASSE( COMB_R=(   _F(  MATR_ASSE = K_ASSE,
+                                       COEF_R = 1.), 
+                                     _F(  MATR_ASSE = C_ASSE,
+                                       COEF_R = 1.)))
+
+#
+# ASSEMBALGE DE LA MATRICE DE MASSES
+#
+M_ASSE=ASSE_MATRICE(  MATR_ELEM=M_ELEM,
+                           NUME_DDL=NUM )
+
+#   
+MODES=MODE_ITER_SIMULT(     MATR_A=R_COMB,   
+                                 MATR_B=M_ASSE, 
+                             CALC_FREQ=_F( NMAX_FREQ = 10))
+
+#
+INTERF=DEFI_INTERF_DYNA(    NUME_DDL=NUM,INTERFACE=(
+                               _F( NOM = 'GAUCHE',
+                                          TYPE = 'CRAIGB',
+                                          GROUP_NO = 'GAUCHE'),  
+                               _F( NOM = 'DROITE',
+                                          TYPE = 'CRAIGB',
+                                          GROUP_NO = 'DROITE'))  
+                            )
+
+#
+BAMO=DEFI_BASE_MODALE(  CLASSIQUE=_F( INTERF_DYNA = INTERF, 
+                                         MODE_MECA = MODES, 
+                                         NMAX_MODE = 10) 
+                             )
+
+#
+MOCYCL=MODE_ITER_CYCL(    BASE_MODALE=BAMO,
+                                  NB_MODE=10,
+                               NB_SECTEUR=21,
+                                  LIAISON=_F( DROITE = 'DROITE', 
+                                           GAUCHE = 'GAUCHE'),
+                                   CALCUL=_F(  OPTION = 'BANDE',
+                                            FREQ = (400., 5000.,),   
+                                            NB_DIAM = 1))
+
+#
+SQUEL=DEFI_SQUELETTE(      CYCLIQUE    =_F(MODE_CYCL=MOCYCL),
+                                  SECTEUR=_F( TOUT = 'OUI'))
+
+#
+DYNAM=REST_BASE_PHYS(    RESU_GENE=MOCYCL, 
+                              SQUELETTE=SQUEL )
+
+#
+TEST_RESU(RESU=(
+   _F(   RESULTAT = DYNAM,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 3.E-2,
+           NUME_ORDRE = 1,         VALE = 409.0),
+   _F(   RESULTAT = DYNAM,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 3.E-2,
+           NUME_ORDRE = 2,         VALE = 409.0),
+   _F(   RESULTAT = DYNAM,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 3.E-2,
+           NUME_ORDRE = 3,         VALE = 1431.),
+   _F(   RESULTAT = DYNAM,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 3.E-2,
+           NUME_ORDRE = 4,         VALE = 1431.),
+   _F(   RESULTAT = DYNAM,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 3.E-2,
+           NUME_ORDRE = 5,         VALE = 3335.),
+   _F(   RESULTAT = DYNAM,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 3.E-2,
+           NUME_ORDRE = 6,         VALE = 3335.),
+   _F(   RESULTAT = DYNAM,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 3.E-2,
+           NUME_ORDRE = 7,         VALE = 4852.),
+   _F(   RESULTAT = DYNAM,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 3.E-2,
+           NUME_ORDRE = 8,         VALE = 4852.))
+          )
+
+#
+FIN()
+#

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 14/02/2005   AUTEUR DURAND C.DURAND 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -478,14 +478,17 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
 
 # pour tester MACR_LIGN_COUPE sur des CHAM_ELEM :
 #-------------------------------------------------
-MACR_LIGN_COUPE( RESULTAT= DEPLD2, MODELE= MO, NOM_CHAM= 'SIEF_ELNO_ELGA',
-  LIGN_COUPE = _F( NB_POINTS= 4, COOR_ORIG= (0., 0.0, 1.5), COOR_EXTR= (0.5, 0.0, 1.5),
-                   TABLE= CO("TB1"), )
-)
-# IMPR_TABLE(TABLE=TB1)
+TB1=MACR_LIGN_COUPE( RESULTAT= DEPLD2,
+                     NOM_CHAM= 'SIEF_ELNO_ELGA',
+                     LIGN_COUPE = _F( NB_POINTS= 4,
+                                      COOR_ORIG= (0., 0.0, 1.5),
+                                      COOR_EXTR= (0.5, 0.0, 1.5),
+                                    ) )
+
+
 TEST_TABLE(   TABLE=TB1,
               FILTRE=(_F( NOM_PARA = 'NUME_ORDRE', VALE_I = 10,),
-                      _F( NOM_PARA = 'NOEUD',      VALE_K = 'N2',),),
+                      _F( NOM_PARA = 'ABSC_CURV',  VALE   = 0.,),),
               NOM_PARA='SIZZ', VALE=114777.0, REFERENCE='ANALYTIQUE',   )
 
 

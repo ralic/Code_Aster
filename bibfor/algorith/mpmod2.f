@@ -3,7 +3,7 @@
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,9 +59,9 @@ C
       INTEGER       NBMESU, NBMTOT
 C
       CHARACTER*1  TYPVAL
-      CHARACTER*8  K8BID,SCAL,SCALAI
+      CHARACTER*8  NOMRES,K8BID,SCAL,SCALAI
       CHARACTER*8  NOMGD,LICMP(30)
-      CHARACTER*16 NOMROU, NOMCHA, CORRES,NOMCHP
+      CHARACTER*16 NOMROU, NOMCHA, CORRES,NOMCHP,TYPRES, K16BID,TYPREP
       CHARACTER*19 CHAMNO, CH1S, CH2S, CHS
       CHARACTER*24 VORIEN
 
@@ -87,6 +87,10 @@ C ----------------------------------------------------------------------
 C
       CALL JEMARQ ( )
 C
+C RECUPERATION DU NOM DU CONCEPT RESULTAT
+      CALL GETRES (NOMRES, TYPRES, K16BID)
+C
+C RECUPERATION DU CHAMP MESURE
       CALL GETVTX ('MODELE_MESURE','NOM_CHAM',1,1,1,NOMCHA,IBID)
 C
 C RECUPERATION DU NB DE VECTEURS DE BASE : NBMTOT
@@ -145,89 +149,115 @@ C ORDRE DE RANGEMENT MESURE SELON VRANGE ET VNOEUD
 
       IF (NOMGD(1:4) .EQ. 'DEPL') THEN
 C RECUPERATION DE L ORIENTATION
-        LICMP(1) = 'D1X'
-        LICMP(2) = 'D1Y'
-        LICMP(3) = 'D1Z'
-        LICMP(4) = 'D2X'
-        LICMP(5) = 'D2Y'
-        LICMP(6) = 'D2Z'
-        LICMP(7) = 'D3X'
-        LICMP(8) = 'D3Y'
-        LICMP(9) = 'D3Z'
-        DO 120 INO = 1,NBNOEU
-          DO 130 ICMP = 1,NBCMP
-            INDICE = (INO-1)*NBCMP+ICMP
-            ORIEN = .FALSE.
-            IF(ZL(JCNSL-1 + INDICE)) THEN
-              DO 140 II = 1,9
-                IF (ZK8(JCNSC-1 +ICMP) .EQ. LICMP(II)) THEN
-                  ORIEN = .TRUE.
-                ENDIF
- 140          CONTINUE
-              IF(.NOT. ORIEN) THEN
-                NBMESU = NBMESU+1
-                ZI(LNOEUD-1 +NBMESU) = INO
-                IF(ZK8(JCNSC-1 +ICMP) .EQ. 'D1') THEN
-                  ZK8(LRANGE-1 +NBMESU) = 'D1'
-                  DO 141 II = 1,NBCMP
-                    IF (ZCMPLX) THEN
-                      VAL = DBLE(ZC(JCNSV-1 +(INO-1)*NBCMP+II))
-                    ELSE
-                      VAL = ZR(JCNSV-1 +(INO-1)*NBCMP+II)
-                    ENDIF
-                    IF(ZK8(JCNSC-1 +II) .EQ. LICMP(1)) THEN
-                      ZR(LORI-1 +(NBMESU-1)*3+1) = VAL
-                    ENDIF
-                    IF(ZK8(JCNSC-1 +II) .EQ. LICMP(2)) THEN
-                      ZR(LORI-1 +(NBMESU-1)*3+2) = VAL
-                    ENDIF
-                    IF(ZK8(JCNSC-1 +II) .EQ. LICMP(3)) THEN
-                      ZR(LORI-1 +(NBMESU-1)*3+3) = VAL
-                    ENDIF
- 141              CONTINUE
-                ENDIF
-                IF(ZK8(JCNSC-1 +ICMP) .EQ. 'D2') THEN
-                  ZK8(LRANGE-1 +NBMESU) = 'D2'
-                  DO 142 II = 1,NBCMP
-                    IF (ZCMPLX) THEN
-                      VAL = DBLE(ZC(JCNSV-1 +(INO-1)*NBCMP+II))
-                    ELSE
-                      VAL = ZR(JCNSV-1 +(INO-1)*NBCMP+II)
-                    ENDIF
-                    IF(ZK8(JCNSC-1 +II) .EQ. LICMP(4)) THEN
-                      ZR(LORI-1 +(NBMESU-1)*3+1) = VAL
-                    ENDIF
-                    IF(ZK8(JCNSC-1 +II) .EQ. LICMP(5)) THEN
-                      ZR(LORI-1 +(NBMESU-1)*3+2) = VAL
-                    ENDIF
-                    IF(ZK8(JCNSC-1 +II) .EQ. LICMP(6)) THEN
-                      ZR(LORI-1 +(NBMESU-1)*3+3) = VAL
-                    ENDIF
- 142              CONTINUE
-                ENDIF
-                IF(ZK8(JCNSC-1 +ICMP) .EQ. 'D3') THEN
-                  ZK8(LRANGE-1 +NBMESU) = 'D3'
-                  DO 143 II = 1,NBCMP
-                    IF (ZCMPLX) THEN
-                      VAL = DBLE(ZC(JCNSV-1 +(INO-1)*NBCMP+II))
-                    ELSE
-                      VAL = ZR(JCNSV-1 +(INO-1)*NBCMP+II)
-                    ENDIF
-                    IF(ZK8(JCNSC-1 +II) .EQ. LICMP(7)) THEN
-                      ZR(LORI-1 +(NBMESU-1)*3+1) = VAL
-                    ENDIF
-                    IF(ZK8(JCNSC-1 +II) .EQ. LICMP(8)) THEN
-                      ZR(LORI-1 +(NBMESU-1)*3+2) = VAL
-                    ENDIF
-                    IF(ZK8(JCNSC-1 +II) .EQ. LICMP(9)) THEN
-                      ZR(LORI-1 +(NBMESU-1)*3+3) = VAL
-                    ENDIF
- 143              CONTINUE
+C RECUPERATION DE L ORIENTATION
+        IF ((TYPRES(1:9).EQ.'HARM_GENE').OR.
+     &      (TYPRES(1:9).EQ.'TRAN_GENE')) THEN
+C  SI RESULTAT DE TYPE HARM_GENE ON SUPPOSE QUE L'ORIENTATION
+C  EST DEFINI PAR LIRE_RESU AU FORMAT DATASET 58      
+          LICMP(1) = 'D1X'
+          LICMP(2) = 'D1Y'
+          LICMP(3) = 'D1Z'
+          LICMP(4) = 'D2X'
+          LICMP(5) = 'D2Y'
+          LICMP(6) = 'D2Z'
+          LICMP(7) = 'D3X'
+          LICMP(8) = 'D3Y'
+          LICMP(9) = 'D3Z'
+          DO 120 INO = 1,NBNOEU
+            DO 130 ICMP = 1,NBCMP
+              INDICE = (INO-1)*NBCMP+ICMP
+              ORIEN = .FALSE.
+              IF(ZL(JCNSL-1 + INDICE)) THEN
+                DO 140 II = 1,9
+                  IF (ZK8(JCNSC-1 +ICMP) .EQ. LICMP(II)) THEN
+                    ORIEN = .TRUE.
+                  ENDIF
+ 140            CONTINUE
+                IF(.NOT. ORIEN) THEN
+                  NBMESU = NBMESU+1
+                  ZI(LNOEUD-1 +NBMESU) = INO
+                  IF(ZK8(JCNSC-1 +ICMP) .EQ. 'D1') THEN
+                    ZK8(LRANGE-1 +NBMESU) = 'D1'
+                    DO 141 II = 1,NBCMP
+                      IF (ZCMPLX) THEN
+                        VAL = DBLE(ZC(JCNSV-1 +(INO-1)*NBCMP+II))
+                      ELSE
+                        VAL = ZR(JCNSV-1 +(INO-1)*NBCMP+II)
+                      ENDIF
+                      IF(ZK8(JCNSC-1 +II) .EQ. LICMP(1)) THEN
+                        ZR(LORI-1 +(NBMESU-1)*3+1) = VAL
+                      ENDIF
+                      IF(ZK8(JCNSC-1 +II) .EQ. LICMP(2)) THEN
+                        ZR(LORI-1 +(NBMESU-1)*3+2) = VAL
+                      ENDIF
+                      IF(ZK8(JCNSC-1 +II) .EQ. LICMP(3)) THEN
+                        ZR(LORI-1 +(NBMESU-1)*3+3) = VAL
+                      ENDIF
+ 141                CONTINUE
+                  ENDIF
+                  IF(ZK8(JCNSC-1 +ICMP) .EQ. 'D2') THEN
+                    ZK8(LRANGE-1 +NBMESU) = 'D2'
+                    DO 142 II = 1,NBCMP
+                      IF (ZCMPLX) THEN
+                        VAL = DBLE(ZC(JCNSV-1 +(INO-1)*NBCMP+II))
+                      ELSE
+                        VAL = ZR(JCNSV-1 +(INO-1)*NBCMP+II)
+                      ENDIF
+                      IF(ZK8(JCNSC-1 +II) .EQ. LICMP(4)) THEN
+                        ZR(LORI-1 +(NBMESU-1)*3+1) = VAL
+                      ENDIF
+                      IF(ZK8(JCNSC-1 +II) .EQ. LICMP(5)) THEN
+                        ZR(LORI-1 +(NBMESU-1)*3+2) = VAL
+                      ENDIF
+                      IF(ZK8(JCNSC-1 +II) .EQ. LICMP(6)) THEN
+                        ZR(LORI-1 +(NBMESU-1)*3+3) = VAL
+                      ENDIF
+ 142                CONTINUE
+                  ENDIF
+                  IF(ZK8(JCNSC-1 +ICMP) .EQ. 'D3') THEN
+                    ZK8(LRANGE-1 +NBMESU) = 'D3'
+                    DO 143 II = 1,NBCMP
+                      IF (ZCMPLX) THEN
+                        VAL = DBLE(ZC(JCNSV-1 +(INO-1)*NBCMP+II))
+                      ELSE
+                        VAL = ZR(JCNSV-1 +(INO-1)*NBCMP+II)
+                      ENDIF
+                      IF(ZK8(JCNSC-1 +II) .EQ. LICMP(7)) THEN
+                        ZR(LORI-1 +(NBMESU-1)*3+1) = VAL
+                      ENDIF
+                      IF(ZK8(JCNSC-1 +II) .EQ. LICMP(8)) THEN
+                        ZR(LORI-1 +(NBMESU-1)*3+2) = VAL
+                      ENDIF
+                      IF(ZK8(JCNSC-1 +II) .EQ. LICMP(9)) THEN
+                        ZR(LORI-1 +(NBMESU-1)*3+3) = VAL
+                      ENDIF
+ 143                CONTINUE
+                  ENDIF
                 ENDIF
               ENDIF
-            ENDIF
- 130      CONTINUE
- 120    CONTINUE
+ 130        CONTINUE
+ 120      CONTINUE
+        ELSEIF (TYPRES(1:9).EQ.'MODE_GENE') THEN
+C  SI RESULTAT DE TYPE MODE_GENE ON SUPPOSE QUE L'ORIENTATION
+C  EST DEFINI PAR LIRE_RESU AU FORMAT DATASET 55      
+          DO 121 INO = 1,NBNOEU
+            DO 131 ICMP = 1,NBCMP
+              INDICE = (INO-1)*NBCMP+ICMP
+              IF(ZL(JCNSL-1 + INDICE)) THEN
+                IF (ZCMPLX) THEN
+                  VAL = DBLE(ZC(JCNSV-1 +(INO-1)*NBCMP+ICMP))
+                ELSE
+                  VAL = ZR(JCNSV-1 +(INO-1)*NBCMP+ICMP)
+                ENDIF
+                IF (ABS(VAL).GT.(100*R8PREM())) THEN
+                  NBMESU = NBMESU+1
+                  ZI(LNOEUD-1 +NBMESU) = INO
+                  ZK8(LRANGE-1 +NBMESU) = ZK8(JCNSC-1 +ICMP)
+                ENDIF
+              ENDIF
+ 131        CONTINUE
+ 121      CONTINUE
+        ENDIF
       ENDIF
 
       IF (NOMGD(1:4) .EQ. 'SIEF' .OR. NOMGD(1:4) .EQ. 'EPSI') THEN
@@ -315,46 +345,67 @@ C
 C CAS DES MESURES DE TYPE 'DEPL'
 C ******************************
 C
-C DIRECTION DE MESURE (VECTEUR DIRECTEUR)
-            DO 21 II = 1 , 3
-              VORI(II) = ZR(LORI-1 + (IMESU-1)*3 +II)
- 21         CONTINUE
+            IF (TYPRES(1:9).EQ.'MODE_GENE') THEN
 
-C NORMALISATION DU VECTEUR DIRECTEUR
-            VAL = 0.D0
-            DO 22 II = 1,3
-              VAL = VAL + VORI(II)*VORI(II)
- 22         CONTINUE
-            VAL = SQRT(VAL)
-            IF (VAL.LT.R8PREM()) THEN
-              CALL UTMESS('F',NOMROU,'NORME VECTEUR DIR. NULLE')
-            ENDIF
-            DO 23 II = 1,3
-              VORI(II) = VORI(II)/VAL
- 23         CONTINUE
-C
-C RECUPERATION DU CHAMP AU NOEUD (BASE)
-C **************************
-
-            DO 101 ICMP = 1,NBCMPI
-              IF (ZK8(JCNSC-1 +ICMP) .EQ. 'DX')
-     &          VECT(1) = ZR(JCNSV-1 +(INO-1)*NBCMPI+ICMP)
-              IF (ZK8(JCNSC-1 +ICMP) .EQ. 'DY')
-     &          VECT(2) = ZR(JCNSV-1 +(INO-1)*NBCMPI+ICMP)
-              IF (ZK8(JCNSC-1 +ICMP) .EQ. 'DZ')
-     &          VECT(3) = ZR(JCNSV-1 +(INO-1)*NBCMPI+ICMP)
- 101        CONTINUE
+              DO 102 ICMP = 1,NBCMPI
+              VECT(ICMP)= 0.D0
+              IF (ZK8(JCNSC-1 +ICMP) .EQ. ZK8(LRANGE-1 +IMESU)) 
+     &          VECT(ICMP) = ZR(JCNSV-1 +(INO-1)*NBCMPI+ICMP)
+ 102          CONTINUE
 
 C DETERMINATION DE LA BASE RESTREINTE
 C *********************************************
 C
-            IPOSD = (IMODE-1)*NBMESU + IMESU
-            ZR(LRED-1 + IPOSD) = 0.D0
+              IPOSD = (IMODE-1)*NBMESU + IMESU
+              ZR(LRED-1 + IPOSD) = 0.D0
 
-            DO 300 II = 1 , 3
-              ZR(LRED-1 + IPOSD) = ZR(LRED-1 + IPOSD)
-     &               + VECT(II) * VORI(II)
- 300        CONTINUE
+              DO 302 II = 1 , NBCMPI
+                ZR(LRED-1 + IPOSD) = ZR(LRED-1 + IPOSD) 
+     &                 + VECT(II)
+ 302          CONTINUE
+            
+            ELSE
+C DIRECTION DE MESURE (VECTEUR DIRECTEUR)
+              DO 21 II = 1 , 3
+                VORI(II) = ZR(LORI-1 + (IMESU-1)*3 +II)
+ 21           CONTINUE
+
+C NORMALISATION DU VECTEUR DIRECTEUR
+              VAL = 0.D0
+              DO 22 II = 1,3
+                VAL = VAL + VORI(II)*VORI(II)
+ 22           CONTINUE
+              VAL = SQRT(VAL)
+              IF (VAL.LT.R8PREM()) THEN
+                CALL UTMESS('F',NOMROU,'NORME VECTEUR DIR. NULLE')
+              ENDIF
+              DO 23 II = 1,3
+                VORI(II) = VORI(II)/VAL
+ 23           CONTINUE
+C
+C RECUPERATION DU CHAMP AU NOEUD (BASE)
+C **************************
+
+              DO 101 ICMP = 1,NBCMPI
+                IF (ZK8(JCNSC-1 +ICMP) .EQ. 'DX')
+     &            VECT(1) = ZR(JCNSV-1 +(INO-1)*NBCMPI+ICMP)
+                IF (ZK8(JCNSC-1 +ICMP) .EQ. 'DY')
+     &            VECT(2) = ZR(JCNSV-1 +(INO-1)*NBCMPI+ICMP)
+                IF (ZK8(JCNSC-1 +ICMP) .EQ. 'DZ')
+     &            VECT(3) = ZR(JCNSV-1 +(INO-1)*NBCMPI+ICMP)
+ 101          CONTINUE
+
+C DETERMINATION DE LA BASE RESTREINTE
+C *********************************************
+C
+              IPOSD = (IMODE-1)*NBMESU + IMESU
+              ZR(LRED-1 + IPOSD) = 0.D0
+
+              DO 300 II = 1 , 3
+                ZR(LRED-1 + IPOSD) = ZR(LRED-1 + IPOSD)
+     &                 + VECT(II) * VORI(II)
+ 300          CONTINUE
+            ENDIF
 C
           ELSE IF ( (NOMCHP(1:14) .EQ. 'EPSI_NOEU_DEPL') .OR.
      &              (NOMCHP(1:14) .EQ. 'SIGM_NOEU_DEPL') ) THEN

@@ -9,7 +9,7 @@ C ----------------------------------------------------------------------
       REAL*8  E,ALPHA,DSDE,SIGY
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,8 +77,7 @@ C ********************* DEBUT DE LA SUBROUTINE *************************
 C
 C --- MESSAGE D'ERREUR SI COMPORTEMENT NON REPERTORIE POUR LES BARRES
 C
-      IF((COMPOR.NE.'ELAS').AND.(COMPOR.NE.'ASSE_COMBU')
-     &                     .AND.(COMPOR.NE.'VMIS_ISOT_LINE')
+      IF((COMPOR.NE.'ELAS').AND.(COMPOR.NE.'VMIS_ISOT_LINE')
      &                     .AND.(COMPOR.NE.'VMIS_CINE_LINE')
      &                     .AND.(COMPOR.NE.'VMIS_ASYM_LINE')
      &                     .AND.(COMPOR.NE.'PINTO_MENEGOTTO')

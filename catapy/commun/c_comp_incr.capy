@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 17/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+#& MODIF COMMUN  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,6 +65,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "VISC_CIN2_CHAB",
                                         "POLY_CFC",
                                         "LMARC",
+                                        "LMARC_IRRA",
                                         "ROUSSELIER",
                                         "ROUSS_PR",
                                         "ROUSS_VISC",
@@ -74,10 +75,12 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "ASSE_CORN",
                                         "NORTON_HOFF",
                                         "LEMAITRE",
+                                        "LEMAITRE_IRRA",
+                                        "LEMA_SEUIL",
                                         "ZIRC_CYRA2",
                                         "VISC_IRRA_LOG",
+                                        "GRAN_IRRA_LOG",
                                         "ZIRC_EPRI",
-                                        "ASSE_COMBU",
                                         "VENDOCHAB",
                                         "NADAI_B",
                                         "DIS_CONTACT",
@@ -166,6 +169,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           VISC_CIN2_CHAB  =SIMP(statut='c',typ='I',defaut=14,into=(14,)),
           POLY_CFC        =SIMP(statut='c',typ='I',defaut=1688,into=(1688,)),
           LMARC           =SIMP(statut='c',typ='I',defaut=20,into=(20,)),
+          LMARC_IRRA      =SIMP(statut='c',typ='I',defaut=20,into=(20,)),
           VISC_TAHERI     =SIMP(statut='c',typ='I',defaut=9,into=(9,)),
           ROUSSELIER      =SIMP(statut='c',typ='I',defaut=9,into=(9,)),
           ROUSS_PR        =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
@@ -176,10 +180,12 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           ARME            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           NORTON_HOFF     =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           LEMAITRE        =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
+          LEMA_SEUIL      =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
+          LEMAITRE_IRRA   =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           ZIRC_CYRA2      =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           ZIRC_EPRI       =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           VISC_IRRA_LOG   =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
-          ASSE_COMBU      =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
+          GRAN_IRRA_LOG   =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           NADAI_B         =SIMP(statut='c',typ='I',defaut=34,into=(34,)),
           VENDOCHAB       =SIMP(statut='c',typ='I',defaut=10,into=(10,)),
           GRILLE_ISOT_LINE=SIMP(statut='c',typ='I',defaut=4,into=(4,)),

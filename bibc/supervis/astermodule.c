@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 24/01/2005   AUTEUR DURAND C.DURAND */
+/* MODIF astermodule supervis  DATE 14/02/2005   AUTEUR DURAND C.DURAND */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -107,6 +107,7 @@
 #define CALLSPPPP(UN,LN,a,b,c,d,e)                     F_FUNC(UN,LN)(a,b,c,d,e,strlen(a))
 
 #define CALLSPPPPS(UN,LN,a,b,c,d,e,f)                     F_FUNC(UN,LN)(a,b,c,d,e,f,strlen(a),strlen(f))
+#define CALLSPPPPPPS(UN,LN,a,b,c,d,e,f,g,h)                  F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,strlen(a),strlen(h))
 #define CALLPPPSP(UN,LN,a,b,c,d,e)                        F_FUNC(UN,LN)(a,b,c,d,e,strlen(d))
 #define DEFPPPSP(UN,LN,a,b,c,d,ld,e)                        STDCALL(UN,LN)(a,b,c,d,e,ld)
 
@@ -117,6 +118,7 @@
 #define DEFSPPPP(UN,LN,a,la,b,c,d,e)                   STDCALL(UN,LN)(a,b,c,d,e,la)
 
 #define DEFSPPPPS(UN,LN,a,la,b,c,d,e,f,lf)          STDCALL(UN,LN)(a,b,c,d,e,f,la,lf)
+#define DEFSPPPPPPS(UN,LN,a,la,b,c,d,e,f,g,h,lh)     STDCALL(UN,LN)(a,b,c,d,e,f,g,h,la,lh)
 #define DEFSSPPPPP(UN,LN,a,la,b,lb,c,d,e,f,g)    STDCALL(UN,LN)(a,b,c,d,e,f,g,la,lb)
 #define DEFSSPPPP(UN,LN,a,la,b,lb,c,d,e,f)    STDCALL(UN,LN)(a,b,c,d,e,f,la,lb)
 #define DEFSSPPP(UN,LN,a,la,b,lb,c,d,e)    STDCALL(UN,LN)(a,b,c,d,e,la,lb)
@@ -173,6 +175,7 @@
 #define CALLSPPPP(UN,LN,a,b,c,d,e)                     F_FUNC(UN,LN)(a,strlen(a),b,c,d,e)
 
 #define CALLSPPPPS(UN,LN,a,b,c,d,e,f)                     F_FUNC(UN,LN)(a,strlen(a),b,c,d,e,f,strlen(f))
+#define CALLSPPPPPPS(UN,LN,a,b,c,d,e,f,g,h)                  F_FUNC(UN,LN)(a,strlen(a),b,c,d,e,f,g,h,strlen(h))
 #define CALLPPPSP(UN,LN,a,b,c,d,e)                        F_FUNC(UN,LN)(a,b,c,d,strlen(d),e)
 #define DEFPPPSP(UN,LN,a,b,c,d,ld,e)                        STDCALL(UN,LN)(a,b,c,d,ld,e)
 
@@ -183,6 +186,7 @@
 #define DEFSPPPP(UN,LN,a,la,b,c,d,e)                   STDCALL(UN,LN)(a,la,b,c,d,e)
 
 #define DEFSPPPPS(UN,LN,a,la,b,c,d,e,f,lf)           STDCALL(UN,LN)(a,la,b,c,d,e,f,lf)
+#define DEFSPPPPPPS(UN,LN,a,la,b,c,d,e,f,g,h,lh)    STDCALL(UN,LN)(a,la,b,c,d,e,f,g,h,lh)
 #define DEFSSPPPPP(UN,LN,a,la,b,lb,c,d,e,f,g)    STDCALL(UN,LN)(a,la,b,lb,c,d,e,f,g)
 #define DEFSSPPPP(UN,LN,a,la,b,lb,c,d,e,f)    STDCALL(UN,LN)(a,la,b,lb,c,d,e,f)
 #define DEFSSPPP(UN,LN,a,la,b,lb,c,d,e)    STDCALL(UN,LN)(a,la,b,lb,c,d,e)
@@ -2383,8 +2387,8 @@ PyObject *args;
         }
 }
 
-#define CALL_GETCON(nomsd,iob,ctype,lcon,iaddr,nomob) CALLSPPPPS(GETCON,getcon,nomsd,iob,ctype,lcon,iaddr,nomob)
-void DEFSPPPPS(GETCON,getcon,char *,int,INTEGER *,INTEGER *,INTEGER *,char **,char *,int);
+#define CALL_GETCON(nomsd,iob,ishf,ilng,ctype,lcon,iaddr,nomob) CALLSPPPPPPS(GETCON,getcon,nomsd,iob,ishf,ilng,ctype,lcon,iaddr,nomob)
+void DEFSPPPPPPS(GETCON,getcon,char *,int,INTEGER *,INTEGER *,INTEGER *,INTEGER *,INTEGER *,char **,char *,int);
 #define CALL_JELIBE(nomsd) CALLS(JELIBE,jelibe,nomsd)
 void DEFS(JELIBE,jelibe,char *,int);
 
@@ -2405,19 +2409,23 @@ PyObject *args;
         char *kvar;
         PyObject *tup;
         INTEGER lcon, iob;
+        INTEGER ishf=0;
+        INTEGER ilng=0;
         INTEGER ctype=0;
         int i;
         char *iaddr;
 
         _DEBUT(aster_getvectjev) ;
 
-        if (!PyArg_ParseTuple(args, "s:getvectjev",&nomsd)) return NULL;
+        if (!PyArg_ParseTuple(args, "s|ll:getvectjev",&nomsd,&ishf,&ilng)) return NULL;
 
         try(1){
           iob=0 ;
                                    SSCRUTE(nomsd);
                                    ISCRUTE(iob);
-          CALL_GETCON(nomsd,&iob,&ctype,&lcon,&iaddr,nomob);
+                                   ISCRUTE(ishf);
+                                   ISCRUTE(ilng);
+          CALL_GETCON(nomsd,&iob,&ishf,&ilng,&ctype,&lcon,&iaddr,nomob);
                                    ISCRUTE(lcon);
                                    ISCRUTE(ctype);
                                    ISCRUTE(iaddr);
@@ -2550,7 +2558,7 @@ PyObject *args;
         INTEGER *l;
         char *kvar;
         PyObject *tup, *dico, *key;
-        INTEGER iob,j;
+        INTEGER iob,j,ishf,ilng;
         INTEGER lcon;
         INTEGER ctype=0;
         INTEGER *val, nbval;
@@ -2572,9 +2580,13 @@ PyObject *args;
         dico = PyDict_New();
         try(1){
           for(j=1;j<iob+1;j++){
+          ishf=0 ;
+          ilng=0 ;
                                    SSCRUTE(nomsd);
                                    ISCRUTE(j);
-          CALL_GETCON(nomsd,&j,&ctype,&lcon,&iaddr,nomob);
+                                   ISCRUTE(ishf);
+                                   ISCRUTE(ilng);
+          CALL_GETCON(nomsd,&j,&ishf,&ilng,&ctype,&lcon,&iaddr,nomob);
                                    ISCRUTE(lcon);
                                    ISCRUTE(ctype);
                                    ISCRUTE(iaddr);

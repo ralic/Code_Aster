@@ -4,7 +4,7 @@
       CHARACTER*19        NSSCHE, NOMSD
 C*********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C
 C   FONCTIONS EXTERNES
 C   ------------------
 C
-      CHARACTER*32 JEXNUM,JEXNOM
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
 C
 C   COMMUNS NORMALISES JEVEUX
 C   -------------------------
@@ -101,6 +101,7 @@ C   DIVERS
 C   ------
 C
       INTEGER      I,M,N,IN,IM,NBTND,NBTMAI,ADRM,NBN,NBM,NDLOC,NBCPAC
+      INTEGER      ICONEC,LCONEC,ICNCIN,LCNCIN
       CHARACTER*24 NCONEC,NCNCIN
       CHARACTER*8  TK8(1),NMAILA
       LOGICAL      TROUVE
@@ -191,6 +192,11 @@ C
       CALL JECREO('&&TREMNO.LISTE.ENTIER','V V I')
       CALL JEECRA('&&TREMNO.LISTE.ENTIER','LONMAX',NBTND,' ')
       CALL JEVEUO('&&TREMNO.LISTE.ENTIER','E',ALISTE)
+      CALL JEVEUO(NCONEC,'L',ICONEC)
+      CALL JEVEUO(JEXATR(NCONEC,'LONCUM'),'L',LCONEC)
+      CALL JEVEUO(NCNCIN,'L',ICNCIN)
+      CALL JEVEUO(JEXATR(NCNCIN,'LONCUM'),'L',LCNCIN)
+      
 C
       LIBRE = 1
 C
@@ -198,7 +204,7 @@ C
 C
          IF ( ZI(APADR + IM-1) .NE. 0 ) THEN
 C
-            CALL JEVEUO(JEXNUM(NCONEC,IM),'L',ADRM)
+            ADRM=ICONEC+ZI(LCONEC-1+IM)-1
 C
             NBN = ZI(APNBN + IM-1)
 C
@@ -232,9 +238,10 @@ C
 C
          N = ZI(ANUND + IN-1)
 C
-         CALL JEVEUO(JEXNUM(NCNCIN,N),'L',ADRM)
-         CALL JELIRA(JEXNUM(NCNCIN,N),'LONMAX',NBM,K1BID)
-C
+
+         ADRM=ICNCIN+ZI(LCNCIN-1+N)-1
+         NBM=ZI(LCNCIN+N)-ZI(LCNCIN-1+N)
+
          LNGM = 0
          LNGV = 0
 C
@@ -291,9 +298,10 @@ C
                   NBSP   = ZI(APNSP + M-1)
                   NDLOC  = 1
                   TROUVE = .FALSE.
-C
-                  CALL JEVEUO(JEXNUM(NCONEC,M),'L',ACONEC)
-                  CALL JELIRA(JEXNUM(NCONEC,M),'LONMAX',NBNM,K1BID)
+
+                  ACONEC=ICONEC+ZI(LCONEC-1+M)-1
+                  NBNM=ZI(LCONEC+M)-ZI(LCONEC-1+M)
+
 C
 220               CONTINUE
                   IF ( (.NOT. TROUVE) .AND. (NDLOC .LE. NBNM) ) THEN
