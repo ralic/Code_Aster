@@ -7,7 +7,7 @@
       CHARACTER*(*)       TABIN, BASOUT, TABOUT, LIPARA(*), LCRIT(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/08/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -264,7 +264,7 @@ C
 C
          NOMJV = NOMTA2(1:17)//'LG.'//KNUME
          ZK24(KTBLP+4*(I-1)+3) = NOMJV
-         CALL JECREO ( NOMJV ,BASE//' V L' )
+         CALL JECREO ( NOMJV ,BASE//' V I' )
          CALL JEECRA ( NOMJV , 'LONMAX' , NBLIGN , ' ' )
          CALL JEVEUO ( NOMJV , 'E', KVALL )
 C
@@ -274,7 +274,7 @@ C
          CALL JEVEUO ( NOJVL2, 'L', JVALL )
 C
          DO 302 J = 1 , NBLIGN
-            ZL(KVALL+J-1) = ZL(JVALL+ZI(JNUME+J-1)-1)
+            ZI(KVALL+J-1) = ZI(JVALL+ZI(JNUME+J-1)-1)
             IF ( TYPE(1:1) .EQ. 'I' ) THEN
                ZI(KVALE+J-1) = ZI(JVALE+ZI(JNUME+J-1)-1)
             ELSEIF ( TYPE(1:1) .EQ. 'R' ) THEN

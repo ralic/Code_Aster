@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 25/05/2004   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 28/09/2004   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -113,7 +113,7 @@ C ======================================================================
       REAL*8        DFICKT, DFICKG, LAMBP,DLAMBP, RHOL, UNSURK
       REAL*8        CPL, LAMBS,DLAMBS, VISCL, DVISCL, CPG, LAMBT
       REAL*8        DLAMBT,VISCG, DVISCG, MAMOLG, CPVG, VISCVG, DVISVG
-      REAL*8        FICKAD,DFADT,KH,LAMBCT, ALPHA
+      REAL*8        FICKAD,DFADT,KH,LAMBCT, ALPHA,ISOT(3)
       CHARACTER*16  MECA,THMC,THER,HYDR
 C ======================================================================
 C --- MISE AU POINT POUR LES VARIABLES INTERNES ------------------------
@@ -193,7 +193,7 @@ C ======================================================================
      +               DPERMS, DPERMP, FICK, DFICKT, DFICKG, LAMBP,
      +               DLAMBP, UNSURK, ALPHA, LAMBS, DLAMBS, VISCL,
      +               DVISCL, MAMOLG, LAMBT, DLAMBT, VISCG, DVISCG,
-     +               MAMOVG, FICKAD, DFADT, LAMBCT)
+     +               MAMOVG, FICKAD, DFADT, LAMBCT,ISOT)
       ENDIF
 C ======================================================================
 C --- CALCUL DES FLUX HYDRAULIQUES UNIQUEMENT SI YAP1 = 1 --------------
@@ -207,7 +207,7 @@ C ======================================================================
      +                  H11,H12,T0,SAT,RV0,G1F,J1D,J1F,J1C,
      +                  J2,J3,G2,PESA)
          ELSE
-            CALL CALCFH(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF, 
+             CALL CALCFH(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF, 
      +                    DIMCON,YAMEC,YATE,ADDEP1,ADDEP2, 
      +                    ADCP11,ADCP12,ADCP21,ADCP22,ADDEME,ADDETE,
      +                    CONGEM,CONGEP,DSDE,P1,P2,
@@ -219,8 +219,8 @@ C ======================================================================
      +                    RHOL, UNSURK, ALPHA,  CPL, LAMBS,
      +                    DLAMBS,
      +                    VISCL, DVISCL, MAMOLG,CPG, LAMBT, DLAMBT,
-     +                    VISCG,
-     +                    DVISCG, MAMOVG, CPVG, VISCVG, DVISVG, RETCOM)
+     +                    VISCG,DVISCG, MAMOVG,
+     +                    CPVG, VISCVG, DVISVG, RETCOM,ISOT)
             IF ( RETCOM.NE.0) THEN
                GOTO 9000
             ENDIF
@@ -236,6 +236,7 @@ C ======================================================================
      +                  ADDETE,ADDEME,ADDEP1,ADDEP2,ADCOTE,
      +                  CONGEP,DSDE,P1,T,GRAT,SAT)
          ELSE
+
             CALL CALCFT(OPTION,MECA,THMC,HYDR,IMATE,NDIM,DIMDEF,
      +                 DIMCON,YAMEC,YAP1,NBPHA1,YAP2,
      +                 NBPHA2,YATE,ADDETE,ADDEME,ADDEP1,ADDEP2,

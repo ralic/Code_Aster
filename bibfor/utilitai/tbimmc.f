@@ -4,7 +4,7 @@
       CHARACTER*(*)       TABLE, LIPAIM(*), FORMAR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -137,7 +137,7 @@ C
             ENDIF
             CHAINE(IDEB:IFIN) = ' '//INPAR(1:ILON)//':'
             IDEB = IFIN + 1
-            IF ( ZL(JLOGQ+I-1) ) THEN
+            IF ( ZI(JLOGQ+I-1).EQ.1 ) THEN
                IF ( TYPE(1:1) .EQ. 'I' ) THEN
                   IFIN = IDEB + 12 - 1
                   IF ( IFIN .GT. 2000 ) THEN

@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOMTA,        NOMPAR(*), TYPPAR(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/01/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,11 +100,11 @@ C
             CALL JEVEUO ( NOMJV , 'E', IRET )
             ZK24(JTBLP+4*(I-1)+2) = NOMJV
             NOMJV = NOMTAB(1:17)//'LG.'//KNUME
-            CALL JECREO ( NOMJV ,BASE//' V L' )
+            CALL JECREO ( NOMJV ,BASE//' V I' )
             CALL JEECRA ( NOMJV , 'LONMAX' , NBLIGN , ' ' )
             CALL JEVEUO ( NOMJV , 'E', JNJV )
             DO 12 J = 1 , NBLIGN
-               ZL(JNJV+J-1) = .FALSE.
+               ZI(JNJV+J-1) = 0
  12         CONTINUE
             ZK24(JTBLP+4*(I-1)+3) = NOMJV
  10      CONTINUE
@@ -161,11 +161,11 @@ C
             CALL JEVEUO ( NOMJV , 'E', IRET )
             ZK24(JTBLP+4*(J-1)+2) = NOMJV
             NOMJV = NOMTAB(1:17)//'LG.'//KNUME
-            CALL JECREO ( NOMJV ,BASE//' V L' )
+            CALL JECREO ( NOMJV ,BASE//' V I' )
             CALL JEECRA ( NOMJV , 'LONMAX' , NBLIGN , ' ' )
             CALL JEVEUO ( NOMJV , 'E', JNJV )
             DO 34 K = 1 , NBLIGN
-               ZL(JNJV+K-1) = .FALSE.
+               ZI(JNJV+K-1) = 0
  34         CONTINUE
             ZK24(JTBLP+4*(J-1)+3) = NOMJV
  30      CONTINUE

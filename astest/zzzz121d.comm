@@ -1,4 +1,4 @@
-# MODIF  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 28/09/2004   AUTEUR DURAND C.DURAND 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE TEST DE HOMARD AVEC DES QUADRANGLES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -62,42 +62,42 @@ DEBUT(CODE=_F( NOM = 'ZZZZ121D',NIV_PUB_WEB='INTERNET'))
 # 0. Formules invariantes
 # 0.1. ==> Chargements sur les bords
 #
-F1 = FORMULE(REEL="""(REEL:Y) =
-1.-(1.5*COS(2.*ATAN2(Y,4.))+COS(4.*ATAN2(Y,4.))) /(16.+Y*Y)
-                            +(3.*COS(4.*ATAN2(Y,4.)))/(2.*(16.+Y*Y)**2)
-              """)
+F1 = FORMULE(NOM_PARA='Y',VALE='''
+1.-(1.5*cos(2.*atan2(Y,4.))+cos(4.*atan2(Y,4.))) /(16.+Y*Y)
+                            +(3.*cos(4.*atan2(Y,4.)))/(2.*(16.+Y*Y)**2)
+              ''')
 
-F2 = FORMULE(REEL="""(REEL:Y) =
--(0.5*SIN(2.*ATAN2(Y,4.))+SIN(4.*ATAN2(Y,4.))) /(16.+Y*Y)
-                             +(3.*SIN(4.*ATAN2(Y,4.)))/(2.*(16.+Y*Y)**2)
-              """)
+F2 = FORMULE(NOM_PARA='Y',VALE='''
+-(0.5*sin(2.*atan2(Y,4.))+sin(4.*atan2(Y,4.))) /(16.+Y*Y)
+                             +(3.*sin(4.*atan2(Y,4.)))/(2.*(16.+Y*Y)**2)
+              ''')
 
-F3 = FORMULE(REEL="""(REEL:X) =
--(0.5*SIN(2.*ATAN2(4.,X))+SIN(4.*ATAN2(4.,X))) /(16.+X*X)
-                             +(3.*SIN(4.*ATAN2(4.,X)))/(2.*(16.+X*X)**2)
-              """)
+F3 = FORMULE(NOM_PARA='X',VALE='''
+-(0.5*sin(2.*atan2(4.,X))+sin(4.*atan2(4.,X))) /(16.+X*X)
+                             +(3.*sin(4.*atan2(4.,X)))/(2.*(16.+X*X)**2)
+              ''')
 
-F4 = FORMULE(REEL="""(REEL:X) =
--(0.5*COS(2.*ATAN2(4.,X))-COS(4.*ATAN2(4.,X))) /(16.+X*X)
-                             -(3.*COS(4.*ATAN2(4.,X)))/(2.*(16.+X*X)**2)
-              """)
+F4 = FORMULE(NOM_PARA='X',VALE='''
+-(0.5*cos(2.*atan2(4.,X))-cos(4.*atan2(4.,X))) /(16.+X*X)
+                             -(3.*cos(4.*atan2(4.,X)))/(2.*(16.+X*X)**2)
+              ''')
 #
 # 0.2. ==> Resultats analytiques au point de coordonnees polaires(R,TH)
 #
-SIXX = FORMULE(REEL="""(REEL:R,REEL:TH) =
-1.-(1.5*COS(2.*TH)+COS(4.*TH)) /(R*R)
-          +(1.5*COS(4.*TH))/(R**4)
-       """)
+SIXX = FORMULE(NOM_PARA=('R','TH'),VALE='''
+1.-(1.5*cos(2.*TH)+cos(4.*TH)) /(R*R)
+          +(1.5*cos(4.*TH))/(R**4)
+       ''')
 
-SIYY = FORMULE(REEL="""(REEL:R,REEL:TH) =
--(0.5*COS(2.*TH)-COS(4.*TH)) /(R*R)
-          -(1.5*COS(4.*TH))/(R**4)
-              """)
+SIYY = FORMULE(NOM_PARA=('R','TH'),VALE='''
+-(0.5*cos(2.*TH)-cos(4.*TH)) /(R*R)
+          -(1.5*cos(4.*TH))/(R**4)
+              ''')
 
-SIXY = FORMULE(REEL="""(REEL:R,REEL:TH) =
--(0.5*SIN(2.*TH)+SIN(4.*TH)) /(R*R)
-          +(1.5*SIN(4.*TH))/(R**4)
-              """)
+SIXY = FORMULE(NOM_PARA=('R','TH'),VALE='''
+-(0.5*sin(2.*TH)+sin(4.*TH)) /(R*R)
+          +(1.5*sin(4.*TH))/(R**4)
+              ''')
 
 #
 # 1. Definition du materiau
@@ -424,6 +424,9 @@ CALC_NO( reuse=RESU_3 ,RESULTAT= RESU_3 , OPTION='SIGM_NOEU_DEPL' )
 #
 # N. Tests de non regression
 #
+
+val1=SIXX(1.,pi/6.)
+val2=SIXX(1.,pi/3.)
 TEST_RESU ( RESU = (
             _F( RESULTAT = RESU_1, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
              CRITERE = 'RELATIF',     PRECISION = 1.E-6,
@@ -435,7 +438,7 @@ TEST_RESU ( RESU = (
              REFERENCE = 'NON_REGRESSION', VERSION = '7.03.18' ),
             _F( RESULTAT = RESU_3, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',     PRECISION = 0.52,
-             GROUP_NO = 'GNP20', NOM_CMP = 'SIXX', VALE = EVAL("""SIXX(1.,PI/6.)"""),
+             GROUP_NO = 'GNP20', NOM_CMP = 'SIXX', VALE = val1,
              REFERENCE = 'ANALYTIQUE'),
             _F( RESULTAT = RESU_1, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
              CRITERE = 'RELATIF',     PRECISION = 1.E-6,
@@ -447,7 +450,7 @@ TEST_RESU ( RESU = (
              REFERENCE = 'NON_REGRESSION', VERSION = '7.03.18' ),
             _F( RESULTAT = RESU_3, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
              CRITERE = 'RELATIF',     PRECISION = 2.E-1,
-             GROUP_NO = 'GNP21', NOM_CMP = 'SIXX', VALE = EVAL("""SIXX(1.,PI/3.)"""),
+             GROUP_NO = 'GNP21', NOM_CMP = 'SIXX', VALE = val2,
              REFERENCE = 'ANALYTIQUE'),
                    ),
             CHAM_NO = (

@@ -20,7 +20,7 @@ C ======================================================================
       INTEGER             IFR, NPARIM
       CHARACTER*(*)       TABLE, FORMAR, LIPAIM(*)
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C TOLE CRS_602
 C      IMPRESSION DE LA TABLE AU FORMAT "TABLEAU"
 C ----------------------------------------------------------------------
@@ -181,7 +181,7 @@ C
       ITC = MAX ( ITC1 , ITC2 )
       IC = 0
       DO 100 I = 1 , NBLIGN
-         IF ( ZL(JLOGQ+I-1) ) THEN
+         IF ( ZI(JLOGQ+I-1).EQ.1 ) THEN
             IF ( TYPEC(1:1) .EQ. 'I' ) THEN
                DO 120 J = 1 , IC
                   IF (ZI(JCOL+J-1) .EQ. ZI(JVALE+I-1) ) GOTO 100
@@ -269,7 +269,7 @@ C
       ENDIF
       IL = 0
       DO 200 I = 1 , NBLIGN
-         IF ( ZL(JLOGQ+I-1) ) THEN
+         IF ( ZI(JLOGQ+I-1).EQ.1 ) THEN
             IF ( TYPEL(1:1) .EQ. 'I' ) THEN
                DO 220 J = 1 , IL
                   IF (ZI(JLIG+J-1) .EQ. ZI(JVALE+I-1) ) GOTO 200

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/09/2004   AUTEUR PBADEL P.BADEL 
+# MODIF  DATE 28/09/2004   AUTEUR DURAND C.DURAND 
 # ======================================================================
 # TITRE : SIMULATION D'EXCAVATION EN COMPORTEMENT HYDRO-MECANIQUE ------
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -59,8 +59,7 @@ LIPPORO=DEFI_LIST_REEL(DEBUT=0.15,
                   INTERVALLE=_F(JUSQU_A=0.16,
                                  PAS=0.0001,),);
 
-KI = FORMULE(REEL = '''(REEL:PORO) = 
-(1.01937E-19*(1+2.E12*(PORO-0.15)**3))''');
+KI = FORMULE(NOM_PARA='PORO',VALE='(1.01937E-19*(1+2.E12*(PORO-0.15)**3))');
 
 KINT=CALC_FONC_INTERP(FONCTION=KI,
                       LIST_PARA=LIPPORO,
@@ -73,7 +72,7 @@ SOL  = DEFI_MATERIAU( ELAS      = _F( E           = 5800.0E6,
                                       NU          = 0.3,
                                       RHO         = 2764.0,
                                       ALPHA       = 0.0,),
-                      DRUCKER_PRAGER   = _F( ECROUISSAGE = 'PARABOLIQUE',
+                      DRUCK_PRAGER   = _F( ECROUISSAGE = 'PARABOLIQUE',
                                       ALPHA       =    0.328     ,
                                       P_ULTM      =    1.225E-2  ,
                                       SY          =    2.11E6    ,

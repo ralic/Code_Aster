@@ -8,7 +8,7 @@
       COMPLEX*16           REFC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/11/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,25 +105,25 @@ C
             LABEL2 = ' SOMM_ABS '
             VALI = 0
             DO 100 I = 1 , NBLIGN
-               IF ( ZL(JVALL+I-1) ) VALI = VALI + ABS( ZI(JVALE+I-1) )
+               IF (ZI(JVALL+I-1).EQ.1) VALI = VALI+ABS( ZI(JVALE+I-1) )
  100        CONTINUE
          ELSEIF ( TYPTES .EQ. 'SOMM' ) THEN
             LABEL2 = ' SOMM '
             VALI = 0
             DO 102 I = 1 , NBLIGN
-               IF ( ZL(JVALL+I-1) ) VALI = VALI + ZI(JVALE+I-1)
+               IF (ZI(JVALL+I-1).EQ.1) VALI = VALI + ZI(JVALE+I-1)
  102        CONTINUE
          ELSEIF ( TYPTES .EQ. 'MAX' ) THEN
             LABEL2 = ' MAX '
             VALI = -ISMAEM()
             DO 104 I = 1 , NBLIGN
-               IF ( ZL(JVALL+I-1) ) VALI = MAX( VALI , ZI(JVALE+I-1) )
+               IF (ZI(JVALL+I-1).EQ.1) VALI = MAX( VALI,ZI(JVALE+I-1) )
  104        CONTINUE
          ELSEIF ( TYPTES .EQ. 'MIN' ) THEN
             LABEL2 = ' MIN '
             VALI = ISMAEM()
             DO 106 I = 1 , NBLIGN
-               IF ( ZL(JVALL+I-1) ) VALI = MIN( VALI , ZI(JVALE+I-1) )
+               IF (ZI(JVALL+I-1).EQ.1) VALI = MIN( VALI,ZI(JVALE+I-1) )
  106        CONTINUE
          ELSE
             WRITE(IFIC,*) 'NOOK '
@@ -135,25 +135,25 @@ C
             VALR = 0.D0
             LABEL2 = ' SOMM_ABS '
             DO 200 I = 1 , NBLIGN
-               IF ( ZL(JVALL+I-1) ) VALR = VALR + ABS( ZR(JVALE+I-1) )
+               IF (ZI(JVALL+I-1).EQ.1) VALR = VALR+ABS( ZR(JVALE+I-1) )
  200        CONTINUE
          ELSEIF ( TYPTES .EQ. 'SOMM' ) THEN
             VALR = 0.D0
             LABEL2 = ' SOMM '
             DO 202 I = 1 , NBLIGN
-               IF ( ZL(JVALL+I-1) ) VALR = VALR + ZR(JVALE+I-1)
+               IF (ZI(JVALL+I-1).EQ.1) VALR = VALR + ZR(JVALE+I-1)
  202        CONTINUE
          ELSEIF ( TYPTES .EQ. 'MAX' ) THEN
             VALR = -R8MAEM()
             LABEL2 = ' MAX '
             DO 204 I = 1 , NBLIGN
-               IF ( ZL(JVALL+I-1) ) VALR = MAX( VALR , ZR(JVALE+I-1) )
+               IF (ZI(JVALL+I-1).EQ.1) VALR = MAX( VALR,ZR(JVALE+I-1) )
  204        CONTINUE
          ELSEIF ( TYPTES .EQ. 'MIN' ) THEN
             VALR = R8MAEM()
             LABEL2 = ' MIN '
             DO 206 I = 1 , NBLIGN
-               IF ( ZL(JVALL+I-1) ) VALR = MIN( VALR , ZR(JVALE+I-1) )
+               IF (ZI(JVALL+I-1).EQ.1) VALR = MIN( VALR,ZR(JVALE+I-1) )
  206        CONTINUE
          ELSE
             WRITE(IFIC,*) 'NOOK '
@@ -165,12 +165,12 @@ C
          IF ( TYPTES .EQ. 'SOMM_ABS' ) THEN
             LABEL2 = ' SOMM_ABS '
             DO 300 I = 1 , NBLIGN
-               IF ( ZL(JVALL+I-1) ) VALC = VALC + ABS( ZC(JVALE+I-1) )
+               IF (ZI(JVALL+I-1).EQ.1) VALC = VALC+ABS( ZC(JVALE+I-1) )
  300        CONTINUE
          ELSEIF ( TYPTES .EQ. 'SOMM' ) THEN
             LABEL2 = ' SOMM '
             DO 302 I = 1 , NBLIGN
-               IF ( ZL(JVALL+I-1) ) VALC = VALC + ZC(JVALE+I-1)
+               IF (ZI(JVALL+I-1).EQ.1) VALC = VALC + ZC(JVALE+I-1)
  302        CONTINUE
          ELSE
             WRITE(IFIC,*) 'NOOK '

@@ -4,7 +4,7 @@
       CHARACTER*(*)       TABIN, NOPARA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/10/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C
             NBVID = 0
             NBNVD = 0
             DO 20 I = 1 , NBLIGN
-               IF ( .NOT. ZL(JVALL+NUME(I)-1) ) THEN
+               IF ( ZI(JVALL+NUME(I)-1).EQ.0 ) THEN
                   NBVID = NBVID + 1
                   ZI(JNUVI+NBVID-1) = NUME(I)
                ELSE

@@ -3,7 +3,7 @@
       CHARACTER*(*)       BASE, SD1, SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/01/2000   AUTEUR D6BHHBQ B.QUINNEZ 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,14 +90,14 @@ C
          CALL CODENT ( I ,'D0',KNUME)
          NOMJV = TAB2(1:17)//'LG.'//KNUME
          ZK24(JTBLP+4*(I-1)+3) = NOMJV
-         CALL JECREO ( NOMJV ,BAS2//' V L' )
+         CALL JECREO ( NOMJV ,BAS2//' V I' )
          CALL JEECRA ( NOMJV , 'LONMAX' , NBPM , ' ' )
          CALL JEECRA ( NOMJV , 'LONUTI' , NBPU , ' ' )
          CALL JEVEUO ( NOMJV , 'E', JNJV )
          NOMJV = TAB1(1:17)//'LG.'//KNUME
          CALL JEVEUO ( NOMJV , 'L', KNJV )
          DO 12 J = 1 , NBPM
-           ZL(JNJV+J-1) = ZL(KNJV+J-1)
+           ZI(JNJV+J-1) = ZI(KNJV+J-1)
  12      CONTINUE
          NOMJV = TAB1//'.'//KNUME
          CALL JEVEUO ( NOMJV , 'L', KVALE )

@@ -6,7 +6,7 @@
       CHARACTER*(*)       NOMTA,        NOMPAR(*),          VK(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/05/99   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -127,35 +127,35 @@ C
                   IF ( TYPE(1:1) .EQ. 'I' ) THEN
                      KI = KI + 1
                      ZI(JVALE+NBLIGN-1) = VI(KI)
-                     ZL(JLOGQ+NBLIGN-1) = .TRUE.
+                     ZI(JLOGQ+NBLIGN-1) = 1
                   ELSEIF ( TYPE(1:1) .EQ. 'R' ) THEN
                      KR = KR + 1
                      ZR(JVALE+NBLIGN-1) = VR(KR)
-                     ZL(JLOGQ+NBLIGN-1) = .TRUE.
+                     ZI(JLOGQ+NBLIGN-1) = 1
                   ELSEIF ( TYPE(1:1) .EQ. 'C' ) THEN
                      KC = KC + 1
                      ZC(JVALE+NBLIGN-1) = VC(KC)
-                     ZL(JLOGQ+NBLIGN-1) = .TRUE.
+                     ZI(JLOGQ+NBLIGN-1) = 1
                   ELSEIF ( TYPE(1:3) .EQ. 'K80' ) THEN
                      KK = KK + 1
                      ZK80(JVALE+NBLIGN-1) = VK(KK)
-                     ZL(JLOGQ+NBLIGN-1) = .TRUE.
+                     ZI(JLOGQ+NBLIGN-1) = 1
                   ELSEIF ( TYPE(1:3) .EQ. 'K32' ) THEN
                      KK = KK + 1
                      ZK32(JVALE+NBLIGN-1) = VK(KK)
-                     ZL(JLOGQ+NBLIGN-1) = .TRUE.
+                     ZI(JLOGQ+NBLIGN-1) = 1
                   ELSEIF ( TYPE(1:3) .EQ. 'K24' ) THEN
                      KK = KK + 1
                      ZK24(JVALE+NBLIGN-1) = VK(KK)
-                     ZL(JLOGQ+NBLIGN-1) = .TRUE.
+                     ZI(JLOGQ+NBLIGN-1) = 1
                   ELSEIF ( TYPE(1:3) .EQ. 'K16' ) THEN
                      KK = KK + 1
                      ZK16(JVALE+NBLIGN-1) = VK(KK)
-                     ZL(JLOGQ+NBLIGN-1) = .TRUE.
+                     ZI(JLOGQ+NBLIGN-1) = 1
                   ELSEIF ( TYPE(1:2) .EQ. 'K8' ) THEN
                      KK = KK + 1
                      ZK8(JVALE+NBLIGN-1) = VK(KK)
-                     ZL(JLOGQ+NBLIGN-1) = .TRUE.
+                     ZI(JLOGQ+NBLIGN-1) = 1
                   ENDIF
                   GOTO 34
                ENDIF
@@ -184,35 +184,35 @@ C
                   IF ( TYPE(1:1) .EQ. 'I' ) THEN
                      KI = KI + 1
                      ZI(JVALE+NUME-1) = VI(KI)
-                     ZL(JLOGQ+NUME-1) = .TRUE.
+                     ZI(JLOGQ+NUME-1) = 1
                   ELSEIF ( TYPE(1:1) .EQ. 'R' ) THEN
                      KR = KR + 1
                      ZR(JVALE+NUME-1) = VR(KR)
-                     ZL(JLOGQ+NUME-1) = .TRUE.
+                     ZI(JLOGQ+NUME-1) = 1
                   ELSEIF ( TYPE(1:1) .EQ. 'C' ) THEN
                      KC = KC + 1
                      ZC(JVALE+NUME-1) = VC(KC)
-                     ZL(JLOGQ+NUME-1) = .TRUE.
+                     ZI(JLOGQ+NUME-1) = 1
                   ELSEIF ( TYPE(1:3) .EQ. 'K80' ) THEN
                      KK = KK + 1
                      ZK80(JVALE+NUME-1) = VK(KK)
-                     ZL(JLOGQ+NUME-1) = .TRUE.
+                     ZI(JLOGQ+NUME-1) = 1
                   ELSEIF ( TYPE(1:3) .EQ. 'K32' ) THEN
                      KK = KK + 1
                      ZK32(JVALE+NUME-1) = VK(KK)
-                     ZL(JLOGQ+NUME-1) = .TRUE.
+                     ZI(JLOGQ+NUME-1) = 1
                   ELSEIF ( TYPE(1:3) .EQ. 'K24' ) THEN
                      KK = KK + 1
                      ZK24(JVALE+NUME-1) = VK(KK)
-                     ZL(JLOGQ+NUME-1) = .TRUE.
+                     ZI(JLOGQ+NUME-1) = 1
                   ELSEIF ( TYPE(1:3) .EQ. 'K16' ) THEN
                      KK = KK + 1
                      ZK16(JVALE+NUME-1) = VK(KK)
-                     ZL(JLOGQ+NUME-1) = .TRUE.
+                     ZI(JLOGQ+NUME-1) = 1
                   ELSEIF ( TYPE(1:2) .EQ. 'K8' ) THEN
                      KK = KK + 1
                      ZK8(JVALE+NUME-1) = VK(KK)
-                     ZL(JLOGQ+NUME-1) = .TRUE.
+                     ZI(JLOGQ+NUME-1) = 1
                   ENDIF
                   GOTO 44
                ENDIF

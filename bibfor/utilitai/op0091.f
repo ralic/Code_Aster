@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -198,6 +198,8 @@ C        --- RECUPERATION DE LA LISTE DE FREQUENCES ---
 C
 C        --- NORME DU SPECTRE D'OSCILLATEUR ----
          CALL GETVR8(NOMOPE,'NORME',1,1,1,NORME,L)
+         WRITE(IFM,1000) NORME
+ 1000    FORMAT(1P,'VALEUR DE NORMALISATION DU SPECTRE: ',E12.5)
 C
 C        --- NATURE DU SPECTRE D'OSCILLATEUR ----
          CALL GETVTX(NOMOPE,'NATURE'     ,1,1,1,NATURE,L)

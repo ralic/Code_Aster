@@ -1,4 +1,4 @@
-# MODIF  DATE 14/09/2004   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 28/09/2004   AUTEUR DURAND C.DURAND 
 # ======================================================================
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -78,8 +78,9 @@ LI1=DEFI_LIST_REEL(DEBUT=0.10000000000000001,
                                  PAS=1.E-2,),);
 
 LAMBT=DEFI_CONSTANTE(VALE=8.3300000000000001,);
-LS = FORMULE(REEL = '''(REEL:SAT) = 
-                (0.3*SAT)''');
+#LS = FORMULE(REEL = '''(REEL:SAT) = 
+#                (0.3*SAT)''');
+LS = FORMULE(NOM_PARA='SAT',VALE='(0.3*SAT)');
 
 LAMBS=CALC_FONC_INTERP(FONCTION=LS,
                         LIST_PARA=LI1,
@@ -94,8 +95,9 @@ LAMBCT=DEFI_CONSTANTE(VALE=0.5,);
 #CONSTBO = DEFI_CONSTANTE ( VALE : 0.99);
 #
 
-SLO = FORMULE(REEL = '''(REEL:PCAP) = 
-                (0.5-1.E-12*(PCAP-3700.+1.E5))''');
+#SLO = FORMULE(REEL = '''(REEL:PCAP) = 
+#                (0.5-1.E-12*(PCAP-3700.+1.E5))''');
+SLO = FORMULE(NOM_PARA='PCAP',VALE='(0.5-1.E-12*(PCAP-3700.+1.E5))');
 
 SATUBO=CALC_FONC_INTERP(FONCTION=SLO,
                         LIST_PARA=LI2,
@@ -106,7 +108,9 @@ NOM_PARA='PCAP',
 
 DSATBO=DEFI_CONSTANTE(VALE=-1.E-12,);
 
-PERMO = FORMULE(REEL = '''(REEL:SAT) = 
+#PERMO = FORMULE(REEL = '''(REEL:SAT) = 
+#             (1.+(0.5*(-1.+SAT**(-16.667))**0.940)**2)**(-0.5)''');
+PERMO = FORMULE(NOM_PARA='SAT',VALE='''
              (1.+(0.5*(-1.+SAT**(-16.667))**0.940)**2)**(-0.5)''');
 
 PERM11BO=CALC_FONC_INTERP(FONCTION=PERMO,
@@ -116,7 +120,12 @@ NOM_PARA='SAT',
                           PROL_DROITE='CONSTANT',
                           INFO=2,);
 
-DPERMO = FORMULE(REEL =  '''(REEL:SAT) =
+#DPERMO = FORMULE(REEL =  '''(REEL:SAT) =
+#  -0.5*(1.+ (0.5*(-1.+(SAT)**(-16.667))**0.940)**2)**(-1.5) 
+#  * (2*(0.5*(-1.+(SAT)**(-16.667))**0.940))
+# *0.47*(-1.+(SAT)**(-16.667))**(-0.06)
+#  * (-16.667) * (SAT)**(-17.667)''');
+DPERMO = FORMULE(NOM_PARA='SAT',VALE='''
   -0.5*(1.+ (0.5*(-1.+(SAT)**(-16.667))**0.940)**2)**(-1.5) 
   * (2*(0.5*(-1.+(SAT)**(-16.667))**0.940))
  *0.47*(-1.+(SAT)**(-16.667))**(-0.06)

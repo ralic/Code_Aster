@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/09/2004   AUTEUR GRANET S.GRANET 
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,11 +125,11 @@ NOM_PARA='SAT',
                          PROL_DROITE='CONSTANT',
                          INFO=2,);
 
-KINTBO=DEFI_CONSTANTE(VALE=9.9999999999999995E-21,);
+KINTBO=DEFI_CONSTANTE(VALE=10.E-21,);
 
 
 MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15000000E8,
-                              NU=0.20000000000000001,
+                              NU=0.2,
                               RHO=2670.0,
                               ALPHA=0.,),
                       COMP_THM = 'LIQU_VAPE',
@@ -162,7 +162,9 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15000000E8,
                                    PESA_X=0.0,
                                    PESA_Y=0.0,
                                    PESA_Z=0.0,
-                                   PERM_IN=KINTBO,
+                                   PERMIN_X=KINTBO,
+                                   PERMIN_Y=KINTBO,
+                                   PERMIN_Z=KINTBO,
                                    PERM_LIQU=UN,
                                    D_PERM_LIQU_SATU=ZERO,
                                    PERM_GAZ=UN,

@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 06/09/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+#& MODIF COMMUN  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -115,6 +115,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "SANS",
                                         "CORR_ACIER",
                                         "MONOCRISTAL",
+                                        "POLYCRISTAL",
                                      ) ),
           ELAS            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           SANS            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
@@ -212,6 +213,11 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                  fr="SD issue de DEFI_COMPOR",
                    COMPOR =SIMP(statut='o',typ=compor_sdaster,max=1),),
 #          
+           b_polyx     = BLOC(condition = "RELATION == 'POLYCRISTAL' ",
+                                 fr="SD issue de DEFI_COMPOR",
+                   COMPOR =SIMP(statut='o',typ=compor_sdaster,max=1),),
+#          
+
 
 
            RELATION_KIT    =SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/09/2004   AUTEUR PBADEL P.BADEL 
+#& MODIF COMMANDE  DATE 28/09/2004   AUTEUR LAMARCHE S.LAMARCHE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -151,7 +151,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
          ),
          TETA_METHODE      =FACT(statut='f',
            TETA            =SIMP(statut='f',typ='R'
-                                ,defaut= 1. ),
+                                ,defaut= 1.,val_min=0.5,val_max=1. ),
          ),
          NEWTON          =FACT(statut='d',
            REAC_INCR       =SIMP(statut='f',typ='I',defaut= 1 ),

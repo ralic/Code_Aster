@@ -1,4 +1,4 @@
-# MODIF  DATE 17/08/2004   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 28/09/2004   AUTEUR GRANET S.GRANET 
 # TITRE TEST HHM 2D, CALCUL DECOUPLE (S=0.5, DSDP=0)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,7 +137,9 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    PESA_X = 0.,
    PESA_Y = -10.,
    PESA_Z = 0.,
-   PERM_IN = KINT,
+   PERMIN_X = KINT,
+   PERMIN_Y = KINT,
+   PERMIN_Z = KINT,
    PERM_LIQU = UN,
    D_PERM_LIQU_SATU = ZERO,
    PERM_GAZ = UN,

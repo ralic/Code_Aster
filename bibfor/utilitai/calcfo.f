@@ -1,9 +1,12 @@
-      SUBROUTINE CALCFO (COMPL,NBVAL,NOMFON,LVAL,NOMFIN,STATUT,
-     +                   INTERP,LNOVA,NOMRES,PROLGD,NOMCMD,NBNOVA )
+      SUBROUTINE CALCFO ( COMPL, NOMFIN, NOMFON, NBVAL, VALE, NOPARA )
       IMPLICIT   NONE
-      INTEGER             IER
+      INTEGER             NBVAL
+      REAL*8              VALE(*)
+      LOGICAL             COMPL
+      CHARACTER*16        NOPARA
+      CHARACTER*19        NOMFIN, NOMFON
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,60 +42,48 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      LNOVA, NBNOVA, 
-     +             NBVAL, LVAL, NBVAL2, LVALE, LFON, IVAL, LPROL,
-     +             LFITA, I
-      LOGICAL      COMPL
-      CHARACTER*2  PROLGD,PROGDF
-      CHARACTER*4  INTERP(2),INTERF(2)
-      CHARACTER*8  K8B, STATUT, NOMRES
-      CHARACTER*16 NOMCMD, TYPRES
-      CHARACTER*19 NOMFON, NOMFIN, LISTR, LISTF
-      CHARACTER*32 JEXNUM
+      INTEGER      IER, NBVAL2, LVALE, LFON, IVAL, LPROL
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
 C     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.VALE ---
 C      
-      IF (COMPL) THEN
-        NBVAL2=3*NBVAL
+      IF ( COMPL ) THEN
+         NBVAL2 = 3*NBVAL
       ELSE
-        NBVAL2=2*NBVAL
+         NBVAL2 = 2*NBVAL
       ENDIF
 C 
       CALL WKVECT ( NOMFON//'.VALE', 'G V R', NBVAL2, LVALE )
       LFON = LVALE + NBVAL
       DO 10 IVAL = 0, NBVAL-1
-         ZR(LVALE+IVAL) = ZR(LVAL+IVAL)
-         IF (COMPL) THEN
-            CALL FOINTC( NOMFIN, NBNOVA, ZK8(LNOVA), ZR(LVALE+IVAL),
+         ZR(LVALE+IVAL) = VALE(IVAL+1)
+         IF ( COMPL ) THEN
+            CALL FOINTC( NOMFIN, 1, NOPARA, ZR(LVALE+IVAL),
      +                   ZR(LFON+2*IVAL+1), ZR(LFON+2*IVAL+2), IER )
             IF (IER.NE.0) THEN
-                CALL UTMESS('F',NOMCMD,'ERREUR DANS FOINTC') 
-             ENDIF
+                CALL UTMESS('F','CALCFO','ERREUR DANS FOINTC') 
+            ENDIF
          ELSE
-             CALL FOINTE ( 'F ', NOMFIN, NBNOVA, ZK8(LNOVA),
-     +                      ZR(LVALE+IVAL), ZR(LFON+IVAL), IER )
+            CALL FOINTE ( 'F ', NOMFIN, 1, NOPARA,
+     +                          ZR(LVALE+IVAL), ZR(LFON+IVAL), IER )
          ENDIF 
  10   CONTINUE
 C
 C     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
 C
-      IF (STATUT .EQ. 'NOUVEAU' ) THEN
-         CALL WKVECT ( NOMFON//'.PROL', 'G V K16', 6, LPROL )
-      ELSE
-         CALL JEVEUO ( NOMFON//'.PROL', 'E', LPROL )
-      ENDIF
+      CALL WKVECT ( NOMFON//'.PROL', 'G V K16', 6, LPROL )
       IF ( COMPL ) THEN
-         ZK16(LPROL)   = 'FONCT_C '
+         ZK16(LPROL)   = 'FONCT_C         '
       ELSE
-         ZK16(LPROL)   = 'FONCTION'
+         ZK16(LPROL)   = 'FONCTION        '
       ENDIF
-      ZK16(LPROL+1) = INTERP(1)//INTERP(2)
-      ZK16(LPROL+2) = ZK8(LNOVA)
-      ZK16(LPROL+3) = NOMRES
-      ZK16(LPROL+4) = PROLGD
+      ZK16(LPROL+1) = 'LIN LIN         '
+      ZK16(LPROL+2) = NOPARA
+      ZK16(LPROL+3) = 'TOUTRESU        '
+      ZK16(LPROL+4) = 'EE              '
+      ZK16(LPROL+5) = NOMFON
 C
       CALL JEDEMA()
       END

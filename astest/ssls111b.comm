@@ -1,7 +1,6 @@
-
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 27/09/2004   AUTEUR ASSIRE A.ASSIRE 
 # RESPONSABLE JMBHH01 J.M.PROIX
-# TITRE PLAQUE STRATIFIEE EN FLEXION - DSQ - B/A = 1
+# TITRE PLAQUE STRATIFIEE EN FLEXION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,14 +18,14 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# SSLS111B
+# SSLS111A
 # PLAQUE DE STRATIFIE RECTANGULAIRE EXCENTREE
-# CALCUL 1 : 1 BICOUCHE , CE CALCUL SERT DE REFERENCE
-# CALCUL 2 : 2 MONOCOUCHES EXCENTRES
-# LE BICOUCHE PRESENTE UNE SYMETRIE MATERIELLE PAR RAPPORT AU
-# PLAN MOYEN
-# MODELISATION DSQ
-#             67 NOEUDS  50 MAILLES QUAD4
+# CALCUL : 2 MONOCOUCHES EXCENTRES
+# SOLUTION ANALYTIQUE DE PLAQUE SANS CT
+# MODELISATION DKT
+# ------------------------------------------------
+#
+#                 MAILLES TRI3
 #----------------------------------------------------------------------
 #POINTS:  A4                          A3
 #           -------------------------
@@ -38,602 +37,196 @@
 #         A1                          A2
 #
 # ______________________________________________________________________
-#
-#
-#
 
+DEBUT(CODE=_F(NOM='SSLS111B',
+              NIV_PUB_WEB='INTERNET',), 
+              );
 
-DEBUT(CODE=_F(NOM='SSLS111B',NIV_PUB_WEB='INTERNET'),);
-#
-#
-#
+# parametres
+h = 0.8;     # epaisseur
+hs2 = h/2
+hs4 = h/4    # excentrement sup
+hs4m = -hs4  # excentrement inf
+E = 200000000000.0;
+Nu=0.0
+G = E/2/(1.0+Nu)
 
+# chargement
+frep = -1000.0;
+
+# solution analytique                      
+L=10.0
+b=5.0
+I=b*h*h*h/12.0
+u_l = frep*b*L*L*L/3/E/I
+T=frep
+M=-T*L
+
+# Materiau
+
+# MATA=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=E,
+#                                 E_T=E,
+#                                 NU_LT=0.0,
+#                                 G_LT=G,
+#                                 RHO=1000.0,),);
+
+MATISO=DEFI_MATERIAU(ELAS=_F(E=E,
+                             NU=0.0,
+                             RHO=1000.0,),);
+
+# ______________________________________________________________________
+#
+#                         2 PLAQUES EXCENTREES
+# ______________________________________________________________________
 
 PRE_GIBI();
 
-MA1=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),);
+MA0=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),);
 
-DEFI_GROUP(reuse =MA1,
+
+# creation de plaq2 : meme noeuds que plaq1 mais mailles distinctes
+
+MA1=CREA_MAILLAGE(MAILLAGE=MA0,
+                  CREA_GROUP_MA=_F(NOM = 'PLAQ2',  
+                                   PREF_MAILLE = 'B',  
+                                   GROUP_MA = 'PLAQ1',)
+                 )
+
+MA1=DEFI_GROUP(reuse =MA1,
                MAILLAGE=MA1,
-               CREA_GROUP_MA=_F(NOM='TOUT',
-                                TOUT='OUI',),);
+               CREA_GROUP_NO=(_F(GROUP_MA='PLAQ1',
+                                 NOM='PLAQ1',),
+                              _F(GROUP_MA='PLAQ2',
+                                 NOM='PLAQ2',),),);
 
-MA=CREA_MAILLAGE(MAILLAGE=MA1,
-                 CREA_GROUP_MA=_F(NOM='PLAQ2',
-                                  GROUP_MA='PLAQ1',
-                                  PREF_MAILLE='MAIL',),);
-
-DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_NO=(_F(GROUP_MA='PLAQ1',
-                                NOM='PLAQ1',),
-                             _F(GROUP_MA='PLAQ2',
-                                NOM='PLAQ2',),),);
-# 2 PLAQUES EXCENTREES
-#
-#
-#
-#
-#
-
-
-MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='DST',),);
-# UNE PLAQUE BICOUCHE
-#
-#
-#
-#
-#
-
-
-MO1=AFFE_MODELE(MAILLAGE=MA,
-                AFFE=_F(GROUP_MA='PLAQ1',
+MO2=AFFE_MODELE(MAILLAGE=MA1,
+                AFFE=_F(GROUP_MA=('PLAQ1','PLAQ2','L12',),
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DST',),);
+                        MODELISATION='DKT',),);
 
-EP=AFFE_CARA_ELEM(MODELE=MO,
-                  COQUE=(_F(GROUP_MA='TOUT',
-                            EPAIS=0.20000000000000001,
-                            INER_ROTA='OUI',),
-                         _F(GROUP_MA='PLAQ1',
-                            EPAIS=0.20000000000000001,
-                            ANGL_REP=(0.0,0.0),
-                            EXCENTREMENT=0.10000000000000001,
-                            INER_ROTA='OUI',),
-                         _F(GROUP_MA='PLAQ2',
-                            EPAIS=0.20000000000000001,
-                            ANGL_REP=(0.0,0.0),
-                            EXCENTREMENT=-0.10000000000000001,
-                            INER_ROTA='OUI',),),);
-
-EP1=AFFE_CARA_ELEM(MODELE=MO1,
-                   COQUE=_F(GROUP_MA='TOUT',
-                            EPAIS=0.40000000000000002,
-                            ANGL_REP=(0.0,0.0),
-                            INER_ROTA='OUI',),);
-
-MATA=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=2.E10,
-                                E_T=2.E10,
-                                NU_LT=0.29999999999999999,
-                                G_LT=2.E9,
-                                RHO=1000.0,),);
-
-MATB=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=1.5000000000E10,
-                                E_T=1.5000000000E10,
-                                NU_LT=0.29999999999999999,
-                                G_LT=1.500000000E9,
-                                RHO=1000.0,),);
-
-MU1=DEFI_COQU_MULT(COUCHE=(_F(EPAIS=0.20000000000000001,
-                              MATER=MATB,
-                              ORIENTATION=0.0,),
-                           _F(EPAIS=0.20000000000000001,
-                              MATER=MATA,
-                              ORIENTATION=0.0,),),);
-
-MUA=DEFI_COQU_MULT(COUCHE=_F(EPAIS=0.20000000000000001,
-                             MATER=MATA,
-                             ORIENTATION=0.0,),);
-
-MUB=DEFI_COQU_MULT(COUCHE=_F(EPAIS=0.20000000000000001,
-                             MATER=MATB,
-                             ORIENTATION=0.0,),);
-
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=(_F(GROUP_MA='PLAQ1',
-                             MATER=MUA,),
+EP2=AFFE_CARA_ELEM(MODELE=MO2,
+                   COQUE=(_F(GROUP_MA=('PLAQ1','L12'),
+                             EPAIS=hs2,
+                             ANGL_REP=(0.0,0.0,),
+                             EXCENTREMENT=hs4,
+                             INER_ROTA='OUI',),
                           _F(GROUP_MA='PLAQ2',
-                             MATER=MUB,),),);
+                             EPAIS=hs2,
+                             ANGL_REP=(0.0,0.0,),
+                             EXCENTREMENT=hs4m,
+                             INER_ROTA='OUI',),),);
 
-CHMUL1=AFFE_MATERIAU(MAILLAGE=MA,
-                     AFFE=_F(TOUT='OUI',
-                             MATER=MU1,),);
+CHMAT2=AFFE_MATERIAU(MAILLAGE=MA1,
+                     AFFE=(_F(GROUP_MA='PLAQ1',
+                              MATER=MATISO,),
+                           _F(GROUP_MA='PLAQ2',
+                              MATER=MATISO,),),);
 
-CHME=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_NO='A1',
-                                 DX=0.0,
-                                 DY=0.0,
-                                 DZ=0.0,
-                                 DRX=0.0,
-                                 DRY=0.0,
-                                 DRZ=0.0,),
-                              _F(GROUP_NO='A2',
-                                 DX=0.0,
-                                 DY=0.0,),),
-                    FORCE_NODALE=_F(GROUP_NO='A3',
-                                    FZ=-1000.0,),
-                    FORCE_COQUE=_F(MAILLE=('M1','M2','M3'),
-                                   FX=200.0,
-                                   FY=-500.0,
-                                   FZ=-500.0,
-                                   PLAN='SUP',),);
+# egalite des deplacements car ils sont calcules sur le plan mail
 
-CHME1=AFFE_CHAR_MECA(MODELE=MO1,
-                     DDL_IMPO=(_F(GROUP_NO='A1',
+CL2=AFFE_CHAR_MECA(MODELE=MO2,
+                     DDL_IMPO=(_F(GROUP_MA='L14',
                                   DX=0.0,
                                   DY=0.0,
                                   DZ=0.0,
                                   DRX=0.0,
                                   DRY=0.0,
-                                  DRZ=0.0,),
-                               _F(GROUP_NO='A2',
-                                  DX=0.0,
-                                  DY=0.0,),),
-                     FORCE_NODALE=_F(GROUP_NO='A3',
-                                     FZ=-1000.0,),
-                     FORCE_COQUE=_F(MAILLE=('M1','M2','M3'),
-                                    FX=200.0,
-                                    FY=-500.0,
-                                    FZ=-500.0,
-                                    MX=100.0,
-                                    MY=40.0,
-                                    PLAN='MAIL',),);
-# ______________________________________________________________________
-#
-#                         2 PLAQUES EXCENTREES
-# ______________________________________________________________________
-#
-#
+                                  DRZ=0.0,),),
+                                     );
 
+CHME2A=AFFE_CHAR_MECA(MODELE=MO2,
+                      FORCE_ARETE=_F(GROUP_MA='L12',
+                                      FZ=frep),);
 
-MEL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                   MODELE=MO,
-                   CHAM_MATER=CHMAT,
-                   CARA_ELEM=EP,
-                   CHARGE=CHME,);
+MACRO_MATR_ASSE(MODELE=MO2,
+                CHAM_MATER=CHMAT2,
+                CARA_ELEM=EP2,
+                CHARGE=CL2,
+                NUME_DDL=CO('NU2'),
+                MATR_ASSE=(_F(MATRICE=CO('MATASS2'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MATASM2'),
+                              OPTION='MASS_MECA',),),);
 
-MASEL=CALC_MATR_ELEM(OPTION='MASS_MECA',
-                     MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     CARA_ELEM=EP,
-                     CHARGE=CHME,);
-
-VEL=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                   CHARGE=CHME,
-                   CHAM_MATER=CHMAT,
-                   CARA_ELEM=EP,);
-
-NU=NUME_DDL(MATR_RIGI=MEL,);
-
-MATASS=ASSE_MATRICE(MATR_ELEM=MEL,
-                    NUME_DDL=NU,);
-
-MATASM=ASSE_MATRICE(MATR_ELEM=MASEL,
-                    NUME_DDL=NU,);
-
-VECASS=ASSE_VECTEUR(VECT_ELEM=VEL,
-                    NUME_DDL=NU,);
-
-MODES=MODE_ITER_SIMULT(MATR_A=MATASS,
-                       MATR_B=MATASM,
+MODE2=MODE_ITER_SIMULT(MATR_A=MATASS2,
+                       MATR_B=MATASM2,
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=4,),);
 
-MESTAT=MECA_STATIQUE(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     CARA_ELEM=EP,
-                     EXCIT=_F(CHARGE=CHME,),);
-
-EFSUP=CALC_ELEM(
-                GROUP_MA='PLAQ1',
+RESU2A=MECA_STATIQUE(MODELE=MO2,
+                CHAM_MATER=CHMAT2,
+                CARA_ELEM=EP2,
+               EXCIT=(
+                      _F(CHARGE=CL2),
+                      _F(CHARGE=CHME2A),
+                      ),
+                      )
+                
+RESU2A=CALC_ELEM(reuse=RESU2A,
+                RESULTAT=RESU2A,
                 OPTION='EFGE_ELNO_DEPL',
-                RESULTAT=MESTAT,
-                PLAN='MAIL',);
-
-EFINF=CALC_ELEM(
-                GROUP_MA='PLAQ2',
-                OPTION='EFGE_ELNO_DEPL',
-                RESULTAT=MESTAT,
-                PLAN='MAIL',);
-
-CALC_NO(reuse =EFSUP,
-              RESULTAT=EFSUP,
-              OPTION='EFGE_NOEU_DEPL',
-              CHAM_MATER=CHMAT,
-              CARA_ELEM=EP,
-              GROUP_MA='PLAQ1',);
-
-CALC_NO(reuse =EFINF,
-              RESULTAT=EFINF,
-              OPTION='EFGE_NOEU_DEPL',
-              CHAM_MATER=CHMAT,
-              CARA_ELEM=EP,
-              GROUP_MA='PLAQ2',);
-
-DEP=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-               OPERATION='EXTR',
-               RESULTAT=MESTAT,
-               NOM_CHAM='DEPL',);
-
-EFNSUP=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
-                  OPERATION='EXTR',
-                  RESULTAT=EFSUP,
-                  NOM_CHAM='EFGE_NOEU_DEPL',);
-
-EFNINF=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
-                  OPERATION='EXTR',
-                  RESULTAT=EFINF,
-                  NOM_CHAM='EFGE_NOEU_DEPL',);
-
-EFF=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
-               OPERATION='ASSE',
-               MAILLAGE=MA,
-               ASSE=(_F(TOUT='OUI',
-                        CHAM_GD=EFNINF,
-                        CUMUL='OUI',
-                        COEF_R=1.0,),
-                     _F(TOUT='OUI',
-                        CHAM_GD=EFNSUP,
-                        CUMUL='OUI',
-                        COEF_R=1.0,),),);
-#  PLAQUE BICOUCHE
-#
-#
-#
-#
-#
+                      )
+                
 
 
-MEL1=CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                    MODELE=MO1,
-                    CHAM_MATER=CHMUL1,
-                    CARA_ELEM=EP1,
-                    CHARGE=CHME1,);
-
-MASEL1=CALC_MATR_ELEM(OPTION='MASS_MECA',
-                      MODELE=MO1,
-                      CHAM_MATER=CHMUL1,
-                      CARA_ELEM=EP1,
-                      CHARGE=CHME1,);
-
-VEL1=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                    CHARGE=CHME1,
-                    CHAM_MATER=CHMUL1,
-                    CARA_ELEM=EP1,);
-
-NU1=NUME_DDL(MATR_RIGI=MEL1,);
-
-MATASS1=ASSE_MATRICE(MATR_ELEM=MEL1,
-                     NUME_DDL=NU1,);
-
-MATASM1=ASSE_MATRICE(MATR_ELEM=MASEL1,
-                     NUME_DDL=NU1,);
-
-VECASS1=ASSE_VECTEUR(VECT_ELEM=VEL1,
-                     NUME_DDL=NU1,);
-
-MODE1=MODE_ITER_SIMULT(MATR_A=MATASS1,
-                       MATR_B=MATASM1,
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=4,),);
-
-
-MESTAT1=MECA_STATIQUE(MODELE=MO1,
-                       CHAM_MATER=CHMUL1,
-                       CARA_ELEM=EP1,
-                       EXCIT=_F(CHARGE=CHME1,),
-                       );
-
-CALC_ELEM( reuse= MESTAT1 ,RESULTAT= MESTAT1 , 
-                       
-                       OPTION='EFGE_ELNO_DEPL',);
-
-CALC_NO(reuse =MESTAT1,
-                RESULTAT=MESTAT1,
+RESU2A=CALC_NO(reuse=RESU2A,
+                RESULTAT=RESU2A,
                 OPTION='EFGE_NOEU_DEPL',
-                );
+                      )
+                      
 
-DEP1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                OPERATION='EXTR',
-                RESULTAT=MESTAT1,
-                NOM_CHAM='DEPL',);
+# Test
 
-EFF1=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
-                OPERATION='EXTR',
-                RESULTAT=MESTAT1,
-                NOM_CHAM='EFGE_NOEU_DEPL',);
+TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='DEPL',NUME_ORDRE=1,
+                  GROUP_NO='A3',PRECISION=0.005,
+                  VALE=u_l,NOM_CMP='DZ',
+                  REFERENCE='ANALYTIQUE',),);
 
-TEST_RESU(CHAM_NO=(_F(CHAM_GD=DEP1,
-                      GROUP_NO='A3',
-                      NOM_CMP='DX',
-                      VALE=-7.9894061235644005E-06,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION='6.2.13',),
-                   _F(CHAM_GD=DEP1,
-                      GROUP_NO='A3',
-                      NOM_CMP='DY',
-                      VALE=-1.1738849607775999E-06,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION='6.2.13',),
-                   _F(CHAM_GD=DEP1,
-                      GROUP_NO='A3',
-                      NOM_CMP='DZ',
-                      VALE=-6.3557308056385996E-3,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION='6.2.13',),
-                   _F(CHAM_GD=DEP1,
-                      GROUP_NO='A3',
-                      NOM_CMP='DRX',
-                      VALE=-4.4262159944774999E-4,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION='6.2.13',),
-                   _F(CHAM_GD=DEP1,
-                      GROUP_NO='A3',
-                      NOM_CMP='DRY',
-                      VALE=5.7270255582418E-4,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION='6.2.13',),
-                   _F(CHAM_GD=DEP1,
-                      NOEUD='N10',
-                      NOM_CMP='DX',
-                      VALE=-4.6281334523221999E-06,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION='6.2.13',),
-                   _F(CHAM_GD=DEP1,
-                      NOEUD='N10',
-                      NOM_CMP='DY',
-                      VALE=-1.8894536074436001E-06,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION='6.2.13',),
-                   _F(CHAM_GD=DEP1,
-                      NOEUD='N10',
-                      NOM_CMP='DZ',
-                      VALE=-4.5210708573043996E-3,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION='6.2.13',),
-                   _F(CHAM_GD=DEP1,
-                      NOEUD='N10',
-                      NOM_CMP='DRX',
-                      VALE=-4.1787415624771002E-4,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION='6.2.13',),
-                   _F(CHAM_GD=DEP1,
-                      NOEUD='N10',
-                      NOM_CMP='DRY',
-                      VALE=5.1952742888098995E-4,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION='6.2.13',),
-                   _F(CHAM_GD=DEP,
-                      GROUP_NO='A3',
-                      NOM_CMP='DX',
-                      VALE=-7.9894061235644005E-06,
-                      PRECISION=4.0000000000000001E-3,
-                      REFERENCE='AUTRE_ASTER',),
-                   _F(CHAM_GD=DEP,
-                      GROUP_NO='A3',
-                      NOM_CMP='DY',
-                      VALE=-1.1738849607775999E-06,
-                      PRECISION=0.016,
-                      REFERENCE='AUTRE_ASTER',),
-                   _F(CHAM_GD=DEP,
-                      GROUP_NO='A3',
-                      NOM_CMP='DZ',
-                      VALE=-6.3557308056385996E-3,
-                      PRECISION=4.0000000000000001E-3,
-                      REFERENCE='AUTRE_ASTER',),
-                   _F(CHAM_GD=DEP,
-                      GROUP_NO='A3',
-                      NOM_CMP='DRX',
-                      VALE=-4.4262159944774999E-4,
-                      PRECISION=7.0000000000000001E-3,
-                      REFERENCE='AUTRE_ASTER',),
-                   _F(CHAM_GD=DEP,
-                      GROUP_NO='A3',
-                      NOM_CMP='DRY',
-                      VALE=5.7270255582418E-4,
-                      PRECISION=6.0000000000000001E-3,
-                      REFERENCE='AUTRE_ASTER',),
-                   _F(CHAM_GD=DEP,
-                      NOEUD='N10',
-                      NOM_CMP='DX',
-                      VALE=-4.6281334523221999E-06,
-                      PRECISION=5.0000000000000001E-3,
-                      REFERENCE='AUTRE_ASTER',),
-                   _F(CHAM_GD=DEP,
-                      NOEUD='N10',
-                      NOM_CMP='DY',
-                      VALE=-1.8894536074436001E-06,
-                      PRECISION=8.0000000000000002E-3,
-                      REFERENCE='AUTRE_ASTER',),
-                   _F(CHAM_GD=DEP,
-                      NOEUD='N10',
-                      NOM_CMP='DZ',
-                      VALE=-4.5210708573043996E-3,
-                      PRECISION=6.0000000000000001E-3,
-                      REFERENCE='AUTRE_ASTER',),
-                   _F(CHAM_GD=DEP,
-                      NOEUD='N10',
-                      NOM_CMP='DRX',
-                      VALE=-4.1787415624771002E-4,
-                      PRECISION=8.0000000000000002E-3,
-                      REFERENCE='AUTRE_ASTER',),
-                   _F(CHAM_GD=DEP,
-                      NOEUD='N10',
-                      NOM_CMP='DRY',
-                      VALE=5.1952742888098995E-4,
-                      PRECISION=7.0000000000000001E-3,
-                      REFERENCE='AUTRE_ASTER',),
-                   _F(CHAM_GD=EFF1,
-                      GROUP_NO='A1',
-                      NOM_CMP='NXX',
-                      VALE=1.6295302554665001E4,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION='6.2.13',),
-                   _F(CHAM_GD=EFF1,
-                      GROUP_NO='A1',
-                      NOM_CMP='NYY',
-                      VALE=-4500.3564594923,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION='6.2.13',),
-                   _F(CHAM_GD=EFF1,
-                      GROUP_NO='A1',
-                      NOM_CMP='NXY',
-                      VALE=991.49585147872006,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION='6.2.13',),
-                   _F(CHAM_GD=EFF1,
-                      GROUP_NO='A1',
-                      NOM_CMP='MXX',
-                      VALE=3.6364539889993997E4,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION='6.2.13',),
-                   _F(CHAM_GD=EFF1,
-                      GROUP_NO='A1',
-                      NOM_CMP='MYY',
-                      VALE=1.5959977356873E4,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION='6.2.13',),
-                   _F(CHAM_GD=EFF1,
-                      GROUP_NO='A1',
-                      NOM_CMP='MXY',
-                      VALE=6317.1646551920003,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION='6.2.13',),
-                   _F(CHAM_GD=EFF1,
-                      GROUP_NO='A1',
-                      NOM_CMP='QX',
-                      VALE=-2.0735211746853001E4,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION='6.2.13',),
-                   _F(CHAM_GD=EFF1,
-                      GROUP_NO='A1',
-                      NOM_CMP='QY',
-                      VALE=-1.0474333313642001E4,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION='6.2.13',),
-                   _F(CHAM_GD=EFF,
-                      GROUP_NO='A1',
-                      NOM_CMP='NXX',
-                      VALE=1.6295302554665001E4,
-                      PRECISION=0.059999999999999998,
-                      REFERENCE='AUTRE_ASTER',),
-                   _F(CHAM_GD=EFF,
-                      GROUP_NO='A1',
-                      NOM_CMP='NYY',
-                      VALE=-4500.3564594923,
-                      PRECISION=0.14000000000000001,
-                      REFERENCE='AUTRE_ASTER',),
-                   _F(CHAM_GD=EFF,
-                      GROUP_NO='A1',
-                      NOM_CMP='NXY',
-                      VALE=991.49585147872006,
-                      PRECISION=0.070000000000000007,
-                      REFERENCE='AUTRE_ASTER',),
-                   _F(CHAM_GD=EFF,
-                      GROUP_NO='A1',
-                      NOM_CMP='MXX',
-                      VALE=3.6364539889993997E4,
-                      PRECISION=0.029999999999999999,
-                      REFERENCE='AUTRE_ASTER',),
-                   _F(CHAM_GD=EFF,
-                      GROUP_NO='A1',
-                      NOM_CMP='MYY',
-                      VALE=1.5959977356873E4,
-                      PRECISION=0.029999999999999999,
-                      REFERENCE='AUTRE_ASTER',),
-                   _F(CHAM_GD=EFF,
-                      GROUP_NO='A1',
-                      NOM_CMP='MXY',
-                      VALE=6317.1646551920003,
-                      PRECISION=2.E-3,
-                      REFERENCE='AUTRE_ASTER',),
-                   _F(CHAM_GD=EFF,
-                      GROUP_NO='A1',
-                      NOM_CMP='QX',
-                      VALE=-2.0735211746853001E4,
-                      PRECISION=0.089999999999999997,
-                      REFERENCE='AUTRE_ASTER',),
-                   _F(CHAM_GD=EFF,
-                      GROUP_NO='A1',
-                      NOM_CMP='QY',
-                      VALE=-1.0474333313642001E4,
-                      PRECISION=0.040000000000000001,
-                      REFERENCE='AUTRE_ASTER',),),
-          RESU=(_F(RESULTAT=MODE1,
+TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EFGE_NOEU_DEPL',NUME_ORDRE=1,
+                  GROUP_NO='A1',
+                  VALE=-500.0,NOM_CMP='QX',
+                  PRECISION=0.15,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EFGE_NOEU_DEPL',NUME_ORDRE=1,
+                  GROUP_NO='A1',
+                  VALE=5000.0,NOM_CMP='MXX',
+                  PRECISION=0.003,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODE2,
                    NUME_ORDRE=1,
                    PARA='FREQ',
-                   VALE=0.95021457309245005,
+                   VALE=1.825E+01,
                    CRITERE='RELATIF',
                    REFERENCE='NON_REGRESSION',
-                   VERSION='6.2.13',),
-                _F(RESULTAT=MODE1,
+                   VERSION='7.3.19',),
+                _F(RESULTAT=MODE2,
                    NUME_ORDRE=2,
                    PARA='FREQ',
-                   VALE=3.6180510862250999,
+                   VALE=8.835E+01,
                    CRITERE='RELATIF',
                    REFERENCE='NON_REGRESSION',
-                   VERSION='6.2.13',),
-                _F(RESULTAT=MODE1,
+                   VERSION='7.3.19',),
+                _F(RESULTAT=MODE2,
                    NUME_ORDRE=3,
                    PARA='FREQ',
-                   VALE=8.1622815417723995,
+                   VALE=1.001E+02,
                    CRITERE='RELATIF',
                    REFERENCE='NON_REGRESSION',
-                   VERSION='6.2.13',),
-                _F(RESULTAT=MODE1,
+                   VERSION='7.3.19',),
+                _F(RESULTAT=MODE2,
                    NUME_ORDRE=4,
                    PARA='FREQ',
-                   VALE=16.544009451076999,
+                   VALE=1.135E+02,
                    CRITERE='RELATIF',
                    REFERENCE='NON_REGRESSION',
-                   VERSION='6.2.13',),
-                _F(RESULTAT=MODES,
-                   NUME_ORDRE=1,
-                   PARA='FREQ',
-                   VALE=0.95021457309245005,
-                   CRITERE='RELATIF',
-                   PRECISION=3.0000000000000001E-3,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MODES,
-                   NUME_ORDRE=2,
-                   PARA='FREQ',
-                   VALE=3.6180510862250999,
-                   CRITERE='RELATIF',
-                   PRECISION=1.E-2,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MODES,
-                   NUME_ORDRE=3,
-                   PARA='FREQ',
-                   VALE=8.1622815417723995,
-                   CRITERE='RELATIF',
-                   PRECISION=4.0000000000000001E-3,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MODES,
-                   NUME_ORDRE=4,
-                   PARA='FREQ',
-                   VALE=16.544009451076999,
-                   CRITERE='RELATIF',
-                   PRECISION=7.0000000000000001E-3,
-                   REFERENCE='AUTRE_ASTER',),),);
-#
-#
-#
+                   VERSION='7.3.19',),),);
 
+
+# Sensibilite des resultats le long des aretes
+
+# IMPR_RESU(RESU=_F(RESULTAT=RESU2A,GROUP_MA='L12',))
+# IMPR_RESU(RESU=_F(RESULTAT=RESU2A,GROUP_MA='L14',))
 
 FIN();
-#
-#
-#

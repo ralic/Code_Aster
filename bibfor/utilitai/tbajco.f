@@ -7,7 +7,7 @@
       COMPLEX*16 VC(*)
       CHARACTER*(*) NOMTA,PARA,TYPE,VK(*),ACTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/07/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,17 +56,18 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C ----------------------------------------------------------------------
-
-      CHARACTER*24 NOMJV,NOMJVL,PARAZ
+      INTEGER      I, IBID, IRET, JTBLP, JTBNP, NBPARA, KI, KR, KC, KK,
+     +             JVALE, JLOGQ, NBLIGN
+      REAL*8       RBID
+      COMPLEX*16   CBID
+      CHARACTER*1  KBID, ACTIOZ
+      CHARACTER*3  TYPEZ, TYPEV
       CHARACTER*19 NOMTAB
-      CHARACTER*3 TYPEZ,TYPEV
-      CHARACTER*1 KBID,ACTIOZ
-      INTEGER I,IBID,IRET,JTBLP,JTBNP,NBPARA,KI,KR,KC,KK,JVALE,JLOGQ
-      INTEGER NBLIGN
-      COMPLEX*16 CBID
-      REAL*8 RBID
-      
+      CHARACTER*24 NOMJV, NOMJVL, PARAZ
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
+C
       NOMTAB=' '
       NOMTAB=NOMTA
       TYPEZ=' '
@@ -82,7 +83,6 @@ C ----------------------------------------------------------------------
       IF ( NOMTAB(18:19) .NE. '  ' ) THEN
          CALL UTMESS('F','TBAJCO','NOM DE TABLE INCORRECT') 
       ENDIF
-
             
       IF (ACTIOZ.EQ.'A') THEN
          CALL TBAJPA (NOMTAB,1,PARA,TYPEZ)
@@ -111,13 +111,11 @@ C ----------------------------------------------------------------------
      &      'NOMBRE DE LIGNE DE LA TABLE') 
          ENDIF
 
-  10  CONTINUE
-      
+  10  CONTINUE      
       
 C  --- RECHERCHE DES NOMS JEVEUX DU PARAMETRE       
       IRET=0
-      DO 40 I=1,NBPARA
-           
+      DO 40 I=1,NBPARA           
          IF(PARAZ.EQ.ZK24(JTBLP+(4*(I-1)))) THEN
             NOMJV=ZK24(JTBLP+(4*(I-1)+2))
             NOMJVL=ZK24(JTBLP+(4*(I-1)+3))
@@ -134,12 +132,10 @@ C  --- RECHERCHE DES NOMS JEVEUX DU PARAMETRE
          CALL UTMESS('F','TBAJCO','LES TYPES DU PARAMETRE'//
      &   'NE CORRESPONDENT PAS ENTRE EUX.')
       ENDIF
-                 
 
       CALL JEECRA ( NOMJV , 'LONUTI' ,  NBLIGN , ' ' )
       CALL JEVEUO ( NOMJV , 'E', JVALE )
       CALL JEVEUO ( NOMJVL, 'E', JLOGQ )
-
 
 C  --- REMPLISSAGE DES CELLULES DE LA COLONNE
 
@@ -147,28 +143,28 @@ C  --- REMPLISSAGE DES CELLULES DE LA COLONNE
          
          IF ( TYPEZ(1:1) .EQ. 'I' ) THEN
             ZI(JVALE+LIGN(I)-1) = VI(I)
-            ZL(JLOGQ+LIGN(I)-1) = .TRUE.
+            ZI(JLOGQ+LIGN(I)-1) = 1
          ELSEIF ( TYPEZ(1:1) .EQ. 'R' ) THEN
             ZR(JVALE+LIGN(I)-1) = VR(I)
-            ZL(JLOGQ+LIGN(I)-1) = .TRUE.
+            ZI(JLOGQ+LIGN(I)-1) = 1
          ELSEIF ( TYPEZ(1:1) .EQ. 'C' ) THEN
             ZC(JVALE+LIGN(I)-1) = VC(I)
-            ZL(JLOGQ+LIGN(I)-1) = .TRUE.
+            ZI(JLOGQ+LIGN(I)-1) = 1
          ELSEIF ( TYPEZ(1:3) .EQ. 'K80' ) THEN
             ZK80(JVALE+LIGN(I)-1) = VK(I)
-            ZL(JLOGQ+LIGN(I)-1) = .TRUE.
+            ZI(JLOGQ+LIGN(I)-1) = 1
          ELSEIF ( TYPEZ(1:3) .EQ. 'K32' ) THEN
             ZK32(JVALE+LIGN(I)-1) = VK(I)
-            ZL(JLOGQ+LIGN(I)-1) = .TRUE.
+            ZI(JLOGQ+LIGN(I)-1) = 1
          ELSEIF ( TYPEZ(1:3) .EQ. 'K24' ) THEN
             ZK24(JVALE+LIGN(I)-1) = VK(I)
-            ZL(JLOGQ+LIGN(I)-1) = .TRUE.
+            ZI(JLOGQ+LIGN(I)-1) = 1
          ELSEIF ( TYPEZ(1:3) .EQ. 'K16' ) THEN
             ZK16(JVALE+LIGN(I)-1) = VK(I)
-            ZL(JLOGQ+LIGN(I)-1) = .TRUE.
+            ZI(JLOGQ+LIGN(I)-1) = 1
          ELSEIF ( TYPEZ(1:2) .EQ. 'K8' ) THEN
             ZK8(JVALE+LIGN(I)-1) = VK(I)
-            ZL(JLOGQ+LIGN(I)-1) = .TRUE.
+            ZI(JLOGQ+LIGN(I)-1) = 1
          ENDIF
   50  CONTINUE
       CALL JEDEMA()

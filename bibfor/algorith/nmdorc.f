@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*(*) MODELZ,COMPOZ
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -47,7 +47,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER NCMPMA,DIMAKI,N2,N3,IBID,NBOCC,I,ICMP,ICOMEL,II,JMA,JNCMP
       INTEGER JNOMA,JVALV,K,N1,NBAP,NBET,NBMA,NBMO1,NBVARI,NC1,NC2
       INTEGER NBMAT,JMAIL,NCOMEL,NS1,JMESM,IMA,IM,IRET,ICPRI,NBSYST
-      INTEGER INV,DIMANV
+      INTEGER INV,DIMANV,NBMONO
       REAL*8 RBID
       COMPLEX*16 CBID
       LOGICAL      BUG, NIVO
@@ -74,11 +74,9 @@ C    POUR COMPORTEMENT KIT_
      &     'KIT4    ','KIT5    ','KIT6    ','KIT7    ','KIT8    ',
      &     'KIT9    ', 'NVI_C   ', 'NVI_T   ', 'NVI_H   ', 'NVI_M   '/
 C     ------------------------------------------------------------------
-
       CALL JEMARQ()
 
       CALL GETRES(K8B,K16BID,NOMCMD)
-
 C                           1234567890123
       IF (NOMCMD(1:13).NE.'THER_LINEAIRE') THEN
 
@@ -274,9 +272,7 @@ C    UN COMPORTEMENT NE DISPOSE PAS DEJA D'UN COMPORTEMENT
    90   CONTINUE
 
 C     ------------------------------------------------------------------
-C
 C                       REMPLISSAGE DE LA CARTE :
-C
 C     ------------------------------------------------------------------
 
         DO 160 I = 1,NBMO1
@@ -374,12 +370,22 @@ CCC MONOCRISTAL
             ELSEIF (COMP(1:8).EQ.'MONOCRIS') THEN
                 CALL GETVID(MOCLEF(I),'COMPOR',K,1,1,SDCOMP,N1)
                 CALL JEVEUO(SDCOMP//'.CPRI','L',ICPRI)
-                NBSYST=ZI(ICPRI-1+1)
+                CALL ASSERT(ZI(ICPRI).EQ.1)
+                NBSYST=ZI(ICPRI-1+5)
                 NBVARI=ZI(ICPRI-1+3)
                 ZK16(JVALV-1+6) = SDCOMP//'.CPRK'             
                 WRITE (ZK16(JVALV-1+7),'(I16)') NBSYST
               
-CCC FIN MONOCRISTAL              
+CCC POLYCRISTAL
+              
+            ELSEIF (COMP(1:8).EQ.'POLYCRIS') THEN
+                CALL GETVID(MOCLEF(I),'COMPOR',K,1,1,SDCOMP,N1)
+                CALL JEVEUO(SDCOMP//'.CPRI','L',ICPRI)
+                CALL ASSERT(ZI(ICPRI).EQ.2)
+                NBMONO=ZI(ICPRI-1+2)
+                NBVARI=ZI(ICPRI-1+3)
+                ZK16(JVALV-1+6) = SDCOMP 
+                WRITE (ZK16(JVALV-1+7),'(I16)') NBMONO
               
             ELSE
               EXIST = GETEXM(MOCLEF(I),COMP)
@@ -486,7 +492,6 @@ C            CALL GETVTX ( MOCLEF(I), 'TOUT'  , K,1,1, OUI   , NT )
         COMPOZ = COMPOR
 
       END IF
-
 C FIN ------------------------------------------------------------------
       CALL JEDEMA()
       END

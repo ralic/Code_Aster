@@ -6,7 +6,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 14/09/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 28/09/2004   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,6 +45,7 @@ C ======================================================================
       REAL*8        RBID33, RBID34, RBID35, RBID36, RBID37, RBID38
       REAL*8        RBID39, RBID40, RBID41, RBID42, RBID43, RBID44
       REAL*8        RBID45,RBID46,RBID47,RBID48,RBID49,RBID50,RBID51
+      REAL*8        RBID52
 C ======================================================================
       CALL THMRCP( 'INITIALI', IMATE, THMC, MECA, HYDR, THER,
      +           T0, P10, P20, PHI0, PVP0, RBID1, RBID2, 
@@ -56,7 +57,8 @@ C ======================================================================
      +           RBID27, RBID28, RBID29,RBID30, RBID31, RBID32,
      +           RBID33, RBID34, RBID35,RBID36, RBID37, RBID38,
      +           RBID39, RBID40, RBID41,RBID42, RBID43, RBID44,RBID45,
-     +           RBID46,RBID47,RBID48,RBID49,RBID50,RBID51,RBID5) 
+     +           RBID46,RBID47,RBID48,RBID49,RBID50,RBID51,RBID5,
+     +           RBID52)
 C ======================================================================
 C --- CALCUL DES VARIABLES ---------------------------------------------
 C ======================================================================

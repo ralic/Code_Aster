@@ -1,8 +1,8 @@
       SUBROUTINE MMMBCA(NOMA,DEFICO,OLDGEO,DEPPLU,DEPMOI,
-     &                  INCOCA,INST)
+     &                  INCOCA,INST,DECOL)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 28/09/2004   AUTEUR LAMARCHE S.LAMARCHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,7 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
       REAL*8 GEOLDM(3),GEOLDE(3),JEUVIT,DT,R8PREM    
       CHARACTER*24 COTAMA,MAESCL,CARACF,ECPDON
       CHARACTER*24 TABFIN,GEOACT,NDIMCO
+      LOGICAL      DECOL      
 
 C ----------------------------------------------------------------------
 
@@ -203,6 +204,8 @@ C     POUR LES POINTS STUPILES NON CONTACTANT : ON REGARDE
 C     LA REACTION
 
         ELSE IF (NINT(ZR(JTABF+16*NTPC+16* (INI-1)+13)).EQ.1) THEN
+
+             DECOL =.TRUE.
 
 C     ON CALCULE LA REACTION LAMBDA
 

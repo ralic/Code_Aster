@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/09/2004   AUTEUR GRANET S.GRANET 
 # TITRE CHAUFFAGE D UN MILIEU POREUX DESATURE AVEC AIR DISSOUS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -132,7 +132,9 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
                                    PESA_X=0.0,
                                    PESA_Y=0.0,
                                    PESA_Z=0.0,
-                                   PERM_IN=KINTBO,
+                                   PERMIN_X=KINTBO,
+                                   PERMIN_Y=KINTBO,
+                                   PERMIN_Z=KINTBO,
                                    PERM_LIQU=UN,
                                    D_PERM_LIQU_SATU=ZERO,
                                    PERM_GAZ=UN,

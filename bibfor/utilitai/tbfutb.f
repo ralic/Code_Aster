@@ -7,7 +7,7 @@
       CHARACTER*(*)       TABOUT, BASOUT, LTABIN(*), PARA, TYPPAR, VK(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/05/2000   AUTEUR AUBHHMB M.BONNAMY 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -209,7 +209,7 @@ C
                NOMJVL = ZK24(JTBLP+4*(J-1)+3)
                CALL JEVEUO ( NOMJV , 'L', JVALE )
                CALL JEVEUO ( NOMJVL, 'L', JVALL )
-               IF ( .NOT. ZL(JVALL+K-1) ) GOTO 42
+               IF ( ZI(JVALL+K-1).EQ.0 ) GOTO 42
                IPAR = IPAR + 1
                ZK24(JPARR+IPAR-1) = JNPAR
                IF ( TYPE(1:1) .EQ. 'I' ) THEN

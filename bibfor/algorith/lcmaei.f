@@ -1,8 +1,8 @@
-      SUBROUTINE LCMAEI (NMATER,IMAT,NECRIS,IFA,NBCOMM,NBPAR,NOMPAR,
-     &                   VALPAR,MATER,NMAT)
+      SUBROUTINE LCMAEI (NMATER,IMAT,NECRIS,NBVAL,NBPAR,NOMPAR,
+     &                   VALPAR,VALRES,NMAT)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/05/2004   AUTEUR KANIT T.KANIT 
+C MODIF ALGORITH  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,17 +33,14 @@ C         VALPAR :  VALEUR DES PARAMETRES
 C         NOMPAR :  NOM DES PARAMETRES
 C     OUT MATER :  COEFFICIENTS MATERIAU A T
 C     ----------------------------------------------------------------
-      INTEGER NBVALM
-      PARAMETER (NBVALM=10)
-      INTEGER         NMAT,NBCOMM(NMAT,3),NBPAR,NVINI,IFA,NBVAL,IMAT,I
+      INTEGER         NMAT,NBPAR,NBVAL,IMAT,I
       REAL*8          MATER(NMAT,2)
-      REAL*8          VALPAR(NBPAR),VALRES(NBVALM)
-      CHARACTER*8     NOMPAR(NBPAR),NOMRES(NBVALM)
-      CHARACTER*2     CODRET(NBVALM)
+      REAL*8          VALPAR(NMAT),VALRES(NMAT)
+      CHARACTER*8     NOMPAR(NBPAR),NOMRES(NMAT)
+      CHARACTER*2     CODRET(NMAT)
       CHARACTER*16    NMATER, NECRIS
 C     ----------------------------------------------------------------
 C
-      NVINI=NBCOMM(IFA,3)
       IF (NECRIS.EQ.'ECRO_ISOT1') THEN
           NBVAL=4
           NOMRES(1)='R_0'
@@ -52,10 +49,6 @@ C
           NOMRES(4)='H'
           CALL RCVALA (IMAT,NMATER, NECRIS,1, NOMPAR,VALPAR,NBVAL,
      &                 NOMRES, VALRES,CODRET,'FM')
-          DO 1 I=1,NBVAL
-             MATER(NVINI-1+I,2)=VALRES(I)
- 1        CONTINUE
-          NBCOMM(IFA+1,1)=NVINI+4
       ELSEIF (NECRIS.EQ.'ECRO_ISOT2') THEN
           NBVAL=6
           NOMRES(1)='R_0'
@@ -66,9 +59,5 @@ C
           NOMRES(6)='B2'
           CALL RCVALA (IMAT,NMATER, NECRIS,1, NOMPAR,VALPAR,NBVAL,
      &                 NOMRES, VALRES,CODRET,'FM')
-          DO 2 I=1,NBVAL
-             MATER(NVINI-1+I,2)=VALRES(I)
- 2        CONTINUE
-          NBCOMM(IFA+1,1)=NVINI+NBVAL
       ENDIF
       END

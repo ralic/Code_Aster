@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 28/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE TP DYNAMIQUE TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,7 +133,7 @@ EXCIT=AFFE_CHAR_MECA(MODELE=MO,
                      FORCE_NODALE=_F(NOEUD='B',
                                      FY=1.E6,),);
 
-EVOLF = FORMULE(REEL = '''(REEL:INST) = SIN(121*INST)''');
+EVOLF = FORMULE(NOM_PARA='INST',VALE='sin(121*INST)');
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=0.02,

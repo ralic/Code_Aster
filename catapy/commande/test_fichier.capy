@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,8 @@ TEST_FICHIER=MACRO(nom="TEST_FICHIER", op=test_fichier_ops,
    NOM_SYSTEME     =SIMP(statut='o',typ='TXM',validators=LongStr(1,255)),
    NB_CHIFFRE      =SIMP(statut='f',typ='I',defaut=6),
    EPSILON         =SIMP(statut='f',typ='R',defaut=1.E-14),
-
+   EXPR_IGNORE     =SIMP(statut='f',typ='TXM',max='**',
+                         fr="Liste d'expressions régulières permettant d'ignorer certaines lignes"),
    VALE_K          =SIMP(statut='o',typ='TXM' ),
    REFERENCE       =SIMP(statut='f',typ='TXM',
                          into=("ANALYTIQUE","SOURCE_EXTERNE","NON_REGRESSION","AUTRE_ASTER") ),

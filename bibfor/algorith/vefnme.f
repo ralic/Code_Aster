@@ -11,7 +11,7 @@
       CHARACTER*8 VECELE,NEWNOM
 
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 20/09/2004   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 28/09/2004   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,20 +91,15 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       LIGREL = LIGREZ
       IF (LIGREL.EQ.' ') LIGREL = MODELE(1:8)//'.MODELE'
 C
-      LISCH2 = LISCHA
-      IF (LISCH2.EQ.' ') THEN 
-      ELSE
-        CALL JEEXIN(LISCH2//'.LCHA',IRET)
-        IF (IRET.EQ.0) THEN
-          NCHAR = 0
-        ELSE
-          CALL JELIRA(LISCH2//'.LCHA','LONMAX',NCHAR,K8BID)
-          CALL JEVEUO(LISCH2//'.LCHA','L',JCHAR)
-        END IF
-      END IF
       CHPESA = ' '
-      CALL MECHPE(NCHAR,ZK24(JCHAR),CHPESA)
-
+      LISCH2 = LISCHA
+      CALL JEEXIN(LISCH2//'.LCHA',IRET)
+      IF (IRET.NE.0) THEN
+         CALL JELIRA(LISCH2//'.LCHA','LONMAX',NCHAR,K8BID)
+         CALL JEVEUO(LISCH2//'.LCHA','L',JCHAR)
+         CALL MECHPE(NCHAR,ZK24(JCHAR),CHPESA)
+      END IF
+C
 C     -- ALLOCATION DU VECT_ELEM RESULTAT :
 C     -------------------------------------
       CALL DETRSD('VECT_ELEM',VECELE)

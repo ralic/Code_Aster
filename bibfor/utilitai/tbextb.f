@@ -8,7 +8,7 @@
      +                    LCRIT(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 02/02/99   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -139,7 +139,7 @@ C
                   DO 50 K = 1 , NBPU
                      N = ZI(JNUMI+K-1)
                      ZI(JNUMI+K-1) = 0
-                     IF ( .NOT. ZL(JVALL+N-1) ) THEN
+                     IF ( ZI(JVALL+N-1).EQ.0 ) THEN
                         ITROUV = ITROUV + 1
                         ZI(JNUMI+ITROUV-1) = N
                      ENDIF
@@ -149,7 +149,7 @@ C
                   DO 51 K = 1 , NBPU
                      N = ZI(JNUMI+K-1)
                      ZI(JNUMI+K-1) = 0
-                     IF ( ZL(JVALL+N-1) ) THEN
+                     IF ( ZI(JVALL+N-1).EQ.1 ) THEN
                         ITROUV = ITROUV + 1
                         ZI(JNUMI+ITROUV-1) = N
                      ENDIF
@@ -162,7 +162,7 @@ C
                      DO 52 K = 1 , NBPU
                         N = ZI(JNUMI+K-1)
                         ZI(JNUMI+K-1) = 0
-                        IF ( .NOT. ZL(JVALL+N-1) ) GOTO 52
+                        IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 52
                         IF ( ZI(JVALE+N-1) .GT. IMAX ) THEN
                            IMAX   = ZI(JVALE+N-1)
                            ITROU2 = N
@@ -173,7 +173,7 @@ C
                      DO 53 K = 1 , NBPU
                         N = ZI(JNUMI+K-1)
                         ZI(JNUMI+K-1) = 0
-                        IF ( .NOT. ZL(JVALL+N-1) ) GOTO 53
+                        IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 53
                         IF ( ZR(JVALE+N-1) .GT. RMAX ) THEN
                            RMAX   = ZR(JVALE+N-1)
                            ITROU2 = N
@@ -192,7 +192,7 @@ C
                      DO 54 K = 1 , NBPU
                         N = ZI(JNUMI+K-1)
                         ZI(JNUMI+K-1) = 0
-                        IF ( .NOT. ZL(JVALL+N-1) ) GOTO 54
+                        IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 54
                         IF ( ABS(ZI(JVALE+N-1)) .GT. IMAX ) THEN
                            IMAX   = ABS(ZI(JVALE+N-1))
                            ITROU2 = N
@@ -203,7 +203,7 @@ C
                      DO 55 K = 1 , NBPU
                         N = ZI(JNUMI+K-1)
                         ZI(JNUMI+K-1) = 0
-                        IF ( .NOT. ZL(JVALL+N-1) ) GOTO 55
+                        IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 55
                         IF ( ABS(ZR(JVALE+N-1)) .GT. RMAX ) THEN
                            RMAX   = ABS(ZR(JVALE+N-1))
                            ITROU2 = N
@@ -214,7 +214,7 @@ C
                      DO 60 K = 1 , NBPU
                         N = ZI(JNUMI+K-1)
                         ZI(JNUMI+K-1) = 0
-                        IF ( .NOT. ZL(JVALL+N-1) ) GOTO 60
+                        IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 60
                         IF ( ABS(ZC(JVALE+N-1)) .GT. ABS(CMAX) ) THEN
                            CMAX   = ZC(JVALE+N-1)
                            ITROU2 = N
@@ -233,7 +233,7 @@ C
                      DO 56 K = 1 , NBPU
                         N = ZI(JNUMI+K-1)
                         ZI(JNUMI+K-1) = 0
-                        IF ( .NOT. ZL(JVALL+N-1) ) GOTO 56
+                        IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 56
                         IF ( ZI(JVALE+N-1) .LT. IMIN ) THEN
                            IMIN   = ZI(JVALE+N-1)
                            ITROU2 = N
@@ -244,7 +244,7 @@ C
                      DO 57 K = 1 , NBPU
                         N = ZI(JNUMI+K-1)
                         ZI(JNUMI+K-1) = 0
-                        IF ( .NOT. ZL(JVALL+N-1) ) GOTO 57
+                        IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 57
                         IF ( ZR(JVALE+N-1) .LT. RMIN ) THEN
                            RMIN   = ZR(JVALE+N-1)
                            ITROU2 = N
@@ -263,7 +263,7 @@ C
                      DO 58 K = 1 , NBPU
                         N = ZI(JNUMI+K-1)
                         ZI(JNUMI+K-1) = 0
-                        IF ( .NOT. ZL(JVALL+N-1) ) GOTO 58
+                        IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 58
                         IF ( ABS(ZI(JVALE+N-1)) .LT. IMIN ) THEN
                            IMIN   = ABS(ZI(JVALE+N-1))
                            ITROU2 = N
@@ -274,7 +274,7 @@ C
                      DO 59 K = 1 , NBPU
                         N = ZI(JNUMI+K-1)
                         ZI(JNUMI+K-1) = 0
-                        IF ( .NOT. ZL(JVALL+N-1) ) GOTO 59
+                        IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 59
                         IF ( ABS(ZR(JVALE+N-1)) .LT. RMIN ) THEN
                            RMIN   = ABS(ZR(JVALE+N-1))
                            ITROU2 = N
@@ -285,7 +285,7 @@ C
                      DO 61 K = 1 , NBPU
                         N = ZI(JNUMI+K-1)
                         ZI(JNUMI+K-1) = 0
-                        IF ( .NOT. ZL(JVALL+N-1) ) GOTO 61
+                        IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 61
                         IF ( ABS(ZC(JVALE+N-1)) .LT. ABS(CMIN) ) THEN
                            CMIN   = ZC(JVALE+N-1)
                            ITROU2 = N
@@ -303,7 +303,7 @@ C
                   DO 30 K = 1 , NBPU
                      N = ZI(JNUMI+K-1)
                      ZI(JNUMI+K-1) = 0
-                     IF ( .NOT. ZL(JVALL+N-1) ) GOTO 30
+                     IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 30
                      IF ( RELA .EQ. 'EQ' ) THEN
                         IF ( ZI(JVALE+N-1) .EQ. VI(KI) ) THEN
                            ITROUV = ITROUV + 1
@@ -344,7 +344,7 @@ C
                   DO 31 K = 1 , NBPU
                      N = ZI(JNUMI+K-1)
                      ZI(JNUMI+K-1) = 0
-                     IF ( .NOT. ZL(JVALL+N-1) ) GOTO 31
+                     IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 31
                      IF ( RELA .EQ. 'EQ' ) THEN
                         REFR = ZR(JVALE+N-1)
                         IF ( CRIT .EQ. 'RELA' ) THEN
@@ -391,7 +391,7 @@ C
                   DO 32 K = 1 , NBPU
                      N = ZI(JNUMI+K-1)
                      ZI(JNUMI+K-1) = 0
-                     IF ( .NOT. ZL(JVALL+N-1) ) GOTO 32
+                     IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 32
                      IF ( RELA .EQ. 'EQ' ) THEN
                         IF ( ZC(JVALE+N-1) .EQ. VC(KC) ) THEN
                            ITROUV = ITROUV + 1
@@ -410,7 +410,7 @@ C
                   DO 33 K = 1 , NBPU
                      N = ZI(JNUMI+K-1)
                      ZI(JNUMI+K-1) = 0
-                     IF ( .NOT. ZL(JVALL+N-1) ) GOTO 33
+                     IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 33
                      IF ( RELA .EQ. 'EQ' ) THEN
                         IF ( ZK80(JVALE+N-1) .EQ. VK(KK) ) THEN
                            ITROUV = ITROUV + 1
@@ -429,7 +429,7 @@ C
                   DO 34 K = 1 , NBPU
                      N = ZI(JNUMI+K-1)
                      ZI(JNUMI+K-1) = 0
-                     IF ( .NOT. ZL(JVALL+N-1) ) GOTO 34
+                     IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 34
                      IF ( RELA .EQ. 'EQ' ) THEN
                         IF ( ZK32(JVALE+N-1) .EQ. VK(KK) ) THEN
                            ITROUV = ITROUV + 1
@@ -448,7 +448,7 @@ C
                   DO 35 K = 1 , NBPU
                      N = ZI(JNUMI+K-1)
                      ZI(JNUMI+K-1) = 0
-                     IF ( .NOT. ZL(JVALL+N-1) ) GOTO 35
+                     IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 35
                      IF ( RELA .EQ. 'EQ' ) THEN
                         IF ( ZK24(JVALE+N-1) .EQ. VK(KK) ) THEN
                            ITROUV = ITROUV + 1
@@ -467,7 +467,7 @@ C
                   DO 36 K = 1 , NBPU
                      N = ZI(JNUMI+K-1)
                      ZI(JNUMI+K-1) = 0
-                     IF ( .NOT. ZL(JVALL+N-1) ) GOTO 36
+                     IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 36
                      IF ( RELA .EQ. 'EQ' ) THEN
                         IF ( ZK16(JVALE+N-1) .EQ. VK(KK) ) THEN
                            ITROUV = ITROUV + 1
@@ -486,7 +486,7 @@ C
                   DO 37 K = 1 , NBPU
                      N = ZI(JNUMI+K-1)
                      ZI(JNUMI+K-1) = 0
-                     IF ( .NOT. ZL(JVALL+N-1) ) GOTO 37
+                     IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 37
                      IF ( RELA .EQ. 'EQ' ) THEN
                         IF ( ZK8(JVALE+N-1) .EQ. VK(KK) ) THEN
                            ITROUV = ITROUV + 1
@@ -541,7 +541,7 @@ C
             NOMJVL = ZK24(JTBLP+4*(J-1)+3)
             CALL JEVEUO ( NOMJV , 'L', JVALE )
             CALL JEVEUO ( NOMJVL, 'L', JVALL )
-            IF ( .NOT. ZL(JVALL+N-1) ) GOTO 42
+            IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 42
             NBP = NBP + 1
             ZK24(JPARR+NBP-1) = JNPAR
             IF ( TYPE(1:1) .EQ. 'I' ) THEN

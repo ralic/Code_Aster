@@ -3,7 +3,7 @@
       CHARACTER*(*)       NOMTA, LISTR, BASOUT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/06/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,7 +107,7 @@ C
             IPAR = ZI(KPARA+J-1)
             NOMJVL = ZK24(JTBLP+4*(IPAR-1)+3)
             CALL JEVEUO ( NOMJVL, 'L', JLOGQ )
-            IF ( ZL(JLOGQ+I-1) ) NBCL = NBCL + 1
+            IF ( ZI(JLOGQ+I-1).EQ.1 ) NBCL = NBCL + 1
  22      CONTINUE
          IF ( NBCL .NE. 0 ) THEN
             NBLG = NBLG + 1
@@ -140,7 +140,7 @@ C
             NOMJVL = ZK24(JTBLP+4*(IPAR-1)+3)
             CALL JEVEUO ( NOMJV , 'L', JVALE )
             CALL JEVEUO ( NOMJVL, 'L', JLOGQ )
-            IF ( ZL(JLOGQ+ILIG-1) ) THEN
+            IF ( ZI(JLOGQ+ILIG-1).EQ.1 ) THEN
                IF ( IDEB1 .EQ. 0 ) IDEB1 = IPAR
                KCOL1 = KCOL1 + 1
                IF ( IVIDE .EQ. 1 ) THEN

@@ -1,4 +1,4 @@
-# MODIF  DATE 29/06/2004   AUTEUR F1BHHAJ J.ANGLES 
+# MODIF  DATE 28/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE CALCUL D UNE EOLIENNE, MODELISATION 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,7 +87,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
 
 CXA = 0.6
 
-FV0 = FORMULE(REEL = '''(REEL:X,REEL:Y,REEL:Z) = 
+FV0 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='''
            (1.5)* ((CXA*10.)/16.3)* ((0.2925*Z)+49.825)**2.''')
 
 #

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+#& MODIF COMMANDE  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,8 +21,9 @@ DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
                    fr="Définition du comportement monocristallin",
                    reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
-            
-          MONOCRISTAL    =FACT(statut='o', max='**',
+                  regles=(EXCLUS('MONOCRISTAL','POLYCRISTAL'),),
+
+          MONOCRISTAL    =FACT(statut='f', max='**',
              MATER           =SIMP(statut='o', typ=mater_sdaster, max=1),
              ECOULEMENT      =SIMP(statut='o', typ='TXM', max=1,
                    fr="Donner le nom du mot-clé facteur de DEFI_MATERIAU précisant le type d'écoulement viscoplastique"),
@@ -34,5 +35,26 @@ DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
                    fr="Donner le nom du mot-clé facteur de DEFI_MATERIAU précisant le comportement élastique (un et un seul)"),
              FAMI_SYST_GLIS  =SIMP(statut='o',typ='TXM', max=1, 
                                 into=('BASAL', 'PRISMATIQUE', 'OCTAEDRIQUE', 'PYRAMIDAL1',
-                                'PYRAMIDAL2', 'CUBIQUE1', 'CUBIQUE2', 'MACLAGE', 'JOINT_GRAIN', 'RL', 'UNIAXIAL'),),),);
+                                'PYRAMIDAL2', 'CUBIQUE1', 'CUBIQUE2', 'MACLAGE', 'JOINT_GRAIN', 'RL', 'UNIAXIAL'),),
+                                ),
+                                
+                                
+          POLYCRISTAL    =FACT(statut='f', max='**',
+             MONOCRISTAL     =SIMP(statut='o', typ=compor_sdaster, max=1),
+             FRAC_VOL  =SIMP(statut='o', typ='R', max=1,fr="fraction volumique de la phase correspondant au monocristal"),
+             ANGL_REP  =SIMP(statut='o',typ='R',max=3,fr="orientation du monocristal : 3 angles d'Euler en degrés"),
+                                ),
+                                
+                                
+          b_poly      =BLOC( condition = "POLYCRISTAL!='None'",
+          LOCALISATION     =SIMP(statut='f', typ='TXM', max=1, into=('BZ', 'BETA', 'RL',),
+                fr="Donner le nom de la règle de localisation"),
+          
+           b_beta      =BLOC( condition = "LOCALISATION=='BETA'",
+             DL            =SIMP(statut='o',typ='R',max=1),
+             DA            =SIMP(statut='o',typ='R',max=1),
+             ),
+             ),
+                                
+                                );
                    

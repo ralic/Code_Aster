@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 14/09/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 28/09/2004   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,7 +95,7 @@ C ======================================================================
       REAL*8       RBID27, RBID28, RBID29, RBID30, RBID31, RBID32
       REAL*8       RBID33, RBID34, RBID35, RBID36, RBID37, RBID38
       REAL*8       RBID39, RBID40,RBID45,RBID46,RBID47,RBID48,RBID49
-      REAL*8       RBID50
+      REAL*8       RBID50,RBID51
       REAL*8       ELAS(NELAS)
       CHARACTER*2  CODRET(NELAS)
       CHARACTER*8  NCRA1(NELAS)
@@ -118,15 +118,15 @@ C =====================================================================
 C --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 C =====================================================================
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
-     +             RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,P1-DP1,
-     +             RBID6,
-     +             RBID7, RBID8, RBID10, R, RHO0, CSIGM,
-     +             BIOT, SATM, SAT, DSATP1, RBID14, RBID15, RBID16,
-     +             RBID17, RBID18, RBID19, RBID20, RBID21, RBID22,
-     +             RBID23, RBID24, RBID25, RHO110, CLIQ, ALPLIQ, CP11,
-     +             RBID26, RBID27, RBID28, RBID29, MAMOLG, CP21,RBID32,
-     +             RBID33, RBID34, RBID35, RBID36, RBID37,RBID38,
-     +             RBID39,RBID45,RBID46,RBID47,RBID48,RBID49,EM,RBID50)
+     +           RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,P1-DP1,
+     +           RBID6,
+     +           RBID7, RBID8, RBID10, R, RHO0, CSIGM,
+     +           BIOT, SATM, SAT, DSATP1, RBID14, RBID15, RBID16,
+     +           RBID17, RBID18, RBID19, RBID20, RBID21, RBID22,
+     +           RBID23, RBID24, RBID25, RHO110, CLIQ, ALPLIQ, CP11,
+     +           RBID26, RBID27, RBID28, RBID29, MAMOLG, CP21,RBID32,
+     +           RBID33, RBID34, RBID35, RBID36, RBID37,RBID38,RBID39,
+     +           RBID45,RBID46,RBID47,RBID48,RBID49,EM,RBID50,RBID51)
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================

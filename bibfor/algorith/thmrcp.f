@@ -7,10 +7,10 @@
      +                   DLAMBP, RHOL, UNSURK, ALPHA, CPL, LAMBS,
      +                   DLAMBS, VISCL, DVISCL, MAMOLG, CPG, LAMBT,
      +                   DLAMBT,VISCG, DVISCG, MAMOLV, CPVG, VISCVG,
-     +                   DVISVG,FICKAD,DFADT,CPAD,KH,PAD,EM,LAMBCT)
+     +                   DVISVG,FICKAD,DFADT,CPAD,KH,PAD,EM,LAMBCT,ISOT)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 28/09/2004   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,7 +43,7 @@ C =====================================================================
       REAL*8        ALPHA, CPL, LAMBS, DLAMBS, VISCL, DVISCL, CPG,PAD
       REAL*8        LAMBT, DLAMBT, VISCG, DVISCG, MAMOLG, CPVG, VISCVG
       REAL*8        DVISVG, FICKAD,DFADT,END, MAMOLV, P1M,CPAD,KH,EM
-      REAL*8        LAMBCT, UNSURK
+      REAL*8        LAMBCT, UNSURK, ISOT(3)
       CHARACTER*8   ETAPE
       CHARACTER*16  MECA,THMC,THER,HYDR
 C =====================================================================
@@ -76,21 +76,21 @@ C =====================================================================
       PARAMETER   ( DIM15  =  2 )
       PARAMETER   ( DIM16  =  6 )
       PARAMETER   ( DIM17  =  4 )
-      PARAMETER   ( DIM18  =  10 )
+      PARAMETER   ( DIM18  =  13 )
       PARAMETER   ( DIM19  =  4 )
-      PARAMETER   ( DIM20  =  11 )
+      PARAMETER   ( DIM20  =  14 )
       PARAMETER   ( DIM21  =  3 )
-      PARAMETER   ( DIM22  = 20 )
+      PARAMETER   ( DIM22  = 23 )
       PARAMETER   ( DIM23  =  4 )
       PARAMETER   ( DIM24  =  3 )
-      PARAMETER   ( DIM25  = 26 )
+      PARAMETER   ( DIM25  = 29 )
       PARAMETER   ( DIM26  =  4 )
       PARAMETER   ( DIM27  =  3 )
       PARAMETER   ( DIM28  =  1 )
-      PARAMETER   ( DIM29  = 20 )
+      PARAMETER   ( DIM29  = 23 )
       PARAMETER   ( DIM30  =  4 )
       PARAMETER   ( DIM31  =  3 )
-      PARAMETER   ( DIM32  = 16 )
+      PARAMETER   ( DIM32  = 19 )
       PARAMETER   ( DIM33  =  4 )
 C      
       PARAMETER   ( DIM35   =  7 )
@@ -98,7 +98,7 @@ C
       PARAMETER   ( DIM37  =  2 )
       PARAMETER   ( DIM38  =  2 )
       PARAMETER   ( DIM39  =  2 )
-      PARAMETER   ( DIM40  = 31 )
+      PARAMETER   ( DIM40  = 34 )
       PARAMETER   ( DIM41  =  4 )
       PARAMETER   ( DIM42  =  3 )
       PARAMETER   ( DIM43  =  1 )
@@ -239,7 +239,10 @@ C =====================================================================
      +              'D_LB_T',
      +              'LAMB_P'   ,
      +              'D_LB_P',
-     +              'LAMB_CT'/
+     +              'LAMB_CT',
+     +              'PERMIN_X',
+     +              'PERMIN_Y',
+     +              'PERMIN_Z'/
        DATA NCRA19 / 'UN_SUR_K' ,
      +              'VISC'     ,
      +              'D_VISC_T' ,
@@ -257,7 +260,10 @@ C =====================================================================
      +              'D_LB_T',
      +              'LAMB_P'   ,
      +              'D_LB_P',
-     +              'LAMB_CT'/
+     +              'LAMB_CT',
+     +              'PERMIN_X',
+     +              'PERMIN_Y',
+     +              'PERMIN_Z'/
        DATA NCRA21 / 'MASS_MOL' ,
      +              'VISC'     ,
      +              'D_VISC_T' /
@@ -271,19 +277,14 @@ C =====================================================================
      +              'PERM_IN'  ,
      +              'PERM_END' ,
      +              'LAMB_T'   ,
-     +              'D_LB_T' ,
-     +              'LAMB_P'   ,
-     +              'D_LB_P' ,
-     +              'LAMB_S'   ,
-     +              'D_LB_S' ,
-     +              'LAMB_CT' ,
-     +              'SATU_PRE' ,
-     +              'D_SATU_P' ,
-     +              'PERM_LIQ' ,
-     +              'D_PERM_L' ,
-     +              'PERM_GAZ' ,
-     +              'D_PERM_S' ,
-     +              'D_PERM_P' /
+     +              'D_LB_T' ,  'LAMB_P' ,
+     +              'D_LB_P' ,'LAMB_S'   ,
+     +              'D_LB_S' ,'LAMB_CT'  ,
+     +              'SATU_PRE' ,'D_SATU_P'  ,
+     +              'PERM_LIQ' , 'D_PERM_L' ,
+     +              'PERM_GAZ' , 'D_PERM_S' ,
+     +              'D_PERM_P','PERMIN_X',
+     +              'PERMIN_Y','PERMIN_Z'/
        DATA NCRA23 / 'UN_SUR_K' ,
      +              'VISC'     ,
      +              'D_VISC_T' ,
@@ -307,7 +308,10 @@ C =====================================================================
      +              'D_PERM_P' ,'FICKV_T'  ,
      +              'FICKV_PV' ,'FICKV_PG' ,
      +              'FICKV_S'  ,'D_FV_T'   ,
-     +              'D_FV_PG' /
+     +              'D_FV_PG',
+     +              'PERMIN_X',
+     +              'PERMIN_Y',
+     +              'PERMIN_Z'/
        DATA NCRA26 / 'UN_SUR_K' ,
      +              'VISC'     ,
      +              'D_VISC_T' ,
@@ -323,22 +327,16 @@ C =====================================================================
      +              'PESA_X'   ,
      +              'PESA_Y'   ,
      +              'PESA_Z'   ,
-     +              'PERM_IN'  ,
-     +              'PERM_END' ,
-     +              'LAMB_T'   ,
-     +              'D_LB_T' ,
-     +              'LAMB_P'   ,
-     +              'D_LB_P' ,
-     +              'LAMB_S'   ,
-     +              'D_LB_S' ,
-     +              'LAMB_CT'   ,
-     +              'SATU_PRE' ,
-     +              'D_SATU_P' ,
-     +              'PERM_LIQ' ,
-     +              'D_PERM_L' ,
-     +              'PERM_GAZ' ,
-     +              'D_PERM_S' ,
-     +              'D_PERM_P' /
+     +              'PERM_IN'  ,'PERM_END' ,
+     +              'LAMB_T'   ,'D_LB_T' ,
+     +              'LAMB_P'   ,'D_LB_P' ,
+     +              'LAMB_S'   ,'D_LB_S' ,
+     +              'LAMB_CT'  ,'SATU_PRE' ,
+     +              'D_SATU_P' ,'PERM_LIQ' ,
+     +              'D_PERM_L' ,'PERM_GAZ' ,
+     +              'D_PERM_S' ,'D_PERM_P',
+     +              'PERMIN_X'  ,'PERMIN_Y',
+     +              'PERMIN_Z'/
        DATA NCRA30 / 'UN_SUR_K' ,
      +              'VISC'     ,
      +              'D_VISC_T' ,
@@ -364,7 +362,10 @@ C =====================================================================
      +              'SATU_PRE' ,
      +              'D_SATU_P' ,
      +              'PERM_LIQ' ,
-     +              'D_PERM_L' /
+     +              'D_PERM_L' ,
+     +              'PERMIN_X',
+     +              'PERMIN_Y',
+     +              'PERMIN_Z'/
        DATA NCRA33 / 'UN_SUR_K' ,
      +              'VISC'     ,
      +              'D_VISC_T' ,
@@ -408,7 +409,10 @@ C =====================================================================
      +              'D_FV_PG','FICKA_T'  ,
      +              'FICKA_PA' , 'FICKA_PL' ,
      +              'FICKA_S'  ,
-     +              'D_FA_T' /
+     +              'D_FA_T' ,
+     +              'PERMIN_X',
+     +              'PERMIN_Y',
+     +              'PERMIN_Z'/
        DATA NCRA41 / 'UN_SUR_K' ,
      +              'VISC'     ,
      +              'D_VISC_T' ,
@@ -850,6 +854,14 @@ C
 C       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 C
             VAL18(8) = 1.0D0
+C
+C       INITIALISATION POUR L'ANISOTROPIE
+C
+            VAL18(4) = 1.0D0
+            VAL18(11) = 1.0D0
+            VAL18(12) = 1.0D0
+            VAL18(13) = 1.0D0
+C
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      +                       3, NCRA18(1), VAL18(1), CODRET, ' ')
             IF (HYDR.EQ.'HYDR_UTIL') THEN
@@ -879,6 +891,13 @@ C =====================================================================
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
      +                            1, NCRA19(4), VAL19(4), CODRET, 'FM') 
             ENDIF
+C
+C--- TENSEUR ISOTOPE LE CAS ECHEANT
+C
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
+     +                       3, NCRA18(11), VAL18(11), CODRET, ' ')
+
+C
             PESA(1) = VAL18(1)
             PESA(2) = VAL18(2)
             PESA(3) = VAL18(3)
@@ -896,6 +915,9 @@ C =====================================================================
             VISCL   = VAL19(2)
             DVISCL  = VAL19(3)
             ALPHA   = VAL19(4)
+            ISOT(1) = VAL18(11)
+            ISOT(2) = VAL18(12)
+            ISOT(3) = VAL18(13)
          ELSE IF (THMC.EQ.'GAZ') THEN
 C =====================================================================
 C --- LOI DE COUPLAGE DE TYPE GAZ -------------------------------------
@@ -910,6 +932,13 @@ C
 C       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 C
             VAL20(9) = 1.0D0
+C
+C       INITIALISATION POUR L'ANISOTROPIE
+C
+            VAL20(5) = 1.0D0
+            VAL20(12) = 1.0D0
+            VAL20(13) = 1.0D0
+            VAL20(14) = 1.0D0
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      +                       DIM20-7, NCRA20(1), VAL20(1), CODRET, ' ')
@@ -938,6 +967,9 @@ C =====================================================================
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
      +                            1, NCRA20(11), VAL20(11), CODRET, ' ')
             ENDIF
+C
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
+     +                            3, NCRA20(12), VAL20(12), CODRET, ' ')
             RGAZ    = VAL20(1)
             PESA(1) = VAL20(2)
             PESA(2) = VAL20(3)
@@ -957,6 +989,9 @@ C =====================================================================
             DVISCG  = VAL21(3)
             LAMBS  = 0.0D0
             DLAMBS  = 0.0D0
+            ISOT(1) = VAL20(12)
+            ISOT(2) = VAL20(13)
+            ISOT(3) = VAL20(14)
          ELSE IF (THMC.EQ.'LIQU_VAPE') THEN
 C =====================================================================
 C --- LOI DE COUPLAGE DE TYPE LIQU_VAPE -------------------------------
@@ -975,7 +1010,13 @@ C       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 C
             VAL22(9) = 1.0D0
             VAL22(11) = 1.0D0
-
+C
+C       INITIALISATION POUR L'ANISOTROPIE
+C
+            VAL22(5) = 1.0D0
+            VAL22(21) = 1.0D0
+            VAL22(22) = 1.0D0
+            VAL22(23) = 1.0D0
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      +                                   4, NCRA22, VAL22, CODRET, ' ')
             IF (HYDR.EQ.'HYDR_UTIL') THEN
@@ -1023,6 +1064,8 @@ C =====================================================================
                 CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'SAT', VALPAR(1),
      +                           2, NCRA22(11), VAL22(11), CODRET, ' ')
             ENDIF
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
+     +                            3, NCRA22(21), VAL22(21), CODRET, ' ')
             RGAZ    = VAL22( 1)
             PESA(1) = VAL22( 2)
             PESA(2) = VAL22( 3)
@@ -1049,6 +1092,9 @@ C =====================================================================
             MAMOLV  = VAL24( 1)
             VISCVG  = VAL24( 2)
             DVISVG  = VAL24( 3)
+            ISOT(1) = VAL22(21)
+            ISOT(2) = VAL22(22)
+            ISOT(3) = VAL22(23)
             IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
                CALL UTMESS('F','THMRCP_11','PROBLEME DANS LA '//
      +                                   'DEFINITION DE LA SATURATION')
@@ -1074,6 +1120,13 @@ C       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 C
             VAL25(9)  = 1.0D0
             VAL25(11) = 1.0D0
+C
+C       INITIALISATION POUR L'ANISOTROPIE
+C
+            VAL25(5) = 1.0D0
+            VAL25(27) = 1.0D0
+            VAL25(28) = 1.0D0
+            VAL25(29) = 1.0D0
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      +                                   4, NCRA25, VAL25, CODRET, ' ')
@@ -1152,10 +1205,12 @@ C
             NOMPAR(2) = 'PGAZ'
             VALPAR(1) =  T
             VALPAR(2) =  P2
-            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 2,NOMPAR, VALPAR,
+           CALL RCVALA(IMATE,' ', 'THM_DIFFU', 2,NOMPAR, VALPAR,
      +                          2, NCRA25(25), VAL25(25), CODRET, ' ')
 
 
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
+     +                            3, NCRA25(27), VAL25(27), CODRET, ' ')
             RGAZ    = VAL25( 1)
             PESA(1) = VAL25( 2)
             PESA(2) = VAL25( 3)
@@ -1187,6 +1242,9 @@ C
             VISCG   = VAL27( 2)
             DVISCG  = VAL27( 3)
             MAMOLV  = VAL28( 1)
+            ISOT(1) = VAL25(27)
+            ISOT(2) = VAL25(28)
+            ISOT(3) = VAL25(29)
             IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
                CALL UTMESS('F','THMRCP_12','PROBLEME DANS LA '//
      +                                   'DEFINITION DE LA SATURATION')
@@ -1212,7 +1270,13 @@ C       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 C
             VAL40(9)  = 1.0D0
             VAL40(11) = 1.0D0
-
+C
+C       INITIALISATION POUR L'ANISOTROPIE
+C
+            VAL40(5) = 1.0D0
+            VAL40(32) = 1.0D0
+            VAL40(33) = 1.0D0
+            VAL40(34) = 1.0D0
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      +                                   4, NCRA40, VAL40, CODRET, ' ')
             IF (HYDR.EQ.'HYDR_UTIL') THEN
@@ -1315,7 +1379,9 @@ C
      +                          4, NCRA40(27), VAL40(27), CODRET, ' ')
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
      +                          1, NCRA40(31), VAL40(31), CODRET, ' ')
-
+C
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
+     +                            3, NCRA40(32), VAL40(32), CODRET, ' ')
 
             RGAZ    = VAL40( 1)
             PESA(1) = VAL40( 2)
@@ -1351,6 +1417,9 @@ C
             VISCG   = VAL42( 2)
             DVISCG  = VAL42( 3)
             MAMOLV  = VAL43( 1)
+            ISOT(1) = VAL40(32)
+            ISOT(2) = VAL40(33)
+            ISOT(3) = VAL40(34)
             IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
                CALL UTMESS('F','THMRCP_13','PROBLEME DANS LA '//
      +                                   'DEFINITION DE LA SATURATION')
@@ -1373,6 +1442,13 @@ C       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 C
             VAL29(9)  = 1.0D0
             VAL29(11) = 1.0D0
+C
+C       INITIALISATION POUR L'ANISOTROPIE
+C
+            VAL29(5) = 1.0D0
+            VAL29(21) = 1.0D0
+            VAL29(22) = 1.0D0
+            VAL29(23) = 1.0D0
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      +                                   4, NCRA29, VAL29, CODRET, ' ')
@@ -1421,6 +1497,8 @@ C =====================================================================
                 CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'SAT', VALPAR(1),
      +                           2, NCRA29(11), VAL29(11), CODRET, ' ')
             ENDIF
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
+     +                            3, NCRA29(21), VAL29(21), CODRET, ' ')
             RGAZ    = VAL29( 1)
             PESA(1) = VAL29( 2)
             PESA(2) = VAL29( 3)
@@ -1447,6 +1525,9 @@ C =====================================================================
             MAMOLG  = VAL31( 1)
             VISCG   = VAL31( 2)
             DVISCG  = VAL31( 3)
+            ISOT(1) = VAL29(21)
+            ISOT(2) = VAL29(22)
+            ISOT(3) = VAL29(23)
             IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
                CALL UTMESS('F','THMRCP_14','PROBLEME DANS LA '//
      +                                   'DEFINITION DE LA SATURATION')
@@ -1466,6 +1547,13 @@ C       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 C
             VAL32(8)  = 1.0D0
             VAL32(10) = 1.0D0
+C
+C       INITIALISATION POUR L'ANISOTROPIE
+C
+            VAL32(4) = 1.0D0
+            VAL32(17) = 1.0D0
+            VAL32(18) = 1.0D0
+            VAL32(19) = 1.0D0
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      +                                   3, NCRA32, VAL32, CODRET, ' ')
@@ -1512,6 +1600,8 @@ C =====================================================================
                 CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'SAT', VALPAR(1),
      +                           2, NCRA32(11), VAL32(11), CODRET, ' ')
             ENDIF
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
+     +                            3, NCRA32(17), VAL32(17), CODRET, ' ')
             PESA(1) = VAL32( 1)
             PESA(2) = VAL32( 2)
             PESA(3) = VAL32( 3)
@@ -1531,6 +1621,9 @@ C =====================================================================
             VISCL   = VAL33( 2)
             DVISCL  = VAL33( 3)
             ALPHA   = VAL33( 4)
+            ISOT(1) = VAL32(17)
+            ISOT(2) = VAL32(18)
+            ISOT(3) = VAL32(19)
             IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
                CALL UTMESS('F','THMRCP_15','PROBLEME DANS LA '//
      +                                   'DEFINITION DE LA SATURATION')

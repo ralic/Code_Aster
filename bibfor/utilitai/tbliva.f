@@ -7,7 +7,7 @@
       CHARACTER*(*)       NOMTA,LIPACR(*),VK(*),VALK,CRIT(*),CTYPE,PARA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 25/08/97   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -145,7 +145,7 @@ C
                   KI = KI + 1
                   DO 30 K = 1 , NBPU
                      N = ZI(JNUMI+K-1)
-                     IF ( .NOT. ZL(JVALL+N-1) ) GOTO 30
+                     IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 30
                      IF ( ZI(JVALE+N-1) .EQ. VI(KI) ) THEN
                         ITROUV = ITROUV + 1
                         ZI(JNUMI+ITROUV-1) = N
@@ -158,7 +158,7 @@ C
                   XR = VR(KR)
                   DO 31 K = 1 , NBPU
                      N = ZI(JNUMI+K-1)
-                     IF ( .NOT. ZL(JVALL+N-1) ) GOTO 31
+                     IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 31
                      REFR = ZR(JVALE+N-1)
                      IF ( RELA .EQ. 'RELA' ) THEN
                         LOK = ( ABS(XR-REFR) .LE. EPSI * ABS(REFR) )
@@ -179,7 +179,7 @@ C
                   XC = VC(KC)
                   DO 32 K = 1 , NBPU
                      N = ZI(JNUMI+K-1)
-                     IF ( .NOT. ZL(JVALL+N-1) ) GOTO 32
+                     IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 32
                      REFC = ZC(JVALE+N-1)
                      IF ( RELA .EQ. 'RELA' ) THEN
                         LOK = ( ABS(XC-REFC) .LE. EPSI * ABS(REFC) )
@@ -195,7 +195,7 @@ C
                   K8 = K8 + 1
                   DO 33 K = 1 , NBPU
                      N = ZI(JNUMI+K-1)
-                     IF ( .NOT. ZL(JVALL+N-1) ) GOTO 33
+                     IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 33
                      IF ( ZK80(JVALE+N-1) .EQ. VK(K8) ) THEN
                         ITROUV = ITROUV + 1
                         ZI(JNUMI+ITROUV-1) = N
@@ -205,7 +205,7 @@ C
                   K8 = K8 + 1
                   DO 34 K = 1 , NBPU
                      N = ZI(JNUMI+K-1)
-                     IF ( .NOT. ZL(JVALL+N-1) ) GOTO 34
+                     IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 34
                      IF ( ZK32(JVALE+N-1) .EQ. VK(K8) ) THEN
                         ITROUV = ITROUV + 1
                         ZI(JNUMI+ITROUV-1) = N
@@ -215,7 +215,7 @@ C
                   K8 = K8 + 1
                   DO 35 K = 1 , NBPU
                      N = ZI(JNUMI+K-1)
-                     IF ( .NOT. ZL(JVALL+N-1) ) GOTO 35
+                     IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 35
                      IF ( ZK24(JVALE+N-1) .EQ. VK(K8) ) THEN
                         ITROUV = ITROUV + 1
                         ZI(JNUMI+ITROUV-1) = N
@@ -225,7 +225,7 @@ C
                   K8 = K8 + 1
                   DO 36 K = 1 , NBPU
                      N = ZI(JNUMI+K-1)
-                     IF ( .NOT. ZL(JVALL+N-1) ) GOTO 36
+                     IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 36
                      IF ( ZK16(JVALE+N-1) .EQ. VK(K8) ) THEN
                         ITROUV = ITROUV + 1
                         ZI(JNUMI+ITROUV-1) = N
@@ -235,7 +235,7 @@ C
                   K8 = K8 + 1
                   DO 37 K = 1 , NBPU
                      N = ZI(JNUMI+K-1)
-                     IF ( .NOT. ZL(JVALL+N-1) ) GOTO 37
+                     IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 37
                      IF ( ZK8(JVALE+N-1) .EQ. VK(K8) ) THEN
                         ITROUV = ITROUV + 1
                         ZI(JNUMI+ITROUV-1) = N
@@ -264,7 +264,7 @@ C
             IF ( TYPE(1:1) .EQ. 'I' ) THEN
                DO 50 K = 1 , NBPU
                   N = ZI(JNUMI+K-1)
-                  IF ( .NOT. ZL(JVALL+N-1) ) GOTO 50
+                  IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 50
                   ITROUV = ITROUV + 1
                   VALI = ZI(JVALE+N-1)
                   CTYPE = 'I'
@@ -272,7 +272,7 @@ C
             ELSEIF ( TYPE(1:1) .EQ. 'R' ) THEN
                DO 51 K = 1 , NBPU
                   N = ZI(JNUMI+K-1)
-                  IF ( .NOT. ZL(JVALL+N-1) ) GOTO 51
+                  IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 51
                   ITROUV = ITROUV + 1
                   VALR = ZR(JVALE+N-1)
                   CTYPE = 'R'
@@ -280,7 +280,7 @@ C
             ELSEIF ( TYPE(1:1) .EQ. 'C' ) THEN
                DO 52 K = 1 , NBPU
                   N = ZI(JNUMI+K-1)
-                  IF ( .NOT. ZL(JVALL+N-1) ) GOTO 52
+                  IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 52
                   ITROUV = ITROUV + 1
                   VALC = ZC(JVALE+N-1)
                   CTYPE = 'C'
@@ -289,7 +289,7 @@ C
                K8 = K8 + 1
                DO 53 K = 1 , NBPU
                   N = ZI(JNUMI+K-1)
-                  IF ( .NOT. ZL(JVALL+N-1) ) GOTO 53
+                  IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 53
                   ITROUV = ITROUV + 1
                   VALK = ZK80(JVALE+N-1)
                   CTYPE = 'K'
@@ -297,7 +297,7 @@ C
             ELSEIF ( TYPE(1:3) .EQ. 'K32' ) THEN
                DO 54 K = 1 , NBPU
                   N = ZI(JNUMI+K-1)
-                  IF ( .NOT. ZL(JVALL+N-1) ) GOTO 54
+                  IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 54
                   ITROUV = ITROUV + 1
                   VALK = ZK32(JVALE+N-1)
                   CTYPE = 'K'
@@ -305,7 +305,7 @@ C
             ELSEIF ( TYPE(1:3) .EQ. 'K24' ) THEN
                DO 55 K = 1 , NBPU
                   N = ZI(JNUMI+K-1)
-                  IF ( .NOT. ZL(JVALL+N-1) ) GOTO 55
+                  IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 55
                   ITROUV = ITROUV + 1
                   VALK = ZK24(JVALE+N-1)
                   CTYPE = 'K'
@@ -313,7 +313,7 @@ C
             ELSEIF ( TYPE(1:3) .EQ. 'K16' ) THEN
                DO 56 K = 1 , NBPU
                   N = ZI(JNUMI+K-1)
-                  IF ( .NOT. ZL(JVALL+N-1) ) GOTO 56
+                  IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 56
                   ITROUV = ITROUV + 1
                   VALK = ZK16(JVALE+N-1)
                   CTYPE = 'K'
@@ -321,7 +321,7 @@ C
             ELSEIF ( TYPE(1:2) .EQ. 'K8' ) THEN
                DO 57 K = 1 , NBPU
                   N = ZI(JNUMI+K-1)
-                  IF ( .NOT. ZL(JVALL+N-1) ) GOTO 57
+                  IF ( ZI(JVALL+N-1).EQ.0 ) GOTO 57
                   ITROUV = ITROUV + 1
                   VALK = ZK8(JVALE+N-1)
                   CTYPE = 'K'

@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF ops Cata  DATE 28/09/2004   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,6 +124,8 @@ def POURSUITE(self,PAR_LOT,CODE,**args):
      # presents sous le meme nom et du meme type dans pick.1
      # Le contexte est ensuite updaté (surcharge) et donc enrichi des
      # variables qui ne sont pas des concepts.
+     # On supprime du pickle_context les concepts valant None, ca peut 
+     # etre le cas des concepts non executés, placés après FIN.
      pickle_context=get_pickled_context()
      if pickle_context==None :
         self.jdc.cr.fatal("<F> Erreur a la relecture du fichier pick.1 : aucun objet sauvegardé ne sera récupéré")
@@ -139,6 +141,7 @@ def POURSUITE(self,PAR_LOT,CODE,**args):
             else: 
                self.jdc.cr.fatal("<F> concept de nom "+elem+" et de type "+str(pickle_class)+" introuvable dans la base globale")
                return
+         if pickle_context[elem]==None : del pickle_context[elem]
      self.g_context.update(pickle_context)
      return
 

@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 14/09/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 28/09/2004   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,6 +95,7 @@ C ======================================================================
       REAL*8       RBID39, RBID40, RBID41, RBID42, RBID43
       REAL*8       RBID50, RBID51, RBID52, RBID53, RBID54, RBID55
       REAL*8       RBID45,RBID46,RBID47,RBID48,RBID49,RBID56,RBID57
+      REAL*8       RBID58
       REAL*8       ELAS(NELAS)
       CHARACTER*2  CODRET(NELAS)
       CHARACTER*8  NCRA1(NELAS)
@@ -130,8 +131,8 @@ C =====================================================================
      +             RBID19, RBID20, RBID21, RBID22,RBID23, RBID24,
      +             RBID25, RHO110, CLIQ, ALPLIQ, CP11,RBID26,
      +             RBID27, RBID28, RBID29, RBID30, RBID31,RBID32,
-     +             RBID33, RBID34, RBID35, MAMOLV, CP12,RBID38,
-     +             RBID39,RBID45,RBID46,RBID47,RBID48,RBID49,EM,RBID57)
+     +             RBID33, RBID34, RBID35, MAMOLV, CP12,RBID38,RBID39,
+     +             RBID45,RBID46,RBID47,RBID48,RBID49,EM,RBID57,RBID58)
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
@@ -318,7 +319,7 @@ C =====================================================================
      +             RBID51,RBID26,RBID27, RBID28, RBID29, RBID30, 
      +             RBID31,RBID32,RBID33, RBID34, RBID35, RBID54, 
      +             RBID55,RBID38, RBID39,RBID45,RBID46,RBID47,RBID48,
-     +             RBID49,RBID56,RBID57)
+     +             RBID49,RBID56,RBID57,RBID58)
 C =====================================================================
 C --- RECUPERATION DE LA VARIABLE INTERNE SAT A L'INSTANT PLUS --------
 C =====================================================================

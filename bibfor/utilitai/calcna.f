@@ -1,10 +1,12 @@
-      SUBROUTINE CALCNA (COMPL,NBVAL,NBVALF,NOMFON,LVAL,NOMFIN,
-     +                   STATUT,INTERF,INTERP,LNOVA,PROGDF,PROLGD,
-     +                   LVALF,NOMCMD,NOMRES,NBNOVA )
+      SUBROUTINE CALCNA ( NOMFIN, NOMFON, NBVALP, VALEP, NOPARP, 
+     +                    NBVALF, VALEF, NOPARF )
       IMPLICIT   NONE
-      INTEGER             IER
+      INTEGER             NBVALP, NBVALF
+      REAL*8              VALEP(*), VALEF(*)
+      CHARACTER*16        NOPARP, NOPARF
+      CHARACTER*19        NOMFIN, NOMFON
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -40,82 +42,60 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      LNOVA, NBNOVA,
-     +             NBVAL, LVAL, LFON, IVAL, LPROL,
-     +             LFITA, NBVALF, LPARA, LVALF,LONT, I, JVALS
-      REAL*8       VALE(2)
-      LOGICAL      COMPL
-      CHARACTER*2  PROLGD,PROGDF
-      CHARACTER*4  INTERP(2),INTERF(2)
-      CHARACTER*8  K8B, STATUT, NOMRES
-      CHARACTER*16 NOMCMD
-      CHARACTER*19 NOMFON, NOMFIN, LISTR, LISTF
-      CHARACTER*32 JEXNUM
+      INTEGER       LONT, I, IVAL, LVAL, LFON, LPROL, LPARA, IER
+      REAL*8        VALE(2)
+      CHARACTER*16  NOPARA(2)
+      CHARACTER*32  JEXNUM
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
 C     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.VALE ---
 C      
-C        
-      IF (COMPL) THEN
-        LONT=3*NBVALF*NBVAL        
-      ELSE
-        LONT=2*NBVALF*NBVAL
-      ENDIF
+      LONT = 2*NBVALF*NBVALP
+      NOPARA(1) = NOPARF
+      NOPARA(2) = NOPARP
 C     
-      CALL JECREC(NOMFON//'.VALE',' G V R','NU','CONTIG',
-     +           'VARIABLE',NBVAL)
+      CALL JECREC ( NOMFON//'.VALE', ' G V R', 'NU', 'CONTIG',
+     +                                            'VARIABLE', NBVALP )
       CALL JEECRA ( NOMFON//'.VALE', 'LONT', LONT, ' ' )
-      DO 10 I = 1 , NBVAL
-        CALL JECROC ( JEXNUM(NOMFON//'.VALE',I) )
-        CALL JEECRA ( JEXNUM(NOMFON//'.VALE',I) , 'LONMAX',
-     +              LONT/NBVAL, ' ' )
-        CALL JEECRA ( JEXNUM(NOMFON//'.VALE',I) , 'LONUTI',
-     +                LONT/NBVAL, ' ' )
-        CALL JEVEUO ( JEXNUM(NOMFON//'.VALE',I), 'E', JVALS )
-        LFON = JVALS + NBVALF
-        VALE(2)=ZR(LVAL+I-1)
-        DO 20 IVAL = 0 , NBVALF-1
-           ZR(JVALS+IVAL) = ZR(LVALF+IVAL)
-           VALE(1)=ZR(JVALS+IVAL)
-           IF (COMPL) THEN
-             CALL FOINTC( NOMFIN, NBNOVA, ZK8(LNOVA), VALE,
-     +                    ZR(LFON+2*IVAL+1), ZR(LFON+2*IVAL+2), IER )
-             IF (IER.NE.0) THEN
-               CALL UTMESS('F',NOMCMD,'ERREUR DANS FOINTC') 
-             ENDIF
-           ELSE        
-             CALL FOINTE( 'F',NOMFIN, NBNOVA, ZK8(LNOVA),
-     +                                VALE, ZR(LFON+IVAL), IER )
-           ENDIF          
- 20     CONTINUE
- 10    CONTINUE
+      DO 10 I = 1 , NBVALP
+         CALL JECROC ( JEXNUM(NOMFON//'.VALE',I) )
+         CALL JEECRA ( JEXNUM(NOMFON//'.VALE',I) , 'LONMAX',
+     +                                              2*NBVALF, ' ' )
+         CALL JEECRA ( JEXNUM(NOMFON//'.VALE',I) , 'LONUTI',
+     +                                              2*NBVALF, ' ' )
+         CALL JEVEUO ( JEXNUM(NOMFON//'.VALE',I), 'E', LVAL )
+         LFON = LVAL + NBVALF
+         VALE(2) = VALEP(I)
+         DO 20 IVAL = 0 , NBVALF-1
+            ZR(LVAL+IVAL) = VALEF(IVAL+1)
+            VALE(1) = ZR(LVAL+IVAL)
+            CALL FOINTE( 'F',NOMFIN, 2, NOPARA,
+     +                                      VALE, ZR(LFON+IVAL), IER )
+ 20      CONTINUE
+ 10   CONTINUE
 C
 C     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
 C
-       IF (STATUT .EQ. 'NOUVEAU' ) THEN
-          CALL WKVECT ( NOMFON//'.PROL', 'G V K16', 6+2*NBVAL, LPROL )
-       ELSE
-          CALL JEVEUO ( NOMFON//'.PROL', 'E', LPROL )
-       ENDIF
+       CALL WKVECT ( NOMFON//'.PROL', 'G V K16', 6+2*NBVALP, LPROL )
 
-       ZK16(LPROL)   = 'NAPPE'
-       ZK16(LPROL+1) = INTERF(1)//INTERF(2)
-       ZK16(LPROL+2) = ZK8(LNOVA+1)
-       ZK16(LPROL+3) = NOMRES
-       ZK16(LPROL+4) = PROGDF
-       ZK16(LPROL+5) = ZK8(LNOVA)
-       DO 30 IVAL = 1, NBVAL
-          ZK16(LPROL+5+(2*IVAL-1)) = INTERP(1)//INTERP(2)
-          ZK16(LPROL+5+(2*IVAL)) = PROLGD
+       ZK16(LPROL)   = 'NAPPE           '
+       ZK16(LPROL+1) = 'LIN LIN         '
+       ZK16(LPROL+2) = NOPARP
+       ZK16(LPROL+3) = 'TOUTRESU        '
+       ZK16(LPROL+4) = 'EE              '
+       ZK16(LPROL+5) = NOPARF
+       DO 30 IVAL = 1, NBVALP
+          ZK16(LPROL+5+(2*IVAL-1)) = 'LIN LIN         '
+          ZK16(LPROL+5+(2*IVAL  )) = 'EE              '
  30    CONTINUE
 C
 C     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PARA ---
 C
-       CALL WKVECT ( NOMFON//'.PARA', 'G V R', NBVAL, LPARA )
-       DO 40 IVAL=0,NBVAL-1
-          ZR(LPARA+IVAL)=ZR(LVAL+IVAL)
+       CALL WKVECT ( NOMFON//'.PARA', 'G V R', NBVALP, LPARA )
+       DO 40 IVAL = 1, NBVALP
+          ZR(LPARA+IVAL-1) = VALEP(IVAL)
  40    CONTINUE
 C
        CALL JEDEMA()

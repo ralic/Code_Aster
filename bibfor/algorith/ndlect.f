@@ -2,10 +2,10 @@
      &                   ALPHA,  DELTA,  V0VIT,  V0ACC,  A0VIT, 
      &                   A0ACC,  NBMODS, NMODAM, VALMOD, BASMOD,
      &                   NREAVI, LIMPED, LONDE,  CHONDP, NONDP,
-     &                   MULTIA, TETA,   IALGO)
+     &                   MULTIA, THETA,   IALGO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 28/09/2004   AUTEUR LAMARCHE S.LAMARCHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,7 @@ C TOLE CRP_21
 
       IMPLICIT NONE
       INTEGER       NBMODS, NREAVI, NONDP, NMODAM, IALGO
-      REAL*8        V0VIT, V0ACC, A0VIT, A0ACC, ALPHA, DELTA, TETA
+      REAL*8        V0VIT, V0ACC, A0VIT, A0ACC, ALPHA, DELTA, THETA
       LOGICAL       LAMORT, LIMPED, LONDE
       CHARACTER*19  LISCHA
       CHARACTER*24  MODELE, MATE, STADYN, VALMOD, BASMOD, CHONDP
@@ -101,7 +101,7 @@ C -- PARAMETRES METHODE DE NEWMARK
          CALL GETFAC('TETA_METHODE',NBOCCT)                  
            IF(NBOCCT .EQ. 1 ) THEN
              IALGO = 3
-             CALL GETVR8('TETA_METHODE','TETA',1,1,1,TETA,N2)
+             CALL GETVR8('TETA_METHODE','TETA',1,1,1,THETA,N2)
            ELSE
              IALGO = 2
              CALL GETVR8('HHT'    ,'ALPHA',1,1,1,ALPHA,N1)
@@ -118,16 +118,12 @@ C -- PARAMETRES METHODE DE NEWMARK
            V0ACC = - (DELTA-DEUX*ALPHA)/DEUX/ALPHA
            A0VIT = -UN/ALPHA
            A0ACC = - (UN-DEUX*ALPHA)/DEUX/ALPHA
-C POUR LA THETA_METHODE ON PREND THETA=1 (THETA VARIABLE A VENIR)
+C POUR LA TETA_METHODE THETA DOIT ETRE DANS [0.5;1]
          ELSEIF (IALGO.EQ.3) THEN
-           IF (TETA .NE. 1) THEN
-             CALL UTMESS('F','NDLECT','CHOISIR TETA EGALE A UN')
-           ELSE
-             V0VIT = - (UN-TETA)/TETA
+             V0VIT = - (UN-THETA)/THETA
              V0ACC = ZERO
-             A0VIT = -UN/TETA
+             A0VIT = -UN/THETA
              A0ACC = ZERO         
-           ENDIF
          ENDIF
          
          LICMP(1) = 'STAOUDYN'

@@ -4,7 +4,7 @@
       CHARACTER*(*)       TABLE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C
          CALL JEVEUO ( NOMJVL, 'L', JLOGQ )
          IF ( TYPE(1:3) .EQ. 'K80' ) THEN
             DO 20 J = 1 , NBLIGN
-               IF ( ZL(JLOGQ+J-1) ) THEN
+               IF ( ZI(JLOGQ+J-1).EQ.1 ) THEN
                   NOMFON = ZK80(JVALE+J-1)(1:19)
                   CALL JEEXIN ( NOMFON//'.PROL', IRET )
                   IF ( IRET .NE. 0 ) GOTO 100
@@ -92,7 +92,7 @@ C
             GOTO 10
          ELSEIF ( TYPE(1:3) .EQ. 'K32' ) THEN
             DO 22 J = 1 , NBLIGN
-               IF ( ZL(JLOGQ+J-1) ) THEN
+               IF ( ZI(JLOGQ+J-1).EQ.1 ) THEN
                   NOMFON = ZK32(JVALE+J-1)(1:19)
                   CALL JEEXIN ( NOMFON//'.PROL', IRET )
                   IF ( IRET .NE. 0 ) GOTO 100
@@ -102,7 +102,7 @@ C
             GOTO 10
          ELSEIF ( TYPE(1:3) .EQ. 'K24' ) THEN
             DO 24 J = 1 , NBLIGN
-               IF ( ZL(JLOGQ+J-1) ) THEN
+               IF ( ZI(JLOGQ+J-1).EQ.1 ) THEN
                   NOMFON = ZK24(JVALE+J-1)(1:19)
                   CALL JEEXIN ( NOMFON//'.PROL', IRET )
                   IF ( IRET .NE. 0 ) GOTO 100
@@ -112,7 +112,7 @@ C
             GOTO 10
          ELSEIF ( TYPE(1:3) .EQ. 'K16' ) THEN
             DO 26 J = 1 , NBLIGN
-               IF ( ZL(JLOGQ+J-1) ) THEN
+               IF ( ZI(JLOGQ+J-1).EQ.1 ) THEN
                   NOMFON = ZK16(JVALE+J-1)
                   CALL JEEXIN ( NOMFON//'.PROL', IRET )
                   IF ( IRET .NE. 0 ) GOTO 100
@@ -122,7 +122,7 @@ C
             GOTO 10
          ELSEIF ( TYPE(1:2) .EQ. 'K8' ) THEN
             DO 28 J = 1 , NBLIGN
-               IF ( ZL(JLOGQ+J-1) ) THEN
+               IF ( ZI(JLOGQ+J-1).EQ.1 ) THEN
                   NOMFON = ZK8(JVALE+J-1)
                   CALL JEEXIN ( NOMFON//'.PROL', IRET )
                   IF ( IRET .NE. 0 ) GOTO 100

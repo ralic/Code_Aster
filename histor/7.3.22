@@ -1,0 +1,609 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR assire A.ASSIRE   DATE  le 27/09/2004 a 15:09:20
+
+------------------------------------------------------------------------------
+CORRECTION AL 2002-047
+   NB_JOURS_TRAV  : 6.
+   INTERET_UTILISATEUR : OUI
+   TITRE : Cas-test plaques excentrées
+   FONCTIONNALITE
+      Plaques avec excentrement.
+   DETAILS
+     Avec JMP on a repris ces deux cas-tests assez anciens dans lesquels les
+     efforts etaient assez differents suivant les modélisations et le type
+     d'éléments utilisés. Dans les cas-tests originaux, on comparait une plaque
+     constituée d'une part d'une coque multi-couche et d'autre part de deux
+     plaques avec excentrement. Le chargement n'était pas du tout physique, et
+     en plus on ne peut pas en théorie comparer les deux hypotheses (pas le
+     meme type de transmission des efforts entre les deux plaques).
+
+     Après un grand nettoyage, on a abouti a deux cas-tests, avec un chargement
+     plus simple et physique et une solution analytique :
+     - ssls111 : deux plaques excentrées symetriques par rapport au plan moyen.
+     - ssls117 : deux plaques excentrées non symetriques.
+
+     Ces deux cas-tests n'ont plus que deux modélisations : DKT/Q4 et DKT/T3.
+     On enlève les modélisations DST car le cisaillement transverse n'est pas
+     géré dans notre solution analytique et amène des écarts qu'on ne peux plus
+     vraiment comparer (les elements DST en excentrement sont testés par 
+     ailleurs dans le ssls122).
+      Résultats : ils sont tres bons pour des éléments Quad4
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V3.03.111
+     DOC_V : V3.03.117
+   VALIDATION
+     ssls111 et ssls117
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 27/09/2004 a 19:40:46
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-320
+   POUR_LE_COMPTE_DE   : M.COURTOIS
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   TITRE :  ZK8/ZK16 dans les fonctions
+   FONCTIONNALITE :
+     les variables récupérées par les mots clés NOM_PARA et NOM_RESU
+     étaient déclarées en K8
+   DETAIL
+      routines modifiées : op00134, op00135, calcfo, calcna, foattr
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     passage des 88 tests validant CALC_FONC_INTERP
+     dans zzzz100a: 
+       SI=CALC_FONC_INTERP( FONCTION=SIa,    LIST_PARA=LI1,
+                            NOM_PARA='INST',
+                 -->>       NOM_RESU='DEPLACEMENT',
+                            PROL_GAUCHE='EXCLU',  PROL_DROITE='CONSTANT',
+                            INTERPOL='LIN', 
+                            TITRE=' FONCTION SINUS '    )
+
+       TEST_FONCTION(ATTRIBUT=( 
+                _F(  FONCTION = SI,  ATTR = 'NOM_RESU',
+                                 ATTR_REFE = 'DEPLACEMENT'),
+
+--------------------------------------------------------------------------
+REALISATION EL 2004-220
+   POUR_LE_COMPTE_DE   : M.COURTOIS
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : TEST_FICHIER : possibilité d'ignorer certaines lignes
+   FONCTIONNALITE
+      On ajoute la possibilité d'ignorer dans le calcul du md5sum les
+      lignes qui vérifient une expression régulière.
+      Exemple :
+         EXPR_IGNORE=('DATE=[0-9]{2}/[0-9]{2}/[0-9]{4}','^VERSION')
+      Les lignes qui vérifient l'une OU l'autre de ces expressions est
+      ignorée.
+      
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.92.04
+       EXPL_ : ajout du mot clé EXPR_IGNORE
+   VALIDATION
+     dans ssnv102c 
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-329
+   POUR_LE_COMPTE_DE   : M.COURTOIS
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   TITRE :  IMPR_RESU Format Ensight
+   FONCTIONNALITE :
+     Au format Ensight si le maillage est fourni, le code vérifie la 
+     cohérence entre le maillage issu du champ et le maillage fourni.
+     Il trainait dans une routine
+          CALL GETVTX('RESU','FORMAT',IOCC,1,1,FORMCM,N)
+     alors que le format n'est plus sous le mot clé facteur RESU.
+   DETAIL
+      routine modifiée : irdepl.f
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     dans ssnv102c: 
+          TEST_FICHIER(NOM_SYSTEME='./RESU_ENSIGHT/SOLNL.geo',
+          TEST_FICHIER(NOM_SYSTEME='./RESU_ENSIGHT/SOLNL.DEPL.1',
+          TEST_FICHIER(NOM_SYSTEME='./RESU_ENSIGHT/SOLNL.DEPL.1.DX',
+          TEST_FICHIER(NOM_SYSTEME='./RESU_ENSIGHT/SOLNL.DEPL.1.DY',
+          TEST_FICHIER(NOM_SYSTEME='./RESU_ENSIGHT/SOLNL.DEPL.1.DZ',
+          TEST_FICHIER(NOM_SYSTEME='./RESU_ENSIGHT/SOLNL.res1',
+
+------------------------------------------------------------------------
+REALISATION EL 2004-203
+   POUR_LE_COMPTE_DE   : J.PELLET
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE :  structure de données TABLE
+   FONCTIONNALITE :
+     remplacement du vecteur de logiques dans la sructure de données TABLE
+     par des entiers
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE:  OUI
+     DOC_D : D4.02.05
+       EXPL_ : remplacement du vecteur de booléens par un vecteur d'entiers
+               'LG.00IJ'(ILIGN) = .FALSE.   =>  'LG.00IJ'(ILIGN) = 0
+               'LG.00IJ'(ILIGN) = .TRUE.    =>  'LG.00IJ'(ILIGN) = 1
+   VALIDATION
+     passage de la liste complete
+     passage de la liste validation
+
+------------------------------------------------------------------------
+REALISATION EL 2004-168
+   POUR_LE_COMPTE_DE   : Y.PONS
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE :  CALC_FONCTION mot clé SPEC_OSCI
+   FONCTIONNALITE :
+     mot clé NORME obligatoire avec émission d'un message dans le fichier
+     MESSAGE:
+         VALEUR DE NORMALISATION DU SPECTRE: 9.81000E+00
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE:  OUI
+     DOC_U : U4.32.04
+       EXPL_ : mot clé facteur SPEC_OSCI, le mot clé NORME est obligatoire
+   VALIDATION
+       11 tests validant SPEC_OSCI
+
+
+-----------------------------------------------------------------------
+--- AUTEUR durand C.DURAND   DATE  le 28/09/2004 a 13:03:59
+
+-----------------------------------------------------------------------
+CORRECTION AL 2004-334
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : nouvele syntaxe formule
+   FONCTIONNALITE
+     suite modification des formules, oubli de traduction nouvelle
+     syntaxe pour les tests suivants :
+       fdnv100a forma12a forma12b hsna100d
+       wtnl103b wtnp100b wtnp102b wtnv102a
+       wtnv102b wtnv125a zzzz121d zzzz183a
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     tests concernés
+
+-----------------------------------------------------------------------
+CORRECTION AL 2004-333
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : include_materiau
+   FONCTIONNALITE
+     suppression par erreur en 7.3.21 de ops002, utile à include_materiau
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     tests utilisant include_materiau
+
+-----------------------------------------------------------------------
+CORRECTION AL 2004-332
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : sdnd120a en cpu limit
+   FONCTIONNALITE
+     sdnd120a en cpu limit, j'ajuste de 60 à 200 secondes.
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     sdnd120a
+
+-----------------------------------------------------------------------
+CORRECTION AL 2004-327
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : récupération base en poursuite
+   FONCTIONNALITE
+     poursuite et namespace "picklé".
+     il y avait conflit en poursuite du jdc suivant :
+        DEBUT(PAR_LOT='OUI')
+        toto=STAT_NON_LINE()
+        FIN()
+        toto=STAT_NON_LINE(reuse=toto)
+     quand on s'arretait en cpu limit dans le STAT_NON_LINE, le fichier pickle 
+     sauvegardé avec la base associait la valeur None à toto (au lieu
+     de evol_noli), à cause du STAT_NON_LINe bidon placé après le FIN
+     La solution consiste à filtrer lors du dépicklage en poursuite les
+     objets valant None.
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     étude fournie avec fiche
+
+
+-----------------------------------------------------------------------
+--- AUTEUR granet S.GRANET   DATE  le 28/09/2004 a 13:22:11
+
+--------------------------------------------------------------------------
+REALISATION EL 2004-208
+   NB_JOURS_TRAV  : 3
+   POUR_LE_COMPTE_DE   : S.GRANET
+   INTERET_UTILISATEUR : NON
+   TITRE  : Introduction d'un vecteur d'anisotropie pour la permeablité 
+            intrinseque en THM 
+   FONCTIONNALITE
+     Jusqu'a present en THM, on rentrait la permeabilite intrinseque K 
+     sous forme d'un scalaire PERM_IN ce qui supposait un milieu isotrope
+     (en fait K = PERM_IN * (1;1;1)). On donne ici la possibilité de rentrer
+     la permeabilite sous forme vectorielle de maniere a introduire une 
+     anisotropie. Le tenseur de permeabilite reste diagonal. Ce vecteur est
+     introduit dans la sous commande THM_DIFFU de DEFI_MATERIAU par les mots
+     cles : PERMIN_X, PERMIN_Y et PERMIN_Z par défaut égaux à un. 
+     L'ancienne ecriture est egalement conservee pour le cas isotrope.
+     routines modifiées :
+       fortran : calcfh, comthm, hmgazp, hmlga, hmliga, hmlgat, hmlisa,
+                 hmliva, hmlvag, thmlec, thmrcp
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION
+     1 cas test avec solution analytique en HM (liqu_satu) provenant du plan
+     de qualification d'ALLIANCES. 6 autres cas tests modifies de maniere à 
+     tester toutes les lois de couplage. Passage de tous les cas tests THM.
+     cas-tests modifiés : 
+     wtnp100a, wtnp101a, wtnp102a, wtnp106a, wtnv112a, wtnv114a
+     cas-tests ajoutés : wtnp110a 
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_U : U4.43.01 
+         EXPL_ : ajout des nouveaux mots clés PERMIN_X, PERMIN_Y et PERMIN_Z 
+      DOC_U : U2.04.05 
+         EXPL_ : ajout des nouveaux mots clés dans la doc U2
+      DOC_R : R7.01.11-A 
+         EXPL_ : Rajouter la notion d'orthotropie concernant la perméabilité intrinseque
+      DOC_V : V7.32.110 
+
+
+-----------------------------------------------------------------------
+--- AUTEUR jmbhh01 J.M.PROIX   DATE  le 27/09/2004 a 12:17:51
+
+--------------------------------------------------------------------------
+REALISATION EL 2004-216
+   INTERET_UTILISATEUR : OUI
+   NB_JOURS_TRAV  : 7
+   TITRE : Materiau POLYCRISTALLIN
+   FONCTIONNALITE
+   Ajout dans DEFI_COMPOR et dans l'intégration des comportements
+   (explicite) du POLYCRISTAL.
+   En comparaison avec le MONOCRISTAL, qui permet de définir un
+   ensemble de modèles de comportement associés à des familles de
+   systèmes de glissement, le POLYCRISTAL traduit la présence en
+   un point donné de plusieurs monocristaux différents, avec des 
+   proportions et des angles différents. Une règle de localisation
+   est également choisie. 
+   Dans DEFI_COMPOR on ajoute :
+   
+    POLYCRISTAL    =FACT(statut='f', max='**',
+        MONOCRISTAL =SIMP(statut='o', typ=compor_sdaster, max=1),
+        FRAC_VOL    =SIMP(statut='o', typ='R', max=1,
+                          fr="fraction volumique de la phase correspondant au monocristal"),
+        ANGL_REP    =SIMP(statut='o',typ='R',max=3,
+                          fr="orientation de la phase correspondant au monocristal : 3 angles d'Euler en degrés"),
+                        ),
+                                
+        b_poly      =BLOC( condition = "POLYCRISTAL!='None'",
+          LOCALISATION     =SIMP(statut='f', typ='TXM', max=1, into=('BZ', 'BETA', 'RL',),
+                                 fr="Donner le nom de la règle de localisation"),
+           b_beta      =BLOC( condition = "LOCALISATION=='BETA'",
+             DL            =SIMP(statut='o',typ='R',max=1),
+             DA            =SIMP(statut='o',typ='R',max=1),
+             ),
+             ),
+                                
+   La définition de ce type de comportement entraine une échelle supplémentaire :  
+   le tenseur des contraintes macroscopiques (en un point de Gauss donné) est 
+   "localisé" pour chaque "phase" (ou chaque monocristal) grâce à une règle de 
+   localisation. Les deux seules qui sont programmées actuellement sont :
+   - BZ (Berveiller-Zaoui)
+   - Beta (règle faisant intervenir une variable supplémentaire)
+   Ce sont ces deux méthodes qui sont utilisées dans POLY_CFC. Par rapport à ce dernier
+   comportement, ce développement est plus général car on peut choisir le nombre de phase
+   que l'on veut (POLY_CFC est limité à 40), les familles de systèmes de glissement que l'on
+   veut (POLY_CFC était limité à OCTAEDRIQUE) et pour chaque monocristal, les lois d'écoulement
+   et d'écrouissage disponibles dans DEFI_MATERIAU.
+   DETAILS
+     La S.D. issue de DEFI_COMPOR évolue, pouR pouvoir contenir les
+     informations supplémentaires.
+       
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V:  V6.04.171 
+     DOC_R : R5.03.11 COMPORTEMENTS VISCOPLASTIQUES MONOCRISTALLINS
+   VALIDATION
+     SSNV171B calcul sur un seul élément, avec une seule phase. 
+     On ajoute un calcul POLYCRISTAL. La solution de référence
+
+
+-----------------------------------------------------------------------
+--- AUTEUR lamarche S.LAMARCHE   DATE  le 28/09/2004 a 10:25:45
+
+--------------------------------------------------------------------------
+REALISATION EL 2004-192
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 7 
+   TITRE : METHODE CONTINUE, CHOIX DES VALEURS DE THETA
+   FONCTIONNALITE
+     Etendre la theta méthode à toutes les valeurs de theta
+     comprises entre 0.5 et 1.0
+   DETAILS
+     La formulation en vitesse consiste a ecrire les lois de contact
+     en vitesse et integrer la dynamique avec un Theta_schema (d'ordre 1).
+     L'utilisateur a le choix entre une formulation CONTINUE en deplacement
+     integree avec un schema de Newmark et une formulation CONTINUE en 
+     vitesse integree avec un Theta_schema.
+     Ce développement permet de faire varier theta de 0.5 à 1,
+     ce qui permet d'assurer la stabilité du schéma (dans le cas linéaire)
+     et de faire varier la dissipation pendant la phase de décollement 
+     qui suit l'impact.
+     Les routines modifiees sont : 
+       nmtble.f, mmmbca.f, dyna_non_line.capy, dinit.f, ndlect.f,op0069.f,
+       op0070.f.       
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V5.03.100  Cas test SDNV100
+       EXPL_ : 
+     DOC_V : V6.01.105  Cas test SSNA105
+       EXPL_ : 
+     DOC_V : V6.04.503  Cas test SSNV503
+       EXPL_ : 
+     DOC_V : V6.04.505  Cas test SSNV505
+       EXPL_ : 
+   VALIDATION
+    * ajout de la modelisation :
+      sdnv100e :formulation en vitesse avec teta = 0.5
+    * par ailleurs, on ajoute les cas test "DeltaCad" suivant :
+      SSNA105b, SSNV503i, SSNV505d, SSNV505e
+
+-------------------------------------------------------------------------------
+CORRECTION AL 2004-275
+   POUR LE COMPTE DE : J.M. PROIX 
+   NB_JOURS_TRAV : 1.0
+   INTERET_UTILISATEUR : OUI
+   TITRE : CALC_ELEM et recuperation de la charge
+   FONCTIONNALITE :  
+   DETAIL : 
+   Le message d'erreur produit par CALC_ELEM, lors d'une poursuite :
+   "OBJET INEXISTANT DANS LES BASES OUVERTES > RESUTOT .0000.EXCIT.LCHA".
+    apparait lorsque l'on essaie de récupèrer la SD charge stockée dans
+    la base globale. Le problème est du au fait que la sauvegarde de 
+    cette SD n'était pas effectuée dans le cas ou le calcul avec STAT_NON_LINE
+    s'arrete par manque de temps CPU.
+   - Fichier fortran modifie  : op0070.f
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION : -Passage de la liste restreinte liste_ct.rest
+   IMPACT_DOCUMENTAIRE : NON
+
+
+-----------------------------------------------------------------------
+--- AUTEUR boyere E.BOYERE   DATE  le 28/09/2004 a 15:08:48
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-323
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   TITRE : DYNA_TRAN_EXPLI endommagee par les vagues de la surface libre
+   FONCTIONNALITE
+     Suite aux ameliorations de Nicolas Greffet sur le calcul de surface
+     libre, DYNA_TRAN_EXPLI etait cassee.
+     Nicolas m'a donne les elements pour tout reparer.
+   DETAILS
+     Dans MXFIFE on fait appel a VEFNME, Or cette routine
+     s'est vue octroyer un argument supplementaire
+     par Nicolas lorsqu'il a modifie le calcul des surfaces libres.
+     On rajoute LISCHA dans l'appel a VEFNME de MXFIFE :
+      CALL VEFNME (MODELE, SIGMOI, CARELE, DEPMOI,
+     &             DEPDE0, VEFINT, MATE  , COMPOR, 0,
+     &             FNOEVO, TR8BID, CARCRI, TEMMOI, ' ', LISCHA   )
+
+     De son cote Lionel Vivan a optimise la routine VEFNME
+     en evitant l'appel, dans cette routine, a MECHPE (calcul
+     des forces de pesanteur) lorsque le champ de pesanteur
+     n'est pas present dans les entrees.
+     Enfin, on restitue sdnd102c car sa FORMULE n'avait pas ete
+     mise au gout du jour lors du passage aux formules
+     a la sauce python.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     sur le cas test sdnd102c
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sdnv100e                     lamarche S.LAMARCHE         379    379      0
+ CASTEST AJOUT ssna105b                     lamarche S.LAMARCHE         232    232      0
+ CASTEST AJOUT ssnv503i                     lamarche S.LAMARCHE         562    562      0
+ CASTEST AJOUT ssnv505d                     lamarche S.LAMARCHE         183    183      0
+ CASTEST AJOUT ssnv505e                     lamarche S.LAMARCHE         187    187      0
+ CASTEST AJOUT wtnp110a                       granet S.GRANET           196    196      0
+ CASTEST MODIF fdnv100a                       durand C.DURAND           329      2      2
+ CASTEST MODIF forma12a                       durand C.DURAND           202      2      2
+ CASTEST MODIF forma12b                       durand C.DURAND           244      2      2
+ CASTEST MODIF hsna100d                       durand C.DURAND           549      9     13
+ CASTEST MODIF miss01a                       cibhhlv L.VIVAN           2198    113     41
+ CASTEST MODIF miss02a                       cibhhlv L.VIVAN           1274     25     25
+ CASTEST MODIF miss03a                       cibhhlv L.VIVAN           1264     55     55
+ CASTEST MODIF miss04a                       cibhhlv L.VIVAN            485      1      1
+ CASTEST MODIF miss04b                       cibhhlv L.VIVAN            471      1      1
+ CASTEST MODIF miss05a                       cibhhlv L.VIVAN           2080    113    113
+ CASTEST MODIF sdnd102c                       boyere E.BOYERE           250      3      3
+ CASTEST MODIF sdnd120a                       durand C.DURAND           273      1      1
+ CASTEST MODIF ssls111a                       assire A.ASSIRE           229    133    524
+ CASTEST MODIF ssls111b                       assire A.ASSIRE           232    136    543
+ CASTEST MODIF ssls117a                       assire A.ASSIRE           237    135    628
+ CASTEST MODIF ssls117b                       assire A.ASSIRE           240    141    547
+ CASTEST MODIF ssnv102c                      cibhhlv L.VIVAN            305     62      1
+ CASTEST MODIF ssnv171b                      jmbhh01 J.M.PROIX          332    133     32
+ CASTEST MODIF wtnl103b                       durand C.DURAND           359      3      4
+ CASTEST MODIF wtnp100a                       granet S.GRANET           307      6      4
+ CASTEST MODIF wtnp100b                       durand C.DURAND           319     16      7
+ CASTEST MODIF wtnp101a                       granet S.GRANET           327      4      2
+ CASTEST MODIF wtnp102a                       granet S.GRANET           347      4      3
+ CASTEST MODIF wtnp102b                       durand C.DURAND           352      6      8
+ CASTEST MODIF wtnp106a                       granet S.GRANET           264      4      2
+ CASTEST MODIF wtnv102a                       durand C.DURAND           344      6      8
+ CASTEST MODIF wtnv102b                       durand C.DURAND           354      6      8
+ CASTEST MODIF wtnv112a                       granet S.GRANET           441      4      2
+ CASTEST MODIF wtnv114b                       granet S.GRANET           278      4      2
+ CASTEST MODIF wtnv125a                       durand C.DURAND           481     28     30
+ CASTEST MODIF zzzz100a                      cibhhlv L.VIVAN           1796     13      9
+ CASTEST MODIF zzzz121d                       durand C.DURAND           466     34     31
+ CASTEST MODIF zzzz183a                       durand C.DURAND           221      2      2
+CATALOPY MODIF commande/calc_fonc_interp     cibhhlv L.VIVAN             49     11     10
+CATALOPY MODIF commande/calc_fonction        cibhhlv L.VIVAN            207      2      2
+CATALOPY MODIF commande/defi_compor          jmbhh01 J.M.PROIX           60     25      3
+CATALOPY MODIF commande/defi_materiau         granet S.GRANET          2722     46     11
+CATALOPY MODIF commande/dyna_non_line       lamarche S.LAMARCHE         304      2      2
+CATALOPY MODIF commande/test_fichier         cibhhlv L.VIVAN             42      3      2
+CATALOPY MODIF commun/c_comp_incr            jmbhh01 J.M.PROIX          296      7      1
+ FORTRAN AJOUT algorith/lcloca               jmbhh01 J.M.PROIX           88     88      0
+ FORTRAN AJOUT algorith/lcmmap               jmbhh01 J.M.PROIX          465    465      0
+ FORTRAN AJOUT algorith/lcmmop               jmbhh01 J.M.PROIX          289    289      0
+ FORTRAN AJOUT supervis/ops002                durand C.DURAND           103    103      0
+ FORTRAN MODIF algorith/calcfh                granet S.GRANET          1068    122     98
+ FORTRAN MODIF algorith/comthm                granet S.GRANET           261      6      5
+ FORTRAN MODIF algorith/dinit               lamarche S.LAMARCHE         217     12      6
+ FORTRAN MODIF algorith/hmgazp                granet S.GRANET           346      3      3
+ FORTRAN MODIF algorith/hmlgat                granet S.GRANET           392      3      3
+ FORTRAN MODIF algorith/hmliga                granet S.GRANET           450      4      4
+ FORTRAN MODIF algorith/hmlisa                granet S.GRANET           385      5      5
+ FORTRAN MODIF algorith/hmliva                granet S.GRANET           523      5      4
+ FORTRAN MODIF algorith/hmlvag                granet S.GRANET           527      8      8
+ FORTRAN MODIF algorith/hmlvga                granet S.GRANET           590      3      3
+ FORTRAN MODIF algorith/kitdec                granet S.GRANET            70      4      2
+ FORTRAN MODIF algorith/lcmaec               jmbhh01 J.M.PROIX           58      9     21
+ FORTRAN MODIF algorith/lcmaei               jmbhh01 J.M.PROIX           63      7     18
+ FORTRAN MODIF algorith/lcmafl               jmbhh01 J.M.PROIX           80      9     30
+ FORTRAN MODIF algorith/lcmate               jmbhh01 J.M.PROIX          136      6      1
+ FORTRAN MODIF algorith/lcmmat               jmbhh01 J.M.PROIX          330     47     11
+ FORTRAN MODIF algorith/lcmmei               jmbhh01 J.M.PROIX          110      5      3
+ FORTRAN MODIF algorith/lcmmon               jmbhh01 J.M.PROIX          152      2      2
+ FORTRAN MODIF algorith/lcmmre               jmbhh01 J.M.PROIX          158      2      2
+ FORTRAN MODIF algorith/lcmmvx               jmbhh01 J.M.PROIX           95      2      2
+ FORTRAN MODIF algorith/mmmbca              lamarche S.LAMARCHE         227      5      2
+ FORTRAN MODIF algorith/mxfife                boyere E.BOYERE           188      2      2
+ FORTRAN MODIF algorith/ndlect              lamarche S.LAMARCHE         185      7     11
+ FORTRAN MODIF algorith/nmcomp               jmbhh01 J.M.PROIX          653     17      1
+ FORTRAN MODIF algorith/nmdorc               jmbhh01 J.M.PROIX          497     14      9
+ FORTRAN MODIF algorith/nmtble              lamarche S.LAMARCHE         118      4      3
+ FORTRAN MODIF algorith/nmvprk               jmbhh01 J.M.PROIX          334      1      1
+ FORTRAN MODIF algorith/op0069              lamarche S.LAMARCHE         677      4      4
+ FORTRAN MODIF algorith/op0070              lamarche S.LAMARCHE         852      7      4
+ FORTRAN MODIF algorith/rdif01               jmbhh01 J.M.PROIX          118      9      1
+ FORTRAN MODIF algorith/thmlec                granet S.GRANET           151     10     10
+ FORTRAN MODIF algorith/thmrcp                granet S.GRANET          1650    140     47
+ FORTRAN MODIF algorith/vefnme                boyere E.BOYERE           207      5     10
+ FORTRAN MODIF calculel/utest0               cibhhlv L.VIVAN            188     11     11
+ FORTRAN MODIF modelisa/op0059               jmbhh01 J.M.PROIX          260    174     22
+ FORTRAN MODIF prepost/irdepl                cibhhlv L.VIVAN            395      2      2
+ FORTRAN MODIF prepost/op0135                cibhhlv L.VIVAN            465      4      4
+ FORTRAN MODIF prepost/tbutnu                cibhhlv L.VIVAN            121      1      1
+ FORTRAN MODIF utilitai/calcfo               cibhhlv L.VIVAN             89     22     31
+ FORTRAN MODIF utilitai/calcna               cibhhlv L.VIVAN            102     36     56
+ FORTRAN MODIF utilitai/foattr               cibhhlv L.VIVAN            123      4      4
+ FORTRAN MODIF utilitai/op0091               cibhhlv L.VIVAN            557      3      1
+ FORTRAN MODIF utilitai/op0134               cibhhlv L.VIVAN            150     54     87
+ FORTRAN MODIF utilitai/tbacce               cibhhlv L.VIVAN            177      9      9
+ FORTRAN MODIF utilitai/tbajco               cibhhlv L.VIVAN            171     19     23
+ FORTRAN MODIF utilitai/tbajli               cibhhlv L.VIVAN            229     17     17
+ FORTRAN MODIF utilitai/tbajpa               cibhhlv L.VIVAN            177      5      5
+ FORTRAN MODIF utilitai/tbcopi               cibhhlv L.VIVAN            147      3      3
+ FORTRAN MODIF utilitai/tbcrsd               cibhhlv L.VIVAN             89      1      1
+ FORTRAN MODIF utilitai/tbcrsv               cibhhlv L.VIVAN             91      1      1
+ FORTRAN MODIF utilitai/tbexcp               cibhhlv L.VIVAN            143      1      1
+ FORTRAN MODIF utilitai/tbexfo               cibhhlv L.VIVAN            223     11     10
+ FORTRAN MODIF utilitai/tbexip               cibhhlv L.VIVAN             86      1      1
+ FORTRAN MODIF utilitai/tbexlr               cibhhlv L.VIVAN            232      3      3
+ FORTRAN MODIF utilitai/tbext2               cibhhlv L.VIVAN            317     10     10
+ FORTRAN MODIF utilitai/tbextb               cibhhlv L.VIVAN            588     22     22
+ FORTRAN MODIF utilitai/tbexv1               cibhhlv L.VIVAN            213     10     10
+ FORTRAN MODIF utilitai/tbexve               cibhhlv L.VIVAN            188     10     10
+ FORTRAN MODIF utilitai/tbfutb               cibhhlv L.VIVAN            256      2      2
+ FORTRAN MODIF utilitai/tbim50               cibhhlv L.VIVAN            156      1      1
+ FORTRAN MODIF utilitai/tbim51               cibhhlv L.VIVAN             90      1      1
+ FORTRAN MODIF utilitai/tbim52               cibhhlv L.VIVAN             75      1      1
+ FORTRAN MODIF utilitai/tbimex               cibhhlv L.VIVAN            369      2      2
+ FORTRAN MODIF utilitai/tbimfi               cibhhlv L.VIVAN            140      1      1
+ FORTRAN MODIF utilitai/tbimfo               cibhhlv L.VIVAN            163      6      6
+ FORTRAN MODIF utilitai/tbimmc               cibhhlv L.VIVAN            255      2      2
+ FORTRAN MODIF utilitai/tbimpa               cibhhlv L.VIVAN            141      1      1
+ FORTRAN MODIF utilitai/tbimpg               cibhhlv L.VIVAN            275      1      1
+ FORTRAN MODIF utilitai/tbimpr               cibhhlv L.VIVAN            170      1      1
+ FORTRAN MODIF utilitai/tbimta               cibhhlv L.VIVAN            495      3      3
+ FORTRAN MODIF utilitai/tbimtr               cibhhlv L.VIVAN             77      1      1
+ FORTRAN MODIF utilitai/tbliva               cibhhlv L.VIVAN            340     17     17
+ FORTRAN MODIF utilitai/tbnuli               cibhhlv L.VIVAN            238      9      9
+ FORTRAN MODIF utilitai/tbtr01               cibhhlv L.VIVAN            166      2      2
+ FORTRAN MODIF utilitai/tbtrii               cibhhlv L.VIVAN             86      1      1
+ FORTRAN MODIF utilitai/tbtrik               cibhhlv L.VIVAN             87      1      1
+ FORTRAN MODIF utilitai/tbtrir               cibhhlv L.VIVAN             87      1      1
+ FORTRAN MODIF utilitai/tbtrtb               cibhhlv L.VIVAN            303      3      3
+  PYTHON MODIF Accas/__init__                cibhhlv L.VIVAN             78      3      3
+  PYTHON MODIF Cata/ops                       durand C.DURAND           424      4      1
+  PYTHON MODIF Macro/test_fichier_ops        cibhhlv L.VIVAN            192     40      7
+  PYTHON MODIF Noyau/N_FONCTION               durand C.DURAND            48      2      1
+  PYTHON MODIF Noyau/__init__                cibhhlv L.VIVAN             43      2      2
+  PYTHON MODIF Outils/calc_eolienne           durand C.DURAND          1733      1      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   10        2684      2684             +2684
+ MODIF :  124       45406      2335    3440     -1105
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  134       48090      5019    3440     +1579 

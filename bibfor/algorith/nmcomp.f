@@ -15,7 +15,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/09/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -623,6 +623,22 @@ CCC    MONOCRISTAL
           ENDIF
           
 CCC    FIN MONOCRISTAL      
+          
+CCC    POLYCRISTAL      
+          
+        ELSEIF ( COMPOR(1)(1:8) .EQ. 'POLYCRIS' ) THEN
+          IF ( INT(CRIT(6)) .EQ. 0 ) THEN
+            CALL REDECE ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
+     &                  INSTAM,INSTAP, TM,   TP,    TREF, 
+     &                  HYDRM, HYDRP,SECHM, SECHP, SREF,EPSM, DEPS,
+     &           SIGM, VIM,OPTION,ELGEOM,ANGMAS, SIGP, VIP, DSIDEP)
+          ELSE
+            CALL NMVPRK ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
+     &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
+     &       DEPS,  SIGM,   VIM,  OPTION,ANGMAS,SIGP, VIP, DSIDEP)
+          ENDIF
+          
+CCC    FIN POLYCRISTAL      
           
         ELSE
           CALL UTMESS('F','NMCOMP_1','LOI DE COMPORTEMENT INEXISTANTE')

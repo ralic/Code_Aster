@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE COMPARAISON POLY_CFC ET MONOCRISTAL. MOD B : MONOCRISTAL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -90,32 +90,47 @@ ORIEN=AFFE_CARA_ELEM(MODELE=TROISD,
                      MASSIF=_F(GROUP_MA='TOUT',
                                ANGL_REP=(30.0,0.0,0.0,),),);
 
-SOLNL=STAT_NON_LINE(MODELE=TROISD,
+#  TST POLY
+COMPORP=DEFI_COMPOR(POLYCRISTAL=(
+                               _F(MONOCRISTAL=COMPORT,
+                                  FRAC_VOL=1.0,
+                                  ANGL_REP=(30.,0.,0.)),),
+                    LOCALISATION='BETA',DA=0.,DL=0.,
+                  #  LOCALISATION='BZ',
+                    );
+
+#IMPR_CO(CO=COMPORP)
+
+SOLNLP=STAT_NON_LINE(MODELE=TROISD,
                     CHAM_MATER=MAT,
-                    CARA_ELEM=ORIEN,
+                  #  CARA_ELEM=ORIEN,
                     EXCIT=(_F(CHARGE=TRAC,
                               FONC_MULT=COEF,
                               TYPE_CHARGE='FIXE_CSTE',),),
-                    COMP_INCR=(_F(RELATION='MONOCRISTAL',
-                                  COMPOR=COMPORT,
+                    COMP_INCR=(_F(RELATION='POLYCRISTAL',
+                                  COMPOR=COMPORP,
                                   DEFORMATION='PETIT',
                                   TOUT='OUI',),),
                     INCREMENT=(_F(LIST_INST=LINST,
                                   SUBD_PAS=4,
                                   SUBD_PAS_MINI=1e-06,),),
-                    NEWTON=(_F(REAC_ITER=1,),),
+                     NEWTON=(_F(PREDICTION='EXTRAPOL',
+                                MATRICE='ELASTIQUE',
+                                REAC_ITER=0,),),
                     CONVERGENCE=(_F(RESI_GLOB_RELA=1e-06,
                                     ITER_GLOB_MAXI=100,
-                                    RESI_INTE_RELA=1e-08,
-                                    ITER_INTE_MAXI=100,
-                                    ITER_INTE_PAS=10,
-                                    RESO_INTE='IMPLICITE',),),);
-
-SOLNL=CALC_ELEM(reuse =SOLNL,
-                RESULTAT=SOLNL,
-                OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
-
-TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
+                                    RESI_INTE_RELA=1e-06,
+                                    ITER_INTE_MAXI=10,
+                                 #    ITER_INTE_PAS=10,
+                                   ITER_INTE_PAS=-4,
+                                    RESO_INTE='RUNGE_KUTTA_2',),),);
+                                    
+SOLNLP=CALC_ELEM(reuse =SOLNLP,
+                 RESULTAT=SOLNLP,
+                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
+                 
+IMPR_RESU(RESU=_F(RESULTAT=SOLNLP))
+TEST_RESU(RESU=(_F(RESULTAT=SOLNLP,
                    INST=TFIN,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
@@ -123,47 +138,36 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    POINT=1,
                    VALE=-210.0,
                    REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=SOLNL,
+                _F(RESULTAT=SOLNLP,
                    INST=TFIN,
                    NOM_CHAM='EPSI_ELGA_DEPL',
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
                    VALE=-0.0018909,
-                   PRECISION=(0.01,1e-06,),
+                   PRECISION=(0.02,1e-06,),
                    REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=SOLNL,
+                _F(RESULTAT=SOLNLP,
                    INST=TFIN,
                    NOM_CHAM='EPSI_ELGA_DEPL',
                    NOM_CMP='EPYY',
                    MAILLE='MA1',
                    POINT=1,
                    VALE=0.000502667,
-                   PRECISION=(0.01,1e-06,),
+                   PRECISION=(0.02,1e-06,),
                    REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=SOLNL,
+                _F(RESULTAT=SOLNLP,
                    INST=TFIN,
                    NOM_CHAM='EPSP_ELGA',
                    NOM_CMP='EPYY',
                    MAILLE='MA1',
                    POINT=1,
                    VALE=6.87828e-05,
-                   PRECISION=(0.01,1e-06,),
+                   PRECISION=(0.02,1e-06,),
                    REFERENCE='AUTRE_ASTER',),),);
 
-SOLNL=CALC_ELEM(reuse =SOLNL,
-                RESULTAT=SOLNL,
-                OPTION='VARI_ELNO_ELGA',);
 
-FV49=RECU_FONCTION(RESULTAT=SOLNL,
-                   NOM_CHAM='VARI_ELNO_ELGA',
-                   TOUT_ORDRE='OUI',
-                   NOM_CMP='V43',
-                   MAILLE='MA1',
-                   NOEUD='NO1',);
-
-IMPR_COURBE(COURBE=_F(FONCTION=FV49,),);
-
+#FIN()
 SOLNL2=STAT_NON_LINE(MODELE=TROISD,
                      CHAM_MATER=MAT,
                      CARA_ELEM=ORIEN,
@@ -228,4 +232,101 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL2,
                    PRECISION=(0.02,1e-06,),
                    REFERENCE='AUTRE_ASTER',),),);
 
-FIN();
+
+
+SOLNL=STAT_NON_LINE(MODELE=TROISD,
+                    CHAM_MATER=MAT,
+                    CARA_ELEM=ORIEN,
+                    EXCIT=(_F(CHARGE=TRAC,
+                              FONC_MULT=COEF,
+                              TYPE_CHARGE='FIXE_CSTE',),),
+                    COMP_INCR=(_F(RELATION='MONOCRISTAL',
+                                  COMPOR=COMPORT,
+                                  DEFORMATION='PETIT',
+                                  TOUT='OUI',),),
+                    INCREMENT=(_F(LIST_INST=LINST,
+                                  SUBD_PAS=4,
+                                  SUBD_PAS_MINI=1e-06,),),
+                    NEWTON=(_F(REAC_ITER=1,),),
+                    CONVERGENCE=(_F(RESI_GLOB_RELA=1e-06,
+                                    ITER_GLOB_MAXI=100,
+                                    RESI_INTE_RELA=1e-08,
+                                    ITER_INTE_MAXI=100,
+                                    ITER_INTE_PAS=10,
+                                    RESO_INTE='IMPLICITE',),),);
+
+SOLNL=CALC_ELEM(reuse =SOLNL,
+                RESULTAT=SOLNL,
+                OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
+
+TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
+                   INST=TFIN,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-210.0,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=SOLNL,
+                   INST=TFIN,
+                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-0.0018909,
+                   PRECISION=(0.01,1e-06,),
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=SOLNL,
+                   INST=TFIN,
+                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CMP='EPYY',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=0.000502667,
+                   PRECISION=(0.01,1e-06,),
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=SOLNL,
+                   INST=TFIN,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPYY',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=6.87828e-05,
+                   PRECISION=(0.01,1e-06,),
+                   REFERENCE='AUTRE_ASTER',),),);
+
+
+EPSPXX1=RECU_FONCTION(RESULTAT=SOLNL,
+                   NOM_CHAM='EPSP_ELGA',
+                   TOUT_ORDRE='OUI',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,);
+
+EPSPXX2=RECU_FONCTION(RESULTAT=SOLNL2,
+                   NOM_CHAM='EPSP_ELGA',
+                   TOUT_ORDRE='OUI',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,);
+
+EPSPXX3=RECU_FONCTION(RESULTAT=SOLNLP,
+                   NOM_CHAM='EPSP_ELGA',
+                   TOUT_ORDRE='OUI',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,);
+
+
+FIN()
+
+IMPR_FONCTION(
+#FORMAT='XMGRACE',PILOTE='INTERACTIF',
+FORMAT='TABLEAU',UNITE=38,
+ COURBE=(
+           _F(FONCTION=EPSPXX1,MARQUEUR=1,COULEUR=1,FREQ_MARQUEUR=1,LEGENDE='MONOCRISTAL IMPLICITE'),
+           _F(FONCTION=EPSPXX2,MARQUEUR=1,COULEUR=1,FREQ_MARQUEUR=1,LEGENDE='MONOCRISTAL EXPLICITE'),
+           _F(FONCTION=EPSPXX3,MARQUEUR=1,COULEUR=1,FREQ_MARQUEUR=1,LEGENDE='POLYCRISTAL EXPLICITE'),
+           ),)
+
+#IMPR_RESU(RESU=_F(RESULTAT=SOLNL2))

@@ -4,7 +4,7 @@
       CHARACTER*(*)      MOTCLE,       NOMFON
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,12 +39,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                            ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      CHARACTER*1   K1BID
       CHARACTER*4   INTERP(2)
-      CHARACTER*8   K8B, NPARA, NRESU, PROLG, PROLD
-      CHARACTER*16  NOMCMD
+      CHARACTER*8   K8B, PROLG, PROLD
+      CHARACTER*16  NOMCMD, NPARA, NRESU
       CHARACTER*19  TEMP
       CHARACTER*24  PROL
-      CHARACTER*1 K1BID
 C     ----------------------------------------------------------------
 C
       CALL JEMARQ()

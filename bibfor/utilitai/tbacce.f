@@ -6,7 +6,7 @@
       CHARACTER*(*)       NOMTA, PARA, MODE, VK
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/04/2002   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C RESPONSABLE DURAND C.DURAND
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -113,7 +113,7 @@ C
             VI = ZI(JVALE+NUMELI-1)
          ELSE
             ZI(JVALE+NUMELI-1) = VI
-            ZL(JVALL+NUMELI-1) = .TRUE.
+            ZI(JVALL+NUMELI-1) = 1
          ENDIF
 C
       ELSEIF ( TYPE(1:1) .EQ. 'R' ) THEN
@@ -121,7 +121,7 @@ C
             VR = ZR(JVALE+NUMELI-1)
          ELSE
             ZR(JVALE+NUMELI-1) = VR
-            ZL(JVALL+NUMELI-1) = .TRUE.
+            ZI(JVALL+NUMELI-1) = 1
          ENDIF
 C
       ELSEIF ( TYPE(1:1) .EQ. 'C' ) THEN
@@ -129,7 +129,7 @@ C
             VC = ZC(JVALE+NUMELI-1)
          ELSE
             ZC(JVALE+NUMELI-1) = VC
-            ZL(JVALL+NUMELI-1) = .TRUE.
+            ZI(JVALL+NUMELI-1) = 1
          ENDIF
 C
       ELSEIF ( TYPE(1:3) .EQ. 'K80' ) THEN
@@ -137,7 +137,7 @@ C
             VK = ZK80(JVALE+NUMELI-1)
          ELSE
             ZK80(JVALE+NUMELI-1) = VK
-            ZL  (JVALL+NUMELI-1) = .TRUE.
+            ZI  (JVALL+NUMELI-1) = 1
          ENDIF
 C
       ELSEIF ( TYPE(1:3) .EQ. 'K32' ) THEN
@@ -145,7 +145,7 @@ C
             VK = ZK32(JVALE+NUMELI-1)
          ELSE
             ZK32(JVALE+NUMELI-1) = VK
-            ZL  (JVALL+NUMELI-1) = .TRUE.
+            ZI  (JVALL+NUMELI-1) = 1
          ENDIF
 C
       ELSEIF ( TYPE(1:3) .EQ. 'K24' ) THEN
@@ -153,7 +153,7 @@ C
             VK = ZK24(JVALE+NUMELI-1)
          ELSE
             ZK24(JVALE+NUMELI-1) = VK
-            ZL  (JVALL+NUMELI-1) = .TRUE.
+            ZI  (JVALL+NUMELI-1) = 1
          ENDIF
 C
       ELSEIF ( TYPE(1:3) .EQ. 'K16' ) THEN
@@ -161,7 +161,7 @@ C
             VK = ZK16(JVALE+NUMELI-1)
          ELSE
             ZK16(JVALE+NUMELI-1) = VK
-            ZL  (JVALL+NUMELI-1) = .TRUE.
+            ZI  (JVALL+NUMELI-1) = 1
          ENDIF
 C
       ELSEIF ( TYPE(1:2) .EQ. 'K8' ) THEN
@@ -169,7 +169,7 @@ C
             VK = ZK8(JVALE+NUMELI-1)
          ELSE
             ZK8(JVALE+NUMELI-1) = VK
-            ZL (JVALL+NUMELI-1) = .TRUE.
+            ZI (JVALL+NUMELI-1) = 1
          ENDIF
       ENDIF
 C

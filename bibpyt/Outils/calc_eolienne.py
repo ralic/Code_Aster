@@ -1,4 +1,4 @@
-#@ MODIF calc_eolienne Outils  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF calc_eolienne Outils  DATE 28/09/2004   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

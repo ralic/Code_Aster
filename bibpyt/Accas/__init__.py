@@ -1,4 +1,4 @@
-#@ MODIF __init__ Accas  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF __init__ Accas  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,8 +33,8 @@
 
 # permet de se proteger de l'oubli de carte coding
 # ce warning deviendra fatal en python 2.4
-#import warnings
-#warnings.filterwarnings('error','Non-ASCII character.*pep-0263',DeprecationWarning)
+import warnings
+warnings.filterwarnings('error','Non-ASCII character.*pep-0263',DeprecationWarning)
 
 from A_JDC_CATA import JDC_CATA
 from A_OPER import OPER

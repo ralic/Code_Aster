@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOMTA, PARA, NOMOBJ, BASOBJ, TYPVAL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,14 +104,14 @@ C
       CALL JEVEUO ( NOMJVL, 'L', JVALL )
       NBVAL = 0
       DO 20 I = 1 , NBLIGN
-         IF ( ZL(JVALL+I-1) ) NBVAL = NBVAL + 1
+         IF ( ZI(JVALL+I-1).EQ.1 ) NBVAL = NBVAL + 1
  20   CONTINUE
 C
       IV = 0
       IF     ( TYPE(1:1) .EQ. 'I'   ) THEN
          CALL WKVECT( NOMOBJ, BASE//' V I', NBVAL, KVALE )
          DO 100 I = 1 , NBLIGN
-            IF ( ZL(JVALL+I-1) ) THEN
+            IF ( ZI(JVALL+I-1).EQ.1 ) THEN
                DO 102 J = 1 , IV
                   IF ( ZI(KVALE+J-1) .EQ. ZI(JVALE+I-1) ) GOTO 100
  102           CONTINUE
@@ -123,7 +123,7 @@ C
       ELSEIF ( TYPE(1:1) .EQ. 'R'   ) THEN
          CALL WKVECT( NOMOBJ, BASE//' V R', NBVAL, KVALE )
          DO 200 I = 1 , NBLIGN
-            IF ( ZL(JVALL+I-1) ) THEN
+            IF ( ZI(JVALL+I-1).EQ.1 ) THEN
                DO 202 J = 1 , IV
                   IF ( ZR(KVALE+J-1) .EQ. ZR(JVALE+I-1) ) GOTO 200
  202           CONTINUE
@@ -135,7 +135,7 @@ C
       ELSEIF ( TYPE(1:1) .EQ. 'C'   ) THEN
          CALL WKVECT( NOMOBJ, BASE//' V C', NBVAL, KVALE )
          DO 300 I = 1 , NBLIGN
-            IF ( ZL(JVALL+I-1) ) THEN
+            IF ( ZI(JVALL+I-1).EQ.1 ) THEN
                DO 302 J = 1 , IV
                   IF ( ZC(KVALE+J-1) .EQ. ZC(JVALE+I-1) ) GOTO 300
  302           CONTINUE
@@ -147,7 +147,7 @@ C
       ELSEIF ( TYPE(1:3) .EQ. 'K80' ) THEN
          CALL WKVECT( NOMOBJ, BASE//' V K80', NBVAL, KVALE )
          DO 400 I = 1 , NBLIGN
-            IF ( ZL(JVALL+I-1) ) THEN
+            IF ( ZI(JVALL+I-1).EQ.1 ) THEN
                DO 402 J = 1 , IV
                   IF ( ZK80(KVALE+J-1) .EQ. ZK80(JVALE+I-1) ) GOTO 400
  402           CONTINUE
@@ -159,7 +159,7 @@ C
       ELSEIF ( TYPE(1:3) .EQ. 'K32' ) THEN
          CALL WKVECT( NOMOBJ, BASE//' V K32', NBVAL, KVALE )
          DO 500 I = 1 , NBLIGN
-            IF ( ZL(JVALL+I-1) ) THEN
+            IF ( ZI(JVALL+I-1).EQ.1 ) THEN
                DO 502 J = 1 , IV
                   IF ( ZK32(KVALE+J-1) .EQ. ZK32(JVALE+I-1) ) GOTO 500
  502           CONTINUE
@@ -171,7 +171,7 @@ C
       ELSEIF ( TYPE(1:3) .EQ. 'K24' ) THEN
          CALL WKVECT( NOMOBJ, BASE//' V K24', NBVAL, KVALE )
          DO 600 I = 1 , NBLIGN
-            IF ( ZL(JVALL+I-1) ) THEN
+            IF ( ZI(JVALL+I-1).EQ.1 ) THEN
                DO 602 J = 1 , IV
                   IF ( ZK24(KVALE+J-1) .EQ. ZK24(JVALE+I-1) ) GOTO 600
  602           CONTINUE
@@ -183,7 +183,7 @@ C
       ELSEIF ( TYPE(1:3) .EQ. 'K16' ) THEN
          CALL WKVECT( NOMOBJ, BASE//' V K16', NBVAL, KVALE )
          DO 700 I = 1 , NBLIGN
-            IF ( ZL(JVALL+I-1) ) THEN
+            IF ( ZI(JVALL+I-1).EQ.1 ) THEN
                DO 702 J = 1 , IV
                   IF ( ZK16(KVALE+J-1) .EQ. ZK16(JVALE+I-1) ) GOTO 700
  702           CONTINUE
@@ -195,7 +195,7 @@ C
       ELSEIF ( TYPE(1:2) .EQ. 'K8'  ) THEN
          CALL WKVECT( NOMOBJ, BASE//' V K8', NBVAL, KVALE )
          DO 800 I = 1 , NBLIGN
-            IF ( ZL(JVALL+I-1) ) THEN
+            IF ( ZI(JVALL+I-1).EQ.1 ) THEN
                DO 802 J = 1 , IV
                   IF ( ZK8(KVALE+J-1) .EQ. ZK8(JVALE+I-1) ) GOTO 800
  802           CONTINUE

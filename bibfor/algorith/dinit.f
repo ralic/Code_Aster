@@ -1,10 +1,10 @@
       SUBROUTINE DINIT (NEQ,V0VIT,V0ACC,A0VIT,A0ACC,ALPHA,DELTA,INSTAM,
      &                 INSTAP,COEVIT,COEACC,DEPPLU,POUGD,DEPENT,VITENT,
      &                 ACCENT,MULTIA,NBMODS,NBPASE,INPSCO,
-     &                 IFORM,TETA,IALGO,CMD,DEFICO)
+     &                 IFORM,THETA,IALGO,CMD,DEFICO,DECOL)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 28/09/2004   AUTEUR LAMARCHE S.LAMARCHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,11 +29,12 @@ C TOLE CRP_21
       INTEGER       NEQ, NBMODS, IFORM, IALGO
       INTEGER       NBPASE
       REAL*8        V0VIT,  V0ACC,  A0VIT, ALPHA, DELTA, INSTAM, INSTAP
-      REAL*8        COEVIT, COEACC, A0ACC, TETA
+      REAL*8        COEVIT, COEACC, A0ACC, THETA
       CHARACTER*13 INPSCO
       CHARACTER*16 CMD
       CHARACTER*24 DEPPLU, DEPENT, VITENT, ACCENT
       CHARACTER*24 MULTIA(8), POUGD(8),DEFICO
+      LOGICAL DECOL      
       
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -63,7 +64,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
       INTEGER       JVITP,JACCP,JDEPKM,JVITKM,JACCKM,JROMKM,JROMK
       INTEGER       I,J,IE,JDEPP,JDEPEN,JVITEN,JACCEN,JNODEP
       INTEGER       JNOVIT,JNOACC,JMLTAP,JPSDEL,NBEXCI,IER
-      REAL*8        PAS,V0ACC1,A0VIT1,COEF1,COEF2,COEF3
+      REAL*8        PAS,V0ACC1,A0VIT1,COEF1,COEF2,COEF3,TETA
 
 C ----------------------------------------------------------------------
       CALL JEMARQ()
@@ -93,7 +94,12 @@ C                     [VITE ET (NEWMARK OU HHT)]
      &               //' DEPLACEMENT AVEC NEWMARK (OU HHT) OU LA'   
      &               //' FORMULATION EN VITESSE AVEC TETA_METHODE' )
       
-      
+
+        IF (DECOL) THEN
+         TETA=THETA
+         ELSE
+         TETA=1.D0
+        ENDIF        
           
          PAS = INSTAP - INSTAM
          V0ACC1 = V0ACC*PAS
@@ -149,8 +155,8 @@ C
            ZR(JVITP+I-1)  = V0VIT*ZR(JVITKM+I-1) + V0ACC1*ZR(JACCKM+I-1)
            ZR(JACCP+I-1)  = A0VIT1*ZR(JVITKM+I-1) + A0ACC*ZR(JACCKM+I-1)
            ELSE
-           ZR(JVITP+I-1)  = 0.D0
-           ZR(JACCP+I-1)  = -ZR(JVITKM+I-1)/PAS
+           ZR(JVITP+I-1)  = ZR(JVITKM+I-1)*(TETA-1)/TETA
+           ZR(JACCP+I-1)  = -ZR(JVITKM+I-1)/(PAS*TETA)
            ENDIF       
         
            ZR(JROMKM+I-1) = 0.D0

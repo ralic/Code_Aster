@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/09/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -132,7 +132,7 @@ CALC_FONCTION=OPER(nom="CALC_FONCTION",op=  91,sd_prod=calc_fonction_prod
            AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
            LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster ),
            FREQ            =SIMP(statut='f',typ='R',max='**'),
-           NORME           =SIMP(statut='f',typ='R',defaut= 9.81E+0,fr="Valeur de la norme du spectre d oscillateur" ),
+           NORME           =SIMP(statut='o',typ='R',defaut= 9.81E+0,fr="Valeur de la norme du spectre d oscillateur" ),
            NATURE          =SIMP(statut='f',typ='TXM',defaut="ACCE",into=("DEPL","VITE","ACCE") ),
            NATURE_FONC     =SIMP(statut='f',typ='TXM',defaut="ACCE",into=("DEPL","VITE","ACCE") ),
          ),

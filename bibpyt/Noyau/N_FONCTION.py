@@ -1,4 +1,4 @@
-#@ MODIF N_FONCTION Noyau  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF N_FONCTION Noyau  DATE 28/09/2004   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,7 @@
 # ======================================================================
 
 from N_ASSD import ASSD
+import string
 
 class FONCTION(ASSD):pass
 

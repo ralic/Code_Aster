@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE FONCTIONS, NAPPES, FORMULES.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -339,8 +339,9 @@ SIa = FORMULE(NOM_PARA='INST',VALE='sin(INST)')
 
 SI=CALC_FONC_INTERP(        FONCTION=SIa,    LIST_PARA=LI1,
                             NOM_PARA='INST',
-                            NOM_RESU='DEPL',
-                            PROL_GAUCHE='EXCLU',  PROL_DROITE='CONSTANT',
+                            NOM_RESU='DEPLACEMENT',
+                            PROL_GAUCHE='EXCLU',
+                            PROL_DROITE='CONSTANT',
                             INTERPOL='LIN', 
                             TITRE=' FONCTION SINUS '    )
 
@@ -352,7 +353,7 @@ TEST_FONCTION(ATTRIBUT=(
                 _F(  FONCTION = SI,  ATTR = 'NOM_PARA',
                                  ATTR_REFE = 'INST'),
                 _F(  FONCTION = SI,  ATTR = 'NOM_RESU',
-                                 ATTR_REFE = 'DEPL'),
+                                 ATTR_REFE = 'DEPLACEMENT'),
                 _F(  FONCTION = SI,  ATTR = 'INTERPOL',
                                  ATTR_REFE = 'LIN LIN '),
                 _F(  FONCTION = SI,  ATTR = 'PROL_DROITE',
@@ -1266,9 +1267,11 @@ DER1=CALC_FONCTION( DERIVE=_F(  FONCTION = SI) )
 IMPR_COURBE(   COURBE=_F(  FONCTION = DER1, LIST_PARA = LR1) )
 
 TEST_FONCTION(ATTRIBUT=( 
-                _F(  FONCTION = SI, ATTR = 'NOM_RESU', ATTR_REFE = 'DEPL'),
-                _F(  FONCTION = DER1, ATTR = 'NOM_RESU', ATTR_REFE = 'VITE')),VALEUR=(
-                  
+                _F(  FONCTION = SI, ATTR = 'NOM_RESU',
+                                    ATTR_REFE = 'DEPLACEMENT'),
+                _F(  FONCTION = DER1, ATTR = 'NOM_RESU',
+                                      ATTR_REFE = 'VITE')),
+              VALEUR=(
                 _F(  FONCTION = DER1, NOM_PARA = 'INST',
                           VALE_PARA = INST0, VALE_REFE = COa(INST0),
                      REFERENCE = 'ANALYTIQUE',),
@@ -1306,8 +1309,9 @@ INT1=CALC_FONCTION( INTEGRE=_F(  FONCTION = DER1) )
 IMPR_COURBE(   COURBE=_F(  FONCTION = INT1, LIST_PARA = LR1) )
 
 TEST_FONCTION( 
-                ATTRIBUT=_F(  FONCTION = INT1, ATTR = 'NOM_RESU', ATTR_REFE = 'DEPL'),VALEUR=(
-                  
+                ATTRIBUT=_F(  FONCTION = INT1, ATTR = 'NOM_RESU',
+                                               ATTR_REFE = 'DEPL'),
+                VALEUR=(
                 _F(  FONCTION = INT1, NOM_PARA = 'INST', CRITERE = 'ABSOLU',
                           VALE_PARA = INST0, VALE_REFE = SIa(INST0),
                      REFERENCE = 'ANALYTIQUE',),

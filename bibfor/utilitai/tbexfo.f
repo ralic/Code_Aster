@@ -5,7 +5,7 @@
      +                    PROLGD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,7 +124,8 @@ C
       CALL JEVEUO ( NOJVLY, 'L', JVALLY )
       NBVAL = 0
       DO 20 I = 1 , NBLIGN
-         IF ( ZL(JVALLX+I-1) .AND. ZL(JVALLY+I-1) )  NBVAL = NBVAL + 1
+         IF ( ZI(JVALLX+I-1).EQ.1 .AND.
+     +        ZI(JVALLY+I-1).EQ.1      )  NBVAL = NBVAL + 1
  20   CONTINUE
 C
 C     VERIF QU'ON A TROUVE QUELQUE CHOSE
@@ -147,7 +148,7 @@ C
       IF     ( TYPEX(1:1) .EQ. 'I'   ) THEN
          CALL WKVECT( NOMFON//'.VALE', BASE//' V I', NBVAL, KVALE )
          DO 30 I = 1 , NBLIGN
-            IF ( ZL(JVALLX+I-1) .AND. ZL(JVALLY+I-1) ) THEN
+            IF ( ZI(JVALLX+I-1).EQ.1 .AND. ZI(JVALLY+I-1).EQ.1 ) THEN
                IV = IV + 1
                ZI(KVALE+IV-1) = ZI(JVALEX+I-1)
                ZI(KVALE+NBFON+IV-1) = ZI(JVALEY+I-1)
@@ -156,7 +157,7 @@ C
       ELSEIF ( TYPEX(1:1) .EQ. 'R'   ) THEN
          CALL WKVECT( NOMFON//'.VALE', BASE//' V R', NBVAL, KVALE )
          DO 31 I = 1 , NBLIGN
-            IF ( ZL(JVALLX+I-1) .AND. ZL(JVALLY+I-1) ) THEN
+            IF ( ZI(JVALLX+I-1).EQ.1 .AND. ZI(JVALLY+I-1).EQ.1 ) THEN
                IV = IV + 1
                ZR(KVALE+IV-1) = ZR(JVALEX+I-1)
                ZR(KVALE+NBFON+IV-1) = ZR(JVALEY+I-1)
@@ -165,7 +166,7 @@ C
       ELSEIF ( TYPEX(1:1) .EQ. 'C'   ) THEN
          CALL WKVECT( NOMFON//'.VALE', BASE//' V C', NBVAL, KVALE )
          DO 32 I = 1 , NBLIGN
-            IF ( ZL(JVALLX+I-1) .AND. ZL(JVALLY+I-1) ) THEN
+            IF ( ZI(JVALLX+I-1).EQ.1 .AND. ZI(JVALLY+I-1).EQ.1 ) THEN
                IV = IV + 1
                ZC(KVALE+IV-1) = ZC(JVALEX+I-1)
                ZC(KVALE+NBFON+IV-1) = ZC(JVALEY+I-1)
@@ -174,7 +175,7 @@ C
       ELSEIF ( TYPEX(1:3) .EQ. 'K80' ) THEN
          CALL WKVECT( NOMFON//'.VALE', BASE//' V K80', NBVAL, KVALE )
          DO 33 I = 1 , NBLIGN
-            IF ( ZL(JVALLX+I-1) .AND. ZL(JVALLY+I-1) ) THEN
+            IF ( ZI(JVALLX+I-1).EQ.1 .AND. ZI(JVALLY+I-1).EQ.1 ) THEN
                IV = IV + 1
                ZK80(KVALE+IV-1) = ZK80(JVALEX+I-1)
                ZK80(KVALE+NBFON+IV-1) = ZK80(JVALEY+I-1)
@@ -183,7 +184,7 @@ C
       ELSEIF ( TYPEX(1:3) .EQ. 'K32' ) THEN
          CALL WKVECT( NOMFON//'.VALE', BASE//' V K32', NBVAL, KVALE )
          DO 34 I = 1 , NBLIGN
-            IF ( ZL(JVALLX+I-1) .AND. ZL(JVALLY+I-1) ) THEN
+            IF ( ZI(JVALLX+I-1).EQ.1 .AND. ZI(JVALLY+I-1).EQ.1 ) THEN
                IV = IV + 1
                ZK32(KVALE+IV-1) = ZK32(JVALEX+I-1)
                ZK32(KVALE+NBFON+IV-1) = ZK32(JVALEY+I-1)
@@ -192,7 +193,7 @@ C
       ELSEIF ( TYPEX(1:3) .EQ. 'K24' ) THEN
          CALL WKVECT( NOMFON//'.VALE', BASE//' V K24', NBVAL, KVALE )
          DO 35 I = 1 , NBLIGN
-            IF ( ZL(JVALLX+I-1) .AND. ZL(JVALLY+I-1) ) THEN
+            IF ( ZI(JVALLX+I-1).EQ.1 .AND. ZI(JVALLY+I-1).EQ.1 ) THEN
                IV = IV + 1
                ZK24(KVALE+IV-1) = ZK24(JVALEX+I-1)
                ZK24(KVALE+NBFON+IV-1) = ZK24(JVALEY+I-1)
@@ -201,7 +202,7 @@ C
       ELSEIF ( TYPEX(1:3) .EQ. 'K16' ) THEN
          CALL WKVECT( NOMFON//'.VALE', BASE//' V ZK16', NBVAL, KVALE )
          DO 36 I = 1 , NBLIGN
-            IF ( ZL(JVALLX+I-1) .AND. ZL(JVALLY+I-1) ) THEN
+            IF ( ZI(JVALLX+I-1).EQ.1 .AND. ZI(JVALLY+I-1).EQ.1 ) THEN
                IV = IV + 1
                ZK16(KVALE+IV-1) = ZK16(JVALEX+I-1)
                ZK16(KVALE+NBFON+IV-1) = ZK16(JVALEY+I-1)
@@ -210,7 +211,7 @@ C
       ELSEIF ( TYPEX(1:2) .EQ. 'K8'  ) THEN
          CALL WKVECT( NOMFON//'.VALE', BASE//' V ZK8', NBVAL, KVALE )
          DO 37 I = 1 , NBLIGN
-            IF ( ZL(JVALLX+I-1) .AND. ZL(JVALLY+I-1) ) THEN
+            IF ( ZI(JVALLX+I-1).EQ.1 .AND. ZI(JVALLY+I-1).EQ.1 ) THEN
                IV = IV + 1
                ZK8(KVALE+IV-1) = ZK8(JVALEX+I-1)
                ZK8(KVALE+NBFON+IV-1) = ZK8(JVALEY+I-1)

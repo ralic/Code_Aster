@@ -15,7 +15,7 @@ C
       REAL*8            BORSUP,     BORINF
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -263,7 +263,7 @@ C         MAILLAGE DONT ON DEMANDE L'IMPRESSION.
         CALL GETFAC('RESU',NOCC)
         DO 14 IOCC=1,NOCC
           CALL GETVID('RESU','MAILLAGE',IOCC,1,1,NOMACM,NM)
-          IF(NM.NE.0) CALL GETVTX('RESU','FORMAT',IOCC,1,1,FORMCM,N)
+          IF(NM.NE.0) CALL GETVTX(' ','FORMAT',1,1,1,FORMCM,N)
           IF(FORMCM(1:7).EQ.'ENSIGHT') THEN
             LMAYAE=.TRUE.
             GO TO 15

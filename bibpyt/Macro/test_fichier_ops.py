@@ -1,4 +1,4 @@
-#@ MODIF test_fichier_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF test_fichier_ops Macro  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,7 +39,27 @@ def test_fichier_ops(self, UNITE, NOM_SYSTEME, NB_CHIFFRE, EPSILON, VALE_K, INFO
    TEST_TABLE      = self.get_cmd('TEST_TABLE')
 
    import os.path
+   import re
+   from types import StringType
    from Macro.test_fichier_ops import md5file
+
+   # vérifie la syntaxe des expressions régulières fournies
+   l_regexp=[]
+   if args['EXPR_IGNORE']:
+      if type(args['EXPR_IGNORE']) is StringType:
+         lexp = [args['EXPR_IGNORE']]
+      else:
+         lexp = args['EXPR_IGNORE']
+      for exp in lexp:
+         try:
+            obj=re.compile(exp)
+         except re.error, s:
+            print '<F> <TEST_FICHIER> <INVALID_REGEXP> '+str(s)+' pour "'+exp+'"'
+         else:
+            l_regexp.append(exp)
+      if len(l_regexp) < len(lexp):
+         self.cr.fatal(' <F> <TEST_FICHIER> Expression régulière invalide (voir <INVALID_REGEXP>)')
+
 
    is_ok=0
 
@@ -52,7 +72,7 @@ def test_fichier_ops(self, UNITE, NOM_SYSTEME, NB_CHIFFRE, EPSILON, VALE_K, INFO
    # fichier correctement fermé
    else:
       # calcule le md5sum du fichier
-      ier, mdsum = md5file(NOM_SYSTEME, NB_CHIFFRE, EPSILON, INFO)
+      ier, mdsum = md5file(NOM_SYSTEME, NB_CHIFFRE, EPSILON, l_regexp, INFO)
       if ier != 0:
          if ier==4:
             texte_erreur='Fichier inexistant : '+NOM_SYSTEME
@@ -103,14 +123,16 @@ def test_fichier_ops(self, UNITE, NOM_SYSTEME, NB_CHIFFRE, EPSILON, VALE_K, INFO
    return ier
 
 
-def md5file(fich,nbch,epsi,info=0):
+def md5file(fich,nbch,epsi,regexp_ignore=[],info=0):
    """
    Cette methode retourne le md5sum d'un fichier en arrondissant les nombres
    reels a la valeur significative.
    IN :
-      fich  : nom du fichier
-      nbch : nombre de decimales significatives
-      epsi  : valeur en deca de laquelle on prend 0.
+      fich          : nom du fichier
+      nbch          : nombre de decimales significatives
+      epsi          : valeur en deca de laquelle on prend 0
+      regexp_ignore : liste d'expressions régulières permettant d'ignorer
+         certaines lignes
    OUT :
       code retour : 0 si ok, >0 sinon
       md5sum
@@ -130,23 +152,34 @@ def md5file(fich,nbch,epsi,info=0):
    format_float='%'+str(nbch+7)+'.'+str(nbch)+'g'
    m=md5.new()
    i=0
-   for ligne in f.xreadlines():
-#python2.3   for ligne in f:
+   for ligne in f:
       i=i+1
+      if info>=2:
+         print 'LIGNE',i,
       # pour decouper 123E+987-1.2345
    #    r=re.split(' +|([0-9]+)\-+',ligne)
-      r=string.split(ligne)
-      for x in r:
-         try:
-            if abs(float(x))<epsi:
-               s='0'
-            else:
-               s=format_float % float(x)
-         except ValueError:
-            s=x
-         if info>=2:
-            print 'LIGNE',i,'VALEUR RETENUE',s
-         m.update(s)
+      keep=True
+      for exp in regexp_ignore:
+         if re.search(exp,ligne):
+            keep=False
+            if info>=2:
+               print ' >>>>>>>>>> IGNOREE <<<<<<<<<<',
+            break
+      if keep:
+         r=string.split(ligne)
+         for x in r:
+            try:
+               if abs(float(x))<epsi:
+                  s='0'
+               else:
+                  s=format_float % float(x)
+            except ValueError:
+               s=x
+            if info>=2:
+               print ' %s' % s,
+            m.update(s)
+      if info>=2:
+         print
    f.close()
    md5sum=m.hexdigest()
    if info>=1:
