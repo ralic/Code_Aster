@@ -2,7 +2,7 @@
      +                  IWRITE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 28/02/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -90,7 +90,7 @@ C
       CHARACTER*16 INTER
       CHARACTER*3  NOQU
       
-      REAL*8       DIST1,DIST2,LAMB,GEOM
+      REAL*8       DIST1,DIST2,LAMB,GEOM,ALJEU
       REAL*8       DIR(3),COEF,SEUIL
       REAL*8       COEFRO,COEFPN,COEFPT,COEFTE
 
@@ -111,6 +111,7 @@ C
       DIST2  = 0.D0
       LAMB   = 0.D0
       GEOM   = 0.D0
+      ALJEU  = -1.D0
 C
 C --- NOM DU CONCEPT RESULTAT D'AFFE_CHAR_MECA
 C
@@ -167,7 +168,10 @@ C ----------------------------------------------------------------------
             ZI(JMETH+ZMETH* (IWRITE-1)+6) = 0
           ELSE
             ZI(JMETH+ZMETH* (IWRITE-1)+6) = 7
+            CALL GETVR8(MOTFAC,'ALARME_JEU',IREAD,1,1,ALJEU,NOC)
+            ZR(JTOLE+ZTOLE*(IWRITE-1)+3)  = ALJEU
           ENDIF
+         
       ELSE IF (TYPM(1:8).EQ.'CONTINUE') THEN
           ZI(JMETH+ZMETH* (IWRITE-1)+6) = 6
       ELSE IF (TYPM(1:5).EQ.'VERIF') THEN

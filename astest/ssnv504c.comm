@@ -1,5 +1,5 @@
 
-# MODIF  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 28/02/2005   AUTEUR MABBAS M.ABBAS 
 # TITRE EXTRUSION D'UN LOPIN CONTACT GLISSIERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -135,6 +135,7 @@ CH2=AFFE_CHAR_MECA(MODELE=MO,
                                RECHERCHE='NOEUD_BOUCLE',
                                METHODE='CONTRAINTE',
                                GLISSIERE = 'OUI',
+                               ALARME_JEU = 0.1,
 
                                REAC_GEOM='AUTOMATIQUE',
                             #   NB_REAC_GEOM=2,

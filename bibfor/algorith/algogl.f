@@ -2,7 +2,7 @@
      &                  DEPTOT,LICCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 28/02/2005   AUTEUR MABBAS M.ABBAS 
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -107,27 +107,29 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      ZCONV
       PARAMETER    (ZCONV=3)
+      INTEGER      ZTOLE
+      PARAMETER    (ZTOLE=4)
       CHARACTER*24 K24BID
       COMPLEX*16   CBID
       INTEGER      IBID
       LOGICAL      TROUAC,DELPOS,GCPC,LELPIV
       CHARACTER*19 MATASS,MATAS1,MATPRE
       INTEGER      IER,IFM,NIV,NDECI,ISINGU,NPVNEG,IZONE
-      INTEGER      II,KK,ITER,ILIAC,NEQMAX
+      INTEGER      II,KK,ITER,ILIAC,NEQMAX,IALARM
       INTEGER      JRESU,JDEPP     
       INTEGER      INDIC,LLMIN
       INTEGER      LLIAC,JDECAL,LLF,LLF1,LLF2
       INTEGER      INDFAC,AJLIAI,SPLIAI,POSIT,SPAVAN
       INTEGER      NEQ,NESCL,NBLIAC,NBLIAI,NBDDL,NDIM,NESMAX
       REAL*8       R8MAEM,AJEU,RHO,RHORHO,AADELT,VAL,R8PREM
-      REAL*8       XJVMAX,X1
+      REAL*8       XJVMAX,X1,ALJEU
       CHARACTER*1  TYPEAJ
       CHARACTER*2  TYPEC0
       CHARACTER*24 MACONT
       CHARACTER*24 APPARI,APPOIN,APCOEF,APJEU,APDDL,COEFMU,NOZOCO
       INTEGER      JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JCMU,JZOCO
-      CHARACTER*24 CONTNO,CONTMA,CONVCO
-      INTEGER      JNOCO,JMACO,JCONV
+      CHARACTER*24 CONTNO,CONTMA,CONVCO,TOLECO
+      INTEGER      JNOCO,JMACO,JCONV,JTOLE
       CHARACTER*19 LIAC,MU,DELT0,DELTA,CM1A,COCO,LIOT,ATMU
       INTEGER      JLIAC,JMU,JDELT0,JDELTA,JCM1A,JCOCO,JLIOT,JATMU
       CHARACTER*19 CHASEC,CHASOL,SOLVEU
@@ -177,6 +179,7 @@ C ======================================================================
       CM1A   = RESOCO(1:14)//'.CM1A'
       ATMU   = RESOCO(1:14)//'.ATMU'
       COCO   = RESOCO(1:14)//'.COCO'
+      TOLECO = DEFICO(1:16)//'.TOLECO'
       MACONT = ZK24(ZI(LDSCON+1))
       SOLVEU = '&&OP0070.SOLVEUR'
 C ======================================================================
@@ -197,10 +200,12 @@ C ======================================================================
       CALL JEVEUO(COEFMU,'L',JCMU)
       CALL JEVEUO(DELT0,'E',JDELT0)
       CALL JEVEUO(DELTA,'E',JDELTA)
+      CALL JEVEUO(TOLECO,'L',JTOLE)
       CALL JEVEUO(RESU(1:19)//'.VALE','E',JRESU)
       CALL JEVEUO(DEPTOT(1:19)//'.VALE','E',JDEPP)
       CALL JEECRA(MACONT(1:19)//'.REFA','DOCU',IBID,'ASSE')
       CALL JEVEUO(SOLVEU//'.SLVK','L',JSLVK)
+
 C ======================================================================
 C --- INITIALISATION DE VARIABLES 
 C --- NESCL  : NOMBRE DE NOEUDS ESCLAVES SUSCEPTIBLES D'ETRE EN CONTACT
@@ -243,6 +248,7 @@ C ======================================================================
       ITEMUL = 2
       ITEMAX = ITEMUL*NBLIAI
       ISTO   = ZI(JCONV+ZCONV*(IZONE-1))
+      ALJEU  = ZR(JTOLE+ZTOLE*(IZONE-1)+3)
       NESMAX = 0
       LLF    = 0 
       LLF1   = 0 
@@ -299,6 +305,7 @@ C ======================================================================
       IF ( NIV .EQ. 2 ) THEN 
         WRITE(IFM,*)'<CONTACT> <> LIAISONS INITIALES '
       ENDIF
+      IALARM = 0
       IF (NBLIAC.EQ.0) THEN
         ZI(JLIOT+4*NBLIAI) = 0
         DO 30 II = 1,NBLIAI
@@ -307,6 +314,16 @@ C ======================================================================
           CALL CALADU(NEQ,NBDDL,ZR(JAPCOE+JDECAL),ZI(JAPDDL+JDECAL),
      &                ZR(JDELT0),VAL)
           AJEU = ZR(JAPJEU+II-1) - VAL
+          IF (AJEU.GT.ALJEU) THEN
+            IALARM = IALARM+1
+            IF (IALARM.EQ.1) THEN
+               CALL UTMESS('A','ALGOGL',
+     &                  'DES NOEUDS SE DECOLLENT PLUS QUE LA VALEUR'//
+     &                  ' D''ALARME_JEU:')
+            ENDIF
+            CALL CFIMP2(IFM,NOMA,II,TYPEC0,'N','ALJ',AJEU,
+     &                    JAPPAR,JNOCO,JMACO)            
+          ENDIF
           INDIC = 0
           POSIT = NBLIAC + 1
           CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,

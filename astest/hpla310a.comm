@@ -1,4 +1,4 @@
-# MODIF  DATE 24/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 01/03/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE BIBLIO_49 FISSURE RADIALE EXTERNE SOUMIS A UN CHOC THERMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -610,7 +610,7 @@ CHDEP3B=STAT_NON_LINE(
                 LIST_INST = L_INST3),
                        CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 7,
-                RESI_GLOB_RELA = 1.0E-4)
+                RESI_GLOB_RELA = 1.0E-6)
               )
 
 CALC_ELEM( reuse=CHDEP3B,

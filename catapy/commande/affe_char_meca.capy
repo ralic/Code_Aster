@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 28/02/2005   AUTEUR MABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -370,6 +370,9 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
                                       into=("DEPL","PRES","TEMP","PRE1","PRE2")),
                 GLISSIERE       =SIMP(statut='f',typ='TXM',defaut="NON",
                                       into=("OUI","NON")),
+                b_glissiere     =BLOC(condition = "GLISSIERE == 'OUI' ",                    
+                      ALARME_JEU  =SIMP(statut='f',typ='R',defaut=0.),
+                                 ),
                 TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),
                 TOLE_PROJ_INT   =SIMP(statut='f',typ='R'  ,defaut=0.001),
                 TOLE_REAC_GEOM  =SIMP(statut='f',typ='R'  ,defaut=0.05),
