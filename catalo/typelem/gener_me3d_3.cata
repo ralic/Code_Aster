@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 19/10/2004   AUTEUR F6BHHBO P.DEBONNIERES 
+%& MODIF TYPELEM  DATE 18/01/2005   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -163,6 +163,7 @@ MATRICE__
     MMATUUC = MDEP_C NDEPLAC NDEPLAC
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
+
 OPTION__
     ADD_SIGM            581   IN__   ECONTPG  PEPCON1  ECONTPG  PEPCON2
                               OUT__  ECONTPG  PEPCON3
@@ -523,6 +524,8 @@ OPTION__
                                      CMATERC  PMATERC  CMATERC  PMATSEN  NTEMPER  PTEMPER  CTEREFE  PTEREF
                                      NTEMPER  PSECHER  CTEREFE  PSECREF  EHYDRER  PHYDRER
                               OUT__  ECONTNO  PCONTRR
+    SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
+                              OUT__  MMATUUR  PSYM
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGGA  PDOMMAG  EFACY_R  PFACY_R  EGGEOM_R PGEOM_R  EHYDRER  PHYDR_R
                                      EGINST_R PINST_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R

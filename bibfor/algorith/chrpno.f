@@ -1,6 +1,6 @@
       SUBROUTINE CHRPNO( CHAMP1, REPERE, NBCMP, ICHAM, TYPE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2003   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ALGORITH  DATE 17/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,8 +58,8 @@ C
       REAL*8       ORIG(3)  , AXEZ(3) , AXER(3) , AXET(3)
       REAL*8       EPSI     , PROSCA  , XNORMR  , VALET(6)
       REAL*8       R8DGRD, PGL2(3,3)
-      CHARACTER*8  MA    , K8B, TYPMCL(2)
-      CHARACTER*16 MOTCLE(2)
+      CHARACTER*8  MA    , K8B, TYPMCL(4)
+      CHARACTER*16 MOTCLE(4)
       CHARACTER*19 CHAMS1,CHAMS0
       CHARACTER*24 MESNOE
 
@@ -69,6 +69,10 @@ C
       TYPMCL(1) = 'GROUP_NO'
       MOTCLE(2) = 'NOEUD'
       TYPMCL(2) = 'NOEUD'
+      MOTCLE(3) = 'GROUP_MA'
+      TYPMCL(3) = 'GROUP_MA'
+      MOTCLE(4) = 'MAILLE'
+      TYPMCL(4) = 'MAILLE'
       MESNOE = '&&CHRPEL.MES_NOEUDS'
 C
       IF (NBCMP.GT.0) THEN
@@ -98,8 +102,10 @@ C
       IF (K8B.EQ.'OUI') NDIM = 2
       CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMA,K8B,IER)
 C
-      CALL RELIEM(' ',MA,'NU_NOEUD','MODI_CHAM',ICHAM,2,MOTCLE,TYPMCL,
+
+      CALL RELIEM(' ',MA,'NU_NOEUD','MODI_CHAM',ICHAM,4,MOTCLE,TYPMCL,
      +                                                  MESNOE,NBN)
+
       IF (NBN.GT.0) THEN
         NBNOEU = NBN
         CALL JEVEUO(MESNOE,'L',IDNOEU)
@@ -168,7 +174,7 @@ C
          ANGNOT(3) = ANGNOT(3)*R8DGRD()
          CALL MATROT(ANGNOT,PGL)
          IF (TYPE(1:4).EQ.'TENS') THEN
-            DO 10 INO=1,NBNO
+            DO 10 INO=1,NBNOEU
                IF (NBN.NE.0) THEN
                  INOE = ZI(IDNOEU+INO-1)
                ELSE
@@ -198,7 +204,7 @@ C
  10         CONTINUE
          ELSE
 C VECTEUR
-            DO 13 INO=1,NBNO
+            DO 13 INO=1,NBNOEU
                IF (NBN.NE.0) THEN
                  INOE = ZI(IDNOEU+INO-1)
                ELSE
@@ -256,8 +262,8 @@ C REPERE CYLINDRIQUE
                LICMPU(3)=3
                LICMPU(4)=5
             ENDIF
-            
-            DO 16 INO = 1 , NBNO
+  
+            DO 16 INO = 1 , NBNOEU
                IF (NBN.NE.0) THEN
                  INOE = ZI(IDNOEU+INO-1)
                ELSE
@@ -378,7 +384,8 @@ C VECTEUR
                LICMPU(2)=3
                LICMPU(3)=2
             ENDIF
-            DO 23 INO = 1 , NBNO
+
+              DO 23 INO = 1 , NBNOEU
                IF (NBN.NE.0) THEN
                  INOE = ZI(IDNOEU+INO-1)
                ELSE
@@ -434,7 +441,6 @@ C VECTEUR
                         ENDIF
  25                  CONTINUE
  24               CONTINUE
- 
 C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                   IF (IPT2.EQ.0) THEN
                      DO 124 II=1,NBCMP
@@ -442,7 +448,6 @@ C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
 124                  CONTINUE
                      GOTO 23
                   ENDIF
-
                   AXER(1) = AXER(1) - ORIG(1)
                   AXER(2) = AXER(2) - ORIG(2)
                   AXER(3) = AXER(3) - ORIG(3)

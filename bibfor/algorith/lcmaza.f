@@ -3,7 +3,7 @@
      &                   HYDRM,HYDRP,SECHM,SECHP,SREF,
      &                   OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 18/01/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -444,10 +444,7 @@ C ------------------------------------------------------------
           DO 220 I=1,6
             DO 221 J=1,6
               DSIDEP (I,J) = DSIDEP (I,J) - 
-     &                    COEF * SIGEL(I)* EPSPLU(J)/2.D0
-              DSIDEP (J,I) = DSIDEP (J,I) - 
-     &                    COEF * SIGEL(I)* EPSPLU(J)/2.D0
-       
+     &                    COEF * SIGEL(I)* EPSPLU(J)
 221         CONTINUE
 220       CONTINUE
 

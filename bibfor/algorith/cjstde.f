@@ -1,8 +1,8 @@
-       SUBROUTINE CJSTDE ( MOD, MATER, NVI, EPS, SIG, VIN, DSDESY )
+       SUBROUTINE CJSTDE ( MOD, MATER, NVI, EPS, SIG, VIN, DSDE )
         IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 18/01/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,11 +28,11 @@ C          NVI     :  NB DE VARIABLES INTERNES
 C          EPS     :  DEFORMATIONS
 C          SIG     :  CONTRAINTES
 C          VIN     :  VARIABLES INTERNES
-C     OUT  DSDESY  :  MATRICE TANGENTE SYMETRISEE
+C     OUT  DSDESY  :  MATRICE TANGENTE
 C       ----------------------------------------------------------------
 C ======================================================================
         INTEGER      NDT, NDI , NVI, I, J
-        REAL*8       MATER(14,2), VIN(*), SIG(6), DSDE(6,6), DSDESY(6,6)
+        REAL*8       MATER(14,2), VIN(*), SIG(6), DSDE(6,6)
         REAL*8       HOOK(6,6), I1, EPS(6), EPSV, E, NU, AL, LA, MU
         REAL*8       R, GR, X(6), GX(6), XII, DFDDS(6), GD(6), KRON(6)
         REAL*8       S(6), SII, HTS, SIIC, NORM(6), EPSSIG, SIIREL, PREF
@@ -254,17 +254,13 @@ C                         HDEV  +  DFDDS(R,S) HOOK(R,S,T,U) GD(T,U)
 C
 C --- C'EST A DIRE :  DSDE = HOOK - HGD.DFH / ( HDEV + DFHGD ) ---------
 C ======================================================================
-        CALL LCINMA ( 0.D0, DSDE )
-        DO 150 I = 1, NDT
-        DO 150 J = 1, NDT
-           DSDE(I,J) = HOOK(I,J) - HGD(I)*DFH(J) / (HDEV+DFHGD)
+        DO 150 I = 1, 6
+        DO 150 J = 1, 6
+           DSDE(I,J) = 0.D0
   150   CONTINUE
-C ======================================================================
-C --- SYMETRISATION DE DSDE --------------------------------------------
-C ======================================================================
         DO 160 I = 1, NDT
         DO 160 J = 1, NDT
-           DSDESY(I,J) = ( DSDE(I,J) + DSDE(J,I) ) / DEUX
+           DSDE(I,J) = HOOK(I,J) - HGD(I)*DFH(J) / (HDEV+DFHGD)
   160   CONTINUE
 C ======================================================================
         CALL JEDEMA ()

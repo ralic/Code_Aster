@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+%& MODIF TYPELEM  DATE 18/01/2005   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,6 +87,7 @@ VECTEUR__
 
 MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
+    MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
     CHAR_LIMITE         483   IN__   NDEPLAR  PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER
@@ -176,6 +177,8 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     SIEF_ELNO_ELGA      20    IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR
+    SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
+                              OUT__  MMATUUR  PSYM
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EHYDRER  PHYDR_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER

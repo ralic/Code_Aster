@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 17/01/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C 0.3. ==> VARIABLES LOCALES
       INTEGER IBID,NBV,NBTROU,NSTAR,J,IREST
       INTEGER TE,TYPELE,NBGREL,NFIC,NBELEM,IGR
       INTEGER MFICH,N1,PRECIS,JINST,ITPS
-      INTEGER LNOMA,IFM,NIV,ULISOP
+      INTEGER LNOMA,IFM,NIV,ULISOP,I0
       REAL*8 EPSI
       CHARACTER*1 KBID
       CHARACTER*4 ACCE
@@ -106,7 +106,7 @@ C 0.3. ==> VARIABLES LOCALES
 
       CHARACTER*8 CHANOM,NOMGD
       INTEGER NUMPT,NUMORD,INUM
-      INTEGER NBCMPV,IAUX
+      INTEGER NBCMPV,IAUX,NPAS0,JSNI,ITPS0
 
       INTEGER IINST
       REAL*8 INST
@@ -185,10 +185,13 @@ C     --- MODELE ---
 
 
 C     --- QUELS SONT LES INSTANTS A RELIRE ---
+      NNU=0
+      NIS=0
       CALL GETVTX(' ','TOUT_ORDRE',0,1,1,K8B,NTO)
       IF (NTO.NE.0) THEN
         ACCES = 'TOUT_ORDRE'
         NBORDR = 100
+        IINST=0
         GO TO 20
       END IF
 
@@ -199,12 +202,14 @@ C     --- QUELS SONT LES INSTANTS A RELIRE ---
         NBORDR = -NNU
         CALL WKVECT(LISTIS//'.VALE','V V I',NBORDR,JNUME)
         CALL GETVIS(' ','NUME_ORDRE',0,1,NBORDR,ZI(JNUME),N1)
+        IINST=0
         GO TO 20
       END IF
 
       CALL GETVID(' ','LIST_ORDRE',0,1,1,LISTIS,NNU)
       IF (NNU.NE.0) THEN
         ACCES = 'LIST_ORDRE'
+        IINST=0
         CALL JEVEUO(LISTIS//'.VALE','L',JNUME)
         CALL JELIRA(LISTIS//'.VALE','LONMAX',NBORDR,K8B)
         GO TO 20
@@ -215,6 +220,7 @@ C     --- QUELS SONT LES INSTANTS A RELIRE ---
         ACCES = 'INST'
         LISTR8 = '&&'//NOMPRO
         NBORDR = -NIS
+        IINST=1
         CALL WKVECT(LISTR8//'.VALE','V V R',NBORDR,JLIST)
         CALL GETVR8(' ','INST',0,1,NBORDR,ZR(JLIST),N1)
         GO TO 20
@@ -223,6 +229,7 @@ C     --- QUELS SONT LES INSTANTS A RELIRE ---
       CALL GETVID(' ','LIST_INST',0,1,1,LISTR8,NIS)
       IF (NIS.NE.0) THEN
         ACCES = 'LIST_INST'
+        IINST=1
         CALL JEVEUO(LISTR8//'.VALE','L',JLIST)
         CALL JELIRA(LISTR8//'.VALE','LONMAX',NBORDR,K8B)
         GO TO 20
@@ -233,6 +240,7 @@ C     --- QUELS SONT LES INSTANTS A RELIRE ---
         ACCES = 'FREQ'
         LISTR8 = '&&'//NOMPRO
         NBORDR = -NIS
+        IINST=1
         CALL WKVECT(LISTR8//'.VALE','V V R',NBORDR,JLIST)
         CALL GETVR8(' ','FREQ',0,1,NBORDR,ZR(JLIST),N1)
         GO TO 20
@@ -241,6 +249,7 @@ C     --- QUELS SONT LES INSTANTS A RELIRE ---
       CALL GETVID(' ','LIST_FREQ',0,1,1,LISTR8,NIS)
       IF (NIS.NE.0) THEN
         ACCES = 'LIST_FREQ'
+        IINST=1
         CALL JEVEUO(LISTR8//'.VALE','L',JLIST)
         CALL JELIRA(LISTR8//'.VALE','LONMAX',NBORDR,K8B)
         GO TO 20
@@ -689,9 +698,8 @@ C     --------------------------------------------
             CALL JEVEUO(PREFIX//'.INST','L',IPAS)
             CALL JEVEUO(PREFIX//'.NUME','L',INUM)
 
-C CREATION D UN PROF_CHNO COMMUN A TOUS LES CHAM_NO
-
-            CALL GCNCON('_',NPRFCN)
+C     CREATION D UN PROF_CHNO COMMUN A TOUS LES CHAM_NO
+            NPRFCN=RESU
             NOMPRN = NPRFCN//'.PROF_CHNO '
 
           ELSE IF (TYPCHA(1:2).EQ.'EL') THEN
@@ -712,18 +720,54 @@ C CREATION D UN PROF_CHNO COMMUN A TOUS LES CHAM_NO
           END IF
   240     CONTINUE
 
+C
+C   
+         IF(ACCES.NE.'TOUT_ORDRE')THEN
+             NPAS0=NBORDR
+         ELSE
+             NPAS0=NPAS
+         ENDIF
+ 
+C     DETERMINATION DES NUMEROS D'INSTANT POUR UNE SELECTION
+C     DE NUMEROS D'ORDRE 
+         IF(NNU.NE.0)THEN
+            CALL JEEXIN('&&SELECT_NUM_INST',IRET)
+            IF(IRET.NE.0)CALL JEDETR('&&SELECT_NUM_INST')
+            CALL WKVECT('&&SELECT_NUM_INST','V V I',NPAS0,JSNI)
+            DO 241 IORD=1,NPAS0
+               DO 242 I0=1,NPAS
+                  IF(ZI(INUM+2*I0-1).EQ.ZI(JNUME+IORD-1))THEN
+                     GOTO 243
+                  ENDIF
+ 242           CONTINUE
+ 243        CONTINUE
+            ZI(JSNI+IORD-1)=I0
+ 241        CONTINUE                    
+         ENDIF
+
+
 C     -- BOUCLE SUR LES PAS DE TEMPS
 C     --------------------------------------------
 
-          DO 250 ITPS = 1,NPAS
+          DO 250 ITPS = 1,NPAS0
             CHANOM = '&&CHTEMP'
             K32B = '                                '
-            NUMPT = ZI(INUM+2*ITPS-2)
-            NUMORD = ZI(INUM+2*ITPS-1)
-            IINST = 0
+C
+            IF(NNU.NE.0)THEN
+              NUMORD = ZI(JNUME+ITPS-1)
+              ITPS0 = ZI(JSNI+ITPS-1)
+              NUMPT = ZI(INUM+2*ITPS0-2)
+            ELSEIF(NTO.NE.0)THEN
+              NUMORD = ZI(INUM+2*ITPS-1)
+              NUMPT  = ZI(INUM+2*ITPS-2)
+            ELSEIF(NIS.NE.0)THEN
+              INST = ZR(JLIST+ITPS-1)
+            ENDIF
+C           
             CALL LRCHME(CHANOM,NOCHMD,K32B,NOMA,TYPCHA,NOMGD,NBCMPV,
      &                  NCMPVA,NCMPVM,IINST,NUMPT,NUMORD,INST,CRIT,EPSI,
      &                  MFICH,NOMPRN,IRET)
+
 
             IF (NUMORD.EQ.EDNONO) THEN
               NUMORD = NUMPT
@@ -745,7 +789,13 @@ C     --------------------------------------------
             CALL COPISD('CHAMP_GD','G',CHANOM,NOMCH)
             CALL RSNOCH(RESU,LINOCH(I),NUMORD,' ')
             CALL RSADPA(RESU,'E',1,'INST',NUMORD,0,JINST,K8B)
-            ZR(JINST) = ZR(IPAS-1+ITPS)
+            IF(NIS.NE.0)THEN
+               ZR(JINST) = INST
+            ELSEIF(NNU.NE.0)THEN
+               ZR(JINST) = ZR(IPAS-1+ITPS0)
+            ELSEIF(NTO.NE.0)THEN
+               ZR(JINST) = ZR(IPAS-1+ITPS)
+            ENDIF
             IF (TYPCHA(1:2).EQ.'NO') THEN
               CALL DETRSD('CHAM_NO',CHANOM)
             ELSE
@@ -819,6 +869,5 @@ C     --------------------------------------------
       CALL UTFINM
 
   300 CONTINUE
-
       CALL JEDEMA()
       END

@@ -1,8 +1,8 @@
-       SUBROUTINE CJSTID ( MOD, MATER, NVI, EPS, SIG, VIN, DSDESY )
+       SUBROUTINE CJSTID ( MOD, MATER, NVI, EPS, SIG, VIN, DSDE )
         IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 18/01/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C          VIN     :  VARIABLES INTERNES
 C     OUT  DSDESY  :  MATRICE TANGENTE SYMETRISEE
 C ======================================================================
         INTEGER     NDT, NDI , NVI, I, J
-        REAL*8      MATER(14,2), VIN(*), SIG(6), DSDE(6,6), DSDESY(6,6)
+        REAL*8      MATER(14,2), VIN(*), SIG(6), DSDE(6,6)
         REAL*8      HOOK(6,6), I1, S(6), SII, HTS, SIIC, NORM(6)
         REAL*8      EPS(6), EPSV, TRACE, COS3T, HLODE, BETA, BETAPR, M
         REAL*8      QISO, R, GR, X(6), GX(6), XII, GAMMA, MUCJS
@@ -304,18 +304,14 @@ C                  - HOOK(I,J,M,N)*GD(M,N)*T2(K,L)
 C ======================================================================
 C --- C'EST A DIRE :  DSDE = HOOK - HK*T1/TROIS - HGD*T2 ---------------
 C ======================================================================
-        CALL LCINMA ( 0.D0, DSDE )
+        DO 190 I = 1, 6
+        DO 190 J = 1, 6
+           DSDE(I,J) = 0.D0
+  190   CONTINUE
         DO 200 I = 1, NDT
         DO 200 J = 1, NDT
            DSDE(I,J) = HOOK(I,J) - HK(I)*T1(J)/TROIS - HGD(I)*T2(J)
   200   CONTINUE
-C ======================================================================
-C --- SYMETRISATION DE DSDE --------------------------------------------
-C ======================================================================
-        DO 210 I = 1, NDT
-        DO 210 J = 1, NDT
-           DSDESY(I,J) = ( DSDE(I,J) + DSDE(J,I) ) / DEUX
-  210   CONTINUE
 C ======================================================================
         CALL JEDEMA ()
 C ======================================================================

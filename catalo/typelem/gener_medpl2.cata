@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 15/11/2004   AUTEUR ROMEO R.FERNANDES 
+%& MODIF TYPELEM  DATE 18/01/2005   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -539,6 +539,8 @@ OPTION__
     SIRE_ELNO_DEPL      376   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER
                                      CTEREFE  PTEREF
                               OUT__  ECONTNO  PCONTRR
+    SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
+                              OUT__  MMATUUR  PSYM
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  EERREUR  PERREUR
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER

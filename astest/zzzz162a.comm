@@ -1,4 +1,4 @@
-# MODIF  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 17/01/2005   AUTEUR REZETTE C.REZETTE 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -179,6 +179,80 @@ TEMPE=LIRE_RESU(TYPE_RESU='EVOL_THER',
                                  NOM_CHAM    ='TEMP',),
                 TOUT_ORDRE='OUI',);
 
+# ----------------------------------------------------------------------------
+# VALIDATION DE LIRE_RESU FORMAT 'MED' POUR UNE LISTE D'INSTANTS
+# ET/OU NUMEROS D'ORDRE: (1/2)
+
+
+TEMP0=LIRE_RESU(TYPE_RESU='EVOL_THER',
+                FORMAT='MED',
+                MAILLAGE=MAIL,
+                UNITE=70,
+                FORMAT_MED=_F(   NOM_CHAM_MED='TEMPE1__TEMP____________________',
+                                 NOM_CMP_IDEM='OUI',
+                                 NOM_CHAM    ='TEMP',),
+                NUME_ORDRE=(1,4,2),);
+
+
+TEST_RESU ( RESU=(  
+                     _F(  RESULTAT   = TEMP0,
+                         NOM_CHAM   = 'TEMP',
+                         NUME_ORDRE = 1,
+                         REFERENCE  = 'AUTRE_ASTER',
+                         NOEUD     = 'N1',
+                         NOM_CMP    = 'TEMP',
+                         VALE       = 6.66660E+01       ),
+                    _F(  RESULTAT   = TEMP0,
+                         NOM_CHAM   = 'TEMP',
+                         NUME_ORDRE = 4,
+                         REFERENCE  = 'AUTRE_ASTER',
+                         NOEUD     = 'N1',
+                         NOM_CMP    = 'TEMP',
+                         VALE       = 8.50000E+01       ), 
+                    _F(  RESULTAT   = TEMP0,
+                         NOM_CHAM   = 'TEMP',
+                         NUME_ORDRE = 2,
+                         REFERENCE  = 'AUTRE_ASTER',
+                         NOEUD     = 'N1',
+                         NOM_CMP    = 'TEMP',
+                         VALE       = 7.33330E+01       ), 
+                    ),)
+
+
+DETRUIRE(CONCEPT=_F(NOM=TEMP0))
+
+TEMP0=LIRE_RESU(TYPE_RESU='EVOL_THER',
+                FORMAT='MED',
+                MAILLAGE=MAIL,
+                UNITE=70,
+                FORMAT_MED=_F(   NOM_CHAM_MED='TEMPE1__TEMP____________________',
+                                 NOM_CMP_IDEM='OUI',
+                                 NOM_CHAM    ='TEMP',),
+                INST=(85.,73.33,),);
+
+
+TEST_RESU ( RESU=(  
+                    _F(  RESULTAT   = TEMP0,
+                         NOM_CHAM   = 'TEMP',
+                         INST       = 8.50000E+01,
+                         REFERENCE  = 'AUTRE_ASTER',
+                         NOEUD     = 'N1',
+                         NOM_CMP    = 'TEMP',
+                         VALE       = 8.50000E+01       ), 
+                   _F(  RESULTAT   = TEMP0,
+                         NOM_CHAM   = 'TEMP',
+                         INST       = 7.33330E+01,
+                         REFERENCE  = 'AUTRE_ASTER',
+                         NOEUD     = 'N1',
+                         NOM_CMP    = 'TEMP',
+                         VALE       = 7.33330E+01       ), 
+                    ),)
+
+
+DETRUIRE(CONCEPT=_F(NOM=TEMP0))
+
+#---------------------------------------------------------------------------------
+
 CHMECA=AFFE_CHAR_MECA(MODELE=MOMECA,
                       TEMP_CALCULEE=TEMPE,
                       DDL_IMPO=(_F(GROUP_NO='GRNO1',
@@ -218,6 +292,45 @@ UUU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
                          ) ,
               UNITE=71,
               TOUT_ORDRE='OUI',);
+
+
+# ----------------------------------------------------------------------------
+# VALIDATION DE LIRE_RESU FORMAT 'MED' POUR UNE LISTE D'INSTANTS
+# ET/OU NUMEROS D'ORDRE: (2/2)
+
+
+
+
+UUU0=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
+              FORMAT='MED',
+              MODELE=MOMECA,
+              FORMAT_MED=(
+                          _F( NOM_CHAM_MED='U_______VARI_ELNO_ELGA__________',
+                              NOM_CMP=('V1','V2',),
+                              NOM_CMP_MED=('V1','V2',),
+                              NOM_CHAM    ='VARI_ELNO'),
+                         ) ,
+              UNITE=71,
+              NUME_ORDRE=4,);
+
+
+TEST_RESU ( RESU=(  
+                    _F(  RESULTAT   = UUU0,
+                         NOM_CHAM   = 'VARI_ELNO',
+                         INST       = 8.50000E+01,
+                         MAILLE     = 'M1',
+                         REFERENCE  = 'AUTRE_ASTER',
+                         NOEUD     =  'N1',
+                         NOM_CMP    = 'V1',
+                         VALE       = 4.12500E-04       ), 
+                    ),)
+
+
+DETRUIRE(CONCEPT=_F(NOM=UUU0))
+
+# ----------------------------------------------------------------------------
+
+
 
 TEST_RESU ( RESU=(  _F(  RESULTAT   = UUU,
                          NOM_CHAM   = 'SIEF_ELNO',

@@ -28,7 +28,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 17/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -327,7 +327,7 @@ C
           CALL UTTCPU (1,'FIN',4,TPS1)
           IF (MAX(5.D0,N100*TPS1(4)).GT.0.90D0*TPS1(1)) THEN
            CALL MDSIZE (NOMRES,ISTO1,NBMODE,LPSTO,NBCHOC,NBREDE)
-           IF (NOMRES.EQ.'99999') THEN
+           IF (NOMRES.EQ.'&&OP0074') THEN
 C          --- CAS D'UNE POURSUITE ---
               CALL GETVID('ETAT_INIT','RESU_GENE',1,1,1,TRAN,NDT)
               IF (NDT.NE.0) CALL RESU74(TRAN,NOMRES)

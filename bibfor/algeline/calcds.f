@@ -4,7 +4,7 @@ C
       REAL*8     HOOK(6,6), DEVG(6), DEVGII, DFDS(6), DFDG, DSDE(6,6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 18/01/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,17 +73,9 @@ C ======================================================================
       CALL LCINMA ( 0.D0, TMP  )
       DO 30    I = 1,NDT
          DO 40 J = 1,NDT
-            TMP(I,J) = HOOK(I,J) + NUM(I,J)/DENOM
+            DSDE(I,J) = HOOK(I,J) + NUM(I,J)/DENOM
  40      CONTINUE
  30   CONTINUE
-C ======================================================================
-C --- CALCUL DE DSIG/DEPS (SYMETRISE) ----------------------------------
-C ======================================================================
-      DO 50    I = 1,NDT
-         DO 60 J = 1,NDT
-            DSDE(I,J) = ( TMP(I,J) + TMP(J,I) ) / DEUX
- 60      CONTINUE
- 50   CONTINUE
 C ======================================================================
       CALL JEDEMA ()
 C ======================================================================

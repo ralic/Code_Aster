@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 11/10/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMUN  DATE 17/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,7 +70,6 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "ROUSS_VISC",
                                         "VMIS_POU_LINE",
                                         "VMIS_POU_FLEJOU",
-                                        "COULOMB",
                                         "ARME",
                                         "ASSE_CORN",
                                         "NORTON_HOFF",
@@ -173,7 +172,6 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           ROUSS_VISC      =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           VMIS_POU_LINE   =SIMP(statut='c',typ='I',defaut=9,into=(9,)),
           VMIS_POU_FLEJOU =SIMP(statut='c',typ='I',defaut=9 ,into=(9,)),
-          COULOMB         =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
           ASSE_CORN       =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
           ARME            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           NORTON_HOFF     =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
