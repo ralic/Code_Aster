@@ -1,4 +1,4 @@
-# MODIF  DATE 04/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE BIBLIO_35  FISSURE RADIALE INTERNE DANS UN CYLINDRE EPAIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -528,23 +528,15 @@ THETA3=CALC_THETA(    MODELE=MO,
 # COURONNE 0
 # ----------
 
-G0_P=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEPP,
-                         THETA=THETA0,
-                        CHAM_MATER=CHMAT,
-                        EXCIT=(_F( CHARGE = CH10),
-                               _F( CHARGE = CL_SL),),
+G0_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
+                        THETA=THETA0,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_P=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEPP,
-                          THETA=THETA0,
+GK0_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
+                         THETA=THETA0,
                          FOND_FISS=FOND,
-                         CHAM_MATER=CHMAT,
-                         EXCIT=(_F( CHARGE = CH10),
-                                _F( CHARGE = CL_SL),),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -553,23 +545,15 @@ GK0_P=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 1
 # ----------
 
-G1_P=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEPP,
-                         THETA=THETA1,
-                        CHAM_MATER=CHMAT,
-                        EXCIT=(_F( CHARGE = CH10),
-                               _F( CHARGE = CL_SL),),
+G1_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
+                        THETA=THETA1,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_P=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEPP,
-                          THETA=THETA1,
+GK1_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
+                         THETA=THETA1,
                          FOND_FISS=FOND,
-                         CHAM_MATER=CHMAT,
-                         EXCIT=(_F( CHARGE = CH10),
-                                _F( CHARGE = CL_SL),),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -578,23 +562,15 @@ GK1_P=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 2
 # ----------
 
-G2_P=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEPP,
-                         THETA=THETA2,
-                        CHAM_MATER=CHMAT,
-                         EXCIT=(_F( CHARGE = CH10),
-                                _F( CHARGE = CL_SL),),
+G2_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
+                        THETA=THETA2,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_P=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEPP,
-                          THETA=THETA2,
+GK2_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
+                         THETA=THETA2,
                          FOND_FISS=FOND,
-                         EXCIT=(_F( CHARGE = CH10),
-                                _F( CHARGE = CL_SL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -603,23 +579,15 @@ GK2_P=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 3
 # ----------
 
-G3_P=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEPP,
-                         THETA=THETA3,
-                        CHAM_MATER=CHMAT,
-                         EXCIT=(_F( CHARGE = CH10),
-                                _F( CHARGE = CL_SL),),
+G3_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
+                        THETA=THETA3,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_P=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEPP,
-                          THETA=THETA3,
+GK3_P=CALC_G_THETA_T(    RESULTAT=CHAMDEPP,
+                         THETA=THETA3,
                          FOND_FISS=FOND,
-                         CHAM_MATER=CHMAT,
-                         EXCIT=(_F( CHARGE = CH10),
-                                _F( CHARGE = CL_SL),),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -632,23 +600,15 @@ GK3_P=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 0
 # ----------
 
-G0_T=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEPT,
-                         THETA=THETA0,
-                        CHAM_MATER=CHMAT,
-                        EXCIT=(_F( CHARGE = CH_TEMP),
-                               _F( CHARGE = CL_SL),),
+G0_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
+                        THETA=THETA0,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_T=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEPT,
-                          THETA=THETA0,
+GK0_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
+                         THETA=THETA0,
                          FOND_FISS=FOND,
-                         CHAM_MATER=CHMAT,
-                         EXCIT=(_F( CHARGE = CH_TEMP),
-                               _F( CHARGE = CL_SL),),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -657,23 +617,15 @@ GK0_T=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 1
 # ----------
 
-G1_T=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEPT,
+G1_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
                         THETA=THETA1,
-                        CHAM_MATER=CHMAT,
-                        EXCIT=(_F( CHARGE = CH_TEMP),
-                               _F( CHARGE = CL_SL),),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_T=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEPT,
+GK1_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
                          THETA=THETA1,
                          FOND_FISS=FOND,
-                         CHAM_MATER=CHMAT,
-                         EXCIT=(_F( CHARGE = CH_TEMP),
-                               _F( CHARGE = CL_SL),),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -682,23 +634,15 @@ GK1_T=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 2
 # ----------
 
-G2_T=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEPT,
-                         THETA=THETA2,
-                        CHAM_MATER=CHMAT,
-                        EXCIT=(_F( CHARGE = CH_TEMP),
-                               _F( CHARGE = CL_SL),),
+G2_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
+                        THETA=THETA2,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_T=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEPT,
-                          THETA=THETA2,
+GK2_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
+                         THETA=THETA2,
                          FOND_FISS=FOND,
-                         CHAM_MATER=CHMAT,
-                         EXCIT=(_F( CHARGE = CH_TEMP),
-                                _F( CHARGE = CL_SL),),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -707,23 +651,15 @@ GK2_T=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 3
 # ----------
 
-G3_T=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEPT,
-                         THETA=THETA3,
-                        CHAM_MATER=CHMAT,
-                        EXCIT=(_F( CHARGE = CH_TEMP),
-                               _F( CHARGE = CL_SL),),
+G3_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
+                        THETA=THETA3,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_T=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEPT,
+GK3_T=CALC_G_THETA_T(    RESULTAT=CHAMDEPT,
                          THETA=THETA3,
                          FOND_FISS=FOND,
-                         CHAM_MATER=CHMAT,
-                         EXCIT=(_F( CHARGE = CH_TEMP),
-                                _F( CHARGE = CL_SL),),
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -740,25 +676,15 @@ GK3_T=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 0
 # ----------
 
-G0_30=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEP0,
+G0_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
                         THETA=THETA0,
-                        EXCIT=(_F(CHARGE = CH0),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_30=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP0,
-                          THETA=THETA0,
+GK0_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
+                         THETA=THETA0,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH0),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -767,25 +693,15 @@ GK0_30=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 1
 # ----------
 
-G1_30=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEP0,
+G1_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
                         THETA=THETA1,
-                        EXCIT=(_F(CHARGE = CH0),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_30=CALC_G_THETA_T(   MODELE=MO,
-                         RESULTAT=CHAMDEP0,
+GK1_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
                          THETA=THETA1,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH0),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -794,25 +710,15 @@ GK1_30=CALC_G_THETA_T(   MODELE=MO,
 # COURONNE 2
 # ----------
 
-G2_30=CALC_G_THETA_T(   MODELE=MO,
-                        RESULTAT=CHAMDEP0,
+G2_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
                         THETA=THETA2,
-                        EXCIT=(_F(CHARGE = CH0),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_30=CALC_G_THETA_T(   MODELE=MO,
-                         RESULTAT=CHAMDEP0,
+GK2_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
                          THETA=THETA2,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH0),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -821,25 +727,15 @@ GK2_30=CALC_G_THETA_T(   MODELE=MO,
 # COURONNE 3
 # ----------
 
-G3_30=CALC_G_THETA_T(   MODELE=MO,
-                        RESULTAT=CHAMDEP0,
+G3_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
                         THETA=THETA3,
-                        EXCIT=(_F(CHARGE = CH0),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_30=CALC_G_THETA_T(   MODELE=MO,
-                         RESULTAT=CHAMDEP0,
+GK3_30=CALC_G_THETA_T(   RESULTAT=CHAMDEP0,
                          THETA=THETA3,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH0),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -853,25 +749,15 @@ GK3_30=CALC_G_THETA_T(   MODELE=MO,
 # COURONNE 0
 # ----------
 
-G0_32=CALC_G_THETA_T(   MODELE=MO,
-                        RESULTAT=CHAMDEP1,
+G0_32=CALC_G_THETA_T(   RESULTAT=CHAMDEP1,
                         THETA=THETA0,
-                        EXCIT=(_F(CHARGE = CH1),
-                                 _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL)),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_32=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP1,
-                          THETA=THETA0,
+GK0_32=CALC_G_THETA_T(   RESULTAT=CHAMDEP1,
+                         THETA=THETA0,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH1),
-                                        _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL)),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -880,25 +766,15 @@ GK0_32=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 1
 # ----------
 
-G1_32=CALC_G_THETA_T(   MODELE=MO,
-                        RESULTAT=CHAMDEP1,
+G1_32=CALC_G_THETA_T(   RESULTAT=CHAMDEP1,
                         THETA=THETA1,
-                        EXCIT=(_F(CHARGE = CH1),
-                                       _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL)),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_32=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP1,
-                          THETA=THETA1,
+GK1_32=CALC_G_THETA_T(   RESULTAT=CHAMDEP1,
+                         THETA=THETA1,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH1),
-                                         _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL)),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -907,25 +783,16 @@ GK1_32=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 2
 # ----------
 
-G2_32=CALC_G_THETA_T(    MODELE=MO,
+G2_32=CALC_G_THETA_T(   MODELE=MO,
                         RESULTAT=CHAMDEP1,
                         THETA=THETA2,
-                        EXCIT=(_F(CHARGE = CH1),
-                                        _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL)),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_32=CALC_G_THETA_T(   MODELE=MO,
-                         RESULTAT=CHAMDEP1,
+GK2_32=CALC_G_THETA_T(   RESULTAT=CHAMDEP1,
                          THETA=THETA2,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH1),
-                                         _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL)),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -934,25 +801,15 @@ GK2_32=CALC_G_THETA_T(   MODELE=MO,
 # COURONNE 3
 # ----------
 
-G3_32=CALC_G_THETA_T(   MODELE=MO,
-                        RESULTAT=CHAMDEP1,
+G3_32=CALC_G_THETA_T(   RESULTAT=CHAMDEP1,
                         THETA=THETA3,
-                        EXCIT=(_F(CHARGE = CH1),
-                                        _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL)),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_32=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP1,
-                          THETA=THETA3,
+GK3_32=CALC_G_THETA_T(   RESULTAT=CHAMDEP1,
+                         THETA=THETA3,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH1),
-                                         _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL)),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -965,25 +822,15 @@ GK3_32=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 0
 # ----------
 
-G0_33=CALC_G_THETA_T(   MODELE=MO,
-                        RESULTAT=CHAMDEP2,
+G0_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
                         THETA=THETA0,
-                        EXCIT=(_F(CHARGE = CH2),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_33=CALC_G_THETA_T(   MODELE=MO,
-                         RESULTAT=CHAMDEP2,
+GK0_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
                          THETA=THETA0,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH2),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -992,25 +839,15 @@ GK0_33=CALC_G_THETA_T(   MODELE=MO,
 # COURONNE 1
 # ----------
 
-G1_33=CALC_G_THETA_T(   MODELE=MO,
-                        RESULTAT=CHAMDEP2,
+G1_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
                         THETA=THETA1,
-                        EXCIT=(_F(CHARGE = CH2),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_33=CALC_G_THETA_T(   MODELE=MO,
-                         RESULTAT=CHAMDEP2,
+GK1_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
                          THETA=THETA1,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH2),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1019,25 +856,15 @@ GK1_33=CALC_G_THETA_T(   MODELE=MO,
 # COURONNE 2
 # ----------
 
-G2_33=CALC_G_THETA_T(   MODELE=MO,
-                        RESULTAT=CHAMDEP2,
+G2_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
                         THETA=THETA2,
-                        EXCIT=(_F(CHARGE = CH2),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_33=CALC_G_THETA_T(   MODELE=MO,
-                         RESULTAT=CHAMDEP2,
+GK2_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
                          THETA=THETA2,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH2),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1046,25 +873,15 @@ GK2_33=CALC_G_THETA_T(   MODELE=MO,
 # COURONNE 3
 # ----------
 
-G3_33=CALC_G_THETA_T(   MODELE=MO,
-                        RESULTAT=CHAMDEP2,
+G3_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
                         THETA=THETA3,
-                        EXCIT=(_F(CHARGE = CH2),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_33=CALC_G_THETA_T(   MODELE=MO,
-                         RESULTAT=CHAMDEP2,
+GK3_33=CALC_G_THETA_T(   RESULTAT=CHAMDEP2,
                          THETA=THETA3,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH2),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1077,25 +894,15 @@ GK3_33=CALC_G_THETA_T(   MODELE=MO,
 # COURONNE 0
 # ----------
 
-G0_335=CALC_G_THETA_T(  MODELE=MO,
-                        RESULTAT=CHAMDEP3,
+G0_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
                         THETA=THETA0,
-                        EXCIT=(_F(CHARGE = CH3),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_335=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP3,
-                          THETA=THETA0,
+GK0_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
+                         THETA=THETA0,
                          FOND_FISS=FOND,
-                        EXCIT=(_F(CHARGE = CH3),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1104,25 +911,15 @@ GK0_335=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 1
 # ----------
 
-G1_335=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEP3,
-                         THETA=THETA1,
-                        EXCIT=(_F(CHARGE = CH3),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
+G1_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
+                        THETA=THETA1,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_335=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP3,
-                          THETA=THETA1,
+GK1_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
+                         THETA=THETA1,
                          FOND_FISS=FOND,
-                        EXCIT=(_F(CHARGE = CH3),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1131,25 +928,15 @@ GK1_335=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 2
 # ----------
 
-G2_335=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEP3,
-                         THETA=THETA2,
-                        EXCIT=(_F(CHARGE = CH3),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
+G2_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
+                        THETA=THETA2,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_335=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP3,
-                          THETA=THETA2,
+GK2_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
+                         THETA=THETA2,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH3),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1158,25 +945,15 @@ GK2_335=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 3
 # ----------
 
-G3_335=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEP3,
+G3_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
                          THETA=THETA3,
-                         EXCIT=(_F(CHARGE = CH3),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_335=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP3,
+GK3_335=CALC_G_THETA_T(  RESULTAT=CHAMDEP3,
                           THETA=THETA3,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH3),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1189,25 +966,15 @@ GK3_335=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 0
 # ----------
 
-G0_34=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEP4,
+G0_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
                         THETA=THETA0,
-                        EXCIT=(_F(CHARGE = CH4),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL)),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_34=CALC_G_THETA_T(   MODELE=MO,
-                         RESULTAT=CHAMDEP4,
+GK0_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
                          THETA=THETA0,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH4),
-                                _F(CHARGE = CH_TEMP),
-                                 _F(CHARGE = CL)),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1216,25 +983,15 @@ GK0_34=CALC_G_THETA_T(   MODELE=MO,
 # COURONNE 1
 # ----------
 
-G1_34=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEP4,
-                         THETA=THETA1,
-                         EXCIT=(_F(CHARGE = CH4),
-                                _F(CHARGE = CH_TEMP),
-                                 _F(CHARGE = CL)),
-                        CHAM_MATER=CHMAT,
+G1_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
+                        THETA=THETA1,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_34=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP4,
+GK1_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
                           THETA=THETA1,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH4),
-                                _F(CHARGE = CH_TEMP),
-                                 _F(CHARGE = CL)),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1243,25 +1000,15 @@ GK1_34=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 2
 # ----------
 
-G2_34=CALC_G_THETA_T(   MODELE=MO,
-                        RESULTAT=CHAMDEP4,
+G2_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
                         THETA=THETA2,
-                        EXCIT=(_F(CHARGE = CH4),
-                                _F(CHARGE = CH_TEMP),
-                                 _F(CHARGE = CL)),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_34=CALC_G_THETA_T(   MODELE=MO,
-                         RESULTAT=CHAMDEP4,
+GK2_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
                          THETA=THETA2,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH4),
-                                _F(CHARGE = CH_TEMP),
-                                 _F(CHARGE = CL)),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1270,25 +1017,15 @@ GK2_34=CALC_G_THETA_T(   MODELE=MO,
 # COURONNE 3
 # ----------
 
-G3_34=CALC_G_THETA_T(   MODELE=MO,
-                        RESULTAT=CHAMDEP4,
+G3_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
                         THETA=THETA3,
-                        EXCIT=(_F(CHARGE = CH4),
-                               _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL)),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_34=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP4,
-                          THETA=THETA3,
+GK3_34=CALC_G_THETA_T(   RESULTAT=CHAMDEP4,
+                         THETA=THETA3,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH4),
-                                _F(CHARGE = CH_TEMP),
-                                 _F(CHARGE = CL)),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1301,25 +1038,15 @@ GK3_34=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 0
 # ----------
 
-G0_345=CALC_G_THETA_T(  MODELE=MO,
-                        RESULTAT=CHAMDEP5,
+G0_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
                         THETA=THETA0,
-                        EXCIT=(_F(CHARGE = CH5),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL)),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_345=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP5,
-                          THETA=THETA0,
+GK0_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
+                         THETA=THETA0,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH5),
-                                _F(CHARGE = CH_TEMP),
-                                 _F(CHARGE = CL)),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1328,25 +1055,15 @@ GK0_345=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 1
 # ----------
 
-G1_345=CALC_G_THETA_T(  MODELE=MO,
-                        RESULTAT=CHAMDEP5,
+G1_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
                         THETA=THETA1,
-                        EXCIT=(_F(CHARGE = CH5),
-                               _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL)),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_345=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP5,
+GK1_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
                           THETA=THETA1,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH5),
-                                _F(CHARGE = CH_TEMP),
-                                 _F(CHARGE = CL)),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1355,25 +1072,15 @@ GK1_345=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 2
 # ----------
 
-G2_345=CALC_G_THETA_T(  MODELE=MO,
-                        RESULTAT=CHAMDEP5,
+G2_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
                         THETA=THETA2,
-                        EXCIT=(_F(CHARGE = CH5),
-                               _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL)),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_345=CALC_G_THETA_T(  MODELE=MO,
-                         RESULTAT=CHAMDEP5,
+GK2_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
                          THETA=THETA2,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH5),
-                                _F(CHARGE = CH_TEMP),
-                                 _F(CHARGE = CL)),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1382,25 +1089,15 @@ GK2_345=CALC_G_THETA_T(  MODELE=MO,
 # COURONNE 3
 # ----------
 
-G3_345=CALC_G_THETA_T(  MODELE=MO,
-                        RESULTAT=CHAMDEP5,
+G3_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
                         THETA=THETA3,
-                        EXCIT=(_F(CHARGE = CH5),
-                               _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL)),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_345=CALC_G_THETA_T(  MODELE=MO,
-                         RESULTAT=CHAMDEP5,
+GK3_345=CALC_G_THETA_T(  RESULTAT=CHAMDEP5,
                          THETA=THETA3,
                          FOND_FISS=FOND,
-                         EXCIT=(_F(CHARGE = CH5),
-                                _F(CHARGE = CH_TEMP),
-                                 _F(CHARGE = CL)),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1413,25 +1110,15 @@ GK3_345=CALC_G_THETA_T(  MODELE=MO,
 # COURONNE 0
 # ----------
 
-G0_35=CALC_G_THETA_T(   MODELE=MO,
-                        RESULTAT=CHAMDEP6,
+G0_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
                         THETA=THETA0,
-                        EXCIT=(_F(CHARGE = CH6),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL)),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_35=CALC_G_THETA_T(   MODELE=MO,
-                         RESULTAT=CHAMDEP6,
+GK0_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
                          THETA=THETA0,
                          FOND_FISS=FOND,
-                          EXCIT=(_F(CHARGE = CH6),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL)),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1440,25 +1127,15 @@ GK0_35=CALC_G_THETA_T(   MODELE=MO,
 # COURONNE 1
 # ----------
 
-G1_35=CALC_G_THETA_T(   MODELE=MO,
-                        RESULTAT=CHAMDEP6,
+G1_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
                         THETA=THETA1,
-                         EXCIT=(_F(CHARGE = CH6),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL)),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_35=CALC_G_THETA_T(   MODELE=MO,
-                         RESULTAT=CHAMDEP6,
+GK1_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
                          THETA=THETA1,
                          FOND_FISS=FOND,
-                           EXCIT=(_F(CHARGE = CH6),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL)),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1467,25 +1144,15 @@ GK1_35=CALC_G_THETA_T(   MODELE=MO,
 # COURONNE 2
 # ----------
 
-G2_35=CALC_G_THETA_T(   MODELE=MO,
-                        RESULTAT=CHAMDEP6,
+G2_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
                         THETA=THETA2,
-                          EXCIT=(_F(CHARGE = CH6),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL)),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_35=CALC_G_THETA_T(   MODELE=MO,
-                         RESULTAT=CHAMDEP6,
+GK2_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
                          THETA=THETA2,
                          FOND_FISS=FOND,
-                            EXCIT=(_F(CHARGE = CH6),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL)),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1494,25 +1161,15 @@ GK2_35=CALC_G_THETA_T(   MODELE=MO,
 # COURONNE 3
 # ----------
 
-G3_35=CALC_G_THETA_T(   MODELE=MO,
-                        RESULTAT=CHAMDEP6,
+G3_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
                         THETA=THETA3,
-                           EXCIT=(_F(CHARGE = CH6),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL)),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_35=CALC_G_THETA_T(   MODELE=MO,
-                         RESULTAT=CHAMDEP6,
+GK3_35=CALC_G_THETA_T(   RESULTAT=CHAMDEP6,
                          THETA=THETA3,
                          FOND_FISS=FOND,
-                             EXCIT=(_F(CHARGE = CH6),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL)),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1525,25 +1182,15 @@ GK3_35=CALC_G_THETA_T(   MODELE=MO,
 # COURONNE 0
 # ----------
 
-G0_36=CALC_G_THETA_T(   MODELE=MO,
-                        RESULTAT=CHAMDEP7,
+G0_36=CALC_G_THETA_T(   RESULTAT=CHAMDEP7,
                         THETA=THETA0,
-                            EXCIT=(_F(CHARGE = CH7),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL)),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_36=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP7,
+GK0_36=CALC_G_THETA_T(   RESULTAT=CHAMDEP7,
                           THETA=THETA0,
                          FOND_FISS=FOND,
-                             EXCIT=(_F(CHARGE = CH7),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1552,25 +1199,15 @@ GK0_36=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 1
 # ----------
 
-G1_36=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEP7,
+G1_36=CALC_G_THETA_T(   RESULTAT=CHAMDEP7,
                          THETA=THETA1,
-                             EXCIT=(_F(CHARGE = CH7),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_36=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP7,
+GK1_36=CALC_G_THETA_T(  RESULTAT=CHAMDEP7,
                           THETA=THETA1,
                          FOND_FISS=FOND,
-                             EXCIT=(_F(CHARGE = CH7),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1579,25 +1216,15 @@ GK1_36=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 2
 # ----------
 
-G2_36=CALC_G_THETA_T(   MODELE=MO,
-                        RESULTAT=CHAMDEP7,
+G2_36=CALC_G_THETA_T(   RESULTAT=CHAMDEP7,
                         THETA=THETA2,
-                            EXCIT=(_F(CHARGE = CH7),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_36=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP7,
+GK2_36=CALC_G_THETA_T(   RESULTAT=CHAMDEP7,
                           THETA=THETA2,
                          FOND_FISS=FOND,
-                            EXCIT=(_F(CHARGE = CH7),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1606,25 +1233,15 @@ GK2_36=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 3
 # ----------
 
-G3_36=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEP7,
+G3_36=CALC_G_THETA_T(   RESULTAT=CHAMDEP7,
                          THETA=THETA3,
-                            EXCIT=(_F(CHARGE = CH7),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_36=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP7,
+GK3_36=CALC_G_THETA_T(   RESULTAT=CHAMDEP7,
                           THETA=THETA3,
                          FOND_FISS=FOND,
-                            EXCIT=(_F(CHARGE = CH7),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1637,25 +1254,15 @@ GK3_36=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 0
 # ----------
 
-G0_38=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEP8,
+G0_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
                          THETA=THETA0,
-                            EXCIT=(_F(CHARGE = CH8),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_38=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP8,
+GK0_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
                           THETA=THETA0,
                          FOND_FISS=FOND,
-                            EXCIT=(_F(CHARGE = CH8),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1664,25 +1271,15 @@ GK0_38=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 1
 # ----------
 
-G1_38=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEP8,
+G1_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
                          THETA=THETA1,
-                            EXCIT=(_F(CHARGE = CH8),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_38=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP8,
+GK1_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
                           THETA=THETA1,
                          FOND_FISS=FOND,
-                            EXCIT=(_F(CHARGE = CH8),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1691,25 +1288,15 @@ GK1_38=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 2
 # ----------
 
-G2_38=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEP8,
+G2_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
                          THETA=THETA2,
-                            EXCIT=(_F(CHARGE = CH8),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_38=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP8,
+GK2_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
                           THETA=THETA2,
                          FOND_FISS=FOND,
-                            EXCIT=(_F(CHARGE = CH8),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1718,25 +1305,15 @@ GK2_38=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 3
 # ----------
 
-G3_38=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEP8,
+G3_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
                          THETA=THETA3,
-                            EXCIT=(_F(CHARGE = CH8),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_38=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP8,
+GK3_38=CALC_G_THETA_T(   RESULTAT=CHAMDEP8,
                           THETA=THETA3,
                          FOND_FISS=FOND,
-                              EXCIT=(_F(CHARGE = CH8),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1749,25 +1326,15 @@ GK3_38=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 0
 # ----------
 
-G0_40=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEP9,
+G0_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
                         THETA=THETA0,
-                             EXCIT=(_F(CHARGE = CH9),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK0_40=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP9,
+GK0_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
                           THETA=THETA0,
                          FOND_FISS=FOND,
-                              EXCIT=(_F(CHARGE = CH9),
-                                _F(CHARGE = CH_TEMP),
-                                _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1776,25 +1343,15 @@ GK0_40=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 1
 # ----------
 
-G1_40=CALC_G_THETA_T(   MODELE=MO,
-                        RESULTAT=CHAMDEP9,
+G1_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
                         THETA=THETA1,
-                             EXCIT=(_F(CHARGE = CH9),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK1_40=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP9,
+GK1_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
                           THETA=THETA1,
                          FOND_FISS=FOND,
-                             EXCIT=(_F(CHARGE = CH9),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1803,25 +1360,15 @@ GK1_40=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 2
 # ----------
 
-G2_40=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEP9,
+G2_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
                          THETA=THETA2,
-                             EXCIT=(_F(CHARGE = CH9),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK2_40=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP9,
+GK2_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
                           THETA=THETA2,
                          FOND_FISS=FOND,
-                             EXCIT=(_F(CHARGE = CH9),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'
@@ -1830,25 +1377,15 @@ GK2_40=CALC_G_THETA_T(    MODELE=MO,
 # COURONNE 3
 # ----------
 
-G3_40=CALC_G_THETA_T(    MODELE=MO,
-                        RESULTAT=CHAMDEP9,
+G3_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
                          THETA=THETA3,
-                             EXCIT=(_F(CHARGE = CH9),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                        CHAM_MATER=CHMAT,
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1
                     )
 
-GK3_40=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP9,
+GK3_40=CALC_G_THETA_T(   RESULTAT=CHAMDEP9,
                           THETA=THETA3,
                          FOND_FISS=FOND,
-                             EXCIT=(_F(CHARGE = CH9),
-                               _F(CHARGE = CH_TEMP),
-                               _F(CHARGE = CL),),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=1,
                          OPTION='CALC_K_G'

@@ -1,7 +1,7 @@
       SUBROUTINE ECLPGM ()
       IMPLICIT   NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 11/10/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,11 +92,11 @@ C DEB ------------------------------------------------------------------
       CALL GETVR8('ECLA_PG','TAILLE_MIN' ,1,1,1,LONMIN,IBID)
 
       NOMOBJ = '&&ECLPGM.NOMOBJ'
+      CEL    = '&&ECLPGM.CHAM_ELEM'
       CALL GETVTX('ECLA_PG','NOM_CHAM'   ,1,1,1,NCHAM ,NCH)
       IF ( NCH .EQ. 0 ) THEN
          FAMIL = 'RIGI'
       ELSE
-         CEL = '&&ECLPGM.CHAM_ELEM'
          CALL DISMOI('F','NOM_LIGREL',MO,'MODELE',IBID,LIGREL,IBID)
 
          NOMPAR = ' '
@@ -252,8 +252,8 @@ C           DANS LE CAS DU QUADRILATERE ON CONTROLE L'APPLATISSEMENT
 3        CONTINUE
 2     CONTINUE
 
-          CALL JEDETR ( NOMOBJ )
-          CALL DETRSD('CHAMP_GD',CEL)
+      CALL JEDETR ( NOMOBJ )
+      CALL DETRSD ('CHAMP_GD',CEL)
 
 C     3. CONSTRUCTION DES OBJETS DU MAILLAGE RESULTAT :
 C     -------------------------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 11/10/2004   AUTEUR LEPAUL S.LEPAUL 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRE INFINI SOUS PRESSION (PLAST VON-MISES ISOT LINEAIRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -40,6 +40,9 @@ MO=AFFE_MODELE(
            AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'AXIS')
            )
 
+PS_DY =DEFI_PARA_SENSI(VALE=0.00000,);
+###PS_DY =DEFI_PARA_SENSI(VALE=0.00001,);
+
 PS_E=DEFI_PARA_SENSI(VALE=210000.,);
 PS_DSDE=DEFI_PARA_SENSI(VALE=2000.,);
 PS_SIGY=DEFI_PARA_SENSI(VALE=50.,);
@@ -61,9 +64,14 @@ P100=DEFI_FONCTION(
            VALE=(0.0, 0.0, 60.0, 100.0,)
            )
 
+CH_DIR=AFFE_CHAR_MECA_F(MODELE=MO,
+                   DDL_IMPO=(_F(GROUP_NO='NOEHGFE',
+                                DY=PS_DY,),
+                            ),
+                   );
 CH1=AFFE_CHAR_MECA( 
             MODELE=MO,
-           DDL_IMPO=_F( GROUP_NO = 'NOEHGFE', DY = 0.),LIAISON_DDL=(
+            LIAISON_DDL=(
            _F( NOEUD = ('N1', 'N2',  ), DDL = ('DY','DY',),
                         COEF_MULT = (1.,-1.,),COEF_IMPO = 0.),
            _F( NOEUD = ('N1', 'N9',  ), DDL = ('DY','DY',),
@@ -251,8 +259,9 @@ CH1=AFFE_CHAR_MECA(
            _F( NOEUD = ('N1', 'N379',), DDL = ('DY','DY',),
                         COEF_MULT = (1.,-1.,),COEF_IMPO = 0.),
            _F( NOEUD = ('N1', 'N380',), DDL = ('DY','DY',),
-                        COEF_MULT = (1.,-1.,),COEF_IMPO = 0.))
-           )
+                        COEF_MULT = (1.,-1.,),COEF_IMPO = 0.)
+                        )
+                  )
 
 CH2=AFFE_CHAR_MECA_F( 
             MODELE=MO,
@@ -267,7 +276,7 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
 
 U= STAT_NON_LINE ( MODELE=MO,
                    CHAM_MATER=CM,
-                   EXCIT=(_F(CHARGE=CH1),_F(CHARGE=CH2)),
+                   EXCIT=(_F(CHARGE=CH1),_F(CHARGE=CH2),_F(CHARGE=CH_DIR)),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE'),
                    INCREMENT=_F(LIST_INST=L_INST,
 #                                INST_FIN=60.,
@@ -283,7 +292,7 @@ U= STAT_NON_LINE ( MODELE=MO,
                             RESI_INTE_RELA = 1.E-8),
                    ARCHIVAGE=_F(LIST_INST=L_INST,
                                 ARCH_ETAT_INIT='OUI',),
-                   SENSIBILITE=(PS_E,PS_DSDE,PS_SIGY),
+                   SENSIBILITE=(PS_E,PS_DSDE,PS_SIGY,PS_DY),
                    INFO=1);
 
 L_INST2=DEFI_LIST_REEL(  DEBUT=40.0,
@@ -295,7 +304,7 @@ L_INST2=DEFI_LIST_REEL(  DEBUT=40.0,
 U= STAT_NON_LINE ( reuse=U,
                    MODELE=MO,
                    CHAM_MATER=CM,
-                   EXCIT=(_F(CHARGE=CH1),_F(CHARGE=CH2)),
+                   EXCIT=(_F(CHARGE=CH1),_F(CHARGE=CH2),_F(CHARGE=CH_DIR)),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE'),
                    INCREMENT=_F(LIST_INST=L_INST2,
                                 INST_FIN=60.,
@@ -312,7 +321,7 @@ U= STAT_NON_LINE ( reuse=U,
 #                                ARCH_ETAT_INIT='OUI',
                                 ),
                    ETAT_INIT=_F(EVOL_NOLI=U),
-                   SENSIBILITE=(PS_E,PS_DSDE,PS_SIGY),
+                   SENSIBILITE=(PS_E,PS_DSDE,PS_SIGY,PS_DY),
                    INFO=1);
 
 
@@ -401,6 +410,39 @@ TEST_RESU(RESU=(
       CRITERE = 'RELATIF', PRECISION = 1.E-4,
       NOM_CMP = 'V1',   SENSIBILITE = PS_SIGY,
       VALE = -4.50133E-4, REFERENCE = 'AUTRE_ASTER' ),
+      ));
+
+# SENSIBILITE PAR RAPPORT A PS_DY
+
+TEST_RESU(RESU=(
+#   _F(RESULTAT = U,
+#      INST = 60.,
+#      NOEUD = 'N213',
+#      NOM_CHAM = 'DEPL',
+#      CRITERE = 'RELATIF', PRECISION = 1.E-4,
+#      NOM_CMP = 'DX',
+#      VALE = -2.28851E-8, REFERENCE = 'AUTRE_ASTER' ),
+#   _F(RESULTAT = U,
+#      INST = 60.,
+#      NOEUD = 'N213',
+#      NOM_CHAM = 'DEPL',
+#      CRITERE = 'RELATIF', PRECISION = 1.E-4,
+#      NOM_CMP = 'DY',
+#      VALE = -2.28851E-8, REFERENCE = 'AUTRE_ASTER' ),
+   _F(RESULTAT = U,
+      INST = 60.,
+      NOEUD = 'N213',
+      NOM_CHAM = 'DEPL',
+      CRITERE = 'ABSOLU', PRECISION = 1.E-6,
+      NOM_CMP = 'DX',   SENSIBILITE = PS_DY,
+      VALE = 0., REFERENCE = 'AUTRE_ASTER' ),
+   _F(RESULTAT = U,
+      INST = 60.,
+      NOEUD = 'N213',
+      NOM_CHAM = 'DEPL',
+      CRITERE = 'RELATIF', PRECISION = 1.E-6,
+      NOM_CMP = 'DY',   SENSIBILITE = PS_DY,
+      VALE = 1., REFERENCE = 'AUTRE_ASTER' ),
       ));
 
 

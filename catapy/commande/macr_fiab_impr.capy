@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +53,13 @@ MACR_FIAB_IMPR=MACRO(nom="MACR_FIAB_IMPR",op=macr_fiab_impr_ops,
                     fr="Table contenant le gradient.",
                     ang="Table which includes the gradient."),
 #
-# 3.2. ==> Le nom du paramètre associé au gradient dans cette table
+# 3.2. ==> Le paramètre sensible
+#
+       PARA_SENSI = SIMP(statut='o',typ=(para_sensi,theta_geom),
+                       fr="Paramètre sensible associé au gradient.",
+                       ang="Sensitivity parameter connected to the gradient."),
+#
+# 3.3. ==> Le nom du paramètre associé au gradient dans cette table
 #
        NOM_PARA = SIMP(statut='o',typ='TXM',
                        fr="Nom du paramètre associé au gradient.",

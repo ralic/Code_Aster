@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN */
+/* MODIF astermodule supervis  DATE 11/10/2004   AUTEUR DURAND C.DURAND */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2714,13 +2714,10 @@ PyObject *args;
         }
 }
 
-void DEFSSPSPP(LIMAGP,limagp,char *, int, char *, int, INTEGER *, char *, int, INTEGER *, INTEGER *);
 void DEFSPSPPPS(RSACCH,rsacch,char *, int, INTEGER *, char *,int,INTEGER *, INTEGER *, INTEGER *, char *,int);
 void DEFSPSSPPP(RSACVA,rsacva,char *, int,INTEGER *, char *,int,char *,int,INTEGER *, double *,INTEGER *);
 void DEFSPSSPPP(RSACPA,rsacpa,char *, int,INTEGER *, char *,int,char *,int,INTEGER *, double *,INTEGER *);
 
-#define CALL_LIMAGP(noma, ligrno, linbno, ligrma, linbma, lidima) \
-                  FCALLSSPSPP(LIMAGP,limagp,noma,strlen(noma),ligrno,8,linbno,ligrma,8,linbma,lidima)
 #define CALL_RSACCH(nomsd, numch, nomch, nbord, liord, nbcmp, liscmp) \
                   FCALLSPSPPPS(RSACCH,rsacch,nomsd,strlen(nomsd),numch, nomch,16,nbord, liord, nbcmp, liscmp,8)
 #define CALL_RSACVA(nomsd, numva, nomva, ctype, ival, rval, ier) \
@@ -2729,95 +2726,6 @@ void DEFSPSSPPP(RSACPA,rsacpa,char *, int,INTEGER *, char *,int,char *,int,INTEG
                   CALLSPSSPPP(RSACPA,rsacpa,nomsd, numva, nomva, ctype, ival, rval, ier)
 
 
-
-static PyObject* aster_GetMaillage(self, args)
-PyObject *self; /* Not used */
-PyObject *args;
-
-/* Retourne les informations relatives a une SD maillage
-
-   Arguments :
-     IN Nom du maillage
-     IN Nature des informations recherchees
-          GROUP_MA   -> Liste des groupes de mailles
-          GROUP_NO   -> Liste des groupes de noeuds
-
-     OUT liste
-       'GROUP_MA' -> Liste des groupes de mailles
-       'GROUP_NO' -> Liste des groupes de noeuds
-
-*/
-
-{
-
-   INTEGER *val, nbval, nbgpno, nbgpma;
-   char *noma, *nom, *nomsd, *mode;
-        int i, nb, lo;
-        char *ligpno, *ligpma;
-        INTEGER *linbma, *linbno, *lidima;
-   PyObject *liste, *tuple;
-
-   if (!PyArg_ParseTuple(args, "ss",&noma, &mode)) return NULL;
-
-/* Identifiant de la SD Maillage */
-   nbval = 2;
-   val = (INTEGER *)malloc((nbval)*sizeof(INTEGER));
-   nom = (char *)malloc(24*sizeof(char));
-   strcpy(nom, "LIST_GROUP");
-
-/* Taille de la SD maillage : nbr GROUP_NO, nbr GROUP_MA */
-        CALL_TAILSD(nom, noma, val, &nbval);
-
-   nbgpno = val[0];
-   nbgpma = val[1];
-        ligpno = (char *)malloc((1+nbgpno)*8*sizeof(char));
-        ligpma = (char *)malloc((1+nbgpma)*8*sizeof(char));
-   linbno = (INTEGER *)malloc((1+nbgpno)*sizeof(INTEGER));
-   linbma = (INTEGER *)malloc((1+nbgpma)*sizeof(INTEGER));
-   lidima = (INTEGER *)malloc((1+nbgpma)*sizeof(INTEGER));
-   CALL_LIMAGP(noma, ligpno, linbno, ligpma, linbma, lidima);
-
-   liste = PyList_New(0);
-
-/* Liste des GROUP_MA */
-
-     if (strcmp(mode,"GROUP_MA") == 0)
-          {
-          for (i=0; i<nbgpma; i++)
-          {
-       tuple = PyTuple_New(3);
-            nom = &(ligpma[i*8]);
-       lo = 8; while (nom[lo-1] == ' ')  lo--;
-            PyTuple_SetItem(tuple, 0, PyString_FromStringAndSize(nom,lo));
-            PyTuple_SetItem(tuple, 1, PyInt_FromLong(linbma[i]));
-            PyTuple_SetItem(tuple, 2, PyInt_FromLong(lidima[i]));
-            PyList_Append(liste,tuple);
-            };
-          }
-
-/* Liste des GROUP_NO */
-
-        if (strcmp(mode,"GROUP_NO") == 0)
-          {
-          for (i=0; i<nbgpno; i++)
-     {
-       tuple = PyTuple_New(2);
-            nom = &(ligpno[i*8]);
-       lo = 8; while (nom[lo-1] == ' ')  lo--;
-            PyTuple_SetItem(tuple, 0, PyString_FromStringAndSize(nom,lo));
-            PyTuple_SetItem(tuple, 1, PyInt_FromLong(linbno[i]));
-            PyList_Append(liste,tuple);
-            };
-          }
-
-          free(ligpno);
-          free(linbno);
-          free(ligpma);
-          free(linbma);
-          free(lidima);
-          return liste;
-
-}
 
 static PyObject* aster_GetResu(self, args)
 PyObject *self; /* Not used */
@@ -3593,7 +3501,6 @@ static PyMethodDef aster_methods[] = {
                 {"getvectjev" , aster_getvectjev ,        METH_VARARGS, getvectjev_doc},
                 {"getcolljev" , aster_getcolljev ,        METH_VARARGS, getcolljev_doc},
                 {"GetResu",     aster_GetResu,            METH_VARARGS},
-                {"GetMaillage", aster_GetMaillage,        METH_VARARGS},
                 {NULL,                NULL}/* sentinel */
 };
 

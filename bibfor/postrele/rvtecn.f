@@ -11,7 +11,7 @@
       CHARACTER*24      XNOVAR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -143,12 +143,6 @@ C
          ZK24(JVALK-1+NBPAR) = 'NOM_CHAM'
          IK = IK + 1
          VALEK(IK) = ZK16(JACC+1)
-         IF ( NOPASE.NE.'        ' ) THEN
-           NBPAR = NBPAR + 1
-           ZK24(JVALK-1+NBPAR) = 'PAR_SENS'
-           IK = IK + 1
-           VALEK(IK) = NOPASE
-         ENDIF
          CALL JEVEUO ( JEXNUM(NOMACC,IOCC), 'L', ADRACC )
          CALL JEVEUO ( JEXNUM(NOMVAL,IOCC), 'L', ADRVAL )
          ACCES = ZK8(ADRACC)

@@ -1,6 +1,6 @@
       SUBROUTINE GETCON(NOMRES,IOB,CTYPE,LCON,IADVAR,NOMOB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 21/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 11/10/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,13 +57,14 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       NOML32=NOMRES
       CALL JJVERN(NOML32,0,IRET)
+      IF(IRET.EQ.0)THEN
+C     CET OBJET N'EXISTE PAS
+         GOTO 999
+      ENDIF
       CALL JELIRA(NOML32,'XOUS',IBID,XOUS)
       CALL JELIRA(NOML32,'GENR',IBID,GENR)
       NOMOB='        '
-      IF(IRET.EQ.0)THEN
-C     CET OBJET N'EXISTE PAS
-         CTYPE=0
-      ELSE IF(XOUS.EQ.'X')THEN
+      IF(XOUS.EQ.'X')THEN
 C     ------------------------------------------------------------------
 C     CET OBJET EST UNE COLLECTION, ON VEUT SON ELEMENT NUMERO IOB
 C     ------------------------------------------------------------------

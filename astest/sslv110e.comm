@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,10 +124,8 @@ G1=CALC_G_THETA_T(  MODELE=MO,
                                  DEFORMATION = 'PETIT',  ),
                     CHAM_MATER=CHMAT )
 
-GLOC1=CALC_G_LOCAL_T(  MODELE=MO,
-                       RESULTAT=CHAMDEPL,
+GLOC1=CALC_G_LOCAL_T(  RESULTAT=CHAMDEPL,
                       TOUT_ORDRE='OUI',
-                       CHAM_MATER=CHMAT,
                         FOND_FISS=FISS1,
                         DEGRE=7,
                        R_SUP_FO=RSUP1,
@@ -136,7 +134,6 @@ GLOC1=CALC_G_LOCAL_T(  MODELE=MO,
                             LISSAGE_G='LEGENDRE',
                          COMP_ELAS=_F( RELATION = 'ELAS',     
                                     DEFORMATION = 'PETIT',  ),
-                       EXCIT=_F(CHARGE=CHFONC,),
                         INFO=1
                       )
 
@@ -161,10 +158,8 @@ G2=CALC_G_THETA_T(  MODELE=MO,
                                  DEFORMATION = 'PETIT',  ),
                     CHAM_MATER=CHMAT )
 
-GLOC2=CALC_G_LOCAL_T(  MODELE=MO,
-                       RESULTAT=CHAMDEPL,
+GLOC2=CALC_G_LOCAL_T(  RESULTAT=CHAMDEPL,
                       TOUT_ORDRE='OUI',
-                       CHAM_MATER=CHMAT,
                         FOND_FISS=FISS1,
                         DEGRE=7,
                        R_SUP_FO=RSUP2,
@@ -173,7 +168,7 @@ GLOC2=CALC_G_LOCAL_T(  MODELE=MO,
                          LISSAGE_G='LEGENDRE',
                          COMP_ELAS=_F( RELATION = 'ELAS',     
                                     DEFORMATION = 'PETIT',  ),
-                       EXCIT=_F(CHARGE=CHFACER), )
+                        )
 
 #----------------------------------------------------------------------
 #                           COURONNE 3
@@ -196,26 +191,22 @@ G3=CALC_G_THETA_T(  MODELE=MO,
                                  DEFORMATION = 'PETIT',  ),
                     CHAM_MATER=CHMAT )
 
-GLOC3=CALC_G_LOCAL_T(  MODELE=MO,
-                       RESULTAT=CHAMDEPL,
+GLOC3=CALC_G_LOCAL_T(  RESULTAT=CHAMDEPL,
                       TOUT_ORDRE='OUI',
-                       CHAM_MATER=CHMAT,
                         FOND_FISS=FISS1,
                         DEGRE=7,
                        R_SUP_FO=RSUP3,
                        R_INF_FO=RINF3,
                          COMP_ELAS=_F( RELATION = 'ELAS',     
                                     DEFORMATION = 'PETIT',  ),
-                       EXCIT=_F(CHARGE=CHFACEF), )
+                        )
 
 #
 #  CALCUL AVEC LA METHODE 'THETA_LAGRANGE'
 #
 
-GLOC4=CALC_G_LOCAL_T(  MODELE=MO,
-                       RESULTAT=CHAMDEPL,
+GLOC4=CALC_G_LOCAL_T(  RESULTAT=CHAMDEPL,
                       TOUT_ORDRE='OUI',
-                       CHAM_MATER=CHMAT,
                         FOND_FISS=FISS1,
                         DEGRE=7,
                         LISSAGE_THETA='LAGRANGE',
@@ -224,7 +215,6 @@ GLOC4=CALC_G_LOCAL_T(  MODELE=MO,
                        R_INF_FO=RINF2,
                          COMP_ELAS=_F( RELATION = 'ELAS',     
                                     DEFORMATION = 'PETIT',  ),
-                       EXCIT=_F(CHARGE=CH,),
                         INFO=1
                       )
 
@@ -232,10 +222,8 @@ GLOC4=CALC_G_LOCAL_T(  MODELE=MO,
 #  CALCUL AVEC LA METHODE 'LAGRANGE_LAGRANGE'
 #
 
-GLOC5=CALC_G_LOCAL_T(  MODELE=MO,
-                       RESULTAT=CHAMDEPL,
+GLOC5=CALC_G_LOCAL_T(  RESULTAT=CHAMDEPL,
                       TOUT_ORDRE='OUI',
-                       CHAM_MATER=CHMAT,
                         FOND_FISS=FISS1,
                         LISSAGE_THETA='LAGRANGE',
                          LISSAGE_G='LAGRANGE',
@@ -243,24 +231,21 @@ GLOC5=CALC_G_LOCAL_T(  MODELE=MO,
                        R_INF_FO=RINF2,
                          COMP_ELAS=_F( RELATION = 'ELAS',     
                                     DEFORMATION = 'PETIT',  ),
-                       EXCIT=_F(CHARGE=CH,), )
+                        )
 
 #
 #  CALCUL AVEC LA METHODE 'NOEUD_NOEUD'
 #
 
-GLOC6=CALC_G_LOCAL_T(  MODELE=MO,
-                       RESULTAT=CHAMDEPL,
+GLOC6=CALC_G_LOCAL_T(  RESULTAT=CHAMDEPL,
                       TOUT_ORDRE='OUI',
-                       CHAM_MATER=CHMAT,
                         FOND_FISS=FISS1,
                         LISSAGE_THETA='LAGRANGE',
                          LISSAGE_G='LAGRANGE_NO_NO',
                        R_SUP_FO=RSUP2,
                        R_INF_FO=RINF2,
                          COMP_ELAS=_F( RELATION = 'ELAS',     
-                                    DEFORMATION = 'PETIT',  ),
-                       EXCIT=_F(CHARGE=CH,), )
+                                    DEFORMATION = 'PETIT',  ), )
 
 #----------------------------------------------------------------------
 #              TEST DE G

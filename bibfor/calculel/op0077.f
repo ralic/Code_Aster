@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,16 +46,16 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER IORD,IORD1,IORD2,NRES,LONVEC,NP,NC,NDEG,IVEC,IRET
       INTEGER LNOFF,NDEP,JINST,ICOMP,ITHETA,IPROPA,IFOND,LONG
       INTEGER I,J,NBINST,NBRE,NBPRUP,IADNUM,NBORN,NBCO
-      INTEGER NBVAL,IBOR,N1,N3,IG,LNOEU,LABSCU
+      INTEGER NBVAL,IBOR,N1,N2,N3,IG,LNOEU,LABSCU
       INTEGER NVITES,NACCE,IRET1
 
       REAL*8 PREC,ALPHA,TIME,RBID
 
       CHARACTER*1 K1BID
-      CHARACTER*4 TYPRUP(8)
+      CHARACTER*4 TYPRUP(8),K4BID
       CHARACTER*8 NOMA,MODELE,SYMECH,K8B,K8BID
       CHARACTER*8 RESU,FISS,FOND,K8BI1,CRIT,THETAI,RESULT
-      CHARACTER*16 TYPE,OPER,OPTION,NOPRUP(8),OPTIO2
+      CHARACTER*16 TYPE,OPER,OPTION,NOPRUP(8),OPTIO2,TYSD
       CHARACTER*19 GRLT,GRLN
       CHARACTER*24 CHFOND,NOMNO,COORN,OBJMA,CHDEPL,VECORD,THETLG,VCHAR
       CHARACTER*24 TRAV1,TRAV2,TRAV3,STOK4,LISSTH,LISSG,SDTHET,K24BID
@@ -72,16 +72,14 @@ C ----------------------------------------------------------------------
       GLAGR = .FALSE.
       COURB='&&OP0077.COURB'
       BASLOC='&&OP0077.BASLOC'
+      VCHAR = '&&OP0077.CHARGES'
 
       CALL GETRES(RESULT,TYPE,OPER)
 
-C- MODELE, CHAM_MATER ET RELATION DE COMPORTEMENT --------------------
+C- OPTION  -------------------------------------------------------------
 
-      CALL GETVID(' ','MODELE',0,1,1,MODELE,IBID)
-      CALL GETVID(' ','CHAM_MATER',0,1,1,MATERI,IBID)
       CALL GETVTX(' ','OPTION',0,1,1,OPTION,IBID)
-      CALL RCMFMC(MATERI,MATE)
-      CALL NMDORC(MODELE,COMPOR)
+C
 C      CALL JEVEUO(COMPOR(1:19)//'.VALV','L',ICOMP)
 C      IF ((ZK16(ICOMP).NE.'ELAS') .AND. (OPTION.NE.'CALC_G')) THEN
 C        CALL UTMESS('F',OPER,'ELASTICITE OBLIGATOIRE AVEC '//OPTION)
@@ -151,6 +149,18 @@ C - D'UN OU PLUSIEURS DEPLACEMENTS A PARTIR D'UN RESULTAT  ------------
 
       CALL GETVID(' ','DEPL',0,1,1,CHDEPL,NDEP)
       IF (NDEP.NE.0) THEN
+        CALL GETVID(' ','MODELE'    ,0,1,1,MODELE,N1)
+        CALL GETVID(' ','CHAM_MATER',0,1,1,MATERI,N2)
+        IF (N1.EQ.0 ) THEN
+           CALL UTMESS('F','OP0077','SI LE MOT-CLE DEPL EST PRESENT'//
+     +                    ' ALORS LE MOT-CLE MODELE EST OBLIGATOIRE.')
+        ENDIF
+        IF (N2.EQ.0 ) THEN
+           CALL UTMESS('F','OP0077','SI LE MOT CLE DEPL EST PRESENT'//
+     +                 ' ALORS LE MOT-CLE CHAM_MATER EST OBLIGATOIRE.')
+        ENDIF
+        CALL RCMFMC(MATERI,MATE)
+        CALL NMDORC(MODELE,COMPOR)
         LONVEC = 1
         CALL GETVR8(' ','INST',0,1,0,RBID,NBINST)
         IF (NBINST.EQ.0) THEN
@@ -191,7 +201,27 @@ C - D'UN OU PLUSIEURS DEPLACEMENTS A PARTIR D'UN RESULTAT  ------------
         IF (IER.NE.0) THEN
           CALL UTMESS('F',OPER,'PROBLEME A LA RECUPERATION D''UN CHAMP')
         END IF
+        CALL GETTCO(RESU,TYSD)
+        IF (TYSD.EQ.'DYNA_TRANS') THEN
+           CALL GETVID(' ','MODELE'    ,0,1,1,MODELE,N1)
+           CALL GETVID(' ','CHAM_MATER',0,1,1,MATERI,N2)
+           IF (N1.EQ.0 ) THEN
+             CALL UTMESS('F','OP0053','DANS LE CAS D''UNE SD RESULTAT'//
+     +                    ' DE TYPE DYNA_TRANS, LE MOT-CLE MODELE EST'//
+     +                    ' OBLIGATOIRE.')
+           ENDIF
+           IF (N2.EQ.0 ) THEN
+             CALL UTMESS('F','OP0053','DANS LE CAS D''UNE SD RESULTAT'//
+     +                    ' DE TYPE DYNA_TRANS, LE MOT-CLE CHAM_MATER'//
+     +                    ' EST OBLIGATOIRE.')
+           ENDIF
+        ENDIF
+C
         CALL JEVEUO(VECORD,'L',IVEC)
+        IORD = ZI(IVEC)
+        CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4BID,RESU,IORD)
+        CALL NMDORC(MODELE,COMPOR)
+        CALL JEVEUO(VCHAR,'L',ICHA)
         NBPRUP = 5
         NOPRUP(1) = 'NUME_ORDRE'
         TYPRUP(1) = 'I'
@@ -206,6 +236,8 @@ C - D'UN OU PLUSIEURS DEPLACEMENTS A PARTIR D'UN RESULTAT  ------------
       END IF
 
 C ---  CHARGE ---------------------------------------------------------
+      CALL GETVID(' ','DEPL',0,1,1,CHDEPL,NDEP)
+      IF(NDEP.NE.0) THEN
       CALL GETFAC('EXCIT',NEXCI)
         NCHA = 0
       IF (NEXCI .GT. 0) THEN
@@ -213,7 +245,6 @@ C ---  CHARGE ---------------------------------------------------------
           CALL GETVID('EXCIT','CHARGE',IEXC,1,1,K24BID,L)
           IF (L .EQ. 1) NCHA = NCHA + 1
  21     CONTINUE
-        VCHAR = '&&OP0077.CHARGES'
         N3=MAX(1,NCHA)
         CALL WKVECT(VCHAR,'V V K8',N3,ICHA)
         IF (NCHA.NE.0) THEN 
@@ -234,6 +265,7 @@ C ---  CHARGE ---------------------------------------------------------
            ENDIF
   23     CONTINUE
         ENDIF
+      ENDIF
       ENDIF
 
 C---  POUR L'OPTION CALC_G_LGLO : PROPAGATION ALPHA ET CHAMP THETA
@@ -393,6 +425,9 @@ C=======================================================================
           DO 40 I = 1,LONVEC
             IF (NRES.NE.0) THEN
               IORD = ZI(IVEC-1+I)
+              CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4BID,
+     &        RESU,IORD)
+              CALL JEVEUO(VCHAR,'L',ICHA)
               CALL RSEXCH(RESU,'DEPL',IORD,CHDEPL,IRET)
               IF (IRET.NE.0) THEN
                 CALL UTDEBM('F',OPER,'ACCES IMPOSSIBLE ')
@@ -426,6 +461,9 @@ C=======================================================================
                CALL JEMARQ()
                IF ( NRES .NE. 0 ) THEN
                   IORD1 = ZI(IVEC-1+I)
+                  CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4BID,
+     &            RESU,IORD1)
+                  CALL JEVEUO(VCHAR,'L',ICHA)
                   CALL RSEXCH(RESU,'DEPL',IORD1,DEPLA1,IRET)
                   IORD2 = ZI(IVEC-1+J)
                   CALL RSEXCH(RESU,'DEPL',IORD2,DEPLA2,IRET)
@@ -501,6 +539,9 @@ C=======================================================================
            CALL JEMARQ()
            IF (NRES.NE.0) THEN
              IORD = ZI(IVEC-1+I)
+             CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4BID,
+     &       RESU,IORD)
+             CALL JEVEUO(VCHAR,'L',ICHA)
              CALL RSEXCH(RESU,'DEPL',IORD,CHDEPL,IRET)
              IF (IRET.NE.0) THEN
                CALL UTDEBM('F',OPER,'ACCES IMPOSSIBLE ')

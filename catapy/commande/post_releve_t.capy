@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/06/2004   AUTEUR F1BHHAJ J.ANGLES 
+#& MODIF COMMANDE  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE G8BHHXD X.DESROCHES
-POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=tabl_post_rele,reentrant='n',
+POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=tabl_post_rele,reentrant='f',
             UIinfo={"groupes":("Post traitements",)},
          ACTION          =FACT(statut='o',max='**',
            regles=(AU_MOINS_UN('CHEMIN','GROUP_NO','NOEUD'),

@@ -7,7 +7,7 @@
       CHARACTER*(*)       NOMCMP(*), NOMTAB
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,12 +121,6 @@ C
          NOPARA(NBPAR) = 'NOM_CHAM'
          IK = IK + 1
          VALEK(IK) = ZK16(JACC+1)
-          IF ( NOPASE.NE.'        ' ) THEN
-           NBPAR = NBPAR + 1
-           NOPARA(NBPAR) = 'PAR_SENS'
-           IK = IK + 1
-           VALEK(IK) = NOPASE
-         ENDIF
          CALL JEVEUO ( JEXNUM(NOMACC,IOCC), 'L', ADRACC )
          CALL JEVEUO ( JEXNUM(NOMVAL,IOCC), 'L', ADRVAL )
          ACCES = ZK8(ADRACC)

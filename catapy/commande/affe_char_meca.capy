@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 11/10/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -319,8 +319,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
              
            b_active        =BLOC(condition = "METHODE == 'CONTRAINTE' ",
                                  fr="Paramètres de la méthode des contraintes actives (contact uniquement)",
-                regles=(EXCLUS('DIST_2','COEF_IMPO'),
-                        EXCLUS('DIST_1','COEF_IMPO'),),
+                regles=(EXCLUS('DIST_ESCL','COEF_IMPO'),
+                        EXCLUS('DIST_MAIT','COEF_IMPO'),),
                 NOM_CHAM        =SIMP(statut='f',typ='TXM',defaut="DEPL",into=("DEPL","PRES","TEMP","PRE1","PRE2")),
                 FROTTEMENT      =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS",) ), 
                 NB_RESOL        =SIMP(statut='f',typ='I', defaut=10 ),
@@ -332,11 +332,11 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
                 SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                 SANS_NOEUD_QUAD =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
                 COEF_IMPO       =SIMP(statut='f',typ='R'),
-                COEF_MULT_2     =SIMP(statut='f',typ='R'),
-                VECT_NORM_2     =SIMP(statut='f',typ='R',max=3),
+                COEF_MULT_ESCL  =SIMP(statut='f',typ='R'),
+                VECT_NORM_ESCL  =SIMP(statut='f',typ='R',max=3),
                 VECT_Y          =SIMP(statut='f',typ='R',min=3,max=3),
-                DIST_1          =SIMP(statut='f',typ='R'),
-                DIST_2          =SIMP(statut='f',typ='R'),
+                DIST_MAIT       =SIMP(statut='f',typ='R'),
+                DIST_ESCL       =SIMP(statut='f',typ='R'),
                 STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),),
            b_lagrangien    =BLOC(condition = "METHODE == 'LAGRANGIEN' ",
                                  fr="Paramètres de la méthode Lagrangienne (contact avec ou sans frottement)",
@@ -350,8 +350,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
                 SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                 SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                 SANS_NOEUD_QUAD =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
-                DIST_1          =SIMP(statut='f',typ='R'),
-                DIST_2          =SIMP(statut='f',typ='R'),
+                DIST_MAIT       =SIMP(statut='f',typ='R'),
+                DIST_ESCL       =SIMP(statut='f',typ='R'),
                 VECT_Y          =SIMP(statut='f',typ='R',min=3,max=3),
                 STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
                 b_frottement    =BLOC(condition = "FROTTEMENT == 'COULOMB' ",fr="Paramètres du frottement de Coulomb",
@@ -371,8 +371,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
                 SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                 SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                 SANS_NOEUD_QUAD =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
-                DIST_1          =SIMP(statut='f',typ='R'),
-                DIST_2          =SIMP(statut='f',typ='R'),
+                DIST_MAIT       =SIMP(statut='f',typ='R'),
+                DIST_ESCL       =SIMP(statut='f',typ='R'),
                 VECT_Y          =SIMP(statut='f',typ='R',min=3,max=3),
                 STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
                 b_frottement    =BLOC(condition = "FROTTEMENT == 'COULOMB' ",fr="Paramètres du frottement de Coulomb",

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2004   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF MODELISA  DATE 11/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -623,16 +623,6 @@ C     -------------------------------------------------
       IF (LAXIS) THEN
         CALL TAXIS(NOMA,ZI(JDMA),NBMAIL)
       END IF
-
-
-
-
-C     --MENAGE :
-      CALL JEDETR(TMPDEF)
-      CALL JEDETR('&&OP0018.MAILLE')
-      CALL JEDETR('&&OP0018.MAILLE2')
-      CALL JEDETR('&&OP0018.MAILLE3')
-      CALL JEDETR('&&OP0018.NOEUD')
 
       CALL JEDEMA()
 

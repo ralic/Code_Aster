@@ -1,6 +1,6 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
 # RESPONSABLE BOITEAU O.BOITEAU
-# TITRE validation de la sensibilite par rapport a la source imposee et
+# TITRE Sensibilite par rapport a la source imposee et temp exterieure
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,8 +20,6 @@
 #                                                                       
 #                                                                       
 # ======================================================================
-# a le temperature exterieure en thermique non-lineaire transitoire 
-# lumpe
 #
 DEBUT( CODE=_F(  NOM = 'SENST03B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON') ,PAR_LOT='NON' )
 #
@@ -59,16 +57,9 @@ DEBUT( CODE=_F(  NOM = 'SENST03B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON') ,PAR
 # trois points I, CENTRE et J.
 # DETAILS:
 #   * La difference finie est une difference centree requierant 3 calculs,
-#     avec un epsilon EPSA=eps=1.e-1.
+#     avec un epsilon EPSA=1.e-1.
 #   * L'ecart qui est teste est un ecart relatif par rapport a la valeur par
-#     differences finies. Il doit etre inferieur a 1.e-07 %. Cet ecart est
-#     trace dans le fichier message.
-# Dans le fichier resultat on trace les cartes contenants le champ de tempe
-# rature a tous les points du transitoire et aux points I, CENTRE et J.
-# On fait des tests de non-regression, au dernier instant, au CENTRE et pour
-# les deux sensibilites:
-#   * sur les differences finies, via un TEST_FONCTION.
-#   * sur les sensibilites analytiques, via un TEST_RESU.
+#     differences finies.
 #
 # 1. Definition/memorisation des fonctions constantes
 #
@@ -86,7 +77,6 @@ PS2=DEFI_PARA_SENSI(VALE=140.0,);
 MEMO_NOM_SENSI(NOM=_F(NOM_COMPOSE='PS_UN',PARA_SENSI=PS2,NOM_SD='PS2',),);
 
 EPSA=1.E-1;
-eps = 1.0e-1
 A1=100.0;
 A2=200.0;
 A3=30.0;
@@ -239,20 +229,33 @@ RLTH=POST_RELEVE_T(ACTION=_F(RESULTAT = RETH,
                    OPERATION='EXTRACTION',
                    GROUP_NO=('I','CENTRE','J'),
                    NOM_CMP=('TEMP')));
-RLTHS1=POST_RELEVE_T(ACTION=_F(RESULTAT = RETH,
+MEMO_NOM_SENSI(NOM=(_F(NOM_SD='RLTH',
+                       PARA_SENSI=PS1,
+                       NOM_COMPOSE='RLTH_PS1'),
+                    _F(NOM_SD='RLTH',
+                       PARA_SENSI=PS2,
+                       NOM_COMPOSE='RLTH_PS2')));
+RLTH=POST_RELEVE_T(reuse=RLTH,
+                   ACTION=_F(RESULTAT = RETH,
                    INTITULE='TEMPERATURE',
                    NOM_CHAM='TEMP',
                    OPERATION='EXTRACTION',
                    GROUP_NO=('I','CENTRE','J'),
                    NOM_CMP=('TEMP'),
                    SENSIBILITE=(PS1)));
-RLTHS2=POST_RELEVE_T(ACTION=_F(RESULTAT = RETH,
+RLTH=POST_RELEVE_T(reuse=RLTH,
+                   ACTION=_F(RESULTAT = RETH,
                    INTITULE='TEMPERATURE',
                    NOM_CHAM='TEMP',
                    OPERATION='EXTRACTION',
                    GROUP_NO=('I','CENTRE','J'),
                    NOM_CMP=('TEMP'),
                    SENSIBILITE=(PS2)));
+###IMPR_TABLE( TABLE=RLTH,NOM_PARA=('NOEUD','INST','TEMP',),);
+###IMPR_TABLE( TABLE=RLTH,SENSIBILITE=(PS1),
+###            NOM_PARA=('NOEUD','INST','TEMP',),);
+###IMPR_TABLE( TABLE=RLTH,SENSIBILITE=(PS2),
+###            NOM_PARA=('NOEUD','INST','TEMP',),);
 RLTH1M=POST_RELEVE_T(ACTION=_F(RESULTAT = RETH1M,
                    INTITULE='TEMPERATURE',
                    NOM_CHAM='TEMP',
@@ -280,137 +283,85 @@ RLTH2P=POST_RELEVE_T(ACTION=_F(RESULTAT = RETH2P,
 #
 # 5. Boucle Python de comparaison difference finie/derivee analytique
 #
-print "**********************************************************"
-print "*        IMPRESSION DES TESTS DERIVEES ANALYTIQUES       *"
-print "*                  VS DIFFERENCES FINIES                 *"
-print "**********************************************************"
-erreur = 0.
-for k in range(1,4):
+for nume_ordre_k in range(3):
 
-  k1 = (k-1)*3+1
-  print ""
-  instk = (k-1)*5
-  print "Instant= ",instk
-
+  k1 = 3*nume_ordre_k+1
 #
 # 5.1. point 'I'
 #
   temp=RLTH['TEMP',k1]
-  print "Temperature en I= ",temp
+#
   tempm=RLTH1M['TEMP',k1]
   tempp=RLTH1P['TEMP',k1]
-  daps1=RLTHS1['TEMP',k1]
-  dfps1 = (tempp-tempm)/(2.*eps)
-  ecart1 = 100.*((dfps1 - daps1)/dfps1)
-  print "Derivee par rapport a la source imposee"
-  print "Analytique/difference finie/ecart",daps1,dfps1,ecart1
-  if abs(ecart1)>1.0e-9:
-    print "****** Ecart trop important ******"
-    erreur = erreur + 1
+  dfps1 = (tempp-tempm)/(2.*EPSA)
   tempm=RLTH2M['TEMP',k1]
   tempp=RLTH2P['TEMP',k1]
-  daps2=RLTHS2['TEMP',k1]
-  dfps2 = (tempp-tempm)/(2.*eps)
-  ecart2 = 100.*((dfps2 - daps2)/dfps2)
-  print "Derivee par rapport a la temperature exterieure imposee"
-  print "Analytique/difference finie/ecart",daps2,dfps2,ecart2
-  if abs(ecart2)>1.0e-9:
-    print "****** Ecart trop important ******"
-    erreur = erreur + 1
+  dfps2 = (tempp-tempm)/(2.*EPSA)
+#
+  TEST_RESU(RESU=(
+     _F(  RESULTAT = RETH,   NUME_ORDRE = nume_ordre_k,
+          NOM_CHAM = 'TEMP',  GROUP_NO=('I'),
+          CRITERE = 'RELATIF', PRECISION = 1.E-8,
+          NOM_CMP = 'TEMP',   SENSIBILITE = PS1,
+          VALE = dfps1, REFERENCE = 'AUTRE_ASTER' ),
+     _F(  RESULTAT = RETH,   NUME_ORDRE = nume_ordre_k,
+          NOM_CHAM = 'TEMP',  GROUP_NO=('I'),
+          CRITERE = 'RELATIF', PRECISION = 1.E-8,
+          NOM_CMP = 'TEMP',   SENSIBILITE = PS2,
+          VALE = dfps2, REFERENCE = 'AUTRE_ASTER' ),
+                 )
+            ) ;
 #
 # 5.2. point 'CENTRE'
 #
   k1=k1+1
   temp=RLTH['TEMP',k1]
-  print "Temperature au CENTRE= ",temp
+#
   tempm=RLTH1M['TEMP',k1]
   tempp=RLTH1P['TEMP',k1]
-  daps1=RLTHS1['TEMP',k1]
-  dfps1 = (tempp-tempm)/(2.*eps)
-  ecart1 = 100.*((dfps1 - daps1)/dfps1)
-  print "Derivee par rapport a la source imposee"
-  print "Analytique/difference finie/ecart",daps1,dfps1,ecart1
-  if abs(ecart1)>1.0e-9:
-    print "****** Ecart trop important ******"
-    erreur = erreur + 1
+  dfps1 = (tempp-tempm)/(2.*EPSA)
   tempm=RLTH2M['TEMP',k1]
   tempp=RLTH2P['TEMP',k1]
-  daps2=RLTHS2['TEMP',k1]
-  dfps2 = (tempp-tempm)/(2.*eps)
-  ecart2 = 100.*((dfps2 - daps2)/dfps2)
-  print "Derivee par rapport a la temperature exterieure imposee"
-  print "Analytique/difference finie/ecart",daps2,dfps2,ecart2
-  if abs(ecart2)>1.0e-9:
-    print "****** Ecart trop important ******"
-    erreur = erreur + 1
+  dfps2 = (tempp-tempm)/(2.*EPSA)
 #
-# 5.3. Conversion PYTHON>ASTER des differences finies au dernier instant
-#  
-  if (k==3) :
-# Transmet la valeur de la difference finie au point CENTRE et au dernier
-# instant, des variables PYTHON dfps1/dfps2 aux variables ASTER DFA1/DFA2
-# Elles sont definies comme des fonctions ASTER pour pouvoir avoir recourt
-# a TEST_FONCTION et pour pouvoir transmettre des donnees provenant de PYTHON
-    print "" 
-    DFA1=FORMULE(NOM_PARA='INST',VALE=str(eval('dfps1')) )  
-    DFA2=FORMULE(NOM_PARA='INST',VALE=str(eval('dfps2')) )
-    print ""
-  
+  TEST_RESU(RESU=(
+     _F(  RESULTAT = RETH,   NUME_ORDRE = nume_ordre_k,
+          NOM_CHAM = 'TEMP',  GROUP_NO=('CENTRE'),
+          CRITERE = 'RELATIF', PRECISION = 1.E-8,
+          NOM_CMP = 'TEMP',   SENSIBILITE = PS1,
+          VALE = dfps1, REFERENCE = 'AUTRE_ASTER' ),
+     _F(  RESULTAT = RETH,   NUME_ORDRE = nume_ordre_k,
+          NOM_CHAM = 'TEMP',  GROUP_NO=('CENTRE'),
+          CRITERE = 'RELATIF', PRECISION = 1.E-8,
+          NOM_CMP = 'TEMP',   SENSIBILITE = PS2,
+          VALE = dfps2, REFERENCE = 'AUTRE_ASTER' ),
+                 )
+            ) ;
 #
-# 5.4. point 'J'
+# 5.3. point 'J'
 #
   k1=k1+1
   temp=RLTH['TEMP',k1]
-  print "Temperature en J= ",temp
+#
   tempm=RLTH1M['TEMP',k1]
   tempp=RLTH1P['TEMP',k1]
-  daps1=RLTHS1['TEMP',k1]
-  dfps1 = (tempp-tempm)/(2.*eps)
-  ecart1 = 100.*((dfps1 - daps1)/dfps1)
-  print "Derivee par rapport a la source imposee"
-  print "Analytique/difference finie/ecart",daps1,dfps1,ecart1
-  if abs(ecart1)>1.0e-9:
-    print "****** Ecart trop important ******"
-    erreur = erreur + 1
+  dfps1 = (tempp-tempm)/(2.*EPSA)
   tempm=RLTH2M['TEMP',k1]
   tempp=RLTH2P['TEMP',k1]
-  daps2=RLTHS2['TEMP',k1]
-  dfps2 = (tempp-tempm)/(2.*eps)
-  ecart2 = 100.*((dfps2 - daps2)/dfps2)
-  print "Derivee par rapport a la temperature exterieure imposee"
-  print "Analytique/difference finie/ecart",daps2,dfps2,ecart2
-  if abs(ecart2)>1.0e-9:
-    print "****** Ecart trop important ******"
-    erreur = erreur + 1
-    
-print ""
-print "nombre d'erreur :",erreur
-print "**********************************************************"
+  dfps2 = (tempp-tempm)/(2.*EPSA)
 #
-# 6. Impressions des cartes resultats et test_resu:fonction
+  TEST_RESU(RESU=(
+     _F(  RESULTAT = RETH,   NUME_ORDRE = nume_ordre_k,
+          NOM_CHAM = 'TEMP',  GROUP_NO=('J'),
+          CRITERE = 'RELATIF', PRECISION = 1.E-8,
+          NOM_CMP = 'TEMP',   SENSIBILITE = PS1,
+          VALE = dfps1, REFERENCE = 'AUTRE_ASTER' ),
+     _F(  RESULTAT = RETH,   NUME_ORDRE = nume_ordre_k,
+          NOM_CHAM = 'TEMP',  GROUP_NO=('J'),
+          CRITERE = 'RELATIF', PRECISION = 1.E-8,
+          NOM_CMP = 'TEMP',   SENSIBILITE = PS2,
+          VALE = dfps2, REFERENCE = 'AUTRE_ASTER' ),
+                 )
+            ) ;
 #
-#IMPR_TABLE( TABLE=RLTH )
-#IMPR_TABLE( TABLE=RLTHS1 )
-#IMPR_TABLE( TABLE=RLTHS2 )
-
-# test de non-regression sur les valeurs de differences finies calculees
-# au 5.3. et sur les valeurs de sensibilite calculees au 4.1
-TEST_FONCTION(VALEUR=(
-          _F( FONCTION = DFA1, NOM_PARA='INST',CRITERE = 'RELATIF',
-              PRECISION = 1.E-8,VALE_PARA=1.,
-              VALE_REFE = 1.4465244189696E+01,REFERENCE = 'AUTRE_ASTER'),
-          _F( FONCTION = DFA2, NOM_PARA='INST',CRITERE = 'RELATIF',
-              PRECISION = 1.E-8,VALE_PARA=1.,
-              VALE_REFE = 5.6992941551229E-01,REFERENCE = 'AUTRE_ASTER')));
-TEST_RESU(RESU=(
-          _F( RESULTAT = RETH, NUME_ORDRE = 2,
-              SENSIBILITE=(PS1),
-              NOM_CHAM = 'TEMP', GROUP_NO = 'CENTRE', CRITERE = 'RELATIF',
-              PRECISION = 1.E-8, NOM_CMP = 'TEMP',
-              VALE = 1.4465244189696E+01, REFERENCE = 'NON_REGRESSION' ),
-          _F( RESULTAT = RETH, NUME_ORDRE = 2,
-              SENSIBILITE=(PS2),
-              NOM_CHAM = 'TEMP',GROUP_NO = 'CENTRE', CRITERE = 'RELATIF',
-              PRECISION = 1.E-8, NOM_CMP = 'TEMP',
-              VALE = 5.6992941551235E-01,REFERENCE = 'NON_REGRESSION' )));
 FIN();

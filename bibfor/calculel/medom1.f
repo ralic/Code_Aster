@@ -10,7 +10,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF CALCULEL  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,9 +83,11 @@ C              12345678
 C
       CALL GETRES(K8B,CONCEP,NOMCMD)
 C    
-      IF ( (NOMCMD.EQ.'CALC_ELEM').OR.
-     &     (NOMCMD.EQ.'CALC_NO'  ).OR.
-     &     (NOMCMD.EQ.'POST_ELEM')) THEN
+      IF ( (NOMCMD.EQ.'CALC_ELEM'     ).OR.
+     &     (NOMCMD.EQ.'CALC_NO'       ).OR.
+     &     (NOMCMD.EQ.'POST_ELEM'     ).OR.
+     &     (NOMCMD.EQ.'CALC_G_LOCAL_T').OR.
+     &     (NOMCMD.EQ.'CALC_G_THETA_T')) THEN
 C
 C     RECUPERATION DU MODELE, MATERIAU, CARA_ELEM et EXCIT
 C     POUR LE NUMERO d'ORDRE NUORD
@@ -98,31 +100,31 @@ C
         ENDIF
       ELSE
 C
-      CALL GETVID(' ','MODELE'    ,0,1,1,MODELE,N1)
-      IF(NOMCMD(1:8).NE.'POST_ZAC') THEN
-         CALL GETVID(' ','CARA_ELEM' ,0,1,1,CARA  ,N2)
-         CALL DISMOI('F','EXI_RDM',MODELE,'MODELE',IBID,K8B,IE)
-         IF ((N2.EQ.0).AND.(K8B(1:3).EQ.'OUI'))
+        CALL GETVID(' ','MODELE'    ,0,1,1,MODELE,N1)
+        IF(NOMCMD(1:8).NE.'POST_ZAC') THEN
+           CALL GETVID(' ','CARA_ELEM' ,0,1,1,CARA  ,N2)
+           CALL DISMOI('F','EXI_RDM',MODELE,'MODELE',IBID,K8B,IE)
+           IF ((N2.EQ.0).AND.(K8B(1:3).EQ.'OUI'))
      &      CALL UTMESS('A','MEDOM1','LE MODELE CONTIENT DES ELEMENTS'
      &    //' DE STRUCTURE. IL FAUT PROBABLEMENT'
      &    //' UTILISER LE MOT-CLE CARA_ELEM.')
-      ENDIF
+        ENDIF
 
 
-      CALL GETVID(' ','CHAM_MATER',0,1,1,MATERI,N3)
-      CALL DISMOI('F','BESOIN_MATER',MODELE,'MODELE',IBID,K8B,IE)
-      IF ((N3.EQ.0).AND.(K8B(1:3).EQ.'OUI'))
+        CALL GETVID(' ','CHAM_MATER',0,1,1,MATERI,N3)
+        CALL DISMOI('F','BESOIN_MATER',MODELE,'MODELE',IBID,K8B,IE)
+        IF ((N3.EQ.0).AND.(K8B(1:3).EQ.'OUI'))
      &      CALL UTMESS('A','MEDOM1','LE MODELE A PROBABLEMENT '
      &    //'BESOIN D UN CHAMP DE MATERIAUX (MOT-CLE CHAM_MATER).')
 C
-      IF ( N3 .NE. 0 ) THEN
-         CALL RCMFMC ( MATERI , MATE )
-      ELSE
-         MATE = ' '
+        IF ( N3 .NE. 0 ) THEN
+          CALL RCMFMC ( MATERI , MATE )
+        ELSE
+          MATE = ' '
+        ENDIF
+C
       ENDIF
-C_fl
-      ENDIF
-C_fl
+C
 C
 C   TRAITEMENT DU CHARGEMENT
 C
@@ -206,6 +208,7 @@ C       ON STOCKE LES CHARGES DONT LE TYPE CORRESPOND A CTYP
           ENDIF
  50     CONTINUE
         NCHA=IN
+
 C
       ENDIF
 C

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+#& MODIF COMMANDE  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,8 +23,8 @@ CALC_G_THETA_T=OPER(nom="CALC_G_THETA_T",op=53,sd_prod=tabl_calc_g_th,
          regles=(UN_PARMI('RESULTAT','DEPL'),
                  PRESENT_PRESENT('VITE','ACCE'),
                  EXCLUS('COMP_ELAS','COMP_INCR'),),
-         MODELE          =SIMP(statut='o',typ=modele_sdaster),
-         CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
+         MODELE          =SIMP(statut='f',typ=modele_sdaster),
+         CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
          THETA           =SIMP(statut='o',typ=(theta_geom,cham_no_depl_r),),
          DEPL            =SIMP(statut='f',typ=cham_no_depl_r),
          VITE            =SIMP(statut='f',typ=cham_no_depl_r),
@@ -44,7 +44,7 @@ CALC_G_THETA_T=OPER(nom="CALC_G_THETA_T",op=53,sd_prod=tabl_calc_g_th,
              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
            ),
          ),
-         EXCIT           =FACT(statut='o',max='**',
+         EXCIT           =FACT(statut='f',max='**',
                CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
                FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE FISSURE AU CENTRE D'UNE PLAQUE MINCE RECTANGULAIRE FAISANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,24 +86,18 @@ THETA0=CALC_THETA(       MODELE=MO,
                         DIRECTION=(1., 0., 0.,)
                      )
 
-G0=CALC_G_THETA_T(        MODELE=MO,
-                        RESULTAT=DEP,
-                              THETA=THETA0,
-                             EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
-                          SYME_CHAR='SANS',
-                           COMP_ELAS=_F( RELATION = 'ELAS',
+G0=CALC_G_THETA_T(      RESULTAT=DEP,
+                        THETA=THETA0,
+                        SYME_CHAR='SANS',
+                        COMP_ELAS=_F( RELATION = 'ELAS',
                                       DEFORMATION = 'PETIT')
                       )
 
-DG0=CALC_G_THETA_T(        MODELE=MO,
-                        RESULTAT=DEP,
-                          SENSIBILITE = (FORC), 
-                              THETA=THETA0,
-                             EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
-                          SYME_CHAR='SANS',
-                           COMP_ELAS=_F( RELATION = 'ELAS',
+DG0=CALC_G_THETA_T(     RESULTAT=DEP,
+                        SENSIBILITE = (FORC), 
+                        THETA=THETA0,
+                        SYME_CHAR='SANS',
+                        COMP_ELAS=_F( RELATION = 'ELAS',
                                       DEFORMATION = 'PETIT')
                       )
 
@@ -113,6 +107,7 @@ TEST_TABLE(       TABLE=DG0,
                            VALE=1.06E-2,
                       REFERENCE='ANALYTIQUE',
                       PRECISION=0.0005    )
+FIN()
 
 THETA01=CALC_THETA(       MODELE=MO,
                           THETA_2D=_F(  GROUP_NO = ('P0',),
@@ -122,24 +117,18 @@ THETA01=CALC_THETA(       MODELE=MO,
                          DIRECTION=(1., 0., 0.,)
                      )
 
-G1=CALC_G_THETA_T(        MODELE=MO,
-                               RESULTAT=DEP,
-                              THETA=THETA01,
-                             EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
+G1=CALC_G_THETA_T(        RESULTAT=DEP,
+                          THETA=THETA01,
                           COMP_ELAS=_F( RELATION = 'ELAS',
                                      DEFORMATION = 'PETIT'),
                           SYME_CHAR='SANS'
                      )
 
-DG1=CALC_G_THETA_T(        MODELE=MO,
-                        RESULTAT=DEP,
-                          SENSIBILITE = (FORC), 
-                              THETA=THETA01,
-                             EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
-                          SYME_CHAR='SANS',
-                           COMP_ELAS=_F( RELATION = 'ELAS',
+DG1=CALC_G_THETA_T(      RESULTAT=DEP,
+                         SENSIBILITE = (FORC), 
+                         THETA=THETA01,
+                         SYME_CHAR='SANS',
+                          COMP_ELAS=_F( RELATION = 'ELAS',
                                       DEFORMATION = 'PETIT')
                       )
 
@@ -164,14 +153,11 @@ DEP2=CALC_ELEM(reuse=DEP2,RESULTAT=DEP2,
               OPTION=('EPSI_ELGA_DEPL','SIEF_ELGA_DEPL',),)
 
 
-DG2=CALC_G_THETA_T(        MODELE=MO,
-                        RESULTAT=DEP2,
-                          SENSIBILITE = (YOUNG), 
-                              THETA=THETA0,
-                             EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
-                          SYME_CHAR='SANS',
-                           COMP_ELAS=_F( RELATION = 'ELAS',
+DG2=CALC_G_THETA_T(     RESULTAT=DEP2,
+                        SENSIBILITE = (YOUNG), 
+                        THETA=THETA0,
+                        SYME_CHAR='SANS',
+                         COMP_ELAS=_F( RELATION = 'ELAS',
                                       DEFORMATION = 'PETIT')
                       )
 
@@ -183,14 +169,11 @@ TEST_TABLE(       TABLE=DG2,
                       PRECISION=0.0005    )
 
 
-DG3=CALC_G_THETA_T(        MODELE=MO,
-                        RESULTAT=DEP2,
-                          SENSIBILITE = (YOUNG), 
-                              THETA=THETA01,
-                             EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
-                          SYME_CHAR='SANS',
-                           COMP_ELAS=_F( RELATION = 'ELAS',
+DG3=CALC_G_THETA_T(     RESULTAT=DEP2,
+                        SENSIBILITE = (YOUNG), 
+                        THETA=THETA01,
+                        SYME_CHAR='SANS',
+                        COMP_ELAS=_F( RELATION = 'ELAS',
                                       DEFORMATION = 'PETIT')
                       )
 

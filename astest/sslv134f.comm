@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CALCUL 3D DE G LOCAL FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,8 +121,6 @@ FOND=DEFI_FOND_FISS(
                        )
 
 GL1=CALC_G_LOCAL_T(
-                    MODELE=MO,
-                    CHAM_MATER=CHMAT,
                     COMP_ELAS=(_F(RELATION='ELAS',),),
   TITRE='G_LOCAL AVEC R_INF =  1.00000E-01 ET R_SUP =  1.00000E+00',
                     RESULTAT=RESU,
@@ -135,8 +133,6 @@ GL1=CALC_G_LOCAL_T(
                   )
 
 GL2=CALC_G_LOCAL_T(
-                    MODELE=MO,
-                    CHAM_MATER=CHMAT,
                     COMP_ELAS=(_F(RELATION='ELAS',),),
   TITRE='G_LOCAL AVEC R_INF =  0.50000E-01 ET R_SUP =  1.50000E+00',
                     RESULTAT=RESU,
@@ -147,8 +143,6 @@ GL2=CALC_G_LOCAL_T(
                   )
 
 GLBIL1=CALC_G_LOCAL_T(
-                    MODELE=MO,
-                    CHAM_MATER=CHMAT,
                     COMP_ELAS=(_F(RELATION='ELAS',),),
   TITRE='G_LOCAL AVEC R_INF =  1.00000E-01 ET R_SUP =  1.00000E+00',
                     RESULTAT=RESU,
@@ -163,8 +157,6 @@ GLBIL1=CALC_G_LOCAL_T(
 
 
 GLBIL2=CALC_G_LOCAL_T(
-                    MODELE=MO,
-                    CHAM_MATER=CHMAT,
                     COMP_ELAS=(_F(RELATION='ELAS',),),
   TITRE='G_LOCAL AVEC R_INF =  5.00000E-01 ET R_SUP =  1.50000E+00',
                     RESULTAT=RESU,
@@ -175,9 +167,7 @@ GLBIL2=CALC_G_LOCAL_T(
                     TOUT_ORDRE='OUI'
                   )
 
-GLMAX1=CALC_G_LOCAL_T(  
-                              MODELE=MO,        
-                          CHAM_MATER=CHMAT,  
+GLMAX1=CALC_G_LOCAL_T(   
   TITRE='GMAX_LOCAL AVEC R_INF =  1.00000E-01 ET R_SUP =  1.00000E+00',
                             RESULTAT=RESU,BORNES=( 
                               _F(  NUME_ORDRE = 1,
@@ -202,9 +192,7 @@ GLMAX1=CALC_G_LOCAL_T(
                           COMP_ELAS=_F(  RELATION = 'ELAS',)
                        )
 
-GLMAX2=CALC_G_LOCAL_T(  
-                              MODELE=MO,        
-                          CHAM_MATER=CHMAT,  
+GLMAX2=CALC_G_LOCAL_T(    
   TITRE='GMAX_LOCAL AVEC R_INF =  5.00000E-01 ET R_SUP =  1.50000E+00',
                             RESULTAT=RESU,BORNES=( 
                               _F(  NUME_ORDRE = 1,

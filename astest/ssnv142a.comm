@@ -1,5 +1,5 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
-# TITRE ESSAI DE FLUAGE PROPRE (MODELE GRANGER)
+# MODIF  DATE 11/10/2004   AUTEUR DURAND C.DURAND 
+# TITRE ESSAI DE FLUAGE PROPRE (MODELE GRANGER_FP_INDT : INDEPDT TEMPER.)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,7 +50,7 @@ BETON=DEFI_MATERIAU(
                 ELAS_FO=_F( E = E, NU = NU, ALPHA = ALPHA,
                             TEMP_DEF_ALPHA = 20.0,
                             FONC_DESORP = FONC1),
-                GRANGER_FP=_F( J1 = 0.2,
+                GRANGER_FP_INDT=_F( J1 = 0.2,
                             TAUX_1 = 4320000.,
                             J2 = 0.1,
                             TAUX_2 = 2160000.,)
@@ -118,39 +118,31 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.0,INTERVALLE=(
 #DELTAT=432000=5J
 
 
-U=STAT_NON_LINE( 
-                            MODELE=MO,
-                        CHAM_MATER=CM,EXCIT=(
-                             _F( 
-                CHARGE = CH1), _F( 
-                CHARGE = CH2), _F( 
-                CHARGE = CH3)),
-                         COMP_INCR=_F( 
-                RELATION = 'GRANGER_FP'),
-                         INCREMENT=_F( 
-                LIST_INST = L_INST,
-                NUME_INST_FIN = 74),
-                            NEWTON=_F( 
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 1),
-                       CONVERGENCE=_F( 
-                RESI_GLOB_MAXI = 1.E-6,
-                ITER_GLOB_MAXI = 25,
-                ITER_INTE_MAXI = 1000)
+U=STAT_NON_LINE(  MODELE=MO,
+                  CHAM_MATER=CM,
+                  EXCIT=( _F(CHARGE = CH1),
+                          _F(CHARGE = CH2),
+                          _F(CHARGE = CH3)),
+                  COMP_INCR=_F(RELATION = 'GRANGER_FP_INDT'),
+                  INCREMENT=_F(LIST_INST = L_INST,
+                               NUME_INST_FIN = 74),
+                  NEWTON=_F(MATRICE = 'TANGENTE',
+                            REAC_ITER = 1),
+                  CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-6,
+                                 ITER_GLOB_MAXI = 25,
+                                 ITER_INTE_MAXI = 1000)
               )
 
 U=CALC_ELEM( reuse=U,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=U,
+             OPTION=('SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+             RESULTAT=U,
               )
 
 U=CALC_ELEM(reuse=U,   RESULTAT=U,
-                   OPTION='EPSI_ELNO_DEPL')
+            OPTION='EPSI_ELNO_DEPL')
 
 U=CALC_ELEM(reuse=U, RESULTAT=U,
-
-                   OPTION='EPGR_ELNO')
+            OPTION='EPGR_ELNO')
 
 TEST_RESU(RESU=(
 

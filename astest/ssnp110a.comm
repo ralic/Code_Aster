@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,62 +116,44 @@ THETA2=CALC_THETA(    MODELE=MO,
                                      DIRECTION=(1., 0., 0.,)
                      )
 
-G1_0=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP,
-                          THETA=THETA0,
-                         EXCIT=_F(CHARGE=CH,),
+G1_0=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
+                         THETA=THETA0,
                          COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_LINE'),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=5
                       )
 
-G2_0=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP,
-                          THETA=THETA0,
-                         EXCIT=_F(CHARGE=CH,),
+G2_0=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
+                         THETA=THETA0,
                          COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_LINE'),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=10
                       )
 
-G3_0=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP,
-                          THETA=THETA0,
-                         EXCIT=_F(CHARGE=CH,),
+G3_0=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
+                         THETA=THETA0,
                          COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_LINE'),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=15
                       )
 
-G4_0=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP,
-                          THETA=THETA0,
-                         EXCIT=_F(CHARGE=CH,),
+G4_0=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
+                         THETA=THETA0,
                          COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_LINE'),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=20
                       )
 
-G5_0=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP,
-                          THETA=THETA0,
-                         EXCIT=_F(CHARGE=CH,),
+G5_0=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
+                         THETA=THETA0,
                          COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_LINE'),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=25
                       )
 
-G6_0=CALC_G_THETA_T(    MODELE=MO,
-                         RESULTAT=CHAMDEP,
-                          THETA=THETA0,
-                         EXCIT=_F(CHARGE=CH,),
+G6_0=CALC_G_THETA_T(     RESULTAT=CHAMDEP,
+                         THETA=THETA0,
                          COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_LINE'),
-                         CHAM_MATER=CHMAT,
                          SYME_CHAR='SYME',
                          NUME_ORDRE=30
                       )

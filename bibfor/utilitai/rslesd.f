@@ -2,7 +2,7 @@
      &                   IEXCIT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF UTILITAI  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -137,40 +137,43 @@ C==========================================================
 C
 C--- RECUPERATION DU NOM DU CARA_ELEM
 C
-      CALL GETVID(' ','CARA_ELEM',0,1,1,NOMLU,N2)
+      IF((NOMCMD.NE.'CALC_G_LOCAL_T').AND.
+     &   (NOMCMD.NE.'CALC_G_THETA_T'))THEN
+        CALL GETVID(' ','CARA_ELEM',0,1,1,NOMLU,N2)
 C
-      CALL RSADPA(RESULT,'L',1,'CARAELEM',NUORD,0,JPARA,K8B)
-      NOMSD=ZK8(JPARA)
+        CALL RSADPA(RESULT,'L',1,'CARAELEM',NUORD,0,JPARA,K8B)
+        NOMSD=ZK8(JPARA)
 C 
 C--- VERIFICATIONS ET AFFECTATIONS
 C
-      IF (NOMSD.NE.' ')THEN
-        IF (N2.EQ.0) THEN
-           CARELE = NOMSD 
-        ELSEIF (NOMSD.EQ.NOMLU) THEN
-           CARELE = NOMLU
-        ELSE
-           CALL UTMESS('A',NOMPRO,
+        IF (NOMSD.NE.' ')THEN
+          IF (N2.EQ.0) THEN
+             CARELE = NOMSD 
+          ELSEIF (NOMSD.EQ.NOMLU) THEN
+             CARELE = NOMLU
+          ELSE
+             CALL UTMESS('A',NOMPRO,
      &            ' LE CARA_ELEM FOURNI PAR L''UTILISATEUR'
      &          //' EST DIFFERENT DE CELUI PRESENT DANS LA SD RESULTAT,'
      &          //' ON POURSUIT LES CALCULS AVEC LE CARA_ELEM FOURNI'
      &          //' PAR L''UTILISATEUR.')
-           CARELE = NOMLU
-        ENDIF
-      ELSE
-        IF (N2.NE.0) THEN
-           CARELE = NOMLU 
+             CARELE = NOMLU
+          ENDIF
         ELSE
-           CARELE = BLAN8
+          IF (N2.NE.0) THEN
+             CARELE = NOMLU 
+          ELSE
+             CARELE = BLAN8
+          ENDIF
         ENDIF
-      ENDIF
 C
 C--- SI LE CARA_ELEM EST ABSENT DE LA SD RESULTAT ET S'IL EST FOURNI PAR
 C    L'UTILISATEUR , ON LE STOCKE DANS LA SD RESULTAT
-C
-      IF(NOMSD.EQ.' '.AND.NOMLU.NE.' ') THEN
-         CALL RSADPA(RESULT,'E',1,'CARAELEM',NUORD,0,JPARA,K8B)
-         ZK8(JPARA)=CARELE
+C  
+        IF(NOMSD.EQ.' '.AND.NOMLU.NE.' ') THEN
+           CALL RSADPA(RESULT,'E',1,'CARAELEM',NUORD,0,JPARA,K8B)
+           ZK8(JPARA)=CARELE
+        ENDIF
       ENDIF
 C            
 C==========================================================

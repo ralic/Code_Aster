@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,36 +131,21 @@ THETA=CALC_THETA(
                       R_SUP = 0.5),
                        )
 
-G=CALC_G_THETA_T(         MODELE=MO,
-                          RESULTAT=RESU,
-                          EXCIT=(_F(CHARGE = CHCL),
-                                 _F(CHARGE = CH1,FONC_MULT = F1),
-                                 _F(CHARGE = CH2,FONC_MULT = F2),),
+G=CALC_G_THETA_T(         RESULTAT=RESU,
                           THETA=THETA,
                           COMP_ELAS=_F(  RELATION = 'ELAS'),
-                          CHAM_MATER=CHMAT
                    )
 
 GBIL=CALC_G_THETA_T(
-                          MODELE=MO,
-                          CHAM_MATER=CHMAT,
                           THETA=THETA,
                           RESULTAT=RESU,
-                          EXCIT=(_F(CHARGE = CHCL),
-                                 _F(CHARGE = CH1,FONC_MULT = F1),
-                                 _F(CHARGE = CH2,FONC_MULT = F2),),
                           OPTION='G_BILINEAIRE',
                           COMP_ELAS=_F(  RELATION = 'ELAS')
                        )
 
 GMAX=CALC_G_THETA_T(
-                          MODELE=MO,
-                          CHAM_MATER=CHMAT,
                           THETA=THETA,
                           RESULTAT=RESU,
-                          EXCIT=(_F(CHARGE = CHCL),
-                                 _F(CHARGE = CH1,FONC_MULT = F1),
-                                 _F(CHARGE = CH2,FONC_MULT = F2),),
                           BORNES=(
                           _F(  NUME_ORDRE = 1,
                                        VALE_MIN = 0.,

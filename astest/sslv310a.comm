@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  MURAKAMI 9.35 FISSURE SEMI-ELLIPTIQUE DEBOUCHANT A LA PEAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,14 +125,11 @@ G0_C1=CALC_G_THETA_T(        MODELE=MO,
 #
 # CALCUL DE G LOCAL AVEC THETA_LEGENDRE
 #
-GLO1_LE5=CALC_G_LOCAL_T(         MODELE=MO,
-                                 RESULTAT=CHAMDEPL,
-                               CHAM_MATER=CHMAT,
+GLO1_LE5=CALC_G_LOCAL_T(         RESULTAT=CHAMDEPL,
                                      FOND_FISS=FISS1,
                                TOUT_ORDRE='OUI',
                                  R_INF_FO=RAY_INF1,
                                  R_SUP_FO=RAY_SUP1,
-                                   EXCIT=_F( CHARGE = CH),
                                     DEGRE=5,
                         LISSAGE_THETA='LEGENDRE',
                             LISSAGE_G='LEGENDRE'
@@ -175,14 +172,11 @@ G0_C2=CALC_G_THETA_T(        MODELE=MO,
 #
 # CALCUL DE G LOCAL AVEC THETA_LEGENDRE
 #
-GLO2_LE5=CALC_G_LOCAL_T(         MODELE=MO,
-                                 RESULTAT=CHAMDEPL,
-                               CHAM_MATER=CHMAT,
+GLO2_LE5=CALC_G_LOCAL_T(        RESULTAT=CHAMDEPL,
                                      FOND_FISS=FISS1,
                                TOUT_ORDRE='OUI',
                                  R_INF_FO=RAY_INF2,
                                  R_SUP_FO=RAY_SUP2,
-                                   EXCIT=_F( CHARGE = CH),
                                     DEGRE=5,
                         LISSAGE_THETA='LEGENDRE',
                             LISSAGE_G='LEGENDRE'
@@ -225,14 +219,11 @@ G0_C3=CALC_G_THETA_T(        MODELE=MO,
 #
 # CALCUL DE G LOCAL AVEC THETA_LEGENDRE
 #
-GLO3_LE4=CALC_G_LOCAL_T(         MODELE=MO,
-                                 RESULTAT=CHAMDEPL,
-                               CHAM_MATER=CHMAT,
+GLO3_LE4=CALC_G_LOCAL_T(         RESULTAT=CHAMDEPL,
                                      FOND_FISS=FISS1,
                                TOUT_ORDRE='OUI',
                                  R_INF_FO=RAY_INF3,
                                  R_SUP_FO=RAY_SUP3,
-                                   EXCIT=_F( CHARGE = CH),
                                     DEGRE=4,
                         LISSAGE_THETA='LEGENDRE',
                             LISSAGE_G='LEGENDRE'

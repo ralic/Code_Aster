@@ -1,7 +1,7 @@
       SUBROUTINE TAILSD(NOM, NOMSD, VAL, NBVAL)
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 11/02/2003   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 11/10/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -87,7 +87,8 @@ C ---------------------------------------------------------------------
         VAL(1) = 0
 C   
         SD = NOMSD
-        CALL JELIRA(SD,'NMAXOC',VAL(1),K8BID)
+        CALL JEEXIN(SD,IRET)
+        IF (IRET.NE.0) CALL JELIRA(SD,'NMAXOC',VAL(1),K8BID)
       ENDIF
 
       END

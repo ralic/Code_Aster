@@ -4,7 +4,7 @@
       REAL*8          XYZL(3,4), DEPL(*), PGL(3,3), SIGMA(*)
       CHARACTER*16    NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -108,7 +108,7 @@ C
 
       CALL TECACH ('ONN','PTEREF',8,ITAB,IRET)
       JTREF = ITAB(1)
-      IF (JTREF.GT.0) THEN
+      IF (IRET.EQ.0) THEN
          TREF = ZR(JTREF)
       ELSE
          TREF = ZERO
@@ -151,7 +151,7 @@ C         IF(ABS(C).GT.1.D-14) PHI= (ATAN(S/C)*180.D0/PI)-90.D0
 C
       CALL TECACH ( 'ONN', 'PTEMPSR', 8, ITAB, IRET )
       IBID = ITAB(1)
-      IF (IBID.GT.0) THEN
+      IF (IRET.EQ.0) THEN
          INST = ZR(IBID)
       ELSE
          INST = ZERO
@@ -168,7 +168,7 @@ C     1- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
 C        -----------------------------------------
       CALL TECACH ('ONN','PTEMPER',8,ITAB,IRET)
       ITEMP = ITAB(1)
-      IF (ITEMP.GT.0) THEN
+      IF (IRET.EQ.0.OR.IRET.EQ.3) THEN
         TEMPNO = .TRUE.
         NBPAR = 1
         NOMPAR(1) = 'TEMP'
@@ -192,7 +192,7 @@ C     2- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
 C        -------------------------------------------------------
       ELSE
         CALL TECACH('ONN','PTEMPEF',1,ITEMP,IRET)
-        IF (ITEMP.GT.0) THEN
+        IF (IRET.EQ.0) THEN
           TEMPNO = .FALSE.
           NBPAR = 2
           NOMPAR(1) = 'INST'

@@ -8,7 +8,7 @@
       REAL*8  TIME
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/06/2004   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,12 +45,14 @@ C ----------------------------------------------------------------------
 C
       INTEGER       IBID, IER, I, IF3D3D, IF2D2D, IF1D2D, IF2D3D,
      +              IPRESS, IEPSIN, IROTA, IPESA, IRET, N1, ICHA0, 
-     +              NBVALE, IN, JVAL
-      CHARACTER*8   K8B
+     +              NBVALE, IN, JVAL, NEXCI, JPARA, JFCHA, NRES
+      CHARACTER*8   K8B, RESU
       CHARACTER*16  TYPE, OPER
       CHARACTER*24  BLANC, VCHAR, VOLU0, C1D2D0, C2D3D0, PRES0,
-     +               EPSI0, PESA0, ROTA0, NOMFCT
-      REAL*8  CONST   
+     +              EPSI0, PESA0, ROTA0, NOMFCT
+      CHARACTER*24  EXCISD
+      REAL*8  CONST 
+      LOGICAL LCHSD  
 C     ------------------------------------------------------------------
 C
       CALL GETRES ( K8B, TYPE, OPER )
@@ -65,6 +67,19 @@ C
       CHPESA = BLANC
       CHROTA = BLANC
 C
+      CALL GETFAC('EXCIT',NEXCI)
+      CALL GETVID(' ','RESULTAT',0,1,1,RESU,NRES)
+      LCHSD=.FALSE.
+      IF(NRES.NE.0.AND.NEXCI.EQ.0) LCHSD=.TRUE. 
+C
+C--- LECTURE DES INFORMATIONS CONTENUES DANS LA SD RESULTAT
+C
+      IF(LCHSD) THEN
+        CALL RSADPA(RESU,'L',1,'EXCIT',IORD,0,JPARA,K8B)
+        EXCISD = ZK24(JPARA)
+        CALL JEVEUO(EXCISD(1:19)//'.FCHA','L',JFCHA)          
+      ENDIF
+C
       IER = 0
       DO 10 I = 1 , NCHAR
 C
@@ -75,7 +90,15 @@ C
          IF ( IF3D3D .NE. 0 ) THEN
            IF ( CHVOLU .EQ. BLANC ) THEN
              CHVOLU = LCHAR(I) // '.CHME.F3D3D.DESC'
-             CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+
+             IF(LCHSD) THEN
+                N1 = 1
+                NOMFCT = ZK24(JFCHA-1+I)
+                IF(NOMFCT(1:2).EQ.'&&') N1 = 0
+             ELSE
+                CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+             ENDIF
+
              IF (N1. NE. 0) THEN
               VCHAR = LCHAR(I) // '.CHME.F3D3D.VALE'
               CALL JEVEUO(VCHAR,'L',JVAL)
@@ -110,7 +133,14 @@ C
          IF ( IF2D2D .NE. 0 ) THEN
            IF ( CHVOLU .EQ. BLANC ) THEN
              CHVOLU = LCHAR(I)//'.CHME.F2D2D.DESC'
-             CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+             IF(LCHSD) THEN
+                N1 = 1
+                NOMFCT = ZK24(JFCHA-1+I)
+                IF(NOMFCT(1:2).EQ.'&&') N1 = 0
+             ELSE
+                CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+             ENDIF
+
              IF (N1. NE. 0) THEN
               VCHAR = LCHAR(I) // '.CHME.F2D2D.VALE'
               CALL JEVEUO(VCHAR,'L',JVAL)
@@ -145,7 +175,15 @@ C
          IF ( IF1D2D .NE. 0 ) THEN
            IF ( CF1D2D .EQ. BLANC ) THEN
              CF1D2D = LCHAR(I)//'.CHME.F1D2D.DESC'
-             CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+
+             IF(LCHSD) THEN
+                N1 = 1
+                NOMFCT = ZK24(JFCHA-1+I)
+                IF(NOMFCT(1:2).EQ.'&&') N1 = 0
+             ELSE
+                CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+             ENDIF
+
              IF (N1. NE. 0) THEN
               VCHAR = LCHAR(I) // '.CHME.F1D2D.VALE'
               CALL JEVEUO(VCHAR,'L',JVAL)
@@ -180,7 +218,15 @@ C
          IF ( IF2D3D .NE. 0 ) THEN
            IF ( CF2D3D .EQ. BLANC ) THEN
              CF2D3D = LCHAR(I)//'.CHME.F2D3D.DESC'
-             CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+
+             IF(LCHSD) THEN
+                N1 = 1
+                NOMFCT = ZK24(JFCHA-1+I)
+                IF(NOMFCT(1:2).EQ.'&&') N1 = 0
+             ELSE
+                CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+             ENDIF
+
              IF (N1. NE. 0) THEN
               VCHAR = LCHAR(I) // '.CHME.F2D3D.VALE'
               CALL JEVEUO(VCHAR,'L',JVAL)
@@ -215,7 +261,14 @@ C
          IF ( IPRESS .NE. 0 ) THEN
            IF ( CHPRES .EQ. BLANC ) THEN
              CHPRES = LCHAR(I)//'.CHME.PRESS.DESC'
-             CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+
+             IF(LCHSD) THEN
+                N1 = 1
+                NOMFCT = ZK24(JFCHA-1+I)
+                IF(NOMFCT(1:2).EQ.'&&') N1 = 0
+             ELSE
+                CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+             ENDIF
              IF (N1. NE. 0) THEN
               VCHAR = LCHAR(I) // '.CHME.PRESS.VALE'
               CALL JEVEUO(VCHAR,'L',JVAL)
@@ -251,7 +304,15 @@ C
            EPSI = .TRUE.
            IF ( CHEPSI .EQ. BLANC ) THEN
              CHEPSI = LCHAR(I)//'.CHME.EPSIN.DESC'
-             CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+
+             IF(LCHSD) THEN
+                N1 = 1
+                NOMFCT = ZK24(JFCHA-1+I)
+                IF(NOMFCT(1:2).EQ.'&&') N1 = 0
+             ELSE
+                CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+             ENDIF
+
              IF (N1. NE. 0) THEN
               VCHAR = LCHAR(I) // '.CHME.EPSIN.VALE'
               CALL JEVEUO(VCHAR,'L',JVAL)
@@ -286,7 +347,15 @@ C
          IF ( IPESA .NE. 0 ) THEN
            IF ( CHPESA .EQ. BLANC ) THEN
              CHPESA = LCHAR(I)//'.CHME.PESAN.DESC'
-             CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+
+             IF(LCHSD) THEN
+                N1 = 1
+                NOMFCT = ZK24(JFCHA-1+I)
+                IF(NOMFCT(1:2).EQ.'&&') N1 = 0
+             ELSE
+                CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+             ENDIF
+
              IF (N1. NE. 0) THEN
               VCHAR = LCHAR(I) // '.CHME.PESAN.VALE'
               CALL JEVEUO(VCHAR,'L',JVAL)
@@ -321,7 +390,15 @@ C
          IF ( IROTA .NE. 0 ) THEN
            IF ( CHROTA .EQ. BLANC ) THEN
              CHROTA = LCHAR(I)//'.CHME.ROTAT.DESC'
-             CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+
+             IF(LCHSD) THEN
+                N1 = 1
+                NOMFCT = ZK24(JFCHA-1+I)
+                IF(NOMFCT(1:2).EQ.'&&') N1 = 0
+             ELSE
+                CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
+             ENDIF
+
              IF (N1. NE. 0) THEN
               VCHAR = LCHAR(I) // '.CHME.ROTAT.VALE'
               CALL JEVEUO(VCHAR,'L',JVAL)

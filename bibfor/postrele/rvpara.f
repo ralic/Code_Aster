@@ -1,9 +1,7 @@
-      SUBROUTINE RVPARA ( NOMRES )
-      IMPLICIT   NONE
-      CHARACTER*(*)       NOMRES
+      SUBROUTINE RVPARA ( NOMTAB, LATAB1, NOPASE, MCF, NBPOST )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 02/06/2003   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF POSTRELE  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,11 +19,25 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C IN  NOMTAB  : NOM DE LA TABLE PRINCIPALE PRODUITE PAR LA COMMANDE
+C IN  LATAB1  : NOM DE LA TABLE A INITIALISER
+C IN  NOPASE  : NOM DU PARAMETRE SENSIBLE EN COURS D'EXAMEN
+C IN  MCF     : MOT-CLE FACTEUR
+C IN  NBPOST  : NOMBRE DE POST-TRAITEMENT A CONSIDERER
+C ----------------------------------------------------------------------
+C     INITIALISE LA TABLE DE POST_RELEVE_T ASSOCIEE A LA TABLE DE
+C     REFERENCE NOMTAB ET A L'EVENTUEL PARAMETRE SENSIBLE NOPASE.
 C     ------------------------------------------------------------------
 C
-C     INITIALISE LA TABLE DE POST_RELEVE_T
+      IMPLICIT   NONE
 C
-C     ------------------------------------------------------------------
+C 0.1. ==> ARGUMENTS
+C
+      CHARACTER*6 MCF
+      CHARACTER*8 NOPASE
+      CHARACTER*19 NOMTAB, LATAB1
+      INTEGER NBPOST
+C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
@@ -43,28 +55,56 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER       NBPOST, JCHEM, JCHAM, JRESU, JSENS, JNCMP, NCMP, I,
-     +              JINVA, JPRIN, JMOME, JMAIL, JMOYE, J, JTRAD,
-     +              JTRAN, IOCC, N1, N2, N3, JCMP, NBC, NUME, JFREQ,
-     +              IRET, IBID, NBP, JINST, JORDR, JMODE, JABSC,
-     +              JNOEU, N11, N12, N13, N14, N15, N16, N17, N18, N19,
-     +              JNCAS, JANGL, JNOCP, NUMCMP, JNUCP, NBORDR, JNUME
+C 0.3. ==> VARIABLES LOCALES
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'RVPARA' )
+C
+      INTEGER IFM, NIV
+      INTEGER IOCC, IBID, IAUX, JAUX
+      INTEGER NRPASS, NBPASS, ADRECG
+      INTEGER       JCHEM, JCHAM, JRESU, JNCMP, NCMP, I,
+     >              JINVA, JPRIN, JMOME, JMAIL, JMOYE, J, JTRAD,
+     >              JTRAN, N1, N2, N3, JCMP, NBC, NUME, JFREQ,
+     >              IRET, NBP, JINST, JORDR, JMODE, JABSC,
+     >              JNOEU, N11, N12, N13, N14, N15, N16, N17, N18,
+     >              JNCAS, JANGL, JNOCP, NUMCMP, JNUCP, NBORDR, JNUME
       REAL*8        R8B
       COMPLEX*16    C16B
       CHARACTER*8   K8B, RESU, NOCMP(50), TYPARA(100), NOMCMP
       CHARACTER*16  K16B, NOMSY, TYSD
       CHARACTER*24  NOMOBJ, CHEXTR, NOPARA(100), KNUME
+      CHARACTER*24 NORECG
+      CHARACTER*24 K24BID
+C
+      LOGICAL OK
 C     ------------------------------------------------------------------
+C
+C====
+C 1. PREALABLES
+C====
 C
       CALL JEMARQ ( )
 C
-      CALL GETFAC ( 'ACTION', NBPOST )
+      CALL INFMAJ
+      CALL INFNIV(IFM,NIV)
+C
+      IF ( NIV.GE.2 ) THEN
+        IF ( NOPASE.EQ.' ' ) THEN
+          CALL UTMESS('I',NOMPRO,'INITIALISATION DE LA TABLE '//NOMTAB)
+        ELSE
+          CALL UTMESS('I',NOMPRO,'INITIALISATION DE LA TABLE ASSOCIEE '
+     > //' A LA TABLE '//NOMTAB//' ET AU PARAMETRE SENSIBLE '//NOPASE
+     > //'CONNUE SOUS LE NOM DE CONCEPT '//LATAB1)
+        ENDIF
+      ENDIF
+C               12   345678   9012345678901234
+      NORECG = '&&'//NOMPRO//'_RESULTA_GD     '
 C
       JABSC = 0
       JCHEM = 0
       JCHAM = 0
       JRESU = 0
-      JSENS = 0
       JORDR = 0
       JMODE = 0
       JINST = 0
@@ -83,33 +123,67 @@ C
       JTRAD = 0
       NCMP  = 0
 C
-      DO 100, IOCC = 1, NBPOST, 1
+C====
+C 2. ON PARCOURT TOUTES LES ACTIONS DEMANDEES
+C====
 C
-         CALL GETVID ( 'ACTION', 'CHEMIN', IOCC,1,0, K8B, N1 )
+      DO 2, IOCC = 1, NBPOST
+C
+C 2.1. ==> ON CHERCHE SI C'EST LA BONNE TABLE
+C
+        CALL GETVID ( MCF, 'RESULTAT', IOCC,1,0, K8B, N3 )
+C
+        IAUX = IOCC
+        IF ( N3.NE.0 ) THEN
+          IBID = 1
+        ELSE
+          IBID = 2
+        ENDIF
+        JAUX = 1
+        CALL PSRESE ( MCF, IAUX, IBID, NOMTAB, JAUX,
+     >                NBPASS, NORECG, IRET )
+C
+        CALL JEVEUO ( NORECG, 'L', ADRECG )
+C
+        OK = .FALSE.
+        DO 21 , NRPASS = 1 , NBPASS
+          IF ( ZK24(ADRECG+2*NRPASS-2)(1:8).EQ.LATAB1(1:8) .AND.
+     >         ZK24(ADRECG+2*NRPASS-1)(1:8).EQ.NOPASE ) THEN
+            OK = .TRUE.
+          ENDIF
+   21   CONTINUE
+C
+        CALL JEDETR ( NORECG )
+C
+C 2.2. ==> ON NE DECOMPTE LES CARACTERISTIQUES QUE SI C'EST LA
+C          BONNE TABLE
+C
+        IF ( OK ) THEN
+C
+         CALL GETVID ( MCF, 'CHEMIN', IOCC,1,0, K8B, N1 )
          IF ( N1 .NE. 0 ) JCHEM = JCHEM + 1
 C
-         CALL GETVID ( 'ACTION', 'CHAM_GD', IOCC,1,0, K8B, N2 )
+         CALL GETVID ( MCF, 'CHAM_GD', IOCC,1,0, K8B, N2 )
          IF ( N2 .NE. 0 ) JCHAM = JCHAM + 1
 C
-         CALL GETVID ( 'ACTION', 'RESULTAT', IOCC,1,0, K8B, N3 )
          IF ( N3 .NE. 0 ) THEN
             JRESU = JRESU + 1
-            CALL GETVID ( 'ACTION', 'RESULTAT', IOCC,1,1, K8B, N3 )
+            CALL GETVID ( MCF, 'RESULTAT', IOCC,1,1, K8B, N3 )
             CALL GETTCO ( K8B, TYSD )
             IF     ( TYSD .EQ. 'EVOL_ELAS'  .OR.
-     +               TYSD .EQ. 'EVOL_THER'  .OR.
-     +               TYSD .EQ. 'EVOL_NOLI'  .OR.
-     +               TYSD .EQ. 'EVOL_CHAR'  .OR.
-     +               TYSD .EQ. 'DYNA_TRANS' )  THEN
+     >               TYSD .EQ. 'EVOL_THER'  .OR.
+     >               TYSD .EQ. 'EVOL_NOLI'  .OR.
+     >               TYSD .EQ. 'EVOL_CHAR'  .OR.
+     >               TYSD .EQ. 'DYNA_TRANS' )  THEN
                JINST = JINST + 1
             ELSEIF ( TYSD .EQ. 'DYNA_HARMO'  .OR.
-     +               TYSD .EQ. 'HARM_GENE'   .OR.
-     +               TYSD .EQ. 'ACOU_HARMO'  )  THEN
+     >               TYSD .EQ. 'HARM_GENE'   .OR.
+     >               TYSD .EQ. 'ACOU_HARMO'  )  THEN
                JFREQ = JFREQ + 1
             ELSEIF ( TYSD .EQ. 'MODE_MECA'   .OR.
-     +               TYSD .EQ. 'MODE_GENE'   .OR.
-     +               TYSD .EQ. 'MODE_ACOU'   .OR.
-     +               TYSD .EQ. 'BASE_MODALE' )  THEN
+     >               TYSD .EQ. 'MODE_GENE'   .OR.
+     >               TYSD .EQ. 'MODE_ACOU'   .OR.
+     >               TYSD .EQ. 'BASE_MODALE' )  THEN
                JFREQ = JFREQ + 1
                JMODE = JMODE + 1
             ELSEIF ( TYSD .EQ. 'MODE_STAT'   )  THEN
@@ -123,65 +197,62 @@ C
             ENDIF
          ENDIF
 C
-         CALL GETVID ( 'ACTION', 'LIST_ORDRE', IOCC,1,0, K8B, N11 )
+         CALL GETVID ( MCF, 'LIST_ORDRE', IOCC,1,0, K8B, N11 )
          IF ( N11 .NE. 0 ) JORDR = JORDR + 1
 C
-         CALL GETVIS ( 'ACTION', 'NUME_ORDRE', IOCC,1,0, IBID, N12 )
+         CALL GETVIS ( MCF, 'NUME_ORDRE', IOCC,1,0, IBID, N12 )
          IF ( N12 .NE. 0 ) JORDR = JORDR + 1
 C
-         CALL GETVID ( 'ACTION', 'LIST_MODE', IOCC,1,0, K8B, N13 )
+         CALL GETVID ( MCF, 'LIST_MODE', IOCC,1,0, K8B, N13 )
          IF ( N13 .NE. 0 ) JMODE = JMODE + 1
 C
-         CALL GETVIS ( 'ACTION', 'NUME_MODE', IOCC,1,0, IBID, N14 )
+         CALL GETVIS ( MCF, 'NUME_MODE', IOCC,1,0, IBID, N14 )
          IF ( N14 .NE. 0 ) JMODE = JMODE + 1
 C
-         CALL GETVID ( 'ACTION', 'LIST_INST', IOCC,1,0, K8B, N15 )
+         CALL GETVID ( MCF, 'LIST_INST', IOCC,1,0, K8B, N15 )
          IF ( N15 .NE. 0 ) JINST = JINST + 1
 C
-         CALL GETVR8 ( 'ACTION', 'INST', IOCC,1,0, R8B, N16 )
+         CALL GETVR8 ( MCF, 'INST', IOCC,1,0, R8B, N16 )
          IF ( N16 .NE. 0 ) JINST = JINST + 1
 C
-         CALL GETVID ( 'ACTION', 'LIST_FREQ', IOCC,1,0, K8B, N17 )
+         CALL GETVID ( MCF, 'LIST_FREQ', IOCC,1,0, K8B, N17 )
          IF ( N17 .NE. 0 ) JFREQ = JFREQ + 1
 C
-         CALL GETVR8 ( 'ACTION', 'FREQ', IOCC,1,0, R8B, N18 )
+         CALL GETVR8 ( MCF, 'FREQ', IOCC,1,0, R8B, N18 )
          IF ( N18 .NE. 0 ) JFREQ = JFREQ + 1
-C
-         CALL GETVID ( 'ACTION', 'SENSIBILITE', IOCC,1,0, K8B, N19 )
-         IF ( N19 .NE. 0 ) JSENS = JSENS + 1
 C
          IF ((N2+N11+N12+N13+N14+N15+N16+N17+N18).EQ.0) JORDR = JORDR+1
 C
-         CALL GETVTX ( 'ACTION', 'TOUT_CMP', IOCC,1,0, K8B, N1 )
+         CALL GETVTX ( MCF, 'TOUT_CMP', IOCC,1,0, K8B, N1 )
          IF ( N1 .NE. 0 ) THEN
             JNCMP = JNCMP  + 1
-            NOMOBJ = '&&RVPARA.NCMP'
+            NOMOBJ = '&&'//NOMPRO//'.NCMP'
             IF ( N2 .NE. 0 ) THEN
-               CALL GETVID ( 'ACTION', 'CHAM_GD', IOCC,1,1, NOMSY, N2 )
+               CALL GETVID ( MCF, 'CHAM_GD', IOCC,1,1, NOMSY, N2 )
                CALL UTNCMP ( NOMSY, NBC, NOMOBJ )
             ELSE
-               CALL GETVID ( 'ACTION', 'RESULTAT', IOCC,1,1, RESU , N3 )
-               CALL GETVTX ( 'ACTION', 'NOM_CHAM', IOCC,1,1, NOMSY, N1 )
+               CALL GETVID ( MCF, 'RESULTAT', IOCC,1,1, RESU , N3 )
+               CALL GETVTX ( MCF, 'NOM_CHAM', IOCC,1,1, NOMSY, N1 )
 
                CALL RSORAC(RESU,'LONUTI',IBID,R8B,K8B,C16B,R8B,K8B,
-     +                                                 NBORDR,1,IBID)
-               KNUME = '&&RVPARA.NUME_ORDRE'
+     >                                                 NBORDR,1,IBID)
+               KNUME = '&&'//NOMPRO//'.NUME_ORDRE'
                CALL WKVECT ( KNUME , 'V V I', NBORDR, JNUME )
                CALL RSORAC(RESU,'TOUT_ORDRE',IBID,R8B,K8B,C16B,R8B,K8B,
-     +                                        ZI(JNUME),NBORDR,IBID)
+     >                                        ZI(JNUME),NBORDR,IBID)
                DO 14 I = 1 , NBORDR
                   NUME = ZI(JNUME+I-1)
                   CALL RSEXCH ( RESU, NOMSY, NUME, CHEXTR, IRET )
                   IF ( IRET .EQ. 0 ) GOTO 16
  14            CONTINUE
-               CALL UTMESS('F','RVPARA','PAS DE CHAMP TROUVE ')
+               CALL UTMESS('F',NOMPRO,'PAS DE CHAMP TROUVE ')
                CALL UTIMPK('S','POUR L''OPTION ',1,NOMSY)
                CALL UTFINM()
  16            CONTINUE
                CALL JEDETR ( KNUME )
                CALL UTNCMP ( CHEXTR, NBC, NOMOBJ )
             ENDIF
-            IF (NBC.EQ.0) CALL UTMESS('F','RVPARA','Y A UN BUG 2')
+            IF (NBC.EQ.0) CALL UTMESS('F',NOMPRO,'Y A UN BUG 2')
             CALL JEVEUO ( NOMOBJ, 'L', JCMP )
             DO 10 I = 1 , NBC
                DO 12 J = 1 , NCMP
@@ -193,29 +264,30 @@ C
             CALL JEDETR ( NOMOBJ )
          ENDIF
 C
-         CALL GETVTX ( 'ACTION', 'NOM_CMP', IOCC,1,0, K8B, N1 )
+         CALL GETVTX ( MCF, 'NOM_CMP', IOCC,1,0, K8B, N1 )
          IF ( N1 .NE. 0 ) THEN
 C
-            CALL GETVTX ( 'ACTION', 'TRAC_NOR'    , IOCC,1,0, K8B, N12)
+            CALL GETVTX ( MCF, 'TRAC_NOR'    , IOCC,1,0, K8B, N12)
             IF ( N12 .NE. 0 ) JTRAN = JTRAN  + 1
 C
-            CALL GETVTX ( 'ACTION', 'TRAC_DIR'      , IOCC,1,0, K8B,N14)
+            CALL GETVTX ( MCF, 'TRAC_DIR'      , IOCC,1,0, K8B,N14)
             IF ( N14 .NE. 0 ) JTRAD = JTRAD  + 1
 C
             IF ( (N12+N14) .NE. 0 ) GOTO 24
             JNCMP = JNCMP  + 1
             NBC = -N1
-            CALL WKVECT ( '&&RVPARA.NCMP', 'V V K8', NBC, JCMP )
-            CALL GETVTX ( 'ACTION', 'NOM_CMP', IOCC,1,NBC, ZK8(JCMP),N1)
-C           CALL GETVIS ( 'ACTION', 'NUME_CMP', IOCC,1,0, IBID,N11)
+            CALL WKVECT ( '&&'//NOMPRO//'.NCMP', 'V V K8', NBC, JCMP )
+            CALL GETVTX ( MCF, 'NOM_CMP', IOCC,1,NBC, ZK8(JCMP),N1)
+C           CALL GETVIS ( MCF, 'NUME_CMP', IOCC,1,0, IBID,N11)
             N11=0
             IF ( N11 .NE. 0 ) THEN
                NUMCMP = -N11
-               CALL WKVECT ( '&&RVPARA.NU_CMP', 'V V I', NUMCMP, JNUCP )
-C           CALL GETVIS('ACTION','NUME_CMP',IOCC,1,NUMCMP,ZI(JNUCP),N11)
+               CALL WKVECT ( '&&'//NOMPRO//'.NU_CMP', 'V V I',
+     >                       NUMCMP, JNUCP )
+C           CALL GETVIS(MCF,'NUME_CMP',IOCC,1,NUMCMP,ZI(JNUCP),N11)
             N11=0
                IF (ZK8(JCMP)(1:4).EQ.'VARI') THEN
-                  IF (NBC.NE.1) CALL UTMESS('F','RVPARA','Y A UN BUG 3')
+                  IF (NBC.NE.1) CALL UTMESS('F',NOMPRO,'Y A UN BUG 3')
                   DO 120 I = 1 , NUMCMP
                      CALL CODENT ( ZI(JNUCP+I-1), 'G', K8B )
                      NOMCMP = 'VARI_'//K8B(1:3)
@@ -234,7 +306,7 @@ C           CALL GETVIS('ACTION','NUME_CMP',IOCC,1,NUMCMP,ZI(JNUCP),N11)
                      NOCMP(NCMP) = ZK8(JCMP+I-1)
  124              CONTINUE
                ENDIF
-               CALL JEDETR ( '&&RVPARA.NU_CMP' )
+               CALL JEDETR ( '&&'//NOMPRO//'.NU_CMP' )
             ELSE
                DO 20 I = 1 , NBC
                   DO 22 J = 1 , NCMP
@@ -244,21 +316,21 @@ C           CALL GETVIS('ACTION','NUME_CMP',IOCC,1,NUMCMP,ZI(JNUCP),N11)
                   NOCMP(NCMP) = ZK8(JCMP+I-1)
  20            CONTINUE
             ENDIF
-            CALL JEDETR ( '&&RVPARA.NCMP' )
+            CALL JEDETR ( '&&'//NOMPRO//'.NCMP' )
          ENDIF
  24      CONTINUE
 C
-         CALL GETVTX ( 'ACTION', 'ELEM_PRINCIPAUX', IOCC,1,0, K8B, N1 )
+         CALL GETVTX ( MCF, 'ELEM_PRINCIPAUX', IOCC,1,0, K8B, N1 )
          IF ( N1 .NE. 0 ) JPRIN = JPRIN + 1
 C
-         CALL GETVTX ( 'ACTION', 'RESULTANTE', IOCC,1,0, K8B, N1 )
-         CALL GETVTX ( 'ACTION', 'MOMENT'    , IOCC,1,0, K8B, N2 )
+         CALL GETVTX ( MCF, 'RESULTANTE', IOCC,1,0, K8B, N1 )
+         CALL GETVTX ( MCF, 'MOMENT'    , IOCC,1,0, K8B, N2 )
          IF ( (N1 .NE. 0) .AND. (N2 .NE. 0) ) JMOME = JMOME + 1
          IF ( (N1 .NE. 0) .AND. (N2 .EQ. 0) ) THEN
             JNCMP = JNCMP  + 1
             NBC = -N1
-            CALL WKVECT ( '&&RVPARA.NCMP', 'V V K8', NBC, JCMP )
-            CALL GETVTX ('ACTION','RESULTANTE',IOCC,1,NBC,ZK8(JCMP),N1)
+            CALL WKVECT ( '&&'//NOMPRO//'.NCMP', 'V V K8', NBC, JCMP )
+            CALL GETVTX (MCF,'RESULTANTE',IOCC,1,NBC,ZK8(JCMP),N1)
             DO 30 I = 1 , NBC
                DO 32 J = 1 , NCMP
                   IF ( NOCMP(J) .EQ. ZK8(JCMP+I-1) ) GOTO 30
@@ -266,32 +338,40 @@ C
                NCMP = NCMP + 1
                NOCMP(NCMP) = ZK8(JCMP+I-1)
  30         CONTINUE
-            CALL JEDETR ( '&&RVPARA.NCMP' )
+            CALL JEDETR ( '&&'//NOMPRO//'.NCMP' )
          ENDIF
 C
-         CALL GETVTX ( 'ACTION', 'OPERATION', IOCC,1,1, K16B, N3 )
+         CALL GETVTX ( MCF, 'OPERATION', IOCC,1,1, K16B, N3 )
          IF ( K16B .EQ. 'MOYENNE' ) JMOYE = JMOYE + 1
          IF ( K16B .EQ. 'EXTRACTION' ) THEN
 C
-            CALL GETVTX ( 'ACTION', 'INVARIANT', IOCC,1,0, K8B, N2 )
+            CALL GETVTX ( MCF, 'INVARIANT', IOCC,1,0, K8B, N2 )
             IF ( N2 .NE. 0 ) JINVA = JINVA + 1
 C
             IF ( N1 .EQ. 0 ) JABSC = JABSC + 1
 C
-            CALL GETVID ( 'ACTION', 'NOEUD', IOCC,1,0, K8B, N2 )
+            CALL GETVID ( MCF, 'NOEUD', IOCC,1,0, K8B, N2 )
             IF ( (N1 .EQ. 0) .AND. (N2 .NE. 0) ) JNOEU = JNOEU + 1
 C
-            CALL GETVID ( 'ACTION', 'GROUP_NO', IOCC,1,0, K8B, N2 )
+            CALL GETVID ( MCF, 'GROUP_NO', IOCC,1,0, K8B, N2 )
             IF ( (N1 .EQ. 0) .AND. (N2 .NE. 0) ) JNOEU = JNOEU + 1
          ENDIF
 C
-         CALL GETVTX ( 'ACTION', 'MOYE_NOEUD', IOCC,1,0, K8B, N1 )
+         CALL GETVTX ( MCF, 'MOYE_NOEUD', IOCC,1,0, K8B, N1 )
          IF ( N1 .NE. 0 ) THEN
-            CALL GETVTX ( 'ACTION', 'MOYE_NOEUD', IOCC,1,1, K8B, N1 )
+            CALL GETVTX ( MCF, 'MOYE_NOEUD', IOCC,1,1, K8B, N1 )
             IF ( K8B(1:3) .EQ. 'NON' ) JMAIL = JMAIL + 1
          ENDIF
 C
- 100  CONTINUE
+        ENDIF
+C
+    2 CONTINUE
+C
+C====
+C 3. CONNAISSANT LES CARACTERISTIQUES DE LA TABLE, ON INITIALISE
+C====
+C
+C 3.1. ==> MISE EN PLACE DES PARAMETRES
 C
       NBP = 1
       NOPARA(NBP) = 'INTITULE'
@@ -324,11 +404,6 @@ C
          NBP = NBP + 1
          NOPARA(NBP) = 'NOM_CHAM'
          TYPARA(NBP) = 'K16'
-      ENDIF
-      IF ( JSENS .NE. 0 ) THEN
-         NBP = NBP + 1
-         NOPARA(NBP) = 'PAR_SENS'
-         TYPARA(NBP) = 'K8'
       ENDIF
       IF ( JORDR .NE. 0 ) THEN
          NBP = NBP + 1
@@ -497,8 +572,22 @@ C
          TYPARA(NBP) = 'K16'
       ENDIF
 C
-      CALL TBCRSD ( NOMRES, 'G' )
-      CALL TBAJPA ( NOMRES, NBP, NOPARA, TYPARA )
+      IF ( NIV.GE.2 ) THEN
+        DO 1789 , N1 = 1 , NBP
+          CALL UTMESS('I',NOMPRO,
+     >    'PARAMETRE '//NOPARA(N1)//'DE TYPE '//TYPARA(N1))
+ 1789   CONTINUE
+      ENDIF
+C
+C 3.2. ==> CREATION/INITIALISATION DE LA TABLE
+C
+      CALL TBCRSD ( LATAB1, 'G' )
+      CALL TBAJPA ( LATAB1, NBP, NOPARA, TYPARA )
+C
+C              12345678      9012345678901234
+      K24BID = LATAB1(1:8)//'           .TITR'
+      CALL TITREA('T',LATAB1,LATAB1,K24BID,'C',' ',0,'G' )
 C
       CALL JEDEMA ( )
+C
       END

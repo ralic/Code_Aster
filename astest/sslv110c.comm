@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -111,32 +111,30 @@ THETA0=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
                                    R_INF_FO = RINF0,  R_SUP_FO = RSUP0)
                                  )
 
-G0=CALC_G_THETA_T( MODELE=MO,   RESULTAT=RESU,  CHAM_MATER=CHMAT,
+G0=CALC_G_THETA_T( RESULTAT=RESU,
                       COMP_ELAS=_F( RELATION = 'ELAS',
                                  DEFORMATION = 'PETIT'),
                      THETA=THETA0,  EXCIT=_F(CHARGE=CH),  )
 
 
-GLOC0=CALC_G_LOCAL_T( MODELE=MO,RESULTAT=RESU,  CHAM_MATER=CHMAT,
+GLOC0=CALC_G_LOCAL_T( RESULTAT=RESU,
                         FOND_FISS=FISS1,
                         DEGRE=7,   R_SUP_FO=RSUP0,   R_INF_FO=RINF0,
                          COMP_ELAS=_F( RELATION = 'ELAS',
                                     DEFORMATION = 'PETIT'),
-                        EXCIT=_F(CHARGE=CH),   )
+                     )
 
-DGE=CALC_G_THETA_T(MODELE=MO,     CHAM_MATER=CHMAT,
-                RESULTAT=RESU, 
+DGE=CALC_G_THETA_T(RESULTAT=RESU, 
                       COMP_ELAS=_F( RELATION = 'ELAS',
                                  DEFORMATION = 'PETIT'),
               SENSIBILITE = (YOUNG,), 
-                     THETA=THETA0,   EXCIT=_F(CHARGE=CH ),)
+                     THETA=THETA0,)
 
-DGF=CALC_G_THETA_T(MODELE=MO,     CHAM_MATER=CHMAT,
-                RESULTAT=RESU, 
+DGF=CALC_G_THETA_T(RESULTAT=RESU, 
                       COMP_ELAS=_F( RELATION = 'ELAS',
                                  DEFORMATION = 'PETIT'),
               SENSIBILITE = (FZ,), 
-                     THETA=THETA0,  EXCIT=_F(CHARGE=CH), )
+                     THETA=THETA0, )
 
 #----------------------------------------------------------------------
 #                           COURONNE 2
@@ -147,68 +145,68 @@ THETA1=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
                                    R_INF_FO = RINF1,  R_SUP_FO = RSUP1)
                                  )
 
-G1=CALC_G_THETA_T(MODELE=MO,RESULTAT=RESU,  CHAM_MATER=CHMAT,
+G1=CALC_G_THETA_T(RESULTAT=RESU,
                      COMP_ELAS=_F( RELATION = 'ELAS',
                                 DEFORMATION = 'PETIT'),
-             THETA=THETA1,   EXCIT=_F(CHARGE=CH),  )
+             THETA=THETA1,)
 
 
-GLOC1=CALC_G_LOCAL_T(MODELE=MO,RESULTAT=RESU,  CHAM_MATER=CHMAT,
+GLOC1=CALC_G_LOCAL_T(RESULTAT=RESU,
                        FOND_FISS=FISS1,
                        DEGRE=7,   R_SUP_FO=RSUP1,   R_INF_FO=RINF1,
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),
-                       EXCIT=_F(CHARGE=CH),  )
+                       )
 
-DGE1=CALC_G_THETA_T(MODELE=MO,     CHAM_MATER=CHMAT,
-                RESULTAT=RESU, 
+DGE1=CALC_G_THETA_T(     
+                      RESULTAT=RESU, 
                       COMP_ELAS=_F( RELATION = 'ELAS',
-                                 DEFORMATION = 'PETIT'),
-              SENSIBILITE = (YOUNG,), 
-                     THETA=THETA1,   EXCIT=_F(CHARGE=CH), )
+                                    DEFORMATION = 'PETIT'),
+                      SENSIBILITE = (YOUNG,), 
+                      THETA=THETA1,    )
 
-DGF1=CALC_G_THETA_T(MODELE=MO,     CHAM_MATER=CHMAT,
-                RESULTAT=RESU, 
+DGF1=CALC_G_THETA_T(     
+                      RESULTAT=RESU, 
                       COMP_ELAS=_F( RELATION = 'ELAS',
-                                 DEFORMATION = 'PETIT'),
-              SENSIBILITE = (FZ,), 
-                     THETA=THETA1,   EXCIT=_F(CHARGE=CH), )
+                                    DEFORMATION = 'PETIT'),
+                      SENSIBILITE = (FZ,), 
+                      THETA=THETA1,    )
 
 
 #----------------------------------------------------------------------
 #                           COURONNE 3
 #----------------------------------------------------------------------
 
-THETA2=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
+THETA2=CALC_THETA(   OPTION='COURONNE', MODELE=MO, FOND_FISS=FISS1,
                         THETA_3D=_F(  TOUT = 'OUI',  MODULE_FO = MODUF,
                                    R_INF_FO = RINF2,  R_SUP_FO = RSUP2)
                                  )
 
-G2=CALC_G_THETA_T(MODELE=MO,RESULTAT=RESU,  CHAM_MATER=CHMAT,
+G2=CALC_G_THETA_T(   RESULTAT=RESU,  
                      COMP_ELAS=_F( RELATION = 'ELAS',
-                                DEFORMATION = 'PETIT'),
-                    THETA=THETA2,   EXCIT=_F(CHARGE=CH), )
+                                   DEFORMATION = 'PETIT'),
+                     THETA=THETA2,    )
 
-GLOC2=CALC_G_LOCAL_T(MODELE=MO,RESULTAT=RESU,  CHAM_MATER=CHMAT,
+GLOC2=CALC_G_LOCAL_T(  RESULTAT=RESU,  
                        FOND_FISS=FISS1,
                        DEGRE=7,   R_SUP_FO=RSUP2,   R_INF_FO=RINF2,
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
-                       EXCIT=_F(CHARGE=CH), )
+                       COMP_ELAS=_F( RELATION = 'ELAS',
+                                     DEFORMATION = 'PETIT'),
+                        )
 
-DGE2=CALC_G_THETA_T(MODELE=MO,     CHAM_MATER=CHMAT,
-                RESULTAT=RESU, 
+DGE2=CALC_G_THETA_T(     
+                      RESULTAT=RESU, 
                       COMP_ELAS=_F( RELATION = 'ELAS',
-                                 DEFORMATION = 'PETIT'),
-              SENSIBILITE = (YOUNG,), 
-                     THETA=THETA2,   EXCIT=_F(CHARGE=CH), )
+                                    DEFORMATION = 'PETIT'),
+                      SENSIBILITE = (YOUNG,), 
+                      THETA=THETA2,    )
 
-DGF2=CALC_G_THETA_T(MODELE=MO,     CHAM_MATER=CHMAT,
-                RESULTAT=RESU, 
+DGF2=CALC_G_THETA_T(     
+                      RESULTAT=RESU, 
                       COMP_ELAS=_F( RELATION = 'ELAS',
-                                 DEFORMATION = 'PETIT'),
-              SENSIBILITE = (FZ,), 
-                     THETA=THETA2,   EXCIT=_F(CHARGE=CH), )
+                                    DEFORMATION = 'PETIT'),
+                      SENSIBILITE = (FZ,), 
+                      THETA=THETA2,    )
 
 #----------------------------------------------------------------------
 #              TEST DE G SUR LES 3 COURONNES

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,8 +19,8 @@
 CALC_G_LOCAL_T=OPER(nom="CALC_G_LOCAL_T",op=77,sd_prod=tabl_calc_g_loca,
                     fr="Calcul du taux de restitution local d énergie",reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
-         MODELE          =SIMP(statut='o',typ=modele_sdaster),
-         CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
+         MODELE          =SIMP(statut='f',typ=modele_sdaster),
+         CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
          regles=(UN_PARMI('RESULTAT','DEPL'),
                  PRESENT_PRESENT('VITE','ACCE'),
                  UN_PARMI('R_INF','R_INF_FO'),

@@ -1,7 +1,7 @@
       SUBROUTINE OP0053 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,13 +67,14 @@ C
       INTEGER      I,J,ICHA,IBID,IORD,IRET,IVEC,IPROPA,IFOND,IRET1
       INTEGER      JINST,LONVEC,NBPRUP,IORD1,IORD2
       INTEGER      NBINST,NC,NCHA,NDEP,NP,NRES,NBVAL,IG,IBOR,NBORN
-      INTEGER      NBCO,N1,N3
+      INTEGER      NBCO,N1,N2,N3
       INTEGER NRPASE,NBPASE,NRPASS,NBPASS,TYPESE
       INTEGER ADRECG,ADCHSE
       INTEGER NVITES,NACCE
 
       REAL*8       TIME,ALPHA,PREC,RBID
 
+      CHARACTER*4 K4BID
       CHARACTER*5 SUFFIX
       CHARACTER*8  MODELE, MATERI, TYPRUP(6)
       CHARACTER*8  RESUCO,TABLE1,FOND,SYMECH,K8BI1,K8BID,CRIT,AFFCHA
@@ -82,6 +83,8 @@ C
       CHARACTER*8 NOPASE
       CHARACTER*13 INPSCO
       CHARACTER*16 TYPCO, OPER, OPTION, NOPRUP(6), OPTIO1, OPTIO2
+      CHARACTER*16 TYSD      
+      CHARACTER*19 KCHA
       CHARACTER*24 BLAN24
       CHARACTER*24 STYPSE, NORECG
       CHARACTER*24 MATE,COMPOR,DEPLA,VECORD,VCHAR,THETA,SDTHET
@@ -113,6 +116,7 @@ C====
 C
       CALL JEMARQ()
 C               123456789012345678901234
+      VCHAR  = '&&'//NOMPRO//'.CHARGES'
       BLAN24 = '                        '
       INPSCO = '&&'//NOMPRO//'_PSCO'
 C               12   345678   9012345678901234
@@ -134,14 +138,10 @@ C
       ENDIF
 C
 C=======================================================================
-C 2.3. ==> MODELE, CHAM_MATER ET RELATION DE COMPORTEMENT
+C 2.3. ==> OPTION
 C=======================================================================
 
-      CALL GETVID(' ','MODELE'    ,0,1,1,MODELE,IBID)
-      CALL GETVID(' ','CHAM_MATER',0,1,1,MATERI,IBID)
       CALL GETVTX(' ','OPTION'    ,0,1,1,OPTION,IBID)
-      CALL RCMFMC(MATERI,MATE)
-      CALL NMDORC(MODELE,COMPOR)
 
 C=======================================================================
 C 2.4. ==> RECUPERATION DU DEPLACEMENT A PARTIR DU MOT CLE DEPL
@@ -150,7 +150,21 @@ C          RESULTAT
 C=======================================================================
 
       CALL GETVID(' ','DEPL',0,1,1,DEPLA,NDEP)
+
       IF(NDEP.NE.0) THEN
+        CALL GETVID(' ','MODELE'    ,0,1,1,MODELE,N1)
+        CALL GETVID(' ','CHAM_MATER',0,1,1,MATERI,N2)
+        IF (N1.EQ.0 ) THEN
+           CALL UTMESS('F','OP0053','SI LE MOT-CLE DEPL EST PRESENT'//
+     +                    ' ALORS LE MOT-CLE MODELE EST OBLIGATOIRE.')
+        ENDIF
+        IF (N2.EQ.0 ) THEN
+           CALL UTMESS('F','OP0053','SI LE MOT CLE DEPL EST PRESENT'//
+     +                 ' ALORS LE MOT-CLE CHAM_MATER EST OBLIGATOIRE.')
+        ENDIF
+C
+        CALL RCMFMC(MATERI,MATE)
+        CALL NMDORC(MODELE,COMPOR)
         LONVEC = 1
         IORD = 0
         CALL GETVR8(' ','INST',0,1,0,RBID,NBINST)
@@ -185,39 +199,69 @@ C=======================================================================
           CALL UTMESS('F',NOMPRO,
      >                'PROBLEME A LA RECUPERATION D''UN CHAMP')
         ENDIF
+        CALL GETTCO(RESUCO,TYSD)
+        IF (TYSD.EQ.'DYNA_TRANS') THEN
+           CALL GETVID(' ','MODELE'    ,0,1,1,MODELE,N1)
+           CALL GETVID(' ','CHAM_MATER',0,1,1,MATERI,N2)
+           CALL GETFAC('EXCIT',NEXCI)
+           IF (N1.EQ.0 ) THEN
+             CALL UTMESS('F','OP0053','DANS LE CAS D''UNE SD RESULTAT'//
+     +                    ' DE TYPE DYNA_TRANS, LE MOT-CLE MODELE EST'//
+     +                    ' OBLIGATOIRE.')
+           ENDIF
+           IF (N2.EQ.0 ) THEN
+             CALL UTMESS('F','OP0053','DANS LE CAS D''UNE SD RESULTAT'//
+     +                    ' DE TYPE DYNA_TRANS, LE MOT-CLE CHAM_MATER'//
+     +                    ' EST OBLIGATOIRE.')
+           ENDIF
+           IF (NEXCI.EQ.0 ) THEN
+             CALL UTMESS('F','OP0053','DANS LE CAS D''UNE SD RESULTAT'//
+     +                    ' DE TYPE DYNA_TRANS, LE MOT-CLE EXCIT'//
+     +                    ' EST OBLIGATOIRE.')
+           ENDIF
+        ENDIF
         CALL JEVEUO ( VECORD, 'L', IVEC )
+        IORD = ZI(IVEC)
+        CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4BID,RESUCO,IORD)
+        CALL NMDORC(MODELE,COMPOR)
+        CALL JEVEUO(VCHAR,'L',ICHA)
       ENDIF
 
 C=======================================================================
 C 2.5. ==> CHARGES
 C=======================================================================
-      CALL GETFAC('EXCIT',NEXCI)
-        NCHA = 0
-      IF (NEXCI .GT. 0) THEN
-        DO 21 IEXC = 1,NEXCI
-          CALL GETVID('EXCIT','CHARGE',IEXC,1,1,K24BID,L)
-          IF (L .EQ. 1) NCHA = NCHA + 1
- 21     CONTINUE
-        VCHAR = '&&'//NOMPRO//'.CHARGES'
-        N3=MAX(1,NCHA)
-        CALL WKVECT(VCHAR,'V V K8',N3,ICHA)
-        IF (NCHA .NE. 0) THEN 
-         DO 22 , I = 1,NCHA
-           CALL GETVID('EXCIT','CHARGE',I,1,1,ZK8(ICHA+I-1),IBID)
- 22      CONTINUE
-         CALL DISMOI('F','NOM_MODELE',ZK8(ICHA),'CHARGE',IBID,K8BI1,IER)
-         IF (K8BI1.NE.MODELE) THEN
-           CALL UTMESS('F',NOMPRO,'LES CHARGES NE S''APPUIENT PAS'
-     &                       //' SUR LE MODELE DONNE EN ARGUMENT')
-         ENDIF
-         DO 23 , I = 1,NCHA
-           CALL DISMOI('F','NOM_MODELE',ZK8(ICHA-1+I),'CHARGE',IBID,
-     &                 K8BID,IER)
-           IF (K8BID.NE.K8BI1) THEN
-             CALL UTMESS('F',NOMPRO,'LES CHARGES NE '
-     &                 // 'S''APPUIENT PAS TOUTES SUR LE MEME MODELE')
+      CALL GETVID(' ','DEPL',0,1,1,DEPLA,NDEP)
+      IF(NDEP.NE.0) THEN
+        CALL GETFAC('EXCIT',NEXCI)
+          NCHA = 0
+        IF (NEXCI .GT. 0) THEN
+          DO 21 IEXC = 1,NEXCI
+            CALL GETVID('EXCIT','CHARGE',IEXC,1,1,K24BID,L)
+            IF (L .EQ. 1) NCHA = NCHA + 1
+ 21       CONTINUE
+          CALL JEEXIN(VCHAR,IRET)
+          IF(IRET.NE.0) CALL JEDETR(VCHAR)
+          N3=MAX(1,NCHA)
+          CALL WKVECT(VCHAR,'V V K8',N3,ICHA)
+          IF (NCHA .NE. 0) THEN 
+           DO 22 , I = 1,NCHA
+             CALL GETVID('EXCIT','CHARGE',I,1,1,ZK8(ICHA+I-1),IBID)
+ 22        CONTINUE
+           CALL DISMOI('F','NOM_MODELE',ZK8(ICHA),'CHARGE',IBID,
+     &                  K8BI1,IER)
+           IF (K8BI1.NE.MODELE) THEN
+             CALL UTMESS('F',NOMPRO,'LES CHARGES NE S''APPUIENT PAS'
+     &                         //' SUR LE MODELE DONNE EN ARGUMENT')
            ENDIF
-  23     CONTINUE
+           DO 23 , I = 1,NCHA
+             CALL DISMOI('F','NOM_MODELE',ZK8(ICHA-1+I),'CHARGE',IBID,
+     &                   K8BID,IER)
+             IF (K8BID.NE.K8BI1) THEN
+               CALL UTMESS('F',NOMPRO,'LES CHARGES NE '
+     &                   // 'S''APPUIENT PAS TOUTES SUR LE MEME MODELE')
+             ENDIF
+  23       CONTINUE
+          ENDIF
         ENDIF
       ENDIF
 C=======================================================================
@@ -281,6 +325,7 @@ C
 C
         IAUX = NRPASE
         JAUX = 1
+        MATERI = MATE(1:8)
         CALL PSNSLE ( INPSCO,IAUX,JAUX,NOPASE )
         CALL PSRENC ( MATERI,NOPASE,MATERS,IRET )
         IF (IRET.EQ.0) THEN
@@ -306,13 +351,18 @@ C
 C
 C 2.9.3.1. ==> LA CHARGE EST-ELLE CONCERNEE PAR UNE SENSIBILITE ?
 C
-          INDIC = INDIC + 1
- 2930     CONTINUE
-          CALL GETVID('EXCIT','CHARGE',INDIC,1,1,NOMCHA,N1)
-          IF (N1.EQ.0) THEN
+          IF(NEXCI .GT. 0) THEN
             INDIC = INDIC + 1
-            GO TO 2930
-          END IF
+ 2930       CONTINUE
+            CALL GETVID('EXCIT','CHARGE',INDIC,1,1,NOMCHA,N1)
+            IF (N1.EQ.0) THEN
+              INDIC = INDIC + 1
+              GO TO 2930
+            END IF
+          ELSE
+              NOMCHA = ZK8(ICHA+ICHAR-1)        
+          ENDIF
+
           DO 2931 , NRPASE = 1 , NBPASE
             IAUX = NRPASE
             JAUX = 1
@@ -524,6 +574,9 @@ C 3.3.1.1. ==> CALCUL DE LA FORME BILINEAIRE DU TAUX DE RESTITUTION
             CALL JEMARQ()
             IF (NRES.NE.0) THEN
               IORD1 = ZI(IVEC-1+I)
+              CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4BID,
+     &        RESUCO,IORD1)
+              CALL JEVEUO(VCHAR,'L',ICHA)
               CALL RSEXCH(RESUCO,'DEPL',IORD1,DEPLA1,IRET)
               IORD2 = ZI(IVEC-1+J)
               CALL RSEXCH(RESUCO,'DEPL',IORD2,DEPLA2,IRET)
@@ -589,6 +642,9 @@ C==============================================================
           CALL JEMARQ()
           IF(NRES.NE.0) THEN
             IORD = ZI(IVEC-1+I)
+            CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4BID,
+     &      RESUCO,IORD)
+            CALL JEVEUO(VCHAR,'L',ICHA)
             CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
             IF(IRET.NE.0) THEN
               CALL UTMESS('F',NOMPRO,'ACCES IMPOSSIBLE AU DEPLACEMENT')

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF APLEXT UTILITAI  DATE 16/06/2003   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF APLEXT UTILITAI  DATE 12/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -126,9 +126,11 @@ void __stdcall APLEXT(long *niv,long *nbd ,char *nom ,unsigned long lnom, long *
        pid_t pidr;
 /*
    Attente de la fin de l'execution de la commande
-*/
-       pidr=wait(&errnoSTAT);
-       if (pidr == -1) { *ier=1; }
+
+*/     do {errno = 0; 
+          pidr=wait(&errnoSTAT);
+       } while (errno==EINTR) ;
+       if (pidr == -1) {perror("wait"); *ier=1;}
        else {
 /*
    Examen du code retour avec détection des signaux

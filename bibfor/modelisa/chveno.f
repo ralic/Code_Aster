@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 11/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,8 +142,8 @@ C
             IF (MOTFAC .EQ. 'CONTACT') THEN
                CALL DISMOI('F','DIM_GEOM',NOMO,'MODELE',NDIM,K8B,IER1)
                IF ( NDIM .GT. 1000 )  NDIM = 3
-               CALL GETVR8 ( MOTFAC, 'VECT_NORM_2',IOCC,1,3, DIR, NOC )
-               CALL GETVR8 ( MOTFAC, 'VECT_Y',     IOCC,1,3, DIR, NOC1 )
+               CALL GETVR8 ( MOTFAC, 'VECT_NORM_ESCL',IOCC,1,3,DIR,NOC)
+               CALL GETVR8 ( MOTFAC, 'VECT_Y',     IOCC,1,3, DIR, NOC1)
             ENDIF
 C
             INDIC = 0
@@ -195,7 +195,7 @@ C                        UTILISEE QUE DANS LE CAS DE L'APPARIEMENT NODAL
                          IF(NOC.EQ.0) THEN
                            CALL UTMESS ('F','CHVENO','ON EST DANS LE'
      +                     //' CAS D''UN CONTACT POINT-POINT ET LE'
-     +                     //' VECTEUR VECT_NORM_2 N''A PAS ETE' 
+     +                     //' VECTEUR VECT_NORM_ESCL N''A PAS ETE' 
      +                     //' RENSEIGNE') 
                          ELSE
                            GOTO 100  
@@ -286,7 +286,7 @@ C                          L'APPARIEMENT NODAL
                            IF(NOC.EQ.0) THEN
                              CALL UTMESS ('F','CHVENO','ON EST DANS LE'
      +                         //' CAS D''UN CONTACT POINT-POINT ET LE'
-     +                         //' VECTEUR VECT_NORM_2 N''A PAS ETE' 
+     +                         //' VECTEUR VECT_NORM_ESCL N''A PAS ETE' 
      +                         //' RENSEIGNE') 
                            ELSE
                              GOTO 100  

@@ -1,4 +1,4 @@
-#@ MODIF macr_fiab_impr_ops Macro  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF macr_fiab_impr_ops Macro  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,7 +89,8 @@ def macr_fiab_impr_ops(self, INFO,
   for val in GRADIENTS :
 #
     IMPR_TABLE ( TABLE = val["TABLE"],
-                 NOM_PARA = ("PAR_SENS", val["NOM_PARA"]),
+                 SENSIBILITE = val["PARA_SENSI"],
+                 NOM_PARA = (val["NOM_PARA"]),
                  UNITE = Unite_Fichier_ASTER_vers_FIABILITE,
                  FORMAT_R = FORMAT_R,
                  INFO = INFO )

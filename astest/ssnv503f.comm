@@ -17,166 +17,188 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# CAS TEST SSNV503B
-# - MODELISATION AVEC DES ELEMENTS D_PLAN (MAILLES QUA4)
-# - MODELISATION DU CONTACT AVEC LA METHODE CONTACT (AFFE_CHAR_MECA)
-# - METHODE LAGRANGIENNE POUR LE CONTACT ET LE FROTTEMENT
-# - JEU DEFINI AVEC DIST_2
+# CAS TEST SSNV503F
+# - MODELISATION 3D
+# - METHODE LAGRANGIENNE POUR LE CONTACT ET PENALISEE POUR LE FROTTEMENT
+# - JEU DEFINI AVEC DIST_ESCL
 
-DEBUT(CODE=_F(NOM='SSNV503B',NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NOM='SSNV503F',NIV_PUB_WEB='INTERNET',),);
 
 PRE_GIBI();
 
+MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),);
 
-MAILL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),);
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_MA=(_F(NOM='RES_LAT',
+                                  GROUP_MA='LR',),
+                               _F(NOM='RES_FOND',
+                                  GROUP_MA='LF',),
+                               _F(NOM='RES_HAUT',
+                                  GROUP_MA='LP',),),
+                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'),);
 
-MAILL=DEFI_GROUP(reuse =MAILL,
-                 MAILLAGE=MAILL,
-                 CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+MO=AFFE_MODELE(MAILLAGE=MAIL,
+               VERIF='MAILLE',
+               AFFE=(_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D',),
+                     _F(GROUP_MA='RES_LAT',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DIS_T',),
+                     _F(GROUP_MA='RES_FOND',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DIS_T',),
+                     _F(GROUP_MA='RES_HAUT',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DIS_T',),),);
 
-MODE=AFFE_MODELE(MAILLAGE=MAILL,
-                 VERIF='MAILLE',
-                 AFFE=(_F(TOUT='OUI',
-                          PHENOMENE='MECANIQUE',
-                          MODELISATION='D_PLAN',),
-                       _F(GROUP_MA='RES_LAT',
-                          PHENOMENE='MECANIQUE',
-                          MODELISATION='2D_DIS_T',),
-                       _F(GROUP_MA='RES_HAUT',
-                          PHENOMENE='MECANIQUE',
-                          MODELISATION='2D_DIS_T',),),);
-
-MAILL=MODI_MAILLAGE(reuse =MAILL,
-                    MAILLAGE=MAILL,
-                    ORIE_PEAU_2D=_F(GROUP_MA=('LMAI','LESC','FACESUP','FACELAT'),),
-                    MODELE=MODE,);
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_PEAU_3D=_F(GROUP_MA=('SMAI','SESC','FACESUP','FACELAT'),),
+                   MODELE=MO,);
 
 #---------------------------------------------------------------------
 #                         CARACTERISTIQUES ELEMENTAIRES
 #---------------------------------------------------------------------
 
-CARA=AFFE_CARA_ELEM(MODELE=MODE,
-                    DISCRET_2D=(_F(GROUP_MA='RES_LAT',
-                                   REPERE='LOCAL',
-                                   CARA='K_T_D_L',
-                                   VALE=(2.0,0.0),),
-                                _F(GROUP_MA='RES_HAUT',
-                                   REPERE='LOCAL',
-                                   CARA='K_T_D_L',
-                                   VALE=(0.005,0.0),),
-                              ),);
+CARA=AFFE_CARA_ELEM(MODELE=MO,
+                    DISCRET=(_F(GROUP_MA=('RES_FOND','RES_HAUT'),
+                                REPERE='LOCAL',
+                                CARA='K_T_D_L',
+                                VALE=(1.E0,0.0,0.0),),
+                             _F(GROUP_MA='RES_LAT',
+                                REPERE='LOCAL',
+                                CARA='K_T_D_L',
+                                VALE=(2.E1,0.0,0.0),),),);
 
 #---------------------------------------------------------------------
 #                         CARACTERISTIQUES MATERIAUX
 #---------------------------------------------------------------------
 
-MPATIN=DEFI_MATERIAU(ELAS=_F(E=2.10000E5,
+MPATIN=DEFI_MATERIAU(ELAS=_F(E=2.10000E6,
                              NU=0.0,),);
 
 MBATI=DEFI_MATERIAU(ELAS=_F(E=1.E5,
                             NU=0.0,),);
 
-CM=AFFE_MATERIAU(MAILLAGE=MAILL,
-                 MODELE=MODE,
+CM=AFFE_MATERIAU(MAILLAGE=MAIL,
+                 MODELE=MO,
                  AFFE=(_F(GROUP_MA='PATIN',
                           MATER=MPATIN,),
                        _F(GROUP_MA='BATI',
                           MATER=MBATI,),
-                       ),);
+                          ),);
 
 #---------------------------------------------------------------------
 #                         CHARGEMENTS
 #---------------------------------------------------------------------
 
-# CONDITIONS AUX LIMITES
-COND_LIM=AFFE_CHAR_MECA(MODELE=MODE,
+COND_LIM=AFFE_CHAR_MECA(MODELE=MO,
                         DDL_IMPO=(_F(GROUP_NO='BATI',
-                                     DX=0.0,DY=0.0,),
-                                  _F(GROUP_NO=('R1','R2','X','Y'),
-                                     DX=0.0,DY=0.0,),),);
+                                     DX=0.0,DY=0.0,DZ=0.0,),
+                                  _F(GROUP_NO=('R1','R2','R3','R4',
+                                               'F1','F2','F3','F4',
+                                               'P1','P2','P3','P4'),
+                                     DX=0.0,DY=0.0,DZ=0.0),
+                                  ),);
 
 # CHARGEMENT 1 : APPLICATION DE LA PRESSION NORMALE
-PNOR=AFFE_CHAR_MECA(MODELE=MODE,
+
+PNOR=AFFE_CHAR_MECA(MODELE=MO,
                     PRES_REP=_F(GROUP_MA='FACESUP',
                                 PRES=300.0,),);
 
 # CHARGEMENT 2 : APPLICATION DE LA PRESSION NORMALE ET DE LA PRESSION
 #                  TANGENTIELLE (PT=0.3*PN*0.99)
-PTAN_99=AFFE_CHAR_MECA(MODELE=MODE,
+
+PTAN_99=AFFE_CHAR_MECA(MODELE=MO,
                        PRES_REP=_F(GROUP_MA='FACELAT',
                                    PRES=178.19999999999999,),);
 
 # CHARGEMENT 3 : APPLICATION DE LA PRESSION NORMALE ET DE LA PRESSION
 #                  TANGENTIELLE (PT=0.3*PN*1.01)
-PTAN_101=AFFE_CHAR_MECA(MODELE=MODE,
+
+PTAN_101=AFFE_CHAR_MECA(MODELE=MO,
                         PRES_REP=_F(GROUP_MA='FACELAT',
                                     PRES=181.80000000000001,),);
 
 # DEFINITION DU CONTACT
-CTAC=AFFE_CHAR_MECA(MODELE=MODE,
+
+CTAC=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(APPARIEMENT='MAIT_ESCL',
                                RECHERCHE='NOEUD_BOUCLE',
                                REAC_GEOM='CONTROLE',
                                NB_REAC_GEOM=2,
-                               METHODE='LAGRANGIEN',
+                               METHODE='PENALISATION',
                                FROTTEMENT='COULOMB',
                                COULOMB=0.3,
+                               E_T=1.E6,
                                COEF_MATR_FROT=0.9,
-                               GROUP_MA_MAIT='LMAI',
-                               GROUP_MA_ESCL='LESC',
-                               DIST_ESCL=-2.
+                               GROUP_MA_MAIT='SMAI',
+                               GROUP_MA_ESCL='SESC',
+                               VECT_Y=(0.,1.,0.),
+                               DIST_ESCL=-2.0,
                                ),);
 
 #---------------------------------------------------------------------
 #                         RESOLUTION
 #---------------------------------------------------------------------
 
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+RAMP1=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,
+                          0.5,1.0,
                           1.0,1.0),
                     PROL_DROITE='LINEAIRE',
                     PROL_GAUCHE='LINEAIRE',);
                     
+RAMP2=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,
+                          0.5,0.0,
+                          1.0,1.0),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=2,),);
          
 # CHARGEMENT 1          
-U_NOR=STAT_NON_LINE(MODELE=MODE,
+U_NOR=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CM,
                     CARA_ELEM=CARA,
                     EXCIT=(_F(CHARGE=PNOR,
-                              FONC_MULT=RAMPE,),
+                              FONC_MULT=RAMP1,),
                            _F(CHARGE=CTAC,),
                            _F(CHARGE=COND_LIM,),),
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),
+                    SOLVEUR=_F(METHODE='LDLT'),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
-                    SOLVEUR=_F(METHODE='LDLT',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=30,),
                     INFO=1,);
 
 U_NOR=CALC_NO(reuse =U_NOR,
               RESULTAT=U_NOR,
-              MODELE=MODE,
+              MODELE=MO,
               CARA_ELEM=CARA,
               OPTION='REAC_NODA',
               EXCIT=(_F(CHARGE=PNOR,
-                        FONC_MULT=RAMPE,),
+                        FONC_MULT=RAMP1,),
                      _F(CHARGE=CTAC,),
                      _F(CHARGE=COND_LIM,),),
               );
                                                
 # CHARGEMENT 2                                 
-U_99=STAT_NON_LINE(MODELE=MODE,
+U_99=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CM,
                    CARA_ELEM=CARA,
                    EXCIT=(_F(CHARGE=PNOR,
-                             FONC_MULT=RAMPE,),
+                             FONC_MULT=RAMP1,),
                           _F(CHARGE=PTAN_99,
-                             FONC_MULT=RAMPE,),
+                             FONC_MULT=RAMP2,),
                           _F(CHARGE=CTAC,),
                           _F(CHARGE=COND_LIM,),),
                    COMP_INCR=_F(RELATION='ELAS',
@@ -190,24 +212,24 @@ U_99=STAT_NON_LINE(MODELE=MODE,
 U_99=CALC_NO(reuse =U_99,
              RESULTAT=U_99,
              CARA_ELEM = CARA,
-             MODELE=MODE,
+             MODELE=MO,
              OPTION='REAC_NODA',
              EXCIT=(_F(CHARGE=PNOR,
-                       FONC_MULT=RAMPE,),
+                       FONC_MULT=RAMP1,),
                     _F(CHARGE=PTAN_99,
-                       FONC_MULT=RAMPE,),
+                       FONC_MULT=RAMP2,),
                     _F(CHARGE=CTAC,),
                     _F(CHARGE=COND_LIM,),),
               );
 
 # CHARGEMENT 3 
-U_101=STAT_NON_LINE(MODELE=MODE,
+U_101=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CM,
                     CARA_ELEM=CARA,
                     EXCIT=(_F(CHARGE=PNOR,
-                              FONC_MULT=RAMPE,),
+                              FONC_MULT=RAMP1,),
                            _F(CHARGE=PTAN_101,
-                              FONC_MULT=RAMPE,),
+                              FONC_MULT=RAMP2,),
                            _F(CHARGE=CTAC,),
                            _F(CHARGE=COND_LIM,),),
                     COMP_INCR=_F(RELATION='ELAS',
@@ -218,20 +240,22 @@ U_101=STAT_NON_LINE(MODELE=MODE,
                     SOLVEUR=_F(METHODE='LDLT',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=1500,),
                     ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI'),
+                   INFO=1,
                     );
 
 U_101=CALC_NO(reuse =U_101,
               RESULTAT=U_101,
               CARA_ELEM = CARA,
-              MODELE=MODE,
+              MODELE=MO,
               OPTION='REAC_NODA',
               EXCIT=(_F(CHARGE=PNOR,
-                        FONC_MULT=RAMPE,),
+                        FONC_MULT=RAMP1,),
                      _F(CHARGE=PTAN_101,
-                        FONC_MULT=RAMPE,),
+                        FONC_MULT=RAMP2,),
                      _F(CHARGE=CTAC,),
                      _F(CHARGE=COND_LIM,),),
               );
+
 
 #---------------------------------------------------------------------
 #                         VERIFICATION DES RESULTATS
@@ -245,8 +269,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U_NOR,
                    GROUP_NO='A',
                    VALE=1.0,
                    PRECISION=1.E-2,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='6.3.13',),
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=U_NOR,
                    INST=1.,
                    NOM_CHAM='DEPL',
@@ -254,8 +277,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U_NOR,
                    GROUP_NO='A',
                    VALE=-1.732,
                    PRECISION=1.E-2,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='6.3.13',),
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=U_NOR,
                    INST=1.,
                    NOM_CHAM='DEPL',
@@ -263,8 +285,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U_NOR,
                    GROUP_NO='B',
                    VALE=1.0,
                    PRECISION=1.E-2,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='6.3.13',),
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=U_NOR,
                    INST=1.,
                    NOM_CHAM='DEPL',
@@ -272,30 +293,63 @@ TEST_RESU(RESU=(_F(RESULTAT=U_NOR,
                    GROUP_NO='B',
                    VALE=-1.732,
                    PRECISION=1.E-2,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='6.3.13',),),);
+                   REFERENCE='NON_REGRESSION',),
+                 _F(RESULTAT=U_NOR,
+                   INST=1.,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='C',
+                   VALE=1.0,
+                   PRECISION=1.E-2,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U_NOR,
+                   INST=1.,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='C',
+                   VALE=-1.732,
+                   PRECISION=1.E-2,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U_NOR,
+                   INST=1.,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='D',
+                   VALE=1.0,
+                   PRECISION=1.E-2,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U_NOR,
+                   INST=1.,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='D',
+                   VALE=-1.732,
+                   PRECISION=1.E-2,
+                   REFERENCE='NON_REGRESSION',),  
+                ),);
 
 TU_NOR=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
-                               GROUP_NO='LESC',
+                               GROUP_NO='SESC',
                                RESULTAT=U_NOR,
                                NOM_CHAM='REAC_NODA',
+                               #RESULTANTE=('DX','DY'),
                                NOM_CMP=('DX','DY'),
-                               REPERE='LOCAL',
+                               #REPERE='LOCAL',
                                OPERATION='EXTRACTION',
                                INST=1.,),);
 
 TEST_TABLE(TABLE=TU_NOR,
            TYPE_TEST='SOMM',
            NOM_PARA='DY',
-           VALE=1.2000E4,
+           VALE=2.0784E5,
            PRECISION=0.050000000000000003,
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=TU_NOR,
            TYPE_TEST='SOMM',
            NOM_PARA='DX',
-           VALE=0.0,
-           CRITERE='ABSOLU',
+           VALE=-1.20E5,
+           #CRITERE='ABSOLU',
            PRECISION=0.050000000000000003,
            REFERENCE='ANALYTIQUE',);
 
@@ -307,8 +361,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U_99,
                    GROUP_NO='A',
                    VALE=1.0,
                    PRECISION=0.023,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='6.3.13',),
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=U_99,
                    INST=1.,
                    NOM_CHAM='DEPL',
@@ -316,8 +369,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U_99,
                    GROUP_NO='A',
                    VALE=-1.732,
                    PRECISION=1.E-2,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='6.3.13',),
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=U_99,
                    INST=1.,
                    NOM_CHAM='DEPL',
@@ -325,8 +377,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U_99,
                    GROUP_NO='B',
                    VALE=1.0,
                    PRECISION=1.E-2,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='6.3.13',),
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=U_99,
                    INST=1.,
                    NOM_CHAM='DEPL',
@@ -334,30 +385,62 @@ TEST_RESU(RESU=(_F(RESULTAT=U_99,
                    GROUP_NO='B',
                    VALE=-1.732,
                    PRECISION=1.E-2,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='6.3.13',),),);
+                   REFERENCE='NON_REGRESSION',),
+                 _F(RESULTAT=U_99,
+                   INST=1.,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='C',
+                   VALE=1.0,
+                   PRECISION=0.023,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U_99,
+                   INST=1.,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='C',
+                   VALE=-1.732,
+                   PRECISION=1.E-2,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U_99,
+                   INST=1.,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='D',
+                   VALE=1.0,
+                   PRECISION=1.E-2,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U_99,
+                   INST=1.,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='D',
+                   VALE=-1.732,
+                   PRECISION=1.E-2,
+                   REFERENCE='NON_REGRESSION',),),);
 
 TU_99=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
-                              GROUP_NO='LESC',
+                              GROUP_NO='SESC',
                               RESULTAT=U_99,
                               NOM_CHAM='REAC_NODA',
+                              #RESULTANTE=('DX','DY'),
                               NOM_CMP=('DX','DY'),
-                              REPERE='LOCAL',
+                              #REPERE='LOCAL',
                               OPERATION='EXTRACTION',
                               INST=1.),);
 
 TEST_TABLE(TABLE=TU_99,
            TYPE_TEST='SOMM',
            NOM_PARA='DY',
-           VALE=1.2000E4,
-           PRECISION=0.050000000000000003,
+           VALE=1.7220E5,
+           PRECISION=0.05,
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=TU_99,
            TYPE_TEST='SOMM',
            NOM_PARA='DX',
-           VALE=-3564.0,
-           PRECISION=0.050000000000000003,
+           VALE=-1.8173E5,
+           PRECISION=0.05,
            REFERENCE='ANALYTIQUE',);
 
 # CHARGEMENT 3
@@ -366,10 +449,9 @@ TEST_RESU(RESU=(_F(RESULTAT=U_101,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
                    GROUP_NO='A',
-                   VALE=8.7940000000000005,
+                   VALE=8.794,
                    PRECISION=1.E-2,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='6.3.13',),
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=U_101,
                    INST=1.,
                    NOM_CHAM='DEPL',
@@ -377,8 +459,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U_101,
                    GROUP_NO='A',
                    VALE=2.7679999999999998,
                    PRECISION=1.E-2,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='6.3.13',),
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=U_101,
                    INST=1.,
                    NOM_CHAM='DEPL',
@@ -386,8 +467,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U_101,
                    GROUP_NO='B',
                    VALE=8.7940000000000005,
                    PRECISION=1.E-2,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='6.3.13',),
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=U_101,
                    INST=1.,
                    NOM_CHAM='DEPL',
@@ -395,29 +475,62 @@ TEST_RESU(RESU=(_F(RESULTAT=U_101,
                    GROUP_NO='B',
                    VALE=2.7679999999999998,
                    PRECISION=1.E-2,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='6.3.13',),),);
+                   REFERENCE='NON_REGRESSION',),
+                  _F(RESULTAT=U_101,
+                   INST=1.,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='C',
+                   VALE=8.794,
+                   PRECISION=1.E-2,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U_101,
+                   INST=1.,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='C',
+                   VALE=2.7679999999999998,
+                   PRECISION=1.E-2,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U_101,
+                   INST=1.,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='D',
+                   VALE=8.7940000000000005,
+                   PRECISION=1.E-2,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U_101,
+                   INST=1.,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='D',
+                   VALE=2.7679999999999998,
+                   PRECISION=1.E-2,
+                   REFERENCE='NON_REGRESSION',),
+                   ),);
 
 TU_101=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
-                               GROUP_NO='LESC',
+                               GROUP_NO='SESC',
                                RESULTAT=U_101,
                                NOM_CHAM='REAC_NODA',
+                               #RESULTANTE=('DX','DY'),
                                NOM_CMP=('DX','DY'),
-                               REPERE='LOCAL',
+                               #REPERE='LOCAL',
                                OPERATION='EXTRACTION',
                                INST=1.),);
 
 TEST_TABLE(TABLE=TU_101,
            TYPE_TEST='SOMM',
            NOM_PARA='DY',
-           VALE=1.2000E4,
+           VALE=1.71486E5,
            PRECISION=0.05,
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=TU_101,
            TYPE_TEST='SOMM',
            NOM_PARA='DX',
-           VALE=-3624.0,
+           VALE=-1.82977E5,
            PRECISION=0.05,
            REFERENCE='ANALYTIQUE',);
 

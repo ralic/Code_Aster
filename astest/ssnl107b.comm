@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 11/10/2004   AUTEUR REZETTE C.REZETTE 
 # TITRE PLAQUE ENCASTREE SOUSMISE A UNE FLEXION PAR DES POUTRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,12 +84,12 @@ CHA=AFFE_CHAR_MECA(VERI_NORM='NON',
                    CONTACT=(_F(APPARIEMENT='NODAL',
                                GROUP_MA_MAIT='COQU1',
                                GROUP_MA_ESCL='POUT1',
-                               VECT_NORM_2=(0.0,0.0,-1.0,),
-                               DIST_2=-0.2,),
+                               VECT_NORM_ESCL=(0.0,0.0,-1.0,),
+                               DIST_ESCL=-0.2,),
                             _F(APPARIEMENT='NODAL',
                                GROUP_MA_MAIT='COQU2',
                                GROUP_MA_ESCL='POUT2',
-                               VECT_NORM_2=(0.0,0.0,-1.0,),),),);
+                               VECT_NORM_ESCL=(0.0,0.0,-1.0,),),),);
 #
 #
 

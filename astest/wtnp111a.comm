@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 11/10/2004   AUTEUR REZETTE C.REZETTE 
 # TITRE TEST ELEMENTAIRE DU SUINTEMENT : EPONGE SOUS PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,7 +85,7 @@ CHAR1=AFFE_CHAR_MECA_F(MODELE=MODELE,
                                 GROUP_MA_ESCL=('DROITE'),
                                 NOM_CHAM='PRE1',
                                 COEF_IMPO=FONCT1,
-                                COEF_MULT_2=1.0,),);
+                                COEF_MULT_ESCL=1.0,),);
 
 
 MESTAT=STAT_NON_LINE(MODELE=MODELE,

@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
+#& MODIF COMMUN  DATE 11/10/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -96,6 +96,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "DRUCKER_PRAGER",
                                         "OHNO",
                                         "GRANGER_FP",
+                                        "GRANGER_FP_INDT",
                                         "GRANGER_FP_V",
                                         "BAZANT_FD",
                                         "BETON_UMLV_FP",
@@ -198,6 +199,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           DRUCKER_PRAGER  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           OHNO            =SIMP(statut='c',typ='I',defaut=32,into=(32,)),
           GRANGER_FP      =SIMP(statut='c',typ='I',defaut=55,into=(55,)),
+          GRANGER_FP_INDT =SIMP(statut='c',typ='I',defaut=55,into=(55,)),
           GRANGER_FP_V    =SIMP(statut='c',typ='I',defaut=55,into=(55,)),
           BAZANT_FD       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           BETON_DOUBLE_DP =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
@@ -259,6 +261,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "VMIS_ISOT_LINE",
                                        "VMIS_ISOT_CINE",
                                        "GRANGER_FP",
+                                       "GRANGER_FP_INDT",
                                        "GRANGER_FP_V",
                                        "BETON_UMLV_FP",
                                        "ROUSS_PR",

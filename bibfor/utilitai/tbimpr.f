@@ -3,7 +3,7 @@
      >                    NPARPG, LIPAPG, FORMAR, FORMAC )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,6 +98,7 @@ C
          GOTO 9999
       ENDIF
 CSV
+      WRITE(IFR,*) ' '
       IF ( FORMAT .EQ. 'ASTER') THEN
           WRITE(IFR,1000) '#DEBUT_TABLE'
       ENDIF 

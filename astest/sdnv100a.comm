@@ -1,4 +1,4 @@
-# MODIF  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 11/10/2004   AUTEUR REZETTE C.REZETTE 
 # ======================================================================
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -75,7 +75,7 @@ CH2=AFFE_CHAR_MECA(
                               E_T            = 1.E16,
                               GROUP_MA_ESCL     = 'FACEINF',
                               GROUP_MA_MAIT     = 'SSOL',
-                              DIST_2         =  0.,
+                              DIST_ESCL         =  0.,
                              )
                   )
 

@@ -6,7 +6,7 @@
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
 
-C MODIF ELEMENTS  DATE 21/09/2004   AUTEUR PBADEL P.BADEL 
+C MODIF ELEMENTS  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -332,7 +332,7 @@ C     1- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
 C        -----------------------------------------
       CALL TECACH ('ONN','PTEMPMR',8,ITABM,IRET)
       ITEMPM=ITABM(1)
-      IF (ITEMPM.GT.0) THEN
+      IF (IRET.EQ.0.OR.IRET.EQ.3) THEN
         TEMPNO = .TRUE.
         CALL TECACH ('OON','PTEMPPR',8,ITABP,IRET)
         ITEMPP=ITABP(1)
@@ -366,7 +366,7 @@ C          ------------------------------------------------------------
 C     2- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
 C        -------------------------------------------------------
         CALL TECACH('ONN','PTEMPEF',1,ITEMP,IRET)
-        IF (ITEMP.GT.0) THEN
+        IF (IRET.EQ.0) THEN
           TEMPNO = .FALSE.
           NOMPU(1) = 'INST'
           NOMPU(2) = 'EPAIS'

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE BIBLIO_131 FISSURE EN MODE 2 D'UNE EPROUVETTE ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -227,193 +227,129 @@ THETA3=CALC_THETA(       MODELE=MO,
 #
 # CALC_G_THETA POUR LES INSTANTS 22, 36, 50, 64
 #
-G220=CALC_G_THETA_T(        MODELE=MO,
-                            RESULTAT=CHAMDEPL,
-                            EXCIT=(_F(CHARGE = CLF),
-                                   _F(CHARGE = CLV,FONC_MULT = RAMPE),),
+G220=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
                             COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                             THETA=THETA0,
-                            CHAM_MATER=CHMAT,
                             SYME_CHAR='SANS',
                             NUME_ORDRE=22
                       )
 
 #
-G360=CALC_G_THETA_T(        MODELE=MO,
-                            RESULTAT=CHAMDEPL,
-                            EXCIT=(_F(CHARGE = CLF),
-                                   _F(CHARGE = CLV,FONC_MULT = RAMPE),),
+G360=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
                             THETA=THETA0,
                             COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            CHAM_MATER=CHMAT,
                             SYME_CHAR='SANS',
                             NUME_ORDRE=36
                       )
 
 #
-G500=CALC_G_THETA_T(        MODELE=MO,
-                            RESULTAT=CHAMDEPL,
-                            EXCIT=(_F(CHARGE = CLF),
-                                   _F(CHARGE = CLV,FONC_MULT = RAMPE),),
+G500=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
                             THETA=THETA0,
                             COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            CHAM_MATER=CHMAT,
                             SYME_CHAR='SANS',
                             NUME_ORDRE=50
                       )
 
 #
-G640=CALC_G_THETA_T(        MODELE=MO,
-                            RESULTAT=CHAMDEPL,
-                            EXCIT=(_F(CHARGE = CLF),
-                                   _F(CHARGE = CLV,FONC_MULT = RAMPE),),
+G640=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
                             THETA=THETA0,
                             COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            CHAM_MATER=CHMAT,
                             SYME_CHAR='SANS',
                             NUME_ORDRE=64
                       )
 
 #
-G221=CALC_G_THETA_T(        MODELE=MO,
-                            RESULTAT=CHAMDEPL,
-                            EXCIT=(_F(CHARGE = CLF),
-                                   _F(CHARGE = CLV,FONC_MULT = RAMPE),),
+G221=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
                             THETA=THETA1,
                             COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            CHAM_MATER=CHMAT,
                             SYME_CHAR='SANS',
                             NUME_ORDRE=22
                       )
 
 #
-G361=CALC_G_THETA_T(        MODELE=MO,
-                            RESULTAT=CHAMDEPL,
+G361=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
                             THETA=THETA1,
-                            EXCIT=(_F(CHARGE = CLF),
-                                   _F(CHARGE = CLV,FONC_MULT = RAMPE),),
                             COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            CHAM_MATER=CHMAT,
                             SYME_CHAR='SANS',
                             NUME_ORDRE=36
                       )
 
 #
-G501=CALC_G_THETA_T(        MODELE=MO,
-                            RESULTAT=CHAMDEPL,
+G501=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
                             THETA=THETA1,
-                            EXCIT=(_F(CHARGE = CLF),
-                                   _F(CHARGE = CLV,FONC_MULT = RAMPE),),
                             COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            CHAM_MATER=CHMAT,
                             SYME_CHAR='SANS',
                             NUME_ORDRE=50
                       )
 
 #
-G641=CALC_G_THETA_T(        MODELE=MO,
-                            RESULTAT=CHAMDEPL,
+G641=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
                             THETA=THETA1,
-                            EXCIT=(_F(CHARGE = CLF),
-                                   _F(CHARGE = CLV,FONC_MULT = RAMPE),),
                             COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            CHAM_MATER=CHMAT,
                             SYME_CHAR='SANS',
                             NUME_ORDRE=64
                       )
 
 #
-G222=CALC_G_THETA_T(        MODELE=MO,
-                            RESULTAT=CHAMDEPL,
-                            EXCIT=(_F(CHARGE = CLF),
-                                   _F(CHARGE = CLV,FONC_MULT = RAMPE),),
+G222=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
                             THETA=THETA2,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            CHAM_MATER=CHMAT,
+                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
                             SYME_CHAR='SANS',
                             NUME_ORDRE=22
                       )
 
 #
-G362=CALC_G_THETA_T(        MODELE=MO,
-                            RESULTAT=CHAMDEPL,
+G362=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
                             THETA=THETA2,
-                            EXCIT=(_F(CHARGE = CLF),
-                                   _F(CHARGE = CLV,FONC_MULT = RAMPE),),
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            CHAM_MATER=CHMAT,
+                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
                             SYME_CHAR='SANS',
                             NUME_ORDRE=36
                       )
 
 #
-G502=CALC_G_THETA_T(        MODELE=MO,
-                            RESULTAT=CHAMDEPL,
-                            EXCIT=(_F(CHARGE = CLF),
-                                   _F(CHARGE = CLV,FONC_MULT = RAMPE),),
+G502=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
                             THETA=THETA2,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            CHAM_MATER=CHMAT,
+                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
                             SYME_CHAR='SANS',
                             NUME_ORDRE=50
                       )
 
 #
-G642=CALC_G_THETA_T(        MODELE=MO,
-                            RESULTAT=CHAMDEPL,
+G642=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
                             THETA=THETA2,
-                            EXCIT=(_F(CHARGE = CLF),
-                                   _F(CHARGE = CLV,FONC_MULT = RAMPE),),
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            CHAM_MATER=CHMAT,
+                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
                             SYME_CHAR='SANS',
                             NUME_ORDRE=64
                       )
 
 #
-G223=CALC_G_THETA_T(        MODELE=MO,
-                            RESULTAT=CHAMDEPL,
+G223=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
                             THETA=THETA3,
-                            EXCIT=(_F(CHARGE = CLF),
-                                   _F(CHARGE = CLV,FONC_MULT = RAMPE),),
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            CHAM_MATER=CHMAT,
+                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
                             SYME_CHAR='SANS',
                           NUME_ORDRE=22
                       )
 
 #
-G363=CALC_G_THETA_T(        MODELE=MO,
-                            RESULTAT=CHAMDEPL,
-                            EXCIT=(_F(CHARGE = CLF),
-                                   _F(CHARGE = CLV,FONC_MULT = RAMPE),),
+G363=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
                             THETA=THETA3,
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            CHAM_MATER=CHMAT,
+                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
                             SYME_CHAR='SANS',
                             NUME_ORDRE=36
                       )
 
 #
-G503=CALC_G_THETA_T(        MODELE=MO,
-                            RESULTAT=CHAMDEPL,
+G503=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
                             THETA=THETA3,
-                            EXCIT=(_F(CHARGE = CLF),
-                                   _F(CHARGE = CLV,FONC_MULT = RAMPE),),
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            CHAM_MATER=CHMAT,
+                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
                             SYME_CHAR='SANS',
                             NUME_ORDRE=50
                       )
 
 #
-G643=CALC_G_THETA_T(        MODELE=MO,
-                            RESULTAT=CHAMDEPL,
+G643=CALC_G_THETA_T(        RESULTAT=CHAMDEPL,
                             THETA=THETA3,
-                            EXCIT=(_F(CHARGE = CLF),
-                                   _F(CHARGE = CLV,FONC_MULT = RAMPE),),
-                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                            CHAM_MATER=CHMAT,
+                            COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),                            
                             SYME_CHAR='SANS',
                             NUME_ORDRE=64
                       )

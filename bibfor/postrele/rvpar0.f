@@ -1,0 +1,209 @@
+      SUBROUTINE RVPAR0 ( NOMTAB, MCF, NBPOST )
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF POSTRELE  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C IN  NOMTAB  : NOM DE LA TABLE PRINCIPALE PRODUITE PAR LA COMMANDE
+C IN  NOPASE  : NOM DU PARAMEE SENSIBLE EN COURS D'EXAMEN
+C IN  MCF     : MOT-CLE FACTEUR
+C IN  NBPOST  : NOMBRE DE POST-TRAITEMENT A CONSIDERER
+C     ------------------------------------------------------------------
+C
+C     INITIALISE LES TABLES DE POST_RELEVE_T
+C
+C     ------------------------------------------------------------------
+C
+      IMPLICIT NONE
+C
+C 0.1. ==> ARGUMENTS
+C
+      CHARACTER*6 MCF
+      CHARACTER*19 NOMTAB
+      INTEGER NBPOST
+C
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16             ZK16
+      CHARACTER*24                      ZK24
+      CHARACTER*32                               ZK32
+      CHARACTER*80                                        ZK80
+      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
+C
+C 0.3. ==> VARIABLES LOCALES
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'RVPAR0' )
+C
+      INTEGER IFM, NIV
+      INTEGER IOCC, IBID, IAUX, JAUX
+      INTEGER IRET
+      INTEGER NBTBMX, ADMEMO, NBTABL
+      INTEGER NBRESU
+      INTEGER NRPASS, NBPASS, ADRECG
+C
+      CHARACTER*8 K8B
+      CHARACTER*8 NOPASE
+      CHARACTER*18 NOMSTR
+      CHARACTER*19 LATAB1
+      CHARACTER*24 NORECG
+C     ------------------------------------------------------------------
+C
+C====
+C 1. PREALABLES
+C====
+C
+      CALL JEMARQ ( )
+C
+      CALL INFMAJ
+      CALL INFNIV(IFM,NIV)
+C
+      IF ( NIV.GE.2 ) THEN
+       CALL UTMESS('I',NOMPRO,'INITIALISATION DE LA TABLE '//NOMTAB)
+      ENDIF
+C               12   345678   9012345678901234
+      NOMSTR = '&&'//NOMPRO//'.NOMPARAMS'
+      NORECG = '&&'//NOMPRO//'_RESULTA_GD     '
+C
+C====
+C 2. ON REPERE LE NOMBRE DE TABLES QU'IL FAUDRA INITIALISER :
+C    . UNE POUR UNE DEMANDE SUR LE CALCUL STANDARD
+C    . UNE POUR CHAQUE PARAMETRE SENSIBLE DEMANDE
+C    POUR CHAQUE TABLE, ON MEMORISE LE NOM DU PARAMETRE SENSIBLE
+C    CONCERNE.
+C====
+C
+C 2.1. ==> ON ALLOUE LE TABLEAU DE MEMORISATION POUR 20 TABLES.
+C          S'IL S'AVERE QU'IL Y EN A BESOIN DE DAVANTAGE, ON ALLONGERA.
+C
+      NBTBMX = 20
+      CALL WKVECT ( NOMSTR, 'G V K8', 2*NBTBMX, ADMEMO )
+C
+C 2.2. ==> ON PARCOURT TOUTES LES ACTIONS DEMANDEES
+C
+      NBTABL = 0
+C
+      DO 22 , IOCC = 1, NBPOST
+C
+C 2.2.1. ==> EST-CE UN RESULTAT ?
+C
+        IAUX = IOCC
+        CALL GETVID ( MCF, 'RESULTAT', IAUX, 1, 0, K8B, NBRESU )
+C
+C 2.2.2. ==> NOMBRE DE PASSAGES POUR LA SENSIBILITE ---
+C
+        IAUX = IOCC
+        IF ( NBRESU.NE.0 ) THEN
+          IBID = 1
+        ELSE
+          IBID = 2
+        ENDIF
+        JAUX = 1
+        CALL PSRESE ( MCF, IAUX, IBID, NOMTAB, JAUX,
+     >                NBPASS, NORECG, IRET )
+C
+        IF ( IRET.EQ.0 ) THEN
+C
+        CALL JEVEUO ( NORECG, 'L', ADRECG )
+C
+C============ DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES =============
+        DO 220 , NRPASS = 1 , NBPASS
+C
+C        POUR LE PASSAGE NUMERO NRPASS :
+C        POUR LE PASSAGE NUMERO NRPASS :
+C        . NOPASE : NOM DU PARAMETRE DE SENSIBILITE EVENTUELLEMENT
+C        . LATAB1 : NOM DE LA TABLE A COMPLETER
+C                   C'EST NOMTAB POUR UN CALCUL STANDARD, UN NOM
+C                   COMPOSE A PARTIR DE NOMTAB ET NOPASE POUR UN CALCUL
+C                   DE SENSIBILITE
+C                     1234567890123456789
+            LATAB1 = '                   '
+            LATAB1(1:8) = ZK24(ADRECG+2*NRPASS-2)(1:8)
+            NOPASE = ZK24(ADRECG+2*NRPASS-1)(1:8)
+CGN          PRINT *,'... PASSAGE NUMERO', NRPASS
+CGN          PRINT *,'... LATAB1 = ', LATAB1
+CGN          PRINT *,'... NOPASE = ', NOPASE
+C
+C 2.2.2.1. ==> ON CHERCHE SI CETTE CONFIGURATION EST DEJA ENREGISTREE ;
+C              SI OUI, ON PASSE AU PARAMETRE SUIVANT (GOTO 220)
+C
+            DO 222 , IAUX = 1 , NBTABL
+              IF ( ZK8(ADMEMO+2*IAUX-2).EQ.LATAB1(1:8) .AND.
+     >             ZK8(ADMEMO+2*IAUX-1).EQ.NOPASE ) THEN
+                GOTO 220
+              ENDIF
+  222       CONTINUE
+C
+C 2.2.2.2. ==> LA CONFIGURATION EST NOUVELLE
+C              ON L'ENREGISTRE, EN ALLONGEANT EVENTUELLEMENT SI LA PLACE
+C              RESERVEE EST TROP PETITE
+C
+            IF ( NBTABL.GE.NBTBMX ) THEN
+              NBTBMX = NBTBMX + 50
+              IAUX = 2*NBTBMX
+              CALL JUVECA ( NOMSTR,IAUX )
+              CALL JEVEUO ( NOMSTR, 'E', ADMEMO )
+            ENDIF
+            CALL JELIRA ( NOMSTR, 'LONUTI', IAUX, K8B )
+            IAUX = IAUX + 2
+            CALL JEECRA ( NOMSTR,'LONUTI',IAUX,K8B )
+C
+            NBTABL = NBTABL + 1
+            ZK8(ADMEMO+2*NBTABL-2) = LATAB1(1:8)
+            ZK8(ADMEMO+2*NBTABL-1) = NOPASE
+C
+  220     CONTINUE
+C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
+          CALL JEDETR ( NORECG )
+        ELSE
+          CALL UTMESS ( 'F', NOMPRO, 'ERREUR DE PROGRAMMATION' )
+        ENDIF
+C
+   22 CONTINUE
+C
+C====
+C 3. ON INITIALISE LES TABLES DEMANDEES
+C====
+C
+      DO 30 , IAUX = 1 , NBTABL
+C                 1234567890123456789
+        LATAB1 = '                   '
+        LATAB1(1:8) = ZK8(ADMEMO+2*IAUX-2)
+        NOPASE = ZK8(ADMEMO+2*IAUX-1)
+C
+        CALL RVPARA ( NOMTAB, LATAB1, NOPASE, MCF, NBPOST )
+C
+   30 CONTINUE
+C
+C====
+C 4. MENAGE
+C====
+C
+      CALL JEDETR ( NOMSTR )
+C
+      CALL JEDEMA ( )
+C
+      END
