@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,7 @@ C ----------------------------------------------------------------------
       INTEGER      NB, NP, NI, NR, NMAT, UN, NT
       REAL*8       ZERO, DAMMAX, Z
       PARAMETER  (NB = 6, NP = 2, NI = 9, NR = 8, NT=3*NB)
-      PARAMETER  (NMAT = 50)
+      PARAMETER  (NMAT = 90)
       PARAMETER  ( UN   = 1.D0   )
       PARAMETER  ( ZERO = 0.D0   )
       PARAMETER  (DAMMAX = 0.99D0)
@@ -114,7 +114,7 @@ C
       REAL*8        DRPDB(NP,NB), DRPDP(NP,NP), DRBDE(NB,NB)
       REAL*8        DRPDE(NP,NB), EPTHM(NB)
       REAL*8        DBETA(NB), DP(NP), DSEDB(NB), DSEDB2(NB,NB), SE
-      REAL*8        HYDRD , HYDRF , SECHD , SECHF,  PGL(3,3)
+      REAL*8        HYDRD,HYDRF,SECHD,SECHF, PGL(3,3),ANGMAS(3)
 C
       CHARACTER*3   MATCST
       CHARACTER*16  LOI, CPMONO(5*NMAT+1)
@@ -163,7 +163,7 @@ C        NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C-----------------------------------------------------------------------
       CALL LCMATE (COMPOR,MOD, IMATE, NMAT, TM, TP, HYDRD, HYDRF, SECHD,
      1              SECHF, TYPMA,  BZ, MATM, MATE,MATCST,
-     3               NBCOMM, CPMONO, PGL,
+     3               NBCOMM, CPMONO,  ANGMAS, PGL,
      2               NDT, NDI, NRV, NVI, VIND )
       IF (NDT.NE.NB.AND.NVI.NE.NI.AND.NRV.NE.NR) GOTO 800
 C

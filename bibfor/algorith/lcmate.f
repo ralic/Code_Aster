@@ -1,12 +1,12 @@
         SUBROUTINE LCMATE ( COMP,   MOD,   IMAT,   NMAT, TEMPD, TEMPF,
      1                      HYDRD, HYDRF, SECHD,  SECHF,
      2                      TYPMA, BZ,    MATERD, MATERF, MATCST, 
-     3                      NBCOMM, CPMONO, PGL,
+     3                      NBCOMM, CPMONO, ANGMAS, PGL,
      4                      NDT, NDI,   NR,    NVI,    VIND)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,7 @@ C           SECHF  :  SECHAGE A L'INSTANT DU CALCUL
 C           BZ     :  VARIABLE LOGIQUE :
 C                    'VRAI' POUR CALCULER AVEC LE MODELE POLY PILVIN
 C                    'FAUX' POUR CALCULER AVEC LE MODELE POLY B.Z.
+C      ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C       OUT MATERD :  COEFFICIENTS MATERIAU A T    (TEMPD )
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT (TEMPF )
 C                     MATER(*,I) = CARACTERISTIQUES MATERIAU
@@ -57,7 +58,7 @@ C       ----------------------------------------------------------------
         INTEGER         IMAT, NMAT, NDT , NDI  , NR , NVI, I
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
-        REAL*8          VIND(*), PGL(3,3)
+        REAL*8          VIND(*), PGL(3,3), ANGMAS(3)
         REAL*8          HYDRD , HYDRF , SECHD , SECHF
         CHARACTER*16    LOI, COMP(*), CPMONO(5*NMAT+1)
         CHARACTER*8     MOD,    TYPMA
@@ -122,8 +123,8 @@ C
      1                 MATERF, MATCST, NDT, NDI, NR, NVI )
      
       ELSEIF ( LOI(1:8) .EQ. 'MONOCRIS' ) THEN
-         CALL LCMMAT ( COMP, MOD, IMAT, NMAT, TEMPD, TEMPF,PGL, MATERD,
-     1            MATERF, MATCST, NBCOMM,CPMONO,NDT, NDI, NR, NVI )
+         CALL LCMMAT ( COMP, MOD, IMAT, NMAT, TEMPD, TEMPF,ANGMAS,PGL,
+     1     MATERD,MATERF, MATCST, NBCOMM,CPMONO,NDT, NDI, NR, NVI )
          TYPMA='COHERENT'
       ENDIF
 C

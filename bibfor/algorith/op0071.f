@@ -3,7 +3,7 @@
       INTEGER             IERR
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/01/2004   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 05/08/2004   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,6 +101,11 @@ C NB_VECT DONNE PAR NUME_DDL_GENE
          ELSE
             NUMDD2 = ZK24(IADRIF+1)(1:14)
          ENDIF
+         IF (NUMDD1.NE.NUMDD2) THEN
+           CALL UTMESS('I',NOMCOM,'BASE MODALE ET MATR_ASSE AVEC'//
+     +                ' NUMEROTATIONS DIFFERENTES')     
+         ENDIF
+         NU = NUMDD1(1:14)
       ELSE
          CALL JEVEUO(MATRAS//'           .REFA','L',LLREFE)
          NUMDD1 = ZK24(LLREFE+1)
@@ -109,12 +114,13 @@ C NB_VECT DONNE PAR NUME_DDL_GENE
          MATRI2 = MATRIC(1:16)
          CALL JEVEUO(MATRI2//'   .REFA','L',LLREFE)
          NUMDD2 = ZK24(LLREFE+1)
+         IF (NUMDD1.NE.NUMDD2) THEN
+           CALL UTMESS('F',NOMCOM,'BASE MODALE ET MATR_ASSE_GENE AVEC'//
+     +                ' NUMEROTATIONS INCOMPATIBLES')    
+         ENDIF
+         NU = NUMDD1(1:14)
       ENDIF
-      NU = NUMDD2(1:14)
-      IF (NUMDD1.NE.NUMDD2) THEN
-        CALL UTMESS('F',NOMCOM,'BASE MODALE ET MATR_ASSE_GENE AVEC'//
-     +                ' NUMEROTATION INCOMPATIBLE')
-      ENDIF
+
 C
 C ----- RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
 C

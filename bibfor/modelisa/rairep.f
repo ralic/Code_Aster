@@ -6,7 +6,7 @@
       REAL*8       RIGNOE(*), RIGTO(*), AMOTO(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/04/99   AUTEUR CIBHHPD P.DAVID 
+C MODIF MODELISA  DATE 05/08/2004   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -299,10 +299,10 @@ C
          WRITE(IFR,1000) NOMNOE,KM,R1,R2,R3,R4,R5,R6
  51   CONTINUE
 C
- 1000 FORMAT(1X,'DISCRET: ( NOEUD:',1X,A8,/5X,'CARA: ''',A1,
-     +      '_TR_D_N'' ',
-     +      1X,'VALE:(',/5X,3(1X,1PE12.5),/5X,3(1X,1PE12.5),1X,')',
-     +      /'   )')
+ 1000 FORMAT(1X,'_F ( NOEUD=''',A8,''',',1X,'CARA= ''',A1,
+     +      '_TR_D_N'', ',
+     +      /4X,'VALE=(',2(/1X,3(1X,1PE12.5,',')),/9X,'),',
+     +      /'   ),')
  1001 FORMAT(1X,'RAIDEURS DE ROTATION A REPARTIR:',/
      +      1X,' KRX: ',1X,1PE12.5,' KRY: ',1X,1PE12.5,
      +      ' KRZ: ',1X,1PE12.5)

@@ -1,12 +1,12 @@
         SUBROUTINE LCMMJF( TAUS,COEFT,IFA,NMAT,NBCOMM,DT,NECOUL,
-     &                   NUMS,VIS,NVI,RP,DRSDPR,DVDTAU,DDVIS,DDVIR,DP)
+     &             TPERD,NUMS,VIS,NVI,RP,DRSDPR,DVDTAU,DDVIS,DDVIR,DP)
         IMPLICIT NONE
         INTEGER IFA,NMAT,NBCOMM(NMAT,3),NUMS,NVI
         REAL*8 TAUS,COEFT(NMAT),VIS(3),DVDTAU(3),RP,DDVIS(3,3),DT
         REAL*8 DDVIR(NVI),DRSDPR(NVI)
         CHARACTER*16 NECOUL,NECRIS,NECRCI
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,14 +41,16 @@ C       DDVIR    :  DERIVEES DES VARIABLES INTERNES PAR RAPPORT AUX
 C                   VARIABLES INTERNES DES AUTRES SYSTEMES
 C       DP
 C     ----------------------------------------------------------------
-      REAL*8 C,P,R0,Q,H,B,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,V,D,VAL
+      REAL*8 C,P,R0,Q,H,B,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,D,VAL
       REAL*8 TPERD,TABS,DRDP,ALPHA,GAMMA,DP,DGAMMA,TAUMU,TAUV,GM,PM,CC
-      REAL*8 PR,DRDPR
+      REAL*8 PR,DRDPR,DELTAV,DELTAG
       INTEGER IFL,NS, IS
 C     ----------------------------------------------------------------
 
 C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
 C     DANS DDVIS : 1,1 = DA/DALPHA, 1,2=DG/DALPHA, 1,3=DP/DALPHA...
+C     DANS DDVIS : 2,1 = DA/DGAMMA, 2,2=DG/DGAMMA, 2,3=DP/DGAMMA...
+C     DANS DDVIS : 3,1 = DA/DP,     3,2=DG/DP,     3,3=DP/DP...
 C     DANS DVDTAU : 1 = DALPHA/DTAU, 2=GAMMA, 3=P
 
       IFL=NBCOMM(IFA,1)
@@ -149,22 +151,38 @@ C             DP/DP
              DDVIR(NUMS)=1.D0
           ENDIF
        ENDIF
+       
       IF (NECOUL.EQ.'ECOU_VISC3') THEN
           K      =COEFT(IFL-1+1)
           TAUMU  =COEFT(IFL-1+2)
-C          GAMMA0 =COEFT(IFL-1+3)
-          V      =COEFT(IFL-1+4)
-                
+          GAMMA0 =COEFT(IFL-1+3)
+          DELTAV =COEFT(IFL-1+4)
+          DELTAG =COEFT(IFL-1+5)
+          
           TAUV=ABS(TAUS)-TAUMU 
           IF (TAUV.GT.0.D0) THEN
-             DP=TAUV*V
-C             TABS=TPERD+273.5D0
-C             DGAMMA=2*GAMMA0*SINH(TAUV*V/K/TABS)*TAUS/ABS(TAUS)
-             CALL UTMESS('F','LCMMFL','ECOU_VISC3 NON DISPONIBLE '//
-     &       ' ACTUELLEMENT EN IMPLICITE. UTILISER RUNGE_KUTTA')
+             TABS=TPERD+273.5D0
+
+             DDVIS(2,1)=0.D0
+             DDVIS(2,2)=1.D0
+             DDVIS(2,3)=-TAUS/ABS(TAUS)
+             
+             DDVIS(3,1)= 0.D0
+             DDVIS(3,2)= 0.D0
+             DDVIS(3,3)= 1.D0
+C             DDVIS(3,3)= 1.D0+GAMMA0*DELTAV/K/TABS*EXP(-DELTAG/K/TABS)
+C     &                 *EXP(DELTAV/K/TABS*TAUV)*DRSDPR(NUMS)
+             
+             DVDTAU(3)=GAMMA0*DELTAV/K/TABS*EXP(-DELTAG/K/TABS)
+     &                 *EXP(DELTAV/K/TABS*TAUV)*TAUS/ABS(TAUS)
+             DDVIR(NUMS)=0.D0
+             
           ELSE
-             DP=0.D0
-C             DGAMMA=0.D0
+             DDVIS(3,3)=1.D0             
+             DDVIS(2,2)=1.D0
+             DDVIS(2,3)=-FTAU/ABS(FTAU)
+             DVDTAU(3)=0.D0
+             DDVIR(NUMS)=0.D0
           ENDIF
        ENDIF
        

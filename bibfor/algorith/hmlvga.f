@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -322,7 +322,7 @@ C  PRESSIONS AIR SEC DISSOUS ET EAU
         VINTP(ADVICO+VICPVP) = PVP - PVP0
       END IF
       PADP = (P2 - PVP)*R*T/KH
-      PADM = ((P2-DP2) - PVPM)*R*T/KH
+      PADM = ((P2-DP2) - PVPM)*R*(T-DT)/KH
       RHO12 = MAMOLV*PVP/R/T
       RHO21 = MAMOLG* (P2-PVP)/R/T
       RHO22 = MAMOLG* PADP/R/T

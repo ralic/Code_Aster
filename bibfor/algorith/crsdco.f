@@ -6,7 +6,7 @@
       CHARACTER*24       NUMEDD, DEFICO, RESOCO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 11/08/2004   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -172,6 +172,12 @@ C
         ELSE IF (ICHAM.EQ.-3) THEN
           NDDL = NDDL + 1
           ZI(JPDDL+INO) = NDDL
+        ELSE IF (ICHAM.EQ.-4) THEN
+          NDDL = NDDL + 1
+          ZI(JPDDL+INO) = NDDL
+        ELSE IF (ICHAM.EQ.-5) THEN
+          NDDL = NDDL + 1
+          ZI(JPDDL+INO) = NDDL
         END IF
  20   CONTINUE
 C
@@ -198,6 +204,12 @@ C
      &                 ZI(JDDL+IDDL-1))
         ELSE IF (ICHAM.EQ.-3) THEN
           CALL POSDDL ('NUME_DDL',NUMEDD,NOMNO,'TEMP',NUNOE,
+     &                 ZI(JDDL+IDDL-1))
+        ELSE IF (ICHAM.EQ.-4) THEN
+          CALL POSDDL ('NUME_DDL',NUMEDD,NOMNO,'PRE1',NUNOE,
+     &                 ZI(JDDL+IDDL-1))
+        ELSE IF (ICHAM.EQ.-5) THEN
+          CALL POSDDL ('NUME_DDL',NUMEDD,NOMNO,'PRE2',NUNOE,
      &                 ZI(JDDL+IDDL-1))
         END IF
  25   CONTINUE

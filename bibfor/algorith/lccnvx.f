@@ -1,9 +1,9 @@
         SUBROUTINE LCCNVX ( LOI, IMAT, NMAT, MATERF, TEMPF, SIGF, VIND,
-     &                      COMP, NBCOMM, CPMONO, PGL,NR,NVI,SEUIL )
+     &               COMP, NBCOMM, CPMONO, PGL,NR,NVI,SEUIL )
         IMPLICIT  NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C ======================================================================
          CALL LGLCVX ( SIGF, VIND, NMAT, MATERF, SEUIL)
 C ======================================================================
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS') THEN
-         CALL LCMMVX ( SIGF, VIND, NMAT, MATERF, 
+         CALL LCMMVX ( SIGF, VIND, NMAT, MATERF, TEMPF,
      &                   COMP,NBCOMM, CPMONO, PGL, NR, NVI, SEUIL)
 C ======================================================================
       ENDIF

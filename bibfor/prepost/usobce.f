@@ -6,7 +6,7 @@
       CHARACTER*19        NOMT19
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 15/01/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 11/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,8 +26,9 @@ C ======================================================================
 C-----------------------------------------------------------------------
 C     GUIDAGE CERCLE
 C ----------------------------------------------------------------------
-      INTEGER      I, L, IFM, NIV,J
-      REAL*8       THETA, TABR(4), DELTAN, AI1, AI2, BI1, BI2, P, PM
+      INTEGER      I, L, IFM, NIV
+      REAL*8       TABR(4), DELTAN
+      REAL*8       ALPHAD, ALPHAM, ALPHAF, PROF, AD, AM, AF
       COMPLEX*16   C16B
       CHARACTER*4  T2
       CHARACTER*8  TABK(2)
@@ -82,119 +83,28 @@ C
 C
          IF ( TYPUSU(I) .EQ. 0 )  GOTO 150
 C
-         AI1 = PARUSU(I,4) / ( PARUSU(I,2) - PARUSU(I,1) )
-         BI1 = AI1*PARUSU(I,1)
-         AI2 = PARUSU(I,4) / ( PARUSU(I,3) - PARUSU(I,2) )
-         BI2 = AI2*PARUSU(I,2)
-         PM  = 0.9D0 * ( AI1*PARUSU(I,2) - BI1 )
+         ALPHAD = PARUSU(I,1)
+         ALPHAM = PARUSU(I,2)
+         ALPHAF = PARUSU(I,3)
+         PROF   = PARUSU(I,4)
 C
-         L = 0
- 40      CONTINUE
-         L = L + 1
-         IF ( OBSUSE(2*L-1) .LT. PARUSU(I,1) ) GOTO 40
-         THETA = OBSUSE(2*L-1)
- 42      CONTINUE
-C ------ CAS OU ANGDEB EST NEGATIF
-         IF ( PARUSU(I,1) .LT. 0 ) THEN
+C ------ ON VERIFIE QUE ALPHAD < ALPHAM < ALPHAF
 C
-C --------- ON REDEFINIT LES ANGLES A 360 DEGRES
-            PARUSU(I,1) = PARUSU(I,1) + 360.D0
-            PARUSU(I,2) = PARUSU(I,2) + 360.D0
-            BI1 = AI1 * PARUSU(I,1)
-C --------- ON RECHERCHE LE THETA JUSTE AU DESSUS DE ANGDEB
-            J = DIMOBS
- 44         CONTINUE
-            J = J - 1
-            IF ( OBSUSE(2*J-1) .GT.PARUSU(I,1) ) GOTO 44
-            J = J + 1
-            THETA = OBSUSE(2*J-1)
+         AD = ALPHAD
+         IF ( ALPHAD .LT. 0.D0 )  AD = ALPHAD + 360.D0
 C
- 43         CONTINUE
-            P = AI1*THETA - BI1    
-            P = MIN ( P , PM ) 
-            OBSUSE(2*J) = OBSUSE(2*J) + P 
-            J = J + 1
-            THETA = OBSUSE(2*J-1)
-            IF ( J .GT. DIMOBS ) THEN
-C ------------ ON  RECUPERE LES ANGLES D ORIGINE
-               PARUSU(I,1) = PARUSU(I,1) - 360.D0
-               PARUSU(I,2) = PARUSU(I,2) - 360.D0
-               BI1 = AI1 * PARUSU(I,1)
+         AM = ALPHAM
+         IF ( AD .GT. ALPHAM )  AM = ALPHAM + 360.D0
+
+         AF = ALPHAF
+         IF ( AM .GT. ALPHAF )  AF = ALPHAF + 360.D0
 C
-               J = 0
- 45            CONTINUE
-               J = J + 1
-               IF (OBSUSE(2*J-1).LT.PARUSU(I,2)) THEN
-                  THETA =OBSUSE (2*J-1)        
-                  P = AI1*THETA - BI1    
-                  P = MIN ( P , PM ) 
-                  OBSUSE(2*J) = OBSUSE(2*J) + P
-                  GOTO 45
-               ELSEIF (OBSUSE(2*J-1).LT.PARUSU(I,3)) THEN
-                 THETA = OBSUSE(2*J-1)
-                 P = PARUSU(I,4) + BI2 - AI2*THETA
-                 P = MIN ( P , PM ) 
-                 OBSUSE(2*J) = OBSUSE(2*J) + P 
-                 GOTO 45
-               ELSE
-                 GOTO 150
-               ENDIF
-            ENDIF
-            GOTO 43
+         IF ( AD.LT.AM .AND. AM.LT.AF ) THEN
+            CALL USVECT ( 1.D0, AD, AM, AF, PROF, DIMOBS, OBSUSE )
          ELSE
-C --------- SI ANGMAX EST DANS LE DERNIER SECTEUR ON 
-C                     VERIFIE QUE ANGFIN NE SOIT PAS REPASSER PAR 0.
-            IF ( PARUSU(I,3) .GT. 360.D0 ) THEN 
-C ------------ ON RECHERCHE LE THETA JUSTE AU DESSUS DE ANGDEB
-               J = DIMOBS
- 49            CONTINUE
-               J = J - 1
-               IF ( OBSUSE(2*J-1) .GT. PARUSU(I,1) ) GOTO 49
-               J = J + 1
-               THETA =OBSUSE (2*J-1)
-C
- 50            CONTINUE          
-               IF ( THETA .LT. PARUSU(I,2) ) THEN
-                  P = AI1*THETA - BI1
-               ELSE
-                  P = PARUSU(I,4) + BI2 - AI2*THETA
-               ENDIF
-               P = MIN ( P , PM )   
-               OBSUSE(2*J)=  OBSUSE(2*J) + P
-               J = J + 1
-               THETA = OBSUSE(2*J-1)
-C ------------ SI THETA SUPERIEUR A 360 ON REMET LES COMPTEURS 
-C                     A ZERO ET THETA VAUT THETA PLUS 360
-C                     POUR ETRE DU MEME ORDRE DE GRANDEUR QUE ANGFIN
-               IF ( J .GT. DIMOBS ) THEN
-                  J = 0
- 55               CONTINUE
-                  J = J + 1
-                   THETA = OBSUSE(2*J-1) + 360.D0
-                  P = PARUSU(I,4) + BI2 - AI2*THETA
-                  P = MIN ( P , PM ) 
-                  OBSUSE(2*J) = OBSUSE(2*J) + P 
-                  IF ( THETA .GT. PARUSU(I,3) ) GOTO 150
-                  GOTO 55
-               ENDIF 
-               GOTO 50
-            ELSE
-C
-C ------------ CAS GENERAL OU TOUT CE PASSE BIEN 
-               IF ( THETA .LT. PARUSU(I,2) ) THEN
-                  P = AI1*THETA - BI1
-               ELSE
-                  P = PARUSU(I,4) + BI2 - AI2*THETA
-               ENDIF
-               P = MIN ( P , PM ) 
-               OBSUSE(2*L) = OBSUSE(2*L) + P
-               L = L + 1
-               IF ( L .GT. 720 ) GOTO 150
-               THETA = OBSUSE(2*L-1)
-               IF ( THETA .GT. PARUSU(I,3) ) GOTO 150
-               GOTO 42
-            ENDIF
+            CALL UTMESS ('F','USOBCE','BUG !')
          ENDIF
+C
  150  CONTINUE
 C
  1000 FORMAT('==> IMPRESSION DE PARAMETRES "OBST" PAR SECTEUR USE:',/,

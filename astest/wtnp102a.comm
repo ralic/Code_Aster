@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,7 +63,13 @@ EPSILON=DEFI_CONSTANTE(VALE=-1.E-30,);
 
 ZERO=DEFI_CONSTANTE(VALE=0.0,);
 
-VISCOLIQ=DEFI_CONSTANTE(VALE=1.E-3,);
+#VISCOLIQ=DEFI_CONSTANTE(VALE=1.E-3,);
+VISCOLIQ=DEFI_FONCTION(NOM_PARA='TEMP',
+                   VALE=(293.0 ,1.002E-3,
+                         323.0 ,0.5468E-3,
+                         393.0 ,0.2818E-3),
+                   PROL_DROITE='CONSTANT',
+                   PROL_GAUCHE='CONSTANT',);
 
 VISCOGAZ=DEFI_CONSTANTE(VALE=1.8E-05,);
 
@@ -142,7 +148,19 @@ DPR11BO=CALC_FONC_INTERP(FONCTION=DPERMO,
 
 # COEF. DE FICK
 #
+# Fick variant enPV - n a pour but que de tester cette fonction puisque c est egal a un
+#************************************                                                                      
+LIPV=DEFI_LIST_REEL(DEBUT=0.1,
+                   INTERVALLE=_F(JUSQU_A=1.000001E5,
+                                 PAS=1.E3,),);
+FVP_PV = FORMULE(REEL = '''(REEL:PVAP) = 1.+PVAP-PVAP''');  
 
+FVPPV  = CALC_FONC_INTERP ( FONCTION    =  FVP_PV     ,
+                            LIST_PARA   =  LIPV    ,
+                            NOM_PARA    = 'PVAP'      ,
+                            PROL_GAUCHE = 'CONSTANT' ,
+                            PROL_DROITE = 'CONSTANT' ,
+                            INFO        = 2          ,);
 
 DM8=DEFI_CONSTANTE(VALE=5.9000000000000003E-06,);
 
@@ -205,6 +223,7 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15000000E8,
                                    D_PERM_SATU_GAZ=ZERO,
                                    D_PERM_PRES_GAZ=ZERO,
                                    FICKV_T=DM8,
+                                   FICKV_PV=FVPPV,
                                    LAMB_T=LAMBT,
                                    LAMB_S=LAMBS,
                                    D_LB_S=DLS,

@@ -1,10 +1,10 @@
       SUBROUTINE CALSIG( EIN,   MOD,    E,    NU,   ALPHA,
      &                   X,     DTIME,  EPSD, DETOT,TPERD,
-     &                   DTPER, TPEREF, SIGI )
-      IMPLICIT REAL*8 (A-H,O-Z)
+     &                   DTPER, TPEREF, NMAT, COEL, SIGI )
+      IMPLICIT NONE
 C     ================================================================ 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,31 +39,56 @@ C         DETOT   :  INCREMENT DE DEFORMATION TOTALE
 C         TPERD   :  TEMPERATURE A T
 C         DTPER   :  INTERVALLE DE TEMPERATURE ENTRE T+DT ET T
 C         TPEREF  :  TEMPERATURE DE REFERENCE
+C         NMAT    :  NOMBRE MAXI DE COEFFICIENTS MATERIAU
+C         COEL    :  COEFFICENT DE L'OPERATEUR D'ELASTICITE ORTHOTROPE
 C     OUT SIGI    :  CONTRAINTES A L'INSTANT COURANT
 C     ---------------------------------------------------------------- 
       CHARACTER*8 MOD
-      REAL*8 NU
-      REAL*8 EIN(6)
-      REAL*8 EEL(6),SIGI(6),EPSD(6),DETOT(6)
+      INTEGER ICP,NMAT
+      REAL*8 NU,COEL(NMAT),HOOK(6,6),ALPHAL,ALPHAT,ALPHAN,ETHL,ETHT
+      REAL*8 EIN(6),XSDT,X,DTIME,ETH,ALPHA,TPERD,DTPER,TPEREF,ETHN
+      REAL*8 EEL(6),SIGI(6),EPSD(6),DETOT(6),DEMU,E,TREEL
 C     ---------------------------------------------------------------- 
       XSDT=X/DTIME
-      ETH=ALPHA*(TPERD+XSDT*DTPER-TPEREF)
-      DO 10 ICP=1,6
-        EEL(ICP)=EPSD(ICP)+DETOT(ICP)*XSDT-EIN(ICP)-ETH
-        IF (ICP.EQ.3) ETH=0.0D0
-   10 CONTINUE
+      
+      IF (COEL(NMAT).EQ.0) THEN
+         ETH=ALPHA*(TPERD+XSDT*DTPER-TPEREF)
+         DO 10 ICP=1,6
+           EEL(ICP)=EPSD(ICP)+DETOT(ICP)*XSDT-EIN(ICP)-ETH
+           IF (ICP.EQ.3) ETH=0.0D0
+   10    CONTINUE
 C
-C --  CAS DES CONTRAINTES PLANES
+C --     CAS DES CONTRAINTES PLANES
 C
-      IF(MOD(1:6).EQ.'C_PLAN') THEN
-        EEL(3)=-NU*(EEL(1)+EEL(2))/(1.0D0-NU)
+         IF(MOD(1:6).EQ.'C_PLAN') THEN
+           EEL(3)=-NU*(EEL(1)+EEL(2))/(1.0D0-NU)
+         ENDIF
+C
+         DEMU=E/(1.0D0+NU)
+         TREEL=(EEL(1)+EEL(2)+EEL(3))
+         TREEL=NU*DEMU*TREEL/(1.0D0-NU-NU)
+         DO 11 ICP=1,6
+           SIGI(ICP)=DEMU*EEL(ICP)+TREEL
+           IF (ICP.EQ.3) TREEL=0.0D0
+   11    CONTINUE
+   
+      ELSEIF(COEL(NMAT).EQ.1) THEN
+         
+            CALL LCOPLI ( 'ORTHOTRO' , MOD , COEL , HOOK )
+            ALPHAL = COEL(73)
+            ALPHAT = COEL(74)
+            ALPHAN = COEL(75)
+            ETHL=ALPHAL*(TPERD+XSDT*DTPER-TPEREF)
+            ETHN=ALPHAT*(TPERD+XSDT*DTPER-TPEREF)
+            ETHT=ALPHAN*(TPERD+XSDT*DTPER-TPEREF)
+            EEL(1) = EPSD(1)+DETOT(1)*XSDT-EIN(1)-ETHL
+            EEL(2) = EPSD(2)+DETOT(2)*XSDT-EIN(2)-ETHN
+            EEL(3) = EPSD(3)+DETOT(3)*XSDT-EIN(3)-ETHT
+            EEL(4) = EPSD(4)+DETOT(4)*XSDT-EIN(4)
+            EEL(5) = EPSD(5)+DETOT(5)*XSDT-EIN(5)
+            EEL(6) = EPSD(6)+DETOT(6)*XSDT-EIN(6)
+            
+            CALL LCPRMV ( HOOK    , EEL , SIGI  )
+         
       ENDIF
-C
-      DEMU=E/(1.0D0+NU)
-      TREEL=(EEL(1)+EEL(2)+EEL(3))
-      TREEL=NU*DEMU*TREEL/(1.0D0-NU-NU)
-      DO 11 ICP=1,6
-        SIGI(ICP)=DEMU*EEL(ICP)+TREEL
-        IF (ICP.EQ.3) TREEL=0.0D0
-   11 CONTINUE
       END

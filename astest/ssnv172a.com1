@@ -14,14 +14,14 @@ for it in xrange(1,nbt+1):
    print 'it=',it
    CONTR1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                  OPERATION='EXTR',
-                 RESULTAT=SOLNL,
+                 RESULTAT=EXPL3A,
                  NUME_ORDRE=it,
                  NOM_CHAM='SIEF_ELGA',);
 
 
    EPSP1=CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
                  OPERATION='EXTR',
-                 RESULTAT=SOLNL,
+                 RESULTAT=EXPL3A,
                  NUME_ORDRE=it,
                  NOM_CHAM='EPSP_ELGA',);
 
@@ -76,7 +76,7 @@ print Fcalc
 # Calcul des moyennes a l'instant final
 CONTR0=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                  OPERATION='EXTR',
-                 RESULTAT=SOLNL,
+                 RESULTAT=IMPL1,
                  NUME_ORDRE=nbt,
                  NOM_CHAM='SIEF_ELGA',);
 

@@ -1,0 +1,629 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR a3bhhae H.ANDRIAMBOLOLONA   DATE  le 11/08/2004 a 09:24:17
+
+REALISATION EL 2004-079
+   INTERET_UTILISATEUR : OUI
+   TITRE : sensibilite des modes propres
+   FONCTIONNALITE
+     Possibilite d'effectuer des calculs de sensibilite dans les
+     operateurs de calcul de modes propres MODE_ITER_SIMULT et
+     MODE_ITER_INV pour les problemes generalises ou quadratiques.
+     Le mot cle facteur SENSIBILITE permet de calculer la derivee
+     de la frequence propre, de omega2, de l'amortissement reduit
+     et du vecteur propre.
+     On ne calcule pas pour l'instant la derivee des grandeurs
+     generalisees (masse, raideur, amortissement),
+     des facteurs de participation et des masses effectives.
+     Le cas des modes multiples n'est pas traite. On considere
+     que tous les modes calcules sont des modes simples. On arrete
+     en erreur fatale si l'ecart relatif entre valeurs propres (omega2)
+     est inferieur a 1e-8.
+     La derivee du vecteur propre depend de la norme choisie.
+     L'utilisateur peut calculer la derivee du vecteur propre
+     relative a une norme specifique en utilisant le mot cle
+     facteur SENSIBILITE dans la commande NORM_MODE.
+   DETAILS
+     Routines modifiees :
+         op0037.f : (NORM_MODE) multiplication des derivees des vecteurs
+                    propres par le coefficient de norme
+         op0044.f,op0045.f : rajout des appels de programme de calcul
+                    des derivees des modes propres si demande par l'utilisateur
+         wpnorm.f : passage en argument du coefficient de norme
+     Nouvelles routines :
+         casemo.f : calcul derivee valeur/vecteur propre complexe
+         semoco.f : preparation donnees pour calcul sensibilite
+                    modes complexes
+         semore.f : calcul sensibilite modes reels
+     Catalogues modifies :
+         mode_iter_simult.capy, mode_iter_inv.capy, norm_mode.capy :
+                    insertion du mot cle SENSIBILITE
+     Script python modifie :
+         B_SENSIBILITE_COMMANDES_SENSIBLES.py : rajout de MODE_ITER_SIMULT,
+                    MODE_ITER_INV et NORM_MODE parmi les commandes sensibles
+     Nouveaux cas test :
+         sensd08 : voir rubrique VALIDATION ci-dessous
+   RESU_FAUX_VERSION_EXPLOITATION : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT : NON
+   RESTITUTION_VERSION_EXPLOITATION : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V1.01.188
+       EXPL_ : nouveau cas test (sensd08) : Sensibilite de modes propres
+               au parametre materiau
+     DOC_R : R4.03.04-A (Calcul de sensibilite en dynamique)
+       EXPL_ : possibilite de calcul de derivee des modes propres,
+               case a cocher dans le paragraphe : Implantation
+               effective dans Code_Aster
+     DOC_U : U4.52.03-G1 (MODE_ITER_SIMULT)
+       EXPL_ : ajout du mot cle SENSIBILITE
+     DOC_U : U4.52.04-G (MODE_ITER_INV)
+       EXPL_ : ajout du mot cle SENSIBILITE
+     DOC_U : U4.52.11-F (NORM_MODE)
+       EXPL_ : ajout du mot cle SENSIBILITE
+   VALIDATION :
+     Un nouveau cas test a ete cree (sensd08). Il s'agit d'une poutre
+     appuyee-appuyee. Pour ce cas particulier, les modes propres
+     peuvent etre obtenus analytiquement. La poutre est modelisee
+     par des elements volumiques paraboliques.
+     La modelisation A realise la derivation des modes propres
+     calcules par la methode iterations simultanees.
+     La modelisation B realise la derivation des modes propres
+     calcules par la methode d'iteration inverse.
+   NB_JOURS_TRAV : 50
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR acbhhcd G.DEVESA   DATE  le 05/08/2004 a 18:47:32
+
+------------------------------------------------------------------------
+CORRECTION AL 2004-219
+   INTERET_UTILISATEUR : NON
+   TITRE  "AFFE_CARA_ELEM option RIGI_MISS3D"
+   FONCTIONNALITE
+   On corrige la prise en compte dans cette option du mot-cle facultatif
+   GROUP_MA_SEG2 qui n'etait pas teste. On restitue alors le test deja
+   existant ZZZZ200B enrichi pour tester l'utilisation de GROUP_MA_SEG2.
+   Ainsi, la prise en compte des termes de couplage dus aux SEG2 ainsi
+   definis fait passer la premiere frequence de 3.84 a 3.79 Hz.
+   VALIDATION
+   Le test ZZZZ200B passe avec et sans GROUP_MA_SEG2.
+   DETAILS
+   On modifie en consequence les routines RIGMI2 et ACEARM.
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   OUI   DEPUIS : 7.2.1
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+	
+   IMPACT_DOCUMENTAIRE : OUI
+   DOC_V : V1.01.200
+   NB_JOURS_TRAV  : 1
+
+------------------------------------------------------------------------
+CORRECTION AL 2004-183
+   INTERET_UTILISATEUR : NON
+   TITRE  "RIGI_PARASOL"
+   FONCTIONNALITE
+   On écrit maintenant (a titre seulement indicatif) dans le fichier
+   .RESU les lignes de commandes associées à la répartition des raideurs
+    par AFFE_CARA_ELEM option RIGI_PARASOL dans le format V6 plutot
+   que dans le format V5.
+   On rappelle que cette impression ne change pas les resultats quelle
+   que soit la syntaxe Aster.
+   VALIDATION
+   Impressions du test ZZZZ200A
+   DETAILS
+   On modifie une instruction FORMAT de la routine RAIREP.
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+	
+   IMPACT_DOCUMENTAIRE : NON
+   NB_JOURS_TRAV  : 0.2
+
+------------------------------------------------------------------------
+CORRECTION AL 2004-187
+   INTERET_UTILISATEUR : NON
+   TITRE  "PROJ_MATR_BASE PROJ_VECT_BASE"
+   FONCTIONNALITE
+   Quand on projette une matrice ou un vecteur sur une base modale de
+   Ritz quelconque, on peut tres bien avoir des numerotations
+   differentes, c'est justement l'interet de ces bases. Les sources des
+   routines OP0071 et OP0072 etaient presque bons. Mais maintenant, au
+   lieu de sortir sur arret fatal apres verification de numerotations
+   differentes entre la base et la matrice ou le vecteur, on se contente
+   d'informer.
+   VALIDATION
+   Une etude destinee a etre un nouveau cas test
+   DETAILS
+   On modifie en consequence les routines OP0071 et OP0072.
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+	
+   IMPACT_DOCUMENTAIRE : NON
+   NB_JOURS_TRAV  : 0.5
+
+------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR boyere E.BOYERE   DATE  le 11/08/2004 a 10:25:56
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-121
+   INTERET_UTILISATEUR : NON
+   TITRE Restauration des conditionnements de suintement
+   FONCTIONNALITE
+Dans le cadre du projet Codhybar, on souhaite effectuer la modelisation
+du suintement en THM. Il s'agit de determiner la hauteur du front de
+saturation, sous lequel l'eau du barrage "suinte", c'est-a-dire le lieu ou le flux
+sortant est positif et ou la pression d'eau vaut la pression
+atmospherique. Concretement cela s'exprime par une condition d'inegalite sur
+le ddl de pression d'eau, condition qui a ete programmee en v5. Cependant, depuis,
+le code a evolue, notamment par l'introduction d'un deuxieme ddl de pression.
+Il a donc fallu donc remettre a niveau la programmation.
+
+UTILISATION :
+
+CHARUE=AFFE_CHAR_MECA(MODELE=MODELE,
+                      CONTACT=_F(APPARIEMENT='NON',
+                                 GROUP_MA_ESCL=('GROUMACON'),
+                                 NOM_CHAM='PRE1',
+                                 COEF_IMPO=-p0,
+                                 COEF_MULT_2=1.0,),);
+REMARQUES IMPORTANTES :
+La condition unilaterale en pression ou en temperature
+n'est utilisable qu'avec la methode 'CONTRAINTES ACTIVES' ;
+Il ne faut pas d'APPARIEMENT ;
+La surface en contact est mise en ESCLAVE.
+
+   RESU_FAUX_VERSION_EXPLOITATION  : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT : NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.44.01
+       EXPL_ : Ajout d'un paragraphe dans le bloc CONTACT
+de la doc AFFE_CHAR_MECA pour clarifier et preciser
+le fonctionnement des conditions unilaterales sur les ddl
+de pression (PRE1 ou PRE2) ou de temperature (TEMP).
+    DOC_V : V7.30.109
+      EXP_ : nouveau cas test WTNP109, suintement sur sol sature
+
+   VALIDATION
+      nouveau cas test WTNP109 + cas test elementaire a venir (a valider ?)
+
+   DETAILS
+modification du catalogue de AFFE_CHAR_MECA :
+- ajout de PRE1 et de PRE2 dans la liste des ddls disponibles pour le contact
+
+routines fortran modifies :
+- calico : creation des SD de contact dans AFFE_CHAR_MECA
+- surfco : impression d'infos sur le contact
+- crsdco : relecture des SD de contact dans STAT_NON_LINE
+- nmcont : mise en oeuvre du contact dans STAT_NON_LINE
+
+   NB_JOURS_TRAV  : 9.5
+------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 11/08/2004 a 09:52:12
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-261
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : E.BOYERE
+   TITRE :  sdnl112b et c
+   FONCTIONNALITE :
+     tests NOOK depuis le passage à python 2.3
+     Les cas tests sdnl112b et c font appel à la commande GENE_FONC_ALEA
+     qui fait appel au générateur de nombres aléatoires de python.
+     Le comportement est différemment entre python2.1 et 2.3.
+     On change les références.
+     Depuis ce passage à python 2.3 sur alphaserver, les résultats de ces
+     tests sont indentiques sur alphaserver et linux, ce qui solde la
+     fiche AL 2004-199
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-151
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 2
+   POUR_LE_COMPTE_DE   : E.BOYERE
+   TITRE :  routines liées à POST_USURE
+   FONCTIONNALITE :
+     Avec une version 32 bits du compilateur Intel f90 les 3 routines
+     usobce.f, usoben.f et ustuen.f ne peuvent être compilées avec un
+     niveau d'optimisation O0, O1, O2 ou O3. Seule la compilation -g
+     est réalisable.
+   DETAIL
+     Reprise de la programmation de ces 3 routines.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     tests de POST_USURE
+
+--------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2004-145
+   INTERET_UTILISATEUR : OUI
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : J.P.LEFEBVRE
+   TITRE :  IMPR_RESU au format CASTEM
+   FONCTIONNALITE :
+     En STA7.2, si on cherche a faire seulement un IMPR_RESU format CASTEM
+     avec juste un MAILLAGE (comme dans les fichiers joints), et si on ne
+     fait pas de DEFI_FICHIER, alors ca ne marche pas : on se retrouve avec
+     uniquement les deux dernieres lignes dans le fichier .cast.
+     Correction faite en 7.2.2 du 05/11/2003, fiche AL 2003-262
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     passage de l'étude associée en STA7.3 et NEW7.3.14
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhpd S.VANDENBERGHE   DATE  le 11/08/2004 a 10:05:09
+
+REALISATION EL 2003-138
+   NB_JOURS_TRAV  : 1
+   POUR_LE_COMPTE_DE : E. GALENNE
+   INTERET_UTILISATEUR : NON
+   TITRE : Mot cle CHARGE dans CALC_G_THETA
+   FONCTIONNALITE : On rend dorenavant le mot cle CHARGE (via EXCIT )
+   obligatoire dans CALC_G_THETA
+
+   DETAILS : Le mot cle n est utile que dans le cas ou des charges volumiques
+   sont presentes. Cependant lors de la formation sur la rupture on s est apercu
+   q un grand nombre d utilisateurs l oubliait.
+   Dorenavant il est donc obligatoire. On change donc les cas tests suivants en
+   consequence: hplp310a, sslv134e, ssnp312a, ssnv108a, sslp103a, ssnp311a,
+   ssnp312b
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : tous les tests utilisant CALC_G_THETA
+
+  -----------------------------------------------------------------------
+
+CORRECTION AL 2003-094
+   NB_JOURS_TRAV  : 2
+   POUR_LE_COMPTE_DE : P.BADEL
+   INTERET_UTILISATEUR : OUI
+   TITRE : Blindage des tests de convergence par reference (SIGM_REFE)
+   FONCTIONNALITE : RESI_REFE_RELA
+   DETAILS :
+      Les tests de convergence par reference a une contrainte (SIGM_REFE) ou a
+      une deformation (EPSI_REFE) n ont ete developpes dans STAT_NON_LINE et
+      DYNA_NON_LINE que pour les elements  de milieu continu 2D et 3D ainsi que
+      pour les COQUE_3D et les tuyaux. Dans le cas d un melange d elements ou
+      certains ne peuvent pas calculer cette option on se retrouve face a des
+      problemes potentiels. Pour les eviter, on a choisi d interdire les
+      options dans les differents catalogues concernes et d attendre un retour
+      des utilisateurs pour eventuellement se lancer dans des developpements.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : passage des cas tests utilisant RESI_REFE_RELA
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR jmbhh01 J.M.PROIX   DATE  le 06/08/2004 a 15:26:50
+
+CORRECTION AL 2004-269
+   POUR_LE_COMPTE_DE : SYLVIE GRANET
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : NON
+   TITRE  Erreur dans la dépendance du coefficient de Ficj FICK_PV
+
+   FONCTIONNALITE
+Une erreur  a été detectée dans le catalogue : les coefficients de Fick FICK_PV
+et FICKA_PA ne pouvaient respectivement pas dépendre de la pression de vapeur
+et de la pression d'air dissous. On corrige et on rajoute un test dans le wtnp102a
+et le wtna102a pour que ces fonctionalités soient testées
+
+   routines modifiées :
+   fortran : thmlec.f
+   catalogue : defi_materiau.capy
+
+
+
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+
+   VALIDATION
+
+   Passage des cas tests THM
+
+   cas-tests modifiés :
+   wtnp102a, wtna102a
+
+   IMPACT_DOCUMENTAIRE : NON
+__________________________________________________________
+
+RESTITUTION HORS AREX
+   POUR_LE_COMPTE_DE : SYLVIE GRANET
+   NB_JOURS_TRAV  : 0.1
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+Une erreur  a été detectée dans le calcul de l'opérateur tangent pour les
+lois de couplages LIQU_AD_GAZ_VAPE. (une opération été réalisée à T+ ou
+lieu de T-)
+   routine modifiée :
+   fortran : hmlvga.f
+
+
+
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+
+   VALIDATION
+
+   Passage des cas tests THM avec air dissous
+
+   IMPACT_DOCUMENTAIRE : NON
+__________________________________________________________
+
+REALISATION EL 2004-166
+   INTERET_UTILISATEUR : OUI
+   NB_JOURS_TRAV  : 8
+   TITRE
+    ELAS_ORTH pour MONOCRISTAL
+   FONCTIONNALITE
+   Prendre en compte l'élasticité orthotrope pour les comportements
+   monocristallins,  soit avec résolution explicite (RUNGE_KUTTA_2)
+   soit avec résolution Implicite (PLASTI)
+
+   Modification de la loi d'écoulement ECOU_VISC3 : on ajoute un paramètre dans
+   DEFI_MATERIAU et on teste (en explicite) dans SSNV172A. Pour le moment, il n'y a
+   pas d'écrouissage pour cette loi. Ce sera dévelopé ultérieurement.
+
+    ECOU_VISC3      =FACT(statut='f',
+      TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECOU_VISC",),),
+      K               =SIMP(statut='o',typ='R',fr="Constante de Boltzmann, en eV/K"),
+      TAUMU           =SIMP(statut='o',typ='R',fr="Seuil d ecoulement, en unite de contraintes"),
+      GAMMA0          =SIMP(statut='o',typ='R',fr="Vitesse d ecoulement initiale, "),
+      DELTAV          =SIMP(statut='o',typ='R',fr="Volume d activation"),
+      DELTAG0         =SIMP(statut='o',typ='R',fr="Gain d energie lie au franchissement d obstacle"),
+    ),
+
+   Validation :
+   ____________
+
+
+   Modification de SSLV120A : comparaison de l'élasticité orthotrope utilisée dans
+   un monocristal (qui reste élastique) à la solution de référence ELAS_ORTH classique.
+   (test d'un parallèlépipède orthotrope sous poids propre). Calcul avec MECA_STATIQUE
+   et STAT_NON_LINE. Les résultats sont identiques.
+
+   Modification de SSNV172A : comparaison de la réponse viscoplastique d'un monocristal
+   en utilisant ELAS_ORTH pour définir un matériau en réalité isotrope. On retrouve les
+   memes résultats que lorsque la partie élastique de la loi est isotrope.
+   Comparaison (en donnant des valeurs particulière aux coefficients) de ECOU_VISC1 (loi
+   monocristalline proche de CIN1_CHAB), et de ECOU_VISC3, sans écrouissage.
+
+
+   RESU_FAUX_VERSION_EXPLOITATION   :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+    DOC_R : R5.03.11
+    DOC_U : U4.43.01
+    EXPL_ : Ajout d'un paramètre dans ECOU_VISC3 (loi basée sur la dynamiqu des
+    dislocations).
+   VALIDATION
+   SSLV120A, SSNV172A
+   DETAILS
+   On vire le dimensionnement fixe dans les routines d'intégration par la
+   methode de runge_kutta_2 : certains tableaux était dimensionné à
+   1688 (nombre de variables internes pour POLY_CFC). On utilise les
+   tableaux dynamiques à la place.
+
+   Pour l'orthotropie, on utilise les angles fournis sous le mot-clé MASSIF
+   dans AFFE_CARA_ELEM. L'argument existe dans NMCOMP, mais il faut le passer
+   a REDECE et NMVPRK. Ceci oblige à modifier les appelants de REDECE : CALCME
+   et NMCPLA.
+   De plus pour faire transiter la matrice de Hooke orthotrope (6x6) depuis la
+   récupération du materiau jusqu'aux routines de résolution, on ajoute des arguments
+   a CALSIG, ce qui conduit à  modifier les appelants : RKDCFC, RKDCBZ, RDKCHA, RKDVEC
+
+
+   Remarque: lors de l'asrest, code retout 2 lié, outre les documents, aux modifications
+   des routines :
+
+   (A/U-558): calcme : modification d'une unite dont le responsable est : UFBHHLL
+   CALCME C RESPONSABLE UFBHHLL C.CHAVANT
+   (A/U-558): nmcomp : modification d'une unite dont le responsable est : PBADEL
+   NMCOMP C RESPONSABLE PBADEL P.BADEL
+
+   Ceci est du à l'ajout de l'argument ANGMAS (angles du repère local d'orthotropie)
+   aux arguments des routines REDECE et NMVPRK
+
+   (A/U-558): nmpl3d : modification d'une unite dont le responsable est : PBADEL
+   NMPL3D C RESPONSABLE PBADEL P.BADEL
+   Correcion d'une coquille concernant les angles du repere local : bien qu'ils soient
+   lus en amont, on les affectait à R8VIDE avant l'appel à NMCOMP.
+------------------------------------------------------------------------------
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sensd08a                      a3bhhae H.ANDRIAMBOLOLONA    219    219      0
+ CASTEST AJOUT sensd08b                      a3bhhae H.ANDRIAMBOLOLONA    219    219      0
+ CASTEST AJOUT wtnp109a                       boyere E.BOYERE           145    145      0
+ CASTEST MODIF hplp310a                      cibhhpd S.VANDENBERGHE    2205    273     89
+ CASTEST MODIF sdnl112b                      cibhhlv L.VIVAN            490      4     14
+ CASTEST MODIF sdnl112c                      cibhhlv L.VIVAN            511      6      6
+ CASTEST MODIF sslp103a                      cibhhpd S.VANDENBERGHE     259      5      1
+ CASTEST MODIF sslv120a                      jmbhh01 J.M.PROIX          484    372     39
+ CASTEST MODIF sslv134e                      cibhhpd S.VANDENBERGHE     325     14     11
+ CASTEST MODIF ssnp311a                      cibhhpd S.VANDENBERGHE     879     34      2
+ CASTEST MODIF ssnp312a                      cibhhpd S.VANDENBERGHE     924    649    550
+ CASTEST MODIF ssnp312b                      cibhhpd S.VANDENBERGHE     871    595    550
+ CASTEST MODIF ssnv108a                      cibhhpd S.VANDENBERGHE     272    176    161
+ CASTEST MODIF ssnv171b                      jmbhh01 J.M.PROIX          231      4      3
+ CASTEST MODIF ssnv172a                      jmbhh01 J.M.PROIX          987    624     93
+ CASTEST MODIF wtna102a                      jmbhh01 J.M.PROIX          293     17      1
+ CASTEST MODIF wtnp102a                      jmbhh01 J.M.PROIX          346     21      2
+ CASTEST MODIF zzzz200b                      acbhhcd G.DEVESA          1121    330      6
+CATALOGU MODIF typelem/gener_me2db1          cibhhpd S.VANDENBERGHE     195      3      1
+CATALOGU MODIF typelem/gener_me2dt0          cibhhpd S.VANDENBERGHE     141      3      1
+CATALOGU MODIF typelem/gener_me2dt1          cibhhpd S.VANDENBERGHE     144      3      1
+CATALOGU MODIF typelem/gener_me2fl2          cibhhpd S.VANDENBERGHE      94      3      1
+CATALOGU MODIF typelem/gener_me2tr0          cibhhpd S.VANDENBERGHE     144      3      1
+CATALOGU MODIF typelem/gener_me2tr1          cibhhpd S.VANDENBERGHE     148      3      1
+CATALOGU MODIF typelem/gener_me3dg_3         cibhhpd S.VANDENBERGHE     356      3      1
+CATALOGU MODIF typelem/gener_me3di3          cibhhpd S.VANDENBERGHE     185      3      1
+CATALOGU MODIF typelem/gener_me3dj2          cibhhpd S.VANDENBERGHE      89      3      1
+CATALOGU MODIF typelem/gener_me3fl3          cibhhpd S.VANDENBERGHE     102      3      1
+CATALOGU MODIF typelem/gener_me_xh           cibhhpd S.VANDENBERGHE     143      3      1
+CATALOGU MODIF typelem/gener_me_xht          cibhhpd S.VANDENBERGHE     144      3      1
+CATALOGU MODIF typelem/gener_me_xt           cibhhpd S.VANDENBERGHE     144      3      1
+CATALOGU MODIF typelem/gener_mebar1          cibhhpd S.VANDENBERGHE     193      3      1
+CATALOGU MODIF typelem/gener_mecab1          cibhhpd S.VANDENBERGHE     149      3      1
+CATALOGU MODIF typelem/gener_mecap1          cibhhpd S.VANDENBERGHE     142      3      1
+CATALOGU MODIF typelem/gener_mecpg2          cibhhpd S.VANDENBERGHE     357      3      1
+CATALOGU MODIF typelem/gener_mecqd1          cibhhpd S.VANDENBERGHE     185      3      1
+CATALOGU MODIF typelem/gener_medit0          cibhhpd S.VANDENBERGHE     157      3      1
+CATALOGU MODIF typelem/gener_medit1          cibhhpd S.VANDENBERGHE     163      3      1
+CATALOGU MODIF typelem/gener_medkg1          cibhhpd S.VANDENBERGHE     223      3      1
+CATALOGU MODIF typelem/gener_medkt2          cibhhpd S.VANDENBERGHE     287      3      1
+CATALOGU MODIF typelem/gener_medpg2          cibhhpd S.VANDENBERGHE     359      3      1
+CATALOGU MODIF typelem/gener_medtr0          cibhhpd S.VANDENBERGHE     165      3      1
+CATALOGU MODIF typelem/gener_medtr1          cibhhpd S.VANDENBERGHE     197      3      1
+CATALOGU MODIF typelem/gener_megri2          cibhhpd S.VANDENBERGHE     190      3      1
+CATALOGU MODIF typelem/gener_megrm2          cibhhpd S.VANDENBERGHE     181      3      1
+CATALOGU MODIF typelem/gener_mepde1          cibhhpd S.VANDENBERGHE     268      3      1
+CATALOGU MODIF typelem/gener_mepdg1          cibhhpd S.VANDENBERGHE     215      3      1
+CATALOGU MODIF typelem/gener_mepdt1          cibhhpd S.VANDENBERGHE     268      3      1
+CATALOGU MODIF typelem/gener_mepgd1          cibhhpd S.VANDENBERGHE     198      3      1
+CATALOGU MODIF typelem/gener_mepli2          cibhhpd S.VANDENBERGHE     174      3      1
+CATALOGU MODIF typelem/gener_mepmf1          cibhhpd S.VANDENBERGHE     172      3      1
+CATALOGU MODIF typelem/gener_mepmf2          cibhhpd S.VANDENBERGHE     212      3      1
+CATALOGU MODIF typelem/gener_mf2fi2          cibhhpd S.VANDENBERGHE      94      3      1
+CATALOGU MODIF typelem/gener_mv2d_2          cibhhpd S.VANDENBERGHE     302      3      1
+CATALOGU MODIF typelem/gener_mv3d_3          cibhhpd S.VANDENBERGHE     405      3      1
+CATALOPY MODIF commande/affe_char_meca        boyere E.BOYERE           759      2      2
+CATALOPY MODIF commande/calc_g_theta_t       cibhhpd S.VANDENBERGHE     104      2      2
+CATALOPY MODIF commande/defi_materiau        jmbhh01 J.M.PROIX         2670      8      7
+CATALOPY MODIF commande/mode_iter_inv        a3bhhae H.ANDRIAMBOLOLONA     94     10      1
+CATALOPY MODIF commande/mode_iter_simult     a3bhhae H.ANDRIAMBOLOLONA    140     10      1
+CATALOPY MODIF commande/norm_mode            a3bhhae H.ANDRIAMBOLOLONA     52      5      1
+ FORTRAN AJOUT algorith/casemo               a3bhhae H.ANDRIAMBOLOLONA    228    228      0
+ FORTRAN AJOUT algorith/semoco               a3bhhae H.ANDRIAMBOLOLONA    371    371      0
+ FORTRAN AJOUT algorith/semore               a3bhhae H.ANDRIAMBOLOLONA    429    429      0
+ FORTRAN AJOUT prepost/usenco                cibhhlv L.VIVAN             53     53      0
+ FORTRAN AJOUT prepost/usvect                cibhhlv L.VIVAN             80     80      0
+ FORTRAN MODIF algeline/op0037               a3bhhae H.ANDRIAMBOLOLONA    610     78     12
+ FORTRAN MODIF algeline/op0044               a3bhhae H.ANDRIAMBOLOLONA    783     20      2
+ FORTRAN MODIF algeline/op0045               a3bhhae H.ANDRIAMBOLOLONA   1059     20      2
+ FORTRAN MODIF algeline/wpnorm               a3bhhae H.ANDRIAMBOLOLONA    171      5      3
+ FORTRAN MODIF algorith/algoco                boyere E.BOYERE           683      1      1
+ FORTRAN MODIF algorith/betmat               jmbhh01 J.M.PROIX          172      3      1
+ FORTRAN MODIF algorith/calcme               jmbhh01 J.M.PROIX          856      3      3
+ FORTRAN MODIF algorith/calsig               jmbhh01 J.M.PROIX           94     31      6
+ FORTRAN MODIF algorith/coefft               jmbhh01 J.M.PROIX           66     20      6
+ FORTRAN MODIF algorith/crsdco                boyere E.BOYERE           557     13      1
+ FORTRAN MODIF algorith/gerpas               jmbhh01 J.M.PROIX          219     60     35
+ FORTRAN MODIF algorith/hmlvga               jmbhh01 J.M.PROIX          590      2      2
+ FORTRAN MODIF algorith/lccnvx               jmbhh01 J.M.PROIX           74      2      2
+ FORTRAN MODIF algorith/lcelin               jmbhh01 J.M.PROIX           83     11      2
+ FORTRAN MODIF algorith/lcjacb               jmbhh01 J.M.PROIX           84      4      4
+ FORTRAN MODIF algorith/lcjela               jmbhh01 J.M.PROIX           60     10      2
+ FORTRAN MODIF algorith/lcjplc               jmbhh01 J.M.PROIX           59      4      4
+ FORTRAN MODIF algorith/lcmafl               jmbhh01 J.M.PROIX          101      4      3
+ FORTRAN MODIF algorith/lcmate               jmbhh01 J.M.PROIX          131      6      5
+ FORTRAN MODIF algorith/lcmmat               jmbhh01 J.M.PROIX          294     92     32
+ FORTRAN MODIF algorith/lcmmcv               jmbhh01 J.M.PROIX           99      2      4
+ FORTRAN MODIF algorith/lcmmfl               jmbhh01 J.M.PROIX          128      7      6
+ FORTRAN MODIF algorith/lcmmin               jmbhh01 J.M.PROIX           89     11      9
+ FORTRAN MODIF algorith/lcmmja               jmbhh01 J.M.PROIX          171      8      4
+ FORTRAN MODIF algorith/lcmmjf               jmbhh01 J.M.PROIX          202     31     13
+ FORTRAN MODIF algorith/lcmmjp               jmbhh01 J.M.PROIX          128     43     25
+ FORTRAN MODIF algorith/lcmmon               jmbhh01 J.M.PROIX          152     10      5
+ FORTRAN MODIF algorith/lcmmre               jmbhh01 J.M.PROIX          158      9      5
+ FORTRAN MODIF algorith/lcmmvx               jmbhh01 J.M.PROIX           95      6      8
+ FORTRAN MODIF algorith/lcplnl               jmbhh01 J.M.PROIX          231      4      6
+ FORTRAN MODIF algorith/lcresi               jmbhh01 J.M.PROIX           88      2      2
+ FORTRAN MODIF algorith/nmcomp               jmbhh01 J.M.PROIX          635      9      9
+ FORTRAN MODIF algorith/nmcont                boyere E.BOYERE           232      3      2
+ FORTRAN MODIF algorith/nmcpla               jmbhh01 J.M.PROIX          467      3      3
+ FORTRAN MODIF algorith/nmpl3d               jmbhh01 J.M.PROIX          347      1      4
+ FORTRAN MODIF algorith/nmveei               jmbhh01 J.M.PROIX          360      4      4
+ FORTRAN MODIF algorith/nmvprk               jmbhh01 J.M.PROIX          334     63     51
+ FORTRAN MODIF algorith/op0071               acbhhcd G.DEVESA           143     10      4
+ FORTRAN MODIF algorith/op0072               acbhhcd G.DEVESA           254      9      9
+ FORTRAN MODIF algorith/plasti               jmbhh01 J.M.PROIX          460      6     11
+ FORTRAN MODIF algorith/rdif01               jmbhh01 J.M.PROIX          110     18     17
+ FORTRAN MODIF algorith/redece               jmbhh01 J.M.PROIX          278      6      6
+ FORTRAN MODIF algorith/rk21co               jmbhh01 J.M.PROIX          106     20     20
+ FORTRAN MODIF algorith/rkdcbz               jmbhh01 J.M.PROIX          270      6      5
+ FORTRAN MODIF algorith/rkdcfc               jmbhh01 J.M.PROIX          257      6      5
+ FORTRAN MODIF algorith/rkdcha               jmbhh01 J.M.PROIX          207      4      5
+ FORTRAN MODIF algorith/rkdvec               jmbhh01 J.M.PROIX          190      4      5
+ FORTRAN MODIF algorith/thmlec               jmbhh01 J.M.PROIX          151      2      2
+ FORTRAN MODIF modelisa/acearm               acbhhcd G.DEVESA           205     11      7
+ FORTRAN MODIF modelisa/calico                boyere E.BOYERE           806      5      1
+ FORTRAN MODIF modelisa/rairep               acbhhcd G.DEVESA           317      5      5
+ FORTRAN MODIF modelisa/rigmi2               acbhhcd G.DEVESA           190     54     14
+ FORTRAN MODIF modelisa/surfco                boyere E.BOYERE           243      5      1
+ FORTRAN MODIF prepost/usobce                cibhhlv L.VIVAN            115     19    109
+ FORTRAN MODIF prepost/usoben                cibhhlv L.VIVAN            229     46    106
+ FORTRAN MODIF prepost/ustuen                cibhhlv L.VIVAN            115     19    110
+ FORTRAN MODIF utilifor/lcdedi               jmbhh01 J.M.PROIX          105     31      5
+ FORTRAN MODIF utilifor/lcopil               jmbhh01 J.M.PROIX           87     14      4
+ FORTRAN MODIF utilifor/lcopli               jmbhh01 J.M.PROIX           90     14      3
+ FORTRAN MODIF utilifor/lcverr               jmbhh01 J.M.PROIX           80      7      4
+  PYTHON MODIF Build/B_SENSIBILITE_COMMANDES_SENSIBLES    a3bhhae H.ANDRIAMBOLOLONA    231      4      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    8        1744      1744             +1744
+ MODIF :  119       37203      4202    2326     +1876
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  127       38947      5946    2326     +3620 

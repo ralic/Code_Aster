@@ -6,7 +6,7 @@
         REAL*8 VINI(NVI),RP
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,8 +46,8 @@ C           DP
 C ======================================================================
 
 C     ----------------------------------------------------------------
-      REAL*8 C,P,R0,Q,H,B,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,V,D
-      REAL*8 TPERD,TABS,PR,DRDP,DDVIR(NVI),DRDPR
+      REAL*8 C,P,R0,Q,H,B,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,D
+      REAL*8 TPERD,TABS,PR,DRDP,DDVIR(NVI),DRDPR,DELTAV,DELTAG
       INTEGER IFL,IEI,TNS,NS,IS
 C     ----------------------------------------------------------------
 
@@ -97,13 +97,14 @@ C------------------------------------------------------------
           K      =COEFT(IFL-1+1)
           TAUMU  =COEFT(IFL-1+2)
           GAMMA0 =COEFT(IFL-1+3)
-          V      =COEFT(IFL-1+4)
+          DELTAV =COEFT(IFL-1+4)
+          DELTAG =COEFT(IFL-1+5)
                 
           TAUV=ABS(TAUS)-TAUMU 
           IF (TAUV.GT.0.D0) THEN
-             DP=TAUV*V
              TABS=TPERD+273.5D0
-             DGAMMA=2*GAMMA0*SINH(TAUV*V/K/TABS)*TAUS/ABS(TAUS)
+             DP=GAMMA0*EXP(-DELTAG/K/TABS)*EXP(DELTAV/K/TABS*TAUV)
+             DGAMMA=DP*TAUS/ABS(TAUS)
           ELSE
              DP=0.D0
              DGAMMA=0.D0

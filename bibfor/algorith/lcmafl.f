@@ -2,7 +2,7 @@
      &                   VALPAR,MATER,NMAT)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/05/2004   AUTEUR KANIT T.KANIT 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -73,11 +73,12 @@ C
           NBCOMM(IFA,2)=NBCOMM(IFA,1)+NBVAL
       ENDIF
       IF (NECOUL.EQ.'ECOU_VISC3') THEN
-          NBVAL=4
+          NBVAL=5
           NOMRES(1)='K'
           NOMRES(2)='TAUMU'
           NOMRES(3)='GAMMA0'
-          NOMRES(4)='V'
+          NOMRES(4)='DELTAV'
+          NOMRES(5)='DELTAG0'
           CALL RCVALA (IMAT,NMATER, NECOUL,1, NOMPAR,VALPAR,NBVAL,
      1                 NOMRES, VALRES,CODRET,'FM')
           DO 111 I=1,NBVAL

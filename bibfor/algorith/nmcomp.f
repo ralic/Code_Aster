@@ -15,7 +15,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -454,7 +454,7 @@ C
             CALL REDECE ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
      &           INSTAM, INSTAP, TM,   TP,    TREF,
      &           HYDRM, HYDRP, SECHM, SECHP, SREF, EPSM, DEPS,
-     &           SIGM, VIM,OPTION, ELGEOM,SIGP, VIP, DSIDEP)
+     &           SIGM, VIM,OPTION, ELGEOM,ANGMAS, SIGP, VIP, DSIDEP)
           ELSE
             CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU
      &      COMPORTEMENT NON PROGRAMMEE')
@@ -464,11 +464,11 @@ C
             CALL REDECE ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP, TM,   TP,    TREF,
      &                  HYDRM, HYDRP,SECHM, SECHP, SREF, EPSM, DEPS,
-     &                  SIGM, VIM,OPTION,ELGEOM,SIGP, VIP, DSIDEP)
+     &            SIGM, VIM,OPTION,ELGEOM,ANGMAS, SIGP, VIP, DSIDEP)
           ELSE
             CALL NMVPRK ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
-     &                  DEPS,  SIGM,   VIM,  OPTION,SIGP, VIP, DSIDEP)
+     &          DEPS,  SIGM,   VIM,  OPTION,ANGMAS,SIGP, VIP, DSIDEP)
           ENDIF
         ELSE IF ( COMPOR(1)(1:8) .EQ. 'POLY_CFC' ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
@@ -478,7 +478,7 @@ C
             CALL NMVPRK ( NDIM,  TYPMOD,  IMATE, COMPOR, CRIT,
      &                    INSTAM,INSTAP, TM,    TP,     TREF,
      &                    EPSM,  DEPS,   SIGM,  VIM,    OPTION,
-     &                    SIGP,  VIP,    DSIDEP)
+     &                    ANGMAS, SIGP,  VIP,    DSIDEP)
           ENDIF
         ELSE IF ( COMPOR(1)(1:9) .EQ. 'VENDOCHAB'  ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
@@ -489,7 +489,7 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
           ELSE
             CALL NMVPRK ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
-     &                  DEPS,  SIGM,   VIM,  OPTION,SIGP, VIP, DSIDEP)
+     &         DEPS,  SIGM,   VIM,  OPTION,ANGMAS,SIGP, VIP, DSIDEP)
           ENDIF
         ELSEIF ( COMPOR(1)(1:10) .EQ. 'ASSE_COMBU' .OR.
      &           COMPOR(1)(1:10) .EQ. 'ZIRC_CYRA2' .OR.
@@ -547,7 +547,7 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
             CALL REDECE ( NDIM,  TYPMOD,  IMATE, COMPOR, CRIT,
      &                    INSTAM, INSTAP, TM,   TP,    TREF,
      &                    HYDRM, HYDRP, SECHM, SECHP, SREF, EPSM, DEPS,
-     &                    SIGM, VIM, OPTION, ELGEOM, SIGP, VIP, DSIDEP)
+     &            SIGM, VIM, OPTION, ELGEOM,ANGMAS,  SIGP, VIP, DSIDEP)
           ENDIF
         ELSEIF ( COMPOR(1)(1:10) .EQ. 'GRANGER_FP' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
@@ -611,13 +611,13 @@ CCC    MONOCRISTAL
         ELSEIF ( COMPOR(1)(1:8) .EQ. 'MONOCRIS' ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             CALL REDECE ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
-     &                  INSTAM,INSTAP, TM,   TP,    TREF,
+     &                  INSTAM,INSTAP, TM,   TP,    TREF, 
      &                  HYDRM, HYDRP,SECHM, SECHP, SREF,EPSM, DEPS,
-     &                  SIGM, VIM,OPTION,ELGEOM,SIGP, VIP, DSIDEP)
+     &           SIGM, VIM,OPTION,ELGEOM,ANGMAS, SIGP, VIP, DSIDEP)
           ELSE
             CALL NMVPRK ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
-     &                  DEPS,  SIGM,   VIM,  OPTION,SIGP, VIP, DSIDEP)
+     &       DEPS,  SIGM,   VIM,  OPTION,ANGMAS,SIGP, VIP, DSIDEP)
           ENDIF
           
 CCC    FIN MONOCRISTAL      

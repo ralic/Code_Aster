@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1935,7 +1935,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES CACHEES -------------------------------------------
 # ---------------------------------------------------------------------------------
-         VERI_P           = SIMP(statut='c',typ='TXM',defaut=("TEMP","SAT" ,"PORO","PGAZ","PCAP","ENDO",) ),
+         VERI_P           = SIMP(statut='c',typ='TXM',defaut=("TEMP","SAT" ,"PORO","PGAZ","PCAP","ENDO","PVAP","PLIQ","PAD",) ),
                                              ) ,
 # =================================================================================
 # --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
@@ -2084,7 +2084,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES CACHEES -------------------------------------------
 # ---------------------------------------------------------------------------------
-         VERI_P           = SIMP(statut='c',typ='TXM',defaut=("TEMP","SAT","PORO","PGAZ","PCAP","ENDO",) ),
+         VERI_P           = SIMP(statut='c',typ='TXM',defaut=("TEMP","SAT","PORO","PGAZ","PCAP","ENDO","PVAP","PLIQ","PAD",) ),
                                              ) ,
 # =================================================================================
 # --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
@@ -2623,10 +2623,11 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
            ),
            ECOU_VISC3      =FACT(statut='f',
              TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECOU_VISC",),),
-             K               =SIMP(statut='o',typ='R'),
-             TAUMU           =SIMP(statut='o',typ='R'),
-             GAMMA0          =SIMP(statut='o',typ='R'),
-             V               =SIMP(statut='o',typ='R'),
+             K               =SIMP(statut='o',typ='R',fr="Constante de Boltzmann, en eV/K"),
+             TAUMU           =SIMP(statut='o',typ='R',fr="Seuil d ecoulement, en unite de contraintes"),
+             GAMMA0          =SIMP(statut='o',typ='R',fr="Vitesse d ecoulement initiale"),
+             DELTAV          =SIMP(statut='o',typ='R',fr="Volume d activation"),
+             DELTAG0         =SIMP(statut='o',typ='R',fr="Gain d energie lie au franchissement d obstacle"),
            ),
            ECOU_PLAS1      =FACT(statut='f',
              TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECOU_PLAS",),),

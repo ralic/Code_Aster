@@ -1,7 +1,7 @@
       SUBROUTINE OP0044(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 11/08/2004   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,7 +109,7 @@ C VARIABLES LOCALES
      &  DET1, DET2, FR, AM, ZAM(3), ZFR(3), SEUIL, FMIN, FMAX, R8DEPI,
      &  OMEGA2, OMGMIN, OMGMAX, RBID, DEPI, R8VIDE, UNDF
       CHARACTER*1 CTYP, TYPER
-      CHARACTER*8  OPTIOV, MODES, KNEGA
+      CHARACTER*8  OPTIOV, MODES, KNEGA, K8BID
       CHARACTER*16 NOMCMD, TYPCON, OPTIOM, OPTIOF, OPTIOR, TYPRES
       CHARACTER*19 MASSE, RAIDE, AMOR, DYNAM
       CHARACTER*24 CBORNE, WORK(5), CAMOR, CFREQ, NOPARA(NBPARA)
@@ -749,6 +749,24 @@ C     ----------- DESTRUCTION DES AUXILLIAIRES DE CALCUL  --------------
 C     ------------------------------------------------------------------
 
       CALL JEDETC('V','&&OP0044',1)
+
+C     ------------------------------------------------------------------
+
+      CALL GETVID(' ','SENSIBILITE',1,IERD,1,K8BID,IRET)
+
+      IF (IRET.GT.0) THEN
+        IF ((KTYP.EQ.'R').AND.(LAMOR.EQ.0)) THEN
+          CALL SEMORE(LRAIDE,LAMOR,LMASSE,NEQ,MXRESF,NBMOD,
+     &            ZR(LRESUR),ZR(LVEC),
+     &            NBPARI,NBPARR,NBPARK,NBPARA,NOPARA,
+     &            ZI(LRESUI),ZK24(LRESUK))
+        ELSE
+          CALL SEMOCO(LRAIDE,LAMOR,LMASSE,NEQ,MXRESF,NBMOD,
+     &            ZR(LRESUR),ZC(LVEC),
+     &            NBPARI,NBPARR,NBPARK,NBPARA,NOPARA,
+     &            ZI(LRESUI),ZK24(LRESUK))
+        ENDIF
+      ENDIF
 
 C     ------------------------------------------------------------------
 

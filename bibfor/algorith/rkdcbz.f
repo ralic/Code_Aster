@@ -1,11 +1,11 @@
       SUBROUTINE RKDCBZ( MOD,  NVI,   VINI,  COEFT, E,
-     &                   NU,   ALPHA, X,     DTIME, SIGI,
+     &                   NU,   ALPHA, X,     DTIME,NMAT,COEL,SIGI,
      &                   EPSD, DETOT, TPERD, DTPER, TPEREF,
      &                   DVIN, IMAT )
       IMPLICIT REAL*8(A-H,O-Z)
 C       ===============================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/04/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +41,8 @@ C         NU      :  COEFFICIENT DE POISSON
 C         ALPHA   :  COEFFICIENT DE DILATATION THERMIQUE
 C         X       :  INSTANT COURANT
 C         DTIME   :  INTERVALLE DE TEMPS
+C         NMAT    :  NOMBRE MAXI DE COEFFICIENTS MATERIAU
+C         COEL    :  COEFFICENT DE L'OPERATEUR D'ELASTICITE ORTHOTROPE
 C         SIGI    :  CONTRAINTES A L'INSTANT COURANT
 C         EPSD    :  DEFORMATION TOTALE A T
 C         DETOT   :  INCREMENT DE DEFORMATION TOTALE
@@ -72,12 +74,11 @@ C
       CHARACTER*2 CODE
       CHARACTER*8 MOD
       REAL*8 NU
-      PARAMETER(NMAT=50)
       REAL*8 GRB(6),SIGLOC(6),DEVLOC(6),EVIGR(6),PTQ(12)
       REAL*8 SIGI(6),EPSD(6),DETOT(6)
       REAL*8 EVI(6),BETGR(240),GAMMA(480),ALMIC(480),GVCUM(480)
       REAL*8 DEVI(6),DBETGR(240),DGAMMA(480),DALMIC(480),DGVCUM(480)
-      REAL*8 COEFT(NMAT)
+      REAL*8 COEFT(NMAT),COEL(NMAT)
       REAL*8 VINI(NVI)
       REAL*8 DVIN(NVI)
       REAL*8 N,K
@@ -135,7 +136,7 @@ C       ----------------------------------------------------------------
           DEVI(I)=ZE
    10   CONTINUE
         CALL CALSIG(EVI,MOD,E,NU,ALPHA,X,DTIME,EPSD,DETOT,
-     &              TPERD,DTPER,TPEREF,SIGI)
+     &              TPERD,DTPER,TPEREF,NMAT,COEL,SIGI)
         DO 11 IGR=1,NGRAIN
           IBG=6*(IGR-1)
           DO 12 I=1,6

@@ -8,7 +8,7 @@
       CHARACTER*19        NOMT19
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 15/01/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 11/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,8 +36,9 @@ C        PARUSU(I,4) = PROFONDEUR MAX
 C
 C ----------------------------------------------------------------------
       INTEGER      I, L, IFM, NIV
-      REAL*8       THETA, DELTAN, AI1, AI2, BI1, BI2, P, R, Y, PM
+      REAL*8       THETA, DELTAN, AI1, BI1, R, Y
       REAL*8       RAD, R8PREM, R8DGRD, TABR(4), ARET1F, ARET2F
+      REAL*8       ALPHAD, ALPHAM, ALPHAF, PROF, AD, AM, AF
       COMPLEX*16   C16B
       CHARACTER*4  T2
       CHARACTER*8  TABK(2)
@@ -48,6 +49,7 @@ C
 C-----------------------------------------------------------------------
 C
       CALL INFNIV ( IFM, NIV )
+C
       RAD  = R8DGRD( )
       ARET1F = 360.D0 - ARETE
       ARET2F = 180.D0 + ARETE2
@@ -95,14 +97,19 @@ C
 C
          IF ( TYPUSU(I) .EQ. 0 )  GOTO 100
 C
-         IF ( ABS(PARUSU(I,2)-PARUSU(I,3)) .LE. R8PREM() )  THEN
+         ALPHAD = PARUSU(I,1)
+         ALPHAM = PARUSU(I,2)
+         ALPHAF = PARUSU(I,3)
+         PROF   = PARUSU(I,4)
+C
+         IF ( ABS(ALPHAM-ALPHAF) .LE. R8PREM() )  THEN
             CALL UTDEBM('A','USOBEN','VERIFIER LES PARAMETRES ')
             CALL UTIMPI('S','D''USURE POUR LE SECTEUR ',1,I)
             CALL UTFINM()
             GOTO 100
          ENDIF
 C
-         IF ( ABS(PARUSU(I,2)-PARUSU(I,1)) .LE. R8PREM() )  THEN
+         IF ( ABS(ALPHAM-ALPHAD) .LE. R8PREM() )  THEN
             CALL UTDEBM('A','USOBEN','VERIFIER LES PARAMETRES ')
             CALL UTIMPI('S','D''USURE POUR LE SECTEUR ',1,I)
             CALL UTFINM()
@@ -112,137 +119,70 @@ C
 C ------ VE + LUNULE SUR LA PREMIERE ENCOCHE
          IF ( TYPUSU(I) .EQ. 2 )  THEN
             IF ( I .EQ. 2 )  THEN
-               AI1 = PARUSU(I,4) / ( PARUSU(I,2) - PARUSU(I,3) )
-               BI1 = AI1*PARUSU(I,3)
-               L = 0
- 102           CONTINUE
-               L = L + 1
-               IF ( OBSUSE(2*L-1) .LT. 20.D0 ) GOTO 102
-CCC               IF ( OBSUSE(2*L-1) .LT. PARUSU(I,1) ) GOTO 102
-               THETA = OBSUSE(2*L-1)
- 104           CONTINUE
-               P = AI1*THETA - BI1
-               OBSUSE(2*L) = OBSUSE(2*L) + P
-               L = L + 1
-               THETA = OBSUSE(2*L-1)
-               IF ( THETA .GT. PARUSU(I,3) ) GOTO 100
-               GOTO 104
+               AI1 = PROF / ( ALPHAM - ALPHAF )
+               BI1 = AI1*ALPHAF
+               CALL USENCO ( AI1, BI1, 20.D0, ALPHAF, DIMOBS, OBSUSE )
             ELSE
-               AI1 = PARUSU(I,4) / ( PARUSU(I,2) - PARUSU(I,1) )
-               BI1 = AI1*PARUSU(I,1)
-               L = 0
- 106           CONTINUE
-               L = L + 1
-               IF ( OBSUSE(2*L-1) .LT. PARUSU(I,1) ) GOTO 106
-               THETA = OBSUSE(2*L-1)
- 108           CONTINUE
-               P = AI1*THETA - BI1
-               OBSUSE(2*L) = OBSUSE(2*L) + P
-               L = L + 1
-               THETA = OBSUSE(2*L-1)
-               IF ( THETA .GT. 340.D0 ) GOTO 100
-CCC               IF ( THETA .GT. PARUSU(I,3) ) GOTO 100
-               GOTO 108
+               AI1 = PROF / ( ALPHAM - ALPHAD )
+               BI1 = AI1*ALPHAD
+               CALL USENCO ( AI1, BI1, ALPHAD, 340.D0, DIMOBS, OBSUSE )
             ENDIF
 C
 C ------ VE SUR LA PREMIERE ENCOCHE
          ELSEIF ( TYPUSU(I) .EQ. 3 )  THEN
             IF ( I .EQ. 1 )  THEN
-               AI1 = PARUSU(I,4) / ( PARUSU(I,2) - PARUSU(I,3) )
-               BI1 = AI1*PARUSU(I,3)
+               AI1 = PROF / ( ALPHAM - ALPHAF )
+               BI1 = AI1*ALPHAF
             ELSE
-               AI1 = PARUSU(I,4) / ( PARUSU(I,2) - PARUSU(I,1) )
-               BI1 = AI1*PARUSU(I,1)
+               AI1 = PROF / ( ALPHAM - ALPHAD )
+               BI1 = AI1*ALPHAD
             ENDIF
-            L = 0
- 110        CONTINUE
-            L = L + 1
-            IF ( OBSUSE(2*L-1) .LT. PARUSU(I,1) ) GOTO 110
-            THETA = OBSUSE(2*L-1)
- 112        CONTINUE
-            P = AI1*THETA - BI1
-            OBSUSE(2*L) = OBSUSE(2*L) + P
-            L = L + 1
-            THETA = OBSUSE(2*L-1)
-            IF ( THETA .GT. PARUSU(I,3) ) GOTO 100
-            GOTO 112
+            CALL USENCO ( AI1, BI1, ALPHAD, ALPHAF, DIMOBS, OBSUSE )
 C
 C ------ VE + LUNULE SUR LA DEUXIEME ENCOCHE
          ELSEIF ( TYPUSU(I) .EQ. 4 )  THEN
             IF ( NBSECT.EQ.12 .AND. I.EQ.8 )  THEN
-               AI1 = PARUSU(I,4) / ( PARUSU(I,2) - PARUSU(I,3) )
-               BI1 = AI1*PARUSU(I,3)
+               AI1 = PROF / ( ALPHAM - ALPHAF )
+               BI1 = AI1*ALPHAF
             ELSEIF ( NBSECT.EQ.10 .AND. I.EQ.7 )  THEN
-               AI1 = PARUSU(I,4) / ( PARUSU(I,2) - PARUSU(I,3) )
-               BI1 = AI1*PARUSU(I,3)
+               AI1 = PROF / ( ALPHAM - ALPHAF )
+               BI1 = AI1*ALPHAF
             ELSE
-               AI1 = PARUSU(I,4) / ( PARUSU(I,2) - PARUSU(I,1) )
-               BI1 = AI1*PARUSU(I,1)
+               AI1 = PROF / ( ALPHAM - ALPHAD )
+               BI1 = AI1*ALPHAD
             ENDIF
-            L = 0
- 120        CONTINUE
-            L = L + 1
-            IF ( OBSUSE(2*L-1) .LT. PARUSU(I,1) ) GOTO 120
-            THETA = OBSUSE(2*L-1)
- 122        CONTINUE
-            P = AI1*THETA - BI1
-            OBSUSE(2*L) = OBSUSE(2*L) + P
-            L = L + 1
-            THETA = OBSUSE(2*L-1)
-            IF ( THETA .GT. PARUSU(I,3) ) GOTO 100
-            GOTO 122
+            CALL USENCO ( AI1, BI1, ALPHAD, ALPHAF, DIMOBS, OBSUSE )
 C
 C ------ VE SUR LA DEUXIEME ENCOCHE
          ELSEIF ( TYPUSU(I) .EQ. 5 )  THEN
             IF ( NBSECT.EQ.12 .AND. I.EQ.7 )  THEN
-               AI1 = PARUSU(I,4) / ( PARUSU(I,2) - PARUSU(I,3) )
-               BI1 = AI1*PARUSU(I,3)
+               AI1 = PROF / ( ALPHAM - ALPHAF )
+               BI1 = AI1*ALPHAF
             ELSEIF ( NBSECT.EQ.10 .AND. I.EQ.6 )  THEN
-               AI1 = PARUSU(I,4) / ( PARUSU(I,2) - PARUSU(I,3) )
-               BI1 = AI1*PARUSU(I,3)
+               AI1 = PROF / ( ALPHAM - ALPHAF )
+               BI1 = AI1*ALPHAF
             ELSE
-               AI1 = PARUSU(I,4) / ( PARUSU(I,2) - PARUSU(I,1) )
-               BI1 = AI1*PARUSU(I,1)
+               AI1 = PROF / ( ALPHAM - ALPHAD )
+               BI1 = AI1*ALPHAD
             ENDIF
-            L = 0
- 130        CONTINUE
-            L = L + 1
-            IF ( OBSUSE(2*L-1) .LT. PARUSU(I,1) ) GOTO 130
-            THETA = OBSUSE(2*L-1)
- 132        CONTINUE
-            P = AI1*THETA - BI1
-            OBSUSE(2*L) = OBSUSE(2*L) + P
-            L = L + 1
-            THETA = OBSUSE(2*L-1)
-            IF ( THETA .GT. PARUSU(I,3) ) GOTO 100
-            GOTO 132
+            CALL USENCO ( AI1, BI1, ALPHAD, ALPHAF, DIMOBS, OBSUSE )
 C
 C ------ LUNULE
          ELSE
-            AI1 = PARUSU(I,4) / ( PARUSU(I,2) - PARUSU(I,1) )
-            BI1 = AI1*PARUSU(I,1)
-            AI2 = PARUSU(I,4) / ( PARUSU(I,3) - PARUSU(I,2) )
-            BI2 = AI2*PARUSU(I,2)
-            PM  = 0.9D0 * ( AI1*PARUSU(I,2) - BI1 )
 C
-            L = 0
- 140        CONTINUE
-            L = L + 1
-            IF ( OBSUSE(2*L-1) .LT. PARUSU(I,1) ) GOTO 140
-            THETA = OBSUSE(2*L-1)
- 142        CONTINUE
-            IF ( THETA .LT. PARUSU(I,2) ) THEN
-               P = AI1*THETA - BI1
+            AD = ALPHAD
+            IF ( ALPHAD .LT. 0.D0 )  AD = ALPHAD + 360.D0
+            AM = ALPHAM
+            IF ( AD .GT. ALPHAM )    AM = ALPHAM + 360.D0
+            AF = ALPHAF
+            IF ( AM .GT. ALPHAF )    AF = ALPHAF + 360.D0
+            IF ( AD.LT.AM .AND. AM.LT.AF ) THEN
+               CALL USVECT ( 1.D0, AD, AM, AF, PROF, DIMOBS, OBSUSE )
             ELSE
-               P = PARUSU(I,4) + BI2 - AI2*THETA
+               CALL UTMESS ('F','USOBEN','LUNULE, BUG !')
             ENDIF
-            P = MIN ( P , PM ) 
-            OBSUSE(2*L) = OBSUSE(2*L) + P
-            L = L + 1
-            THETA = OBSUSE(2*L-1)
-            IF ( THETA .GT. PARUSU(I,3) ) GOTO 100
-            GOTO 142
          ENDIF
+ 9999 CONTINUE
  100  CONTINUE
 C
       IF ( GUIDAG .EQ. 'ENCO_1' ) THEN

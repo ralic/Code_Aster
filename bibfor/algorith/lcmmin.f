@@ -1,8 +1,8 @@
       SUBROUTINE LCMMIN ( TYPESS, ESSAI, MOD, NMAT,
-     &                      MATERF, NR, NVI,YD,  DEPS, DY  )
+     &                      MATERF, NR, NVI, YD, DEPS, DY  )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,7 +38,7 @@ C       ----------------------------------------------------------------
 C
       INTEGER         NDT , NDI , TYPESS , NMAT,NR,NVI
 C
-      REAL*8          YD(*)     , DY(*),  ESSAI
+      REAL*8          YD(NR)     , DY(NR),  ESSAI
       REAL*8          HOOK(6,6) , DFDS(6)
       REAL*8          DEPS(6)
       REAL*8          SIG(6)    , DSIG(6)
@@ -49,23 +49,25 @@ C
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT , NDI
 C     ----------------------------------------------------------------
-C     ----------------------------------------------------------------
-C
-C      IF ( TYPESS .EQ. -1 ) TYPESS = 2
-      TYPESS=0
-C
 C
 C - SOLUTION INITIALE = NUL
 C
       IF ( TYPESS .EQ. 0) THEN
+         CALL LCINVN ( NR  , 0.D0 , DY )
          IF(MOD(1:6).EQ.'C_PLAN')THEN
             DEPS(3) = 0.D0
          ENDIF
 C
 C - SOLUTION INITIALE = ELASTIQUE
 C
-      ELSEIF ( TYPESS .EQ. 1 ) THEN
-         CALL LCOPLI ( 'ISOTROPE' , MOD , MATERF(1,1) , HOOK )
+      ELSEIF (TYPESS.EQ.1.OR.TYPESS.EQ.-1) THEN
+      
+         IF (MATERF(NMAT,1).EQ.0) THEN
+            CALL LCOPLI ( 'ISOTROPE' , MOD , MATERF(1,1) , HOOK )
+         ELSEIF (MATERF(NMAT,1).EQ.1) THEN
+            CALL LCOPLI ( 'ORTHOTRO' , MOD , MATERF(1,1) , HOOK )
+         ENDIF
+         
          CALL LCTRMA (HOOK , HOOK)
          CALL LCPRMV ( HOOK    , DEPS , DSIG  )
          CALL LCEQVN ( NDT     , DSIG , DY(1) )

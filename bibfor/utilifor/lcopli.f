@@ -1,8 +1,8 @@
         SUBROUTINE LCOPLI ( TYP, MOD, MATER, HOOK)
-        IMPLICIT REAL*8 (A-H,O-Z)
+        IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C           MATER  :  COEFFICIENTS MATERIAU ELASTIQUE
 C       OUT HOOK   :  OPERATEUR RIGIDITE ELASTIQUE LINEAIRE
 C       ----------------------------------------------------------------
 C
-        INTEGER         NDT , NDI
+        INTEGER         NDT , NDI, I, J
         REAL*8          UN  , D12 , ZERO , DEUX
         PARAMETER       ( D12  = .5D0   )
         PARAMETER       ( UN   = 1.D0   )
@@ -39,6 +39,7 @@ C
 C
         REAL*8          HOOK(6,6)
         REAL*8          MATER(*) , E ,   NU , AL , LA , MU
+        REAL*8 E1,E2,E3,NU12,NU13,NU23,G1,G2,G3,NU21,NU31,NU32,DELTA
 C
         CHARACTER*8     MOD , TYP
 C       ----------------------------------------------------------------
@@ -48,26 +49,26 @@ C
         CALL LCINMA ( ZERO , HOOK )
 C
         IF ( TYP .EQ. 'ISOTROPE' ) THEN
-        E  = MATER(1)
-        NU = MATER(2)
-        AL = E  * (UN-NU) / (UN+NU) / (UN-DEUX*NU)
-        LA = NU * E       / (UN+NU) / (UN-DEUX*NU)
-        MU = E  * D12     / (UN+NU)
+           E  = MATER(1)
+           NU = MATER(2)
+           AL = E  * (UN-NU) / (UN+NU) / (UN-DEUX*NU)
+           LA = NU * E       / (UN+NU) / (UN-DEUX*NU)
+           MU = E  * D12     / (UN+NU)
 C
 C - 3D/DP/AX/CP
 C
-            IF ( MOD(1:2) .EQ. '3D'     .OR.
-     1           MOD(1:6) .EQ. 'D_PLAN' .OR.
-     1           MOD(1:6) .EQ. 'C_PLAN' .OR.
-     2           MOD(1:4) .EQ. 'AXIS'        )THEN
+           IF ( MOD(1:2) .EQ. '3D'     .OR.
+     1          MOD(1:6) .EQ. 'D_PLAN' .OR.
+     1          MOD(1:6) .EQ. 'C_PLAN' .OR.
+     2          MOD(1:4) .EQ. 'AXIS'        )THEN
                 DO 40 I = 1,NDI
                 DO 40 J = 1,NDI
-                        IF(I.EQ.J) HOOK(I,J) = AL
-                        IF(I.NE.J) HOOK(I,J) = LA
+                   IF(I.EQ.J) HOOK(I,J) = AL
+                   IF(I.NE.J) HOOK(I,J) = LA
  40             CONTINUE
                 DO 45 I = NDI+1 , NDT
                 DO 45 J = NDI+1 , NDT
-                        IF(I.EQ.J) HOOK(I,J) = DEUX* MU
+                   IF(I.EQ.J) HOOK(I,J) = DEUX* MU
  45             CONTINUE
 C
 C - 1D
@@ -75,5 +76,15 @@ C
             ELSE IF ( MOD(1:2) .EQ. '1D' )THEN
                 HOOK(1,1) = E
             ENDIF
+
+        ELSEIF ( TYP .EQ. 'ORTHOTRO' ) THEN
+        
+           DO 55 I=1,6
+              DO 56 J=1,6
+                 HOOK(I,J)=MATER(6*(J-1)+I)
+56            CONTINUE
+55         CONTINUE
+
         ENDIF
+        
         END

@@ -7,7 +7,7 @@
      +                   DVISCG, MAMOLV, FICKAD, DFADT, LAMBCT)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -94,7 +94,7 @@ C =====================================================================
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                   RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
      +                   RBID6, P2, PHI, END,
-     +                   RBID7, RBID28, RGAZ, RBID8, RBID9, BIOT,
+     +                   RBID7, PVP, RGAZ, RBID8, RBID9, BIOT,
      +                   RBID11,
      +                   SATUR, DSATUR, PESA, PERMFH, PERMLI, DPERML,
      +                   PERMGZ,

@@ -1,8 +1,8 @@
         SUBROUTINE LCMMAT (COMP, MOD,  IMAT,   NMAT,   TEMPD,   TEMPF,
-     &    PGL,MATERD,MATERF, MATCST,NBCOMM,CPMONO,NDT, NDI,NR , NVI)
+     &   ANGMAS,PGL,MATERD,MATERF, MATCST,NBCOMM,CPMONO,NDT,NDI,NR,NVI)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,6 +34,7 @@ C           MOD    :  TYPE DE MODELISATION
 C           NMAT   :  DIMENSION  MAXIMUM DE MATER
 C           TEMPD  :  TEMPERATURE  A T
 C           TEMPF  :  TEMPERATURE  A T+DT
+C      ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C       OUT MATERD :  COEFFICIENTS MATERIAU A T
 C           PGL    : MATRICE DE PASSAGE GLOBAL LOCAL
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
@@ -69,15 +70,16 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C     ----------------------------------------------------------------
       INTEGER         NMAT, NDT , NDI  , NR , NVI,NBCOMM(NMAT,3)
       REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
-      REAL*8          HYDRD , HYDRF , SECHD , SECHF,R8DGRD
-      REAL*8          VALPAD(3), VALPAF(3)
-      REAL*8          EPSI,R8PREM,REPERE(3),PGL(3,3)
+      REAL*8          HYDRD , HYDRF , SECHD , SECHF,R8DGRD,HOOK(6,6)
+      REAL*8          VALPAD(3), VALPAF(3),REPERE(7),XYZ(3),KOOH(6,6)
+      REAL*8          EPSI,R8PREM,ANGMAS(3),PGL(3,3),R8VIDE,HOOKF(6,6)
       CHARACTER*8     MOD, NOM , NOMC(14) , NOMPAR(3)
       CHARACTER*2     BL2, CERR(14)
       CHARACTER*3     MATCST
       CHARACTER*16    COMP(*),NMATER,NECOUL,NECRIS,NECRCI
       CHARACTER*16    CPMONO(5*NMAT+1),PHENOM
-      INTEGER I, ICOMPO, IMAT, NBFSYS, IFA,J,ICAMAS,IRET,ITAB(8)
+      INTEGER I, ICOMPO, IMAT, NBFSYS, IFA,J,ICAMAS,ITAB(8)
+      LOGICAL IRET
 C     ----------------------------------------------------------------
 C
 C -   NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
@@ -96,6 +98,8 @@ C
          NDT = 4
          NDI = 3
       ENDIF
+      CALL R8INIR(2*NMAT, 0.D0, MATERD, 1)
+      CALL R8INIR(2*NMAT, 0.D0, MATERF, 1)
             
       NOMPAR(1) = 'TEMP'
       VALPAD(1) = TEMPD
@@ -108,26 +112,14 @@ C     LA DERNIERE VARIABLE INTERNE EST L'INDICATEUR PLASTIQUE
 C           
       NR=NVI+NDT-1
       
-C     CET APPEL SERA A DEPLACER DANS NMPL3D, NMPL2D (UNE FOIS PAR PG)
-      CALL TECACH('NNN','PCAMASS',1,ITAB,IRET)
-      
-      DO 10 I = 1, 3
-         REPERE(I) = 0.D0
- 10   CONTINUE
-      IF (IRET.EQ.0) THEN
-         ICAMAS=ITAB(1)
-         IF (ZR(ICAMAS).GT.0.D0) THEN
-C
-C ----      ANGLES NAUTIQUES
-C           ----------------
-            REPERE(1) = ZR(ICAMAS+1)*R8DGRD()
-            REPERE(2) = ZR(ICAMAS+2)*R8DGRD()
-            REPERE(3) = ZR(ICAMAS+3)*R8DGRD()
-         ELSE
-            CALL UTMESS('F','LCMMAT','DEFINIR 3 ANGLES')
-         ENDIF
+      IF (ANGMAS(1).NE.R8VIDE()) THEN
+         CALL MATROT(ANGMAS,PGL)
+      ELSE
+          CALL LCINVN(9,0.D0,PGL)
+          PGL(1,1)=1.D0
+          PGL(2,2)=1.D0
+          PGL(3,3)=1.D0
       ENDIF
-      CALL MATROT(REPERE,PGL)
       
       DO 111 I=1,NMAT
       DO 111 J=1,3
@@ -182,26 +174,23 @@ C     ON STOCKE A LA FIN LE NOMBRE TOTAL DE COEF MATERIAU
  61    CONTINUE         
       
       CALL RCCOMA(IMAT,'ELAS',PHENOM,CERR)
-      IF (PHENOM.NE.'ELAS') THEN
-         CALL UTMESS('F','LCMATE','SEUL ELAS EST POSSIBLE ACTUELLEMENT')
-      ENDIF
       
+      IF (PHENOM.EQ.'ELAS') THEN
 C
-C
-C -    ELASTICITE -----------------------------------------
+C -    ELASTICITE ISOTROPE
 C
           NOMC(1) = 'E       '
           NOMC(2) = 'NU      '
           NOMC(3) = 'ALPHA   '
 C
 C -     RECUPERATION MATERIAU A TEMPD (T)
-C        LA IL FAUDRAIT RECUPER CHAQUE MATERIAU
 C
           CALL RCVALA (  IMAT,  ' ',  'ELAS', 1,  NOMPAR,VALPAD, 2,
      1                   NOMC(1),  MATERD(1,1),  CERR(1), 'FM' )
           CALL RCVALA (  IMAT,  ' ',  'ELAS', 1,  NOMPAR,VALPAD, 1,
      1                   NOMC(3),  MATERD(3,1),  CERR(3), BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERD(3,1) = 0.D0
+          MATERD(NMAT,1)=0
 C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
@@ -210,25 +199,96 @@ C
           CALL RCVALA (  IMAT, ' ',   'ELAS',  1, NOMPAR,VALPAF, 1,
      1                   NOMC(3),  MATERF(3,1),  CERR(3), BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
+          MATERF(NMAT,1)=0
+          
+      ELSE IF (PHENOM.EQ.'ELAS_ORTH') THEN
+        
+        REPERE(1)=1
+        DO 21 I=1,3
+           IF (ANGMAS(1).NE.R8VIDE()) THEN
+               REPERE(I+1)=ANGMAS(I)
+           ELSE               
+               REPERE(I+1)=0.D0
+           ENDIF
+ 21     CONTINUE
 C
-C -     MATERIAU CONSTANT ?
+C -    ELASTICITE ORTHOTROPE
 C
-        MATCST = 'OUI'
-        EPSI=R8PREM()
-        DO 30 I = 1,3
-          IF (ABS(MATERD(I,1)-MATERF(I,1) ).GT.EPSI*MATERD(I,1)) THEN
-          MATCST = 'NON'
-          GOTO 9999
-          ENDIF
- 30     CONTINUE
-        DO 40 I = 1,NMAT
-          IF (ABS(MATERD(I,2)-MATERF(I,2) ).GT.EPSI*MATERD(I,2)) THEN
-          MATCST = 'NON'
-          GOTO 9999
-          ENDIF
- 40     CONTINUE
 C
- 9999   CONTINUE
+C -     MATRICE D'ELASTICITE ET SON INVERSE A TEMPD(T)
+C
+        CALL DMAT3D(IMAT,VALPAD,R8VIDE(),R8VIDE(),R8VIDE(),REPERE,XYZ,
+     &              HOOK)
+        CALL D1MA3D(IMAT,VALPAD,R8VIDE(),REPERE,XYZ,KOOH)
+        
+        
+        DO 101 I=1,6
+           DO 102 J=1,6
+              MATERD(6*(J-1)+I,1)=HOOK(I,J)
+              MATERD(36+6*(J-1)+I,1)=KOOH(I,J)
+ 102       CONTINUE
+ 101    CONTINUE
  
-        CALL JEDEMA()
-        END
+        MATERD(NMAT,1)=1
+        
+        NOMC(1) = 'ALPHA_L'
+        NOMC(2) = 'ALPHA_T'
+        NOMC(3) = 'ALPHA_N'
+        
+        CALL RCVALA(IMAT,' ',PHENOM,1,NOMPAR,VALPAD,3,NOMC,MATERD(73,1),
+     &              CERR,' ')     
+        IF (CERR(1).NE.'OK') MATERD(73,1) = 0.D0
+        IF (CERR(2).NE.'OK') MATERD(74,1) = 0.D0
+        IF (CERR(3).NE.'OK') MATERD(75,1) = 0.D0
+        
+        
+     
+C
+C -     MATRICE D'ELASTICITE ET SON INVERSE A A TEMPF (T+DT)
+C
+        CALL DMAT3D(IMAT,VALPAF,R8VIDE(),R8VIDE(),R8VIDE(),REPERE,XYZ,
+     &              HOOKF)
+     
+        CALL D1MA3D(IMAT,VALPAF,R8VIDE(),REPERE,XYZ,KOOH)
+     
+        DO 103 I=1,6
+           DO 104 J=1,6
+              MATERF(6*(J-1)+I,1)=HOOKF(I,J)
+              MATERF(36+6*(J-1)+I,1)=KOOH(I,J)
+ 104       CONTINUE
+ 103    CONTINUE
+ 
+        MATERF(NMAT,1)=1
+        
+        CALL RCVALA(IMAT,' ',PHENOM,1,NOMPAR,VALPAF,3,NOMC,MATERF(73,1),
+     &              CERR,' ')
+        IF (CERR(1).NE.'OK') MATERF(73,1) = 0.D0
+        IF (CERR(2).NE.'OK') MATERF(74,1) = 0.D0
+        IF (CERR(3).NE.'OK') MATERF(75,1) = 0.D0
+        
+      ELSE
+         CALL UTMESS('F','LCMATE',PHENOM//' IMPOSSIBLE ACTUELLEMENT')
+      ENDIF
+      
+      
+C
+C -   MATERIAU CONSTANT ?
+C
+      MATCST = 'OUI'
+      EPSI=R8PREM()
+      DO 30 I = 1,NMAT
+        IF (ABS(MATERD(I,1)-MATERF(I,1) ).GT.EPSI*MATERD(I,1)) THEN
+        MATCST = 'NON'
+        GOTO 9999
+        ENDIF
+ 30   CONTINUE
+      DO 40 I = 1,NMAT
+        IF (ABS(MATERD(I,2)-MATERF(I,2) ).GT.EPSI*MATERD(I,2)) THEN
+        MATCST = 'NON'
+        GOTO 9999
+        ENDIF
+ 40   CONTINUE
+C
+ 9999 CONTINUE
+      CALL JEDEMA()
+      END

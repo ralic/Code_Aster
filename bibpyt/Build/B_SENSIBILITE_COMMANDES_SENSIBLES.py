@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 30/03/2004   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 11/08/2004   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,6 +66,9 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
                                      'STAT_NON_LINE',
                                      'DYNA_LINE_HARM',
                                      'DYNA_LINE_TRAN',
+                                     'MODE_ITER_SIMULT',
+                                     'MODE_ITER_INV',
+                                     'NORM_MODE',
                                      'EXTR_RESU',
                                      'PROJ_CHAMP',
                                      'CALC_G_THETA_T']

@@ -1,11 +1,11 @@
         SUBROUTINE RKDCHA( MOD,  NVI,   VINI,  COEFT, E,
-     &                     NU,   ALPHA, X,     DTIME, SIGI,
+     &                     NU,   ALPHA, X,     DTIME,NMAT,COEL,SIGI,
      &                     EPSD, DETOT, TPERD, DTPER, TPEREF,
      &                     DVIN )
         IMPLICIT REAL*8(A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/01/98   AUTEUR CIBHHLB L.BOURHRARA 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,9 +31,8 @@ C     CETTE ROUTINE FOURNIT LA DERIVEE DE L ENSEMBLE DES VARIABLES
 C     INTERNES DU MODELE
 C     ----------------------------------------------------------------
       CHARACTER*8 MOD
-      PARAMETER(NMAT=50)
       REAL*8 NU
-      REAL*8 COEFT(NMAT)
+      REAL*8 COEFT(NMAT),COEL(NMAT)
       REAL*8 VINI(*)
       REAL*8 DVIN(*)
       REAL*8 SMX(6),PETIN(6),PETIN2(6),SIGI(6),EPSD(6),DETOT(6)
@@ -83,7 +82,7 @@ C
 C
 C       ----------------------------------------------------------------
         CALL CALSIG(EVI,MOD,E,NU,ALPHA,X,DTIME,EPSD,DETOT,
-     &              TPERD,DTPER,TPEREF,SIGI)
+     &              TPERD,DTPER,TPEREF,NMAT,COEL,SIGI)
       TRSIG=(SIGI(1)+SIGI(2)+SIGI(3))/3.0D0
       GRJ2V=0.0D0
       DO 10 ITENS=1,6

@@ -1,12 +1,12 @@
          SUBROUTINE PLASTI ( TYPMOD, IMAT,  COMP,  CRIT, TIMED,
      1                       TIMEF, TEMPD, TEMPF, TREF, HYDRD, HYDRF,
      2                       SECHD, SECHF, SREF, EPSDT, DEPST, SIGD, 
-     3                       VIND,OPT,SIGF, VINF, DSDE, ICOMP, NVI, 
+     3                   VIND,OPT,ANGMAS,SIGF, VINF, DSDE, ICOMP, NVI, 
      4                       IRTETI)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -243,7 +243,7 @@ C
 C
         REAL*8          SEUIL, THETA, DT, DEVG(6), DEVGII
 C
-        REAL*8          DSDE(6,6),  PGL(3,3)
+        REAL*8          DSDE(6,6),  PGL(3,3), ANGMAS(3)
 C
         REAL*8          MATERD(NMAT,2) , MATERF(NMAT,2)
 C
@@ -284,18 +284,13 @@ C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
         CALL LCMATE (COMP, MOD, IMAT, NMAT, TEMPD, TEMPF, HYDRD, HYDRF,
      1                SECHD, SECHF, TYPMA, BZ, MATERD,MATERF, MATCST,
-     3                NBCOMM, CPMONO, PGL,
+     3                NBCOMM, CPMONO, ANGMAS, PGL,
      2                NDT , NDI , NR, NVI, VIND)
-C
+ 
 C --    RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
 C
         CALL LCDEDI ( NMAT,  MATERD, MATERF, TEMPD, TEMPF, TREF,
      &                DEPST, EPSDT, DEPS,   EPSD )
-C
-C               CALL LCIMVE ( 'DEPST = ', DEPST )
-C               CALL LCIMVE ( 'EPSDT = ', EPSDT )
-C               CALL LCIMVE ( 'DEPS = ' , DEPS )
-C               CALL LCIMVE ( 'EPSD = ' , EPSD )
 C
 C --    RETRAIT ENDOGENNE ET RETRAIT DE DESSICCATION
 C
@@ -349,7 +344,7 @@ C
 C --    PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
 C
         CALL LCCNVX ( LOI, IMAT, NMAT, MATERF, TEMPF, SIGF, VIND,
-     &                COMP, NBCOMM, CPMONO, PGL, NR, NVI, SEUIL )
+     &          COMP, NBCOMM, CPMONO, PGL, NR, NVI, SEUIL )
 C
           IF ( SEUIL .GE. 0.D0 ) THEN
 C
@@ -424,7 +419,7 @@ C   ------> ELASTOPLASTICITE ==>  TYPMA = 'VITESSE '
 C   ------> VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
                 IF     ( TYPMA .EQ. 'COHERENT' ) THEN
 
-                CALL LCJPLC ( LOI  , MOD ,  NMAT, MATERF,
+                CALL LCJPLC ( LOI  , MOD ,  NMAT, MATERF,TEMPF,
      &            TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,NR,NVI,
      &                  EPSD,DEPS,SIGF,VINF,SIGD,VIND, 
      &                   DSDE )

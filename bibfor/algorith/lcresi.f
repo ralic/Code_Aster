@@ -5,7 +5,7 @@
 C TOLE CRP_21        
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C
      1                 YD,   YF,   DEPS,   DY,     R )
      
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS' ) THEN
-         CALL LCMMRE ( MOD, NMAT, MATERD, MATERF,
+         CALL LCMMRE ( MOD, NMAT, MATERD, MATERF,TEMPF,
      3                COMP,NBCOMM, CPMONO, PGL, NR, NVI, TIMED, TIMEF,
      1                 YD,   YF,   DEPS,   DY,     R )
       ENDIF

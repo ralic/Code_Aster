@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 11/08/2004   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -79,6 +79,15 @@ MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
            STOP_ERREUR     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            SEUIL           =SIMP(statut='f',typ='R',defaut= 1.E-2,val_min=0.E+0,
                                  fr="Valeur limite admise pour l ereur a posteriori des modes"  ),
+         ),
+         SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
+                               fr="Liste des param\350tres de sensibilit\351.",
+                               ang="List of sensitivity parameters",
+         ),
+         b_sensibilite   =BLOC(condition = "SENSIBILITE != None",
+             CHAM_MATER      =SIMP(statut='f',typ=cham_mater ),
+             CARA_ELEM       =SIMP(statut='f',typ=cara_elem ),
+             EXCIT           =FACT(statut='f',max='**',),  # que pour NMDOME
          ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
          TITRE           =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),

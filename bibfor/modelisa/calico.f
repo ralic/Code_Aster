@@ -1,7 +1,7 @@
       SUBROUTINE CALICO(CHARZ,NOMAZ,NOMOZ,NDIM,MOTFAZ)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 11/08/2004   AUTEUR BOYERE E.BOYERE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -125,6 +125,8 @@ C          (DIM NZOCO)
 C         - +/-1 : DEPLACEMENT
 C         -   -2 : PRESSION (ELEMENTS THM UNIQUEMENT)
 C         -   -3 : TEMPERATURE (ELEMENTS THM UNIQUEMENT)
+C         -   -4 : PRESSION1 (ELEMENTS THM UNIQUEMENT)
+C         -   -5 : PRESSION2 (ELEMENTS THM UNIQUEMENT)
 C NORLI : UTILISATION DU LISSAGE DES NORMALES OU NON
 C         -   0 : PAS DE LISSAGE
 C         -   1 : LISSAGE
@@ -646,6 +648,8 @@ C ======================================================================
         END IF
         IF (CHAM(1:4).EQ.'PRES') ZI(JCHAM+IOC-1) = -2
         IF (CHAM(1:4).EQ.'TEMP') ZI(JCHAM+IOC-1) = -3
+        IF (CHAM(1:4).EQ.'PRE1') ZI(JCHAM+IOC-1) = -4
+        IF (CHAM(1:4).EQ.'PRE2') ZI(JCHAM+IOC-1) = -5
 
         IF (APPAR(1:3).EQ.'NON') THEN
           IF (TYPM(1:8).EQ.'CONTINUE') THEN

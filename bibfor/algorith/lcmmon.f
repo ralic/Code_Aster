@@ -1,14 +1,14 @@
         SUBROUTINE LCMMON( COMP,NBCOMM,CPMONO,NMAT,NVI,VINI,  
      &                     X,  DTIME, E,NU,ALPHA,PGL,MOD,COEFT,SIGI,
      &                     EPSD, DETOT, TPERD, DTPER, TPEREF,
-     &                     DVIN )
+     &                     COEL,DVIN )
         IMPLICIT NONE
         INTEGER NMAT,NBCOMM(NMAT,3),NVI
-        REAL*8 VINI(*),DVIN(*),NU,E,ALPHA,X,DTIME,COEFT(NMAT)
+        REAL*8 VINI(*),DVIN(*),NU,E,ALPHA,X,DTIME,COEFT(NMAT),COEL(NMAT)
         REAL*8 SIGI(6),EPSD(6),DETOT(6),TPERD,DTPER,TPEREF,PGL(3,3)
         CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21 
 C ======================================================================
@@ -67,8 +67,9 @@ C
         EVI(ITENS) = VINI(ITENS)
         DEVI(ITENS) = 0.D0
     5 CONTINUE
+
       CALL CALSIG(EVI,MOD,E,NU,ALPHA,X,DTIME,EPSD,DETOT,
-     &              TPERD,DTPER,TPEREF,SIGI)
+     &              TPERD,DTPER,TPEREF,NMAT,COEL,SIGI)
       
       NBFSYS=NBCOMM(NMAT,2)
       
@@ -143,5 +144,9 @@ C
       DO 30 ITENS=1,6
         DVIN(ITENS)= DEVI(ITENS)
    30 CONTINUE
-C
+      IF (DP.EQ.0.D0) THEN
+         DVIN(NVI)=0
+      ELSE
+         DVIN(NVI)=1
+      ENDIF
       END

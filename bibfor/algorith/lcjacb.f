@@ -1,11 +1,11 @@
-        SUBROUTINE LCJACB ( LOI,  MOD,  IMAT, NMAT,MATERF,
+        SUBROUTINE LCJACB ( LOI,  MOD,  IMAT, NMAT,MATERF,TEMPF,
      1                      TIMED,TIMEF,   YF,    DEPS,
      3                COMP,NBCOMM, CPMONO, PGL,NR,NVI,
      2                      EPSD,  DY,  DRDY )
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C
         REAL*8          DEPS(6) , EPSD(6)
         REAL*8          DRDY(NR,NR) , YF(NR), DY(NR)
 C
-        REAL*8          MATERF(NMAT,2)
+        REAL*8          MATERF(NMAT,2),TEMPF
         REAL*8          TIMED, TIMEF
 C
         CHARACTER*8     MOD
@@ -76,7 +76,7 @@ C
      1                  YF,  DY,   NR,  DRDY )
 C
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS' ) THEN
-         CALL LCMMJA ( MOD, NMAT, MATERF, TIMED, TIMEF,
+         CALL LCMMJA ( MOD, NMAT, MATERF, TIMED, TIMEF,TEMPF,
      3                COMP,NBCOMM, CPMONO, PGL,NR,NVI,
      1                  YF,  DY,   DRDY )
       ENDIF

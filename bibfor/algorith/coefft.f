@@ -1,10 +1,10 @@
         SUBROUTINE COEFFT( NCOE,  COTHE, COEFF, DCOTHE, DCOEFF,
      &                     X,     DTIME, COEFT, E,      NU,
-     &                     ALPHA )
-        IMPLICIT REAL*8(A-H,O-Z)
+     &                     ALPHA, NMAT, COEL )
+        IMPLICIT NONE
 C       ===============================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,19 +33,33 @@ C           DCOTHE :  INTERVALLE COEFFICIENTS MATERIAU ELAST POUR DT
 C           DCOEFF :  INTERVALLE COEFFICIENTS MATERIAU INELAST POUR DT 
 C           X      :  INSTANT COURANT
 C           DTIME  :  INTERVALLE DE TEMPS
+C           NMAT   :  NOMNRE MAXI DE COEF MATERIAU
 C       OUT COEFT  :  COEFFICIENTS MATERIAU INELASTIQUE A T+DT 
 C           E,NU,
 C           ALPHA  :  COEFFICIENTS MATERIAU ELASTIQUE A T+DT 
+C           COEL   :  COEFFICIENTS  ELASTIQUES ORTHOTROPES A T+DT 
 C       ---------------------------------------------------------------
-        REAL*8 NU
-        REAL*8 COTHE(3),DCOTHE(3)
-        REAL*8 SIGI(6),EPSD(6),DETOT(6) 
+        INTEGER NMAT,NCOE,I
+        REAL*8 NU,E
+        REAL*8 COTHE(NMAT),DCOTHE(NMAT),COEL(NMAT)
+        REAL*8 SIGI(6),EPSD(6),DETOT(6),HSDT,DTIME,X,ALPHA
         REAL*8 COEFF(NCOE),DCOEFF(NCOE),COEFT(NCOE)
 C
         HSDT=X/DTIME
-        E=COTHE(1)+HSDT*DCOTHE(1)
-        NU=COTHE(2)+HSDT*DCOTHE(2)
-        ALPHA=COTHE(3)+HSDT*DCOTHE(3)
+        
+        CALL R8INIR(NMAT, 0.D0, COEL, 1)
+        
+        IF (COTHE(NMAT).EQ.0) THEN
+           E=COTHE(1)+HSDT*DCOTHE(1)
+           NU=COTHE(2)+HSDT*DCOTHE(2)
+           ALPHA=COTHE(3)+HSDT*DCOTHE(3)           
+        ELSEIF (COTHE(NMAT).EQ.1) THEN 
+           DO 11 I=1,NMAT
+              COEL(I)=COTHE(I)+HSDT*DCOTHE(I)
+   11      CONTINUE
+           COEL(NMAT)=1.D0
+        ENDIF
+           
         DO 10 I=1,NCOE
           COEFT(I)=COEFF(I)+HSDT*DCOEFF(I)
    10   CONTINUE

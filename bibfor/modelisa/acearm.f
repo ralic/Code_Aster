@@ -1,7 +1,7 @@
       SUBROUTINE ACEARM(NOMA,NOMO,LMAX,NOEMAF,NOCADI,NMTGDI,NBOCC,IVR,
      +                  IFM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 05/08/2004   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,7 +52,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       PARAMETER    ( NBCAR = 100, NBVAL = 1000, NRD = 2 )
       INTEGER      JDC(3), JDV(3), ULISOP
-      REAL*8       VAL(NBVAL), ETA, VALE(6)
+      REAL*8       VAL(NBVAL), ETA, VALE(21)
       CHARACTER*1  KMA(3)
       CHARACTER*6  KI
       CHARACTER*8  K8B, NOMU, CAR(NBCAR), CARA
@@ -71,6 +71,7 @@ C
       CALL GETRES(NOMU,CONCEP,CMD)
       MLGNMA = NOMA//'.NOMMAI'
       NCMP = 3
+      NCMP = 21
       CALL WKVECT('&&TMPRIGMA','V V R',3*LMAX,IRGMA)
       CALL WKVECT('&&TMPRIPTO','V V R',3*NOEMAF,IRPTO)
       CALL WKVECT('&&TMPRILTO','V V R',3*NOEMAF,IRLTO)
@@ -101,7 +102,6 @@ C --- CONSTRUCTION DES CARTES ET ALLOCATION
 
       IF (IXCK.NE.0) GOTO 11
 C
-C      GOTO 11
       DO 10 I = 1 , 3
          NOCADI(I) = NOCADI(I) + 2
  10   CONTINUE
@@ -164,7 +164,7 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
  41        CONTINUE
          ENDIF
 C
-         CARA = 'K_T_D_L'
+         CARA = 'K_T_L'
          IF (NGL.NE.0) THEN
            CALL JELIRA(JEXNOM(NOMA//'.GROUPEMA',NOGL),'LONMAX',
      +                 NMA,K8B)
@@ -176,12 +176,16 @@ C
             CALL JENUNO(JEXNUM(MLGNMA,ZI(LDGM+IN)),NOMMAI)
             ZK8(ITBMP+IN) = NOMMAI
  22        CONTINUE
+           CALL R8INIR(21,0.D0,VALE,1)
            DO 42 I = 1,NBLI
              IV = 1
              JD = ITBMP + I - 1
-             CALL AFFDIS(NDIM,IREP,ETA,CARA,ZR(IRGMA+3*I-3),JDC,
-     +                   JDV,IVR,IV,KMA,NCMP,L,IFM)
-             CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP)
+             VALE(7)=ZR(IRGMA+3*I-3)
+             VALE(12)=ZR(IRGMA+3*I-2) 
+             VALE(18)=ZR(IRGMA+3*I-1) 
+             CALL AFFDIS(NDIM,IREP,ETA,CARA,VALE,JDC,
+     +                   JDV,IVR,IV,KMA,NCMP2,L,IFM)
+             CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP2)
  42        CONTINUE
          ENDIF
  30   CONTINUE

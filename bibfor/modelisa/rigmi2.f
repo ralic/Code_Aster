@@ -1,6 +1,6 @@
       SUBROUTINE RIGMI2(NOMA,NOGR,IFREQ,NFREQ,IFMIS,RIGMA,RIGTO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 05/08/2004   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,6 +45,7 @@ C
       CHARACTER*8  K8B
       CHARACTER*8  NOMGR, NOMMAI
       CHARACTER*24 MLGNMA, MAGRMA, MANOMA, TABRIG
+      REAL*8       Z0
 
 C
       CALL JEMARQ()
@@ -54,6 +55,7 @@ C
       MANOMA = NOMA//'.CONNEX'
       MLGNMA = NOMA//'.NOMMAI'
       NOEMAX = 0
+      Z0 = 0.D0
 C
 
       CALL JELIRA(JEXNOM(MAGRMA,NOGR),'LONMAX',NB,K8B)
@@ -70,8 +72,6 @@ C        TABLEAU DE PARTICIPATION DES NOEUDS DE L INTERFACE
 C
       CALL WKVECT('&&RIGMI2.PARNO','V V I',NOEMAX,IPARNO)
 
-      CALL JELIRA(JEXNOM(MAGRMA,NOGR),'LONMAX',NB,K8B)
-      CALL JEVEUO(JEXNOM(MAGRMA,NOGR),'L',LDGM)
       DO 23 IN = 0,NB-1
          CALL JEVEUO(JEXNUM(MANOMA,ZI(LDGM+IN)),'L',LDNM)
          INOE = ZI(LDNM)
@@ -101,23 +101,60 @@ C
       IF (IRET.EQ.0) CALL IRMIIM(IFMIS,IFREQ,NFREQ,NBNO,TABRIG)      
       CALL JEVEUO(TABRIG,'L',JRIG)
       NBMODE = 3*NBNO
-      IM = 0
-      I1 = 0
-C      CALL JELIRA(JEXNOM(MAGRMA,NOGR),'LONMAX',NB,K8B)
-C      CALL JEVEUO(JEXNOM(MAGRMA,NOGR),'L',LDGM)
+      CALL WKVECT('&&RIGMI2.SOMTOT','V V R',NBMODE,ISOTO)
+      CALL WKVECT('&&RIGMI2.SOMPAR','V V R',NBMODE,ISOPA)
+      DO 28 I1 = 1, NBNO
+      DO 28 I2 = 1, NBNO
+         IF (I1.NE.I2) THEN
+            ZR(ISOTO+3*I1-3) = ZR(ISOTO+3*I1-3) + 
+     +       ZR(JRIG+(3*I2-3)*NBMODE+3*I1-3)
+            ZR(ISOTO+3*I1-2) = ZR(ISOTO+3*I1-2) + 
+     +       ZR(JRIG+(3*I2-2)*NBMODE+3*I1-2)
+            ZR(ISOTO+3*I1-1) = ZR(ISOTO+3*I1-1) + 
+     +       ZR(JRIG+(3*I2-1)*NBMODE+3*I1-1)
+         ENDIF
+  28  CONTINUE
+C
       DO 33 IN = 0,NB-1
          IM = ZI(LDGM+IN)
          CALL JEVEUO(JEXNUM(MANOMA,ZI(LDGM+IN)),'L',LDNM)
          DO 37 II = 1, NBNO
             IF (ZI(LDNM).EQ.ZI(IDNO+II-1)) I1 = II
             IF (ZI(LDNM+1).EQ.ZI(IDNO+II-1)) I2 = II
- 37      CONTINUE
-         RIGMA(3*IN+1) = ZR(JRIG+(3*I2-3)*NBMODE+3*I1-3)
-         RIGMA(3*IN+2) = ZR(JRIG+(3*I2-2)*NBMODE+3*I1-2)
-         RIGMA(3*IN+3) = ZR(JRIG+(3*I2-1)*NBMODE+3*I1-1)
+ 37      CONTINUE 
+         ZR(ISOPA+3*I1-3) = ZR(ISOPA+3*I1-3) + 
+     +    ZR(JRIG+(3*I2-3)*NBMODE+3*I1-3)
+         ZR(ISOPA+3*I2-3) = ZR(ISOPA+3*I2-3) + 
+     +    ZR(JRIG+(3*I2-3)*NBMODE+3*I1-3)
+         ZR(ISOPA+3*I1-2) = ZR(ISOPA+3*I1-2) + 
+     +    ZR(JRIG+(3*I2-2)*NBMODE+3*I1-2)
+         ZR(ISOPA+3*I2-2) = ZR(ISOPA+3*I2-2) + 
+     +    ZR(JRIG+(3*I2-2)*NBMODE+3*I1-2)
+         ZR(ISOPA+3*I1-1) = ZR(ISOPA+3*I1-1) + 
+     +    ZR(JRIG+(3*I2-1)*NBMODE+3*I1-1)
+         ZR(ISOPA+3*I2-1) = ZR(ISOPA+3*I2-1) + 
+     +    ZR(JRIG+(3*I2-1)*NBMODE+3*I1-1)
  33   CONTINUE
 C
       DO 34 IN = 0,NB-1
+         IM = ZI(LDGM+IN)
+         CALL JEVEUO(JEXNUM(MANOMA,ZI(LDGM+IN)),'L',LDNM)
+         DO 38 II = 1, NBNO
+            IF (ZI(LDNM).EQ.ZI(IDNO+II-1)) I1 = II
+            IF (ZI(LDNM+1).EQ.ZI(IDNO+II-1)) I2 = II
+ 38      CONTINUE 
+         RIGMA(3*IN+1) = 0.25D0*ZR(JRIG+(3*I2-3)*NBMODE+3*I1-3)*
+     +    (ZR(ISOTO+3*I1-3)/ZR(ISOPA+3*I1-3) + 
+     +     ZR(ISOTO+3*I2-3)/ZR(ISOPA+3*I2-3)+0.D0)
+         RIGMA(3*IN+2) = 0.25D0*ZR(JRIG+(3*I2-2)*NBMODE+3*I1-2)*
+     +    (ZR(ISOTO+3*I1-2)/ZR(ISOPA+3*I1-2) + 
+     +     ZR(ISOTO+3*I2-2)/ZR(ISOPA+3*I2-2)+0.D0)
+         RIGMA(3*IN+3) = 0.25D0*ZR(JRIG+(3*I2-1)*NBMODE+3*I1-1)*
+     +    (ZR(ISOTO+3*I1-1)/ZR(ISOPA+3*I1-1) + 
+     +     ZR(ISOTO+3*I2-1)/ZR(ISOPA+3*I2-1)+0.D0)         
+ 34   CONTINUE
+C
+      DO 35 IN = 0,NB-1
          IM = ZI(LDGM+IN)
          R1 = RIGMA(3*IN+1)
          R2 = RIGMA(3*IN+2)
@@ -135,16 +172,19 @@ C
          RIGMA(3*IN+2) = R2
          RIGMA(3*IN+3) = R3
          CALL JENUNO(JEXNUM(MLGNMA,IM),NOMMAI)
-         WRITE(IFR,1000) NOMMAI,R1,R2,R3
- 34   CONTINUE
+         WRITE(IFR,1000) NOMMAI,Z0,Z0,Z0,Z0,Z0,Z0,R1,Z0,Z0,Z0,Z0,R2,
+     +                   Z0,Z0,Z0,Z0,Z0,R3,Z0,Z0,Z0
+ 35   CONTINUE
 C
- 1000 FORMAT(2X,'_F ( MAILLE=''',A8,''',',1X,'CARA= ''K_T_D_L'' , ',
-     +      /7X,'VALE=(',1X,3(1X,1PE12.5,','),1X,'),',
+ 1000 FORMAT(2X,'_F ( MAILLE=''',A8,''',',1X,'CARA= ''K_T_L'' , ',
+     +      /7X,'VALE=(',7(/1X,3(1X,1PE12.5,',')),/1X,'),',
      +      /'   ),')
 
  9999 CONTINUE
       CALL JEDETR('&&RIGMI2.PARNO')
       CALL JEDETR('&&RIGMI2.NOEUD')
+      CALL JEDETR('&&RIGMI2.SOMTOT')
+      CALL JEDETR('&&RIGMI2.SOMPAR')
 C
       CALL JEDEMA()
       END

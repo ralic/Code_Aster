@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/07/2004   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 11/08/2004   AUTEUR BOYERE E.BOYERE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -318,7 +318,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
                                  fr="Paramètres de la méthode des contraintes actives (contact uniquement)",
                 regles=(EXCLUS('DIST_2','COEF_IMPO'),
                         EXCLUS('DIST_1','COEF_IMPO'),),
-                NOM_CHAM        =SIMP(statut='f',typ='TXM',defaut="DEPL",into=("DEPL","PRES","TEMP")),
+                NOM_CHAM=SIMP(statut='f',typ='TXM',defaut="DEPL",into=("DEPL","PRES","TEMP","PRE1","PRE2")),
                 FROTTEMENT      =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS",) ), 
                 NB_RESOL        =SIMP(statut='f',typ='I', defaut=10 ),
                 REAC_GEOM       =SIMP(statut='f',typ='TXM',defaut="AUTOMATIQUE",into=("AUTOMATIQUE","CONTROLE","SANS")),

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/03/2003   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGELINE  DATE 11/08/2004   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,7 @@ C     PARAMETRES "MODE_MECA"
 C     PARAMETRES "MODE_FLAMB"
       PARAMETER   ( NBPAFI=1 , NBPAFR=2  , NBPAFK=1, NBPAFT=4  )
       INTEGER       LMAT(2), IBID, IFM , NIV
+      INTEGER       ADRECG,NRPASS,NBPASS,IRET,IAUX,JAUX,IOCC,LMODS,ISENS
       REAL*8        R8B, PREC
       COMPLEX*16    C16B
       LOGICAL       LMASIN, LREFE
@@ -53,7 +54,7 @@ C     PARAMETRES "MODE_FLAMB"
      +              PARAKI(2), VALEKI(2), CTYP, FORMAR, NOMA
       CHARACTER*14  NUME
       CHARACTER*16  TYPCON, NOMCMD, NORM, NOEUD, NOMSY, NOMVAR, OLDNOR
-      CHARACTER*19  K19B
+      CHARACTER*19  K19B,NORECG
       CHARACTER*24  MASSE, AMOR, RAIDE, REFE, NOMJV, METHOD,
      +              KVEC, KVALI, KVALR, KVALK,
      +              NOPARM(NBPAMT), NOPARF(NBPAFT), NOPARA(NBPAMT)
@@ -482,49 +483,114 @@ C     --- SIGNE DES MODES ---
          ENDIF
       ENDIF
 C
+C RECUPERATION INFORMATIONS SENSIBILITE
+      CALL GETVID(' ','SENSIBILITE',1,IERD,1,K8B,ISENS)
+
+      NBPASS = 0
+      CALL WKVECT('&&OP0037.COEF_MODE','V V R',NBMODE,LCOEF)
+      IF (ISENS.GT.0) THEN
+        IOCC = 1
+        IAUX = 1
+        JAUX = 0
+        NORECG = '&&OP0037.NORECG'
+        CALL PSRESE(' ',IOCC,IAUX,MODEIN,JAUX,NBPASS,NORECG,IRET)
+        IF (NBPASS .GT. 0) CALL JEVEUO(NORECG,'L',ADRECG)
+      ENDIF
+
+      DO 300 NRPASS = 0,NBPASS 
+        IF (NRPASS .GT. 0) THEN
+          K19B = ZK24(ADRECG+2*NRPASS-2)(1:19)
+          CALL JEDETR(KVEC)
+          CALL JEDETR(KVALI)
+          CALL JEDETR(KVALR)
+          CALL JEDETR(KVALK)
+          CALL VPRECU ( K19B, NOMSY, NBMOD, ZI(LNUMOR), KVEC,
+     &              NBPARA, NOPARA, KVALI, KVALR, KVALK,
+     &              NEQ, NBMODE, TYPMOD, NPARI, NPARR, NPARK )
+          CALL JEVEUO ( KVEC , 'E', LMODS )
+          CALL JEVEUO ( KVALI, 'E', LVALI )
+          CALL JEVEUO ( KVALR, 'E', LVALR )
+          CALL JEVEUO ( KVALK, 'E', LVALK )
+          MODEOU = K19B
+        ENDIF
+
 C     --- NORMALISATION DES MODES ET ARCHIVAGE ---
-      ILGCON = LXLGUT(TYPCON)
-      IF ( TYPCON(ILGCON-1:ILGCON) .EQ. '_C' ) ILGCON = ILGCON -2
-      CALL RSEXIS(MODEOU,IRET)
-      IF ( IRET .EQ. 0 ) CALL RSCRSD(MODEOU,TYPCON(:ILGCON),NBMODE)
-      IPREC = 0
-      IF ( TYPMOD .EQ. 'R' ) THEN
-          CALL WKVECT('&&OP0037.COEF_MODE','V V R',NBMODE,LCOEF)
+        ILGCON = LXLGUT(TYPCON)
+        IF ( TYPCON(ILGCON-1:ILGCON) .EQ. '_C' ) ILGCON = ILGCON -2
+        CALL RSEXIS(MODEOU,IRET)
+        IF ( IRET .EQ. 0 ) CALL RSCRSD(MODEOU,TYPCON(:ILGCON),NBMODE)
+        IPREC = 0
+        IF ( TYPMOD .EQ. 'R' ) THEN
+         IF (NRPASS .EQ. 0) THEN
           IF ( TYPCON(1:10) .EQ. 'MODE_FLAMB' ) THEN
              CALL VPNOR1 ( NORM, NEQ, NBMODE, ZI(LDDL), ZR(LMOD),
      +                     ISIGN, NUMDDL, ZR(LCOEF) )
           ELSE
              IF ( LREFE ) THEN
-                CALL VPNORM ( NORM, 'OUI', LMAT, NEQ, NBMODE, ZI(LDDL),
+                CALL VPNORM ( NORM,'OUI',LMAT,NEQ,NBMODE,ZI(LDDL),
      +                        ZR(LMOD), ZR(LVALR), LMASIN, XMASTR,
      +                        ISIGN, NUMDDL, ZR(LCOEF) )
              ELSE
-                CALL VPNORM ( NORM, 'NON', LMAT, NEQ, NBMODE, ZI(LDDL),
+                CALL VPNORM ( NORM,'NON',LMAT,NEQ,NBMODE,ZI(LDDL),
      +                        ZR(LMOD), ZR(LVALR), LMASIN, XMASTR,
      +                        ISIGN, NUMDDL, ZR(LCOEF) )
              ENDIF
           ENDIF
           CALL VPSTOR ( -1, TYPMOD, MODEOU, NBMODE, NEQ, ZR(LMOD),
-     +                  ZC(1), NBMODE, NBPARI, NBPARR, NBPARK, NOPARA,
-     +                  ZI(LVALI), ZR(LVALR), ZK24(LVALK), IPREC )
+     +                  ZC(1),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,
+     +                  ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC)
           CALL VPNOR2 ( MODEOU, NBMODE, ZI(LNUMOR), ZR(LCOEF) )
-          CALL JEDETR('&&OP0037.COEF_MODE')
-      ELSEIF ( TYPMOD .EQ. 'C' ) THEN
+
+         ELSE
+           DO 200 IM = 1,NBMODE
+             DO 210 IEQ = 1,NEQ
+               IRET = LMODS-1+NEQ*(IM-1)+IEQ
+                     ZR(IRET) = ZR(IRET)*ZR(LCOEF-1+IM)
+ 210         CONTINUE
+ 200       CONTINUE
+           CALL VPSTOR ( -1,TYPMOD,MODEOU,NBMODE,NEQ,ZR(LMODS),
+     +                  ZC(1),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,
+     +                  ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC)
+           CALL VPNOR2 ( MODEOU,NBMODE,ZI(LNUMOR),ZR(LCOEF))
+         ENDIF
+
+        ELSEIF ( TYPMOD .EQ. 'C' ) THEN
+         IF (NRPASS .EQ. 0) THEN
           CALL WPNORM ( NORM, 'OUI', LMAT, NEQ, NBMODE, ZI(LDDL),
-     +                  ZC(LMOD), ZR(LVALR) )
-          CALL VPSTOR ( -1, TYPMOD, MODEOU, NBMODE, NEQ, ZR(1),
-     +                 ZC(LMOD), NBMODE, NBPARI, NBPARR, NBPARK, NOPARA,
-     +                 ZI(LVALI), ZR(LVALR), ZK24(LVALK), IPREC )
-      ELSE
+     +                  ZC(LMOD), ZR(LVALR) ,ZR(LCOEF))
+          CALL VPSTOR ( -1,TYPMOD,MODEOU,NBMODE,NEQ,ZR(1),
+     +                 ZC(LMOD),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,
+     +                 ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC )
+         ELSE
+           DO 220 IM = 1,NBMODE
+             DO 230 IEQ = 1,NEQ
+               IRET = LMODS-1+NEQ*(IM-1)+IEQ
+               ZC(IRET) = ZC(IRET)*ZR(LCOEF-1+IM)
+ 230         CONTINUE
+ 220       CONTINUE
+           CALL VPSTOR ( -1,TYPMOD,MODEOU,NBMODE,NEQ,ZR(1),
+     +                 ZC(LMODS),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,
+     +                 ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC)
+         ENDIF
+        ELSE
           CALL UTMESS('F',NOMCMD,'"'//TYPMOD//
      +                                '"  TYPE DE MODE NON TRAITE')
-      ENDIF
+        ENDIF
 C
-      DO 60 IM = 1,NBMODE
+        DO 60 IM = 1,NBMODE
          CALL RSADPA(MODEOU,'E',1,'NORME',ZI(LNUMOR+IM-1),0,LNORM,K8B)
          ZK24(LNORM) = METHOD
- 60   CONTINUE
+ 60     CONTINUE
 C
+C FIN BOUCLE SUR LES PARAMETRES SENSIBLES
+C
+ 300  CONTINUE
+
+      CALL JEDETR('&&OP0037.COEF_MODE')
+      IF (ISENS.GT.0) THEN
+        CALL JEDETR(NORECG)
+      ENDIF
+
 C     --- ON MET UN TITRE ----
       CALL TITRE
 C

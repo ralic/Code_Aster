@@ -1,9 +1,9 @@
         SUBROUTINE LCDEDI ( NMAT,  MATERD, MATERF, TD, TF, TR,
      &                      DEPST, EPSDT, DEPSM,  EPSDM )
-        IMPLICIT REAL*8 (A-H,O-Z)
+        IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILIFOR  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,25 +55,51 @@ C               EPSDT   DEFORMATION TOTALE A T
 C       OUT     DEPSM   INCREMENT DE DEFORMATION MECANIQUE
 C               EPSDM   DEFORMATION MECANIQUE A T
 C       ----------------------------------------------------------------
-        INTEGER         NDT  , NDI , NMAT
+        INTEGER         NDT  , NDI , NMAT, K
         CHARACTER*2     CE
         REAL*8          TD,  TF , TR
         REAL*8          EPSDT(6), DEPST(6)
-        REAL*8          EPSDM(6), DEPSM(6)
-        REAL*8          ALPHAD,  ALPHAF
+        REAL*8          EPSDM(6), DEPSM(6),ALPHFN,ALPHFL,ALPHFT
+        REAL*8          ALPHAD, ALPHAF,ALPHDL,ALPHDT,ALPHDN
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
-        ALPHAD = MATERD(3,1)
-        ALPHAF = MATERF(3,1)
-                DO 110 K = 1,NDI
-                DEPSM(K) = DEPST(K) - ( ALPHAF*(TF-TR) - ALPHAD*(TD-TR))
-                EPSDM(K) = EPSDT(K) - ( ALPHAD*(TD-TR) )
- 110            CONTINUE
+        IF (MATERD(NMAT,1).EQ.0) THEN
+           ALPHAD = MATERD(3,1)
+           ALPHAF = MATERF(3,1)
+           DO 110 K = 1,NDI
+              DEPSM(K) = DEPST(K) - ( ALPHAF*(TF-TR) - ALPHAD*(TD-TR))
+              EPSDM(K) = EPSDT(K) - ( ALPHAD*(TD-TR) )
+ 110      CONTINUE
 C
-                DO 111 K  = NDI+1,NDT
-                DEPSM(K)  = DEPST(K)
-                EPSDM(K)  = EPSDT(K)
- 111            CONTINUE
+          DO 111 K  = NDI+1,NDT
+             DEPSM(K)  = DEPST(K)
+             EPSDM(K)  = EPSDT(K)
+ 111      CONTINUE
+ 
+        ELSEIF (MATERD(NMAT,1).EQ.1) THEN
+        
+          ALPHDL = MATERD(73,1)
+          ALPHDT = MATERD(74,1)
+          ALPHDN = MATERD(75,1)
+C
+          ALPHFL = MATERF(73,1)
+          ALPHFT = MATERF(74,1)
+          ALPHFN = MATERF(75,1)
+C
+          DEPSM(1) = DEPST(1) - ( ALPHFL*(TF-TR) - ALPHDL*(TD-TR))
+          DEPSM(2) = DEPST(2) - ( ALPHFT*(TF-TR) - ALPHDT*(TD-TR))
+          DEPSM(3) = DEPST(3) - ( ALPHFN*(TF-TR) - ALPHDN*(TD-TR))
+              
+          EPSDM(1) = EPSDT(1) - ( ALPHDL*(TD-TR) )
+          EPSDM(2) = EPSDT(2) - ( ALPHDT*(TD-TR) )
+          EPSDM(3) = EPSDT(3) - ( ALPHDN*(TD-TR) )
+          
+          DO 112 K  = 4,6
+             DEPSM(K)  = DEPST(K)
+             EPSDM(K)  = EPSDT(K)
+ 112      CONTINUE
+          
+        ENDIF
         END

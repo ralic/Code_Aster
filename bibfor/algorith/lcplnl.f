@@ -6,7 +6,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -143,13 +143,14 @@ C -     INITIALISATION DU TYPE DE SOLUTION D ESSAI (-1)
 C
         TYPESS = -1
         INTG   = 0
+        
 C
  2              CONTINUE
 C
 C --    CALCUL DE LA SOLUTION D ESSAI INITIALE DU SYSTEME NL EN DY
 C
         CALL LCINIT ( LOI,   TYPESS, ESSAI, MOD, NMAT,
-     &                MATERF,TIMED,TIMEF,NR, NVI,YD,
+     &                MATERF,TIMED,TIMEF,NR, NVI, YD,
      &                EPSD,  DEPS,   DY )
 C
 
@@ -168,26 +169,23 @@ C
      3                COMP,NBCOMM, CPMONO, PGL,NR,NVI,
      &                TEMPF,TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R )
 
-C       SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
+C     SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
         IF(ITER.EQ.1) THEN
            CALL LCEQVN ( NR ,   R ,   RINI )
         ENDIF
 C
 C --    CALCUL DU JACOBIEN DU SYSTEME A T+DT = DRDY(DY)
 C
-        CALL LCJACB ( LOI,   MOD,   IMAT, NMAT, MATERF,
+        CALL LCJACB ( LOI,   MOD,   IMAT, NMAT, MATERF,TEMPF,
      &                  TIMED,TIMEF,     YF,    DEPS,
      3                COMP,NBCOMM, CPMONO, PGL,NR,NVI,
      &                  EPSD,  DY,    DRDY )
-
-C               CALL LCIMMN ( 'DRDY =' , NR ,NR, DRDY )
 C
 C --    RESOLUTION DU SYSTEME LINEAIRE DRDY(DY).DDY = -R(DY)
 C
 
         CALL LCEQMN ( NR , DRDY , DRDY1 )
         CALL LCEQVN ( NR ,   R ,   DDY )
-
         CALL MGAUSS ( DRDY1 , DDY , NR , NR , 1, ZERO, FAUX )
 
 C

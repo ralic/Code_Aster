@@ -1,11 +1,11 @@
         SUBROUTINE REDECE ( NDIM, TYPMOD, IMAT, COMP, CRIT,
      1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
      &                      HYDRF,SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
-     2                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE)
-        IMPLICIT REAL*8 (A-H,O-Z)
+     2                      VIND, OPT,ELGEOM,ANGMAS,SIGF,VINF,DSDE)
+        IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,7 +100,7 @@ C               DSDE    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 C       ----------------------------------------------------------------
         INTEGER         IMAT , NDIM   , NDT   , NDI  , NVI
 C
-        REAL*8          CRIT(*)
+        REAL*8          CRIT(*), ANGMAS(3)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
         REAL*8          HYDRD , HYDRF , SECHD , SECHF , SREF, ELGEOM(*)
         REAL*8          EPSDT(6),  DEPST(6)
@@ -176,7 +176,7 @@ C
         CALL PLASTI ( TYPMOD, IMAT,  COMP,  CRIT,
      1                TIMED, TIMEF, TEMPD, TEMPF, TREF,
      2                HYDRD, HYDRF, SECHD, SECHF, SREF,
-     3                EPSDT, DEPST, SIGD,  VIND,  OPT,
+     3                EPSDT, DEPST, SIGD,  VIND,  OPT, ANGMAS,
      4                SIGF,  VINF,  DSDE,  ICOMP, NVI,  IRTET)
         ENDIF
         IF ( IRTET.GT.0 ) GOTO (1), IRTET
@@ -260,7 +260,7 @@ C
               CALL PLASTI ( TYPMOD,  IMAT,   COMP,   CRIT,  TD,
      1                    TF,    TEMD,   TEMF,   TREF,  HYDD, HYDF,
      2                    SECD, SECF, SREF,  EPS,   DEPS,
-     2                    SD,    VIND,     OPT,    SIGF,   VINF,
+     2                SD,    VIND,     OPT, ANGMAS,   SIGF,   VINF,
      3                    DSDELO,  ICOMP,   NVI,  IRTET)
             ENDIF
             IF ( IRTET.GT.0 ) GOTO (1), IRTET

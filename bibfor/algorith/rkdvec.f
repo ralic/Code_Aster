@@ -1,12 +1,12 @@
         SUBROUTINE RKDVEC( MOD,   IMAT,  MATCST,
      &                     NVI,   VINI,  COEFT,
-     &                     E, NU, ALPHA, X,     DTIME, SIGI,
+     &                     E, NU, ALPHA, X,     DTIME,NMAT,COEL,SIGI,
      &                     EPSD, DETOT, TPERD,  DTPER, TPEREF,
      &                     DVIN)
         IMPLICIT REAL*8(A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,11 +39,10 @@ C     ----------------------------------------------------------------
       INTEGER         NDT
       REAL*8          VPAR(2)
       CHARACTER*8     NOMCOE,NOMPAR(2)
-      PARAMETER(NMAT=50)
       REAL*8 E, NU, ALPHA
       REAL*8 X, DTIME, HSDT
       REAL*8 TPERD, DTPER, TPEREF, TEMP
-      REAL*8 COEFT(NMAT)
+      REAL*8 COEFT(NMAT),COEL(NMAT)
       REAL*8 VINI(NVI)
       REAL*8 DVIN(NVI)
       REAL*8 SEDVP,  CRITV,      E0,         EPSIEC
@@ -94,7 +93,7 @@ C----------------------------------------------------------------
       E0=E
       E=E0*(1.D0-DMG)
         CALL CALSIG(EVI,MOD,E,NU,ALPHA,X,DTIME,EPSD,DETOT,
-     &              TPERD,DTPER,TPEREF,SIGI)
+     &              TPERD,DTPER,TPEREF,NMAT,COEL,SIGI)
       E=E0
 C
 C----- VARIABLES INTERNES

@@ -1,9 +1,9 @@
-        SUBROUTINE LCMMRE ( MOD, NMAT, MATERD, MATERF,
+        SUBROUTINE LCMMRE ( MOD, NMAT, MATERD, MATERF,TEMPF,
      3             COMP,NBCOMM, CPMONO, PGL, NR, NVI, TIMED, TIMEF,
      1                      YD ,  YF,   DEPS,   DY,     R )
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,7 +45,7 @@ C
       REAL*8          SIGF(6)   , DSIG(6) ,    SIGD(6) ,    DFDS(6)
       REAL*8          DEPS(6)   , DEPSP(6),    DEPSE(6), DEVI(6),DT
       REAL*8          EPSED(6)  , EPSEF(6), EPSP(6),H1SIGF(6)
-      REAL*8          MATERD(NMAT*2) ,MATERF(NMAT*2)
+      REAL*8          MATERD(NMAT*2) ,MATERF(NMAT*2),TEMPF
       REAL*8          VIS(3),MS(6),TAUS,DGAMMA,DALPHA,DP,RP
       REAL*8          R(NR),DY(NR),YD(NR),YF(NR),RBID,R8VIDE
 C
@@ -59,7 +59,6 @@ C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT , NDI
 C     ----------------------------------------------------------------
 C
-      RBID=R8VIDE()
       DT=TIMEF-TIMED
       CALL LCEQVN ( NDT , YF(1)       , SIGF)
       CALL LCEQVN ( NDT , YD(1)       , SIGD)
@@ -70,8 +69,13 @@ C
 C                 -1                     -1
 C -   HOOKF, HOOKD , DFDS , EPSEF = HOOKD  SIGD + DEPS - DEPSP
 C
-      CALL LCOPIL  ( 'ISOTROPE' , MOD , MATERD(1) , DKOOH )
-      CALL LCOPIL  ( 'ISOTROPE' , MOD , MATERF(1) , FKOOH )
+      IF (MATERF(NMAT).EQ.0) THEN
+         CALL LCOPIL  ( 'ISOTROPE' , MOD , MATERD(1) , DKOOH )
+         CALL LCOPIL  ( 'ISOTROPE' , MOD , MATERF(1) , FKOOH )
+      ELSEIF (MATERF(NMAT).EQ.1) THEN
+         CALL LCOPIL  ( 'ORTHOTRO' , MOD , MATERD(1) , DKOOH )
+         CALL LCOPIL  ( 'ORTHOTRO' , MOD , MATERF(1) , FKOOH )
+      ENDIF
       CALL LCPRMV ( DKOOH,   SIGD  , EPSED )
       CALL LCDIVE ( DEPS ,   DEPSP , DEPSE )
       CALL LCSOVE ( EPSED,   DEPSE , EPSEF )
@@ -130,7 +134,7 @@ C           CAS IMPLCITE : IL FAUT PRENDRE EN COMPTE DT
 C           CAS EXPLICITE : IL NE LE FAUT PAS (C'EST FAIT PAR RDIF01)
 C            
             CALL LCMMFL(TAUS,MATERF(NMAT+1),IFA,NMAT,NBCOMM,
-     &      NECOUL,RP,NUMS,VIS,NVI,YF(NDT+1),DT,DT,DGAMMA,DP,RBID)
+     &      NECOUL,RP,NUMS,VIS,NVI,YF(NDT+1),DT,DT,DGAMMA,DP,TEMPF)
 C
 C           ECROUISSAGE CINEMATIQUE
 C

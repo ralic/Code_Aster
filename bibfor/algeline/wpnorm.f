@@ -1,13 +1,13 @@
       SUBROUTINE WPNORM ( NORM, PARA, LMATR, NEQ, NBMODE, DDLEXC,
-     +                   VECPRO, RESUFR )
+     +                   VECPRO, RESUFR , COEF)
       IMPLICIT   NONE
       CHARACTER*(*)       NORM, PARA
       INTEGER             NBMODE, NEQ, LMATR(*), DDLEXC(*)
       COMPLEX*16          VECPRO(NEQ,*)
-      REAL*8              RESUFR(NBMODE,*)
+      REAL*8              RESUFR(NBMODE,*), COEF(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/06/99   AUTEUR CIBHHPD P.DAVID 
+C MODIF ALGELINE  DATE 11/08/2004   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,6 +92,7 @@ C        --- NORMALISATION SUR LES DDL NON EXCLUS
  6             CONTINUE
             ENDIF
             RX1 = 1.0D0 / RNORM
+            COEF(IM) = RX1
             DO 8 IEQ = 1 , NEQ
                VECPRO(IEQ,IM) = VECPRO(IEQ,IM) * RX1
  8          CONTINUE
@@ -144,6 +145,7 @@ C        --- DU PROBLEME GENERALISE ASSOCIE AU PROBLEME QUADRATIQUE ---
                XNORM = XNORM + VECPRO(IEQ,IM) * ZC(LACC1+IEQ-1)
    31      CONTINUE
            XNORM = 1.D0 / SQRT(XNORM)
+           COEF(IM) = XNORM
            DO 32 IEQ = 1, NEQ
               VECPRO(IEQ,IM) = VECPRO(IEQ,IM) * XNORM
    32      CONTINUE

@@ -1,9 +1,9 @@
         SUBROUTINE LCELIN ( MOD ,  NMAT,  MATERD, MATERF,
      1                      NVI,   DEPS,  SIGD,   VIND,   SIGF,   VINF )
-        IMPLICIT REAL*8 (A-H,O-Z)
+        IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,11 +40,20 @@ C       ----------------------------------------------------------------
         REAL*8          EPSED(6),       EPSEF(6) ,   DEPS(6)
         CHARACTER*8     MOD
 C       ----------------------------------------------------------------
+        IF (MATERF(NMAT,1).EQ.0) THEN
 C
 C --    OPERATEUR ELASTIQUE LINEAIRE ISOTROPE
 C
-        CALL LCOPLI ( 'ISOTROPE' , MOD , MATERF(1,1) , HOOKF )
-        CALL LCOPIL ( 'ISOTROPE' , MOD , MATERD(1,1) , DKOOH )
+           CALL LCOPLI ( 'ISOTROPE' , MOD , MATERF(1,1) , HOOKF )
+           CALL LCOPIL ( 'ISOTROPE' , MOD , MATERD(1,1) , DKOOH )
+           
+        ELSEIF (MATERF(NMAT,1).EQ.1) THEN
+C
+C --    OPERATEUR ELASTIQUE LINEAIRE ORTHOTROPE
+C
+           CALL LCOPLI ( 'ORTHOTRO' , MOD , MATERF(1,1) , HOOKF )
+           CALL LCOPIL ( 'ORTHOTRO' , MOD , MATERD(1,1) , DKOOH )
+        ENDIF
 C
 C                                                        -1
 C --    DEFORMATION ELASTIQUE A T ET T+DT : EPSEF = HOOKD  SIGD + DEPS

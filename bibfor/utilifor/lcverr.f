@@ -2,7 +2,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C                               1 = IIDDYII/IIDYII < EPS
 C                               2 = IIDDYI/DYIII   < EPS
 C       OUT ERR    :    VECTEUR ERREUR
 C       ----------------------------------------------------------------
-        REAL*8          ZERO
+        REAL*8          ZERO,R8PREM
         PARAMETER       ( ZERO = 0.D0   )
         INTEGER         N , ND , NR,  TYP
         REAL*8          DY(*)  , DDY(*)
@@ -42,12 +42,15 @@ C
 C       ERREUR(I) =  !DDYI/DYI! < EPS
 C
         IF     ( TYP .EQ. 0 ) THEN
+            ERR(1)=0.D0
             DO 1 I = 1,NR
-                IF(DY(I).EQ.ZERO) THEN
-                ERR(I)    = DDY(I)
+C                IF(DY(I).EQ.ZERO) THEN
+                IF(DY(I).LT.R8PREM()) THEN
+                   ERR(I)    = ABS(DDY(I))
                 ELSE
-                ERR(I)    = ABS(DDY(I) / DY(I))
+                   ERR(I)    = ABS(DDY(I) / DY(I))
                 ENDIF
+                ERR(1)=MAX(ERR(1),ERR(I))
  1          CONTINUE
 C
 C       ERREUR = !!DDY!!/!!DY!! < EPS

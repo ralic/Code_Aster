@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 11/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE CALCUL DE K1, K2 EN DP ET CP SUR UNE PLAQUE CIRCULAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,17 +137,19 @@ THETACP=CALC_THETA(    MODELE=MOCP,
                                  R_SUP = 20.),
                        DIRECTION=( 8.6602540379E-01, 0.5, 0.,)  )
 
-GCP=CALC_G_THETA_T(       MODELE=MOCP,
-                               DEPL=UCP,
-                              THETA=THETACP,
+GCP=CALC_G_THETA_T(      MODELE=MOCP,
+                         DEPL=UCP,
+                         THETA=THETACP,
+                         EXCIT=_F( CHARGE = CHCP),
                          CHAM_MATER=CM )
 
-K1K2CP=CALC_G_THETA_T(        MODELE=MOCP,
-                                  DEPL=UCP,
-                                 THETA=THETACP,
-                                  FOND_FISS=FOND,
+K1K2CP=CALC_G_THETA_T(      MODELE=MOCP,
+                            DEPL=UCP,
+                            THETA=THETACP,
+                            EXCIT=_F( CHARGE = CHCP),
+                            FOND_FISS=FOND,
                             CHAM_MATER=CM,
-                                OPTION='CALC_K_G')
+                            OPTION='CALC_K_G')
 
 #---------------------------------------------------------------------
 #          MODELISATION ET CALCUL EN DEFORMATIONS PLANES
@@ -179,17 +181,19 @@ THETADP=CALC_THETA(    MODELE=MODP,
                                  R_SUP = 20.),
                        DIRECTION=( 8.6602540379E-01, 0.5, 0.,)  )
 
-GDP=CALC_G_THETA_T(       MODELE=MODP,
-                               DEPL=UDP,
-                              THETA=THETADP,
+GDP=CALC_G_THETA_T(      MODELE=MODP,
+                         DEPL=UDP,
+                         EXCIT=_F( CHARGE = CHDP),
+                         THETA=THETADP,
                          CHAM_MATER=CM )
 
-K1K2DP=CALC_G_THETA_T(        MODELE=MODP,
-                                  DEPL=UDP,
-                                 THETA=THETADP,
-                                  FOND_FISS=FOND,
-                            CHAM_MATER=CM,
-                                OPTION='CALC_K_G')
+K1K2DP=CALC_G_THETA_T(    MODELE=MODP,
+                          DEPL=UDP,
+                          EXCIT=_F( CHARGE = CHDP),
+                          THETA=THETADP,
+                          FOND_FISS=FOND,
+                          CHAM_MATER=CM,
+                          OPTION='CALC_K_G')
 
 #--------------------------------------------------------------------
 #            TEST DES RESULTATS DE G, K1 ET K2   EN CP

@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,7 +82,7 @@ C
       REAL*8  DSDEME(6,6)  
       REAL*8  ALPH0,ALPH1,ALPH2,ALPH3,XMT,RDDCDT,RDXMDT
       REAL*8  ALPHAT,ALPHBT,ALPHCT,SY,BB,XM,TM
-      REAL*8  PP,R8BID
+      REAL*8  PP,R8BID,ANGMAS(3)
       INTEGER      NNELA,NBPAR,NSURM,NINIG,NSATM
       PARAMETER    (NNELA=7, NSURM=14,NINIG=2,NSATM=15)
       REAL*8       VALRES(NNELA),VALPAR,VALSUR(NSURM),INIGAT(NINIG)
@@ -208,7 +208,7 @@ C ======================================================================
         CALL REDECE(NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM, INSTAP, 
      >              T,TF,TREF,0.0D0,0.0D0,0.0D0,0.0D0,0.0D0,
      >              DEFGEM(ADDEME+NDIM),DEPS,CONGEM(ADCOME),
-     >              VINTM,OPTION,R8BID,CONGEP(ADCOME),VINTP, 
+     >              VINTM,OPTION,R8BID,ANGMAS,CONGEP(ADCOME),VINTP, 
      >              DSDEME)
       ENDIF
       IF (MECA.EQ.'DRUCKER_PRAGER') THEN

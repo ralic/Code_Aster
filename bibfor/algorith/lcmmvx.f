@@ -1,8 +1,8 @@
-      SUBROUTINE LCMMVX (  SIGF ,VIN, NMAT, MATERF,
+      SUBROUTINE LCMMVX (  SIGF ,VIN, NMAT, MATERF,TEMPF,
      &                   COMP,NBCOMM, CPMONO, PGL, NR, NVI, SEUIL)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,8 +32,8 @@ C     ----------------------------------------------------------------
       INTEGER         NDT , NDI , NMAT, NR, NVI
       INTEGER         ITENS,NBFSYS,I,NUVI,IFA,ICOMPO,NBSYS,IS,IV
 C
-      REAL*8          SIGF(6),VIN(NVI),RP
-      REAL*8          MATERF(NMAT*2),SEUIL,RBID,R8VIDE,DT
+      REAL*8          SIGF(6),VIN(NVI),RP,TEMPF
+      REAL*8          MATERF(NMAT*2),SEUIL,DT
       REAL*8          VIS(3),MS(6),TAUS,DGAMMA,DALPHA,DP
 C
       CHARACTER*8     MOD      
@@ -42,8 +42,6 @@ C
       CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
       CHARACTER*16 NOMFAM,NMATER,NECOUL,NECRIS
 C
-      RBID=R8VIDE()
-            
       NBFSYS=NBCOMM(NMAT,2)
       
       NUVI=6
@@ -58,7 +56,7 @@ C
       
          CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
          
-         IF (NBSYS.EQ.0) CALL UTMESS('F','LCMMRE','NBSYS=0')
+         IF (NBSYS.EQ.0) CALL UTMESS('F','LCMMVX','NBSYS=0')
          
          DO 7 IS=1,NBSYS
             NUMS=NUMS+1
@@ -87,7 +85,7 @@ C
 C           ECOULEMENT VISCOPLASTIQUE
 C            
             CALL LCMMFL(TAUS,MATERF(NMAT+1),IFA,NMAT,NBCOMM,
-     &         NECOUL,RP,NUMS,VIS,NVI,VIN,DT,DT,DGAMMA,DP,RBID)
+     &         NECOUL,RP,NUMS,VIS,NVI,VIN,DT,DT,DGAMMA,DP,TEMPF)
 
             IF (DP.GT.0.D0) SEUIL=1.D0
 

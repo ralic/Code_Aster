@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE ETIREMENT D'UN PARALLELEPIPEDE ORTHOTROPE SOUS SON PROPRE POIDS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,25 +33,15 @@ MAT=DEFI_MATERIAU( ELAS_ORTH=_F(  E_L = 5.0E+11,
                                 E_N = 2.0E+11,
                                 NU_LT = 0.1,
                                 NU_LN = 0.3,
-                               NU_TN = 0.1,G_LT = 76923.1E+6,
-   G_LN = 76923.1E+6,G_TN = 76923.1E+6,RHO = 7800.,ALPHA_L = 0.,ALPHA_N = 0.,
+                               NU_TN = 0.1,
+                               G_LT = 76923.1E+6,
+                            G_LN = 76923.1E+6,
+                            G_TN = 76923.1E+6,
+                            RHO = 7800.,
+                            ALPHA_L = 0.,
+                            ALPHA_N = 0.,
                             ALPHA_T = 0.)  )
 
-#MAT = DEFI_MATERIAU( ELAS_ISOT_TRAN:( E_L: 5.0E+11,
-
-#
-
-#                              E_N: 1.0E+11,
-
-#                             NU_L: 0.3,
-
-#                             NU_N: 0.3,
-
-#
-
-# G_N:76923.1E+6,RHO:7800.
-
-#                           )  )  ;
 
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
                        AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )
@@ -74,77 +64,420 @@ RESU=MECA_STATIQUE(MODELE=MO,
                    EXCIT=_F(CHARGE=CH,),
                    );
 
+
+
+
 RESU=CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
-               
-               OPTION=('SIGM_ELNO_DEPL',),
+               OPTION=('SIGM_ELNO_DEPL','EPSI_ELGA_DEPL'),
                 )
                 
-#---------------------------------------------------------------------
 
 TEST_RESU(RESU=( 
      # B 
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
               CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
-              NOEUD = 'N53',      NOM_CMP = 'DX',           VALE = 0.),
+              NOEUD = 'N53',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = 0.),
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
               CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
-              NOEUD = 'N53',      NOM_CMP = 'DY',           VALE = 0.),
+              NOEUD = 'N53',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = 0.),
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
               CRITERE = 'RELATIF',  PRECISION = 1.E-3,
-              NOEUD = 'N53',      NOM_CMP = 'DZ',          VALE = -1.721655E-6),
+              NOEUD = 'N53',      NOM_CMP = 'DZ',          REFERENCE='ANALYTIQUE', VALE = -1.721655E-6),
      # C 
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
               CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
-              NOEUD = 'N12',      NOM_CMP = 'DX',           VALE = 0.),
+              NOEUD = 'N12',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = 0.),
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
               CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
-              NOEUD = 'N12',      NOM_CMP = 'DY',           VALE = 0.),
+              NOEUD = 'N12',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = 0.),
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
               CRITERE = 'RELATIF',  PRECISION = 1.E-3,
-              NOEUD = 'N12',      NOM_CMP = 'DZ',           VALE = -1.707308E-6),
+              NOEUD = 'N12',      NOM_CMP = 'DZ',           REFERENCE='ANALYTIQUE', VALE = -1.707308E-6),
      # D 
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
               CRITERE = 'RELATIF',  PRECISION = 1.E-3,
-              NOEUD = 'N18',      NOM_CMP = 'DX',           VALE = -1.721655E-7),
+              NOEUD = 'N18',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = -1.721655E-7),
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
               CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
-              NOEUD = 'N18',      NOM_CMP = 'DY',           VALE = 0.),
+              NOEUD = 'N18',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = 0.),
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
               CRITERE = 'RELATIF',  PRECISION = 3.E-3,
-              NOEUD = 'N18',      NOM_CMP = 'DZ',           VALE = 1.434713E-8),
+              NOEUD = 'N18',      NOM_CMP = 'DZ',           REFERENCE='ANALYTIQUE', VALE = 1.434713E-8),
      # E 
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
               CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
-              NOEUD = 'N56',      NOM_CMP = 'DX',           VALE = 0.),
+              NOEUD = 'N56',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = 0.),
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
               CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
-              NOEUD = 'N56',      NOM_CMP = 'DY',           VALE = 0.),
+              NOEUD = 'N56',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = 0.),
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
               CRITERE = 'RELATIF',  PRECISION = 1.E-3,
-              NOEUD = 'N56',      NOM_CMP = 'DZ',           VALE = -1.291241E-6),
+              NOEUD = 'N56',      NOM_CMP = 'DZ',           REFERENCE='ANALYTIQUE', VALE = -1.291241E-6),
      # X 
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
               CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
-              NOEUD = 'N70',      NOM_CMP = 'DX',           VALE = 0.),
+              NOEUD = 'N70',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = 0.),
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
               CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
-              NOEUD = 'N70',      NOM_CMP = 'DY',           VALE = -5.73885E-8),
+              NOEUD = 'N70',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = -5.73885E-8),
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
               CRITERE = 'RELATIF',  PRECISION = 5.E-3,
-              NOEUD = 'N70',      NOM_CMP = 'DZ',           VALE = 4.782375E-9),
+              NOEUD = 'N70',      NOM_CMP = 'DZ',           REFERENCE='ANALYTIQUE', VALE = 4.782375E-9),
      # CONTRAINTES EN A , E ET X
             
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
               CRITERE = 'RELATIF',  PRECISION = 1.E-3, MAILLE = 'HEX3',
-              NOEUD = 'N59',   NOM_CMP = 'SIZZ', VALE = 2.29554E5),
+              NOEUD = 'N59',   NOM_CMP = 'SIZZ', REFERENCE='ANALYTIQUE', VALE = 2.29554E5),
             
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
               CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX2',
-              NOEUD = 'N56',   NOM_CMP = 'SIZZ',          VALE = 1.14777E5),
+              NOEUD = 'N56',   NOM_CMP = 'SIZZ',          REFERENCE='ANALYTIQUE', VALE = 1.14777E5),
             
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
               CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX6',
-              NOEUD = 'N70',   NOM_CMP = 'SIZZ',          VALE = 2.29554E5))
+              NOEUD = 'N70',   NOM_CMP = 'SIZZ',          REFERENCE='ANALYTIQUE', VALE = 2.29554E5))
+              )
+
+
+#################################################################
+
+
+                    
+MAT2=DEFI_MATERIAU( ELAS_ORTH=_F(  E_L = 5.0E+11,
+                                E_T = 5.0E+11,
+                                E_N = 2.0E+11,
+                                NU_LT = 0.1,
+                                NU_LN = 0.3,
+                                NU_TN = 0.1,
+                                G_LT = 76923.1E+6,
+                                G_LN = 76923.1E+6,
+                                G_TN = 76923.1E+6,
+                                RHO = 7800.,
+                                ALPHA_L = 0.,
+                                ALPHA_N = 0.,
+                                ALPHA_T = 0.) ,
+                            
+                    ECOU_VISC1=_F(N=0.0,
+                                  K=1.E11,
+                                  C=0.0,
+                                  ),
+                                  
+                    ECRO_ISOT1=_F(R_0=1.E11,
+                                  Q=0.,
+                                  B=0.,
+                                  H=0.0,),
+                                  
+                    ECRO_CINE1=_F(D=0.,),
+                    
+                                  );
+
+
+CHMAT2=AFFE_MATERIAU(  MAILLAGE=MA,
+                       AFFE=_F(  TOUT = 'OUI', 
+                        MATER = MAT2
+                        ) )
+
+
+COMPOR2=DEFI_COMPOR(MONOCRISTAL=(_F(
+                                    MATER=MAT2,
+                                    ECOULEMENT='ECOU_VISC1',
+                                    ECRO_ISOT='ECRO_ISOT1',
+                                    ECRO_CINE='ECRO_CINE1',
+                                    ELAS='ELAS_ORTH',
+                                    FAMI_SYST_GLIS='UNIAXIAL',
+                                    ),),);
+
+RESU1=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CHMAT2,
+                   EXCIT=_F(CHARGE=CH,),
+                   );
+
+RESU1=CALC_ELEM( reuse= RESU1 ,RESULTAT= RESU1 ,
+               OPTION=('SIEF_ELNO_ELGA',),
+                )
+#
+#---------------------------------------------------------------------
+
+TEST_RESU(RESU=( 
+     # B 
+            _F(  RESULTAT = RESU1, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N53',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU1, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N53',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU1, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+              NOEUD = 'N53',      NOM_CMP = 'DZ',          REFERENCE='ANALYTIQUE', VALE = -1.721655E-6),
+     # C 
+            _F(  RESULTAT = RESU1, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N12',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU1, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N12',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU1, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+              NOEUD = 'N12',      NOM_CMP = 'DZ',           REFERENCE='ANALYTIQUE', VALE = -1.707308E-6),
+     # D 
+            _F(  RESULTAT = RESU1, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+              NOEUD = 'N18',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = -1.721655E-7),
+            _F(  RESULTAT = RESU1, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N18',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU1, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 3.E-3,
+              NOEUD = 'N18',      NOM_CMP = 'DZ',           REFERENCE='ANALYTIQUE', VALE = 1.434713E-8),
+     # E 
+            _F(  RESULTAT = RESU1, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N56',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU1, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N56',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU1, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+              NOEUD = 'N56',      NOM_CMP = 'DZ',           REFERENCE='ANALYTIQUE', VALE = -1.291241E-6),
+     # X 
+            _F(  RESULTAT = RESU1, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N70',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU1, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N70',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = -5.73885E-8),
+            _F(  RESULTAT = RESU1, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 5.E-3,
+              NOEUD = 'N70',      NOM_CMP = 'DZ',           REFERENCE='ANALYTIQUE', VALE = 4.782375E-9),
+     # CONTRAINTES EN A , E ET X
+            
+            _F(  RESULTAT = RESU1, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO_ELGA',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-3, MAILLE = 'HEX3',
+              NOEUD = 'N59',   NOM_CMP = 'SIZZ', REFERENCE='ANALYTIQUE', VALE = 2.29554E5),
+            
+            _F(  RESULTAT = RESU1, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO_ELGA',
+              CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX2',
+              NOEUD = 'N56',   NOM_CMP = 'SIZZ',          REFERENCE='ANALYTIQUE', VALE = 1.14777E5),
+            
+            _F(  RESULTAT = RESU1, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO_ELGA',
+              CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX6',
+              NOEUD = 'N70',   NOM_CMP = 'SIZZ',          REFERENCE='ANALYTIQUE', VALE = 2.29554E5))
+              )
+
+
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=1,
+                                    NOMBRE=1,),),);
+                                    
+DEFI_GROUP( reuse=MA,MAILLAGE=MA,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+ORIEN=AFFE_CARA_ELEM(MODELE=MO,
+                     MASSIF=_F(GROUP_MA='TOUT',
+                               ANGL_REP=(0.0,0.0,0.0,),),);
+
+COEF=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,0.0,1.0,1.0,),
+                   PROL_DROITE='LINEAIRE',
+                   PROL_GAUCHE='LINEAIRE',);
+                   
+RESU2=STAT_NON_LINE(MODELE=MO,
+                     CHAM_MATER=CHMAT2,
+                    CARA_ELEM=ORIEN,
+                     EXCIT=_F(CHARGE=CH,
+                               FONC_MULT=COEF,
+                     ),
+                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
+                                   COMPOR=COMPOR2,
+                                   DEFORMATION='PETIT',
+                                   TOUT='OUI',),),
+                     INCREMENT=(_F(LIST_INST=LINST,),),
+                     NEWTON=_F(
+                               # PREDICTION='EXTRAPOL',
+                               #MATRICE='ELASTIQUE',
+                               #REAC_ITER=1,
+                               ),
+                     ARCHIVAGE=_F(LIST_INST=LINST,),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                  #  ARRET='NON',
+                                  #   ITER_GLOB_MAXI=0,
+                                  #   ITER_GLOB_MAXI=10,
+                                     RESI_INTE_RELA=1e-06,
+                                     ITER_INTE_MAXI=10,
+                                     ITER_INTE_PAS=-10,
+                                     RESO_INTE='IMPLICITE',
+                                   #  RESO_INTE='RUNGE_KUTTA_2',
+                                     ),
+                                     );
+
+RESU2=CALC_ELEM( reuse= RESU2 ,RESULTAT= RESU2 ,
+               OPTION=('SIEF_ELNO_ELGA',),
+                )
+                
+#
+#---------------------------------------------------------------------
+
+TEST_RESU(RESU=( 
+     # B 
+            _F(  RESULTAT = RESU2, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N53',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU2, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N53',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU2, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+              NOEUD = 'N53',      NOM_CMP = 'DZ',          REFERENCE='ANALYTIQUE', VALE = -1.721655E-6),
+     # C 
+            _F(  RESULTAT = RESU2, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N12',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU2, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N12',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU2, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+              NOEUD = 'N12',      NOM_CMP = 'DZ',           REFERENCE='ANALYTIQUE', VALE = -1.707308E-6),
+     # D 
+            _F(  RESULTAT = RESU2, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+              NOEUD = 'N18',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = -1.721655E-7),
+            _F(  RESULTAT = RESU2, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N18',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU2, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 3.E-3,
+              NOEUD = 'N18',      NOM_CMP = 'DZ',           REFERENCE='ANALYTIQUE', VALE = 1.434713E-8),
+     # E 
+            _F(  RESULTAT = RESU2, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N56',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU2, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N56',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU2, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+              NOEUD = 'N56',      NOM_CMP = 'DZ',           REFERENCE='ANALYTIQUE', VALE = -1.291241E-6),
+     # X 
+            _F(  RESULTAT = RESU2, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N70',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU2, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N70',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = -5.73885E-8),
+            _F(  RESULTAT = RESU2, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 8.E-3,
+              NOEUD = 'N70',      NOM_CMP = 'DZ',           REFERENCE='ANALYTIQUE', VALE = 4.782375E-9),
+     # CONTRAINTES EN A , E ET X
+            
+            _F(  RESULTAT = RESU2, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO_ELGA',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-3, MAILLE = 'HEX3',
+              NOEUD = 'N59',   NOM_CMP = 'SIZZ', REFERENCE='ANALYTIQUE', VALE = 2.29554E5),
+            
+            _F(  RESULTAT = RESU2, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO_ELGA',
+              CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX2',
+              NOEUD = 'N56',   NOM_CMP = 'SIZZ',          REFERENCE='ANALYTIQUE', VALE = 1.14777E5),
+            
+            _F(  RESULTAT = RESU2, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO_ELGA',
+              CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX6',
+              NOEUD = 'N70',   NOM_CMP = 'SIZZ',          REFERENCE='ANALYTIQUE', VALE = 2.29554E5))
+              )
+
+
+
+
+# EXPLICITE
+
+RESU3=STAT_NON_LINE(MODELE=MO,
+                     CHAM_MATER=CHMAT2,
+                    CARA_ELEM=ORIEN,
+                     EXCIT=_F(CHARGE=CH,
+                               FONC_MULT=COEF,
+                     ),
+                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
+                                   COMPOR=COMPOR2,
+                                   DEFORMATION='PETIT',
+                                   TOUT='OUI',),),
+                     INCREMENT=(_F(LIST_INST=LINST,),),
+                     ARCHIVAGE=_F(LIST_INST=LINST,),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                     RESO_INTE='RUNGE_KUTTA_2',
+                                     ),
+                                     );
+                                     
+
+RESU3=CALC_ELEM( reuse= RESU3 ,RESULTAT= RESU3 ,
+               OPTION=('SIEF_ELNO_ELGA','EPSI_ELGA_DEPL'),
+                )
+                
+#
+#---------------------------------------------------------------------
+
+TEST_RESU(RESU=( 
+     # B 
+            _F(  RESULTAT = RESU3, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N53',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU3, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N53',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU3, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+              NOEUD = 'N53',      NOM_CMP = 'DZ',          REFERENCE='ANALYTIQUE', VALE = -1.721655E-6),
+     # C 
+            _F(  RESULTAT = RESU3, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N12',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU3, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N12',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU3, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+              NOEUD = 'N12',      NOM_CMP = 'DZ',           REFERENCE='ANALYTIQUE', VALE = -1.707308E-6),
+     # D 
+            _F(  RESULTAT = RESU3, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+              NOEUD = 'N18',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = -1.721655E-7),
+            _F(  RESULTAT = RESU3, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N18',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU3, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 3.E-3,
+              NOEUD = 'N18',      NOM_CMP = 'DZ',           REFERENCE='ANALYTIQUE', VALE = 1.434713E-8),
+     # E 
+            _F(  RESULTAT = RESU3, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N56',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU3, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N56',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU3, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+              NOEUD = 'N56',      NOM_CMP = 'DZ',           REFERENCE='ANALYTIQUE', VALE = -1.291241E-6),
+     # X 
+            _F(  RESULTAT = RESU3, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N70',      NOM_CMP = 'DX',           REFERENCE='ANALYTIQUE', VALE = 0.),
+            _F(  RESULTAT = RESU3, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              NOEUD = 'N70',      NOM_CMP = 'DY',           REFERENCE='ANALYTIQUE', VALE = -5.73885E-8),
+            _F(  RESULTAT = RESU3, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 8.E-3,
+              NOEUD = 'N70',      NOM_CMP = 'DZ',           REFERENCE='ANALYTIQUE', VALE = 4.782375E-9),
+     # CONTRAINTES EN A , E ET X
+            
+            _F(  RESULTAT = RESU3, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO_ELGA',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-3, MAILLE = 'HEX3',
+              NOEUD = 'N59',   NOM_CMP = 'SIZZ', REFERENCE='ANALYTIQUE', VALE = 2.29554E5),
+            
+            _F(  RESULTAT = RESU3, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO_ELGA',
+              CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX2',
+              NOEUD = 'N56',   NOM_CMP = 'SIZZ',          REFERENCE='ANALYTIQUE', VALE = 1.14777E5),
+            
+            _F(  RESULTAT = RESU3, NUME_ORDRE=1, NOM_CHAM='SIEF_ELNO_ELGA',
+              CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX6',
+              NOEUD = 'N70',   NOM_CMP = 'SIZZ',          REFERENCE='ANALYTIQUE', VALE = 2.29554E5))
               )
 
 FIN()

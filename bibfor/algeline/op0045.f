@@ -1,7 +1,7 @@
       SUBROUTINE OP0045(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/06/2004   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGELINE  DATE 11/08/2004   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,7 +129,7 @@ C VARIABLES LOCALES
      &  RBID, TOLDYN
       COMPLEX*16   SIGMA, CBID
       CHARACTER*1  CTYP,APPR
-      CHARACTER*8  MODES,KNEGA,METHOD,ARRET
+      CHARACTER*8  MODES,KNEGA,METHOD,ARRET,K8BID
       CHARACTER*16 MODRIG
       CHARACTER*16 TYPCON,NOMCMD,OPTIOF,OPTIOV,TYPRES
       CHARACTER*19 MASSE,RAIDE,AMOR,MATPSC,MATOPA,VECRIG
@@ -1028,6 +1028,24 @@ C     ------------------------------------------------------------------
       CALL JEDETC('V','.&',20)
       CALL JEDETC('V','&&OP0045',1)
       CALL JEDETC('V',VECRIG,1)
+
+C     ------------------------------------------------------------------
+
+      CALL GETVID(' ','SENSIBILITE',1,IERD,1,K8BID,IRET)
+
+      IF (IRET.GT.0) THEN
+        IF ((KTYP.EQ.'R').AND.(LAMOR.EQ.0)) THEN
+          CALL SEMORE(LRAIDE,LAMOR,LMASSE,NEQ,MXRESF,NCONV,
+     &            ZR(LRESUR),ZR(LVEC),
+     &            NBPARI,NBPARR,NBPARK,NBPARA,NOPARA,
+     &            ZI(LRESUI),ZK24(LRESUK))
+        ELSE
+          CALL SEMOCO(LRAIDE,LAMOR,LMASSE,NEQ,MXRESF,NCONV,
+     &            ZR(LRESUR),ZC(LVEC),
+     &            NBPARI,NBPARR,NBPARK,NBPARA,NOPARA,
+     &            ZI(LRESUI),ZK24(LRESUK))
+        ENDIF
+      ENDIF
 
 C     ------------------------------------------------------------------
 

@@ -1,10 +1,10 @@
-      SUBROUTINE LCMMJP ( MOD, NMAT, MATER,
+      SUBROUTINE LCMMJP ( MOD, NMAT, MATER,TEMPF,
      &            TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,NR,NVI,
      &                  SIGF,VINF,SIGD,VIND, 
      &                   DSDE )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,25 +48,25 @@ C      DSDE = INVERSE(Y0-Y1*INVERSE(Y3)*Y2)
 C     ----------------------------------------------------------------
       INTEGER         NDT , NDI , NMAT , NVI,I,J,NR, NVV
 C DIMENSIONNEMENT DYNAMIQUE
-      REAL*8          DRDY(NR,NR),Y0(6*6),Y1(6*(NVI-1)),DSDE(6,6)
-      REAL*8          MATER(NMAT*2),Y2((NVI-1)*6),KYL(6,6),DET,I6(6,6)
-      REAL*8          Y3((NVI-1)*(NVI-1)),HOOK(6,6),Y2D((NVI-1)*6)
-      REAL*8          YD(NR),YF(NR),DY(NR),Y2Y1((NVI-1)*(NVI-1)),UN,ZERO
+      REAL*8          DRDY(NR,NR),Y0(6,6),Y1(6,(NVI-7)),DSDE(6,6)
+      REAL*8          MATER(NMAT*2),Y2((NVI-7),6),KYL(6,6),DET,I6(6,6)
+      REAL*8          Y3((NVI-7),(NVI-7)),HOOK(6,6)
+      REAL*8          YD(NR),YF(NR),DY(NR),UN,ZERO,TEMPF
       CHARACTER*8     MOD
       LOGICAL         IRET
-      PARAMETER       ( UN   =  1.D0   )
-      PARAMETER       ( ZERO =  0.D0   )
+C      PARAMETER       ( UN   =  1.D0   )
+C      PARAMETER       ( ZERO =  0.D0   )
       
       INTEGER         NBCOMM(NMAT,3)
       REAL*8  SIGF(*),SIGD(*),VIND(*),VINF(*),TIMED,TIMEF,PGL(3,3)
       CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
       COMMON /TDIM/ NDT,NDI
-      DATA  I6        /UN     , ZERO  , ZERO  , ZERO  ,ZERO  ,ZERO,
-     1                 ZERO   , UN    , ZERO  , ZERO  ,ZERO  ,ZERO,
-     2                 ZERO   , ZERO  , UN    , ZERO  ,ZERO  ,ZERO,
-     3                 ZERO   , ZERO  , ZERO  , UN    ,ZERO  ,ZERO,
-     4                 ZERO   , ZERO  , ZERO  , ZERO  ,UN    ,ZERO,
-     5                 ZERO   , ZERO  , ZERO  , ZERO  ,ZERO  ,UN/
+C      DATA  I6        /UN     , ZERO  , ZERO  , ZERO  ,ZERO  ,ZERO,
+C     1                 ZERO   , UN    , ZERO  , ZERO  ,ZERO  ,ZERO,
+C     2                 ZERO   , ZERO  , UN    , ZERO  ,ZERO  ,ZERO,
+C     3                 ZERO   , ZERO  , ZERO  , UN    ,ZERO  ,ZERO,
+C     4                 ZERO   , ZERO  , ZERO  , ZERO  ,UN    ,ZERO,
+C     5                 ZERO   , ZERO  , ZERO  , ZERO  ,ZERO  ,UN/
 
 C
 C - RECUPERER LES SOUS-MATRICES BLOC
@@ -80,31 +80,49 @@ C
       CALL R8AXPY( NR, -1.D0, YD, 1,DY, 1)
       
 C     RECALCUL DE LA DERNIERE MATRICE JACOBIENNE      
-      CALL LCMMJA ( MOD, NMAT, MATER, TIMED, TIMEF,
+      CALL LCMMJA ( MOD, NMAT, MATER, TIMED, TIMEF, TEMPF,
      &              COMP,NBCOMM, CPMONO, PGL,NR,NVI,YF,DY,DRDY)
 C     NVV est le nombre de varaibles internes liées aux systemes de
 C     glissement, il y en a 3*Ns     
+
       NVV=NVI-1-6
-      DET=0.D0
-      CALL LCICMA (DRDY,NR,NR,NDT,NDT,1,1 ,Y0 ,6,6,1,1)
-      CALL LCICMA (DRDY,NR,NR,NDT,NVV,NDT,NDT+7,Y1,6,NVV,1,1)
-      CALL LCICMA (DRDY,NR,NR,NVV,NDT,NDT+7,1,Y2,NVV,6,1,1)
-      CALL LCICMA (DRDY,NR,NR,NVV,NVV,NDT+7,NDT+7,Y3,NVV,NVV,1,1)
-      IRET = .TRUE.
       
+      DO 10 I=1,6
+      DO 10 J=1,6
+         Y0(I,J)=DRDY(I,J)
+ 10   CONTINUE
+ 
+      DO 20 I=1,6
+      DO 20 J=1,NVV
+         Y1(I,J)=DRDY(NDT+I,NDT+6+J)
+ 20   CONTINUE
+      
+      DO 30 I=1,NVV
+      DO 30 J=1,6
+         Y2(I,J)=DRDY(NDT+6+I,J)
+ 30   CONTINUE
+      
+      DO 40 I=1,NVV
+      DO 40 J=1,NVV
+         Y3(I,J)=DRDY(NDT+6+I,NDT+6+J)
+ 40   CONTINUE       
+       
 C       Y2=INVERSE(Y3)*Y2
+      IRET = .TRUE.
+      DET=0.D0      
       CALL MGAUSS ( Y3, Y2, NVV, NVV, 6, DET, IRET )
       IF (.NOT.IRET) CALL UTMESS('F','LCMMJP','Y3 SINGULIERE')
-      
+
 C      KYL=Y1*INVERSE(Y3)*Y2
       CALL PROMAT(Y1,6,6,NVV,Y2,NVV,NVV,6,KYL)
       
 C      Y0=Y0+Y1*INVERSE(Y3)*Y2
       CALL R8AXPY(36, 1.D0, KYL, 1,Y0, 1)
-      CALL LCEQMA ( I6     , DSDE           )
-      
 C      DSDE = INVERSE(Y0-Y1*INVERSE(Y3)*Y2)
-      CALL MGAUSS ( Y0, DSDE, 6, 6, 6, DET, IRET )
-      IF (.NOT.IRET) CALL UTMESS('F','LCMMJP','Y0 SINGULIERE')
-
+      CALL LCEQMN ( 6 , Y0,DSDE           )
+      CALL INVALM (DSDE, 6, 6)
+        
+C      CALL LCEQMA ( I6     , DSDE           )      
+C      CALL MGAUSS ( Y0, DSDE, 6, 6, 6, DET, IRET )
+C      IF (.NOT.IRET) CALL UTMESS('F','LCMMJP','Y0 SINGULIERE')
       END

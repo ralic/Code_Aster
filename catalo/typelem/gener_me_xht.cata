@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/07/2004   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF TYPELEM  DATE 11/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -124,6 +124,8 @@ OPTION__
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  ECORR_R  PCORRMR  ECORR_R  PCORRPR
                                      E1NEUT_R PLEVSET
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
+    REFE_FORC_NODA      -1    IN__   XXXXXXX  XXXXXXX
+                              OUT__  XXXXXXX  XXXXXXX
     RIGI_MECA           11    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  EHYDRER  PHYDRER  CMATERC  PMATERC
                                      NTEMPER  PSECHER  NTEMPER  PTEMPER
                               OUT__  MMATUUR  PMATUUR

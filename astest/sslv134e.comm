@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 11/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,27 +133,36 @@ THETA=CALC_THETA(
 
 G=CALC_G_THETA_T(         MODELE=MO,
                           RESULTAT=RESU,
-                     EXCIT=_F(CHARGE=CH2,),
-                             THETA=THETA,
-                         COMP_ELAS=_F(  RELATION = 'ELAS'),
-                        CHAM_MATER=CHMAT
+                          EXCIT=(_F(CHARGE = CHCL),
+                                 _F(CHARGE = CH1,FONC_MULT = F1),
+                                 _F(CHARGE = CH2,FONC_MULT = F2),),
+                          THETA=THETA,
+                          COMP_ELAS=_F(  RELATION = 'ELAS'),
+                          CHAM_MATER=CHMAT
                    )
 
 GBIL=CALC_G_THETA_T(
-                              MODELE=MO,
+                          MODELE=MO,
                           CHAM_MATER=CHMAT,
-                               THETA=THETA,
-                            RESULTAT=RESU,
-                              OPTION='G_BILINEAIRE',
+                          THETA=THETA,
+                          RESULTAT=RESU,
+                          EXCIT=(_F(CHARGE = CHCL),
+                                 _F(CHARGE = CH1,FONC_MULT = F1),
+                                 _F(CHARGE = CH2,FONC_MULT = F2),),
+                          OPTION='G_BILINEAIRE',
                           COMP_ELAS=_F(  RELATION = 'ELAS')
                        )
 
 GMAX=CALC_G_THETA_T(
-                              MODELE=MO,
+                          MODELE=MO,
                           CHAM_MATER=CHMAT,
-                               THETA=THETA,
-                            RESULTAT=RESU,BORNES=(
-                              _F(  NUME_ORDRE = 1,
+                          THETA=THETA,
+                          RESULTAT=RESU,
+                          EXCIT=(_F(CHARGE = CHCL),
+                                 _F(CHARGE = CH1,FONC_MULT = F1),
+                                 _F(CHARGE = CH2,FONC_MULT = F2),),
+                          BORNES=(
+                          _F(  NUME_ORDRE = 1,
                                        VALE_MIN = 0.,
                                        VALE_MAX = 1.),
                                      _F(  NUME_ORDRE = 2,
@@ -171,20 +180,14 @@ GMAX=CALC_G_THETA_T(
 
 IMPR_TABLE      ( 
                    #FICHIER  = 'AGRAF',
-                  FICHIER         =  'RESULTAT',
+                  UNITE=8,
                   TABLE           =  GMAX,
                 );
 
 IMPR_TABLE      (
                   TABLE           =  GBIL,
-                  FICHIER         =  'RESULTAT',
+                  UNITE=8,
                 );
-
-#IMPR_TABLE      (
-#                  TABLE           :  G
-#                  FICHIER         :  'RESULTAT'
-#                );
-
 
 TEST_TABLE(        TABLE=G,
                   NOM_PARA='G',

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,6 +104,21 @@ DSATBO=DEFI_CONSTANTE(VALE=0.,);
 
 
 FICK=DEFI_CONSTANTE(VALE=6.E-10,);
+# COEF. DE FICK
+#
+# Fick variant enPAD - n a pour but que de tester cette fonction puisque c est egal a un
+#************************************                                                                      
+LIPA=DEFI_LIST_REEL(DEBUT=0.1,
+                   INTERVALLE=_F(JUSQU_A=1.000001E5,
+                                 PAS=1.E3,),);
+FA_PA = FORMULE(REEL = '''(REEL:PAD) = 1.+PAD-PAD''');  
+
+FAPA  = CALC_FONC_INTERP ( FONCTION    =  FA_PA     ,
+                            LIST_PARA   =  LIPA    ,
+                            NOM_PARA    = 'PAD'      ,
+                            PROL_GAUCHE = 'CONSTANT' ,
+                            PROL_DROITE = 'CONSTANT' ,
+                            INFO        = 2          ,);
 
 KINTBO=DEFI_CONSTANTE(VALE=9.9999999999999995E-20,);
 HENRY=DEFI_CONSTANTE(VALE=50000.,);
@@ -156,6 +171,7 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15000000E8,
                                    D_PERM_PRES_GAZ=ZERO,
                                    FICKV_T=ZERO,
                                    FICKA_T=FICK,
+                                   FICKA_PA=FAPA,
                                    LAMB_T=ZERO,
                                    ),);
 

@@ -1,13 +1,13 @@
       SUBROUTINE RK21CO( COMP,   MOD,     IMAT, MATCST,NBCOMM,CPMONO,
-     &                   N0,    NMAT,    Y,
+     &                   NVI,    NMAT,    Y,
      &                   KP,    EE,      A,       H, PGL,COTHE,
      &                   COEFF, DCOTHE,  DCOEFF,  E,      NU,
-     &                   ALPHA, X,       PAS,     SIGI,   EPSD,
+     &                   ALPHA, COEL, X,       PAS,     SIGI,   EPSD,
      &                   DETOT, TPERD,   DTPER,   TPEREF, BZ )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,7 @@ C     IN  COMP     :  NOM DU MODELE DE COMPORTEMENT
 C         MOD     :  TYPE DE MODELISATION
 C         IMAT    :  CODE DU MATERIAU CODE
 C         MATCST  : 'OUI'  'NAP'  'NON' 
-C         N0      :  NOMBRE DE VARIABLES INTERNES 
+C         NVI      :  NOMBRE DE VARIABLES INTERNES 
 C         NMAT    :  NOMBRE DE PARAMETRES MATERIAU INELASTIQUE
 C         Y       :  VARIABLES INTERNES 
 C         KP      :  INDICE POUR L'INTEGRATION
@@ -63,43 +63,43 @@ C         BZ      :  VARIABLE LOGIQUE :
 C                   'VRAI' ON UTILISE LE MODELE POLY PILVIN
 C                   'FAUX' ON UTILISE LE MODELE POLY B.Z.
 C     ----------------------------------------------------------------
+      
+      INTEGER    NMAT,IMAT , NBCOMM(NMAT,3),KP,NVI,I
       CHARACTER*16 COMP(*),CPMONO(5*NMAT+1)
       CHARACTER*8 MOD
-      INTEGER         IMAT , NBCOMM(NMAT,3)
       CHARACTER*3     MATCST
       LOGICAL BZ
-      PARAMETER (NF=1688)
-      REAL*8 E, NU, ALPHA, PGL(3,3)
-      REAL*8 X, PAS
+      REAL*8 E, NU, ALPHA, PGL(3,3), COEL(NMAT)
+      REAL*8 X, PAS, H, HS2
       REAL*8 TPERD, DTPER, TPEREF
-      REAL*8 COTHE(3),DCOTHE(3)
+      REAL*8 COTHE(NMAT),DCOTHE(NMAT)
       REAL*8 SIGI(6),EPSD(6),DETOT(6)
-      REAL*8 Y(NF)
-      REAL*8 F(NF)
+      REAL*8 Y(NVI)
+      REAL*8 F(NVI)
       REAL*8 COEFF(NMAT),DCOEFF(NMAT)
-      REAL*8 EE(NF),A(NF)
+      REAL*8 EE(NVI),A(NVI)
 C
       IF (KP.EQ.1) THEN
         CALL RDIF01(COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,
-     &              N0,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,
-     &              E,NU,ALPHA,X,PAS,SIGI,EPSD,DETOT,TPERD,DTPER,
+     &              NVI,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,
+     &              E,NU,ALPHA,COEL,X,PAS,SIGI,EPSD,DETOT,TPERD,DTPER,
      &              TPEREF,F,BZ)
-        DO 10 I=1,N0
+        DO 10 I=1,NVI
           A(I)=F(I)
           Y(I)=Y(I)+A(I)*H
    10   CONTINUE
       ELSE
-        DO 11 I=1,N0
+        DO 11 I=1,NVI
           Y(I)=Y(I)+A(I)*H
    11   CONTINUE
       END IF
       X=X+H
       CALL RDIF01(COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,
-     &            N0,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,
-     &            E,NU,ALPHA,X,PAS,SIGI,EPSD,DETOT,TPERD,DTPER,
+     &            NVI,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,
+     &            E,NU,ALPHA,COEL,X,PAS,SIGI,EPSD,DETOT,TPERD,DTPER,
      &            TPEREF,F,BZ)
       HS2=0.5D0*H
-      DO 12 I=1,N0
+      DO 12 I=1,NVI
         EE(I)=(F(I)-A(I))*HS2
         Y(I)=Y(I)+EE(I)
    12   CONTINUE

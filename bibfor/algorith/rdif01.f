@@ -1,13 +1,13 @@
         SUBROUTINE RDIF01( COMP,   MOD,   IMAT,   MATCST,NBCOMM, 
      &                     CPMONO,NVI,    NMAT,   VINI,
      &                     COTHE, COEFF, DCOTHE, DCOEFF,PGL, E,
-     &                     NU,    ALPHA, X,      DTIME,  SIGI,
+     &                     NU,    ALPHA, COEL,X,   DTIME,  SIGI,
      &                     EPSD,  DETOT, TPERD,  DTPER,  TPEREF,
      &                     DVIN,  BZ )
-        IMPLICIT REAL*8 (A-H,O-Z)
+        IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,18 +56,18 @@ C           TPEREF  :  TEMPERATURE DE REFERENCE
 C           DVIN    :  DERIVEES DES VARIABLES INTERNES A T
 C           BZ      :  VARIABLE LOGIQUE
 C       ----------------------------------------------------------------
+        INTEGER IMAT,I,NMAT,NVI,NBCOMM(NMAT,3),NCOE
         CHARACTER*16 LOI,COMP(*),CPMONO(5*NMAT+1)
         CHARACTER*8 MOD
-        INTEGER IMAT,NBCOMM(NMAT,3),I
         CHARACTER*3 MATCST
         REAL*8 E, NU, ALPHA,PGL(3,3)
         LOGICAL BZ
-        REAL*8 X, DTIME
+        REAL*8 X, DTIME,COEL(NMAT)
         REAL*8 TPERD, DTPER, TPEREF
-        REAL*8 COTHE(3),DCOTHE(3)
+        REAL*8 COTHE(NMAT),DCOTHE(NMAT)
         REAL*8 COEFF(NMAT),DCOEFF(NMAT)
         REAL*8 SIGI(6),EPSD(6),DETOT(6)
-        REAL*8 COEFT(50)
+        REAL*8 COEFT(NMAT)
         REAL*8 VINI(NVI)
         REAL*8 DVIN(NVI)
 C
@@ -75,35 +75,36 @@ C
         IF (LOI(1:8).EQ.'MONOCRIS') THEN
            NCOE=NBCOMM(NMAT,3)
           CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,
-     &                E,NU,ALPHA)
+     &                E,NU,ALPHA,NMAT,COEL)
           CALL LCMMON(COMP,NBCOMM,CPMONO,NMAT,NVI,VINI,X,DTIME,E,NU,
-     &     ALPHA,PGL,MOD,COEFT,SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,DVIN)
+     &     ALPHA,PGL,MOD,COEFT,SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,
+     &     COEL,DVIN)
 
         ELSEIF (LOI(1:9).EQ.'VISCOCHAB') THEN
           NCOE=25
             CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,
-     &                E,NU,ALPHA)
-          CALL RKDCHA(MOD,NVI,VINI,COEFT,E,NU,ALPHA,X,DTIME,
+     &                E,NU,ALPHA,NMAT,COEL)
+          CALL RKDCHA(MOD,NVI,VINI,COEFT,E,NU,ALPHA,X,DTIME,NMAT,COEL,
      &                SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,DVIN)
         ELSE IF (LOI(1:9).EQ.'POLY_CFC') THEN
           NCOE=13
           IF (BZ) THEN
             CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,
-     &                E,NU,ALPHA)
-            CALL RKDCFC(MOD,NVI,VINI,COEFT,E,NU,ALPHA,X,DTIME,
+     &                E,NU,ALPHA,NMAT,COEL)
+            CALL RKDCFC(MOD,NVI,VINI,COEFT,E,NU,ALPHA,X,DTIME,NMAT,COEL,
      &                  SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,DVIN,IMAT)
           ELSE
             CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,
-     &                E,NU,ALPHA)
-            CALL RKDCBZ(MOD,NVI,VINI,COEFT,E,NU,ALPHA,X,DTIME,
+     &                E,NU,ALPHA,NMAT,COEL)
+            CALL RKDCBZ(MOD,NVI,VINI,COEFT,E,NU,ALPHA,X,DTIME,NMAT,COEL,
      &                  SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,DVIN,IMAT)
           END IF
         ELSE  IF (LOI(1:9).EQ.'VENDOCHAB') THEN
           NCOE=9
             CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,
-     &                E,NU,ALPHA)
+     &                E,NU,ALPHA,NMAT,COEL)
           CALL RKDVEC(MOD,IMAT,MATCST,NVI,VINI,COEFT,E,NU,
-     &                ALPHA,X,DTIME,SIGI,EPSD,DETOT,TPERD,
+     &                ALPHA,X,DTIME,NMAT,COEL,SIGI,EPSD,DETOT,TPERD,
      &                DTPER,TPEREF,DVIN)
         END IF
         END
