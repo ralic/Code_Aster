@@ -1,0 +1,250 @@
+
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE  PLAQUE CARREE COMPOSITE SOUS PRESSION UNIFORME
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#---------------------------------------------------------------------
+#         - MODELISATION AVEC DES ELEMENTS 'DST'(TRIA3)
+#---------------------------------------------------------------------
+
+DEBUT(CODE=_F(NOM='SSLS115F',
+              NIV_PUB_WEB='INTERNET',),);
+
+PRE_GIBI();
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON',),);
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=(_F(GROUP_MA='AB',),
+                             _F(GROUP_MA='BC',),
+                             _F(GROUP_MA='CD',),
+                             _F(GROUP_MA='DA',),),);
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(GROUP_MA='MAIL',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='DST',),);
+
+MA=MODI_MAILLAGE(reuse =MA,
+                 MAILLAGE=MA,
+                 ORIE_NORM_COQUE=_F(GROUP_MA='MAIL1',
+                                    VECT_NORM=(0.0,0.0,1.0,),
+                                    GROUP_NO='C',),
+                 MODELE=MO,
+                 INFO=2,);
+
+CAR_ELE=AFFE_CARA_ELEM(MODELE=MO,
+                       COQUE=_F(GROUP_MA='MAIL',
+                                EPAIS=0.1,
+                                ANGL_REP=(20.0,-30.0,),),);
+
+MAT1=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=3.4156,
+                                E_T=1.793,
+                                NU_LT=0.44,
+                                G_LT=1.0,
+                                G_LN=0.608,
+                                G_TN=1.015,),);
+
+MAT2=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=0.34156,
+                                E_T=0.1793,
+                                NU_LT=0.44,
+                                G_LT=0.1,
+                                G_LN=0.0608,
+                                G_TN=0.1015,),);
+
+MULTI=DEFI_COQU_MULT(COUCHE=(_F(EPAIS=0.01,
+                                MATER=MAT1,
+                                ORIENTATION=0.0,),
+                             _F(EPAIS=0.08,
+                                MATER=MAT2,
+                                ORIENTATION=0.0,),
+                             _F(EPAIS=0.01,
+                                MATER=MAT1,
+                                ORIENTATION=0.0,),),);
+
+CHAM_MAT=AFFE_MATERIAU(MAILLAGE=MA,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MULTI,),);
+
+CHA=AFFE_CHAR_MECA(MODELE=MO,
+                   LIAISON_OBLIQUE=(_F(GROUP_NO='AB',
+                                       ANGL_NAUT=(20.0,30.0,0.0,),
+                                       DZ=0.0,),
+                                    _F(GROUP_NO='AB',
+                                       ANGL_NAUT=(20.0,30.0,0.0,),
+                                       DRY=0.0,),
+                                    _F(GROUP_NO='BC',
+                                       ANGL_NAUT=(20.0,30.0,0.0,),
+                                       DX=0.0,),
+                                    _F(GROUP_NO='BC',
+                                       ANGL_NAUT=(20.0,30.0,0.0,),
+                                       DRY=0.0,),
+                                    _F(GROUP_NO='CD',
+                                       ANGL_NAUT=(20.0,30.0,0.0,),
+                                       DY=0.0,),
+                                    _F(GROUP_NO='CD',
+                                       ANGL_NAUT=(20.0,30.0,0.0,),
+                                       DRX=0.0,),
+                                    _F(GROUP_NO='DA',
+                                       ANGL_NAUT=(20.0,30.0,0.0,),
+                                       DZ=0.0,),
+                                    _F(GROUP_NO='DA',
+                                       ANGL_NAUT=(20.0,30.0,0.0,),
+                                       DRX=0.0,),),
+                   FORCE_COQUE=_F(TOUT='OUI',
+                                  PRES=-1.0,),);
+
+RESU=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CHAM_MAT,
+                   CARA_ELEM=CAR_ELE,
+                   EXCIT=_F(CHARGE=CHA,),);
+#
+#COUCHE 1 : CALCUL DES CONTRAINTES
+
+SIG_C1_S=CALC_ELEM(
+                   RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   OPTION='SIGM_ELNO_DEPL',
+                   NUME_COUCHE=1,
+                   NIVE_COUCHE='SUP',
+                   );
+#
+
+SIG_C1_I=CALC_ELEM(
+                   RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   OPTION='SIGM_ELNO_DEPL',
+                   NUME_COUCHE=1,
+                   NIVE_COUCHE='INF',
+                   );
+#COUCHE 2 : CALCUL DES CONTRAINTES
+
+SIG_C2_S=CALC_ELEM(
+                   RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   OPTION='SIGM_ELNO_DEPL',
+                   NUME_COUCHE=2,
+                   NIVE_COUCHE='SUP',
+                   );
+
+SIG_C2_I=CALC_ELEM(
+                   RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   OPTION='SIGM_ELNO_DEPL',
+                   NUME_COUCHE=2,
+                   NIVE_COUCHE='INF',
+                   );
+#COUCHE 3 : CALCUL DES CONTRAINTES
+
+SIG_C3_S=CALC_ELEM(
+                   RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   OPTION='SIGM_ELNO_DEPL',
+                   NUME_COUCHE=3,
+                   NIVE_COUCHE='SUP',
+                   );
+
+SIG_C3_I=CALC_ELEM(
+                   RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   OPTION='SIGM_ELNO_DEPL',
+                   NUME_COUCHE=3,
+                   NIVE_COUCHE='INF',
+                   );
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='C',
+                   VALE=36.304,
+                   PRECISION=0.003,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='C',
+                   VALE=7.1687,
+                   PRECISION=0.003,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='C',
+                   VALE=19.696,
+                   PRECISION=0.003,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=SIG_C3_I,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='M72',
+                   GROUP_NO='C',
+                   VALE=47.1,
+                   PRECISION=0.12,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=SIG_C3_S,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='M72',
+                   GROUP_NO='C',
+                   VALE=58.8,
+                   PRECISION=0.12,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=SIG_C2_I,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='M72',
+                   GROUP_NO='C',
+                   VALE=-4.71,
+                   PRECISION=0.12,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=SIG_C2_S,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='M72',
+                   GROUP_NO='C',
+                   VALE=4.71,
+                   PRECISION=0.12,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=SIG_C1_I,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='M72',
+                   GROUP_NO='C',
+                   VALE=-58.8,
+                   PRECISION=0.12,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=SIG_C1_S,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='M72',
+                   GROUP_NO='C',
+                   VALE=-47.1,
+                   PRECISION=0.12,
+                   REFERENCE='SOURCE_EXTERNE',),),);
+
+FIN();

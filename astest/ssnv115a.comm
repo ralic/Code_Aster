@@ -1,4 +1,4 @@
-# MODIF  DATE 05/04/2004   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TOLE ONDULEE EN TRACTION (MISES ECR. ISOT. 2D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,8 +82,6 @@ U2=CALC_ELEM( reuse=U2,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=U2,
-                            MODELE=MO,
-                        CHAM_MATER=CM
               )
 
 #==============================================================
@@ -187,8 +185,6 @@ U2=CALC_ELEM( reuse=U2,
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=U2,
                         NUME_ORDRE=( 6, 7, 8, 9, 10, ),
-                            MODELE=MO,
-                        CHAM_MATER=CM
               )
 
 TEST_RESU(RESU=(
@@ -226,8 +222,6 @@ V=CALC_ELEM( reuse=V,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=V,
-                            MODELE=MO,
-                        CHAM_MATER=CM
               )
 
 TEST_RESU(RESU=(

@@ -1,0 +1,215 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# RESPONSABLE JMBHH01 J.M.PROIX
+# TITRE HEMISPHERE DOUBLEMENT PINCE MODELISATION 300 SHB8
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ELEMENT SHB8PS - A.COMBESCURE - S.BAGUET -INSA LYON 2003
+#
+#
+
+
+DEBUT(CODE=_F(NOM='SSLS105C',NIV_PUB_WEB='INTERNET'),);
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=6.825E7,
+                          NU=0.3,),);
+
+#  300 SHB8
+
+
+PRE_GIBI(UNITE_GIBI=21,UNITE_MAILLAGE=31);
+
+MAIL31=LIRE_MAILLAGE(UNITE=31);
+
+MAIL31=MODI_MAILLAGE(reuse=MAIL31,MAILLAGE=MAIL31,
+ORIE_SHB8=_F(GROUP_MA='VOLTOT'),)
+
+MAIL31=DEFI_GROUP(reuse =MAIL31,
+                MAILLAGE=MAIL31,
+                CREA_GROUP_NO=(_F(GROUP_MA='SUD1',),
+                               _F(GROUP_MA='SUG1',),),);
+                               
+
+MODMEC31=AFFE_MODELE(MAILLAGE=MAIL31,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='SHB8',),);
+                            
+
+CHM31=AFFE_MATERIAU(MAILLAGE=MAIL31,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=MAT,),);
+
+
+CHARG31=AFFE_CHAR_MECA(MODELE=MODMEC31,
+                      DDL_IMPO=(_F(GROUP_MA=('SUD1'),
+                                   DY=0.0,),
+                                _F(GROUP_MA='SUG1',
+                                   DX=0.0,),
+                                _F(GROUP_NO='PCE',
+                                   DZ=0.0,),),
+                      FORCE_NODALE=(_F(GROUP_NO='PAE',
+                                      FX=-2.,),
+                                    _F(GROUP_NO='PBE',
+                                      FY=2.,),),);
+
+RESU31=MECA_STATIQUE(MODELE=MODMEC31,
+                    CHAM_MATER=CHM31,
+                    EXCIT=_F(CHARGE=CHARG31,),);
+
+RESU31=CALC_ELEM(reuse =RESU31,
+                OPTION='SIEF_ELNO_ELGA',
+                RESULTAT=RESU31,);
+
+IMPR_RESU(RESU=_F(FORMAT='RESULTAT',
+                   RESULTAT=RESU31,
+                   NOM_CHAM=('DEPL','SIEF_ELNO_ELGA'),
+                   VALE_MAX='OUI',VALE_MIN='OUI',),
+                   )
+                   
+TEST_RESU(RESU=(
+            _F(  RESULTAT = RESU31, NOM_CHAM='DEPL', PRECISION = 20.E-2, REFERENCE='SOURCE_EXTERNE',NUME_ORDRE=1,
+              GROUP_NO = 'PAE',      NOM_CMP = 'DX',           VALE = -0.185),
+
+            _F(   RESULTAT = RESU31, NOM_CHAM='DEPL',  PRECISION = 20.E-2, REFERENCE='SOURCE_EXTERNE',NUME_ORDRE=1,
+              GROUP_NO = 'PBE',      NOM_CMP = 'DY',           VALE = 0.185),
+              ),)
+
+
+#  1200 SHB8
+
+
+PRE_GIBI(UNITE_GIBI=22,UNITE_MAILLAGE=32);
+
+MAIL32=LIRE_MAILLAGE(UNITE=32);
+
+MAIL32=MODI_MAILLAGE(reuse=MAIL32,MAILLAGE=MAIL32,
+ORIE_SHB8=_F(GROUP_MA='VOLTOT'),)
+
+MAIL32=DEFI_GROUP(reuse =MAIL32,
+                MAILLAGE=MAIL32,
+                CREA_GROUP_NO=(_F(GROUP_MA='SUD1',),
+                               _F(GROUP_MA='SUG1',),),);
+                               
+
+MODMEC32=AFFE_MODELE(MAILLAGE=MAIL32,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='SHB8',),);
+                            
+
+CHM32=AFFE_MATERIAU(MAILLAGE=MAIL32,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=MAT,),);
+
+
+CHARG32=AFFE_CHAR_MECA(MODELE=MODMEC32,
+                      DDL_IMPO=(_F(GROUP_MA=('SUD1'),
+                                   DY=0.0,),
+                                _F(GROUP_MA='SUG1',
+                                   DX=0.0,),
+                                _F(GROUP_NO='PCE',
+                                   DZ=0.0,),),
+                      FORCE_NODALE=(_F(GROUP_NO='PAE',
+                                      FX=-2.,),
+                                    _F(GROUP_NO='PBE',
+                                      FY=2.,),),);
+
+RESU32=MECA_STATIQUE(MODELE=MODMEC32,
+                    CHAM_MATER=CHM32,
+                    EXCIT=_F(CHARGE=CHARG32,),);
+
+RESU32=CALC_ELEM(reuse =RESU32,
+                OPTION='SIEF_ELNO_ELGA',
+                RESULTAT=RESU32,);
+
+IMPR_RESU(RESU=_F(FORMAT='RESULTAT',
+                   RESULTAT=RESU32,
+                   NOM_CHAM=('DEPL','SIEF_ELNO_ELGA'),
+                   VALE_MAX='OUI',VALE_MIN='OUI',),
+                   )
+                   
+TEST_RESU(RESU=(
+            _F(  RESULTAT = RESU32, NOM_CHAM='DEPL', PRECISION = 2.E-2, REFERENCE='SOURCE_EXTERNE',NUME_ORDRE=1,
+              GROUP_NO = 'PAE',      NOM_CMP = 'DX',           VALE = -0.185),
+
+            _F(   RESULTAT = RESU32, NOM_CHAM='DEPL',  PRECISION = 2.E-2, REFERENCE='SOURCE_EXTERNE',NUME_ORDRE=1,
+              GROUP_NO = 'PBE',      NOM_CMP = 'DY',           VALE = 0.185),
+              ),)
+
+#  2700 SHB8
+
+
+PRE_GIBI(UNITE_GIBI=23,UNITE_MAILLAGE=33);
+
+MAIL33=LIRE_MAILLAGE(UNITE=33);
+
+MAIL33=MODI_MAILLAGE(reuse=MAIL33,MAILLAGE=MAIL33,
+ORIE_SHB8=_F(GROUP_MA='VOLTOT'),)
+
+MAIL33=DEFI_GROUP(reuse =MAIL33,
+                MAILLAGE=MAIL33,
+                CREA_GROUP_NO=(_F(GROUP_MA='SUD1',),
+                               _F(GROUP_MA='SUG1',),),);
+                               
+
+MODMEC33=AFFE_MODELE(MAILLAGE=MAIL33,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='SHB8',),);
+                            
+
+CHM33=AFFE_MATERIAU(MAILLAGE=MAIL33,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=MAT,),);
+
+
+CHARG33=AFFE_CHAR_MECA(MODELE=MODMEC33,
+                      DDL_IMPO=(_F(GROUP_MA=('SUD1'),
+                                   DY=0.0,),
+                                _F(GROUP_MA='SUG1',
+                                   DX=0.0,),
+                                _F(GROUP_NO='PCE',
+                                   DZ=0.0,),),
+                      FORCE_NODALE=(_F(GROUP_NO='PAE',
+                                      FX=-2.,),
+                                    _F(GROUP_NO='PBE',
+                                      FY=2.,),),);
+
+RESU33=MECA_STATIQUE(MODELE=MODMEC33,
+                    CHAM_MATER=CHM33,
+                    EXCIT=_F(CHARGE=CHARG33,),);
+
+RESU33=CALC_ELEM(reuse =RESU33,
+                OPTION='SIEF_ELNO_ELGA',
+                RESULTAT=RESU33,);
+
+IMPR_RESU(RESU=_F(FORMAT='RESULTAT',
+                   RESULTAT=RESU33,
+                   NOM_CHAM=('DEPL','SIEF_ELNO_ELGA'),
+                   VALE_MAX='OUI',VALE_MIN='OUI',),
+                   )
+                   
+TEST_RESU(RESU=(
+            _F(  RESULTAT = RESU33, NOM_CHAM='DEPL', PRECISION = 0.3E-2, REFERENCE='SOURCE_EXTERNE',NUME_ORDRE=1,
+              GROUP_NO = 'PAE',      NOM_CMP = 'DX',           VALE = -0.185),
+
+            _F(   RESULTAT = RESU33, NOM_CHAM='DEPL',  PRECISION = 0.3E-2, REFERENCE='SOURCE_EXTERNE',NUME_ORDRE=1,
+              GROUP_NO = 'PBE',      NOM_CMP = 'DY',           VALE = 0.185),
+              ),)
+
+FIN()

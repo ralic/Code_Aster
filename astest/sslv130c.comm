@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2004   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,12 +83,8 @@ EVOL   = STAT_NON_LINE (
              REAC_ITER= 1 ), ) ;
              
 EVOL = CALC_ELEM (reuse=EVOL,
-              MODELE= MO,
-              CHAM_MATER= CM,
               RESULTAT= EVOL,
-              EXCIT= (_F(CHARGE= CLIM),
-                      _F(CHARGE= CH,
-                         FONC_MULT= RAMPE),),
+              
               OPTION= (
                'EPSI_ELNO_DEPL',
                'SIEF_ELNO_ELGA',
@@ -215,8 +211,6 @@ EVOL2   = STAT_NON_LINE (
                REAC_ITER= 1 ),) ;
 
 EVOL2 = CALC_ELEM (reuse=EVOL2,
-              MODELE= MO,
-              CHAM_MATER= CM,
               RESULTAT= EVOL2,
               OPTION= (
                'EPSI_ELNO_DEPL',

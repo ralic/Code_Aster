@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2002   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE DERIVEES PAR RAPPORT A UNE VARIATION DE DOMAINE.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -105,8 +105,7 @@ RE_THE_1=THER_LINEAIRE(  MODELE=MOD_THER,
 
 #
 
-RE_THE_1=CALC_ELEM( reuse=RE_THE_1,        MODELE=MOD_THER,
-                            CHAM_MATER=CH_MATE,
+RE_THE_1=CALC_ELEM( reuse=RE_THE_1,        
                               RESULTAT=RE_THE_1,
                           SENSIBILITE=(THETA),
                                OPTION=( 'DETE_ELNO_DLTE', )
@@ -129,8 +128,7 @@ RE_THE_2=THER_LINEAIRE(    MODELE=MOD_THER,
                          )
 
 #
-RE_THE_2=CALC_ELEM( reuse=RE_THE_2,        MODELE=MOD_THER,
-                           CHAM_MATER=CH_MATE,
+RE_THE_2=CALC_ELEM( reuse=RE_THE_2,        
                              RESULTAT=RE_THE_2,
                          SENSIBILITE=(THETA),
                               OPTION=( 'DETE_ELNO_DLTE', )
@@ -203,10 +201,9 @@ RE_MEC_1=MECA_STATIQUE(  MODELE=MOD_MECA,
                          )
 
 #
-RE_MEC_1=CALC_ELEM( reuse=RE_MEC_1,        MODELE=MOD_MECA,
-                           CHAM_MATER=CH_MATE,
+RE_MEC_1=CALC_ELEM( reuse=RE_MEC_1,        
                              RESULTAT=RE_MEC_1,
-                               EXCIT=_F(  CHARGE = CH_MEC_1),
+                               
                          SENSIBILITE=(THETA),
                               OPTION=( 'DEDE_ELNO_DLDE',
                                        'SIEF_ELGA_DEPL',
@@ -230,10 +227,9 @@ RE_MEC_2=MECA_STATIQUE(         MODELE=MOD_MECA,
                          )
 
 #
-RE_MEC_2=CALC_ELEM( reuse=RE_MEC_2,        MODELE=MOD_MECA,
-                           CHAM_MATER=CH_MATE,
+RE_MEC_2=CALC_ELEM( reuse=RE_MEC_2,        
                              RESULTAT=RE_MEC_2,
-                               EXCIT=_F(  CHARGE = CH_MEC_2),
+                               
                          SENSIBILITE=(THETA),
                               OPTION=( 'DEDE_ELNO_DLDE',
                                        'SIEF_ELGA_DEPL',

@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TUYAUTERIE COUDEE EN FLEXION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,9 +104,6 @@ RESU1=CALC_ELEM( reuse=RESU1,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=RESU1,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                         CARA_ELEM=CAREL
               )
 
 TEST_RESU(
@@ -150,9 +147,6 @@ RESU2=CALC_ELEM( reuse=RESU2,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=RESU2,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                         CARA_ELEM=CAREL
               )
 
 TEST_RESU(

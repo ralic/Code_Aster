@@ -1,4 +1,4 @@
-# MODIF  DATE 10/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  ESSAI DE TRACTION-CISAILLEMENT 3D (ROUSSELIER_FO)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -399,8 +399,6 @@ SOLNL=CALC_ELEM( reuse=SOLNL,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=SOLNL,
-                            MODELE=TROISD,
-                        CHAM_MATER=MAT
               )
 
 # 
@@ -422,9 +420,8 @@ TEST_RESU(RESU=(
              PARA = 'ITER_LINE',        VALE_I = 0))
            )
 
-SOLNL=CALC_ELEM(  reuse=SOLNL,             MODELE=TROISD,
+SOLNL=CALC_ELEM(  reuse=SOLNL,             
                                  RESULTAT=SOLNL,
-                               CHAM_MATER=MAT,
                                    OPTION='EPSI_ELNO_DEPL'  )
 
 TEST_RESU(RESU=(

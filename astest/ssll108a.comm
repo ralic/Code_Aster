@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE 2D_DISCRET EN NON-LINEAIRE -
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,9 +63,8 @@ DEP=MECA_STATIQUE(MODELE=MOD, CARA_ELEM=CELEM,
                                CHAM_MATER=CHMAT,
                    EXCIT=_F( CHARGE = CH), )
 
-CALC_ELEM( reuse= DEP ,RESULTAT= DEP , MODELE=MOD, CARA_ELEM=CELEM,
-                               CHAM_MATER=CHMAT,
-                   EXCIT=_F( CHARGE = CH),  OPTION=(
+CALC_ELEM( reuse= DEP ,RESULTAT= DEP ,  
+                     OPTION=(
                                                 'EFGE_ELNO_DEPL',))
 
 L_INST=DEFI_LIST_REEL(

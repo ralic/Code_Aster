@@ -1,4 +1,4 @@
-# MODIF  DATE 12/01/2004   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  - CONSOLIDATION TERZAGHI 2D Q8  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -295,8 +295,6 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    REFERENCE='ANALYTIQUE',),),);
 
 RESU1=CALC_ELEM(reuse =RESU1,
-                MODELE=MODELE,
-                CHAM_MATER=CHMAT0,
                 OPTION='SIEF_ELNO_ELGA',
                 RESULTAT=RESU1,);
 

@@ -1,0 +1,140 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE CYLINDRE EN D.P. (TEST DES FORCES NODALES)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#CAS_TEST__: SSLV100H
+# ----------------------------------------------------------------------
+# SSLV100 H                  COMMANDES                          8/06/92
+# CYLINDRE CREUX EN DEFORMATIONS PLANES
+#
+# MODELISATION : ELEMENTS MECANIQUE D_PLAN ( QUAD4 + TRIA3 )
+# MAILLAGE     : ASTER (ISSU DE ALI-BABA)
+# ----------------------------------------------------------------------
+# GROUPES DE NOEUDS: A , B , C , D , E , F , BORDAB
+# GROUPES DE MAILLES:  FACEAE , FACEEF
+# ----------------------------------------------------------------------
+#
+
+DEBUT(CODE=_F( NOM = 'SSLV100H',NIV_PUB_WEB='INTERNET'))
+
+M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),   )
+
+M=DEFI_GROUP( reuse=M,   MAILLAGE=M,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MO=AFFE_MODELE(            MAILLAGE=M,
+                                  AFFE=_F(  TOUT = 'OUI',
+                                         PHENOMENE = 'MECANIQUE',
+                                         MODELISATION = 'D_PLAN'))
+
+MA=DEFI_MATERIAU(            ELAS=_F(  E = 200000.,
+                                         NU = 0.3,
+                                         ALPHA = 0.)
+                       )
+
+MA0=DEFI_MATERIAU(          ELAS_ORTH=_F(  E_L = 200000.,
+          E_T = 200000.,  E_N = 200000., 
+     G_LT = 76923.0769231, G_LN = 76923.0769231, G_TN = 76923.0769231,
+          NU_LT = 0.3, NU_LN = 0.3, NU_TN = 0.3,
+          ALPHA_L = 0.,  ALPHA_T = 0., ALPHA_N = 0.)
+                         )
+
+CM=AFFE_MATERIAU(        MAILLAGE=M,
+                                  AFFE=_F(  TOUT = 'OUI',
+                                         MATER = MA))
+
+CM0=AFFE_MATERIAU(        MAILLAGE=M,
+                                  AFFE=_F(  TOUT = 'OUI',
+                                         MATER = MA0))
+
+ESSAI=AFFE_CARA_ELEM(MODELE=MO,
+                MASSIF=_F(  
+                
+       GROUP_MA = 'TOUT',
+
+                ANGL_REP = (0., )))
+
+ESSAI0=AFFE_CARA_ELEM(MODELE=MO,
+                MASSIF=_F(  
+                GROUP_MA = 'TOUT',
+                ANGL_REP = (23., )))
+
+CH=AFFE_CHAR_MECA(       MODELE=MO,FACE_IMPO=(
+          _F( GROUP_MA = 'FACEEF',  DNOR = 0.),
+          _F( GROUP_MA = 'FACEAE', DNOR = -5.72E-5)),
+           DDL_IMPO=_F( GROUP_NO = 'BORDAB',  DY = 0.))
+
+DEPLA=MECA_STATIQUE(   MODELE=MO,  
+                           CHAM_MATER=CM, EXCIT=_F(  CHARGE = CH) )
+
+DEPLA0=MECA_STATIQUE(   MODELE=MO,  
+             CARA_ELEM=ESSAI0,   CHAM_MATER=CM0, EXCIT=_F(  CHARGE = CH) )
+
+DEPLA=CALC_NO( reuse=DEPLA,   RESULTAT=DEPLA,
+               OPTION='REAC_NODA',  
+                     )
+
+DEPLA0=CALC_NO( reuse=DEPLA0,   RESULTAT=DEPLA0, 
+                OPTION='REAC_NODA',      
+                )
+
+#-----------------------------------------------------------------------
+TEST_RESU(RESU=( 
+       _F( RESULTAT = DEPLA, CRITERE = 'RELATIF', PRECISION = 3.5E-2,
+        NUME_ORDRE = 1,
+        NOEUD = 'N391',  NOM_CMP = 'DX', NOM_CHAM = 'REAC_NODA', VALE = 0.1360),
+       _F( RESULTAT = DEPLA, CRITERE = 'RELATIF', PRECISION = 4.1E-2,
+        NUME_ORDRE = 1,
+        NOEUD = 'N391',  NOM_CMP = 'DY', NOM_CHAM = 'REAC_NODA', VALE = 0.056),
+       _F( RESULTAT = DEPLA, CRITERE = 'RELATIF', PRECISION = 7.4E-2,
+        NUME_ORDRE = 1,
+        NOEUD = 'N92',   NOM_CMP = 'DX', NOM_CHAM = 'REAC_NODA', VALE = 0.14686),
+       _F( RESULTAT = DEPLA, CRITERE = 'RELATIF', PRECISION = 7.1E-2,
+        NUME_ORDRE = 1,
+        NOEUD = 'N92',   NOM_CMP = 'DY', NOM_CHAM = 'REAC_NODA', VALE = 0.0108),
+       _F( RESULTAT = DEPLA, CRITERE = 'RELATIF', PRECISION = 0.2E-2,
+        NUME_ORDRE = 1,
+        NOEUD = 'N447',  NOM_CMP = 'DX', NOM_CHAM = 'REAC_NODA', VALE = 0.1138),
+       _F( RESULTAT = DEPLA, CRITERE = 'RELATIF', PRECISION = 0.7E-2,
+        NUME_ORDRE = 1,
+        NOEUD = 'N447',  NOM_CMP = 'DY', NOM_CHAM = 'REAC_NODA', VALE = 0.093))
+            )
+
+TEST_RESU(RESU=( 
+       _F( RESULTAT = DEPLA0, CRITERE = 'RELATIF', PRECISION = 3.5E-2,
+        NUME_ORDRE = 1,
+        NOEUD = 'N391',  NOM_CMP = 'DX', NOM_CHAM = 'REAC_NODA', VALE = 0.1360),
+       _F( RESULTAT = DEPLA0, CRITERE = 'RELATIF', PRECISION = 4.1E-2,
+        NUME_ORDRE = 1,
+        NOEUD = 'N391',  NOM_CMP = 'DY', NOM_CHAM = 'REAC_NODA', VALE = 0.056),
+       _F( RESULTAT = DEPLA0, CRITERE = 'RELATIF', PRECISION = 7.4E-2,
+        NUME_ORDRE = 1,
+        NOEUD = 'N92',   NOM_CMP = 'DX', NOM_CHAM = 'REAC_NODA', VALE = 0.14686),
+       _F( RESULTAT = DEPLA0, CRITERE = 'RELATIF', PRECISION = 7.1E-2,
+        NUME_ORDRE = 1,
+        NOEUD = 'N92',   NOM_CMP = 'DY', NOM_CHAM = 'REAC_NODA', VALE = 0.0108),
+       _F( RESULTAT = DEPLA0, CRITERE = 'RELATIF', PRECISION = 0.2E-2,
+        NUME_ORDRE = 1,
+        NOEUD = 'N447',  NOM_CMP = 'DX', NOM_CHAM = 'REAC_NODA', VALE = 0.1138),
+       _F( RESULTAT = DEPLA0, CRITERE = 'RELATIF', PRECISION = 0.7E-2,
+        NUME_ORDRE = 1,
+        NOEUD = 'N447',  NOM_CMP = 'DY', NOM_CHAM = 'REAC_NODA', VALE = 0.093))
+       )
+
+FIN( )
+#

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER IER
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF CALCULEL  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,10 +50,10 @@ C     ------------------------------------------------------------------
       CHARACTER*1 BASE
       CHARACTER*4 CTYP
       CHARACTER*8 K8B,MODELE,CARA,CHAM,TEMP,NOMA,PLAN
-      CHARACTER*8 K8BID
+      CHARACTER*8 K8BID, BLAN8
       CHARACTER*14 NUME
       CHARACTER*16 TYPE,OPER,OPTION,OPT2
-      CHARACTER*19 KCHA,CHELEM,PRESS,LIGREL
+      CHARACTER*19 KCHA,CHELEM,PRESS,LIGREL,K19B
       CHARACTER*24 CHGEOM,CHCARA(15),CHHARM,CHAMGD,CHSIG,CHEPS
       CHARACTER*24 THETA1,MATE,SDTHET,THETA,K24B
       CHARACTER*24 CHTEMP,CHTREF,CHTIME,CHNUMC,CHMASS,CHFREQ,CHAREP
@@ -62,6 +62,10 @@ C     ------------------------------------------------------------------
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
+C
+C               1234567890123456789
+      BLAN8  = '        '
+C
       BASE = 'G'
       COEF = 1.D0
       CCOEF = (1.D0,1.D0)
@@ -80,7 +84,7 @@ C DEB ------------------------------------------------------------------
       ENDIF
 
       KCHA = '&&OP0038.CHARGES'
-      CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP)
+      CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,BLAN8,1)
       CALL JEVEUO(KCHA,'E',JCHA)
 
       CALL EXLIMA(' ','G',MODELE,CHELEM,LIGREL)

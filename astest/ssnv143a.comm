@@ -1,4 +1,4 @@
-# MODIF  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TRACTION BIAXIALE EN 3D - COMPORTEMENT BETON_DOUBLE_DP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -222,16 +222,9 @@ SOLNL=CALC_ELEM( reuse=SOLNL,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=SOLNL,
-                            MODELE=TROISD,
-                        CHAM_MATER=MATBET,EXCIT=(
-                             _F(  CHARGE = COND_LIM),
-                             _F(  CHARGE = TRAC))
               )
 
-SOLNL=CALC_ELEM(     reuse=SOLNL,          MODELE=TROISD,
-                               CHAM_MATER=MATBET,EXCIT=(
-                                   _F(  CHARGE = COND_LIM),
-                                   _F(  CHARGE = TRAC)),
+SOLNL=CALC_ELEM(     reuse=SOLNL,          
                                    OPTION='EPSI_ELNO_DEPL',
                                  RESULTAT=SOLNL )
 

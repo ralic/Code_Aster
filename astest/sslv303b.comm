@@ -1,0 +1,309 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE CYLINDRE ENCASTRE SOUS POIDS PROPRE ET PRESSION
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#       (AXIS_FOURIER ET FORCE_INTERNE)
+DEBUT( CODE=_F(  NOM = 'SSLV303B',NIV_PUB_WEB='INTERNET') )
+
+MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),   )
+
+#
+# DEFINITION DES GROUPES DE NOEUDS
+MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,CREA_GROUP_NO=(
+                       _F(  GROUP_MA = 'ENCAST'),
+                       _F(  GROUP_MA = 'CONT_PR'),
+                       _F(  GROUP_MA = ( 'B',  'SECT_MED', )))
+                   )
+
+#
+# DEFINITION DU MODELE
+MODELE=AFFE_MODELE(    MAILLAGE=MAIL,
+                         AFFE=_F(  TOUT = 'OUI',
+                       PHENOMENE = 'MECANIQUE',
+                       MODELISATION = 'AXIS_FOURIER')  )
+
+#
+# DEFINITION DU MATERIAU
+ACIER=DEFI_MATERIAU(    ELAS=_F(  E = 2.1E11,  NU = 0.3,
+                                 ALPHA = 1.E-5,  RHO = 7800.)
+                      )
+
+#
+# ATTRIBUTION DU MATERIAU
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
+                          AFFE=_F(  TOUT = 'OUI',
+                                 MATER = ACIER)  )
+
+F_Y=DEFI_FONCTION(    NOM_PARA='Y',
+                        VALE=( 0.,     10000.,
+                               0.24,   10000., )
+                    )
+
+# DEFINITION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
+CLIM=AFFE_CHAR_MECA(    MODELE=MODELE,
+                            DDL_IMPO=_F(  GROUP_NO = 'ENCAST',
+                                       DX = 0.,  DY = 0.,  DZ = 0.)  )
+
+#   GRAVITE
+CHAR_GR=AFFE_CHAR_MECA(     MODELE=MODELE,
+                              FORCE_INTERNE=_F(  TOUT = 'OUI',
+                                              FX = 76518., FZ = 76518.)
+                          )
+
+#   PRESSION
+CHAR_PR=AFFE_CHAR_MECA_F(   MODELE=MODELE,
+                              PRES_REP=_F(  GROUP_MA = 'CONT_PR',
+                                         PRES = F_Y)
+                          )
+
+# RESOLUTION DES 2 CAS DE CHARGE INDEPENDANTS
+DEF0=MACRO_ELAS_MULT(        MODELE=MODELE,
+                             CHAM_MATER=CHMAT,
+                             CHAR_MECA_GLOBAL=CLIM,CAS_CHARGE=(
+                             _F( 
+                                          MODE_FOURIER = 1,
+                                            
+                                          TYPE_MODE = 'SYME',
+                                          CHAR_MECA = CHAR_GR),
+                             _F( 
+                                          MODE_FOURIER = 1,
+                                            
+                                          TYPE_MODE = 'SYME',
+                                          CHAR_MECA = CHAR_PR))
+                     )
+
+U0_GR=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=DEF0,
+                    NUME_ORDRE=1
+                  )
+
+U0_PR=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=DEF0,
+                    NUME_ORDRE=2
+                  )
+
+#
+# CALCUL DES CONTRAINTES
+
+DEF0=CALC_ELEM( reuse= DEF0, RESULTAT= DEF0,
+                OPTION=('SIGM_ELNO_DEPL',),
+                )
+
+SIG0_GR=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+                      RESULTAT=DEF0,
+                      NUME_ORDRE=1,
+                      NOM_CHAM='SIGM_ELNO_DEPL'
+                  )
+
+SIG0_PR=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+                      RESULTAT=DEF0,
+                      NUME_ORDRE=2,
+                      NOM_CHAM='SIGM_ELNO_DEPL'
+                  )
+
+# RECOMBINAISONS DE FOURIER EN DEPLACEMENTS ET CONTRAINTES
+# POUR TETA = 0. (GRAVITE) ET TETA = 0. (PRESSION)
+# POUR CHAQUE CAS DE CHARGE SEPAREMENT
+U_GR=COMB_CHAM_NO( 
+                      COMB_FOURIER=_F(  CHAM_NO = U0_GR,
+                                     NUME_MODE = 1,
+                                     TYPE_MODE = 'SYME',
+                                     COEF_R = 1.),
+                      ANGL=0. )
+
+SIG_GR=COMB_CHAM_ELEM( 
+                      COMB_FOURIER=_F(  CHAM_ELEM = SIG0_GR,
+                                     NUME_MODE = 1,
+                                     TYPE_MODE = 'SYME',
+                                     COEF_R = 1.),
+                      ANGL=0. )
+
+U_PR=COMB_CHAM_NO( 
+                      COMB_FOURIER=_F(  CHAM_NO = U0_PR,
+                                     NUME_MODE = 1,
+                                     TYPE_MODE = 'SYME',
+                                     COEF_R = 1.),
+                      ANGL=0. )
+
+SIG_PR=COMB_CHAM_ELEM( 
+                      COMB_FOURIER=_F(  CHAM_ELEM = SIG0_PR,
+                                     NUME_MODE = 1,
+                                     TYPE_MODE = 'SYME',
+                                     COEF_R = 1.),
+                      ANGL=0. )
+
+# COMBINAISON DES 2 CAS DE CHARGE
+U=COMB_CHAM_NO( COMB_FOURIER=(
+                      _F(  CHAM_NO = U0_GR,
+                                     NUME_MODE = 1,
+                                     TYPE_MODE = 'SYME',
+                                     COEF_R = 1.),
+                      _F(  CHAM_NO = U0_PR,
+                                     NUME_MODE = 1,
+                                     TYPE_MODE = 'SYME',
+                                     COEF_R = 1.)),
+                      ANGL=0. )
+
+SIG=COMB_CHAM_ELEM( COMB_FOURIER=(
+                      _F(  CHAM_ELEM = SIG0_GR,
+                                     NUME_MODE = 1,
+                                     TYPE_MODE = 'SYME',
+                                     COEF_R = 1.),
+                      _F(  CHAM_ELEM = SIG0_PR,
+                                     NUME_MODE = 1,
+                                     TYPE_MODE = 'SYME',
+                                     COEF_R = 1.)),
+                      ANGL=0. )
+
+#
+TEST_RESU(CHAM_NO=(
+#                 UR
+            _F(  CHAM_GD = U_GR,
+                      NOEUD = 'N249',
+                      NOM_CMP = 'DX',
+                      VALE = 3.566E-7,
+                      PRECISION = 0.007),
+              _F(  CHAM_GD = U_GR,
+                    NOEUD = 'N87',
+                    NOM_CMP = 'DX',
+                    VALE = 3.566E-7,
+                    PRECISION = 0.009),
+#                  UT
+             _F(  CHAM_GD = U_GR,
+                    NOEUD = 'N249',
+                    NOM_CMP = 'DY',
+                    VALE = 0.,
+                    CRITERE = 'ABSOLU',
+                    PRECISION = 0.001),
+             _F(  CHAM_GD = U_GR,
+                    NOEUD = 'N87',
+                    NOM_CMP = 'DY',
+                    VALE = 0.,
+                    CRITERE = 'ABSOLU',
+                    PRECISION = 0.001))
+          )
+
+#
+T1=POST_RELEVE_T(    ACTION=_F(  GROUP_NO = ( 'B', ),
+                                INTITULE = 'SIG',
+                                CHAM_GD = SIG_GR,
+                                NOM_CMP = ('SIXX', 'SIYY', 'SIZZ',),
+                                OPERATION = 'EXTRACTION')
+                   )
+
+#
+TEST_TABLE(       TABLE=T1,
+                  FILTRE=_F(  NOM_PARA = 'NOEUD',
+                           VALE_K = 'N2'),
+                NOM_PARA='SIYY',
+               PRECISION=0.042,
+                    VALE=-2.496E5           )
+
+#
+TEST_RESU(CHAM_NO=(
+#                 UR
+            _F(  CHAM_GD = U_PR,
+                      NOEUD = 'N249',
+                      NOM_CMP = 'DX',
+                      VALE = -7.82E-6,
+                      PRECISION = 0.014),
+              _F(  CHAM_GD = U_PR,
+                    NOEUD = 'N87',
+                    NOM_CMP = 'DX',
+                    VALE = -7.82E-6,
+                    PRECISION = 0.016))
+          )
+
+#
+T2=POST_RELEVE_T(    ACTION=_F(  GROUP_NO = ( 'B', ),
+                                INTITULE = 'SIG',
+                                CHAM_GD = SIG_PR,
+                                NOM_CMP = ('SIXX', 'SIYY', 'SIZZ',),
+                                OPERATION = 'EXTRACTION')
+                   )
+
+#
+TEST_TABLE(       TABLE=T2,
+                  FILTRE=_F(  NOM_PARA = 'NOEUD',
+                           VALE_K = 'N2'),
+                NOM_PARA='SIXX',
+               PRECISION=0.135,
+                    VALE=1.63E6           )
+
+TEST_TABLE(       TABLE=T2,
+                  FILTRE=_F(  NOM_PARA = 'NOEUD',
+                           VALE_K = 'N2'),
+                NOM_PARA='SIYY',
+               PRECISION=0.027,
+                    VALE=5.51E6           )
+
+TEST_TABLE(       TABLE=T2,
+                  FILTRE=_F(  NOM_PARA = 'NOEUD',
+                           VALE_K = 'N2'),
+                NOM_PARA='SIZZ',
+               PRECISION=0.147,
+                    VALE=1.65E6           )
+
+#
+#
+TEST_RESU(CHAM_NO=(
+#                 UR
+            _F(  CHAM_GD = U,
+                      NOEUD = 'N249',
+                      NOM_CMP = 'DX',
+                      VALE = -7.46E-6,
+                      PRECISION = 0.014),
+              _F(  CHAM_GD = U,
+                    NOEUD = 'N87',
+                    NOM_CMP = 'DX',
+                    VALE = -7.46E-6,
+                    PRECISION = 0.016))
+          )
+
+#
+T3=POST_RELEVE_T(    ACTION=_F(  GROUP_NO = ( 'B', ),
+                                INTITULE = 'SIG',
+                                CHAM_GD = SIG,
+                                NOM_CMP = ('SIXX', 'SIYY', 'SIZZ',),
+                                OPERATION = 'EXTRACTION')
+                   )
+
+#
+TEST_TABLE(       TABLE=T3,
+                  FILTRE=_F(  NOM_PARA = 'NOEUD',
+                           VALE_K = 'N2'),
+                NOM_PARA='SIXX',
+               PRECISION=0.138,
+                    VALE=1.56E6           )
+
+TEST_TABLE(       TABLE=T3,
+                  FILTRE=_F(  NOM_PARA = 'NOEUD',
+                           VALE_K = 'N2'),
+                NOM_PARA='SIYY',
+               PRECISION=0.03,
+                    VALE=5.25E6           )
+
+TEST_TABLE(       TABLE=T3,
+                  FILTRE=_F(  NOM_PARA = 'NOEUD',
+                           VALE_K = 'N2'),
+                NOM_PARA='SIZZ',
+               PRECISION=0.15,
+                    VALE=1.57E6           )
+
+FIN()
+#

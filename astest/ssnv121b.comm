@@ -1,0 +1,244 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE ROTATION ET TRACTION 2D GRANDES DEFORMATIONS (LOI LINEAIRE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+
+DEBUT(CODE=_F( NOM = 'SSNV121B',NIV_PUB_WEB='INTERNET'))
+
+MA=LIRE_MAILLAGE()
+
+MO=AFFE_MODELE( 
+               MAILLAGE=MA,
+                  VERIF='MAILLE',
+             AFFE=_F( 
+               TOUT = 'OUI',
+               PHENOMENE = 'MECANIQUE',
+               MODELISATION = 'D_PLAN')
+             )
+
+ACIER=DEFI_MATERIAU( 
+                   ELAS=_F( 
+               E = 200000.,
+               NU = 0.3)
+             )
+
+CHP_MATE=AFFE_MATERIAU( 
+               MAILLAGE=MA,
+                   AFFE=_F( 
+               TOUT = 'OUI',
+               MATER = ACIER)
+             )
+
+L_INST=DEFI_LIST_REEL( 
+              DEBUT=0.0,INTERVALLE=(
+              
+              _F( JUSQU_A = 0.1,  NOMBRE = 10),
+              _F( JUSQU_A = 1.,   NOMBRE = 9),
+              _F( JUSQU_A = 2.,   NOMBRE = 5),
+              _F( JUSQU_A = 2.99, NOMBRE = 15),
+              _F( JUSQU_A = 3.,   NOMBRE = 10))
+             )
+
+F_CHAR=DEFI_FONCTION( 
+                NOM_PARA='INST',
+              PROL_DROITE='CONSTANT',
+                    VALE=(
+               0.,  0., 
+               1.,  0., 
+               2.,  1., 
+               3.,  0.,
+               )
+             )
+
+F_ROTA=DEFI_FONCTION( 
+                NOM_PARA='INST',
+              PROL_DROITE='CONSTANT',
+                    VALE=(
+               0.,  0., 
+               1.,  1., 
+               2.,  1., 
+               3.,  0.,
+               )
+             )
+
+CHR_ROTA=AFFE_CHAR_MECA( 
+               MODELE=MO,DDL_IMPO=(
+              
+              _F( NOEUD = 'NO3',  DX = 0.,     DY = 0.),
+              _F( NOEUD = 'NO1',  DX = -1000., DY = -1000.),
+              _F( NOEUD = 'NO2',  DX = -2000.),
+              _F( NOEUD = 'NO4',  DX = -1000.))
+             )
+
+CHR_FORC=AFFE_CHAR_MECA( 
+                     MODELE=MO,
+                FORCE_CONTOUR=_F( MAILLE = 'MA2',  FY = 31096.154)
+             )
+
+V=STAT_NON_LINE( 
+                            MODELE=MO,
+                        CHAM_MATER=CHP_MATE,EXCIT=(
+                             _F( 
+                CHARGE = CHR_ROTA,
+                FONC_MULT = F_ROTA), _F( 
+                CHARGE = CHR_FORC,
+                FONC_MULT = F_CHAR)),
+                         COMP_ELAS=_F( 
+                RELATION = 'ELAS',
+                DEFORMATION = 'GREEN'),
+                         INCREMENT=_F( 
+                LIST_INST = L_INST),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 1),
+                       CONVERGENCE=_F( 
+                RESI_GLOB_MAXI = 1.E-3,
+                ITER_GLOB_MAXI = 50)
+              )
+
+V=CALC_NO( reuse=V,
+                RESULTAT=V,  
+                  OPTION='FORC_NODA',
+             )
+
+V=CALC_ELEM( reuse=V,
+                RESULTAT=V,
+                 OPTION='EPSG_ELNO_DEPL'
+           )
+
+IMPR_RESU(    MODELE=MO,
+                 RESU=_F( 
+             FORMAT = 'RESULTAT',
+             RESULTAT = V,
+             NOM_CHAM = (
+               'DEPL',
+               'SIEF_ELGA',
+               'FORC_NODA',
+               'EPSG_ELNO_DEPL',
+               ),
+             INST = (1., 2., 3.,),
+             PRECISION = 1.E-5,
+             TOUT = 'OUI')
+           )
+
+TEST_RESU(RESU=(
+              _F( 
+               RESULTAT = V,  NOM_CHAM = 'DEPL',  INST = 2.,
+               NOEUD = 'NO2',   NOM_CMP = 'DY',
+               PRECISION = 1.E-3,
+               VALE = 100.),
+              _F( 
+               RESULTAT = V,  NOM_CHAM = 'DEPL',  INST = 2.,
+               NOEUD = 'NO4',   NOM_CMP = 'DY',
+               PRECISION = 1.E-3,
+               VALE = 1100.),
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'SIEF_ELGA',  INST = 2.,
+               MAILLE = 'MA1',  POINT = 1,               NOM_CMP = 'SIXX',
+               PRECISION = 1.E-3,
+               VALE = 11013.986),
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'SIEF_ELGA',  INST = 2.,
+               MAILLE = 'MA1',  POINT = 1,               NOM_CMP = 'SIYY',
+               PRECISION = 1.E-3,
+               VALE = 31096.154),
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'SIEF_ELGA',  INST = 2.,
+               MAILLE = 'MA1',  POINT = 1,               NOM_CMP = 'SIZZ',
+               PRECISION = 1.E-3,
+               VALE = 11013.986),
+              _F( 
+               RESULTAT = V,     NOM_CHAM = 'SIEF_ELGA',  INST = 2.,
+               MAILLE = 'MA1',    POINT = 1,               NOM_CMP = 'SIXY',
+               PRECISION = 1.E-3,
+               CRITERE = 'ABSOLU',
+               VALE = 0.),
+#
+              _F( 
+               RESULTAT = V,  NOM_CHAM = 'DEPL',  INST = 3.,
+               NOEUD = 'NO2',   NOM_CMP = 'DY',
+               PRECISION = 1.E-3,
+               CRITERE = 'ABSOLU',
+               VALE = 0.),
+              _F( 
+               RESULTAT = V,  NOM_CHAM = 'DEPL',  INST = 3.,
+               NOEUD = 'NO4',   NOM_CMP = 'DY',
+               PRECISION = 1.E-3,
+               CRITERE = 'ABSOLU',
+               VALE = 0.),
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'SIEF_ELGA',  INST = 3.,
+               MAILLE = 'MA1',  POINT = 1,               NOM_CMP = 'SIXX',
+               PRECISION = 1.E-3,
+               CRITERE = 'ABSOLU',
+               VALE = 0.),
+              _F( 
+               RESULTAT = V,     NOM_CHAM = 'SIEF_ELGA',  INST = 3.,
+               MAILLE = 'MA1',    POINT = 1,               NOM_CMP = 'SIXY',
+               PRECISION = 1.E-3,
+               CRITERE = 'ABSOLU',
+               VALE = 0.),
+              _F( 
+               RESULTAT = V,     NOM_CHAM = 'SIEF_ELGA',  INST = 3.,
+               MAILLE = 'MA1',    POINT = 1,               NOM_CMP = 'SIYY',
+               PRECISION = 1.E-3,
+               CRITERE = 'ABSOLU',
+               VALE = 0.),
+              _F( 
+               RESULTAT = V,     NOM_CHAM = 'SIEF_ELGA',  INST = 3.,
+               MAILLE = 'MA1',    POINT = 1,               NOM_CMP = 'SIZZ',
+               PRECISION = 1.E-3,
+               CRITERE = 'ABSOLU',
+               VALE = 0.),
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'FORC_NODA',  INST = 2.,
+               NOEUD = 'NO4',   NOM_CMP = 'DX',
+               PRECISION = 1.E-3,
+               VALE = 6.0577E6),
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'FORC_NODA',  INST = 2.,
+               NOEUD = 'NO4',   NOM_CMP = 'DY',
+               PRECISION = 1.E-3,
+               CRITERE = 'RELATIF',
+               VALE = 15.5481E6),
+#
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'EPSG_ELNO_DEPL',  INST = 2.,
+               MAILLE = 'MA1',  NOEUD = 'NO4',   NOM_CMP = 'EPXX',
+               PRECISION = 1.E-3,
+               VALE = 0.105),
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'EPSG_ELNO_DEPL',  INST = 2.,
+               MAILLE = 'MA1',  NOEUD = 'NO4',   NOM_CMP = 'EPYY',
+               PRECISION = 1.E-3,  CRITERE = 'ABSOLU',
+               VALE = 0.),
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'EPSG_ELNO_DEPL',  INST = 2.,
+               MAILLE = 'MA1',  NOEUD = 'NO4',   NOM_CMP = 'EPZZ',
+               PRECISION = 1.E-3,  CRITERE = 'ABSOLU',
+               VALE = 0.),
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'EPSG_ELNO_DEPL',  INST = 2.,
+               MAILLE = 'MA1',  NOEUD = 'NO4',   NOM_CMP = 'EPXY',
+               PRECISION = 1.E-3,  CRITERE = 'ABSOLU',
+               VALE = 0.))
+             )
+
+FIN()
+#

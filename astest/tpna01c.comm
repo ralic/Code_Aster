@@ -1,4 +1,4 @@
-# MODIF  DATE 09/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PB 3D STATIONNAIRE AVEC RAYONNEMENT - HEXA20 SOLVEUR: MULT_FRONT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -179,9 +179,7 @@ TEMPE=THER_NON_LINE_MO(         MODELE=MOTH,
                                          ITER_GLOB_MAXI = 10) )
 
 TEMPE=CALC_ELEM(reuse=TEMPE,RESULTAT=TEMPE,
-                MODELE=MOTH,
-                EXCIT=_F(  CHARGE = CHTH),
-                CHAM_MATER=CHMAT,
+                
                 OPTION='FLUX_ELNO_TEMP',
                 NUME_ORDRE=0
                 );

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE VALIDATION DE LA COMMANDE  CREA_CHAMP/OPTION:'ASSE'
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,8 +56,6 @@ CALC_ELEM( reuse=SOLPL,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=SOLPL,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT
               )
 
 #================================================================

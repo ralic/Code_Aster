@@ -1,4 +1,4 @@
-# MODIF  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES SANS FROTTEMENT.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -132,17 +132,13 @@ RESU=STAT_NON_LINE(MODELE=MO,
 #------- POST TRAITEMENT -----------------------
 
 RESU=CALC_ELEM(reuse =RESU,
-               MODELE=MO,
-               CHAM_MATER=CHMAT,
                OPTION='SIEF_ELNO_ELGA',
                RESULTAT=RESU,);
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
              OPTION=('REAC_NODA','SIEF_NOEU_ELGA'),
-             MODELE=MO,
-             CHAM_MATER=CHMAT,
-             EXCIT=_F(CHARGE=DEPL,),);
+             );
 
 TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
                                  GROUP_NO='LRESU',

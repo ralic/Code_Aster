@@ -1,4 +1,4 @@
-# MODIF  DATE 08/03/2004   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CYLINDRE EN C.P. (TRIA6 QUAD8)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,34 +60,26 @@ RESU=MECA_STATIQUE(MODELE=MO,
                    );
                    
 RESU=CALC_ELEM( reuse= RESU ,RESULTAT=RESU ,
-                             MODELE=MO,
                              NUME_ORDRE=1,
-                             CHAM_MATER=CM,
-                             EXCIT=_F(CHARGE=CH),
+                             
                              OPTION=('EPSI_ELNO_DEPL',),
                 )
 
 RESU=CALC_ELEM( reuse= RESU ,RESULTAT=RESU ,
                              NUME_ORDRE=1,
-                             MODELE=MO,
-                             CHAM_MATER=CM,
-                             EXCIT=_F(CHARGE=CH),
+                             
                              OPTION=('SIGM_ELNO_DEPL',),
                 )
 
 RESU=CALC_ELEM( reuse= RESU, RESULTAT=RESU ,
-                             MODELE=MO,
                              NUME_ORDRE=1,
-                             CHAM_MATER=CM,
-                             EXCIT=_F(CHARGE=CH),
+                             
                              OPTION=('ENDO_ELNO_SIGA',),
                 )
                 
 RESU=CALC_ELEM( reuse= RESU, RESULTAT=RESU ,
-                             MODELE=MO,
                              NUME_ORDRE=1,
-                             CHAM_MATER=CM,
-                             EXCIT=_F(CHARGE=CH),
+                             
                              OPTION=('ENDO_ELNO_SINO',),
                 )
 

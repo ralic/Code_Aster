@@ -1,4 +1,4 @@
-# MODIF  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CONTACT/FROTTEMENT POULIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,13 +125,10 @@ RESU=STAT_NON_LINE (
 
 RESU=CALC_ELEM( reuse=RESU,
                   RESULTAT=RESU,
-                  MODELE=MO,
-                  CHAM_MATER=CHMAT,
                   OPTION='SIEF_ELNO_ELGA',
                 )
 RESU=CALC_NO( reuse=RESU,
                 RESULTAT=RESU,
-                CHAM_MATER=CHMAT,
                 OPTION='SIEF_NOEU_ELGA',
               )
               

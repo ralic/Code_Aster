@@ -1,4 +1,4 @@
-# MODIF  DATE 03/05/2004   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE ESSAI DE RELAXATION EN 3D VENDOCHAB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -274,8 +274,6 @@ SOLNL=CALC_ELEM( reuse=SOLNL,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=SOLNL,
-                            MODELE=EPD3,
-                        CHAM_MATER=MAT
               )
 
 TEST_RESU(RESU=(

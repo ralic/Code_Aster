@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 16/03/2004   AUTEUR PBADEL P.BADEL 
+%& MODIF COMPELEM  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -41,8 +41,9 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA3     ELEMENT__ MEGRDKT
 
        MODELISATION__ 'GRILLE_MEMBRANE'  DIM__ 2 3   CODE__ 'GRM'
-              MAILLE__ TRIA3     ELEMENT__ MEGRTR3
-      
+              MAILLE__ TRIA3     ELEMENT__ MEGMTR3
+              MAILLE__ QUAD4     ELEMENT__ MEGMQU4
+
        MODELISATION__ 'COQUE_AXIS'       DIM__ 1 2   CODE__ 'CQA'
               MAILLE__ SEG3      ELEMENT__ MECXSE3
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CYLINDRE SOUMIS A UNE PRESSION EN MODE 1 FOURIER (TRIA6)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,21 +92,16 @@ TEST_TABLE(       TABLE=T_ENER,
 # ----------------------------------------------------------------------
 
 FO_ELAS1=CALC_ELEM(reuse=FO_ELAS1,   RESULTAT=FO_ELAS1,
-                         MODELE=MO,
                          OPTION=( 'SIGM_ELNO_DEPL', 'SIEF_ELGA_DEPL', ),
-                         CHAM_MATER=CM                       )
+                       )
 
 FO_ELAS1=CALC_NO(reuse=FO_ELAS1,   RESULTAT=FO_ELAS1,
-                         MODELE=MO,
-                       EXCIT=_F(  CHARGE = CH,   ),
                        OPTION='FORC_NODA',
-                       CHAM_MATER=CM                         )
+                         )
 
 FO_ELAS1=CALC_NO(reuse=FO_ELAS1,   RESULTAT=FO_ELAS1,
-                       EXCIT=_F(  CHARGE = CH,   ),
-                         MODELE=MO,
                        OPTION='REAC_NODA',
-                       CHAM_MATER=CM                         )
+                         )
 
 SIGMA=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
                     RESULTAT=FO_ELAS1, NUME_MODE=1,

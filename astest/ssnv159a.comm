@@ -1,4 +1,4 @@
-# MODIF  DATE 12/01/2004   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE DE LAIGLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -194,8 +194,6 @@ U1=CALC_ELEM( reuse=U1,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=U1,
-                            MODELE=MODELE,
-                        CHAM_MATER=CHMAT
               )
 
 TEMPS2=DEFI_LIST_REEL(   DEBUT=1.,INTERVALLE=(
@@ -256,8 +254,6 @@ U2=STAT_NON_LINE(
 U2=CALC_ELEM( reuse=U2,
               OPTION=('SIEF_ELNO_ELGA',),
               RESULTAT=U2,
-              MODELE=MODELE,
-              CHAM_MATER=CHMAT
             )
 
 U2=CALC_NO(  reuse=U2,     

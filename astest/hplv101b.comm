@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE HOMOGENEISATION D'UN MATERIAU HOMOGENE - 3D - HEXA20
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -152,10 +152,7 @@ DEPLDM=MECA_STATIQUE(
                    )
 
 CALC_ELEM( reuse= DEPLDM ,RESULTAT= DEPLDM ,
-                 MODELE=MODME,
-             CHAM_MATER=CHMAT,
-              CARA_ELEM=ESSAI,
-                  EXCIT=_F( CHARGE = CHARMM),
+                  
                  OPTION=('SIGM_ELNO_DEPL',)  )
 
 
@@ -166,9 +163,7 @@ DEPLDF=MECA_STATIQUE(
                    )
 
 CALC_ELEM( reuse= DEPLDF ,RESULTAT= DEPLDF ,
-                 MODELE=MODME,   CHAM_MATER=CHMAT,
-              CARA_ELEM=ESSAI,
-                  EXCIT=_F( CHARGE = CHARMF),
+                  
                  OPTION=('SIGM_ELNO_DEPL',)  )
 
 #
@@ -185,9 +180,7 @@ DEPLDMO=MECA_STATIQUE(
                    )
 
 CALC_ELEM( reuse= DEPLDMO ,RESULTAT= DEPLDMO ,
-                 MODELE=MODME,   CHAM_MATER=CHMATO,
-              CARA_ELEM=ESSAI0,
-                  EXCIT=_F( CHARGE = CHARMM),
+                  
                  OPTION=('SIGM_ELNO_DEPL',)  )
 
 
@@ -198,9 +191,7 @@ DEPLDFO=MECA_STATIQUE(
                    )
 
 CALC_ELEM( reuse= DEPLDFO ,RESULTAT= DEPLDFO ,
-                 MODELE=MODME,   CHAM_MATER=CHMATO,
-              CARA_ELEM=ESSAI0,
-                  EXCIT=_F( CHARGE = CHARMF),
+                  
                  OPTION=('SIGM_ELNO_DEPL',)  )
 
 #
@@ -218,9 +209,7 @@ DEPLDMOO=MECA_STATIQUE(
                    )
 
 CALC_ELEM( reuse= DEPLDMOO ,RESULTAT= DEPLDMOO ,
-                 MODELE=MODME,   CHAM_MATER=CHMATOO,
-              CARA_ELEM=ESSAI00,
-                  EXCIT=_F( CHARGE = CHARMM),
+                  
                  OPTION=('SIGM_ELNO_DEPL',)  )
 
 
@@ -231,9 +220,7 @@ DEPLDFOO=MECA_STATIQUE(
                    )
 
 CALC_ELEM( reuse= DEPLDFOO ,RESULTAT= DEPLDFOO ,
-                 MODELE=MODME,   CHAM_MATER=CHMATOO,
-              CARA_ELEM=ESSAI00,
-                  EXCIT=_F( CHARGE = CHARMF),
+                  
                  OPTION=('SIGM_ELNO_DEPL',)  )
 
 #

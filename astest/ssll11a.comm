@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TREILLIS DE BARRES ARTICULEES SOUS CHARGE PONCTUELLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -146,14 +146,12 @@ RESU1=MECA_STATIQUE(  MODELE=MODELE,
 # LA FLEXION EST NON NEGLIGEABLE
 
 
-RESU1=CALC_ELEM(reuse=RESU1,  MODELE=MODELE,
+RESU1=CALC_ELEM(reuse=RESU1,
                       OPTION=( 'SIPO_ELNO_DEPL', 'SIGM_ELNO_DEPL', ),
-                      CHAM_MATER=CHMAT,   CARA_ELEM=CAREL,
                       RESULTAT=RESU1                             )
 
-RESU1=CALC_ELEM(reuse=RESU1,  MODELE=MODELE,
+RESU1=CALC_ELEM(reuse=RESU1, 
                       OPTION='SIGM_ELNO_CART',
-                      CHAM_MATER=CHMAT,   CARA_ELEM=CAREL,
                       RESULTAT=RESU1                             )
 
 RESU1=CALC_NO(reuse=RESU1,  OPTION='SIGM_NOEU_CART',

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,13 +160,8 @@ U_NOR=STAT_NON_LINE(MODELE=MODE,
 
 U_NOR=CALC_NO(reuse =U_NOR,
               RESULTAT=U_NOR,
-              MODELE=MODE,
-              CARA_ELEM=CARA,
               OPTION='REAC_NODA',
-              EXCIT=(_F(CHARGE=PNOR,
-                        FONC_MULT=RAMPE,),
-                     _F(CHARGE=CTAC,),
-                     _F(CHARGE=COND_LIM,),),
+              
               );
                                                
 # CHARGEMENT 2                                 
@@ -188,15 +183,8 @@ U_99=STAT_NON_LINE(MODELE=MODE,
 
 U_99=CALC_NO(reuse =U_99,
              RESULTAT=U_99,
-             CARA_ELEM = CARA,
-             MODELE=MODE,
              OPTION='REAC_NODA',
-             EXCIT=(_F(CHARGE=PNOR,
-                       FONC_MULT=RAMPE,),
-                    _F(CHARGE=PTAN_99,
-                       FONC_MULT=RAMPE,),
-                    _F(CHARGE=CTAC,),
-                    _F(CHARGE=COND_LIM,),),
+             
               );
 
 # CHARGEMENT 3 
@@ -220,15 +208,8 @@ U_101=STAT_NON_LINE(MODELE=MODE,
 
 U_101=CALC_NO(reuse =U_101,
               RESULTAT=U_101,
-              CARA_ELEM = CARA,
-              MODELE=MODE,
               OPTION='REAC_NODA',
-              EXCIT=(_F(CHARGE=PNOR,
-                        FONC_MULT=RAMPE,),
-                     _F(CHARGE=PTAN_101,
-                        FONC_MULT=RAMPE,),
-                     _F(CHARGE=CTAC,),
-                     _F(CHARGE=COND_LIM,),),
+              
               );
 
 #---------------------------------------------------------------------

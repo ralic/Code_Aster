@@ -1,0 +1,397 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE TRACTION CISAILLEMENT EN 3D (LMARC_FO) ET REDECOUPAGE DU TEMPS
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#----------------------------------------------------------------------
+#             TEST MODELE LMARC 3D A CONTRAINTE IMPOSEE
+#              ESSAI EN TRACTION(ZZ) CISAILLEMENT(YZ)
+#
+#      MODELE DEVELOPPE POUR DECRIRE LE COMPORTEMENT VISCOPLASTIQUE
+#           ANISOTROPE DES TUBES DE GAINE EN ZIRCALOY
+#----------------------------------------------------------------------
+#                ELEMENT 3D CUBE A 8 NOEUDS
+#              ETAT HOMOGENE CONTRAINTE DEFORMATION
+#       UNITES : NEWTON , MILLIMETRE , SECONDE (N,MM,S,->MPA)
+#
+#
+#               Z       A                     A = 1 MM
+#               L<------------->                      2
+#                                             S = 1 MM
+#                / N5            N8
+#              >O--------------O
+#              /L             /L
+#         N6  / L         N7 / L
+#           >O--+-----------O  L
+#            L  L           L  L
+#            L  L     S     L  L
+#            L  L           L  L
+#            L  L/ N1       L  L N4
+#            L >O-----------L--O-> Y
+#            L /V           L /
+#         N2 L/          N3 L/
+#           >O--------------O
+#
+#          /
+#         X
+#
+#
+#----------------------------------------------------------------------
+#
+DEBUT(     CODE=_F( NOM = 'SSNV117B',NIV_PUB_WEB='INTERNET') )
+
+CUBE=LIRE_MAILLAGE(    )
+
+TROISD=AFFE_MODELE(            MAILLAGE=CUBE,
+                                    AFFE=_F(   PHENOMENE = 'MECANIQUE',
+                                            MODELISATION = '3D',
+                                            MAILLE = 'MA1'))
+
+R_0_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     10.,
+                                 1000.,  10.,      ))
+
+DE_0_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     1.5E-6,
+                                 1000.,  1.5E-6,   ))
+
+N_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     2.4,
+                                 1000.,  2.4,      ))
+
+K_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     15.,
+                                 1000.,  15.,      ))
+
+Y_I_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     160.,
+                                 1000.,  160.,     ))
+
+Y_0_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     177.,
+                                 1000.,  177.,     ))
+
+B_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     2.5,
+                                 1000.,  2.5,      ))
+
+A_0_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     331.69,
+                                 1000.,  331.69,      ))
+
+RM_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,    0.354E-2,
+                                 1000., 0.354E-2,  ))
+
+M_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     3.57,
+                                 1000.,  3.57,      ))
+
+P_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     9000.,
+                                 1000.,  9000.,    ))
+
+P1_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     400.,
+                                 1000.,  400.,     ))
+
+P2_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     10.,
+                                 1000.,  10.,      ))
+
+M11_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     1.1,
+                                 1000.,  1.1,      ))
+
+M22_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     1.2,
+                                 1000.,  1.2,      ))
+
+M33_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     0.66666,
+                                 1000.,  0.66666,  ))
+
+M66_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     1.7,
+                                 1000.,  1.7,      ))
+
+N11_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     0.699,
+                                 1000.,  0.699,    ))
+
+N22_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     0.5624,
+                                 1000.,  0.5624,   ))
+
+N33_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     0.6666666,
+                                 1000.,  0.6666666, ))
+
+N66_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     0.66,
+                                 1000.,  0.66,      ))
+
+Q11_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     0.6666666,
+                                 1000.,  0.6666666, ))
+
+Q22_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     0.6666666,
+                                 1000.,  0.6666666, ))
+
+Q33_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     0.6666666,
+                                 1000.,  0.6666666, ))
+
+Q66_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     1.,
+                                 1000.,  1.,       ))
+
+R11_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     0.88,
+                                 1000.,  0.88,     ))
+
+R22_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     0.88,
+                                 1000.,  0.88,     ))
+
+R33_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     0.6666666,
+                                 1000.,  0.6666666, ))
+
+R66_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     1.375,
+                                 1000.,  1.375,     ))
+
+ACIER=DEFI_MATERIAU(            ELAS=_F(   E = 73000.,
+                                            NU = .42,
+                                            ALPHA = 0.),
+
+                                LMARC_FO=_F(   R_0 = R_0_T,
+                                            DE_0 = DE_0_T,
+                                            N = N_T,
+                                            K = K_T,
+                                            Y_I = Y_I_T,
+                                            Y_0 = Y_0_T,
+                                            B = B_T,
+                                            A_0 = A_0_T,
+                                            RM = RM_T,
+                                            M = M_T,
+                                            P = P_T,
+                                            P1 = P1_T,
+                                            P2 = P2_T,
+                                            M11 = M11_T,
+                                            M22 = M22_T,
+                                            M33 = M33_T,
+                                            M66 = M66_T,
+                                            N11 = N11_T,
+                                            N22 = N22_T,
+                                            N33 = N33_T,
+                                            N66 = N66_T,
+                                            Q11 = Q11_T,
+                                            Q22 = Q22_T,
+                                            Q33 = Q33_T,
+                                            Q66 = Q66_T,
+                                            R11 = R11_T,
+                                            R22 = R22_T,
+                                            R33 = R33_T,
+                                            R66 = R66_T)
+                             )
+
+MAT=AFFE_MATERIAU(            MAILLAGE=CUBE,
+                                    AFFE=_F(  MAILLE = 'MA1',
+                                           MATER = ACIER))
+
+LINST=DEFI_LIST_REEL(              DEBUT=1.,INTERVALLE=(
+                             
+                           _F(  JUSQU_A = 25.,     NOMBRE = 5),
+                           _F(  JUSQU_A = 30.,     NOMBRE = 5))
+                                         )
+
+COND_LIM=AFFE_CHAR_MECA(    
+                     MODELE=TROISD,DDL_IMPO=(
+                   _F(  NOEUD = 'N1',         DX = 0.,  DY = 0.),
+                            _F(  NOEUD = 'N4',         DX = 0.),
+                            _F(  GROUP_NO = 'FACEXY',  DZ = 0.)))
+
+TRAC=AFFE_CHAR_MECA(    
+                     MODELE=TROISD,
+               FORCE_NODALE=_F(  GROUP_NO = 'FACE1XY',  FZ = .25))
+
+CIS=AFFE_CHAR_MECA(    
+                     MODELE=TROISD,FORCE_NODALE=(
+               _F(  GROUP_NO = 'FACEXZ',  FZ = -.25),
+               _F(  GROUP_NO = 'FACEXY',  FY = -.25),
+               _F(  GROUP_NO = 'FACE1XZ', FZ = .25),
+               _F(  GROUP_NO = 'FACE1XY', FY = .25)))
+
+COEF_TR=DEFI_FONCTION( 
+                              NOM_PARA='INST',
+                                  VALE=(
+                                           0.,   0.,
+                                          30.,   300.,
+     ))
+
+COEF_CS=DEFI_FONCTION(  
+                              NOM_PARA='INST',
+                                  VALE=(
+                                           0.,   0.,
+                                          30.,   50.,
+     ))
+
+SOLNL=STAT_NON_LINE( 
+                             TITRE='TEST MODELE LMARC',
+                            MODELE=TROISD,
+                        CHAM_MATER=MAT,EXCIT=(
+                             _F( 
+                CHARGE = COND_LIM),
+                             _F( 
+                CHARGE = TRAC,
+                FONC_MULT = COEF_TR),
+                             _F( 
+                CHARGE = CIS,
+                FONC_MULT = COEF_CS)),
+                         COMP_INCR=_F( 
+                RELATION = 'LMARC',
+                DEFORMATION = 'PETIT',
+                TOUT = 'OUI'),
+                         INCREMENT=_F( 
+                LIST_INST = LINST),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE',
+                REAC_INCR = 1,
+                REAC_ITER = 5),
+                       CONVERGENCE=_F( 
+                ITER_GLOB_MAXI = 40,
+                ITER_INTE_MAXI = 40,
+                ITER_INTE_PAS = 5,
+                RESI_GLOB_RELA = 1.E-4)
+              )
+
+SOLNL=CALC_ELEM( reuse=SOLNL,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=SOLNL,
+              )
+
+SOLNL=CALC_ELEM(       reuse=SOLNL,
+                                      INST=30.,
+                                    OPTION='EPSI_ELNO_DEPL',
+                                 RESULTAT=SOLNL )
+
+TEST_RESU(RESU=(
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 10,
+               MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIZZ',  VALE = 0.300000E+03),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 10,
+               MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIYZ',  VALE = 0.500000E+02),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 10,
+               MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'EPZZ',  VALE = 0.590897E-02,
+                                                     PRECISION = 2.E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 10,
+               MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'EPYY',  VALE = -0.281487E-02,
+                                                     PRECISION = 5.E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 10,
+               MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'EPYZ',  VALE = 0.165159E-02,
+                                                     PRECISION = 1.E-2),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 10,
+               MAILLE = 'MA1',  NOEUD = 'N1',
+               NOM_CMP = 'V3',             VALE = 0.166557E+03),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 10,
+               MAILLE = 'MA1',  NOEUD = 'N1',
+               NOM_CMP = 'V2',             VALE = -0.827068E+02),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 10,
+               MAILLE = 'MA1',  NOEUD = 'N1',
+               NOM_CMP = 'V1',             VALE = -0.838038E+02),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 10,
+               MAILLE = 'MA1',  NOEUD = 'N1',
+               NOM_CMP = 'V6',             VALE = 0.601284E+02),
+
+ _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 10,
+               MAILLE = 'MA1',  NOEUD = 'N1',
+               NOM_CMP = 'V19',            VALE = 0.188479E-02,
+                                                     PRECISION = 1.2E-2))
+
+                                                                     )
+
+FIN()
+#

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/11/2003   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE ESTIMATEUR D'ERREUR SUR UNE PLAQUE TROUEE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,8 +92,7 @@ RESU=MECA_STATIQUE(     MODELE=MO,
                                _F( CHARGE = CH2))
                         )
 
-RESU=CALC_ELEM(  reuse=RESU,      MODELE=MO,
-                      CHAM_MATER=CM,
+RESU=CALC_ELEM(  reuse=RESU,      
                         RESULTAT=RESU,
                       TOUT_ORDRE='OUI',
                           OPTION=( 'SIGM_NOZ1_ELGA', 'ERRE_ELEM_NOZ1',

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/09/2002   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE ESSAI DE COMPRESSION-DILATATION POUR ETUDE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -148,13 +148,9 @@ U=STAT_NON_LINE(MODELE    = MOMECA,
 #-------------------------------------------------------
 
 U=CALC_ELEM(reuse =U,
-            MODELE=MOMECA,
-            CHAM_MATER=CHMAT,
             OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
             RESULTAT=U,
-            EXCIT=(_F(CHARGE=CLMECA,),
-                   _F(CHARGE = CHMECA,
-                      FONC_MULT = FCT),),
+            
             );
 
 VARI=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',

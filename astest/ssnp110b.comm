@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,8 +85,6 @@ CHAMDEP=CALC_ELEM( reuse=CHAMDEP,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=CHAMDEP,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT
               )
 
 FOND=DEFI_FOND_FISS(    MAILLAGE=MA,

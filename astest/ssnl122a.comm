@@ -1,4 +1,4 @@
-# MODIF  DATE 25/05/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE POUTRE DROITE CANTILEVER MULTI-FIBRES : FORCE PONCTUELLE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -278,9 +278,6 @@ STNL = STAT_NON_LINE(
 
 
 STNL=CALC_ELEM(reuse =STNL,
-               MODELE=MO,
-               CHAM_MATER=CHMAT,
-               CARA_ELEM=CAREL,
                RESULTAT=STNL,
                OPTION='SIEF_ELNO_ELGA',);
 

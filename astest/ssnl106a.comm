@@ -1,0 +1,432 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# AVEC ECRO-LINE OU ECRO_FLEJOU OU UN MOMENT EN PLASTICITE PARFAITE
+# MODELISATION POU_D_TG. DEUX SECTIONS : RECTANGLE ET CERCLE
+#======================================================================
+
+
+DEBUT( CODE=_F(  NOM = 'SSNL106A',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE(  )
+
+MO=AFFE_MODELE(        MAILLAGE=MA,
+     AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE',MODELISATION = 'POU_D_TG')
+                        )
+
+CAREL=AFFE_CARA_ELEM(   MODELE=MO,POUTRE=(
+          # SECTION CERCLE :
+           _F(  GROUP_MA = 'GC1',   SECTION = 'CERCLE',
+          CARA = (   'R',   ), VALE = (  0.1,)),
+          # SECTION RECTANGLE  :
+           _F(  GROUP_MA = 'GR1',   SECTION = 'RECTANGLE',
+          CARA = (   'HY', 'HZ',  ), VALE = (  0.2,  0.1, )))
+)
+
+# ------ TRACTION SIMPLE AVEC ECROUISSAGE ------------------------------
+# AFFECTE SUR LA SECTION CERCLE
+
+MATC2=DEFI_MATERIAU(   ELAS=_F( E = 2.E11, NU = 0.3),
+           ECRO_LINE=_F( D_SIGM_EPSI = 2.E9, SY = 150.E6),
+       VMIS_POUTRE=_F( NP = 4.7124E6,
+                MEY = 1.1781E5, MPY = 2.E5, CAY = 0.84, CBY = 0.002,
+                MEZ = 1.1781E5, MPZ = 2.E5, CAZ = 0.84, CBZ = 0.0002,
+                MPX = 1.E10)
+                        )
+
+# AFFECTE SUR LA SECTION RECTANGLE
+
+MATR3=DEFI_MATERIAU(   ELAS=_F( E = 2.E11, NU = 0.3),
+           ECRO_FLEJOU=_F( EP = 2.E10, SY = 150.E6, SU = 160.E6, PUISS = 1.0),
+       VMIS_POUTRE=_F( NP = 3.0E6,
+                MEY = 1.1781E5, MPY = 2.E5, CAY = 0.84, CBY = 0.002,
+                MEZ = 1.1781E5, MPZ = 2.E5, CAZ = 0.84, CBZ = 0.0002,
+                MPX = 1.E10)
+                        )
+
+CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA,AFFE=(
+                       _F( GROUP_MA = 'GC1', MATER = MATC2),
+                       _F( GROUP_MA = 'GR1', MATER = MATR3)))
+
+CHART=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
+     _F( GROUP_NO = 'A', DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),
+     _F( GROUP_NO = 'B', DX = 0.75E-3))
+    )
+
+FONCT=DEFI_FONCTION(   NOM_PARA='INST',
+                      VALE=( 0., 0., 10., 10., ) )
+
+#
+
+LINST=DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=(
+               _F( JUSQU_A = 1., NOMBRE = 1),
+               _F( JUSQU_A = 2., NOMBRE = 10),
+               _F( JUSQU_A = 3., NOMBRE = 10))
+)
+
+REST=STAT_NON_LINE( 
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT1,
+                         CARA_ELEM=CAREL,
+                             EXCIT=_F( 
+                CHARGE = CHART,
+                FONC_MULT = FONCT),COMP_INCR=(
+                         _F( 
+                RELATION = 'VMIS_POU_LINE',
+                GROUP_MA = 'GC1'),
+                         _F( 
+                RELATION = 'VMIS_POU_FLEJOU',
+                GROUP_MA = 'GR1')),
+                         INCREMENT=_F( 
+                LIST_INST = LINST),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 1),
+                       CONVERGENCE=_F( 
+                RESO_INTE = 'RUNGE_KUTTA_4',
+                ITER_INTE_MAXI = 500)
+              )
+
+REST=CALC_ELEM( reuse=REST,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=REST,
+              )
+
+REST=CALC_ELEM( reuse=REST,    
+                     RESULTAT=REST,
+                       OPTION='DEGE_ELNO_DEPL'    )
+
+TEST_RESU(RESU=(_F( RESULTAT = REST,
+                 NUME_ORDRE = 11,
+                 NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'R3',
+                 MAILLE = 'SR2',
+                 NOM_CMP = 'N',
+                 VALE = 3.1230E+6, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3),
+           _F( RESULTAT = REST,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'R3',
+                 MAILLE = 'SR2',
+                 NOM_CMP = 'N',
+                 VALE = 3.1529E+6, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3),
+           _F( RESULTAT = REST,
+                 NUME_ORDRE = 11,
+                 NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'C3',
+                 MAILLE = 'SC2',
+                 NOM_CMP = 'N',
+                 VALE = 4.75951E+6, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3),
+           _F( RESULTAT = REST,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'C3',
+                 MAILLE = 'SC2',
+                 NOM_CMP = 'N',
+                 VALE = 4.80664E+06, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3),
+           _F( RESULTAT = REST,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'DEGE_ELNO_DEPL',
+                 NOEUD = 'C3',
+                 MAILLE = 'SC2',
+                 NOM_CMP = 'EPXX',
+                 VALE = 2.25000E-03, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3),
+           _F( RESULTAT = REST,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOEUD = 'C3',
+                 MAILLE = 'SC2',
+                 NOM_CMP = 'V6',
+                 VALE = 3.00000E+06, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+           _F( RESULTAT = REST,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOEUD = 'C3',
+                 MAILLE = 'SC2',
+                 NOM_CMP = 'V7',
+                 VALE = 1.02000E+00, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3))
+          )
+
+IMPR_RESU(RESU=_F( 
+RESULTAT = REST, NUME_ORDRE = 21)
+)
+
+# ------ FLEXION GZ EN PLASTICITE PARFAITE ---------------------------
+
+# PLASTICITE PARFAITE
+
+# AFFECTE SUR LA SECTION RECTANGLE
+
+MATR1=DEFI_MATERIAU(   ELAS=_F( E = 2.E11, NU = 0.3),
+           ECRO_LINE=_F( D_SIGM_EPSI = 0.,  SY = 150.E6),
+       VMIS_POUTRE=_F( NP = 3.0E6,
+               MEY = 5.E4, MPY = 7.5E4, CAY = 0.84, CBY = 0.002,
+               MEZ = 1.E5, MPZ = 1.5E5, CAZ = 0.84, CBZ = 0.0013,
+               MPX = 1.E10)
+                        )
+
+# AFFECTE SUR LA SECTION CERCLE
+
+MATC1=DEFI_MATERIAU(   ELAS=_F( E = 2.E11, NU = 0.3),
+           ECRO_LINE=_F( D_SIGM_EPSI = 0.0, SY = 150.E6),
+       VMIS_POUTRE=_F( NP = 4.7124E6,
+                MEY = 1.1781E5, MPY = 2.E5, CAY = 0.84, CBY = 0.002,
+                MEZ = 1.1781E5, MPZ = 2.E5, CAZ = 0.84, CBZ = 0.0012,
+                MPX = 1.E10)
+                        )
+
+CHMAT2=AFFE_MATERIAU(   MAILLAGE=MA,AFFE=(
+                       _F( GROUP_MA = 'GC1', MATER = MATC1),
+                       _F( GROUP_MA = 'GR1', MATER = MATR1)))
+
+CHARM=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
+     _F( GROUP_NO = 'A', DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),
+      _F( GROUP_NO = 'B',  DRZ = 0.75E-2)))
+
+FONCM=DEFI_FONCTION(   NOM_PARA='INST',
+                      VALE=( 0., 0., 
+                             20., 20., 
+                             30., -2., 
+                           ) )
+
+LINSR=DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=(
+               _F( JUSQU_A = 1.,    NOMBRE = 1),
+               _F( JUSQU_A = 5.,    NOMBRE = 20),
+               _F( JUSQU_A = 10.,   NOMBRE = 10),
+               _F( JUSQU_A = 20.,   NOMBRE = 10),
+               _F( JUSQU_A = 30.,   NOMBRE = 30))
+)
+
+RESM=STAT_NON_LINE( 
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT2,
+                         CARA_ELEM=CAREL,
+                             EXCIT=_F( 
+                CHARGE = CHARM,
+                FONC_MULT = FONCM),
+                         COMP_INCR=_F( 
+                RELATION = 'VMIS_POU_LINE'),
+                         INCREMENT=_F( 
+                LIST_INST = LINSR),
+                       CONVERGENCE=_F( 
+                ITER_GLOB_MAXI = 100,
+                ITER_INTE_MAXI = 50,
+                RESO_INTE = 'RUNGE_KUTTA_4',
+                RESI_INTE_RELA = 1.E-6),
+                            NEWTON=_F( 
+                MATRICE = 'ELASTIQUE')
+              )
+
+RESM=CALC_ELEM( reuse=RESM,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=RESM,
+              )
+
+RESM=CALC_ELEM( reuse=RESM,    
+                     RESULTAT=RESM,
+                       OPTION='DEGE_ELNO_DEPL'    )
+
+# RESULTATS EN PLASTICITE PARFAITE
+
+
+TEST_RESU(RESU=(
+
+#SECTION RECTANGLE
+
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+ NOEUD = 'R3', MAILLE = 'SR2', NOM_CMP = 'MFZ', REFERENCE = 'ANALYTIQUE',
+                 NUME_ORDRE = 1, VALE = 0.10000E+6, PRECISION = 1.E-3),
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+ NOEUD = 'R3', MAILLE = 'SR2', NOM_CMP = 'MFZ', REFERENCE = 'ANALYTIQUE',
+                 NUME_ORDRE = 21, VALE = 0.14800E+6, PRECISION = 1.E-2),
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+    NOEUD = 'R3', MAILLE = 'SR2', NOM_CMP = 'MFZ', REFERENCE = 'ANALYTIQUE',
+                 NUME_ORDRE = 31, VALE = 0.14950E+6, PRECISION = 1.E-2),
+
+           _F( RESULTAT = RESM, NOM_CHAM = 'DEGE_ELNO_DEPL',
+    NOEUD = 'R3', MAILLE = 'SR2', NOM_CMP = 'KZ', REFERENCE = 'ANALYTIQUE',
+                 NUME_ORDRE = 31, VALE = 7.50000E-02),
+
+ # LA CHARGE LIMITE VAUT 0.15E+6
+
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'R3', MAILLE = 'SR2', NOM_CMP = 'MFZ',
+NUME_ORDRE = 41, VALE = 0.14988E+6, PRECISION = 1.E-2, REFERENCE = 'ANALYTIQUE'),
+
+#SECTION CERCLE
+
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'C3', MAILLE = 'SC2', NOM_CMP = 'MFZ',
+NUME_ORDRE = 1, VALE = 0.11781E+6, PRECISION = 1.E-3, REFERENCE = 'ANALYTIQUE'),
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'C3', MAILLE = 'SC2', NOM_CMP = 'MFZ',
+NUME_ORDRE = 21, VALE = 0.19602E+6, PRECISION = 1.E-2, REFERENCE = 'ANALYTIQUE'),
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'C3', MAILLE = 'SC2', NOM_CMP = 'MFZ',
+REFERENCE = 'ANALYTIQUE',
+                 NUME_ORDRE = 31, VALE = 0.19900E+6, PRECISION = 1.E-2),
+
+ # LA CHARGE LIMITE VAUT 0.2E+6
+
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'C3', MAILLE = 'SC2', NOM_CMP = 'MFZ',
+REFERENCE = 'ANALYTIQUE',
+                 NUME_ORDRE = 41, VALE = 0.19975E+6, PRECISION = 1.E-2),
+
+# LA CHARGE LIMITE DANS L'AUTRE SENS VAUT -0.15E+6
+
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'R3', MAILLE = 'SR2', NOM_CMP = 'MFZ',
+                 NUME_ORDRE = 71, VALE = -0.15E+6, PRECISION = 1.E-2,
+REFERENCE = 'ANALYTIQUE'),
+# LA CHARGE LIMITE DANS L'AUTRE SENS VAUT -0.2E+6 
+
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'C3', MAILLE = 'SC2', NOM_CMP = 'MFZ',
+                 NUME_ORDRE = 71, VALE = -0.2E+6, PRECISION = 1.E-2,
+REFERENCE = 'ANALYTIQUE'))
+          )
+
+# TEST DES REACTIONS
+
+
+REST=CALC_NO( reuse=REST,     RESULTAT=REST,  
+                    OPTION='REAC_NODA' )
+
+TEST_RESU(RESU=(_F( RESULTAT = REST,
+                 NUME_ORDRE = 11,
+                 NOM_CHAM = 'REAC_NODA',
+                 NOEUD = 'R3',
+                 NOM_CMP = 'DX',
+                 VALE = 3.1230E+6,
+REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3),
+           _F( RESULTAT = REST,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'REAC_NODA',
+                 NOEUD = 'R3',
+                 NOM_CMP = 'DX',
+                 VALE = 3.1529E+6,
+REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3),
+           _F( RESULTAT = REST,
+                 NUME_ORDRE = 11,
+                 NOM_CHAM = 'REAC_NODA',
+                 NOEUD = 'C3',
+                 NOM_CMP = 'DX',
+                 VALE = 4.75951E+6,
+REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3),
+           _F( RESULTAT = REST,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'REAC_NODA',
+                 NOEUD = 'C3',
+                 NOM_CMP = 'DX',
+                 VALE = 4.80664E+06,
+REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3))
+          )
+
+RESM=CALC_NO( reuse=RESM,     RESULTAT=RESM,  
+                    OPTION='REAC_NODA' )
+
+TEST_RESU(RESU=(_F( RESULTAT = RESM, NOM_CHAM = 'REAC_NODA', NOEUD = 'R3',
+    NOM_CMP = 'DRZ', NUME_ORDRE = 1, 
+REFERENCE = 'ANALYTIQUE',
+VALE = 0.10000E+6, PRECISION = 1.E-3),
+
+           _F( RESULTAT = RESM, NOM_CHAM = 'REAC_NODA',
+                 NOEUD = 'R3', NOM_CMP = 'DRZ',
+REFERENCE = 'ANALYTIQUE',
+                 NUME_ORDRE = 21, VALE = 0.14800E+6, PRECISION = 1.E-2),
+           _F( RESULTAT = RESM, NOM_CHAM = 'REAC_NODA',
+                 NOEUD = 'R3', NOM_CMP = 'DRZ',
+REFERENCE = 'ANALYTIQUE',
+                 NUME_ORDRE = 31, VALE = 0.14950E+6, PRECISION = 1.E-2),
+ # LA CHARGE LIMITE VAUT 0.15E+6
+           _F( RESULTAT = RESM, NOM_CHAM = 'REAC_NODA',
+                 NOEUD = 'R3', NOM_CMP = 'DRZ',
+REFERENCE = 'ANALYTIQUE',
+                 NUME_ORDRE = 41, VALE = 0.14988E+6, PRECISION = 1.E-2),
+           _F( RESULTAT = RESM, NOM_CHAM = 'REAC_NODA',
+                 NOEUD = 'C3', NOM_CMP = 'DRZ',
+REFERENCE = 'ANALYTIQUE',
+                 NUME_ORDRE = 1, VALE = 0.11781E+6, PRECISION = 1.E-3),
+           _F( RESULTAT = RESM, NOM_CHAM = 'REAC_NODA',
+                 NOEUD = 'C3', NOM_CMP = 'DRZ',
+REFERENCE = 'ANALYTIQUE',
+                 NUME_ORDRE = 21, VALE = 0.19602E+6, PRECISION = 1.E-2),
+           _F( RESULTAT = RESM, NOM_CHAM = 'REAC_NODA',
+                 NOEUD = 'C3', NOM_CMP = 'DRZ',
+REFERENCE = 'ANALYTIQUE',
+                 NUME_ORDRE = 31, VALE = 0.19900E+6, PRECISION = 1.E-2),
+ # LA CHARGE LIMITE VAUT 0.2E+6
+           _F( RESULTAT = RESM, NOM_CHAM = 'REAC_NODA',
+                 NOEUD = 'C3', NOM_CMP = 'DRZ',
+REFERENCE = 'ANALYTIQUE',
+                 NUME_ORDRE = 41, VALE = 0.19975E+6, PRECISION = 1.E-2))
+          )
+
+FIN( )
+#
+#
+#
+#
+#XM = RECU_FONCTION ( RESULTAT : RESM
+#                          INTITULE : 'DXM'
+#                          TOUT_INST : 'OUI'
+#                  NOM_CHAM : 'DEPL'
+#                 GROUP_NO : B
+#                 NOM_CMP: 'DRZ'
+#                        );
+#
+#   YM = RECU_FONCTION ( RESULTAT : RESM
+#                          INTITULE : 'FXM'
+#                          TOUT_INST : 'OUI'
+#                  NOM_CHAM : 'SIEF_ELNO_ELGA'
+#                 NOEUD : C3 MAILLE : SC2
+#                 NOM_CMP: 'MFZ'
+#                        );
+#
+#
+#
+# #MPR_COURBE(FORMAT    : 'AGRAF'
+#             FICHIER   : 'AGRAF'
+#          TITRE_GRAPHIQUE : 'SSNL106 AVEC POU_D_T'
+#         LEGENDE_X       : 'UX DU POINT B'
+#         LEGENDE_Y       : 'FX DU POINT B'
+#             COURBE    : (FONC_X : XM
+#                          FONC_Y : YM
+#                 LEGENDE   : 'CALCUL AVEC POU_D_T'
+#                 STYLE     : 'LIGNE'
+#                 COULEUR   : 'VERT_FONCE'
+#                 MARQUEUR  : 'FUSEE_F'
+#                 FREQ_MARQUEUR : 1
+#                           )
+#            );
+#

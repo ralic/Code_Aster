@@ -1,4 +1,4 @@
-# MODIF  DATE 12/11/2003   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL EN TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,9 +125,7 @@ REMEZERO=MECA_STATIQUE(         MODELE=MOMEZERO,
 # 3.4.3. CALCUL DE L'INDICATEUR D'ERREUR
 #
 REMEZERO=CALC_ELEM( reuse=REMEZERO,   RESULTAT=REMEZERO,
-                MODELE=MOMEZERO,
-               CHAM_MATER=MATEZERO,
-                    EXCIT=_F(  CHARGE = CHMEZERO,    ),
+                    
               OPTION=( 'SIGM_ELNO_DEPL', 
                        'ERRE_ELGA_NORE', ),
               NUME_ORDRE=3
@@ -242,9 +240,7 @@ REMEUN=MECA_STATIQUE(         MODELE=MOMEUN,
 # 5.4.3. CALCUL DE L'INDICATEUR D'ERREUR
 #
 REMEUN=CALC_ELEM( reuse=REMEUN,   RESULTAT=REMEUN,
-                MODELE=MOMEUN,
-               CHAM_MATER=MATEUN,
-                    EXCIT=_F(  CHARGE = CHMEUN,    ),
+                    
               OPTION=( 'SIGM_ELNO_DEPL', 
                        'ERRE_ELGA_NORE', ),
               NUME_ORDRE=3

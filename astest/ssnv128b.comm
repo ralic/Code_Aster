@@ -1,4 +1,4 @@
-# MODIF  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,8 +127,6 @@ U2M=STAT_NON_LINE(MODELE    = MO,
 U2M=CALC_ELEM(reuse=U2M,
               OPTION=('SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA',),
               RESULTAT=U2M,
-              MODELE=MO,
-              CHAM_MATER=CHMAT
              )
 #
 DEPL2M=CREA_CHAMP(OPERATION='EXTR',
@@ -209,8 +207,6 @@ U2L=STAT_NON_LINE(MODELE    = MO,
 U2L=CALC_ELEM(reuse=U2L,
               OPTION=('SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA',),
               RESULTAT=U2L,
-              MODELE=MO,
-              CHAM_MATER=CHMAT
              )
 #
 DEPL2L=CREA_CHAMP(OPERATION='EXTR',
@@ -290,8 +286,6 @@ U3M=STAT_NON_LINE(MODELE      = MO,
 U3M=CALC_ELEM(reuse=U3M,
             OPTION=('SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA',),
             RESULTAT=U3M,
-            MODELE=MO,
-            CHAM_MATER=CHMAT
            )
 #
 DEPL3M=CREA_CHAMP(OPERATION='EXTR',
@@ -372,8 +366,6 @@ U3L=STAT_NON_LINE(MODELE      = MO,
 U3L=CALC_ELEM(reuse=U3L,
             OPTION=('SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA',),
             RESULTAT=U3L,
-            MODELE=MO,
-            CHAM_MATER=CHMAT
            )
 #
 DEPL3L=CREA_CHAMP(OPERATION='EXTR',

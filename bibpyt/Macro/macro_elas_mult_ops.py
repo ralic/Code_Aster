@@ -1,4 +1,4 @@
-#@ MODIF macro_elas_mult_ops Macro  DATE 19/01/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_elas_mult_ops Macro  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -149,19 +149,45 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
 
   motscles={}
   iocc=0
-  if ielas : 
-     motscles['AFFE']=[]
-     for m in CAS_CHARGE:
-        motscles['AFFE'].append(_F(CHAM_GD=nomchn[iocc],
-                                   NOM_CAS=m['NOM_CAS'],) )
-        iocc=iocc+1
-  else :
-     motscles['AFFE']=[]
-     for m in CAS_CHARGE:
-        motscles['AFFE'].append(_F(CHAM_GD=nomchn[iocc],
-                                   NUME_MODE=m['MODE_FOURIER'],
-                                   TYPE_MODE=m['TYPE_MODE'],) )
-        iocc=iocc+1
+  motscle2={}
+  if CHAM_MATER : motscle2['CHAM_MATER']=CHAM_MATER
+  if CARA_ELEM  : motscle2['CARA_ELEM']=CARA_ELEM
+  if CHAM_MATER or CARA_ELEM :
+    if ielas : 
+       motscles['AFFE']=[]
+       for m in CAS_CHARGE:
+          motscles['AFFE'].append(_F(MODELE=MODELE,
+                                     CHAM_GD=nomchn[iocc],
+                                     NOM_CAS=m['NOM_CAS'],
+                                     **motscle2) )
+          iocc=iocc+1
+    else :
+       motscles['AFFE']=[]
+       for m in CAS_CHARGE:
+          motscles['AFFE'].append(_F(MODELE=MODELE,
+                                     CHAM_GD=nomchn[iocc],
+                                     NUME_MODE=m['MODE_FOURIER'],
+                                     TYPE_MODE=m['TYPE_MODE'],
+                                     **motscle2) )
+          iocc=iocc+1
+  else:
+    if ielas : 
+       motscles['AFFE']=[]
+       for m in CAS_CHARGE:
+          motscles['AFFE'].append(_F(MODELE=MODELE,
+                                     CHAM_GD=nomchn[iocc],
+                                     NOM_CAS=m['NOM_CAS'],) )
+          iocc=iocc+1
+    else :
+       motscles['AFFE']=[]
+       for m in CAS_CHARGE:
+          motscles['AFFE'].append(_F(MODELE=MODELE,
+                                     CHAM_GD=nomchn[iocc],
+                                     NUME_MODE=m['MODE_FOURIER'],
+                                     TYPE_MODE=m['TYPE_MODE'],) )
+          iocc=iocc+1
+
+
   nomres=CREA_RESU(OPERATION='AFFE',TYPE_RESU=tyresu,NOM_CHAM='DEPL',**motscles)
 
 #####################################################################

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE MELANGE 3D-PLAQUE-POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -224,80 +224,50 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=DEP2,
                       PRECISION=0.001,),),);
 
 DEPF=CALC_ELEM(reuse =DEPF,
-               MODELE=MO,
-               CHAM_MATER=CHMA,
-               CARA_ELEM=CARA,
                RESULTAT=DEPF,
                NUME_ORDRE=1,
                GROUP_MA='GRMA2',
                OPTION='EFGE_ELNO_DEPL',
-               EXCIT=(
-               _F(CHARGE=CHME,),
-               _F(CHARGE=CHMEF,),),);
+               );
 
 DEPF=CALC_ELEM(reuse =DEPF,
-               MODELE=MO,
-               CHAM_MATER=CHMA,
-               CARA_ELEM=CARA,
                RESULTAT=DEPF,
                NUME_ORDRE=1,
                GROUP_MA='GRMA2',
                OPTION='SIGM_ELNO_DEPL',
                NIVE_COUCHE='SUP',
-               EXCIT=(
-               _F(CHARGE=CHME,),
-               _F(CHARGE=CHMEF,),),);
+               );
 
 DEPF=CALC_ELEM(reuse =DEPF,
-               MODELE=MO,
-               CHAM_MATER=CHMA,
-               CARA_ELEM=CARA,
                RESULTAT=DEPF,
                NUME_ORDRE=1,
                GROUP_MA='GRMA2',
                OPTION='EPSI_ELNO_DEPL',
                NIVE_COUCHE='SUP',
-               EXCIT=(
-               _F(CHARGE=CHME,),
-               _F(CHARGE=CHMEF,),),);
+               );
 
 DEPC=CALC_ELEM(reuse =DEPC,
-               MODELE=MO,
-               CHAM_MATER=CHMA,
-               CARA_ELEM=CARA,
                RESULTAT=DEPC,
                NUME_ORDRE=1,
                GROUP_MA='GRMA2',
                OPTION='EFGE_ELNO_DEPL',
-               EXCIT=(
-               _F(CHARGE=CHME,),
-               _F(CHARGE=CHMEC,),),);
+               );
 
 DEPC=CALC_ELEM(reuse =DEPC,
-               MODELE=MO,
-               CHAM_MATER=CHMA,
-               CARA_ELEM=CARA,
                RESULTAT=DEPC,
                NUME_ORDRE=1,
                GROUP_MA='GRMA2',
                OPTION='SIGM_ELNO_DEPL',
                NIVE_COUCHE='SUP',
-               EXCIT=(
-               _F(CHARGE=CHME,),
-               _F(CHARGE=CHMEC,),),);
+               );
 
 DEPC=CALC_ELEM(reuse =DEPC,
-               MODELE=MO,
-               CHAM_MATER=CHMA,
-               CARA_ELEM=CARA,
                RESULTAT=DEPC,
                NUME_ORDRE=1,
                GROUP_MA='GRMA2',
                OPTION='EPSI_ELNO_DEPL',
                NIVE_COUCHE='SUP',
-               EXCIT=(
-               _F(CHARGE=CHME,),
-               _F(CHARGE=CHMEC,),),);
+               );
 
 TEST_RESU(RESU=(_F(RESULTAT=DEPF,
                    NUME_ORDRE=1,

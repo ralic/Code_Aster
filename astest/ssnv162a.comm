@@ -1,4 +1,4 @@
-# MODIF  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE CALCUL DE FLUAGE DE DESSICATION INTRINSEQUE (MODELE BAZANT)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -172,24 +172,13 @@ U=STAT_NON_LINE(
               )
 
 U=CALC_ELEM( reuse=U,
-                            OPTION=('SIEF_ELNO_ELGA'),
-                          RESULTAT=U,
-                          EXCIT=(_F( 
-                CHARGE = CH2),),
-                            MODELE=MO,
-                        CHAM_MATER=CM
-              )
+              OPTION=('SIEF_ELNO_ELGA'),
+              RESULTAT=U,)
 
-U=CALC_ELEM(reuse=U,   MODELE=MO,      RESULTAT=U,
-              CHAM_MATER=CM,
-              EXCIT=(_F( 
-                CHARGE = CH2),),
+U=CALC_ELEM(reuse=U,   RESULTAT=U,
               OPTION='EPSI_ELNO_DEPL')
 
-U=CALC_ELEM(reuse=U,   MODELE=MO,      RESULTAT=U,
-             CHAM_MATER=CM, 
-             EXCIT=(_F( 
-                CHARGE = CH2),), 
+U=CALC_ELEM(reuse=U,   RESULTAT=U, 
              OPTION=('EPGR_ELNO'))
 
 

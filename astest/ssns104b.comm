@@ -1,0 +1,384 @@
+
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# RESPONSABLE KOECHLIN P.KOECHLIN
+#  DATE   : 27/10/03
+#  AUTEUR : F. LEBOUVIER (DeltaCAD)
+#  TITRE  : FLEXION D'UNE DALLE EN BETON ARME (MODELE GLRC) APPUYEE SUR 2 COTES:
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#           REGIME DE POUTRE PLASTIQUE
+#
+#  DETAILS : MODELISATION DKTG
+#            Mailles QUAD4
+
+DEBUT(CODE=_F(NOM='SSNS104B',
+              NIV_PUB_WEB='INTRANET',),);
+EP = 0.12
+
+# Membrane
+
+H1111 = 1158.E6
+H1122 = 0.
+H1112 = 0.
+H2222 = 1158.E6
+H2212 = 0.
+H1212 = 1158.E6/2.
+
+# Flexion
+
+A1111 = 1.39E6
+A1122 = 0.
+A1112 = 0.
+A2222 = 1.39E6
+A2212 = 0.
+A1212 = 1.39E6/2.
+
+# Membrane-Flexion
+
+B1111 = 0.
+B1122 = 0.
+B1112 = 0.
+B2222 = 0.
+B2212 = 0.
+B1212 = 0.
+
+# Membrane-Cisaillement
+
+E1113=0.
+E1123=0.
+E2213=0.
+E2223=0.
+E1213=0.
+E1223=0.
+
+# Flexion-Cisaillement
+
+F1113=0.
+F1123=0.
+F2213=0.
+F2223=0.
+F1213=0.
+F1223=0.
+
+# Cisaillement
+
+G1313=0.00001
+G1323=0.
+G2323=0.00001
+
+PRE_GIBI();
+
+MAIL=LIRE_MAILLAGE();
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='LCONTY',),
+                               _F(GROUP_MA='LCONTX',),
+                               _F(GROUP_MA='LSYMX' ,),
+                               _F(GROUP_MA='LSYMY' ,),
+                               ),
+                );
+
+MOD=AFFE_MODELE(MAILLAGE=MAIL,
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKTG',),);
+
+MAIL=MODI_MAILLAGE(reuse=MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_NORM_COQUE=_F(GROUP_MA='DALLE',
+                                      VECT_NORM=(0.,0.,1.),
+                                      GROUP_NO='A1',),
+                   MODELE = MOD,);
+
+MOMLIM_1=DEFI_FONCTION(NOM_PARA='NORM',
+                     VALE=((0.0, 32500.),(1.0, 32500.),),
+                     PROL_DROITE='LINEAIRE',
+                     PROL_GAUCHE='LINEAIRE',
+                     );
+MOMLIM_2=DEFI_FONCTION(NOM_PARA='NORM',
+                     VALE=((0.0, -32500.),(1.0, -32500.),),
+                     PROL_DROITE='LINEAIRE',
+                     PROL_GAUCHE='LINEAIRE',
+                     );
+CPRAG=DEFI_FONCTION(NOM_PARA='NORM',
+                     VALE=((0.0, 73700.),(1.0, 73700.),),
+                     PROL_DROITE='LINEAIRE',
+                     PROL_GAUCHE='LINEAIRE',
+                     );
+
+MAT=DEFI_MATERIAU(
+                 GLRC_FO=_F(
+                                MEX1 =  MOMLIM_1,   
+                                MEY1 =  MOMLIM_1,
+                                MEX2 =  MOMLIM_2,
+                                MEY2 =  MOMLIM_2,
+                                CX1  =  CPRAG,
+                                CY1  =  CPRAG,
+                                CXY1 =  CPRAG,
+                                CX2  =  CPRAG,
+                                CY2  =  CPRAG,
+                                CXY2 =  CPRAG,
+                           ),
+                  ELAS_COQUE=_F(
+#---MEMBRANE
+                                M_LLLL = H1111,
+                                M_LLTT = H1122,
+                                M_LLLT = H1112,
+                                M_TTTT = H2222,
+                                M_TTLT = H2212,
+                                M_LTLT = H1212,
+#---FLEXION
+                                F_LLLL = A1111,
+                                F_LLTT = A1122,
+                                F_LLLT = A1112,
+                                F_TTTT = A2222,
+                                F_TTLT = A2212,
+                                F_LTLT = A1212,
+#---MEMBRANE-FLEXION
+                                MF_LLLL = B1111,
+                                MF_LLTT = B1122,
+                                MF_LLLT = B1112,
+                                MF_TTTT = B2222,
+                                MF_TTLT = B2212,
+                                MF_LTLT = B1212,
+#---MEMBRANE-CISAILLEMENT
+                                MC_LLLZ = E1113,
+                                MC_LLTZ = E1123,
+                                MC_TTLZ = E2213,
+                                MC_TTTZ = E2223,
+                                MC_LTLZ = E1213,
+                                MC_LTTZ = E1223,
+#---FLEXION-CISAILLEMENT
+                                FC_LLLZ = F1113,
+                                FC_LLTZ = F1123,
+                                FC_TTLZ = F2213,
+                                FC_TTTZ = F2223,
+                                FC_LTLZ = F1213,
+                                FC_LTTZ = F1223,
+#---CISAILLEMENT
+                                C_LZLZ = G1313,
+                                C_LZTZ = G1323,
+                                C_TZTZ = G2323,
+                           ),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=(_F(TOUT='OUI',MATER=MAT,),),
+                    );
+
+CARA_ELE=AFFE_CARA_ELEM(MODELE=MOD,
+                        COQUE=_F(GROUP_MA='MESH',
+                                 EPAIS=EP,
+                                 ANGL_REP=(0.0,0.0,),),);
+
+COND_LIM=AFFE_CHAR_MECA(MODELE=MOD,
+                        DDL_IMPO=(_F(GROUP_NO='LCONTY',
+                                     DZ=0.0,),
+                                  _F(GROUP_NO='LSYMX',
+                                     DY=0,
+                                     DRX=0,),
+                                  _F(GROUP_NO='LSYMY',
+                                     DX=0,
+                                     DRY=0.0,),),);
+
+PRES=AFFE_CHAR_MECA(MODELE=MOD,
+                    FORCE_COQUE=_F(GROUP_MA='DALLE',
+                                   PRES=-100000.0,),);
+
+CH_FO=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=((0.0, 0.0),(1.0, 1.0),),
+                     PROL_DROITE='LINEAIRE',
+                     PROL_GAUCHE='LINEAIRE',
+                    );
+
+INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
+                          _F(JUSQU_A = .8,NOMBRE = 1),
+                          _F(JUSQU_A = 1.,NOMBRE = 5),
+                      ),);
+
+RESU=STAT_NON_LINE( MODELE=MOD,
+                      CHAM_MATER= CHMAT,
+                      CARA_ELEM = CARA_ELE,
+                      COMP_INCR=_F(RELATION = 'GLRC',),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=250,),
+                      NEWTON=_F(
+                               REAC_ITER=1, # FULL_MECA
+                               PAS_MINI_ELAS=0.0,
+                               MATRICE='TANGENTE',
+                               REAC_INCR=1),
+                      INCREMENT=_F( LIST_INST = INST,
+                                    PRECISION =1.E-1),
+                      EXCIT=(   _F( CHARGE = COND_LIM,),
+                                 _F( CHARGE = PRES,
+                                    FONC_MULT = CH_FO,), 
+                     ),);
+
+RESU=CALC_ELEM(reuse=RESU,
+                     OPTION=('SIEF_ELNO_ELGA',
+                             'DEGE_ELNO_DEPL',
+                             'VARI_ELNO_ELGA'),
+                     RESULTAT=RESU,
+              );
+
+NORD=6
+TEST_RESU(RESU=(             
+           _F( RESULTAT = RESU,
+               NUME_ORDRE = NORD,  
+               NOM_CHAM = 'DEPL',   
+               CRITERE = 'RELATIF',    
+               PRECISION = 0.005,
+               GROUP_NO = 'A1',    
+               NOM_CMP = 'DZ',      
+               VALE = 3.125E-02, 
+               REFERENCE = 'NON_REGRESSION'),
+             ),);
+
+#
+# TEST DE EFFORT NORMAL AU CENTRE DE LA DALLE
+#
+TEST_RESU(RESU=(             
+           _F( RESULTAT = RESU,
+               NUME_ORDRE = NORD,  
+               NOM_CHAM = 'SIEF_ELNO_ELGA',   
+               CRITERE = 'ABSOLU',    
+               PRECISION = 0.0006,
+               GROUP_NO = 'A1',
+               MAILLE='M133',    
+               NOM_CMP = 'NXX',      
+               VALE = 0., 
+               REFERENCE = 'ANALYTIQUE',),
+           _F( RESULTAT = RESU,
+               NUME_ORDRE = NORD,  
+               NOM_CHAM = 'SIEF_ELNO_ELGA',   
+               CRITERE = 'ABSOLU',    
+               PRECISION = 0.0006,
+               GROUP_NO = 'A1',
+               MAILLE='M133',    
+               NOM_CMP = 'NYY',      
+               VALE = 0., 
+               REFERENCE = 'ANALYTIQUE',),
+             ),
+          );
+#
+# TEST DU MOMENT FLECHISSANT AU CENTRE DE LA DALLE
+#
+TEST_RESU(RESU=(             
+           _F( RESULTAT = RESU,
+               NUME_ORDRE = NORD,  
+               NOM_CHAM = 'SIEF_ELNO_ELGA',   
+               CRITERE = 'RELATIF',    
+               PRECISION = 0.003,
+               GROUP_NO = 'A1',
+               MAILLE='M133',    
+               NOM_CMP = 'MXX',      
+               VALE = 40500., 
+               REFERENCE = 'ANALYTIQUE'),
+           _F( RESULTAT = RESU,
+               NUME_ORDRE = NORD,  
+               NOM_CHAM = 'SIEF_ELNO_ELGA',   
+               CRITERE = 'ABSOLU',    
+               PRECISION = 50.,
+               GROUP_NO = 'A1',
+               MAILLE='M133',    
+               NOM_CMP = 'MYY',      
+               VALE = 0., 
+               REFERENCE = 'ANALYTIQUE'),
+             ),
+          );
+#
+# TEST DU MOMENT DE RAPPEL AU CENTRE DE LA DALLE
+#  V1 = Mxx - mx
+#  V2 = Myy - my
+#
+TEST_RESU(RESU=(             
+           _F( RESULTAT = RESU,
+               NUME_ORDRE = NORD,  
+               NOM_CHAM = 'VARI_ELNO_ELGA',   
+               CRITERE = 'RELATIF',    
+               PRECISION = 0.00001,
+               GROUP_NO = 'A1',
+               MAILLE='M133',    
+               NOM_CMP = 'V1',      
+               VALE = 32500., 
+               REFERENCE = 'ANALYTIQUE'),
+           _F( RESULTAT = RESU,
+               NUME_ORDRE = NORD,  
+               NOM_CHAM = 'VARI_ELNO_ELGA',   
+               CRITERE = 'ABSOLU',    
+               PRECISION = 50,
+               GROUP_NO = 'A1',
+               MAILLE='M133',    
+               NOM_CMP = 'V2',      
+               VALE = 0., 
+               REFERENCE = 'ANALYTIQUE'),
+             ),
+          );
+#
+# TEST DE LA COURBURE PLASTIQUE AU CENTRE DE LA DALLE
+#
+TEST_RESU(RESU=(             
+           _F( RESULTAT = RESU,
+               NUME_ORDRE = NORD,  
+               NOM_CHAM = 'VARI_ELNO_ELGA',   
+               CRITERE = 'RELATIF',    
+               PRECISION = 0.015,
+               GROUP_NO = 'A1',
+               MAILLE='M133',    
+               NOM_CMP = 'V4',      
+               VALE = 0.1085, 
+               REFERENCE = 'ANALYTIQUE'),
+           _F( RESULTAT = RESU,
+               NUME_ORDRE = NORD,  
+               NOM_CHAM = 'VARI_ELNO_ELGA',   
+               CRITERE = 'ABSOLU',    
+               PRECISION = 7.E-5,
+               GROUP_NO = 'A1',
+               MAILLE='M133',    
+               NOM_CMP = 'V5',      
+               VALE = 0., 
+               REFERENCE = 'ANALYTIQUE'),
+             ),
+         );
+#
+# TEST DE LA COURBURE AU CENTRE DE LA DALLE
+#
+TEST_RESU(RESU=(             
+           _F( RESULTAT = RESU,
+               NUME_ORDRE = NORD,  
+               NOM_CHAM = 'DEGE_ELNO_DEPL',   
+               CRITERE = 'RELATIF',    
+               PRECISION = 0.015,
+               GROUP_NO = 'A1',
+               MAILLE='M133',    
+               NOM_CMP = 'KXX',      
+               VALE = 0.1376, 
+               REFERENCE = 'ANALYTIQUE'),
+           _F( RESULTAT = RESU,
+               NUME_ORDRE = NORD,  
+               NOM_CHAM = 'DEGE_ELNO_DEPL',   
+               CRITERE = 'ABSOLU',    
+               PRECISION = 9.E-5,
+               GROUP_NO = 'A1',
+               MAILLE='M133',    
+               NOM_CMP = 'KYY',      
+               VALE = 0., 
+               REFERENCE = 'ANALYTIQUE'),
+            ),
+        );
+     
+FIN();

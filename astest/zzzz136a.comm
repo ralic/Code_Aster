@@ -1,4 +1,4 @@
-# MODIF  DATE 29/08/2003   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE VALIDATION POST_RELEVE_T 3D EN DIFFERENTS REPERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,9 +115,8 @@ RESU=MECA_STATIQUE(        MODELE=MO,
 
                            )
 
-CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,         MODELE=MO,
-                            CHAM_MATER=CH_MAT,
-                                 EXCIT=_F(  CHARGE = CHARGE,    ),
+CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,         
+                                 
                                 OPTION='SIGM_ELNO_DEPL'
                            )
 

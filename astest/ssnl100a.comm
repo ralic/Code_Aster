@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PROBLEME A DEUX PORTEES AVEC CABLE POULIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -148,9 +148,6 @@ RESU=CALC_ELEM( reuse=RESU,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=RESU,
-                            MODELE=MO1,
-                        CHAM_MATER=CHMAT1,
-                         CARA_ELEM=CARA1
               )
 
 TEST_RESU(RESU=(

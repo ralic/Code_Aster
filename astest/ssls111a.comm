@@ -1,5 +1,5 @@
 
-# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DKQ - B/A = 1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -242,17 +242,13 @@ MESTAT=MECA_STATIQUE(MODELE=MO,
                      CARA_ELEM=EP,
                      EXCIT=_F(CHARGE=CHME,),);
 
-EFSUP=CALC_ELEM(MODELE=MO,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=EP,
+EFSUP=CALC_ELEM(
                 GROUP_MA='PLAQ1',
                 OPTION='EFGE_ELNO_DEPL',
                 RESULTAT=MESTAT,
                 PLAN='MAIL',);
 
-EFINF=CALC_ELEM(MODELE=MO,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=EP,
+EFINF=CALC_ELEM(
                 GROUP_MA='PLAQ2',
                 OPTION='EFGE_ELNO_DEPL',
                 RESULTAT=MESTAT,
@@ -346,17 +342,14 @@ MESTAT1=MECA_STATIQUE(MODELE=MO1,
                        EXCIT=_F(CHARGE=CHME1,),
                        );
 
-CALC_ELEM( reuse= MESTAT1 ,RESULTAT= MESTAT1 , MODELE=MO1,
-                       CHAM_MATER=CHMUL1,
-                       CARA_ELEM=EP1,
-                       EXCIT=_F(CHARGE=CHME1,),
+CALC_ELEM( reuse= MESTAT1 ,RESULTAT= MESTAT1 , 
+                       
                        OPTION='EFGE_ELNO_DEPL',);
 
 CALC_NO(reuse =MESTAT1,
                 RESULTAT=MESTAT1,
                 OPTION='EFGE_NOEU_DEPL',
-                CHAM_MATER=CHMUL1,
-                CARA_ELEM=EP1,);
+                );
 
 DEP1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TUBE FIN CIRCULAIRE SOUS PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,8 +133,7 @@ RESU2=MECA_STATIQUE(    MODELE=MODAST,   CHAM_MATER=CHMAT,
                            LIST_INST=L_INST
                          )
 
-RESU2=CALC_ELEM( reuse=RESU2,      MODELE=MODAST,     RESULTAT=RESU2,
-                      CHAM_MATER=CHMAT,     CARA_ELEM=CAREL,
+RESU2=CALC_ELEM( reuse=RESU2,           RESULTAT=RESU2,
                           OPTION='SIGM_ELNO_DEPL',
                        LIST_INST=L_INST
                    )
@@ -206,8 +205,7 @@ RESU3=MECA_STATIQUE(    MODELE=MODAST,   CHAM_MATER=CHMAT,
                            LIST_INST=L_INST2
                          )
 
-RESU3=CALC_ELEM( reuse=RESU3,      MODELE=MODAST,     RESULTAT=RESU3,
-                      CHAM_MATER=CHMAT,     CARA_ELEM=CAREL,
+RESU3=CALC_ELEM( reuse=RESU3,           RESULTAT=RESU3,
                           OPTION='SIGM_ELNO_DEPL',
                        LIST_INST=L_INST2
                    )

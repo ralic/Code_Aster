@@ -1,0 +1,331 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE PARALLELEPIPEDE. MODULE D'YOUNG FONCTION DE LA TEMPERATURE.
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#CAS_TEST__: HPLV100A
+
+DEBUT(CODE=_F(  NOM = 'HPLV100A',NIV_PUB_WEB='INTERNET') )
+
+#
+# CALCUL THERMIQUE D'UN PARALLELEPIPEDE AVEC FLUX CONSTANT SUR
+#  CHACUNE DE CES FACES, AFIN D' OBTENIR LES CHAMPS DE TEMPERATURES
+#  T= AX+BY+CZ+D ET T= AX+CY+BZ+D
+#
+
+M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
+
+MO=AFFE_MODELE(
+           MAILLAGE=M,
+          AFFE=_F( TOUT = 'OUI',PHENOMENE = 'THERMIQUE',MODELISATION = '3D',) )
+
+MODI_MAILLAGE( reuse=M,   MAILLAGE=M,
+                            MODELE=MO,
+                        ORIE_PEAU_3D=_F(  GROUP_MA = ( 'YZO', 'YZA', ),  )
+                      )
+
+MA=DEFI_MATERIAU(
+          THER=_F( RHO_CP = 2.,  LAMBDA = 1.0,  )    )
+
+CM=AFFE_MATERIAU(
+           MAILLAGE=M,
+          AFFE=_F( TOUT = 'OUI',MATER = MA,  TEMP_REF = 0., )
+          )
+
+TE=DEFI_CONSTANTE(      VALE=0. )
+
+YZA=DEFI_CONSTANTE(     VALE=-2. )
+
+YZO=DEFI_CONSTANTE(      VALE=2. )
+
+XZP=DEFI_CONSTANTE(     VALE=-3. )
+
+XZM=DEFI_CONSTANTE(      VALE=3. )
+
+XYC=DEFI_CONSTANTE(     VALE=-4. )
+
+XYM=DEFI_CONSTANTE(      VALE=4. )
+
+CH_1=AFFE_CHAR_THER_F(
+           MODELE=MO,FLUX_REP=(
+          _F( GROUP_MA = 'YZA', FLUN = YZA,  ),
+          _F( GROUP_MA = 'YZO', FLUN = YZO,  ),
+          _F( GROUP_MA = 'XZP', FLUN = XZP,  ),
+          _F( GROUP_MA = 'XZM', FLUN = XZM,  ),
+          _F( GROUP_MA = 'XYC', FLUN = XYC,  ),
+          _F( GROUP_MA = 'XYM', FLUN = XYM,  )),
+          TEMP_IMPO=_F( GROUP_NO = 'A',  TEMP = TE,   )
+          )
+
+CH_2=AFFE_CHAR_THER_F(
+           MODELE=MO,FLUX_REP=(
+          _F( GROUP_MA = 'YZA', FLUN = YZA,  ),
+          _F( GROUP_MA = 'YZO', FLUN = YZO,  ),
+          _F( GROUP_MA = 'XZP', FLUN = XYC,  ),
+          _F( GROUP_MA = 'XZM', FLUN = XYM,  ),
+          _F( GROUP_MA = 'XYC', FLUN = XZP,  ),
+          _F( GROUP_MA = 'XYM', FLUN = XZM,  )),
+          TEMP_IMPO=_F( GROUP_NO = 'A',  TEMP = TE,   )
+          )
+
+TEMP1=THER_LINEAIRE(   MODELE=MO,  CHAM_MATER=CM,
+                         EXCIT=_F( CHARGE = CH_1, ) )
+
+TEMP2=THER_LINEAIRE(   MODELE=MO,  CHAM_MATER=CM,
+                         EXCIT=_F( CHARGE = CH_2, ) )
+
+CHT1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+                    NOM_CHAM='TEMP', RESULTAT=TEMP1,  NUME_ORDRE=0 )
+
+CHT2=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+                    NOM_CHAM='TEMP', RESULTAT=TEMP2,  NUME_ORDRE=0 )
+
+TEMP=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                      NOM_CHAM='TEMP',AFFE=(
+                      _F(  INST = 1.,
+                                CHAM_GD = CHT1,   ),
+                              _F(  INST = 2.,
+                                CHAM_GD = CHT2,   ))
+                  )
+
+TEST_RESU(CHAM_NO=(
+              _F(
+              CHAM_GD = CHT1,   GROUP_NO = 'O',     NOM_CMP = 'TEMP',
+                         VALE = 40.,   ),
+              _F(
+              CHAM_GD = CHT1,   GROUP_NO = 'D',     NOM_CMP = 'TEMP',
+                         VALE = -35.,  ),
+              _F(
+              CHAM_GD = CHT2,   GROUP_NO = 'O',     NOM_CMP = 'TEMP',
+                         VALE = 40.,   ),
+              _F(
+              CHAM_GD = CHT2,   GROUP_NO = 'D',     NOM_CMP = 'TEMP',
+                         VALE = -35.,  ))
+           )
+
+#
+#   CALCUL ELASTIQUE AVEC E= 1000./(-TEMPER+800.)
+#
+
+
+MO2=AFFE_MODELE(
+           MAILLAGE=M,    VERIF='MAILLE',
+          AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D',) )
+
+FE=DEFI_FONCTION(
+           NOM_PARA='TEMP',
+           VALE=(
+ -3.5550E+01,  1.1968E+00, -3.5000E+01,  1.1976E+00, -3.4450E+01,
+  1.1984E+00, -3.3900E+01,  1.1992E+00, -3.3350E+01,  1.2000E+00,
+ -3.2800E+01,  1.2008E+00, -3.2250E+01,  1.2016E+00, -3.1700E+01,
+  1.2024E+00, -3.1150E+01,  1.2032E+00, -3.0600E+01,  1.2039E+00,
+ -3.0050E+01,  1.2047E+00, -2.9500E+01,  1.2055E+00, -2.8950E+01,
+  1.2063E+00, -2.8400E+01,  1.2071E+00, -2.7850E+01,  1.2079E+00,
+ -2.7300E+01,  1.2088E+00, -2.6750E+01,  1.2096E+00, -2.6200E+01,
+  1.2104E+00, -2.5650E+01,  1.2112E+00, -2.5100E+01,  1.2120E+00,
+ -2.4550E+01,  1.2128E+00, -2.4000E+01,  1.2136E+00, -2.3450E+01,
+  1.2144E+00, -2.2900E+01,  1.2152E+00, -2.2350E+01,  1.2160E+00,
+ -2.1800E+01,  1.2168E+00, -2.1250E+01,  1.2177E+00, -2.0700E+01,
+  1.2185E+00, -2.0150E+01,  1.2193E+00, -1.9600E+01,  1.2201E+00,
+ -1.9050E+01,  1.2209E+00, -1.8500E+01,  1.2217E+00, -1.7950E+01,
+  1.2226E+00, -1.7400E+01,  1.2234E+00, -1.6850E+01,  1.2242E+00,
+ -1.6300E+01,  1.2250E+00, -1.5750E+01,  1.2259E+00, -1.5200E+01,
+  1.2267E+00, -1.4650E+01,  1.2275E+00, -1.4100E+01,  1.2284E+00,
+ -1.3550E+01,  1.2292E+00, -1.3000E+01,  1.2300E+00, -1.2450E+01,
+  1.2308E+00, -1.1900E+01,  1.2317E+00, -1.1350E+01,  1.2325E+00,
+ -1.0800E+01,  1.2333E+00, -1.0250E+01,  1.2342E+00, -9.7000E+00,
+  1.2350E+00, -9.1500E+00,  1.2359E+00, -8.6000E+00,  1.2367E+00,
+ -8.0500E+00,  1.2375E+00, -7.5000E+00,  1.2384E+00, -6.9500E+00,
+  1.2392E+00, -6.4000E+00,  1.2401E+00, -5.8500E+00,  1.2409E+00,
+ -5.3000E+00,  1.2418E+00, -4.7500E+00,  1.2426E+00, -4.2000E+00,
+  1.2435E+00, -3.6500E+00,  1.2443E+00, -3.1000E+00,  1.2452E+00,
+ -2.5500E+00,  1.2460E+00, -2.0000E+00,  1.2469E+00, -1.4500E+00,
+  1.2477E+00, -9.0000E-01,  1.2486E+00, -3.5000E-01,  1.2495E+00,
+  2.0000E-01,  1.2503E+00,  7.5000E-01,  1.2512E+00,  1.3000E+00,
+  1.2520E+00,  1.8500E+00,  1.2529E+00,  2.4000E+00,  1.2538E+00,
+  2.9500E+00,  1.2546E+00,  3.5000E+00,  1.2555E+00,  4.0500E+00,
+  1.2564E+00,  4.6000E+00,  1.2572E+00,  5.1500E+00,  1.2581E+00,
+  5.7000E+00,  1.2590E+00,  6.2500E+00,  1.2598E+00,  6.8000E+00,
+  1.2607E+00,  7.3500E+00,  1.2616E+00,  7.9000E+00,  1.2625E+00,
+  8.4500E+00,  1.2633E+00,  9.0000E+00,  1.2642E+00,  9.5500E+00,
+  1.2651E+00,  1.0100E+01,  1.2660E+00,  1.0650E+01,  1.2669E+00,
+  1.1200E+01,  1.2677E+00,  1.1750E+01,  1.2686E+00,  1.2300E+01,
+  1.2695E+00,  1.2850E+01,  1.2704E+00,  1.3400E+01,  1.2713E+00,
+  1.3950E+01,  1.2722E+00,  1.4500E+01,  1.2731E+00,  1.5050E+01,
+  1.2740E+00,  1.5600E+01,  1.2749E+00,  1.6150E+01,  1.2758E+00,
+  1.6700E+01,  1.2767E+00,  1.7250E+01,  1.2775E+00,  1.7800E+01,
+  1.2784E+00,  1.8350E+01,  1.2793E+00,  1.8900E+01,  1.2802E+00,
+  1.9450E+01,  1.2811E+00,  2.0000E+01,  1.2821E+00,  2.0550E+01,
+  1.2830E+00,  2.1100E+01,  1.2839E+00,  2.1650E+01,  1.2848E+00,
+  2.2200E+01,  1.2857E+00,  2.2750E+01,  1.2866E+00,  2.3300E+01,
+  1.2875E+00,  2.3850E+01,  1.2884E+00,  2.4400E+01,  1.2893E+00,
+  2.4950E+01,  1.2902E+00,  2.5500E+01,  1.2912E+00,  2.6050E+01,
+  1.2921E+00,  2.6600E+01,  1.2930E+00,  2.7150E+01,  1.2939E+00,
+  2.7700E+01,  1.2948E+00,  2.8250E+01,  1.2958E+00,  2.8800E+01,
+  1.2967E+00,  2.9350E+01,  1.2976E+00,  2.9900E+01,  1.2985E+00,
+  3.0450E+01,  1.2995E+00,  3.1000E+01,  1.3004E+00,  3.1550E+01,
+  1.3013E+00,  3.2100E+01,  1.3023E+00,  3.2650E+01,  1.3032E+00,
+  3.3200E+01,  1.3041E+00,  3.3750E+01,  1.3051E+00,  3.4300E+01,
+  1.3060E+00,  3.4850E+01,  1.3069E+00,  3.5400E+01,  1.3079E+00,
+  3.5950E+01,  1.3088E+00,  3.6500E+01,  1.3098E+00,  3.7050E+01,
+  1.3107E+00,  3.7600E+01,  1.3116E+00,  3.8150E+01,  1.3126E+00,
+  3.8700E+01,  1.3135E+00,  3.9250E+01,  1.3145E+00,  3.9800E+01,
+  1.3154E+00,  4.0350E+01,  1.3164E+00,  4.0900E+01,  1.3173E+00,
+  4.1450E+01,  1.3183E+00,  4.2000E+01,  1.3193E+00,  4.2550E+01,
+  1.3202E+00,  4.3100E+01,  1.3212E+00,  4.3650E+01,  1.3221E+00,
+  4.4200E+01,  1.3231E+00,  4.4750E+01,  1.3241E+00,  4.5300E+01,
+  1.3250E+00,  4.5850E+01,  1.3260E+00,  4.6400E+01,  1.3270E+00,
+  4.6950E+01,  1.3279E+00,  4.7500E+01,  1.3289E+00,  4.8050E+01,
+  1.3299E+00,  4.8600E+01,  1.3308E+00,  4.9150E+01,  1.3318E+00,
+  4.9700E+01,  1.3328E+00,  5.0250E+01,  1.3338E+00,  5.0800E+01,
+  1.3348E+00,  5.1350E+01,  1.3357E+00,  5.1900E+01,  1.3367E+00,
+  5.2450E+01,  1.3377E+00,  5.3000E+01,  1.3387E+00,  5.3550E+01,
+  1.3397E+00,  5.4100E+01,  1.3407E+00,  5.4650E+01,  1.3417E+00,
+  5.5200E+01,  1.3426E+00,  5.5750E+01,  1.3436E+00,  5.6300E+01,
+  1.3446E+00,  5.6850E+01,  1.3456E+00,  5.7400E+01,  1.3466E+00,
+  5.7950E+01,  1.3476E+00,  5.8500E+01,  1.3486E+00,  5.9050E+01,
+  1.3496E+00,  5.9600E+01,  1.3506E+00,  6.0150E+01,  1.3516E+00,
+  6.0700E+01,  1.3526E+00,  6.1250E+01,  1.3536E+00,  6.1800E+01,
+  1.3546E+00,  6.2350E+01,  1.3557E+00,  6.2900E+01,  1.3567E+00,
+  6.3450E+01,  1.3577E+00,  6.4000E+01,  1.3587E+00,  6.4550E+01,
+  1.3597E+00,  6.5100E+01,  1.3607E+00,  6.5650E+01,  1.3617E+00,
+  6.6200E+01,  1.3628E+00,  6.6750E+01,  1.3638E+00,  6.7300E+01,
+  1.3648E+00,  6.7850E+01,  1.3658E+00,  6.8400E+01,  1.3669E+00,
+  6.8950E+01,  1.3679E+00,  6.9500E+01,  1.3689E+00,  7.0050E+01,
+  1.3700E+00,  7.0600E+01,  1.3710E+00,  7.1150E+01,  1.3720E+00,
+  7.1700E+01,  1.3731E+00,  7.2250E+01,  1.3741E+00,  7.2800E+01,
+  1.3751E+00,  7.3350E+01,  1.3762E+00,  7.3900E+01,  1.3772E+00,
+  7.4450E+01,  1.3783E+00,  7.5000E+01,  1.3793E+00,
+  ))
+
+#
+
+FNU=DEFI_CONSTANTE(    VALE=0.3  )
+
+FAL=DEFI_CONSTANTE(    VALE=0.0  )
+
+MA2=DEFI_MATERIAU(
+           ELAS_FO=_F( E = FE,  NU = FNU,  ALPHA = FAL, TEMP_DEF_ALPHA=20.0,)    )
+
+CM2=AFFE_MATERIAU(
+            MAILLAGE=M,
+           AFFE=_F( TOUT = 'OUI',MATER = MA2, TEMP_REF = 20., ) )
+
+CH2=AFFE_CHAR_MECA(
+            MODELE=MO2,
+            TEMP_CALCULEE=TEMP
+                          )
+
+# LA CHARGE SUIVANTE (CH4) EST SEPAREE DE CH2 POUR VERIFIER LA
+# CORRECTION DE AL 95-075
+
+CH4=AFFE_CHAR_MECA(
+            MODELE=MO2,DDL_IMPO=(
+           _F( GROUP_NO = 'O',    DX = 0., DY = 0.,DZ = 0.,),
+           _F( GROUP_NO = 'B',    DX = 0., DZ = 0.,),
+           _F( GROUP_NO = 'C',    DX = 0., )),PRES_REP=(
+           _F( GROUP_MA = 'YZO', PRES = -1.,   ),
+           _F( GROUP_MA = 'YZA', PRES = -1.,   ))
+                          )
+
+# LA CHARGE SUIVANTE (CH3) NE DOIT RIEN CHANGER AU RESULTAT
+# CAR LE DDL EST BLOQUE. ELLE NE SERT QU'A VERIFIER QUE L'ON PEUT
+# METTRE 2 CHARGES DANS MECA_STATIQUE AVEC OPTION : 'SIGM_ELNO_DEPL'
+
+CH3=AFFE_CHAR_MECA(
+            MODELE=MO2,
+           FORCE_NODALE=_F( GROUP_NO = 'O',    FX = 10., )
+                          )
+
+LR=DEFI_LIST_REEL(    DEBUT=1.,
+                            INTERVALLE=_F(  JUSQU_A = 2.,   NOMBRE = 1,  )
+                        )
+
+
+RES=MECA_STATIQUE(   MODELE=MO2,  CHAM_MATER=CM2,
+
+                            LIST_INST=LR,EXCIT=(
+                          _F( CHARGE = CH2, ),
+                          _F( CHARGE = CH4, ),
+                          _F( CHARGE = CH3, ))  )
+
+CALC_ELEM( reuse= RES ,RESULTAT= RES ,      
+                           OPTION='SIGM_ELNO_DEPL',
+                            LIST_INST=LR,)
+
+CALC_ELEM(reuse=RES,     
+                    
+                     OPTION='EPSI_ELNO_DEPL',
+                     RESULTAT=RES
+                   )
+
+TEST_RESU(RESU=(
+              _F(   RESULTAT = RES,   NOM_CHAM = 'DEPL',    NUME_ORDRE = 1,
+                 GROUP_NO = 'A',     NOM_CMP = 'DX',
+                 VALE = 15.6,     PRECISION = 1.E-03,        ),
+              _F(   RESULTAT = RES,   NOM_CHAM = 'DEPL',    NUME_ORDRE = 1,
+                 GROUP_NO = 'A',     NOM_CMP = 'DY',
+                 VALE = -0.57,    PRECISION = 1.E-03,        ),
+              _F(   RESULTAT = RES,   NOM_CHAM = 'DEPL',    NUME_ORDRE = 1,
+                 GROUP_NO = 'A',     NOM_CMP = 'DZ',
+                 VALE = -0.77,    PRECISION = 1.E-03,        ),
+              _F(   RESULTAT = RES,   NOM_CHAM = 'DEPL',    NUME_ORDRE = 1,
+                 GROUP_NO = 'D',     NOM_CMP = 'DX',
+                 VALE = 16.3,     PRECISION = 1.E-03,        ),
+              _F(   RESULTAT = RES,   NOM_CHAM = 'DEPL',    NUME_ORDRE = 1,
+                 GROUP_NO = 'D',     NOM_CMP = 'DY',
+                 VALE = -1.785,   PRECISION = 1.E-03,        ),
+              _F(   RESULTAT = RES,   NOM_CHAM = 'DEPL',    NUME_ORDRE = 1,
+                 GROUP_NO = 'D',     NOM_CMP = 'DZ',
+                 VALE = -2.0075,  PRECISION = 1.E-03,        ),
+              _F(  RESULTAT = RES,  NOM_CHAM = 'SIGM_ELNO_DEPL',  NUME_ORDRE = 1,
+                MAILLE = 'M1',    POINT = 1,    NOM_CMP = 'SIXX',   VALE = 1.0,    ),
+              _F(  RESULTAT = RES,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 1,
+                MAILLE = 'M13',   NOEUD = 'N22',  NOM_CMP = 'EPXX',   VALE = 0.800,  ),
+              _F(  RESULTAT = RES,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 1,
+                MAILLE = 'M13',   NOEUD = 'N22',  NOM_CMP = 'EPYY',   VALE = -0.240, ))
+           )
+
+TEST_RESU(RESU=(
+              _F(   RESULTAT = RES,   NOM_CHAM = 'DEPL',    NUME_ORDRE = 2,
+                 GROUP_NO = 'A',     NOM_CMP = 'DX',
+                 VALE = 15.6,     PRECISION = 1.E-03,        ),
+              _F(   RESULTAT = RES,   NOM_CHAM = 'DEPL',    NUME_ORDRE = 2,
+                 GROUP_NO = 'A',     NOM_CMP = 'DY',
+                 VALE = -0.77,    PRECISION = 1.E-03,        ),
+              _F(   RESULTAT = RES,   NOM_CHAM = 'DEPL',    NUME_ORDRE = 2,
+                 GROUP_NO = 'A',     NOM_CMP = 'DZ',
+                 VALE = -0.57,    PRECISION = 1.E-03,        ),
+              _F(   RESULTAT = RES,   NOM_CHAM = 'DEPL',    NUME_ORDRE = 2,
+                 GROUP_NO = 'D',     NOM_CMP = 'DX',
+                 VALE = 16.3,     PRECISION = 1.E-03,        ),
+              _F(   RESULTAT = RES,   NOM_CHAM = 'DEPL',    NUME_ORDRE = 2,
+                 GROUP_NO = 'D',     NOM_CMP = 'DY',
+                 VALE = -1.98125,  PRECISION = 1.E-03,       ),
+              _F(   RESULTAT = RES,   NOM_CHAM = 'DEPL',    NUME_ORDRE = 2,
+                 GROUP_NO = 'D',     NOM_CMP = 'DZ',
+                 VALE = -1.81125,    PRECISION = 1.E-03,     ),
+              _F(   RESULTAT = RES,  NOM_CHAM = 'SIGM_ELNO_DEPL',  NUME_ORDRE = 2,
+                 MAILLE = 'M1',    POINT = 1,    NOM_CMP = 'SIXX',   VALE = 1.0,   ),
+              _F(   RESULTAT = RES,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 2,
+                 MAILLE = 'M13',   NOEUD = 'N22',  NOM_CMP = 'EPXX',   VALE = 0.800, ),
+              _F(   RESULTAT = RES,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 2,
+                 MAILLE = 'M13',   NOEUD = 'N22',  NOM_CMP = 'EPYY',   VALE = -0.240,))
+           )
+
+FIN()
+#

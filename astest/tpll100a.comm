@@ -1,4 +1,4 @@
-# MODIF  DATE 09/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE MUR PLAN ANISOTROPE EN THERMIQUE STATIONNAIRE ANISOTROPE (HEXA8)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,8 +87,7 @@ TEMPE=THER_LINEAIRE(       MODELE=MOTH,
                                 _F(  CHARGE = CHTH4)),
                          )
 
-TEMPE=CALC_ELEM(reuse=TEMPE,     MODELE=MOTH,
-                 CHAM_MATER=CHMAT,    CARA_ELEM=ESSAI ,
+TEMPE=CALC_ELEM(reuse=TEMPE,     
                           OPTION=( 'FLUX_ELNO_TEMP',
                                    'FLUX_ELGA_TEMP',  ),
                     RESULTAT=TEMPE               )

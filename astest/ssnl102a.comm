@@ -1,4 +1,4 @@
-# MODIF  DATE 13/06/2002   AUTEUR PBBHHPB P.BADEL 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE COMPORTEMENT NON-LINEAIRE D'UN ASSEMBLAGE DE CORNIERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -88,9 +88,6 @@ STATNL=CALC_ELEM( reuse=STATNL,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=STATNL,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                         CARA_ELEM=CAREL
               )
 
 #

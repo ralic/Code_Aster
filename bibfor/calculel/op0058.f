@@ -1,7 +1,7 @@
       SUBROUTINE OP0058(IER)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/05/2004   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF CALCULEL  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,8 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
       CHARACTER*8 ZK8
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
       CHARACTER*32 ZK32
@@ -52,7 +54,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*6 NOMPRO
       PARAMETER (NOMPRO='OP0058')
 
-      INTEGER BUFIN1,IOROLD,IFM,NIV,LINST,IFREQ
+      INTEGER BUFIN1,IOROLD,IFM,NIV,LINST,IFREQ,NUORD
       INTEGER LREFE,LMAT,LVALE,LDEPL,LFREQ,LACCE
       INTEGER NBORDR,IORDR,IORDR1,IORDR2,JORDR,IORDRM
       INTEGER IRET,NCHAR,IRET1,IRET2,IRET3,IRET4,IERD
@@ -78,7 +80,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*13 INPSCO
       CHARACTER*14 NUME
       CHARACTER*16 NOMCMD,OPTION,OPTIO2,TYSD,PHENO,CONCEP,OPT1,NOMCHA
-      CHARACTER*19 LERES1
+      CHARACTER*19 LERES1,K19B
       CHARACTER*19 INFCHA,CARTEF,CARTEH,CARTET,CARTES,NOMGDF,NOMGDH,
      &             NOMGDT,NOMGDS
       CHARACTER*19 KNUM,KCHA,CHDYNR,CHACCE,MASSE,REFE,COMPOR,DCEL
@@ -108,7 +110,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       COMPLEX*16 C16B,CALPHA,CCOEF
       COMPLEX*16 CBID
 
-      LOGICAL EXITIM,EXIPOU,EXIPLA,NEWCAL,LBID,EVOL
+      LOGICAL EXITIM,EXIPOU,EXIPLA,NEWCAL,LBID,EVOL,EXICAR
 
       REAL*8 ZERO,UN
       PARAMETER (ZERO=0.D0,UN=1.D0)
@@ -175,14 +177,17 @@ C               12   345678   9012345678901234
       CALL MODOPT(RESUCO,LESOPT,NBOPT)
       CALL JEVEUO(LESOPT,'L',JOPT)
 
-      CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP)
-      CALL JEVEUO(KCHA,'L',JCHA)
-
       CALL GETVTX(' ','NORME',1,1,1,NORME,NOR)
 
       CALL GETVR8(' ','PRECISION',1,1,1,PREC,NP)
       CALL GETVTX(' ','CRITERE',1,1,1,CRIT,NC)
       CALL RSUTNU(RESUCO,' ',0,KNUM,NBORDR,PREC,CRIT,IRET)
+
+      CALL JEVEUO(KNUM,'L',JORDR)
+      NUORD = ZI(JORDR)
+
+      CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,NUORD)
+      CALL JEVEUO(KCHA,'L',JCHA)
       IF (IRET.EQ.10) THEN
         CALL UTMESS('A',NOMCMD,'LE RESULTAT '//RESUCO//' N''EXISTE PAS')
         GO TO 530
@@ -278,7 +283,7 @@ C=======================================================================
         CALL GETVID(' ','CARA_ELEM',1,1,1,K8B,N1)
         CALL GETVIS(' ','NUME_COUCHE',1,1,1,IBID,N2)
         CALL GETVTX(' ','NIVE_COUCHE',1,1,1,K8B,N3)
-        IF (N1.EQ.0) THEN
+        IF (N1.EQ.0.AND.CARA.EQ.' ') THEN
           CALL UTMESS('A',NOMCMD,'POUR UN MODELE COMPORTANT DES '//
      &          'ELEMENTS DE PLAQUE OU DE COQUE, IL FAUT LE "CARA_ELEM"'
      &                )
@@ -352,11 +357,13 @@ C EN OUTPUT --> INFCHA ET INPSCO
             INFCHA = '&&'//NOMPRO//'.INFCHA'
             IF (TYSD.EQ.'EVOL_THER') THEN
               CALL NTDOTH(MODEL2,MATE2,CARA2,K24B,LBID,LBID,INFCHA,
-     &                    NBPASE,INPSCO)
+     &                    NBPASE,INPSCO,RESUCO,IBID)
             ELSE IF (TYSD.EQ.'EVOL_ELAS') THEN
-              CALL NMDOME(MODEL2,MATE2,CARA2,INFCHA,NBPASE,INPSCO)
+              CALL NMDOME(MODEL2,MATE2,CARA2,INFCHA,NBPASE,INPSCO,
+     &                    RESUCO,1)
             ELSE IF (TYSD.EQ.'DYNA_TRANS') THEN
-              CALL NMDOME(MODEL2,MATE2,CARA2,INFCHA,NBPASE,INPSCO)
+              CALL NMDOME(MODEL2,MATE2,CARA2,INFCHA,NBPASE,INPSCO,
+     &                    RESUCO,1)
             ELSE
               CALL UTMESS('A',NOMCMD,'IMPOSSIBLE DE CALCULER'//
      &                    ' UN RESULTAT DERIVE POUR LE TYPE '//TYSD)
@@ -408,7 +415,12 @@ C           IF (IRET.NE.0) THEN
 C             GO TO 440
 C           END IF
           CODSEN=0
-
+C
+          CALL JEVEUO(KNUM,'L',JORDR)
+          NUORD = ZI(JORDR)
+          CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,NUORD)
+          CALL JEVEUO(KCHA,'L',JCHA)
+C
           CALL MECHAM(OPTION,MODELE,NCHAR,ZK8(JCHA),CARA,NH,CHGEOM,
      &                CHCARA,CHHARM,IRET)
           IF (IRET.NE.0) GO TO 530
@@ -503,6 +515,10 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
             DO 70,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               IF (TYPESE.EQ.0) THEN
                 CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
                 IF (IRET.GT.0) GO TO 72
@@ -648,6 +664,7 @@ C          * UTILISATION DU MOT-CLE FACTEUR EXICT
                 END IF
                 IF (IOCC.GT.0) THEN
                   CALL GETVID('EXCIT','CHARGE',IOCC,1,1,CHAREP,N1)
+                  IF(N1.EQ.0) CHAREP=ZK8(JCHA-1+IOCC)
                 END IF
               END IF
 C=======================================================================
@@ -720,6 +737,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 90,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                    IRET1)
               CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
@@ -769,6 +790,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 100,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,1,RESUCO,'HYDR_ELGA',IORDR,CHSIG,OPTION,
      &                    IRET1)
               IF (IRET1.GT.0) GO TO 102
@@ -814,6 +839,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 110,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,1,RESUCO,TYPE//'            ',IORDR,CHAMGD,
      &                    OPTION,IRET)
               IF (IRET.GT.0) GO TO 112
@@ -864,6 +893,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 130,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
               IF (IRET.GT.0) GO TO 132
               CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
@@ -900,6 +933,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 140,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,1,RESUCO,'VARI_ELGA',IORDR,CHAMGD,OPTION,
      &                    IRET)
               IF (IRET.GT.0) GO TO 142
@@ -945,6 +982,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 150,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
               IF (IRET.GT.0) GO TO 152
               CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
@@ -1012,6 +1053,10 @@ C ---- VERIF SENSIBILITE FIN
               CHEPS = ' '
               CHSIG = ' '
               CHSIC = ' '
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               IF (OPTION.EQ.'EQUI_ELGA_EPSI') THEN
                 CALL RSEXC2(1,1,RESUCO,'EPSI_ELGA_DEPL',IORDR,CHEPS,
      &                      OPTION,IRET)
@@ -1131,6 +1176,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 170,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,1,RESUCO,NOMCHA,IORDR,CHBID,OPTION,IRET)
               IF (IRET.GT.0) GO TO 172
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
@@ -1198,6 +1247,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 180,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,1,RESUCO,'SIGM'//OPTION(10:14)//'_ELGA  ',
      &                    IORDR,CHSIGN,OPTION,IRET)
               IF (IRET.GT.0) GO TO 182
@@ -1230,6 +1283,10 @@ C --------- VERIFICATION DU PERIMETRE D'UTILISATION
             DO 190,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,3,RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIG,
      &                    OPTION,IRET)
               CALL RSEXC2(2,3,RESUCO,'SIEF_ELNO_ELGA',IORDR,CHSIG,
@@ -1335,7 +1392,10 @@ C BOUCLE SUR LES PAS DE TEMPS
             DO 210,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
-
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
 C RECUPERATION DU PARM_THETA CORRESPONDANT A IORDR
               CALL JENONU(JEXNOM(RESUCO//'           .NOVA',
      &                    'PARM_THETA'),IAD)
@@ -1494,6 +1554,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 240,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               IF (OPTION.EQ.'SIGM_ELNO_CART') THEN
                 CALL RSEXC2(1,1,RESUCO,'SIGM_ELNO_DEPL',IORDR,CHAMGD,
      &                      OPTION,IRET)
@@ -1534,6 +1598,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 250,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,1,RESUCO,'VITE',IORDR,CHAMGD,OPTION,IRET)
               IF (IRET.GT.0) GO TO 252
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
@@ -1606,6 +1674,10 @@ C CALCUL
             DO 280,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
 C RECUPERATION DU NOM DU CHAMP_GD = LERES1(OPTION,IORDR)
 C LERES1 = NOM USER DE LA SD CORRESPONDANT AU RESULTAT DE CALC_ELEM
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
@@ -1706,6 +1778,10 @@ C           IF (OPTION.NE.'PRES_ELNO_DBEL') GOTO 9997
             DO 300,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               IF (PHENO(1:4).EQ.'MECA') THEN
                 CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
                 TYPE = 'DEPL'
@@ -1757,6 +1833,10 @@ C ---- VERIF SENSIBILITE FIN
               CALL JEMARQ()
               IORDR1 = ZI(JORDR+IAUX-1)
               IORDR2 = ZI(JORDR+IAUX)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR1)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR1,CHSIG1,OPTION,
      &                    IRET1)
               CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR2,CHSIG2,OPTION,
@@ -1794,6 +1874,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 320,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL CODENT(IORDR,'G',KIORD)
 
 C ---       RECUPERATION DES CONTRAINTES DE L'INSTANT COURANT :
@@ -1871,6 +1955,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 340,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               IF (OPTION.EQ.'ENDO_ELNO_SIGA') THEN
                 CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                      IRET)
@@ -2068,6 +2156,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 350,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,1,RESUCO,'TEMP',IORDR,CHTEMP,OPTION,IRET)
               IF (IRET.GT.0) GO TO 352
               CALL RSEXC2(1,1,RESUCO,'META_ELGA_TEMP',IORDR,CHMETA,
@@ -2102,6 +2194,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 360,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                    IRET1)
               IF (IRET1.GT.0) GO TO 362
@@ -2143,6 +2239,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 370,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,IRET1)
               IF (IRET1.GT.0) THEN
                 CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
@@ -2186,6 +2286,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 380,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,1,RESUCO,'EPSI_ELGA_DEPL',IORDR,CHEPS,
      &                      OPTION,IRET2)
               IF (IRET2.GT.0) GO TO 382
@@ -2222,6 +2326,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 390,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,1,RESUCO,'EQUI_ELGA_EPSI',IORDR,CHEEQ,
      &                      OPTION,IRET2)
               IF (IRET2.GT.0) GO TO 392
@@ -2259,6 +2367,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 400,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,1,RESUCO,'EQUI_ELGA_SIGM',IORDR,CHSEQ,
      &                      OPTION,IRET2)
               IF (IRET2.GT.0) GO TO 402
@@ -2294,6 +2406,10 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 1410,IAUX = 1,NBORDR
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               IF (IORDR.EQ.1) GO TO 1410
           CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG2,OPTION,IRET)
           CALL RSEXC2(1,1,RESUCO,'VARI_ELGA',IORDR-1,CHVAR1,OPTION,IRET)
@@ -2325,6 +2441,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 410,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,1,RESUCO,'VARI_ELGA',IORDR,CHAMGD,OPTION,
      &                    IRET)
               IF (IRET.GT.0) GO TO 412
@@ -2355,6 +2475,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 420,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,1,RESUCO,'VARI_ELGA',IORDR,CHAMGD,OPTION,
      &                    IRET)
 
@@ -2384,6 +2508,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 430,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                    IRET)
               CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
@@ -2433,6 +2561,10 @@ C ---- VERIF SENSIBILITE FIN
             DO 450,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
               IF (OPTION.EQ.'DEDE_ELNO_DLDE') THEN
                 K4BID = 'DEPL'
               ELSE
@@ -2471,6 +2603,9 @@ C ---- VERIF SENSIBILITE FIN
             DO 460,IAUX = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
               CALL RSEXC2(1,1,LERES0,'SIEF_ELGA_DEPL',IORDR,DLAGSI,
      &                    OPTION,IRET)
               IF (IRET.GT.0) GO TO 462

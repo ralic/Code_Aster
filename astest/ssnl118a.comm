@@ -1,4 +1,4 @@
-# MODIF  DATE 03/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE BARRE SOUMISE A UN CHAMP DE VITESSE DE VENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,12 +134,7 @@ RSTAT1=STAT_NON_LINE(
 RSTAT1=CALC_ELEM(
     reuse      = RSTAT1,
     RESULTAT   = RSTAT1,
-    MODELE     = MO,
-    CARA_ELEM  = CARELEM,
-    CHAM_MATER = CHMAT,
-    EXCIT=(_F(CHARGE = LIMIT ),
-           _F(CHARGE = FVENTCX )
-           ),
+    
     TOUT_ORDRE='OUI',
     OPTION=('SIEF_ELNO_ELGA'),
 )
@@ -147,12 +142,7 @@ RSTAT1=CALC_ELEM(
 RSTAT1=CALC_NO(
     reuse      = RSTAT1,
     RESULTAT   = RSTAT1,
-    MODELE     = MO,
-    CARA_ELEM  = CARELEM,
-    CHAM_MATER = CHMAT,
-    EXCIT=(_F(CHARGE = LIMIT ),
-           _F(CHARGE = FVENTCX )
-           ),
+    
     TOUT_ORDRE='OUI',
     OPTION='REAC_NODA'
 )

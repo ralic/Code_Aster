@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 #
 #
@@ -164,9 +164,6 @@ RESU1=MECA_STATIQUE(MODELE=MODMECA,
                            _F(CHARGE=CHARG1,),),);
 
 RESU1=CALC_ELEM(reuse =RESU1,
-                MODELE=MODMECA,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=CARA_COQ,
                 OPTION=('SIGM_ELNO_DEPL','EQUI_ELNO_SIGM',),
                 RESULTAT=RESU1,
                 NIVE_COUCHE='SUP',);
@@ -178,17 +175,11 @@ RESU2=MECA_STATIQUE(MODELE=MODMECA,
                            _F(CHARGE=CHARG2,),),);
 
 RESU2=CALC_ELEM(reuse =RESU2,
-                MODELE=MODMECA,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=CARA_COQ,
                 OPTION='SIGM_ELNO_DEPL',
                 RESULTAT=RESU2,
                 NIVE_COUCHE='SUP',);
 
 RESU2=CALC_ELEM(reuse =RESU2,
-                MODELE=MODMECA,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=CARA_COQ,
                 OPTION='EQUI_ELNO_SIGM',
                 RESULTAT=RESU2,);
 
@@ -283,10 +274,7 @@ TEST_TABLE(TABLE=TABDEP2,
 
 RESU1=CALC_NO(reuse =RESU1,
               RESULTAT=RESU1,
-              OPTION='FORC_NODA',
-              MODELE=MODMECA,
-              CHAM_MATER=CHMAT,
-              CARA_ELEM=CARA_COQ,);
+              OPTION='FORC_NODA');
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/03/2001   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PLAQUE CIRCULAIRE SOUMISE A PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -493,8 +493,6 @@ CALCNL=CALC_ELEM( reuse=CALCNL,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=CALCNL,
-                            MODELE=MODEL,
-                        CHAM_MATER=MATER
               )
 
 TEST_RESU(RESU=( 

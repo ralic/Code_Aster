@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,8 +24,8 @@ def calc_elem_prod(RESULTAT,**args):
 CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,docu="U4.81.01-g",reentrant='f',
             UIinfo={"groupes":("Post traitements",)},
             fr="Compléter ou créer un résultat en calculant des champs par éléments (contraintes, déformations,... )",
-     MODELE          =SIMP(statut='o',typ=modele),
-     CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
+     MODELE          =SIMP(statut='f',typ=modele),
+     CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
      CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
 
      RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,mode_meca,
@@ -129,7 +129,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,docu="U4.81.01-g",re
                                       (type(OPTION)==type(()) and  'SIGM_ELNO_DEPL' in OPTION ) or \
                                       (type(OPTION)==type(()) and  'SIEF_ELGA_DEPL' in OPTION ) ",
                                       fr="charge contenant les temperatures ou autre charge",
-                         EXCIT           =FACT(statut='o',max='**',
+                         EXCIT           =FACT(statut='f',max='**',
                          CHARGE          =SIMP(statut='o',typ=char_meca ),),
                                     ),
                                   ),
@@ -149,9 +149,9 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,docu="U4.81.01-g",re
                                             (type(OPTION)==type(()) and  'SIPO_ELNO_DEPL' in OPTION ) or \
                                             (type(OPTION)==type(()) and  'EFGE_ELNO_DEPL' in OPTION ) ",
                                             fr="charge contenant les temperatures ou les efforts répartis (poutres) ou autre",
-                    EXCIT           =FACT(statut='o',max='**',
+                    EXCIT           =FACT(statut='f',max='**',
                                           regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
-                         CHARGE          =SIMP(statut='o',typ=char_meca ),
+                         CHARGE          =SIMP(statut='f',typ=char_meca ),
                          FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
                          FONC_MULT_C     =SIMP(statut='f',typ=fonction_c),
                          COEF_MULT       =SIMP(statut='f',typ='R'),
@@ -215,7 +215,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                       (type(OPTION)==type(()) and  'EPME_ELNO_DEPL' in OPTION ) or \
                                       (type(OPTION)==type(()) and  'EPME_ELGA_DEPL' in OPTION ) ",
                                       fr="charge contenant les temperatures",
-                    EXCIT           =FACT(statut='o',max='**',
+                    EXCIT           =FACT(statut='f',max='**',
                          CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou) ),),
                                  ),
                                        ),
@@ -230,8 +230,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                       (type(OPTION)==type(()) and  'ENEL_ELNO_ELGA' in OPTION ) or \
                                       (type(OPTION)==type(()) and  'ECIN_ELEM_DEPL' in OPTION ) ",
                                       fr="charge contenant les temperatures",
-                    EXCIT           =FACT(statut='o',max='**',
-                         CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou) ),),
+                    EXCIT           =FACT(statut='f',max='**',
+                         CHARGE          =SIMP(statut='f',typ=(char_meca,char_ther,char_acou) ),),
                               ),
                                  ),
                                  

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,9 +72,7 @@ RESU=MECA_STATIQUE(    MODELE=MODEL,       CHAM_MATER=CHMAT,
                                 EXCIT=_F(  CHARGE = CHARGE),
                              )
 
-CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,     MODELE=MODEL,       CHAM_MATER=CHMAT,
-                                CARA_ELEM=CARELEM,
-                                EXCIT=_F(  CHARGE = CHARGE),
+CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,     
                                 OPTION=( 'EFGE_ELNO_DEPL',
                                          'EPOT_ELEM_DEPL', )
                              )
@@ -84,18 +82,14 @@ CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,     MODELE=MODEL,       CHAM_MATER=CHMA
 #
 # TEST DE L'OPTION EQUI_ELNO_SIGM EN ELASTICITE
 #
-CALC_ELEM( reuse=RESU,       MODELE=MODEL,
-                      CHAM_MATER=CHMAT,
-                       CARA_ELEM=CARELEM,
+CALC_ELEM( reuse=RESU,       
                       TOUT_ORDRE='OUI',
                           OPTION='SIGM_ELNO_DEPL',
                         RESULTAT=RESU,
                      NIVE_COUCHE='INF')
 
 #
-CALC_ELEM( reuse=RESU,       MODELE=MODEL,
-                      CHAM_MATER=CHMAT,
-                       CARA_ELEM=CARELEM,
+CALC_ELEM( reuse=RESU,       
                       TOUT_ORDRE='OUI',
                           OPTION='EQUI_ELNO_SIGM',
                         RESULTAT=RESU )
@@ -499,27 +493,20 @@ CALC_ELEM( reuse=U3,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=U3,
-                            MODELE=MODEL,
-                        CHAM_MATER=CHMAT,
-                         CARA_ELEM=CARELEM
               )
 
 #--------------------------------------------------------
 #
 # TEST DE L'OPTION EQUI_ELNO_SIGM EN PLASTICITE
 
-CALC_ELEM( reuse=U3,        MODELE=MODEL,
-                       CHAM_MATER=CHMAT,
-                        CARA_ELEM=CARELEM,
+CALC_ELEM( reuse=U3,       
                        NUME_ORDRE=4,
                          RESULTAT=U3,
                            OPTION='SIGM_ELNO_COQU',
                       NUME_COUCHE=1,
                       NIVE_COUCHE='INF'                )
 
-CALC_ELEM( reuse=U3,       MODELE=MODEL,
-                       CHAM_MATER=CHMAT,
-                        CARA_ELEM=CARELEM,
+CALC_ELEM( reuse=U3,       
                        NUME_ORDRE=4,
                            OPTION='EQUI_ELNO_SIGM',
                          RESULTAT=U3 )

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE NON-LINEAIRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -110,12 +110,11 @@ U1=STAT_NON_LINE(MODELE=MOPOU,
 
 
 U1=CALC_NO(OPTION='REAC_NODA',
-           reuse =U1, RESULTAT=U1, MODELE=MOPOU, CHAM_MATER=CHMAT,  CARA_ELEM=POUCA,
-           EXCIT=(_F(CHARGE=BLOCAGE,),  _F(CHARGE=DEPIMP,FONC_MULT=FOFO,),),
+           reuse =U1, RESULTAT=U1,
            );
 
 U1=CALC_ELEM(OPTION='EPSI_ELGA_DEPL',
-             reuse =U1,RESULTAT=U1, MODELE=MOPOU, CHAM_MATER=CHMAT, CARA_ELEM=POUCA,
+             reuse =U1,RESULTAT=U1,
              );
 
 #test de quelques resultats aux pas 2 , 12 et 20

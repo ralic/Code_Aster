@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF CALCULEL  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C     COMMANDE:  CALC_MATR_ELEM
 
 C ----------------------------------------------------------------------
@@ -43,7 +43,7 @@ C     ------------------------------------------------------------------
       REAL*8 TIME,TPS(6)
       CHARACTER*1 BASE
       CHARACTER*4 CTYP
-      CHARACTER*8 K8B,MODELE,CARA,SIGG,NOMCMP(6)
+      CHARACTER*8 K8B,MODELE,CARA,SIGG,NOMCMP(6),BLAN8
       CHARACTER*8 MATEL,RIGIEL,MASSEL
       CHARACTER*16 TYPE,OPER,SUROPT
       CHARACTER*19 KCHA
@@ -60,7 +60,7 @@ C DEB ------------------------------------------------------------------
       BASE = 'G'
 
       CALL GETRES(MATEL,TYPE,OPER)
-
+      BLAN8  = '        '
       RIGIEL = ' '
       MASSEL = ' '
       SIGG = ' '
@@ -72,7 +72,7 @@ C DEB ------------------------------------------------------------------
       IF (N5.EQ.0) TIME = 0.D0
       CALL GETVIS(' ','MODE_FOURIER',0,1,1,NH,N6)
       KCHA = '&&OP0009.CHARGES'
-      CALL MEDOME(MODELE,MATE,CARA,KCHA,NCHA,CTYP)
+      CALL MEDOME(MODELE,MATE,CARA,KCHA,NCHA,CTYP,BLAN8)
       CALL JEVEUO(KCHA,'E',ICHA)
       CALL GETVID(' ','THETA',0,1,1,SDTHET,N7)
       CALL GETVR8(' ','PROPAGATION',0,1,1,ALPHA,N8)

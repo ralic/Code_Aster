@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CALCUL DE G POUR UN PB ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,13 +140,10 @@ UP=CALC_ELEM( reuse=UP,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=UP,
-                            MODELE=MO,
-                        CHAM_MATER=CM
               )
 
-UP=CALC_ELEM( reuse=UP,       MODELE=MO,
+UP=CALC_ELEM( reuse=UP,   
                       RESULTAT=UP,
-                    CHAM_MATER=CM,
                        OPTION=('EPSP_ELNO','EPSI_ELGA_DEPL')
                   )
 
@@ -180,29 +177,22 @@ UP2=CALC_ELEM( reuse=UP2,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=UP2,
-                            MODELE=MO,
-                        CHAM_MATER=CM
               )
 
-UP2=CALC_ELEM( reuse=UP2,       MODELE=MO,
+UP2=CALC_ELEM( reuse=UP2,    
                       RESULTAT=UP2,
-                    CHAM_MATER=CM,
                        OPTION=('EPSP_ELNO','EPSI_ELGA_DEPL')
                   )
 #############################################################
 # CALCUL DE L ENERGIE TOTALE
 #############################################################
 ENER_TOT=POST_ELEM(     RESULTAT=UP,
-                             MODELE=MO,
-                         CHAM_MATER=CM,
                          TOUT_ORDRE='OUI',
                         ENER_TOTALE=_F(  TOUT = 'OUI')
                       )
 
 
 ENER_TO2=POST_ELEM(     RESULTAT=UP2,
-                             MODELE=MO,
-                         CHAM_MATER=CM,
                          TOUT_ORDRE='OUI',
                         ENER_TOTALE=_F(  TOUT = 'OUI')
                       )

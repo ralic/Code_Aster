@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/03/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,15 +59,21 @@ C
       LOGICAL       LNCAS
       CHARACTER*6   TYPEGD
       CHARACTER*8   K8B, RESU, NOMF, NOMA, TYPMOD, CRITER
+      CHARACTER*8   MODELE, MATERI, CARELE, BLAN8
       CHARACTER*16  NOMP(MXPARA), TYPE, OPER, ACCES, K16B
-      CHARACTER*19  CHMOD, NOMCH , CHAMP, LISTR8
+      CHARACTER*19  CHMOD, NOMCH , CHAMP, LISTR8, EXCIT
       CHARACTER*24  K24, LINST, NSYMB, TYPRES, TYPCHF, TYPCHR, LCPT
 C
       DATA          LINST,LISTR8,LCPT/'&&CRTYPE_LINST','&&CRTYPE_LISR8',
      &                                '&&CPT_CRTYPE'/
 C ----------------------------------------------------------------------
       CALL JEMARQ()
+
+C              1234567890123456789
+      BLAN8 = '        '
+      EXCIT = '                   '
 C
+
       CALL GETRES ( RESU, TYPE, OPER )
 C
       CALL GETFAC ( 'AFFE', NBFAC )
@@ -124,6 +130,14 @@ C
 C
       DO 100 IOCC = 1,NBFAC
 C
+C
+        CALL GETVID ('AFFE', 'MODELE'    , 1,1,1, MODELE, N1 )
+        IF(N1.EQ.0) MODELE = BLAN8
+        CALL GETVID ('AFFE', 'CHAM_MATER', 1,1,1, MATERI, N1 )
+        IF(N1.EQ.0) MATERI = BLAN8
+        CALL GETVID ('AFFE', 'CARA_ELEM' , 1,1,1, CARELE, N1 )
+        IF(N1.EQ.0) CARELE = BLAN8
+C
         CALL GETVID ( 'AFFE', 'CHAM_GD', IOCC,1,1, CHAMP, N1 )
 C
         CALL DISMOI ('F','TYPE_SUPERVIS',CHAMP,'CHAMP',IBID,K24 ,IER)
@@ -151,15 +165,18 @@ C
           IF ( N0 .NE. 0 ) THEN
             CALL RSADPA ( RESU,'E',1,'NOM_CAS',NUMINI,0,IAD,K8B)
             ZK16(IAD) = ACCES
+            CALL RSSEPA (RESU,NUMINI,MODELE,MATERI,CARELE,EXCIT)
           ELSE
             CALL GETVIS ('AFFE', 'NUME_MODE', IOCC,1,1, NUME, N0 )
             CALL RSADPA ( RESU,'E',1,'NUME_MODE',NUMINI,0,IAD,K8B)
             ZI(IAD) = NUME
+            CALL RSSEPA (RESU,NUMINI,MODELE,MATERI,CARELE,EXCIT)
           ENDIF
           IF ( TYPRES .EQ. 'FOURIER_ELAS' ) THEN
             CALL GETVTX ( 'AFFE', 'TYPE_MODE', IOCC,1,1, TYPMOD, N0 )
             CALL RSADPA (RESU,'E',1,'TYPE_MODE',NUMINI,0,IAD,K8B)
             ZK8(IAD) = TYPMOD
+            CALL RSSEPA (RESU,NUMINI,MODELE,MATERI,CARELE,EXCIT)
           ENDIF
           GOTO 100
         ENDIF
@@ -303,6 +320,7 @@ C           ----------------------------------
           CALL RSNOCH ( RESU, NSYMB, ICOMPT, ' ' )
           CALL RSADPA ( RESU,'E',1,'INST',ICOMPT,0,IAD,K8B)
           ZR(IAD) = TPS
+          CALL RSSEPA (RESU,ICOMPT,MODELE,MATERI,CARELE,EXCIT)
           IF (J.GE.2) CALL JEDEMA()
 3       CONTINUE
         CALL DETRSD('CHAMP_GD',CHMOD)

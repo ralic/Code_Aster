@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/03/2004   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF PREPOST  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,13 +60,13 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*6 NOMPRO
       PARAMETER (NOMPRO='OP0106')
 
-      INTEGER NBPASE,NRPASS,NBPASS,TYPESE,ADRECG
+      INTEGER NBPASE,NRPASS,NBPASS,TYPESE,ADRECG, NUORD
       INTEGER IAUX,JAUX,IBID
       INTEGER I,IACHAR,IAD,IBD,IC,ICHAR,IE,IND,INUME,IOPT,IORDR,IRET,
      &        IRET1,IRET2,J,JCGMP,JCHMP,JDDL,JDDR,JFO,JFONO,JFPIP,JINFC,
      &        JNMO,JNOCH,JOPT,JORDR,JRE,JRENO,LACCE,LDEPL,LMAT,LONC2,
      &        LONCH,LREF,LTRAV,LVAFON,N0,N2,NBCHAR,NBDDL,NBOPT,
-     &        NBORDR,NC,NEQ,NH,NP,NBMA,JMAI,N3,N4,NBNO,JNOE
+     &        NBORDR,NC,NEQ,NH,NP,NBMA,JMAI,N3,N4,NBNO,JNOE, II
       REAL*8 TIME,OMEGA2,PREC,COEF(3),PARTPS(3),ETAN
       CHARACTER*4  TYPCAL
       CHARACTER*8  K8BID,RESUC1,CTYP,CRIT,NOMCMP(3),NOPASE,NOMA
@@ -80,9 +80,9 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*24 VECGMP,VACGMP,CNCGMP,BIDON,CHTREF,CHTEMP
       CHARACTER*24 K24BID,CHELEM,CHACCE,VRENO,VARENO
       CHARACTER*24 COMPOR,CHVIVE,CHACVE,MESMAI,MESNOE
-      CHARACTER*24 NORECG,VAPRIN,STYPSE,NOOJB
+      CHARACTER*24 NORECG,VAPRIN,STYPSE,NOOJB, K24B
 
-      LOGICAL EXITIM
+      LOGICAL EXITIM, LBID
 C     ------------------------------------------------------------------
       DATA INFCHA/'&&INFCHA.INFCHA'/
       DATA NOMCMP/'DX','DY','DZ'/
@@ -229,7 +229,14 @@ C EN OUTPUT --> INFCHA ET INPSCO
 C   SUPPRESSION DE LA LIGNE SUIVANTE	  
 C          MODELE = '&&'//NOMPRO
           MODELE = ' '
-          CALL NMDOME(MODELE,MATER,CARAC,INFCHA,NBPASE,INPSCO)
+          NUORD  = ZI(JORDR)
+          IF (TYPE.EQ.'EVOL_THER') THEN
+            CALL NTDOTH(MODELE,MATER,CARAC,K24B,LBID,LBID,INFCHA,
+     &                    NBPASE,INPSCO,RESUC1,NUORD)
+          ELSE
+            CALL NMDOME(MODELE,MATER,CARAC,INFCHA,NBPASE,INPSCO,
+     &                RESUC1,NUORD)
+          ENDIF
 
 C INFO. RELATIVE AUX CHARGES
           FOMULT = INFCHA//'.FCHA'
@@ -441,6 +448,37 @@ C       ================================================================
             DO 230 I = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+I-1)
+              IF (TYPE.EQ.'EVOL_THER') THEN
+                CALL NTDOTH(MODELE,MATER,CARAC,K24B,LBID,LBID,INFCHA,
+     &                      NBPASE,INPSCO,RESUCO(1:8),IORDR)
+              ELSE
+                CALL NMDOME(MODELE,MATER,CARAC,INFCHA,NBPASE,INPSCO,
+     &                      RESUCO(1:8),IORDR)
+              ENDIF
+              FOMULT = INFCHA//'.FCHA'
+              CHARGE = INFCHA//'.LCHA'
+              INFOCH = INFCHA//'.INFC'
+              CALL JEEXIN(INFOCH,IRET)
+              IF (IRET.NE.0) THEN
+                 CALL JEVEUO(INFOCH,'L',JINFC)
+                 NBCHAR = ZI(JINFC)
+                 IF (NBCHAR.NE.0) THEN
+                    CALL JEVEUO(CHARGE,'L',IACHAR)
+                    CALL JEDETR('&&'//NOMPRO//'.L_CHARGE')
+                    CALL WKVECT('&&'//NOMPRO//'.L_CHARGE','V V K8',
+     &                   NBCHAR,ICHAR)
+                    DO 31 II = 1,NBCHAR
+                       ZK8(ICHAR-1+II) = ZK24(IACHAR-1+II) (1:8)
+ 31                 CONTINUE
+                 ELSE
+                    ICHAR = 1
+                 END IF
+              ELSE
+                 NBCHAR = 0
+                 ICHAR = 1
+              END IF
+              CALL EXLIMA(' ','G',MODELE,LERES0,LIGREL) 
+
               VECHMP = ' '
               VACHMP = ' '
               CNCHMP = ' '

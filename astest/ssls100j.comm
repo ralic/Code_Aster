@@ -1,0 +1,172 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE PLAQUE CIRCULAIRE ENCASTREE SOUMISE A UNE PRESSION UNIFORME
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# CAS_TEST__: SSLS100J
+# SSLS100/J                COMMANDES                            23/03/93
+# PLAQUE CIRCULAIRE ENCASTREE SOUMISE A UNE PRESSION UNIFORME
+#----------------------------------------------------------------------
+# MODELISATION COQUE_AXIS:   21 NOEUDS -- 20 MAILLES SEG3 ; KAPPA=5/6
+#
+#                    !->
+#        Y !       S !N
+#          !     <---!
+#          !         !
+#          ====================!  -------->
+#          O        D          A        X
+#
+#                 1.0 M
+#          !-------------------!
+#======================================================================
+
+DEBUT( CODE=_F(  NOM = 'SSLS100J',NIV_PUB_WEB='INTERNET') )
+
+#
+
+MATER=DEFI_MATERIAU( ELAS=_F(  E = 1.0,     NU = 0.3) )
+
+MAILL=LIRE_MAILLAGE(   )
+
+MAILL=DEFI_GROUP( reuse=MAILL,   MAILLAGE=MAILL,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAILL,
+                          AFFE=_F(  TOUT = 'OUI',   MATER = MATER) )
+
+MODEL=AFFE_MODELE(  MAILLAGE=MAILL,
+                        AFFE=_F( TOUT = 'OUI',   MODELISATION = 'COQUE_AXIS',
+                              PHENOMENE = 'MECANIQUE') )
+
+CHARGE=AFFE_CHAR_MECA(  MODELE=MODEL,DDL_IMPO=(
+              _F( NOEUD = 'A',   DX = 0., DY = 0., DRZ = 0.),
+              _F( NOEUD = 'O',                     DRZ = 0.)),
+           FORCE_COQUE=_F(  TOUT = 'OUI',   FY = -1.0)   )
+
+CARELEM=AFFE_CARA_ELEM(  MODELE=MODEL,
+                 COQUE=_F(
+       GROUP_MA = 'TOUT',
+ EPAIS = 0.1,
+                       A_CIS = 0.83333, MODI_METRIQUE = 'NON',
+                       ANGL_REP = (180., 0.,)) )
+
+RESU=MECA_STATIQUE(    MODELE=MODEL, CHAM_MATER=CHMAT,
+                               CARA_ELEM=CARELEM,
+                               EXCIT=_F(  CHARGE = CHARGE)       )
+
+RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,     
+                        NIVE_COUCHE='SUP',
+                             OPTION=('SIGM_ELNO_DEPL','EPSI_ELNO_DEPL',),
+               );
+               
+RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,     
+                        OPTION=('EFGE_ELNO_DEPL','DEGE_ELNO_DEPL',),
+               );
+
+TEST_RESU(RESU=(_F(
+                   RESULTAT = RESU,  NOM_CHAM = 'SIGM_ELNO_DEPL',
+                   MAILLE = 'STU',  NOEUD = 'O',
+                   NOM_CMP = 'SIXX',
+                   NUME_ORDRE = 1,
+                   VALE = -4.905E+01, PRECISION = 1.E-02),
+                  _F(
+                   RESULTAT = RESU,  NOM_CHAM = 'SIGM_ELNO_DEPL',
+                   MAILLE = 'STU',  NOEUD = 'O',
+                   NOM_CMP = 'SIYY',
+                   NUME_ORDRE = 1,
+                   VALE = -4.905E+01, PRECISION = 1.E-02)))
+
+#--------------------------------------------------------------------
+RELEVE_1=POST_RELEVE_T(
+                   ACTION=_F(  NOEUD = ( 'A',    'F',   'D',    'P',  'O', ),
+#                                   X =   1. .75  .5  .25  0.
+                            INTITULE = 'DEPL',
+                            RESULTAT = RESU,
+                            NOM_CHAM='DEPL',
+                            NUME_ORDRE = 1,
+                            NOM_CMP = ( 'DX',  'DY',  'DRZ', ),
+                            OPERATION = 'EXTRACTION')
+                          )
+
+RELEVE_2=POST_RELEVE_T( ACTION=(
+                   _F(  NOEUD = 'O',
+                            INTITULE = 'DEGE',
+                            RESULTAT = RESU,
+                            NOM_CHAM='DEGE_ELNO_DEPL',
+                            NUME_ORDRE=1,
+                            NOM_CMP = ('KXX', 'KYY', 'KXY',),
+                            OPERATION = 'EXTRACTION'),
+                   _F(  NOEUD = 'O',
+                            INTITULE = 'EFGE_DEP',
+                            RESULTAT = RESU,
+                            NUME_ORDRE=1,
+                            NOM_CHAM='EFGE_ELNO_DEPL',
+                            NOM_CMP = 'MYY',
+                            OPERATION = 'EXTRACTION'))
+                          )
+
+#--------------------------------------------------------------------
+
+TEST_RESU(RESU=(
+
+     # DEPLACEMENTS
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+               CRITERE = 'RELATIF',   PRECISION = 5.E-3,
+              NOEUD = 'O',        NOM_CMP = 'DY',    VALE = -178.4240E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+               CRITERE = 'RELATIF',   PRECISION = 5.E-3,
+              NOEUD = 'D',        NOM_CMP = 'DY',    VALE = -101.8270E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+               CRITERE = 'RELATIF',   PRECISION = 5.E-3,
+              NOEUD = 'D',        NOM_CMP = 'DRZ',   VALE = 255.9400E-0),
+
+     # DEFORMATIONS GENERALISEES
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEGE_ELNO_DEPL',
+              CRITERE = 'RELATIF',   PRECISION = 5.E-2, MAILLE = 'IJK',
+              NOEUD = 'D',        NOM_CMP = 'KXX',   VALE = -170.625E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEGE_ELNO_DEPL',
+              CRITERE = 'RELATIF',   PRECISION = 5.E-2, MAILLE = 'KLM',
+              NOEUD = 'D',        NOM_CMP = 'KXX',   VALE = -170.625E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEGE_ELNO_DEPL',
+              CRITERE = 'RELATIF',   PRECISION = 5.E-3, MAILLE = 'IJK',
+              NOEUD = 'D',        NOM_CMP = 'KYY',   VALE = -511.875E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEGE_ELNO_DEPL',
+              CRITERE = 'RELATIF',   PRECISION = 5.E-3, MAILLE = 'KLM',
+              NOEUD = 'D',        NOM_CMP = 'KYY',   VALE = -511.875E-0),
+     # EFFORTS GENERALISES
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO_DEPL',
+              CRITERE = 'RELATIF',   PRECISION = 2.E-2, MAILLE = 'ABC',
+              NOEUD = 'A',        NOM_CMP = 'MXX',   VALE = 0.12500E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO_DEPL',
+              CRITERE = 'RELATIF',   PRECISION = 2.E-2, MAILLE = 'ABC',
+              NOEUD = 'A',        NOM_CMP = 'MYY',   VALE = 0.03750E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO_DEPL',
+              CRITERE = 'RELATIF',   PRECISION = 5.E-3, MAILLE = 'IJK',
+              NOEUD = 'D',        NOM_CMP = 'MYY',   VALE = -0.05156E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO_DEPL',
+              CRITERE = 'RELATIF',   PRECISION = 7.E-3, MAILLE = 'KLM',
+              NOEUD = 'D',        NOM_CMP = 'MYY',   VALE = -0.05156E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO_DEPL',
+              CRITERE = 'RELATIF',   PRECISION = 1.E-2, MAILLE = 'STU',
+              NOEUD = 'O',        NOM_CMP = 'MXX',   VALE = -0.08125E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO_DEPL',
+              CRITERE = 'RELATIF',   PRECISION = 1.E-2, MAILLE = 'STU',
+              NOEUD = 'O',        NOM_CMP = 'MYY',   VALE = -0.08125E-0))
+            )
+
+FIN( )
+#

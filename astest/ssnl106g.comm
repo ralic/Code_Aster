@@ -1,4 +1,4 @@
-# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,14 +102,9 @@ REST=STAT_NON_LINE(
 REST=CALC_ELEM( reuse=REST,
                             OPTION='SIEF_ELNO_ELGA',
                           RESULTAT=REST,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT1,
-                         CARA_ELEM=CAREL
               )
 
-REST=CALC_NO( reuse=REST,     RESULTAT=REST,  MODELE=MO,
-                     CHAM_MATER=CHMAT1,
-                      CARA_ELEM=CAREL,
+REST=CALC_NO( reuse=REST,     RESULTAT=REST,  
                     OPTION='REAC_NODA' )
 
 
@@ -184,14 +179,9 @@ RESM=STAT_NON_LINE(  MODELE=MO, CHAM_MATER=CHMAT2, CARA_ELEM=CAREL,
 RESM=CALC_ELEM( reuse=RESM,
                             OPTION='SIEF_ELNO_ELGA',
                           RESULTAT=RESM,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT2,
-                         CARA_ELEM=CAREL
               )
 
-RESM=CALC_NO( reuse=RESM,     RESULTAT=RESM,  MODELE=MO,
-                     CHAM_MATER=CHMAT2,
-                      CARA_ELEM=CAREL,
+RESM=CALC_NO( reuse=RESM,     RESULTAT=RESM,  
                     OPTION='REAC_NODA' )
 
 TEST_RESU(RESU=(

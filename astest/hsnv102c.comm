@@ -1,4 +1,4 @@
-# MODIF  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE THERMO_METALLO_MECANIQUE COUPLEE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -365,14 +365,11 @@ U=CALC_ELEM( reuse=U,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=U,
-                            MODELE=MO,
-                        CHAM_MATER=CM2,
-               EXCIT=_F( CHARGE = CH_FO)
-              )
+               )
 
-U=CALC_ELEM( reuse=U,  MODELE=MO,     CHAM_MATER=CM2,
+U=CALC_ELEM( reuse=U,       
                       RESULTAT=U,    OPTION='EPSI_ELNO_DEPL',
-               EXCIT=_F( CHARGE = CH_FO))
+               )
 
 CHVAR24=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R',
 RESULTAT=U, NOM_CHAM='VARI_ELNO_ELGA',

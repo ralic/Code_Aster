@@ -1,4 +1,4 @@
-# MODIF  DATE 22/11/2001   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE D'UNE NAPPE D'ARMATURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -173,9 +173,6 @@ LEDEP=CALC_ELEM( reuse=LEDEP,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=LEDEP,
-                            MODELE=LEMOD,
-                        CHAM_MATER=MATAF,
-                         CARA_ELEM=LACAR
               )
 
 #
@@ -186,14 +183,10 @@ LEDEP=CALC_ELEM( reuse=LEDEP,
 
 
 
-LEDEP=CALC_ELEM(reuse=LEDEP,      RESULTAT=LEDEP,        MODELE=LEMOD,
-                           CHAM_MATER=MATAF,     CARA_ELEM=LACAR,
+LEDEP=CALC_ELEM(reuse=LEDEP,      RESULTAT=LEDEP,        
                                OPTION='SIGM_ELNO_COQU')
 
 LEDEP=CALC_ELEM(reuse=LEDEP,
-                      MODELE=LEMOD,
-                      CHAM_MATER=MATAF,
-                       CARA_ELEM=LACAR,
                       TOUT_ORDRE='OUI',
                      OPTION=('DEGE_ELNO_DEPL',
                              'EPSI_ELNO_DEPL',),

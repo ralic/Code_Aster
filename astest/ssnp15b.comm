@@ -1,4 +1,4 @@
-# MODIF  DATE 02/12/2003   AUTEUR PBADEL P.BADEL 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. C_PLAN)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -153,15 +153,11 @@ U=CALC_ELEM( reuse=U,
                             OPTION=( 'EPSI_ELGA_DEPL',
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=U,
-                            MODELE=MO,
-                        CHAM_MATER=CM
               )
 
 U=CALC_ELEM(
               reuse=U,
-                    MODELE=MO,
                   RESULTAT=U,
-                CHAM_MATER=CM,
                    OPTION=('EPSP_ELGA', 'EPSI_ELNO_DEPL',)
               )
 
@@ -193,33 +189,26 @@ U2=CALC_ELEM( reuse=U2,
                             OPTION=( 'EPSI_ELGA_DEPL',
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=U2,
-                            MODELE=MO,
-                        CHAM_MATER=CM
               )
 
 U2=CALC_ELEM(
               reuse=U2,
-                    MODELE=MO,
                   RESULTAT=U2,
-                CHAM_MATER=CM,
                    OPTION=('EPSP_ELGA', 'EPSI_ELNO_DEPL',)
               )
 
-U2=CALC_ELEM( reuse=U2,      MODELE=MO,
+U2=CALC_ELEM( reuse=U2,      
                          RESULTAT=U2,
-                       CHAM_MATER=CM,
                            OPTION='ETOT_ELGA'
                      )
 
-U2=CALC_ELEM( reuse=U2,      MODELE=MO,
+U2=CALC_ELEM( reuse=U2,      
                          RESULTAT=U2,
-                       CHAM_MATER=CM,
                            OPTION='ETOT_ELNO_ELGA'
                      )
 
-U2=CALC_ELEM( reuse=U2,      MODELE=MO,
+U2=CALC_ELEM( reuse=U2,      
                          RESULTAT=U2,
-                       CHAM_MATER=CM,
                            OPTION='ETOT_ELEM'
                      )
 
@@ -337,16 +326,12 @@ TEST_RESU(RESU=(
 
 
 ENER_TOT=POST_ELEM(     RESULTAT=U,
-                             MODELE=MO,
-                         CHAM_MATER=CM,
                          TOUT_ORDRE='OUI',
                         ENER_TOTALE=_F(  TOUT = 'OUI')
                       )
 
 
 ENER_TO2=POST_ELEM(     RESULTAT=U2,
-                             MODELE=MO,
-                         CHAM_MATER=CM,
                          TOUT_ORDRE='OUI',
                         ENER_TOTALE=_F(  TOUT = 'OUI')
                       )
@@ -513,15 +498,11 @@ TEST_TABLE(TABLE=ENER_TO2,
 #
 
 IND_ENER=POST_ELEM(     RESULTAT=U,
-                             MODELE=MO,
-                         CHAM_MATER=CM,
                                INST=(1.,2.,3.,),
                         INDIC_ENER=_F(  TOUT = 'OUI')
                       )
 
 IND_SEUI=POST_ELEM(    RESULTAT=U,
-                             MODELE=MO,
-                         CHAM_MATER=CM,
                          NUME_ORDRE=(12,52,53,),
                         INDIC_SEUIL=_F(  TOUT = 'OUI',
                                         )
@@ -649,15 +630,11 @@ V=CALC_ELEM( reuse=V,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=V,
-                            MODELE=MO,
-                        CHAM_MATER=CM
               )
 
 V=CALC_ELEM(
               reuse=V,
-                    MODELE=MO,
                   RESULTAT=V,
-                CHAM_MATER=CM,
                    OPTION='EPSI_ELNO_DEPL'
               )
 
@@ -688,15 +665,11 @@ VO=CALC_ELEM( reuse=VO,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=VO,
-                            MODELE=MO,
-                        CHAM_MATER=CMO
               )
 
 VO=CALC_ELEM(
               reuse=VO,
-                    MODELE=MO,
                   RESULTAT=VO,
-                CHAM_MATER=CMO,
                    OPTION='EPSI_ELNO_DEPL'
               )
 
@@ -727,15 +700,11 @@ VI=CALC_ELEM( reuse=VI,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=VI,
-                            MODELE=MO,
-                        CHAM_MATER=CMI
               )
 
 VI=CALC_ELEM(
               reuse=VI,
-                    MODELE=MO,
                   RESULTAT=VI,
-                CHAM_MATER=CMI,
                    OPTION='EPSI_ELNO_DEPL'
               )
 

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE VALIDATION DE MACR_CARA_POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -215,9 +215,7 @@ MEST5=MECA_STATIQUE(MODELE=MO,
 
 MEST5=CALC_NO(reuse =MEST5,
               RESULTAT=MEST5,
-                    CARA_ELEM=CAREL,
-              OPTION='FORC_NODA',
-              MODELE=MO,);
+              OPTION='FORC_NODA',);
               
 
 # VALEUR DE REFERENCE

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE NON-REGRESSION THERMO-ELASTICITE POUR TOUTES COQUES SURFACIQUES
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,9 +101,7 @@ TEST_RESU( RESU=_F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
               VALE = 4.6891508740240E+04)
             )
 
-MESTAT=CALC_ELEM( reuse=MESTAT,      RESULTAT=MESTAT,        MODELE=MO,
-                  CHAM_MATER=CHMAT,     CARA_ELEM=CARA,
-                       EXCIT=_F(  CHARGE = CHPES),
+MESTAT=CALC_ELEM( reuse=MESTAT,      RESULTAT=MESTAT,        
                       OPTION=( 'SIEF_ELGA_DEPL', 'SIGM_ELNO_DEPL',
                                'EPSI_ELNO_DEPL', 'EFGE_ELNO_DEPL', )
                      )
@@ -130,10 +128,8 @@ TEST_RESU(RESU=( _F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
               VALE = 1.8660521476424E+05))
             )
 
-MESTAT=CALC_ELEM( reuse=MESTAT,      RESULTAT=MESTAT,        MODELE=MO,
+MESTAT=CALC_ELEM( reuse=MESTAT,      RESULTAT=MESTAT,
                 MAILLE=('Q1','T1','Q2','Q3','T3',),
-                  CHAM_MATER=CHMAT,     CARA_ELEM=CARA,
-                       EXCIT=_F(  CHARGE = CHPES),
                       OPTION='DEGE_ELNO_DEPL'        )
 
 TEST_RESU( RESU=_F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
@@ -143,9 +139,7 @@ TEST_RESU( RESU=_F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
               VALE = 2.6755379426528E+04)
             )
 
-MESTAT=CALC_NO( reuse=MESTAT,    RESULTAT=MESTAT,     CARA_ELEM=CARA,
-                     CHAM_MATER=CHMAT,
-                          EXCIT=_F(  CHARGE = CHPES),
+MESTAT=CALC_NO( reuse=MESTAT,    RESULTAT=MESTAT, 
                          OPTION=( 'EPSI_NOEU_DEPL', 'SIGM_NOEU_DEPL',
                                  )
                    )

@@ -1,4 +1,4 @@
-# MODIF  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TEST DE NON-REGRESSION D'ASTER : THERMIQUE PLAN
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -371,8 +371,7 @@ THL10=THER_LINEAIRE(        MODELE=MO,
                            INCREMENT=_F(  LIST_INST = LR1),
                            TEMP_INIT=_F( VALE = 0.) )
 
-THL10=CALC_ELEM(reuse=THL10,     MODELE=MO,
-                 CHAM_MATER=CHMAT,
+THL10=CALC_ELEM(reuse=THL10,     
                           OPTION=( 'FLUX_ELNO_TEMP',
                                    'FLUX_ELGA_TEMP',  ),
                     RESULTAT=THL10               )

@@ -1,4 +1,4 @@
-# MODIF  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE THERMO_METALLO_MECANIQUE EN DEFORMATIONS PLANES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -223,10 +223,9 @@ U=STAT_NON_LINE(
                 ITER_GLOB_MAXI = 40)
               )
 
-U=CALC_ELEM( reuse=U,       MODELE=MO,
+U=CALC_ELEM( reuse=U,       
                             RESULTAT=U,
-                          CHAM_MATER=CM2,
-                               EXCIT=_F( CHARGE = CH_FO),
+                               
                               OPTION=( 'SIEF_ELNO_ELGA',
                                        'VARI_ELNO_ELGA',)
                       )

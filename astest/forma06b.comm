@@ -1,4 +1,4 @@
-# MODIF  DATE 26/08/2002   AUTEUR BSERRE B.SERRE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE PABHHHH N.TARDIEU
 
 # TITRE CORRIGE TP POUTRE FORMATION POST TRAITEMENT
@@ -122,21 +122,14 @@ MA=DEFI_GROUP(reuse =MA,
 #
 
 MEST11=CALC_ELEM(reuse =MEST11,
-                 MODELE=MO1,
-                 CHAM_MATER=CHMAT,
-                 CARA_ELEM=CAREL1,
                  OPTION=('EFGE_ELNO_DEPL','SIPO_ELNO_DEPL','EFGE_ELNO_CART',),
                  RESULTAT=MEST11,
-                 EXCIT=(_F(CHARGE=CH111,),
-                        _F(CHARGE=CH121,),),);
+                 );
 
 MEST11=CALC_NO(reuse =MEST11,
                RESULTAT=MEST11,
                OPTION=('EFGE_NOEU_DEPL','SIPO_NOEU_DEPL','EFGE_NOEU_CART',),
-               CHAM_MATER=CHMAT,
-               CARA_ELEM=CAREL1,
-               EXCIT=(_F(CHARGE=CH111,),
-                      _F(CHARGE=CH121,),),);
+               );
 
 #
 # IMPRESSIONS FORMAT RESULTAT

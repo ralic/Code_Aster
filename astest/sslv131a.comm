@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE ORTHOTROPIE DANS UN REPERE QUELCONQUE (3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,31 +61,25 @@ MEST1=MECA_STATIQUE(       MODELE=MOD3D,    CHAM_MATER=CHMATIST,
 
           )
 
-CALC_ELEM( reuse= MEST1 ,RESULTAT= MEST1 ,        MODELE=MOD3D,    CHAM_MATER=CHMATIST,
-              CARA_ELEM=CAREL3D,    EXCIT=_F( CHARGE = CHAR3D),
+CALC_ELEM( reuse= MEST1 ,RESULTAT= MEST1 ,            
+                  
 
            OPTION=('EPSI_ELGA_DEPL',
            'SIGM_ELNO_DEPL',)  )
 
-CALC_ELEM(reuse=MEST1,      MODELE=MOD3D,
+CALC_ELEM(reuse=MEST1,      
                        RESULTAT=MEST1,
                          OPTION='ENEL_ELGA',
-                     CHAM_MATER=CHMATIST,
-                      CARA_ELEM=CAREL3D
                   )
 
-CALC_ELEM(reuse=MEST1,      MODELE=MOD3D,
+CALC_ELEM(reuse=MEST1,      
                        RESULTAT=MEST1,
                          OPTION='ENEL_ELNO_ELGA',
-                     CHAM_MATER=CHMATIST,
-                      CARA_ELEM=CAREL3D
                   )
 
 CALC_NO(  reuse=MEST1,
                        RESULTAT=MEST1,
                          OPTION='ENEL_NOEU_ELGA',
-                     CHAM_MATER=CHMATIST,
-                      CARA_ELEM=CAREL3D
                   )
 
 TEST_RESU(RESU=(
@@ -161,24 +155,20 @@ MEST2=MECA_STATIQUE(       MODELE=MOD3D,    CHAM_MATER=CHMATORT,
 
            )
 
-CALC_ELEM( reuse= MEST2 ,RESULTAT= MEST2 ,        MODELE=MOD3D,    CHAM_MATER=CHMATORT,
-            CARA_ELEM=CAREL3D,    EXCIT=_F( CHARGE = CHAR3D),
+CALC_ELEM( reuse= MEST2 ,RESULTAT= MEST2 ,            
+                
 
            OPTION=('EPSI_ELGA_DEPL',
            'SIGM_ELNO_DEPL',)  )
 
-CALC_ELEM(reuse=MEST2,      MODELE=MOD3D,
+CALC_ELEM(reuse=MEST2,      
                        RESULTAT=MEST2,
                          OPTION='ENEL_ELGA',
-                     CHAM_MATER=CHMATORT,
-                      CARA_ELEM=CAREL3D
                   )
 
-CALC_ELEM(reuse=MEST2,      MODELE=MOD3D,
+CALC_ELEM(reuse=MEST2,      
                        RESULTAT=MEST2,
                          OPTION='ENEL_ELNO_ELGA',
-                     CHAM_MATER=CHMATORT,
-                      CARA_ELEM=CAREL3D
                   )
 
 TEST_RESU(RESU=(

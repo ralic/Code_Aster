@@ -1,4 +1,4 @@
-# MODIF  DATE 09/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PB 3D STATIONNAIRE AVEC RAYONNEMENT - HEXA20
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -218,11 +218,7 @@ TEST_RESU(RESU=(
     )
 
 TEMPE=CALC_ELEM(reuse=TEMPE,RESULTAT=TEMPE,
-                MODELE=MOTH,
-                EXCIT=(_F(  CHARGE = CHTH),
-                       _F(  CHARGE = CHTHB),
-                       _F(  CHARGE = CHTHC)),
-                CHAM_MATER=CHMAT,
+                
                 OPTION='FLUX_ELNO_TEMP',
                 INST=0.
                 );

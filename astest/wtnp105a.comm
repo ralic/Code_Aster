@@ -1,4 +1,4 @@
-# MODIF  DATE 25/05/2004   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -234,8 +234,6 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  );
                                           
 U0=CALC_ELEM(reuse =U0,
-             MODELE=MODELE,
-             CHAM_MATER=CHMAT0,
              TOUT_ORDRE='OUI',
              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
              RESULTAT=U0,);

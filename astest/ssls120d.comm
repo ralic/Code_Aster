@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE : COQUE MINCE CYLINDRIQUE SOUS PRESSION HYDROSTATIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,11 +99,7 @@ ELAS1=MECA_STATIQUE(MODELE=MODMECA,
                     NUME_COUCHE=1,
                     );
 
-CALC_ELEM( reuse= ELAS1 ,RESULTAT= ELAS1 , MODELE=MODMECA,
-                    CHAM_MATER=CHMAT1,
-                    CARA_ELEM=CARAELE,
-                    EXCIT=(_F(CHARGE=BLOCAGE,),
-                           _F(CHARGE=PH,),),
+CALC_ELEM( reuse= ELAS1 ,RESULTAT= ELAS1 , 
                     NUME_COUCHE=1,
                     OPTION='SIGM_ELNO_DEPL',);
 
@@ -199,11 +195,7 @@ ELAS2=MECA_STATIQUE(MODELE=MODMECA,
                            _F(CHARGE=PH,),),
                     NUME_COUCHE=1,);
 
-CALC_ELEM( reuse= ELAS2 ,RESULTAT= ELAS2 , MODELE=MODMECA,
-                    CHAM_MATER=CHMAT2,
-                    CARA_ELEM=CARAELE,
-                    EXCIT=(_F(CHARGE=BLOCAGE,),
-                           _F(CHARGE=PH,),),
+CALC_ELEM( reuse= ELAS2 ,RESULTAT= ELAS2 , 
                     NUME_COUCHE=1,OPTION='SIGM_ELNO_DEPL',);
 
 TEST_RESU(RESU=_F(RESULTAT=ELAS2,

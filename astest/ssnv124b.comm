@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2004   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CALCUL DE CHARGE LIMITE EN 3D - METHODE DE NORTON-HOFF
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -106,21 +106,14 @@ RESU=STAT_NON_LINE(
   )
 
 ECHL = POST_ELEM(
-  MODELE=MO,
-  CHAM_MATER=CHMAT,
   RESULTAT = RESU,
   CHAR_LIMITE=_F()
   )
 
 
-RESU=CALC_ELEM(reuse=RESU,       MODELE=MO,
-                      CHAM_MATER=CHMAT,
+RESU=CALC_ELEM(reuse=RESU,       
                       RESULTAT=RESU,
-                      EXCIT=(
-                             _F(CHARGE = CH_CL),
-                             _F(CHARGE = INCOMP),
-                             _F(CHARGE = CH1,)
-                            ),
+                      
                         OPTION=('EPSI_ELNO_DEPL',
                                 'SIEF_ELNO_ELGA',
                                 'ERRE_ELGA_NORE',

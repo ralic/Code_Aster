@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE MELANGE 3D-PLAQUE-POUTRE SANS NOEUD COMMUN ENTRE ELEMENTS.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,13 +125,10 @@ DEP=MECA_STATIQUE(MODELE=MO,
                   NIVE_COUCHE='SUP',);
 
 DEP=CALC_ELEM(reuse =DEP,
-              MODELE=MO,
-              CHAM_MATER=CHMA,
-              CARA_ELEM=CARA,
               RESULTAT=DEP,
               OPTION=('SIGM_ELNO_DEPL','EFGE_ELNO_DEPL',),
               NIVE_COUCHE='SUP',
-              EXCIT=_F(CHARGE=CHME,),);
+              );
 
 DEP1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
@@ -192,9 +189,6 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=DEP1,
 DEP=CALC_NO(reuse =DEP,
             RESULTAT=DEP,
             OPTION='FORC_NODA',
-            MODELE=MO,
-            CHAM_MATER=CHMA,
-            CARA_ELEM=CARA,
             TOUT='OUI',);
 
 TABLEAU1=POST_RELEVE_T(ACTION=_F(INTITULE='MOMENT',

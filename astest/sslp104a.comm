@@ -1,4 +1,4 @@
-# MODIF  DATE 19/01/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE POUTRE CANTILEVER . VALIDATION DE LA METHODE ARLEQUIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -90,8 +90,6 @@ RES=STAT_NON_LINE(MODELE=MOD,
                                NUME_INST_FIN=1,),);
 
 RES=CALC_ELEM(reuse =RES,
-              MODELE=MOD,
-              CHAM_MATER=CHMAT,
               OPTION='SIEF_ELNO_ELGA',
               RESULTAT=RES,);
 

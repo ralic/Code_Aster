@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PLAQUE SOUMISE A UN GRADIENT DE TEMPERATURE DANS L'EPAISSEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,9 +127,6 @@ U2=CALC_ELEM( reuse=U2,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=U2,
-                            MODELE=MO,
-                        CHAM_MATER=CM,
-                         CARA_ELEM=CARAC
               )
 
 U2=STAT_NON_LINE( reuse=U2,
@@ -160,15 +157,11 @@ U2=CALC_ELEM( reuse=U2,
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=U2,
                         NUME_ORDRE=3,
-                            MODELE=MO,
-                        CHAM_MATER=CM,
-                         CARA_ELEM=CARAC
               )
 
-U2=CALC_ELEM( reuse=U2, CHAM_MATER=CM,  RESULTAT=U2,
-                 MODELE=MO,
-                 EXCIT=_F( CHARGE = CH_LA),
-                   CARA_ELEM=CARAC, TOUT_ORDRE='OUI',
+U2=CALC_ELEM( reuse=U2,   RESULTAT=U2,
+                 
+                    TOUT_ORDRE='OUI',
                  NUME_COUCHE=1,  NIVE_COUCHE='SUP',
                   OPTION='EPSI_ELNO_DEPL'
                     )
@@ -176,10 +169,8 @@ U2=CALC_ELEM( reuse=U2, CHAM_MATER=CM,  RESULTAT=U2,
 #L'OPTION DEGE_ELNO_DEPL N'EXISTE PAS POUR LES ELEMENTS COQUE
 #NECESSITE DE REPARTIR LES OPTIONS SUIVANT LES ELEMENTS
 
-U2=CALC_ELEM( reuse=U2, CHAM_MATER=CM,  RESULTAT=U2,
-                 MODELE=MO,
-                 EXCIT=_F( CHARGE = CH_LA),
-                   CARA_ELEM=CARAC,
+U2=CALC_ELEM( reuse=U2,   RESULTAT=U2,
+                 
                   MAILLE=('M1','M2','M3',),
                  TOUT_ORDRE='OUI',
                  NUME_COUCHE=1,  NIVE_COUCHE='SUP',

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE PABHHHH N. TARDIEU
 # TITRE SENSIBILITE AUX DONNEES MATERIAUX EN MECA_STATIQUE ORTHOTROPE 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -166,36 +166,24 @@ RES=MECA_STATIQUE(MODELE=MODEMECA,
 
 RES = CALC_ELEM(
                  reuse = RES,
-                 MODELE = MODEMECA,
                  RESULTAT = RES,
-                 EXCIT=(_F(CHARGE=CH_0,),_F(CHARGE=CH_1,),),
-                 CHAM_MATER = MATEMAIL,
                  OPTION = 'EPSI_ELNO_DEPL'
                  );
 RES = CALC_ELEM(
                  reuse = RES,
-                 MODELE = MODEMECA,
                  RESULTAT = RES,
-                 EXCIT=(_F(CHARGE=CH_0,),_F(CHARGE=CH_1,),),
-                 CHAM_MATER = MATEMAIL,
                  OPTION = 'EPSI_ELNO_DEPL',
                  SENSIBILITE=tuple(PS)
                  );
 
 RES = CALC_ELEM(
                  reuse = RES,
-                 MODELE = MODEMECA,
                  RESULTAT = RES,
-                 EXCIT=(_F(CHARGE=CH_0,),_F(CHARGE=CH_1,),),
-                 CHAM_MATER = MATEMAIL,
                  OPTION = 'SIGM_ELNO_DEPL'
                  );
 RES = CALC_ELEM(
                  reuse = RES,
-                 MODELE = MODEMECA,
                  RESULTAT = RES,
-                 EXCIT=(_F(CHARGE=CH_0,),_F(CHARGE=CH_1,),),
-                 CHAM_MATER = MATEMAIL,
                  OPTION = 'SIGM_ELNO_DEPL',
                  SENSIBILITE=tuple(PS)
                  );
@@ -304,10 +292,7 @@ for i in range(n):
                   );
   RES2 = CALC_ELEM(
                  reuse = RES2,
-                 MODELE = MODEMECA,
                  RESULTAT = RES2,
-                 EXCIT=(_F(CHARGE=CH_0,),_F(CHARGE=CH_1,),),
-                 CHAM_MATER = MATEMA2,
                  OPTION = 'EPSI_ELNO_DEPL'
                  );
 
@@ -359,10 +344,7 @@ for i in range(n):
                   );
   RES2 = CALC_ELEM(
                  reuse = RES2,
-                 MODELE = MODEMECA,
                  RESULTAT = RES2,
-                 EXCIT=(_F(CHARGE=CH_0,),_F(CHARGE=CH_1,),),
-                 CHAM_MATER = MATEMA2,
                  OPTION = 'SIGM_ELNO_DEPL'
                  );
 

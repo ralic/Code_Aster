@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -154,10 +154,7 @@ DEPLPES=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLPES ,RESULTAT= DEPLPES ,
-                  MODELE=MO,
-              CHAM_MATER=CHMAT,
-               CARA_ELEM=CARE,
-                   EXCIT=_F( CHARGE = CHPES),
+                   
                   OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
              NIVE_COUCHE='INF'
                          )
@@ -173,10 +170,7 @@ DEPLROT=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLROT ,RESULTAT= DEPLROT ,
-                  MODELE=MO,
-              CHAM_MATER=CHMAT,
-               CARA_ELEM=CARE,
-                   EXCIT=_F( CHARGE = CHROT),
+                   
                   OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
              NIVE_COUCHE='INF'
                          )
@@ -192,10 +186,7 @@ DEPLDIL=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
-                  MODELE=MO,
-              CHAM_MATER=CHMAT,
-               CARA_ELEM=CARE,
-                   EXCIT=_F( CHARGE = CHDIL),
+                   
                   OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
             NIVE_COUCHE='INF'
                          )
@@ -211,10 +202,7 @@ DEPLDILT=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLDILT ,RESULTAT= DEPLDILT ,
-                  MODELE=MO,
-              CHAM_MATER=CHMATH,
-               CARA_ELEM=CARE,
-                   EXCIT=_F( CHARGE = CHDIL),
+                   
                   OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
             NIVE_COUCHE='INF'
                          )
@@ -230,10 +218,7 @@ DEPLDI2=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLDI2 ,RESULTAT= DEPLDI2 ,
-                  MODELE=MO,
-              CHAM_MATER=CHMAT,
-               CARA_ELEM=CARE,
-                   EXCIT=_F( CHARGE = CHDI2),
+                   
                   OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
              NIVE_COUCHE='INF'
                          )
@@ -249,10 +234,7 @@ DEPLDI2T=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLDI2T ,RESULTAT= DEPLDI2T ,
-                  MODELE=MO,
-              CHAM_MATER=CHMATH,
-               CARA_ELEM=CARE,
-                   EXCIT=_F( CHARGE = CHDI2),
+                   
                   OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
              NIVE_COUCHE='INF'
                          )

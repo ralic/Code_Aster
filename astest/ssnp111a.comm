@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PLAQUE EN COMPRESSION SOUMISE A UNE PRESSION VARIANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,8 +107,7 @@ CALCNL=STAT_NON_LINE(
                 ITER_LINE_MAXI = 3)
               )
 
-CALCNL=CALC_ELEM( reuse=CALCNL,              MODELE=MODEL,
-                                CHAM_MATER=MATER,
+CALCNL=CALC_ELEM( reuse=CALCNL,              
                                   RESULTAT=CALCNL,
                                   OPTION=( 'SIEF_ELNO_ELGA',
                                            'VARI_ELNO_ELGA',

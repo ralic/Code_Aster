@@ -1,4 +1,4 @@
-# MODIF  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE COMPRESSION/TRACTION EN 3D - COMPORTEMENT BETON_DOUBLE_DP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -268,10 +268,7 @@ SOLNL=STAT_NON_LINE( reuse=SOLNL,
                 RESI_INTE_RELA = 1.E-8)
               )
 
-SOLNL=CALC_ELEM(     reuse=SOLNL,          MODELE=TROISD,
-                               CHAM_MATER=MATBET,EXCIT=(
-                                   _F(  CHARGE = COND_LIM),
-                                   _F(  CHARGE = TRAC)),
+SOLNL=CALC_ELEM(     reuse=SOLNL,          
                                    OPTION=('VARI_ELNO_ELGA',
                                            'SIEF_ELNO_ELGA', ),
                                  RESULTAT=SOLNL )

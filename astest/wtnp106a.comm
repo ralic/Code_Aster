@@ -1,4 +1,4 @@
-# MODIF  DATE 25/05/2004   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CHAUFFAGE D UN MILIEU POREUX DESATURE AVEC AIR DISSOUS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -210,8 +210,6 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                             STOP_SINGULIER='NON',),
                  );
 U0=CALC_ELEM(reuse =U0,
-             MODELE=MODELE,
-             CHAM_MATER=CHMAT0,
              TOUT_ORDRE='OUI',
              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
              RESULTAT=U0,);

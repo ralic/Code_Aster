@@ -1,4 +1,4 @@
-# MODIF  DATE 20/03/2001   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TRACTION-COMPRESSION UNIAXIALE ECROUISSAGE MIXTE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,8 +86,6 @@ U=CALC_ELEM( reuse=U,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=U,
-                            MODELE=MOMECA,
-                        CHAM_MATER=CM
               )
 
 TEST_RESU(RESU=(

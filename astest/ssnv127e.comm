@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -190,8 +190,6 @@ IMPR_RESU(MODELE=MO,
                   NOM_CHAM=('DEPL','VALE_CONT',)),);
 
 U=CALC_ELEM(reuse =U,
-            MODELE=MO,
-            CHAM_MATER=CHMAT,
             OPTION=('SIEF_ELNO_ELGA'),
             RESULTAT=U,);
 #                                                       

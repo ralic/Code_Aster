@@ -1,4 +1,4 @@
-# MODIF  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  THERMO_METALLO_MECANIQUE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -298,13 +298,9 @@ U=STAT_NON_LINE(reuse=U,
      RECH_LINEAIRE=_F( ITER_LINE_MAXI = 3))
 
 U=CALC_ELEM(reuse=U,
-          MODELE=MOMECA,
-      CHAM_MATER=CHP_MATL,
         RESULTAT=U,
           OPTION=('SIEF_ELNO_ELGA',
-                  'VARI_ELNO_ELGA',),EXCIT=(
-           _F( CHARGE = CHR_TRAC),
-                 _F( CHARGE = CHR_TEMP)))
+                  'VARI_ELNO_ELGA',),)
 
 U=CALC_NO(reuse=U,
       RESULTAT=U,

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DST  170 N - 296 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -212,11 +212,7 @@ TEST_TABLE(      TABLE=EPOT_PE,
 
 #--------------------------------------------------------------------
 
-DEPR=CALC_ELEM( reuse= DEPR ,RESULTAT= DEPR ,MODELE=MODEL,
-                         CHAM_MATER=CHMAT, CARA_ELEM=CARELEM,
-                         EXCIT=(_F(CHARGE=CINE,),
-                                _F(CHARGE=PRES),
-                                ),
+DEPR=CALC_ELEM( reuse= DEPR ,RESULTAT= DEPR ,
                          OPTION=('EFGE_ELNO_DEPL',),
                 )
 

@@ -1,0 +1,130 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE TRACTION SIMPLE VISC_TAHERI (VITESSE DE DEFORM. CSTE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+
+DEBUT(CODE=_F( NOM = 'SSNV170B',NIV_PUB_WEB='INTERNET'))
+
+#......................................................................
+# CUBE EN TRACTION SIMPLE CALCUL 3D
+# DEFORMATION IMPOSEE ET VITESSE DE DEFORMATION CONSTANTE
+# LOI VISC_TAHERI
+#......................................................................
+
+MAIL=LIRE_MAILLAGE( )
+
+MAT=DEFI_MATERIAU(
+            ELAS=_F( E = 200.E+3, NU = .3),
+            LEMAITRE=_F(N=10.8,UN_SUR_K=6.9E-4,UN_SUR_M=0.102),
+            TAHERI=_F(  R_0 = 1.E-3,
+# ON MET R_O DIFFERENT DE 0 POUR NE PAS AVOIR UNE DIVISION PAR 0
+# DANS NMTADP.F A LA LIGNE 62.
+                        ALPHA = 0.,
+                        M = 1.,
+                        A = 0.,
+                        B = 0.,
+                        C1 = 0.,
+                        C_INF = 0.,
+                        S = 900.)
+                     )
+
+CM=AFFE_MATERIAU(MAILLAGE=MAIL,
+                 AFFE=_F( TOUT = 'OUI', MATER = MAT)
+                     )
+
+MOMECA=AFFE_MODELE(MAILLAGE=MAIL,
+   AFFE=_F( TOUT = 'OUI', MODELISATION = '3D', PHENOMENE = 'MECANIQUE')
+                     )
+
+CHMECA=AFFE_CHAR_MECA(  MODELE=MOMECA,
+                        FACE_IMPO=(
+                              _F( MAILLE = 'DEVANT',  DZ = 0.),
+                              _F( MAILLE = 'BAS',     DY = 0.),
+                              _F( MAILLE = 'HAUT',    DY = 1.),
+                              _F( MAILLE = 'GAUCHE',  DX = 0 )
+                                   )
+                               )
+
+CHMECA2=AFFE_CHAR_MECA( MODELE=MOMECA,
+                        FORCE_FACE=_F(MAILLE='HAUT', FY = 1)
+                        )
+
+FDEPL=DEFI_FONCTION(    NOM_PARA='INST',
+                        PROL_DROITE='EXCLU',
+                        PROL_GAUCHE='EXCLU',
+                        VALE=(
+                                0.,      0,
+                                240.,    0.5,
+                             )
+                          )
+
+L_INST=DEFI_LIST_REEL(  DEBUT=0.,INTERVALLE=(
+                           _F( JUSQU_A = 240.,NOMBRE = 30),
+                                 )
+                         )
+
+U=STAT_NON_LINE(        MODELE=MOMECA,
+                        CHAM_MATER=CM,
+                        EXCIT=(
+                                _F(     CHARGE = CHMECA,
+                                        FONC_MULT = FDEPL
+                                        ),
+                               ),
+                        COMP_INCR=_F(RELATION = 'VISC_TAHERI'),
+                        NEWTON=_F(MATRICE = 'TANGENTE', REAC_ITER = 1),
+                        INCREMENT=_F(LIST_INST = L_INST),
+                        CONVERGENCE=_F(
+                                        RESI_GLOB_RELA = 1.E-6,
+                                        ITER_GLOB_MAXI = 25,
+                                        ITER_INTE_MAXI = 100
+                                       ),
+                         )
+
+U=CALC_ELEM(            reuse=U,
+                        OPTION=(
+                                'SIEF_ELNO_ELGA',
+                                'EPSI_ELNO_DEPL',
+                                'EPSP_ELNO'
+                                ),
+                        RESULTAT=U,
+                       )
+
+TEST_RESU(RESU=(
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                MAILLE = 'M1',
+                NOEUD = 'N6',
+                INST = 40.,
+                NOM_CMP = 'SIYY',
+                VALE = 632.29325,
+                REFERENCE = 'AUTRE_ASTER'),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                MAILLE = 'M1',
+                NOEUD = 'N6',
+                INST = 240.,
+                NOM_CMP = 'SIYY',
+                VALE = 761.7493,
+                REFERENCE = 'AUTRE_ASTER')))
+
+
+
+FIN()

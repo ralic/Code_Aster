@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PLAQUE ENCASTREE SOUSMISE A UNE FLEXION PAR DES POUTRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,9 +116,6 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06,),);
 
 RESU=CALC_ELEM(reuse =RESU,
-               MODELE=MO,
-               CHAM_MATER=CHMAT,
-               CARA_ELEM=CARA,
                OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),
                RESULTAT=RESU,);
 

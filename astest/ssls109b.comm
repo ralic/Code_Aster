@@ -1,4 +1,4 @@
-# MODIF  DATE 30/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE DE 3 NAPPES D'ARMATURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -156,34 +156,29 @@ RESU0=MECA_STATIQUE(    MODELE=LEMOD,       CHAM_MATER=MATAF,
                                CARA_ELEM=LACAR,
                                EXCIT=_F(  CHARGE = LECHAR,    )       )
 
-RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        MODELE=LEMOD,
-                         CHAM_MATER=MATAF,    CARA_ELEM=LACAR,
+RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        
                              OPTION='EFGE_ELNO_DEPL' )
 
-RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        MODELE=LEMOD,
-                         CHAM_MATER=MATAF,    CARA_ELEM=LACAR,
+RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        
                              OPTION='SIGM_ELNO_DEPL' )
 
-#RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        MODELE=LEMOD,
-#                         CHAM_MATER=MATAF,    CARA_ELEM=LACAR,
+#RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        
+#                             
 #                             OPTION='SIEF_ELGA_DEPL' )
 
-RESU0=CALC_NO(  reuse=RESU0,   RESULTAT=RESU0,  MODELE=LEMOD,
-                               TOUT='OUI',CHAM_MATER=MATAF,
+RESU0=CALC_NO(  reuse=RESU0,   RESULTAT=RESU0,  
+                               TOUT='OUI',
                                OPTION='FORC_NODA',
-                               CARA_ELEM=LACAR       )
+                               )
 
 
-RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        MODELE=LEMOD,
-                         CHAM_MATER=MATAF,    CARA_ELEM=LACAR,
+RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        
                              OPTION='EPSI_ELNO_DEPL' )
 
-RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        MODELE=LEMOD,
-                         CHAM_MATER=MATAF,    CARA_ELEM=LACAR,
+RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        
                              OPTION='DEGE_ELNO_DEPL' )
 
-RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        MODELE=LEMOD,
-                         CHAM_MATER=MATAF,    CARA_ELEM=LACAR,
+RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        
                              OPTION='SIEF_ELNO_ELGA' )
 
 IMPR_RESU(RESU=_F(RESULTAT=RESU0,
@@ -205,13 +200,12 @@ RESU1=STAT_NON_LINE(    MODELE=LEMOD,       CHAM_MATER=MATAF,
                                INCREMENT=_F(LIST_INST = LINST),
                                COMP_INCR=_F(RELATION = 'GRILLE_ISOT_LINE' ),)
 
-RESU1=CALC_NO(  reuse=RESU1,   RESULTAT=RESU1,  MODELE=LEMOD,
-                               TOUT='OUI',CHAM_MATER=MATAF,
+RESU1=CALC_NO(  reuse=RESU1,   RESULTAT=RESU1,  
+                               TOUT='OUI',
                                OPTION='FORC_NODA',
-                               CARA_ELEM=LACAR       )
+                               )
 
-RESU1=CALC_ELEM(reuse=RESU1,     RESULTAT=RESU1,        MODELE=LEMOD,
-                         CHAM_MATER=MATAF,    CARA_ELEM=LACAR,
+RESU1=CALC_ELEM(reuse=RESU1,     RESULTAT=RESU1,        
                              OPTION='SIEF_ELNO_ELGA' )
 
 IMPR_RESU(RESU=_F(RESULTAT=RESU1,NOM_CHAM=('FORC_NODA','SIEF_ELNO_ELGA','SIEF_ELGA','DEPL')))

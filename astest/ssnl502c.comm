@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE ADBHHPM P.MASSIN 
 # DATE   : 23/07/2001
 # AUTEUR : F. LEBOUVIER (DELTACAD) 
@@ -253,27 +253,18 @@ RESULT=STAT_NON_LINE(reuse=RESULT,      MODELE=MO,
 RESULT= CALC_ELEM (reuse=RESULT ,
                   OPTION     ='SIEF_ELNO_ELGA',
                   RESULTAT   = RESULT,
-                  MODELE     = MO,
-                  CHAM_MATER = CHMAT,
-                  CARA_ELEM  = CAREL,
                   TOUT_ORDRE = 'OUI',
                                   );
 
 RESULT= CALC_ELEM (reuse=RESULT ,
                   OPTION     ='EFGE_ELNO_CART',
                   RESULTAT   = RESULT,
-                  MODELE     = MO,
-                  CHAM_MATER = CHMAT,
-                  CARA_ELEM  = CAREL,
                   TOUT_ORDRE = 'OUI',
                              );
 
 RESULT= CALC_NO   (reuse=RESULT ,
                   OPTION     ='FORC_NODA',
                   RESULTAT   = RESULT,
-                  MODELE     = MO,
-                  CHAM_MATER = CHMAT,
-                  CARA_ELEM  = CAREL,
                   TOUT_ORDRE = 'OUI',
                              );
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # -----------------------------------------------------------------
 # TITRE CALCUL DU RETRAIT DE DESSICCATION SUR UN CYLINDRE
 #        ET D'HYDRATATION - LOI ELASTIQUE
@@ -135,15 +135,10 @@ U=STAT_NON_LINE( MODELE=MO,
                                ITER_INTE_MAXI=100,),);
 U=CALC_ELEM(reuse =U,
              RESULTAT = U,
-             CHAM_MATER=CM,
-             EXCIT=(_F(CHARGE=CH1,),
-                    _F(CHARGE=CH2,),),
-             MODELE=MO,
              OPTION=('EPSI_ELNO_DEPL','EPSP_ELNO','SIEF_ELNO_ELGA'),         )
 
 U=CALC_NO(reuse =U,
              RESULTAT = U,
-             CHAM_MATER=CM,
              OPTION=('EPSI_NOEU_DEPL','SIEF_NOEU_ELGA','EPSP_NOEU'),         )
 
 TEST_RESU(RESU=(
@@ -181,14 +176,9 @@ U2=MECA_STATIQUE( MODELE=MO,
                  INST = 3600.)
 U2=CALC_ELEM(reuse =U2,
              RESULTAT = U2,
-             CHAM_MATER=CM,
-                EXCIT=(_F(CHARGE=CH1,),
-                       _F(CHARGE=CH2,),),
-             MODELE=MO,
              OPTION=('EPSI_ELNO_DEPL','SIGM_ELNO_DEPL'),         )
 U2=CALC_NO(reuse =U2,
              RESULTAT = U2,
-             CHAM_MATER=CM,
              OPTION=('EPSI_NOEU_DEPL','SIGM_NOEU_DEPL'),         )
 
 TEST_RESU(RESU=(

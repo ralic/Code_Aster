@@ -1,4 +1,4 @@
-# MODIF  DATE 20/02/2002   AUTEUR GJBHHEL E.LORENTZ 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CALCUL DE CHARGE LIMITE D UN FOND TORIQUE (NORTON-HOFF)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,8 +121,7 @@ RESU1=STAT_NON_LINE(
     ),
   )
 
-ECHL1=POST_ELEM(  MODELE=MO,
-                  CHAM_MATER=CHMAT,
+ECHL1=POST_ELEM(  
                   RESULTAT=RESU1,
                   CHAR_LIMITE=_F( )  )
 

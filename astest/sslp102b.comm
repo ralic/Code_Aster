@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TAUX DE RESTITUTION AVEC ETAT INITIAL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,8 +95,6 @@ RESU=CALC_ELEM( reuse=RESU,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=RESU,
-                            MODELE=MO,
-                        CHAM_MATER=CM
               )
 
 #SIGMA =CREA_CHAMP(  OPERATION:'EXTR' TYPE_CHAM:'ELNO_SIEF_R'

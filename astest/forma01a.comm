@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 #
 #
@@ -144,9 +144,6 @@ RESU1=MECA_STATIQUE(MODELE=MODMECA,
 
 
 CALC_ELEM(reuse =RESU1,
-                MODELE=MODMECA,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=CARA_POU,
                 OPTION='EFGE_ELNO_DEPL',
                 RESULTAT=RESU1,);
 # ECRITURE DES RESULTATS AU FORMAT RESULTAT
@@ -300,11 +297,7 @@ RESU2=MECA_STATIQUE(MODELE=MODMECA2,
                             _F(CHARGE=CHARGT2,),),
                      );
 
-CALC_ELEM( reuse= RESU2 ,RESULTAT= RESU2 , MODELE=MODMECA2,
-                     CHAM_MATER=CHMAT2,
-                     CARA_ELEM=CARAFLEX,
-                     EXCIT=(_F(CHARGE=BLOQUAG2,),
-                            _F(CHARGE=CHARGT2,),),
+CALC_ELEM( reuse= RESU2 ,RESULTAT= RESU2 , 
                      OPTION=('SIGM_ELNO_DEPL','EFGE_ELNO_DEPL',),);
 
 IMPR_RESU(MODELE=MODMECA2,

@@ -1,0 +1,167 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE CYLINDRE SOUMIS A UNE PRESSION EN MODE 1 FOURIER (QUAD4)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# CAS TEST SSLV109D
+# ----------------------------------------------------------------------
+# CYLINDRE EN FLEXION FOURIER HARMONIQUE 1
+#
+# MODELISATION : ELEMENTS MECANIQUE AXIS_FOURIER(1920 QUAD4,2169 NOEUDS)
+#
+# MAILLAGE     : ALIBABA ==> ASTER
+#
+# ----------------------------------------------------------------------
+# GROUPE DE MAILLES: PRES_REP : GRMA7
+# GROUPE DE NOEUDS : DDL_IMPO : GRNM5
+# ----------------------------------------------------------------------
+#
+
+DEBUT(   CODE=_F( NOM = 'SSLV109D',NIV_PUB_WEB='INTERNET'))
+
+M=LIRE_MAILLAGE(   )
+
+MO=AFFE_MODELE(        MAILLAGE=M,
+                                AFFE=_F(  TOUT = 'OUI',
+                                       PHENOMENE = 'MECANIQUE',
+                                       MODELISATION = 'AXIS_FOURIER'))
+
+MA=DEFI_MATERIAU(          ELAS=_F(  E = 72.,
+                                       NU = 0.3,
+                                       RHO = 0.))
+
+P=DEFI_FONCTION(      NOM_PARA='X',
+                          VALE=(0.,0., .5,  .5, 1.,  1.,) )
+
+U0=DEFI_CONSTANTE(    VALE=0. )
+
+CM=AFFE_MATERIAU(      MAILLAGE=M,
+                                AFFE=_F(  TOUT = 'OUI',
+                                       MATER = MA))
+
+BLOQU=AFFE_CHAR_MECA_F(       MODELE=MO,DDL_IMPO=(
+                           
+                        _F(  NOEUD = 'N1',   DX = U0,  DY = U0,  DZ = U0),
+                        _F(  GROUP_NO = 'GRNM5',   DY = U0)),)
+                        
+CH=AFFE_CHAR_MECA_F(  MODELE=MO,PRES_REP=_F(  GROUP_MA = 'GRMA7', PRES = P))
+
+RESU=MACRO_ELAS_MULT(      MODELE=MO,
+                             CHAM_MATER=CM,
+                           CHAR_MECA_GLOBAL=BLOQU,
+                           CAS_CHARGE=_F( 
+                                 MODE_FOURIER = 1,
+                                 TYPE_MODE = 'SYME',
+                                 CHAR_MECA = CH,
+                                 SOUS_TITRE = 'MODE FOURIER 1 SYME'
+                                 )
+                          )
+
+RESU=CALC_ELEM( reuse= RESU, RESULTAT= RESU,
+                OPTION=('SIGM_ELNO_DEPL',),
+                )
+
+
+TEST_RESU(RESU=(
+   # DEPLACEMENTS
+              
+#   NOEUD B
+            _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           NOEUD = 'N1129',    NOM_CMP = 'DX',      VALE = 2.083333333E-3),
+            _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
+           CRITERE = 'ABSOLU',  PRECISION = 1.E-3,
+           NOEUD = 'N1129',    NOM_CMP = 'DY',      VALE = 0.),
+            _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           NOEUD = 'N1129',    NOM_CMP = 'DZ',      VALE = -2.083333333E-3),
+            _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+#   NOEUD E
+           NOEUD = 'N141',     NOM_CMP = 'DX',      VALE = 0.25),
+            _F(  RESULTAT = RESU,  NUME_MODE=1, NOM_CHAM='DEPL',
+           CRITERE = 'ABSOLU',  PRECISION = 1.E-3,
+           NOEUD = 'N141',     NOM_CMP = 'DY',      VALE = 0.),
+            _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+           NOEUD = 'N141',     NOM_CMP = 'DZ',      VALE = 0.25),
+            _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+#   NOEUD F
+           NOEUD = 'N705',     NOM_CMP = 'DX',      VALE = 0.250520833333),
+            _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+           NOEUD = 'N705',     NOM_CMP = 'DY',      VALE = -0.041666666666),
+            _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+           NOEUD = 'N705',     NOM_CMP = 'DZ',      VALE = 0.249479166666),
+            _F(  RESULTAT = RESU,  NUME_MODE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+#   NOEUD G
+           NOEUD = 'N1269',    NOM_CMP = 'DX',      VALE = 0.252083333333),
+            _F(  RESULTAT = RESU,  NUME_MODE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+           NOEUD = 'N1269',    NOM_CMP = 'DY',      VALE = -0.083333333333),
+            _F(  RESULTAT = RESU,  NUME_MODE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+           NOEUD = 'N1269',    NOM_CMP = 'DZ',      VALE = 0.247916666666),
+            _F(  RESULTAT = RESU,  NUME_MODE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+#   NOEUD C
+           NOEUD = 'N1369',    NOM_CMP = 'DX',      VALE = 1.),
+            _F(  RESULTAT = RESU,  NUME_MODE=1, NOM_CHAM='DEPL',
+           CRITERE = 'ABSOLU',   PRECISION = 1.E-3,
+           NOEUD = 'N1369',    NOM_CMP = 'DY',      VALE = 0.),
+            _F(  RESULTAT = RESU,  NUME_MODE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+           NOEUD = 'N1369',    NOM_CMP = 'DZ',      VALE = 1.),
+            _F(  RESULTAT = RESU,  NUME_MODE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+#   NOEUD D
+           NOEUD = 'N2169',    NOM_CMP = 'DX',      VALE = 1.0020833333333),
+            _F(  RESULTAT = RESU,  NUME_MODE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+           NOEUD = 'N2169',    NOM_CMP = 'DY',      VALE = -0.1666666666666),
+            _F(  RESULTAT = RESU,  NUME_MODE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+           NOEUD = 'N2169',    NOM_CMP = 'DZ',      VALE = 0.9977916666666),
+
+   # CONTRAINTES
+              
+# CONTRAINTE SIYY (LA SEULE NOM_CMP NON NULLE)
+            _F(  RESULTAT = RESU,  NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+  MAILLE = 'M981',   NOEUD = 'N1129',    NOM_CMP = 'SIYY',           VALE = -1.),
+            _F(  RESULTAT = RESU,  NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',  PRECISION = 1.E-2,
+  MAILLE = 'M140',   NOEUD = 'N141',     NOM_CMP = 'SIYY',           VALE = 0.),
+            _F(  RESULTAT = RESU,  NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 3.E-2,
+  MAILLE = 'M560',   NOEUD = 'N705',     NOM_CMP = 'SIYY',           VALE = -0.5),
+            _F(  RESULTAT = RESU,  NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 3.E-2,
+  MAILLE = 'M1120',  NOEUD = 'N1269',    NOM_CMP = 'SIYY',           VALE = -1.),
+            _F(  RESULTAT = RESU,  NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',  PRECISION = 1.E-2,
+  MAILLE = 'M1220',  NOEUD = 'N1369',    NOM_CMP = 'SIYY',           VALE = 0.),
+            _F(  RESULTAT = RESU,  NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+  MAILLE = 'M1920',  NOEUD = 'N2169',    NOM_CMP = 'SIYY',           VALE = -1.))
+            )
+
+FIN()
+#

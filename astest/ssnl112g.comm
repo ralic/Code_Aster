@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE ESSAI DE THERMOPLASTICITE (MISES ECR. ISOT. BARRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -148,11 +148,7 @@ UELAS=MECA_STATIQUE(
 
 CALC_ELEM( reuse= UELAS ,RESULTAT= UELAS ,
 
-                     MODELE=MOD,
-                 CHAM_MATER=CHMAT,
-                 CARA_ELEM=CARBA,EXCIT=(
-                _F(  CHARGE = LIAISON),
-                _F(  CHARGE = DEFTHER)),
+                 
                   LIST_INST=LINST,
                  OPTION='SIGM_ELNO_DEPL'
 
@@ -179,13 +175,9 @@ U=STAT_NON_LINE(
 CALC_ELEM( reuse=U,
                             OPTION='SIEF_ELNO_ELGA',
                           RESULTAT=U,
-                            MODELE=MOD,
-                        CHAM_MATER=CHMAT,
-                         CARA_ELEM=CARBA
               )
 
-CALC_NO(reuse=U,  OPTION='FORC_NODA',  MODELE=MOD,
-                        CHAM_MATER=CHMAT,  CARA_ELEM=CARBA,
+CALC_NO(reuse=U,  OPTION='FORC_NODA',  
                         RESULTAT=U)
 
 MASS = POST_ELEM(MODELE=MOD,

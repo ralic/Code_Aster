@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # ======================================================================
 # TITRE CAS-TEST POUR LA VALIDATION DE l'OPTION INDI_LOCA_ELGA POUR ----
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -168,8 +168,6 @@ U = CALC_ELEM(
               OPTION     = ('INDI_LOCA_ELGA',),
               RESULTAT   = U,
               NUME_ORDRE = (19,last_iter),
-              MODELE     = MODELE,
-              CHAM_MATER = CHMAT,
               );
               
 IMPR_RESU(RESU=_F(RESULTAT=U,

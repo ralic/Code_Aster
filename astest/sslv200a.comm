@@ -1,4 +1,4 @@
-# MODIF  DATE 25/05/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TEST DE NON-REGRESSION D'ASTER : MECANIQUE LINEAIRE 3D
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -528,13 +528,7 @@ MSLIN=MECA_STATIQUE(        MODELE=MO,
                            LIST_INST=LR1,
                           )
 
-CALC_ELEM( reuse= MSLIN ,RESULTAT= MSLIN ,         MODELE=MO,
-                            CARA_ELEM=CARA1,
-                           CHAM_MATER=CHMAT,EXCIT=(
-                           _F(  CHARGE = CHMEC,
-                                   FONC_MULT = FO13),
-                           _F(  CHARGE = CHMECF,
-                                   FONC_MULT = FO14),),
+CALC_ELEM( reuse= MSLIN ,RESULTAT= MSLIN ,         
                            LIST_INST=LR1,
                            OPTION=(
                             'SIGM_ELNO_DEPL',
@@ -792,15 +786,9 @@ TEST_TABLE(    TABLE=TABME1,
 # ----------------------------------------------------------------------
 #   POST_TRAITEMENT DU CALCUL
 # ----------------------------------------------------------------------
-CALC_ELEM( reuse=MSLIN,       MODELE=MO,
-                       CHAM_MATER=CHMAT,
-                        CARA_ELEM=CARA1,
+CALC_ELEM( reuse=MSLIN,       
                            OPTION=( 'EPSG_ELGA_DEPL', 'EPSG_ELNO_DEPL', ),
-                          RESULTAT=MSLIN,EXCIT=(
-                            _F(  CHARGE = CHMEC,
-                                    FONC_MULT = FO13),
-                            _F(  CHARGE = CHMECF,
-                                    FONC_MULT = FO14))
+                          RESULTAT=MSLIN,
                     )
 
 TEST_RESU(RESU=( _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
@@ -1002,13 +990,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
 
 CALC_NO( reuse=MSLIN,       OPTION=( 'EPSI_NOEU_DEPL', 'EQUI_NOEU_SIGM',
                                   'EQUI_NOEU_EPSI',  ),
-                       RESULTAT=MSLIN,
-                      CARA_ELEM=CARA1,
-                     CHAM_MATER=CHMAT,EXCIT=(
-                          _F(  CHARGE = CHMEC,
-                                  FONC_MULT = FO13),
-                          _F(  CHARGE = CHMECF,
-                                  FONC_MULT = FO14)))
+                       RESULTAT=MSLIN,)
 
 TEST_RESU(RESU=( _F(  RESULTAT = MSLIN,    INST = 11.5,
                      NOM_CHAM = 'EPSI_NOEU_DEPL',
@@ -1195,12 +1177,8 @@ TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='GAMMA',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-9,
       VALE=  4.3494219020953E+01  )
 
-TABLE2=POST_ELEM(        MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                         CARA_ELEM=CARA1,
-                          RESULTAT=MSLIN,
+TABLE2=POST_ELEM(     RESULTAT=MSLIN,
                               INST=5.5,
-                            CHARGE=CHMEC,
                           ENER_POT=_F( TOUT = 'OUI',
                                     GROUP_MA = 'GMA21',
                                     MAILLE = ('M44', 'M99',)) )

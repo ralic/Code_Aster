@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE O.BOITEAU
 # TITRE Maillage adaptatif mecanique sur une poutre en flexion
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -170,11 +170,7 @@ for num_calc in range(0,nb_calc1) :
 # DEUX TYPES D'INDICATEURS D'ERREUR EN MECANIQUE (ZZ1 ET RESIDU).
    DEPLA[num_calc]=CALC_ELEM(reuse=DEPLA[num_calc],
                   RESULTAT=DEPLA[num_calc],
-                  MODELE=MO[num_calc],
                   TOUT='OUI',
-                  CHAM_MATER=CHMAT[num_calc],
-                  EXCIT=(_F(CHARGE=CLIM[num_calc],),
-                         _F(CHARGE=CH[num_calc],),),
                   TOUT_ORDRE='OUI',
                   OPTION=(
 # LISSAGE DES CONTRAINTES SI STAT_NON_LINE
@@ -204,9 +200,7 @@ for num_calc in range(0,nb_calc1) :
 #   os.system('/logiciels/aster/outils/gibi2000.x post1.dgibi')
 
 # CALCUL DE L'ENERGIE POTENTIELLE DE DEFORMATION
-   ENER[num_calc]=POST_ELEM(MODELE=MO[num_calc],
-                     CHAM_MATER=CHMAT[num_calc],
-                     CHARGE=(CLIM[num_calc],CH[num_calc]),
+   ENER[num_calc]=POST_ELEM(
                      RESULTAT=DEPLA[num_calc],
                      ENER_POT=_F(TOUT='OUI',),);
 

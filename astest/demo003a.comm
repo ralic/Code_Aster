@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
@@ -119,8 +119,6 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=37);
 # On calcule la force de reaction du massif
 # attention : la force est en n/radian
 RESU=CALC_NO(reuse =RESU,
-             MODELE=MO,
-             CHAM_MATER=CHMAT,
              OPTION='REAC_NODA',
              RESULTAT=RESU,);
 

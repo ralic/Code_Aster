@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE O.BOITEAU
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -151,13 +151,8 @@ for num_calc in range(0,nb_calc1) :
 # L'INDICATEUR D'ERREUR EN RESIDU.
    TEMP[num_calc]=CALC_ELEM(reuse=TEMP[num_calc],
                   RESULTAT=TEMP[num_calc],
-                  MODELE=MOT[num_calc],
                   TOUT='OUI',
                   TOUT_ORDRE='OUI',
-                  CHAM_MATER=CHMATT[num_calc],
-                  EXCIT=( 
-                         _F(CHARGE = CHT[num_calc]),
-                         _F(CHARGE = CLIMT[num_calc],),),
                   OPTION=(
 # LISSAGE DES FLUX
                        'FLUX_ELNO_TEMP',
@@ -182,9 +177,7 @@ for num_calc in range(0,nb_calc1) :
 #   os.system('/logiciels/aster/outils/gibi2000.x post1.dgibi')   
 
 # CALCUL DE L'ENERGIE POTENTIELLE DE DEFORMATION
-   ENERT[num_calc]=POST_ELEM(MODELE=MOT[num_calc],
-                     CHAM_MATER=CHMATT[num_calc],
-                     CHARGE=(CLIMT[num_calc],CHT[num_calc]),
+   ENERT[num_calc]=POST_ELEM(
                      RESULTAT=TEMP[num_calc],
                      ENER_POT=_F(TOUT='OUI',),);
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CABLE DE PRECONTRAINTE DANS UNE POUTRE DROITE EN BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,9 +127,6 @@ EVOLNOLI=STAT_NON_LINE(
 EVOLNOLI=CALC_ELEM( reuse=EVOLNOLI,
                             OPTION='SIEF_ELNO_ELGA',  
                           RESULTAT=EVOLNOLI,
-                            MODELE=MODELE,
-                        CHAM_MATER=CHMATER,
-                         CARA_ELEM=CARAELEM
               )
 
 #

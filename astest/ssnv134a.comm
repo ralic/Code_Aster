@@ -1,4 +1,4 @@
-# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,8 +116,6 @@ U1=CALC_ELEM( reuse=U1,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=U1,
-                            MODELE=MODELE,
-                        CHAM_MATER=CHMAT
               )
 
 TEMPS2=DEFI_LIST_REEL(   DEBUT=1.,INTERVALLE=(
@@ -196,8 +194,6 @@ U2=CALC_ELEM( reuse=U2,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=U2,
-                            MODELE=MODELE,
-                        CHAM_MATER=CHMAT
               )
 
 #FIN();
@@ -215,8 +211,6 @@ U2=CALC_ELEM( reuse=U2,
 
 
 U2=CALC_ELEM( reuse=U2,     RESULTAT=U2,
-                        MODELE=MODELE,
-                    CHAM_MATER=CHMAT,
                     NUME_ORDRE=(1, 2, 3, 4, 8, 23,),
                         OPTION=('EPSI_ELNO_DEPL', )
                 )

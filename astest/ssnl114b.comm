@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CABLE PESANT AVEC DILATATION THERMIQUE. MODEL. B : POU_D_T_GD
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,9 +109,6 @@ RESU1=CALC_ELEM( reuse=RESU1,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=RESU1,
-                            MODELE=MO2,
-                        CHAM_MATER=CHM2,
-                         CARA_ELEM=CARA2
               )
 
 # SOLUTION ANALYTIQUE : FORTRAN DANS SSNL114.38

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE (NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,11 +167,8 @@ RESP=MECA_STATIQUE(         MODELE=MO,    CHAM_MATER=CM,
 
                         )
 
-CALC_ELEM( reuse= RESP ,RESULTAT= RESP ,          MODELE=MO,    CHAM_MATER=CM,
-                              CARA_ELEM=CA_M,EXCIT=(
-                            _F(  CHARGE = CH),
-                            _F(  CHARGE = CHP),
-                            _F(  CHARGE = CHP_F)),
+CALC_ELEM( reuse= RESP ,RESULTAT= RESP ,              
+                              
                              OPTION='SIGM_ELNO_DEPL'
                         )
 
@@ -223,10 +220,9 @@ RESF=MECA_STATIQUE(    MODELE=MO,           CHAM_MATER=CM,EXCIT=(
 
                         )
 
-CALC_ELEM( reuse= RESF ,RESULTAT= RESF ,     MODELE=MO,           CHAM_MATER=CM,EXCIT=(
+CALC_ELEM( reuse= RESF ,RESULTAT= RESF ,                EXCIT=(
                             _F(  CHARGE = CH),
                                   _F(  CHARGE = CHF)),
-                            CARA_ELEM=CA_M,
                                OPTION='SIGM_ELNO_DEPL'
                         )
 
@@ -234,8 +230,7 @@ CALC_NO( reuse=RESF,   RESULTAT=RESF,
                       OPTION='SIGM_NOEU_DEPL'
                   )
 
-RESFINF=CALC_ELEM(    MODELE=MO,   CHAM_MATER=CM,
-                          CARA_ELEM=CA_M,
+RESFINF=CALC_ELEM(       
                           RESULTAT=RESF,
                            OPTION='SIGM_ELNO_DEPL',
                           NIVE_COUCHE='INF'
@@ -245,8 +240,7 @@ CALC_NO(   reuse=RESFINF,   RESULTAT=RESFINF,
                            OPTION='SIGM_NOEU_DEPL'
                       )
 
-RESFSUP=CALC_ELEM(    MODELE=MO,   CHAM_MATER=CM,
-                          CARA_ELEM=CA_M,
+RESFSUP=CALC_ELEM(       
                           RESULTAT=RESF,
                            OPTION='SIGM_ELNO_DEPL',
                           NIVE_COUCHE='SUP'
@@ -325,10 +319,8 @@ RESG=MECA_STATIQUE(    MODELE=MO,        CHAM_MATER=CM,
 
                         )
 
-CALC_ELEM( reuse= RESG ,RESULTAT= RESG ,     MODELE=MO,        CHAM_MATER=CM,
-                                            CARA_ELEM=CA_M,EXCIT=(
-                            _F(  CHARGE = CH),
-                                  _F(  CHARGE = CHG)),
+CALC_ELEM( reuse= RESG ,RESULTAT= RESG ,             
+                                            
                              OPTION='SIGM_ELNO_DEPL'
                         )
 
@@ -336,8 +328,7 @@ CALC_NO( reuse=RESG,   RESULTAT=RESG,
                       OPTION='SIGM_NOEU_DEPL'
                   )
 
-RESGINF=CALC_ELEM(    MODELE=MO,   CHAM_MATER=CM,
-                          CARA_ELEM=CA_M,
+RESGINF=CALC_ELEM(       
                           RESULTAT=RESG,
                            OPTION='SIGM_ELNO_DEPL',
                           NIVE_COUCHE='INF'
@@ -347,8 +338,7 @@ CALC_NO(   reuse=RESGINF,   RESULTAT=RESGINF,
                            OPTION='SIGM_NOEU_DEPL'
                       )
 
-RESGSUP=CALC_ELEM(    MODELE=MO,   CHAM_MATER=CM,
-                          CARA_ELEM=CA_M,
+RESGSUP=CALC_ELEM(       
                           RESULTAT=RESG,
                            OPTION='SIGM_ELNO_DEPL',
                           NIVE_COUCHE='SUP'
@@ -427,10 +417,8 @@ RESM=MECA_STATIQUE(    MODELE=MO,        CHAM_MATER=CM,
 
                         )
 
-CALC_ELEM( reuse= RESM ,RESULTAT= RESM ,     MODELE=MO,        CHAM_MATER=CM,
-                                            CARA_ELEM=CA,EXCIT=(
-                            _F(  CHARGE = CH),
-                                  _F(  CHARGE = CHM)),
+CALC_ELEM( reuse= RESM ,RESULTAT= RESM ,             
+                                            
                              OPTION='SIGM_ELNO_DEPL'
                         )
 
@@ -438,8 +426,7 @@ CALC_NO( reuse=RESM,   RESULTAT=RESM,
                       OPTION='SIGM_NOEU_DEPL'
                   )
 
-RESMINF=CALC_ELEM(    MODELE=MO,   CHAM_MATER=CM,
-                          CARA_ELEM=CA,
+RESMINF=CALC_ELEM(       
                           RESULTAT=RESM,
                            OPTION='SIGM_ELNO_DEPL',
                           NIVE_COUCHE='INF'
@@ -449,8 +436,7 @@ CALC_NO(   reuse=RESMINF,   RESULTAT=RESMINF,
                            OPTION='SIGM_NOEU_DEPL'
                       )
 
-RESMSUP=CALC_ELEM(    MODELE=MO,   CHAM_MATER=CM,
-                          CARA_ELEM=CA,
+RESMSUP=CALC_ELEM(       
                           RESULTAT=RESM,
                            OPTION='SIGM_ELNO_DEPL',
                           NIVE_COUCHE='SUP'

@@ -3,7 +3,7 @@
       INTEGER IERR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ALGORITH  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C
       INTEGER NBOCC,IINTEG,ICODE,NRPASE,IOCC,JSTD,IRESOL,LVALE,IEQ,JAUX
       REAL*8 RVAL, T0
       CHARACTER*8   K8B, NOMRES, MASSE, RIGID, AMORT, BASENO
-      CHARACTER*8   MATREI, MAPREI, MATERI
+      CHARACTER*8   MATREI, MAPREI, MATERI, BLAN8
       CHARACTER*13  INPSCO
       CHARACTER*16  TYPRES, NOMCMD
       CHARACTER*19  CHANNO, SOLVEU, INFCHA, CHSOL
@@ -80,7 +80,10 @@ C     -----------------------------------------------------------------
 C     -----------------------------------------------------------------
 C
       CALL JEMARQ()
-
+C
+C               1234567890123456789
+      BLAN8  = '        '
+C
       BASENO = '&&'//NOMPRO
 C              12345678 90123
       INPSCO = BASENO//'_PSCO'
@@ -177,7 +180,7 @@ C
 
           IF (NBPASE .GT. 0) THEN
             CALL NMDOME ( MODELE, MATE, CARELE, INFCHA,
-     &              NBPASE, INPSCO )
+     &              NBPASE, INPSCO ,BLAN8, IBID)
             FOMULT = INFCHA//'.FCHA'
             INFOCH = INFCHA//'.INFC'
             CHARGE = INFCHA//'.LCHA'
@@ -193,7 +196,7 @@ C
             CALL UTMESS('F',NOMCMD,'LE MODELE EST OBLIGATOIRE')
           ENDIF
           CALL NMDOME ( MODELE, MATE, CARELE, INFCHA,
-     +              NBPASE, INPSCO )
+     +              NBPASE, INPSCO ,BLAN8, IBID)
           FOMULT = INFCHA//'.FCHA'
           INFOCH = INFCHA//'.INFC'
           CHARGE = INFCHA//'.LCHA'

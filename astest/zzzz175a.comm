@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE COUPLAGE ASTER-HOMARD SUR UN CALCUL STAT_NON_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -176,12 +176,8 @@ for num_calc in range(nbre_calcul):
 # 5.7.1. Calcul de l'indicateur d'erreur
 #
     resu[num_calc]=CALC_ELEM(reuse =resu[num_calc],
-                      MODELE=mode[num_calc],
-                      CHAM_MATER=chma[num_calc],
                       OPTION=('SIEF_ELNO_ELGA','ERRE_ELGA_NORE',),
                       RESULTAT=resu[num_calc],
-                      EXCIT=(_F(CHARGE=bloq[num_calc],),
-                             _F(CHARGE=pres[num_calc],),),
                       INST=inst_fin,);
 #
     Mad2[num_calc+1]=CO('Mad2_%d' % (num_calc+1))

@@ -1,0 +1,331 @@
+      SUBROUTINE RSLESD (RESULT,NUORD,MODELE,MATERI,CARELE,EXCIT,
+     &                   IEXCIT)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+      IMPLICIT NONE
+C
+      INTEGER NUORD,IEXCIT
+      CHARACTER*8  RESULT,MODELE,CARELE,MATERI
+      CHARACTER*19 EXCIT
+
+
+C----------------------------------------------------------------------
+C     BUT: PERMET DE LIRE OU D'ECRIRE DES NOMS DE CONCEPT DE 
+C          LA SD RESULTAT ET D'EXPLOITER DES OBJETS DE LA SD
+C          CORRESPONDANT AUX CHARGES
+C
+C     IN      RESULT : NOM DE LA SD RESULTAT
+C     IN      IORDR  : NUMERO D'ORDRE
+C     OUT     MODELE : NOM DU MODELE
+C     OUT     MATERI : NOM DU CHAMP MATERIAU
+C     OUT     CARELE : NOM DE LA CARACTERISTIQUE ELEMENTAIRE
+C     OUT     EXCIT  : NOM DE LA SD INFO_CHARGE
+C     OUT     IEXCIT : INDICE DEFINISSANT L'ORIGINE DU CHARGEMENT
+C                      UTILISE LORS DES CALCLULS
+C                      0 : LE CHARGEMENT EST ISSU DE LA SD RESULTAT
+C                      1 : LE CHARGEMENT EST FOURNI PAR L'UTILISATEUR
+C 
+C --------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C     VARIABLES LOCALES
+      INTEGER JPARA,N,N1,N2,N3,N4,IEX
+      INTEGER JLCHA,JINFC,JFCHA, NCHA
+      INTEGER ILU, ISD
+      INTEGER NCHALU, NCHASD
+      INTEGER LCHALU,FCHALU
+      CHARACTER*6 NOMPRO
+      PARAMETER(NOMPRO='RSLESD')
+      CHARACTER*8 BLAN8,NOMSD,NOMLU
+      CHARACTER*8 FONCLU, K8B, FONCSD
+      CHARACTER*19 KCHA, KFON
+      CHARACTER*16 TYPE,NOMCMD
+      CHARACTER*24 EXCISD
+
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C--- INITIALISATIONS
+C               123456789012345678901234
+      BLAN8  = '        '
+      KCHA   = '&&'//NOMPRO//'.CHARGE    '
+      KFON   = '&&'//NOMPRO//'.FONC_MULT '
+      IEXCIT = 0
+      N4     = 0
+C      
+      CALL GETRES(K8B,TYPE,NOMCMD)
+C
+C==========================================================
+C
+C     T R A I T E M E N T  DU  M O D E L E 
+C
+C========================================================== 
+C     
+C---  RECUPERATION DU NOM DU MODELE
+C
+      CALL GETVID(' ','MODELE'    ,0,1,1,NOMLU,N1)
+C
+      CALL RSADPA(RESULT,'L',1,'MODELE',NUORD,0,JPARA,K8B)
+      NOMSD=ZK8(JPARA)
+C 
+C--- VERIFICATIONS ET AFFECTATIONS
+C
+      IF (NOMSD.NE.' ')THEN
+        IF (N1.EQ.0) THEN
+           MODELE = NOMSD 
+        ELSEIF (NOMSD.EQ.NOMLU) THEN
+           MODELE = NOMLU
+        ELSE
+          CALL UTMESS('F',NOMPRO,
+     &         ' LE MODELE FOURNI PAR L''UTILISATEUR EST'
+     &       //' DIFFERENT DE CELUI PRESENT DANS LA SD RESULTAT.')
+        ENDIF
+      ELSE
+        IF (N1.NE.0) THEN
+           MODELE = NOMLU 
+        ELSE
+           MODELE = BLAN8
+        ENDIF
+      ENDIF        
+C
+C--- SI LE MODELE EST ABSENT DE LA SD RESULTAT ET S'IL EST FOURNI PAR
+C    L'UTILISATEUR , ON LE STOCKE DANS LA SD RESULTAT
+C
+      IF(NOMSD.EQ.' '.AND.NOMLU.NE.' ') THEN
+         CALL RSADPA(RESULT,'E',1,'MODELE',NUORD,0,JPARA,K8B)
+         ZK8(JPARA)=MODELE
+      ENDIF
+C      
+C==========================================================
+C
+C     T R A I T E M E N T   D U   C A R A _ E L E M
+C
+C========================================================== 
+C
+C--- RECUPERATION DU NOM DU CARA_ELEM
+C
+      CALL GETVID(' ','CARA_ELEM',0,1,1,NOMLU,N2)
+C
+      CALL RSADPA(RESULT,'L',1,'CARAELEM',NUORD,0,JPARA,K8B)
+      NOMSD=ZK8(JPARA)
+C 
+C--- VERIFICATIONS ET AFFECTATIONS
+C
+      IF (NOMSD.NE.' ')THEN
+        IF (N2.EQ.0) THEN
+           CARELE = NOMSD 
+        ELSEIF (NOMSD.EQ.NOMLU) THEN
+           CARELE = NOMLU
+        ELSE
+           CALL UTMESS('A',NOMPRO,
+     &            ' LE CARA_ELEM FOURNI PAR L''UTILISATEUR'
+     &          //' EST DIFFERENT DE CELUI PRESENT DANS LA SD RESULTAT,'
+     &          //' ON POURSUIT LES CALCULS AVEC LE CARA_ELEM FOURNI'
+     &          //' PAR L''UTILISATEUR.')
+           CARELE = NOMLU
+        ENDIF
+      ELSE
+        IF (N2.NE.0) THEN
+           CARELE = NOMLU 
+        ELSE
+           CARELE = BLAN8
+        ENDIF
+      ENDIF
+C
+C--- SI LE CARA_ELEM EST ABSENT DE LA SD RESULTAT ET S'IL EST FOURNI PAR
+C    L'UTILISATEUR , ON LE STOCKE DANS LA SD RESULTAT
+C
+      IF(NOMSD.EQ.' '.AND.NOMLU.NE.' ') THEN
+         CALL RSADPA(RESULT,'E',1,'CARAELEM',NUORD,0,JPARA,K8B)
+         ZK8(JPARA)=CARELE
+      ENDIF
+C            
+C==========================================================
+C
+C     T R A I T E M E N T   D U   M A T E R I A U
+C
+C========================================================== 
+C
+C---  RECUPERATION DU NOM DU CHAMP MATERIAU
+C
+      CALL GETVID(' ','CHAM_MATER',0,1,1,NOMLU,N3)
+C
+      CALL RSADPA(RESULT,'L',1,'CHAMPMAT',NUORD,0,JPARA,K8B)
+      NOMSD=ZK8(JPARA)
+C 
+C--- VERIFICATIONS ET AFFECTATIONS
+C
+      IF (NOMSD.NE.' ')THEN
+        IF (N3.EQ.0) THEN
+           MATERI = NOMSD 
+        ELSEIF (NOMSD.EQ.NOMLU) THEN
+           MATERI = NOMLU
+        ELSE
+           CALL UTMESS('A',NOMPRO,
+     &           ' LE MATERIAU FOURNI PAR L''UTILISATEUR'
+     &         //' EST DIFFERENT DE CELUI PRESENT DANS LA SD RESULTAT,'
+     &         //' ON POURSUIT LES CALCULS AVEC LE MATERIAU FOURNI PAR'
+     &         //' L''UTILISATEUR.')        
+          MATERI = NOMLU
+        ENDIF
+      ELSE
+        IF (N3.NE.0) THEN
+           MATERI = NOMLU 
+        ELSE
+           MATERI = BLAN8
+        ENDIF
+      ENDIF
+C
+C--- SI LE MATERIAU EST ABSENT DE LA SD RESULTAT ET S'IL EST FOURNI PAR
+C    L'UTILISATEUR , ON LE STOCKE DANS LA SD RESULTAT
+C
+      IF(NOMSD.EQ.' '.AND.NOMLU.NE.' ') THEN
+         CALL RSADPA(RESULT,'E',1,'CHAMPMAT',NUORD,0,JPARA,K8B)
+         ZK8(JPARA)=MATERI
+      ENDIF
+C            
+C==========================================================
+C
+C     T R A I T E M E N T   D E S    C H A R G E M E N T S
+C
+C========================================================== 
+C      
+C--- RECUPERATION DES CHARGEMENTS 'EXCIT'
+C
+C--- LECTURE DES INFORMATIONS UTILISATEUR
+C
+      IF(NOMCMD.NE.'POST_ELEM') THEN
+ 
+        CALL GETFAC('EXCIT',NCHALU)
+C
+        IF ( NCHALU .NE. 0 ) THEN 
+          CALL WKVECT(KCHA,'V V K8',NCHALU,LCHALU)
+          CALL WKVECT(KFON,'V V K8',NCHALU,FCHALU)
+          DO 10 IEX = 1, NCHALU
+            CALL GETVID('EXCIT','CHARGE',IEX,1,1,
+     &                   ZK8(LCHALU+IEX-1),N1)
+            CALL GETVID('EXCIT','FONC_MULT',IEX,1,1,FONCLU,N2)
+            IF (N2.NE.0) THEN
+              ZK8(FCHALU+IEX-1) = FONCLU
+            ENDIF
+ 10       CONTINUE
+        ENDIF
+      ELSE
+        CALL GETVID(' ','CHARGE'    ,0,1,0,K8B   ,N4)
+        NCHA = -N4
+        NCHALU = MAX(1,NCHA)
+        CALL WKVECT( KCHA ,'V V K8',NCHALU,LCHALU)
+        CALL GETVID(' ','CHARGE',0,1,NCHA,ZK8(LCHALU),N4)
+      ENDIF
+C
+C--- LECTURE DES INFORMATIONS CONTENUES DANS LA SD RESULTAT
+C
+      CALL RSADPA(RESULT,'L',1,'EXCIT',NUORD,0,JPARA,K8B)
+      EXCISD=ZK24(JPARA)
+C 
+C--- VERIFICATIONS ET AFFECTATIONS
+C
+C     IEXCIT = 0 SD RESULTAT
+C            = 1 UTILISATEUR
+
+      IF(NOMCMD.EQ.'POST_ELEM') THEN
+        IF (N4.EQ.0)  THEN
+          IEXCIT = 0
+          NCHALU = 0
+        ELSE
+          IEXCIT = 1
+        ENDIF
+      ELSE
+        IF (NCHALU.NE.0)  IEXCIT = 1
+      ENDIF
+
+      IF (NCHALU.EQ.0.AND.EXCISD(1:1).EQ.' ') IEXCIT = 1
+                    
+      IF (EXCISD.NE.' ') THEN 
+        EXCIT = EXCISD
+        CALL JEVEUO(EXCIT(1:19)//'.LCHA','L',JLCHA)
+        CALL JEVEUO(EXCIT(1:19)//'.INFC','L',JINFC)
+        CALL JEVEUO(EXCIT(1:19)//'.FCHA','L',JFCHA)          
+        NCHASD = ZI(JINFC)
+      ENDIF
+C
+C--- VERIFICATIONS DU NOM DES CHARGES
+C
+      IF( (NCHALU.NE.0) .AND. (EXCISD.NE.' ')) THEN
+        DO 40 ILU = 1,NCHALU
+          DO 20 ISD = 1,NCHASD
+            IF(ZK8(LCHALU-1+ILU).EQ.ZK24(JLCHA-1+ISD)(1:8)) GOTO 30
+ 20       CONTINUE
+          CALL UTMESS('A',NOMPRO,
+     &        ' LE CHARGEMENT (MOT CLE: CHARGE) FOURNI PAR'
+     &      //' L''UTILISATEUR EST DIFFERENT DE CELUI PRESENT DANS'
+     &      //' LA SD RESULTAT,ON POURSUIT LES CALCULS AVEC LE'
+     &      //' CHARGEMENT FOURNI PAR L''UTILISATEUR.')
+ 30       CONTINUE
+ 40     CONTINUE
+C
+C--- VERIFICATIONS DU NOM DES FONCTION MULTIPLICATRICES
+C
+        IF(NOMCMD.NE.'POST_ELEM') THEN
+          DO 70 ILU = 1,NCHALU
+            DO 50 ISD = 1,NCHASD
+              FONCSD = ZK24(JFCHA-1+ISD)(1:8)
+              IF(FONCSD(1:2).EQ.'&&') FONCSD = BLAN8
+              IF(ZK8(FCHALU-1+ILU).EQ.FONCSD) GOTO 60
+ 50         CONTINUE
+              CALL UTMESS('A',NOMPRO,
+     &          ' LES FONCTIONS MULTIPLICATRICES DU CHARGEMENT'
+     &        //' (MOT CLE: FONC_MULT) FOURNI PAR L''UTILISATEUR '
+     &        //' SONT DIFFERENTES DE CELLES PRESENTES DANS LA SD '
+     &        //' RESULTAT, ON POURSUIT LES CALCULS AVEC LES FONCTIONS' 
+     &        //' MULTIPLICATRICES FOURNI PAR L''UTILISATEUR.')
+ 60         CONTINUE
+ 70       CONTINUE
+         ENDIF
+       ENDIF
+C
+C SI LE TYPE DE RESULTAT EST EVOL_THER ET CALC_NO ON NE PREND PAS 
+C LA CHARGE CONTENUE DANS LA SD RESULTAT
+C
+       IF(TYPE(1:9).EQ.'EVOL_THER'.AND.NOMCMD.EQ.'CALC_NO') IEXCIT = 1
+C 
+C--- MENAGE
+C
+      CALL JEDETR(KCHA)
+      CALL JEDETR(KFON)
+C
+      CALL JEDEMA()
+      END

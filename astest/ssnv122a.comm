@@ -1,4 +1,4 @@
-# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE ROTATION ET PRESSION 3D GRANDES DEFORMATIONS (LOI LINEAIRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -214,14 +214,12 @@ V=STAT_NON_LINE( reuse=V,
 
 V=CALC_NO(
              reuse=V,
-                RESULTAT=V,  MODELE=MO,
+                RESULTAT=V,  
                   OPTION='REAC_NODA',
              )
 
 V=CALC_ELEM(
              reuse=V,
-                  MODELE=MO,
-              CHAM_MATER=CHP_MATE,
                 RESULTAT=V,
                  OPTION='EPSG_ELNO_DEPL'
              )

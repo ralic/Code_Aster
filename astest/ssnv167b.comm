@@ -1,4 +1,4 @@
-# MODIF  DATE 01/12/2003   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 
 # TITRE TESTS DE CONTACT POUR LES ELEMENTS QUADRATIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -91,12 +91,8 @@ SOL1 = STAT_NON_LINE( MODELE=MO,
                          
                          
 SOL1=CALC_NO(reuse =SOL1,
-            MODELE = MO,           
               RESULTAT=SOL1,
-              EXCIT=(
-              _F(CHARGE = CHBLO),
-              _F(CHARGE = CHCO1),
-                          ),
+              
               OPTION='REAC_NODA',); 
                                      
 
@@ -281,12 +277,8 @@ SOL2 = STAT_NON_LINE( MODELE=MO,
                          
                          
 SOL2=CALC_NO(reuse =SOL2,
-            MODELE = MO,           
               RESULTAT=SOL2,
-              EXCIT=(
-              _F(CHARGE = CHBLO),
-              _F(CHARGE = CHCO2),
-                          ),
+              
               OPTION='REAC_NODA',); 
                                      
 

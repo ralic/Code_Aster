@@ -1,0 +1,340 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE CYLINDRE EN C.P. (PYRAM13)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#CAS_TEST__: SSLV04M
+# ----------------------------------------------------------------------
+# SSLV04 M               COMMANDES                            19/08/91
+# CYLINDRE CREUX EN CONTRAINTES PLANES
+# SOUS PRESSION INTERNE (60 MPA)
+#
+# MODELISATION : ELEMENTS MECANIQUE 3D (PYRAM13+QUAD8)
+# MAILLAGE     : GIBI > ASTER
+# ----------------------------------------------------------------------
+# GROUPES DE NOEUDS ET MAILLES :
+# GRNO: A B E F    BORDAB
+# GRMA: BORDEF  CYLINT  CYL
+# ----------------------------------------------------------------------
+#
+
+DEBUT( CODE=_F(  NOM = 'SSLV04M',NIV_PUB_WEB='INTERNET'),
+            BASE=_F(  FICHIER = 'LOCALE', LONG_REPE = 2000,  )
+                                 )
+
+M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),   )
+
+M=DEFI_GROUP(reuse=M,  MAILLAGE=M,
+        CREA_GROUP_NO=_F( GROUP_MA = 'BORDAB', )
+                   )
+
+MO=AFFE_MODELE(            MAILLAGE=M,
+                                   VERIF='MAILLE',
+                           AFFE=_F(  GROUP_MA = ('BORDEF','CYLINT','CYL',),
+                                         PHENOMENE = 'MECANIQUE',
+                                         MODELISATION = '3D',        ))
+
+M=MODI_MAILLAGE( reuse=M,   MAILLAGE=M,
+                            MODELE=MO,
+                        ORIE_PEAU_3D=_F(  GROUP_MA = 'CYLINT',  )
+                      )
+
+MA=DEFI_MATERIAU(            ELAS=_F(  E = 200000.,
+                                         NU = 0.3,
+                                         ALPHA = 0.,    )
+                        )
+
+CM=AFFE_MATERIAU(        MAILLAGE=M,
+                                  AFFE=_F(  TOUT = 'OUI',
+                                         MATER = MA,            ))
+
+CH=AFFE_CHAR_MECA(         MODELE=MO,
+                             FACE_IMPO=_F(  GROUP_MA = 'BORDEF',   DNOR = 0.,   ),DDL_IMPO=(
+                              _F(  GROUP_NO = 'F',        DZ = 0.,     ),
+                                       _F(  GROUP_NO = 'BORDAB',   DY = 0.,     )),
+                              PRES_REP=_F(  GROUP_MA = 'CYLINT',   PRES = 60., )
+                       )
+
+RESU=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CM,
+                   EXCIT=_F(CHARGE=CH,),
+                   );
+                   
+RESU=CALC_ELEM( reuse= RESU ,RESULTAT=RESU ,
+                             NUME_ORDRE=1,
+                             
+                             OPTION=('EPSI_ELNO_DEPL',),
+                )
+
+RESU=CALC_ELEM( reuse= RESU ,RESULTAT=RESU ,
+                             NUME_ORDRE=1,
+                             
+                             OPTION=('SIGM_ELNO_DEPL',),
+                )
+
+RESU=CALC_ELEM( reuse= RESU, RESULTAT=RESU ,
+                             NUME_ORDRE=1,
+                             
+                             OPTION=('ENDO_ELNO_SIGA',),
+                )
+                
+RESU=CALC_ELEM( reuse= RESU, RESULTAT=RESU ,
+                             NUME_ORDRE=1,
+                             
+                             OPTION=('ENDO_ELNO_SINO',),
+                )
+
+
+TEST_RESU(RESU=(
+   # DEPLACEMENTS
+
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-3,
+           GROUP_NO = 'A',       NOM_CMP = 'DX',             VALE = 59.E-6,       ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-10,
+           GROUP_NO = 'A',       NOM_CMP = 'DY',             VALE = 0.,           ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-3,
+           GROUP_NO = 'B',       NOM_CMP = 'DX',             VALE = 40.E-6,       ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-10,
+           GROUP_NO = 'B',       NOM_CMP = 'DY',             VALE = 0.,           ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-3,
+           GROUP_NO = 'E',       NOM_CMP = 'DX',             VALE = 41.7193E-6,   ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-3,
+           GROUP_NO = 'E',       NOM_CMP = 'DY',             VALE = 41.7193E-6,   ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-3,
+           GROUP_NO = 'F',       NOM_CMP = 'DX',             VALE = 28.2843E-6,   ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-3,
+           GROUP_NO = 'F',       NOM_CMP = 'DY',             VALE = 28.2843E-6,   ),
+
+    # DEFORMATIONS
+
+
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-3,
+ GROUP_NO = 'A',     MAILLE = 'M6',     NOM_CMP = 'EPXX',      VALE = -4.5E-4,      ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-3,
+ GROUP_NO = 'A',     MAILLE = 'M6',     NOM_CMP = 'EPYY',      VALE = 5.9E-4,       ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-3,
+ GROUP_NO = 'A',     MAILLE = 'M6',     NOM_CMP = 'EPZZ',      VALE = 0.,           ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-3,
+ GROUP_NO = 'A',     MAILLE = 'M6',     NOM_CMP = 'EPXY',      VALE = 0.,           ),
+
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'B',     MAILLE = 'M58',     NOM_CMP = 'EPXX',      VALE = -0.6E-4,       ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'B',     MAILLE = 'M58',     NOM_CMP = 'EPYY',      VALE = 2.E-4,        ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-3,
+ GROUP_NO = 'B',     MAILLE = 'M58',     NOM_CMP = 'EPZZ',      VALE = 0.,           ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-3,
+ GROUP_NO = 'B',     MAILLE = 'M58',     NOM_CMP = 'EPXY',      VALE = 0.,           ),
+
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'E',     MAILLE = 'M546',     NOM_CMP = 'EPXX',      VALE = 0.7E-4,       ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 2.E-2,
+ GROUP_NO = 'E',     MAILLE = 'M546',     NOM_CMP = 'EPYY',      VALE = 0.7E-4,      ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-3,
+ GROUP_NO = 'E',     MAILLE = 'M546',     NOM_CMP = 'EPZZ',      VALE = 0.,           ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-3,
+ GROUP_NO = 'E',     MAILLE = 'M546',     NOM_CMP = 'EPXY',      VALE = -5.2E-4,     ),
+
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'F',     MAILLE = 'M599',     NOM_CMP = 'EPXX',      VALE = 0.7E-4,       ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'F',     MAILLE = 'M599',     NOM_CMP = 'EPYY',      VALE = 0.7E-4,       ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-3,
+ GROUP_NO = 'F',     MAILLE = 'M599',     NOM_CMP = 'EPZZ',      VALE = 0.,           ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-3,
+ GROUP_NO = 'F',     MAILLE = 'M599',     NOM_CMP = 'EPXY',      VALE = -1.3E-4,      ))
+           )
+
+#-----------------------------------------------------------------
+
+TEST_RESU(RESU=(
+
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-3,
+ GROUP_NO = 'A',     MAILLE = 'M6',     NOM_CMP = 'SIXX',      VALE = -60.,         ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'A',     MAILLE = 'M6',     NOM_CMP = 'SIYY',      VALE = 100.,         ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-1,
+ GROUP_NO = 'A',     MAILLE = 'M6',     NOM_CMP = 'SIZZ',      VALE = 0.,           ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-1,
+ GROUP_NO = 'A',     MAILLE = 'M6',     NOM_CMP = 'SIXY',      VALE = 0.,           ))
+           )
+
+TEST_RESU(RESU=(
+
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'A',     MAILLE = 'M6',       NOM_CMP = 'TRIAX',      VALE = 9.5893E-2,  ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'A',     MAILLE = 'M6',       NOM_CMP = 'SI_ENDO',      VALE = 130.265,   ))
+           )
+
+TEST_RESU(RESU=(
+
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'A',     MAILLE = 'M6',       NOM_CMP = 'TRIAX',      VALE = 9.5893E-2,  ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'A',     MAILLE = 'M6',       NOM_CMP = 'SI_ENDO',      VALE = 130.265,   ))
+           )
+
+#-----------------------------------------------------------------
+
+TEST_RESU(RESU=(
+
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-1,
+ GROUP_NO = 'B',     MAILLE = 'M58',     NOM_CMP = 'SIXX',      VALE = 0.,           ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.2E-3,
+ GROUP_NO = 'B',     MAILLE = 'M58',     NOM_CMP = 'SIYY',      VALE = 40.,          ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-1,
+ GROUP_NO = 'B',     MAILLE = 'M58',     NOM_CMP = 'SIZZ',      VALE = 0.,           ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-1,
+ GROUP_NO = 'B',     MAILLE = 'M58',     NOM_CMP = 'SIXY',      VALE = 0.,           ))
+           )
+
+TEST_RESU(RESU=(
+
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-3,
+ GROUP_NO = 'B',     MAILLE = 'M58',      NOM_CMP = 'TRIAX',      VALE = 3.3333E-1,  ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-3,
+ GROUP_NO = 'B',     MAILLE = 'M58',      NOM_CMP = 'SI_ENDO',      VALE = 40.0,      ))
+           )
+
+TEST_RESU(RESU=(
+
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
+           CRITERE = 'RELATIF',    PRECISION = 1.2E-3,
+ GROUP_NO = 'B',     MAILLE = 'M58',      NOM_CMP = 'TRIAX',      VALE = 3.3333E-1,  ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'B',     MAILLE = 'M58',      NOM_CMP = 'SI_ENDO',      VALE = 40.0,      ))
+           )
+
+#-----------------------------------------------------------------
+
+TEST_RESU(RESU=(
+
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'E',     MAILLE = 'M546',     NOM_CMP = 'SIXX',      VALE = 20.,          ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'E',     MAILLE = 'M546',     NOM_CMP = 'SIYY',      VALE = 20.,          ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-1,
+ GROUP_NO = 'E',     MAILLE = 'M546',     NOM_CMP = 'SIZZ',      VALE = 0.,           ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.2E-3,
+ GROUP_NO = 'E',     MAILLE = 'M546',     NOM_CMP = 'SIXY',      VALE = -80.,         ))
+           )
+
+TEST_RESU(RESU=(
+
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'E',     MAILLE = 'M546',     NOM_CMP = 'TRIAX',      VALE = 9.5893E-2,  ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'E',     MAILLE = 'M546',     NOM_CMP = 'SI_ENDO',      VALE = 130.265,   ))
+           )
+
+TEST_RESU(RESU=(
+
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'E',     MAILLE = 'M546',     NOM_CMP = 'TRIAX',      VALE = 9.5893E-2,  ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'E',     MAILLE = 'M546',     NOM_CMP = 'SI_ENDO',      VALE = 130.265,   ))
+           )
+
+#-----------------------------------------------------------------
+
+TEST_RESU(RESU=(
+
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'F',     MAILLE = 'M599',     NOM_CMP = 'SIXX',      VALE = 20.,          ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-3,
+ GROUP_NO = 'F',     MAILLE = 'M599',     NOM_CMP = 'SIYY',      VALE = 20.,          ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-2,
+ GROUP_NO = 'F',     MAILLE = 'M599',     NOM_CMP = 'SIZZ',      VALE = 0.,           ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.2E-3,
+ GROUP_NO = 'F',     MAILLE = 'M599',     NOM_CMP = 'SIXY',      VALE = -20.,         ))
+           )
+
+TEST_RESU(RESU=(
+
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-3,
+ GROUP_NO = 'F',     MAILLE = 'M599',     NOM_CMP = 'TRIAX',      VALE = 3.3333E-1,   ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-3,
+ GROUP_NO = 'F',     MAILLE = 'M599',     NOM_CMP = 'SI_ENDO',      VALE = 40.0,      ))
+           )
+
+TEST_RESU(RESU=(
+
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+ GROUP_NO = 'F',     MAILLE = 'M599',     NOM_CMP = 'TRIAX',      VALE = 3.3333E-1,   ),
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-3,
+ GROUP_NO = 'F',     MAILLE = 'M599',     NOM_CMP = 'SI_ENDO',      VALE = 40.0,      ))
+           )
+
+#-----------------------------------------------------------------
+FIN()
+#

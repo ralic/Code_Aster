@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,23 +102,14 @@ REST=STAT_NON_LINE(MODELE=MO,
                                   ITER_INTE_MAXI=50,),);
 
 REST=CALC_ELEM(reuse =REST,
-               MODELE=MO,
-               CHAM_MATER=CHMAT1,
-               CARA_ELEM=CAREL,
                RESULTAT=REST,
                OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','DEGE_ELNO_DEPL',),);
 
 REST=CALC_NO(reuse =REST,
              RESULTAT=REST,
-             OPTION='REAC_NODA',
-             MODELE=MO,
-             CHAM_MATER=CHMAT1,
-             CARA_ELEM=CAREL,);
+             OPTION='REAC_NODA',);
 
 REST=CALC_ELEM(reuse =REST,
-               MODELE=MO,
-               CHAM_MATER=CHMAT1,
-               CARA_ELEM=CAREL,
                RESULTAT=REST,
                TOUT_ORDRE='OUI',
                OPTION='SIGM_ELNO_TUYO',
@@ -127,17 +118,12 @@ REST=CALC_ELEM(reuse =REST,
                ANGLE=90,);
 
 REST=CALC_ELEM(reuse =REST,
-               MODELE=MO,
-               CHAM_MATER=CHMAT1,
-               CARA_ELEM=CAREL,
                RESULTAT=REST,
                TOUT_ORDRE='OUI',
                OPTION=('EPSI_ELNO_TUYO','EPEQ_ELNO_TUYO','SIEQ_ELNO_TUYO',),
                NUME_COUCHE=3,
                NIVE_COUCHE='SUP',
-               ANGLE=90,
-               EXCIT=_F(CHARGE=CHART,
-                        FONC_MULT=FONCT,),);
+               ANGLE=90,);
 
 IMPR_RESU(MODELE=MO,
           RESU=_F(RESULTAT=REST,
@@ -145,9 +131,6 @@ IMPR_RESU(MODELE=MO,
                   GROUP_NO=('A','B',),),);
 
 REST=CALC_ELEM(reuse =REST,
-               MODELE=MO,
-               CHAM_MATER=CHMAT1,
-               CARA_ELEM=CAREL,
                RESULTAT=REST,
                TOUT_ORDRE='OUI',
                OPTION='VARI_ELNO_TUYO',
@@ -280,10 +263,7 @@ RESM=STAT_NON_LINE(MODELE=MO,
 
 RESM=CALC_NO(reuse =RESM,
              RESULTAT=RESM,
-             OPTION='REAC_NODA',
-             MODELE=MO,
-             CHAM_MATER=CHMAT2,
-             CARA_ELEM=CAREL,);
+             OPTION='REAC_NODA',);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESM,
                    NUME_ORDRE=1,
@@ -302,9 +282,6 @@ TEST_RESU(RESU=(_F(RESULTAT=RESM,
                    REFERENCE='ANALYTIQUE',),),);
 
 RESM=CALC_ELEM(reuse =RESM,
-               MODELE=MO,
-               CHAM_MATER=CHMAT2,
-               CARA_ELEM=CAREL,
                RESULTAT=RESM,
                TOUT_ORDRE='OUI',
                OPTION=('SIGM_ELNO_TUYO','DEGE_ELNO_DEPL',),
@@ -318,9 +295,7 @@ IMPR_RESU(MODELE=MO,
                   NUME_ORDRE=1,
                   GROUP_NO=('A','B',),),);
 
-RESM2=CALC_ELEM(MODELE=MO,
-                CHAM_MATER=CHMAT2,
-                CARA_ELEM=CAREL,
+RESM2=CALC_ELEM(
                 RESULTAT=RESM,
                 TOUT_ORDRE='OUI',
                 OPTION='SIGM_ELNO_TUYO',

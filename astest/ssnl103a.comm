@@ -1,4 +1,4 @@
-# MODIF  DATE 13/06/2002   AUTEUR PBBHHPB P.BADEL 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE POUTRE CANTILEVER EN GRANDE ROTATION SOUMISE A UN MOMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,9 +87,6 @@ RESU=CALC_ELEM( reuse=RESU,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=RESU,
-                            MODELE=MO1,
-                        CHAM_MATER=CHMAT1,
-                         CARA_ELEM=CARA1
               )
 
 # 

@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,11 +62,8 @@ CHAMDEPL=MECA_STATIQUE(        MODELE=MO,
 DEP=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                  NOM_CHAM='DEPL',  RESULTAT=CHAMDEPL,  NUME_ORDRE=1  )
 
-CHAMDEPL=CALC_ELEM( reuse=CHAMDEPL,       MODELE=MO,
-                       CHAM_MATER=CHMAT,
-                           OPTION='SIGM_ELNO_DEPL',EXCIT=(
-                            _F(  CHARGE = SYMETRIE),
-                            _F(  CHARGE = PRESSION)),
+CHAMDEPL=CALC_ELEM( reuse=CHAMDEPL,      
+                           OPTION='SIGM_ELNO_DEPL',
                          RESULTAT=CHAMDEPL )
 
 FISS=DEFI_FOND_FISS(    MAILLAGE=MA,

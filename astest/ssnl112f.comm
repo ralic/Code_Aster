@@ -1,4 +1,4 @@
-# MODIF  DATE 26/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE ESSAI DE PLASTICITE (MISES ECR. ISOT. ASYM BARRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,9 +86,6 @@ U5=STAT_NON_LINE(
 
 U5=CALC_ELEM( reuse=U5,     OPTION='SIEF_ELNO_ELGA',
                           RESULTAT=U5,
-                            MODELE=MOD,
-                        CHAM_MATER=CHMAT2,
-                         CARA_ELEM=CARBA
               )
 
 TEST_RESU(RESU=( 

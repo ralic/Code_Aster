@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE COUDE EN FLEXION EN ELASTOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -155,13 +155,9 @@ U1=CALC_ELEM( reuse=U1,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=U1,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                         CARA_ELEM=CAREL
               )
 
-U1=CALC_NO(reuse=U1,OPTION='FORC_NODA', RESULTAT=U1, CHAM_MATER=CHMAT,
-            MODELE=MO, CARA_ELEM=CAREL)
+U1=CALC_NO(reuse=U1,OPTION='FORC_NODA', RESULTAT=U1, )
 
 # REFERENCE : CALCUL 3D-POUTRES
 

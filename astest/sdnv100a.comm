@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # ======================================================================
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,18 +140,14 @@ U=DYNA_NON_LINE(  MODELE=MODE,  CHAM_MATER=CM,
 
 EPOTPS=POST_ELEM(
                  ENER_POT=_F(TOUT='OUI',),
-                 MODELE=MODE,
                  RESULTAT=U,
-                 CHAM_MATER=CM,
                  )
 
 IMPR_TABLE(TABLE=EPOTPS);
 
 ECITPS=POST_ELEM(
                  ENER_CIN=_F(TOUT='OUI',),
-                 MODELE=MODE,
                  RESULTAT=U,
-                 CHAM_MATER=CM,
                  )
 
 IMPR_TABLE(TABLE=ECITPS);

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2004   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TEST THM, 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -211,11 +211,9 @@ MESTAT=STAT_NON_LINE(MODELE=MODELE,
                      SOLVEUR=_F(METHODE='LDLT',),);
 
 MESTAT=CALC_ELEM(reuse =MESTAT,
-                 MODELE=MODELE,
-                 CHAM_MATER=CHMAT0,
                  OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
                  RESULTAT=MESTAT,);
-#IMPR_RESU(MODELE=MODELE,
+#IMPR_RESU(
 #          RESU=_F(MAILLAGE=MAIL,
 #                  RESULTAT=MESTAT,),);
 #

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 04/03/2002   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # DATE   : 13/11/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -163,12 +163,10 @@ DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 #
 
 
-C2_M=CALC_ELEM(MODELE=MO,
-               CHAM_MATER=CHAM_MAT,
-               CARA_ELEM=CAR_ELE,
+C2_M=CALC_ELEM(
                OPTION='SIGM_ELNO_DEPL',
                RESULTAT=RESU,
-               EXCIT=_F(CHARGE=CHA,),
+               
                NUME_COUCHE=2,
                NIVE_COUCHE='MOY',);
 
@@ -185,12 +183,10 @@ SIG_C2_M=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                     NUME_ORDRE=1,);
 
 
-C2_S=CALC_ELEM(MODELE=MO,
-                CHAM_MATER=CHAM_MAT,
-                CARA_ELEM=CAR_ELE,
+C2_S=CALC_ELEM(
                 OPTION='SIGM_ELNO_DEPL',
                 RESULTAT=RESU,
-                EXCIT=_F( CHARGE = CHA),
+                
                  NUME_COUCHE=2,
                  NIVE_COUCHE='SUP'
 )
@@ -213,12 +209,10 @@ SIG_C2_S=CREA_CHAMP(    RESULTAT=C2_S,
 #
 
 
-C3_S=CALC_ELEM(MODELE=MO,
-               CHAM_MATER=CHAM_MAT,
-               CARA_ELEM=CAR_ELE,
+C3_S=CALC_ELEM(
                OPTION='SIGM_ELNO_DEPL',
                RESULTAT=RESU,
-               EXCIT=_F(CHARGE=CHA,),
+               
                NUME_COUCHE=3,
                NIVE_COUCHE='SUP',);
 

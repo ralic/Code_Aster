@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TEST DE L'ESTIMATEUR EN RESIDU SUR UN CYLINDRE CREUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,9 +82,8 @@ RESU=MECA_STATIQUE(         MODELE=MO,
                                  EXCIT=_F( CHARGE = CH)
                         )
 
-RESU=CALC_ELEM(     reuse=RESU,        MODELE=MO,
-                            CHAM_MATER=CM,
-                                 EXCIT=_F( CHARGE = CH),
+RESU=CALC_ELEM(     reuse=RESU,        
+                                 
                             TOUT_ORDRE='OUI',
                                 OPTION=( 'SIRE_ELNO_DEPL',
                                          'ERRE_ELGA_NORE',

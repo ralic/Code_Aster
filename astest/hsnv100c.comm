@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE TUYAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,14 +120,9 @@ U=CALC_ELEM( reuse=U,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=U,
-                            MODELE=MOMECA,
-                        CHAM_MATER=CM,
-                         CARA_ELEM=CAREL
               )
 
-U=CALC_NO(reuse=U, CHAM_MATER=CM,
-                            MODELE=MOMECA,
-           EXCIT=_F(  CHARGE = CHMECA),  CARA_ELEM=CAREL,
+U=CALC_NO(reuse=U, 
           OPTION='FORC_NODA',
             RESULTAT=U
          )
@@ -212,9 +207,7 @@ FIN()
 #          );
 #
 #
-#&UE=CALC_NO(CHAM_MATER: CM,
-#            MODELE=MOMECA,
-#          EXCIT: ( CHARGE: CHMECA) CARA_ELEM: CAREL
+#&UE=CALC_NO(
 #          OPTION:'FORC_NODA'
 #          RESULTAT : UE
 #         );

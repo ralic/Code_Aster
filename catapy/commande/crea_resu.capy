@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/04/2004   AUTEUR ASSIRE A.ASSIRE 
+#& MODIF COMMANDE  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,6 +39,9 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,docu="U4.44.12-e",r
            NOM_CHAM     =SIMP(statut='f',typ='TXM',into=("DEPL","TEMP","IRRA","HYDR_ELGA",),),
            AFFE         =FACT(statut='o',max='**',
              regles=(UN_PARMI('NOM_CAS','NUME_MODE','LIST_INST','INST',),),
+             MODELE          =SIMP(statut='f',typ=modele),
+             CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
+             CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
              CHAM_GD         =SIMP(statut='f',typ=(cham_gd)),
              NOM_CAS         =SIMP(statut='f',typ='TXM' ),
              NUME_MODE       =SIMP(statut='f',typ='I'),

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. DKT)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,48 +113,33 @@ U=STAT_NON_LINE(MODELE=MO,
                                ITER_INTE_MAXI=30,),);
 
 U=CALC_ELEM(reuse =U,
-            MODELE=MO,
-            CHAM_MATER=CM,
-            CARA_ELEM=CARAC,
             RESULTAT=U,
             OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
 
 U=CALC_ELEM(reuse =U,
-            MODELE=MO,
-            CHAM_MATER=CM,
-            CARA_ELEM=CARAC,
             RESULTAT=U,
             TOUT_ORDRE='OUI',
             OPTION='SIGM_ELNO_COQU',
             NIVE_COUCHE='SUP',);
 
 U=CALC_ELEM(reuse =U,
-            MODELE=MO,
-            CHAM_MATER=CM,
-            CARA_ELEM=CARAC,
             RESULTAT=U,
             TOUT_ORDRE='OUI',
             OPTION=('DEGE_ELNO_DEPL','EPSI_ELNO_DEPL',),);
 
-U1=CALC_ELEM(MODELE=MO,
-             CHAM_MATER=CM,
-             CARA_ELEM=CARAC,
+U1=CALC_ELEM(
              RESULTAT=U,
              TOUT_ORDRE='OUI',
              OPTION='VARI_ELNO_COQU',
              NIVE_COUCHE='INF',);
 
-U2=CALC_ELEM(MODELE=MO,
-             CHAM_MATER=CM,
-             CARA_ELEM=CARAC,
+U2=CALC_ELEM(
              RESULTAT=U,
              TOUT_ORDRE='OUI',
              OPTION='VARI_ELNO_COQU',
              NIVE_COUCHE='MOY',);
 
-U3=CALC_ELEM(MODELE=MO,
-             CHAM_MATER=CM,
-             CARA_ELEM=CARAC,
+U3=CALC_ELEM(
              RESULTAT=U,
              TOUT_ORDRE='OUI',
              OPTION='VARI_ELNO_COQU',

@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TUBE DE BREE (METHODE ZAC)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,9 +131,9 @@ SOLPL=STAT_NON_LINE(
             NEWTON=_F(  REAC_ITER = 1)
                              )
 
-CALC_ELEM( reuse=SOLPL,    MODELE=MO,   CHAM_MATER=CHMAT,
+CALC_ELEM( reuse=SOLPL,       
               OPTION=( 'EPSP_ELNO', ),
-             EXCIT=_F(    CHARGE = CHME),
+             
                RESULTAT=SOLPL
              )
 
@@ -179,12 +179,8 @@ SOLSTA=MECA_STATIQUE(
              )
 
 CALC_ELEM( reuse= SOLSTA ,RESULTAT= SOLSTA ,
-              MODELE=MO,
               LIST_INST=LISTEL,
-              CHAM_MATER=CHMAT,EXCIT=(
-              _F(    CHARGE = CHPRES),
-              _F(    CHARGE = CHCL),
-              _F(    CHARGE = CHME)),
+              
              OPTION=(
              'EPSI_ELGA_DEPL',  )
                          )
@@ -268,12 +264,8 @@ SOLSTA2=MECA_STATIQUE(
             )
 
 CALC_ELEM( reuse= SOLSTA2 ,RESULTAT= SOLSTA2 ,
-              MODELE=MO,
               LIST_INST=LISTEL,
-              CHAM_MATER=CHMAT,EXCIT=(
-              _F(    CHARGE = CHPRES),
-              _F(    CHARGE = CHME2),
-              _F(    CHARGE = CHCL)),
+              
              OPTION=(
               'EPSI_ELGA_DEPL',  )
                          )

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE FATIGUE - COMPTAGE DE CYCLES RAINFLOW - DOMMAGE-EQUIVALENTS- 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -111,8 +111,7 @@ DEPL=MECA_STATIQUE(
                                            FONC_MULT = COEF),
                                LIST_INST=LINST                       )
 
-DEPL=CALC_ELEM( reuse=DEPL,               MODELE=TRIDIM,
-                                CHAM_MATER=MAT,
+DEPL=CALC_ELEM( reuse=DEPL,               
                                     OPTION=(   'EPSI_ELGA_DEPL',
                                                'EPSI_ELNO_DEPL',
                                                'EPME_ELGA_DEPL',
@@ -120,8 +119,7 @@ DEPL=CALC_ELEM( reuse=DEPL,               MODELE=TRIDIM,
                                                'SIGM_ELNO_DEPL',   ),
                                   RESULTAT=DEPL )
 
-DEPL=CALC_ELEM( reuse=DEPL,               MODELE=TRIDIM,
-                                CHAM_MATER=MAT,
+DEPL=CALC_ELEM( reuse=DEPL,               
                                     OPTION=(   'EQUI_ELGA_SIGM',
                                                'EQUI_ELGA_EPSI',
                                                'EQUI_ELNO_SIGM',

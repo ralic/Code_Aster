@@ -1,4 +1,4 @@
-# MODIF  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE GRANGER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -143,22 +143,13 @@ U=CALC_ELEM( reuse=U,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=U,
-                          EXCIT=(_F( 
-                CHARGE = CH3),),
-                            MODELE=MO,
-                        CHAM_MATER=CM
               )
 
-U=CALC_ELEM(reuse=U,   MODELE=MO,      RESULTAT=U,
-             CHAM_MATER=CM,
-             EXCIT=(_F( 
-                CHARGE = CH3),),
+U=CALC_ELEM(reuse=U,   RESULTAT=U,
                    OPTION='EPSI_ELNO_DEPL')
 
-U=CALC_ELEM(reuse=U,   MODELE=MO,      RESULTAT=U,
-             CHAM_MATER=CM,
-             EXCIT=(_F( 
-                CHARGE = CH3),),
+U=CALC_ELEM(reuse=U, RESULTAT=U,
+
                    OPTION='EPGR_ELNO')
 
 TEST_RESU(RESU=(

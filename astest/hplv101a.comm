@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2004   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE HOMOGENEISATION D'UN MATERIAU HOMOGENE - CONT. PLANES - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,9 +114,7 @@ DEPLDM=MECA_STATIQUE(
                       )
 
 CALC_ELEM( reuse= DEPLDM ,RESULTAT= DEPLDM ,
-                  MODELE=MODME,
-                  CHAM_MATER=CHMAT,
-                  EXCIT=_F( CHARGE = CHARMM),
+                  
                   OPTION='SIGM_ELNO_DEPL'
                       )
 #
@@ -127,8 +125,6 @@ CALC_ELEM( reuse = DEPLDM,
                    OPTION =(
                          'SIEF_ELNO_ELGA'),
                           RESULTAT=DEPLDM,
-                          MODELE=MODME,
-                          CHAM_MATER=CHMAT
                  )
 # ------------------------------------------------------------------
 L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
@@ -172,16 +168,14 @@ T_DZETA=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
 TT=POST_ELEM(   MODELE=MODTH,   CHAM_MATER=CHMAT,
                  CHAM_GD=T_DZETA,    INST=0.,  ENER_POT=_F(  TOUT = 'OUI') )
 
-ENER_ELA=POST_ELEM(     MODELE=MODME,
+ENER_ELA=POST_ELEM(     
                           RESULTAT=DEPLD2,
-                          CHAM_MATER=CHMAT2,
                           NUME_ORDRE=10,
                            ENER_ELAS=_F( TOUT = 'OUI')
                        )
 
-ENER_TOT=POST_ELEM(     MODELE=MODME,
+ENER_TOT=POST_ELEM(     
                           RESULTAT=DEPLD2,
-                          CHAM_MATER=CHMAT2,
                           NUME_ORDRE=10,
                            ENER_TOTALE=_F( TOUT = 'OUI')
                        )

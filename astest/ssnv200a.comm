@@ -1,0 +1,242 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE  ESSAI DE TRACTION-CISAILLEMENT 3D (VISC_TAHERI)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#----------------------------------------------------------------------
+#    CAS TEST VPCS PLAQUE CARREE EN TRACTION CISAILLEMENT PROPORTIONNEL
+#                   ESSAI AVEC CHARGE EN RAMPE A 88 N (0.17#)
+#----------------------------------------------------------------------
+#        UNITES : NEWTON , MILLIMETRE , SECONDE (N,MM,S,->MPA)
+#----------------------------------------------------------------------
+#
+#               Y       A
+#               I<------------->                     A = 1 MM
+#                     FACE1XZ                                2
+#                                                    S = 1 MM
+#               V   NO1        A   NO2
+#              <O>-------------O>
+#              /I             /I                F(T)
+#       NO5  V/ I       NO6 A/ I                 A
+#           <O>-+-----------O> I              22NI____
+#            I  I           I  I                 I   /I
+#  FACEYZ    I  I           I  I      FACE1YZ    I  / I
+#            I  I           I  I                 I /  I
+#            I  V   NO3     I  A  NO4            I/   I
+#            I<<O-----------I-<O      - X        +----+----> T
+#            I /            I /                       1S
+#       NO7  V/        NO8  A/
+#          <<O-------------<O
+#
+#          /       FACEXZ
+#         Z               SEUIL ELASTIQUE : F = 64.8    MPA (=RO(1-M))
+#                          EN TRACTION      U = 3.24E-4 MM
+#
+#
+#----------------------------------------------------------------------
+# CAS - TEST DE NON REGRESSION DU CODE ASTER
+# ATTENTION : LES SOLUTIONS DE REFERENCE ONT ETE OBTENUES
+# PAR UN PREMIER PASSAGE DU CODE_ASTER: 6.0.15
+#
+DEBUT(     CODE=_F(  NOM = 'SSNV200A',NIV_PUB_WEB='INTERNET'))
+
+CUBE=LIRE_MAILLAGE(  )
+
+TROISD=AFFE_MODELE(          MAILLAGE=CUBE,
+                                  AFFE=_F(   PHENOMENE = 'MECANIQUE',
+                                          MODELISATION = '3D',
+                                          TOUT = 'OUI'))
+
+R_0_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     72.,
+                                 1000.,  72.,      ))
+
+ALPHA_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     .3,
+                                 1000.,  .3,       ))
+
+M_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     .1,
+                                 1000.,  .1,       ))
+
+A_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     312.,
+                                 1000.,  312.,       ))
+
+B_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     30.,
+                                 1000.,  30.,       ))
+
+C1_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     -.012,
+                                 1000.,  -.012,      ))
+
+C_INF_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     .065,
+                                 1000.,  .065,       ))
+
+S_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 0.,     450.,
+                                 1000.,  450.,      ))
+
+ACIER1=DEFI_MATERIAU(
+                                    ELAS=_F(   E = 200000.,
+                                            NU = .3,
+                                            ALPHA = 0.),
+
+                               TAHERI_FO=_F(   R_0 = R_0_T,
+                                            ALPHA = ALPHA_T,
+                                            M = M_T,
+                                            A = A_T,
+                                            B = B_T,
+                                            C1 = C1_T,
+                                            C_INF = C_INF_T,
+                                            S = S_T),
+                            LEMAITRE=_F(       N = 11.,
+                                            UN_SUR_K = 3.28410E-04,
+                                            UN_SUR_M = 0.17857)
+                           )
+
+MAT1=AFFE_MATERIAU(           MAILLAGE=CUBE,
+                                    AFFE=_F(  MAILLE = 'MA1',
+                                           MATER = ACIER1,
+                                           TEMP_REF = 20.))
+
+LINST=DEFI_LIST_REEL(             DEBUT=0.,INTERVALLE=(
+                              _F( JUSQU_A = .35, NOMBRE = 1),
+                                         _F( JUSQU_A = 1.,  NOMBRE = 5))
+                                         )
+
+TR_CS=AFFE_CHAR_MECA(
+                    MODELE=TROISD,DDL_IMPO=(
+                _F(  NOEUD = 'NO4', DX = 0.,DY = 0.),
+                         _F(  NOEUD = 'NO8', DX = 0.,DY = 0.,DZ = 0.),
+                         _F(  NOEUD = 'NO2', DX = 0.),
+                         _F(  NOEUD = 'NO6', DX = 0.)),FORCE_NODALE=(
+            _F(  NOEUD = ('NO1', 'NO5', 'NO3', 'NO7',),       FY = -1.),
+                         _F(  NOEUD = ('NO3', 'NO7',),  FX = -2.),
+                         _F(  NOEUD = ('NO2', 'NO6',),  FY = 1.))
+                                                                     )
+
+COEF=DEFI_FONCTION(
+                              NOM_PARA='INST',
+                            PROL_DROITE='LINEAIRE',
+                           PROL_GAUCHE='LINEAIRE',
+                                  VALE=( 0.,  0.,
+                                         1.,  1.,
+                                         2.,  22.,
+                                       ))
+
+SOLNL1=STAT_NON_LINE(
+               TITRE='TEST TRACTION_CISAILLEMENT MODELE TAHERI',
+                            MODELE=TROISD,
+                        CHAM_MATER=MAT1,
+                             EXCIT=_F(
+                CHARGE = TR_CS,
+                FONC_MULT = COEF,
+                TYPE_CHARGE = 'FIXE_CSTE'),
+                         COMP_INCR=_F(
+                RELATION = 'VISC_TAHERI',
+                DEFORMATION = 'PETIT',
+                TOUT = 'OUI'),
+                         INCREMENT=_F(
+                LIST_INST = LINST),
+                            NEWTON=_F(
+                MATRICE = 'TANGENTE',
+                REAC_INCR = 1,
+                REAC_ITER = 10),
+                       CONVERGENCE=_F(
+                ITER_GLOB_MAXI = 20,
+                ITER_INTE_MAXI = 1000,
+                ITER_INTE_PAS = 10,
+                RESI_GLOB_RELA = 1.E-6),
+                     RECH_LINEAIRE=_F(
+                ITER_LINE_MAXI = 4,
+                RESI_LINE_RELA = 1.E-3),
+                INFO=2
+              )
+
+SOLNL1=CALC_ELEM( reuse=SOLNL1,     RESULTAT=SOLNL1,
+                               OPTION=( 'SIEF_ELNO_ELGA',
+                                        'VARI_ELNO_ELGA',
+                                        'EPSI_ELNO_DEPL',
+                                        'EPSP_ELGA',
+                                        'EPSP_ELNO',
+                                      )
+                      )
+
+#
+TEST_RESU(RESU=(
+
+  _F(  REFERENCE = 'NON_REGRESSION',
+         RESULTAT = SOLNL1,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 6,
+         MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXX',  VALE = 2.0E-05,
+         PRECISION = 1.E-10),
+
+  _F(  REFERENCE = 'NON_REGRESSION',
+         RESULTAT = SOLNL1,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 6,
+         MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXY',  VALE = 2.60E-5,
+         PRECISION = 1.E-10),
+
+  _F(  RESULTAT = SOLNL1,  NOM_CHAM = 'EPSP_ELGA',       NUME_ORDRE = 6,
+         CRITERE = 'ABSOLU', MAILLE = 'MA1',  POINT = 1,    NOM_CMP = 'EPXX',
+         VALE = 0.0,            REFERENCE = 'NON_REGRESSION',
+         PRECISION = 1.E-10),
+
+  _F(  RESULTAT = SOLNL1,  NOM_CHAM = 'EPSP_ELGA',       NUME_ORDRE = 6,
+         MAILLE = 'MA1',  POINT = 1,    NOM_CMP = 'EPXY', CRITERE = 'ABSOLU',
+         REFERENCE = 'NON_REGRESSION',         VALE = 0.0,
+          PRECISION = 1.E-10),
+
+  _F(  RESULTAT = SOLNL1,  NOM_CHAM = 'EPSP_ELNO',       NUME_ORDRE = 6,
+         MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXX',  CRITERE = 'ABSOLU',
+         REFERENCE = 'NON_REGRESSION',        VALE = 0.0,
+         PRECISION = 1.E-10),
+
+  _F(  RESULTAT = SOLNL1,  NOM_CHAM = 'EPSP_ELNO',       NUME_ORDRE = 6,
+         MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXY',  CRITERE = 'ABSOLU',
+         REFERENCE = 'NON_REGRESSION',       VALE = 0.0,
+         PRECISION = 1.E-10),
+
+  _F(  RESULTAT = SOLNL1,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 6,
+         MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'V1', CRITERE = 'ABSOLU',
+         REFERENCE = 'NON_REGRESSION',        VALE = 0.0,
+         PRECISION = 1.E-10),
+
+  _F(  RESULTAT = SOLNL1,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 6,
+         MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'V2',
+         REFERENCE = 'NON_REGRESSION',        VALE = 64.800195094755,
+         PRECISION = 5.E-6))
+         )
+
+FIN()

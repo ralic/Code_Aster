@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/02/2004   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TEST THM, D_PLAN_DPTR6
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -200,8 +200,6 @@ TEST_RESU(RESU=_F(RESULTAT=MESTAT,
                   REFERENCE='ANALYTIQUE',),);
 
 MESTAT=CALC_ELEM(reuse =MESTAT,
-                 MODELE=MODELE,
-                 CHAM_MATER=CHMAT0,
                  OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
                  RESULTAT=MESTAT,);
 

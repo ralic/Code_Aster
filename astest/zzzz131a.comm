@@ -1,4 +1,4 @@
-# MODIF  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE VALIDATION DE LA COMMANDE CREA_RESU MOT CLE FACTEUR PERM_CHAM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,9 +117,6 @@ RESU1=CALC_ELEM( reuse=RESU1,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=RESU1,
-                            MODELE=MO1,
-                        CHAM_MATER=CHMAT1,
-                         CARA_ELEM=CARA1
               )
 
 TEST_RESU(RESU=(
@@ -362,9 +359,6 @@ RESU2=CALC_ELEM( reuse=RESU2,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=RESU2,
-                            MODELE=MO2,
-                        CHAM_MATER=CHMAT2,
-                         CARA_ELEM=CARA2
               )
 
 NUM2=1

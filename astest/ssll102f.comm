@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -103,9 +103,7 @@ MEST1=MECA_STATIQUE(        MODELE=MO,
                       )
 
 #
-MEST1=CALC_ELEM( reuse=MEST1,       MODELE=MO,
-                       CHAM_MATER=CHMAT,
-                        CARA_ELEM=CAREL,
+MEST1=CALC_ELEM( reuse=MEST1,       
                          RESULTAT=MEST1,EXCIT=(
                             _F( CHARGE = CHARG1),
                                   _F( CHARGE = CHARG2)),

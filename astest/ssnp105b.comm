@@ -1,0 +1,415 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE  BETON  TRACTION UNIAXIALE CYCLIQUE COQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+DEBUT(CODE=_F( NOM = 'SSNP105B',NIV_PUB_WEB='INTERNET')
+        )
+
+#......................................................................
+# EPROUVETTE DE BETON EN TRACTION UNIAXIALE
+# FISSURATION  NADAI_B  (COQUES)
+# COMPORTEMENT ELASTIQUE PRE-PIC
+#......................................................................
+
+
+M=LIRE_MAILLAGE( )
+
+M=DEFI_GROUP( reuse=M,   MAILLAGE=M,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MO=AFFE_MODELE(
+            MAILLAGE=M,    VERIF='MAILLE',
+           AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'DKT')
+           )
+
+EPRO=DEFI_MATERIAU(
+                ELAS=_F( E = 30000., NU = 0.2),
+
+                NADAI_B=_F(
+                F_C = 30.,
+                F_T = 3.,
+                CRIT_E_C = 0.4,
+                EPSP_R_C = 4.E-3,
+                EPSP_P_C = 1.E-3,
+                EPSI_R_T = 4.E-4,
+                FAC_T_C = 0.4)
+           )
+
+LACAR=AFFE_CARA_ELEM(    MODELE=MO,
+                COQUE=_F(
+       GROUP_MA = 'TOUT',
+
+                        EPAIS = 1.)
+                      )
+
+CM=AFFE_MATERIAU(
+            MAILLAGE=M,
+           AFFE=_F( TOUT = 'OUI',MATER = EPRO)
+           )
+
+#---------------------------------------------------------
+#  CONDITION AUX LIMITES
+#---------------------------------------------------------
+LIAISON=AFFE_CHAR_MECA(
+            MODELE=MO,DDL_IMPO=(
+           _F( NOEUD = 'NO1',  DX = 0.,  DY = 0., DZ = 0.,
+                DRX = 0., DRY = 0., DRZ = 0.),
+           _F( NOEUD = 'NO2',  DY = 0., DZ = 0.,
+                DRX = 0., DRY = 0., DRZ = 0.),
+           _F( NOEUD = 'NO4',   DZ = 0.,
+                DRX = 0., DRY = 0., DRZ = 0.),
+           _F( NOEUD = 'NO3',   DZ = 0.,
+                DRX = 0., DRY = 0., DRZ = 0.))
+           )
+
+#---------------------------------------------------------
+#  CHARGEMENT EN DEPLACEMENT IMPOSE : TRACTION UNIAXIAL
+#---------------------------------------------------------
+
+CH_FO=AFFE_CHAR_MECA(
+            MODELE=MO,DDL_IMPO=(
+           _F( NOEUD = 'NO3',  DY = 1.E-4),
+           _F( NOEUD = 'NO4',  DY = 1.E-4))
+           )
+
+#---------------------------------------------------------
+#  DEFINITION DE LA TABLE DE CHARGEMENT CYCLIQUE
+#---------------------------------------------------------
+#
+
+COEF_TR=DEFI_FONCTION(   NOM_PARA='INST',
+           PROL_GAUCHE='LINEAIRE',  PROL_DROITE='LINEAIRE',
+           VALE=(0.,0.,1.,1.,2.,1.5,3.,-1.,4.,-5.,5.,-10.,6.,-15.,
+           7.,-20.,8.,-10.,9.,-9.,10.,-5.,11.,-4.,12.,-3.,13.,0.,
+           14.,2.,15.,-3.,16.,-4.,17.,-7.,18.,-15.,19.,-20.,20.,-25.,
+           21.,-20.,22.,-15.,23.,-10.,24.,-9.,25.,-8.,26.,-5.,27.,-3.,
+           28.,-2.,29.,4.,))
+
+L_INST=DEFI_LIST_REEL(   DEBUT=0.0,
+             INTERVALLE=_F( JUSQU_A = 29.,    NOMBRE = 29)
+                         )
+
+#---------------------------------------------------------
+# STAT_NON_LINE 'NADAI_B'
+#---------------------------------------------------------
+
+U=STAT_NON_LINE(
+                            MODELE=MO,
+                        CHAM_MATER=CM,
+                         CARA_ELEM=LACAR,EXCIT=(
+                             _F(
+                CHARGE = CH_FO,
+                FONC_MULT = COEF_TR), _F(
+                CHARGE = LIAISON)),
+                         COMP_INCR=_F(
+                RELATION = 'NADAI_B',
+                TOUT = 'OUI'),
+                         INCREMENT=_F(
+                LIST_INST = L_INST),
+                            NEWTON=_F(
+                MATRICE = 'ELASTIQUE'),
+                       CONVERGENCE=_F(
+                RESI_GLOB_MAXI = 1.E-6,
+                ITER_INTE_MAXI = 10,
+                ITER_GLOB_MAXI = 100,
+                RESI_INTE_RELA = 1.E-6),
+                     RECH_LINEAIRE=_F(
+                ITER_LINE_MAXI = 0)
+              )
+
+U=CALC_ELEM( reuse=U,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=U,
+              )
+
+U=CALC_ELEM(
+              reuse=U,
+                  RESULTAT=U,
+                   OPTION=('EPSI_ELNO_DEPL','SIGM_ELNO_COQU',)
+              )
+
+#   IMPR_RESU  ( MODELE:MO
+#                RESU  :(FORMAT    : 'CASTEM'
+#                        MAILLAGE  : M   )
+#                RESU  :(FORMAT    : 'CASTEM'
+#                        RESULTAT  : U
+#                        TOUT_CHAM : 'OUI'
+#                        TOUT_ORDRE: 'OUI'
+#                        FORM_TABL : 'OUI' )
+#              );
+
+
+IMPR_RESU( MODELE=MO,
+                  RESU=_F( FORMAT = 'RESULTAT',
+                        RESULTAT = U,
+                        TOUT = 'OUI')
+              )
+
+TEST_RESU(RESU=(
+
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 2.,
+                NOM_CMP = 'NYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = 2.5),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 2.,
+                NOM_CMP = 'EPYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = 1.5E-4),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 2.,
+                NOM_CMP = 'EPXX',
+                REFERENCE='NON_REGRESSION',
+                VALE = -2.E-5),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 3.,
+                NOM_CMP = 'NYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = -2.99448),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 3.,
+                NOM_CMP = 'EPYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = -1.E-4),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 7.,
+                NOM_CMP = 'NYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = -30.),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 7.,
+                NOM_CMP = 'EPYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = -20.E-4),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 7.,
+                NOM_CMP = 'EPXX',
+                REFERENCE='NON_REGRESSION',
+                VALE = -2.E-5),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 8.,
+                NOM_CMP = 'NYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = -10.),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 8.,
+                NOM_CMP = 'EPYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = -10.E-4),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 12.,
+                NOM_CMP = 'NYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = 1.22270),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 12.,
+                NOM_CMP = 'EPYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = -3.E-4),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 13.,
+                NOM_CMP = 'NYY',
+                VALE = 0.00,
+                REFERENCE='NON_REGRESSION',
+                CRITERE = 'ABSOLU'),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 13.,
+                NOM_CMP = 'EPYY',
+                VALE = 0.00,
+                REFERENCE='NON_REGRESSION',
+                CRITERE = 'ABSOLU'),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 15.,
+                NOM_CMP = 'NYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = -1.76471),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 15.,
+                NOM_CMP = 'EPYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = -3.E-4),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 15.,
+                NOM_CMP = 'EPXX',
+                REFERENCE='NON_REGRESSION',
+                VALE = -2.E-5),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 18.,
+                NOM_CMP = 'NYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = -20.),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 18.,
+                NOM_CMP = 'EPYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = -15.E-4),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 20.,
+                NOM_CMP = 'NYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = -22.5),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 20.,
+                NOM_CMP = 'EPYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = -25.E-4),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 22.,
+                NOM_CMP = 'NYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = -7.5),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 22.,
+                NOM_CMP = 'EPYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = -15.E-4),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 25.,
+                NOM_CMP = 'NYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = -1.58824),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 25.,
+                NOM_CMP = 'EPYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = -8.E-4),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 27.,
+                NOM_CMP = 'NYY',
+                VALE = 0.0,
+                REFERENCE='NON_REGRESSION',
+                CRITERE = 'ABSOLU'),
+                _F(
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'MA1',
+                NOEUD = 'NO1',
+                INST = 27.,
+                NOM_CMP = 'EPYY',
+                REFERENCE='NON_REGRESSION',
+                VALE = -3.E-4))
+              )
+
+FIN()
+#

@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE WEIBULL ET RICE-TRACEY EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,8 +128,6 @@ U=STAT_NON_LINE(CHAM_MATER=CM,
                           REAC_ITER=3,),);
 
 WEIB=POST_ELEM(CHARGE=(CHARG,CH_T),
-               MODELE=MO,
-               CHAM_MATER=CM,
                WEIBULL=_F(CORR_PLAST='NON',
                           TOUT='OUI',
                           COEF_MULT=2.0,
@@ -137,8 +135,7 @@ WEIB=POST_ELEM(CHARGE=(CHARG,CH_T),
                RESULTAT=U,
                TOUT_ORDRE='OUI',);
 
-RET=POST_ELEM(MODELE=MO,
-              CHAM_MATER=CM,
+RET=POST_ELEM(
               RICE_TRACEY=_F(LOCAL='OUI',
                              TOUT='OUI',
                              OPTION='SIGM_ELMOY',),

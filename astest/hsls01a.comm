@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PLAQUE  MINCE ENCASTREE SOUMISE A UN GRADIENT THERMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,18 +86,13 @@ MESTAT=MECA_STATIQUE(
                           )
 
 MESTAT=CALC_NO( reuse=MESTAT,        RESULTAT=MESTAT,
-                               MODELE=MOD,
-                         CHAM_MATER=CHMAT,
-                          CARA_ELEM=CARA,
-                              EXCIT=_F( CHARGE = CH1),
+                              
                             OPTION='FORC_NODA'
                    )
 
-MESTAT=CALC_ELEM( reuse=MESTAT,         MODELE=MOD,
+MESTAT=CALC_ELEM( reuse=MESTAT,         
                             RESULTAT=MESTAT,
-                          CHAM_MATER=CHMAT,
-                           CARA_ELEM=CARA,
-                              EXCIT=_F(  CHARGE = CH1),
+                              
                               OPTION='SIGM_ELNO_DEPL'
                    )
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE THERMO-HYDRATATION EN ADIABATIQUE 3D - HEXA8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -257,14 +257,12 @@ _F(  CHAM_GD = H60, MAILLE = 'M1', POINT = 1, NOM_CMP = 'HYDR', VALE = 0.94,
 RESUTHYD=CALC_ELEM(  reuse=RESUTHYD,
                      OPTION=('HYDR_ELNO_ELGA'),
                      RESULTAT=RESUTHYD,
-                     MODELE=MODTHER,
-                     CHAM_MATER=CHMATNL
               )
               
 RESUTHYD=CALC_NO  (  reuse=RESUTHYD,
                      OPTION=('HYDR_NOEU_ELGA'),
                      RESULTAT=RESUTHYD,
-                   #  CHAM_MATER=CHMATNL
+                   #  
               )
 
 HYDRELNO=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_HYDR_R',

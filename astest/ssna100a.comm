@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TUBE DE BREE (METHODE ZAC)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,8 +127,6 @@ CALC_ELEM( reuse=SOLPL,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=SOLPL,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT
               )
 
 
@@ -140,10 +138,8 @@ SOLSTA=MECA_STATIQUE(
             )
 
 CALC_ELEM( reuse= SOLSTA ,RESULTAT= SOLSTA ,
-              MODELE=MO,
               LIST_INST=LISTEL,
-              CHAM_MATER=CHMAT,
-              EXCIT=_F(  CHARGE = CHME),
+              
              OPTION=(
              'EPSI_ELGA_DEPL',  )
                          )
@@ -220,8 +216,6 @@ CALC_ELEM( reuse=SOLPL2,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=SOLPL2,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT
               )
 
 
@@ -233,10 +227,8 @@ SOLSTA2=MECA_STATIQUE(
              )
 
 CALC_ELEM( reuse= SOLSTA2 ,RESULTAT= SOLSTA2 ,
-              MODELE=MO,
               LIST_INST=LISTEL,
-              CHAM_MATER=CHMAT,
-              EXCIT=_F(  CHARGE = CHME2),
+              
              OPTION=(
               'EPSI_ELGA_DEPL',  )
                          )
@@ -391,8 +383,8 @@ TEST_RESU(RESU=(
 #
 #
 #
-CALC_ELEM( reuse=SOLPL,    MODELE=MO,   CHAM_MATER=CHMAT,
-                  EXCIT=_F(    CHARGE = CHME),
+CALC_ELEM( reuse=SOLPL,       
+                  
             MAILLE=('M6','M1',),
              NUME_ORDRE=2,
               OPTION=( 'EPSP_ELNO', ),

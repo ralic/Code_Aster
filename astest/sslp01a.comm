@@ -1,4 +1,4 @@
-# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PLAQUE EN FLEXION ET CISAILLEMENT DANS SON PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,9 +85,8 @@ NOM_CHAM='DEPL', RESULTAT=DEF,
 #
 # CALCUL DES CONTRAINTES
 
-DEF=CALC_ELEM( reuse= DEF ,RESULTAT= DEF ,MODELE=MODELE,
-                              CHAM_MATER=CHMAT,
-                              EXCIT=(_F(CHARGE=CHARGT),),
+DEF=CALC_ELEM( reuse= DEF ,RESULTAT= DEF ,
+                              
                               OPTION=('SIGM_ELNO_DEPL',),
                 ) 
 

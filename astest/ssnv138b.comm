@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE VERSION POUTRE DE LA PLAQUE EN GRANDES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,9 +134,6 @@ NONLI=STAT_NON_LINE(  MODELE=MO1,
                                 ARCH_ETAT_INIT='OUI',),);
 
 NONLI=CALC_ELEM(reuse =NONLI,
-               MODELE=MO1,
-               CHAM_MATER=CHMAT1,
-               CARA_ELEM=CARA1,
                OPTION='SIEF_ELNO_ELGA',
                RESULTAT=NONLI,);
 

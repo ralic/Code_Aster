@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CALCUL DE MODULES EFFECTIFS EN PYTHON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,8 +63,6 @@ MESTY=MECA_STATIQUE(MODELE=MO,
                    EXCIT=_F(CHARGE=CHARGY,),);
 
 MESTY=CALC_ELEM(reuse =MESTY,
-               MODELE=MO,
-               CHAM_MATER=CHMAT,
                RESULTAT=MESTY,);
 
 IMPR_RESU(RESU=_F(RESULTAT=MESTY,),);
@@ -131,8 +129,6 @@ MESTX=MECA_STATIQUE(MODELE=MO,
                    EXCIT=_F(CHARGE=CHARGX,),);
 
 MESTX=CALC_ELEM(reuse =MESTX,
-               MODELE=MO,
-               CHAM_MATER=CHMAT,
                RESULTAT=MESTX,);
 
 IMPR_RESU(RESU=_F(RESULTAT=MESTX,),);

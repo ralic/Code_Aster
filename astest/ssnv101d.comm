@@ -1,4 +1,4 @@
-# MODIF  DATE 10/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN DEFORMATIONS PLANES (CHABOCHE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -198,15 +198,13 @@ SOLNL1=STAT_NON_LINE(
                              CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,  
                                            ITER_INTE_MAXI = 20,        ))
 
-SOLNL1=CALC_ELEM( reuse=SOLNL1,              MODELE=DPLAN,
-                                CHAM_MATER=MAT1,
+SOLNL1=CALC_ELEM( reuse=SOLNL1,              
                                       INST=1.435,
                                    OPTION=(
                               'SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA',),
                                   RESULTAT=SOLNL1 )
 
-SOLNL1=CALC_ELEM( reuse=SOLNL1,              MODELE=DPLAN,
-                                CHAM_MATER=MAT1,
+SOLNL1=CALC_ELEM( reuse=SOLNL1,              
                                       INST=1.435,
                                     OPTION='EPSI_ELNO_DEPL',
                                   RESULTAT=SOLNL1 )
@@ -259,15 +257,13 @@ SOLNL2=STAT_NON_LINE(
                              CONVERGENCE=_F(  ITER_GLOB_MAXI = 20,  
                                            ITER_INTE_MAXI = 20,        ))
 
-SOLNL2=CALC_ELEM( reuse=SOLNL2,              MODELE=DPLAN,
-                                CHAM_MATER=MAT2,
+SOLNL2=CALC_ELEM( reuse=SOLNL2,              
                                       INST=1.435,
                                    OPTION=(
                               'SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA',),
                                   RESULTAT=SOLNL2 )
 
-SOLNL2=CALC_ELEM( reuse=SOLNL2,              MODELE=DPLAN,
-                                CHAM_MATER=MAT2,
+SOLNL2=CALC_ELEM( reuse=SOLNL2,              
                                       INST=1.435,
                                     OPTION='EPSI_ELNO_DEPL',
                                   RESULTAT=SOLNL2 )
@@ -330,9 +326,8 @@ SOLNL3=STAT_NON_LINE(
 
 
 
-SOLNL3=CALC_ELEM( reuse=SOLNL3,       MODELE=DPLAN,
+SOLNL3=CALC_ELEM( reuse=SOLNL3,       
                             RESULTAT=SOLNL3,
-                          CHAM_MATER=MAT3,
                         NUME_ORDRE=13,
                               OPTION=( 'VARI_ELNO_ELGA',
                                        'EPSI_ELNO_DEPL', 
@@ -397,9 +392,8 @@ SOLNL4=STAT_NON_LINE(
 
 
 
-SOLNL4=CALC_ELEM( reuse=SOLNL4,       MODELE=DPLAN,
+SOLNL4=CALC_ELEM( reuse=SOLNL4,       
                             RESULTAT=SOLNL4,
-                          CHAM_MATER=MAT4,
                         NUME_ORDRE=13,
                               OPTION=( 'VARI_ELNO_ELGA',
                                        'EPSI_ELNO_DEPL', 
@@ -464,9 +458,8 @@ SOLNL5=STAT_NON_LINE(
 
 
 
-SOLNL5=CALC_ELEM( reuse=SOLNL5,       MODELE=DPLAN,
+SOLNL5=CALC_ELEM( reuse=SOLNL5,       
                             RESULTAT=SOLNL5,
-                          CHAM_MATER=MAT5,
                         NUME_ORDRE=13,
                               OPTION=( 'VARI_ELNO_ELGA',
                                        'EPSI_ELNO_DEPL', 

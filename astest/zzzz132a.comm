@@ -1,4 +1,4 @@
-# MODIF  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE DURAND C.DURAND
 # TITRE VALIDATION DE NON REGRESSION DE LA LECTURE DE DONNEES MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -266,9 +266,8 @@ MECATER=MECA_STATIQUE(        MODELE=MODEMECA,
                              LIST_INST=L_INST,
                             )
 
-CALC_ELEM( reuse= MECATER ,RESULTAT= MECATER ,         MODELE=MODEMECA,
-                             CHAM_MATER=MATMECA,
-                            EXCIT=_F(  CHARGE = MECATERM),
+CALC_ELEM( reuse= MECATER ,RESULTAT= MECATER ,         
+                            
                              LIST_INST=L_INST,
                                 OPTION=( 'SIGM_ELNO_DEPL',
                                          'EPSI_ELNO_DEPL', )

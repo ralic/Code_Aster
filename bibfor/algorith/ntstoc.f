@@ -1,7 +1,8 @@
       SUBROUTINE NTSTOC ( IARCH, NUMORD, TEMPER, COMPOR, NOMCH, VTEMP,
-     &                    VTEMPP, VHYDR, LONCH, TPSNP1, CRITHE, PARA )
+     &                    VTEMPP, VHYDR, LONCH, TPSNP1, CRITHE, PARA,
+     &                    MODELE, MATE, CARELE, LISCHA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/08/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +23,9 @@ C
       IMPLICIT NONE
       INTEGER      NUMORD, LONCH, IARCH
       REAL*8       TPSNP1, PARA(*)
+      CHARACTER*19 LISCHA
       CHARACTER*24 TEMPER, NOMCH, VTEMP, VTEMPP, CRITHE, COMPOR, VHYDR
+      CHARACTER*24 MODELE, MATE, CARELE
 C
 C ----------------------------------------------------------------------
 C
@@ -70,7 +73,8 @@ C --- ARCHIVAGE
 C
       IF ( IARCH .EQ. 1 ) THEN
          CALL NTARCH (NUMORD,TEMPER,NOMCH,COMPOR,VTEMP,VHYDR,
-     &                TPSNP1,CRITHE,PARA)
+     &                TPSNP1,CRITHE,PARA,
+     &                MODELE, MATE, CARELE, LISCHA)
          WRITE(IFM,1010) 'TEMP',NUMORD,TPSNP1
          WRITE(IFM,'(/)')
       ENDIF

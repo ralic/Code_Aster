@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE GNICOLAS G.NICOLAS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,11 +83,10 @@ TEMPLIN=THER_LINEAIRE(
                   EXCIT=_F( CHARGE = CHTHE)
                          )
 #
-TEMPLIN=CALC_ELEM( MODELE=MOTHER,
+TEMPLIN=CALC_ELEM( 
                    SENSIBILITE=(THETA),
                    reuse=TEMPLIN,
                    RESULTAT=TEMPLIN,
-                   CHAM_MATER=CHMATHE,
                    OPTION='DETE_ELNO_DLTE'
                   )
 #
@@ -116,9 +115,7 @@ DEPLDIL=MECA_STATIQUE(
 
 CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
                       SENSIBILITE=(THETA),
-                      MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      EXCIT=_F( CHARGE = CHDIL),
+                      
                       OPTION=('SIGM_ELNO_DEPL',)
                          )
 #
@@ -131,9 +128,7 @@ IMPR_RESU( MODELE=MO,
 CALC_ELEM( reuse=DEPLDIL,
                    RESULTAT=DEPLDIL,
                    SENSIBILITE=(THETA),
-                   MODELE=MO,
-                   CHAM_MATER=CHMAT,
-                   EXCIT=_F( CHARGE = CHDIL),
+                   
                    OPTION=('SIEF_ELGA_DEPL',
                             'DEDE_ELNO_DLDE',
                             'DESI_ELNO_DLSI')

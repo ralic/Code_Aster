@@ -4,7 +4,7 @@
      &                   INPSCO, PARCON )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/05/2003   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C
 C
       REAL*8       PARMET(*), PARCRI(*), PARCON(*)
 C
-      CHARACTER*8  MODEDE, RESULT
+      CHARACTER*8  MODEDE, RESULT,K8B, BLAN8
       CHARACTER*8 BASENO
       CHARACTER*16 METHOD(6)
       CHARACTER*19 LISCHA, SOLVEU, SOLVDE
@@ -101,6 +101,9 @@ C ----------------------------------------------------------------------
       CHARACTER*16 K16BID, NOMCMD
 C ----------------------------------------------------------------------
 C
+C               1234567890123456789
+      BLAN8  = '        '
+C
 C -- NOM UTILISATEUR DU CONCEPT RESULTAT CREE PAR LA COMMANDE
 C
       CALL GETRES (RESULT,K16BID,NOMCMD)
@@ -115,7 +118,7 @@ C -- DONNEES MECANIQUES
 C
       MODELE = ' '
       CALL NMDOME ( MODELE, MATE, CARELE, LISCHA,
-     >              NBPASE, INPSCO )
+     >              NBPASE, INPSCO ,BLAN8,IBID)
 C
 C -- PARAMETRES DONNES APRES LE MOT-CLE FACTEUR SOLVEUR
 C

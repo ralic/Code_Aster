@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2001   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 
 # TITRE FORMATION THERMO-PLASTICITE DANS LE CODE_ASTER CORRECTION TP1
@@ -139,25 +139,17 @@ U=STAT_NON_LINE( reuse=U,
                           )
 
 U=CALC_ELEM(     reuse=U,
-                                  MODELE=MO,
                                 RESULTAT=U,
-                              CHAM_MATER=CM,
                                  OPTION=('EPSI_ELNO_DEPL',
                                          'VARI_ELNO_ELGA',)
                           )
 
 U=CALC_NO(       reuse=U,
-                                  MODELE=MO,
                                 RESULTAT=U,
                                     INST=(1., 2., 3., 4.,),
                               PRECISION=1.E-6,
                                  OPTION='REAC_NODA',
-                              CHAM_MATER=CM,EXCIT=(
-                                  
-                                _F(  CHARGE = LIAISON),
-                                _F(  CHARGE = SIGMA,   FONC_MULT = SIGMA_F),
-                                _F(  CHARGE = TAU,     FONC_MULT = TAU_F))
-                          )
+                              )
 
 IMPR_RESU(
               MODELE=MO,RESU=(

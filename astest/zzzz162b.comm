@@ -1,0 +1,229 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE VALIDATION LIRE_RESU AU FORMAT MED
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'ZZZZ162B',NIV_PUB_WEB='INTERNET'))
+#......................................................................
+# CECI EST UN TEST DE L ECRITURE ET LA RELECTURE DES CHAMPS
+# AU FORMAT MED POUR MAILLE HEXA8 - C EST LA RECOPIE DE HSNV100G
+#......................................................................
+
+MAIL=LIRE_MAILLAGE( )
+
+#
+# DONNEES DE MODELISATION
+#
+
+FCT1=DEFI_FONCTION(   NOM_PARA='EPSI',  PROL_DROITE='LINEAIRE',
+                                          PROL_GAUCHE='LINEAIRE',
+                       VALE=(
+                             0.200E-2,      400.,
+                             0.400E-2,      500.,)
+                                                    )
+
+#
+
+FCT2=DEFI_FONCTION(   NOM_PARA='EPSI',  PROL_DROITE='LINEAIRE',
+                                          PROL_GAUCHE='LINEAIRE',
+                       VALE=(
+                             0.100E-2,      200.,
+                             0.300E-2,      300.,)
+                                                    )
+
+#
+
+CTRACB=DEFI_NAPPE(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
+                                         PROL_GAUCHE='LINEAIRE',
+                           PARA=(0.,50.,),
+                           FONCTION=(FCT1,FCT2,)            )
+
+#
+
+MAT=DEFI_MATERIAU( 
+          THER=_F( RHO_CP = 0.0E-3,LAMBDA = 1.0E-3),
+          ELAS=_F( E = 200.E+3, NU = .3,ALPHA = 10.0E-6),
+           TRACTION=_F( SIGM = CTRACB)                                 )
+
+#
+
+CM=AFFE_MATERIAU( 
+            MAILLAGE=MAIL,
+          AFFE=_F( TOUT = 'OUI',MATER = MAT,TEMP_REF = 0.)
+                                                )
+
+#
+
+T0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAIL,
+                        AFFE=_F( TOUT = 'OUI', NOM_CMP = 'TEMP',
+                              VALE = 0.0)                 )
+
+L_INST=DEFI_LIST_REEL( 
+               DEBUT=0.,INTERVALLE=(
+           _F( JUSQU_A = 66.666E0,   NOMBRE = 1),
+                      _F( JUSQU_A = 80.000E0,   NOMBRE = 2),
+                      _F( JUSQU_A = 90.000E0,   NOMBRE = 2))
+         )
+
+#
+
+TIMPVAR=DEFI_FONCTION(  
+                             NOM_PARA='INST',  NOM_RESU='TEMP',
+                             VALE=(  0.E0,   0.E0,
+                                  100.E0, 100.E0,)
+                                             )
+
+#
+
+MOTHER=AFFE_MODELE(  MAILLAGE=MAIL,
+         AFFE=_F( TOUT = 'OUI', MODELISATION = '3D', PHENOMENE = 'THERMIQUE'))
+
+#
+
+MOMECA=AFFE_MODELE(  MAILLAGE=MAIL,
+         AFFE=_F( TOUT = 'OUI', MODELISATION = '3D', PHENOMENE = 'MECANIQUE'))
+
+#
+
+CHTHER=AFFE_CHAR_THER_F(    MODELE=MOTHER,TEMP_IMPO=(
+                            _F( GROUP_NO = 'GRNOTOUT',  TEMP = TIMPVAR),),)
+
+#
+
+TEMPE1=THER_LINEAIRE(  MODELE=MOTHER,   CHAM_MATER=CM,
+                   EXCIT=_F( CHARGE = CHTHER),
+                   TEMP_INIT=_F( CHAM_NO = T0),
+                   INCREMENT=_F( LIST_INST = L_INST)
+                        )
+
+DEFI_FICHIER(FICHIER='MED_70', UNITE=70, TYPE='LIBRE')
+
+IMPR_RESU(RESU=_F(FORMAT='MED',
+                  RESULTAT=TEMPE1,
+                  FICHIER='MED_70',),);
+
+TEMPE=LIRE_RESU(TYPE_RESU='EVOL_THER',
+                FORMAT='MED',
+                MAILLAGE=MAIL,
+                UNITE=70,
+                NOM_CHAM='TEMP',
+                FORMAT_MED=_F(   NOM_CHAM_MED='TEMPE1__TEMP____________________',
+                                 NOM_CMP_IDEM='OUI',
+                                 NOM_CHAM    ='TEMP',),
+                TOUT_ORDRE='OUI',);
+
+CHMECA=AFFE_CHAR_MECA( 
+            MODELE=MOMECA,DDL_IMPO=(
+           _F( NOEUD = 'N3',     DX = 0., DZ=0.),
+           _F( NOEUD = 'N4',    DZ=0.),
+           _F( GROUP_NO = 'GRNO1',  DY = 0.),
+           _F( GROUP_NO = 'GRNO2',  DY = 0.)),
+          TEMP_CALCULEE=TEMPE      )
+
+U=STAT_NON_LINE(MODELE=MOMECA,
+                CHAM_MATER=CM,
+                EXCIT=_F( CHARGE = CHMECA),
+                COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC'),
+                NEWTON=_F(MATRICE = 'TANGENTE',
+                          REAC_ITER = 1),
+                INCREMENT=_F( LIST_INST = L_INST),
+                CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-5,
+                               ITER_GLOB_MAXI = 10)
+              )
+
+#
+U=CALC_ELEM( reuse=U,
+             OPTION=( 'EPSI_ELNO_DEPL',
+                      'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+             RESULTAT=U,
+             
+              )
+
+DEFI_FICHIER(FICHIER='MED_71', UNITE=71, TYPE='LIBRE')
+
+IMPR_RESU(RESU=_F(FORMAT='MED',
+                  RESULTAT=U,
+                  FICHIER='MED_71',),);
+
+UUU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
+              FORMAT='MED',
+              MODELE=MOMECA,
+              FORMAT_MED=(_F( NOM_CHAM_MED='U_______DEPL____________________',
+                              NOM_CMP_IDEM='OUI',
+                              NOM_CHAM    ='DEPL' ),
+                          _F( NOM_CHAM_MED='U_______SIEF_ELNO_ELGA__________',
+                              NOM_CMP_IDEM='OUI',
+                              NOM_CHAM    ='SIEF_ELNO') ) ,
+              UNITE=71,
+              NOM_CHAM=('DEPL','SIEF_ELNO',),
+              TOUT_ORDRE='OUI',);
+
+#
+TEST_RESU ( RESU=(  _F(  RESULTAT   = UUU, 
+                         NOM_CHAM   = 'SIEF_ELNO',
+                         NUME_ORDRE = 4,
+                         REFERENCE  = 'AUTRE_ASTER', 
+                         MAILLE     = 'M1',
+                         POINT      = 1,
+                         NOM_CMP    = 'SIYY',
+                         VALE       = -87.5       ),
+                    _F(  RESULTAT   = UUU, 
+                         NOM_CHAM   = 'DEPL',
+                         NUME_ORDRE = 5,
+                         REFERENCE  = 'AUTRE_ASTER', 
+                         NOEUD      = 'N2',
+                         NOM_CMP    = 'DX',
+                         VALE       = 1.275E-03  ),),  )
+
+
+IMPR_RESU(RESU=_F(FORMAT='RESULTAT',
+                  RESULTAT=UUU,),);
+
+MAIL2=LIRE_MAILLAGE(FORMAT='MED',
+                    UNITE =71     );
+
+MOMECA2=AFFE_MODELE(MAILLAGE=MAIL2,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),);
+
+SIGMRELU=LIRE_CHAMP(MAILLAGE=MAIL2,
+                MODELE=MOMECA2,
+                FORMAT='MED',
+                UNITE=71,
+                NOM_MED='U_______SIEF_ELNO_ELGA__________',
+                NOM_CMP_IDEM='OUI',
+                NUME_ORDRE=1,NUME_PT=1,
+                TYPE_CHAM='ELNO_SIEF_R',
+                INFO=2
+               ) ;
+IMPR_RESU ( RESU=_F( CHAM_GD=SIGMRELU, ) ) ;
+
+DEPLRELU=LIRE_CHAMP(MAILLAGE=MAIL2,
+                FORMAT='MED',
+                UNITE=71,
+                NOM_MED='U_______DEPL____________________',
+                NOM_CMP_IDEM='OUI',
+                NUME_ORDRE=1,NUME_PT=1,
+                TYPE_CHAM='NOEU_DEPL_R',
+                INFO=2
+               ) ;
+IMPR_RESU ( RESU=_F( CHAM_GD=DEPLRELU, ) )
+
+FIN()
+#

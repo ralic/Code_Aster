@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -101,9 +101,8 @@ RESU1=MECA_STATIQUE(  MODELE=MO,       CHAM_MATER=CHMAT,
                        LIST_INST=LINST,
                        EXCIT=_F( CHARGE = CHMEC,  FONC_MULT = FCTMUL), )
 
-CALC_ELEM( reuse= RESU1 ,RESULTAT= RESU1 ,   MODELE=MO,       CHAM_MATER=CHMAT,
+CALC_ELEM( reuse= RESU1 ,RESULTAT= RESU1 , 
                        LIST_INST=LINST,
-                       EXCIT=_F( CHARGE = CHMEC,  FONC_MULT = FCTMUL),
                        OPTION=( 'SIGM_ELNO_DEPL',
                         )
                      )
@@ -150,10 +149,8 @@ RESU2=MECA_STATIQUE(  MODELE=MO,      CHAM_MATER=CHMAT,
                        EXCIT=( _F(  CHARGE = CHTHER),
                                _F(  CHARGE = CHMEC, FONC_MULT = FCTMUL)),     )
 
-CALC_ELEM( reuse= RESU2 ,RESULTAT= RESU2 ,   MODELE=MO,      CHAM_MATER=CHMAT,
+CALC_ELEM( reuse= RESU2 ,RESULTAT= RESU2 ,
                        LIST_INST=LINST,
-                       EXCIT=( _F(  CHARGE = CHTHER),
-                               _F(  CHARGE = CHMEC, FONC_MULT = FCTMUL)),
                        OPTION=( 'SIGM_ELNO_DEPL',
                         )
                     )
@@ -183,10 +180,8 @@ RESUTH=MECA_STATIQUE(  MODELE=MO,    CHAM_MATER=CHMAT,
                                 _F( CHARGE = CHMEC0,  FONC_MULT = FCTMUL)),
                       )
 
-CALC_ELEM( reuse= RESUTH ,RESULTAT= RESUTH ,   MODELE=MO,    CHAM_MATER=CHMAT,
+CALC_ELEM( reuse= RESUTH ,RESULTAT= RESUTH ,
                         LIST_INST=LINST,
-                        EXCIT=( _F( CHARGE = CHTHER),
-                                _F( CHARGE = CHMEC0,  FONC_MULT = FCTMUL)),
                         OPTION='SIGM_ELNO_DEPL'
                       )
 

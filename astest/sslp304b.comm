@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE ORTHOTROPE EN TRACTION UNIAXIALE HORS AXES D'ORTHOTROPIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -84,10 +84,8 @@ DEF=MECA_STATIQUE(    MODELE=MODELE,
                          EXCIT=_F(  CHARGE = CHARGT),
                            )
 
-CALC_ELEM( reuse= DEF ,RESULTAT= DEF ,     MODELE=MODELE,
-                         CHAM_MATER=CHMAT,
-                         CARA_ELEM=CARA,
-                         EXCIT=_F(  CHARGE = CHARGT),
+CALC_ELEM( reuse= DEF ,RESULTAT= DEF ,     
+                         
                          OPTION='SIGM_ELNO_DEPL',  )
 
 #

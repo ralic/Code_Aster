@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/10/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PORTEE DE CABLES SOUMISE A DES EFFORTS ELECTRODYNAMIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -287,9 +287,6 @@ RESU=STAT_NON_LINE(reuse =RESU,
                                 DETR_NUME_SUIV='OUI',),);
 
 RESU=CALC_ELEM(reuse =RESU,
-               MODELE=MO,
-               CHAM_MATER=CHMAT,
-               CARA_ELEM=CARA,
                RESULTAT=RESU,
                OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
 #--------------------------------------------------------------------
@@ -806,9 +803,6 @@ TEST_FONCTION(VALEUR=_F(FONCTION=D1,
 #---------------------------------------------------------------------
 
 RESU=CALC_ELEM(reuse =RESU,
-               MODELE=MO,
-               CHAM_MATER=CHMAT,
-               CARA_ELEM=CARA,
                RESULTAT=RESU,
                NUME_ORDRE=41,
                OPTION=('SIEF_ELNO_ELGA','SIGM_ELNO_SIEF','SIPO_ELNO_SIEF',),);

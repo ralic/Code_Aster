@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2003   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE (MODELISATION:3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -145,9 +145,7 @@ U=CALC_ELEM( reuse=U,
                             OPTION=(  'EPSI_ELNO_DEPL',
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=U,
-                            MODELE=MOMECA,
-                        CHAM_MATER=CM,
-                             EXCIT=_F( CHARGE = CHMECA),
+                             
               )
 
 #
@@ -174,8 +172,8 @@ TEST_RESU(RESU=(
 
 #  ATESTS DES ENERGIES
 U=CALC_ELEM( reuse=U, OPTION=( 'ETOT_ELGA','ENEL_ELGA'),
-                             EXCIT=_F( CHARGE = CHMECA),
-                          RESULTAT=U, MODELE=MOMECA,CHAM_MATER=CM,)
+                             
+                          RESULTAT=U, )
 
 
 IMPR_RESU(RESU=_F(RESULTAT=U,NOM_CHAM=('ETOT_ELGA','ENEL_ELGA'),NUME_ORDRE=1))
@@ -185,14 +183,12 @@ TEST_RESU(RESU=(
             MAILLE = 'M1', POINT=1, NOM_CMP = 'TOTALE', VALE = 4.4444E-02),),)
 
 #
-T_POT=POST_ELEM(      MODELE=MOMECA,
-                  CHAM_MATER=CM,
+T_POT=POST_ELEM(      
                     RESULTAT=U,
                       CHARGE=CHMECA,
                     ENER_POT=_F( TOUT = 'OUI',)  )
 
-T_TOT=POST_ELEM(      MODELE=MOMECA,
-                  CHAM_MATER=CM,
+T_TOT=POST_ELEM(      
                     RESULTAT=U,
                       CHARGE=CHMECA,
                     ENER_TOTALE=_F( TOUT = 'OUI',)  )

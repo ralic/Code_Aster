@@ -1,5 +1,5 @@
 
-# MODIF  DATE 15/03/2004   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DKT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -339,13 +339,10 @@ STA1=MECA_STATIQUE(MODELE=MO,
                    EXCIT=_F(CHARGE=CHME,),);
 
 STA1=CALC_ELEM(reuse =STA1,
-               CARA_ELEM=EP,
-               MODELE=MO,
-               CHAM_MATER=CHMUL1,
                RESULTAT=STA1,
                TYPE_OPTION='SIGM_STRUCT',
                OPTION=('SIEF_ELNO_ELGA','EFGE_ELNO_DEPL',),
-               EXCIT=_F(CHARGE=CHME,),);
+               );
 # ______________________________________________________________________
 
 
@@ -355,13 +352,10 @@ STA2=MECA_STATIQUE(MODELE=MO,
                    EXCIT=_F(CHARGE=CHME,),);
 
 STA2=CALC_ELEM(reuse =STA2,
-               CARA_ELEM=EP2,
-               MODELE=MO,
-               CHAM_MATER=CHMUL2,
                RESULTAT=STA2,
                TYPE_OPTION='SIGM_STRUCT',
                OPTION=('SIEF_ELNO_ELGA','EFGE_ELNO_DEPL',),
-               EXCIT=_F(CHARGE=CHME,),);
+               );
                               
 # ______________________________________________________________________
 
@@ -372,13 +366,10 @@ STA3=MECA_STATIQUE(MODELE=MO3,
                    EXCIT=_F(CHARGE=CHME3,),);
 
 STA3=CALC_ELEM(reuse =STA3,
-               CARA_ELEM=EP3,
-               MODELE=MO3,
-               CHAM_MATER=CHMUL3,
                RESULTAT=STA3,
                TYPE_OPTION='SIGM_STRUCT',
                OPTION=('SIEF_ELNO_ELGA','EFGE_ELNO_DEPL',),
-               EXCIT=_F(CHARGE=CHME3,),);
+               );
                
                
 # ______________________________________________________________________

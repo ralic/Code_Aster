@@ -1,0 +1,587 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# RESPONSABLE F6BHHBO P.DEBONNIERES
+# TITRE FLUAGE AXIAL D'UN ELEMENT HEXA8 AVEC COMPORTEMENT
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#       DE LEMAITRE
+
+
+DEBUT( CODE=_F(  NOM = 'SSNL124A',NIV_PUB_WEB='INTERNET')   )
+
+MA=LIRE_MAILLAGE(  )
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MO=AFFE_MODELE(        MAILLAGE=MA,
+                         AFFE=_F(  TOUT = 'OUI',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = '3D')
+                       )
+
+CHXN=CREA_CHAMP(  OPERATION='EXTR', 
+                   TYPE_CHAM='NOEU_GEOM_R',
+                   NOM_CHAM='GEOMETRIE',
+                   MAILLAGE=MA
+                   )
+
+
+FLUXAX=DEFI_FONCTION(   NOM_PARA='X',
+                            VALE=( 0.,    7.2E+21,
+                                  4000., 7.2E+21,)
+                         )
+
+FLUX_Y=DEFI_FONCTION(   NOM_PARA='Y',
+                            VALE=( 0.,    1.,
+                                  100.,    1.,)
+                         )
+
+FLUXPL=DEFI_NAPPE(   NOM_PARA='Z',
+                         PARA=(0., 100.,),
+                         FONCTION=(FLUX_Y, FLUX_Y,)
+                      )
+
+#------------------------------------------------
+# CREATION DU CHAMP ASSOCIE A LA FONCTION FLUXAX
+#------------------------------------------------
+CH_FAX=CREA_CHAMP(  OPERATION='AFFE', 
+                        TYPE_CHAM='NOEU_NEUT_F',
+                         MAILLAGE=MA,
+                        AFFE=_F( TOUT = 'OUI', NOM_CMP = 'X1', VALE_F = FLUXAX)
+#                        INFO : 2
+                      )
+
+CH_FAX_R=CREA_CHAMP(  OPERATION='EVAL', 
+                        TYPE_CHAM='NOEU_NEUT_R',
+                         CHAM_F=CH_FAX,
+                        CHAM_PARA=CHXN
+                       )
+
+#-----------------------------------------------                      
+# CREATION DU CHAMP ASSOCIE A LA FONCTION FLUXPL
+#-----------------------------------------------
+CH_FPL=CREA_CHAMP(  OPERATION='AFFE', 
+                        TYPE_CHAM='NOEU_NEUT_F',
+                         MAILLAGE=MA,
+                        AFFE=_F( TOUT = 'OUI', NOM_CMP = 'X2', VALE_F = FLUXPL)
+                        )
+
+CH_FPL_R=CREA_CHAMP(  OPERATION='EVAL', 
+                        TYPE_CHAM='NOEU_NEUT_R',
+                         CHAM_F=CH_FPL,
+                        CHAM_PARA=CHXN
+                       )
+
+#------------------
+# FONCTION PRODUIT
+#------------------
+MULT = FORMULE(REEL="""(REEL:X1,REEL:X2,REEL:INST) =
+X1*X2*INST""")
+
+CHRES=CREA_CHAMP( OPERATION='AFFE', 
+                   TYPE_CHAM='NOEU_NEUT_F',
+                   MAILLAGE=MA,
+                   AFFE=_F( TOUT = 'OUI', NOM_CMP = 'X1', VALE_F = MULT)
+                  )
+
+#-----------------------------------------------------
+# CREATION DU CHAMP FLUENC1 ASSOCIE A LA LISTE LINST
+# LE CHAMP EST CALCULE POUR LES 5 PREMIERS INSTANTS
+#-----------------------------------------------------
+#
+#
+INST0_1=CREA_CHAMP( OPERATION='AFFE', 
+                      TYPE_CHAM='NOEU_INST_R',
+                      MAILLAGE=MA,
+                      AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = 0.0)
+                  )
+
+REST0_1=CREA_CHAMP( OPERATION='EVAL', 
+                     TYPE_CHAM='NOEU_NEUT_R',
+                      CHAM_F=CHRES,
+                     CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST0_1,)
+                    )
+
+RES00_1=CREA_CHAMP( OPERATION='ASSE', 
+                     TYPE_CHAM='NOEU_IRRA_R',
+                      MAILLAGE=MA,
+                     ASSE=_F( TOUT = 'OUI', CHAM_GD = REST0_1,
+                     NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',)),
+                     INFO=2
+                    )
+
+#
+#
+#
+#
+INST1_1=CREA_CHAMP( OPERATION='AFFE', 
+                      TYPE_CHAM='NOEU_INST_R',
+                      MAILLAGE=MA,
+                      AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = 1.0)
+                  )
+
+REST1_1=CREA_CHAMP( OPERATION='EVAL', 
+                     TYPE_CHAM='NOEU_NEUT_R',
+                      CHAM_F=CHRES,
+                     CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST1_1,)
+                    )
+
+RES11_1=CREA_CHAMP( OPERATION='ASSE', 
+                     TYPE_CHAM='NOEU_IRRA_R',
+                      MAILLAGE=MA,
+                     ASSE=_F( TOUT = 'OUI', CHAM_GD = REST1_1,
+                     NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',)),
+                     INFO=2
+                    )
+
+#
+#
+#
+INST2_1=CREA_CHAMP( OPERATION='AFFE', 
+                      TYPE_CHAM='NOEU_INST_R',
+                      MAILLAGE=MA,
+                      AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = 864.99)
+                  )
+
+REST2_1=CREA_CHAMP( OPERATION='EVAL', 
+                     TYPE_CHAM='NOEU_NEUT_R',
+                      CHAM_F=CHRES,
+                     CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST2_1,)
+                    )
+
+RES22_1=CREA_CHAMP( OPERATION='ASSE', 
+                     TYPE_CHAM='NOEU_IRRA_R',
+                      MAILLAGE=MA,
+                     ASSE=_F( TOUT = 'OUI', CHAM_GD = REST2_1,
+                     NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',)),
+                     INFO=2
+                    )
+
+#
+#
+#
+INST3_1=CREA_CHAMP( OPERATION='AFFE', 
+                      TYPE_CHAM='NOEU_INST_R',
+                      MAILLAGE=MA,
+                      AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = 1728.98)
+                  )
+
+REST3_1=CREA_CHAMP( OPERATION='EVAL', 
+                     TYPE_CHAM='NOEU_NEUT_R',
+                      CHAM_F=CHRES,
+                     CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST3_1,)
+                    )
+
+RES33_1=CREA_CHAMP( OPERATION='ASSE', 
+                     TYPE_CHAM='NOEU_IRRA_R',
+                      MAILLAGE=MA,
+                     ASSE=_F( TOUT = 'OUI', CHAM_GD = REST3_1,
+                     NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',)),
+                     INFO=2
+                    )
+
+#
+#
+#
+INST4_1=CREA_CHAMP( OPERATION='AFFE', 
+                      TYPE_CHAM='NOEU_INST_R',
+                      MAILLAGE=MA,
+                      AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = 2592.97)
+                  )
+
+REST4_1=CREA_CHAMP( OPERATION='EVAL', 
+                     TYPE_CHAM='NOEU_NEUT_R',
+                      CHAM_F=CHRES,
+                     CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST4_1,)
+                    )
+
+RES44_1=CREA_CHAMP( OPERATION='ASSE', 
+                     TYPE_CHAM='NOEU_IRRA_R',
+                      MAILLAGE=MA,
+                     ASSE=_F( TOUT = 'OUI', CHAM_GD = REST4_1,
+                     NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',)),
+                     INFO=2
+                    )
+
+#
+#
+#
+INST5_1=CREA_CHAMP( OPERATION='AFFE', 
+                      TYPE_CHAM='NOEU_INST_R',
+                      MAILLAGE=MA,
+                      AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = 3456.96)
+                  )
+
+REST5_1=CREA_CHAMP( OPERATION='EVAL', 
+                     TYPE_CHAM='NOEU_NEUT_R',
+                      CHAM_F=CHRES,
+                     CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST5_1,)
+                    )
+
+RES55_1=CREA_CHAMP( OPERATION='ASSE', 
+                     TYPE_CHAM='NOEU_IRRA_R',
+                      MAILLAGE=MA,
+                     ASSE=_F( TOUT = 'OUI', CHAM_GD = REST5_1,
+                     NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',)),
+                     INFO=2
+                    )
+
+#
+#
+#
+FLUENC1=CREA_RESU(  
+                      OPERATION='AFFE', TYPE_RESU='EVOL_VARC',
+                      NOM_CHAM='IRRA',AFFE=(
+                      _F( CHAM_GD = RES00_1, INST = 0.0),
+                      _F( CHAM_GD = RES11_1, INST = 1.0),
+                      _F( CHAM_GD = RES22_1, INST = 864.99),
+                      _F( CHAM_GD = RES33_1, INST = 1728.98),
+                      _F( CHAM_GD = RES33_1, INST = 2160.975),
+                      _F( CHAM_GD = RES44_1, INST = 2592.97),
+                      _F( CHAM_GD = RES55_1, INST = 3456.96))
+                     )
+
+#
+
+
+MAT2=DEFI_MATERIAU(    ELAS=_F( E = 1.E5, NU = 0.3, ALPHA = 0.),
+                        GRAN_IRRA=_F( 
+                          A = -1.51E-16,
+                          B = 1.542E-13,
+                          S = 0.396),
+                       LEMAITRE=_F(
+                         UN_SUR_K = 1.E-6,
+                         UN_SUR_M = 0.207060772,
+                         N = 2.3364),
+                       FLU_IRRA=_F(
+                         L = 0.,
+                         PHI_ZERO = 4.240281E+21,
+                         BETA = 1.2,
+                         QSR_K = 3321.093)
+                     )
+
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,AFFE=
+                        _F(  MAILLE = 'MA1', MATER = MAT2, TEMP_REF = 299.85)
+                        )
+
+CHART=AFFE_CHAR_MECA(  MODELE=MO,
+              DDL_IMPO=(_F(  NOEUD = 'NO3',DX = 0., DY = 0., DZ = 0.),
+                        _F( NOEUD = 'NO1',DX = 0.,DZ = 0.),
+                        _F(NOEUD = ('NO5','NO7',),DX = 0.)),
+                     FORCE_NODALE=_F(NOEUD = ('NO2','NO4','NO6','NO8',),
+                                     FX = 25.)
+                       )
+
+FON_T=DEFI_FONCTION(   NOM_PARA='X',
+                            NOM_RESU='TEMP',
+                            VALE=( 0., 299.85, 4000., 299.85,))
+
+CHTEM=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MA,
+                           AFFE=_F(  TOUT = 'OUI',
+                                  NOM_CMP = 'TEMP',
+                                  VALE_F = FON_T)
+                       )
+
+CHTH=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                       NOM_CHAM='TEMP',AFFE=(
+                       _F(  CHAM_GD = CHTEM,
+                                 INST = 0.),
+                       _F(  CHAM_GD = CHTEM,
+                                 INST = 32.E6))
+                   )
+
+CH_TH=AFFE_CHAR_MECA(   MODELE=MO,
+                             TEMP_CALCULEE=CHTH
+                         )
+
+FONCT=DEFI_FONCTION(   NOM_PARA='INST',
+                           VALE=( 0.,     0.,
+                                  1.,     1.,
+                                  32.E6,  1.,
+                                  ) )
+
+LINST=DEFI_LIST_REEL( DEBUT=0.,INTERVALLE=(
+                        _F( JUSQU_A = 1.,    NOMBRE = 1),
+                        _F( JUSQU_A = 3456.96, NOMBRE = 40))
+                       # CE QU'IL FAUDRAIT POUR AVOIR LA SOLUTION
+                       # INTERVALLE:(JUSQU_A:86400. NOMBRE: 8640)
+                       )
+CARA1=AFFE_CARA_ELEM(    MODELE=MO,MASSIF=(
+                           _F(
+       GROUP_MA = 'TOUT',
+
+                                    ANGL_REP = (0.,0.,0.,))
+                                    ) )
+
+REST=STAT_NON_LINE( 
+                            MODELE=MO,
+                         VARI_COMM=_F(    
+                IRRA = FLUENC1),              
+                        CHAM_MATER=CHMAT,
+                        CARA_ELEM = CARA1,
+                         EXCIT=(
+                             _F( 
+                CHARGE = CHART,
+                FONC_MULT = FONCT),
+                             _F( 
+                CHARGE = CH_TH)),
+                         COMP_INCR=_F( 
+                RELATION = 'ASSE_COMBU'),
+                         INCREMENT=_F( 
+                LIST_INST = LINST),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE'),
+                       PARM_THETA = 0.5,
+                       CONVERGENCE=_F( 
+                RESI_GLOB_RELA = 1.E-6,
+                ITER_INTE_MAXI = 150,
+                ITER_GLOB_MAXI = 500,
+                ARRET = 'OUI')
+              )
+
+REST=CALC_ELEM( reuse=REST,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=REST,
+              )
+
+# MATERIAU LEMAITRE
+
+TEST_RESU(RESU=( 
+
+    _F( RESULTAT = REST, NUME_ORDRE =31, NOM_CHAM = 'VARI_ELGA', NOM_CMP = 'V1',
+     MAILLE = 'MA1', POINT = 1, VALE = 0.164696,  PRECISION = 5.E-3,
+     REFERENCE = 'ANALYTIQUE'),
+
+    _F( RESULTAT = REST, NUME_ORDRE =31, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+     NOEUD = 'NO2', VALE = 0.166804,    PRECISION = 1.E-2,
+     REFERENCE = 'ANALYTIQUE'),
+
+    _F( RESULTAT = REST, NUME_ORDRE =41, NOM_CHAM = 'VARI_ELGA', NOM_CMP = 'V1',
+     MAILLE = 'MA1', POINT = 1, VALE = 0.19833,   PRECISION = 5.E-3,
+     REFERENCE = 'ANALYTIQUE'),
+
+    _F( RESULTAT = REST, NUME_ORDRE =41, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+     NOEUD = 'NO2', VALE = 0.20057,   PRECISION = 1.E-2,
+     REFERENCE = 'ANALYTIQUE'),
+
+    _F( RESULTAT = REST, NUME_ORDRE =41, NOM_CHAM = 'SIEF_ELGA', NOM_CMP =
+     'SIXX',MAILLE = 'MA1', POINT = 1, VALE = 100.,   PRECISION = 1.E-4,
+     REFERENCE = 'ANALYTIQUE'))
+
+          )
+
+
+FIN()
+#
+#
+## PROGAMME FORTRAN POUR OBTENIR LA SOLUTION DE REFERENCE
+#
+#      PROGRAM ZERO
+#      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+#      REAL*8 NMCRI1
+#      EXTERNAL NMCRI1
+#      COMMON /RCONM1/ EPSV,SIG,X,X1,X2,DX,DX1,DX2,SIGN,DT,E
+#C
+#C---- INITIALISATION DES VARIABLES
+#      T    = 0.D0
+#      EPSV = 0.D0
+#      SIG  = 0.D0
+#      X    = 0.D0
+#      X1   = 0.D0
+#      X2   = 0.D0
+#      E    = 100000.
+#      SIG  = 100.
+#C-----
+#      SIGN = SIG/ABS(SIG)
+#C
+#      DO I = 1,101
+#         IF(I.EQ.1)THEN
+#           DT   = 1.D0
+#         ELSE
+#           DT   =864.D0
+#         ENDIF
+#         T = T + DT
+#         XX = 0.D0
+#         F0 = NMCRI1(XX)
+#         APPROX = SIGN*SIG/E
+#         NITER = 1000
+#         PREC = 1.D-08
+#         CALL ZEROFO(NMCRI1,F0,APPROX,PREC,NITER,SOLU)
+#         WRITE(6,*)' ITERATION',I,' DEPSV : ',SOLU
+#         OPEN(10,FILE='SOLUPLA',STATUS='UNKNOWN',FORM='FORMATTED')
+#         EPSV = EPSV + SOLU
+#         EPS  = SIG/E + SIGN*EPSV
+#         X    = X  + DX
+#         X1   = X1 + DX1
+#         X2   = X2 + DX2
+#         SIGN = (SIG-X)/ABS(SIG-X)
+#         L0=4000.
+#         DEP=L0*EPS
+#         WRITE(10,'(4E15.5)')T,EPSV,SIG,DEP
+#      ENDDO
+#      STOP
+#      END
+#C-------------------------
+#      FUNCTION NMCRI1(DEPSV)
+#      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+#      REAL*8 NMCRI1
+#      COMMON /RCONM1/ EPSV,SIG,X,X1,X2,DX,DX1,DX2,SIGN,DT,E
+#C
+#C
+#      P    = 11900.D0
+#      P1   = 1656.D0
+#      P2   = 325.5D0
+#C      EPSVO= 2.02D-08
+#      EPSVO= 2.02D-09
+#      XN   = 1.D0/1.44D0
+#      XM   = 22.3
+#C      XMO  = 3.23D0
+#C      XM1  = 20.8D0
+#C      XO   = 10.
+#C      RMO  = 4.04D-08
+#C      RM1  = 2.1D-35
+#      XMO  = 3.57D0
+#      XO   = 331.69
+#      RMO  = 0.354E-2
+#C
+#      B    = 3.D0
+#      YO   = 99.5
+#      YSAT = 110.
+#C
+#      YY   = YSAT + (YO-YSAT)*EXP(-B*(EPSV+DEPSV))
+#      DX2  = P2*( YY*SIGN - X2)*DEPSV/(1. + P2*DEPSV)
+#      DX1  = P1*( YY*SIGN - ( X1 - X2 - DX2))*DEPSV/(1. + P1*DEPSV)
+#      Y    = (DEPSV/(EPSVO*DT))**XN
+#      F1   = SIG - XM*SIGN*LOG(Y+SQRT(1.+Y**2)) - X
+#C      F2   = P*( YY*SIGN - ( X + F1 - ( X1 + DX1)))*DEPSV
+#C     &     - RMO*DT*((X+F1)/ABS(X+F1))*(ABS(X+F1)/XO)**XMO
+#C     &     - RM1*DT*((X+F1)/ABS(X+F1))*(ABS(X+F1)/XO)**XM1
+#C      F2   = P*( SIGSIG*YY - ( X + F1 - ( X1 + DX1)))*DEPSV
+#C     &     - DELTAT * RM0*((X+F1)/ABS(X+F1))*SINH((ABS(X+F1)/X0)**XM0)
+#      F2   = P*( YY*SIGN - ( X + F1 - ( X1 + DX1)))*DEPSV
+#     &     - RMO*DT*((X+F1)/ABS(X+F1))*SINH((ABS(X+F1)/XO)**XMO)
+#C
+#      DX   = F1
+#      NMCRI1    = SIGN*(F2 - F1)
+#C
+#      END
+#C--------------------------------------------------------------
+#      SUBROUTINE ZEROFO(F,F0,XAP,EPSI,NITMAX,SOLU)
+#      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+#C
+#C     ARGUMENTS:
+#C     ----------
+#      REAL*8 F,F0,XAP,EPSI,SOLU
+#      INTEGER NITMAX
+#C ----------------------------------------------------------------------
+#C     BUT:
+#C         TROUVER UNE RACINE DE L'EQUATION F(X)=0
+#C         ON SUPPOSE QUE LA FONCTION F EST CROISSANTE ET QUE F(0)<0
+#C
+#C     IN:
+#C         F  : FONCTION DONT ON CHERCHE LE ZERO
+#C         F0 : VALEUR DE F AU POINT 0 (CETTE VALEUR EST DONNEE ET NON
+#C              CALCULEE PAR LE PROGRAMME PAR ECONOMIE).
+#C         XAP: APPROXIMATION DE LA SOLUTION.
+#C        EPSI: TOLERANCE ABSOLU SUR LE ZERO CHERCHE : ABS(F(SOLU))<EPSI
+#C      NITMAX: NOMBRE MAXI D'ITERATIONS AUTORISEES.
+#C
+#C     OUT:
+#C         SOLU: VALEUR DE LA RACINE CHERCHEE.
+#C
+#C ----------------------------------------------------------------------
+#      REAL*8 FY,FZ,X,Y,Z,A,B
+#      INTEGER N
+#C DEB-------------------------------------------------------------------
+#C
+#C     INITIALISATIONS
+#C
+#      INDIC = 0
+#      N = 1
+#      X = 0.D0
+#      FX = F0
+#      IF (ABS(FX).LT.EPSI) THEN
+#         Z=0.D0
+#         GO TO 90
+#      ENDIF
+#      Y = XAP
+#      FY = F(Y)
+#C
+#C     DEBUT DES ITERATIONS
+#C
+#   10 CONTINUE
+#      IF (FY.GT.0.D0) THEN
+#        A = X
+#        B = Y
+#   20   CONTINUE
+#        Z = Y - (Y-X)*FY/(FY-FX)
+#C        WRITE(6,*)'FY-FX',FY-FX
+#        IF (((Z-A)*(Z-B)).GT.0.D0) THEN
+#          Z = (A+B)/2.D0
+#        ENDIF
+#C
+#        N = N + 1
+#        FZ = F(Z)
+#        IF (ABS(FZ).LT.EPSI) GO TO 90
+#        IF (N.GT.NITMAX) GO TO 98
+#        IF (FZ.LT.0.D0) THEN
+#          A = Z
+#        ELSE
+#          B = Z
+#        ENDIF
+#        X = Y
+#        FX = FY
+#        Y = Z
+#        FY = F(Z)
+#        GO TO 20
+#      ELSE
+#        IF (FY.LT.FX) GO TO 99
+#        Z = Y - (Y-X)*FY/(FY-FX)
+#        WRITE(6,*)'FY-FX',FY-FX
+#        N = N + 1
+#        X = Y
+#        FX = FY
+#        Y = Z
+#        FY = F(Z)
+#C
+#        IF (ABS(FY).LT.EPSI) GO TO 90
+#        IF (N.GT.NITMAX) GO TO 98
+#      ENDIF
+#      GO TO 10
+#C
+#   90 CONTINUE
+#      SOLU=Z
+#      GO TO 9999
+#C
+#   98 CONTINUE
+#      WRITE(6,*)'NOMBRE MAXI ITERATIONS ATTEINT'
+#      INDIC = 1
+#C
+#   99 CONTINUE
+#      WRITE(6,*)'ECHEC DE LA RECHERCHE DE ZERO'
+#      INDIC = 1
+#C
+# 9999 CONTINUE
+#      IF(INDIC.EQ.1) THEN
+#      STOP
+#      ELSE
+#      RETURN
+#      ENDIF
+#      END
+#

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE MISE EN TENSION DE CABLES DE PRECONTRAINTES DANS UNE POUTRE 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -251,9 +251,6 @@ RES1 =  CALC_PRECONT(  reuse=RES1,
 #--------------------------------------
 
 RES1=CALC_ELEM(reuse =RES1,
-               MODELE=MO,
-               CHAM_MATER=CMAT,
-               CARA_ELEM=CE,
                OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM'),
                RESULTAT=RES1,);
 

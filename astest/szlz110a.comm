@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CALCUL DU DOMMAGE DE LEMAITRE-SERMAGE (CALC_ELEM)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -463,40 +463,25 @@ L_ORDRE=DEFI_LIST_ENTI(DEBUT=1,
 # CALCUL DES CHAMPS ELEMTAIRES POUR CAS ELASTIQUE <MECA_STATIQUE>
 # ==============================================================================
 #%RESUPLAS=CALC_ELEM(reuse =RESUPLAS,
-#%                   MODELE=MODMECA,
-#%                   CHAM_MATER=MAT_PLAS,
 #%                   TOUT='OUI',
 #%                   LIST_ORDRE=L_ORDRE,
 #%                   OPTION=('SIEF_ELNO_ELGA','EPSI_ELNO_DEPL','VARI_ELNO_ELGA',),
 #%                   RESULTAT=RESUPLAS,
-#%                   EXCIT=(_F(CHARGE=BLOCAGES,),
-#%                          _F(CHARGE=CHAMTEMP,),
-#%                          _F(CHARGE=PRESSION,),
-#%                         ),);
+#%                         );
 
 RESUPLAS=CALC_ELEM(reuse =RESUPLAS,
-                   MODELE=MODMECA,
-                   CHAM_MATER=MAT_PLAS,
                    TOUT='OUI',
                    LIST_ORDRE=L_ORDRE,
                    OPTION=('ENDO_ELGA','ENDO_ELNO_ELGA',),
                    RESULTAT=RESUPLAS,
-                   EXCIT=(_F(CHARGE=BLOCAGES,),
-                          _F(CHARGE=CHAMTEMP,),
-                          _F(CHARGE=PRESSION,),
-                         ),);
+                         );
 
 RESUPLA1=CALC_ELEM(reuse =RESUPLA1,
-                   MODELE=MODMECA,
-                   CHAM_MATER=MAT_PLA1,
                    TOUT='OUI',
                    LIST_ORDRE=L_ORDRE,
                    OPTION=('ENDO_ELGA','ENDO_ELNO_ELGA',),
                    RESULTAT=RESUPLA1,
-                   EXCIT=(_F(CHARGE=BLOCAGES,),
-                          _F(CHARGE=CHAMTEMP,),
-                          _F(CHARGE=PRESSION,),
-                         ),);
+                         );
 
 # ================================================================================
 # IMPRESSION DES RESULTATS DU PROBLEME THERMOMECANIQUE

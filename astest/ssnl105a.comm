@@ -1,4 +1,4 @@
-# MODIF  DATE 10/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 #
 # TITRE CADRE DE BARRES HAUBANE.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -105,13 +105,9 @@ RESU1=CALC_ELEM( reuse=RESU1,
                             OPTION=(
                   'SIEF_ELNO_ELGA', ),
                           RESULTAT=RESU1,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                         CARA_ELEM=CARELEM
               )
 
-RESU1=CALC_NO(reuse=RESU1,  OPTION='FORC_NODA',  MODELE=MO,
-                        CHAM_MATER=CHMAT,  CARA_ELEM=CARELEM,
+RESU1=CALC_NO(reuse=RESU1,  OPTION='FORC_NODA',  
                         RESULTAT=RESU1)
 
 TEST_RESU(RESU=(  

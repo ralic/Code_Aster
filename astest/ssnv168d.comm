@@ -1,0 +1,351 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# RESPONSABLE ROMEO R.FERNANDES
+# ======================================================================
+# TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE TYPE (3D)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#                DRUCKER-PRAGER A ECROUISSAGE NEGATIF
+#                PARABOLIQUE POUR UN CONFINEMENT DE 2 MPA
+# ======================================================================
+DEBUT(   CODE=_F( NOM = 'SSNV168D',NIV_PUB_WEB='INTERNET')   )
+
+#***********************************************************************
+#    MAILLAGE + MODELE
+#***********************************************************************
+
+MAILLAGE = LIRE_MAILLAGE( )
+
+MODELE   = AFFE_MODELE( MAILLAGE =     MAILLAGE,
+                        AFFE     = _F( TOUT         = 'OUI',
+                                       PHENOMENE    = 'MECANIQUE',
+                                       MODELISATION = '3D')
+                      )
+        
+MAILLAGE = MODI_MAILLAGE( reuse        = MAILLAGE,
+                          MAILLAGE     = MAILLAGE,
+                          MODELE       = MODELE,
+                          ORIE_PEAU_3D = _F( GROUP_MA = ('HAUT',
+                                    'DEVANT',
+                                    'GAUCHE',
+                                    'BAS',
+                                    'DERRIERE',
+        'DROITE',),  )
+                     )
+
+#***********************************************************************
+#    INCREMENTS DE TEMPS
+#***********************************************************************
+
+TEMPS1   = DEFI_LIST_REEL( DEBUT      = 0.,
+                           INTERVALLE = _F( JUSQU_A = 1.0, NOMBRE = 1 )
+                          )
+     
+TEMPS2   = DEFI_LIST_REEL( DEBUT      = 1.,
+                           INTERVALLE = _F( JUSQU_A = 2.0, NOMBRE = 100 )
+                          )
+
+#***********************************************************************
+#    MATERIAU : SOL
+#***********************************************************************
+
+MATER    = DEFI_MATERIAU(  ELAS    = _F(  E  = 5800.0E6,
+                                          NU = 0.3  ,),
+                           DRUCKER_PRAGER = _F(  ECROUISSAGE = 'PARABOLIQUE',
+                                          ALPHA       =    0.33      ,
+                                          P_ULTM      =    0.01      ,
+                                          SY          =    2.57E6    ,
+                                          SY_ULTM     =    0.57E6    ,),
+                        );
+
+CHMAT    = AFFE_MATERIAU(  MAILLAGE = MAILLAGE,
+                           AFFE     = _F(  TOUT  = 'OUI',
+                                           MATER = MATER )
+                        );
+
+#***********************************************************************
+#    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES
+#***********************************************************************
+
+PR_LATE=AFFE_CHAR_MECA(    MODELE=MODELE,
+                              PRES_REP=_F(   GROUP_MA = ( 'DEVANT', 'DROITE', ),  
+                                          PRES = 1.,  
+                                    )
+                       )
+
+PR_V=AFFE_CHAR_MECA(    MODELE=MODELE,
+                             PRES_REP=_F(   GROUP_MA = 'HAUT',    PRES = 1.,  
+                                    )
+                        )
+
+DEP_SYM=AFFE_CHAR_MECA(    MODELE=MODELE,FACE_IMPO=(
+                              _F(  GROUP_MA = 'BAS',      DZ = 0.,   ),
+                              _F(  GROUP_MA = 'DERRIERE', DX = 0.,   ),
+                              _F(  GROUP_MA = 'GAUCHE',   DY = 0.,   ))
+                           )
+
+COEF1    = DEFI_FONCTION( NOM_PARA    = 'INST',
+                          PROL_DROITE = 'CONSTANT',
+                          VALE=( 0.0,  0.0,
+                                 1.0,  2.0E6,)
+                        )
+
+#***********************************************************************
+#    CALCUL DE LA SOLUTION
+#***********************************************************************
+
+U1=STAT_NON_LINE( 
+                  MODELE     = MODELE,
+                  CHAM_MATER = CHMAT,
+    EXCIT      = ( _F( CHARGE       = PR_LATE,
+                                     FONC_MULT    = COEF1),
+     _F( CHARGE       = PR_V,
+                                     FONC_MULT    = COEF1),
+     _F( CHARGE       = DEP_SYM)),
+                  COMP_INCR  = _F( RELATION       = 'DRUCKER_PRAGER'),
+                  NEWTON     = _F( MATRICE        = 'TANGENTE',
+                                   REAC_ITER      = 1,),
+                  CONVERGENCE= _F( RESI_GLOB_RELA = 1.E-4,
+                                   RESI_INTE_RELA = 1.E-6,
+                                   ITER_GLOB_MAXI = 50,
+                                   ITER_INTE_MAXI = 100),
+                  INCREMENT  = _F( LIST_INST      = TEMPS1)
+                )
+
+U1=CALC_ELEM( reuse      =U1,
+              OPTION     =( 'SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA',),
+              RESULTAT   = U1,
+            )
+
+#***********************************************************************
+#    NOUVEAU CHARGEMENT MECANIQUE : DEPLACEMENT UNIAXIALE UNITAIRE
+#***********************************************************************
+
+
+SIG_INI = CREA_CHAMP( OPERATION = 'EXTR',
+                      TYPE_CHAM = 'ELGA_SIEF_R',
+                      NOM_CHAM  = 'SIEF_ELGA',
+        RESULTAT  = U1,
+                      INST      = 1.,
+                    )
+
+VAR_INI = CREA_CHAMP( OPERATION = 'EXTR',
+                      TYPE_CHAM = 'ELGA_VARI_R',
+                      NOM_CHAM  = 'VARI_ELGA',
+        RESULTAT  = U1,
+                      INST      = 1.
+                    )
+
+DEP_V=AFFE_CHAR_MECA( MODELE    = MODELE,
+                      FACE_IMPO = _F( GROUP_MA = 'HAUT', DZ = 1., )
+                     )
+
+COEF2   = DEFI_FONCTION( NOM_PARA    = 'INST',
+                         PROL_DROITE = 'LINEAIRE',
+                         PROL_GAUCHE = 'CONSTANT',
+                         VALE=( 1.0,  0.0,
+                                2.0, -0.015, )
+                       )
+
+#***********************************************************************
+#    CALCUL DE LA SOLUTION
+#***********************************************************************
+
+U2 = STAT_NON_LINE( 
+                    MODELE     = MODELE,
+                    CHAM_MATER = CHMAT,
+      EXCIT      = ( _F( CHARGE       = PR_LATE,
+                                       FONC_MULT    = COEF1),
+              _F( CHARGE       = DEP_SYM),
+              _F( CHARGE       = DEP_V,
+                                       FONC_MULT    = COEF2)),
+                    COMP_INCR  = _F( RELATION       = 'DRUCKER_PRAGER'),
+                    ETAT_INIT  = _F( SIGM           = SIG_INI,
+                                     VARI           = VAR_INI),
+                    INCREMENT  = _F( LIST_INST      = TEMPS2),
+                    NEWTON     = _F( MATRICE        = 'TANGENTE',
+                                     REAC_ITER      = 1,),
+                    CONVERGENCE= _F( RESI_GLOB_RELA = 1.E-6,
+                                     RESI_INTE_RELA = 1.E-6,
+                                     ITER_INTE_MAXI = 100,
+                                     ITER_INTE_PAS  = -10,
+                                     ITER_GLOB_MAXI = 100)
+                  )
+
+U2       = CALC_ELEM( reuse      = U2,
+                      OPTION     = ('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+                      RESULTAT   = U2,
+                    );
+      
+U2       = CALC_NO( reuse    = U2,     
+                    RESULTAT = U2,
+                    OPTION   = ( 'SIEF_NOEU_ELGA', 'VARI_NOEU_ELGA')
+                  )
+              
+TEST_RESU( RESU = (
+###########################
+# --- CONTRAINTE SIXX --- #
+###########################
+                _F(   RESULTAT   = U2,
+                      REFERENCE  = 'ANALYTIQUE',
+                      VERSION    = '7.2.5',
+                      NOEUD      = 'NO8',
+                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CMP    = 'SIXX',
+                      INST       = 2.0,
+                      PRECISION  = 1.E-3,
+                      VALE       = -2.0E+6),
+###########################
+# --- CONTRAINTE SIZZ --- #
+###########################
+                 _F(  RESULTAT   = U2,
+                      REFERENCE  = 'ANALYTIQUE',
+                      NOEUD      = 'NO8',
+                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CMP    = 'SIZZ',
+                      INST       = 1.07000,
+                      PRECISION  = 1.E-3,
+                      VALE       = -8.09000E+06),
+                 _F(  RESULTAT   = U2,
+                      REFERENCE  = 'ANALYTIQUE',
+                      NOEUD      = 'NO8',
+                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CMP    = 'SIZZ',
+                      INST       = 1.1600,
+                      PRECISION  = 1.E-3,
+                      VALE       = -8.009308230E+06),
+                 _F(  RESULTAT   = U2,
+                      REFERENCE  = 'ANALYTIQUE',
+                      NOEUD      = 'NO8',
+                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CMP    = 'SIZZ',
+                      INST       = 1.3400,
+                      PRECISION  = 1.E-3,
+                      VALE       = -6.62756833E+06),
+                 _F(  RESULTAT   = U2,
+                      REFERENCE  = 'ANALYTIQUE',
+                      NOEUD      = 'NO8',
+                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CMP    = 'SIZZ',
+                      INST       = 1.5300,
+                      PRECISION  = 1.E-3,
+                      VALE       = -5.805970149E+06),
+###############################
+# --- VARIABLE INTERNE V1 --- #
+###############################
+                 _F(  RESULTAT   = U2,
+                      REFERENCE  = 'ANALYTIQUE',
+                      NOEUD      = 'NO8',
+                      NOM_CHAM   = 'VARI_NOEU_ELGA',
+                      NOM_CMP    = 'V1',
+                      CRITERE    = 'ABSOLU',
+                      INST       = 1.07000,
+                      PRECISION  = 1.E-3,
+                      VALE       = 0.000000E+0),
+                 _F(  RESULTAT   = U2,
+                      REFERENCE  = 'ANALYTIQUE',
+                      NOEUD      = 'NO8',
+                      NOM_CHAM   = 'VARI_NOEU_ELGA',
+                      NOM_CMP    = 'V1',
+                      INST       = 1.1600,
+                      PRECISION  = 1.E-3,
+                      VALE       = 2.03569011063E-03),
+                 _F(  RESULTAT   = U2,
+                      REFERENCE  = 'ANALYTIQUE',
+                      NOEUD      = 'NO8',
+                      NOM_CHAM   = 'VARI_NOEU_ELGA',
+                      NOM_CMP    = 'V1',
+                      INST       = 1.3400,
+                      PRECISION  = 1.E-3,
+                      VALE       = 6.421109537E-03),
+                 _F(  RESULTAT   = U2,
+                      REFERENCE  = 'ANALYTIQUE',
+                      NOEUD      = 'NO8',
+                      NOM_CHAM   = 'VARI_NOEU_ELGA',
+                      NOM_CMP    = 'V1',
+                      INST       = 1.5300,
+                      PRECISION  = 1.E-3,
+                      VALE       = 1.0886266045E-02),
+
+##########################
+# --- DEPLACEMENT DZ --- #
+##########################
+                 _F(  RESULTAT   = U2,
+                      REFERENCE  = 'ANALYTIQUE',
+                      NOEUD      = 'NO8',
+                      NOM_CHAM   = 'DEPL',
+                      NOM_CMP    = 'DZ',
+                      INST       = 1.07000,
+                      PRECISION  = 1.E-3,
+                      VALE       = -1.050E-03),
+                 _F(  RESULTAT   = U2,
+                      REFERENCE  = 'ANALYTIQUE',
+                      NOEUD      = 'NO8',
+                      NOM_CHAM   = 'DEPL',
+                      NOM_CMP    = 'DZ',
+                      INST       = 1.1600,
+                      PRECISION  = 1.E-3,
+                      VALE       = -2.400E-03),
+                 _F(  RESULTAT   = U2,
+                      REFERENCE  = 'ANALYTIQUE',
+                      NOEUD      = 'NO8',
+                      NOM_CHAM   = 'DEPL',
+                      NOM_CMP    = 'DZ',
+                      INST       = 1.3400,
+                      PRECISION  = 1.E-3,
+                      VALE       = -5.1000E-03),
+                 _F(  RESULTAT   = U2,
+                      REFERENCE  = 'ANALYTIQUE',
+                      NOEUD      = 'NO8',
+                      NOM_CHAM   = 'DEPL',
+                      NOM_CMP    = 'DZ',
+                      INST       = 1.5300,
+                      PRECISION  = 1.E-3,
+                      VALE       = -7.950000E-03),
+)
+)
+########################################################################
+# --- DONNEES UTILES POUR IMPRESSION ----------------------------------#
+########################################################################
+#SIGMA    = POST_RELEVE_T( ACTION = _F( INTITULE  = 'SIGMA',
+#                                       RESULTAT  =  U2,
+#                                       NOEUD     = 'NO8',
+#                                       NOM_CHAM  = 'SIEF_NOEU_ELGA',
+#                                       TOUT_CMP  = 'OUI',
+#                                       OPERATION = 'EXTRACTION',),);
+#
+#DEFORMAT = POST_RELEVE_T( ACTION = _F( INTITULE  = 'DEFORMATION',
+#                                       RESULTAT  =  U2,
+#                                       NOEUD     = 'NO8',
+#                                       NOM_CHAM  = 'VARI_NOEU_ELGA',
+#                                       TOUT_CMP  = 'OUI',
+#                                       OPERATION = 'EXTRACTION',),);
+#
+#DEPLACEM = POST_RELEVE_T( ACTION = _F( INTITULE  = 'DEPLACEMENT',
+#                                       RESULTAT  =  U2,
+#                                       NOEUD     = 'NO8',
+#                                       NOM_CHAM  = 'DEPL',
+#                                       TOUT_CMP  = 'OUI',
+#                                       OPERATION = 'EXTRACTION',),);
+#
+#IMPR_TABLE(TABLE=SIGMA,   );
+#IMPR_TABLE(TABLE=DEFORMAT,);
+#IMPR_TABLE(TABLE=DEPLACEM,);
+#######################################################################
+
+FIN()
+#

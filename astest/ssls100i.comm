@@ -1,4 +1,4 @@
-# MODIF  DATE 22/03/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUMISE A UNE PRESSION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,8 +109,7 @@ RESU=MECA_STATIQUE(    MODELE=MODEL, CHAM_MATER=CHMAT,
                                CARA_ELEM=CARELEM,
                                EXCIT=_F(  CHARGE = CHARGE)       )
 
-RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,     MODELE=MODEL,
-                        CHAM_MATER=CHMAT,   CARA_ELEM=CARELEM,
+RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,     
                         NIVE_COUCHE='SUP',
                         OPTION=('SIGM_ELNO_DEPL','EFGE_ELNO_DEPL',
                                 'DEGE_ELNO_DEPL',),

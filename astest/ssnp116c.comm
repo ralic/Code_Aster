@@ -1,4 +1,4 @@
-# MODIF  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE COUPLAGE FLUAGE/NADAI_B - TRACTION UNIAXIALE EN C_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -265,10 +265,7 @@ COUPLA=STAT_NON_LINE(
                            RESI_INTE_RELA = 1.E-6)
                             )
 
-COUPLA=CALC_ELEM(    reuse=COUPLA,          MODELE=MO,
-                               CHAM_MATER=CM,EXCIT=(
-                                   _F(  CHARGE = COND_LIM),
-                                   _F(  CHARGE = TRAC)),
+COUPLA=CALC_ELEM(    reuse=COUPLA,          
                                   OPTION=( 'SIEF_ELNO_ELGA',
                                            'VARI_ELNO_ELGA',
                                            'EPGR_ELNO',      ),
@@ -455,10 +452,7 @@ COUPLA2=STAT_NON_LINE(
                            RESI_INTE_RELA = 1.E-6)
                             )
 
-COUPLA2=CALC_ELEM(    reuse=COUPLA2,          MODELE=MO,
-                               CHAM_MATER=CM,EXCIT=(
-                                   _F(  CHARGE = COND_LIM),
-                                   _F(  CHARGE = TRAC)),
+COUPLA2=CALC_ELEM(    reuse=COUPLA2,          
                                   OPTION=( 'SIEF_ELNO_ELGA',
                                            'VARI_ELNO_ELGA',
                                            'EPGR_ELNO',      ),
@@ -567,10 +561,7 @@ COUPLA3=STAT_NON_LINE(
                            RESI_INTE_RELA = 1.E-6)
                             )
 
-COUPLA3=CALC_ELEM(    reuse=COUPLA3,          MODELE=MO,
-                               CHAM_MATER=CM,EXCIT=(
-                                   _F(  CHARGE = COND_LIM),
-                                   _F(  CHARGE = TRAC)),
+COUPLA3=CALC_ELEM(    reuse=COUPLA3,          
                                   OPTION=( 'SIEF_ELNO_ELGA',
                                            'VARI_ELNO_ELGA',
                                            'EPGR_ELNO',      ),

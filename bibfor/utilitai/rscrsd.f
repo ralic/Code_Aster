@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,52 +69,73 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                          E V O L _ E L A S
 C     ------------------------------------------------------------------
-      PARAMETER (NPEVEL=18,NAEVEL=5)
+      PARAMETER (NPEVEL=22,NAEVEL=9)
       CHARACTER*16 PAEVEL(NPEVEL)
 C     ------------------------------------------------------------------
 C                          E V O L _ N O L I
 C     ------------------------------------------------------------------
-      PARAMETER (NPEVNO=9,NAEVNO=3)
+      PARAMETER (NPEVNO=13,NAEVNO=7)
       CHARACTER*16 PAEVNO(NPEVNO)
 C     ------------------------------------------------------------------
 C                          E V O L _ T H E R
 C     ------------------------------------------------------------------
-      PARAMETER (NPEVTH=8,NAEVTH=3)
+      PARAMETER (NPEVTH=12,NAEVTH=7)
       CHARACTER*16 PAEVTH(NPEVTH)
 C     ------------------------------------------------------------------
 C                          E V O L _ V A R C
 C     ------------------------------------------------------------------
-      PARAMETER (NPVARC=1)
+      PARAMETER (NPVARC=5)
       CHARACTER*16 PAVARC(NPVARC)
 C     ------------------------------------------------------------------
 C                          M O D E _ M E C A
 C     ------------------------------------------------------------------
-      PARAMETER (NPMOME=26,NAMOME=11)
+      PARAMETER (NPMOME=30,NAMOME=15)
       CHARACTER*16 PAMOME(NPMOME)
 C     ------------------------------------------------------------------
 C                          M O D E _ F L A M B
 C     ------------------------------------------------------------------
-      PARAMETER (NPFLAM=4,NAFLAM=2)
+      PARAMETER (NPFLAM=8,NAFLAM=6)
       CHARACTER*16 PAFLAM(NPFLAM)
 C     ------------------------------------------------------------------
 C                          M O D E _ A C O U
 C     ------------------------------------------------------------------
-      PARAMETER (NPMOMA=17,NAMOMA=11)
+      PARAMETER (NPMOMA=21,NAMOMA=15)
       CHARACTER*16 PAMOMA(NPMOMA)
 C     ------------------------------------------------------------------
 C                          M O D E _ S T A T
 C     ------------------------------------------------------------------
-      PARAMETER (NPMOST=6,NAMOST=6)
+      PARAMETER (NPMOST=10,NAMOST=10)
       CHARACTER*16 PAMOST(NAMOST)
 C     ------------------------------------------------------------------
 C                          B A S E _ M O D A L E
 C     ------------------------------------------------------------------
-      PARAMETER (NPBAMO=8,NABAMO=5)
+      PARAMETER (NPBAMO=12,NABAMO=9)
       CHARACTER*16 PABAMO(NPBAMO)
+C     ------------------------------------------------------------------
+C                          D Y N A _ T R A N S
+C     ------------------------------------------------------------------
+      PARAMETER (NPDYTR=5)
+      CHARACTER*16 PADYTR(NPDYTR)
+C     ------------------------------------------------------------------
+C                          D Y N A _ H A R M O
+C     ------------------------------------------------------------------
+      PARAMETER (NPDYHA=5)
+      CHARACTER*16 PADYHA(NPDYHA)
+C     ------------------------------------------------------------------
+C                          M U L T _ E L A S 
+C     ------------------------------------------------------------------
+      PARAMETER (NPMUEL=5)
+      CHARACTER*16 PAMUEL(NPMUEL)
+C     ------------------------------------------------------------------
+C                          A C O U _ H A R M O 
+C     ------------------------------------------------------------------
+      PARAMETER (NPACHA=5)
+      CHARACTER*16 PAACHA(NPACHA)
 C     ------------------------------------------------------------------
 C                          E V O L _ E L A S
 C     ------------------------------------------------------------------
-      DATA PAEVEL/'INST','ITER_GCPC','METHODE','RENUM','STOCKAGE',
+      DATA PAEVEL/'INST','MODELE','CHAMPMAT','CARAELEM','EXCIT',
+     &     'ITER_GCPC','METHODE','RENUM','STOCKAGE',
      &     'RESI_GCPC','EFFORT_N','MOMENT_MFY','MOMENT_MFZ',
      &     'DEFO_D_DX_X','DEFO_D_DRY_X','DEFO_D_DRZ_X','EFFORT_D_VY_X',
      &     'EFFORT_D_VZ_X','MOMENT_D_MT_X','EFFORT_VY','EFFORT_VZ',
@@ -122,22 +143,25 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                          E V O L _ N O L I
 C     ------------------------------------------------------------------
-      DATA PAEVNO/'INST','ITER_GLOB','ITER_LINE','RESI_GLOB_RELA',
+      DATA PAEVNO/'INST','MODELE','CHAMPMAT','CARAELEM','EXCIT',
+     &     'ITER_GLOB','ITER_LINE','RESI_GLOB_RELA',
      &     'RESI_GLOB','CHAR_MINI','ETA_PILOTAGE','RESI_GLOB_MOINS',
      &     'CHAR_CRIT'/
 C     ------------------------------------------------------------------
 C                          E V O L _ T H E R
 C     ------------------------------------------------------------------
-      DATA PAEVTH/'INST','ITER_GLOB','ITER_LINE','RESI_GLOB_RELA',
+      DATA PAEVTH/'INST','MODELE','CHAMPMAT','CARAELEM','EXCIT',
+     &     'ITER_GLOB','ITER_LINE','RESI_GLOB_RELA',
      &     'RESI_GLOB_MAXI','RHO','PARM_THETA','DELTAT'/
 C     ------------------------------------------------------------------
 C                          E V O L _ V A R C
 C     ------------------------------------------------------------------
-      DATA PAVARC/'INST'/
+      DATA PAVARC/'INST','MODELE','CHAMPMAT','CARAELEM','EXCIT'/
 C     ------------------------------------------------------------------
 C                          M O D E _ M E C A
 C     ------------------------------------------------------------------
-      DATA PAMOME/'NUME_MODE','FREQ','NORME','METHODE','ITER_QR',
+      DATA PAMOME/'NUME_MODE','FREQ','MODELE','CHAMPMAT','CARAELEM',
+     &     'EXCIT','NORME','METHODE','ITER_QR',
      &     'ITER_BATHE','ITER_ARNO','ITER_JACOBI','ITER_SEPARE',
      &     'ITER_AJUSTE','ITER_INVERSE','OMEGA2','AMOR_REDUIT  ',
      &     'ERREUR','MASS_GENE ','RIGI_GENE   ','AMOR_GENE',
@@ -147,11 +171,13 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                          M O D E _ F L A M B
 C     ------------------------------------------------------------------
-      DATA PAFLAM/'NUME_MODE','NORME','CHAR_CRIT','ERREUR'/
+      DATA PAFLAM/'NUME_MODE','NORME','MODELE','CHAMPMAT','CARAELEM',
+     &            'EXCIT','CHAR_CRIT','ERREUR'/
 C     ------------------------------------------------------------------
 C                          M O D E _ A C O U
 C     ------------------------------------------------------------------
-      DATA PAMOMA/'NUME_MODE','FREQ','NORME','METHODE','ITER_QR',
+      DATA PAMOMA/'NUME_MODE','FREQ','MODELE','CHAMPMAT','CARAELEM',
+     &     'EXCIT','NORME','METHODE','ITER_QR',
      &     'ITER_BATHE','ITER_ARNO','ITER_JACOBI','ITER_SEPARE',
      &     'ITER_AJUSTE','ITER_INVERSE','OMEGA2','AMOR_REDUIT  ',
      &     'ERREUR','MASS_GENE ','RIGI_GENE   ','AMOR_GENE'/
@@ -159,12 +185,31 @@ C     ------------------------------------------------------------------
 C                          M O D E _ S T A T
 C     ------------------------------------------------------------------
       DATA PAMOST/'NOEUD_CMP','NUME_DDL','TYPE_DEFO','COEF_X','COEF_Y',
-     &     'COEF_Z'/
+     &     'COEF_Z','MODELE','CHAMPMAT','CARAELEM','EXCIT'/
 C     ------------------------------------------------------------------
 C                          B A S E _ M O D A L E
 C     ------------------------------------------------------------------
       DATA PABAMO/'NUME_MODE','FREQ','NOEUD_CMP','NORME','TYPE_DEFO',
+     &     'MODELE','CHAMPMAT','CARAELEM','EXCIT',
      &     'OMEGA2','MASS_GENE','RIGI_GENE'/
+C     ------------------------------------------------------------------
+C                          D Y N A _ T R A N S
+C     ------------------------------------------------------------------
+      DATA PADYTR/'INST','MODELE','CHAMPMAT','CARAELEM','EXCIT'/
+C     ------------------------------------------------------------------
+C                          D Y N A _ H A R M O
+C     ------------------------------------------------------------------
+      DATA PADYHA/'FREQ','MODELE','CHAMPMAT','CARAELEM','EXCIT'/
+C     ------------------------------------------------------------------
+C                          M U L T _ E L A S
+C     ------------------------------------------------------------------
+      DATA PAMUEL/'NOM_CAS','MODELE','CHAMPMAT','CARAELEM','EXCIT'/
+C     ------------------------------------------------------------------
+C                          A C O U _ H A R M O
+C     ------------------------------------------------------------------
+      DATA PAACHA/'FREQ','MODELE','CHAMPMAT','CARAELEM','EXCIT'/
+C     ------------------------------------------------------------------
+
 C     ------------------------------------------------------------------
 C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
@@ -283,6 +328,10 @@ C     ------------------------------------------------------------------
         CALL UTACCE('P',NOMSD,'METHODE','METH','K16',NBORDR)
         CALL UTACCE('P',NOMSD,'RENUM','RENU','K16',NBORDR)
         CALL UTACCE('P',NOMSD,'STOCKAGE','STOC','K16',NBORDR)
+        CALL UTACCE('P',NOMSD,'MODELE','MODL','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CHAMPMAT','MATE','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CARAELEM','CARA','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'EXCIT','CHAR','K24',NBORDR)
         CALL UTPARA(NOMSD,NPEVEL,NAEVEL,PAEVEL,NBORDR)
         GO TO 310
 
@@ -296,15 +345,22 @@ C     ------------------------------------------------------------------
           CALL JECROC(JEXNOM(NOMS2//'.DESC',CHMECA(I)))
    60   CONTINUE
 
-        NBNOVA = 1
+        NBNOVA = NPMUEL
         CALL JEECRA(NOMS2//'.NOVA','NOMMAX',NBNOVA,' ')
-        CALL JECROC(JEXNOM(NOMS2//'.NOVA','NOM_CAS'))
+
+        DO 65 I = 1,NPMUEL
+          CALL JECROC(JEXNOM(NOMS2//'.NOVA',PAMUEL(I)))
+   65   CONTINUE
 
         CALL JECREC(NOMS2//'.TAVA','G V K8','NU','CONTIG','CONSTANT',
      &              NBNOVA)
         CALL JEECRA(NOMS2//'.TAVA','LONMAX',4,' ')
 
         CALL UTACCE('A',NOMSD,'NOM_CAS','NCAS','K16',NBORDR)
+        CALL UTACCE('P',NOMSD,'MODELE','MODL','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CHAMPMAT','MATE','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CARAELEM','CARA','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'EXCIT','CHAR','K24',NBORDR)
         GO TO 310
 
 C     ------------------------------------------------------------------
@@ -317,10 +373,14 @@ C     ------------------------------------------------------------------
           CALL JECROC(JEXNOM(NOMS2//'.DESC',CHMECA(I)))
    70   CONTINUE
 
-        NBNOVA = 2
+        NBNOVA = 6
         CALL JEECRA(NOMS2//'.NOVA','NOMMAX',NBNOVA,' ')
         CALL JECROC(JEXNOM(NOMS2//'.NOVA','NUME_MODE'))
         CALL JECROC(JEXNOM(NOMS2//'.NOVA','TYPE_MODE'))
+        CALL JECROC(JEXNOM(NOMS2//'.NOVA','MODELE'))
+        CALL JECROC(JEXNOM(NOMS2//'.NOVA','CHAMPMAT'))
+        CALL JECROC(JEXNOM(NOMS2//'.NOVA','CARAELEM'))
+        CALL JECROC(JEXNOM(NOMS2//'.NOVA','EXCIT'))
 
         CALL JECREC(NOMS2//'.TAVA','G V K8','NU','CONTIG','CONSTANT',
      &              NBNOVA)
@@ -328,6 +388,11 @@ C     ------------------------------------------------------------------
 
         CALL UTACCE('A',NOMSD,'NUME_MODE','NUMO','I',NBORDR)
         CALL UTACCE('P',NOMSD,'TYPE_MODE','TYMO','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'MODELE','MODL','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CHAMPMAT','MATE','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CARAELEM','CARA','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'EXCIT','CHAR','K24',NBORDR)
+
         GO TO 310
 
 C     ------------------------------------------------------------------
@@ -352,6 +417,10 @@ C     ------------------------------------------------------------------
         CALL UTACCE('A',NOMSD,'INST','INST','R',NBORDR)
         CALL UTACCE('P',NOMSD,'ITER_GLOB','ITEG','I',NBORDR)
         CALL UTACCE('P',NOMSD,'ITER_LINE','ITEL','I',NBORDR)
+        CALL UTACCE('P',NOMSD,'MODELE','MODL','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CHAMPMAT','MATE','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CARAELEM','CARA','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'EXCIT','CHAR','K24',NBORDR)
         CALL UTPARA(NOMSD,NPEVNO,NAEVNO,PAEVNO,NBORDR)
         GO TO 310
 
@@ -364,7 +433,23 @@ C     ------------------------------------------------------------------
         DO 100 I = 1,NBCHAM
           CALL JECROC(JEXNOM(NOMS2//'.DESC',CHMECA(I)))
   100   CONTINUE
-        GO TO 300
+        NBNOVA = NPDYTR
+        CALL JEECRA(NOMS2//'.NOVA','NOMMAX',NBNOVA,' ')
+
+        DO 105 I = 1,NPDYTR
+          CALL JECROC(JEXNOM(NOMS2//'.NOVA',PADYTR(I)))
+  105   CONTINUE
+
+        CALL JECREC(NOMS2//'.TAVA','G V K8','NU','CONTIG','CONSTANT',
+     &              NBNOVA)
+        CALL JEECRA(NOMS2//'.TAVA','LONMAX',4,' ')
+
+        CALL UTACCE('A',NOMSD,'INST','INST','R',NBORDR)
+        CALL UTACCE('P',NOMSD,'MODELE','MODL','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CHAMPMAT','MATE','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CARAELEM','CARA','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'EXCIT','CHAR','K24',NBORDR)
+        GO TO 310
 
 C     ------------------------------------------------------------------
       ELSE IF (TYPES2.EQ.'DYNA_HARMO') THEN
@@ -375,7 +460,24 @@ C     ------------------------------------------------------------------
         DO 110 I = 1,NBCHAM
           CALL JECROC(JEXNOM(NOMS2//'.DESC',CHMECA(I)))
   110   CONTINUE
-        GO TO 290
+
+        NBNOVA = NPDYHA
+        CALL JEECRA(NOMS2//'.NOVA','NOMMAX',NBNOVA,' ')
+
+        DO 115 I = 1,NPDYHA
+          CALL JECROC(JEXNOM(NOMS2//'.NOVA',PADYHA(I)))
+  115   CONTINUE
+
+        CALL JECREC(NOMS2//'.TAVA','G V K8','NU','CONTIG','CONSTANT',
+     &            NBNOVA)
+        CALL JEECRA(NOMS2//'.TAVA','LONMAX',4,' ')
+
+        CALL UTACCE('A',NOMSD,'FREQ','FREQ','R',NBORDR)
+        CALL UTACCE('P',NOMSD,'MODELE','MODL','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CHAMPMAT','MATE','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CARAELEM','CARA','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'EXCIT','CHAR','K24',NBORDR)
+        GO TO 310
 
 C     ------------------------------------------------------------------
       ELSE IF (TYPES2.EQ.'HARM_GENE') THEN
@@ -397,7 +499,25 @@ C     ------------------------------------------------------------------
         DO 130 I = 1,NBCHAM
           CALL JECROC(JEXNOM(NOMS2//'.DESC',CHACOU(I)))
   130   CONTINUE
-        GO TO 290
+
+        NBNOVA = NPACHA
+        CALL JEECRA(NOMS2//'.NOVA','NOMMAX',NBNOVA,' ')
+
+        DO 135 I = 1,NPACHA
+          CALL JECROC(JEXNOM(NOMS2//'.NOVA',PAACHA(I)))
+  135   CONTINUE
+
+        CALL JECREC(NOMS2//'.TAVA','G V K8','NU','CONTIG','CONSTANT',
+     &              NBNOVA)
+        CALL JEECRA(NOMS2//'.TAVA','LONMAX',4,' ')
+
+        CALL UTACCE('A',NOMSD,'FREQ','FREQ','R',NBORDR)
+        CALL UTACCE('P',NOMSD,'MODELE','MODL','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CHAMPMAT','MATE','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CARAELEM','CARA','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'EXCIT','CHAR','K24',NBORDR)
+
+        GO TO 310
 
 C     ------------------------------------------------------------------
       ELSE IF (TYPES2.EQ.'EVOL_CHAR') THEN
@@ -433,8 +553,12 @@ C     ------------------------------------------------------------------
         CALL JEECRA(NOMS2//'.TAVA','LONMAX',4,' ')
 
         CALL UTACCE('A',NOMSD,PAEVTH(1),'INST','R',NBORDR)
-        CALL UTACCE('P',NOMSD,PAEVTH(2),'ITEG','I',NBORDR)
-        CALL UTACCE('P',NOMSD,PAEVTH(3),'ITEL','I',NBORDR)
+        CALL UTACCE('P',NOMSD,'MODELE','MODL','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CHAMPMAT','MATE','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CARAELEM','CARA','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'EXCIT','CHAR','K24',NBORDR)
+        CALL UTACCE('P',NOMSD,PAEVTH(6),'ITEG','I',NBORDR)
+        CALL UTACCE('P',NOMSD,PAEVTH(7),'ITEL','I',NBORDR)
         CALL UTPARA(NOMSD,NPEVTH,NAEVTH,PAEVTH,NBORDR)
         GO TO 310
 
@@ -458,6 +582,10 @@ C     ------------------------------------------------------------------
         CALL JEECRA(NOMS2//'.TAVA','LONMAX',4,' ')
 
         CALL UTACCE('A',NOMSD,'INST','INST','R',NBORDR)
+        CALL UTACCE('P',NOMSD,'MODELE','MODL','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CHAMPMAT','MATE','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CARAELEM','CARA','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'EXCIT','CHAR','K24',NBORDR)
         GO TO 310
 
 C     ------------------------------------------------------------------
@@ -485,6 +613,10 @@ C     ------------------------------------------------------------------
         CALL UTACCE('P',NOMSD,'COEF_X','COEX','R',NBORDR)
         CALL UTACCE('P',NOMSD,'COEF_Y','COEY','R',NBORDR)
         CALL UTACCE('P',NOMSD,'COEF_Z','COEZ','R',NBORDR)
+        CALL UTACCE('P',NOMSD,'MODELE','MODL','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CHAMPMAT','MATE','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CARAELEM','CARA','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'EXCIT','CHAR','K24',NBORDR)
         GO TO 310
 C     ------------------------------------------------------------------
       ELSE IF (TYPES2.EQ.'MODE_MECA' .OR. TYPES2.EQ.'MODE_GENE'
@@ -514,6 +646,10 @@ C     ------------------------------------------------------------------
 
         CALL UTACCE('A',NOMSD,'FREQ','FREQ','R',NBORDR)
         CALL UTACCE('A',NOMSD,'NUME_MODE','NUMO','I',NBORDR)
+        CALL UTACCE('P',NOMSD,'MODELE','MODL','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CHAMPMAT','MATE','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CARAELEM','CARA','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'EXCIT','CHAR','K24',NBORDR)
         CALL UTACCE('P',NOMSD,'NORME','NORM','K24',NBORDR)
         CALL UTACCE('P',NOMSD,'METHODE','METH','K24',NBORDR)
         CALL UTACCE('P',NOMSD,'ITER_QR','ITEQ','I',NBORDR)
@@ -547,6 +683,10 @@ C     ------------------------------------------------------------------
 
         CALL UTACCE('A',NOMSD,'NUME_MODE','NUMO','I',NBORDR)
         CALL UTACCE('P',NOMSD,'NORME','NORM','K24',NBORDR)
+        CALL UTACCE('P',NOMSD,'MODELE','MODL','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CHAMPMAT','MATE','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CARAELEM','CARA','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'EXCIT','CHAR','K24',NBORDR)
         CALL UTPARA(NOMSD,NPFLAM,NAFLAM,PAFLAM,NBORDR)
         GO TO 310
 C     ------------------------------------------------------------------
@@ -577,6 +717,10 @@ C     ------------------------------------------------------------------
         CALL UTACCE('P',NOMSD,'ITER_SEPARE','ITES','I',NBORDR)
         CALL UTACCE('P',NOMSD,'ITER_AJUSTE','ITAJ','I',NBORDR)
         CALL UTACCE('P',NOMSD,'ITER_INVERSE','ITEI','I',NBORDR)
+        CALL UTACCE('P',NOMSD,'MODELE','MODL','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CHAMPMAT','MATE','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CARAELEM','CARA','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'EXCIT','CHAR','K24',NBORDR)
         CALL UTPARA(NOMSD,NPMOMA,NAMOMA,PAMOMA,NBORDR)
         GO TO 310
 
@@ -604,6 +748,10 @@ C     ------------------------------------------------------------------
         CALL UTACCE('A',NOMSD,'NOEUD_CMP','NOEU','K16',NBORDR)
         CALL UTACCE('P',NOMSD,'NORME','NORM','K24',NBORDR)
         CALL UTACCE('P',NOMSD,'TYPE_DEFO','TYPE','K16',NBORDR)
+        CALL UTACCE('P',NOMSD,'MODELE','MODL','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CHAMPMAT','MATE','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'CARAELEM','CARA','K8',NBORDR)
+        CALL UTACCE('P',NOMSD,'EXCIT','CHAR','K24',NBORDR)
         CALL UTPARA(NOMSD,NPBAMO,NABAMO,PABAMO,NBORDR)
         GO TO 310
 

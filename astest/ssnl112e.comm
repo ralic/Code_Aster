@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE ESSAI DE DEPLACEMENT IMPOSE SUR UNE BARRE (PINTO)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -598,9 +598,6 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
 LEDEP=CALC_ELEM( reuse=LEDEP,
                             OPTION='SIEF_ELNO_ELGA',  
                           RESULTAT=LEDEP,
-                            MODELE=MOD,
-                        CHAM_MATER=CHMAT,
-                         CARA_ELEM=CARBA
               )
 
 #

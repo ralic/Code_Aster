@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT 3D (POLY_CFC_FO)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -263,8 +263,6 @@ SOLNL=STAT_NON_LINE(
 SOLNL=CALC_ELEM( reuse=SOLNL,
                         OPTION=('SIEF_ELNO_ELGA', 'EPSI_ELNO_DEPL',),
                       RESULTAT=SOLNL,
-                        MODELE=MO,
-                    CHAM_MATER=MAT
               )
 
 TEST_RESU(RESU=( 

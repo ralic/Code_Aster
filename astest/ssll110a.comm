@@ -1,0 +1,122 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE 3 BARRES EN U SOUMISES A LA PESANTEUR
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+
+DEBUT(CODE=_F(NOM='SSLL110A',NIV_PUB_WEB='INTERNET'),);
+
+MAILLAGE=LIRE_MAILLAGE();
+
+ACIER=DEFI_MATERIAU(ELAS=_F(NU=0.3,
+                            RHO=8000.0,
+                            E=2.E11,),);
+
+PLUME=DEFI_MATERIAU(ELAS=_F(NU=0.3,
+                            RHO=0.0,
+                            E=2.E11,),);
+
+CH_MATER=AFFE_MATERIAU(AFFE=(_F(MATER=ACIER,
+                                GROUP_MA='PESA',),
+                             _F(MATER=PLUME,
+                                GROUP_MA='VERT',),),
+                       MAILLAGE=MAILLAGE,);
+
+MODELE=AFFE_MODELE(AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='BARRE',),
+                   MAILLAGE=MAILLAGE,);
+
+CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
+                        BARRE=_F(SECTION='GENERALE',
+                                 GROUP_MA=('PESA','VERT'),
+                                 CARA='A',
+                                 VALE=1.0,),);
+
+CHARGE_1=AFFE_CHAR_MECA(DDL_IMPO=(_F(TOUT='OUI',
+                                     DZ=0.0,
+                                     DX=0.0,),
+                                  _F(DX=0.0,
+                                     DY=0.0,
+                                     GROUP_NO='A',),
+                                  _F(DX=0.0,
+                                     DY=0.0,
+                                     GROUP_NO='B',),),
+                        MODELE=MODELE,
+                        PESANTEUR=(20.0,0.866,-0.5,0.0),);
+
+STATIQU1=MECA_STATIQUE(CHAM_MATER=CH_MATER,
+                       MODELE=MODELE,
+                       CARA_ELEM=CARA_ELE,
+                       EXCIT=_F(CHARGE=CHARGE_1,),);
+
+STATIQU1=CALC_ELEM(reuse =STATIQU1,
+                   RESULTAT=STATIQU1,
+                   OPTION='EFGE_ELNO_DEPL',
+                   );
+
+IMPR_RESU(RESU=_F(RESULTAT=STATIQU1,),
+          MODELE=MODELE,);
+          
+IMPR_RESU(MODELE=MODELE,
+             RESU=_F(FORMAT='GMSH',FICHIER='IDEAS',
+                     RESULTAT=STATIQU1,),
+                     );
+
+TEST_RESU(RESU=_F(NOM_CHAM='EFGE_ELNO_DEPL',
+                  RESULTAT=STATIQU1,
+                  MAILLE='M1',
+                  REFERENCE='ANALYTIQUE',
+                  VALE=4.E5,
+                  NOM_CMP='N',
+                  NUME_ORDRE=1,
+                  NOEUD='N1',),);
+
+TEST_RESU(RESU=_F(NOM_CHAM='EFGE_ELNO_DEPL',
+                  RESULTAT=STATIQU1,
+                  MAILLE='M3',
+                  REFERENCE='ANALYTIQUE',
+                  VALE=4.E5,
+                  NOM_CMP='N',
+                  NUME_ORDRE=1,
+                  NOEUD='N4',),);
+                  
+TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=STATIQU1,
+                  REFERENCE='ANALYTIQUE',
+                  VALE=-2.E-5,
+                  NOM_CMP='DY',
+                  NUME_ORDRE=1,
+                  NOEUD='N2',),);
+TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=STATIQU1,
+                  REFERENCE='ANALYTIQUE',
+                  VALE=-2.E-5,
+                  NOM_CMP='DY',
+                  NUME_ORDRE=1,
+                  NOEUD='N3',),);
+
+
+IMPR_RESU(MODELE=MODELE,
+          RESU=( 
+                 _F(FORMAT='GMSH',FICHIER='IDEAS',
+                   MAILLAGE=MAILLAGE),
+                   ),);
+
+FIN();
+

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CYLINDRE EN 3D (PENTA6 HEXA8)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,8 +65,8 @@ RESU=MECA_STATIQUE(         MODELE=MO,    CHAM_MATER=CM,
                           EXCIT=_F(  CHARGE = CH),
                       )
 
-CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,          MODELE=MO,    CHAM_MATER=CM,
-                          EXCIT=_F(  CHARGE = CH),
+CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,              
+                          
                       OPTION=('EPSI_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
 CALC_NO( reuse=RESU,                      RESULTAT=RESU,

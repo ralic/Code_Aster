@@ -1,4 +1,4 @@
-# MODIF  DATE 12/11/2003   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE COUPLAGE ASTER_HOMARD - CAS TRIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,9 +102,7 @@ RESUZERO=MECA_STATIQUE(         MODELE=MODEZERO,
 # 3.6. CALCUL DE L'INDICATEUR D'ERREUR
 #
 RESUZERO=CALC_ELEM( reuse=RESUZERO,   RESULTAT=RESUZERO,
-                MODELE=MODEZERO,
-               CHAM_MATER=MATEZERO,
-                    EXCIT=_F(  CHARGE = CHARZERO),
+                    
               OPTION=( 'SIGM_ELNO_DEPL', 
                        'ERRE_ELGA_NORE', )
                       )
@@ -182,9 +180,7 @@ RESUUN=MECA_STATIQUE(         MODELE=MODEUN,
 # 5.6. CALCUL DE L'INDICATEUR D'ERREUR
 #
 RESUUN=CALC_ELEM( reuse=RESUUN,   RESULTAT=RESUUN,
-                MODELE=MODEUN,
-               CHAM_MATER=MATEUN,
-                    EXCIT=_F(  CHARGE = CHARUN),
+                    
               OPTION=( 'SIGM_ELNO_DEPL', 
                        'ERRE_ELGA_NORE', )
                     )

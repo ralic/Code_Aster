@@ -1,4 +1,4 @@
-# MODIF  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE COUPLAGE FLUAGE/BETON_DOUBLE_DP - TRACTION UNIAXIALE EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -287,11 +287,6 @@ COUPLA=STAT_NON_LINE(
                             )
 
 COUPLA=CALC_ELEM(    reuse=COUPLA,
-                     MODELE=MO,
-                     CHAM_MATER=CM,
-                     EXCIT=(
-                             _F(  CHARGE = COND_LIM),
-                             _F(  CHARGE = TRAC)),
                      OPTION=( 'EPSI_ELNO_DEPL',
                               'SIEF_ELNO_ELGA',
                               'EPGR_ELNO',
@@ -603,10 +598,7 @@ COUPLA2=STAT_NON_LINE(
                 SOLVEUR=_F(),
               )
 
-COUPLA2=CALC_ELEM(    reuse=COUPLA2,          MODELE=MO,
-                               CHAM_MATER=CM2,EXCIT=(
-                                   _F(  CHARGE = COND_LI2),
-                                   _F(  CHARGE = TRAC)),
+COUPLA2=CALC_ELEM(    reuse=COUPLA2,          
                                   OPTION=( 'EPSI_ELNO_DEPL',
                                            'SIEF_ELNO_ELGA',
                                            'EPGR_ELNO',
@@ -760,10 +752,7 @@ COUPLA3=STAT_NON_LINE(
                  SOLVEUR=_F(NPREC=9),
               )
 
-COUPLA3=CALC_ELEM(    reuse=COUPLA3,          MODELE=MO,
-                               CHAM_MATER=CM2,EXCIT=(
-                                   _F(  CHARGE = COND_LI2),
-                                   _F(  CHARGE = TRAC)),
+COUPLA3=CALC_ELEM(    reuse=COUPLA3,          
                                   OPTION=( 'EPSI_ELNO_DEPL',
                                            'SIEF_ELNO_ELGA',
                                            'EPGR_ELNO',

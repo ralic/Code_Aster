@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE CINEMATIQUE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,16 +124,14 @@ U=STAT_NON_LINE(
                 ITER_LINE_MAXI = 5)
               )
 
-U=CALC_ELEM( reuse=U,       MODELE=MO,
+U=CALC_ELEM( reuse=U,       
                             RESULTAT=U,
-                          CHAM_MATER=CM,
                               OPTION=( 'VARI_ELNO_ELGA',
                                        'SIEF_ELNO_ELGA', 
                                        'EPSI_ELNO_DEPL',  )   )
 
-U=CALC_ELEM( reuse=U,      MODELE=MO,
+U=CALC_ELEM( reuse=U,      
                            RESULTAT=U,
-                         CHAM_MATER=CM,
                              OPTION=( 'DCHA_ELGA_SIGM',
                                       'DCHA_ELNO_SIGM',
                                       'RADI_ELNO_SIGM',  ),

@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE FISSURE AU CENTRE D'UNE PLAQUE MINCE RECTANGULAIRE FAISANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,10 +69,8 @@ DEP=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,
                               EXCIT=_F( CHARGE = CH),
                      )
 
-DEP=CALC_ELEM(reuse=DEP,RESULTAT=DEP,   MODELE=MO,
-              CHAM_MATER=CHMAT,
+DEP=CALC_ELEM(reuse=DEP,RESULTAT=DEP,   
                           SENSIBILITE = (FORC),
-                              EXCIT=_F( CHARGE = CH),
               OPTION=('EPSI_ELGA_DEPL','SIEF_ELGA_DEPL',),)
 
 FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
@@ -161,10 +159,8 @@ DEP2=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,
                               EXCIT=_F( CHARGE = CH),
                    )
 
-DEP2=CALC_ELEM(reuse=DEP2,RESULTAT=DEP2,   MODELE=MO,
-              CHAM_MATER=CHMAT,
+DEP2=CALC_ELEM(reuse=DEP2,RESULTAT=DEP2,   
                           SENSIBILITE = (YOUNG), 
-                              EXCIT=_F( CHARGE = CH),
               OPTION=('EPSI_ELGA_DEPL','SIEF_ELGA_DEPL',),)
 
 

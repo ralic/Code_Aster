@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUS PRESSION DKT  170 N - 296 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,9 +140,8 @@ REFERENCE='ANALYTIQUE', NOEUD = 'F',          NOM_CMP = 'DZ',        VALE = -78.
 
 #--------------------------------------------------------------------
 
-DEP=CALC_ELEM( reuse= DEP ,RESULTAT= DEP ,MODELE=MODEL,
-               NUME_ORDRE=1,CHAM_MATER=CHMAT,
-               CARA_ELEM=CARELEM,OPTION=('EFGE_ELNO_DEPL',),
+DEP=CALC_ELEM( reuse= DEP ,RESULTAT= DEP, 
+               NUME_ORDRE=1,OPTION=('EFGE_ELNO_DEPL',),
                 )
 
 #--------------------------------------------------------------------

@@ -3,7 +3,7 @@
       CHARACTER*(*) NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/10/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +25,7 @@ C      DETRUIRE UNE STRUCTURE DE DONNEES "RESULTAT-COMPOSE".
 C ----------------------------------------------------------------------
 C IN  : NOMD2  : NOM DE LA STRUCTURE "RESULTAT" A DETRUIRE.
 C ----------------------------------------------------------------------
+      INTEGER IRET
       CHARACTER*19 NOMD2
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
 C ----------------------------------------------------------------------
@@ -51,6 +52,18 @@ C ----------------------------------------------------------------------
 
       CALL JEEXIN(NOMD2//'.NUME',IRET)
       IF (IRET.GT.0) CALL JEDETR(NOMD2//'.NUME')
+
+      CALL JEEXIN(NOMD2//'.MODL',IRET)
+      IF (IRET.GT.0) CALL JEDETR(NOMD2//'.MODL')
+
+      CALL JEEXIN(NOMD2//'.CARA',IRET)
+      IF (IRET.GT.0) CALL JEDETR(NOMD2//'.CARA')
+
+      CALL JEEXIN(NOMD2//'.MATE',IRET)
+      IF (IRET.GT.0) CALL JEDETR(NOMD2//'.MATE')
+
+      CALL JEEXIN(NOMD2//'.CHAR',IRET)
+      IF (IRET.GT.0) CALL JEDETR(NOMD2//'.CHAR')
 
 C PERMUT DE LA DESTRUCTION
 

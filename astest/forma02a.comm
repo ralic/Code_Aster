@@ -1,4 +1,4 @@
-# MODIF  DATE 02/03/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 
 # TITRE FORMATION  THERMO-PLASTICITE DANS LE CODE_ASTER ENONCE DU TP1
@@ -123,29 +123,23 @@ U=STAT_NON_LINE(
                           )
 
 UE=CALC_ELEM(     reuse=UE,
-                                  MODELE=MO,
                                 RESULTAT=UE,
-                              CHAM_MATER=CM,
                                  OPTION=('EPSI_ELNO_DEPL',
                                           'EPSI_ELGA_DEPL',)
                           )
 
 UE=CALC_NO(      reuse=UE,
-                               CHAM_MATER=CM,
                                RESULTAT=UE,
                                    OPTION='EPSI_NOEU_DEPL'
                         )
 
 U=CALC_ELEM(     reuse=U,
-                                  MODELE=MO,
                                 RESULTAT=U,
-                              CHAM_MATER=CM,
                                  OPTION=('EPSI_ELNO_DEPL',
                                         'EPSI_ELGA_DEPL',)
                           )
 
 U=CALC_NO(      reuse=U,
-                             CHAM_MATER=CM,
                               RESULTAT=U, 
                                   OPTION='EPSI_NOEU_DEPL'
                         )

@@ -1,4 +1,4 @@
-# MODIF  DATE 15/12/2003   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE ROMEO R.FERNANDES
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE TYPE (AXIS)
@@ -114,8 +114,6 @@ U1=STAT_NON_LINE(
 U1=CALC_ELEM( reuse      =U1,
               OPTION     =( 'SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA',),
               RESULTAT   = U1,
-              MODELE     = MODELE,
-              CHAM_MATER = CHMAT
             )
 
 #***********************************************************************
@@ -175,8 +173,6 @@ U2 = STAT_NON_LINE(
 U2       = CALC_ELEM( reuse      = U2,
                       OPTION     = ('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
                       RESULTAT   = U2,
-                      MODELE     = MODELE,
-                      CHAM_MATER = CHMAT,
                     );
       
 U2       = CALC_NO( reuse    = U2,     

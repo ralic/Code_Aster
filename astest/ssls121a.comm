@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE  : PLAQUE STRATIFIEE SOUMISE A 4 CHARGEMETNS ELEMENTAIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -146,10 +146,7 @@ RESU1=MECA_STATIQUE( MODELE=MO,
                       EXCIT=_F(CHARGE = CHA1),
                        )
 
-CALC_ELEM( reuse= RESU1 ,RESULTAT= RESU1 ,  MODELE=MO,
-                      CHAM_MATER=CHAM_MAT,
-                      CARA_ELEM=CAR_ELE,
-                      EXCIT=_F(CHARGE = CHA1),
+CALC_ELEM( reuse= RESU1 ,RESULTAT= RESU1 ,
                       OPTION=(
                               'EFGE_ELNO_DEPL',
                               'DEGE_ELNO_DEPL'),
@@ -175,9 +172,6 @@ TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='DEGE_ELNO_DEPL',NOM_CMP='KXX',RESULTAT
 # DEFINIES DANS DEFI_MATERIAU
 #
 CALC_ELEM(   reuse = RESU1,
-                     MODELE=MO,
-                     CHAM_MATER=CHAM_MAT,
-                     CARA_ELEM=CAR_ELE,
                      OPTION=(
                            'SIGM_ELNO_DEPL',
                            'CRIT_ELNO_RUPT'),
@@ -195,9 +189,7 @@ IMPR_RESU ( MODELE=MO,
            )
 #
 
-R1S1INF = CALC_ELEM( MODELE=MO,
-                     CHAM_MATER=CHAM_MAT,
-                     CARA_ELEM=CAR_ELE,
+R1S1INF = CALC_ELEM( 
                      OPTION=  'EPSI_ELNO_DEPL' ,
                      NUME_COUCHE=1,
                      NIVE_COUCHE='INF',
@@ -206,9 +198,7 @@ R1S1INF = CALC_ELEM( MODELE=MO,
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO_DEPL',NOM_CMP='SIXX',RESULTAT=RESU1,
            NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=-6.82,PRECISION=0.001,),);
 
-R1S2INF=CALC_ELEM( MODELE=MO,
-                   CHAM_MATER=CHAM_MAT,
-                   CARA_ELEM=CAR_ELE,
+R1S2INF=CALC_ELEM( 
                    OPTION='SIGM_ELNO_DEPL',
                    NUME_COUCHE=2,
                    NIVE_COUCHE='INF',
@@ -272,10 +262,7 @@ RESU2=MECA_STATIQUE( MODELE=MO,
                       EXCIT=_F( CHARGE = CHA2),
                        )
 
-CALC_ELEM( reuse= RESU2 ,RESULTAT= RESU2 ,  MODELE=MO,
-                      CHAM_MATER=CHAM_MAT,
-                      CARA_ELEM=CAR_ELE,
-                      EXCIT=_F( CHARGE = CHA2),
+CALC_ELEM( reuse= RESU2 ,RESULTAT= RESU2 , 
                       OPTION=( 'EFGE_ELNO_DEPL'),
                        )
 # ON TESTE QUE LES EFFORTS SONT UNIFORMES
@@ -286,17 +273,13 @@ TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='MYY',RESULTAT
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='MYY',RESULTAT=RESU2,
            TYPE_TEST='MIN',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
 
-R2S1INF=CALC_ELEM( MODELE=MO,
-                CHAM_MATER=CHAM_MAT,
-                CARA_ELEM=CAR_ELE,
+R2S1INF=CALC_ELEM( 
                 OPTION='SIGM_ELNO_DEPL',
                 NUME_COUCHE=1,
                 NIVE_COUCHE='INF',
                 RESULTAT=RESU2,);
 
-R2S2INF=CALC_ELEM( MODELE=MO,
-                   CHAM_MATER=CHAM_MAT,
-                   CARA_ELEM=CAR_ELE,
+R2S2INF=CALC_ELEM( 
                    OPTION='SIGM_ELNO_DEPL',
                    NUME_COUCHE=2,
                    NIVE_COUCHE='INF',
@@ -359,10 +342,7 @@ RESU3=MECA_STATIQUE(       MODELE=MO,
                               EXCIT=_F( CHARGE = CHA3),
                           )
 
-CALC_ELEM( reuse= RESU3 ,RESULTAT= RESU3 ,        MODELE=MO,
-                         CHAM_MATER=CHAM_MAT,
-                          CARA_ELEM=CAR_ELE,
-                              EXCIT=_F( CHARGE = CHA3),
+CALC_ELEM( reuse= RESU3 ,RESULTAT= RESU3 ,
                          OPTION=('EFGE_ELNO_DEPL',)
                        )
 # ON TESTE QUE LES EFFORTS SONT UNIFORMES
@@ -373,15 +353,11 @@ TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='QY',RESULTAT=
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='QY',RESULTAT=RESU3,
            TYPE_TEST='MIN',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
 
-R3S2INF=CALC_ELEM( MODELE=MO,
-                CHAM_MATER=CHAM_MAT,
-                CARA_ELEM=CAR_ELE,
+R3S2INF=CALC_ELEM( 
                 OPTION='SIGM_ELNO_DEPL',NUME_COUCHE=2,NIVE_COUCHE='INF',
                 RESULTAT=RESU3,);
 
-R3S2MOY=CALC_ELEM( MODELE=MO,
-                CHAM_MATER=CHAM_MAT,
-                CARA_ELEM=CAR_ELE,
+R3S2MOY=CALC_ELEM( 
                 OPTION='SIGM_ELNO_DEPL',NUME_COUCHE=2,NIVE_COUCHE='MOY',
                 RESULTAT=RESU3,);
 
@@ -440,10 +416,7 @@ RESU4=MECA_STATIQUE(       MODELE=MO,
                               EXCIT=_F( CHARGE = CHA4),
                          )
 
-CALC_ELEM( reuse= RESU4 ,RESULTAT= RESU4 ,        MODELE=MO,
-                         CHAM_MATER=CHAM_MAT,
-                          CARA_ELEM=CAR_ELE,
-                              EXCIT=_F( CHARGE = CHA4),
+CALC_ELEM( reuse= RESU4 ,RESULTAT= RESU4 ,  
                          OPTION=('EFGE_ELNO_DEPL',)
                        )
 # ON TESTE QUE LES EFFORTS SONT UNIFORMES
@@ -454,15 +427,11 @@ TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='QX',RESULTAT=
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='QX',RESULTAT=RESU4,
            TYPE_TEST='MIN',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
 
-R4S2INF=CALC_ELEM( MODELE=MO,
-                CHAM_MATER=CHAM_MAT,
-                CARA_ELEM=CAR_ELE,
+R4S2INF=CALC_ELEM( 
                 OPTION='SIGM_ELNO_DEPL',NUME_COUCHE=2,NIVE_COUCHE='INF',
                 RESULTAT=RESU4,);
 
-R4S2MOY=CALC_ELEM( MODELE=MO,
-                CHAM_MATER=CHAM_MAT,
-                CARA_ELEM=CAR_ELE,
+R4S2MOY=CALC_ELEM( 
                 OPTION='SIGM_ELNO_DEPL',NUME_COUCHE=2,NIVE_COUCHE='MOY',
                 RESULTAT=RESU4,);
 

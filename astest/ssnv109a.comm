@@ -1,0 +1,200 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# RESPONSABLE F6BHHBO P.DEBONNIERES
+# TITRE ESSAI DE TRACTION-CISAILLEMENT (VISCOELASTICITE CYRANO3)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'SSNV109A',NIV_PUB_WEB='INTRANET') )
+
+#......................................................................
+# PLAQUE CARREE EN TRACTION CISAILLEMENT CALCUL 3D
+# LOI DE FLUAGE DE CYRANO2
+#......................................................................
+
+
+M=LIRE_MAILLAGE( )
+
+MO=AFFE_MODELE( 
+            MAILLAGE=M,    VERIF='MAILLE',
+           AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D')
+           )
+
+TEMPE=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
+                          AFFE=_F(  TOUT = 'OUI', NOM_CMP = 'TEMP',
+                                 VALE = 350.)
+                       )
+
+EFAB=DEFI_CONSTANTE(    VALE=0.6)
+
+TREC=DEFI_CONSTANTE(    VALE=475.)
+
+FLUX=DEFI_CONSTANTE(    VALE=1.E+14)
+
+YPINI=DEFI_FONCTION(   NOM_PARA='TEMP',
+             VALE=( 300.,    195000.,
+                    400.,    195000., )    )
+
+YPFIN=DEFI_FONCTION(   NOM_PARA='TEMP',
+             VALE=( 300.,    195000.,
+                    400.,    195000., )    )
+
+YP=DEFI_NAPPE(   NOM_PARA='INST', INTERPOL='LIN',
+             PARA=(  0.,
+                     500., ),
+             FONCTION=( YPINI,
+                        YPFIN, ) )
+
+NUINI=DEFI_FONCTION(   NOM_PARA='TEMP',
+             VALE=( 300.,    0.3,
+                    400.,    0.3, )    )
+
+NUFIN=DEFI_FONCTION(   NOM_PARA='TEMP',
+             VALE=( 300.,    0.3,
+                    400.,    0.3, )    )
+
+NU=DEFI_NAPPE(   NOM_PARA='INST', INTERPOL='LIN',
+             PARA=(  0.,
+                     500., ),
+             FONCTION=( NUINI,
+                        NUFIN, ) )
+
+ALP=DEFI_CONSTANTE(    VALE=0. )
+
+ACIER=DEFI_MATERIAU( 
+                ELAS_FO=_F( E = YP,  NU = NU, ALPHA = ALP, TEMP_DEF_ALPHA=20.0,),
+           ZIRC_CYRA2=_F( EPSI_FAB = EFAB,TEMP_RECUIT = TREC,FLUX_PHI = FLUX)
+           )
+
+CM=AFFE_MATERIAU( 
+            MAILLAGE=M,   
+           AFFE=_F( TOUT = 'OUI',MATER = ACIER, TEMP_REF = 20.) )
+
+P23=DEFI_FONCTION( 
+           NOM_PARA='INST',PROL_DROITE='CONSTANT',PROL_GAUCHE='LINEAIRE',
+           VALE=(0.0, 0.0, 0.00001, 23.275,)
+           )
+
+M23=DEFI_FONCTION( 
+           NOM_PARA='INST',PROL_DROITE='CONSTANT',PROL_GAUCHE='LINEAIRE',
+           VALE=(0.0, 0.0, 0.00001,-23.275,)
+           )
+
+M37M23=DEFI_FONCTION( 
+           NOM_PARA='INST',PROL_DROITE='CONSTANT',PROL_GAUCHE='LINEAIRE',
+           VALE=(0.0, 0.0, 0.00001,-61.075, )
+           )
+
+M37P23=DEFI_FONCTION( 
+           NOM_PARA='INST',PROL_DROITE='CONSTANT',PROL_GAUCHE='LINEAIRE',
+           VALE=(0.0, 0.0, 0.00001,-14.525, )
+           )
+
+CH1=AFFE_CHAR_MECA( 
+            MODELE=MO,
+             TEMP_CALCULEE=TEMPE,DDL_IMPO=(
+           _F( NOEUD = 'NO4', DX = 0.,DY = 0.),
+                    _F( NOEUD = 'NO8', DX = 0.,DY = 0.,DZ = 0.),
+                    _F( NOEUD = 'NO2', DX = 0.),
+                    _F( NOEUD = 'NO6', DX = 0.))
+           )
+
+CH2=AFFE_CHAR_MECA_F( 
+            MODELE=MO,FORCE_NODALE=(
+           _F( NOEUD = ('NO1', 'NO5',), FX = M37P23,  FY = M23),
+                        _F( NOEUD = ('NO2', 'NO6',), FX = P23,     FY = P23),
+                        _F( NOEUD = ('NO3', 'NO7',), FX = M37M23,  FY = M23),
+                        _F( NOEUD = ('NO4', 'NO8',), FX = M23,     FY = P23))
+                          )
+
+L_INST=DEFI_LIST_REEL(  DEBUT=0.0,INTERVALLE=(
+             _F( JUSQU_A = 0.00001,    NOMBRE = 1),
+             _F( JUSQU_A = 100.0,      NOMBRE = 9),
+             _F( JUSQU_A = 500.0,      NOMBRE = 10))
+           )
+
+U=STAT_NON_LINE( 
+                            MODELE=MO,
+                        CHAM_MATER=CM,EXCIT=(
+                             _F( 
+                CHARGE = CH1), _F( 
+                CHARGE = CH2)),
+                         COMP_INCR=_F( 
+                RELATION = 'ZIRC_CYRA2'),
+                         INCREMENT=_F( 
+                LIST_INST = L_INST),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 1),
+                       PARM_THETA = 0.5,
+                       CONVERGENCE=_F( 
+                RESI_GLOB_MAXI = 1.E-4,
+                ITER_GLOB_MAXI = 25,
+                ITER_INTE_MAXI = 1000)
+              )
+
+U=CALC_ELEM( reuse=U,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                             
+                          RESULTAT=U,
+              )
+
+#
+
+TEST_RESU(RESU=( 
+           _F(  RESULTAT = U,              NUME_ORDRE = 20,
+             PARA = 'INST',             VALE = 5.00000E+02),
+           _F(  RESULTAT = U,              NUME_ORDRE = 20,
+             PARA = 'ITER_GLOB',        VALE_I = 0,
+             CRITERE = 'ABSOLU',         PRECISION = 6.),
+           _F(  RESULTAT = U,              NUME_ORDRE = 20,
+             CRITERE = 'ABSOLU',        PRECISION = 1.E-07,
+             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
+           _F(  RESULTAT = U,              NUME_ORDRE = 20,
+             CRITERE = 'ABSOLU',        PRECISION = 1.E-06,
+             PARA = 'RESI_GLOB',        VALE = 0.),
+           _F(  RESULTAT = U,              NUME_ORDRE = 20,
+             CRITERE = 'ABSOLU',         PRECISION = 2.,
+             PARA = 'ITER_LINE',        VALE_I = 0))
+           )
+
+U=CALC_ELEM(reuse=U,       
+                        RESULTAT=U,
+                            
+                          OPTION='EPSI_ELNO_DEPL')
+
+U=CALC_ELEM(reuse=U,       
+                        RESULTAT=U,
+                            
+                          OPTION='EPSP_ELNO')
+
+TEST_RESU(RESU=(
+
+  _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'MA2',NOEUD = 'NO2',
+        NUME_ORDRE = 10,NOM_CMP = 'EPXX',VALE = 2.015E-03),
+  _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'MA2',NOEUD = 'NO2',
+        NUME_ORDRE = 10,NOM_CMP = 'EPXY',VALE = 1.861E-03),
+  _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'MA2',NOEUD = 'NO2',
+        NUME_ORDRE = 20,NOM_CMP = 'EPXX',VALE = 6.388E-03),
+  _F( RESULTAT = U,NOM_CHAM = 'EPSP_ELNO',MAILLE = 'MA2',NOEUD = 'NO2',
+        NUME_ORDRE = 20,NOM_CMP = 'EPXY',VALE = 5.900E-03))
+
+           )
+
+FIN()
+#

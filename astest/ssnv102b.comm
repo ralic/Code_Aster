@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN CONTRAINTES PLANES (TAHERI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,22 +120,17 @@ SOLNL=CALC_ELEM( reuse=SOLNL,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=SOLNL,
-                            MODELE=CPLAN,
-                        CHAM_MATER=MAT
               )
 
-SOLNL=CALC_ELEM(  reuse=SOLNL,             MODELE=CPLAN,
+SOLNL=CALC_ELEM(  reuse=SOLNL,             
                                  RESULTAT=SOLNL,
-                               CHAM_MATER=MAT,
                                    OPTION='EPSI_ELNO_DEPL'  )
 
-SOLNL=CALC_ELEM( reuse=SOLNL,               MODELE=CPLAN,
-                                CHAM_MATER=MAT,
+SOLNL=CALC_ELEM( reuse=SOLNL,               
                                     OPTION='EPSP_ELGA',
                                   RESULTAT=SOLNL )
 
-SOLNL=CALC_ELEM( reuse=SOLNL,               MODELE=CPLAN,
-                                CHAM_MATER=MAT,
+SOLNL=CALC_ELEM( reuse=SOLNL,               
                                     OPTION='EPSP_ELNO',
                                   RESULTAT=SOLNL )
 

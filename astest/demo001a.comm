@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE DEMONSTRATION DE LA JOURNE ASTER LIBRE DU 14 OCTOBRE 2003
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,7 +81,7 @@ for k in range(3):
                        EXCIT=(_F(CHARGE=SYMETRIE,),
                               _F(CHARGE=FPILO),),);
                        
-   RESUELAS=CALC_ELEM(reuse =RESUELAS,MODELE=MO,CHAM_MATER=CM,
+   RESUELAS=CALC_ELEM(reuse =RESUELAS,
                  OPTION=('SIEF_ELNO_ELGA','ERRE_ELGA_NORE','ERRE_ELNO_ELGA'),
                  RESULTAT=RESUELAS);  
                                 
@@ -218,11 +218,11 @@ for k in range(1,NPAST+1):
                                    NOM_CMP='DY',),
                        CONVERGENCE=_F(ITER_GLOB_MAXI=100,),);
                        
-   RESUPILO=CALC_ELEM(reuse =RESUPILO,MODELE=MO,CHAM_MATER=CM,
+   RESUPILO=CALC_ELEM(reuse =RESUPILO,
                  OPTION=('SIEF_ELNO_ELGA',),RESULTAT=RESUPILO,NUME_ORDRE=k);  
                                 
    RESUPILO=CALC_NO(reuse =RESUPILO,RESULTAT=RESUPILO,
-               OPTION=('SIEF_NOEU_ELGA'),CHAM_MATER=CM,NUME_ORDRE=k);   
+               OPTION=('SIEF_NOEU_ELGA'),NUME_ORDRE=k);   
                            
    GNUSY=POST_RELEVE_T(ACTION=_F(  INTITULE = 'SYG',
               GROUP_NO='GM12', RESULTAT = RESUPILO,

@@ -1,0 +1,116 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE ESSAI DE PLASTICITE (MISES ECR. ISOT. ASYM BARRE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+
+
+DEBUT(  CODE=_F(  NOM = 'SSNL112L',NIV_PUB_WEB='INTERNET') )
+
+MAIL=LIRE_MAILLAGE( )
+
+MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,
+                 CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MOD=AFFE_MODELE(  MAILLAGE=MAIL,
+                        AFFE=_F(  TOUT = 'OUI',
+                               PHENOMENE = 'MECANIQUE',
+                               MODELISATION = '2D_BARRE') )
+
+CARBA=AFFE_CARA_ELEM(   MODELE=MOD,
+                        BARRE=_F(  GROUP_MA = 'TOUT',
+                                   SECTION = 'GENERALE',
+                                   CARA = ('A',),
+                                   VALE = ( 1.,))
+                     )
+
+MATER2=DEFI_MATERIAU(     ELAS=_F(  E = 1.E11,  NU = 0.),
+                             ECRO_ASYM_LINE=_F(  DT_SIGM_EPSI = 0.E9,
+                                              SY_T = 0.5E8,
+                                              DC_SIGM_EPSI = 0.E9,
+                                              SY_C = 2.E8)
+                          )
+
+CHMAT2=AFFE_MATERIAU(  MAILLAGE=MAIL,
+                       AFFE=_F(  TOUT = 'OUI',    MATER = MATER2))
+
+CHAR=AFFE_CHAR_MECA(   MODELE=MOD,DDL_IMPO=(
+                           _F(  GROUP_NO = 'A',
+                                      DX = 0., DY = 0.),
+                           _F(  GROUP_NO = 'B',
+                                      DX = 0., DY = 1.))
+                            )
+
+# TRACTION-COMPRESSION PLASTIQUE PARFAIT PARFAIT
+
+
+FONC5=DEFI_FONCTION(   NOM_PARA='INST',
+                      VALE=( 0., 0.,
+                             1.,  0.01,
+                             2., -0.01,
+)
+                     )
+
+LINST4=DEFI_LIST_REEL(  DEBUT=0.,INTERVALLE=(
+           _F(  JUSQU_A = 1.,      NOMBRE = 10),
+           _F(  JUSQU_A = 2.,      NOMBRE = 10))
+                        )
+
+U5=STAT_NON_LINE( 
+                            MODELE=MOD,
+                        CHAM_MATER=CHMAT2,
+                         CARA_ELEM=CARBA,
+                             EXCIT=_F( 
+                CHARGE = CHAR,
+                FONC_MULT = FONC5),
+                         COMP_INCR=_F( 
+                RELATION = 'VMIS_ASYM_LINE'),
+                         INCREMENT=_F( 
+                LIST_INST = LINST4),
+                            NEWTON=_F( 
+                PREDICTION = 'ELASTIQUE',
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 1),
+                       CONVERGENCE=_F( 
+                RESI_GLOB_RELA = 1.E-6),
+                     RECH_LINEAIRE=_F( 
+                ITER_LINE_MAXI = 3)
+              )
+
+U5=CALC_ELEM( reuse=U5,
+                            OPTION='SIEF_ELNO_ELGA',
+                          RESULTAT=U5,
+              )
+
+TEST_RESU(RESU=( 
+
+    _F( RESULTAT = U5, NUME_ORDRE = 1, NOM_CHAM = 'SIEF_ELNO_ELGA', NOM_CMP = 'N',
+     MAILLE = 'M1', NOEUD = 'N1', VALE = 5.00000E+07,  REFERENCE = 'ANALYTIQUE'),
+
+    _F( RESULTAT = U5, NUME_ORDRE = 10, NOM_CHAM = 'SIEF_ELNO_ELGA', NOM_CMP = 'N',
+     MAILLE = 'M1', NOEUD = 'N1', VALE = 5.00000E+07,  REFERENCE = 'ANALYTIQUE'),
+
+    _F( RESULTAT = U5, NUME_ORDRE = 12, NOM_CHAM = 'SIEF_ELNO_ELGA', NOM_CMP = 'N',
+     MAILLE = 'M1', NOEUD = 'N1', VALE = -2.00000E+08, REFERENCE = 'ANALYTIQUE'),
+
+    _F( RESULTAT = U5, NUME_ORDRE = 20, NOM_CHAM = 'SIEF_ELNO_ELGA', NOM_CMP = 'N',
+     MAILLE = 'M1', NOEUD = 'N1', VALE = -2.00000E+08, REFERENCE = 'ANALYTIQUE'))
+
+          )
+
+FIN()

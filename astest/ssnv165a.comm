@@ -1,4 +1,4 @@
-# MODIF  DATE 12/01/2004   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JOUMANA J. EL GHARIB
 
 # TITRE CAS TEST TRIAXIAL NON DRAINE AVEC CAM_CLAY EN 3D
@@ -299,8 +299,6 @@ U1=STAT_NON_LINE(reuse=U1,
               )
               
 U1=CALC_ELEM(  reuse=U1, 
-                  MODELE=MODELE,
-                  CHAM_MATER=CHMAT,
                   OPTION=('SIEF_ELNO_ELGA',
                           'VARI_ELNO_ELGA',
                           ),
@@ -308,7 +306,6 @@ U1=CALC_ELEM(  reuse=U1,
                         )
 
 U1=CALC_NO(  reuse=U1,     RESULTAT=U1,
-                   CHAM_MATER=CHMAT,
                        OPTION=( 'SIEF_NOEU_ELGA',
                        'VARI_NOEU_ELGA',
                            ),

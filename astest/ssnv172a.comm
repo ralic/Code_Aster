@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2004   AUTEUR KANIT T.KANIT 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,8 +119,6 @@ SOLNL=STAT_NON_LINE(MODELE     =TROISD,
                                     RESO_INTE     ='RUNGE_KUTTA_2',),),);
                                     
 SOLNL=CALC_ELEM(reuse =SOLNL,
-                MODELE=TROISD,
-                CHAM_MATER=MAT,
                 RESULTAT=SOLNL,
                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),); 
                 
@@ -216,8 +214,6 @@ SOLNL2=STAT_NON_LINE(MODELE     =TROISD,
                                     RESO_INTE     ='RUNGE_KUTTA_2',),),);
                                     
 SOLNL2=CALC_ELEM(reuse =SOLNL2,
-                MODELE=TROISD,
-                CHAM_MATER=MAT2,
                 RESULTAT=SOLNL2,
                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),); 
                 
@@ -312,8 +308,6 @@ SOLNL3=STAT_NON_LINE(MODELE     =TROISD,
                                     RESO_INTE     ='RUNGE_KUTTA_2',),),);
                                     
 SOLNL3=CALC_ELEM(reuse =SOLNL3,
-                MODELE=TROISD,
-                CHAM_MATER=MAT3,
                 RESULTAT=SOLNL3,
                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),); 
                 
@@ -405,8 +399,6 @@ SOLNL4=STAT_NON_LINE(MODELE     =TROISD,
                                     RESO_INTE     ='RUNGE_KUTTA_2',),),);
                                     
 SOLNL4=CALC_ELEM(reuse =SOLNL4,
-                MODELE=TROISD,
-                CHAM_MATER=MAT4,
                 RESULTAT=SOLNL4,
                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),); 
                 
@@ -498,8 +490,6 @@ SOLNL5=STAT_NON_LINE(MODELE     =TROISD,
                                     RESO_INTE     ='RUNGE_KUTTA_2',),),);
                                     
 SOLNL5=CALC_ELEM(reuse =SOLNL5,
-                MODELE=TROISD,
-                CHAM_MATER=MAT5,
                 RESULTAT=SOLNL5,
                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),); 
                 
@@ -591,8 +581,6 @@ SOLNL6=STAT_NON_LINE(MODELE     =TROISD,
                                     RESO_INTE     ='RUNGE_KUTTA_2',),),);
                                     
 SOLNL6=CALC_ELEM(reuse =SOLNL6,
-                MODELE=TROISD,
-                CHAM_MATER=MAT6,
                 RESULTAT=SOLNL6,
                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),); 
                 

@@ -1,0 +1,276 @@
+
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE PLAQUE SOUMISE A UN GRADIENT DE TEMPERATURE DANS L'EPAISSEUR
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#CAS_TEST__: HSNS100A
+# ----------------------------------------------------------------------
+# MODELISATION : DKT ET COQUE_3D
+# ----------------------------------------------------------------------
+#
+#
+
+
+DEBUT(CODE=_F(NOM='HSNS100A',
+              NIV_PUB_WEB='INTERNET',),);
+
+M=LIRE_MAILLAGE();
+
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_MA=_F(NOM='TOUT',
+                              TOUT='OUI',),);
+
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+
+TEMPER=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                  OPERATION='AFFE',
+                  MAILLAGE=M,
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP=('TEMP','TEMP_INF','TEMP_SUP',),
+                          VALE=(0.0,-50.0,50.0,),),);
+
+MO=AFFE_MODELE(MAILLAGE=M,
+               AFFE=(_F(MAILLE=('M1','M2',),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKT',),
+                     _F(MAILLE='M3',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKT',),
+                     _F(MAILLE=('M4','M5',),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='COQUE_3D',),
+                     _F(MAILLE='M6',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='COQUE_3D',),),);
+
+CARAC=AFFE_CARA_ELEM(MODELE=MO,
+                     COQUE=_F(GROUP_MA='TOUT',
+                              EPAIS=0.1,
+                              A_CIS=100000.0,
+                              COQUE_NCOU=5,
+                              MODI_METRIQUE='OUI',),);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.0,
+                            NU=0.3,
+                            ALPHA=0.01,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=0.2,
+                                 SY=10000.0,),);
+
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=ACIER,
+                         TEMP_REF=20.0,),);
+
+CH_LA=AFFE_CHAR_MECA(MODELE=MO,
+                     TEMP_CALCULEE=TEMPER,
+                     DDL_IMPO=(_F(TOUT='OUI',
+                                  DRZ=0.0,),
+                               _F(GROUP_NO='BOUT1',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DRZ=0.0,),
+                               _F(GROUP_NO='BOUT1',
+                                  DZ=0.0,
+                                  DRX=0.0,
+                                  DRY=0.0,),),);
+
+CH_FO=AFFE_CHAR_MECA(MODELE=MO,
+                     FORCE_NODALE=_F(GROUP_NO='BOUT2',
+                                     FX=1.0,
+                                     FY=1.0,
+                                     FZ=1.0,),);
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,1.0,1.0,),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=3,),);
+
+U2=STAT_NON_LINE(MODELE=MO,
+                 CHAM_MATER=CM,
+                 CARA_ELEM=CARAC,
+                 EXCIT=(_F(CHARGE=CH_FO,
+                           FONC_MULT=RAMPE,),
+                        _F(CHARGE=CH_LA,),),
+                 COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                 INCREMENT=_F(LIST_INST=L_INST,
+                              NUME_INST_FIN=2,),
+                 NEWTON=_F(MATRICE='ELASTIQUE',),
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=30,
+                                RESI_INTE_RELA=1e-08,
+                                ITER_INTE_MAXI=30,),);
+
+U2=CALC_ELEM(reuse =U2,
+             RESULTAT=U2,
+             OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
+
+U2=STAT_NON_LINE(reuse =U2,
+                 MODELE=MO,
+                 CHAM_MATER=CM,
+                 CARA_ELEM=CARAC,
+                 EXCIT=(_F(CHARGE=CH_FO,
+                           FONC_MULT=RAMPE,),
+                        _F(CHARGE=CH_LA,),),
+                 COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                 ETAT_INIT=_F(EVOL_NOLI=U2,
+                              NUME_ORDRE=2,),
+                 INCREMENT=_F(LIST_INST=L_INST,
+                              NUME_INST_FIN=3,),
+                 NEWTON=_F(MATRICE='TANGENTE',
+                           REAC_ITER=2,),
+                 CONVERGENCE=_F(RESI_INTE_RELA=1e-08,
+                                ITER_INTE_MAXI=30,),);
+
+U2=CALC_ELEM(reuse =U2,
+             RESULTAT=U2,
+             NUME_ORDRE=3,
+             TYPE_OPTION='SIGM_MASSIF',
+             OPTION='SIEF_ELNO_ELGA',);
+
+U2=CALC_ELEM(reuse =U2,
+             RESULTAT=U2,
+             NUME_ORDRE=3,
+             TYPE_OPTION='VARI',
+             OPTION='VARI_ELNO_ELGA',);
+
+U2=CALC_ELEM(reuse =U2,
+             RESULTAT=U2,
+             TOUT_ORDRE='OUI',
+             TYPE_OPTION='EPSI',
+             OPTION='EPSI_ELNO_DEPL',
+             
+             NUME_COUCHE=1,
+             NIVE_COUCHE='SUP',);
+#L'OPTION DEGE_ELNO_DEPL N'EXISTE PAS POUR LES ELEMENTS COQUE
+#NECESSITE DU PARTAGE DES OPTIONS SUIVANT LES ELEMENTS
+#
+
+
+U2=CALC_ELEM(reuse =U2,
+             RESULTAT=U2,
+             TOUT_ORDRE='OUI',
+             MAILLE=('M1','M2','M3',),
+             TYPE_OPTION='EPSI',
+             OPTION='DEGE_ELNO_DEPL',);
+
+TEST_RESU(RESU=(_F(RESULTAT=U2,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N1',
+                   VALE=110.831,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U2,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N1',
+                   VALE=113790.0,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U2,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRY',
+                   NOEUD='N17',
+                   VALE=-19616.0,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U2,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXY',
+                   MAILLE='M1',
+                   POINT=3,
+                   SOUS_POINT=16,
+                   VALE=-674.339667,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U2,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIYY',
+                   MAILLE='M5',
+                   POINT=1,
+                   SOUS_POINT=14,
+                   VALE=-166.65,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U2,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CMP='MXX',
+                   MAILLE='M1',
+                   NOEUD='N8',
+                   VALE=3.594152,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U2,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CMP='NXY',
+                   MAILLE='M5',
+                   NOEUD='Z2',
+                   VALE=-0.783839,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U2,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   MAILLE='M1',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   VALE=-557.986,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U2,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   MAILLE='M1',
+                   POINT=1,
+                   SOUS_POINT=6,
+                   VALE=-108.505,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U2,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   MAILLE='M5',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U2,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CMP='EPXY',
+                   MAILLE='M1',
+                   NOEUD='N16',
+                   VALE=-8.590736,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U2,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='DEGE_ELNO_DEPL',
+                   NOM_CMP='GAX',
+                   MAILLE='M1',
+                   NOEUD='N8',
+                   VALE=-9.358623,
+                   REFERENCE='NON_REGRESSION',),),);
+
+FIN();

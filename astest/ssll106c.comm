@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2003   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS ELEMENT TUYAU_6M MACRO_ELAS_MULT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -693,17 +693,14 @@ REST=MECA_STATIQUE(             MODELE=MO,
 
                         )
 
-CALC_ELEM( reuse= REST ,RESULTAT= REST ,              MODELE=MO,
-                                 CHAM_MATER=CHMAT,
-                                  CARA_ELEM=CAREL,EXCIT=(
-                           _F(  CHARGE = CHAR0),
-                           _F(  CHARGE = CHARTH)),
+CALC_ELEM( reuse= REST ,RESULTAT= REST ,              
+                                  
                   OPTION=('EPSI_ELGA_DEPL',
                           'EFGE_ELNO_DEPL', )
                         )
 
-CALC_NO(reuse=REST, CHAM_MATER=CHMAT,  MODELE=MO,
-                EXCIT=_F(  CHARGE = CHARTH),  CARA_ELEM=CAREL,
+CALC_NO(reuse=REST,   
+                  
               OPTION='FORC_NODA',
                  RESULTAT=REST
          )

@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE D6BHHAR A.RAZAKANAIVO
 # TITRE TREMPE D UN BARREAU INFINI A SECTION CARREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -643,8 +643,6 @@ TEMPE=CALC_META(reuse =TEMPE,
                              TOUT='OUI',),);
 
 TEMPE=CALC_ELEM(reuse =TEMPE,
-                MODELE=MOTH,
-                CHAM_MATER=CHMAT,
                 RESULTAT=TEMPE,
                 OPTION=('DURT_ELGA_META','DURT_ELNO_META',),);
 
@@ -673,8 +671,6 @@ TEMPE1=CALC_META(reuse =TEMPE1,
                               TOUT='OUI',),);
 
 TEMPE1=CALC_ELEM(reuse =TEMPE1,
-                 MODELE=MOTH,
-                 CHAM_MATER=CHMAT,
                  RESULTAT=TEMPE1,
                  INST=(300.0,410.0,),
                  OPTION=('DURT_ELGA_META','DURT_ELNO_META',),);

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE RACCORD POUTRE-3D : PROBLEME DE SAINT-VENANT -
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -185,12 +185,11 @@ RESU=MECA_STATIQUE(MODELE=MOD,
                    );
 
 RESU=CALC_ELEM(reuse=RESU,
-               MODELE=MOD,
                RESULTAT=RESU,
                GROUP_MA='POU3D',
                OPTION='SIGM_ELNO_DEPL',
-               EXCIT=_F(CHARGE=CH,),
-               CHAM_MATER=CHMAT )
+               
+               )
 
 TEST_RESU(RESU=(  
      # DEPLACEMENTS

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE SENSIBILITE AUX DONNEES - EXEMPLE D'UTILISATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -135,10 +135,6 @@ resultat=MECA_STATIQUE(MODELE=modele,
 #
 resultat=CALC_ELEM(reuse =resultat,
                    RESULTAT=resultat,
-                   MODELE=modele,
-                   CHAM_MATER=ch_mater,
-                   EXCIT=(_F(CHARGE=encastre),
-                          _F(CHARGE=pression)),
                    OPTION=('SIGM_ELNO_DEPL','ERRE_ELGA_NORE'));
 #
 # 8.2. Les derivees des contraintes aux points de Gauss
@@ -146,10 +142,6 @@ resultat=CALC_ELEM(reuse =resultat,
 resultat=CALC_ELEM(reuse =resultat,
                    RESULTAT=resultat,
                    SENSIBILITE=(E1,E2,E3,PA,PB),
-                   MODELE=modele,
-                   CHAM_MATER=ch_mater,
-                   EXCIT=(_F(CHARGE=encastre),
-                          _F(CHARGE=pression)),
                    OPTION=('SIEF_ELGA_DEPL','SIGM_ELNO_DEPL'));
 #
 # 8.3. Les derivees des contraintes aux noeuds
@@ -157,8 +149,6 @@ resultat=CALC_ELEM(reuse =resultat,
 resultat=CALC_NO(reuse =resultat,
                  RESULTAT=resultat,
                  SENSIBILITE=(E1,E2,E3),
-                 EXCIT=(_F(CHARGE=encastre),
-                        _F(CHARGE=pression)),
                  OPTION='SIGM_NOEU_DEPL');
 #
 # 9. Impressions des resultats

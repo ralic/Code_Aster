@@ -1,0 +1,173 @@
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# TITRE BARRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+
+
+
+DEBUT( CODE=_F(  NOM = 'SSNL127D',NIV_PUB_WEB='INTERNET') )
+
+PRE_GIBI();
+
+MAIL=LIRE_MAILLAGE( );
+
+CHCOR = CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='CART_CORR_R',
+                    MAILLAGE=MAIL,
+                    AFFE=_F( TOUT = 'OUI',
+                             NOM_CMP = 'CORR',
+                             VALE = 0.),
+                             INFO=2,
+                   )
+
+#  IMPR_RESU(RESU=_F(CHAM_GD=CHCOR,),);
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                 MAILLAGE=MAIL,
+                 CREA_GROUP_NO=(_F(GROUP_MA='LINS',
+                                   NOM='LIN',),
+                                _F(GROUP_MA='LINS1',
+                                   NOM='LIN1',),
+                                _F(GROUP_MA='LINL',
+                                   NOM='LINC',),                                   
+                                   ),
+                 INFO=1,);
+                 
+MAIL=DEFI_GROUP(reuse =MAIL,
+                 MAILLAGE=MAIL,
+                 CREA_GROUP_NO=_F(GROUP_MA=('FACE','FACEA','BLOQ1','BLOQ',),),
+                 );
+                 
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                INFO=2,
+                CREA_GROUP_NO=(
+                               _F(DIFFE=('BLOQ','LIN',),
+                                  NOM='ENCAS',),
+                               _F(DIFFE=('BLOQ1','LIN1',),
+                                  NOM='ENCAS1',),                                                                                         
+                                  ),);  
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=_F(GROUP_MA=('PAFA',),),);
+
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),);
+                            
+
+
+# ------ TRACTION SIMPLE AVEC ECROUISSAGE ------------------------------
+# AFFECTE SUR LA SECTION CERCLE
+               
+MATC2=DEFI_MATERIAU(
+                ELAS=_F(
+                   E = 2.E11,
+                   NU = 0.3,
+                   ),
+                CORR_ACIER=_F(
+                   D_CORR=0.2,
+                   ECRO_K=500.E6,
+                   ECRO_M=2.781,
+                   SY = 500.E6,
+                   )
+              )                        
+
+
+
+CHMAT1=AFFE_MATERIAU(   MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           MATER = MATC2,),);
+
+
+COND_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
+                        DDL_IMPO=(_F(GROUP_NO='FACEA',
+                                     DZ=0.0,),
+                                  _F(GROUP_NO='ENCAS',
+                                     DX=0.0,
+                                  ),                      
+                                  _F(GROUP_NO='ENCAS1',
+                                     DY=0.0,      
+                                  ),                              
+                                  ),);
+COEF=DEFI_FONCTION( 
+              NOM_PARA='INST',
+                  VALE=(0., 0.,
+                        1., 1.,),
+              PROL_DROITE='CONSTANT',
+             );
+
+                                     
+TRACTION=AFFE_CHAR_MECA( 
+                      MODELE=MODELE,
+               DDL_IMPO=_F( GROUP_NO = 'FACE',
+                            DZ = 0.023,
+                          ),
+              );
+
+
+L_INST=DEFI_LIST_REEL( 
+               DEBUT=0.0,INTERVALLE=(_F(JUSQU_A= 1.,
+                                                NOMBRE = 20,),                  
+              ),);
+
+#
+
+REST=STAT_NON_LINE( MODELE=MODELE,
+                    CHAM_MATER=CHMAT1,
+                    VARI_COMM=_F(CORROSION = CHCOR), 
+                    EXCIT=(_F(CHARGE=COND_LIM,),
+                           _F(CHARGE=TRACTION,
+                           FONC_MULT=COEF,),),
+                COMP_INCR=_F( 
+                 RELATION = 'CORR_ACIER',                         
+                   TOUT='OUI',
+                ),
+               INCREMENT=_F( 
+                LIST_INST = L_INST,
+                SUBD_PAS=4,
+                SUBD_PAS_MINI=1.E-06,
+                ),
+                NEWTON=_F( 
+                 MATRICE = 'TANGENTE',
+                  REAC_INCR = 1,
+                 REAC_ITER = 1),
+                CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-06,
+                               ITER_GLOB_MAXI= 50,
+                               RESI_INTE_RELA=1.E-6,
+                               ITER_INTE_MAXI=50,), 
+               );
+              
+              
+REST=CALC_ELEM( reuse=REST,
+            OPTION=('SIEF_ELNO_ELGA',),
+                RESULTAT=REST,
+              )
+
+TEST_RESU( 
+           RESU=_F(  RESULTAT = REST,       INST = 1.,
+             NOM_CHAM = 'DEPL',  REFERENCE = 'NON_REGRESSION',
+             GROUP_NO = 'PAFA', NOM_CMP = 'DZ', VALE = 2.3E-02)
+             )
+
+
+FIN( )
+

@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2004   AUTEUR JOUMANA J.EL-GHARIB 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE ESSAI HYDROSTATIQUE SUIVI D UN TRIAXIAL A SUCCION FIXE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -317,8 +317,6 @@ U1=STAT_NON_LINE(reuse=U1,
 
               
 U1=CALC_ELEM(  reuse=U1, 
-                  MODELE=MODELE,
-                  CHAM_MATER=CHMAT,
                   OPTION=('SIEF_ELNO_ELGA',
                           'VARI_ELNO_ELGA',
                           ),
@@ -326,7 +324,6 @@ U1=CALC_ELEM(  reuse=U1,
                         )
 
 U1=CALC_NO(  reuse=U1,     RESULTAT=U1,
-                   CHAM_MATER=CHMAT,
                        OPTION=( 'SIEF_NOEU_ELGA',
                        'VARI_NOEU_ELGA',
                            ),

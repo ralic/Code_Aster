@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/02/2004   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  - COUPLE TH ANALYTIQUE  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -162,8 +162,6 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
                     INFO=2,);
 
 RESU1=CALC_ELEM(reuse =RESU1,
-                MODELE=MODELE,
-                CHAM_MATER=CHMAT0,
                 OPTION='SIEF_ELNO_ELGA',
                 RESULTAT=RESU1,);
 
