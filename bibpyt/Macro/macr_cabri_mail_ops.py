@@ -1,4 +1,4 @@
-#@ MODIF macr_cabri_mail_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_cabri_mail_ops Macro  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,11 +72,11 @@ def macr_cabri_mail_ops(self,EXEC_MAILLAGE,RAFF_MAILLAGE,VERI_MAIL,GEOM_BRID,
    imp_formF = 1
   else:
    imp_formF = 0 
-  if IMPRESSION['FICHIER']!=None:
-   imp_fich = IMPRESSION['FICHIER']
-   imp_fichF = 1
-  else:
-   imp_fichF = 0 
+#  if IMPRESSION['FICHIER']!=None:
+#   imp_fich = IMPRESSION['FICHIER']
+#   imp_fichF = 1
+#  else:
+#   imp_fichF = 0 
  
   # Maillage  
   nrad = RAFF_MAILLAGE['NB_RADIAL']
@@ -141,8 +141,8 @@ def macr_cabri_mail_ops(self,EXEC_MAILLAGE,RAFF_MAILLAGE,VERI_MAIL,GEOM_BRID,
   nomres = LIRE_MAILLAGE(VERI_MAIL=_F(APLAT = ver_apla,
                                       VERIF = ver_veri ),)
                                       
-  if (imp_fichF == 1):  
-   print imp_fich
+#  if (imp_fichF == 1):  
+#   print imp_fich
   if (imp_formF == 1):  
    print imp_form
   if (imp_unitF == 1):  

@@ -3,7 +3,7 @@
 C
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,7 +89,7 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      LOGICAL      PREMIE
+      LOGICAL      PREMIE,GEOM,ALGO
       INTEGER      ICONTA,JPREM
       INTEGER      IFM,NIV
       REAL*8       TPS1(4),TPS2(4),TPSGEO,TPSALG
@@ -135,17 +135,11 @@ C
 
       CALL CFGEOM(PREMIE,LREAC(1),ITERAT,INST,
      &            NOMA,DEFICO,RESOCO,
-     &            DEPPLU,DEPDEL)
+     &            DEPPLU,DEPDEL,GEOM)
 
       CALL UTTCPU (10,'FIN',4,TPS1)
 
       TPSGEO = TPS1(4)
-C
-C ======================================================================
-C     PREPARATION DES DONNEES POUR CONTACT EN THM (PRESSION/TEMPERATURE)
-C ======================================================================
-C
-      CALL CFTHM(DEFICO,RESOCO)
 C
 C ======================================================================
 C     ALGORITHMES DE CONTACT
@@ -155,14 +149,18 @@ C
       CALL CFALGO(NOMA,ITERAT,CONV,
      &            DEFICO,RESOCO,
      &            DEPPLU,DDEPLA,DEPDEL,CNCINE,
-     &            LICCVG,LREAC)
+     &            LICCVG,LREAC,ALGO)
       CALL UTTCPU (20,'FIN',4,TPS2)
 
       TPSALG = TPS2(4)
 C
       IF (NIV.GE.2) THEN
-         WRITE (IFM,*) '<CONTACT> TEMPS CPU POUR GEOMETRIE : ',TPSGEO
-         WRITE (IFM,*) '<CONTACT> TEMPS CPU POUR ALGORITHME: ',TPSALG
+         IF (GEOM) THEN
+           WRITE (IFM,*) '<CONTACT> TEMPS CPU POUR GEOMETRIE : ',TPSGEO
+         ENDIF
+         IF (ALGO) THEN
+           WRITE (IFM,*) '<CONTACT> TEMPS CPU POUR ALGORITHME: ',TPSALG
+         ENDIF
          WRITE (IFM,*) '<CONTACT> *** FIN DU TRAITEMENT *** <CONTACT>'
       ENDIF
 C

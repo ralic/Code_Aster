@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 08/02/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -263,6 +263,39 @@ U0=CALC_NO(reuse =U0,
 #                  GROUP_NO=('BO',),),);
 #################################################
 
+DPVP=CALC_ELEM(RESULTAT=U0,OPTION='EXTR_ELNO_VARI',NOM_VARI='DPVP');
+DPVP=CALC_NO(reuse=DPVP,RESULTAT=DPVP,OPTION='EXTR_NOEU_VARI');
+
+SATLIQ=CALC_ELEM(RESULTAT=U0,
+       OPTION='EXTR_ELNO_VARI',
+       NOM_VARI='SATLIQ'
+       );
+       
+SATLIQ=CALC_NO(reuse=SATLIQ,
+       RESULTAT=SATLIQ,
+       OPTION='EXTR_NOEU_VARI'
+       );
+
+TEST_RESU(RESU=(
+                _F(RESULTAT=DPVP,
+                   INST=1.00000E+04,
+                   NOM_CHAM='EXTR_NOEU_VARI',
+                   NOM_CMP='X1',
+                   NOEUD='N2',
+                   VALE=4.59613E+05,
+                   PRECISION=1.E-3,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '7.3.20', ),
+                _F(RESULTAT=SATLIQ,
+                   INST=1.00000E+04,
+                   NOM_CHAM='EXTR_NOEU_VARI',
+                   NOM_CMP='X1',
+                   NOEUD='N2',
+                   VALE=4.99159E-01,
+                   PRECISION=1.E-3,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '7.3.20', ),
+                   ),);
 TEST_RESU(RESU=(
                 _F(RESULTAT=U0,
                    INST=1.00000E+04,

@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 25/10/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 08/02/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
       PARAMETER (NCMEC1=47)
       PARAMETER (NCMEC2=47)
-      PARAMETER (NCMEC3=27)
+      PARAMETER (NCMEC3=30)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3)
       CHARACTER*16 CHMEC1(NCMEC1)
       CHARACTER*16 CHMEC2(NCMEC2)
@@ -251,7 +251,8 @@ C     ------------------------------------------------------------------
      &     'EPGR_ELGA','SIGM_NOEU_SIEF','SIPO_NOEU_SIEF','EPGR_ELNO',
      &     'VALE_CONT','VARI_ELNO_COQU','CRIT_ELNO_RUPT','ETOT_ELGA',
      &     'ETOT_ELNO_ELGA','ETOT_ELEM','VALE_NCOU_MAXI',
-     &     'MODE_FLAMB','ENDO_ELGA','ENDO_ELNO_ELGA','INDI_LOCA_ELGA'/
+     &     'MODE_FLAMB','ENDO_ELGA','ENDO_ELNO_ELGA','INDI_LOCA_ELGA',
+     &     'EXTR_ELGA_VARI','EXTR_ELNO_VARI','EXTR_NOEU_VARI'/
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E R M I Q U E
 C     ------------------------------------------------------------------

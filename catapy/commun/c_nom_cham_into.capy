@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMUN  DATE 08/02/2005   AUTEUR CIBHHPD L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,6 +97,9 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "ETOT_ELEM",
                         "ETOT_ELGA",
                         "ETOT_ELNO_ELGA",
+                        "EXTR_ELGA_VARI",
+                        "EXTR_ELNO_VARI",
+                        "EXTR_NOEU_VARI",
                         "FLUX_ELGA_TEMP",
                         "FLUX_ELNO_TEMP",
                         "FLUX_NOEU_TEMP",

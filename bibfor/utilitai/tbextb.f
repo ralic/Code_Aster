@@ -8,7 +8,7 @@
      +                    LCRIT(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -505,7 +505,10 @@ C
  22      CONTINUE
  24      CONTINUE
          IF ( ITROUV .EQ. 0 ) THEN
-            CALL UTMESS('F','TBEXTB','PAS DE LIGNES TROUVEES') 
+            CALL UTDEBM('F','TBEXTB','PAS DE LIGNES TROUVEES') 
+            CALL UTIMPK('L','TABLE: ',1,NOMTAB) 
+            CALL UTIMPK('L','PARAMETRES: ',NPACRI,LIPACR) 
+            CALL UTFINM()
          ENDIF
          NBPU = ITROUV
  20   CONTINUE

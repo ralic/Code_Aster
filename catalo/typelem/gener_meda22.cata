@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 04/01/2005   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 08/02/2005   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,6 +55,9 @@ MODE_LOCAL__
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
+    E1GNEUT  = NEUT_R   ELGA__ RIGI    (X1       )
+    E1NNEUT  = NEUT_R   ELNO__ IDEN__  (X1       )
+    E1NEUTK  = NEUT_K24 ELEM__         (Z1       )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
                                         SIP      M11      FH11X    FH11Y    ENT11    M12
@@ -93,6 +96,10 @@ OPTION__
                               OUT__  EDEFOPG  PDEFORR
     EPSI_ELNO_DEPL      600   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR
                               OUT__  EDEFONO  PDEFORR
+    EXTR_ELGA_VARI      549   IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR  E1NEUTK  PNOVARI
+                              OUT__  E1GNEUT  PVARIGS
+    EXTR_ELNO_VARI      549   IN__   CCOMPOR  PCOMPOR  ZVARINO  PVARINR  E1NEUTK  PNOVARI
+                              OUT__  E1NNEUT  PVARINS
     FORC_NODA           600   IN__   ECONTPG  PCONTMR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR

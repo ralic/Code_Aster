@@ -2,7 +2,7 @@
      &                  DEFICO,RESOCO,LMAT,CINE,NBLIAI)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -85,7 +85,7 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      ZCONV
-      PARAMETER    (ZCONV=3)
+      PARAMETER    (ZCONV=4)
       INTEGER      LG,IBID,IL
       INTEGER      LLIAC,JDECAL,NBDDL,POSIT,JRCINE,IERD
       INTEGER      NEQ,LGBLOC,TAMPON
@@ -150,7 +150,7 @@ C
 
       CALL DISMOI('F','NOM_NUME_DDL',NOMMAT,'MATR_ASSE',IBID,NU,IERD)
       IZONE  = 1
-      LGBLOC = ZI(JCONV+ZCONV*(IZONE-1)+2)
+      LGBLOC = ZI(JCONV+ZCONV*(IZONE-1)+1)
 
       NBSM   = NBLIAC + LLF + LLF1 + LLF2 - AJLIAI
       NPAS   = NBSM / LGBLOC

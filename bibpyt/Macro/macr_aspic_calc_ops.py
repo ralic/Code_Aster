@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 22/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -427,18 +427,21 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
         if i<10 : NUME = '0'+str(i)
         else    : NUME =     str(i)
         mcsimp={}
-        mcsimp['PRECISION']=55.E-1
-        mcsimp['GROUP_NO' ]='LD'+str(i)
+        mcsimp['INTITULE'   ]='LD'+str(i)
+        mcsimp['GROUP_NO'   ]='LD'+str(i)
+        mcsimp['RESULTAT'   ]=nomres
+        mcsimp['TOUT_ORDRE' ]='OUI'
+        mcsimp['NOM_CHAM'   ]='SIEF_ELNO_ELGA'
+        mcsimp['PRECISION'  ]=55.E-1
+        mcsimp['TOUT_CMP'   ]='OUI'
+        mcsimp['OPERATION'  ]='EXTRACTION'
         mcfact.append( _F(**mcsimp) )
-      __pmpbsd=POST_RCCM(MATER       = MRCCM,
-                         MAILLAGE    = MAILLAGE,
+      __prelsd=POST_RELEVE_T(ACTION=mcfact)
+      __pmpbsd=POST_RCCM(OPTION         = 'PM_PB',
                          TYPE_RESU_MECA = 'EVOLUTION',
-                         TYPE_RESU   = 'VALE_MAX',
-                         OPTION      = 'PM_PB',
-                         SEGMENT     = mcfact,
-                         TRANSITOIRE = _F(RESULTAT  =nomres,
-                                          NOM_CHAM  ='SIEF_ELNO_ELGA',
-                                          TOUT_ORDRE='OUI',),
+                         TYPE_RESU      = 'VALE_MAX',
+                         MATER          = MRCCM,
+                         TRANSITOIRE = _F(TABL_RESU_MECA = __prelsd,),
                          TITRE       = '-- TRAITEMENT DES AZIMUTS DROITS --',)
       IMPR_TABLE(TABLE = __pmpbsd, )
 #
@@ -514,18 +517,21 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
         if i<10 : NUME = '0'+str(i)
         else    : NUME =     str(i)
         mcsimp={}
-        mcsimp['PRECISION']=55.E-1
-        mcsimp['GROUP_NO' ]='LI'+str(i)
+        mcsimp['INTITULE'   ]='LI'+str(i)
+        mcsimp['GROUP_NO'   ]='LI'+str(i)
+        mcsimp['RESULTAT'   ]=nomres
+        mcsimp['TOUT_ORDRE' ]='OUI'
+        mcsimp['NOM_CHAM'   ]='SIEF_ELNO_ELGA'
+        mcsimp['PRECISION'  ]=55.E-1
+        mcsimp['TOUT_CMP'   ]='OUI'
+        mcsimp['OPERATION'  ]='EXTRACTION'
         mcfact.append( _F(**mcsimp) )
-      __pmpbsi=POST_RCCM(MATER       = MRCCM,
-                         MAILLAGE    = MAILLAGE,
+      __prelsi=POST_RELEVE_T(ACTION=mcfact)
+      __pmpbsi=POST_RCCM(OPTION         = 'PM_PB',
                          TYPE_RESU_MECA = 'EVOLUTION',
-                         TYPE_RESU   = 'VALE_MAX',
-                         OPTION      = 'PM_PB',
-                         SEGMENT     = mcfact,
-                         TRANSITOIRE = _F(RESULTAT  =nomres,
-                                          NOM_CHAM  ='SIEF_ELNO_ELGA',
-                                          TOUT_ORDRE='OUI',),
+                         TYPE_RESU      = 'VALE_MAX',
+                         MATER          = MRCCM,
+                         TRANSITOIRE = _F(TABL_RESU_MECA = __prelsi,),
                          TITRE       = '-- TRAITEMENT DES AZIMUTS INCLINES --',)
       IMPR_TABLE(TABLE = __pmpbsi, )
 #

@@ -4,7 +4,7 @@
       INTEGER NBNOMI
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 31/10/95   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ALGELINE  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,8 @@ C
 C
       IF (NOMTYP(1:5).EQ.'TRIA6') THEN
          NBNOMI = 3
+      ELSEIF (NOMTYP(1:5).EQ.'TRIA7') THEN
+         NBNOMI = 4
       ELSEIF (NOMTYP(1:5).EQ.'TRIA9') THEN
          NBNOMI = 6
       ELSEIF (NOMTYP(1:5).EQ.'QUAD8') THEN
@@ -43,6 +45,8 @@ C
          NBNOMI = 8
       ELSEIF (NOMTYP(1:5).EQ.'SEG3') THEN
          NBNOMI = 1
+      ELSE 
+        CALL UTMESS ('F','NBNOMI','TYPE DE MAILLE INCONNU')
       ENDIF
 C
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE EN C.P. (TRIA3 QUAD4) AXISYM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,20 +167,23 @@ LIGNE=INTE_MAIL_2D(  MAILLAGE=M,
                                        GROUP_NO_EXTR = 'B', ),
                      INFO=2    )
 
+T_RESU=POST_RELEVE_T( ACTION=_F( INTITULE = 'LIGNE',
+                                 CHEMIN = LIGNE,
+                                 RESULTAT = RESU,
+                                 NOM_CHAM =  'SIGM_ELNO_DEPL',
+                                 OPERATION = 'EXTRACTION',
+                                 TOUT_CMP = 'OUI',
+                               ),
+                     ) ;
 
-
-T1=POST_RCCM(  MAILLAGE=M,
-               MATER=MA,
+T1=POST_RCCM(  OPTION='PM_PB',
                TYPE_RESU_MECA='EVOLUTION',
-               OPTION='PM_PB',
-               SEGMENT=_F(  CHEMIN = LIGNE,
-                            INTITULE = 'RCCM', ),
-               TRANSITOIRE=_F(  RESULTAT=RESU,
-                                NOM_CHAM='SIGM_ELNO_DEPL', ),
+               MATER=MA,
+               TRANSITOIRE=_F( TABL_RESU_MECA=T_RESU, ),
              )
 
 IMPR_TABLE( TABLE=T1,
-            NOM_PARA=('CHEMIN','LIEU','PM','PB','PMB'),  )
+            NOM_PARA=('LIEU','PM','PB','PMB'),  )
 
 TEST_TABLE(  TABLE=T1,
              FILTRE=_F(NOM_PARA='LIEU',

@@ -1,4 +1,4 @@
-#@ MODIF impr_fonction_ops Macro  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF impr_fonction_ops Macro  DATE 07/02/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -194,7 +194,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
             lx=lval[0]
             lr=lval[1]
             if typ=='fonction_c' and dCi.has_key('PARTIE'):
-               if dCi['PARTIE']=='COMPLEXE' : lr=lval[2]
+               if dCi['PARTIE']=='IMAG' : lr=lval[2]
             # on stocke les données dans le Graph
             if typ=='fonction_c' and not dCi.has_key('PARTIE'):
                dicC={

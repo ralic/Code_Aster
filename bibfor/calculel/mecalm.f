@@ -6,7 +6,7 @@
 C
 C TOLE CRP_20
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/11/2004   AUTEUR BOYERE E.BOYERE 
+C MODIF CALCULEL  DATE 08/02/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -310,7 +310,7 @@ C=======================================================================
 C=======================================================================
 
 C============ DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES =============
-      DO 480,NRPASS = 1,NBPASS
+      DO 490,NRPASS = 1,NBPASS
 
 C        POUR LE PASSAGE NUMERO NRPASS :
 C        . NOPASE : NOM DU PARAMETRE DE SENSIBILITE EVENTUELLEMENT
@@ -351,7 +351,7 @@ C EN OUTPUT --> INFCHA ET INPSCO
             ELSE
               CALL UTMESS('A',NOMCMD,'IMPOSSIBLE DE CALCULER'//
      &                    ' UN RESULTAT DERIVE POUR LE TYPE '//TYSD)
-              GO TO 480
+              GO TO 490
             END IF
             CHARGE = INFCHA//'.LCHA'
             INFOCH = INFCHA//'.INFC'
@@ -364,7 +364,7 @@ C DETERMINATION DU CHAMP DERIVE LERES0 ASSOCIE A (RESUCO,NOPASE)
             CALL UTMESS('A',NOMCMD,
      &   'IMPOSSIBLE DE TROUVER LE RESULTAT DERIVE ASSOCIE AU RESULTAT '
      &                  //RESUCO//' ET AU PARAMETRE SENSIBLE '//NOPASE)
-            GO TO 480
+            GO TO 490
           END IF
 
 C DETERMINATION DU TYPE DE DERIVE: TYPESE ET STYPSE
@@ -377,7 +377,7 @@ C DETERMINATION DU TYPE DE DERIVE: TYPESE ET STYPSE
             CALL UTMESS('A',NOMCMD,
      &         'IMPOSSIBLE DE CALCULER UN RESULTAT DERIVE POUR LE TYPE '
      &                  //TYSD)
-            GO TO 480
+            GO TO 490
           END IF
 
           IF (NEWCAL) THEN
@@ -2186,8 +2186,75 @@ C ---- VERIF SENSIBILITE FIN
               CALL JEDEMA()
   460       CONTINUE
 
+C    ------------------------------------------------------------------
+C    -- OPTION "EXTR_ELGA_VARI"
+C    ------------------------------------------------------------------
 
+          ELSE IF (OPTION.EQ.'EXTR_ELGA_VARI' ) THEN
+C ---- VERIF SENSIBILITE
+            IF (TYPESE.NE.0) THEN
+               CODSEN = 1
+            ENDIF
+            IF(CODSEN.NE.0) GO TO 900
+C ---- VERIF SENSIBILITE FIN
+            DO 470,IAUX = 1,NBORDR
+              CALL JEMARQ()
+              IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
+              CALL RSEXC2(1,1,RESUCO,'VARI_ELGA',IORDR,CHAMGD,OPTION,
+     &                    IRET)
+              IF (IRET.GT.0) GO TO 472
+              CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
+              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
+              CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
+     &                    K24B,K24B,CHNUMC,K24B,K24B,K24B,K24B,K24B,
+     &                    K24B,K24B,K24B,ZERO,CZERO,K24B,SOP,CHELEM,
+     &                    LIGREL,BASE,K24B,K24B,K24B,K24B,COMPOR,
+     &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
+              IF (IRET.GT.0) GO TO 472
+              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
+  472         CONTINUE
+              CALL JEDEMA()
+  470      CONTINUE
 C      -----------------------------------------------------------------
+C    ------------------------------------------------------------------
+C    -- OPTION "EXTR_ELNO_VARI"
+C    ------------------------------------------------------------------
+
+          ELSE IF (OPTION.EQ.'EXTR_ELNO_VARI' ) THEN
+C ---- VERIF SENSIBILITE
+            IF (TYPESE.NE.0) THEN
+               CODSEN = 1
+            ENDIF
+            IF(CODSEN.NE.0) GO TO 900
+C ---- VERIF SENSIBILITE FIN
+            DO 480,IAUX = 1,NBORDR
+              CALL JEMARQ()
+              IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
+              CALL RSEXC2(1,1,RESUCO,'VARI_ELNO_ELGA',IORDR,CHAMGD,
+     &                    OPTION,IRET)
+              IF (IRET.GT.0) GO TO 482
+              CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
+              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
+              CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
+     &                    K24B,K24B,CHNUMC,K24B,K24B,K24B,K24B,K24B,
+     &                    K24B,K24B,K24B,ZERO,CZERO,K24B,SOP,CHELEM,
+     &                    LIGREL,BASE,K24B,K24B,K24B,K24B,COMPOR,
+     &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
+              IF (IRET.GT.0) GO TO 482
+              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
+  482         CONTINUE
+              CALL JEDEMA()
+  480      CONTINUE
+C      -----------------------------------------------------------------
+
          ELSE
             CALL UTMESS('A',NOMCMD,' OPTION INEXISTANTE:'//OPTION)
          ENDIF
@@ -2211,11 +2278,11 @@ C     ------------------------------------------------------------------
   440   CONTINUE
 C============= FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =============
         IF (NEWCAL) THEN
-          DO 470,IAUX = 1,NRPASS - 1
+          DO 475,IAUX = 1,NRPASS - 1
             IF (ZK24(ADCRRS+IAUX-1)(1:19).EQ.LERES1) THEN
-              GO TO 480
+              GO TO 490
             END IF
-  470     CONTINUE
+  475     CONTINUE
           NOMPAR = '&&'//NOMPRO//'.NOMS_PARA '
           CALL RSNOPA(RESUCO,2,NOMPAR,NBAC,NBPA)
           NBPARA = NBAC + NBPA
@@ -2246,7 +2313,7 @@ C============= FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =============
   510     CONTINUE
           ZK24(ADCRRS+NRPASS-1)(1:19) = LERES1
         END IF
-  480 CONTINUE
+  490 CONTINUE
 C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
       GO TO 530
   520 CONTINUE

@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 07/02/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -164,9 +164,9 @@ class TableBase(object):
       lmax=[]
       for p in para:
          t=typ[para.index(p)]
-         larg_max=max([len(p)] + \
+         larg_max=max([len(str(p))] + \
                [len(FMT(dform,k,t) % 0) for k in ('formK','formR','formI')])
-         lspa.append(FMT(dform,'formK',t,larg_max,p) % p)
+         lspa.append(FMT(dform,'formK',t,larg_max,str(p)) % p)
          lmax.append(larg_max)
       if typdef:
          stype=dform['csep'].join([''] + \
@@ -424,19 +424,21 @@ class Table(TableBase):
       #lpz='%s=f(%s,%s)' % (pz,px,py)
       lpz='%s/%s' % (px,py)
       new_para=[lpz,]
-      # attention aux doublons dans ly
+      # attention aux doublons dans lx et ly
       for it in ly:
          if it<>None and new_para.count(it)==0:
             new_para.append(it)
-      x0=None
-      for x in lx:
-         if x<>None and x<>x0:
+      newx=[]
+      for it in lx:
+         if it<>None and newx.count(it)==0:
+            newx.append(it)
+      for x in newx:
+         if x<>None:
             d={ lpz : x, }
             taux = (getattr(self,px)==x)
             for dz in taux.rows:
                d[dz[py]]=dz[pz]
             new_rows.append(d)
-         x0=x
       new_type=[self.type[0],] + [self.type[2]]*len(ly)
       new_titr=self.titr
       if new_titr<>'': new_titr+='\n'

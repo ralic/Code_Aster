@@ -2,7 +2,7 @@
      &                  NBLIAC,JCNSVR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -69,6 +69,8 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      ZAPPAR
       PARAMETER    (ZAPPAR=3)
+      INTEGER      ZCMP
+      PARAMETER    (ZCMP=19)
       INTEGER      II,POSESC,NUMESC,NUMMAI,POSMAI
       CHARACTER*8  NOMESC,NOMMAI
       CHARACTER*4  TYPE2
@@ -119,8 +121,8 @@ C
 C
 C --- VALEURS
 C
-        RN = ZR(JCNSVR-1+ (NUMESC-1)*19+3 )
-        R  = ZR(JCNSVR-1+ (NUMESC-1)*19+19)
+        RN = ZR(JCNSVR-1+ (NUMESC-1)*ZCMP+3 )
+        R  = ZR(JCNSVR-1+ (NUMESC-1)*ZCMP+19)
 
         COE = 0.0D0
         IF ( RN.NE.0.D0 ) THEN
@@ -132,8 +134,8 @@ C
           COE = PROD/RN
         ENDIF
 
-        VARC   = ZR(JCNSVR-1+ (NUMESC-1)*19+1 )
-        AJEUFT = ZR(JCNSVR-1+ (NUMESC-1)*19+9 )
+        VARC   = ZR(JCNSVR-1+ (NUMESC-1)*ZCMP+1 )
+        AJEUFT = ZR(JCNSVR-1+ (NUMESC-1)*ZCMP+9 )
         IF (VARC.NE.0.0D0) THEN
           WRITE (IFM,2000) II,' (ND',NOMESC,TYPE2,NOMMAI,
      &                     ') * JEU:',ZR(JAPJEU+II-1),' * RN:',RN,

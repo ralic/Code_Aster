@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 22/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -358,6 +358,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #     l epaisseur
 #
       l_grno=MAILLAGE.LIST_GROUP_NO()
+      tabprl=[None]*4
       tablig=[None]*4
 #
 #     prelevements des ligaments circonferentiels et longitudinaux
@@ -370,15 +371,20 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
         elif (tgrno[0][:4] in LIG) and (tgrno[0][4:6] not in ('GV','TU','MI')): lgrno.append(tgrno[0])
 #
       motscles={}
-      motscles['SEGMENT']=[]
-      for grno in lgrno : motscles['SEGMENT'].append(_F(INTITULE=grno,GROUP_NO=grno))
+      motscles['ACTION']=[]
+      for grno in lgrno : 
+         motscles['ACTION'].append(_F(RESULTAT=nomres,
+                                      NOM_CHAM='SIEF_ELNO_ELGA',
+                                      TOUT_CMP='OUI',
+                                      INTITULE=grno,
+                                      GROUP_NO=grno,
+                                      OPERATION='EXTRACTION',))
       motscles['TITRE']='TABLE DE POST-TRAITEMENT SECTION SOUS-EPAISSEUR'
+      tabprl[1]=POST_RELEVE_T(**motscles)
       tablig[1]=POST_RCCM(MATER          = rccmat,
-                          MAILLAGE       = MAILLAGE,
                           TYPE_RESU_MECA = 'EVOLUTION',
                           OPTION         = 'PM_PB',
-                          TRANSITOIRE=_F(RESULTAT=nomres,
-                                         NOM_CHAM='SIEF_ELNO_ELGA',),**motscles)
+                          TRANSITOIRE=_F(TABL_RESU_MECA = tabprl[1],),)
 #
       motscles={}
       motscles['ACTION']=[]
@@ -436,6 +442,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #     les 8 ligaments sont tous les 45 degres
 #
       ACOUR = mc_IMPR_TABLE['ANGLE']*pi/180.0
+      secprl=[None]*3
       secrcm=[None]*3
       secinv=[None]*3
       secmoy=[None]*3
@@ -450,15 +457,21 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #
 #        moyenne RCCM sur les sections MI,TU et GV
 #
-         motscles['SEGMENT']=[]
-         for j in range(8) : motscles['SEGMENT'].append(_F(INTITULE=LIG[j]+SECT[i],
-                                                           GROUP_NO=LIG[j]+SECT[i]))
-         secrcm[i] = POST_RCCM( MAILLAGE        = MAILLAGE ,
-                                MATER           = rccmat ,
-                                TYPE_RESU_MECA  = 'EVOLUTION' ,
-                                OPTION          = 'PM_PB' ,
-                                TRANSITOIRE     = _F(RESULTAT = nomres,NOM_CHAM='SIEF_ELNO_ELGA'),
-                                **motscles)
+         motscles={}
+         motscles['ACTION']=[]
+         for j in range(8) :
+            motscles['ACTION'].append(_F(RESULTAT=nomres,
+                                         NOM_CHAM='SIEF_ELNO_ELGA',
+                                         TOUT_CMP='OUI',
+                                         INTITULE=LIG[j]+SECT[i],
+                                         GROUP_NO=LIG[j]+SECT[i],
+                                         OPERATION='EXTRACTION',))
+         motscles['TITRE']='TABLE DE POST-TRAITEMENT MOYENNE RCCM SECTION '+SECT[i]
+         secprl[i]=POST_RELEVE_T(**motscles)
+         secrcm[i]=POST_RCCM(MATER          = rccmat,
+                             TYPE_RESU_MECA = 'EVOLUTION',
+                             OPTION         = 'PM_PB',
+                             TRANSITOIRE=_F(TABL_RESU_MECA = secprl[i],),)
 #
 #        invariants sur les sections MI,TU et GV
 #

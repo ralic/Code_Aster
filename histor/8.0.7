@@ -1,0 +1,1122 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR assire A.ASSIRE   DATE  le 07/02/2005 a 13:03:59
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-461
+   NB_JOURS_TRAV  : 0.1
+   INTERET_UTILISATEUR : OUI
+   TITRE : Demo001a
+   FONCTIONNALITE
+     Le test demo001a peut fonctionner en interactif (les courbes et les isos
+     s'affichent en direct a l'ecran) ou en non-interactif (les courbes sont
+     générées dans des .ps). Si on a mis Interactif, on doit avoir un DISPLAY
+     fixé. Lorsque l'on execute le test en batch, on n'a normalement pas de
+     DISPLAY, mais parfois si (depend des parametres du compte de l'utilisateur)
+     et donc ca plante.
+   DETAILS
+     Pour regler le probleme une fois pour toute, on met le defaut de ce test
+     a Interactif = non.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     demo001a
+
+------------------------------------------------------------------------------
+CORRECTION AO 2004-378
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : ASTK + Stanley distant
+   FONCTIONNALITE
+     L'utilisateur voulait ouvrir Stanley distant sur une base en faisant
+     Bouton Droit + Stanley dans ASTK. Ca ne marchait pas car la variable
+     DISPLAY n'etait pas définie.
+   DETAILS
+     Corrigé depuis ASTK 1.2.0
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+CORRECTION AO 2005-017
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : ASTK + Stanley + surcharge
+   FONCTIONNALITE
+     L'utilisateur voulait ouvrir Stanley avec un executable surchargé en
+     faisant Bouton Droit + Stanley dans ASTK. L'executable surchargé n'etait
+     pas pris en compte.
+   DETAILS
+     Corrigé depuis ASTK 1.2.1
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 5.
+   INTERET_UTILISATEUR : OUI
+   FONCTIONNALITE : DEFI_PART_FETI
+      Ameliorations dans la partie partitionnement.
+   DETAILS
+     Dans fetcrf.f on corrige un certain les dimensionnements en dur dans des
+     tableaux. On ajoute la possibilité d'utiliser un MAILLAGE qui n'est pas
+     celui du modele.
+
+     Dans partition.py / classe Mail_py, on modifie pour que, si le maillage
+     provient d'Aster (avec la methode FromAster), lorsque l'on le renvoit
+     dans l'espace Aster (avec la methode ToAster), les noms des mailles soient
+     conservés.
+
+     Dans partition.py / classe Partition : ajout d'un parametre pour ne pas
+     tenir compte de la recherche des mailles de bords (non ouvert a
+     l'utilisateur pour le moment).
+
+     Fichiers : partition.py, fetcrf.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Les tests feti00* passés en astout.
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR boyere E.BOYERE   DATE  le 08/02/2005 a 14:15:15
+
+-------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2004-452
+   NB_JOURS_TRAV  : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE Plantage dans DYNA_TRAN_EXPLI avec le contact
+   FONCTIONNALITE
+     DYNA_TRAN_EXPLI se plante lorsque l'on essaie d'utiliser le contact.
+     C'est precisé dans la documentation que c'est interdit.
+     On n'a pas decidé d'ajouter un message d'arret plus explicite dans le code
+     car l'opérateur doit tres bientot etre integré dans DYNA_NON_LINE.
+     A moyen terme, le contact par contrainte active devrait alors
+     etre operationnel avec les schémas explicites en temps.
+   IMPACT_DOCUMENTAIRE : NON
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 08/02/2005 a 10:50:53
+
+--------------------------------------------------------------------------
+REALISATION EL 2005-009
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : J.PELLET
+   INTERET_UTILISATEUR : NON
+   TITRE : IMPR_MATRICE valeurs par défaut pour UNITE
+   FONCTIONNALITE
+     La commande IMPR_MATRICE imprime par défaut :
+        - sur l'unité 8 (RESULTAT) pour le format 'RESULTAT'
+        - sur l'unité 30 (IDEAS) pour le format 'IDEAS'
+     Définition de blocs pour etre conforme à la doc U
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U7.04.32
+       EXPL_ : valeur par défaut de UNITE
+   VALIDATION
+     passage des tests ahlv100a, sdld102a, sslx200a
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-031
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : E.GALENNE
+   INTERET_UTILISATEUR : OUI
+   TITRE : POST_RCCM / TYPE_RESU_MECA='EVOLUTION'
+   FONCTIONNALITE
+   Pour le calcul du SN :
+   ----------------------
+      Il n'y a pas de combinaison entre resultats
+      resu = POST_RCCM( TYPE_RESU_MECA = 'EVOLUTION',
+                                OPTION = 'SN',
+                                 MATER = mat,
+                     TRANSITOIRE =(_F( TABL_RESU_MECA = T_resu1,),
+                                   _F( TABL_RESU_MECA = T_resu2,),
+                                  )
+      est équivalent à
+        resu1 = POST_RCCM( TYPE_RESU_MECA = 'EVOLUTION',
+                                OPTION = 'SN',
+                                 MATER = mat,
+                     TRANSITOIRE =_F( TABL_RESU_MECA = T_resu1,),
+      et
+        resu2 = POST_RCCM( TYPE_RESU_MECA = 'EVOLUTION',
+                                OPTION = 'SN',
+                                 MATER = mat,
+                     TRANSITOIRE =_F( TABL_RESU_MECA = T_resu2,),
+
+   Pour le calcul en FATIGUE :
+   ---------------------------
+      Il y a combinaison entre resultats
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_R : R7.04.03 POST_RCCM
+       EXPL_ : SN pas de combinaison entre résultats
+               FATIGUE combinaison entre résultats
+   VALIDATION
+     test rccm01a
+
+--------------------------------------------------------------------------
+REALISATION EL 2005-011
+   NB_JOURS_TRAV  : 12
+   POUR_LE_COMPTE_DE   : E.GALENNE
+   INTERET_UTILISATEUR : OUI
+   TITRE : POST_RCCM
+   FONCTIONNALITE
+    opérateur POST_RCCM / TYPE_RESU_MECA='EVOLUTION' :
+      traitement du chemin par POST_RELEVE_T hors de l'opérateur
+
+    nouvelle syntaxe de l'opérateur:
+    resu = POST_RCCM( TYPE_RESU_MECA = 'EVOLUTION',
+                              OPTION = | 'PM_PB',
+                                       | 'SN',
+                                       | 'FATIGUE',
+                           TYPE_RESU = / 'VALE_MAX',
+                                       / 'DETAILS',
+                                MATER = mat,
+                                TITRE = montitre,
+                   TRANSITOIRE =_F( o TABL_RESU_MECA = T_resu,
+                                    f TABL_SIGM_THER = T_resuth,
+                                  )
+                 )
+      T_resu et T_resuth sont des tables issues de POST_RELEVE_T
+
+      T_resu=POST_RELEVE_T( ACTION=_F( INTITULE = 'LIGNE',
+                                       CHEMIN = LIGNE,
+                                       RESULTAT = RESU1,
+                                       NOM_CHAM =  'SIGM_ELNO_DEPL',
+                                       OPERATION = 'EXTRACTION',
+                                       TOUT_CMP = 'OUI',
+                                      ), ) ;
+      Le mot clé facteur ACTION est répétable autant de fois qu'il y a
+      de chemins.
+      On pourra faire un appel unique à POST_RCCM et on traitera tous
+      les chemins de la table de POST_RELEVE_T.
+      Dans la table issue de POST_RCCM, on retrouvera le paramètre
+      INTITULE.
+
+   INTERPRETATION DU RCCM
+   ----------------------
+   1- resu = POST_RCCM( TYPE_RESU_MECA = 'EVOLUTION',
+                                OPTION = 'SN',
+                                 MATER = mat,
+                     TRANSITOIRE =(_F( TABL_RESU_MECA = T_resu1,),
+                                   _F( TABL_RESU_MECA = T_resu2,),
+                                  )
+      est équivalent à
+        resu1 = POST_RCCM( TYPE_RESU_MECA = 'EVOLUTION',
+                                OPTION = 'SN',
+                                 MATER = mat,
+                     TRANSITOIRE =_F( TABL_RESU_MECA = T_resu1,),
+      et
+        resu2 = POST_RCCM( TYPE_RESU_MECA = 'EVOLUTION',
+                                OPTION = 'SN',
+                                 MATER = mat,
+                     TRANSITOIRE =_F( TABL_RESU_MECA = T_resu2,),
+
+      Pour le calcul du SN, pas de combinaisons entre resultats.
+
+   2- resu = POST_RCCM( TYPE_RESU_MECA = 'EVOLUTION',
+                                OPTION = 'FATIGUE',
+                                 MATER = mat,
+                     TRANSITOIRE =(_F( TABL_RESU_MECA = T_resu1,),
+                                   _F( TABL_RESU_MECA = T_resu2,),
+                                  )
+      Pour le calcul en FATIGUE, les resultats sont combinés entre eux.
+
+   3- pour le calcul du facteur d'usage:
+      une fois la valeur maxi trouvée dans la matrice des facteurs
+      d'usage, il ne faut pas mettre à 0 la ligne et la colonne.
+      Il faut mettre à 0 la ligne ou la colonne où le nombre d'occurence
+      est devenu égal à 0.
+
+   DETAIL
+   temps CPU
+     cas test aspic08a
+       POST_RELEVE_T :               466.00s
+       POST_RCCM     :    167.02s     22.95s
+       total job     :   1458.42s   1751.50s
+     cas test rccm06a
+       POST_RELEVE_T :                50.80s
+       POST_RCCM     :    488.14s     26.33s
+       total job     :    684.52s    270.22s
+     cas test ascou02a
+       POST_RELEVE_T :                 4.84s
+       POST_RCCM     :      1.14s      0.24s
+       total job     :     33.58s     35.83s
+
+   suppression des routines suivantes:
+     PRCCM0,1,2,4,5,6,7,8,9  PRPMPB  PRSNSP  PRGARG  PRGNOE  PROUEX
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.83.11 commande POST_RCCM
+       EXPL_ : remplacement de SD Resultat par des SD Table
+     DOC_R : R4.83.11 POST_RCCM
+       EXPL_ :
+   VALIDATION
+     le test rccm01a est un test "analytique" et a validé le développement
+     tests rccm01a, rccm01b, rccm06a, sslv04h, sslv100g
+     tests aspic08a
+     tests ascou02a, ascou03a, ascou06a
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhpd L.SALMONA   DATE  le 08/02/2005 a 10:07:36
+
+-------------------------------------------------------------------------------
+REALISATION EL 2004-123
+    NB_JOURS_TRAV  : 9.
+    POUR_LE_COMPTE_DE   : R.FERNANDES
+    INTERET_UTILISATEUR : OUI
+    TITRE  : Traitement des variables internes en THM
+    FONCTIONNALITE : Creation d'un nouveau champ par extraction des champs de
+    variables internes (VARI_ELGA et VARI_ELNO_ELGA)
+
+    DETAIL :
+    Pour pouvoir post traiter les variables internes en THM de facon plus
+    conviviale, de nouveaux champs ont été crées.
+    Le principe de ces champs est d'extraire du champ VARI_ELGA (ou
+    VARI_ELNO_ELGA pour le cham_elem aux noeuds) la variable interne qui nous
+    intéresse via un mot clé plus parlant que V1,V2,...
+
+    Le nom des nouveaux champs est EXTR_ELGA_VARI et EXTR_ELNO_VARI pour les
+    cham_elem et EXTR_NOEU_VARI pour le cham_no
+
+    En tant que post traitement ces champs sont calculés par CALC_ELEM et
+    CALC_NO. La syntaxe à utiliser est la suivante:
+
+    pour un cham_elem
+
+    GAMP=CALC_ELEM(RESULTAT=U1,
+                  OPTION='EXTR_ELNO_VARI',
+                  NOM_VARI='GAMP'); -----------> nouveau mot clé pour
+                                                 indiquer quelle variable on
+                                                 souhaite extraire via un nom
+                                                 codé
+
+    et pour un cham_no
+
+    GAMP=CALC_NO(reuse=GAMP,
+               RESULTAT=GAMP,
+               OPTION='EXTR_NOEU_VARI');
+
+    Puisqu'il s'agit juste d'extraire une (et une seule!!) variable interne,
+    les cham_elem correspondants doivent avoir été calculés au préalable.
+
+    La liste des différents noms symboliques des variables internes est :
+
+
+    "DPORO"        : variation de la porosité du matériau
+    "DRHOLQ"       : variation de la masse volumique du matériau
+    "DPVP"         : variation de la pression de vapeur
+    "SATLIQ"       : saturation du liquide
+    "EVP"          : déformation plastique volumique cumulée
+    "IND_ETA"      : Indicateur d'état mécanique
+    "D"            : Valeur de l'endommagement
+    "IND_END"      : Indicateur d'endommagement
+    "TEMP_MAX"     : Température maximale
+    "GAMP"         : Déformation déviatoire plastique cumulée
+    "PCR"          : Pression critique
+    "SEUIL_HYD"    : Seuil hydrique
+    "IND_HYD"      : Indicateur d'irréversibilité hydrique
+    "PCOHE"        : Pression de cohésion
+    "COMP_ROC"     : Comportement de la roche
+    "SEUIL_ISO"    : Seuil isotrope
+    "ANG_DEV"      : Angle du seuil déviatoire
+    "X11"          : Composantes du tenseur d'écrouissage cinématique
+    "X22"          : Composantes du tenseur d'écrouissage cinématique
+    "X33"          : Composantes du tenseur d'écrouissage cinématique
+    "X12"          : Composantes du tenseur d'écrouissage cinématique
+    "X13"          : Composantes du tenseur d'écrouissage cinématique
+    "X23"          : Composantes du tenseur d'écrouissage cinématique
+    "DIST_DEV"     : Distance normalisée au seuil déviatoire
+    "DEV_SUR_CRIT" : Rapport entre le seuil déviatoire et le seuil déviatorique
+                     critique
+    "DIST_ISO"     : Distance normalisée au seuil isotrope
+    "NB_ITER"      : Nombre d'itérations internes
+    "ARRET"        : Valeur du test local d'arrêt du processus itératif
+    "NB_REDE"      : Nombre de redécoupage local du pas de temps
+    "SIGNE"        : Signe du produit contracté de la contrainte déviatorique
+                     par la déformation plastique déviatorique
+
+    REMARQUE :
+
+    Lorsque la variable à extraire ne fait pas partie des variables internes
+    des lois concernées, une alarme est émise mais le champ est tout de meme
+    affecté à R8VIDE().
+
+
+    RESU_FAUX_VERSION_EXPLOITATION    :  NON
+    RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+    RESTITUTION_VERSION_EXPLOITATION  :  NON
+    RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+    VALIDATION :
+
+    -wtnp100a: modélisation D_PLAN_THVD, loi de couplage
+               LIQU_VAPE on rajoute des TEST_RESU sur les champs DPVP et SATLIQ
+    -wtnl103b: modélisation AXIS_HM, loi de DRUCKER-PRAGER et loi de couplage
+               LIQU_SATU, on rajoute des TEST_RESU sur les champs GAMP, EVP, DRHOLQ
+               et DPORO
+    -wtnp102a: modélisation D_PLAN_THHD, loi de couplage LIQU_VAPE_GAZ on
+               rajoute des TEST_RESU sur les champs DPVP et SATLIQ
+    -wtnv121a: modélisation 3D_HHMD, loi ENDO_ISOT_BETON et loi de couplage
+               LIQU_GAZ, on rajoute des TEST_RESU sur le champ D.
+    -wtnv123a: modélisation 3D_HHM, loi BARCELONE et loi de couplage LIQU_GAZ
+               on rajoute des TEST_RESU sur les champs PCR, IND_ETA, SEUIL_HYD
+               et IND_GYD
+    IMPACT_DOCUMENTAIRE : OUI
+
+    DOC_U : U4.81.01-H2
+    EXPL_ : Rajout des nouvelles options EXTR_ELGA_VARI et EXTR_ELNO_VARI dans
+            la doc de CALC_ELEM
+    DOC_U : U4.81.02-G2
+    EXPL_ : Rajout de la nouvelle option EXTR_NOEU_VARI et EXTR_ELNO_VARI dans
+            la doc de CALC_NO
+
+
+-----------------------------------------------------------------------
+--- AUTEUR g8bhhxd X.DESROCHES   DATE  le 08/02/2005 a 15:58:30
+
+-------------------------------------------------------------------------------
+REALISATION EL 2005-035
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE  : CAS-TEST DE NON REGRESSION mac3c01a
+   FONCTIONNALITE
+      Cas-test correspondant a la nouvelle version de MAC3
+      (assemblage AFA3GL, modele simplifie)
+      Ce cas-test en compression axiale permet de gerer le
+      nouveau fichier de commande en configuration.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION
+   IMPACT_DOCUMENTAIRE : NON
+
+
+-----------------------------------------------------------------------
+--- AUTEUR lebouvie F.LEBOUVIER   DATE  le 07/02/2005 a 13:25:41
+
+-------------------------------------------------------------------------------
+CORRECTION AL 2005-034
+   NB_JOURS_TRAV : 2.0
+   POUR LE COMPTE DE : C. DURAND
+   INTERET_UTILISATEUR : OUI
+   TITRE : SECH_GRANGER et ELEMENTS LUMPES
+   FONCTIONNALITE :
+   DETAIL :
+      Dans l'étude, générant l'erreur, l'utilisateur souhaite utiliser la
+      modélisation 3D_DIAG pour réaliser le calcul de séchage (SECH_GRANGER)
+      avec un maillage composé de mailles HEXA8. Le calcul s'arrête avec le
+      message suivant dans l'option RESI_RIGI_MASS (te0283):
+         <F> <THER_NON_LINE> <NTFCMA_01> COMPORTEMENT NON TROUVE
+      a) Analyse:
+        le problème se situe dans la routine te0283, à la ligne 88
+         on avait :
+            IF (ZK16(ICOMP) (1:5).NE.'THER_') THEN
+         au lieu de :
+            IF (ZK16(ICOMP) (1:5).EQ.'THER_') THEN
+        Le cas-test 3D, hsna100d qui a été restitué lors de la réalisation de
+        l'évolution EL2004-138 "SECHAGE ET ELEMENTS LUMPES", utilise des mailles
+        TETRA4. Ce cas-test n'active pas la routine te0283 pour le calcul de
+        l'option RESI_RIGI_MASS mais le te0126. L'option RESI_RIGI_MASS associée
+        aux mailles HEXA8 n'était pas testée (absence de cas-test).
+      b) Vérifications
+       -On vérifie que le problème rencontré n'est pas présent dans les routines
+        restituées lors de la réalisation de la fiche EL2004-138.
+       -Création d'un nouveau cas-test avec des mailles HEXA8, basé sur le
+        cas-test HSNA100 "séchage d'un mur d'enceinte en béton
+
+  RESU_FAUX_VERSION_EXPLOITATION    :  NON
+  RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+  RESTITUTION_VERSION_EXPLOITATION  :  OUI
+  RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+  VALIDATION : Passage de l'étude et du nouveau cas-test et des tests restitués
+               lors de la réalisation de la fiche EL2004-138.
+  IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V7.20.100
+       EXPL_ : HSNA100 "séchage d'un mur d'enceinte en béton" ajout de la
+               modélisation e : modélisation 3D_DIAG avec des mailles
+               HEXA8.
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mabbas M.ABBAS   DATE  le 07/02/2005 a 14:36:22
+
+-----------------------------------------------------------------------
+CORRECTION AL 2004-455
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : OUI
+   TITRE : CONTACT - Bug avec TRIA7
+   FONCTIONNALITE
+     L'étude associée fait du contact entre COQUES3D de type TRIA7.
+     On plante salement dans la lecture des données du contact:
+        <S> <JJALLS01> LONGUEUR DU SEGMENT DE VALEURS INVALIDE
+            >ACHAR   .CONTACT.NOEUQU         <
+     L'erreur se situe dans NBNOEL.
+   DETAILS
+    Aucun cas-test de la base ne faisait de contact avec TRIA7.
+    La routine NBNOEL est appelée par la présence du mot-clef CONTACT
+    dans AFFE_CHAR_MECA. Elle compte le nombre de mailles, de noeuds et
+    de noeuds milieux d'une maille ou d'un groupe de mailles.
+    Pour connaitre le nombre de noeuds milieux, on fait appel a une fonction
+    nbnomi.f qui retourne le nombre de noeuds milieux en fonction du type
+    d'élément.
+    Cette fonction ne connaissait pas TRIA7 et retournait zéro pour le nombre
+    de noeuds milieux, au lieu de quatre.
+    La routine NBNOEL retirait le noeud sommet des TRIA7 en retirant 1 au nombre
+    de noeuds milieux retournés par NBNOMI. Et donc: 0-1 = -1
+    On se retrouvait avec un nombre de noeuds milieux incorrect et négatif.
+
+    Corrections:
+    - prendre en compte les TRIA7 dans NBNOMI
+    - modifier NBNOMI pour qu'à l'avenir, s'il existe un TRIA34, on plante
+      proprement (transformation des IF en ELSE IF)
+    - correction de la routine TYPEMA, ajoutee en 7.3.23, qui ignorait aussi les
+      TRIA7 mais qui plantait proprement en 'TYPE DE MAILLE INCONNU'
+    - modification de PROJMA et PROJTR (ignoraient les TRIA7)
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+    Nouveau cas test ssnv129c
+    Base sur ssnv129b avec trois CREA_MAILLAGE enchaines:
+          QUAD8_9       (Q8->Q9)
+          QUAD_TRIA3    (Q9->T3)
+          LINE_QUAD     (T3->T6)
+          TRIA6_7       (T6->T7)
+
+-----------------------------------------------------------------------
+CORRECTION AL 2005-016
+   NB_JOURS_TRAV  : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE : MACR_CABRI_MAIL - Mot-clef FICHIER parasite
+   FONCTIONNALITE
+     Le mot-clef 'IMPRESSION' de MACR_CABRI_MAIL utilise l'option 'FICHIER'
+     qui vient de l'ancien DEFUFI et qui a été résorbé au profit de DEFI_FICHIER.
+     Il faut donc veiller à supprimer 'FICHIER' dans MACR_CABRI_MAIL/IMPRESSION
+     qui n'a, de toute manière aucun effet.
+   DETAILS
+     Suppression reference mot-clef 'FICHIER' dans le CAPY et dans
+     macr_cabri_mail_ops.py
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.CB.10A
+       EXPL_ : suppression mot_clef FICHIER
+   VALIDATION
+     cabri
+
+-----------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : NON
+   TITRE : CONTACT - Réécriture resultat contact VALE_CONT
+   FONCTIONNALITE
+   DETAILS
+     Réécriture de la routine RESUCO qui calcule les données du contact
+     pour post-traitement.
+     On supprime RESUCO au profit de CFRESU
+     Simplification, factorisation de certains calculs
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+-----------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : NON
+   TITRE : CONTACT - Reecriture creation SD
+   FONCTIONNALITE
+   DETAILS
+     Reecriture de la routine CRSDCO qui cree les SD pour le calcul du contact.
+     On supprime CRSDCO au profit de CFCRSD
+     Supprime:
+       CRSDCO
+     Ajoute:
+       CFCRSD
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+-----------------------------------------------------------------------
+REALISATION EL 2004-069
+   NB_JOURS_TRAV  : 4
+   INTERET_UTILISATEUR : OUI
+   TITRE : Vérification des interpénétrations par les routines de contact
+   FONCTIONNALITE
+     Etudier la possibilité de définir les conditions de contact ...
+     mais sans résoudre le contact. L'idée est de vérifier si on a des
+     interpénétrations de matière, sans payer le surcout du calcul du contact.
+     Ce serait particulièrement utile pour l'appliquer (donc sans surcout calcul)
+     sur les levres des fissures en mécanique de la rupture.
+     Il s'agirait juste d'émettre une alarme.
+     Il faudrait l'employer systématiquement dans ASPIC et ASCOUF.
+   DETAILS
+    Cette EL permet de verifier qu'il y a interpenetration entre deux surfaces (ou
+   deux lignes en 2D). On utilise pour ca les routines d'appariement du contact.
+   cfalgo detecte un cas METHODE='VERIF' pour eviter de lancer le calcul du contact
+   proprement dit.
+   Si STOP_INTERP='OUI', une interpenétration provoquera l'arret en erreur fatale:
+           <F> <STAT_NON_LINE> <CFSANS> INTERPENETRATIONS DES SURFACES
+   Sinon: c'est une ALARME:
+           <A> <STAT_NON_LINE> <CFSANS> INTERPENETRATIONS DES SURFACES
+   Dans STAT_NON_LINE, affichage de la liste des interpenétrations a la
+   fin de chaque pas de temps:
+ <CONTACT>   * INTERPENETRATION  DU  NOEUD <N2      > AVEC <M522    > * JEU: 0.00000E+00
+ <CONTACT>   * INTERPENETRATION  DU  NOEUD <N3      > AVEC <M521    > * JEU: 0.00000E+00
+ <CONTACT>   * INTERPENETRATION  DU  NOEUD <N4      > AVEC <M520    > * JEU: 0.00000E+00
+ <CONTACT>   * INTERPENETRATION  DU  NOEUD <N5      > AVEC <M518    > * JEU: 0.00000E+00
+ <CONTACT>   * INTERPENETRATION  DU  NOEUD <N6      > AVEC <M517    > * JEU: 0.00000E+00
+ <CONTACT>   * INTERPENETRATION  DU  NOEUD <N7      > AVEC <M516    > * JEU: 0.00000E+00
+ <CONTACT>   * INTERPENETRATION  DU  NOEUD <N8      > AVEC <M514    > * JEU: 0.00000E+00
+ <CONTACT>   * INTERPENETRATION  DU  NOEUD <N9      > AVEC <M513    > * JEU: 0.00000E+00
+ <CONTACT>   * INTERPENETRATION  DU  NOEUD <N10     > AVEC <M512    > * JEU: 0.00000E+00
+ <CONTACT>   * INTERPENETRATION  DU  NOEUD <N11     > AVEC <M511    > * JEU: 0.00000E+00
+ <CONTACT>   * IL Y A     10 NOEUDS INTERPENETRES (JEU REF.:  5.00000E-01)
+
+   Modifications.
+   * Traitement d'AFFE_CHAR_MECA
+     la routine cazoco est modifiée en profondeur (détection d'un bug au passage,
+    voir AL2005-035). On ajoute cazocc (mot-clefs specifiques METHODE=CONTINUE)
+    et cazocv (mot-clefs spécifiques METHODE=VERIF).
+    Modif de ssnv504b: suppression de l'option FROTTEMENT='SANS'
+   * SD de contact
+     Le vecteur TOLECO est agrandi pour contenir TOLE_VERI_JEU.
+     Le vecteur CONVCO est agrandi pour contenir STOP_INTERP.
+     Impacts sur: algocl, algoco, caraco, carama, cfaca1, fro2gd,frolgd,fropgd
+   * Affichage des resultats
+     Nouvelle routine CFSANS appelee dans CFRESU
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION
+     ssnv504a: ajout d'un STAT_NON_LINE avec contact sans calcul
+     METHODE = 'VERIF', TOLE_INTERP = 0.5, STOP_VERIF='NON'
+     !!!!!!!!! ON INTRODUIT UNE ALARME DANS LE TEST, FORCEMENT !!!!!!!!!!!
+     !!!!!!!!! L'ALARME EST LEGITIME !!!!!!!!!!!
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_D : D4.06.14
+       EXPL_ : Nouvelles SD de contact (modif de DEFICO.TOLECO et DEFICO.CONVCO)
+     DOC_D : D4.05.00
+       EXPL_ : Mise en oeuvre informatique du contact
+     DOC_U : U4.44.01
+       EXPL_ : AFFE_CHAR_MECA
+          nouvelle methode de "contact" METHODE='VERIF'
+          nouveau mot-clef:
+            * STOP_VERIF      =SIMP(statut='f',typ='TXM',defaut="NON",
+                                    into=("OUI","NON")),
+               l'interpenetration s'arrete ou pas en erreur fatale
+            * TOLE_INTERP     =SIMP(statut='f',typ='R',defaut = 0.)
+               tolerance de détection de l'interpénetration
+          Suppression de l'option FROTTEMENT='SANS'
+     DOC_U : U2.04.04
+       EXPL_ : Preciser l'usage de cette nouvelle option de contact
+
+-----------------------------------------------------------------------
+REALISATION EL 2004-265
+   NB_JOURS_TRAV  : 0.1
+   INTERET_UTILISATEUR : OUI
+   TITRE : Contact - Recherche lineaire
+   FONCTIONNALITE
+     Le contact et la recherche linéaire sont incompatibles pour des raisons théoriques.
+     La documentation le précise bien. Mais il n'y a pas de vérification
+     dans STAT_NON_LINE.
+     Comme pour le couple pilotage/contact, je propose d'ajouter une erreur
+     fatale pour le couple recherche lineaire/contact dans NMINIT.
+   DETAILS
+     Il n'y a qu'un cas très particulier ou la recherche linéaire est compatible
+     avec le contact: matériau élastique, petits déplacements.
+     Or ce cas ne correspond pas à un besoin d'utiliser la recherche lineaire.
+     On interdit donc carrément CONTACT+RECHERCHE_LINEAIRE
+     impact: NMINIT
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION
+      essai
+   IMPACT_DOCUMENTAIRE : NON
+
+-----------------------------------------------------------------------
+REALISATION EL 2005-004
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : OUI
+   TITRE : contact glissière
+   FONCTIONNALITE
+     Restitution des développements de l'IFP sur le contact glissière.
+   DETAILS
+     Cette EL permet de réaliser le contact "collant": tous les noeuds
+     potentiels de contact sont actifs.
+     Les deux surfaces ne peuvent jamais décoller.
+     Modifications.
+     * Nouvelle routine: ALGOGL appele via CFALGO
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION
+    nouveau cas-test: ssnv504b
+    ssnv504b: ajout cas-test contact avec glissiere (extrusion de lopin)
+              GLISSIERE = 'OUI'
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_D : D4.06.14
+       EXPL_ : Nouvelles SD de contact (modif de DEFICO.TOLECO et DEFICO.CONVCO)
+     DOC_D : D4.05.00
+       EXPL_ : Mise en oeuvre informatique du contact
+     DOC_U : U4.44.01
+       EXPL_ : AFFE_CHAR_MECA
+          nouvelle option de la methode de "contact" METHODE='CONTRAINTE'
+             GLISSIERE       =SIMP(statut='f',typ='TXM',defaut="NON",
+                                      into=("OUI","NON")),
+     DOC_U : U2.04.04
+       EXPL_ : Préciser l'usage de ce mot-clef
+
+-----------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2004-065
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   TITRE : CONTACT - Contact collant
+   FONCTIONNALITE
+     On propose d'ajouter une option au contact permettant le contact "COLLANT" .
+     (Via un nouveau mot-clef simple: ADHESION = COLLANT/NORMAL)
+     Un contact "collant" est un contact qui reste dès lors qu'il a été initié.
+     Quelque soit le mouvement des deux surfaces relatives, le contact reste en place.
+     Cette évolution permettrait peut-etre de résoudre certaines situations
+     d'oscillations (collage/décollage).
+   DETAILS
+     Cette fiche fait doublon avec EL 2005-004 (realisation IFP)
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   VALIDATION
+   IMPACT_DOCUMENTAIRE : NON
+
+-----------------------------------------------------------------------
+REALISATION EL 2004-270
+   NB_JOURS_TRAV  : 5
+   INTERET_UTILISATEUR : OUI
+   TITRE : AOM - STAT_NON_LINE CONTACT
+   FONCTIONNALITE
+     Le calcul ci-joint est un calcul coeur complet (193 assemblages
+     combustibles). Au bout de 10 heures de CPU, je n'ai toujours pas
+     convergé au 1-er pas de temps. Si j'enlève les conditions de
+     contact, çà converge très vite.
+     Sur un demi coeur et le même fichier de commandes, je fais 13 pas de
+     temps en 4 heures de temps CPU.
+   DETAILS
+     Les groupes de noeuds étaient mal définis.
+     Le modèle excluait les mauvais noeuds (via l'option 'SANS_GROUP_NO').
+     Le contact n'y retrouvait pas ses petits et faisait des centaines
+     d'iterations internes inutiles.
+     Après modif par Xavier, le calcul devient plus raisonnable.
+
+     Cette fiche est un argument supplémentaire pour l'affichage
+     des itérations internes de contact dans STAT_NON_LINE (EL2005-015).
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      essai
+
+-----------------------------------------------------------------------
+REALISATION ED 2004-035
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE :  AFFE_CHAR_MECA / CONTACT
+   FONCTIONNALITE
+     Dans U5.01.01, on dit P5/6 sur VALE_CONT de voir AFFE_CHAR_MECA/CONTACT.
+     Après avoir vu, on ne trouve rien sur VALE_CONT dans ce doc.
+     Ni d'ailleurs dans R5.03.50.
+   DETAILS
+     On decrit la SD VALE_CONT dasn la doc d'AFFE_CHAR_MECA
+     Fait dans la doc v7
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   VALIDATION
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.44.01
+       EXPL_ : AFFE_CHAR_MECA
+          description de la SD VALE_CONT
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mcourtoi M.COURTOIS   DATE  le 07/02/2005 a 14:39:30
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-009
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : IMPR_FONCTION n'imprime pas la partie imaginaire d'une fonction complexe.
+   FONCTIONNALITE
+      Pour tracer la partie imaginaire d'une fonction, 'IMAG' avait été
+      par erreur remplacée par 'COMPLEXE' (mot-clé PARTIE).
+      C'était donc toujours la partie réelle qui était tracée.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+   Anomalie dans IMPR_TABLE :
+      En voulant utiliser le format TABLEAU_CROISE sur une table ayant pour
+      paramètres NOEUD, INST et TEMP :
+
+      - çà fonctionnait avec NOM_PARA=('NOEUD', 'INST', 'TEMP'),
+      - çà plantait     avec NOM_PARA=('INST', 'NOEUD', 'TEMP') car le
+        paramètre de la table intermédiaire construite est un réel et non
+        une chaine de caractères (plantait sur len(p)).
+
+         TABL_POST_RELE
+         TEMP FONCTION DE NOEUD ET INST
+            NOEUD/INST     0.0          5.0          10.0
+              NO3      -1.40016E+02 -1.08375E+02 -2.11548E+01
+              NO33      2.12849E+02  2.42536E+02  3.27656E+02
+              NO2       1.41113E+02  3.46661E+02  5.55747E+02
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE ED 2004-032
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE
+      Dire dans U4.01.03 qu'un champ par élément Aster a le même nom dans le
+      fichier Castem
+      --> ce n'est pas le but de ce document qui s'arrête à la syntaxe ;
+          l'intention est bonne mais cela nécessiterait de compiler les
+          modifs de toutes les docs.
+          Le but de ce document est de répondre à la question :
+             "mon fichier tournait avec la version précédente, il plante dans
+             la phase de vérification : qu'est-ce qui a changé dans cette
+             commande et pourquoi ?"
+   FONCTIONNALITE
+   IMPACT_DOCUMENTAIRE : NON
+
+------------------------------------------------------------------------------
+CORRECTION AO 2004-273
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE
+      Problème avec la bsf quand le répertoire contient des noms de fichiers
+      comportant un ou plusieurs espaces.
+   FONCTIONNALITE
+      Effectivement, dans ce cas, il y a un décalage lors de l'interprétation
+      du contenu du répertoire (le nom n'est pas affiché et le type du fichier
+      ou répertoire suivant est celui de l'item précédent).
+      C'est connu et indiqué dans la doc d'astk (U1.04.00), on peut s'en
+      protéger mais c'est au détriment des performances quand il y a bcp de
+      fichiers et de toutes manières, on n'est pas sous windows et çà
+      posera à coup sûr des problèmes (copie de fichiers par exemple)...
+
+      J'ajoute un message quand on détecte un décalage :
+      """
+         Avertissement : Décalage détecté dans le traitement de ce répertoire.
+         En général, cela signifie qu'un nom de fichier contient un espace, il
+         se peut que le fichier ou répertoire 'XXXXXX' soit mal représenté dans
+         la liste.
+      """
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+      Vu depuis longtemps déjà avec P.Semete
+
+------------------------------------------------------------------------------
+CORRECTION AO 2005-030
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : Diagnostic <S> ignoré en interactif avec astk 1.2.0.
+   FONCTIONNALITE
+      Effectivement, une erreur d'aiguillage dans le diagnostic faisait que
+      l'on s'arrêtait sur OK (car on avait la phrase magique sur la fermeture
+      des bases dans le .resu), mais un "elif" à la place d'un nouveau "if"
+      faisait que l'on ne regardait pas si une erreur <S> était à l'origine
+      de la fermeture des bases.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+      corrigé depuis astk 1.2.1
+
+------------------------------------------------------------------------------
+CORRECTION AO 2005-040
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : Ordre de lancement des fichiers de commandes multiples.
+   FONCTIONNALITE
+      Le profil contient deux fichiers .comm (un qui commence par DEBUT, l'autre
+      par POURSUITE), c'est celui qui commence par POURSUITE qui est lancé en
+      premier !!!
+      En fait, ce n'était pas dit dans la doc, j'ajoute cette remarque dans le
+      paragraphe "Comment faire une étude ?" :
+            Dans le cas d'une étude avec plusieurs fichiers de commandes, tous
+            les fichiers doivent être de type « comm », associés à l'unité
+            logique 1 et c'est l'extension qui détermine l'ordre d'exécution :
+            .comm, puis .com0, .com1, ?, .com9 (il peut y avoir des trous).
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+      sera dans U1.04.00 indice C (pour version 7.4)
+
+
+-----------------------------------------------------------------------
+--- AUTEUR pabhhhh N.TARDIEU   DATE  le 07/02/2005 a 10:29:22
+
+------------------------------------------------------------------------
+REALISATION EL 2004-248
+   NB_JOURS_TRAV  : 3
+   POUR_LE_COMPTE_DE : Mickael ABBAS
+   INTERET_UTILISATEUR : OUI
+   TITRE : STAT_NON_LINE et CONTACT (AOM)
+   FONCTIONNALITE
+     L'utilisateur se plaint qu'il n'arrive pas à faire passer son étude qui comporte
+     un nombre important de liaisons de contact avec 12 Go de mémoire et 24h de temps.
+     Dans un premier temps, il a été remarqué que la méthode de résolution utilisée
+     était "PENALISATION". Le calcul a alors été lancé avec la méthode "CONTRAINTE"
+     (valeur par défaut) et il est 'passé' avec 4 Go. En fait 'passer' est un peu
+     exagéré : la calcul tourne mais le résidu relatif est toujours à 1.e-4.
+     Si on enlève le contact, tout se passe bien. Il y a à mon sens un problème de
+     conditionnement de la matrice qui fait que le résidu n'est pas "nul".
+     Il est à noter que le modèle contient de nombreuses LIAISON_MAIL et des
+     éléments HEXA 20, qui sont des facteurs de dégradation du conditionnement de
+     la matrice en présence de contact.
+     Pour vérifier cela, j'ai demandé à Vincent Godard qui prend la suite du projet
+     où intervient ce calcul de me faire parvenir le même maillage mais tout en linéaire
+     et un maillage dérafiné, histoire de pouvoir le faire passer assez vite.
+     Donc je décide de clore la fiche dans la mesure où le pb de mémoire semble
+     résolu. L'analyse de la détérioration du conditionnement de la matrice sera
+     effectuée dans les semaines qui viennent.
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : NON
+   VALIDATION
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U2.04.04
+      EXPL_ : Insister dans ces documentations sur le fait que la méthode 'CONTRAINTE'
+              est à privilégier dans le cas de gros calculs.
+     DOC_U : U4.44.01
+      EXPL_ : Insister dans ces documentations sur le fait que la méthode 'CONTRAINTE'
+              est à privilégier dans le cas de gros calculs.
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT hsna100e                     lebouvie F.LEBOUVIER        553    553      0
+ CASTEST AJOUT mac3c01a                      g8bhhxd X.DESROCHES        469    469      0
+ CASTEST AJOUT ssnv129c                       mabbas M.ABBAS            293    293      0
+ CASTEST AJOUT ssnv504c                       mabbas M.ABBAS            221    221      0
+ CASTEST MODIF ascou02a                      cibhhlv L.VIVAN             87      1      1
+ CASTEST MODIF ascou03a                      cibhhlv L.VIVAN             89      1      1
+ CASTEST MODIF ascou06a                      cibhhlv L.VIVAN             75      1      1
+ CASTEST MODIF demo001a                       assire A.ASSIRE           296      2      2
+ CASTEST MODIF rccm01a                       cibhhlv L.VIVAN            199      1      1
+ CASTEST MODIF rccm01b                       cibhhlv L.VIVAN            358     10     23
+ CASTEST MODIF rccm06a                       cibhhlv L.VIVAN           1355    244    227
+ CASTEST MODIF sslv04h                       cibhhlv L.VIVAN            371     13     10
+ CASTEST MODIF sslv100g                      cibhhlv L.VIVAN            329     63     44
+ CASTEST MODIF ssnv504a                       mabbas M.ABBAS            318     45      3
+ CASTEST MODIF wtnl103b                      cibhhpd L.SALMONA          447     89      1
+ CASTEST MODIF wtnp100a                      cibhhpd L.SALMONA          340     34      1
+ CASTEST MODIF wtnp102a                      cibhhpd L.SALMONA          382     36      1
+ CASTEST MODIF wtnv121a                      cibhhpd L.SALMONA          411     34      1
+ CASTEST MODIF wtnv123a                      cibhhpd L.SALMONA          573    129      1
+CATALOGU AJOUT options/extr_elga_vari        cibhhpd L.SALMONA           32     32      0
+CATALOGU AJOUT options/extr_elno_vari        cibhhpd L.SALMONA           32     32      0
+CATALOGU MODIF typelem/gener_me3g33          cibhhpd L.SALMONA          119      8      1
+CATALOGU MODIF typelem/gener_me3h13          cibhhpd L.SALMONA          141      8      1
+CATALOGU MODIF typelem/gener_me3h23          cibhhpd L.SALMONA          137      8      1
+CATALOGU MODIF typelem/gener_me3h33          cibhhpd L.SALMONA          130      8      1
+CATALOGU MODIF typelem/gener_me3h43          cibhhpd L.SALMONA          165      8      1
+CATALOGU MODIF typelem/gener_me3h53          cibhhpd L.SALMONA          161      8      1
+CATALOGU MODIF typelem/gener_meaa12          cibhhpd L.SALMONA          114      8      1
+CATALOGU MODIF typelem/gener_meaa22          cibhhpd L.SALMONA          145      8      1
+CATALOGU MODIF typelem/gener_meaa32          cibhhpd L.SALMONA          143      8      1
+CATALOGU MODIF typelem/gener_meag32          cibhhpd L.SALMONA          105      8      1
+CATALOGU MODIF typelem/gener_meah12          cibhhpd L.SALMONA          147      8      1
+CATALOGU MODIF typelem/gener_meah22          cibhhpd L.SALMONA          145      8      1
+CATALOGU MODIF typelem/gener_meah32          cibhhpd L.SALMONA          119      8      1
+CATALOGU MODIF typelem/gener_meah42          cibhhpd L.SALMONA          150      8      1
+CATALOGU MODIF typelem/gener_meah52          cibhhpd L.SALMONA          148      8      1
+CATALOGU MODIF typelem/gener_meda12          cibhhpd L.SALMONA          114      8      1
+CATALOGU MODIF typelem/gener_meda22          cibhhpd L.SALMONA          151      8      1
+CATALOGU MODIF typelem/gener_meda32          cibhhpd L.SALMONA          149      8      1
+CATALOGU MODIF typelem/gener_medg32          cibhhpd L.SALMONA          105      8      1
+CATALOGU MODIF typelem/gener_medh12          cibhhpd L.SALMONA          160      8      1
+CATALOGU MODIF typelem/gener_medh22          cibhhpd L.SALMONA          158      8      1
+CATALOGU MODIF typelem/gener_medh32          cibhhpd L.SALMONA          124      8      1
+CATALOGU MODIF typelem/gener_medh42          cibhhpd L.SALMONA          162      8      1
+CATALOGU MODIF typelem/gener_medh52          cibhhpd L.SALMONA          160      8      1
+CATALOPY MODIF commande/affe_char_meca        mabbas M.ABBAS            866    104     27
+CATALOPY MODIF commande/affe_char_meca_f      mabbas M.ABBAS            555     91     21
+CATALOPY MODIF commande/calc_elem            cibhhpd L.SALMONA          526     16      2
+CATALOPY MODIF commande/calc_no              cibhhpd L.SALMONA          101      2      2
+CATALOPY MODIF commande/impr_matrice         cibhhlv L.VIVAN             71     27     26
+CATALOPY MODIF commande/macr_cabri_mail       mabbas M.ABBAS             91      1      2
+CATALOPY MODIF commande/post_rccm            cibhhlv L.VIVAN            200      9     22
+CATALOPY MODIF commun/c_nom_cham_into        cibhhpd L.SALMONA          184      4      1
+ FORTRAN AJOUT algorith/algogl                mabbas M.ABBAS            657    657      0
+ FORTRAN AJOUT algorith/cfcrsd                mabbas M.ABBAS            618    618      0
+ FORTRAN AJOUT algorith/cfresa                mabbas M.ABBAS             87     87      0
+ FORTRAN AJOUT algorith/cfresb                mabbas M.ABBAS            110    110      0
+ FORTRAN AJOUT algorith/cfresu                mabbas M.ABBAS            444    444      0
+ FORTRAN AJOUT algorith/cfsans                mabbas M.ABBAS            175    175      0
+ FORTRAN AJOUT algorith/posvar               cibhhpd L.SALMONA          322    322      0
+ FORTRAN AJOUT elements/te0549               cibhhpd L.SALMONA          104    104      0
+ FORTRAN AJOUT modelisa/cazocc                mabbas M.ABBAS            202    202      0
+ FORTRAN AJOUT modelisa/cazocv                mabbas M.ABBAS            117    117      0
+ FORTRAN AJOUT postrele/rcev22               cibhhlv L.VIVAN            312    312      0
+ FORTRAN AJOUT postrele/rcevfa               cibhhlv L.VIVAN            145    145      0
+ FORTRAN AJOUT postrele/rcevfu               cibhhlv L.VIVAN            182    182      0
+ FORTRAN AJOUT postrele/rcevo0               cibhhlv L.VIVAN             91     91      0
+ FORTRAN AJOUT postrele/rcevo1               cibhhlv L.VIVAN             92     92      0
+ FORTRAN AJOUT postrele/rcevo2               cibhhlv L.VIVAN            350    350      0
+ FORTRAN AJOUT postrele/rcevod               cibhhlv L.VIVAN            466    466      0
+ FORTRAN AJOUT postrele/rcevom               cibhhlv L.VIVAN            563    563      0
+ FORTRAN AJOUT postrele/rcevse               cibhhlv L.VIVAN            129    129      0
+ FORTRAN AJOUT postrele/rcevsn               cibhhlv L.VIVAN            126    126      0
+ FORTRAN AJOUT postrele/rcevsp               cibhhlv L.VIVAN            126    126      0
+ FORTRAN MODIF algeline/nbnomi                mabbas M.ABBAS             52      5      1
+ FORTRAN MODIF algorith/algocl                mabbas M.ABBAS            665      3      3
+ FORTRAN MODIF algorith/algoco                mabbas M.ABBAS            683      3      3
+ FORTRAN MODIF algorith/carama                mabbas M.ABBAS            207      2      2
+ FORTRAN MODIF algorith/cfaca1                mabbas M.ABBAS            341      3      3
+ FORTRAN MODIF algorith/cfalgo                mabbas M.ABBAS            199     23      6
+ FORTRAN MODIF algorith/cfdisc                mabbas M.ABBAS            178     15      2
+ FORTRAN MODIF algorith/cfgeom                mabbas M.ABBAS            180     15      3
+ FORTRAN MODIF algorith/cfimp3                mabbas M.ABBAS            167      7      5
+ FORTRAN MODIF algorith/cfimp4                mabbas M.ABBAS            479      2      2
+ FORTRAN MODIF algorith/fro2gd                mabbas M.ABBAS            746      3      3
+ FORTRAN MODIF algorith/frolgd                mabbas M.ABBAS           1096      2      2
+ FORTRAN MODIF algorith/fropgd                mabbas M.ABBAS            842      3      3
+ FORTRAN MODIF algorith/nmcofr                mabbas M.ABBAS            170      8     10
+ FORTRAN MODIF algorith/nminit                mabbas M.ABBAS            386     13      3
+ FORTRAN MODIF algorith/op0069                mabbas M.ABBAS            656      4      4
+ FORTRAN MODIF algorith/op0070                mabbas M.ABBAS            834      5      4
+ FORTRAN MODIF algorith/projma                mabbas M.ABBAS            174      3      2
+ FORTRAN MODIF algorith/projtr                mabbas M.ABBAS            475      7      2
+ FORTRAN MODIF algorith/rechco                mabbas M.ABBAS            406     32     51
+ FORTRAN MODIF algorith/typema                mabbas M.ABBAS            116      5      2
+ FORTRAN MODIF calculel/mecalc               cibhhpd L.SALMONA          537     30      6
+ FORTRAN MODIF calculel/mecalm               cibhhpd L.SALMONA         2324     76      9
+ FORTRAN MODIF elements/fetcrf                assire A.ASSIRE          1496    287    243
+ FORTRAN MODIF elements/te0283              lebouvie F.LEBOUVIER        173      2      2
+ FORTRAN MODIF modelisa/caraco                mabbas M.ABBAS            185      5      3
+ FORTRAN MODIF modelisa/cazoco                mabbas M.ABBAS            568    327    327
+ FORTRAN MODIF modelisa/surfco                mabbas M.ABBAS            382      1      2
+ FORTRAN MODIF postrele/op0165               cibhhlv L.VIVAN            142      1      1
+ FORTRAN MODIF postrele/rcevol               cibhhlv L.VIVAN            192    102    128
+ FORTRAN MODIF utilitai/rscrsd               cibhhpd L.SALMONA          843      4      3
+ FORTRAN MODIF utilitai/tbextb               cibhhlv L.VIVAN            591      5      2
+ FORTRAN SUPPR algorith/crsdco                mabbas M.ABBAS            601      0    601
+ FORTRAN SUPPR algorith/resuco                mabbas M.ABBAS            772      0    772
+ FORTRAN SUPPR postrele/prccm0               cibhhlv L.VIVAN             57      0     57
+ FORTRAN SUPPR postrele/prccm1               cibhhlv L.VIVAN            471      0    471
+ FORTRAN SUPPR postrele/prccm2               cibhhlv L.VIVAN            139      0    139
+ FORTRAN SUPPR postrele/prccm4               cibhhlv L.VIVAN             81      0     81
+ FORTRAN SUPPR postrele/prccm5               cibhhlv L.VIVAN            196      0    196
+ FORTRAN SUPPR postrele/prccm6               cibhhlv L.VIVAN            350      0    350
+ FORTRAN SUPPR postrele/prccm7               cibhhlv L.VIVAN            299      0    299
+ FORTRAN SUPPR postrele/prccm8               cibhhlv L.VIVAN            304      0    304
+ FORTRAN SUPPR postrele/prccm9               cibhhlv L.VIVAN            222      0    222
+ FORTRAN SUPPR postrele/prgarg               cibhhlv L.VIVAN            304      0    304
+ FORTRAN SUPPR postrele/prgnoe               cibhhlv L.VIVAN             94      0     94
+ FORTRAN SUPPR postrele/prouex               cibhhlv L.VIVAN            155      0    155
+ FORTRAN SUPPR postrele/prpmpb               cibhhlv L.VIVAN            170      0    170
+ FORTRAN SUPPR postrele/prsnsp               cibhhlv L.VIVAN            180      0    180
+  PYTHON MODIF Macro/impr_fonction_ops      mcourtoi M.COURTOIS         393      2      2
+  PYTHON MODIF Macro/macr_ascouf_calc_ops    cibhhlv L.VIVAN            690     28     15
+  PYTHON MODIF Macro/macr_aspic_calc_ops     cibhhlv L.VIVAN            827     23     17
+  PYTHON MODIF Macro/macr_cabri_mail_ops      mabbas M.ABBAS            461      8      8
+  PYTHON MODIF Utilitai/Table               mcourtoi M.COURTOIS         704     10      8
+  PYTHON MODIF Utilitai/partition             assire A.ASSIRE          1289     81      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   27        7018      7018             +7018
+ MODIF :   85       32425      2304    1339      +965
+ SUPPR :   16        4395              4395     -4395
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  128       43838      9322    5734     +3588 

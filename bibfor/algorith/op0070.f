@@ -1,7 +1,7 @@
       SUBROUTINE OP0070 (IER)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,7 @@ C
       INTEGER      NBOBSE, NUINS0
       INTEGER      NBOBAR, NUOBSE, NBPASE, NIVEAU
       INTEGER      IAUX,   JAUX , IFLAMB,  DININS
-      INTEGER      IALGO, IFORM ,   ICONTX
+      INTEGER      IALGO, IFORM, ICONTX 
 C
       REAL*8       PARMET(30), PARCRI(11), CONV(21), ETA, ETAN, R8VIDE
       REAL*8       DIINST,     INSTAM,     INSTAP,   INST(3),   ALPHA
@@ -297,7 +297,7 @@ C -- ETAT INITIAL ET CREATION DES STRUCTURES DE DONNEES
      &            NURO,   REAROT, VARDEM, LAGDEM, CNDIDI,
      &            PILOTE, DEFICO, RESOCO, CRITNL, FONACT,
      &            CMD,    DEPENT, VITENT, ACCENT, NBMODS,
-     &            CNVFRE, PARCON, PARCRI(6), ICONTX, 
+     &            CNVFRE, PARCON, PARCRI(6), ICONTX,
      &            NBPASE, INPSCO, LISCH2 )
      
       INSTAM = DIINST(PARTPS, 0)
@@ -485,6 +485,7 @@ C -- ET COMMUNIQUENT PAR LA VARIABLE NIVEAU
      &            ACCPLU, VITINI, ACCINI, CMD,    INST,
      &            ICONTX)
 
+
 C ======================================================================
 C   PHASE DE PREDICTION : INTERPRETEE COMME UNE DIRECTION DE DESCENTE
 C ======================================================================
@@ -535,8 +536,8 @@ C -- DES RIGI_ELEM (SI DEMANDE)
      &            ROMKM1, ROMK,   PILOTE, DEPDEL, DEPPIL,
      &            DEPOLD, IECPCO, LIGRCF, CARTCF, MCONEL,
      &            SCONEL, MAILLA, DEPPLU, DEFICO, CNCINE,
-     &            SOLVEU, LREAC,  ETA   , LICCVG, DDEPLA, 
-     &            ICONTX)   
+     &            SOLVEU, LREAC,  ETA   , LICCVG, DDEPLA,
+     &            ICONTX) 
       IF (LICCVG(1).EQ.1) GOTO 4000
 
 C -- CALCUL DES FORCES SUIVEUSES
@@ -693,7 +694,7 @@ C -- FIN DE BOUCLE DE CONTACT ECP
         CALL NMTBLE(NIVEAU, 
      &              MAILLA, DEFICO, OLDGEO, NEWGEO,
      &              DEPMOI, DEPGEO, MAXB,   DEPLAM,
-     &              COMGEO, CSEUIL, COBCA,  ICONTX, 
+     &              COMGEO, CSEUIL, COBCA,  ICONTX,
      &              DEPPLU, INST,   DECOL,  MODELE)
       ELSE 
         NIVEAU = 0
@@ -716,8 +717,8 @@ C ======================================================================
 C -- ECRITURE DES NOEUDS EN CONTACT SI ON A CONVERGE
 
       IF (IECPCO.EQ.0 .AND. .NOT.ECHCON(1) .AND. .NOT.ECHCON(2)) THEN
-        CALL RESUCO (NUMINS,INSTAP,DEFICO,RESOCO,DEPDEL,DDEPLA,
-     &               MAILLA,CNSINR,ITERAT)
+        CALL CFRESU(NUMINS,INSTAP,DEFICO,RESOCO,DEPDEL,
+     &              DDEPLA,MAILLA,CNSINR)
       ENDIF
       
 C -- SELON SI L'ON DOIT OBSERVER OU NON

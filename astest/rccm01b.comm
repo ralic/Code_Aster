@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM KE_MIXTE FATIGUE B3200
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,29 +133,27 @@ TEST_RESU(RESU=(
 #   chargement mecanique + thermique
 #--------------------------------------------------------------------------------
 
-
-
-
 LIGNE=INTE_MAIL_2D(  MAILLAGE=MA,
                      DEFI_SEGMENT=_F(  ORIGINE   = ( -1.0,  0.5, ),
                                        EXTREMITE = (  1.0,  0.5, )),
                      INFO=2    )
 
+TABLE=POST_RELEVE_T(ACTION=_F(INTITULE='LIGNE',
+                              CHEMIN=LIGNE,
+                              RESULTAT=RESU2, TOUT_CMP='OUI',
+                              NOM_CHAM='SIGM_ELNO_DEPL',
+                              OPERATION='EXTRACTION',),);
 
+IMPR_TABLE(TABLE=TABLE,FORMAT='ASTER');
+                                 
 FAT5=POST_RCCM( TYPE_RESU_MECA = 'EVOLUTION',  
                        MATER = MAT,  
-                    MAILLAGE = MA,
                    TYPE_RESU = 'DETAILS',
                       OPTION = 'FATIGUE_ZH210',
                        TITRE = 'FATIGUE_ZH210, RESULTAT: RESU2+RESUTH',
-                     SEGMENT =_F(  CHEMIN = LIGNE,
-                                   INTITULE = 'FATIGUE_ZH: RESU2'),
-                 TRANSITOIRE =(_F(  RESULTAT = RESU2,
-                                   NOM_CHAM = 'SIGM_ELNO_DEPL',
-                                   INST = (0.,  2.,),NB_OCCUR = 200,),
-                                   ),
+                 TRANSITOIRE =_F( TABL_RESU_MECA = TABLE,
+                                  INST = (0.,  2.,), NB_OCCUR = 200,),
                  )
-
 
 IMPR_TABLE( TABLE  =  FAT5,
             FILTRE = _F(NOM_PARA = 'LIEU', VALE_K='ORIG',),
@@ -169,15 +167,6 @@ IMPR_TABLE( TABLE  =  FAT5,
                         ORDRE    = 'CROISSANT',),
  )
                                  
-TABLE=POST_RELEVE_T(ACTION=_F(INTITULE='TH1',
-                                 CHEMIN=LIGNE,
-                                 RESULTAT=RESU2,TOUT_CMP='OUI',
-                                 NOM_CHAM='SIGM_ELNO_DEPL',
-                                 OPERATION='EXTRACTION',),);
-
-IMPR_TABLE(TABLE=TABLE,FORMAT='ASTER');
-                                 
-
                                  
 # RELECTURE DE LA TABLE AUGMENTEE DE SIXZ ET SIYZ, MECA+THER
 TINS3_MX = LIRE_TABLE (UNITE=38, FORMAT='ASTER',SEPARATEUR=' ',TYPE_TABLE='TABL_POST_RELE',
@@ -190,8 +179,6 @@ TINS3_PR = LIRE_TABLE (UNITE=38, FORMAT='ASTER',SEPARATEUR=' ',TYPE_TABLE='TABL_
                             TITRE='TINS3_FX',NUME_TABLE=3,)                           
 TINS3_T2 = LIRE_TABLE (UNITE=38, FORMAT='ASTER',SEPARATEUR=' ',TYPE_TABLE='TABL_POST_RELE',
                             TITRE='TINS3_FX',NUME_TABLE=3,)                           
-
-
 
 TRCCM_2=POST_RCCM( TYPE_RESU_MECA = 'UNITAIRE',
                    TYPE_RESU='DETAILS',

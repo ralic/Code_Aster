@@ -1,6 +1,6 @@
       SUBROUTINE OP0069 (IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -85,7 +85,7 @@ C
       INTEGER      NMODAM, NREAVI, NONDP,  KCHAM,  KCOMP
       INTEGER      KNUCM,  NBOBSE, NUINS0
       INTEGER      NBOBAR, NUOBSE, NBPASE, NIVEAU
-      INTEGER      NRPASE, IAUX,   JAUX,ICONTX
+      INTEGER      NRPASE, IAUX,   JAUX, ICONTX
 C
       REAL*8       PARMET(30), PARCRI(11), CONV(21), ETA, ETAN, R8VIDE
       REAL*8       DIINST,     INSTAM,     INSTAP,   INST(3),   ALPHA
@@ -284,7 +284,7 @@ C -- ETAT INITIAL ET CREATION DES STRUCTURES DE DONNEES
      &            NURO,   REAROT, VARDEM, LAGDEM, CNDIDI,
      &            PILOTE, DEFICO, RESOCO, CRITNL, FONACT,
      &            CMD,    DEPENT, VITENT, ACCENT, NBMODS,
-     &            CNVFRE, PARCON, PARCRI(6), ICONTX,  
+     &            CNVFRE, PARCON, PARCRI(6), ICONTX,
      &            NBPASE, INPSCO, LISCH2)
      
       INSTAM = DIINST(PARTPS, 0)
@@ -472,7 +472,7 @@ C -- ET COMMUNIQUENT PAR LA VARIABLE NIVEAU
      &            MCONEL, SCONEL, K24BID, K24BID, K24BID,
      &            K24BID, K24BID, K24BID, K16BID, INST,
      &            ICONTX)
-     
+
 C ======================================================================
 C CALCUL DU SECOND MEMBRE (Fext - Fint)
 C ======================================================================
@@ -558,8 +558,8 @@ C ======================================================================
 C -- ECRITURE DES NOEUDS EN CONTACT SI ON A CONVERGE
 
       IF (IECPCO.EQ.0 .AND. .NOT.ECHCON(1) .AND. .NOT.ECHCON(2)) THEN
-        CALL RESUCO (NUMINS,INSTAP,DEFICO,RESOCO,DEPDEL,DDEPLA,
-     &               MAILLA,CNSINR,ITERAT)
+        CALL CFRESU(NUMINS,INSTAP,DEFICO,RESOCO,DEPDEL,
+     &              DDEPLA,MAILLA,CNSINR)
       ENDIF
       
 C -- SELON SI L'ON DOIT OBSERVER OU NON

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE EN D.P. (QUAD9)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,85 +77,104 @@ CH1=INTE_MAIL_2D(   MAILLAGE=M,
                                                  7.6536655426025E-02, ))              )
 
 CH2=INTE_MAIL_2D(   MAILLAGE=M,
-                       DEFI_SEGMENT=_F(  ORIGINE = ( 0.,
-                                                 0., ),
+                       DEFI_SEGMENT=_F(  ORIGINE = ( 0., 0., ),
                                     EXTREMITE = ( 1.8477588891983E-01,
                                                  7.6536655426025E-02, ))              )
 
-T1=POST_RCCM(  MAILLAGE=M,
-               MATER=MA,
-               TYPE_RESU_MECA='EVOLUTION',
-               OPTION='PM_PB',
-               SEGMENT=_F(  CHEMIN = CH1,
-                            INTITULE = 'RCCM', ),
-               TRANSITOIRE=_F(  RESULTAT=RESU,
-                                NOM_CHAM='SIGM_ELNO_DEPL', ),
-             )
+T_RESU=POST_RELEVE_T( ACTION=(_F( INTITULE = 'CH1',
+                                  CHEMIN = CH1,
+                                  RESULTAT = RESU,
+                                  NOM_CHAM =  'SIGM_ELNO_DEPL',
+                                  OPERATION = 'EXTRACTION',
+                                  TOUT_CMP = 'OUI', ),
+                              _F( INTITULE = 'CH2',
+                                  CHEMIN = CH2,
+                                  RESULTAT = RESU,
+                                  NOM_CHAM =  'SIGM_ELNO_DEPL',
+                                  OPERATION = 'EXTRACTION',
+                                  TOUT_CMP = 'OUI', ),
+                              ),
+                     ) ;
 
-TEST_TABLE(      TABLE=T1,
-             FILTRE=_F(NOM_PARA='LIEU',
-                        VALE_K='ORIG' ),
+T_PMPB=POST_RCCM(  OPTION='PM_PB',
+                   TYPE_RESU_MECA='EVOLUTION',
+                   MATER=MA,
+                   TRANSITOIRE=_F( TABL_RESU_MECA=T_RESU, ),
+                )
+
+#--------------------------------------------------------------------
+TEST_TABLE(      TABLE=T_PMPB,
+             FILTRE=(_F(NOM_PARA='INTITULE',
+                        VALE_K='CH1' ),
+                     _F(NOM_PARA='LIEU',
+                        VALE_K='ORIG' ),),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='PM',
                    VALE=8.00836E+01         )
 
-TEST_TABLE(      TABLE=T1,
-             FILTRE=_F(NOM_PARA='LIEU',
-                        VALE_K='ORIG' ),
+TEST_TABLE(      TABLE=T_PMPB,
+             FILTRE=(_F(NOM_PARA='INTITULE',
+                        VALE_K='CH1' ),
+                     _F(NOM_PARA='LIEU',
+                        VALE_K='ORIG' ),),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='PB',
                    VALE=5.46358E+01         )
 
-TEST_TABLE(      TABLE=T1,
-             FILTRE=_F(NOM_PARA='LIEU',
-                        VALE_K='ORIG' ),
+TEST_TABLE(      TABLE=T_PMPB,
+             FILTRE=(_F(NOM_PARA='INTITULE',
+                        VALE_K='CH1' ),
+                     _F(NOM_PARA='LIEU',
+                        VALE_K='ORIG' ),),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='PMB',
                    VALE=1.34719E+02         )
 
-TEST_TABLE(      TABLE=T1,
-             FILTRE=_F(NOM_PARA='LIEU',
-                        VALE_K='EXTR' ),
+TEST_TABLE(      TABLE=T_PMPB,
+             FILTRE=(_F(NOM_PARA='INTITULE',
+                        VALE_K='CH1' ),
+                     _F(NOM_PARA='LIEU',
+                        VALE_K='EXTR' ),),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='PMB',
                    VALE=2.54479E+01         )
 
-T2=POST_RCCM(  MAILLAGE=M,
-               MATER=MA,
-               TYPE_RESU_MECA='EVOLUTION',
-               OPTION='PM_PB',
-               SEGMENT=_F(  CHEMIN = CH2,
-                            INTITULE = 'RCCM', ),
-               TRANSITOIRE=_F(  RESULTAT=RESU,
-                                NOM_CHAM='SIGM_ELNO_DEPL', ),
-             )
-
-TEST_TABLE(      TABLE=T2,
-             FILTRE=_F(NOM_PARA='LIEU',
-                        VALE_K='ORIG' ),
+#--------------------------------------------------------------------
+TEST_TABLE(      TABLE=T_PMPB,
+             FILTRE=(_F(NOM_PARA='INTITULE',
+                        VALE_K='CH2' ),
+                     _F(NOM_PARA='LIEU',
+                        VALE_K='ORIG' ),),
              NOM_PARA='PM',
                    VALE=8.00836E+01         )
 
-TEST_TABLE(      TABLE=T2,
-             FILTRE=_F(NOM_PARA='LIEU',
-                        VALE_K='ORIG' ),
+TEST_TABLE(      TABLE=T_PMPB,
+             FILTRE=(_F(NOM_PARA='INTITULE',
+                        VALE_K='CH2' ),
+                     _F(NOM_PARA='LIEU',
+                        VALE_K='ORIG' ),),
              NOM_PARA='PB',
                    VALE=5.46358E+01         )
 
-TEST_TABLE(      TABLE=T2,
-             FILTRE=_F(NOM_PARA='LIEU',
-                        VALE_K='ORIG' ),
+TEST_TABLE(      TABLE=T_PMPB,
+             FILTRE=(_F(NOM_PARA='INTITULE',
+                        VALE_K='CH2' ),
+                     _F(NOM_PARA='LIEU',
+                        VALE_K='ORIG' ),),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='PMB',
                    VALE=1.34719E+02         )
 
-TEST_TABLE(      TABLE=T2,
-             FILTRE=_F(NOM_PARA='LIEU',
-                        VALE_K='EXTR' ),
+TEST_TABLE(      TABLE=T_PMPB,
+             FILTRE=(_F(NOM_PARA='INTITULE',
+                        VALE_K='CH2' ),
+                     _F(NOM_PARA='LIEU',
+                        VALE_K='EXTR' ),),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='PMB',
                    VALE=2.54479E+01         )
 
+#--------------------------------------------------------------------
 TEST_RESU(RESU=(
    # DEPLACEMENTS
               

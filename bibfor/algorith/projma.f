@@ -6,7 +6,7 @@
      &                  COORDM,COEFNO,OLDJEU,JEU,PROYES)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -141,7 +141,8 @@ C
      &              NORM,TANG,
      &              COORDM,COEFNO,OLDJEU,JEU,
      &              NOEUD,DEBORD)
-      ELSE IF ((MATYP.EQ.'TRI3').OR.(MATYP.EQ.'TRI6')) THEN
+      ELSE IF ((MATYP.EQ.'TRI3').OR.(MATYP.EQ.'TRI6').OR.
+     &                              (MATYP.EQ.'TRI7')) THEN
         CALL PROJTR(MATYP,NBNO,NDIM,
      &              COOR(1),COOR(4),COOR(7),COORDP,
      &              PROJ,MOYEN,LISSA,TANGDF,ZR(JLISSA),DIAGNO,TOLEIN,

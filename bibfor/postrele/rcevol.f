@@ -4,7 +4,7 @@
       CHARACTER*8         NOMMAT
       CHARACTER*16        TYPTAB, OPTION(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF POSTRELE  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,175 +44,149 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      NBFS, NBFT, J, N1, IOCC, 
-     +             NPARA, NBPAR, NBORDM, NBORDT, NBORDR
-      REAL*8       VALRES(3), PARA(3), SM, EREFE, E,  RBID, R8VIDE
-      LOGICAL      RCCMPM, RCCMSN, SNTHER, FATIZH, LNOEU, LINTI
-      CHARACTER*2  CODRET(3)
-      CHARACTER*5  KOCC
-      CHARACTER*8  K8B, NOMRES, NOMPAR, NOMVAL(3), NOMA,
-     +             TYPCO, COURBE,  TYPARA(36), PARASG
-      CHARACTER*16 NOMCMD, CONCEP, PHENOM, NOMCHA, NOMCH1, 
-     +             NOPARA(36), NCHEFF, NCHEFT, INTITU
-      CHARACTER*24 XNOMCP, XNUMCP, XNOMCT, XNUMCT, LSTNAC
+      INTEGER      I, J, N1, NBINTI, JINTI, NBTRAN
+      REAL*8       RBID, PARA(3), SM
+      LOGICAL      LPMPB, LSN, LFATIG, FLEXIO
+      CHARACTER*8  K8B
+      CHARACTER*16 KINTI
+      CHARACTER*24 CINST, CSILI, CSIEX, CSNO, CSNE, CSNEO, CSNEE, 
+     +             CSPO, CSPE, CFAO, CFAE, CNOC, CRESU, INTITU
 C DEB ------------------------------------------------------------------
 C
-      CALL GETRES ( NOMRES , CONCEP , NOMCMD )
+C --- VECTEUR DES INSTANTS DEMANDES
 C
-      CALL GETFAC ( 'SEGMENT'     , NBFS )
-      CALL GETFAC ( 'TRANSITOIRE' , NBFT )
+      CINST = '&&RCEVOL.INSTANTS'
 C
-      CALL GETVTX ( 'TRANSITOIRE', 'NOM_CHAM',1,1,1, NOMCHA, N1 )
-      DO 10, IOCC = 2, NBFT, 1
-         CALL GETVTX ( 'TRANSITOIRE', 'NOM_CHAM',IOCC,1,1,NOMCH1,N1)
-         IF ( NOMCHA .NE. NOMCH1 )  THEN
-            CALL CODENT ( IOCC, 'G', KOCC )
-            CALL UTMESS('F',NOMCMD,' LES NOM_CHAM '//NOMCHA//
-     +        ' ET '//NOMCH1//' DONNES POUR LES OCCURENCES 1 ET '//
-     +        KOCC//' DU MOT-FACTEUR "TRANSITOIRE" SONT DIFFERENTS.')
+C --- VECTEUR DES TRANSITOIRES
+C
+      CRESU = '&&RCEVOL.RESU_MECA'
+C
+C --- VECTEUR DES CONTRAINTES LINEARISEES AUX EXTREMITES (PMPB, SN)
+C
+      CSILI = '&&RCEVOL.SIGM_LINE'
+C
+C --- VECTEUR DES CONTRAINTES AUX EXTREMITES (SP)
+C
+      CSIEX = '&&RCEVOL.SIGM_EXTR'
+C
+C --- VECTEUR DES NB_OCCUR
+C
+      CNOC  = '&&RCEVOL.NB_OCCUR'
+C
+C --- CALCUL DE GRANDEURS A L'ORIGINE ET A L'EXTREMITE
+C
+      CSNO  = '&&RCEVOL.CALCUL_SN .ORIG'
+      CSNE  = '&&RCEVOL.CALCUL_SN .EXTR'
+      CSNEO = '&&RCEVOL.CALCUL_SNE.ORIG'
+      CSNEE = '&&RCEVOL.CALCUL_SNE.EXTR'
+      CSPO  = '&&RCEVOL.CALCUL_SP .ORIG'
+      CSPE  = '&&RCEVOL.CALCUL_SP .EXTR'
+      CFAO  = '&&RCEVOL.FATIGUE   .ORIG'
+      CFAE  = '&&RCEVOL.FATIGUE   .EXTR'
+C
+C     ------------------------------------------------------------------
+C                             LES OPTIONS
+C     ------------------------------------------------------------------
+      LFATIG = .FALSE.
+      LSN    = .FALSE.
+      LPMPB  = .FALSE.
+      FLEXIO = .FALSE.
+C
+      DO 10 I = 1 , NBOPT
+         IF ( OPTION(I) .EQ. 'PM_PB' ) THEN
+            LPMPB = .TRUE.
+         ELSEIF ( OPTION(I) .EQ. 'SN' ) THEN
+            LSN = .TRUE.
+         ELSEIF ( OPTION(I) .EQ. 'FATIGUE_ZH210' ) THEN
+            LFATIG = .TRUE.
+            LSN    = .TRUE.
          ENDIF
  10   CONTINUE
 C
-      LNOEU = .FALSE.
-      DO 20, IOCC = 1, NBFS, 1
-         CALL GETVID ( 'SEGMENT', 'GROUP_NO', IOCC,1,0, K8B, N1 )
-         IF ( N1 .NE. 0 )  LNOEU = .TRUE.
-         CALL GETVID ( 'SEGMENT', 'NOEUD'   , IOCC,1,0, K8B, N1 )
-         IF ( N1 .NE. 0 )  LNOEU = .TRUE.
- 20   CONTINUE
-      IF ( LNOEU )  THEN
-         CALL GETVID ( ' ', 'MAILLAGE', 1,1,1, NOMA, N1 )
-         IF ( N1 .EQ. 0 )  THEN
-            CALL UTMESS('F',NOMCMD,' LE MAILLAGE EST OBLIGATOIRE '//
-     +          'SI LES MOTS CLES GROUP_NO OU NOEUD SONT PRESENTS.')
-         ENDIF
-      ENDIF
-C
 C     ------------------------------------------------------------------
-C                             LA TABLE 
+C                     NOMBRE DE LIGNE A "POST_RCCM"
 C     ------------------------------------------------------------------
-      CALL PRCCM0 ( NBOPT, OPTION, NBFT, NPARA, NOPARA, TYPARA,  
-     +              RCCMPM, RCCMSN, SNTHER, FATIZH, TYPTAB )
 C
-      CALL TBCRSD ( NOMRES, 'G' )
-      CALL TBAJPA ( NOMRES, NPARA, NOPARA, TYPARA )
+      INTITU = '&&RCEVOL.INTITULE'
+      CALL RCEVO0 ( INTITU, NBINTI, LSN, LFATIG, NBTRAN )
+      CALL JEVEUO ( INTITU, 'L', JINTI )
 C
 C     ------------------------------------------------------------------
 C                            LE MATERIAU
 C     ------------------------------------------------------------------
 C
-      NBPAR     = 0
-      NOMPAR    = ' '
-      NOMVAL(1) = 'SM'
-      CALL RCVALE ( NOMMAT, 'RCCM', NBPAR, NOMPAR, RBID, 1,
-     +              NOMVAL, SM, CODRET, 'F ' )
-C
-      PARA(1) = R8VIDE()
-      PARA(2) = R8VIDE()
-      PARA(3) = R8VIDE()
-      IF ( FATIZH ) THEN
-         CALL RCCOME ( NOMMAT, 'FATIGUE', PHENOM, CODRET )
-         IF ( CODRET(1) .EQ. 'NO' ) THEN
-            CALL UTMESS('F',NOMCMD,'IL FAUT DEFINIR LE '//
-     +                   'COMPORTEMENT "FATIGUE" DANS DEFI_MATERIAU')
-         ENDIF
-         CALL RCCOME ( NOMMAT, 'ELAS', PHENOM, CODRET )
-         IF ( CODRET(1) .EQ. 'NO' ) THEN
-            CALL UTMESS('F',NOMCMD,'IL FAUT DEFINIR LE '//
-     +                   'COMPORTEMENT "ELAS" DANS DEFI_MATERIAU')
-         ENDIF
-C
-         NOMVAL(1) = 'M_KE'
-         NOMVAL(2) = 'N_KE'
-         CALL RCVALE ( NOMMAT, 'RCCM', NBPAR, NOMPAR, RBID, 2, 
-     +                 NOMVAL, VALRES, CODRET, 'F ' )
-         PARA(1) = VALRES(1)
-         PARA(2) = VALRES(2)
-C
-         NOMVAL(1) = 'E_REFE'
-         CALL RCVALE ( NOMMAT, 'FATIGUE', NBPAR, NOMPAR, RBID, 1, 
-     +                 NOMVAL, EREFE, CODRET, 'F ' )
-C
-         NOMVAL(1) = 'E'
-         CALL RCVALE ( NOMMAT, 'ELAS', NBPAR, NOMPAR, RBID, 1, 
-     +                 NOMVAL, E, CODRET, 'F ' )
-         PARA(3) = EREFE / E
-      ENDIF
+      CALL RCEVO1 ( NOMMAT, LFATIG, SM, PARA )
 C
 C     ------------------------------------------------------------------
-C                        TRAITEMENT DES CHAMPS 
-C     ------------------------------------------------------------------
 C
-      XNOMCP = '&&OP0165.NOM.COMPOSANTES'
-      XNUMCP = '&&OP0165.NUM.COMPOSANTES'
-      NCHEFF = '&&OP0165.CHAMP19'
-      CALL PRGARG ( 'TRANSITOIRE', 'RESULTAT', XNOMCP, XNUMCP, NCHEFF,
-     +               NBORDM, RCCMPM, RCCMSN, SNTHER )
+      DO 100 I = 1, NBINTI
 C
-      XNOMCT = '&&OP0165.NOM.COMPOSANT_T'
-      XNUMCT = '&&OP0165.NUM.COMPOSANT_T'
-      NCHEFT = '&&OP0165.CHAMP_T'
-      IF ( SNTHER ) THEN
-         CALL PRGARG ( 'TRANSITOIRE', 'RESU_SIGM_THER', XNOMCT, XNUMCT,
-     +              NCHEFT, NBORDT, .FALSE., .FALSE., .FALSE. )
-      ENDIF
+        DO 110 J = 1, NBTRAN
 C
-C     ------------------------------------------------------------------
-C              TRAITEMENT DES OPTIONS SUIVANT LES CHEMINS
-C     ------------------------------------------------------------------
+           KINTI = ZK16(JINTI-1+NBTRAN*(I-1)+J)
 C
-      LSTNAC = '&&OP0165.MES_NOEUDS'
-      NOMA   = ' ' 
-      CALL GETVID ( ' ', 'MAILLAGE', 1,1,1, NOMA, N1 )
+C         --------------------------------------------------------------
+C                    TRAITEMENT DU MOT CLE FACTEUR TRANSITOIRE
+C         --------------------------------------------------------------
 C
-      DO 30 J = 1 , NBFS
+           IF ( LSN .AND. .NOT.LFATIG .AND. NBTRAN.GT.1 ) THEN
+             CALL RCEV22 ( NBINTI, KINTI, J, CSILI, CINST, CSIEX, 
+     +                     LFATIG, FLEXIO, CNOC, CRESU )
+           ELSE
+             CALL RCEVO2 ( NBINTI, KINTI, CSILI, CINST, CSIEX, 
+     +                     LFATIG, FLEXIO, CNOC, CRESU )
+           ENDIF
 C
-         CALL GETVID ( 'SEGMENT', 'CHEMIN'  ,J,1,1, COURBE, N1 )
-         IF ( N1 .EQ. 0 ) THEN
-            TYPCO  = 'NOEUDS'
-            CALL PRGNOE ( COURBE, PARASG, NOMA, 'SEGMENT', J, LSTNAC )
-         ELSE
-            TYPCO  = 'CHEMIN'
-            PARASG = 'CHEMIN'
-         ENDIF
+C         --------------------------------------------------------------
+C                          TRAITEMENT DES OPTIONS 
+C         --------------------------------------------------------------
 C
-         LINTI = .FALSE.
-         INTITU = COURBE
-         CALL GETVTX ( 'SEGMENT','INTITULE' , J,1,1, INTITU, N1 )
-         IF ( N1 .NE. 0 )  LINTI = .TRUE.
+          IF ( LSN ) CALL RCEVSN ( CSILI, CINST, CSNO, CSNE )
 C
-         IF ( FATIZH ) THEN
+          IF ( FLEXIO )  CALL RCEVSE ( CSILI, CINST, CSNEO, CSNEE )
 C
-            CALL PRCCM1 ( 'TRANSITOIRE', NBFT, TYPCO, COURBE, SM, 
-     +           NBORDM, NBORDR, XNOMCP, XNUMCP, NCHEFF, NOMA, LSTNAC )
+          IF ( LFATIG ) THEN
+            CALL RCEVSP ( CSIEX, CINST, CSPO, CSPE )
+            CALL RCEVFA ( NOMMAT, PARA, SM, CNOC, CSNO, CSNE, CSPO,
+     +                    CSPE, CFAO, CFAE )
+          ENDIF
 C
-            CALL PRCCM2 ( NOMMAT, NBORDR, PARA, SM )
+C         --------------------------------------------------------------
+C                                 ARCHIVAGE
+C         --------------------------------------------------------------
 C
-         ENDIF
+          IF ( TYPTAB .EQ. 'VALE_MAX' ) THEN
 C
-         IF ( RCCMPM .OR. RCCMSN ) THEN
+           CALL RCEVOM ( CSILI, CINST, CNOC, SM, LFATIG, LPMPB, LSN,
+     +                   CSNO, CSNE, FLEXIO, CSNEO, CSNEE, CFAO, CFAE, 
+     +                   CSPO, CSPE, CRESU, KINTI, I, J )
 C
-            CALL PRCCM7 ( 'TRANSITOIRE', NBFT, TYPCO, COURBE, SM,  
-     +                    XNOMCP, XNUMCP, NCHEFF, RCCMPM, RCCMSN,  
-     +                    SNTHER, NCHEFT, NOMA, LSTNAC )
+          ELSE
 C
-         ENDIF
+           CALL RCEVOD ( CSILI, CINST, CNOC, SM, LFATIG, LPMPB, LSN,
+     +                   CSNO, CSNE, FLEXIO, CSNEO, CSNEE, CFAO, CFAE,
+     +                   CSPO, CSPE, CRESU, KINTI, I, J )
 C
-         IF ( TYPTAB .EQ. 'VALE_MAX' ) THEN
+          ENDIF
 C
-            CALL PRCCM6 ( NOMRES, NBFT, NBORDR, PARASG, COURBE, LINTI,
-     +                    INTITU, SM, NCHEFF, RCCMPM,
-     +                    RCCMSN, SNTHER, FATIZH )
-         ELSE
+          CALL JEDETR ( CINST )
+          CALL JEDETR ( CRESU )
+          CALL JEDETR ( CSILI )
+          CALL JEDETR ( CSIEX )
+          CALL JEDETR ( CNOC  )
+          CALL JEDETR ( CSNO  )
+          CALL JEDETR ( CSNE  )
+          CALL JEDETR ( CSNEO )
+          CALL JEDETR ( CSNEE )
+          CALL JEDETR ( CSPO  )
+          CALL JEDETR ( CSPE  )
+          CALL JEDETR ( CFAO  )
+          CALL JEDETR ( CFAE  )
 C
-            CALL PRCCM5 ( NOMRES, NBFT, NBORDR, PARASG, COURBE, LINTI,
-     +                    INTITU, SM, NCHEFF, RCCMPM, 
-     +                    RCCMSN, SNTHER, FATIZH )
+ 110    CONTINUE
 C
-         ENDIF
+ 100  CONTINUE
 C
-         CALL JEDETR ( LSTNAC )
-C
- 30   CONTINUE
+      CALL JEDETR ( INTITU )
 C
       END

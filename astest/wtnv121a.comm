@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 08/02/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE MOUILLAGE D'UNE COLONNE EN BETON AVEC LOI D'ENDOMMMAGEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -292,6 +292,39 @@ REPONSE=CALC_NO(reuse =REPONSE,
                PRECISION = 1.E-10,
                OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA'),
                TOUT='OUI');
+
+ENDO=CALC_ELEM(RESULTAT=REPONSE,
+               OPTION='EXTR_ELNO_VARI',
+               NOM_VARI='D'
+               );
+
+ENDO=CALC_NO(reuse=ENDO,
+             RESULTAT=ENDO,
+             OPTION='EXTR_NOEU_VARI'
+             );
+
+TEST_RESU(RESU=(
+# ENDOMMAGEMENT
+                 _F(  RESULTAT = ENDO,   
+                       GROUP_NO = 'E',      
+                       NOM_CHAM = 'EXTR_NOEU_VARI',    
+                       NOM_CMP = 'X1',     
+                       INST = 0.5,  
+                       REFERENCE='NON_REGRESSION', 
+                       PRECISION = 1.E-5,   
+                       VALE = 7.78955E-04,
+                     ),
+                 _F(  RESULTAT = ENDO,   
+                       GROUP_NO = 'E',      
+                       NOM_CHAM = 'EXTR_NOEU_VARI',    
+                       NOM_CMP = 'X1',     
+                       INST = 1.0,  
+                       REFERENCE='NON_REGRESSION', 
+                       PRECISION = 1.E-5,   
+                       VALE = 7.78955E-04,
+                     ),
+                 )
+        );
 
 TEST_RESU(RESU=(
 # CONTRAINTE SIZZ

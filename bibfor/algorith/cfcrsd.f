@@ -1,24 +1,24 @@
-      SUBROUTINE CRSDCO(NOMA,LISCHA,NUMEDD,NEQ,DEFICO,RESOCO)
-
-C ----------------------------------------------------------------------
+      SUBROUTINE CFCRSD(NOMA,LISCHA,NUMEDD,NEQ,DEFICO,RESOCO)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/01/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
-C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
-C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C
 C TOLE CRP_20
       IMPLICIT     NONE
       INTEGER      NEQ
@@ -144,15 +144,16 @@ C
          GOTO 9999
       ENDIF
 
-
-C ----------------------------------------------------------------------
-C 
-C  STRUCTURES COMMUNES POUR CONTACT ET FROTTEMENT
-C
-C ----------------------------------------------------------------------
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<CONTACT> CREATION DE LA SD RESULTAT DE CONTACT'
       END IF
+
+C ----------------------------------------------------------------------
+C
+C     SD GEOMETRIQUES DU CONTACT/FROTTEMENT
+C
+C ----------------------------------------------------------------------
+
 
       NDIMCO = DEFICO(1:16)//'.NDIMCO'
       CALL JEVEUO (NDIMCO, 'E',JDIM)
@@ -210,8 +211,8 @@ C
         IZONE = ZI(JZOCO+INO-1)
         ICHAM = ZI(JCHAM+IZONE-1)
         IF ((ICHAM.EQ.1).OR.(ICHAM.EQ.-1)) THEN
-            NDDL = NDDL + NDIM
-            ZI(JPDDL+INO) = NDDL
+          NDDL = NDDL + NDIM
+          ZI(JPDDL+INO) = NDDL
         ELSE IF (ICHAM.EQ.-2) THEN
           NDDL = NDDL + 1
           ZI(JPDDL+INO) = NDDL
@@ -303,6 +304,21 @@ C
         ZI(JREAC+ZREAC*(IZONE-1)+3) = 0
  30   CONTINUE
 
+
+C ----------------------------------------------------------------------
+C
+C     SD ALGORITHMIQUES DU CONTACT/FROTTEMENT
+C
+C ----------------------------------------------------------------------
+
+C
+C --- SI METHODE SANS CONTACT, ON SORT
+C
+      IF (ABS(TYPALC).EQ.5) THEN
+         GOTO 9999
+      ENDIF
+
+
 C ======================================================================
 C --- VECTEURS DE TRAVAIL ----------------------------------------------
 C ======================================================================
@@ -328,6 +344,7 @@ C ---       JBID 7 : NOMBRE DE LIAISON DE FROTTEMENT (2EME DIRECTION ) -
 C ======================================================================
       CALL JEEXIN (COCO,IER)
       IF (IER.EQ.0) CALL WKVECT (COCO,'V V I',8,JBID)
+
       CALL DISMOI('F','NB_EC','DEPL_R','GRANDEUR',NEC,K1BID,IER)
       ZI(JBID  ) = NDIM
       ZI(JBID+1) = 0

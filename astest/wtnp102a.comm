@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 08/02/2005   AUTEUR CIBHHPD L.SALMONA 
 # ======================================================================
 # TITRE MODELISATION D_PLAN_THHD EN QUAD8
 # ======================================================================
@@ -283,6 +283,19 @@ U0=CALC_NO(reuse =U0,
              OPTION=('VARI_NOEU_ELGA'),
              RESULTAT=U0,);
              
+DPVP=CALC_ELEM(RESULTAT=U0,
+               OPTION='EXTR_ELNO_VARI',
+               NOM_VARI='DPVP'
+               )
+DPVP=CALC_NO(reuse=DPVP,
+             RESULTAT=DPVP,
+             OPTION='EXTR_NOEU_VARI',
+             )
+
+
+SATLIQ=CALC_ELEM(RESULTAT=U0,OPTION='EXTR_ELNO_VARI',NOM_VARI='SATLIQ')
+SATLIQ=CALC_NO(reuse=SATLIQ,RESULTAT=SATLIQ,OPTION='EXTR_NOEU_VARI',)
+
 #################################################
 #IMPR_RESU(RESU=_F(RESULTAT=U0,
 #                  NOM_CHAM='DEPL',
@@ -292,6 +305,28 @@ U0=CALC_NO(reuse =U0,
 #                  NOM_CHAM='VARI_NOEU_ELGA',
 #                  GROUP_NO=('BO',),),);
 #################################################
+
+TEST_RESU(RESU=(
+                _F(RESULTAT=DPVP,
+                   INST=1.00000E+04,
+                   NOM_CHAM='EXTR_NOEU_VARI',
+                   NOM_CMP='X1',
+                   NOEUD='N2',
+                   VALE=4.59768E+05,
+                   PRECISION=1.E-3,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '7.3.20', ),
+                _F(RESULTAT=SATLIQ,
+                   INST=1.00000E+04,
+                   NOM_CHAM='EXTR_NOEU_VARI',
+                   NOM_CMP='X1',
+                   NOEUD='N2',
+                   VALE=4.99158E-01,
+                   PRECISION=1.E-3,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '7.3.20', ),
+                   ),
+        );
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=U0,

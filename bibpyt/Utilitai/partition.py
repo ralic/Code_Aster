@@ -1,4 +1,4 @@
-#@ MODIF partition Utilitai  DATE 29/11/2004   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF partition Utilitai  DATE 07/02/2005   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -194,6 +194,11 @@ class MAIL_PY :
 
     del(Lma_groupma_tot)
 
+    # listes de correspondance entre Aster et Mail-Py
+    self.correspondance_noeuds  = aster.getvectjev(nom_maillage+'.NOMNOE')
+    self.correspondance_mailles = aster.getvectjev(nom_maillage+'.NOMMAI')
+
+
 # -------------------------------------------------------------
 
   def ToAster(self) :
@@ -264,44 +269,109 @@ class MAIL_PY :
 
     (nno,ndim) = self.cn.shape
   
-    l.append('COOR_3D')
-    for i in range(nno) :
-      ch = 'N'+repr(i)+'  '+`self.cn[i,0]` + '  ' + `self.cn[i,1]` + '  ' + `self.cn[i,2]`
-      l.append(ch)
 
+    # Coordonnees des noeuds
+    l.append('COOR_3D')
+
+    # Si le maillage initial ne provient pas d'Aster
+    if len(self.correspondance_noeuds) == 0:
+      for i in range(nno) :
+        ch = 'N'+repr(i)+'  '+`self.cn[i,0]` + '  ' + `self.cn[i,1]` + '  ' + `self.cn[i,2]`
+#        ch = 'N'+repr(i+1)+'  '+`self.cn[i,0]` + '  ' + `self.cn[i,1]` + '  ' + `self.cn[i,2]`
+        l.append(ch)
+
+    # Si le maillage initial provient d'Aster
+    else:
+      for i in range(nno) :
+        ch = self.correspondance_noeuds[i]+'  '+`self.cn[i,0]` + '  ' + `self.cn[i,1]` + '  ' + `self.cn[i,2]`
+#        ch = 'N'+repr(i+1)+'  '+`self.cn[i,0]` + '  ' + `self.cn[i,1]` + '  ' + `self.cn[i,2]`
+        l.append(ch)
+
+    # Connectivité des mailles
     ind = N.argsort(self.tm)
     ty = 0
-    for m in ind :
-      if self.tm[m] <> ty :
-        l.append('FINSF') ; l.append('%')
-        ty = self.tm[m]
-        l.append(self.nom[ty])
-      ch = 'M'+`m`+'  '
-      for n in self.co[m] :
-        ch = ch + 'N'+`n` + ' '
-      l.append(ch)
+
+    # Si le maillage initial ne provient pas d'Aster
+    if len(self.correspondance_mailles) == 0:
+      for m in ind :
+        if self.tm[m] <> ty :
+          l.append('FINSF') ; l.append('%')
+          ty = self.tm[m]
+          l.append(self.nom[ty])
+        ch = 'M'+`m`+'  '
+#        ch = 'M'+`m+1`+'  '
+        for n in self.co[m] :
+          ch = ch + 'N'+`n` + ' '
+#          ch = ch + 'N'+`n+1` + ' '
+        l.append(ch)
+
+    # Si le maillage initial provient d'Aster
+    else:
+      for m in ind :
+        if self.tm[m] <> ty :
+          l.append('FINSF') ; l.append('%')
+          ty = self.tm[m]
+          l.append(self.nom[ty])
+        ch = self.correspondance_mailles[m]+'  '
+#        ch = 'M'+`m+1`+'  '
+        for n in self.co[m] :
+          ch = ch + self.correspondance_noeuds[n] + ' '
+#          ch = ch + 'N'+`n+1` + ' '
+        l.append(ch)
+
     l.append('FINSF') ; l.append('%')
 
+
+    # Group_ma et Group_no
     entete = ['GROUP_MA','GROUP_NO']
     d_gp   = [self.gma,self.gno]
     pref   = ['M','N']  
-    for (d_gp,entete,prefixe) in [(self.gma,'GROUP_MA','M'),(self.gno,'GROUP_NO','N')] :
-      for gp in d_gp :
-        l.append(entete)
-        l.append('  ' + gp)
-        ch = ' '
-        i=0
-        for o in d_gp[gp]:
-          i+=1  # on ne met que 8 mailles sur une meme ligne
-#          if len(ch) > 60:
-          if (len(ch) > 60 or i>7):
-            l.append(ch)
-            ch = ' '
-            i=0
-          ch = ch + prefixe + `o` + ' '
-        l.append(ch)
-        l.append('FINSF') ; l.append('%')            
 
+    # Si le maillage initial ne provient pas d'Aster
+    if len(self.correspondance_mailles) == 0:
+
+      for (d_gp,entete,prefixe) in [(self.gma,'GROUP_MA','M'),(self.gno,'GROUP_NO','N')] :
+        for gp in d_gp :
+         if len(d_gp[gp])>0:  # On ne prend en compte que les group_* non vides
+          l.append(entete)
+          l.append('  ' + gp)
+          ch = ' '
+          i=0
+          for o in d_gp[gp]:
+            i+=1  # on ne met que 8 mailles sur une meme ligne
+            if (len(ch) > 60 or i>7):
+              l.append(ch)
+              ch = ' '
+              i=0
+            ch = ch + prefixe + `o` + ' '
+          l.append(ch)
+          l.append('FINSF') ; l.append('%')            
+
+    # Si le maillage initial provient d'Aster
+    else:
+
+      for (d_gp,entete,prefixe) in [(self.gma,'GROUP_MA','M'),(self.gno,'GROUP_NO','N')] :
+        for gp in d_gp :
+         if len(d_gp[gp])>0:  # On ne prend en compte que les group_* non vides
+          l.append(entete)
+          l.append('  ' + gp)
+          ch = ' '
+          i=0
+          for o in d_gp[gp]:
+            i+=1  # on ne met que 8 mailles sur une meme ligne
+            if (len(ch) > 60 or i>7):
+              l.append(ch)
+              ch = ' '
+              i=0
+#            ch = ch + prefixe + `o` + ' '
+            if prefixe=='M':
+              ch = ch + self.correspondance_mailles[o] + ' '
+            else:
+              ch = ch + self.correspondance_noeuds[o] + ' '
+          l.append(ch)
+          l.append('FINSF') ; l.append('%')            
+
+    # Fin
     l.append('FIN\n')
     return string.join(l,'\n')
 
@@ -343,6 +413,7 @@ class PARTITION:
                             'exe_metis'   : aster.repout() + 'pmetis',
                             'fichier_in'  : 'fort.66',
                             'fichier_out' : 'fort.68',
+                            'elimine_bords': 'NON',
                              }
 
     self.Creation_Dico_Correspondance_Type_Maille()
@@ -410,7 +481,7 @@ class PARTITION:
 
     self.OPTIONS['NB_PART'] = NB_PART
     self.OPTIONS['INFO']    = INFO
-    self.MAILLAGE_Python = MAILLAGE_Python
+    self.MAILLAGE_Python    = MAILLAGE_Python
 
     exe_metis = self.OPTIONS['exe_metis']
     f_metis   = self.OPTIONS['fichier_in']
@@ -434,21 +505,28 @@ class PARTITION:
       print 'dim=', self.MAILLAGE_Python.dime_maillage
     if self.OPTIONS['INFO']>=5: print '_LST_MA=', _LST_MA
 
-    # Liste des mailles à prendre en compte : dimension _DIM
-    _D_DIM_MAILLES = self.Creation_Listes_Mailles_Par_Dim(self.MAILLAGE_Python.tm, _LST_MA=_LST_MA)
 
-    # Connectivité et connectivité inverse sur les bords
-    self.Connectivite_Aretes()
+    # Elimination des mailles de bords
+    if self.OPTIONS['elimine_bords']!='NON':
 
-    self.liste_mailles = _D_DIM_MAILLES[ _DIM ]
+      # Liste des mailles à prendre en compte : dimension _DIM
+      _D_DIM_MAILLES = self.Creation_Listes_Mailles_Par_Dim(self.MAILLAGE_Python.tm, _LST_MA=_LST_MA)
+  
+      # Connectivité et connectivité inverse sur les bords
+      self.Connectivite_Aretes()
+  
+      self.liste_mailles = _D_DIM_MAILLES[ _DIM ]
+  
+      # Pour prendre en compte des mélanges d'elements de dimension differente
+      _LST, _LST_BD = self.Elimination_Mailles_de_bords(MAILLAGE_Python, _D_DIM_MAILLES, _DIM)
+      self.liste_mailles = N.concatenate( (self.liste_mailles,N.array(_LST)) )
+  
+      if self.OPTIONS['INFO']>=5:
+        print '_LST_BD=',_LST_BD
+        print '_LST=',_LST
 
-    # Pour prendre en compte des mélanges d'elements de dimension differente
-    _LST, _LST_BD = self.Elimination_Mailles_de_bords(MAILLAGE_Python, _D_DIM_MAILLES, _DIM)
-    self.liste_mailles = N.concatenate( (self.liste_mailles,N.array(_LST)) )
-
-    if self.OPTIONS['INFO']>=5:
-      print '_LST_BD=',_LST_BD
-      print '_LST=',_LST
+    else:
+      self.liste_mailles = _LST_MA
 
 
     # Restriction des connectivités aux mailles à prendre en compte
@@ -473,7 +551,8 @@ class PARTITION:
     self.liste_sd = self.Lecture_fichier_sdd(self.fichier_out, self.liste_mailles)
 
     # Traitement des mailles de bords (on les reinjecte dans un SD)
-    self.Affectation_Mailles_de_bords(_LST_BD, _DIM)
+    if self.OPTIONS['elimine_bords']!='NON':
+      self.Affectation_Mailles_de_bords(_LST_BD, _DIM)
 
     t1 = time.clock()
     print "--- FIN PARTITIONNEMENT : ", t1 - self.t00

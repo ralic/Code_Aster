@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 08/02/2005   AUTEUR CIBHHPD L.SALMONA 
 # ======================================================================
 # TITRE : SIMULATION D'EXCAVATION EN COMPORTEMENT HYDRO-MECANIQUE ------
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -235,6 +235,46 @@ U1       = CALC_NO( reuse    = U1,
                    OPTION   = ( 'SIEF_NOEU_ELGA', 'VARI_NOEU_ELGA')
                   )
     
+GAMP=CALC_ELEM(RESULTAT=U1,
+               OPTION='EXTR_ELNO_VARI',
+               NOM_VARI='GAMP'
+               );
+
+GAMP=CALC_NO(reuse=GAMP,
+             RESULTAT=GAMP,
+             OPTION='EXTR_NOEU_VARI'
+             );
+    
+EVP=CALC_ELEM(RESULTAT=U1,
+              OPTION='EXTR_ELNO_VARI',
+              NOM_VARI='EVP'
+              );
+
+EVP=CALC_NO(reuse=EVP,
+            RESULTAT=EVP,
+            OPTION='EXTR_NOEU_VARI'
+            );
+
+DRHOLQ=CALC_ELEM(RESULTAT=U1,
+                 OPTION='EXTR_ELNO_VARI',
+                 NOM_VARI='DRHOLQ'
+                 );
+                 
+DRHOLQ=CALC_NO(reuse=DRHOLQ,
+               RESULTAT=DRHOLQ,
+               OPTION='EXTR_NOEU_VARI'
+               );
+
+DPORO=CALC_ELEM(RESULTAT=U1,
+                OPTION='EXTR_ELNO_VARI',
+                NOM_VARI='DPORO'
+                );
+                
+DPORO=CALC_NO(reuse=DPORO,
+              RESULTAT=DPORO,
+              OPTION='EXTR_NOEU_VARI'
+              );
+
 TEST_RESU(RESU=_F(RESULTAT=U1,
                   INST = 1.490156250E6,
                   NOM_CHAM='SIEF_NOEU_ELGA',
@@ -267,6 +307,54 @@ TEST_RESU(RESU=_F(RESULTAT=U1,
                   PRECISION=1.E-4,
                   VERSION = '7.3.8',
                   REFERENCE='NON_REGRESSION',),);  
+
+TEST_RESU(RESU=_F(RESULTAT=GAMP,
+                  INST = 1.490156250E6,
+                  NOM_CHAM='EXTR_NOEU_VARI',
+                  NOM_CMP='X1',
+                  NOEUD='N5',
+                  VALE=3.39056E-01,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,
+                  VERSION = '7.3.8',
+                  REFERENCE='NON_REGRESSION',),);  
+   
+#################################################################   
+
+TEST_RESU(RESU=_F(RESULTAT=EVP,
+                  INST = 1.490156250E6,
+                  NOM_CHAM='EXTR_NOEU_VARI',
+                  NOM_CMP='X1',
+                  NOEUD='N5',
+                  VALE=3.33631E-01,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,
+                  VERSION = '7.3.8',
+                  REFERENCE='NON_REGRESSION',),);  
+   
+TEST_RESU(RESU=_F(RESULTAT=DRHOLQ,
+                  INST = 1.490156250E6,
+                  NOM_CHAM='EXTR_NOEU_VARI',
+                  NOM_CMP='X1',
+                  NOEUD='N5',
+                  VALE=-2.39452E+00,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,
+                  VERSION = '7.3.8',
+                  REFERENCE='NON_REGRESSION',),);  
+   
+TEST_RESU(RESU=_F(RESULTAT=DPORO,
+                  INST = 1.490156250E6,
+                  NOM_CHAM='EXTR_NOEU_VARI',
+                  NOM_CMP='X1',
+                  NOEUD='N5',
+                  VALE=1.85017E-01,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,
+                  VERSION = '7.3.8',
+                  REFERENCE='NON_REGRESSION',),);  
+
+#################################################################   
 
 TEST_RESU(RESU=_F(RESULTAT=U1,
                   INST = 1.490156250E6,

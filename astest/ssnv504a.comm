@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
 # TITRE EXTRUSION D'UN LOPIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,7 +133,6 @@ CH2=AFFE_CHAR_MECA(MODELE=MO,
                    CONTACT=(_F(APPARIEMENT='MAIT_ESCL',
                                RECHERCHE='NOEUD_BOUCLE',
                                METHODE='CONTRAINTE',
-                               FROTTEMENT='SANS',
                                REAC_GEOM='CONTROLE',
                                NB_REAC_GEOM=2,
                                GROUP_MA_MAIT='SMAI1',
@@ -144,9 +143,25 @@ CH2=AFFE_CHAR_MECA(MODELE=MO,
                                REAC_GEOM='CONTROLE',
                                NB_REAC_GEOM=2,
                                METHODE='CONTRAINTE',
-                               FROTTEMENT='SANS',
                                GROUP_MA_MAIT='SMAI2',
                                GROUP_MA_ESCL='SESC2',),),);
+
+CH3=AFFE_CHAR_MECA(MODELE=MO,
+                   CONTACT=(_F(APPARIEMENT='MAIT_ESCL',
+                               RECHERCHE='NOEUD_BOUCLE',
+                               METHODE='VERIF',
+                               TOLE_INTERP = 0.5,
+                               GROUP_MA_MAIT='SMAI1',
+                               GROUP_MA_ESCL='SESC1',
+                               STOP_INTERP='NON',
+
+                               ),
+                            _F(APPARIEMENT='MAIT_ESCL',
+                               RECHERCHE='NOEUD_BOUCLE',
+                               METHODE='VERIF',
+                               GROUP_MA_MAIT='SMAI2',
+                               GROUP_MA_ESCL='SESC2',),),);
+
 #_____________________________________________________________________
 #
 #                    DEFINITIONS DES FONCTIONS TEMPORELLES 
@@ -271,6 +286,33 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    VALE_I=1,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',),),);
+
+
+
+U2=STAT_NON_LINE(MODELE=MO,
+                CHAM_MATER=CM,
+                EXCIT=(_F(CHARGE=CH0,
+                          FONC_MULT=DPLY,),
+                       _F(CHARGE=CH1,),
+                       _F(CHARGE=CH3,),),
+                COMP_INCR=_F(RELATION='ELAS',
+                             TOUT='OUI',),
+                INCREMENT=_F(LIST_INST=L_INST,),
+                NEWTON=_F(MATRICE='TANGENTE',
+                          REAC_ITER=1,),
+                CONVERGENCE=_F(RESI_GLOB_MAXI=9.9999999999999995E-07,),);
+
+TEST_RESU(RESU=(
+                _F(RESULTAT=U2,
+                   NUME_ORDRE=31,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='K',
+                   VALE=155.096,
+                   PRECISION=1.E-3,
+                   VERSION = '8.0.6',
+                   REFERENCE='NON_REGRESSION',),
+),);
 
 FIN();
 #

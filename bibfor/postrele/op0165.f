@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT   NONE
       INTEGER            IER
 C     ------------------------------------------------------------------
-C MODIF POSTRELE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
 C     ------------------------------------------------------------------
 C
 C     OPERATEUR POST_RCCM

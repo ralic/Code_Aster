@@ -1,7 +1,7 @@
       SUBROUTINE FETCRF(SDFET1)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ELEMENTS  DATE 07/02/2005   AUTEUR ASSIRE A.ASSIRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -62,12 +62,13 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
-      INTEGER     NBMA(10),LISTMA(10,2),NBNO(10),LISTNO(12,2),
-     &   NBVO(10),LISTCO(3,2),NBFETE,LISTFE(10),LISTNI(10),NBPR(10),
-     &   LISTPR(10,2),NBDDL(10)
+C      INTEGER      NBNO(1000), NGMA(1000), NBRD(1000), NBMABD(1000) 
+C      CHARACTER*8  LSTGMA(1000), LSTBRD(1000),NOMCHA(1000),NOMSD(1000)
+      INTEGER      NBNO, NGMA, NBRD, NBMABD, LSTGMA, LSTBRD,NOMCHA,NOMSD
+
       INTEGER      JADR,I,J,NBSD,INTBUF,NBNOIN,IFM,NIV,NBMAI,
      &             NBNOI3,NBNOG,NBCHAR,MULTC
-      CHARACTER*8  K8BID,K8BUFF,NOMSD(10)
+      CHARACTER*8  K8BID,K8BUFF
       CHARACTER*19 SDFETI
       CHARACTER*24 NOMSDA,NOMSDB,NOMSDI,NOMSDG,NOMSDM,NOMSDH,NOMSDJ,
      &             NOMSLN,NOMSLI,NOMSLM
@@ -76,29 +77,30 @@ C DECLARATION VARIABLES LOCALES
       INTEGER      NBID,ITMP,JVALE,NBGRMN,IALIK8,IALII1,IALII2,
      &             NBK8,NBIS,IRET,IER,NBNOTO,IERD,IALINO,JTRAV,IANBNO,
      &             NBGMA,NBMAIL,IALIMA,II,JJ,NBNOSD,NB,IANBMA,IALIBD,
-     &             IS9,INCRS,L,XT,YT,ZT,VALE(12),IALSNO,IALSMU,K,KK,NN,
+     &             IS9,INCRS,L,XT,YT,ZT,IALSNO,IALSMU,K,KK,NN,
      &             LINOMA,IALSMA,IND,JNOMA,JPRNM,NEC,N,INO,DDLC,
      &             IALSK,NUMSD,IALSPO,IPOS,IAJADR,JTMP,IALSTR,IALSTB,
-     &             JADRI,JADRJ,IALSFG,NBMATO,NBVM,NGMA(1000),NMA(1000),
-     &             NBRD(1000),NBMABD(1000),IALSML,IALSMD,IALSCR,NBMAMA
+     &             JADRI,JADRJ,IALSFG,NBMATO,NBVM, NBFETE,IALSML,IALSMD,
+     &             IALSCR,NBMAMA
       CHARACTER*1  K1BID
       CHARACTER*4  K4TMP
-      CHARACTER*8  LSTGMA(1000),LSTMA(1000),KTMP,NOM,MA,K8B,NOMGMA,NOMO,
-     &             LSTBRD(1000),NOMCHA(1000),NOMN
+      CHARACTER*8  KTMP,NOM,MA,K8B,NOMGMA,NOMO,
+     &             NOMN,NOMA
       CHARACTER*16 CONCEP,CMD,OPTION, MOTCLE, TYPMCL, MOTFAC
       CHARACTER*19 LIGRMO,LIGRCH
       CHARACTER*24 NOMNOE,GRPNOE,COOVAL,LISNO,LISNOM,NOMREF
       CHARACTER*24 GRPMA,GRPNO
       CHARACTER*32 JEXNUM
       LOGICAL      EXISDG
-      
+
       CHARACTER*8  MODELE, CHARGE
       INTEGER      IBID,ND,IADR,N1,N2,N3,N4,NBOBJ1,LONLI1,IDLIG1,NVAL,
      &             ICSDMA,ICHNBM,ISDLSM,NBMATA,ILMAT,NDTAR,
      &             ISDLCH,ISDCHA,ISDMAT,INBMCH,IFLIM,IDFLIN,IFLII,DEC,
      &             ICH,ISD,IMAT,ILSCHA,IDFLII,IDFLIM,IDFLM,IDFLN,IFNT,
      &             NB1,NB2,NB3,BIFLII,BIFLIM,BIFLN,JADRH,NBNOTA,
-     &             NOINCH,NBNOEU,ILIAIS,INBNO,ICOMPT,LL
+     &             NOINCH,NBNOEU,ILIAIS,INBNO,ICOMPT,LL,NBDDLI,IADIME,
+     &             NDIME
 
 C CORPS DU PROGRAMME
       CALL JEMARQ()
@@ -110,13 +112,10 @@ C INITIALISATIONS
       NOMSDM=SDFETI//'.FDIM'      
       NOMSDA=SDFETI//'.FETA'
       NOMSDB=SDFETI//'.FETB'
-C      NOMSDD=SDFETI//'.FETD'
-C      NOMSDE=SDFETI//'.FETE'
-      NOMSDI=SDFETI//'.FETI'
       NOMSDG=SDFETI//'.FETG'
       NOMSDH=SDFETI//'.FETH'
+      NOMSDI=SDFETI//'.FETI'
       NOMSDJ=SDFETI//'.FETJ'
-
       NOMSLN=SDFETI//'.FLIN'
       NOMSLI=SDFETI//'.FLII'
       NOMSLM=SDFETI//'.FLIM'
@@ -129,18 +128,37 @@ C --- LIGREL DU MODELE
 
 
 C CREATION DES DIFFERENTS ATTRIBUTS DE LA S.D. SD_FETI
-C .REFE
+C .FREF
 
 C NBRE DE CHARGE
       CALL GETFAC('EXCIT',NBCHAR)
-      IF (NIV.GE.4) WRITE(6,*) 'NBCHAR=',NBCHAR
+      IF (NIV.GE.4) WRITE(IFM,*) 'NBCHAR=',NBCHAR
+
+
+C VECTEURS TEMPORAIRES DE TAILLE NBCHAR
+      IF (NBCHAR.GT.0) THEN
+        CALL WKVECT('&&FETCRF.NOMCHA   ','V V K8',NBCHAR,NOMCHA)
+      ENDIF
+
+
+C VECTEURS TEMPORAIRES DE TAILLE NBSD
+      CALL GETFAC('DEFI',NBSD)
+      NBSD = ABS(NBSD)
+      CALL WKVECT('&&FETCRF.NBNO     ','V V I',NBSD,NBNO)
+      CALL WKVECT('&&FETCRF.NGMA     ','V V I',NBSD,NGMA)
+      CALL WKVECT('&&FETCRF.NBRD     ','V V I',NBSD,NBRD)
+      CALL WKVECT('&&FETCRF.NBMABD   ','V V I',NBSD,NBMABD)
+      CALL WKVECT('&&FETCRF.LSTGMA   ','V V K8',NBSD,LSTGMA)
+      CALL WKVECT('&&FETCRF.LSTBRD   ','V V K8',NBSD,LSTBRD)
+      CALL WKVECT('&&FETCRF.NOMSD    ','V V K8',NBSD,NOMSD)
+
 
 C LISTE DES CHARGES
       IF (NBCHAR.GE.1) THEN
         DO 800 I = 1,NBCHAR
           CALL GETVID('EXCIT','CHARGE',I,1,1,K8B,ND)
-          IF (NIV.GE.4) WRITE(6,*) 'CHARGE=',K8B
-          NOMCHA(I)=K8B
+          IF (NIV.GE.4) WRITE(IFM,*) 'CHARGE=',K8B
+          ZK8(NOMCHA-1+I)=K8B
   800   CONTINUE
       ENDIF 
 
@@ -149,7 +167,7 @@ C     CREATION .FREF
       CALL WKVECT(NOMREF,'G V K8',INTBUF,JADR)
       ZK8(JADR)=NOMO
       DO 50 I=1,NBCHAR
-        ZK8(JADR+I)=NOMCHA(I)
+        ZK8(JADR+I)=ZK8(NOMCHA-1+I)
    50 CONTINUE
 
       IF (NIV.GE.3) THEN 
@@ -158,17 +176,29 @@ C     CREATION .FREF
       ENDIF 
 
 
-
-
 C --- MAILLAGE ASSOCIE AU MODELE
-      CALL JEVEUO(LIGRMO//'.NOMA','L',JNOMA)
-      MA = ZK8(JNOMA)
+C     
+      CALL GETVID(' ','MAILLAGE',1,1,1,NOMA,NBVM)
+C      write(6,*) 'NBVM=',NBVM
+C      write(6,*) 'NOMA=',NOMA
+      IF (NBVM.EQ.0) THEN
+        CALL JEVEUO(LIGRMO//'.NOMA','L',JNOMA)
+        MA = ZK8(JNOMA)
+      ELSE
+        MA=NOMA
+      ENDIF
+      IF (NIV.GE.4) WRITE(IFM,*) 'NOMA=',MA
+
+C --- DIMENSION DU PROBLEME
+      CALL JEVEUO(MA//'.DIME','L',IADIME)
+      NDIME=ZI(IADIME+5)
+      IF (NIV.GE.4) WRITE(IFM,*) 'DIMENSION=',NDIME
+
 
 C DETERMINATION DU NB TOTAL DE NOEUDS ET DE MAILLES DU MAILLAGE
       CALL DISMOI('F','NB_NO_MAILLA',MA,'MAILLAGE',NBNOTO,K8B,IERD)
       CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMATO,K8B,IERD)
-      IF (NIV.GE.4) WRITE(6,*) 'NBNOTO ET NBMATO=',NBNOTO,NBMATO
-
+      IF (NIV.GE.4) WRITE(IFM,*) 'NBNOTO ET NBMATO=',NBNOTO,NBMATO
       GRPMA = MA//'.GROUPEMA       '
 
 C
@@ -183,16 +213,15 @@ C
 C
 C --- LECTURE DU CONTENU DES MOT-CLES DEFI
 C
-      CALL GETFAC('DEFI',NBSD)
-      NBSD = ABS(NBSD)
-
       DO 1 I = 1, NBSD
-        CALL GETVID('DEFI','GROUP_MA',I,1,1,LSTGMA(I),NGMA(I))
-C        WRITE(6,*) 'NGMA=',NGMA,LSTGMA(I)
-        CALL GETVID('DEFI','GROUP_MA_BORD',I,1,1,LSTBRD(I),NBRD(I))
-C        WRITE(6,*) 'NBRD=',NBRD,LSTBRD(I)
+        CALL GETVID('DEFI','GROUP_MA',I,1,1,ZK8(LSTGMA-1+I),
+     &                                         ZI(NGMA-1+I))
+C        WRITE(IFM,*) 'NGMA=',NGMA,ZK8(LSTGMA-1+I)
+        CALL GETVID('DEFI','GROUP_MA_BORD',I,1,1,ZK8(LSTBRD-1+I),
+     &                                              ZI(NBRD-1+I))
+C        WRITE(IFM,*) 'NBRD=',NBRD,ZK8(LSTBRD-1+I)
 C        CALL GETVID('DEFI','MAILLE',  I,1,1,LSTMA(I),NMA(I))
-C        WRITE(6,*) 'NMA=',NMA,LSTMA(I)
+C        WRITE(IFM,*) 'NMA=',NMA,LSTMA(I)
   1   CONTINUE
 
 
@@ -208,12 +237,7 @@ C  ON PREND LE MOT-CLE NOM TRONQUE A 4 CARACTERES ET ON AJOUTE LE NUM
       DO 5 I = 1, NBSD
         WRITE(KTMP,'(I4)') I
         CALL LXCADR(KTMP)
-        NOMSD(I) = K4TMP(1:ITMP)//KTMP
-C         CALL JEEXIN(JEXNOM(GRPMA,NOMSD(I)),IRET)
-C         IF (IRET.GT.0) THEN
-C           CALL UTMESS('F','FETCRF','LE GROUP_MA : '//NOMSD(I)//
-C      &                ' EXISTE DEJA, CHANGER ''NOM''.')
-C         ENDIF
+        ZK8(NOMSD-1+I) = K4TMP(1:ITMP)//KTMP
   5   CONTINUE
 
 
@@ -227,8 +251,8 @@ C   ZI(IALINO-1+J), J = 1,NBNOT
 
       IER = 0
       DO 21 I = 1,NBSD
-        IF (NGMA(I).EQ.1) THEN
-          NOMGMA=LSTGMA(I)
+        IF (ZI(NGMA-1+I).EQ.1) THEN
+          NOMGMA=ZK8(LSTGMA-1+I)
           CALL JEEXIN(JEXNOM(GRPMA,NOMGMA),IRET)
             IF (IRET.EQ.0) THEN
               IER = IER + 1
@@ -270,9 +294,9 @@ C     BOUCLE SUR LES SOUS-DOMAINES
 
         CALL WKVECT('&&FETCRF.TMP  ','V V I',2*NBNOTO,JTMP)
 
-        IF (NGMA(I).EQ.1) THEN
-          NOMGMA=LSTGMA(I)
-          IF (NIV.GE.4) WRITE(6,*) 'NOMGMA=',NOMGMA
+        IF (ZI(NGMA-1+I).EQ.1) THEN
+          NOMGMA=ZK8(LSTGMA-1+I)
+          IF (NIV.GE.4) WRITE(IFM,*) 'NOMGMA=',NOMGMA
 
 C         MAILLES DU GROUP_MA (POUR LE CALCUL DE NBMAIL)
           CALL JELIRA(JEXNOM(GRPMA,NOMGMA),'LONMAX',NBMAIL,K8B)
@@ -286,7 +310,7 @@ C         NB TOTAL DE MAILLE DANS LE SD
 
         IF (NIV.GE.4) THEN
           DO 221 J = 1,NBMAIL
-            WRITE(6,*) 'ZI(IALIMA)=',ZI(IALIMA-1+J)
+            WRITE(IFM,*) 'ZI(IALIMA)=',ZI(IALIMA-1+J)
   221     CONTINUE
         ENDIF
 
@@ -301,13 +325,13 @@ C                         nombre de noeuds = ZI(IANBNO-1+I)
 
         IF (NIV.GE.4) THEN
           DO 222 J = 1,ZI(IANBNO-1+I)
-            WRITE(6,*) 'ZI(JTMP)=',ZI(JTMP-1+J)
+            WRITE(IFM,*) 'ZI(JTMP)=',ZI(JTMP-1+J)
   222     CONTINUE
         ENDIF
 
 
 C       REMPLISSAGE DE SDFETI / .FETB
-        K8BUFF=NOMSD(I)
+        K8BUFF=ZK8(NOMSD-1+I)
         CALL JECROC(JEXNOM(NOMSDB,K8BUFF))
         INTBUF=2*ZI(IANBNO-1+I)
         CALL JEECRA(JEXNOM(NOMSDB,K8BUFF),'LONMAX',INTBUF,K8BID)
@@ -318,17 +342,15 @@ C       REMPLISSAGE DE SDFETI / .FETB
 C         - NOEUD
           INO = ZI(JTMP-1+J)
           ZI(JADR+2*J-1-1)=INO
-C          ZI(JADR+2*J-1-1)=ZI(JTMP-1+J)
 
 C         - NB DDL CUMULES
           DO 7 L=1,30*NEC
-C          INO = ZI(JTMP-1+J)
             IF (EXISDG( ZI(JPRNM-1+NEC*(INO-1)+1) ,L )) THEN
               K=K+1
             ENDIF
   7       CONTINUE
           ZI(JADR+2*J-1  )=K
-          IF (NIV.GE.4) WRITE(6,*) 'DDL___=',K
+          IF (NIV.GE.4) WRITE(IFM,*) 'DDL___=',K
   210     CONTINUE                      
   200   CONTINUE
 
@@ -336,25 +358,25 @@ C       NB DDL TOTAL DU SOUS-DOMAINE I
         ZI(IALSK-1+I)=K
 
 C       NB NOEUD DANS LE SD COURANT
-        NBNO(I)=ZI(IANBNO-1+I)
+        ZI(NBNO-1+I)=ZI(IANBNO-1+I)
 
 C       CREATION DU VECTEUR DES NOEUDS :  ZI(IALINO-1+...+3*NBNOTO)
 C                DU VECTEUR DE CORRESPONDANCE NOEUD -> SD 
 C                                      :  ZI(LINOMA-1+...+3*NBNOTO)
 C                DU VECTEUR DE CORRESPONDANCE NOEUD -> POSITION DANS SD
         IPOS=1
-        DO 25 J = 1,NBNO(I)
+        DO 25 J = 1,ZI(NBNO-1+I)
           ZI(IALINO+NB-1+J)= ZI(JTMP-1+J)
           ZI(LINOMA+NB-1+J)= I
           ZI(IALSPO+NB-1+J)= IPOS
           IPOS=IPOS+1
-          IF (NIV.GE.4) WRITE(6,*) 'NOEUD=',ZI(JTMP-1+J)
-          IF (NIV.GE.4) WRITE(6,*) 'GMA=',ZI(LINOMA+NB-1+J)
-          IF (NIV.GE.4) WRITE(6,*) 'POS=',ZI(IALSPO+NB-1+J)
+          IF (NIV.GE.4) WRITE(IFM,*) 'NOEUD=',ZI(JTMP-1+J)
+          IF (NIV.GE.4) WRITE(IFM,*) 'GMA=',ZI(LINOMA+NB-1+J)
+          IF (NIV.GE.4) WRITE(IFM,*) 'POS=',ZI(IALSPO+NB-1+J)
    25   CONTINUE
 
 C       ON INCREMENTE LE NOMBRE DE NOEUDS TOTAL DES LISTES
-        NB=NB+NBNO(I)
+        NB=NB+ZI(NBNO-1+I)
 
 
         CALL JEDETR('&&FETCRF.TMP')
@@ -368,49 +390,50 @@ C       ON INCREMENTE LE NOMBRE DE NOEUDS TOTAL DES LISTES
 C      REMPLISSAGE DE SDFETI / .FETA
       CALL JECREC(NOMSDA,'G V I','NO','DISPERSE','VARIABLE',NBSD)
       DO 100 I=1,NBSD
-        K8BUFF=NOMSD(I)
+        K8BUFF=ZK8(NOMSD-1+I)
         CALL JECROC(JEXNOM(NOMSDA,K8BUFF))
 
 C       NB MAILLES
         INTBUF=ZI(IANBMA-1+I)
 
 C       NB MAILLES DE BORDS SI BESOIN...
-        NBMABD(I)=0
-        IF (NBRD(I).EQ.1) THEN
-          CALL JELIRA(JEXNOM(GRPMA,LSTBRD(I)),'LONMAX',NBMABD(I),K8B)
-C          WRITE(6,*) 'NBID=',NBID
+        ZI(NBMABD-1+I)=0
+        IF (ZI(NBRD-1+I).EQ.1) THEN
+          CALL JELIRA(JEXNOM(GRPMA,ZK8(LSTBRD-1+I)),'LONMAX',
+     &                               ZI(NBMABD-1+I),K8B)
+C          WRITE(IFM,*) 'NBID=',NBID
         ENDIF
         
 C       NB MAILLES TOTALES
-        NBID=INTBUF+NBMABD(I)
+        NBID=INTBUF+ZI(NBMABD-1+I)
 
         CALL JEECRA(JEXNOM(NOMSDA,K8BUFF),'LONMAX',NBID,K8BID)
         CALL JEVEUO(JEXNOM(NOMSDA,K8BUFF),'E',JADR)
 
 C       MAILLES DU GROUP_MA (POUR .FETA)
-        IF (NGMA(I).EQ.1) THEN
-          NOMGMA=LSTGMA(I)
+        IF (ZI(NGMA-1+I).EQ.1) THEN
+          NOMGMA=ZK8(LSTGMA-1+I)
           CALL JELIRA(JEXNOM(GRPMA,NOMGMA),'LONMAX',ZI(IANBMA-1+I),K8B)
           CALL JEVEUO(JEXNOM(GRPMA,NOMGMA),'L',IALIMA)
         ENDIF
 
         DO 90 J=1,INTBUF
           ZI(JADR+J-1)=ZI(IALIMA-1+J)
-C          WRITE(6,*) JADR+J-1
+C          WRITE(IFM,*) JADR+J-1
    90   CONTINUE                        
 
 C       MAILLES DE BORD (POUR .FETA)
-        IF (NBRD(I).EQ.1) THEN
-          NOMGMA=LSTBRD(I)
+        IF (ZI(NBRD-1+I).EQ.1) THEN
+          NOMGMA=ZK8(LSTBRD-1+I)
 
 C         MAILLES DU GROUP_MA (POUR LE CALCUL DE NBMAIL)
-          CALL JELIRA(JEXNOM(GRPMA,NOMGMA),'LONMAX',NBMABD(I),K8B)
+          CALL JELIRA(JEXNOM(GRPMA,NOMGMA),'LONMAX',ZI(NBMABD-1+I),K8B)
           CALL JEVEUO(JEXNOM(GRPMA,NOMGMA),'L',IALIBD)
 
-          DO 91 J=1,NBMABD(I)
+          DO 91 J=1,ZI(NBMABD-1+I)
             ZI(JADR+J-1+INTBUF)=ZI(IALIBD-1+J)
-C            WRITE(6,*) JADR+J-1+INTBUF
-C            WRITE(6,*) 'ZI(IALIBD-1+J)=',ZI(IALIBD-1+J)
+C            WRITE(IFM,*) JADR+J-1+INTBUF
+C            WRITE(IFM,*) 'ZI(IALIBD-1+J)=',ZI(IALIBD-1+J)
    91     CONTINUE                        
 
         ENDIF
@@ -424,21 +447,35 @@ C            WRITE(6,*) 'ZI(IALIBD-1+J)=',ZI(IALIBD-1+J)
 C FIN .FETA ET .FETB
 C --------------------------------------------------------------
 
-      IF (NIV.GE.4) THEN
-        WRITE(6,*) 'NB=',NB
+      IF (NIV.GE.3) THEN
+        WRITE(IFM,*) ' '  
+        WRITE(IFM,*) '------------------------------------'  
+        WRITE(IFM,*) '|           FETA ET FETB            |'
+        WRITE(IFM,*) '|  PAR SD :   - NB DDL              |'
+        WRITE(IFM,*) '|             - NB MAILLES          |'
+        WRITE(IFM,*) '|             - NB NOEUDS           |'
+        WRITE(IFM,*) ' '  
+
+        WRITE(IFM,*) 'NB NOEUDS=',NB
         DO 94 I = 1,NBSD
-          WRITE(6,*) 'SD=',I
-          WRITE(6,*) 'DDL TOTAL=',ZI(IALSK-1+I)
-          WRITE(6,*) 'MA TOTAL =',ZI(IANBMA-1+I)
-          WRITE(6,*) 'NO TOTAL =',ZI(IANBNO-1+I)
+          WRITE(IFM,*) 'SD=',I
+          WRITE(IFM,*) 'DDL TOTAL=',ZI(IALSK-1+I)
+          WRITE(IFM,*) 'MA TOTAL =',ZI(IANBMA-1+I)
+          WRITE(IFM,*) 'NO TOTAL =',ZI(IANBNO-1+I)
    94   CONTINUE
-        WRITE(6,*) '++++++++++++++++++++++++++++++++++++++'
+      ENDIF
+
+      IF (NIV.GE.4) THEN
+        WRITE(IFM,*) ' '  
+        WRITE(IFM,*) '------------------------------------'  
+        WRITE(IFM,*) '|    TOUS LES NOEUDS ET LEUR SD     |'
+        WRITE(IFM,*) ' '  
         DO 24 J = 1,NB
-          WRITE(6,*) 'NOEUD=',ZI(IALINO-1+J)
-          WRITE(6,*) 'GMA=',ZI(LINOMA-1+J)
+          WRITE(IFM,*) 'NOEUD=',ZI(IALINO-1+J), 'GMA=',ZI(LINOMA-1+J)
    24   CONTINUE
-        WRITE(6,*)  'NB=',NB 
-        WRITE(6,*) '++++++++++++++++++++++++++++++++++++++'
+        WRITE(IFM,*)  'TOTAL NOEUDS=',NB 
+        WRITE(IFM,*) ' '  
+        WRITE(IFM,*) '------------------------------------'  
         CALL JXVERI('MESSAGE',' ')
       ENDIF
 
@@ -485,7 +522,7 @@ C            --- PERMUTATION DES VALEURS ---
         IF (INCRS.GE.1) GOTO 12
       ENDIF
 
-      CALL JXVERI('MESSAGE',' ')
+      IF (NIV.GE.4) CALL JXVERI('MESSAGE',' ')
 
 
 C ----------------------------------------------------------------------
@@ -505,20 +542,15 @@ C     TABLEAU NBSDxNBSD CONTENANT LE NB DE NOEUD D'INTERFACE ENTRE 2 SD
    48   CONTINUE
    49 CONTINUE
 
-      CALL JXVERI('MESSAGE',' ')
-
 
       CALL WKVECT('&&FETCRF.LST_ORDO ','V V I',NB,IALSNO)
       CALL WKVECT('&&FETCRF.LST_MULT ','V V I',NB,IALSMU)
       CALL WKVECT('&&FETCRF.LST_GMA  ','V V I',2*NB,IALSMA)
-
       CALL WKVECT('&&FETCRF.LST_TRI  ','V V I',3*NB+3,IALSTR)
 
-      CALL JXVERI('MESSAGE',' ')
+      IF (NIV.GE.4) CALL JXVERI('MESSAGE',' ')
+      IF (NIV.GE.4) WRITE(IFM,*) '**************************',NB
 
-      IF (NIV.GE.4) WRITE(6,*) '**************************',NB
-
-C       NN=1
       K=1
       DO 28 I = 1,NB
         DO 29 J = I+1,NB
@@ -526,12 +558,9 @@ C       NN=1
 C         SI ON A TROUVE UN NOEUD D'INTERFACE (CAD COMMUN A 2 SD)
           IF ( ZI(IALINO-1+I).EQ.ZI(IALINO-1+J) ) THEN
 
-            IF (NIV.GE.4) WRITE(6,*) I,J,K
-            IF (NIV.GE.4) WRITE(6,*) '--- ',ZI(IALINO-1+I),
+            IF (NIV.GE.4) WRITE(IFM,*) I,J,K
+            IF (NIV.GE.4) WRITE(IFM,*) '--- ',ZI(IALINO-1+I),
      &                       ZI(LINOMA-1+I),ZI(LINOMA-1+J)
-
-C            NN=NN+1
-C            WRITE(6,*) 'NN=',NN
 
 C           ON COMPLETE LE TABLEAU DES NOEUDS D'INTERFACE ENTRE 2 SD
             ITMP=ZI(LINOMA-1+I)
@@ -541,7 +570,7 @@ C           ON COMPLETE LE TABLEAU DES NOEUDS D'INTERFACE ENTRE 2 SD
               JTMP=ZI(LINOMA-1+I)
             ENDIF
 
-            IF (NIV.GE.4) WRITE(6,*) 'ITMP ET JTMP :',ITMP,JTMP
+            IF (NIV.GE.4) WRITE(IFM,*) 'ITMP ET JTMP :',ITMP,JTMP
 
             ZI(IALSTB-1+(ITMP-1)*NBSD+JTMP)=
      &                          ZI(IALSTB-1+(ITMP-1)*NBSD+JTMP)+1
@@ -568,16 +597,19 @@ C           ON INCREMENTE LE NOMBRE DE NOEUDS TROUVES
             K=K+1
 
           ENDIF
-C           ELSE
-C             WRITE(6,*) 'NNNN=',NN
-C             NN=1
-C           ENDIF
 
    29   CONTINUE
    28 CONTINUE
 
 
 C     CALCUL DE LA MULTIPLICITE DES NOEUDS D'INTERFACE
+
+      IF (NIV.GE.4) WRITE(IFM,*) ' '
+      IF (NIV.GE.4) WRITE(IFM,*) '------------------------------------'
+      IF (NIV.GE.4) WRITE(IFM,*) '  NOEUDS INTERFACE ET MULTIPLICITE  '
+      IF (NIV.GE.4) WRITE(IFM,*) '   1 SI APPARTIENT AU SD, 0 SINON   '
+      IF (NIV.GE.4) WRITE(IFM,*) ' '  
+
       CALL WKVECT('&&FETCRF.LST_MLT  ','V V I',K-1,IALSML)
       CALL WKVECT('&&FETCRF.LST_COR  ','V V I',K-1,IALSCR)
       CALL WKVECT('&&FETCRF.LST_MSD  ','V V I',NBSD,IALSMD)
@@ -591,64 +623,62 @@ C     CALCUL DE LA MULTIPLICITE DES NOEUDS D'INTERFACE
           ZI(IALSMD+J-1)=0
    31   CONTINUE
 
-        IF (NIV.GE.4) WRITE(6,*) 'ITMP=',ITMP
+        IF (NIV.GE.4) WRITE(IFM,*) 'NOEUD=',ITMP
 
         DO 30 I = 1,K-1
           IF ( I.NE.L+1 ) THEN
             IF ( ZI(IALSTR+3*(I-1)).EQ.ZI(IALSTR+3*(L-1)) ) THEN
-C              WRITE(6,*) 'I=',ZI(IALSTR+3*(I-1))
                JTMP=ZI(IALSTR+3*(I-1)+1)
                ZI(IALSMD+JTMP-1)=1
-C               WRITE(6,*) 'JJTMP=',JTMP
                JTMP=ZI(IALSTR+3*(I-1)+2)
                ZI(IALSMD+JTMP-1)=1
-C               WRITE(6,*) 'JJTMP=',JTMP
             ENDIF
           ENDIF
-
    30   CONTINUE
 
         NN=0
         DO 35 J = 1,NBSD
-          IF (NIV.GE.4) WRITE(6,*) 'IALSMD=',ZI(IALSMD+J-1)
+          IF (NIV.GE.3) WRITE(IFM,*) 'SD',J,' :',ZI(IALSMD+J-1)
           IF ( ZI(IALSMD+J-1).EQ.1 ) NN=NN+1
    35   CONTINUE
         ZI(IALSML+L-1)=NN
-C        WRITE(6,*) 'NN2=',NN
-
    34 CONTINUE
 
-
-      DO 38 J = 1,K-1
-        IF (NIV.GE.4) WRITE(6,*) 'MLT=',ZI(IALSML+J-1)
-   38 CONTINUE
-
-
-      CALL JXVERI('MESSAGE',' ')
+      IF (NIV.GE.4) THEN
+        DO 38 J = 1,K-1
+          ITMP = ZI(IALSTR+3*(J-1))
+          WRITE(IFM,*) 'NOEUD:', ITMP, ' MLT=',ZI(IALSML+J-1)
+   38   CONTINUE
+        CALL JXVERI('MESSAGE',' ')
+      ENDIF
 
       IF (NIV.GE.4) THEN 
         DO 59 I = 1,NBSD
           DO 58 J = 1,NBSD
-            WRITE(6,*) I,J,ZI(IALSTB-1+(I-1)*NBSD+J)
+            WRITE(IFM,*) I,J,ZI(IALSTB-1+(I-1)*NBSD+J)
    58     CONTINUE
    59   CONTINUE
-        WRITE(6,*) '---------------'  
       ENDIF
 
+      IF (NIV.GE.3) WRITE(IFM,*) ' '  
+      IF (NIV.GE.3) WRITE(IFM,*) '------------------------------------'
+      IF (NIV.GE.3) WRITE(IFM,*) '  NOEUDS ET LAGRANGES D''INTERFACE  |'
+      IF (NIV.GE.3) WRITE(IFM,*) ' '
 
       KK=1
       DO 37 I = 1,K-1
         ITMP=ZI(IALSTR+3*(I-1)+1)
         JTMP=ZI(IALSTR+3*(I-1)+2)
 
-        IF (NIV.GE.4) WRITE(6,*) 'NOEUD =',ZI(IALSTR+3*(I-1))
-        IF (NIV.GE.4) WRITE(6,*) 'SD1   =',ZI(IALSTR+3*(I-1)+1)
-        IF (NIV.GE.4) WRITE(6,*) 'SD2   =',ZI(IALSTR+3*(I-1)+2)
-        IF (NIV.GE.4) WRITE(6,*) 'NB=',ZI(IALSTB-1+(ITMP-1)*NBSD+JTMP)
-        IF (NIV.GE.4) WRITE(6,*) ' '  
+        IF (NIV.GE.3) WRITE(IFM,*) 'NOEUD   =',ZI(IALSTR+3*(I-1))
+        IF (NIV.GE.3) WRITE(IFM,*) '1ER  SD =',ZI(IALSTR+3*(I-1)+1)
+        IF (NIV.GE.3) WRITE(IFM,*) '2IEM SD =',ZI(IALSTR+3*(I-1)+2)
+        IF (NIV.GE.3) WRITE(IFM,*) 'NB=',ZI(IALSTB-1+(ITMP-1)*NBSD+JTMP)
 
 C       ON NE CONSERVE QUE LES SD QUI ONT AU MOINS 2 NOEUDS COMMUNS
-        IF ( ZI(IALSTB-1+(ITMP-1)*NBSD+JTMP).GE.2 ) THEN
+C        (EN 2D) OU 3 NOEUDS COMMUNS (EN 3D)
+        IF ( ZI(IALSTB-1+(ITMP-1)*NBSD+JTMP).GE.NDIME ) THEN
+          IF (NIV.GE.3) WRITE(IFM,*) '--> LAGRANGE CONSERVE'  
 
           NBID=0
           DO 36 J = 1,K-1
@@ -660,30 +690,45 @@ C       ON NE CONSERVE QUE LES SD QUI ONT AU MOINS 2 NOEUDS COMMUNS
    36     CONTINUE
 
           ZI(IALSNO-1+KK)      = ZI(IALSTR+3*(I-1))
-C          ZI(IALSMU-1+KK)      = ZI(IALSTB-1+(ITMP-1)*NBSD+JTMP)
           ZI(IALSMU-1+KK)      = NBID
           ZI(IALSMA+2*(KK-1))  = ITMP
           ZI(IALSMA+2*(KK-1)+1)= JTMP
           KK=KK+1
 
+        ELSE
+          IF (NIV.GE.3) WRITE(IFM,*) '--> INTERFACE DE MESURE NULLE '//
+     &         '(LAGRANGE NON CONSERVE)'
         ENDIF
+
+        IF (NIV.GE.3) WRITE(IFM,*) ' '  
 
    37 CONTINUE
 
+
 C     NB NOEUDS INTERFACE
       NBFETE=KK-1
+
+      IF (NIV.GE.3) WRITE(IFM,*) 'IL Y A :',NBFETE,' NOEUDS INTERFACE'
+      IF (NIV.GE.3) WRITE(IFM,*) '-------------------------------------'
+      IF (NIV.GE.3) WRITE(IFM,*) ' '
 
 C     TAILLE DE LA LISTE RELIANT LES NOEUDS A LEURS SD
       NBNOSD=2*(KK-1)
 
       IF (NIV.GE.4) THEN
+        WRITE(IFM,*) ' '
+        WRITE(IFM,*) '------------------------------------'
+        WRITE(IFM,*) '  NOEUDS INTERFACE ET MULTIPLICITE  '
+        WRITE(IFM,*) ' '
+
         DO 32 J = 1,NBFETE
-          WRITE(6,*) 'NOEUD =',ZI(IALSNO-1+J)
-          WRITE(6,*) 'MULT     =',ZI(IALSMU-1+J)
+          WRITE(IFM,*) 'NOEUD =',ZI(IALSNO-1+J), ' MULT=',ZI(IALSMU-1+J)
    32   CONTINUE
+        WRITE(IFM,*) ' '  
         DO 33 J = 1,NBNOSD
-          WRITE(6,*) 'SD_=',ZI(IALSMA-1+J)
+          WRITE(IFM,*) 'SD_=',ZI(IALSMA-1+J)
    33   CONTINUE
+        WRITE(IFM,*) ' '  
       ENDIF
 
 
@@ -700,7 +745,7 @@ C      - NUMERO DU NOEUD D'INTERFACE
 
 C      - MULTIPLICITE
 C        ZI(JADR+4*(I-1)+1)=ZI(IALSMU-1+I)
-         IF (NIV.GE.4) WRITE(6,*) 'NOEUD=', ZI(IALSNO-1+I)
+         IF (NIV.GE.4) WRITE(IFM,*) 'NOEUD=', ZI(IALSNO-1+I)
          DO 40 J=1,NBFETE+1
            IF ( ZI(IALSCR+J-1).EQ.ZI(IALSNO-1+I) ) THEN
              GOTO 41
@@ -709,8 +754,8 @@ C        ZI(JADR+4*(I-1)+1)=ZI(IALSMU-1+I)
    41    CONTINUE
          ZI(JADR+4*(I-1)+1)=ZI(IALSML+J-1)
 C         ZI(JADR+4*(I-1)+1)=ZI(IALSML+ZI(IALSNO-1+I)-1)
-         IF (NIV.GE.4) WRITE(6,*) 'J=',J
-         IF (NIV.GE.4) WRITE(6,*) 'MUL=', ZI(IALSML+J-1),ZI(IALSCR+J-1)
+         IF (NIV.GE.4) WRITE(IFM,*) 'J=',J
+         IF (NIV.GE.4) WRITE(IFM,*) 'MUL=',ZI(IALSML+J-1),ZI(IALSCR+J-1)
 
 C      - NB DDL CUMULES
 C        K=0
@@ -720,7 +765,7 @@ C        K=0
             K=K+1
           ENDIF
   2     CONTINUE
-        IF (NIV.GE.4) WRITE(6,*) 'DDL=',K
+        IF (NIV.GE.4) WRITE(IFM,*) 'DDL=',K
         ZI(JADR+4*(I-1)+2)=K
 
 C      - LISTE DES SD D'APPARTENANCE
@@ -729,6 +774,9 @@ C        MULTC=MULTC+ZI(IALSMU-1+I)
         MULTC=MULTC+2
 
   500 CONTINUE
+  
+C     On STOCKE LE NB DE DDL TOTAL DES NOEUDS D'INTERFACE
+      NBDDLI=K
       IF (NIV.GE.3) 
      &  WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSDI
         
@@ -739,12 +787,12 @@ C .FETJ : LISTE DES SD PARTAGEANT UN NOEUD D'INTERFACE
       JADRJ=JADR
       DO 501 J=1,NBNOSD
         ZI(JADR+J-1)=ZI(IALSMA-1+J)
-        IF (NIV.GE.4) WRITE(6,*) 'SD__=',ZI(IALSMA-1+J)
+        IF (NIV.GE.4) WRITE(IFM,*) 'SD__=',ZI(IALSMA-1+J)
   501 CONTINUE
       IF (NIV.GE.3) 
      &  WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSDJ   
 
-      CALL JXVERI('MESSAGE',' ')
+      IF (NIV.GE.4) CALL JXVERI('MESSAGE',' ')
 
 
 
@@ -766,7 +814,7 @@ C .FETG
 C     BOUCLE SUR LES SOUS-DOMAINES
       DO 51 I = 1,NBSD
 
-        IF (NIV.GE.4) WRITE(6,*) 'NUMERO DU SD (VARIABLE I) : ',I
+        IF (NIV.GE.4) WRITE(IFM,*) 'NUMERO DU SD (VARIABLE I) : ',I
 
 C       NB D'OCCURENCE DANS FETG
         NN=0
@@ -777,10 +825,10 @@ C       ADRESSE DE DEBUT DE FETB POUR LE SD I
 C       BOUCLE SUR LES NOEUDS DANS FETB
         DO 52 J = 1,ZI(IANBNO-1+I)
 
-         IF (NIV.GE.4) WRITE(6,*) ' '
-         IF (NIV.GE.4) WRITE(6,*) ' '
-         IF (NIV.GE.4) WRITE(6,*) '--- FETB / NUMERO DU COUPLE : ',J
-         IF (NIV.GE.4) WRITE(6,*) '--- FETB / NOEUD , DDL : ',
+         IF (NIV.GE.4) WRITE(IFM,*) ' '
+         IF (NIV.GE.4) WRITE(IFM,*) ' '
+         IF (NIV.GE.4) WRITE(IFM,*) '--- FETB / NUMERO DU COUPLE : ',J
+         IF (NIV.GE.4) WRITE(IFM,*) '--- FETB / NOEUD , DDL : ',
      &         ZI(JADR+2*J-1-1),ZI(JADR+2*J-1)
 C         SI LE NOEUD DANS FETB EST NEGATIF (IE NOEUD D'INTERFACE)
           IF ( ZI(JADR+2*J-1-1).LT.0 ) THEN
@@ -790,20 +838,16 @@ C             SI LES NOEUDS CORRESPONDENT
               IF ( ZI(JADRI+4*(K-1)).EQ.ABS(ZI(JADR+2*J-1-1)) ) THEN
 
                 IF (NIV.GE.4) THEN
-                  IF (NIV.GE.4) WRITE(6,*) ' '
-                  WRITE(6,*) '  FETI : POSITION : ',K
-                  WRITE(6,*) '  FETI : NOEUD CORRESPONDANT : ',
+                  IF (NIV.GE.4) WRITE(IFM,*) ' '
+                  WRITE(IFM,*) '  FETI : POSITION : ',K
+                  WRITE(IFM,*) '  FETI : NOEUD CORRESPONDANT : ',
      &                               ZI(JADRI+4*(K-1))
-                  WRITE(6,*) '  FETI : POSITION 1ER SD : ',
+                  WRITE(IFM,*) '  FETI : POSITION 1ER SD : ',
      &                               ZI(JADRI+4*(K-1)+3)
-                  WRITE(6,*) '  FETI : SD :',
+                  WRITE(IFM,*) '  FETI : SD :',
      &                               ZI(JADRJ-1+ZI(JADRI+4*(K-1)+3)),
      &                               ZI(JADRJ-1+ZI(JADRI+4*(K-1)+3)+1)
                 ENDIF
-
-C               SI LE SD I EST BIEN UN DES DEUX SD DU NOEUD COURANT
-C                IF ( (I.EQ.ZI(JADRJ-1+ZI(JADRI+4*(K-1)+3))).OR.
-C     &               (I.EQ.ZI(JADRJ-1+ZI(JADRI+4*(K-1)+3)+1)) ) THEN
 
 C               SI LE SD I EST LE 1ER SD DU NOEUD COURANT
                 IF (I.EQ.ZI(JADRJ-1+ZI(JADRI+4*(K-1)+3))) THEN
@@ -816,13 +860,11 @@ C                   SI LE SD COURANT EST PLUS FAIBLE QUE LE 1ER SD
 
 C               OU SI LE SD I EST LE DEUXIEME SD DU NOEUD COURANT
                 ELSEIF (I.EQ.ZI(JADRJ-1+ZI(JADRI+4*(K-1)+3)+1)) THEN
-C                  ELSE
-C                   SI LE SD COURANT EST PLUS FAIBLE QUE LE 2IEME SD
-                    IF (I.LT.ZI(JADRJ-1+ZI(JADRI+4*(K-1)+3))) THEN
-                      NBID=-1*K
-                    ELSE
-                      NBID=K
-                    ENDIF
+                  IF (I.LT.ZI(JADRJ-1+ZI(JADRI+4*(K-1)+3))) THEN
+                    NBID=-1*K
+                  ELSE
+                    NBID=K
+                  ENDIF
                 ENDIF
 
                 IF ( (I.EQ.ZI(JADRJ-1+ZI(JADRI+4*(K-1)+3))).OR.
@@ -830,7 +872,8 @@ C                   SI LE SD COURANT EST PLUS FAIBLE QUE LE 2IEME SD
                   NN=NN+1
                   ZI(IALSFG+2*(NN-1))  = NBID
                   ZI(IALSFG+2*(NN-1)+1)= J
-                  IF (NIV.GE.4) WRITE(6,*) '-- NOEUD,FETB,FETG',J,NBID,K
+                  IF (NIV.GE.4) WRITE(IFM,*) '-- NOEUD,FETB,FETG',J,
+     &                                                       NBID,K
                 ENDIF
 
               ENDIF
@@ -839,7 +882,7 @@ C                   SI LE SD COURANT EST PLUS FAIBLE QUE LE 2IEME SD
 
   52    CONTINUE
 
-        K8BUFF=NOMSD(I)      
+        K8BUFF=ZK8(NOMSD-1+I)
         CALL JECROC(JEXNOM(NOMSDG,K8BUFF))
         INTBUF=2*NN
         CALL JEECRA(JEXNOM(NOMSDG,K8BUFF),'LONMAX',INTBUF,K8BID)
@@ -878,7 +921,7 @@ C       LISTE TEMPORAIRE : NOMS DES LIGREL DE CHARGE
 
 C       PREMIERE PASSE : CALCUL DU NB TOTAL DE MAILLES TARDIVES
         DO 811 I = 1,NBCHAR
-          LIGRCH = NOMCHA(I)//'.CHME.LIGRE'
+          LIGRCH = ZK8(NOMCHA-1+I)//'.CHME.LIGRE'
           ZK24(ILSCHA-1+I)= LIGRCH
           CALL JEEXIN(LIGRCH//'.NEMA',N2)
           IF (N2.NE.0) THEN
@@ -888,7 +931,7 @@ C       PREMIERE PASSE : CALCUL DU NB TOTAL DE MAILLES TARDIVES
           ENDIF
   811   CONTINUE
 
-        IF (NIV.GE.4) WRITE(6,*) 'NBMATA:', NBMATA
+        IF (NIV.GE.4) WRITE(IFM,*) 'NBMATA:', NBMATA
 
       ENDIF
 
@@ -947,13 +990,13 @@ C       NB DE NOEUDS DE L'INTERFACE QUI SONT SUR DES CHARGEMENTS
 
         DO 801 ICH = 1,NBCHAR
 
-          LIGRCH = NOMCHA(ICH)//'.CHME.LIGRE'
+          LIGRCH = ZK8(NOMCHA-1+ICH)//'.CHME.LIGRE'
 
           IF (NIV.GE.4) THEN
-            WRITE(6,*) '----------------------------------------------'
-            WRITE(6,*) '        CHARGE : ', ICH
-            WRITE(6,*) '----------------------------------------------'
-            WRITE(6,*) 'LIGRCH:', LIGRCH
+            WRITE(IFM,*) '--------------------------------------------'
+            WRITE(IFM,*) '        CHARGE : ', ICH
+            WRITE(IFM,*) '--------------------------------------------'
+            WRITE(IFM,*) 'LIGRCH:', LIGRCH
           ENDIF
 
 C         SI ON TROUVE DES MAILLES TARDIVES DANS LA CHARGE
@@ -962,8 +1005,8 @@ C         SI ON TROUVE DES MAILLES TARDIVES DANS LA CHARGE
           IF (N1.NE.0) THEN
             CALL JEVEUO(LIGRCH//'.NBNO','L',IADR)
             CALL JELIRA(LIGRCH//'.NBNO','LONMAX',N1,K8B)
-C             write(6,*) 'LIGRCH:', LIGRCH, IADR, N1
-C             write(6,*) 'ZI:', ZI(IADR-1+1)
+C             WRITE(IFM,*) 'LIGRCH:', LIGRCH, IADR, N1
+C             WRITE(IFM,*) 'ZI:', ZI(IADR-1+1)
 C OBJET TEMPORAIRE POUR STOCKER LES NOEUDS TARDIFS DEJA TRAITES ET
 C AINSI EVITER LES NOEUDS COMPTES DEUX FOIS AVEC LIAISON_DDL....
             INBNO=ZI(IADR)
@@ -991,24 +1034,24 @@ C
               ZI(ISDMAT-1+K)=0
   809       CONTINUE
 
-C             write(6,*) '_Adr0_Mat_=',ISDMAT
-C             write(6,*) 'LIGRCH:', LIGRCH, IDLIG1, N2, NBOBJ1, LONLI1
-C             write(6,*) 'ZI:', ZI(IDLIG1-1+1)
+C             WRITE(IFM,*) '_Adr0_Mat_=',ISDMAT
+C             WRITE(IFM,*) 'LIGRCH:', LIGRCH, IDLIG1, N2, NBOBJ1, LONLI1
+C             WRITE(IFM,*) 'ZI:', ZI(IDLIG1-1+1)
 
-            CALL JXVERI('MESSAGE',' ')
+      IF (NIV.GE.4) CALL JXVERI('MESSAGE',' ')
 
 C           POINTEUR VERS LA POSITION DANS LA COLLECTION
             IADR=IDLIG1
             DO 802 J = 1, NBOBJ1
 C             NB NOEUDS DE CHAQUE MAILLE
               CALL JELIRA(JEXNUM(LIGRCH//'.NEMA',J),'LONMAX',N3,K8B)
-C               write(6,*) '\n\nMaille Tar:', J
+C               WRITE(IFM,*) '\n\nMaille Tar:', J
 
 
 C             ON PARCOURS LES NOEUDS DE LA MAILLE TARDIVE
               DO 803 K = 1, N3-1
-C                 write(6,*) ' '
-C                 write(6,*) 'Nd:', ZI(IADR-1+K)
+C                 WRITE(IFM,*) ' '
+C                 WRITE(IFM,*) 'Nd:', ZI(IADR-1+K)
                 NDTAR=ZI(IADR-1+K)
 
 C               SI C'EST UN NOEUD PHYSIQUE, ON CHERCHE SON(SES) SD
@@ -1021,11 +1064,11 @@ C               SI C'EST UN NOEUD PHYSIQUE, ON CHERCHE SON(SES) SD
                       DEC=(J-1)*NBSD+NUMSD
                       NB1=NB1+1
 
-C                       WRITE(6,*) 'Nd_=',ZI(IALINO-1+L)
-C                       WRITE(6,*) 'Sd_=',NUMSD
-C                       write(6,*) '_Ad_=',ISDMAT-1+(J-1)*NBSD+NUMSD
-C                       write(6,*) '_Ad_=',ISDMAT-1+DEC
-C                       write(6,*) '_Val_=',ZI( ISDMAT-1+DEC )
+C                       WRITE(IFM,*) 'Nd_=',ZI(IALINO-1+L)
+C                       WRITE(IFM,*) 'Sd_=',NUMSD
+C                       WRITE(IFM,*) '_Ad_=',ISDMAT-1+(J-1)*NBSD+NUMSD
+C                       WRITE(IFM,*) '_Ad_=',ISDMAT-1+DEC
+C                       WRITE(IFM,*) '_Val_=',ZI( ISDMAT-1+DEC )
 
                       IF (ZI(ISDMAT-1+DEC).EQ.0) THEN
                           ZI(ISDMAT-1+DEC) = 1
@@ -1038,14 +1081,9 @@ C                 .AJOUT DU NOEUD CHARGE SUR L'INTERFACE DANS LA LISTE
                   IF (NB1.GT.1) THEN
                     NOINCH=NOINCH+1
                     CALL JENUNO(JEXNUM(NOMNOE,NDTAR),NOMN)
-C                     CALL UTDEBM('A','FETCRF','LE NOEUD ')
-C                     CALL UTIMPK('S','',1,NOMN//' DU CHARGEMENT 
-C      &                     '//NOMCHA(ICH)//' EST'//
-C      &                     ' SUR L''INTERFACE.')
-C                     CALL UTFINM
-
                     CALL UTMESS('A','FETCRF','LE NOEUD '//NOMN//' DU '//
-     &             'CHARGEMENT '//NOMCHA(ICH)//' EST SUR L''INTERFACE.')
+     &              'CHARGEMENT '//ZK8(NOMCHA-1+ICH)//' EST SUR '//
+     &              'L''INTERFACE.')
 
                   ENDIF
 
@@ -1073,21 +1111,21 @@ C             POSITION DE LA MAILLE TARDIVE SUIVANTE DANS LA COLLECTION
 
 C           VERIFICATION DES OBJETS TEMPORAIRES
             IF (NIV.GE.4) THEN
-              WRITE(6,*) '----------'
+              WRITE(IFM,*) '----------'
               DO 810 J = 1, NBOBJ1
                 DO 812 NUMSD = 1, NBSD
                   DEC=(J-1)*NBSD+NUMSD
-                WRITE(6,*) 'SD:',NUMSD,' MT:',J,' VAL:',ZI(ISDMAT-1+DEC)
+              WRITE(IFM,*) 'SD:',NUMSD,' MT:',J,' VAL:',ZI(ISDMAT-1+DEC)
   812           CONTINUE
   810         CONTINUE
-              WRITE(6,*) '----------'
+              WRITE(IFM,*) '----------'
               DO 815 NUMSD = 1, NBSD
                 DO 814 J = 1, NBOBJ1
                   DEC=(J-1)*NBSD+NUMSD
-                WRITE(6,*) 'MT:',J,' SD:',NUMSD,' VAL:',ZI(ISDMAT-1+DEC)
+              WRITE(IFM,*) 'MT:',J,' SD:',NUMSD,' VAL:',ZI(ISDMAT-1+DEC)
   814           CONTINUE
   815         CONTINUE
-              WRITE(6,*) '----------', NB2
+              WRITE(IFM,*) '----------', NB2
             ENDIF
 
 
@@ -1100,22 +1138,22 @@ C           MISE A JOUR DE L'OBJET TEMPORAIRE POUR FLIM
 
 C                 MAJ de IDFLIM (NB DE MAILLES TARDIVES TROUVEES PAR SD)
                   ZI(IDFLIM-1+NUMSD)=ZI(IDFLIM-1+NUMSD)+1
-C          write(6,*) ' SD:',NUMSD,' IdF:',ZI(IDFLIM-1+NUMSD)
+C          WRITE(IFM,*) ' SD:',NUMSD,' IdF:',ZI(IDFLIM-1+NUMSD)
 
 C                 MAJ DE IFLIM (MAILLES TARDIVES TROUVEES)
                   DEC=(J-1 + NB2)*NBSD+ NUMSD
                   ZI(IFLIM-1+DEC) = J
-C          write(6,*) '_DEC=',DEC,' SD ',NUMSD,' MaT ',J,' CH ',ICH,NB2
-C          write(6,*) J, ZI(IDFLIM-1+NUMSD)
+C         WRITE(IFM,*) '_DEC=',DEC,' SD ',NUMSD,' MaT ',J,' CH ',ICH,NB2
+C          WRITE(IFM,*) J, ZI(IDFLIM-1+NUMSD)
 
 C                 MAJ DE IFLII
                   DEC=(ICH-1)*NBSD+NUMSD
                   ZI(IFLII-1+ DEC) = ZI(IFLII-1+ DEC) + 1
 
                 ENDIF
-C                write(6,*) 'SD ',NUMSD,' MT ',J,' _VAL_ ',NVAL
+C                WRITE(IFM,*) 'SD ',NUMSD,' MT ',J,' _VAL_ ',NVAL
   901         CONTINUE
-C              write(6,*) '---'
+C              WRITE(IFM,*) '---'
   900       CONTINUE
 
 C           DECALAGE POUR IFLIM (LES NOUVELLES MaT COMMENCENT A LA FIN)
@@ -1157,49 +1195,49 @@ C          CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',GRAN),'L',IACMP)
 
 C       VERIFICATION DES OBJETS TEMPORAIRES
         IF (NIV.GE.4) THEN
-          WRITE(6,*) ' '  
-          WRITE(6,*) '----------------------------------------------'
-          WRITE(6,*) '         FIN DES CHARGES'
-          WRITE(6,*) '----------------------------------------------'
-          WRITE(6,*) ' '  
-          WRITE(6,*) 'NB1=',NB1
-          WRITE(6,*) 'NB2=',NB2
-          WRITE(6,*) 'NBMATA=',NBMATA
-          WRITE(6,*) 'NBSD=',NBSD
-          WRITE(6,*) 'NBCHAR=',NBCHAR
+          WRITE(IFM,*) ' '  
+          WRITE(IFM,*) '----------------------------------------------'
+          WRITE(IFM,*) '         FIN DES CHARGES'
+          WRITE(IFM,*) '----------------------------------------------'
+          WRITE(IFM,*) ' '  
+          WRITE(IFM,*) 'NB1=',NB1
+          WRITE(IFM,*) 'NB2=',NB2
+          WRITE(IFM,*) 'NBMATA=',NBMATA
+          WRITE(IFM,*) 'NBSD=',NBSD
+          WRITE(IFM,*) 'NBCHAR=',NBCHAR
 
-          WRITE(6,*) '--------------------------'
+          WRITE(IFM,*) '--------------------------'
           DO 902 J = 1, NBMATA
-            WRITE(6,*) ' '
+            WRITE(IFM,*) ' '
             DO 903 NUMSD = 1, NBSD
               DEC=(J-1)*NBSD+NUMSD
-              WRITE(6,*) 'SD:',NUMSD,' MT:',J,' IFLIM:',ZI(IFLIM-1+DEC)
+             WRITE(IFM,*) 'SD:',NUMSD,' MT:',J,' IFLIM:',ZI(IFLIM-1+DEC)
   903       CONTINUE
   902     CONTINUE
-          WRITE(6,*) '--------------------------'
+          WRITE(IFM,*) '--------------------------'
           DO 905 K = 1, NBSD*NBMATA
-            WRITE(6,*) 'IFLIM:',ZI(IFLIM-1+K)
+            WRITE(IFM,*) 'IFLIM:',ZI(IFLIM-1+K)
   905     CONTINUE
-          WRITE(6,*) '--------------------------'
+          WRITE(IFM,*) '--------------------------'
           DO 904 ICH = 1, NBCHAR
             DO 908 ISD = 1, NBSD
               DEC=(ICH-1)*NBSD+ISD
-              WRITE(6,*) 'CH:',ICH,' SD:',ISD,' IFLII:',ZI(IFLII-1+DEC)
+             WRITE(IFM,*) 'CH:',ICH,' SD:',ISD,' IFLII:',ZI(IFLII-1+DEC)
   908       CONTINUE
   904     CONTINUE
-          WRITE(6,*) '--------------------------'
+          WRITE(IFM,*) '--------------------------'
           DO 907 K = 1, NBSD
-            WRITE(6,*) 'SD:',K,' IDFLIM:',ZI(IDFLIM-1+ K)
+            WRITE(IFM,*) 'SD:',K,' IDFLIM:',ZI(IDFLIM-1+ K)
   907     CONTINUE
-          WRITE(6,*) '--------------------------'
+          WRITE(IFM,*) '--------------------------'
           DO 906 K = 1, NBCHAR
-            WRITE(6,*) 'CHA:',ZK24(ILSCHA-1+ K)
+            WRITE(IFM,*) 'CHA:',ZK24(ILSCHA-1+ K)
   906     CONTINUE
-          WRITE(6,*) '--------------------------'
+          WRITE(IFM,*) '--------------------------'
           DO 824 K = 1, NBMATA
-            WRITE(6,*) 'MAT',K,' NBNOT:',ZI(IFNT-1+K)
+            WRITE(IFM,*) 'MAT',K,' NBNOT:',ZI(IFNT-1+K)
   824     CONTINUE
-          WRITE(6,*) '--------------------------'
+          WRITE(IFM,*) '--------------------------'
         ENDIF 
 
 
@@ -1221,7 +1259,7 @@ C CREATION DES DIFFERENTS ATTRIBUTS DE LA S.D. SD_FETI
 C .FDIM                 
 C     ON COMPTE LES MAILLES DE BORDS DANS LE TOTAL DES MAILLES
       DO 93 I=1,NBSD
-        NBMATO=NBMATO+NBMABD(I)
+        NBMATO=NBMATO+ZI(NBMABD-1+I)
   93  CONTINUE
 
       CALL JELIRA(NOMO(1:8)//'.MAILLE','LONMAX',NBMAMA,K8B)
@@ -1229,7 +1267,8 @@ C     ON COMPTE LES MAILLES DE BORDS DANS LE TOTAL DES MAILLES
       ZI(JADR)=NBSD
       ZI(JADR+1)=NBFETE
       ZI(JADR+2)=NBMAMA
-      ZI(JADR+3)=NBFETE*2
+C      ZI(JADR+3)=NBFETE*3
+      ZI(JADR+3)=NBDDLI
       ZI(JADR+4)=NBNOTO
       IF (NIV.GE.3)
      &  WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSDM
@@ -1244,13 +1283,13 @@ C.FETH
 C     MISE A JOUR DE FETH (AJOUT DES NOEUDS TARDIFS)
       IF (NBNOTA.GT.0) THEN
         DO 701 J = 1, NBMATA
-C          write(6,*) 'HH MAT',J,' NBNoT:',ZI(IFNT-1+J)
+C          WRITE(IFM,*) 'HH MAT',J,' NBNoT:',ZI(IFNT-1+J)
           DO 702 NUMSD = 1, NBSD
             DEC=(J-1)*NBSD+NUMSD
             IF ( ZI(IFLIM-1+DEC).GT.0 ) THEN
               ZI(JADRH-1+NUMSD)=ZI(JADRH-1+NUMSD) + ZI(IFNT-1+J)
             ENDIF
-C            write(6,*) 'HH IFLIM:',ZI(IFLIM-1+DEC),' NUMSD:',NUMSD
+C            WRITE(IFM,*) 'HH IFLIM:',ZI(IFLIM-1+DEC),' NUMSD:',NUMSD
   702     CONTINUE
   701   CONTINUE
       ENDIF
@@ -1281,7 +1320,7 @@ C       VECTEURS TEMPORAIRES CONTENANT LES TAILLES DES COLLECTIONS FLIx
           ZI(IDFLN-1+NUMSD) =0
   915   CONTINUE
 
-        IF (NIV.GE.4) WRITE(6,*) '---- PREMIER PASSAGE ----'
+        IF (NIV.GE.4) WRITE(IFM,*) '---- PREMIER PASSAGE ----'
 
 C       PREMIER PASSAGE : RECUPERATION DE LA TAILLE DES COLLECTIONS
         DO 910 ICH = 1, NBCHAR
@@ -1289,14 +1328,14 @@ C       PREMIER PASSAGE : RECUPERATION DE LA TAILLE DES COLLECTIONS
           DO 911 ISD = 1, NBSD
             DEC=(ICH-1)*NBSD+ISD
             NN=NN+ZI(IFLII-1+ DEC)
-C            write(6,*) 'SD:',ISD,' CHA:',ICH,' nb:',ZI(IFLII-1+ DEC)
+C            WRITE(IFM,*) 'SD:',ISD,' CHA:',ICH,' nb:',ZI(IFLII-1+ DEC)
   911     CONTINUE
-C          write(6,*) 'NN:',NN
+C          WRITE(IFM,*) 'NN:',NN
 
           IF (NN.GT.0) THEN
             DO 913 ISD = 1, NBSD
               DEC=(ICH-1)*NBSD+ISD
-C             write(6,*) '  SD:',ISD,' CHA:',ICH,' nb:',ZI(IFLII-1+ DEC)
+C           WRITE(IFM,*) '  SD:',ISD,' CHA:',ICH,' nb:',ZI(IFLII-1+ DEC)
 
 C             SI LA CHARGE COURANTE A DES MAILLES TARDIVES DANS LE SD
 C             ON INCREMENTE LES TAILLES DES 3 COLLECTIONS POUR LE SD
@@ -1313,10 +1352,10 @@ C             ON INCREMENTE LES TAILLES DES 3 COLLECTIONS POUR LE SD
 
         IF (NIV.GE.4) THEN
           DO 916 ISD = 1, NBSD
-            WRITE(6,*) 'SD',ISD,' DIM IDFLII:',ZI(IDFLII-1+ISD)
-            WRITE(6,*) 'SD',ISD,' DIM IDFLM:',ZI(IDFLM-1+ISD)
-            WRITE(6,*) 'SD',ISD,' DIM IDFLN:',ZI(IDFLN-1+ISD)
-            WRITE(6,*) ' '
+            WRITE(IFM,*) 'SD',ISD,' DIM IDFLII:',ZI(IDFLII-1+ISD)
+            WRITE(IFM,*) 'SD',ISD,' DIM IDFLM:',ZI(IDFLM-1+ISD)
+            WRITE(IFM,*) 'SD',ISD,' DIM IDFLN:',ZI(IDFLN-1+ISD)
+            WRITE(IFM,*) ' '
   916     CONTINUE
         ENDIF
 
@@ -1332,7 +1371,7 @@ C       SINON CA VAUT L'ADRESSE MEMOIRE COURANTE POUR CHAQUE SD
           ZI(BIFLN-1+ISD)=0
   925   CONTINUE
 
-        IF (NIV.GE.4) WRITE(6,*) '---- DEUXIEME PASSAGE ----'
+        IF (NIV.GE.4) WRITE(IFM,*) '---- DEUXIEME PASSAGE ----'
 
 C       DEUXIEME PASSAGE : REMPLISSAGE DES COLLECTIONS FLII ET FLIN
         DO 920 ICH = 1, NBCHAR
@@ -1341,29 +1380,30 @@ C         NN = NB DE MAILLES TARDIVE DE LA CHARGE
           DO 921 ISD = 1, NBSD
             DEC=(ICH-1)*NBSD+ISD
             NN=NN+ZI(IFLII-1+ DEC)
-C            write(6,*) 'SD:',ISD,' CHA:',ICH,' nb:',ZI(IFLII-1+ DEC)
+C            WRITE(IFM,*) 'SD:',ISD,' CHA:',ICH,' nb:',ZI(IFLII-1+ DEC)
   921     CONTINUE
-C          WRITE(6,*) 'CH:',ICH,' NB MaT:',NN
+C          WRITE(IFM,*) 'CH:',ICH,' NB MaT:',NN
 
 C         SI LA CHARGE COURANTE A DES MAILLES TARDIVES
           IF (NN.GT.0) THEN
 
             DO 923 ISD = 1, NBSD
               DEC=(ICH-1)*NBSD+ISD
-C              write(6,*) '  SD:',ISD,' CHA:',ICH,' nb:',ZI(IFLII-1+DEC)
+C            WRITE(IFM,*) '  SD:',ISD,' CHA:',ICH,' nb:',ZI(IFLII-1+DEC)
 
 C             SI LA CHARGE COURANTE A DES MAILLES TARDIVES DANS LE SD
               IF (ZI(IFLII-1+DEC).GT.0) THEN
 
 C               CREATION DE .FLIN (NOM DE LA CHARGE)
                 N1 = ZI(IDFLN-1+ISD)
-C                write(6,*) 'N1:',N1
+C                WRITE(IFM,*) 'N1:',N1
                 IF ( N1.GT.0 ) THEN
                   IF ( ZI(BIFLN-1+ISD).EQ.0 ) THEN
-                    CALL JECROC(JEXNOM(NOMSLN,NOMSD(ISD)))
-                    CALL JEECRA(JEXNOM(NOMSLN,NOMSD(ISD)),'LONMAX',N1,
-     &                          K8B)
-                    CALL JEVEUO(JEXNOM(NOMSLN,NOMSD(ISD)),'E',JADR)
+                    CALL JECROC(JEXNOM(NOMSLN,ZK8(NOMSD-1+ISD)))
+                    CALL JEECRA(JEXNOM(NOMSLN,ZK8(NOMSD-1+ISD)),
+     &                          'LONMAX',N1,K8B)
+                    CALL JEVEUO(JEXNOM(NOMSLN,ZK8(NOMSD-1+ISD)),'E',
+     &                                                          JADR)
 C                   ADDR DE DEPART POUR FLIN/ISD
                     ZI(BIFLN-1+ISD)=JADR
                   ENDIF
@@ -1377,13 +1417,14 @@ C                 ADDR COURANTE POUR FLIN/ISD INCREMENTEE DE 1
 
 C               CREATION DE .FLII (NB MAT POUR LE SD ET POUR LA CHARGE)
                 N1 = ZI(IDFLII-1+ISD)
-C                write(6,*) 'N1:',N1
+C                WRITE(IFM,*) 'N1:',N1
                 IF ( N1.GT.0 ) THEN
                   IF ( ZI(BIFLII-1+ISD).EQ.0 ) THEN
-                    CALL JECROC(JEXNOM(NOMSLI,NOMSD(ISD)))
-                    CALL JEECRA(JEXNOM(NOMSLI,NOMSD(ISD)),'LONMAX',N1,
-     &                          K8B)
-                    CALL JEVEUO(JEXNOM(NOMSLI,NOMSD(ISD)),'E',JADR)
+                    CALL JECROC(JEXNOM(NOMSLI,ZK8(NOMSD-1+ISD)))
+                    CALL JEECRA(JEXNOM(NOMSLI,ZK8(NOMSD-1+ISD)),
+     &                                               'LONMAX',N1,K8B)
+                    CALL JEVEUO(JEXNOM(NOMSLI,ZK8(NOMSD-1+ISD)),'E',
+     &                                                          JADR)
 C                   ADDR DE DEPART POUR FLII/ISD
                     ZI(BIFLII-1+ISD)=JADR
                   ENDIF
@@ -1394,17 +1435,20 @@ C                 REMPLISSAGE DE FLII/ISD
                   ZI(JADR+1)=ZI(IFLII-1+DEC)
 C                 ADDR COURANTE POUR FLII/ISD INCREMENTEE DE 2
                   ZI(BIFLII-1+ISD)=ZI(BIFLII-1+ISD)+2
-C                  write(6,*) 'NBOBJ1:',NBOBJ1, ZI(JADR),ZI(JADR+1)
+C                  WRITE(IFM,*) 'NBOBJ1:',NBOBJ1, ZI(JADR),ZI(JADR+1)
                 ENDIF
 
 C               CREATION DE .FLIM (- NUMERO DES LIGRE.LIEL)
                 N1 = ZI(IDFLM-1+ISD)
                 IF ( N1.GT.0 ) THEN
                   IF ( ZI(BIFLIM-1+ISD).EQ.0 ) THEN
-                    CALL JECROC(JEXNOM(NOMSLM,NOMSD(ISD)))
-                    CALL JEECRA(JEXNOM(NOMSLM,NOMSD(ISD)),'LONMAX',N1,
-     &                          K8B)
-                    CALL JEVEUO(JEXNOM(NOMSLM,NOMSD(ISD)),'E',JADR)
+                    CALL JECROC(JEXNOM(NOMSLM,ZK8(NOMSD-1+ISD)))
+                    CALL JEECRA(JEXNOM(NOMSLM,ZK8(NOMSD-1+ISD)),
+     &                                             'LONMAX',N1,K8B)
+                    CALL JEVEUO(JEXNOM(NOMSLM,ZK8(NOMSD-1+ISD)),
+     &                                                  'E',JADR)
+
+
 C                   ADDR DE DEPART POUR FLIM/ISD
                     ZI(BIFLIM-1+ISD)=JADR
                   ENDIF
@@ -1419,13 +1463,13 @@ C         FIN SI LA CHARGE COURANTE A DES MAILLES TARDIVES
 C       FIN BOUCLE SUR LES CHARGES
   920   CONTINUE
 
-        IF (NIV.GE.4) WRITE(6,*) '---- TROISIEME PASSAGE ----'
+        IF (NIV.GE.4) WRITE(IFM,*) '---- TROISIEME PASSAGE ----'
 
 C       TROISIEME PASSAGE : REMPLISSAGE DE LA COLLECTION FLIM
         DO 930 J = 1, NBMATA
           DO 932 NUMSD = 1, NBSD
             DEC=(J-1)*NBSD+NUMSD
-C        write(6,*) 'SD:',NUMSD,' MT:',J,' IFLIM=',ZI(IFLIM-1+DEC)
+C        WRITE(IFM,*) 'SD:',NUMSD,' MT:',J,' IFLIM=',ZI(IFLIM-1+DEC)
             IF (ZI(IFLIM-1+DEC).GT.0) THEN
 C             ADDR COURANTE POUR FLIM/ISD
               JADR=ZI(BIFLIM-1+NUMSD)
@@ -1447,6 +1491,6 @@ C     FIN DE CREATION DE FLII, FLIM ET FLIN
       ENDIF
 
       CALL JEDETR('&&FETCRF.NB_NO')
-      CALL JXVERI('MESSAGE','FIN')
+      IF (NIV.GE.4) CALL JXVERI('MESSAGE',' ')
       CALL JEDEMA()
       END

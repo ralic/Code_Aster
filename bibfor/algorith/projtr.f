@@ -7,7 +7,7 @@
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -434,10 +434,15 @@ C
      
 C
 C ======================================================================
-C            PROJECTION QUADRATIQUE SUR LE TRIA6 (PROJ = 2)
+C            PROJECTION QUADRATIQUE SUR LE TRIA6/7 (PROJ = 2)
 C ======================================================================
 C
       IF ((MATYP.EQ.'TRI6').AND.(PROJ.EQ.2)) THEN
+        CALL UTMESS ('F','PROJTR_02',
+     &               'LA PROJECTION QUADRATIQUE POUR LES TRIANGLES '
+     &               //'N''EST PAS DISPONIBLE')
+      END IF
+      IF ((MATYP.EQ.'TRI7').AND.(PROJ.EQ.2)) THEN
         CALL UTMESS ('F','PROJTR_02',
      &               'LA PROJECTION QUADRATIQUE POUR LES TRIANGLES '
      &               //'N''EST PAS DISPONIBLE')

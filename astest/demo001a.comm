@@ -1,4 +1,4 @@
-# MODIF  DATE 23/11/2004   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 07/02/2005   AUTEUR ASSIRE A.ASSIRE 
 # TITRE DEMONSTRATION DE LA JOURNE ASTER LIBRE DU 14 OCTOBRE 2003
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ DEBUT(CODE=_F( NOM = 'DEMO001A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LO
 import os
 
 # Execution interactive : 1=OUI, 0=NON
-interactif  = 1
+interactif  = 0
 fic_ps='fort.55'
 
 # Commande Gmsh (elle ne fait rien si c'est la version batch de Gmsh)

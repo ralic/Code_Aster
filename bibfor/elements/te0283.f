@@ -1,6 +1,6 @@
       SUBROUTINE TE0283(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/09/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 07/02/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,7 @@ C DEB ------------------------------------------------------------------
       THETA = ZR(ITEMPS+2)
       KHI = ZR(ITEMPS+3)
 
-      IF (ZK16(ICOMP) (1:5).NE.'THER_') THEN
+      IF (ZK16(ICOMP) (1:5).EQ.'THER_') THEN
 
         CALL NTFCMA(ZI(IMATE),IFON)
 

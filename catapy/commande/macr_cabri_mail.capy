@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -76,7 +76,6 @@ MACR_CABRI_MAIL=MACRO(nom="MACR_CABRI_MAIL",
                                             ),
                                          ),
                       IMPRESSION    = FACT(statut='d',
-                        FICHIER        = SIMP(statut='f',typ='TX'),
                         UNITE          = SIMP(statut='f',typ='I'),
                         FORMAT         = SIMP(statut='f',typ='TXM',defaut="ASTER",    
                                               into=("ASTER","CASTEM","IDEAS"),
