@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE CIRCULAIRE SOUMISE A PRESSION (AXISYMETRIQUE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -122,15 +122,6 @@ CALCNL=CALC_NO(
                  RESULTAT=CALCNL,
                    OPTION='SIEF_NOEU_ELGA'
               )
-
-IMPR_RESU(
-             MODELE=MODEL,
-              
-              RESU=_F( 
-              RESULTAT = CALCNL,
-              NUME_ORDRE = 6,
-              NOM_CHAM = ('DEPL','SIEF_NOEU_ELGA',))
-            )
 
 TEST_RESU(RESU=(
           

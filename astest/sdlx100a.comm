@@ -1,4 +1,4 @@
-# MODIF  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE REPONSE TRANSITOIRE D UNE PLAQUE A UNE PRESSION ISSUE DE ENSIGHT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -175,10 +175,9 @@ TEST_FONCTION(VALEUR=(
 
 DEFI_FICHIER( FICHIER= 'PRES', UNITE = 38)
 
-IMPR_RESU( RESU=_F(  RESULTAT = PRES,
-                    FICHIER = 'PRES',
-                    TOUT_ORDRE = 'OUI',
-                    FORMAT = 'IDEAS')  )
+IMPR_RESU( FORMAT = 'IDEAS', UNITE = 38, 
+           RESU=_F(  RESULTAT = PRES,
+                     TOUT_ORDRE = 'OUI', )  )
 
 #--------------------------------------------------------------------
 # TEST DE LIRE_RESU

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 26/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -95,13 +95,6 @@ RESUL=MECA_STATIQUE(       MODELE=MO,
 RESUL=CALC_ELEM( reuse=RESUL,     RESULTAT=RESUL,
                            OPTION='EFGE_ELNO_DEPL'
                     )
-
-#
-IMPR_RESU(  MODELE=MO, 
-               RESU=_F( FORMAT = 'IDEAS',
-                     MAILLAGE = MA)
-           )
-
 #
 #---------------------------------------------------------------------
 #                         VERIFICATION DES RESULTATS

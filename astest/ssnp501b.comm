@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES SANS FROTTEMENT.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -168,19 +168,6 @@ TAB_CONT=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
                                  OPERATION='EXTRACTION',),);
 
 
-IMPR_TABLE(TABLE=TAB_REAC,
-           FORMAT='EXCEL',);
-IMPR_TABLE(TABLE=TAB_PRES,
-           FORMAT='EXCEL',);
-IMPR_TABLE(TABLE=TAB_CONT,
-           FORMAT='EXCEL',);
-
-IMPR_RESU(MODELE=MO,
-          RESU=_F(FORMAT='GMSH',
-                  MAILLAGE=MA,
-                  RESULTAT=RESU,
-                  NOM_CHAM='DEPL',
-                  FICHIER='CASTEM',),);
 
 #------- TEST DES RESULTATS --------------
 # TEST REFERENCE

@@ -1,4 +1,4 @@
-# MODIF  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE  REPONSE HARMONIQUE D'UNE BARRE PAR SOUS-STRUCTURATION DYNAMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -594,12 +594,9 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHARM2,
 #----------------------------------------------------------
 #
 
-DEFI_FICHIER( FICHIER= 'HARMDIR', UNITE = 38)
-
-IMPR_RESU(RESU=_F( RESULTAT = HARMDIR,
-                  FICHIER = 'HARMDIR',
-                TOUT_ORDRE = 'OUI',
-                 FORMAT = 'IDEAS'))
+IMPR_RESU( FORMAT = 'IDEAS', UNITE = 38, 
+           RESU=_F( RESULTAT = HARMDIR,
+                    TOUT_ORDRE = 'OUI', ))
 
 #
 #----------------------------------------------------------

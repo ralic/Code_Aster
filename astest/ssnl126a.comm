@@ -1,0 +1,101 @@
+
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# TITRE FLAMBEMENT NON LINEAIRE POUTRE 3D HPP
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+
+DEBUT(CODE=_F( NOM = 'SSNL126A',NIV_PUB_WEB='INTERNET'));
+
+PRE_GIBI();
+
+mail=LIRE_MAILLAGE();
+
+modele=AFFE_MODELE(MAILLAGE=mail,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),);
+
+acier=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
+                            NU=0.,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=70000000000.0,
+                                 SY=4000000.0,),);
+
+ch_mat=AFFE_MATERIAU(MAILLAGE=mail,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=acier,),);
+
+CL=AFFE_CHAR_MECA(MODELE=modele,
+                  DDL_IMPO=_F(GROUP_MA='ENCAST',
+                              DX=0.0,
+                              DY=0.0,
+                              DZ=0.0,),);
+
+CS=AFFE_CHAR_MECA(MODELE=modele,
+                  FORCE_FACE=_F(GROUP_MA='EFFORT',
+                                FX=-6500000.0,),);
+
+fonc=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,0.0,10.0,10.0,),);
+
+list=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=1.,
+                                  NOMBRE=10,),);
+
+res=STAT_NON_LINE(MODELE=modele,
+                  CHAM_MATER=ch_mat,
+                  EXCIT=(_F(CHARGE=CS,
+                            FONC_MULT=fonc,
+                            TYPE_CHARGE='FIXE_CSTE',),
+                         _F(CHARGE=CL,
+                            TYPE_CHARGE='FIXE_CSTE',),),
+                  COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                               DEFORMATION='PETIT',
+                               TOUT='OUI',),
+                  INCREMENT=_F(LIST_INST=list,),
+                  NEWTON=_F(REAC_INCR=1,
+                            PREDICTION='TANGENTE',
+                            MATRICE='TANGENTE',
+                            REAC_ITER=1,),
+                  CONVERGENCE=_F(ITER_GLOB_MAXI=300,),
+                  CRIT_FLAMB=_F(CHAR_CRIT=(-15,15),),
+                  );
+
+              
+
+
+TEST_RESU(RESU=(
+                 _F(RESULTAT=res,
+                   INST=0.2,
+                   PARA='CHAR_CRIT',
+                   VALE=-9.96,
+                   PRECISION=0.002,
+                   REFERENCE='ANALYTIQUE',),
+                 _F(RESULTAT=res,
+                   INST=1.0,
+                   PARA='CHAR_CRIT',
+                   VALE=-0.66,
+                   PRECISION=0.03,
+                   REFERENCE='ANALYTIQUE',),
+                   ),)
+
+
+FIN();
+
+
+

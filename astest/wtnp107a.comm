@@ -1,4 +1,4 @@
-# MODIF  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CHAUFFAGE D UN MILIEU POREUX SANS AIR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -340,12 +340,6 @@ U0=CALC_ELEM(reuse =U0,
              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
 #---------------------------------------------------------------------
 
-IMPR_RESU(MODELE=MODELE,
-          RESU=_F(FORMAT='IDEAS',
-                  MAILLAGE=MAIL,
-                  RESULTAT=U0,
-                  NOM_CHAM=('DEPL','SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),),);
-                  
 ZMP=INTE_MAIL_2D (MAILLAGE=MAIL,
                DEFI_CHEMIN=_F(GROUP_MA='BAS',),);
                
@@ -359,7 +353,7 @@ TEMPE=POST_RELEVE_T (ACTION=_F(INTITULE='TEMPERATURE',
                      OPERATION='EXTRACTION',),);
 
 IMPR_TABLE(TABLE=TEMPE,
-           FICHIER='RESULTAT',
+           UNITE=8,
            FORMAT='AGRAF',
            PAGINATION='INST',
            NOM_PARA=('INST','COOR_X','PRE1','TEMP'),

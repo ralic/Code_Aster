@@ -1,0 +1,259 @@
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# RESPONSABLE ADBHHPM P.MASSIN
+# DATE   : 03/05/2000
+# AUTEUR : F. LEBOUVIER (DELTACAD)
+# TITRE  : POUTRE ELANCEE, ENCASTREE-LIBRE, REPLIEE SUR ELLE MEME
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#---------------------------------------------------------------------
+#  - PROBLEME BIDIMENSIONNEL EN ANALYSE MODALE DYNAMIQUE D'UNE POUTRE 
+#    ELANCEE 
+#  - MODELISATION AVEC DES ELEMENTS 'COQUE_C_PLAN'
+#---------------------------------------------------------------------
+#
+DEBUT( CODE=_F( NOM = 'SDLL02C',NIV_PUB_WEB='INTERNET'))
+
+#
+#PRE_IDEAS ();
+#
+MAIL=LIRE_MAILLAGE( )
+
+#
+MODEL=AFFE_MODELE(   MAILLAGE=MAIL,
+                           AFFE=_F( TOUT = 'OUI',
+                                 PHENOMENE = 'MECANIQUE',
+                                 MODELISATION = 'COQUE_C_PLAN')
+                     )
+
+#
+#---------------------------------------------------------------------
+#                      CARACTERISTIQUES ELEMENTAIRES
+#---------------------------------------------------------------------
+#
+CARA=AFFE_CARA_ELEM(   MODELE=MODEL,
+                          COQUE=_F( GROUP_MA = 'TOUT_ELT',
+                                 EPAIS = 0.005)
+                       )
+
+#
+#---------------------------------------------------------------------
+#                      CARACTERISTIQUES MATERIAUX
+#---------------------------------------------------------------------
+#
+MATER=DEFI_MATERIAU(   ELAS=_F( E = 2.1E+11,
+                               NU = 0.3,
+                               RHO = 7800.)
+                       )
+
+#
+AFFMATER=AFFE_MATERIAU(   MAILLAGE=MAIL,
+                                AFFE=_F( TOUT = 'OUI',
+                                      MATER = MATER)
+                         )
+
+#
+#---------------------------------------------------------------------
+#                      CHARGEMENTS
+#---------------------------------------------------------------------
+#
+CHARGE=AFFE_CHAR_MECA(        MODELE=MODEL,
+                              DDL_IMPO=_F( NOEUD = 'NO1',
+                                          DX = 0.,
+                                          DY = 0.,
+                                          DRZ = 0.)
+                         )
+
+#
+#---------------------------------------------------------------------
+#                      RESOLUTION
+#---------------------------------------------------------------------
+#
+MATRIGI=CALC_MATR_ELEM(       MODELE=MODEL,
+                            CHAM_MATER=AFFMATER,
+                             CARA_ELEM=CARA,
+                                OPTION='RIGI_MECA',
+                                CHARGE=CHARGE
+                          )
+
+#
+MATMASS=CALC_MATR_ELEM(       MODELE=MODEL,
+                            CHAM_MATER=AFFMATER,
+                             CARA_ELEM=CARA, 
+                                OPTION='MASS_MECA',
+                                CHARGE=CHARGE 
+                          )
+
+#
+NU=NUME_DDL(   MATR_RIGI=MATRIGI)
+
+#
+MATRI_AS=ASSE_MATRICE(   MATR_ELEM=MATRIGI,   NUME_DDL=NU)
+
+#
+MATMA_AS=ASSE_MATRICE(   MATR_ELEM=MATMASS,   NUME_DDL=NU)
+
+#                                     
+
+MODES=MODE_ITER_SIMULT(      MATR_A=MATRI_AS,
+                               MATR_B=MATMA_AS,
+                              METHODE='SORENSEN',
+                            CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
+                                       NMAX_FREQ = 8)
+                          )
+
+#
+MODES=NORM_MODE( reuse=MODES,   MODE=MODES,
+                      NORME='TRAN'
+                    )
+
+MODE_1=CREA_CHAMP(      RESULTAT=MODES,
+                        OPERATION='EXTR',
+                         TYPE_CHAM='NOEU_DEPL_R',
+                         NOM_CHAM='DEPL',
+                       NUME_ORDRE=1 
+                    )
+
+MODE_2=CREA_CHAMP(      RESULTAT=MODES,
+                        OPERATION='EXTR',
+                         TYPE_CHAM='NOEU_DEPL_R',
+                         NOM_CHAM='DEPL',
+                       NUME_ORDRE=2 
+                    )
+
+MODE_3=CREA_CHAMP(      RESULTAT=MODES,
+                        OPERATION='EXTR',
+                         TYPE_CHAM='NOEU_DEPL_R',
+                         NOM_CHAM='DEPL',
+                       NUME_ORDRE=3 
+                    )
+
+MODE_4=CREA_CHAMP(      RESULTAT=MODES,
+                        OPERATION='EXTR',
+                         TYPE_CHAM='NOEU_DEPL_R',
+                         NOM_CHAM='DEPL',
+                       NUME_ORDRE=4 
+                    )
+
+MODE_7=CREA_CHAMP(      RESULTAT=MODES,
+                        OPERATION='EXTR',
+                         TYPE_CHAM='NOEU_DEPL_R',
+                         NOM_CHAM='DEPL',
+                       NUME_ORDRE=7 
+                    )
+
+MODE_8=CREA_CHAMP(      RESULTAT=MODES,
+                        OPERATION='EXTR',
+                         TYPE_CHAM='NOEU_DEPL_R',
+                         NOM_CHAM='DEPL',
+                       NUME_ORDRE=8 
+                    )
+
+#
+#---------------------------------------------------------------------
+#                      VERIFICATIONS DES RESULTATS
+#---------------------------------------------------------------------
+#
+#FREQUENCES ET MODES DE VIBRATION DE LA STRUCTURE
+#################################################
+TEST_RESU(RESU=(
+       _F( RESULTAT = MODES,             PARA = 'FREQ',
+             CRITERE = 'RELATIF',    PRECISION = 0.01,
+             NUME_ORDRE = 1,                 VALE = 11.76),
+
+       _F( RESULTAT = MODES,             PARA = 'FREQ',
+             CRITERE = 'RELATIF',    PRECISION = 0.01,
+             NUME_ORDRE = 2,                 VALE = 11.76),
+
+       _F( RESULTAT = MODES,             PARA = 'FREQ',
+             CRITERE = 'RELATIF',    PRECISION = 0.01,
+             NUME_ORDRE = 3,                 VALE = 105.88),
+
+       _F( RESULTAT = MODES,             PARA = 'FREQ',
+             CRITERE = 'RELATIF',    PRECISION = 0.02,
+             NUME_ORDRE = 4,                 VALE = 105.88),
+
+       _F( RESULTAT = MODES,             PARA = 'FREQ',
+             CRITERE = 'RELATIF',    PRECISION = 0.02,
+             NUME_ORDRE = 5,                 VALE = 294.10),
+
+       _F( RESULTAT = MODES,             PARA = 'FREQ',
+             CRITERE = 'RELATIF',    PRECISION = 0.04,
+             NUME_ORDRE = 6,                 VALE = 294.10),
+
+       _F( RESULTAT = MODES,             PARA = 'FREQ',
+             CRITERE = 'RELATIF',    PRECISION = 0.04,
+             NUME_ORDRE = 7,                 VALE = 576.44),
+
+       _F( RESULTAT = MODES,             PARA = 'FREQ',
+             CRITERE = 'RELATIF',    PRECISION = 0.065,
+             NUME_ORDRE = 8,                 VALE = 576.44)),CHAM_NO=(
+
+       _F( CHAM_GD = MODE_1,         NOM_CMP = 'DY',
+               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               NOEUD = 'NO2',                 VALE = -0.707),
+
+       _F( CHAM_GD = MODE_1,         NOM_CMP = 'DY',
+               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               NOEUD = 'NO41',                 VALE = 1.),
+
+       _F( CHAM_GD = MODE_2,         NOM_CMP = 'DY',
+               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               NOEUD = 'NO2',                 VALE = 0.707),
+
+       _F( CHAM_GD = MODE_2,         NOM_CMP = 'DY',
+               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               NOEUD = 'NO41',                 VALE = 1.),
+
+       _F( CHAM_GD = MODE_3,         NOM_CMP = 'DY',
+               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               NOEUD = 'NO2',                 VALE = 0.707),
+
+       _F( CHAM_GD = MODE_3,         NOM_CMP = 'DY',
+               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               NOEUD = 'NO41',                 VALE = 1.),
+
+       _F( CHAM_GD = MODE_4,         NOM_CMP = 'DY',
+               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               NOEUD = 'NO2',                 VALE = -0.370),
+
+       _F( CHAM_GD = MODE_4,         NOM_CMP = 'DY',
+               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               NOEUD = 'NO41',                 VALE = 0.523),
+
+       _F( CHAM_GD = MODE_7,         NOM_CMP = 'DY',
+               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               NOEUD = 'NO2',                 VALE = 0.707),
+
+       _F( CHAM_GD = MODE_7,         NOM_CMP = 'DY',
+               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               NOEUD = 'NO41',                 VALE = 1.0),
+
+       _F( CHAM_GD = MODE_8,         NOM_CMP = 'DY',
+               CRITERE = 'RELATIF',         PRECISION = 0.04,   
+               NOEUD = 'NO2',                 VALE = -0.388),
+
+       _F( CHAM_GD = MODE_8,         NOM_CMP = 'DY',
+               CRITERE = 'RELATIF',         PRECISION = 0.04,   
+               NOEUD = 'NO41',                 VALE = 0.549))  
+               
+               )
+
+FIN()
+#    
+#
+# 

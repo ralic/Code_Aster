@@ -1,4 +1,4 @@
-# MODIF  DATE 09/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PB 2D AXISYMETRIQUE STATIONNAIRE AVEC RAYONNEMENT - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -180,8 +180,6 @@ TEMPE=THER_NON_LINE(          MODELE=MOTH,
                                OPTION='FLUX_ELNO_TEMP',
                  TITRE=( ' CAS TEST &CODE','&RL COMMANDE &COMMANDE', )
                        )
-
-IMPR_RESU ( RESU=_F(RESULTAT = TEMPE, TOUT_PARA='OUI'), )
 
 #
 

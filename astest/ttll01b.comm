@@ -1,4 +1,4 @@
-# MODIF  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CHOC THERMIQUE SUR UN MUR INFINI QUAD8 - TEMP_INIT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -157,8 +157,8 @@ DEFI_FICHIER( FICHIER = 'TEMPE', UNITE = 37 )
 
 #
 
-IMPR_RESU(RESU=_F(   FORMAT = 'IDEAS',  FICHIER = 'TEMPE',
-                   RESULTAT = TEMPE))
+IMPR_RESU( FORMAT = 'IDEAS',  UNITE = 37,
+           RESU=_F( RESULTAT = TEMPE ),)
 
 #----------------------------------------------------------
 # TEST DE LIRE_RESU
@@ -176,8 +176,7 @@ TEMPEE=LIRE_RESU(       MODELE=MOTH,
                     )
 
 TEMP_1E=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
-RESULTAT=TEMPEE, NOM_CHAM='TEMP',
-             INST=.7 )
+                    RESULTAT=TEMPEE, NOM_CHAM='TEMP', INST=.7 )
 
 TEST_RESU(
        CHAM_NO=_F( CHAM_GD = TEMP_1E, NOEUD = 'NO33', NOM_CMP = 'TEMP',
@@ -209,8 +208,7 @@ TEMPAE=THER_LINEAIRE(reuse=TEMPAE,       MODELE=MOTH,
                         )
 
 TEMP_2E=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
-RESULTAT=TEMPAE, NOM_CHAM='TEMP',
-             INST=2. )
+                    RESULTAT=TEMPAE, NOM_CHAM='TEMP', INST=2. )
 
 TEST_RESU(
       CHAM_NO=_F( CHAM_GD = TEMP_2E, NOEUD = 'NO33', NOM_CMP = 'TEMP',

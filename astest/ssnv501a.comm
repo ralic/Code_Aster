@@ -1,0 +1,303 @@
+
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# TITRE EMBOUTISSAGE D'UNE TOLE PAR UN POINCON HEMISPHERIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# CAS_TEST: SSNV501A - PAS DE FROTTEMENT
+# MODELE 
+# MAILLAGE : ELEMENT 2D QUADRANGLE A 4 NOEUDS
+#            CONTACT : SEG2
+# UNITES   : NEWTON , METRE , SECONDE (N,M,S)
+#
+#......................................................................
+#  CALCUL TEST ELEMENTS FINIS DE CONTACT 2D SEG2
+#                                MODELISATION AXIS (QUA4)
+#......................................................................
+#
+#
+
+
+DEBUT(CODE=_F(NOM='SSNV501A',NIV_PUB_WEB='INTERNET'),);
+#  
+#
+
+
+PRE_GIBI();
+#
+#
+
+
+MAILL1=LIRE_MAILLAGE();
+
+MAILL1=DEFI_GROUP(reuse =MAILL1,
+                  MAILLAGE=MAILL1,
+                  CREA_GROUP_MA=_F(NOM='SOLIDE',
+                                   UNION=('MATRICE','POINCON'),),
+                  CREA_GROUP_NO=(_F(GROUP_MA='LC2G',
+                                    NOM='LIM11',),
+                                 _F(GROUP_MA='LGF',
+                                    NOM='LIM12',),
+                                 _F(GROUP_MA='LBC1',
+                                    NOM='LBC1',),
+                                 _F(GROUP_MA='LDA1',
+                                    NOM='LIM2',),
+                                 _F(GROUP_MA='LA2H',
+                                    NOM='LIM3',),
+                                 _F(GROUP_MA='LHE',
+                                    NOM='LIM4',),),
+                  INFO=2,);
+
+MODEL=AFFE_MODELE(MAILLAGE=MAILL1,
+                  VERIF='MAILLE',
+                  AFFE=_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='AXIS',),);
+
+MAILL1=MODI_MAILLAGE(reuse =MAILL1,
+                     MAILLAGE=MAILL1,
+                     ORIE_PEAU_2D=_F(GROUP_MA='LFC2',),
+                     MODELE=MODEL,);
+
+MAILL1=MODI_MAILLAGE(reuse =MAILL1,
+                     MAILLAGE=MAILL1,
+                     ORIE_PEAU_2D=_F(GROUP_MA='LC1D',),
+                     MODELE=MODEL,);
+
+MAILL1=MODI_MAILLAGE(reuse =MAILL1,
+                     MAILLAGE=MAILL1,
+                     ORIE_PEAU_2D=_F(GROUP_MA='LEA2',),
+                     MODELE=MODEL,);
+
+MAILL1=MODI_MAILLAGE(reuse =MAILL1,
+                     MAILLAGE=MAILL1,
+                     ORIE_PEAU_2D=_F(GROUP_MA='LA1B',),
+                     MODELE=MODEL,);
+#           
+#-----------------------------------------------------------------------
+#     DEFINITIONS DES CARACTERISTIQUES MATERIAUX ET AFFECTATION
+#-----------------------------------------------------------------------
+#
+#
+
+
+SI=DEFI_FONCTION(NOM_PARA='EPSI',
+                 VALE=
+                 (0.00011675000000000001,80.559227800000002,0.00021675000000000001,93.570246600000004,
+                        0.00031674999999999997,102.1347396,0.00041675000000000002,108.68265839999999,0.00051674999999999996,
+                        114.0493503,0.00071675000000000005,122.6468706,0.00091675000000000003,129.48864219999999,
+                        0.0011167499999999999,135.2247275,0.00131675,140.19323549999999,0.00171675,148.55670620000001,
+                        0.0021167500000000001,155.4943676,0.0031167500000000002,169.14120510000001,0.0041167499999999997,
+                        179.67043029999999,0.0051167499999999998,188.34342029999999,0.0061167499999999998,195.77017960000001,
+                        0.010116750000000001,218.29747459999999,0.020116749999999999,253.28276769999999,0.030116750000000001,
+                        276.36666500000001,0.050116750000000002,308.51781260000001,0.070116750000000005,331.7343065,0.10011675,
+                        358.26885479999999),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',);
+
+MFLAN=DEFI_MATERIAU(ELAS=_F(E=6.9004E4,
+                            NU=0.29999999999999999,),
+                    TRACTION=_F(SIGM=SI,),);
+
+MMATRICE=DEFI_MATERIAU(ELAS=_F(E=1.E7,
+                               NU=0.29999999999999999,),);
+
+MPOINCON=DEFI_MATERIAU(ELAS=_F(E=1.E7,
+                               NU=0.29999999999999999,),);
+
+CM=AFFE_MATERIAU(MAILLAGE=MAILL1,
+                 AFFE=(_F(GROUP_MA='FLAN',
+                          MATER=MFLAN,),
+                       _F(GROUP_MA='MATRICE',
+                          MATER=MMATRICE,),
+                       _F(GROUP_MA='POINCON',
+                          MATER=MPOINCON,),),);
+#           
+#-----------------------------------------------------------------------
+#            CONDITIONS AUX LIMITES ET CHARGEMENT SURFACIQUE
+#---------------------------------------------------------------------- 
+#
+#
+
+
+CH1=AFFE_CHAR_MECA(MODELE=MODEL,
+                   DDL_IMPO=(_F(GROUP_NO='LIM11',
+                                DX=0.0,
+                                DY=0.0,),
+                             _F(GROUP_NO='LIM12',
+                                DX=0.0,
+                                DY=0.0,),
+                             _F(GROUP_NO='LIM2',
+                                DX=0.0,),
+                             _F(GROUP_NO='LIM3',
+                                DX=0.0,),
+                             _F(GROUP_NO='LBC1',
+                                DX=0.0,
+                                DY=0.0,),),
+                   LIAISON_DDL=_F(GROUP_NO=('A1','A2'),
+                                  DDL=('DY','DY'),
+                                  COEF_MULT=(1.0,-1.0),
+                                  COEF_IMPO=0.0,),
+                   PRES_REP=_F(GROUP_MA='LHE',
+                               PRES=12.33,),);
+#           
+#-----------------------------------------------------------------------
+#                      CARACTERISTIQUES DU CONTACT
+#-----------------------------------------------------------------------
+#
+#
+
+
+CH2=AFFE_CHAR_MECA(MODELE=MODEL,
+                   CONTACT=(_F(APPARIEMENT='MAIT_ESCL',
+                               RECHERCHE='NOEUD_BOUCLE',
+                               METHODE='CONTRAINTE',
+                               GROUP_MA_MAIT='LFC2',
+                               GROUP_MA_ESCL='LC1D',
+                               SANS_GROUP_NO=('C1','C2'),),
+                            _F(APPARIEMENT='MAIT_ESCL',
+                               RECHERCHE='NOEUD_BOUCLE',
+                               METHODE='CONTRAINTE',
+                               GROUP_MA_MAIT='LEA2',
+                               GROUP_MA_ESCL='LA1B',
+                               SANS_GROUP_NO=('A1','A2'),),),
+                   INFO=2,);
+#           
+#-----------------------------------------------------------------------
+#                      RESOLUTION
+#-----------------------------------------------------------------------
+#
+#
+
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,1.0,1.0),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=0.5,
+                                     NOMBRE=50,),
+                                  _F(JUSQU_A=1.0,
+                                     NOMBRE=50,),),);
+
+DEFOR=STAT_NON_LINE(MODELE=MODEL,
+                    CHAM_MATER=CM,
+                    EXCIT=(_F(CHARGE=CH1,
+                              FONC_MULT=RAMPE,),
+                           _F(CHARGE=CH2,),),
+                    COMP_INCR=(_F(RELATION='VMIS_ISOT_TRAC',
+                                  DEFORMATION='SIMO_MIEHE',
+                                  GROUP_MA='FLAN',),
+                               _F(RELATION='ELAS',
+                                  DEFORMATION='SIMO_MIEHE',
+                                  GROUP_MA='SOLIDE',),),
+                    INCREMENT=_F(LIST_INST=L_INST,
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI=9.9999999999999995E-07,),
+                    NEWTON=_F(MATRICE='TANGENTE',
+                              REAC_ITER=1,),
+                    CONVERGENCE=_F(RESI_GLOB_RELA=9.9999999999999995E-07,
+                                   ITER_GLOB_MAXI=200,
+                                   RESI_INTE_RELA=9.9999999999999995E-07,
+                                   ITER_INTE_MAXI=20,
+                                   ITER_INTE_PAS=10,),
+                    INFO=1,);
+
+TEST_RESU(RESU=(_F(RESULTAT=DEFOR,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='A2',
+                   VALE=9.6699999999999999,
+                   PRECISION=0.25,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=DEFOR,
+                   NUME_ORDRE=20,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='A2',
+                   VALE=13.33,
+                   PRECISION=0.25,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=DEFOR,
+                   NUME_ORDRE=30,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='A2',
+                   VALE=19.170000000000002,
+                   PRECISION=0.25,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=DEFOR,
+                   NUME_ORDRE=40,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='A2',
+                   VALE=22.670000000000002,
+                   PRECISION=0.25,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=DEFOR,
+                   NUME_ORDRE=50,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='A2',
+                   VALE=25.670000000000002,
+                   PRECISION=0.25,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=DEFOR,
+                   NUME_ORDRE=60,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='A2',
+                   VALE=29.670000000000002,
+                   PRECISION=0.25,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=DEFOR,
+                   NUME_ORDRE=70,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='A2',
+                   VALE=34.0,
+                   PRECISION=0.25,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=DEFOR,
+                   NUME_ORDRE=80,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='A2',
+                   VALE=38.600000000000001,
+                   PRECISION=0.25,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=DEFOR,
+                   NUME_ORDRE=90,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='A2',
+                   VALE=46.670000000000002,
+                   PRECISION=0.25,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=DEFOR,
+                   NUME_ORDRE=100,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='A2',
+                   VALE=50.0,
+                   PRECISION=0.25,
+                   REFERENCE='SOURCE_EXTERNE',),),);
+
+FIN();
+#

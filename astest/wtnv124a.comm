@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE DESATURATION SUIVIE D UN CHARGEMENT HYDROSTATIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -263,12 +263,6 @@ U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
               )
 
 
-IMPR_RESU(RESU=_F(MAILLAGE=MAILLAGE,
-                  FORMAT='RESULTAT',
-                  RESULTAT=U1,
-                  PRECISION = 1.E-10,
-                  INST = 6.,),);
-
 # CHARGEMENT  HYDROSTATIQUE
 
 
@@ -429,7 +423,4 @@ TEST_RESU(RESU=(
                      ),                     
                      ),)
                      
-IMPR_RESU(RESU=_F(MAILLAGE=MAILLAGE,
-                  FORMAT='RESULTAT',
-                  RESULTAT=U1,),);
 FIN () ;

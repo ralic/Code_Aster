@@ -1,4 +1,4 @@
-# MODIF  DATE 16/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION ET PESANTEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -225,15 +225,11 @@ TEMPE1=THER_LINEAIRE(MODELE=MODTHER1,
                     EXCIT=_F(CHARGE=CHTHER,),);
 
 
-#IMPR_RESU(RESU=_F(RESULTAT=TEMPE1),)
-
 TEMPE2=PROJ_CHAMP(METHODE='ELEM',
                    RESULTAT=TEMPE1,
                    MODELE_1=MODTHER1,
                    MODELE_2=MODELE,
                    TOUT_ORDRE='OUI',);
-
-IMPR_RESU(RESU=_F(RESULTAT=TEMPE2),)
 
 CHTT100=AFFE_CHAR_MECA(MODELE=MODELE,
                        TEMP_CALCULEE=TEMPE2,);
@@ -262,8 +258,6 @@ NLTT100=CALC_ELEM(reuse =NLTT100,
                    OPTION=('EPSI_ELNO_DEPL',),
                    RESULTAT=NLTT100,);
 
-IMPR_RESU(RESU=_F(RESULTAT=NLTT100,),);
-
 NLTT101 = MODI_REPERE (
                         RESULTAT = NLTT100,
                         NUME_ORDRE = 1,
@@ -277,10 +271,6 @@ NLTT101 = MODI_REPERE (
                                           ),
                         INFO=2,
                         )
-
-IMPR_RESU(RESU=_F(RESULTAT=NLTT101,),);
-                                         
-
 
 # POUR COMPARER AVEC lA SOLUTION SANS THERMIQUE
 
@@ -304,7 +294,6 @@ EVOLNOT=CALC_ELEM(reuse =EVOLNOT,
                    OPTION=('EPSI_ELNO_DEPL',),
                    RESULTAT=EVOLNOT,);
                    
-IMPR_RESU(RESU=_F(RESULTAT=EVOLNOT,),);
 
 # CONTRAINTES IDENTIQUES PUISQUE DILATATION THERMIQUE LIBRE
 TEST_RESU(RESU=(

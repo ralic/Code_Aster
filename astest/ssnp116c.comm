@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 05/07/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 # TITRE COUPLAGE FLUAGE/NADAI_B - TRACTION UNIAXIALE EN C_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,13 +19,18 @@
 # ======================================================================
 #-----------------------------------------------------------------------
 #   TEST DU MODELE DE COUPLAGE D'UNE LOI DE FLUAGE DE GRANGER
-#   (GRANGER_FP) ET D'UNE LOI DE PLASTICITE/FISSURATION NADAI_B
-#   EN DEPLACEMENT IMPOSE, EN MODELISATION C_PLAN, EN TRACTION 
-#   UNIAXIALE (XX).
-#   LES PARAMETRES DE LA LOI DE PLASTICITE/FISSURATION SONT CHOISIS
+#   (GRANGER_FP) ET DES LOIS DE PLASTICITE/FISSURATION :
+#   BETON_DOUBLE_DP (DOUBLE CRITERE DE DRUCKER PRAGER),
+#   VMIS_ISOT_LINE ET CHABOCHE EN DEPLACEMENT IMPOSE,
+#    EN MODELISATION C_PLAN, EN TRACTION UNIAXIALE (XX).
+#  
+#   POUR SIMPLIFIER LA SOLUTION ANALYTIQUE DE REFERENCE :
+#   - LES PARAMETRES DE LA LOI DE PLASTICITE/FISSURATION SONT CHOISIS
 #   AFIN D'OBTENIR UN COMPORTMENT ELASTO PLASTIQUE QUASI PARFAIT
-#   (ECROUISSAGE QUASI NUL) POUR SIMPLIFIER LA SOLUTION ANALYTIQUE DE
-#   REFERENCE. 
+#   (ECROUISSAGE QUASI NUL) . 
+#   LES VARIATIONS DE TEMPERATURE ET DE SECHAGE ET LES COEFFICIENTS 
+#  DE RETRAIT DE DESSICCATION ET RETRAIT THERMIQUE SONT CHOISIS DE TELLE
+#   SORTE QUE LES 2 EFFETS S'ANNULENT
 #-----------------------------------------------------------------------
 #   LE MAILLAGE COMPREND :
 #                1 ELEMENT  2D QUADRILATERE  A 4 NOEUDS
@@ -42,93 +47,50 @@ PRE_GIBI()
 
 MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'), )
 
-MAIL=DEFI_GROUP( reuse=MAIL,        MAILLAGE=MAIL,CREA_GROUP_NO=(
+MAIL=DEFI_GROUP( reuse=MAIL,        
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(
                        _F( GROUP_MA = 'LA'),
                        _F( GROUP_MA = 'LF'),
                        _F( GROUP_MA = 'LAY'),
                        _F( GROUP_MA = 'LDY'))
                    )
 
-MO=AFFE_MODELE(    MAILLAGE=MAIL,
-                            AFFE=_F( TOUT = 'OUI',
-                                  PHENOMENE = 'MECANIQUE',
-                                  MODELISATION = 'C_PLAN')
+MO=AFFE_MODELE( MAILLAGE=MAIL,
+                AFFE=_F( TOUT = 'OUI',
+                      PHENOMENE = 'MECANIQUE',
+                      MODELISATION = 'C_PLAN')
                     )
 
-DESORP=DEFI_FONCTION(      NOM_PARA='SECH',
-                           PROL_DROITE='LINEAIRE',
-                          PROL_GAUCHE='LINEAIRE',
-                                 VALE=(0.,  1.,  1.,  1.,)
+DESORP=DEFI_FONCTION( NOM_PARA='SECH',
+                      VALE=(0.,  1.,  1.,  1.,)
                        )
 
-E=DEFI_FONCTION(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
-                                         PROL_GAUCHE='LINEAIRE',
-                        VALE=(   0.E0,      25000.,
-                                20.E0,      31000.,
-                               800.E0,       8000., )
-                      )
+E = DEFI_CONSTANTE(VALE = 31000)
 
-NU=DEFI_FONCTION(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
-                                         PROL_GAUCHE='LINEAIRE',
-                        VALE=(   0.E0,      0.2,
-                                20.E0,      0.2,
-                               800.E0,      0.1, )
-                      )
+NU = DEFI_CONSTANTE(VALE = 0.2)
 
-ALPHA=DEFI_FONCTION(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
-                                         PROL_GAUCHE='LINEAIRE',
-                        VALE=(   0.E0,      1.E-5,
-                               800.E0,      1.E-5, )
-                     )
+ALPHA = DEFI_CONSTANTE(VALE = 1.E-5)
 
-FC=DEFI_FONCTION(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
-                                         PROL_GAUCHE='LINEAIRE',
-                        VALE=(   0.E0,      40.,
-                               400.E0,      40.,
-                               800.E0,      15., )
-                      )
+FC = DEFI_CONSTANTE(VALE = 40.)
 
-FT=DEFI_FONCTION(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
-                                         PROL_GAUCHE='LINEAIRE',
-                        VALE=(   0.E0,      4.,
-                               400.E0,      4.,
-                               800.E0,      1.5, )
-                      )
+FT = DEFI_CONSTANTE(VALE = 4.)
 
-BETA=DEFI_FONCTION(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
-                                         PROL_GAUCHE='LINEAIRE',
-                        VALE=(   0.E0,      1.16,
-                               800.E0,      1.16, )
-                      )
+BETA = DEFI_CONSTANTE(VALE = 1.16)
 
-GC=DEFI_FONCTION(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
-                                        PROL_GAUCHE='LINEAIRE',
-                        VALE=(   0.E0,      10.,
-                               800.E0,      10., )
-                      )
-
-GT=DEFI_FONCTION(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
-                                         PROL_GAUCHE='LINEAIRE',
-                        VALE=(   0.E0,      10000.,
-                               800.E0,      10000., )
-                      )
+GC = DEFI_CONSTANTE(VALE = 10.)
 
 # VALEUR NON PHYSIQUE DE GT POUR MODELISER UN ECROUISSAGE QUASI NUL
 # VALEUR USUELLE : GT = 0.1
+GT = DEFI_CONSTANTE(VALE = 10000.)
 
-ECRO=DEFI_FONCTION(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
-                                         PROL_GAUCHE='LINEAIRE',
-                        VALE=(   0.E0,      0.01,
-                               400.E0,      0.01,
-                               800.E0,      0.01, )
-                      )
+ECRO = DEFI_CONSTANTE(VALE = 0.01)
 
 BETON=DEFI_MATERIAU(            ELAS_FO=_F( E = E,
                                             NU = NU,    
                                             K_DESSIC = 2.E-4,
-                                            B_ENDOGE = 0.0,
                                             ALPHA = ALPHA,
-                                            TEMP_DEF_ALPHA=20.0,
+                                            TEMP_DEF_ALPHA=0.0,
                                             FONC_DESORP = DESORP,),
                                  GRANGER_FP=_F( J1 = 0.2,
                                             TAUX_1 = 4320000.,
@@ -156,91 +118,90 @@ BETON=DEFI_MATERIAU(            ELAS_FO=_F( E = E,
 SECH1=CREA_CHAMP(   OPERATION='AFFE',
                        TYPE_CHAM='NOEU_TEMP_R',
                         MAILLAGE=MAIL,
-                            AFFE=_F(  TOUT = 'OUI', 
+                            AFFE=_F(  TOUT = 'OUI',
                                    NOM_CMP = 'TEMP',
-                                   VALE = 0.)     )
+                                   VALE = 1.)     )
 
 SECH2=CREA_CHAMP(   OPERATION='AFFE',
                        TYPE_CHAM='NOEU_TEMP_R',
                         MAILLAGE=MAIL,
-                            AFFE=_F(  TOUT = 'OUI', 
+                            AFFE=_F(  TOUT = 'OUI',
                                    NOM_CMP = 'TEMP',
-                                   VALE = 1.)     )
+                                   VALE = 0.)     )
 
 TEMP1=CREA_CHAMP(   OPERATION='AFFE',
                        TYPE_CHAM='NOEU_TEMP_R',
                         MAILLAGE=MAIL,
-                            AFFE=_F(  TOUT = 'OUI', 
+                            AFFE=_F(  TOUT = 'OUI',
                                    NOM_CMP = 'TEMP',
                                    VALE = 0.)     )
 
 TEMP2=CREA_CHAMP(   OPERATION='AFFE',
                        TYPE_CHAM='NOEU_TEMP_R',
                         MAILLAGE=MAIL,
-                            AFFE=_F(  TOUT = 'OUI', 
+                            AFFE=_F(  TOUT = 'OUI',
                                    NOM_CMP = 'TEMP',
                                    VALE = 20.)     )
 
 CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
-                            AFFE=_F( TOUT = 'OUI',
-                                  MATER = BETON,
-                                  TEMP_REF = 20.,
-                                  SECH_REF = 0.)
+                     AFFE=_F( TOUT = 'OUI',
+                           MATER = BETON,
+                           TEMP_REF = 0.,
+                           SECH_REF = 1.)
                     )
 
-TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
-                      NOM_CHAM='TEMP',AFFE=(
-                       _F(  INST = 0.,         CHAM_GD = TEMP2),
-                               _F(  INST = 100.,       CHAM_GD = TEMP2))
+TEMP=CREA_RESU(  OPERATION='AFFE', 
+                 TYPE_RESU='EVOL_THER',
+                 NOM_CHAM='TEMP',
+                 AFFE=( _F(  INST = 0.,         CHAM_GD = TEMP1),
+                        _F(  INST = 100.,       CHAM_GD = TEMP1))
                     )
 
-SECH=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
-                      NOM_CHAM='TEMP',AFFE=(
-                       _F(  INST = 0.,         CHAM_GD = SECH1),
-                               _F(  INST = 100.,       CHAM_GD = SECH1))
+SECH=CREA_RESU(  OPERATION='AFFE', 
+                 TYPE_RESU='EVOL_THER',
+                 NOM_CHAM='TEMP',
+                 AFFE=(_F(  INST = 0.,         CHAM_GD = SECH1),
+                       _F(  INST = 100.,       CHAM_GD = SECH1))
                     )
-
-COND_LIM=AFFE_CHAR_MECA(    
-                      MODELE=MO,
-               TEMP_CALCULEE=TEMP,
-               SECH_CALCULEE=SECH,DDL_IMPO=(
-                  _F(  GROUP_NO = 'LA',       DX = 0.),
-                  _F(  GROUP_NO = ('A1', 'B1',),  DY = 0.),
-                  _F(  GROUP_NO = ('F1', 'E1',),  DY = 0.)),LIAISON_DDL=(
-               _F(  GROUP_NO = ( 'C1',  'D1', ),
-                             DDL = ( 'DX', 'DX', ),
-                             COEF_MULT = (  1., -1., ),
-                             COEF_IMPO = 0.),
-               _F(  GROUP_NO = ( 'C2',  'D2', ),
-                             DDL = ( 'DX', 'DX', ),
-                             COEF_MULT = (  1., -1., ),
-                             COEF_IMPO = 0.)),
-              LIAISON_UNIF=_F(  GROUP_MA = 'LD',
-                             DDL = 'DX')
+                    
+COND_LIM=AFFE_CHAR_MECA( MODELE=MO,
+                         TEMP_CALCULEE=TEMP,
+                         SECH_CALCULEE=SECH,
+                         DDL_IMPO=(_F(  GROUP_NO = 'LA',       DX = 0.),
+                                   _F(  GROUP_NO = ('A1', 'B1',),  DY = 0.),
+                                   _F(  GROUP_NO = ('F1', 'E1',),  DY = 0.)),
+                         LIAISON_DDL=(_F(  GROUP_NO = ( 'C1',  'D1', ),
+                                           DDL = ( 'DX', 'DX', ),
+                                           COEF_MULT = (  1., -1., ),
+                                           COEF_IMPO = 0.),
+                                      _F(  GROUP_NO = ( 'C2',  'D2', ),
+                                           DDL = ( 'DX', 'DX', ),
+                                           COEF_MULT = (  1., -1., ),
+                                           COEF_IMPO = 0.)),
+                         LIAISON_UNIF=_F(  GROUP_MA = 'LD',
+                                          DDL = 'DX')
                    )
 
-TRAC=AFFE_CHAR_MECA(    
-                      MODELE=MO,
-                    DDL_IMPO=_F(  GROUP_NO = 'LF',  DX = 0.006)
+TRAC=AFFE_CHAR_MECA( MODELE=MO,
+                     DDL_IMPO=_F(  GROUP_NO = 'LF',  DX = 0.006)
                             )
 
-LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
-                              
+LINST=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=(
                            _F(  JUSQU_A = 10.,        NOMBRE = 4),
                            _F(  JUSQU_A = 13.0242,    NOMBRE = 3),
                            _F(  JUSQU_A = 100.,       NOMBRE = 3))
                          )
 
-COEF_TR=DEFI_FONCTION(  
-                              NOM_PARA='INST', 
-                                  VALE=(        0.,     0.,
-                                              100.,     1.,
-                                              200.,     1.,  )
+COEF_TR=DEFI_FONCTION( NOM_PARA='INST',
+                       VALE=(        0.,     0.,
+                                   100.,     1., )
                         )
 
-################################################
-###    COUPLAGE   GRANGER_FP  NADAI_B        ###
-################################################
+#########################################################
+###    COUPLAGE GRANGER_FP NADAI_B            ###
+#     THERMIQUE ET SECHAGE CST - SOLUTION ANALYTIQUE  ###
+#########################################################
 
 COUPLA=STAT_NON_LINE( 
                    TITRE='COUPLAGE FLUAGE/FISSURATION',
@@ -267,19 +228,10 @@ COUPLA=STAT_NON_LINE(
 
 COUPLA=CALC_ELEM(    reuse=COUPLA,          
                                   OPTION=( 'SIEF_ELNO_ELGA',
-                                           'VARI_ELNO_ELGA',
-                                           'EPGR_ELNO',      ),
+                                           'EPGR_ELNO',    ),
                                  RESULTAT=COUPLA  )
 
 RELEVE_1=POST_RELEVE_T(ACTION=( 
-                   _F(  RESULTAT = COUPLA,
-                            INTITULE = 'DEPL',
-                            NOM_CHAM = 'DEPL',
-                            NOM_CMP = 'DX',
-                            LIST_INST = LINST,
-                            PRECISION = 1.E-8,
-                            GROUP_NO = 'C1',
-                            OPERATION = 'EXTRACTION'), 
                    _F(  RESULTAT = COUPLA,
                             INTITULE = 'SIEF',
                             NOM_CHAM = 'SIEF_ELNO_ELGA',
@@ -297,21 +249,6 @@ RELEVE_1=POST_RELEVE_T(ACTION=(
                             GROUP_NO = 'C1',
                             OPERATION = 'EXTRACTION')) 
                        )
-
-IMPR_TABLE(  TABLE=RELEVE_1,
-              NOM_PARA='DX', 
-              FILTRE=_F(  NOM_PARA = 'INTITULE', VALE_K = 'DEPL')
-           )
-
-IMPR_TABLE(  TABLE=RELEVE_1,
-              NOM_PARA='SIXX', 
-              FILTRE=_F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF')
-           )
-
-IMPR_TABLE(  TABLE=RELEVE_1,
-              NOM_PARA='EPXX', 
-              FILTRE=_F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF')
-           )
 
 TEST_TABLE(  TABLE=RELEVE_1,
                 NOM_PARA='SIXX',FILTRE=( 
@@ -351,14 +288,6 @@ TEST_TABLE(  TABLE=RELEVE_1,
 
 RELEVE_2=POST_RELEVE_T(ACTION=( 
                    _F(  RESULTAT = COUPLA,
-                            INTITULE = 'DEPL',
-                            NOM_CHAM = 'DEPL',
-                            NOM_CMP = 'DX',
-                            LIST_INST = LINST,
-                            PRECISION = 1.E-8,
-                            GROUP_NO = 'F1',
-                            OPERATION = 'EXTRACTION'), 
-                   _F(  RESULTAT = COUPLA,
                             INTITULE = 'SIEF',
                             NOM_CHAM = 'SIEF_ELNO_ELGA',
                             NOM_CMP = 'SIXX',
@@ -366,7 +295,7 @@ RELEVE_2=POST_RELEVE_T(ACTION=(
                             PRECISION = 1.E-8,
                             GROUP_NO = 'F1',
                             OPERATION = 'EXTRACTION'), 
-                   _F(  RESULTAT = COUPLA,
+                  _F(  RESULTAT = COUPLA,
                             INTITULE = 'EPSF',
                             NOM_CHAM = 'EPGR_ELNO',
                             TOUT_CMP = 'OUI',
@@ -376,20 +305,6 @@ RELEVE_2=POST_RELEVE_T(ACTION=(
                             OPERATION = 'EXTRACTION')) 
                        )
 
-IMPR_TABLE(  TABLE=RELEVE_2,
-              NOM_PARA='DX', 
-              FILTRE=_F(  NOM_PARA = 'INTITULE', VALE_K = 'DEPL')
-           )
-
-IMPR_TABLE(  TABLE=RELEVE_2,
-              NOM_PARA='SIXX', 
-              FILTRE=_F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF')
-           )
-
-IMPR_TABLE(  TABLE=RELEVE_2,
-              NOM_PARA='EPXX', 
-              FILTRE=_F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF')
-           )
 
 TEST_TABLE(  TABLE=RELEVE_2,
                 NOM_PARA='SIXX',FILTRE=( 
@@ -427,14 +342,133 @@ TEST_TABLE(  TABLE=RELEVE_2,
                REFERENCE='ANALYTIQUE'
            )
 
-##################################################
-###    COUPLAGE   GRANGER_FP  VMIS_ISOT_LINE   ###
-##################################################
+#####################################################################
+#   TEST DE TOUS LES COUPLAGES AVEC THERMIQUE ET SECHAGE VARIABLES
+#####################################################################
 
-COUPLA2=STAT_NON_LINE( 
+TEMPV=CREA_RESU(  OPERATION='AFFE', 
+                 TYPE_RESU='EVOL_THER',
+                 NOM_CHAM='TEMP',
+                 AFFE=( _F(  INST = 0.,         CHAM_GD = TEMP1),
+                        _F(  INST = 100.,       CHAM_GD = TEMP2))
+                    )
+
+SECHV=CREA_RESU(  OPERATION='AFFE', 
+                 TYPE_RESU='EVOL_THER',
+                 NOM_CHAM='TEMP',
+                 AFFE=(_F(  INST = 0.,         CHAM_GD = SECH1),
+                       _F(  INST = 100.,       CHAM_GD = SECH2))
+                    )
+
+COND_LI2=AFFE_CHAR_MECA( MODELE=MO,
+                         TEMP_CALCULEE=TEMPV,
+                         SECH_CALCULEE=SECHV,
+                         DDL_IMPO=(_F(  GROUP_NO = 'LA',       DX = 0.),
+                                   _F(  GROUP_NO = ('A1', 'B1',),  DY = 0.),
+                                   _F(  GROUP_NO = ('F1', 'E1',),  DY = 0.)),
+                         LIAISON_DDL=(_F(  GROUP_NO = ( 'C1',  'D1', ),
+                                           DDL = ( 'DX', 'DX', ),
+                                           COEF_MULT = (  1., -1., ),
+                                           COEF_IMPO = 0.),
+                                      _F(  GROUP_NO = ( 'C2',  'D2', ),
+                                           DDL = ( 'DX', 'DX', ),
+                                           COEF_MULT = (  1., -1., ),
+                                           COEF_IMPO = 0.)),
+                         LIAISON_UNIF=_F(  GROUP_MA = 'LD',
+                                          DDL = 'DX')
+                   )
+
+COUPLA2=STAT_NON_LINE( TITRE='COUPLAGE FLUAGE/FISSURATION',
+                       MODELE=MO,
+                       EXCIT=(_F(  CHARGE = COND_LI2),
+                              _F(  CHARGE = TRAC,
+                                   FONC_MULT = COEF_TR)),
+                       INCREMENT=_F(  LIST_INST = LINST),
+                       CHAM_MATER=CM,
+                       COMP_INCR=_F( RELATION = 'KIT_DDI',
+                                     RELATION_KIT = ('GRANGER_FP', 'NADAI_B',),
+                                     DEFORMATION = 'PETIT',
+                                     TOUT = 'OUI'),
+                       NEWTON=_F(  MATRICE = 'ELASTIQUE'),
+                       CONVERGENCE=_F(  ITER_GLOB_MAXI = 50,
+                                        ITER_INTE_MAXI = 20,
+                                        ITER_INTE_PAS = 0,
+                                        RESI_GLOB_RELA = 1.E-6,
+                                        RESI_INTE_RELA = 1.E-6)
+                            )
+
+COUPLA2=CALC_ELEM(    reuse=COUPLA2,          
+                                  OPTION=( 'SIEF_ELNO_ELGA',
+                                           'EPGR_ELNO',    ),
+                                 RESULTAT=COUPLA2  )
+
+RELEVE_3=POST_RELEVE_T(ACTION=( 
+                   _F(  RESULTAT = COUPLA2,
+                            INTITULE = 'SIEF',
+                            NOM_CHAM = 'SIEF_ELNO_ELGA',
+                            NOM_CMP = 'SIXX',
+                            LIST_INST = LINST,
+                            PRECISION = 1.E-8,
+                            GROUP_NO = 'F1',
+                            OPERATION = 'EXTRACTION'), 
+                  _F(  RESULTAT = COUPLA2,
+                            INTITULE = 'EPSF',
+                            NOM_CHAM = 'EPGR_ELNO',
+                            TOUT_CMP = 'OUI',
+                            LIST_INST = LINST,
+                            PRECISION = 1.E-8,
+                            GROUP_NO = 'F1',
+                            OPERATION = 'EXTRACTION')) 
+                       )
+
+TEST_TABLE(  TABLE=RELEVE_3,
+                NOM_PARA='SIXX',FILTRE=( 
+                  _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
+                  _F(  NOM_PARA = 'INST',     VALE = 10.)),
+                    VALE=3.077192E+00,
+               PRECISION=1.E-4,
+               REFERENCE='NON_REGRESSION',
+               VERSION = '7.3.9',
+           )
+
+TEST_TABLE(  TABLE=RELEVE_3,
+              NOM_PARA='EPXX',FILTRE=( 
+              _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
+                  _F(  NOM_PARA = 'INST',     VALE = 10.)),
+                    VALE=7.357178E-07,
+               PRECISION=1.E-4,
+               REFERENCE='NON_REGRESSION',
+               VERSION = '7.3.9',
+           )
+
+TEST_TABLE(  TABLE=RELEVE_3,
+                NOM_PARA='SIXX',FILTRE=( 
+                  _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
+                  _F(  NOM_PARA = 'INST',     VALE = 100.)),
+                    VALE=3.999942E+00,
+               PRECISION=1.E-4,
+               REFERENCE='NON_REGRESSION',
+               VERSION = '7.3.9',
+           )
+
+TEST_TABLE(  TABLE=RELEVE_3,
+              NOM_PARA='EPXX',FILTRE=( 
+              _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
+                  _F(  NOM_PARA = 'INST',     VALE = 100.)),
+                    VALE=2.140718E-05,
+               PRECISION=1.E-4,
+               REFERENCE='NON_REGRESSION',
+               VERSION = '7.3.9',
+           )
+
+################################################
+###    COUPLAGE   GRANGER_FP  VMIS_ISOT_LINE      ###
+################################################
+
+COUPLA3=STAT_NON_LINE( 
                    TITRE='COUPLAGE FLUAGE/FISSURATION',
                   MODELE=MO,EXCIT=(
-                   _F(  CHARGE = COND_LIM),
+                   _F(  CHARGE = COND_LI2),
                    _F(  CHARGE = TRAC,
                            FONC_MULT = COEF_TR)),
                INCREMENT=_F(  LIST_INST = LINST),
@@ -452,131 +486,13 @@ COUPLA2=STAT_NON_LINE(
                            RESI_INTE_RELA = 1.E-6)
                             )
 
-COUPLA2=CALC_ELEM(    reuse=COUPLA2,          
-                                  OPTION=( 'SIEF_ELNO_ELGA',
-                                           'VARI_ELNO_ELGA',
-                                           'EPGR_ELNO',      ),
-                                 RESULTAT=COUPLA2  )
-
-RELEVE_3=POST_RELEVE_T(ACTION=( 
-                   _F(  RESULTAT = COUPLA2,
-                            INTITULE = 'DEPL',
-                            NOM_CHAM = 'DEPL',
-                            NOM_CMP = 'DX',
-                            LIST_INST = LINST,
-                            PRECISION = 1.E-8,
-                            GROUP_NO = 'F1',
-                            OPERATION = 'EXTRACTION'), 
-                   _F(  RESULTAT = COUPLA2,
-                            INTITULE = 'SIEF',
-                            NOM_CHAM = 'SIEF_ELNO_ELGA',
-                            NOM_CMP = 'SIXX',
-                            LIST_INST = LINST,
-                            PRECISION = 1.E-8,
-                            GROUP_NO = 'F1',
-                            OPERATION = 'EXTRACTION'), 
-                   _F(  RESULTAT = COUPLA2,
-                            INTITULE = 'EPSF',
-                            NOM_CHAM = 'EPGR_ELNO',
-                            TOUT_CMP = 'OUI',
-                            LIST_INST = LINST,
-                            PRECISION = 1.E-8,
-                            GROUP_NO = 'F1',
-                            OPERATION = 'EXTRACTION')) 
-                       )
-
-IMPR_TABLE(  TABLE=RELEVE_3,
-              NOM_PARA='DX', 
-              FILTRE=_F(  NOM_PARA = 'INTITULE', VALE_K = 'DEPL')
-           )
-
-IMPR_TABLE(  TABLE=RELEVE_3,
-              NOM_PARA='SIXX', 
-              FILTRE=_F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF')
-           )
-
-IMPR_TABLE(  TABLE=RELEVE_3,
-              NOM_PARA='EPXX', 
-              FILTRE=_F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF')
-           )
-
-TEST_TABLE(  TABLE=RELEVE_3,
-                NOM_PARA='SIXX',FILTRE=( 
-                  _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 10.)),
-                    VALE=3.07786E+00,
-               PRECISION=1.E-4,
-               REFERENCE='ANALYTIQUE'
-           )
-
-TEST_TABLE(  TABLE=RELEVE_3,
-              NOM_PARA='EPXX',FILTRE=( 
-              _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 10.)),
-                    VALE=7.14171E-07,
-               PRECISION=3.E-4,
-               REFERENCE='ANALYTIQUE'
-           )
-
-TEST_TABLE(  TABLE=RELEVE_3,
-                NOM_PARA='SIXX',FILTRE=( 
-                  _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=4.00000E+00,
-               PRECISION=1.E-4,
-               REFERENCE='ANALYTIQUE'
-           )
-
-TEST_TABLE(  TABLE=RELEVE_3,
-              NOM_PARA='EPXX',FILTRE=( 
-              _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=1.73162E-05,
-               PRECISION=2.E-4,
-               REFERENCE='ANALYTIQUE'
-           )
-
-################################################
-###    COUPLAGE   GRANGER_FP  CHABOCHE      ###
-################################################
-
-COUPLA3=STAT_NON_LINE( 
-                   TITRE='COUPLAGE FLUAGE/FISSURATION',
-                  MODELE=MO,EXCIT=(
-                   _F(  CHARGE = COND_LIM),
-                   _F(  CHARGE = TRAC,
-                           FONC_MULT = COEF_TR)),
-               INCREMENT=_F(  LIST_INST = LINST),
-              CHAM_MATER=CM,
-               COMP_INCR=_F(  RELATION = 'KIT_DDI',
-                           RELATION_KIT = ('GRANGER_FP', 
-                                             'CHABOCHE',),
-                           DEFORMATION = 'PETIT',
-                           TOUT = 'OUI'),
-                  NEWTON=_F(  MATRICE = 'ELASTIQUE'),
-             CONVERGENCE=_F(  ITER_GLOB_MAXI = 50,
-                           ITER_INTE_MAXI = 20,
-                           ITER_INTE_PAS = 0,
-                           RESI_GLOB_RELA = 1.E-6,
-                           RESI_INTE_RELA = 1.E-6)
-                            )
-
 COUPLA3=CALC_ELEM(    reuse=COUPLA3,          
                                   OPTION=( 'SIEF_ELNO_ELGA',
-                                           'VARI_ELNO_ELGA',
-                                           'EPGR_ELNO',      ),
+                                           'EPGR_ELNO',   ),
                                  RESULTAT=COUPLA3  )
 
 RELEVE_4=POST_RELEVE_T(ACTION=( 
                    _F(  RESULTAT = COUPLA3,
-                            INTITULE = 'DEPL',
-                            NOM_CHAM = 'DEPL',
-                            NOM_CMP = 'DX',
-                            LIST_INST = LINST,
-                            PRECISION = 1.E-8,
-                            GROUP_NO = 'F1',
-                            OPERATION = 'EXTRACTION'), 
-                   _F(  RESULTAT = COUPLA3,
                             INTITULE = 'SIEF',
                             NOM_CHAM = 'SIEF_ELNO_ELGA',
                             NOM_CMP = 'SIXX',
@@ -584,7 +500,7 @@ RELEVE_4=POST_RELEVE_T(ACTION=(
                             PRECISION = 1.E-8,
                             GROUP_NO = 'F1',
                             OPERATION = 'EXTRACTION'), 
-                   _F(  RESULTAT = COUPLA3,
+                 _F(  RESULTAT = COUPLA3,
                             INTITULE = 'EPSF',
                             NOM_CHAM = 'EPGR_ELNO',
                             TOUT_CMP = 'OUI',
@@ -594,56 +510,137 @@ RELEVE_4=POST_RELEVE_T(ACTION=(
                             OPERATION = 'EXTRACTION')) 
                        )
 
-IMPR_TABLE(  TABLE=RELEVE_4,
-              NOM_PARA='DX', 
-              FILTRE=_F(  NOM_PARA = 'INTITULE', VALE_K = 'DEPL')
-           )
-
-IMPR_TABLE(  TABLE=RELEVE_4,
-              NOM_PARA='SIXX', 
-              FILTRE=_F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF')
-           )
-
-IMPR_TABLE(  TABLE=RELEVE_4,
-              NOM_PARA='EPXX', 
-              FILTRE=_F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF')
-           )
-
 TEST_TABLE(  TABLE=RELEVE_4,
-                NOM_PARA='SIXX',FILTRE=( 
+                NOM_PARA='SIXX',FILTRE=(
                   _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
                   _F(  NOM_PARA = 'INST',     VALE = 10.)),
-                    VALE=3.07786E+00,
+                    VALE=3.077193E+00,
                PRECISION=1.E-4,
-               REFERENCE='ANALYTIQUE'
+               REFERENCE='NON_REGRESSION',
+               VERSION = '7.3.9',
            )
 
 TEST_TABLE(  TABLE=RELEVE_4,
-              NOM_PARA='EPXX',FILTRE=( 
+              NOM_PARA='EPXX',FILTRE=(
               _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
                   _F(  NOM_PARA = 'INST',     VALE = 10.)),
-                    VALE=7.14171E-07,
-               PRECISION=3.E-4,
-               REFERENCE='ANALYTIQUE'
+                    VALE=7.357178E-07,
+               PRECISION=1.E-4,
+               REFERENCE='NON_REGRESSION',
+               VERSION = '7.3.9',
            )
 
 TEST_TABLE(  TABLE=RELEVE_4,
-                NOM_PARA='SIXX',FILTRE=( 
+                NOM_PARA='SIXX',FILTRE=(
                   _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
                   _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=4.00000E+00,
+                    VALE=4.000009E+00,
                PRECISION=1.E-4,
-               REFERENCE='ANALYTIQUE'
+               REFERENCE='NON_REGRESSION',
+               VERSION = '7.3.9',
            )
 
 TEST_TABLE(  TABLE=RELEVE_4,
-              NOM_PARA='EPXX',FILTRE=( 
+              NOM_PARA='EPXX',FILTRE=(
               _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
                   _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=1.73162E-05,
-               PRECISION=2.E-4,
-               REFERENCE='ANALYTIQUE'
+                    VALE=2.140745E-05,
+               PRECISION=1.E-4,
+               REFERENCE='NON_REGRESSION',
+               VERSION = '7.3.9',
            )
+################################################
+###    COUPLAGE    GRANGER_FP     CHABOCHE   ###
+################################################
+
+COUPLA4=STAT_NON_LINE(
+                 TITRE='COUPLAGE FLUAGE/FISSURATION',
+                 MODELE=MO,
+                 EXCIT=(
+                        _F(  CHARGE = COND_LI2),
+                        _F(  CHARGE = TRAC,
+                             FONC_MULT = COEF_TR)),
+                 INCREMENT=_F(  LIST_INST = LINST),
+                 CHAM_MATER=CM,
+                 COMP_INCR=_F(  RELATION = 'KIT_DDI',
+                                RELATION_KIT = ('GRANGER_FP',
+                                                'CHABOCHE',),
+                                DEFORMATION = 'PETIT',
+                                TOUT = 'OUI'),
+                 NEWTON=_F(     MATRICE = 'ELASTIQUE',
+                                ),
+                 CONVERGENCE=_F(ITER_GLOB_MAXI = 50,
+                                ITER_INTE_MAXI = 20,
+                                ITER_INTE_PAS = 0,
+                                RESI_GLOB_RELA = 1.E-6,
+                                RESI_INTE_RELA = 1.E-6),
+                 SOLVEUR=_F(NPREC=9),
+              )
+
+COUPLA4=CALC_ELEM(    reuse=COUPLA4,          
+                                  OPTION=( 'SIEF_ELNO_ELGA',
+                                           'EPGR_ELNO', ),
+                                 RESULTAT=COUPLA4 )
+
+RELEVE_5=POST_RELEVE_T(ACTION=(
+                   _F(  RESULTAT = COUPLA4,
+                            INTITULE = 'SIEF',
+                            NOM_CHAM = 'SIEF_ELNO_ELGA',
+                            NOM_CMP = 'SIXX',
+                            LIST_INST = LINST,
+                            PRECISION = 1.E-8,
+                            GROUP_NO = 'F1',
+                            OPERATION = 'EXTRACTION'),
+                   _F(  RESULTAT = COUPLA4,
+                            INTITULE = 'EPSF',
+                            NOM_CHAM = 'EPGR_ELNO',
+                            TOUT_CMP = 'OUI',
+                            LIST_INST = LINST,
+                            PRECISION = 1.E-8,
+                            GROUP_NO = 'F1',
+                            OPERATION = 'EXTRACTION'),)
+                       )
+
+TEST_TABLE(  TABLE=RELEVE_5,
+                NOM_PARA='SIXX',FILTRE=(
+                  _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
+                  _F(  NOM_PARA = 'INST',     VALE = 10.)),
+                    VALE=3.077193E+00,
+               PRECISION=1.E-4,
+               REFERENCE='NON_REGRESSION',
+               VERSION = '7.3.9',
+           )
+
+TEST_TABLE(  TABLE=RELEVE_5,
+              NOM_PARA='EPXX',FILTRE=(
+              _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
+                  _F(  NOM_PARA = 'INST',     VALE = 10.)),
+                    VALE=7.357178E-07,
+               PRECISION=1.E-4,
+               REFERENCE='NON_REGRESSION',
+               VERSION = '7.3.9',
+           )
+
+TEST_TABLE(  TABLE=RELEVE_5,
+                NOM_PARA='SIXX',FILTRE=(
+                  _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
+                  _F(  NOM_PARA = 'INST',     VALE = 100.)),
+                    VALE=4.000000E+00,
+               PRECISION=1.E-4,
+               REFERENCE='NON_REGRESSION',
+               VERSION = '7.3.9',
+           )
+
+TEST_TABLE(  TABLE=RELEVE_5,
+              NOM_PARA='EPXX',FILTRE=(
+              _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
+                  _F(  NOM_PARA = 'INST',     VALE = 100.)),
+                    VALE=2.140743E-05,
+               PRECISION=1.E-4,
+               REFERENCE='NON_REGRESSION',
+               VERSION = '7.3.9',
+           )
+
 
 FIN()
-#
+

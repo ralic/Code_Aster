@@ -4,9 +4,10 @@
       INTEGER       NFON,JFON
       REAL*8        PFI(3),O(3),VOR(3),DIMIN
 
+
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 05/07/2004   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -107,8 +108,8 @@ C      BOUCLE SUR LES POINTS M DE FONFIS POUR CALCULER L'ANGLE THETA
          CALL PSCAL(3,OA,OH,PS)
          NOH=SQRT(OH(1)*OH(1) + OH(2)*OH(2)  +  OH(3)*OH(3))
          IF (NOH.EQ.0) CALL UTMESS('F','XORIFF','PROBLEME DANS L '//
-     &                           'ORIENTATION DU FOND DE FISSURE '//
-     &                           'CAR PT_ORIGIN SE TROUVE SUR FONFIS')
+     &                           'ORIENTATION DU FOND DE FISSURE :'//
+     &                           ' PT_ORIGIN MAL CHOISI.')
          COS=PS/(NOA*NOH)
          THETA=TRIGOM('ACOS',COS)
 C        SIGNE DE THETA (06/01/2004)

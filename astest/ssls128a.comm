@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE  : VALIDATION DE  CRIT_ELNO_RUPT DE CALC_ELEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,7 +116,7 @@ COMPO=DEFI_COQU_MULT(COUCHE=(_F(EPAIS=0.28,
                              _F(EPAIS=0.28,
                                 MATER=CARBONE,
                                 ORIENTATION=0.0,),),
-                     IMPRESSION=_F(FICHIER='RESULTAT',),);
+                     IMPRESSION=_F(UNITE=8),);
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=_F(TOUT='OUI',
@@ -157,10 +157,6 @@ RESU1=CALC_ELEM(reuse=RESU1,
                NIVE_COUCHE='INF',);
               
 
-
-IMPR_RESU(RESU=_F(RESULTAT=RESU1,
-                  NOM_CHAM=('SIGM_ELNO_DEPL','CRIT_ELNO_RUPT',),
-                  MAILLE='M49',),);
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESU1,
@@ -239,10 +235,6 @@ RESU2=CALC_ELEM(reuse=RESU2,
                NUME_COUCHE=2,
                NIVE_COUCHE='INF',);
               
-
-IMPR_RESU(RESU=_F(RESULTAT=RESU2,
-                  NOM_CHAM=('SIGM_ELNO_DEPL','CRIT_ELNO_RUPT',),
-                  MAILLE='M49',),);
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESU2,

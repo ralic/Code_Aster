@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE ECHANGE_PAROI EN THERMIQUE LINEAIRE TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,16 +140,6 @@ RESUTHLI=THER_LINEAIRE(
                               PARM_THETA=0.57,
                               INCREMENT=_F(  LIST_INST = LINST)
                            )
-
-#
-
-IMPR_RESU(
-               MODELE=MODTHER,
-               RESU=_F(  FORMAT = 'RESULTAT',
-                      RESULTAT = RESUTHLI,
-                      NOM_CHAM = 'TEMP',
-                      GROUP_NO = 'BINF')
-            )
 
 #
 # =====================================================================

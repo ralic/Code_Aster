@@ -1,4 +1,4 @@
-# MODIF  DATE 24/02/2003   AUTEUR NICOLAS O.NICOLAS 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE SOUS-STRUCT. TRANS. (MNEAL) : SYSTEME 3 MASSES - 4 RESSORTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -317,19 +317,11 @@ TRAN1=REST_BASE_PHYS(   RESU_GENE=TRANGEN1,
                              MODE_MECA=MODGLO )
 
 #
-IMPR_RESU( RESU=_F( FORMAT = 'RESULTAT',
-                  RESULTAT = TRAN1))
-
-#
 TRAN2=REST_BASE_PHYS(   RESU_GENE=TRANGEN2,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN',
                              MODE_MECA=MODGLO )
-
-#
-IMPR_RESU( RESU=_F( FORMAT = 'RESULTAT',
-                  RESULTAT = TRAN2))
 
 #
 TRAN3=REST_BASE_PHYS(   RESU_GENE=TRANGEN3,
@@ -339,22 +331,12 @@ TRAN3=REST_BASE_PHYS(   RESU_GENE=TRANGEN3,
                              MODE_MECA=MODGLO )
 
 #
-IMPR_RESU( RESU=_F( FORMAT = 'RESULTAT',
-                  RESULTAT = TRAN3))
-
-#
 TRAN4=REST_BASE_PHYS(   RESU_GENE=TRANGEN4,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN',
                              MODE_MECA=MODGLO )
 
-#
-IMPR_RESU( RESU=_F( FORMAT = 'RESULTAT',
-                  RESULTAT = TRAN4))
-
-#
-#
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN1,
                   NOM_CHAM = 'DEPL',

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE EN C.P. (TRIA3 QUAD4)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,12 +41,6 @@ M=CREA_MAILLAGE( MAILLAGE=M0,
                  MODI_MAILLE=_F( OPTION = 'QUAD_TRIA3',
                                  GROUP_MA = 'S2', ),
                )
-DEFI_FICHIER ( FICHIER = 'CASTEM', UNITE = 37 ) 
-
-IMPR_RESU ( RESU=_F( MAILLAGE = M , 
-                     FICHIER = 'CASTEM', FORMAT='CASTEM', ) , ) 
-DEFI_FICHIER(ACTION='LIBERER',UNITE=37)
-
 DEFI_GROUP(reuse=M,       MAILLAGE=M,
                   CREA_GROUP_NO=_F( NOM = 'DIRI', GROUP_MA = 'AB'))
 
@@ -412,10 +406,5 @@ TEST_RESU(RESU=(
          GROUP_NO = 'A', MAILLE='M1', NOM_CMP = 'SIXY',VALE = -1.04715E+0),),
            )
 #
-
-IMPR_RESU(RESU=_F(RESULTAT=RESU2,
-                  FORMAT='CASTEM',
-                  MAILLAGE=M,),);
-
 FIN()
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR DURAND C.DURAND 
 # TITRE CUBE ORTHOTROPE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -149,12 +149,19 @@ TEMPE=THER_LINEAIRE(   MODELE=MOTH,
 #
 
 
-TEMPE=CALC_ELEM(reuse=TEMPE,RESULTAT=TEMPE,
-                
+TEMPE=CALC_ELEM(reuse=TEMPE,RESULTAT=TEMPE,           
                 OPTION=('FLUX_ELNO_TEMP','FLUX_ELGA_TEMP'),
                 );
 
-
+MACR_LIGN_COUPE(   RESULTAT    = TEMPE,
+                   MODELE      = MOTH,
+                   LIGN_COUPE  = ( _F( NB_POINTS  = 11,
+                                       COOR_ORIG  = (-0.1,-0.1,-0.1),
+                                       COOR_EXTR  = ( 0.1, 0.1, 0.1),
+                                       TABLE      = CO("TABTE1")  ),
+                                 )
+                     )
+IMPR_TABLE(TABLE=TABTE1)
 TEST_RESU(RESU=(
 #
 # TEMPERATURES ----------------------------
@@ -345,7 +352,29 @@ _F( RESULTAT = TEMPE, MAILLE = 'M129', NUME_ORDRE=0, NOM_CHAM='FLUX_ELGA_TEMP',
              POINT = 8,     NOM_CMP = 'FLUX',  VALE = 45.,    PRECISION = 1.E-2))
 #
              )
-
+#
+# TESTS DE MACR_LIGN_COUPE
+#
+TEST_TABLE( TABLE=TABTE1,
+              FILTRE=_F(  NOM_PARA = 'NOEUD',VALE_K = 'N1'),
+              NOM_PARA='TEMP', CRITERE='RELATIF',PRECISION=1.0E-3,VALE=41.0,
+              REFERENCE='ANALYTIQUE',)
+TEST_TABLE( TABLE=TABTE1,
+              FILTRE=_F(  NOM_PARA = 'NOEUD',VALE_K = 'N3'),
+              NOM_PARA='TEMP', CRITERE='RELATIF',PRECISION=1.0E-3,VALE=33.6,
+              REFERENCE='ANALYTIQUE',)
+TEST_TABLE( TABLE=TABTE1,
+              FILTRE=_F(  NOM_PARA = 'NOEUD',VALE_K = 'N6'),
+              NOM_PARA='TEMP', CRITERE='RELATIF',PRECISION=1.0E-3,VALE=22.5,
+              REFERENCE='ANALYTIQUE',)
+TEST_TABLE( TABLE=TABTE1,
+              FILTRE=_F(  NOM_PARA = 'NOEUD',VALE_K = 'N8'),
+              NOM_PARA='TEMP', CRITERE='RELATIF',PRECISION=1.0E-3,VALE=15.1,
+              REFERENCE='ANALYTIQUE',)
+TEST_TABLE( TABLE=TABTE1,
+              FILTRE=_F(  NOM_PARA = 'NOEUD',VALE_K = 'N11'),
+              NOM_PARA='TEMP', CRITERE='RELATIF',PRECISION=1.0E-3,VALE= 4.0,
+              REFERENCE='ANALYTIQUE',)
 #
 # FIN ------------------------------------------------------------------
 #

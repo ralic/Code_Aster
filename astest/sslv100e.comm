@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE EN D.P. (TRIA3 QUAD4)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,56 +57,17 @@ CH=AFFE_CHAR_MECA(         MODELE=MO,
                              FACE_IMPO=_F(  GROUP_MA = 'FE',  DNOR = 0.),
                               PRES_REP=_F(  GROUP_MA = 'AE',  PRES = 60.))
 
-DEFI_FICHIER(FICHIER='ELGA',UNITE=30)
-DEFI_FICHIER(FICHIER='ELNO',UNITE=31)
-DEFI_FICHIER(FICHIER='NOEU',UNITE=32)
-
-
 RESU=MECA_STATIQUE(         MODELE=MO,    CHAM_MATER=CM,
                           EXCIT=_F(  CHARGE = CH),
                       )   
-
-
-IMPR_RESU(MODELE=MO,
-          RESU=(_F(FORMAT='IDEAS',
-                   RESULTAT=RESU,
-                   NOM_CHAM='SIEF_ELGA_DEPL',
-                   FICHIER='ELGA'),
-                _F(FORMAT='IDEAS',
-                   RESULTAT=RESU,
-                   NOM_CHAM='SIEF_ELGA_DEPL',
-                   NOM_CMP=('SIZZ','SIXY','SIYY','SIXX'),
-                   FICHIER='ELGA')))
 
 
 CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,              
                           
                       OPTION=('EPSI_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
-IMPR_RESU(MODELE=MO,
-          RESU=(_F(FORMAT='IDEAS',
-                   RESULTAT=RESU,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
-                   FICHIER='ELNO'),
-                _F(FORMAT='IDEAS',
-                   RESULTAT=RESU,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
-                   NOM_CMP=('SIZZ','SIXY','SIYY','SIXX'),
-                   FICHIER='ELNO')))
-
 CALC_NO( reuse=RESU,                      RESULTAT=RESU,
                      OPTION=('EPSI_NOEU_DEPL', 'SIGM_NOEU_DEPL',))
-
-IMPR_RESU(MODELE=MO,
-          RESU=(_F(FORMAT='IDEAS',
-                   RESULTAT=RESU,
-                   NOM_CHAM='SIGM_NOEU_DEPL',
-                   FICHIER='NOEU'),
-                _F(FORMAT='IDEAS',
-                   RESULTAT=RESU,
-                   NOM_CHAM='SIGM_NOEU_DEPL',
-                   NOM_CMP=('SIZZ','SIXY','SIYY','SIXX'),
-                   FICHIER='NOEU')))
 
 #--------------------------------------------------------------------
 

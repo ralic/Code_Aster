@@ -1,0 +1,629 @@
+# MODIF  DATE 05/07/2004   AUTEUR GENIAUT S.GENIAUT 
+# TITRE BARREAU FISSURE AVEC X-FEM
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNV173B',
+              NIV_PUB_WEB='INTERNET',),);
+
+PRE_GIBI();
+
+MAILLE=LIRE_MAILLAGE(INFO=1,);
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLE,
+                       );
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),   
+                    );
+
+
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=_F(GROUP_MA=('VOL',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),
+                     );        
+
+LN=FORMULE(REEL="""(REEL:X,REEL:Y,REEL:Z)=Z-12.5 """);
+LT=FORMULE(REEL="""(REEL:X,REEL:Y,REEL:Z)=X-10. """);                       
+
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
+                    DEFI_FISS=_F(
+                                 FONC_LT=LT,
+                                 FONC_LN=LN,               
+                                 ),
+                    GROUP_MA_ENRI='VOL',
+                    ORIE_FOND=_F(PFON_INI= (2.5 ,0. ,12.5 ),
+                                 VECT_ORIE=(0. ,0. ,1. ),
+                                 PT_ORIGIN=(-0.5,0.,1.5 ),),
+                    INFO=3,
+                    );
+
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         FISSURE=FISS,
+                         INFO=2,
+                         );
+
+E=205000.0E6
+nu=0.3
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=nu,
+                            RHO=7800.0,),);
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       MODELE=MODELEK,
+                       AFFE=(_F(GROUP_MA=('VOL',),
+                                MATER=ACIER,
+                                TEMP_REF=0.0,),
+                             ),);
+ZERO=0.0
+DEPX=1.E-6
+DEPY=2.E-6
+DEPZ=3.E-6
+
+CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
+                       DDL_IMPO=(
+                                 _F(NOEUD=('N1','N6','N11','N16',),
+                                    DX=ZERO,
+                                    DY=ZERO,
+                                    DZ=ZERO,
+                                    ),
+                                 _F(NOEUD=('N21','N22','N23','N24',),
+                                    DX=ZERO,
+                                    DY=ZERO,
+                                    DZ=DEPX,),
+                                 ),
+                       INFO=1,);
+
+CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
+                       DDL_IMPO=(
+                                 _F(NOEUD=('N1','N6','N11','N16',),
+                                    DX=ZERO,
+                                    DY=ZERO,
+                                    DZ=ZERO,
+                                    ),
+                                 _F(NOEUD=('N21','N22','N23','N24',),
+                                    DX=DEPX,
+                                    DY=DEPY,
+                                    DZ=DEPZ,),
+                                 ),
+                       INFO=1,);
+          
+CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
+                      LIAISON_XFEM='OUI',);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=1,),);
+
+UTOT1=STAT_NON_LINE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMAT,              
+                   EXCIT=(_F(CHARGE=CH1,), 
+                          _F(CHARGE=CHXFEM,),),                  
+                   COMP_ELAS=_F(RELATION='ELAS',
+                                GROUP_MA='VOL',),
+                   INCREMENT=_F(LIST_INST=L_INST,),
+#                   NEWTON=_F(MATRICE='ELASTIQUE',),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=8,
+                                  RESI_GLOB_MAXI=1e-07,
+#                                  RESI_GLOB_RELA=1e-06,
+                                  ),
+#                   SOLVEUR=_F(METHODE='LDLT',
+#                              RENUM='RCMK',
+#                              STOP_SINGULIER='OUI',),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                   INFO=2,);
+
+UTOT2=STAT_NON_LINE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMAT,              
+                   EXCIT=(_F(CHARGE=CH2,), 
+                          _F(CHARGE=CHXFEM,),),                  
+                   COMP_ELAS=_F(RELATION='ELAS',
+                                GROUP_MA='VOL',),
+                   INCREMENT=_F(LIST_INST=L_INST,),
+#                   NEWTON=_F(MATRICE='ELASTIQUE',),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=8,
+                                  RESI_GLOB_MAXI=1e-07,
+#                                  RESI_GLOB_RELA=1e-06,
+                                  ),
+#                   SOLVEUR=_F(METHODE='LDLT',
+#                              RENUM='RCMK',
+#                              STOP_SINGULIER='OUI',),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                   INFO=1,);
+
+DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                NOEUD=('N1','N2','N3','N4','N5','N21',),
+                                RESULTAT=UTOT1,
+                                NOM_CHAM='DEPL',
+                                NUME_ORDRE=1,
+                                TOUT_CMP='OUI',
+#                                NOM_CMP=('DX','DY','DZ','H1X','H1Y','H1Z',),
+                                OPERATION='EXTRACTION',),);
+
+DEP2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                NOEUD=('N1','N2','N3','N4','N5','N21',),
+                                RESULTAT=UTOT2,
+                                NOM_CHAM='DEPL',
+                                NUME_ORDRE=1,
+                                TOUT_CMP='OUI',
+#                                NOM_CMP=('DX','DY','DZ','H1X','H1Y','H1Z',),
+                                OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=DEP1,
+           FORMAT='AGRAF',
+           FORMAT_R='1PE12.5',
+           FORMAT_C='MODULE_PHASE',
+           IMPR_FONCTION='NON',);
+
+IMPR_TABLE(TABLE=DEP2,
+           FORMAT='AGRAF',
+           FORMAT_R='1PE12.5',
+           FORMAT_C='MODULE_PHASE',
+           IMPR_FONCTION='NON',);
+
+DEPMILX=DEPX/2
+DEPMILY=DEPY/2
+DEPMILZ=DEPZ/2
+
+# test pour la calcul avec la charge CH1
+
+TEST_TABLE(TABLE=DEP1,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);   
+
+TEST_TABLE(TABLE=DEP1,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);  
+
+TEST_TABLE(TABLE=DEP1,
+           NOM_PARA='DY',
+           TYPE_TEST='MIN',
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);   
+
+TEST_TABLE(TABLE=DEP1,
+           NOM_PARA='DY',
+           TYPE_TEST='MAX',
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);  
+           
+TEST_TABLE(TABLE=DEP1,
+           NOM_PARA='DZ',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N1',),
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);  
+           
+TEST_TABLE(TABLE=DEP1,
+           NOM_PARA='DZ',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N2',),
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);           
+           
+TEST_TABLE(TABLE=DEP1,
+           NOM_PARA='DCZ',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N3',),
+           VALE=DEPMILX,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);  
+           
+TEST_TABLE(TABLE=DEP1,
+           NOM_PARA='DCZ',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N4',),
+           VALE=DEPMILX,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);                      
+
+TEST_TABLE(TABLE=DEP1,
+           NOM_PARA='DZ',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N5',),
+           VALE=DEPX,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);  
+           
+TEST_TABLE(TABLE=DEP1,
+           NOM_PARA='DZ',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N21',),
+           VALE=DEPX,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);                                
+
+TEST_TABLE(TABLE=DEP1,
+           NOM_PARA='H1X',
+           TYPE_TEST='MIN',
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);   
+
+TEST_TABLE(TABLE=DEP1,
+           NOM_PARA='H1X',
+           TYPE_TEST='MAX',
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);  
+
+TEST_TABLE(TABLE=DEP1,
+           NOM_PARA='H1Y',
+           TYPE_TEST='MIN',
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);   
+
+TEST_TABLE(TABLE=DEP1,
+           NOM_PARA='H1Y',
+           TYPE_TEST='MAX',
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);  
+            
+           
+TEST_TABLE(TABLE=DEP1,
+           NOM_PARA='H1Z',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N2',),
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);           
+           
+TEST_TABLE(TABLE=DEP1,
+           NOM_PARA='H1Z',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N3',),
+           VALE=DEPMILX,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);  
+           
+TEST_TABLE(TABLE=DEP1,
+           NOM_PARA='H1Z',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N4',),
+           VALE=DEPMILX,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);                      
+
+TEST_TABLE(TABLE=DEP1,
+           NOM_PARA='H1Z',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N5',),
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);           
+
+
+# test pour la calcul avec la charge CH2
+
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N1',),
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);  
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N2',),
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);           
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DCX',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N3',),
+           VALE=DEPMILX,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',); 
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DCX',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N4',),
+           VALE=DEPMILX,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);                     
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N5',),
+           VALE=DEPX,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',); 
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N21',),
+           VALE=DEPX,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',); 
+           
+           
+           
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N1',),
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);  
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N2',),
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);           
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DCY',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N3',),
+           VALE=DEPMILY,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',); 
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DCY',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N4',),
+           VALE=DEPMILY,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);                     
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N5',),
+           VALE=DEPY,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',); 
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N21',),
+           VALE=DEPY,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);            
+           
+           
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DZ',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N1',),
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);  
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DZ',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N2',),
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);           
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DCZ',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N3',),
+           VALE=DEPMILZ,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',); 
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DCZ',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N4',),
+           VALE=DEPMILZ,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);                     
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DZ',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N5',),
+           VALE=DEPZ,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',); 
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='DZ',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N21',),
+           VALE=DEPZ,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',); 
+
+
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='H1X',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N2',),
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);           
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='H1X',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N3',),
+           VALE=DEPMILX,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',); 
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='H1X',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N4',),
+           VALE=DEPMILX,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);                     
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='H1X',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N5',),
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);  
+
+
+
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='H1Y',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N2',),
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);           
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='H1Y',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N3',),
+           VALE=DEPMILY,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',); 
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='H1Y',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N4',),
+           VALE=DEPMILY,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);                     
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='H1Y',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N5',),
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);  
+
+
+
+  
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='H1Z',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N2',),
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);           
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='H1Z',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N3',),
+           VALE=DEPMILZ,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',); 
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='H1Z',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N4',),
+           VALE=DEPMILZ,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);                     
+           
+TEST_TABLE(TABLE=DEP2,
+           NOM_PARA='H1Z',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                      VALE_K='N5',),
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);  
+           
+FIN();

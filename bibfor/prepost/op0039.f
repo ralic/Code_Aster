@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 C TOLE CRP_20
 C     PROCEDURE IMPR_RESU
 C     ------------------------------------------------------------------
@@ -43,9 +43,6 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-C
-      INTEGER    IFIEN1
-      PARAMETER (IFIEN1=31)
 C
       INTEGER NOCC, IOCC, IOC2
       INTEGER IFC, IFI
@@ -112,92 +109,107 @@ C
        ENDIF
   100 CONTINUE
 C
-C     -------------------------------------------
-C     --- TRAITEMENT DE LA COMMANDE IMPR_RESU ---
-C     -------------------------------------------
+C     -----------------
+C     --- LE MODELE ---
+C     -----------------
       LMOD   = .FALSE.
       MODELE = ' '
-      CALL GETVID ( ' ', 'MODELE'  ,0,1,1, MODELE, N )
+      CALL GETVID ( ' ', 'MODELE'  ,1,1,1, MODELE, N )
       IF ( N .NE. 0 ) LMOD= .TRUE.
 C
-      NUMEMO = 0
-      VERSIO = 5
-      NOMJV  = '&&OP0039.NOM_MODELE'
+C     ---------------------------------------------
+C     --- FORMAT, FICHIER ET UNITE D'IMPRESSION ---
+C     ---------------------------------------------
+C
+C     --- FORMAT ---
+      CALL GETVTX ( ' ', 'FORMAT'  ,1,1,1, FORM , N )
+C
+C     --- VERSION D'ECRITURE  ----
+      NIVE = 0
+      VERSIO = 0
       LCASTS = .FALSE.
-      DO 200 IOCC = 1,NOCC
-C
-C        --- FORMAT ---
-         CALL GETVTX ( 'RESU', 'FORMAT'  ,IOCC,1,1, FORM , N )
-C
-         IF ( FORM .NE. 'CASTEM' ) GOTO 200
-C
-C        --- FICHIER ---
-         IFI = 0
-         FICH = ' '
-         CALL GETVIS ( 'RESU', 'UNITE'  , IOCC,1,1, IFI , N11 )
-         CALL GETVTX ( 'RESU', 'FICHIER', IOCC,1,1, FICH, N12 )
-         IF ( N12 .NE. 0 ) THEN
-            CALL UTMESS('A','IMPR_RESU',
-     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
-     +               ' UTILISER LE MOT CLE "UNITE"')
-            IFI = IUNIFI( FICH )
-         ENDIF
-         IF ( IFI .EQ. 0 )   IFI = IUNIFI( FORM )
-         IF ( .NOT. ULEXIS( IFI ) ) THEN
-            FICH = FORM
-            IFI = 37
-            CALL ULOPEN ( IFI, ' ', FICH, 'NEW', 'O' )
-         ENDIF
-C
-         CALL GETVIS ( 'RESU', 'NIVE_GIBI', IOCC,1,1, NIVE, N )
+      LGMSH = .FALSE.
+      IF ( FORM .EQ. 'CASTEM' ) THEN
          LCASTS = .TRUE.
-C
-         IF ( NUMEMO .EQ. 0 ) THEN
-            IF ( LMOD ) THEN
-               NBMODL = 1
-               CALL WKVECT ( NOMJV, 'V V K24', 10, JMODL )
-               CALL JEECRA ( NOMJV , 'LONUTI' , NBMODL , ' ' )
-               CALL JEVEUO ( NOMJV, 'E', JMODL )
-               ZK24(JMODL) = MODELE//'.MODELE         '
-            ENDIF
-            DO 202 IOC2 = 1 , NOCC
-               CALL GETVID ( 'RESU', 'RESULTAT', IOC2,1,1, RESU, NR )
-               IF ( NR .NE. 0 ) CALL RSCRMO ( IOC2, RESU , NOMJV )
- 202        CONTINUE
-            NUMEMO = NUMEMO + 1
+         CALL GETVIS ( ' ', 'NIVE_GIBI', 1,1,1, NIVE, N )
+
+      ELSEIF ( FORM(1:5) .EQ. 'IDEAS' ) THEN
+         VERSIO = 5
+         CALL GETVIS ( ' ', 'VERSION', 1,1,1, VERSIO, N )
+
+      ELSEIF ( FORM(1:4) .EQ. 'GMSH' ) THEN
+         VERSIO = 1
+         VERSI2 = 1.0D0
+         EPS    = 1.0D-6
+         CALL GETVR8 ( ' ', 'VERSION', 1,1,1, VERSI2, N )
+         IF (VERSI2.GT.1.0D0-EPS.AND.VERSI2.LT.1.0D0+EPS) THEN
+            VERSIO = 1
+         ELSEIF (VERSI2.GT.1.2D0-EPS.AND.VERSI2.LT.1.2D0+EPS) THEN
+            VERSIO = 2
          ENDIF
+      ENDIF
 C
-C        --- MAILLAGE ---
-         CALL GETVID ( 'RESU', 'MAILLAGE', IOCC,1,1, NOMA, NM )
+C     --- FICHIER ---
+      IFI = 0
+      FICH = FORM
+      CALL GETVIS ( ' ', 'UNITE', 1,1,1, IFI , N11 )
+      IFC = IFI
+      IF ( .NOT. ULEXIS( IFI ) ) THEN
+         CALL ULOPEN ( IFI, ' ', FICH, 'NEW', 'O' )
+      ENDIF
 C
-C        ---  IMPRESSION DU MAILLAGE -----
-         IF ( NM .NE. 0 ) THEN
-            IF ( LMOD  ) THEN
-               CALL DISMOI('I','NOM_MAILLA',MODELE,'MODELE',IBID,NOMAB,
-     >               IRET)
-               IF (NOMA.NE.NOMAB) THEN
-                 CALL UTMESS('F',NOMCMD,'LE MODELE ET LE MAILLAGE'
-     >               //' INTRODUITS NE SONT PAS COHERENTS')
+      NUMEMO = 0
+      NOMJV  = '&&OP0039.NOM_MODELE'
+      IF ( FORM .EQ. 'CASTEM' ) THEN
+         DO 200 IOCC = 1,NOCC
+            IF ( NUMEMO .EQ. 0 ) THEN
+               IF ( LMOD ) THEN
+                  NBMODL = 1
+                  CALL WKVECT ( NOMJV, 'V V K24', 10, JMODL )
+                  CALL JEECRA ( NOMJV , 'LONUTI' , NBMODL , ' ' )
+                  CALL JEVEUO ( NOMJV, 'E', JMODL )
+                  ZK24(JMODL) = MODELE//'.MODELE         '
                ENDIF
-            ENDIF
-            IF (FORM(1:4).NE.'GMSH'.OR.NR.EQ.0) THEN
-               CALL IRMAIL ( FORM,IFI,VERSIO,NOMA,LMOD,MODELE,NIVE,
-     >                        INFMAI )
+               DO 202 IOC2 = 1 , NOCC
+                 CALL GETVID ( 'RESU', 'RESULTAT', IOC2,1,1, RESU, NR )
+                 IF ( NR .NE. 0 ) CALL RSCRMO ( IOC2, RESU , NOMJV )
+ 202           CONTINUE
                NUMEMO = NUMEMO + 1
             ENDIF
-         ENDIF
- 200  CONTINUE
-      IF ( LCASTS ) THEN
+C
+C           --- MAILLAGE ---
+            CALL GETVID ( 'RESU', 'MAILLAGE', IOCC,1,1, NOMA, NM )
+C
+C           ---  IMPRESSION DU MAILLAGE -----
+            IF ( NM .NE. 0 ) THEN
+               IF ( LMOD  ) THEN
+                  CALL DISMOI('I','NOM_MAILLA',MODELE,'MODELE',IBID,
+     >                                                 NOMAB,IRET)
+                  IF (NOMA.NE.NOMAB) THEN
+                    CALL UTMESS('F',NOMCMD,'LE MODELE ET LE MAILLAGE'
+     >                          //' INTRODUITS NE SONT PAS COHERENTS')
+                  ENDIF
+               ENDIF
+               IF (FORM(1:4).NE.'GMSH'.OR.NR.EQ.0) THEN
+                  CALL IRMAIL ( FORM,IFI,VERSIO,NOMA,LMOD,MODELE,NIVE,
+     >                        INFMAI )
+                  NUMEMO = NUMEMO + 1
+               ENDIF
+            ENDIF
+ 200     CONTINUE
+C
          IF ( NUMEMO .LE. 1 ) THEN
             CALL UTMESS('F',NOMCMD,'IL FAUT DONNER LE MAILLAGE POUR '//
      &                            'UNE IMPRESSION AU FORMAT "CASTEM".')
          ENDIF
+C
+         CALL JEEXIN('&&OP0039.LAST',IRET)
+         IF(IRET.EQ.0)  CALL WKVECT('&&OP0039.LAST','V V I',8,JLAST)
+C
       ENDIF
 C
 C     -------------------------------------------
 C
-      LCASTS = .FALSE.
-      LGMSH = .FALSE.
 C     --- BOUCLE SUR LE NOMBRE DE MISES EN FACTEUR ---
       DO 10 IOCC = 1,NOCC
          NBNOS = 0
@@ -212,44 +224,8 @@ C     --- BOUCLE SUR LE NOMBRE DE MISES EN FACTEUR ---
          LCOR = .FALSE.
          CECR = 'L'
 C
-C        --- FORMAT ---
+C        --- FORMAT D'ECRITURE DES REELS ---
          CALL GETVTX('RESU','FORMAT_R',IOCC,1,1,FORMR,N)
-         CALL GETVTX('RESU','FORMAT'  ,IOCC,1,1,FORM ,N)
-         IF(FORM.EQ.'CASTEM') THEN
-           LCASTS=.TRUE.
-           CALL JEEXIN('&&OP0039.LAST',IRET)
-           IF(IRET.EQ.0) THEN
-             CALL WKVECT('&&OP0039.LAST','V V I',8,JLAST)
-           ENDIF
-         ENDIF
-C
-C        --- FICHIER ---
-         IFI = 0
-         FICH = ' '
-         CALL GETVIS ( 'RESU', 'UNITE'  , IOCC,1,1, IFI , N11 )
-         CALL GETVTX ( 'RESU', 'FICHIER', IOCC,1,1, FICH, N12 )
-         IF ( N12 .NE. 0 ) THEN
-            CALL UTMESS('A','IMPR_RESU',
-     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
-     +               ' UTILISER LE MOT CLE "UNITE"')
-            IFI = IUNIFI( FICH )
-         ENDIF
-         IF (FORM(1:7).EQ.'ENSIGHT') THEN
-            IFI = IFIEN1
-            FICH = 'ENSIGHT'
-         ELSE
-            IF ( FICH .EQ. ' ' ) FICH = FORM
-            IF ( IFI .EQ. 0 )  IFI = IUNIFI( FICH )
-         ENDIF
-         IF ( FORM .EQ. 'CASTEM' ) THEN 
-            IF ( IFI .EQ. 0 )  IFI = 37
-         ELSEIF ( FORM .EQ. 'IDEAS' ) THEN  
-            IF ( IFI .EQ. 0 )  IFI = 30
-         ENDIF
-         IFC = IFI
-         IF ( .NOT. ULEXIS( IFI ) ) THEN
-            CALL ULOPEN ( IFI, ' ', FICH, 'NEW', 'O' )
-         ENDIF
 C
 C        --- MODE D'ECRITURE DES PARAMETRES------
 C            (RMQUE: UNIQUEMENT INTERESSANT POUR FORMAT 'RESULTAT')
@@ -261,23 +237,6 @@ C            (RMQUE: UNIQUEMENT INTERESSANT POUR FORMAT 'RESULTAT')
                CECR = 'E'
             ENDIF
          ENDIF
-C
-C        --- VERSION D'ECRITURE DU FICHIER IDEAS ----
-         VERSIO = 5
-         IF ( FORM(1:5) .EQ. 'IDEAS' ) THEN
-            CALL GETVIS ( 'RESU', 'VERSION', IOCC,1,1, VERSIO, N )
-         ENDIF
-        IF ( FORM(1:4) .EQ. 'GMSH' ) THEN
-          VERSIO = 1
-          VERSI2 = 1.0D0
-          EPS    = 1.0D-6
-          CALL GETVR8 ( 'RESU', 'VERSION', IOCC,1,1, VERSI2, N )
-          IF (VERSI2.GT.1.0D0-EPS.AND.VERSI2.LT.1.0D0+EPS) THEN
-            VERSIO =1
-          ELSEIF (VERSI2.GT.1.2D0-EPS.AND.VERSI2.LT.1.2D0+EPS) THEN
-            VERSIO =2
-          ENDIF
-        ENDIF
 C
 C        --- IMPRESSION DES COORDONNEES------
 C            (ECRITURE VARIABLES DE TYPE RESULTAT AU FORMAT 'RESULTAT')

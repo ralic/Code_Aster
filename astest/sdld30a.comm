@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE  SYSTEME 2 MASSES - 3 RESSORTS ENCASTRE EN NO1 ET NO4
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -310,20 +310,6 @@ RGQBC=COMB_SISM_MODAL(
                   
               IMPRESSION=_F( TOUT = 'OUI',),
               INFO=2,
-                  ),
-                  
-IMPR_RESU(
-                 MODELE=MODELE,
-                 RESU=(
-                _F( 
-                        RESULTAT = RGQBC,  
-                        FORMAT = 'RESULTAT',
-                        NOM_CHAM =(
-                           'DEPL',
-                           'REAC_NODA',                          
-                           ),  
-                             ),
-                             )                
                   ),
                   
 # TESTS DES DEPLACEMENTS

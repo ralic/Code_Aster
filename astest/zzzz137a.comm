@@ -1,4 +1,4 @@
-# MODIF  DATE 15/12/2003   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE VALIDATION DE AFFE_CHAR_MECA/EVOL_CHAR (DE TYPE PRESSION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,16 +19,6 @@
 # ======================================================================
 
 DEBUT(CODE=_F( NOM = 'ZZZZ137A',NIV_PUB_WEB='INTERNET') )
-
-# POUR AVOIR UN MAILLAGE VENANT D'IDEAS
-# (ALORS QU'IL A ETE FAIT PAR GIBI) :
-#----------------------------------------
-#  PRE_GIBI(); MA = LIRE_MAILLAGE(  ) ;
-#  &MA = DEFI_GROUP(MAILLAGE:MA
-#                CREA_GROUP_NO : (TOUT_GROUP_MA : 'OUI' ));
-#  IMPR_RESU(RESU:(MAILLAGE:MA FORMAT:'IDEAS'));
-#  PRE_IDEAS(); MA2 = LIRE_MAILLAGE();
-#  IMPR_RESU(RESU:(MAILLAGE:MA2));FIN();
 
 PRE_IDEAS(UNITE_IDEAS=19,UNITE_MAILLAGE=20)
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE : FLAMBEMENT D'UNE PLAQUE CIRCULAIRE SOUMISE A UNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,10 +69,6 @@ ELAS=MACRO_ELAS_MULT(MODELE=MODMECA,
                                    TYPE_MODE='SYME',
                                    CHAR_MECA=CHAR,
                                    OPTION='SIEF_ELGA_DEPL',),);
-
-IMPR_RESU(RESU=_F(RESULTAT=ELAS,
-                  VALE_MAX='OUI',
-                  VALE_MIN='OUI',),);
 
 SIG=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                OPERATION='EXTR',

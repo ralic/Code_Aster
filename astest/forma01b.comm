@@ -1,11 +1,7 @@
-
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 #
 #
-#
-
-
 DEBUT(CODE=_F(NOM='FORMA01B',
               NIV_PUB_WEB='INTERNET',),);
 # TITRE TRAVAUX PRATIQUES FORMATION DE BASE 
@@ -191,14 +187,11 @@ IMPR_RESU(MODELE=MODMECA,
                    NOM_CHAM='DEPL',
                    GROUP_MA='EFOND',),),);
 
-IMPR_RESU(MODELE=MODMECA,
-          RESU=(_F(FORMAT='CASTEM',
-                   MAILLAGE=MAIL,),
-                _F(FORMAT='CASTEM',
-                   RESULTAT=RESU1,
+IMPR_RESU(MODELE=MODMECA,FORMAT='CASTEM',
+          RESU=(_F(MAILLAGE=MAIL,),
+                _F(RESULTAT=RESU1,
                    NOM_CHAM=('DEPL','SIGM_ELNO_DEPL','EQUI_ELNO_SIGM',),),
-                _F(FORMAT='CASTEM',
-                   RESULTAT=RESU2,
+                _F(RESULTAT=RESU2,
                    NOM_CHAM=('DEPL','SIGM_ELNO_DEPL','EQUI_ELNO_SIGM',),),),);
 
 MAIL=DEFI_GROUP(reuse =MAIL,

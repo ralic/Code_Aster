@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 14/06/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+%& MODIF TYPELEM  DATE 05/07/2004   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -378,6 +378,7 @@ OPTION__
                                      EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR
                                      CTEREFE  PSECREF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF   
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  ECORR_R  PCORRMR  ECORR_R  PCORRPR
+                                     E1NEUT_R PLEVSET
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  MMATUNS  PMATUNS
                                      ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     FULL_MECA_ELAS      139   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
@@ -451,6 +452,7 @@ OPTION__
                                      EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR
                                      CTEREFE  PSECREF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF   
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  ECORR_R  PCORRMR  ECORR_R  PCORRPR
+                                     E1NEUT_R PLEVSET
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      9     IN__   NGEOMER  PGEOMER  EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
@@ -489,7 +491,7 @@ OPTION__
                                      CTEMPSR  PINSTPR  NIRRAER  PIRRAMR  NIRRAER  PIRRAPR  CMATERC  PMATERC
                                      EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR
                                      CTEREFE  PSECREF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF  
-                                     ZVARIPG  PVARIMR  ECORR_R  PCORRMR  ECORR_R  PCORRPR
+                                     ZVARIPG  PVARIMR  ECORR_R  PCORRMR  ECORR_R  PCORRPR  E1NEUT_R PLEVSET
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     SIEF_ELGA_DEPL      22    IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      NTEMPER  PTEMPER  CTEREFE  PTEREF   NTEMPER  PSECHER  CTEREFE  PSECREF 

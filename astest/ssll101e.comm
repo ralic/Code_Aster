@@ -1,0 +1,391 @@
+
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# RESPONSABLE ADBHHPM P.MASSIN
+# DATE   : 25/09/2000
+# AUTEUR : F. LEBOUVIER
+# TITRE  : TUYAUTERIE: PROBLEME DE HOVGAARD
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#---------------------------------------------------------------------
+#  - ANALYSE STATIQUE D'UNE TUYAUTERIE TRIDIMENSIONNELLE COMPORTANT
+#    DES COUDES
+#  - MODELISATION AVEC DES ELEMENTS 'TUYAU': SEG4 (3 MODES DE FOURIER)
+#---------------------------------------------------------------------
+#
+#
+#
+
+
+DEBUT(CODE=_F(NOM='SSLL101E',NIV_PUB_WEB='INTERNET'),);
+#
+#PRE_IDEAS ();
+#
+#
+#
+
+
+MAIL=LIRE_MAILLAGE();
+#
+#
+#
+
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAIL,
+                       MODI_MAILLE=_F(TOUT='OUI',
+                                      OPTION='SEG3_4',),);
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=(_F(NOEUD='NO42',
+                                      NOM='ND2',),
+                                   _F(NOEUD='NO31',
+                                      NOM='ND3',),
+                                   _F(NOEUD='NO36',
+                                      NOM='ND4',),
+                                   _F(NOEUD='NO22',
+                                      NOM='ND5',),
+                                   _F(NOEUD='NO28',
+                                      NOM='ND6',),
+                                   _F(NOEUD='NO26',
+                                      NOM='ND7',),
+                                   _F(NOEUD='NO24',
+                                      NOM='ND8',),
+                                   _F(NOEUD='NO11',
+                                      NOM='ND9',),
+                                   _F(NOEUD='NO16',
+                                      NOM='ND10',),
+                                   _F(NOEUD='NO2',
+                                      NOM='ND11',),
+                                   _F(NOEUD='NO8',
+                                      NOM='ND12',),
+                                   _F(NOEUD='NO6',
+                                      NOM='ND13',),
+                                   _F(NOEUD='NO4',
+                                      NOM='ND14',),),);
+#
+#
+#
+
+
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='TUYAU_3M',),);
+#
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES ELEMENTAIRES
+#---------------------------------------------------------------------
+#
+#
+#
+
+
+CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
+                       POUTRE=_F(GROUP_MA='TOUT_ELT',
+                                 SECTION='CERCLE',
+                                 CARA=('R','EP'),
+                                 VALE=(0.092499999999999999,0.0061199999999999996),),
+                       ORIENTATION=_F(GROUP_NO='C',
+                                      CARA='GENE_TUYAU',
+                                      VALE=(1.0,0.0,0.0),),);
+#
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES MATERIAUX
+#---------------------------------------------------------------------
+#
+#
+#
+
+
+MATER=DEFI_MATERIAU(ELAS=_F(E=1.65800000000E11,
+                            NU=0.29999999999999999,
+                            RHO=1.34041E4,
+                            ALPHA=1.288E-05,),);
+#
+#
+#
+
+
+AFF_MAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MATER,
+                              TEMP_REF=0.0,),);
+#
+#---------------------------------------------------------------------
+#                     CHARGEMENTS
+#---------------------------------------------------------------------
+#
+#
+#
+
+
+COND_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
+                        DDL_IMPO=_F(GROUP_NO=('H','C'),
+                                    DX=0.0,
+                                    DY=0.0,
+                                    DZ=0.0,
+                                    DRX=0.0,
+                                    DRY=0.0,
+                                    DRZ=0.0,
+                                    UI2=0.0,
+                                    UI3=0.0,
+                                    UO2=0.0,
+                                    UO3=0.0,
+                                    VI2=0.0,
+                                    VI3=0.0,
+                                    VO2=0.0,
+                                    VO3=0.0,
+                                    WI2=0.0,
+                                    WI3=0.0,
+                                    WO2=0.0,
+                                    WO3=0.0,
+                                    WO=0.0,
+                                    WI1=0.0,
+                                    WO1=0.0,),);
+#
+#
+#
+
+
+POI_PROP=AFFE_CHAR_MECA(MODELE=MODELE,
+                        PESANTEUR=(9.8100000000000005,0.0,0.0,-1.0),);
+#
+#
+#
+
+
+F_NODALE=AFFE_CHAR_MECA(MODELE=MODELE,
+                        FORCE_NODALE=(_F(GROUP_NO='ND2',
+                                         FX=0.0,
+                                         FY=0.0,
+                                         FZ=-624.89700000000005,),
+                                      _F(GROUP_NO='ND3',
+                                         FX=0.0,
+                                         FY=0.0,
+                                         FZ=-788.72400000000005,),
+                                      _F(GROUP_NO=('ND4','ND10'),
+                                         FX=0.0,
+                                         FY=0.0,
+                                         FZ=-327.654,),
+                                      _F(GROUP_NO=('ND5','ND9'),
+                                         FX=0.0,
+                                         FY=0.0,
+                                         FZ=-214.839,),
+                                      _F(GROUP_NO=('ND6','ND7','ND8'),
+                                         FX=0.0,
+                                         FY=0.0,
+                                         FZ=-102.5145,),
+                                      _F(GROUP_NO='ND11',
+                                         FX=0.0,
+                                         FY=0.0,
+                                         FZ=-222.68700000000001,),
+                                      _F(GROUP_NO=('ND12','ND13'),
+                                         FX=0.0,
+                                         FY=0.0,
+                                         FZ=-117.72,),
+                                      _F(GROUP_NO='ND14',
+                                         FX=0.0,
+                                         FY=0.0,
+                                         FZ=-176.58000000000001,),),);
+#
+#
+#
+
+
+TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=MAILLAGE,
+                AFFE=(_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=472.22000000000003,),
+                      _F(TOUT='OUI',
+                         NOM_CMP='TEMP_INF',
+                         VALE=472.22000000000003,),
+                      _F(TOUT='OUI',
+                         NOM_CMP='TEMP_SUP',
+                         VALE=472.22000000000003,),),);
+#
+#
+#
+
+
+DILATA=AFFE_CHAR_MECA(MODELE=MODELE,
+                      TEMP_CALCULEE=TEMP,);
+#
+#---------------------------------------------------------------------
+#                        RESOLUTION
+#---------------------------------------------------------------------
+#
+#
+#
+
+
+RESU=MACRO_ELAS_MULT(MODELE=MODELE,
+                     CHAM_MATER=AFF_MAT,
+                     CARA_ELEM=CARELEM,
+                     CHAR_MECA_GLOBAL=COND_LIM,
+                     CAS_CHARGE=(_F(NOM_CAS='CHARGE NUMERO 1',
+                                    CHAR_MECA=POI_PROP,),
+                                 _F(NOM_CAS='CHARGE NUMERO 2',
+                                    CHAR_MECA=F_NODALE,),
+                                 _F(NOM_CAS='CHARGE NUMERO 3',
+                                    CHAR_MECA=DILATA,),),);
+#
+#---------------------------------------------------------------------
+#                        VERIFICATION DES RESULTATS
+#---------------------------------------------------------------------
+#
+#
+#
+
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 1',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='D',
+                   VALE=-1.6516999999999999E-4,
+                   REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-2,),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 1',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='D',
+                   VALE=-1.3869999999999999E-05,
+                   REFERENCE='SOURCE_EXTERNE',PRECISION=0.050000000000000003,),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 1',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='D',
+                   VALE=-8.0376000000000008E-06,
+                   REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-2,),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 2',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='D',
+                   VALE=-1.6445000000000001E-4,
+                   REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-2,),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 2',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='D',
+                   VALE=-1.4245E-05,
+                   REFERENCE='SOURCE_EXTERNE',PRECISION=0.02,),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 2',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='D',
+                   VALE=-1.0047000000000001E-05,
+                   REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-2,),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 3',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='D',
+                   VALE=-6.3277000000000003E-3,
+                   REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-2,),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 3',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='D',
+                   VALE=-0.013091999999999999,
+                   REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-2,),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 3',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='D',
+                   VALE=0.016798,
+                   REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-2,),),);
+
+LR=DEFI_LIST_REEL(DEBUT=0.0,
+                  INTERVALLE=_F(JUSQU_A=1.0,
+                                NOMBRE=1,),);
+
+TEMP0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=MAILLAGE,
+                 AFFE=(_F(TOUT='OUI',
+                          NOM_CMP='TEMP',
+                          VALE=0.0,),
+                       _F(TOUT='OUI',
+                          NOM_CMP='TEMP_INF',
+                          VALE=0.0,),
+                       _F(TOUT='OUI',
+                          NOM_CMP='TEMP_SUP',
+                          VALE=0.0,),),);
+
+TEMP2=CREA_RESU( OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=(_F(CHAM_GD=TEMP0,
+                        INST=0.0,),
+                     _F(CHAM_GD=TEMP,
+                        INST=1.0,),
+                        ),
+                        );
+
+DILAT2=AFFE_CHAR_MECA(MODELE=MODELE,
+                      TEMP_CALCULEE=TEMP2,);
+
+RESUNL=STAT_NON_LINE(MODELE=MODELE,
+                     CHAM_MATER=AFF_MAT,
+                     CARA_ELEM=CARELEM,
+                     EXCIT=(_F(CHARGE=COND_LIM,),
+                            _F(CHARGE=DILAT2,),),
+                     COMP_INCR=_F(RELATION='ELAS',),
+                     INCREMENT=_F(LIST_INST=LR,),);
+#
+#
+#
+
+
+TEST_RESU(RESU=(_F(RESULTAT=RESUNL,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='D',
+                   VALE=-6.3277000000000003E-3,
+                   REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-2,),
+                _F(RESULTAT=RESUNL,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='D',
+                   VALE=-0.013091999999999999,
+                   REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-2,),
+                _F(RESULTAT=RESUNL,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='D',
+                   VALE=0.016798,
+                   REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-2,),),);
+
+FIN();
+#
+#
+# 
+#
+# 
+#
+#

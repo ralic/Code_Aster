@@ -5,7 +5,7 @@
      >                    PREFIX,
      >                    INFMED )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
+C MODIF MODELISA  DATE 06/07/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,6 +108,7 @@ C
       INTEGER CODE
       INTEGER JNOMTY(NTYMAX), JNUMTY(NTYMAX), JCXTYP(NTYMAX)
       INTEGER TABAUX(1)
+      INTEGER NROMAI
 C
       CHARACTER*7 SAUX07
       CHARACTER*8 SAUX08
@@ -159,7 +160,7 @@ C    QUE LA NUMEROTATION IMPLICITE SE FAIT DANS CET ORDRE. DONC ON
 C    LE FAIT !
 C====
 C
-      IAUX = 1
+      NROMAI = 1
       DO 21 , LETYPE = 1 , NBTYP
 C
 C 2.0. ==> PASSAGE DU NUMERO DE TYPE MED AU NUMERO DE TYPE ASTER
@@ -184,13 +185,13 @@ C
      >                  EDMAIL, TYPGEO(ITYP), CODRET )
 C
           IF ( CODRET.EQ.0 ) THEN
-            IAUX = IAUX + NMATYP(ITYP)
+            NROMAI = NROMAI + NMATYP(ITYP)
           ELSE
             CALL UTMESS ('I',NOMPRO,'ABSENCE DE NUMEROTATION '//
      >             'DES MAILLES '//NOMTYP(ITYP)//' DANS LE FICHIER MED')
             DO 211 , JAUX = 1 , NMATYP(ITYP)
-              ZI(JNUMTY(ITYP)+JAUX-1) = IAUX
-              IAUX = IAUX + 1
+              ZI(JNUMTY(ITYP)+JAUX-1) = NROMAI
+              NROMAI = NROMAI + 1
   211       CONTINUE
             CODRET = 0
           ENDIF
@@ -204,6 +205,10 @@ C
      >                  EDMAIL, TYPGEO(ITYP), CODRET )
 C
           IF ( CODRET.NE.0 ) THEN
+            IF ( INFMED.GE.2 ) THEN
+              CALL UTMESS ('I',NOMPRO,'LES MAILLES '//NOMTYP(ITYP)//
+     >                     'NE SONT PAS NOMMEES DANS LE FICHIER MED')
+            ENDIF
             DO 221 , IAUX = 1, NMATYP(ITYP)
               CODE = ZI(JNUMTY(ITYP)+IAUX-1)
               CALL CODENT(CODE,'G',SAUX07)

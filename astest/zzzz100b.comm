@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 05/07/2004   AUTEUR GREFFET N.GREFFET 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE VALIDATION DE L'OPTION ASSE DE CALC_FONCTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,77 +80,175 @@ INST2=0.130
 
 INST3=0.402
 
-X1=-1.95106E+00
+INST4=0.555
 
-X2=-1.17714E+00
+# Valeurs d'origine :
 
-X3=1.58581E+00
+X1=-1.9510565E+00
 
-Y1=-1.72319E+00
+X2=-5.8778525E-01
 
-Y2=1.02367E+00
+X3=1.585812E+00
 
-Y3=4.33236E+00
+X4=-1.5877853E+00
 
-FREQ1=50.8
+Y1=-1.7231939E+00
 
-FREQ2=121.1
+Y2=1.0236723E+00
 
-FFX_F1=('RI',0.124,0.0383,),
+Y3=4.3323627E+00
 
-FFX_F2=('RI',0.177,-0.0347,),
+Y4=-4.7069934E-01
 
-FFY_F1=('RI',0.145,0.0373,),
 
-FFY_F2=('RI',0.176,-0.0623,),
+# Valeurs pour METHODE='TRONCATURE' (Matlab)
 
-XFF=CALC_FONCTION(    FFT=_F( 
-            FONCTION = X) )
+FREQ01=50.880626
 
-YFF=CALC_FONCTION(    FFT=_F( 
-            FONCTION = Y) )
+FREQ02=121.330724
 
-FFXFF=CALC_FONCTION(    FFT=_F( 
-            FONCTION = XFF) )
+FFX_F01=('RI',-0.179780,-0.060581,),
 
-FFYFF=CALC_FONCTION(    FFT=_F( 
-            FONCTION = YFF) )
+FFX_F02=('RI',-0.141016,0.025987,),
 
-TEST_FONCTION(VALEUR=( _F(  FONCTION = XFF,   VALE_PARA = FREQ1,
-                    REFERENCE = 'NON_REGRESSION',
-                          VALE_REFE_C = FFX_F1,  
-                    PRECISION = .01),  
-    _F(  FONCTION = XFF,   VALE_PARA = FREQ2,
-                    REFERENCE = 'NON_REGRESSION',
-                          VALE_REFE_C = FFX_F2,  
-                    PRECISION = .01),       
-    _F(  FONCTION = YFF,   VALE_PARA = FREQ1,
-                    REFERENCE = 'NON_REGRESSION',
-                          VALE_REFE_C = FFY_F1,  
-                    PRECISION = .01), 
-    _F(  FONCTION = YFF,   VALE_PARA = FREQ2,
-                    REFERENCE = 'NON_REGRESSION',
-                          VALE_REFE_C = FFY_F2,  
-                    PRECISION = .01))          
+FFY_F01=('RI',-0.192283,-0.000707,),
+
+FFY_F02=('RI',-0.168030,0.028451,),
+
+
+# Valeurs pour METHODE='PROL_ZERO' (Matlab)
+
+FREQ1=50.830890
+
+FREQ2=121.212121
+
+FFX_F1=('RI',-0.197175,-0.019420,),
+
+FFX_F2=('RI',-0.113826,0.060841,),
+
+FFY_F1=('RI',-0.220456,0.047644,),
+
+FFY_F2=('RI',-0.153210,0.070896,),
+
+XFF0=CALC_FONCTION( FFT=_F( FONCTION = X, METHODE='TRONCATURE',) )
+
+YFF0=CALC_FONCTION( FFT=_F( FONCTION = Y, METHODE='TRONCATURE',) )
+
+FFXFF0=CALC_FONCTION( FFT=_F( FONCTION = XFF0, METHODE='TRONCATURE',) )
+
+FFYFF0=CALC_FONCTION( FFT=_F( FONCTION = YFF0, METHODE='TRONCATURE',) )
+
+PRECIS = 0.00001 
+
+TEST_FONCTION(VALEUR=(
+    _F(  FONCTION = XFF0,   VALE_PARA = FREQ01,
+                    REFERENCE = 'SOURCE_EXTERNE',
+                    VALE_REFE_C = FFX_F01,  
+                    PRECISION = PRECIS ),  
+    _F(  FONCTION = XFF0,   VALE_PARA = FREQ02,
+                    REFERENCE = 'SOURCE_EXTERNE',
+                    VALE_REFE_C = FFX_F02,  
+                    PRECISION = PRECIS ),       
+    _F(  FONCTION = YFF0,   VALE_PARA = FREQ01,
+                    REFERENCE = 'SOURCE_EXTERNE',
+                    VALE_REFE_C = FFY_F01,  
+                    PRECISION = PRECIS ), 
+    _F(  FONCTION = YFF0,   VALE_PARA = FREQ02,
+                    REFERENCE = 'SOURCE_EXTERNE',
+                    VALE_REFE_C = FFY_F02,  
+                    PRECISION = PRECIS ) , ) ,
                )
 
-TEST_FONCTION(VALEUR=( _F(  FONCTION = FFXFF,    VALE_PARA = INST1,
+TEST_FONCTION(VALEUR=( 
+    _F(  FONCTION = FFXFF0,    VALE_PARA = INST1,
                     REFERENCE = 'ANALYTIQUE',
-                          VALE_REFE = X1,  
-                    PRECISION = .01),  
+                    VALE_REFE = X1,  
+                    PRECISION = PRECIS ),  
+    _F(  FONCTION = FFXFF0,   VALE_PARA = INST2,
+                    REFERENCE = 'ANALYTIQUE',
+                    VALE_REFE = X2,
+                    PRECISION = PRECIS ),      
+    _F(  FONCTION = FFXFF0,   VALE_PARA = INST3,
+                    REFERENCE = 'ANALYTIQUE',
+                    VALE_REFE = X3,
+                    PRECISION = PRECIS ),      
+    _F(  FONCTION = FFYFF0,   VALE_PARA = INST1,
+                    REFERENCE = 'ANALYTIQUE',
+                    VALE_REFE = Y1,  
+                    PRECISION = PRECIS ),  
+    _F(  FONCTION = FFYFF0,   VALE_PARA = INST2,
+                    REFERENCE = 'ANALYTIQUE',
+                    VALE_REFE = Y2,
+                    PRECISION = PRECIS ),      
+    _F(  FONCTION = FFYFF0,   VALE_PARA = INST3,
+                    REFERENCE = 'ANALYTIQUE',
+                    VALE_REFE = Y3,
+                    PRECISION = PRECIS ) , ) ,      
+               )
+
+
+XFF=CALC_FONCTION( FFT=_F( FONCTION = X, METHODE='PROL_ZERO',) )
+
+YFF=CALC_FONCTION( FFT=_F( FONCTION = Y, METHODE='PROL_ZERO',) )
+
+FFXFF=CALC_FONCTION( FFT=_F( FONCTION = XFF, METHODE='PROL_ZERO',) )
+
+FFYFF=CALC_FONCTION( FFT=_F( FONCTION = YFF, METHODE='PROL_ZERO',) )
+
+TEST_FONCTION(VALEUR=( 
+    _F(  FONCTION = XFF,   VALE_PARA = FREQ1,
+                    REFERENCE = 'SOURCE_EXTERNE',
+                    VALE_REFE_C = FFX_F1,  
+                    PRECISION = PRECIS ),  
+    _F(  FONCTION = XFF,   VALE_PARA = FREQ2,
+                    REFERENCE = 'SOURCE_EXTERNE',
+                    VALE_REFE_C = FFX_F2,  
+                    PRECISION = PRECIS ),       
+    _F(  FONCTION = YFF,   VALE_PARA = FREQ1,
+                    REFERENCE = 'SOURCE_EXTERNE',
+                    VALE_REFE_C = FFY_F1,  
+                    PRECISION = PRECIS ), 
+    _F(  FONCTION = YFF,   VALE_PARA = FREQ2,
+                    REFERENCE = 'SOURCE_EXTERNE',
+                    VALE_REFE_C = FFY_F2,  
+                    PRECISION = PRECIS ) , ) ,          
+               )
+
+TEST_FONCTION(VALEUR=( 
+    _F(  FONCTION = FFXFF,    VALE_PARA = INST1,
+                    REFERENCE = 'ANALYTIQUE',
+                    VALE_REFE = X1,  
+                    PRECISION = PRECIS ),  
+    _F(  FONCTION = FFXFF,   VALE_PARA = INST2,
+                    REFERENCE = 'ANALYTIQUE',
+                    VALE_REFE = X2,
+                    PRECISION = PRECIS ),      
     _F(  FONCTION = FFXFF,   VALE_PARA = INST3,
                     REFERENCE = 'ANALYTIQUE',
-                          VALE_REFE = X3,
-                    PRECISION = .01),      
+                    VALE_REFE = X3,
+                    PRECISION = PRECIS ),      
+    _F(  FONCTION = FFXFF,   VALE_PARA = INST4,
+                    REFERENCE = 'ANALYTIQUE',
+                    VALE_REFE = X4,
+                    PRECISION = PRECIS ),      
     _F(  FONCTION = FFYFF,   VALE_PARA = INST1,
                     REFERENCE = 'ANALYTIQUE',
-                          VALE_REFE = Y1,  
-                    PRECISION = .06),  
+                     VALE_REFE = Y1,  
+                    PRECISION = PRECIS ),  
+    _F(  FONCTION = FFYFF,   VALE_PARA = INST2,
+                    REFERENCE = 'ANALYTIQUE',
+                    VALE_REFE = Y2,
+                    PRECISION = PRECIS ),      
     _F(  FONCTION = FFYFF,   VALE_PARA = INST3,
                     REFERENCE = 'ANALYTIQUE',
-                          VALE_REFE = Y3,
-                    PRECISION = .03))      
+                    VALE_REFE = Y3,
+                    PRECISION = PRECIS ),      
+    _F(  FONCTION = FFYFF,   VALE_PARA = INST4,
+                    REFERENCE = 'ANALYTIQUE',
+                     VALE_REFE = Y4,
+                    PRECISION = PRECIS ) , )  ,    
                )
+
 
 #
 

@@ -1,0 +1,210 @@
+      SUBROUTINE REEREF(ELREFP,NNOP,NDDLE,IGEOM,XG,DEPR,GRAND,
+     &                                         XE,FF,DFDI,F,EPS)
+      IMPLICIT NONE
+      CHARACTER*8  ELREFP
+      INTEGER      IGEOM,NNOP,NDDLE
+      REAL*8       XG(3),DEPR(3,NNOP),XE(3),FF(NNOP)
+      REAL*8       DFDI(NNOP,3),F(3,3),EPS(6)
+      LOGICAL      GRAND
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 05/07/2004   AUTEUR GENIAUT S.GENIAUT 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C ----------------------------------------------------------------------
+C FONCTION REALISEE:  TROUVER LES COORDONNEES DANS L'ELEMENT DE
+C                     REFERENCE D'UN POINT DONNE DANS L'ELEMENT REEL
+C                     PAR LA METHODE NEWTON-RAPHSON
+C                     ET CALCUL DES ELEMENTS CINEMATIQUES
+C    ENTREE:
+C      ELREFP : TYPE DE L'ELEMENT DE REF PARENT
+C      NNOP   : NOMBRE DE NOEUDS DE L'ELT DE RÉF PARENT
+C      IGEOM  : COORDONNEES DES NOEUDS
+C      XG     : COORDONNES DU POINT DANS L'ELEMENT REEL
+C      DEPR    : DEPLACEMENT RÉEL À PARTIR DE LA CONF DE REF
+C     GRAND   : INDICATEUR SI GRANDES TRANSFORMATIONS
+C
+C    SORTIE:
+C      XE     : COORDONNÉES DU POINT DANS L'ÉLÉMENT DE RÉF PARENT 
+C      FF     : FONCTIONS DE FORMES EN XE
+C      DFDI   : DÉRIVÉES DES FONCTIONS DE FORMES EN XE
+C      F      : GRADIENT DE LA TRANSFORMATION
+C      EPS    : DÉFORMATIONS
+C.......................................................................
+
+C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER ZI
+      REAL*8 ZR
+      COMPLEX*16 ZC
+      LOGICAL ZL
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+
+      INTEGER     ITER,I,J,K,N
+      INTEGER     NBNOMX,NNO,NDERIV,ITERMX
+      REAL*8      ETMP(3),ERR,TOLER
+      PARAMETER   (NBNOMX = 27 , TOLER = 1.D-8 , ITERMX = 50)
+      REAL*8      POINT(3),XENEW(3),INVJAC(3,3)
+      REAL*8      DFF(3,NBNOMX)
+      REAL*8      RAC2, KRON(3,3),TMP,GRAD(3,3),EPSTAB(3,3)
+      DATA KRON/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
+
+C DEB ------------------------------------------------------------------
+
+      CALL JEMARQ()
+
+      RAC2 = SQRT(2.D0)
+      
+C     1) RECHERCHE DE XE PAR NEWTON-RAPHSON    
+C     -------------------------------------
+
+      ITER=0
+      CALL LCINVN(3,0.D0,XE) 
+      
+ 100  CONTINUE     
+      ITER=ITER+1
+
+C     VALEURS DES FONCTIONS DE FORME EN XE
+      CALL ELRFVF(ELREFP,XE,NBNOMX,FF,NNO)
+      CALL ASSERT(NNO.EQ.NNOP)
+
+C     DERIVEES 1ERES DES FONCTIONS DE FORME EN XE
+      CALL ELRFDF(ELREFP,XE,3*NBNOMX,DFF,NNO,NDERIV)
+      CALL ASSERT(NDERIV.EQ.3)
+
+C     CALCUL DES COORDONNEES DU POINT
+      CALL LCINVN(3,0.D0,POINT) 
+      DO 200 I=1,3
+        DO 210 K=1,NNO
+          POINT(I)=POINT(I)+FF(K)*ZR(IGEOM-1+3*(K-1)+I)       
+ 210    CONTINUE
+ 200  CONTINUE
+ 
+C     CALCUL DE L'INVERSE DE LA JACOBIENNE EN XE
+      CALL XJACOB(NNO,DFF,IGEOM,INVJAC)
+
+C     UPDATE XE
+      DO 220 I=1,3
+        XENEW(I)=XE(I)
+        DO 230 K=1,3
+          XENEW(I)=XENEW(I)-INVJAC(I,K)*(POINT(K)-XG(K))
+ 230    CONTINUE
+ 220  CONTINUE
+
+C     CALCUL DE L'ERREUR
+      DO 240 I=1,3
+        ETMP(I)=XENEW(I)-XE(I)
+ 240  CONTINUE
+      CALL PSCAL(3,ETMP,ETMP,ERR)
+      CALL LCEQVN(3,XENEW,XE)
+      IF (ERR.LE.TOLER) THEN 
+        GOTO 999
+      ELSEIF (ITER.LT.ITERMX) THEN
+        GOTO 100
+      ELSE
+        CALL UTMESS('F','REEREF','ECHEC DE CONVERGENCE DANS '//
+     &     'L''INVERSION DU SYSTEME PAR NEWTON-RAPHSON.')
+      ENDIF
+
+ 999  CONTINUE
+
+C           write(6,*)'xe ',XE
+
+C     2) CALCUL DES QUANTITÉS DE RÉFÉRENCE EN XE   
+C     -------------------------------------
+
+C     FONCTIONS DE FORMES DE RÉFÉRENCE EN XE : FF
+      CALL ELRFVF(ELREFP,XE,NBNOMX,FF,NNO)
+
+C     DÉRIVÉES DES FONCTIONS DE FORMES DE RÉFÉRENCE EN XE : DFF
+      CALL ELRFDF(ELREFP,XE,3*NBNOMX,DFF,NNO,NDERIV)
+
+C     INVERSE DE LA JACOBIENNE EN XE : INVJAC
+      CALL XJACOB(NNO,DFF,IGEOM,INVJAC) 
+
+
+C     3) CALCUL DES QUANTITÉS CINÉMATIQUES EN XE
+C     -------------------------------------
+
+C     DÉRIVÉES DES FONCTIONS DE FORMES EN XE : DFDI
+      CALL MATINI(NNO,3,0.D0,DFDI)       
+      DO 300 N=1,NNO
+        DO 310 I=1,3
+          DO 311 K=1,3
+            DFDI(N,I)= DFDI(N,I) + INVJAC(K,I)*DFF(K,N)
+ 311      CONTINUE
+ 310    CONTINUE
+ 300  CONTINUE
+
+C     CALCUL DES GRADIENTS : GRAD(U) ET F
+      DO 400 I=1,3
+        DO 401 J=1,3
+          F(I,J)=KRON(I,J)
+          GRAD(I,J)=0.D0
+ 401    CONTINUE
+ 400  CONTINUE
+
+      DO 402 N=1,NNO
+        DO 403 I=1,3
+C        write(6,*)' ',DEPR(I,N)
+C        write(6,*)' ',DFDI(N,I)
+          DO 404 J=1,3
+            GRAD(I,J) = GRAD(I,J) + DFDI(N,J)*DEPR(I,N)
+ 404      CONTINUE
+ 403    CONTINUE
+ 402  CONTINUE
+      
+
+      IF (GRAND) THEN
+        DO 405 I=1,3
+          DO 406 J=1,3
+            F(I,J) = F(I,J) + GRAD(I,J)
+ 406       CONTINUE
+ 405     CONTINUE
+      ENDIF
+
+C     CALCUL DES DÉFORMATIONS : EPS
+      DO 407 I=1,3
+        DO 408 J=1,I
+          TMP = GRAD(I,J) + GRAD(J,I)
+          IF (GRAND) THEN
+            DO 409 K=1,3
+              TMP = TMP + GRAD(K,I)*GRAD(K,J)
+ 409        CONTINUE
+          ENDIF
+          EPSTAB(I,J) = 0.5D0*TMP
+ 408    CONTINUE
+ 407  CONTINUE
+
+      EPS(1) = EPSTAB(1,1)
+      EPS(2) = EPSTAB(2,2)
+      EPS(4) = EPSTAB(2,1)*RAC2
+      EPS(3) = EPSTAB(3,3)
+      EPS(5) = EPSTAB(3,1)*RAC2
+      EPS(6) = EPSTAB(3,2)*RAC2
+
+      CALL JEDEMA()
+      END

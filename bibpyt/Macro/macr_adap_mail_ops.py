@@ -1,4 +1,4 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 19/01/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_adap_mail_ops Macro  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -382,11 +382,11 @@ def macr_adap_mail_ops ( self,
       motscsi['MAILLAGE'] = dico['Nom_ASTER']
       motscfa={}
       motscfa['RESU']=_F( INFO_MAILLAGE=infomail,
-                          FICHIER=Nom_Symbolique_Fichier_ASTER_vers_HOMARD,
-                          FORMAT ='MED',
                           **motscsi )
 #
-      IMPR_RESU ( INFO = INFO, **motscfa )
+      IMPR_RESU ( INFO = INFO, 
+                  FORMAT ='MED', UNITE = Unite_Fichier_ASTER_vers_HOMARD,
+                  **motscfa )
 #
 # 4.2.4. Le(s) champ(s)
 #
@@ -400,12 +400,12 @@ def macr_adap_mail_ops ( self,
       motscsi['NOM_CMP'] = dico['COMPOSANTE']
     motscfa={}
     motscfa['RESU']=_F( INFO_MAILLAGE=infomail,
-                        FICHIER=Nom_Symbolique_Fichier_ASTER_vers_HOMARD,
-                        FORMAT ='MED',
                         **motscsi
                       )
 #
-    IMPR_RESU ( INFO = INFO, **motscfa )
+    IMPR_RESU ( INFO = INFO, 
+                FORMAT ='MED', UNITE = Unite_Fichier_ASTER_vers_HOMARD,
+                **motscfa )
 #
 # 4.3. ==> Ecriture de la commande d'écriture des fichiers de données pour HOMARD
 #

@@ -1,0 +1,231 @@
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#  PAR UN INDENTEUR SPHERIQUE ELASTIQUE
+# CAS TEST  SSNV506C
+#  MAILLAGE EN MM
+#  METHODE DES CONTRAINTES ACTIVES EN 3D
+# SPHERE RIGIDE MODELISER UNIQUEMENT PAR LA SURFACE DE CONTACT
+
+
+DEBUT(CODE=_F(NOM='SSNV506C',NIV_PUB_WEB='INTERNET'),);
+
+#-------------------------------------------------------------------
+#                      LECTURE MAILLAGE SSNV506C.MGIB
+#-------------------------------------------------------------------
+
+PRE_GIBI();
+
+SSNV506C=LIRE_MAILLAGE(INFO=1,);
+
+#--------------------------------------------------------------------
+#                     DEFINITION DU MODELE
+#--------------------------------------------------------------------
+
+SSNV506C=DEFI_GROUP(reuse =SSNV506C,
+                    MAILLAGE=SSNV506C,
+                    CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',), ),);
+
+MO=AFFE_MODELE(MAILLAGE=SSNV506C,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
+
+# REORENTATION DES NORMALES DES SURFACES DE CONTACT
+SSNV506C=MODI_MAILLAGE(reuse =SSNV506C,
+                       MAILLAGE=SSNV506C,
+                       ORIE_PEAU_3D=_F(GROUP_MA='SESC',),
+                       MODELE=MO,
+                       INFO=1,);
+
+SSNV506C=MODI_MAILLAGE(reuse =SSNV506C,
+                       MAILLAGE=SSNV506C,
+                       ORIE_NORM_COQUE=_F(GROUP_MA='SMAI',
+                                          VECT_NORM=(0.0,-1.0,0.0),
+                                          GROUP_NO='E',),
+                       MODELE=MO,
+                       INFO=1,);
+
+#----------------------------------------------------------------------
+#                      DEFINITION DES MATERIAUX
+#----------------------------------------------------------------------
+
+MSPH=DEFI_MATERIAU(ELAS=_F(E=210000,
+                           NU=0.29999999999999999,),);
+
+MBATI=DEFI_MATERIAU(ELAS=_F(E=210000,
+                            NU=0.29999999999999999,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=0.0,
+                                 SY=50.0,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV506C,
+                    AFFE=(_F(GROUP_MA='SPHSUP',
+                             MATER=MSPH,),
+                          _F(GROUP_MA='BATI',
+                             MATER=MBATI,),),);
+
+#----------------------------------------------------------------------
+#              DEFINITION DES PARAMETRES DE CHARGEMENT
+#----------------------------------------------------------------------
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,
+                          1.0,1.0,),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=0.01,
+                                    NOMBRE=2,),
+                                 _F(JUSQU_A=0.1,
+                                    NOMBRE=9,),
+                                 _F(JUSQU_A=1.0,
+                                    NOMBRE=18,),),);
+
+#---------------------------------------------------------------------
+#              AFFECTATION DES CONDITIONS AUX LIMITES 
+#                     ET DU DEPLACEMENT IMPOSE
+#---------------------------------------------------------------------
+
+DPLIMPO=AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=(_F(GROUP_NO='SPHSUP',
+                                    DX=0.,DY=-100.,DZ=0.,),
+                                 _F(GROUP_NO='BASE',
+                                    DX=0.,DY=0.,DZ=0.,),
+                                 _F(GROUP_NO=('SBYZ'),
+                                    DX=0.,),
+                                 _F(GROUP_NO=('SBXY'),
+                                    DZ=0.,),),
+                       LIAISON_DDL=_F(GROUP_NO=('S','E'),
+                                      DDL=('DY','DY'),
+                                      COEF_MULT=(1.0,-1.0),
+                                      COEF_IMPO=0.,),);
+
+CONT=AFFE_CHAR_MECA(MODELE=MO,
+                    CONTACT=_F(APPARIEMENT='MAIT_ESCL',
+                               RECHERCHE='NOEUD_BOUCLE',
+                               REAC_GEOM='CONTROLE',
+                               NB_REAC_GEOM=2,
+                               METHODE='CONTRAINTE',
+                              # FROTTEMENT='SANS',
+                               GROUP_MA_MAIT='SMAI',
+                               GROUP_MA_ESCL='SESC',
+                               SANS_GROUP_NO=('E','S'),),
+                    INFO=1,);
+
+#----------------------------------------------------------------------
+#                         RESOLUTION
+#----------------------------------------------------------------------
+
+SSNV506=STAT_NON_LINE(MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                       EXCIT=(_F(CHARGE=DPLIMPO,
+                                 FONC_MULT=RAMPE,),
+                              _F(CHARGE=CONT,),),
+                       COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                                    GROUP_MA='BATI'),
+                       COMP_ELAS=_F(RELATION='ELAS',
+                                    GROUP_MA='SPHSUP',),
+                       INCREMENT=_F(LIST_INST=LINST,
+                                    INST_FIN=0.1,
+                                    SUBD_PAS=4,
+                                    SUBD_PAS_MINI=9.9999999999999995E-07,),
+                       NEWTON=_F(MATRICE='TANGENTE',
+                                 REAC_ITER=1,
+                                 ),
+                       CONVERGENCE=_F(RESI_GLOB_RELA=9.9999999999999995E-07,
+                                      ITER_GLOB_MAXI=15,
+                                      ARRET='OUI',),
+                       ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),
+                       INFO=1,);
+
+#----------------------------------------------------------------------
+#                         POST TRAITEMENT
+#----------------------------------------------------------------------
+
+SSNV506=CALC_NO(reuse =SSNV506,
+                 RESULTAT=SSNV506,
+                 OPTION='REAC_NODA',
+                 MODELE=MO,);
+
+LINST2=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=1.,
+                                   NOMBRE=10,),);                                   
+
+TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
+                                 GROUP_NO='SESC',
+                                 RESULTAT=SSNV506,
+                                 NOM_CHAM='REAC_NODA',
+                                 LIST_INST=LINST,
+                                 RESULTANTE='DY',
+                                 OPERATION = 'EXTRACTION'),); 
+ 
+IMPR_TABLE(TABLE=TAB_REAC,
+           FORMAT='EXCEL',);
+
+#----------------------------------------------------------------------
+#                   TESTS DES RESULTATS
+#----------------------------------------------------------------------
+
+# TESTS DE NON REGRESSION
+# Xz = 0.
+TEST_RESU(RESU=_F(RESULTAT=SSNV506,
+                  NOEUD='N124',
+                  INST=0.1,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='RN',
+                  VALE=1.7651618108200E+04,
+                  PRECISION=1.E-5,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='7.1.6',),);
+
+TEST_RESU(RESU=_F(RESULTAT=SSNV506,
+                  NOEUD='N125',
+                  INST=0.1,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='RN',
+                  VALE=0.0,
+                  PRECISION=1.E-12,
+                  CRITERE='ABSOLU',
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='7.1.1',),);
+
+# Xx = 0.
+TEST_RESU(RESU=_F(RESULTAT=SSNV506,
+                  NOEUD='N349',
+                  INST=0.1,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='RN',
+                  VALE=1.7917820437106E+04,
+                  PRECISION=1.E-5,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='7.1.6',),);
+
+TEST_RESU(RESU=_F(RESULTAT=SSNV506,
+                  NOEUD='N351',
+                  INST=0.1,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='RN',
+                  VALE=0.0,
+                  PRECISION=1.E-12,
+                  CRITERE='ABSOLU',
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='7.1.1',),);
+
+FIN();             

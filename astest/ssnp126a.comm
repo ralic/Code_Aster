@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2004   AUTEUR NDOMING N.DOMINGUEZ 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE cas test de validation de la loi de comportement JOINT_BA
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -357,14 +357,10 @@ V22D=RECU_FONCTION(RESULTAT=U,
 # ---------- en format AGRAF ----------
 #
 
-#DEFI_FICHIER(FICHIER='AGRAF',UNITE=25,);
-
-
 # COURBE CONTRAINTE SXY liaison AU PG EN FONCTION DE UX
 
 
-IMPR_COURBE(
-#            FICHIER='AGRAF',
+IMPR_COURBE( UNITE=25,
             FORMAT='AGRAF',
             TITRE_GRAPHIQUE='CONTRAINTE TANGENTIELLE EN FONCTION DE UX ',
             LEGENDE_X='UX(mm)',
@@ -378,8 +374,7 @@ IMPR_COURBE(
 # COURBE CONTRAINTE SXY liaison AU PG EN FONCTION DE UX
 
 
-IMPR_COURBE(
-#            FICHIER='AGRAF',
+IMPR_COURBE( UNITE=25,
             FORMAT='AGRAF',
             TITRE_GRAPHIQUE='ENDOMMAGEMENT EN FONCTION DE UX ',
             LEGENDE_X='UX(mm)',

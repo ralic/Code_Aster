@@ -1,4 +1,4 @@
-# MODIF  DATE 05/12/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE  - TH  COUPLE SURFACIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,8 +39,6 @@ MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
             #        CREA_GROUP_NO : (GROUP_MA : COT)
 
                    )
-
-IMPR_RESU(RESU=_F(MAILLAGE=MAIL),)
 
 MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
                         AFFE=_F(  GROUP_MA = 'MAIL',

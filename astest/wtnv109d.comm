@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TEST THM, 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -213,11 +213,6 @@ MESTAT=STAT_NON_LINE(MODELE=MODELE,
 MESTAT=CALC_ELEM(reuse =MESTAT,
                  OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
                  RESULTAT=MESTAT,);
-#IMPR_RESU(
-#          RESU=_F(MAILLAGE=MAIL,
-#                  RESULTAT=MESTAT,),);
-#
-
 
 TEST_RESU(RESU=_F(RESULTAT=MESTAT,
                   NUME_ORDRE=1,

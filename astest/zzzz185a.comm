@@ -1,0 +1,387 @@
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# TITRE  COMMANDE MODI_MAILLAGE ET SYMETRIE / PROJ_CHAMP ET DISTANCE_MAX
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# 
+# ====================================================================
+#
+# L'objectif de ce cas test est de valider la commande MODI_MAILLAGE
+# avec le mot cle SYMETRIE et la commande PROJ_CHAMP avec le mot cle
+# DISTANCE_MAX.
+#  - la commande MODI_MAILLAGE, avec le mot cle SYMETRIE permet de
+#    prendre le symetrique d'un maillage 2D ou 3D,
+#  - la commande PROJ_CHAMP avec le mot cle DISTANCE_MAX permet de
+#    faire en sorte que pour les noeuds du 2nd maillage qui ne sont
+#    pas dans un element du 1er maillage et qui sont au-dela de
+#    DISTANCE_MAX, il n'y a pas de projection du champ.
+#
+# ====================================================================
+
+DEBUT(CODE=_F(NOM='ZZZZ185A',
+              NIV_PUB_WEB='INTERNET',),)
+
+# ==========================================================
+#
+# A) Etude thermique sur 1/8 de la structure.
+# B) Construction du champ thermique sur 1/4 de la structure
+#    par les projections des resultats obtenus sur le 1/8 de
+#    structure. Prise en compte du plan de symetrie.
+# C) Etude thermique sur 1/4 de la structure.
+# D) Comparaison entre le champ projete et l'etude sur le 1/4
+#    de la structure.
+#
+# ==========================================================
+
+# si ficgmsh=1 ==> impression dans fichier au format gmsh
+ficgmsh = 0
+
+# ==========================================================
+# A) Etude thermique sur 1/8 de la structure
+#    ---------------------------------------
+#
+#   1) Lecture du maillage
+#   2) Affectation du modele
+#   3) Definition et affectation du materiau
+#   4) Definition des conditions aux limites
+#   5) Calcul
+#   6) Sauvegarde des resultats au format MED
+#
+# --------
+# A.1
+PRE_GIBI(UNITE_GIBI=19,UNITE_MAILLAGE=20)
+mail08=LIRE_MAILLAGE(UNITE=20,FORMAT='ASTER')
+# A.2
+mode08=AFFE_MODELE(
+  MAILLAGE=mail08,
+  AFFE=_F(TOUT='OUI',
+          PHENOMENE='THERMIQUE',
+          MODELISATION='3D',),
+)
+# A.3
+monmat=DEFI_MATERIAU(
+#  ELAS=_F(E=2.0E+11, NU=0.3, RHO=7800.0, ALPHA=2e-05,),
+#  THER=_F(LAMBDA=15.0, RHO_CP=4000000.0,),
+  THER=_F(LAMBDA=15.0),
+)
+mater08=AFFE_MATERIAU(
+  MAILLAGE=mail08,
+  AFFE=_F(TOUT='OUI', MATER=monmat, TEMP_REF=0.0,),
+)
+# A.4
+chther08=AFFE_CHAR_THER(
+  MODELE=mode08,
+  TEMP_IMPO=(_F(GROUP_MA='SURFDEB',TEMP=250.0,),
+             _F(GROUP_MA='SURFFIN',TEMP=160.0,),),
+  FLUX_REP =(_F(GROUP_MA='SSUP1',  FLUN= 10.0,),
+             _F(GROUP_MA='SSUP3',  FLUN= 30.0,),
+             _F(GROUP_MA='SFOND',  FLUN=  0.0,),),
+  ECHANGE  =(_F(GROUP_MA='SRAY1',  COEF_H=350.0, TEMP_EXT=300.0,),
+             _F(GROUP_MA='SRAY4',  COEF_H=600.0, TEMP_EXT=310.0,),
+             _F(GROUP_MA=('SRAY2','SSUP2','SRAY3',),
+                COEF_H=400.0, TEMP_EXT=275.0,),),
+)
+# A.5
+rther08=THER_LINEAIRE(
+  MODELE=mode08,
+  CHAM_MATER=mater08,
+  EXCIT=_F(CHARGE=chther08,),
+)
+# A.6
+DEFI_FICHIER (FICHIER='MED',UNITE=81,TYPE='LIBRE')
+IMPR_RESU(FORMAT='MED', UNITE=81, 
+  RESU=_F(MAILLAGE=mail08,
+          RESULTAT=rther08,
+          NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
+)
+DEFI_FICHIER (ACTION='LIBERER',UNITE=81)
+
+
+# ==========================================================
+# B) Construction du champ thermique sur 1/4 de la structure
+#    -------------------------------------------------------
+#
+#   1) Champ thermique sur un 1/8 de la structure
+#     a) Lecture du maillage a partir du fichier MED
+#     b) Lecture du champ a partir du fichier MED
+#     c) Creation d'un resultat a partir du champ lu
+#     d) Affectation du modele
+#
+#   2) Champ thermique dans le plan de symetrie
+#     a) Affectation du modele
+#
+#   3) Champ thermique sur un 1/8 de la structure
+#     a) Lecture du maillage a partir du fichier MED
+#     b) Modification du maillage, symetrie par rapport a un plan
+#     c) Lecture du champ a partir du fichier MED
+#     d) Creation d'un resultat a partir du champ lu
+#     e) Affectation du modele
+#
+#   4) Projection sur le 1/4 de la structure
+#     a) Lecture du maillage
+#     b) Affectation du modele
+#     c) Projection des champs sur le modele
+#     d) Recuperation des champs projetes
+#     e) Combinaison des champs
+#     f) Creation d'un resultat a partir du champ combines
+#
+# --------
+# B.1.a 
+mamed01=LIRE_MAILLAGE( UNITE=81, FORMAT='MED',)
+# B.1.b
+dmed01=LIRE_CHAMP(
+   MAILLAGE=mamed01, FORMAT='MED',UNITE=81,
+   NOM_MED='rther08_TEMP____________________',
+   NOM_CMP_IDEM='OUI',
+   NUME_ORDRE=0, NUME_PT=0,
+   TYPE_CHAM='NOEU_TEMP_R',
+)
+# B.1.c
+resrep1=CREA_RESU(
+   OPERATION='AFFE',
+   TYPE_RESU='EVOL_THER',
+   NOM_CHAM='TEMP',
+   AFFE=(_F(CHAM_GD=dmed01, INST=1.0,),),
+)
+# B.1.d
+momed01=AFFE_MODELE(
+   MAILLAGE=mamed01,
+   AFFE=_F(GROUP_MA='VOLUME',
+           PHENOMENE='THERMIQUE',
+           MODELISATION='3D',),
+)
+# --------
+# B.2.a
+momedsy=AFFE_MODELE(
+   MAILLAGE=mamed01,
+   AFFE=_F(GROUP_MA='SURFFIN',
+           PHENOMENE='THERMIQUE',
+           MODELISATION='3D',),
+)
+# --------
+# B.3.a
+mamed02=LIRE_MAILLAGE( UNITE=81, FORMAT='MED',)
+# B.3.b
+mamed02=MODI_MAILLAGE(
+  reuse   =mamed02,
+  MAILLAGE=mamed02,
+  SYMETRIE=_F(POINT = ( 0.0,  0.0,  0.0,),
+              AXE_1 = ( 1.0,  1.0,  0.0,),
+              AXE_2 = ( 0.0,  0.0, -1.0,),
+             ),
+)
+# B.3.c
+dmed02=LIRE_CHAMP(
+   MAILLAGE=mamed02, FORMAT='MED', UNITE=81,
+   NOM_MED='rther08_TEMP____________________',
+   NOM_CMP_IDEM='OUI',
+   NUME_ORDRE=0, NUME_PT=0,
+   TYPE_CHAM='NOEU_TEMP_R',
+)
+# B.3.d
+resrep2=CREA_RESU(
+   OPERATION='AFFE',
+   TYPE_RESU='EVOL_THER',
+   NOM_CHAM='TEMP',
+   AFFE=(_F(CHAM_GD=dmed02, INST=1.0,),),
+)
+# B.3.e
+momed02=AFFE_MODELE(
+   MAILLAGE=mamed02,
+   AFFE=_F(GROUP_MA='VOLUME',
+           PHENOMENE='THERMIQUE',
+           MODELISATION='3D',),
+)
+# --------
+# B.4.a
+PRE_GIBI(UNITE_GIBI=21,UNITE_MAILLAGE=22)
+mail04=LIRE_MAILLAGE(UNITE=22,FORMAT='ASTER')
+# B.4.b
+mode04=AFFE_MODELE(
+   MAILLAGE=mail04,
+   AFFE=_F(TOUT='OUI',
+           PHENOMENE='THERMIQUE',
+           MODELISATION='3D',),
+)
+# B.4.c
+chp01 = PROJ_CHAMP(
+   METHODE  = 'ELEM',  RESULTAT = resrep1,
+   MODELE_1 = momed01, MODELE_2 = mode04,
+   NOM_CHAM = 'TEMP',  INST     = 1.0,
+   DISTANCE_MAX = 1.0E-3,
+)
+chp02 = PROJ_CHAMP(
+   METHODE  = 'ELEM',  RESULTAT = resrep2,
+   MODELE_1 = momed02, MODELE_2 = mode04,
+   NOM_CHAM = 'TEMP',  INST     = 1.0,
+   DISTANCE_MAX = 1.0E-3,
+)
+chpsy=PROJ_CHAMP(
+   METHODE  = 'ELEM',  RESULTAT = resrep1,
+   MODELE_1 = momedsy, MODELE_2 = mode04,
+   NOM_CHAM = 'TEMP',  INST     = 1.0,
+   DISTANCE_MAX = 1.0E-3,
+)
+# B.4.d
+chpno01= CREA_CHAMP(
+   TYPE_CHAM = 'NOEU_TEMP_R', OPERATION = 'EXTR',
+   RESULTAT  = chp01, NOM_CHAM  = 'TEMP',
+   INST      = 1.0,
+)
+chpno02= CREA_CHAMP(
+   TYPE_CHAM = 'NOEU_TEMP_R', OPERATION = 'EXTR',
+   RESULTAT  = chp02, NOM_CHAM  = 'TEMP',
+   INST      = 1.0,
+)
+chpnosy= CREA_CHAMP(
+   TYPE_CHAM = 'NOEU_TEMP_R', OPERATION = 'EXTR',
+   RESULTAT  = chpsy, NOM_CHAM  = 'TEMP',
+   INST      = 1.0,
+)
+# Creation d'un champ nul
+chpnul=CREA_CHAMP(
+  TYPE_CHAM='NOEU_TEMP_R', OPERATION='AFFE',
+  MODELE=mode04, PROL_ZERO='OUI',
+  AFFE=_F(TOUT='OUI', NOM_CMP='TEMP', VALE=0.0,),
+)
+# B.4.e
+chpnotot=COMB_CHAM_NO(
+  COMB_R=(_F(CHAM_NO=chpnul,  COEF_R=  1.0 ),
+          _F(CHAM_NO=chpno01, COEF_R=  1.0 ),
+          _F(CHAM_NO=chpnosy, COEF_R= -1.0 ),
+          _F(CHAM_NO=chpno02, COEF_R=  1.0 ),)
+)
+# B.4.f
+rprojec=CREA_RESU(
+   OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+   NOM_CHAM='TEMP',
+   AFFE=(_F(CHAM_GD=chpnotot, INST=1.0,),),
+)
+
+# ==========================================================
+# C) Etude thermique sur 1/4 de la structure
+#    ---------------------------------------
+#
+#   1) Affectation du materiau
+#   2) Definition des conditions aux limites
+#   3) Calcul
+#
+# C.1
+mater04=AFFE_MATERIAU(
+  MAILLAGE=mail04,
+  AFFE=_F(TOUT='OUI', MATER=monmat, TEMP_REF=0.0,),
+)
+# C.2
+chther04=AFFE_CHAR_THER(
+  MODELE=mode04,
+  TEMP_IMPO=(_F(GROUP_MA='SURFDEB', TEMP=250.0,),
+             _F(GROUP_MA='SURFI01', TEMP=160.0,),
+             _F(GROUP_MA='SURFFIN', TEMP=250.0,),),
+  FLUX_REP =(_F(GROUP_MA='SSUP1',   FLUN= 10.0,),
+             _F(GROUP_MA='SSUP3',   FLUN= 30.0,),
+             _F(GROUP_MA='SFOND',   FLUN=  0.0,),),
+  ECHANGE  =(_F(GROUP_MA='SRAY1',   COEF_H=350.0, TEMP_EXT=300.0,),
+             _F(GROUP_MA='SRAY4',   COEF_H=600.0, TEMP_EXT=310.0,),
+             _F(GROUP_MA=('SRAY2','SSUP2','SRAY3',),
+                COEF_H=400.0,TEMP_EXT=275.0,),),
+)
+# C.3
+rther04=THER_LINEAIRE(
+  MODELE=mode04,
+  CHAM_MATER=mater04,
+  EXCIT=_F(CHARGE=chther04,),
+)
+
+# ==========================================================
+# D) Comparaison entre la projection et l'etude
+#    ------------------------------------------
+#
+#   1) Recuperation du champ projete
+#   2) Recuperation du champ calcule
+#   3) Differences des champs
+#   4) Creation d'un resultat
+#   5) Tests sur les ecarts mini et maxi
+#
+# D.1
+chpnoprj= CREA_CHAMP(
+   TYPE_CHAM = 'NOEU_TEMP_R', OPERATION = 'EXTR',
+   RESULTAT  = rprojec, NOM_CHAM  = 'TEMP',
+   INST      = 1.0,
+)
+# D.2
+chpnocal= CREA_CHAMP(
+   TYPE_CHAM = 'NOEU_TEMP_R', OPERATION = 'EXTR',
+   RESULTAT  = rther04, NOM_CHAM  = 'TEMP',
+   INST      = 0.0,
+)
+# D.3
+chpnodif=COMB_CHAM_NO(
+  COMB_R=(_F(CHAM_NO=chpnoprj, COEF_R=  1.0),
+          _F(CHAM_NO=chpnocal, COEF_R= -1.0),),
+)
+# D.4
+rdiffer=CREA_RESU(
+   OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+   NOM_CHAM='TEMP',
+   AFFE=(_F(CHAM_GD=chpnodif, INST=1.0,),),
+)
+# D.5
+TEST_RESU(
+  RESU=(_F(RESULTAT=rdiffer, INST=1.0, NOM_CHAM='TEMP',
+           REFERENCE = 'NON_REGRESSION', VERSION='7.02',
+           CRITERE='ABSOLU', TYPE_TEST='MAX',
+           PRECISION= 1.0E-4, VALE=  0.0,),
+        _F(RESULTAT=rdiffer, INST=1.0, NOM_CHAM='TEMP',
+           REFERENCE = 'NON_REGRESSION', VERSION='7.02',
+           CRITERE='ABSOLU', TYPE_TEST='MIN',
+           PRECISION= 1.0E-4, VALE=  0.0,),),
+)
+
+# ==========================================================
+# Impression au format GMSH
+if ( ficgmsh == 1 ):
+  DEFI_FICHIER (FICHIER='GMSH08',UNITE=55)
+  IMPR_RESU( FORMAT='GMSH', UNITE=55, VERSION=1.2, 
+    MODELE=mode08,
+    RESU=_F(MAILLAGE=mail08,
+            RESULTAT=rther08,
+            NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
+  )
+  DEFI_FICHIER (ACTION='LIBERER',UNITE=55)
+
+  DEFI_FICHIER (FICHIER='GMSH',UNITE=56)
+  IMPR_RESU( FORMAT='GMSH', UNITE=56, VERSION=1.2, 
+    MODELE=mode04,
+    RESU=(_F(MAILLAGE=mail04,
+             RESULTAT=rprojec,
+             NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
+          _F(RESULTAT=rther04,
+             NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
+          _F(RESULTAT=rdiffer,
+             NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
+          _F(RESULTAT=chp01,
+             NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
+          _F(RESULTAT=chp02,
+             NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
+          _F(RESULTAT=chpsy,
+             NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
+          ),
+  )
+  DEFI_FICHIER (ACTION='LIBERER',UNITE=56)
+
+
+FIN()

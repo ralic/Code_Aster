@@ -1,0 +1,656 @@
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# TITRE AEROREFRIGERANT SOUMIS A UNE EXCITATION SOL
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# ELEMENTS  : QUAD4 DKT
+# REFERENCE : SAMCEF
+#-------------------------------------------------------------
+
+
+DEBUT(CODE=_F( NOM = 'SDLS300A',NIV_PUB_WEB='INTERNET'))
+
+MAYA=LIRE_MAILLAGE( )
+
+#
+# DEFINITION DU MODELE
+#
+
+STRUC=AFFE_MODELE(    MAILLAGE=MAYA,
+                               AFFE=_F(  GROUP_MA = 'TOUT',
+                                      MODELISATION = 'DKT',
+                                      PHENOMENE = 'MECANIQUE'))
+
+#
+# DEFINITION DES PROPRIETES PHYSIQUES
+#
+
+ACIER=DEFI_MATERIAU(         
+                         ELAS=_F(  RHO = 2244.,
+                           NU = 0.166,
+                           E = 2.76E10))
+
+MATER=AFFE_MATERIAU(    MAILLAGE=MAYA,
+                                 AFFE=_F(  GROUP_MA = 'TOUT',
+                                        MATER = ACIER))
+
+CARA=AFFE_CARA_ELEM(      MODELE=STRUC,
+                                 COQUE=_F(  GROUP_MA = 'TOUT',
+                                         EPAIS = 0.305)
+                          )
+
+#
+# DEFINITION DES CONDITIONS AUX LIMITES
+#
+
+FIXA=AFFE_CHAR_MECA(      MODELE=STRUC,
+                              #(GROUP_NO : SYMETRIE
+                                       #       DY : 0.
+                                       #      DRX : 0.
+                                       #      DRZ : 0.  )
+
+                                       DDL_IMPO=_F(  GROUP_NO = 'FIXA',
+                                               DX = 0.,
+                                               DY = 0.,
+                                               DZ = 0.,
+                                               DRX = 0.,
+                                               DRY = 0.,
+                                               DRZ = 0.)
+                          )
+
+# CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITE ET DE MASSE
+
+K_ELEM=CALC_MATR_ELEM(        MODELE=STRUC,
+                                 CARA_ELEM=CARA,
+                                    CHARGE=FIXA,
+                                CHAM_MATER=MATER,
+                                   OPTION='RIGI_MECA' )
+
+M_ELEM=CALC_MATR_ELEM(        MODELE=STRUC,
+                                 CARA_ELEM=CARA,
+                                    CHARGE=FIXA,
+                                CHAM_MATER=MATER,
+                                   OPTION='MASS_MECA' )
+
+# NUMEROTATION
+
+NUMERO=NUME_DDL(    MATR_RIGI=K_ELEM )
+
+# ASSEMBLAGE DES MATRICES DE RIGIDITE ET DE MASSE
+
+
+K_ASSE=ASSE_MATRICE(    MATR_ELEM=K_ELEM,
+                             NUME_DDL=NUMERO  )
+
+M_ASSE=ASSE_MATRICE(    MATR_ELEM=M_ELEM,
+                             NUME_DDL=NUMERO   )
+
+TABL_MAS=POST_ELEM(        MODELE=STRUC,
+                          CHAM_MATER=MATER,
+                           CARA_ELEM=CARA,
+                          MASS_INER=_F(  TOUT = 'OUI')
+                      )
+
+MODE1=MACRO_MODE_MECA(    MATR_A=K_ASSE,
+                               MATR_B=M_ASSE,
+
+                               CALC_FREQ=_F(  FREQ_MIN = 1.,    
+                                           FREQ_MAX = 7.,    
+                                           COEF_DIM_ESPACE = 3,
+                                           NB_BLOC_FREQ = 6),
+                                NORM_MODE=_F(  NORME = 'TRAN_ROTA',
+                                            MASS_INER = TABL_MAS),
+                      FILTRE_MODE=_F(  CRIT_EXTR = 'MASS_EFFE_UN'),
+                       IMPRESSION=_F(  CUMUL = 'OUI')
+
+                            )
+
+TEST_RESU(RESU=(
+   _F(   RESULTAT = MODE1,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 1.E-7,
+           NUME_MODE = 47,
+           VALE = 2.800653445E+00,
+           REFERENCE = 'NON_REGRESSION',
+           VERSION = '5.4.4'),
+
+   _F(   RESULTAT = MODE1,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 1.E-7,
+           NUME_MODE = 48,
+           VALE = 2.800653445E+00,
+           REFERENCE = 'NON_REGRESSION',
+           VERSION = '5.4.4'),
+
+   _F(   RESULTAT = MODE1,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 1.E-7,
+           NUME_MODE = 158,
+           VALE = 5.924906673E+00,
+           REFERENCE = 'NON_REGRESSION',
+           VERSION = '5.4.4'),
+
+   _F(   RESULTAT = MODE1,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 1.E-7,
+           NUME_MODE = 159,
+           VALE = 5.924906673E+00,
+           REFERENCE = 'NON_REGRESSION',
+           VERSION = '5.4.4'))
+        )
+
+FIN( )
+#
+#
+## ON NE TESTE QUE LA PARTIE ANALYSE MODALE
+## LE RESTE EST CONSERVE MAIS PAS TESTE
+##
+## INTERSPECTRE D EXCITATION
+##
+#
+#SPECT   = DEFI_FONCTION ( NOM_PARA    : 'FREQ'
+#                          NOM_RESU    : 'VITE'
+#                          INTERPOL    : 'LOG'
+#                          PROL_DROITE  : 'CONSTANT'
+#                          PROL_GAUCHE : 'CONSTANT'
+#                          VALE        : (
+#    3.33000E-01    8.50311E-01
+#    5.00000E-01    1.23685E+00
+#    6.66000E-01    1.59433E+00
+#    1.00000E+00    2.23430E+00
+#    1.25000E+00    2.69313E+00
+#    1.66600E+00    3.32352E+00
+#    2.29000E+00    4.05612E+00
+#    2.50000E+00    4.18931E+00
+#    2.70000E+00    4.30901E+00
+#    3.33300E+00    4.52135E+00
+#    3.88000E+00    4.58077E+00
+#    5.00000E+00    4.30712E+00
+#    5.75000E+00    4.31011E+00
+#    6.66600E+00    3.82817E+00
+#    7.72000E+00    3.57006E+00
+#    9.11000E+00    3.48590E+00
+#    1.00000E+01    2.87142E+00
+#    1.25000E+01    2.38761E+00
+#    1.66660E+01    2.12573E+00
+#    2.50000E+01    2.08916E+00
+#    3.33330E+01    1.91279E+00
+#    5.00000E+01    1.95501E+00
+#                                        )
+#                        );
+#
+##
+#SPECT_X   = DEFI_NAPPE( NOM_PARA : 'AMOR'
+#                        INTERPOL : ( 'LIN'  'LOG' )
+#                        PARA     : ( 0.02
+#                                   )
+#                        FONCTION : ( SPECT
+#                                   )
+#                      ) ;
+##
+#MODE_STA = MODE_STATIQUE ( MATR_RIGI : K_ASSE
+#                           MATR_MASS : M_ASSE
+#                            PSEUDO_MODE: ( AXE: ('X')
+#                                       )
+#                         ) ;
+##
+##
+##
+#SISMC   = COMB_SISM_MODAL( MODE_MECA : MODE1
+#                           AMOR_REDUIT      : (0.02  0.02
+#                                               0.02  0.02
+#                                       )
+#                           MASS_INER : TABL_MAS
+#                           CORR_FREQ : 'OUI'
+#                           EXCIT     : (MONO_APPUI : 'OUI'
+#                                        AXE        : ( 1.  0.  0. )
+#                                        SPEC_OSCI  : SPECT_X
+#                                        NATURE     : 'ACCE'
+#                                       )
+#                           COMB_MODE : (TYPE : 'CQC' )
+#                           OPTION    : ('DEPL'
+#                                       )
+#                        ) ;
+##
+#SISMS   = COMB_SISM_MODAL( MODE_MECA : MODE1
+#                           AMOR_REDUIT      : (0.02  0.02
+#                                               0.02  0.02
+#                                       )
+#                           MASS_INER : TABL_MAS
+#                           CORR_FREQ : 'OUI'
+#                           EXCIT     : (MONO_APPUI : 'OUI'
+#                                        AXE        : ( 1.  0.  0. )
+#                                        SPEC_OSCI  : SPECT_X
+#                                        NATURE     : 'ACCE'
+#                                       )
+#                           COMB_MODE : (TYPE : 'SRSS' )
+#                           OPTION    : ('DEPL'
+#                                       )
+#                        ) ;
+##
+#DEPLMOC  = CREA_CHAMP ( OPERATION:'EXTR' TYPE_CHAM:'NOEU_DEPL_R'
+#                       RESULTAT  : SISMC
+#                       NOM_CHAM  : 'DEPL'
+#                       NOEUD_CMP : ( 'DIR' 'X' )
+###                       TITRE     : 'CHAMP DE DEPLACEMENT'
+#                     ) ;
+##
+#DEPLMOS  = CREA_CHAMP ( OPERATION:'EXTR' TYPE_CHAM:'NOEU_DEPL_R'
+#                       RESULTAT  : SISMS
+#                       NOM_CHAM  : 'DEPL'
+#                       NOEUD_CMP : ( 'DIR' 'X' )
+###                       TITRE     : 'CHAMP DE DEPLACEMENT'
+#                     ) ;
+##
+## PM1  : POINT DE MESURE 1  ALITITUDE 12.7
+## PM2  : POINT DE MESURE 2  ALITITUDE 25.4
+## PM3  : POINT DE MESURE 3  ALITITUDE 38.1
+## PM4  : POINT DE MESURE 4  ALITITUDE 50.8
+## PM5  : POINT DE MESURE 5  ALITITUDE 63.5
+## PM6  : POINT DE MESURE 6  ALITITUDE 76.2
+## PM7  : POINT DE MESURE 7  ALITITUDE 88.9
+## PM8  : POINT DE MESURE 8  ALITITUDE 101.6
+## PM9  : POINT DE MESURE 9  ALITITUDE 111.3
+## PM10 : POINT DE MESURE 10 ALITITUDE 127.0
+##
+## TEST_RESU POUR LA RECOMBINNAISON SRSS
+##
+#TEST_RESU( CHAM_NO : ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.44
+#                       GROUP_NO  : PM1
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 1.31666E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.065
+#                       GROUP_NO  : PM2
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 1.48509E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.112
+#                       GROUP_NO  : PM3
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 1.89824E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.203
+#                       GROUP_NO  : PM4
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 2.44282E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.187
+#                       GROUP_NO  : PM5
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 3.27575E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.086
+#                       GROUP_NO  : PM6
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 4.56822E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.036
+#                       GROUP_NO  : PM7
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 5.91846E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.047
+#                       GROUP_NO  : PM8
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 7.02442E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.077
+#                       GROUP_NO  : PM9
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 7.67736E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.066
+#                       GROUP_NO  : PM10
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 9.05470E-03
+#                     )
+##
+## DIRECTION Z
+##
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.111
+#                       GROUP_NO  : PM1
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 4.54094E-04
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.193
+#                       GROUP_NO  : PM2
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 6.83260E-04
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.073
+#                       GROUP_NO  : PM3
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 1.09126E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.03
+#                       GROUP_NO  : PM4
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 1.51084E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.05
+#                       GROUP_NO  : PM5
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 1.79577E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.026
+#                       GROUP_NO  : PM6
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 1.94596E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.013
+#                       GROUP_NO  : PM7
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 2.02569E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.034
+#                       GROUP_NO  : PM8
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 2.11550E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.045
+#                       GROUP_NO  : PM9
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 2.18883E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.042
+#                       GROUP_NO  : PM10
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 2.35815E-03
+#                     )
+##
+## DIRECTION Y
+##
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.008
+#                       GROUP_NO  : PM1
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 4.69713E-04
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.071
+#                       GROUP_NO  : PM2
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 1.00203E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.054
+#                       GROUP_NO  : PM3
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 1.72594E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.026
+#                       GROUP_NO  : PM4
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 2.63889E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.012
+#                       GROUP_NO  : PM5
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 3.68596E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.008
+#                       GROUP_NO  : PM6
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 4.82834E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.005
+#                       GROUP_NO  : PM7
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 6.04770E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.005
+#                       GROUP_NO  : PM8
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 7.27929E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.005
+#                       GROUP_NO  : PM9
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 8.17896E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOS
+#                       PRECISION : 0.005
+#                       GROUP_NO  : PM10
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 9.50208E-03
+#                     )
+#           ) ;
+##
+## TEST_RESU POUR LA RECOMBINNAISON ABS
+##
+#TEST_RESU( CHAM_NO : ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.44
+#                       GROUP_NO  : PM1
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 1.31837E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.063
+#                       GROUP_NO  : PM2
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 1.48461E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.113
+#                       GROUP_NO  : PM3
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 1.89823E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.203
+#                       GROUP_NO  : PM4
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 2.44484E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.19
+#                       GROUP_NO  : PM5
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 3.27824E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.086
+#                       GROUP_NO  : PM6
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 4.57068E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.037
+#                       GROUP_NO  : PM7
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 5.91874E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.048
+#                       GROUP_NO  : PM8
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 7.02369E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.077
+#                       GROUP_NO  : PM9
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 7.67798E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.066
+#                       GROUP_NO  : PM10
+#                       NOM_CMP   : 'DX'
+#                       VALE      : 9.05338E-03
+#                     )
+##
+## DIRECTION Z
+##
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.111
+#                       GROUP_NO  : PM1
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 4.53492E-04
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.193
+#                       GROUP_NO  : PM2
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 6.83221E-04
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.073
+#                       GROUP_NO  : PM3
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 1.09108E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.03
+#                       GROUP_NO  : PM4
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 1.51002E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.05
+#                       GROUP_NO  : PM5
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 1.79470E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.026
+#                       GROUP_NO  : PM6
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 1.94471E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.013
+#                       GROUP_NO  : PM7
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 2.02447E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.034
+#                       GROUP_NO  : PM8
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 2.11424E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.045
+#                       GROUP_NO  : PM9
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 2.18745E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.041
+#                       GROUP_NO  : PM10
+#                       NOM_CMP   : 'DZ'
+#                       VALE      : 2.35640E-03
+#                     )
+##
+## DIRECTION Y
+##
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.008
+#                       GROUP_NO  : PM1
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 4.70292E-04
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.071
+#                       GROUP_NO  : PM2
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 1.00281E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.055
+#                       GROUP_NO  : PM3
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 1.72688E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.026
+#                       GROUP_NO  : PM4
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 2.64023E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.012
+#                       GROUP_NO  : PM5
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 3.68752E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.008
+#                       GROUP_NO  : PM6
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 4.82951E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.005
+#                       GROUP_NO  : PM7
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 6.04815E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.005
+#                       GROUP_NO  : PM8
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 7.27939E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.005
+#                       GROUP_NO  : PM9
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 8.17890E-03
+#                     )
+#                     ( CHAM_GD   : DEPLMOC
+#                       PRECISION : 0.005
+#                       GROUP_NO  : PM10
+#                       NOM_CMP   : 'DY'
+#                       VALE      : 9.50099E-03
+#                     )
+#           ) ;
+#
+#
+#FIN();
+#

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE POUTRE ENCASTREE ET MASSE CONCENTREE SOUMISE A UNE FORCE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -183,9 +183,6 @@ MODE1=CALC_NO(reuse=MODE1,     RESULTAT=MODE1,
                        MODELE=MO,            OPTION='FORC_NODA', 
                      CHAM_MATER=CHMAT,
                       CARA_ELEM=CARAELEM       )
-
-IMPR_RESU( RESU=_F(  RESULTAT = MODE1,
-                   NOEUD = 'N21')  )
 
 #
 # TEST_RESU

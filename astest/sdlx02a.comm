@@ -1,0 +1,452 @@
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# TITRE PROBLEME DE HOVGAARD: CALCUL MODAL ET CALCUL SPECTRAL
+# ======================================================================
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+
+DEBUT( CODE=_F(  NOM = 'SDLX02A',NIV_PUB_WEB='INTERNET') )
+
+MAILLAGE=LIRE_MAILLAGE( )
+
+MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
+                  _F(  GROUP_MA = 'POU_D_T',  PHENOMENE = 'MECANIQUE',
+                         MODELISATION = 'POU_D_T'),
+                       _F(  GROUP_MA = 'POU_C_T',  PHENOMENE = 'MECANIQUE',
+                         MODELISATION = 'POU_C_T'))                  )
+
+#
+
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 1.658E+11,  RHO = 1.3404106E+04,
+                                   NU = 0.3,  ALPHA = 1.288E-05)    )
+
+CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
+                            AFFE=_F(  GROUP_MA = 'MAT_1',  MATER = MAT) )
+
+COND_LIM=AFFE_CHAR_MECA(  MODELE=MODELE,
+                         DDL_IMPO=_F(  GROUP_NO = 'ENCASTRE',
+                                    DX = 0.,  DY = 0.,  DZ = 0.,
+                                    DRX = 0.,  DRY = 0.,  DRZ = 0.)   )
+
+#
+
+CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,POUTRE=(
+                  _F(  GROUP_MA = 'SEC_1',  SECTION = 'GENERALE',
+                           CARA = ( 'A',  'IZ', 'IY', 'AY', 'AZ', 'JX',
+                                  'EZ', 'EY', 'RY', 'RZ', 'RT',      ),
+                           VALE = ( 3.4390E-03,  1.3770E-05,  1.3770E-05,
+                                  2.0,  2.0,  2.7540E-05,  0.0,  0.0,
+                                  1.0,  1.0,  1.0,        )),
+                         _F(  GROUP_MA = 'SEC_2', SECTION = 'GENERALE',
+                           CARA = ( 'A',  'IZ', 'IY', 'AY', 'AZ', 'JX',
+                                  'EZ', 'EY', 'RY', 'RZ', 'RT',      ),
+                           VALE = ( 3.4390E-03, 5.8870E-06, 5.8870E-06,
+                                  2.0,  2.0,  2.7540E-05,  0.0,  0.0,
+                                  1.0,  1.0,  1.0,        ))),DEFI_ARC=(
+                  _F(  MAILLE = 'E3',  ORIE_ARC = 90., RAYON = 0.922),
+                           _F(  MAILLE = 'E4',  ORIE_ARC = 90., RAYON = 0.922),
+                           _F(  MAILLE = 'E9',  ORIE_ARC = 0., RAYON = 0.922),
+                           _F(  MAILLE = 'E10', ORIE_ARC = 0., RAYON = 0.922)) )
+
+#
+
+RIGI_ELE=CALC_MATR_ELEM(  MODELE=MODELE,   OPTION='RIGI_MECA',
+                              CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                              CHARGE=( COND_LIM, )                   )
+
+MASS_ELE=CALC_MATR_ELEM(  MODELE=MODELE,   OPTION='MASS_MECA',
+                              CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                              CHARGE=( COND_LIM, )                   )
+
+MASS_ELD=CALC_MATR_ELEM(  MODELE=MODELE,   OPTION='MASS_MECA_DIAG',
+                              CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                              CHARGE=( COND_LIM, )                   )
+
+NUME_DDL=NUME_DDL(  MATR_RIGI=RIGI_ELE)
+
+RIGIDITE=ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,   NUME_DDL=NUME_DDL )
+
+MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,   NUME_DDL=NUME_DDL )
+
+MASSE_DI=ASSE_MATRICE(  MATR_ELEM=MASS_ELD,   NUME_DDL=NUME_DDL )
+
+TABL_MAS=POST_ELEM(  MODELE=MODELE,
+                         CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                        MASS_INER=_F(  TOUT = 'OUI')                   )
+
+MODE=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,   MATR_B=MASSE,
+                    METHODE='TRI_DIAG',
+                  CALC_FREQ=_F(  NMAX_FREQ = 9) )
+
+MODE_DIA=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,   MATR_B=MASSE_DI,
+                    METHODE='TRI_DIAG',
+                  CALC_FREQ=_F(  NMAX_FREQ = 9) )
+
+MODE_DIA=NORM_MODE(reuse=MODE_DIA,   MODE=MODE_DIA,   NORME='TRAN_ROTA',
+                         MASS_INER=TABL_MAS                 )
+
+MODE_DIA=CALC_ELEM(reuse=MODE_DIA,  MODELE=MODELE,  RESULTAT=MODE_DIA,
+                         OPTION=( 'SIEF_ELGA_DEPL', 'EFGE_ELNO_DEPL', ),
+                         CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE  )
+
+MODE_DIA=CALC_NO(reuse=MODE_DIA,  RESULTAT=MODE_DIA,
+                   MODELE=MODELE,   OPTION='REAC_NODA',
+                       CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE    )
+
+TEST_RESU(RESU=( 
+       _F( RESULTAT = MODE,      NUME_MODE = 1,  PRECISION = 0.006, 
+                             PARA = 'FREQ',  VALE = 10.39),
+       _F( RESULTAT = MODE,      NUME_MODE = 2,  PRECISION = 0.006, 
+                             PARA = 'FREQ',  VALE = 20.02),
+       _F( RESULTAT = MODE,      NUME_MODE = 3,  PRECISION = 0.005, 
+                             PARA = 'FREQ',  VALE = 25.45),
+       _F( RESULTAT = MODE,      NUME_MODE = 4,  PRECISION = 0.030, 
+                             PARA = 'FREQ',  VALE = 48.32),
+       _F( RESULTAT = MODE,      NUME_MODE = 5,  PRECISION = 0.016, 
+                             PARA = 'FREQ',  VALE = 52.60),
+       _F( RESULTAT = MODE,      NUME_MODE = 6,  PRECISION = 0.029, 
+                             PARA = 'FREQ',  VALE = 84.81),
+       _F( RESULTAT = MODE,      NUME_MODE = 7,  PRECISION = 0.035, 
+                             PARA = 'FREQ',  VALE = 87.16),
+       _F( RESULTAT = MODE,      NUME_MODE = 8,  PRECISION = 0.007, 
+                             PARA = 'FREQ',  VALE = 129.31),
+       _F( RESULTAT = MODE,      NUME_MODE = 9,  PRECISION = 0.001, 
+                             PARA = 'FREQ',  VALE = 131.69)) )
+
+#
+
+TEST_RESU(RESU=( 
+       _F( RESULTAT = MODE_DIA,  NUME_MODE = 1,  PRECISION = 0.005, 
+                             PARA = 'FREQ',  VALE = 10.18),
+       _F( RESULTAT = MODE_DIA,  NUME_MODE = 2,  PRECISION = 0.005, 
+                             PARA = 'FREQ',  VALE = 19.54),
+       _F( RESULTAT = MODE_DIA,  NUME_MODE = 3,  PRECISION = 0.005, 
+                             PARA = 'FREQ',  VALE = 25.47),
+       _F( RESULTAT = MODE_DIA,  NUME_MODE = 4,  PRECISION = 0.008, 
+                             PARA = 'FREQ',  VALE = 48.09),
+       _F( RESULTAT = MODE_DIA,  NUME_MODE = 5,  PRECISION = 0.010, 
+                             PARA = 'FREQ',  VALE = 52.86),
+       _F( RESULTAT = MODE_DIA,  NUME_MODE = 6,  PRECISION = 0.011, 
+                             PARA = 'FREQ',  VALE = 75.94),
+       _F( RESULTAT = MODE_DIA,  NUME_MODE = 7,  PRECISION = 0.010, 
+                             PARA = 'FREQ',  VALE = 80.11),
+       _F( RESULTAT = MODE_DIA,  NUME_MODE = 8,  PRECISION = 0.015, 
+                             PARA = 'FREQ',  VALE = 122.34),
+       _F( RESULTAT = MODE_DIA,  NUME_MODE = 9,  PRECISION = 0.015, 
+                             PARA = 'FREQ',  VALE = 123.15)) )
+
+#
+
+MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE_DI,
+                             PSEUDO_MODE=_F(  AXE = ( 'X',  'Y',  'Z', ))  )
+
+T_RELE = POST_RELEVE_T ( ACTION=_F( INTITULE = 'MO_ST',
+                                    NOEUD    = 'N1000',
+                                    RESULTAT = MODE_STA,
+                                    NOM_CHAM = 'DEPL',
+                                    TOUT_CMP = 'OUI',
+                                    OPERATION= 'EXTRACTION',),)
+IMPR_TABLE ( TABLE = T_RELE,
+             NOM_PARA = ('NOEUD','NUME_ORDRE','DX','DY','DZ','NOEUD_CMP',), )
+
+MODE_STA=CALC_ELEM(reuse=MODE_STA,  MODELE=MODELE,  RESULTAT=MODE_STA,
+                         OPTION=( 'SIEF_ELGA_DEPL', 'EFGE_ELNO_DEPL', ),
+                         CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE   )
+
+MODE_STA=CALC_NO(reuse=MODE_STA,  RESULTAT=MODE_STA,
+                    MODELE=MODELE,   OPTION='REAC_NODA',
+                       CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE     )
+
+#
+
+ACCE_XY=DEFI_FONCTION(  NOM_PARA='FREQ',    INTERPOL='LOG',
+                            VALE=(     1.0,   1.962,   10.0,   19.62,
+                                      30.0,  19.62,   100.0,    1.962,
+                                   10000.0,   1.962,          )       )
+
+ACCE_Z=DEFI_FONCTION(  NOM_PARA='FREQ',    INTERPOL='LOG',
+                            VALE=(     1.0,   0.981,   10.0,    9.81,
+                                      30.0,   9.81,   100.0,    0.981,
+                                   10000.0,   0.981,          )       )
+
+SPECT_XY=DEFI_NAPPE(  NOM_PARA='AMOR',
+                            INTERPOL=( 'LIN', 'LOG', ),
+                          PARA=(     0.015,   0.02,    0.025,  ),
+                          FONCTION=( ACCE_XY,  ACCE_XY,  ACCE_XY, )  )
+
+SPECT_Z=DEFI_NAPPE(  NOM_PARA='AMOR',
+                            INTERPOL=( 'LIN', 'LOG', ),
+                          PARA=(     0.015,   0.02,    0.025,  ),
+                          FONCTION=( ACCE_Z,   ACCE_Z,   ACCE_Z,  )  )
+
+#
+
+SISM_SPE=COMB_SISM_MODAL(  MODE_MECA=MODE_DIA,
+                                AMOR_REDUIT=0.02,
+                               MASS_INER=TABL_MAS,
+                               CORR_FREQ='NON',
+                              EXCIT=_F(  MONO_APPUI = 'OUI',
+                                      TRI_SPEC = 'OUI',
+                                      SPEC_OSCI = ( SPECT_XY,  SPECT_XY, 
+                                                   SPECT_XY, ),
+                                      ECHELLE = ( 1.,  1.,  0.5, )),
+                              COMB_MODE=_F(  TYPE = 'SRSS'),
+                              COMB_DIRECTION=_F(  TYPE = 'QUAD'),
+                                OPTION=( 'DEPL',  'EFGE_ELNO_DEPL', 
+                                         'REAC_NODA', )
+                            )
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N300',  NOM_CMP = 'DX',    VALE = 4.847E-03),
+                   _F(  RESULTAT = SISM_SPE, NOM_CHAM = 'DEPL', NUME_ORDRE = 4,
+                     NOEUD = 'N300',  NOM_CMP = 'DY',    VALE = 2.192E-03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N300',  NOM_CMP = 'DZ',    VALE = 2.735E-06),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N500',  NOM_CMP = 'DX',    VALE = 4.808E-03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N500',  NOM_CMP = 'DY',    VALE = 2.914E-03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N500',  NOM_CMP = 'DZ',    VALE = 6.507E-04),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N700',  NOM_CMP = 'DX',    VALE = 3.588E-03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N700',  NOM_CMP = 'DY',    VALE = 2.914E-03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N700',  NOM_CMP = 'DZ',    VALE = 8.599E-04),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N900',  NOM_CMP = 'DX',    VALE = 2.342E-03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N900',  NOM_CMP = 'DY',    VALE = 2.913E-03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N900',  NOM_CMP = 'DZ',    VALE = 1.027E-03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N1100',  NOM_CMP = 'DX',   VALE = 3.009E-06),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N1100',  NOM_CMP = 'DY',   VALE = 9.375E-04),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N1100',  NOM_CMP = 'DZ',   VALE = 3.364E-04))
+             )
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N100',  NOM_CMP = 'DX',    VALE = 2.132E+03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N100',  NOM_CMP = 'DY',    VALE = 1.241E+03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N100',  NOM_CMP = 'DZ',    VALE = 5.646E+02),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N100',  NOM_CMP = 'DRX',   VALE = 2.352E+03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N100',  NOM_CMP = 'DRY',   VALE = 4.746E+03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N100',  NOM_CMP = 'DRZ',   VALE = 9.373E+02),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N1500',  NOM_CMP = 'DX',   VALE = 1.653E+03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N1500',  NOM_CMP = 'DY',   VALE = 3.354E+03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N1500',  NOM_CMP = 'DZ',   VALE = 8.937E+02),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N1500',  NOM_CMP = 'DRX',  VALE = 1.708E+02),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N1500',  NOM_CMP = 'DRY',  VALE = 1.668E+03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N1500',  NOM_CMP = 'DRZ',  VALE = 4.903E+03))
+            )
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E2',
+                     NOEUD = 'N300',  NOM_CMP = 'N',     VALE = 5.599E+02),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E2',
+                     NOEUD = 'N300',  NOM_CMP = 'VY',    VALE = 4.308E+02),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E2',
+                     NOEUD = 'N300',  NOM_CMP = 'VZ',    VALE = 9.149E+02),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E2',
+                     NOEUD = 'N300',  NOM_CMP = 'MT',    VALE = 9.325E+02),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E2',
+                     NOEUD = 'N300',  NOM_CMP = 'MFY',   VALE = 5.873E+02),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E2',
+                     NOEUD = 'N300',  NOM_CMP = 'MFZ',   VALE = 6.204E+02),
+
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E7',
+                     NOEUD = 'N700',  NOM_CMP = 'N',     VALE = 1.625E+03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E7',
+                     NOEUD = 'N700',  NOM_CMP = 'VY',    VALE = 1.367E+03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E7',
+                     NOEUD = 'N700',  NOM_CMP = 'VZ',    VALE = 2.254E+02),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E7',
+                     NOEUD = 'N700',  NOM_CMP = 'MT',    VALE = 6.496E+02),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E7',
+                     NOEUD = 'N700',  NOM_CMP = 'MFY',   VALE = 4.998E+02),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E7',
+                     NOEUD = 'N700',  NOM_CMP = 'MFZ',   VALE = 9.087E+02),
+
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E11',
+                     NOEUD = 'N1100', NOM_CMP = 'N',     VALE = 1.652E+03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E11',
+                     NOEUD = 'N1100', NOM_CMP = 'VY',    VALE = 3.177E+03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E11',
+                     NOEUD = 'N1100', NOM_CMP = 'VZ',    VALE = 7.957E+02),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E11',
+                     NOEUD = 'N1100', NOM_CMP = 'MT',    VALE = 1.706E+02),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E11',
+                     NOEUD = 'N1100', NOM_CMP = 'MFY',   VALE = 9.247E+02),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E11',
+                     NOEUD = 'N1100', NOM_CMP = 'MFZ',   VALE = 2.150E+03))
+            )
+
+# ----------------------------------------------------------------------
+#      COMPARAISON AVEC POUX, POUR VALIDER L'OPTION CORR_FREQ
+# ----------------------------------------------------------------------
+
+SISM_SIS=COMB_SISM_MODAL(  MODE_MECA=MODE_DIA,
+                                 AMOR_REDUIT=0.02,
+                               CORR_FREQ='OUI',
+                               MASS_INER=TABL_MAS,
+                              EXCIT=_F(  MONO_APPUI = 'OUI',
+                                      TRI_SPEC = 'OUI',
+                                      SPEC_OSCI = ( SPECT_XY,  SPECT_XY, 
+                                                   SPECT_Z,  ),
+                                      ECHELLE = ( 1.,  1.,  1., )),
+                              COMB_MODE=_F(  TYPE = 'SRSS'),
+                              COMB_DIRECTION=_F(  TYPE = 'QUAD'),
+                                OPTION=( 'DEPL',  'EFGE_ELNO_DEPL', 
+                                         'REAC_NODA', )
+                            )
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N300',  NOM_CMP = 'DX',    VALE = 4.847E-03),
+
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N300',  NOM_CMP = 'DY',    VALE = 2.192E-03),
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N700',  NOM_CMP = 'DX',    VALE = 3.588E-03),
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N700',  NOM_CMP = 'DY',    VALE = 2.914E-03),
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N700',  NOM_CMP = 'DRY',   VALE = 1.436E-03),
+
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'REAC_NODA',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N100',  NOM_CMP = 'DX',    VALE = 2.132E+03),
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'REAC_NODA',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N100',  NOM_CMP = 'DY',    VALE = 1.241E+03),
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'REAC_NODA',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N100',  NOM_CMP = 'DZ',    VALE = 5.646E+02),
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'REAC_NODA',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N1500', NOM_CMP = 'DRX',   VALE = 1.708E+02),
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'REAC_NODA',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N1500', NOM_CMP = 'DRY',   VALE = 1.668E+03),
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'REAC_NODA',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'N1500', NOM_CMP = 'DRZ',   VALE = 4.903E+03),
+
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E1',
+                     NOEUD = 'N100',  NOM_CMP = 'N',     VALE = 5.646E+02),
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E1',
+                     NOEUD = 'N100',  NOM_CMP = 'VY',    VALE = 1.241E+03),
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E1',
+                     NOEUD = 'N100',  NOM_CMP = 'VZ',    VALE = 2.132E+03),
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E1',
+                     NOEUD = 'N200',  NOM_CMP = 'MT',    VALE = 9.362E+02),
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E1',
+                     NOEUD = 'N200',  NOM_CMP = 'MFY',   VALE = 1.857E+03),
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E1',
+                     NOEUD = 'N200',  NOM_CMP = 'MFZ',   VALE = 7.596E+02),
+
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E10',
+                     NOEUD = 'N1000', NOM_CMP = 'N',     VALE = 2.454E+03),
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E10',
+                     NOEUD = 'N1000', NOM_CMP = 'VY',    VALE = 1.997E+03),
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E10',
+                     NOEUD = 'N1000', NOM_CMP = 'VZ',    VALE = 5.050E+02),
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E10',
+                     NOEUD = 'N1100', NOM_CMP = 'MT',    VALE = 1.706E+02),
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E10',
+                     NOEUD = 'N1100', NOM_CMP = 'MFY',   VALE = 9.251E+02),
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E10',
+                     NOEUD = 'N1100', NOM_CMP = 'MFZ',   VALE = 2.151E+03))
+            )
+
+#
+
+FIN( )
+#

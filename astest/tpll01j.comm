@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE Calcul d'indicateur d'erreur en thermique lineaire
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,8 +61,6 @@ for k in range(1,nbcalc):
    RESU[k]=THER_LINEAIRE( MODELE=MODE[k],
            CHAM_MATER=MATE[k], EXCIT=_F( CHARGE = CHA1[k]))
 
-###   IMPR_RESU( RESU=_F(RESULTAT = RESU[k], TOUT_PARA='OUI',))
-
 # Calcul de l'indicateur d'erreur
    RESU[k]=CALC_ELEM( reuse=RESU[k], 
               TOUT='OUI', 
@@ -70,8 +68,7 @@ for k in range(1,nbcalc):
 #              INFO=2,
               OPTION=('FLUX_ELNO_TEMP','ERTH_ELEM_TEMP','ERTH_ELNO_ELEM'))
 
-   IMPR_RESU( RESU=_F(FORMAT='MED',
-                    RESULTAT = RESU[k]))
+   IMPR_RESU( FORMAT='MED', RESU=_F( RESULTAT = RESU[k]))
 
    if ( k < nbcalc-1 ) :
 # Adaptation du maillage en se basant sur la composante ERTABS du champ
@@ -110,7 +107,6 @@ TEST_RESU(RESU=(
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
                 VALE = 4.1591876225226E-05,
                 VERSION='V6.2.1',            CRITERE='RELATIF')))
-###IMPR_RESU ( RESU=_F(MAILLAGE=M[2], IMPR_COOR='OUI') )
 TEST_RESU(RESU=(       
             _F( RESULTAT = RESU[2],          NUME_ORDRE = 0, 
                 NOM_CHAM = 'ERTH_ELEM_TEMP', MAILLE = 'M1', 

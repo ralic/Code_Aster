@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2003   AUTEUR GODARD V.GODARD 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TRACTION D'UN BARREAU FRAGILE - PRED_ELAS - ENDO_ISOT_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,25 +167,6 @@ REPONSE=STAT_NON_LINE( reuse=REPONSE,
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 10)
              )
-
-IMPR_RESU(RESU= _F( 
-               RESULTAT = REPONSE,
-               NUME_ORDRE = 41,
-               GROUP_NO = 'E',
-               NOM_CHAM = 'DEPL',
-               NOM_CMP = 'DZ',),)
-IMPR_RESU(RESU=_F( 
-               RESULTAT = REPONSE,
-               NUME_ORDRE = 41,
-               MAILLE = 'M1',
-               NOM_CHAM = 'SIEF_ELGA',
-               NOM_CMP = 'SIZZ',),)
-IMPR_RESU(RESU=_F( 
-               RESULTAT = REPONSE,
-               NUME_ORDRE = 41,
-               MAILLE = 'M1',
-               NOM_CHAM = 'VARI_ELGA',
-               NOM_CMP = 'V1',),)
 
 TABLE = RECU_TABLE(CO=REPONSE, NOM_PARA='ETA_PILOTAGE')
              

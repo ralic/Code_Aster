@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,25 +20,45 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
             UIinfo={"groupes":("Impression",)},
                fr="Impression du résultat d un calcul (différents formats)",
          MODELE          =SIMP(statut='f',typ=modele_sdaster),
-         RESU            =FACT(statut='o',max='**',
-           FORMAT          =SIMP(statut='f',typ='TXM',defaut="RESULTAT",
+
+         FORMAT          =SIMP(statut='f',typ='TXM',defaut="RESULTAT",
                                  into=("RESULTAT","IDEAS","ASTER","CASTEM","ENSIGHT","MED","GMSH") ),
 
-           b_format_ideas  =BLOC(condition="FORMAT=='IDEAS'",fr="version Ideas",
-             VERSION         =SIMP(statut='f',typ='I',defaut=5,into=(4,5)),
-           ),
+         b_format_resultat  =BLOC(condition="FORMAT=='RESULTAT'",fr="unité logique d'impression au format RESULTAT",
+           UNITE           =SIMP(statut='f',typ='I',defaut=8),  
+         ),
 
-           b_format_castem =BLOC(condition="FORMAT=='CASTEM'",fr="version Castem",
-             NIVE_GIBI       =SIMP(statut='f',typ='I',defaut=10,into=(3,10)),
-           ),
+         b_format_ideas  =BLOC(condition="FORMAT=='IDEAS'",fr="unité logique d'impression et version IDEAS",
+           UNITE           =SIMP(statut='f',typ='I',defaut=30),  
+           VERSION         =SIMP(statut='f',typ='I',defaut=5,into=(4,5)),
+         ),
 
-           b_format_gmsh  =BLOC(condition="FORMAT=='GMSH'",fr="version post traitement de GMSH",
-             VERSION         =SIMP(statut='f',typ='R',defaut=1.2,into=(1.0,1.2)),
-           ),
+         b_format_aster  =BLOC(condition="FORMAT=='ASTER'",fr="unité logique d'impression au format ASTER",
+           UNITE           =SIMP(statut='f',typ='I',defaut=26),  
+         ),
+
+         b_format_castem =BLOC(condition="FORMAT=='CASTEM'",fr="unité logique d'impression et version CASTEM",
+           UNITE           =SIMP(statut='f',typ='I',defaut=37),  
+           NIVE_GIBI       =SIMP(statut='f',typ='I',defaut=10,into=(3,10)),
+         ),
+
+         b_format_ensight  =BLOC(condition="FORMAT=='ENSIGHT'",fr="unité logique d'impression au format ENSIGHT",
+           UNITE           =SIMP(statut='f',typ='I',defaut=31),  
+         ),
+
+         b_format_med  =BLOC(condition="FORMAT=='MED'",fr="unité logique d'impression au format MED",
+           UNITE           =SIMP(statut='f',typ='I',defaut=80),  
+         ),
+
+         b_format_gmsh  =BLOC(condition="FORMAT=='GMSH'",fr="unité logique d'impression et version GMSH",
+           UNITE           =SIMP(statut='f',typ='I',defaut=19),  
+           VERSION         =SIMP(statut='f',typ='R',defaut=1.2,into=(1.0,1.2)),
+         ),
+
+         RESU            =FACT(statut='o',max='**',
 
            regles=(AU_MOINS_UN('CHAM_GD','RESULTAT','MAILLAGE'),
-                   EXCLUS('CHAM_GD','RESULTAT'),
-                   EXCLUS('UNITE','FICHIER'),),
+                   EXCLUS('CHAM_GD','RESULTAT'),),
            MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster,squelette)),
            INFO_MAILLAGE   =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
            CHAM_GD         =SIMP(statut='f',typ=cham_gd_sdaster),
@@ -76,53 +96,51 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
                CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
              ),
            ),
-
-           b_parametres    =BLOC(condition="""(RESULTAT != None)and(FORMAT == 'RESULTAT')""",
-             regles=(EXCLUS('TOUT_PARA','NOM_PARA'),),
+###
+###           b_parametres    =BLOC(condition="""(RESULTAT != None)and(FORMAT == 'RESULTAT')""",
+###             regles=(EXCLUS('TOUT_PARA','NOM_PARA'),),
              INFO_RESU       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
              TOUT_PARA       =SIMP(statut='f',typ='TXM',into=("OUI","NON",) ),
              NOM_PARA        =SIMP(statut='f',typ='TXM',max='**'),
              FORM_TABL       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON","EXCEL") ),
-           ),
-
-           b_cmp=BLOC(condition="""((CHAM_GD != None)or(RESULTAT != None))and\
-           ((FORMAT == 'CASTEM')or(FORMAT == 'RESULTAT')or(FORMAT == 'IDEAS')or(FORMAT == 'ENSIGHT')or(FORMAT == 'MED'))""",
-                                 fr="sélection des composantes",
-             regles=(EXCLUS('TOUT_CMP','NOM_CMP'),),
+###           ),
+###
+###           b_cmp=BLOC(condition="""((CHAM_GD != None)or(RESULTAT != None))and\
+###           ((FORMAT == 'CASTEM')or(FORMAT == 'RESULTAT')or(FORMAT == 'IDEAS')or(FORMAT == 'ENSIGHT')or(FORMAT == 'MED'))""",
+###                                 fr="sélection des composantes",
+###             regles=(EXCLUS('TOUT_CMP','NOM_CMP'),),
              TOUT_CMP        =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),
-           ),
-
-           b_gmsh=BLOC(condition="""((CHAM_GD != None)or(RESULTAT != None))and((FORMAT == 'GMSH'))""",
-                                 fr="sélection des composantes et des entités toplogiques",
-             NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),
-             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-             GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           ),
-
-           b_topologie=BLOC(condition="""((CHAM_GD != None)or(RESULTAT != None))and\
-                                   ((FORMAT == 'RESULTAT')or(FORMAT == 'IDEAS')or(FORMAT == 'MED'))""",
-                                   fr="sélection des entités toplogiques",
+###           ),
+###
+###           b_gmsh=BLOC(condition="""((CHAM_GD != None)or(RESULTAT != None))and((FORMAT == 'GMSH'))""",
+###                                 fr="sélection des composantes et des entités toplogiques",
+###             NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),
+###             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+###             GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+###           ),
+###
+###           b_topologie=BLOC(condition="""((CHAM_GD != None)or(RESULTAT != None))and\
+###                                   ((FORMAT == 'RESULTAT')or(FORMAT == 'IDEAS')or(FORMAT == 'MED'))""",
+###                                   fr="sélection des entités toplogiques",
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
              GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
              MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           ),
-
-           b_valeurs         =BLOC(condition="(FORMAT == 'RESULTAT')",
-                                   fr="sélection sur les valeurs",
+###           ),
+###
+###           b_valeurs         =BLOC(condition="(FORMAT == 'RESULTAT')",
+###                                   fr="sélection sur les valeurs",
              VALE_MAX        =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              VALE_MIN        =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              BORNE_SUP       =SIMP(statut='f',typ='R'),
              BORNE_INF       =SIMP(statut='f',typ='R'),
              IMPR_COOR       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
              FORMAT_R        =SIMP(statut='f',typ='TXM',defaut="1PE12.5"),
-           ),
+###           ),
 
            SOUS_TITRE      =SIMP(statut='f',typ='TXM',max='**'),
-           UNITE           =SIMP(statut='f',typ='I'),  
-           FICHIER         =SIMP(statut='f',typ='TXM'),
          ),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 ) ;

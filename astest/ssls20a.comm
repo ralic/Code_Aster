@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE COQUE CYLINDRIQUE PINCEE A BORDS LIBRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,10 +78,6 @@ MATASS=FACT_LDLT( reuse=MATASS,  MATR_ASSE=MATASS )
 
 VECASS=RESO_LDLT(reuse=VECASS, MATR_FACT=MATASS,     CHAM_NO=VECASS)
 
-IMPR_RESU(  MODELE=MODELE_1,
-                RESU=_F( FICHIER = 'RESULTAT',
-                      CHAM_GD = VECASS)   )
-
 #---------------------------------------------------------------------
 
 
@@ -92,7 +88,7 @@ TEST_RESU(
 #---------------------------------------------------------------------
 
 CH_INIT=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',
-MAILLAGE=MAILLA_1,
+                    MAILLAGE=MAILLA_1,
                          AFFE=_F(   TOUT = 'OUI',
             NOM_CMP = (    'DX',        'DY',        'DZ',
                           'DRX',       'DRY',       'DRZ',      ),

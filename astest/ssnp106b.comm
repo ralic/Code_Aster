@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE BETON TRACTION COMPRESSION COQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,22 +140,10 @@ U=CALC_ELEM(
               )
 
 VARI=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R',
-NOM_CHAM='VARI_ELNO_ELGA',
+              NOM_CHAM='VARI_ELNO_ELGA',
               RESULTAT=U,
               INST=0.525
               )
-
-# IMPR_RESU
-#              (
-#              MODELE:MO
-#              RESU  :
-#                (
-#                RESULTAT: U
-#                FORMAT  :'RESULTAT'
-#                TOUT : 'OUI'
-#                )
-#              ) ;
-
 
 TEST_RESU(RESU=(
 

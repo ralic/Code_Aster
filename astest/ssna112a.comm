@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2004   AUTEUR NDOMING N.DOMINGUEZ 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE Test de arrachement axisymmetrique(La Borderie & Pijaudier Cabot)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -190,26 +190,6 @@ L_INST2=DEFI_LIST_REEL(VALE =( 2., 4., 6., 8.,10.,
                        );
 
 
-# ---------- en format RESULTAT ----------
-
-IMPR_RESU(RESU=(_F(RESULTAT=U1,
-                  NOM_CHAM='SIEF_ELGA',
-                  TOUT_CMP='OUI',
-                  LIST_INST=L_INST2,
-                  FORM_TABL='OUI',
-                  GROUP_MA = 'LIAISON',
-                  IMPR_COOR='NON',),
-                  ),);
-
-IMPR_RESU(RESU=(_F(RESULTAT=U1,
-                  NOM_CHAM='VARI_ELGA',
-                  TOUT_CMP='OUI',
-                  LIST_INST=L_INST2,
-                  FORM_TABL='OUI',
-                  GROUP_MA = 'LIAISON',
-                  IMPR_COOR='NON',),
-                  ),);
-                  
 TEST_RESU(RESU=(_F(RESULTAT=U1,
                   REFERENCE='SOURCE_EXTERNE',
                   NOM_CHAM='SIEF_ELGA',
@@ -365,16 +345,11 @@ V2PG2_66=RECU_FONCTION(RESULTAT=U1,
 
 # ---------- en format AGRAF ----------
 #
-
-#DEFI_FICHIER(FICHIER='AGRAF',UNITE=25,);
-
-
 # COURBE CONTRAINTE SXY liaison AU PG EN FONCTION DE UX
 
 
-IMPR_COURBE(
-#            FICHIER='AGRAF',
-            FORMAT='AGRAF',
+IMPR_COURBE(FORMAT='AGRAF',
+            UNITE=8,
             TITRE_GRAPHIQUE='PILOTAGE SXY EN FONCTION DE UX ',
             LEGENDE_X='UX(mm)',
             LEGENDE_Y='CONTRAINTE (MPa)',
@@ -403,9 +378,8 @@ IMPR_COURBE(
 # COURBE CONTRAINTE SXY liaison AU PG EN FONCTION DE UX
 
 
-IMPR_COURBE(
-#            FICHIER='AGRAF',
-            FORMAT='AGRAF',
+IMPR_COURBE(FORMAT='AGRAF',
+            UNITE=8,
             TITRE_GRAPHIQUE='ENDOMMAGEMENT EN FONCTION DE UX ',
             LEGENDE_X='UX(mm)',
             LEGENDE_Y='ENDOMMAGEMENT',

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ANNEAU AVEC RAIDISSEUR SOUS PRESSION EXTERNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -108,11 +108,6 @@ SIGMA_1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                     RESULTAT=RESU, NUME_ORDRE=1,
                     NOM_CHAM='SIEF_ELGA_DEPL' ),
 
-#IMPR_RESU(MODELE=MODMECA,
-#          RESU=(_F(FORMAT='RESULTAT',
-#                   CHAM_GD=SIGMA_1,VALE_MAX='OUI',VALE_MIN='OUI',
-#                   ),
-#                   ),);
 #
 ###### MATRICE DE RIGIDITE GEOMETRIQUE ELEMENTAIRE
 #
@@ -141,11 +136,10 @@ TEST_RESU(RESU=(
 
 if impr_gmsh==1 :                   
    DEFI_FICHIER ( FICHIER='GMSH',UNITE=55)
-   IMPR_RESU(MODELE=MODMECA,
-          RESU=(_F(FORMAT='GMSH',FICHIER='GMSH',
-                   RESULTAT=MOD_1,
-                   NOM_CHAM=('DEPL'),),
-                   ),);
+   IMPR_RESU( MODELE=MODMECA,
+              FORMAT='GMSH',UNITE=55,
+              RESU=_F( RESULTAT=MOD_1,
+                       NOM_CHAM='DEPL', ), );
                    
 
 D_FONC=DEFI_FONCTION(NOM_PARA='INST',
@@ -192,14 +186,12 @@ NONLIN=STAT_NON_LINE(MODELE=MODMECA,
 
 if impr_gmsh==1 :                   
    DEFI_FICHIER(FICHIER='GMSH2',UNITE=56)
-   IMPR_RESU(MODELE=MODMECA,
-          RESU=(
-                _F(FORMAT='GMSH',FICHIER='GMSH2',
-                   RESULTAT=NONLIN,INST=0.9,
-                   NOM_CHAM='DEPL',),
-                _F(FORMAT='GMSH',FICHIER='GMSH2',
-                   RESULTAT=NONLIN,INST=0.9,
-                   NOM_CHAM='SIEF_ELGA',NOM_CMP=('SIXX','SIYY','SIZZ'),),
+   IMPR_RESU( MODELE=MODMECA,
+              FORMAT='GMSH', UNITE=56,
+          RESU=(_F( RESULTAT=NONLIN, INST=0.9,
+                    NOM_CHAM='DEPL',),
+                _F( RESULTAT=NONLIN,INST=0.9,
+                    NOM_CHAM='SIEF_ELGA',NOM_CMP=('SIXX','SIYY','SIZZ'),),
                    ),);
 
 TABDX=POST_RELEVE_T(ACTION=_F(INTITULE='F',

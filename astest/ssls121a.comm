@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE  : PLAQUE STRATIFIEE SOUMISE A 4 CHARGEMETNS ELEMENTAIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -94,7 +94,7 @@ MULTI = DEFI_COQU_MULT( COUCHE=( _F( EPAIS = 0.25,
                                  _F( EPAIS = 0.25,
                                      MATER = MAT,
                                      ORIENTATION = 0.),),
-                        IMPRESSION=_F(FICHIER='RESULTAT')
+                        IMPRESSION=_F(UNITE=8)
                         )
 #
 CHAM_MAT = AFFE_MATERIAU( MAILLAGE=MA,
@@ -182,13 +182,6 @@ CALC_ELEM(   reuse = RESU1,
 
 
 #
-IMPR_RESU ( MODELE=MO,
-            RESU =_F( RESULTAT = RESU1,
-                      NOEUD = ('N10'),
-                      NOM_CHAM = ('SIGM_ELNO_DEPL','CRIT_ELNO_RUPT'),),
-           )
-#
-
 R1S1INF = CALC_ELEM( 
                      OPTION=  'EPSI_ELNO_DEPL' ,
                      NUME_COUCHE=1,

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JOUMANA J. EL GHARIB
 
 # TITRE CAS TEST TRIAXIAL NON DRAINE AVEC CAM_CLAY EN 3D
@@ -236,14 +236,6 @@ U1=STAT_NON_LINE(reuse=U1,
               )
 
 
-IMPR_RESU(RESU=_F(MAILLAGE=MAILLAGE,
-                  FORMAT='RESULTAT',
-                  RESULTAT=U1,
-                  NOM_CHAM=('DEPL'),
-                  PRECISION = 1.E-10,
-                  INST = 6.,),);
-
-
 DEP_V=AFFE_CHAR_MECA(    MODELE=MODELE,
                               FACE_IMPO=_F(  GROUP_MA = 'HAUT',    DZ = 1.,   )
                            )
@@ -313,10 +305,6 @@ U1=CALC_NO(  reuse=U1,     RESULTAT=U1,
 
 
 
-IMPR_RESU(RESU=_F(FORMAT='RESULTAT',
-                  MAILLAGE=MAILLAGE,
-                  RESULTAT=U1,),);
-
 SXXCD=RECU_FONCTION( RESULTAT=U1,
                     NOM_CMP='SIXX',
                     NOM_CHAM='SIEF_NOEU_ELGA',
@@ -355,19 +343,19 @@ DEPNZ=RECU_FONCTION( RESULTAT=U1,
                     TOUT_ORDRE='OUI')
                     
                             
-IMPR_COURBE(  FICHIER='AGRAF',    FORMAT='AGRAF',
+IMPR_COURBE(  UNITE=25,    FORMAT='AGRAF',
                   COURBE=_F(  FONC_X = SXXCD, FONC_Y = DEPNX),
        TITRE_GRAPHIQUE='DX EN FONCTION DE SIGX ',
                   LEGENDE_X='SIGX',
                   LEGENDE_Y='DX'
               )
-IMPR_COURBE(  FICHIER='AGRAF',    FORMAT='AGRAF',
+IMPR_COURBE(  UNITE=25,    FORMAT='AGRAF',
                   COURBE=_F(  FONC_X = SYYCD, FONC_Y = DEPNY),
        TITRE_GRAPHIQUE='DY EN FONCTION DE SIGY ',
                   LEGENDE_X='SIGY',
                   LEGENDE_Y='DY'
               )
-IMPR_COURBE(  FICHIER='AGRAF',    FORMAT='AGRAF',
+IMPR_COURBE(  UNITE=25,    FORMAT='AGRAF',
                   COURBE=_F(  FONC_X = SZZCD, FONC_Y = DEPNZ),
        TITRE_GRAPHIQUE='DZ EN FONCTION DE SIGZ ',
                   LEGENDE_X='SIGZ',

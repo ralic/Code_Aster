@@ -1,4 +1,4 @@
-# MODIF  DATE 08/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -171,9 +171,6 @@ TEST_RESU(RESU=(_F( RESULTAT = REST,
                  PRECISION = 1.E-3))
           )
 
-IMPR_RESU(RESU=_F( 
-RESULTAT = REST, NUME_ORDRE = 21)
-)
 
 # ------ FLEXION GZ EN PLASTICITE PARFAITE ---------------------------
 

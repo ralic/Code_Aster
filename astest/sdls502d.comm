@@ -1,0 +1,183 @@
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# RESPONSABLE ADBHHPM P.MASSIN 
+# DATE   : 19/05/2000
+# AUTEUR : F. LEBOUVIER (DELTACAD )
+# TITRE  : PLAQUE CARREE SOLIDE SIMPLEMENT SUPPORTEE 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#---------------------------------------------------------------------
+#  - CALCUL EN ANALYSE MODALE DYNAMIQUE D'UNE PLAQUE CARREE EPAISSE 
+#    SIMPLEMENT SUPPORTEE 
+#  - MODELISATION AVEC DES ELEMENTS DKT (QUAD4) 
+#---------------------------------------------------------------------
+#
+DEBUT( CODE=_F( NOM = 'SDLS502D',NIV_PUB_WEB='INTERNET'),);
+
+#
+PRE_GIBI();
+
+PLAQ_MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'), );
+
+#
+MODEL=AFFE_MODELE(   MAILLAGE=PLAQ_MA,
+                           AFFE=_F( TOUT = 'OUI',
+                                 PHENOMENE = 'MECANIQUE',
+                                MODELISATION = 'DKT',),);
+PLAQ_MA=DEFI_GROUP(reuse =PLAQ_MA,
+                MAILLAGE=PLAQ_MA,
+                CREA_GROUP_NO=_F(GROUP_MA='BORDS',NOM='BORDS',),);
+#
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES ELEMENTAIRES 
+#---------------------------------------------------------------------
+#
+CARA_ELE=AFFE_CARA_ELEM(   MODELE=MODEL,
+                              COQUE=_F( GROUP_MA = 'TOUT_ELT',
+                                     EPAIS = 1.,
+                                     ANGL_REP = (15.5,0.,),),
+                           );
+
+#
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES MATERIAUX 
+#---------------------------------------------------------------------
+#
+ACIER=DEFI_MATERIAU(   ELAS=_F( E = 2.E+11,
+                               NU = 0.3,
+                               RHO = 8000.),);
+
+#
+MAT=AFFE_MATERIAU(   MAILLAGE=PLAQ_MA,
+                           AFFE=_F( TOUT = 'OUI', MATER = ACIER)
+                                                   );
+
+#
+#---------------------------------------------------------------------
+#                     CHARGEMENTS 
+#---------------------------------------------------------------------
+#
+CHAR0=AFFE_CHAR_MECA(     MODELE=MODEL,
+                          DDL_IMPO=_F( GROUP_NO = 'BORDS', DZ = 0.)
+                        );
+
+#
+#---------------------------------------------------------------------
+#                     RESOLUTION 
+#---------------------------------------------------------------------
+#
+M_EL_RIG=CALC_MATR_ELEM(       MODELE=MODEL,
+                             CHAM_MATER=MAT,
+                              CARA_ELEM=CARA_ELE,
+                                 CHARGE=CHAR0,
+                                 OPTION='RIGI_MECA'
+                           );
+
+#
+M_EL_MAS=CALC_MATR_ELEM(       MODELE=MODEL,
+                             CHAM_MATER=MAT,
+                              CARA_ELEM=CARA_ELE,
+                                 CHARGE=CHAR0,
+                                 OPTION='MASS_MECA'
+                           );
+
+#
+NU=NUME_DDL(   MATR_RIGI=M_EL_RIG)
+
+#
+M_AS_RIG=ASSE_MATRICE(   MATR_ELEM=M_EL_RIG,   NUME_DDL=NU)
+
+#
+M_AS_MAS=ASSE_MATRICE(   MATR_ELEM=M_EL_MAS,   NUME_DDL=NU)
+
+#
+MODES=MODE_ITER_SIMULT(      MATR_A=M_AS_RIG,
+                               MATR_B=M_AS_MAS,
+                              METHODE='SORENSEN',
+                            CALC_FREQ=_F( OPTION = 'BANDE',
+                                       FREQ = (10., 350.,))   
+                          );
+
+#
+#---------------------------------------------------------------------
+#                     VERIFICATION DES RESULTATS 
+#---------------------------------------------------------------------
+#
+TEST_RESU(RESU=(
+       _F( RESULTAT = MODES, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
+             CRITERE = 'RELATIF',    PRECISION = 0.06,
+             NUME_MODE = 4,                 VALE = 44.762),
+
+       _F( RESULTAT = MODES, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
+             CRITERE = 'RELATIF',    PRECISION = 0.07,
+             NUME_MODE = 5,                 VALE = 110.52),
+
+       _F( RESULTAT = MODES, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
+             CRITERE = 'RELATIF',    PRECISION = 0.07,
+             NUME_MODE = 6,                 VALE = 110.52),
+
+       _F( RESULTAT = MODES, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
+             CRITERE = 'RELATIF',    PRECISION = 0.1,
+             NUME_MODE = 7,                 VALE = 169.08),
+
+       _F( RESULTAT = MODES, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
+             CRITERE = 'RELATIF',    PRECISION = 0.01,
+             NUME_MODE = 8,                 VALE = 193.93),
+
+       _F( RESULTAT = MODES, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
+             CRITERE = 'RELATIF',    PRECISION = 0.015,
+             NUME_MODE = 9,                 VALE = 206.64),
+
+       _F( RESULTAT = MODES, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
+             CRITERE = 'RELATIF',    PRECISION = 0.015,
+             NUME_MODE = 10,                 VALE = 206.64)
+#======================================================================
+#= LES VALEURS DE REFERENCE AU DELA DU MODE 10 NE SONT PAS CONNUES   ==
+#= LES VALEURS DE REFERENCE IMPOSEES (=1) SONT FAUSSES. L'OBJET ICI  ==
+#= EST D'IMPRIMER LES VALEURS TROUVEES DANS LE FICHIER RESU          ==
+#======================================================================
+#_F( RESULTAT = MODES,PARA = 'FREQ',
+#CRITERE = 'RELATIF',
+#REFERENCE = 'NON_REGRESSION',
+#NUME_MODE = 11,  VALE = 2.2621054540426E+02),
+#_F( RESULTAT = MODES,PARA = 'FREQ',
+#CRITERE = 'RELATIF',
+#REFERENCE = 'NON_REGRESSION',
+#NUME_MODE = 12,  VALE = 2.2840781260250E+02),
+#_F( RESULTAT = MODES,PARA = 'FREQ',
+#CRITERE = 'RELATIF',
+#REFERENCE = 'NON_REGRESSION',
+#NUME_MODE = 13,  VALE = 2.4499028459396E+02),
+#_F( RESULTAT = MODES,PARA = 'FREQ',
+#CRITERE = 'RELATIF',
+#REFERENCE = 'NON_REGRESSION',
+#NUME_MODE = 14,  VALE = 2.4731383844313E+02),
+#_F( RESULTAT = MODES,PARA = 'FREQ',
+#CRITERE = 'RELATIF',
+#REFERENCE = 'NON_REGRESSION',
+#NUME_MODE = 15,  VALE = 2.5400040471272E+02),
+#_F( RESULTAT = MODES, PARA = 'FREQ',
+# CRITERE = 'RELATIF',
+#REFERENCE = 'NON_REGRESSION',
+# NUME_MODE = 16,  VALE = 2.9810874999352E+02),
+#_F( RESULTAT = MODES,PARA = 'FREQ',
+#CRITERE = 'RELATIF',
+# REFERENCE = 'NON_REGRESSION',
+# NUME_MODE = 17,  VALE = 3.2223070515790E+02),
+),);
+
+FIN();

@@ -2,8 +2,9 @@
       IMPLICIT NONE 
       INTEGER           IER
 
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 05/07/2004   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,6 +22,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE CIBHHLV L.VIVAN
+C 
 C                       OPERATEUR DEFI_FISS_XFEM :
 C                INITIALISATION DES CHAMPS NÉCESSAIRES À XFEM
 C                 - LEVEL-SETS
@@ -53,8 +55,8 @@ C
       REAL*8        PFI(3),VOR(3),ORI(3),NORME
       CHARACTER*8   FISS,MODE,NFONF,NFONG,MAFIS,FONFIS,MAENR,NOMA,METH
       CHARACTER*16  K16BID
-      CHARACTER*19  CNSLT,CNSLN,GRLT,GRLN
-      CHARACTER*24  OBJMA
+      CHARACTER*19  CNSLT,CNSLN,GRLT,GRLN,CNSEN
+      CHARACTER*24  OBJMA,CHFOND,BASLOC
 C
 C-----------------------------------------------------------------------
 C     DÉBUT
@@ -122,19 +124,32 @@ C
         CALL IMPRSD('CHAMP',FISS//'.GRLTNO',IFM,'FISSURE.GRLTNO=')
         CALL IMPRSD('CHAMP',FISS//'.GRLNNO',IFM,'FISSURE.GRLNNO=')
       END IF
-      
-      CALL DETRSD ( 'CHAM_NO_S'  , GRLT )
-      CALL DETRSD ( 'CHAM_NO_S'  , GRLN )
+ 
 C
 C-----------------------------------------------------------------------
 C     CALCUL DE L'ENRICHISSEMENT ET DES POINTS DU FOND DE FISSURE
 C-----------------------------------------------------------------------
 C
+      CNSEN='&&OP0041.CNSEN'
       CALL NORMEV(VOR,NORME)
       IF (NORME.LT.1.D-10) CALL UTMESS('F','OP0041','LA NORME '//
      &                              'DU VECTEUR VECT_ORIE EST NULLE')
       
-      CALL XENRCH(IFM,NIV,NOMA,CNSLT,CNSLN,PFI,VOR,ORI,FISS)
+      CALL XENRCH(IFM,NIV,NOMA,CNSLT,CNSLN,CNSEN,PFI,VOR,ORI,FISS)
+
+      CALL CNSCNO(CNSEN,' ','G',FISS//'.STNO')
+
+      IF (NIV.GT.2) THEN
+        CALL IMPRSD('CHAMP',FISS//'.STNO',IFM,'FISSURE.STNO=')
+      END IF
+C
+C-----------------------------------------------------------------------
+C     CALCUL DE LA BASE LOCALE AU FOND DE FISSURE
+C-----------------------------------------------------------------------
+C
+      BASLOC=FISS//'.BASLOC'
+      CHFOND = FISS//'.FONDFISS'  
+      CALL XBASLO(MODE,NOMA,CHFOND,GRLT,GRLN,BASLOC)
 C
 C-----------------------------------------------------------------------
 C     FIN
@@ -142,6 +157,10 @@ C-----------------------------------------------------------------------
 C
       CALL DETRSD('CHAM_NO_S',CNSLT)
       CALL DETRSD('CHAM_NO_S',CNSLN)
+     
+      CALL DETRSD('CHAM_NO_S',GRLT)
+      CALL DETRSD('CHAM_NO_S',GRLN)
+      CALL DETRSD('CHAM_NO_S',CNSEN)
 
       CALL JEDEMA()
       END

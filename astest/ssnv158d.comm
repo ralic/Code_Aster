@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE LAIGLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -234,37 +234,6 @@ ROSIGY=RECU_FONCTION(RESULTAT=U2,
                      NOM_CMP='SIYY',
                      NOEUD='N4',
                      TITRE='SIG Y',);
-
-#IMPR_COURBE(FICHIER='AGRAF',
-#            FORMAT='AGRAF',
-#            TITRE_GRAPHIQUE='SRO EN X DU SOMMET DU BK ',
-#            FREQ_GRILLE_X=1,
-#            FREQ_GRILLE_Y=1,
-#            COURBE=(_F(FONCTION=RODEPX,),
-#                    _F(FONCTION=RODEPY,),
-#                    _F(FONCTION=ROSIGX,),
-#                    _F(FONCTION=ROSIGY,),
-#                   ),
-#)
-#
-#IMPR_RESU(
-#          RESU =(
-#                  _F(
-#                     RESULTAT  = U2,
-#                     NOEUD     = 'N4',
-#                     NOM_CHAM  = 'SIEF_NOEU_ELGA',
-#                     NOM_CMP   = 'SIYY',),
-#                  _F(
-#                     RESULTAT  = U2,
-#                     NOEUD     = 'N4',
-#                     NOM_CHAM  = 'DEPL',
-#                     NOM_CMP   = 'DY',),
-#                  _F(
-#                     RESULTAT  = U2,
-#                     NOEUD     = 'N4',
-#                     NOM_CHAM  = 'VARI_ELNO_ELGA',
-#                     NOM_CMP   = 'V1',),
-#         ),);
 
 TEST_RESU(RESU=(
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 04/04/2001
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -134,15 +134,15 @@ ETA=RECU_FONCTION(RESULTAT=RESULTAT,
                   NOM_PARA_RESU='ETA_PILOTAGE',
                   TOUT_ORDRE='OUI',);
 IMPR_COURBE(COURBE=_F(FONCTION=DEPX,),
-            FICHIER='AGRAF',
+            UNITE=25,
             FORMAT='AGRAF',
             TITRE_GRAPHIQUE='Depx en fonction du temps',);
 IMPR_COURBE(COURBE=_F(FONCTION=ETA,),
-            FICHIER='AGRAF',
+            UNITE=25,
             FORMAT='AGRAF',
             TITRE_GRAPHIQUE='Eta en fonction du temps',);
 IMPR_COURBE(COURBE=_F(FONCTION=DEPY,),
-            FICHIER='AGRAF',
+            UNITE=25,
             FORMAT='AGRAF',
             TITRE_GRAPHIQUE='Depy en fonction du temps',);
 DEPL=CREA_CHAMP(NOM_CHAM='DEPL',
@@ -150,10 +150,7 @@ DEPL=CREA_CHAMP(NOM_CHAM='DEPL',
                 OPERATION='EXTR',
                 NUME_ORDRE=1,
                 RESULTAT=RESULTAT,);
-IMPR_RESU(RESU=_F(MAILLAGE=MAIL_F,
-                  FORMAT='IDEAS',
-                  RESULTAT=RESULTAT,),
-          MODELE=MOD_F,);
+
 TEST_RESU(RESU=(_F(PARA='ETA_PILOTAGE',
                    RESULTAT=RESULTAT,
                    PRECISION=0.14,

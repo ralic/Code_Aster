@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,26 +125,6 @@ EVOLNOLI=CALC_NO( reuse=EVOLNOLI,  RESULTAT=EVOLNOLI,
                       OPTION='SIEF_NOEU_ELGA',
               )
 
-IMPR_RESU(RESU=_F(RESULTAT=EVOLNOLI,
-                    NOEUD=('N1','N11','N7','N5'),
-                  NOM_CHAM='SIEF_ELNO_ELGA', ), );
-
-IMPR_RESU(RESU=_F(RESULTAT=EVOLNOLI,
-                  NOM_CHAM='SIEF_NOEU_ELGA', ), );
-
-IMPR_RESU(RESU=_F(RESULTAT=EVOLNOLI,
-                  GROUP_NO=( 'CABLE', 'B1', 'B2', 'B3', 'B4' ),
-                  NOM_CHAM='DEPL', ), );
-
-IMPR_RESU(RESU=_F(RESULTAT=EVOLNOLI,
-                  GROUP_MA= 'CABLE',
-                  NOM_CHAM='SIEF_ELNO_ELGA', ), );
-
-IMPR_RESU(RESU=_F(RESULTAT=EVOLNOLI,
-                  GROUP_NO=( 'B1', 'B2', 'B3', 'B4' ),
-                  NOM_CHAM='SIEF_ELNO_ELGA', ), );
-
-
 ESSAI1=POST_RELEVE_T(ACTION=(_F(
                               INTITULE='ESSAI1',
                               GROUP_NO = 'CABLE' ,
@@ -155,10 +135,6 @@ ESSAI1=POST_RELEVE_T(ACTION=(_F(
                               OPERATION='EXTRACTION',),
                             ),
                     ) ;
-
-IMPR_TABLE(TABLE=ESSAI1,
-           NOM_PARA=('NOEUD', 'ABSC_CURV', 'N'),
-          );
 
 #
 ########################################################################

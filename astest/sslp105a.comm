@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE Alexis COURTOIS (MMC)
 # TITRE : TUNNEL CIRCULAIRE REVETU EN CHAMP DE CONTRAINTES INITIAL ISOTROPE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -520,14 +520,6 @@ TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   CRITERE = 'RELATIF',
                   REFERENCE='ANALYTIQUE',),);                 
                                                                 
-##############################################
-# IMPRESSION DES RESULTATS EN FORMAT CASTEM
-# POUR VISUALISATION DES ISOVALEURS 
-##############################################                    
-# IMPR_RESU(MODELE=MO2,
-#         RESU=_F(FORMAT='CASTEM',
-#         MAILLAGE=MAIL,
-#         RESULTAT=RESU1,),);
 
 FIN();
 

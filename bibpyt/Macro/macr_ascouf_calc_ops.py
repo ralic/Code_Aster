@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -670,15 +670,16 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                   motscles['VERSION'   ]= IMPRESSION['VERSION']
     if IMPRESSION['FORMAT']=='CASTEM' :
                                   motscles['NIVE_GIBI' ]= IMPRESSION['NIVE_GIBI']
-    mcfresu.append(_F(MAILLAGE=MAILLAGE,RESULTAT=nomres,FORMAT=IMPRESSION['FORMAT'],**motscles))
+    mcfresu.append(_F(MAILLAGE=MAILLAGE,RESULTAT=nomres,))
     if ECHANGE!=None:
       motscles={}
       if IMPRESSION['FORMAT']=='IDEAS' :
                                     motscles['VERSION'   ]= IMPRESSION['VERSION']
       if IMPRESSION['FORMAT']=='CASTEM' :
                                     motscles['NIVE_GIBI' ]= IMPRESSION['NIVE_GIBI']
-      mcfresu.append(_F(RESULTAT=resuth,FORMAT=IMPRESSION['FORMAT'],**motscles))
+      mcfresu.append(_F(RESULTAT=resuth,))
     IMPR_RESU( MODELE = modele,
-               RESU   = mcfresu )
+               RESU   = mcfresu,
+               FORMAT=IMPRESSION['FORMAT'],**motscles)
 #
   return ier

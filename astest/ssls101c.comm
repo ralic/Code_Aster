@@ -1,0 +1,418 @@
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# TITRE PLAQUE CIRCULAIRE POSEE SOUS PRESSION  147 SHB8
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSLS101C',
+              NIV_PUB_WEB='INTERNET',),);
+#----------------------------------------------------------------------
+#                        ! y
+#                        !
+# POINTS: O            C **   
+#         A              *   *
+#         B              *     * B
+#         C            E *   F   *               
+#         D              *        *
+#         E              *         *
+#         F              O ___D____A  ----> x
+#----------------------------------------------------------------------
+T = 0.05;
+
+R = 1.0;
+
+P = 1.0;
+
+
+MATER=DEFI_MATERIAU(ELAS=_F(E=1.0,
+                            NU=0.3,
+                            RHO=1.0,),);
+
+MAIL1=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON',),);
+
+MODKT=AFFE_MODELE(MAILLAGE=MAIL1,
+                  AFFE=_F(GROUP_MA='QUAD',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DKT',),);
+
+MAIL1=MODI_MAILLAGE(reuse =MAIL1,
+                    MAILLAGE=MAIL1,
+                    ORIE_NORM_COQUE=_F(GROUP_MA='QUAD',
+                                       VECT_NORM=(0.0,0.0,1.0,),
+                                       NOEUD='O',),
+                    MODELE=MODKT,);
+
+MAIL2=CREA_MAILLAGE(MAILLAGE=MAIL1,
+                    COQU_VOLU=_F(NOM='VOLUH',
+                                 GROUP_MA='QUAD',
+                                 EPAIS=T,
+                                 PREF_MAILLE='MH',
+                                 PREF_NOEUD='NH',
+                                 PLAN='INF',),
+                    INFO=2,);
+
+MAILL=CREA_MAILLAGE(MAILLAGE=MAIL2,
+                    COQU_VOLU=_F(NOM='VOLUB',
+                                 GROUP_MA='QUAD',
+                                 EPAIS=T,
+                                 PREF_MAILLE='MB',
+                                 PREF_NOEUD='NB',
+                                 PLAN='SUP',),
+                    INFO=2,);
+
+MAILL=DEFI_GROUP(reuse =MAILL,
+                 MAILLAGE=MAILL,
+                 CREA_GROUP_NO=(_F(OPTION='PLAN',
+                                   NOM='PLANY0',
+                                   NOEUD_CENTRE='O',
+                                   VECT_NORMALE=(0.0,1.0,0.0,),
+                                   PRECISION=0.001,),
+                                _F(OPTION='PLAN',
+                                   NOM='PLANX0',
+                                   NOEUD_CENTRE='O',
+                                   VECT_NORMALE=(1.0,0.0,0.0,),
+                                   PRECISION=0.001,),),);
+
+
+MAILL=MODI_MAILLAGE(reuse =MAILL,
+                    MAILLAGE=MAILL,
+                    ORIE_SHB8=_F(GROUP_MA=('VOLUH','VOLUB',),),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAILL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATER,),);
+
+MODEL=AFFE_MODELE(MAILLAGE=MAILL,
+                  VERIF='MAILLE',
+                  AFFE=_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='SHB8',),);
+
+CINE=AFFE_CHAR_MECA(MODELE=MODEL,
+                    DDL_IMPO=(_F(GROUP_NO='GRNO_ABC',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,),
+                            #  _F(GROUP_NO='GRNO_OA',
+                              _F(GROUP_NO='PLANY0',
+                                 DY=0.0,),
+                            #  _F(GROUP_NO='GRNO_OC',
+                              _F(GROUP_NO='PLANX0',
+                                 DX=0.0,),
+                            #  _F(NOEUD='O',
+                            #     DX=0.0,
+                            #     DY=0.0,),
+                                 ),);
+
+PRES=AFFE_CHAR_MECA(MODELE=MODEL,
+                    FORCE_FACE=_F(GROUP_MA='QUAD',
+                                  FZ=-1.0,),);
+
+CHF3=AFFE_CHAR_MECA(MODELE=MODEL,
+                    FORCE_INTERNE=_F(TOUT='OUI',
+                                     FZ=-10.0,),);
+
+FZC=DEFI_CONSTANTE(VALE=-10.0)
+
+CHFC=AFFE_CHAR_MECA_F(MODELE=MODEL,
+                    FORCE_INTERNE=_F(TOUT='OUI',
+                                     FZ=FZC,),);
+
+
+CHPE=AFFE_CHAR_MECA(MODELE=MODEL,
+                    PESANTEUR=(10.0,0.0,0.0,-10.0,),);
+
+MATELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                       MODELE=MODEL,
+                       CHAM_MATER=CHMAT,
+                       CHARGE=CINE,);
+
+VEPR=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                    CHARGE=(CINE,PRES,),
+                    CHAM_MATER=CHMAT,);
+
+VEF3=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                    CHARGE=(CINE,CHF3,),
+                    CHAM_MATER=CHMAT,);
+
+VEFC=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                    CHARGE=(CINE,CHFC,),
+                    CHAM_MATER=CHMAT,);
+
+VEPE=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                    CHARGE=(CINE,CHPE,),
+                    CHAM_MATER=CHMAT,);
+
+NU=NUME_DDL(MATR_RIGI=MATELEM,);
+
+MATASS=ASSE_MATRICE(MATR_ELEM=MATELEM,
+                    NUME_DDL=NU,);
+
+VEPRAS=ASSE_VECTEUR(VECT_ELEM=VEPR,
+                    NUME_DDL=NU,);
+
+VEF3AS=ASSE_VECTEUR(VECT_ELEM=VEF3,
+                    NUME_DDL=NU,);
+
+VEFCAS=ASSE_VECTEUR(VECT_ELEM=VEFC,
+                    NUME_DDL=NU,);
+
+VEPEAS=ASSE_VECTEUR(VECT_ELEM=VEPE,
+                    NUME_DDL=NU,);
+
+MATASS=FACT_LDLT(reuse =MATASS,
+                 MATR_ASSE=MATASS,);
+
+DEPR=RESO_LDLT(MATR_FACT=MATASS,
+               CHAM_NO=VEPRAS,);
+
+DEF3=RESO_LDLT(MATR_FACT=MATASS,
+               CHAM_NO=VEF3AS,);
+
+DEFC=RESO_LDLT(MATR_FACT=MATASS,
+               CHAM_NO=VEFCAS,);
+
+DEPE=RESO_LDLT(MATR_FACT=MATASS,
+               CHAM_NO=VEPEAS,);
+#--------------------------------------------------------------------
+
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=DEPR,
+                      NOEUD='O',
+                      NOM_CMP='DZ',
+                      VALE=-695.6256,
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',PRECISION=0.005,),
+                   _F(CHAM_GD=DEPR,
+                      NOEUD='A',
+                      NOM_CMP='DZ',
+                      VALE=0.0,
+                      CRITERE='ABSOLU',
+                      REFERENCE='ANALYTIQUE',PRECISION=1e-10,),
+                   _F(CHAM_GD=DEPR,
+                      NOEUD='B',
+                      NOM_CMP='DZ',
+                      VALE=0.0,
+                      CRITERE='ABSOLU',
+                      REFERENCE='ANALYTIQUE',PRECISION=1e-10,),
+                   _F(CHAM_GD=DEPR,
+                      NOEUD='C',
+                      NOM_CMP='DZ',
+                      VALE=0.0,
+                      CRITERE='ABSOLU',
+                      REFERENCE='ANALYTIQUE',PRECISION=1e-10,),
+                   _F(CHAM_GD=DEPR,
+                      NOEUD='D',
+                      NOM_CMP='DZ',
+                      VALE=-489.727,
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',PRECISION=0.0055,),
+                   _F(CHAM_GD=DEPR,
+                      NOEUD='E',
+                      NOM_CMP='DZ',
+                      VALE=-489.727,
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',PRECISION=0.0055,),
+                   _F(CHAM_GD=DEPR,
+                      NOEUD='F',
+                      NOM_CMP='DZ',
+                      VALE=-435.8974,
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',PRECISION=0.0055,),
+
+# FORCE_INTERNE
+                   _F(CHAM_GD=DEF3,
+                      NOEUD='O',
+                      NOM_CMP='DZ',
+                      VALE=-695.6256,
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',PRECISION=0.006,),
+                   _F(CHAM_GD=DEF3,
+                      NOEUD='A',
+                      NOM_CMP='DZ',
+                      VALE=0.0,
+                      CRITERE='ABSOLU',
+                      REFERENCE='ANALYTIQUE',PRECISION=1e-10,),
+                   _F(CHAM_GD=DEF3,
+                      NOEUD='B',
+                      NOM_CMP='DZ',
+                      VALE=0.0,
+                      CRITERE='ABSOLU',
+                      REFERENCE='ANALYTIQUE',PRECISION=1e-10,),
+                   _F(CHAM_GD=DEF3,
+                      NOEUD='C',
+                      NOM_CMP='DZ',
+                      VALE=0.0,
+                      CRITERE='ABSOLU',
+                      REFERENCE='ANALYTIQUE',PRECISION=1e-10,),
+                   _F(CHAM_GD=DEF3,
+                      NOEUD='D',
+                      NOM_CMP='DZ',
+                      VALE=-489.727,
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',PRECISION=0.0055,),
+                   _F(CHAM_GD=DEF3,
+                      NOEUD='E',
+                      NOM_CMP='DZ',
+                      VALE=-489.727,
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',PRECISION=0.0055,),
+                   _F(CHAM_GD=DEF3,
+                      NOEUD='F',
+                      NOM_CMP='DZ',
+                      VALE=-435.8974,
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',PRECISION=0.0055,),
+
+
+# FORCE_INTERNE FONCTION
+                   _F(CHAM_GD=DEFC,
+                      NOEUD='O',
+                      NOM_CMP='DZ',
+                      VALE=-695.6256,
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',PRECISION=0.006,),
+                   _F(CHAM_GD=DEFC,
+                      NOEUD='A',
+                      NOM_CMP='DZ',
+                      VALE=0.0,
+                      CRITERE='ABSOLU',
+                      REFERENCE='ANALYTIQUE',PRECISION=1e-10,),
+                   _F(CHAM_GD=DEFC,
+                      NOEUD='B',
+                      NOM_CMP='DZ',
+                      VALE=0.0,
+                      CRITERE='ABSOLU',
+                      REFERENCE='ANALYTIQUE',PRECISION=1e-10,),
+                   _F(CHAM_GD=DEFC,
+                      NOEUD='C',
+                      NOM_CMP='DZ',
+                      VALE=0.0,
+                      CRITERE='ABSOLU',
+                      REFERENCE='ANALYTIQUE',PRECISION=1e-10,),
+                   _F(CHAM_GD=DEFC,
+                      NOEUD='D',
+                      NOM_CMP='DZ',
+                      VALE=-489.727,
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',PRECISION=0.0055,),
+                   _F(CHAM_GD=DEFC,
+                      NOEUD='E',
+                      NOM_CMP='DZ',
+                      VALE=-489.727,
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',PRECISION=0.0055,),
+                   _F(CHAM_GD=DEFC,
+                      NOEUD='F',
+                      NOM_CMP='DZ',
+                      VALE=-435.8974,
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',PRECISION=0.0055,),
+# PESANTEUR
+                   _F(CHAM_GD=DEPE,
+                      NOEUD='O',
+                      NOM_CMP='DZ',
+                      VALE=-695.6256,
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',PRECISION=0.006,),
+                   _F(CHAM_GD=DEPE,
+                      NOEUD='A',
+                      NOM_CMP='DZ',
+                      VALE=0.0,
+                      CRITERE='ABSOLU',
+                      REFERENCE='ANALYTIQUE',PRECISION=1e-10,),
+                   _F(CHAM_GD=DEPE,
+                      NOEUD='B',
+                      NOM_CMP='DZ',
+                      VALE=0.0,
+                      CRITERE='ABSOLU',
+                      REFERENCE='ANALYTIQUE',PRECISION=1e-10,),
+                   _F(CHAM_GD=DEPE,
+                      NOEUD='C',
+                      NOM_CMP='DZ',
+                      VALE=0.0,
+                      CRITERE='ABSOLU',
+                      REFERENCE='ANALYTIQUE',PRECISION=1e-10,),
+                   _F(CHAM_GD=DEPE,
+                      NOEUD='D',
+                      NOM_CMP='DZ',
+                      VALE=-489.727,
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',PRECISION=0.0055,),
+                   _F(CHAM_GD=DEPE,
+                      NOEUD='E',
+                      NOM_CMP='DZ',
+                      VALE=-489.727,
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',PRECISION=0.0055,),
+                   _F(CHAM_GD=DEPE,
+                      NOEUD='F',
+                      NOM_CMP='DZ',
+                      VALE=-435.8974,
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',PRECISION=0.0055,),),);
+
+CHAMELG=CALC_CHAM_ELEM(    MODELE=MODEL,
+                             CHAM_MATER=CHMAT,
+                             OPTION='COOR_ELGA' )
+
+Z1=-0.906179845938664*T/2+T/2
+Z2=0.538469310105683*T/2+T/2
+TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMELG,
+                          MAILLE = 'MH1',
+                          POINT = 1,
+                          NOM_CMP = 'Z',
+                          REFERENCE = 'ANALYTIQUE',
+                          PRECISION = 1.E-9,
+                          VALE=  Z1 )   )
+
+TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMELG,
+                          MAILLE = 'MH1',
+                          POINT = 4,
+                          NOM_CMP = 'Z',
+                          REFERENCE = 'ANALYTIQUE',
+                          PRECISION = 1.E-9,
+                          VALE=  Z2 )   )
+                          
+
+#--------------------------------------------------------------------
+
+RESU=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_ELAS',
+                NOM_CHAM='DEPL',
+                AFFE=_F(CHAM_GD=DEPR,
+                        INST=0.
+                        ),
+                );
+
+RESU=CALC_ELEM( reuse=RESU, RESULTAT=RESU, MODELE=MODEL, 
+                          OPTION=('SIEF_ELGA_DEPL'),
+                           CHAM_MATER=CHMAT,  )
+
+#--------------------------------------------------------------------
+# expression des contraintes a partir du moment SIXX=MXX*12*z/(h*h*h)
+# COORDONNEE DU POINT DE GAUSS EXTREME
+ZH=0.906179845938664*T/2+T/2
+
+MXX_O=-0.20625
+SIG_O=MXX_O*12*ZH/0.001
+
+TEST_RESU(  RESU=_F( RESULTAT=RESU, INST=0., NOM_CHAM='SIEF_ELGA_DEPL',
+   NOM_CMP='SIXX',MAILLE='MH1',POINT=5,
+   REFERENCE='ANALYTIQUE',PRECISION=0.5E-2, VALE=SIG_O ),)
+
+FIN()
+

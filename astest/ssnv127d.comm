@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,11 +66,6 @@ SSNV127D=DEFI_GROUP(reuse =SSNV127D,
                                       GROUP_NO_ORIG='A1',
                                       GROUP_NO_EXTR='B2',),),);
 #                                                       
-#
-
-
-IMPR_RESU(RESU=_F(FORMAT='CASTEM',
-                  MAILLAGE=SSNV127D,),);
 #_____________________________________________________________________ 
 #                                                       
 #                    DEFINITION DU MODELE               
@@ -187,12 +182,6 @@ U=STAT_NON_LINE(MODELE=MO,
                 SOLVEUR=_F(METHODE='LDLT'),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=50),
                 );
-
-IMPR_RESU(MODELE=MO,
-          RESU=_F(FORMAT='CASTEM',
-                  MAILLAGE=SSNV127D,
-                  RESULTAT=U,
-                  NOM_CHAM=('DEPL','VALE_CONT',)),);
 
 U=CALC_ELEM(reuse =U,
             OPTION=('SIEF_ELNO_ELGA'),

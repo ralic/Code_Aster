@@ -1,0 +1,142 @@
+      SUBROUTINE RAXINI( VSEC1, VSEC2, VSEC3, VSEC4, NPTSEC, NBORDR,
+     &                   UMIN, UMAX, VMIN, VMAX, AXEINI )
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF PREPOST  DATE 05/07/2004   AUTEUR F1BHHAJ J.ANGLES 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE F1BHHAJ J.ANGLES
+      IMPLICIT      NONE
+      INTEGER       NPTSEC(4), NBORDR
+      REAL*8        VSEC1(2*NBORDR), VSEC2(2*NBORDR), VSEC3(2*NBORDR)
+      REAL*8        VSEC4(2*NBORDR), UMIN, UMAX, VMIN, VMAX
+      CHARACTER*4   AXEINI
+C ----------------------------------------------------------------------
+C BUT: RECHERCHER l'AXE INITIAL PARMI LES AXES 1 ET 2.
+C ----------------------------------------------------------------------
+C ARGUMENTS:
+C VSEC1     IN   R  : VECTEUR CONTENANT LES COMPOSANTES u ET v DES
+C                     POINTS INCLUS DANS LE SECTEUR 1, POUR LE VECTEUR
+C                     NORMAL COURANT.
+C VSEC2     IN   R  : VECTEUR CONTENANT LES COMPOSANTES u ET v DES
+C                     POINTS INCLUS DANS LE SECTEUR 2, POUR LE VECTEUR
+C                     NORMAL COURANT.
+C VSEC3     IN   R  : VECTEUR CONTENANT LES COMPOSANTES u ET v DES
+C                     POINTS INCLUS DANS LE SECTEUR 3, POUR LE VECTEUR
+C                     NORMAL COURANT.
+C VSEC4     IN   R  : VECTEUR CONTENANT LES COMPOSANTES u ET v DES
+C                     POINTS INCLUS DANS LE SECTEUR 4, POUR LE VECTEUR
+C                     NORMAL COURANT.
+C NPTSEC    IN   I  : VECTEUR CONTANT LE NOMBRE DE POINTS DE CHAQUE
+C                     SECTEUR.
+C NBORDR    IN   I  : NOMBRE DE NUMERO D'ORDRE STOCKE DANS LA
+C                     STRUCTURE DE DONNEES RESULTAT.
+C UMIN      IN   R  : VALEUR MINIMALE DES u, POUR LE VECTEUR COURANT.
+C UMAX      IN   R  : VALEUR MAXIMALE DES u, POUR LE VECTEUR COURANT.
+C VMIN      IN   R  : VALEUR MINIMALE DES v, POUR LE VECTEUR COURANT.
+C VMAX      IN   R  : VALEUR MAXIMALE DES v, POUR LE VECTEUR COURANT.
+C AXEINI    OUT  K4 : AXE INITIAL.
+C
+C-----------------------------------------------------------------------
+C---- COMMUNS NORMALISES  JEVEUX
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32,JEXNOM,JEXNUM,JEXATR
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     ------------------------------------------------------------------
+      INTEGER      I
+C
+      REAL*8       U0, V0, CSTA, CSTB, A1, B1, UI, VI
+      REAL*8       AMAXS1, AMAXS2, AMAXS3, AMAXS4, RPAX1, RPAX2
+      REAL*8       AMP1, AMP2
+C
+C-----------------------------------------------------------------------
+C234567                                                              012
+C
+      CALL JEMARQ()
+C
+      U0 = UMIN + (UMAX-UMIN)/2.0D0
+      V0 = VMIN + (VMAX-VMIN)/2.0D0
+C
+C PROJECTION SUR L'AXE 1
+C
+      CSTA = (UMAX - UMIN)
+      CSTB = (VMAX - VMIN)
+      A1 = (VMAX-VMIN)/(UMAX-UMIN)
+      B1 = (UMAX*VMIN - UMIN*VMAX)/(UMAX-UMIN)
+      AMAXS2 = 0.0D0
+      AMAXS4 = 0.0D0
+
+      DO 10 I=1, NPTSEC(2)
+        UI = VSEC2(2*I - 1)
+        UI = VSEC2(2*I)
+        CALL PROAX0(UI, VI, CSTA, CSTB, A1, B1, U0, V0, RPAX1)
+        IF (RPAX1 .GT. AMAXS2) AMAXS2 = RPAX1
+ 10   CONTINUE
+
+      DO 20 I=1, NPTSEC(4)
+        UI = VSEC4(2*I - 1)
+        UI = VSEC4(2*I)
+        CALL PROAX0(UI, VI, CSTA, CSTB, A1, B1, U0, V0, RPAX1)
+        IF (RPAX1 .LT. AMAXS4) AMAXS4 = RPAX1
+ 20   CONTINUE
+C
+C PROJECTION SUR L'AXE 2
+C
+      CSTA = -(UMAX - UMIN)
+      CSTB =  (VMAX - VMIN)
+      A1 = -(VMAX - VMIN)/(UMAX - UMIN)
+      B1 = (UMAX*VMAX - UMIN*VMIN)/(UMAX-UMIN)
+      AMAXS1 = 0.0D0
+      AMAXS3 = 0.0D0
+
+      DO 30 I=1, NPTSEC(1)
+        UI = VSEC1(2*I - 1)
+        UI = VSEC1(2*I)
+        CALL PROAX0(UI, VI, CSTA, CSTB, A1, B1, U0, V0, RPAX2)
+        IF (RPAX2 .LT. AMAXS1) AMAXS1 = RPAX2
+ 30   CONTINUE
+
+      DO 40 I=1, NPTSEC(3)
+        UI = VSEC3(2*I - 1)
+        UI = VSEC3(2*I)
+        CALL PROAX0(UI, VI, CSTA, CSTB, A1, B1, U0, V0, RPAX2)
+        IF (RPAX2 .GT. AMAXS3) AMAXS3 = RPAX2
+ 40   CONTINUE
+C
+C CALCUL DE L'AMPLITUDE MAX SUR CHACUN DES AXES
+C
+      AMP1 = AMAXS2 - AMAXS4
+      AMP2 = AMAXS3 - AMAXS1
+      IF (AMP1 .GT. AMP2) THEN
+         AXEINI = 'AXE1'
+      ELSE
+         AXEINI = 'AXE2'
+      ENDIF
+C
+      CALL JEDEMA()
+      END

@@ -1,5 +1,4 @@
-
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -200,79 +199,3 @@ TEST_RESU(RESU=(_F(RESULTAT=MEST1,
 
 FIN();
 #
-#
-#IMPR_RESU( MODELE : MO1
-#RESU:( MAILLAGE : MA
-#RESULTAT: MEST1 FORMAT :'CASTEM'));
-#   IMPR_RESU( RESU:( RESULTAT: MEST1
-#               GROUP_NO : (NOPOU1,NOPOU2 ) )) ;
-##SUR UNE MOITIE DE LA LONGUEUR POUTRE MAILLEE EN COQUES
-##SUR L'AUTRE MOITIE DE LA LONGUEUR POUTRE MAILLEE EN POUTRES
-##---------------------------------------------------------------
-
-#
-#&MA = DEFI_GROUP(MAILLAGE : MA
-#                 CREA_GROUP_NO:(GROUP_MA :LREC1)) ;
-#MO2 = AFFE_MODELE      (
-#        MAILLAGE: MA
-#        AFFE:(GROUP_MA: (POUMAS,LREC1,LREC2),
-#                         PHENOMENE:'MECANIQUE',MODELISATION:'Q4G')
-#        AFFE:(GROUP_MA: POU2,
-#                        PHENOMENE:'MECANIQUE',MODELISATION:'POU_D_E')
-#                        );
-#
-# CAREL2 = AFFE_CARA_ELEM ( MODELE: MO2
-#          # SECTION RECTANGLE :
-#          POUTRE: ( GROUP_MA: POU2   SECTION: 'GENERALE'
-#          CARA:(   'A'            'IY'              'IZ'
-#                                                    'JX'
-#                    'RY'           'RZ'             'RT')
-#          VALE:  (  0.6           0.3345          0.1175
-#                                                    1.29E-7
-#                    0.55            1.05            0.1)
-#                  )
-#           COQUE : ( GROUP_MA: (POUMAS,LREC1,LREC2),
-#                     EPAIS   : 0.1 )
-#                       );
-# CH3 = AFFE_CHAR_MECA( MODELE: MO2
-#                       DDL_IMPO: (GROUP_NO:LREC1
-#                       DX:0. DY:0. DZ:0. DRX:0. DRY:0. DRZ:0.)
-#                       FORCE_NODALE: (GROUP_NO :P2POU
-#                                      FX:1. MY:1. MZ:1.)
-#                     );
-#
-# CH4 = AFFE_CHAR_MECA( MODELE: MO2
-#                       LIAISON_ELEM : (OPTION     : 'COQ_POU'
-#                                       CARA_ELEM  : CAREL2
-#                                       AXE_POUTRE : (1. 0. 0.)
-#                                       GROUP_MA_1 : LREC2
-#                                       GROUP_NO_2 : P1POU
-#                                    )
-#                      ) ;
-#
-# MEST2 = MECA_STATIQUE ( MODELE     : MO2 , CHAM_MATER : CHMAT
-#                         CARA_ELEM  : CAREL2
-#                         EXCIT:(CHARGE: CH3 )
-#                         EXCIT:(CHARGE: CH4)
-#                        );
-#
-#IMPR_RESU( RESU:( MAILLAGE : MA FORMAT :'CASTEM')
-#           RESU:( RESULTAT: MEST2 FORMAT:'CASTEM'));
-#
-# TEST_RESU(
-#   RESU:(RESULTAT: MEST2 NOM_CHAM:'DEPL' NUME_ORDRE:1
-#         NOEUD:N3035  NOM_CMP:'DX' VALE: 6.666667E-10)
-#   RESU:(RESULTAT: MEST2 NOM_CHAM:'DEPL' NUME_ORDRE:1
-#         PRECISION:5.D-3
-#         NOEUD:N3035  NOM_CMP:'DY' VALE: 1.3617E-7)
-#   RESU:(RESULTAT: MEST2 NOM_CHAM:'DEPL' NUME_ORDRE:1
-#         PRECISION:3.5D-3
-#         NOEUD:N3035  NOM_CMP:'DZ' VALE: -4.78326E-8)
-#   RESU:(RESULTAT: MEST2 NOM_CHAM:'DEPL' NUME_ORDRE:1
-#         PRECISION:2.1D-3
-#         NOEUD:N3035  NOM_CMP:'DRY' VALE: 1.195815E-9)
-#   RESU:(RESULTAT: MEST2 NOM_CHAM:'DEPL' NUME_ORDRE:1
-#         PRECISION:3.D-3
-#         NOEUD:N3035  NOM_CMP:'DRZ' VALE: 3.40425E-9)
-#          );
-#FIN( ) ;

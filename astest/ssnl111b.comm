@@ -1,4 +1,4 @@
-# MODIF  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE ESSAI DE THERMO-PLASTICITE (MISES ECR. ISOT. LINE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -226,31 +226,6 @@ CALC_ELEM( reuse= UELAS ,RESULTAT= UELAS ,
                )
 
 #
-#IMPR_RESU (
-#          MODELE: MO
-#          RESU  :
-#            (FORMAT  : 'RESULTAT'
-#             RESULTAT: TEMPRESU
-#             NOEUD   : (N2,N4,N6)
-#             NOM_CMP : ('TEMP')
-#             NOM_CHAM: 'TEMP'
-#             INST    : (1.,2.,3.,4.,5.)
-#            )
-#            (FORMAT  : 'RESULTAT'
-#             RESULTAT: UELAS
-#             NOEUD   : (N2,N4,N6)
-#             NOM_CMP : ('DY')
-#             NOM_CHAM: 'DEPL'
-#             TOUT_ORDRE: 'OUI'
-#            )
-#            (FORMAT  : 'RESULTAT'
-#             RESULTAT: UELAS
-#             NOEUD   : (N2,N4,N6)
-#             NOM_CMP : ('N')
-#             NOM_CHAM: 'SIGM_ELNO_DEPL'
-#             TOUT_ORDRE: 'OUI'
-#            )
-#          );
 
 TEST_RESU(RESU=(
 
@@ -433,7 +408,6 @@ SIGY3_T=RECU_FONCTION(
 
 #IMPR_COURBE (
 #               FORMAT  : 'RESULTAT'
-#               FICHIER : 'RESULTAT'
 #               LABEL_X : 'TEMPS'
 #               LABEL_Y : 'DEPLACEMENT AXIAL'
 #               COURBE  : (FONCTION: UY_T)
@@ -441,15 +415,12 @@ SIGY3_T=RECU_FONCTION(
 #
 #IMPR_COURBE (
 #               FORMAT  : 'RESULTAT'
-#               FICHIER : 'RESULTAT'
 #               LABEL_X : 'TEMPS'
 #               LABEL_Y : 'CONTRAINTES AXIALES'
 #               COURBE  : (FONCTION: SIGY1_T, LEGENDE : 'BARRE 1')
 #                         (FONCTION: SIGY2_T, LEGENDE : 'BARRE 2')
 #                         (FONCTION: SIGY3_T, LEGENDE : 'BARRE 3')
 #            );
-
-# FIN() ;
 #################################################################
 #
 
@@ -486,35 +457,6 @@ CALC_ELEM( reuse=U,
               )
 
 #
-#IMPR_RESU (
-#          MODELE: MO
-#          RESU  :
-#            (FORMAT  : 'RESULTAT'
-#             RESULTAT: TEMPRESU
-#             NOEUD   : (N2,N4,N6)
-#             NOM_CMP : ('TEMP')
-#             NOM_CHAM: 'TEMP'
-#             TOUT_ORDRE: 'OUI'
-#            )
-#            (FORMAT  : 'RESULTAT'
-#             RESULTAT: U
-#             NOEUD   : (N2,N4,N6)
-#             NOM_CMP : ('DY')
-#             NOM_CHAM: 'DEPL'
-#             TOUT_ORDRE: 'OUI'
-#            )
-#          );
-#
-#
-#   IMPR_RESU ( MODELE: MO
-#               RESU: ( FORMAT  : 'RESULTAT'
-#                       RESULTAT: U
-#                       NOEUD   : (N2,N4,N6)
-#                       NOM_CMP : ('N')
-#                       TOUT_ORDRE: 'OUI'
-#                       NOM_CHAM :'SIEF_ELNO_ELGA'
-#                     )
-#              );
 #
 TEST_RESU(RESU=(
 

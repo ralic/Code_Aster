@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 
 DEBUT(CODE=_F(NOM='SDLV123A',
               NIV_PUB_WEB='INTERNET',),);
@@ -189,17 +189,11 @@ G4=CALC_G_THETA_T( MODELE=MODELE,
                     SYME_CHAR='SYME'
                   )
 
-IMPR_TABLE ( FICHIER = 'RESULTAT',
-             TABLE   = G1 ,
-           );
+IMPR_TABLE ( TABLE   = G1 );
 
-IMPR_TABLE ( FICHIER = 'RESULTAT',
-             TABLE   = G2 ,
-           );
+IMPR_TABLE ( TABLE   = G2 );
 
-IMPR_TABLE ( FICHIER = 'RESULTAT',
-             TABLE   = G3 ,
-           );
+IMPR_TABLE ( TABLE   = G3 );
 
 
 
@@ -209,13 +203,10 @@ IMPR_TABLE ( FICHIER = 'RESULTAT',
 #
 DEFI_FICHIER( FICHIER= 'CASTEM', UNITE = 37)
 
-IMPR_RESU(MODELE=MODELE,
-          RESU=(_F(FORMAT='CASTEM',
-                   FICHIER='CASTEM',
-                  MAILLAGE=MAIL,),
-                _F(RESULTAT=evol,
-                   FICHIER='CASTEM',
-                   FORMAT='CASTEM',),
+IMPR_RESU( FORMAT='CASTEM', UNITE = 37,
+           MODELE=MODELE,
+           RESU=(_F(MAILLAGE=MAIL,),
+                 _F(RESULTAT=evol,),
                   ),);
 
 TEST_TABLE(TABLE=G1,

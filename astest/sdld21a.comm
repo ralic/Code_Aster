@@ -1,4 +1,4 @@
-# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,10 +79,9 @@ DYNAHARM=DYNA_LINE_HARM( MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
 
 DEFI_FICHIER( FICHIER= 'DYNAHARM', UNITE = 38 )
 
-IMPR_RESU(RESU=_F( RESULTAT = DYNAHARM,
-                  FICHIER = 'DYNAHARM',
-                TOUT_ORDRE = 'OUI',
-                 FORMAT = 'IDEAS'))
+IMPR_RESU( FORMAT = 'IDEAS', UNITE = 38 , 
+           RESU=_F( RESULTAT = DYNAHARM,
+                    TOUT_ORDRE = 'OUI', ))
 
 #
 #----------------------------------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE LOIS NON LOCALES A DEFORMATIONS REGULARISEES SUR BARREAU 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -112,20 +112,6 @@ EVOL1=STAT_NON_LINE(reuse=EVOL1,
                                  ETA_PILO_MIN=1.,
                                  ETA_PILO_MAX=100.,),
                        );
-#IMPR_RESU(RESU=(  _F(
-#               RESULTAT = EVOL1,
-#               NUME_ORDRE = 37,
-#               NOEUD = 'N2',
-#               NOM_CHAM = 'DEPL',
-#               NOM_CMP = 'DX',
-#               ), _F(
-#               RESULTAT = EVOL1,
-#               NUME_ORDRE = 37,
-#               MAILLE = 'M1',
-##               POINT = 1,
-#               NOM_CHAM = 'VARI_ELGA',
-#               NOM_CMP = 'V1',
-#               ),)
 #             )
 # Recuperation du dernier numero d'ordre
 dico = EVOL1.LIST_VARI_ACCES()
@@ -148,11 +134,5 @@ TEST_RESU(RESU=(  _F(
               NOM_CMP = 'V1',
               VALE = 9.38993E-01))
             )
-
-#IMPR_RESU(RESU=_F(FORMAT='CASTEM',
-#                  RESULTAT=EVOL1,
-#                  NOM_CHAM='DEPL',
-#                  MAILLAGE=TOTO,),
-#          MODELE=MO,);
 
 FIN();

@@ -1,0 +1,223 @@
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# TITRE SYSTEME MAS RES A 8 DDL (AMORTISSEMENT VISQ. NON PROPORTION.)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# DYNAMIQUE TRANSITOIRE SUR BASE MODALE SYSTEME MASSE ET RESSORT
+#
+
+DEBUT( CODE=_F(  NOM = 'SDLD29A',NIV_PUB_WEB='INTERNET') )
+
+#
+
+RESSORT=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
+
+#
+
+MODELE=AFFE_MODELE(   MAILLAGE=RESSORT,
+                        AFFE=_F(  TOUT = 'OUI',  PHENOMENE = 'MECANIQUE',
+                               MODELISATION = 'DIS_T')   )
+
+#
+
+CHAMPCAR=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
+                 _F(  MAILLE = ('E1','E2','E3','E4','E5','E6','E7','E8','E9',),
+                           CARA = 'K_T_D_L', VALE = (1.E5, 1., 1.,)),
+
+                         _F(  MAILLE = 'E1',
+                           CARA = 'A_T_D_L', VALE = (250., 1., 1.,)),
+
+                         _F(  MAILLE = ('E2','E3','E4','E5','E6','E7','E8',),
+                           CARA = 'A_T_D_L', VALE = (50., 1., 1.,)),
+
+                         _F(  MAILLE = 'E9',
+                           CARA = 'A_T_D_L', VALE = (25., 1., 1.,)),
+
+                         _F(  MAILLE = ('P1','P2','P3','P4','P5','P6','P7','P8',),
+                           CARA = 'M_T_D_N', VALE = 10.))  )
+
+#
+
+CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
+                          _F(  TOUT = 'OUI', DY = 0.,  DZ = 0.),
+                                   _F(  NOEUD = ('N1','N10',),  DX = 0.0)) )
+
+#
+
+EFFORT=AFFE_CHAR_MECA(  MODELE=MODELE,
+                          FORCE_NODALE=_F(  NOEUD = 'N5',  FX = 1.)  )
+
+#
+
+RIGIELEM=CALC_MATR_ELEM(  MODELE=MODELE,  OPTION='RIGI_MECA',
+                             CARA_ELEM=CHAMPCAR,  CHARGE=CHARGE  )
+
+MASSELEM=CALC_MATR_ELEM(  MODELE=MODELE,  OPTION='MASS_MECA',
+                             CARA_ELEM=CHAMPCAR,  CHARGE=CHARGE  )
+
+AMORELEM=CALC_MATR_ELEM(  MODELE=MODELE,  OPTION='AMOR_MECA',
+                             CARA_ELEM=CHAMPCAR,  CHARGE=CHARGE  )
+
+EFFOELEM=CALC_VECT_ELEM(  CHARGE=EFFORT,  OPTION='CHAR_MECA',
+                             CARA_ELEM=CHAMPCAR                  )
+
+#
+#
+
+NUMEROTA=NUME_DDL(  MATR_RIGI=RIGIELEM  )
+
+#
+
+MATRRIGI=ASSE_MATRICE(  MATR_ELEM=RIGIELEM,  NUME_DDL=NUMEROTA  )
+
+MATRMASS=ASSE_MATRICE(  MATR_ELEM=MASSELEM,  NUME_DDL=NUMEROTA  )
+
+MATRAMOR=ASSE_MATRICE(  MATR_ELEM=AMORELEM,  NUME_DDL=NUMEROTA  )
+
+VECTASS=ASSE_VECTEUR(  VECT_ELEM=EFFOELEM,  NUME_DDL=NUMEROTA  )
+
+#
+#
+
+MODES=MODE_ITER_INV(  MATR_A=MATRRIGI,  MATR_B=MATRMASS,
+                         CALC_FREQ=_F( OPTION = 'AJUSTE',
+                        FREQ = ( 5., 10., 15., 20., 24., 27., 30., 32., ))
+                      )
+
+#
+
+FONCTIO1=DEFI_FONCTION(  NOM_PARA='INST',   NOM_RESU='ALPHA',
+                           VALE=( 0., 1.,  1., 1.,  1.0000001, 0., ),
+                            PROL_DROITE='CONSTANT'               )
+
+#
+MACRO_PROJ_BASE(  BASE=MODES,
+                  PROFIL = 'PLEIN',
+                  MATR_ASSE_GENE=(
+                   _F( 
+                                   MATRICE = CO("MASSEGEN"),
+                                   MATR_ASSE = MATRMASS), 
+                   _F( 
+                                   MATRICE = CO("RIGIDGEN"),
+                                   MATR_ASSE = MATRRIGI),
+                   _F( 
+                                   MATRICE = CO("AMORTGEN"), 
+                                   MATR_ASSE = MATRAMOR,)),
+                   VECT_ASSE_GENE=_F( 
+                                   VECTEUR = CO("EFFOGENE"),
+                                   VECT_ASSE = VECTASS) )
+
+#
+
+DYNAMODA=DYNA_TRAN_MODAL(  MASS_GENE=MASSEGEN,  RIGI_GENE=RIGIDGEN,
+                              AMOR_GENE=AMORTGEN,
+                             EXCIT=_F(  VECT_GENE = EFFOGENE,
+                                     FONC_MULT = FONCTIO1),
+                              INCREMENT=_F( INST_INIT = 0., 
+                                         INST_FIN = 1.5, PAS = 0.00001)
+                           )
+
+# 
+# DEFINITION DES INSTANTS DE CALCUL DE LA SOLUTION
+#-------------------------------------------------
+
+LISTR8=DEFI_LIST_REEL(  DEBUT=0.09,INTERVALLE=(
+                          _F(  JUSQU_A = 0.81, NOMBRE = 8),
+                                     _F(  JUSQU_A = 0.91, NOMBRE = 1),
+                                     _F(  JUSQU_A = 0.99, NOMBRE = 1),  
+                                     _F(  JUSQU_A = 1.45, NOMBRE = 1))  )
+
+#
+
+DYNATRAN=REST_BASE_PHYS(  RESU_GENE=DYNAMODA,    NOM_CHAM='DEPL',
+                             LIST_INST=LISTR8,   INTERPOL='LIN'    )
+
+#
+
+TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 1,
+                   NOM_CHAM = 'DEPL', PRECISION = 0.00000001,
+                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 3.95408E-5)  )
+
+#
+
+TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 2,
+                   NOM_CHAM = 'DEPL', PRECISION = 0.0002,
+                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 5.1359E-6)  )
+
+#
+
+TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 3,
+                   NOM_CHAM = 'DEPL', PRECISION = 0.00003,
+                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 3.7679E-5)  )
+
+#
+
+TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 4,
+                   NOM_CHAM = 'DEPL', PRECISION = 0.0002,
+                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 7.3551E-6)  )
+
+#
+
+TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 5,
+                   NOM_CHAM = 'DEPL', PRECISION = 0.00004,
+                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 3.5852E-5)  )
+
+#
+
+TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 6,
+                   NOM_CHAM = 'DEPL', PRECISION = 0.00006,
+                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 8.8191E-6)  )
+
+#
+
+TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 7,
+                   NOM_CHAM = 'DEPL', PRECISION = 0.00002,
+                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 3.46578E-5)  )
+
+#
+
+TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 8,
+                   NOM_CHAM = 'DEPL', PRECISION = 0.00005,
+                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 1.00942E-5)  )
+
+#
+
+TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 9,
+                   NOM_CHAM = 'DEPL', PRECISION = 0.000008,
+                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 3.36216E-5)  )
+
+#
+
+TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 10,
+                   NOM_CHAM = 'DEPL', PRECISION = 0.00005,
+                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 1.1308E-5)  )
+
+#
+
+TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 11,
+                   NOM_CHAM = 'DEPL', PRECISION = 0.00002,
+                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 3.26106E-5)  )
+
+#
+
+TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 12,
+                   NOM_CHAM = 'DEPL', PRECISION = 0.0000006,
+                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = -2.19248E-5)  )
+
+#
+FIN( )
+#

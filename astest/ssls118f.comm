@@ -1,4 +1,4 @@
-# MODIF  DATE 14/06/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE  PLAQUE CARREE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,10 +121,6 @@ EFF=CALC_ELEM(RESULTAT=RESU,
 SIGG=CALC_ELEM(RESULTAT=RESU,
                    OPTION='SIEF_ELNO_ELGA',);
                    
-IMPR_RESU(RESU=_F(MAILLAGE=MAIL,
-                  FORMAT='IDEAS',
-                  RESULTAT=RESU,),
-          MODELE=MO,);
 TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
                   RESULTAT=RESU,
                   PRECISION=0.053,

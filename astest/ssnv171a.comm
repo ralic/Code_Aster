@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE COMPARAISON POLY_CFC ET MONOCRISTAL. MOD A : POLY_CFC
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -155,8 +155,3 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    ),);
 
 FIN();
-IMPR_RESU(RESU=_F(RESULTAT=SOLNL,
-                  INST=TFIN,PRECISION=1e-06,
-                   NOM_CHAM=('EPSI_ELGA_DEPL','SIEF_ELGA','EPSP_ELGA'),
-                #  NUME_ORDRE=(1,56,57,NUMFIN),
-                  ),);

@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2004   AUTEUR JOUMANA J.EL-GHARIB 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 
 # TITRE ESSAI HYDROSTATIQUE SUIVI D UN TRIAXIAL EN CONTRACTANCE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -450,13 +450,6 @@ U1=STAT_NON_LINE(reuse=U1,
                 ITER_INTE_PAS  = 10,                )
               )
 
-# IMPRESSION POUR DETERMINATION DU CHAMP DE DEPLACEMENT
-# A L'INSTANT 46.              
-#IMPR_RESU(  MODELE=MODELE,
-#             RESU=_F( FORMAT = 'RESULTAT',
-#                   RESULTAT = U1,
-#                   NOM_CHAM= 'DEPL'));
-                   
 # TRIAXIAL EN DILATANCE
 
 DEP_V=AFFE_CHAR_MECA(    MODELE=MODELE,
@@ -531,20 +524,6 @@ U1=CALC_NO(  reuse=U1,     RESULTAT=U1,
                            ),
                 )
 
-########################################################
-# --- IMPRESSION POUR DETERMINATION DE --------------- #
-# --- L'ORDRE DE GRANDEUR DES VALEURS DE REFERENCE --- #
-########################################################
-#IMPR_RESU(  MODELE=MODELE,
-#             RESU=_F( FORMAT = 'RESULTAT',
-#                   RESULTAT = U1,
-#                   NOM_CHAM = 'DEPL',))
-########################################################
-#IMPR_RESU(  MODELE=MODELE,
-#             RESU=_F( FORMAT = 'RESULTAT',
-#                   RESULTAT = U1,
-#                   NOM_CHAM = 'SIEF_NOEU_ELGA',))
-########################################################
 #
 #-------------------------
 #    TEST_RESU 

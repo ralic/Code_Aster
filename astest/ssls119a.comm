@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 18/07/2001
 # AUTEUR : P. MASSIN
@@ -77,19 +77,6 @@ DEP_Z=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               NOM_CMP='DZ',
                               RESULTAT=RESU,
                               NOM_CHAM='DEPL',),);
-
-IMPR_RESU(RESU=_F(MAILLAGE=MAIL,
-                  FORMAT='CASTEM',
-                  RESULTAT=RESU,
-                  NOM_CHAM=('DEPL','SIGM_ELNO_DEPL'),),
-          MODELE=MO,);
-
-IMPR_RESU(RESU=_F(FORMAT='RESULTAT',
-                  RESULTAT=RESU,
-                  FICHIER='RESULTAT',
-                  NOM_CHAM='DEPL',
-                  GROUP_NO= ('C','D'),
-                  NOM_CMP='DZ',),);
 
 TEST_RESU(RESU=(
      _F( RESULTAT = RESU,         NOM_CHAM = 'DEPL',

@@ -1,0 +1,232 @@
+
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+#              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
+#              REDISTRIBUTION OF THIS FILE.
+# ======================================================================
+# CAS_TEST : SSNV505A
+# MODELE 
+# MAILLAGE : ELEMENT 3D QUADRANGLE A 9 NOEUDS
+# UNITES   : NEWTON , MILLIMETRE , SECONDE (N,MM,S)
+#
+#
+
+
+DEBUT(CODE=_F( NOM = 'SSNV505A',NIV_PUB_WEB='INTERNET'));
+#......................................................................
+#  CALCUL TEST ELEMENTS FINIS DE CONTACT 3D QUA8
+#                                MODELISATION COQUES_3D (QUA9)
+#......................................................................
+#
+#
+
+
+PRE_GIBI();
+#
+#
+
+
+MAILL1=LIRE_MAILLAGE();
+
+MAILL2=CREA_MAILLAGE(MAILLAGE=MAILL1,
+                     MODI_MAILLE=_F(GROUP_MA='STRUCT',
+                                    OPTION='QUAD8_9',),);
+
+MAILL2=DEFI_GROUP(reuse =MAILL2,
+                  MAILLAGE=MAILL2,
+                  CREA_GROUP_MA=(_F(NOM='SESC',
+                                    DIFFE=('POUTRE2','MA2'),),
+                                 _F(NOM='SMAI',
+                                    DIFFE=('POUTRE1','MA1'),),
+                                 ),
+                  CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),
+                                 _F(NOM='SOMMET',
+                                    GROUP_MA='STRUCT',
+                                    CRIT_NOEUD='SOMMET',),
+                                 _F(NOM='NRESU',
+                                    DIFFE=('POUTRE2','LCC1'),),
+                                 ),
+                  INFO=2
+                  );
+
+MODE=AFFE_MODELE(MAILLAGE=MAILL2,
+                 VERIF='MAILLE',
+                 AFFE=_F(GROUP_MA='STRUCT',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='COQUE_3D',),);
+
+
+MAILL2=MODI_MAILLAGE(reuse =MAILL2,
+                     MAILLAGE=MAILL2,
+                     ORIE_NORM_COQUE=_F(GROUP_MA='SMAI',
+                                        VECT_NORM=(0.0,1.0,0.0),
+                                        GROUP_NO='ORI',
+                                      ),
+                     MODELE=MODE,);
+
+MAILL2=MODI_MAILLAGE(reuse =MAILL2,
+                     MAILLAGE=MAILL2,
+                     ORIE_NORM_COQUE=_F(GROUP_MA='SESC',
+                                        VECT_NORM=(0.0,-1.0,0.0),
+                                        GROUP_NO='C',),
+                     MODELE=MODE,);
+
+MPOUTRE=DEFI_MATERIAU(ELAS=_F(E=6.8948E3,
+                              NU=0.3333,),);
+
+CARA=AFFE_CARA_ELEM(MODELE=MODE,
+                    VERIF='MAILLE',
+                    COQUE=_F(GROUP_MA=('POUTRE1','POUTRE2'),
+                             COQUE_NCOU =1,
+                             EPAIS=63.5,
+                             COEF_RIGI_DRZ=1.E-3,
+                             ),);
+
+CM=AFFE_MATERIAU(MAILLAGE=MAILL2,
+                 AFFE=_F(GROUP_MA='STRUCT',
+                         MATER=MPOUTRE,),);
+
+COND_LIM=AFFE_CHAR_MECA(MODELE=MODE,
+                        DDL_IMPO=(_F(GROUP_NO='SOMMET',
+                                     DZ=0,DRX=0),
+                                 _F(GROUP_NO=('LAA3','LBB1'),
+                                     DX=0.0,DY=0.0,DRX=0,DRY=0,DRZ=0,),
+                                  ),);
+
+
+CH1=AFFE_CHAR_MECA(MODELE=MODE,
+                   DDL_IMPO=_F(GROUP_NO=('C','C1'),
+                               DY=-790.,
+                             ),);
+
+
+CH2=AFFE_CHAR_MECA(MODELE=MODE,
+                   CONTACT=_F(GROUP_MA_MAIT='SMAI',
+                              GROUP_MA_ESCL='SESC',
+                              SANS_GROUP_NO=('LBB1','LCC1'),
+                              DIST_1=31.75,
+                              DIST_2=31.75,
+                              ),
+                  INFO=2);
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,1.0,1.0),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=1.,
+                                   NOMBRE=100,),);
+
+
+LARCH=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=1.,
+                                   NOMBRE=25,),);
+
+U=STAT_NON_LINE(MODELE=MODE,
+                CHAM_MATER=CM,
+                CARA_ELEM=CARA,
+                EXCIT=(_F(CHARGE=COND_LIM,),
+                       _F(CHARGE=CH1,
+                          FONC_MULT=RAMPE,),
+                       _F(CHARGE=CH2,),
+                       ),
+                COMP_ELAS=_F(RELATION='ELAS',
+                             DEFORMATION='GREEN_GR',
+                             GROUP_MA='STRUCT',),
+                INCREMENT=_F(LIST_INST=LINST,
+                             INST_FIN=1.,
+                             SUBD_PAS=4,
+                             SUBD_PAS_MINI=1E-5,
+                             ),
+                NEWTON=_F(REAC_ITER=1,
+                          ),
+                CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
+                ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',
+                             LIST_INST=LARCH,),
+                INFO=1,);
+
+U=CALC_NO(reuse =U,
+          RESULTAT=U,
+          CARA_ELEM=CARA,
+          OPTION=('REAC_NODA','FORC_NODA',),
+          MODELE=MODE,
+          CHAM_MATER=CM,
+          EXCIT=(_F(CHARGE=COND_LIM,),
+                 _F(CHARGE=CH1,
+                    FONC_MULT=RAMPE,),
+                 _F(CHARGE=CH2,),
+                 ),
+         );
+          
+
+
+TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+                                 GROUP_NO='C',
+                                 RESULTAT=U,
+                                 NOM_CHAM='DEPL',
+                                 NOM_CMP='DY',
+                                 OPERATION='EXTRACTION',),);
+IMPR_TABLE(FORMAT='EXCEL',
+           TABLE=TAB_DEPL,);
+
+TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
+                                 GROUP_NO=('LAA3','LBB1'),
+                                 RESULTAT=U,
+                                 NOM_CHAM='FORC_NODA',
+                                 RESULTANTE='DY',
+                                 OPERATION='EXTRACTION',),);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.2),
+           VALE=4.37897E+02,
+           PRECISION=0.1E-2,
+           REFERENCE='NON_REGRESSION',
+           VERSION='6.3.17',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.4),
+           VALE=1.65012E+03,
+           PRECISION=0.1E-2,
+           REFERENCE='NON_REGRESSION',
+           VERSION='6.3.17',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.6),
+           VALE=3.35705E+03,
+           PRECISION=0.1E-2,
+           REFERENCE='NON_REGRESSION',
+           VERSION='6.3.17',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.8),
+           VALE=3.01163E+03,
+           PRECISION=0.1E-2,
+           REFERENCE='NON_REGRESSION',
+           VERSION='6.3.17',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.),
+           VALE=3.14692E+03,
+           PRECISION=0.1E-2,
+           REFERENCE='NON_REGRESSION',
+           VERSION='6.3.17',);
+
+
+FIN();
+
+

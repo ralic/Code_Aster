@@ -5,7 +5,7 @@
       CHARACTER*19  CNSLT,CNSLN
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 05/07/2004   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,7 +54,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     
       INTEGER       IBID,IRET,ME1,ME2,CLSM
-      INTEGER       NBNO,INO,JCOOR,NBMAF,NUNO(3),NUNOSE(2),I
+      INTEGER       NBNO,INO,JCOOR,NBMAF,NUNO(4),NUNOSE(2),I
       INTEGER       JLTSV,JLTSL,JLNSV,JLNSL,AR(12,2)
       REAL*8        VALPU(3),AB(3),AC(3),AP(3),VN(3),VNT(3),BC(3)
       REAL*8        A(3),P(3),B(3),C(3),M(3),PM(3),VNREF(3)
@@ -118,7 +118,7 @@ C-----------------------------------------------------------------------
      &              'GROUP_MA_FISS','GROUP_MA',LISMA,NBMAF)       
         CALL JEVEUO(LISMA,'L',JDLIMA)
 
-        LISSE = '&&XINILS.LISTE_MA_FONFISS'    
+        LISSE = '&&XINILS.LISTE_MA_FONFIS'    
         CALL RELIEM(' ',NOMA,'NU_MAILLE','DEFI_FISS',1,1,
      &              'GROUP_MA_FOND','GROUP_MA',LISSE,NBSEF)        
         CALL JEVEUO(LISSE,'L',JDLISE)

@@ -1,4 +1,4 @@
-# MODIF  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TEST NAPPE D'ARMATURE (MODELISATION GRILLE_MEMBRANE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -172,8 +172,6 @@ LEDEP=CALC_NO( reuse = LEDEP,
 # POST TRAITEMENT DES RESULTATS
 # -------------------------------------------------
 #
-
-#IMPR_RESU(RESU=_F(RESULTAT=LEDEP,),);
 
 TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE EN FLEXION ET CISAILLEMENT DANS SON PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,10 +120,9 @@ TEST_RESU(   RESU=_F(  RESULTAT = DEF,
 
 DEFI_FICHIER( FICHIER= 'DEF', UNITE = 38 )
 
-IMPR_RESU(RESU=_F( RESULTAT = DEF,
-                   FICHIER = 'DEF',
-                   TOUT_ORDRE = 'OUI',
-                   FORMAT = 'IDEAS'))
+IMPR_RESU( FORMAT = 'IDEAS', UNITE = 38,
+           RESU=_F( RESULTAT = DEF,
+                    TOUT_ORDRE = 'OUI', ))
 
 #
 #----------------------------------------------------------

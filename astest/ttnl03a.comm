@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE THERMO-HYDRATATION EN ADIABATIQUE 3D - HEXA8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -446,7 +446,6 @@ EVOL_1 = CREA_RESU ( reuse=EVOL_1,
                      AFFE      = _F( CHAM_GD = T05,
                                      INST    = 5.00000E+00  )
                    )
-IMPR_RESU ( RESU=_F( RESULTAT = EVOL_1 ) )
 #
 TEST_RESU( RESU=( 
        _F(  RESULTAT = EVOL_1,  INST = 5.00000E+00,  NOM_CHAM = 'TEMP', 

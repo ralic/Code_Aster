@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE THERMO_METALLO_MECANIQUE DECOUPLEE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -111,14 +111,6 @@ TEMPE=CALC_META( reuse=TEMPE,  MODELE=MOTH,
                                  TOUT = 'OUI')
 
                    )
-
-IMPR_RESU(
-               MODELE=MOTH,
-               RESU=_F( 
-
-                    MAILLAGE = MAIL,
-                    RESULTAT = TEMPE)
- )
 
 FBM1=DEFI_FONCTION(      NOM_PARA='TEMP',
                             PROL_DROITE='LINEAIRE',

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,11 +124,6 @@ REST=CALC_ELEM(reuse =REST,
                NUME_COUCHE=3,
                NIVE_COUCHE='SUP',
                ANGLE=90,);
-
-IMPR_RESU(MODELE=MO,
-          RESU=_F(RESULTAT=REST,
-                  NOM_CHAM=('EPSI_ELNO_TUYO','EPEQ_ELNO_TUYO','SIEQ_ELNO_TUYO','DEGE_ELNO_DEPL',),
-                  GROUP_NO=('A','B',),),);
 
 REST=CALC_ELEM(reuse =REST,
                RESULTAT=REST,
@@ -289,12 +284,6 @@ RESM=CALC_ELEM(reuse =RESM,
                NIVE_COUCHE='SUP',
                ANGLE=90,);
 
-IMPR_RESU(MODELE=MO,
-          RESU=_F(RESULTAT=RESM,
-                  NOM_CHAM=('SIGM_ELNO_TUYO','DEGE_ELNO_DEPL',),
-                  NUME_ORDRE=1,
-                  GROUP_NO=('A','B',),),);
-
 RESM2=CALC_ELEM(
                 RESULTAT=RESM,
                 TOUT_ORDRE='OUI',
@@ -303,11 +292,6 @@ RESM2=CALC_ELEM(
                 NIVE_COUCHE='INF',
                 ANGLE=90,);
 
-IMPR_RESU(MODELE=MO,
-          RESU=_F(RESULTAT=RESM2,
-                  NOM_CHAM='SIGM_ELNO_TUYO',
-                  NUME_ORDRE=1,
-                  GROUP_NO=('A','B',),),);
 #
 # POUR VALIDER L'IMPRESSION DES VARIABLES INTERNES:
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # ======================================================================
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -152,12 +152,6 @@ ECITPS=POST_ELEM(
 
 IMPR_TABLE(TABLE=ECITPS);
 
-IMPR_RESU(RESU=_F(
-                  RESULTAT=U,
-                  NUME_ORDRE = (20,40,60),
-                  NOM_CHAM=('DEPL','VITE'),),
-          MODELE=MODE,);
-
 DE100=RECU_FONCTION(RESULTAT=U,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DZ',
@@ -178,17 +172,6 @@ VI5=RECU_FONCTION(RESULTAT=U,
                      NOM_CMP='DZ',
                      NOEUD='N5',
                      TITRE='VITE',);
-#IMPR_COURBE(FICHIER='AGRAF',
-#            FORMAT='AGRAF',
-#            TITRE_GRAPHIQUE='SRO EN X DU SOMMET DU BK ',
-#            FREQ_GRILLE_X=1,
-#            FREQ_GRILLE_Y=1,
-#            COURBE=(_F(FONCTION=DE100,),
-#                    _F(FONCTION=VI100,),
-#                    _F(FONCTION=DE5,),
-#                    _F(FONCTION=VI5,),
-#                   ),
-#             ) ;
 
 TEST_RESU( RESU=_F(  RESULTAT = U,
                      NUME_ORDRE = 20,

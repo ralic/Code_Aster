@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_mail_ops Macro  DATE 23/02/2004   AUTEUR F1BHHAJ J.ANGLES 
+#@ MODIF macr_aspic_mail_ops Macro  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -406,7 +406,6 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
   MODI_MAILLAGE =self.get_cmd('MODI_MAILLAGE')
   AFFE_MODELE   =self.get_cmd('AFFE_MODELE')
   CREA_MAILLAGE =self.get_cmd('CREA_MAILLAGE')
-  DEFI_FICHIER  =self.get_cmd('DEFI_FICHIER')
   IMPR_RESU     =self.get_cmd('IMPR_RESU')
 
 # La macro compte pour 1 dans la numerotation des commandes
@@ -831,18 +830,14 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
      if IMPRESSION.__class__.__name__  !='MCList' : IMPRESSION  =[IMPRESSION,]
      for impr in IMPRESSION :
 #
-         if impr['FICHIER']!=None:
-            DEFI_FICHIER(FICHIER = impr['FICHIER'],
-                         UNITE   = impr['UNITE'  ] )
-#
          motscles={}
          if impr['FORMAT']=='IDEAS'  : motscles['VERSION']  =impr['VERSION']
          if impr['FORMAT']=='CASTEM' : motscles['NIVE_GIBI']=impr['NIVE_GIBI']
-         if impr['FICHIER']!=None    : motscles['FICHIER']  =impr['FICHIER']
-         impr_resu = _F( MAILLAGE = nomres,
-                         FORMAT   = impr['FORMAT'],
-                         **motscles)
-         IMPR_RESU( RESU = impr_resu )
+         if impr['UNITE']!=None      : motscles['UNITE']    =impr['UNITE']
+         impr_resu = _F( MAILLAGE = nomres,)
+#
+         IMPR_RESU( RESU = impr_resu, 
+                    FORMAT = impr['FORMAT'],**motscles )
 #
   return ier
 

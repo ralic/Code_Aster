@@ -1,4 +1,4 @@
-# MODIF  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE  SUIVI PERFORMANCE : FLUAGE SAS FLAMANVILLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -643,10 +643,6 @@ RESU1=STAT_NON_LINE(   MODELE=MODELE,
                            SOLVEUR=_F( METHODE = 'MULT_FRONT', RENUM = 'MD')
 
                      )
-
-#IMPR_RESU ( RESU: (RESULTAT: RESU1 , VALE_MAX: 'OUI' )
-#           );
-
 
 TEST_RESU(RESU=(
             _F( RESULTAT = RESU1,

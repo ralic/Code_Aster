@@ -1,4 +1,4 @@
-# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE SYSTEME MAS RES A 8 DDL (AMORTISSEMENT VISQ. PROPORTION.)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -240,8 +240,6 @@ TEST_RESU(RESU=(
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = -2.65E-5))
            )
 
-#IMPR_RESU( RESU:( FORMAT: 'RESULTAT', TOUT: 'OUI' 
-#                  RESULTAT: DEPLTRAN            ) )  ;           
 #           
 #-----------------------------------------------------------------------
 #               TRANSITOIRE DIRECT PAS DE TEMPS ADAPTATIF

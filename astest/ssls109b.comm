@@ -1,4 +1,4 @@
-# MODIF  DATE 21/06/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE DE 3 NAPPES D'ARMATURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -217,10 +217,6 @@ RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,
 RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        
                              OPTION='SIEF_ELNO_ELGA' )
 
-IMPR_RESU(RESU=_F(RESULTAT=RESU0,
-NOM_CHAM=('FORC_NODA','SIEF_ELNO_ELGA','SIEF_ELGA_DEPL','DEPL',)))
-#
-
 # -------------------------------------------------
 # CALCUL MECANIQUE STATIQUE LINEAIRE 
 # -------------------------------------------------
@@ -242,9 +238,6 @@ RESU1=CALC_NO(  reuse=RESU1,   RESULTAT=RESU1,
 
 RESU1=CALC_ELEM(reuse=RESU1,     RESULTAT=RESU1,        
                              OPTION='SIEF_ELNO_ELGA' )
-
-IMPR_RESU(RESU=_F(RESULTAT=RESU1,NOM_CHAM=('FORC_NODA','SIEF_ELNO_ELGA','SIEF_ELGA','DEPL')))
-
 
 TEST_RESU(RESU=(
 

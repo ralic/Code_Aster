@@ -1,10 +1,7 @@
-
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 #
 #
-
-
 DEBUT(CODE=_F(NOM='FORMA01E',
               NIV_PUB_WEB='INTERNET',),);
 # TITRE TRAVAUX PRATIQUES FORMATION DE BASE 
@@ -190,21 +187,16 @@ IMPR_RESU(MODELE=MODMECA,
                   VALE_MAX='OUI',
                   VALE_MIN='OUI',),);
 
-IMPR_RESU(MODELE=MODMECA,
-          RESU=(_F(FORMAT='CASTEM',
-                   MAILLAGE=MAIL,),
-                _F(FORMAT='CASTEM',
-                   RESULTAT=RESU1,
+IMPR_RESU(MODELE=MODMECA,FORMAT='CASTEM',
+          RESU=(_F(MAILLAGE=MAIL,),
+                _F(RESULTAT=RESU1,
                    NOM_CHAM=('EFGE_ELNO_DEPL','DEPL',),),
-                _F(FORMAT='CASTEM',
-                   RESULTAT=RESU2,
+                _F(RESULTAT=RESU2,
                    NOM_CHAM=('EFGE_ELNO_DEPL','DEPL',),),),);
 
-IMPR_RESU(MODELE=MODMECA,
-          RESU=_F(FORMAT='GMSH',
-                  RESULTAT=RESU1,
-                  NOM_CHAM='DEPL',
-                  FICHIER='IDEAS',),);
+IMPR_RESU(MODELE=MODMECA,FORMAT='GMSH',UNITE=30,
+          RESU=_F(RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NUME_ORDRE=1,
@@ -251,7 +243,3 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
 
 FIN();
 #
-#
-#
-#
-

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE SPHERE SOUS PRESSION EXTERNE MODELISATION 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -74,24 +74,6 @@ RESUT=CALC_ELEM(reuse =RESUT,
                 RESULTAT=RESUT,);
 
 
-IMPR_RESU(MODELE=MODMECA,
-          RESU=_F(FORMAT='RESULTAT',
-                   RESULTAT=RESUT,
-                   NOM_CHAM=('DEPL','SIEF_ELGA_DEPL','SIEF_ELNO_ELGA'),
-                   VALE_MAX='OUI',VALE_MIN='OUI',),
-                   );
-
-
-DEFI_FICHIER(FICHIER='MSH', UNITE=37)
-
-IMPR_RESU(MODELE=MODMECA,
-          RESU=(
-                 _F(FORMAT='GMSH',
-                   FICHIER='MSH',
-                   RESULTAT=RESUT,
-                   NOM_CHAM=('DEPL'),),
-                   ),)
-
 TEST_RESU(RESU=(
             _F(  RESULTAT = RESUT, NOM_CHAM='DEPL', PRECISION = 1.3E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
               GROUP_NO = 'PAE',      NOM_CMP = 'DX',           VALE = -1.28279E-5),
@@ -103,11 +85,3 @@ TEST_RESU(RESU=(
               GROUP_NO = 'PCE',      NOM_CMP = 'DZ',           VALE = -1.28279E-5),
               ),)
 FIN()
-
-IMPR_RESU(MODELE=MODMECA,
-          RESU=(_F(FORMAT='CASTEM',
-                   MAILLAGE=MAIL,),
-                _F(FORMAT='CASTEM',
-                   RESULTAT=RESUT,
-                   NOM_CHAM=('DEPL','SIEF_ELNO_ELGA'),),
-                   ),);

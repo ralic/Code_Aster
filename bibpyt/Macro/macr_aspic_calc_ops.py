@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -778,6 +778,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
   if IMPRESSION!=None:
     mcfresu =[]
     motscles={}
+    motsclei={}
     if IMPRESSION['FORMAT'] in ('IDEAS','CASTEM') :
       ncham   =[]
       if IMPRESSION['NOM_CHAM']!=None :
@@ -799,10 +800,10 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
       elif IMPRESSION['INST']!=None :
                                   motscles['INST'      ]= IMPRESSION['INST']
     if IMPRESSION['FORMAT']=='IDEAS' :
-                                  motscles['VERSION'   ]= IMPRESSION['VERSION']
+                                  motsclei['VERSION'   ]= IMPRESSION['VERSION']
     if IMPRESSION['FORMAT']=='CASTEM' :
-                                  motscles['NIVE_GIBI' ]= IMPRESSION['NIVE_GIBI']
-    mcfresu.append(_F(MAILLAGE=MAILLAGE,RESULTAT=nomres,FORMAT=IMPRESSION['FORMAT'],**motscles))
+                                  motsclei['NIVE_GIBI' ]= IMPRESSION['NIVE_GIBI']
+    mcfresu.append(_F(MAILLAGE=MAILLAGE,RESULTAT=nomres,**motscles))
     if ECHANGE!=None:
       motscles={}
       if IMPRESSION['FORMAT'] in ('IDEAS','CASTEM') :
@@ -820,11 +821,12 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
         elif IMPRESSION['INST']!=None :
                                     motscles['INST'      ]= IMPRESSION['INST']
       if IMPRESSION['FORMAT']=='IDEAS' :
-                                    motscles['VERSION'   ]= IMPRESSION['VERSION']
+                                    motsclei['VERSION'   ]= IMPRESSION['VERSION']
       if IMPRESSION['FORMAT']=='CASTEM' :
-                                    motscles['NIVE_GIBI' ]= IMPRESSION['NIVE_GIBI']
-      mcfresu.append(_F(RESULTAT=nomres,FORMAT=IMPRESSION['FORMAT'],**motscles))
+                                    motsclei['NIVE_GIBI' ]= IMPRESSION['NIVE_GIBI']
+      mcfresu.append(_F(RESULTAT=nomres,**motscles))
     IMPR_RESU( MODELE = modele,
-               RESU   = mcfresu )
+               RESU   = mcfresu,
+               FORMAT=IMPRESSION['FORMAT'],**motsclei)
 #
   return ier

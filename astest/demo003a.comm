@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
@@ -107,11 +107,9 @@ RESU=STAT_NON_LINE(MODELE=MO,
 
 DEFI_FICHIER(FICHIER='DEPLA', UNITE=37)
                      
-IMPR_RESU (RESU = _F(
-           FORMAT = 'GMSH',
-           RESULTAT = RESU,
-           NOM_CHAM = ('DEPL'),
-           FICHIER='DEPLA')
+IMPR_RESU (FORMAT = 'GMSH',UNITE=37,
+           RESU = _F( RESULTAT = RESU,
+                      NOM_CHAM = 'DEPL', )
            );
            
 DEFI_FICHIER(ACTION='LIBERER',UNITE=37);
@@ -192,7 +190,7 @@ DY=RECU_FONCTION(RESULTAT=RESU,
                  GROUP_NO='GM16')
 
 IMPR_COURBE(FORMAT='AGRAF',
-            FICHIER='RESULTAT',
+            UNITE=8,
             LEGENDE_X='Deplacement (mm)',
             LEGENDE_Y='Force (N/rd)',
             COURBE=(_F(FONC_X = DY,

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE POUTRE VRILLEE SHB8 MAILLAGE 24 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -70,17 +70,6 @@ RESU1=CALC_ELEM(reuse =RESU1,
                 OPTION='SIEF_ELNO_ELGA',
                 RESULTAT=RESU1,);
 
-IMPR_RESU(MODELE=MODMECA,
-          RESU=(_F(FORMAT='RESULTAT',
-                   RESULTAT=RESU1,
-                   NOM_CHAM=('DEPL','SIEF_ELGA_DEPL','SIEF_ELNO_ELGA',),
-                   VALE_MAX='OUI',VALE_MIN='OUI',),
-                   ),);
-
-
-
-
-
 CHARGT2=AFFE_CHAR_MECA(MODELE=MODMECA,
                       DDL_IMPO=(_F(GROUP_MA=('ENCAS'),
                                    DX=0.0,),
@@ -121,26 +110,6 @@ TEST_RESU(RESU=(
               GROUP_NO = 'A2',      NOM_CMP = 'DZ',           VALE = -1.72E-3))
              )
 
-
-IMPR_RESU(MODELE=MODMECA,
-          RESU=(_F(FORMAT='RESULTAT',
-                   RESULTAT=RESU2,
-                   NOM_CHAM=('DEPL','SIEF_ELGA_DEPL','SIEF_ELNO_ELGA',),
-                   VALE_MAX='OUI',VALE_MIN='OUI',),
-                   ),);
-
-
-
-DEFI_FICHIER(FICHIER='MSH', UNITE=37)
-
-IMPR_RESU(MODELE=MODMECA,
-          RESU=(
-                 _F(FORMAT='GMSH',
-                   FICHIER='MSH',
-                   RESULTAT=RESU2,
-                   VERSION=1.2,
-                   NOM_CHAM=('DEPL'),),
-                   ),)
 
 FIN()
 

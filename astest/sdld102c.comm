@@ -1,4 +1,4 @@
-# MODIF  DATE 11/02/98   AUTEUR SABJLMA P.LATRUBESSE 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE SOUS-STRUCT. TRANSITOIRE : SYSTEME MASSES-RESSORTS AMORTI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -290,9 +290,6 @@ TRAN1=REST_BASE_PHYS(   RESU_GENE=TRANGEN1,
                              MODE_MECA=MODGLO )
 
 #
-IMPR_RESU( RESU=_F( FORMAT = 'RESULTAT', 
-                  RESULTAT = TRAN1))
-
 TRAN2=REST_BASE_PHYS(   RESU_GENE=TRANGEN2,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
@@ -300,21 +297,12 @@ TRAN2=REST_BASE_PHYS(   RESU_GENE=TRANGEN2,
                              MODE_MECA=MODGLO )
 
 #
-IMPR_RESU( RESU=_F( FORMAT = 'RESULTAT', 
-                  RESULTAT = TRAN2))
-
 TRAN3=REST_BASE_PHYS(   RESU_GENE=TRANGEN3,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN',
                              MODE_MECA=MODGLO )
 
-#
-IMPR_RESU( RESU=_F( FORMAT = 'RESULTAT', 
-                  RESULTAT = TRAN3))
-
-#
-#
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN1,
                   NOM_CHAM = 'DEPL',

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE COUPLAGE ASTER-HOMARD SUR UN CALCUL STAT_NON_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -67,8 +67,6 @@ MACR_INFO_MAIL( MAILLAGE=maill_fr,
                 INTERPENETRATION='OUI',
                 CONNEXITE='OUI'
                )
-#
-###IMPR_RESU(RESU=_F(MAILLAGE=maill_fr,FORMAT='MED'),);
 #
 # 3. Dimensionnement des tableaux des concepts maillage
 #    On affecte les valeurs a None (peu importe)
@@ -200,7 +198,7 @@ for num_calc in range(nbre_calcul):
 #
 # 5.8. Impression du resultat pour utilisation dans les cas_tests de HOMARD
 #
-###  IMPR_RESU(RESU=_F(RESULTAT=resu[num_calc],FORMAT='MED',INST=inst_fin,),);
+###  IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=resu[num_calc],INST=inst_fin,),);
 #
 # 6. Tests de non regression
 #    On met volontairement en dur le nom du concept resultat. Cela permet de tester

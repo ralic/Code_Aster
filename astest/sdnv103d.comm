@@ -1,4 +1,4 @@
-# MODIF  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -130,21 +130,6 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                                 LIST_INST=L_SAUV),
                    );
 
-#####################################################
-# IMPRESSION DES RESULTATS SOUS DIFFERENTS FORMATS
-#####################################################
-
-IMPR_RESU(RESU=_F(FORMAT='CASTEM',
-                  MAILLAGE=MA,
-                  RESULTAT=RESU,
-                  NOM_CHAM=('DEPL'),),);
-
-IMPR_RESU(RESU=_F(FORMAT='RESULTAT',
-                  RESULTAT=RESU,
-                  GROUP_NO=('B1','A2'),
-                  INST=2.E-5,
-                  NOM_CHAM=('DEPL','VITE','ACCE'),),);
-
 
 VITE_A2=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN A2',
                                 GROUP_NO= 'A2',
@@ -168,24 +153,6 @@ DEPL_B1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN B1',
                                 OPERATION='EXTRACTION',),);
 
 
-#IMPR_COURBE(FORMAT='AGRAF',
-#            FICHIER='AGRAF',
-#            LEGENDE_X='INSTANT (S)',
-#            LEGENDE_Y='DEPLACEMENT DY',
-#            COURBE=(_F(TABLE=VITE_A2,
-#                       PARA_X='INST',
-#                       PARA_Y='DY',
-#                       LEGENDE='VITE EN A2',),
-#                   _F(TABLE=DEPL_A1,
-#                       PARA_X='INST',
-#                       PARA_Y='DY',
-#                       LEGENDE='DEPL EN A1',),
-#                   _F(TABLE=DEPL_B1,
-#                       PARA_X='INST',
-#                       PARA_Y='DY',
-#                       LEGENDE='DEPL EN B1',),
-#                                           ));
-#
 #####################################################
 # TESTS DE DEPLACEMENTS, VITESSES ET ACCELERATIONS
 #####################################################

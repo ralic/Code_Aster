@@ -1,4 +1,4 @@
-# MODIF  DATE 16/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE FLAMBEMENT NON LINEAIRE POUTRE EN L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,8 +17,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-
-
 
 DEBUT(CODE=_F( NOM = 'SSLL105D',NIV_PUB_WEB='INTERNET'));
 
@@ -88,13 +86,6 @@ TEST_RESU(RESU=(
 
 
 
-DEFI_FICHIER(FICHIER='MODEFLAM',UNITE=36)
-
-IMPR_RESU(RESU=_F(FORMAT='GMSH',FICHIER='MODEFLAM',
-                  RESULTAT=res,NUME_ORDRE=(10),
-                  NOM_CHAM='MODE_FLAMB',),);
-
-
 effort2=AFFE_CHAR_MECA(MODELE=modele,
                       FORCE_NODALE=_F(GROUP_NO='C',
                                       FX=-1,),);
@@ -121,17 +112,5 @@ TEST_RESU(RESU=(
                    REFERENCE='ANALYTIQUE',),
                    ),)
 
-
-IMPR_RESU(RESU=_F(RESULTAT=res2,NUME_ORDRE=(10),
-                  NOM_CHAM='MODE_FLAMB',VALE_MAX='OUI',VALE_MIN='OUI'),);
-
-
-DEFI_FICHIER(FICHIER='MODEFLAM',UNITE=37,
-#NOM_SYSTEME='./REPE_OUT/modeflamb2.pos'
-)
-
-IMPR_RESU(RESU=_F(FORMAT='GMSH',FICHIER='MODEFLAM',
-                  RESULTAT=res2,NUME_ORDRE=(10),
-                  NOM_CHAM='MODE_FLAMB',),);
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,9 +119,6 @@ MEST1=CALC_NO( reuse=MEST1,
                                    'SIEF_NOEU_ELGA',
                                    )
                    )
-#IMPR_RESU(RESU=_F(RESULTAT=MEST1))
-
-
 #
 TEST_RESU(   RESU=_F( RESULTAT = MEST1,
                     NOM_CHAM = 'DEPL',

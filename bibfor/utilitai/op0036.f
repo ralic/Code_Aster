@@ -3,7 +3,7 @@
       INTEGER             IER
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 06/07/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,15 +37,16 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER IOCC,JF,IBID,NI,NR,NK,I,J,IR,JJJ,JP,NDIM,NDIM1,JT,JPROL,JD
-      INTEGER NOCC,IL,NOCC2
-      REAL*8  RBID,VR(2)     
+      INTEGER NOCC,IL,NOCC2,NINDI,III,DIMMAX,JY,JWORK
+      INTEGER COMPT,NBLIGN
+      REAL*8  RBID,VR(2),IND,DIM
       COMPLEX*16 CBID 
       CHARACTER*1 KBID
       CHARACTER*3 NTYP
       CHARACTER*8  RESULT,TYPARA(2)
       CHARACTER*16 CONCEP,NOMCMD,NMPAR,NMPAR1,NMPARF(2)
       CHARACTER*19 NFCT
-      CHARACTER*24 TRAV,LDBL
+      CHARACTER*24 TRAV,LDBL,INDIC,LTYP,WORK
       DATA TYPARA / 'R'       , 'R'       /   
 C     ------------------------------------------------------------------
 
@@ -54,76 +55,142 @@ C     ------------------------------------------------------------------
       IER=0
 
       CALL GETRES(RESULT,CONCEP,NOMCMD)
-      CALL TBCRSD(RESULT,'G')
       CALL GETFAC('LISTE',NOCC)
       CALL GETFAC('FONCTION',NOCC2)
+      INDIC='&&OP0036.IND'
       TRAV='&&OP0036.VAL'
       LDBL='&&OP0036.DBL'
+      LTYP='&&OP0036.TYP'
+      WORK='&&OP0036.WOR'
 C
 C     ==========
 C --- CAS: LISTE 
 C     ==========
 
       IF(NOCC.NE.0)THEN
+
+         CALL WKVECT(WORK,'V V I',1000,JWORK)
          CALL WKVECT(LDBL,'V V K16',NOCC,JD)
-         NDIM=0
-         DO 5 IOCC=1,NOCC
+         CALL WKVECT(LTYP,'V V K8',NOCC,JY)
+         DIM=0.D0
+         IND=0.D0
+         DIMMAX=0
+         COMPT=1
+         NBLIGN=0
+         
+         DO 50 IOCC=1,NOCC
             CALL GETVID('LISTE','PARA',IOCC,1,1,NMPAR,JP)
             ZK16(JD+IOCC-1)=NMPAR
+            CALL GETVIS('LISTE','LISTE_I',  IOCC,1,0,IBID,NI)
+            CALL GETVIS('LISTE','NUME_LIGN',IOCC,1,0,IBID,NINDI)
+            CALL GETVR8('LISTE','LISTE_R',  IOCC,1,0,RBID,NR)
+            CALL GETVTX('LISTE','LISTE_K',  IOCC,1,0,KBID,NK)
+            CALL GETVTX('LISTE','TYPE_K',   IOCC,1,1,NTYP,JT)
+            
+            IF ( NINDI.NE.0 ) THEN
+              IF ( (-NI-NR-NK).NE.(-NINDI)) THEN
+               CALL UTMESS('F','OP0036','LES LISTES NUME_LIGN'//
+     &         ' ET LISTE_X DOIVENT CONTENIR LE MEME NOMBRE DE TERMES')
+              ENDIF
+            ELSE
+              DIM=DIM-NI-NR-NK
+              IND=IND+1.D0
+              DIMMAX=MAX(DIMMAX,(-NI-NR-NK))
+            ENDIF
+
+            NINDI=-NINDI
+            CALL GETVIS('LISTE','NUME_LIGN',IOCC,1,NINDI,
+     &           ZI(JWORK+500-1+COMPT),IR)
+            COMPT=COMPT+NINDI
+            IF ( NI.NE.0 ) THEN
+               ZK8(JY+IOCC-1)='I'
+            ELSE IF (NR.NE.0) THEN
+               ZK8(JY+IOCC-1)='R'
+            ELSE IF (NK.NE.0) THEN
+               IF (NTYP(2:2).EQ.'8') THEN
+                  ZK8(JY+IOCC-1)='K8'
+               ELSE IF (NTYP(2:2).EQ.'1') THEN
+                  ZK8(JY+IOCC-1)='K16'
+               ELSE IF (NTYP(2:2).EQ.'2') THEN
+                  ZK8(JY+IOCC-1)='K24'
+               ENDIF
+            ENDIF
+
+ 50      CONTINUE
+
+        IF(INT(IND).NE.0) THEN   
+           IF (INT(DIM/IND).NE.DIMMAX) THEN
+              CALL UTMESS('F','OP0036','LES LISTES DES DONNEES'//
+     &         ' SONT INCOMPATIBLES.')
+           ENDIF
+        ENDIF 
+
+C       ---DIMENSIONNEMENT DE LA TABLE
+
+         DO 70 I=1,DIMMAX
+            ZI(JWORK-1+I)= 1
+ 70      CONTINUE
+
+         DO 80 I=1,500
+            ZI(JWORK+ZI(JWORK+500+I-1)-1)= 1
+ 80      CONTINUE
+ 
+ 
+         DO 90 I=1,500
+            NBLIGN= NBLIGN+ZI(JWORK+I-1)
+ 90      CONTINUE
+         
+C        ---CREATION DE LA TABLE
+
+         CALL JEDETR(WORK) 
+         CALL TBCRSV(RESULT,'G',NOCC,ZK16(JD),ZK8(JY),NBLIGN)
+         CALL JEDETR(LTYP)
+
+         DO 200 IOCC=1,NOCC
             CALL GETVIS('LISTE','LISTE_I',IOCC,1,0,IBID,NI)
-            CALL GETVR8('LISTE','LISTE_R',IOCC,1,0,RBID,NR)
-            CALL GETVTX('LISTE','LISTE_K',IOCC,1,0,KBID,NK)
-            NDIM=NDIM+MAX(-NI,-NR,-NK)
- 5       CONTINUE       
-         IF (NDIM.NE.(MAX(-NI,-NR,-NK)*NOCC)) THEN
-             CALL UTMESS('F','OP0036','LES LISTES'//
-     &          ' DOIVENT CONTENIR LE MEME NOMBRE DE TERMES')
-         ENDIF
-         DO 10 IOCC=1,NOCC
-            CALL GETVIS('LISTE','LISTE_I',IOCC,1,0,IBID,NI)
+            CALL GETVIS('LISTE','NUME_LIGN',IOCC,1,0,IBID,NINDI)
             CALL GETVR8('LISTE','LISTE_R',IOCC,1,0,RBID,NR)
             CALL GETVTX('LISTE','LISTE_K',IOCC,1,0,KBID,NK)
             CALL GETVID('LISTE','PARA',IOCC,1,1,NMPAR,JP)
-            DO 15 J=1,NOCC
+            DO 150 J=1,NOCC
                NMPAR1=ZK16(JD+J-1)
                IF ((NMPAR.EQ.NMPAR1).AND.(J.NE.IOCC)) THEN 
                   CALL UTMESS('F','OP0036','LES NOMS'//
      &                 ' DES PARAMETRES DOIVENT ETRE DIFFERENTS')
                ENDIF
- 15         CONTINUE       
+ 150        CONTINUE       
+
+            IF (NINDI.NE.0)THEN
+               NINDI=-NINDI
+               CALL WKVECT(INDIC,'V V I',NINDI,III)
+               CALL GETVIS('LISTE','NUME_LIGN',IOCC,1,NINDI,ZI(III),IR)
+            ELSE
+               CALL WKVECT(INDIC,'V V I',(-NI-NR-NK),III)
+               DO 175 I=1,(-NI-NR-NK)
+                    ZI(III+I-1)=I
+ 175           CONTINUE       
+            ENDIF
+            
+
 
 C           LISTE D'ENTIERS :
 C           ---------------
             IF (NI.NE.0)THEN
                NI=-NI
-               CALL TBAJPA(RESULT,1,NMPAR,'I')
                CALL WKVECT(TRAV,'V V I',NI,JJJ)
                CALL GETVIS('LISTE','LISTE_I',IOCC,1,NI,ZI(JJJ),IR)
-               DO 20 J=1,NI
-               IF (IOCC.EQ.1)THEN
-                  IL=0
-               ELSE
-                  IL=J
-               ENDIF
-               CALL TBAJLI(RESULT,1,NMPAR,ZI(JJJ+J-1),RBID,CBID,KBID,IL)
- 20            CONTINUE       
+               CALL TBAJCO(RESULT,NMPAR,'I',NI,ZI(JJJ),
+     &         RBID,CBID,KBID,'R',ZI(III))
             ENDIF
 
 C           LISTE DE REELS :
 C           --------------
             IF (NR.NE.0)THEN
                NR=-NR
-               CALL TBAJPA(RESULT,1,NMPAR,'R')
                CALL WKVECT(TRAV,'V V R',NR,JJJ)
                CALL GETVR8('LISTE','LISTE_R',IOCC,1,NR,ZR(JJJ),IR)
-               DO 30 J=1,NR
-               IF (IOCC.EQ.1)THEN
-                  IL=0
-               ELSE
-                  IL=J
-               ENDIF
-               CALL TBAJLI(RESULT,1,NMPAR,IBID,ZR(JJJ+J-1),CBID,KBID,IL)
- 30            CONTINUE
+               CALL TBAJCO(RESULT,NMPAR,'R',NR,IBID,ZR(JJJ),
+     &         CBID,KBID,'R',ZI(III))
             ENDIF
 
 C           LISTE DE CHAINE DE CARACTERES :
@@ -133,59 +200,36 @@ C           -----------------------------
                CALL GETVTX('LISTE','TYPE_K',IOCC,1,1,NTYP,JT)
 C              CHAINES DE 8 CARACTERES
                IF(NTYP(2:2).EQ.'8')THEN
-                  CALL TBAJPA(RESULT,1,NMPAR,'K8')
                   CALL WKVECT(TRAV,'V V K8',NK,JJJ)
                   CALL GETVTX('LISTE','LISTE_K',IOCC,1,NK,ZK8(JJJ),IR)
-                  DO 40 J=1,NK
-                     IF (IOCC.EQ.1)THEN
-                        IL=0
-                     ELSE
-                        IL=J
-                     ENDIF
-                     CALL TBAJLI(RESULT,1,NMPAR,IBID,RBID,CBID,
-     &                    ZK8(JJJ+J-1),IL)
- 40               CONTINUE
+                  CALL TBAJCO(RESULT,NMPAR,'K8',NK,IBID,RBID,CBID,
+     &                 ZK8(JJJ),'R',ZI(III))
 
 C              CHAINES DE 16 CARACTERES
                ELSEIF(NTYP(2:2).EQ.'1')THEN
-                  CALL TBAJPA(RESULT,1,NMPAR,'K16')
                   CALL WKVECT(TRAV,'V V K16',NK,JJJ)
                   CALL GETVTX('LISTE','LISTE_K',IOCC,1,NK,ZK16(JJJ),IR)
-                  DO 50 J=1,NK
-                     IF (IOCC.EQ.1)THEN
-                        IL=0
-                     ELSE
-                        IL=J
-                     ENDIF
-                     CALL TBAJLI(RESULT,1,NMPAR,IBID,RBID,CBID,
-     &                    ZK16(JJJ+J-1),IL)
- 50               CONTINUE  
+                  CALL TBAJCO(RESULT,NMPAR,'K16',NK,IBID,RBID,CBID,
+     &                 ZK16(JJJ),'R',ZI(III))
 
 C              CHAINES DE 24 CARACTERES
                ELSEIF(NTYP(2:2).EQ.'2')THEN
-                  CALL TBAJPA(RESULT,1,NMPAR,'K24')
                   CALL WKVECT(TRAV,'V V K24',NK,JJJ)
                   CALL GETVTX('LISTE','LISTE_K',IOCC,1,NK,ZK24(JJJ),IR)
-                  DO 60 J=1,NK
-                     IF (IOCC.EQ.1)THEN
-                        IL=0
-                     ELSE
-                        IL=J
-                     ENDIF
-                     CALL TBAJLI(RESULT,1,NMPAR,IBID,RBID,CBID,
-     &                    ZK24(JJJ+J-1),IL)
- 60               CONTINUE 
+                  CALL TBAJCO(RESULT,NMPAR,'K24',NK,IBID,RBID,CBID,
+     &                 ZK24(JJJ),'R',ZI(III))
                ENDIF
             ENDIF
             CALL JEDETR(TRAV) 
- 10      CONTINUE
-         CALL JEDETR(LDBL) 
-
+            CALL JEDETR(INDIC)
+ 200     CONTINUE
+         CALL JEDETR(LDBL)
 C     ==============    
 C --- CAS : FONCTION
 C     ==============
 
       ELSEIF(NOCC2.NE.0)THEN
+         CALL TBCRSD(RESULT,'G')
          CALL GETVID('FONCTION','FONCTION',1,1,1,NFCT,IR)
          CALL JEVEUO(NFCT//'.PROL','L',JPROL)
          IF(ZK16(JPROL).NE.'FONCTION' .AND.
@@ -202,14 +246,14 @@ C     ==============
          CALL TBAJPA(RESULT,2,NMPARF,TYPARA)
          CALL JELIRA(NFCT//'.VALE','LONMAX',NDIM,KBID)
          CALL JEVEUO(NFCT//'.VALE','L',JJJ)
-         DO 70 I=1,NDIM/2
+         DO 300 I=1,NDIM/2
 C NON, LES ORDONNEES SONT A LA FIN       VR(2)=ZR(JJJ+2*I-1)
 C            VR(1)=ZR(JJJ+2*I-2)
 C            VR(2)=ZR(JJJ+2*I-1)
             VR(1)=ZR(JJJ-1+I)
             VR(2)=ZR(JJJ-1+NDIM/2+I)
             CALL TBAJLI(RESULT,2,NMPARF,IBID,VR,CBID,KBID,0)
- 70   CONTINUE
+ 300  CONTINUE
       ENDIF
 
       CALL TITRE

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,11 +83,6 @@ DYNAHARM=DYNA_LINE_HARM( MATR_MASS=MATASM,  MATR_RIGI=MATASK,
                                     PUIS_PULS = 1,  PHAS_DEG = 90.),
              TITRE=( 'CAS TEST &CODE','&RL   COMMANDE &COMMANDE', )
                                     )
-
-#  IMPR_RESU (MODELE : COLONNE
-#             RESU   :(FORMAT:'RESULTAT'  FICHIER:'RESULTAT'
-#                      RESULTAT:DYNAHARM ));
-
 
 TEST_RESU(RESU=(
              _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 01,

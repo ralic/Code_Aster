@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE DE 3 NAPPES D'ARMATURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,11 +127,6 @@ RESU=CALC_NO(reuse =RESU,
              OPTION='FORC_NODA',
              );
 
-IMPR_RESU(MODELE=MO,
-          RESU=_F(FORMAT='RESULTAT',
-                  RESULTAT=RESU,
-                  TOUT='OUI',),);
-
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   NUME_ORDRE=1,
                   NOM_CHAM='SIEF_ELNO_ELGA',
@@ -175,11 +170,6 @@ RESU1=CALC_ELEM(
                 OPTION=('SIGM_ELNO_DEPL','EPSI_ELNO_DEPL',),
                 NUME_COUCHE=1,);
 
-IMPR_RESU(MODELE=MO,
-          RESU=_F(FORMAT='RESULTAT',
-                  RESULTAT=RESU1,
-                  TOUT='OUI',),);
-
 TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   NUME_ORDRE=1,
                   NOM_CHAM='SIGM_ELNO_DEPL',
@@ -203,11 +193,6 @@ RESU2=CALC_ELEM(
                 OPTION=('SIGM_ELNO_DEPL','EPSI_ELNO_DEPL',),
                 NUME_COUCHE=2,);
 
-IMPR_RESU(MODELE=MO,
-          RESU=_F(FORMAT='RESULTAT',
-                  RESULTAT=RESU2,
-                  TOUT='OUI',),);
-
 TEST_RESU(RESU=_F(RESULTAT=RESU2,
                   NUME_ORDRE=1,
                   NOM_CHAM='SIGM_ELNO_DEPL',
@@ -230,11 +215,6 @@ RESU3=CALC_ELEM(
                 RESULTAT=RESU,
                 OPTION=('SIGM_ELNO_DEPL','EPSI_ELNO_DEPL',),
                 NUME_COUCHE=3,);
-
-IMPR_RESU(MODELE=MO,
-          RESU=_F(FORMAT='RESULTAT',
-                  RESULTAT=RESU3,
-                  TOUT='OUI',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESU3,
                   NUME_ORDRE=1,

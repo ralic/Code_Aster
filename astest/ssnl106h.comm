@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -221,7 +221,7 @@ CA=CALC_FONC_INTERP(        FONCTION=CAa,    LIST_PARA=LI1,
                             PROL_GAUCHE='CONSTANT',  PROL_DROITE='CONSTANT',
                             INTERPOL='LIN', 
                             TITRE=' FONCTION ANALYTIQUE '    )
-IMPR_COURBE(FICHIER='AGRAF',
+IMPR_COURBE(UNITE=8,
             FORMAT='AGRAF',
             TITRE_GRAPHIQUE='TUYAU EN FLEXION. COURBE MOMENT ROTATION',
             LEGENDE_X='ROTATION IMPOSEE',
@@ -236,21 +236,6 @@ IMPR_COURBE(FICHIER='AGRAF',
                        LEGENDE='ANALYTIQUE',
                        COULEUR='BLEU',
                        MARQUEUR='CARRE',),),);
-
-IMPR_RESU(RESU=(_F(RESULTAT=RESM,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
-                   VALE_MAX='OUI',
-                   VALE_MIN='OUI',),
-             ),);
-
-IMPR_RESU(MODELE=MO,
-          RESU=(_F(FORMAT='CASTEM',
-                   MAILLAGE=MA,
-                   RESULTAT=REST,
-                   NOM_CHAM=('DEPL','SIEF_ELNO_ELGA',),),
-                _F(FORMAT='CASTEM',
-                   RESULTAT=RESM,
-                   NOM_CHAM=('DEPL','SIEF_ELNO_ELGA',),),),);
 
 FIN( )
 

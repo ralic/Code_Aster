@@ -1,4 +1,6 @@
       SUBROUTINE CHARME ( FONREE )
+
+C MODIF MODELISA  DATE 05/07/2004   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,8 +20,8 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       CHARACTER*4         FONREE
+
 C ----------------------------------------------------------------------
-C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C
 C      OPERATEURS :     AFFE_CHAR_MECA ET AFFE_CHAR_MECA_C
 C                                      ET AFFE_CHAR_MECA_F
@@ -264,6 +266,10 @@ C --- DDL_IMPO ---
 C
       MOTFAC = 'DDL_IMPO        '
       CALL CADDLI ( OPER, MOTFAC, FONREE, CHAR )
+C
+C --- LIAISON_XFEM ---
+C
+      CALL CAXFEM ( FONREE, CHAR )
 C
 C --- LIAISON_DDL ---
 C

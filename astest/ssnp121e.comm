@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CONTACT DE DEUX BLOCS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,23 +126,6 @@ SIELNO=CREA_CHAMP(  OPERATION='EXTR',
                      RESULTAT=RESU,
                    NUME_ORDRE=1);
                    
-#IMPR_RESU(MODELE=MO,
-#            RESU=(_F(FORMAT= 'CASTEM',
-#                   MAILLAGE=MA,
-#                   RESULTAT=RESU,
-#        NOM_CHAM=('DEPL','SIEF_NOEU_ELGA','EQUI_NOEU_SIGM',),),),);
-
-IMPR_RESU(MODELE=MO,
-            RESU=(_F(FORMAT= 'RESULTAT',
-                   MAILLAGE=MA,
-                   RESULTAT=RESU,
-                  NOM_CHAM=('DEPL','SIEF_NOEU_ELGA','EQUI_NOEU_SIGM',),),                  _F(FORMAT='RESULTAT',
-                   MAILLAGE=MA,
-                   GROUP_NO=('SURESC','SURMAI'),
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                    NOM_CMP=('LAGS_C','DX','DY','DZ'),),),);
-
 TEST_RESU(   RESU=_F(  RESULTAT = RESU,
                      NUME_ORDRE = 1,
                       GROUP_NO = 'A21',

@@ -1,0 +1,319 @@
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# TITRE FLAMBEMENT D'UNE CORNIERE ELASTIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# CORNIERE 120 X 120 X 8 D'UNE LONGUEUR DE 1200
+# MODELISATION POU_D_TG
+#=======================================================================
+
+DEBUT( CODE=_F(  NOM = 'SSLL103A',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE()
+
+MAT=DEFI_MATERIAU(ELAS=_F( E = 2.1E5,NU = 0.3,))
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F( TOUT = 'OUI',MATER = MAT,))
+
+MO=AFFE_MODELE( MAILLAGE=MA,   AFFE=_F( TOUT = 'OUI',  
+       PHENOMENE = 'MECANIQUE',     MODELISATION = 'POU_D_TG',))
+
+CARAC=AFFE_CARA_ELEM( MODELE=MO,POUTRE=(
+         _F( MAILLE = ( 'S1', 'S2', 'S3', 'S4', ),  SECTION = 'GENERALE',
+        CARA = (  'A',         'IY',           'IZ',            
+                'AY',        'AZ',           'EY',            
+                'EZ',        'JX',           'JG',            
+                'IYR2',      'IZR2',                          ),
+        VALE = (1856.,       4167339.,       1045547.,          
+                 0.,       0.,             41.012,            
+                 0.,       39595.,         44398819.,         
+              84948392.,   0.,                                ), ),
+         _F( MAILLE = ( 'S5', 'S6', 'S7', 'S8', ),  SECTION = 'GENERALE',
+        CARA = (  'A1',        'IY1',          'IZ1',           
+                'AY1',       'AZ1',          'EY1',           
+                'EZ1',       'JX1',          'JG1',           
+                'IYR21',     'IZR21',     
+                'A2',        'IY2',          'IZ2',           
+                'AY2',       'AZ2',          'EY2',           
+                'EZ2',       'JX2',          'JG2',           
+                'IYR22',     'IZR22',                         ),
+        VALE = (1856.,       4167339.,       1045547.,          
+                 0.,       0.,             41.012,            
+                 0.,       39595.,         44398819.,         
+              84948392.,   0.,            
+              1856.,       4167339.,       1045547.,          
+                 0.,       0.,             41.012,            
+                 0.,       39595.,         44398819.,         
+              84948392.,   0.,                                ), ))
+      )
+
+BLOQ=AFFE_CHAR_MECA(   MODELE=MO,
+#         DDL_IMPO:(NOEUD:A1    DX:0. DY:0. DZ:0. DRX:0.       )
+#          DDL_IMPO:(NOEUD:A2          DY:0. DZ:0. DRX:0.       ) );
+################################################################
+          DDL_IMPO=_F( NOEUD = 'A1',    DX = 0., DY = 0., DZ = 0., ),LIAISON_DDL=(
+       _F(     NOEUD = ( 'A1',    'A1',    'A1',  ),  
+                          DDL = ('DRX', 'DRY', 'DRZ',),  
+                    COEF_MULT = (  1.,    1.,    1., ),  
+                    COEF_IMPO = 0.,                  ),
+#
+       _F(     NOEUD = ( 'A2',   'A2', ),  
+                          DDL = ('DX', 'DY',),  
+                    COEF_MULT = ( 1.,   -1.,),  
+                    COEF_IMPO = 0.,            ),
+#
+       _F(     NOEUD = ( 'A2',   'A2', ),  
+                          DDL = ('DX', 'DZ',),  
+                    COEF_MULT = ( 1.,   -1.,),  
+                    COEF_IMPO = 0.,            ),
+#
+       _F(     NOEUD = ( 'A2',    'A2',    'A2',  ),  
+                          DDL = ('DRX', 'DRY', 'DRZ',),  
+                    COEF_MULT = (  1.,    1.,    1., ),  
+                    COEF_IMPO = 0.,                  ))    )
+
+################################################################
+#
+
+RIGEL=CALC_MATR_ELEM(MODELE=MO,    OPTION='RIGI_MECA',
+          CHAM_MATER=CHMAT,  CARA_ELEM=CARAC, CHARGE=BLOQ )
+
+NU=NUME_DDL( MATR_RIGI=RIGEL )
+
+RIGAS=ASSE_MATRICE(MATR_ELEM=RIGEL,NUME_DDL=NU)
+
+
+# FLAMBEMENT CAS 1  (FORCE EN G)
+# ------------------------------
+
+CHFORC_1=AFFE_CHAR_MECA(MODELE=MO,
+#                  FORCE_NODALE:(NOEUD: A2  FX:-1.      ));
+                   FORCE_NODALE=_F( NOEUD = 'A2',   FX = -5.7735026919E-01,
+                                            FY = -5.7735026919E-01,
+                                            FZ = -5.7735026919E-01,  ))
+                            
+                            
+STAT1=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARAC,
+                   EXCIT=(_F(CHARGE=BLOQ,),
+                          _F(CHARGE=CHFORC_1,),),);
+                          
+SIGMA_1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
+                    RESULTAT=STAT1, NUME_ORDRE=1,
+                    NOM_CHAM='SIEF_ELGA_DEPL' );
+
+ 
+RIGELG_1=CALC_MATR_ELEM( MODELE=MO, OPTION='RIGI_GEOM',
+                             CARA_ELEM=CARAC,  SIEF_ELGA=SIGMA_1 )
+
+RIGASG_1=ASSE_MATRICE(MATR_ELEM=RIGELG_1,NUME_DDL=NU)
+
+#
+
+MOD_1=MODE_ITER_SIMULT(   MATR_A=RIGAS,
+                              MATR_B=RIGASG_1,
+                              TYPE_RESU='MODE_FLAMB',
+                            CALC_FREQ=_F(  NMAX_FREQ = 20,
+                            DIM_SOUS_ESPACE = 40,   )
+                          )
+
+#
+
+TEST_RESU(RESU=(
+   _F( RESULTAT = MOD_1, NUME_MODE = 20,  PARA = 'CHAR_CRIT', VALE = -6.9253171E5,
+    PRECISION = 1.E-5,),
+   _F( RESULTAT = MOD_1, NUME_MODE = 13,  PARA = 'CHAR_CRIT', VALE = -1.5048739E6,
+    PRECISION = 4.E-5,),
+   _F( RESULTAT = MOD_1, NUME_MODE = 2,  PARA = 'CHAR_CRIT', VALE = -1.0058989E7,
+    PRECISION = 4.E-5,)))
+
+# FLAMBEMENT CAS 2  (FORCE EN C)
+# ------------------------------
+
+CHFORC_2=AFFE_CHAR_MECA(MODELE=MO,FORCE_NODALE=(
+##             FORCE_NODALE:(NOEUD: A1         MZ:+41.012 )
+##             FORCE_NODALE:(NOEUD: A2  FX:-1. MZ:-41.012 ));
+###############################################################
+               _F( NOEUD = 'A1',     MX = -1.6743078889E+01,
+                                          MY = -1.6743078889E+01,
+                                          MZ = 3.3486157777E+01,  ),
+#
+               _F( NOEUD = 'A2',     FX = -5.7735026919E-01,
+                                          FY = -5.7735026919E-01,
+                                          FZ = -5.7735026919E-01,
+                                          MX = 1.6743078889E+01,
+                                          MY = 1.6743078889E+01,
+                                          MZ = -3.3486157777E+01, ))  )
+
+###############################################################
+STAT2=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARAC,
+                   EXCIT=(_F(CHARGE=BLOQ,),
+                          _F(CHARGE=CHFORC_2,),),);
+                          
+SIGMA_2=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
+                    RESULTAT=STAT2, NUME_ORDRE=1,
+                    NOM_CHAM='SIEF_ELGA_DEPL' );
+
+RIGELG_2=CALC_MATR_ELEM( MODELE=MO, OPTION='RIGI_GEOM',
+                             CARA_ELEM=CARAC,  SIEF_ELGA=SIGMA_2 )
+
+RIGASG_2=ASSE_MATRICE(MATR_ELEM=RIGELG_2,NUME_DDL=NU)
+
+#
+
+MOD_2=MODE_ITER_SIMULT(   MATR_A=RIGAS,
+                              MATR_B=RIGASG_2,
+                              TYPE_RESU='MODE_FLAMB',
+                            CALC_FREQ=_F(  NMAX_FREQ = 20,
+                            DIM_SOUS_ESPACE = 40,   )
+                          )
+
+#
+
+TEST_RESU(RESU=(
+   _F( RESULTAT = MOD_2, NUME_MODE = 4,  PARA = 'CHAR_CRIT', VALE = -1.5048739E6,
+    PRECISION = 4.E-5,),
+   _F( RESULTAT = MOD_2, NUME_MODE = 3,  PARA = 'CHAR_CRIT', VALE = -5.9981232E6,
+    PRECISION = 4.E-5,),
+   _F( RESULTAT = MOD_2, NUME_MODE = 5,  PARA = 'CHAR_CRIT', VALE = +1.4790446E6,
+    PRECISION = 4.E-5,)))
+
+# FLAMBEMENT CAS 3  (FORCE EN A)
+# ------------------------------
+
+CHFORC_3=AFFE_CHAR_MECA(MODELE=MO,FORCE_NODALE=(
+##                       FORCE_NODALE:(NOEUD: A1         MY:-41.012 )
+##                       FORCE_NODALE:(NOEUD: A2  FX:-1. MY:+41.012 ));
+###############################################################
+               _F( NOEUD = 'A1',     MX = 2.8999863310E+01, 
+                                          MY = -2.8999863310E+01, ),
+#
+               _F( NOEUD = 'A2',     FX = -5.7735026919E-01,
+                                          FY = -5.7735026919E-01,
+                                          FZ = -5.7735026919E-01,
+                                          MX = -2.8999863310E+01,
+                                          MY = 2.8999863310E+01,  ))  )
+
+###############################################################
+
+STAT3=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARAC,
+                   EXCIT=(_F(CHARGE=BLOQ,),
+                          _F(CHARGE=CHFORC_3,),),);
+                          
+SIGMA_3=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
+                    RESULTAT=STAT3, NUME_ORDRE=1,
+                    NOM_CHAM='SIEF_ELGA_DEPL' );
+
+RIGELG_3=CALC_MATR_ELEM( MODELE=MO, OPTION='RIGI_GEOM',
+                             CARA_ELEM=CARAC,  SIEF_ELGA=SIGMA_3 )
+
+RIGASG_3=ASSE_MATRICE(MATR_ELEM=RIGELG_3,NUME_DDL=NU)
+
+#
+
+MOD_3=MODE_ITER_SIMULT(   MATR_A=RIGAS,
+                              MATR_B=RIGASG_3,
+                              TYPE_RESU='MODE_FLAMB',
+                            CALC_FREQ=_F(  NMAX_FREQ = 20,
+                            DIM_SOUS_ESPACE = 40,   )
+                          )
+
+#
+
+TEST_RESU(RESU=(
+   _F( RESULTAT = MOD_3, NUME_MODE = 20, PARA = 'CHAR_CRIT', VALE = -5.7226082E5,
+    PRECISION = 2.E-5,),
+   _F( RESULTAT = MOD_3, NUME_MODE = 11, PARA = 'CHAR_CRIT', VALE = -2.4595077E6,
+    PRECISION = 4.E-5,),
+   _F( RESULTAT = MOD_3, NUME_MODE = 2, PARA = 'CHAR_CRIT', VALE = -1.8567372E7,
+    PRECISION = 4.E-5,)))
+
+# FLAMBEMENT CAS 4  (MOMENT SUIVANT OY)
+# -------------------------------------
+
+CHFORC_4=AFFE_CHAR_MECA(MODELE=MO,FORCE_NODALE=(
+##                       FORCE_NODALE:(NOEUD: A1  MY:-1.      )
+##                       FORCE_NODALE:(NOEUD: A2  MY:+1.      ));
+###############################################################
+               _F( NOEUD = 'A1',     MX = 7.0710678119E-01, 
+                                          MY = -7.0710678119E-01, ),
+#
+               _F( NOEUD = 'A2',     MX = -7.0710678119E-01,
+                                          MY = 7.0710678119E-01,  ))  )
+
+###############################################################
+
+STAT4=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARAC,
+                   EXCIT=(_F(CHARGE=BLOQ,),
+                          _F(CHARGE=CHFORC_4,),),);
+                          
+SIGMA_4=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
+                    RESULTAT=STAT4, NUME_ORDRE=1,
+                    NOM_CHAM='SIEF_ELGA_DEPL' )
+
+RIGELG_4=CALC_MATR_ELEM( MODELE=MO, OPTION='RIGI_GEOM',
+                             CARA_ELEM=CARAC,  SIEF_ELGA=SIGMA_4 )
+
+RIGASG_4=ASSE_MATRICE(MATR_ELEM=RIGELG_4,NUME_DDL=NU)
+
+#
+
+MOD_4=MODE_ITER_SIMULT(   MATR_A=RIGAS,
+                              MATR_B=RIGASG_4,
+                              TYPE_RESU='MODE_FLAMB',
+                            CALC_FREQ=_F(  NMAX_FREQ = 4,
+                            DIM_SOUS_ESPACE = 20,   )
+                          )
+
+MOD_5=MODE_ITER_INV(   MATR_A=RIGAS,
+                              MATR_B=RIGASG_4,
+                              TYPE_RESU='MODE_FLAMB',
+                            CALC_FREQ=_F(  CHAR_CRIT = (-1.5E8, 1.7E8,), )
+                             
+                          )
+
+#
+
+TEST_RESU(
+   RESU=_F( RESULTAT = MOD_4, NUME_MODE = 3,  PARA = 'CHAR_CRIT', VALE = +7.0063121E7,
+    PRECISION = 4.E-5,))
+
+IMPR_RESU(  RESU=_F(  RESULTAT = MOD_4,  
+                      TOUT_PARA = 'OUI',    )  )
+
+MOD_4=NORM_MODE( reuse=MOD_4,    MODE=MOD_4,
+                         NORME='EUCL_TRAN'  )
+
+IMPR_RESU(  RESU=_F(  RESULTAT = MOD_4,  
+                      TOUT_PARA = 'OUI',    )  )
+
+#
+
+TEST_RESU(
+   RESU=_F( RESULTAT = MOD_4, NUME_MODE = 3,  PARA = 'CHAR_CRIT', VALE = +7.0063121E7,
+    PRECISION = 4.E-5,))
+
+# --------------------------------------------------------------------
+FIN()
+#

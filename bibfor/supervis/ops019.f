@@ -3,7 +3,7 @@
       INTEGER             ICMD , ICOND , IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF SUPERVIS  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -1205,19 +1205,18 @@ C
 C
          ICMD = ICMD + 1
          CALL SMDCMD ( ICMD, ' ', 'IMPR_RESU', IERUSR )
+           CALL PUTVTX ( 'FORMAT'  , 1, ZK16(IFORM+I-1),
+     +                     ZI(ILFOR+I-1) , IERUSR)
+           IF (ZK16(IFORM+I-1)(1:5).EQ.'IDEAS') THEN
+             CALL PUTVIS ( 'VERSION' , 1, ZI(IVERS+I-1), IERUSR )
+           ELSEIF (ZK16(IFORM+I-1)(1:6).EQ.'CASTEM') THEN
+             CALL PUTVIS ( 'NIVE_GIBI' , 1, ZI(INIVG+I-1), IERUSR )
+           ENDIF
+           IF ( ZI(INF+I-1) .NE. 0 ) THEN
+             CALL PUTVIS ( 'UNITE'  , 1, ZI(INF+I-1), IERUSR)
+           ENDIF
            CALL SMDMCF ( 'RESU', IERUSR )
              CALL PUTVID ( 'MAILLAGE', 1, NOMRES, IERUSR )
-             CALL PUTVTX ( 'FORMAT'  , 1, ZK16(IFORM+I-1),
-     +                     ZI(ILFOR+I-1) , IERUSR)
-             IF (ZK16(IFORM+I-1)(1:5).EQ.'IDEAS') THEN
-               CALL PUTVIS ( 'VERSION' , 1, ZI(IVERS+I-1), IERUSR )
-             ELSEIF (ZK16(IFORM+I-1)(1:6).EQ.'CASTEM') THEN
-               CALL PUTVIS ( 'NIVE_GIBI' , 1, ZI(INIVG+I-1), IERUSR )
-             ENDIF
-             IF ( ZI(INF+I-1) .NE. 0 ) THEN
-               CALL PUTVTX ( 'FICHIER'  , 1, ZK16(IFICH+I-1) ,
-     +                       ZI(ILFIC+I-1), IERUSR)
-             ENDIF
            CALL SMFMCF ( IERUSR )
          CALL SMFCMD ( IERUSR )
 C

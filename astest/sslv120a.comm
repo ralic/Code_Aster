@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE ETIREMENT D'UN PARALLELEPIPEDE ORTHOTROPE SOUS SON PROPRE POIDS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,12 +79,6 @@ RESU=CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
                OPTION=('SIGM_ELNO_DEPL',),
                 )
                 
-#
-IMPR_RESU(  MODELE=MO,  
-           RESU=_F(  RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=1, 
-           FORMAT = 'IDEAS', MAILLAGE = MA))
-
-
 #---------------------------------------------------------------------
 
 TEST_RESU(RESU=( 

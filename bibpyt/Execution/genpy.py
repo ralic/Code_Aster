@@ -1,4 +1,4 @@
-#@ MODIF genpy Execution  DATE 13/10/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF genpy Execution  DATE 06/07/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -175,9 +175,17 @@ class genpy:
     return st
 
   def visitMCSIMP(self,node):
-    if type(node.valeur) == types.TupleType :
+    if type(node.valeur) in (types.TupleType,types.ListType) :
       st = '('
-      for val in node.valeur :
+      # Si la liste est trop longue, on ne l'imprime pas completement
+      lmax=1000
+      listVal=node.valeur
+      trail=')'
+      if len(node.valeur) > lmax:
+         listVal=node.valeur[:lmax]
+         trail='...)\nliste ecourtee : cardinal > 1000'
+      
+      for val in listVal :
         if type(val)  == types.InstanceType :
           val.accept(self)
           if hasattr(node.etape,'sdprods') and val in node.etape.sdprods:
@@ -189,7 +197,8 @@ class genpy:
         else :
           st = st + `val`
         st = st +','
-      st = st + ')'
+
+      st = st + trail
     elif type(node.valeur) == types.InstanceType :
       node.valeur.accept(self)
       if hasattr(node.etape,'sdprods') and node.valeur in node.etape.sdprods:
@@ -207,6 +216,7 @@ class genpy:
       st='"""'+node.val+'"""'
     else :
       st=`node.valeur`
+
     if (node.definition.into==None and self._simp=='into') :
       self._result=''
     else :

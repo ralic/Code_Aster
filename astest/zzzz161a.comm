@@ -1,4 +1,4 @@
-# MODIF  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE ESSAI MED POUR DIFFERENTS TYPES D ELEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -83,9 +83,7 @@ RESUTRQU=MECA_STATIQUE( MODELE=MODETRQU,
 
 DEFI_FICHIER( FICHIER = 'MED_70', TYPE = 'LIBRE',UNITE = 70)
 
-IMPR_RESU(RESU=_F(FORMAT='MED',
-                  RESULTAT=RESUTRQU,
-                  FICHIER='MED_70',),);
+IMPR_RESU(FORMAT='MED',UNITE = 70,RESU=_F(RESULTAT=RESUTRQU,),);
 
 
 RESUTRQ2=LIRE_RESU(
@@ -129,21 +127,17 @@ IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQ2,
                      GROUP_MA = 'MILIEU' ),
             INFO=2 ) ;
 #
-IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQ2,
-                     FORMAT='MED',
-                     NOM_CHAM = ('DEPL',) ),
+IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RESUTRQ2,
+                                   NOM_CHAM = ('DEPL',) ),
             INFO=2 ) ;
-IMPR_RESU ( RESU=_F( CHAM_GD=REQT_GD,
-                     FORMAT='MED', ),
+IMPR_RESU ( FORMAT='MED', RESU=_F( CHAM_GD=REQT_GD,),
             INFO=2 ) ;
-IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQ2,
-                     FORMAT='MED',
-                     NOM_CHAM = ('SIGM_ELNO_DEPL',),),
+IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RESUTRQ2,
+                                   NOM_CHAM = ('SIGM_ELNO_DEPL',),),
             INFO=2 ) ;
-IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQ2,
-                     FORMAT='MED',
-                     NOM_CHAM = ('ERRE_ELGA_NORE',),
-                     GROUP_MA = 'MILIEU' ),
+IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RESUTRQ2,
+                                   NOM_CHAM = ('ERRE_ELGA_NORE',),
+                                   GROUP_MA = 'MILIEU' ),
             INFO=2 ) ;
 #
 # 5. Relecture

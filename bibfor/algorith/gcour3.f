@@ -1,10 +1,11 @@
       SUBROUTINE GCOUR3 (RESU,NOMA,NOMO,NOMNO,COORN,LNOFF,TRAV1,
      &           TRAV2,TRAV3,CHFOND,GRLT,DIREC,CONNEX,THLAGR,
-     &           NBRE,MILIEU,BASLO)
+     &           NBRE,MILIEU)
        IMPLICIT REAL*8 (A-H,O-Z)
 
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 05/07/2004   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,7 +59,6 @@ C                 LISTE DE CHAMPS_NO THETA
 C        TRAV3 : MODULE(THETA)
 C        MILIEU: .TRUE.  : ELEMENT QUADRATIQUE
 C                .FALSE. : ELEMENT LINEAIRE
-C        BASLO  : COORD DU POINT PROJETÉ SUR FONFIS
 C     ------------------------------------------------------------------
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -84,7 +84,6 @@ C
       CHARACTER*24      TRAV1,TRAV2,TRAV3,OBJOR,OBJEX,CHFOND,REPK
       CHARACTER*24      OBJ3,NORM,STOK1,STOK2,STOK3,NUMGAM,CHAMNO
       CHARACTER*24      STOK4,DIRE4,COORN,NOMNO,DIRE5,DIRTH, TEMP
-      CHARACTER*24      BASLO
       CHARACTER*19      CNSGT, GRLT
       CHARACTER*8       CHBID, FISS,RESU, NOMA, NOMO
       CHARACTER*6       KIORD
@@ -93,7 +92,7 @@ C
       INTEGER           IADR8,IM2,IADRCO,JMIN,IELINF,IADNUM
       INTEGER           IADRNO,NNOEU,NUM,IERD,IMODU,NBRE
       INTEGER           IRET,NUMA,NDIMTE,IDIRTH,IDEEQ,NBDIR
-      INTEGER           ITANEX,ITANOR,JGT,JGN,JBALO
+      INTEGER           ITANEX,ITANOR,JGT,JGN
 C
       REAL*8            DIRX,DIRY,DIRZ,XI1,YI1,ZI1,XJ1,YJ1,ZJ1
       REAL*8            XIJ,YIJ,ZIJ,EPS,D, GRTX,GRTY,GRTZ
@@ -116,8 +115,6 @@ C
       CALL JEVEUO(COORN,'L',IADRCO)
 
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,CHBID,IERD)
-
-      CALL WKVECT(BASLO,'V V R',3*NBNO,JBALO)
 
       CALL JEVEUO(CHFOND,'L',IFON)
 
@@ -228,9 +225,6 @@ C               DISTANCE MN
                   DMIN = D
                   JMIN = J
                   SMIN = S
-                  XA=XN
-                  YA=YN
-                  ZA=ZN
                 ENDIF
 600           CONTINUE
 
@@ -260,11 +254,6 @@ C               DISTANCE MN
                 ZR(ITHETA+(I-1)*3+2-1) = (1-ALPHA)*VALY
                 ZR(ITHETA+(I-1)*3+3-1) = (1-ALPHA)*VALZ
               ENDIF
-
-C             SAUVEGARDE DES COORD DU PROJETÉ
-              ZR(JBALO-1+(I-1)*3+1)=XA
-              ZR(JBALO-1+(I-1)*3+2)=YA
-              ZR(JBALO-1+(I-1)*3+3)=ZA
 
  500      CONTINUE
         ELSE

@@ -1,5 +1,3 @@
-
-
 POURSUITE(CODE=_F( NOM = 'FORMA03B'),PAR_LOT='NON');
 
 #import Stanley
@@ -58,10 +56,7 @@ F_FY_P=RECU_FONCTION(TABLE=FHAUTP,
                      PARA_Y='DY',
                      INTERPOL='LIN',);
 
-DEFI_FICHIER(FICHIER='FYGPILO',
-                     UNITE=81,)
-
-IMPR_COURBE(FICHIER='FYGPILO',
+IMPR_COURBE(UNITE=81,
             FORMAT='EXCEL',
             COURBE=(_F(FONCTION=F_DY_P,
                        LEGENDE='Deplacement suivant Y au point G',),
@@ -80,29 +75,21 @@ IMPR_COURBE(FICHIER='FYGPILO',
 #
 #  DEPOUILLEMENT AVEC GMSH
 
-DEFI_FICHIER(FICHIER='GMSHPILO',
-                     UNITE=82,)
-                     
 TDEP=(1.,  4.)
 
-IMPR_RESU(MODELE=MO,
-          RESU=(_F(FORMAT='GMSH',
-                   RESULTAT=RESUPILO,
-                   NOM_CHAM='DEPL',
-                   INST=TDEP,
-                   FICHIER='GMSHPILO',),
-                _F(FORMAT='GMSH',
-                   RESULTAT=RESUPILO,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
-                   NOM_CMP='SIYY',
-                   INST=TDEP,
-                   FICHIER='GMSHPILO',),
-                _F(FORMAT='GMSH',
-                   RESULTAT=RESUPILO,
-                   NOM_CHAM='VARI_ELNO_ELGA',
-                   INST=TDEP,
-                   NOM_CMP='V1',
-                   FICHIER='GMSHPILO',),),);
+IMPR_RESU( FORMAT='GMSH', UNITE=82,
+           MODELE=MO,
+           RESU=(_F( RESULTAT=RESUPILO,
+                     NOM_CHAM='DEPL',
+                     INST=TDEP, ),
+                 _F( RESULTAT=RESUPILO,
+                     NOM_CHAM='SIEF_ELNO_ELGA',
+                     NOM_CMP='SIYY',
+                     INST=TDEP, ),
+                 _F( RESULTAT=RESUPILO,
+                     NOM_CHAM='VARI_ELNO_ELGA',
+                     INST=TDEP,
+                     NOM_CMP='V1', ), ), );
 
 
 #  
@@ -148,15 +135,12 @@ F_FY_G=RECU_FONCTION(TABLE=FHAUT,
                      PARA_Y='DY',
                      INTERPOL='LIN',);
 
-DEFI_FICHIER(FICHIER='FYG',
-                     UNITE=83,)
-
-IMPR_COURBE(FICHIER='FYG',
-            FORMAT='EXCEL',
-            COURBE=(_F(FONCTION=F_DY_G,
-                       LEGENDE='Deplacement suivant Y au point G',),
-                    _F(FONCTION=F_FY_G,
-                       LEGENDE='Resultante de forces nodale suivant Y sur FG',),),);
+IMPR_COURBE( UNITE=83,
+             FORMAT='EXCEL',
+             COURBE=(_F(FONCTION=F_DY_G,
+                        LEGENDE='Deplacement suivant Y au point G',),
+                     _F(FONCTION=F_FY_G,
+                        LEGENDE='Resultante de forces nodale suivant Y sur FG',),),);
 
 
 
@@ -171,30 +155,21 @@ IMPR_COURBE(FICHIER='FYG',
 #
 #  DEPOUILLEMENT AVEC GMSH
 
-DEFI_FICHIER(FICHIER='GMSH',
-                     UNITE=84,)
-
 TDEP2=( 5.4, 6.)
 
-
-IMPR_RESU(MODELE=MO,
-          RESU=(_F(FORMAT='GMSH',
-                   RESULTAT=RESUNL,
-                   NOM_CHAM='DEPL',
-                   INST=TDEP2,
-                   FICHIER='GMSH',),
-                _F(FORMAT='GMSH',
-                   RESULTAT=RESUNL,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
-                   NOM_CMP='SIYY',
-                   INST=TDEP2,
-                   FICHIER='GMSH',),
-                _F(FORMAT='GMSH',
-                   RESULTAT=RESUNL,
-                   NOM_CHAM='VARI_ELNO_ELGA',
-                   INST=TDEP2,
-                   NOM_CMP='V1',
-                   FICHIER='GMSH',),),);
+IMPR_RESU( FORMAT='GMSH', UNITE=84,
+           MODELE=MO,
+           RESU=(_F( RESULTAT=RESUNL,
+                     NOM_CHAM='DEPL',
+                     INST=TDEP2, ),
+                 _F( RESULTAT=RESUNL,
+                     NOM_CHAM='SIEF_ELNO_ELGA',
+                     NOM_CMP='SIYY',
+                     INST=TDEP2, ),
+                 _F( RESULTAT=RESUNL,
+                     NOM_CHAM='VARI_ELNO_ELGA',
+                     INST=TDEP2,
+                     NOM_CMP='V1', ), ), );
 
 # IMPRESSION DU RESULTAT AUX POINTS DE GAUSS AVEC CASTEM2000:
 #

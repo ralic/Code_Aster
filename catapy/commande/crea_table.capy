@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 06/07/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,6 +42,7 @@ CREA_TABLE=OPER(nom="CREA_TABLE",op=  36,sd_prod=crea_table_prod,
                         PARA=SIMP(statut='o',typ='TXM'),
                         TYPE_K=SIMP(statut='f',typ='TXM',defaut='K8',
                                     into=('K8','K16','K24')),
+                        NUME_LIGN=SIMP(statut='f',typ='I',max='**'),
                         LISTE_I=SIMP(statut='f',typ='I',max='**'),
                         LISTE_R=SIMP(statut='f',typ='R',max='**'),
                         LISTE_K=SIMP(statut='f',typ='TXM', max='**')),

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TRACTION THERMIQUE HYPER-ELASTICITE NON LINEAIRE 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -452,11 +452,6 @@ TEST_RESU(RESU=(
                PRECISION = 1.E-3,
                CRITERE = 'ABSOLU',
                VALE = 0.))
-             )
-
-IMPR_RESU(
-              MODELE=MO,
-                RESU=_F( RESULTAT = VT,  INST = (2., 3.,))
              )
 
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -110,13 +110,9 @@ REST=CALC_ELEM( reuse=REST,
                        ANGLE=90,
                       RESULTAT=REST
                    )
-IMPR_RESU(  MODELE=MO,
-                 RESU=_F( GROUP_NO = ('A', 'B',),
-                       RESULTAT = REST, 
-                       NOM_CHAM = ('EPEQ_ELNO_TUYO','SIGM_ELNO_TUYO',
-                             'SIEQ_ELNO_TUYO','EPSI_ELNO_TUYO','DEGE_ELNO_DEPL'))
-            )
+
 # TEST PAR RAPPORT A LA SOLUTION ANALYTIQUE
+
 TEST_RESU(RESU=(
            _F( RESULTAT = REST,REFERENCE='ANALYTIQUE',
                  NUME_ORDRE = 1,
@@ -291,14 +287,6 @@ IMPR_RESU(RESU=(
                    VALE_MIN='OUI',),
                     ),)
 
-IMPR_RESU(MODELE=MO,
-          RESU=(_F(FORMAT='CASTEM',
-                   MAILLAGE=MA,
-                   RESULTAT=REST,
-                   NOM_CHAM=('DEPL','SIGM_ELNO_TUYO','VARI_ELNO_TUYO'),),
-                _F(FORMAT='CASTEM',
-                   RESULTAT=RESM,
-                   NOM_CHAM=('DEPL','SIGM_ELNO_TUYO','VARI_ELNO_TUYO'),),),);
 
 # SOLUTION ANALYTIQUE EVIDENTE : LA COURBURE EST CONSTANTE, CAR LA ROTATION
 # VARIE LINEAIREMENT (LE MOMENT EST CONSTANT)

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE HEMISPHERE DOUBLEMENT PINCE MODELISATION 300 SHB8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -75,12 +75,6 @@ RESU31=CALC_ELEM(reuse =RESU31,
                 OPTION='SIEF_ELNO_ELGA',
                 RESULTAT=RESU31,);
 
-IMPR_RESU(RESU=_F(FORMAT='RESULTAT',
-                   RESULTAT=RESU31,
-                   NOM_CHAM=('DEPL','SIEF_ELNO_ELGA'),
-                   VALE_MAX='OUI',VALE_MIN='OUI',),
-                   )
-                   
 TEST_RESU(RESU=(
             _F(  RESULTAT = RESU31, NOM_CHAM='DEPL', PRECISION = 20.E-2, REFERENCE='SOURCE_EXTERNE',NUME_ORDRE=1,
               GROUP_NO = 'PAE',      NOM_CMP = 'DX',           VALE = -0.185),
@@ -137,12 +131,6 @@ RESU32=CALC_ELEM(reuse =RESU32,
                 OPTION='SIEF_ELNO_ELGA',
                 RESULTAT=RESU32,);
 
-IMPR_RESU(RESU=_F(FORMAT='RESULTAT',
-                   RESULTAT=RESU32,
-                   NOM_CHAM=('DEPL','SIEF_ELNO_ELGA'),
-                   VALE_MAX='OUI',VALE_MIN='OUI',),
-                   )
-                   
 TEST_RESU(RESU=(
             _F(  RESULTAT = RESU32, NOM_CHAM='DEPL', PRECISION = 2.E-2, REFERENCE='SOURCE_EXTERNE',NUME_ORDRE=1,
               GROUP_NO = 'PAE',      NOM_CMP = 'DX',           VALE = -0.185),
@@ -198,12 +186,6 @@ RESU33=CALC_ELEM(reuse =RESU33,
                 OPTION='SIEF_ELNO_ELGA',
                 RESULTAT=RESU33,);
 
-IMPR_RESU(RESU=_F(FORMAT='RESULTAT',
-                   RESULTAT=RESU33,
-                   NOM_CHAM=('DEPL','SIEF_ELNO_ELGA'),
-                   VALE_MAX='OUI',VALE_MIN='OUI',),
-                   )
-                   
 TEST_RESU(RESU=(
             _F(  RESULTAT = RESU33, NOM_CHAM='DEPL', PRECISION = 0.3E-2, REFERENCE='SOURCE_EXTERNE',NUME_ORDRE=1,
               GROUP_NO = 'PAE',      NOM_CMP = 'DX',           VALE = -0.185),

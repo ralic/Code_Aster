@@ -1,0 +1,186 @@
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# RESPONSABLE ADBHHPM P.MASSIN
+# DATE   : 14/04/2000
+# AUTEUR : F. LEBOUVIER (DELTACAD)
+# TITRE  : VIBRATIONS DE FLEXION D'UNE POUTRE SANDWICH
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#---------------------------------------------------------------------
+#  - CALCUL EN ANALYSE MODALE DYNAMIQUE D'UNE POUTRE SANDWICH
+#    SIMPLEMENT SUPPORTEE
+#  - MODELISATION AVEC DES ELEMENTS 'DKT'(TRIA3)
+#---------------------------------------------------------------------
+#
+DEBUT( CODE=_F( NOM = 'SDLS503A',NIV_PUB_WEB='INTERNET'))
+
+#
+#PRE_IDEAS ();
+#
+MA1=LIRE_MAILLAGE( )
+
+#
+MO1=AFFE_MODELE(   MAILLAGE=MA1,
+                         AFFE=_F( TOUT = 'OUI',
+                               PHENOMENE = 'MECANIQUE',
+                               MODELISATION = 'DKT')
+                   )
+
+#
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES ELEMENTAIRES
+#---------------------------------------------------------------------
+#
+CAR_ELE1=AFFE_CARA_ELEM(   MODELE=MO1,
+                              COQUE=_F( GROUP_MA = 'TOUT_ELT',
+                                     EPAIS = 0.1,
+                                     ANGL_REP = (90.,-9.48,))
+                           )
+
+#
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES MATERIAUX
+#---------------------------------------------------------------------
+#
+REVET1=DEFI_MATERIAU(   ELAS_ORTH=_F( E_L = 4.E+10, 
+                                     E_T = 4.E+10,
+                                     G_LT = 4.E+9,
+                                     G_LN = 4.E+9,
+                                     NU_LT = 0.3,
+                                     NU_LN = 0.3, 
+                                     RHO = 2000.)
+                        )
+
+COEUR1=DEFI_MATERIAU(   ELAS_ORTH=_F( E_L = 4.E+07,
+                                     E_T = 4.E+07,  
+                                     G_LT = 1.5E+7,  
+                                     G_LN = 1.5E+7,
+                                     NU_LT = 0.3,
+                                     NU_LN = 0.3,
+                                     RHO = 50.)
+                        )
+
+MULTI1=DEFI_COQU_MULT( COUCHE=(  _F( EPAIS = 0.025,
+                                   MATER = REVET1,
+                                   ORIENTATION = 0.),
+                           _F( EPAIS = 0.05,
+                                   MATER = COEUR1,
+                                   ORIENTATION = 0.),
+                           _F( EPAIS = 0.025,
+                                   MATER = REVET1,
+                                   ORIENTATION = 0.))
+                         )
+
+CHA_MAT1=AFFE_MATERIAU(   MAILLAGE=MA1,
+                                AFFE=_F( TOUT = 'OUI', MATER = MULTI1)
+                                                               )
+
+#
+#---------------------------------------------------------------------
+#                     CHARGEMENTS
+#---------------------------------------------------------------------
+#
+CHAR1=AFFE_CHAR_MECA(     MODELE=MO1,DDL_IMPO=(
+                          _F( GROUP_NO = 'COTEAB', DX = 0.),
+                          _F( GROUP_NO = 'COTECD', DX = 0.)),LIAISON_OBLIQUE=(
+                   _F( GROUP_NO = 'TOUT_NOE', 
+                                         DZ = 0., 
+                                   ANGL_NAUT = (90., -9.48, 0., )),
+                   _F( GROUP_NO = 'TOUT_NOE', 
+                                         DRX = 0., 
+                                   ANGL_NAUT = (90., -9.48, 0., )),
+                   _F( GROUP_NO = 'TOUT_NOE', 
+                                         DRY = 0., 
+                                   ANGL_NAUT = (90., -9.48, 0., )))
+                       )
+
+#
+#---------------------------------------------------------------------
+#                     RESOLUTION
+#---------------------------------------------------------------------
+#
+MA_EL_R1=CALC_MATR_ELEM(       MODELE=MO1,
+                             CHAM_MATER=CHA_MAT1,
+                              CARA_ELEM=CAR_ELE1,
+                                 CHARGE=CHAR1,
+                                 OPTION='RIGI_MECA'
+                           )
+
+#
+MA_EL_M1=CALC_MATR_ELEM(       MODELE=MO1,
+                             CHAM_MATER=CHA_MAT1,
+                              CARA_ELEM=CAR_ELE1,
+                                 OPTION='MASS_MECA'
+                           )
+
+#
+NUM1=NUME_DDL(   MATR_RIGI=MA_EL_R1)
+
+#
+MA_AS_R1=ASSE_MATRICE(   MATR_ELEM=MA_EL_R1,   NUME_DDL=NUM1)
+
+#
+MA_AS_M1=ASSE_MATRICE(   MATR_ELEM=MA_EL_M1,   NUME_DDL=NUM1)
+
+#
+MODE1=MODE_ITER_INV(      MATR_A=MA_AS_R1,
+                            MATR_B=MA_AS_M1,
+                         CALC_FREQ=_F( OPTION = 'AJUSTE',
+                       FREQ = (5.,8500.,),
+                                   NMAX_FREQ = 10) 
+                       )
+
+#
+#---------------------------------------------------------------------
+#                     VERIFICATION DES RESULTATS
+#---------------------------------------------------------------------
+#
+TEST_RESU(RESU=(
+       _F( RESULTAT = MODE1,             PARA = 'FREQ',
+             CRITERE = 'RELATIF',
+             REFERENCE = 'NON_REGRESSION', 
+             NUME_ORDRE = 1,   VALE = 2.7744897912443E+02),
+       _F( RESULTAT = MODE1,             PARA = 'FREQ',
+             CRITERE = 'RELATIF',   
+             REFERENCE = 'NON_REGRESSION', 
+             NUME_ORDRE = 2,   VALE = 1.1058280386242E+03),
+#     RESU : (RESULTAT   : MODE1             PARA : 'FREQ'
+#             CRITERE    : 'RELATIF' 
+#             NUME_ORDRE : 3  VALE : 2.4738031885313E+03
+#             )
+       _F( RESULTAT = MODE1,             PARA = 'FREQ',
+             CRITERE = 'RELATIF', 
+             REFERENCE = 'NON_REGRESSION', 
+             NUME_ORDRE = 4,   VALE = 2.4738031885313E+03),
+       _F( RESULTAT = MODE1,             PARA = 'FREQ',
+             CRITERE = 'RELATIF', 
+             REFERENCE = 'NON_REGRESSION', 
+             NUME_ORDRE = 5,   VALE = 4.3639703053389E+03),
+#     RESU : (RESULTAT   : MODE1             PARA : 'FREQ'
+#             CRITERE    : 'RELATIF' 
+#             NUME_ORDRE : 6  VALE : 331.963
+#             )
+       _F( RESULTAT = MODE1,             PARA = 'FREQ',
+             CRITERE = 'RELATIF', 
+             REFERENCE = 'NON_REGRESSION', 
+             NUME_ORDRE = 7,   VALE = 6.7539044000678E+03))
+           )
+
+#
+FIN()
+#
+# 

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # ======================================================================
 # TITRE ESSAI HYDROSTATIQUE SUIVI D UN TRIAXIAL A SUCCION FIXE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -339,21 +339,6 @@ U1=CALC_NO(  reuse=U1,     RESULTAT=U1,
                            ),
                 )
 
-########################################################
-# --- IMPRESSION POUR DETERMINATION DE --------------- #
-# --- L'ORDRE DE GRANDEUR DES VALEURS DE REFERENCE --- #
-########################################################
-#IMPR_RESU(  MODELE=MODELE,
-#             RESU=_F( FORMAT = 'RESULTAT',
-#                   RESULTAT = U1,
-#                   NOM_CHAM = 'DEPL',))
-########################################################
-#IMPR_RESU(  MODELE=MODELE,
-#             RESU=_F( FORMAT = 'RESULTAT',
-#                   RESULTAT = U1,
-#                   NOM_CHAM = 'SIEF_NOEU_ELGA',))
-########################################################
-#
 #-------------------------
 #    TEST_RESU 
 #-------------------------

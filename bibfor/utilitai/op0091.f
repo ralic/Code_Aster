@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 05/07/2004   AUTEUR GREFFET N.GREFFET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -391,7 +391,8 @@ C        --- SENS DE LA TRANSFORMATION
          ELSEIF(ZK16(LPRO+2).EQ.'FREQ') THEN
             NSENS = -1
          ENDIF
-         CALL FONFFT(NSENS,NOMFON,SORTIE,'G')
+         CALL GETVID(NOMOPE,'METHODE',1,1,1,METHOD,L)
+         CALL FONFFT(NSENS,NOMFON,SORTIE,METHOD,'G')
 C
 C     ------------------------------------------------------------------
       ELSEIF( NOMOPE .EQ. 'MAX' ) THEN
@@ -543,6 +544,7 @@ C     ON NE LE FAIT PAS POUR LES TABL_FONC
      +    NOMOPE .NE. 'NORME           ' ) THEN
          CALL FOATTR(' ',1,SORTIE)
          IF (NIV.GT.1) CALL FOIMPR(SORTIE,NIV,IFM,0,LISTR)
+
 C
 C     --- VERIFICATION QU'ON A BIEN CREER UNE FONCTION ---
 C         ET REMISE DES ABSCISSES EN ORDRE CROISSANT

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL EN TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,7 +41,6 @@ MATER2=DEFI_MATERIAU(
 # 2. LECTURE DU MAILLAGE ET TEST DE LA MACRO SUR L'INFORMATION
 #
 MZERO=LIRE_MAILLAGE( )
-###IMPR_RESU ( RESU=(_F ( MAILLAGE = MZERO ) ) ) ;
 #
 MACR_INFO_MAIL(
               VERSION_HOMARD='V6_2',
@@ -90,10 +89,6 @@ RETHZERO=THER_LINEAIRE(    MODELE=MOTHZERO,
                              INCREMENT=_F(  LIST_INST = INSTZERO,   )
                          )
 #
-###IMPR_RESU ( RESU=(_F(RESULTAT= RETHZERO IMPR_COOR = 'OUI'
-###                                        NUME_ORDRE = 2 ) ) ) ;
-###IMPR_RESU ( RESU=(_F(RESULTAT= RETHZERO ) ) ) ;
-#
 # 3.4. LA MECANIQUE
 # 3.4.1. MODELE
 #
@@ -131,15 +126,11 @@ REMEZERO=CALC_ELEM( reuse=REMEZERO,   RESULTAT=REMEZERO,
               NUME_ORDRE=3
                       )
 #
-###IMPR_RESU ( RESU=(_F(RESULTAT= REMEZERO IMPR_COOR = 'OUI'
-###                                        NUME_ORDRE = 3 ) ) ) ;
-###IMPR_RESU ( RESU=(_F(RESULTAT= REMEZERO ) ) ) ;
-#
 # 3.4.4. IMPRESSIONS POUR CREER LA BASE DU CAS-TEST HOMARD med_2d_carre_d2 A L'ITERATION 0
 #
-###IMPR_RESU ( RESU=_F( FORMAT='MED', RESULTAT=REMEZERO,
+###IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=REMEZERO,
 ###                     NOM_CHAM='ERRE_ELGA_NORE',NOM_CMP='ERREST',NUME_ORDRE = 3 ) ) ;
-###IMPR_RESU ( RESU=_F( FORMAT='MED', RESULTAT=RETHZERO,
+###IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RETHZERO,
 ###                     NOM_CHAM='TEMP', NUME_ORDRE = 2 ) ) ;
 #
 # 4. ADAPTATION DU MAILLAGE DE ZERO VERS UN
@@ -164,10 +155,6 @@ MACR_ADAP_MAIL(
               QUALITE='OUI',
               INTERPENETRATION='NON'
                )
-#
-###IMPR_RESU ( RESU=(_F ( MAILLAGE = MUN ) ) ) ;
-###IMPR_CO ( CO = TEMPUN  ) ;
-###IMPR_RESU ( RESU=(_F ( CHAM_GD = TEMPUN ) ) ) ;
 #
 # 5. CALCUL SUR LE MAILLAGE UN
 #
@@ -208,12 +195,6 @@ RETHUN=THER_LINEAIRE(    MODELE=MOTHUN,
                              INCREMENT=_F(  LIST_INST = INSTUN,   )
                          )
 #
-###IMPR_RESU ( RESU=(_F(RESULTAT= RETHUN ) ) ) ;
-###IMPR_RESU ( RESU=(_F(RESULTAT= RETHUN IMPR_COOR = 'OUI'
-###                                         NUME_ORDRE = 0 ) ) ) ;
-###IMPR_RESU ( RESU=(_F(RESULTAT= RETHUN IMPR_COOR = 'OUI'
-###                                         NUME_ORDRE = 2 ) ) ) ;
-#
 # 5.4. LA MECANIQUE
 # 5.4.1. MODELE
 #
@@ -246,15 +227,11 @@ REMEUN=CALC_ELEM( reuse=REMEUN,   RESULTAT=REMEUN,
               NUME_ORDRE=3
                       )
 #
-###IMPR_RESU ( RESU=(_F(RESULTAT= REMEUN ) ) ) ;
-###IMPR_RESU ( RESU=(_F(RESULTAT= REMEUN IMPR_COOR = 'OUI'
-###                                         NUME_ORDRE = 3 ) ) ) ;
-#
 # 5.4.4. IMPRESSIONS POUR CREER LA BASE DU CAS-TEST HOMARD med_2d_carre_d2 A L'ITERATION 1
 #
-###IMPR_RESU ( RESU=_F( FORMAT='MED', RESULTAT=REMEUN,
+###IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=REMEUN,
 ###                     NOM_CHAM='ERRE_ELGA_NORE',NOM_CMP='ERREST',NUME_ORDRE = 3 ) ) ;
-###IMPR_RESU ( RESU=_F( FORMAT='MED', RESULTAT=RETHUN,
+###IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RETHUN,
 ###                     NOM_CHAM='TEMP', NUME_ORDRE = 2 ) ) ;
 #
 # 6. TEST DE NON REGRESSION
@@ -319,10 +296,6 @@ MACR_ADAP_MAIL(
               INFO = 1
                )
 #
-###IMPR_RESU ( RESU=(_F ( MAILLAGE = MDEUX ) ) ) ;
-###IMPR_CO ( CO = TEMP_8  ) ;
-###IMPR_RESU ( RESU=(_F ( CHAM_GD = TEMP_8 ) ) ) ;
-#
 # 7. CALCUL SUR LE MAILLAGE DEUX
 #
 # 7.1. MISE EN PLACE DES MATERIAUX
@@ -361,12 +334,6 @@ RETHDEUX=THER_LINEAIRE(    MODELE=MOTHDEUX,
                              INCREMENT=_F(  LIST_INST = INSTDEUX,   )
                          )
 #
-###IMPR_RESU ( RESU=(_F(RESULTAT= RETHDEUX ) ) ) ;
-###IMPR_RESU ( RESU=(_F(RESULTAT= RETHDEUX IMPR_COOR = 'OUI'
-###                                        NUME_ORDRE = 0 ) ) ) ;
-###IMPR_RESU ( RESU=(_F(RESULTAT= RETHDEUX IMPR_COOR = 'OUI'
-###                                        NUME_ORDRE = 2 ) ) ) ;
-#
 # 7.4. LA MECANIQUE
 # 7.4.1. MODELE
 #
@@ -389,10 +356,6 @@ REMEDEUX=MECA_STATIQUE(         MODELE=MOMEDEUX,
                                    EXCIT=_F(  CHARGE = CHMEDEUX,     ),
                              LIST_INST=INSTDEUX
                          )
-#
-###IMPR_RESU ( RESU=(_F(RESULTAT= REMEDEUX ) ) ) ;
-###IMPR_RESU ( RESU=(_F(RESULTAT= REMEDEUX IMPR_COOR = 'OUI'
-###                                         NUME_ORDRE = 3 ) ) ) ;
 #
 # 8. TEST DE NON REGRESSION
 #

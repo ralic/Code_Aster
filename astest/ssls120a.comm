@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE : COQUE MINCE CYLINDRIQUE SOUS PRESSION HYDROSTATIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -144,13 +144,6 @@ TEST_RESU(RESU=_F(RESULTAT=ELAS1,
                   REFERENCE='ANALYTIQUE',),);
 
 
-IMPR_RESU(RESU=(_F(FORMAT='CASTEM',
-                   MAILLAGE=MAIL,
-                   RESULTAT=ELAS1,),
-                _F(RESULTAT=ELAS1,
-                   VALE_MAX='OUI',
-                   VALE_MIN='OUI',),),);
-
 # CAS ORTHOTROPE : SOLUTION ANALYTIQUE
 
 
@@ -200,12 +193,5 @@ TEST_RESU(RESU=_F(RESULTAT=ELAS1,
                   GROUP_NO='PM',MAILLE='M2',
                   VALE=SIG,PRECISION=0.01,
                   REFERENCE='ANALYTIQUE',),);
-
-IMPR_RESU(RESU=(_F(FORMAT='CASTEM',
-                   MAILLAGE=MAIL,
-                   RESULTAT=ELAS2,),
-                _F(RESULTAT=ELAS2,
-                   VALE_MAX='OUI',
-                   VALE_MIN='OUI',),),);
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE EN C.P. (TRIA6 QUAD8) TEST ORIE_PRES_2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -157,23 +157,5 @@ TEST_RESU(RESU=(
  GROUP_NO = 'F',  NOM_CMP = 'SIXY',      VALE = -20.))
            )
 
-IMPR_RESU(MODELE=MO,
-          RESU=( _F(FORMAT='GMSH',FICHIER='IDEAS',
-                   RESULTAT=RESU,
-                   NOM_CHAM=('SIGM_ELNO_DEPL','SIEF_ELGA_DEPL',),
-#                   NOM_CHAM=('SIGM_ELNO_DEPL',
-#                   NOM_CHAM='SIEF_ELGA_DEPL',)
-                   GROUP_MA='SB5',
-                   ),
-                   ),
-                   );
-
-IMPR_RESU(MODELE=MO,
-          RESU=(
-                 _F(FORMAT='GMSH',FICHIER='IDEAS',
-                   MAILLAGE=M),
-                   ),);
-
 FIN()
-
 #

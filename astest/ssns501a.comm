@@ -1,0 +1,257 @@
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# RESPONSABLE ADBHHPM P.MASSIN
+# DATE   : 10/08/2000
+# AUTEUR : F. LEBOUVIER (DELTACAD)
+# TITRE  : GRANDS DEPLACEMENTS D'UN PANNEAU CYLINDRIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#---------------------------------------------------------------------
+#- CALCUL DE LA STABILITE D'UN PANNEAU CYLINDRIQUE SIMPLEMENT SUPPORTE
+#  SOUMIS A UN EFFORT CONCENTRE EN SON CENTRE.
+#- VALIDATION DANS LE DOMAINE QUASI_STATIQUE NON_LINEAIRE GEOMETRIQUE
+#  EN PRESENCE DE FORTES INSTABILITES
+#- MODELISATION AVEC DES ELEMENTS 'COQUE_3D' (TRIA7)
+#---------------------------------------------------------------------
+#
+DEBUT( CODE=_F( NOM = 'SSNS501A',NIV_PUB_WEB='INTERNET'))
+
+#
+PRE_IDEAS()
+#
+MAIL=LIRE_MAILLAGE( )
+MAIL=DEFI_GROUP( reuse=MAIL,
+                       MAILLAGE=MAIL,CREA_GROUP_NO=(
+                       _F(  GROUP_MA = 'TOUT_ELT',  ),)
+                    )
+#
+MAILLAGE=CREA_MAILLAGE(     MAILLAGE=MAIL,
+                           MODI_MAILLE=_F( TOUT = 'OUI',
+                                        OPTION = 'TRIA6_7')
+                         )
+
+#
+MODELE=AFFE_MODELE(   MAILLAGE=MAILLAGE,
+                            AFFE=_F( TOUT = 'OUI',
+                                  PHENOMENE = 'MECANIQUE',
+                                  MODELISATION = 'COQUE_3D')
+                      )
+
+#
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES ELEMENTAIRES
+#---------------------------------------------------------------------
+#
+CARA_ELT=AFFE_CARA_ELEM(   MODELE=MODELE,
+                             COQUE=_F( GROUP_MA = 'TOUT_ELT',
+                                    EPAIS = 0.00635,
+#                                    A_CIS    : 2500.
+                               COEF_RIGI_DRZ = 0.001)
+                          )
+
+#
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES MATERIAUX
+#---------------------------------------------------------------------
+#
+MATERIAU=DEFI_MATERIAU(   ELAS=_F( E = 3.10275E+09,
+                                  NU = 0.3)
+                          )
+
+#
+CHAM_MAT=AFFE_MATERIAU(   MAILLAGE=MAILLAGE,
+                                AFFE=_F( TOUT = 'OUI', MATER = MATERIAU)
+                          )
+
+#
+#---------------------------------------------------------------------
+#                     CHARGEMENTS
+#---------------------------------------------------------------------
+#
+COND_LIM=AFFE_CHAR_MECA(     MODELE=MODELE,DDL_IMPO=(
+                             _F( GROUP_NO = 'COTEAB',
+                                       DX = 0., DRY = 0., DRZ = 0.),
+                             _F( GROUP_NO = 'COTECD',
+                                       DX = 0., DY = 0., DZ = 0.),
+                             _F( GROUP_NO = 'COTEAD',
+                                       DY = 0., DRX = 0., DRZ = 0.))
+                           )
+
+#
+CHARGE=AFFE_CHAR_MECA(          MODELE=MODELE,
+                            FORCE_NODALE=_F( GROUP_NO = 'A',
+                                          FZ = -150.)
+                          )
+
+F_CHARGE=DEFI_FONCTION(      NOM_PARA='INST',
+                             PROL_DROITE='CONSTANT',
+                            PROL_GAUCHE='EXCLU',
+                                   VALE=( 0.,   0.,
+                                          1.,   1.,
+                                        )
+                        )
+
+#
+#---------------------------------------------------------------------
+#                        RESOLUTION
+#---------------------------------------------------------------------
+#
+LIS_INST=DEFI_LIST_REEL(        DEBUT=0.0,INTERVALLE=(
+                             _F( JUSQU_A = .5,   NOMBRE = 1),
+                             _F( JUSQU_A = .95,  NOMBRE = 1),
+                             _F( JUSQU_A = .97,  NOMBRE = 1),
+                             _F( JUSQU_A = 1.0,  NOMBRE = 1),
+                             _F( JUSQU_A = 1.6,  NOMBRE = 20),
+                             _F( JUSQU_A = 2.2,  NOMBRE = 20),
+                             _F( JUSQU_A = 4.2,  NOMBRE = 100))
+                          )
+
+RESULTAT=STAT_NON_LINE(       MODELE=MODELE,
+                            CHAM_MATER=CHAM_MAT,
+                             CARA_ELEM=CARA_ELT,EXCIT=(
+                                 _F( CHARGE = COND_LIM),
+                                       _F( CHARGE = CHARGE,
+                                        FONC_MULT = F_CHARGE)),
+                             COMP_ELAS=_F( RELATION = 'ELAS',
+                                        DEFORMATION = 'GREEN_GR',
+               ),
+                             INCREMENT=_F( LIST_INST = LIS_INST,
+                                     NUME_INST_FIN = 3),
+                              NEWTON=_F( REAC_ITER = 1,
+                                      MATRICE = 'TANGENTE'),
+                         CONVERGENCE=_F(
+                                      ITER_GLOB_MAXI = 30,
+                                      RESI_INTE_RELA = 1.E-6,
+                                      RESI_GLOB_RELA = 1.E-6)
+                          )
+
+RESULTAT=STAT_NON_LINE(reuse=RESULTAT,      MODELE=MODELE,
+                            CHAM_MATER=CHAM_MAT,
+                             CARA_ELEM=CARA_ELT,EXCIT=(
+                                 _F( CHARGE = COND_LIM),
+                                       _F( CHARGE = CHARGE,
+                                        TYPE_CHARGE = 'FIXE_PILO')),
+                             COMP_ELAS=_F( RELATION = 'ELAS',
+                                        DEFORMATION = 'GREEN_GR',
+               ),
+                             INCREMENT=_F( LIST_INST = LIS_INST,
+                                    NUME_INST_INIT = 3,
+                                     SUBD_PAS=4,
+                                     SUBD_PAS_MINI=0.000001,
+                                    NUME_INST_FIN = 144),
+                              PILOTAGE=_F( TYPE = 'LONG_ARC',
+                                       SELECTION='ANGL_INCR_DEPL',
+                                       GROUP_NO = 'TOUT_ELT',
+                                        NOM_CMP = ('DX', 'DY', 'DZ',),
+#DELT_T=0.03 --> DELTA_W=2.5E-4
+                                        ETA_PILO_MAX=5.,
+                                        COEF_MULT = 120.),
+                              NEWTON=_F( REAC_ITER = 1,
+                                      MATRICE = 'TANGENTE'),
+                           ETAT_INIT=_F( EVOL_NOLI = RESULTAT),
+                         CONVERGENCE=_F(
+                                      ITER_GLOB_MAXI = 30,
+                                      RESI_INTE_RELA = 1.E-6,
+                                      RESI_GLOB_RELA = 1.E-6)
+                          )
+
+#
+TABLE_DZ=POST_RELEVE_T(
+                                ACTION=_F( GROUP_NO = 'A',
+                          INTITULE = 'TAB_DZ',
+                          RESULTAT = RESULTAT,
+                          NOM_CHAM = 'DEPL',
+                          NOM_CMP = 'DZ',
+                          TOUT_ORDRE = 'OUI',
+                          OPERATION = 'EXTRACTION')
+                          )
+
+IMPR_TABLE(  TABLE=TABLE_DZ)
+#
+#---------------------------------------------------------------------
+#                        IMPRESSION DES RESULTATS
+#---------------------------------------------------------------------
+DEPZ=RECU_FONCTION (   RESULTAT = RESULTAT,
+                          NOM_CMP = 'DZ',
+                          NOM_CHAM = 'DEPL',
+                          GROUP_NO = 'A',
+                          TOUT_ORDRE = 'OUI')
+
+
+ETA=RECU_FONCTION (   RESULTAT = RESULTAT,
+                          NOM_PARA_RESU = 'ETA_PILOTAGE',
+                          TOUT_ORDRE = 'OUI')
+
+IMPR_COURBE ( FORMAT='AGRAF', UNITE=8,
+              COURBE=_F( FONCTION = DEPZ),
+              TITRE_GRAPHIQUE='Depz en fonction du temps'
+              )
+
+IMPR_COURBE (UNITE=8, FORMAT='AGRAF',
+             COURBE=_F( FONCTION = ETA),
+             TITRE_GRAPHIQUE='Eta en fonction du temps'
+              )
+
+#
+#---------------------------------------------------------------------
+#                        VERIFICATION DES RESULTATS
+#---------------------------------------------------------------------
+#
+TEST_RESU(RESU=(
+           _F(  RESULTAT = RESULTAT,
+                  PARA = 'ETA_PILOTAGE',
+                  NUME_ORDRE = 5,
+                  VALE = 1.0,
+                  PRECISION = 0.025),
+           _F( RESULTAT = RESULTAT,          NUME_ORDRE = 5,
+                 NOM_CHAM = 'DEPL',            GROUP_NO = 'A',
+                 NOM_CMP = 'DZ',              VALE = -0.014,
+                 PRECISION = 0.061),
+           _F(  RESULTAT = RESULTAT,
+                  PARA = 'ETA_PILOTAGE',
+                  NUME_ORDRE = 30,
+                  VALE = 0.3125,
+                  PRECISION = 0.8),
+           _F( RESULTAT = RESULTAT,          NUME_ORDRE = 30,
+                 NOM_CHAM = 'DEPL',            GROUP_NO = 'A',
+                 NOM_CMP = 'DZ',              VALE = -0.0171,
+                 PRECISION = 0.01),
+           _F(  RESULTAT = RESULTAT,
+                  PARA = 'ETA_PILOTAGE',
+                  NUME_ORDRE = 49,
+                  VALE = -0.4458,
+                  PRECISION = 0.2),
+           _F( RESULTAT = RESULTAT,          NUME_ORDRE = 49,
+                 NOM_CHAM = 'DEPL',            GROUP_NO = 'A',
+                 NOM_CMP = 'DZ',              VALE = -0.014,
+                 PRECISION = 0.05),
+           _F(  RESULTAT = RESULTAT,
+                  PARA = 'ETA_PILOTAGE',
+                  NUME_ORDRE = 58,
+                  VALE = -0.6333,
+                  PRECISION = 0.02),
+           _F( RESULTAT = RESULTAT,          NUME_ORDRE = 58,
+                 NOM_CHAM = 'DEPL',            GROUP_NO = 'A',
+                 NOM_CMP = 'DZ',              VALE = -0.0161,
+                 PRECISION = 0.01),
+           )
+           )
+
+#
+FIN()
+#
+#

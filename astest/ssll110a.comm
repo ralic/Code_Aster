@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE 3 BARRES EN U SOUMISES A LA PESANTEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,14 +70,6 @@ STATIQU1=CALC_ELEM(reuse =STATIQU1,
                    OPTION='EFGE_ELNO_DEPL',
                    );
 
-IMPR_RESU(RESU=_F(RESULTAT=STATIQU1,),
-          MODELE=MODELE,);
-          
-IMPR_RESU(MODELE=MODELE,
-             RESU=_F(FORMAT='GMSH',FICHIER='IDEAS',
-                     RESULTAT=STATIQU1,),
-                     );
-
 TEST_RESU(RESU=_F(NOM_CHAM='EFGE_ELNO_DEPL',
                   RESULTAT=STATIQU1,
                   MAILLE='M1',
@@ -111,12 +103,6 @@ TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
                   NUME_ORDRE=1,
                   NOEUD='N3',),);
 
-
-IMPR_RESU(MODELE=MODELE,
-          RESU=( 
-                 _F(FORMAT='GMSH',FICHIER='IDEAS',
-                   MAILLAGE=MAILLAGE),
-                   ),);
 
 FIN();
 

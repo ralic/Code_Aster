@@ -1,0 +1,313 @@
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# TITRE CALCUL DES FORCE_FLUIDE LORS D'UNE CHUTTE DE GRAPPE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT( CODE=_F(  NOM = 'FDNL100A',NIV_PUB_WEB='INTRANET'), )
+
+MAILLA=LIRE_MAILLAGE();
+
+MAILLA=DEFI_GROUP(reuse =MAILLA,
+                  MAILLAGE=MAILLA,
+                  CREA_GROUP_NO=(_F(GROUP_MA=('GRAPPE'),),),)
+
+MODELE=AFFE_MODELE(MAILLAGE=MAILLA,
+                   AFFE=(_F(GROUP_MA=('GRAPPE',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='POU_D_E',),),)
+
+E  = 1.9633E+14
+NU = 0.34
+
+# ACIER DE BASE  TIGE DE COMMANDE ET CRAYON
+MATER1=DEFI_MATERIAU(ELAS=_F(E=E,
+                             NU=NU,
+                             RHO=7700.0,),);
+
+# MATERIAU EQUIVALENT PARTIE TIGE CANELEE
+MATER2=DEFI_MATERIAU(ELAS=_F(E=E,
+                             NU=NU,
+                             RHO=7200.0,),);
+
+# MATERIAU EQUIVALENT BASE ARAIGNEE
+MATER3=DEFI_MATERIAU(ELAS=_F(E=E,
+                             NU=NU,
+                             RHO=18000.0,),);
+
+# MATERIAU EQUIVALENT CRAYON + RESSORT
+MATER4=DEFI_MATERIAU(ELAS=_F(E=E,
+                             NU=NU,
+                             RHO=15000.0,),);
+
+# MATERIAU EQUIVALENT CRAYON + AIC
+MATER5=DEFI_MATERIAU(ELAS=_F(E=E,
+                             NU=NU,
+                             RHO=57900.0,),);
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLA,
+                       MODELE=MODELE,
+                       AFFE=(_F(GROUP_MA='TRAV1',
+                                MATER=MATER1,),
+                             _F(GROUP_MA='TRAV2',
+                                MATER=MATER2,),
+                             _F(GROUP_MA='TRAV3',
+                                MATER=MATER1,),
+                             _F(GROUP_MA='TRAV4',
+                                MATER=MATER2,),
+                             _F(GROUP_MA='TRAV5',
+                                MATER=MATER1,),
+                             _F(GROUP_MA='TRAV6',
+                                MATER=MATER3,),
+                             _F(GROUP_MA='TRAV7',
+                                MATER=MATER3,),
+                             _F(GROUP_MA='TRAV8',
+                                MATER=MATER1,),
+                             _F(GROUP_MA='TRAV9',
+                                MATER=MATER4,),
+                             _F(GROUP_MA='TRAV10',
+                                MATER=MATER5,),
+                             _F(GROUP_MA='TRAV11',
+                                MATER=MATER1,),),);
+
+CHAMPCAR=AFFE_CARA_ELEM(MODELE=MODELE,
+                        ORIENTATION=(_F(GROUP_MA='GRAPPE',
+                                        VALE=(0.,0.,1.),
+                                        CARA='VECT_Y',),),
+                        POUTRE=(_F(GROUP_MA='TRAV1',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IY','IZ','AY','AZ','JX',),
+                                   VALE=(0.00119224,1.82e-07,1.82e-07,1.57,1.57,3.64e-07,),),
+                                _F(GROUP_MA='TRAV2',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IY','IZ','AY','AZ','JX',),
+                                   VALE=(0.00100267,1.3794e-07,1.3794e-07,1.60,1.60,2.7588e-07,),),
+                                _F(GROUP_MA='TRAV3',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IY','IZ','AY','AZ','JX',),
+                                   VALE=(0.00119224,1.82e-07,1.82e-07,1.57,1.57,3.64e-07,),),
+                                _F(GROUP_MA='TRAV4',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IY','IZ','AY','AZ','JX',),
+                                   VALE=(0.00076309,1.1953e-07,1.1953e-07,1.76,1.76,2.3906e-07,),),
+                                _F(GROUP_MA='TRAV5',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IY','IZ','AY','AZ','JX',),
+                                   VALE=(0.00136572,1.4843e-07,1.4843e-07,2.0,2.0,2.9686e-07,),),
+                                _F(GROUP_MA='TRAV6',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IY','IZ','AY','AZ','JX',),
+                                   VALE=(0.0010516,1.4057e-07,1.4057e-07,1.56,1.56,2.8115e-07,),),
+                                _F(GROUP_MA='TRAV7',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IY','IZ','AY','AZ','JX',),
+                                   VALE=(0.0010516,1.4057e-07,1.4057e-07,1.56,1.56,2.8115e-07,),),
+                                _F(GROUP_MA='TRAV8',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IY','IZ','AY','AZ','JX',),
+                                   VALE=(0.0008822,1.9000e-09,1.9000e-09,2.0,2.0,3.8000e-09,),),
+                                _F(GROUP_MA='TRAV9',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IY','IZ','AY','AZ','JX',),
+                                   VALE=(0.0002997,3.2092e-09,3.2092e-09,1.95,1.95,6.4184e-09,),),
+                                _F(GROUP_MA='TRAV10',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IY','IZ','AY','AZ','JX',),
+                                   VALE=(0.0002997,4.33254e-09,4.3325e-09,1.95,1.95,8.6649e-09,),),
+                                _F(GROUP_MA='TRAV11',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IY','IZ','AY','AZ','JX',),
+                                   VALE=(0.0017644,1.0323e-08,1.0323e-08,2.0,2.0,2.0646e-08,),),),)
+
+MASSESTR=POST_ELEM(  MODELE=MODELE,
+                         CHAM_MATER=CHAMPMAT,   CARA_ELEM=CHAMPCAR,
+                        MASS_INER=_F(  GROUP_MA = 'GRAPPE', ) )
+
+IMPR_TABLE( TABLE=MASSESTR, )
+
+FM = 100. / 11.360 
+
+CHARGE = AFFE_CHAR_MECA(MODELE=MODELE,
+
+                       DDL_IMPO = _F( GROUP_NO='GRAPPE',
+                                      DX=0.0,
+                                      DZ=0.0, 
+                                      DRX=0.0,
+                                      DRY=0.0,
+                                      DRZ=0.0,),
+
+                       FORCE_POUTRE = _F( GROUP_MA='GRAPPE',
+                                          FY= FM  ),
+                      ) ;
+
+# --- LECTURE DES DONNESS GRAPPE_900 ---
+INCLUDE(   UNITE= 33,   INFO=1  )
+
+F_FLUIDE=AFFE_CHAR_MECA(MODELE=MODELE,
+                     GRAPPE_FLUIDE=(_F( GROUP_MA='GRAPPE',
+                                        GROUP_NO_ORIG = 'PHTDC',
+                                        GROUP_NO_EXTR = 'PBCRA',
+                                        Z0 = 0.22 ,
+                                        CARA_HYDR = C_HYDR ,
+                                        VALE_HYDR = V_HYDR ,
+                                        CARA_GRAPPE = C_GRAP ,
+                                        VALE_GRAPPE = V_GRAP ,
+                                        CARA_COMMANDE = C_COMM ,
+                                        VALE_COMMANDE = V_COMM ,
+                                        CARA_MANCHETTE = C_MANC ,
+                                        VALE_MANCHETTE = V_MANC ,
+                                        CARA_GUIDE = C_GUID ,
+                                        VALE_GUIDE = V_GUID ,
+                                        CARA_ASSEMBLAGE = C_ASSE ,
+                                        VALE_ASSEMBLAGE = V_ASSE ,
+                                        CARA_PDC = C_PDC ,
+                                        VALE_PDC = V_PDC ,
+                                      ),
+                                    _F( CARA_GRAPPE = 'M' ,
+                                        VALE_GRAPPE = 126.418 ,
+                                      ),
+                                   ),
+                        ) ;
+
+
+TFIN = 1.790     # Temps fin pour le calcul
+
+PAS = 0.001      # pas de temps du calcul
+
+L_INST=DEFI_LIST_REEL( DEBUT=0.0,
+                       INTERVALLE=_F( JUSQU_A=TFIN, PAS=PAS,),
+                     ) ;
+
+#
+# avec DEBUG=.TRUE. dans les routines nmgrfl.f et gfforc.f, on imprime
+# - sur l'unite 38 les forces fluides calculees
+# - sur l'unite 37 le nombre de noeuds dans chaque zone
+#
+#DEFI_FICHIER( FICHIER='IMPR_NOEUD', UNITE=37 );
+#DEFI_FICHIER( FICHIER='IMPR_FORCE', UNITE=38 );
+#
+
+RESU=DYNA_NON_LINE( MODELE=MODELE,
+                CHAM_MATER=CHAMPMAT,
+                CARA_ELEM=CHAMPCAR,
+                EXCIT=(_F(CHARGE=F_FLUIDE,),
+                       _F(CHARGE=CHARGE,),),
+                COMP_INCR=_F(RELATION='ELAS',
+                             TOUT='OUI',),
+                INCREMENT=_F(LIST_INST=L_INST,
+                             INST_FIN = TFIN,
+                            ),
+                 NEWMARK=_F(),
+                 ARCHIVAGE=_F( INST=( 0.700, 1.400, 1.787 ), ),
+            );
+
+#  reference PEGASE 
+
+#  instant 0.7
+DEPL_1 = -1.15123E+00
+VITE_1 = -2.61813E+00
+ACCE_1 = -1.20711E+00
+
+#  instant 1.4
+DEPL_2 = -3.15521E+00
+VITE_2 = -2.65416E+00
+ACCE_2 =  1.59127E+01
+
+#  instant 1.790
+DEPL_3 = -3.60997E+00
+VITE_3 = -7.27310E-01
+ACCE_3 = -2.90925E-01
+
+TEST_RESU(RESU=(
+          # DEPLACEMENT DU NOEUD SUPERIEUR DE LA TIGE
+        
+   _F(  RESULTAT = RESU,     INST = 7.00000E-01,   NOM_CHAM = 'DEPL',
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = 0.0005, 
+        GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = DEPL_1 ),
+   _F(  RESULTAT = RESU,     INST = 1.40000E+00,   NOM_CHAM = 'DEPL',
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = 0.0005, 
+        GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = DEPL_2 ),
+   _F(  RESULTAT = RESU,     INST = 1.78700E+00,   NOM_CHAM = 'DEPL',
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = 0.0005, 
+        GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = DEPL_3 ),
+
+          # VITESSE DU NOEUD SUPERIEUR DE LA TIGE
+        
+   _F(  RESULTAT = RESU,     INST = 7.00000E-01,    NOM_CHAM = 'VITE',
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0005, 0.001 ),
+        GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = VITE_1 ),
+   _F(  RESULTAT = RESU,     INST = 1.40000E+00,   NOM_CHAM = 'VITE',
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0010, 0.001 ),
+        GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = VITE_2 ),
+   _F(  RESULTAT = RESU,     INST = 1.78700E+00,   NOM_CHAM = 'VITE',
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0005, 0.001 ),
+        GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = VITE_3 ),
+
+          # ACCELERATION DU NOEUD SUPERIEUR DE LA TIGE
+        
+#   _F(  RESULTAT = RESU,     INST = 7.00000E-01,    NOM_CHAM = 'ACCE',
+#        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = 0.180, 
+#        GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = ACCE_1 ),
+   _F(  RESULTAT = RESU,     INST = 1.40000E+00,   NOM_CHAM = 'ACCE',
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.035, 0.001 ), 
+        GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = ACCE_2 ),
+#   _F(  RESULTAT = RESU,     INST = 1.78700E+00,   NOM_CHAM = 'ACCE',
+#        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 25.000, 0.001 ), 
+#        GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = ACCE_3 ),
+
+        )       )
+
+TEST_RESU(RESU=(
+          # DEPLACEMENT DU NOEUD INFERIEUR DU CRAYON
+        
+   _F(  RESULTAT = RESU,     INST = 7.00000E-01,   NOM_CHAM = 'DEPL',
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0005, 0.001 ),
+        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = DEPL_1 ),
+   _F(  RESULTAT = RESU,     INST = 1.40000E+00,   NOM_CHAM = 'DEPL',
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0005, 0.001 ),
+        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = DEPL_2 ),
+   _F(  RESULTAT = RESU,     INST = 1.78700E+00,    NOM_CHAM = 'DEPL',
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0005, 0.001 ),
+        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = DEPL_3 ),
+
+          # VITESSE DU NOEUD INFERIEUR DU CRAYON
+        
+   _F(  RESULTAT = RESU,     INST = 7.00000E-01,    NOM_CHAM = 'VITE',
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0005, 0.001 ), 
+        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = VITE_1 ),
+   _F(  RESULTAT = RESU,     INST = 1.40000E+00,   NOM_CHAM = 'VITE',
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0010, 0.001 ), 
+        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = VITE_2 ),
+   _F(  RESULTAT = RESU,     INST = 1.78700E+00,   NOM_CHAM = 'VITE',
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0005, 0.001 ), 
+        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = VITE_3 ),
+
+          # ACCELERATION DU NOEUD INFERIEUR DU CRAYON
+        
+#   _F(  RESULTAT = RESU,     INST = 7.00000E-01,    NOM_CHAM = 'ACCE',
+#        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.400, 0.001 ), 
+#        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = ACCE_1 ),
+   _F(  RESULTAT = RESU,     INST = 1.40000E+00,   NOM_CHAM = 'ACCE',
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.015, 0.001 ), 
+        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = ACCE_2 ),
+#   _F(  RESULTAT = RESU,     INST = 1.78700E+00,   NOM_CHAM = 'ACCE',
+#        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.700, 0.001 ), 
+#        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = ACCE_3 ),
+
+        )       )
+
+FIN();

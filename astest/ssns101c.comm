@@ -1,4 +1,4 @@
-# MODIF  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE CLAQUAGE  CALOTTE CYLINDRIQUE SHB8  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -152,13 +152,6 @@ NONLIN=CALC_ELEM(reuse=NONLIN, RESULTAT=NONLIN,
                     OPTION=('SIEF_ELNO_ELGA','EQUI_ELGA_SIGM','EQUI_ELNO_SIGM','VARI_ELNO_ELGA'),
                     );
                     
-IMPR_RESU(MODELE=MODMECA,
-          RESU=(_F(
-                  VALE_MAX='OUI',VALE_MIN='OUI',
-                  FORMAT='RESULTAT',INST=15.,
-                   RESULTAT=NONLIN,),),);
-
-
 TEST_RESU(RESU=(
                  _F(RESULTAT=NONLIN,
                    INST=15.,
@@ -276,16 +269,10 @@ INCLUDE(UNITE=10)
 # COURBES(listcourb,titre='SSNS101',legx='INST',legy='FORCE',fichier='./fort.24')
 
 DEFI_FICHIER(FICHIER='GMSH',UNITE=37)
-IMPR_RESU(MODELE=MODMECA,
-          RESU=(
-                 _F(FORMAT='GMSH',VERSION=1.2,
-                   FICHIER='GMSH',
-                   RESULTAT=NONLIN,INST=15.,
-                   NOM_CHAM=('DEPL',
-                   #'SIEF_ELNO_ELGA',
-                   'VARI_ELNO_ELGA',
-                   ),
-                   ),
+IMPR_RESU( MODELE=MODMECA,
+           FORMAT='GMSH', VERSION=1.2, UNITE=37,
+           RESU=_F( RESULTAT=NONLIN, INST=15.,
+                    NOM_CHAM=('DEPL','VARI_ELNO_ELGA',),
                    ),)
 
 FIN()

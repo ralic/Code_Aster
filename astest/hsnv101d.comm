@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE THERMO_METALLO_MECANIQUE DECOUPLEE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -293,21 +293,8 @@ U=CALC_ELEM( reuse=U,
                           RESULTAT=U,
               )
               
-IMPR_RESU(RESU=(_F(RESULTAT=U,
-
-                   NOM_CHAM='SIEF_ELNO_ELGA',
-                   NOEUD='N13',
-                   MAILLE='M1',
-                   NOM_CMP='SIYY',),
-                _F(RESULTAT=U,
-                   NOM_CHAM='VARI_ELNO_ELGA',
-                   MAILLE='M1',
-                   NOEUD='N13',
-                   ),),)     
-                   
-                   
 CHVAR47=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R',
-RESULTAT=U, NOM_CHAM='VARI_ELNO_ELGA',
+                    RESULTAT=U, NOM_CHAM='VARI_ELNO_ELGA',
                        INST=47. )
 CHSIG47=CREA_CHAMP(NOM_CHAM='SIEF_ELNO_ELGA',
                    INST=47.0,

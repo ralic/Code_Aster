@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE GNICOLAS G.NICOLAS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -94,10 +94,6 @@ CALC_NO( reuse=TEMPLIN,  RESULTAT=TEMPLIN,
                  SENSIBILITE=(THETA),
                  OPTION='DETE_NOEU_DLTE')
 #
-##IMPR_RESU(RESU=(_F(RESULTAT=TEMPLIN,),
-##                _F(RESULTAT=TEMPLIN,SENSIBILITE=THETA,),
-##               ),);
-#
 CHDIL=AFFE_CHAR_MECA(  MODELE=MO,
            TEMP_CALCULEE=TEMPLIN,
            DDL_IMPO=_F(  GROUP_MA = 'TOUT',   DY = 0.) )
@@ -119,12 +115,6 @@ CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
                       OPTION=('SIGM_ELNO_DEPL',)
                          )
 #
-IMPR_RESU( MODELE=MO,
-           RESU =_F( FORMAT='RESULTAT',
-                     FICHIER='RESULTAT',
-                     RESULTAT=DEPLDIL),
-          )
-#
 CALC_ELEM( reuse=DEPLDIL,
                    RESULTAT=DEPLDIL,
                    SENSIBILITE=(THETA),
@@ -143,10 +133,6 @@ CALC_NO( reuse=DEPLDIL,   RESULTAT=DEPLDIL,
              OPTION=('DESI_NOEU_DLSI', 'DEDE_NOEU_DLDE')
                    )
 
-#
-##IMPR_RESU(RESU=(_F(RESULTAT=DEPLDIL,),
-##                _F(RESULTAT=DEPLDIL,SENSIBILITE=THETA,),
-##               ),);
 #
 TEST_RESU(RESU=(
 # DERIVEES DES TEMPERATURES

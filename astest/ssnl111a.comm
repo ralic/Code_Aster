@@ -1,4 +1,4 @@
-# MODIF  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE ESSAI DE THERMO-PLASTICITE (MISES ECR. ISOT. C_PLAN)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -392,14 +392,12 @@ SIGY3_T=RECU_FONCTION(
 
 #IMPR_COURBE (
 #               FORMAT  : 'RESULTAT'
-#               FICHIER : 'RESULTAT'
 #               LABEL_X : 'TEMPS'
 #               LABEL_Y : 'DEPLACEMENT AXIAL'
 #               COURBE  : (FONCTION: UY_T)
 #            );
 #IMPR_COURBE (
 #               FORMAT  : 'RESULTAT'
-#               FICHIER : 'RESULTAT'
 #               LABEL_X : 'TEMPS'
 #               LABEL_Y : 'CONTRAINTES AXIALES'
 #               COURBE  : (FONCTION: SIGY1_T, LEGENDE : 'BARRE 1')
@@ -407,7 +405,6 @@ SIGY3_T=RECU_FONCTION(
 #                         (FONCTION: SIGY3_T, LEGENDE : 'BARRE 3')
 #            );
 
-# FIN() ;
 ################################################################
 #
 
@@ -442,38 +439,6 @@ CALC_ELEM( reuse=U,
                           RESULTAT=U,
               )
 
-#IMPR_RESU (
-#          MODELE: MO
-#          RESU  :
-#            (FORMAT  : 'RESULTAT'
-#             RESULTAT: TEMPRESU
-#             NOEUD   : (P1,P2,P3)
-#             NOM_CMP : ('TEMP')
-#             NOM_CHAM: 'TEMP'
-#             TOUT_ORDRE: 'OUI'
-#            )
-#            (FORMAT  : 'RESULTAT'
-#             RESULTAT: U
-#             NOEUD   : (P1,P2,P3)
-#             NOM_CMP : ('DX', 'DY')
-#             NOM_CHAM: 'DEPL'
-#             TOUT_ORDRE: 'OUI'
-#            )
-#            (FORMAT  : 'RESULTAT'
-#             RESULTAT: U
-#             NOEUD   : (P1,P2,P3)
-#             NOM_CMP : ('SIYY')
-#             TOUT_ORDRE: 'OUI'
-#             NOM_CHAM :'SIEF_ELNO_ELGA'
-#            )
-#            (FORMAT  : 'RESULTAT'
-#             RESULTAT: U
-#             NOEUD   : (P1,P2,P3)
-#             NOM_CMP : ('EPYY')
-#             NOM_CHAM :'EPSP_ELNO'
-#             TOUT_ORDRE: 'OUI'
-#            )
-#          );
 TEST_RESU(RESU=(
 
             _F( RESULTAT = U,

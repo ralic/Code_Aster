@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TEST PHI2AS NUMERO 1 MODELISATION BARRE ECROUISSAGE CINEMATIQUE LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -209,8 +209,7 @@ EPSP1=CALC_FONCTION(COMB=(_F(FONCTION=FU1,
                              COEF=-1.0000000000000004E-05,),
                              ),);
 
-TEST_FONCTION(FICHIER='RESULTAT',
-              TEST_NOOK='NON',
+TEST_FONCTION(TEST_NOOK='NON',
               VALEUR=(_F(FONCTION=EPSP1,
                          NOM_PARA='INST',
                          VALE_PARA=1.0,
@@ -223,13 +222,6 @@ TEST_FONCTION(FICHIER='RESULTAT',
                          VALE_REFE=8.E-4,
                          PRECISION=1.E-3,
                          REFERENCE='ANALYTIQUE',),),);
-#U=CALC_ELEM(reuse=U,   MODELE=MOMECA,
-#                    CHAM_MATER=CHMATER,
-#                    RESULTAT=U,
-#                      EXCIT=_F( CHARGE = CHR_TEMP,  ),
-#                      OPTION=( 'EPSP_ELNO', )
-#                   )
-#
 
 
 TEST_RESU(RESU=(_F(RESULTAT=U,
@@ -299,8 +291,7 @@ EPSP2=CALC_FONCTION(COMB=(_F(FONCTION=FU2,
                           _F(FONCTION=FN2,
                              COEF=-5.0000000000000004E-06,),),);
 
-TEST_FONCTION(FICHIER='RESULTAT',
-              TEST_NOOK='NON',
+TEST_FONCTION(TEST_NOOK='NON',
               VALEUR=(_F(FONCTION=EPSP2,
                          NOM_PARA='INST',
                          VALE_PARA=1.0,
@@ -314,12 +305,7 @@ TEST_FONCTION(FICHIER='RESULTAT',
                          PRECISION=1.E-3,
                          REFERENCE='ANALYTIQUE',),),);
 
-#IMPR_RESU(RESU=_F(RESULTAT=U))
-
-#IMPR_RESU(RESU=_F(RESULTAT=U2))
-
-
-IMPR_COURBE(FICHIER='RESULTAT',
+IMPR_COURBE(UNITE=8,
             FORMAT='EXCEL',
           #  TITRE_GRAPHIQUE=TITRE,
           #  LEGENDE_X='T (S)',
@@ -398,8 +384,7 @@ EPSP3=CALC_FONCTION(COMB=(_F(FONCTION=FU3,
                           _F(FONCTION=FN3,
                              COEF=-5.0000000000000004E-06,),),);
 
-TEST_FONCTION(FICHIER='RESULTAT',
-              TEST_NOOK='NON',
+TEST_FONCTION(TEST_NOOK='NON',
               VALEUR=(_F(FONCTION=EPSP3,
                          NOM_PARA='INST',
                          VALE_PARA=1.0,

@@ -1,5 +1,3 @@
-
-
 POURSUITE(CODE=_F(NOM='FORMA03A'),PAR_LOT='NON')
 
 #import Stanley
@@ -33,9 +31,9 @@ STHETA=POST_RELEVE_T(ACTION=_F(INTITULE='STHETA',
                                REPERE='POLAIRE',
                                OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=STHETA,
-           FICHIER='RESULTAT',
-           FORMAT='EXCEL',);
+IMPR_TABLE( UNITE=8,
+            TABLE=STHETA,
+            FORMAT='EXCEL',);
 
 STCALC=RECU_FONCTION(TABLE=STHETA,
                      PARA_X='ABSC_CURV',
@@ -60,10 +58,7 @@ STTAC=CALC_FONC_INTERP(FONCTION=STTA,NOM_PARA='ABSC_CURV',
                        LIST_PARA=LISABS,
                        INTERPOL='LIN',);
 
-DEFI_FICHIER(FICHIER='STHETA',
-                     UNITE=81,)
-
-IMPR_COURBE(FICHIER='STHETA',
+IMPR_COURBE(UNITE=81,
             FORMAT='EXCEL',
             COURBE=(_F(FONCTION=STTAC,),
                     _F(FONCTION=STCALC,),),);
@@ -109,12 +104,7 @@ F_SYY_G=RECU_FONCTION(TABLE=SYY_G,
                       PARA_Y='SIYY',
                       INTERPOL='LIN',);
 
-DEFI_FICHIER(FICHIER='SYYG',
-                     UNITE=82,)
-               
-
-
-IMPR_COURBE(FICHIER='SYYG',
+IMPR_COURBE(UNITE=82,
             FORMAT='EXCEL',
             COURBE=(_F(FONCTION=F_DY_G,
                        LEGENDE='Dy au point G',),
@@ -163,10 +153,7 @@ F_FY_G=RECU_FONCTION(TABLE=FHAUT,
                      PARA_Y='DY',
                      INTERPOL='LIN',);
 
-DEFI_FICHIER(FICHIER='FYG',
-                     UNITE=83,)
-
-IMPR_COURBE(FICHIER='FYG',
+IMPR_COURBE(UNITE=83,
             FORMAT='EXCEL',
             COURBE=(_F(FONCTION=F_DY_G,
                        LEGENDE='Deplacement suivant Y au point G',),
@@ -190,13 +177,12 @@ IMPR_COURBE(FICHIER='FYG',
 #
 ########################################################
 
-IMPR_RESU(MODELE=MO,
-          RESU=_F(FORMAT='CASTEM',
-                  MAILLAGE=M,
-                  RESULTAT=RESUNL,
-                  NOM_CHAM=('DEPL','SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),
-                  INST=(1.,5.4),
-                  FICHIER='CASTEM',),);
+IMPR_RESU( FORMAT='CASTEM', UNITE=37,
+           MODELE=MO,
+           RESU=_F( MAILLAGE=M,
+                    RESULTAT=RESUNL,
+                    NOM_CHAM=('DEPL','SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),
+                    INST=(1.,5.4), ), );
 
                   
 #######################################################
@@ -205,19 +191,12 @@ IMPR_RESU(MODELE=MO,
 #
 #######################################################
 
-DEFI_FICHIER(FICHIER='GMSH',
-                     UNITE=36,)
-
-IMPR_RESU(MODELE=MO,
-          RESU=_F(FORMAT='GMSH',
-                  RESULTAT=RESUNL,
-                  NOM_CHAM=('DEPL','SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),
-                  INST=(1.,5.4),
-                  FICHIER='GMSH',),);
+IMPR_RESU( FORMAT='GMSH', UNITE=36, 
+           MODELE=MO,
+           RESU=_F( RESULTAT=RESUNL,
+                    NOM_CHAM=('DEPL','SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),
+                    INST=(1.,5.4), ), );
 
 
 
 FIN();
-
-
-                  

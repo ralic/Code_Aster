@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE  PLAQUE CARREE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,11 +113,6 @@ EFF=CALC_ELEM(RESULTAT=RESU,
                    PLAN='MOY',
                    OPTION='EFGE_ELNO_DEPL',);
 
-IMPR_RESU(RESU=_F(MAILLAGE=MA,
-                  FORMAT='IDEAS',
-                  RESULTAT=RESU,),
-          MODELE=MO,);
-          
 TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
                   RESULTAT=RESU,
                   REFERENCE='ANALYTIQUE',

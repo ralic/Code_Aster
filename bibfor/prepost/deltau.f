@@ -1,7 +1,7 @@
       SUBROUTINE DELTAU(JRWORK, JNBPG, NBPGT, NBORDR, NMAINI, NBMAP,
      &                  NUMPAQ, TSPAQ, NOMMET, NOMCRI, CESR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/05/2004   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 05/07/2004   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -700,13 +700,18 @@ C
 C
 C 1/ CRITERE DE MATAKE
                IF (NOMCRI(1:6) .EQ. 'MATAKE') THEN
-                  SIGEQ(K) = DTAUM(K) + (VALA*NORMAX(K))
-                  SIGEQ(K) = SIGEQ(K)*COEFPA
+                  IF ( NORMAX(K) .GT. 0.0D0 ) THEN
+                     SIGEQ(K) = DTAUM(K) + (VALA*NORMAX(K))
+                     SIGEQ(K) = SIGEQ(K)*COEFPA
+                  ELSE
+                     SIGEQ(K) = DTAUM(K)
+                     SIGEQ(K) = SIGEQ(K)*COEFPA
+                  ENDIF
                ENDIF
 C
 C 2/ CRITERE DE DANG VAN
                IF (NOMCRI(1:16) .EQ. 'DANG_VAN_MODI_AC') THEN
-                  IF ( (VALA*PHYDRM) .GT. 0.0D0 ) THEN
+                  IF ( PHYDRM .GT. 0.0D0 ) THEN
                      SIGEQ(K) = DTAUM(K) + (VALA*PHYDRM)
                      SIGEQ(K) = SIGEQ(K)*COEFPA
                   ELSE

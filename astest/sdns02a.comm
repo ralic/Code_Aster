@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE AILETTE FISSUREE AVEC CONTACT
@@ -220,11 +220,9 @@ RESU=DYNA_NON_LINE(MODELE=MO,
 
 # Sortie d'un fichier universel (unv) IDEAS
 DEFI_FICHIER(FICHIER='IDEASMAIL',UNITE=30)
-IMPR_RESU(RESU=_F(FORMAT='IDEAS',
-                  MAILLAGE=MA,
-                  VERSION=5,
-                  RESULTAT=RESU,
-                  FICHIER='IDEASMAIL'),);
+IMPR_RESU(FORMAT='IDEAS', VERSION=5, UNITE=30,
+          RESU=_F(MAILLAGE=MA,
+                  RESULTAT=RESU, ),);
 DEFI_FICHIER(ACTION='LIBERER',UNITE=30 )  
 
 # Sans contact
@@ -367,16 +365,12 @@ IMPR_RESU(RESU=_F(RESULTAT=RESU2,
 DEFI_FICHIER(FICHIER='POST',UNITE=unite_GMSH )
 
 # # Eriture du resultat
-# IMPR_RESU(MODELE=MO,
-#           RESU=_F(FORMAT='GMSH',
-#                   FICHIER='POST',
-#                   NOM_CHAM='DEPL',
+# IMPR_RESU(MODELE=MO, FORMAT='GMSH', UNITE=unite_GMSH, 
+#           RESU=_F(NOM_CHAM='DEPL',
 #                   RESULTAT=RESU,),);
 # Eriture du resultat
-IMPR_RESU(MODELE=MO,
-          RESU=_F(FORMAT='GMSH',
-                  FICHIER='POST',
-                  MAILLAGE=MA,),);
+IMPR_RESU( MODELE=MO, FORMAT='GMSH', UNITE=unite_GMSH, 
+           RESU=_F(MAILLAGE=MA,),);
 # Fermeture de l'unite logique FORTRAN
 DEFI_FICHIER(ACTION='LIBERER',UNITE=unite_GMSH )
 

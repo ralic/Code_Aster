@@ -1,5 +1,5 @@
 
-# MODIF  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE EXTRUSION D'UN LOPIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -187,12 +187,6 @@ U=STAT_NON_LINE(MODELE=MO,
                           REAC_ITER=1,),
                 CONVERGENCE=_F(RESI_GLOB_MAXI=9.9999999999999995E-07,),);
 
-IMPR_RESU(MODELE=MO,
-          RESU=_F(FORMAT='CASTEM',
-                  MAILLAGE=MAILL1,
-                  RESULTAT=U,
-                  NOM_CHAM='DEPL',),);
-
 TEST_RESU(RESU=(_F(RESULTAT=U,
                    NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
@@ -279,6 +273,4 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    REFERENCE='NON_REGRESSION',),),);
 
 FIN();
-#
-# 
 #

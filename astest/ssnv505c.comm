@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,38 +126,18 @@ U=CALC_NO(reuse =U,
           );
 
 
-IMPR_RESU(MODELE=MODE,
-          RESU=_F(FORMAT='CASTEM',
-                  MAILLAGE=MAILL1,
-                  RESULTAT=U,
-                  NOM_CHAM=('DEPL','FORC_NODA',),
-                  FICHIER='CASTEM'),);
-
-IMPR_RESU(MODELE=MODE,
-          RESU=_F(FORMAT='RESULTAT',
-                  RESULTAT=U,
-                  NOM_CHAM=('FORC_NODA',),
-                  INST=1.),);
-
 TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                  GROUP_NO='C',
                                  RESULTAT=U,
                                  NOM_CHAM='DEPL',
                                  NOM_CMP='DY',
                                  OPERATION='EXTRACTION',),);
-IMPR_TABLE(FORMAT='EXCEL',
-           TABLE=TAB_DEPL,);
-
-
 TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
                                  GROUP_NO=('LA3A','LB3B'),
                                  RESULTAT=U,
                                  NOM_CHAM='FORC_NODA',
                                  RESULTANTE='DY',
                                  OPERATION='EXTRACTION',),);
-IMPR_TABLE(FORMAT='EXCEL',
-           TABLE=TAB_REAC,);
-           
 TEST_TABLE(TABLE=TAB_REAC,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',

@@ -1,0 +1,119 @@
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# TITRE FLAMBEMENT NON LINEAIRE POUTRE 3D GREEN
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'SSNL126B',NIV_PUB_WEB='INTERNET'));
+
+PRE_GIBI();
+
+mail=LIRE_MAILLAGE();
+
+modele=AFFE_MODELE(MAILLAGE=mail,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),);
+
+CC=AFFE_CHAR_MECA(MODELE=modele,
+                  DDL_IMPO=(_F(GROUP_MA='ENCAST',
+                               DX=0.0,
+                               DY=0.0,
+                               DZ=0.0,),),);
+
+CSEL=AFFE_CHAR_MECA(MODELE=modele,
+                  FORCE_FACE=_F(GROUP_MA='EFFORT',
+                                FX=-20000000.0,),);
+
+acier=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
+                            NU=0.3,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=70000000000.0,
+                                 SY=4000000.0,),);
+
+ch_mat=AFFE_MATERIAU(MAILLAGE=mail,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=acier,),);
+
+fonc=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,0.0,1.0,1.0,),);
+#list=DEFI_LIST_REEL(DEBUT=0.0,
+#                    INTERVALLE=_F(JUSQU_A=1.0,
+#                                  NOMBRE=10,),);
+
+list=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=1,
+                                  NOMBRE=10,),);
+
+resuel=STAT_NON_LINE(MODELE=modele,
+                   CHAM_MATER=ch_mat,
+                   EXCIT=(_F(CHARGE=CC,),
+                          _F(CHARGE=CSEL,
+                             FONC_MULT=fonc,),),
+                   COMP_INCR=_F(RELATION='ELAS',
+                                DEFORMATION='GREEN',),
+                   INCREMENT=_F(LIST_INST=list,),
+                   NEWTON=_F(REAC_INCR=1,
+                             MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                  ITER_GLOB_MAXI=10,),
+                  CRIT_FLAMB=_F()
+                  );
+TEST_RESU(RESU=(
+                 _F(RESULTAT=resuel,
+                   INST=1.0,
+                   PARA='CHAR_CRIT',
+                   VALE=-19.065,
+                   PRECISION=0.03,
+                   REFERENCE='NON_REGRESSION',),
+                   ),)
+
+# ELASTOPLASTIQUE
+CS=AFFE_CHAR_MECA(MODELE=modele,
+                  FORCE_FACE=_F(GROUP_MA='EFFORT',
+                                FX=-10000000.0,),);
+resu=STAT_NON_LINE(MODELE=modele,
+                   CHAM_MATER=ch_mat,
+                   EXCIT=(_F(CHARGE=CC,),
+                          _F(CHARGE=CS,
+                             FONC_MULT=fonc,),),
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                                DEFORMATION='GREEN',),
+                   INCREMENT=_F(LIST_INST=list,),
+                   NEWTON=_F(REAC_INCR=1,
+                             MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                  ITER_GLOB_MAXI=10,),
+                  CRIT_FLAMB=_F()
+                  );
+TEST_RESU(RESU=(
+                 _F(RESULTAT=resu,
+                   INST=0.4,
+                   PARA='CHAR_CRIT',
+                   VALE=4.9917,
+                   REFERENCE='NON_REGRESSION',),
+                   
+                 _F(RESULTAT=resu,
+                   INST=0.5,
+                   PARA='CHAR_CRIT',
+                   VALE=-1.3186,
+                   REFERENCE='NON_REGRESSION',),
+                   ),)
+
+
+FIN();

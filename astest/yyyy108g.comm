@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2000   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE  CTJ25 - RENUM RCMK / AFFE_CHAR_MECA / RESO_GRAD
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,12 +85,6 @@ TEST_RESU(CHAM_NO=(
  _F( CHAM_GD = KVECAS, NOEUD = 'NO2974', NOM_CMP = 'DZ',
                                        VALE = -2.9173E-5, PRECISION = 1.5E-4))
              )
-
-# ----------------------------------------------------------------------
-#  IMPR_RESU ( MODELE: MO
-#              RESU: ( FICHIER:'RESULTAT'  CHAM_GD : VECAS  )
-#            ) ;
-# ----------------------------------------------------------------------
 
 FIN()
 #

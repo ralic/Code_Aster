@@ -1,10 +1,10 @@
-      SUBROUTINE FONFFT ( NSENS, NOMFON, SORTIE, BASE )
+      SUBROUTINE FONFFT ( NSENS, NOMFON, SORTIE, METHOD, BASE )
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)       NOMFON, SORTIE
       CHARACTER*(1)                               BASE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 31/03/2003   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 05/07/2004   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,10 +40,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8   CBID
-      CHARACTER*16  NOMRES
+      CHARACTER*16  NOMRES, METHOD
       CHARACTER*19  NOMFI, NOMFS
       CHARACTER*24  VALE, PROL
-      REAL*8        PAS,PASFRQ
+      REAL*8        PAS,PASFRQ,PAS2
 C     ----------------------------------------------------------------
       CALL JEMARQ()
       NOMFI = NOMFON
@@ -69,39 +69,58 @@ C     ---  NOMBRE DE POINTS ----
       N = 1
   100 CONTINUE
       NBPTS = 2**N
-      IF (NBPTS.LE.NBVA) THEN
+      IF (NBPTS.LT.NBVA) THEN
          N = N + 1
          GOTO 100
       ENDIF
-      NBPTS = 2**(N-1)
-      LFON  = LVAR + NBVA
+C     Methode de prise en compte du signal : 
+C     -TRONCATURE : on tronque au 2**N inferieur le plus proche de NBVA
+C     -PROL_ZERO : on prolonge le signal avec des zero pour aller
+C                   au 2**N le plus proche superieur a NBVA
+      IF ( (METHOD.EQ.'TRONCATURE') .AND. (NBPTS.NE.NBVA) ) THEN
+         NBPTS = 2**(N-1)
+         NBPTS1 = NBPTS
+         NBPTS2 = 2*NBPTS
+      ELSE
+         NBPTS = 2**N
+         NBPTS1 = NBVA
+         NBPTS2 = NBPTS
+      ENDIF
 C
+      LFON  = LVAR + NBVA
 C     --- TRANSORMATION PAR FOURIER
       IF (NSENS.EQ.1) THEN
 C     --- SENS DIRECT
 C     --- RECOPIE DES VARIABLES ---
          CALL WKVECT('&&TRAVAIL','V V C',NBPTS,LTRA)
-         DO 199 I = 1,NBPTS
+         DO 199 I = 1,NBPTS1
             ZC(LTRA+I-1) = DCMPLX(ZR(LFON+I-1),0.D0)
   199    CONTINUE
+         IF (NBPTS.GT.NBVA) THEN
+            DO 1999 I = 1,(NBPTS-NBVA)
+               ZC(LTRA+NBVA+I-1) =  DCMPLX(0.D0,0.D0)
+ 1999       CONTINUE
+         ENDIF
+  
          CALL FFT(ZC(LTRA),NBPTS,1)
          PAS = ZR(LVAR+1)-ZR(LVAR)
-         NBPTS1 = NBPTS/2
-         NBVAL1 = 3*NBPTS1
+         NBVAL1 = 3*NBPTS
          CALL WKVECT(NOMFS//'.VALE',BASE//' V R',NBVAL1,LRES)
-         LRES1 = LRES + NBPTS1
-         PASFRQ = 1.D0/(NBPTS*PAS)
-         DO 198 I = 1,NBPTS1
-            ZR(LRES+I-1) = I*PASFRQ
+         LRES1 = LRES + NBPTS
+         PASFRQ = 1.D0/((NBPTS-1)*PAS)
+         DO 198 I = 1,NBPTS
+            ZR(LRES+I-1) = (I-1)*PASFRQ
   198    CONTINUE
-         DO 200 I = 1,NBPTS1
+         DO 200 I = 1,NBPTS
             II = 2*I-1
             ZR(LRES1+II-1) = DBLE(ZC(LTRA+I-1))*PAS
             ZR(LRES1+II) = DIMAG(ZC(LTRA+I-1))*PAS
   200    CONTINUE
       ELSEIF (NSENS.EQ.-1) THEN
 C     --- SENS INVERSE
-         NBPTS2 = 2*NBPTS
+C
+C        Pour cas tronque
+C         NBPTS=2*NBPTS
          CALL WKVECT('&&TRAVAIL','V V C',NBPTS2,LTRA)
          DO 201 I = 1,NBPTS
             II = 2*I-1
@@ -111,14 +130,14 @@ C     --- SENS INVERSE
   201    CONTINUE
          CALL FFT(ZC(LTRA),NBPTS2,-1)
          PAS = ZR(LVAR+1)-ZR(LVAR)
-         WRITE(6,*) 'PAS ',PAS
          CALL WKVECT(NOMFS//'.VALE',BASE//' V R',2*NBPTS2,LRES)
          LRES1 = LRES + NBPTS2
          DO 202 I = 1,NBPTS2
-            ZR(LRES+I-1) = 1.D0/(NBPTS2*PAS)*(I-1)
+            ZR(LRES+I-1) = 1.D0/((NBPTS2-1)*PAS)*(I-1)
   202    CONTINUE
+         PAS2 = 1/ZR(LVAR+NBPTS2-1)
          DO 203 I = 1,NBPTS2
-            ZR(LRES1+I-1) = DBLE(ZC(LTRA+I-1))*NBPTS2*PAS
+            ZR(LRES1+I-1) = DBLE(ZC(LTRA+I-1))/PAS2
   203    CONTINUE
       ENDIF
 C

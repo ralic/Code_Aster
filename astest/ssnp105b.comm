@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE  BETON  TRACTION UNIAXIALE CYCLIQUE COQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -142,23 +142,6 @@ U=CALC_ELEM(
               reuse=U,
                   RESULTAT=U,
                    OPTION=('EPSI_ELNO_DEPL','SIGM_ELNO_COQU',)
-              )
-
-#   IMPR_RESU  ( MODELE:MO
-#                RESU  :(FORMAT    : 'CASTEM'
-#                        MAILLAGE  : M   )
-#                RESU  :(FORMAT    : 'CASTEM'
-#                        RESULTAT  : U
-#                        TOUT_CHAM : 'OUI'
-#                        TOUT_ORDRE: 'OUI'
-#                        FORM_TABL : 'OUI' )
-#              );
-
-
-IMPR_RESU( MODELE=MO,
-                  RESU=_F( FORMAT = 'RESULTAT',
-                        RESULTAT = U,
-                        TOUT = 'OUI')
               )
 
 TEST_RESU(RESU=(

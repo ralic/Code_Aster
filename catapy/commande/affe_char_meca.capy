@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 05/07/2004   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
                     ,fr="Affectation de charges et conditions aux limites mécaniques constantes",
                      reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
-         regles=(AU_MOINS_UN('DDL_IMPO','FACE_IMPO','LIAISON_DDL','FORCE_NODALE',
+         regles=(AU_MOINS_UN('DDL_IMPO','FACE_IMPO','LIAISON_DDL','LIAISON_XFEM','FORCE_NODALE',
                              'FORCE_FACE','FORCE_ARETE','FORCE_CONTOUR','FORCE_INTERNE',
                              'PRES_REP','FORCE_POUTRE','FORCE_COQUE','LIAISON_OBLIQUE',
                              'FORCE_ELEC','INTE_ELEC','PESANTEUR','ROTATION','IMPE_FACE',
@@ -294,6 +294,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
              COEF_IMPO       =SIMP(statut='o',typ='R' ),
              NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
            ),
+
+         LIAISON_XFEM      =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON" ),
 
          VECT_ASSE       =SIMP(statut='f',typ=cham_no_depl_r ),
 

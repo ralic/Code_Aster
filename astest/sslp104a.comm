@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE POUTRE CANTILEVER . VALIDATION DE LA METHODE ARLEQUIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,10 +40,6 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA='GM7',),
                                _F(GROUP_MA='GM8',), ),);
-
-DEFI_FICHIER(FICHIER='mail',UNITE=24)
-IMPR_RESU(RESU=_F(FORMAT='RESULTAT',MAILLAGE=MAIL,FICHIER='mail'))
-
 
 ELAS=DEFI_MATERIAU(ELAS=_F(E=300.0,
                            NU=0.29999999999999999,),);
