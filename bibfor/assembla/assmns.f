@@ -10,7 +10,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ASSEMBLA  DATE 25/01/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C-----------------------------------------------------------------------
      +             KTMP2,KCONL
       REAL*8 R,RINF,RSUP,COEF
       INTEGER HMAX,IMO,ILAGR,ILIMO
-      INTEGER NBNO
+      INTEGER ADMODL,LCMODL,NBNO
       INTEGER NBEC
       CHARACTER*1 K1BID
 C-----------------------------------------------------------------------
@@ -177,6 +177,9 @@ C
       BAS2 = BASE
       IFM = IUNIFI('MESSAGE')
       MATDEV = MATAS
+C
+      CALL JEVEUO(JEXATR('&CATA.TE.MODELOC','LONCUM'),'L',LCMODL)
+      CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',1),'L',ADMODL)
 C
       DO 1 I = 1, NBECMX
         ICODLA(I) = 0
@@ -622,8 +625,9 @@ C
                   DO 839 K1 = 1,NNOE
                     N1 = ZZCONX(NUMA,K1)
                     IAD1 = ZZPRNO(ILIMNU,N1,1)
-                    CALL CORDDL(IDPRN1,IDPRN2,ILIMNU,MODE,NEC,NCMP,N1,
-     +         K1,NDDL1,ZI(IAPSDL-1+NMXCMP*(K1-1)+1))
+                    CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILIMNU,
+     +                          MODE,NEC,NCMP,N1,K1,NDDL1,
+     +                          ZI(IAPSDL-1+NMXCMP*(K1-1)+1))
                     ZI(IANULO-4+3*K1+1) = N1
                     ZI(IANULO-4+3*K1+2) = IAD1
                     ZI(IANULO-4+3*K1+3) = NDDL1
@@ -739,8 +743,9 @@ C     R = COEFF MULTIPLICATEUR
                   DO 540 K1 = 1,NNOE
                     N1 = ZZCONX(NUMA,K1)
                     IAD1 = ZZPRNO(ILIMNU,N1,1)
-                    CALL CORDDL(IDPRN1,IDPRN2,ILIMNU,MODE,NEC,NCMP,N1,
-     +         K1,NDDL1,ZI(IAPSDL-1+NMXCMP*(K1-1)+1))
+                    CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILIMNU,
+     +                          MODE,NEC,NCMP,N1,K1,NDDL1,
+     +                          ZI(IAPSDL-1+NMXCMP*(K1-1)+1))
                     ZI(IANULO-4+3*K1+1) = N1
                     ZI(IANULO-4+3*K1+2) = IAD1
                     ZI(IANULO-4+3*K1+3) = NDDL1
@@ -813,9 +818,9 @@ C---- ALORS ON EST SUR UNE MAILLE TARDIVE DE "LAGRANGE"
                     IF (N1.LT.0) THEN
                       N1 = -N1
                       IAD1 = ZZPRNO(ILINU,N1,1)
-                      CALL CORDDL(IDPRN1,IDPRN2,ILINU,MODE,NEC,NCMP,
-     +                            N1,K1,NDDL1,
-     +                  ZI(IAPSDL-1+NMXCMP*(K1-1)+1))
+                      CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILINU,
+     +                            MODE,NEC,NCMP,N1,K1,NDDL1,
+     +                            ZI(IAPSDL-1+NMXCMP*(K1-1)+1))
 C
 C---- SI NOEUD LAGR ( NNOE=3,NDDL1=1,N1<0,NUMA<0 ) ALORS CONL(IAD1)=R
 C---- ET POUR TOUTE LA MATRICE ELEMENTAIRE ON POSE R = COEF*LICOEF(IMAT)
@@ -825,9 +830,9 @@ C---- ET POUR TOUTE LA MATRICE ELEMENTAIRE ON POSE R = COEF*LICOEF(IMAT)
                       END IF
                     ELSE
                       IAD1 = ZZPRNO(ILIMNU,N1,1)
-                      CALL CORDDL(IDPRN1,IDPRN2,ILIMNU,MODE,NEC,
-     +                            NCMP,N1,K1,NDDL1,
-     +                  ZI(IAPSDL-1+NMXCMP*(K1-1)+1))
+                      CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILIMNU,
+     +                            MODE,NEC,NCMP,N1,K1,NDDL1,
+     +                            ZI(IAPSDL-1+NMXCMP*(K1-1)+1))
                     END IF
                     ZI(IANULO-4+3*K1+1) = N1
                     ZI(IANULO-4+3*K1+2) = IAD1

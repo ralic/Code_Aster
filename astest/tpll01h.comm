@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 24/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE MUR PLAN EN THERMIQUE STATIONNAIRE (TETRA4)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,6 +85,13 @@ TEST_RESU(RESU=(
    _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELNO_TEMP',
    MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0),
       ),);
+      
+MACR_INFO_MAIL( MAILLAGE=MAIL,
+                QUALITE='OUI',
+                INTERPENETRATION='OUI',
+                CONNEXITE='OUI',
+                TAILLE='OUI'
+               )
 
 FIN()
 #

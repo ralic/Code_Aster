@@ -2,7 +2,7 @@
      &                  NUMSD,NEQ)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ELEMENTS  DATE 24/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -144,17 +144,11 @@ C --- CHANGER LA GRANDEUR
 C MONITORING
       IF ((INFOFE(1:1).EQ.'T').AND.((METHOD(1:4).EQ.'FETI')
      &  .OR.(NUMSD.GT.0))) THEN
-        WRITE(IFM,*)
-        WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
         IF (NUMSD.EQ.0) THEN
-          WRITE(IFM,*)'<FETI/VTCRE1> DOMAINE GLOBAL'
+          WRITE(IFM,*)'<FETI/VTCRE1> DOMAINE GLOBAL ',CHAMP(1:19)
         ELSE
-          WRITE(IFM,*)'<FETI/VTCRE1> NUMERO DE SOUS-DOMAINE: ',NUMSD
+          WRITE(IFM,*)'<FETI/VTCRE1> SD: ',NUMSD,' ',CHAMP(1:19)
         ENDIF                             
-        WRITE(IFM,*)'<FETI/VTCRE1> REMPLISSAGE OBJETS JEVEUX ',
-     &        CHAMP(1:19)
-        WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'        
-        WRITE(IFM,*)
       ENDIF
 C FIN ------------------------------------------------------
       CALL JEDEMA()

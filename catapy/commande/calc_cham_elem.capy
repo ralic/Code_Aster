@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 24/01/2005   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,6 @@ def calc_cham_elem_prod(OPTION,**args):
 
   if OPTION == "FLUX_ELGA_TEMP" : return cham_elem_flux_r
   if OPTION == "FLUX_ELNO_TEMP" : return cham_elem_flux_r
-  if OPTION == "SOUR_ELGA_ELEC" : return cham_elem_sour_r
 
 # options acoustiques
 
@@ -57,11 +56,11 @@ CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=calc_cham_elem_prod,
 #
 
          OPTION          =SIMP(statut='o',typ='TXM',
-                               into=("FLUX_ELGA_TEMP","FLUX_ELNO_TEMP","SOUR_ELGA_ELEC",
+                               into=("FLUX_ELGA_TEMP","FLUX_ELNO_TEMP",
                                      "PRES_ELNO_DBEL","PRES_ELNO_REEL","PRES_ELNO_IMAG",
                                      "COOR_ELGA"), ),
 
-         b_thermique  =BLOC(condition="OPTION in ('FLUX_ELNO_TEMP','FLUX_ELGA_TEMP','SOUR_ELGA_ELEC',)",
+         b_thermique  =BLOC(condition="OPTION in ('FLUX_ELNO_TEMP','FLUX_ELGA_TEMP',)",
            TEMP            =SIMP(statut='o',typ=(cham_no_temp_r,)),
          ),
 

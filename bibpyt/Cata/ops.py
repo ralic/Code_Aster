@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF ops Cata  DATE 24/01/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -407,6 +407,8 @@ def INCLUDE_MATERIAU(self,NOM_AFNOR,TYPE_MODELE,VARIANTE,TYPE_VALE,NOM_MATER,
       self.Execute_alone()
 
     self.make_contexte(f,self.text)
+    for k,v in self.g_context.items() :
+        if isinstance(v,ASSD) and k!=v.nom : del self.g_context[k]
 
 def build_procedure(self,**args):
     """

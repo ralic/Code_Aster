@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 24/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DST -
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -229,8 +229,7 @@ DEP=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 EFINF=CALC_ELEM(
                 GROUP_MA='PLAQ1',
                 OPTION='EFGE_ELNO_DEPL',
-                RESULTAT=MESTAT,
-                
+                RESULTAT=MESTAT,                
                 PLAN='MAIL',);
 
 EFSUP=CALC_ELEM(
@@ -321,9 +320,7 @@ MODE1=MODE_ITER_SIMULT(MATR_A=MATASS1,
 MESTAT1=MECA_STATIQUE(MODELE=MO1,
                        CHAM_MATER=CHMUL1,
                        CARA_ELEM=EP1,
-                       EXCIT=_F(CHARGE=CHME1,),
-
-                       PLAN='MAIL',);
+                       EXCIT=_F(CHARGE=CHME1,),);
 
 CALC_ELEM( reuse= MESTAT1 ,RESULTAT= MESTAT1 , 
                        

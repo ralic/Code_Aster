@@ -1,4 +1,4 @@
-# MODIF  DATE 04/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 24/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE BIBLIO_49 FISSURE RADIALE EXTERNE SOUMIS A UN CHOC THERMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -347,7 +347,7 @@ DEP1B=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 #
 TEST_RESU(    CHAM_ELEM=_F(  CHAM_GD = SIGM1A,
                              MAILLE = 'M2787',
-                             NOEUD = 'N18',
+                             NOEUD = 'N4526',
                              NOM_CMP = 'SIYY',
                              REFERENCE='NON_REGRESSION', 
                              VERSION  ='7.2.24',
@@ -493,7 +493,7 @@ DEP2B=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 #
 TEST_RESU(   CHAM_ELEM=_F(  CHAM_GD = SIGM2A,
                           MAILLE = 'M2787',
-                          NOEUD = 'N18',
+                          NOEUD = 'N4526',
                           NOM_CMP = 'SIYY',
                           REFERENCE='NON_REGRESSION', 
                           VERSION  ='7.2.24',
@@ -638,7 +638,7 @@ DEP3B=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 #
 TEST_RESU(   CHAM_ELEM=_F(  CHAM_GD = SIGM3A,
                           MAILLE = 'M2787',
-                          NOEUD = 'N18',
+                          NOEUD = 'N4526',
                           NOM_CMP = 'SIYY',
                           REFERENCE='NON_REGRESSION', 
                           VERSION  ='7.2.24',
@@ -1028,6 +1028,7 @@ TEST_TABLE(       TABLE=G03B3,
                             VALE=1.23523,
                        PRECISION=1.E-3   )
 
-#
+
 FIN( )
 #
+

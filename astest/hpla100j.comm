@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 24/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -263,9 +263,6 @@ DEPLPES=MECA_STATIQUE(
                CARA_ELEM=CARE,
               CHAM_MATER=CHMAT,
                    EXCIT=_F( CHARGE = CHPES),
-
-             NUME_COUCHE=1,
-             NIVE_COUCHE='INF'
                          )
 
 CALC_ELEM( reuse= DEPLPES ,RESULTAT= DEPLPES ,
@@ -280,9 +277,6 @@ DEPLDIL=MECA_STATIQUE(
               CHAM_MATER=CHMAT,
                CARA_ELEM=CARE,
                    EXCIT=_F( CHARGE = CHDIL),
-
-              NUME_COUCHE=1,
-             NIVE_COUCHE='INF'
                        )
 
 CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
@@ -297,9 +291,6 @@ DEPLDILT=MECA_STATIQUE(
               CHAM_MATER=CHMATH,
                CARA_ELEM=CARE,
                    EXCIT=_F( CHARGE = CHDIL),
-
-             NUME_COUCHE=1,
-             NIVE_COUCHE='INF'
                          )
 
 CALC_ELEM( reuse= DEPLDILT ,RESULTAT= DEPLDILT ,
@@ -314,8 +305,6 @@ DEPLDI2=MECA_STATIQUE(
               CHAM_MATER=CHMAT,
                CARA_ELEM=CARE,
                    EXCIT=_F( CHARGE = CHDI2),
-
-             NIVE_COUCHE='INF'
                          )
 
 CALC_ELEM( reuse= DEPLDI2 ,RESULTAT= DEPLDI2 ,
@@ -329,9 +318,6 @@ DEPLDI2T=MECA_STATIQUE(
               CHAM_MATER=CHMATH,
                CARA_ELEM=CARE,
                    EXCIT=_F( CHARGE = CHDI2),
-
-             NUME_COUCHE=1,
-             NIVE_COUCHE='INF'
                          )
 
 CALC_ELEM( reuse= DEPLDI2T ,RESULTAT= DEPLDI2T ,

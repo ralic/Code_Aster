@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 24/01/2005   AUTEUR DURAND C.DURAND 
 # TITRE TEST DE NON-REGRESSION D'ASTER : THERMIQUE AXIS
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -223,11 +223,19 @@ MAILLAGE=MA,AFFE=(
                                       NOM_CMP = 'TEMP',
                                       VALE = 0.6)) )
 
-CHELEM1=CALC_CHAM_ELEM(        MODELE=MO,
-                                   TOUT='OUI',
-                             CHAM_MATER=CHMAT,
-                                 OPTION='SOUR_ELGA_ELEC',
-                                   TEMP=CHAMNO4 )
+POT_ELRE=CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                   NOM_CHAM='TEMP',
+                   AFFE=_F(  CHAM_GD = CHAMNO4, INST = 4.,MODELE=MO,CHAM_MATER=CHMAT),
+                                 )
+CALC_ELEM(reuse=POT_ELRE,
+          RESULTAT=POT_ELRE,
+          OPTION='SOUR_ELGA_ELEC',
+         )
+
+CHELEM1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_SOUR_R',
+                     NOM_CHAM='SOUR_ELGA_ELEC',RESULTAT=POT_ELRE,
+                     NUME_ORDRE=1)
+
 
 LR1=DEFI_LIST_REEL(         DEBUT=0.3,
                          INTERVALLE=_F(  JUSQU_A = 18.7,

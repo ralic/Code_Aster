@@ -10,7 +10,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 25/01/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,7 @@ C-----------------------------------------------------------------------
       INTEGER      NMALIL,IMO,ILAGR,ILIMO,NBNO,EPDMS,JPDMS,NBEC,NLILI,
      &             NBREFN,NBSD,IFETM,IDD,IFETN,IDIME,ILIGRP,GD,NEC,IINF,
      &             DIGDEL,ILIGRT,ILIGRB,IRET1,ILIGRC,IFEL1,IFEL2,IFEL3,
-     &             IFCPU
+     &             ADMODL,LCMODL,IFCPU
       REAL*8       R,RINF,RSUP,TEMPS(6)
       LOGICAL      CUMUL,ACREER,LFETI,LLIMO,LLICH,LLICHD
 
@@ -126,7 +126,9 @@ C----------------------------------------------------------------------
       CALL DISMOI('F','NB_CMP_MAX',NOGDSI,'GRANDEUR',NMXCMP,K8BID,IERD)
       CALL DISMOI('F','NUM_GD_SI',NOGDSI,'GRANDEUR',NUGD,K8BID,IERD)
       NEC = NBEC(NUGD)
-
+C
+      CALL JEVEUO(JEXATR('&CATA.TE.MODELOC','LONCUM'),'L',LCMODL)
+      CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',1),'L',ADMODL)
 
 C     -- TEST EXISTENCE &&POIDS_MAILLE
 C     ---------------------------------
@@ -693,9 +695,9 @@ C--------------------
                       DO 190 K1 = 1,NNOE
                         N1 = ZZCONX(NUMA,K1)
                         IAD1 = ZZPRNO(1,N1,1)
-                        CALL CORDDL(IDPRN1,IDPRN2,1,MODE,NEC,NCMP,
-     &                              N1,K1,NDDL1,ZI(IAPSDL-1+NMXCMP* (K1-
-     &                              1)+1))
+                        CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,1,MODE,
+     &                              NEC,NCMP,N1,K1,NDDL1,
+     &                              ZI(IAPSDL-1+NMXCMP* (K1-1)+1))
                         ZI(IANULO-1+2* (K1-1)+1) = IAD1
                         ZI(IANULO-1+2* (K1-1)+2) = NDDL1
                         DO 180 I1 = 1,NDDL1
@@ -764,8 +766,8 @@ C SI POUR FETI, LIGREL TARDIF DUPLIQUE, VERITABLE N1 DANS LE LIGREL DUPL
                           IF (LLICHD) N1=-ZI(IFEL3+2*(N1-1))
 C NUMERO D'EQUATION DU PREMIER DDL DE N1                          
                           IAD1 = ZZPRNO(ILINU,N1,1)
-                          CALL CORDDL(IDPRN1,IDPRN2,ILINU,MODE,NEC,
-     &                                NCMP,N1,K1,NDDL1,
+                          CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILINU,
+     &                                MODE,NEC,NCMP,N1,K1,NDDL1,
      &                                ZI(IAPSDL-1+NMXCMP* (K1-1)+1))
 
 C---- SI NOEUD LAGR ( ILAGR=1,NDDL1=1,N1<0,NUMA<0 ) ALORS CONL(IAD1)=R
@@ -777,8 +779,8 @@ C---- ET POUR TOUTE LA MATRICE ELEMENTAIRE ON POSE R = COEF*LICOEF(IMAT)
                         ELSE
 C NOEUD PHYSIQUE                        
                           IAD1 = ZZPRNO(1,N1,1)
-                          CALL CORDDL(IDPRN1,IDPRN2,1,MODE,NEC,
-     &                                NCMP,N1,K1,NDDL1,
+                          CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,1,
+     &                                MODE,NEC,NCMP,N1,K1,NDDL1,
      &                                ZI(IAPSDL-1+NMXCMP* (K1-1)+1))
                         END IF
                         ZI(IANULO-1+2* (K1-1)+1) = IAD1
@@ -888,16 +890,11 @@ C     -- MISE A JOUR DE REFA(4)
 C MONITORING
   310   CONTINUE
         IF (LFETI .AND. (INFOFE(1:1).EQ.'T')) THEN
-          WRITE (IFM,*)
-          WRITE (IFM,*) 'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
           IF (IDD.EQ.0) THEN
-            WRITE (IFM,*) '<FETI/ASSMAM> DOMAINE GLOBAL'
+            WRITE (IFM,*) '<FETI/ASSMAM> DOMAINE GLOBAL',KMAREF(1:19)
           ELSE
-            WRITE (IFM,*) '<FETI/ASSMAM> NUMERO DE SOUS-DOMAINE: ',IDD
-          END IF
-          WRITE (IFM,*) '<FETI/ASSMAM> REMPLISSAGE OBJETS JEVEUX ',
-     &      KMAREF(1:19)
-          WRITE (IFM,*)
+            WRITE (IFM,*) '<FETI/ASSMAM> SD: ',IDD,' ',KMAREF(1:19)
+          ENDIF
           WRITE (IFM,1000) COEF
         ENDIF
         IF ((INFOFE(3:3).EQ.'T') .AND. (IDD.NE.0))

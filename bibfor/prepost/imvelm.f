@@ -1,7 +1,7 @@
       SUBROUTINE IMVELM ( IFM, NOMSDZ, NBCMP, LISCMZ, NBELEM,
      +                    LISMAZ, NBCHIF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 25/01/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C ----- COMMUNS NORMALISES  JEVEUX
       CHARACTER*32                            ZK32
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM
+      CHARACTER*32     JEXNUM, JEXNOM, JEXATR
 C -----  ARGUMENTS
       CHARACTER*(*) NOMSDZ, LISCMZ, LISMAZ
 C -----  VARIABLES LOCALES
@@ -93,7 +93,7 @@ C -----  VARIABLES LOCALES
       CHARACTER*72  FORMA, FORMB, FORMC
       CHARACTER*80  FORVAC
       CHARACTER*120 FORMC4
-      INTEGER       GD
+      INTEGER       ADMODL,LCMODL,GD
       INTEGER       DIGDEL, NBNO, NBEC, DG(NBECMX), ENTCOD
       INTEGER       LXLGUT
       COMPLEX*16    ZEROC
@@ -118,6 +118,9 @@ C
       DO 1 I =1, NBECMX
         DG(I) = 0
  1    CONTINUE
+C
+      CALL JEVEUO(JEXATR('&CATA.TE.MODELOC','LONCUM'),'L',LCMODL)
+      CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',1),'L',ADMODL)
 C
 C --- RECUPERATION DES NOEUDS POUR-LESQUELS ON VEUT L'IMPRESSION
 C --- DU VECTEUR :
@@ -297,8 +300,6 @@ C        ---------------------------------------------------------
 C
           IF (MODE.GT.0) THEN
 C
-           CALL ENTCO0 ( MODE, IADM, M1 )
-C
 C ---      RECUPERATION DU NOMBRE DE CONNECTIVITES DES ELEMENTS DU GREL:
 C          ------------------------------------------------------------
             NNOE = NBNO(MODE)
@@ -311,7 +312,7 @@ C          -----------------------
               NBCMNO = 0
               DO 50 ICMP = 1, NCMPMX
                 DO 60 IEC = 1, NEC
-                  DG(IEC) = ENTCOD(NEC,IADM,M1,INO,IEC)
+                  DG(IEC) = ENTCOD(ADMODL,LCMODL,NEC,MODE,INO,IEC)
   60            CONTINUE
                 IF (EXISDG(DG,ICMP)) THEN
                     NBCMNO = NBCMNO + 1
@@ -640,8 +641,6 @@ C        ---------------------------------------------------------
 C
           IF (MODE.GT.0) THEN
 C
-           CALL ENTCO0 ( MODE, IADM, M1 )
-C
 C ---      RECUPERATION DU NOMBRE DE CONNECTIVITES DES ELEMENTS DU GREL:
 C          ------------------------------------------------------------
             NNOE = NBNO(MODE)
@@ -654,7 +653,7 @@ C          -----------------------
               NBCMNO = 0
               DO 180 ICMP = 1, NCMPMX
                 DO 190 IEC = 1, NEC
-                  DG(IEC) = ENTCOD(NEC,IADM,M1,INO,IEC)
+                  DG(IEC) = ENTCOD(ADMODL,LCMODL,NEC,MODE,INO,IEC)
  190            CONTINUE
                 IF (EXISDG(DG,ICMP)) THEN
                     NBCMNO = NBCMNO + 1

@@ -1,0 +1,150 @@
+      SUBROUTINE FETARP(INFOFE,IFM,NITER,NBI,NBREOR,LRIGID,DIMGI,SDFETI,
+     &                  IPIV,JGITGI,NBSD,IFETF,IFETH,JGI,LSTOGI,IREX,
+     &                  IPRJ,IR2,IFIV,MATAS)
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 24/01/2005   AUTEUR BOITEAU O.BOITEAU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C-----------------------------------------------------------------------
+C    - FONCTION REALISEE:  TEST DEFINIE POSITIVITE DE P*FI*P VIA UN
+C      CALCUL DE LA PARTIE BASSE DE SON SPECTRE AVEC ARPACK
+C
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       14/01/05 (OB): CREATION.
+C----------------------------------------------------------------------
+C RESPONSABLE BOITEAU O.BOITEAU
+C CORPS DU PROGRAMME
+      IMPLICIT NONE
+
+C DECLARATION PARAMETRES D'APPELS
+      INTEGER      IFM,NITER,NBI,NBREOR,DIMGI,IPIV,JGITGI,NBSD,IFETF,
+     &             IFETH,JGI,IREX,IPRJ,IR2,IFIV
+      LOGICAL      LRIGID,LSTOGI
+      CHARACTER*19 SDFETI,MATAS
+      CHARACTER*24 INFOFE
+      
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      
+C DECLARATION VARIABLES LOCALES
+      INTEGER    IDO,INFO,NFREQ,NBVECT,ITEST,ITEST1,I,IPARAM(11),
+     &           ITEST2,ITEST3,ITEST4,ITEST5,ITEST6,ITEST7,ITEST8,LONWL,
+     &           IPNTR(14)
+      REAL*8     TOL
+C COMMON ARPACK
+      INTEGER LOGFIL,NDIGIT,MGETV0,
+     &  MNAUPD,MNAUP2,MNAITR,MNEIGH,MNAPPS,MNGETS,MNEUPD      
+      COMMON /DEBUG/
+     &  LOGFIL,NDIGIT,MGETV0,
+     &  MNAUPD,MNAUP2,MNAITR,MNEIGH,MNAPPS,MNGETS,MNEUPD
+
+      IF (INFOFE(7:7).EQ.'T') THEN
+C NIVEAU D'IMPRESSION ARPACK
+        NDIGIT=-3
+        LOGFIL=IFM
+        MGETV0=0
+        MNAUPD=0
+        MNAUP2=0
+        MNAITR=0
+        MNEIGH=0
+        MNAPPS=0
+        MNGETS=0
+        MNEUPD=0
+        IDO=0
+        INFO=0
+        NFREQ=MIN(NITER,NBI-2)
+        NBVECT=MIN(NBREOR,NBI)
+        CALL WKVECT('&&FETI.TESTA','V V R',NBI,ITEST)
+        CALL WKVECT('&&FETI.TEST1','V V R',NBI*NBVECT,ITEST1)
+        CALL WKVECT('&&FETI.TEST2','V V R',3*NBI,ITEST2)        
+        IPARAM(1) = 1
+        IPARAM(3) = 10
+        IPARAM(4) = 1
+        IPARAM(7) = 1
+        LONWL = 3*NBVECT**2+6*NBVECT
+        CALL WKVECT('&&FETI.TEST3','V V R',LONWL,ITEST3)
+        CALL WKVECT('&&FETI.TEST4','V V L',NBVECT,ITEST4)
+        CALL WKVECT('&&FETI.TEST5','V V R',2*(NFREQ+1),ITEST5)
+        CALL WKVECT('&&FETI.TEST6','V V R',3*NBVECT,ITEST6)
+        CALL WKVECT('&&FETI.TEST7','V V R',NBI,ITEST7)
+        CALL WKVECT('&&FETI.TEST8','V V R',NBI,ITEST8)
+        TOL=1.D-15
+        
+   31   CONTINUE         
+        CALL DNAUPD(IDO,'I',NBI,'SR',NFREQ,TOL,ZR(ITEST),NBVECT,
+     &     ZR(ITEST1),NBI,IPARAM,IPNTR,ZR(ITEST2),ZR(ITEST3),LONWL,INFO,
+     &     NBI,0.717D0)
+        IF (ABS(IDO).EQ.1) THEN
+          CALL FETPRJ(NBI,ZR(ITEST2+IPNTR(1)-1),ZR(ITEST7),
+     &       JGITGI,LRIGID,DIMGI,1,SDFETI,IPIV,NBSD,ZI(IFETF),
+     &       ZI(IFETH),MATAS,ZR(JGI),LSTOGI,INFOFE,IREX,IPRJ)     
+          CALL FETFIV(NBSD,NBI,ZR(ITEST7),ZR(IR2),ZR(ITEST8),
+     &      MATAS,ZI(IFETF),ZI(IFETH),INFOFE,IREX,IFIV)
+          CALL FETPRJ(NBI,ZR(ITEST8),ZR(ITEST2+IPNTR(2)-1),
+     &       JGITGI,LRIGID,DIMGI,1,SDFETI,IPIV,NBSD,ZI(IFETF),
+     &       ZI(IFETH),MATAS,ZR(JGI),LSTOGI,INFOFE,IREX,IPRJ)     
+          GOTO 31
+        ELSE IF (IDO.EQ.2) THEN
+         CALL DCOPY(NBI,ZR(ITEST2+IPNTR(1)-1),1,ZR(ITEST2+IPNTR(2)-1),1)
+          GOTO 31
+        ENDIF
+        IF ((INFO.NE.0).OR.((IDO.EQ.99).AND.(IPARAM(5).LT.NFREQ)))
+     &    CALL UTMESS('A','FETARP','PB 1 TEST SPECTRE FI PAR ARPACK !')
+        INFO=0
+        CALL DNEUPD(.FALSE.,'A',ZL(ITEST4),ZR(ITEST5),ZR(ITEST5+NFREQ),
+     &    ZR(ITEST1),NBI,0.D0,0.D0,ZR(ITEST6),'I',NBI,'SR',NFREQ,0.D0,
+     &    ZR(ITEST),NBVECT,ZR(ITEST1),NBI,IPARAM,IPNTR,ZR(ITEST2),
+     &    ZR(ITEST3),LONWL,INFO)
+        IF (INFO.NE.0)
+     &    CALL UTMESS('A','FETARP','PB 2 TEST SPECTRE FI PAR ARPACK !')
+        WRITE(IFM,*)
+        WRITE(IFM,*)'******* NMAX_ITER VP PLUS BASSES DE P*FI*P *******'
+        DO 33 I=1,IPARAM(5)
+          WRITE(IFM,1070)I,ZR(ITEST5+I-1),ZR(ITEST5+NFREQ+I-1)
+   33   CONTINUE
+        WRITE(IFM,*)'**************************************************'
+        WRITE(IFM,*)
+        CALL JEDETR('&&FETI.TESTA')
+        CALL JEDETR('&&FETI.TEST1')
+        CALL JEDETR('&&FETI.TEST2')
+        CALL JEDETR('&&FETI.TEST3')
+        CALL JEDETR('&&FETI.TEST4')
+        CALL JEDETR('&&FETI.TEST5')
+        CALL JEDETR('&&FETI.TEST6')
+        CALL JEDETR('&&FETI.TEST7')
+        CALL JEDETR('&&FETI.TEST8')
+      ENDIF
+ 1070 FORMAT('VALEUR PROPRE N ',I3,' ',D11.4,' + I ',D11.4)
+         
+      END

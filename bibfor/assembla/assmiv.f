@@ -4,7 +4,7 @@
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ASSEMBLA  DATE 25/01/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,8 +85,8 @@ C ---------------------------------------------------------------------
       CHARACTER*19 VECAS,VPROF
       CHARACTER*24 KMAILA,K24PRN,KNULIL,KVELIL,KVEREF,KVEDSC,RESU,NOMLI,
      &             KNEQUA,KVALE,NOMOPT
-      CHARACTER*1 K1BID
-      INTEGER NBEC, EPDMS, JPDMS 
+      CHARACTER*1  K1BID
+      INTEGER      ADMODL, LCMODL, NBEC, EPDMS, JPDMS 
 C ----------------------------------------------------------------------
 C     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
 C     S.D. MANIPULEES DANS LE SOUS PROGRAMME
@@ -171,6 +171,9 @@ C --- VERIF DE MOTCLE:
         CALL UTMESS('F','ASSVEC','LE MOTCLE : '//MOTCLE//
      &              ' EST INCORRECT. ON ATTEND : "CUMU" OU "ZERO" ')
       END IF
+C
+      CALL JEVEUO(JEXATR('&CATA.TE.MODELOC','LONCUM'),'L',LCMODL)
+      CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',1),'L',ADMODL)
 
       VECAS = VEC
       BAS = BASE
@@ -442,8 +445,8 @@ C------------------------------
                       N1 = ZI(ICONX1-1+ZI(ICONX2+NUMA-1)+K1-1)
                       IAD1 = ZI(IDPRN1-1+ZI(IDPRN2+ILIMNU-1)+
      &                       (N1-1)* (NEC+2)+1-1)
-                      CALL CORDDL(IDPRN1,IDPRN2,ILIMNU,MODE,NEC,NCMP,N1,
-     &                            K1,NDDL1,ZI(IAPSDL))
+                      CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILIMNU,
+     &                            MODE,NEC,NCMP,N1,K1,NDDL1,ZI(IAPSDL))
                       IF (NDDL1.EQ.0) GO TO 120
                       IF (IAD1.EQ.0) THEN
                         CALL UTDEBM('F','ASSVEC','1')
@@ -532,8 +535,8 @@ CCDIR$ IVDEP
 
                         IAD1 = ZI(IDPRN1-1+ZI(IDPRN2+ILINU-1)+
      &                         (N1-1)* (NEC+2)+1-1)
-                        CALL CORDDL(IDPRN1,IDPRN2,ILINU,MODE,NEC,NCMP,
-     &                              N1,K1,NDDL1,ZI(IAPSDL))
+                        CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILINU,
+     &                            MODE,NEC,NCMP,N1,K1,NDDL1,ZI(IAPSDL))
                         IF (NDDL1.GT.100) THEN
                           CALL UTDEBM('F','ASSVEC','6')
                           CALL UTIMPI('L','--- NDDL : ',1,NDDL1)
@@ -544,8 +547,8 @@ CCDIR$ IVDEP
                       ELSE
                         IAD1 = ZI(IDPRN1-1+ZI(IDPRN2+ILIMNU-1)+
      &                         (N1-1)* (NEC+2)+1-1)
-                        CALL CORDDL(IDPRN1,IDPRN2,ILIMNU,MODE,NEC,NCMP,
-     &                              N1,K1,NDDL1,ZI(IAPSDL))
+                        CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILIMNU,
+     &                            MODE,NEC,NCMP,N1,K1,NDDL1,ZI(IAPSDL))
                         IF (NDDL1.GT.100) THEN
                           CALL UTDEBM('F','ASSVEC','7')
                           CALL UTIMPI('L','--- NDDL : ',1,NDDL1)

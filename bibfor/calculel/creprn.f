@@ -1,6 +1,6 @@
       SUBROUTINE CREPRN(LIGREZ,MOLOCZ,BASEZ,PRNMZ,PRNSZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 25/01/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,7 @@ C -----  VARIABLES LOCALES
       INTEGER IMA,IMODE,INO,INOLD,IRET,ITE,J,K,L,LGNCMP,NBNM
       INTEGER NBNOMS,NBSMA,NBSSA,NEC,NEL,NL,NM,NNOE,NUMA,NUNOEL
       INTEGER NBGREL,INDIK8,NBNO,NUMAIL,NUMGLM,NUMGLS,NBELEM,IADM,M1
+      INTEGER ADMODL,LCMODL
       CHARACTER*1 BASE
       CHARACTER*8 K8BID,NOMA,NOMGD,EXIEL,NOMACR,MOLOC
       CHARACTER*16 NOMTE
@@ -111,7 +112,9 @@ C     ---------------
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NM,K8BID,IER)
       CALL DISMOI('F','NB_NL_MAILLA',NOMA,'MAILLAGE',NL,K8BID,IER)
       CALL DISMOI('F','NB_SM_MAILLA',NOMA,'MAILLAGE',NBSMA,K8BID,IER)
-
+C
+      CALL JEVEUO(JEXATR('&CATA.TE.MODELOC','LONCUM'),'L',LCMODL)
+      CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',1),'L',ADMODL)
 
       IF (MOLOC.EQ.' ') THEN
         CALL DISMOI('F','PHENOMENE',LIGREL,'LIGREL',IBID,PHENOM,IER)
@@ -199,7 +202,6 @@ C       ------------------------------
 
 
         IF (IMODE.GT.0) THEN
-          CALL ENTCO0 ( IMODE, IADM, M1 )
           NNOE = NBNO(IMODE)
           NEL = NBELEM(LIGREL,IGR)
           DO 70 J = 1,NEL
@@ -211,7 +213,7 @@ C              -------------------------------------------
               DO 40 K = 1,NNOE
                 NUNOEL = NUMGLM(NUMA,K)
                 DO 30 L = 1,NEC
-                  IEC = ENTCOD(NEC,IADM,M1,K,L)
+                  IEC = ENTCOD(ADMODL,LCMODL,NEC,IMODE,K,L)
                   ZI(IAPRNM-1+NEC* (NUNOEL-1)+
      &              L) = IOR(ZI(IAPRNM-1+NEC* (NUNOEL-1)+L),IEC)
    30           CONTINUE
@@ -224,7 +226,7 @@ C              ------------------------------
               DO 60 K = 1,NNOE
                 NUNOEL = NUMGLS(NUMA,K)
                 DO 50 L = 1,NEC
-                  IEC = ENTCOD(NEC,IADM,M1,K,L)
+                  IEC = ENTCOD(ADMODL,LCMODL,NEC,IMODE,K,L)
                   IF (NUNOEL.GT.0) THEN
                     ZI(IAPRNM-1+NEC* (NUNOEL-1)+L) = 
      &                          IOR(ZI(IAPRNM-1+NEC* (NUNOEL-1)+L),IEC)

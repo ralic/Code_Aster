@@ -1,7 +1,7 @@
-      SUBROUTINE FETSCA(NBI,VI,VO,SCALIN,SDFETI)
+      SUBROUTINE FETSCA(NBI,VI,VO,SCALIN,INFOFE,NBI2,IFETI,IFM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 24/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,11 +22,13 @@ C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  CALCUL DE LA PHASE DE MISE A L'ECHELLE
 C                         AU SENS FETI
 C
-C      IN    NBI: IN   : NOMBRE DE NOEUDS D'INTERFACE
+C      IN    NBI: IN   : NOMBRE DE DDLS D'INTERFACE
 C      IN     VI: VR8  : VECTEUR INPUT DE TAILLE NBI
 C      OUT    VO: VR8  : VECTEUR OUTPUT DE TAILLE NBI
 C      IN SCALIN: CH24 : PARAMETRE DE SCALING
-C      IN SDFETI: CH19 : SD DECRIVANT LE PARTIONNEMENT FETI
+C      IN NBI2 : IN   : NBRE DE LAGRANGE D'INTERFACE
+C      IN IFETI: IN   : ADRESSE JEVEUX OBJET SDFETI.FETI
+C      IN IFM  : IN   : UNITE D'IMPRESSION
 C   -------------------------------------------------------------------
 C     ASTER INFORMATIONS:
 C       28/01/04 (OB): CREATION.
@@ -36,10 +38,9 @@ C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      INTEGER      NBI
+      INTEGER      NBI,NBI2,IFETI,IFM
       REAL*8       VI(NBI),VO(NBI)
-      CHARACTER*19 SDFETI
-      CHARACTER*24 SCALIN
+      CHARACTER*24 SCALIN,INFOFE
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
@@ -59,23 +60,13 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
-      INTEGER      I,IFETI,IAUX,IFM,NIV,IMULT,NBDDL,NBDDLC,IAUXJ,J,
-     &             IDIME,NBNI,IINF
+      INTEGER      I,IAUX,IMULT,NBDDL,NBDDLC,IAUXJ,J
       REAL*8       RMULT
-      CHARACTER*24 INFOFE
       
-C CORPS DU PROGRAMME
-      CALL JEMARQ()
-
-C RECUPERATION DU NIVEAU D'IMPRESSION
-      CALL INFNIV(IFM,NIV)
-      CALL JEVEUO('&&'//SDFETI(1:17)//'.FINF','L',IINF)
-      INFOFE=ZK24(IINF)
+C ROUTINE AVEC MOINS DE MONITORING, JEVEUX.. CAR APPELLEE SOUVENT
             
 C MONITORING
       IF (INFOFE(1:1).EQ.'T') THEN
-        WRITE(IFM,*)
-        WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
         IF (SCALIN(1:4).EQ.'SANS') THEN
           WRITE(IFM,*)'<FETI/FETSCA> SANS SCALING'
          ELSE
@@ -93,19 +84,12 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C ----  SCALING PAR MULTPLICITE
 C ----------------------------------------------------------------------
-
-C ADRESSE NBRE DE NOEUDS D'INTERFACE (NBNI)
-        CALL JEVEUO(SDFETI(1:19)//'.FDIM','L',IDIME)
-        NBNI=ZI(IDIME+1)
               
-C ADRESSE JEVEUX DE L'OBJET DECRIVANT LE VECTEUR D'INTERFACE
-        CALL JEVEUO(SDFETI//'.FETI','L',IFETI)      
         IAUX=IFETI+1
-
 C ---------------------------------------------------
 C BOUCLE SUR LES NOEUDS D'INTERFACE
 C ---------------------------------------------------   
-        DO 20 I=1,NBNI
+        DO 20 I=1,NBI2
         
 C MULTIPLICITE DU IEME NOEUD D'INTERFACE        
           IMULT=ZI(IAUX)
@@ -138,19 +122,14 @@ C FIN BOUCLE SUR LES NOEUDS D'INTERFACE
 C ---------------------------------------------------
 
 C MONITORING
-      IF (INFOFE(4:4).EQ.'T') THEN
-        WRITE(IFM,*)'<FETI/FETSCA> INPUT I VI(I)'      
-        DO 30 I=1,NBI
-          WRITE(IFM,*)I,'  ',VI(I)
-   30   CONTINUE
-        WRITE(IFM,*)'OUTPUT I VO(I)'         
-        DO 31 I=1,NBI
-          WRITE(IFM,*)I,'  ',VO(I)
-   31   CONTINUE          
-      ENDIF
-      IF (INFOFE(1:1).EQ.'T') THEN        
-        WRITE(IFM,*)
-        WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
-      ENDIF          
-      CALL JEDEMA()
+C      IF (INFOFE(4:4).EQ.'T') THEN
+C        WRITE(IFM,*)'<FETI/FETSCA> INPUT I VI(I)'      
+C        DO 30 I=1,NBI
+C          WRITE(IFM,*)I,'  ',VI(I)
+C   30   CONTINUE
+C        WRITE(IFM,*)'OUTPUT I VO(I)'         
+C        DO 31 I=1,NBI
+C          WRITE(IFM,*)I,'  ',VO(I)
+C   31   CONTINUE          
+C      ENDIF          
       END

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 15/10/2004   AUTEUR PABHHHH N.TARDIEU */
+/* MODIF astermodule supervis  DATE 24/01/2005   AUTEUR DURAND C.DURAND */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -578,41 +578,6 @@ void DEFPS(UEXCEP,uexcep,_IN INTEGER *exc_type,  _IN char *reason , _IN int lrea
    TraiteErreur(*exc_type);
    _FIN("UEXCEP");
 }
-
-
-/* Pour initialiser statiquement une chaine avec des blancs d'une longueur suffisante */
-static char * blan="                                                                                                            \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                \
-                                                                                                                                ";
-
-
-/*
-#define STRING_FCPY(dest,taille,src,longueur) \
-   strncpy(dest,blan,taille);strncpy(dest,src,longueur);
-*/
 
 #define BLANK(dest,taille) memset(dest,' ',taille)
 #define STRING_FCPY(dest,taille,src,longueur) \
@@ -1369,7 +1334,13 @@ void DEFSSS( GETRES ,getres, _OUT char *nomres, _IN int lres, _OUT char *concep,
         res=PyObject_CallMethod(commande,"getres","");
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
-        if (res == NULL)MYABORT("erreur dans la partie Python");
+        if (res == NULL){
+          /* Aucune commande n'est active on retourne des chaines blanches */
+          BLANK(nomres,lres);
+          BLANK(concep,lconc);
+          BLANK(nomcmd,lcmd);
+          return ;
+        }
 
         ok = PyArg_ParseTuple(res,"s#s#s#",&ss1,&s1,&ss2,&s2,&ss3,&s3);
         if (!ok)MYABORT("erreur dans la partie Python");

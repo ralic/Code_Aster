@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 24/01/2005   AUTEUR DURAND C.DURAND 
 # TITRE ESSAI DE THERMO-PLASTICITE (MISES ECR. ISOT. LINE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -406,21 +406,6 @@ SIGY3_T=RECU_FONCTION(
                  INTERPOL='LIN'
                           )
 
-#IMPR_COURBE (
-#               FORMAT  : 'RESULTAT'
-#               LABEL_X : 'TEMPS'
-#               LABEL_Y : 'DEPLACEMENT AXIAL'
-#               COURBE  : (FONCTION: UY_T)
-#            );
-#
-#IMPR_COURBE (
-#               FORMAT  : 'RESULTAT'
-#               LABEL_X : 'TEMPS'
-#               LABEL_Y : 'CONTRAINTES AXIALES'
-#               COURBE  : (FONCTION: SIGY1_T, LEGENDE : 'BARRE 1')
-#                         (FONCTION: SIGY2_T, LEGENDE : 'BARRE 2')
-#                         (FONCTION: SIGY3_T, LEGENDE : 'BARRE 3')
-#            );
 #################################################################
 #
 

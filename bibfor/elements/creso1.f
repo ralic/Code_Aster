@@ -4,7 +4,7 @@
      &  STOGI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ELEMENTS  DATE 24/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -131,24 +131,11 @@ C --------------------------------------------------------------
       
 C MONITORING
       IF (INFOFE(1:1).EQ.'T') THEN
-        WRITE(IFM,*)
-        WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
         IF (NUMSD.EQ.0) THEN
           WRITE(IFM,*)'<FETI/CRESO1> DOMAINE GLOBAL'
         ELSE
-          WRITE(IFM,*)'<FETI/CRESO1> NUMERO DE SOUS-DOMAINE: ',
-     &      NUMSD       
-        ENDIF   
-        WRITE(IFM,*)'<FETI/CRESO1> CREATION OBJETS JEVEUX ',
-     &    SOLVEU(1:19),' SUR LA BASE V' 
-        WRITE(IFM,*)'.SLVK: ',METHOD,' ',PRECO,' ',VERIF,' ',
-     &    RENUM,' ',SYME,' ',SDFETI(1:8),' ',TYREOR,' ',SCALIN,
-     &    ' ',STOGI
-        WRITE(IFM,*)'.SLVR: ',EPS,' ',RESIRE,' ',TBLOC,' ',
-     &     TESTCO
-        WRITE(IFM,*)'.SLVI: ',NPREC,' ',NMAXIT,' ',ISTOP,
-     &    ' ',NIREMP,' ',NBREOR
-        WRITE(IFM,*)
+          WRITE(IFM,*)'<FETI/CRESO1> SD: ',NUMSD       
+        ENDIF
       ENDIF     
                         
       IF (INFOFE(2:2).EQ.'T') 
@@ -193,11 +180,7 @@ C MAILLE POURTANT DANS LE MODELE
           ENDIF 
     7   CONTINUE                
       ENDIF
-      
-      IF (INFOFE(1:1).EQ.'T') THEN 
-        WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'        
-        WRITE(IFM,*)
-      ENDIF             
+             
 C FIN ------------------------------------------------------
       CALL JEDEMA()
       END

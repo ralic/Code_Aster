@@ -1,8 +1,8 @@
       SUBROUTINE FETREO(REORTH,ALPHAN,NBI,IRG,ITER,NBREOR,IRP,IDDFRO,
-     &                  IDDRO,IPSRO,GS,IGSMKP,RMIN,IRH,SDFETI)
+     &                  IDDRO,IPSRO,GS,IGSMKP,RMIN,IRH,INFOFE,IFM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 24/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,7 +35,6 @@ C                             CONTENANT FI*PK, PK ET PK.FIPK
 C      IN : GS/IGSMKP: LOG  : FLAG DETERMINANT LA METHODE DE REORTHO
 C      IN :  RMIN   :  R8  : PLUS PETITE VALEUR REELLE DISCERNABLE
 C      IN :   IRH   :  IN  : ADRESSE JEVEUX HK+1
-C      IN :   SDFETI: CH19 : SD DECRIVANT LE PARTIONNEMENT FETI
 C   -------------------------------------------------------------------
 C     ASTER INFORMATIONS:
 C       02/04/04 (OB): CREATION.
@@ -48,7 +47,7 @@ C DECLARATION PARAMETRES D'APPELS
       INTEGER      NBI,ITER,NBREOR,IRP,IRG,IDDFRO,IDDRO,IPSRO,IRH
       REAL*8       ALPHAN
       LOGICAL      REORTH,GS,IGSMKP
-      CHARACTER*19 SDFETI
+      CHARACTER*24 INFOFE
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
@@ -69,17 +68,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
       REAL*8       DDOT,RAUX,NORMAV,NORMAP,RGSKP2,BETAN,BETAD,BETA,RMIN
-      INTEGER      IAUX1,IAUX2,IAUX3,I,J,ITER1,NBI1,IAD,IFM,NIV,IINF
-      CHARACTER*24 INFOFE
+      INTEGER      IAUX1,IAUX2,IAUX3,I,J,ITER1,NBI1,IAD,IFM,NIV
             
-C CORPS DU PROGRAMME
-      CALL JEMARQ()
-
-C RECUPERATION DU NIVEAU D'IMPRESSION
-      CALL INFNIV(IFM,NIV)
-      CALL JEVEUO('&&'//SDFETI(1:17)//'.FINF','L',IINF)
-      INFOFE=ZK24(IINF)
-            
+C CORPS DU PROGRAMME            
 C INITS.
       ITER1=ITER+1
       NBI1=NBI-1
@@ -93,8 +84,6 @@ C ---------------------------------------------------
       IF (REORTH) THEN
       
         IF (INFOFE(1:1).EQ.'T') THEN
-          WRITE(IFM,*)
-          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
           IF (GS) THEN
             WRITE(IFM,*)'<FETI/FETREO> REORTHO DE TYPE GS'
           ELSE IF (IGSMKP) THEN
@@ -102,8 +91,6 @@ C ---------------------------------------------------
           ELSE
             WRITE(IFM,*)'<FETI/FETREO> REORTHO DE TYPE GSM'          
           ENDIF
-          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
-          WRITE(IFM,*)    
         ENDIF      
         IF (ITER.LT.NBREOR) THEN
           IAUX2=1
@@ -181,13 +168,8 @@ C CALCUL DE ALPHAN = GK+1.PK+1
       ELSE
       
 C MONITORING
-        IF (INFOFE(1:1).EQ.'T') THEN
-          WRITE(IFM,*)
-          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
-          WRITE(IFM,*)'<FETI/FETREO> SANS REORTHOGONALISATION'
-          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
-          WRITE(IFM,*)    
-        ENDIF      
+        IF (INFOFE(1:1).EQ.'T')
+     &    WRITE(IFM,*)'<FETI/FETREO> SANS REORTHOGONALISATION'
 C ---------------------------------------------------
 C ----  PAS DE REORTHOGONALISATION (ELLE EST IMPLICITE)
 C ---------------------------------------------------
@@ -195,7 +177,7 @@ C ON REORTHOGONALISE SEULEMENT PAR RAPPORT A LA DERNIERE DD
 C CALCUL DE BETAK = HK+1.GK+1/HK.GK = BETANK/BETADK     
         BETAN=DDOT(NBI,ZR(IRG),1,ZR(IRH),1)
         BETAD=ALPHAN
-        IF (BETAD.LT.RMIN) THEN
+        IF (ABS(BETAD).LT.RMIN) THEN
           BETAD=RMIN
           CALL UTMESS('A','FETREO','PB DIVISION PAR ZERO'//
      &       'DANS LA CONSTRUCTION DU BETA !')      
@@ -213,5 +195,4 @@ C -----------------------------
    
       ENDIF
       
-      CALL JEDEMA()
       END      

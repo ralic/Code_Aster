@@ -1,4 +1,4 @@
-#@ MODIF macr_fiab_impr_ops Macro  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF macr_fiab_impr_ops Macro  DATE 24/01/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,8 +17,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-
-
 # RESPONSABLE GNICOLAS G.NICOLAS
 #
 def macr_fiab_impr_ops(self, INFO,
@@ -86,14 +84,16 @@ def macr_fiab_impr_ops(self, INFO,
 # 5. Ecritures des gradients
 #____________________________________________________________________
 #
-  for val in GRADIENTS :
+  if GRADIENTS is not None :
 #
-    IMPR_TABLE ( TABLE = val["TABLE"],
-                 SENSIBILITE = val["PARA_SENSI"],
-                 NOM_PARA = (val["NOM_PARA"]),
-                 UNITE = Unite_Fichier_ASTER_vers_FIABILITE,
-                 FORMAT_R = FORMAT_R,
-                 INFO = INFO )
+    for val in GRADIENTS :
+#
+      IMPR_TABLE ( TABLE = val["TABLE"],
+                   SENSIBILITE = val["PARA_SENSI"],
+                   NOM_PARA = (val["NOM_PARA"]),
+                   UNITE = Unite_Fichier_ASTER_vers_FIABILITE,
+                   FORMAT_R = FORMAT_R,
+                   INFO = INFO )
 #____________________________________________________________________
 #
 # 6. Libération du fichier d'échange

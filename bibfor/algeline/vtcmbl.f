@@ -3,7 +3,7 @@ C     ------------------------------------------------------------------
 C     COMBINAISON LINEAIRE DE CHAM_NO OU DE CHAM_ELEM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 24/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -348,18 +348,11 @@ C L'ITERATION SUIVANTE
 
 C MONITORING
         IF ((INFOFE(1:1).EQ.'T').AND.(NBSD.GT.0)) THEN
-          WRITE(IFM,*)
-          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
           IF (IDD.EQ.0) THEN
-            WRITE(IFM,*)'<FETI/VTCMBL> DOMAINE GLOBAL'
+            WRITE(IFM,*)'<FETI/VTCMBL> DOMAINE GLOBAL ',CH19R(1:19)
           ELSE
-            WRITE(IFM,*)'<FETI/VTCMBL> NUMERO DE SOUS-DOMAINE: ',IDD
+            WRITE(IFM,*)'<FETI/VTCMBL> SD: ',IDD,' ',CH19R(1:19)
           ENDIF                           
-          WRITE(IFM,*)'<FETI/VTCMBL> REMPLISSAGE OBJETS JEVEUX ',
-     &        CH19R(1:19)
-          WRITE(IFM,*)
-          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'        
-          WRITE(IFM,*)
         ENDIF
         IF ((INFOFE(2:2).EQ.'T').AND.(IDD.NE.0)) 
      &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CH19R(1:19),1,' ')

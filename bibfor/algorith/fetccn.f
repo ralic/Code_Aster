@@ -1,7 +1,7 @@
       SUBROUTINE FETCCN(CHAMN1,CHAMN2,CHAMN3,CHAMN4,TYPCUM,CHAMNR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 24/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -168,18 +168,11 @@ C----------------------------------------------------------------------
         ENDIF   
 C MONITORING
         IF ((INFOFE(1:1).EQ.'T').AND.(NBSD.GT.0)) THEN
-          WRITE(IFM,*)
-          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
           IF (IDD.EQ.0) THEN
-            WRITE(IFM,*)'<FETI/FETCCN> DOMAINE GLOBAL'
+            WRITE(IFM,*)'<FETI/FETCCN> DOMAINE GLOBAL ',CHAMRB(1:19)
           ELSE
-            WRITE(IFM,*)'<FETI/FETCCN> NUMERO DE SOUS-DOMAINE: ',IDD
-          ENDIF                           
-          WRITE(IFM,*)'<FETI/FETCCN> REMPLISSAGE OBJETS JEVEUX ',
-     &         CHAMRB(1:19)
-          WRITE(IFM,*)
-          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'        
-          WRITE(IFM,*)
+            WRITE(IFM,*)'<FETI/FETCCN> SD: ',IDD,' ',CHAMRB(1:19)
+          ENDIF
         ENDIF
         IF ((INFOFE(2:2).EQ.'T').AND.(IDD.NE.0)) 
      &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHAMRB(1:19),1,' ')

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 24/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE MELANGE 3D-PLAQUE-POUTRE SANS NOEUD COMMUN ENTRE ELEMENTS.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,8 +126,7 @@ CHME=AFFE_CHAR_MECA(MODELE=MO,
 DEP=MECA_STATIQUE(MODELE=MO,
                   CHAM_MATER=CHMA,
                   CARA_ELEM=CARA,
-                  EXCIT=_F(CHARGE=CHME,),
-                  NIVE_COUCHE='SUP',);
+                  EXCIT=_F(CHARGE=CHME,),);
 
 DEP=CALC_ELEM(reuse =DEP,
               RESULTAT=DEP,

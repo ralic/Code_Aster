@@ -2,7 +2,7 @@
      &                  TYPE)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 25/01/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,8 @@ C ---------------------------------------------------------------------
       LOGICAL      LFETI,LLIMO,LLICH,LLICHD      
       INTEGER      ICODLA(NBECMX),ICODGE(NBECMX),NBEC,EPDMS,JPDMS,NBSD,
      &             IDIME,IDD,ILIGRP,IFETN,IFETC,IREFN,NBREFN,ILIGRT,
-     &             ILIGRB,IRET1,ILIGRC,IFEL1,IFEL2,IFEL3,IINF,IFCPU
+     &             ADMODL,LCMODL,ILIGRB,IRET1,ILIGRC,IFEL1,IFEL2,IFEL3,
+     &             IINF,IFCPU
       REAL*8       TEMPS(6)
      
 C ----------------------------------------------------------------------
@@ -171,6 +172,9 @@ C --- VERIF DE MOTCLE:
         CALL UTMESS('F','ASSVEC','LE MOTCLE : '//MOTCLE//
      &              ' EST INCORRECT. ON ATTEND : "CUMU" OU "ZERO" ')
       END IF
+C
+      CALL JEVEUO(JEXATR('&CATA.TE.MODELOC','LONCUM'),'L',LCMODL)
+      CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',1),'L',ADMODL)
 
       VECAS = VEC
       BAS = BASE
@@ -612,8 +616,8 @@ C--------------------
                         N1 = ZI(ICONX1-1+ZI(ICONX2+NUMA-1)+K1-1)
                         IAD1 = ZI(IDPRN1-1+ZI(IDPRN2+ILIMNU-1)+
      &                       (N1-1)* (NEC+2)+1-1)
-                        CALL CORDDL(IDPRN1,IDPRN2,ILIMNU,MODE,NEC,NCMP,
-     &                              N1,K1,NDDL1,ZI(IAPSDL))
+                        CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILIMNU,
+     &                            MODE,NEC,NCMP,N1,K1,NDDL1,ZI(IAPSDL))
                         IF (NDDL1.EQ.0) GO TO 120
                         IF (IAD1.EQ.0) THEN
                           CALL UTDEBM('F','ASSVEC','1')
@@ -715,8 +719,8 @@ C SI POUR FETI, LIGREL TARDIF DUPLIQUE, VERITABLE N1 DANS LE LIGREL DUPL
 C NUMERO D'EQUATION DU PREMIER DDL DE N1                          
                           IAD1 = ZI(IDPRN1-1+ZI(IDPRN2+ILINU-1)+
      &                           (N1-1)* (NEC+2)+1-1)
-                          CALL CORDDL(IDPRN1,IDPRN2,ILINU,MODE,NEC,NCMP,
-     &                                N1,K1,NDDL1,ZI(IAPSDL))
+                         CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILINU,
+     &                            MODE,NEC,NCMP,N1,K1,NDDL1,ZI(IAPSDL))
                           IF (NDDL1.GT.100) THEN
                             CALL UTDEBM('F','ASSVEC','6')
                             CALL UTIMPI('L','--- NDDL : ',1,NDDL1)
@@ -728,8 +732,8 @@ C NOEUD PHYSIQUE
                         
                           IAD1 = ZI(IDPRN1-1+ZI(IDPRN2+ILIMNU-1)+
      &                           (N1-1)* (NEC+2)+1-1)
-                          CALL CORDDL(IDPRN1,IDPRN2,ILIMNU,MODE,NEC,
-     &                                NCMP,N1,K1,NDDL1,ZI(IAPSDL))
+                        CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILIMNU,
+     &                            MODE,NEC,NCMP,N1,K1,NDDL1,ZI(IAPSDL))
                           IF (NDDL1.GT.100) THEN
                             CALL UTDEBM('F','ASSVEC','7')
                             CALL UTIMPI('L','--- NDDL : ',1,NDDL1)

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 24/01/2005   AUTEUR DURAND C.DURAND 
 # TITRE TEST ANALYTIQUE DE LA GENERATION DE FONCTIONS ALEATOIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -762,65 +762,53 @@ TEST_TABLE(      TABLE=RMS2,
 # MISE EN COMMENTAIRE POUR NE PAS SURCHARGER LES CAS TEST MAIS MONTRER
 # UN EXEMPLE DE RESULTAT GRAPHIQUE DE GENE_FONC_ALEA
 
-IMPR_COURBE( UNITE=25,
-              FORMAT= 'AGRAF',
-     TITRE_GRAPHIQUE= 'MODULE DSP F11',
+IMPR_FONCTION( UNITE=25,
+              FORMAT= 'TABLEAU',
+              TITRE= 'MODULE DSP F11',
               LEGENDE_X= 'Freq. (Hz)',
-              FREQ_GRILLE_X= 1,
-              FREQ_GRILLE_Y= 1,
               ECHELLE_Y = 'LOG',
               COURBE=(_F( 
                        FONCTION = MF11,) ,),
             ) 
 
-IMPR_COURBE( UNITE=25,
-              FORMAT= 'AGRAF',
-     TITRE_GRAPHIQUE= 'PHASE DSP F11',
+IMPR_FONCTION( UNITE=25,
+              FORMAT= 'TABLEAU',
+              TITRE= 'PHASE DSP F11',
               LEGENDE_X= 'Freq. (Hz)',
-              FREQ_GRILLE_X= 1,
-              FREQ_GRILLE_Y= 1,
               COURBE=(_F( 
                        FONCTION = PF11,) ,),
             ) 
 
-IMPR_COURBE( UNITE=25,
-              FORMAT= 'AGRAF',
-     TITRE_GRAPHIQUE= 'MODULE DSP F12',
+IMPR_FONCTION( UNITE=25,
+              FORMAT= 'TABLEAU',
+              TITRE= 'MODULE DSP F12',
               LEGENDE_X= 'Freq. (Hz)',
-              FREQ_GRILLE_X= 1,
-              FREQ_GRILLE_Y= 1,
               ECHELLE_Y = 'LOG',
               COURBE=(_F( 
                        FONCTION = MF12,) ,),
             ) 
 
-IMPR_COURBE( UNITE=25,
-              FORMAT= 'AGRAF',
-     TITRE_GRAPHIQUE= 'PHASE DSP F12',
+IMPR_FONCTION( UNITE=25,
+              FORMAT= 'TABLEAU',
+              TITRE= 'PHASE DSP F12',
               LEGENDE_X= 'Freq. (Hz)',
-              FREQ_GRILLE_X= 1,
-              FREQ_GRILLE_Y= 1,
               COURBE=(_F( 
                        FONCTION = PF12,) ,),
             ) 
               
-IMPR_COURBE( UNITE=25,
-              FORMAT= 'AGRAF',
-     TITRE_GRAPHIQUE= 'MODULE DSP F22',
+IMPR_FONCTION( UNITE=25,
+              FORMAT= 'TABLEAU',
+              TITRE= 'MODULE DSP F22',
               LEGENDE_X= 'Freq. (Hz)',
-              FREQ_GRILLE_X= 1,
-              FREQ_GRILLE_Y= 1,
               ECHELLE_Y = 'LOG',
               COURBE=(_F( 
                        FONCTION = MF22,) ,),
             ) 
 
-IMPR_COURBE( UNITE=25,
-              FORMAT= 'AGRAF',
-     TITRE_GRAPHIQUE= 'PHASE DSP F22',
+IMPR_FONCTION( UNITE=25,
+              FORMAT= 'TABLEAU',
+              TITRE= 'PHASE DSP F22',
               LEGENDE_X= 'Freq. (Hz)',
-              FREQ_GRILLE_X= 1,
-              FREQ_GRILLE_Y= 1,
               COURBE=(_F( 
                        FONCTION = PF22,) ,),
             ) 
@@ -832,23 +820,19 @@ MSPECT11=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT11,
 PSPECT11=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT11,
                                     PARTIE = 'PHASE') )
 
-IMPR_COURBE( UNITE=25,
-              FORMAT= 'AGRAF',
-     TITRE_GRAPHIQUE= 'MODULE DSP CIBLE 11',
+IMPR_FONCTION( UNITE=25,
+              FORMAT= 'TABLEAU',
+              TITRE= 'MODULE DSP CIBLE 11',
               LEGENDE_X= 'Freq. (Hz)',
-              FREQ_GRILLE_X= 1,
-              FREQ_GRILLE_Y= 1,
               ECHELLE_Y = 'LOG',
               COURBE=(_F( 
                        FONCTION = MSPECT11,) ,),
             ) 
 
-IMPR_COURBE( UNITE=25,
-              FORMAT= 'AGRAF',
-     TITRE_GRAPHIQUE= 'PHASE DSP CIBLE 11',
+IMPR_FONCTION( UNITE=25,
+              FORMAT= 'TABLEAU',
+              TITRE= 'PHASE DSP CIBLE 11',
               LEGENDE_X= 'Freq. (Hz)',
-              FREQ_GRILLE_X= 1,
-              FREQ_GRILLE_Y= 1,
               COURBE=(_F( 
                        FONCTION = PSPECT11,) ,),
             ) 
@@ -859,23 +843,19 @@ MSPECT12=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT12,
 PSPECT12=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT12,
                                      PARTIE = 'PHASE') )
 
-IMPR_COURBE( UNITE=25,
-              FORMAT= 'AGRAF',
-     TITRE_GRAPHIQUE= 'MODULE DSP CIBLE 12',
+IMPR_FONCTION( UNITE=25,
+              FORMAT= 'TABLEAU',
+              TITRE= 'MODULE DSP CIBLE 12',
               LEGENDE_X= 'Freq. (Hz)',
-              FREQ_GRILLE_X= 1,
-              FREQ_GRILLE_Y= 1,
               ECHELLE_Y = 'LOG',
               COURBE=(_F( 
                        FONCTION = MSPECT12,) ,),
            ) 
 
-IMPR_COURBE( UNITE=25,
-              FORMAT= 'AGRAF',
-     TITRE_GRAPHIQUE= 'PHASE DSP CIBLE 12',
+IMPR_FONCTION( UNITE=25,
+              FORMAT= 'TABLEAU',
+              TITRE= 'PHASE DSP CIBLE 12',
               LEGENDE_X= 'Freq. (Hz)',
-              FREQ_GRILLE_X= 1,
-              FREQ_GRILLE_Y= 1,
               COURBE=(_F( 
                        FONCTION = PSPECT12,) ,),
            ) 
@@ -886,23 +866,19 @@ MSPECT22=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT22,
 PSPECT22=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT22,
                                      PARTIE = 'PHASE') )
 
-IMPR_COURBE( UNITE=25,
-              FORMAT= 'AGRAF',
-     TITRE_GRAPHIQUE= 'MODULE DSP CIBLE 22',
+IMPR_FONCTION( UNITE=25,
+              FORMAT= 'TABLEAU',
+              TITRE= 'MODULE DSP CIBLE 22',
               LEGENDE_X= 'Freq. (Hz)',
-              FREQ_GRILLE_X= 1,
-              FREQ_GRILLE_Y= 1,
               ECHELLE_Y = 'LOG',
               COURBE=(_F( 
                        FONCTION = MSPECT22,) ,),
                        )
 
-IMPR_COURBE( UNITE=25,
-              FORMAT= 'AGRAF',
-     TITRE_GRAPHIQUE= 'PHASE DSP CIBLE 22',
+IMPR_FONCTION( UNITE=25,
+              FORMAT= 'TABLEAU',
+              TITRE= 'PHASE DSP CIBLE 22',
               LEGENDE_X= 'Freq. (Hz)',
-              FREQ_GRILLE_X= 1,
-              FREQ_GRILLE_Y= 1,
               COURBE=(_F( 
                        FONCTION = PSPECT22,) ,),
             ) 

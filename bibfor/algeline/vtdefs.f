@@ -1,7 +1,7 @@
       SUBROUTINE VTDEFS(CHPOUT,CHPIN,BASE,TYPC)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 24/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,18 +135,11 @@ C ALEATOIRES
 
 C MONITORING
         IF ((INFOFE(1:1).EQ.'T').AND.(LFETI)) THEN
-          WRITE(IFM,*)
-          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
           IF (IDD.GT.0) THEN
-            WRITE(IFM,*)'<FETI/VTDEFS> NUMERO DE SOUS-DOMAINE: ',IDD
+            WRITE(IFM,*)'<FETI/VTDEFS> SD: ',IDD,' ',ARG2(1:19)
           ELSE
-            WRITE(IFM,*)'<FETI/VTDEFS> DOMAINE GLOBAL'          
+            WRITE(IFM,*)'<FETI/VTDEFS> DOMAINE GLOBAL ',ARG2(1:19)
           ENDIF                           
-          WRITE(IFM,*)'<FETI/VTDEFS> CREATION OBJETS JEVEUX ',
-     &         ARG2(1:19)
-          WRITE(IFM,*)     
-          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'        
-          WRITE(IFM,*)
         ENDIF
         IF ((INFOFE(2:2).EQ.'T').AND.(IDD.GT.0))
      &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,ARG2(1:19),1,' ')

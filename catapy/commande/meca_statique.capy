@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 24/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,10 +41,6 @@ MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
          OPTION          =SIMP(statut='f',typ='TXM',into=("SIEF_ELGA_DEPL","SANS"),defaut="SIEF_ELGA_DEPL",max=1,
              fr="seule option : contraintes aux points de Gauss. Utiliser CALC_ELEM pour les autres.",
                           ),
-         NUME_COUCHE     =SIMP(statut='f',typ='I',defaut=1),
-         NIVE_COUCHE     =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY") ),
-         ANGLE           =SIMP(statut='f',typ='I',defaut=0),
-         PLAN            =SIMP(statut='f',typ='TXM',defaut="MAIL",into=("SUP","INF","MOY","MAIL") ),
          SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
                                fr="Liste des paramètres de sensibilité.",
                                ang="List of sensitivity parameters"),
