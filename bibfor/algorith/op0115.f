@@ -3,7 +3,7 @@
       INTEGER           IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,8 +130,6 @@ C
           CALL UTMESS('F',NOMCMD//'ERREUR.03',
      +            'ERREUR SUR LES INDICES')
         ENDIF
-      CALL JEDETR('&&OP0115.TEMP.INDI')
-      CALL JEDETR('&&OP0115.TEMP.INDJ')
       CALL INFMAJ
 C
 C---2 --- CREATION ET REMPLISSAGE DE L'OBJET  NOMU ---

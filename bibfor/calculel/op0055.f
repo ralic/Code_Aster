@@ -3,7 +3,7 @@
       INTEGER             IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -187,9 +187,6 @@ C
         ENDIF
       ENDIF
 C
-      NCNCIN = '&&OP055.CONNECINVERSE  '
-      CALL JEEXIN ( NCNCIN, IRET )
-      IF (IRET .NE. 0) CALL JEDETR( NCNCIN )
 C
       CALL JEDEMA()
       END

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 29/09/2004   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -637,14 +637,14 @@ C     --MENAGE :
       CALL JEDEMA()
 
  1200 FORMAT (/,'<MODELE> LISTE DES ELEMENTS AFFECTES A DES MAILLES OU '
-     &       ,'NOEUDS DU MAILLAGE ',A8,/,'   TYPE ELEMENT FINI    NOMB',
-     &       'RE   TYPE MAILLE   AFFECTE SUR')
- 1210 FORMAT (4X,A16,2X,I8,5X,A8,6X,A8)
+     &       ,'NOEUDS DU MAILLAGE ',A8,/,
+     & '   TYPE ELEMENT FINI        NOMBRE  TYPE MAILLE   AFFECTE SUR')
+ 1210 FORMAT (4X,A16,2X,I12,5X,A8,6X,A8)
  1220 FORMAT (4X,A8,7 (2X,A8))
- 1000 FORMAT (/,' SUR LES ',I6,' MAILLES DU MAILLAGE ',A8,/,'    ON A ',
-     &       'DEMANDE L''AFFECTATION DE ',I6,/,'    ON A PU EN AFFECTE',
-     &       'R ',I6)
- 1100 FORMAT (/,' SUR LES ',I6,' NOEUDS DU MAILLAGE ',A8,/,'    ON A D',
-     &       'EMANDE L''AFFECTATION DE ',I6,/,
-     &       '    ON A PU EN AFFECTER ',I6)
+ 1000 FORMAT (/,' SUR LES ',I12,' MAILLES DU MAILLAGE ',A8,/,
+     &          '    ON A DEMANDE L''AFFECTATION DE ',I12,/,
+     &          '    ON A PU EN AFFECTER            ',I12)
+ 1100 FORMAT (/,' SUR LES ',I12,' NOEUDS  DU MAILLAGE ',A8,/,
+     &          '    ON A DEMANDE L''AFFECTATION DE ',I12,/,
+     &          '    ON A PU EN AFFECTER            ',I12)
       END

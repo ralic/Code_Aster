@@ -1,4 +1,4 @@
-#@ MODIF test_fichier_ops Macro  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF test_fichier_ops Macro  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-def test_fichier_ops(self, UNITE, NOM_SYSTEME, NB_CHIFFRE, EPSILON, VALE_K, INFO, **args):
+def test_fichier_ops(self, UNITE, FICHIER, NB_CHIFFRE, EPSILON, VALE_K, INFO, **args):
    """
      Macro TEST_FICHIER permettant de tester la non-regression d'un fichier
      'a une tolerance' pres pour les nombres reels en calculant
@@ -64,18 +64,18 @@ def test_fichier_ops(self, UNITE, NOM_SYSTEME, NB_CHIFFRE, EPSILON, VALE_K, INFO
    is_ok=0
 
    # vérifier que le fichier a été fermé
-   tinfo__ = INFO_EXEC_ASTER(LISTE_INFO='ETAT_UNITE', FICHIER=NOM_SYSTEME)
+   tinfo__ = INFO_EXEC_ASTER(LISTE_INFO='ETAT_UNITE', FICHIER=FICHIER)
    
    if tinfo__['ETAT_UNITE',1].find('OUVERT')>-1:
-      print "<A> <TEST_FICHIER> LE FICHIER N'A PAS ETE FERME :\n",NOM_SYSTEME
+      print "<A> <TEST_FICHIER> LE FICHIER N'A PAS ETE FERME :\n",FICHIER
 
    # fichier correctement fermé
    else:
       # calcule le md5sum du fichier
-      ier, mdsum = md5file(NOM_SYSTEME, NB_CHIFFRE, EPSILON, l_regexp, INFO)
+      ier, mdsum = md5file(FICHIER, NB_CHIFFRE, EPSILON, l_regexp, INFO)
       if ier != 0:
          if ier==4:
-            texte_erreur='Fichier inexistant : '+NOM_SYSTEME
+            texte_erreur='Fichier inexistant : '+FICHIER
          else:
             texte_erreur='Erreur dans md5file, code retour = '+str(ier)
          texte_erreur='<S> <TEST_FICHIER> '+texte_erreur

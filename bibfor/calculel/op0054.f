@@ -3,7 +3,7 @@
       INTEGER             IER 
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -181,18 +181,6 @@ C
      +               NBNO, FORMAT, IFIC )
          ENDIF
 C
-C        --- DESTRUCTION DES OBJETS DE TRAVAIL ---
-C
-         CALL JEEXIN ( TRAV1 , IRET )
-         IF ( IRET .NE. 0 ) CALL JEDETR ( TRAV1 )
-         CALL JEEXIN ( TRAV2 , IRET )
-         IF ( IRET .NE. 0 ) CALL JEDETR ( TRAV2 )
-         CALL JEEXIN ( TRAV3 , IRET )
-         IF ( IRET .NE. 0 ) CALL JEDETR ( TRAV3 )
-         CALL JEEXIN ( TRAV4 , IRET )
-         IF ( IRET .NE. 0 ) CALL JEDETR ( TRAV4 )
-         CALL JEEXIN ( STOK4 , IRET )
-         IF ( IRET .NE. 0 ) CALL JEDETR ( STOK4 )
       ENDIF
 C
 C     ==================================================================

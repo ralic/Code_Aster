@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/03/2004   AUTEUR PROIA E.PROIA 
+C MODIF PREPOST  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -307,7 +307,6 @@ C
          CALL JEDEMA()
  100  CONTINUE
 C
-      IF ( EXIST )  CALL JEDETR ( '&&OP0188.INSTANT' )
 C
  8888 CONTINUE
 C

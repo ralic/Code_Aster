@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/06/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF PREPOST  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -271,7 +271,6 @@ C
      +    (ZR(JFONC+K-1),ZR(JFONC+K+NBVAL-1),K=1,NBVAL)
    73 CONTINUE
  9999 CONTINUE
-      CALL JEDETC('V','&&OP0162',1)
 C
       CALL JEDEMA()
       END

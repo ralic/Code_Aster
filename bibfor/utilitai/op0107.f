@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,7 +121,6 @@ C                   -----------
                CALL JEVEUO ( KNUM, 'L', JORDR )
                CALL RSEXCH ( RESUCO, 'DEPL', ZI(JORDR), CHDEF, IRET )
                IF ( IRET .GT. 0 ) CALL UTMESS('F','OP0107','Y A UN BUG')
-               CALL JEDETR ( KNUM )
             ENDIF
          ENDIF
 
@@ -271,10 +270,6 @@ C                   -------------
 C
  9999 CONTINUE
       CALL TITRE
-      CALL JEDETC('V','&&',1)
-      CALL JEDETR( KCHA )
-      CALL JEDETC('V','.MATE_CODE',9)
-      CALL JEDETC('V','.CODI',20)
 C
       CALL JEDEMA ( )
 99999 CONTINUE

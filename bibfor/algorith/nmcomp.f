@@ -15,7 +15,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -214,6 +214,12 @@ C -- RUPTURE BETON
           GOTO 9000
         ENDIF
 
+        IF ( COMPOR(1) .EQ. 'ENDO_ORTH_BETON' ) THEN
+          CALL LCEOBG(NDIM, TYPMOD, IMATE, CRIT, EPSM, DEPS,
+     &                   VIM, OPTION, SIGP, VIP,  DSIDEP)
+          GOTO 9000
+        ENDIF
+
 C -- DRUCKER - PRAGER
 
         IF (COMPOR(1) .EQ. 'DRUCKER_PRAGER') THEN
@@ -313,6 +319,14 @@ C PETITES DEFORMATIONS
             ELSE
               CALL LCLDSB(NDIM, TYPMOD, IMATE, COMPOR, EPSM, DEPS,
      &                   VIM,TM,TP,TREF,OPTION, SIGP, VIP,  DSIDEP)
+            ENDIF
+        ELSE IF ( COMPOR(1) .EQ. 'ENDO_ORTH_BETON' ) THEN
+          IF ( INT(CRIT(6)) .NE. 0 )  THEN
+              CALL UTMESS('F','NMCOMP_1',
+     &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+            ELSE
+              CALL LCEOBL (NDIM, TYPMOD, IMATE, CRIT, EPSM, DEPS,
+     &                   VIM, OPTION, SIGP, VIP,  DSIDEP)
             ENDIF
         ELSE IF ( COMPOR(1)(1:6) .EQ. 'MAZARS' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN

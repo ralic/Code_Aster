@@ -1,4 +1,4 @@
-#@ MODIF macro_miss_3d_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macro_miss_3d_ops Macro  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,7 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
   #self.icmd=1
   self.set_icmd(1)
 
-  iunit = DEFI_FICHIER(ACTION='LIBERER',UNITE=UNITE_IMPR_ASTER)
+  DEFI_FICHIER(ACTION='LIBERER',UNITE=UNITE_IMPR_ASTER)
 
   import aster 
   loc_fic=aster.repout()

@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -172,8 +172,6 @@ C     --- CONTROLE DES TYPES ---
       ENDIF
 C     --------------------------------------------------------------
 C
-C     --- LIBERATION DES DESCRIPTEURS DE LA MATRICE FACTORISEE ---
-      CALL JEDETC('V','.&VDI',20)
       CALL TITRE
       CALL JEDEMA()
       END

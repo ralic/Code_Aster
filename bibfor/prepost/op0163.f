@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 15/12/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -226,7 +226,6 @@ C
       ZK24(LREFE+2) = MATRK
       CALL JELIBE(KREFE//'.REFE')
 C
-      CALL JEDETC('V','&&OP0163',1)
  1000 FORMAT(I6)
  1001 FORMAT(6(1PE12.5))
 C

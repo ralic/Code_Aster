@@ -1,7 +1,7 @@
       SUBROUTINE OP0035 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -109,7 +109,5 @@ C=======================================================================
 
       CALL TITRE
 
-      CALL JEDETR('&&LISTE_INFO')
-      CALL JEDETR('&&TYPE_INFO')
       CALL JEDEMA()
       END

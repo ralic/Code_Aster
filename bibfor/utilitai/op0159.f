@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -311,8 +311,6 @@ C
          CALL JEDETR ( '&OP0159.CMP' )
  200  CONTINUE
 C
-      CALL JEDETR ( '&&OP0159.NUME_MAILLE' )
-      CALL JEDETR ( '&&OP0159.NUME_ELEMENT' )
       CALL JEDEMA( )
 C
       END

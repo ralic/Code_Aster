@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # DATE     : 03/08/2001
 # AUTEUR   : F. LEBOUVIER (DELTACAD)
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
@@ -57,15 +57,17 @@ MAILL=MODI_MAILLAGE(reuse =MAILL,
 #---------------------------------------------------------------------
 
 CARA=AFFE_CARA_ELEM(MODELE=MODE,
-                    DISCRET=(_F(GROUP_MA='RES_LAT',
-                                REPERE='LOCAL',
-                                CARA='K_T_D_L',
-                                VALE=(2.0,0.0),),
-                             _F(GROUP_MA='RES_HAUT',
-                                REPERE='LOCAL',
-                                CARA='K_T_D_L',
-                                VALE=(0.005,0.0),),
-                           ),);
+                    DISCRET_2D=(_F(GROUP_MA='RES_LAT',
+                                   REPERE='LOCAL',
+                                   CARA='K_T_D_L',
+                                   VALE=(2.0,0.0),),
+                                _F(GROUP_MA='RES_HAUT',
+                                   REPERE='LOCAL',
+                                   CARA='K_T_D_L',
+                                   VALE=(0.005,0.0),),
+                              ),);
+
+IMPR_CO ( CO = CARA ) ;
 
 #---------------------------------------------------------------------
 #                         CARACTERISTIQUES MATERIAUX

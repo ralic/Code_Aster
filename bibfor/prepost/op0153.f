@@ -2,7 +2,7 @@
       IMPLICIT  REAL*8  ( A-H,O-Z )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,8 +101,7 @@ C
          IF ( NIS .EQ. 0 ) THEN
             CALL TBEXV1 ( RESU, 'INST', '&&OP0153.INST','V',NBV,K8B)
             CALL JEVEUO ('&&OP0153.INST', 'L', JINST )
-            DINST = ZR(JINST+NBV-1)
-            CALL JEDETR ( '&&OP0153.INST' ) 
+            DINST = ZR(JINST+NBV-1) 
          ENDIF
          CALL TBEXV1 ( RESU, 'SECTEUR', '&&OP0153.SECT','V',NBV,K8B)
          CALL JEVEUO ('&&OP0153.SECT', 'L', JSECT )
@@ -426,8 +425,6 @@ C
  888  CONTINUE
 C
       CALL TITRE
-C
-      CALL JEDETC('V','&&OP0153',1)
 C
  1000 FORMAT(/,80('-'))
  1010 FORMAT(A11,2X,A15,2X,A15,2X,A15,2X,A15)

@@ -4,7 +4,7 @@
      &                   DSIDP1)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/09/2004   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 05/10/2004   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -104,7 +104,7 @@ C
       CHARACTER*8 NOMRES(16)
       CHARACTER*8 NOMPAR(1),TYPE
       CHARACTER*24 NOMMA
-      REAL*8      VALPAM(1)
+      REAL*8      VALPAM(1),R8NNEM
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
       DATA        TOL/1.D-10/NUL/0.D0/ZERO/0.D0/
 C DEB ------------------------------------------------------------------
@@ -579,7 +579,7 @@ C     -- 9.3.3 CALCUL DES TERMES DE DSIDEP
  132  CONTINUE
           DO 134 K=1,3
           DO 135 L=4,NDIMSI
-             DSIDEP(K,L) = -1.D0/2.D0*(A(K)*AAP(L)+AP(L)*AA(K))
+             DSIDEP(K,L) = -1.D0/2.D0*(A(K)*AAP(L)+AP(K)*AA(L))
              DSIDEP(K,L) = DSIDEP(K,L)/H
              DSIDEP(L,K) = DSIDEP(K,L)
  135  CONTINUE

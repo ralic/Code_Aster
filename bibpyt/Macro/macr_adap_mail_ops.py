@@ -1,4 +1,4 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_adap_mail_ops Macro  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -111,6 +111,7 @@ def macr_adap_mail_ops ( self,
   IMPR_FICO_HOMA  = self.get_cmd("IMPR_FICO_HOMA")
   LIRE_MAILLAGE   = self.get_cmd("LIRE_MAILLAGE")
   LIRE_CHAMP      = self.get_cmd("LIRE_CHAMP")
+  DETRUIRE        = self.get_cmd('DETRUIRE')
 #
 # 1.4. ==> Le nom du programme HOMARD à lancer
 #
@@ -337,7 +338,6 @@ def macr_adap_mail_ops ( self,
 #
   Unite_Fichier_ASTER_vers_HOMARD = 1787 + 2*Numero_Passage_Fonction
   Fichier_ASTER_vers_HOMARD = os.path.join(Rep_Calc_ASTER,"fort." + str(Unite_Fichier_ASTER_vers_HOMARD))
-  Nom_Symbolique_Fichier_ASTER_vers_HOMARD = "ASTER_to_HOMARD"
   Fichier_HOMARD_Entree = os.path.join(Rep_Calc_HOMARD_global,"MAILL."+str(niter)+".MED")
 ###  print "Fichier_ASTER_vers_HOMARD = ",Fichier_ASTER_vers_HOMARD
 ###  print "Fichier_HOMARD_Entree = ",Fichier_HOMARD_Entree
@@ -366,7 +366,6 @@ def macr_adap_mail_ops ( self,
 # 4.2.2. La définition du fichier de ASTER vers HOMARD
 # 
   DEFI_FICHIER ( ACTION= "ASSOCIER",
-                 FICHIER = Nom_Symbolique_Fichier_ASTER_vers_HOMARD,
                  UNITE = Unite_Fichier_ASTER_vers_HOMARD,
                  TYPE = "LIBRE",
                  INFO = INFO )
@@ -589,21 +588,21 @@ def macr_adap_mail_ops ( self,
 #
   Nom_Fichier_Configuration = "HOMARD.Configuration"
   Fichier_Configuration = os.path.join(Rep_Calc_HOMARD_local,Nom_Fichier_Configuration)
-  dico[Fichier_Configuration] = ("HOMARD_CONFIG","FICHIER_CONF",unite)
+  dico[Fichier_Configuration] = ("HOMARD_CONFIG","UNITE_CONF",unite)
 #
   if ( modhom != "ADAP" ) :
     unite = unite + 1
     Nom_Fichier_Donnees = "HOMARD.Donnees"
     Fichier_Donnees = os.path.join(Rep_Calc_HOMARD_local,Nom_Fichier_Donnees)
 #                             1234567890123456
-    dico[Fichier_Donnees] = ("HOMARD_DONN","FICHIER_DONN",unite)
+    dico[Fichier_Donnees] = ("HOMARD_DONN","UNITE_DONN",unite)
 #
 # 4.3.4.2. ==> L'ouverture de ces fichiers
 #
   for fic in dico.keys() :
-    DEFI_FICHIER ( ACTION= "ASSOCIER", NOM_SYSTEME = fic, FICHIER = dico[fic][0], UNITE = dico[fic][2],
+    DEFI_FICHIER ( ACTION= "ASSOCIER", FICHIER = fic, UNITE = dico[fic][2],
                    TYPE = "ASCII", ACCES = "NEW", INFO = INFO )
-    motscfa[dico[fic][1]] = dico[fic][0]
+    motscfa[dico[fic][1]] = dico[fic][2]
 #
 # 4.3.4.3. ==> Ecriture
 #

@@ -4,7 +4,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2004   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -154,13 +154,5 @@ C
 C-----------------------------------------------------------------------
 C     FIN
 C-----------------------------------------------------------------------
-C
-      CALL DETRSD('CHAM_NO_S',CNSLT)
-      CALL DETRSD('CHAM_NO_S',CNSLN)
-     
-      CALL DETRSD('CHAM_NO_S',GRLT)
-      CALL DETRSD('CHAM_NO_S',GRLN)
-      CALL DETRSD('CHAM_NO_S',CNSEN)
-
       CALL JEDEMA()
       END

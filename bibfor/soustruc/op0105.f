@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 05/01/2004   AUTEUR DURAND C.DURAND 
+C MODIF SOUSTRUC  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,11 +87,6 @@ C     --ON CALCULE LES CARACTERISTIQUES DU MAILLAGE:
 C     ----------------------------------------------
 C
       CALL CARGEO(MAG)
-C
-C     --"MENAGE":
-C     -----------
-      CALL JEDETC('V',MAG,1)
-      CALL JEDETC('V','&&OP0105',1)
 C
       CALL JEDEMA()
       END

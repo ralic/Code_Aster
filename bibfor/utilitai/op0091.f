@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -435,11 +435,6 @@ C        --- RECUPERATION DES ARGUMENTS ---
  610     CONTINUE  
          CALL FOCASU ( N6, ZK8(LNOMF), ZR(LCOEF), ZC(LCOEFZ), 
      .   ZL(LCCPLX),ZL(LFCPLX), LPARA, SORTIE, BASE,'FONCTION')
-         CALL JEDETR ( NOMTEM(1) )
-         CALL JEDETR ( NOMTEM(2) )
-         CALL JEDETR ( NOMTEM(3) )
-         CALL JEDETR ( NOMTEM(4) )
-         CALL JEDETR ( NOMTEM(5) )
 C
       ELSEIF( NOMOPE .EQ. 'COMB_C' ) THEN
 C
@@ -462,11 +457,6 @@ C        ON SAIT QUE (LCOR,LCOC) VAUT (0,1) OU (1,0)
  620     CONTINUE
          CALL FOCASU ( N9, ZK8(LNOMF), ZR(LCOEF), ZC(LCOEFZ), 
      .   ZL(LCCPLX),ZL(LFCPLX), LPARA, SORTIE, BASE,'FONCT_C ')
-         CALL JEDETR ( NOMTEM(1) )
-         CALL JEDETR ( NOMTEM(2) )
-         CALL JEDETR ( NOMTEM(3) )
-         CALL JEDETR ( NOMTEM(4) )
-         CALL JEDETR ( NOMTEM(5) )
 C
 C     ------------------------------------------------------------------
       ELSEIF( NOMOPE .EQ. 'ENVELOPPE' )THEN
@@ -479,7 +469,6 @@ C
          CALL GETVID(NOMOPE,'FONCTION',1,1,NBFON,ZK8(LNOMF),L)
          CALL GETVTX(NOMOPE,'CRITERE',1,1,1,CRITER,L)
          CALL FOCAEN( NBFON , ZK8(LNOMF) , CRITER , SORTIE, BASE )
-         CALL JEDETR(NOMTEM(1))
 C
 C     ------------------------------------------------------------------
       ELSEIF( NOMOPE .EQ. 'EXTRACTION' ) THEN
@@ -513,7 +502,6 @@ C
          CALL GETVTX ( NOMOPE, 'SURCHARGE',   1,1,1, SURCHG, L )
          CALL FOCAAS ( NBFON, ZK8(LNOMF), SURCHG, INTERP, PROLGD, BASE,
      +                                                    SORTIE )
-         CALL JEDETR ( NOMTEM(1) )
 C
       ELSEIF( NOMOPE .EQ. 'PUISSANCE' ) THEN
 C

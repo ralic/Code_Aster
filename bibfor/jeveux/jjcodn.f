@@ -1,6 +1,6 @@
       FUNCTION JJCODN(ICRE , NOMREP , NOMEC , IREP, CREP , NMAX , NUTI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/03/98   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 29/09/2004   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,22 +104,23 @@ C
                GOTO 5
             ELSE
                IF ( ICRE .EQ. 3 ) THEN
-                  CMESS = ' LE REPERTOIRE '//NOMREP//' EST SATURE '
+                  CMESS = 'POUR LE REPERTOIRE '//NOMREP//' TROP '//
+     &                    'DE COLLISION DANS LE HCODING.'
                   CALL JVMESS ( 'F' , PGME//'04' , CMESS )
                ELSE IF ( ICRE .EQ. 0 )   THEN
                   IRET = 0
                ENDIF
             END IF
-          END IF
-        END IF
- 10     CONTINUE
-        IF ( RINSER ) THEN
-           IREP(IDEHCO+IIN) = -JIN
-           DO 25 K = 1 , LL
-             CREP(IDENOM+LNOM*(-JIN-1)+K) = NOMEC(K:K)
- 25        CONTINUE
-           IRET  = -JIN
-        ENDIF
+         END IF
+      END IF
+ 10   CONTINUE
+      IF ( RINSER ) THEN
+         IREP(IDEHCO+IIN) = -JIN
+         DO 25 K = 1 , LL
+           CREP(IDENOM+LNOM*(-JIN-1)+K) = NOMEC(K:K)
+ 25      CONTINUE
+         IRET  = -JIN
+      ENDIF
       JJCODN = IRET
 C FIN ------------------------------------------------------------------
       END

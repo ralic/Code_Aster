@@ -2,7 +2,7 @@
       IMPLICIT  REAL*8  ( A-H,O-Z )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 02/12/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -341,14 +341,6 @@ C
       TABK(1) = 'OBST'
       CALL TBAJLI ( NOMT19, 2, NOPAR1, IBID, TABR, C16B, TABK, 0 )
 C
-      CALL JEDETR ( '&&OP0182.TUBUSE' )
-      CALL JEDETR ( '&&OP0182.OBSUSE' )
-      IF ( NOB .EQ. 0 ) THEN
-         OBST = '&&OBSTEM'
-         CALL JEDETR ( OBST//'           .REFE' )
-         CALL JEDETR ( OBST//'           .VALR' )
-         CALL JEDETR ( OBST//'           .VALT' )
-      ENDIF
 C
       CALL JEDEMA()
       END

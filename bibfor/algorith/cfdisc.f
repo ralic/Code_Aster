@@ -1,7 +1,7 @@
       SUBROUTINE CFDISC(DEFICO,RESOCO,TYPALC,TYPALF,FROT3D,MATTAN)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,18 +19,13 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
-
-
-      IMPLICIT NONE
-      CHARACTER*24        DEFICO
-      CHARACTER*14        RESOCO
-      INTEGER             TYPALC
-      INTEGER             TYPALF
-      INTEGER             FROT3D
-      INTEGER             MATTAN
-
-
-
+      IMPLICIT     NONE
+      CHARACTER*24 DEFICO
+      CHARACTER*14 RESOCO
+      INTEGER      TYPALC
+      INTEGER      TYPALF
+      INTEGER      FROT3D
+      INTEGER      MATTAN
 C ----------------------------------------------------------------------
 C  PERMET DE SAVOIR S'IL Y A CONTACT/FROTTEMENT
 C ----------------------------------------------------------------------
@@ -55,10 +50,10 @@ C OUT MATTAN  : INDIQUE SI LA MATRICE TANGENTE GLOBALE EST MODIFIEE
 C   PAR LA PRESENCE DE CONTACT/FROTTEMENT
 C   0 NON
 C   1 OUI
+C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
-
-      CHARACTER*32 JEXNUM
-      INTEGER ZI,IER
+C
+      INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
       COMMON /RVARJE/ZR(1)
@@ -72,15 +67,20 @@ C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-
+C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-
+C
+      INTEGER      ZMETH
+      PARAMETER    (ZMETH=8)
       INTEGER      ICONTA,NBLIAC,LLF
-      CHARACTER*24 COCO, METHCO
-      INTEGER      JCOCO, JMETH, IMETH,IZONE
-
-
-C --- INITIALISATION: NI CONTACT, NI FROTTEMENT       
+      CHARACTER*24 COCO,METHCO
+      INTEGER      JCOCO,JMETH,IMETH,IZONE
+C
+C ----------------------------------------------------------------------
+C
+C
+C --- INITIALISATION: NI CONTACT, NI FROTTEMENT  
+C     
       TYPALC = 0
       TYPALF = 0
       MATTAN = 0
@@ -97,7 +97,7 @@ C --- Y A T-IL DU CONTACT/FROTTEMENT DANS LE CALCUL
 C --- RECUPERATION METHODE CONTACT/FROTTEMENT    
       CALL JEVEUO(METHCO,'L',JMETH)
       IZONE = 1
-      IMETH = ZI(JMETH+10*(IZONE-1)+6)
+      IMETH = ZI(JMETH+ZMETH*(IZONE-1)+6)
 
       IF (IMETH.EQ.-1) THEN
         TYPALC = -1

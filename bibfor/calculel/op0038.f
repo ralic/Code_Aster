@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER IER
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF CALCULEL  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -153,13 +153,8 @@ C        ---------------------
         CALL UTMESS('F',' OP0038 ',' OPTION INEXISTANTE:'//OPTION)
       END IF
 
-      IF (CHNUMC.NE.' ') CALL DETRSD('CHAMP_GD',CHNUMC)
-      IF (EXITIM) CALL DETRSD('CHAMP_GD',CHTIME)
+
    10 CONTINUE
-      CALL JEDETC('V','.CODI',20)
-      CALL JEDETC('V','.MATE_CODE',9)
-      CALL JEDETC('V','&&',1)
-      CALL JEDETR(KCHA)
 
       CALL JEDEMA()
       END

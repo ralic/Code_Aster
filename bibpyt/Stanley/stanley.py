@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF stanley Stanley  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1555,6 +1555,7 @@ class DRIVER :
 
     para = _F(  
       MODELE     = contexte.modele,
+      NOM_CHAM   = selection.nom_cham,
       SHRINK     = float(self.stan.parametres['SHRINK']),
       TAILLE_MIN = float(self.stan.parametres['TAILLE_MIN']),
       )
@@ -1691,10 +1692,9 @@ class DRIVER_GMSH(DRIVER) :
     if self.terminal : self.terminal.Fermer()       # un seul terminal GMSH ouvert en meme temps
     l_detr = []
   
-    DEFI_FICHIER(
-        UNITE = 33, 
-#        FICHIER   = 'GMSH_POS'
-      )
+    DEFI_FICHIER( UNITE = 33, 
+#                 FICHIER   = 'GMSH_POS'
+                )
 
     contexte   = self.stan.contexte
     type_champ = cata[selection.nom_cham].type
@@ -1857,6 +1857,7 @@ class DRIVER_GRACE(DRIVER) :
       
 # ==============================================================================
 
+# -*- coding: iso-8859-1 -*-
 
 class PRE_STANLEY :
 

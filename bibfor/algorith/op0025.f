@@ -2,7 +2,7 @@
 C
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -327,15 +327,7 @@ C
          ZI(JINFC+I-1)=ZI(JINF+I-1)
  52   CONTINUE
 C
-      CALL JEDETR(MATASS)
-      CALL JEDETR(MAPREC)
 C
-      CALL JEDETC('V','&&',1)
-      CALL JEDETC('V','_',1)
-      CALL JEDETC('V','.CODI',20)
-      CALL JEDETC('V',RESULT(1:8),1)
-      CALL JEDETC('V','.MATE_CODE',9)
-
       CALL TITRE()
       LIEVOL = ' '
 C

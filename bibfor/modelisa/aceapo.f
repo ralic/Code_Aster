@@ -6,7 +6,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -141,32 +141,28 @@ C ----  TYPE DE SECTION ET DE VARIATION DE SECTION POUR CETTE OCCURENCE
 C        TEST DE ZK8(JCARA) SEUL > VERIFICATION D HOMOGENEITE DEJA FAITE
 
          IF ( VARSEC(1:4) .EQ. 'AFFI' ) THEN
-            IF ( SEC(1:4) .EQ. 'CERC' ) THEN
-               CALL UTMESS('E',CMD,' POUTRE : VARIATION AFFINE INTER'//
-     +                             'DITE AVEC UNE SECTION CIRCULAIRE')
-            ELSEIF ( SEC(1:4) .EQ. 'GENE'  ) THEN
-               CALL UTMESS('E',CMD,' POUTRE : VARIATION AFFINE INTER'//
-     +                             'DITE AVEC UNE SECTION GENERALE')
-            ELSE
-C              --- VERIFIER SI LA SECTION RECTANGLE EST BIEN AFFINE
-C                  HY1 = HY2   ET  EPY1 = EPY2
-               HY1  = 0.D0
-               HY2  = 0.D0
-               EPY1 = 0.D0
-               EPY2 = 0.D0
-               DO 120 K = 1 , NBCAR
-                 IF (ZK8(JCARA-1+K)(1:3).EQ.'HY1')  HY1  = ZR(JVALE-1+K)
-                 IF (ZK8(JCARA-1+K)(1:3).EQ.'HY2')  HY2  = ZR(JVALE-1+K)
-                 IF (ZK8(JCARA-1+K)(1:4).EQ.'EPY1') EPY1 = ZR(JVALE-1+K)
-                 IF (ZK8(JCARA-1+K)(1:4).EQ.'EPY2') EPY2 = ZR(JVALE-1+K)
- 120           CONTINUE
-               IF ( (HY1 .NE. HY2) .OR. (EPY1 .NE. EPY2) ) THEN
-                  CALL UTMESS('A',CMD,' POUTRE : VARIATION AFFINE '//
-     +                        'AVEC UNE SECTION RECTANGLE : HY1 DIFFE'//
-     +                        'RENT DE HY2 OU EPY1 DIFFERENT DE EPY2')
-               ENDIF
-            ENDIF
             IVAR = 1
+            HY1 = 0.D0
+            EPY1 = 0.D0
+            DO 120 K = 1 , NBCAR
+               IF (ZK8(JCARA-1+K)(1:3).EQ.'HY ')  THEN
+                  HY1  = ZR(JVALE-1+K)
+                  ZK8(JCARA-1+K) = 'HY1'
+               ENDIF
+               IF (ZK8(JCARA-1+K)(1:4).EQ.'EPY ') THEN
+                  EPY1 = ZR(JVALE-1+K)
+                  ZK8(JCARA-1+K) = 'EPY1'
+               ENDIF
+ 120        CONTINUE
+            NCAR = NCAR + 1
+            ZK8(JCARA-1+NCAR) = 'HY2'
+             ZR(JVALE-1+NCAR) = HY1
+            IF ( EPY1 .NE. 0.D0 ) THEN
+               NCAR = NCAR + 1
+               ZK8(JCARA-1+NCAR) = 'EPY2'
+                ZR(JVALE-1+NCAR) = EPY1
+            ENDIF
+            NCARAC = NCAR
          ENDIF
 C
          DO 20 I = 1 , NTYPSE

@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF B_ETAPE Build  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -204,7 +204,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       if CONTEXT.debug : prbanner("getvtx %s %s %d %d %d" %(nom_motfac,nom_motcle,iocc,iarg,mxval))
 
       valeur=self.get_valeur_mc(nom_motfac,nom_motcle,iocc,iarg,mxval)
-      valeur=self.Traite_DEFI_VALEUR(valeur,"TX")
+      valeur=self.Traite_value(valeur,"TX")
       if CONTEXT.debug :
          B_utils.TraceGet( 'GETVTX',nom_motfac,iocc,nom_motcle,valeur)
          for k in valeur[1] : assert(type(k)==types.StringType)
@@ -295,18 +295,16 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       else :
          return valeur
 
-   def Traite_DEFI_VALEUR(self,valeur,leType) :
+   def Traite_value(self,valeur,leType) :
       """
           Classe  : B_ETAPE.ETAPE
-          Auteurs : CC & AY
-          Methode : Traite_DEFI_VALEUR
-          INTENTION : Traitement du cas ou la donnee a ete introduite par DEFI_VALEUR
-                      Dans ce cas, l'objet lui-meme est retourne et non sa valeur !!!
+          Methode : Traite_value
+          INTENTION : Traitement du cas ou la donnee est un faux entier ou reel (classe entier et reel)
+                      de accas.capy. L'attribut 'valeur' de la sd a été renseigné par la commande qui
+                      l'a produite. C'est cette valeur qui est donc renvoyée ici.
       """
 
-      if CONTEXT.debug : print "Traite_DEFI_VALEUR: ",valeur,leType
-      assert(type(leType)==types.StringType)
-      assert(leType=="IS" or leType=="R8" or leType=="TX" or leType=="C8" or leType=="LS")
+      if CONTEXT.debug : print "Traite_value: ",valeur
 
       if valeur[0] == 0:return valeur
 
@@ -314,13 +312,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       list_apres=[]
       for k in tup_avant :
           if isinstance(k,N_ASSD.ASSD):
-              if not k.etape:
-                 # Il s'agit d'un concept issu d'une poursuite, on l'evalue
-                 k=self.codex.getvectjev(k.get_name())
-              else:
-                 k=k.etape[leType]
-             
-              if CONTEXT.debug : print "valeur evaluee: ",k
+              k=k.valeur
           if type(k) in ( types.TupleType ,types.ListType) :
               if leType == "C8" and k[0] in ("MP","RI") :
                  # on est en presence d'un complexe isolé
@@ -331,7 +323,6 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
           else:
               # on est en presence d'un (R8,IS,TX,LS) isolé
               list_apres.append( k )
-
       if valeur[0] < 0:
          # la longueur initiale etait superieure a mxval. 
          # Elle ne peut qu'augmenter
@@ -340,6 +331,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
          valeur_apres=( len(list_apres) , tuple(list_apres) ) 
 
       return valeur_apres
+
 
    def retnom( self ) :
       """
@@ -383,7 +375,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       if CONTEXT.debug : prbanner("getvis %s %s %d %d %d" %(nom_motfac,nom_motcle,iocc,iarg,mxval))
 
       valeur=self.get_valeur_mc(nom_motfac,nom_motcle,iocc,iarg,mxval)
-      valeur=self.Traite_DEFI_VALEUR(valeur,"IS")
+      valeur=self.Traite_value(valeur,"IS")
       if CONTEXT.debug :
          B_utils.TraceGet( 'GETVIS',nom_motfac,iocc,nom_motcle,valeur)
          for k in valeur[1] : assert(type(k)==types.IntType),type(k)
@@ -445,7 +437,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       if CONTEXT.debug : prbanner("getvr8 %s %s %d %d %d" %(nom_motfac,nom_motcle,iocc,iarg,mxval))
 
       valeur=self.get_valeur_mc(nom_motfac,nom_motcle,iocc,iarg,mxval)
-      valeur=self.Traite_DEFI_VALEUR(valeur,"R8")
+      valeur=self.Traite_value(valeur,"R8")
       if CONTEXT.debug :
          B_utils.TraceGet( 'GETVR8',nom_motfac,iocc,nom_motcle,valeur)
          for k in valeur[1] : assert(type(k)==types.FloatType),`k`+" n'est pas un float"
@@ -461,7 +453,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       if CONTEXT.debug : prbanner("getvc8 %s %s %d %d %d" %(nom_motfac,nom_motcle,iocc,iarg,mxval))
 
       valeur=self.get_valeur_mc(nom_motfac,nom_motcle,iocc,iarg,mxval)
-      valeur=self.Traite_DEFI_VALEUR(valeur,"C8")
+      valeur=self.Traite_value(valeur,"C8")
       if CONTEXT.debug : 
          B_utils.TraceGet( 'GETVC8',nom_motfac,iocc,nom_motcle,valeur)
       return valeur
@@ -500,8 +492,8 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       if CONTEXT.debug : prbanner("getvls %s %s %d %d %d" %(nom_motfac,nom_motcle,iocc,iarg,mxval))
 
       valeur=self.get_valeur_mc(nom_motfac,nom_motcle,iocc,iarg,mxval)
+      valeur=self.Traite_value(valeur,"IS")
       #XXX est ce IS ou LS ????
-      valeur=self.Traite_DEFI_VALEUR(valeur,"IS")
       if CONTEXT.debug :
          B_utils.TraceGet( 'GETVLS',nom_motfac,iocc,nom_motcle,valeur)
          for k in valeur[1] : assert(type(k)==types.IntType)
@@ -675,3 +667,20 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       else:
             ret=-1
       return ret
+
+   def putvir(self,ival):
+      """
+          Sorties:
+            indicateur sur le type ( 1=le concept sortant est bien un 'entier',
+                                     0=mauvais type de concept)
+          Fonction:
+            renvoyer une valeur entière depuis le fortran vers l'attribut
+            valeur de la sd 'entier'
+      """
+      if B_utils.Typast(AsType(self.sd))!='IS ' :
+         raise AsException("Probleme dans putvir: %s, n est pas de type entier !" % (self.sd.nom))
+         return 0
+      self.sd.valeur=ival
+      return 1
+
+

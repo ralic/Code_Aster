@@ -1,13 +1,8 @@
-      SUBROUTINE CVGCNT(ITEMAX,NEQ,DEPDEL,AUTOC1,AUTOC2,VECONT,LREAC)
-
-      IMPLICIT      NONE
-      LOGICAL ITEMAX,LREAC(4)
-      INTEGER NEQ,VECONT(2)
-      CHARACTER*19 AUTOC1,AUTOC2
-      CHARACTER*24 DEPDEL
+      SUBROUTINE CVGCNT(MAILLA,ITEMAX,NEQ,DEPDEL,AUTOC1,AUTOC2,
+     &                  VECONT,LREAC)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/05/2003   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,23 +19,44 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C
+      IMPLICIT     NONE
+      LOGICAL      ITEMAX
+      LOGICAL      LREAC(4)
+      INTEGER      NEQ
+      INTEGER      VECONT(2)
+      CHARACTER*19 AUTOC1
+      CHARACTER*19 AUTOC2
+      CHARACTER*24 DEPDEL
+      CHARACTER*8  MAILLA
+C
 C ======================================================================
-C BUT : CONVERGENCE LIEE A LA REACTUALISATION GEOMETRIQUE DU CONTACT ---
+C ROUTINE APPELEE PAR : NMCONV
 C ======================================================================
-C IN     : ITEMAX : .TRUE. SI ITERATION MAXIMUM ATTEINTE                
-C IN/OUT : VECONT : (1) = NOMBRE DE REACTUALISATION GEOMETRIQUE    
-C        :        :       A EFFECTUER / -1 SI AUTOMATIQUE             
-C        :        :                   /  0 SI PAS DE REACTUALISATION  
-C        :        :                   /  N REACTUALISATIONS  
-C        :        : (2) = NOMBRE DE REACTUALISATIONS GEOMETRIQUES    
-C                         EFFECTUEES
-C OUT    : LREAC  : (1) = TRUE  SI REACTUALISATION A FAIRE  
-C        :        : (2) = TRUE  SI ATTENTE POINT FIXE CONTACT
-C        :        : (3) = TRUE  SI METHODE CONTINUE
-C        :        : (4) = TRUE  SI MODELISATION DU CONTACT
-C ======================================================================
+C
+C CONVERGENCE LIEE A LA REACTUALISATION GEOMETRIQUE DU CONTACT
+C
+C IN  MAILLA : NOM DU MAILLAGE
+C IN  ITEMAX : .TRUE. SI ITERATION MAXIMUM ATTEINTE DANS STAT_NON_LINE
+C IN  NEQ    : NOMBRE D'EQUATIONS
+C IN  DEPDEL : INCREMENT DE DEPLACEMENT CUMULE
+C IN  AUTOC1 : NOM DE L'OBJET JEVEUX POUR LA REACTUALISATION
+C               GEOMETRIQUE AUTOMATIQUE (NOM LIE A OP0069/OP0070)
+C IN  AUTOC2 : NOM DE L'OBJET JEVEUX POUR LA REACTUALISATION
+C               GEOMETRIQUE AUTOMATIQUE (NOM LIE A OP0069/OP0070)
+C I/O VECONT : (1) = NOMBRE DE REACTUALISATION GEOMETRIQUE A EFFECTUER
+C                     / -1 SI AUTOMATIQUE             
+C                     /  0 SI PAS DE REACTUALISATION  
+C                     /  N REACTUALISATIONS  
+C              (2) = NOMBRE DE REACTUALISATIONS GEOMETRIQUES EFFECTUEES
+C OUT LREAC  : (1) = TRUE  SI REACTUALISATION A FAIRE 
+C              (2) = TRUE  SI ATTENTE POINT FIXE CONTACT
+C              (3) = TRUE  SI METHODE CONTINUE
+C              (4) = TRUE  SI MODELISATION DU CONTACT
+C
 C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
-      CHARACTER*32 JEXNUM,JEXNOM
+C
+      CHARACTER*32 JEXNUM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -55,17 +71,29 @@ C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-      INTEGER JDEPDE,JAUTO1,JAUTO2,II,IRET,JMAXDE
-      REAL*8 AUTONO,TEMP1,TEMP2,R8PREM,TOLERA,RMIN
-      CHARACTER*8  MAXDEP
+C
+      INTEGER      JDEPDE,JAUTO1,JAUTO2,II,IRET,JMAXDE,NUMNO1,NUMNO2
+      REAL*8       AUTONO,TEMP1,TEMP2,R8PREM,TOLERA,RMIN
+      CHARACTER*8  MAXDEP,NOMNO
+      INTEGER      IFM,NIV
+C
+C ----------------------------------------------------------------------
+C
+      CALL INFNIV (IFM,NIV)
+      CALL JEMARQ ()
 
-      CALL JEMARQ()
-
+C
+C --- TOLERANCE POUR REACTUALISATION GEOMETRIQUE AUTOMATIQUE
+C
+      TOLERA   = 5.0D-2
+C
       LREAC(1) = .TRUE.
       LREAC(3) = .TRUE.
+C
 C --- CONVERGENCE GEOMETRIQUE MAIS ATTENTE POINT FIXE CONTACT
-C     =======================================================
+C     
       IF (LREAC(2)) THEN
         CALL NMIMPR('IMPR','CONV_OK',' ',0.D0,0)
         CALL NMIMPR('IMPR','FIXE_NON',' ',0.D0,0)
@@ -73,34 +101,45 @@ C     =======================================================
         LREAC(3) = .FALSE.
       ELSE
         VECONT(2) = VECONT(2) + 1
+C
 C --- CORRESPOND A REAC_GEOM = AUTOMATIQUE
-C     =====================================
+C    
         IF (VECONT(1).LT.0) THEN
-          TOLERA = 5.0D-2
-          TEMP1 = 0.D0
-          TEMP2 = 0.D0
+          TEMP1  = 0.D0
+          TEMP2  = 0.D0
           CALL JEVEUO(DEPDEL(1:19)//'.VALE','L',JDEPDE)
           CALL JEVEUO(AUTOC1//'.VALE','E',JAUTO1)
           CALL JEVEUO(AUTOC2//'.VALE','E',JAUTO2)
+C --- AUTOC1 CONTIENT L'INCREMENT DE DEPLACEMENT ENTRE L'ITERATION
+C DE NEWTON PRECEDENTE ET L'ACTUELLE
+C --- AUTOC2 CONTIENT LE DEPLACEMENT CUMULE ENTRE LE DEBUT
+C ET JUSTE AVANT L'ITERATION ACTUELLE
           DO 10 II = 1,NEQ
             ZR(JAUTO2-1+II) = ZR(JAUTO2-1+II) + ZR(JAUTO1-1+II)
             ZR(JAUTO1-1+II) = ZR(JDEPDE-1+II) - ZR(JAUTO2-1+II)
    10     CONTINUE
-C  ---  CALCUL DU MAX DE LA NORME DU DEPL
-          CALL CNOMAX(AUTOC1,TEMP1)
-          CALL CNOMAX(AUTOC2,TEMP2)
+C
+C  ---  CALCUL DU MAX DE LA NORME DU DEPLACEMENT (SAUF LAGRANGES)
+C
+          CALL CNOMAX(AUTOC1,TEMP1,NUMNO1)
+          CALL CNOMAX(AUTOC2,TEMP2,NUMNO2)
+
+
+
           MAXDEP='&&CVGCNT'
           CALL JEEXIN(MAXDEP,IRET)
 C  ---  STOCKAGE DU MAX DE LA NORME DU DEPL
           IF (IRET.EQ.0) THEN
              CALL WKVECT(MAXDEP,'V V R',1,JMAXDE)
-             ZR(JMAXDE-1+1)=TEMP2
-             RMIN=R8PREM()
+             ZR(JMAXDE-1+1) = TEMP2
+             RMIN           = R8PREM()
           ELSE
              CALL JEVEUO(MAXDEP,'E',JMAXDE)
-             ZR(JMAXDE-1+1)=MAX(ZR(JMAXDE-1+1),TEMP2)
-             RMIN=1.D-6*ZR(JMAXDE-1+1)
+             ZR(JMAXDE-1+1) = MAX(ZR(JMAXDE-1+1),TEMP2)
+             RMIN           = 1.D-6*ZR(JMAXDE-1+1)
           ENDIF
+
+
           IF (TEMP2.LT.RMIN) THEN
             IF (TEMP2.EQ.0.D0) THEN
               AUTONO = 10.0D0*TOLERA
@@ -110,21 +149,30 @@ C  ---  STOCKAGE DU MAX DE LA NORME DU DEPL
           ELSE
             AUTONO = TEMP1/TEMP2
           END IF
+
+          IF (NIV.GE.2) THEN
+            CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',NUMNO2),NOMNO)
+            WRITE (IFM,1000)  NOMNO,' NORME: ',TEMP2,' (TOLE: ',
+     &         AUTONO*100,' % - BUT ',TOLERA*100,'%)'
+          ENDIF
+
           IF (AUTONO.LT.TOLERA) THEN
             CALL NMIMPR('IMPR','CONV_OK',' ',0.D0,0)
             CALL NMIMPR('IMPR','AUTO_GEO',' ',0.D0,VECONT(2))
           ELSE
             LREAC(3) = .FALSE.
           END IF
+C
 C --- CORRESPOND A REAC_GEOM = SANS
-C     =============================
+C     
         ELSE IF (VECONT(1).EQ.0) THEN
           CALL NMIMPR('IMPR','CONV_OK',' ',0.D0,0)
           CALL NMIMPR('IMPR','GEOM_MIN',' ',0.D0,0)
           LREAC(1) = .FALSE.
         ELSE
+C
 C --- CORRESPOND A REAC_GEOM = CONTROLE
-C     =================================
+C     
           IF (VECONT(2).EQ.VECONT(1)) THEN
             CALL NMIMPR('IMPR','CONV_OK',' ',0.D0,0)
             CALL NMIMPR('IMPR','AUTO_GEO',' ',0.D0,VECONT(1))
@@ -140,5 +188,9 @@ C     =================================
       END IF
 
       CALL JEDEMA()
+C
+ 1000 FORMAT (' <CONTACT> REACTUALISATION GEOM. MAX. DEPL. SUR ',
+     &         A8,A8,E10.3,A8,E10.3,A9,E10.3,A2)
 
+C
       END

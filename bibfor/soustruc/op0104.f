@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 07/10/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF SOUSTRUC  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,6 @@ C
                ZI(JGG+J) = ZI(JVG+J)
  102        CONTINUE
  100     CONTINUE
-         CALL JEDETR ( GRPMAV )
       ENDIF
 C
 C     --- ON COMPTE LE NOMBRE DE NOUVEAUX GROUP_NO ---
@@ -143,7 +142,6 @@ C
                ZI(JGG+J) = ZI(JVG+J)
  202        CONTINUE
  200     CONTINUE
-         CALL JEDETR ( GRPNOV )
       ENDIF
 C
 C     --- TRAITEMENT DU MOT CLEF CREA_GROUP_MA ---
@@ -154,9 +152,6 @@ C     --- TRAITEMENT DU MOT CLEF CREA_GROUP_NO ---
 C
       IF ( NBGRNO .GT. 0 ) CALL SSCGNO ( MA , NBGNIN )
 C
-      NCNCIN = '&&OP0104.CONNECINVERSE  '
-      CALL JEEXIN ( NCNCIN, NCI )
-      IF (NCI .NE. 0) CALL JEDETR( NCNCIN )
 C
       CALL JEDEMA ( )
 C

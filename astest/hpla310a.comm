@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 04/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE BIBLIO_49 FISSURE RADIALE EXTERNE SOUMIS A UN CHOC THERMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,10 +26,6 @@ DEFI_GROUP( reuse=MA,        MAILLAGE=MA,
                                                       ))
                        )
 
-#
-L_INST=DEFI_LIST_REEL(   DEBUT=0.0,
-                              INTERVALLE=_F( JUSQU_A = 1., NOMBRE = 1)
-                          )
 
 #
 TEMPEXT=100.
@@ -221,12 +217,28 @@ CHMATB=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=(
 #
 # RECUPERATION DU CHAMP DE TEMPERATURE A T = 0.312 S
 #
-TEMP1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+
+L_INST1=DEFI_LIST_REEL(   DEBUT=0.0,
+                              INTERVALLE=_F( JUSQU_A = 0.312, NOMBRE = 1)
+                          )
+
+RESU1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
                           RESULTAT=TEMP,
                           NOM_CHAM='TEMP',
                               INST=0.312
                        )
 
+TEMP1=CREA_RESU(OPERATION='AFFE',
+                 TYPE_RESU='EVOL_THER',
+                 NOM_CHAM='TEMP',
+                 AFFE=_F(CHAM_GD=T0,
+                         INST=.0,),);
+
+TEMP1=CREA_RESU(reuse=TEMP1,OPERATION='AFFE',
+                 TYPE_RESU='EVOL_THER',
+                 NOM_CHAM='TEMP',
+                 AFFE=_F(CHAM_GD=RESU1,
+                         INST=0.312,),);
 #
 # FISSURE BLOQUEE
 #
@@ -244,9 +256,10 @@ CH1A=AFFE_CHAR_MECA(           MODELE=MO,
                             )
 
 #
-
+INSME1A=DEFI_LIST_REEL(VALE=0.312);
 CHDEP1A=MECA_STATIQUE(        MODELE=MO,
                               CHAM_MATER=CHMATA,
+                                   LIST_INST=INSME1A,
                                    EXCIT=_F( CHARGE = CH1A),
                           )
 
@@ -305,7 +318,7 @@ CHDEP1B=STAT_NON_LINE(
                             NEWTON=_F(
                 MATRICE = 'ELASTIQUE'),
                          INCREMENT=_F(
-                LIST_INST = L_INST),
+                LIST_INST = L_INST1),
                        CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 7,
                 RESI_GLOB_RELA = 1.0E-4)
@@ -349,11 +362,26 @@ TEST_RESU(    CHAM_ELEM=_F(  CHAM_GD = SIGM1A,
 #
 # RECUPERATION DU CHAMP DE TEMPERATURE A T = 12.48 S
 #
-TEMP2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+L_INST2=DEFI_LIST_REEL(   DEBUT=0.0,
+                              INTERVALLE=_F( JUSQU_A = 12.48, NOMBRE = 1)
+                          )
+RESU2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
                           RESULTAT=TEMP,
                           NOM_CHAM='TEMP',
                               INST=12.48
                        )
+TEMP2=CREA_RESU(OPERATION='AFFE',
+                 TYPE_RESU='EVOL_THER',
+                 NOM_CHAM='TEMP',
+                 AFFE=_F(CHAM_GD=T0,
+                         INST=.0,),);
+
+TEMP2=CREA_RESU(reuse=TEMP2,OPERATION='AFFE',
+                 TYPE_RESU='EVOL_THER',
+                 NOM_CHAM='TEMP',
+                 AFFE=_F(CHAM_GD=RESU2,
+                         INST=12.48,),);
+#                         INST=0.312,),);
 
 #
 # FISSURE BLOQUEE
@@ -372,9 +400,10 @@ CH2A=AFFE_CHAR_MECA(           MODELE=MO,
                             )
 
 #
-
+INSME2A=DEFI_LIST_REEL(VALE=12.48);
 CHDEP2A=MECA_STATIQUE(         MODELE=MO,
                                CHAM_MATER=CHMATA,
+                                    LIST_INST=INSME2A,
                                     EXCIT=_F( CHARGE = CH2A),
                            )
 
@@ -435,7 +464,7 @@ CHDEP2B=STAT_NON_LINE(
                             NEWTON=_F(
                 MATRICE = 'ELASTIQUE'),
                          INCREMENT=_F(
-                LIST_INST = L_INST),
+                LIST_INST = L_INST2),
                        CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 7,
                 RESI_GLOB_RELA = 1.0E-4)
@@ -479,12 +508,25 @@ TEST_RESU(   CHAM_ELEM=_F(  CHAM_GD = SIGM2A,
 #
 # RECUPERATION DU CHAMP DE TEMPERATURE A T = 312. S
 #
-TEMP3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+L_INST3=DEFI_LIST_REEL(   DEBUT=0.0,
+                              INTERVALLE=_F( JUSQU_A = 312., NOMBRE = 1)
+                          )
+RESU3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
                           RESULTAT=TEMP,
                           NOM_CHAM='TEMP',
                               INST=312.
                        )
+TEMP3=CREA_RESU(OPERATION='AFFE',
+                 TYPE_RESU='EVOL_THER',
+                 NOM_CHAM='TEMP',
+                 AFFE=_F(CHAM_GD=T0,
+                         INST=.0,),);
 
+TEMP3=CREA_RESU(reuse=TEMP3,OPERATION='AFFE',
+                 TYPE_RESU='EVOL_THER',
+                 NOM_CHAM='TEMP',
+                 AFFE=_F(CHAM_GD=RESU3,
+                         INST=312.,),);
 #
 # FISSURE BLOQUEE
 #
@@ -502,9 +544,10 @@ CH3A=AFFE_CHAR_MECA(           MODELE=MO,
                             )
 
 #
-
+INSME3A=DEFI_LIST_REEL(VALE=312.);
 CHDEP3A=MECA_STATIQUE(         MODELE=MO,
                                CHAM_MATER=CHMATA,
+                                    LIST_INST=INSME3A,
                                     EXCIT=_F( CHARGE = CH3A),
                             )
 
@@ -564,7 +607,7 @@ CHDEP3B=STAT_NON_LINE(
                             NEWTON=_F(
                 MATRICE = 'ELASTIQUE'),
                          INCREMENT=_F(
-                LIST_INST = L_INST),
+                LIST_INST = L_INST3),
                        CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 7,
                 RESI_GLOB_RELA = 1.0E-4)
@@ -648,7 +691,8 @@ THETA3=CALC_THETA(    MODELE=MO,
 # POUR FO = 0.001
 #
 G01B=CALC_G_THETA_T(        MODELE=MO,
-                                DEPL=DEP1B,
+                                 RESULTAT=CHDEP1B,
+                                 NUME_ORDRE=1,
                                THETA=THETA0,
                               EXCIT=_F(CHARGE=CH1B,),
                           CHAM_MATER=CHMATB,
@@ -657,7 +701,8 @@ G01B=CALC_G_THETA_T(        MODELE=MO,
 
 #
 G01B1=CALC_G_THETA_T(        MODELE=MO,
-                                 DEPL=DEP1B,
+                                 RESULTAT=CHDEP1B,
+                                 NUME_ORDRE=1,
                                 THETA=THETA1,
                                EXCIT=_F(CHARGE=CH1B,),
                            CHAM_MATER=CHMATB,
@@ -666,7 +711,8 @@ G01B1=CALC_G_THETA_T(        MODELE=MO,
 
 #
 G01B2=CALC_G_THETA_T(        MODELE=MO,
-                                 DEPL=DEP1B,
+                                 RESULTAT=CHDEP1B,
+                                 NUME_ORDRE=1,
                                 THETA=THETA2,
                                EXCIT=_F(CHARGE=CH1B,),
                            CHAM_MATER=CHMATB,
@@ -675,7 +721,8 @@ G01B2=CALC_G_THETA_T(        MODELE=MO,
 
 #
 G01B3=CALC_G_THETA_T(        MODELE=MO,
-                                 DEPL=DEP1B,
+                                 RESULTAT=CHDEP1B,
+                                 NUME_ORDRE=1,
                                 THETA=THETA3,
                                EXCIT=_F(CHARGE=CH1B,),
                            CHAM_MATER=CHMATB,
@@ -718,7 +765,8 @@ TEST_TABLE(       TABLE=G01B3,
 # POUR FO = 0.004
 #
 G02B=CALC_G_THETA_T(        MODELE=MO,
-                                DEPL=DEP2B,
+                                 RESULTAT=CHDEP2B,
+                                 NUME_ORDRE=1,
                                THETA=THETA0,
                               EXCIT=_F(CHARGE=CH2B,),
                           CHAM_MATER=CHMATB,
@@ -727,7 +775,8 @@ G02B=CALC_G_THETA_T(        MODELE=MO,
 
 #
 G02B1=CALC_G_THETA_T(        MODELE=MO,
-                                 DEPL=DEP2B,
+                                 RESULTAT=CHDEP2B,
+                                 NUME_ORDRE=1,
                                 THETA=THETA1,
                                EXCIT=_F(CHARGE=CH2B,),
                            CHAM_MATER=CHMATB,
@@ -736,7 +785,8 @@ G02B1=CALC_G_THETA_T(        MODELE=MO,
 
 #
 G02B2=CALC_G_THETA_T(        MODELE=MO,
-                                 DEPL=DEP2B,
+                                 RESULTAT=CHDEP2B,
+                                 NUME_ORDRE=1,
                                 THETA=THETA2,
                                EXCIT=_F(CHARGE=CH2B,),
                            CHAM_MATER=CHMATB,
@@ -745,7 +795,8 @@ G02B2=CALC_G_THETA_T(        MODELE=MO,
 
 #
 G02B3=CALC_G_THETA_T(        MODELE=MO,
-                                 DEPL=DEP2B,
+                                 RESULTAT=CHDEP2B,
+                                 NUME_ORDRE=1,
                                 THETA=THETA3,
                                EXCIT=_F(CHARGE=CH2B,),
                            CHAM_MATER=CHMATB,
@@ -788,7 +839,8 @@ TEST_TABLE(       TABLE=G02B3,
 # POUR FO = 1
 #
 G03B=CALC_G_THETA_T(        MODELE=MO,
-                                DEPL=DEP3B,
+                                 RESULTAT=CHDEP3B,
+                                 NUME_ORDRE=1,
                                THETA=THETA0,
                               EXCIT=_F(CHARGE=CH3B,),
                           CHAM_MATER=CHMATB,
@@ -797,7 +849,8 @@ G03B=CALC_G_THETA_T(        MODELE=MO,
 
 #
 G03B1=CALC_G_THETA_T(        MODELE=MO,
-                                 DEPL=DEP3B,
+                                 RESULTAT=CHDEP3B,
+                                 NUME_ORDRE=1,
                                 THETA=THETA1,
                                EXCIT=_F(CHARGE=CH3B,),
                            CHAM_MATER=CHMATB,
@@ -806,7 +859,8 @@ G03B1=CALC_G_THETA_T(        MODELE=MO,
 
 #
 G03B2=CALC_G_THETA_T(        MODELE=MO,
-                                 DEPL=DEP3B,
+                                 RESULTAT=CHDEP3B,
+                                 NUME_ORDRE=1,
                                 THETA=THETA2,
                                EXCIT=_F(CHARGE=CH3B,),
                            CHAM_MATER=CHMATB,
@@ -815,7 +869,8 @@ G03B2=CALC_G_THETA_T(        MODELE=MO,
 
 #
 G03B3=CALC_G_THETA_T(        MODELE=MO,
-                                 DEPL=DEP3B,
+                                 RESULTAT=CHDEP3B,
+                                 NUME_ORDRE=1,
                                 THETA=THETA3,
                                EXCIT=_F(CHARGE=CH3B,),
                            CHAM_MATER=CHMATB,

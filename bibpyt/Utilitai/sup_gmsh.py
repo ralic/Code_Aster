@@ -1,4 +1,4 @@
-#@ MODIF sup_gmsh Utilitai  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF sup_gmsh Utilitai  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,8 +17,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-
-
 
 import os.path, string, os, copy
 from Numeric import *

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE 2D_DISCRET EN NON-LINEAIRE -
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,9 +44,9 @@ MOD=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
 
 CELEM=AFFE_CARA_ELEM(   MODELE=MOD,
                VERIF=( 'MAILLE',  'NOEUD',  ),
-                DISCRET= _F(  GROUP_MA = 'GRMA',
-                               CARA = 'K_T_D_L',
-                               VALE = (1000., 1000.,),)
+                DISCRET_2D= _F( GROUP_MA = 'GRMA',
+                                CARA = 'K_T_D_L',
+                                VALE = (1000., 1000.,),)
                      )
 
 CH=AFFE_CHAR_MECA(

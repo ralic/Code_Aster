@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PORTIQUE A LIAISON LATERALE  (EULER) FORCE PONCTUELLE + REPARTIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,23 +37,23 @@ ACIER=DEFI_MATERIAU(ELAS=_F( E = 2.0E+11,NU = 0.,RHO = 0.,ALPHA = 0.) )
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F( TOUT = 'OUI',MATER = ACIER))
 
-CAREL1=AFFE_CARA_ELEM( MODELE=MO1,POUTRE=(
-                    _F( SECTION = 'RECTANGLE',CARA = 'H',
-                            MAILLE = 'AB',          VALE = 0.04),
-                           _F( MAILLE = ('AC','AG','GD',),  VALE = 0.01, 
-                           SECTION = 'RECTANGLE',CARA = 'H'),
-                           _F( MAILLE = 'AE',    
-                           SECTION = 'RECTANGLE', CARA = ( 'H1', 'H2',),
-                            VALE = ( 0.02, 0.02, )))          )
+CAREL1=AFFE_CARA_ELEM( MODELE=MO1,
+                 POUTRE=(_F( MAILLE = 'AB',     SECTION = 'RECTANGLE',
+                             CARA = 'H',        VALE = 0.04   ),
+                         _F( MAILLE = ('AC','AG','GD',),  SECTION = 'RECTANGLE',
+                             CARA = 'H',        VALE = 0.01  ),
+                         _F( MAILLE = 'AE',     SECTION = 'RECTANGLE',  
+                             VARI_SECT = 'HOMOTHETIQUE',
+                             CARA = ( 'H1', 'H2',), VALE = ( 0.02, 0.02, ),),),  )
 
-CAREL2=AFFE_CARA_ELEM( MODELE=MO2,POUTRE=(
-                    _F( SECTION = 'RECTANGLE',CARA = 'H',
-                            MAILLE = 'AB',          VALE = 0.04),
-                           _F( MAILLE = ('AC','AG','GD',),  VALE = 0.01,
-                           SECTION = 'RECTANGLE',CARA = 'H'),
-                           _F( MAILLE = 'AE',   SECTION = 'RECTANGLE',
-                             CARA = ( 'H1', 'H2',),
-                            VALE = ( 0.02, 0.02, )))          )
+CAREL2=AFFE_CARA_ELEM( MODELE=MO2,
+                 POUTRE=(_F( MAILLE = 'AB',   SECTION = 'RECTANGLE',
+                             CARA = 'H',      VALE = 0.04 ),
+                         _F( MAILLE = ('AC','AG','GD',), SECTION = 'RECTANGLE',
+                             CARA = 'H',      VALE = 0.01,),
+                         _F( MAILLE = 'AE',   SECTION = 'RECTANGLE',
+                             VARI_SECT = 'HOMOTHETIQUE',
+                             CARA = ( 'H1', 'H2',), VALE = ( 0.02, 0.02, ),),),   )
 
 CH111=AFFE_CHAR_MECA( MODELE=MO1,DDL_IMPO=(
           _F( TOUT = 'OUI',    DZ = 0., DRX = 0., DRY = 0.),
@@ -204,13 +204,13 @@ TEST_RESU(
 # ------------------------------------------------
 
 CARE21=AFFE_CARA_ELEM( MODELE=MO1,
-                    ORIENTATION=_F(  MAILLE = 'AB', CARA = 'ANGL_VRIL', VALE = -90.),POUTRE=(
-                    _F( SECTION = 'RECTANGLE',CARA = 'H',
-                            MAILLE = 'AB',          VALE = 0.04),
-                           _F( MAILLE = ('AC','AG','GD',),  
-                           SECTION = 'RECTANGLE',CARA = 'H', VALE = 0.01),
-                           _F( MAILLE = 'AE',          
-                           SECTION = 'RECTANGLE',CARA = 'H', VALE = 0.02)) )
+                    ORIENTATION=_F(  MAILLE = 'AB', CARA = 'ANGL_VRIL', VALE = -90.),
+                    POUTRE=( _F( SECTION = 'RECTANGLE',CARA = 'H',
+                                 MAILLE = 'AB',          VALE = 0.04),
+                             _F( MAILLE = ('AC','AG','GD',),  
+                                 SECTION = 'RECTANGLE',CARA = 'H', VALE = 0.01),
+                             _F( MAILLE = 'AE',          
+                                 SECTION = 'RECTANGLE',CARA = 'H', VALE = 0.02)) )
 
 CH521=AFFE_CHAR_MECA_F(   MODELE=MO1,
           FORCE_NODALE=_F( NOEUD = 'G',      FY = C15),
@@ -224,13 +224,13 @@ TEST_RESU(
    NOEUD = 'A',  NOM_CMP = 'DRZ', VALE = 0.227118,       PRECISION = 2.E-3) )
 
 CARE22=AFFE_CARA_ELEM( MODELE=MO2,
-                    ORIENTATION=_F(  MAILLE = 'AB', CARA = 'ANGL_VRIL', VALE = -90.),POUTRE=(
-                    _F( SECTION = 'RECTANGLE',CARA = 'H',
-                            MAILLE = 'AB',          VALE = 0.04),
-                           _F( MAILLE = ('AC','AG','GD',),  
-                           SECTION = 'RECTANGLE',CARA = 'H', VALE = 0.01),
-                           _F( MAILLE = 'AE',          
-                           SECTION = 'RECTANGLE',CARA = 'H', VALE = 0.02)) )
+                    ORIENTATION=_F(  MAILLE = 'AB', CARA = 'ANGL_VRIL', VALE = -90.),
+                    POUTRE=(_F( SECTION = 'RECTANGLE',CARA = 'H',
+                                MAILLE = 'AB',          VALE = 0.04),
+                            _F( MAILLE = ('AC','AG','GD',),  
+                                SECTION = 'RECTANGLE',CARA = 'H', VALE = 0.01),
+                            _F( MAILLE = 'AE',          
+                                SECTION = 'RECTANGLE',CARA = 'H', VALE = 0.02)) )
 
 CH522=AFFE_CHAR_MECA_F(   MODELE=MO2,
           FORCE_NODALE=_F( NOEUD = 'G',      FY = C15),

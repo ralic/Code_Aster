@@ -1,4 +1,4 @@
-#@ MODIF calc_eolienne Outils  DATE 28/09/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF calc_eolienne Outils  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1421,38 +1421,43 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
       # Creation de mots-cles pour les IMPR_RESU
       for impr in IMPRESSION :
         if impr['FORMAT']=='RESULTAT':
-          DEFI_FICHIER(FICHIER=fich1,NOM_SYSTEME=fich1b)
-          fichr = fich1
+          UNIT_1B=DEFI_FICHIER(FICHIER=fich1b)
+          unitr = UNIT_1B
         if impr['FORMAT']=='CASTEM':
-          DEFI_FICHIER(FICHIER=fich2,NOM_SYSTEME=fich2b)
-          fichr = fich2
+          UNIT_2B=DEFI_FICHIER(FICHIER=fich2b)
+          unitr = UNIT_2B
         if impr['FORMAT']=='ENSIGHT':
-          DEFI_FICHIER(FICHIER=fich3,NOM_SYSTEME=fich3b)
-          fichr = fich3
+          UNIT_3B=DEFI_FICHIER(FICHIER=fich3b)
+          unitr = UNIT_3B
         if impr['FORMAT']=='IDEAS':
-          DEFI_FICHIER(FICHIER=fich4,NOM_SYSTEME=fich4b)
-          fichr = fich4
+          UNIT_4B=DEFI_FICHIER(FICHIER=fich4b)
+          unitr = UNIT_4B
         if MODELISATION == '3D':    
-             motscles['IMPRESSION'].append(_F(FORMAT=impr['FORMAT'],MAILLAGE=MA[j],RESULTAT=RESU,FICHIER=fichr,
+             motscles['IMPRESSION'].append(_F(MAILLAGE=MA[j],RESULTAT=RESU,
                                              NOM_CHAM=('DEPL','SIGM_ELNO_DEPL','EQUI_ELNO_SIGM',),) )
         if MODELISATION == 'COQUE':      
-             motscles['IMPRESSION'].append(_F(FORMAT=impr['FORMAT'],MAILLAGE=MA2[j],RESULTAT=RESU,FICHIER=fichr,
+             motscles['IMPRESSION'].append(_F(MAILLAGE=MA2[j],RESULTAT=RESU,
                                            NOM_CHAM=('DEPL','SIGM_ELNO_DEPL','EQUI_ELNO_SIGM',),) )
         if MODELISATION == 'POUTRE':     
-             motscles['IMPRESSION'].append(_F(FORMAT=impr['FORMAT'],MAILLAGE=MA[j],RESULTAT=RESU,FICHIER=fichr,
+             motscles['IMPRESSION'].append(_F(MAILLAGE=MA[j],RESULTAT=RESU,
                                            NOM_CHAM=('DEPL','SIGM_ELNO_SIEF','SIPO_ELNO_SIEF',),) )
 
-      IMPR_RESU(RESU=motscles['IMPRESSION'],)
+      IMPR_RESU(FORMAT=impr['FORMAT'],UNITE=unitr,
+                RESU=motscles['IMPRESSION'],)
 
       for impr in IMPRESSION :
         if impr['FORMAT']=='RESULTAT':
-          DEFI_FICHIER(ACTION='LIBERER',NOM_SYSTEME=fich1b)
+          DEFI_FICHIER(ACTION='LIBERER',FICHIER=fich1b)
+          DETRUIRE(CONCEPT=_F( NOM = UNIT_1B))
         if impr['FORMAT']=='CASTEM':
-          DEFI_FICHIER(ACTION='LIBERER',NOM_SYSTEME=fich2b)
+          DEFI_FICHIER(ACTION='LIBERER',FICHIER=fich2b)
+          DETRUIRE(CONCEPT=_F( NOM = UNIT_2B))
         if impr['FORMAT']=='ENSIGHT':
-          DEFI_FICHIER(ACTION='LIBERER',NOM_SYSTEME=fich3b)
+          DEFI_FICHIER(ACTION='LIBERER',FICHIER=fich3b)
+          DETRUIRE(CONCEPT=_F( NOM = UNIT_3B))
         if impr['FORMAT']=='IDEAS':
-          DEFI_FICHIER(ACTION='LIBERER',NOM_SYSTEME=fich4b)
+          DEFI_FICHIER(ACTION='LIBERER',FICHIER=fich4b)
+          DETRUIRE(CONCEPT=_F( NOM = UNIT_4B))
       
       if (MODELISATION == '3D') and (FATIGUE != None) :
          DETRUIRE(CONCEPT=_F( NOM = SIG_PRO))
@@ -1498,9 +1503,10 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
       motscles={}
       motscles['IMPRESSION']=[]
 
-      motscles['IMPRESSION'].append(_F(FORMAT=impr['FORMAT'],MAILLAGE=mail_ref,CHAM_GD=CHFATI,) )
+      motscles['IMPRESSION'].append(_F(MAILLAGE=mail_ref,CHAM_GD=CHFATI,) )
 
-    IMPR_RESU( MODELE   = MOREF,
+    IMPR_RESU( FORMAT=impr['FORMAT'],
+               MODELE   = MOREF,
                RESU=motscles['IMPRESSION'],)
 
 #____________________________________________________________________

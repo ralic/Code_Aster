@@ -3,10 +3,10 @@
      &                   CONVER, ECHLDC, ECHEQU, ECHCON, FINPAS, 
      &                   CRITNL, NUMINS, FOINER, PARTPS, PARMET,
      &                   NEQ,    DEPDEL, AUTOC1, AUTOC2, VECONT,
-     &                   LREAC,  CNVFRE, CNVCF1)
+     &                   LREAC,  CNVFRE, MAILLA, CNVCF1)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,7 @@ C ======================================================================
       CHARACTER*19  CRITNL, CNRESI, CNDIRI, CNFEXT, CNVCFO, CNVFRE
       CHARACTER*19  FOINER, PARTPS, AUTOC1, AUTOC2, CNVCF1
       CHARACTER*24  DEPDEL
+      CHARACTER*8   MAILLA
 C ----------------------------------------------------------------------
 C
 C     COMMANDE STAT_NON_LINE : VERIFICATION DES CRITERES D'ARRET
@@ -91,8 +92,9 @@ C OUT   ECHLDC    : .TRUE. SI ECHEC INTEGRATION LOI DE COMPORTEMENT
 C OUT   ECHCON    : .TRUE. SI ECHEC TRAITEMENT DU CONTACT UNILATERAL
 C OUT   ECHEQU    : .TRUE. SI MATASS SINGULIERE
 C OUT   FINPAS    : .TRUE. SI ON NE FAIT PLUS D'AUTRES PAS DE TEMPS
-C OUT   MAXREL  : .TRUE. SI CRITERE RESI_GLOB_RELA ET CHARGEMENT = 0,
+C OUT   MAXREL    : .TRUE. SI CRITERE RESI_GLOB_RELA ET CHARGEMENT = 0,
 C                             ON UTILISE RESI_GLOB_MAXI
+C IN    MAILLA    : NOM DU MAILLAGE
 C IN/JXOUT CRITNL : SYNTHESE DES RESULTATS DE CONVERGENCE POUR ARCHIVAGE
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
@@ -268,7 +270,6 @@ C         SI C'EST UN DDL DE LAGRANGE : LA CONVERGENCE EST IMMEDIATE
 C        (PAS DE LIAISON NON LINEAIRE DANS ASTER) : ON NE LA TESTE PAS
         ENDIF  
  20   CONTINUE
- 
       
       INFO(3) = VMAX1
       INFO(4) = VMAX3
@@ -293,6 +294,7 @@ C     A DES FORCES NODALES NULLES
      &       'INITIALES INDUISENT DES CONTRAINTES INCOMPATIBLES')
          ENDIF
       ENDIF
+
 
 C -- CRITERES DU LAGRANGIEN AUGMENTE
 
@@ -353,8 +355,8 @@ C ======================================================================
 C ======================================================================
 C --- CONVERGENCE ADAPTEE AU CONTACT -----------------------------------
 C ======================================================================
-            CALL CVGCNT(ITEMAX, NEQ, DEPDEL, AUTOC1, AUTOC2, VECONT,
-     +                                                            LREAC)
+            CALL CVGCNT(MAILLA,ITEMAX,NEQ,DEPDEL,AUTOC1,AUTOC2,
+     &                  VECONT,LREAC)
          ELSE
 C ======================================================================
 C --- LE NOMBRE D'ITERATIONS MAXIMAL EST_IL ATTEINT? -------------------

@@ -5,7 +5,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF POSTRELE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -225,7 +225,6 @@ C
      &            NBPOIN, NBPOI1, RESULT)
 C
 C
-      CALL JEDETC('V','&&OP0185',1)
       CALL JEDEMA ( )
 C
       END

@@ -1,7 +1,7 @@
       SUBROUTINE OP0045(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/08/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -1026,9 +1026,6 @@ C     ----------- DESTRUCTION DES AUXILLIAIRES DE CALCUL  --------------
 C     ------------------------------------------------------------------
 
  999  CONTINUE
-      CALL JEDETC('V','.&',20)
-      CALL JEDETC('V','&&OP0045',1)
-      CALL JEDETC('V',VECRIG,1)
 
 C     ------------------------------------------------------------------
 
@@ -1051,8 +1048,6 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 
  9999 CONTINUE
-      CALL JEDETR(CBORFR)
-      CALL JEDETR(CBORCR)
       CALL JEDEMA()
 C
 C     FIN DE OP0045

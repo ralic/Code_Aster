@@ -1,6 +1,6 @@
-      SUBROUTINE FGEQUI(T,TYP,NDIM,EQUI)
+      SUBROUTINE FGEQUI ( T, TYP, NDIM, EQUI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,13 +26,18 @@ C                        . VON MISES                    (= 1 VALEUR)
 C                        . TRESCA                       (= 1 VALEUR)
 C                        . CONTRAINTES PRINCIPALES      (= 3 VALEURS)
 C                        . VON-MISES * SIGNE (PRESSION) (= 1 VALEUR)
+C                        . DIRECTION DES CONTRAINTES PRINCIPALES 
+C                                                       (=3*3 VALEURS)
 C               . DEFORMATIONS EQUIVALENTES  :
 C                        . SECOND INVARIANT             (= 1 VALEUR)
 C                        . DEFORMATIONS PRINCIPALES     (= 3 VALEURS)
 C                        . 2EME INV. * SIGNE (1ER.INV.) (= 1 VALEUR)
+C                        . DIRECTION DES CONTRAINTES PRINCIPALES 
+C                                                       (=3*3 VALEURS)
 C ----------------------------------------------------------------------
 C     IN     T     TENSEUR CONTRAINTE OU DEFORMATION (XX YY ZZ XY XZ YZ)
-C            TYP   TYPE DU TENSEUR 'SIGM' OU 'EPSI'
+C            TYP   TYPE DU TENSEUR 'SIGM' OU 'EPSI' SUIVI EVENTUELLEMENT
+C            DES CARACTERES _DIR POUR CALCULER LES VECTEURS DIRECTEURS
 C            NDIM  DIMENSION ESPACE 3 OU 2
 C     OUT    EQUI  VECTEUR DES GRANDEURS EQUIVALENTES
 C ----------------------------------------------------------------------
@@ -42,101 +47,130 @@ C ----------------------------------------------------------------------
       REAL*8         TOL, TOLDYN
       INTEGER        NBVEC, NPERM
       INTEGER        NDIM, TYPE, IORDRE
-      CHARACTER*4    TYP
+      CHARACTER*(*)    TYP
       CHARACTER*3    LCQEQV
       COMMON /TDIM/  NT,ND
       DATA   NUL     /6*0.D0/
       DATA   NPERM ,TOL,TOLDYN    /12,1.D-10,1.D-2/
 C ----------------------------------------------------------------------
 C
-        IF      ( NDIM .EQ. 3 )THEN
-        NT = 6
-        ND = 3
-        ELSE IF ( NDIM .EQ. 2 ) THEN
-        NT = 4
-        ND = 3
-        ELSE IF ( NDIM .EQ. 1 ) THEN
-        NT = 1
-        ND = 1
-        ENDIF
+      IF      ( NDIM .EQ. 3 )THEN
+         NT = 6
+         ND = 3
+      ELSE IF ( NDIM .EQ. 2 ) THEN
+         NT = 4
+         ND = 3
+      ELSE IF ( NDIM .EQ. 1 ) THEN
+         NT = 1
+         ND = 1
+      ENDIF
 C
-C       TENSEUR TN = (XX YY ZZ RAC2.XY RAC2.XZ RAC2.YZ) (POUR LCIV2E)
+C --- TENSEUR TN = (XX YY ZZ RAC2.XY RAC2.XZ RAC2.YZ) (POUR LCIV2E)
 C
-        RAC2 = SQRT (2.D0)
-        DO 1 I  = 1,ND
-        TN(I)   = T(I)
- 1      CONTINUE
-        DO 2 I  = ND+1 , NT
-        TN(I)   = RAC2 * T(I)
- 2      CONTINUE
+      RAC2 = SQRT (2.D0)
+      DO 10 I  = 1,ND
+         TN(I)   = T(I)
+ 10   CONTINUE
+      DO 12 I  = ND+1 , NT
+         TN(I)   = RAC2 * T(I)
+ 12   CONTINUE
 C
-C       MATRICE TR = (XX XY XZ YY YZ ZZ) (POUR JACOBI)
+C --- MATRICE TR = (XX XY XZ YY YZ ZZ) (POUR JACOBI)
 C
-        TR(1) = T(1)
-        TR(2) = T(4)
-        TR(3) = T(5)
-        TR(4) = T(2)
-        TR(5) = T(6)
-        TR(6) = T(3)
+      TR(1) = T(1)
+      TR(2) = T(4)
+      TR(3) = T(5)
+      TR(4) = T(2)
+      TR(5) = T(6)
+      TR(6) = T(3)
 C
-C       MATRICE UNITE = (1 0 0 1 0 1) (POUR JACOBI)
+C --- MATRICE UNITE = (1 0 0 1 0 1) (POUR JACOBI)
 C
-        TU(1) = 1.D0
-        TU(2) = 0.D0
-        TU(3) = 0.D0
-        TU(4) = 1.D0
-        TU(5) = 0.D0
-        TU(6) = 1.D0
+      TU(1) = 1.D0
+      TU(2) = 0.D0
+      TU(3) = 0.D0
+      TU(4) = 1.D0
+      TU(5) = 0.D0
+      TU(6) = 1.D0
 C
-C       DEFORMATIONS
+C --- VALEURS PRINCIPALES
+      NBVEC = 3
 C
-          IF      ( TYP .EQ. 'EPSI' ) THEN
-C -       SECOND INVARIANT
-          EQUI(1) =  LCIV2E (TN)
-C -       VALEURS PRINCIPALES
-          NBVEC = 3
-          IF ( LCQEQV(TR,NUL) .EQ. 'OUI' ) THEN
-          EQUI(2) = 0.D0
-          EQUI(3) = 0.D0
-          EQUI(4) = 0.D0
-          ELSE
-          TYPE = 0
-          IORDRE = 0
-          CALL JACOBI(NBVEC,NPERM,TOL,TOLDYN,TR,TU,VECP,EQUI(2),JACAUX,
-     &                NITJAC,TYPE,IORDRE)
-          ENDIF
-C         PREMIER INVARIANT
-          CALL LCHYDR (TN,HYD)
-C         EQUIVALENT FATIGUE = SECOND INVARIANT * SIGNE(PREMIER INV)
-            IF ( HYD .GE. 0.D0 )EQUI(5) =   EQUI(1)
-            IF ( HYD .LT. 0.D0 )EQUI(5) = - EQUI(1)
+      DO 20 I = 1, NBVEC
+         DO 22 J = 1, NBVEC
+            VECP(J,I) = 0.0D0
+ 22      CONTINUE
+ 20   CONTINUE
 C
-C       CONTRAINTES
+C --- DEFORMATIONS
 C
-          ELSE IF ( TYP .EQ. 'SIGM' ) THEN
-C -       VON MISES = SECOND INVARIANT
-          EQUI(1) =  LCIV2S (TN)
-C -       VALEURS PRINCIPALES
-          NBVEC = 3
-          IF ( LCQEQV(TR,NUL) .EQ. 'OUI' ) THEN
-          EQUI(3) = 0.D0
-          EQUI(4) = 0.D0
-          EQUI(5) = 0.D0
-          ELSE
-          TYPE = 0
-          IORDRE = 0
-          CALL JACOBI(NBVEC,NPERM,TOL,TOLDYN,TR,TU,VECP,EQUI(3),JACAUX,
-     &                NITJAC,TYPE,IORDRE)
-          ENDIF
-C -       TRESCA = MAX DIFF VALEURS PRINCIPALES
-          EQUI(2) = MAX ( ABS(EQUI(3)-EQUI(4)),
-     +                    ABS(EQUI(3)-EQUI(5)),
-     +                    ABS(EQUI(4)-EQUI(5)) )
-C -       PREMIER INVARIANT
-          CALL LCHYDR (TN,HYD)
-C -       EQUIVALENT FATIGUE = SECOND INVARIANT * SIGNE(PREMIER INV)
-            IF ( HYD .GE. 0.D0 )EQUI(6) =   EQUI(1)
-            IF ( HYD .LT. 0.D0 )EQUI(6) = - EQUI(1)
-          ENDIF
+      IF      ( TYP(1:4) .EQ. 'EPSI' ) THEN
+C ------ SECOND INVARIANT
+         EQUI(1) =  LCIV2E (TN)
+         IF ( LCQEQV(TR,NUL) .EQ. 'OUI' ) THEN
+            EQUI(2) = 0.D0
+            EQUI(3) = 0.D0
+            EQUI(4) = 0.D0
+         ELSE
+            TYPE = 0
+            IORDRE = 0
+            CALL JACOBI(NBVEC,NPERM,TOL,TOLDYN,TR,TU,VECP,EQUI(2),
+     &                  JACAUX,NITJAC,TYPE,IORDRE)
+         ENDIF
+C ------ PREMIER INVARIANT
+         CALL LCHYDR (TN,HYD)
+C ------ EQUIVALENT FATIGUE = SECOND INVARIANT * SIGNE(PREMIER INV)
+         IF ( HYD .GE. 0.D0 )  EQUI(5) =   EQUI(1)
+         IF ( HYD .LT. 0.D0 )  EQUI(5) = - EQUI(1)
 C
-        END
+C ------ DIRECTION DES DEFORMATIONS PRINCIPALES DANS EQUI
+C -      DANS L ORDRE LES COORDONNEES DU VECTEUR PUIS PASSAGE
+C -      A L AUTRE VECTEUR
+         IF (TYP(5:8).EQ.'_DIR') THEN
+            DO 100 I=1,NBVEC
+               DO 102 J=1,NBVEC
+                  EQUI(5+((I-1)*NBVEC)+J) = VECP(J,I)
+ 102           CONTINUE
+ 100        CONTINUE
+         ENDIF
+C
+C --- CONTRAINTES
+C
+      ELSE IF ( TYP(1:4) .EQ. 'SIGM' ) THEN
+C ------ VON MISES = SECOND INVARIANT
+         EQUI(1) =  LCIV2S (TN)
+C
+         IF ( LCQEQV(TR,NUL) .EQ. 'OUI' ) THEN
+            EQUI(3) = 0.D0
+            EQUI(4) = 0.D0
+            EQUI(5) = 0.D0
+         ELSE
+            TYPE = 0
+            IORDRE = 0
+            CALL JACOBI(NBVEC,NPERM,TOL,TOLDYN,TR,TU,VECP,EQUI(3),
+     &                  JACAUX,NITJAC,TYPE,IORDRE)
+         ENDIF
+C ------ TRESCA = MAX DIFF VALEURS PRINCIPALES
+         EQUI(2) = MAX ( ABS(EQUI(3)-EQUI(4)),
+     +                   ABS(EQUI(3)-EQUI(5)),
+     +                   ABS(EQUI(4)-EQUI(5)) )
+C ------ PREMIER INVARIANT
+         CALL LCHYDR (TN,HYD)
+C ------ EQUIVALENT FATIGUE = SECOND INVARIANT * SIGNE(PREMIER INV)
+         IF ( HYD .GE. 0.D0 )EQUI(6) =   EQUI(1)
+         IF ( HYD .LT. 0.D0 )EQUI(6) = - EQUI(1)
+C
+C ------ DIRECTION DES CONTRAINTES PRINCIPALES DANS EQUI
+C -      DANS L ORDRE LES COORDONNEES DU VECTEUR PUIS PASSAGE 
+C -      A L AUTRE VECTEUR
+         IF (TYP(5:8).EQ.'_DIR') THEN
+            DO 200 I=1,NBVEC
+               DO 202 J=1,NBVEC
+                  EQUI(6+((I-1)*NBVEC)+J) = VECP(J,I)
+ 202           CONTINUE
+ 200        CONTINUE
+         ENDIF
+C
+      ENDIF
+C
+      END

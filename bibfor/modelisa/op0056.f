@@ -3,7 +3,7 @@
       INTEGER IER
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -669,7 +669,6 @@ C       COEFFICENTS DE CISAILLEMENT MOYENS
         DO 240 I = 57,56 + NV*NBCOU
           ZC(JOBMC-1+I) = 0.D0
   240   CONTINUE
-        CALL JEDETR('&&OP0056.EPOR')
       END IF
 
       IF (THER) THEN
@@ -808,7 +807,6 @@ C     ------ CARACTERISTIQUES THERMIQUES ------
           ZR(JOBTH-1+I) = QT(I)
           ZR(JOBTC-1+I) = 0.D0
   300   CONTINUE
-        CALL JEDETR('&&OP0056.EPOR')
       END IF
 
  1000 FORMAT (/,80 ('-'))

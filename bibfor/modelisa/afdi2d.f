@@ -7,7 +7,7 @@
       CHARACTER*8                CAR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/01/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,7 +122,6 @@ C - TR_D_N
                   ZR (JDV(J)+2) =  VAL(IV)
                   ZR (JDV(J)+3) =  VAL(IV)*VAL(IV+3)
                   ZR (JDV(J)+4) = -VAL(IV)*VAL(IV+2)
-                  ZR (JDV(J)+5) =  VAL(IV) * VAL(IV+8)
                   ZR (JDV(J)+5) =  VAL(IV+1)+ 
      +                VAL(IV)*(VAL(IV+2)*VAL(IV+2)+VAL(IV+3)*VAL(IV+3))
                   IV = IV + 4

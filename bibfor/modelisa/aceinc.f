@@ -15,7 +15,7 @@
       CHARACTER*16      MCLF(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,18 +125,18 @@ C
           NJ = 0
           NN = 0
           CALL GETVEM(NOMA,'GROUP_MA',MCLF(MCL),'GROUP_MA',
-     +              IOC,1,LMAX,ZK8(JDLS),NG)
+     +                                IOC,1,LMAX,ZK8(JDLS),NG)
           CALL GETVEM(NOMA,'MAILLE',MCLF(MCL),'MAILLE',
-     +            IOC,1,LMAX,ZK8(JDLS),NM)
-          IF ( MCL.EQ.3 .OR. MCL.EQ.4 ) THEN
+     +                                IOC,1,LMAX,ZK8(JDLS),NM)
+          IF ( MCL.EQ.3 .OR. MCL.EQ.4 .OR. MCL.EQ.14 ) THEN
             CALL GETVEM(NOMA,'GROUP_NO',MCLF(MCL),'GROUP_NO',
-     +                IOC,1,LMAX,ZK8(JDLS),NJ)
+     +                                  IOC,1,LMAX,ZK8(JDLS),NJ)
             CALL GETVEM(NOMA,'NOEUD',MCLF(MCL),'NOEUD',
-     +             IOC,1,LMAX,ZK8(JDLS),NN)
+     +                                  IOC,1,LMAX,ZK8(JDLS),NN)
           ELSEIF ( MCL.EQ.12 ) THEN
             CALL GETVR8(MCLF(MCL),'ORIG_AXE',IOC,1,0,R8B,NORIG)
           ENDIF
-          IF (MCL.EQ.1 .OR. MCL.EQ.3 .OR .MCL.EQ.4)THEN
+          IF (MCL.EQ.1 .OR. MCL.EQ.3 .OR .MCL.EQ.4 .OR .MCL.EQ.14)THEN
             CALL GETVTX(MCLF(MCL),'CARA',IOC,1,NBCAR,CAR,NCAR)
             IF (NCAR.GT.0) NCARA = NCAR
           ENDIF
@@ -175,7 +175,7 @@ C              IF (MCL.EQ.5) NOCAPC = NOCAPC + 1
      +                      NBECO,NBECA,NBEBA,NBEMA,NBEGR,NBEGB,
      +                            NUTYEL,NTYELE,CAR,NCARA,IVR,KIOC,IER)
  36           CONTINUE
-              IF (MCL.EQ.3) THEN
+              IF (MCL.EQ.3 .OR. MCL.EQ.14) THEN
                 DO 38 II = 1 , NCARA
                   DO 40 JJ = 1 , 3
                     IF (CAR(II)(1:1).EQ.KMA(JJ)) NOCADI(JJ)=NOCADI(JJ)+1
@@ -190,7 +190,7 @@ C ---     "MAILLE" = MAILLES DE LA LISTE DE MAILLES
             IF (MCL.EQ.2) THEN
                NOCACO = NOCACO + 1
                NMTGCO = NMTGCO + NM
-            ELSEIF (MCL.EQ.3) THEN
+            ELSEIF (MCL.EQ.3 .OR. MCL.EQ.14) THEN
                DO 42 II = 1 , NCARA
                   DO 44 JJ = 1 , 3
                      IF (CAR(II)(1:1).EQ.KMA(JJ)) THEN
@@ -236,7 +236,7 @@ C               NOCAPC = NOCAPC + 1
           ENDIF
 C
 C ---     MAILLES TARDIVES EXISTENT POUR CE MODELE :
-          IF (IXNW.NE.0 .AND. (MCL.EQ.3.OR.MCL.EQ.4) )THEN
+          IF (IXNW.NE.0 .AND. (MCL.EQ.3.OR.MCL.EQ.4.OR.MCL.EQ.14) )THEN
 C
 C ---   "GROUP_NO" = MAILLES TARDIVES DANS LA LISTE DE GROUPES DE NOEUDS
             IF (NJ.GT.0) THEN
@@ -257,7 +257,7 @@ C ---   "GROUP_NO" = MAILLES TARDIVES DANS LA LISTE DE GROUPES DE NOEUDS
      +                        NBECO,NBECA,NBEBA,NBEMA,NBEGR,NBEGB,
      +                            NUTYEL,NTYELE,CAR,NCARA,IVR,KIOC,IER)
  50             CONTINUE
-                IF (MCL.EQ.3) THEN
+                IF (MCL.EQ.3.OR.MCL.EQ.14) THEN
                   DO 54 II = 1 , NCARA
                     DO 56 JJ = 1 , 3
                       IF (CAR(II)(1:1).EQ.KMA(JJ)) THEN
@@ -286,7 +286,7 @@ C ---       "NOEUD" = MAILLES TARDIVES  DE LA LISTE DE NOEUDS
      +                      NBECO,NBECA,NBEBA,NBEMA,NBEGR,NBEGB,
      +                            NUTYEL,NTYELE,CAR,NCARA,IVR,KIOC,IER)
  58           CONTINUE
-              IF (MCL.EQ.3) THEN
+              IF (MCL.EQ.3.OR.MCL.EQ.14) THEN
                 DO 62 II = 1 , NCARA
                   DO 64 JJ = 1 , 3
                     IF (CAR(II)(1:1).EQ.KMA(JJ)) THEN
@@ -327,7 +327,7 @@ C     --------------------------------------------------
             ENDIF
  81       CONTINUE
         ENDIF
-        IF ( NBOCC(3) .NE. 0 ) THEN
+        IF ( NBOCC(3).NE.0 .OR. NBOCC(14).NE.0 ) THEN
           DO 82 I = NBEPO+1 , NBEPO+NBEDI
             IF (ZI(JDLM+NUMMAI-1).EQ.NTYELE(I)) THEN
                CALL UTMESS('A',CMD,'LA MAILLE '//NOMMAI//' N''A PAS ETE'

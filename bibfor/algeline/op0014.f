@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 MATASS,MATFAC,TYPE,PRECON
       CHARACTER*16 CONCEP,NOMCMD
       CHARACTER*19 MASS,MFAC
-      INTEGER NPREC
+      INTEGER NPREC,IATFAC,IBDEB,IBFIN,IBID,IER1,IFM,ILDEB,ILFIN
+      INTEGER IRET,ISINGU,ISTOP,JADIA
+      INTEGER LDTBLO,LFNBLO,NDECI,NEQ,NIV,NPVNEG   
       LOGICAL LPRECO
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -180,7 +182,6 @@ C     --------------------------------------------------------------
 
       CALL JEDETR(MFAC//'.&VDI')
       CALL JEDETR(MFAC//'.&TRA')
-      CALL JEDETR('&&MLTFR8.POINTEUR_REELS')
       CALL TITRE
       CALL JEDEMA()
       END

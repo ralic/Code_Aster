@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/07/2004   AUTEUR GENIAUT S.GENIAUT 
+C MODIF CALCULEL  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -528,27 +528,6 @@ C=======================================================================
       ENDIF
 
       CALL TITRE
-
-      CALL JEDETR('&&OP0077.CHARGES')
-      CALL JEDETR('&&OP0077.VECTORDR')
-
-      CALL JEDETR(BASLOC)
-      CALL JEDETR(COURB)
-
-      CALL JEDETC(' ',THETAI,1)
-      CALL JEDETC('V','.CODI',20)
-      CALL JEDETC('V','.MATE_CODE',9)
-      CALL JEDETC('G','&&NMDORC',1)
-      CALL JEDETC('V','1',1)
-      CALL JEDETC('V','2',1)
-      CALL JEDETC('V','3',1)
-      CALL JEDETC('V','4',1)
-      CALL JEDETC('V','5',1)
-      CALL JEDETC('V','6',1)
-      CALL JEDETC('V','7',1)
-      CALL JEDETC('V','8',1)
-      CALL JEDETC('V','9',1)
-      CALL JEDETC('V','&&',1)
 
       CALL JEDEMA()
       END

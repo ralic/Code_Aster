@@ -1,7 +1,7 @@
       SUBROUTINE OP0044(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/08/2004   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -743,12 +743,6 @@ C PARAMETRE POUR VERIF. DE STURM ETENDUE (INACTIVE DANS OP0044)
      +         ZR(LRESUR),ZR(LRESUR+3*MXRESF),ZR(LRESUR+MXRESF),TYPRES,
      +         STURM, NBLAGR)
 CCC      IF ( CTYP .EQ. 'E' ) IER = IER + IERX
-
-C     ------------------------------------------------------------------
-C     ----------- DESTRUCTION DES AUXILLIAIRES DE CALCUL  --------------
-C     ------------------------------------------------------------------
-
-      CALL JEDETC('V','&&OP0044',1)
 
 C     ------------------------------------------------------------------
 

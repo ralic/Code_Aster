@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE AILETTE FISSUREE AVEC CONTACT
@@ -258,10 +258,10 @@ TEST_RESU(RESU=(
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='A4',
-                   VALE=4.34778E-02,
+                   VALE=4.34230E-02,
                    INST=500,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.2.2',),
+                   VERSION='7.3.23',),
   
                  _F(RESULTAT=RESU,
                    NOM_CHAM='VITE',

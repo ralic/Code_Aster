@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE RESSORT NON LINEAIRE INCLUANT DU FROTTEMENT DE COULOMB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,7 @@ MO=AFFE_MODELE(        MAILLAGE=MA,
 
 CAREL=AFFE_CARA_ELEM(   MODELE=MO,
                            DISCRET=_F(  GROUP_MA = 'DISC',
-                                     CARA = (   'K_T_D_L', ),
+                                     CARA = 'K_T_D_L',
                                      VALE = (    1.E3, 1.E3, 1.E3, ))
                         )
 

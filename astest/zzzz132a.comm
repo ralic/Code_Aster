@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 29/09/2004   AUTEUR MJBHHPE J.L.FLEJOU 
 # RESPONSABLE DURAND C.DURAND
 # TITRE VALIDATION DE NON REGRESSION DE LA LECTURE DE DONNEES MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -261,23 +261,28 @@ CALC_ELEM( reuse= MECATER ,RESULTAT= MECATER ,
                                          'EPSI_ELNO_DEPL', )
                          )
 
+#  PASSAGE D'UN CODAGE DES NOMS ET DES MAILLES DE BASE 10 EN BASE 36
+#          NOEUD  = 'N96'   ==> N2O
+#          MAILLE = 'M16',  ==> MG
+#          NOEUD  = 'N1',   ==> N1
+
 TEST_RESU(RESU=(
     _F( RESULTAT = MECATER,
           NUME_ORDRE = 1,
           NOM_CHAM = 'DEPL',
-          NOEUD = 'N96',
+          NOEUD   = 'N2O',
           NOM_CMP = 'DX',
-          VALE = -1.24897E-04),
+          VALE    = -1.24897E-04),
     _F( RESULTAT = MECATER,
           NUME_ORDRE = 1,
           NOM_CHAM = 'DEPL',
-          NOEUD = 'N96',
-          NOM_CMP = 'DY',
-          VALE = 4.26518E-05),
+          NOEUD    = 'N2O',
+          NOM_CMP  = 'DY',
+          VALE     = 4.26518E-05),
     _F( RESULTAT = MECATER,
           NUME_ORDRE = 21,
           NOM_CHAM = 'SIGM_ELNO_DEPL',
-          MAILLE = 'M16',
+          MAILLE = 'MG',
           NOEUD = 'N1',
           NOM_CMP = 'SIYY',
           VALE = 2.63537E+05))
@@ -302,17 +307,24 @@ THER_1=LIRE_CHAMP( MAILLAGE=MA,
                    NUME_PT = 1,
                    TYPE_CHAM='NOEU_TEMP_R'
                    )
+
+
+#  PASSAGE D'UN CODAGE DES NOMS ET DES MAILLES DE BASE 10 EN BASE 36
+#          NOEUD = 'N1240',  ==> NYG
+#          NOEUD = 'N685',   ==> NJ1
+#          NOEUD = 'N16',    ==> NG
+
 TEST_RESU(CHAM_NO=(
     _F( CHAM_GD = THER_1,
-          NOEUD = 'N1240',
+          NOEUD = 'NYG',
           NOM_CMP = 'TEMP',
           VALE = 1.00000E+00),
     _F( CHAM_GD = THER_1,
-          NOEUD = 'N685',
+          NOEUD = 'NJ1',
           NOM_CMP = 'TEMP',
           VALE = 1.00000E+00),
     _F( CHAM_GD = THER_1,
-          NOEUD = 'N16',
+          NOEUD = 'NG',
           NOM_CMP = 'TEMP',
           VALE = 1.00000E+00))
    )

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 04/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE BIBLIO_35  FISSURE RADIALE INTERNE DANS UN CYLINDRE EPAIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,6 +65,12 @@ F_T = FORMULE(NOM_PARA=('X','Y'),
               VALE='''(T1F(TP)-((T1F(TP)-TP)*
                log((sqrt((X*X)+(Y*Y)))/R1))/(log(RHO/R1)))''')
 
+TEMP0=CREA_CHAMP(  OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
+                         MAILLAGE=MA,
+                         AFFE=_F( GROUP_NO = 'TOT',
+                               NOM_CMP = 'TEMP',
+                               VALE=0.)
+                        )
 TEMP_IMP=CREA_CHAMP(  OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
                          MAILLAGE=MA,
                          AFFE=_F( GROUP_NO = 'TOT',
@@ -73,6 +79,11 @@ TEMP_IMP=CREA_CHAMP(  OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
                         )
 
 TEMP_EV=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                        NOM_CHAM='TEMP',
+                        AFFE=_F(  CHAM_GD = TEMP0,
+                                  INST = 0.)
+                    )
+TEMP_EV=CREA_RESU(    reuse=TEMP_EV,OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                         NOM_CHAM='TEMP',
                         AFFE=_F(  CHAM_GD = TEMP_IMP,
                                   INST = 1.)
@@ -158,19 +169,20 @@ L_INST=DEFI_LIST_REEL(
                              DEBUT=0.0,
                               INTERVALLE=_F( JUSQU_A = 1., NOMBRE = 1)
                            )
-
+INSTMECA=DEFI_LIST_REEL(VALE=1.)
 # -------------------------------------------------------------
 # CALCUL AVEC LES CHARGEMENTS 1 ET 2 DE LA FICHE (SANS CONTACT)
 # -------------------------------------------------------------
 
 CHAMDEPP=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=( 
               _F( CHARGE = CH10),
-              _F( CHARGE = CL_SL))
+              _F( CHARGE = CL_SL)),
                           )
 
 CHAMDEPT=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=( 
               _F( CHARGE = CH_TEMP),
-              _F( CHARGE = CL_SL))
+              _F( CHARGE = CL_SL)),
+              LIST_INST=INSTMECA,
                           )
 
 # -----------------------------------------------------------
@@ -198,7 +210,7 @@ CHAMDEP0=STAT_NON_LINE(
                    SUBD_PAS_MINI = 0.000001),
                        CONVERGENCE=_F( 
                 ITER_GLOB_MAXI = 4),
-              INFO=2
+#              INFO=2
               )
 
 CHAMDEP0=CALC_ELEM( reuse=CHAMDEP0,

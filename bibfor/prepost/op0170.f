@@ -3,7 +3,7 @@
       INTEGER             IER
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,9 +99,6 @@ C
            ZR(IVMOM+(I-1)*3+1) = ZR(INBL2+I-1)
            ZR(IVMOM+(I-1)*3+2) = ZR(INBL4+I-1)
  10     CONTINUE
-        CALL JEDETR ( NOMOB1 )
-        CALL JEDETR ( NOMOB2 )
-        CALL JEDETR ( NOMOB3 )
 C
       ELSE
 C
@@ -147,6 +144,5 @@ C
 C
       CALL TITRE
 C
-      IF ( IVMOM .NE. 0 ) CALL JEDETR ( '&&OP0170.MOMENT' )
 C
       END

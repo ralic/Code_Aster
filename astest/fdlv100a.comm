@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PISTON COUPLE A UNE COLONNE DE FLUIDE INCOMPRESSIBLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,7 +72,7 @@ CHARGE=AFFE_CHAR_THER( MODELE=FLUIDE,
                     TEMP_IMPO=_F( GROUP_NO = 'SORTIE', TEMP = 0.)   )
 
 CHAMPCAR=AFFE_CARA_ELEM( MODELE=STRUCT,
-                             DISCRET=_F( GROUP_MA = 'RESSORT', CARA = 'K_T_D_L',
+                         DISCRET_2D=_F( GROUP_MA = 'RESSORT', CARA = 'K_T_D_L',
                                         VALE = (1.E5, 1.E5, )))
 
 CHARGS=AFFE_CHAR_MECA( MODELE=STRUCT,DDL_IMPO=(

@@ -3,7 +3,7 @@
       INTEGER            ICOND , IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF SUPERVIS  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,6 @@ C
             WRITE(IFM,1000)
             CALL RSINFO ( ZK8(JCMD+I-1) , IFM )
  10      CONTINUE
-         CALL JEDETR ( '&&OP9999.NOM' )
       ENDIF
 C
 C     --- IMPRESSION DES TEMPS PAR COMMANDE

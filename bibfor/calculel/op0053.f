@@ -1,7 +1,7 @@
       SUBROUTINE OP0053 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -691,10 +691,6 @@ C====
 C 4. MENAGE
 C====
 C
-      CALL JEDETR('&&'//NOMPRO//'.CHARGES')
       CALL JEDETC('G','&&NMDORC',1)
-      CALL JEDETC('V','.CODI',20)
-      CALL JEDETC('V','.MATE_CODE',9)
-      CALL JEDETC('V','&&',1)
       CALL JEDEMA()
       END

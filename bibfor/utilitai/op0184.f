@@ -3,7 +3,7 @@
       INTEGER IER
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -415,7 +415,6 @@ C  ==> LES TE SAVENT CE QU4ILS ONT A FAIRE
       CALL UTMESS('F',NOMCMD,'PB LECTURE DU FICHIER IDEAS')
 
   190 CONTINUE
-      CALL JEDETC('V','&&OP0184',1)
       CALL JEDEMA()
 
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/05/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE MASSE AJOUTEE CALCULEE SUR MODELE GENERALISE - MODES MOUILLES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,8 +73,8 @@ STRUCT=AFFE_MODELE(  MAILLAGE=MAILLA,AFFE=(
 
                      )
 
-PARAM=AFFE_CARA_ELEM( MODELE=STRUCT,DISCRET=(
-                             _F( GROUP_MA = 'LIG9', CARA = 'K_T_D_L',
+PARAM=AFFE_CARA_ELEM( MODELE=STRUCT,DISCRET_2D=(
+                           _F( GROUP_MA = 'LIG9', CARA = 'K_T_D_L',
                                         VALE = (1.E7, 1., )),
                           _F( GROUP_MA = 'LIG10', CARA = 'K_T_D_L',
                                         VALE = (1.E7, 1., )),

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -190,10 +190,10 @@ TEST_RESU(RESU=_F(RESULTAT=SSNV506,
                   INST=0.1,
                   NOM_CHAM='VALE_CONT',
                   NOM_CMP='RN',
-                  VALE=1.7651618108200E+04,
+                  VALE=1.7491132503031E+04,
                   PRECISION=1.E-5,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='7.1.6',),);
+                  VERSION='7.3.23',),);
 
 TEST_RESU(RESU=_F(RESULTAT=SSNV506,
                   NOEUD='N125',
@@ -212,10 +212,10 @@ TEST_RESU(RESU=_F(RESULTAT=SSNV506,
                   INST=0.1,
                   NOM_CHAM='VALE_CONT',
                   NOM_CMP='RN',
-                  VALE=1.7917820437106E+04,
+                  VALE=1.8083947024158E+04,
                   PRECISION=1.E-5,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='7.1.6',),);
+                  VERSION='7.3.23',),);
 
 TEST_RESU(RESU=_F(RESULTAT=SSNV506,
                   NOEUD='N351',

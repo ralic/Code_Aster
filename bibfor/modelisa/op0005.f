@@ -3,7 +3,7 @@
       INTEGER             IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/12/2003   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,9 +131,5 @@ C
       CALL ANIVER(NOMMAT)
 C
 C
-      CALL JEDETC('V','&&',1)
-      CALL JEDETR('&&OP0005.NBOBJE')
-      CALL JEDETR('&&OP0005.TYPFON')
-
       CALL JEDEMA()
       END

@@ -1,7 +1,7 @@
       SUBROUTINE OP0171 (IER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 14/09/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF CALCULEL  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -391,13 +391,6 @@ C
           CALL RSSEPA(RESULT(1:8),0,MODELE(1:8),MATE(1:8),CARELE(1:8),
      &                     LISCHA) 
 C
-C --- ON FAIT LE MENAGE ...
-C
-      CALL JEDETC ('V','&&',1)
-      CALL JEDETC('V','_',1)
-      CALL JEDETC ('V','.CODI',20)
-      CALL JEDETC ('V',RESULT(1:8),1)
-      CALL JEDETC('V','MATE',10)
       CALL TITRE ()
 C
 C ----------------------------------------------------------------------

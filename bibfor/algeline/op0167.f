@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 01/09/2003   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -175,7 +175,6 @@ C
          CALL CMCOVO ( NOMAIN, NOMAOU, NBMA, ZI(JMA), PRFNO,
      +                 PRFMA, NUMMA, EPAIS, PLAN, TRANS )
 C
-         CALL JEDETR ( NOMJV )
 C
          GOTO 300
       END IF
@@ -774,7 +773,6 @@ C ----------------------------------------------------------------------
                 ZI(JGG+J) = ZI(JVG+J)
   260         CONTINUE
   270       CONTINUE
-            CALL JEDETR(GRPMAV)
           END IF
           DO 290 IOCC = 1,NBCRP1
             CALL GETVID('CREA_POI1','NOM_GROUP_MA',IOCC,1,0,K8B,N1)
@@ -815,8 +813,6 @@ C ----------------------------------------------------------------------
 
       CALL GETFAC ( 'DETR_GROUP_MA', NBDGMA )
       IF (NBDGMA.EQ.1) CALL CMDGMA(NOMAOU)
-
-      CALL JEDETC('V','&&OP0167',1)
 
   300 CONTINUE
 

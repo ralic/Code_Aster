@@ -1,7 +1,7 @@
       SUBROUTINE OP0058(IER)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -2689,8 +2689,6 @@ C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
       CALL UTMESS('A',NOMCMD,'TYPE : '//TYSD//
      &            ' INCOMPATIBLE AVEC L''OPTION : '//OPTION)
   530 CONTINUE
-      CALL JEDETC('V','&&',1)
-      CALL JEDETC('V','.CODI',20)
-      CALL JEDETC('V','.MATE_CODE',9)
+C
       CALL JEDEMA()
       END

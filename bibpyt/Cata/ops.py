@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 28/09/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF ops Cata  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -301,9 +301,7 @@ def subst_materiau(text,NOM_MATER,EXTRACTION,UNITE_LONGUEUR):
           if m.group(3) == "UNIT":
              if   UNITE_LONGUEUR=='M'  : coef = '0'
              elif UNITE_LONGUEUR=='MM' : coef = m.group(4)
-             print ' UNITE_LONGUEUR = BINGO'
-             print ' UNITE_LONGUEUR = ',m.group(4),type(m.group(4))
-             ll_u.append('   '+m.group(1)+" = "+m.group(2)+coef)
+             ll_u.append(m.group(1)+" = "+m.group(2)+coef)
           else : ll_u.append(l)
        else : ll_u.append(l)
 
@@ -421,4 +419,14 @@ def build_procedure(self,**args):
     self.set_icmd(None)
     icmd=0
     #ier=self.codex.opsexe(self,icmd,-1,3)
+    return ier
+
+def build_DEFI_FICHIER(self,**args):
+    """
+    Fonction ops de la macro DEFI_FICHIER
+    """
+    ier=0
+    self.set_icmd(None)
+    icmd=0
+    ier=self.codex.opsexe(self,icmd,-1,26)
     return ier

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF POSTRELE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -498,28 +498,7 @@ C
  300     CONTINUE
       ENDIF
 C
-      CALL JEDETR ( LISMAI )
-      CALL JEDETR ( '&&OP0096.NSDS' )
       CALL I3DRDM ( DESCM )
-      CALL JEDETR ( '&&OP0096.MAILLE.CHP.SUCC' )
-      CALL JEDETR ( '&&OP0096.MAILLE.CHP.PREC' )
-      CALL JEDETR ( '&&OP0096.MAILLE.CHP.DESC' )
-      CALL JEDETR ( '&&OP0096.NEW.COORDO.VALE' )
-      CALL JEEXIN ( TEMP1 , I )
-      IF ( I .NE. 0 ) THEN
-         CALL JEDETR ( TEMP1  )
-         CALL JEDETR ( TEMP2  )
-         CALL JEDETR ( TEMP3  )
-         CALL JEDETR ( TEMP4  )
-         CALL JEDETR ( TEMP5  )
-         CALL JEDETR ( TEMP6  )
-         CALL JEDETR ( TEMP7  )
-         CALL JEDETR ( TEMP8  )
-         CALL JEDETR ( TEMP9  )
-         CALL JEDETR ( TEMP10 )
-         CALL JEDETR ( TEMP13 )
-         CALL JEDETR ( TEMP14 )
-      ENDIF
 C
       CALL JEDEMA()
 C

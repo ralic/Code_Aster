@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 05/07/2004   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF COMPELEM  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -249,6 +249,8 @@ GRANDEUR_SIMPLE__
                     KY       KZ       GAX      GAY      INVA_2   PRIN_1   PRIN_2   PRIN_3
                     INVA_2SG PRE1     P1DX     P1DY     P1DZ     PRE2     P2DX     P2DY
                     P2DZ     TEMP     TEDX     TEDY     TEDZ     DX       DY       DZ
+                    VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X VECT_3_Y
+                    VECT_3_Z
     ERREUR   = R    ERREST   NUEST    SIGCAL
     ERRETEMP = R    ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1   TERMSA   TERMS2
                     TERMS1   TERMFL   TERMF2   TERMF1   TERMEC   TERME2   TERME1
@@ -478,7 +480,8 @@ GRANDEUR_SIMPLE__
                     FH12Y    FH12Z    ENT12    M21      FH21X    FH21Y    FH21Z    ENT21
                     M22      FH22X    FH22Y    FH22Z    ENT22    QPRIM    FHTX     FHTY
                     FHTZ     SIMAX    SIMIN    QXX      QXY      QYX      QYY      QZX
-                    QZY      Q2XX     Q2XY     Q2YX     Q2YY     Q2ZX     Q2ZY
+                    QZY      Q2XX     Q2XY     Q2YX     Q2YY     Q2ZX     Q2ZY     VECT_1_X
+                    VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X VECT_3_Y VECT_3_Z
     SIZZ_R   = R    SIZZ
     SOUR_F   = K8   SOUR     VNOR
     SOUR_R   = R    SOUR     VNOR

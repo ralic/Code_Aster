@@ -1,7 +1,8 @@
-      SUBROUTINE LISTCO (MOTFAZ,NOMAZ,IOC,NTRAV,NBMA,NBNO,NBNOQU,
-     &                   LISTMA,LISTNO,LISTQU,CHARZ)
+      SUBROUTINE LISTCO (CHAR,MOTFAC,NOMA,NTRAV,NZOCO,ORDSTC,
+     &                   NMACO,NNOCO,NNOQUA)
+     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,11 +20,16 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C
-      IMPLICIT NONE
-C
-      INTEGER       IOC,NTRAV,NBMA,NBNO,LISTMA(NBMA),LISTNO(NBNO)
-      INTEGER       NBNOQU, LISTQU(3*NBNOQU)
-      CHARACTER*(*) MOTFAZ,NOMAZ,CHARZ
+      IMPLICIT     NONE
+      CHARACTER*8  CHAR
+      CHARACTER*16 MOTFAC
+      CHARACTER*8  NOMA
+      INTEGER      NTRAV
+      INTEGER      NZOCO   
+      INTEGER      ORDSTC   
+      INTEGER      NMACO
+      INTEGER      NNOCO
+      INTEGER      NNOQUA
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELEE PAR : CALICO
@@ -31,14 +37,19 @@ C ----------------------------------------------------------------------
 C
 C STOCKAGE DES MAILLES ET NOEUDS DE CONTACT DES DIFFERENTES SURFACES.
 C
-C IN  MOTFAZ : MOT-CLE FACTEUR (VALANT 'CONTACT')
-C IN  NOMAZ  : NOM DU MAILLAGE
-C IN  IOC    : NUMERO D'OCCURENCE DU MOT-CLE FACTEUR 'CONTACT' (ZONE)
-C IN  NMBA   : NOMBRE DE MAILLES DANS LA ZONE IOC
-C IN  NBNO   : NOMBRE DE NOEUDS DANS LA ZONE IOC
-C IN  NTRAV  : DIMENSION DU TABLEAU DE TRAVAIL
-C VAR LISTMA : LISTE DES NUMEROS DES MAILLES DE CONTACT
-C VAR LISTNO : LISTE DES NUMEROS DES NOEUDS DE CONTACT
+C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
+C IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
+C IN  NOMA   : NOM DU MAILLAGE
+C IN  NTRAV  : NOMBRE MAXIMUM DE GROUPES ET DE MAILLES IMPLIQUES DANS 
+C              LE CONTACT (TOUTES ZONES CONFONDUES)
+C IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
+C IN  ORDSTC : ORDRE DE STOCKAGE DES ZONES MAITRES ET ESCLAVES
+C              0: MAITRES PUIS ESCLAVES
+C              1: ESCLAVES PUIS MAITRES
+C IN  NMACO  : NOMBRE TOTAL DE MAILLES DES SURFACES DE CONTACT
+C IN  NNOCO  : NOMBRE TOTAL DE NOEUDS DES SURFACES DE CONTACT
+C IN  NNOQUA : NOMBRE TOTAL DE NOEUDS QUADRATIQUES DES SURFACES DE 
+C              CONTACT
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
@@ -56,200 +67,88 @@ C
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*32       JEXNUM , JEXNOM
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      NG,NGR,NMAI,N1,N2,NBMAIL,NB,NUMAIL,NOC
-      INTEGER      II1,II2,IPMA,IPNO,INO,JCOOR,NOUNDF
-      INTEGER      JGRO,JBID,JDES,IBID,IATYMA,ITYP,NUTYP
-      INTEGER      N1Q, N2Q, IPQU, NOEUSO, NOEUMI, NBNOMI
-      CHARACTER*1  K1BID
-      CHARACTER*8  K8BID,NOMA,NOMTM,CHAR,MOTCLE,TYMOCL(4)
-      CHARACTER*16 MOTFAC,MOTCLV(4),TYPF
-      CHARACTER*24 LISMA
+
+      CHARACTER*24 PZONE,PSURMA,PSURNO,PNOQUA
+      INTEGER      JZONE,JSUMA,JSUNO,JNOQUA
+      CHARACTER*24 CONTMA,CONTNO,CONOQU
+      INTEGER      JMACO,JNOCO,JNOQU
+      INTEGER      JTRAV
+      INTEGER      NZOCP,NSYME
+      INTEGER      IOC,IREAD,IWRITE,ISY
+      CHARACTER*24 SYMECO
+      INTEGER      JSYME      
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 
-C
-      MOTFAC = MOTFAZ
-      NOMA   = NOMAZ
-      CHAR   = CHARZ
-      CALL GETVTX (MOTFAC,'METHODE',IOC,1,1,TYPF,NOC)
+C --- NOMS JEVEUX
+      SYMECO  = CHAR(1:8)//'.CONTACT.SYMECO'
+      CALL JEVEUO(SYMECO,'L',JSYME)
+      NSYME = ZI(JSYME)
 
-CCC
-CCC
-CCC   modifie le 8/12/03, en attendant l'evolution de RELIEM.
-CCC   Le GETVEM verifie que les mailles appartiennent au maillage,
-CCC   RELIEM est en doublon avec GETVEM.
-CCC
-C
-C --- VERIFICATION QUE LES MAILLES DE CONTACT APPATIENNENT AU MODELE
-C
-CCC      MOTCLV(1) = 'GROUP_MA_ESCL'
-CCC      TYMOCL(1) = 'GROUP_MA'
-CCC      MOTCLV(2) = 'MAILLE_ESCL'
-CCC      TYMOCL(2) = 'MAILLE'
-CCC      MOTCLV(3) = 'GROUP_MA_MAIT'
-CCC      TYMOCL(3) = 'GROUP_MA'
-CCC      MOTCLV(4) = 'MAILLE_MAIT'
-CCC      TYMOCL(4) = 'MAILLE'
-CCC      LISMA = '&&CALICO.VERIF'
-CCC      CALL RELIEM(NOMO,NOMA,'NU_MAILLE',MOTFAC,IOC,2,MOTCLV,
-CCC     &                TYMOCL,LISMA,IBID)
-CCC      CALL JEDETR(LISMA)
-C
+
+      PZONE  = CHAR(1:8)//'.CONTACT.PZONECO'
+      PSURMA = CHAR(1:8)//'.CONTACT.PSUMACO'
+      PSURNO = CHAR(1:8)//'.CONTACT.PSUNOCO'
+      PNOQUA = CHAR(1:8)//'.CONTACT.PNOEUQU'
+      CALL JEVEUO(PZONE,'L',JZONE)
+      CALL JEVEUO(PSURMA,'L',JSUMA)
+      CALL JEVEUO(PSURNO,'L',JSUNO)
+      CALL JEVEUO(PNOQUA,'L',JNOQUA)
+
+      CONTMA = CHAR(1:8)//'.CONTACT.MAILCO'
+      CONTNO = CHAR(1:8)//'.CONTACT.NOEUCO'
+      CONOQU = CHAR(1:8)//'.CONTACT.NOEUQU'     
+      CALL WKVECT(CONTMA,'G V I',NMACO,JMACO)
+      CALL WKVECT(CONTNO,'G V I',NNOCO,JNOCO)
+      IF (NNOQUA.NE.0) THEN
+        CALL WKVECT(CONOQU,'G V I',3*NNOQUA,JNOQU)
+      END IF
+
 C --- AFFECTATION DU TABLEAU DE TRAVAIL ET INITIALISATION
-C
-      CALL WKVECT ('&&LISTCO.TRAV','V V K8',NTRAV,JBID)
-C
-      NBMAIL = NBMA
-      IPMA   = 0
-      IPNO   = 0
-      IPQU   = 0
-C
-C ======================================================================
-C      REMPLISSAGE DE LA LISTE DE MAILLES ET DE LA LISTE DE NOEUDS
-C ======================================================================
-C
-      CALL JEVEUO(NOMA//'.TYPMAIL','L',IATYMA)
+      CALL WKVECT ('&&LISTCO.TRAV','V V K8',NTRAV,JTRAV)
+                             
+C --- ON NE BOUCLE QUE SUR LES ZONES PRINCIPALES: 
+      NZOCP = NZOCO - NSYME
 
-      IF(TYPF(1:8).EQ.'CONTINUE') THEN  
+      IWRITE = 0
+       
+      DO 11 IOC = 1,NZOCP
+         IREAD  = IOC
+         IWRITE = IOC
+         CALL LIEXCO (CHAR,MOTFAC,NOMA,IREAD,IWRITE,JTRAV,ORDSTC,
+     +                   JZONE,JSUMA,JSUNO,JNOQUA,
+     +                   JMACO,JNOCO,JNOQU)
+   11 CONTINUE  
 
-C ----- METHODE CONTINUE : ON STOCKE D ABORD ----------
-C       LES ESCLAVES
-C ----------------------------------------------------    
-C
-C --- MOT-CLE GROUP_MA_ESCL
-C
-         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_ESCL',
-     &                                       IOC,1,0,K8BID,NG)
-         IF (NG.NE.0) THEN
-             MOTCLE = 'GROUP_MA'
-             NG = - NG
-             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_ESCL',
-     &                                          IOC,1,NG,ZK8(JBID),NGR)
-             CALL EXNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),
-     &                   NBMA,NBNO,NBNOQU,LISTMA,LISTNO,
-     &                   LISTQU,IPMA, IPNO, IPQU)
-         END IF
-C
-C --- MOT-CLE MAILLE_ESCL
-C
-         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_ESCL',
-     &                                     IOC,1,0,K8BID,NBMA)
-         IF (NBMA.NE.0) THEN
-             MOTCLE = 'MAILLE'
-             NBMA = -NBMA
-             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_ESCL',
-     &                                       IOC,1,NBMA,ZK8(JBID),NMAI)
-             CALL EXNOEL(CHAR,NOMA,MOTCLE,0,ZK8(JBID),NBMA,
-     &                   NBNO,NBNOQU,LISTMA,LISTNO,LISTQU,
-     &                   IPMA, IPNO, IPQU)
-         ENDIF
-C
-C --- MOT-CLE GROUP_MA_MAIT
-C
-         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_MAIT',
-     &                                       IOC,1,0,K8BID,NG)
-         IF (NG.NE.0) THEN
-             MOTCLE = 'GROUP_MA'
-             NG = -NG
-             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_MAIT',
-     &                                         IOC,1,NG,ZK8(JBID),NGR)
-             CALL EXNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),
-     &                   NBMA,NBNO,NBNOQU,LISTMA,LISTNO,
-     &                   LISTQU,IPMA, IPNO, IPQU)
-         END IF
-C
-C --- MOT-CLE MAILLE_MAIT
-C
-         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_MAIT',
-     &          IOC,1,0,K8BID,NB)
-         IF (NB.NE.0) THEN
-             MOTCLE = 'MAILLE'
-             NB = -NB
-             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_MAIT',
-     &              IOC,1,NB,ZK8(JBID),NMAI)
-             CALL EXNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),
-     &                   NBMA,NBNO,NBNOQU,LISTMA,LISTNO,
-     &                   LISTQU,IPMA, IPNO, IPQU)
-         ENDIF
+C --- ON BOUCLE SUR LES ZONES PRINCIPALES MAIS ON AGIT SUR LES 
+C      ZONES SYMETRIQUES
+      IF (NSYME.GT.0) THEN  
 
-       ELSE
-C
-C ------------LES AUTRES METHODES ON STOCKE D ABORD LES MAITRES
+         IF (ORDSTC.EQ.1) ORDSTC = 0
+         IF (ORDSTC.EQ.0) ORDSTC = 1
 
-C
-C --- MOT-CLE GROUP_MA_MAIT
-C
-         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_MAIT',
-     &                                       IOC,1,0,K8BID,NG)
-         IF (NG.NE.0) THEN
-             MOTCLE = 'GROUP_MA'
-             NG = - NG
-             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_MAIT',
-     &                                          IOC,1,NG,ZK8(JBID),NGR)
-             CALL EXNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),
-     &                   NBMA,NBNO,NBNOQU,LISTMA,LISTNO,
-     &                   LISTQU,IPMA, IPNO, IPQU)
-         END IF
-C
-C --- MOT-CLE MAILLE_MAIT
-C
-         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_MAIT',
-     &                                     IOC,1,0,K8BID,NBMA)
-         IF (NBMA.NE.0) THEN
-             MOTCLE = 'MAILLE'
-             NBMA = -NBMA
-             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_MAIT',
-     &                                       IOC,1,NBMA,ZK8(JBID),NMAI)
-             CALL EXNOEL(CHAR,NOMA,MOTCLE,0,ZK8(JBID),NBMA,
-     &                   NBNO,NBNOQU,LISTMA,LISTNO,LISTQU,
-     &                   IPMA, IPNO, IPQU)
-         ENDIF
-C
-C --- MOT-CLE GROUP_MA_ESCL
-C
-         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_ESCL',
-     &                                       IOC,1,0,K8BID,NG)
-         IF (NG.NE.0) THEN
-             MOTCLE = 'GROUP_MA'
-             NG = -NG
-             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_ESCL',
-     &                                          IOC,1,NG,ZK8(JBID),NGR)
-             CALL EXNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),
-     &                   NBMA,NBNO,NBNOQU,LISTMA,LISTNO,
-     &                   LISTQU,IPMA, IPNO, IPQU)
-         END IF
-C
-C --- MOT-CLE MAILLE_ESCL
-C
-         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_ESCL',
-     &                                     IOC,1,0,K8BID,NB)
-         IF (NB.NE.0) THEN
-             MOTCLE = 'MAILLE'
-             NB = -NB
-             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_ESCL',
-     &                                         IOC,1,NB,ZK8(JBID),NMAI)
-             CALL EXNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),
-     &                   NBMA,NBNO,NBNOQU,LISTMA,LISTNO,
-     &                   LISTQU,IPMA, IPNO, IPQU)
-         ENDIF
-       ENDIF
+         DO 6 IOC = 1,NZOCP
+            IREAD = IOC
+            DO 7 ISY = 1,NSYME       
+               IF (ZI(JSYME+ISY) .EQ.IOC) THEN
+                IWRITE = IWRITE+1
+                CALL LIEXCO (CHAR,MOTFAC,NOMA,IREAD,IWRITE,JTRAV,ORDSTC,
+     +                 JZONE,JSUMA,JSUNO,JNOQUA,
+     +                 JMACO,JNOCO,JNOQU)
+               ENDIF
+  7         CONTINUE             
+  6      CONTINUE      
+         IF (ORDSTC.EQ.1) ORDSTC = 0
+         IF (ORDSTC.EQ.0) ORDSTC = 1   
+      ENDIF
 
-C
-C --- VERIFICATIONS ET ECRITURES
-C
-      NBMA = NBMAIL
-      IF (IPMA.NE.NBMA)   CALL UTMESS('F','LISTCO_01','ERREUR SUR IPMA')
-      IF (IPNO.NE.NBNO)   CALL UTMESS('F','LISTCO_02','ERREUR SUR IPNO')
-      IF (IPQU.NE.NBNOQU) CALL UTMESS('F','LISTCO_03','ERREUR SUR IPQU')
-C
       CALL JEDETR ('&&LISTCO.TRAV')
-C
+
 C ----------------------------------------------------------------------
 C
       CALL JEDEMA()

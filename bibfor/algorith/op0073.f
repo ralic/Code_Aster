@@ -2,7 +2,7 @@
       IMPLICIT  REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,6 @@ C
  10     CONTINUE
         CALL JEIMPO(IFM,NOMRES//'           .VALR',' ',' RAYONS ')
         CALL JEIMPO(IFM,NOMRES//'           .VALT',' ',' ANGLES ')
-        CALL JEDETR('&&OP0073.TEMP')
       ENDIF
       IF (TYPE(1:5).EQ.'GUID_') THEN
         NBPAIR = 801

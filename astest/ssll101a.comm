@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TUYAUTERIE (PROBLEME DE HOVGAARD) POU_D_T
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,28 +42,29 @@ BLOCAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                   DDL_IMPO=_F( GROUP_NO = 'ENCASTRE',
                             DX = 0.,DY = 0.,DZ = 0., DRX = 0.,DRY = 0.,DRZ = 0.)  )
 
-CARA_ELE=AFFE_CARA_ELEM( MODELE=MODELE,POUTRE=(
-                  _F(  SECTION = 'GENERALE',
-                           GROUP_MA = 'POU_D_T',
-                           CARA = ('A', 'IZ', 'IY', 'AY', 'AZ', 'JX',
-                                'EZ', 'EY', 'RY', 'RZ', 'RT', ),
-                           VALE = ( 3.439E-03, 1.377E-05, 1.377E-05,
-                                  2.,        2.,        2.754E-05,
-                                  0.,        0.,        9.250E-02,
-                                  9.250E-02, 9.250E-02, )),
+CARA_ELE=AFFE_CARA_ELEM( MODELE=MODELE,
+                POUTRE=(_F(  SECTION = 'GENERALE',
+                             GROUP_MA = 'POU_D_T',
+                             CARA = ('A', 'IZ', 'IY', 'AY', 'AZ', 'JX',
+                                     'EZ', 'EY', 'RY', 'RZ', 'RT', ),
+                             VALE = ( 3.439E-03, 1.377E-05, 1.377E-05,
+                                      2.,        2.,        2.754E-05,
+                                      0.,        0.,        9.250E-02,
+                                      9.250E-02, 9.250E-02, )),
                          _F(  GROUP_MA = 'POU_C_T',  SECTION = 'GENERALE',
-                          CARA = ('A1', 'IZ1', 'IY1', 'AY1', 'AZ1','JX1',
-                                'EZ1', 'EY1', 'RY1', 'RZ1', 'RT1', 
-                                'A2', 'IZ2', 'IY2', 'AY2', 'AZ2','JX2',
-                                'EZ2', 'EY2', 'RY2', 'RZ2', 'RT2',     ),
-                           VALE = ( 3.439E-03, 5.887E-06, 5.887E-06,
-                                  2.,        2.,        2.754E-05,
-                                  0.,        0.,        9.250E-02,
-                                  9.250E-02, 9.250E-02,
-                                  3.439E-03, 5.887E-06, 5.887E-06,
-                                  2.,        2.,        2.754E-05,
-                                  0.,        0.,        9.250E-02,
-                                  9.250E-02, 9.250E-02, )))
+                              VARI_SECT = 'HOMOTHETIQUE',
+                              CARA = ('A1', 'IZ1', 'IY1', 'AY1', 'AZ1','JX1',
+                                      'EZ1', 'EY1', 'RY1', 'RZ1', 'RT1', 
+                                      'A2', 'IZ2', 'IY2', 'AY2', 'AZ2','JX2',
+                                      'EZ2', 'EY2', 'RY2', 'RZ2', 'RT2',     ),
+                              VALE = ( 3.439E-03, 5.887E-06, 5.887E-06,
+                                       2.,        2.,        2.754E-05,
+                                       0.,        0.,        9.250E-02,
+                                       9.250E-02, 9.250E-02,
+                                       3.439E-03, 5.887E-06, 5.887E-06,
+                                       2.,        2.,        2.754E-05,
+                                       0.,        0.,        9.250E-02,
+                                       9.250E-02, 9.250E-02, )))
                         )
 
 #

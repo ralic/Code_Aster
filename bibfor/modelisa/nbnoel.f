@@ -1,7 +1,8 @@
-      SUBROUTINE NBNOEL(CHARZ,NOMAZ,MOTCLE,NGR,CALCMA,INDICE,NBMA,NBNO,
-     &                  NBNOQU)
+      SUBROUTINE NBNOEL(CHAR,NOMA,MOTCLE,NGR,CALCMA,INDQUA,
+     +                 NBMA,NBNO,NBNOQU)
+                
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/12/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,15 +19,41 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-
+C
       IMPLICIT NONE
-
-      INTEGER NGR,INDICE,NBMA,NBNO,NBNOQU
-      CHARACTER*8 CHARZ,NOMAZ,MOTCLE,CALCMA(*)
+C     
+C  IN  <-    
+      CHARACTER*8    CHAR
+      CHARACTER*8    NOMA
+      CHARACTER*8    MOTCLE
+      INTEGER        NGR
+      CHARACTER*8    CALCMA(*)
+      INTEGER        INDQUA
+C  I/O <->
+      INTEGER        NBMA
+C  OUT ->
+      INTEGER        NBNO
+      INTEGER        NBNOQU
 
 C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : POINCO/PAMAN2
+C ROUTINE APPELEE PAR : NBNOCO
 C ----------------------------------------------------------------------
+C
+C NOMBRE DE MAILLES, DE NOEUDS ET DE NOEUDS QUADRATIQUES DE GROUPES DE 
+C MAILLE OU DE MAILLES
+C
+C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
+C IN  NOMA   : NOM DU MAILLAGE
+C IN  MOTCLE : MOT-CLE (GROUP_MA ou MAILLE)
+C IN  NGR    : NOMBRE DE GROUPES
+C IN  CALCMA : VECTEUR DE CHARACTER*8 DE TRAVAIL 
+C IN  INDQUA : VAUT 1 LORSQUE L'ON DOIT IGNORER LES NOEUDS MILIEUX 
+C I/O  NBMA  : NOMBRE DE MAILLES 
+C              / UTILISE EN ENTREE LORSQUE MOTCLE = "MAILLE"
+C OUT  NBNO  : NOMBRE DE NOEUDS
+C OUT NBNOQU : NOMBRE DE NOEUDS QUADRATIQUES
+C ----------------------------------------------------------------------
+
 
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 
@@ -53,15 +80,16 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
       INTEGER IRET,NEL,IGREL,NBGREL,ITYPEL,IALIEL
       INTEGER IBID,IER,II3,NUMAI2
       CHARACTER*1 K1BID
-      CHARACTER*8 NOMTM,NOMA,NOMOB,CHAR
+      CHARACTER*8 NOMTM,NOMOB
       CHARACTER*16 NOMTE
       CHARACTER*19 NOLIG
       CHARACTER*24 GRMAMA,MAILMA
 
+C ----------------------------------------------------------------------
+
       CALL JEMARQ()
 
-      CHAR = CHARZ
-      NOMA = NOMAZ
+ 
       MAILMA = NOMA//'.NOMMAI'
       GRMAMA = NOMA//'.GROUPEMA'
       NBNO = 0
@@ -81,7 +109,7 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
             CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYP),NOMTM)
             CALL JELIRA(JEXNUM(NOMA//'.CONNEX',NUMAIL),'LONMAX',N1,
      &                  K1BID)
-            IF (INDICE.EQ.1) THEN
+            IF (INDQUA.EQ.1) THEN
               NOEUMI = 0
               NOEUSO = N1
             ELSE IF (NOMTM(1:5).EQ.'QUAD8' .OR.
@@ -133,7 +161,7 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
           ITYP = IATYMA - 1 + NUMAIL
           NUTYP = ZI(ITYP)
           CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYP),NOMTM)
-          IF (INDICE.EQ.1) THEN
+          IF (INDQUA.EQ.1) THEN
             NOEUMI = 0
             NOEUSO = N1
           ELSE IF (NOMTM(1:5).EQ.'QUAD8' .OR.

@@ -1,0 +1,606 @@
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# TITRE POUTRE DE SECTION RECTANGULAIRE VARIABLE (ENCASTREE-LIBRE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#CAS_TEST__: SDLL09A
+# SDLL09/A                 COMMANDES                             5/03/91
+# POUTRE ELANCEE DE SECTION RECTANGULAIRE VARIABLE
+# SECT RECT: 1) 0.04*0.04==>0.01*0.01     2) 0.04*0.05==>0.01*0.01
+# L= 1M -- ENCASTREE-LIBRE --                      REF: SFM.VPCS SDLL09
+# MODELISATION POU_D_E: 31 NOEUDS -- 30 MAILLES SEG2
+# POINTS  A=N100   B=N200
+#=======================================================================
+
+
+DEBUT(CODE=_F(  NOM = 'SDLL09A',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE( )
+
+MO=AFFE_MODELE(  MAILLAGE=MA, 
+                  AFFE=_F(  TOUT = 'OUI',    PHENOMENE = 'MECANIQUE',
+                         MODELISATION = 'POU_D_E')  )
+
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.0E+11,  NU = 0.3,  RHO = 7800.) )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+                       AFFE=_F(  TOUT = 'OUI',    MATER = MAT) )
+
+# PB PLAN + NOEUD 'A' ENCASTRE
+CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
+          _F(  TOUT = 'OUI',    DZ = 0., DRX = 0., DRY = 0.),
+                   _F(  NOEUD = 'N100',   DX = 0., DY = 0.,  DRZ = 0.)) )
+
+#  -----------------------------------------------------------------
+#        DEFINITION DES SECTIONS
+#  -----------------------------------------------------------------
+#
+#        CAS 1
+#
+CELCAS1=AFFE_CARA_ELEM(   MODELE=MO,POUTRE=( 
+          _F(  SECTION = 'GENERALE',
+                   VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+         MAILLE = 'E101', 
+         VALE = (
+ 0.160000000E-02,  0.213333333E-06,  0.213333333E-06,  0.360533333E-06,
+ 0.152100000E-02,  0.192786750E-06,  0.192786750E-06,  0.325809607E-06, )),
+ 
+     _F(    MAILLE = 'E102',  SECTION = 'GENERALE',
+                   VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+         VALE = (
+ 0.152100000E-02,  0.192786750E-06,  0.192786750E-06,  0.325809607E-06,
+ 0.144400000E-02,  0.173761333E-06,  0.173761333E-06,  0.293656653E-06, )),
+ 
+     _F(    MAILLE = 'E103', SECTION = 'GENERALE',
+                   VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+         VALE = (
+ 0.144400000E-02,  0.173761333E-06,  0.173761333E-06,  0.293656653E-06,
+ 0.136900000E-02,  0.156180083E-06,  0.156180083E-06,  0.263944341E-06, )),
+ 
+     _F(    MAILLE = 'E104', SECTION = 'GENERALE',
+                   VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+         VALE = (
+ 0.136900000E-02,  0.156180083E-06,  0.156180083E-06,  0.263944341E-06,
+ 0.129600000E-02,  0.139968000E-06,  0.139968000E-06,  0.236545920E-06, )),
+ 
+     _F(    MAILLE = 'E105', SECTION = 'GENERALE',
+                   VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+         VALE = (
+ 0.129600000E-02,  0.139968000E-06,  0.139968000E-06,  0.236545920E-06,
+ 0.122500000E-02,  0.125052083E-06,  0.125052083E-06,  0.211338021E-06, )),
+ 
+     _F(    MAILLE = 'E106', SECTION = 'GENERALE',
+                   VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+         VALE = (
+ 0.122500000E-02,  0.125052083E-06,  0.125052083E-06,  0.211338021E-06,
+ 0.115600000E-02,  0.111361333E-06,  0.111361333E-06,  0.188200653E-06, )),
+ 
+     _F(    MAILLE = 'E107', SECTION = 'GENERALE',
+                   VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+         VALE = (
+ 0.115600000E-02,  0.111361333E-06,  0.111361333E-06,  0.188200653E-06,
+ 0.108900000E-02,  0.988267500E-07,  0.988267500E-07,  0.167017207E-06, )),
+ 
+     _F(    MAILLE = 'E108', SECTION = 'GENERALE',
+                   VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+         VALE = (
+ 0.108900000E-02,  0.988267500E-07,  0.988267500E-07,  0.167017207E-06,
+ 0.102400000E-02,  0.873813333E-07,  0.873813333E-07,  0.147674453E-06, )),
+ 
+     _F(    MAILLE = 'E109', SECTION = 'GENERALE',
+                   VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+         VALE = (
+ 0.102400000E-02,  0.873813333E-07,  0.873813333E-07,  0.147674453E-06,
+ 0.961000000E-03,  0.769600833E-07,  0.769600833E-07,  0.130062541E-06, )),
+ 
+     _F(    MAILLE = 'E110', SECTION = 'GENERALE',
+                   VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+         VALE = (
+ 0.961000000E-03,  0.769600833E-07,  0.769600833E-07,  0.130062541E-06,
+ 0.900000000E-03,  0.675000000E-07,  0.675000000E-07,  0.114075000E-06, )),
+ 
+     _F(    MAILLE = 'E111', SECTION = 'GENERALE',
+                   VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+         VALE = (
+ 0.900000000E-03,  0.675000000E-07,  0.675000000E-07,  0.114075000E-06,
+ 0.841000000E-03,  0.589400833E-07,  0.589400833E-07,  0.996087408E-07, )),
+ 
+     _F(    MAILLE = 'E112', SECTION = 'GENERALE',
+                   VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+         VALE = (
+ 0.841000000E-03,  0.589400833E-07,  0.589400833E-07,  0.996087408E-07,
+ 0.784000000E-03,  0.512213333E-07,  0.512213333E-07,  0.865640533E-07, )),
+ 
+     _F(    MAILLE = 'E113', SECTION = 'GENERALE',
+                   VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+         VALE = (
+ 0.784000000E-03,  0.512213333E-07,  0.512213333E-07,  0.865640533E-07,
+ 0.729000000E-03,  0.442867500E-07,  0.442867500E-07,  0.748446075E-07, )),
+ 
+     _F(    MAILLE = 'E114', SECTION = 'GENERALE',
+                   VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+         VALE = (
+ 0.729000000E-03,  0.442867500E-07,  0.442867500E-07,  0.748446075E-07,
+ 0.676000000E-03,  0.380813333E-07,  0.380813333E-07,  0.643574533E-07, )),
+#  
+ _F(  SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+                   VARI_SECT = 'HOMOTHETIQUE',
+   MAILLE = 'E115',   VALE = (0.026000, 0.026000,  0.025000, 0.025000, )),
+                  
+ _F(  MAILLE = 'E116',  SECTION = 'RECTANGLE',  CARA = ( 'HZ1',  'HY1', 'HZ2', 'HY2',),
+                   VARI_SECT = 'HOMOTHETIQUE',
+                 VALE = (0.025000, 0.025000,  0.024000, 0.024000, )),
+                  
+ _F(  MAILLE = 'E117',  SECTION = 'RECTANGLE',  CARA = ( 'HZ1',  'HY1', 'HZ2', 'HY2',),
+                   VARI_SECT = 'HOMOTHETIQUE',
+                 VALE = (0.024000, 0.024000,  0.023000, 0.023000, )),
+                 
+ _F(  MAILLE = 'E118',  SECTION = 'RECTANGLE',  CARA = ( 'HZ1',  'HY1', 'HZ2', 'HY2',),
+                   VARI_SECT = 'HOMOTHETIQUE',
+                 VALE = (0.023000, 0.023000,  0.022000, 0.022000, )),
+                 
+ _F(  SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+                   VARI_SECT = 'HOMOTHETIQUE',
+ MAILLE = 'E119',   VALE = (0.022000, 0.022000,  0.021000, 0.021000, )),
+ 
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E120',   VALE = (0.021000, 0.021000,  0.020000, 0.020000, )),
+ 
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E121',   VALE = (0.020000, 0.020000,  0.019000, 0.019000, )),
+ 
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E122',   VALE = (0.019000, 0.019000,  0.018000, 0.018000, )),
+ 
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E123',   VALE = (0.018000, 0.018000,  0.017000, 0.017000, )),
+  
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E124',   VALE = (0.017000, 0.017000,  0.016000, 0.016000, )),
+  
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E125',   VALE = (0.016000, 0.016000,  0.015000, 0.015000, )),
+  
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E126',   VALE = (0.015000, 0.015000,  0.014000, 0.014000, )),
+  
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E127',   VALE = (0.014000, 0.014000,  0.013000, 0.013000, )),
+  
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E128',   VALE = (0.013000, 0.013000,  0.012000, 0.012000, )),
+  
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E129',   VALE = (0.012000, 0.012000,  0.011000, 0.011000, )),
+  
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E130',   VALE = (0.011000, 0.011000,  0.010000, 0.010000, )))
+                      )
+
+#
+# -----------------------------------------------------------------
+#
+#  -----------------------------------------------------------------
+#
+
+#  CAS 2
+#
+CELCAS2=AFFE_CARA_ELEM(   MODELE=MO,POUTRE=(
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1',     'HY1',      'HZ2',     'HY2',   ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E101',   VALE = (0.050000, 0.040000,  0.048667, 0.039000, )),
+   
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E102',   VALE = (0.048667, 0.039000,  0.047333, 0.038000, )),
+ 
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E103',   VALE = (0.047333, 0.038000,  0.046000, 0.037000, )),
+  
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E104',   VALE = (0.046000, 0.037000,  0.044667, 0.036000, )),
+  
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E105',   VALE = (0.044667, 0.036000,  0.043333, 0.035000, )),
+  
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E106',   VALE = (0.043333, 0.035000,  0.042000, 0.034000, )),
+  
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ),  
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E107',   VALE = (0.042000, 0.034000,  0.040667, 0.033000, )),
+  
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E108',   VALE = (0.040667, 0.033000,  0.039333, 0.032000, )),
+  
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E109',   VALE = (0.039333, 0.032000,  0.038000, 0.031000, )),
+  
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E110',   VALE = (0.038000, 0.031000,  0.036667, 0.030000, )),
+  
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E111',   VALE = (0.036667, 0.030000,  0.035333, 0.029000, )),
+  
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E112',   VALE = (0.035333, 0.029000,  0.034000, 0.028000, )),
+  
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E113',   VALE = (0.034000, 0.028000,  0.032667, 0.027000, )),
+  
+ _F( SECTION = 'RECTANGLE',   CARA = ( 'HZ1', 'HY1', 'HZ2', 'HY2', ), 
+     VARI_SECT = 'HOMOTHETIQUE',
+     MAILLE = 'E114',   VALE = (0.032667, 0.027000,  0.031333, 0.026000, )),
+#
+ _F(  SECTION = 'GENERALE',
+      VARI_SECT = 'HOMOTHETIQUE',
+                     CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                              'A2',     'IY2',   'IZ2',    'JX2',  ), 
+         MAILLE = 'E115', 
+         VALE = (
+ 0.814666667E-03,  0.666518025E-07,  0.458928889E-07,  0.913979854E-07,
+ 0.750000000E-03,  0.562500000E-07,  0.390625000E-07,  0.775154020E-07, )),
+ 
+ 
+ 
+  _F(  SECTION = 'GENERALE',
+       VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+        MAILLE = 'E116', 
+         VALE = (
+ 0.750000000E-03,  0.562500000E-07,  0.390625000E-07,  0.775154020E-07,
+ 0.688000000E-03,  0.471152593E-07,  0.330240000E-07,  0.652754976E-07, )),
+ 
+  _F(  SECTION = 'GENERALE',
+       VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+        MAILLE = 'E117', 
+         VALE = (
+ 0.688000000E-03,  0.471152593E-07,  0.330240000E-07,  0.652754976E-07,
+ 0.628666667E-03,  0.391403210E-07,  0.277137222E-07,  0.545434985E-07, )),
+ 
+  _F(  SECTION = 'GENERALE',
+       VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+        MAILLE = 'E118', 
+         VALE = (
+ 0.628666667E-03,  0.391403210E-07,  0.277137222E-07,  0.545434985E-07,
+ 0.572000000E-03,  0.322226667E-07,  0.230706667E-07,  0.451903907E-07, )),
+ 
+  _F(  SECTION = 'GENERALE',
+       VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+        MAILLE = 'E119', 
+         VALE = (
+ 0.572000000E-03,  0.322226667E-07,  0.230706667E-07,  0.451903907E-07,
+ 0.518000000E-03,  0.262645185E-07,  0.190365000E-07,  0.370929201E-07, )),
+ 
+  _F(  SECTION = 'GENERALE',
+       VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+        MAILLE = 'E120', 
+         VALE = (
+ 0.518000000E-03,  0.262645185E-07,  0.190365000E-07,  0.370929201E-07,
+ 0.466666667E-03,  0.211728395E-07,  0.155555556E-07,  0.301335925E-07, )),
+ 
+  _F(  SECTION = 'GENERALE',
+       VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+      MAILLE = 'E121', 
+         VALE = (
+ 0.466666667E-03,  0.211728395E-07,  0.155555556E-07,  0.301335925E-07,
+ 0.418000000E-03,  0.168593333E-07,  0.125748333E-07,  0.242006736E-07, )),
+ 
+  _F(  SECTION = 'GENERALE',
+       VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+        MAILLE = 'E122', 
+         VALE = (
+ 0.418000000E-03,  0.168593333E-07,  0.125748333E-07,  0.242006736E-07,
+ 0.372000000E-03,  0.132404444E-07,  0.100440000E-07,  0.191881894E-07, )),
+ 
+  _F(  SECTION = 'GENERALE',
+       VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+        MAILLE = 'E123', 
+         VALE = (
+ 0.372000000E-03,  0.132404444E-07,  0.100440000E-07,  0.191881894E-07,
+ 0.328666667E-03,  0.102373580E-07,  0.791538889E-08,  0.149959263E-07, )),
+ 
+  _F(  SECTION = 'GENERALE',
+       VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+        MAILLE = 'E124', 
+         VALE = (
+ 0.328666667E-03,  0.102373580E-07,  0.791538889E-08,  0.149959263E-07,
+ 0.288000000E-03,  0.777600000E-08,  0.614400000E-08,  0.115294315E-07, )),
+ 
+  _F(  SECTION = 'GENERALE',
+       VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+        MAILLE = 'E125', 
+         VALE = (
+ 0.288000000E-03,  0.777600000E-08,  0.614400000E-08,  0.115294315E-07,
+ 0.250000000E-03,  0.578703704E-08,  0.468750000E-08,  0.870001359E-08, )),
+ 
+  _F(  SECTION = 'GENERALE',
+       VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+        MAILLE = 'E126', 
+         VALE = (
+ 0.250000000E-03,  0.578703704E-08,  0.468750000E-08,  0.870001359E-08,
+ 0.214666667E-03,  0.420587654E-08,  0.350622222E-08,  0.642474308E-08, )),
+ 
+  _F(  SECTION = 'GENERALE',
+       VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+        MAILLE = 'E127', 
+         VALE = (
+ 0.214666667E-03,  0.420587654E-08,  0.350622222E-08,  0.642474308E-08,
+ 0.182000000E-03,  0.297266667E-08,  0.256316667E-08,  0.462645412E-08, )),
+ 
+  _F(  SECTION = 'GENERALE',
+       VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+        MAILLE = 'E128', 
+         VALE = (
+ 0.182000000E-03,  0.297266667E-08,  0.256316667E-08,  0.462645412E-08,
+ 0.152000000E-03,  0.203229630E-08,  0.182400000E-08,  0.323374662E-08, )),
+ 
+  _F(  SECTION = 'GENERALE',
+       VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+        MAILLE = 'E129', 
+         VALE = (
+ 0.152000000E-03,  0.203229630E-08,  0.182400000E-08,  0.323374662E-08,
+ 0.124666667E-03,  0.133439506E-08,  0.125705556E-08,  0.218099045E-08, )),
+ 
+  _F(  SECTION = 'GENERALE',
+       VARI_SECT = 'HOMOTHETIQUE',
+                   CARA = ( 'A1',     'IY1',   'IZ1',    'JX1',    
+                            'A2',     'IY2',   'IZ2',    'JX2',  ), 
+        MAILLE = 'E130', 
+         VALE = (
+ 0.124666667E-03,  0.133439506E-08,  0.125705556E-08,  0.218099045E-08,
+ 0.100000000E-03,  0.833333333E-09,  0.833333333E-09,  0.140833333E-08, )))
+ 
+                  )
+
+MASSX1=POST_ELEM(    MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                       CARA_ELEM=CELCAS1,
+                       MASS_INER=_F(  GROUP_MA = 'POU')
+                   )
+
+MASSX2=POST_ELEM(    MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                       CARA_ELEM=CELCAS2,
+                       MASS_INER=_F(  TOUT = 'OUI')
+                   )
+
+#
+
+
+TEST_TABLE(      TABLE=MASSX1,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='MASSE',
+                     VALE=5.46                )
+
+TEST_TABLE(      TABLE=MASSX1,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='CDG_X',
+                     VALE=0.321428            )
+
+TEST_TABLE(      TABLE=MASSX1,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='CDG_Y',
+                  CRITERE='ABSOLU',
+                     VALE=0.                  )
+
+TEST_TABLE(      TABLE=MASSX1,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='CDG_Z',
+                  CRITERE='ABSOLU',
+                     VALE=0.                  )
+
+TEST_TABLE(      TABLE=MASSX1,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='IX_G',
+                     VALE=8.8659E-04          )
+
+TEST_TABLE(      TABLE=MASSX1,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='IY_G',
+                     VALE=3.20336E-01         )
+
+TEST_TABLE(      TABLE=MASSX1,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='IZ_G',
+                     VALE=3.20336E-01         )
+
+TEST_TABLE(      TABLE=MASSX1,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='IX_PRIN_G',
+                     VALE=8.8659E-04          )
+
+TEST_TABLE(      TABLE=MASSX1,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='IY_PRIN_G',
+                     VALE=3.20336E-01         )
+
+TEST_TABLE(      TABLE=MASSX1,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='IZ_PRIN_G',
+                     VALE=3.20336E-01         )
+
+# --------------------------------------------------------------------
+
+MELR1=CALC_MATR_ELEM(  MODELE=MO,             CHARGE=CH,
+                         CHAM_MATER=CHMAT,     OPTION='RIGI_MECA',
+                         CARA_ELEM=CELCAS1  )
+
+MELR2=CALC_MATR_ELEM(  MODELE=MO,             CHARGE=CH,
+                         CHAM_MATER=CHMAT,     OPTION='RIGI_MECA',
+                         CARA_ELEM=CELCAS2  )
+
+MELM1=CALC_MATR_ELEM(  MODELE=MO,             CHARGE=CH,
+                         CHAM_MATER=CHMAT,     OPTION='MASS_MECA',
+                         CARA_ELEM=CELCAS1  )
+
+MELM2=CALC_MATR_ELEM(  MODELE=MO,             CHARGE=CH,
+                         CHAM_MATER=CHMAT,     OPTION='MASS_MECA',
+                         CARA_ELEM=CELCAS2  )
+
+NUM1=NUME_DDL(  MATR_RIGI=MELR1 )
+
+NUM2=NUME_DDL(  MATR_RIGI=MELR2 )
+
+MATASSR1=ASSE_MATRICE(MATR_ELEM=MELR1,NUME_DDL=NUM1)
+
+MATASSM1=ASSE_MATRICE(MATR_ELEM=MELM1,NUME_DDL=NUM1)
+
+MATASSR2=ASSE_MATRICE(MATR_ELEM=MELR2,NUME_DDL=NUM2)
+
+MATASSM2=ASSE_MATRICE(MATR_ELEM=MELM2,NUME_DDL=NUM2)
+
+# ------------------------------------------------------------------
+#         *********   2 CALCULS  **********
+# ------------------------------------------------------------------
+
+# ---  CAS1 -------
+
+MODE1=MODE_ITER_INV(  MATR_A=MATASSR1,
+                        MATR_B=MATASSM1,
+                       CALC_FREQ=_F(  FREQ = ( 53.,    1150., )) )
+
+# ---  CAS2 -------
+
+MODE2=MODE_ITER_INV(  MATR_A=MATASSR2,
+                        MATR_B=MATASSM2,
+                       CALC_FREQ=_F(  FREQ = ( 53.,    1150., )) )
+
+# --------------------------------------------------------------------
+
+
+TEST_RESU(RESU=(
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 2.E-3,
+           NUME_ORDRE = 1,       VALE = 54.18),
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 2.E-3,
+           NUME_ORDRE = 2,       VALE = 171.94),
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 2.E-3,
+           NUME_ORDRE = 3,       VALE = 384.40),
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 2.E-3,
+           NUME_ORDRE = 4,       VALE = 697.24),
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 2.E-3,
+           NUME_ORDRE = 5,       VALE = 1112.28),
+           #------------------------------------------
+   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 2.E-3,
+           NUME_ORDRE = 1,       VALE = 56.55),
+   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 2.E-3,
+           NUME_ORDRE = 2,       VALE = 175.19),
+   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 2.E-3,
+           NUME_ORDRE = 3,       VALE = 389.01),
+   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 2.E-3,
+           NUME_ORDRE = 4,       VALE = 702.36),
+   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 2.E-3,
+           NUME_ORDRE = 5,       VALE = 1117.63)) )
+
+FIN()
+#

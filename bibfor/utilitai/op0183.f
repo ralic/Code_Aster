@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       INTEGER             IERR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,6 @@ C
       IF (IERRC .NE. 0) THEN
          CALL UTMESS('F','EXEC_LOGICIEL','CODE RETOUR NON NUL DETECTE')
       ENDIF
-      CALL JEDETR('&&OP0183_NOM')
       CALL JEDEMA()
 C
 C FIN ------------------------------------------------------------------

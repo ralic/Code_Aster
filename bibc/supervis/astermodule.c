@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 20/09/2004   AUTEUR DURAND C.DURAND */
+/* MODIF astermodule supervis  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2055,6 +2055,41 @@ PyObject * MakeTupleFloat(long nbval,double * kval)
                 return t;
         }
 }
+
+
+#if defined HPUX
+void putvir (_IN INTEGER *ival)
+#elif defined PPRO_NT
+void __stdcall PUTVIR (_IN INTEGER *ival)
+#else
+void putvir_(_IN INTEGER *ival)
+#endif
+{
+        /*
+            Entrees:
+              ival entier à affecter
+            Fonction:
+              renseigner l'attribut valeur associé à la sd
+              n'est utile que pour DEFI_FICHIER
+              cet attribut est ensuite évalué par la méthode traite_value
+              de B_ETAPE.py
+        */
+        PyObject *res = (PyObject*)0 ;
+        _DEBUT("putvir_") ;{
+        ISCRUTE(*ival) ;
+
+        res = PyObject_CallMethod(commande,"putvir","i",*ival);
+        /*
+                    Si le retour est NULL : une exception a ete levee dans le code Python appele
+                    Cette exception est a transferer normalement a l appelant mais FORTRAN ???
+                    On produit donc un abort en ecrivant des messages sur la stdout
+        */
+        if (res == NULL)
+                MYABORT("erreur a l appel de putvir dans la partie Python");
+
+        }_FIN("putvir_") ;
+}
+
 
 
 void DEFPSSP(GCUCON,gcucon,INTEGER *icmd, char *resul, int lresul, char *concep, int lconcep, INTEGER *ier)

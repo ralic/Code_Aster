@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+C MODIF MODELISA  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -388,13 +388,6 @@ C
          ENDIF
 C
   40  CONTINUE
-C
-C 4.9 DESTRUCTION DES OBJETS DE TRAVAIL
-C ---
-      CALL JEDETC('V','&&OP0180',1)
-      CALL JEDETC('V',CARSIG,1)
-      CALL JEDETC('V',CHMAT,1)
-      CALL JEDETC('V',CAELEM,1)
 C
       CALL JEDEMA()
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 04/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRE CREUX THERMOVISCOPLASTICITE LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -72,7 +72,7 @@ MAT = DEFI_MATERIAU(
 CHMAT = AFFE_MATERIAU (MAILLAGE = MA,
                        AFFE =_F(TOUT='OUI',
                                 MATER = MAT,
-                                TEMP_REF = 20.)
+                                TEMP_REF = 0.)
                        ) 
 
                              

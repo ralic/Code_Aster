@@ -1,6 +1,6 @@
       SUBROUTINE INFOMA ( NOMU )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/06/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 29/09/2004   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -228,8 +228,8 @@ C ----------------------------------
   802 FORMAT (/,'------------ MAILLAGE ',A8,
      &       ' - IMPRESSIONS NIVEAU ',I2,' ------------',/)
   803 FORMAT (/,15X,'------  ',A32,'  ------',/)
-  804 FORMAT (/,A32,I6)
-  806 FORMAT (30X,A8,5X,I6)
+  804 FORMAT (/,A32,I12)
+  806 FORMAT (30X,A8,5X,I12)
   808 FORMAT (30X,A8,2X,I12)
   809 FORMAT (/,80('-'),/)
 

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #  PAR UN INDENTEUR SPHERIQUE ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -185,10 +185,10 @@ TEST_RESU(RESU=_F(RESULTAT=SSNV506,
                   INST=0.1,
                   NOM_CHAM='VALE_CONT',
                   NOM_CMP='RN',
-                  VALE=1.7436799661373E+04,
+                  VALE=1.7856037919963E+04,
                   PRECISION=0.0015,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='7.1.6',),);
+                  VERSION='7.3.23',),);
 
 TEST_RESU(RESU=_F(RESULTAT=SSNV506,
                   NOEUD='N76',
@@ -207,10 +207,10 @@ TEST_RESU(RESU=_F(RESULTAT=SSNV506,
                   INST=0.1,
                   NOM_CHAM='VALE_CONT',
                   NOM_CMP='RN',
-                  VALE=1.7853117091757E+04,
+                  VALE=1.7429338391073E+04,
                   PRECISION=0.0015,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='7.1.6',),);
+                  VERSION='7.3.23',),);
 
 TEST_RESU(RESU=_F(RESULTAT=SSNV506,
                   NOEUD='N302',

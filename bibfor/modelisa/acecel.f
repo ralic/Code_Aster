@@ -13,7 +13,7 @@ C
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -161,7 +161,7 @@ C     ----------------------------------------------
      +                  ' QUI NE CONTIENT PAS UN SEUL ELEMENT COQUE !')
          IER = IER + 1
       ENDIF
-      IF (NBOCC(3).NE.0 .AND. NDISCR.EQ.0) THEN
+      IF ((NBOCC(3).NE.0 .OR. NBOCC(14).NE.0) .AND. NDISCR.EQ.0) THEN
          CALL UTMESS('E',CMD,'VOUS NE POUVEZ AFFECTEE DES VALEURS'//
      +                           ' DE TYPE "DISCRET" AU MODELE '//NOMO//
      +                ' QUI NE CONTIENT PAS UN SEUL ELEMENT DISCRET !')
@@ -172,7 +172,7 @@ C     ----------------------------------------------
          CALL UTMESS('E',CMD,'VOUS NE POUVEZ AFFECTER DES VALEURS'//
      +            ' DE TYPE "ORIENTATION" AU MODELE '//NOMO//' QUI NE'//
      +              ' CONTIENT NI ELEMENT POUTRE NI ELEMENT DISCRET '//
-     +                                          'NI ELEMENT DISCRET !')
+     +                                          'NI ELEMENT BARRE !')
          IER = IER + 1
       ENDIF
       IF (NBOCC(5).NE.0 .AND. NPOUTR.EQ.0) THEN

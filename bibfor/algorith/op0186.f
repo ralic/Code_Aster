@@ -1,6 +1,6 @@
       SUBROUTINE OP0186(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -630,12 +630,6 @@ C --- CALCUL DES OPTIONS
       CALL NTOPTC(RESULT,MODELE,MATE,CARELE,CHARGE,INFOCH,LISOPT,NOPT,
      &            PARCRR(1))
 
-C --- ON FAIT LE MENAGE ...
-      CALL JEDETC('V','&&',1)
-      CALL JEDETC('V','_',1)
-      CALL JEDETC('V','.CODI',20)
-      CALL JEDETC('V',RESULT(1:8),1)
-      CALL JEDETC('V','.MATE_CODE',9)
       CALL TITRE()
       LIEVOL = ' '
 C ----------------------------------------------------------------------

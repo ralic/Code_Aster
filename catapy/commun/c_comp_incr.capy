@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
+#& MODIF COMMUN  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,6 +28,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "LABORD_1D",
                                         "ENDO_FRAGILE",
                                         "ENDO_ISOT_BETON",
+                                        "ENDO_ORTH_BETON",
                                         "MAZARS",
                                         "JOINT_BA",
                                         "RUPT_FRAG",
@@ -129,6 +130,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           LABORD_1D       =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
           ENDO_FRAGILE    =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           ENDO_ISOT_BETON =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
+          ENDO_ORTH_BETON =SIMP(statut='c',typ='I',defaut=7,into=(7,)),
           MAZARS          =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           JOINT_BA        =SIMP(statut='c',typ='I',defaut=6,into=(6,)),
           RUPT_FRAG       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),

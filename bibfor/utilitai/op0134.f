@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,9 +142,6 @@ C
 C
       CALL TITRE
       IF (NIV.GT.1) CALL FOIMPR (NOMFON,NIV,IFM,0,LISTP)  
-C
-      CALL JEDETR('&&OP0134.VALP') 
-      CALL JEDETR('&&OP0134.VALF') 
 C        
       CALL JEDEMA()
       END

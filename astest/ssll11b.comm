@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TREILLIS DE BARRES ARTICULEES TRAITE UNIQUEMENT DES LIAISONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,16 +46,18 @@ E2=0.006
 
 R2=(2.E-04 + pi*E2*E2) / (2.*pi*E2)
 
-CAREL=AFFE_CARA_ELEM(  MODELE=MOD,POUTRE=(
-                     _F(  GROUP_MA = 'ACBC',  SECTION = 'CERCLE',
-                              CARA = ( 'R1', 'R2', 'EP1', 'EP2', ),
-                              VALE = (  R2,   R2,   E2,   E2,  )),
-                            _F(  GROUP_MA = 'CDBD', SECTION = 'CERCLE',
-                              CARA = ( 'R1', 'R2', 'EP1', 'EP2', ),
-                              VALE = (  R1,   R1,   E1,   E1,  ))) )
+CAREL=AFFE_CARA_ELEM(  MODELE=MOD,
+                POUTRE=(_F( GROUP_MA = 'ACBC',  SECTION = 'CERCLE',
+                            VARI_SECT = 'HOMOTHETIQUE',
+                            CARA = ( 'R1', 'R2', 'EP1', 'EP2', ),
+                            VALE = (  R2,   R2,   E2,   E2,  )),
+                        _F( GROUP_MA = 'CDBD', SECTION = 'CERCLE',
+                            VARI_SECT = 'HOMOTHETIQUE',
+                            CARA = ( 'R1', 'R2', 'EP1', 'EP2', ),
+                            VALE = (  R1,   R1,   E1,   E1,  ))) )
 
 CHADEP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R', 
-MAILLAGE=MA,
+                   MAILLAGE=MA,
      AFFE=_F(   NOEUD = ('A1','B2',), NOM_CMP = ( 'DY',), VALE = ( 1.,))
                        )
 

@@ -1,0 +1,162 @@
+# MODIF  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
+# TITRE TRACTION SIMPLE EN 3D - COMPORTEMENT ENDO_ORTH_BETON
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+
+#----------------------------------------------------------------------
+#   TEST MODELE ENDO_ORTH_BETON EN DEPLACEMENT IMPOSE
+#   ESSAI DE TRACTION SIMPLE   
+#   SANS PILOTAGE
+#
+#----------------------------------------------------------------------
+
+DEBUT(     CODE=_F( NOM = 'SSNV176A',NIV_PUB_WEB='INTERNET'),
+           PAR_LOT='NON');
+
+MA=LIRE_MAILLAGE();
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+              AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),
+                       );
+
+L_INST = DEFI_LIST_REEL (
+              DEBUT=0.0,
+              INTERVALLE=(_F(JUSQU_A=1.00,NOMBRE=50,),
+                          ),);
+
+L_ARCH= DEFI_LIST_REEL (
+              DEBUT=0.0,
+              INTERVALLE=(_F(JUSQU_A=1.00,NOMBRE=50,),
+                          ),);
+
+r33 = 3**-0.5
+
+C_RIGIDE = AFFE_CHAR_MECA(
+  MODELE = MO,
+  DDL_IMPO = _F(NOEUD = 'N0',DX = 0,DY = 0,DZ = 0),
+  LIAISON_DDL = (
+    _F(NOEUD=('N2','N1'),DDL=('DX','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),
+    _F(NOEUD=('N3','N1'),DDL=('DX','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
+    _F(NOEUD=('N3','N2'),DDL=('DY','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
+    )
+  );
+
+U_COMP=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.,0.,1.,3.e-4),
+                     PROL_DROITE='CONSTANT',);
+
+CHR_C = AFFE_CHAR_MECA( MODELE = MO,
+                        DDL_IMPO = _F(NOEUD='N1', DX= 1.),
+                       );
+
+BETON= DEFI_MATERIAU(
+              ELAS = _F(E = 32000.,  NU = 0.2), 
+              ENDO_ORTH_BETON = _F(ALPHA = 0.87,
+                                   K0 = 3.e-4,
+                                   K1 = 10.5,
+                                   K2 = 6.e-4,
+                                   ECROB=1.e-3,
+                                   ECROD=0.06,
+                                   ),);
+
+CHP_M=AFFE_MATERIAU(MAILLAGE=MA,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=BETON,),);
+
+U=STAT_NON_LINE(MODELE=MO,
+              CHAM_MATER=CHP_M,
+              EXCIT=(_F(CHARGE=CHR_C,
+                       FONC_MULT=U_COMP,),
+                     _F(CHARGE=C_RIGIDE,),),
+              COMP_INCR=_F(RELATION='ENDO_ORTH_BETON',
+                           DEFORMATION='PETIT',),
+              INCREMENT=_F(LIST_INST=L_INST,
+                           INST_FIN=1., 
+                           ),
+              NEWTON=_F(MATRICE='TANGENTE',
+                        REAC_ITER=1,),
+              CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
+                             ITER_GLOB_MAXI=10,
+                             RESI_INTE_RELA=1.E-10,
+                             ITER_INTE_MAXI=20,),
+             ARCHIVAGE=_F(LIST_INST=L_ARCH),
+             );
+
+U = CALC_ELEM(
+   reuse = U,
+   MODELE    =MO,
+   CHAM_MATER=CHP_M,
+   RESULTAT  =U,
+   OPTION    =('EPSI_ELGA_DEPL'),
+   );
+
+# Recuperation du dernier numero d'ordre
+dico = U.LIST_VARI_ACCES()
+no   = dico['NUME_ORDRE'][-1]
+
+TEST_RESU(RESU=(  _F(
+               RESULTAT = U,
+               REFERENCE = 'NON_REGRESSION',
+               NUME_ORDRE = no,
+              NOEUD = 'N1',
+              NOM_CHAM = 'DEPL',
+              NOM_CMP = 'DX',
+              VALE = 3.E-04), 
+              _F(
+              RESULTAT = U,
+              REFERENCE = 'NON_REGRESSION',
+              NUME_ORDRE = no,
+              NOM_CHAM='EPSI_ELGA_DEPL',
+              NOM_CMP='EPXX',
+              MAILLE='VOLUME',
+              POINT = 1,
+              VALE = 3.E-4),
+              _F(
+              RESULTAT = U,
+              REFERENCE = 'NON_REGRESSION',
+              NUME_ORDRE = no,
+              MAILLE = 'VOLUME',
+              POINT = 1,
+              NOM_CHAM = 'SIEF_ELGA',
+              NOM_CMP = 'SIXX',
+              VALE = 1.11388E+00),
+              _F(
+              RESULTAT = U,
+              REFERENCE = 'NON_REGRESSION',
+              NUME_ORDRE = no,
+              MAILLE = 'VOLUME',
+              POINT = 1,
+              NOM_CHAM = 'VARI_ELGA',
+              NOM_CMP = 'V1',
+              VALE = 6.59365E-01),
+              _F(
+              RESULTAT = U,
+              REFERENCE = 'NON_REGRESSION',
+              NUME_ORDRE = no,
+              MAILLE = 'VOLUME',
+              POINT = 1,
+              NOM_CHAM = 'VARI_ELGA',
+              NOM_CMP = 'V7',
+              VALE = 2.42260E-04),
+              ),
+            );
+
+FIN();

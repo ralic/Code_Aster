@@ -1,7 +1,7 @@
       SUBROUTINE TE0531(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/10/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,6 +39,8 @@ C                        . VON MISES                    (= 1 VALEUR)
 C                        . TRESCA                       (= 1 VALEUR)
 C                        . CONTRAINTES PRINCIPALES      (= 3 VALEURS)
 C                        . VON-MISES * SIGNE (PRESSION) (= 1 VALEUR)
+C                        . DIRECTION DES CONTRAINTES PRINCIPALES 
+C                                                      (=3*3 VALEURS)
 C     OPTIONS :  'EQUI_ELNO_SIGM'
 C                'EQUI_ELGA_SIGM'
 C     ENTREES :  OPTION : OPTION DE CALCUL
@@ -48,7 +50,7 @@ C     REMARQUE:  LA DERNIERE GRANDEUR EST UTILISE
 C                PARTICULIEREMENT POUR DES CALCULS DE CUMUL DE
 C                DOMMAGE EN FATIGUE
 C ----------------------------------------------------------------------
-      PARAMETER (NPGMAX=27,NNOMAX=27,NEQMAX=6)
+      PARAMETER (NPGMAX=27,NNOMAX=27,NEQMAX=15)
 C ----------------------------------------------------------------------
       INTEGER IDEFO,ICONT,IEQUIF
       INTEGER IDCP,KP,J,I,INO
@@ -74,7 +76,8 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-        NCEQ = 6
+        NCEQ = 15
+        NCMP = 6
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
       CALL JEVECH('PCONTRR','L',ICONT)
@@ -98,7 +101,7 @@ C -       DEFORMATIONS
           DO 50 KP = 1,NPG
             IDCP = (KP-1)*NCEQ
 C            CALL FGEQUI(ZR(ICONT+ (KP-1)*6),'SIGM',3,EQPG(IDCP+1))
-            CALL FGEQUI(SIGMA((KP-1)*6+1),'SIGM',3,EQPG(IDCP+1))
+            CALL FGEQUI(SIGMA((KP-1)*6+1),'SIGM_DIR',3,EQPG(IDCP+1))
    50     CONTINUE
         END IF
 
@@ -118,13 +121,13 @@ C -       CONTRAINTES
 
         IF (OPTION(11:14).EQ.'SIGM') THEN
           DO 100 KP = 1,NPG
-            IDCP = (KP-1)*NCEQ
+            IDCP = (KP-1)*NCMP
             CALL FGEQUI(SIGMA((KP-1)*6+1),'SIGM',3,EQPG(IDCP+1))
   100     CONTINUE
 
 C -       EXTRAPOLATION AUX NOEUDS
 
-          CALL PPGAN2(JGANO,NCEQ,EQPG,ZR(IEQUIF))
+          CALL PPGAN2(JGANO,NCMP,EQPG,ZR(IEQUIF))
 
         END IF
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE COQUE HELICOIDALE (POUTRE VRILLEE) SOUS CHARGES CONCENTREES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,7 +104,7 @@ TEST_RESU(CHAM_NO=(
 # TEST IMPR_RESU/GMSH 1.0 MAILLAGE
 fich='MA10'
 DEFI_FICHIER( UNITE=35,
-              NOM_SYSTEME='./REPE_OUT/'+fich+'.pos')
+              FICHIER='./REPE_OUT/'+fich+'.pos')
 
 IMPR_RESU ( MODELE=MODELE_1,
             INFO=2,
@@ -113,7 +113,7 @@ IMPR_RESU ( MODELE=MODELE_1,
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=35)
 
-TEST_FICHIER(NOM_SYSTEME='./REPE_OUT/'+fich+'.pos',
+TEST_FICHIER(FICHIER='./REPE_OUT/'+fich+'.pos',
              NB_CHIFFRE=6,
              EPSILON=1.E-14,
              VALE_K='895b06118b8ec653113906f433bfbf75',
@@ -125,7 +125,7 @@ TEST_FICHIER(NOM_SYSTEME='./REPE_OUT/'+fich+'.pos',
 # TEST IMPR_RESU/GMSH 1.0 RESU
 fich='DEP10'
 DEFI_FICHIER( UNITE=36,
-              NOM_SYSTEME='./REPE_OUT/'+fich+'.pos')
+              FICHIER='./REPE_OUT/'+fich+'.pos')
 
 IMPR_RESU ( MODELE=MODELE_1,
             INFO=2,
@@ -134,7 +134,7 @@ IMPR_RESU ( MODELE=MODELE_1,
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=36)
 
-TEST_FICHIER(NOM_SYSTEME='./REPE_OUT/'+fich+'.pos',
+TEST_FICHIER(FICHIER='./REPE_OUT/'+fich+'.pos',
              NB_CHIFFRE=6,
              EPSILON=1.E-14,
              VALE_K='ce589133e055f3717243a7985f2ec8be',
@@ -146,7 +146,7 @@ TEST_FICHIER(NOM_SYSTEME='./REPE_OUT/'+fich+'.pos',
 # TEST IMPR_RESU/GMSH 1.0 MAILLAGE
 fich='MA12'
 DEFI_FICHIER( UNITE=37,
-              NOM_SYSTEME='./REPE_OUT/'+fich+'.pos')
+              FICHIER='./REPE_OUT/'+fich+'.pos')
 
 IMPR_RESU ( MODELE=MODELE_1,
             INFO=2,
@@ -155,7 +155,7 @@ IMPR_RESU ( MODELE=MODELE_1,
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=37)
 
-TEST_FICHIER(NOM_SYSTEME='./REPE_OUT/'+fich+'.pos',
+TEST_FICHIER(FICHIER='./REPE_OUT/'+fich+'.pos',
              NB_CHIFFRE=6,
              EPSILON=1.E-14,
              VALE_K='895b06118b8ec653113906f433bfbf75',
@@ -167,7 +167,7 @@ TEST_FICHIER(NOM_SYSTEME='./REPE_OUT/'+fich+'.pos',
 # TEST IMPR_RESU/GMSH 1.0 RESU
 fich='DEP12'
 DEFI_FICHIER( UNITE=38,
-              NOM_SYSTEME='./REPE_OUT/'+fich+'.pos')
+              FICHIER='./REPE_OUT/'+fich+'.pos')
 
 IMPR_RESU ( MODELE=MODELE_1,
             INFO=2,
@@ -176,7 +176,7 @@ IMPR_RESU ( MODELE=MODELE_1,
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
 
-TEST_FICHIER(NOM_SYSTEME='./REPE_OUT/'+fich+'.pos',
+TEST_FICHIER(FICHIER='./REPE_OUT/'+fich+'.pos',
              NB_CHIFFRE=6,
              EPSILON=1.E-14,
              VALE_K='d955360c754356b2ac2091e336b57f0a',

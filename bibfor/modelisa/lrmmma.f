@@ -5,7 +5,7 @@
      >                    PREFIX,
      >                    INFMED )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/07/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 29/09/2004   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -211,7 +211,7 @@ C
             ENDIF
             DO 221 , IAUX = 1, NMATYP(ITYP)
               CODE = ZI(JNUMTY(ITYP)+IAUX-1)
-              CALL CODENT(CODE,'G',SAUX07)
+              CALL CODLET(CODE,'G',SAUX07)
               ZK8(JNOMTY(ITYP)+IAUX-1) = 'M'//SAUX07
   221       CONTINUE
             CODRET = 0

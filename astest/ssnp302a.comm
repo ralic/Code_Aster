@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 04/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PLAQUE CARREE EN TRACTION SOUMIS A UN CHAMP DE TEMPERATURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,8 +48,14 @@ TRAC_FO=DEFI_FONCTION(       NOM_PARA='INST',
                                    VALE=( 0.,      0.,
                                           1.,      100., )
                         )
+T0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', 
+MAILLAGE=MAYA,AFFE=(
+                               _F(  TOUT='OUI',
+                                      NOM_CMP = 'TEMP',
+                                      VALE = 0.))
+                      )
 
-TCALC=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', 
+T_CAL=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', 
 MAILLAGE=MAYA,AFFE=(
                                _F(  NOEUD = 'NO1',
                                       NOM_CMP = 'TEMP',
@@ -64,6 +70,18 @@ MAILLAGE=MAYA,AFFE=(
                                       NOM_CMP = 'TEMP',
                                       VALE = 1000.))
                       )
+
+TCALC=CREA_RESU( OPERATION='AFFE',
+                 TYPE_RESU='EVOL_THER',
+                 NOM_CHAM='TEMP',
+                 AFFE=_F(CHAM_GD=T0,
+                         INST=.0,),);
+CREA_RESU(reuse =TCALC,
+                 OPERATION='AFFE',
+                 TYPE_RESU='EVOL_THER',
+                 NOM_CHAM='TEMP',
+                 AFFE=_F(CHAM_GD=T_CAL,
+                         INST= 1.0,),);
 
 TEMPER=AFFE_CHAR_MECA(      MODELE=MODEL,
                              TEMP_CALCULEE=TCALC  )

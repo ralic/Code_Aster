@@ -1,4 +1,4 @@
-# MODIF  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 29/09/2004   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE Calcul d'indicateur d'erreur en thermique lineaire
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,9 +108,11 @@ TEST_RESU(RESU=(
                 VALE = 4.1591876225226E-05,
                 VERSION='V6.6',              CRITERE='RELATIF')))
 
+# LE CODAGE DES NOMS DE NOEUDS ET DE MAILLES DANS LES FICHIERS MED EST EN BASE 36
+# La maille M25 ==> MP
 TEST_RESU(RESU=(       
             _F( RESULTAT = RESU[2],          NUME_ORDRE = 0, 
-                NOM_CHAM = 'ERTH_ELEM_TEMP', MAILLE = 'M25', 
+                NOM_CHAM = 'ERTH_ELEM_TEMP', MAILLE = 'MP', 
                 POINT =1,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
                 VALE = 4.3627678192699E-05,  PRECISION = 1.E-5,

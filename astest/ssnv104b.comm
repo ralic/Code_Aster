@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
 #
 # TITRE CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -310,10 +310,10 @@ TEST_RESU(
                   NOM_CHAM = 'DEPL',
                   NOEUD = 'N287',
                   NOM_CMP = 'DX',
-                  VALE = -1.08495E-01,
+                  VALE = -1.08112E-01,
                   PRECISION = 1.0E-03,
                   REFERENCE='NON_REGRESSION',
-                  VERSION = '6.2.8',
+                  VERSION = '7.3.23',
                   CRITERE = 'RELATIF'),
             _F(
                   RESULTAT = RESU3,
@@ -321,10 +321,10 @@ TEST_RESU(
                   NOM_CHAM = 'DEPL',
                   NOEUD = 'N287',
                   NOM_CMP = 'DY',
-                  VALE = -1.63447E-01,
+                  VALE = -1.64640E-01,
                   PRECISION = 1.0E-03,
                   REFERENCE='NON_REGRESSION',
-                  VERSION = '6.2.8',
+                  VERSION = '7.3.23',
                   CRITERE = 'RELATIF'),
             _F(
                   RESULTAT = RESU3,
@@ -332,10 +332,10 @@ TEST_RESU(
                   NOM_CHAM = 'DEPL',
                   NOEUD = 'N285',
                   NOM_CMP = 'DX',
-                  VALE = -1.61456E-01,
+                  VALE = -1.60610E-01,
                   PRECISION = 1.0E-03,
                   REFERENCE='NON_REGRESSION',
-                  VERSION = '6.2.8',
+                  VERSION = '7.3.23',
                   CRITERE = 'RELATIF'),
             _F(
                   RESULTAT = RESU3,
@@ -431,10 +431,10 @@ TEST_RESU(
                   NOM_CHAM = 'DEPL',
                   NOEUD = 'N287',
                   NOM_CMP = 'DX',
-                  VALE = -1.08495E-01,
+                  VALE = -1.08112E-01,
                   PRECISION = 1.0E-03,
                   REFERENCE='NON_REGRESSION',
-                  VERSION = '6.2.8',
+                  VERSION = '7.3.23',
                   CRITERE = 'RELATIF'),
             _F(
                   RESULTAT = RESU4,
@@ -442,10 +442,10 @@ TEST_RESU(
                   NOM_CHAM = 'DEPL',
                   NOEUD = 'N287',
                   NOM_CMP = 'DY',
-                  VALE = -1.63447E-01,
+                  VALE = -1.64640E-01,
                   PRECISION = 1.0E-03,
                   REFERENCE='NON_REGRESSION',
-                  VERSION = '6.2.8',
+                  VERSION = '7.3.23',
                   CRITERE = 'RELATIF'),
             _F(
                   RESULTAT = RESU4,
@@ -453,10 +453,10 @@ TEST_RESU(
                   NOM_CHAM = 'DEPL',
                   NOEUD = 'N285',
                   NOM_CMP = 'DX',
-                  VALE = -1.61456E-01,
+                  VALE = -1.60610E-01,
                   PRECISION = 1.E-03,
                   REFERENCE='NON_REGRESSION',
-                  VERSION = '6.2.8',
+                  VERSION = '7.3.23',
                   CRITERE = 'RELATIF'),
             _F(
                   RESULTAT = RESU4,

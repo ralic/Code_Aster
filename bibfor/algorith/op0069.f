@@ -1,6 +1,6 @@
       SUBROUTINE OP0069 (IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/09/2004   AUTEUR LAMARCHE S.LAMARCHE 
+C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -650,27 +650,7 @@ C ======================================================================
 
 C     COPIE DE LA SD INFO_CHARGE DANS LA BASE GLOBALE
       CALL COPISD(' ','G',LISCHA,LISCH2)
-
-      CALL JEDETC ('V','.CODI',20)
-      CALL JEDETC ('V','&&',1)
-      CALL JEDETC ('V','_',1)
-      CALL JEDETC ('V',RESULT,1)
-      CALL JEDETC ('V','.MATE_CODE',9)
-      CALL JEDETR (DEFICO(1:16)//'.DDLCO')
-      CALL JEDETR (DEFICO(1:16)//'.PDDLCO')
-      
-C -- DESTRUCTION DES OBJETS OBSERVATION
-
-      IF ( NBOBSE .NE. 0 ) THEN
-         CALL JEDETR ( '&&DYOBSE.MAILLA'   )
-         CALL JEDETR ( '&&DYOBSE.NOM_CHAM' )
-         CALL JEDETR ( '&&DYOBSE.NOM_CMP ' )
-         CALL JEDETR ( '&&DYOBSE.NUME_CMP' )
-         CALL JEDETR ( '&&DYOBSE.NOEUD'    )
-         CALL JEDETR ( '&&DYOBSE.MAILLE'   )
-         CALL JEDETR ( '&&DYOBSE.POINT'    )
-      ENDIF
-
+C
  9000 FORMAT ('INSTANT DE CALCUL : ',1PE16.9)
 
       CALL JEDEMA()

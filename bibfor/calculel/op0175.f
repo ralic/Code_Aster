@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER IER
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF CALCULEL  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C TOLE CRP_20
 C     COMMANDE :  POST_ZAC
 C        METHODE ZARKA-CASIER
@@ -404,7 +404,6 @@ C -- CRITERES DE CONVERGENCE LOCAUX
       ZR(IRCMP+4) = 0
       CALL MECACT('V',CARCRI,'MODELE',LIGREL,'CARCRI',NCMP,ZK8(JACMP),
      &            IBID,ZR(IRCMP),CBID,K8BID)
-      CALL JEDETR('&&OP0175.TRAVR')
 
 C -- NUME_DDL
       NUMEDD = '12345678.NUMED'
@@ -550,16 +549,6 @@ C       CALCUL DES AMPLITUDES ET VALEURS MOYENNES A L'ETAT LMITE
         END IF
   120 CONTINUE
   130 CONTINUE
-
-
-C --- ON FAIT LE MENAGE ...
-      CALL JEDETR(KNUME)
-      CALL JEDETR(KCHA)
-      CALL JEDETC('V','&&',1)
-      CALL JEDETC('V','.CODI',20)
-      CALL JEDETC('V','.MATE_CODE',9)
-      CALL JEDETC('V',RESULT(1:8),1)
-      CALL JEDETC('V','_',1)
 
       CALL JEDEMA()
       END

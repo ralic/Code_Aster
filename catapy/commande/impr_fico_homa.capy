@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,11 +35,11 @@ IMPR_FICO_HOMA=PROC(nom="IMPR_FICO_HOMA",op= 189, docu="U7.04.01-b",
 #
 # 3. Le nom local du fichier de configuration HOMARD
 #
-         FICHIER_CONF    =SIMP(statut='o',typ='TXM'),
+         UNITE_CONF    =SIMP(statut='o',typ='I'),
 #
 # 4. Le nom local du fichier de données HOMARD
 #
-         FICHIER_DONN    =SIMP(statut='f',typ='TXM'),
+         UNITE_DONN    =SIMP(statut='f',typ='I'),
 #
 # 5. Gestion des éléments autres que des simplexes
 #       0 : autres elements refuses (defaut)

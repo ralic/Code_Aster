@@ -1,6 +1,7 @@
       SUBROUTINE REACCO (PREMIE,METH,REAC)
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,13 +19,13 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C
-      IMPLICIT NONE
-C
-      LOGICAL PREMIE
-      INTEGER METH(5),REAC(4)
+      IMPLICIT     NONE
+      LOGICAL      PREMIE
+      INTEGER      METH(5)
+      INTEGER      REAC(4)
 C
 C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : NMCONT
+C ROUTINE APPELEE PAR : NMCOFR
 C ----------------------------------------------------------------------
 C
 C IN  PREMIE : VAUT .TRUE. SI C'EST LE PREMIER CALCUL (PAS DE PASSE)
@@ -41,7 +42,7 @@ C              (+1 SI BRUTE FORCE (OBLIGATOIRE SI PREMIE = .TRUE.)
 C               +/-2 SI PAR VOISINAGE, +/-3 SI PAR BOITES,
 C               > 0 SI ON CHERCHE D'ABORD UN NOEUD PUIS LA MAILLE,
 C               < 0 SI ON CHERCHE DIRECTEMENT LA MAILLE)
-C VAR REAC   : CARACTERISTIQUES DE LA REACTUALISATION (CF. METH(5))
+C OUT REAC   : CARACTERISTIQUES DE LA REACTUALISATION (CF. METH(5))
 C          (1) REACTUALISATION DE L'APPARIEMENT
 C              ( 0 = PAS DE REACTUALISATION,
 C               -1 = PAS D'APPARIEMENT MAIS REMPLISSAGE INITIAL DES SD
@@ -52,87 +53,72 @@ C          (3) PROJECTION ET REACTUALISATION DE LA GEOMETRIE
 C              +/-1 : PROJECTION LINEAIRE   +/-2 PROJECTION QUADRATIQUE
 C              > 0  : REACTUALISATION NORMALES ET COORDONNEES
 C              < 0  : GEOMETRIE PRECEDENTE
-C          (4) NUMERO DE LA SURFACE ESCLAVE (1 OU 2, 0 = SANS OBJET)
+C          (4) INUTILISE
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER OLD
-C
-C ----------------------------------------------------------------------
-C
-C --- REACTUALISATION DE L'APPARIEMENT
-C
+
+
+C ======================================================================
+C      REACTUALISATION DE L'APPARIEMENT
+C ======================================================================
       IF (PREMIE) THEN
-C
-C - SI PREMIER CALCUL ON NE CONNAIT PAS LE PASSE
-C
+
+C --- SI PREMIER CALCUL ON NE CONNAIT PAS LE PASSE
         REAC(1) = 1
-C
-C - SI PAS D'APPARIEMENT ON PASSERA QUAND MEME UNE 1ERE FOIS DANS RECHNO
-C - REMPLIR LES STRUCTURES DE DONNEES
-C
-        IF (METH(1).EQ.-1) REAC(1) = -1
-C
+C --- SI PAS D'APPARIEMENT ON PASSERA QUAND MEME UNE 1ERE FOIS DANS 
+C --- RECHNO POUR REMPLIR LES STRUCTURES DE DONNEES
+        IF (METH(1).EQ.-1) THEN 
+          REAC(1) = -1
+        ENDIF
       ELSE
-C
-C - PAR DEFAUT ON PREND LA METHODE INDIQUEE DANS LE FICHIER DE COMMANDE
+C --- PAR DEFAUT ON PREND LA METHODE INDIQUEE DANS LE FICHIER COMM
         REAC(1) = METH(5)
-C - SI RELATION SANS APPARIEMENT (U RIGIDE, PRESSION, TEMPERATURE)
-        IF (METH(1).EQ.-1) REAC(1) = 0
-C
-C - ANCIEN FORTRAN AVEC REAC_APPA
-C
-C - SI L'UTILISATEUR NE VEUT PAS DE REACTUALISATION
-C        IF (METH(2).EQ.0) REAC(1) = 0
-C - SI ON EST EN DESSOUS DE LA FREQUENCE DE REACTUALISATION
-C        IF (REAC(2).LT.METH(2)-1) REAC(1) = 0
-C
-C - SI APPARIEMENT NODAL ON CHERCHE LE NOEUD LE PLUS PROCHE
-        IF (METH(1).EQ.0) REAC(1) = ABS(REAC(1))
-C
+C --- SI RELATION SANS APPARIEMENT (U RIGIDE, PRESSION, TEMPERATURE)
+        IF (METH(1).EQ.-1) THEN 
+          REAC(1) = 0
+        ENDIF
+C --- SI APPARIEMENT NODAL ON CHERCHE LE NOEUD LE PLUS PROCHE
+        IF (METH(1).EQ.0) THEN 
+          REAC(1) = ABS(REAC(1))
+        ENDIF
       END IF
-C
-C --- TYPE DE PROJECTION ET REACTUALISATION DES NORMALES
-C
-C - PAR DEFAUT ON PREND LA METHODE INDIQUEE DANS LE FICHIER DE COMMANDE
+C ======================================================================
+C      TYPE DE PROJECTION ET REACTUALISATION DES NORMALES
+C ======================================================================
+
+C --- PAR DEFAUT ON PREND LA METHODE INDIQUEE DANS FICHIER DE COMMANDE
       REAC(3) = METH(4)
-C - SI REAC_APPA = 0 (PETITS GLISSEMENTS) -> GEOMETRIE INITIALE
-      IF ((METH(2).EQ.0).AND.(REAC(3).GT.0)) REAC(3) = -REAC(3)
-C - SI RELATION SANS APPARIEMENT : IL FAUT TOUJOURS REACTUALISER
-C - LE SECOND MEMBRE
-      IF (METH(1).EQ.-1) REAC(3) = 1
-C
-C --- NUMERO DE LA SURFACE ESCLAVE
-C
-C - METHODE SANS APPARIEMENT (U RIGIDE, PRESSION OU TEMPERATURE)
-C
-      IF (METH(1).EQ.-1) REAC(4) = 1
-C
-C - METHODE NODALE
-C
-      IF (METH(1).EQ.0) THEN
-        IF (METH(3).EQ.1) THEN
-          OLD = REAC(4)
-          IF (OLD.EQ.0) REAC(4) = 2
-          IF (OLD.EQ.1) REAC(4) = 2
-          IF (OLD.EQ.2) REAC(4) = 1
-        ELSE
-          REAC(4) = 0
-        END IF
-      END IF
-C
-C - METHODE MAITRE-ESCLAVE
-C
-      IF (METH(1).EQ.1) THEN
-        IF (METH(3).EQ.1) THEN
-          OLD = REAC(4)
-          IF (OLD.EQ.0) REAC(4) = 2
-          IF (OLD.EQ.1) REAC(4) = 2
-          IF (OLD.EQ.2) REAC(4) = 1
-        ELSE
-          REAC(4) = 2
-        END IF
-      END IF
+C --- SI REAC_APPA = 0 (PETITS GLISSEMENTS) -> GEOMETRIE INITIALE
+      IF ((METH(2).EQ.0).AND.(REAC(3).GT.0)) THEN 
+        REAC(3) = -REAC(3)
+      ENDIF
+C --- SI RELATION SANS APPARIEMENT : IL FAUT TOUJOURS REACTUALISER
+C --- LE SECOND MEMBRE
+      IF (METH(1).EQ.-1) THEN 
+        REAC(3) = 1
+      ENDIF
 C
 C ----------------------------------------------------------------------
 C

@@ -3,7 +3,7 @@
       INTEGER             IERR
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,8 +130,6 @@ C
 C
       CALL JEEXIN ( '&&MAT152.MADE', IRET ) 
       IF ( IRET.GT.0 ) CALL JEVEUO ( '&&MAT152.MADE', 'E', IMADE )
-      CALL JEEXIN ( '&&OP0199.VEC' , IRET )
-      IF (IRET.GT.0) CALL JEDETR('&&OP0199.VEC')
 C
 C================================================================
 C CALCUL ET STOCKAGE DES POTENTIELS INSTATIONNAIRES PHI1 ET PHI2
@@ -212,23 +210,6 @@ C
 10      CONTINUE
       ENDIF
 C
-C-----------------MENAGE FINAL SUR VOLATILE-----------------------
-C
-      CALL JEDETC('V','.CODI',20)
-      CALL JEDETC('V','.MATE_CODE',9)
-      CALL JEDETC('V','&',1)
-      CALL JEDETC('V','_',1)
-      CALL JEDETC('V',NU,1)
-      CALL JEDETC('V',NUM,1)
-      CALL JEDETC('V','NUM',1)
-      CALL JEDETC('V',MA,1)
-      CALL JEDETC('V',MAX,1)
-      CALL JEDETC('V',MAY,1)
-      CALL JEDETC('V',MAZ,1)
-      CALL JEDETC('V','PHIB19',1)
-      CALL JEDETC('V','MA',1)
-      CALL JEDETC('V','B',1)
-      CALL JEDETC('V','PHPLO',1)
 C
       CALL JEDETC('G','&&RIGFLU',1)
       CALL JEDETC('G','&&CALMAA',1)

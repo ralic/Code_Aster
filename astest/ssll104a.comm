@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE POUTRE DE SECTION RECTANGULAIRE  (ENCASTREE-LIBRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,70 +86,43 @@ CH3=AFFE_CHAR_MECA(  MODELE=MO3,
 
 
 CELEM1=AFFE_CARA_ELEM(   MODELE=MO1,
-                         VERIF=( 'MAILLE',  'NOEUD',  ),POUTRE=(
-#
-#
-               _F(  SECTION = 'GENERALE',
-
-                # CISAILLEMENT COMMUN
-        CARA = ( 'AY1',  'AZ1',  'AY2',  'AZ2', ),   
-       GROUP_MA = 'TOUT',
- 
-        VALE = (  1.,    1.,    1.,    1.,  )),
-
-                # ENTREES OBLIGATOIRES MAIS FICTIVES POUR CE CALCUL
-   _F(     CARA = ( 'IY1',  'JX1',  'IY2',  'JX2', ),   GROUP_MA = 'TOUT',
-        SECTION = 'GENERALE',
-        VALE = (  1.,     1.,     1.,     1.,   )),
-
-                #    AIRE       ET     INERTIE/Z
-   _F(     CARA = (    'A1',             'IZ1',       
-                     'A2',             'IZ2',     ),  GROUP_MA = 'TOUT',
-        SECTION = 'GENERALE',
-        VALE = (  1.,     1.,     1.,     1.,   )))
-                                                        )
+                         VERIF=( 'MAILLE',  'NOEUD',  ),
+            POUTRE=
+               _F(  GROUP_MA = 'TOUT',  
+                    SECTION = 'GENERALE', VARI_SECT = 'HOMOTHETIQUE',
+                    CARA = ( 'A1',   'IZ1',  'A2',   'IZ2', 
+                             'AY1',  'AZ1',  'AY2',  'AZ2',   
+                             'IY1',  'JX1',  'IY2',  'JX2', ), 
+                    VALE = (  1.,     1.,     1.,     1.,  
+                              1.,     1.,     1.,     1., 
+                              1.,     1.,     1.,     1.,   )),
+                     )
 
 CELEM2=AFFE_CARA_ELEM(   MODELE=MO2,
-                         VERIF=( 'MAILLE',  'NOEUD',   ),POUTRE=(
-#
-#
-               _F(  SECTION = 'GENERALE',
-
-                # CISAILLEMENT COMMUN
-        CARA = ( 'AY1',  'AZ1',  'AY2',  'AZ2', ),   GROUP_MA = 'TOUT',
-        VALE = (  1.,    1.,    1.,    1.,  )),
-                # ENTREES OBLIGATOIRES MAIS FICTIVES POUR CE CALCUL
-   _F(     CARA = ( 'IY1',  'JX1',  'IY2',  'JX2', ),   GROUP_MA = 'TOUT',
-        SECTION = 'GENERALE',
-        VALE = (  1.,     1.,     1.,     1.,   )),
-
-                #    AIRE       ET     INERTIE/Z
-   _F(     CARA = (    'A1',             'IZ1',       
-                     'A2',             'IZ2',     ),  GROUP_MA = 'TOUT',
-        SECTION = 'GENERALE',
-        VALE = (  1.,     1.,     1.,     1.,   )))
-                                                        )
+                         VERIF=( 'MAILLE',  'NOEUD',  ),
+            POUTRE=
+               _F(  GROUP_MA = 'TOUT',  
+                    SECTION = 'GENERALE', VARI_SECT = 'HOMOTHETIQUE',
+                    CARA = ( 'A1',   'IZ1',  'A2',   'IZ2', 
+                             'AY1',  'AZ1',  'AY2',  'AZ2',   
+                             'IY1',  'JX1',  'IY2',  'JX2', ), 
+                    VALE = (  1.,     1.,     1.,     1.,  
+                              1.,     1.,     1.,     1., 
+                              1.,     1.,     1.,     1.,   )),
+                     )
 
 CELEM3=AFFE_CARA_ELEM(   MODELE=MO3,
-                         VERIF=( 'MAILLE',  'NOEUD',  ),POUTRE=(
-#
-#
-               _F(  SECTION = 'GENERALE',
-
-                # CISAILLEMENT COMMUN
-        CARA = ( 'AY1',  'AZ1',  'AY2',  'AZ2', ),   GROUP_MA = 'TOUT',
-        VALE = (  1.,    1.,    1.,    1.,  )),
-                # ENTREES OBLIGATOIRES MAIS FICTIVES POUR CE CALCUL
-   _F(     CARA = ( 'IY1',  'JX1',  'IY2',  'JX2', ),   GROUP_MA = 'TOUT',
-        SECTION = 'GENERALE',
-        VALE = (  1.,     1.,     1.,     1.,   )),
-
-                #    AIRE       ET     INERTIE/Z
-   _F(     CARA = (    'A1',             'IZ1',       
-                     'A2',             'IZ2',     ),  GROUP_MA = 'TOUT',
-        SECTION = 'GENERALE',
-        VALE = (  1.,     1.,     1.,     1.,   )))
-                                                        )
+                         VERIF=( 'MAILLE',  'NOEUD',  ),
+            POUTRE=
+               _F(  GROUP_MA = 'TOUT',  
+                    SECTION = 'GENERALE', VARI_SECT = 'HOMOTHETIQUE',
+                    CARA = ( 'A1',   'IZ1',  'A2',   'IZ2', 
+                             'AY1',  'AZ1',  'AY2',  'AZ2',   
+                             'IY1',  'JX1',  'IY2',  'JX2', ), 
+                    VALE = (  1.,     1.,     1.,     1.,  
+                              1.,     1.,     1.,     1., 
+                              1.,     1.,     1.,     1.,   )),
+                     )
 
 # ------------------------------------------------------------------
 

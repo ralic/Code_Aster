@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -222,7 +222,6 @@ C
         CALL WKVECT('&&OP0093.MODE_STAT_ACCU','V V R',NEQ*NBMODA,LMODA)
             CALL MODSTA('ACCE',LMATR,LMATM,NUME,IBID,ZR(JCOEF),NEQ,
      >                                                NBMODA,ZR(LMODA))
-            CALL JEDETR ('&&OP0093.COEFFICIENT')
          ENDIF
 C
          IF ( NBACC .NE. NBPSMO ) THEN
@@ -500,7 +499,5 @@ C     --- ECRITURE EVENTUELLE DES VALEURS ET DES VECTEURS PROPRES ---
      >                 .FALSE., FORMAR,LMOD,NIVE,VERSIO)
       ENDIF
 C     ------------------------------------------------------------------
-      CALL JEDETC('V','&&OP0093',1)
-C
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_D_N
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,11 +50,11 @@ MA=DEFI_GROUP(reuse=MA,  MAILLAGE=MA,CREA_GROUP_MA=(
       _F( NOM = 'GN4',  UNION = ('GN3','GN2', )))
       )
 
-MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
-       _F(  TOUT = 'OUI',    PHENOMENE = 'MECANIQUE',
+MO=AFFE_MODELE(  MAILLAGE=MA,
+                 AFFE=(_F(  TOUT = 'OUI',     PHENOMENE = 'MECANIQUE',
                             MODELISATION = '2D_DIS_TR'),
-            _F(  GROUP_NO = 'GN4', MODELISATION = '2D_DIS_TR',
-            PHENOMENE = 'MECANIQUE')) )
+                       _F(  GROUP_NO = 'GN4', PHENOMENE = 'MECANIQUE', 
+                            MODELISATION = '2D_DIS_TR')) )
 
 CH=AFFE_CHAR_MECA(  MODELE=MO,
       DDL_IMPO=_F(  TOUT = 'OUI',        DRZ = 0.),LIAISON_DDL=(
@@ -70,15 +70,14 @@ CH=AFFE_CHAR_MECA(  MODELE=MO,
                    )
 
 CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
-       ORIENTATION=_F(  GROUP_NO = 'GN4',   CARA = 'ANGL_NAUT',
-                                     VALE = ( 53.130102,  0.,   0.,  )),DISCRET=(
-       
-         _F(  CARA = 'K_TR_D_L',   REPERE = 'LOCAL',
-                            GROUP_MA = 'GM4',    VALE = (1.E5,0.,0., )),
-         _F(  CARA = 'K_TR_D_N',   REPERE = 'LOCAL',
-                            NOEUD = ( 'P1','P8',),   VALE = (1.E5,0.,0., )),
-         _F(  CARA = 'M_TR_D_N', REPERE = 'GLOBAL',
-                            GROUP_NO = 'GN4',    VALE = (10.,10.,0.,0.,)))
+        ORIENTATION=_F(  GROUP_NO = 'GN4',   CARA = 'ANGL_NAUT',
+                         VALE = ( 53.130102,  0.,   0.,  )),
+        DISCRET_2D=(_F(  CARA = 'K_TR_D_L',   REPERE = 'LOCAL',
+                         GROUP_MA = 'GM4',    VALE = (1.E5,0.,0., )),
+                    _F(  CARA = 'K_TR_D_N',   REPERE = 'LOCAL',
+                         NOEUD = ( 'P1','P8',),   VALE = (1.E5,0.,0., )),
+                    _F(  CARA = 'M_TR_D_N', REPERE = 'GLOBAL',
+                         GROUP_NO = 'GN4',    VALE = (10.,10.,0.,0.,)))
                          )
 
 # --------------------------------------------------------------------

@@ -1,7 +1,7 @@
       SUBROUTINE OP0145 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -255,7 +255,6 @@ C
   20    CONTINUE
         ZI(LVAIN) = ISPECT
 C
-        CALL JEDETC('V','OP0145',1)
 C
 C ----2.MODELES "FONCTIONS DE FORME" ET "EXCITATIONS PONCTUELLES"
 C       ---------------------------------------------------------
@@ -315,7 +314,6 @@ C
             DO 30 IFO = 1,IFONCT
               ZK16(LVATE+3+IFO) = ZK8(LFON+IFO-1)
   30        CONTINUE
-            CALL JEDETC('V','OP0145',1)
           ENDIF
 C
 C ------2.2.2.MODELE "EXCITATIONS PONCTUELLES"
@@ -335,7 +333,6 @@ C
             DO 40 INAT = 1,INOEUD
               ZK16(LVATE+3+INAT) = ZK8(LNAT+INAT-1)
   40        CONTINUE
-            CALL JEDETC('V','OP0145',1)
 C
             CALL WKVECT(VARE,'G V R',INOEUD,LVARE)
             CALL GETVR8(NOMMCF,'ANGL',1,1,INOEUD,ZR(LVARE),IBID)

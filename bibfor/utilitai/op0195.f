@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -221,9 +221,7 @@ C -----------------------------------------------------
      &                          ' ET '//NOMGD2)
 
 
-C 8. MENAGE :
-C -----------------------------------------------------
-      CALL DETRSD('CHAM_ELEM',CELMOD)
+C
       CALL JEDEMA()
 
       END

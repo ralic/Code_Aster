@@ -1,0 +1,130 @@
+      SUBROUTINE CARANO (IZONE,DEFICO,RESOCO,NEWGEO,NDIM,POSNOE,
+     &                   COORDP,NORM,TANG,NBDDLE)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+      IMPLICIT     NONE
+      INTEGER      IZONE
+      CHARACTER*24 DEFICO
+      CHARACTER*24 RESOCO
+      CHARACTER*24 NEWGEO
+      INTEGER      NDIM
+      INTEGER      POSNOE
+      REAL*8       COORDP(3)
+      REAL*8       NORM(3)
+      REAL*8       TANG(6)
+      INTEGER      NBDDLE
+C
+C ----------------------------------------------------------------------
+C ROUTINE APPELEE PAR : PROJEC
+C ----------------------------------------------------------------------
+C
+C CARACTERISTIQUES DU NOEUD ESCLAVE
+C
+C IN  IZONE  : NUMERO DE LA ZONE DE CONTACT
+C IN  DEFICO : SD DE CONTACT (DEFINITION)
+C IN  RESOCO : SD DE CONTACT (RSULTAT)
+C IN  NEWGEO : COORDONNEES REACTUALISEES DES NOEUDS DU MAILLAGE
+C IN  NDIM   : DIMENSION DE L'ESPACE (2 OU 3)
+C IN  POSNOE : INDICE DU NOEUD ESCLAVE DANS CONTNO
+C OUT COORDP : COORDONNEES DU NOEUD ESCLAVE
+C OUT NORM   : VECTEUR NORMAL
+C OUT TANG   : VECTEURS TANGENTS
+C OUT NBDDLE : NOMBRE DE DDL SUR LE NOEUD ESCLAVE
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      ZMETH
+      PARAMETER    (ZMETH=8)
+      CHARACTER*24 METHCO,TANDEF,CONTNO,PDDL,NORINI
+      INTEGER      JMETH,JTGDEF,JNOCO,JPDDL,JNRINI,JCOOR
+      INTEGER      TANGDF,K,NUMNO
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ ()
+C
+      CONTNO = DEFICO(1:16)//'.NOEUCO'
+      PDDL   = DEFICO(1:16)//'.PDDLCO'
+      TANDEF = DEFICO(1:16)//'.TANDEF'
+      METHCO = DEFICO(1:16)//'.METHCO'
+      NORINI = RESOCO(1:14)//'.NORINI'       
+C
+      CALL JEVEUO (NEWGEO(1:19)//'.VALE','L',JCOOR)
+      CALL JEVEUO (PDDL,  'L',JPDDL)
+      CALL JEVEUO (CONTNO,'L',JNOCO)
+      CALL JEVEUO (METHCO,'L',JMETH)
+      CALL JEVEUO (NORINI,'L',JNRINI)
+C
+C --- CARACTERISTIQUES DU NOEUD ESCLAVE
+C     
+      NUMNO  = ZI(JNOCO+POSNOE-1)
+      NBDDLE = ZI(JPDDL+POSNOE) - ZI(JPDDL+POSNOE-1)
+      IF (NBDDLE.GT.3) THEN
+        CALL UTMESS ('F','CARANO','ON NE PEUT PAS AVOIR PLUS'
+     &               //' DE 3 DDLS IMPLIQUES DANS LA MEME RELATION'
+     &               //' UNILATERALE')
+      END IF
+
+      DO 3 K = 1,3
+        NORM(K) = ZR(JNRINI+3*(POSNOE-1)+K-1)
+3     CONTINUE
+C
+C --- CALCUL DES VECTEUR TANGENTS
+C
+C     RECUPERATION DU VECTEUR TANGENT SI DEFINI PAR UTILISATEUR
+      TANGDF = ZI(JMETH+ZMETH*(IZONE-1)+2)
+      IF (TANGDF.EQ.1) THEN
+         CALL JEVEUO (TANDEF,'L',JTGDEF)
+         TANG(1) = ZR(JTGDEF+3*(IZONE-1))
+         TANG(2) = ZR(JTGDEF+3*(IZONE-1)+1)
+         TANG(3) = ZR(JTGDEF+3*(IZONE-1)+2)
+      ELSE
+         TANG(1) = 0.0D0
+         TANG(2) = 0.0D0
+         TANG(3) = 0.0D0
+      ENDIF
+C 
+      CALL CFTANG(NDIM,NORM,TANG,TANGDF)
+C
+C --- COORDONNEES DU NOEUD ESCLAVE
+C
+      COORDP(1) = ZR(JCOOR+3*(NUMNO-1))
+      COORDP(2) = ZR(JCOOR+3*(NUMNO-1)+1)
+      COORDP(3) = ZR(JCOOR+3*(NUMNO-1)+2)
+C
+      CALL JEDEMA()
+C ----------------------------------------------------------------------
+      END

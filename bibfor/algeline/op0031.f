@@ -3,7 +3,7 @@
       INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -215,12 +215,6 @@ C        --- COMBINAISON DES MATRICES ---
      +                     ZK8(LTYPEM),ZK24(LNOMMA),TYPRES,NMTRES,
      .                     NOMDDL,'V')
 C     ------------------------------------------------------------------
-      CALL JEDETR(CNOM)
-      CALL JEDETR(CCOEF)
-      CALL JEDETR(CTYPEC)
-      CALL JEDETR(CTYPEM)
-      CALL JEDETR(CPTRM)
-      CALL JEDETR(CPTNOM)
  9999 CONTINUE
       CALL JEDEMA()
       END

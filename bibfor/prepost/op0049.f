@@ -1,6 +1,6 @@
       SUBROUTINE OP0049 ( IERR )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C TOLE CRS_513
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,7 +97,6 @@ C
         CALL ULOPEN ( -NFIGI,' ',' ','NEW','O')
       ENDIF
 
-      CALL JEDETC('V','&&GILIRE',1)
       GOTO 99999
 C
  100  CONTINUE

@@ -1,9 +1,10 @@
        SUBROUTINE  PIPEPE(PILO, NDIM, NNO, NPG, IPOIDS, IVF, IDFDE,
      &             GEOM, TYPMOD, IMATE, COMPOR, LGPG, DEPLM, SIGM,
-     &             VIM, DDEPL, DEPL0, DEPL1, COPILO,DFDI, ELGEOM,IBORNE,
-     &             ICTAU)
+     &             VIM,DDEPL, DEPL0, DEPL1, COPILO,DFDI,
+     &             ELGEOM,IBORNE,ICTAU)
+     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -184,7 +185,7 @@ C -- PILOTAGE PAR LA PREDICTION ELASTIQUE
         ELSE
           TAU=ZR(ICTAU)
 
-C        CONTRAINTES AVEC SQRT(2)	  
+C        CONTRAINTES AVEC SQRT(2)          
           CALL R8COPY(NDIMSI,SIGM(1,KPG),1,SIGMA,1)
           DO 70 K = 4, NDIMSI
             SIGMA(K) = SIGMA(K)*RAC2
@@ -223,6 +224,24 @@ C        CONTRAINTES AVEC SQRT(2)
      &                SIGMA,VIM(1,KPG),EPSM,EPSP, EPSD,
      &                ETAMIN,ETAMAX,COPILO(1,KPG), COPILO(2,KPG),
      &                COPILO(3,KPG), COPILO(4,KPG),COPILO(5,KPG))
+
+            ELSEIF (COMPOR(1).EQ.'ENDO_ORTH_BETON') THEN
+              CALL R8AXPY(NDIMSI, 1.D0, EPSM,1, EPSP,1)
+              ETAMIN=ZR(IBORNE+1)
+              ETAMAX=ZR(IBORNE)
+              IF (ETAMIN.EQ.R8VIDE() .OR. ETAMAX.EQ.R8VIDE()) 
+     &          CALL UTMESS('F','PIPEPE','LE PILOTAGE PRED_ELAS '
+     &         // 'NECESSITE ETA_PILO_MIN ET ETA_PILO_MAX '
+     &         // 'POUR LA LOI ENDO_ORTH_BETON')
+
+              CALL PIPEDO(NDIM,TYPMOD,TAU,IMATE,
+     &                SIGMA,VIM(1,KPG),
+     &                EPSM,EPSP, EPSD,
+     &                ETAMIN,ETAMAX,COPILO(1,KPG), COPILO(2,KPG),
+     &                COPILO(3,KPG), COPILO(4,KPG),COPILO(5,KPG))
+
+
+
 
             ELSEIF (COMPOR(1).EQ.'BETON_DOUBLE_DP') THEN
               CALL R8AXPY(NDIMSI, 1.D0, EPSM,1, EPSP,1)

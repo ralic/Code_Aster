@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -334,8 +334,6 @@ C
  102     CONTINUE
          CALL JEDEMA()
  100  CONTINUE
-      CALL JEDETR ( KMODE )
-      CALL JEDETR ( '&&OP0168.NOM_MODE' )
 C
 C     --- ON ALARME SI NUME_MODE IDENTIQUE ---
 C
@@ -431,7 +429,6 @@ C
  301        CONTINUE
          ENDIF
       ENDIF
-      CALL JEDETR ( '&&OP0168.NUME_ORDRE' )
 C
       CALL TITRE()
 C

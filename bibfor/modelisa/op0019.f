@@ -1,5 +1,5 @@
       SUBROUTINE OP0019(IER)
-C MODIF MODELISA  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF MODELISA  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,7 +56,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       PARAMETER (NBEPO=13,NBEDI=8,NBECO=26,NBECA=2)
       PARAMETER (NBEBA=2,NBEMA=46,NBEGR=1,NBEGB=3)
       PARAMETER (NBTEL=NBEPO+NBEDI+NBECO+NBECA+NBEBA+NBEMA+NBEGR+NBEGB)
-      PARAMETER (NBMCF=13,NBEL1=51,NBEL2=50)
+      PARAMETER (NBMCF=14,NBEL1=51,NBEL2=50)
 
       INTEGER NBMCLE(NBMCF),NBOCC(NBMCF),IVR(3)
       INTEGER NTYELE(NBTEL),NOCADI(3),NMTGDI(3)
@@ -78,7 +78,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &     'DISCRET         ','ORIENTATION     ','DEFI_ARC        ',
      &     'CABLE           ','BARRE           ','MASSIF          ',
      &     'POUTRE_FLUI     ','RIGI_PARASOL    ','ASSE_GRIL       ',
-     &     'GRILLE          ','RIGI_MISS_3D    '/
+     &     'GRILLE          ','RIGI_MISS_3D    ','DISCRET_2D      '/
 
       DATA NOMEL1/'MECA_POU_D_T    ','MECA_POU_D_E    ',
      &     'MECA_POU_D_T_GD ','MECA_POU_C_T    ',
@@ -118,7 +118,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &     'MET6SEG3        ','MET3SEG4        ','MEGRQU4         ',
      &     'MEGRDKT         ','MEGMTR3         ','MEGMQU4         '/
 
-      DATA NBMCLE/2,2,4,4,2,2,2,2,2,1,2,2,0/
+      DATA NBMCLE/2,2,4,4,2,2,2,2,2,1,2,2,0,4/
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -267,8 +267,9 @@ C --- RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MAILLAGE ASSOCIE
 C     VERIFICATION DE LA SYNTAXE DES ELEMENTS DISCRET :
 C     -------------------------------------------------
       LXD = 0
-      IF (NBOCC(3).NE.0) THEN
-        CALL ACEVDI(NBOCC(3),NOMA,NOMO,NLM,NLG,NLN,NLJ,IRET)
+      IF (NBOCC(3).NE.0 .OR. NBOCC(14).NE.0) THEN
+        NBOCCD = NBOCC(3) + NBOCC(14)
+        CALL ACEVDI(NBOCCD,NOMA,NOMO,NLM,NLG,NLN,NLJ,IRET)
         LXD = MAX(NLM,NLN,NLG,NLJ)
         LMAX = MAX(LMAX,LXD)
       END IF
@@ -410,7 +411,8 @@ C     FABRICATION DE LA CARTE COMMUNE A TOUS LES ELEMENTS LINEIQUE
 C --- AFFECTATION DES ORIENTATIONS AUX ELEMENTS POUTRES ET DISCRETS  ET
 C     BARRES ET AFFECTATION DE LA CARTE ORIENTATION :
 C     -----------------------------------------------
-      IF (NBOCC(1).NE.0 .OR. NBOCC(3).NE.0 .OR. NBOCC(7).NE.0) THEN
+      IF (NBOCC(1).NE.0 .OR. NBOCC(3).NE.0 .OR. NBOCC(14).NE.0 .OR.
+     &    NBOCC(7).NE.0) THEN
         CALL ACEAOR(NOMA,NOMO,LMAX,NBEPO,NBEDI,NBTEL,NTYELE,NOMELE,IVR,
      &              IFM,NBOCC)
       END IF
@@ -431,8 +433,9 @@ C     -----------------------------------------------------------------
 
 C --- AFFECTATION DES MATRICES AUX ELEMENTS DISCRETS :
 C     ------------------------------------------------
-      IF (NBOCC(3).NE.0) THEN
-        CALL ACEADI(NOMA,NOMO,LMAX,NOCADI,NMTGDI,NBOCC(3),IVR,IFM)
+      IF (NBOCC(3).NE.0 .OR. NBOCC(14).NE.0) THEN
+        NBOCCD = NBOCC(3) + NBOCC(14)
+        CALL ACEADI(NOMA,NOMO,LMAX,NOCADI,NMTGDI,NBOCCD,IVR,IFM)
       END IF
 
 C --- AFFECTATION DES COURBURES AUX ELEMENTS POUTRES COURBES :
@@ -492,12 +495,6 @@ C     ------------------------------------------------
      &              IFM)
       END IF
 
-C --- DESTRUCTIONS DES OBJETS JEVEUX TEMPORAIRES DE AFFE_CARA_ELEM :
-C     --------------------------------------------------------------
-      CALL JEDETR(TMPLST)
-      CALL JEDETR(TMPLMA)
-      IF (IXNW.NE.0) CALL JEDETR(TMPLNO)
-
 C     COMPACTAGE DE LA CARTE : '.CVENTCXF'
       IF (NBCART.GT.0) THEN
         CALL TECART(CARTCF)
@@ -508,12 +505,10 @@ C     DESTRUCTION DES CHAMPS
         CALL JEDETR(TMPNCF)
       END IF
 
-
 C --- ON AJOUTE LE TRAITEMENT DU MOT CLEF CARAC_SECT SOUS LE
 C               LE MOT CLEF FACTEUR "POUTRE"
 C     --------------------------------------------------------
       CALL JSSECT(NOMU,NOMA)
-
 
 C --- TRAITEMENT DES MOTS CLES AFFE_SECT ET AFFE_FIBRE
 C     + TRAITEMENT DES MOTS CLES :

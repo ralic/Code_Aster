@@ -3,7 +3,7 @@
       INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,7 +107,6 @@ C
             ENDIF
          ENDIF
  10   CONTINUE
-      CALL JEDETR('&&OP0022.BORNE')
       ENDIF
 C
       CALL INFMAJ
@@ -138,7 +137,6 @@ C
  4       CONTINUE
          ZI(JBOR+NBVALE-1) = ZI(KVAL+NBVALE-1)
          ZI(JVAL+NBVALE-1) = ZI(KVAL+NBVALE-1)
-         CALL JEDETR('&&OP0022.VALE')
       ELSE
 C
       CALL WKVECT(RESU//'           .LPAS','G V I',MAX(1,NBOCC),JPAS)

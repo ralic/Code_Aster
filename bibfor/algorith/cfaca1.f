@@ -1,8 +1,8 @@
-      SUBROUTINE CFACA1(NDIM, NBLIAC, AJLIAI, LLF, LLF1, LLF2, NESMAX,
-     +                               DEFICO, RESOCO, LMAT, CINE, NBLIAI)
+      SUBROUTINE CFACA1(NDIM,NBLIAC,AJLIAI,LLF,LLF1,LLF2,NESMAX,
+     &                  DEFICO,RESOCO,LMAT,CINE,NBLIAI)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,39 +19,54 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C ======================================================================
-      IMPLICIT      NONE
-      INTEGER       NDIM, NBLIAC, AJLIAI, LLF, LLF1, LLF2, NESMAX
-      INTEGER       LMAT, NBLIAI
-      CHARACTER*24  DEFICO,RESOCO, CINE
-C ======================================================================
+
+      IMPLICIT     NONE
+      CHARACTER*24 DEFICO
+      CHARACTER*24 RESOCO
+      CHARACTER*24 CINE
+      INTEGER      LLF
+      INTEGER      LLF1
+      INTEGER      LLF2
+      INTEGER      NESMAX
+      INTEGER      LMAT
+      INTEGER      NBLIAC
+      INTEGER      AJLIAI
+      INTEGER      NDIM
+      INTEGER      NBLIAI
+C
 C ----------------------------------------------------------------------
-C  ROUTINE REALISANT LE CALCUL DE A.C-1.AT PAR RESOLUTION DE C.X=A(I)
+C ROUTINE APPELEE PAR : CFACAT
+C ----------------------------------------------------------------------
+C
+C ROUTINE REALISANT LE CALCUL DE A.C-1.AT PAR RESOLUTION DE C.X=A(I)
 C     A(I) -> I-EME COLONNE DE A
 C     X    -> I-EME COLONNE DE C-1.A
 C  LA ROUTINE EST OPTIMISEE PAR TRAITEMENT DES SECONDS MEMBRES PAR BLOCS
-C ----------------------------------------------------------------------
-C ======================================================================
-C  CM1A   : MATRICE C-1.AT
-C  MATR   : MATRICE A.C-1.AT
-C  MATASS : MATRICE ASSEMBLEE DU PROBLEME GLOBAL
-C  MATPRE : MATRICE DE PRECONDITIONNEMENT SI GCPC
-C  CINE   : CHARGEMENT DE TYPE DIRICHLET
-C  LMAT   : DESCRIPTEUR DE LA MATASS 
-C  GCPC   : VRAI SI GCPC
-C  NEQ    : NOMBRE D'EQUATIONS DU PROBLEME GLOBAL
-C  NBLIAC : NOMBRE DE LIAISONS ACTIVES
-C  IDEBUC : NUMERO DE LA LIAISON OU COMMENCER LE CALCUL
-C  JLIAC  : ADRESSE DE LA SD LISTE DES LIAISONS POTENTIELLES
-C  JAPPTR : ADRESSE DE LA SD APPARIEMENT
-C  JAPCOE : ADRESSE DE LA SD COEF D'APPARIEMENT
-C  JAPDDL : ADRESSE DE LA SD DDL A APPARIER
-C  INDIC  : INDIQUE SI L'ON ENLEVE OU AJOUTE UNE LIAISON
-C  XJVMAX : UTILE POUR L'ELIMINATION DES PIVOTS NULS
-C ======================================================================
-C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
-C ======================================================================
-      CHARACTER*32       JEXNUM , JEXNOM
+C
+C IN  NDIM   : DIMENSION DU PROBLEME
+C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
+C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+C                'E': RESOCO(1:14)//'.CM1A'
+C IN  LMAT   : DESCRIPTEUR DE LA MATR_ASSE DU SYSTEME MECANIQUE
+C IN  CINE   : CHAM_NO CINEMATIQUE
+C IN  NBLIAI : NOMBRE DE LIAISONS DE CONTACT POSSIBLES
+C IN  NBLIAC : NOMBRE DE LIAISONS ACTIVES
+C I/O AJLIAI : INDICE DANS LA LISTE DES LIAISONS ACTIVES DE LA DERNIERE
+C              LIAISON CORRECTE DU CALCUL 
+C              DE LA MATRICE DE CONTACT ACM1AT
+C IN  NESMAX : NOMBRE MAX DE NOEUDS ESCLAVES
+C              (SERT A DECALER LES POINTEURS POUR LE FROTTEMENT 3D)
+C IN  LLF    : NOMBRE DE LIAISONS DE FROTTEMENT (EN 2D)
+C              NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LES DEUX 
+C               DIRECTIONS SIMULTANEES (EN 3D)
+C IN  LLF1   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA 
+C               PREMIERE DIRECTION (EN 3D)
+C IN  LLF2   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA 
+C               SECONDE DIRECTION (EN 3D)
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      CHARACTER*32       JEXNUM
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -66,66 +81,80 @@ C ======================================================================
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C ======================================================================
-C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-C ======================================================================
-      INTEGER       JAPPTR, JAPDDL, JLIAC, JAPCOE, JAPCOF, LG, IBID, IL
-      INTEGER       II, LLIAC, JDECAL, NBDDL, POSIT, JCM1A, JRCINE, IERD
-      INTEGER       JJ, LLJAC, NEQ, IRET1, IRET2, IRET3, LGBLOC, TAMPON
-      INTEGER       ADRE, DESC, NBSN, LGIND, NBLOC, LGBLMA, NBSM, NPAS
-      INTEGER       NREST, DEKL, IPAS, LLF3D, KK, ILIAC, JTMPV, NPAST
-      INTEGER       LONMIN,JMETH
-      CHARACTER*14  NU
-      CHARACTER*19  LIAC, CM1A
-      CHARACTER*24  APPOIN, APDDL, APCOEF, APCOFR, NOMMAT
-      CHARACTER*24  NOMP01, NOMP03, NOMP16, NOMT26,METHCO
-C ======================================================================
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      ZCONV
+      PARAMETER    (ZCONV=3)
+      INTEGER      LG,IBID,IL
+      INTEGER      LLIAC,JDECAL,NBDDL,POSIT,JRCINE,IERD
+      INTEGER      NEQ,LGBLOC,TAMPON
+      INTEGER      NBSM,NPAS
+      INTEGER      NREST,IPAS,LLF3D,KK,ILIAC,JTMPV,NPAST
+      INTEGER      IZONE
+      CHARACTER*14 NU
+      CHARACTER*19 LIAC,CM1A
+      INTEGER      JLIAC,JCM1A
+      CHARACTER*24 METHCO,CONVCO,APPOIN,APDDL,APCOEF,APCOFR
+      INTEGER      JMETH,JCONV,JAPPTR,JAPDDL,JAPCOE,JAPCOF
+      CHARACTER*24 NOMMAT
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-C ======================================================================
+C
       METHCO = DEFICO(1:16)//'.METHCO'
+      CONVCO = DEFICO(1:16)//'.CONVCO'
       CM1A   = RESOCO(1:14)//'.CM1A'
       APPOIN = RESOCO(1:14)//'.APPOIN'
       APDDL  = RESOCO(1:14)//'.APDDL'
       LIAC   = RESOCO(1:14)//'.LIAC'
       APCOEF = RESOCO(1:14)//'.APCOEF'
       APCOFR = RESOCO(1:14)//'.APCOFR'
-C ======================================================================
-C --- APPELS JEVEUX GENERALISES ----------------------------------------
-C ======================================================================
-      CALL JEVEUO (METHCO,'L',JMETH)
-      CALL JEVEUO (APPOIN,'L',JAPPTR)
-      CALL JEVEUO (APDDL, 'L',JAPDDL)
-      CALL JEVEUO (LIAC,  'L',JLIAC )
-      CALL JEVEUO (APCOEF,'L',JAPCOE)
+C 
+C --- RECUPERATION D'OBJETS JEVEUX
+C 
+      CALL JEVEUO(METHCO,'L',JMETH)
+      CALL JEVEUO(CONVCO,'L',JCONV)
+      CALL JEVEUO(APPOIN,'L',JAPPTR)
+      CALL JEVEUO(APDDL, 'L',JAPDDL)
+      CALL JEVEUO(LIAC,  'L',JLIAC )
+      CALL JEVEUO(APCOEF,'L',JAPCOE)
       IF (LLF.NE.0) THEN
-        CALL JEVEUO (APCOFR,'L',JAPCOF)
+        CALL JEVEUO(APCOFR,'L',JAPCOF)
       ELSE
         IF (LLF1.NE.0) THEN
-          CALL JEVEUO (APCOFR,'L',JAPCOF)
+          CALL JEVEUO(APCOFR,'L',JAPCOF)
         ELSE
           IF (LLF2.NE.0) THEN
-            CALL JEVEUO (APCOFR,'L',JAPCOF)
+            CALL JEVEUO(APCOFR,'L',JAPCOF)
           ENDIF
         ENDIF
       ENDIF
-      CALL JEVEUO (CINE(1:19)//'.VALE'    ,'L',JRCINE)
-C ======================================================================
-C --- INITIALISATIONS --------------------------------------------------
-C ======================================================================
-      NEQ    = ZI(LMAT+2 )
-C ======================================================================
-C - PAR METHODE DIRECTE AVEC BLOCS DE SECONDS MEMBRES
-C ======================================================================
-C --- CALCUL DE LGBLOC
-C ======================================================================
-
+      CALL JEVEUO(CINE(1:19)//'.VALE'    ,'L',JRCINE)
+C 
+C --- NOMBRE D'EQUATIONS DU SYSTEME
+C 
+      NEQ    = ZI(LMAT+2)
+C
+C --- NOM DE LA MATRICE 
+C
       NOMMAT = ZK24(ZI(LMAT+1))
-      CALL DISMOI('F','NOM_NUME_DDL',NOMMAT,'MATR_ASSE',IBID,NU,IERD)
-      LGBLOC = ZI(JMETH+10)
+C
+C ----------------------------------------------------------------------
+C --- PAR METHODE DIRECTE AVEC BLOCS DE SECONDS MEMBRES
+C ----------------------------------------------------------------------
+C
+C --- CALCUL DE LGBLOC
+C
 
-      NBSM  = NBLIAC + LLF + LLF1 + LLF2 - AJLIAI
-      NPAS  = NBSM / LGBLOC
-      NREST = NBSM - LGBLOC*NPAS
+      CALL DISMOI('F','NOM_NUME_DDL',NOMMAT,'MATR_ASSE',IBID,NU,IERD)
+      IZONE  = 1
+      LGBLOC = ZI(JCONV+ZCONV*(IZONE-1)+2)
+
+      NBSM   = NBLIAC + LLF + LLF1 + LLF2 - AJLIAI
+      NPAS   = NBSM / LGBLOC
+      NREST  = NBSM - LGBLOC*NPAS
 
       IF (NREST.GT.0) THEN
          NPAST = NPAS + 1
@@ -153,67 +182,67 @@ C ======================================================================
             NBDDL  = ZI(JAPPTR+LLIAC) - ZI(JAPPTR+LLIAC-1)
             CALL CFTYLI(RESOCO, ILIAC, POSIT)
             GOTO (1000, 2000, 3000, 4000) POSIT
-C ======================================================================
-C --- AJOUT D'UNE LIAISON DE CONTACT -----------------------------------
-C ======================================================================
+C 
+C --- AJOUT D'UNE LIAISON DE CONTACT 
+C 
  1000       CONTINUE
-C ======================================================================
-C --- CALCUL DE LA COLONNE AT POUR LA LIAISON ACTIVE LLIAC EN CONTACT --
-C ======================================================================
+C 
+C --- CALCUL DE LA COLONNE AT POUR LA LIAISON ACTIVE LLIAC EN CONTACT 
+C 
             CALL CALATM(NEQ,NBDDL,1.D0,ZR(JAPCOE+JDECAL),
      &                          ZI(JAPDDL+JDECAL),ZR(TAMPON+NEQ*(IL-1)))
             GOTO 20
-C ======================================================================
-C --- AJOUT D'UNE LIAISON DE FROTTEMENT SUIVANT LES DEUX DIRECTIONS ----
-C ======================================================================
+C 
+C --- AJOUT D'UNE LIAISON DE FROTTEMENT SUIVANT LES DEUX DIRECTIONS 
+C 
  2000       CONTINUE
-C ======================================================================
-C --- PREMIERE DIRECTION -----------------------------------------------
-C ======================================================================
-C --- CALCUL DE LA COLONNE AT POUR LA PREMIERE DIRECTION DE FROTTEMENT -
-C ======================================================================
+C 
+C --- PREMIERE DIRECTION
+C 
+C --- CALCUL DE LA COLONNE AT POUR LA PREMIERE DIRECTION DE FROTTEMENT 
+C 
             LLF3D = LLF3D + 1
             ZI(JTMPV -1 +LLF3D) = LLIAC
             CALL CALATM(NEQ,NBDDL,1.D0,ZR(JAPCOF+JDECAL),
      &                          ZI(JAPDDL+JDECAL),ZR(TAMPON+NEQ*(IL-1)))
             GOTO 20
-C ======================================================================
-C --- AJOUT D'UNE LIAISON DE FROTTEMENT SUIVANT LA 1ERE DIRECTION ------
-C ======================================================================
+C 
+C --- AJOUT D'UNE LIAISON DE FROTTEMENT SUIVANT LA 1ERE DIRECTION 
+C
  3000       CONTINUE
-C ======================================================================
-C --- CALCUL DE LA COLONNE AT POUR LA PREMIERE DIRECTION DE FROTTEMENT -
-C ======================================================================
+C 
+C --- CALCUL DE LA COLONNE AT POUR LA PREMIERE DIRECTION DE FROTTEMENT 
+C 
             CALL CALATM(NEQ,NBDDL,1.D0,ZR(JAPCOF+JDECAL),
      &                          ZI(JAPDDL+JDECAL),ZR(TAMPON+NEQ*(IL-1)))
             GOTO 20
-C ======================================================================
-C --- AJOUT D'UNE LIAISON DE FROTTEMENT SUIVANT LA 2NDE DIRECTION ------
-C ======================================================================
+C 
+C --- AJOUT D'UNE LIAISON DE FROTTEMENT SUIVANT LA 2NDE DIRECTION 
+C 
  4000       CONTINUE
-C ======================================================================
-C --- SECONDE DIRECTION ------------------------------------------------
-C ======================================================================
-C --- CALCUL DE LA COLONNE AT POUR LA SECONDE DIRECTION DE FROTTEMENT --
-C ======================================================================
+C 
+C --- SECONDE DIRECTION 
+C 
+C --- CALCUL DE LA COLONNE AT POUR LA SECONDE DIRECTION DE FROTTEMENT 
+C 
             CALL CALATM(NEQ,NBDDL,1.D0,ZR(JAPCOF+JDECAL+30*NESMAX),
      &                          ZI(JAPDDL+JDECAL),ZR(TAMPON+NEQ*(IL-1)))
  20      CONTINUE
-C ======================================================================
+C 
 C --- CALCUL DE C-1.AT (EN TENANT COMPTE DES CHARGES CINEMATIQUES)
-C ======================================================================
+C 
          CALL NMRLDB(LMAT,ZR(JRCINE),ZR(TAMPON),LG)
-C ======================================================================
-C --- RECOPIE ----------------------------------------------------------
-C ======================================================================
+C 
+C --- RECOPIE 
+C
          DO 50 IL = 1,LG
             ILIAC = LGBLOC* (IPAS-1) + IL + AJLIAI
             LLIAC = ZI(JLIAC+ILIAC-1)
             CALL CFTYLI(RESOCO, ILIAC, POSIT)
             GOTO (1100, 2100, 3100, 4100) POSIT
-C ======================================================================
-C --- AJOUT D'UNE LIAISON DE CONTACT -----------------------------------
-C ======================================================================
+C 
+C --- AJOUT D'UNE LIAISON DE CONTACT
+C 
  1100       CONTINUE
             CALL JEVEUO(JEXNUM(CM1A,LLIAC),'E',JCM1A)
             DO 60 KK = 1,NEQ
@@ -221,9 +250,9 @@ C ======================================================================
  60         CONTINUE
             CALL JELIBE(JEXNUM(CM1A,LLIAC))
             GOTO 50
-C ======================================================================
-C --- AJOUT D'UNE LIAISON DE CONTACT -----------------------------------
-C ======================================================================
+C 
+C --- AJOUT D'UNE LIAISON DE CONTACT 
+C 
  2100       CONTINUE
             CALL JEVEUO(JEXNUM(CM1A,LLIAC+NBLIAI),'E',JCM1A)
             DO 160 KK = 1,NEQ
@@ -231,9 +260,9 @@ C ======================================================================
  160        CONTINUE
             CALL JELIBE (JEXNUM(CM1A,LLIAC+NBLIAI))
             GOTO 50
-C ======================================================================
-C --- AJOUT D'UNE LIAISON DE CONTACT -----------------------------------
-C ======================================================================
+C
+C --- AJOUT D'UNE LIAISON DE CONTACT 
+C
  3100       CONTINUE
             CALL JEVEUO(JEXNUM(CM1A,LLIAC+NBLIAI),'E',JCM1A)
             DO 260 KK = 1,NEQ
@@ -241,9 +270,9 @@ C ======================================================================
  260        CONTINUE
             CALL JELIBE (JEXNUM(CM1A,LLIAC+NBLIAI))
             GOTO 50
-C ======================================================================
-C --- AJOUT D'UNE LIAISON DE CONTACT -----------------------------------
-C ======================================================================
+C 
+C --- AJOUT D'UNE LIAISON DE CONTACT 
+C 
  4100       CONTINUE
             CALL JEVEUO(JEXNUM(CM1A,LLIAC+(NDIM-1)*NBLIAI),'E',JCM1A)
             DO 360 KK = 1,NEQ
@@ -252,9 +281,9 @@ C ======================================================================
             CALL JELIBE (JEXNUM(CM1A,LLIAC+(NDIM-1)*NBLIAI))
  50      CONTINUE
  10   CONTINUE
-C ======================================================================
-C --- CAS DU FROTTEMENT SUIVANT LA SECONDE DIRECTION EN 3D -------------
-C ======================================================================
+C 
+C --- CAS DU FROTTEMENT SUIVANT LA SECONDE DIRECTION EN 3D 
+C
       IF (NDIM.EQ.3.AND.LLF3D.NE.0) THEN
          NBSM  = LLF3D
          NPAS  = NBSM / LGBLOC
@@ -277,19 +306,19 @@ C ======================================================================
             DO 100 IL = 1, LG
                ILIAC = LGBLOC*(IPAS-1) + IL
                LLIAC = ZI(JTMPV -1 +ILIAC)
-C ======================================================================
-C --- AJOUT D'UNE LIAISON DE FROTTEMENT SUIVANT LA 2NDE DIRECTION ------
-C ======================================================================
-C --- CALCUL DE LA COLONNE AT POUR LA SECONDE DIRECTION DE FROTTEMENT --
-C ======================================================================
+C 
+C --- AJOUT D'UNE LIAISON DE FROTTEMENT SUIVANT LA 2NDE DIRECTION 
+C 
+C --- CALCUL DE LA COLONNE AT POUR LA SECONDE DIRECTION DE FROTTEMENT 
+C 
                JDECAL = ZI(JAPPTR+LLIAC-1)
                NBDDL  = ZI(JAPPTR+LLIAC) - ZI(JAPPTR+LLIAC-1)
                CALL CALATM(NEQ,NBDDL,1.D0,ZR(JAPCOF+JDECAL+30*NESMAX),
      &                          ZI(JAPDDL+JDECAL),ZR(TAMPON+NEQ*(IL-1)))
  100        CONTINUE
-C ======================================================================
+C 
 C --- CALCUL DE C-1.AT (EN TENANT COMPTE DES CHARGES CINEMATIQUES)
-C ======================================================================
+C 
             CALL NMRLDB(LMAT,ZR(JRCINE),ZR(TAMPON),LG)
 
 C --- RECOPIE
@@ -306,7 +335,7 @@ C --- RECOPIE
       ENDIF
       AJLIAI = NBLIAC + LLF + LLF1 + LLF2
       CALL JEDETC('V','&&CFACA1',1)
-C ======================================================================
+C 
       CALL JEDEMA()
-C ======================================================================
+C 
       END

@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+#& MODIF ENTETE  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,11 +42,10 @@ JdC = JDC_CATA(code='ASTER',
                          AU_MOINS_UN('FIN'),
                          A_CLASSER(('DEBUT','POURSUITE'),'FIN')))
 # Type le plus general
-class entier   (ASSD):pass
-class reel     (ASSD):pass
-class complexe (ASSD):pass
-class chaine   (ASSD):pass
-
+class entier   (ASSD):
+   def __init__(self,valeur=None,**args):
+      ASSD.__init__(self,**args)
+      self.valeur=valeur
 
 # Type geometriques
 class no  (GEOM):pass
@@ -358,9 +357,9 @@ class fonction_class(ASSD):
    def Valeurs(self):pass
    def Parametres(self):
       """
-      Retourne un dictionnaire contenant les paramètres de la fonction ;
-      le type jeveux (FONCTION, FONCT_C, NAPPE) n'est pas retourné,
-      le dictionnaire peut ainsi etre fourni à CALC_FONC_INTERP tel quel.
+      Retourne un dictionnaire contenant les parametres de la fonction ;
+      le type jeveux (FONCTION, FONCT_C, NAPPE) n'est pas retourne,
+      le dictionnaire peut ainsi etre fourni a CALC_FONC_INTERP tel quel.
       """
       TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT' }
       prol=aster.getvectjev(string.ljust(self.get_name(),19)+'.PROL')
@@ -375,7 +374,7 @@ class fonction_class(ASSD):
 class fonction_sdaster(fonction_class):
    def Valeurs(self) :
       """
-      Retourne deux listes de valeurs : abscisses et ordonnées
+      Retourne deux listes de valeurs : abscisses et ordonnees
       """
       if self.etape.nom=='DEFI_FONCTION' :
         lbl=list(self.etape['VALE'])
@@ -407,7 +406,7 @@ class para_sensi(fonction_sdaster):
 class fonction_c(fonction_class):
    def Valeurs(self) :
       """
-      Retourne trois listes de valeurs : abscisses, parties réelles et imaginaires.
+      Retourne trois listes de valeurs : abscisses, parties reelles et imaginaires.
       """
       if self.etape.nom=='DEFI_FONCTION' :
         lbl=list(self.etape['VALE_C'])
@@ -430,12 +429,12 @@ class fonction_c(fonction_class):
 class nappe_sdaster(fonction_class):
    def Valeurs(self):
       """
-      Retourne la liste des valeurs du paramètre,
-      et une liste de couples (abscisses,ordonnées) de chaque fonction.
+      Retourne la liste des valeurs du parametre,
+      et une liste de couples (abscisses,ordonnees) de chaque fonction.
       """
       nsd=string.ljust(self.get_name(),19)
       dicv=aster.getcolljev(nsd+'.VALE')
-      # les clés de dicv sont 1,...,N (indice du paramètre)
+      # les cles de dicv sont 1,...,N (indice du parametre)
       lpar=aster.getvectjev(nsd+'.PARA')
       lval=[]
       for k in range(len(dicv)):
@@ -445,10 +444,10 @@ class nappe_sdaster(fonction_class):
       return [lpar,lval]
    def Parametres(self):
       """
-      Retourne un dictionnaire contenant les paramètres de la nappe,
-      le type jeveux (NAPPE) n'est pas retourné,
-      le dictionnaire peut ainsi etre fourni à CALC_FONC_INTERP tel quel,
-      et une liste de dictionnaire des paramètres de chaque fonction.
+      Retourne un dictionnaire contenant les parametres de la nappe,
+      le type jeveux (NAPPE) n'est pas retourne,
+      le dictionnaire peut ainsi etre fourni a CALC_FONC_INTERP tel quel,
+      et une liste de dictionnaire des parametres de chaque fonction.
       """
       TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT' }
       prol=aster.getvectjev(string.ljust(self.get_name(),19)+'.PROL')
@@ -557,3 +556,4 @@ class vect_elem_depl_r(vect_elem):pass
 class vect_elem_pres_c(vect_elem):pass
 class vect_elem_pres_r(vect_elem):pass
 class vect_elem_temp_r(vect_elem):pass
+

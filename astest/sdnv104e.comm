@@ -1,4 +1,4 @@
-# MODIF  DATE 04/06/2004   AUTEUR LAMARCHE S.LAMARCHE 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,9 +52,9 @@ MAILL=MODI_MAILLAGE(reuse =MAILL,
 #---------------------------------------------------------------------
 
 CARA=AFFE_CARA_ELEM(MODELE=MODE,
-                    DISCRET=(_F(GROUP_MA='RESLAT',
-                                CARA='K_T_D_L',
-                                VALE=(12.E3,0.0),),)
+                    DISCRET_2D=_F(GROUP_MA='RESLAT',
+                                  CARA='K_T_D_L',
+                                  VALE=(12.E3,0.0),),
                    )
 
 #---------------------------------------------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE POUTRE DE SECTION RECTANGULAIRE VARIABLE (POSEE-POSEE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,61 +69,80 @@ CHPOU=AFFE_CHAR_MECA(
 #24.01 CARA_ELEM
 #
 # AFFINITE PARALLELE A Y
-CARELX=AFFE_CARA_ELEM(    MODELE=MOPOU,POUTRE=(
+CARELX=AFFE_CARA_ELEM(    MODELE=MOPOU, INFO=2,
+                          POUTRE=(
 
-
-     _F(  SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
-       MAILLE = 'M1',   CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-                    VALE = (  0.05,   0.0600,  0.05,   0.0570, )),
-     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-     MAILLE = 'M2',   VALE = (  0.05,  0.0570,  0.05,   0.0540, )),
-     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-     MAILLE = 'M3',   VALE = (  0.05,  0.0540,  0.05,  0.0510, )),
-     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-     MAILLE = 'M4',   VALE = (  0.05,  0.0510,  0.05,  0.0480, )),
-     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-     MAILLE = 'M5',   VALE = (  0.05,  0.0480,  0.05,  0.0450, )),
-     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-     MAILLE = 'M6',   VALE = (  0.05,  0.0450,  0.05,  0.0420, )),
-     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-     MAILLE = 'M7',   VALE = (  0.05,  0.0420,  0.05,  0.0390, )),
-     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-     MAILLE = 'M8',   VALE = (  0.05,  0.0390,  0.05,  0.0360, )),
-     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-     MAILLE = 'M9',   VALE = (  0.05,  0.0360,  0.05,  0.0330, )),
-     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-     MAILLE = 'M10',  VALE = (  0.05,  0.0330,  0.05,  0.0300, )))
+     _F(  MAILLE = 'M1', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',    'HZ2',   ),
+          VALE = (  0.05,  0.0600,   0.0570, )),
+     _F(  MAILLE = 'M2', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',    'HZ2',   ),
+          VALE = (  0.05,  0.0570,   0.0540, )),
+     _F(  MAILLE = 'M3', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',    'HZ2',   ),
+          VALE = (  0.05,  0.0540,   0.0510, )),
+     _F(  MAILLE = 'M4', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',    'HZ2',   ),
+          VALE = (  0.05,  0.0510,   0.0480, )),
+     _F(  MAILLE = 'M5', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',    'HZ2',   ),
+          VALE = (  0.05,  0.0480,   0.0450, )),
+     _F(  MAILLE = 'M6', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',    'HZ2',   ),
+          VALE = (  0.05,  0.0450,   0.0420, )),
+     _F(  MAILLE = 'M7', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',    'HZ2',   ),
+          VALE = (  0.05,  0.0420,   0.0390, )),
+     _F(  MAILLE = 'M8', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',    'HZ2',   ),
+          VALE = (  0.05,  0.0390,   0.0360, )),
+     _F(  MAILLE = 'M9', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',    'HZ2',   ),
+          VALE = (  0.05,  0.0360,   0.0330, )),
+     _F(  MAILLE = 'M10', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',    'HZ2',   ),
+          VALE = (  0.05,  0.0330,   0.0300, )))
 
                         )
 
 #
 # AFFINITE PARALLELE A Z PAR ROTATION ET CALCUL PAR HOMOTHETIQUE
-CARELY=AFFE_CARA_ELEM(    MODELE=MOPOU,
+CARELY=AFFE_CARA_ELEM(    MODELE=MOPOU, INFO=2, 
 
-   ORIENTATION=_F(  CARA = 'ANGL_VRIL', VALE = 90.,
-       GROUP_MA = 'TOUT'),POUTRE=(
+   ORIENTATION=_F( GROUP_MA = 'TOUT', CARA = 'ANGL_VRIL', VALE = 90., ),
+                    
+   POUTRE=(
 
-    _F(  SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
-       MAILLE = 'M1',   CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-                    VALE = (  0.05,   0.0600,  0.05,   0.0570, )),
-     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-     MAILLE = 'M2',   VALE = (  0.05,  0.0570,  0.05,   0.0540, )),
-     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-     MAILLE = 'M3',   VALE = (  0.05,  0.0540,  0.05,  0.0510, )),
-     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-     MAILLE = 'M4',   VALE = (  0.05,  0.0510,  0.05,  0.0480, )),
-     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-     MAILLE = 'M5',   VALE = (  0.05,  0.0480,  0.05,  0.0450, )),
-     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-     MAILLE = 'M6',   VALE = (  0.05,  0.0450,  0.05,  0.0420, )),
-     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-     MAILLE = 'M7',   VALE = (  0.05,  0.0420,  0.05,  0.0390, )),
-     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-     MAILLE = 'M8',   VALE = (  0.05,  0.0390,  0.05,  0.0360, )),
-     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-     MAILLE = 'M9',   VALE = (  0.05,  0.0360,  0.05,  0.0330, )),
-     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
-     MAILLE = 'M10',  VALE = (  0.05,  0.0330,  0.05,  0.0300, )))
+     _F(  MAILLE = 'M1', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',   'HZ1',     'HZ2',   ),
+          VALE = (  0.05,   0.0600,    0.0570, )),
+     _F(  MAILLE = 'M2', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',     'HZ2',   ),
+          VALE = (  0.05,  0.0570,     0.0540, )),
+     _F(  MAILLE = 'M3', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',     'HZ2',   ),
+          VALE = (  0.05,  0.0540,    0.0510, )),
+     _F(  MAILLE = 'M4', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',     'HZ2',   ),
+          VALE = (  0.05,  0.0510,    0.0480, )),
+     _F(  MAILLE = 'M5', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',     'HZ2',   ),
+          VALE = (  0.05,  0.0480,    0.0450, )),
+     _F(  MAILLE = 'M6', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',     'HZ2',   ),
+          VALE = (  0.05,  0.0450,    0.0420, )),
+     _F(  MAILLE = 'M7', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',     'HZ2',   ),
+          VALE = (  0.05,  0.0420,    0.0390, )),
+     _F(  MAILLE = 'M8', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',     'HZ2',   ),
+          VALE = (  0.05,  0.0390,    0.0360, )),
+     _F(  MAILLE = 'M9', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',     'HZ2',   ),
+          VALE = (  0.05,  0.0360,    0.0330, )),
+     _F(  MAILLE = 'M10', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+          CARA = ( 'HY',  'HZ1',     'HZ2',   ),
+          VALE = (  0.05,  0.0330,    0.0300, )))
                         )
 
 #
@@ -172,37 +191,37 @@ TEST_TABLE(      TABLE=MASSX,
                    FILTRE=_F(  NOM_PARA = 'LIEU',
                             VALE_K = 'POU'),
                  NOM_PARA='IX_G',
-                     VALE=11.2715             )
+                     VALE=11.273979            )
 
 TEST_TABLE(      TABLE=MASSX,
                    FILTRE=_F(  NOM_PARA = 'LIEU',
                             VALE_K = 'POU'),
                  NOM_PARA='IY_G',
-                     VALE=11.2712             )
+                     VALE=11.27325479          )
 
 TEST_TABLE(      TABLE=MASSX,
                    FILTRE=_F(  NOM_PARA = 'LIEU',
                             VALE_K = 'POU'),
                  NOM_PARA='IZ_G',
-                     VALE=1.38475E-02         )
+                     VALE=1.389375E-02         )
 
 TEST_TABLE(      TABLE=MASSX,
                    FILTRE=_F(  NOM_PARA = 'LIEU',
                             VALE_K = 'POU'),
                  NOM_PARA='IX_PRIN_G',
-                     VALE=1.38475E-02         )
+                     VALE=1.389375E-02         )
 
 TEST_TABLE(      TABLE=MASSX,
                    FILTRE=_F(  NOM_PARA = 'LIEU',
                             VALE_K = 'POU'),
                  NOM_PARA='IY_PRIN_G',
-                     VALE=11.2712             )
+                     VALE=11.2732479           )
 
 TEST_TABLE(      TABLE=MASSX,
                    FILTRE=_F(  NOM_PARA = 'LIEU',
                             VALE_K = 'POU'),
                  NOM_PARA='IZ_PRIN_G',
-                     VALE=11.2715             )
+                     VALE=11.273979           )
 
 TEST_TABLE(      TABLE=MASSY,
                    FILTRE=_F(  NOM_PARA = 'LIEU',
@@ -234,37 +253,37 @@ TEST_TABLE(      TABLE=MASSY,
                    FILTRE=_F(  NOM_PARA = 'LIEU',
                             VALE_K = 'POU'),
                  NOM_PARA='IX_G',
-                     VALE=11.2712             )
+                     VALE=11.2732479          )
 
 TEST_TABLE(      TABLE=MASSY,
                    FILTRE=_F(  NOM_PARA = 'LIEU',
                             VALE_K = 'POU'),
                  NOM_PARA='IY_G',
-                     VALE=11.2715             )
+                     VALE=11.273979           )
 
 TEST_TABLE(      TABLE=MASSY,
                    FILTRE=_F(  NOM_PARA = 'LIEU',
                             VALE_K = 'POU'),
                  NOM_PARA='IZ_G',
-                     VALE=1.38475E-02         )
+                     VALE=1.3893755E-02       )
 
 TEST_TABLE(      TABLE=MASSY,
                    FILTRE=_F(  NOM_PARA = 'LIEU',
                             VALE_K = 'POU'),
                  NOM_PARA='IX_PRIN_G',
-                     VALE=1.38475E-02         )
+                     VALE=1.389375E-02        )
 
 TEST_TABLE(      TABLE=MASSY,
                    FILTRE=_F(  NOM_PARA = 'LIEU',
                             VALE_K = 'POU'),
                  NOM_PARA='IY_PRIN_G',
-                     VALE=11.2712             )
+                     VALE=11.2732479          )
 
 TEST_TABLE(      TABLE=MASSY,
                    FILTRE=_F(  NOM_PARA = 'LIEU',
                             VALE_K = 'POU'),
                  NOM_PARA='IZ_PRIN_G',
-                     VALE=11.2715             )
+                     VALE=11.2732479          )
 
 # --------------------------------------------------------------------
 # ====================================
@@ -358,39 +377,39 @@ TEST_RESU(RESU=(
 #A2X
              _F(  RESULTAT = MODPOUX,  PARA = 'FREQ',
                      CRITERE = 'RELATIF',  PRECISION = 0.043,
-                     NUME_MODE = 1,       VALE = 23.85),
+                     NUME_MODE = 1,       VALE = 2.4883719438590E+01),
 # EN ATTENTE DES VALEURS A TESTER  DANS LE SENS X
 #                  ( RESULTAT: MODPOUX , PARA: 'FREQ'
 #                     CRITERE: 'RELATIF' , PRECISION: 0.02
-#                     NUME_MODE : 2      , VALE:   28.57   )
+#                     NUME_MODE : 2      , VALE:     )
                   _F(  RESULTAT = MODPOUX,  PARA = 'FREQ',
                      CRITERE = 'RELATIF',  PRECISION = 0.011,
-                     NUME_MODE = 3,       VALE = 100.00),
+                     NUME_MODE = 3,       VALE = 1.0117166656029E+02),
 #                  ( RESULTAT: MODPOUX , PARA: 'FREQ'
 #                     CRITERE: 'RELATIF' , PRECISION: 0.02
 #                     NUME_MODE : 4      , VALE:  114.92   )
                   _F(  RESULTAT = MODPOUX,  PARA = 'FREQ',
                      CRITERE = 'RELATIF',  PRECISION = 0.016,
-                     NUME_MODE = 5,       VALE = 223.34),
+                     NUME_MODE = 5,       VALE = 2.2717436461294E+02),
 #                  ( RESULTAT: MODPOUX , PARA: 'FREQ'
 #                     CRITERE: 'RELATIF' , PRECISION: 0.02
 #                     NUME_MODE : 6      , VALE:  258.63   )
 #A2Y
                   _F(  RESULTAT = MODPOUY,  PARA = 'FREQ',
                      CRITERE = 'RELATIF',  PRECISION = 0.043,
-                     NUME_MODE = 1,       VALE = 23.85),
+                     NUME_MODE = 1,       VALE = 2.4883721494878E+01),
 #                 ( RESULTAT: MODPOUY , PARA: 'FREQ'
 #                     CRITERE: 'RELATIF' , PRECISION: 0.02
 #                     NUME_MODE : 2      , VALE:   28.57   )
                   _F(  RESULTAT = MODPOUY,  PARA = 'FREQ',
                      CRITERE = 'RELATIF',  PRECISION = 0.011,
-                     NUME_MODE = 3,       VALE = 100.00),
+                     NUME_MODE = 3,       VALE = 1.0117166656029E+02),
 #                 ( RESULTAT: MODPOUY , PARA: 'FREQ'
 #                     CRITERE: 'RELATIF' , PRECISION: 0.02
 #                     NUME_MODE : 4      , VALE:  114.92   )
                   _F(  RESULTAT = MODPOUY,  PARA = 'FREQ',
                      CRITERE = 'RELATIF',  PRECISION = 0.016,
-                     NUME_MODE = 5,       VALE = 223.34))
+                     NUME_MODE = 5,       VALE = 2.2717436461294E+02))
 #                 ( RESULTAT: MODPOUY , PARA: 'FREQ'
 #                     CRITERE: 'RELATIF' , PRECISION: 0.02
 #                     NUME_MODE : 6      , VALE:  258.63   )

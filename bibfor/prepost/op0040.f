@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -444,9 +444,6 @@ C
          WRITE(IFI,'(A)') '</TUYAUTERIE>'
 C
  9999 CONTINUE
-      CALL DETRSD('CHAM_ELEM',CHACES)
-      CALL DETRSD('CHAM_ELEM',CHARED)
-      CALL DETRSD('CHAM_ELEM',GEOCES)
-      CALL DETRSD('CHAM_ELEM',GEORED)
+
       CALL JEDEMA()
       END

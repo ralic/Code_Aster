@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -366,6 +366,5 @@ C
       CALL MODIBA(NOMRES,BASEMO,BASEFL,NUMVIT,NEWRES,ITYPFL,IMASSE,
      &            ZI(INUOR),NBNUOR,ZI(INUMO),NBMFL)
 C
-      CALL JEDETC('V','&&OP0149',1)
       CALL JEDEMA()
       END

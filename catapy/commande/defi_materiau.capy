@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/09/2004   AUTEUR GRANET S.GRANET 
+#& MODIF COMMANDE  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -367,6 +367,14 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              D_SIGM_EPSI     =SIMP(statut='o',typ='R'),
              SYT             =SIMP(statut='o',typ='R'),
              SYC             =SIMP(statut='f',typ='R'),
+           ),
+           ENDO_ORTH_BETON  =FACT(statut='f',
+             ALPHA            =SIMP(statut='f',typ='R',defaut=0.9),
+             K0               =SIMP(statut='o',typ='R'),
+             K1               =SIMP(statut='o',typ='R'),
+             K2               =SIMP(statut='f',typ='R',defaut=7.E-4),
+             ECROB            =SIMP(statut='o',typ='R'),
+             ECROD            =SIMP(statut='o',typ='R'),
            ),
            PRAGER          =FACT(statut='f',
              C               =SIMP(statut='o',typ='R'),

@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT   NONE
       INTEGER            IER
 C     ------------------------------------------------------------------
-C MODIF POSTRELE  DATE 24/05/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C     ------------------------------------------------------------------
 C
 C     OPERATEUR POST_RCCM
@@ -138,8 +138,5 @@ C     ------------------------------------------------------------------
 C
       CALL TITRE
 C
-      CALL JEEXIN ( '&&OP0051.CONNECINVERSE  ', IBID )
-      IF (IBID .NE. 0)  CALL JEDETR ( '&&OP0051.CONNECINVERSE  ' )
-      CALL JEDETC ( 'V' , '&&OP0165' , 1 )
 C
       END

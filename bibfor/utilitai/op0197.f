@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -570,10 +570,12 @@ C
  308    CONTINUE
 C
       END IF
-C
+
       CALL JEDETR ( '&&OP0197.NOM_VECSIG' )
       CALL JEDETR ( '&&OP0197.NOM_VECPRO' )
       CALL JEDETR ( '&&OP0197.NOM_NURES' )
+
+C
 C
 C  ---   STOCKAGE DANS LA TABLE TABL_PARA_TEMP
 C        TABLE PARAMETRES FONCTION TEMPERATURE : T,M,SIGU(T)
@@ -611,13 +613,6 @@ C
       NOPASE = '        '
       CALL TBIMPR ( TAPAIT, NOPASE, 'EXCEL', IFM, NTPSI+2, ZK16(INOPA),
      >              0, K16BID, '1PE12.5', ' ')
-
-      CALL DETRSD('TABLE',TAPAIT)
 C
-C     ---  DESTRUCTION DES OBJETS DE TRAVAIL ---
-      CALL JEDETC('V','&&OP0197' , 1 )
-      CALL JEDETC('V','&&',1)
-      CALL JEDETC('V','.MATE_CODE',9)
-      CALL JEDETC('V','.CODI',20)
       CALL JEDEMA()
       END

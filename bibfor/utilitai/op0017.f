@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,6 @@ C
         DO 1, I=1,NBCO
           CALL UTIMSD(IFI,NIVO,LATTR,LCONT,ZK8(IALICO-1+I),1,BASE)
  1      CONTINUE
-        CALL JEDETR ('&&OP0017.LISTE_CO')
       END IF
 C
       CALL GETVTX(' ','CHAINE',0,1,1,CHAINE,N2)

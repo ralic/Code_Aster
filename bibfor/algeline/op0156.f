@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,6 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*14  NUMEM, NUMEC
       CHARACTER*16  TYPE, NOMCMD
       CHARACTER*19  MASSE, RESU, CHAMNO, CHAMN2, PRNO
-      LOGICAL       CRCHNO
 C     ------------------------------------------------------------------
       CALL JEMARQ ( )
       CALL INFMAJ()
@@ -88,7 +87,6 @@ C
          CALL UTIMPK('S','ET CELLES DU CHAM_NO SONT ',1,TYPRES)
          CALL UTFINM ( )
       ENDIF
-      CRCHNO = .FALSE.
       CALL JEVEUO ( CHAMNO//'.REFE', 'L', IAREFE )
       PRNO = ZK24(IAREFE-1+2)(1:19)
       CALL JEEXIN ( PRNO//'.NEQU', IRET )
@@ -97,7 +95,6 @@ C
          CALL VTCREB ( CHAMN2, NUMEM, 'V', TYPRES, NEQ )
          CALL VTCOPY ( CHAMNO, CHAMN2, IRET )
          CHAMNO = CHAMN2
-         CRCHNO = .TRUE.
       ENDIF
       CALL DISMOI('F','NOM_NUME_DDL',CHAMNO,'CHAM_NO',IBID,NUMEC,IRET)
       IF ( NUMEM .NE. NUMEC ) THEN
@@ -105,7 +102,6 @@ C
          CALL VTCREB ( CHAMN2, NUMEM, 'V', TYPRES, NEQ )
          CALL VTCOPY ( CHAMNO, CHAMN2, IRET )
          CHAMNO = CHAMN2
-         CRCHNO = .TRUE.
       ENDIF
       CALL JEVEUO ( CHAMNO//'.VALE', 'L', JCHIN )
 C
@@ -125,11 +121,6 @@ C
          CALL MCMULT ( 'ZERO', LMAT, ZC(JCHIN), TYPRES, ZC(JCHOUT), 1 )
       ENDIF
 C
-      IF ( CRCHNO ) THEN
-         CALL JEDETR ( CHAMN2//'.DESC' )
-         CALL JEDETR ( CHAMN2//'.REFE' )
-         CALL JEDETR ( CHAMN2//'.VALE' )
-      ENDIF
 C
       CALL TITRE()
 C

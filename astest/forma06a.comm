@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE PABHHHH N.TARDIEU
 
 # TITRE ENONCE TP POUTRE FORMATION POST TRAITEMENT
@@ -50,7 +50,7 @@ CAREL1=AFFE_CARA_ELEM(MODELE=MO1,
                                  CARA='H',
                                  VALE=1.E-2,),
                               _F(GROUP_MA='AE',
-                                 SECTION='RECTANGLE',
+                                 SECTION='RECTANGLE', VARI_SECT = 'HOMOTHETIQUE',
                                  CARA=('H1','H2',),
                                  VALE=(0.01,0.01,),),),);
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE LIAISON TUBE-GRILLE AVEC FROTTEMENT DE COULOMB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,25 +29,17 @@ MO=AFFE_MODELE(        MAILLAGE=MA,AFFE=(
                                 MODELISATION = 'POU_D_E'),
                          _F(  GROUP_MA = 'DISC',
                                 PHENOMENE = 'MECANIQUE',
-                             #  MODELISATION:'DIS_T')
                                 MODELISATION = 'DIS_TR'))
                        )
 
 CAREL=AFFE_CARA_ELEM(   MODELE=MO,
-                             POUTRE=_F(  GROUP_MA = 'POUT',
-                                      SECTION = 'RECTANGLE',
-                                      CARA = (   'H',  ),
-                                      VALE = (    1.,  )),
-                             DISCRET=_F(  GROUP_MA = 'DISC',
-                                  #   CARA:(   'K_T_D_L' )
-                                  #   VALE:(    1.E3 1.E3 1.E3 ) )
-                                      CARA = (   'K_TR_D_L', ),
-                                      VALE = (    1.E3, 1.E3, 1.E3,
-                                                1.E3, 1.E3, 1.E3,
-                                           ))
-                      #   ORIENTATION: ( GROUP_MA: POUT
-                      #                  CARA:   'VECT_Y'
-                      #                  VALE: (-.067 0.01346 0.0 ) )
+                        POUTRE=_F(  GROUP_MA = 'POUT',
+                                    SECTION = 'RECTANGLE',
+                                    CARA = 'H',   VALE = 1.,  ),
+                        DISCRET=_F(  GROUP_MA = 'DISC',
+                                     CARA = 'K_TR_D_L',
+                                     VALE = (  1.E3, 1.E3, 1.E3,
+                                               1.E3, 1.E3, 1.E3 ), )
                         )
 
 FRIG=DEFI_FONCTION(   NOM_PARA='INST',

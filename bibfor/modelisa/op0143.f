@@ -1,7 +1,7 @@
       SUBROUTINE OP0143(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -534,6 +534,5 @@ C       ==========
         CALL GETVIS(' ','INFO',0,1,1,NIV,IBID)
         IF (NIV.EQ.2) CALL TFIMPR(NOMU)
 C
-      CALL JEDETC('V','&&OP0143',1)
       CALL JEDEMA()
       END

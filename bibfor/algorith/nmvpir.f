@@ -8,7 +8,7 @@
      &                   ANGMAS,
      &                   SIGP,VIP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -413,7 +413,7 @@ C
      *        UNSURK,UNSURM,THETA,DEUMUP,FG,FDGDST,FDGDEV)
         ELSE IF (ICAS.EQ.3) THEN
            XAP = 0.99D0 * SIELEQ
-           IF (ABS(A0).LE.PREC) THEN
+           IF (ABS(A0).LE.PREC.OR.FLUPHI.LE.1.D-15) THEN
              X = 0.D0
            ELSE
 

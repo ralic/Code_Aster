@@ -1,0 +1,117 @@
+      SUBROUTINE JEUXSE(NDIM,LAMBDA,NUTYP,LISSA,VLISSA,
+     &                  MOYEN,TANG,INORM,COORDM,COORDP,TANGDF,
+     &                  COEF,NORM,JEU)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+
+      IMPLICIT NONE
+C
+      INTEGER       NDIM
+      REAL*8        LAMBDA
+      CHARACTER*4   NUTYP
+      INTEGER       LISSA
+      REAL*8        VLISSA(9)
+      INTEGER       MOYEN
+      REAL*8        TANG(6)
+      REAL*8        INORM(3)
+      REAL*8        COORDM(3)
+      REAL*8        COORDP(3)
+      INTEGER       TANGDF
+
+      REAL*8        COEF(3)
+      REAL*8        NORM(3)
+      REAL*8        JEU
+
+C
+C ----------------------------------------------------------------------
+C ROUTINE APPELEE PAR : PROJSE
+C ----------------------------------------------------------------------
+C
+C CETTE ROUTINE CALCULE LE JEU APRES PROJECTION, LES COEFFICIENTS
+C DE LA RELATION LINEAIRE ET LA NORMALE RESULTANTE LISSEE
+C 
+C IN  NDIM   : DIMENSION DE L'ESPACE (2 OU 3)
+C IN  LAMBDA : COEFFICIENT DU LIEU DE LA PROJECTION DU POINT
+C IN  NUTYP  : TYPE DE MAILLE
+C IN  LISSA  : INDICATEUR DE LISSAGE
+C IN  VLISSA : NORMALES LISSEES
+C IN  MOYEN  : INDICATEUR DE MOYENNE MAITRE/ESCLAVE
+C IN  TANG   : VECTEURS TANGENTS
+C IN  INORM  : VECTEUR NORMAL AU NOEUD ESCLAVE INITIALEMENT
+C IN  COORDM : COORDONNEES DE LA PROJECTION DU NOEUD ESCLAVE SUR LA 
+C              MAILLE MAITRE
+C IN  COORDP : COORDONNEES DU NOEUD ESCLAVE P
+C IN  TANGDF : INDICATEUR DE PRESENCE D'UN VECT_Y DEFINI PAR 
+C              L'UTILISATEUR
+C               0 PAS DE VECT_Y
+C               1 UN VECT_Y EST DEFINI
+C OUT COEF   : COEFFICIENTS DE LA RELATION LINEAIRE
+C OUT NORM   : NORMALE RESULTANTE
+C OUT JEU    : JEU DANS LA DIRECTION DE LA NORMALE CHOISIE (PM.NORM)
+C
+C ----------------------------------------------------------------------
+C
+      REAL*8  NORME
+C
+C ----------------------------------------------------------------------
+C
+C --- COEFFICIENTS DE LA RELATION LINEAIRE
+C
+      COEF(1) = - (1.D0-LAMBDA)
+      COEF(2) = -LAMBDA
+      COEF(3) = 0.0D0
+      IF (NUTYP.EQ.'SEG3') THEN
+        COEF(1) = -2* (1.D0-LAMBDA)* (0.5D0-LAMBDA)
+        COEF(2) = -2*LAMBDA* (LAMBDA-0.5D0)
+        COEF(3) = -4*LAMBDA* (1.D0-LAMBDA)
+      END IF
+C
+C --- LISSAGE DES NORMALES
+C
+      IF (LISSA.EQ.1) THEN
+        IF (NUTYP.EQ.'SEG2') THEN
+          NORM(1) = COEF(1)*VLISSA(1) + COEF(2)*VLISSA(4)
+          NORM(2) = COEF(1)*VLISSA(2) + COEF(2)*VLISSA(5)
+          NORM(3) = COEF(1)*VLISSA(3) + COEF(2)*VLISSA(6)
+        ELSE IF (NUTYP.EQ.'SEG3') THEN
+          NORM(1) = COEF(1)*VLISSA(1) + COEF(2)*VLISSA(4) +
+     &              COEF(3)*VLISSA(7)
+          NORM(2) = COEF(1)*VLISSA(2) + COEF(2)*VLISSA(5) +
+     &              COEF(3)*VLISSA(8)
+          NORM(3) = COEF(1)*VLISSA(3) + COEF(2)*VLISSA(6) +
+     &              COEF(3)*VLISSA(9)
+        END IF
+        IF (MOYEN.EQ.1) THEN
+          CALL NORMEV(NORM,NORME)
+          NORM(1) = INORM(1) + NORM(1)
+          NORM(2) = INORM(2) + NORM(2)
+          NORM(3) = INORM(3) + NORM(3)
+        END IF
+        CALL NORMEV(NORM,NORME)
+        JEU = (COORDM(1)-COORDP(1))*NORM(1) +
+     &        (COORDM(2)-COORDP(2))*NORM(2)
+        IF (NDIM.EQ.3) THEN 
+          JEU = JEU + (COORDM(3)-COORDP(3))*NORM(3)
+        ENDIF
+        CALL CFTANG(2,NORM,TANG,TANGDF)
+   
+      ENDIF
+
+      END

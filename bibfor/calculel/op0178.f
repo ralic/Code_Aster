@@ -3,7 +3,7 @@
       INTEGER IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,6 @@ C             -- TEST_RESU/S_I(OU S_R) :
           END IF
    10   CONTINUE
 
-        CALL JEDETR('&&OP0178.LISTE')
       END IF
 
 
@@ -140,7 +139,6 @@ C               -- TEST_RESU/S_I(OU S_R) :
           CALL JEDETR('&&OP0178.LISTE')
    30   CONTINUE
 
-        CALL JEDETR('&&OP0178.LCO')
       END IF
 
 

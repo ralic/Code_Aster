@@ -1,7 +1,8 @@
-      SUBROUTINE POINCO (CHAR,MOTFAZ,NOMAZ,NZOCO,NSUCO,NMACO,NNOCO,
-     +                   NNOQUA,PZONE,PSURMA,PSURNO,PNOQUA,NTRAV)
+      SUBROUTINE POINCO(CHAR,MOTFAC,NOMA,NZOCO,ORDSTC,INDQUA,
+     &                  NSUCO,NMACO,NNOCO,NNOQUA,NTRAV)
+     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 01/12/2003   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,34 +20,45 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C
-      IMPLICIT NONE
-C
-      INTEGER       NZOCO,NSUCO,NMACO,NNOCO,NTRAV,NNOQUA
-      CHARACTER*8   CHAR
-      CHARACTER*(*) MOTFAZ,NOMAZ
-      CHARACTER*24  PZONE,PSURMA,PSURNO,PNOQUA
+      IMPLICIT     NONE
+      CHARACTER*8  CHAR
+      CHARACTER*16 MOTFAC
+      CHARACTER*8  NOMA
+      INTEGER      NZOCO
+      INTEGER      ORDSTC
+      INTEGER      INDQUA     
+      INTEGER      NSUCO
+      INTEGER      NMACO
+      INTEGER      NNOCO
+      INTEGER      NNOQUA
+      INTEGER      NTRAV    
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELEE PAR : CALICO
 C ----------------------------------------------------------------------
 C
-C DETERMINATION DU NOMBRE DE ZONES DE CONTACT, ET DU NOMBRE TOTAL DE
+C DETERMINATION DU NOMBRE DE ZONES DE CONTACT ET DU NOMBRE TOTAL DE
 C MAILLES ET DE NOEUDS DE CONTACT. REMPLISSAGE DES POINTEURS ASSOCIES.
 C
-C IN  MOTFAZ : MOT-CLE FACTEUR (VALANT 'CONTACT')
-C IN  NOMAZ  : NOM DU MAILLAGE
+C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
+C IN  MOTFAC : MOT-CLE FACTEUR
+C IN  NOMA   : NOM DU MAILLAGE
 C IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
+C IN  ORDSTC : ORDRE DE STOCKAGE DES ZONES MAITRES ET ESCLAVES
+C              0: MAITRES PUIS ESCLAVES
+C              1: ESCLAVES PUIS MAITRES
+C IN  INDQUA : VAUT 1 LORSQUE L'ON DOIT IGNORER LES NOEUDS MILIEUX DANS
+C              NBNOEL (PENALISATION SUR LE CONTACT OU METHODE CONTINUE)
 C OUT NSUCO  : NOMBRE TOTAL DE SURFACES DE CONTACT
-C OUT NMACO  : NOMBRE TOTAL DE MAILLES DES SURFACES
-C OUT NNOCO  : NOMBRE TOTAL DE NOEUDS DES SURFACES
-C OUT PZONE  : POINTEUR DES ZONES DE CONTACT
-C OUT PSURMA : POINTEUR DES MAILLES DES SURFACES
-C OUT PSURNO : POINTEUR DES NOEUDS DES SURFACES
-C OUT NTRAV  : DIMENSION DU TABLEAU DE TRAVAIL
+C OUT NMACO  : NOMBRE TOTAL DE MAILLES DES SURFACES DE CONTACT
+C OUT NNOCO  : NOMBRE TOTAL DE NOEUDS DES SURFACES DE CONTACT
+C OUT NNOQUA : NOMBRE TOTAL DE NOEUDS QUADRATIQUES DES SURFACES DE
+C              CONTACT
+C OUT NTRAV  : NOMBRE MAXIMUM DE GROUPES ET DE MAILLES IMPLIQUES DANS 
+C              LE CONTACT (TOUTES ZONES CONFONDUES)
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -64,252 +76,167 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      NG0,NG1,NG2,NM0,NM1,NM2,NTOT,NBMA,NBNO
-      INTEGER      NG,NGR,N1,N2,NBMAIL,NMAI,NUMAIL
-      INTEGER      IOC,II1,II2,ISURF,INDICE
-      INTEGER      JZONE,JSUMA,JSUNO,JGRO,JBID,IBID
-      INTEGER      IATYMA,NUTYP,ITYP,JNOQUA,NBNOQU
-      INTEGER      N1Q, N2Q, NOEUSO, NOEUMI, NBNOMI
-      INTEGER      NOC, NOCN
-      REAL*8       COEFPN
-      CHARACTER*8  NOMTM, MOTCLE
-      CHARACTER*1  K1BID
-      CHARACTER*8  K8BID,NOMA,NOMAIL
-      CHARACTER*16 MOTFAC,TYPF,PROJ
+      INTEGER      IOC,ISY,IWRITE,IREAD,ISYME
+      INTEGER      NZOCP,NGTOT,NSYME
+      CHARACTER*24 PZONE,PSURMA,PSURNO,PNOQUA
+      INTEGER      JZONE,JSUMA,JSUNO,JNOQUA
+      CHARACTER*24 SYMECO
+      INTEGER      JSYME
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C
-      MOTFAC = MOTFAZ
-      NOMA   = NOMAZ
-C
+
+C --- NOMS JEVEUX
+      PZONE  = CHAR(1:8)//'.CONTACT.PZONECO'
+      PSURMA = CHAR(1:8)//'.CONTACT.PSUMACO'
+      PSURNO = CHAR(1:8)//'.CONTACT.PSUNOCO'
+      PNOQUA = CHAR(1:8)//'.CONTACT.PNOEUQU'
+      SYMECO = CHAR(1:8)//'.CONTACT.SYMECO'
+
+C --- NOMBRE DE ZONES SYMETRIQUES
+      NSYME = 0
+      CALL JEVEUO(SYMECO,'L',JSYME)    
+      NSYME = ZI(JSYME)
+
+C  --- DETERMINATION DU NOMBRE DE GROUPES DE MAILLES
+C  --- ET DE MAILLES PAR ZONE POUR TOUTES LES ZONES DE CONTACT
+C  --- REMPLISSAGE DU POINTEUR ASSOCIE JZONE. 
+
+      CALL WKVECT (PZONE,'G V I',NZOCO+1,JZONE)     
+
+      ZI(JZONE) = 0  
       NSUCO = 0
-      NMACO = 0
-      NNOCO = 0
-      NTRAV = 0
-      INDICE= 0
-C
-C ======================================================================
-C              DETERMINATION DU NOMBRE TOTAL DE SURFACES
-C                  ET REMPLISSAGE DU POINTEUR PZONE
-C ======================================================================
-C
-      CALL WKVECT (PZONE,'G V I',NZOCO+1,JZONE)
-      ZI(JZONE) = 0
-C
-      DO 10 IOC = 1,NZOCO
-C
-         CALL GETVTX (MOTFAC,'METHODE',IOC,1,1,TYPF,NOC)
-         CALL GETVTX (MOTFAC,'PROJECTION',IOC,1,1,PROJ,NOC)         
-         IF (TYPF(1:8).EQ.'PENALISA') THEN
-            CALL GETVR8 (MOTFAC,'E_N',1,1,1,COEFPN, NOCN)
-            IF(NOCN.NE.0) INDICE=1
-         ELSEIF(TYPF(1:8).EQ.'CONTINUE') THEN
-            INDICE=1
-         ENDIF
-C        ACTIVATION  DE LA PROJECTION QUADRATIQUE       
-        IF (PROJ.EQ.'QUADRATIQUE') THEN
-           INDICE = 1
-        ENDIF
-C
-         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_ESCL',
-     +                                       IOC,1,0,K8BID,NG1)
-         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_MAIT',
-     +                                       IOC,1,0,K8BID,NG2)
-         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_ESCL',
-     +                                     IOC,1,0,K8BID,NM1)
-         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_MAIT',
-     +                                     IOC,1,0,K8BID,NM2)
-         IF (NG1.NE.0) NSUCO = NSUCO + 1
-         IF (NG2.NE.0) NSUCO = NSUCO + 1
-         IF (NM1.NE.0) NSUCO = NSUCO + 1
-         IF (NM2.NE.0) NSUCO = NSUCO + 1
-         NG0 = 0
-         NM0 = 0
-         NTOT = ABS(NG1) + ABS(NG2) + ABS(NM1) + ABS(NM2)
-     +          + ABS(NG0) + ABS(NM0)
-         NTRAV = MAX (NTRAV,NTOT)
-         NSUCO = NSUCO + ABS(NG0) + ABS(NM0)
-C
-         ZI(JZONE+IOC) = NSUCO
-C
- 10   CONTINUE
-C
-C ======================================================================
-C     LECTURE DES MAILLES ET DES NOEUDS POUR CALCULER NMACO ET NNOCO
-C               ET REMPLIR LES POINTEURS PSURMA ET PSURNO
-C ======================================================================
-C
+      
+C  --- NOMBRE MAXIMUM DE GROUPES ET DE MAILLES IMPLIQUES DANS LE CONTACT
+C  --- (TOUTES ZONES CONFONDUES).
+C  --- SERT POUR LA CONSTRUCTION D'UN VECTEUR DE TRAVAIL DANS NBSUCO
+      NTRAV = 0  
+
+C ----------------------------------------------------------------------
+C --- GESTION DES ZONES SYMETRIQUES ET DES OCCURRENCES DE CONTACT
+C --- UNE ZONE DE CONTACT (QUELCONQUE) EST REFERENCEE A DEUX NIVEAUX:
+C ---  1/ DANS AFFE_CHAR_MECA (NIVEAU UTILISATEUR)
+C ---  2/ DANS LA SD DE CONTACT (NIVEAU PROGRAMMEUR)
+C --- POUR LE CAS DE L'APPARIEMMENT CLASSIQUE (NON SYMETRIQUE), LES 
+C ---  REFERENCES SONT IDENTIQUES. 
+C --- POUR LE CAS DES ZONES SYMETRIQUES, ON CREE DEUX REFERENCES DANS
+C ---  LA SD ALORS QU'IL N'Y EN A QU'UNE DANS AFFE_CHAR_MECA.
+C ----------------------------------------------------------------------
+
+C --- IREAD: ON LIT LA IREAD-EME OCCURRENCE DANS LE MOT-CLEF 
+C            AFFE_CHAR_MECA
+C --- IWRITE: ON ECRIT LA IWRITE-EME OCCURRENCE DANS LA SD DE CONTACT
+
+C --- ON NE BOUCLE QUE SUR LES ZONES PRINCIPALES:
+      NZOCP = NZOCO - NSYME
+
+      DO 2 IOC = 1,NZOCP
+C         POUR LES ZONES DE CONTACT PRINCIPALES: IREAD = IWRITE
+         IREAD  = IOC
+         IWRITE = IOC            
+C         DECOMPTE DU NOMBRE DE SURFACES, DE MAILLES ET DE GROUPES DE
+C           MAILLES
+         CALL NBZOCO(CHAR,MOTFAC,NOMA,IREAD,IWRITE,JZONE,
+     +               NSUCO,NGTOT)
+         NTRAV = MAX(NTRAV,NGTOT)
+  2   CONTINUE  
+  
+C --- ON BOUCLE SUR LES ZONES PRINCIPALES MAIS ON AGIT SUR LES ZONES
+C     SYMETRIQUES
+C --- POUR ZONES DE CONTACT SYMETRIQUES
+C ---   IREAD: OCCURRENCE DU MOT-CLEF CONTACT SYMETRIQUE
+C ---   IWRITE: OCCURRENCE DANS LA SD DE LA ZONE DE CONTACT SYMETRIQUE
+ 
+      IF (NSYME.GT.0) THEN  
+         ISYME = 0
+         DO 3 IOC = 1,NZOCP
+C           POUR LES ZONES DE CONTACT SYMETRIQUES
+C           IREAD = ON LIT LA IOC OCCURENCE DANS AFFE_CHAR_MECA
+            IREAD = IOC
+            DO 4 ISY = 1,NSYME      
+               IF (ZI(JSYME+ISY).EQ.IOC) THEN
+C                    CETTE ZONE EST DE TYPE SYMETRIQUE
+                  ISYME  = ISYME +1
+C                    IWRITE: ON ECRIT A LA FIN DE LA SD CONTACT
+                  IWRITE = NZOCP+ISYME
+C                    DECOMPTE DU NOMBRE DE SURFACES, DE MAILLES
+C                     ET DE GROUPES DE MAILLES
+                  CALL NBZOCO(CHAR,MOTFAC,NOMA,IREAD,IWRITE,JZONE,
+     +                  NSUCO,NGTOT)
+               ENDIF
+  4         CONTINUE             
+  3      CONTINUE   
+         IF (ISYME.NE.NSYME) CALL UTMESS ('F','POINCO',
+     +                                 'ERREUR NBZOCO/SYMETRIQUE')
+         IF (IWRITE.NE.NZOCO) CALL UTMESS ('F','POINCO',
+     +                                 'ERREUR NBZOCO/SYMETRIQUE')     
+      ENDIF
+      
+C --- NSUCO EST LE NOMBRE TOTAL DE SURFACES DE CONTACT Y COMPRIS 
+C     LES ZONES SYMETRIQUES 
+
+C --- DETERMINATION DU NOMBRE DE MAILLES, DE NOEUDS DE CONTACT ET
+C --- DE NOEUDS DE CONTACT QUADRATIQUES POUR TOUTES LES SURFACES 
+C     DE CONTACT
+C --- REMPLISSAGE DES POINTEURS ASSOCIES JSUMA,JSUNO,JNOQUA
+     
       CALL WKVECT (PSURMA,'G V I',NSUCO+1,JSUMA)
       CALL WKVECT (PSURNO,'G V I',NSUCO+1,JSUNO)
-      CALL WKVECT (PNOQUA,'G V I',NSUCO+1,JNOQUA)
-      CALL WKVECT ('&&POINCO.TRAV','V V K8',NTRAV,JBID)
-C
+      CALL WKVECT (PNOQUA,'G V I',NSUCO+1,JNOQUA)      
       ZI(JSUMA)  = 0
       ZI(JSUNO)  = 0
-      ZI(JNOQUA) = 0
-C
-      ISURF = 0
-C
-      DO 20 IOC = 1,NZOCO
+      ZI(JNOQUA) = 0     
 
-        IF(TYPF(1:8).EQ.'CONTINUE') THEN
-C
-C ----- METHODE CONTINUE : ON STOCKE D ABORD ----------
-C       LES ESCLAVES
-C
-         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_ESCL',
-     +                                       IOC,1,0,K8BID,NG)
-         IF (NG.NE.0) THEN
-             MOTCLE = 'GROUP_MA'
-             NG = -NG
-             ISURF = ISURF + 1
-             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_ESCL',
-     +                IOC,1,NG,ZK8(JBID),NGR)
-             CALL NBNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),INDICE,
-     +                   NBMA,NBNO,NBNOQU)
-             ZI(JSUMA  + ISURF) = ZI(JSUMA  + ISURF-1) + NBMA
-             ZI(JSUNO  + ISURF) = ZI(JSUNO  + ISURF-1) + NBNO
-             ZI(JNOQUA + ISURF) = ZI(JNOQUA + ISURF-1) + NBNOQU
-         END IF
-C
-C ------ MOT-CLE MAILLE_ESCL
-C
-         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_ESCL',
-     +                                     IOC,1,0,K8BID,NBMA)
-         IF (NBMA.NE.0) THEN
-             MOTCLE = 'MAILLE'
-             NBMA   = -NBMA
-             ISURF = ISURF + 1
-             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_ESCL',
-     +              IOC,1,NBMA,ZK8(JBID),NMAI)
-             CALL NBNOEL(CHAR,NOMA,MOTCLE,0,ZK8(JBID),INDICE,
-     +                   NBMA,NBNO,NBNOQU)
-             ZI(JSUMA  + ISURF) = ZI(JSUMA  + ISURF-1) + NBMA
-             ZI(JSUNO  + ISURF) = ZI(JSUNO  + ISURF-1) + NBNO
-             ZI(JNOQUA + ISURF) = ZI(JNOQUA + ISURF-1) + NBNOQU
+C --- ON NE BOUCLE QUE SUR LES ZONES PRINCIPALES:
+
+      IWRITE = 0
+
+      DO 5 IOC = 1,NZOCP
+         IREAD  = IOC   
+C --- /!\ IWRITE EST INCREMENTE DANS NBSUCO->NBNOCO                    
+         CALL NBSUCO (CHAR,MOTFAC,NOMA,IREAD,IWRITE,JSUMA,
+     +                  JSUNO,JNOQUA,NTRAV,ORDSTC,INDQUA)          
+  5   CONTINUE   
+  
+C --- ON BOUCLE SUR LES ZONES PRINCIPALES MAIS ON AGIT SUR LES 
+C      ZONES SYMETRIQUES
+
+      IF (NSYME.GT.0) THEN  
+         ISYME = 0 
+         IF (ORDSTC.EQ.1) THEN
+          ORDSTC = 0 
+         ELSE 
+          ORDSTC = 1
          ENDIF
-C
-C ------ MOT-CLE GROUP_MA_MAIT
-C
-         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_MAIT',
-     +                                       IOC,1,0,K8BID,NG)
-         IF (NG.NE.0) THEN
-             MOTCLE = 'GROUP_MA'
-             NG = -NG
-             ISURF = ISURF + 1
-             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_MAIT',
-     +                IOC,1,NG,ZK8(JBID),NGR)
-             CALL NBNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),
-     +                   INDICE,NBMA,NBNO,NBNOQU)
-             ZI(JSUMA  + ISURF) = ZI(JSUMA  + ISURF-1) + NBMA
-             ZI(JSUNO  + ISURF) = ZI(JSUNO  + ISURF-1) + NBNO
-             ZI(JNOQUA + ISURF) = ZI(JNOQUA + ISURF-1) + NBNOQU
-         END IF
-C
-C ------ MOT-CLE MAILLE_MAIT
-C
-         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_MAIT',
-     +                                     IOC,1,0,K8BID,NBMA)
-         IF (NBMA.NE.0) THEN
-             MOTCLE = 'MAILLE'
-             NBMA   = -NBMA
-             ISURF = ISURF + 1
-             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_MAIT',
-     +              IOC,1,NBMA,ZK8(JBID),NMAI)
-             CALL NBNOEL(CHAR,NOMA,MOTCLE,0,ZK8(JBID),INDICE,
-     +                   NBMA,NBNO,NBNOQU)
-             ZI(JSUMA  + ISURF) = ZI(JSUMA  + ISURF-1) + NBMA
-             ZI(JSUNO  + ISURF) = ZI(JSUNO  + ISURF-1) + NBNO
-             ZI(JNOQUA + ISURF) = ZI(JNOQUA + ISURF-1) + NBNOQU
+
+         DO 6 IOC = 1,NZOCP
+            IREAD = IOC
+            DO 7 ISY = 1,NSYME      
+               IF (ZI(JSYME+ISY) .EQ.IOC) THEN
+                  ISYME = ISYME +1
+C                   /!\ IWRITE EST INCREMENTE DANS NBSUCO->NBNOCO 
+                  CALL NBSUCO (CHAR,MOTFAC,NOMA,IREAD,IWRITE,JSUMA,
+     +                  JSUNO,JNOQUA,NTRAV,ORDSTC,INDQUA)
+               ENDIF
+  7         CONTINUE             
+  6      CONTINUE      
+         IF (ISYME.NE.NSYME) CALL UTMESS ('F','POINCO',
+     +                                 'ERREUR NBSUCO/SYMETRIQUE') 
+         IF (ORDSTC.EQ.1) THEN
+          ORDSTC = 0 
+         ELSE 
+          ORDSTC = 1
          ENDIF
-C
-       ELSE
-C
-C ------ LES AUTRES METHODES ON STOCKE D ABORD LES MAITRES
-C
-C ------ MOT-CLE GROUP_MA_MAIT
-C
-         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_MAIT',
-     +                                       IOC,1,0,K8BID,NG)
-         IF (NG.NE.0) THEN
-             MOTCLE = 'GROUP_MA'
-             NG = -NG
-             ISURF = ISURF + 1
-             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_MAIT',
-     +                IOC,1,NG,ZK8(JBID),NGR)
-             CALL NBNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),INDICE,
-     +                   NBMA,NBNO,NBNOQU)
-             ZI(JSUMA  + ISURF) = ZI(JSUMA  + ISURF-1) + NBMA
-             ZI(JSUNO  + ISURF) = ZI(JSUNO  + ISURF-1) + NBNO
-             ZI(JNOQUA + ISURF) = ZI(JNOQUA + ISURF-1) + NBNOQU
-         END IF
-C
-C ------ MOT-CLE MAILLE_MAIT
-C
-         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_MAIT',
-     +                                     IOC,1,0,K8BID,NBMA)
-         IF (NBMA.NE.0) THEN
-             MOTCLE = 'MAILLE'
-             NBMA   = -NBMA
-             ISURF = ISURF + 1
-             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_MAIT',
-     +                                       IOC,1,NBMA,ZK8(JBID),NMAI)
-             CALL NBNOEL(CHAR,NOMA,MOTCLE,0,ZK8(JBID),INDICE,
-     +                   NBMA,NBNO,NBNOQU)
-             ZI(JSUMA  + ISURF) = ZI(JSUMA  + ISURF-1) + NBMA
-             ZI(JSUNO  + ISURF) = ZI(JSUNO  + ISURF-1) + NBNO
-             ZI(JNOQUA + ISURF) = ZI(JNOQUA + ISURF-1) + NBNOQU
-         ENDIF
-C
-C ------ MOT-CLE GROUP_MA_ESCL
-C
-         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_ESCL',
-     +                                       IOC,1,0,K8BID,NG)
-         IF (NG.NE.0) THEN
-             MOTCLE = 'GROUP_MA'
-             NG = -NG
-             ISURF = ISURF + 1
-             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_ESCL',
-     +                                          IOC,1,NG,ZK8(JBID),NGR)
-             CALL NBNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),
-     +                   INDICE,NBMA,NBNO,NBNOQU)
-             ZI(JSUMA  + ISURF) = ZI(JSUMA  + ISURF-1) + NBMA
-             ZI(JSUNO  + ISURF) = ZI(JSUNO  + ISURF-1) + NBNO
-             ZI(JNOQUA + ISURF) = ZI(JNOQUA + ISURF-1) + NBNOQU
-         END IF
-C
-C ------ MOT-CLE MAILLE_ESCL
-C
-         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_ESCL',
-     +                                     IOC,1,0,K8BID,NBMA)
-         IF (NBMA.NE.0) THEN
-             MOTCLE = 'MAILLE'
-             NBMA   = -NBMA
-             ISURF = ISURF + 1
-             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_ESCL',
-     +                                       IOC,1,NBMA,ZK8(JBID),NMAI)
-             CALL NBNOEL(CHAR,NOMA,MOTCLE,0,ZK8(JBID),INDICE,
-     +                   NBMA,NBNO,NBNOQU)
-             ZI(JSUMA  + ISURF) = ZI(JSUMA  + ISURF-1) + NBMA
-             ZI(JSUNO  + ISURF) = ZI(JSUNO  + ISURF-1) + NBNO
-             ZI(JNOQUA + ISURF) = ZI(JNOQUA + ISURF-1) + NBNOQU
-         ENDIF
-        ENDIF
-C
- 20   CONTINUE
-C
+      ENDIF
+
+C --- NMACO EST LE NOMBRE TOTAL DE MAILLES DE CONTACT      
+C --- NNOCO EST LE NOMBRE TOTAL DE NOEUDS DE CONTACT       
+C --- NNOQUA EST LE NOMBRE TOTAL DE NOEUDS QUADRATIQUES DE CONTACT      
+
       NMACO  = ZI(JSUMA  + NSUCO)
       NNOCO  = ZI(JSUNO  + NSUCO)
       NNOQUA = ZI(JNOQUA + NSUCO)
-C
-C --- VERIFICATIONS ET ECRITURES
-C
-      IF (ISURF.NE.NSUCO) CALL UTMESS ('F','POINCO_01',
-     +                                 'ERREUR SUR ISURF')
-C
-      CALL JEDETR ('&&POINCO.TRAV')
 C
 C ----------------------------------------------------------------------
 C

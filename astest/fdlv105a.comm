@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PISTON AXISYMETRIQUE VIBRANT DANS UN FLUIDE INCOMPRESSIBLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -91,10 +91,8 @@ CHARGE=AFFE_CHAR_THER( MODELE=FLUIDE,
 #
 
 CHAMPCAR=AFFE_CARA_ELEM( MODELE=STRUCT,
-                 DISCRET=_F( GROUP_MA = 'RESSORTS', CARA = 'K_T_N',
-                 VALE = (1.,
-                       0., 15915.5,
-                       ))
+                 DISCRET_2D=_F( GROUP_MA = 'RESSORTS', CARA = 'K_T_N',
+                                VALE = (1., 0., 15915.5,), )
                  )
 
 #

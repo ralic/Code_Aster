@@ -3,7 +3,7 @@
       INTEGER IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -215,9 +215,6 @@ C     --- CREATION ET REMPLISSAGE DE LA COLLECTION NOMFON.VALE ---
       CALL JECREC(NOMFON//'.VALE','G V R',
      +                            'NU','CONTIG','VARIABLE',NBFONC)
       CALL FOSTON(NOMFON//'.VALE',ZK24(LNOMF),NBFONC)
-C
-C     --- MENAGE ---
-      CALL JEDETC('V','&&OP0004',1)
 C
 C     --- CREATION D'UN TITRE ---
       CALL TITRE

@@ -1,4 +1,4 @@
-# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE 'FLAMBEMENT' D'UNE CORNIERE ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,7 +41,7 @@ MO=AFFE_MODELE( MAILLAGE=MA,   AFFE=_F( TOUT = 'OUI',
 
 CARAC=AFFE_CARA_ELEM( MODELE=MO,POUTRE=(
          _F( MAILLE = ( 'S1', 'S2', 'S3', 'S4', ),  SECTION = 'GENERALE',
-        CARA = (  'A',         'IY',           'IZ',            
+        CARA = ('A',         'IY',           'IZ',            
                 'AY',        'AZ',           'EY',            
                 'EZ',        'JX',           'JG',            
                 'IYR2',      'IZR2',                          ),
@@ -50,8 +50,9 @@ CARAC=AFFE_CARA_ELEM( MODELE=MO,POUTRE=(
                # 0.      , 39595.        , 44398819.         ,
                  0.,       39595.,         0.,         
               84948392.,   0.,                                ), ),
-         _F( MAILLE = ( 'S5', 'S6', 'S7', 'S8', ),  SECTION = 'GENERALE',
-        CARA = (  'A1',        'IY1',          'IZ1',           
+         _F( MAILLE = ( 'S5', 'S6', 'S7', 'S8', ),  
+             SECTION = 'GENERALE', VARI_SECT = 'HOMOTHETIQUE',
+        CARA = ('A1',        'IY1',          'IZ1',           
                 'AY1',       'AZ1',          'EY1',           
                 'EZ1',       'JX1',          'JG1',           
                 'IYR21',     'IZR21',     

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,13 +106,6 @@ C
  110      CONTINUE
         ENDIF
  100  CONTINUE
-      CALL JEDETR ( '&&OP0161.NUME_ORDRE' )
-      CALL JEDETR ( '&&OP0161.CHAMP' )
-      CALL JEDETR ( '&&OP0161.ANGLE' )
-      CALL JEDETR ( '&&OP0161.NOM_CHAMP' )
-      CALL JEDETR ( '&&OP0161.TYP_CHAMP' )
-      CALL JEDETR ( '&&OP0161.NUM_HARMO' )
-      CALL JEDETR ( '&&OP0161.COEFFICIE' )
 C
       CALL JEDEMA()
       END

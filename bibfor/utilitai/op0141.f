@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -356,9 +356,7 @@ C        DO 333 IC=1,NBCOUR
 C          WRITE(6,*) 'IMPR_COURBE :',ZK24(LEXT+IC-1)
 C333     CONTINUE
         CALL FOIEXC(LISFON,IUL,IND,LISTR)
-        CALL JEDETR('&&OP0141.TABEXCEL')
-        CALL JEDETC('V','&&COURBE',1)
-        CALL JEDETC('V','&&PARTIE',1)
+
       ENDIF
 C
  9999 CONTINUE

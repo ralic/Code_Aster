@@ -14,7 +14,7 @@
      &                    MATRIG,VECTF,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,7 +135,7 @@ C OUT VECTUB  : FORCES NODALES CALCUL EPSR (RAPH_MECA ET FULL_MECA)
 C OUT MATRIG  : MATRICE DE RIGIDITE STOCKEE EN LIGNE
 C.................FIN MODIFS............................................
 
-      INTEGER KPG,KU,N,I,M,J,KL,K,KP,KKL,PQ,COD(27)
+      INTEGER KPG,KU,N,I,M,J,KL,K,L,KP,KKL,PQ,COD(27)
       INTEGER PNNO,PNNOB,PNDIM,PDIMSI,IVF,IDFDE,IPOIDS,IDFDEB,IVFB
       PARAMETER (PNNO=20)
       PARAMETER (PNNOB=8)
@@ -153,13 +153,31 @@ C.................FIN MODIFS............................................
       REAL*8 CCC, RAC2,R8VIDE, ADIME, ANGMAS(3)
       REAL*8       EPSTM(12), DEPST(12),DSIDPT(12,6)
       REAL*8       MATUU(PNDIM,PNNO,PNNO,PNDIM),VECTU(PNDIM,PNNO)
-      REAL*8       MATEE(PNNOB,PNNOB),MATUE(PNDIM,PNNO,PNNOB,PNDIM*2)
+      REAL*8       MATEE(PNDIM*2,PNNOB,PNNOB,PNDIM*2)
+      REAL*8       MATUE(PNDIM,PNNO,PNNOB,PNDIM*2)
       REAL*8       MATEU(PNDIM*2,PNNOB,PNNO,PNDIM),VECTUB(2*PNDIM,PNNOB)
       REAL*8       MATR(PNNOB*3*PNDIM+(PNNO-PNNOB)*PNDIM,
      &                   PNNOB*3*PNDIM+(PNNO-PNNOB)*PNDIM)
+      REAL*8  VECP(PNDIM,PNDIM),VPP(PNDIM),TR(PDIMSI),ARRET
+      REAL*8  PROJ(PDIMSI,PDIMSI)
+      REAL*8  PROJ2(PDIMSI,PDIMSI),TOLB
+      REAL*8  RTEMP,RTEMP2
+      INTEGER T(PNDIM,PNDIM)
 
       CHARACTER*8 NOMRES(3)
       REAL*8      VALRES(3)
+
+      T(1,1)=1
+      T(2,2)=2
+      T(3,3)=3
+      T(1,2)=4
+      T(2,1)=4
+      T(1,3)=5
+      T(3,1)=5
+      T(2,3)=6
+      T(3,2)=6
+
+      TOLB=1.D-2
 
 C - INITIALISATION
 
@@ -184,7 +202,7 @@ C - SEPARATION U/EPSR DANS DEPLM
      &    OPTION(1:14).EQ.'RIGI_MECA_ELAS' .OR.
      &    OPTION(1:9).EQ.'FULL_MECA') THEN
         CALL R8INIR(PNDIM*PNNO*PNNO*PNDIM,0.D0,MATUU,1)
-        CALL R8INIR(PNNOB*PNNOB,0.D0,MATEE,1)
+        CALL R8INIR(PDIMSI*PNNOB*PNNOB*PDIMSI,0.D0,MATEE,1)
         CALL R8INIR(PNDIM*PNNO*PNNOB*PDIMSI,0.D0,MATUE,1)
         CALL R8INIR(PNDIM*PNNO*PNNOB*PDIMSI,0.D0,MATEU,1)
         CALL R8INIR((PNNOB*3*PNDIM+(PNNO-PNNOB)*PNDIM)
@@ -323,6 +341,7 @@ C
 C
 C   REUNION DES EPSM, DEPS AVEC EPSRM, DEPSR POUR PASSAGE DANS NMCOMP
 
+
         CALL R8INIR(12,0.D0,EPSTM,1)
         CALL R8INIR(12,0.D0,DEPST,1)
 
@@ -372,6 +391,71 @@ C
      &  .OR. OPTION(1: 9) .EQ. 'FULL_MECA'    ) THEN
 C
 
+        CALL R8INIR(36,0.D0,PROJ,1)
+
+        IF (COMPOR(1) .EQ. 'ENDO_ORTH_BETON') THEN
+C MODIFICATION POUR ENDO_ORTH_BETON------------------------
+C ON ARRETE DE REGULARISER DANS LES DIRECTIONS OU ON A CASSE
+C-----------------------------------------------------------
+          TR(1) = VIM(1,KPG)
+          TR(2) = VIM(2,KPG)
+          TR(3) = VIM(3,KPG)
+          TR(4) = VIM(4,KPG)
+          TR(5) = VIM(5,KPG)
+          TR(6) = VIM(6,KPG)
+          CALL DIAGO3(TR,VECP,VPP)
+
+          DO 701 I=1,3
+            DO 702 J=I,3
+              ARRET=1.D0
+              IF ((1.D0-VPP(I)).LE.TOLB) THEN
+                ARRET=0.D0
+              ELSEIF ((1.D0-VPP(J)).LE.TOLB) THEN
+                ARRET=0.D0
+              ENDIF
+              IF (I.EQ.J) THEN
+                RTEMP2=1.D0
+              ELSE
+                RTEMP2=RAC2
+              ENDIF
+              DO 703 K=1,3
+                DO 704 L=1,3
+                  IF (K.EQ.L) THEN
+                    RTEMP=1.D0
+                  ELSE
+                    RTEMP=RAC2
+                  ENDIF
+                  PROJ(T(I,J),T(K,L))=PROJ(T(I,J),T(K,L))
+     &                +ARRET*(VECP(I,K)*VECP(J,L)+VECP(J,K)*VECP(I,L))
+     &                 /RTEMP*RTEMP2/2.D0
+ 704            CONTINUE
+ 703          CONTINUE
+ 702        CONTINUE
+ 701      CONTINUE
+
+        ELSE
+
+          CALL R8INIR(36,0.D0,PROJ,1)
+
+          DO 705 I=1,NDIMSI
+             PROJ(I,I)=1.D0
+ 705      CONTINUE
+          
+        ENDIF
+
+C CONTRACTION DU PROJECTEUR
+          CALL R8INIR(36,0.D0,PROJ2,1)
+          
+          DO 730 I=1,NDIMSI
+            DO 731 J=1,NDIMSI
+              DO 732 K=1,NDIMSI
+                 PROJ2(I,J)=PROJ2(I,J)
+     &                          +PROJ(K,I)*PROJ(K,J)
+ 732          CONTINUE
+ 731        CONTINUE
+ 730      CONTINUE
+
+
         DO 190 I=1,NDIM
           DO 180 M=1,NNO
             DO 170 N=1,NNO
@@ -386,20 +470,6 @@ C
  170        CONTINUE
  180      CONTINUE
  190    CONTINUE
-C
-C
-C -  CALCUL DE LA MATRICE DE RIGIDITE EPSRM/EPSRM
-C
-          DO 171 N=1,NNOB
-            DO 181 M=1,NNOB
-              MATEE(M,N)=MATEE(M,N)+ZR(IVFB+M+(KPG-1)*NNOB-1)*
-     &                    ZR(IVFB+N+(KPG-1)*NNOB-1)*POIDS
-              DO 191 K=1,NDIM
-                MATEE(M,N) = MATEE(M,N)
-     &           +(CCC*DFDIB(N,K)*DFDIB(M,K))*POIDS
- 191         CONTINUE
- 181       CONTINUE
- 171      CONTINUE
 C
 C
 C -  CALCUL DE LA MATRICE DE RIGIDITE U/EPSRM
@@ -423,14 +493,48 @@ C -  CALCUL DE LA MATRICE DE RIGIDITE U/EPSRM
  192      CONTINUE
 C
 C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C ON CHANGE CETTE PARTIE DE LA MATRICE DE RIGIDITE
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C ON N A PLUS LA MEME RIGIDITE POUR TOUTES LES COMPOSANTES
+C DU TENSEUR DES DEFORMATIONS REGULARISEES 
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+C -  CALCUL DE LA MATRICE DE RIGIDITE EPSRM/EPSRM
+C
+          DO 171 N=1,NNOB
+            DO 181 M=1,NNOB
+              DO 720 PQ=1,NDIMSI
+                DO 721 KL=1,NDIMSI
+
+             IF (PQ.EQ.KL) THEN
+              DO 191 K=1,NDIM
+                MATEE(PQ,M,N,KL) = MATEE(PQ,M,N,KL)
+     &           +(CCC*DFDIB(N,K)*DFDIB(M,K))*POIDS
+ 191          CONTINUE
+             ENDIF
+
+         MATEE(PQ,M,N,KL)=MATEE(PQ,M,N,KL)+ZR(IVFB+M+(KPG-1)*NNOB-1)*
+     &              ZR(IVFB+N+(KPG-1)*NNOB-1)*PROJ2(PQ,KL)*POIDS
+
+ 721           CONTINUE
+ 720         CONTINUE
+ 181       CONTINUE
+ 171      CONTINUE
+C
+C
+C
 C -  CALCUL DE LA MATRICE DE RIGIDITE EPSRM/U
 
           DO 193 M=1,NNOB
             DO 183 N=1,NNO
               DO 173 PQ=1,NDIMSI
                 DO 163 J=1,NDIM
+                  DO 750 KL=1,NDIMSI
                   MATEU(PQ,M,N,J)=MATEU(PQ,M,N,J)-
-     &            ZR(IVFB+M+(KPG-1)*NNOB-1)*DEF(PQ,N,J)*POIDS
+     &            ZR(IVFB+M+(KPG-1)*NNOB-1)*
+     &            PROJ2(PQ,KL)*DEF(KL,N,J)*POIDS
+ 750              CONTINUE
  163            CONTINUE
  173          CONTINUE
  183        CONTINUE
@@ -466,8 +570,10 @@ C - STOCKAGE DE LA MATRICE DE RIGIDITE
                   KU = (NDIM+NDIMSI)*(N-1) + KL
                   MATR(KP,KU) = ADIME*MATEU(J,M,N,KL)
 551             CONTINUE
-                KU = (NDIM+NDIMSI)*(N-1) + J +NDIM
-                MATR(KP,KU) = ADIME*MATEE(M,N)
+                DO 552 I=1,NDIMSI
+                  KU = (NDIM+NDIMSI)*(N-1) + I +NDIM
+                  MATR(KP,KU) = ADIME*MATEE(J,M,N,I)
+552             CONTINUE
 561           CONTINUE
               DO 531 N=NNOB+1,NNO
                 DO 521 KL=1,NDIM
@@ -524,12 +630,19 @@ C
  230      CONTINUE
 C
 C
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+CC- ON CHANGE LE VECTEUR FORCE
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C
 C - CALCUL DE LA "FORCE" DANS LE CALCUL DE EPSRM
           DO 290 N=1,NNOB
             DO 280 PQ=1,NDIMSI
+              DO 260 KL=1,NDIMSI
               VECTUB(PQ,N)=VECTUB(PQ,N)+(ZR(IVFB+N+(KPG-1)*NNOB-1)*
-     &         (EPSRM(PQ)+DEPSR(PQ))-ZR(IVFB+N+(KPG-1)*NNOB-1)*
-     &         (EPSM(PQ)+DEPS(PQ))) *POIDS
+     &         (EPSRM(KL)+DEPSR(KL))-ZR(IVFB+N+(KPG-1)*NNOB-1)*
+     &         (EPSM(KL)+DEPS(KL)))*PROJ2(PQ,KL)*POIDS
+ 260          CONTINUE
               DO 270 I=1,NDIM
                 VECTUB(PQ,N)=VECTUB(PQ,N)+CCC*(DFDIB(N,I)*(GEPSRM(PQ,I)
      &                       +DGEPSR(PQ,I))) * POIDS

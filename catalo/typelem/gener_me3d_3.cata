@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/09/2004   AUTEUR F6BHHBO P.DEBONNIERES 
+%& MODIF TYPELEM  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,7 +75,9 @@ MODE_LOCAL__
     EENECNO  = ENER_R   ELEM__         (TOTALE   DX       DY       DZ       )
     CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
-    EDFEQPG  = EPSI_R   ELGA__ RIGI     (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
+    EDFEQPG  = EPSI_R   ELGA__ RIGI     (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG  
+                                         VECT_1_X  VECT_1_Y  VECT_1_Z  VECT_2_X   VECT_2_Y
+                                         VECT_2_Z  VECT_3_X  VECT_3_Y  VECT_3_Z  )
     EDEFOPG  = EPSI_R   ELGA__ RIGI     (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
@@ -134,7 +136,9 @@ MODE_LOCAL__
                                         Z        )
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPG  = SIEF_R   ELGA__ RIGI     (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
-    ECOEQPG  = SIEF_R   ELGA__ RIGI     (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
+    ECOEQPG  = SIEF_R   ELGA__ RIGI     (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG    
+                                         VECT_1_X  VECT_1_Y  VECT_1_Z  VECT_2_X   VECT_2_Y
+                                         VECT_2_Z  VECT_3_X  VECT_3_Y  VECT_3_Z  )
     ETRIAXS  = SIEF_R   ELNO__ IDEN__  (TRIAX    SI_ENDO  )
     ETRIANO  = DOMMAG   ELNO__ IDEN__  (TRIAX    SI_ENDO  COENDO DOM_LEM D_CUMULE)
     ETRIAPG  = DOMMAG   ELGA__ RIGI    (TRIAX    SI_ENDO  COENDO DOM_LEM D_CUMULE)

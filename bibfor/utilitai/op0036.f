@@ -3,7 +3,7 @@
       INTEGER             IER
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/07/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -142,9 +142,8 @@ C       ---DIMENSIONNEMENT DE LA TABLE
          
 C        ---CREATION DE LA TABLE
 
-         CALL JEDETR(WORK) 
          CALL TBCRSV(RESULT,'G',NOCC,ZK16(JD),ZK8(JY),NBLIGN)
-         CALL JEDETR(LTYP)
+
 
          DO 200 IOCC=1,NOCC
             CALL GETVIS('LISTE','LISTE_I',IOCC,1,0,IBID,NI)
@@ -223,7 +222,6 @@ C              CHAINES DE 24 CARACTERES
             CALL JEDETR(TRAV) 
             CALL JEDETR(INDIC)
  200     CONTINUE
-         CALL JEDETR(LDBL)
 C     ==============    
 C --- CAS : FONCTION
 C     ==============

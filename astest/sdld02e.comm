@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_D_N
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,14 +69,13 @@ CH=AFFE_CHAR_MECA(  MODELE=MO,LIAISON_DDL=(
 
 CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
        ORIENTATION=_F(  GROUP_NO = 'GN4',    CARA = 'ANGL_NAUT',
-                                     VALE = ( 53.130102,  0.,   0.,  ), ),DISCRET=(
-       
-         _F(  CARA = 'K_T_D_L',   REPERE = 'LOCAL',
-                            GROUP_MA = 'GM4',     VALE = (1.E5,0., ), ),
-         _F(  CARA = 'K_T_D_N',   REPERE = 'LOCAL',
-                            NOEUD = ( 'P1','P8',),   VALE = (1.E5,0., ), ),
-         _F(  CARA = 'M_T_D_N', REPERE = 'GLOBAL',
-                            GROUP_NO = 'GN4',     VALE = 10.,      ))
+                        VALE = ( 53.130102,  0.,   0.,  ), ),
+       DISCRET_2D=(_F(  CARA = 'K_T_D_L',   REPERE = 'LOCAL',
+                        GROUP_MA = 'GM4',     VALE = (1.E5,0., ), ),
+                   _F(  CARA = 'K_T_D_N',   REPERE = 'LOCAL',
+                        NOEUD = ( 'P1','P8',),   VALE = (1.E5,0., ), ),
+                   _F(  CARA = 'M_T_D_N', REPERE = 'GLOBAL',
+                        GROUP_NO = 'GN4',     VALE = 10.,      ))
                          )
 
 # --------------------------------------------------------------------

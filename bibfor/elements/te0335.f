@@ -1,7 +1,7 @@
       SUBROUTINE TE0335(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,10 +43,14 @@ C                        . VON MISES                    (= 1 VALEUR)
 C                        . TRESCA                       (= 1 VALEUR)
 C                        . CONTRAINTES PRINCIPALES      (= 3 VALEURS)
 C                        . VON-MISES * SIGNE (PRESSION) (= 1 VALEUR)
+C                        . DIRECTION DES CONTRAINTES PRINCIPALES 
+C                                                       (=3*3 VALEURS)
 C               . DEFORMATIONS EQUIVALENTES  :
 C                        . SECOND INVARIANT             (= 1 VALEUR)
 C                        . DEFORMATIONS PRINCIPALES     (= 3 VALEURS)
 C                        . 2EME INV. * SIGNE (1ER.INV.) (= 1 VALEUR)
+C                        . DIRECTION DES DEFORMATIONS PRINCIPALES 
+C                                                       (=3*3 VALEURS)
 
 C     OPTIONS :  'EQUI_ELNO_SIGM'
 C                'EQUI_ELGA_SIGM'
@@ -66,11 +70,11 @@ C                DIMENSIONNE  A  NEQMAX CMP MAX * 21 PG MAX
 C                EQNO (CONT/DEF EQUIVALENT NOEUDS)
 C                DIMENSIONNE  A  NEQMAX CMP MAX * 27 NO MAX
 C ----------------------------------------------------------------------
-      PARAMETER (NPGMAX=27,NNOMAX=27,NEQMAX=6)
+      PARAMETER (NPGMAX=27,NNOMAX=27,NEQMAX=15)
 C ----------------------------------------------------------------------
       INTEGER IDEFO,ICONT,IEQUIF
       INTEGER IDCP,KP,J,I,INO
-      INTEGER NNO,NBPG(10),NCEQ,NPG,NNOS
+      INTEGER NNO,NBPG(10),NCEQ,NPG,NNOS,NCMP
       REAL*8 EQPG(NEQMAX*NPGMAX),EQNO(NEQMAX*NNOMAX)
       CHARACTER*16 NOMTE,OPTION
 
@@ -93,11 +97,14 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       IF (OPTION(11:14).EQ.'EPSI') THEN
-        NCEQ = 5
+        NCEQ = 14
+        NCMP = 5
       ELSE IF (OPTION(11:14).EQ.'EPME') THEN
         NCEQ = 5
+        NCMP = 5
       ELSE IF (OPTION(11:14).EQ.'SIGM') THEN
-        NCEQ = 6
+        NCEQ = 15
+        NCMP = 6
       END IF
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
@@ -117,7 +124,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       DO 10 I = 1,NCEQ*NPG
         EQPG(I) = 0.0D0
    10 CONTINUE
-      DO 20 I = 1,NCEQ*NNO
+      DO 20 I = 1,NCMP*NNO
         EQNO(I) = 0.0D0
    20 CONTINUE
 
@@ -130,7 +137,7 @@ C -       DEFORMATIONS
         IF (OPTION(11:14).EQ.'EPSI') THEN
           DO 30 KP = 1,NPG
             IDCP = (KP-1)*NCEQ
-            CALL FGEQUI(ZR(IDEFO+ (KP-1)*6),'EPSI',3,EQPG(IDCP+1))
+            CALL FGEQUI(ZR(IDEFO+ (KP-1)*6),'EPSI_DIR',3,EQPG(IDCP+1))
    30     CONTINUE
 
 C -       DEFORMATIONS HORS THERMIQUES
@@ -146,7 +153,7 @@ C -       CONTRAINTES
         ELSE IF (OPTION(11:14).EQ.'SIGM') THEN
           DO 50 KP = 1,NPG
             IDCP = (KP-1)*NCEQ
-            CALL FGEQUI(ZR(ICONT+ (KP-1)*6),'SIGM',3,EQPG(IDCP+1))
+            CALL FGEQUI(ZR(ICONT+ (KP-1)*6),'SIGM_DIR',3,EQPG(IDCP+1))
    50     CONTINUE
         END IF
 
@@ -166,7 +173,7 @@ C -       DEFORMATIONS
 
         IF (OPTION(11:14).EQ.'EPSI') THEN
           DO 80 INO = 1,NNO
-            IDCP = (INO-1)*NCEQ
+            IDCP = (INO-1)*NCMP
             CALL FGEQUI(ZR(IDEFO+ (INO-1)*6),'EPSI',3,EQNO(IDCP+1))
    80     CONTINUE
 
@@ -174,7 +181,7 @@ C -       DEFORMATIONS HORS THERMIQUES
 
         ELSE IF (OPTION(11:14).EQ.'EPME') THEN
           DO 90 INO = 1,NNO
-            IDCP = (INO-1)*NCEQ
+            IDCP = (INO-1)*NCMP
             CALL FGEQUI(ZR(IDEFO+ (INO-1)*6),'EPSI',3,EQNO(IDCP+1))
    90     CONTINUE
 
@@ -182,13 +189,13 @@ C -       CONTRAINTES
 
         ELSE IF (OPTION(11:14).EQ.'SIGM') THEN
           DO 100 KP = 1,NPG
-            IDCP = (KP-1)*NCEQ
+            IDCP = (KP-1)*NCMP
             CALL FGEQUI(ZR(ICONT+ (KP-1)*6),'SIGM',3,EQPG(IDCP+1))
   100     CONTINUE
 
 C -       EXTRAPOLATION AUX NOEUDS
 
-          CALL PPGAN2(JGANO,NCEQ,EQPG,ZR(IEQUIF))
+          CALL PPGAN2(JGANO,NCMP,EQPG,ZR(IEQUIF))
 
         END IF
 
@@ -196,8 +203,8 @@ C -       STOCKAGE
 
         IF (OPTION(11:14).NE.'SIGM') THEN
           DO 120 INO = 1,NNO
-            DO 110 J = 1,NCEQ
-              ZR(IEQUIF-1+ (INO-1)*NCEQ+J) = EQNO((INO-1)*NCEQ+J)
+            DO 110 J = 1,NCMP
+              ZR(IEQUIF-1+ (INO-1)*NCMP+J) = EQNO((INO-1)*NCMP+J)
   110       CONTINUE
   120     CONTINUE
         END IF

@@ -3,7 +3,7 @@
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF MODELISA  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -251,8 +251,7 @@ C         NOMBRE DE VAR INT TOTAL + 8 (TENSEUR B OU EVP + NORME+INDIC)
          ZI(IPI-1+NCPRI-1)=JCPRK
          ZI(IPI-1+NCPRI)=NVLOC
          ZK16(IPK)=LOCA
-         
-         CALL JEDETR('&&OP0059.LISTEMONO')
+
       ENDIF
       
 C FIN ------------------------------------------------------------------

@@ -1,11 +1,12 @@
-      SUBROUTINE REAJEU(RESOCO, DEPTOT, DEPDEL, LMAT)
+      SUBROUTINE REAJEU(RESOCO,DEPTOT,DEPDEL)
 C
-      IMPLICIT      NONE
-      INTEGER       LMAT
-      CHARACTER*24  RESOCO, DEPTOT, DEPDEL
+      IMPLICIT     NONE
+      CHARACTER*24 RESOCO
+      CHARACTER*24 DEPTOT
+      CHARACTER*24 DEPDEL
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/02/2002   AUTEUR ADBHHVV V.CANO 
+C MODIF ALGELINE  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,16 +23,20 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C ======================================================================
-C --- BUT : RECUPERATION DU JEU ----------------------------------------
-C ======================================================================
-C IN/OUT : RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT --------------
-C IN --- : DEPTOT : DEPLACEMENTS TOTALS DEPUIS L'INSTANT INITIAL -------
-C IN --- : DEPDEL : DEPLACEMENTS DEPUIS LE DERNIER PAS DE TEMPS CONVERGE
-C IN --- : LMAT   : DESCRIPTEUR DE LA MATR_ASSE DU SYSTEME MECANIQUE ---
-C ======================================================================
+
+C
+C ----------------------------------------------------------------------
+C ROUTINE APPELEE PAR : CFGEOM
+C ----------------------------------------------------------------------
+C
+C RECUPERATION DU JEU
+C
+C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+C IN  DEPTOT : DEPLACEMENTS TOTALS DEPUIS L'INSTANT INITIAL
+C IN  DEPDEL : DEPLACEMENTS DEPUIS LE DERNIER PAS DE TEMPS CONVERGE
+C
 C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
-      CHARACTER*32 JEXNUM,JEXNOM
+C
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -46,17 +51,22 @@ C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-C ======================================================================
-      INTEGER      II, NBLIAI, JDECAL, NBDDL, NEQ, JDEPDE
-      INTEGER      JAPJEU, JJEUIN, JAPPTR, JAPPAR, JAPCOE, JAPDDL, JDEPP
+C
+      CHARACTER*24 APJEU,JEUINI,APPOIN,APPARI,APCOEF,APDDL
+      INTEGER      JAPJEU,JJEUIN,JAPPTR,JAPPAR,JAPCOE,JAPDDL
+      INTEGER      JDEPP,JDEPDE
+      INTEGER      NBLIAI,NEQ,II,JDECAL,NBDDL
       REAL*8       VAL
-      CHARACTER*24 APJEU, JEUINI, APPOIN, APPARI, APCOEF, APDDL
-C ======================================================================
+      CHARACTER*8  K8BID
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ ()
-C ======================================================================
-C --- RECUPERATION DES VECTEURS DE JEU ---------------------------------
-C ======================================================================
+C
+C --- RECUPERATION DES VECTEURS DE JEU
+C
       APJEU  = RESOCO (1:14)//'.APJEU'
       JEUINI = RESOCO (1:14)//'.JEUINI'
       APPOIN = RESOCO (1:14)//'.APPOIN'
@@ -72,7 +82,8 @@ C ======================================================================
       CALL     JEVEUO (DEPTOT(1:19)//'.VALE','L',JDEPP)
       CALL     JEVEUO (DEPDEL(1:19)//'.VALE','L',JDEPDE)
       NBLIAI = ZI(JAPPAR)
-      NEQ    = ZI(LMAT+2)
+
+      CALL JELIRA (DEPTOT(1:19) // '.VALE','LONMAX',NEQ,K8BID)
       DO 10 II = 1,NBLIAI
          JDECAL = ZI(JAPPTR+II-1)
          NBDDL  = ZI(JAPPTR+II) - ZI(JAPPTR+II-1)
@@ -80,7 +91,7 @@ C ======================================================================
      +               ZR(JDEPP),VAL)
          ZR(JAPJEU+II-1) = ZR(JJEUIN+II-1) - VAL
  10   CONTINUE
-C ======================================================================
+C
       CALL JEDEMA ()
-C ======================================================================
+C ----------------------------------------------------------------------
       END

@@ -1,0 +1,103 @@
+      SUBROUTINE NORMSE(NDIM,COORDA,COORDB,TANG,
+     &                  NORM,INORM)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+
+      IMPLICIT NONE
+C
+      INTEGER       NDIM
+
+      REAL*8        COORDA(3)
+      REAL*8        COORDB(3)
+
+      REAL*8        TANG(6)
+      REAL*8        NORM(3)
+      REAL*8        INORM(3)
+
+C
+C ----------------------------------------------------------------------
+C ROUTINE APPELEE PAR : PROJSE
+C ----------------------------------------------------------------------
+C
+C CETTE ROUTINE REALISE LE LISSAGE DES NORMALES MAITRE/ESCLAVE
+C  (MOYENNE ENTRE NORMALE NOEUD ESCLAVE ET NORMALE MAILLE MAITRE)
+C NB: LE SEGMENT EST SUPPOSE RECTILIGNE (MEME POUR SEG3)
+C 
+C IN  NDIM   : DIMENSION DE L'ESPACE (2 OU 3)
+C IN  COORDA : COORDONNEES DU SOMMET A DU SEGMENT
+C IN  COORDB : COORDONNEES DU SOMMET B DU SEGMENT
+C IN  TANG   : VECTEURS TANGENTS
+C I/O NORM   : NORMALE AU NOEUD ESCLAVE
+C OUT INORM  : NORMALE INITIALE AU NOEUD ESCLAVE
+C ----------------------------------------------------------------------
+      REAL*8 DENOM,VECSEG(3),XNORM(3),NORME
+C ----------------------------------------------------------------------
+C
+C --- ON STOCKE DANS INORM LA NORMALE AU NOEUD ESCLAVE
+C
+      IF (NDIM.EQ.3) THEN
+       INORM(1) = NORM(1)
+       INORM(2) = NORM(2)
+       INORM(3) = NORM(3)
+      ELSE
+       INORM(1) = NORM(1)
+       INORM(2) = NORM(2)
+       INORM(3) = 0.0D0
+      END IF
+      DENOM = (COORDB(1)-COORDA(1))**2 + (COORDB(2)-COORDA(2))**2
+      IF (NDIM.EQ.3) THEN
+         DENOM = DENOM + (COORDB(3)-COORDA(3))**2
+      END IF
+
+      IF (DENOM.EQ.0) THEN
+         CALL UTMESS('F','NORMSE','UNE MAILLE MAITRE EST DE '//
+     &               'LONGUEUR NULLE')
+      END IF
+
+C --- ON STOCKE DANS XNORM LA NORMALE A LA MAILLE MAITRE
+
+      IF (NDIM.EQ.3) THEN
+        VECSEG(1) = (COORDB(1)-COORDA(1))/SQRT(DENOM)
+        VECSEG(2) = (COORDB(2)-COORDA(2))/SQRT(DENOM)
+        VECSEG(3) = (COORDB(3)-COORDA(3))/SQRT(DENOM)
+        XNORM(1) = VECSEG(2)*TANG(3) - VECSEG(3)*TANG(2)
+        XNORM(2) = VECSEG(3)*TANG(1) - VECSEG(1)*TANG(3)
+        XNORM(3) = VECSEG(1)*TANG(2) - VECSEG(2)*TANG(1)
+      ELSE
+        XNORM(1) = (COORDB(2)-COORDA(2))/SQRT(DENOM)
+        XNORM(2) = - (COORDB(1)-COORDA(1))/SQRT(DENOM)
+        XNORM(3) = 0.0D0
+      END IF
+
+C --- ON FAIT UNE MOYENNE ENTRE LES DEUX NORMALES POUR LA PROJECTION
+
+      IF (NDIM.EQ.3) THEN
+        NORM(1) = INORM(1) - XNORM(1)
+        NORM(2) = INORM(2) - XNORM(2)
+        NORM(3) = INORM(3) - XNORM(3)
+      ELSE
+        NORM(1) = INORM(1) - XNORM(1)
+        NORM(2) = INORM(2) - XNORM(2)
+        NORM(3) = 0.0D0
+      END IF
+
+      CALL NORMEV(NORM,NORME)
+   
+      END

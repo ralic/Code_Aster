@@ -1,0 +1,235 @@
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# TITRE POUTRE ELANCEE, 2 APPUIS, COUPLEE A UN SYSTEME MASSE-RESSORT
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#CAS_TEST__: SDLL04A
+# SDLL04/A                 COMMANDES                             5/03/91
+# POUTRE ELANCEE SUR 2 APPUIS COUPLEE A UN SYSTEME DISCRET MASSE-RESSORT
+# 3 CALCULS: LAMBDA= 0 ; 0.001 ; 0.01               REF: SFM.VPCS SDLL04
+# MODELISATION POU_D_T  DIS_T  --
+# NOMS DES NOEUDS:   A=N1    B=N21    C=N22    D=N6
+#=======================================================================
+
+
+DEBUT( CODE=_F(  NOM = 'SDLL04A',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
+
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.0E+11,  NU = 0.3,  RHO = 7800.) )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+          AFFE=_F(  GROUP_MA = 'MPOUTRE',     MATER = MAT)   )
+
+#*********************************************************************
+#
+#   CALCUL 1         LAMBDA = 0.
+#                    ==> SANS MASSE-RESSORT
+#                      = CAS D'UME POUTRE POSEE-POSEE
+#*********************************************************************
+
+MODP=AFFE_MODELE(  MAILLAGE=MA, 
+         AFFE=_F(  PHENOMENE = 'MECANIQUE',
+                GROUP_MA = 'MPOUTRE',    MODELISATION = 'POU_D_T') )
+
+CHP=AFFE_CHAR_MECA(  MODELE=MODP,DDL_IMPO=(
+        _F(  GROUP_NO = 'NPOUTRE',   DZ = 0., DRX = 0., DRY = 0.),
+                 _F(  GROUP_NO = 'A',    DX = 0., DY = 0.),
+                 _F(  GROUP_NO = 'B',            DY = 0.)) )
+
+CARLEMP=AFFE_CARA_ELEM(   MODELE=MODP,
+            POUTRE=_F(  GROUP_MA = 'MPOUTRE',      SECTION = 'GENERALE',
+              CARA = ( 'A',  'IY',   'IZ',    'JX',  'AY',  'AZ', ),
+              VALE = ( 0.01,   1.,   0.39E-5,   1.,   1.2,   1.2,  )) )
+
+#--------------------------------------
+
+MELRP=CALC_MATR_ELEM(  MODELE=MODP,
+                         CHARGE=CHP,
+                        OPTION='RIGI_MECA',
+                         CHAM_MATER=CHMAT,
+                          CARA_ELEM=CARLEMP   )
+
+MELMP=CALC_MATR_ELEM(  MODELE=MODP,
+                         CHARGE=CHP,
+                        OPTION='MASS_MECA',
+                         CHAM_MATER=CHMAT,
+                          CARA_ELEM=CARLEMP   )
+
+NUMP=NUME_DDL(  MATR_RIGI=MELRP  )
+
+MATASSRP=ASSE_MATRICE(MATR_ELEM=MELRP,NUME_DDL=NUMP)
+
+MATASSMP=ASSE_MATRICE(MATR_ELEM=MELMP,NUME_DDL=NUMP)
+
+#--------- CALCUL MODAL
+
+MDP=MODE_ITER_SIMULT(
+         MATR_A=MATASSRP,
+         MATR_B=MATASSMP,
+         METHODE='TRI_DIAG',
+        CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
+                    NMAX_FREQ = 2)  )
+
+#*********************************************************************
+#
+#   CALCULS 2 ET 3    LAMBDA = 0.001 ET 0.01
+#                     ==>  AVEC MASSE-RESSORT
+#*********************************************************************
+
+
+#--------- DEFINITIONS COMMUNES
+
+MODM=AFFE_MODELE(  MAILLAGE=MA,AFFE=( 
+         _F(  PHENOMENE = 'MECANIQUE',
+                GROUP_MA = 'MPOUTRE',  MODELISATION = 'POU_D_T'),
+              _F(  MAILLE = ('CD','MC',),    MODELISATION = 'DIS_T',
+              PHENOMENE = 'MECANIQUE')) )
+
+CHM=AFFE_CHAR_MECA(  MODELE=MODM,DDL_IMPO=(
+        _F(  GROUP_NO = 'NPOUTRE',   DZ = 0., DRX = 0., DRY = 0.),
+                 _F(  GROUP_NO = 'A',         DX = 0., DY = 0.),
+                 _F(  GROUP_NO = 'B',                 DY = 0.),
+                 _F(  GROUP_NO = 'C',         DX = 0., DZ = 0.)) )
+
+#---------------------------------------------------------------------
+
+#                     CALCUL 2         LAMBDA = 0.001
+
+#---------------------------------------------------------------------
+
+CARLEM2=AFFE_CARA_ELEM(   MODELE=MODM,
+
+            #------ POUTRE AB
+            POUTRE=_F(  GROUP_MA = 'MPOUTRE',        SECTION = 'GENERALE',
+                        CARA = (  'A', 'IY',   'IZ',    'JX',  'AY',  'AZ', ),
+                        VALE = ( 0.01,   1.,   0.39E-5,   1.,   1.2,   1.2,  )),
+
+            #------ POINT C   MASSE + RAIDEUR
+            DISCRET=( _F(  MAILLE = 'MC',     CARA = 'M_T_D_N', 
+                                     #          M
+                                     VALE =    0.78,            ),
+                      _F(  MAILLE = 'CD',     CARA = 'K_T_D_L', 
+                                     #       KX     KY       KZ
+                                     VALE = ( 0.,   75.9791,  0., ),),),  )
+
+#--------------------------------------
+
+MELR2=CALC_MATR_ELEM(  MODELE=MODM,
+                         CHARGE=CHM,
+                        OPTION='RIGI_MECA',
+                         CHAM_MATER=CHMAT,
+                          CARA_ELEM=CARLEM2    )
+
+MELM2=CALC_MATR_ELEM(  MODELE=MODM,
+                         CHARGE=CHM,
+                        OPTION='MASS_MECA',
+                         CHAM_MATER=CHMAT,
+                          CARA_ELEM=CARLEM2    )
+
+NUM2=NUME_DDL(  MATR_RIGI=MELR2  )
+
+MATASSR2=ASSE_MATRICE(MATR_ELEM=MELR2,NUME_DDL=NUM2)
+
+MATASSM2=ASSE_MATRICE(MATR_ELEM=MELM2,NUME_DDL=NUM2)
+
+#--------- CALCUL MODAL
+
+MD2=MODE_ITER_INV(
+         MATR_A=MATASSR2,
+         MATR_B=MATASSM2,
+        CALC_FREQ=_F(  OPTION = 'PROCHE',
+                    FREQ = (  1.5,  1.6,  6.5,  )) )
+
+#---------------------------------------------------------------------
+
+#                     CALCUL 3         LAMBDA = 0.01
+
+#---------------------------------------------------------------------
+
+CARLEM3=AFFE_CARA_ELEM(   MODELE=MODM,
+            #------ POUTRE AB
+            POUTRE=_F(  GROUP_MA = 'MPOUTRE',        SECTION = 'GENERALE',
+                        CARA = (  'A', 'IY',   'IZ',    'JX',  'AY',  'AZ', ),
+                        VALE = ( 0.01,   1.,   0.39E-5,   1.,   1.2,   1.2,  )),
+
+            #------ POINT C   MASSE + RAIDEUR
+            DISCRET=(_F(  MAILLE = 'MC',     CARA = 'M_T_D_N', 
+                                     #          M
+                                     VALE =     7.80,           ),
+                     _F(  MAILLE = 'CD',     CARA =  'K_T_D_L', 
+                                     #       KX     KY      KZ
+                                     VALE = ( 0.,  759.791,  0., ),),),  )
+
+#--------------------------------------
+
+MELR3=CALC_MATR_ELEM(  MODELE=MODM,
+                         CHARGE=CHM,
+                        OPTION='RIGI_MECA',
+                         CHAM_MATER=CHMAT,
+                          CARA_ELEM=CARLEM3   )
+
+MELM3=CALC_MATR_ELEM(  MODELE=MODM,
+                         CHARGE=CHM,
+                        OPTION='MASS_MECA',
+                         CHAM_MATER=CHMAT,
+                          CARA_ELEM=CARLEM3   )
+
+MATASSR3=ASSE_MATRICE(MATR_ELEM=MELR3,NUME_DDL=NUM2)
+
+MATASSM3=ASSE_MATRICE(MATR_ELEM=MELM3,NUME_DDL=NUM2)
+
+#--------- CALCUL MODAL
+
+MD3=MODE_ITER_INV(
+         MATR_A=MATASSR3,
+         MATR_B=MATASSM3,
+        CALC_FREQ=_F(   FREQ = (  1.,   7.,  )) )
+
+#----------------------------------------------------------------------
+
+
+TEST_RESU(RESU=(
+   _F(   RESULTAT = MDP,         PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-3,
+           NUME_ORDRE = 1,       VALE = 1.5707),
+   _F(   RESULTAT = MDP,         PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-3,
+           NUME_ORDRE = 2,       VALE = 6.2831),
+           #-----------------------------------------
+   _F(   RESULTAT = MD2,         PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 1,       VALE = 1.5460),
+   _F(   RESULTAT = MD2,         PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 2,       VALE = 1.5958),
+   _F(   RESULTAT = MD2,         PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 3,       VALE = 6.2336),
+           #-----------------------------------------
+   _F(   RESULTAT = MD3,         PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-3,
+           NUME_ORDRE = 1,       VALE = 1.4937),
+   _F(   RESULTAT = MD3,         PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-3,
+           NUME_ORDRE = 2,       VALE = 1.6506),
+   _F(   RESULTAT = MD3,         PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-3,
+           NUME_ORDRE = 3,       VALE = 6.2874)) )
+
+FIN()
+#

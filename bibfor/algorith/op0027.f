@@ -2,7 +2,7 @@
 C RESPONSABLE CAMBIER S.CAMBIER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2003   AUTEUR CAMBIER S.CAMBIER 
+C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -121,8 +121,6 @@ C
 
       CALL GEMATG ( N, DELTA, ZR(IAK), ZR(IADR), ZR(IADR1), ZR(IADR2) )
 
-      CALL JEDETR ( '&&OP0027.VECTTRA1' )
-      CALL JEDETR ( '&&OP0027.VECTTRA2' )
 C
       CALL JEDEMA()
       END

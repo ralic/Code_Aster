@@ -4,7 +4,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/11/2003   AUTEUR ACBHHCD G.DEVESA 
+C MODIF MODELISA  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*1  KMA(3)
       CHARACTER*6  KI
       CHARACTER*8  K8B, NOMU, CAR(NBCAR)
-      CHARACTER*16 SEC, REP, TOU, REPDIS(NRD), CONCEP, CMD
+      CHARACTER*16 SEC, REP, TOU, REPDIS(NRD), CONCEP, CMD, MCF
       CHARACTER*19 CARTDK, CARTDM, CARTDA, CART(3), LIGMO
       CHARACTER*24 TMPNDM, TMPVDM, TMPNDA, TMPVDA, TMPNDK, TMPVDK
       CHARACTER*24 TMPDIS, MLGGNO, MLGNNO
@@ -102,10 +102,13 @@ C --- 2D
       ENDIF
 C
 C --- DIMENSION DU PROBLEME
+      MCF  = ' '
       IF (I3D.EQ.1) THEN
         NDIM = 3
+        MCF  = 'DISCRET'
       ELSEIF (I2D.EQ.1) THEN
         NDIM = 2
+        MCF  = 'DISCRET_2D'
       ENDIF
       CALL JEEXIN(MODNEM,IXNW)
       NBMTRD = 0
@@ -176,18 +179,18 @@ C --- BOUCLE SUR LES OCCURENCES DE DISCRET
          DO 31 I = 1 , NBVAL
             VAL(I) = 0.0D0
  31      CONTINUE
-         CALL GETVEM(NOMA,'GROUP_MA','DISCRET','GROUP_MA',
+         CALL GETVEM(NOMA,'GROUP_MA',MCF,'GROUP_MA',
      +                                     IOC,1,LMAX,ZK8(JDLS),NG)
-         CALL GETVEM(NOMA,'MAILLE'  ,'DISCRET','MAILLE',
+         CALL GETVEM(NOMA,'MAILLE'  ,MCF,'MAILLE',
      +                                     IOC,1,LMAX,ZK8(JDLS),NM)
-         CALL GETVEM(NOMA,'GROUP_NO','DISCRET','GROUP_NO',
+         CALL GETVEM(NOMA,'GROUP_NO',MCF,'GROUP_NO',
      +                                     IOC,1,LMAX,ZK8(JDLS),NJ)
-         CALL GETVEM(NOMA,'NOEUD'   ,'DISCRET','NOEUD',
+         CALL GETVEM(NOMA,'NOEUD'   ,MCF,'NOEUD',
      +                                     IOC,1,LMAX,ZK8(JDLS),NN)
-         CALL GETVTX('DISCRET','CARA'     ,IOC,1,NBCAR,CAR      ,NCAR)
-         CALL GETVR8('DISCRET','VALE'     ,IOC,1,NBVAL,VAL      ,NVAL)
-         CALL GETVTX('DISCRET','REPERE'   ,IOC,1,1    ,REP      ,NREP)
-         CALL GETVR8('DISCRET','AMOR_HYST',IOC,1,1    ,ETA      ,NETA)
+         CALL GETVTX(MCF,'CARA'     ,IOC,1,NBCAR,CAR      ,NCAR)
+         CALL GETVR8(MCF,'VALE'     ,IOC,1,NBVAL,VAL      ,NVAL)
+         CALL GETVTX(MCF,'REPERE'   ,IOC,1,1    ,REP      ,NREP)
+         CALL GETVR8(MCF,'AMOR_HYST',IOC,1,1    ,ETA      ,NETA)
          IF (IOC.EQ.1 .AND. NREP.EQ.0) REP = REPDIS(1)
          DO 32 I = 1 , NRD
             IF (REP.EQ.REPDIS(I)) IREP = I

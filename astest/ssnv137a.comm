@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CABLE DE PRECONTRAINTE DANS UNE POUTRE DROITE EN BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,9 +125,16 @@ EVOLNOLI=STAT_NON_LINE(
               )
 
 EVOLNOLI=CALC_ELEM( reuse=EVOLNOLI,
-                            OPTION='SIEF_ELNO_ELGA',  
+                            OPTION=('SIEF_ELNO_ELGA','EQUI_ELGA_SIGM'),  
                           RESULTAT=EVOLNOLI,
               )
+
+
+IMPR_RESU(RESU=(_F(RESULTAT=EVOLNOLI,
+NOM_CHAM='EQUI_ELGA_SIGM',GROUP_MA='POUTRE'),
+_F(RESULTAT=EVOLNOLI,
+NOM_CHAM='SIEF_ELGA',GROUP_MA='POUTRE'),),);
+
 
 #
 ########################################################################
@@ -656,6 +663,45 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-3,
                       VALE = 7.955801E+5) )
+
+#
+########################################################################
+# TEST SUR LA DIRECTION DES VECTEURS DES CONTRAINTES PRINCIPALES
+########################################################################
+#
+
+TEST_RESU(   RESU=(_F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      MAILLE = 'HX010101',
+                      POINT=1,
+                      NOM_CHAM = 'EQUI_ELGA_SIGM',
+                      NOM_CMP = 'VECT_1_X',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-7,
+                      REFERENCE='ANALYTIQUE',
+                      VALE = 1.E+00),
+                  _F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      MAILLE = 'HX010101',
+                      POINT=1,
+                      NOM_CHAM = 'EQUI_ELGA_SIGM',
+                      NOM_CMP = 'VECT_1_Y',
+                      CRITERE = 'ABSOLU',
+                      PRECISION = 1.0E-7,
+                      REFERENCE='ANALYTIQUE',
+                      VALE = 0.E+00),
+                  _F(  RESULTAT = EVOLNOLI,
+                      NUME_ORDRE = 1,
+                      MAILLE = 'HX010101',
+                      POINT=1,
+                      NOM_CHAM = 'EQUI_ELGA_SIGM',
+                      NOM_CMP = 'VECT_1_Z',
+                      CRITERE = 'ABSOLU',
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION = 1.0E-7,
+                      VALE = 0.E+00),),
+
+         )
 
 #
 

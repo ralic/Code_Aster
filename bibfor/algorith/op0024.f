@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,7 +89,6 @@ C    ----------------------
    10   CONTINUE
         ZR(JBOR+NBVALE-1) = ZR(KVAL+NBVALE-1)
         ZR(JVAL+NBVALE-1) = ZR(KVAL+NBVALE-1)
-        CALL JEDETR('&&OP0024.VALE')
 
 
 C     CAS DU MOT CLE INTERVALLE=
