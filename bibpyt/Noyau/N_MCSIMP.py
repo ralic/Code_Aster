@@ -1,4 +1,4 @@
-#@ MODIF N_MCSIMP Noyau  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_MCSIMP Noyau  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,6 +31,7 @@ import types
 from copy import copy
 
 from Noyau.N_ASSD import ASSD,assd
+from Noyau.N_CO import CO
 import N_OBJECT
 
 class MCSIMP(N_OBJECT.OBJECT):
@@ -153,3 +154,27 @@ class MCSIMP(N_OBJECT.OBJECT):
       if len(l) > 0 :
         dico[self.nom] = l
       return dico
+
+   def get_mcs_with_co(self,co):
+      """
+          Cette methode retourne l'objet MCSIMP self s'il a le concept co
+          comme valeur.
+      """
+      lval=self.valeur
+      if type(self.valeur) not in (types.TupleType,types.ListType):
+        lval=(self.valeur,)
+      if co in lval:return [self,]
+      return []
+
+   def get_all_co(self):
+      """
+          Cette methode retourne la liste de tous les concepts co
+          associés au mot cle simple
+      """
+      lval=self.valeur
+      if type(self.valeur) not in (types.TupleType,types.ListType):
+        lval=(self.valeur,)
+      l=[]
+      for c in lval:
+        if isinstance(c,CO) or hasattr(c,"_etape"):l.append(c)
+      return l

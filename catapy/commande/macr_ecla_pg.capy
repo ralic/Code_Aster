@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,8 +42,8 @@ MACR_ECLA_PG=MACRO(nom="MACR_ECLA_PG",op=macr_ecla_pg_ops,sd_prod=macr_ecla_pg_p
              TAILLE_MIN      =SIMP(statut='f',typ='R',defaut= 0.0, fr="Taille minimale d'un coté" ),
              
              # concepts produits par la commande :
-             RESULTAT        =SIMP(statut='o',typ=(resultat_sdaster,CO),fr="SD_RESULTAT résultat de la commande"),
-             MAILLAGE        =SIMP(statut='o',typ=(maillage_sdaster,CO),fr="MAILLAGE associé aux cham_no de la SD_RESULTAT"),
+             RESULTAT        =SIMP(statut='o',typ=CO,fr="SD_RESULTAT résultat de la commande"),
+             MAILLAGE        =SIMP(statut='o',typ=CO,fr="MAILLAGE associé aux cham_no de la SD_RESULTAT"),
                      
              # Sélection éventuelle d'un sous-ensemble des éléments à visualiser :           
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),

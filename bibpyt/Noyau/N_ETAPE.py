@@ -1,4 +1,4 @@
-#@ MODIF N_ETAPE Noyau  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_ETAPE Noyau  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -194,6 +194,12 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
       return self.sd
 
    def get_type_produit(self):
+      try:
+          return self.get_type_produit_brut()
+      except:
+          return None
+
+   def get_type_produit_brut(self):
       """
           Retourne le type du concept résultat de l'étape
           Deux cas :
@@ -206,11 +212,7 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
       """
       if type(self.definition.sd_prod) == types.FunctionType:
         d=self.cree_dict_valeurs(self.mc_liste)
-        try:
-          sd_prod= apply(self.definition.sd_prod,(),d)
-        except:
-          #traceback.print_exc()
-          return None
+        sd_prod= apply(self.definition.sd_prod,(),d)
       else:
         sd_prod=self.definition.sd_prod
       return sd_prod
@@ -344,33 +346,6 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
       """
       if hasattr(old_etape,"sdnom") :
         self.sdnom = old_etape.sdnom
-
-   def get_sd_utilisees(self):
-      """ 
-          Retourne la liste des concepts qui sont utilisés à l'intérieur d'une commande
-          ( comme valorisation d'un MCS) 
-      """
-      l=[]
-      for child in self.mc_liste:
-        l.extend(child.get_sd_utilisees())
-      return l
-
-   def get_sd_mcs_utilisees(self):
-      """ 
-          Retourne la ou les SD utilisée par self sous forme d'un dictionnaire :
-          . Si aucune sd n'est utilisée, le dictionnaire est vide.
-          . Sinon, les clés du dictionnaire sont les mots-clés derrière lesquels on
-            trouve des sd ; la valeur est la liste des sd attenante.
-            Exemple : { 'VALE_F': [ <Cata.cata.para_sensi instance at 0x9419854>,
-                                    <Cata.cata.para_sensi instance at 0x941a204> ],
-                        'MODELE': [<Cata.cata.modele instance at 0x941550c>] }
-      """
-      dico = {}
-      for child in self.mc_liste:
-        daux = child.get_sd_mcs_utilisees()
-        for cle in daux.keys():
-          dico[cle] = daux[cle]
-      return dico
 
    def reparent(self,parent):
      """

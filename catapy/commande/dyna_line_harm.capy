@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,6 +21,7 @@ def dyna_line_harm_prod(MATR_MASS,**args):
   if AsType(MATR_MASS) == matr_asse_depl_c : return dyna_harmo
   if AsType(MATR_MASS) == matr_asse_pres_c : return acou_harmo
   if AsType(MATR_MASS) == matr_asse_gene_r : return harm_gene
+  if AsType(MATR_MASS) == matr_asse_gene_c : return harm_gene
   raise AsException("type de concept resultat non prevu")
 
 DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
@@ -48,7 +49,7 @@ DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
          EXCIT           =FACT(statut='o',max='**',
            regles=(UN_PARMI('VECT_ASSE','CHARGE'),
                    UN_PARMI('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
-           VECT_ASSE       =SIMP(statut='f',typ=(cham_no_depl_r,cham_no_pres_c,vect_asse_gene ) ),
+           VECT_ASSE       =SIMP(statut='f',typ=(cham_no_depl_r,cham_no_depl_c,cham_no_pres_c,vect_asse_gene_r,vect_asse_gene_c ) ),
            CHARGE          =SIMP(statut='f',typ=char_meca ),
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),
            FONC_MULT_C     =SIMP(statut='f',typ=fonction_c ),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,8 +21,11 @@ from Macro.macro_matr_asse_ops import macro_matr_asse_ops
 
 def macro_matr_asse_prod(self,NUME_DDL,MATR_ASSE,**args):
   if not MATR_ASSE:  raise AsException("Impossible de typer les concepts resultats")
-  if not NUME_DDL:  raise AsException("Impossible de typer les concepts resultats")
-  self.type_sdprod(NUME_DDL,nume_ddl_sdaster)
+  if not NUME_DDL :  raise AsException("Impossible de typer les concepts resultats")
+  if isinstance(NUME_DDL,CO) :
+    self.type_sdprod(NUME_DDL,nume_ddl_sdaster)
+  else:
+    self.type_sdprod(NUME_DDL,NUME_DDL.__class__)
   for m in MATR_ASSE:
     opti=m['OPTION']
 
@@ -58,7 +61,7 @@ MACRO_MATR_ASSE=MACRO(nom="MACRO_MATR_ASSE",op=macro_matr_asse_ops,
          ),
 
          MATR_ASSE       =FACT(statut='o',max='**',
-             MATRICE         =SIMP(statut='o',typ=(matr_asse,CO)),
+             MATRICE         =SIMP(statut='o',typ=CO),
              OPTION          =SIMP(statut='o',typ='TXM',
                                    into=("RIGI_MECA","MASS_MECA","MASS_MECA_DIAG",
                                          "AMOR_MECA","RIGI_MECA_HYST","IMPE_MECA",

@@ -1,4 +1,4 @@
-#@ MODIF codex Build  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF codex Build  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,6 +27,9 @@
 # Modules Python
 import string
 
+class error(Exception):pass
+class FatalError(error):pass
+
 def argv(args):
    """
       Cette fonction sert a initialiser le code avec les paramètres
@@ -40,6 +43,9 @@ def init(debug):
       Deuxième fonction d'initialisation interfacee avec le FORTRAN
    """
    print "codex.init : ", debug
+
+def impers():
+   return None
 
 def opsexe(cmd,icmd,ipass,op):
    """

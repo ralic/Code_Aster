@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,12 +46,12 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op=macr_ascouf_calc_ops,sd_prod=ma
          ),
 
          MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster ),
-         MODELE          =SIMP(statut='o',typ=(CO,modele_sdaster)),
-         CHAM_MATER      =SIMP(statut='f',typ=(CO,cham_mater)),
-         CARA_ELEM       =SIMP(statut='f',typ=(CO,cara_elem)),
-         FOND_FISS       =SIMP(statut='f',typ=(CO,fond_fiss)),
-         CHARGE          =SIMP(statut='f',typ=(CO,char_meca)),
-         RESU_THER       =SIMP(statut='f',typ=(CO,evol_ther)),
+         MODELE          =SIMP(statut='o',typ=CO,),
+         CHAM_MATER      =SIMP(statut='f',typ=CO,),
+         CARA_ELEM       =SIMP(statut='f',typ=CO,),
+         FOND_FISS       =SIMP(statut='f',typ=CO,),
+         CHARGE          =SIMP(statut='f',typ=CO,),
+         RESU_THER       =SIMP(statut='f',typ=CO,),
 
          AFFE_MATERIAU   =FACT(statut='o',max=3,
            regles=(UN_PARMI('TOUT','GROUP_MA'),),

@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 14/02/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF ops Cata  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -353,8 +353,6 @@ def subst_materiau(text,NOM_MATER,EXTRACTION,UNITE_LONGUEUR):
    else:
      ll=ll_u
 
-   for l in ll:
-     print l
    lines=ll
    ll=[]
    for l in lines:

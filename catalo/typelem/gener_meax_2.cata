@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/01/2005   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 22/02/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,6 +60,7 @@ MODE_LOCAL__
     EDEULNO  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
     EDOMGGA  = DOMMAG   ELGA__ RIGI    (DOMA     )
     EDOMGNO  = DOMMAG   ELNO__ IDEN__  (DOMA     )
+    EENECNO  = ENER_R   ELEM__         (TOTALE   )
     EENEDNO  = ENER_R   ELEM__         (TOTALE   )
     EENEDPG  = ENER_R   ELGA__ RIGI    (TOTALE   )
     EENEDNN  = ENER_R   ELNO__ IDEN__  (TOTALE   )
@@ -76,6 +77,7 @@ MODE_LOCAL__
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
     EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       )
+    CFREQR   = FREQ_R   ELEM__         (FREQ     )
     EGTHETA  = G        ELEM__         (GTHETA   )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
@@ -292,6 +294,9 @@ OPTION__
                               OUT__  ECONTNO  PDLSINO
     ENDO_ELNO_SIGM      511   IN__   ECONTNO  PCONTNO  ECONTPG  PCONTPG  CMATERC  PMATERC  NTEMPER  PTEMPER
                               OUT__  ETRIAXS  PTRIAXS
+    ECIN_ELEM_DEPL      82    IN__   DDL_MECA PDEPLAR  CFREQR   PFREQR   NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     NTEMPER  PTEMPER
+                              OUT__  EENECNO  PENERCR
     ENEL_ELGA           575   IN__   CCAMASS  PCAMASS  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
                               OUT__  EENEDPG  PENERDR

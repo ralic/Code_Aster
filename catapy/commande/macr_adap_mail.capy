@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -105,7 +105,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
            MAILLAGE_N     = SIMP(statut='o',typ=maillage_sdaster,
                            fr="Maillage avant adaptation",
                            ang="Mesh before adaptation" ),
-           MAILLAGE_NP1   = SIMP(statut='o',typ=(CO,maillage_sdaster),
+           MAILLAGE_NP1   = SIMP(statut='o',typ=CO,
                            fr="Maillage apres adaptation",
                            ang="Mesh after adaptation" ),
 #
@@ -240,7 +240,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
 # 7.1. Le nom du champ qui contiendra le resultat de la mise a jour
 #
-           CHAM_MAJ       = SIMP(statut='o',typ=(CO,cham_gd_sdaster),
+           CHAM_MAJ       = SIMP(statut='o',typ=CO,
                            fr="Nom du champ qui contiendra le champ mis à jour",
                            ang="Name of the field for the updated field"),
 #

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 19/10/2004   AUTEUR F6BHHBO P.DEBONNIERES 
+%& MODIF TYPELEM  DATE 22/02/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,6 +42,7 @@ MODE_LOCAL__
     EENEDNO  = ENER_R   ELEM__         (TOTALE   )
     EENEDPG  = ENER_R   ELGA__ RIGI     (TOTALE   )
     EENEDNN  = ENER_R   ELNO__ IDEN__  (TOTALE   )
+    EENECNO  = ENER_R   ELEM__         (TOTALE   )
     CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     )
     CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     )
     EDEFOPG  = EPSI_R   ELGA__ RIGI     (EPXX     EPYY     EPZZ     EPXY     )
@@ -56,6 +57,7 @@ MODE_LOCAL__
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
     EFORCER  = FORC_R   ELGA__ RIGI     (FX       FY       )
+    CFREQR   = FREQ_R   ELEM__         (FREQ     )
     EGTHETA  = G        ELEM__         (GTHETA   )
     EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     K1       K2       )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        )
@@ -278,6 +280,9 @@ OPTION__
     DLSI_ELNO_DLDE      558   IN__   DDL_MECA PDEPLAR  DDL_MECA PDLAGDE  NTEMPER  PDLAGTE  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  DDL_MECA PVECTTH
                               OUT__  ECONTNO  PDLSINO
+    ECIN_ELEM_DEPL      82    IN__   DDL_MECA PDEPLAR  CFREQR   PFREQR   NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     NTEMPER  PTEMPER
+                              OUT__  EENECNO  PENERCR
     ENDO_ELNO_SIGM      511   IN__   ECONTNO  PCONTNO  ECONTPG  PCONTPG  CMATERC  PMATERC  NTEMPER  PTEMPER
                               OUT__  ETRIAXS  PTRIAXS
     ENEL_ELGA           575   IN__   CCAMASS  PCAMASS  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC

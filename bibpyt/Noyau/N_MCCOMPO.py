@@ -1,4 +1,4 @@
-#@ MODIF N_MCCOMPO Noyau  DATE 20/10/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF N_MCCOMPO Noyau  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -378,3 +378,24 @@ class MCCOMPO(N_OBJECT.OBJECT):
       for cle in daux.keys():
         dico[cle] = daux[cle]
     return dico
+
+   def get_mcs_with_co(self,co):
+      """
+         Cette methode retourne l'objet MCSIMP fils de self 
+         qui a le concept co comme valeur.
+         En principe, elle ne doit etre utilisee que pour les concepts
+         instances de la classe CO
+      """
+      l=[]
+      for child in self.mc_liste:
+        l.extend(child.get_mcs_with_co(co))
+      return l
+
+   def get_all_co(self):
+      """
+         Cette methode retourne tous les concepts instances de CO
+      """
+      l=[]
+      for child in self.mc_liste:
+        l.extend(child.get_all_co())
+      return l

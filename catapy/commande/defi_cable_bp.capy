@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,17 +44,11 @@ from Macro.defi_cable_bp_ops import defi_cable_bp_ops
 #
 # ===========================================================================
 
-
-def defi_cable_bp_prod(self,MAILLAGE,**args ):
-  if MAILLAGE!= None : self.type_sdprod(MAILLAGE,maillage_sdaster)
-  return cabl_precont
-  raise AsException("type de concept resultat non prevu")
-
-DEFI_CABLE_BP=MACRO(nom="DEFI_CABLE_BP",op=defi_cable_bp_ops,sd_prod=defi_cable_bp_prod,
-                   fr=" ",
+DEFI_CABLE_BP=MACRO(nom="DEFI_CABLE_BP",op=defi_cable_bp_ops,sd_prod=cabl_precont,
+                   fr="",
                    reentrant='n',
-         regles=(PRESENT_PRESENT('MAILLAGE','CONE'),),
-         MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster,CO)),
+         regles=(ENSEMBLE('MAILLAGE','CONE'),),
+         MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster),
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
          CARA_ELEM       =SIMP(statut='o',typ=cara_elem ),
@@ -73,7 +67,7 @@ DEFI_CABLE_BP=MACRO(nom="DEFI_CABLE_BP",op=defi_cable_bp_ops,sd_prod=defi_cable_
          RELAXATION      =FACT(statut='f',min=0,
            R_J             =SIMP(statut='o',typ='R',val_min=0.E+0 ),  
          ),
-         CONE            =FACT(statut='f',min=0,
+         CONE            =FACT(statut='f',
            RAYON             =SIMP(statut='o',typ='R',val_min=0.E+0 ),  
            LONGUEUR          =SIMP(statut='o',typ='R',val_min=0.E+0 ),  
            PRESENT           =SIMP(statut='o',typ='TXM',min=2,max=2,into=("OUI","NON") ),

@@ -6,7 +6,7 @@
       REAL*8                         CONST(2)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/06/99   AUTEUR ADBHHPM P.MASSIN 
+C MODIF ALGELINE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,8 @@ C
 C
       ZERO= 0.D0
       UN  = 1.D0
-      CUN = UN
+      CUN = DCMPLX(UN,0.D0)
+      
       IF ( CUMUL .EQ. 'CUMU' ) THEN
          RCUM = UN
       ELSE
@@ -92,14 +93,14 @@ C
       ELSE
          IF( TYPCST(1:1).EQ. 'R') THEN
            DO 310 IVAL = 0, NEQ-1
-              IF ( ZR(LMAT+IVAL) .NE. UN ) THEN
+              IF ( ZC(LMAT+IVAL) .NE. CUN ) THEN
                 ZC(LRES+IVAL)=RCUM*ZC(LRES+IVAL)+CONST(1)*ZC(LMAT+IVAL)
               ENDIF
  310       CONTINUE
          ELSEIF ( TYPCST(1:1) .EQ. 'C' ) THEN
            C8CST = DCMPLX(CONST(1),CONST(2))
            DO 320 IVAL = 0, NEQ-1
-              IF ( ZR(LMAT+IVAL) .NE. UN ) THEN
+              IF ( ZC(LMAT+IVAL) .NE. CUN ) THEN
                  ZC(LRES+IVAL)=RCUM*ZC(LRES+IVAL)+C8CST*ZC(LMAT+IVAL)
               ENDIF
  320       CONTINUE

@@ -1,4 +1,4 @@
-#@ MODIF N_CO Noyau  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_CO Noyau  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,4 +39,16 @@ class CO(ASSD):
           raise AsException("Concept CO, fichier: ",appel[1]," ligne : ",appel[0],'\n',e)
     else:
        self.nom=nom
+
+  def is_object(valeur):
+    """
+          Indique si valeur est d'un type conforme à la classe (retourne 1)
+          ou non conforme (retourne 0)
+    """
+    if hasattr(valeur,'_etape') :
+       # valeur est un concept CO qui a ete transforme par type_sdprod
+       if valeur.etape == valeur._etape:
+           # le concept est bien produit par l'etape
+           return 1
+    return 0
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,16 +19,11 @@
 
 from Macro.macro_mode_meca_ops import macro_mode_meca_ops
 
-def macro_mode_meca_prod(self,MATR_A,MATR_B,**args ):
-  self.type_sdprod(MATR_A,matr_asse_depl_r)
-  self.type_sdprod(MATR_B,matr_asse_depl_r)
-  return mode_meca
-
-MACRO_MODE_MECA=MACRO(nom="MACRO_MODE_MECA",op=macro_mode_meca_ops,sd_prod=macro_mode_meca_prod,
+MACRO_MODE_MECA=MACRO(nom="MACRO_MODE_MECA",op=macro_mode_meca_ops,sd_prod=mode_meca,
                      reentrant='n',
             UIinfo={"groupes":("Résolution",)},
-         MATR_A          =SIMP(statut='o',typ=(CO,matr_asse_depl_r) ),
-         MATR_B          =SIMP(statut='o',typ=(CO,matr_asse_depl_r) ),
+         MATR_A          =SIMP(statut='o',typ=matr_asse_depl_r ),
+         MATR_B          =SIMP(statut='o',typ=matr_asse_depl_r ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
 #  ce mot cle ne devrait il pas etre dans calc_freq  
          METHODE         =SIMP(statut='f',typ='TXM',defaut="SORENSEN",    

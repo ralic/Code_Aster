@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ def macro_matr_ajou_prod(self,MATR_AMOR_AJOU,MATR_MASS_AJOU,MATR_RIGI_AJOU,FORC_
   self.type_sdprod(MATR_RIGI_AJOU,matr_asse_gene_r)
   if FORC_AJOU != None:
     for m in FORC_AJOU:
-      self.type_sdprod(m['VECTEUR'],vect_asse_gene)
+      self.type_sdprod(m['VECTEUR'],vect_asse_gene_r)
 
   return None
 
@@ -66,16 +66,16 @@ MACRO_MATR_AJOU=MACRO(nom="MACRO_MATR_AJOU",op=macro_matr_ajou_ops,sd_prod=macro
          MODELE_GENE     =SIMP(statut='f',typ=modele_gene),
          NUME_DDL_GENE   =SIMP(statut='f',typ=nume_ddl_gene),
          DIST_REFE       =SIMP(statut='f',typ='R',defaut= 1.0E-2),
-         MATR_MASS_AJOU  =SIMP(statut='f',typ=(CO,matr_asse)),
-         MATR_RIGI_AJOU  =SIMP(statut='f',typ=(CO,matr_asse)),
-         MATR_AMOR_AJOU  =SIMP(statut='f',typ=(CO,matr_asse)),
+         MATR_MASS_AJOU  =SIMP(statut='f',typ=CO,),
+         MATR_RIGI_AJOU  =SIMP(statut='f',typ=CO,),
+         MATR_AMOR_AJOU  =SIMP(statut='f',typ=CO,),
          MONO_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",),),
          MODE_STAT       =SIMP(statut='f',typ=(mode_stat_depl,mode_stat_acce,mode_stat_forc,),),
          FORC_AJOU       =FACT(statut='f',max='**',
            DIRECTION     =SIMP(statut='o',typ='R',max=3),
            NOEUD         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
            GROUP_NO      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-           VECTEUR       =SIMP(statut='o',typ=(CO,vect_asse_gene)),
+           VECTEUR       =SIMP(statut='o',typ=CO),
          ),
          SOLVEUR         =FACT(statut='d',
            METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC") ),

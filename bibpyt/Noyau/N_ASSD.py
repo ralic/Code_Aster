@@ -1,4 +1,4 @@
-#@ MODIF N_ASSD Noyau  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_ASSD Noyau  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,6 +107,8 @@ class ASSD:
       d=self.__dict__.copy()
       for key in ('parent','etape','jdc'):
           if d.has_key(key):del d[key]
+      for key in d.keys():
+          if key[0]=='_':del d[key]
       return d
 
 class assd(ASSD):

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,8 +57,8 @@ MACR_CABRI_CALC=MACRO(nom="MACR_CABRI_CALC",
                         MATER    = SIMP(statut='o',typ=mater_sdaster),
                         TEMP_REF = SIMP(statut='d',typ='R',defaut= 25. ),
                       ),                      
-                      CHAM_MATER = SIMP(statut = 'f',typ=(cham_mater,CO),),
-                      MODELE_THER= SIMP(statut = 'f',typ=(modele_sdaster,CO),),
+                      CHAM_MATER = SIMP(statut = 'f',typ=CO,),
+                      MODELE_THER= SIMP(statut = 'f',typ=CO,),
                       
                       DEFI_CHAR_THER = FACT(statut ='d',
                         TEMP_INIT     = SIMP(statut='d',typ='R',defaut= 25.,),
@@ -70,16 +70,16 @@ MACR_CABRI_CALC=MACRO(nom="MACR_CABRI_CALC",
                       ),                      
                       
                       CHAR_THER  = FACT(statut = 'f',max=4,
-                        CHARGE    = SIMP(statut='o',typ=(char_ther,CO)),
+                        CHARGE    = SIMP(statut='o',typ=CO),
                         TYPE      = SIMP(statut='o',typ='TXM',
                                  into=("BRIDE_FLUIDE","BRIDE_AIR","ECROU_GOUJON",
                                        "BRIDE_JOINT"),)
                                        ),
 
-                      RESU_THER  = SIMP(statut = 'f',typ=(evol_ther,CO),),                                       
+                      RESU_THER  = SIMP(statut = 'f',typ=CO,),                                       
 
                                        
-                      MODELE_MECA= SIMP(statut = 'f',typ=(modele_sdaster,CO),),
+                      MODELE_MECA= SIMP(statut = 'f',typ=CO,),
 
                       DEFI_CHAR_MECA   = FACT(statut='o',
                         PRETENS    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster),),
@@ -88,7 +88,7 @@ MACR_CABRI_CALC=MACRO(nom="MACR_CABRI_CALC",
                       ),                                                             
 
                       CHAR_MECA  = FACT(statut = 'f',max=11,
-                        CHARGE    = SIMP(statut='o',typ=(char_meca,CO)),
+                        CHARGE    = SIMP(statut='o',typ=CO),
                         TYPE      = SIMP(statut='o',typ='TXM',
                                  into=("BLOC_BAS_GOUJ","BLOC_BAS_JOINT",
                                        "BLOC_LAT_ALES","BLOC_LAT_NALES",

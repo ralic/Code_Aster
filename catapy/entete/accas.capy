@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 31/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+#& MODIF ENTETE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -639,6 +639,8 @@ class tabl_weibull    (table_sdaster):pass
 #--------------------------------
 class vect_asse(ASSD):pass
 class vect_asse_gene(vect_asse):pass
+class vect_asse_gene_r(vect_asse_gene):pass
+class vect_asse_gene_c(vect_asse_gene):pass
 
 
 # vect_elem :

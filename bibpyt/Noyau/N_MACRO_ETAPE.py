@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,6 +36,7 @@ import N_ETAPE
 from N_Exception import AsException
 import N_utils
 from N_utils import AsType
+from N_CO import CO
 
 class MACRO_ETAPE(N_ETAPE.ETAPE):
    """
@@ -92,10 +93,12 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
          self.jdc = self.parent.get_jdc_root()
          self.id=self.parent.register(self)
          self.niveau=None
+         self.UserError=self.jdc.UserError
       else:
          self.jdc = self.parent =None
          self.id=None
          self.niveau=None
+         self.UserError="UserError"
 
    def Build_sd(self,nom):
       """
@@ -131,7 +134,7 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
          self.reset_current_step()
          raise AsException("Etape ",self.nom,'ligne : ',self.appel[0],
                               'fichier : ',self.appel[1],e)
-      except (EOFError,self.jdc.UserError):
+      except (EOFError,self.UserError):
          # Le retablissement du step courant n'est pas strictement necessaire. On le fait pour des raisons de coherence
          self.reset_current_step()
          raise
@@ -144,6 +147,17 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
 
       self.Execute()
       return sd
+
+   def mark_CO(self):
+      """
+         Marquage des concepts CO d'une macro-commande
+      """
+      # On marque les concepts CO pour verification ulterieure de leur bonne utilisation
+      l=self.get_all_co()
+      for c in l:
+          #if not hasattr(c,"_etape") or c._etape is not c.etape: 
+             c._etape=self
+      return l
 
    def get_sd_prod(self):
       """
@@ -163,6 +177,9 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
       """
       sd_prod=self.definition.sd_prod
       self.typret=None
+      # On marque les concepts CO pour verification ulterieure de leur bonne utilisation
+      self.mark_CO()
+
       if type(self.definition.sd_prod) == types.FunctionType:
         d=self.cree_dict_valeurs(self.mc_liste)
         try:
@@ -171,7 +188,7 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
           # les concepts produits dans self.sdprods, il faut le mettre à zéro avant de l'appeler
           self.sdprods=[]
           sd_prod= apply(sd_prod,(self,),d)
-        except (EOFError,self.jdc.UserError):
+        except (EOFError,self.UserError):
           raise
         except:
           if CONTEXT.debug: traceback.print_exc()
@@ -194,6 +211,13 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
       return self.sd
 
    def get_type_produit(self,force=0):
+      try:
+          return self.get_type_produit_brut(force)
+      except:
+          #traceback.print_exc()
+          return None
+
+   def get_type_produit_brut(self,force=0):
       """
            Retourne le type du concept résultat de l'étape et eventuellement type
             les concepts produits "à droite" du signe égal (en entrée)
@@ -206,16 +230,15 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
                     et on retourne son résultat
       """
       if not force and hasattr(self,'typret'): return self.typret
+      # On marque les concepts CO pour verification ulterieure de leur bonne utilisation
+      self.mark_CO()
+
       if type(self.definition.sd_prod) == types.FunctionType:
         d=self.cree_dict_valeurs(self.mc_liste)
-        try:
-          # Comme sd_prod peut invoquer la méthode type_sdprod qui ajoute
-          # les concepts produits dans self.sdprods, il faut le mettre à zéro
-          self.sdprods=[]
-          sd_prod= apply(self.definition.sd_prod,(self,),d)
-        except:
-          #traceback.print_exc()
-          return None
+        # Comme sd_prod peut invoquer la méthode type_sdprod qui ajoute
+        # les concepts produits dans self.sdprods, il faut le mettre à zéro
+        self.sdprods=[]
+        sd_prod= apply(self.definition.sd_prod,(self,),d)
       else:
         sd_prod=self.definition.sd_prod
       return sd_prod
@@ -278,32 +301,87 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
       if not hasattr(co,'etape'):
          # Le concept vaut None probablement. On ignore l'appel
          return
-
+      # 
+      # On cherche a discriminer les differents cas de typage d'un concept
+      # produit par une macro qui est specifie dans un mot cle simple.
+      # On peut passer plusieurs fois par type_sdprod ce qui explique
+      # le nombre important de cas.
+      #
+      # Cas 1 : Le concept est libre. Il vient d'etre cree par CO(nom)
+      # Cas 2 : Le concept est produit par la macro. On est deja passe par type_sdprod.
+      #         Cas semblable a Cas 1.
+      # Cas 3 : Le concept est produit par la macro englobante (parent). On transfere
+      #         la propriete du concept de la macro parent a la macro courante (self)
+      #         en verifiant que le type est valide
+      # Cas 4 : La concept est la propriete d'une etape fille. Ceci veut dire qu'on est
+      #         deja passe par type_sdprod et que la propriete a ete transfere a une 
+      #         etape fille. Cas semblable a Cas 3.
+      # Cas 5 : Le concept est produit par une etape externe a la macro.
+      #
       if co.etape == None:
-         # le concept est libre
+         # Cas 1 : le concept est libre
+         # On l'attache a la macro et on change son type dans le type demande
+         # Recherche du mot cle simple associe au concept
+         mcs=self.get_mcs_with_co(co)
+         if len(mcs) != 1:
+            raise AsException("""Erreur interne. 
+Il ne devrait y avoir qu'un seul mot cle porteur du concept CO (%s)""" % co)
+         mcs=mcs[0]
+         if not CO in mcs.definition.type:
+            raise AsException("""Erreur interne. 
+Impossible de changer le type du concept (%s). Le mot cle associe ne supporte pas CO mais seulement (%s)""" %(co,mcs.definition.type))
          co.etape=self
          co.__class__ = t
          self.sdprods.append(co)
+
       elif co.etape== self:
-         # le concept est produit par self
-         co.__class__ = t
+         # Cas 2 : le concept est produit par la macro (self)
+         # On est deja passe par type_sdprod (Cas 1 ou 3).
+         # Il suffit de le mettre dans la liste des concepts produits (self.sdprods)
+         # Le type du concept doit etre coherent avec le type demande (seulement derive)
+         if not isinstance(co,t):
+            raise AsException("""Erreur interne. 
+Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co.__class__))
          self.sdprods.append(co)
+
       elif co.etape== self.parent:
-         # le concept est produit par la macro superieure
-         # on transfere la propriete
-         # On verifie que le type du concept existant co.__class__ est un sur type de celui attendu
+         # Cas 3 : le concept est produit par la macro parente (self.parent)
+         # on transfere la propriete du concept a la macro fille
+         # et on change le type du concept comme demande
+         # Au prealable, on verifie que le concept existant (co) est une instance 
+         # possible du type demande (t)
          # Cette règle est normalement cohérente avec les règles de vérification des mots-clés
-         if not issubclass(t,co.__class__):
-            raise AsException("Le type du concept produit %s devrait etre une sur classe de %s" %(co.__class__,t))
+         if not isinstance(co,t):
+            raise AsException("""
+Impossible de changer le type du concept produit (%s) en (%s).
+Le type actuel (%s) devrait etre une classe derivee du nouveau type (%s)""" % (co,t,co.__class__,t))
+         mcs=self.get_mcs_with_co(co)
+         if len(mcs) != 1:
+            raise AsException("""Erreur interne. 
+Il ne devrait y avoir qu'un seul mot cle porteur du concept CO (%s)""" % co)
+         mcs=mcs[0]
+         if not CO in mcs.definition.type:
+            raise AsException("""Erreur interne. 
+Impossible de changer le type du concept (%s). Le mot cle associe ne supporte pas CO mais seulement (%s)""" %(co,mcs.definition.type))
          co.etape=self
-         co.__class__ = t
+         # On ne change pas le type car il respecte la condition isinstance(co,t)
+         #co.__class__ = t
          self.sdprods.append(co)
+
       elif self.issubstep(co.etape):
-         # Le concept est propriété d'une sous etape de self. Il doit etre considere
-         # comme produit par la macro => ajout dans self.sdprods
+         # Cas 4 : Le concept est propriété d'une sous etape de la macro (self). 
+         # On est deja passe par type_sdprod (Cas 3 ou 1).
+         # Il suffit de le mettre dans la liste des concepts produits (self.sdprods)
+         # Le type du concept et t doivent etre derives. 
+         # Il n'y a aucune raison pour que la condition ne soit pas verifiee.
+         if not isinstance(co,t):
+            raise AsException("""Erreur interne. 
+Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co.__class__))
          self.sdprods.append(co)
+
       else:
-         # le concept est produit par une autre étape
+         # Cas 5 : le concept est produit par une autre étape
+         # On ne fait rien
          return
 
    def issubstep(self,etape):
@@ -353,7 +431,7 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
          # Il s'agit d'un concept de sortie de la macro. Il ne faut pas le créer
          # Il faut quand meme appeler la fonction sd_prod si elle existe.
          # get_type_produit le fait et donne le type attendu par la commande pour verification ultérieure.
-         sdprod=etape.get_type_produit()
+         sdprod=etape.get_type_produit_brut()
          sd=self.Outputs[nomsd]
          # On verifie que le type du concept existant sd.__class__ est un sur type de celui attendu
          # Cette règle est normalement cohérente avec les règles de vérification des mots-clés

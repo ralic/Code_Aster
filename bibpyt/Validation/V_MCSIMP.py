@@ -1,4 +1,4 @@
-#@ MODIF V_MCSIMP Validation  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF V_MCSIMP Validation  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -189,7 +189,6 @@ class MCSIMP:
         if self.definition.val_min == '**' and self.definition.val_max == '**':
            # L'intervalle est infini, on ne fait pas de test
            return 1
-        #if type(self.valeur) in (types.ListType,types.TupleType) :
         if type(self.valeur) == types.TupleType and not self.valeur[0] in ('RI','MP') or type(self.valeur) == types.ListType:
           # Cas d'une liste de valeurs
           test = 1
@@ -206,7 +205,6 @@ class MCSIMP:
             return 1
       else :
         # on est dans le cas d'un ensemble discret de valeurs possibles (into)
-        #if type(self.valeur) in (types.ListType,types.TupleType) :
         if type(self.valeur) == types.TupleType and not self.valeur[0] in ('RI','MP') or type(self.valeur) == types.ListType:
           # Cas d'une liste de valeur
           for e in self.valeur:
@@ -302,15 +300,16 @@ class MCSIMP:
 
    def is_object_from(self,objet,classe):
       """
-           Retourne 1 si valeur est un objet de la classe classe ou d'une
-           sous-classe de classe, 0 sinon
+           Retourne 1 si objet est une instance de la classe classe, 0 sinon
       """
       if type(objet) != types.InstanceType :
-          return 0
-      if not objet.__class__ == classe and not issubclass(objet.__class__,classe):
         return 0
-      else:
+
+      if isinstance(objet,classe) :
+        # On accepte les instances de la classe et des classes derivees 
         return 1
+
+      return 0
 
    def compare_type(self,valeur,type_permis):
       """

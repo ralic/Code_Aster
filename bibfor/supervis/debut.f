@@ -4,7 +4,7 @@
       INTEGER                 IER,IPASS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 22/02/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,8 @@ C
          CALL PRENTE
          CALL UTINIT( 2 , 80 , 1 )
          CALL JVINIT( 2 , 80 , 1 )
+C     --- LECTURE DU MOT CLE FACTEUR DEBUG OU DE GESTION MEMOIRE DEMANDE
+      CALL IBDBGS()
 C
 C     --- LECTURE DU MOT CLE HDF ---
 C
@@ -72,8 +74,6 @@ C
 C     --- LECTURE DU MOT CLE SIMPLE PAR LOT  ---
       IF ( IER .EQ. 0 ) CALL IBTLOT( LOT, IER )
 C
-C     --- LECTURE DU MOT CLE FACTEUR DEBUG OU DE GESTION MEMOIRE DEMANDE
-      CALL IBDBGS()
 C
 C     --- STATS SUR LA COMMANDE DE DEMARRAGE  ---
       ISTAT = 2

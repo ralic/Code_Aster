@@ -1,4 +1,4 @@
-# MODIF  DATE 09/11/2004   AUTEUR NICOLAS O.NICOLAS 
+# MODIF  DATE 18/02/2005   AUTEUR VABHHTS J.PELLET 
 # TITRE CROSSE SOUS CHARGEMENTS DIVERS (AVEC SOUS-STRUCTURATION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@
 
 DEBUT(CODE=_F(  NOM = 'SSLP100D',NIV_PUB_WEB='INTERNET'),)
 
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),  )
+MA=LIRE_MAILLAGE()
 
 MA=DEFI_GROUP(reuse=MA, MAILLAGE=MA,CREA_GROUP_NO=(
                      _F(  NOM = 'A',   NOEUD = 'N1'),
@@ -254,7 +254,6 @@ U1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
               OPERATION='EXTR',
               RESULTAT=U,
               NOM_CHAM='DEPL',
-              TYPE_RESU='VALE',
               NUME_ORDRE=3,);
 
 #=======================================================================
@@ -357,7 +356,6 @@ U2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
               OPERATION='EXTR',
               RESULTAT=U,
               NOM_CHAM='DEPL',
-              TYPE_RESU='VALE',
               NUME_ORDRE=5,);
 
 U2S_123=DEPL_INTERNE(   DEPL_GLOBAL=U2,    MAILLE='S_123',

@@ -1,0 +1,268 @@
+
+# MODIF  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+# TITRE SYSTEME MAS RES A 2 DDL (AMORTISSEMENT HYSTERETIQUE SUR BASE MODALE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ======================================================================
+#CAS_TEST__:SDLD313C
+#       DYNAMIQUE LINEAIRE HARMONIQUE
+
+DEBUT(CODE=_F(NOM='SDLD313D',
+              NIV_PUB_WEB='INTERNET',),);
+#
+
+MASRES=LIRE_MAILLAGE();
+
+MASRES=DEFI_GROUP(reuse =MASRES,
+                  MAILLAGE=MASRES,
+                  CREA_GROUP_MA=_F(NOM='TOUT',
+                                   TOUT='OUI',),);
+#
+
+MODELE=AFFE_MODELE(MAILLAGE=MASRES,
+                   AFFE=(_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='POU_D_T',),
+                         _F(NOEUD=('B','C',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_T',),),);
+#
+
+MATER=DEFI_MATERIAU(ELAS=_F(E=28000.0,
+                            NU=0.0,
+                            RHO=0.0,
+                            AMOR_HYST=0.0,),);
+
+MATHYST=DEFI_MATERIAU(ELAS=_F(E=28000.0,
+                              NU=0.0,
+                              RHO=0.0,
+                              AMOR_HYST=0.01,),);
+#
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MASRES,
+                       AFFE=(_F(MAILLE='K2',
+                                MATER=MATER,),
+                             _F(GROUP_MA='AMORT',
+                                MATER=MATHYST,),),);
+#
+
+RIGMAS=AFFE_CARA_ELEM(MODELE=MODELE,
+                      POUTRE=_F(GROUP_MA='TOUT',
+                                SECTION='RECTANGLE',
+                                CARA='H',
+                                VALE=1.0,),
+                      DISCRET=(_F(NOEUD='B',
+                                  CARA='M_T_D_N',
+                                  VALE=10.0,),
+                               _F(NOEUD='C',
+                                  CARA='M_T_D_N',
+                                  VALE=5.0,),),);
+#
+
+CONDLIM=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=(_F(TOUT='OUI',
+                                    DY=0.0,
+                                    DZ=0.0,
+                                    DRX=0.0,
+                                    DRY=0.0,
+                                    DRZ=0.0,),
+                                 _F(NOEUD='A',
+                                    DX=0.0,),),);
+
+FORCENO=AFFE_CHAR_MECA(MODELE=MODELE,
+                       FORCE_NODALE=_F(NOEUD='C',
+                                       FX=100.0,),);
+
+RIGIELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                        MODELE=MODELE,
+                        CHAM_MATER=CHAMPMAT,
+                        CARA_ELEM=RIGMAS,
+                        CHARGE=CONDLIM,);
+
+MASSELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                        MODELE=MODELE,
+                        CHAM_MATER=CHAMPMAT,
+                        CARA_ELEM=RIGMAS,
+                        CHARGE=CONDLIM,);
+
+RIGCMPLX=CALC_MATR_ELEM(OPTION='RIGI_MECA_HYST',
+                        MODELE=MODELE,
+                        CHARGE=CONDLIM,
+                        CHAM_MATER=CHAMPMAT,
+                        CARA_ELEM=RIGMAS,
+                        RIGI_MECA=RIGIELEM,);
+
+SCNDMEMB=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                        CHARGE=FORCENO,
+                        CARA_ELEM=RIGMAS,);
+
+INCONNUS=NUME_DDL(MATR_RIGI=RIGCMPLX,
+                  METHODE='LDLT',);
+
+MATRRIGR=ASSE_MATRICE(MATR_ELEM=RIGIELEM,
+                      NUME_DDL=INCONNUS,);
+
+MATRRIGI=ASSE_MATRICE(MATR_ELEM=RIGCMPLX,
+                      NUME_DDL=INCONNUS,);
+
+MATRMASS=ASSE_MATRICE(MATR_ELEM=MASSELEM,
+                      NUME_DDL=INCONNUS,);
+
+VECTASS=ASSE_VECTEUR(VECT_ELEM=SCNDMEMB,
+                     NUME_DDL=INCONNUS,);
+
+VECTASC=COMB_CHAM_NO(COMB_C=_F(CHAM_NO=VECTASS,
+                               COEF_C=('RI',1.0,0.01,),),);
+                               
+# DEFINITION DES PULSATIONS/FREQUENCES DE LA REPONSE HARMONIQUE
+#-------------------------------------------------
+L_REEL = (0.0, 3.3687, 6.4847999999999999, 8.0006000000000004, 11.874599999999999, 13.4747, 15.5802, 21.054300000000001);
+
+
+LISFREQ=DEFI_LIST_REEL(VALE=L_REEL,);
+
+REPHARM=DYNA_LINE_HARM(MATR_MASS=MATRMASS,
+                       MATR_RIGI=MATRRIGI,
+                       LIST_FREQ=LISFREQ,
+                       EXCIT=_F(VECT_ASSE=VECTASC,
+                                COEF_MULT=1.0,
+                                PHAS_DEG=0.0,),);
+
+F1=RECU_FONCTION(RESULTAT=REPHARM,
+                 NOM_CHAM='DEPL',
+                 LIST_FREQ=LISFREQ,
+                 NOM_CMP='DX',
+                 NOEUD='C',);
+
+
+MODES=MODE_ITER_SIMULT(MATR_A=MATRRIGR,
+                       MATR_B=MATRMASS,);
+
+NUMGEN=NUME_DDL_GENE(BASE=MODES,);
+
+KGEN=PROJ_MATR_BASE(BASE=MODES,
+                    NUME_DDL_GENE=NUMGEN,
+                    MATR_ASSE=MATRRIGI,);
+
+MGEN=PROJ_MATR_BASE(BASE=MODES,
+                    NUME_DDL_GENE=NUMGEN,
+                    MATR_ASSE=MATRMASS,);
+
+FGEN=PROJ_VECT_BASE(BASE=MODES,
+                    NUME_DDL_GENE=NUMGEN,
+                    VECT_ASSE=VECTASC,);
+
+REPHARMG=DYNA_LINE_HARM(MATR_MASS=MGEN,
+                       MATR_RIGI=KGEN,
+                       LIST_FREQ=LISFREQ,
+                       EXCIT=_F(VECT_ASSE=FGEN,
+                                COEF_MULT=1.0,
+                                PHAS_DEG=0.0,),);
+
+
+REPHARMP=REST_BASE_PHYS(RESU_GENE=REPHARMG,
+                       TOUT_ORDRE='OUI',
+                       TOUT_CHAM='OUI',);
+                       
+F2=RECU_FONCTION(RESULTAT=REPHARMP,
+                 NOM_CHAM='DEPL',
+                 LIST_FREQ=LISFREQ,
+                 NOM_CMP='DX',
+                 NOEUD='C',);
+
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=F1,
+                         VALE_PARA=0.0,
+                         VALE_REFE_C=('RI',7.1428571428571E-03,3.5714285714286E-05,),
+                         PRECISION=0.005,
+                         REFERENCE='NON_REGRESSION',
+                         ),
+                      _F(FONCTION=F1,
+                         VALE_PARA=3.3687,
+                         VALE_REFE_C=('RI',9.4851216048453E-03,2.0446837340910E-05,),
+                         REFERENCE='NON_REGRESSION',
+                         PRECISION=0.005,),
+                      _F(FONCTION=F1,
+                         VALE_PARA=6.4848,
+                         VALE_REFE_C=('RI',-3.3141916836232E-01,-2.4030762004921E-01,),
+                         REFERENCE='NON_REGRESSION',
+                         PRECISION=0.005,),
+                      _F(FONCTION=F1,
+                         VALE_PARA=8.0006,
+                         VALE_REFE_C=('RI',-9.8492745550386E-03,-3.2422370429397E-04,),
+                         REFERENCE='NON_REGRESSION',
+                         PRECISION=0.005,),
+                      _F(FONCTION=F1,
+                         VALE_PARA=11.8746,
+                         VALE_REFE_C=('RI',-4.2119842542924E-05,-3.6144108309845E-05,),
+                         REFERENCE='NON_REGRESSION',
+                         PRECISION=0.005,),
+                      _F(FONCTION=F1,
+                         VALE_PARA=13.4747,
+                         VALE_REFE_C=('RI',2.3722503002275E-03,-2.6513981523821E-05,),
+                         REFERENCE='NON_REGRESSION',
+                         PRECISION=0.005,),
+                      _F(FONCTION=F1,
+                         VALE_PARA=15.5802,
+                         VALE_REFE_C=('RI',-3.1524642028195E-01,-1.9127700432901E-01,),
+                         REFERENCE='NON_REGRESSION',
+                         PRECISION=0.005,),
+                      _F(FONCTION=F1,
+                         VALE_PARA=21.0543,
+                         VALE_REFE_C=('RI',-1.8899054618541E-03,-1.9452779737883E-05,),
+                         REFERENCE='NON_REGRESSION',
+                         PRECISION=0.005,),),);
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=F2,
+                         VALE_PARA=0.0,
+                         VALE_REFE_C=('RI',7.1428571428571E-03,3.5714285714286E-05,),
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=0.05,),
+                      _F(FONCTION=F2,
+                         VALE_PARA=3.3687,
+                         VALE_REFE_C=('RI',9.4851216048453E-03,2.0446837340910E-05,),
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=0.05,),
+                      _F(FONCTION=F2,
+                         VALE_PARA=6.4848,
+                         VALE_REFE_C=('RI',-3.3141916836232E-01,-2.4030762004921E-01,),
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=0.05,),
+                      _F(FONCTION=F2,
+                         VALE_PARA=8.0006,
+                         VALE_REFE_C=('RI',-9.8492745550386E-03,-3.2422370429397E-04,),
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=0.05,),
+                      _F(FONCTION=F2,
+                         VALE_PARA=13.4747,
+                         VALE_REFE_C=('RI',2.3722503002275E-03,-2.6513981523821E-05,),
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=0.05,),
+                      _F(FONCTION=F2,
+                         VALE_PARA=15.5802,
+                         VALE_REFE_C=('RI',-3.1524642028195E-01,-1.9127700432901E-01,),
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=0.05,),
+                      _F(FONCTION=F2,
+                         VALE_PARA=21.0543,
+                         VALE_REFE_C=('RI',-1.8899054618541E-03,-1.9452779737883E-05,),
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=0.05,),),);
+
+FIN();
+#

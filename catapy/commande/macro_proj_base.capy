@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,10 +23,9 @@ def macro_proj_base_prod(self,MATR_ASSE_GENE,VECT_ASSE_GENE,PROFIL,**args ):
   if MATR_ASSE_GENE != None:
     for m in MATR_ASSE_GENE:
       self.type_sdprod(m['MATRICE'],matr_asse_gene_r)
-      self.type_sdprod(m['MATR_ASSE'],matr_asse_depl_r)
   if VECT_ASSE_GENE != None:
     for v in VECT_ASSE_GENE:
-      self.type_sdprod(v['VECTEUR'],vect_asse_gene)
+      self.type_sdprod(v['VECTEUR'],vect_asse_gene_r)
   return None
 
 MACRO_PROJ_BASE=MACRO(nom="MACRO_PROJ_BASE",op=macro_proj_base_ops,
@@ -37,15 +36,15 @@ MACRO_PROJ_BASE=MACRO(nom="MACRO_PROJ_BASE",op=macro_proj_base_ops,
          NB_VECT         =SIMP(statut='f',typ='I',defaut= 9999),
          PROFIL          =SIMP(statut='f',typ='TXM',defaut="DIAG",into=("PLEIN","DIAG") ),
          MATR_ASSE_GENE  =FACT(statut='f',max='**',
-           MATRICE         =SIMP(statut='o',typ=(CO,matr_asse)),
+           MATRICE         =SIMP(statut='o',typ=CO,),
            MATR_ASSE       =SIMP(statut='f',typ=matr_asse_depl_r),
            MATR_ASSE_GENE  =SIMP(statut='f',typ=matr_asse_gene_r),
          ),
          VECT_ASSE_GENE  =FACT(statut='f',max='**',
-           VECTEUR         =SIMP(statut='o',typ=(CO,vect_asse)),
+           VECTEUR         =SIMP(statut='o',typ=CO,),
            TYPE_VECT       =SIMP(statut='f',typ='TXM',defaut="FORC"),
            VECT_ASSE       =SIMP(statut='f',typ=cham_no_depl_r),
-           VECT_ASSE_GENE  =SIMP(statut='f',typ=vect_asse_gene),
+           VECT_ASSE_GENE  =SIMP(statut='f',typ=vect_asse_gene_r),
          ),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
 )  ;

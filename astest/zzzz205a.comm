@@ -1,0 +1,137 @@
+# MODIF  DATE 22/02/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+
+# TITRE CALCUL DE L'ENERGIE CINETIQUE EN 2D D'UNE PLAQUE RECTANGULAIRE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='ZZZZ205A',NIV_PUB_WEB='INTERNET'))
+
+PRE_GMSH();
+
+#---------------------------------------------------------------------
+# -- MAILLAGE LINEAIRE , MODELISATION D_PLAN
+#---------------------------------------------------------------------
+
+MA_INIT=LIRE_MAILLAGE()
+
+MA=CREA_MAILLAGE(MAILLAGE=MA_INIT,LINE_QUAD=_F(TOUT='OUI'))
+
+ACIER=DEFI_MATERIAU(   ELAS=_F( E = 1.E+11,
+                             NU = 0.3 ,RHO=7800.,))
+
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,
+                             AFFE=_F( TOUT = 'OUI', MATER = ACIER),)
+
+MO=AFFE_MODELE(    MAILLAGE=MA,
+                         AFFE=_F(  TOUT='OUI',
+                                   PHENOMENE = 'MECANIQUE',
+                                   MODELISATION = 'D_PLAN'), 
+               )
+#
+#--CREATION DE LA SD RESULTAT DE TYPE EVOL_NOLI
+#
+VITE_1s=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R', 
+                    MAILLAGE=MA,
+                    AFFE=_F(  TOUT = 'OUI',
+                    NOM_CMP = ('DX','DY'),
+                    VALE = (  1.5,    0.,))
+                      )
+VITE_2s=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R', 
+                    MAILLAGE=MA,
+                    AFFE=_F(  TOUT = 'OUI',
+                    NOM_CMP = ('DX','DY'),
+                    VALE = (  1.5,    2.5,))
+                      )
+VITE=CREA_RESU(OPERATION='AFFE',
+                    TYPE_RESU='EVOL_NOLI',
+                    NOM_CHAM='VITE',
+                    AFFE=_F(CHAM_GD=VITE_1s,INST=1.0,),);
+VITE=CREA_RESU(reuse=VITE,OPERATION='AFFE',
+                    TYPE_RESU='EVOL_NOLI',
+                    NOM_CHAM='VITE',
+                    AFFE=_F(CHAM_GD=VITE_2s,INST=2.0,),);
+
+# CALCUL DE LA MASSE  ---------------------------------
+#
+MASSE=POST_ELEM(  MODELE=MO,
+                        CHAM_MATER=CHMAT,
+                        MASS_INER=_F(  GROUP_MA = ( 'GM100','GM200', ),
+                                    TOUT = 'OUI') )
+
+IMPR_TABLE(TABLE=MASSE)
+
+TEST_TABLE(      TABLE=MASSE,
+                   FILTRE=_F(  NOM_PARA = 'LIEU', VALE_K = 'MA',),
+                   REFERENCE='ANALYTIQUE',  
+                   NOM_PARA='MASSE', 
+                   VALE=2.0475E+03, 
+                   PRECISION=0.0001)
+
+#
+# CALCUL DE L'ENERGIE CINETIQUE -----------------------
+#
+ENER=POST_ELEM(   MODELE=MO,   CHAM_MATER=CHMAT,
+                 RESULTAT=VITE,ENER_CIN=_F( 
+                                           GROUP_MA=('GM100','GM200'),TOUT='OUI') )
+IMPR_TABLE(TABLE=ENER)
+TEST_TABLE(      TABLE=ENER,
+                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'MA',),
+                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1,),),
+                   REFERENCE='ANALYTIQUE',  
+                   NOM_PARA='TOTALE', 
+                   VALE=2.30344E+03, 
+                   PRECISION=0.0001)
+TEST_TABLE(      TABLE=ENER,
+                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'GM100',),
+                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1,),),
+                   REFERENCE='ANALYTIQUE',  
+                   NOM_PARA='TOTALE', 
+                   VALE=9.21375E+02, 
+                   PRECISION=0.0001)
+TEST_TABLE(      TABLE=ENER,
+                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'GM200',),
+                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1,),),
+                   REFERENCE='ANALYTIQUE',  
+                   NOM_PARA='TOTALE', 
+                   VALE=1.38206E+03, 
+                   PRECISION=0.0001)
+TEST_TABLE(      TABLE=ENER,
+                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'MA',),
+                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 2,),),
+                   REFERENCE='ANALYTIQUE',  
+                   NOM_PARA='TOTALE', 
+                   VALE=8.70187E+03, 
+                   PRECISION=0.0001)
+TEST_TABLE(      TABLE=ENER,
+                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'GM100',),
+                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 2,),),
+                   REFERENCE='ANALYTIQUE',  
+                   NOM_PARA='TOTALE', 
+                   VALE=3.48075E+03, 
+                   PRECISION=0.0001)
+TEST_TABLE(      TABLE=ENER,
+                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'GM200',),
+                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 2,),),
+                   REFERENCE='ANALYTIQUE',  
+                   NOM_PARA='TOTALE', 
+                   VALE=5.221125E+03, 
+                   PRECISION=0.0001)
+
+
+FIN( )
+#

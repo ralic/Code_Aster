@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,14 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-PROJ_VECT_BASE=OPER(nom="PROJ_VECT_BASE",op=  72,sd_prod=vect_asse_gene,
+def vect_asse_gene_prod(VECT_ASSE,VECT_ASSE_GENE,**args):
+  if AsType(VECT_ASSE) == cham_no_depl_r  : return vect_asse_gene_r
+  if AsType(VECT_ASSE_GENE) == vect_asse_gene_r  : return vect_asse_gene_r
+  if AsType(VECT_ASSE) == cham_no_depl_c  : return vect_asse_gene_c
+  if AsType(VECT_ASSE_GENE) == vect_asse_gene_c  : return vect_asse_gene_c
+  raise AsException("type de concept resultat non prevu")
+
+PROJ_VECT_BASE=OPER(nom="PROJ_VECT_BASE",op=  72,sd_prod=vect_asse_gene_prod,
                     fr="Projection d un vecteur assemblé sur une base (modale ou de RITZ)",
                     reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
@@ -24,6 +31,6 @@ PROJ_VECT_BASE=OPER(nom="PROJ_VECT_BASE",op=  72,sd_prod=vect_asse_gene,
          BASE            =SIMP(statut='o',typ=(mode_meca,base_modale,mode_gene,mode_stat ) ),
          NUME_DDL_GENE   =SIMP(statut='o',typ=nume_ddl_gene ),
          TYPE_VECT       =SIMP(statut='f',typ='TXM',defaut="FORC"),
-         VECT_ASSE       =SIMP(statut='f',typ=cham_no_depl_r ),
-         VECT_ASSE_GENE  =SIMP(statut='f',typ=vect_asse_gene ),
+         VECT_ASSE       =SIMP(statut='f',typ=(cham_no_depl_r,cham_no_depl_c) ),
+         VECT_ASSE_GENE  =SIMP(statut='f',typ=(vect_asse_gene_r,vect_asse_gene_c) ),
 )  ;

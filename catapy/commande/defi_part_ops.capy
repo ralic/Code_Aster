@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/11/2004   AUTEUR ASSIRE A.ASSIRE 
+#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,9 +23,9 @@ DEFI_PART_OPS=OPER(nom="DEFI_PART_OPS",op=21,sd_prod=sd_feti_sdaster,
                     docu="U4.23.05",reentrant='n',
                     UIinfo={"groupes":("Résolution",)},
          MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
+         MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster) ),
          NOM             =SIMP(statut='f',typ='TXM',defaut='SD'),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2,3,4) ),
-
          DEFI          =FACT(statut='f',max='**',
            GROUP_MA        =SIMP(statut='o',typ=grma),
            GROUP_MA_BORD   =SIMP(statut='f',typ=grma),

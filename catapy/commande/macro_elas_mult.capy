@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,10 @@
 from Macro.macro_elas_mult_ops import macro_elas_mult_ops
 
 def macro_elas_mult_prod(self,NUME_DDL,CAS_CHARGE,**args ):
-  self.type_sdprod(NUME_DDL,nume_ddl_sdaster)
+  if isinstance(NUME_DDL,CO) :
+    self.type_sdprod(NUME_DDL,nume_ddl_sdaster)
+  else:
+    self.type_sdprod(NUME_DDL,NUME_DDL.__class__)
   if CAS_CHARGE[0]['NOM_CAS']      != None : return mult_elas
   if CAS_CHARGE[0]['MODE_FOURIER'] != None : return fourier_elas
   raise AsException("type de concept resultat non prevu")

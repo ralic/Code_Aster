@@ -8,7 +8,7 @@
       REAL*8           CONST(NBCOMB)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGELINE  DATE 18/02/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,15 +106,17 @@ C
 C --- CONSTRUCTION ET AFFECTATION DU TABLEAU DESTINE A CONTENIR
 C --- LES POINTEURS DES DESCRIPTEURS DES MATR_ASSE A COMBINER :
 C     -------------------------------------------------------
-      CALL WKVECT('&&MTCMB2.LISPOINT','V V I',NBCOMB,IDLIMA)
+      CALL WKVECT('&&MTCMBL.LISPOINT','V V I',NBCOMB,IDLIMA)
 C
       DO 10 I = 1, NBCOMB
         CALL MTDSCR(LIMAT(I))
         CALL JEVEUO(LIMAT(I)(1:19)//'.&INT','E',ZI(IDLIMA+I-1))
    10 CONTINUE
 C
-      CALL JELIRA(LIMAT(1)(1:19)//'.REFA','DOCU',IBID,ETAMAT)
+      CALL JELIRA(LIMAT(1)(1:19)//'.REFA','DOCU',IBID,ETAMA1)
       CALL JEVEUO(LIMAT(1)(1:19)//'.REFA','L',JREFA)
+      IF (ETAMA1.NE.'ASSE')  CALL UTMESS('F','MTCMBL',
+     +    'LES MATRICES A COMBINER NE SONT PAS DE TYPE ASSE')
 C
       IER1 = 0
       DO 20 I = 2, NBCOMB
@@ -126,14 +128,12 @@ C
             IER1=1
          ENDIF
          IF (ZK24(JREFA).NE.ZK24(JREFI)) THEN
-              CALL UTMESS('F','MTCMB2','LES MATRICES A COMBINER NE '//
-     +                     'SONT PAS CONSTRUITE SUR LE MEME MAILLAGE')
+              CALL UTMESS('F','MTCMBL','LES MATRICES A COMBINER NE '//
+     +                     'SONT PAS CONSTRUITES SUR LE MEME MAILLAGE')
          ENDIF
 
-         IF (ETAMAT.NE.'ASSE') THEN
-              CALL UTMESS('F','MTCMB2','LES MATRICES A COMBINER'//
-     +                     ' NE SONT PAS DE TYPE ASSE')
-         ENDIF
+         IF (ETAMAT.NE.'ASSE')  CALL UTMESS('F','MTCMBL',
+     +      'LES MATRICES A COMBINER NE SONT PAS DE TYPE ASSE')
   20  CONTINUE
 C
 C --- COMBINAISON LINEAIRE DES .VALE DES MATRICES :
@@ -184,7 +184,7 @@ C --- SONT IDENTIQUES :
 C     ---------------
          CALL VERELI(NBCOMB, ZI(IDLIMA), IER)
          IF (IER.NE.0) THEN
-              CALL UTMESS('F','MTCMB2','LES ELIM_DDL DES MATRICES'//
+              CALL UTMESS('F','MTCMBL','LES ELIM_DDL DES MATRICES'//
      +                     ' A COMBINER NE SONT PAS COHERENTS')
          ENDIF
 C
@@ -268,7 +268,7 @@ C     =========================================================
         CALL JEDETR(ZK24(ZI(LRES+1))(1:19)//'.CONL')
       END IF
 C
-      CALL JEDETR('&&MTCMB2.LISPOINT')
+      CALL JEDETR('&&MTCMBL.LISPOINT')
 C
       CALL JEDEMA()
       END
