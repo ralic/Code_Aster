@@ -2,7 +2,7 @@
      &                  COLAUI,SDFETI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -68,7 +68,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
       INTEGER      IDD,IFETM,NBDDL,IDD1,JXSOL,J,TYPSYM,OPTION,IFM,NIV,
-     &             NBSOL,LMAT,NBBLOC,NBSDF,NBMC,IFETP,NBMC1,JXSOL1,IINF
+     &             NBSOL,LMAT,NBBLOC,NBSDF,NBMC,IFETP,NBMC1,JXSOL1,IINF,
+     &             IAUXJ
       CHARACTER*19 MATDD
       CHARACTER*24 NOMSDP,INFOFE
       CHARACTER*32 JEXNUM
@@ -89,7 +90,6 @@ C INIT. NOM OBJET JEVEUX POUR PRODUIT PAR PSEUDO-INVERSE LOCALE
             
 C INIT. VECTEUR SOLUTION ET AUX
       DO 10 J=1,NBI
-        VD2(J)=0.D0
         VDO(J)=0.D0
    10 CONTINUE         
 C OBJET JEVEUX POINTANT SUR LA LISTE DES MATR_ASSE
@@ -101,6 +101,7 @@ C --------------------------------------------------------------------
 C NOMBRE DE SOUS-DOMAINES FLOTTANTS      
       NBSDF=0 
       DO 40 IDD=1,NBSD
+        CALL JEMARQ()
         IDD1=IDD-1
         
 C MATR_ASSE ASSOCIEE AU SOUS-DOMAINE IDD      
@@ -147,14 +148,15 @@ C -------------------------------------------------
 C ----  SOUS-DOMAINE FLOTTANT
 C -------------------------------------------------
           NBSDF=NBSDF+1
-C CALCUL DE (KI)+FI PAR MULT_FRONT   
-          CALL RLTFR8(MATDD,NBDDL,ZR(JXSOL),NBSOL,TYPSYM)         
+C CALCUL DE (KI)+FI PAR MULT_FRONT 
+          CALL RLTFR8(MATDD,NBDDL,ZR(JXSOL),NBSOL,TYPSYM)
           CALL JEVEUO(JEXNUM(NOMSDP,NBSDF),'L',IFETP)
           
           NBMC1=NBMC-1
           JXSOL1=JXSOL-1
           DO 25 J=0,NBMC1
-            ZR(JXSOL1+ZI(IFETP+J))=0.D0   
+            IAUXJ=ZI(IFETP+J)
+            ZR(JXSOL1+IAUXJ)=0.D0   
    25     CONTINUE
    
 C MONITORING
@@ -174,9 +176,7 @@ C RESTRICTION DU SOUS-DOMAINE IDD SUR L'INTERFACE: (RIDD) * ...
         OPTION=1        
         CALL FETREX(OPTION,IDD,NBDDL,ZR(JXSOL),NBI,VD2,SDFETI,COLAUI)  
 C CUMUL DANS LE VECTEUR VDO=SOMME(I=1,NBSD)(RI * ((KI)+ * RIT * V))
-        DO 30 J=1,NBI
-          VDO(J)=VDO(J)+VD2(J)
-   30   CONTINUE
+        CALL DAXPY(NBI,1.D0,VD2,1,VDO,1)
 
 C MONITORING
         IF (INFOFE(1:1).EQ.'T') THEN
@@ -184,7 +184,7 @@ C MONITORING
      &                ' RI*((KI)+*(RIT*V)) '      
           WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
         ENDIF
-                
+        CALL JEDEMA()         
    40 CONTINUE             
       CALL JEDEMA()
       END

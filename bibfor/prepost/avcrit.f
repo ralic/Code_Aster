@@ -2,7 +2,7 @@
      &                   VMAX, OMIN, OMAX, NOMCRI, VSIGN, VPHYDR,
      &                   SIGEQ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/01/2004   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 10/01/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -76,42 +76,50 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ------------------------------------------------------------------
-      INTEGER    I, IVECT, ADRS0, ADRS1, ADRS2, ICYCL
+      INTEGER    I, IVECT, AD0, AD1, AD2, ICYCL, NVAL
+      REAL*8     COEPRE
 C     ------------------------------------------------------------------
 C
 C234567                                                              012
-C
+
       CALL JEMARQ()
 C
-      DO 10 IVECT=1, NBVEC
-         ADRS0 = (IVECT-1)*NBORDR
-         DO 20 ICYCL=1, NCYCL(IVECT)
-C
-C 1. CRITERE DOMM_MAXI
-C
-            IF (NOMCRI(1:9) .EQ. 'DOMM_MAXI') THEN
-               ADRS1 = (IVECT-1)*NBORDR + ICYCL
-               ADRS2 = (IVECT-1)*(NBORDR+2) + ICYCL
-               SIGEQ(ADRS1)= ABS((VMAX(ADRS2) - VMIN(ADRS2))/2.0D0) +
-     &                       VALA*MAX(VSIGN(ADRS0+OMAX(ADRS2)),
-     &                                VSIGN(ADRS0+OMIN(ADRS2)),0.0D0)
-               SIGEQ(ADRS1)= SIGEQ(ADRS1)*COEFPA
-            ENDIF
-C
+      CALL GETVR8(' ','COEF_PREECROU',1,1,1,COEPRE,NVAL)
+
+C 1. CRITERE DOMM_MAXI (MATAKE MODIFIE AMPLITUDE VARIABLE)
+
+      IF (NOMCRI(1:9) .EQ. 'DOMM_MAXI') THEN
+         DO 10 IVECT=1, NBVEC
+            AD0 = (IVECT-1)*NBORDR
+            DO 20 ICYCL=1, NCYCL(IVECT)
+               AD1 = (IVECT-1)*NBORDR + ICYCL
+               AD2 = (IVECT-1)*(NBORDR+2) + ICYCL
+               SIGEQ(AD1)= COEPRE*ABS((VMAX(AD2) - VMIN(AD2))/2.0D0) +
+     &                       VALA*MAX(VSIGN(AD0+OMAX(AD2)),
+     &                                VSIGN(AD0+OMIN(AD2)),0.0D0)
+               SIGEQ(AD1)= SIGEQ(AD1)*COEFPA
+
+ 20         CONTINUE
+ 10      CONTINUE
+
 C 2. CRITERE DE DANG_VAN MODIFIE (AMPLITUDE VARIABLE)
-C
-            IF (NOMCRI(1:16) .EQ. 'DANG_VAN_MODI_AV') THEN
-               ADRS1 = (IVECT-1)*NBORDR + ICYCL
-               ADRS2 = (IVECT-1)*(NBORDR+2) + ICYCL
-               SIGEQ(ADRS1)= ABS((VMAX(ADRS2) - VMIN(ADRS2))/2.0D0) +
-     &                       VALA*MAX(VPHYDR(OMAX(ADRS2)),
-     &                                VPHYDR(OMIN(ADRS2)),0.0D0)
-               SIGEQ(ADRS1)= SIGEQ(ADRS1)*COEFPA
-            ENDIF
-C
- 20      CONTINUE
- 10   CONTINUE
-C
+
+      ELSEIF (NOMCRI(1:16) .EQ. 'DANG_VAN_MODI_AV') THEN
+         DO 30 IVECT=1, NBVEC
+            AD0 = (IVECT-1)*NBORDR
+            DO 40 ICYCL=1, NCYCL(IVECT)
+               AD1 = (IVECT-1)*NBORDR + ICYCL
+               AD2 = (IVECT-1)*(NBORDR+2) + ICYCL
+               SIGEQ(AD1)= COEPRE*ABS((VMAX(AD2) - VMIN(AD2))/2.0D0) +
+     &                       VALA*MAX(VPHYDR(OMAX(AD2)),
+     &                                VPHYDR(OMIN(AD2)),0.0D0)
+               SIGEQ(AD1)= SIGEQ(AD1)*COEFPA
+
+ 40         CONTINUE
+ 30      CONTINUE
+
+      ENDIF
+
       CALL JEDEMA()
 C
       END

@@ -1,7 +1,7 @@
       SUBROUTINE FETING(NBSD,SDFETI,CHSECM,COLAUI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -68,7 +68,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
       INTEGER      IDD,IFETG,IAUX1,NB,K,IFETC,IDEEQ,NBDDL,IREFE,IFM,NIV,
-     &             IAUX2,NBDDL1,IAUX3,ICMP,IEQ,NBCMP,IFETB,ICOL,J,IINF
+     &             IAUX2,NBDDL1,IAUX3,ICMP,IEQ,NBCMP,IFETB,ICOL,J,IINF,
+     &             TESTA
       CHARACTER*8  K8BID,NOMSD
       CHARACTER*19 CHSMDD,PRFCHN
       CHARACTER*24 CH24B,INFOFE
@@ -90,7 +91,7 @@ C----------------------------------------------------------------------
 C BOUCLE SUR LES SOUS-DOMAINES
 C----------------------------------------------------------------------
       DO 100 IDD=1,NBSD
-      
+        CALL JEMARQ()
 C SECOND MEMBRE LOCAL AU SOUS-DOMAINE
         CHSMDD=ZK24(IFETC+IDD-1)(1:19)
         CALL JEVEUO(CHSMDD//'.REFE','L',IREFE)
@@ -169,14 +170,15 @@ C CROISSANT (RENUMEROTATION MD, MDA ET METIS)
           
    30     CONTINUE
 
-C TESTS DE COHERENCE      
-          CALL ASSERT(IEQ.GT.0)
-          CALL ASSERT(NBCMP.GT.0)     
+C TESTS DE COHERENCE
+          TESTA=IEQ*NBCMP      
+          CALL ASSERT(TESTA.GT.0)
           
           ZI(ICOL+2*K)=IEQ
           ZI(ICOL+2*K+1)=NBCMP
 
-   50   CONTINUE   
+   50   CONTINUE
+        CALL JEDEMA()   
   100 CONTINUE
 
 C MONITORING

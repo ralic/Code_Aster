@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 10/01/2005   AUTEUR F1BHHAJ J.ANGLES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,6 +60,7 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
            MAILLE        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**' ),
            GROUP_NO      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**' ),
            NOEUD         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**' ),
+           COEF_PREECROU =SIMP(statut='f',typ='R',defaut= 1.0E+0),
            b_period       =BLOC(condition = "TYPE_CHARGE == 'PERIODIQUE'",
                CRITERE       =SIMP(statut='o',typ='TXM',into=("MATAKE","DANG_VAN_MODI_AC") ),
                METHODE       =SIMP(statut='o',typ='TXM',into=("CERCLE_EXACT",) ),

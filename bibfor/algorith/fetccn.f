@@ -1,7 +1,7 @@
       SUBROUTINE FETCCN(CHAMN1,CHAMN2,CHAMN3,CHAMN4,TYPCUM,CHAMNR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -109,7 +109,8 @@ C --- BOUCLE SUR LES SOUS-DOMAINES
 C----------------------------------------------------------------------
 
       DO 10 IDD=0,NBSD
-      
+
+        IF (NBSD.GT.0) CALL JEMARQ()      
         IF (IDD.EQ.0) THEN
 C DOMAINE GLOBAL        
           CHAM1B=CHAMN1
@@ -184,6 +185,8 @@ C MONITORING
      &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHAMRB(1:19),1,' ')
         IF ((INFOFE(2:2).EQ.'T').AND.(IDD.EQ.NBSD))
      &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHAMNR(1:19),1,' ')
+        IF (NBSD.GT.0) CALL JEDEMA()      
+     
    10 CONTINUE   
      
       CALL JEDEMA()

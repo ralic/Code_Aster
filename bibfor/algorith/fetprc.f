@@ -2,7 +2,7 @@
      &                  SDFETI,PRECO,COLAU2)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -88,10 +88,8 @@ C INIT.
    2  CONTINUE
        
       IF (PRECO(1:4).EQ.'SANS') THEN
-C PAS DE PRECONDITIONNEMENT: ZR(IR1)=ZR(IRG) (VD0=VD1)      
-        DO 5 J=1,NBI
-          VDO(J)=VD1(J)
-   5    CONTINUE
+C PAS DE PRECONDITIONNEMENT: ZR(IR1)=ZR(IRG) (VD0=VD1)
+        CALL DCOPY(NBI,VD1,1,VDO,1)
 C MONITORING
         IF (INFOFE(1:1).EQ.'T') THEN
           WRITE(IFM,*)
@@ -114,6 +112,7 @@ C --------------------------------------------------------------------
 C ----  BOUCLE SUR LES SOUS-DOMAINES
 C -------------------------------------------------------------------- 
         DO 40 IDD=1,NBSD
+          CALL JEMARQ()
           IDD1=IDD-1
         
 C MATR_ASSE ASSOCIEE AU SOUS-DOMAINE IDD      
@@ -146,9 +145,7 @@ C RESTRICTION DU SOUS-DOMAINE IDD SUR L'INTERFACE: (RIDD) * ...
           OPTION=1        
           CALL FETREX(OPTION,IDD,NBDDL,ZR(JXSOL2),NBI,VD2,SDFETI,COLAUI)
 C CUMUL DANS LE VECTEUR VDO=SOMME(I=1,NBSD)(RI * ((KI)+ * RIT * V))
-          DO 30 J=1,NBI
-            VDO(J)=VDO(J)+VD2(J)
-   30     CONTINUE
+          CALL DAXPY(NBI,1.D0,VD2,1,VDO,1)
 
 C MONITORING
           IF (INFOFE(1:1).EQ.'T') THEN
@@ -156,7 +153,7 @@ C MONITORING
      &                  'RI*((KI)*(RIT*V)) '      
             WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
           ENDIF
-                
+          CALL JEDEMA()      
    40   CONTINUE             
       ELSE
         CALL UTMESS('F','FETPRC','OPTION DE CALCUL NON PREVUE !')      

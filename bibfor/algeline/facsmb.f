@@ -3,7 +3,7 @@
      +     ADRESS,LFRONT,NBLIGN,LGSN,DEBFAC,DEBFSN,CHAINE,
      +     PLACE,NBASS,DELG,LGIND,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,7 +67,24 @@ C==================================================================
       INTEGER CHAINE(NBND),PLACE(NBND),NBASS(NBSN)
       INTEGER I,K,J,ND,NDJ,P,SNI,ANDI,SN,L,SUIV,COUR
       INTEGER IND,NDK,NDI,PRMNDI,IDDL2,NNDI,IANC,DLI
-      INTEGER J1,J2,IFM,NIV,LONG,DECAL
+      INTEGER J1,J2,IFM,NIV,LONG,DECAL,IRET,IFET1,IFET2,IFET3,NBSD1,S1
+
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CALL INFNIV(IFM,NIV)
       IER =0
 C     CALCUL DE INVSUP FILS ET FRERE
@@ -228,5 +245,24 @@ C     MODIFS POUR DGEMV
       IF (NIV.GE.1) THEN
          WRITE(IFM,*)'   --- LONGUEUR DE LA MATRICE FACTORISEE ',DECAL
       ENDIF
+C STOCKAGE INFO SI FETI
+      CALL JEEXIN('&FETI.INFO.STOCKAGE.FIDD',IRET)
+      IF (IRET.NE.0) THEN
+        CALL JEVEUO('&FETI.INFO.STOCKAGE.FIDD','L',IFET1)
+        NBSD1=ZI(IFET1+1)-1
+        IFET2=-ZI(IFET1)
+        CALL JEVEUO('&FETI.INFO.STOCKAGE.FVAF','E',IFET3)
+        ZI(IFET3+IFET2)=DECAL
+        IF (IFET2.EQ.NBSD1) THEN
+          S1=0
+          DO 450 I=0,NBSD1
+            S1=S1+ZI(IFET3+I)
+  450     CONTINUE
+          ZI(IFET3+NBSD1+1)=S1
+        ELSE
+          ZI(IFET1)=IFET2+1
+        ENDIF                
+      ENDIF
+            
  999  CONTINUE
       END

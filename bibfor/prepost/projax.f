@@ -1,7 +1,7 @@
       SUBROUTINE PROJAX( VECPG, NBVEC, NBORDR, PROAXE, IFLAG,
      &                   RMIMA, RAXE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/07/2004   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 10/01/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -84,14 +84,14 @@ C
 C
 C-----------------------------------------------------------------------
 C234567                                                              012
-C
+
       CALL JEMARQ()
 C
       CALL WKVECT('&&PROJAX.SECT1', 'V V R', NBORDR*2, JSEC1)
       CALL WKVECT('&&PROJAX.SECT2', 'V V R', NBORDR*2, JSEC2)
       CALL WKVECT('&&PROJAX.SECT3', 'V V R', NBORDR*2, JSEC3)
       CALL WKVECT('&&PROJAX.SECT4', 'V V R', NBORDR*2, JSEC4)
-C
+
       N1 = 0
 
       DO 10 IVECT=1, NBVEC
@@ -112,9 +112,9 @@ C
          ELSE
             DIAMIN = VMAX - VMIN
          ENDIF
-C
+
 C 1. DETERMINATION DES POINTS SITUES DANS LES 4 SECTEURS
-C
+
          NBPTS1 = 0
          NBPTS2 = 0
          NBPTS3 = 0
@@ -161,7 +161,7 @@ C
                ENDIF
  30         CONTINUE
  20      CONTINUE
-C
+
 C 2. CHOIX DE L'AXE INITIAL (SI UN 2EME AXE EST DEMANDE,
 C                            IL SERA DEDUIT DE L'AXE INITIAL.)
 C
@@ -173,8 +173,8 @@ C        |                           |    PAR DEFINITION L'AXE 2 EST LE
 C        |                           |    SEGMENT AC.
 C        | Sect.4             Sect.3 |
 C      D ----------------------------- C
-C
-C
+
+
          IF (IFLAG(IVECT) .EQ. 0) THEN
             N1 = N1 - NBORDR
 
@@ -194,6 +194,10 @@ C
                AXEINI = 'AXE2'
             ELSEIF ( ((NBPTS1 .EQ. 0) .AND. (NBPTS3 .GT. 0) .AND.
      &                (NBPTS2 .EQ. 0) .AND. (NBPTS4 .GT. 0)) .OR.
+     &               ((NBPTS1 .EQ. 0) .AND. (NBPTS3 .GT. 0) .AND.
+     &                (NBPTS2 .GT. 0) .AND. (NBPTS4 .EQ. 0)) .OR.
+     &               ((NBPTS1 .GT. 0) .AND. (NBPTS3 .EQ. 0) .AND.
+     &                (NBPTS2 .EQ. 0) .AND. (NBPTS4 .GT. 0)) .OR.
      &               ((NBPTS1 .GT. 0) .AND. (NBPTS3 .EQ. 0) .AND.
      &                (NBPTS2 .GT. 0) .AND. (NBPTS4 .EQ. 0)) .OR.
      &               ((NBPTS1 .GT. 0) .AND. (NBPTS3 .GT. 0) .AND.
@@ -205,11 +209,14 @@ C
                CALL RAXINI(ZR(JSEC1), ZR(JSEC2), ZR(JSEC3), ZR(JSEC4),
      &                     NPTSEC, NBORDR, UMIN, UMAX, VMIN, VMAX,
      &                     AXEINI)
+            ELSE
+               CALL UTMESS('F', 'PROJAX.1', 'PRESENCE DE POINT(S) '//
+     &                     'QUE DANS UN SECTEUR.')
             ENDIF
-C
+
 C 3. CALCUL DES CONSTANTES NECESSAIRES A LA PROJECTION SUR UN OU DEUX
 C    AXES
-C
+
             IF ( AXEINI .EQ. 'AXE1' ) THEN
                CSTAI = UMAX-UMIN
                CSTBI = VMAX-VMIN
@@ -230,21 +237,21 @@ C
                AS = (VAXE2 - V0)/(UAXE2 - U0)
                BS = (UAXE2*V0 - U0*VAXE2)/(UAXE2 - U0)
             ENDIF
-C
+
 C 4. PROJECTION SUR UN AXE OU DEUX AXES
-C
+
             DO 40 IORDR=1, NBORDR
                N1 = N1 + 1
 
                UI = VECPG(2*N1 - 1)
                VI = VECPG(2*N1)
-C
+
 C 4.1 PROJECTION SUR L'AXE INITIAL
-C
+
                CALL PROAX0(UI,VI, CSTAI,CSTBI, AI,BI, U0,V0, RPAXI)
 
 C 4.2 PROJECTION SUR LE SECOND AXE SI CELA EST DEMANDE
-C
+
                IF ( PROAXE .EQ. 'DEUX_AXES' ) THEN
                   CALL PROAX0(UI,VI, CSTAS,CSTBS, AS,BS, U0,V0, RPAXS)
                ELSE
@@ -252,14 +259,14 @@ C
                ENDIF
 
 C 4.3 CALCUL DU MODULE ET ATTRIBUTION DU SIGNE
-C
+
                IF (RPAXI .LT. 0.0D0) THEN
                   RAXE(N1) = -SQRT(RPAXI**2 + RPAXS**2)
                ELSE
                   RAXE(N1) = SQRT(RPAXI**2 + RPAXS**2)
                ENDIF
  40         CONTINUE
-C  
+
 C LES POINTS SONT ALIGNES VERTICALEMENT
          ELSEIF ( IFLAG(IVECT) .EQ. 1 ) THEN
             N1 = N1 - NBORDR
@@ -277,7 +284,7 @@ C LES POINTS SONT ALIGNES VERTICALEMENT
                ENDIF
                RAXE(N1) = VAL
  50         CONTINUE
-C  
+
 C LES POINTS SONT ALIGNES HORIZONTALEMENT
          ELSEIF ( IFLAG(IVECT) .EQ. 2 ) THEN
             N1 = N1 - NBORDR
@@ -295,7 +302,7 @@ C LES POINTS SONT ALIGNES HORIZONTALEMENT
                ENDIF
                RAXE(N1) = VAL
  60         CONTINUE
-C  
+
 C LES POINTS SONT DANS UN CADRE DONT LES COTES SONT INFERIEURS A EPSILO
          ELSEIF ( IFLAG(IVECT) .EQ. 3 ) THEN
             N1 = N1 - NBORDR
@@ -317,7 +324,7 @@ C LES POINTS SONT DANS UN CADRE DONT LES COTES SONT INFERIEURS A EPSILO
          ENDIF
 
  10   CONTINUE
-C
+
       CALL JEDETR('&&PROJAX.SECT1')
       CALL JEDETR('&&PROJAX.SECT2')
       CALL JEDETR('&&PROJAX.SECT3')

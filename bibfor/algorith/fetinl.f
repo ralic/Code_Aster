@@ -1,8 +1,8 @@
-      SUBROUTINE FETINL(NBI,VLAGI,GI,JGITGI,MATAS,CHSECM,LRIGID,DIMGI,
-     &                  NBSD,VSDF,VDDL,SDFETI)
+      SUBROUTINE FETINL(NBI,VLAGI,COLAUI,JGITGI,MATAS,CHSECM,LRIGID,
+     &                  DIMGI,NBSD,VSDF,VDDL,SDFETI,IPIV,GI,LSTOGI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,12 +19,12 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C TOLE CRP_4
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  CALCUL DU VECTEUR LAGRANGE INITIAL LANDA0
 C
 C   IN   NBI   : IN  : TAILLE DU VECTEUR
 C   IN/OUT VLAGI : VR8: VECTEUR LAGRANGE INITIAL
-C   IN    GI : MATR8 : MATRICE GI
 C   IN   JGITGI: IN : ADRESSES OBJETS JEVEUX (GI)T*GI
 C   IN   MATAS: K19  : NOM DE LA MATRICE DE RIGIDITE GLOBALE
 C   IN  CHSECM: K19  : CHAM_NO SECOND MEMBRE GLOBAL
@@ -35,6 +35,11 @@ C   IN   NBSD:  IN   : NOMBRE DE SOUS-DOMAINES
 C   IN   VSDF: VIN  : VECTEUR MATR_ASSE.FETF INDIQUANT SI SD FLOTTANT
 C   IN   VDDL: VIN  : VECTEUR DES NBRES DE DDLS DES SOUS-DOMAINES
 C   IN  SDFETI: CH19: SD DECRIVANT LE PARTIONNEMENT FETI
+C   IN/OUT IPIV: VIN : ADRRESSE VECTEUR DECRIVANT LE PIVOTAGE LAPACK
+C                     POUR INVERSER (GIT)*GI
+C   IN COLAUI: CH24 : COLLECTION TEMPORAIRE D'ENTIER
+C   IN    GI : MATR8: MATRICE GI
+C   IN LSTOGI: LO : TRUE, GI STOCKE, FALSE, RECALCULE
 C   -------------------------------------------------------------------
 C     ASTER INFORMATIONS:
 C       04/12/03 (OB): CREATION.
@@ -45,12 +50,15 @@ C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      INTEGER      NBI,JGITGI,DIMGI,NBSD,VSDF(NBSD),VDDL(NBSD)
+      INTEGER      NBI,JGITGI,DIMGI,NBSD,VSDF(NBSD),VDDL(NBSD),IPIV
       REAL*8       VLAGI(NBI),GI(NBI,DIMGI)
       CHARACTER*19 MATAS,CHSECM,SDFETI
-      LOGICAL      LRIGID
+      CHARACTER*24 COLAUI
+      LOGICAL      LRIGID,LSTOGI
       
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER*4          ZI4
+      COMMON  / I4VAJE / ZI4(1)
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -69,13 +77,13 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
       INTEGER      I,IFM,NIV,JVE,IDD,NBSDF,IFETR,NBMC,IMC,NBMC1,IDECAI,
-     &             IVALE,IDECAO,NBDDL,IFETC,NGITGI,JA,NGITG2,NB,J,JVE1,
-     &             K,IINF
-      REAL*8       DDOT,DET,RAUX
+     &             IVALE,IDECAO,NBDDL,IFETC,NB,J,JVE1,K,IINF,OPT,GII,
+     &             INFOL8
+      INTEGER*4    INFOLA
+      REAL*8       DDOT,RAUX
       CHARACTER*19 CHSMDD
       CHARACTER*24 NOMSDR,INFOFE      
       CHARACTER*32 JEXNUM
-      LOGICAL      IRET
       
 C CORPS DU PROGRAMME
       CALL JEMARQ()
@@ -87,8 +95,6 @@ C RECUPERATION DU NIVEAU D'IMPRESSION
 
 C INITS.
       NOMSDR=MATAS//'.FETR'
-      IRET=.TRUE.
-      DET=-999.D0
       DO 10 I=1,NBI
         VLAGI(I)=0.D0
    10 CONTINUE
@@ -114,7 +120,7 @@ C NOMBRE DE SOUS-DOMAINES FLOTTANTS
 C DECALAGE STOCKAGE E   
         IDECAO=JVE        
         DO 100 IDD=1,NBSD
-                  
+          CALL JEMARQ()        
 C NOMBRES DE MODES DE CORPS RIGIDES DU SOUS-DOMAINE IDD
           NBMC=VSDF(IDD)
                         
@@ -141,6 +147,7 @@ C DECALAGE DE .FETR
               IDECAO=IDECAO+1         
    90       CONTINUE
           ENDIF
+          CALL JEDEMA()
   100   CONTINUE
 
 C MONITORING
@@ -157,66 +164,79 @@ C MONITORING
 C -------------------------------------------------------------------- 
 C CONSTITUTION DE ((GI)T*GI)-1*E STOCKE DANS '&&FETINL.E.R'
 C --------------------------------------------------------------------
-C VECTEUR AUXILIAIRE CONTENANT A=(GI)T*GI DESYMETRISEE
-        NGITGI=(DIMGI*(DIMGI+1)/2)-1
-        NGITG2=DIMGI*DIMGI      
-        CALL WKVECT('&&FETINL.GITGI.R','V V R',NGITG2,JA)
-C DESYMETRISE (GI)T*GI DANS A CAR MTGAUSS ECRASE LA MATRICE A INVERSER
-        I=1
-        J=1
-        DO 107 K=0,NGITGI
-          IDECAI=(J-1)*DIMGI+I-1
-          ZR(JA+IDECAI)=ZR(JGITGI+K)
-          IF (I.NE.J) THEN
-            IDECAI=(I-1)*DIMGI+J-1
-            ZR(JA+IDECAI)=ZR(JGITGI+K)      
-          ENDIF
-          I=I+1
-          IF (I.GT.DIMGI) THEN
-            J=J+1
-            I=J
-           ENDIF
-  107   CONTINUE
-  
-        IF (INFOFE(4:4).EQ.'T') THEN
-          IDECAO=JA
-          DO 114 J=1,DIMGI
-            DO 113 I=1,DIMGI
-              WRITE(IFM,*)'GTG(I,J)',I,J,ZR(IDECAO)
-              IDECAO=IDECAO+1
-  113       CONTINUE
-  114     CONTINUE
-        ENDIF
-                
         NB=1
-        CALL MGAUSS(ZR(JA),ZR(JVE),DIMGI,DIMGI,NB,DET,IRET)
+        INFOLA=0
+        INFOL8=0
+C FACTORISATION/DESCENTE-REMONTEE SYMETRIQUE INDEFINIE (STOCKEE PAR
+C PAQUET) VIA LAPACK
+        CALL DSPTRF('L',DIMGI,ZR(JGITGI),ZI4(IPIV),INFOLA)
+        INFOL8=INFOLA
+        IF (INFOL8.NE.0) THEN
+          CALL UTDEBM('F','FETINL','SYSTEME (GI)T*GI PROBABLEMENT')
+          CALL UTIMPI('S','  NON INVERSIBLE: ',0,I)
+          CALL UTIMPI('L','PB LAPACK DGETRF: ',1,INFOL8)
+          CALL UTFINM()
+        ENDIF
+        INFOL8=0
+        INFOLA=0        
+        CALL DSPTRS('L',DIMGI,NB,ZR(JGITGI),ZI4(IPIV),ZR(JVE),DIMGI,
+     &    INFOLA)
+        INFOL8=INFOLA          
+        IF (INFOL8.NE.0) THEN
+          CALL UTDEBM('F','FETINL','SYSTEME (GI)T*GI PROBABLEMENT')
+          CALL UTIMPI('S','  NON INVERSIBLE: ',0,I)
+          CALL UTIMPI('L','PB LAPACK DGETRS: ',1,INFOL8)
+          CALL UTFINM()
+        ENDIF     
 C MONITORING
         IF (INFOFE(1:1).EQ.'T') THEN
           WRITE(IFM,*)'<FETI/FETINL> INVERSION (GITGI)-1*E'
-          WRITE(IFM,*)'<FETI/FETINL> DET/IRET ',DET,' ',IRET   
         ENDIF   
         IF (INFOFE(4:4).EQ.'T') THEN
           DO 115 I=1,DIMGI
             WRITE(IFM,*)'(GIT*GI)-1*E(I)',I,ZR(JVE+I-1)
   115     CONTINUE
         ENDIF
-        IF (.NOT.IRET) THEN
-          CALL UTDEBM('F','FETINL','SYSTEME (GI)T*GI PROBABLEMENT')
-          CALL UTIMPI('S','  NON INVERSIBLE: ',0,I)
-          CALL UTIMPR('L','DETERMINANT APPROCHE: ',1,DET)
-          CALL UTFINM()
-        ENDIF
+
 C -------------------------------------------------------------------- 
 C CONSTITUTION DE LANDA0=GI*(((GI)T*GI)-1*E) STOCKE DANS VLAGI
 C --------------------------------------------------------------------
-        JVE1=JVE-1
-        DO 201 J=1,DIMGI
-          RAUX=ZR(JVE1+J)
-          DO 200 I=1,NBI
-            VLAGI(I)=VLAGI(I)+GI(I,J)*RAUX
-  200     CONTINUE
-  201   CONTINUE
 
+        IF (LSTOGI) THEN
+          CALL DGEMV('N',NBI,DIMGI,1.D0,GI,NBI,ZR(JVE),1,1.D0,VLAGI,1)
+        ELSE
+        
+C NOMBRE DE SOUS-DOMAINES FLOTTANTS      
+          NBSDF=0
+          OPT=1
+          CALL WKVECT('&&FETI.GGT.V3','V V R',NBI,GII)
+          JVE1=JVE-1
+          DO 200 IDD=1,NBSD
+C NBRE DE DDL DU SOUS-DOMAINE IDD       
+            NBDDL=VDDL(IDD)
+C NOMBRES DE MODES DE CORPS RIGIDES DU SOUS-DOMAINE IDD
+            NBMC=VSDF(IDD)
+                        
+            IF (NBMC.NE.-1) THEN
+C SOUS-DOMAINE FLOTTANT
+              NBSDF=NBSDF+1
+C COMPOSANTES DES MODES DE CORPS RIGIDES DE IDD
+              CALL JEVEUO(JEXNUM(NOMSDR,NBSDF),'L',IFETR)
+C ----  BOUCLES SUR LES MODES DE CORPS RIGIDES DE IDD
+              DO 190 IMC=1,NBMC
+                JVE1=JVE1+1
+                RAUX=ZR(JVE1)         
+                CALL FETREX(OPT,IDD,NBDDL,ZR(IFETR+(IMC-1)*NBDDL),NBI,
+     &                   ZR(GII),SDFETI,COLAUI)
+                CALL DAXPY(NBI,RAUX,ZR(GII),1,VLAGI,1)     
+  190         CONTINUE
+              CALL JELIBE(JEXNUM(NOMSDR,NBSDF))
+            ENDIF
+  200     CONTINUE
+          CALL JEDETR('&&FETI.GGT.V3')
+          
+        ENDIF
+        
 C MONITORING
         IF (INFOFE(1:1).EQ.'T') THEN
           WRITE(IFM,*)'<FETI/FETINL> CONSTRUCTION DE LANDA0'
@@ -228,9 +248,8 @@ C MONITORING
             WRITE(IFM,*)'LANDA0(I)',I,VLAGI(I)
   205     CONTINUE      
         ENDIF                
-C DESTRUCTION OBJETS TEMPORAIRES        
+C DESTRUCTION OBJET TEMPORAIRE        
         CALL JEDETR('&&FETINL.E.R')
-        CALL JEDETR('&&FETINL.GITGI.R')                 
       ENDIF
                 
       CALL JEDEMA()

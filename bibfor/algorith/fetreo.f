@@ -2,7 +2,7 @@
      &                  IDDRO,IPSRO,GS,IGSMKP,RMIN,IRH,SDFETI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -116,9 +116,7 @@ C -----------------------------
 C CALCUL NOUVELLE DIRECTION DE DESCENTE ORTHOGONALISEE (ETAPE 1)
 C (ZR(IRP)) PK+1 = HK+1 (EQUIVAUT A GK+1 SI SANS PRECOND)
 C -----------------------------
-        DO 56 J=0,NBI1
-          ZR(IRP+J)=ZR(IRH+J)
-   56   CONTINUE
+        CALL DCOPY(NBI,ZR(IRH),1,ZR(IRP),1)
 
 C -----------------------------
 C BOUCLE ET TEST IGSM DE KAHN-PARLETT

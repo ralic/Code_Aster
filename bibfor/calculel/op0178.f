@@ -3,7 +3,7 @@
       INTEGER IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 11/01/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*10 FORMR,PRECI
       CHARACTER*100 FORM1
       CHARACTER*3 TYPE
-      INTEGER RESUME,SOMMI,LONUTI,LONMAX
+      INTEGER RESUME,SOMMI,LONUTI,LONMAX,NI
       LOGICAL ULEXIS
       REAL*8  SOMMR
 
@@ -80,7 +80,8 @@ C    -----------------------------------------
         DO 10 I = 1,NBOBJ
           OBJ = ZK24(IALIOB-1+I)
           IF (OBJ(1:1).EQ.'&') GO TO 10
-          CALL TSTOBJ(OBJ,RESUME,SOMMI,SOMMR,LONUTI,LONMAX,TYPE,IRET)
+          CALL TSTOBJ(OBJ,'NON',RESUME,SOMMI,SOMMR,LONUTI,LONMAX,TYPE,
+     &                IRET,NI)
           IF (IRET.EQ.0) THEN
 C             -- TEST_RESU/RESUME:
             IF (TYPTES.EQ.'RESUME') THEN
@@ -118,7 +119,8 @@ C    -----------------------------------------
 
           DO 20 I = 1,NBOBJ
             OBJ = ZK24(IALIOB-1+I)
-            CALL TSTOBJ(OBJ,RESUME,SOMMI,SOMMR,LONUTI,LONMAX,TYPE,IRET)
+            CALL TSTOBJ(OBJ,'NON',RESUME,SOMMI,SOMMR,LONUTI,LONMAX,TYPE,
+     &                  IRET,NI)
             IF (IRET.EQ.0) THEN
 C               -- TEST_RESU/RESUME:
               IF (TYPTES.EQ.'RESUME') THEN

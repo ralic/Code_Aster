@@ -3,7 +3,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/01/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 11/01/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,6 @@ C ----------------------------------------------------------------------
       COMMON /CAII02/IAOPTT,LGCO,IAOPMO,ILOPMO,IAOPNO,ILOPNO,IAOPDS,
      +       IAOPPA,NPARIO,NPARIN,IAMLOC,ILMLOC,IADSGD
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
       COMMON /CVARJE/ZC(1)
@@ -67,6 +66,7 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       INTEGER IGR,TE,IPAR,NVAL,MODE
       INTEGER IAOPTT,LGCO,IAOPMO,ILOPMO,IAOPNO,ILOPNO,IAOPDS,IAOPPA
       INTEGER NPARIO,NPARIN,IAMLOC,ILMLOC,IADSGD
+      INTEGER NBSP,NCDYN,JEL,TAILL1
       CHARACTER*8 NOPARA,TYCH
       CHARACTER*8 NOPARE
 
@@ -90,14 +90,27 @@ C           ------
             NVAL = DIGDE2(MODE)
             TYCH = ZK8(IACHIK-1+2* (IPARIN-1)+1)
 
-C           CAS DES CHAM_ELEM :
+C           CAS DES CHAM_ELEM POTENTIELLEMENT ETENDUS :
             IF (TYCH(1:4).EQ.'CHML') THEN
-C   ATTENTION : CETTE PROGRAMMATION SUPPOSE QUE LE MODE ATTENDU
-C               EST LE MEME QUE CELUI DU CHAMP GLOBAL
-C               (CE QUI EST ACTUELLEMNT VERIFIE PAR EXCHML)
               JCELD = ZI(IACHII-1+11* (IPARIN-1)+4)
-              LGGREL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4)
-              TAILLE = MAX(TAILLE,LGGREL)
+
+C             CAS DES CHAM_ELEM ETENDUS :
+              IF ((ZI(JCELD-1+3).GT.1).OR.(ZI(JCELD-1+4).GT.1)) THEN
+                TAILL1=0
+                DO 11, JEL=1,NBELGR
+                  NBSP  = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4*(JEL-1)+1)
+                  NCDYN = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4*(JEL-1)+2)
+                  NBSP =MAX(NBSP,1)
+                  NCDYN=MAX(NCDYN,1)
+                  TAILL1=TAILL1+NVAL*NCDYN*NBSP
+ 11             CONTINUE
+                TAILLE = MAX(TAILLE,TAILL1)
+
+C             CAS DES CHAM_ELEM NON ETENDUS :
+              ELSE
+                TAILLE = MAX(TAILLE,NVAL*NBELGR)
+              END IF
+
             ELSE
               TAILLE = MAX(TAILLE,NVAL*NBELGR)
             END IF

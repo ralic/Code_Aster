@@ -1,7 +1,8 @@
-      SUBROUTINE FETPRJ(NBI,VI,VO,GI,JGITGI,LRIGID,DIMGI,OPTION,SDFETI)
+      SUBROUTINE FETPRJ(NBI,VI,VO,COLAUI,JGITGI,LRIGID,DIMGI,OPTION,
+     &                  SDFETI,IPIV,NBSD,VSDF,VDDL,MATAS,GI,LSTOGI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,6 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C TOLE CRP_4
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  CALCUL AU SENS FETI DE:
 C          * LA PROJECTION COMPLETE P=I-GI.(GIT.GI)-1.GIT SI OPTION=1
@@ -29,13 +31,21 @@ C
 C      IN    NBI: IN   : NOMBRE DE NOEUDS D'INTERFACE
 C      IN     VI: VR8  : VECTEUR INPUT DE TAILLE NBI
 C      OUT    VO: VR8  : VECTEUR OUTPUT DE TAILLE NBI SI OPTION=1
-C      IN    GI : MATR8: MATRICE GI
+C      IN COLAUI: CH24 : COLLECTION TEMPORAIRE D'ENTIER
 C      IN JGITGI: IN  : ADRESSE OBJET JEVEUX (GI)T*GI
 C      IN LRIGID: LO  : LOGICAL INDIQUANT LA PRESENCE D'AU MOINS UN
 C         SOUS-DOMAINES FLOTTANT
 C      IN  DIMGI:  IN : TAILLE DE GIT*GI
 C      IN OPTION:  IN  : 1 -> PROJECTION., 2-> RECONSTRUCTION ALPHA SOL.
 C      IN SDFETI: CH19 : SD DECRIVANT LE PARTIONNEMENT FETI
+C   IN/OUT IPIV: VIN : ADRESSE VECTEUR DECRIVANT LE PIVOTAGE LAPACK
+C                     POUR INVERSER (GIT)*GI
+C     IN   VSDF: VIN : VECTEUR MATR_ASSE.FETF INDIQUANT SI SD FLOTTANT
+C     IN   VDDL: VIN : VECTEUR DES NBRES DE DDLS DES SOUS-DOMAINES
+C     IN   NBSD:  IN : NOMBRE DE SOUS-DOMAINES
+C     IN   MATAS: K19 : NOM DE LA MATRICE DE RIGIDITE GLOBALE
+C     IN    GI : MATR8: MATRICE GI
+C     IN  LSTOGI: LO : TRUE, GI STOCKE, FALSE, RECALCULE
 C   -------------------------------------------------------------------
 C     ASTER INFORMATIONS:
 C       28/01/04 (OB): CREATION.
@@ -46,12 +56,16 @@ C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      INTEGER      NBI,JGITGI,DIMGI,OPTION
+      INTEGER      NBSD,NBI,JGITGI,DIMGI,OPTION,VSDF(NBSD),VDDL(NBSD),
+     &             IPIV
       REAL*8       VI(NBI),VO(NBI),GI(NBI,DIMGI)
-      LOGICAL      LRIGID
-      CHARACTER*19 SDFETI
-      
+      LOGICAL      LRIGID,LSTOGI
+      CHARACTER*19 SDFETI,MATAS
+      CHARACTER*24 COLAUI
+
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER*4          ZI4
+      COMMON  / I4VAJE / ZI4(1)
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -69,11 +83,13 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
-      INTEGER      IFM,NIV,JGITVI,JGITV1,NGITGI,NGITG2,JA,I,J,IDECAI,K,
-     &             NB,IDECAO,L,M,IINF
-      REAL*8       DET,RAUX
-      CHARACTER*24 INFOFE     
-      LOGICAL      IRET
+      INTEGER      IFM,NIV,JGITVI,JGITV1,I,J,IDECAI,K,NB,IDECAO,L,M,
+     &             IINF,NBSDF,OPT,GII,GII1,NBDDL,NBMC,IFETR,IMC,IDD,
+     &             INFOL8
+      INTEGER*4    INFOLA
+      REAL*8       RAUX,DDOT
+      CHARACTER*24 INFOFE,NOMSDR     
+      CHARACTER*32 JEXNUM
       
 C CORPS DU PROGRAMME
       CALL JEMARQ()
@@ -92,13 +108,11 @@ C AUCUN MODE DE CORPS RIGIDE P=ID (OPTION=1 OBLIGEATOIRE)
 C --------------------------------------------------------------------
 C---------------------------------------------------------------------
       IF (.NOT.LRIGID) THEN
+      
         IF (OPTION.NE.1)
      &    CALL UTMESS('F','FETPRJ','OPTION DE CALCUL INCOHERENTE !')
-   
-        DO 10 I=1,NBI
-          VO(I)=VI(I)
-   10   CONTINUE
-   
+        CALL DCOPY(NBI,VI,1,VO,1)
+       
       ELSE
 C---------------------------------------------------------------------
 C --------------------------------------------------------------------
@@ -106,9 +120,6 @@ C PRESENCE DE MODES DE CORPS RIGIDES P (OPTION=1) OU P' (OPTION=2)
 C --------------------------------------------------------------------
 C---------------------------------------------------------------------
 
-C INITS.
-        IRET=.TRUE.
-        DET=-999.D0
 C --------------------------------------------------------------------
 C CONSTITUTION DE (GI)T*VI STOCKE DANS '&&FETPRJ.GITVI.R'
 C --------------------------------------------------------------------
@@ -116,14 +127,40 @@ C VECTEUR AUXILIAIRE
         CALL WKVECT('&&FETPRJ.GITVI.R','V V R',DIMGI,JGITVI)
         JGITV1=JGITVI-1
         
-        DO 20 I=1,DIMGI
-          ZR(JGITV1+I)=0.D0
-          DO 19 J=1,NBI
-            ZR(JGITV1+I)=ZR(JGITV1+I)+GI(J,I)*VI(J)
-   19     CONTINUE
-   20   CONTINUE
-   
-        
+        IF (LSTOGI) THEN        
+          CALL DGEMV('T',NBI,DIMGI,1.D0,GI,NBI,VI,1,0.D0,ZR(JGITVI),1)
+        ELSE
+
+          DO 9 I=1,DIMGI
+            ZR(JGITV1+I)=0.D0
+    9     CONTINUE      
+          NOMSDR=MATAS//'.FETR'      
+          NBSDF=0
+          OPT=1
+          CALL WKVECT('&&FETI.GGT.V4','V V R',NBI,GII)
+          GII1=GII-1
+          DO 30 IDD=1,NBSD
+            NBDDL=VDDL(IDD)
+            NBMC=VSDF(IDD)                        
+            IF (NBMC.NE.-1) THEN
+              NBSDF=NBSDF+1
+              CALL JEVEUO(JEXNUM(NOMSDR,NBSDF),'L',IFETR)
+              DO 20 IMC=1,NBMC
+                JGITV1=JGITV1+1
+                CALL FETREX(OPT,IDD,NBDDL,ZR(IFETR+(IMC-1)*NBDDL),NBI,
+     &                  ZR(GII),SDFETI,COLAUI)
+                DO 10 I=1,NBI
+                  ZR(JGITV1)=ZR(JGITV1)+ZR(GII1+I)*VI(I)
+   10           CONTINUE
+   20         CONTINUE
+              CALL JELIBE(JEXNUM(NOMSDR,NBSDF))
+            ENDIF
+   30     CONTINUE
+          IF (OPTION.NE.1) CALL JEDETR('&&FETI.GGT.V4')
+          JGITV1=JGITVI-1
+          
+        ENDIF
+
 C MONITORING
         IF (INFOFE(1:1).EQ.'T') THEN
           WRITE(IFM,*)
@@ -134,40 +171,22 @@ C MONITORING
 C --------------------------------------------------------------------
 C CONSTITUTION DE ((GI)T*GI)-1*(GI)T*VI STOCKE DANS '&&FETPRJ.GITGI.R'
 C --------------------------------------------------------------------
-C VECTEUR AUXILIAIRE CONTENANT A=(GI)T*GI DESYMETRISEE
-        NGITGI=(DIMGI*(DIMGI+1)/2)-1
-        NGITG2=DIMGI*DIMGI      
-        CALL WKVECT('&&FETPRJ.GITGI.R','V V R',NGITG2,JA)
-
-C DESYMETRISE (GI)T*GI DANS A CAR MTGAUSS ECRASE LA MATRICE A INVERSER
-        I=1
-        J=1
-        DO 100 K=0,NGITGI
-          IDECAI=(J-1)*DIMGI+I-1
-          ZR(JA+IDECAI)=ZR(JGITGI+K)
-          IF (I.NE.J) THEN
-            IDECAI=(I-1)*DIMGI+J-1
-            ZR(JA+IDECAI)=ZR(JGITGI+K)      
-          ENDIF
-          I=I+1
-          IF (I.GT.DIMGI) THEN
-            J=J+1
-            I=J
-           ENDIF
-  100   CONTINUE
-                
         NB=1
-        CALL MGAUSS(ZR(JA),ZR(JGITVI),DIMGI,DIMGI,NB,DET,IRET)
-        
+        INFOLA=0
+        INFOL8=0
+C DESCENTE-REMONTEE MATRICE SYMETRIQUE INDEFINIE (STOCKEE PAR PAQUET)
+C VIA LAPACK
+        CALL DSPTRS('L',DIMGI,NB,ZR(JGITGI),ZI4(IPIV),ZR(JGITVI),DIMGI,
+     &  INFOLA)     
 C MONITORING
         IF (INFOFE(1:1).EQ.'T') THEN
           WRITE(IFM,*)'<FETI/FETPRJ> INVERSION (GITGI)-1*...'   
-          WRITE(IFM,*)'<FETI/FETPRJ> DET/IRET ',DET,' ',IRET      
         ENDIF
-        IF (.NOT.IRET) THEN
+        INFOL8=INFOLA
+        IF (INFOL8.NE.0) THEN
           CALL UTDEBM('F','FETPRJ','SYSTEME (GI)T*GI PROBABLEMENT')
           CALL UTIMPI('S','  NON INVERSIBLE: ',0,I)
-          CALL UTIMPR('L','DETERMINANT APPROCHE: ',1,DET)
+          CALL UTIMPI('L','PB LAPACK DGETRS: ',1,INFOL8)
           CALL UTFINM()
         ENDIF
         
@@ -175,17 +194,34 @@ C MONITORING
 C --------------------------------------------------------------------
 C CONSTITUTION DE V0=VI-GI*((GI)T*GI)-1*(GI)T*VI (OPTION=1)
 C --------------------------------------------------------------------
-          DO 150 I=1,NBI
-            VO(I)=VI(I)
-  150     CONTINUE
-  
-          DO 201 J=1,DIMGI
-            RAUX=ZR(JGITV1+J)
-            DO 200 I=1,NBI
-              VO(I)=VO(I)-GI(I,J)*RAUX
+          CALL DCOPY(NBI,VI,1,VO,1)
+          
+          IF (LSTOGI) THEN          
+            CALL DGEMV('N',NBI,DIMGI,-1.D0,GI,NBI,ZR(JGITVI),1,1.D0,
+     &        VO,1)
+          ELSE          
+            NBSDF=0
+            DO 200 IDD=1,NBSD
+              NBDDL=VDDL(IDD)
+              NBMC=VSDF(IDD)
+                        
+              IF (NBMC.NE.-1) THEN
+                NBSDF=NBSDF+1
+                CALL JEVEUO(JEXNUM(NOMSDR,NBSDF),'L',IFETR)
+                DO 190 IMC=1,NBMC
+                  JGITV1=JGITV1+1
+                  RAUX=-ZR(JGITV1)         
+                  CALL FETREX(OPT,IDD,NBDDL,ZR(IFETR+(IMC-1)*NBDDL),NBI,
+     &                      ZR(GII),SDFETI,COLAUI)
+                  CALL DAXPY(NBI,RAUX,ZR(GII),1,VO,1)  
+  190           CONTINUE
+                CALL JELIBE(JEXNUM(NOMSDR,NBSDF))
+              ENDIF
   200       CONTINUE
-  201     CONTINUE
-
+            CALL JEDETR('&&FETI.GGT.V4')
+            
+          ENDIF
+                  
 C MONITORING
           IF (INFOFE(1:1).EQ.'T') THEN
             WRITE(IFM,*)'<FETI/FETPRJ> LAMBDA = P * LAMBDA'         
@@ -196,14 +232,13 @@ C MONITORING
             DO 300 I=1,NBI
               WRITE(IFM,*)I,'  ',VI(I),' ',VO(I)
   300       CONTINUE
-          ENDIF          
+          ENDIF
+                    
         ELSE
 C --------------------------------------------------------------------
 C CONSTITUTION DE V0=((GI)T*GI)-1*(GI)T*VI (OPTION=2)
 C --------------------------------------------------------------------
-          DO 310 I=1,DIMGI
-            VO(I)=ZR(JGITV1+I)
-  310     CONTINUE
+          CALL DCOPY(DIMGI,ZR(JGITVI),1,VO,1)
 
 C MONITORING
           IF (INFOFE(1:1).EQ.'T') THEN
@@ -220,7 +255,6 @@ C MONITORING
         ENDIF   
 C DESTRUCTION OBJET TEMPORAIRE  
         CALL JEDETR('&&FETPRJ.GITVI.R')
-        CALL JEDETR('&&FETPRJ.GITGI.R')                          
       ENDIF
                 
       CALL JEDEMA()

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 11/01/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*4 KIOC,CDIM
       CHARACTER*8 NOMA,NOMU,K8B,VERIF(2)
       CHARACTER*8 TYPENT,TYPEMA,NOMAIL,TABMAI(8)
-      CHARACTER*16 CONCEP,CMD,PHENOM,TYPELE,MODELI,LMODEL(10)
+      CHARACTER*16 CONCEP,CMD,PHENOM,TYPELE,MODELI,LMODEL(10),TYPEMO,
+     +             TYPEM1
       CHARACTER*19 LIGREL
       CHARACTER*24 NOMMAI,NOMNOE,TYPMAI,GRPNOE,GRPMAI,TMPDEF
       CHARACTER*24 CPTNEM,CPTNOM,CPTNBN,CPTLIE,CPTMAI,CPTNOE
@@ -503,44 +504,54 @@ C ---   STOCKAGE DES NOUVELLES MAILLES DANS NEMA
 
 C ---   IMPRESSIONS DE VERIFICATION
 
-      IF (IMPVER.EQ.1) THEN
-        WRITE (IFM,1200) NOMA
-        NUMVEC = 1
-        DO 250 I = 1,NUGREL
-          CALL JELIRA(JEXNUM(CPTLIE,I),'LONMAX',NMGREL,K8B)
-          NUMAIL = ZI(JDLI+NUMVEC-1)
-          IF (NUMAIL.LT.0) THEN
+      WRITE (IFM,1300)
+      NUMVEC = 1
+      TYPEMO = ' '
+      TYPEM1 = ' '
+      DO 300 I = 1,NUGREL
+         CALL JELIRA(JEXNUM(CPTLIE,I),'LONMAX',NMGREL,K8B)
+         NUMAIL = ZI(JDLI+NUMVEC-1)
+         IF (NUMAIL.LT.0) THEN
             NUTYPM = NTYPOI
-            TYPENT = 'NOEUD   '
-          ELSE
+         ELSE
             NUTYPM = ZI(JDTM+NUMAIL-1)
-            TYPENT = 'MAILLE  '
-          END IF
-          NUTYPE = ZI(JDLI+NUMVEC+NMGREL-2)
-          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYPM),TYPEMA)
-          CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',NUTYPE),TYPELE)
-          WRITE (IFM,1210) TYPELE,NMGREL - 1,TYPEMA,TYPENT
-          JC = 0
-          DO 240 J = JDLI + NUMVEC - 1,JDLI + NUMVEC + NMGREL - 3
-            JC = JC + 1
-            NUMAIL = ZI(J)
+         END IF
+         NUTYPE = ZI(JDLI+NUMVEC+NMGREL-2)
+         CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYPM),TYPEMA)
+         CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',NUTYPE),TYPELE)
+         CALL MODE18 ( TYPELE, TYPEMO )
+         IF ( TYPEM1 .NE. ' ' ) THEN
+            CALL CORR18 ( TYPELE, TYPEM1, TYPEMO )
+         END IF
+         TYPEM1 = TYPEMO
+         WRITE (IFM,1310) TYPEMO, TYPELE, TYPEMA, NMGREL-1
+         IF (IMPVER.EQ.1) THEN
             IF (NUMAIL.LT.0) THEN
-              NUMNOE = ZI(JDNW+ (-NUMAIL*2-1)-1)
-              CALL JENUNO(JEXNUM(NOMNOE,NUMNOE),NOMAIL)
+               WRITE (IFM,1321)
             ELSE
-              CALL JENUNO(JEXNUM(NOMMAI,NUMAIL),NOMAIL)
-            END IF
-            IF (JC.EQ.8 .OR. J.EQ.JDLI+NUMVEC+NMGREL-3) THEN
-              TABMAI(JC) = NOMAIL
-              WRITE (IFM,1220) (TABMAI(K),K=1,JC)
-              JC = 0
-            ELSE
-              TABMAI(JC) = NOMAIL
-            END IF
-  240     CONTINUE
-          NUMVEC = NUMVEC + NMGREL
-  250   CONTINUE
-      END IF
+               WRITE (IFM,1322)
+            ENDIF
+            JC = 0
+            DO 240 J = JDLI + NUMVEC - 1,JDLI + NUMVEC + NMGREL - 3
+               JC = JC + 1
+               NUMAIL = ZI(J)
+               IF (NUMAIL.LT.0) THEN
+                  NUMNOE = ZI(JDNW+ (-NUMAIL*2-1)-1)
+                  CALL JENUNO(JEXNUM(NOMNOE,NUMNOE),NOMAIL)
+               ELSE
+                  CALL JENUNO(JEXNUM(NOMMAI,NUMAIL),NOMAIL)
+               END IF
+               IF (JC.EQ.8 .OR. J.EQ.JDLI+NUMVEC+NMGREL-3) THEN
+                  TABMAI(JC) = NOMAIL
+                  WRITE (IFM,1330) (TABMAI(K),K=1,JC)
+                  JC = 0
+               ELSE
+                  TABMAI(JC) = NOMAIL
+               END IF
+  240       CONTINUE
+         ENDIF
+         NUMVEC = NUMVEC + NMGREL
+ 300  CONTINUE
 
 
 C ---   SAUVEGARDES / LIBERATIONS / DESTRUCTIONS
@@ -626,15 +637,16 @@ C     -------------------------------------------------
 
       CALL JEDEMA()
 
- 1200 FORMAT (/,'<MODELE> LISTE DES ELEMENTS AFFECTES A DES MAILLES OU '
-     &       ,'NOEUDS DU MAILLAGE ',A8,/,
-     & '   TYPE ELEMENT FINI        NOMBRE  TYPE MAILLE   AFFECTE SUR')
- 1210 FORMAT (4X,A16,2X,I12,5X,A8,6X,A8)
- 1220 FORMAT (4X,A8,7 (2X,A8))
+ 1300 FORMAT (/,'    MODELISATION      ELEMENT FINI      TYPE MAILLE',
+     &          '          NOMBRE')
+ 1310 FORMAT (4X,A16,2X,A16,2X,A8,7X,I12)
+ 1321 FORMAT (6X,'LISTE DES NOEUDS AFFECTES:' )
+ 1322 FORMAT (6X,'LISTE DES MAILLES AFFECTEES:' )
+ 1330 FORMAT (4X,8(2X,A8))
  1000 FORMAT (/,' SUR LES ',I12,' MAILLES DU MAILLAGE ',A8,/,
      &          '    ON A DEMANDE L''AFFECTATION DE ',I12,/,
-     &          '    ON A PU EN AFFECTER            ',I12)
+     &          '    ON A PU EN AFFECTER           ',I12)
  1100 FORMAT (/,' SUR LES ',I12,' NOEUDS  DU MAILLAGE ',A8,/,
      &          '    ON A DEMANDE L''AFFECTATION DE ',I12,/,
-     &          '    ON A PU EN AFFECTER            ',I12)
+     &          '    ON A PU EN AFFECTER           ',I12)
       END

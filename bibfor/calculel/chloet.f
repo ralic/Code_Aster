@@ -1,7 +1,7 @@
       SUBROUTINE CHLOET(IPARG,ETENDU,JCELD)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/01/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 11/01/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C     --------------------------------------------------
         IF (TYCH.NE.'CHML') GO TO 20
         JCELD = ZI(IACHOI-1+2* (ICH-1)+1)
       END IF
-      IF (ZI(JCELD-1+3)+ZI(JCELD-1+4).EQ.0) THEN
+      IF ((ZI(JCELD-1+4).EQ.0).AND.(ZI(JCELD-1+3).LE.1)) THEN
         GO TO 20
       ELSE
         GO TO 10

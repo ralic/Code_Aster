@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 11/01/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,13 +52,14 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       INTEGER IACONB,IACONU,IACOCF,NNO1,I,INDIRE,LNO
       INTEGER NBTYP,NDDL2,NBMA2,IDMAI2,JLISTK,JDIM,NDIM1
       INTEGER JNBN,JNUNOE,JNORM,IDIM,IJ,N1,N2,NORIEN
+      INTEGER KNO2,KKNO2,JNU2BS,JELIM
       LOGICAL LROTA,DNOR,LREORI
       REAL*8 BETA,COEF1,MROTA(3,3),ZERO,NORMAL(3)
       COMPLEX*16 BETAC
       CHARACTER*2 TYPLAG
       CHARACTER*4 FONREE
       CHARACTER*4 TYPCOE,ZCST,TYPLIA
-      CHARACTER*8 K8B,NOMA,MO,M8BLAN,NOMAIL
+      CHARACTER*8 K8B,NOMA,MO,M8BLAN,NOMAIL,KELIM
       CHARACTER*8 KBETA,NONO1,NONO2,CHARGE,CMP,DDL2,LISTYP(10)
       CHARACTER*16 MOTFAC,CORRES,TYMOCL(4),MOTCLE(4),NOMCMD
       CHARACTER*19 LIGRMO
@@ -135,19 +136,23 @@ C ----------------------------------------------------------------------
       CALL WKVECT('&&CALIRC.DIRECT','V V R',IDMAX*3,IDIREC)
       CALL WKVECT('&&CALIRC.DIMENSION','V V I',IDMAX,IDIMEN)
 
+
+C     &&CALIRC.ELIM(INO) : 0 -> INO PAS ELIMINE
+C                          1 -> INO ELIMINE
+      CALL WKVECT('&&CALIRC.ELIM','V V I',NNOMX,JELIM)
+
       CORRES = '&&CALIRC.CORRES'
 
       DO 240 IOCC = 1,NOCC
 
-C         IL FAUT REMETTRE à ZERO CES 2 OBJETS ENTRE 2 OCCURENCES :
-          DO 241, KK=1,IDMAX
-            ZI(IDIMEN-1+KK)=0
- 241      CONTINUE
-          DO 242, KK=1,3*IDMAX
-            ZR(IDIREC-1+KK)=0.D0
- 242      CONTINUE
+C       IL FAUT REMETTRE à ZERO CES 2 OBJETS ENTRE 2 OCCURENCES :
+        DO 241, KK=1,IDMAX
+          ZI(IDIMEN-1+KK)=0
+ 241    CONTINUE
+        DO 242, KK=1,3*IDMAX
+          ZR(IDIREC-1+KK)=0.D0
+ 242    CONTINUE
 
-C
         DNOR = .FALSE.
         IF (TYPLIA.EQ.'DEPL') THEN
           CALL GETVTX(MOTFAC,'DDL_ESCL',IOCC,1,1,DDL2,NDDL2)
@@ -246,7 +251,33 @@ C            -------------------------------------------------
         END IF
 
 
-C       1.3 TRANSFORMATION DE LA GEOMETRIE DE GRNO2 :
+C       1.3 ON ELIMINE DE LINONU2 LES NOEUDS DEJA ELIMINES LORS DES
+C           OCCURENCES PRECEDENTES DE LIAISON_MAILLE
+C       ---------------------------------------------------------------
+        CALL GETVTX(MOTFAC,'ELIM_MULT',IOCC,1,1,KELIM,IBID)
+        IF (KELIM.EQ.'NON') THEN
+           KKNO2=0
+           CALL WKVECT('&&CALIRC.LINONU2BIS','V V I',NBNO2,JNU2BS)
+           DO 77,KNO2=1,NBNO2
+             NUNO2=ZI(IAGNO2-1+KNO2)
+C            -- SI NUNO2 N'EST PAS ENCORE ELIMINE :
+             IF (ZI(JELIM-1+NUNO2).EQ.0) THEN
+                ZI(JELIM-1+NUNO2)=1
+                KKNO2=KKNO2+1
+                ZI(JNU2BS +KKNO2)=NUNO2
+             END IF
+77         CONTINUE
+           NBNO2=KKNO2
+           CALL JEDETR('&&CALIRC.LINONU2')
+           CALL WKVECT('&&CALIRC.LINONU2','V V I',NBNO2,IAGNO2)
+           DO 78,KNO2=1,NBNO2
+             ZI(IAGNO2-1+KNO2)=ZI(JNU2BS +KNO2)
+78         CONTINUE
+           CALL JEDETR('&&CALIRC.LINONU2BIS')
+        END IF
+
+
+C       1.4 TRANSFORMATION DE LA GEOMETRIE DE GRNO2 :
 C       ------------------------------------------
         GEOM2 = '&&CALIRC.GEOM_TRANSF'
         CALL CALIRG(IOCC,NDIM,NOMA,'&&CALIRC.LINONU2',GEOM2,MROTA,LROTA)
@@ -494,6 +525,7 @@ C           -----------------------------------------------------
       CALL JEDETR('&&CALIRC.COEF')
       CALL JEDETR('&&CALIRC.DIRECT')
       CALL JEDETR('&&CALIRC.DIMENSION')
+      CALL JEDETR('&&CALIRC.ELIM')
 
 C --- AFFECTATION DE LA LISTE DE RELATIONS A LA CHARGE :
 C     ------------------------------------------------

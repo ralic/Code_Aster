@@ -1,0 +1,776 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR acbhhcd G.DEVESA   DATE  le 11/01/2005 a 13:07:22
+
+REALISATION EL 2005-002
+   INTERET_UTILISATEUR : NON
+   TITRE  test RIGI_MISS_3D et DIS_CONTACT en dynamique 
+   FONCTIONNALITE
+   On cree un nouveau cas test MISS06A testant le decollement dynamique
+   sous sollicitation sismique d'une structure par rapport a un sol 
+   modelise par MISS3D. Apres la generation des caracteristiques de 
+   rigidite sous la fondation par AFFE_CARA_ELEM option RIGI_MISS_3D, 
+   on lance DYNA_NON_LINE avec une relation DIS_CHOC et materiau
+   DIS_CONTACT pour les ressorts de contact associes au tapis de sol.
+   On teste les deplacements verticaux maximaux obtenus sur la fondation
+   lors des decollements.
+
+   Test livre dans le cadre du projet OMERSI
+   
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON 
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+   DOC_V : V1.10.125
+   EXPL_  : Doc du nouveau cas test miss06a
+   VALIDATION : Test MISS06A
+   NB_JOURS_TRAV  : 3.5
+   
+
+
+
+
+   
+
+
+-----------------------------------------------------------------------
+--- AUTEUR boiteau O.BOITEAU   DATE  le 10/01/2005 a 18:43:21
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-016
+   INTERET_UTILISATEUR : OUI
+   TITRE
+   ------
+              Amelioration des performances CPU/memoire de FETI
+	      
+   FONCTIONNALITE  SOLVEUR='FETI' dans MECA_STATIQUE
+   --------------
+   Point 1:
+   Amelioration de la gestion memoire 
+     * dans les boucles sur les sous-domaines JEMARQ, JEDEMA ou JELIBE
+     * deplacement d'allocation d'objets de taille moyenne dans ALFETI
+     * lorsque l'interface devient importante, un objet prend de l'importance
+     c'est la matrice GI des restrictions a l'interface des modes rigides.
+     Par exemple pour un cube 3D decoupe en 64 sous-domaines, elle prend de
+     l'ordre de 10 fois la taille de la matrice K non decoupee. (K-1 c'est 70
+     fois)
+     On a dorenavant la possibilite, avec le mot-cle
+               STOCKAGE_GI='OUI','NON' ou 'CAL'
+     si 'OUI': on la calcule et la stocke une fois pour toute
+     si 'NON': on la recalcule a chaque fois que l'on en a besoin
+        c'est à dire 9 + nb_iterations*4
+     si 'CAL' : si taille GI > taille moyenne des matrice de rigidite locales
+                  on ne stocke pas (='NON')
+		sinon on stocke (='OUI')
+     Valeur par defaut: 'CAL'
+   
+   Point 2:		 
+   Amelioration de la gestion memoire/CPU et de la robustesse en remplacant
+   l'inversion de la matrice GIT*GI (symetrique indefinie de taille le nbre de
+   modes rigides total des sous-domaines)
+   * avant on utilisait MGAUSS (stockage plein et on recommencait a chaque fois,
+     c'est a dire 3 + nb_iter*2)
+   * maitenant on la factorise une fois en LDLT, on la stocke en triangulaire
+     inferieure pleine et on fait des descente remontee a chaque inversion via
+     les routines LAPACK: DSPTRF et DSPTRS.
+   Comme elles acceptent le pivotage partielle on a gagne en robustesse (des
+   cas qui plantaient avec MGAUSS, dorenavant sont resolus) mais il a fallut
+   introduire un vecteur d'entiers INTEGER*4 pour transferer l'info sur le
+   pivotage. Il reste local a la routine maître de FETI (ALFETI) et seule son
+   addresse (I8) est transmise aux 3 routines l'utilisant (FETINL,FETRIN,FETPRJ)
+   D'autre part, l'entier de code retour I4 de ces routines est transcrit dans
+   un I8 pour diagnostic et eventuellement traitement (msg d'erreur).
+   
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER*4          ZI4
+      COMMON  / I4VAJE / ZI4(1)   
+
+      IF (LRIGID) CALL WKVECT('&&FETI.LAPACK.IPIV','V V S',DIMGI,IPIV)
+   
+   J'ai du mettre un TOLE_CRP4 pour les 3 routines
+
+   Cube en elasticite lineaire (90 000 DDLs)
+        MULT_FRONT   FETI 16SD AVANT/APRES  FETI 64SD AVANT/APRES
+ ------------------------------------------------------------------------  
+ CPU (S)       120     115/100      MGAUSS PLANTE/ 565 SI GI NON
+                                                             370 SINON
+ MEMOIRE (Mo)  400     120/70                      60  SI GI NON
+                                                             250 SINON
+  
+   Point 3:
+   Amelioration des performances CPU en remplacant des traitements vectoriels
+   ou matriciels de grandes tailles (en general le nbre de DDLs d'interface ou
+   du sous-domaine) par des
+     BLAS1: DDOT, DAXPY, DNRM2,DCOPY
+     BLAS2: DGEMV
+
+   Point 4:
+   Rajout de fonctionnalites de monitoring pour connaitre les temps CPU des
+     - assemblages des matrices et seconds membres
+     - factorisations symboliques
+     - factorisations numeriques
+     - resolution globale du solveur
+   
+   Pour FETI si le mot-cle INFO_FETI(9:9)='T':
+    affichage temps CPU intermediaires (initialisations, precond, projec..)
+    taille de l'interface, du nbre de modes rigides, de l'objet GI si stocke
+    taille des matrices de rigidite locales et de leurs factorisees
+    temps d'assemblages, de factorisation symb et numeriques propres a chaque
+    sous-domaine avec les temps totaux et les pires (pour une idee du temps
+    parallele le plus favorable)		     		     
+
+     *****************************************
+   <FETI/ALFETI>
+    NB SOUS-DOMAINES                     16
+    NB DE MODES RIGIDES                     87
+    POINTS INTERFACE / MAILLAGE / RAPPORT        5577        27107 0.21D+02 %
+    SOUS-DOMAINE/ MATRICE / FACTORISEE / NOEUDS 
+    N    1     :    118941   1352427      1996
+    N    2     :    119016   1292049      1998
+    N    3     :    118800   1432287      1992
+    N    4     :    119970   1260072      2028
+    ......
+    N   16     :    119802   1290150      2021
+ -----------------------------------
+   TOTAL       :     1911198     21249234        32180
+   MOYENNE     :      119449      1328077         2011
+   
+   SOUS-DOMAINE/CPU FACSYM/CPU ASSE/CPU FACNUM 
+   N    0     :   0.28D+00   0.00D+00   0.00D+00
+   N    1     :   0.53D+00   0.23D+00   0.11D+01
+   N    2     :   0.58D+00   0.28D+00   0.12D+01
+   ....
+   N   16     :   0.55D+00   0.23D+00   0.13D+01
+ -----------------------------------
+  CPU + SYS TOTAL  :  0.93D+01   0.41D+01   0.21D+02
+  CPU + SYS LA PIRE:  0.60D+00   0.30D+00   0.15D+01
+  TAILLE (GI + GIT*GI)/MATRICE MOYENNE :  0.12D+04 %
+  ******************************************
+
+   * FETI: NORME DU RESIDU INITIAL = 0.1706D-01
+   *        NORME DU RESIDU A ATTEINDRE EN ABS/RELA= 0.1706D-09 0.1000D-07
+  ....
+ 
+   ******************************************
+   * ITERATION    1 NORME DU RESIDU EN ABS/RELA = 0.1346D-01 0.7893D+00
+   ******************************************
+   TEST CV CPU/SYS:   0.000000000000000E+000  0.000000000000000E+000
+   FETPRC+SCA+PRJ CPU/SYS:   1.666666666666572E-002  0.000000000000000E+000
+   FETREO CPU/SYS:   0.000000000000000E+000  0.000000000000000E+000
+   FETFIV CPU/SYS:   0.300000000000001       0.616666666666667     
+   FETPRJ CPU/SYS:   3.333333333333499E-002  0.000000000000000E+000
+     
+   Point 5:
+   Maintenance preventive: renommage de toutes les structures de donnes inter
+   mediaires (CHAM_NO, SD_SOLVEUR, MATR_ASSE locaux, objets lies aux LIGRELs
+   de charge reconstruits....) pour ne pas etre dependant du nombre de sous
+   -domaine ou du nombre de charge. On utilise la routine GNCON qui genere
+   des chaines de characteres non deja prises (les docs D ont ete mises a jour)
+                    
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+   --------------------
+       DOC_D :  D4.06.21
+       EXPL_ :
+       DOC_D :  D4.06.10
+       EXPL_ :       
+       DOC_D :  D4.06.05
+       EXPL_ :
+       DOC_D :  D4.06.11
+       EXPL_ :
+       DOC_D :  D4.06.07      
+       EXPL_ :
+       	       
+   VALIDATION
+   -----------
+     Diverses combinaisons en 2D/3D en variant configurations de blocage et nbre
+     de sous-domaines. 
+     
+   DETAILS
+   --------         
+   ALFETI,ASSMAM,ASSVEC,CRESO1,EXLIM2,FACSMB,FETCCN,FETFIV,FETGGT,FETING,FETINL,
+   FETPRC,FETPRJ,FETREX,FETRIN,NUMERO,PREML1,PRERES,RESFET,RESOUD,TLDLG2,VTCREB,
+   FACSMB,FETREO,FETSCA
+   
+   NB_JOURS_TRAV  : 20   
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 11/01/2005 a 08:58:49
+
+--------------------------------------------------------------------------
+REALISATION EL 2004-257
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : J.PELLET
+   INTERET_UTILISATEUR : OUI
+   TITRE : messages AFFE_MODELE
+   FONCTIONNALITE
+     AFFE_MODELE affiche systématiquement (et pas uniquement en INFO=2)
+     les types affectés et le cardinal du nb de mailles affectées, mais
+     sans le détail des noms de mailles (comme le fait le info=2).
+     De plus, AFFE_MODELE pourrait afficher en regard le vrai nom de la
+     modélisation.
+   DETAIL
+     Exemple d'impression pour INFO=1 (test sslv200a)
+ SUR LES          612 MAILLES DU MAILLAGE MA      
+    ON A DEMANDE L'AFFECTATION DE          612
+    ON A PU EN AFFECTER                    612
+
+    MODELISATION      ELEMENT FINI      TYPE MAILLE          NOMBRE
+    3D                MECA_TETRA4       TETRA4                   52
+    3D                MECA_PENTA6       PENTA6                   16
+    3D                MECA_HEXA8        HEXA8                    16
+    3D                MECA_PYRAM5       PYRAM5                   24
+    3D                MECA_TETRA10      TETRA10                  46
+    3D                MECA_PENTA15      PENTA15                  16
+    3D                MECA_HEXA27       HEXA27                   16
+    3D                MECA_HEXA20       HEXA20                   16
+    3D                MECA_PYRAM13      PYRAM13                  18
+    3D                MECA_FACE3        TRIA3                    60
+    3D                MECA_FACE4        QUAD4                    50
+    3D                MECA_FACE6        TRIA6                    56
+    3D                MECA_FACE8        QUAD8                    50
+    3D                MECA_FACE9        QUAD9                    36
+    3D                MECA_ARETE2       SEG2                     60
+    3D                MECA_ARETE3       SEG3                     80
+
+     Exemple d'impression pour INFO=2 (test sslv200a)
+ SUR LES          612 MAILLES DU MAILLAGE MA      
+    ON A DEMANDE L'AFFECTATION DE          612
+    ON A PU EN AFFECTER                    472
+
+    MODELISATION      ELEMENT FINI      TYPE MAILLE          NOMBRE
+    3D                THER_TETRA4       TETRA4                   52
+      LISTE DES MAILLES AFFECTEES:
+      M1        M2        M3        M4        M5        M6        M7        M8      
+      M9        M10       M11       M12       M13       M14       M15       M16     
+      M17       M18       M19       M20       M21       M22       M23       M24     
+      M25       M26       M27       M28       M29       M30       M31       M32     
+      M33       M34       M35       M36       M37       M38       M39       M40     
+      M41       M42       M43       M44       M45       M46       M47       M48     
+      M49       M50       M51       M52     
+    3D                THER_PENTA6       PENTA6                   16
+      LISTE DES MAILLES AFFECTEES:
+      M53       M54       M55       M56       M57       M58       M59       M60     
+      M61       M62       M63       M64       M65       M66       M67       M68     
+    ...
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_U : U4.41.01 commande AFFE_MODELE
+        EXPL_ : impression INFO 1 : MODELISATION,ELEMENT FINI,TYPE MAILLE,NOMBRE
+   VALIDATION 
+
+--------------------------------------------------------------------------
+REALISATION EL 2004-266
+   NB_JOURS_TRAV  : 2
+   POUR_LE_COMPTE_DE   : J.PELLET
+   INTERET_UTILISATEUR : NON
+   TITRE : usage de JEVEUS et JEVEUT
+   FONCTIONNALITE
+     1/ usage de JEVEUS
+        ===============
+     JEVEUS alloue un objet en mémoire de facon permanente durant
+     l'exécution du jeu de données.
+     L'usage en était initialement pour le superviseur.
+     remplacement de JEVEUS dans 4 routines :
+     - entcod : passage des pointeurs en argument de la routine
+     - foderi : programmation identique à fointe, utilisation de commons
+                et appel à foder0 dans execop pour remettre les commons
+                à "zéro".
+     - limend : mauvaise utilisation, remplacé par un JEVEUO.
+     - rcvale : mauvaise utilisation, remplacé par un JEVEUO.
+
+     suite à ces développements, suppression de JEVEUS
+     
+     2/ usage de JEVEUT
+        ===============
+     JEVEUT alloue un objet en mémoire de facon permanente durant
+     l'exécution de la commande courante.
+     Analyse des 25 routines qui appelent JEVEUT:
+     - alfint.f : JEVEUT --> JEVEUO
+     - dltins.f : JEVEUT --> JEVEUO
+     - dltp0.f  : JEVEUT --> JEVEUO
+     - nmchar.f : JEVEUT --> JEVEUO
+
+     - fointe.f : utilisation de JEVEUT normal
+     - foderi.f : utilisation de JEVEUT normal
+
+     - pour les autres, JP analyse.
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_D : D6.06.01 usage de JEVEUX
+        EXPL_ : suppression de JEVEUS
+   VALIDATION 
+      passage de la liste complète
+      passage de la liste validation
+      + qq tests en -dbgjeveux
+
+
+-----------------------------------------------------------------------
+--- AUTEUR f1bhhaj J.ANGLES   DATE  le 10/01/2005 a 15:17:48
+
+RESTITUTION HORS AREX
+TITRE : La restitution de l'EL 2004-219 n'a pas été prise en compte (7.3.25).
+FONCTIONNALITE : CALC_FATIGUE. L'évolution consistait à ajouter un coefficient
+     dans les critères de fatigue MATAKE, DANG_VAN_MODI_AC, DOMM_MAXI et
+     DANG_VAN_MODI_AV de manière à prendre en compte un préécrouissage.
+INTERET_UTILISATEUR : NON
+DETAILS :
+L'évolution nous a conduit à modifier les routines deltau.f, dtauno.f, avgrma.f
+avgrno.f, avcrit.f, projax.f, proax0.f, raxini.f rnomat.f et calc_fatigue.capy.
+Dans calc_fatigue.capy on ajoute la ligne suivante dans le bloc b_fatigue_multi:
+
+     COEF_PREECROU =SIMP(statut='f',typ='R',defaut= 1.0E+0),
+
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : NON
+VALIDATION : SSLV135, calculs RRA et FATHER
+NB_JOURS_TRAV  : 1.0
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR galenne E.GALENNE   DATE  le 10/01/2005 a 11:49:37
+
+CORRECTION AL 2004-446   
+   INTERET_UTILISATEUR : NON
+   TITRE Problème de génération maillage ASCOUF
+   FONCTIONNALITE
+   Un utilisateur a signalé une erreur dans la génération automatique du maillage avec la 
+   macro-commande macr_ascouf_calc dans le cas d'un coude fissuré de 30° (sortie brutale 
+   de la procédure gibi).
+   Ce problème provient du fait que le bloc fissure, de taille non paramétrable, est plus 
+   grand que le coude et dépasse donc à la fois côté 'tube droit' et côté 'tube GV'. Ce 
+   cas n'avait pas été envisagé dans la procédure de maillage, alors que les cas où le 
+   bloc fissure dépassait sur l'une ou l'autre des extrémités du coude étaient traités.
+   
+   On modifie donc en conséquence la procédure de maillage des coudes fissurés, en 
+   s'inspirant des deux cas précédents.
+   
+   Fichier modifié : ascouf_fiss_v4.datg
+   
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON   
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON   
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   Passage de l'étude avec le coude de 30° 
+   DETAILS
+   NB_JOURS_TRAV  : 2.5
+
+
+-----------------------------------------------------------------------
+--- AUTEUR vabhhts J.PELLET   DATE  le 11/01/2005 a 16:46:41
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-005
+NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE le test sdld313c se plante en 8.0.1
+   FONCTIONNALITE
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+
+   Suite ménage BLAS/LAPACK :
+
+   En supprimant la routine GLAHQR (replacée par la routine LAPACK ZLAHQR)
+   Je n'avais pas vu que 2 routines (ZNEIGH et ZNEUPD) l'utilisaient et que
+   le dernier argument (IERR) devait devenir un INTEGER*4.
+   Je corrige donc ces 2 routines.
+
+   Liste des fichiers modifiés:
+   zneigh.f  zneupd.f
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-234
+   NB_JOURS_TRAV : 1
+   INTERET_UTILISATEUR : OUI
+   TITRE "AFFE_CHAR_MECA/LIAISON_MAIL"
+
+   FONCTIONNALITE
+   J.F Rit se plaignait (à juste titre) de l'inconfort de LIAISON_MAIL
+   lorsque l'on veut "souder" (par exemple) les 3 blocs suivants :
+
+   |----------||-------------|     Il faut utiliser 3 occurences de LIAISON_MAIL :
+   |         C||G            |
+   |   V1     ||             |     1) souder AB sur DE
+   |A        B||             |     2) souder CB sur GH
+   |----------||      V3     |     2) souder EF sur GH
+   |----------||             |
+   |D        E||             |     mais en faisant cela, on "élimine" 2 fois les ddls
+   |          ||             |     du noeud B (occurences 1 et 2) et on se plante
+   |   V2     ||             |     plus tard avec un message de type "pivot nul".
+   |         F||H            |
+   |----------||-------------|
+
+   L'utilisateur envisageait 2 solutions :
+   1) éliminer automatiquement les éliminations multiples (car redondantes)
+   2) solution moins élégante : ajouter un mot clé SANS_GROUP_NO pour éviter
+      de traiter une 2eme fois le noeud B.
+
+   Une fois n'est pas coutume, j'ai décidé de donner entière satisfaction à
+   l'utilisateur. J'ai ajouté un mot clé ELIM_MULT= OUI/NON (defaut : NON).
+
+   Dans l'exemple précédent, il tapera :
+   CH12=AFFE_CHAR_MECA(  MODELE=MO, LIAISON_MAIL=(
+        _F( GROUP_MA_ESCL = 'AB', GROUP_MA_MAIT = 'V2', ),
+        _F( GROUP_MA_ESCL = 'CB', GROUP_MA_MAIT = 'V3', ELIM_MULT='NON' ),
+        _F( GROUP_MA_ESCL = 'EF', GROUP_MA_MAIT = 'V3', ),
+        ),)
+
+   L'effet de ce mot clé est le suivant : lors d'une occurence du mot clé facteur
+   LIAISON_MAIL, on détermine la liste des noeuds esclaves à "éliminer". Si
+   ELIM_MULT='NON', on s'interdit d'éliminer plusieurs fois un noeud déjà éliminé
+   lors d'une précédente occurence. C'est ce qui se passera lors de la 2eme occurence
+   pour le noeud B qui aura déjà été éliminé lors de la 1ère occurrence.
+
+   J'ai choisi de gérer ce problème d'élimination multiple par un mot clé
+   modifiable par l'utilisateur pour pouvoir gérer le cas "DNOR". En effet,
+   lorsque l'on élimine le seul ddl DNOR, on peut vouloir traiter plusieurs
+   fois le même noeud (pour les coins), cela ne provoquera pas forcément
+   des liaisons redondantes (et donc pas de "pivots nuls").
+
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+     DOC_U : U4.44.01 (affe_char_meca)
+     EXPL_: expliquer le nouveau mot clé ELIM_MULT de liaison_mail
+     DOC_U : U4.44.02 (affe_char_ther)
+     EXPL_: expliquer le nouveau mot clé ELIM_MULT de liaison_mail
+
+   VALIDATION
+   J'ai refait passer l'étude jointe avec la fiche d'AL.
+   J'ai retiré le commentaire devant la commande qui se plantait (avant la résolution
+   de l'évolution).
+   J'ai ensuite comparé les champs de contraintes :
+     - du calcul de référence  soudé par le mailleur  : resmf
+     - du calcul "soudé" par LIAISON_MAILL            : resm
+
+   Les valeurs des 2 champs sont les mêmes avec 4 chiffres significatifs.
+   Je considère donc que c'est OK.
+   DETAILS
+
+   Liste des fichiers modifiés:
+  calirc.f
+  affe_char_meca.capy  affe_char_ther.capy
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2004-259
+   NB_JOURS_TRAV : 0.2
+   INTERET_UTILISATEUR : NON
+   TITRE "pourquoi détruit-on l'objet .LIEL des LIGREL ?"
+
+   FONCTIONNALITE
+   Il peut sembler curieux de détruire ces objets.
+   Lionel Vivan a enquêté : il s'agit simplement de la conséquence de la routine
+   adalig.f qui optimise la taille des GRELs des LIGRELs.
+   Cette routine détruit l'objet .LIEL pour le réallouer de façon plus
+   optimale (GRELs équilibrés en taille).
+   IMPACT_DOCUMENTAIRE : NON
+   DETAILS
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX   (H1)
+   NB_JOURS_TRAV : 1
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+
+   Amélioration des routines servant à contrôler la non-regression :
+
+   1) la routine TSTOBJ qui calcule 5 nombres (LONGMAX, LONUTI, TYPE, SOMMI et SOMMR)
+      pour un objet JEVEUX donné est encapsulée dans une nouvelle routine DBGOBJ qui
+      imprime les nombres pertinents dans un fichier. Par exemple, on n'imprime pas
+      SOMMI pour les nombres réels et complexes.
+   2) Je modifie la définition des nombres SOMMI et SOMMR pour qu'une éventuelle permutation
+      des valeurs du vecteur provoque une modification de ces nombres. Pour cela, quand on
+      fait la "somme" des éléments du vecteur, on introduit un effet de position en faisant :
+            DO K=1,LONG
+                 SOMMR = SOMMR + (MOD(K,3)+1)*X(K)
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_D : D6.00.01 (liste des utilitaires)
+     EXPL_: ajouter dbgobj.f et imptou.f (et retirer tstobj.f)
+   VALIDATION
+   DETAILS
+
+   Liste des fichiers modifiés:
+  caldbg.f  dbgobj.f  imptou.f  op0178.f  sscgno.f  tstobj.f
+  tstvec.f  utesto.f  utims3.f  utimsd.f
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX   (H1)
+   NB_JOURS_TRAV : 0
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+   On supprime une information incorrecte imprimée par le solveur MULT_FRONT :
+      --- LONGUEUR DE LA FACTORISEE  (SANS REL LIN)  XXXXXX
+
+   En effet, depuis quelques temps, la factorisation symbolique (METIS, MDA, ...) est
+   faite sur le graphe de "connectivité des noeuds" qui est plus petit que le graphe
+   de la connectivité des ddls. Il faudrait donc multiplier le nombre calculé
+   par 4 (en 2D) ou 9 (en 3D) si tous les noeuds portaient 2 (ou 3) ddls.
+
+   En revanche, l'information :
+    --- LONGUEUR DE LA MATRICE FACTORISEE               YYYYYYYY
+   est correcte. J'ai vérifié : elle est identique au LONMAX de l'objet .VALF.
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+         WRITE(IFM,*)'   --- LONGUEUR DE LA FACTORISEE ',
+     %        '(SANS REL LIN) ',FCTNZS
+
+   Liste des fichiers modifiés:
+  preml1.f   (cette routine est finalement restituée par O. Boiteau)
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-005
+   NB_JOURS_TRAV : 2
+   INTERET_UTILISATEUR : OUI
+   TITRE  "chainage Saturne-Aster : pression constante par élément"
+
+   FONCTIONNALITE
+   Le chainage Saturne-Aster (projet Nicodeme) consiste à récupérer de SATURNE
+   une évolution de pression sur l'interface solide/liquide.
+   Cette pression est lue (au format MED) sur les éléments de facette (en 3D)
+   du maillage saturne (elle est constante par facette).
+   Elle est ensuite projetée sur la peau interne du maillage mécanique Aster.
+   On obtient alors une SD evol_char que l'on applique en tant que chargement
+   sur le modèle mécanique.
+
+   Le calcul mécanique (fourni par D. Hersant) se plantait dans STAT_NON_LINE
+   car la routine de calcul des efforts de pression considérait que la pression
+   devait etre connue aux noeuds des éléments (alors que Saturne la calcule
+   constante par maille).
+
+   J'ai donc fait une première évolution pour que le code accepte une pression
+   constante par élément.
+
+   Une autre erreur est alors apparue : le chargement de pression doit etre
+   calculé par tous les éléments pour lesquels cela a un sens. Dans l'étude
+   fournie, d'autres éléments de facette (surface extérieure) ainsi que les
+   éléments de tuyau sont sensés calculer les efforts de pression. N'ayant pas
+   de donnée "pression", le calcul ne pouvait pas etre fait sur ces éléments.
+
+   J'ai donc fait une seconde évolution pour que les élements de facette (et
+   de tuyau) utilisent une pression 0. lorsque celle-ci est absente.
+
+   Suite à ces évolutions, le calcul va jusqu'au bout (2 pas de temps)
+   => je considère mon travail achevé.
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+     DOC_D : D6.00.01 : liste des utilitaires
+       EXPL_: ajouter la routine jevecd dans le "paquet" TE0000
+              (cette routine permet de récupérer un champ local absent
+               sur une maille initialisé à une valeur donnée.)
+     DOC_D : D0.04.02 : discrétisation spatiale (éléments finis)
+       EXPL_: ajouter le fait que CALCUL traite maintenant les 4 cas :
+            CHAM_ELEM / ELEM - > ELNO
+            CHAM_ELEM / ELEM - > ELGA
+            CHAM_ELEM / ELNO - > ELEM
+            CHAM_ELEM / ELGA - > ELEM
+            sous réserve que :
+              - le champ "in" et le champ local attendu aient les mêmes composantes
+              - le champ "in" ne soit pas "étendu" (sous-points et/ou NCDYN > 1)
+
+   VALIDATION
+   DETAILS
+   1) on améliore la routine EXCHML pour que la routine CALCUL puisse
+      utiliser :
+        - des champs "IN" CHAM_ELEM/ELEM alors que les type_element attendent :
+          ELNO ou ELGA (dupplication des valeurs)
+        - des champs "IN" CHAM_ELEM/ELNO (ou ELGA) alors que les type_element attendent :
+          ELEM  (moyenne arithmétique des valeurs)
+   2) on améliore les routines te0018, te0583 et te0088 (elements de bord en 3D et 2D
+      + elements de tuyau) pour qu'ils prennent une pression 0. si celle-ci est
+      absente sur l'élément.
+
+   Liste des fichiers modifiés:
+  chloet.f  dchlmx.f  exchml.f  exresl.f  extrai.f  jevecd.f
+  te0018.f  te0088.f  te0583.f
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-280
+   NB_JOURS_TRAV : 1
+   INTERET_UTILISATEUR : NON
+
+   TITRE "cas test sensd08a se plante sur LINUX en  no-debug "
+
+   FONCTIONNALITE
+   Suite à la 1ère réponse préliminaire à cette fiche (qui incriminait la routine calsvd.f)
+   J'ai reprogrammé cette routine de décomposition d'une matrice en valeurs singulières
+   en utilisant la routine lapack DGESDD.
+
+   Le test SENSD08A est OK maintenant sur alphaserver et sur LINUX (en debug et nodebug)
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON (le ménage BLAS n'ayant pas été fait en version 7)
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+
+   Liste des fichiers modifiés:
+  calsvd.f  cricho.f  rslsvd.f
+
+  ======================================================================
+  Code_retour 2 :
+    * ajout "C TOLE CRP_4"  pour 3 routines manipulant des INTEGER*4 :
+      CRP_4 CALSVD
+      CRP_4 ZNEIGH
+      CRP_4 ZNEUPD
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT miss06a                       acbhhcd G.DEVESA           557    557      0
+ CASTEST MODIF sslv135a                      f1bhhaj J.ANGLES          1286      6      1
+ CASTEST MODIF sslv135b                      f1bhhaj J.ANGLES          1266      6      1
+ CASTEST MODIF sslv135c                      f1bhhaj J.ANGLES          1184      9      1
+ CASTEST MODIF sslv135d                      f1bhhaj J.ANGLES           780      9      1
+CATALOPY MODIF commande/affe_char_meca       vabhhts J.PELLET           789      2      1
+CATALOPY MODIF commande/affe_char_ther       vabhhts J.PELLET           205      2      1
+CATALOPY MODIF commande/calc_fatigue         f1bhhaj J.ANGLES            79      2      1
+CATALOPY MODIF commande/meca_statique        boiteau O.BOITEAU           87      3      2
+    DATG MODIF ascouf_fiss_v4.datg         E.GALENNE 12839              124     23      0
+ FORTRAN AJOUT calculel/dbgobj               vabhhts J.PELLET            81     81      0
+ FORTRAN AJOUT calculel/entco0               cibhhlv L.VIVAN             86     86      0
+ FORTRAN AJOUT calculel/jevecd               vabhhts J.PELLET            70     70      0
+ FORTRAN AJOUT modelisa/corr18               cibhhlv L.VIVAN             85     85      0
+ FORTRAN AJOUT modelisa/hhm018               cibhhlv L.VIVAN             58     58      0
+ FORTRAN AJOUT modelisa/hm0018               cibhhlv L.VIVAN             59     59      0
+ FORTRAN AJOUT modelisa/mode18               cibhhlv L.VIVAN            369    369      0
+ FORTRAN AJOUT modelisa/thh018               cibhhlv L.VIVAN             70     70      0
+ FORTRAN AJOUT modelisa/thhm18               cibhhlv L.VIVAN             69     69      0
+ FORTRAN AJOUT modelisa/thm018               cibhhlv L.VIVAN             67     67      0
+ FORTRAN AJOUT utilitai/foder0               cibhhlv L.VIVAN             50     50      0
+ FORTRAN MODIF algeline/alfeti               boiteau O.BOITEAU          775    231    106
+ FORTRAN MODIF algeline/calsvd               vabhhts J.PELLET           175    110    342
+ FORTRAN MODIF algeline/facsmb               boiteau O.BOITEAU          268     38      2
+ FORTRAN MODIF algeline/preml1               boiteau O.BOITEAU          355     44      5
+ FORTRAN MODIF algeline/preres               boiteau O.BOITEAU          201     19      2
+ FORTRAN MODIF algeline/resfet               boiteau O.BOITEAU          102      5      4
+ FORTRAN MODIF algeline/resoud               boiteau O.BOITEAU          202     17      8
+ FORTRAN MODIF algeline/rslsvd               vabhhts J.PELLET           123     11     13
+ FORTRAN MODIF algeline/tldlg2               boiteau O.BOITEAU          604      9      5
+ FORTRAN MODIF algeline/vtcreb               boiteau O.BOITEAU          132      3      2
+ FORTRAN MODIF algeline/zneigh               vabhhts J.PELLET           269      5      3
+ FORTRAN MODIF algeline/zneupd               vabhhts J.PELLET           930      5      5
+ FORTRAN MODIF algorith/cresol               boiteau O.BOITEAU          296     44      6
+ FORTRAN MODIF algorith/dltins               cibhhlv L.VIVAN            352      4      4
+ FORTRAN MODIF algorith/dltp0                cibhhlv L.VIVAN            134      2      2
+ FORTRAN MODIF algorith/fetccn               boiteau O.BOITEAU          193      4      1
+ FORTRAN MODIF algorith/fetfiv               boiteau O.BOITEAU          190      8      8
+ FORTRAN MODIF algorith/fetggt               boiteau O.BOITEAU          280    126     55
+ FORTRAN MODIF algorith/feting               boiteau O.BOITEAU          196      7      5
+ FORTRAN MODIF algorith/fetinl               boiteau O.BOITEAU          256     77     58
+ FORTRAN MODIF algorith/fetprc               boiteau O.BOITEAU          163      5      8
+ FORTRAN MODIF algorith/fetprj               boiteau O.BOITEAU          261     95     61
+ FORTRAN MODIF algorith/fetreo               boiteau O.BOITEAU          217      2      4
+ FORTRAN MODIF algorith/fetrex               boiteau O.BOITEAU          188     22     31
+ FORTRAN MODIF algorith/fetrin               boiteau O.BOITEAU          507     23     19
+ FORTRAN MODIF algorith/fetsca               boiteau O.BOITEAU          156      2      4
+ FORTRAN MODIF algorith/nmchar               cibhhlv L.VIVAN            463      4      4
+ FORTRAN MODIF algorith/rcmfmc               cibhhlv L.VIVAN            139      3      3
+ FORTRAN MODIF assembla/assmam               boiteau O.BOITEAU          928     21      4
+ FORTRAN MODIF assembla/assvec               boiteau O.BOITEAU          858     19      3
+ FORTRAN MODIF assembla/numero               boiteau O.BOITEAU          354     55     28
+ FORTRAN MODIF calculel/caldbg               vabhhts J.PELLET            89      4     13
+ FORTRAN MODIF calculel/chloet               vabhhts J.PELLET           109      2      2
+ FORTRAN MODIF calculel/cordd2               cibhhlv L.VIVAN            112      3      4
+ FORTRAN MODIF calculel/corddl               cibhhlv L.VIVAN            112      4      3
+ FORTRAN MODIF calculel/creprn               cibhhlv L.VIVAN            313      7      6
+ FORTRAN MODIF calculel/dchlmx               vabhhts J.PELLET           149     21      8
+ FORTRAN MODIF calculel/entcod               cibhhlv L.VIVAN             66     26     61
+ FORTRAN MODIF calculel/exchml               vabhhts J.PELLET           188    113     17
+ FORTRAN MODIF calculel/exresl               vabhhts J.PELLET            90      6      1
+ FORTRAN MODIF calculel/extrai               vabhhts J.PELLET           131      8     19
+ FORTRAN MODIF calculel/imptou               vabhhts J.PELLET           101      5      6
+ FORTRAN MODIF calculel/op0178               vabhhts J.PELLET           151      6      4
+ FORTRAN MODIF calculel/tstobj               vabhhts J.PELLET           208     20      7
+ FORTRAN MODIF calculel/tstvec               vabhhts J.PELLET           201     73     47
+ FORTRAN MODIF calculel/utesto               vabhhts J.PELLET            68      4      3
+ FORTRAN MODIF elements/creso1               boiteau O.BOITEAU          203     18     12
+ FORTRAN MODIF elements/te0018               vabhhts J.PELLET            81      3      3
+ FORTRAN MODIF elements/te0088               vabhhts J.PELLET            95      2      2
+ FORTRAN MODIF elements/te0583               vabhhts J.PELLET           492      2      2
+ FORTRAN MODIF modelisa/alfint               cibhhlv L.VIVAN            208      1      1
+ FORTRAN MODIF modelisa/calirc               vabhhts J.PELLET           536     36      4
+ FORTRAN MODIF modelisa/exlim2               boiteau O.BOITEAU          314      3      1
+ FORTRAN MODIF modelisa/foderi               cibhhlv L.VIVAN            162     53     35
+ FORTRAN MODIF modelisa/limend               cibhhlv L.VIVAN            110      3      3
+ FORTRAN MODIF modelisa/op0018               cibhhlv L.VIVAN            652     28     16
+ FORTRAN MODIF modelisa/rcvale               cibhhlv L.VIVAN            164      3      3
+ FORTRAN MODIF modelisa/tstbar               vabhhts J.PELLET           271      2      2
+ FORTRAN MODIF postrele/i3imas               cibhhlv L.VIVAN            388      3      3
+ FORTRAN MODIF prepost/avcrit                f1bhhaj J.ANGLES           125     36     28
+ FORTRAN MODIF prepost/avgrma                f1bhhaj J.ANGLES           833    186    186
+ FORTRAN MODIF prepost/avgrno                f1bhhaj J.ANGLES           842     10      1
+ FORTRAN MODIF prepost/deltau                f1bhhaj J.ANGLES           816    133    129
+ FORTRAN MODIF prepost/dtauno                f1bhhaj J.ANGLES           840     14      5
+ FORTRAN MODIF prepost/imelnm                cibhhlv L.VIVAN           1202      7      3
+ FORTRAN MODIF prepost/imelnn                cibhhlv L.VIVAN           1406      7      3
+ FORTRAN MODIF prepost/imelnv                cibhhlv L.VIVAN           1009      7      3
+ FORTRAN MODIF prepost/imvelm                cibhhlv L.VIVAN            912      7      3
+ FORTRAN MODIF prepost/imveln                cibhhlv L.VIVAN            830      7      3
+ FORTRAN MODIF prepost/imvelv                cibhhlv L.VIVAN            800      7      3
+ FORTRAN MODIF prepost/proax0                f1bhhaj J.ANGLES            85      5      5
+ FORTRAN MODIF prepost/projax                f1bhhaj J.ANGLES           334     27     20
+ FORTRAN MODIF prepost/raxini                f1bhhaj J.ANGLES           145      8      5
+ FORTRAN MODIF prepost/rnomat                f1bhhaj J.ANGLES           204     35     34
+ FORTRAN MODIF soustruc/cricho               vabhhts J.PELLET           348      4      5
+ FORTRAN MODIF supervis/execop               cibhhlv L.VIVAN            136      5      2
+ FORTRAN MODIF utilitai/utims3               vabhhts J.PELLET           145      2      6
+ FORTRAN MODIF utilitai/utimsd               vabhhts J.PELLET           169      2      4
+ FORTRAN SUPPR jeveux/jeveus                 cibhhlv L.VIVAN             41      0     41
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   12        1621      1621             +1621
+ MODIF :   87       33012      2050    1550      +500
+ SUPPR :    1          41                41       -41
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  100       34674      3671    1591     +2080 

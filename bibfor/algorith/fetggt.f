@@ -1,8 +1,8 @@
       SUBROUTINE FETGGT(NBSD,MATAS,VSDF,VDDL,SDFETI,LRIGID,NBI,COLAUI,
-     &                  NOMGI,NOMGGT,DIMGI)
+     &                  NOMGGT,DIMGI,NOMGI,STOGI,LSTOGI,MAMOY)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,8 +32,12 @@ C     OUT LRIGID: LO  : LOGICAL INDIQUANT LA PRESENCE D'AU MOINS UN
 C         SOUS-DOMAINES FLOTTANT
 C      IN    NBI: IN   : NOMBRE DE NOEUDS D'INTERFACE
 C      IN COLAUI: CH24 : COLLECTION TEMPORAIRE D'ENTIER
-C      IN NOMGI/NOMGGT: CH24: NOMS DES OBJ. JEVEUX CONTENANT GI/GIT*GI
+C      IN NOMGGT: CH24: NOMS DE OBJ. JEVEUX CONTENANT GIT*GI
 C     OUT DIMGI:  IN : TAILLE DE GIT*GI
+C      IN NOMGI: CH24: NOMS DE OBJ. JEVEUX CONTENANT GI (EVENTUELLEMENT)
+C      IN STOGI: CH24: PARAMETRE DE STOCKAGE DE GI
+C     OUT LSTOGI: LO : TRUE, GI STOCKE, FALSE, RECALCULE
+C      IN MAMOY: IN : CRITERE DE STOCKAGE DE GI SI STOGI='CAL' 
 C   -------------------------------------------------------------------
 C     ASTER INFORMATIONS:
 C       01/06/04 (OB): CREATION.
@@ -43,10 +47,10 @@ C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      INTEGER      NBSD,VSDF(NBSD),VDDL(NBSD),NBI,DIMGI
+      INTEGER      NBSD,VSDF(NBSD),VDDL(NBSD),NBI,DIMGI,MAMOY
       CHARACTER*19 MATAS,SDFETI
-      CHARACTER*24 COLAUI,NOMGI,NOMGGT
-      LOGICAL      LRIGID
+      CHARACTER*24 COLAUI,NOMGGT,NOMGI,STOGI
+      LOGICAL      LRIGID,LSTOGI
       
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
@@ -66,9 +70,11 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
-      INTEGER      IFM,NIV,IDD,NBMC,NGI,NGITGI,IDECA3,JGI1,IMC,
-     &             IFETR,NBDDL,NBMC1,IDECAI,K,OPT,IDECAO,IDECAJ,
-     &             I,J,NBSDF,IINF,JGI,JGITGI
+      INTEGER      IFM,NIV,IDD,NBMC,NGI,NGITGI,IDECA3,IMC,
+     &             IFETR,NBDDL,K,OPT,IDECAJ,IMC1,JMC,GII,GIJ,IDECAO,
+     &             I,J,NBSDF,IINF,JGITGI,JDD,IDD1,NBDDLJ,NBMCJ,ICOMPT,
+     &             NBSDFJ,IFETRJ,JGI,NBMC1,IDECAI
+      REAL*8       DDOT,RAUX
       CHARACTER*24 NOMSDR,INFOFE
       CHARACTER*32 JEXNUM
       
@@ -83,8 +89,8 @@ C RECUPERATION DU NIVEAU D'IMPRESSION
 C INITS.
       NOMSDR=MATAS//'.FETR'
       LRIGID=.FALSE.
+      LSTOGI=.FALSE.
       DIMGI=0
-      JGI=-1
       JGITGI=-1
       
 C BOUCLE SUR LES SOUS-DOMAINES POUR CALCULER L'ORDRE DE DE GIT*GI 
@@ -98,94 +104,158 @@ C MONITORING
           WRITE(IFM,*)
           WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
           WRITE(IFM,*)'<FETI/FETGGT> PAS DE MODE DE CORPS RIGIDE'
-        ENDIF
+        ENDIF   
         GOTO 999
       ELSE
-        LRIGID=.TRUE.      
+        LRIGID=.TRUE.
+        RAUX=DIMGI*NBI  
+C DETREMINATION DU STOCKAGE DE GI OU PAS
+        IF (STOGI(1:3).EQ.'OUI') THEN
+          LSTOGI=.TRUE.
+        ELSE IF (STOGI(1:3).EQ.'NON') THEN
+          LSTOGI=.FALSE.
+        ELSE IF (STOGI(1:3).EQ.'CAL') THEN
+          IF (RAUX.LT.MAMOY) THEN
+            LSTOGI=.TRUE.
+          ELSE
+            LSTOGI=.FALSE.        
+          ENDIF
+        ELSE
+          CALL UTMESS('F','FETGGT','VALEUR DE STOGI INCOHERENTE !')     
+        ENDIF     
 C MONITORING
         IF (INFOFE(1:1).EQ.'T') THEN
           WRITE(IFM,*)
           WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
           WRITE(IFM,*)'<FETI/FETGGT> NBRE TOTAL DE CORPS RIGIDES',DIMGI
+          IF (LSTOGI)
+     &      WRITE(IFM,*)'              STOCKAGE GI',LSTOGI,RAUX,MAMOY
         ENDIF      
       ENDIF
 
 C VECTEURS AUXILIAIRES CONTENANT GI ET GIT*GI (STOCKAGE PAR COLONNE
 C AVEC SEULEMENT LA PARTIE TRIANGULAIRE INFERIEURE POUR GIT*GI)
-      NGI=NBI*DIMGI
-      NGITGI=DIMGI*(DIMGI+1)/2      
-      CALL WKVECT(NOMGI,'V V R',NGI,JGI)
+      NGITGI=DIMGI*(DIMGI+1)/2
       CALL WKVECT(NOMGGT,'V V R',NGITGI,JGITGI)
-      JGI1=JGI-1
+      IF (LSTOGI) THEN
+        NGI=NBI*DIMGI      
+        CALL WKVECT(NOMGI,'V V R',NGI,JGI)      
+      ELSE
+        CALL WKVECT('&&FETI.GGT.V1','V V R',NBI,GII)
+        CALL WKVECT('&&FETI.GGT.V2','V V R',NBI,GIJ)      
+      ENDIF
+      OPT=1
+      NBSDF=0        
+
+      IF (LSTOGI) THEN
 C -------------------------------------------------------------------- 
-C CONSTITUTION DE GI
+C CONSTITUTION DE (GI)T*GI EN CONSTRUISANT GI
+C --------------------------------------------------------------------
+C DECALAGE DU VECTEUR OUTPUT DE FETREX (GI)
+        IDECAO=JGI
+        DO 30 IDD=1,NBSD
+
+          NBDDL=VDDL(IDD)
+          NBMC=VSDF(IDD)
+                        
+          IF (NBMC.NE.-1) THEN
+            NBMC1=NBMC-1
+            NBSDF=NBSDF+1
+            CALL JEVEUO(JEXNUM(NOMSDR,NBSDF),'L',IFETR)          
+            IDECAI=IFETR    
+            DO 20 IMC=0,NBMC1         
+              CALL FETREX(OPT,IDD,NBDDL,ZR(IDECAI),NBI,ZR(IDECAO),
+     &                    SDFETI,COLAUI)                    
+              IDECAI=IDECAI+NBDDL
+              IDECAO=IDECAO+NBI
+   20       CONTINUE      
+          ENDIF
+   30   CONTINUE
+
+C MONITORING
+        IF (INFOFE(1:1).EQ.'T')
+     &    WRITE(IFM,*)'<FETI/FETGGT> CONSTRUCTION GI'
+        IF (INFOFE(4:4).EQ.'T') THEN
+          IDECAO=JGI      
+          DO 32 J=1,DIMGI
+            DO 31 I=1,NBI
+              WRITE(IFM,*)'G(I,J)',I,J,ZR(IDECAO)
+              IDECAO=IDECAO+1       
+   31       CONTINUE
+   32     CONTINUE
+        ENDIF
+
+C IL ME SEMBLE QU'IL N'Y A PAS DE ROUTINE BLAS EFFECTUANT GT*G AVEC
+C G MATRICE RECTANGLE ET LE RESULTAT STOCKE DANS UNE MATRICE TRIANG
+C GULAIRE        
+        IDECAO=JGITGI
+        DO 43 J=1,DIMGI
+          IDECAJ=(J-1)*NBI+JGI
+          DO 42 I=J,DIMGI           
+            IDECAI=(I-1)*NBI+JGI
+            ZR(IDECAO)=DDOT(NBI,ZR(IDECAI),1,ZR(IDECAJ),1)
+            IDECAO=IDECAO+1
+   42     CONTINUE
+   43   CONTINUE
+     
+      ELSE         
+C -------------------------------------------------------------------- 
+C CONSTITUTION DE (GI)T*GI SANS CONSTRUIRE GI
 C --------------------------------------------------------------------
 C ----  BOUCLE SUR LES SOUS-DOMAINES
 
-C DECALAGE DU VECTEUR OUTPUT DE FETREX (GI)
-      IDECAO=JGI
 C NOMBRE DE SOUS-DOMAINES FLOTTANTS      
-      NBSDF=0        
-      DO 100 IDD=1,NBSD
-
-C NBRE DE DDL DU SOUS-DOMAINE IDD       
-        NBDDL=VDDL(IDD)
-
-C NOMBRES DE MODES DE CORPS RIGIDES DU SOUS-DOMAINE IDD
-        NBMC=VSDF(IDD)
+        ICOMPT=-1
+        DO 100 IDD=1,NBSD
+      
+          NBDDL=VDDL(IDD)
+          NBMC=VSDF(IDD)
                         
-        IF (NBMC.NE.-1) THEN
+          IF (NBMC.NE.-1) THEN
+            NBSDF=NBSDF+1
+            IDD1=IDD+1
+            CALL JEVEUO(JEXNUM(NOMSDR,NBSDF),'L',IFETR)
+            NBSDFJ=NBSDF+1
+            DO 90 IMC=1,NBMC
+              CALL FETREX(OPT,IDD,NBDDL,ZR(IFETR+(IMC-1)*NBDDL),NBI,
+     &                  ZR(GII),SDFETI,COLAUI)
+              ICOMPT=ICOMPT+1     
+              ZR(JGITGI+ICOMPT)=DDOT(NBI,ZR(GII),1,ZR(GII),1)
+              IMC1=IMC+1
+              DO 60 JMC=IMC1,NBMC
+                ICOMPT=ICOMPT+1       
+                CALL FETREX(OPT,IDD,NBDDL,ZR(IFETR+(JMC-1)*NBDDL),NBI,
+     &                    ZR(GIJ),SDFETI,COLAUI)
+                ZR(JGITGI+ICOMPT)=DDOT(NBI,ZR(GII),1,ZR(GIJ),1)
+   60         CONTINUE
+
+C ----  BOUCLE SUR LES SOUS-DOMAINES JDD > IDD
+              NBSDFJ=NBSDF    
+              DO 80 JDD=IDD1,NBSD
+                NBDDLJ=VDDL(JDD)
+                NBMCJ=VSDF(JDD)
+                IF (NBMCJ.NE.-1) THEN
 C SOUS-DOMAINE FLOTTANT
-          NBMC1=NBMC-1
-          NBSDF=NBSDF+1
+                  NBSDFJ=NBSDFJ+1
 C COMPOSANTES DES MODES DE CORPS RIGIDES
-          CALL JEVEUO(JEXNUM(NOMSDR,NBSDF),'L',IFETR)
-          
-C ----  BOUCLE SUR LES MODES DE CORPS RIGIDES
-C DECALAGE INPUT DE FETREX
-          IDECAI=IFETR    
-          DO 90 IMC=0,NBMC1         
-
-C RESTRICTION DU SOUS-DOMAINE IDD SUR L'INTERFACE: (RIDD) * ...
-            OPT=1
-            CALL FETREX(OPT,IDD,NBDDL,ZR(IDECAI),NBI,ZR(IDECAO),SDFETI,
-     &         COLAUI)
-                    
-C MAJ DES DECALAGES INPUT ET OUTPUT DE FETREX       
-            IDECAI=IDECAI+NBDDL
-            IDECAO=IDECAO+NBI
-   90     CONTINUE      
-        ENDIF
-  100 CONTINUE
-
-C MONITORING
-      IF (INFOFE(1:1).EQ.'T')
-     &  WRITE(IFM,*)'<FETI/FETGGT> CONSTRUCTION GI'
-      IF (INFOFE(4:4).EQ.'T') THEN
-        IDECAO=JGI      
-        DO 102 J=1,DIMGI
-          DO 101 I=1,NBI
-            WRITE(IFM,*)'G(I,J)',I,J,ZR(IDECAO)
-            IDECAO=IDECAO+1       
-  101     CONTINUE
-  102   CONTINUE
+                  CALL JEVEUO(JEXNUM(NOMSDR,NBSDFJ),'L',IFETRJ)
+C ----  BOUCLE SUR LES MODES DE CORPS RIGIDES DE JDD
+                  DO 70 JMC=1,NBMCJ         
+                    ICOMPT=ICOMPT+1           
+                   CALL FETREX(OPT,JDD,NBDDLJ,ZR(IFETRJ+(JMC-1)*NBDDLJ),
+     &                NBI,ZR(GIJ),SDFETI,COLAUI)
+                    ZR(JGITGI+ICOMPT)=DDOT(NBI,ZR(GII),1,ZR(GIJ),1)
+   70             CONTINUE
+                  CALL JELIBE(JEXNUM(NOMSDR,NBSDFJ))
+                ENDIF         
+   80         CONTINUE                       
+   90       CONTINUE
+            CALL JELIBE(JEXNUM(NOMSDR,NBSDF))      
+          ENDIF
+  100   CONTINUE
+        CALL JEDETR('&&FETI.GGT.V1')
+        CALL JEDETR('&&FETI.GGT.V2')  
       ENDIF
-C -------------------------------------------------------------------- 
-C CONSTITUTION DE (GI)T*GI (SEULE LA PARTIE TRIANGULAIRE INFERIEURE
-C EST CALCULEE ET STOCKEE)
-C --------------------------------------------------------------------
-      IDECAO=JGITGI
-      DO 130 J=1,DIMGI
-        IDECAJ=(J-1)*NBI+JGI1   
-        DO 120 I=J,DIMGI
-          ZR(IDECAO)=0.D0
-          IDECAI=(I-1)*NBI+JGI1
-          DO 110 K=1,NBI
-            ZR(IDECAO)=ZR(IDECAO)+ZR(IDECAI+K)*ZR(IDECAJ+K)
-  110     CONTINUE
-          IDECAO=IDECAO+1         
-  120   CONTINUE
-  130 CONTINUE
 
 C MONITORING
       IF (INFOFE(1:1).EQ.'T') THEN
@@ -205,5 +275,6 @@ C MONITORING
         WRITE(IFM,*)    
       ENDIF                
   999 CONTINUE
+  
       CALL JEDEMA()  
       END

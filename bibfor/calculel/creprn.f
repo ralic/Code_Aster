@@ -1,6 +1,6 @@
       SUBROUTINE CREPRN(LIGREZ,MOLOCZ,BASEZ,PRNMZ,PRNSZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/03/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF CALCULEL  DATE 11/01/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C -----  VARIABLES LOCALES
       INTEGER ICODLA,IEC,IEL,IER,IGR,ILLIEL,ILMACO,ILMSCO
       INTEGER IMA,IMODE,INO,INOLD,IRET,ITE,J,K,L,LGNCMP,NBNM
       INTEGER NBNOMS,NBSMA,NBSSA,NEC,NEL,NL,NM,NNOE,NUMA,NUNOEL
-      INTEGER NBGREL,INDIK8,NBNO,NUMAIL,NUMGLM,NUMGLS,NBELEM
+      INTEGER NBGREL,INDIK8,NBNO,NUMAIL,NUMGLM,NUMGLS,NBELEM,IADM,M1
       CHARACTER*1 BASE
       CHARACTER*8 K8BID,NOMA,NOMGD,EXIEL,NOMACR,MOLOC
       CHARACTER*16 NOMTE
@@ -199,6 +199,7 @@ C       ------------------------------
 
 
         IF (IMODE.GT.0) THEN
+          CALL ENTCO0 ( IMODE, IADM, M1 )
           NNOE = NBNO(IMODE)
           NEL = NBELEM(LIGREL,IGR)
           DO 70 J = 1,NEL
@@ -210,7 +211,7 @@ C              -------------------------------------------
               DO 40 K = 1,NNOE
                 NUNOEL = NUMGLM(NUMA,K)
                 DO 30 L = 1,NEC
-                  IEC = ENTCOD(NEC,IMODE,K,L)
+                  IEC = ENTCOD(NEC,IADM,M1,K,L)
                   ZI(IAPRNM-1+NEC* (NUNOEL-1)+
      &              L) = IOR(ZI(IAPRNM-1+NEC* (NUNOEL-1)+L),IEC)
    30           CONTINUE
@@ -223,10 +224,10 @@ C              ------------------------------
               DO 60 K = 1,NNOE
                 NUNOEL = NUMGLS(NUMA,K)
                 DO 50 L = 1,NEC
-                  IEC = ENTCOD(NEC,IMODE,K,L)
+                  IEC = ENTCOD(NEC,IADM,M1,K,L)
                   IF (NUNOEL.GT.0) THEN
-                    ZI(IAPRNM-1+NEC* (NUNOEL-1)+
-     &                L) = IOR(ZI(IAPRNM-1+NEC* (NUNOEL-1)+L),IEC)
+                    ZI(IAPRNM-1+NEC* (NUNOEL-1)+L) = 
+     &                          IOR(ZI(IAPRNM-1+NEC* (NUNOEL-1)+L),IEC)
                   ELSE
                     NUNOEL = -NUNOEL
                     ZI(IAPRNS-1+NEC* (NUNOEL-1)+

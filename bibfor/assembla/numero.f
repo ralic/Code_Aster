@@ -1,6 +1,6 @@
       SUBROUTINE NUMERO(NUPOSS,MODELZ,INFCHZ,SOLVEU,BASE,NU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,8 @@ C DECLARATION VARIABLES LOCALES
      &             I,ILIMA,NBMA,NBSD,IFM,NIV,ILISMA,IBID,ISOLFS,IREFE,
      &             IFETN,NEQUA,NBPB,NCHARF,L,IFLIN,NBCHA,IVLIGR,INUEQ,
      &             NBNO,INLAGR,IDEEQL,NBNOL,J,COMPT,NBNO4,IPRNO,
-     &             NEC2,LPRNO,LDEEQG,INO,ICMP,IINF,NBCHA1
+     &             NEC2,LPRNO,LDEEQG,INO,ICMP,IINF,NBCHA1,IFCPU
+      REAL*8       TEMPS(6)
       CHARACTER*1  K1
       CHARACTER*3  VERIF
       CHARACTER*8  MOLOC,NOMCHA,K8BID,METHOD,NOMSD,MODELE
@@ -92,7 +93,7 @@ C-----------------------------------------------------------------------
       IF (IRET.NE.0) THEN
         CALL JELIRA(LCHARG,'LONMAX',NCHAR,K8BID)
         CALL JEVEUO(LCHARG,'L',JCHAR)
-      END IF
+      ENDIF
       LLIGR = '&&NUMERO.LISTE_LIGREL'
       CALL WKVECT(LLIGR,'V V K24',NCHAR+1,JLLIGR)
       NBLIG = 0
@@ -100,7 +101,7 @@ C-----------------------------------------------------------------------
       IF (IRET.GT.0) THEN
         ZK24(JLLIGR) = MODELE(1:8)//'.MODELE'      
         NBLIG = NBLIG + 1
-      END IF
+      ENDIF
       DO 10 K = 1,NCHAR
         NOMCHA = ZK24(JCHAR+K-1)
         CALL JEVEUO(NOMCHA(1:8)//'.TYPE','L',JTYPCH)
@@ -109,10 +110,10 @@ C-----------------------------------------------------------------------
         IF (IRET.GT.0) THEN
           ZK24(JLLIGR+NBLIG) = NOMLIG(1:19)
           NBLIG = NBLIG + 1
-        END IF
+        ENDIF
    10 CONTINUE
       CALL JEECRA(LLIGR,'LONUTI',NBLIG,K8BID)
-
+      
 C SOLVEUR FETI ?
       CALL JEVEUO(SOLVEU(1:19)//'.SLVK','L',ISLVK)
       METHOD=ZK24(ISLVK)
@@ -123,6 +124,26 @@ C SOLVEUR FETI ?
         LFETI=.FALSE.
         INFOFE='FFFFFFFF'
       ENDIF
+            
+C CALCUL TEMPS  
+      IF ((NIV.GE.2).OR.(LFETI)) THEN
+        CALL UTTCPU(50,'INIT ',6,TEMPS)
+        CALL UTTCPU(50,'DEBUT',6,TEMPS)
+      ENDIF
+C --------------------------------------------------------------
+C CREATION ET REMPLISSAGE DE LA SD NUME_DDL "MAITRE"
+C --------------------------------------------------------------
+      CALL NUMER2(NUPOSS,NBLIG,ZK24(JLLIGR),' ',SOLVEU,BASE,NU,NEQUA)
+             
+      IF ((NIV.GE.2).OR.(LFETI)) THEN
+        CALL UTTCPU(50,'FIN  ',6,TEMPS)
+        WRITE(IFM,*)'TEMPS CPU/SYS FACTORISATION SYM: ',TEMPS(5),
+     &   TEMPS(6)
+        IF (LFETI) THEN
+          CALL JEVEUO('&FETI.INFO.CPU.FACS','E',IFCPU)
+          ZR(IFCPU)=TEMPS(5)+TEMPS(6)
+        ENDIF   
+      ENDIF     
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       IF (LFETI) THEN
@@ -133,7 +154,22 @@ C STRUCTURE DE DONNEES DE TYPE SD_FETI
         VERIF=ZK24(ISLVK+2)
         CALL JEVEUO('&&'//SDFETI(1:17)//'.FINF','L',IINF)
         INFOFE=ZK24(IINF)
-        
+
+C MONITORING
+        IF (INFOFE(1:1).EQ.'T') THEN
+          WRITE(IFM,*)          
+          WRITE(IFM,*)'<FETI/NUMERO> DOMAINE GLOBAL'
+          WRITE(IFM,*)'<FETI/NUMERO> NOMBRE D''EQUATIONS ',NEQUA
+          WRITE(IFM,*)'<FETI/NUMERO> REMPLISSAGE OBJET JEVEUX ',
+     &        NU(1:14)
+        ENDIF   
+        IF (INFOFE(2:2).EQ.'T')
+     &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,NU(1:14),1,' ')
+        IF (INFOFE(1:1).EQ.'T') THEN 
+          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'        
+          WRITE(IFM,*)
+        ENDIF
+
 C VERIFICATION COHERENCE SD_FETI AVEC PARAMETRAGE OPERATEUR
         CALL JEVEUO(SDFETI(1:19)//'.FREF','L',IREFE)
         CALL JELIRA(SDFETI(1:19)//'.FREF','LONMAX',NCHARF,K8BID)
@@ -184,6 +220,7 @@ C CF DISMPH.F
           WRITE (IFM,*)'<FETI/NUMERO> PHENOMENE ',PHENO,MOLOC  
           WRITE(IFM,*)
         ENDIF
+
            
 C PREPARATION BOUCLE SUR LES SOUS-DOMAINES   
         CALL JEVEUO(SDFETI(1:19)//'.FDIM','L',IDIME)
@@ -198,7 +235,12 @@ C CONSTITUTION OBJET STOCKAGE.FETS
                         
 C BOUCLE SUR LES SOUS-DOMAINES --------------------------------------
         DO 30 I=1,NBSD
-        
+
+          IF ((NIV.GE.2).OR.(LFETI)) THEN
+            CALL UTTCPU(50,'INIT ',6,TEMPS)       
+            CALL UTTCPU(50,'DEBUT',6,TEMPS)
+          ENDIF
+          CALL JEMARQ()
           CALL JEVEUO(JEXNUM(NOMSDA,I),'L',ILIMA)
           CALL JELIRA(JEXNUM(NOMSDA,I),'LONMAX',NBMA,K8BID)
           
@@ -273,20 +315,19 @@ C MONITORING
           ENDIF 
           IF (INFOFE(2:2).EQ.'T') 
      &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,NOMFE2(1:14),1,' ')
-     
+          IF ((NIV.GE.2).OR.(LFETI)) THEN
+            CALL UTTCPU(50,'FIN  ',6,TEMPS)
+            WRITE(IFM,*)'TEMPS CPU/SYS FACTORISATION SYM: ',TEMPS(5),
+     &        TEMPS(6)
+            ZR(IFCPU+I)=TEMPS(5)+TEMPS(6)
+          ENDIF
+          CALL JEDEMA()
    30   CONTINUE
 
-
-C FIN DE IF METHOD='FETI'               
+C FIN DE IF METHOD='FETI'              
       ENDIF
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-
-C --------------------------------------------------------------
-C CREATION ET REMPLISSAGE DE LA SD NUME_DDL "MAITRE"
-C --------------------------------------------------------------
-      CALL NUMER2(NUPOSS,NBLIG,ZK24(JLLIGR),' ',SOLVEU,BASE,NU,NEQUA)
-      CALL JEDETR(LLIGR)
 
       IF (LFETI) THEN
 C POUR EVITER QUE LA RECONSTRUCTION DU CHAMP GLOBAL SOIT FAUSSE DANS
@@ -308,20 +349,6 @@ C SOUS-STRUCTURATION QUI EST ILLICITE AVEC FETI, MAIS ON NE SAIT JAMAIS)
           ENDIF 
    40   CONTINUE
       ENDIF
-            
-C MONITORING
-          IF (INFOFE(1:1).EQ.'T') THEN
-            WRITE(IFM,*)          
-            WRITE(IFM,*)'<FETI/NUMERO> DOMAINE GLOBAL'
-            WRITE(IFM,*)'<FETI/NUMERO> NOMBRE D''EQUATIONS ',NEQUA
-            WRITE(IFM,*)'<FETI/NUMERO> REMPLISSAGE OBJET JEVEUX ',
-     &        NU(1:14)
-          ENDIF   
-          IF (INFOFE(2:2).EQ.'T')
-     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,NU(1:14),1,' ')
-          IF (INFOFE(1:1).EQ.'T') THEN 
-            WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'        
-            WRITE(IFM,*)
-          ENDIF       
+      CALL JEDETR(LLIGR)            
       CALL JEDEMA()
       END

@@ -3,7 +3,7 @@
       REAL*8    T0
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ALGORITH  DATE 11/01/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,7 +106,7 @@ C     --- DEFINITION DES INSTANTS DE CALCUL A PARTIR DE "LIST_INST" ---
 C
          CALL GETVID('INCREMENT','LIST_INST',1,1,1,LI,N1)
          IF (N1.NE.0) THEN
-            CALL JEVEUT(LI//'           .BINT','L',JBINT)
+            CALL JEVEUO(LI//'           .BINT','L',JBINT)
             T0 = ZR (JBINT)
          ELSE
 C

@@ -5,7 +5,7 @@
      +     NRL,DEB,VOIS,SUIT,IER,NEC,PRNO,DEEQ,
      &     NOEUD,DDL,INVPND,PERMND,SPNDND,XADJD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ALGELINE  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,8 +34,8 @@ C     TOLE CRP_21
       INTEGER DEB(*),VOIS(*),SUIT(*),IER
       INTEGER NOEUD(*),DDL(*), PERMND(*), INVPND(*),SPNDND(*),XADJD(*)
 C     VARIABLES LOCALES
-      INTEGER I,J,FIN,IDELTA,MAXINT,NADJ
-      INTEGER N2,FCTNZS,INNZ,NUMI,NUMJ,NUML,NUM,II
+      INTEGER I,J,FIN,IDELTA,MAXINT,NADJ,NBSD1,IFET3,IFET4,S1,S2
+      INTEGER N2,FCTNZS,INNZ,NUMI,NUMJ,NUML,NUM,II,IRET,IFET1,IFET2
       REAL*8 NBOPS
       INTEGER NNZ(1:NEQ),QSIZE(NEQ),LLIST(NEQ),SUIV(NEQ)
       INTEGER LIBRE,IOVFLO,NCMPA,IFM,NIV,P(NEQ),Q(N2),NRL
@@ -52,6 +52,23 @@ C     INTEGER NOEUD(1:MAXDDL), DDL(1:MAXND), INVPND(1:MAXND)
 C     INTEGER PERMND(1:MAXND), SPNDND(1:MAXND)
       INTEGER NDI, NDJ, PAS, K,  NDANC, IDDL, SNI, IND, NDDL
       INTEGER AD,ADD, ITEM,ITEMM,NDD
+
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C****************************************************************
 C     CALL UTTCPU(2,'DEBUT',6,TEMPS)
 C****************************************************************
@@ -300,17 +317,39 @@ C     *  'TEMPS CPU',TEMPS(3),
 C     *  ' + TEMPS CPU SYSTEME ',TEMPS(6)
       ENDIF
       FCTNZS = FCTNZS + NEQ
+
       IF (NIV.GE.1) THEN
          WRITE(IFM,*)'--- RESULTATS DE LA RENUMEROTATION : '
          WRITE(IFM,*)'   --- NOMBRE DE NOEUDS ',NBND
          WRITE(IFM,*)'   --- LONGUEUR DE LA MATRICE INITIALE ',DIAG(NEQ)
          WRITE(IFM,*)'   --- NOMBRE DE SUPERNOEUDS ',NBSN
-         WRITE(IFM,*)'   --- LONGUEUR DE LA FACTORISEE ',
-     %        '(SANS REL LIN) ',FCTNZS
          IF(OPTNUM.EQ.2) THEN
             WRITE(IFM,*)'   --- NOMBRE D''OP. FLOTTANTES ',NBOPS
          ENDIF
-      ENDIF
 
+C STOCKAGE INFO SI FETI
+       ENDIF
+       CALL JEEXIN('&FETI.INFO.STOCKAGE.FIDD',IRET)
+       IF (IRET.NE.0) THEN
+         CALL JEVEUO('&FETI.INFO.STOCKAGE.FIDD','E',IFET1)
+         NBSD1=ZI(IFET1+1)-1
+         IFET2=ZI(IFET1)
+         CALL JEVEUO('&FETI.INFO.STOCKAGE.FVAL','E',IFET3)
+         ZI(IFET3+IFET2)=DIAG(NEQ)
+         CALL JEVEUO('&FETI.INFO.STOCKAGE.FNBN','E',IFET4)
+         ZI(IFET4+IFET2)=NBND
+         IF (IFET2.EQ.NBSD1) THEN
+           S1=0
+           S2=0
+           DO 450 I=0,NBSD1
+             S1=S1+ZI(IFET3+I)
+             S2=S2+ZI(IFET4+I)            
+  450      CONTINUE
+           ZI(IFET3+NBSD1+1)=S1
+           ZI(IFET4+NBSD1+1)=S2
+         ENDIF
+         ZI(IFET1)=-IFET2        
+       ENDIF
+      
  999  CONTINUE
       END

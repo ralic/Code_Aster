@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 11/01/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ======================================================================
 C RESPONSABLE                            VABHHTS J.PELLET
 C     ARGUMENTS:
 C     ----------
-      INTEGER NIN,NOU
+      INTEGER NIN,NOU,I,IRET
       CHARACTER*(*) LCHIN(*),LCHOU(*),OPTION
 C ----------------------------------------------------------------------
 C     BUT : IMPRIMER SUR UNE LIGNE LA VALEUR
@@ -30,8 +30,6 @@ C           DES CHAMPS "IN" ET "OUT" AFIN DE COMPARER 2 VERSIONS
 C ----------------------------------------------------------------------
       CHARACTER*19 CHAMP
       CHARACTER*24 OJB
-      CHARACTER*3 TYPE
-      INTEGER SOMMI,RESUME,LONMAX,LONUTI,I,IRET
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
@@ -67,9 +65,7 @@ C     -----------------------------------------------------
         CALL EXISD('RESUELEM',CHAMP,IRET)
         IF (IRET.GT.0) OJB = CHAMP//'.RESL'
 
-        CALL TSTOBJ(OJB,RESUME,SOMMI,SOMMR,LONUTI,LONMAX,TYPE,IRET)
-        WRITE (6,1001) 'AJACO|',OJB,LONMAX,LONUTI,TYPE,IRET,RESUME,
-     &    SOMMI,SOMMR
+        CALL DBGOBJ(OJB,'OUI',6,'&&CALCUL')
    10 CONTINUE
 
 
@@ -85,14 +81,9 @@ C     -----------------------------------------------------
         CALL EXISD('RESUELEM',CHAMP,IRET)
         IF (IRET.GT.0) OJB = CHAMP//'.RESL'
 
-        CALL TSTOBJ(OJB,RESUME,SOMMI,SOMMR,LONUTI,LONMAX,TYPE,IRET)
-        WRITE (6,1001) 'AJACO|',OJB,LONMAX,LONUTI,TYPE,IRET,RESUME,
-     &    SOMMI,SOMMR
+        CALL DBGOBJ(OJB,'OUI',6,'&&CALCUL')
    20 CONTINUE
-
-
 
       CALL JEDEMA()
 
- 1001 FORMAT (A10,A25,I8,I8,A4,I7,I24,I24,E17.8)
       END

@@ -3,7 +3,7 @@
       CHARACTER*24  LISPAS, LIBINT, LINBPA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ALGORITH  DATE 11/01/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,10 +111,10 @@ C     --- DEFINITION DES INSTANTS DE CALCUL A PARTIR DE "LIST_INST" ---
 C
       CALL GETVID('INCREMENT','LIST_INST',1,1,1,LI,N1)
       IF (N1.NE.0) THEN
-         CALL JEVEUT(LI//'           .LPAS','L',JLPAS)
-         CALL JEVEUT(LI//'           .NBPA','L',JNBPA)
+         CALL JEVEUO(LI//'           .LPAS','L',JLPAS)
+         CALL JEVEUO(LI//'           .NBPA','L',JNBPA)
          CALL JEVEUO(LI//'           .VALE','L',JVALE)
-         CALL JEVEUT(LI//'           .BINT','L',JBINT)
+         CALL JEVEUO(LI//'           .BINT','L',JBINT)
          CALL JELIRA(LI//'           .VALE','LONUTI',NBINST,K1BID)
          CALL JELIRA(LI//'           .NBPA','LONUTI',NBGRPA,K1BID)
          LISPAS = LI//'           .LPAS'

@@ -10,7 +10,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 11/01/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -276,7 +276,7 @@ CCC         MXSGEL = MXSGEL + 100
             CALL JEVEUO(ROM9,'E',AROM9)
             DO 20, I = 1, PTSGEL, 1
                CALL JELIRA(JEXNUM(ROM1,I),'LONMAX',N1,K1BID)
-               CALL JEVEUT(JEXNUM(ROM1,I),'L',I2)
+               CALL JEVEUO(JEXNUM(ROM1,I),'L',I2)
                CALL JECROC(JEXNUM('&&I3IMAS.XD.TMP',I))
                CALL JEECRA(JEXNUM('&&I3IMAS.XD.TMP',I),'LONMAX',N1,' ')
                CALL JEVEUO(JEXNUM('&&I3IMAS.XD.TMP',I),'E',I1)
@@ -289,7 +289,7 @@ CCC         MXSGEL = MXSGEL + 100
             DO 30, I = 1, PTSGEL, 1
                CALL JELIRA(JEXNUM('&&I3IMAS.XD.TMP',I),'LONMAX',
      +                     N1,K1BID)
-               CALL JEVEUT(JEXNUM('&&I3IMAS.XD.TMP',I),'L',I2)
+               CALL JEVEUO(JEXNUM('&&I3IMAS.XD.TMP',I),'L',I2)
                CALL JECROC(JEXNUM(ROM1,I))
                CALL JEECRA(JEXNUM(ROM1,I),'LONMAX',N1,' ')
                CALL JEVEUO(JEXNUM(ROM1,I),'E',I1)

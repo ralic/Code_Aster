@@ -1,7 +1,7 @@
       SUBROUTINE FETREX(OPTION,IDD,NI,VI,NO,VO,SDFETI,COLAUI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -63,7 +63,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C DECLARATION VARIABLES LOCALES
       INTEGER      IAUX1,IAUX2,IAUX3,J,IFETG,LONG,MOD,IFETB,IFETI,ICOL,
      &             NDDLCI,NBDDLI,IAUX21,IAUX31,NUMGD,NDDLCD,IFETJ,
-     &             NBDDLD,K,IFM,NIV,VAL(2),I,IINF
+     &             NBDDLD,K,IFM,NIV,VAL(2),I,IINF,TESTA
       REAL*8       SIGN,RAUX2,RSIGN,UN
       CHARACTER*24 INFOFE
       CHARACTER*32 JEXNUM
@@ -106,15 +106,15 @@ C ----  OPERATEUR DE RESTRICTION RI/EXTRACTION (RI)T
 C ----------------------------------------------------------------------
 
 C MONITORING
-        IF (INFOFE(1:1).EQ.'T') THEN
-          WRITE(IFM,*)
-          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
-          IF (OPTION.EQ.1) THEN
-            WRITE(IFM,*)'<FETI/FETREX> OP. DE RESTRICTION RI I= ',IDD
-          ELSE
-            WRITE(IFM,*)'<FETI/FETREX> OP. D''EXTRACTION (RI)T I= ',IDD
-          ENDIF       
-        ENDIF                   
+C        IF (INFOFE(1:1).EQ.'T') THEN
+C          WRITE(IFM,*)
+C          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
+C          IF (OPTION.EQ.1) THEN
+C            WRITE(IFM,*)'<FETI/FETREX> OP. DE RESTRICTION RI I= ',IDD
+C          ELSE
+C            WRITE(IFM,*)'<FETI/FETREX> OP. D''EXTRACTION (RI)T I= ',IDD
+C          ENDIF       
+C        ENDIF                   
         DO 20 J=0,LONG
 
           IAUX1=IFETG+2*J
@@ -128,7 +128,6 @@ C POUR CALCULS AUXILIAIRES
           RSIGN=SIGN(UN,RAUX2)                  
           IAUX2=ABS(IAUX2)
           IAUX21=IFETI+4*(IAUX2-1)
-
 C LE NBRE DE DDLS CUMULES AVANT LUI (NDDLCI)
 C DANS LE VECTEUR D'INTERFACE/ SON NBRE DE DDLS (NBDDLI)
           NDDLCI=ZI(IAUX21+2)
@@ -137,38 +136,30 @@ C DANS LE VECTEUR D'INTERFACE/ SON NBRE DE DDLS (NBDDLI)
           ELSE
             NBDDLI=NDDLCI-ZI(IAUX21-2)
           ENDIF
-          NDDLCI=NDDLCI-NBDDLI    
+          NDDLCI=NDDLCI-NBDDLI+1    
 
 C NBRE DE DDLS CUMULES AVANT LUI DANS LE VECTEUR LOCAL AU SOUS-DOMAINE 
 C PROF_CHNO(IDD) (NDDLCD)/ SON NOMBRE DE DDLS (NBDDLD)            
-          NDDLCD=ZI(ICOL+2*J)-1
+          NDDLCD=ZI(ICOL+2*J)
           NBDDLD=ZI(ICOL+2*J+1)                   
                           
 C MONITORING
-C          IF (NIV.GE.5) THEN
-C            WRITE(IFM,*)IDD,ZI(IAUX21),RSIGN
+C            WRITE(IFM,*)IDD,ZI(IAUX21),RSIGN,NO,NI
 C            WRITE(IFM,*)NDDLCI,NBDDLI,NDDLCD,NBDDLD
-C          ENDIF
                   
 C TEST DE COHERENCE DES DONNEES INDIVIDUELLEMENT
-          CALL ASSERT(NDDLCI.GE.0)        
-          CALL ASSERT(NBDDLI.GT.0)
-          CALL ASSERT(NDDLCD.GE.0)        
-          CALL ASSERT(NBDDLD.GT.0)
+          TESTA=NDDLCI*NBDDLI*NDDLCD*NBDDLD
+          CALL ASSERT(TESTA.GT.0)
                                   
 C TEST DE COHERENCE DES NOMBRES DE DDLS
           CALL ASSERT(NBDDLI.EQ.NBDDLD)   
 
           IF (OPTION.EQ.1) THEN
-C RESTRICTION   
-            DO 13 K=1,NBDDLD      
-              VO(NDDLCI+K)=VO(NDDLCI+K)+RSIGN*VI(NDDLCD+K)
-   13       CONTINUE
+C RESTRICTION
+            CALL DAXPY(NBDDLD,RSIGN,VI(NDDLCD),1,VO(NDDLCI),1)   
           ELSE
 C EXTRACTION
-            DO 16 K=1,NBDDLI      
-              VO(NDDLCD+K)=VO(NDDLCD+K)+RSIGN*VI(NDDLCI+K)
-   16       CONTINUE      
+            CALL DAXPY(NBDDLI,RSIGN,VI(NDDLCI),1,VO(NDDLCD),1)
           ENDIF
                                                   
    20   CONTINUE
@@ -189,9 +180,9 @@ C MONITORING
           WRITE(IFM,*)I,'  ',VO(I)
    31   CONTINUE          
       ENDIF
-      IF (INFOFE(1:1).EQ.'T') THEN        
-        WRITE(IFM,*)
-        WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
-      ENDIF
+C      IF (INFOFE(1:1).EQ.'T') THEN        
+C        WRITE(IFM,*)
+C        WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
+C      ENDIF
       CALL JEDEMA()
       END

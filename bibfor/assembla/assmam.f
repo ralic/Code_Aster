@@ -10,7 +10,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,8 +78,9 @@ C-----------------------------------------------------------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
       INTEGER      NMALIL,IMO,ILAGR,ILIMO,NBNO,EPDMS,JPDMS,NBEC,NLILI,
      &             NBREFN,NBSD,IFETM,IDD,IFETN,IDIME,ILIGRP,GD,NEC,IINF,
-     &             DIGDEL,ILIGRT,ILIGRB,IRET1,ILIGRC,IFEL1,IFEL2,IFEL3
-      REAL*8       R,RINF,RSUP
+     &             DIGDEL,ILIGRT,ILIGRB,IRET1,ILIGRC,IFEL1,IFEL2,IFEL3,
+     &             IFCPU
+      REAL*8       R,RINF,RSUP,TEMPS(6)
       LOGICAL      CUMUL,ACREER,LFETI,LLIMO,LLICH,LLICHD
 
 C-----------------------------------------------------------------------
@@ -278,7 +279,10 @@ C STOCKE &&//NOMPRO(1:6)//'_M.' POUR COHERENCE AVEC L'EXISTANT
 C ADRESSE JEVEUX DE L'OBJET SDFETI(1:8)//'.MAILLE.NUMSD'
         NOMLOG=SDFETS(1:8)//'.MAILLE.NUMSD' 
         CALL JEVEUO(NOMLOG,'L',ILIGRP)
-        ILIGRP=ILIGRP-1         
+        ILIGRP=ILIGRP-1
+
+C ADRESSE JEVEUX OBJET AFFICHAGE CPU
+        CALL JEVEUO('&FETI.INFO.CPU.ASSE','E',IFCPU)
       ENDIF
 
 C==========================
@@ -286,7 +290,13 @@ C BOUCLE SUR LES SOUS-DOMAINES:
 C==========================
 C IDD=0 --> DOMAINE GLOBAL/ IDD=I --> IEME SOUS-DOMAINE
       DO 320 IDD = 0,NBSD
-          
+C ATTENTION SI FETI LIBERATION MEMOIRE PREVUE EN FIN DE BOUCLE     
+        IF (LFETI) CALL JEMARQ()
+C CALCUL TEMPS  
+        IF ((NIV.GE.2).OR.(LFETI)) THEN
+          CALL UTTCPU(90,'INIT ',6,TEMPS)
+          CALL UTTCPU(90,'DEBUT',6,TEMPS)
+        ENDIF          
 C---- RECUPERATION DE PRNO/LILI/HCOL/ADIA/DESC
         IF (IDD.EQ.0) THEN
 C SI DOMAINE GLOBAL FETI
@@ -895,8 +905,15 @@ C MONITORING
         IF ((INFOFE(3:3).EQ.'T') .AND. (IDD.EQ.NBSD))
      &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,MATDEV(1:19),1,' ')
 
+        IF ((NIV.GE.2).OR.(LFETI)) THEN
+          CALL UTTCPU(90,'FIN  ',6,TEMPS)
+          WRITE(IFM,*)'TEMPS CPU/SYS ASSEMBLAGE M: ',TEMPS(5),TEMPS(6)
+          IF (LFETI) ZR(IFCPU+IDD)=ZR(IFCPU+IDD)+TEMPS(5)+TEMPS(6)
+        ENDIF
+              
 C---- FIN BOUCLE SUR LES SOUS-DOMAINES:
 C--------------------------------------
+        IF (LFETI) CALL JEDEMA()
   320 CONTINUE
 
       CALL JEDETR(MATDEV//'.ADNE')

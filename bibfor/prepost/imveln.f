@@ -1,7 +1,7 @@
       SUBROUTINE IMVELN ( IFM, NOMSDZ, NBCMP, LISCMZ,
      +                    NBELEM, LISMAZ, NBCHIF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 11/01/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -387,6 +387,8 @@ C        ---------------------------------------------------------
 C
           IF (MODE.GT.0) THEN
 C
+           CALL ENTCO0 ( MODE, IADM, M1 )
+C
 C ---      RECUPERATION DU NOMBRE DE CONNECTIVITES DES ELEMENTS DU GREL:
 C          ------------------------------------------------------------
             NNOE = NBNO(MODE)
@@ -399,7 +401,7 @@ C          -----------------------
               NBCMNO = 0
               DO 60 ICMP = 1, NCMPMX
                 DO 70 IEC = 1, NEC
-                  DG(IEC) = ENTCOD(NEC,MODE,INO,IEC)
+                  DG(IEC) = ENTCOD(NEC,IADM,M1,INO,IEC)
   70            CONTINUE
                 IF (EXISDG(DG,ICMP)) THEN
                     NBCMNO = NBCMNO + 1
@@ -610,6 +612,8 @@ C        ---------------------------------------------------------
 C
           IF (MODE.GT.0) THEN
 C
+           CALL ENTCO0 ( MODE, IADM, M1 )
+C
 C ---      RECUPERATION DU NOMBRE DE CONNECTIVITES DES ELEMENTS DU GREL:
 C          ------------------------------------------------------------
             NNOE = NBNO(MODE)
@@ -622,7 +626,7 @@ C          -----------------------
               NBCMNO = 0
               DO 180 ICMP = 1, NCMPMX
                 DO 190 IEC = 1, NEC
-                  DG(IEC) = ENTCOD(NEC,MODE,INO,IEC)
+                  DG(IEC) = ENTCOD(NEC,IADM,M1,INO,IEC)
  190            CONTINUE
                 IF (EXISDG(DG,ICMP)) THEN
                     NBCMNO = NBCMNO + 1

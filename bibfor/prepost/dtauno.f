@@ -1,7 +1,7 @@
       SUBROUTINE DTAUNO(JRWORK, LISNOE, NBNOT, NBORDR, NNOINI, NBNOP,
      &                  NUMPAQ, TSPAQ, NOMMET, NOMCRI, NOMMAI, CNSR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/11/2004   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 10/01/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -84,7 +84,7 @@ C     ------------------------------------------------------------------
       INTEGER      NBPAR, ICMP, ADRS, KWORK, SOMNOW, CNBNO
 C
       REAL*8       EPSILO, DGAM, GAMMA, PI, R8PI, DPHI, TAB1(18), PHI
-      REAL*8       GAMMAM, PHIM, DGAM2, DPHI2, DTAUM(2)
+      REAL*8       COEPRE, GAMMAM, PHIM, DGAM2, DPHI2, DTAUM(2)
       REAL*8       NXM(2), NYM(2), NZM(2)
       REAL*8       SIXX, SIYY, SIZZ, SIXY, SIXZ, SIYZ, FXM(2), FYM(2)
       REAL*8       FZM(2), EPSXX, EPSYY, EPSZZ, EPSXY, EPSXZ, EPSYZ
@@ -149,6 +149,10 @@ C DESTINE A RECEVOIR LES RESULTATS : DTAUM, ....
       CALL JEVEUO(CNSR//'.CNSD','L',JCNRD)
       CALL JEVEUO(CNSR//'.CNSL','E',JCNRL)
       CALL JEVEUO(CNSR//'.CNSV','E',JCNRV)
+
+C RECUPERATION DU COEFFICIENT DE PRE-ECROUISSAGE DONNE PAR L'UTILISATEUR
+
+      CALL GETVR8(' ','COEF_PREECROU',1,1,1,COEPRE,IRET)
 
 C RECUPERATION MAILLE PAR MAILLE DU MATERIAU DONNE PAR L'UTILISATEUR
 
@@ -731,17 +735,22 @@ C ---------------------------------------------------------------------
 
 C 1/ CRITERE DE MATAKE
                IF (NOMCRI(1:6) .EQ. 'MATAKE') THEN
-                  SIGEQ(K) = DTAUM(K) + (VALA*NORMAX(K))
-                  SIGEQ(K) = SIGEQ(K)*COEFPA
+                  IF ( (VALA*NORMAX(K)) .GT. 0.0D0 ) THEN
+                     SIGEQ(K) = COEPRE*DTAUM(K) + (VALA*NORMAX(K))
+                     SIGEQ(K) = SIGEQ(K)*COEFPA
+                  ELSE
+                     SIGEQ(K) = COEPRE*DTAUM(K)
+                     SIGEQ(K) = SIGEQ(K)*COEFPA
+                  ENDIF
                ENDIF
 
 C 2/ CRITERE DE DANG VAN
                IF (NOMCRI(1:16) .EQ. 'DANG_VAN_MODI_AC') THEN
                   IF ( (VALA*PHYDRM) .GT. 0.0D0 ) THEN
-                     SIGEQ(K) = DTAUM(K) + (VALA*PHYDRM)
+                     SIGEQ(K) = COEPRE*DTAUM(K) + (VALA*PHYDRM)
                      SIGEQ(K) = SIGEQ(K)*COEFPA
                   ELSE
-                     SIGEQ(K) = DTAUM(K)
+                     SIGEQ(K) = COEPRE*DTAUM(K)
                      SIGEQ(K) = SIGEQ(K)*COEFPA
                   ENDIF
                ENDIF

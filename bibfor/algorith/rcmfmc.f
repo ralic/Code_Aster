@@ -3,7 +3,7 @@
       CHARACTER*(*)       CHMAT , MATE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 11/01/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,8 +117,8 @@ C
   11  CONTINUE
       
       CODI = ' '
-      CALL JEVEUT(MATERI//'.MATE_CODE.GRP' ,'L',IGRP)
-      CALL JEVEUT(MATERI//'.MATE_CODE.NGRP','L',INGRP)
+      CALL JEVEUO(MATERI//'.MATE_CODE.GRP' ,'L',IGRP)
+      CALL JEVEUO(MATERI//'.MATE_CODE.NGRP','L',INGRP)
       ICOMPT=0
       DO 10 KK = 1,NBGRP
          NBMAT=ZI(INGRP-1+KK)

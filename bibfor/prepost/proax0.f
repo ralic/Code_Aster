@@ -1,6 +1,6 @@
       SUBROUTINE PROAX0( UI, VI, CSTA, CSTB, A1, B1, U0, V0, RPAX )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/07/2004   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 10/01/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -61,11 +61,11 @@ C     ------------------------------------------------------------------
       REAL*8       UP, VP, VAL
 C-----------------------------------------------------------------------
 C234567                                                              012
-C
+
       CALL JEMARQ()
-C
+
       RPAX = 0.0D0
-C
+
       UIP = UI + 1.0D0
       VIP = VI - (CSTA/CSTB)*(UIP-UI)
 
@@ -80,6 +80,6 @@ C
          VAL = -VAL
       ENDIF
       RPAX = VAL
-C
+
       CALL JEDEMA()
       END

@@ -2,7 +2,7 @@
      +                    CHASOL, CRITEZ )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,9 +69,9 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C VARIABLES LOCALES
-      INTEGER      NBSD,IDIME,IDD,IFETC,IFETM,IBID 
-      REAL*8       TESTCO     
-      CHARACTER*24 METRES,SDFETI,TYREOR,PRECO,SCALIN
+      INTEGER      NBSD,IDIME,IDD,IFETC,IFETM,IBID,IFM,NIV 
+      REAL*8       TESTCO,TEMPS(6)     
+      CHARACTER*24 METRES,SDFETI,TYREOR,PRECO,SCALIN,STOGI
       CHARACTER*19 MATAS,MAPREC,CHSOL,PCHN1,PCHN2,ARG1,ARG2,CHSECM
       CHARACTER*4  ETAMAT
       LOGICAL      IDENSD,LFETI
@@ -79,7 +79,8 @@ C VARIABLES LOCALES
 C CORPS DU PROGRAMME
       CALL JEMARQ()
       CALL JEDBG2(IDBGAV,0)
-
+      CALL INFNIV(IFM,NIV) 
+      
       MATAS = MATASS
       MAPREC = MATPRE
       CHSOL = CHASOL
@@ -134,7 +135,10 @@ C     -----------------------------------------------
          ENDIF
    10 CONTINUE
 
-
+      IF ((NIV.GE.2).OR.(LFETI)) THEN
+        CALL UTTCPU(53,'INIT ',6,TEMPS)
+        CALL UTTCPU(53,'DEBUT',6,TEMPS)
+      ENDIF
       IF (METRES.EQ.'LDLT'.OR.METRES.EQ.'MULT_FRO'.OR.
      &    METRES.EQ.'FETI') THEN
      
@@ -168,8 +172,9 @@ C     -----------------------------------------------
            PRECO=ZK24(ISLVK+1)                     
            TYREOR=ZK24(ISLVK+6)
            SCALIN=ZK24(ISLVK+7)
+           STOGI=ZK24(ISLVK+8)
            CALL RESFET(SDFETI(1:19),MATAS,CHCINE(1:19),CHSECM,CHSOL,
-     &       NITER,EPSI,CRITER,TESTCO,NBREOR,TYREOR,PRECO,SCALIN)   
+     &       NITER,EPSI,CRITER,TESTCO,NBREOR,TYREOR,PRECO,SCALIN,STOGI)
          ENDIF
 
       ELSE IF (METRES.EQ.'GCPC') THEN
@@ -181,13 +186,17 @@ C     ----------------------------------
          IREP=1
          CALL RESGRA ( CHSOL, MATAS, CHSECM, CHCINE, MAPREC,
      +                 BASE, IREP, NITER, EPSI, CRITER )
-C
+
       ELSE
           CALL UTMESS('F','RESOUD',' LA METHODE DE RESOLUTION: '//
      +                     METRES//' EST INCONNUE. ON ATTEND LDLT'//
      +                             ',GCPC, MULT_FRO OU FETI')
       ENDIF
-C
+      IF ((NIV.GE.2).OR.(LFETI)) THEN
+        CALL UTTCPU(53,'FIN  ',6,TEMPS)
+        WRITE(IFM,*)'TEMPS CPU/SYS SOLVEUR: ',TEMPS(5),TEMPS(6)
+      ENDIF      
+
       CALL JEDBG2(IBID,IDBGAV)
       CALL JEDEMA()
       END

@@ -1,7 +1,7 @@
       SUBROUTINE FETSCA(NBI,VI,VO,SCALIN,SDFETI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -87,9 +87,7 @@ C MONITORING
 C ----------------------------------------------------------------------
 C ----  PAS DE SCALING
 C ----------------------------------------------------------------------
-        DO 10 I=1,NBI
-          VO(I)=VI(I)
-   10   CONTINUE
+        CALL DCOPY(NBI,VI,1,VO,1)
          
       ELSE IF (SCALIN(1:4).EQ.'MULT') THEN
 C ----------------------------------------------------------------------

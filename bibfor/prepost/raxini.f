@@ -2,7 +2,7 @@
      &                   UMIN, UMAX, VMIN, VMAX, AXEINI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/07/2004   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 10/01/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -91,16 +91,18 @@ C
       AMAXS2 = 0.0D0
       AMAXS4 = 0.0D0
 
+C      WRITE(6,*)'RAXINI => NPTSEC(2) = ',NPTSEC(2)
       DO 10 I=1, NPTSEC(2)
         UI = VSEC2(2*I - 1)
-        UI = VSEC2(2*I)
+        VI = VSEC2(2*I)
+C        WRITE(6,*)'RAXINI => UI, VI = ',UI, VI
         CALL PROAX0(UI, VI, CSTA, CSTB, A1, B1, U0, V0, RPAX1)
         IF (RPAX1 .GT. AMAXS2) AMAXS2 = RPAX1
  10   CONTINUE
 
       DO 20 I=1, NPTSEC(4)
         UI = VSEC4(2*I - 1)
-        UI = VSEC4(2*I)
+        VI = VSEC4(2*I)
         CALL PROAX0(UI, VI, CSTA, CSTB, A1, B1, U0, V0, RPAX1)
         IF (RPAX1 .LT. AMAXS4) AMAXS4 = RPAX1
  20   CONTINUE
@@ -116,14 +118,14 @@ C
 
       DO 30 I=1, NPTSEC(1)
         UI = VSEC1(2*I - 1)
-        UI = VSEC1(2*I)
+        VI = VSEC1(2*I)
         CALL PROAX0(UI, VI, CSTA, CSTB, A1, B1, U0, V0, RPAX2)
         IF (RPAX2 .LT. AMAXS1) AMAXS1 = RPAX2
  30   CONTINUE
 
       DO 40 I=1, NPTSEC(3)
         UI = VSEC3(2*I - 1)
-        UI = VSEC3(2*I)
+        VI = VSEC3(2*I)
         CALL PROAX0(UI, VI, CSTA, CSTB, A1, B1, U0, V0, RPAX2)
         IF (RPAX2 .GT. AMAXS3) AMAXS3 = RPAX2
  40   CONTINUE
@@ -132,6 +134,7 @@ C CALCUL DE L'AMPLITUDE MAX SUR CHACUN DES AXES
 C
       AMP1 = AMAXS2 - AMAXS4
       AMP2 = AMAXS3 - AMAXS1
+C      WRITE(6,*)'RAXINI => AMP1, AMP2 = ',AMP1,AMP2
       IF (AMP1 .GT. AMP2) THEN
          AXEINI = 'AXE1'
       ELSE
