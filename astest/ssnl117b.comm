@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE COUDE EN FLEXION EN ELASTOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -164,8 +164,8 @@ def macr_rota_globale_ops(self,RESULTAT,GROUP_NO_ORIG,GROUP_NO_EXTR,**args):
 #  
 # ===========================================================================
 
-MACR_ROTA_GLOBALE=MACRO(nom="MACR_ROTA_GLOBALE",op=macr_rota_globale_ops,sd_prod=fonction,
-                       docu="",reentrant='n',
+MACR_ROTA_GLOBALE=MACRO(nom="MACR_ROTA_GLOBALE",op=macr_rota_globale_ops,sd_prod=fonction_sdaster,
+                       reentrant='n',
                        fr="calcul de la rotation globale dans un coude.",
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,evol_noli,evol_ther) ),
          GROUP_NO_ORIG   =SIMP(statut='o',typ=grno,max=1),

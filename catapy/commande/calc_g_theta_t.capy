@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,12 +18,12 @@
 # ======================================================================
 CALC_G_THETA_T=OPER(nom="CALC_G_THETA_T",op=53,sd_prod=tabl_calc_g_th,
                     fr="Calcul du taux de restitution d énergie par la méthode theta en thermo-élasticité en 2D ou en 3D",
-                    docu="U4.82.03-f",reentrant='f',
+                    reentrant='f',
             UIinfo={"groupes":("Post traitements",)},
          regles=(UN_PARMI('RESULTAT','DEPL'),
                  PRESENT_PRESENT('VITE','ACCE'),
                  EXCLUS('COMP_ELAS','COMP_INCR'),),
-         MODELE          =SIMP(statut='o',typ=modele),
+         MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          THETA           =SIMP(statut='o',typ=(theta_geom,cham_no_depl_r),),
          DEPL            =SIMP(statut='f',typ=cham_no_depl_r),
@@ -35,9 +35,9 @@ CALC_G_THETA_T=OPER(nom="CALC_G_THETA_T",op=53,sd_prod=tabl_calc_g_th,
            regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST'),),
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
-           LIST_ORDRE      =SIMP(statut='f',typ=listis),
+           LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
            INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-           LIST_INST       =SIMP(statut='f',typ=listr8),
+           LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
             
            b_acce_reel     =BLOC(condition="(INST != None)or(LIST_INST != None)",
              PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-6),
@@ -46,7 +46,7 @@ CALC_G_THETA_T=OPER(nom="CALC_G_THETA_T",op=53,sd_prod=tabl_calc_g_th,
          ),
          EXCIT           =FACT(statut='f',max='**',
                CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
-               FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
+               FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule)),
                TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),
          ),
          SYME_CHAR       =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","ANTI","SANS") ),

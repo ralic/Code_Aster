@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,8 +32,8 @@ def lire_champ_prod(TYPE_CHAM=None,**args):
 
 LIRE_CHAMP=OPER(nom="LIRE_CHAMP",op= 192,sd_prod=lire_champ_prod,
                 fr="Lire un champ dans un fichier et le stocker dans un concept.",
-                docu="U7.02.02-b",reentrant='n',
-         MAILLAGE        =SIMP(statut='o',typ=maillage,),
+                reentrant='n',
+         MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster,),
          FORMAT          =SIMP(statut='f',typ='TXM',defaut="MED",into=("MED",),),
          UNITE           =SIMP(statut='f',typ='I',defaut= 81,),  
          b_format =BLOC(condition = "FORMAT == 'MED'",
@@ -63,7 +63,7 @@ LIRE_CHAMP=OPER(nom="LIRE_CHAMP",op= 192,sd_prod=lire_champ_prod,
 #                   homologue dans macr_adap_mail
          TYPE_CHAM       =SIMP(statut='o',typ='TXM',into=C_TYPE_CHAM_INTO()),
          b_modele =BLOC(condition = "TYPE_CHAM!=None and TYPE_CHAM[0:2] == 'EL'",
-            MODELE      =SIMP(statut='o',typ=modele, ),
+            MODELE      =SIMP(statut='o',typ=modele_sdaster, ),
                   ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
 )  ;

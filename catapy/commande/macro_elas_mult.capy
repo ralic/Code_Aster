@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,18 +21,18 @@
 from Macro.macro_elas_mult_ops import macro_elas_mult_ops
 
 def macro_elas_mult_prod(self,NUME_DDL,CAS_CHARGE,**args ):
-  self.type_sdprod(NUME_DDL,nume_ddl)
+  self.type_sdprod(NUME_DDL,nume_ddl_sdaster)
   if CAS_CHARGE[0]['NOM_CAS']      != None : return mult_elas
   if CAS_CHARGE[0]['MODE_FOURIER'] != None : return fourier_elas
   raise AsException("type de concept resultat non prevu")
 
-MACRO_ELAS_MULT=MACRO(nom="MACRO_ELAS_MULT",op=macro_elas_mult_ops,sd_prod=macro_elas_mult_prod,docu="U4.51.02-d",reentrant='f',
+MACRO_ELAS_MULT=MACRO(nom="MACRO_ELAS_MULT",op=macro_elas_mult_ops,sd_prod=macro_elas_mult_prod,reentrant='f',
             UIinfo={"groupes":("Résolution",)},
          regles=(UN_PARMI('CHAR_MECA_GLOBAL','CHAR_CINE_GLOBAL','LIAISON_DISCRET', ),),
-         MODELE          =SIMP(statut='o',typ=modele),
+         MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
-         NUME_DDL        =SIMP(statut='f',typ=(nume_ddl,CO)),
+         NUME_DDL        =SIMP(statut='f',typ=(nume_ddl_sdaster,CO)),
          CHAR_MECA_GLOBAL=SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
          CHAR_CINE_GLOBAL=SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
          LIAISON_DISCRET =SIMP(statut='f',typ='TXM',into=("OUI",)),

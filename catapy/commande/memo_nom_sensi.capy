@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE GNICOLAS G.NICOLAS
-MEMO_NOM_SENSI=PROC(nom="MEMO_NOM_SENSI",op=129,docu="U4.31.07-a",
+MEMO_NOM_SENSI=PROC(nom="MEMO_NOM_SENSI",op=129,
             UIinfo={"groupes":("Fonction",)},
                     fr="Mémorisation des noms des concepts dérivés.",
                     ang="Memorisation of the names of the sensitive concepts.",
@@ -53,11 +53,11 @@ MEMO_NOM_SENSI=PROC(nom="MEMO_NOM_SENSI",op=129,docu="U4.31.07-a",
 
                  ),
 
-         NOM_ZERO=SIMP(statut='f',typ=fonction,
+         NOM_ZERO=SIMP(statut='f',typ=fonction_sdaster,
                        fr="Nom de la fonction nulle",
                        ang="Name of the zero fonction"),
 
-         NOM_UN  =SIMP(statut='f',typ=fonction,
+         NOM_UN  =SIMP(statut='f',typ=fonction_sdaster,
                        fr="Nom de la fonction unité",
                        ang="Name of the one fonction"),
 

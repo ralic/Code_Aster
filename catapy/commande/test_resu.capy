@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 #
 #
 # ======================================================================
-TEST_RESU=PROC(nom="TEST_RESU",op=23,docu="U4.92.01-g",
+TEST_RESU=PROC(nom="TEST_RESU",op=23,
             UIinfo={"groupes":("Impression",)},
          fr="Extraction d une valeur et comparaison à une valeur de référence",
          regles=(AU_MOINS_UN('CHAM_NO','CHAM_ELEM','RESU','OBJET')),
@@ -31,7 +31,7 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,docu="U4.92.01-g",
                    PRESENT_PRESENT('NOEUD','NOM_CMP'),
                    PRESENT_PRESENT( 'GROUP_NO','NOM_CMP'),
                    UN_PARMI('VALE','VALE_I','VALE_C'),),
-           CHAM_GD         =SIMP(statut='o',typ=cham_no),
+           CHAM_GD         =SIMP(statut='o',typ=cham_no_sdaster),
            NOEUD           =SIMP(statut='f',typ=no   ),
            GROUP_NO        =SIMP(statut='f',typ=grno ),
            NOM_CMP         =SIMP(statut='f',typ='TXM'),
@@ -53,7 +53,7 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,docu="U4.92.01-g",
                    PRESENT_PRESENT('GROUP_NO','NOM_CMP'),
                    PRESENT_PRESENT('POINT','NOM_CMP'),
                    UN_PARMI('VALE','VALE_I','VALE_C'), ),
-           CHAM_GD         =SIMP(statut='o',typ=cham_elem),
+           CHAM_GD         =SIMP(statut='o',typ=cham_elem_sdaster),
            MAILLE          =SIMP(statut='f',typ=ma),
            POINT           =SIMP(statut='f',typ='I' ),
            SOUS_POINT      =SIMP(statut='f',typ='I'),
@@ -81,7 +81,7 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,docu="U4.92.01-g",
                    PRESENT_PRESENT('GROUP_NO','NOM_CMP'),
                    PRESENT_PRESENT('POINT','NOM_CMP'),
                    UN_PARMI('VALE','VALE_I','VALE_C') ,),
-           RESULTAT        =SIMP(statut='o',typ=resultat),
+           RESULTAT        =SIMP(statut='o',typ=resultat_sdaster),
            SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),
                                  fr="Paramètre de sensibilité.",
                                  ang="Sensitivity parameter"),

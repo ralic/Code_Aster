@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/12/2003   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,16 +18,16 @@
 # ======================================================================
 # RESPONSABLE VABHHTS J.PELLET
 def defi_group_prod(MAILLAGE,**args):
-  if AsType(MAILLAGE) == maillage : return maillage
+  if AsType(MAILLAGE) == maillage_sdaster : return maillage_sdaster
   if AsType(MAILLAGE) == squelette : return squelette
   raise AsException("type de concept resultat non prevu")
 
 DEFI_GROUP=OPER(nom="DEFI_GROUP",op= 104,sd_prod=defi_group_prod,
                 fr="Définition de nouveaux groupes de noeuds et/ou de mailles dans un concept maillage",
-                docu="U4.22.01-f",reentrant='o',
+                reentrant='o',
             UIinfo={"groupes":("Maillage",)},
          regles=(AU_MOINS_UN('CREA_GROUP_MA','CREA_GROUP_NO'),),
-         MAILLAGE        =SIMP(statut='o',typ=(maillage,squelette) ),
+         MAILLAGE        =SIMP(statut='o',typ=(maillage_sdaster,squelette) ),
 
          CREA_GROUP_MA   =FACT(statut='f',max='**',
 

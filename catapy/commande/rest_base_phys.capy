@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,7 @@ def rest_base_phys_prod(RESU_GENE,RESULTAT,**args ):
 
 REST_BASE_PHYS=OPER(nom="REST_BASE_PHYS",op=  75,sd_prod=rest_base_phys_prod,
                     fr="Restituer dans la base physique des résultats en coordonnées généralisées",
-                    docu="U4.63.21-f",reentrant='n',
+                    reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
         regles=(UN_PARMI('RESU_GENE','RESULTAT'),
                 EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','TOUT_INST'),
@@ -47,9 +47,9 @@ REST_BASE_PHYS=OPER(nom="REST_BASE_PHYS",op=  75,sd_prod=rest_base_phys_prod,
          NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),  
          TOUT_INST       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),  
-         LIST_INST       =SIMP(statut='f',typ=listr8 ),
+         LIST_INST       =SIMP(statut='f',typ=listr8_sdaster ),
          FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),  
-         LIST_FREQ       =SIMP(statut='f',typ=listr8 ),
+         LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster ),
          CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("ABSOLU","RELATIF") ),
          PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),  
          INTERPOL        =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","LIN") ),
@@ -62,7 +62,7 @@ REST_BASE_PHYS=OPER(nom="REST_BASE_PHYS",op=  75,sd_prod=rest_base_phys_prod,
          GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
          NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
  
-         ACCE_MONO_APPUI =SIMP(statut='f',typ=(fonction,formule)),
+         ACCE_MONO_APPUI =SIMP(statut='f',typ=(fonction_sdaster,formule)),
          DIRECTION       =SIMP(statut='f',typ='R',min=3,max=3 ),
 
          SQUELETTE       =SIMP(statut='f',typ=squelette ),

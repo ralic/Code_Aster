@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ def crea_resu_prod(TYPE_RESU,**args):
   if TYPE_RESU == "EVOL_VARC"    : return evol_varc
   raise AsException("type de concept resultat non prevu")
 
-CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,docu="U4.44.12-e",reentrant='f',
+CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
             UIinfo={"groupes":("Modélisation",)},
                fr="Engendrer ou enrichir une structure de donnees en affectant les cham_gd associes",
 
@@ -39,15 +39,15 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,docu="U4.44.12-e",r
            NOM_CHAM     =SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO()),
 
            AFFE         =FACT(statut='o',max='**',
-             CHAM_GD       =SIMP(statut='o',typ=(cham_gd)),
-             MODELE        =SIMP(statut='f',typ=modele),
+             CHAM_GD       =SIMP(statut='o',typ=(cham_gd_sdaster)),
+             MODELE        =SIMP(statut='f',typ=modele_sdaster),
              CHAM_MATER    =SIMP(statut='f',typ=cham_mater),
              CARA_ELEM     =SIMP(statut='f',typ=cara_elem),
 
             # affectation de plusieurs instants à l'aide d'un champ aux noeuds de fonctions du temps:
              b_fonc       =BLOC(condition = "AsType(CHAM_GD) in (cham_no_temp_f,cham_no_depl_f)",
                 INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-                LIST_INST       =SIMP(statut='f',typ=listr8),
+                LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
                 NUME_INIT       =SIMP(statut='f',typ='I', val_min=1),
                 NUME_FIN        =SIMP(statut='f',typ='I', val_min=1),
                 PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
@@ -61,7 +61,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,docu="U4.44.12-e",r
                 NUME_MODE       =SIMP(statut='f',typ='I'),
                 TYPE_MODE       =SIMP(statut='f',typ='TXM',defaut="SYME",into=("SYME","ANTI","TOUS") ),
                 INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-                LIST_INST       =SIMP(statut='f',typ=listr8),
+                LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
                 NUME_INIT       =SIMP(statut='f',typ='I', val_min=1),
                 NUME_FIN        =SIMP(statut='f',typ='I', val_min=1),
                 PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
@@ -78,17 +78,17 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,docu="U4.44.12-e",r
              regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','LIST_ORDRE'),),
              NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                                    into=("SIEF_ELGA","VARI_ELGA","SIEF_ELGA_DEPL","FLUX_ELGA_TEMP",) ),
-             MODELE_INIT     =SIMP(statut='o',typ=modele),
+             MODELE_INIT     =SIMP(statut='o',typ=modele_sdaster),
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-             RESU_INIT       =SIMP(statut='o',typ=resultat),
-             MAILLAGE        =SIMP(statut='o',typ=maillage),
+             RESU_INIT       =SIMP(statut='o',typ=resultat_sdaster),
+             MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
              TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
-             LIST_ORDRE      =SIMP(statut='f',typ=listis),
+             LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
              INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-             LIST_INST       =SIMP(statut='f',typ=listr8),
+             LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
              PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3),
              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",) ),
            ),
@@ -102,9 +102,9 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,docu="U4.44.12-e",r
            INST_INIT       =SIMP(statut='f',typ='R'),
            PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3),
            CRITERE         =SIMP(statut='f',typ='TXM',into=('RELATIF','ABSOLU'),defaut='RELATIF'),
-           MAILLAGE_INIT   =SIMP(statut='o',typ=maillage,),
+           MAILLAGE_INIT   =SIMP(statut='o',typ=maillage_sdaster,),
            RESU_FINAL      =SIMP(statut='o',typ=evol_noli,),
-           MAILLAGE_FINAL  =SIMP(statut='o',typ=maillage,),
+           MAILLAGE_FINAL  =SIMP(statut='o',typ=maillage_sdaster,),
            PERM_CHAM       =FACT(statut='o',
               GROUP_MA_FINAL =SIMP(statut='o',typ=grma),
               GROUP_MA_INIT  =SIMP(statut='o',typ=grma),
@@ -119,10 +119,10 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,docu="U4.44.12-e",r
 
            PROL_RTZ        =FACT(statut='o',
               regles=(EXCLUS('INST','LIST_INST'),),
-              MAILLAGE_FINAL  =SIMP(statut='o',typ=maillage,),
+              MAILLAGE_FINAL  =SIMP(statut='o',typ=maillage_sdaster,),
               TABLE           =SIMP(statut='o',typ=tabl_post_rele,fr="Table issue de post_releve_t"),
               INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-              LIST_INST       =SIMP(statut='f',typ=listr8),
+              LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
               b_acce_reel     =BLOC(condition="(INST != None)or(LIST_INST != None)",
                  PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-6),
                  CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),

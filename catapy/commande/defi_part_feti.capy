@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,9 +17,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # RESPONSABLE BOITEAU O.BOITEAU
-DEFI_PART_FETI=OPER(nom="DEFI_PART_FETI",op=21,sd_prod=sd_feti,
+DEFI_PART_FETI=OPER(nom="DEFI_PART_FETI",op=21,sd_prod=sd_feti_sdaster,
                    fr="Creation partitionnement en sous-domaines pour FETI",
-                   docu="U4.23.05",reentrant='n',
+                   reentrant='n',
             UIinfo={"groupes":("Résolution",)},
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2,3,4) ),
 )  ;

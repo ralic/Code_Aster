@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,13 +25,13 @@ def affe_char_cine_prod(MECA_IMPO,THER_IMPO,ACOU_IMPO,**args):
 
 AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
                     ,fr="Affectation de conditions aux limites cinématiques pour traitement sans dualisation",
-                     docu="U4.44.03-f",reentrant='n',
+                     reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
          regles=(AU_MOINS_UN('MECA_IMPO','THER_IMPO','ACOU_IMPO'),
                  EXCLUS('MECA_IMPO','THER_IMPO'),
                  EXCLUS('MECA_IMPO','ACOU_IMPO'),
                  EXCLUS('THER_IMPO','ACOU_IMPO'),),
-         MODELE          =SIMP(statut='o',typ=modele ),
+         MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          MECA_IMPO       =FACT(statut='f',max='**',
            regles=(UN_PARMI('TOUT','GROUP_NO','NOEUD'),
                    AU_MOINS_UN('DX','DY','DZ','DRX','DRY','DRZ','GRX','PRES','TEMP','PHI'),),

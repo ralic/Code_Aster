@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+#& MODIF ENTETE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,11 +40,11 @@ JdC = JDC_CATA(code='ASTER',
                          AU_MOINS_UN('FIN'),
                          A_CLASSER(('DEBUT','POURSUITE'),'FIN')))
 # Type le plus general
-class entier  (ASSD):pass
-class reel    (ASSD):pass
-class complexe(ASSD):pass
-class chaine  (ASSD):pass
-class compor  (ASSD):pass
+class entier   (ASSD):pass
+class reel     (ASSD):pass
+class complexe (ASSD):pass
+class chaine   (ASSD):pass
+
 
 # Type geometriques
 class no  (GEOM):pass
@@ -66,33 +66,32 @@ class char_cine_meca  (ASSD):pass
 class char_cine_ther  (ASSD):pass
 class char_meca       (ASSD):pass
 class char_ther       (ASSD):pass
-class courbe          (ASSD):pass
+class compor_sdaster  (ASSD):pass
+class courbe_sdaster  (ASSD):pass
 class fiss_xfem       (ASSD):pass
 class fond_fiss       (ASSD):pass
 class interf_dyna_clas(ASSD):pass
 class interspfact     (ASSD):pass
-class listis          (ASSD):pass
-class liste           (ASSD):pass
+class listis_sdaster  (ASSD):pass
 class macr_elem_dyna  (ASSD):pass
 class macr_elem_stat  (ASSD):pass
-class mater           (ASSD):pass
-class melasflu        (ASSD):pass
-class modele          (ASSD):pass
+class mater_sdaster   (ASSD):pass
+class melasflu_sdaster(ASSD):pass
+class modele_sdaster  (ASSD):pass
 class modele_gene     (ASSD):pass
-class nume_ddl        (ASSD):pass
+class nume_ddl_sdaster(ASSD):pass
 class nume_ddl_gene   (ASSD):pass
-class obstacle        (ASSD):pass
-class sd_feti         (ASSD):pass
-class spectre         (ASSD):pass
-class surface         (ASSD):pass
+class obstacle_sdaster(ASSD):pass
+class sd_feti_sdaster (ASSD):pass
+class spectre_sdaster (ASSD):pass
+class surface_sdaster (ASSD):pass
 class tran_gene       (ASSD):pass
 class type_flui_stru  (ASSD):pass
-class valeur          (ASSD):pass
 
 
 # liste :
 #--------------------------------
-class listr8   (ASSD):
+class listr8_sdaster   (ASSD):
   def LIST_VALEURS(self) :
     """ retourne la liste des valeurs [ val1, ...] """
     vale=string.ljust(self.get_name(),19)+'.VALE'
@@ -115,7 +114,7 @@ class post_comp_cham_no :
 
 # maillage :
 #--------------------------------
-class maillage(ASSD):
+class maillage_sdaster(ASSD):
   def LIST_GROUP_NO(self) :
     """ retourne la liste des groupes de noeuds sous la forme :
         [ (gno1, nb noeuds  gno1), ...] """
@@ -126,47 +125,47 @@ class maillage(ASSD):
     return aster.GetMaillage(self.get_name(), "GROUP_MA")
 
 
-class squelette     (maillage):pass
+class squelette     (maillage_sdaster):pass
 
 
-# cham_gd (carte,cham_no,cham_elem)
+# cham_gd_sdaster (carte_sdaster,cham_no_sdaster,cham_elem_sdaster)
 #--------------------------------
 
-class cham_gd(ASSD):pass
+class cham_gd_sdaster(ASSD):pass
 
-# cham_gd/carte :
+# cham_gd_sdaster/carte_sdaster :
 #--------------------------------
-class carte(cham_gd):pass
-class carte_dbel_r   (carte):pass
-class carte_depl_c   (carte):pass
-class carte_depl_f   (carte):pass
-class carte_depl_r   (carte):pass
-class carte_durt_r   (carte):pass
-class carte_ener_r   (carte):pass
-class carte_epsi_r   (carte):pass
-class carte_erreur   (carte):pass
-class carte_flux_r   (carte):pass
-class carte_g_depl_r (carte):pass
-class carte_geom_r   (carte):pass
-class carte_hydr_r   (carte):pass
-class carte_inst_r   (carte):pass
-class carte_inte_r   (carte):pass
-class carte_irra_r   (carte):pass
-class carte_neut_f   (carte):pass
-class carte_neut_r   (carte):pass
-class carte_pres_r   (carte):pass
-class carte_sief_r   (carte):pass
-class carte_sour_r   (carte):pass
-class carte_temp_f   (carte):pass
-class carte_temp_r   (carte):pass
-class carte_var2_r   (carte):pass
-class carte_vnor_c   (carte):pass
-class carte_corr_r   (carte):pass
+class carte_sdaster  (cham_gd_sdaster):pass
+class carte_dbel_r   (carte_sdaster):pass
+class carte_depl_c   (carte_sdaster):pass
+class carte_depl_f   (carte_sdaster):pass
+class carte_depl_r   (carte_sdaster):pass
+class carte_durt_r   (carte_sdaster):pass
+class carte_ener_r   (carte_sdaster):pass
+class carte_epsi_r   (carte_sdaster):pass
+class carte_erreur   (carte_sdaster):pass
+class carte_flux_r   (carte_sdaster):pass
+class carte_g_depl_r (carte_sdaster):pass
+class carte_geom_r   (carte_sdaster):pass
+class carte_hydr_r   (carte_sdaster):pass
+class carte_inst_r   (carte_sdaster):pass
+class carte_inte_r   (carte_sdaster):pass
+class carte_irra_r   (carte_sdaster):pass
+class carte_neut_f   (carte_sdaster):pass
+class carte_neut_r   (carte_sdaster):pass
+class carte_pres_r   (carte_sdaster):pass
+class carte_sief_r   (carte_sdaster):pass
+class carte_sour_r   (carte_sdaster):pass
+class carte_temp_f   (carte_sdaster):pass
+class carte_temp_r   (carte_sdaster):pass
+class carte_var2_r   (carte_sdaster):pass
+class carte_vnor_c   (carte_sdaster):pass
+class carte_corr_r   (carte_sdaster):pass
 
 
-# cham_gd/cham_elem :
+# cham_gd_sdaster/cham_elem_sdaster :
 #--------------------------------
-class cham_elem(cham_gd):
+class cham_elem_sdaster(cham_gd_sdaster):
 
   def EXTR_COMP(self,comp,lgma,topo=0) :
     """ retourne les valeurs de la composante comp du champ sur la liste
@@ -203,41 +202,41 @@ class cham_elem(cham_gd):
     
     return post_comp_cham_el(valeurs,maille,point,sous_point)
     
-class cham_elem_crit_r(cham_elem):pass
-class cham_elem_dbel_r(cham_elem):pass
-class cham_elem_depl_c(cham_elem):pass
-class cham_elem_depl_f(cham_elem):pass
-class cham_elem_depl_r(cham_elem):pass
-class cham_elem_dommag(cham_elem):pass
-class cham_elem_durt_r(cham_elem):pass
-class cham_elem_ener_r(cham_elem):pass
-class cham_elem_epsi_c(cham_elem):pass
-class cham_elem_epsi_r(cham_elem):pass
-class cham_elem_erreur(cham_elem):pass
-class cham_elem_facy_r(cham_elem):pass
-class cham_elem_flux_r(cham_elem):pass
-class cham_elem_g_depl(cham_elem):pass
-class cham_elem_geom_r(cham_elem):pass
-class cham_elem_hydr_r(cham_elem):pass
-class cham_elem_inst_r(cham_elem):pass
-class cham_elem_inte_r(cham_elem):pass
-class cham_elem_irra_r(cham_elem):pass
-class cham_elem_neut_f(cham_elem):pass
-class cham_elem_neut_r(cham_elem):pass
-class cham_elem_pres_r(cham_elem):pass
-class cham_elem_sief_c(cham_elem):pass
-class cham_elem_sief_r(cham_elem):pass
-class cham_elem_sour_r(cham_elem):pass
-class cham_elem_spma_r(cham_elem):pass
-class cham_elem_temp_f(cham_elem):pass
-class cham_elem_temp_r(cham_elem):pass
-class cham_elem_vari_r(cham_elem):pass
-class cham_elem_vnor_c(cham_elem):pass
+class cham_elem_crit_r(cham_elem_sdaster):pass
+class cham_elem_dbel_r(cham_elem_sdaster):pass
+class cham_elem_depl_c(cham_elem_sdaster):pass
+class cham_elem_depl_f(cham_elem_sdaster):pass
+class cham_elem_depl_r(cham_elem_sdaster):pass
+class cham_elem_dommag(cham_elem_sdaster):pass
+class cham_elem_durt_r(cham_elem_sdaster):pass
+class cham_elem_ener_r(cham_elem_sdaster):pass
+class cham_elem_epsi_c(cham_elem_sdaster):pass
+class cham_elem_epsi_r(cham_elem_sdaster):pass
+class cham_elem_erreur(cham_elem_sdaster):pass
+class cham_elem_facy_r(cham_elem_sdaster):pass
+class cham_elem_flux_r(cham_elem_sdaster):pass
+class cham_elem_g_depl(cham_elem_sdaster):pass
+class cham_elem_geom_r(cham_elem_sdaster):pass
+class cham_elem_hydr_r(cham_elem_sdaster):pass
+class cham_elem_inst_r(cham_elem_sdaster):pass
+class cham_elem_inte_r(cham_elem_sdaster):pass
+class cham_elem_irra_r(cham_elem_sdaster):pass
+class cham_elem_neut_f(cham_elem_sdaster):pass
+class cham_elem_neut_r(cham_elem_sdaster):pass
+class cham_elem_pres_r(cham_elem_sdaster):pass
+class cham_elem_sief_c(cham_elem_sdaster):pass
+class cham_elem_sief_r(cham_elem_sdaster):pass
+class cham_elem_sour_r(cham_elem_sdaster):pass
+class cham_elem_spma_r(cham_elem_sdaster):pass
+class cham_elem_temp_f(cham_elem_sdaster):pass
+class cham_elem_temp_r(cham_elem_sdaster):pass
+class cham_elem_vari_r(cham_elem_sdaster):pass
+class cham_elem_vnor_c(cham_elem_sdaster):pass
 
 
 # cham_gd/cham_no :
 #--------------------------------
-class cham_no(cham_gd):  
+class cham_no_sdaster(cham_gd_sdaster):  
 
   def EXTR_COMP(self,comp,lgno,topo=0) :
     """ retourne les valeurs de la composante comp du champ sur la liste
@@ -268,41 +267,41 @@ class cham_no(cham_gd):
     
     return post_comp_cham_no(valeurs,noeud)
 
-class cham_no_dbel_r   (cham_no):pass
-class cham_no_depl_c   (cham_no):pass
-class cham_no_depl_f   (cham_no):pass
-class cham_no_depl_r   (cham_no):pass
-class cham_no_durt_r   (cham_no):pass
-class cham_no_ener_r   (cham_no):pass
-class cham_no_epsi_r   (cham_no):pass
-class cham_no_erreur   (cham_no):pass
-class cham_no_facy_r   (cham_no):pass
-class cham_no_flux_r   (cham_no):pass
-class cham_no_g_depl_r (cham_no):pass
-class cham_no_geom_r   (cham_no):pass
-class cham_no_hydr_r   (cham_no):pass
-class cham_no_inst_r   (cham_no):pass
-class cham_no_inte_r   (cham_no):pass
-class cham_no_irra_r   (cham_no):pass
-class cham_no_neut_f   (cham_no):pass
-class cham_no_neut_r   (cham_no):pass
-class cham_no_pres_c   (cham_no):pass
-class cham_no_pres_r   (cham_no):pass
-class cham_no_sief_r   (cham_no):pass
-class cham_no_sour_r   (cham_no):pass
-class cham_no_spma_r   (cham_no):pass
-class cham_no_temp_c   (cham_no):pass
-class cham_no_temp_f   (cham_no):pass
-class cham_no_temp_r   (cham_no):pass
-class cham_no_vanl_r   (cham_no):pass
-class cham_no_var2_r   (cham_no):pass
-class cham_no_vnor_c   (cham_no):pass
+class cham_no_dbel_r   (cham_no_sdaster):pass
+class cham_no_depl_c   (cham_no_sdaster):pass
+class cham_no_depl_f   (cham_no_sdaster):pass
+class cham_no_depl_r   (cham_no_sdaster):pass
+class cham_no_durt_r   (cham_no_sdaster):pass
+class cham_no_ener_r   (cham_no_sdaster):pass
+class cham_no_epsi_r   (cham_no_sdaster):pass
+class cham_no_erreur   (cham_no_sdaster):pass
+class cham_no_facy_r   (cham_no_sdaster):pass
+class cham_no_flux_r   (cham_no_sdaster):pass
+class cham_no_g_depl_r (cham_no_sdaster):pass
+class cham_no_geom_r   (cham_no_sdaster):pass
+class cham_no_hydr_r   (cham_no_sdaster):pass
+class cham_no_inst_r   (cham_no_sdaster):pass
+class cham_no_inte_r   (cham_no_sdaster):pass
+class cham_no_irra_r   (cham_no_sdaster):pass
+class cham_no_neut_f   (cham_no_sdaster):pass
+class cham_no_neut_r   (cham_no_sdaster):pass
+class cham_no_pres_c   (cham_no_sdaster):pass
+class cham_no_pres_r   (cham_no_sdaster):pass
+class cham_no_sief_r   (cham_no_sdaster):pass
+class cham_no_sour_r   (cham_no_sdaster):pass
+class cham_no_spma_r   (cham_no_sdaster):pass
+class cham_no_temp_c   (cham_no_sdaster):pass
+class cham_no_temp_f   (cham_no_sdaster):pass
+class cham_no_temp_r   (cham_no_sdaster):pass
+class cham_no_vanl_r   (cham_no_sdaster):pass
+class cham_no_var2_r   (cham_no_sdaster):pass
+class cham_no_vnor_c   (cham_no_sdaster):pass
 
 
-# resultat : (evol,mode_stat,mode_meca)
-#--------------------------------
+# resultat_sdaster : (evol_sdaster,mode_stat,mode_meca)
+#--------------------------------------
 
-class resultat(ASSD):
+class resultat_sdaster(ASSD):
   def LIST_CHAMPS (self) :
     return aster.GetResu(self.get_name(), "CHAMPS")
   def LIST_NOM_CMP (self) :
@@ -312,46 +311,46 @@ class resultat(ASSD):
   def LIST_PARA (self) :
     return aster.GetResu(self.get_name(), "PARAMETRES")
 
-class acou_harmo    (resultat):pass
-class base_modale     (resultat):pass
-class comb_fourier  (resultat):pass
-class dyna_harmo    (resultat):pass
-class dyna_trans    (resultat):pass
-class fourier_elas  (resultat):pass
-class harm_gene     (resultat):pass
-class mode_acou     (resultat):pass
-class mode_cycl     (resultat):pass
-class mode_flamb    (resultat):pass
-class mode_gene     (resultat):pass
-class mult_elas     (resultat):pass
-class theta_geom    (resultat):pass
+class acou_harmo    (resultat_sdaster):pass
+class base_modale   (resultat_sdaster):pass
+class comb_fourier  (resultat_sdaster):pass
+class dyna_harmo    (resultat_sdaster):pass
+class dyna_trans    (resultat_sdaster):pass
+class fourier_elas  (resultat_sdaster):pass
+class harm_gene     (resultat_sdaster):pass
+class mode_acou     (resultat_sdaster):pass
+class mode_cycl     (resultat_sdaster):pass
+class mode_flamb    (resultat_sdaster):pass
+class mode_gene     (resultat_sdaster):pass
+class mult_elas     (resultat_sdaster):pass
+class theta_geom    (resultat_sdaster):pass
 
-# resultat/evol :
+# resultat_sdaster/evol_sdaster :
 #--------------------------------
-class evol(resultat):pass
-class evol_char(evol):pass
-class evol_elas(evol):pass
-class evol_noli(evol):pass
-class evol_ther(evol):pass
-class evol_varc(evol):pass
+class evol_sdaster(resultat_sdaster):pass
+class evol_char(evol_sdaster):pass
+class evol_elas(evol_sdaster):pass
+class evol_noli(evol_sdaster):pass
+class evol_ther(evol_sdaster):pass
+class evol_varc(evol_sdaster):pass
 
-# resultat/mode_stat :
+# resultat_sdaster/mode_stat :
 #--------------------------------
-class mode_stat(resultat):pass
+class mode_stat(resultat_sdaster):pass
 class mode_stat_depl(mode_stat):pass
 class mode_stat_acce(mode_stat):pass
 class mode_stat_forc(mode_stat):pass
 
 
-# resultat/mode_meca :
+# resultat_sdaster/mode_meca :
 #--------------------------------
-class mode_meca(resultat):pass
+class mode_meca(resultat_sdaster):pass
 class mode_meca_c(mode_meca):pass
 
 
-# fonction :
+# fonction_sdaster :
 #--------------------------------
-class fonction(ASSD):
+class fonction_sdaster(ASSD):
   def LIST_VALEURS(self) :
     """ retourne la liste des valeurs [ val1, ...] """
     vale=string.ljust(self.get_name(),19)+'.VALE'
@@ -361,8 +360,8 @@ class fonction(ASSD):
         lbr.append(lbl[i])
         lbr.append(lbl[len(lbl)/2+i])
     return lbr
-class para_sensi(fonction):pass
-class fonction_c(fonction):
+class para_sensi(fonction_sdaster):pass
+class fonction_c(fonction_sdaster):
   def LIST_VALEURS(self) :
     """ retourne la liste des valeurs [ val1, ...] """
     vale=string.ljust(self.get_name(),19)+'.VALE'
@@ -373,7 +372,7 @@ class fonction_c(fonction):
         lbr.append(lbl[len(lbl)/3+i*2])
         lbr.append(lbl[len(lbl)/3+i*2+1])
     return lbr
-class nappe(fonction):pass
+class nappe_sdaster(fonction_sdaster):pass
 
 
 # matr_asse :
@@ -406,7 +405,7 @@ class matr_elem_temp_r(matr_elem):pass
 # table :
 #--------------------------------
 
-class table(ASSD):
+class table_sdaster(ASSD):
   def __getitem__(self,key):
       requete=string.ljust(key[0],24)
       tblp=string.ljust(self.get_name(),19)+'.TBLP'
@@ -417,36 +416,36 @@ class table(ASSD):
       if key[1]>len(resu) : raise KeyError
       else                : return resu[key[1]-1]
 
-class tabl_aire_int   (table):pass
-class tabl_calc_g_loca(table):pass
-class tabl_calc_g_th  (table):pass
-class tabl_cara_geom  (table):pass
-class tabl_char_limite(table):pass
-class tabl_ener_elas  (table):pass
-class tabl_ener_pot   (table):pass
-class tabl_ener_cin   (table):pass
-class tabl_trav_ext   (table):pass
-class tabl_ener_totale(table):pass
-class tabl_indic_ener (table):pass
-class tabl_indic_seuil(table):pass
-class tabl_intsp      (table):pass
-class tabl_mass_iner  (table):pass
-class tabl_post_alea  (table):pass
-class tabl_post_beta  (table):pass
-class tabl_post_dyna  (table):pass
-class tabl_post_f_alea(table):pass
-class tabl_post_fatig (table):pass
-class tabl_post_gouj2e(table):pass
-class tabl_post_k     (table):pass
-class tabl_post_rccm  (table):pass
-class tabl_post_rele  (table):pass
-class tabl_post_simpli(table):pass
-class tabl_post_usur  (table):pass
-class tabl_reca_weib  (table):pass
-class tabl_rice_tracey(table):pass
-class tabl_texture    (table):pass
-class tabl_trc        (table):pass
-class tabl_weibull    (table):pass
+class tabl_aire_int   (table_sdaster):pass
+class tabl_calc_g_loca(table_sdaster):pass
+class tabl_calc_g_th  (table_sdaster):pass
+class tabl_cara_geom  (table_sdaster):pass
+class tabl_char_limite(table_sdaster):pass
+class tabl_ener_elas  (table_sdaster):pass
+class tabl_ener_pot   (table_sdaster):pass
+class tabl_ener_cin   (table_sdaster):pass
+class tabl_trav_ext   (table_sdaster):pass
+class tabl_ener_totale(table_sdaster):pass
+class tabl_indic_ener (table_sdaster):pass
+class tabl_indic_seuil(table_sdaster):pass
+class tabl_intsp      (table_sdaster):pass
+class tabl_mass_iner  (table_sdaster):pass
+class tabl_post_alea  (table_sdaster):pass
+class tabl_post_beta  (table_sdaster):pass
+class tabl_post_dyna  (table_sdaster):pass
+class tabl_post_f_alea(table_sdaster):pass
+class tabl_post_fatig (table_sdaster):pass
+class tabl_post_gouj2e(table_sdaster):pass
+class tabl_post_k     (table_sdaster):pass
+class tabl_post_rccm  (table_sdaster):pass
+class tabl_post_rele  (table_sdaster):pass
+class tabl_post_simpli(table_sdaster):pass
+class tabl_post_usur  (table_sdaster):pass
+class tabl_reca_weib  (table_sdaster):pass
+class tabl_rice_tracey(table_sdaster):pass
+class tabl_texture    (table_sdaster):pass
+class tabl_trc        (table_sdaster):pass
+class tabl_weibull    (table_sdaster):pass
 
 
 # vect_asse :

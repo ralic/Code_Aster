@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,13 +25,13 @@ def dyna_line_harm_prod(MATR_MASS,**args):
 
 DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
                     fr="Réponse dynamique complexe d un système à une excitation harmonique",
-                    docu="U4.53.11-f",reentrant='n',
+                    reentrant='n',
             UIinfo={"groupes":("Résolution",)},
          regles=(PRESENT_ABSENT('AMOR_REDUIT','MATR_AMOR'),
                  PRESENT_ABSENT('AMOR_REDUIT','LIST_AMOR'),
                  PRESENT_ABSENT('MATR_AMOR','LIST_AMOR'),
                  UN_PARMI('FREQ','LIST_FREQ'),),
-         MODELE          =SIMP(statut='f',typ=modele ),
+         MODELE          =SIMP(statut='f',typ=modele_sdaster ),
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater ),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem ),
          MATR_MASS       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_pres_c,matr_asse_gene_r ) ),
@@ -39,10 +39,10 @@ DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
                                               ,matr_asse_gene_r,matr_asse_gene_c ) ),
          MATR_AMOR       =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_pres_c,matr_asse_gene_r ) ),
          AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
-         LIST_AMOR       =SIMP(statut='f',typ=listr8 ),
+         LIST_AMOR       =SIMP(statut='f',typ=listr8_sdaster ),
          MATR_IMPE_PHI   =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
          FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-         LIST_FREQ       =SIMP(statut='f',typ=listr8 ),
+         LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster ),
          TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI",)),
          NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=3,into=("DEPL","VITE","ACCE") ),
          EXCIT           =FACT(statut='o',max='**',
@@ -53,7 +53,7 @@ DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),
            FONC_MULT_C     =SIMP(statut='f',typ=fonction_c ),
            COEF_MULT_C     =SIMP(statut='f',typ='C' ),
-           FONC_MULT       =SIMP(statut='f',typ=(fonction,formule) ),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
            COEF_MULT       =SIMP(statut='f',typ='R' ),
            PHAS_DEG        =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
            PUIS_PULS       =SIMP(statut='f',typ='I',defaut= 0 ),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/09/2003   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,15 +16,15 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-CREA_TABLE=OPER(nom="CREA_TABLE",op=  36,sd_prod=table,
+CREA_TABLE=OPER(nom="CREA_TABLE",op=  36,sd_prod=table_sdaster,
                 fr="Creation d'une table a partir d'une fonction ou de deux listes",
-                reentrant='n',docu='U4.99.99',UIinfo={"groupes":("Table",)},
+                reentrant='n',UIinfo={"groupes":("Table",)},
 
            regles=(EXCLUS('FONCTION','LISTE')),
 
            FONCTION=FACT(statut='f',min=1,max=1,
                     fr="Creation d'une table a partir d'une fonction",
-                        FONCTION=SIMP(statut='o',typ=fonction),
+                        FONCTION=SIMP(statut='o',typ=fonction_sdaster),
                         PARA=SIMP(statut='f',typ='TXM',min=2,max=2)),  
 
            LISTE=FACT(statut='f',min=2,max=2,

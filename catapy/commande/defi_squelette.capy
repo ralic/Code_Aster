@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 DEFI_SQUELETTE=OPER(nom="DEFI_SQUELETTE",op= 110,sd_prod=squelette,
                     fr="Définition d un maillage de visualisation",
-                    docu="U4.24.01-f",reentrant='n',
+                    reentrant='n',
             UIinfo={"groupes":("Maillage",)},
          regles=(UN_PARMI('MODE_CYCL','MODELE_GENE','MAILLAGE'),
                  PRESENT_PRESENT('MODE_CYCL','SECTEUR'),
@@ -49,7 +49,7 @@ DEFI_SQUELETTE=OPER(nom="DEFI_SQUELETTE",op= 110,sd_prod=squelette,
            GROUP_MA        =SIMP(statut='o',typ=grma),
          ),
          EXCLUSIF        =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
-         MAILLAGE        =SIMP(statut='f',typ=maillage ),
+         MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster ),
          MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
          GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
          TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,8 +17,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE VABHHTS J.PELLET
-RECU_TABLE=OPER(nom="RECU_TABLE",op= 174,sd_prod=table,
-                fr=" ",docu="U4.71.02-b",reentrant='n',
+RECU_TABLE=OPER(nom="RECU_TABLE",op= 174,sd_prod=table_sdaster,
+                fr=" ",reentrant='n',
             UIinfo={"groupes":("Résultats et champs",)},
          CO              =SIMP(statut='o',typ=assd),
          regles=(UN_PARMI('NOM_TABLE','NOM_PARA')),

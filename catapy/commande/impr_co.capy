@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE VABHHTS J.PELLET
-IMPR_CO=PROC(nom="IMPR_CO",op=17,docu="U4.91.11-g",
+IMPR_CO=PROC(nom="IMPR_CO",op=17,
             UIinfo={"groupes":("Impression",)},
              fr="Impression du contenu d un concept utilisateur (pour développeur)",
          regles=(UN_PARMI('CO','CHAINE', ),),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 27/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE MCOURTOI M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,8 +17,8 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage,
-                     docu="U4.23.02-d",reentrant='n',
+CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
+                     reentrant='n',
             UIinfo={"groupes":("Maillage",)},
          regles=(EXCLUS('ECLA_PG','CREA_MAILLE'),
                  EXCLUS('ECLA_PG','CREA_GROUP_MA'),
@@ -36,7 +36,7 @@ CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage,
                  EXCLUS('COQU_VOLU','CREA_GROUP_MA'),
                  EXCLUS('COQU_VOLU','DETR_GROUP_MA'),
                  ),
-         MAILLAGE        =SIMP(statut='o',typ=maillage ),
+         MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster ),
          CREA_POI1       =FACT(statut='f',max='**',fr="Création de mailles de type POI1 à partir de noeuds",
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD' ),),
            NOM_GROUP_MA    =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -118,7 +118,7 @@ CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage,
          ),
          ECLA_PG         =FACT(statut='f',
                                fr="Eclatement des mailles en petites mailles contenant chacune un seul point de gauss",
-           MODELE          =SIMP(statut='o',typ=modele ),
+           MODELE          =SIMP(statut='o',typ=modele_sdaster ),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),

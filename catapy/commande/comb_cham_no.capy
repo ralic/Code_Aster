@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/02/2004   AUTEUR CAMBIER S.CAMBIER 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +38,7 @@ def comb_cham_no_prod(COMB_R,COMB_C,COMB_FOURIER,**args):
 
 COMB_CHAM_NO=OPER(nom="COMB_CHAM_NO",op=  30,sd_prod=comb_cham_no_prod
                     ,fr="Combinaison linéaire de champs aux noeuds",
-                     docu="U4.72.02-g",reentrant='f',
+                     reentrant='f',
             UIinfo={"groupes":("Résultats et champs",)},
          regles=(UN_PARMI('COMB_R','COMB_C','COMB_FOURIER'),),
          COMB_R          =FACT(statut='f',max='**',

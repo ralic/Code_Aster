@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 DYNA_ALEA_MODAL=OPER(nom="DYNA_ALEA_MODAL",op= 131,sd_prod=tabl_intsp
                     ,fr="Calcule la réponse spectrale d une structure linéaire sous une excitation connue par sa DSP",
-                     docu="U4.53.22-e",reentrant='n',
+                     reentrant='n',
             UIinfo={"groupes":("Résolution",)},
          BASE_MODALE     =FACT(statut='o',
            regles=(UN_PARMI('NUME_ORDRE','BANDE'),),
@@ -49,7 +49,7 @@ DYNA_ALEA_MODAL=OPER(nom="DYNA_ALEA_MODAL",op= 131,sd_prod=tabl_intsp
 # on devrait rajouter EXCLUS('GRANDEUR','CHAM_NO') pour eviter ambiguite car CHAM_NO => GRANDEUR='EFFO'
 # cela impliquerait d'enlever la valeur par defaut a GRANDEUR            
                NUME_ORDRE_J    =SIMP(statut='o',typ='I',max='**'),
-               CHAM_NO         =SIMP(statut='f',typ=cham_no),
+               CHAM_NO         =SIMP(statut='f',typ=cham_no_sdaster),
                NOEUD           =SIMP(statut='f',typ=no,max='**'),
                b_noeud         =BLOC(condition = "NOEUD != None",
                   NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from Macro.macro_matr_asse_ops import macro_matr_asse_ops
 def macro_matr_asse_prod(self,NUME_DDL,MATR_ASSE,**args):
   if not MATR_ASSE:  raise AsException("Impossible de typer les concepts resultats")
   if not NUME_DDL:  raise AsException("Impossible de typer les concepts resultats")
-  self.type_sdprod(NUME_DDL,nume_ddl)
+  self.type_sdprod(NUME_DDL,nume_ddl_sdaster)
   for m in MATR_ASSE:
     opti=m['OPTION']
 
@@ -41,16 +41,16 @@ def macro_matr_asse_prod(self,NUME_DDL,MATR_ASSE,**args):
     self.type_sdprod(m['MATRICE'],t)
   return None
 
-MACRO_MATR_ASSE=MACRO(nom="MACRO_MATR_ASSE",op=macro_matr_asse_ops,docu="U4.61.21-d",
+MACRO_MATR_ASSE=MACRO(nom="MACRO_MATR_ASSE",op=macro_matr_asse_ops,
             UIinfo={"groupes":("Matrices/vecteurs",)},
                       sd_prod=macro_matr_asse_prod,
                       fr="Calcul des matrices assemblées (matr_asse_gd) par exemple de rigidité, de masse ",
-         MODELE          =SIMP(statut='o',typ=modele),
+         MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
          CHARGE          =SIMP(statut='f',typ=(char_meca,char_ther,char_acou),validators=NoRepeat(),max='**'),
          INST            =SIMP(statut='f',typ='R'),
-         NUME_DDL        =SIMP(statut='o',typ=(nume_ddl,CO)),
+         NUME_DDL        =SIMP(statut='o',typ=(nume_ddl_sdaster,CO)),
          SOLVEUR         =FACT(statut='d',
            METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",
                                  into=("LDLT","MULT_FRONT","GCPC")),

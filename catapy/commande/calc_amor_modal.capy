@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,9 +16,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-CALC_AMOR_MODAL=OPER(nom="CALC_AMOR_MODAL",op= 172,sd_prod=listr8,
+CALC_AMOR_MODAL=OPER(nom="CALC_AMOR_MODAL",op= 172,sd_prod=listr8_sdaster,
                      fr="Création d'une liste d'amortissements modaux calculés selon la règle du RCC-G",
-                     docu="U4.52.13-d",reentrant='n',
+                     reentrant='n',
             UIinfo={"groupes":("Résolution",)},
          ENER_SOL        =FACT(statut='o',
            regles=(UN_PARMI('GROUP_NO_RADIER','GROUP_MA_RADIER'),
@@ -33,7 +33,7 @@ CALC_AMOR_MODAL=OPER(nom="CALC_AMOR_MODAL",op= 172,sd_prod=listr8,
            MODE_MECA       =SIMP(statut='o',typ=mode_meca ),
            GROUP_NO_RADIER =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
            GROUP_MA_RADIER =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           FONC_GROUP      =SIMP(statut='f',typ=(fonction,formule) ),
+           FONC_GROUP      =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
            COEF_GROUP      =SIMP(statut='f',typ='R',max='**'),
            KX              =SIMP(statut='o',typ='R' ),
            KY              =SIMP(statut='o',typ='R' ),
@@ -52,7 +52,7 @@ CALC_AMOR_MODAL=OPER(nom="CALC_AMOR_MODAL",op= 172,sd_prod=listr8,
          ),
          AMOR_SOL        =FACT(statut='o',
            AMOR_REDUIT     =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
-           FONC_AMOR_GEO   =SIMP(statut='o',typ=(fonction,formule),max='**' ),
+           FONC_AMOR_GEO   =SIMP(statut='o',typ=(fonction_sdaster,formule),max='**' ),
            HOMOGENE        =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            SEUIL           =SIMP(statut='f',typ='R',defaut= 0.3 ),
          ),

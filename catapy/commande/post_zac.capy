@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,21 +16,21 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-POST_ZAC=OPER(nom="POST_ZAC",op= 175,sd_prod=mult_elas,docu="U4.83.21-b",reentrant='n',
+POST_ZAC=OPER(nom="POST_ZAC",op= 175,sd_prod=mult_elas,reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
               fr="Donne l'état adapté ou accommodé d'une structure sous chargement cyclique élastique affine ou non",
-         MODELE          =SIMP(statut='o',typ=modele),
+         MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          EXCIT           =FACT(statut='o',max='**',
            CHARGE          =SIMP(statut='o',typ=char_meca),
-           FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule)),
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",into=("FIXE_CSTE",)),
          ),
          EVOL_ELAS       =SIMP(statut='o',typ=evol_elas),
          b_evol_elas     =BLOC(condition="EVOL_ELAS != None",
            regles=(UN_PARMI('NUME_ORDRE','LIST_INST','INST'),),
            NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),  
-           LIST_INST       =SIMP(statut='f',typ=listr8),
+           LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
            INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),  
          ),
          TEMP_ZAC        =SIMP(statut='f',typ='R',defaut=0.0E+0),  

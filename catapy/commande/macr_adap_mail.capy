@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from Macro.macr_adap_mail_ops import macr_adap_mail_ops
 
 def macr_adap_mail_prod(self,MAJ_CHAM,ADAPTATION,**args):
   maillage_np1=ADAPTATION['MAILLAGE_NP1']
-  self.type_sdprod(maillage_np1,maillage)
+  self.type_sdprod(maillage_np1,maillage_sdaster)
   if MAJ_CHAM == None:return None
 # Remarque : la liste qui suit doit etre conforme à son homologue de LIRE_CHAMP
   for ch in MAJ_CHAM:
@@ -39,7 +39,6 @@ def macr_adap_mail_prod(self,MAJ_CHAM,ADAPTATION,**args):
 MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_adap_mail_prod,
                      fr="Adapter un maillage avec le logiciel HOMARD.",
                      ang="Mesh adaptation with HOMARD software.",
-                     docu="U7.03.01-b",
 #
 # 1. Le niveau d'information
 #
@@ -103,10 +102,10 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #      A. Le concept du maillage initial
 #      B. Le concept du maillage final
 #
-           MAILLAGE_N     = SIMP(statut='o',typ=maillage,
+           MAILLAGE_N     = SIMP(statut='o',typ=maillage_sdaster,
                            fr="Maillage avant adaptation",
                            ang="Mesh before adaptation" ),
-           MAILLAGE_NP1   = SIMP(statut='o',typ=(CO,maillage),
+           MAILLAGE_NP1   = SIMP(statut='o',typ=(CO,maillage_sdaster),
                            fr="Maillage apres adaptation",
                            ang="Mesh after adaptation" ),
 #
@@ -117,7 +116,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                            fr="Indicateur d'erreur",
                            ang="Error indicator",
 #
-# 5.3.1. Le nom du concept resultat
+# 5.3.1. Le nom du concept resultat_sdaster
 #
                            RESULTAT_N     = SIMP(statut='o',typ=(evol_elas,evol_noli,evol_ther) ,
                            fr="Resultat contenant l'indicateur d'erreur",
@@ -223,7 +222,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
 # 6. Suivi d'une frontiere
 #
-         MAILLAGE_FRONTIERE = SIMP(statut='f',typ=maillage,
+         MAILLAGE_FRONTIERE = SIMP(statut='f',typ=maillage_sdaster,
                            fr="Maillage de la frontiere à suivre",
                            ang="Boundary mesh" ),
 #
@@ -241,7 +240,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
 # 7.1. Le nom du champ qui contiendra le resultat de la mise a jour
 #
-           CHAM_MAJ       = SIMP(statut='o',typ=(CO,cham_gd),
+           CHAM_MAJ       = SIMP(statut='o',typ=(CO,cham_gd_sdaster),
                            fr="Nom du champ qui contiendra le champ mis à jour",
                            ang="Name of the field for the updated field"),
 #

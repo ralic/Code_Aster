@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ def calc_no_prod(RESULTAT,**args):
    if AsType(RESULTAT) != None : return AsType(RESULTAT)
    raise AsException("type de concept resultat non prevu")
 
-CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,docu="U4.81.02-f",reentrant='o',
+CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='o',
             UIinfo={"groupes":("Post traitements",)},
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,acou_harmo,mode_meca,
                                                mode_acou,mode_stat,mode_stat_depl,mode_stat_acce,
@@ -40,11 +40,11 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,docu="U4.81.02-f",reentr
          NOM_CAS         =SIMP(statut='f',typ='TXM' ),
          INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
          FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-         LIST_INST       =SIMP(statut='f',typ=listr8),
-         LIST_FREQ       =SIMP(statut='f',typ=listr8),
+         LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
+         LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
          PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3 ),
          CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
-         LIST_ORDRE      =SIMP(statut='f',typ=listis),
+         LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
 
          OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                                into=("FORC_NODA","REAC_NODA",
@@ -80,14 +80,14 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,docu="U4.81.02-f",reentr
 
          b_forc_reac     =BLOC(condition = """(OPTION == 'FORC_NODA') or (type(OPTION) == type(()) and 'FORC_NODA' in OPTION) or\
  (OPTION == 'REAC_NODA') or (type(OPTION) == type(()) and 'REAC_NODA' in OPTION)""",
-             MODELE          =SIMP(statut='f',typ=modele),
+             MODELE          =SIMP(statut='f',typ=modele_sdaster),
          ),
 
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
          EXCIT           =FACT(statut='f',max='**',
            CHARGE          =SIMP(statut='f',typ=(char_meca,char_ther,char_acou) ),
-           FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule)),
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",
                                  into=("FIXE_CSTE","FIXE_PILO","SUIV") ),
          ),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,17 +17,17 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,docu="U4.44.12-e",reentrant='f',
+DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='f',
             UIinfo={"groupes":("Modélisation",)},
                fr="Définition des caratéristiques d''une fissure avec XFEM",
 
-    MODELE                =SIMP(statut='o',typ=modele),
+    MODELE                =SIMP(statut='o',typ=modele_sdaster),
     DEFI_FISS             =FACT(statut='o',max=01,
       regles              =(UN_PARMI('GROUP_MA_FISS','FONC_LT'),
                             ENSEMBLE('FONC_LT','FONC_LN'),
                             ENSEMBLE('GROUP_MA_FISS','GROUP_MA_FOND')),
-      FONC_LT             =SIMP(statut='f',typ=(fonction,formule) ),
-      FONC_LN             =SIMP(statut='f',typ=(fonction,formule) ),
+      FONC_LT             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+      FONC_LN             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
       GROUP_MA_FISS       =SIMP(statut='f',typ=grma,max=01),
       GROUP_MA_FOND       =SIMP(statut='f',typ=grma),
     ),

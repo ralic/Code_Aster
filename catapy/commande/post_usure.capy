@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-POST_USURE=OPER(nom="POST_USURE",op=153,sd_prod=tabl_post_usur,docu="U4.84.05-d",reentrant='f',
+POST_USURE=OPER(nom="POST_USURE",op=153,sd_prod=tabl_post_usur,reentrant='f',
             UIinfo={"groupes":("Post traitements",)},
                 fr="Calcul des volumes d'usure et des profondeurs d'usure",
          regles=(UN_PARMI('TUBE_NEUF','RESU_GENE','PUIS_USURE'),
@@ -112,7 +112,7 @@ POST_USURE=OPER(nom="POST_USURE",op=153,sd_prod=tabl_post_usur,docu="U4.84.05-d"
          ANGL_ISTHME     =SIMP(statut='f',typ='R'),  
          ANGL_IMPACT     =SIMP(statut='f',typ='R'),  
          INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),  
-         LIST_INST       =SIMP(statut='f',typ=listr8),
+         LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
          COEF_INST       =SIMP(statut='f',typ='R',defaut=1.0E+0),  
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
          TITRE           =SIMP(statut='f',typ='TXM',max='**' ),  

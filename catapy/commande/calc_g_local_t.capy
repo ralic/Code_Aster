@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,9 +17,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 CALC_G_LOCAL_T=OPER(nom="CALC_G_LOCAL_T",op=77,sd_prod=tabl_calc_g_loca,
-                    fr="Calcul du taux de restitution local d énergie",docu="U4.82.04-f",reentrant='n',
+                    fr="Calcul du taux de restitution local d énergie",reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
-         MODELE          =SIMP(statut='o',typ=modele),
+         MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          regles=(UN_PARMI('RESULTAT','DEPL'),
                  PRESENT_PRESENT('VITE','ACCE'),
@@ -35,9 +35,9 @@ CALC_G_LOCAL_T=OPER(nom="CALC_G_LOCAL_T",op=77,sd_prod=tabl_calc_g_loca,
              regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST'),),
              TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
-             LIST_ORDRE      =SIMP(statut='f',typ=listis),
+             LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
              INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-             LIST_INST       =SIMP(statut='f',typ=listr8),
+             LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
              
              b_acce_reel     =BLOC(condition="(INST != None)or(LIST_INST != None)",
                PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-6),
@@ -46,7 +46,7 @@ CALC_G_LOCAL_T=OPER(nom="CALC_G_LOCAL_T",op=77,sd_prod=tabl_calc_g_loca,
          ),
          EXCIT           =FACT(statut='f',max='**',
                CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
-               FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
+               FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule)),
                TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),
          ),
          SYME_CHAR       =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","ANTI","SANS") ),
@@ -118,8 +118,8 @@ CALC_G_LOCAL_T=OPER(nom="CALC_G_LOCAL_T",op=77,sd_prod=tabl_calc_g_loca,
 
          R_INF           =SIMP(statut='f',typ='R'),
          R_SUP           =SIMP(statut='f',typ='R'),
-         R_INF_FO        =SIMP(statut='f',typ=(fonction,formule)),
-         R_SUP_FO        =SIMP(statut='f',typ=(fonction,formule)),
+         R_INF_FO        =SIMP(statut='f',typ=(fonction_sdaster,formule)),
+         R_SUP_FO        =SIMP(statut='f',typ=(fonction_sdaster,formule)),
  
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/01/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,12 +17,12 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE VABHHTS J.PELLET
-ASSE_MAILLAGE=OPER(nom="ASSE_MAILLAGE",op= 105,sd_prod=maillage,
+ASSE_MAILLAGE=OPER(nom="ASSE_MAILLAGE",op= 105,sd_prod=maillage_sdaster,
                    fr="Assembler deux maillages sous un seul nom",
-                   docu="U4.23.03-f",reentrant='n',
+                   reentrant='n',
                    UIinfo={"groupes":("Maillage",)},
-         MAILLAGE_1 =  SIMP(statut='o',typ=maillage,),
-         MAILLAGE_2 =  SIMP(statut='o',typ=maillage,),
+         MAILLAGE_1 =  SIMP(statut='o',typ=maillage_sdaster,),
+         MAILLAGE_2 =  SIMP(statut='o',typ=maillage_sdaster,),
          OPERATION  =  SIMP(statut='o',typ='TXM',into=("SOUS_STR","SUPERPOSE","COLLAGE"),),
          b_collage  =  BLOC(condition = "OPERATION == 'COLLAGE'",
            COLLAGE  =  FACT(statut='o',

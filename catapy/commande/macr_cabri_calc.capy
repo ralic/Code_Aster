@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,9 +22,9 @@ from Macro.macr_cabri_calc_ops import macr_cabri_calc_ops
 def macr_cabri_calc_prod(self,MODELE_THER,MODELE_MECA,CHAM_MATER,
                          CHAR_THER,CHAR_MECA,RESU_THER,**args):
   if MODELE_THER != None:
-   self.type_sdprod(MODELE_THER,modele)   
+   self.type_sdprod(MODELE_THER,modele_sdaster)   
   if MODELE_MECA != None:
-   self.type_sdprod(MODELE_MECA,modele)  
+   self.type_sdprod(MODELE_MECA,modele_sdaster)  
   if RESU_THER != None:
    self.type_sdprod(RESU_THER,evol_ther)     
   if CHAM_MATER != None:
@@ -44,7 +44,7 @@ MACR_CABRI_CALC=MACRO(nom="MACR_CABRI_CALC",
                       fr="Calcul d'une jonction boulonnée de tuyauterie",
                       reentrant='n',
                       UIinfo={"groupes":("Outils métier",)},
-                      MAILLAGE   = SIMP(statut='o',typ=maillage,),
+                      MAILLAGE   = SIMP(statut='o',typ=maillage_sdaster,),
                       AFFE_MATERIAU = FACT(statut='o',max='**',
                         regles=(UN_PARMI('TOUT','GROUP_MA',),),
                         TOUT     = SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -54,19 +54,19 @@ MACR_CABRI_CALC=MACRO(nom="MACR_CABRI_CALC",
                                                                   "ROND",
                                                                   "ECROU",
                                                                   "JOINT",) ),
-                        MATER    = SIMP(statut='o',typ=mater),
+                        MATER    = SIMP(statut='o',typ=mater_sdaster),
                         TEMP_REF = SIMP(statut='d',typ='R',defaut= 25. ),
                       ),                      
                       CHAM_MATER = SIMP(statut = 'f',typ=(cham_mater,CO),),
-                      MODELE_THER= SIMP(statut = 'f',typ=(modele,CO),),
+                      MODELE_THER= SIMP(statut = 'f',typ=(modele_sdaster,CO),),
                       
                       DEFI_CHAR_THER = FACT(statut ='d',
                         TEMP_INIT     = SIMP(statut='d',typ='R',defaut= 25.,),
-                        COEF_H_FLUI   = SIMP(statut='f',typ=fonction,),
-                        TEMP_EXT_FLUI = SIMP(statut='f',typ=fonction,),
-                        COEF_H_AIR    = SIMP(statut='f',typ=fonction,),
-                        TEMP_EXT_AIR  = SIMP(statut='f',typ=fonction,),
-                        LIST_INST     = SIMP(statut='f',typ=listr8),
+                        COEF_H_FLUI   = SIMP(statut='f',typ=fonction_sdaster,),
+                        TEMP_EXT_FLUI = SIMP(statut='f',typ=fonction_sdaster,),
+                        COEF_H_AIR    = SIMP(statut='f',typ=fonction_sdaster,),
+                        TEMP_EXT_AIR  = SIMP(statut='f',typ=fonction_sdaster,),
+                        LIST_INST     = SIMP(statut='f',typ=listr8_sdaster),
                       ),                      
                       
                       CHAR_THER  = FACT(statut = 'f',max=4,
@@ -79,12 +79,12 @@ MACR_CABRI_CALC=MACRO(nom="MACR_CABRI_CALC",
                       RESU_THER  = SIMP(statut = 'f',typ=(evol_ther,CO),),                                       
 
                                        
-                      MODELE_MECA= SIMP(statut = 'f',typ=(modele,CO),),
+                      MODELE_MECA= SIMP(statut = 'f',typ=(modele_sdaster,CO),),
 
                       DEFI_CHAR_MECA   = FACT(statut='o',
-                        PRETENS    = SIMP(statut='f',typ=fonction,),
-                        PRES_REP   = SIMP(statut='f',typ=fonction,),
-                        EFFE_FOND  = SIMP(statut='f',typ=fonction,),
+                        PRETENS    = SIMP(statut='f',typ=fonction_sdaster,),
+                        PRES_REP   = SIMP(statut='f',typ=fonction_sdaster,),
+                        EFFE_FOND  = SIMP(statut='f',typ=fonction_sdaster,),
                       ),                                                             
 
                       CHAR_MECA  = FACT(statut = 'f',max=11,
@@ -114,7 +114,7 @@ MACR_CABRI_CALC=MACRO(nom="MACR_CABRI_CALC",
                       INCREMENT = FACT(statut='f',
                         regles=(EXCLUS('NUME_INST_INIT','INST_INIT'),
                                 EXCLUS('NUME_INST_FIN','INST_FIN'),),
-                        LIST_INST       =SIMP(statut='f',typ=listr8),
+                        LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
                         EVOLUTION       =SIMP(statut='f',typ='TXM',defaut="CHRONOLOGIQUE",
                                  into=("CHRONOLOGIQUE",) ),                                 
                         NUME_INST_INIT  =SIMP(statut='f',typ='I'),

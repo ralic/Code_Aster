@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/02/2004   AUTEUR MJBHHPE J.L.FLEJOU 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,9 +17,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE G8BHHXD X.DESROCHES
-MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage,
+MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
                    fr="Modification de la connectivité de groupes de mailles 2D ou 3D affectées à la modélisation de contact",
-                   docu="U4.23.04-d",reentrant='o',
+                   reentrant='o',
             UIinfo={"groupes":("Maillage",)},
       regles=(AU_MOINS_UN('ORIE_CONTACT','DEFORME','EQUE_PIQUA','ORIE_PEAU_2D',
                        'ORIE_PEAU_3D','ORIE_NORM_COQUE','PLAQ_TUBE','MODI_MAILLE',
@@ -49,7 +49,7 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage,
               EXCLUS('SYMETRIE','MODI_BASE'),
               EXCLUS('SYMETRIE','ECHELLE'),
               ),
-         MAILLAGE        =SIMP(statut='o',typ=maillage ),
+         MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster ),
 
          ORIE_CONTACT    =FACT(statut='f',
            GROUP_MA        =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
@@ -98,7 +98,7 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage,
            GROUP_NO        =SIMP(statut='f',typ=grno),
          ),
          b_modele        =BLOC(condition = "(ORIE_PEAU_2D != None) or (ORIE_PEAU_3D != None) or(ORIE_NORM_COQUE != None)",
-           MODELE          =SIMP(statut='o',typ=modele ),
+           MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          ),
          PLAQ_TUBE       =FACT(statut='f',
            DEXT            =SIMP(statut='o',typ='R' ),

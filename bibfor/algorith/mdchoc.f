@@ -13,7 +13,7 @@
       LOGICAL            LAMOR,LFLU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/10/1999   AUTEUR SABJLMA P.LATRUBESSE 
+C MODIF ALGORITH  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -191,7 +191,7 @@ C
       CALL GETTCO(NUMDDL,TYPNUM)
 C
 C --- CALCUL DIRECT
-      IF (TYPNUM(1:13).EQ.'NUME_DDL     ') THEN
+      IF (TYPNUM.EQ.'NUME_DDL_SDASTER') THEN
         CALL DISMOI('F','NOM_MAILLA',NUMDDL,'NUME_DDL',IB,MAILLA,IE)
         DO 111 I=1,NBNLI
           II = I
@@ -463,7 +463,7 @@ C
 C
         CALL JEVEUO(NOECHO(I,4)//'.COORDO    .VALE','L',JCOOR1)
         CALL JEVEUO(NOECHO(I,8)//'.COORDO    .VALE','L',JCOOR2)
-        IF (TYPNUM(1:13).EQ.'NUME_DDL     ') THEN
+        IF (TYPNUM.EQ.'NUME_DDL_SDASTER') THEN
           DO 12 J = 1,3
             PARCHO(I,6+J) = ZR(JCOOR1+3*(INO1-1)+J-1)
             PARCHO(I,9+J) = ZR(JCOOR2+3*(INO2-1)+J-1)
@@ -613,7 +613,7 @@ C
         N1=-N1
         IF (N1.EQ.3) THEN
           CALL GETVR8(MOTFAC,'ORIG_OBST',II,1,3,TEMPO,N1)
-          IF (TYPNUM(1:13).EQ.'NUME_DDL     ') THEN
+          IF (TYPNUM.EQ.'NUME_DDL_SDASTER') THEN
             PARCHO(I,13) = TEMPO(1)
             PARCHO(I,14) = TEMPO(2)
             PARCHO(I,15) = TEMPO(3)
@@ -674,7 +674,7 @@ C ---   RECHERCHE DES ANGLES NAUTIQUES
            CALL GETVR8(MOTFAC,'NORM_OBST',II,1,3,TXLOC,N1)
            CALL GETVR8(MOTFAC,'ANGL_VRIL',II,1,1,ANGL,N1)
            IF (N1.NE.0) THEN
-              IF (TYPNUM(1:13).EQ.'NUME_DDL     '.OR.
+              IF (TYPNUM.EQ.'NUME_DDL_SDASTER'.OR.
      &            REPERE.EQ.'GLOBAL') THEN
                 CALL ANGVX(TXLOC,ALPHA,BETA)
                 PARCHO(I,16) = SIN(ALPHA)
@@ -700,7 +700,7 @@ C ---   RECHERCHE DES ANGLES NAUTIQUES
               TYLOC(1) = (PARCHO(I,10) - PARCHO(I,7))
               TYLOC(2) = (PARCHO(I,11) - PARCHO(I,8))
               TYLOC(3) = (PARCHO(I,12) - PARCHO(I,9))
-              IF (TYPNUM(1:13).EQ.'NUME_DDL     '.OR.
+              IF (TYPNUM.EQ.'NUME_DDL_SDASTER'.OR.
      &           REPERE.EQ.'GLOBAL') THEN
                  CALL ANGVXY(TXLOC,TYLOC,ANG)
                  PARCHO(I,16) = SIN(ANG(1))
@@ -733,7 +733,7 @@ C ---   RECHERCHE DES ANGLES NAUTIQUES
               TZLOC(2) = (PARCHO(I,11) - PARCHO(I,8))
               TZLOC(3) = (PARCHO(I,12) - PARCHO(I,9))
              CALL PROVEC(TZLOC,TXLOC,TYLOC)
-              IF (TYPNUM(1:13).EQ.'NUME_DDL     '.OR.
+              IF (TYPNUM.EQ.'NUME_DDL_SDASTER'.OR.
      &            REPERE.EQ.'GLOBAL') THEN
                   CALL ANGVXY(TXLOC,TYLOC,ANG)
                   PARCHO(I,16) = SIN(ANG(1))
@@ -765,7 +765,7 @@ C ---   RECHERCHE DES ANGLES NAUTIQUES
               CALL UTMESS('I','MDCHOC',' GAMMA = 0 :VALEUR PAR'//
      &                                   ' DEFAUT ')
               ANGL = 0.D0
-              IF (TYPNUM(1:13).EQ.'NUME_DDL     '.OR.
+              IF (TYPNUM.EQ.'NUME_DDL_SDASTER'.OR.
      &            REPERE.EQ.'GLOBAL') THEN
                 CALL ANGVX(TXLOC,ALPHA,BETA)
                 PARCHO(I,16) = SIN(ALPHA)
@@ -818,7 +818,7 @@ C          DETERMINATION DES AXES LOCAUX
                TZLOC(3) = TYLOC(2)
            ENDIF
            CALL PROVEC(TYLOC,TZLOC,TXLOC)
-           IF (TYPNUM(1:13).EQ.'NUME_DDL     '.OR.
+           IF (TYPNUM.EQ.'NUME_DDL_SDASTER'.OR.
      &         REPERE.EQ.'GLOBAL') THEN
               CALL ANGVXY(TXLOC,TYLOC,ANG)
               PARCHO(I,16) = SIN(ANG(1))
@@ -925,7 +925,7 @@ C
 C     --- REMPLISSAGE DE DPLMOD(I,J,K) ---
 C
 C --- CALCUL DIRECT
-      IF (TYPNUM(1:13).EQ.'NUME_DDL     ') THEN
+      IF (TYPNUM.EQ.'NUME_DDL_SDASTER') THEN
         DO 113 I=1,NBNLI
           DO 114 J=1,NBMODE
             DPLMOD(I,J,1) = BMODAL(ZI(JDDL-1+6*(I-1)+1),J)
@@ -984,7 +984,7 @@ C
       IF (MONMOT(1:3).EQ.'OUI') THEN
 C
 C ----- CALCUL DIRECT
-        IF (TYPNUM(1:13).EQ.'NUME_DDL     ') THEN
+        IF (TYPNUM.EQ.'NUME_DDL_SDASTER') THEN
           DO 123 I=1,NBNLI
             DO 124 J=1,NEXCIT
               PS2DEL(I,J,1) = PS1DEL(ZI(JDDL-1+6*(I-1)+1),J)

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,10 +21,10 @@ def calc_elem_prod(RESULTAT,**args):
    if AsType(RESULTAT) != None : return AsType(RESULTAT)
    raise AsException("type de concept resultat non prevu")
 
-CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,docu="U4.81.01-g",reentrant='f',
+CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
             UIinfo={"groupes":("Post traitements",)},
             fr="Compléter ou créer un résultat en calculant des champs par éléments (contraintes, déformations,... )",
-     MODELE          =SIMP(statut='f',typ=modele),
+     MODELE          =SIMP(statut='f',typ=modele_sdaster),
      CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
      CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
 
@@ -45,11 +45,11 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,docu="U4.81.01-g",re
 
      INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
      FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-     LIST_INST       =SIMP(statut='f',typ=listr8),
-     LIST_FREQ       =SIMP(statut='f',typ=listr8),
+     LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
+     LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
      PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3 ),
      CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",) ),
-     LIST_ORDRE      =SIMP(statut='f',typ=listis),
+     LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
      
      TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
      GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
@@ -107,7 +107,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,docu="U4.81.01-g",re
                                      fr="Charges contenant les températures, les efforts répartis pour les poutres...",
                                      regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
                     CHARGE          =SIMP(statut='o',typ=char_meca ),
-                    FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
+                    FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule)),
                     FONC_MULT_C     =SIMP(statut='f',typ=fonction_c),
                     COEF_MULT       =SIMP(statut='f',typ='R'),
                     COEF_MULT_C     =SIMP(statut='f',typ='C'),
@@ -152,7 +152,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,docu="U4.81.01-g",re
                     EXCIT           =FACT(statut='f',max='**',
                                           regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
                          CHARGE          =SIMP(statut='f',typ=char_meca ),
-                         FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
+                         FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule)),
                          FONC_MULT_C     =SIMP(statut='f',typ=fonction_c),
                          COEF_MULT       =SIMP(statut='f',typ='R'),
                          COEF_MULT_C     =SIMP(statut='f',typ='C'),
@@ -325,7 +325,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                EXCIT           =FACT(statut='f',max='**',
                                       regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
                     CHARGE          =SIMP(statut='o',typ=char_meca ),
-                    FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
+                    FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule)),
                     FONC_MULT_C     =SIMP(statut='f',typ=fonction_c),
                     COEF_MULT       =SIMP(statut='f',typ='R'),
                     COEF_MULT_C     =SIMP(statut='f',typ='C'),
@@ -473,7 +473,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                EXCIT           =FACT(statut='f',max='**',
                     regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
                     CHARGE          =SIMP(statut='o',typ=char_ther ),
-                    FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
+                    FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule)),
                     FONC_MULT_C     =SIMP(statut='f',typ=fonction_c),
                     COEF_MULT       =SIMP(statut='f',typ='R'),
                     COEF_MULT_C     =SIMP(statut='f',typ='C'),
@@ -495,7 +495,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
           EXCIT           =FACT(statut='f',max='**',
                 regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
                 CHARGE          =SIMP(statut='o',typ=char_acou ),
-                FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
+                FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule)),
                 FONC_MULT_C     =SIMP(statut='f',typ=fonction_c),
                 COEF_MULT       =SIMP(statut='f',typ='R'),
                 COEF_MULT_C     =SIMP(statut='f',typ='C'),

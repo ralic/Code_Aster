@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,9 +16,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-DEFI_NAPPE=OPER(nom="DEFI_NAPPE",op=   4,sd_prod=nappe,
+DEFI_NAPPE=OPER(nom="DEFI_NAPPE",op=   4,sd_prod=nappe_sdaster,
                 fr="Définition des valeurs d une fonction de deux variables réelles",
-                docu="U4.31.03-g",reentrant='n',
+                reentrant='n',
             UIinfo={"groupes":("Fonction",)},
          regles=(UN_PARMI('FONCTION','DEFI_FONCTION'),
                  EXCLUS('FONCTION','NOM_PARA_FONC',),
@@ -29,7 +29,7 @@ DEFI_NAPPE=OPER(nom="DEFI_NAPPE",op=   4,sd_prod=nappe,
                                                           ) ),
          NOM_RESU        =SIMP(statut='f',typ='TXM',defaut="TOUTRESU"),       
          PARA            =SIMP(statut='o',typ='R',max='**'),
-         FONCTION        =SIMP(statut='f',typ=(fonction,formule),max='**' ),
+         FONCTION        =SIMP(statut='f',typ=(fonction_sdaster,formule),max='**' ),
          NOM_PARA_FONC   =SIMP(statut='f',typ='TXM',into=("TEMP","INST","X","Y","Z","EPSI","FREQ",
                                                           "PULS","AMOR","EPAIS","SAT", "PGAZ","PCAP") ),
          DEFI_FONCTION   =FACT(statut='f',max='**',

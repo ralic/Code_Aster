@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/03/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,7 @@ def proj_champ_prod(RESULTAT=None,CHAM_NO_REFE=None,**args ):
     if AsType(CHAM_NO_REFE) == cham_no_flux_r : return cham_no_flux_r
     raise AsException("type de concept resultat non prevu")
 
-PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,docu="U4.72.05-d",reentrant='f',
+PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
             UIinfo={"groupes":("Résultats et champs",)},
                 fr="Projection d'un champ aux noeuds sur les noeuds d'un autre maillage",
 #
@@ -52,19 +52,19 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,docu="U4.72.05-
            SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
                                fr="Liste des paramètres de sensibilité.",
                                ang="List of sensitivity parameters",),
-           MODELE_1        =SIMP(statut='o',typ=modele),
-           MODELE_2        =SIMP(statut='o',typ=modele),
+           MODELE_1        =SIMP(statut='o',typ=modele_sdaster),
+           MODELE_2        =SIMP(statut='o',typ=modele_sdaster),
 
            TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
 
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),
-           LIST_ORDRE      =SIMP(statut='f',typ=listis),
+           LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
            INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
-           LIST_INST       =SIMP(statut='f',typ=listr8),
+           LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
            FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
-           LIST_FREQ       =SIMP(statut='f',typ=listr8),
+           LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
            DISTANCE_MAX    =SIMP(statut='f',typ='R',max=1,
             fr="Distance maximale entre le noeud et l'élément le plus proche, lorsque le noeud n'est dans aucun élément."),
          ),

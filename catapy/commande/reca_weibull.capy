@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,21 +17,21 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 RECA_WEIBULL=OPER(nom="RECA_WEIBULL",op= 197,sd_prod=tabl_reca_weib,
-                     fr=" ",docu="U4.82.06-b",reentrant='n',
+                     fr=" ",reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
          LIST_PARA       =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=2,into=("SIGM_REFE","M",) ),
          RESU            =FACT(statut='o',max='**',
            regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST',),
                    AU_MOINS_UN('TOUT','GROUP_MA','MAILLE', ),),
            EVOL_NOLI       =SIMP(statut='o',typ=(evol_noli) ),
-           MODELE          =SIMP(statut='o',typ=(modele) ),
+           MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
            CHAM_MATER      =SIMP(statut='o',typ=(cham_mater) ),
            TEMPE           =SIMP(statut='f',typ='R' ),
            LIST_INST_RUPT  =SIMP(statut='o',typ='R',validators=NoRepeat(),max='**' ),
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),
            INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
-           LIST_INST       =SIMP(statut='f',typ=(listr8) ),
+           LIST_INST       =SIMP(statut='f',typ=(listr8_sdaster) ),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),

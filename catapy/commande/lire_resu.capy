@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/02/2004   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,7 +61,7 @@ def l_nom_cham_pas_elga(): return (
      "VITE", "VITE_ABSOLU", "VITE_VENT",
                            )
 
-LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,docu="U7.02.01-d",reentrant='n',
+LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
             UIinfo={"groupes":("Maillage",)},
                fr="Lecture de champs aux noeuds ou par éléments aux noeuds sur un fichier IDEAS ou EnSight",
 
@@ -78,8 +78,8 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,docu="U7.02.01-d",r
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
 
          regles=(UN_PARMI('MAILLAGE','MODELE'),),
-         MAILLAGE        =SIMP(statut='f',typ=maillage),
-         MODELE          =SIMP(statut='f',typ=modele),
+         MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster),
+         MODELE          =SIMP(statut='f',typ=modele_sdaster),
 
          NB_VARI         =SIMP(statut='f',typ='I' ),
 
@@ -159,10 +159,10 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,docu="U7.02.01-d",r
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
            INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-           LIST_INST       =SIMP(statut='f',typ=listr8),
-           LIST_ORDRE      =SIMP(statut='f',typ=listis),
+           LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
+           LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
            FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-           LIST_FREQ       =SIMP(statut='f',typ=listr8),
+           LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
 
            b_acce_reel     =BLOC(condition="(INST != None)or(LIST_INST != None)or(FREQ != None)or(LIST_FREQ != None)",
              PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3),

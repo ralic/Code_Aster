@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,19 +25,19 @@ def recu_fonction_prod(RESULTAT=None,TABLE=None,OBSTACLE=None,
   if TABLE != None :
      if TYPE_RESU != None :
         if TYPE_RESU == "FONCTION_C" : return fonction_c
-        if TYPE_RESU == "FONCTION"   : return fonction
+        if TYPE_RESU == "FONCTION"   : return fonction_sdaster
      else:
-        return fonction
-  if RESU_GENE      != None         : return fonction
-  if BASE_ELAS_FLUI != None         : return fonction
-  if RESULTAT       != None         : return fonction
-  if CHAM_GD        != None         : return fonction
-  if OBSTACLE       != None         : return fonction
-  raise AsException("type de concept resultat non prevu")
+        return fonction_sdaster
+  if RESU_GENE      != None         : return fonction_sdaster
+  if BASE_ELAS_FLUI != None         : return fonction_sdaster
+  if RESULTAT       != None         : return fonction_sdaster
+  if CHAM_GD        != None         : return fonction_sdaster
+  if OBSTACLE       != None         : return fonction_sdaster
+  raise AsException("type de concept resultat_sdaster non prevu")
 
 RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
                    fr="Extraire sous forme d une fonction, l évolution temporelle d une composante d un champ ou d une table",
-                   docu="U4.32.03-f",reentrant='n',
+                   reentrant='n',
             UIinfo={"groupes":("Fonction",)},
          regles=(UN_PARMI('CHAM_GD','RESULTAT','RESU_GENE','TABLE','BASE_ELAS_FLUI','OBSTACLE'),),
 
@@ -47,9 +47,9 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
          RESULTAT        =SIMP(statut='f',typ=(evol_elas,dyna_trans,evol_noli,evol_ther,dyna_harmo ) ),
          RESU_GENE       =SIMP(statut='f',typ=tran_gene),
 #  concept table à créer
-         TABLE           =SIMP(statut='f',typ=table),
-         BASE_ELAS_FLUI  =SIMP(statut='f',typ=melasflu),
-         OBSTACLE        =SIMP(statut='f',typ=obstacle),
+         TABLE           =SIMP(statut='f',typ=table_sdaster),
+         BASE_ELAS_FLUI  =SIMP(statut='f',typ=melasflu_sdaster),
+         OBSTACLE        =SIMP(statut='f',typ=obstacle_sdaster),
 
          b_tran_gene = BLOC ( condition = "RESU_GENE != None",
                               fr="Récupération de la fonction concernant les chocs à partir d un concept TRAN_GENE",
@@ -57,15 +57,15 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
                     EXCLUS('MULT_APPUI','CORR_STAT'),),
              MULT_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              CORR_STAT       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-             ACCE_MONO_APPUI =SIMP(statut='f',typ=(fonction,formule)),
+             ACCE_MONO_APPUI =SIMP(statut='f',typ=(fonction_sdaster,formule)),
              PARA_X          =SIMP(statut='f',typ='TXM' ),
              PARA_Y          =SIMP(statut='f',typ='TXM' ),
              SOUS_STRUC      =SIMP(statut='f',typ='TXM' ),
-             LIST_PARA       =SIMP(statut='f',typ=listr8 ),
+             LIST_PARA       =SIMP(statut='f',typ=listr8_sdaster ),
              INTITULE        =SIMP(statut='f',typ='TXM' ),
          ),
          b_base_elas_flui = BLOC ( condition = "BASE_ELAS_FLUI != None",
-                                   fr="Récupération de la fonction à partir d un concept melasflu",
+                                   fr="Récupération de la fonction à partir d un concept melasflu_sdaster",
            regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE'),),
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
@@ -73,7 +73,7 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
            PARA_X          =SIMP(statut='o',typ='TXM',into=("VITE_FLU",) ),
            PARA_Y          =SIMP(statut='o',typ='TXM',into=("FREQ","AMOR") ),
          ),
-         b_table = BLOC ( condition = "TABLE != None",fr="Récupération de la fonction à partir d un concept table",
+         b_table = BLOC ( condition = "TABLE != None",fr="Récupération de la fonction à partir d un concept table_sdaster",
            regles=(UN_PARMI('PARA_X','NOM_PARA_TABL'),
                    PRESENT_PRESENT('PARA_X','PARA_Y'),),
            PARA_X          =SIMP(statut='f',typ='TXM',
@@ -122,12 +122,12 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
            NOM_PARA_RESU   =SIMP(statut='f',typ='TXM' ),
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
-           LIST_ORDRE      =SIMP(statut='f',typ=listis ),
+           LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster ),
            TOUT_INST       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-           LIST_INST       =SIMP(statut='f',typ=listr8 ),
+           LIST_INST       =SIMP(statut='f',typ=listr8_sdaster ),
            FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-           LIST_FREQ       =SIMP(statut='f',typ=listr8 ),
+           LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster ),
            b_prec = BLOC ( condition = "(INST != None) or (LIST_INST != None) or (FREQ != None) or (LIST_FREQ != None)",
              PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
@@ -151,12 +151,12 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
            NOM_CHAM        =SIMP(statut='f',typ='TXM',into=("DEPL","VITE","ACCE","PTEM") ),
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
-           LIST_ORDRE      =SIMP(statut='f',typ=listis ),
+           LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster ),
            TOUT_INST       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-           LIST_INST       =SIMP(statut='f',typ=listr8 ),
+           LIST_INST       =SIMP(statut='f',typ=listr8_sdaster ),
            FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-           LIST_FREQ       =SIMP(statut='f',typ=listr8 ),
+           LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster ),
            b_prec = BLOC ( condition = "(INST != None) or (LIST_INST != None) or (FREQ != None) or (LIST_FREQ != None)",
              PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/03/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,6 @@
 from Macro.test_fichier_ops import test_fichier_ops
 
 TEST_FICHIER=MACRO(nom="TEST_FICHIER", op=test_fichier_ops,
-                   docu="U4.92.04-a",
                    UIinfo={"groupes":("Impression",)},
                    
    FICHIER         =SIMP(statut='f',typ='TXM',defaut="RESULTAT"),

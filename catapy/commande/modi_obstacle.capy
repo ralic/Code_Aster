@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,8 +16,8 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-MODI_OBSTACLE=OPER(nom="MODI_OBSTACLE",op=182,sd_prod=obstacle,
-                   fr=" ",docu="U4.44.22-b",reentrant='f',
+MODI_OBSTACLE=OPER(nom="MODI_OBSTACLE",op=182,sd_prod=obstacle_sdaster,
+                   fr=" ",reentrant='f',
             UIinfo={"groupes":("Modélisation",)},
       regles=(PRESENT_ABSENT('R_MOBILE','CRAYON'),
               PRESENT_PRESENT('V_USUR_TUBE','V_USUR_OBST'),),
@@ -25,9 +25,9 @@ MODI_OBSTACLE=OPER(nom="MODI_OBSTACLE",op=182,sd_prod=obstacle,
          V_USUR_OBST     =SIMP(statut='f',typ='R',max='**'),
          TABL_USURE      =SIMP(statut='f',typ=tabl_post_usur),
          INST            =SIMP(statut='f',typ='R'),  
-         OBSTACLE        =SIMP(statut='f',typ=obstacle),
-         GUIDE           =SIMP(statut='o',typ=obstacle),
-         CRAYON          =SIMP(statut='f',typ=obstacle),
+         OBSTACLE        =SIMP(statut='f',typ=obstacle_sdaster),
+         GUIDE           =SIMP(statut='o',typ=obstacle_sdaster),
+         CRAYON          =SIMP(statut='f',typ=obstacle_sdaster),
          R_MOBILE        =SIMP(statut='f',typ='R'),  
          PERCEMENT       =SIMP(statut='f',typ='R',defaut=1),  
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),

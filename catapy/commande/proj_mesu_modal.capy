@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,16 +25,16 @@ def proj_mesu_modal_prod(MODELE_MESURE,**args):
 
 PROJ_MESU_MODAL=OPER(nom="PROJ_MESU_MODAL",op= 193,
                      sd_prod=proj_mesu_modal_prod,
-                     docu="U4.73.01-b",reentrant='n',
+                     reentrant='n',
             UIinfo={"groupes":("Résultats et champs",)},
                      fr="Calcul de coordonnees generalisees de mesure experimentale relatives a une base de projection",
 
          MODELE_CALCUL   =FACT(statut='o',
-           MODELE          =SIMP(statut='o',typ=(modele) ),
+           MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
            BASE            =SIMP(statut='o',typ=(mode_meca,base_modale,) ),
                          ),
          MODELE_MESURE   =FACT(statut='o',
-           MODELE          =SIMP(statut='o',typ=(modele) ),
+           MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
            MESURE          =SIMP(statut='o',typ=(dyna_trans,dyna_harmo,base_modale,) ),
            NOM_PARA        =SIMP(statut='f',typ='TXM',defaut="INST",into=("INST","FREQ","DEFORMEE",),),
            NOM_CHAM        =SIMP(statut='f',typ='TXM',defaut="DEPL",into=("DEPL","VITE","ACCE","SIEF_NOEU","EPSI_NOEU_DEPL",) ),
@@ -53,7 +53,7 @@ PROJ_MESU_MODAL=OPER(nom="PROJ_MESU_MODAL",op= 193,
            b_regul =BLOC(condition="REGUL!='NON'",
                          regles=(PRESENT_ABSENT('COEF_PONDER','COEF_PONDER_F', ),),
                          COEF_PONDER   =SIMP(statut='f',typ='R',defaut=0.     ,max='**' ),  
-                         COEF_PONDER_F =SIMP(statut='f',typ=(fonction,formule),max='**' ),
+                         COEF_PONDER_F =SIMP(statut='f',typ=(fonction_sdaster,formule),max='**' ),
                         ),
              ),
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,14 +18,14 @@
 # ======================================================================
 THER_NON_LINE_MO=OPER(nom="THER_NON_LINE_MO",op= 171,sd_prod=evol_ther,
                      fr="Thermique non lineaire en repere mobile",
-                     docu="U4.54.03-c",reentrant='n',
+                     reentrant='n',
             UIinfo={"groupes":("Résolution",)},
-         MODELE          =SIMP(statut='o',typ=modele ),
+         MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
          CARA_ELEM       =SIMP(statut='c',typ=cara_elem ),
          EXCIT           =FACT(statut='o',max='**',
            CHARGE          =SIMP(statut='o',typ=char_ther ),
-           FONC_MULT       =SIMP(statut='c',typ=(fonction,formule) ),
+           FONC_MULT       =SIMP(statut='c',typ=(fonction_sdaster,formule) ),
          ),
          TEMP_INIT       =FACT(statut='f',
            EVOL_THER       =SIMP(statut='f',typ=evol_ther ),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ from Macro.macr_cabri_mail_ops import macr_cabri_mail_ops
 
 MACR_CABRI_MAIL=MACRO(nom="MACR_CABRI_MAIL",
                       op=macr_cabri_mail_ops,
-                      sd_prod=maillage,
+                      sd_prod=maillage_sdaster,
                       fr="maillage d'une jonction boulonnée de tuyauterie",
                       reentrant='n',
                       UIinfo={"groupes":("Outils métier",)},

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 # RESPONSABLE JMBHH01 J.M.PROIX
 POST_K1_K2_K3=OPER(nom="POST_K1_K2_K3",op=188,sd_prod=tabl_post_k,
                    fr="Calcul des FIC par extrapolation du champ de déplacements sur les lèvres de la fissure",
-                   docu="U4.82.05-b",reentrant='n',
+                   reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
 
            regles=(UN_PARMI('RESULTAT','TABL_DEPL_SUP'),
@@ -31,7 +31,7 @@ POST_K1_K2_K3=OPER(nom="POST_K1_K2_K3",op=188,sd_prod=tabl_post_k,
                              fr="Modélisation cohérente avec celle utilisée pour le calcul des déplacements"),
          FOND_FISS     =SIMP(statut='f',typ=fond_fiss),
          b_fond_fiss   =BLOC (condition="(FOND_FISS!= None)",
-                         MAILLAGE      = SIMP(statut='o',typ=maillage),
+                         MAILLAGE      = SIMP(statut='o',typ=maillage_sdaster),
                          PRECISION     = SIMP(statut='f',typ='R',defaut=0.001),
                          NOEUD         = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                          GROUP_NO      = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
@@ -39,7 +39,7 @@ POST_K1_K2_K3=OPER(nom="POST_K1_K2_K3",op=188,sd_prod=tabl_post_k,
                          SANS_GROUP_NO = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                          TOUT          = SIMP(statut='f',typ='TXM',into=("OUI",) )
                          ),
-         MATER         =SIMP(statut='o',typ=mater,
+         MATER         =SIMP(statut='o',typ=mater_sdaster,
                              fr="Matériau homogène et isotrope cohérent avec celui utilisé pour le calcul des déplacements"),
          RESULTAT      =SIMP(statut='f',typ=(evol_elas,evol_noli),
                              fr="Table déplacement des noeuds de la lèvre supérieure et inférieure"),
@@ -52,9 +52,9 @@ POST_K1_K2_K3=OPER(nom="POST_K1_K2_K3",op=188,sd_prod=tabl_post_k,
          PREC_VIS_A_VIS= SIMP(statut='f',typ='R',defaut=0.1),
          TOUT_ORDRE    =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE    =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
-         LIST_ORDRE    =SIMP(statut='f',typ=listis),
+         LIST_ORDRE    =SIMP(statut='f',typ=listis_sdaster),
          INST          =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-         LIST_INST     =SIMP(statut='f',typ=listr8),
+         LIST_INST     =SIMP(statut='f',typ=listr8_sdaster),
              b_acce_reel     =BLOC(condition="(INST != None)or(LIST_INST != None)",
                PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-6),
                CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),

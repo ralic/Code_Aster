@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,6 @@
 # ======================================================================
 IMPR_MATRICE=PROC(nom="IMPR_MATRICE",op= 159,
                   fr="Impression des matrices élémentaires et des matrices assemblées",
-                  docu="U7.04.32-d",
             UIinfo={"groupes":("Impression",)},
          regles=(AU_MOINS_UN('MATR_ELEM','MATR_ASSE'),),
 

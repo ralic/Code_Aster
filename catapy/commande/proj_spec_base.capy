@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,13 +16,13 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-PROJ_SPEC_BASE=OPER(nom="PROJ_SPEC_BASE",op= 146,sd_prod=tabl_intsp,docu="U4.63.14-d",reentrant='n',
+PROJ_SPEC_BASE=OPER(nom="PROJ_SPEC_BASE",op= 146,sd_prod=tabl_intsp,reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
                     fr="Projection d un ou plusieurs spectres de turbulenc sur un ensemble de bases modales ",
       regles=(UN_PARMI('BASE_ELAS_FLUI','MODE_MECA','CHAM_NO'),
               ENSEMBLE('FREQ_INIT','FREQ_FIN','NB_POIN'),),
-         SPEC_TURB       =SIMP(statut='o',typ=spectre,validators=NoRepeat(),max='**' ),
-         BASE_ELAS_FLUI  =SIMP(statut='f',typ=melasflu ),
+         SPEC_TURB       =SIMP(statut='o',typ=spectre_sdaster,validators=NoRepeat(),max='**' ),
+         BASE_ELAS_FLUI  =SIMP(statut='f',typ=melasflu_sdaster ),
          MODE_MECA       =SIMP(statut='f',typ=mode_meca ),
          CHAM_NO         =SIMP(statut='f',typ=cham_no_depl_r ),
          FREQ_INIT       =SIMP(statut='f',typ='R',val_min=0.E+0 ),  
@@ -31,7 +31,7 @@ PROJ_SPEC_BASE=OPER(nom="PROJ_SPEC_BASE",op= 146,sd_prod=tabl_intsp,docu="U4.63.
          OPTION          =SIMP(statut='f',typ='TXM',defaut="TOUT",into=("TOUT","DIAG")),
          GROUP_MA        =SIMP(statut='f',typ=grma),
 #  Quel est le type attendu derriere  MODELE_INTERFACE         
-         MODELE_INTERFACE=SIMP(statut='f',typ=modele),
+         MODELE_INTERFACE=SIMP(statut='f',typ=modele_sdaster),
          VECT_X          =SIMP(statut='f',typ='R',min=3,max=3 ),  
          VECT_Y          =SIMP(statut='f',typ='R',min=3,max=3 ),  
          ORIG_AXE        =SIMP(statut='f',typ='R',min=3,max=3 ),  

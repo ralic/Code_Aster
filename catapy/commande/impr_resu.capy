@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/01/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,10 +16,10 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-IMPR_RESU=PROC(nom="IMPR_RESU",op=39,docu="U4.91.01-g",
+IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
             UIinfo={"groupes":("Impression",)},
                fr="Impression du résultat d un calcul (différents formats)",
-         MODELE          =SIMP(statut='f',typ=modele),
+         MODELE          =SIMP(statut='f',typ=modele_sdaster),
          RESU            =FACT(statut='o',max='**',
            FORMAT          =SIMP(statut='f',typ='TXM',defaut="RESULTAT",
                                  into=("RESULTAT","IDEAS","ASTER","CASTEM","ENSIGHT","MED","GMSH") ),
@@ -38,10 +38,10 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,docu="U4.91.01-g",
 
            regles=(AU_MOINS_UN('CHAM_GD','RESULTAT','MAILLAGE'),
                    EXCLUS('CHAM_GD','RESULTAT'),),
-           MAILLAGE        =SIMP(statut='f',typ=(maillage,squelette)),
+           MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster,squelette)),
            INFO_MAILLAGE   =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
-           CHAM_GD         =SIMP(statut='f',typ=cham_gd),
-           RESULTAT        =SIMP(statut='f',typ=resultat),# CO() sd a creer !!!
+           CHAM_GD         =SIMP(statut='f',typ=cham_gd_sdaster),
+           RESULTAT        =SIMP(statut='f',typ=resultat_sdaster),# CO() sd a creer !!!
 
            b_sensibilite   =BLOC(condition="RESULTAT != None",
                                  fr="Définition des paramètres de sensibilité",
@@ -61,14 +61,14 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,docu="U4.91.01-g",
              TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
              NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
-             LIST_ORDRE      =SIMP(statut='f',typ=listis),
+             LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
              NOEUD_CMP       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
              NOM_CAS         =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
              ANGL            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
              FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-             LIST_FREQ       =SIMP(statut='f',typ=listr8),
+             LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
              INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-             LIST_INST       =SIMP(statut='f',typ=listr8),
+             LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
 
              b_acce_reel     =BLOC(condition="(FREQ != None)or(LIST_FREQ != None)or(INST != None)or(LIST_INST != None)",
                PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3),

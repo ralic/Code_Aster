@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,16 +19,16 @@
 # RESPONSABLE VABHHTS J.PELLET
 AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
                    fr="Affectation de caractéristiques de matériaux à un maillage",
-                         docu="U4.43.03-g",reentrant='n',
+                         reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
-         MAILLAGE        =SIMP(statut='o',typ=maillage),
-         MODELE          =SIMP(statut='f',typ=modele),
+         MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
+         MODELE          =SIMP(statut='f',typ=modele_sdaster),
          AFFE            =FACT(statut='o',max='**',
            regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-           MATER           =SIMP(statut='o',typ=mater,max=30),
+           MATER           =SIMP(statut='o',typ=mater_sdaster,max=30),
            TEMP_REF        =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
            SECH_REF        =SIMP(statut='f',typ='R',val_min=0.E+0),
          ),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,12 +22,12 @@ from Macro.macr_lign_coupe_ops import macr_lign_coupe_ops
 def macr_lign_coupe_prod(self,LIGN_COUPE,**args):
   if not LIGN_COUPE:  raise AsException("Impossible de typer les concepts resultats")
   for m in LIGN_COUPE:
-    self.type_sdprod(m['TABLE'],table)
+    self.type_sdprod(m['TABLE'],table_sdaster)
   return None
 
 
 MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",op=macr_lign_coupe_ops,sd_prod=macr_lign_coupe_prod,
-                       docu="",reentrant='n',
+                       reentrant='n',
             UIinfo={"groupes":("Outils métier",)},
                        fr="extraction d un résultat sur des lignes de coupes définies par 2 points et un intervalle",
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,evol_noli,evol_ther) ),
@@ -37,12 +37,12 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",op=macr_lign_coupe_ops,sd_prod=macr_
          b_ther        =BLOC(condition = "AsType(RESULTAT) in (evol_ther,)",fr="résultat thermique",
            NOM_CHAM        =SIMP(statut='f',typ='TXM',defaut='TEMP' ),  
          ),
-         MODELE          =SIMP(statut='o',typ=modele ),
+         MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          UNITE_MAILLAGE  =SIMP(statut='f',typ='I',defaut=25),  
          LIGN_COUPE     =FACT(statut='o',max='**',
            NB_POINTS       =SIMP(statut='o',typ='I'),
            COOR_ORIG       =SIMP(statut='o',typ='R',min=2,max=3),  
            COOR_EXTR       =SIMP(statut='o',typ='R',min=2,max=3),  
-           TABLE           =SIMP(statut='o',typ=(table,CO)), 
+           TABLE           =SIMP(statut='o',typ=(table_sdaster,CO)), 
          ),
 )  ;

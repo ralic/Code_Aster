@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 18/11/2003   AUTEUR LEBOUVIE F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,15 +18,15 @@
 # ======================================================================
 # RESPONSABLE MCOURTOI M.COURTOIS
 def defi_fonction_prod(VALE,VALE_PARA,VALE_C,NOEUD_PARA,**args):
-  if VALE != None  : return fonction
+  if VALE != None  : return fonction_sdaster
   if VALE_C != None  : return fonction_c
-  if VALE_PARA != None  : return fonction
-  if NOEUD_PARA != None  : return fonction
+  if VALE_PARA != None  : return fonction_sdaster
+  if NOEUD_PARA != None  : return fonction_sdaster
   raise AsException("type de concept resultat non prevu")
 
 DEFI_FONCTION=OPER(nom="DEFI_FONCTION",op=3,sd_prod=defi_fonction_prod
                     ,fr="Définition des valeurs réelles ou complexes d une fonction réelle",
-                     docu="U4.31.02-g",reentrant='n',
+                     reentrant='n',
             UIinfo={"groupes":("Fonction",)},
          regles=(UN_PARMI('VALE','VALE_C','VALE_PARA','NOEUD_PARA'),),
          NOM_PARA        =SIMP(statut='o',typ='TXM',
@@ -39,15 +39,15 @@ DEFI_FONCTION=OPER(nom="DEFI_FONCTION",op=3,sd_prod=defi_fonction_prod
                                fr ="Fonction réelle définie par une liste de couples (abscisse,ordonnée)"),
          VALE_C          =SIMP(statut='f',typ='R',min=2,max='**',
                                fr ="Fonction complexe définie par une liste de couples"),
-         VALE_PARA       =SIMP(statut='f',typ=listr8,
-                               fr ="Fonction réelle définie par deux concepts de type listr8" ),
+         VALE_PARA       =SIMP(statut='f',typ=listr8_sdaster,
+                               fr ="Fonction réelle définie par deux concepts de type listr8_sdaster" ),
          b_vale_para     =BLOC(condition = "VALE_PARA != None",
-           VALE_FONC       =SIMP(statut='o',typ=listr8 ),
+           VALE_FONC       =SIMP(statut='o',typ=listr8_sdaster ),
          ),
          NOEUD_PARA      =SIMP(statut='f',typ=no,max='**',
                                fr ="Fonction réelle définie par une liste de noeuds et un maillage"),
          b_noeud_para    =BLOC(condition = "NOEUD_PARA != None",
-           MAILLAGE        =SIMP(statut='o',typ=maillage ),
+           MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster ),
            VALE_Y          =SIMP(statut='o',typ='R',max='**'),
          ),
 

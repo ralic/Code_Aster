@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/01/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,8 +20,8 @@
 
 from Macro.macr_aspic_mail_ops import macr_aspic_mail_ops
 
-MACR_ASPIC_MAIL=MACRO(nom="MACR_ASPIC_MAIL",op= macr_aspic_mail_ops,sd_prod=maillage,reentrant='n',
-                    fr=" ",docu="U4.pc.10-b",
+MACR_ASPIC_MAIL=MACRO(nom="MACR_ASPIC_MAIL",op= macr_aspic_mail_ops,sd_prod=maillage_sdaster,reentrant='n',
+                    fr=" ",
             UIinfo={"groupes":("Outils métier",)},
 
          EXEC_MAILLAGE   =FACT(statut='o',

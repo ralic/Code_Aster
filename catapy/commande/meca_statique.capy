@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,11 +18,11 @@
 # ======================================================================
 # RESPONSABLE VABHHTS J.PELLET
 MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
-                   fr="Analyse mécanique statique linéaire",docu="U4.51.01-g",reentrant='f',
+                   fr="Analyse mécanique statique linéaire",reentrant='f',
             UIinfo={"groupes":("Résolution",)},
                    regles=(EXCLUS("INST","LIST_INST"),
                            AU_MOINS_UN('CHAM_MATER','CARA_ELEM',), ),
-         MODELE          =SIMP(statut='o',typ=modele),
+         MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater,
          fr="le CHAM_MATER est nécessaire, sauf si le modèle ne contient que des éléments discrets (modélisations DIS_XXX)",
          ang="CHAM_MATER is compulsory, except if the model contains only discret elements (modelizations DIS_XXX)"),
@@ -32,11 +32,11 @@ MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          EXCIT           =FACT(statut='o',max='**',
            CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
-           FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule)),
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),
          ),
          INST            =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
-         LIST_INST       =SIMP(statut='f',typ=listr8),
+         LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
          INST_FIN        =SIMP(statut='f',typ='R'),
          OPTION          =SIMP(statut='f',typ='TXM',into=("SIEF_ELGA_DEPL","SANS"),defaut="SIEF_ELGA_DEPL",max=1,
              fr="seule option : contraintes aux points de Gauss. Utiliser CALC_ELEM pour les autres.",
@@ -51,7 +51,7 @@ MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
          SOLVEUR         =FACT(statut='d',
          METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","FETI") ),
            b_feti          =BLOC(condition = "METHODE == 'FETI' ",fr="Paramètres de la méthode FETI 1",
-             PARTITION       =SIMP(statut='o',typ=sd_feti),
+             PARTITION       =SIMP(statut='o',typ=sd_feti_sdaster),
              RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.E-6,val_min=0.),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut=0,val_min=0),

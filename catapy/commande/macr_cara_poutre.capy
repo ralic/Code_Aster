@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@
 from Macro.macr_cara_poutre_ops import macr_cara_poutre_ops
 
 MACR_CARA_POUTRE=MACRO(nom="MACR_CARA_POUTRE",op=macr_cara_poutre_ops,sd_prod=tabl_cara_geom,
-                       docu="U4.42.02-d",reentrant='n',
+                       reentrant='n',
           UIinfo={"groupes":("Modélisation",)},
           fr="caractéristiques d'une section transversale de poutre à partir d'un maillage 2D",
           regles=(EXCLUS('SYME_X','GROUP_MA_BORD'),
@@ -54,7 +54,7 @@ MACR_CARA_POUTRE=MACRO(nom="MACR_CARA_POUTRE",op=macr_cara_poutre_ops,sd_prod=ta
                            fr=" calcul des coef de cisaillement équivalents a un reseau de poutres",
                             regles=(ENSEMBLE('LONGUEUR','LIAISON','MATERIAU') ,),
                             LONGUEUR        =SIMP(statut='f',typ='R',fr="Longueur du réseau de poutres"),  
-                            MATERIAU        =SIMP(statut='f',typ=mater,fr="Materiau elastique lineaire du reseau"),
+                            MATERIAU        =SIMP(statut='f',typ=mater_sdaster,fr="Materiau elastique lineaire du reseau"),
                             LIAISON         =SIMP(statut='f',typ='TXM',into=("ROTULE","ENCASTREMENT"),
                             fr="type de conditions aux limites sur le plancher supérieur" ),
                               ), 

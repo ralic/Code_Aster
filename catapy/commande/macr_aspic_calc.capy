@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 from Macro.macr_aspic_calc_ops import macr_aspic_calc_ops
 
 def macr_aspic_calc_prod(self,MODELE,CHAM_MATER,CARA_ELEM,FOND_FISS_1,FOND_FISS_2,CHARGE,RESU_THER,**args):
-  if MODELE      != None:self.type_sdprod(MODELE,modele)
+  if MODELE      != None:self.type_sdprod(MODELE,modele_sdaster)
   if CHAM_MATER  != None:self.type_sdprod(CHAM_MATER,cham_mater)
   if CARA_ELEM   != None:self.type_sdprod(CARA_ELEM,cara_elem)
   if FOND_FISS_1 != None:self.type_sdprod(FOND_FISS_1,fond_fiss)
@@ -30,7 +30,7 @@ def macr_aspic_calc_prod(self,MODELE,CHAM_MATER,CARA_ELEM,FOND_FISS_1,FOND_FISS_
   return evol_noli
 
 MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=macr_aspic_calc_ops,sd_prod=macr_aspic_calc_prod,
-                    fr=" ",docu="U4.pc.20-b",reentrant='n',
+                    fr=" ",reentrant='n',
             UIinfo={"groupes":("Outils métier",)},
          regles=(UN_PARMI('COMP_INCR','COMP_ELAS'),),
 
@@ -41,8 +41,8 @@ MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=macr_aspic_calc_ops,sd_prod=macr_
          TUBULURE        =FACT(statut='o',
            TYPE            =SIMP(statut='o',typ='TXM',into=("TYPE_1","TYPE_2") ),
          ),
-         MAILLAGE        =SIMP(statut='o',typ=maillage),
-         MODELE          =SIMP(statut='f',typ=(CO,modele)),
+         MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
+         MODELE          =SIMP(statut='f',typ=(CO,modele_sdaster)),
          CHAM_MATER      =SIMP(statut='f',typ=(CO,cham_mater)),
          CARA_ELEM       =SIMP(statut='f',typ=(CO,cara_elem)),
          FOND_FISS_1     =SIMP(statut='f',typ=(CO,fond_fiss)),
@@ -54,7 +54,7 @@ MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=macr_aspic_calc_ops,sd_prod=macr_
            regles=(UN_PARMI('TOUT','GROUP_MA'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",)),
            GROUP_MA        =SIMP(statut='f',typ='TXM',into=("TUBU","CORP","SOUD","SOUDCORP","SOUDTUBU") ),
-           MATER           =SIMP(statut='o',typ=mater),
+           MATER           =SIMP(statut='o',typ=mater_sdaster),
            TEMP_REF        =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
            RCCM            =SIMP(statut='o',typ='TXM',into=("OUI","NON")),
          ),
@@ -68,13 +68,13 @@ MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=macr_aspic_calc_ops,sd_prod=macr_
            NOEUD           =SIMP(statut='f',typ=no),
            EFFE_FOND       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
            PRES_LEVRE      =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
-           FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule)),
          ),
 
          ECHANGE         =FACT(statut='f',
-           COEF_H_TUBU     =SIMP(statut='o',typ=(fonction,formule)),
-           COEF_H_CORP     =SIMP(statut='o',typ=(fonction,formule)),
-           TEMP_EXT        =SIMP(statut='o',typ=(fonction,formule)),
+           COEF_H_TUBU     =SIMP(statut='o',typ=(fonction_sdaster,formule)),
+           COEF_H_CORP     =SIMP(statut='o',typ=(fonction_sdaster,formule)),
+           TEMP_EXT        =SIMP(statut='o',typ=(fonction_sdaster,formule)),
          ),
 
          TORS_CORP       =FACT(statut='f',max=6,
@@ -86,7 +86,7 @@ MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=macr_aspic_calc_ops,sd_prod=macr_
            MX              =SIMP(statut='f',typ='R'),
            MY              =SIMP(statut='f',typ='R'),
            MZ              =SIMP(statut='f',typ='R'),
-           FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule)),
          ),
 
          TORS_TUBU       =FACT(statut='f',max=6,
@@ -97,7 +97,7 @@ MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=macr_aspic_calc_ops,sd_prod=macr_
            MX              =SIMP(statut='f',typ='R'),
            MY              =SIMP(statut='f',typ='R'),
            MZ              =SIMP(statut='f',typ='R'),
-           FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule)),
          ),
 
          COMP_INCR       =FACT(statut='f',
@@ -172,7 +172,7 @@ MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=macr_aspic_calc_ops,sd_prod=macr_
          INCREMENT       =FACT(statut='o',
            regles=(EXCLUS('NUME_INST_INIT','INST_INIT'),
                    EXCLUS('NUME_INST_FIN','INST_FIN'),),
-           LIST_INST       =SIMP(statut='o',typ=listr8),
+           LIST_INST       =SIMP(statut='o',typ=listr8_sdaster),
            EVOLUTION       =SIMP(statut='f',typ='TXM',defaut="CHRONOLOGIQUE",
                                  into=("CHRONOLOGIQUE","RETROGRADE","SANS",) ),
            NUME_INST_INIT  =SIMP(statut='f',typ='I'),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 CALC_FORC_AJOU=OPER(nom="CALC_FORC_AJOU",op=199,sd_prod=vect_asse_gene,
                    fr="calcul de la force ajoutee ",
-                   docu="U4.66.03-a",reentrant ='n',
+                   reentrant ='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
 
         regles=(EXCLUS('MODE_MECA','MODELE_GENE'),
@@ -26,8 +26,8 @@ CALC_FORC_AJOU=OPER(nom="CALC_FORC_AJOU",op=199,sd_prod=vect_asse_gene,
                 UN_PARMI('MONO_APPUI', 'NOEUD','GROUP_NO'),
                 UN_PARMI('MONO_APPUI','MODE_STAT')),
 
-         MODELE_FLUIDE   =SIMP(statut='o',typ=modele ),
-         MODELE_INTERFACE=SIMP(statut='o',typ=modele ),
+         MODELE_FLUIDE   =SIMP(statut='o',typ=modele_sdaster ),
+         MODELE_INTERFACE=SIMP(statut='o',typ=modele_sdaster ),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
          CHARGE          =SIMP(statut='o',typ=char_ther ),
          MODE_MECA       =SIMP(statut='f',typ=mode_meca ),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,10 +21,10 @@
 #
 POST_K_BETA=OPER(nom="POST_K_BETA",op=198,sd_prod=tabl_post_beta,
                    fr="Calcul des FIC par la méthode K_BETA",
-                   docu="U4.82.07-a",reentrant='n',
+                   reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
-         MAILLAGE      = SIMP(statut='o',typ=maillage),
-         MATER_REV     = SIMP(statut='o',typ=mater),
+         MAILLAGE      = SIMP(statut='o',typ=maillage_sdaster),
+         MATER_REV     = SIMP(statut='o',typ=mater_sdaster),
          EPAIS_REV     = SIMP(statut='o',typ='R'),
          FISSURE       = FACT(statut='o',
             DECALAGE       = SIMP(statut='f',typ='R',defaut=-2.e-04),

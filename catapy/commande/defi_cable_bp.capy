@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,16 +46,16 @@ from Macro.defi_cable_bp_ops import defi_cable_bp_ops
 
 
 def defi_cable_bp_prod(self,MAILLAGE,**args ):
-  if MAILLAGE!= None : self.type_sdprod(MAILLAGE,maillage)
+  if MAILLAGE!= None : self.type_sdprod(MAILLAGE,maillage_sdaster)
   return cabl_precont
   raise AsException("type de concept resultat non prevu")
 
 DEFI_CABLE_BP=MACRO(nom="DEFI_CABLE_BP",op=defi_cable_bp_ops,sd_prod=defi_cable_bp_prod,
                    fr=" ",
-                   docu="U4.42.04-a",reentrant='n',
+                   reentrant='n',
          regles=(PRESENT_PRESENT('MAILLAGE','CONE'),),
-         MAILLAGE        =SIMP(statut='f',typ=(maillage,CO)),
-         MODELE          =SIMP(statut='o',typ=modele ),
+         MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster,CO)),
+         MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
          CARA_ELEM       =SIMP(statut='o',typ=cara_elem ),
          GROUP_MA_BETON  =SIMP(statut='o',typ=grma),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/01/2004   AUTEUR GNICOLAS G.NICOLAS 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ from Macro.macr_fiabilite_ops import macr_fiabilite_ops
 #====
 #
 def macr_fiabilite_prod ( self , **args ):
-  return listr8
+  return listr8_sdaster
 #
 #====
 # 2. L'entete
@@ -36,7 +36,6 @@ MACR_FIABILITE = MACRO ( nom="MACR_FIABILITE",op=macr_fiabilite_ops,
                          sd_prod=macr_fiabilite_prod,
                          fr="Faire de la mécanique fiabiliste.",
                          ang="Fiability mechanics.",
-                         docu="U7.03.31-a",
 #
 #====
 # 3. Le niveau d'information

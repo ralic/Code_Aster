@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,10 +16,10 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-THER_NON_LINE=OPER(nom="THER_NON_LINE",op= 186,sd_prod=evol_ther,docu="U4.54.02-e",reentrant='f',
+THER_NON_LINE=OPER(nom="THER_NON_LINE",op= 186,sd_prod=evol_ther,reentrant='f',
             UIinfo={"groupes":("Résolution",)},
                    fr="Analyse thermique non linéaire stationnaire ou transitoire" ,
-         MODELE          =SIMP(statut='o',typ=(modele) ),
+         MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
          CHAM_MATER      =SIMP(statut='o',typ=(cham_mater) ),
          CARA_ELEM       =SIMP(statut='c',typ=(cara_elem) ),
          COMP_THER_NL    =FACT(statut='d',max='**',
@@ -39,10 +39,10 @@ THER_NON_LINE=OPER(nom="THER_NON_LINE",op= 186,sd_prod=evol_ther,docu="U4.54.02-
          EVOL_THER_SECH  =SIMP(statut='f',typ=evol_ther),
          EXCIT           =FACT(statut='o',max='**',
            CHARGE          =SIMP(statut='o',typ=char_ther),
-           FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,formule)),
          ),
          INCREMENT       =FACT(statut='f',
-           LIST_INST       =SIMP(statut='o',typ=listr8),
+           LIST_INST       =SIMP(statut='o',typ=listr8_sdaster),
            NUME_INIT       =SIMP(statut='f',typ='I'),
            NUME_FIN        =SIMP(statut='f',typ='I'),
          ),
@@ -93,8 +93,8 @@ THER_NON_LINE=OPER(nom="THER_NON_LINE",op= 186,sd_prod=evol_ther,docu="U4.54.02-
          PARM_THETA      =SIMP(statut='f',typ='R',defaut= 0.57 ),
          ARCHIVAGE       =FACT(statut='f',
            regles=(UN_PARMI('LIST_ARCH','PAS_ARCH','LIST_INST','INST', ),),
-           LIST_ARCH       =SIMP(statut='f',typ=(listis) ),
-           LIST_INST       =SIMP(statut='f',typ=(listr8) ),
+           LIST_ARCH       =SIMP(statut='f',typ=(listis_sdaster) ),
+           LIST_INST       =SIMP(statut='f',typ=(listr8_sdaster) ),
            INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
            PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
            CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",) ),

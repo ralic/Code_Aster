@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,13 +18,13 @@
 # ======================================================================
 CALC_MATR_AJOU=OPER(nom="CALC_MATR_AJOU",op= 152,sd_prod=matr_asse_gene_r,
                     fr="Calcul des matrices de masse, d amortissement ou de raideur ajoutées",
-                    docu="U4.66.01-d",reentrant='n',
+                    reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
          regles=(EXCLUS('MODE_MECA','CHAM_NO','MODELE_GENE'),
                  PRESENT_ABSENT('NUME_DDL_GENE','CHAM_NO'),
                  PRESENT_PRESENT('MODELE_GENE','NUME_DDL_GENE'),),
-         MODELE_FLUIDE   =SIMP(statut='o',typ=modele ),
-         MODELE_INTERFACE=SIMP(statut='o',typ=modele ),
+         MODELE_FLUIDE   =SIMP(statut='o',typ=modele_sdaster ),
+         MODELE_INTERFACE=SIMP(statut='o',typ=modele_sdaster ),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
          CHARGE          =SIMP(statut='o',typ=char_ther ),
          MODE_MECA       =SIMP(statut='f',typ=mode_meca ),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,18 +16,18 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-DIST_LIGN_3D=OPER(nom="DIST_LIGN_3D",op= 133,sd_prod=fonction,docu="U4.mk.30-d",reentrant='n', 
+DIST_LIGN_3D=OPER(nom="DIST_LIGN_3D",op= 133,sd_prod=fonction_sdaster,reentrant='n', 
             UIinfo={"groupes":("Outils métier",)},
                   fr="Calcul sous forme d une fonction du temps de la distance minimale entre deux structures filaires",
       regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST'),
               UN_PARMI('GROUP_MA_2','POIN_FIXE'),),
-         MODELE          =SIMP(statut='o',typ=modele),
+         MODELE          =SIMP(statut='o',typ=modele_sdaster),
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,evol_noli) ),
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",)),
          NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
          INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-         LIST_INST       =SIMP(statut='f',typ=listr8),
-         LIST_ORDRE      =SIMP(statut='f',typ=listis),
+         LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
+         LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
          PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
          CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
          GROUP_MA_1      =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),

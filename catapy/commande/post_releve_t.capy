@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE G8BHHXD X.DESROCHES
-POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=tabl_post_rele,docu="U4.81.21-e",reentrant='n',
+POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=tabl_post_rele,reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
          ACTION          =FACT(statut='o',max='**',
            regles=(AU_MOINS_UN('CHEMIN','GROUP_NO','NOEUD'),
@@ -33,7 +33,7 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=tabl_post_rele,docu="U4.81.
                    EXCLUS('TRAC_DIR','TRAC_NOR'),
                    PRESENT_PRESENT('ORIGINE','AXE_Z'),),
            INTITULE        =SIMP(statut='o',typ='TXM'),  
-           CHEMIN          =SIMP(statut='f',typ=(courbe,surface) ),
+           CHEMIN          =SIMP(statut='f',typ=(courbe_sdaster,surface_sdaster) ),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
@@ -61,15 +61,15 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=tabl_post_rele,docu="U4.81.
              NOM_CHAM        =SIMP(statut='o',typ='TXM' ),  
              TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),  
-             LIST_ORDRE      =SIMP(statut='f',typ=listis),
+             LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
              NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),  
-             LIST_MODE       =SIMP(statut='f',typ=listis),
+             LIST_MODE       =SIMP(statut='f',typ=listis_sdaster),
              NOEUD_CMP       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
              NOM_CAS         =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),  
              FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),  
-             LIST_FREQ       =SIMP(statut='f',typ=listr8),
+             LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
              INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),  
-             LIST_INST       =SIMP(statut='f',typ=listr8),
+             LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
              PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-6),  
              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU")),
            ),

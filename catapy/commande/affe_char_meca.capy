@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/02/2004   AUTEUR MABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 
 AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
                     ,fr="Affectation de charges et conditions aux limites mécaniques constantes",
-                     docu="U4.44.01-g",reentrant='n',
+                     reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
          regles=(AU_MOINS_UN('DDL_IMPO','FACE_IMPO','LIAISON_DDL','FORCE_NODALE',
                              'FORCE_FACE','FORCE_ARETE','FORCE_CONTOUR','FORCE_INTERNE',
@@ -35,7 +35,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
                  EXCLUS('PRES_CALCULEE','EVOL_CHAR'),),
          VERI_DDL        =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          VERI_NORM       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
-         MODELE          =SIMP(statut='o',typ=(modele) ),
+         MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
          TEMP_CALCULEE   =SIMP(statut='f',fr="Champ de température issu d'un autre calcul",
                                typ=(evol_ther,cham_no_temp_r,carte_temp_r,carte_temp_f ) ),
          HYDR_CALCULEE   =SIMP(statut='f',fr="Champ d hydratation issu d'un autre calcul",
@@ -288,9 +288,9 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            ),
 
          LIAISON_CHAMNO  =FACT(statut='f',max='**',
-                               fr="définir une relation linéaire entre tous les ddls d'un concept cham_no",
-#  type de cham_no CO()
-             CHAM_NO         =SIMP(statut='o',typ=cham_no), #CO()
+                               fr="définir une relation linéaire entre tous les ddls d'un concept cham_no_sdaster",
+#  type de cham_no_sdaster CO()
+             CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster), #CO()
              COEF_IMPO       =SIMP(statut='o',typ='R' ),
              NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
            ),

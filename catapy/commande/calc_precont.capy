@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,15 +31,15 @@ from Macro.calc_precont_ops import calc_precont_ops
 
 CALC_PRECONT=MACRO(nom="CALC_PRECONT",op=calc_precont_ops,sd_prod=evol_noli,
                    fr="imposer la tension definie par le BPEL dans les cables",
-                   docu="",reentrant='f',
+                   reentrant='f',
          reuse =SIMP(statut='f',typ='evol_noli'),
-         MODELE           =SIMP(statut='o',typ=modele),
+         MODELE           =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER       =SIMP(statut='o',typ=cham_mater),
          CARA_ELEM        =SIMP(statut='o',typ=cara_elem),
          CABLE_BP         =SIMP(statut='o',typ=cabl_precont,validators=NoRepeat(),max='**'),
          CABLE_BP_INACTIF =SIMP(statut='f',typ=cabl_precont,validators=NoRepeat(),max='**'),
          INCREMENT        =FACT(statut='o',
-           LIST_INST       =SIMP(statut='o',typ=listr8),
+           LIST_INST       =SIMP(statut='o',typ=listr8_sdaster),
            INST_INIT       =SIMP(statut='f',typ='R'),
            INST_FIN        =SIMP(statut='f',typ='R'),
            PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3 ),

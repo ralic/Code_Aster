@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,12 +18,11 @@
 # ======================================================================
 # RESPONSABLE VABHHTS J.PELLET
 TEST_TABLE=PROC(nom="TEST_TABLE",op= 177,
-                docu="U4.92.03-c",
             UIinfo={"groupes":("Impression",)},
          regles=(UN_PARMI('VALE','VALE_I','VALE_C', ),),
          FICHIER         =SIMP(statut='f',typ='TXM',defaut="RESULTAT"),
-#  concept table à tester
-         TABLE           =SIMP(statut='o',typ=table),
+#  concept table_sdaster à tester
+         TABLE           =SIMP(statut='o',typ=table_sdaster),
 
          SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),
                                  fr="Paramètre de sensibilité.",

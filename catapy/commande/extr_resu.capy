@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,7 @@ def extr_resu_prod(RESULTAT,**args):
   if AsType(RESULTAT) == fourier_elas : return fourier_elas
   raise AsException("type de concept resultat non prevu")
 
-EXTR_RESU=OPER(nom="EXTR_RESU",op=176,sd_prod=extr_resu_prod,docu="U4.71.04-c",reentrant='f',
+EXTR_RESU=OPER(nom="EXTR_RESU",op=176,sd_prod=extr_resu_prod,reentrant='f',
             UIinfo={"groupes":("Résultats et champs",)},
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,acou_harmo,mode_meca,
                                                mode_acou,mode_stat_depl,mode_stat_acce,mode_stat_forc,evol_ther,evol_noli,
@@ -52,14 +52,14 @@ EXTR_RESU=OPER(nom="EXTR_RESU",op=176,sd_prod=extr_resu_prod,docu="U4.71.04-c",r
            NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',into=C_NOM_CHAM_INTO()),
            PRECISION       =SIMP(statut='f',typ='R',defaut=1.E-3 ),
            CRITERE         =SIMP(statut='f',typ='TXM',into=("RELATIF","ABSOLU"),defaut="RELATIF"),
-           LIST_ARCH       =SIMP(statut='f',typ=listis),
+           LIST_ARCH       =SIMP(statut='f',typ=listis_sdaster),
            PAS_ARCH        =SIMP(statut='f',typ='I'),
            NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
-           LIST_ORDRE      =SIMP(statut='f',typ=listis),
+           LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
            INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-           LIST_INST       =SIMP(statut='f',typ=listr8),
+           LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
            FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-           LIST_FREQ       =SIMP(statut='f',typ=listr8),
+           LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
            NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
            NOEUD_CMP       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
            NOM_CAS         =SIMP(statut='f',typ='TXM'),

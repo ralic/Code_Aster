@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,13 +30,13 @@ def crea_champ_prod(TYPE_CHAM,**args):
   elif TYPE_CHAM[0:5] == "SOUR_"    :
      uu="cham_elem_sour_"+grandeur
   else :
-     raise AsException("type de concept resultat non prevu")
+     raise AsException("type de concept resultat_sdaster non prevu")
 
   vv=eval(uu) ; return vv
 
 
 CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
-                fr="  ",docu="U4.72.04-b",reentrant='n',
+                fr="  ",reentrant='n',
             UIinfo={"groupes":("Résultats et champs",)},
          TYPE_CHAM       =SIMP(statut='o',typ='TXM',into=C_TYPE_CHAM_INTO()),
       # TYPE_CHAM doit etre de la forme : CART_xx, NOEU_xx, ELEM_xx, ELGA_xx ou ELNO_xx
@@ -45,8 +45,8 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
 #        SI CREATION D'UN CHAM_NO, POUR IMPOSER LA NUMEROTATION DES DDLS :
 #        ------------------------------------------------------------------
          regles=(EXCLUS('NUME_DDL','CHAM_NO',)),
-         NUME_DDL        =SIMP(statut='f',typ=(nume_ddl) ),
-         CHAM_NO         =SIMP(statut='f',typ=(cham_no) ),
+         NUME_DDL        =SIMP(statut='f',typ=(nume_ddl_sdaster) ),
+         CHAM_NO         =SIMP(statut='f',typ=(cham_no_sdaster) ),
 
 #        SI CREATION D'UN CHAM_ELEM, POUR aider a l'allocation du champ :
 #        (PAR DEFAUT : TOU_INI_ELNO/_ELGA/_ELEM)
@@ -57,8 +57,8 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
 
          b_affe          =BLOC(condition = "OPERATION == 'AFFE'",
              regles=(UN_PARMI('MAILLAGE','MODELE'),),
-             MAILLAGE        =SIMP(statut='f',typ=(maillage) ),
-             MODELE          =SIMP(statut='f',typ=(modele) ),
+             MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster) ),
+             MODELE          =SIMP(statut='f',typ=(modele_sdaster) ),
              b_affe_modele   =BLOC(condition = "MODELE != None",
                  PROL_ZERO       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ), ),
              AFFE            =FACT(statut='o',max='**',
@@ -73,13 +73,13 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                 VALE            =SIMP(statut='f',typ='R',max='**' ),
                 VALE_I          =SIMP(statut='f',typ='I',max='**' ),
                 VALE_C          =SIMP(statut='f',typ='C',max='**' ),
-                VALE_F          =SIMP(statut='f',typ=(fonction,formule),max='**'),
+                VALE_F          =SIMP(statut='f',typ=(fonction_sdaster,formule),max='**'),
                                    ),
                              ),
          b_asse          =BLOC(condition = "OPERATION == 'ASSE'",
              regles=(UN_PARMI('MAILLAGE','MODELE'),),
-             MAILLAGE        =SIMP(statut='f',typ=(maillage) ),
-             MODELE          =SIMP(statut='f',typ=(modele) ),
+             MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster) ),
+             MODELE          =SIMP(statut='f',typ=(modele_sdaster) ),
              b_asse_modele   =BLOC(condition = "MODELE != None",
                  PROL_ZERO       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ), ),
              ASSE            =FACT(statut='o',max='**',
@@ -90,7 +90,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                 GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                 MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
                 NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-                CHAM_GD         =SIMP(statut='o',typ=(cham_gd)),
+                CHAM_GD         =SIMP(statut='o',typ=(cham_gd_sdaster)),
                 NOM_CMP         =SIMP(statut='f',typ='TXM',max='**' ),
                 NOM_CMP_RESU    =SIMP(statut='f',typ='TXM',max='**' ),
                 CUMUL           =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
@@ -98,19 +98,19 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                                     ),
                              ),
          b_eval          =BLOC(condition = "OPERATION == 'EVAL'",
-             CHAM_F          =SIMP(statut='o',typ=(cham_gd)),
-             CHAM_PARA       =SIMP(statut='o',typ=(cham_gd),max='**'),
+             CHAM_F          =SIMP(statut='o',typ=(cham_gd_sdaster)),
+             CHAM_PARA       =SIMP(statut='o',typ=(cham_gd_sdaster),max='**'),
                              ),
          b_disc          =BLOC(condition = "OPERATION == 'DISC'",
-             MODELE          =SIMP(statut='f',typ=(modele) ),
+             MODELE          =SIMP(statut='f',typ=(modele_sdaster) ),
              PROL_ZERO       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
-             CHAM_GD         =SIMP(statut='o',typ=(cham_gd)),
+             CHAM_GD         =SIMP(statut='o',typ=(cham_gd_sdaster)),
                              ),
          b_extr          =BLOC(condition = "OPERATION == 'EXTR'",
              regles=(UN_PARMI('MAILLAGE','FISSURE','RESULTAT'),),
-             MAILLAGE        =SIMP(statut='f',typ=(maillage) ),
+             MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster) ),
              FISSURE         =SIMP(statut='f',typ=(fiss_xfem) ),
-             RESULTAT        =SIMP(statut='f',typ=(resultat) ),
+             RESULTAT        =SIMP(statut='f',typ=(resultat_sdaster) ),
              b_extr_maillage =BLOC(condition = "MAILLAGE != None",
                  NOM_CHAM        =SIMP(statut='o',typ='TXM',into=("GEOMETRIE",)),
                                   ),
@@ -127,7 +127,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                  TYPE_MAXI       =SIMP(statut='f',typ='TXM',into=("MAXI","MINI","MAXI_ABS","MINI_ABS","NORM_TRAN",) ),
                  TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="VALE",into=("VALE","INST",) ),
                  TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-                 LIST_INST       =SIMP(statut='f',typ=(listr8) ),
+                 LIST_INST       =SIMP(statut='f',typ=(listr8_sdaster) ),
                  NUME_ORDRE      =SIMP(statut='f',typ='I'),
                  INST            =SIMP(statut='f',typ='R'),
                  FREQ            =SIMP(statut='f',typ='R'),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/02/2004   AUTEUR ASSIRE A.ASSIRE 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,9 +17,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # RESPONSABLE D6BHHJP J.P.LEFEBVRE
-INFO_EXEC_ASTER=OPER(nom="INFO_EXEC_ASTER",op=35,sd_prod=table,
+INFO_EXEC_ASTER=OPER(nom="INFO_EXEC_ASTER",op=35,sd_prod=table_sdaster,
                     fr="Récupère différentes informations propres à l'exécution en cours",
-                    docu="U4.00.00-f",reentrant='n',
+                    reentrant='n',
                     UIinfo={"groupes":("Gestion du travail",)},
 
          regles=(),

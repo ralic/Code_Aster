@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-IMPR_CLASSI=PROC(nom="IMPR_CLASSI",op= 114,docu="U7.04.21-b",
+IMPR_CLASSI=PROC(nom="IMPR_CLASSI",op= 114,
             UIinfo={"groupes":("Fonction",)},
          regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','FREQ','NUME_MODE','LIST_FREQ',
                         'LIST_ORDRE' ),),
@@ -24,10 +24,10 @@ IMPR_CLASSI=PROC(nom="IMPR_CLASSI",op= 114,docu="U7.04.21-b",
          MODE_MECA       =SIMP(statut='o',typ=mode_meca ),
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
-         LIST_ORDRE      =SIMP(statut='f',typ=listis ),
+         LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster ),
          NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
          FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-         LIST_FREQ       =SIMP(statut='f',typ=listr8 ),
+         LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster ),
          b_prec_crit     =BLOC(condition = "LIST_FREQ != None or FREQ != None",
              PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",

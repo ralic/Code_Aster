@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/02/2004   AUTEUR CAMBIER S.CAMBIER 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +35,7 @@ def comb_matr_asse_prod(COMB_R,COMB_C,CALC_AMOR_GENE,**args):
 
 COMB_MATR_ASSE=OPER(nom="COMB_MATR_ASSE",op=  31,sd_prod=comb_matr_asse_prod,
                     fr="Combinaison linéaire de matrices assemblées",
-                    docu="U4.72.01-g",reentrant='f',
+                    reentrant='f',
             UIinfo={"groupes":("Résultats et champs",)},
          regles=(UN_PARMI('COMB_R','COMB_C','CALC_AMOR_GENE' ),),
          COMB_R          =FACT(statut='f',max='**',
@@ -56,7 +56,7 @@ COMB_MATR_ASSE=OPER(nom="COMB_MATR_ASSE",op=  31,sd_prod=comb_matr_asse_prod,
            MASS_GENE    = SIMP(statut='f', typ=matr_asse_gene_r),
            RIGI_GENE    = SIMP(statut='f', typ=matr_asse_gene_r),
            AMOR_REDUIT  = SIMP(statut='f',typ='R',max='**'),
-           LIST_AMOR    = SIMP(statut='f',typ=listr8 ),
+           LIST_AMOR    = SIMP(statut='f',typ=listr8_sdaster ),
          ),         
          SANS_CMP        =SIMP(statut='f',typ='TXM',into=("LAGR",) ),
 )  ;

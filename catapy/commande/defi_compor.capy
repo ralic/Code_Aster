@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,13 +17,13 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor,
+DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
                    fr="Définition du comportement monocristallin",
-                   docu="Ux.xx.xx-g",reentrant='n',
+                   reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
             
           MONOCRISTAL    =FACT(statut='o', max='**',
-             MATER           =SIMP(statut='o', typ=mater, max=1),
+             MATER           =SIMP(statut='o', typ=mater_sdaster, max=1),
              ECOULEMENT      =SIMP(statut='o', typ='TXM', max=1,
                    fr="Donner le nom du mot-clé facteur de DEFI_MATERIAU précisant le type d'écoulement viscoplastique"),
              ECRO_ISOT       =SIMP(statut='o', typ='TXM', max=1,

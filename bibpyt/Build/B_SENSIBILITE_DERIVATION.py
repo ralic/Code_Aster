@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_DERIVATION Build  DATE 30/03/2004   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF B_SENSIBILITE_DERIVATION Build  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -400,7 +400,7 @@ class SENSIBILITE_DERIVATION :
 #      3. La valeur est un objet : sa dérivée est la fonction nulle
 #
        elif type(mcsimp.valeur) == types.InstanceType :
-         if isinstance(mcsimp.valeur,new_jdc.g_context['fonction']) :
+         if isinstance(mcsimp.valeur,new_jdc.g_context['fonction_sdaster']) :
            mcsimp.valeur = self.fonction_0["ps"]
 #
 #      4. La valeur est une liste ou un tuple : on applique les étapes 1, 2 et 3 à chacun
@@ -420,7 +420,7 @@ class SENSIBILITE_DERIVATION :
              val_nouv = self.d_nom_s_c[val]
            elif type(val) == types.InstanceType :
 ###         print '........ val.nom =", val.nom
-             if isinstance(val,new_jdc.g_context['fonction']) :
+             if isinstance(val,new_jdc.g_context['fonction_sdaster']) :
                val_nouv = self.fonction_0["ps"]
              else :
                val_nouv = val

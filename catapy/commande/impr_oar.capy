@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/03/2004   AUTEUR D6BHHAM A.M.DONORE 
+#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,12 +18,12 @@
 # ======================================================================
 # RESPONSABLE D6BHHAM A.M.DONORE
 #
-IMPR_OAR =PROC(nom="IMPR_OAR",op= 40,docu="U7.04.51",
+IMPR_OAR =PROC(nom="IMPR_OAR",op= 40,
                fr="Impression au format OAR",
                UIinfo={"groupes":("Impression",)},
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem                          ),
-         MAILLAGE        =SIMP(statut='o',typ=maillage                           ),
-         MODELE          =SIMP(statut='o',typ=modele                             ),
+         MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster                        ),
+         MODELE          =SIMP(statut='o',typ=modele_sdaster                          ),
          MAILLE          =SIMP(statut='o',typ=ma  ,validators=NoRepeat(),max=2   ),
          NOEUD           =SIMP(statut='o',typ=no  ,validators=NoRepeat()         ),
 
@@ -37,7 +37,7 @@ IMPR_OAR =PROC(nom="IMPR_OAR",op= 40,docu="U7.04.51",
                                  into=("PRIMAIRE","SECONDAIRE","TOTAL") ),
               SIGNE           =SIMP(statut='f',typ='TXM',defaut="S",
                                  into=("S","NS") ),
-              RESULTAT        =SIMP(statut='o',typ=resultat),# CO() sd a creer !!!
+              RESULTAT        =SIMP(statut='o',typ=resultat_sdaster),# CO() sd a creer !!!
            ),
 
 
