@@ -3,7 +3,7 @@
       CHARACTER*8         FOND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/05/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
      +             KNOLS, KNOLI, JNOFO, JINTS, JINTI, NUTYP, IPAS,
      +             NUMEXT, KNULS, KNULI, IFM, NIV, IATYMA, NTTRI6,
      +             NTQUA8, NTQUA9, JTGOR, JTGEX, NO1, NO2, NO3,
-     +             NBINST, JINST, IIN, JNFT
+     +             NBINST, JINST, IIN, JNFT,IERA
       PARAMETER  ( NBPAR1=12 )
       REAL*8       R8B, COEFD, COEFD3, COEFG, COEFG3, X0(3), D1, D2,
      +             D, RMAX, EPSI, VECNOR(3), X1, X2, Y1, Y2, Z1, Z2,
@@ -292,6 +292,7 @@ C --- BOUCLE SUR LES NOEUDS DU FOND DE FISSURE :
 C     ----------------------------------------
 
       DO 200 INF = 1 , NBNOFT, IPAS
+         IERA = 0
          IF ( .NOT. ZL(JNFT+INF-1) ) GOTO 200
          IF ( NIV .EQ. 2 )  WRITE(IFM,1000) ZK8(JNOFO+INF-1)
          CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO+INF-1)), NUMORI )
@@ -445,7 +446,7 @@ C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
  110        CONTINUE
          ENDIF
          CALL OREINO ( NOMA, ZI(KNULS), NBVAS, NUMORI, NUMEXT,
-     +                       ZR(IDCOOR), CRITN, PREC, IRET )
+     +                       ZR(IDCOOR), CRITN, PREC,IERA, IRET )
          IF ( IRET .NE. 0 ) GOTO 202
 
          CALL WKVECT ( NOESUP , 'V V K8', NBVAS, KNOLS  )
@@ -503,7 +504,7 @@ C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
  120        CONTINUE
          ENDIF
          CALL OREINO ( NOMA, ZI(KNULI), NBVAI, NUMORI, NUMEXT,
-     +                       ZR(IDCOOR), CRITN, PREC, IRET )
+     +                       ZR(IDCOOR), CRITN, PREC,IERA, IRET )
          IF ( IRET .NE. 0 ) GOTO 202
 
          CALL WKVECT ( NOEINF , 'V V K8', NBVAI, KNOLI  )

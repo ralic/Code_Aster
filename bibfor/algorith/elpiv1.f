@@ -1,7 +1,7 @@
-      SUBROUTINE ELPIV1(XJVMAX, MATR, NOMA, DEFICO, RESOCO, IDEBUT,
-     +                  NBLIAC, KKMIN, PIVOT, INDIC)
+      SUBROUTINE ELPIV1(XJVMAX, INDIC, NBLIAC, AJLIAI, SPLIAI, SPAVAN,
+     +                                             NOMA, DEFICO, RESOCO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 07/05/2003   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,13 +18,11 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C
       IMPLICIT NONE
       CHARACTER*8  NOMA
-      CHARACTER*19 MATR
       CHARACTER*24 RESOCO,DEFICO
       REAL*8       XJVMAX
-      INTEGER      IDEBUT, NBLIAC, KKMIN, INDIC, PIVOT
+      INTEGER      NBLIAC, INDIC, AJLIAI, SPLIAI, SPAVAN
 C ---------------------------------------------------------------------
 C     BUT         : ELIMINATION DES PIVOTS NULS
 C     APPELEE PAR : ALGOCO, ALGOCP
@@ -50,11 +48,14 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
+      CHARACTER*1  TYPEAJ,TYPESP
+      CHARACTER*2  TYPEC0
       CHARACTER*8  NOM1
-      CHARACTER*19 LIAC, LIOT
+      CHARACTER*19 LIAC, LIOT, MATR
       CHARACTER*24 APPARI,CONTNO
-      INTEGER      JVALE,KK1,KK2,KK1F,KK2F,JVA
-      INTEGER      NIV,ILIAC,JLIAC,IFM,JLIOT, NBOTE 
+      REAL*8       COPMAX
+      INTEGER      JVALE,KK1,KK2,KK1F,KK2F,JVA,LLF,LLF1,LLF2
+      INTEGER      NIV,ILIAC,JLIAC,IFM,JLIOT, NBOTE ,PIVOT
       INTEGER      JAPPAR,ICONTA,NBLIAI
       INTEGER      JNOCO,POS1,NUM1,LLIAC      
 C
@@ -72,15 +73,21 @@ C
 C
       LIAC = RESOCO(1:14)//'.LIAC'
       LIOT = RESOCO(1:14)//'.LIOT'
+      MATR = RESOCO(1:14)//'.MATR'
 C      
       CALL JEVEUO(LIAC,'E',JLIAC)
       CALL JEVEUO(LIOT,'E',JLIOT)
       CALL JEVEUO(JEXNUM(MATR//'.VALE',1),'L',JVALE)
 C
-        PIVOT = 0
-        XJVMAX = XJVMAX*1.D-10
+      TYPESP = 'S'
+      TYPEC0 = 'C0'
+      COPMAX = XJVMAX * 1.0D-08
+      PIVOT  = 0
+      LLF    = 0
+      LLF1   = 0
+      LLF2   = 0
 C        
-        DO 10 KK1=IDEBUT,NBLIAC
+        DO 10 KK1=SPAVAN+1,NBLIAC
           DO 20 KK2=1,NBLIAC
             IF(KK2.GT.KK1) THEN
               KK1F = KK2
@@ -90,14 +97,14 @@ C
               KK2F = KK2
             ENDIF
             JVA = JVALE-1+((KK1F-1)*KK1F)/2 +KK2F
-            IF(ABS(ZR(JVA)).LT.XJVMAX) THEN            
+            IF(ABS(ZR(JVA)).LT.COPMAX) THEN            
               PIVOT = 1
             ELSE
               PIVOT = 0
               GOTO 10
             ENDIF
  20       CONTINUE
-          IF(PIVOT.EQ.1) THEN
+          IF (PIVOT.EQ.1) THEN
 C
             LLIAC = ZI(JLIAC-1+KK1)
             POS1 = ZI(JAPPAR+3* (LLIAC-1)+1)
@@ -105,18 +112,15 @@ C
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM1),NOM1)
             WRITE(IFM,1000) 'CONTACT : NOEUD ',NOM1
             IF (NIV.EQ.2) THEN 
-               WRITE(IFM,1000) 'CONTACT:LIAISON ',LLIAC
+               WRITE(IFM,1001) 'CONTACT:LIAISON ',LLIAC
             ENDIF
 C
             ZI(JLIOT+4*NBLIAI) = ZI(JLIOT+4*NBLIAI) + 1
             NBOTE = ZI(JLIOT+4*NBLIAI)            
             ZI(JLIOT-1+NBOTE) = ZI(JLIAC-1+KK1)
-            KKMIN = KK1
-            NBLIAC = NBLIAC - 1
-            DO 30 ILIAC = KKMIN,NBLIAC
-              ZI(JLIAC-1+ILIAC) = ZI(JLIAC+ILIAC)
- 30         CONTINUE
-            INDIC = -1
+
+            CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
+     +                                 RESOCO,TYPESP,KK1,LLIAC,TYPEC0)
             GOTO 40
           ENDIF
  10     CONTINUE
@@ -125,5 +129,6 @@ C
         CALL JEDEMA()
 C
  1000 FORMAT('PIVOT NUL OTE',A17,A8)
+ 1001 FORMAT('PIVOT NUL OTE',A17,I5)
 C
       END 

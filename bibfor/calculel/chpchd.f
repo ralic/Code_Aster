@@ -3,7 +3,7 @@
       CHARACTER*(*) CHIN,CHOU,BASE,CELMOD,TYPE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,6 +94,7 @@ C 3.  -- CALCUL DE CAS :
 C ---------------------------------------
 C         /'NOEU->ELNO'   : CHAM_NO -> ELNO
 C         /'NOEU->ELGA'   : CHAM_NO -> ELGA
+C         /'CART->ELEM'   : CARTE   -> ELEM
 C         /'CART->ELGA'   : CARTE   -> ELGA
 C         /'CART->ELNO'   : CARTE   -> ELNO
 C         /'CART->NOEU'   : CARTE   -> CHAM_NO
@@ -150,7 +151,7 @@ C     ----------------------------------------------------------------
         ELSE IF (CAS(1:4).EQ.'ELGA') THEN
           CALL CELCES(CHIN,'V',CES1)
           MGANO = '&&CHPCHD.MAGANO'
-          CALL UTMESS('F','CHPCHD','GA -> NO A FAIRE ...')
+          CALL UTMESS('F','CHPCHD','GAUSS -> NOEUD A FAIRE ...')
         ELSE IF (CAS(1:4).EQ.'CART') THEN
           CALL CARCES(CHIN,'ELNO',' ','V',CES1,IRET)
         END IF
@@ -161,7 +162,7 @@ C     ----------------------------------------------------------------
         CALL DETRSD('CHAM_ELEM_S',CES1)
 
 
-      ELSE IF ((CAS.EQ.'CART->ELGA') .OR. (CAS.EQ.'CART->ELNO')) THEN
+      ELSE IF (CAS(1:8).EQ.'CART->EL') THEN
 C     ----------------------------------------------------------------
         IF (LIGREL.EQ.' ') CALL UTMESS('F','CHPCHD','IL FAUT MODELE')
 

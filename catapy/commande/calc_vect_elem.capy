@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,7 @@ CALC_VECT_ELEM=OPER(nom="CALC_VECT_ELEM",op=8,sd_prod=calc_vect_elem_prod,docu="
                                                            "FORC_NODA","CHAR_MECA_LAGR") ),
          b_char_meca     =BLOC(condition = "OPTION=='CHAR_MECA'",
            regles=(AU_MOINS_UN('CHARGE','MODELE'),),
-           CHARGE          =SIMP(statut='f',typ=char_meca,max='**'),
+           CHARGE          =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
            MODELE          =SIMP(statut='f',typ=modele),
            b_charge     =BLOC(condition = "CHARGE != None", fr="modèle ne contenant pas de sous-structure",
               CHAM_MATER   =SIMP(statut='f',typ=cham_mater),
@@ -45,19 +45,19 @@ CALC_VECT_ELEM=OPER(nom="CALC_VECT_ELEM",op=8,sd_prod=calc_vect_elem_prod,docu="
                 regles=(UN_PARMI('TOUT','MAILLE'),),
                 CAS_CHARGE  =SIMP(statut='o',typ='TXM' ),
                 TOUT        =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-                MAILLE      =SIMP(statut='f',typ=ma,max='**',),
+                MAILLE      =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**',),
               ),
            ),
          ),
          b_char_ther     =BLOC(condition = "OPTION=='CHAR_THER'",
            CARA_ELEM        =SIMP(statut='f',typ=cara_elem),
-           CHARGE           =SIMP(statut='o',typ=char_ther,max='**'),
+           CHARGE           =SIMP(statut='o',typ=char_ther,validators=NoRepeat(),max='**'),
            INST             =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
          ),
               
          b_char_acou     =BLOC(condition = "OPTION=='CHAR_ACOU'",
            CHAM_MATER        =SIMP(statut='o',typ=cham_mater),
-           CHARGE            =SIMP(statut='o',typ=char_acou,max='**'),
+           CHARGE            =SIMP(statut='o',typ=char_acou,validators=NoRepeat(),max='**'),
          ),
          
          b_forc_noda     =BLOC(condition = "OPTION=='FORC_NODA'",
@@ -70,7 +70,7 @@ CALC_VECT_ELEM=OPER(nom="CALC_VECT_ELEM",op=8,sd_prod=calc_vect_elem_prod,docu="
            CHAM_MATER        =SIMP(statut='o',typ=cham_mater),
            THETA             =SIMP(statut='o',typ=theta_geom),
            PROPAGATION       =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
-           CHARGE            =SIMP(statut='f',typ=char_meca,max='**'),
+           CHARGE            =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
            INST              =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
          ),
 ) ;

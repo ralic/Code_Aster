@@ -1,11 +1,11 @@
-      FUNCTION BPRIME (NBMAT, MATER, PARAME, NDT, INVAR1, S, EPSSIG)
+      FUNCTION BPRIME (NBMAT, MATER, PARAME, INVAR1, S, EPSSIG)
 C
       IMPLICIT  NONE
-      INTEGER   NBMAT, NDT
-      REAL*8    MATER(NBMAT,2),PARAME(5),INVAR1,S(*),EPSSIG,BPRIME
+      INTEGER   NBMAT
+      REAL*8    MATER(NBMAT,2),PARAME(5),INVAR1,S(6),EPSSIG,BPRIME
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C --- : EPSSIG : EPSILON -----------------------------------------------
 C OUT : BPRIME : PARAMETRE CONTROLANT LE COMPORTEMENT VOLUMIQUE --------
 C ------------ : DU MATERIAU -------------------------------------------
 C ======================================================================
-      INTEGER DIMNDT
+      INTEGER NDT, NDI
       REAL*8  MUN, UN, DEUX, TROIS, SIX, EPSTOL
       REAL*8  MULT, SIGC, GAMMA, KSI, PREF
       REAL*8  SGAMP, AGAMP, MGAMP, SII, FACT1, FACT2
@@ -46,14 +46,16 @@ C ======================================================================
 C ======================================================================
 C --- INITIALISATION DE PARAMETRES -------------------------------------
 C ======================================================================
-      PARAMETER       ( MUN    = -1.0D0   )
-      PARAMETER       ( UN     =  1.0D0   )
-      PARAMETER       ( DEUX   =  2.0D0   )
-      PARAMETER       ( TROIS  =  3.0D0   )
-      PARAMETER       ( SIX    =  6.0D0   )
+      PARAMETER  ( MUN    = -1.0D0   )
+      PARAMETER  ( UN     =  1.0D0   )
+      PARAMETER  ( DEUX   =  2.0D0   )
+      PARAMETER  ( TROIS  =  3.0D0   )
+      PARAMETER  ( SIX    =  6.0D0   )
+C ======================================================================
+      COMMON /TDIM/   NDT , NDI
+C ======================================================================
       EPSTOL = R8PREM()
       SIGT0  = 0.0D0
-      DIMNDT = NDT
 C ======================================================================
 C --- INITIALISATION DES PARAMETRES MATERIAU ---------------------------
 C ======================================================================
@@ -71,9 +73,9 @@ C ======================================================================
 C ======================================================================
 C --- CALCULS INTERMEDIAIRE POUR LE CALCUL DE BPRIME -------------------
 C ======================================================================
-      CALL     PSCAL(DIMNDT, S, S, SII)
+      CALL     PSCAL(NDT, S, S, SII)
       SII    = SQRT (SII)
-      RCOS3T = COS3T(DIMNDT, S, PREF, EPSSIG)
+      RCOS3T = COS3T(S, PREF, EPSSIG)
 C ======================================================================
 C --- CALCUL DE PHI0 = 2*ARCTAN(RAC(1+A*M*S**(A-1))) - PI/2 ------------
 C ======================================================================
@@ -94,7 +96,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE SIGT0 = 2*C0*RAC((1-SIN(PHI0))/(1+SIN(PHI0)) -----------
 C ======================================================================
-      IF ((1+SIN(PHI0)).LT.EPSTOL) THEN
+      IF ((UN+SIN(PHI0)).LT.EPSTOL) THEN
          CALL UTMESS('F','BPRIME_2','VALEUR INFERIEURE A LA TOLERANCE')
       ENDIF
       SIGT0  = DEUX*C0*SQRT((UN-SIN(PHI0))/(UN+SIN(PHI0)))
@@ -104,9 +106,9 @@ C --- CALCULS DE INTERMEDIAIRE -----------------------------------------
 C ======================================================================
       SIG1  = INVAR1/TROIS + SQRT(DEUX/TROIS)*SII*RCOS3T
       SIG2  = INVAR1/TROIS - SQRT(DEUX/TROIS)*SII*
-     +                ( RCOS3T/DEUX+SQRT(TROIS*(1-RCOS3T*RCOS3T))/DEUX )
+     +               ( RCOS3T/DEUX+SQRT(TROIS*(UN-RCOS3T*RCOS3T))/DEUX )
       SIG3  = INVAR1/TROIS + SQRT(DEUX/TROIS)*SII*
-     +                (-RCOS3T/DEUX+SQRT(TROIS*(1-RCOS3T*RCOS3T))/DEUX )
+     +               (-RCOS3T/DEUX+SQRT(TROIS*(UN-RCOS3T*RCOS3T))/DEUX )
 C ======================================================================
 C --- RECUPERATION DE SIG1 (MAX) ET SIG3 (MIN) -------------------------
 C ======================================================================

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,10 +34,10 @@ NORM_MODE=OPER(nom="NORM_MODE",op=  37,sd_prod=norm_mode_prod,
          b_noeud    =BLOC(condition = "NOEUD != None",
            NOM_CMP    =SIMP(statut='o',typ='TXM' ),
          ),
-         AVEC_CMP   =SIMP(statut='f',typ='TXM',max='**'),
-         SANS_CMP   =SIMP(statut='f',typ='TXM',max='**'),
+         AVEC_CMP   =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
+         SANS_CMP   =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
          MASS_INER  =SIMP(statut='f',typ=tabl_mass_iner ),
-         MODE_SIGNE =FACT(statut='f',max=1,fr="Imposer un signe sur une des composantes des modes",
+         MODE_SIGNE =FACT(statut='f',fr="Imposer un signe sur une des composantes des modes",
            NOEUD      =SIMP(statut='o',typ=no,fr="Noeud ou sera imposé le signe"),
            NOM_CMP    =SIMP(statut='o',typ='TXM',fr="Composante du noeud ou sera imposé le signe" ),
            SIGNE      =SIMP(statut='f',typ='TXM',defaut="POSITIF",into=("NEGATIF","POSITIF"),

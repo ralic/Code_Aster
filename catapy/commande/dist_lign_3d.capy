@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/01/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,14 +24,14 @@ DIST_LIGN_3D=OPER(nom="DIST_LIGN_3D",op= 133,sd_prod=fonction,docu="U4.mk.30-d",
          MODELE          =SIMP(statut='o',typ=modele),
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,evol_noli) ),
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",)),
-         NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
-         INST            =SIMP(statut='f',typ='R',max='**'),
+         NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+         INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
          LIST_INST       =SIMP(statut='f',typ=listr8),
          LIST_ORDRE      =SIMP(statut='f',typ=listis),
          PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
          CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
-         GROUP_MA_1      =SIMP(statut='o',typ=grma,max='**'),
-         GROUP_MA_2      =SIMP(statut='f',typ=grma,max='**'),
+         GROUP_MA_1      =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
+         GROUP_MA_2      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
          POIN_FIXE       =SIMP(statut='f',typ='R',min=3,max=3),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 )  ;

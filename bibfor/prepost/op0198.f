@@ -3,7 +3,7 @@
       INTEGER    IER
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 07/04/2003   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 29/04/2003   AUTEUR EPICURE S.BUGAT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,8 +79,8 @@ C ======================================================================
       DKMB   =  0.0D0
       K1ACP  =  0.0D0
       K1BCP  =  0.0D0
-      KAL    =  1.D0/R8MIEM()
-      KBL    =  1.D0/R8MIEM()
+      KAL    =  0.0D0
+      KBL    =  0.0D0
 C ======================================================================
 C --- RECUPERATION DES DONNEES AUTRE QUE K1D ---------------------------
 C ======================================================================
@@ -117,8 +117,8 @@ C ======================================================================
          DKMB   =  0.0D0
          K1ACP  =  0.0D0
          K1BCP  =  0.0D0
-         KAL    =  1.D0/R8MIEM()
-         KBL    =  1.D0/R8MIEM()
+         KAL    =  0.0D0
+         KBL    =  0.0D0
 C ======================================================================
 C --- RECUPERATION DES DONNEES ASSOCIEES A LA IK1D OCCURENCE DE K1D ----
 C ======================================================================

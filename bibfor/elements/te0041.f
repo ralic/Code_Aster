@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,10 +131,9 @@ C
          CALL JEVECH('PCADISA','L',JDC)
          CALL JEVECH('PMATUUR','E',JDM)
          IF (NDIM.NE.3) GOTO 6
-         CALL TECACH(.TRUE.,.FALSE.,'PRIGIEL',1,JDR)
+         CALL TECACH('ONN','PRIGIEL',1,JDR,IRET)
          IF (JDR.EQ.0) GOTO 6
-CCC         CALL TECACH(.TRUE.,.FALSE.,'PMATERC',1,JMA)
-         CALL TECAC2('NNN','PMATERC',1,JMA,IRET)
+         CALL TECACH('NNN','PMATERC',1,JMA,IRET)
          IF ((JMA.EQ.0) .OR.(IRET.NE.0)) GOTO 6
          NOMRES(1) = 'RIGI_NOR'
          NOMRES(2) = 'AMOR_NOR'

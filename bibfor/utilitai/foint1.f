@@ -4,7 +4,7 @@
       CHARACTER*(*)                   NOMPU(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 15/05/2003   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,7 +104,7 @@ C
       ENDIF
       IF (NBPU.LT.NBPARA) THEN
         IER = 110
-        CALL UTDEBM('A','FOINT1','ERREUR A L''INTERPOLATION')
+        CALL UTDEBM('E','FOINT1','ERREUR A L''INTERPOLATION')
         CALL UTIMPI('L',' PAS ASSEZ DE PARAMETRES : ',1,NBPU)
         CALL UTIMPI('S',' AU LIEU DE',1,NBPARA)
         CALL UTFINM()
@@ -117,7 +117,7 @@ C
               NPAR(I)=NUPAR
             ELSE
               IER = 120
-              CALL UTDEBM('A','FOINT1','ERREUR A L''INTERPOLATION')
+              CALL UTDEBM('E','FOINT1','ERREUR A L''INTERPOLATION')
               CALL UTIMPK('L',' PARAMETRE',NBPU,NOMPU)
               CALL UTIMPK('S',' EN DOUBLE',0,' ')
               CALL UTFINM()
@@ -127,8 +127,8 @@ C
    21   CONTINUE
         IF (NPAR(I).EQ.0) THEN
           IER = 130
-          CALL UTDEBM('A','FOINT1','ERREUR A L''INTERPOLATION')
-          CALL UTIMPK('L',' PARAMETRES ATTENDUS',NBPA,NOMPF)
+          CALL UTDEBM('E','FOINT1','ERREUR A L''INTERPOLATION')
+          CALL UTIMPK('L',' PARAMETRES ATTENDUS',NBPARA,NOMPF)
           CALL UTIMPK('L',' PARAMETRES RECUS   ',NBPU,NOMPU)
           CALL UTFINM()
           GOTO 9999
@@ -172,7 +172,7 @@ C
 C
         ELSE IF (COLI.EQ.'I') THEN
           IF (ZK16(JPRO+1)(1:3).EQ.'NON') THEN
-            CALL UTMESS('A','FOINTA_08','INTERPOLATION SUR PARAMETRES'
+            CALL UTMESS('E','FOINTA_08','INTERPOLATION SUR PARAMETRES'
      +                  //' NON PERMISE')
             IER = 170
             GOTO 9999
@@ -211,14 +211,14 @@ C
 C
         ELSE
           IER = 140
-          CALL UTMESS('A','FOINT1',
+          CALL UTMESS('E','FOINT1',
      +                         'INTERPOLATION "'//COLI//'" INCONNUE')
           GOTO 9999
         ENDIF
 C
       ELSE
         IER = 150
-        CALL UTMESS('A','FOINT1','"'//ZK16(JPRO)//
+        CALL UTMESS('E','FOINT1','"'//ZK16(JPRO)//
      +                              '" TYPE DE FONCTION INCONNU')
         GOTO 9999
       ENDIF

@@ -1,7 +1,7 @@
       SUBROUTINE FRAPP2(SD1,NOMA,LIGREL,CARTE)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/08/2002   AUTEUR ADBHHPM P.MASSIN 
+C MODIF ALGORITH  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,39 +52,41 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER JNOMA,JTYMAI,NBNOT,JTYNMA,JTABF,IACNX1,ILCNX1,JCMCF
       INTEGER NUMA1,NUMA2,ITYMA1,ITYMA2
       INTEGER JNBNO,LONG,NBNO,JAD,ITYTE,ITYMA,NCMP
-      PARAMETER (NBTYP=26)
+      PARAMETER (NBTYP=29)
 
       INTEGER COMPT(NBTYP)
       CHARACTER*2 CH2
       CHARACTER*8 KBID,NTYMA1,NTYMA2
       CHARACTER*16 NOMTE(NBTYP)
 C     COMPT(1) : NOMBRE DE  CFS2S2
-C     COMPT(2) : NOMBRE DE  CFS2S2L
-C     COMPT(3) : NOMBRE DE  CFS3S3
-C     COMPT(4) : NOMBRE DE  CFS3S3L
-C     COMPT(5)  =NOMBRE DE  CFS2S3
-C     COMPT(6)  =NOMBRE DE  CFS2S3L
-C     COMPT(7)  =NOMBRE DE  CFS3S2
-C     COMPT(8)  =NOMBRE DE  CFS3S2L
-C     COMPT(9)  =NOMBRE DE  CFT3T3
-C     COMPT(10) =NOMBRE DE  CFT3T3L
-C     COMPT(11) =NOMBRE DE  CFT3T6
-C     COMPT(12) =NOMBRE DE  CFT3T6L
-C     COMPT(13) =NOMBRE DE  CFT6T3
-C     COMPT(14) =NOMBRE DE  CFT6T3L
-C     COMPT(15) =NOMBRE DE  CFT6T6
-C     COMPT(16) =NOMBRE DE  CFT6T6L
-C     COMPT(17) =NOMBRE DE  CFQ4Q4
-C     COMPT(18) =NOMBRE DE  CFQ4Q4L
-C     COMPT(19) =NOMBRE DE  CFQ4Q8
-C     COMPT(20) =NOMBRE DE  CFQ4Q8L
-C     COMPT(21) =NOMBRE DE  CFQ8Q4
-C     COMPT(22) =NOMBRE DE  CFQ8Q4L
-C     COMPT(23) =NOMBRE DE  CFQ8Q8
-C     COMPT(24) =NOMBRE DE  CFQ8Q8L
-C     COMPT(25) =NOMBRE DE  CFQ4T3
-C     COMPT(26) =NOMBRE DE  CFT3Q4
-
+C     COMPT(2) : NOMBRE DE  CFS3S3
+C     COMPT(3) : NOMBRE DE  CFS2S3
+C     COMPT(4) : NOMBRE DE  CFS3S2
+C     COMPT(5)  =NOMBRE DE  CFT3T3
+C     COMPT(6)  =NOMBRE DE  CFT3T6
+C     COMPT(7)  =NOMBRE DE  CFT6T3
+C     COMPT(8)  =NOMBRE DE  CFT6T6
+C     COMPT(9)  =NOMBRE DE  CFQ4Q4
+C     COMPT(10) =NOMBRE DE  CFQ4Q8
+C     COMPT(11) =NOMBRE DE  CFQ8Q4
+C     COMPT(12) =NOMBRE DE  CFQ8Q8
+C     COMPT(13) =NOMBRE DE  CFQ4T3
+C     COMPT(14) =NOMBRE DE  CFT3Q4
+C     COMPT(15) =NOMBRE DE  CFT6Q4
+C     COMPT(16) =NOMBRE DE  CFQ4T6
+C     COMPT(17) =NOMBRE DE  CFT6Q8
+C     COMPT(18) =NOMBRE DE  CFQ8T6
+C     COMPT(19) =NOMBRE DE  CFT6Q9
+C     COMPT(20) =NOMBRE DE  CFQ9T6
+C     COMPT(21) =NOMBRE DE  CFQ8T3
+C     COMPT(22) =NOMBRE DE  CFT3Q8
+C     COMPT(23) =NOMBRE DE  CFQ8Q9
+C     COMPT(24) =NOMBRE DE  CFQ9Q8
+C     COMPT(25) =NOMBRE DE  CFQ9Q4
+C     COMPT(26) =NOMBRE DE  CFQ4Q9
+C     COMPT(27) =NOMBRE DE  CFQ9T3
+C     COMPT(28) =NOMBRE DE  CFT3Q9
+C     COMPT(29) =NOMBRE DE  CFQ9Q9
       CALL JEMARQ()
 
 C     1. DESTRUCTION DU LIGREL ET DE LA CARTE S'ILS EXISTENT :
@@ -92,33 +94,36 @@ C      ------------------------------------------------------
       CALL DETRSD('LIGREL',LIGREL)
       CALL DETRSD('CARTE',CARTE)
 
-
       NOMTE(1) = 'CFS2S2'
-      NOMTE(2) = 'CFS2S2L'
-      NOMTE(3) = 'CFS3S3'
-      NOMTE(4) = 'CFS3S3L'
-      NOMTE(5) = 'CFS2S3'
-      NOMTE(6) = 'CFS2S3L'
-      NOMTE(7) = 'CFS3S2'
-      NOMTE(8) = 'CFS3S2L'
-      NOMTE(9) = 'CFT3T3'
-      NOMTE(10) = 'CFT3T3L'
-      NOMTE(11) = 'CFT3T6'
-      NOMTE(12) = 'CFT3T6L'
-      NOMTE(13) = 'CFT6T3'
-      NOMTE(14) = 'CFT6T3L'
-      NOMTE(15) = 'CFT6T6'
-      NOMTE(16) = 'CFT6T6L'
-      NOMTE(17) = 'CFQ4Q4'
-      NOMTE(18) = 'CFQ4Q4L'
-      NOMTE(19) = 'CFQ4Q8'
-      NOMTE(20) = 'CFQ4Q8L'
-      NOMTE(21) = 'CFQ8Q4'
-      NOMTE(22) = 'CFQ8Q4L'
-      NOMTE(23) = 'CFQ8Q8'
-      NOMTE(24) = 'CFQ8Q8L'
-      NOMTE(25) = 'CFQ4T3'
-      NOMTE(26) = 'CFT3Q4'
+      NOMTE(2) = 'CFS3S3'
+      NOMTE(3) = 'CFS2S3'
+      NOMTE(4) = 'CFS3S2'
+      NOMTE(5) = 'CFT3T3'
+      NOMTE(6) = 'CFT3T6'
+      NOMTE(7) = 'CFT6T3'
+      NOMTE(8) = 'CFT6T6'
+      NOMTE(9) = 'CFQ4Q4'
+      NOMTE(10) = 'CFQ4Q8' 
+      NOMTE(11) = 'CFQ8Q4' 
+      NOMTE(12) = 'CFQ8Q8'
+      NOMTE(13) = 'CFQ4T3'
+      NOMTE(14) = 'CFT3Q4'
+      NOMTE(15) = 'CFT6Q4'
+      NOMTE(16) = 'CFQ4T6'
+      NOMTE(17) = 'CFT6Q8'
+      NOMTE(18) = 'CFQ8T6'
+      NOMTE(19) = 'CFT6Q9'
+      NOMTE(20) = 'CFQ9T6'
+      NOMTE(21) = 'CFQ8T3'
+      NOMTE(22) = 'CFT3Q8'
+      NOMTE(23) = 'CFQ8Q9'
+      NOMTE(24) = 'CFQ9Q8'
+      NOMTE(25) = 'CFQ9Q4'
+      NOMTE(26) = 'CFQ4Q9'
+      NOMTE(27) = 'CFQ9T3'
+      NOMTE(28) = 'CFT3Q9'
+      NOMTE(29) = 'CFQ9Q9'
+
 
 C     2.CREATION DU LIGREL :
 C      --------------------
@@ -135,7 +140,7 @@ C     ----------------------
 
 C     2.2. ON COMPTE DES CHOSES ET ON CREE .TYPNEMA :
 C      ------------------------------------------------
-      DO 10,K = 1,26
+      DO 10,K = 1,29
         COMPT(K) = 0
    10 CONTINUE
 
@@ -145,207 +150,235 @@ C      ------------------------------------------------
       CALL JEVEUO(NOMA//'.TYPMAIL','L',JTYMAI)
       NBPC = NINT(ZR(JTABF-1+1))
 
+
       CALL WKVECT('&&FRAPP2.TYPNEMA','V V I',2*NBPC,JTYNMA)
 C          : 2 ENTIERS PAR NOUVELLE MAILLE :
 C              NUMERO DU TYPE DE MAILLE
 C              NOMBRE DE NOEUDS DU TYPE DE MAILLE
       NBNOT = 0
       DO 20,IPC = 1,NBPC
-        INTERN = .FALSE.
+   
         NUMA1 = NINT(ZR(JTABF+16* (IPC-1)+1))
         NUMA2 = NINT(ZR(JTABF+16* (IPC-1)+2))
         ITYMA1 = ZI(JTYMAI-1+NUMA1)
         ITYMA2 = ZI(JTYMAI-1+NUMA2)
 
+
+
         CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYMA1),NTYMA1)
-        CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYMA2),NTYMA2)
-
+        CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYMA2),NTYMA2)         
         IF ((NTYMA1.EQ.'SEG2') .AND. (NTYMA2.EQ.'SEG2')) THEN
-          IF (INTERN) THEN
-            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG22L'),
-     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
-            ZI(JTYNMA-1+2* (IPC-1)+2) = 5
 
-            NBNOT = NBNOT + 1
-            COMPT(2) = COMPT(2) + 1
-          ELSE
             CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG22'),
      &                  ZI(JTYNMA-1+2* (IPC-1)+1))
             ZI(JTYNMA-1+2* (IPC-1)+2) = 4
             NBNOT = NBNOT + 0
             COMPT(1) = COMPT(1) + 1
-          END IF
-
+         
         ELSE IF ((NTYMA1.EQ.'SEG3') .AND. (NTYMA2.EQ.'SEG3')) THEN
-          IF (INTERN) THEN
-            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG33L'),
-     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
-            ZI(JTYNMA-1+2* (IPC-1)+2) = 7
-            NBNOT = NBNOT + 1
-            COMPT(4) = COMPT(4) + 1
-          ELSE
+
             CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG33'),
      &                  ZI(JTYNMA-1+2* (IPC-1)+1))
             ZI(JTYNMA-1+2* (IPC-1)+2) = 6
             NBNOT = NBNOT + 0
-            COMPT(3) = COMPT(3) + 1
-          END IF
+            COMPT(2) = COMPT(2) + 1
+          
         ELSE IF ((NTYMA1.EQ.'SEG2') .AND. (NTYMA2.EQ.'SEG3')) THEN
-          IF (INTERN) THEN
-            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG23L'),
-     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
-            ZI(JTYNMA-1+2* (IPC-1)+2) = 6
-            NBNOT = NBNOT + 1
-            COMPT(6) = COMPT(6) + 1
-          ELSE
+
             CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG23'),
      &                  ZI(JTYNMA-1+2* (IPC-1)+1))
             ZI(JTYNMA-1+2* (IPC-1)+2) = 5
             NBNOT = NBNOT + 0
-            COMPT(5) = COMPT(5) + 1
-          END IF
+            COMPT(3) = COMPT(3) + 1
+        
         ELSE IF ((NTYMA1.EQ.'SEG3') .AND. (NTYMA2.EQ.'SEG2')) THEN
-          IF (INTERN) THEN
-            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG32L'),
-     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
-            ZI(JTYNMA-1+2* (IPC-1)+2) = 6
-            NBNOT = NBNOT + 1
-            COMPT(8) = COMPT(8) + 1
-          ELSE
+
             CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG32'),
      &                  ZI(JTYNMA-1+2* (IPC-1)+1))
             ZI(JTYNMA-1+2* (IPC-1)+2) = 5
             NBNOT = NBNOT + 0
-            COMPT(7) = COMPT(7) + 1
-          END IF
+            COMPT(4) = COMPT(4) + 1
+          
         ELSE IF ((NTYMA1.EQ.'TRIA3') .AND. (NTYMA2.EQ.'TRIA3')) THEN
-          IF (INTERN) THEN
-            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA33L'),
-     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
-            ZI(JTYNMA-1+2* (IPC-1)+2) = 7
-            NBNOT = NBNOT + 1
-            COMPT(10) = COMPT(10) + 1
-          ELSE
+
             CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA33'),
      &                  ZI(JTYNMA-1+2* (IPC-1)+1))
             ZI(JTYNMA-1+2* (IPC-1)+2) = 6
             NBNOT = NBNOT + 0
-            COMPT(9) = COMPT(9) + 1
-          END IF
-         ELSE IF ((NTYMA1.EQ.'TRIA3') .AND. (NTYMA2.EQ.'QUAD4')) THEN
-             CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TR3QU4'),
-     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
-             ZI(JTYNMA-1+2* (IPC-1)+2) = 7
-             NBNOT = NBNOT + 0
-             COMPT(26) = COMPT(26) + 1
-         ELSE IF ((NTYMA1.EQ.'TRIA3') .AND. (NTYMA2.EQ.'TRIA6')) THEN
-          IF (INTERN) THEN
-            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA36L'),
-     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
-            ZI(JTYNMA-1+2* (IPC-1)+2) = 10
-            NBNOT = NBNOT + 1
-            COMPT(12) = COMPT(12) + 1
-          ELSE
-            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA36'),
+            COMPT(5) = COMPT(5) + 1
+        
+        ELSE IF ((NTYMA1.EQ.'TRIA3') .AND. (NTYMA2.EQ.'TRIA6')) THEN
+
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TR3TR6'),
      &                  ZI(JTYNMA-1+2* (IPC-1)+1))
             ZI(JTYNMA-1+2* (IPC-1)+2) = 9
             NBNOT = NBNOT + 0
-            COMPT(11) = COMPT(11) + 1
-          END IF
+            COMPT(6) = COMPT(6) + 1
 
         ELSE IF ((NTYMA1.EQ.'TRIA6') .AND. (NTYMA2.EQ.'TRIA3')) THEN
-          IF (INTERN) THEN
-            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA63L'),
-     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
-            ZI(JTYNMA-1+2* (IPC-1)+2) = 10
-            NBNOT = NBNOT + 1
-            COMPT(14) = COMPT(14) + 1
-          ELSE
-            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA63'),
+
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TR6TR3'),
      &                  ZI(JTYNMA-1+2* (IPC-1)+1))
             ZI(JTYNMA-1+2* (IPC-1)+2) = 9
             NBNOT = NBNOT + 0
-            COMPT(13) = COMPT(13) + 1
-          END IF
+            COMPT(7) = COMPT(7) + 1
+          
         ELSE IF ((NTYMA1.EQ.'TRIA6') .AND. (NTYMA2.EQ.'TRIA6')) THEN
-          IF (INTERN) THEN
-            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA66L'),
-     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
-            ZI(JTYNMA-1+2* (IPC-1)+2) = 13
-            NBNOT = NBNOT + 1
-            COMPT(16) = COMPT(16) + 1
-          ELSE
+
             CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA66'),
      &                  ZI(JTYNMA-1+2* (IPC-1)+1))
             ZI(JTYNMA-1+2* (IPC-1)+2) = 12
             NBNOT = NBNOT + 0
-            COMPT(15) = COMPT(15) + 1
-          END IF
+            COMPT(8) = COMPT(8) + 1
+         
         ELSE IF ((NTYMA1.EQ.'QUAD4') .AND. (NTYMA2.EQ.'QUAD4')) THEN
-          IF (INTERN) THEN
-            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD44L'),
-     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
-            ZI(JTYNMA-1+2* (IPC-1)+2) = 9
-            NBNOT = NBNOT + 1
-            COMPT(18) = COMPT(18) + 1
-          ELSE
-            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD44'),
+
+           CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD44'),
      &                  ZI(JTYNMA-1+2* (IPC-1)+1))
             ZI(JTYNMA-1+2* (IPC-1)+2) = 8
             NBNOT = NBNOT + 0
-            COMPT(17) = COMPT(17) + 1
-          END IF
-         ELSE IF ((NTYMA1.EQ.'QUAD4') .AND. (NTYMA2.EQ.'TRIA3')) THEN
-             CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU4TR3'),
-     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
-             ZI(JTYNMA-1+2* (IPC-1)+2) = 7
-             NBNOT = NBNOT + 0
-             COMPT(25) = COMPT(25) + 1
+            COMPT(9) = COMPT(9) + 1
+          
         ELSE IF ((NTYMA1.EQ.'QUAD4') .AND. (NTYMA2.EQ.'QUAD8')) THEN
-          IF (INTERN) THEN
-            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD48L'),
-     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
-            ZI(JTYNMA-1+2* (IPC-1)+2) = 13
-            NBNOT = NBNOT + 1
-            COMPT(20) = COMPT(20) + 1
-          ELSE
-            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD48'),
+
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU4QU8'),
      &                  ZI(JTYNMA-1+2* (IPC-1)+1))
             ZI(JTYNMA-1+2* (IPC-1)+2) = 12
             NBNOT = NBNOT + 0
-            COMPT(19) = COMPT(19) + 1
-          END IF
+            COMPT(10) = COMPT(10) + 1
+          
+
         ELSE IF ((NTYMA1.EQ.'QUAD8') .AND. (NTYMA2.EQ.'QUAD4')) THEN
-          IF (INTERN) THEN
-            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD84L'),
-     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
-            ZI(JTYNMA-1+2* (IPC-1)+2) = 13
-            NBNOT = NBNOT + 1
-            COMPT(22) = COMPT(22) + 1
-          ELSE
-            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD84'),
+
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU8QU4'),
      &                  ZI(JTYNMA-1+2* (IPC-1)+1))
             ZI(JTYNMA-1+2* (IPC-1)+2) = 12
             NBNOT = NBNOT + 0
-            COMPT(21) = COMPT(21) + 1
-          END IF
+            COMPT(11) = COMPT(11) + 1
+         
         ELSE IF ((NTYMA1.EQ.'QUAD8') .AND. (NTYMA2.EQ.'QUAD8')) THEN
-          IF (INTERN) THEN
-            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD88L'),
-     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
-            ZI(JTYNMA-1+2* (IPC-1)+2) = 17
-            NBNOT = NBNOT + 1
-            COMPT(24) = COMPT(24) + 1
-          ELSE
+            
             CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD88'),
      &                  ZI(JTYNMA-1+2* (IPC-1)+1))
             ZI(JTYNMA-1+2* (IPC-1)+2) = 16
             NBNOT = NBNOT + 0
+            COMPT(12) = COMPT(12) + 1
+        ELSE IF ((NTYMA1.EQ.'QUAD4') .AND. (NTYMA2.EQ.'TRIA3')) THEN
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU4TR3'),
+     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
+            ZI(JTYNMA-1+2* (IPC-1)+2) = 7
+            NBNOT = NBNOT + 0
+            COMPT(13) = COMPT(13) + 1
+        ELSE IF ((NTYMA1.EQ.'TRIA3') .AND. (NTYMA2.EQ.'QUAD4')) THEN
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TR3QU4'),
+     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
+            ZI(JTYNMA-1+2* (IPC-1)+2) = 7
+            NBNOT = NBNOT + 0
+            COMPT(14) = COMPT(14) + 1
+        ELSE IF ((NTYMA1.EQ.'TRIA6') .AND. (NTYMA2.EQ.'QUAD4')) THEN
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TR6QU4'),
+     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
+            ZI(JTYNMA-1+2* (IPC-1)+2) = 10
+            NBNOT = NBNOT + 0
+            COMPT(15) = COMPT(15) + 1
+        ELSE IF ((NTYMA1.EQ.'QUAD4') .AND. (NTYMA2.EQ.'TRIA6')) THEN
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU4TR6'),
+     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
+            ZI(JTYNMA-1+2* (IPC-1)+2) = 10
+            NBNOT = NBNOT + 0
+            COMPT(16) = COMPT(16) + 1
+        ELSE IF ((NTYMA1.EQ.'TRIA6') .AND. (NTYMA2.EQ.'QUAD8')) THEN
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TR6QU8'),
+     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
+            ZI(JTYNMA-1+2* (IPC-1)+2) = 14
+            NBNOT = NBNOT + 0
+            COMPT(17) = COMPT(17) + 1
+        ELSE IF ((NTYMA1.EQ.'QUAD8') .AND. (NTYMA2.EQ.'TRIA6')) THEN
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU8TR6'),
+     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
+            ZI(JTYNMA-1+2* (IPC-1)+2) = 14
+            NBNOT = NBNOT + 0
+            COMPT(18) = COMPT(18) + 1          
+        ELSE IF ((NTYMA1.EQ.'TRIA6') .AND. (NTYMA2.EQ.'QUAD9')) THEN
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TR6QU9'),
+     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
+            ZI(JTYNMA-1+2* (IPC-1)+2) = 15
+            NBNOT = NBNOT + 0
+            COMPT(19) = COMPT(19) + 1
+        ELSE IF ((NTYMA1.EQ.'QUAD9') .AND. (NTYMA2.EQ.'TRIA6')) THEN
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU9TR6'),
+     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
+            ZI(JTYNMA-1+2* (IPC-1)+2) = 15
+            NBNOT = NBNOT + 0
+            COMPT(20) = COMPT(20) + 1             
+        ELSE IF ((NTYMA1.EQ.'QUAD8') .AND. (NTYMA2.EQ.'TRIA3')) THEN
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU8TR3'),
+     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
+            ZI(JTYNMA-1+2* (IPC-1)+2) = 11
+            NBNOT = NBNOT + 0
+            COMPT(21) = COMPT(21) + 1
+        ELSE IF ((NTYMA1.EQ.'TRIA3') .AND. (NTYMA2.EQ.'QUAD8')) THEN
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TR3QU8'),
+     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
+            ZI(JTYNMA-1+2* (IPC-1)+2) = 11
+            NBNOT = NBNOT + 0
+            COMPT(22) = COMPT(22) + 1  
+        ELSE IF ((NTYMA1.EQ.'QUAD8') .AND. (NTYMA2.EQ.'QUAD9')) THEN
+
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU8QU9'),
+     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
+            ZI(JTYNMA-1+2* (IPC-1)+2) = 17
+            NBNOT = NBNOT + 0
             COMPT(23) = COMPT(23) + 1
-          END IF
+         
+        ELSE IF ((NTYMA1.EQ.'QUAD9') .AND. (NTYMA2.EQ.'QUAD8')) THEN
+
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU8QU8'),
+     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
+            ZI(JTYNMA-1+2* (IPC-1)+2) = 17
+            NBNOT = NBNOT + 0
+            COMPT(24) = COMPT(24) + 1
+        ELSE IF ((NTYMA1.EQ.'QUAD9') .AND. (NTYMA2.EQ.'QUAD4')) THEN
+
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU9QU4'),
+     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
+            ZI(JTYNMA-1+2* (IPC-1)+2) = 13
+            NBNOT = NBNOT + 0
+            COMPT(25) = COMPT(25) + 1
+         
+        ELSE IF ((NTYMA1.EQ.'QUAD4') .AND. (NTYMA2.EQ.'QUAD9')) THEN
+
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU4QU9'),
+     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
+            ZI(JTYNMA-1+2* (IPC-1)+2) = 13
+            NBNOT = NBNOT + 0
+            COMPT(26) = COMPT(26) + 1
+        ELSE IF ((NTYMA1.EQ.'QUAD9') .AND. (NTYMA2.EQ.'TRIA3')) THEN
+
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU9TR3'),
+     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
+            ZI(JTYNMA-1+2* (IPC-1)+2) = 12
+            NBNOT = NBNOT + 0
+            COMPT(27) = COMPT(27) + 1
+         
+        ELSE IF ((NTYMA1.EQ.'TRIA3') .AND. (NTYMA2.EQ.'QUAD9')) THEN
+
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TR3QU9'),
+     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
+            ZI(JTYNMA-1+2* (IPC-1)+2) = 12
+            NBNOT = NBNOT + 0
+            COMPT(28) = COMPT(28) + 1
+        ELSE IF ((NTYMA1.EQ.'QUAD9') .AND. (NTYMA2.EQ.'QUAD9')) THEN
+
+            CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD99'),
+     &                  ZI(JTYNMA-1+2* (IPC-1)+1))
+            ZI(JTYNMA-1+2* (IPC-1)+2) = 18
+            NBNOT = NBNOT + 0
+            COMPT(29) = COMPT(29) + 1
         ELSE
           CALL JXABOR()
         END IF
+
 
    20 CONTINUE
 
@@ -359,59 +392,65 @@ C     2.4 CREATION DE .NEMA :
 C      --------------------
       CALL JECREC(LIGREL//'.NEMA','V V I','NU','CONTIG','VARIABLE',NBPC)
       LONG = 0
-C      CFS2S2 :
+C    'CFS2S2'   :
       LONG = LONG + COMPT(1)* (4+1)
-C      CFS2S2L :
-      LONG = LONG + COMPT(2)* (5+1)
-C      CFS3S3 :
-      LONG = LONG + COMPT(3)* (6+1)
-C      CFS3S3L :
-      LONG = LONG + COMPT(4)* (7+1)
-C      CFS2S3
-      LONG = LONG + COMPT(5)* (5+1)
-C      CFS2S3L
-      LONG = LONG + COMPT(6)* (6+1)
-C      CFS3S2
-      LONG = LONG + COMPT(7)* (5+1)
-C      CFS3S2L
-      LONG = LONG + COMPT(8)* (6+1)
-C      CFT3T3
-      LONG = LONG + COMPT(9)* (6+1)
-C      CFT3T3L
-      LONG = LONG + COMPT(10)* (7+1)
-C      CFT3T6
-      LONG = LONG + COMPT(11)* (9+1)
-C      CFT3T6L
-      LONG = LONG + COMPT(12)* (10+1)
-C      CFT6T3
-      LONG = LONG + COMPT(13)* (9+1)
-C      CFT6T3L
-      LONG = LONG + COMPT(14)* (10+1)
-C      CFT6T6
-      LONG = LONG + COMPT(15)* (12+1)
-C      CFT6T6L
-      LONG = LONG + COMPT(16)* (13+1)
-C      CFQ4Q4
-      LONG = LONG + COMPT(17)* (8+1)
-C      CFQ4Q4L
-      LONG = LONG + COMPT(18)* (9+1)
-C      CFQ4Q8
-      LONG = LONG + COMPT(19)* (12+1)
-C      CFQ4Q8L
-      LONG = LONG + COMPT(20)* (13+1)
-C      CFQ8Q4
-      LONG = LONG + COMPT(21)* (12+1)
-C      CFQ8Q4L
-      LONG = LONG + COMPT(22)* (13+1)
-C      CFQ8Q8
-      LONG = LONG + COMPT(23)* (16+1)
-C      CFQ8Q8L
+C     'CFS3S3'  :
+      LONG = LONG + COMPT(2)* (6+1)
+C     'CFS2S3'  :
+      LONG = LONG + COMPT(3)* (5+1)
+C     'CFS3S2'  :
+      LONG = LONG + COMPT(4)* (5+1)
+C     'CFT3T3' 
+      LONG = LONG + COMPT(5)* (6+1)
+C     'CFT3T6'                            
+      LONG = LONG + COMPT(6)* (9+1)      
+C     'CFT6T3'                             
+      LONG = LONG + COMPT(7)* (9+1)      
+C     'CFT6T6'                            
+      LONG = LONG + COMPT(8)* (12+1)      
+C     'CFQ4Q4'                                 
+      LONG = LONG + COMPT(9)* (12+1)      
+C     'CFQ4Q8'                                    
+      LONG = LONG + COMPT(10)* (12+1)      
+C     'CFQ8Q4'                              
+      LONG = LONG + COMPT(11)* (12+1)      
+C     'CFQ8Q8'                            
+      LONG = LONG + COMPT(12)* (16+1)     
+C     'CFQ4T3'                              
+      LONG = LONG + COMPT(13)* (7+1)      
+C     'CFT3Q4'                             
+      LONG = LONG + COMPT(14)* (7+1)     
+C     'CFT6Q4'                              
+      LONG = LONG + COMPT(15)* (10+1)     
+C     'CFQ4T6'                             
+      LONG = LONG + COMPT(16)* (10+1)     
+C     'CFT6Q8'                              
+      LONG = LONG + COMPT(17)* (14+1)      
+C     'CFQ8T6'                             
+      LONG = LONG + COMPT(18)* (14+1)      
+C     'CFT6Q9'                              
+      LONG = LONG + COMPT(19)* (15+1)     
+C     'CFQ9T6'                             
+      LONG = LONG + COMPT(20)* (15+1)
+C     'CFQ8T3' 
+      LONG = LONG + COMPT(21)* (11+1)
+C     'CFT3Q8' 
+      LONG = LONG + COMPT(22)* (11+1)
+C     'CFQ8Q9' 
+      LONG = LONG + COMPT(23)* (17+1)
+C     'CFQ9Q8' 
       LONG = LONG + COMPT(24)* (17+1)
-C      CFSS2S2
-C      CFQ4T3
-      LONG = LONG + COMPT(25)* (7+1)
-C      CFT3Q4
-      LONG = LONG + COMPT(26)* (7+1)
+C     'CFQ9Q4' 
+      LONG = LONG + COMPT(25)* (13+1)
+C     'CFQ4Q9' 
+      LONG = LONG + COMPT(26)* (13+1)
+C     'CFQ9T3'
+      LONG = LONG + COMPT(27)* (12+1)
+C     'CFT3Q9'
+      LONG = LONG + COMPT(28)* (12+1)
+C     'CFQ9Q9'
+      LONG = LONG + COMPT(29)* (18+1)
+C 
 C 
 
 
@@ -456,6 +495,7 @@ C      --------------------
       DO 70,K = 1,NBTYP
         LONG = LONG + COMPT(K)
    70 CONTINUE
+         
       CALL JEECRA(LIGREL//'.LIEL','LONT',LONG,KBID)
 
       ICO = 0
@@ -471,105 +511,117 @@ C      --------------------
           CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFS2S2'),ITYTE)
           CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG22'),ITYMA)
           ZI(JAD-1+COMPT(K)+1) = ITYTE
-        ELSE IF (NOMTE(K).EQ.'CFS2S2L') THEN
-          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFS2S2L'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG22L'),ITYMA)
-          ZI(JAD-1+COMPT(K)+1) = ITYTE
         ELSE IF (NOMTE(K).EQ.'CFS3S3') THEN
           CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFS3S3'),ITYTE)
           CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG33'),ITYMA)
-          ZI(JAD-1+COMPT(K)+1) = ITYTE
-        ELSE IF (NOMTE(K).EQ.'CFS3S3L') THEN
-          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFS3S3L'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG33L'),ITYMA)
           ZI(JAD-1+COMPT(K)+1) = ITYTE
         ELSE IF (NOMTE(K).EQ.'CFS2S3') THEN
           CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFS2S3'),ITYTE)
           CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG23'),ITYMA)
           ZI(JAD-1+COMPT(K)+1) = ITYTE
-        ELSE IF (NOMTE(K).EQ.'CFS2S3L') THEN
-          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFS2S3L'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG23L'),ITYMA)
-          ZI(JAD-1+COMPT(K)+1) = ITYTE
         ELSE IF (NOMTE(K).EQ.'CFS3S2') THEN
           CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFS3S2'),ITYTE)
           CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG32'),ITYMA)
-          ZI(JAD-1+COMPT(K)+1) = ITYTE
-        ELSE IF (NOMTE(K).EQ.'CFS3S2L') THEN
-          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFS3S2L'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG32L'),ITYMA)
           ZI(JAD-1+COMPT(K)+1) = ITYTE
         ELSE IF (NOMTE(K).EQ.'CFT3T3') THEN
           CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFT3T3'),ITYTE)
           CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA33'),ITYMA)
           ZI(JAD-1+COMPT(K)+1) = ITYTE
-        ELSE IF (NOMTE(K).EQ.'CFT3T3L') THEN
-          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFT3T3L'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA33L'),ITYMA)
-          ZI(JAD-1+COMPT(K)+1) = ITYTE
         ELSE IF (NOMTE(K).EQ.'CFT3T6') THEN
           CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFT3T6'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA36'),ITYMA)
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TR3TR6'),ITYMA)
           ZI(JAD-1+COMPT(K)+1) = ITYTE
-        ELSE IF (NOMTE(K).EQ.'CFT3T6L') THEN
-          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFT3T6L'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA36L'),ITYMA)
-          ZI(JAD-1+COMPT(K)+1) = ITYTE
-        ELSE IF (NOMTE(K).EQ.'CFT6T3') THEN
+        ELSE IF (NOMTE(K).EQ.'CFT6T3') THEN 
           CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFT6T3'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA63'),ITYMA)
-          ZI(JAD-1+COMPT(K)+1) = ITYTE
-        ELSE IF (NOMTE(K).EQ.'CFT6T3L') THEN
-          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFT6T3L'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA63L'),ITYMA)
-          ZI(JAD-1+COMPT(K)+1) = ITYTE
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TR6TR3'),ITYMA)
+          ZI(JAD-1+COMPT(K)+1) = ITYTE        
         ELSE IF (NOMTE(K).EQ.'CFT6T6') THEN
           CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFT6T6'),ITYTE)
           CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA66'),ITYMA)
-          ZI(JAD-1+COMPT(K)+1) = ITYTE
-        ELSE IF (NOMTE(K).EQ.'CFT6T6L') THEN
-          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFT6T6L'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA66L'),ITYMA)
-          ZI(JAD-1+COMPT(K)+1) = ITYTE
-        ELSE IF (NOMTE(K).EQ.'CFQ4Q4') THEN
+          ZI(JAD-1+COMPT(K)+1) = ITYTE    
+        ELSE IF (NOMTE(K).EQ.'CFQ4Q4') THEN  
           CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ4Q4'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD44'),ITYMA)
-          ZI(JAD-1+COMPT(K)+1) = ITYTE
-        ELSE IF (NOMTE(K).EQ.'CFQ4Q4L') THEN
-          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ4Q4L'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD44L'),ITYMA)
-          ZI(JAD-1+COMPT(K)+1) = ITYTE
-        ELSE IF (NOMTE(K).EQ.'CFQ4Q8') THEN
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD44'),ITYMA) 
+          ZI(JAD-1+COMPT(K)+1) = ITYTE 
+        ELSE IF (NOMTE(K).EQ.'CFQ4Q8') THEN  
           CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ4Q8'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD48'),ITYMA)
-          ZI(JAD-1+COMPT(K)+1) = ITYTE
-        ELSE IF (NOMTE(K).EQ.'CFQ4Q8L') THEN
-          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ4Q8L'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD48L'),ITYMA)
-          ZI(JAD-1+COMPT(K)+1) = ITYTE
-        ELSE IF (NOMTE(K).EQ.'CFQ8Q4') THEN
-          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ8Q4'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD84'),ITYMA)
-          ZI(JAD-1+COMPT(K)+1) = ITYTE
-        ELSE IF (NOMTE(K).EQ.'CFQ8Q4L') THEN
-          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ8Q4L'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD84L'),ITYMA)
-          ZI(JAD-1+COMPT(K)+1) = ITYTE
-        ELSE IF (NOMTE(K).EQ.'CFQ8Q8') THEN
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU4QU8'),ITYMA) 
+          ZI(JAD-1+COMPT(K)+1) = ITYTE    
+        ELSE IF (NOMTE(K).EQ.'CFQ8Q4') THEN     
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ8Q4'),ITYTE) 
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU8QU4'),ITYMA) 
+          ZI(JAD-1+COMPT(K)+1) = ITYTE  
+        ELSE IF (NOMTE(K).EQ.'CFQ8Q8') THEN    
           CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ8Q8'),ITYTE)
           CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD88'),ITYMA)
+          ZI(JAD-1+COMPT(K)+1) = ITYTE   
+        ELSE IF (NOMTE(K).EQ.'CFQ4T3') THEN  
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ4T3'),ITYTE) 
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU4TR3'),ITYMA)
+          ZI(JAD-1+COMPT(K)+1) = ITYTE  
+        ELSE IF (NOMTE(K).EQ.'CFT3Q4') THEN  
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFT3Q4'),ITYTE) 
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TR3QU4'),ITYMA)  
+          ZI(JAD-1+COMPT(K)+1) = ITYTE 
+        ELSE IF (NOMTE(K).EQ.'CFT6Q4') THEN 
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFT6Q4'),ITYTE)
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TR6QU4'),ITYMA)
           ZI(JAD-1+COMPT(K)+1) = ITYTE
-        ELSE IF (NOMTE(K).EQ.'CFQ8Q8L') THEN
-          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ8Q8L'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD88L'),ITYMA)
+        ELSE IF (NOMTE(K).EQ.'CFQ4T6') THEN
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ4T6'),ITYTE)
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU4TR6'),ITYMA)
+          ZI(JAD-1+COMPT(K)+1) = ITYTE
+        ELSE IF (NOMTE(K).EQ.'CFT6Q8') THEN
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFT6Q8'),ITYTE)
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TR6QU8'),ITYMA)
+          ZI(JAD-1+COMPT(K)+1) = ITYTE
+        ELSE IF (NOMTE(K).EQ.'CFQ8T6') THEN
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ8T6'),ITYTE)
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU8TR6'),ITYMA)
+          ZI(JAD-1+COMPT(K)+1) = ITYTE
+        ELSE IF (NOMTE(K).EQ.'CFT6Q9') THEN
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFT6Q9'),ITYTE)
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TR6QU9'),ITYMA)
+          ZI(JAD-1+COMPT(K)+1) = ITYTE
+        ELSE IF (NOMTE(K).EQ.'CFQ9T6') THEN
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ9T6'),ITYTE)
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU9TR6'),ITYMA) 
+          ZI(JAD-1+COMPT(K)+1) = ITYTE 
+        ELSE IF (NOMTE(K).EQ.'CFQ8T3') THEN  
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ8T3'),ITYTE)  
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU8TR3'),ITYMA)  
+          ZI(JAD-1+COMPT(K)+1) = ITYTE
+        ELSE IF (NOMTE(K).EQ.'CFT3Q8') THEN
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFT3Q8'),ITYTE)
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TR3QU8'),ITYMA)
+          ZI(JAD-1+COMPT(K)+1) = ITYTE
+        ELSE IF (NOMTE(K).EQ.'CFQ8Q9') THEN
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ8Q9'),ITYTE)
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU8QU9'),ITYMA)
+          ZI(JAD-1+COMPT(K)+1) = ITYTE
+        ELSE IF (NOMTE(K).EQ.'CFQ9Q8') THEN
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ9Q8'),ITYTE)
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU9QU8'),ITYMA)
+          ZI(JAD-1+COMPT(K)+1) = ITYTE
+        ELSE IF (NOMTE(K).EQ.'CFQ9Q4') THEN
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ9Q4'),ITYTE)
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU9QU4'),ITYMA)
+          ZI(JAD-1+COMPT(K)+1) = ITYTE
+        ELSE IF (NOMTE(K).EQ.'CFQ4Q9') THEN
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ4Q9'),ITYTE)
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU4QU9'),ITYMA)
+          ZI(JAD-1+COMPT(K)+1) = ITYTE
+        ELSE IF (NOMTE(K).EQ.'CFQ9T3') THEN
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ9T3'),ITYTE)
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU9TR3'),ITYMA)
+          ZI(JAD-1+COMPT(K)+1) = ITYTE
+        ELSE IF (NOMTE(K).EQ.'CFT3Q9') THEN
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFT3Q9'),ITYTE)
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TR3QU9'),ITYMA)
           ZI(JAD-1+COMPT(K)+1) = ITYTE
         ELSE IF (NOMTE(K).EQ.'CFQ4T3') THEN
-          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ4T3'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU4TR3'),ITYMA)
-          ZI(JAD-1+COMPT(K)+1) = ITYTE
-        ELSE IF (NOMTE(K).EQ.'CFT3Q4') THEN
-          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFT3Q4'),ITYTE)
-          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TR3QU4'),ITYMA)
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE','CFQ9Q9'),ITYTE)
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QU9QU9'),ITYMA)
           ZI(JAD-1+COMPT(K)+1) = ITYTE
         ELSE
           CALL JXABOR()

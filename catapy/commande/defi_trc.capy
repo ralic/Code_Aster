@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,16 +19,16 @@
 DEFI_TRC=OPER(nom="DEFI_TRC",op=94,sd_prod=tabl_trc,docu="U4.43.04-f",reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
               fr="Définition d un diagramme de transformations en refroidissement continu d un acier",
-         HIST_EXP        =FACT(statut='o',min=1,max='**',
+         HIST_EXP        =FACT(statut='o',max='**',
            VALE            =SIMP(statut='o',typ='R',max='**'),
          ),
-         TEMP_MS         =FACT(statut='o',min=1,max='**',
+         TEMP_MS         =FACT(statut='o',max='**',
            SEUIL           =SIMP(statut='o',typ='R'),
            AKM             =SIMP(statut='o',typ='R'),
            BKM             =SIMP(statut='o',typ='R'),
            TPLM            =SIMP(statut='o',typ='R'),
          ),
-         GRAIN_AUST      =FACT(statut='f',min=1,max='**',
+         GRAIN_AUST      =FACT(statut='f',max='**',
            DREF           =SIMP(statut='f',typ='R'),
            A              =SIMP(statut='f',typ='R'),
          ),

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/12/2002   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 17/09/2003   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE D'UNE NAPPE D'ARMATURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -489,17 +489,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 1.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 0.00000E+00),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 1.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 0.00000E+00),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 1.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 0.00000E+00),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 1.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 0.00000E+00),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 1.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 0.00000E+00),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 1.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 0.00000E+00),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 1.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 0.00000E+00),
              ),)
 
 
@@ -509,17 +501,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 2.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 2.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 1.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 2.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 1.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 2.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.80000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 2.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.80000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 2.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 1.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 2.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 1.),
              ),)
 
 
@@ -529,17 +513,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 3.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 3.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 0.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 3.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 0.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 3.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.80000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 3.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.80000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 3.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 0.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 3.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 0.),
              ),)
 
 TEST_RESU(RESU=( 
@@ -547,18 +523,10 @@ TEST_RESU(RESU=(
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 4.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
-       #     _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 4.,   TYPE_TEST='MIN',
-       #      CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 0.),
-       #     _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 4.,   TYPE_TEST='MAX',
-       #      CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 0.),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 4.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.80000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 4.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.80000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 4.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 0.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 4.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 0.),
              ),)
 
 TEST_RESU(RESU=( 
@@ -567,17 +535,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 5.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 5.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 0.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 5.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 0.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 5.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.80000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 5.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.80000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 5.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 0.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 5.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 0.),
              ),)
 
 TEST_RESU(RESU=( 
@@ -586,17 +546,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 6.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 5.04000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 6.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 1.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 6.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 1.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 6.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 5.04000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 6.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 5.04000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 6.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 1.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 6.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 1.),
              ),)
 
 TEST_RESU(RESU=( 
@@ -605,17 +557,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 7.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 5.04000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 7.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 0.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 7.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 0.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 7.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 5.04000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 7.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 5.04000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 7.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 0.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 7.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 0.),
              ),)
 
 TEST_RESU(RESU=( 
@@ -624,17 +568,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 8.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 8.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 1.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 8.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 1.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 8.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 9.43200E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 8.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 9.43200E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 8.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 1.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 8.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 1.),
              ),)
 
 TEST_RESU(RESU=( 
@@ -643,17 +579,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 9.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 9.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 0.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 9.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 0.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 9.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 9.43200E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 9.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 9.43200E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 9.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 0.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 9.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 0.),
              ),)
 
 TEST_RESU(RESU=( 
@@ -662,17 +590,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 10.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.47456E-02),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 10.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 1.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 10.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 1.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 10.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.47456E-02),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 10.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.47456E-02),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 10.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 1.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 10.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 1.),
              ),)
 
 TEST_RESU(RESU=( 
@@ -681,17 +601,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 11.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.47456E-02),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 11.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 0.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 11.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V2',         VALE = 0.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 11.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.47456E-02),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 11.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.47456E-02),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 11.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 0.),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 11.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V4',         VALE = 0.),
              ),)
 
 FIN()

@@ -1,13 +1,13 @@
-      SUBROUTINE CALCDR(NDT, NDI, NBMAT, MATER, PARAME, DERIVE,
-     +                  G, I, U, Q, DEVG, DEVGII, TRACEG, DFDL)
+      SUBROUTINE CALCDR( NBMAT, MATER, PARAME, DERIVE,
+     +                          G, I, U, Q, DEVG, DEVGII, TRACEG, DFDL)
 C
       IMPLICIT      NONE
-      INTEGER       NDT, NDI, NBMAT
+      INTEGER       NBMAT
       REAL*8        MATER(NBMAT,2), PARAME(5), DERIVE(4), G, I, U
-      REAL*8        Q(*), DEVG(*), DEVGII, TRACEG, DFDL
+      REAL*8        Q(6), DEVG(6), DEVGII, TRACEG, DFDL
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE DUDS ---------------------------------------------------
 C ======================================================================
-      CALL DRUDRS(NDT, NDI, PARAME, Q, H0, SIGC, DUDS)
+      CALL DRUDRS(PARAME, Q, H0, SIGC, DUDS)
 C ======================================================================
 C --- CALCUL DE DUDG ---------------------------------------------------
 C ======================================================================
@@ -74,7 +74,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE DFDS ---------------------------------------------------
 C ======================================================================
-      CALL DRFDRS(NDT, Q, PARAME, H0, SIGC, G, U, DUDS, DFDS)
+      CALL DRFDRS(Q, PARAME, H0, SIGC, G, U, DUDS, DFDS)
 C ======================================================================
 C --- CALCUL DE DFDG ---------------------------------------------------
 C ======================================================================
@@ -82,8 +82,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE DFDL ---------------------------------------------------
 C ======================================================================
-      CALL DRFNEW(NDT, NDI, DEVG, DEVGII, TRACEG, DFDS, DFDG, MU, K,
-     +            DFDL)
+      CALL DRFNEW(DEVG, DEVGII, TRACEG, DFDS, DFDG, MU, K, DFDL)
 C ======================================================================
       CALL JEDEMA ()
 C ======================================================================

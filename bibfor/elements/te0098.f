@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/08/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 S
       INTEGER I,ICHG,ICHN,ICARAC,JMAT,IC,IFF,IPOIDS,IVF,JTAB(7)
       INTEGER NNO,NPG,NPG1,NCMP,NNOS,NCMP2,KP,K,LGPG,ICOMPO
-      INTEGER LGPG1
+      INTEGER LGPG1,IRET
 C     ------------------------------------------------------------------
 
       CALL ELREF1(ELREFE)
@@ -84,6 +84,8 @@ C NOMBRE DE COMPOSANTES DES CONTRAINTES SUPPLEMENTAIRES
       ELSE IF (NOMTE(5:8).EQ.'TR6 ') THEN
         NNOS = 3
       ELSE IF (NOMTE(5:8).EQ.'QS8 ') THEN
+        NNOS = 4      
+      ELSE IF (NOMTE(5:8).EQ.'QS4 ') THEN
         NNOS = 4
       ELSE IF (NOMTE(5:8).EQ.'QU8 ' .OR. NOMTE(5:8).EQ.'QU9 ') THEN
         NNOS = 4
@@ -111,7 +113,7 @@ C     ---------------------------------------
         CALL JEVECH('PVARINR','L',ICHN)
         CALL JEVECH('PVARIGR','E',ICHG)
 
-        CALL TECACH(.TRUE.,.TRUE.,'PVARINR',7,JTAB)
+        CALL TECACH('OON','PVARINR',7,JTAB,IRET)
         LGPG1= MAX(JTAB(6),1)*JTAB(7)
 
         NCMP = LGPG1
@@ -125,7 +127,7 @@ C     ---------------------------------------
         CALL JEVECH('PVARIGR','L',ICHG)
         CALL JEVECH('PVARINR','E',ICHN)
 
-        CALL TECACH(.TRUE.,.TRUE.,'PVARINR',7,JTAB)
+        CALL TECACH('OON','PVARINR',7,JTAB,IRET)
         LGPG1= MAX(JTAB(6),1)*JTAB(7)
 
         NCMP = LGPG1

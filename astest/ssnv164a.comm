@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 16/09/2003   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE MISE EN TENSION DE CABLES DE PRECONTRAINTES DANS UNE POUTRE 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@ DEBUT( CODE=_F(  NOM = 'SSNV164A',NIV_PUB_WEB='INTERNET'),)
 
 PRE_GIBI();
 
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), );
+MA=LIRE_MAILLAGE();
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -60,7 +60,7 @@ MBETON=DEFI_MATERIAU(ELAS=_F(E=4.E10,
 MCABLE=DEFI_MATERIAU(ELAS=_F(E=1.93000000000E11,
                              NU=0.3,
                              RHO=7850,),
-                     BPEL_ACIER=_F(SY=1.94000000000E11,
+                     BPEL_ACIER=_F(F_PRG=1.94000000000E11,
                                    FROT_COURB=0.0,
                                    FROT_LINE=1.5E-3,),
                      ECRO_LINE = _F(SY = 1.94E11,

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/03/2003   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 16/09/2003   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE VALIDATION DE L'OPERATEUR DEFI_CABLE_BP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,7 +65,7 @@ ACIER=DEFI_MATERIAU(
                               NU = 0.3),
                  BPEL_ACIER=_F(  RELAX_1000 = 2.0,
                               MU0_RELAX = 0.3,
-                              SY = 1.77E+9,
+                              F_PRG = 1.77E+9,
                               FROT_COURB = 0.2,
                               FROT_LINE = 3.0E-3) )
 

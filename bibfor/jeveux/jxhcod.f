@@ -1,6 +1,7 @@
       FUNCTION JXHCOD ( CHAIN , LREP )
+C TOLE CRP_4
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/03/98   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,16 +21,15 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER  JXHCOD ,         LREP
       CHARACTER*(*)     CHAIN
-C             ROUTINE AVEC ADHERENCE SYSTEME    CRAY
-C             FONCTION(S) UTILISEE(S) : STRMOV
 C ----------------------------------------------------------------------
-      INTEGER          L32IS
-      COMMON /IL32JE/  L32IS
-C ----------------------------------------------------------------------
-      INTEGER           I(8)
+      INTEGER*4          I(8)
+C
+C   ATTENTION, IL FAUT IMPERATIVEMENT UTILISER UN TABLEAU I AYANT
+C   POUR LONGUEUR TOTALE 32 OCTETS (ICI 4*8) POUR S'ALIGNER SUR LA 
+C   CHAINE PASSEE EN ARGUMENT (32 CARACTERES MAXIMUM)
 C
       CALL STRMOV ( CHAIN , 1 , 32 , I(1) , 1 )
-      DO 1 K = 2,L32IS
+      DO 1 K = 2,8
          I(1) = XOR ( I(1) , I(K) )
  1    CONTINUE
       JXHCOD = 1 + MOD(I(1),LREP)

@@ -1,6 +1,5 @@
-# MODIF  DATE 07/01/2003   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 01/07/2003   AUTEUR JMBHH01 J.M.PROIX 
 # RESPONSABLE JMBHH01 J.M.PROIX
-
 # TITRE CORRIGE TP2 FORMATION THERMOPLASTICITE PLAQUE TROUEE EN TRACTIO
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,21 +20,14 @@
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 
-
-DEBUT(CODE=_F( NOM = 'FORMA03B',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON');
-
+DEBUT(CODE=_F(NOM='FORMA03B',
+              NIV_PUB_WEB='INTERNET',),);
 #===========================================
-INSTFIN1=5.4
-INSTFIN2=4.
-INSTFIN3=6.
-
 
 PRE_GIBI();
 
 M=LIRE_MAILLAGE();
 # PLAQUE TROUEE : CONTRAINTES PLANES
-#
-
 
 MO=AFFE_MODELE(MAILLAGE=M,
                VERIF='MAILLE',
@@ -43,14 +35,9 @@ MO=AFFE_MODELE(MAILLAGE=M,
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),);
 # COURBE DE TRACTION
-#
-
 
 CTRAC=DEFI_FONCTION(NOM_PARA='EPSI',
-                    VALE=(0.004,4.0,
-                          0.006,5.0,
-                          0.009,5.5,
-                          0.02,6.0,),
+                    VALE=(0.004,4.0,0.006,5.0,0.009,5.5,0.02,6.0,),
                     PROL_DROITE='CONSTANT',);
 
 MA=DEFI_MATERIAU(ELAS=_F(E=1000.0,
@@ -61,8 +48,6 @@ CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          MATER=MA,),);
 # CONDITIONS DE SYMETRIE (QUART DE PLAQUE)
-#
-
 
 CH1=AFFE_CHAR_MECA(MODELE=MO,
                    FACE_IMPO=(_F(GROUP_MA=('LBC','LCD',),
@@ -70,20 +55,17 @@ CH1=AFFE_CHAR_MECA(MODELE=MO,
                               _F(GROUP_MA=('LGH','LHI','LIA',),
                                  DX=0.0,),),);
 # TRACTION REPARTIE SUR LE HAUT
-#
-
 
 CH2=AFFE_CHAR_MECA(MODELE=MO,
                    FORCE_CONTOUR=_F(GROUP_MA='LFG',
                                     FY=1.0,),);
-
 #PILOTAGE                            
-#
+INSTFIN2 = 4.0;
 
 
 L_INST2=DEFI_LIST_REEL(DEBUT=0.0,
-                       INTERVALLE=_F(JUSQU_A=4.0,
-                                     NOMBRE=40,),);
+                       INTERVALLE=(_F(JUSQU_A=INSTFIN2,
+                                      NOMBRE=40,),),);
 
 RESUPILO=STAT_NON_LINE(MODELE=MO,
                        CHAM_MATER=CM,
@@ -91,148 +73,79 @@ RESUPILO=STAT_NON_LINE(MODELE=MO,
                               _F(CHARGE=CH2,
                                  TYPE_CHARGE='FIXE_PILO',),),
                        COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
-                       INCREMENT=_F(LIST_INST=L_INST2,INST_FIN=INSTFIN2),
+                       INCREMENT=_F(LIST_INST=L_INST2,
+                                    INST_FIN=INSTFIN2,),
                        NEWTON=_F(REAC_ITER=1,),
                        PILOTAGE=_F(TYPE='DDL_IMPO',
                                    COEF_MULT=1.0,
                                    GROUP_NO='A',
-                                   NOM_CMP='DY',),);
+                                   NOM_CMP='DY',),
+                       ARCHIVAGE=_F(LIST_INST=L_INST2,),);
 
 RESUPILO=CALC_ELEM(reuse =RESUPILO,
                    MODELE=MO,
                    CHAM_MATER=CM,
-                   OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),
-                   RESULTAT=RESUPILO,);
+                   RESULTAT=RESUPILO,
+                   OPTION='SIEF_ELNO_ELGA',);
 
 RESUPILO=CALC_NO(reuse =RESUPILO,
                  RESULTAT=RESUPILO,
                  OPTION='SIEF_NOEU_ELGA',
                  CHAM_MATER=CM,);
-                 
-# COURBE SIGMA YY AU POINT G EN FONCTION DE UY
-
-
-SYYP=RECU_FONCTION(RESULTAT=RESUPILO,
-                   NOM_CHAM='SIEF_NOEU_ELGA',
-                   TOUT_ORDRE='OUI',
-                   NOM_CMP='SIYY',
-                   GROUP_NO='G',);
-
-UYP=RECU_FONCTION(RESULTAT=RESUPILO,
-                  NOM_CHAM='DEPL',
-                  TOUT_ORDRE='OUI',
-                  NOM_CMP='DY',
-                  GROUP_NO='G',);
-
-IMPR_COURBE(FICHIER='AGRAF',
-            FORMAT='AGRAF',
-            TITRE_GRAPHIQUE='PILOTAGE SYY EN FONCTION DE UY AU POINT G',
-            LEGENDE_X='UY',
-            LEGENDE_Y='SIGMA YY',
-            COURBE=_F(FONC_X=UYP,
-                      FONC_Y=SYYP,),);
-                      
-                      
 # POUR VISUALISER LE ETA_PILOTAGE = F(INST)
-#
 
 ETA_PILO=RECU_FONCTION(RESULTAT=RESUPILO,
                        NOM_PARA_RESU='ETA_PILOTAGE',
                        TOUT_ORDRE='OUI',);
 
-IMPR_COURBE(FICHIER='AGRAF',
-            FORMAT='AGRAF',
-            TITRE_GRAPHIQUE='ETA_PILOTAGE = F(INSTANT)',
-            LEGENDE_X='INST',
-            LEGENDE_Y='ETA_PILO',
+IMPR_COURBE(FICHIER='RESULTAT',
+            FORMAT='EXCEL',
             COURBE=_F(FONCTION=ETA_PILO,),);
 
 TEST_FONCTION(VALEUR=(_F(FONCTION=ETA_PILO,
                          NOM_PARA='INST',
                          VALE_PARA=0.1,
-                         VALE_REFE=3.1112978341948923,
+                         VALE_REFE=3.11129783419,
                          REFERENCE='NON_REGRESSION',),
                       _F(FONCTION=ETA_PILO,
                          NOM_PARA='INST',
                          VALE_PARA=0.4,
-                         VALE_REFE=5.0500533283708453,
+                         VALE_REFE=5.05005332837,
                          REFERENCE='NON_REGRESSION',),
                       _F(FONCTION=ETA_PILO,
                          NOM_PARA='INST',
                          VALE_PARA=1.0,
-                         VALE_REFE=5.3896051439300789,
+                         VALE_REFE=5.38960514393,
                          REFERENCE='NON_REGRESSION',),
                       _F(FONCTION=ETA_PILO,
                          NOM_PARA='INST',
                          VALE_PARA=1.5,
-                         VALE_REFE=5.4008749454399485,
+                         VALE_REFE=5.40087494544,
                          REFERENCE='NON_REGRESSION',),
                       _F(FONCTION=ETA_PILO,
                          NOM_PARA='INST',
                          VALE_PARA=2.0,
-                         VALE_REFE=5.4046949439892451,
+                         VALE_REFE=5.40469494399,
                          REFERENCE='NON_REGRESSION',),),);
-                         
-                      
-# COURBE FORCE RESULTANTE EN HAUT EN FONCTION DU DEPLACEMENT
-#
-
-
-RESUPILO=CALC_NO(reuse =RESUPILO,
-                 RESULTAT=RESUPILO,
-                 OPTION='FORC_NODA',
-                 MODELE=MO,
-                 CHAM_MATER=CM,);
-
-LH=INTE_MAIL_2D(MAILLAGE=M,
-                DEFI_CHEMIN=_F(GROUP_MA='LFG',),);
-
-FHAUT=POST_RELEVE_T(ACTION=_F(INTITULE='F_HAUT',
-                              CHEMIN=LH,
-                              RESULTAT=RESUPILO,
-                              NOM_CHAM='FORC_NODA',
-                              LIST_INST=L_INST2,
-                              RESULTANTE=('DX','DY','DZ',),
-                              OPERATION='EXTRACTION',),);
-
-FY=RECU_FONCTION(TABLE=FHAUT,
-                 PARA_X='INST',
-                 PARA_Y='DY',);
-
-IMPR_COURBE(FICHIER='AGRAF',
-            FORMAT='AGRAF',
-            TITRE_GRAPHIQUE='RESULTANTE EN FONCTION DE DY AU POINT G',
-            LEGENDE_X='DY (G)',
-            LEGENDE_Y='FY RESULTANTE SUR LFG',
-            COURBE=_F(FONC_X=UYP,
-                      FONC_Y=FY,),);
-                      
-                      
-                      
-                      
-                      
 #=======================================================================        
-                        
-#DECHARGE
+# CHARGE-DECHARGE
+INSTFIN1 = 5.4;
+
+INSTFIN3 = 6.0;
+
 
 F_DEPL=DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0,0.0,
-                           5.4,5.4,
-                           6.0,0.0,),);
+                     VALE=(0.0,0.0,INSTFIN1,INSTFIN1,INSTFIN3,0.0,),);
 # DISCRETISATION EN TEMPS
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=(_F(JUSQU_A=5.4,
-                                     NOMBRE=27,),
-                                  _F(JUSQU_A=6.0,
+                      INTERVALLE=(_F(JUSQU_A=1.0,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=INSTFIN1,
+                                     NOMBRE=22,),
+                                  _F(JUSQU_A=INSTFIN3,
                                      NOMBRE=6,),),);
-                                     
-# PREMIER CALCUL SANS SOUCI JUSQU'A 5.4 MPA
-# RECHERCHE LINEAIRE ET SUBDIVISION DU PAS DE TEMPS
-# LE NOMBRE D'ITERATIONS POUR CONVERGER AUGMENTE
-#
-#
-
+#  CALCUL JUSQU'A 5.4 MPA PUIS DECHARGE
 
 RESUNL=STAT_NON_LINE(MODELE=MO,
                      CHAM_MATER=CM,
@@ -243,9 +156,9 @@ RESUNL=STAT_NON_LINE(MODELE=MO,
                      INCREMENT=_F(LIST_INST=L_INST,
                                   INST_FIN=INSTFIN1,
                                   SUBD_PAS=4,
-                                  SUBD_PAS_MINI=1.E-2,),
+                                  SUBD_PAS_MINI=0.0001,),
                      NEWTON=_F(REAC_ITER=1,),
-                     RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,),);
+                     ARCHIVAGE=_F(LIST_INST=L_INST,),);
 
 RESUNL=STAT_NON_LINE(reuse =RESUNL,
                      MODELE=MO,
@@ -255,232 +168,90 @@ RESUNL=STAT_NON_LINE(reuse =RESUNL,
                                FONC_MULT=F_DEPL,),),
                      COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
                      ETAT_INIT=_F(EVOL_NOLI=RESUNL,),
-                     INCREMENT=_F(LIST_INST=L_INST,INST_FIN=INSTFIN3),
+                     INCREMENT=_F(LIST_INST=L_INST,
+                                  INST_FIN=INSTFIN3,),
                      NEWTON=_F(PREDICTION='ELASTIQUE',
-                               REAC_ITER=1,),
-                     RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,),);
-                     
+                               REAC_ITER=1,),);
 # CALCUL DES CHAMPS AUX NOEUDS PAR ELEMENT
-#
-
 
 RESUNL=CALC_ELEM(reuse =RESUNL,
                  MODELE=MO,
                  CHAM_MATER=CM,
-                 OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','EQUI_ELGA_SIGM'),
-                 RESULTAT=RESUNL,);
-                 
+                 RESULTAT=RESUNL,
+                 OPTION='SIEF_ELNO_ELGA',);
 # CALCUL DES CHAMPS MOYENNES AUX NOEUDS POUR TEST_RESU
-#
-
 
 RESUNL=CALC_NO(reuse =RESUNL,
                RESULTAT=RESUNL,
-               OPTION=('SIEF_NOEU_ELGA'),
+               OPTION='SIEF_NOEU_ELGA',
                CHAM_MATER=CM,);
 
 TEST_RESU(RESU=_F(RESULTAT=RESUNL,
+                  INST=INSTFIN1,
+                  NOM_CHAM='SIEF_NOEU_ELGA',
+                  NOM_CMP='SIYY',
+                  GROUP_NO='G',
+                  VALE=5.40262,
+                  REFERENCE='NON_REGRESSION',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUNL,
+                  INST=INSTFIN3,
+                  NOM_CHAM='SIEF_NOEU_ELGA',
+                  NOM_CMP='SIYY',
+                  GROUP_NO='A',
+                  VALE=0.0871535,
+                  REFERENCE='NON_REGRESSION',),);
+#  CALCUL JUSQU'A 5.4 MPA PUIS DECHARGE
+# RECHERCHE LINEAIRE ET SUBDIVISION DU PAS DE TEMPS
+
+RESURL=STAT_NON_LINE(MODELE=MO,
+                     CHAM_MATER=CM,
+                     EXCIT=(_F(CHARGE=CH1,),
+                            _F(CHARGE=CH2,
+                               FONC_MULT=F_DEPL,),),
+                     COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
+                     INCREMENT=_F(LIST_INST=L_INST,
+                                  INST_FIN=INSTFIN3,
+                                  SUBD_PAS=4,
+                                  SUBD_PAS_MINI=0.0001,),
+                     NEWTON=_F(PREDICTION='ELASTIQUE',
+                               REAC_ITER=1,),
+                     RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,),
+                     ARCHIVAGE=_F(LIST_INST=L_INST,),);
+# CALCUL DES CHAMPS AUX NOEUDS PAR ELEMENT
+
+RESURL=CALC_ELEM(reuse =RESURL,
+                 MODELE=MO,
+                 CHAM_MATER=CM,
+                 RESULTAT=RESURL,
+                 OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
+# CALCUL DES CHAMPS MOYENNES AUX NOEUDS POUR TEST_RESU
+
+RESURL=CALC_NO(reuse =RESURL,
+               RESULTAT=RESURL,
+               OPTION='SIEF_NOEU_ELGA',
+               CHAM_MATER=CM,);
+
+TEST_RESU(RESU=_F(RESULTAT=RESURL,
                   INST=5.4,
                   NOM_CHAM='SIEF_NOEU_ELGA',
                   NOM_CMP='SIYY',
                   GROUP_NO='G',
                   VALE=5.40262,
                   REFERENCE='NON_REGRESSION',),);
-                  
-# DEPOUILLEMENTS DES RESULTATS
-# INSTANTS DE DEPOUILLEMENT 
-#
 
-TDEP = (1., 5.4, 6.0);
-
-# VALEURS MAXI DES CONTRAINTES EQUIVALENTES ET DES VARIABLES INTERNES
-#
-
+TEST_RESU(RESU=_F(RESULTAT=RESURL,
+                  INST=INSTFIN3,
+                  NOM_CHAM='SIEF_NOEU_ELGA',
+                  NOM_CMP='SIYY',
+                  GROUP_NO='A',
+                  VALE=0.0871535,
+                  REFERENCE='NON_REGRESSION',),);
 
 IMPR_RESU(MODELE=MO,
-          RESU=(_F(RESULTAT=RESUNL,
-                   NOM_CHAM='EQUI_ELGA_SIGM',
-                   INST=TDEP,
-                   VALE_MAX='OUI',),
-                _F(RESULTAT=RESUNL,
-                   NOM_CHAM='VARI_ELGA',
-                   INST=TDEP,
-                   VALE_MAX='OUI',),),);
-                   
-#  DEPOUILLEMENT AVEC CASTEM 2000
-#
-
-
-IMPR_RESU(MODELE=MO,
-          RESU=_F(FORMAT='CASTEM',
-                  MAILLAGE=M,
-                  RESULTAT=RESUNL,
+          RESU=_F(FORMAT='MED',
+                  RESULTAT=RESURL,
                   NOM_CHAM=('DEPL','SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),
-                  INST=TDEP,),);
-                  
-# IMPRESSION DU RESULTAT AUX POINTS DE GAUSS AVEC CASTEM2000:
-#
-
-
-MA2=CREA_MAILLAGE(MAILLAGE=M,
-                  ECLA_PG=_F(MODELE=MO,
-                             SHRINK=0.9,),);
-
-RESUNL2=CREA_RESU(OPERATION='ECLA_PG',
-                  TYPE_RESU='EVOL_NOLI',
-                  ECLA_PG=_F(NOM_CHAM=('SIEF_ELGA','VARI_ELGA',),
-                             MODELE_INIT=MO,
-                             RESU_INIT=RESUNL,
-                             MAILLAGE=MA2,),);
-
-DEFUFI(IMPRESSION=_F(NOM='CAST_PG',
-                     UNITE=36,),);
-
-MO2=AFFE_MODELE(MAILLAGE=MA2,
-                AFFE=_F(TOUT='OUI',
-                        PHENOMENE='MECANIQUE',
-                        MODELISATION='C_PLAN',),);
-
-IMPR_RESU(MODELE=MO2,
-          RESU=_F(FORMAT='CASTEM',
-                  MAILLAGE=MA2,
-                  RESULTAT=RESUNL2,
-                  INST=TDEP,
-                  FICHIER='CAST_PG',),);
-                  
-# COURBE SIGMA YY AU POINT G EN FONCTION DE UY
-#
-
-
-SYG=RECU_FONCTION(RESULTAT=RESUNL,
-                   NOM_CHAM='SIEF_NOEU_ELGA',
-                   TOUT_ORDRE='OUI',
-                   NOM_CMP='SIYY',
-                   GROUP_NO='G',);
-DYG=RECU_FONCTION(RESULTAT=RESUNL,
-                   NOM_CHAM='DEPL',
-                   TOUT_ORDRE='OUI',
-                   NOM_CMP='DY',
-                   GROUP_NO='G',);
-
-
-IMPR_COURBE(FICHIER='AGRAF',
-            FORMAT='AGRAF',
-            TITRE_GRAPHIQUE='SYY EN FONCTION DE DY AU POINT G',
-            LEGENDE_X='DY',
-            LEGENDE_Y='SIGMA YY',
-            COURBE=_F(FONC_X=DYG,
-                      FONC_Y=SYG,),);
-    
-    
-                      
-#=================================================================
-# TRACE DE COURBES AVEC PYTHON ET GNUPLOT
-#=================================================================
-
-#=================================================================
-# FONCTION PYTHON pour extraire d'une table issue de POST_RELEVE_T
-# de nom Table, un tableau Numeric contenant deux colonnes :
-# la premiere colonne correpond a Para, la deuxieme a Champ.
-
-def Extract_Numeric(Table,Para,Champ):
-  try:
-      import Numeric
-  except KeyError:
-         raise AsException("On ne trouve pas le module Numeric")         
-  Result = [[None]*2]
-  nb_temp = 0
-# Boucle de lecture sur les temps
-  while 1: 
-#   Si on n'a pas lu tous les temps
-    try:
-#     alors on lit les 2 champs abscisse et ordonnee
-        Result[nb_temp][0] = Table[Para,nb_temp+1]
-        Result[nb_temp][1] = Table[Champ,nb_temp+1]
-        nb_temp = nb_temp + 1  
-#     on ajoute une dimension temporelle supplementaire au resultat
-        Result.append([None]*2)
-#   Si on a lu tous les temps alors on sort de la boucle
-    except KeyError:
-      break
-# on renvoie le resultat en fin
-  Rep = Result[0:nb_temp]
-  F=Numeric.zeros((len(Rep),2),Numeric.Float)   
-# on transforme Rep en array Numeric
-  for i in range(len(Rep)):
-   for j in range(2) :
-      F[i][j] = Rep[i][j]
-  del(Rep)
-  del(Result)
-  return F
-#===========================================
-
-
-#===========================================
-# TRACE GNUPLOT POSTSCRIPT
-
-import Gnuplot
-import Numeric
-
-GNUSY=POST_RELEVE_T( 
-      ACTION=_F(  INTITULE = 'SYG',
-              GROUP_NO='G', RESULTAT = RESUNL,
-             NOM_CMP = 'SIYY',
-            NOM_CHAM = 'SIEF_NOEU_ELGA',
-           OPERATION = 'EXTRACTION')
-            )
-GNUDY=POST_RELEVE_T( 
-      ACTION=_F(  INTITULE = 'DYG',
-              GROUP_NO='G', RESULTAT = RESUNL,
-             NOM_CMP = 'DY',
-            NOM_CHAM = 'DEPL',
-           OPERATION = 'EXTRACTION')
-            )
-NUMSY = Extract_Numeric(GNUSY , 'INST' , 'SIYY')
-NUMDY = Extract_Numeric(GNUDY , 'INST' , 'DY')
-
-NUMSD = Numeric.transpose(Numeric.array([NUMDY[:,1],NUMSY[:,1]]))
-
-print NUMSD
-
-
-
-#
-# EN attendant que Gnuplot soit installe sur la machine
-#
-#graphe = Gnuplot.Gnuplot()
-#Gnuplot.GnuplotOpts.prefer_inline_data=1
-#graphe('set terminal postscript color')
-#graphe('set output "fort.24" ')
-#graphe('set data style lines')
-#graphe('set grid')
-#graphe.plot(Gnuplot.Data(NUMSY,title='SYY point G'))
-#graphe.plot(Gnuplot.Data(NUMDY,title='DY point G'))
-#graphe.plot(Gnuplot.Data(NUMSD,title='SYY fonction de DY point G'))
-
-#===========================================
-# IMPR_RESU FORMAT GMSH
-#===========================================
-
-DEFUFI(IMPRESSION=_F(NOM='POST',
-                     UNITE=55,),);
-
-IMPR_RESU(MODELE=MO,
-          RESU=(
-               _F(FORMAT='GMSH',NOM_CHAM=('DEPL'),
-                  FICHIER='POST',
-                  RESULTAT=RESUNL,),
-               _F(FORMAT='GMSH',NOM_CHAM=('SIEF_ELNO_ELGA'),
-                  FICHIER='POST',
-                  RESULTAT=RESUNL,),
-                   )
-                  );
-
-
-FERMER(UNITE=55)
-
-#os.system('cp fort.55 resu.pos')
-#os.system('gmsh resu.pos')
+                  FICHIER='MED',),);
 
 FIN();
-

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,12 +22,12 @@ DEFI_INTE_SPEC=OPER(nom="DEFI_INTE_SPEC",op= 115,sd_prod=tabl_intsp,
 
          DIMENSION       =SIMP(statut='f',typ='I',defaut= 1 ),
 
-         PAR_FONCTION    =FACT(statut='f',min=1,max='**',
+         PAR_FONCTION    =FACT(statut='f',max='**',
            NUME_ORDRE_I    =SIMP(statut='o',typ='I' ),
            NUME_ORDRE_J    =SIMP(statut='o',typ='I' ),
            FONCTION        =SIMP(statut='o',typ=fonction_c ),
          ),
-         KANAI_TAJIMI    =FACT(statut='f',min=1,max='**',
+         KANAI_TAJIMI    =FACT(statut='f',max='**',
            regles=(EXCLUS('VALE_R','VALE_C'),),
            NUME_ORDRE_I    =SIMP(statut='o',typ='I' ),
            NUME_ORDRE_J    =SIMP(statut='o',typ='I' ),
@@ -42,7 +42,7 @@ DEFI_INTE_SPEC=OPER(nom="DEFI_INTE_SPEC",op= 115,sd_prod=tabl_intsp,
            PROL_DROITE     =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("CONSTANT","LINEAIRE","EXCLU") ),
            PROL_GAUCHE     =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("CONSTANT","LINEAIRE","EXCLU") ),
          ),
-         CONSTANT        =FACT(statut='f',min=1,max='**',
+         CONSTANT        =FACT(statut='f',max='**',
            regles=(EXCLUS('VALE_R','VALE_C'),),
            NUME_ORDRE_I    =SIMP(statut='o',typ='I' ),
            NUME_ORDRE_J    =SIMP(statut='o',typ='I' ),

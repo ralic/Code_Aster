@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ MACR_ASPIC_MAIL=MACRO(nom="MACR_ASPIC_MAIL",op= -16,sd_prod=maillage,reentrant='
                     fr=" ",docu="U4.pc.10-b",
             UIinfo={"groupes":("Outils métier",)},
 
-         EXEC_MAILLAGE   =FACT(statut='o',min=1,max=1,
+         EXEC_MAILLAGE   =FACT(statut='o',
            LOGICIEL        =SIMP(statut='o',typ='TXM',defaut="GIBI2000",into=("GIBI98","GIBI2000")),
            UNITE_DATG      =SIMP(statut='f',typ='I',defaut=70),  
            UNITE_MGIB      =SIMP(statut='f',typ='I',defaut=19),  
@@ -32,7 +32,7 @@ MACR_ASPIC_MAIL=MACRO(nom="MACR_ASPIC_MAIL",op= -16,sd_prod=maillage,reentrant='
 
          RAFF_MAIL       =SIMP(statut='f',typ='TXM',defaut="GROS",into=("GROS","FIN")),
 
-         TUBULURE        =FACT(statut='o',min=1,max=1,
+         TUBULURE        =FACT(statut='o',
            E_BASE          =SIMP(statut='o',typ='R'),  
            DEXT_BASE       =SIMP(statut='o',typ='R'),  
            L_BASE          =SIMP(statut='o',typ='R'),  
@@ -44,19 +44,19 @@ MACR_ASPIC_MAIL=MACRO(nom="MACR_ASPIC_MAIL",op= -16,sd_prod=maillage,reentrant='
            L_PENETR        =SIMP(statut='f',typ='R',defaut= 0.0E+0),  
          ),
 
-         SOUDURE         =FACT(statut='o',min=1,max=1,
+         SOUDURE         =FACT(statut='o',
            H_SOUD          =SIMP(statut='o',typ='R'),  
            ANGL_SOUD       =SIMP(statut='o',typ='R'),  
            JEU_SOUD        =SIMP(statut='o',typ='R'),  
          ),
 
-         CORPS           =FACT(statut='o',min=1,max=1,
+         CORPS           =FACT(statut='o',
            E_CORP          =SIMP(statut='o',typ='R'),  
            DEXT_CORP       =SIMP(statut='o',typ='R'),  
            X_MAX           =SIMP(statut='o',typ='R'),  
          ),
 
-         FISS_SOUDURE    =FACT(statut='f',min=1,max=1,
+         FISS_SOUDURE    =FACT(statut='f',
            TYPE            =SIMP(statut='o',typ='TXM',into=("LONGUE","COURTE")),
            AXIS            =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
            PROFONDEUR      =SIMP(statut='o',typ='R'),  
@@ -75,7 +75,7 @@ MACR_ASPIC_MAIL=MACRO(nom="MACR_ASPIC_MAIL",op= -16,sd_prod=maillage,reentrant='
            NB_COURONNE     =SIMP(statut='f',typ='I'),  
          ),
 
-         IMPRESSION      =FACT(statut='f',min=1,max='**',
+         IMPRESSION      =FACT(statut='f',max='**',
            regles=(PRESENT_PRESENT('FICHIER','UNITE'),),
            FORMAT          =SIMP(statut='f',typ='TXM',defaut="ASTER",into=("ASTER","IDEAS","CASTEM")),
 

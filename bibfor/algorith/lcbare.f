@@ -1,7 +1,7 @@
       SUBROUTINE LCBARE(MATE,OPTION,SU,SIGMA,DSIDEP,VIM,VIP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2002   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,8 +20,6 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C                                                                       
 C                                                                       
 C ======================================================================
-
-
       IMPLICIT NONE   
       INTEGER MATE
       REAL*8 SU(2),SIGMA(2),DSIDEP(2,2),VIM(*),VIP(*)
@@ -43,18 +41,17 @@ C OUT : SIGMA , DSIDEP , VIP
 C I/O : 
 C
 C-----------------------------------------------------------------------
-
       LOGICAL RESI, RIGI, ELAS
-      REAL*8 SUNO,COEF1,COEF2,COEF3,SUNODT,SUNODN,
-     &       SIGMAC,K,LAMBDA,VALRES(3)
+      REAL*8 SUNO,COEF1,COEF2,COEF3,SUNODT,SUNODN
+      REAL*8 SIGMAC,K,LAMBDA,VALRES(3),UMAX,KP
       CHARACTER*2 CODRET(3)
       CHARACTER*8 NOMRES(3)
-                            
+      
 C RECUPERATION DES PARAMETRES PHYSIQUES :
 
       NOMRES(1) = 'GC'
       NOMRES(2) = 'SIGM_C'
-      NOMRES(3) = 'SAUT_C'
+      NOMRES(3) = 'SAUT_C'      
       
       CALL RCVALA ( MATE,'RUPT_FRAG',0,' ',0.D0,3,
      &                 NOMRES,VALRES,CODRET, 'F ' )
@@ -62,7 +59,7 @@ C RECUPERATION DES PARAMETRES PHYSIQUES :
       K      = VALRES(1)      
       SIGMAC = VALRES(2)  
       LAMBDA = VALRES(3)
- 
+
 C OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE :
  
       RESI = (OPTION.EQ.'FULL_MECA') .OR. (OPTION.EQ.'RAPH_MECA')
@@ -70,37 +67,44 @@ C OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE :
      
 C CALCUL DE LA NORME DU SAUT :
         
-      SUNO = SQRT(SU(1)*SU(1) + SU(2)*SU(2))
-      
+      SUNO = SQRT(MAX(0.D0 ,SU(1))*MAX(0.D0,SU(1)) + SU(2)*SU(2))
+                
 C VALEURS INTERMEDIAIRES :      
       
       COEF1 = EXP(- SIGMAC * SUNO / K)
       
       COEF2 =  ( 0.5D0*SIGMAC / (VIM(1)+LAMBDA) )
-     &      * EXP( -SIGMAC * (VIM(1)+LAMBDA)/K ) 
-
-C (VIM(1) + LAMBDA)  EST UN SEUIL VARIABLE QUI S'AJUSTE SUR SUNO 
+     &         * EXP( -SIGMAC * (VIM(1)+LAMBDA)/K ) 
+          
+       KP = SIGMAC/LAMBDA * EXP( -SIGMAC * LAMBDA/K )
+       
+C LE SEUIL VARIABLE LAMBDA + VIM(1) S'AJUSTE SUR SUNO 
 C POUR DECHARGER ELASTIQUEMENT SI SUNO (I.E. LE CHARGEMENT) DIMINUE
 
 C CALCUL DES CONTRAINTES :
 
       IF (RESI) THEN
+      
+        UMAX = LAMBDA + VIM(1)
                       
-        IF ( SUNO .LE. (VIM(1) + LAMBDA) ) THEN        
+        IF ( SUNO .LE. UMAX ) THEN        
           ELAS = .TRUE.
-          SIGMA(1) = 2*COEF2*SU(1)    
+          SIGMA(1) = 2*COEF2*MAX(0.D0,SU(1))  -  KP*MAX(0.D0,-SU(1)) 
           SIGMA(2) = 2*COEF2*SU(2)    
           VIP(1) = VIM(1)
           VIP(2) = 0.D0
+          VIP(3) = VIM(3)
         ELSE 
           ELAS = .FALSE.   
-          SIGMA(1) = SIGMAC * SU(1) * COEF1 / SUNO
-          SIGMA(2) = SIGMAC * SU(2) * COEF1 / SUNO            
+          SIGMA(1) = SIGMAC*MAX(0.D0,SU(1))*COEF1/SUNO
+     &               - KP*MAX(0.D0,-SU(1))
+          SIGMA(2) = SIGMAC*SU(2)*COEF1/SUNO            
           VIP(1) = SUNO - LAMBDA
-          VIP(2) = 1.D0  
+          VIP(2) = 1.D0
+          VIP(3) = 1.D0 - EXP(-(SIGMAC/K)*SUNO)  
         ENDIF
+        
       ENDIF 
-
 
 C CALCUL DES DERIVEES DES CONTRAINTES PAR RAPPORT AU SAUT :
       
@@ -109,26 +113,28 @@ C CALCUL DES DERIVEES DES CONTRAINTES PAR RAPPORT AU SAUT :
         IF (OPTION.EQ.'RIGI_MECA_TANG') ELAS = (NINT(VIM(2)) .EQ. 0)
       
         IF (ELAS) THEN
+        
           DSIDEP(1,1) = 2*COEF2     
           DSIDEP(2,2) = 2*COEF2     
           DSIDEP(1,2) = 0.D0       
-          DSIDEP(2,1) = 0.D0       
-         
-        ELSE
-          SUNODT = SU(1) / SUNO   
+          DSIDEP(2,1) = 0.D0     
+            
+        ELSE                   
+             
+          SUNODT = MAX(0.D0,SU(1)) / SUNO   
           SUNODN = SU(2) / SUNO              
           COEF3  = SIGMAC/K + 1.D0/SUNO
           
-          DSIDEP(1,1) =   SIGMAC*COEF1 * (1-SU(1)*SUNODT*COEF3) / SUNO
-          DSIDEP(1,2) = - SIGMAC*SU(1)*SUNODN*COEF1*COEF3 / SUNO
+          DSIDEP(1,1) =   SIGMAC*COEF1 * 
+     &                    (1-MAX(0.D0,SU(1))*SUNODT*COEF3) / SUNO
+          DSIDEP(1,2) = - SIGMAC*MAX(0.D0,SU(1))*SUNODN*COEF1*COEF3/SUNO
           DSIDEP(2,1) = - SIGMAC*SU(2)*SUNODT*COEF1*COEF3 / SUNO
           DSIDEP(2,2) =   SIGMAC*COEF1 * (1-SU(2)*SUNODN*COEF3) / SUNO
+          
         ENDIF 
         
+        IF (SU(1).LT.0) DSIDEP(1,1) = KP        
+        
       ENDIF
-      
-      
-      
-      
-
+            
       END

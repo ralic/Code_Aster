@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,9 +23,7 @@ INFO_EXEC_ASTER=OPER(nom="INFO_EXEC_ASTER",op=35,sd_prod=table,
                     UIinfo={"groupes":("Gestion du travail",)},
 
          regles=(),
-         LISTE_INFO      =SIMP(statut='o',typ='TXM',max='**',
-                               into=("CPU_RESTANT","CPU",),),
-  
+         LISTE_INFO      =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=2,into=("CPU_RESTANT","CPU",),),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 )  ;

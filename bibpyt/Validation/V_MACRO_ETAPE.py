@@ -1,4 +1,4 @@
-#@ MODIF V_MACRO_ETAPE Validation  DATE 06/01/2003   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF V_MACRO_ETAPE Validation  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,58 +61,38 @@ class MACRO_ETAPE(V_ETAPE.ETAPE):
       if self.state == 'unchanged' :
         return self.valid
       else:
-        valid = 1
-        # on teste les mots cles de la commande
-        for child in self.mc_liste :
-          if not child.isvalid():
-            valid = 0
-            break
-        # on teste les règles de la commande
-        text_erreurs,test_regles = self.verif_regles()
-        if not test_regles :
-          if cr == 'oui' : self.cr.fatal(string.join(("Règle(s) non respectée(s) :", text_erreurs)))
-          valid = 0
+        valid=self.valid_child()
+        valid=valid * self.valid_regles(cr)
+
         if self.reste_val != {}:
           if cr == 'oui' :
             self.cr.fatal("Mots cles inconnus :" + string.join(self.reste_val.keys(),','))
           valid=0
+
         if sd == "non":
            # Dans ce cas, on ne calcule qu'une validite partielle, on ne modifie pas l'état de self
            # on retourne simplement l'indicateur valid
            return valid
-        if hasattr(self,'valid'):
-          old_valid = self.valid
-        else:
-          old_valid = None
-        # on teste, si elle existe, le nom de la sd (sa longueur doit etre <= 8 caractères)
+
         if self.sd != None :
-          # la SD existe déjà : on regarde son nom
-          if self.sd.get_name() != None :
-            if len(self.sd.nom) > 8 :
-              if cr == 'oui' :
-                self.cr.fatal("Le nom de concept %s est trop long (8 caractères maxi)" %self.sd.nom)
-              valid = 0
-          if string.find(self.sd.nom,'sansnom') != -1 :
-              # la SD est 'sansnom' : --> erreur
-              if cr == 'oui' :
-                self.cr.fatal("Pas de nom pour le concept retourné")
-              valid = 0
-          elif string.find(self.sd.nom,'SD_') != -1 :
-              # la SD est 'SD_' cad son nom = son id donc pas de nom donné par utilisateur : --> erreur
-              if cr == 'oui' :
-                self.cr.fatal("Pas de nom pour le concept retourné")
-              valid = 0
+           valid = valid * self.valid_sdnom(cr)
+
+        if self.definition.reentrant == 'n' and self.reuse:
+           # Il ne peut y avoir de concept reutilise avec une MACRO  non reentrante
+           if cr == 'oui' : self.cr.fatal('Macro-commande non reentrante : ne pas utiliser reuse ')
+           valid=0
+
         if valid:
           valid = self.update_sdprod(cr)
+
         # Si la macro comprend des etapes internes, on teste leur validite
         for e in self.etapes:
           if not e.isvalid():
             valid=0
             break
-        self.valid = valid
-        self.state = 'unchanged'
-        if old_valid:
-          if old_valid != self.valid : self.init_modif_up()
+
+        self.set_valid(valid)
+
         return self.valid
 
    def update_sdprod(self,cr='non'):
@@ -181,7 +161,6 @@ class MACRO_ETAPE(V_ETAPE.ETAPE):
         if self.definition.reentrant == 'o':
            if cr == 'oui' : self.cr.fatal('Commande obligatoirement reentrante : specifier reuse=concept')
            valid=0
-           #self.reuse = self.sd
       return valid
 
    def report(self):

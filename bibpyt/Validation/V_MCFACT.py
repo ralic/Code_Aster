@@ -1,4 +1,4 @@
-#@ MODIF V_MCFACT Validation  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF V_MCFACT Validation  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,13 +68,22 @@ class MCFACT(V_MCCOMPO.MCCOMPO):
         if not test_regles :
           if cr == 'oui' : self.cr.fatal(string.join(("Règle(s) non respectée(s) :", text_erreurs)))
           valid = 0
+        #
+        # On verifie les validateurs s'il y en a
+        #
+        if self.definition.validators and not self.definition.validators.verif(self.valeur):
+           if cr == 'oui' :
+              self.cr.fatal(string.join(("Mot-clé : ",self.nom,"devrait avoir ",self.definition.validators.info())))
+           valid=0
+        # fin des validateurs
+        #
         if self.reste_val != {}:
           if cr == 'oui' :
             self.cr.fatal("Mots cles inconnus :" + string.join(self.reste_val.keys(),','))
           valid=0
         self.valid = valid
         self.state = 'unchanged'
-        if old_valid:
-          if old_valid != self.valid : self.init_modif_up()
+        if not old_valid or old_valid != self.valid : 
+           self.init_modif_up()
         return self.valid
 

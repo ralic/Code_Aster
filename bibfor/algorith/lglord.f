@@ -4,7 +4,7 @@ C
       REAL*8      SIG1, SIG2, SIG3
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/03/2002   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

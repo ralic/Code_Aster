@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 30/01/2002   AUTEUR VABHHTS J.PELLET 
+%& MODIF OPTIONS  DATE 22/07/2003   AUTEUR G8BHHXD X.DESROCHES 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,10 +38,8 @@ OPTION__
         PSIGINR  SIEF_R
         PDEPINR  DEPL_R
         PEPSINR  EPSI_R
-        PDLAGDE  DEPL_R
+        PDEPLSE  DEPL_R
         PVECTTH  DEPL_R
-        PDLAGTE  TEMP_R
+        PTEMPSE  TEMP_R
    OUT__
 PGTHETA G ELEM__
-PDGTHET G ELEM__
-

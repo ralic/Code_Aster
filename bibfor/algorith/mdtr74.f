@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 21/07/2003   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,13 +144,15 @@ C     --- RECUPERATION DE LA BASE MODALE ET NOMBRE DE MODES ---
       CALL JEVEUO(MASGEN//'           .&INT','L',LMAT)
       NTERM = ZI(LMAT+14)
       TYPBA2 = TYPBAS
-      IF (TYPBAS.EQ.'MODE_MECA'.AND.NTERM.GT.NBMODE) THEN 
+      IF ((TYPBAS.EQ.'MODE_MECA'.AND.NTERM.GT.NBMODE).OR.
+     +    (TYPBAS.EQ.'MODE_STAT'.AND.NTERM.GT.NBMODE)) THEN 
          TYPBAS = 'BASE_MODA'
       ENDIF           
 
       NBSTOC = NBMODE
 
-      IF (TYPBA2(1:9).EQ.'MODE_MECA') THEN
+      IF ((TYPBA2(1:9).EQ.'MODE_MECA').OR.
+     +    (TYPBA2(1:9).EQ.'MODE_STAT')) THEN
         MATASS = ZK24(JDRIF) (1:8)
         CALL DISMOI('F','NOM_NUME_DDL',MATASS,'MATR_ASSE',IB,NUMDDL,IE)
         CALL DISMOI('F','NB_EQUA',MATASS,'MATR_ASSE',NEQ,K8B,IE)
@@ -271,8 +273,12 @@ C     ... RECUPERATION D'UNE LISTE D'AMORTISSEMENTS REDUITS ...
         ELSE
           CALL WKVECT('&&MDTR74.AMORTI','V V R8',NBMODE,JAMOG)
           DO 80 IM = 1,NBMODE
-            CALL RSADPA(BASEMO,'L',1,'AMOR_REDUIT',IM,0,LAMRE,K8B)
-            ZR(JAMOG+IM-1) = ZR(LAMRE)
+            IF (TYPBA2(1:9).NE.'MODE_STAT') THEN
+              CALL RSADPA(BASEMO,'L',1,'AMOR_REDUIT',IM,0,LAMRE,K8B)
+              ZR(JAMOG+IM-1) = ZR(LAMRE)
+            ELSE
+              ZR(JAMOG+IM-1) = 0.D0 
+            ENDIF                 
    80     CONTINUE
         END IF
         AMOGEN = '        '

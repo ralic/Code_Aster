@@ -1,8 +1,9 @@
-      SUBROUTINE NMFI2D( MATE,OPTION,GEOM,DEPLM,DDEPL,
-     &                   SIGMA,FINT,KTAN,VIM,VIP,COMPOR,TYPMOD)
+      SUBROUTINE NMFI2D( NPG,MATE,OPTION,GEOM,DEPLM,DDEPL,
+     &                   SIGMA,FINT,KTAN,VIM,VIP,COMPOR,TYPMOD,
+     &                   INSTM,INSTP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2002   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,9 +24,9 @@ C
 C ======================================================================
 
       IMPLICIT NONE
-      INTEGER MATE
-      REAL*8  GEOM(2,4),DEPLM(2,4),DDEPL(2,4),
-     &        FINT(8),KTAN(8,8),SIGMA(2),VIM(*),VIP(*)
+      INTEGER MATE,NPG
+      REAL*8  GEOM(2,4),DEPLM(2,4),DDEPL(2,4),INSTM,INSTP
+      REAL*8  FINT(8),KTAN(8,8),SIGMA(2,NPG),VIM(3,NPG),VIP(3,NPG)
       CHARACTER*8  TYPMOD(*)
       CHARACTER*16 OPTION, COMPOR(*)
      
@@ -44,17 +45,21 @@ C       * FORC_NODA      : TRAITE DANS NMFIFI.F
 C
 C SUBROUTINE APPELEE DANS LE TE0201
 C
-C IN  : OPTION,COMPOR,GEOM,DEPLM,DDEPL,VIM
-C OUT : SIGMA,FINT,KTAN, VIP
+C IN  : OPTION,COMPOR,GEOM,DEPLM,DDEPL,VIM,NPG,TYPMOD,MATE
+C OUT : SIGMA,FINT,KTAN,VIP
 C I/O : 
 C
 C-----------------------------------------------------------------------
 
       LOGICAL RESI, RIGI, AXI
-      INTEGER I,J,Q,S, IBID
-      REAL*8  DSIDEP(2,2),B(2,8),RBID,
-     &        SU(2),U(8),AIRE
+      INTEGER I,J,Q,S, IBID,KPG
+      REAL*8 DSIDEP(2,2),B(2,8),RBID
+      REAL*8 SU(2),U(8),AIRE,POIDS(2),SIG(2),VIMOIN(3),VIPLUS(3)
 
+
+      CALL R8INIR(8 , 0.D0, FINT,1)
+      CALL R8INIR(64, 0.D0, KTAN,1)
+      CALL R8INIR(4,  0.D0, SIGMA ,1)
 
       AXI  = TYPMOD(1) .EQ. 'AXIS'
       RESI = OPTION.EQ.'RAPH_MECA' .OR. OPTION.EQ.'FULL_MECA'
@@ -68,7 +73,6 @@ C DEFINITION DU DEPLACEMENT A L'INSTANT A T+
 
 C     U=U-
       CALL R8COPY(8, DEPLM,1, U,1)
-      
 C     SI RESI ALORS U=U+ 
       IF (RESI) CALL R8AXPY(8, 1.D0, DDEPL,1, U,1)
      
@@ -81,60 +85,77 @@ C    L'ELEMENT A L'AXE DE SYMETRIE.
 
       AIRE = SQRT( (GEOM(1,2)-GEOM(1,1))**2 + (GEOM(2,2)-GEOM(2,1))**2 )
       IF (AXI) AIRE = AIRE * (GEOM(1,1)+GEOM(1,2))/2.D0
+       
+      DO 11 KPG=1,NPG
+
+C POIDS DU POINT DE GAUSS COURANT :
+ 
+        POIDS(KPG) = AIRE/2 
         
 C CALCUL DE LA MATRICE B DONNANT LES SAUT PAR ELEMENTS A PARTIR DES 
 C DEPLACEMENTS AUX NOEUDS :  
 C LE CHANGEMENT DE REPERE EST INTEGRE DANS LA MATRICE B (VOIR NMFISA) 
       
-      CALL NMFISA(GEOM,B)
+        CALL NMFISA(GEOM,B,KPG)
         
 C CALCUL DU SAUT DE DEPLACEMENT DANS L'ELEMENT (SU_N,SU_T) = B U :
  
-      CALL R8INIR(2, 0.D0, SU,1)
-      DO 10 J=1,8
-        SU(1) = SU(1) + B(1,J)*U(J)
-        SU(2) = SU(2) + B(2,J)*U(J)
- 10   CONTINUE
- 
-         
+        CALL R8INIR(2, 0.D0, SU,1)
+        DO 10 J=1,8
+          SU(1) = SU(1) + B(1,J)*U(J)
+          SU(2) = SU(2) + B(2,J)*U(J)         
+ 10     CONTINUE
+        
 C CALCUL DE LA CONTRAINTE DANS L'ELEMENT AINSI QUE LA DERIVEE 
 C DE CELLE-CI PAR RAPPORT AU SAUT DE DEPLACEMENT (SIGMA ET DSIDEP) :  
+        VIMOIN(1)=VIM(1,KPG)
+        VIMOIN(2)=VIM(2,KPG)
+        VIMOIN(3)=VIM(3,KPG)
 
-      CALL NMCOMP (2,TYPMOD,MATE,COMPOR,RBID,RBID,RBID,RBID,
-     &             RBID,RBID,RBID,RBID,RBID,RBID,SU,RBID,RBID,
-     &             VIM,OPTION,RBID,RBID,1,RBID,RBID,RBID,
-     &             SIGMA,VIP,DSIDEP,IBID)
-      
-
+        CALL R8INIR(2,  0.D0, SIG ,1)
+        CALL NMCOMP (2,TYPMOD,MATE,COMPOR,RBID,RBID,RBID,RBID,
+     &               RBID,RBID,RBID,RBID,RBID,RBID,SU,RBID,RBID,
+     &               VIMOIN,OPTION,RBID,RBID,1,RBID,RBID,RBID,
+     &               SIG,VIPLUS,DSIDEP,IBID)
+       
+        IF (RESI) THEN               
+          SIGMA(1,KPG)=SIG(1)
+          SIGMA(2,KPG)=SIG(2)
+          VIP(1,KPG)=VIPLUS(1)
+          VIP(2,KPG)=VIPLUS(2)
+          VIP(3,KPG)=VIPLUS(3)          
+        ENDIF
+        
 C CALCUL DES FINT (B_T SIGMA )
 
-      IF (RESI) THEN
+        IF (RESI) THEN
 
-        DO 20 I=1,8
-          FINT(I) = 0.D0
-          DO 40 Q=1,2          
-            FINT(I) = FINT(I) +  AIRE*B(Q,I)*SIGMA(Q)
- 40       CONTINUE
- 20     CONTINUE
+          DO 20 I=1,8
+            DO 40 Q=1,2          
+              FINT(I) = FINT(I) +  POIDS(KPG)*B(Q,I)*SIGMA(Q,KPG)
+ 40         CONTINUE
+ 20       CONTINUE
 
-      ENDIF   
+        ENDIF   
 
 
 C CALCUL DES KTAN = ( B_T  DSIGMA/DSU  B )
 
-      IF (RIGI) THEN
+        IF (RIGI) THEN
 
-        DO 50 I=1,8
-          DO 52 J=1,8
-            KTAN(I,J) = 0
-            DO 60 Q=1,2       
-              DO 62 S=1,2
-                KTAN(I,J) = KTAN(I,J)+ AIRE*B(Q,I)*DSIDEP(Q,S)*B(S,J)
- 62           CONTINUE
- 60         CONTINUE
- 52       CONTINUE
- 50     CONTINUE
+          DO 50 I=1,8
+            DO 52 J=1,8
+              DO 60 Q=1,2       
+                DO 62 S=1,2
+                  KTAN(I,J) = KTAN(I,J)+ 
+     &                        POIDS(KPG)*B(Q,I)*DSIDEP(Q,S)*B(S,J)
+ 62             CONTINUE
+ 60           CONTINUE
+ 52         CONTINUE
+ 50       CONTINUE
  
-      ENDIF 
+        ENDIF 
+
+ 11   CONTINUE 
 
       END

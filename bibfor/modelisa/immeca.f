@@ -4,7 +4,8 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/03/2003   AUTEUR ASSIRE A.ASSIRE 
+C MODIF MODELISA  DATE 06/10/2003   AUTEUR ASSIRE A.ASSIRE 
+C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,7 +97,7 @@ C -----------------
      &              ITETRA, JCOOR, JCXMA, JD2, JNOCA, JNOD2, JNUNOB,
      &              JTBLP, JTBNP, JXCA, JXYZMA, JYCA, JZCA, NBCNX,
      &              NBLIGN, NBNO, NBPARA, NNOMAX, NOE, NOEBE, NUMAIL,
-     &              INOBE0,NBVAL,NBVAL2
+     &              INOBE0,NBVAL,NBVAL2, IRET, IBID
       REAL*8        D2, D2MIN, DX, DY, DZ, RBID, X3DCA(3), XBAR(4)
       REAL*8        X3DCA2(3),AXE(3),XNORM,XNORM2,ZERO,UN,X0(3),X(3)
       REAL*8        XX0(3),XNOXX2,ANG,DIST,RAYON,R8PREM
@@ -104,7 +105,7 @@ C -----------------
       REAL*8        VDIR(6),VCOEFR(2)
       INTEGER       VNDIM(2),ICYL,IFM,NIV
       CHARACTER*8   VDDL(2), NOEUD(2)
-      CHARACTER*8   NNOEC2, K8B, PRESEN(2),K8VIDE
+      CHARACTER*8   NNOEC2, K8B, PRESEN(2),K8VIDE, NOANCR(2), NOGRNA(2)
       COMPLEX*16    CBID
       CHARACTER*3   K3B
       CHARACTER*8   NNOECA, VOISIN(2)
@@ -145,18 +146,55 @@ C ---
 
 C RECUPERATION DES MOTS-CLES
 
+C     TRAITEMENT DU MOT-CLE 'CONE'
       CALL GETVR8 ('CONE','RAYON',1,1,1,RAYON,NBVAL)
       CALL GETVR8 ('CONE','LONGUEUR',1,1,1,LONG,NBVAL2)
-      IF (NBVAL .EQ. 0) then
+      IF (NBVAL .EQ. 0) THEN
         RAYON = ZERO
       ENDIF
-      IF (NBVAL2 .EQ. 0) then
+      IF (NBVAL2 .EQ. 0) THEN
         LONG = ZERO
       ENDIF
       PRESEN(1) = K8VIDE
       PRESEN(2) = K8VIDE
       CALL GETVTX ('CONE','PRESENT',1,1,2,PRESEN,N1)
 
+
+C     TRAITEMENT DU MOT-CLE 'NOEUD_ANCRAGE'
+      NOANCR(1) = K8VIDE
+      NOANCR(2) = K8VIDE
+      CALL GETVTX ('DEFI_CABLE','NOEUD_ANCRAGE',ICABL,1,2,NOANCR,N1)
+
+C     TRAITEMENT DU MOT-CLE 'GROUP_NO_ANCRAGE'      
+      IF (N1.EQ.0) THEN
+         CALL GETVEM(MAILLA,'GROUP_NO','DEFI_CABLE','GROUP_NO_ANCRAGE',
+     +                        ICABL,1,2,NOGRNA(1),IBID)
+C
+         CALL UTNONO(' ',MAILLA,'NOEUD',NOGRNA(1),K8B,IRET)
+         IF ( IRET.EQ.10 ) THEN
+            CALL UTMESS('F','IMMECA',
+     +                  'LE GROUP_NO : '//NOGRNA(1)//'N''EXISTE PAS.')
+         ELSE IF ( IRET.EQ.1 ) THEN
+            CALL UTDEBM('A','IMMECA',
+     +                  'TROP DE NOEUDS DANS LE GROUP_NO')
+            CALL UTIMPK('L','  NOEUD UTILISE: ',1,K8B)
+            CALL UTFINM( )
+         ENDIF
+         NOANCR(1) = K8B
+C
+         CALL UTNONO(' ',MAILLA,'NOEUD',NOGRNA(2),K8B,IRET)
+         IF ( IRET.EQ.10 ) THEN
+            CALL UTMESS('F','IMMECA',
+     +                  'LE GROUP_NO : '//NOGRNA(1)//'N''EXISTE PAS.')
+         ELSE IF ( IRET.EQ.1 ) THEN
+            CALL UTDEBM('A','IMMECA',
+     +                  'TROP DE NOEUDS DANS LE GROUP_NO')
+            CALL UTIMPK('L','  NOEUD UTILISE: ',1,K8B)
+            CALL UTFINM( )
+         ENDIF
+         NOANCR(2) = K8B
+      ENDIF
+      
 C
 C 1.2 DONNEES RELATIVES AU CABLE
 C ---
@@ -214,6 +252,17 @@ C.... CALCUL DE LA LONGUEUR TOTALE DU CABLE
       DO 101 INOCA = 1, (NBNO-1)
 
         NNOECA = ZK8(JNOCA+IDECA+INOCA-1)
+
+C       DANS LE CAS OU LE NOEUD INITIAL CORRESPOND AU NOEUD FINAL DONNE
+C       PAR L'UTILISATEUR ON DOIT INVERSER LES DIRECTIVES 'PRESENT'
+        IF (INOCA.EQ.1) THEN
+          IF (NNOECA.EQ.NOANCR(2)) THEN
+            K8B = PRESEN(2)
+            PRESEN(2) = PRESEN(1)
+            PRESEN(1) = K8B
+          ENDIF
+        ENDIF
+
         X3DCA(1) = ZR(JXCA+IDECA+INOCA-1)
         X3DCA(2) = ZR(JYCA+IDECA+INOCA-1)
         X3DCA(3) = ZR(JZCA+IDECA+INOCA-1)
@@ -228,16 +277,16 @@ C.... CALCUL DE LA LONGUEUR TOTALE DU CABLE
         AXE(3) = (X3DCA2(3) - X3DCA(3))
         XNORM2 = AXE(1)*AXE(1) + AXE(2)*AXE(2) + AXE(3)*AXE(3)
 
-        if (XNORM2 .eq. ZERO) then
-          call UTMESS('F','IMMECA',
+        IF (XNORM2 .EQ. ZERO) THEN
+          CALL UTMESS('F','IMMECA',
      &             'ERREUR : DEUX NOEUDS DU CABLE SONT CONFONDUS '//
      &             'ON NE PEUT PAS DEFINIR LE CYLINDRE.')
-        end if
+        END IF
 
         XNORM = SQRT(XNORM2)
         LONGCA = LONGCA + XNORM
 
-101   CONTINUE
+ 101  CONTINUE
 
       IF (NIV.EQ.2) THEN
         WRITE(IFM,*) '------------------------------------------'
@@ -251,6 +300,7 @@ C.... CALCUL DE LA LONGUEUR TOTALE DU CABLE
         WRITE(IFM,*) '  LONGUEUR DU CABLE : ',LONGCA
         WRITE(IFM,*) ' '
       END IF
+
 
 C
 C 2.2 BOUCLE SUR LE NOMBRE DE NOEUDS DU CABLE
@@ -283,11 +333,11 @@ C
          AXE(3) = (X3DCA2(3) - X3DCA(3))
          XNORM2 = AXE(1)*AXE(1) + AXE(2)*AXE(2) + AXE(3)*AXE(3)
 
-         if (XNORM2 .eq. ZERO) then
-           call UTMESS('F','IMMECA',
+         IF (XNORM2 .EQ. ZERO) THEN
+           CALL UTMESS('F','IMMECA',
      &             'ERREUR : DEUX NOEUDS DU CABLE SONT CONFONDUS '//
      &             'ON NE PEUT PAS DEFINIR LE CYLINDRE.')
-         end if
+         END IF
 
          XNORM = SQRT(XNORM2)
 
@@ -329,7 +379,7 @@ C     ---------------------------------------------------------
 C     CAS 2 : ON ATTACHE UN SEUL NOEUD DU BETON AU NOEUD CABLE
 C     ---------------------------------------------------------
 
-112     CONTINUE
+ 112    CONTINUE
         IF (NIV.EQ.2) THEN
           WRITE(IFM,*) '-> ON ATTACHE LE NOEUD OU LA MAILLE BETON '//
      &             'LA PLUS PROCHE'

@@ -7,7 +7,7 @@
       REAL*8                               A,A2,XL,RAD,ANGS2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/03/99   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -169,8 +169,8 @@ C *********************************************************************
 C
 C     --- RECUPERATION DU COEF_MULT ---
 C
-      CALL TECACH(.FALSE.,.FALSE.,'PCOEFFR',1,ICOER)
-      CALL TECACH(.FALSE.,.FALSE.,'PCOEFFC',1,ICOEC)
+      CALL TECACH('NNN','PCOEFFR',1,ICOER,IRET)
+      CALL TECACH('NNN','PCOEFFC',1,ICOEC,IRET)
 C
       IF ( ICOER .NE. 0 ) THEN
          DO 400 I = 1 , 12

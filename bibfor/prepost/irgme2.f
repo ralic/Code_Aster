@@ -6,7 +6,7 @@
       LOGICAL  IWRI
       CHARACTER*24  CONNEX
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/12/2002   AUTEUR PABHHHH N.TARDIEU 
+C MODIF PREPOST  DATE 16/06/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -101,6 +101,7 @@ C
                    CALL CESEXI('C',JCESD,JCESL,IMAOLD,IPT,ISP,K,IAD)
                    IF (IAD.GT.0) THEN
                      VALE = ZR(JCESV-1+IAD)
+                     IF (ABS(VALE).LE.1.D-99) VALE = 0.D0
                      VAL2(K) = VALE
                      IADMAX=IAD
                    ELSE

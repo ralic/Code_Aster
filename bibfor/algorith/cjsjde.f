@@ -3,7 +3,7 @@
         IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/10/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -224,7 +224,7 @@ C ======================================================================
      >               S, SII, SIIREL, COS3TS, HTS, DETS, 
      >               Q, QII, QIIREL, COS3TQ, HTQ, DETQ )
 
-        CALL CALCQ(NDT,Q,GAMMA,PREF,EPSSIG,QQ)
+        CALL CALCQ(Q,GAMMA,PREF,EPSSIG,QQ)
         CALL LCPRSC(QQ,QQ,TRUC)
         QQII = SQRT(TRUC)
 

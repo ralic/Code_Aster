@@ -1,4 +1,4 @@
-#@ MODIF B_ENTITE Build  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF B_ENTITE Build  DATE 06/10/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,6 +49,99 @@ class ENTITE:
           if o:return o
       return None
 
+   def get_nb_mcs(self):
+      """
+          Cette methode retourne le nombre total de mots cles simples
+          sous l'objet self
+      """
+      nb=0
+      for k,v in self.entites.items():
+        if v.label in ("BLOC","FACT"):
+           nb=nb+v.get_nb_mcs()
+        elif v.label in ("SIMP",):
+           nb=nb+1
+        else: 
+           pass
+      return nb
+
+   def getmfm(self,motfac,nbval):
+      """
+          Cette methode retourne la liste des mots cles simples sous 
+          la commande si motfac == '' ou sous le mot cle facteur motfac
+          ainsi que la liste des types associes aux mots cles simples
+      """
+      mcf=self.get_entite(motfac)
+      lmc=[]
+      lty=[]
+      if (mcf):
+         lmc=mcf.get_mc_simp()
+         lty=mcf.get_ty_mc()
+      else:
+         lmc=self.get_mc_simp()
+         lty=self.get_ty_mc()
+      return (lmc,lty)
+
+   def get_ty_mc(self):
+      """
+          Cette methode retourne la liste des types de concept attendus derriere
+          un mot cle simple 
+          self peut etre une commande ou un mot cle facteur
+      """
+      l=[]
+      for k,v in self.entites.items():
+        if  v.label == 'BLOC' :
+          l=l+v.get_ty_mc()
+        elif v.label == 'SIMP' :
+          l.append(B_utils.Typast(v.type))
+      return l
+
+   def get_mc_simp(self,niv=1):
+      """
+          Cette methode retourne la liste des mots cles simple sous self
+          Ne franchit pas le niveau des MCFACTS
+      """
+      motcles=[]
+      for k,v in self.entites.items():
+          if  v.label == 'BLOC' :
+              motcles=motcles+v.get_mc_simp()
+          elif v.label == 'SIMP' :
+              motcles.append(k)
+          elif v.label == 'FACT' :
+###    on ne veut conserver que les mcsimp de haut niveau
+              if   niv==1 : pass
+###    on veut "eliminer" les mcfacts pour avoir tous les mcsimp
+              elif niv==2 : motcles=motcles+v.get_mc_simp()
+      return motcles
+
+   def get_mc_fact(self):
+      """
+          Cette methode retourne la liste des noms de mots cles facteurs
+          sous self
+      """
+      motcles=[]
+      for k,v in self.entites.items():
+          if  v.label == 'BLOC' :
+              motcles=motcles+v.get_mc_fact()
+          elif v.label == 'SIMP' :
+              pass
+          elif v.label == 'FACT' :
+              motcles.append(k)
+      return motcles
+
+   def get_li_mc_fact(self):
+      """
+          Cette methode retourne la liste des mots cles facteurs sous self
+      """
+      motcles=[]
+      for k,v in self.entites.items():
+          if  v.label == 'BLOC' :
+              motcles=motcles+v.get_li_mc_fact()
+          elif v.label == 'SIMP' :
+              pass
+          elif v.label == 'FACT' :
+              motcles.append(v)
+      return motcles
+
    def getmcfs(self,nom_motfac):
       """ 
           Retourne la liste des mots cles facteurs de nom nom_motfac
@@ -71,120 +164,35 @@ class ENTITE:
            if o:l=l+o
       return l
 
-   def getmnb(self,nomcmd):
+   def getmat(self):
       """
-         Cette methode retourne le nombre de mots cles facteurs
-         de mots cles simples et de descripteurs = simples+facteurs
-         sous la commande self
+      Retourne :
+        le nombre de mots cles facteur sous la commande, y compris en eliminant les blocs
+        la liste de leur noms
+        Attention : les doublons sont elimines
       """
-      nbmcle=0
-      nbfac=0
-      for k,e in self.entites.items():
-        if e.label == 'FACT' :
-          nbfac=nbfac+1
-          nbmcle=nbmcle+self.entites[k].get_nb_mc()
-        elif e.label == 'SIMP' :
-          nbmcle=nbmcle+1
-        else:
-          #XXX Je ne vois pas pourquoi on leve une exception. Si e est un BLOC ???
-          #raise AsException("erreur sur le type d entite")
-          pass
-      return (nbfac,nbmcle,nbfac+nbmcle)
+      if CONTEXT.debug : prbanner("getmat")
+      assert(hasattr(self,'nom')),"self n'a pas d'attribut nom PB"
+      liste_nom=self.get_mc_fact()
+      for child in liste_nom:
+          while liste_nom.count(child)>1 : liste_nom.remove(child)
+      return (liste_nom,)
 
-   def get_nb_mc(self):
+   def getfns(self,nom_motfac):
       """
-          Cette methode retourne le nombre total de mots cles simples
-          sous l'objet self
+         Retourne le nombre max de mots cles simples sous les mots cles facteurs 
+         portant le nom nomfac
+           nom_motfac   : nom du mot cle facteur
+           Retour:
+           nbmcs        : nombre max de mcsimp sous les mcfacts de nom nom_motfac
       """
-      nb=0
-      for k,v in self.entites.items():
-        if v.label in ("BLOC","FACT"):
-           nb=nb+v.get_nb_mc()
-        elif v.label in ("SIMP",):
-           nb=nb+1
-        else: 
-           pass
-      return nb
+      if CONTEXT.debug : prbanner("getfns")
+      assert(hasattr(self,'nom')),"self n'a pas d'attribut nom PB"
+      liste=self.get_li_mc_fact()
+      nbmcs=0
+      for child in liste :
+          if child.nom==nom_motfac:
+             i=len(child.get_mc_simp())
+             if i>nbmcs : nbmcs=i
+      return nbmcs
 
-   def getmfa(self,nomcmd,ifac):
-      """
-          Cette methode retourne le nom du ième mot clé facteur, le nombre
-          de mots cles simples sous ce mot cle facteur et le nombre total
-          d'arguments du mot cle facteur (ne sert pas ici)
-      """
-      if nomcmd != self.nom:
-        raise AsException("le nom de la commande ne correspond pas",
-                            nomcmd,self.nom)
-      n=0
-      for k,v in self.entites.items():
-        if v.label == 'FACT' :
-           n=n+1
-        if n == ifac:
-        # on a trouve le mot cle facteur
-           return(k,v.get_nb_mc(),0)
-      # si on a rien trouve
-      return ('',0,0)
-
-   def getmfm(self,motfac,nbval):
-      """
-          Cette methode retourne la liste des mots cles simples sous 
-          la commande si motfac == '' ou sous le mot cle facteur motfac
-          ainsi que la liste des types associes aux mots cles simples
-      """
-      lmc=[]
-      lty=[]
-      if motfac=='':
-         lmc=self.get_motcles_simples()
-         lty=self.get_ty_mc()
-      #XXX : tres probablement il faudrait chercher le FACT sous les BLOC
-      # en utilisant get_entite. La recherche suivante est restrictive
-      elif self.entites.has_key(motfac):
-         v=self.entites[motfac]
-         lmc=v.get_motcles_simples()
-         lty=v.get_ty_mc()
-      else:
-         raise AsException("GETMFM : le MCFACT ",motfac," n appartient pas a la commande")
-      return (lmc,lty)
-
-   def get_motcles_simples(self):
-      """
-          Retourne la liste des noms des sous entites SIMP en parcourant le niveau BLOC
-          mais sans parcourir les autres objets (FACT,...)
-      """
-      motcles=[]
-      for k,v in self.entites.items():
-          if  v.label == 'BLOC' :
-              motcles=motcles+v.get_motcles_simples()
-          elif v.label == 'SIMP' :
-              motcles.append(k)
-      return motcles
-
-   def get_ty_mc(self):
-      """
-          Cette methode retourne la liste des types de concept attendus derriere
-          un mot cle simple 
-          self peut etre une commande ou un mot cle facteur
-      """
-      l=[]
-      for k,v in self.entites.items():
-        if  v.label == 'BLOC' :
-          l=l+v.get_ty_mc()
-        elif v.label == 'SIMP' :
-          l.append(B_utils.Typast(v.type))
-      return l
-
-   def get_mc(self):
-      """
-          Cette methode retourne la liste des mots cles de la commande
-      """
-      motcles=[]
-      for k,v in self.entites.items():
-          if  v.label == 'BLOC' :
-              motcles.append(k)
-              motcles=motcles+v.get_mc()
-          elif v.label == 'SIMP' :
-              motcles.append(k)
-          elif v.label == 'FACT' :
-              motcles.append(k)
-              motcles=motcles+v.get_mc()
-      return motcles

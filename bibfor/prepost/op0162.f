@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 03/06/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,10 +41,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      APRNO, IDDL, NCMP, NEC, IERD, GD, TABL(8), TAB2(8)
+      INTEGER      ULISOP
       CHARACTER*4  CTYP
       CHARACTER*8  K8B, RESU, MASSE, RIGI, NOMA, VECT, TYPI
       CHARACTER*14 NUME
-      CHARACTER*16 CONCEP, NOMCMD
+      CHARACTER*16 CONCEP, NOMCMD, K16NOM
       CHARACTER*19 FONC
       CHARACTER*24 NPRNO, REFE, VALE, DEEQ, TYPE
       CHARACTER*24 NOMCH1, NOMCH2, KBID, NOMCH0
@@ -68,7 +69,10 @@ C
 C
 C     ----- RECUPERATION UNITE DE MISS ---
       CALL GETVIS(' ','UNITE',1,1,1,IFMIS,NU)
-      CALL ASOPEN ( IFMIS, ' ' )
+      K16NOM = ' '
+      IF ( ULISOP ( IFMIS, K16NOM ) .EQ. 0 )  THEN 
+        CALL ULOPEN ( IFMIS,' ',' ','NEW','O')
+      ENDIF 
 C
 C     ----- RECUPERATION DES MODES -----
       CALL GETVID(' ','MACR_ELEM_DYNA',1,1,1,MAEL,NMM)

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,9 @@
 % ======================================================================
 GENER_MEDIT1
 TYPE_GENE__
-ENTETE__ ELEMENT__ MECA_DIS_T_L     MAILLE__ SEG2     ELREFE__  V_SEG2 NB_GAUSS__ NELGA=FPG2
+
+ENTETE__ ELEMENT__ MECA_DIS_T_L     MAILLE__ SEG2
+   ELREFE__  V_SEG2    GAUSS__  NELGA=FPG2
 
 MODE_LOCAL__
     CABSCUR  = ABSC_R   ELEM__         (ABSC1    ABSC2    )
@@ -68,7 +70,7 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
-    AMOR_MECA           41    IN__   CCADISA  PCADISA  CCAORIE  PCAORIE  MMATUUR  PRIGIEL  CMATERC  PMATERC
+    AMOR_MECA           41    IN__   CCADISA  PCADISA  CCAORIE  PCAORIE  CMATERC  PMATERC  MMATUUR  PRIGIEL
                               OUT__  MMATUUR  PMATUUR
     CHAR_MECA_PESA_R    43    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  CPESANR  PPESANR
                               OUT__  MVECTUR  PVECTUR
@@ -89,8 +91,8 @@ OPTION__
     FULL_MECA           47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
                                      DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CINSTPR  PINSTPR  NIRRAER  PIRRAMR  NIRRAER  PIRRAPR  CMATERC  PMATERC
-                                     ZVARIPG  PVARIMR  DDL_MECA PVITENT  DDL_MECA PVITPLU  NTEMPER  PTEMPMR
-                                     NTEMPER  PTEMPPR
+                                     NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  ZVARIPG  PVARIMR  DDL_MECA PVITENT
+                                     DDL_MECA PVITPLU
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
     MASS_FLUI_STRU      41    IN__   CABSCUR  PABSCUR  CCADISM  PCADISM  CCAORIE  PCAORIE
@@ -101,6 +103,10 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR
     MASS_MECA_DIAG      41    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE
                               OUT__  MMATUUR  PMATUUR
+    MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    MECA_SENS_RAPH      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     M_GAMMA             41    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
                               OUT__  MVECTUR  PVECTUR
     NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR
@@ -108,8 +114,8 @@ OPTION__
     RAPH_MECA           47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
                                      DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CINSTPR  PINSTPR  NIRRAER  PIRRAMR  NIRRAER  PIRRAPR  CMATERC  PMATERC
-                                     ZVARIPG  PVARIMR  DDL_MECA PVITENT  DDL_MECA PVITPLU  NTEMPER  PTEMPMR
-                                     NTEMPER  PTEMPPR
+                                     NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  ZVARIPG  PVARIMR  DDL_MECA PVITENT
+                                     DDL_MECA PVITPLU
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     RIGI_FLUI_STRU      41    IN__   CABSCUR  PABSCUR  CCADISK  PCADISK  CCAORIE  PCAORIE
                               OUT__  MMATUUR  PMATUUR
@@ -124,8 +130,8 @@ OPTION__
     RIGI_MECA_TANG      47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
                                      DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CINSTPR  PINSTPR  NIRRAER  PIRRAMR  NIRRAER  PIRRAPR  CMATERC  PMATERC
-                                     ZVARIPG  PVARIMR  DDL_MECA PVITENT  DDL_MECA PVITPLU  NTEMPER  PTEMPMR
-                                     NTEMPER  PTEMPPR
+                                     NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  ZVARIPG  PVARIMR  DDL_MECA PVITENT
+                                     DDL_MECA PVITPLU
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELGA_DEPL      42    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
                               OUT__  EEFGEGA  PCONTRR

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,7 +39,7 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",op=macr_lign_coupe_ops,sd_prod=macr_
          ),
          MODELE          =SIMP(statut='o',typ=modele ),
          UNITE_MAILLAGE  =SIMP(statut='f',typ='I',defaut=25),  
-         LIGN_COUPE     =FACT(statut='o',min=1,max='**',
+         LIGN_COUPE     =FACT(statut='o',max='**',
            NB_POINTS       =SIMP(statut='o',typ='I'),
            COOR_ORIG       =SIMP(statut='o',typ='R',min=2,max=3),  
            COOR_EXTR       =SIMP(statut='o',typ='R',min=2,max=3),  

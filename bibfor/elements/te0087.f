@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/08/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,8 @@ C
       CALL JEVETE(FF,'L',IFF)
 C
       IF (OPTION(6:9).EQ.'ELNO') THEN
-        IF(NOMTE(5:7).EQ.'TR3' .OR. NOMTE(5:7).EQ.'QU4' ) THEN
+        IF(NOMTE(5:7).EQ.'TR3' .OR. NOMTE(5:7).EQ.'QU4' .OR.
+     &     NOMTE(5:7).EQ.'QS4') THEN
            NNOS   = NNO
            IPOIDS = IFF + NPG1*(1+3*NNO)
            IVF    = IPOIDS+NPG2
@@ -154,7 +155,7 @@ C      --------------------------------------------------
 C
 C ---- RECUPERATION DU CHAMP DE TEMPERATURE SUR L'ELEMENT :
 C      --------------------------------------------------
-      CALL TECACH(.TRUE.,.FALSE.,'PTEMPER',1,ITEMPE)
+      CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
       IF (ITEMPE.NE.0) THEN
         DO 30 I = 1, NNO
           TEMPE(I) = ZR(ITEMPE+I-1)
@@ -163,7 +164,7 @@ C      --------------------------------------------------
 C
 C --- RECUPERATION DE L'HYDRATATION AUX POINTS DE GAUSS DE L'ELEMENT :
 C     -----------------------------------------------------
-      CALL TECACH(.FALSE.,.FALSE.,'PHYDRER',1,IHYDRE)
+      CALL TECACH('NNN','PHYDRER',1,IHYDRE,IRET)
       IF(IHYDRE.NE.0) THEN
       DO 35 I = 1, NPG
          HYDR(I)   = ZR(IHYDRE+I-1)
@@ -173,7 +174,7 @@ C     -----------------------------------------------------
 C
 C --- RECUPERATION DU SECHAGE AUX NOEUDS DE L'ELEMENT :
 C     -----------------------------------------------------
-      CALL TECACH(.FALSE.,.FALSE.,'PSECHER',1,ISECHE)
+      CALL TECACH('NNN','PSECHER',1,ISECHE,IRET)
       IF(ISECHE.NE.0) THEN
       DO 36 I = 1, NNO
          SECH(I)   = ZR(ISECHE+I-1)
@@ -183,14 +184,14 @@ C     -----------------------------------------------------
 C
 C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE :
 C      -------------------------------------------
-      CALL TECACH(.TRUE.,.FALSE.,'PTEREF',1,ITREF)
+      CALL TECACH('ONN','PTEREF',1,ITREF,IRET)
       IF (ITREF.NE.0) THEN
           TREF = ZR(ITREF)
       ENDIF
 C
 C ---- RECUPERATION DE L'INSTANT DE CALCUL :
 C      -----------------------------------
-      CALL TECACH(.TRUE.,.FALSE.,'PTEMPSR',1,ITEMPS)
+      CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
       IF (ITEMPS.NE.0) THEN
           INSTAN = ZR(ITEMPS)
       ENDIF
@@ -198,7 +199,7 @@ C
 C ---- RECUPERATION DU COMPORTEMENT DANS LE CAS DES CONTRAINTES PLANES :
 C      ---------------------------------------------------------------
       IF (MODELI(1:2).EQ.'CP') THEN
-      CALL TECACH(.TRUE.,.FALSE.,'PCOMPOR',1,ICOMPO)
+      CALL TECACH('ONN','PCOMPOR',1,ICOMPO,IRET)
         IF (ICOMPO.NE.0) THEN
           COMPOR = ZK16(ICOMPO)
           IF (COMPOR.NE.'ELAS'.AND.COMPOR.NE.'                ') THEN

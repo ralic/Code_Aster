@@ -1,17 +1,19 @@
-        SUBROUTINE CALCME(OPTION,COMPOR,MECA,INMECA,IMATE,TYPMOD,
-     >                       CRIT,INSTAM, INSTAP, TREF,
-     &                       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,        
-     &                       YAMEC,YAP1,NBPHA1,YAP2,NBPHA2,YATE,
-     &                       ADDEME,ADCOME,ADDETE,
-     &                       DEFGEM,CONGEM,CONGEP,
-     &                       VINTM,VINTP,ADVIME,ADVITH,
-     &                       ADDEP1,ADDEP2,
-     &                       DSDE,
-     &                       DEPS,DEPSV,PHI,P1,P2,T,DT,PHI0,RETCOM
-     &                      )
-C 
+        SUBROUTINE CALCME(OPTION,COMPOR,MECA,IMATE,TYPMOD,
+     +                       CRIT,INSTAM, INSTAP, TREF,
+     +                       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,        
+     +                       YAMEC,YAP1,NBPHA1,YAP2,NBPHA2,YATE,
+     +                       ADDEME,ADCOME,ADDETE,
+     +                       DEFGEM,CONGEM,CONGEP,
+     +                       VINTM,VINTP,ADVIME,ADVITH,
+     +                       ADDEP1,ADDEP2,
+     +                       DSDE,
+     +                       DEPS,DEPSV,PHI,P1,P2,T,DT,PHI0,RETCOM
+     +                      )
+C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/09/2002   AUTEUR UFBHHLL C.CHAVANT 
+C ======================================================================
+C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,29 +51,24 @@ C                                 (RESI_INTE_PAS == ITEDEC )
 C                                 0 = PAS DE REDECOUPAGE
 C                                 N = NOMBRE DE PALIERS
 C                OUT RETCOM
-C
-      IMPLICIT NONE
-      LOGICAL MECTRU
-      INTEGER NDIM,DIMDEF,DIMCON,NVIMEC,NVITH
-      INTEGER ADDEME,ADDETE,ADDEP1,ADDEP2
-      INTEGER ADCOME,ADVIME,ADVITH,IMATE
-      INTEGER YAMEC,YAP1,NBPHA1,YAP2,NBPHA2,YATE
-      CHARACTER*16 OPTION,COMPOR(*),MECA
-      INTEGER INMECA
-      REAL*8 DEFGEM(1:DIMDEF)
-      REAL*8 CONGEM(1:DIMCON),CONGEP(1:DIMCON)
-      REAL*8 VINTM(1:NVIMEC+NVITH),VINTP(1:NVIMEC+NVITH)
-      REAL*8 DSDE(1:DIMCON,1:DIMDEF)
-      CHARACTER*8  TYPMOD(2)
-      INTEGER RETCOM
-C      
-      REAL*8 DEPS(6),DEPSV
-      REAL*8 T,DT,TF,P1,P2
-      INTEGER I,J,NELAS,NRESMA
-      REAL*8 PHI,YOUNG,NU,ALPHA0,PHI0
-      REAL*8          CRIT(*),INSTAM,INSTAP,TREF
-      
-      
+C ======================================================================
+      IMPLICIT      NONE
+      LOGICAL       MECTRU
+      INTEGER       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,ADDEME,ADDETE,ADDEP1
+      INTEGER       ADDEP2,ADCOME,ADVIME,ADVITH,IMATE
+      INTEGER       YAMEC,YAP1,NBPHA1,YAP2,NBPHA2,YATE,RETCOM
+      REAL*8        DEFGEM(1:DIMDEF)
+      REAL*8        CONGEM(1:DIMCON),CONGEP(1:DIMCON)
+      REAL*8        VINTM(1:NVIMEC+NVITH),VINTP(1:NVIMEC+NVITH)
+      REAL*8        DSDE(1:DIMCON,1:DIMDEF)
+      CHARACTER*8   TYPMOD(2)
+      CHARACTER*16  OPTION,COMPOR(*),MECA
+C ======================================================================
+C --- VARIABLES LOCALES ------------------------------------------------
+C ======================================================================
+      INTEGER       I,J,NELAS,NRESMA
+      REAL*8        DEPS(6),DEPSV,T,DT,TF,P1,P2
+      REAL*8        PHI,YOUNG,NU,ALPHA0,PHI0,CRIT(*),INSTAM,INSTAP,TREF
       PARAMETER (NELAS = 4  )
       PARAMETER (NRESMA = 18)
       REAL*8       ELAS(NELAS)
@@ -100,13 +97,10 @@ C
       CHARACTER*8  BGCR1(NNELA),NOMPAR,BGCR2(NSURM),BGCR3(NINIG)
       CHARACTER*8  BGCR7(NSATM)
       CHARACTER*16 COMPLG
-C----------------------------------------------------------------
-        INTEGER NDT,NDI
-        COMMON /TDIM/   NDT  , NDI
-C 
-      INTEGER ELA,CJS,ENLGAT,ESUGAT,ESSGAT,EPSGAT,CAMCLA,LAIGLE
-      LOGICAL PORELA
-
+C ======================================================================
+      INTEGER NDT,NDI
+      COMMON /TDIM/   NDT  , NDI
+C
       DATA NCRA1 / 'E','NU','RHO','ALPHA' /
 C BG
       DATA BGCR1 
@@ -118,49 +112,27 @@ C BG
       DATA BGCR7 /'E_CHAR','E_DECHAR','XN','RF','EV_KB'
      &            ,'EV_XM','D_E_T','ALPHA0','ALPHA1','ALPHA2','ALPHA3'
      &            ,'ALPHA_S','ANG_FRT','COHE','RESI_TRAC'/
-C
-      DATA ELA    /1/
-      DATA CJS    /2/ 
-      DATA ENLGAT /3/
-      DATA ESSGAT /4/     
-      DATA EPSGAT /5/     
-      DATA ESUGAT /6/
-      DATA CAMCLA /7/
-      DATA LAIGLE /8/
-C
-C
-C INITIALISATION VARIABLE PORELA
-C 
-C
-      IF (YAMEC.EQ.1) THEN
-         PORELA = (INMECA.EQ.ELA)    .OR.
-     +            (INMECA.EQ.CJS)    .OR.
-     +            (INMECA.EQ.CAMCLA) .OR.
-     +            (INMECA.EQ.LAIGLE)
-      ELSE
-        PORELA = .FALSE.
-      ENDIF
-      
-C
-C **********************************************************************
-C   RECUPERATION DES DONNEES MATERIAU DANS DEFI_MATERIAU
-C
-      IF (PORELA) THEN
+C ======================================================================
+C --- RECUPERATION DES DONNEES MATERIAU DANS DEFI_MATERIAU -------------
+C ======================================================================
+      IF (  (MECA.EQ.'ELAS')            .OR.
+     +      (MECA.EQ.'CJS')             .OR.
+     +      (MECA.EQ.'CAM_CLAY')        .OR.
+     +      (MECA.EQ.'LAIGLE')          .OR.
+     +      (MECA.EQ.'MAZARS')          .OR.
+     +      (MECA.EQ.'ENDO_ISOT_BETON')      ) THEN
          CALL RCVALA(IMATE,'ELAS',0,' ',0.D0,NELAS,
-     &               NCRA1,ELAS,CODRET,'FM')
-         YOUNG=ELAS(1)
-         NU=ELAS(2)
-         ALPHA0=ELAS(4)
+     +                                           NCRA1,ELAS,CODRET,'FM')
+         YOUNG  = ELAS(1)
+         NU     = ELAS(2)
+         ALPHA0 = ELAS(4)
       ENDIF
-C
-C **********************************************************************
-C
-C  CALCUL DES CONTRAINTES
-C
-C **********************************************************************
-C LOI ELASTIQUE
-C
-      IF (INMECA.EQ.ELA) THEN
+C ======================================================================
+C --- CALCUL DES CONTRAINTES -------------------------------------------
+C ======================================================================
+C --- LOI ELASTIQUE ----------------------------------------------------
+C ======================================================================
+      IF (MECA.EQ.'ELAS') THEN
          IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
      &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
            DO 101 I=1,3
@@ -207,11 +179,11 @@ C
  103        CONTINUE
          ENDIF
       ENDIF
-C **********************************************************************
-C LOI CJS OU LOI DE LAIGLE
-C **********************************************************************
+C ======================================================================
+C --- LOI CJS OU LOI DE LAIGLE -----------------------------------------
+C ======================================================================
       MECTRU = .FALSE.
-      IF (INMECA.EQ.CJS) THEN
+      IF (MECA.EQ.'CJS') THEN
         MECTRU = .TRUE.
         TF = T + DT
         CALL NMCJS(  TYPMOD,  IMATE, COMPOR, CRIT,
@@ -222,7 +194,7 @@ C **********************************************************************
      >                      CONGEP(ADCOME), VINTP, 
      >                      DSDEME)
       ENDIF
-      IF (INMECA.EQ.LAIGLE) THEN
+      IF (MECA.EQ.'LAIGLE') THEN
         COMPLG = 'LAIGLE'
         MECTRU = .TRUE.
         TF = T + DT
@@ -240,10 +212,10 @@ C **********************************************************************
                   DSDE(ADCOME+I-1,ADDEME+NDIM+J-1)=DSDEME(I,J)
  201           CONTINUE
  200        CONTINUE
-C
-C  LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE
-C  PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION)
-C
+C ======================================================================
+C --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
+C --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
+C ======================================================================
             IF (YATE.EQ.1) THEN
                DO 206 I=1,3 
                   DSDE(ADCOME-1+I,ADDETE)=-ALPHA0*
@@ -254,10 +226,10 @@ C
             ENDIF
          ENDIF
       ENDIF
-C **********************************************************************
-C LOI CAM_CLAY
-C **********************************************************************
-      IF (INMECA.EQ.CAMCLA) THEN
+C ======================================================================
+C --- LOI CAM_CLAY -----------------------------------------------------
+C ======================================================================
+      IF (MECA.EQ.'CAM_CLAY') THEN
         TF = T + DT
         CALL NMCCAM(  NDIM, TYPMOD,  IMATE, COMPOR, CRIT,
      &                      INSTAM, INSTAP, 
@@ -273,10 +245,10 @@ C **********************************************************************
             DSDE(ADCOME+I-1,ADDEME+NDIM+J-1)=DSDEME(I,J)
   401     CONTINUE
   402     CONTINUE
-C
-C  LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE
-C  PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION)
-C
+C ======================================================================
+C --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
+C --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
+C ======================================================================
          IF (YATE.EQ.1) THEN
             DO 406 I=1,3 
                   DSDE(ADCOME-1+I,ADDETE)=-ALPHA0*
@@ -287,11 +259,74 @@ C
          ENDIF
         ENDIF
       ENDIF
-C
-C **********************************************************************
-C LOI ELASTIQUE NON LINEAIRE POUR LES SOLS SATURE
-C
-      IF (INMECA.EQ.ENLGAT) THEN
+C ======================================================================
+C --- LOI MAZARS -------------------------------------------------------
+C ======================================================================
+      IF (MECA.EQ.'MAZARS') THEN
+        TF = T + DT
+        CALL LCMAZA(  NDIM, TYPMOD,  IMATE, COMPOR,
+     &                      DEFGEM(ADDEME+NDIM), 
+     >                      DEPS, 
+     >                      VINTM, T, TF, TREF, 
+     >                      OPTION, CONGEP(ADCOME), VINTP, 
+     >                      DSDEME)
+        IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
+     >            (OPTION(1:9).EQ.'FULL_MECA')) THEN
+          DO 502 I = 1 , 2*NDIM
+           DO 501 J = 1 , 2*NDIM
+            DSDE(ADCOME+I-1,ADDEME+NDIM+J-1)=DSDEME(I,J)
+  501     CONTINUE
+  502     CONTINUE
+C ======================================================================
+C --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
+C --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
+C ======================================================================
+         IF (YATE.EQ.1) THEN
+            DO 506 I=1,3 
+                  DSDE(ADCOME-1+I,ADDETE)=-ALPHA0*
+     >            (DSDE(ADCOME-1+I,ADDEME+NDIM-1+1)+
+     >             DSDE(ADCOME-1+I,ADDEME+NDIM-1+2)+
+     >             DSDE(ADCOME-1+I,ADDEME+NDIM-1+3))/3.D0
+ 506        CONTINUE
+         ENDIF
+        ENDIF
+      ENDIF
+C ======================================================================
+C --- LOI ENDO_ISOT_BETON ----------------------------------------------
+C ======================================================================
+      IF (MECA.EQ.'ENDO_ISOT_BETON') THEN
+        TF = T + DT
+        CALL LCLDSB(  NDIM, TYPMOD,  IMATE, COMPOR,
+     &                      DEFGEM(ADDEME+NDIM), 
+     >                      DEPS, 
+     >                      VINTM, T, TF, TREF,
+     >                      OPTION, CONGEP(ADCOME), VINTP, 
+     >                      DSDEME)
+        IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
+     >            (OPTION(1:9).EQ.'FULL_MECA')) THEN
+          DO 602 I = 1 , 2*NDIM
+           DO 601 J = 1 , 2*NDIM
+            DSDE(ADCOME+I-1,ADDEME+NDIM+J-1)=DSDEME(I,J)
+  601     CONTINUE
+  602     CONTINUE
+C ======================================================================
+C --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
+C --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
+C ======================================================================
+         IF (YATE.EQ.1) THEN
+            DO 606 I=1,3 
+                  DSDE(ADCOME-1+I,ADDETE)=-ALPHA0*
+     >            (DSDE(ADCOME-1+I,ADDEME+NDIM-1+1)+
+     >             DSDE(ADCOME-1+I,ADDEME+NDIM-1+2)+
+     >             DSDE(ADCOME-1+I,ADDEME+NDIM-1+3))/3.D0
+ 606        CONTINUE
+         ENDIF
+        ENDIF
+      ENDIF
+C ======================================================================
+C --- LOI ELASTIQUE NON LINEAIRE POUR LES SOLS SATURE ------------------
+C ======================================================================
+      IF (MECA.EQ.'ELAS_THM') THEN
 C
 C  RECUPERATION DES COEFFICIENTS DU MATERIAU PORO_THM_GAT 
 C
@@ -309,7 +344,7 @@ C
 C
 C CALCUL DES MODULES  
 C
-      IF (INMECA.EQ.ENLGAT) THEN
+      IF (MECA.EQ.'ELAS_THM') THEN
        RKB=XKB+BTK*T
        RDKBDT=BTK
        NU=(3.D0*XKB-XKL)/(6.D0*XKB)
@@ -378,11 +413,10 @@ C
  114      CONTINUE
          ENDIF
       ENDIF
-CC
-C **********************************************************************
-C LOI ELASTIQUE NON LINEAIRE POUR LES SOLS SATURE
-C
-        IF (INMECA.EQ.ESSGAT) THEN
+C ======================================================================
+C --- LOI ELASTIQUE NON LINEAIRE POUR LES SOLS SATURE ------------------
+C ======================================================================
+        IF (MECA.EQ.'SURF_ETAT_SATU') THEN
 C
 C  RECUPERATION DES COEFFICIENTS DU MATERIAU SURF_SAT__GAT 
 C
@@ -570,11 +604,10 @@ C
  204      CONTINUE
          ENDIF
         ENDIF
-CC
-C **********************************************************************
-C LOI ELASTIQUE NON LINEAIRE POUR LES SOLS NON SATURE
-C
-        IF (INMECA.EQ.ESUGAT) THEN
+C ======================================================================
+C --- LOI ELASTIQUE NON LINEAIRE POUR LES SOLS NON SATURE --------------
+C ======================================================================
+        IF (MECA.EQ.'SURF_ETAT_NSAT') THEN
 C
 C  RECUPERATION DES COEFFICIENTS DU MATERIAU PORO_THM_NONSAT 
 C
@@ -765,9 +798,10 @@ C
  218      CONTINUE
          ENDIF
         ENDIF
-C **********************************************************************
-C LOI ELASTOPLASTIQUE SATURE THM 
-      IF (INMECA.EQ.EPSGAT) THEN
+C ======================================================================
+C --- LOI ELASTOPLASTIQUE SATURE THM -----------------------------------
+C ======================================================================
+      IF (MECA.EQ.'CAM_CLAY_THM') THEN
        CALL  NMPGAT(OPTION,TYPMOD,IMATE,COMPOR,CRIT,MECA,
      &                       T,DT, TREF,DEPS,PHI0,
      &                       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,        
@@ -777,6 +811,5 @@ C LOI ELASTOPLASTIQUE SATURE THM
      &                       ADDEP1,ADDEP2, 
      &                       DSDE)
        ENDIF
-C
-C **********************************************************************
+C ======================================================================
       END

@@ -1,13 +1,11 @@
-      SUBROUTINE SOLREI(NDT, NDI, GAMP, S, I1N, PARAME, NBMAT, MATER, Q,
-     +                  VECN)
+      SUBROUTINE SOLREI(GAMP, S, I1N, PARAME, NBMAT, MATER, Q, VECN)
 C
       IMPLICIT   NONE
-      INTEGER    NDT, NDI, NBMAT
-      REAL*8     S(*),I1N,PARAME(5),MATER(NBMAT,2),Q(*),VECN(*)
-      REAL*8     GAMP
+      INTEGER    NBMAT
+      REAL*8     S(6),I1N,PARAME(5),MATER(NBMAT,2),Q(6),VECN(6),GAMP
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +37,7 @@ C --- : MATER  : PARAMETRES MATERIAU -----------------------------------
 C OUT : Q      : DERIVEE Q = DG/DSIG -----------------------------------
 C --- : VECN   : VECTEUR N POUR PROJECTION SUR LE DOMAINE --------------
 C ======================================================================
+      INTEGER    NDT, NDI
       REAL*8     ZERO, UN, EPSULT, GAMULT, GAMCJS, PREF, EPSSIG
       REAL*8     BPRIME, B
 C ======================================================================
@@ -48,6 +47,8 @@ C ======================================================================
       PARAMETER       ( UN       =  1.0D0   )
       PARAMETER       ( EPSULT   =  1.0D-03 )
       PARAMETER       ( EPSSIG   =  1.0D-8  )
+C ======================================================================
+      COMMON /TDIM/   NDT , NDI
 C ======================================================================
       CALL JEMARQ ()
 C ======================================================================
@@ -59,7 +60,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE Q ------------------------------------------------------
 C ======================================================================
-      CALL CALCQ(NDT, S, GAMCJS, PREF, EPSSIG, Q)
+      CALL CALCQ(S, GAMCJS, PREF, EPSSIG, Q)
 C ======================================================================
 C --- CALCUL DE N ------------------------------------------------------
 C ======================================================================
@@ -71,9 +72,9 @@ C ======================================================================
 C ======================================================================
 C --- CAS OU GAMP <= GAMULT(1-EPS) -------------------------------------
 C ======================================================================
-         B   = BPRIME(NBMAT, MATER, PARAME, NDT, I1N, S, EPSSIG)
+         B   = BPRIME(NBMAT, MATER, PARAME, I1N, S, EPSSIG)
       ENDIF
-      CALL     CALCN (NDT, NDI, S, B, VECN)
+      CALL     CALCN (S, B, VECN)
 C ======================================================================
       CALL JEDEMA ()
 C ======================================================================

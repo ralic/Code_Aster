@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 22/11/2001   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,7 +67,7 @@ C     --------------------------------------------------
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 
       CALL JEVECH('PMATERC','L',LMATER)
-      CALL TECACH(.TRUE.,.FALSE.,'PTEMPER',1,ITEMPE)
+      CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
       IF (ITEMPE.EQ.0) THEN
         NBPAR = 0
         NOMPAR = ' '

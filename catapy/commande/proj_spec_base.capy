@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ PROJ_SPEC_BASE=OPER(nom="PROJ_SPEC_BASE",op= 146,sd_prod=tabl_intsp,docu="U4.63.
                     fr="Projection d un ou plusieurs spectres de turbulenc sur un ensemble de bases modales ",
       regles=(UN_PARMI('BASE_ELAS_FLUI','MODE_MECA','CHAM_NO'),
               ENSEMBLE('FREQ_INIT','FREQ_FIN','NB_POIN'),),
-         SPEC_TURB       =SIMP(statut='o',typ=spectre,max='**' ),
+         SPEC_TURB       =SIMP(statut='o',typ=spectre,validators=NoRepeat(),max='**' ),
          BASE_ELAS_FLUI  =SIMP(statut='f',typ=melasflu ),
          MODE_MECA       =SIMP(statut='f',typ=mode_meca ),
          CHAM_NO         =SIMP(statut='f',typ=cham_no_depl_r ),

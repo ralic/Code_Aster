@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 30/09/2003   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +17,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 def lire_champ_prod(TYPE_CHAM=None,**args):
+# Remarque : si cette liste évolue, il faut penser à mettre à jour son
+#            homologue dans macr_adap_mail
   if TYPE_CHAM == "NOEU_DBEL_R" : return cham_no_dbel_r
   if TYPE_CHAM == "NOEU_DEPL_C" : return cham_no_depl_c
   if TYPE_CHAM == "NOEU_DEPL_F" : return cham_no_depl_f
@@ -126,16 +128,30 @@ LIRE_CHAMP=OPER(nom="LIRE_CHAMP",op= 192,sd_prod=lire_champ_prod,
          FORMAT          =SIMP(statut='f',typ='TXM',defaut="MED",into=("MED",),),
          UNITE           =SIMP(statut='f',typ='I',defaut= 81,),  
          b_format =BLOC(condition = "FORMAT == 'MED'",
-         regles=(UN_PARMI('NOM_CMP_IDEM','NOM_CMP'),
-          PRESENT_PRESENT('NOM_CMP','NOM_CMP_MED' ),),
+         regles=( UN_PARMI('NOM_CMP_IDEM','NOM_CMP'),
+                  PRESENT_PRESENT('NOM_CMP','NOM_CMP_MED' ),
+                  EXCLUS('NUME_ORDRE','INST'),
+                  EXCLUS('NUME_PT','INST'),),
             NOM_MED      =SIMP(statut='o',typ='TXM', ),
             NOM_CMP_IDEM =SIMP(statut='f',typ='TXM',into=("OUI",), ),
-            NOM_CMP      =SIMP(statut='f',typ='TXM',max='**',),
-            NOM_CMP_MED  =SIMP(statut='f',typ='TXM',max='**',),
-            NUME_ORDRE   =SIMP(statut='f',typ='I',max='**',),
-            NUME_PT      =SIMP(statut='f',typ='I',max='**',),
-            NOM_MAIL_MED = SIMP(statut='f',typ='TXM',),
+            NOM_CMP      =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',),
+            NOM_CMP_MED  =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',),
+            NUME_PT      =SIMP(statut='f',typ='I'  ,validators=NoRepeat(),max='**',),
+            NUME_ORDRE   =SIMP(statut='f',typ='I'  ,validators=NoRepeat(),max='**',
+                           fr="Numero d ordre du champ à lire",ang="Rank of the field to be read" ),
+            INST         =SIMP(statut='f',typ='R',fr="Instant associé",ang="Instant" ),
+#
+            b_precision     =BLOC(condition="(INST != None)",
+              PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3,
+              fr="Précision sur le choix de l'instant associé",ang="Accuracy over instant choice" ),
+              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),
+              fr="Critère de précision sur le choix de l'instant associé",
+              ang="Accuracy criterium over instant choice" ),),
+#
+            NOM_MAIL_MED =SIMP(statut='f',typ='TXM',),
                   ),
+#        Remarque : si cette liste évolue, il faut penser à mettre à jour son
+#                   homologue dans macr_adap_mail
          TYPE_CHAM       =SIMP(statut='o',typ='TXM',
                        into=("NOEU_DBEL_R",  "ELEM_DBEL_R",  "ELNO_DBEL_R",  "ELGA_DBEL_R",
                              "NOEU_DEPL_C",  "ELEM_DEPL_C",  "ELNO_DEPL_C",  "ELGA_DEPL_C",
@@ -162,7 +178,7 @@ LIRE_CHAMP=OPER(nom="LIRE_CHAMP",op= 192,sd_prod=lire_champ_prod,
                              "NOEU_VAR2_R",  "ELEM_VARI_R",  "ELNO_VARI_R",  "ELGA_VARI_R",
                              "NOEU_VNOR_C",  "ELEM_VNOR_C",  "ELNO_VNOR_C",  "ELGA_VNOR_C",
                              "NOEU_IRRA_R",  "ELEM_IRRA_R",  "ELNO_IRRA_R",  "ELGA_IRRA_R",) ),
-         b_modele =BLOC(condition = "TYPE_CHAM[0:2] == 'EL'",
+         b_modele =BLOC(condition = "TYPE_CHAM!=None and TYPE_CHAM[0:2] == 'EL'",
             MODELE      =SIMP(statut='o',typ=modele, ),
                   ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),

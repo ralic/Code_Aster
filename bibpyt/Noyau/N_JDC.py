@@ -1,4 +1,4 @@
-#@ MODIF N_JDC Noyau  DATE 23/10/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF N_JDC Noyau  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -99,6 +99,7 @@ NONE = None
       self.current_context={}
       self.condition_context={}
       self.index_etape_courante=0
+      self.UserError="UserError"
 
    def compile(self):
       """
@@ -182,24 +183,33 @@ NONE = None
         s= traceback.format_exception_only("Erreur de nom",e)[0][:-1]
         message = "erreur de syntaxe,  %s ligne %d" % (s,l[-1][1])
         if CONTEXT.debug :
-          #prbanner(message)
           traceback.print_exc()
         self.cr.exception(message)
         CONTEXT.unset_current_step()
 
+      except self.UserError,exc_val:
+        self.traiter_user_exception(exc_val)
+        CONTEXT.unset_current_step()
+    
       except :
         # erreur inattendue
         # sys_exc_typ,sys_exc_value,sys_exc_frame = sys_exc.info() 
         # (tuple de 3 éléments)
-        if CONTEXT.debug :
-          traceback.print_exc()
-          #prbanner("erreur non prevue et non traitee prevenir \
-          #           la maintenance "+self.nom)
-        l=traceback.format_exception(sys.exc_info()[0],sys.exc_info()[1],
-                                     sys.exc_info()[2])
+        if CONTEXT.debug : traceback.print_exc()
+
+        exc_typ,exc_val,exc_fr=sys.exc_info()
+        l=traceback.format_exception(exc_typ,exc_val,exc_fr)
         self.cr.exception("erreur non prevue et non traitee prevenir la maintenance "+
                            self.nom+'\n'+ string.join(l))
+        del exc_typ,exc_val,exc_fr
         CONTEXT.unset_current_step()
+
+   def traiter_user_exception(self,exc_val):
+       """Cette methode realise un traitement sur les exceptions utilisateur    
+          Par defaut il n'y a pas de traitement. La méthode doit etre 
+          surchargée pour en introduire un.
+       """
+       return 
 
    def register(self,etape):
       """
@@ -243,9 +253,9 @@ NONE = None
                   Dans le cas du JDC, le deuxième cas ne peut pas se produire.
       """
       sd= etape.get_sd_prod()
-      if sd != None and etape.reuse == None:
+      if sd != None and (etape.definition.reentrant == 'n' or etape.reuse is None) :
          # ATTENTION : On ne nomme la SD que dans le cas de non reutilisation 
-         # d un concept
+         # d un concept. Commande non reentrante ou reuse absent.
          self.NommerSdprod(sd,nomsd)
       return sd
 
@@ -257,6 +267,7 @@ NONE = None
           Met le concept créé dans le concept global g_context
       """
       if CONTEXT.debug : print "JDC.NommerSdprod ",sd,sdnom
+
       o=self.sds_dict.get(sdnom,None)
       if isinstance(o,ASSD):
          raise AsException("Nom de concept deja defini : %s" % sdnom)
@@ -308,8 +319,8 @@ NONE = None
             if os.path.exists("fort."+str(unite)):
                file= "fort."+str(unite)
          if file == None :
-            raise AsException("Impossible de trouver le fichier correspondant \
-                               a l unite %s" % unite)
+            raise AsException("Impossible de trouver le fichier correspondant"
+                               " a l unite %s" % unite)
          if not os.path.exists(file):
             raise AsException("%s n'est pas un fichier existant" % unite)
       fproc=open(file,'r')

@@ -1,7 +1,7 @@
       SUBROUTINE TE0096(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 22/07/2003   AUTEUR G8BHHXD X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,8 +38,8 @@ C   ELEMENTS ISOPARAMETRIQUES 2D
 C
 C   OPTION : 'CALC_G'     (G AVEC CHARGES REELLES)
 C            'CALC_G_F'   (G AVEC CHARGES FONCTIONS)
-C            'CALC_DG'    (G + DG AVEC CHARGES REELLES)
-C            'CALC_DG_F'  (G + DG AVEC CHARGES FONCTIONS)
+C            'CALC_DG'    (DG AVEC CHARGES REELLES)
+C            'CALC_DG_F'  (DG AVEC CHARGES FONCTIONS)
 C
 C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
@@ -57,6 +57,7 @@ C     ASTER INFORMATIONS:
 C       11/12/00 (OB): DEPLACEMENT DU TEST DE LA NULLITE DU THETAFISS,
 C                      TOILETTAGE FORTRAN,
 C                      MISE EN PLACE DE LA DERIVEE DE G.
+C      04/07/03 (GN): MISE EN PLACE DU MECANISME DES SENSIBILITES
 C-----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
@@ -82,6 +83,10 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C DECLARATION VARIABLES LOCALES
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'TE0096' )
+C
       CHARACTER*2   CODRET
       CHARACTER*8   NOMPAR(3),TYPMOD(2),ELREFE
       CHARACTER*16  COMPOR(4),OPRUPT,PHENOM
@@ -95,7 +100,7 @@ C DECLARATION VARIABLES LOCALES
       REAL*8   TCLA,TTHE,TFOR,TPLAS,TINI,POIDS,R,RBID
       REAL*8   P,PPG,DPDM(3),RP,ENERGI(2),RHO,OM,OMO
       REAL*8   DTDM(3,5),DER(6),DFDM(3,5),DUDM(3,4)
-      REAL*8   GRADDU(3,4),GRADTH(3,4),DLAGTG,DDLAGT(3),
+      REAL*8   GRADDU(3,4),GRADTH(3,4),TEMSEG,DTEMSG(3),
      &         D2DFDM(3,6),D2EPSI(6,6),D2SIGI(6,6),
      &         DLDFDM(3,3),DLDTDM(3,3),DLEPSI(6,3),DLSIGI(6,3),
      &         TAUX(3,3),DDUDM(3,3),DEPSTA(3,3),DEPS(6),DLF(3,3),
@@ -111,8 +116,8 @@ C DECLARATION VARIABLES LOCALES
       INTEGER  IFORC,IFORF,ITHET,IGTHET,IROTA,IPESA,IER
       INTEGER  NNO,NNOS,NPG,NPG1,NPG2,NPG3,NPG4,NCMP
       INTEGER  I,J,K,KK,L,M,KP,NDIM,COMPT,JIN,JVAL,NBVARI
-      INTEGER  IDLAGD,ITHETA,IJ,IJ1,MATCOD,IDLAGT,IDGTHE,IDFD2E,
-     &         IDFD2K,IDFDEK,NBDIV2,IDEB,IFIN,I1
+      INTEGER  IDEPSE,ITHETA,IJ,IJ1,MATCOD,ITEMSE,IDFD2E,
+     &         IDFD2K,IDFDEK,NBDIV2,IDEB,IFIN,I1,IRET
 
       LOGICAL  GRAND,AXI,CP,FONC,INCR,EPSINI,
      &         TSENUL,DERIVL
@@ -129,6 +134,7 @@ C =====================================================================
       AXI    = .FALSE.
       CP     = .FALSE.
       EPSINI = .FALSE.
+CGN      PRINT *,'................. ',NOMPRO,' .............'
 
 
       IF (NOMTE(3:4).EQ.'AX') THEN
@@ -192,7 +198,6 @@ C INIT. COMPLEMENTAIRES POUR LA DERIVATION DE G
         DTFOR  = 0.D0
         DTPLAS = 0.D0
         DTINI  = 0.D0
-        CALL JEVECH('PDGTHET','E',IDGTHE)
         CALL JEVECH('PVECTTH','L',ITHETA)
       ENDIF
 
@@ -222,15 +227,15 @@ C =====================================================================
 
 C TEST SUR LA LOI DE COMPORTEMENT
 C RECUPERATION DES CHAMPS LOCAUX (CARTE) ASSOCIES AU CALCUL DE LA
-C DERIV.: PVECTTH (THETA SENSIBILITE), PDLAGDE (DERIV. DEPLACEMENT)
-C PDLAGTE (DERIV. TEMPERATURE)
+C DERIV.: PVECTTH (THETA SENSIBILITE), PDEPLSE (DERIV. DEPLACEMENT)
+C PTEMPSE (DERIV. TEMPERATURE)
       IF (DERIVL) THEN
         IF (COMPOR(1)(1:4).NE.'ELAS')
-     &    CALL UTMESS('F','TE0096 '//OPTION,'SEULE UNE LOI DE  '//
+     &    CALL UTMESS('F',NOMPRO//OPTION,'SEULE UNE LOI DE  '//
      &    'COMPORTEMENT ELASTIQUE ISOTROPE EST VALIDE POUR LE '//
      &    'CALCUL DE DG !')
-        CALL JEVECH('PDLAGDE','L',IDLAGD)
-        CALL JEVECH('PDLAGTE','L',IDLAGT)
+        CALL JEVECH('PDEPLSE','L',IDEPSE)
+        CALL JEVECH('PTEMPSE','L',ITEMSE)
 
 C TEST DE LA NULLITE DU THETA SENSIBILITE
         IDEB = ITHETA
@@ -258,12 +263,12 @@ C RECUPERATION DU CHAMP LOCAL (CARTE) ASSOCIE AU EPS INIT
         NOMPAR(2) = 'Y'
         NOMPAR(3) = 'INST'
         VALPAR(3) = ZR(ITEMPS)
-        CALL TECACH(.TRUE.,.FALSE.,'PEPSINF',1,IEPSF)
+        CALL TECACH('ONN','PEPSINF',1,IEPSF,IRET)
         IF (IEPSF.NE.0) EPSINI = .TRUE.
       ELSE
         FONC = .FALSE.
         CALL JEVECH('PFRVOLU','L',IFORC)
-        CALL TECACH(.TRUE.,.FALSE.,'PEPSINR',1,IEPSR)
+        CALL TECACH('ONN','PEPSINR',1,IEPSR,IRET)
         IF (IEPSR.NE.0) EPSINI = .TRUE.
       ENDIF
 
@@ -276,10 +281,10 @@ C LOI DE COMPORTEMENT
         CALL JEVECH('PDEFOPL','L',IEPSP)
         CALL JEVECH('PVARIPR','L',IVARI)
       ENDIF
-      CALL TECACH(.TRUE.,.FALSE.,'PPESANR',1,IPESA)
-      CALL TECACH(.TRUE.,.FALSE.,'PROTATR',1,IROTA)
-      CALL TECACH(.TRUE.,.FALSE.,'PSIGINR',1,ISIGI)
-      CALL TECACH(.TRUE.,.FALSE.,'PDEPINR',1,IDEPI)
+      CALL TECACH('ONN','PPESANR',1,IPESA,IRET)
+      CALL TECACH('ONN','PROTATR',1,IROTA,IRET)
+      CALL TECACH('ONN','PSIGINR',1,ISIGI,IRET)
+      CALL TECACH('ONN','PDEPINR',1,IDEPI,IRET)
 
 C TREF PAR MAILLE ET DEFORMATION INITIALE PAR NOEUD
       TREF  = ZR(ITREF)
@@ -299,14 +304,14 @@ C ON NE PEUT AVOIR SIMULTANEMENT DEFORMATIONS ET CONTRAINTES INIT.
       ENDIF
 
 C FLAG AVEC L'OPTION 'CALC_DG' OU 'CALC_DG_F'
-      IF (DERIVL.AND.INCR)
-     &  CALL UTMESS('F','TE0096 '//OPTION,'LE CALCUL DE DG N''A '//
+      IF (DERIVL.AND.INCR) THEN
+        CALL UTMESS('F',NOMPRO//OPTION,'LE CALCUL DE DG N''A '//
      &  'PAS ETE ETENDU A LA PLASTICITE !')
+      ENDIF
 
 C =====================================================================
 C RECUPERATION DES CHARGES ET DEFORMATIONS INITIALES
 C =====================================================================
-
       IF (FONC) THEN
         DO 50 I=1,NNO
           I1 = I-1
@@ -420,11 +425,11 @@ C INITIALISATIONS
         L   = (KP-1)*NNO
         TG  = 0.D0
         PPG = 0.D0
-        DLAGTG = 0.D0
+        TEMSEG = 0.D0
         DO 220 I=1,3
           TGDM(I) = 0.D0
           DPDM(I) = 0.D0
-          DDLAGT(I) = 0.D0
+          DTEMSG(I) = 0.D0
           DO 200 J=1,3
             SR(I,J) = 0.D0
             DSR(I,J) = 0.D0
@@ -509,26 +514,24 @@ C CALCUL DES DERIVEES SECONDES DES FONCTIONS DE FORMES
           CALL D2GEOM(NDIM,NNO,ZR(IGEOM),KP,ZR(IDFDE),ZR(IDFDK),
      &                ZR(IDFD2E),ZR(IDFD2K),ZR(IDFDEK),DFD2DI)
 
-C CALCULS DE LA DERIVEE LAGRANGIENNE DU DEPLACEMENT (GRADDU(.,4)) ET
-C DE SON GRADIENT (GRADDU),
-C DU THETA SENSIBILITE (GRADTH(.,4)) ET DE SON GRADIENT (GRADTH),
-C DE LA DERIVEE LAGRANGIENNE DE LA TEMPERATURE (DLAGTG) ET
-C DE SON GRADIENT (DDLAGT).
+C . DERIVEE DU DEPLACEMENT (GRADDU(.,4)) ET DE SON GRADIENT (GRADDU),
+C . THETA SENSIBILITE (GRADTH(.,4)) ET DE SON GRADIENT (GRADTH),
+C . DERIVEE DE LA TEMPERATURE (TEMSEG) ET DE SON GRADIENT (DTEMSG).
           DO 323 I=1,NNO
             I1 = I-1
             DER(1) = DFDI(I)
             DER(2) = DFDI(I+NNO)
             DER(4) = ZR(IVF+L+I1)
-            DLAGTG = DLAGTG + ZR(IDLAGT+I1)*DER(4)
+            TEMSEG = TEMSEG + ZR(ITEMSE+I1)*DER(4)
             DO 322 J=1,NDIM
               IJ1 = NDIM*I1+J
               IJ = IJ1 - 1
-              DDLAGT(J) = DDLAGT(J) + ZR(IDLAGT+I1)*DER(J)
+              DTEMSG(J) = DTEMSG(J) + ZR(ITEMSE+I1)*DER(J)
               DO 321 K=1,NDIM
-                GRADDU(J,K) = GRADDU(J,K) + ZR(IDLAGD+IJ)*DER(K)
+                GRADDU(J,K) = GRADDU(J,K) + ZR(IDEPSE+IJ)*DER(K)
                 GRADTH(J,K) = GRADTH(J,K) + ZR(ITHETA+IJ)*DER(K)
 321           CONTINUE
-              GRADDU(J,4) = GRADDU(J,4) + ZR(IDLAGD+IJ)*DER(4)
+              GRADDU(J,4) = GRADDU(J,4) + ZR(IDEPSE+IJ)*DER(4)
               GRADTH(J,4) = GRADTH(J,4) + ZR(ITHETA+IJ)*DER(4)
 322         CONTINUE
 323       CONTINUE
@@ -544,12 +547,12 @@ C LA DERIVEE LAGRANGIENNE DU THETA FISSURE (DTDM(.,5)) EST NULLE,
 C ON CALCULE CELLES DES FORCES VOLUMIQUES (DFDM(.,5)) ET DU TERME
 C AUXILIAIRE TAUX POUR LA DERIVEE LAGRANGIENNE DU GRADIENT DU
 C DEPLACEMENT (DDUDM).
-C ON TRANSFORME GRAD(DL(T)) EN DL(GRAD(T)) (DDLAGT).
+C ON TRANSFORME GRAD(DL(T)) EN DL(GRAD(T)) (DTEMSG).
 
           IF (.NOT.TSENUL) THEN
             DO 502 I=1,NDIM
               DO 501 J=1,NDIM
-                DDLAGT(I) = DDLAGT(I) - TGDM(J)*GRADTH(J,I)
+                DTEMSG(I) = DTEMSG(I) - TGDM(J)*GRADTH(J,I)
 501           CONTINUE
 502         CONTINUE
             DO 353 I=1,NNO
@@ -592,7 +595,7 @@ C =======================================
 C FIN DU IF THETA SENSIBILITE EST NON NUL
 C =======================================
 
-C CALCUL DE LA DERIVEE LAGRANGIENNE DE EPS (DEPS)
+C CALCUL DE LA DERIVEE DE EPS (DEPS)
         DO 328 I=1,NDIM
           DO 327 J=1,NDIM
             DDUDM(I,J) = GRADDU(I,J) - TAUX(I,J)
@@ -614,7 +617,7 @@ C CALCUL DE LA DERIVEE LAGRANGIENNE DE EPS (DEPS)
 
 C TRAITEMENTS PARTICULIERS LIES A LA REPRESENTATION DES TENSEURS
 C (RAC2), A L'INCIDENCE DE L'AXISYMETRIE SUR LES GRADIENTS ET
-C LEURS DERIVEES LAGRANGIENNES.
+C LEURS DERIVEES.
         DEPS(1) = DEPSTA(1,1)
         DEPS(2) = DEPSTA(2,2)
         DEPS(4) = DEPSTA(2,1)*RAC2
@@ -634,7 +637,7 @@ C LEURS DERIVEES LAGRANGIENNES.
      &                  (DFDM(1,4)*GRADTH(1,4)/R))/R
         ENDIF
 
-C CALCUL DE LA DERIVEE LAGRANGIENNE DE LA TRANSFORMATION (EN GRANDES
+C CALCUL DE LA DERIVEE DE LA TRANSFORMATION (EN GRANDES
 C DEFORMATIONS ET/OU AXI) (DLF(I,J))
         IF (GRAND) THEN
           DO 349 I=1,3
@@ -721,7 +724,7 @@ C ===========================================
 C CALCULS COMPLEMENTAIRES 2 POUR DG
 C ===========================================
 
-C CALCUL DES DERIVEES LAGRANGIENNES DE EPSINI (DDEPSI), DE
+C CALCUL DES DERIVEES DE EPSINI (DDEPSI), DE
 C EPS - EPSINI (DEPS) ET DES DERIVEES SECONDES DE EPSINI (D2EPSI)
           IF (DERIVL.AND..NOT.TSENUL) THEN
             DO 432 I=1,NCMP
@@ -755,7 +758,7 @@ C CALCUL DE DL(EPSII,J) (DLEPSI)
 
 C =======================================================
 C CALCUL DES CONTRAINTES, DE L'ENERGIE LIBRE ET DE LEURS
-C DERIVEES LAGRANGIENNE
+C DERIVEES
 C =======================================================
 
         IF (INCR) THEN
@@ -770,14 +773,14 @@ C EN PLASTICITE
         ELSE
 
 C EN ELASTICITE
-C SI DERIVL, CALCUL DE LA DERIVEE LAGRANGIENNE DE SIGMA (DSIGL)
+C SI DERIVL, CALCUL DE LA DERIVEE DE SIGMA (DSIGL)
 C ET DE CELLE DE L'ENERGIE LIBRE (DENERG).
           CRIT(1) = 300
           CRIT(2) = 0.D0
           CRIT(3) = 1.D-3
           CALL NMELNL(NDIM,TYPMOD,MATCOD,COMPOR,CRIT,TG,TREF,
      &                OPRUPT,EPS,SIGL,RBID,RBID,ENERGI,DERIVL,
-     &                DLAGTG,DEPS,DENERG,DSIGL)
+     &                TEMSEG,DEPS,DENERG,DSIGL)
         ENDIF
 
 C =======================================================
@@ -796,7 +799,7 @@ C TRAITEMENTS DEPENDANT DE LA MODELISATION
         ENDIF
 
 C CALCUL DE LA DIVERGENCE DU THETA FISSURE (DIVT), DE SA DERIVEE
-C LAGRANGIENNE ET DE LA DIVERGENCE DU THETA SENSIBILITE (DIVTS)
+C ET DE LA DIVERGENCE DU THETA SENSIBILITE (DIVTS)
         DIVT = 0.D0
         DIVTS = 0.D0
         DLDIVT = 0.D0
@@ -929,26 +932,27 @@ C DOMAINE SI DERIVL
 
 C =======================================================
 C TERME THERMOELASTIQUE CLASSIQUE F.SIG:(GRAD(U).GRAD(THET))-ENER*DIVT
+C REMARQUE : POUR LA DERIVEE, TCLA EST INUTILE.
+C            MAIS ON A BESOIN DE PROD2 SI TSENUL EST FAUX.
 C =======================================================
+        IF ( .NOT.DERIVL .OR. .NOT.TSENUL ) THEN
 
-        PROD  = 0.D0
-        PROD2 = 0.D0
-        DO 490 I=1,3
-          DO 480 J=1,3
-            DO 475 K=1,3
-              DO 470 M=1,3
+          PROD  = 0.D0
+          PROD2 = 0.D0
+          DO 490 I=1,3
+            DO 480 J=1,3
+              DO 475 K=1,3
+                DO 470 M=1,3
                   PROD =PROD+F(I,J)*SR(J,K)*DUDM(I,M)*DTDM(M,K)
-470           CONTINUE
-475         CONTINUE
-480       CONTINUE
-490     CONTINUE
-        PROD2 = POIDS*( PROD - ENERGI(1)*DIVT)
-        TCLA  = TCLA + PROD2
+470             CONTINUE
+475           CONTINUE
+480         CONTINUE
+490       CONTINUE
+          PROD2 = POIDS*( PROD - ENERGI(1)*DIVT)
 
-C ===========================================
-C CALCUL DE LA DERIVEE DU TERME TCLA POUR DG
-C ===========================================
-        IF (DERIVL) THEN
+        ENDIF
+C
+        IF ( DERIVL ) THEN
 C LE TERME DPROD1 CORRESPOND A DL(SIGMAIK*UI,M)*THFM,K
 C LE TERME DPROD2 CORRESPOND A SIGMAIK*UI,M*DL(THFM,K)
 C LE TERME DENERG(1) A DL(ENERGIE LIBRE)
@@ -962,20 +966,30 @@ C LE TERME DENERG(1) A DL(ENERGIE LIBRE)
 
                   DPROD1 = DPROD1 + F(I,J) * DTDM(M,K) *
      &            (DSR(J,K) * DUDM(I,M) + SR(J,K) * DDUDM(I,M))
-                  IF (GRAND)
-     &              DPROD3 = DPROD3 + DLF(I,J) * DTDM(M,K) *
-     &                       SR(J,K) * DUDM(I,M)
-                  IF (.NOT.TSENUL)
-     &              DPROD2 = DPROD2 + F(I,J) * DLDTDM(M,K) *
-     &                       SR(J,K) * DUDM(I,M)
+                  IF ( GRAND ) THEN
+                    DPROD3 = DPROD3
+     &                     + DLF(I,J) * DTDM(M,K) * SR(J,K) * DUDM(I,M)
+                  ENDIF
+                  IF ( .NOT.TSENUL ) THEN
+                    DPROD2 = DPROD2
+     &                     + F(I,J) * DLDTDM(M,K) * SR(J,K) * DUDM(I,M)
+                  ENDIF
 491             CONTINUE
 492           CONTINUE
 493         CONTINUE
 494       CONTINUE
           DTCLA  = DTCLA + POIDS * (DPROD1 - DENERG(1)*DIVT)
-          IF (GRAND) DTCLA = DTCLA + POIDS * DPROD3
-          IF (.NOT.TSENUL) DTCLA = DTCLA +
-     &       (DPROD2 - ENERGI(1)*DLDIVT) * POIDS + PROD2 * DIVTS
+          IF ( GRAND ) THEN
+            DTCLA = DTCLA + POIDS * DPROD3
+          ENDIF
+          IF (.NOT.TSENUL) THEN
+            DTCLA = DTCLA
+     &            + (DPROD2 - ENERGI(1)*DLDIVT) * POIDS + PROD2*DIVTS
+          ENDIF
+C GN REMARQUE : EST-CE NORMAL QUE PROD2*DIVTS NE SOIT PAS
+C               MULTIPLIE PAR LE POIDS, COMME POUR DTINI CI-APRES ?
+        ELSE
+          TCLA  = TCLA + PROD2
         ENDIF
 
 C =======================================================
@@ -988,46 +1002,51 @@ C =======================================================
           PROD = PROD + TGDM(I)*DTDM(I,4)
 500     CONTINUE
         PROD2 = - POIDS*PROD*ENERGI(2)
-        TTHE = TTHE + PROD2
-
-C ===========================================
-C CALCUL DE LA DERIVEE DU TERME TTHE POUR DG
-C ===========================================
-
-        IF (DERIVL) THEN
+C
+        IF ( DERIVL ) THEN
 C LE TERME DPROD1 CORRESPOND A DL(T,I)*THFI
 C LE TERME DPROD2 CORRESPOND A T,I*DL(THFI)
 C LE TERME DENERG(2) A DL(DERIVEE EN T DE L'ENERGIE LIBRE)
           DPROD1 = 0.D0
           DPROD2 = 0.D0
           DO 503 I=1,NDIM
-            DPROD1 = DPROD1 + DDLAGT(I)*DTDM(I,4)
-            IF (.NOT.TSENUL) DPROD2 = DPROD2 + TGDM(I)*DTDM(I,5)
+            DPROD1 = DPROD1 + DTEMSG(I)*DTDM(I,4)
+            IF (.NOT.TSENUL) THEN
+              DPROD2 = DPROD2 + TGDM(I)*DTDM(I,5)
+            ENDIF
 503       CONTINUE
           DTTHE = DTTHE - POIDS*(DPROD1*ENERGI(2)+PROD*DENERG(2))
-          IF (.NOT.TSENUL) DTTHE = DTTHE - POIDS*DPROD2*ENERGI(2) +
-     &                             PROD2 * DIVTS
+          IF (.NOT.TSENUL) THEN
+             DTTHE = DTTHE
+     >             - POIDS*DPROD2*ENERGI(2) + PROD2*DIVTS
+          ENDIF
+C GN REMARQUE : EST-CE NORMAL QUE PROD2*DIVTS NE SOIT PAS
+C               MULTIPLIE PAR LE POIDS, COMME POUR DTINI CI-APRES ?
+        ELSE
+          TTHE = TTHE + PROD2
         ENDIF
 
 C =======================================================
 C TERME FORCE VOLUMIQUE
+C REMARQUE : POUR LA DERIVEE, TFOR EST INUTILE.
+C            MAIS ON A BESOIN DE PROD2 SI TSENUL EST FAUX.
 C =======================================================
+C
+        IF ( .NOT.DERIVL .OR. .NOT.TSENUL ) THEN
 
-        PROD2 = 0.D0
-        DO 520 I=1,NDIM
-          PROD=0.D0
-          DO 510 J=1,NDIM
-            PROD = PROD + DFDM(I,J)*DTDM(J,4)
-510       CONTINUE
-          PROD2 = PROD2 + DUDM(I,4)*(PROD+DFDM(I,4)*DIVT)*POIDS
-520     CONTINUE
-        TFOR = TFOR + PROD2
-
-C ===========================================
-C CALCUL DE LA DERIVEE DU TERME TFOR POUR DG
-C ===========================================
-
-        IF (DERIVL) THEN
+          PROD2 = 0.D0
+          DO 520 I=1,NDIM
+            PROD=0.D0
+            DO 510 J=1,NDIM
+              PROD = PROD + DFDM(I,J)*DTDM(J,4)
+510         CONTINUE
+            PROD2 = PROD2 + DUDM(I,4)*(PROD+DFDM(I,4)*DIVT)*POIDS
+520       CONTINUE
+C
+        ENDIF
+C
+        IF ( DERIVL ) THEN
+C
 C LE TERME DPROD1 CORRESPOND A DL(UI)*(FI,J*THFJ + FI*DIV(THF))
 C LE TERME DPROD2 A UI*(DL(FI,J)*THFJ+DL(FI)*DIV(THF))
 C LE TERME DPROD3 A UI*(FI,J*DL(THFJ) + FI*DL(DIV(THF)))
@@ -1049,48 +1068,61 @@ C LE TERME DPROD3 A UI*(FI,J*DL(THFJ) + FI*DL(DIV(THF)))
 516         CONTINUE
 517       CONTINUE
           DTFOR = DTFOR + DPROD1*POIDS
-          IF (.NOT.TSENUL) DTFOR = DTFOR + (DPROD2+DPROD3)*POIDS +
-     &                             PROD2*DIVTS
+          IF (.NOT.TSENUL) THEN
+            DTFOR = DTFOR
+     >            + (DPROD2+DPROD3)*POIDS + PROD2*DIVTS
+          ENDIF
+C GN REMARQUE : EST-CE NORMAL QUE PROD2*DIVTS NE SOIT PAS
+C               MULTIPLIE PAR LE POIDS, COMME POUR DTINI CI-APRES ?
+        ELSE
+          TFOR = TFOR + PROD2
         ENDIF
 
 C =======================================================
 C TERME PLASTIQUE :   SIG:(GRAD(EPSP).THETA)- R(P).GRAD(P).THETA
 C =======================================================
+C
+        IF ( .NOT.DERIVL ) THEN
 
-        IF (INCR) THEN
-          PROD1=0.D0
-          PROD2=0.D0
-          DO 620 I=1,NCMP
-            DO 610 J=1,NDIM
+          IF (INCR) THEN
+            PROD1=0.D0
+            PROD2=0.D0
+            DO 620 I=1,NCMP
+              DO 610 J=1,NDIM
                 PROD1 = PROD1 + SIGL(I)*DEPSP(I,J)*DTDM(J,4)
-610         CONTINUE
-620       CONTINUE
-          DO 650 I=1,NDIM
-            PROD2 = PROD2 + RP*DPDM(I)*DTDM(I,4)
-650       CONTINUE
-          TPLAS = TPLAS + (PROD1-PROD2)*POIDS
+610           CONTINUE
+620         CONTINUE
+            DO 650 I=1,NDIM
+              PROD2 = PROD2 + RP*DPDM(I)*DTDM(I,4)
+650         CONTINUE
+            TPLAS = TPLAS + (PROD1-PROD2)*POIDS
+          ENDIF
+
         ENDIF
 
 C =======================================================
 C TERME INITIAL:  SIG:GRAD(EPSIN).THETA-(EPS-EPSIN):GRAD(SIGIN).THETA
+C REMARQUE : POUR LA DERIVEE, TINI EST INUTILE.
+C            MAIS ON A BESOIN DE PROD1 ET PROD2 SI TSENUL EST FAUX.
 C =======================================================
-
+C
         IF ((ISIGI.NE.0).OR.(IDEPI.NE.0).OR.EPSINI) THEN
-          PROD1=0.D0
-          PROD2=0.D0
-          DO 670 I=1,NCMP
-            DO 660 J=1,NDIM
+C
+          IF ( .NOT.DERIVL .OR. .NOT.TSENUL ) THEN
+
+            PROD1=0.D0
+            PROD2=0.D0
+            DO 670 I=1,NCMP
+              DO 660 J=1,NDIM
               PROD1=PROD1+(SIGL(I)-0.5D0*SIGIN(I))*DEPSIN(I,J)*DTDM(J,4)
               PROD2=PROD2+(EPS(I) +0.5D0*EPSIN(I))*DSIGIN(I,J)*DTDM(J,4)
-660         CONTINUE
-670       CONTINUE
-          TINI = TINI + (PROD1-PROD2)*POIDS
-
-C ===========================================
-C CALCUL DE LA DERIVEE DU TERME DTINI POUR DG
-C ===========================================
-
-          IF (DERIVL) THEN
+660           CONTINUE
+670         CONTINUE
+C
+          ENDIF
+C
+          IF ( DERIVL ) THEN
+C
 C DPROD1 = THETAFJ*EPSINII,J*(DL(SIGI)-0.5D0DL(SIGINI))
 C DPROD2 = THETAFJ*SIGINII,J*(DL(EPSI)-0.5D0DL(EPSINI))
 C DPROD3 = THETAFJ * DL(EPSINII)*(DL(SIGI)-0.5D0DL(SIGINI)) -
@@ -1118,9 +1150,14 @@ C          DL(THETAFJ) * SIGINII*(DL(EPSI)-0.5D0DL(EPSINI))
 672           CONTINUE
 673         CONTINUE
             DTINI = DTINI + (DPROD1-DPROD2)*POIDS
-            IF (.NOT.TSENUL) DTINI = DTINI + DPROD3*POIDS +
-     &                               (PROD1-PROD2)*POIDS*DIVTS
+            IF ( .NOT.TSENUL ) THEN
+               DTINI = DTINI
+     >               + ( DPROD3 + (PROD1-PROD2)*DIVTS ) *POIDS
+            ENDIF
+          ELSE
+            TINI = TINI + (PROD1-PROD2)*POIDS
           ENDIF
+C
         ENDIF
 
 C ==================================================================
@@ -1131,11 +1168,12 @@ C ==================================================================
 C EXIT EN CAS DE THETA FISSURE NUL PARTOUT
 9999  CONTINUE
 
-C ASSEMBLAGE FINAL DES TERMES DE G
-       ZR(IGTHET) = TTHE+TCLA+TFOR+TPLAS+TINI
-
-C ASSEMBLAGE FINAL DES TERMES DE DLAG(G)
-       IF (DERIVL) ZR(IDGTHE) = DTTHE+DTCLA+DTFOR+DTPLAS+DTINI
+C ASSEMBLAGE FINAL DES TERMES DE G OU DG
+      IF ( DERIVL ) THEN
+        ZR(IGTHET) = DTTHE + DTCLA + DTFOR + DTPLAS + DTINI
+      ELSE
+        ZR(IGTHET) = TTHE  + TCLA  + TFOR  + TPLAS  + TINI
+      ENDIF
 
       CALL JEDEMA()
       END

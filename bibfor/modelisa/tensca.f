@@ -1,9 +1,9 @@
       SUBROUTINE TENSCA(TABLCA,ICABL,NBNOCA,NBF0,F0,DELTA,RELAX,RJ,
-     &                  XFLU,XRET,EA,RH1000,MU0,SY,FRCO,FRLI,SA)
+     &                  XFLU,XRET,EA,RH1000,MU0,FPRG,FRCO,FRLI,SA)
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/10/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 16/09/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C                    VALEUR DE LA RELAXATION A 1000 HEURES EN %
 C  IN     : MU0    : REAL*8 , SCALAIRE
 C                    VALEUR DU COEFFICIENT DE RELAXATION DE L'ACIER
 C                    PRECONTRAINT
-C  IN     : SY     : REAL*8 , SCALAIRE
+C  IN     : FPRG     : REAL*8 , SCALAIRE
 C                    VALEUR DE LA CONTRAINTE LIMITE ELASTIQUE DE L'ACIER
 C  IN     : FRCO   : REAL*8 , SCALAIRE
 C                    VALEUR DU COEFFICIENT DE FROTTEMENT EN COURBE
@@ -97,7 +97,7 @@ C ARGUMENTS
 C ---------
       CHARACTER*19  TABLCA
       INTEGER       ICABL, NBNOCA(*), NBF0
-      REAL*8        F0, DELTA, RJ, XFLU, XRET, EA, RH1000, MU0, SY,
+      REAL*8        F0, DELTA, RJ, XFLU, XRET, EA, RH1000, MU0, FPRG,
      &              FRCO, FRLI, SA
       LOGICAL       RELAX
 C
@@ -186,7 +186,7 @@ C --- RELAXATION DE L'ACIER
 C
       IF ( RELAX ) THEN
          KRELAX = RJ * 5.0D-02 * RH1000
-         FLIM = SY * SA
+         FLIM = FPRG * SA
          DO 40 INO = 1, NBNO
             ZR(JF+INO-1) = ZR(JF+INO-1)
      &                   * ( 1.0D0 - KRELAX * (ZR(JF+INO-1)/FLIM-MU0) )

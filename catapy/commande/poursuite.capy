@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,6 +20,9 @@ POURSUITE=MACRO(nom="POURSUITE",op=ops.build_poursuite,repetable='n',fr="Poursui
                 docu="U4.11.03-g",sd_prod = ops.POURSUITE,
             UIinfo={"groupes":("Gestion du travail",)},
                 op_init = ops.POURSUITE_context,fichier_ini = 1,
+         HDF             =FACT(statut='f',min=1,max=1,
+           FICHIER         =SIMP(fr="nom du fichier hdf associe",statut='o',typ='TXM'),
+         ),
          PAR_LOT         =SIMP(fr="mode de traitement des commandes",statut='f',typ='TXM',
                            into=("OUI","NON"),defaut="OUI"),
          BASE            =FACT(fr="définition des parmètres associés aux bases JEVEUX",

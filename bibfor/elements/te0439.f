@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/06/2002   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 11/08/2003   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,8 +62,10 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C     ------------------------------------------------------------------
-      PARAMETER         ( NNOMAX = 27 , NEQMAX = 6 )
+      PARAMETER         ( NNOMAX = 27 , NEQMAX = 6 , NPGMAX = 27 )
+      INTEGER            NNO, NPG, NNOS
       REAL*8             EQNO(NEQMAX*NNOMAX), SIGMA(6), DEFORM(6)
+      REAL*8             EQPG(NEQMAX*NPGMAX)
       CHARACTER*8        ELREFE
       CHARACTER*24       CARAC
 C     ------------------------------------------------------------------
@@ -78,7 +80,20 @@ C     ------------------------------------------------------------------
       CARAC = '&INEL.'//ELREFE//'.CARAC'
       CALL JEVETE ( CARAC, 'L', ICARAC )
       NNO = ZI(ICARAC)
-
+      NPG  = ZI(ICARAC+3)
+C
+      IF (NOMTE(5:8).EQ.'TR3 ') THEN
+        NNOS = NNO
+      ELSE IF (NOMTE(5:8).EQ.'QU4 ') THEN
+        NNOS = NNO
+      ELSE IF (NOMTE(5:8).EQ.'TR6 ') THEN
+        NNOS = 3
+      ELSE IF (NOMTE(5:8).EQ.'QS8 ') THEN
+        NNOS = 4
+      ELSE IF (NOMTE(5:8).EQ.'QU8 ' .OR. NOMTE(5:8).EQ.'QU9 ') THEN
+        NNOS = 4
+      END IF
+C
       DO 10 I  = 1,NCEQ*NNO
           EQNO(I) = 0.0D0
  10   CONTINUE
@@ -109,28 +124,35 @@ C     -----------------------------------
          CALL JEVECH ( 'PCONTRR', 'L', ICONT  )
          CALL JEVECH ( 'PCONTEQ', 'E', IEQUIF )
 
-         DO 200 INO = 1,NNO
-            IDCP = (INO-1) * NCEQ
+         DO 303 KP = 1,NPG
+            IDCP = (KP-1) * NCEQ
             DO 202 I = 1,4
-               SIGMA(I) = ZR(ICONT+(INO-1)*5+I-1)
+               SIGMA(I) = ZR(ICONT+(KP-1)*5+I-1)
  202        CONTINUE
             SIGMA(5) = 0.D0
             SIGMA(6) = 0.D0
-            CALL FGEQUI ( SIGMA, 'SIGM', 2, EQNO(IDCP+1) )
- 200     CONTINUE
-
+            CALL FGEQUI ( SIGMA, 'SIGM', 2, EQPG(IDCP+1) )
+ 303     CONTINUE
+C
+C -      EXTRAPOLATION AUX NOEUDS :
+C
+         CALL PPGANO(NNOS,NPG,NCEQ,EQPG,ZR(IEQUIF))
+C
        ELSE
          CALL UTMESS('F','TE0439','OPTION INCONNUE : '//OPTION)
-
+C
       ENDIF
-
+C
+C
 C -   STOCKAGE :
 C     --------
 
-      DO 300 INO = 1,NNO
-         DO 310 J   = 1,NCEQ
-            ZR(IEQUIF-1+(INO-1)*NCEQ+J) = EQNO((INO-1)*NCEQ+J)
- 310     CONTINUE
- 300  CONTINUE
-
+      IF ( OPTION(11:14) .NE. 'SIGM' )  THEN
+        DO 300 INO = 1,NNO
+           DO 310 J   = 1,NCEQ
+              ZR(IEQUIF-1+(INO-1)*NCEQ+J) = EQNO((INO-1)*NCEQ+J)
+ 310       CONTINUE
+ 300    CONTINUE
+      ENDIF
+      
       END

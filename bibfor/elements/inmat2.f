@@ -1,6 +1,6 @@
       SUBROUTINE INMAT2(NDIM,NNO,NNOS,NBFPG,ELREFE,X,NBPG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/10/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/08/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -222,7 +222,8 @@ C     ------------------------------------------------------------------
       ELSE IF (ELREFE.EQ.'QUAD4' .OR. ELREFE.EQ.'QUA8D' .OR.
      &         ELREFE.EQ.'QUAD4L' .OR. ELREFE.EQ.'QUAD8' .OR.
      &         ELREFE.EQ.'QUAS8' .OR. ELREFE.EQ.'QUAI4' .OR.
-     &         ELREFE.EQ.'QUAI8' .OR. ELREFE.EQ.'QUAD9') THEN
+     &         ELREFE.EQ.'QUAI8' .OR. ELREFE.EQ.'QUAD9' .OR.
+     &         ELREFE.EQ.'QUAS4') THEN
 
         NBPG1 = NBPG(1)
         DIMB = NNOS*NBPG1 + 2
@@ -297,6 +298,23 @@ C     RECUPERATION DU POINTEUR IFFT
               ZR(JMATSI+L+KP-1) = ZR(JN+LN+I-1)
   130       CONTINUE
   140     CONTINUE
+        END IF
+
+
+        IF (ELREFE.EQ.'QUAS4') THEN
+          CALL WKVECT('&&INIMAT.M','V V R',NNOS*NNOS,JM)
+          CALL WKVECT('&&INIMAT.N','V V R',NNOS*NBPG1,JN)
+
+C     RECUPERATION DU POINTEUR IFFT
+          CALL JEVEUO('&&JNI099.FFT','L',IFFT)
+
+          DO 141 I = 1,NNOS
+            L = (I-1)*NBPG1
+            DO 131 KP = 1,NBPG1
+              LN = (KP-1)*NNOS
+              ZR(JMATSI+L+KP-1) = 1.D0
+  131       CONTINUE
+  141     CONTINUE
         END IF
 
         CALL JEDETR('&&INIMAT.M')

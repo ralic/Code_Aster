@@ -1,5 +1,5 @@
       SUBROUTINE TE0039(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 20/03/2002   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -275,8 +275,7 @@ C                    PMPB = ABS(N/S) + SQRT(MY**2+MZ**2)*R/I
           DO 40 IN = 1,NEQ
             FS(IN) = ZR(ICONTG+IN-1)
    40     CONTINUE
-          CALL TECACH(.FALSE.,.FALSE.,'PCAORIR',1,IREPE)
-
+          CALL TECACH('NNN','PCAORIR',1,IREPE,IRET)
         ELSE IF (OPTION.EQ.'FORC_NODA') THEN
           CALL JEVECH('PCONTMR','L',ICONTG)
           CALL JEVECH('PVECTUR','E',IVECTU)
@@ -290,7 +289,6 @@ C                    PMPB = ABS(N/S) + SQRT(MY**2+MZ**2)*R/I
               FS(IN+NC) = ZR(ICONTG+IN+NC-1)
    60       CONTINUE
           END IF
-
         ELSE IF (OPTION.EQ.'CHAR_MECA_EPSI_R') THEN
 
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
@@ -374,7 +372,6 @@ C     --- SECTION FINALE ---
               FS(11) = E*XIY2*XKY
               FS(12) = E*XIZ2*XKZ
             END IF
-
             FS(1) = -FS(1)
             FS(2) = -FS(2)
             FS(3) = -FS(3)
@@ -395,7 +392,6 @@ C           --- RECUPERATION DES COORDONNEES DES NOEUDS
      &                    'NOEUDS CONFONDUS POUR UN ELEMENT: '//
      &                    CH16(:8))
             END IF
-
             CALL JEVECH('PCAARPO','L',LRCOU)
             RAD = ZR(LRCOU)
             ANGARC = ZR(LRCOU+1)
@@ -444,14 +440,12 @@ C        --- CALCUL DES FORCES INDUITES
   100         CONTINUE
   110       CONTINUE
           END IF
-
         ELSE
           CH16 = OPTION
           CI16 = NOMTE
           CALL UTMESS('F','ELEMENT  "'//CI16//'"  (TE0039)',
      &                'L''OPTION "'//CH16//'" EST INCONNUE')
         END IF
-
 C        --- RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA
         CALL JEVECH('PCAORIE','L',LORIEN)
 
@@ -501,5 +495,4 @@ C           --- RECUPERATION DES COORDONNEES DES NOEUDS
         END IF
       END IF
       CALL JEDEMA()
-
       END

@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
 C                          COQUE 1D
 C                          OPTION : 'RIGI_MECA      '
@@ -104,7 +104,7 @@ C===============================================================
 C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 
 C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-      CALL TECAC2 ( 'NNN', 'PTEMPER', 8, ITAB ,IRET)
+      CALL TECACH ( 'NNN', 'PTEMPER', 8, ITAB ,IRET)
       ITEMP=ITAB(1)
       IF (ITEMP.NE.0) THEN
         NBPAR = 1
@@ -126,7 +126,7 @@ C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
       ELSE
 
 C     -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS':
-      CALL TECACH(.FALSE.,.FALSE.,'PTEMPEF',1,ITEMP)
+      CALL TECACH('NNN','PTEMPEF',1,ITEMP,IRET)
         IF (ITEMP.GT.0) THEN
           CALL UTMESS('A','TE0221',' LORSQU''IL Y A VARIATION '//
      &    'DE TEMPERATURE DANS L''EPAISSEUR, UTILISER "STAT_NON_LINE"')

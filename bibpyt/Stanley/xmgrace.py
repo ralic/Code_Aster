@@ -1,4 +1,4 @@
-#@ MODIF xmgrace Stanley  DATE 21/01/2003   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF xmgrace Stanley  DATE 06/10/2003   AUTEUR JMBHH01 J.M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,20 +20,20 @@
 #                       TERMINAL GRAPHIQUE XMGRACE
 # =========================================================================
 
-import os, string
+import os, string, glob
 from popen2 import Popen3
 import env
+from time import sleep
 
+TERMINAL = 0    # terminal actif ou non (au plus un terminal en meme temps)
 
-TERMINAL = 0      # terminal actif ou non (au plus un terminal en meme temps)
-  
   
 class Xmgr :
 
   DEJA_ACTIF = 'Terminal xmgrace deja actif'
   
 
-  def __init__(self, gr_max = 10) :
+  def __init__(self, gr_max = 10, options=None) :
   
   
 #  Declaration
@@ -44,11 +44,11 @@ class Xmgr :
     
 #  Initialisation
     TERMINAL = 1
-    self.gr_max = gr_max        # nombre de graphes 
-    self.gr_act = 0             # numero du graphe actif
-    self.sets   = [0]*gr_max    # nombre de sets par graphe
-    self.nom_pipe = 'xmgr.pipe' # nom du pipe de communication
-        
+    self.gr_max = gr_max         # nombre de graphes
+    self.gr_act = 0              # numero du graphe actif
+    self.sets   = [0]*gr_max     # nombre de sets par graphe
+    self.nom_pipe = 'xmgr.pipe'  # nom du pipe de communication
+    
 #  Ouverture du pipe de communication avec xmgrace
     if os.path.exists(self.nom_pipe) :
       os.remove(self.nom_pipe)
@@ -56,16 +56,20 @@ class Xmgr :
     self.pipe = open(self.nom_pipe,'a+')
  
 #  Lancement de xmgrace
-    shell = env.grace + ' -graph ' + repr(gr_max-1) + ' -npipe ' + self.nom_pipe
+    if options != None :
+       shell = env.grace + options + ' -graph ' + repr(gr_max-1) + ' -npipe ' + self.nom_pipe
+    else :
+       shell = env.grace +           ' -graph ' + repr(gr_max-1) + ' -npipe ' + self.nom_pipe
+       
     self.controle = Popen3(shell)  
     
 #  Mise a l'echelle des graphes
     for i in xrange(gr_max) :
       gr = 'G'+repr(i)
       self.Send('WITH ' + gr)
-      self.Send('VIEW XMIN 0.17')
-      self.Send('VIEW XMAX 0.77')
-      self.Send('VIEW YMIN 0.25')
+      self.Send('VIEW XMIN 0.15')
+      self.Send('VIEW XMAX 0.85')
+      self.Send('VIEW YMIN 0.15')
       self.Send('VIEW YMAX 0.85')
       
 #  Activation du graphe G0
@@ -98,6 +102,8 @@ class Xmgr :
       self.Send('Exit')
     self.pipe.close()
     os.remove(self.nom_pipe)
+    for fich in glob.glob('xmgr.*.dat') :
+      os.remove(fich)
     TERMINAL = 0
 
 
@@ -117,6 +123,7 @@ class Xmgr :
 # Envoie une commande a l'interpreteur de xmgrace
 
     if self.Terminal_ouvert() :
+      
       self.pipe.write(command + '\n')
       self.pipe.flush()
       if echo : print command 
@@ -194,6 +201,11 @@ class Xmgr :
     self.Send('LEGEND STRING ' + repr(set) + ' "' + legende + '"')
     self.Send('REDRAW')
       
+  def Sortie_EPS(self,nom_fich) :
+
+    self.Send('HARDCOPY DEVICE "EPS" ')
+    self.Send('PRINT TO "' + nom_fich +'"') 
+    self.Send('PRINT')  
     
   def Courbe(self, courbe, legende = None) :
   
@@ -204,9 +216,10 @@ class Xmgr :
     set = self.sets[self.gr_act]
     self.sets[self.gr_act] = set+1
     
-    courbe.Sauve('xmgr.dat')
+    name = 'xmgr.' + repr(self.gr_act) + '.' + repr(set) + '.dat'
+    courbe.Sauve(name)
     self.Send('WITH G'+repr(self.gr_act))
-    self.Send('read "xmgr.dat"')
+    self.Send('read "' + name + '"')
     self.Send('redraw')
     
     if legende :

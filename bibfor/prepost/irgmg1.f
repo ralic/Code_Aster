@@ -6,7 +6,7 @@
       LOGICAL           IWRI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 16/06/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,6 +91,7 @@ C
                VALE = VALE + ZR(JCESV-1+IAD)
             ENDIF
  13      CONTINUE
+         IF (ABS(VALE).LE.1.D-99) VALE = 0.D0
          IF ( NBPT .NE. 0 )  VALE = VALE / NBPT
          IF (IWRI) THEN
             DO 15 INO = 1,NBNO

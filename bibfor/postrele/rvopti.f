@@ -1,14 +1,15 @@
-      SUBROUTINE RVOPTI(NCH19,NOMGD,TYPEGD,OPTION)
+      SUBROUTINE RVOPTI ( MCF, IOCC, NCH19, NOMGD, TYPEGD, OPTION )
       IMPLICIT REAL*8 (A-H,O-Z)
 C
-      CHARACTER*19 NCH19
-      CHARACTER*16 OPTION
-      CHARACTER*8  NOMGD
-      CHARACTER*4  TYPEGD
+      CHARACTER*(*) MCF
+      CHARACTER*19  NCH19
+      CHARACTER*16  OPTION
+      CHARACTER*8   NOMGD
+      CHARACTER*4   TYPEGD
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/09/1999   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 29/08/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,15 +35,28 @@ C IN  TYPEGD : K : VAUT 'CHNO' OU 'CHLM'
 C OUT OPTION : K : NOM OPTION CALC_ELEM POUR CHLM OU ADAPTATION CHNO
 C     ------------------------------------------------------------------
 C
-      INTEGER N
+      INTEGER    IOCC, NC, IER
+      LOGICAL    LNCH, GETEXM
 C
 C======================================================================
 C
       OPTION = '                '
 C
       IF ( TYPEGD .EQ. 'CHML' ) THEN
-         CALL DISMOI('F','NOM_OPTION',NCH19,'CHAMP',N,OPTION,IERR)
+C
+         CALL DISMOI('F','NOM_OPTION',NCH19,'CHAMP',NC,OPTION,IER)
+C
       ELSE IF ( TYPEGD .EQ. 'CHNO' ) THEN
+C
+C ------ POUR LES OPTIONS XXXX_NOEU_XXXX, ON RECUPERE L'OPTION
+C        PAR LE MOT CLE "NOM_CHAM"
+C
+         LNCH = GETEXM ( MCF, 'NOM_CHAM' )
+         IF ( LNCH ) THEN
+            CALL GETVTX ( MCF, 'NOM_CHAM', IOCC,1,1, OPTION, NC )
+            IF ( OPTION(6:9) .EQ. 'NOEU' )  GOTO 9999
+         ENDIF
+C
          IF ( NOMGD .EQ. 'SIEF_R' ) THEN
             OPTION = 'SIEF_NOEU_DEPL  '
          ELSE IF ( NOMGD .EQ. 'EPSI_R' ) THEN
@@ -55,4 +69,5 @@ C
             OPTION = 'FORC_NOEU_FORC  '
          ENDIF
       ENDIF
+ 9999 CONTINUE
       END

@@ -9,7 +9,7 @@ C
       CHARACTER*(*)  NJVSEG
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/02/2002   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF PREPOST  DATE 16/06/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,6 +88,7 @@ C
                   IF ( ZK8(JCNSC-1+K) .EQ. NOCMP ) THEN
                      IF (ZL(JCNSL-1+(LISTNO(INOE)-1)*NCMP+K)) THEN
                         VALE = ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+K)
+                        IF (ABS(VALE).LE.1.D-99) VALE = 0.D0
                         GOTO 20
                      ENDIF
                   ENDIF

@@ -1,13 +1,12 @@
-      SUBROUTINE LGLITE(NDT, NDI, YF, NR, NBMAT, MATER, F0, DEVG, 
-     +                  DEVGII, TRACEG, DY)
+      SUBROUTINE LGLITE(YF, NBMAT, MATER, F0, DEVG, DEVGII, TRACEG, DY)
 C
       IMPLICIT      NONE
-      INTEGER       NBMAT, NR, NDT, NDI
-      REAL*8        YF(*), MATER(NBMAT,2), F0
-      REAL*8        DEVG(*), DEVGII, TRACEG, DY(*)
+      INTEGER       NBMAT
+      REAL*8        YF(10), MATER(NBMAT,2), F0
+      REAL*8        DEVG(6), DEVGII, TRACEG, DY(10)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +55,7 @@ C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C ======================================================================
-      INTEGER       JPARA, JDERIV
+      INTEGER       JPARA, JDERIV, NDT, NDI
       REAL*8        PREF, EPSSIG, GAMCJS, MU, K, SNII, RN, GN, UCN
       REAL*8        RCOS3T, COS3T, HLODE, GDEV, UCRITP
       REAL*8        DFDL, SN(6), INVN, GAMPN, EVPN, DELTAN, Q(6)
@@ -65,6 +64,8 @@ C ======================================================================
 C --- INITIALISATION DE PARAMETRES -------------------------------------
 C ======================================================================
       PARAMETER       ( EPSSIG  = 1.0D-8 )
+C ======================================================================
+      COMMON /TDIM/   NDT , NDI
 C ======================================================================
       CALL JEMARQ ()
 C ======================================================================
@@ -96,23 +97,23 @@ C --- CALCUL DES VARIABLES ELASTIQUES INITIALES ------------------------
 C ======================================================================
       CALL     PSCAL (NDT, SN, SN, SNII)
       SNII   = SQRT  (SNII)
-      RCOS3T = COS3T (NDT, SN, PREF, EPSSIG)
+      RCOS3T = COS3T (SN, PREF, EPSSIG)
       RN     = HLODE (GAMCJS, RCOS3T)
       GN     = GDEV  (SNII, RN)
       UCN    = UCRITP(NBMAT, MATER, ZR(JPARA), GN, INVN)
 C ======================================================================
 C --- CALCUL DE Q ------------------------------------------------------
 C ======================================================================
-      CALL SOLREN(NDT, SN, NBMAT, MATER, Q)
+      CALL SOLREN(SN, NBMAT, MATER, Q)
 C ======================================================================
 C --- CALCUL DES DIFFERENTES DERIVEES ----------------------------------
 C ======================================================================
-      CALL CALCDR(NDT, NDI, NBMAT, MATER, ZR(JPARA), ZR(JDERIV), GN,
+      CALL CALCDR(NBMAT, MATER, ZR(JPARA), ZR(JDERIV), GN,
      +            INVN, UCN, Q, DEVG, DEVGII, TRACEG, DFDL)
 C ======================================================================
 C --- CALCUL DES DIFFERENTS INCREMENTS ---------------------------------
 C ======================================================================
-      CALL CALCDY(NDT, NR, MU, K, F0, DEVG, DEVGII, TRACEG, DFDL, 
+      CALL CALCDY(MU, K, F0, DEVG, DEVGII, TRACEG, DFDL, 
      +            DELTAN, DY)
 C ======================================================================
 C --- DESTRUCTION DES VECTEURS INUTILES --------------------------------

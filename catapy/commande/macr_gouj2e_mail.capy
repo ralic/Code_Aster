@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,26 +19,26 @@
 MACR_GOUJ2E_MAIL=MACRO(nom="MACR_GOUJ2E_MAIL",op= -22,sd_prod=maillage,
                       fr=" ",docu="U4.gj.10-b",reentrant='n',
             UIinfo={"groupes":("Outils métier",)},
-         EXEC_MAILLAGE   =FACT(statut='o',min=1,max=1,
+         EXEC_MAILLAGE   =FACT(statut='o',
            LOGICIEL        =SIMP(statut='o',typ='TXM',defaut="GIBI2000",into=("GIBI98","GIBI2000") ),
            UNITE_DATG      =SIMP(statut='f',typ='I',defaut=70),  
            UNITE_MGIB      =SIMP(statut='f',typ='I',defaut=19),  
            NIVE_GIBI       =SIMP(statut='f',typ='I',defaut=10,into=(3,4,5,6,7,8,9,10)),
          ),
-         DEFI_GOUJ       =FACT(statut='o',min=1,max=1,
+         DEFI_GOUJ       =FACT(statut='o',
            TYPE            =SIMP(statut='o',typ='TXM',into=("M33","M64","M90","M115","M155","M180","M186")),
            VARIANTE        =SIMP(statut='o',typ='TXM',into=("A","B","C","D","E","F","G","H","I","J","K","L","M",  
                                                             "N","O","P","Q","R","S","T","U","V","W","X","Y","Z")), 
          ),
-         GEOM_GOUJ_BRID  =FACT(statut='o',min=1,max=1,
+         GEOM_GOUJ_BRID  =FACT(statut='o',
            NB_FILET        =SIMP(statut='o',typ='I'),  
            H_CORP_BRID     =SIMP(statut='o',typ='R'),  
            R_EXT_BRID      =SIMP(statut='o',typ='R'),  
            H_HAUT_BRID     =SIMP(statut='f',typ='R',defaut=0.0E+0),  
            H_BAS_BRID      =SIMP(statut='f',typ='R',defaut= 0.0E+0),  
-           FILET_ABST      =SIMP(statut='f',typ='I',max='**'),  
+           FILET_ABST      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),  
          ),
-         IMPRESSION      =FACT(statut='f',min=1,max=1,
+         IMPRESSION      =FACT(statut='f',
            regles=(PRESENT_PRESENT('FICHIER','UNITE'),),
            FORMAT          =SIMP(statut='f',typ='TXM',defaut="RESULTAT",    
                                  into=("RESULTAT","IDEAS","ASTER","CASTEM","ENSIGHT","MED")),

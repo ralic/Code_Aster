@@ -5,7 +5,7 @@
      +     LT,NRL,DEB,VOIS,SUIT,IER,NEC,PRNO,DEEQ,
      &     NOEUD,DDL,INVPND,PERMND,SPNDND,XADJD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 07/07/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,9 +40,9 @@ C     VARIABLES LOCALES
       INTEGER NNZ(1:NEQ),QSIZE(NEQ),LLIST(NEQ),SUIV(NEQ)
       INTEGER LIBRE,IOVFLO,NCMPA,IFM,NIV,P(NEQ),Q(N2),LT,NRL
       INTEGER IT,NBPAR,IERRC,DEBUT,LRM
-      CHARACTER*80 TXT80(3)
+      CHARACTER*80 TXT80(4)
       CHARACTER*128 REP,LOGIEL
-      INTEGER NEC,PRNO(*),DEEQ(*),INO,NBCMP
+      INTEGER NEC,PRNO(*),DEEQ(*),INO,NBCMP,ULNUME,IULM1,IULM2
 C--------------------------------------------------------------
 C
 C     VERSION RENUMEROTATION PAR NOEUD
@@ -210,25 +210,37 @@ C----------------------------------MINIMUM DEGRE : APPROXIMATE MIN DEG
      >        LLIST,QSIZE)
       ELSE IF(OPTNUM.EQ.2) THEN
 C----------------------------------METIS 4 : METHODE DE BISSECTION
-         CALL ASOPEN(81, ' ')
-         REWIND 81
-         WRITE(81,1001) NBND,INT(NADJ)/2,NIV,IFM
-         WRITE(81,1001) (XADJD(I),I=1,NBND+1)
+         IULM1 = ULNUME ()
+         IF ( IULM1 .EQ. -1 ) THEN
+           CALL UTMESS('F','PREML1',' ERREUR A L''APPEL DE METIS '//
+     >                 'PLUS AUCUNE UNITE LOGIQUE LIBRE !')     
+         ENDIF 
+         IULM2 = ULNUME ()
+         IF ( IULM2 .EQ. -1 ) THEN
+           CALL UTMESS('F','PREML1',' ERREUR A L''APPEL DE METIS '//
+     >                 'PLUS AUCUNE UNITE LOGIQUE LIBRE !')
+         ENDIF 
+         CALL ULOPEN ( IULM1,' ',' ','NEW','O')
+         WRITE(IULM1,1001) NBND,INT(NADJ)/2,NIV,IFM
+         WRITE(IULM1,1001) (XADJD(I),I=1,NBND+1)
          DO 510 I=1,NBND
             DEBUT=XADJD(I)
             FIN= XADJD(I+1)-1
-             WRITE (81,1000) (ADJNCY(J),J=DEBUT,FIN)
+            WRITE (IULM1,1000) (ADJNCY(J),J=DEBUT,FIN)
  1000       FORMAT(10I8)
  1001       FORMAT(8I10)
  510     CONTINUE
 C     FERMETURE DU FICHIER
-         CALL ASOPEN(-81, ' ')
-         NBPAR=3
+         CALL ULOPEN (-IULM1,' ',' ',' ',' ')
+         NBPAR=4
          CALL REPOUT(1,LRM,REP)
          LOGIEL = REP(1:LRM)//'onmetis'
          TXT80(1)=LOGIEL
-         TXT80(2)='fort.81'
+         TXT80(2)='fort.'
+         CALL CODENT(IULM1,'G',TXT80(2)(6:80))
          CALL CODENT( NIV , 'G' , TXT80(3)  )
+         TXT80(4)='fort.'
+         CALL CODENT(IULM2,'G',TXT80(4)(6:80))
          CALL APLEXT(NIV,NBPAR,TXT80,IERRC)
          IF (IERRC .NE. 0) THEN
 C     TRAITEMENT D'ERREUR
@@ -236,11 +248,11 @@ C     TRAITEMENT D'ERREUR
             CALL UTMESS('F','PREML1',' ERREUR A L''APPEL DE METIS ')
             GOTO 999
          ENDIF
-         CALL ASOPEN(85, ' ')
-         CALL PREMLE(INVPND,PERMND,NBSN,SPNDND,PARENT,NBND,NBOPS,FCTNZS,
-     &        LGIND)
+         CALL ULOPEN ( IULM2,' ',' ','OLD','O')
+         CALL PREMLE(IULM2,INVPND,PERMND,NBSN,SPNDND,PARENT,NBND,NBOPS,
+     &        FCTNZS,LGIND)
 C     FERMETURE DU FICHIER
-         CALL ASOPEN(-85, ' ')
+         CALL ULOPEN (-IULM2,' ',' ',' ',' ')
 C     CLOSE(UNIT=85)
       ENDIF
 C****************************************************************

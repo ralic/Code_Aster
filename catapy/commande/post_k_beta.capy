@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,14 +26,14 @@ POST_K_BETA=OPER(nom="POST_K_BETA",op=198,sd_prod=tabl_post_beta,
          MAILLAGE      = SIMP(statut='o',typ=maillage),
          MATER_REV     = SIMP(statut='o',typ=mater),
          EPAIS_REV     = SIMP(statut='o',typ='R'),
-         FISSURE       = FACT(statut='o',min=1,max=1,
+         FISSURE       = FACT(statut='o',
             DECALAGE       = SIMP(statut='f',typ='R',defaut=-2.e-04),
             PROFONDEUR     = SIMP(statut='o',typ='R'),
             LONGUEUR       = SIMP(statut='o',typ='R'),
             ORIENTATION    = SIMP(statut='o',typ='TXM',
                                  into=("CIRC","LONGI"),),
          ),
-         K1D           = FACT(statut='o',min=1,max='**',
+         K1D           = FACT(statut='o',max='**',
             TABL_MECA_REV  = SIMP(statut='o',typ=(tabl_post_rele)),
             TABL_MECA_MDB  = SIMP(statut='o',typ=(tabl_post_rele)),
             TABL_THER      = SIMP(statut='o',typ=(tabl_post_rele)),

@@ -1,7 +1,7 @@
       SUBROUTINE NMVCLE(MODELZ,MATZ,LISCHZ,INSTAN,COMZ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/12/2001   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ALGORITH  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,20 +40,8 @@ C ----------------------------------------------------------------------
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
       LOGICAL            ZL
       COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
@@ -62,8 +50,10 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*19 TEMP, HYDR, SECH, CTPS
       CHARACTER*19 PHAS, EPAN, IRRA
       INTEGER      IBID, IEX
+      INTEGER TYPESE
       CHARACTER*8 NOPASE
       CHARACTER*8  K8BID
+      CHARACTER*24 STYPSE
       COMPLEX*16   CBID
 
 
@@ -81,6 +71,7 @@ C    SUPPRESSION DE L'OBJET S'IL EXISTE DEJA
 C    INITIALISATION
       CHARGE = LISCHA // '.LCHA'
       INFOCH = LISCHA // '.INFC'
+      TYPESE = 0
       NOPASE = '        '
 
 
@@ -97,8 +88,9 @@ C    LISTE DES VARIABLES DE COMMANDE
 C    CREATION DE LA SD VARI_COM
 
 C    DETERMINATION DU CHAMP DE TEMPERATURE
-      CALL NMDETE ( MODELE, MATE, CHARGE, INFOCH, NOPASE,
-     >              INSTAN, TEMP, EXITMP )
+      CALL NMDETE ( MODELE, MATE, CHARGE, INFOCH, INSTAN,
+     >              TYPESE, STYPSE, NOPASE,
+     >              TEMP, EXITMP )
 
 C    DETERMINATION DES CHAMPS SECHAGE ET HYDRATATION
       CALL NMDEHY (MODELE,LISCHA,INSTAN,HYDR,EXIHYD,SECH,EXISEC)

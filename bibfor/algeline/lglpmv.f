@@ -1,12 +1,12 @@
-      SUBROUTINE LGLPMV(CUMUL,N,DIM,A,X,Y)
+      SUBROUTINE LGLPMV(CUMUL,N,A,X,Y)
 C
         IMPLICIT       NONE
         CHARACTER*(*)  CUMUL
-        INTEGER        DIM, N
-        REAL*8         A(DIM,DIM), X(N),Y(N)
+        INTEGER        N
+        REAL*8         A(6,6), X(6),Y(6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C ======================================================================
 C ======================================================================
         IF ( CUMUL .EQ. 'ZERO' ) THEN
            DO 1 I = 1 , N
-              Y(I) = 0.D0
+              Y(I) = 0.0D0
  1         CONTINUE
         ENDIF
 C ======================================================================

@@ -1,6 +1,6 @@
       SUBROUTINE JEDETR ( NOMLU )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 23/06/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,8 @@ C
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
       INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
       COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IFNIVO, NIVO
+      COMMON /JVNIVO/  IFNIVO, NIVO
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
      +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
@@ -63,8 +65,6 @@ C     ------------------------------------------------------------------
       CHARACTER*32    NOML32 , NOM32
       INTEGER         ICRE , IRET , ID(IDNUM) , IADDI(2)
 C DEB ------------------------------------------------------------------
-C J#DEB
-
       NOML32 = NOMLU
       ICRE = 0
       CALL JJVERN ( NOML32 , ICRE , IRET )
@@ -82,6 +82,9 @@ C
         IF ( IADDI(1) .GT. 0 ) THEN
           LONOI = LONO(JLONO(IC)+IDATOS)*LTYP(JLTYP(IC)+IDATOS)
           CALL JXLIBD ( 0, IDATOS , IC , IADDI , LONOI )
+        ENDIF
+        IF (NIVO .GE. 2) THEN
+          CALL JVMESS('I','JEDETC','DESTRUCTION DE '//NOML32)
         ENDIF
         CALL JJCREN ( NOML32 , -1 , IRET )
         NOMOS = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
@@ -150,11 +153,18 @@ C
           DO 2 K = 1 , IDNUM
             IF ( ID(K) .GT. 0 ) THEN
               NOM32 = RNOM ( JRNOM(IC) + ID(K) )
+              IF (NIVO .GE. 2) THEN
+                CALL JVMESS('I','JEDETC','DESTRUCTION DE '//
+     +                       NOML32(1:24))
+              ENDIF
               CALL JJCREN ( NOM32 , -2 , IRET )
               CALL JJMZAT ( IC , ID(K) )
             ENDIF
  2        CONTINUE
           CALL JJLIBP ( IBACOL)
+          IF (NIVO .GE. 2) THEN
+            CALL JVMESS('I','JEDETC','DESTRUCTION DE '//NOML32(1:24))
+          ENDIF
           CALL JJCREN ( NOML32(1:24) , -2 , IRET )
           CALL JJMZAT ( IC , IDATCO )
           NOMCO = '$$$$$$$$$$$$$$$$$$$$$$$$'
@@ -204,11 +214,13 @@ C
             IBLONG = IADM ( JIADM(IC) + IXLONG )
             ISZON ( JISZON + IBLONG + IDATOC - 1 ) = 0
           ENDIF
+          IF (NIVO .GE. 2) THEN
+            CALL JVMESS('I','JEDETC','DESTRUCTION DE '//NOML32)
+          ENDIF
           CALL JJCROC ( NOMLU(25:32) , -3 )
           NOMOC = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
         ENDIF
       ENDIF
  9999 CONTINUE
 C FIN ------------------------------------------------------------------
-C J#FIN
       END

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,14 +36,14 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,docu="U4.44.12-e",r
 
            TYPE_RESU    =SIMP(statut='o',typ='TXM',into=("MULT_ELAS","EVOL_ELAS","EVOL_NOLI","FOURIER_ELAS",
                                                          "EVOL_THER","EVOL_VARC",) ),
-           NOM_CHAM     =SIMP(statut='f',typ='TXM',into=("DEPL","TEMP","IRRA","HYDR_ELGA",),max=1 ),
-           AFFE         =FACT(statut='f',min=1,max='**',
+           NOM_CHAM     =SIMP(statut='f',typ='TXM',into=("DEPL","TEMP","IRRA","HYDR_ELGA",),),
+           AFFE         =FACT(statut='o',max='**',
              regles=(UN_PARMI('NOM_CAS','NUME_MODE','LIST_INST','INST',),),
              CHAM_GD         =SIMP(statut='f',typ=(cham_gd)),
              NOM_CAS         =SIMP(statut='f',typ='TXM' ),
              NUME_MODE       =SIMP(statut='f',typ='I'),
              TYPE_MODE       =SIMP(statut='f',typ='TXM',defaut="SYME",into=("SYME","ANTI","TOUS") ),
-             INST            =SIMP(statut='f',typ='R',max='**'),
+             INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
              LIST_INST       =SIMP(statut='f',typ=listr8),
              NUME_INIT       =SIMP(statut='f',typ='I'),
              NUME_FIN        =SIMP(statut='f',typ='I'),
@@ -56,17 +56,17 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,docu="U4.44.12-e",r
 
            TYPE_RESU       =SIMP(statut='o',typ='TXM',into=("EVOL_ELAS","EVOL_NOLI","EVOL_THER"), ),
 
-           ECLA_PG         =FACT(statut='f',min=1,max=1,
+           ECLA_PG         =FACT(statut='o',
              regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','LIST_ORDRE'),),
-             NOM_CHAM        =SIMP(statut='o',typ='TXM',max='**',
+             NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                                    into=("SIEF_ELGA","VARI_ELGA","SIEF_ELGA_DEPL","FLUX_ELGA_TEMP",) ),
              MODELE_INIT     =SIMP(statut='o',typ=modele),
              RESU_INIT       =SIMP(statut='o',typ=resultat),
              MAILLAGE        =SIMP(statut='o',typ=maillage),
              TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-             NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
+             NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
              LIST_ORDRE      =SIMP(statut='f',typ=listis),
-             INST            =SIMP(statut='f',typ='R',max='**'),
+             INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
              LIST_INST       =SIMP(statut='f',typ=listr8),
              PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3),
              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",) ),
@@ -76,7 +76,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,docu="U4.44.12-e",r
          b_perm_cham =BLOC(condition = "OPERATION == 'PERM_CHAM'",
 
            TYPE_RESU       =SIMP(statut='o',typ='TXM',into=("EVOL_NOLI",) ),
-           NOM_CHAM        =SIMP(statut='f',typ='TXM',into=("DEPL","SIEF_ELGA","VARI_ELGA",),max='**' ),
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',into=("DEPL","SIEF_ELGA","VARI_ELGA",),validators=NoRepeat(),max='**' ),
            RESU_INIT       =SIMP(statut='o',typ=evol_noli),
            INST_INIT       =SIMP(statut='f',typ='R'),
            PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3),
@@ -84,7 +84,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,docu="U4.44.12-e",r
            MAILLAGE_INIT   =SIMP(statut='o',typ=maillage,),
            RESU_FINAL      =SIMP(statut='o',typ=evol_noli,),
            MAILLAGE_FINAL  =SIMP(statut='o',typ=maillage,),
-           PERM_CHAM       =FACT(statut='o',min=1,max=1,
+           PERM_CHAM       =FACT(statut='o',
               GROUP_MA_FINAL =SIMP(statut='o',typ=grma),
               GROUP_MA_INIT  =SIMP(statut='o',typ=grma),
               TRAN           =SIMP(statut='o',typ='R',max='**'),
@@ -96,11 +96,11 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,docu="U4.44.12-e",r
 
            TYPE_RESU       =SIMP(statut='o',typ='TXM',into=("EVOL_THER",) ),
 
-           PROL_RTZ        =FACT(statut='f',min=1,max=1,
+           PROL_RTZ        =FACT(statut='o',
               regles=(EXCLUS('INST','LIST_INST'),),
               MAILLAGE_FINAL  =SIMP(statut='o',typ=maillage,),
               TABLE           =SIMP(statut='o',typ=tabl_post_rele,fr="Table issue de post_releve_t"),
-              INST            =SIMP(statut='f',typ='R',max='**'),
+              INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
               LIST_INST       =SIMP(statut='f',typ=listr8),
               b_acce_reel     =BLOC(condition="(INST != None)or(LIST_INST != None)",
                  PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-6),

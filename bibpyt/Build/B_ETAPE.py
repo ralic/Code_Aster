@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF B_ETAPE Build  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,12 +77,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       if CONTEXT.debug : print "ETAPE._Build ",self.nom
       # On demande d incrementer le compteur de la commande de 1
       self.set_icmd(1)
-
-      if self.definition.op == 9999:
-        # Il s'agit de la commande FIN
-        return 9999
-      else:
-        return 0
+      return 0
 
    def setmode(self,mode):
       """
@@ -585,30 +580,16 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       else:
          return 0,0
 
-   def getmnb(self):
+   def getfns(self,nom_motfac):
       """
-         Retourne des informations generales sur le catalogue de la commande courante
-           nbfac  : nombre de mots cles facteurs
-           nbcle  : nombre de mots simples (total des mots cles incluant les sous mots cles
-           nbdesc : nombre de descripteurs (je ne sais pas ce que c est, uniquement superviseur ?)
+         Retourne le nombre max de mots cles simples sous les mots cles facteurs 
+         portant le nom nomfac
+           motfac   : nom du mot cle facteur
       """
       if CONTEXT.debug : prbanner("getmnb")
       assert(hasattr(self,'nom')),"self n'a pas d'attribut nom PB"
-      return self.definition.getmnb(self.nom)
-
-   def getmfa(self,nomcmd,ifac):
-      """
-         Retourne des informations sur le ieme mot cle facteur du catalogue de la commande nomcmd
-           nomcmd : nom de la commande
-           ifac   : numero du mot cle facteur
-         Retour:
-           motfac : nom du mot cle
-           nbcle  : nombre de sous mots cles simples
-           nbarg  : nombre total d arguments du mot cle facteur(a priori ne doit
-                                      etre utilise que par le superviseur)
-      """
-      if CONTEXT.debug : prbanner("getmfa %s %d " %(nomcmd,ifac))
-      return self.definition.getmfa(nomcmd,ifac)
+      nom_motfac=string.strip(nom_motfac)
+      return self.definition.getfns(nom_motfac)
 
    def getmfm(self,motfac,nbval):
       """
@@ -624,6 +605,18 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       if CONTEXT.debug : prbanner("getmfm %s %d " %(motfac,nbval))
       motfac=string.strip(motfac)
       return self.definition.getmfm(motfac,nbval)
+
+   def getmat(self):
+      """
+          Retourne :
+            le nombre de mots cles facteur sous la commande, y compris en eliminant les blocs
+            la liste de leur noms
+            Attention : les doublons sont elimines
+      """
+      if CONTEXT.debug : prbanner("getmat")
+      assert(hasattr(self,'nom')),"self n'a pas d'attribut nom PB"
+      return self.definition.getmat()
+
 
    def gcucon(self,icmd,resul,concep):
       """
@@ -647,14 +640,3 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       else:
             ret=-1
       return ret
-
-
-
-
-
-
-
-
-
-
-

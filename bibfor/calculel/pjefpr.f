@@ -1,13 +1,9 @@
-      SUBROUTINE PJEFPR(NDIM,TYPRES,EVO1,RESU,MODEL2,CORRES)
+      SUBROUTINE PJEFPR(TYPRES,EVO1,RESU,MODEL2,CORRES)
 C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
-      IMPLICIT NONE
-      CHARACTER*16 TYPRES,CORRES
-      CHARACTER*8  EVO1,RESU,MODEL2
-      INTEGER NDIM
-C ----------------------------------------------------------------------
+C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/03/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 30/09/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +25,6 @@ C       PROJETER LES CHAMPS AUX NOEUDS CONTENUS DANS LA SD EVO1
 C       SUR LES NOEUDS DU MAILLAGE SOUS-JACENT AU MODELE MODEL2
 C       EN SE SERVANT DE LA CORRESPONDANCE CORRES.
 C
-C  IN       NDIM    I   : 2 OU 3 (DIMENSION DE L'ESPACE)
 C  IN       TYPRES  K16 : TYPE DE EVO1 : EVOL_THER/ELAS/NOLI
 C  IN/JXIN  EVO1    K8  : NOM DE L'EVOL_XXX A PROJETER
 C  IN/JXOUT RESU    K8  : NOM DE L'EVOL_XXX RESULTAT
@@ -43,33 +38,44 @@ C   3- POUR LES EVOL_THER      : ON PROJETE LES CHAM_NO DE 'TEMP_R'
 C   3- POUR LES EVOL_ELAS/NOLI : ON PROJETE LES CHAM_NO DE 'DEPL_R'
 C
 
-C ----------------------------------------------------------------------
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C ---------------------------------------------------------------------
+C
+      IMPLICIT   NONE
+C
+C 0.1. ==> ARGUMENTS
+C
+      CHARACTER*16 TYPRES,CORRES
+      CHARACTER*8  EVO1,RESU,MODEL2
+C
+C 0.2. ==> COMMUNS
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
 C
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
       COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
       CHARACTER*8        ZK8
       CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
+      CHARACTER*24                          ZK24,NOOJB
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C --- FIN DECLARATIONS NORMALISEES JEVEUX -----------------------------
+C
+C 0.3. ==> VARIABLES LOCALES
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'PJEFPR' )
 C
       INTEGER       IBID, IE, JCONO, IRET, JORDR, NBORDR, I, IORDR,
-     +              IAINS1, IAINS2, NBSYM, ISYM
+     &              IAINS1, IAINS2, NBSYM, ISYM, ICO
       LOGICAL       ACCENO
       CHARACTER*8   KB, MA1, MA2, TYCH
       CHARACTER*16  NOMSYM(200)
       CHARACTER*19  CH1, CH2, CH1S, CH2S, PRFCHN
-C DEB ------------------------------------------------------------------
+      CHARACTER*19 NOMS2
+C DEB -----------------------------------------------------------------
       CALL JEMARQ()
 
       CALL DISMOI('F','NOM_MAILLA', EVO1,'RESULTAT',IBID,MA1,IE)
@@ -77,28 +83,41 @@ C DEB ------------------------------------------------------------------
 
       CALL JEVEUO(CORRES//'.PJEF_NO','L',JCONO)
       IF (ZK8(JCONO-1+1).NE.MA1)
-     &CALL UTMESS('F','PJEFPR','MAILLAGES 1 DIFFERENTS.')
+     &CALL UTMESS('F',NOMPRO,'MAILLAGES 1 DIFFERENTS.')
       IF (ZK8(JCONO-1+2).NE.MA2)
-     &CALL UTMESS('F','PJEFPR','MAILLAGES 2 DIFFERENTS.')
+     &CALL UTMESS('F',NOMPRO,'MAILLAGES 2 DIFFERENTS.')
 
       CALL RSUTC4(EVO1,' ',1,200,NOMSYM,NBSYM,ACCENO)
       CALL ASSERT (NBSYM.GT.0)
 
 
-C     1- CREATION DE LA SD RESULTAT :RESU
+C     1- CREATION DE LA SD RESULTAT : RESU
 C     ------------------------------------
-      CALL RSUTNU(EVO1,' ',0,'&&PJEFPR.NUME_ORDRE',NBORDR,0.D0,
+      CALL RSUTNU(EVO1,' ',0,'&&'//NOMPRO//'.NUME_ORDRE',NBORDR,0.D0,
      &            'ABSO',IRET)
-      CALL JEVEUO('&&PJEFPR.NUME_ORDRE','L',JORDR)
-      CALL RSCRSD ( RESU, TYPRES, NBORDR )
+      IF ( IRET.NE.0 ) THEN
+        CALL UTMESS('F',NOMPRO,'PROBLEME DANS L''EXAMEN DE '//EVO1)
+      ENDIF
+      IF ( NBORDR.EQ.0 ) THEN
+        CALL UTMESS('F',NOMPRO,'AUCUN NUMERO D''ORDRE DANS '//EVO1)
+      ENDIF
+      CALL JEVEUO('&&'//NOMPRO//'.NUME_ORDRE','L',JORDR)
+      NOMS2(1:8) = RESU
+      CALL JEEXIN (NOMS2//'.DESC', IRET )
+      IF ( IRET.EQ.0 ) THEN
+        CALL RSCRSD ( RESU, TYPRES, NBORDR )
+      ENDIF
 
 
 C     2- ON CALCULE LES CHAM_NO RESULTATS :
 C     ------------------------------------
-      CH1S='&&PJEFPR.CH1S'
-      CH2S='&&PJEFPR.CH2S'
+      CH1S='&&'//NOMPRO//'.CH1S'
+      CH2S='&&'//NOMPRO//'.CH2S'
+      ICO=0
       DO 4,ISYM=1,NBSYM
-      CALL GCNCON ( '_' , PRFCHN )
+      NOOJB='12345678.00000.NUME.PRNO'
+      CALL GNOMSD ( NOOJB,10,14)
+      PRFCHN=NOOJB(1:19)
       DO 5,I=1,NBORDR
         IORDR = ZI(JORDR+I-1)
         CALL RSEXCH(EVO1,NOMSYM(ISYM),IORDR,CH1,IRET)
@@ -106,7 +125,7 @@ C     ------------------------------------
         CALL DISMOI('F','TYPE_CHAMP',CH1,'CHAMP',IBID,TYCH,IBID)
         IF (TYCH.NE.'NOEU') THEN
            IF ( ACCENO ) THEN
-              CALL UTMESS('F','PJEFPR','ON NE SAIT PAS PROJETER CE '//
+              CALL UTMESS('F',NOMPRO,'ON NE SAIT PAS PROJETER CE '//
      +                                 'TYPE DE CHAMP: '//NOMSYM(ISYM))
            ELSE
               GO TO 5
@@ -114,6 +133,7 @@ C     ------------------------------------
         ENDIF
 
 C       2-1 : TRANSFORMATION DE CH1 EN CHAM_NO_S : CH1S
+        ICO=ICO+1
         CALL DETRSD('CHAM_NO_S',CH1S)
         CALL CNOCNS(CH1,'V',CH1S)
 
@@ -135,11 +155,11 @@ C       2-3 : TRANSFORMATION DE CH2S EN CHAM_NO : CH2
  5    CONTINUE
  4    CONTINUE
 
- 9999 CONTINUE
+      IF (ICO.EQ.0) CALL UTMESS('F','PJEFPR','AUCUN CHAMP PROJETE.')
 
       CALL DETRSD('CHAM_NO_S',CH1S)
       CALL DETRSD('CHAM_NO_S',CH2S)
-      CALL JEDETR('&&PJEFPR.NUME_ORDRE')
+      CALL JEDETR('&&'//NOMPRO//'.NUME_ORDRE')
 
       CALL JEDEMA()
       END

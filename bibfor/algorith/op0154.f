@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/09/2002   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 29/09/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -197,6 +197,13 @@ C     ---------------------------------------------------------------
       IF (N1.NE.0) THEN
         CALL GETVID ( ' ', 'MODELE', 1,1,1, MODELE, N2 )
         CALL ORILGM(MODELE)
+      ENDIF
+C
+C     --- TRAITEMENT DU MOT CLEF  "ORIE_SHB8" :
+C     ------------------------------------------
+      CALL GETFAC ( 'ORIE_SHB8', NBOCC )
+      IF ( NBOCC .NE. 0 ) THEN
+         CALL ORISHB ( MA )
       ENDIF
 C
 C     --- TRAITEMENT DES MOT CLEF  "PLAQ_TUBE" ET "TUBE_COUDE":

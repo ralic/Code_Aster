@@ -3,7 +3,7 @@ C TOLE CRS_513 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 10/03/98   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,23 +89,23 @@ C        EXECUTION OU VERIFICATION DE SYNTAXE
             IF (NBOCC .GT. 0) THEN
                CALL GETVIS('CODE','UNITE',1,1,1,IUNIT,K)
             ENDIF
-            CALL DEFUFI(IUNIT,'&SYSCODE')
+            CALL ULDEFI(IUNIT,'&SYSCODE','A','N','N')
             CALL CODENT(IUNIT,'D',ZK8(LCODE+1))
             FICHIE='&SYSCODE'
             CATEST=ZK8(LCODE)
          ELSE
-            CALL DEFUFI( 0 ,'&SYSCODE')
+            CALL ULDEFI( 0 ,'&SYSCODE','A','N','N')
          ENDIF
-         CALL DEFUFI( ISTAT ,'&SYSSTAT')
+         CALL ULDEFI( ISTAT ,'&SYSSTAT','A','N','N')
       ELSE
          CALL JEEXIN('&&SYS   .CODE',IRET)
          IF ( IRET .EQ. 0 ) THEN
-            CALL DEFUFI(0,'&SYSCODE')
-            CALL DEFUFI(0,'&SYSSTAT')
+            CALL ULDEFI(0,'&SYSCODE','A','N','N')
+            CALL ULDEFI(0,'&SYSSTAT','A','N','N')
          ELSE
             CALL JEVEUO('&&SYS   .CODE','L',LCODE)
             CALL LXLIIS(ZK8(LCODE+1),IUNIT,IER)
-            CALL DEFUFI(IUNIT,'&SYSCODE')
+            CALL ULDEFI(IUNIT,'&SYSCODE','A','N','N')
 C
 C           SUPPRESSION CAR POSITIONNEMENT APRES LA FIN DE FICHIER
 C           EST-CE QUE CELA SERT A QUELQUE CHOSE
@@ -117,7 +117,7 @@ C   2           CONTINUE
 C-QUE        ENDIF
 C
             CALL LXLIIS(ZK8(LCODE+2),ISTAT,IER)
-            CALL DEFUFI(ISTAT,'&SYSSTAT')
+            CALL ULDEFI(ISTAT,'&SYSSTAT','A','N','N')
          ENDIF
       ENDIF
 C

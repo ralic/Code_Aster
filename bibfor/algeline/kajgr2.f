@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C --- LECTURE DU FICHIER DE DONNEES
 C     =============================
          CALL JEVEUO(NOM2,'L',IUNIT)
          UNIT = ZI(IUNIT-1+2)   
-         CALL ASOPEN(UNIT, ' ' )
+         CALL ULOPEN(UNIT,' ',' ','NEW','O')
 C
 C ---    BLOC D'INITIALISATION
          DO 10 I = 1,NBOMAX
@@ -98,7 +98,7 @@ C
          CALL WKVECT(NOM1,'G V I',1,IFLAG) 
          ZI(IFLAG+1-1) = 1
 C        FERMETURE DU FICHIER
-         CALL ASOPEN(-UNIT, ' ' )
+         CALL ULOPEN(-UNIT,' ',' ',' ',' ')
          GO TO 60
       ENDIF
 C

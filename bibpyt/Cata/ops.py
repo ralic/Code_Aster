@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 07/04/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF ops Cata  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,6 +39,10 @@ def DEBUT(self,PAR_LOT,CODE,**args):
    """
        Fonction sdprod de la macro DEBUT
    """
+   # La commande DEBUT ne peut exister qu'au niveau jdc
+   if self.jdc is not self.parent :
+      raise Accas.AsException("La commande DEBUT ne peut exister qu'au niveau jdc")
+
    self.jdc.set_par_lot(PAR_LOT)
    if CODE!=None :
       self.jdc.fico=CODE['NOM']
@@ -49,6 +53,8 @@ def build_debut(self,**args):
    """
    Fonction ops pour la macro DEBUT
    """
+   self.jdc.UserError=self.codex.error
+
    if self.jdc.par_lot == 'NON' :
       self.jdc._Build()
    # On execute la fonction debut pour initialiser les bases
@@ -63,16 +69,20 @@ def build_debut(self,**args):
    self.definition.op=None
    return ier
 
-def POURSUITE(self,PAR_LOT,CODE,**args):
+def POURSUITE(self,PAR_LOT,CODE,HDF,**args):
    """
        Fonction sdprod de la macro POURSUITE
    """
+   # La commande POURSUITE ne peut exister qu'au niveau jdc
+   if self.jdc is not self.parent :
+      raise Accas.AsException("La commande POURSUITE ne peut exister qu'au niveau jdc")
+
    self.jdc.set_par_lot(PAR_LOT)
    if CODE!=None :
       self.jdc.fico=CODE['NOM']
    else:
       self.jdc.fico=None
-   if self.codex and os.path.isfile("glob.1"):
+   if (self.codex and os.path.isfile("glob.1")) or HDF!=None:
      # Le module d'execution est accessible et glob.1 est present
      # Pour eviter de rappeler plusieurs fois la sequence d'initialisation
      # on memorise avec l'attribut fichier_init que l'initialisation
@@ -133,6 +143,7 @@ def build_poursuite(self,**args):
    # Pour POURSUITE on ne modifie pas la valeur initialisee dans ops.POURSUITE
    # Il n y a pas besoin d executer self.codex.poursu (c'est deja fait dans
    # la fonction sdprod de la commande (ops.POURSUITE))
+   self.jdc.UserError=self.codex.error
    return 0
 
 def INCLUDE(self,UNITE,**args):
@@ -163,37 +174,37 @@ def build_include(self,**args):
    # Pour presque toutes les commandes (sauf FORMULE et POURSUITE)
    # le numero de la commande n est pas utile en phase de construction
    # La macro INCLUDE ne sera pas numérotée (incrément=None)
+   ier=0
    self.set_icmd(None)
    icmd=0
-   ier=self.codex.opsexe(self,icmd,-1,1)
+   # On n'execute pas l'ops d'include en phase BUILD car il ne sert a rien.
+   #ier=self.codex.opsexe(self,icmd,-1,1)
    return ier
 
 def detruire(self,d):
    """
        Cette fonction est la fonction op_init de la PROC DETRUIRE
    """
-   sd=[]
-   for mc in self["CONCEPT"]:
-     mcs=mc["NOM"]
-     if type(mcs) == types.ListType or type(mcs) == types.TupleType:
-       for e in mcs:
-         if isinstance(e,ASSD):
-           sd.append(e)
-           e=e.nom
-         if d.has_key(e):del d[e]
-         if self.jdc.sds_dict.has_key(e):del self.jdc.sds_dict[e]
-     else:
-       if isinstance(mcs,formule):
-         cr=self.parent.report()
-         cr.fatal("la destruction d'une FORMULE est impossible" )
-       if isinstance(mcs,ASSD):
-         sd.append(mcs)
-         mcs=mcs.nom
-       if d.has_key(mcs):del d[mcs]
-       if self.jdc.sds_dict.has_key(mcs):del self.jdc.sds_dict[mcs]
-   for s in sd:
-     # On signale au parent que le concept s n'existe plus apres l'étape self
-     self.parent.delete_concept_after_etape(self,s)
+   if self["CONCEPT"]!=None:
+     sd=[]
+     for mc in self["CONCEPT"]:
+       mcs=mc["NOM"]
+       if type(mcs) == types.ListType or type(mcs) == types.TupleType:
+         for e in mcs:
+           if isinstance(e,ASSD):
+             sd.append(e)
+             e=e.nom
+           if d.has_key(e):del d[e]
+           if self.jdc.sds_dict.has_key(e):del self.jdc.sds_dict[e]
+       else:
+         if isinstance(mcs,ASSD):
+           sd.append(mcs)
+           mcs=mcs.nom
+         if d.has_key(mcs):del d[mcs]
+         if self.jdc.sds_dict.has_key(mcs):del self.jdc.sds_dict[mcs]
+     for s in sd:
+       # On signale au parent que le concept s n'existe plus apres l'étape self
+       self.parent.delete_concept_after_etape(self,s)
 
 def subst_materiau(text,NOM_MATER,EXTRACTION,UNITE_LONGUEUR):
    """
@@ -274,6 +285,13 @@ def subst_materiau(text,NOM_MATER,EXTRACTION,UNITE_LONGUEUR):
    text=string.join(ll,'\n')
    return text
 
+def post_INCLUDE(self):
+  """
+      Cette fonction est executée apres toutes les commandes d'un INCLUDE (RETOUR)
+      Elle sert principalement pour les INCLUDE_MATERIAU : remise a blanc du prefixe Fortran
+  """
+  self.codex.opsexe(self,0,-1,2)
+
 def INCLUDE_MATERIAU(self,NOM_AFNOR,TYPE_MODELE,VARIANTE,TYPE_VALE,NOM_MATER,
                     EXTRACTION,UNITE_LONGUEUR,INFO,**args):
   """ 
@@ -305,6 +323,9 @@ def INCLUDE_MATERIAU(self,NOM_AFNOR,TYPE_MODELE,VARIANTE,TYPE_VALE,NOM_MATER,
     # et le contexte de l etape (local au sens Python)
     # Il faut auparavant l'enregistrer aupres du module linecache (utile pour nommage.py)
     linecache.cache[f]=0,0,string.split(self.text,'\n'),f
+
+    self.postexec=post_INCLUDE
+
     if self.jdc.par_lot == 'NON':
       # On est en mode commande par commande, on appelle la methode speciale
       self.Execute_alone()
@@ -340,6 +361,19 @@ def build_procedure(self,**args):
     # On ne numérote pas une macro PROCEDURE (incrément=None)
     self.set_icmd(None)
     icmd=0
-    ier=self.codex.opsexe(self,icmd,-1,3)
+    #ier=self.codex.opsexe(self,icmd,-1,3)
+    return ier
+
+def build_retour(self,**args):
+    """
+    Fonction ops de la macro RETOUR appelée lors de la phase de Build
+    """
+    ier=0
+    # Pour presque toutes les commandes (sauf FORMULE et POURSUITE)
+    # le numero de la commande n est pas utile en phase de construction
+    # On ne numérote pas une macro RETOUR (incrément=None)
+    self.set_icmd(None)
+    icmd=0
+    #ier=self.codex.opsexe(self,icmd,-1,2)
     return ier
 

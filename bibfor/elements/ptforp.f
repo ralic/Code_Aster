@@ -8,7 +8,7 @@
       REAL*8            A,A2,XL,RAD,ANGS2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2001   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -163,7 +163,7 @@ C
      +     OPTION .EQ. 'CHAR_MECA_SR1D1D' ) THEN
 C     --- FORCES REPARTIES PAR VALEURS REELLES---
 C        POUR LE CAS DU VENT
-         CALL TECACH(.FALSE.,.FALSE.,'PVITER',1,LFORC)
+         CALL TECACH('NNN','PVITER',1,LFORC,IRET)
          IF ( LFORC .NE. 0 ) THEN
            IF (NOMTE .EQ. 'MECA_POU_C_T') GOTO 997
            OKVENT = .TRUE.
@@ -190,7 +190,7 @@ C
       ELSEIF ( OPTION .EQ. 'CHAR_MECA_FF1D1D' .OR.
      +         OPTION .EQ. 'CHAR_MECA_SF1D1D' ) THEN
 C     --- FORCES REPARTIES PAR FONCTIONS ---
-          CALL TECACH ( .FALSE., .FALSE., 'PTEMPSR', 1, ITEMPS )
+          CALL TECACH ('NNN', 'PTEMPSR', 1, ITEMPS,IRET )
           IF ( ITEMPS .NE. 0 ) THEN
              W(4) = ZR(ITEMPS)
              W(8) = ZR(ITEMPS)
@@ -246,7 +246,7 @@ C          NORME DE LA VITESSE PERPENDICULAIRE
            VALPAV(1) = SQRT( VITE2 )
            IF ( VALPAV(1) .GT. R8MIN ) THEN
 C            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
-             CALL TECACH(.TRUE.,.FALSE.,'PVENTCX',1,IFCX)
+             CALL TECACH('ONN','PVENTCX',1,IFCX,IRET)
              IF ( IFCX .LE. 0 ) GOTO  999
              IF ( ZK8(IFCX)(1:1) .EQ. '.' ) GOTO  999
              CALL FOINTE('FM',ZK8(IFCX),1,NOMPAV,VALPAV,FCX,IRET)
@@ -270,7 +270,7 @@ C          NORME DE LA VITESSE PERPENDICULAIRE
            VALPAV(1) = SQRT( VITE2 )
            IF ( VALPAV(1) .GT. R8MIN ) THEN
 C            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
-             CALL TECACH(.TRUE.,.FALSE.,'PVENTCX',1,IFCX)
+             CALL TECACH('ONN','PVENTCX',1,IFCX,IRET)
              IF ( IFCX .LE. 0 ) GOTO  999
              IF ( ZK8(IFCX)(1:1) .EQ. '.' ) GOTO  999
              CALL FOINTE('FM',ZK8(IFCX),1,NOMPAV,VALPAV,FCX,IRET)
@@ -331,8 +331,8 @@ C *********************************************************************
 C
 C     --- RECUPERATION DU COEF_MULT ---
 C
-      CALL TECACH(.FALSE.,.FALSE.,'PCOEFFR',1,ICOER)
-      CALL TECACH(.FALSE.,.FALSE.,'PCOEFFC',1,ICOEC)
+      CALL TECACH('NNN','PCOEFFR',1,ICOER,IRET)
+      CALL TECACH('NNN','PCOEFFC',1,ICOEC,IRET)
 C
       IF ( ICOER .NE. 0 ) THEN
          DO 400 I = 1 , 12

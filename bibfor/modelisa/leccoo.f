@@ -3,7 +3,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/03/97   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF MODELISA  DATE 01/09/2003   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,6 +75,7 @@ C - LECTURE DE L'ENTETE
 C
         INOM=0
         ILEC=1
+        DEBLIG=0
         CALL LIRTET(IFL,IFM,ILEC,INOM,CNL,NOM,ICL,IV,RV,CV,DEBLIG)
         GO TO 9
 C

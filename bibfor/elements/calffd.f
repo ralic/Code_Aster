@@ -1,6 +1,6 @@
       SUBROUTINE CALFFD(ALIAS,XI,YI,TN,DR,DDR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/12/2000   AUTEUR ADBHHPM P.MASSIN 
+C MODIF ELEMENTS  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -128,16 +128,16 @@ C LES FFS
 
 C LES DERIVEES 1ERES / XI
         DR(1,1) = 0.D0
-        DR(1,2) = 0.5D0* (2*XI+2*YI+1.D0)
-        DR(1,3) = 0.5D0* (2*XI+1.D0)
+        DR(1,2) = 0.5D0* (2.D0*XI+2.D0*YI+1.D0)
+        DR(1,3) = 0.5D0* (2.D0*XI+1.D0)
         DR(1,4) = - (1.D0+YI)
-        DR(1,5) = - (1.D0+YI+2*XI)
+        DR(1,5) = - (1.D0+YI+2.D0*XI)
         DR(1,6) = (1.D0+YI)
 C ----------        / YI
-        DR(2,1) = 0.5D0* (2*YI+1.D0)
-        DR(2,2) = 0.5D0* (2*XI+2*YI+1.D0)
+        DR(2,1) = 0.5D0* (2.D0*YI+1.D0)
+        DR(2,2) = 0.5D0* (2.D0*XI+2.D0*YI+1.D0)
         DR(2,3) = 0.D+00
-        DR(2,4) = - (1.D0+XI+2*YI)
+        DR(2,4) = - (1.D0+XI+2.D0*YI)
         DR(2,5) = - (1.D0+XI)
         DR(2,6) = (1.D0+XI)
 

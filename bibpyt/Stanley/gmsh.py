@@ -1,4 +1,4 @@
-#@ MODIF gmsh Stanley  DATE 04/02/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF gmsh Stanley  DATE 01/07/2003   AUTEUR JMBHH01 J.M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,7 +81,8 @@ class GMSH_DISTANT :
       ex_gmsh = env.gmsh
       mdis = env.machine_gmsh
       fdis = env.rep_gmsh + '/' + fichier + '.pos'
-      fmdis = mdis + ":" + fdis
+      fmdis = env.login_gmsh + '@' + mdis + ":" + fdis
+      mdis = '-l ' + env.login_gmsh + ' ' + mdis 
       os.system("rcp " + fichier + " " + fmdis)
       os.system("rsh " + mdis + " '" + ex_gmsh + " " + fdis + "'")
       os.system("rsh " + mdis + " rm " + fdis)

@@ -13,7 +13,7 @@
       CHARACTER*16       TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/03/2003   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 21/07/2003   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,8 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
       IER = 0
 C ---    CALCUL TRANSITOIRE CLASSIQUE
-      IF (TYPBAS(1:9).EQ.'MODE_MECA') THEN
+      IF ((TYPBAS(1:9).EQ.'MODE_MECA').OR.
+     +    (TYPBAS(1:9).EQ.'MODE_STAT')) THEN
          CALL JEVEUO(BASEMO//'           .REFE','L',JDRIF)
          MATASS =  ZK24(JDRIF)(1:8)
          CALL DISMOI('F','NOM_MAILLA'  ,MATASS,'MATR_ASSE',

@@ -1,6 +1,6 @@
       SUBROUTINE CGNOEC (MOFAZ, IOCC, NOMAZ, LISNOZ, NBNO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/10/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 29/08/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,8 +64,8 @@ C
 C --------- VARIABLES LOCALES ---------------------------
       CHARACTER*1    K1BID
       CHARACTER*8    NOMA, K8BID, NOMAIL, NOMPOI
-      CHARACTER*16   MOTFAC
-      CHARACTER*24   LISNOE, NOEUMA
+      CHARACTER*16   MOTFAC, MOCLE(3)
+      CHARACTER*24   LISNOE
 C
       REAL*8         X0(3), X(3), XX0(3), AXE(3), ANGLE(2)
 C.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -77,8 +77,6 @@ C     ---------------
       MOTFAC = MOFAZ
       NOMA   = NOMAZ
       LISNOE = LISNOZ
-C
-      NOEUMA = NOMA//'.NOMNOE'
 C
       ZERO  = 0.0D0
       UN    = 1.0D0
@@ -118,48 +116,10 @@ C     --------------------------------------------------
 C
 C --- RECUPERATION DU POINT SITUE SUR L'AXE DU CYLINDRE :
 C     -------------------------------------------------
-      CALL GETVR8(MOTFAC,'POINT',IOCC,1,0,R8BID,NPOINT)
-      IF (NPOINT.EQ.0) THEN
-          CALL GETVEM(NOMA,'NOEUD',MOTFAC,
-     +        'NOEUD_CENTRE',IOCC,1,0,K8BID,NBNO)
-          IF (NBNO.EQ.0) THEN
-              CALL UTMESS('F','CGNOEC','ON DOIT UTILISER '//
-     +         'OBLIGATOIREMENT LE MOT-CLE POINT '//
-     +         'OU LE MOT-CLE NOEUD_CENTRE POUR L''OPTION '//
-     +         'ENV_CYLINDRE DE CREA_GROUP_NO POUR '//
-     +         'DEFINIR UN POINT SITUE SUR L''AXE '//
-     +         'DU CYLINDRE.')
-          ELSE
-              NBNO = -NBNO
-              IF (NBNO.NE.1) THEN
-                 CALL UTMESS('F','CGNOEC','ON NE DOIT DONNER '//
-     +                       'QU''UN SEUL NOEUD POUR DEFINIR '//
-     +                       'LE POINT SITUE SUR L''AXE DU CYLINDRE. ')
-              ELSE
-                 CALL GETVEM(NOMA,'NOEUD',MOTFAC,
-     +               'NOEUD_CENTRE',IOCC,1,1,NOMPOI,NNO)
-C
-C ---       NUMERO DU NOEUD SITUE SUR L'AXE DU CYLINDRE :
-C           -------------------------------------------
-                  CALL JENONU(JEXNOM(NOEUMA,NOMPOI),NUMPOI)
-C
-C ---       COORDONNEES  :
-C           -----------
-                  X0(1) =  ZR(IDCOOR-1+3*(NUMPOI-1)+1)
-                  X0(2) =  ZR(IDCOOR-1+3*(NUMPOI-1)+2)
-                  X0(3) =  ZR(IDCOOR-1+3*(NUMPOI-1)+3)
-              ENDIF
-          ENDIF
-      ELSE
-          CALL GETVR8(MOTFAC,'POINT',IOCC,1,NDIM,X0,NB)
-          IF (NB.NE.3) THEN
-             CALL UTMESS('F','CGNOEC','POUR L''OPTION '//
-     +                     'ENV_CYLINDRE DE CREA_GROUP_NO, IL FAUT '//
-     +                     'DEFINIR LES 3 COMPOSANTES QUAND '//
-     +                     'ON UTILISE LE MOT CLE "POINT".')
-          ENDIF
-C
-      ENDIF
+      MOCLE(1) = 'POINT'
+      MOCLE(2) = 'NOEUD_CENTRE'
+      MOCLE(3) = 'GROUP_NO_CENTRE'
+      CALL UTCONO ( MOTFAC, MOCLE, IOCC, NOMA, NDIM, X0, IRET )
 C
 C --- RECUPERATION DU RAYON DU CYLINDRE :
 C     ---------------------------------

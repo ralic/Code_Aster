@@ -10,7 +10,8 @@
      >                   NVOMAX,NNOMAX,NSOMAX,NBVOS,VOISIN,P2P1,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/09/2002   AUTEUR UFBHHLL C.CHAVANT 
+C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,12 +28,12 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C TOLE CRP_20
 C TOLE CRP_21
+C ======================================================================
        IMPLICIT NONE
 C
        INTEGER      NNO,NNOS, NPG, IMATE,DIMDEF,DIMCON
-       INTEGER      DIMMAT
+       INTEGER      DIMMAT,IBID
        PARAMETER    (DIMMAT=120)
        INTEGER      NBVARI,NDDL,NMEC,NP1,NP2,NDIM
        CHARACTER*16 NOMTE, OPTION,COMPOR(*)
@@ -50,13 +51,14 @@ C
        INTEGER      MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5)
        INTEGER      YAMEC,YAP1,YAP2,YATE  
        INTEGER      ADDEME,ADDEP1,ADDEP2,ADDETE ,II,JJ 
+       CHARACTER*2  CODMES
        CHARACTER*8  TYPMOD(2)
        LOGICAL AXI,P2P1
-       INTEGER      CODRET
-       INTEGER NVOMAX,NNOMAX,NSOMAX
+       INTEGER NVOMAX,NNOMAX,NSOMAX,CODRET
        INTEGER VOISIN(NVOMAX,NNOMAX)
        INTEGER NBVOS(NSOMAX)
        REAL*8 FACDG
+       CHARACTER*16  THMC, LOI
 C.......................................................................
 C
 C     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA
@@ -100,7 +102,7 @@ C OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
 C......................................................................
 C
       INTEGER KPG,I,J,N,M,G,KK,K,KJI
-      REAL*8  DT,TA,TA1
+      REAL*8  DT,TA,TA1,RTHMC,R8PREM
       INTEGER N1,N2,IDL,IDL1M,IIDL,IIDL1,IIDL2
       REAL*8          VARBIO,VARLQ,VARVP,RELA,RELBIO,RELLIQ,RELVP,USVARL
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -168,8 +170,34 @@ C
 C
 C **********************************************************************
 C     CALCUL POUR CHAQUE POINT DE GAUSS : BOUCLE SUR KPG
-C
-C$
+
+      LOI = ' '
+      CALL RCVALA(IMATE, 'THM_INIT', 0, ' ', 0.D0, 1, 'COMP_THM',
+     +                                             RTHMC, CODMES, 'FM')
+      THMC = COMPOR( 8)
+      IF ( (RTHMC-1.0D0).LT.R8PREM() ) THEN
+         LOI = 'LIQU_SATU'
+      ELSE IF ( (RTHMC-2.0D0).LT.R8PREM() ) THEN
+         LOI = 'GAZ'
+      ELSE IF ( (RTHMC-3.0D0).LT.R8PREM() ) THEN
+         LOI = 'LIQU_VAPE'
+      ELSE IF ( (RTHMC-4.0D0).LT.R8PREM() ) THEN
+         LOI = 'LIQU_VAPE_GAZ'
+      ELSE IF ( (RTHMC-5.0D0).LT.R8PREM() ) THEN
+         LOI = 'LIQU_GAZ'
+      ELSE IF ( (RTHMC-6.0D0).LT.R8PREM() ) THEN
+         LOI = 'LIQU_GAZ_ATM'
+      ELSE IF ( (RTHMC-7.0D0).LT.R8PREM() ) THEN
+         LOI = 'LIQU_SATU_GAT'
+      ELSE IF ( (RTHMC-8.0D0).LT.R8PREM() ) THEN
+         LOI = 'LIQU_NSAT_GAT'
+      ENDIF
+      IF (THMC.NE.LOI) THEN
+         CALL UTMESS('F','ASSTHM','IL Y A INCOHRENCE ENTRE LA LOI'//
+     +         ' DE COUPLAGE DE DEFI_MATERIAU '//LOI//' ET LA LOI'//
+     +         ' DE COUPLAGE DANS STAT_NON_LINE '//THMC)
+      ENDIF
+
       DO 10 KPG=1,NPG
 C        CALCUL DE LA MATRICE B AU POINT DE GAUSS
 C

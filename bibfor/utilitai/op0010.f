@@ -1,6 +1,6 @@
       SUBROUTINE OP0010 ( IER )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,7 @@ C     COMMANDE FERMER
 C
       INTEGER         IER
       INTEGER         IBID,NBUNIT,NBVALE,JVAL,NV,K
+      CHARACTER*1     KBID
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
@@ -41,6 +42,8 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      KBID = ' '
+
       CALL JEMARQ()
       CALL INFMAJ()
 C
@@ -50,7 +53,7 @@ C
 
       CALL GETVIS(' ','UNITE' ,0,1,NBVALE,ZI(JVAL),NV)
       DO 100 K=1,NBVALE
-        CLOSE (ZI(JVAL+K-1))
+        CALL ULDEFI (-ZI(JVAL+K-1), KBID , KBID , KBID , KBID)
  100  CONTINUE
       CALL JEDETR('&&OP0010.VALE')
 C

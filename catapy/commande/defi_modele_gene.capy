@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,19 +19,19 @@
 DEFI_MODELE_GENE=OPER(nom="DEFI_MODELE_GENE",op= 126,sd_prod=modele_gene,
                       docu="U4.65.02-e",reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
-         SOUS_STRUC      =FACT(statut='o',min=1,max='**',
+         SOUS_STRUC      =FACT(statut='o',max='**',
            NOM             =SIMP(statut='o',typ='TXM' ),
            MACR_ELEM_DYNA  =SIMP(statut='o',typ=macr_elem_dyna ),
            ANGL_NAUT       =SIMP(statut='f',typ='R',max=3),
            TRANS           =SIMP(statut='f',typ='R',max=3),
          ),
-         LIAISON         =FACT(statut='o',min=1,max='**',
+         LIAISON         =FACT(statut='o',max='**',
            SOUS_STRUC_1    =SIMP(statut='o',typ='TXM' ),
            INTERFACE_1     =SIMP(statut='o',typ='TXM' ),
            SOUS_STRUC_2    =SIMP(statut='o',typ='TXM' ),
            INTERFACE_2     =SIMP(statut='o',typ='TXM' ),
          ),
-         VERIF           =FACT(statut='f',min=1,max='**',
+         VERIF           =FACT(statut='f',max='**',
 #  dans la doc U stop_erreur est obligatoire         
            STOP_ERREUR     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),

@@ -1,7 +1,7 @@
       SUBROUTINE CATANG(NDIM,XNORM,XTANG,TANGDF)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/05/2002   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 02/06/2003   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,9 @@ C ----------------------------------------------------------------------
           XTANG(1) = -XNORM(2)
           XTANG(2) = XNORM(1)
           XTANG(3) = 0.0D0
+          XTANG(4) = 0.0D0
+          XTANG(5) = 0.0D0
+          XTANG(6) = 0.0D0
         ELSE
           DET = SQRT(XNORM(1)**2+XNORM(2)**2)
           IF (DET.NE.0.0D0) THEN

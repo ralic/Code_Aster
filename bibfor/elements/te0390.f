@@ -1,6 +1,6 @@
       SUBROUTINE TE0390 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C
 C* STOUDY VAUT: 1., SI L'ON EST EN DYNAMIQUE
 C*              0., SI L'ON EST EN STATIQUE
 C
-      CALL TECACH(.FALSE.,.FALSE.,'PSTADYN',1,ISTADY)
+      CALL TECACH('NNN','PSTADYN',1,ISTADY,IRET)
       IF (ISTADY.EQ.0) THEN
         STOUDY = 0.D0
       ELSE
@@ -212,7 +212,12 @@ C
           K2 = K2 + 1
           K3 = K3 + 1
           X00(KC,NE) = ZR(K0)
-          X0K(KC,NE) = ZR(K0) + ZR(K1) + ZR(K2)
+          
+         IF (OPTION(1:14) .EQ. 'RIGI_MECA_TANG') THEN
+           X0K(KC,NE) = ZR(K0) + ZR(K1) 
+         ELSE
+           X0K(KC,NE) = ZR(K0) + ZR(K1) + ZR(K2)
+         ENDIF
 
 31      CONTINUE
         DO 32 KC=1,3
@@ -220,12 +225,19 @@ C
           K2 = K2 + 1
           K3 = K3 + 1
           QIM(KC,NE) = ZR(K1)
-          QIK(KC,NE) = ZR(K2)
-          TETAK(KC,NE) = ZR(K3)
+C
+          IF (OPTION(1:14) .EQ. 'RIGI_MECA_TANG') THEN
+             QIK(KC,NE) = 0.D0
+             TETAK(KC,NE) = 0.D0
+          ELSE
+             QIK(KC,NE) = ZR(K2)
+             TETAK(KC,NE) = ZR(K3)
+             ENDIF
+
 32      CONTINUE
 33    CONTINUE
 C
-      CALL JEVECH('PVARIMP','E',IVARIM)
+      CALL JEVECH('PVARIMP','L',IVARIM)
       CALL JEVECH('PVARIPR','E',IVARIP)
       IF (STOUDY.GT.DEMI) THEN
 C* ON TRAITE UN PROBLEME DYNAMIQUE

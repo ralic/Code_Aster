@@ -1,13 +1,25 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-#              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
-#              REDISTRIBUTION OF THIS FILE.
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-def calc_fatigue_prod(TYPE_CALCUL,**args):
+def calc_fatigue_prod(TYPE_CALCUL,OPTION,**args):
   if TYPE_CALCUL == "CUMUL_DOMMAGE" : return cham_elem_dommag
-  if TYPE_CALCUL == "FATIGUE_MULTI" : return cham_elem_facy_r
+  if TYPE_CALCUL == "FATIGUE_MULTI" and OPTION == "DOMA_ELGA": return cham_elem_facy_r
+  if TYPE_CALCUL == "FATIGUE_MULTI" and OPTION == "DOMA_NOEUD": return cham_no_facy_r
   raise AsException("type de calcul non prevu")
 
 CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant='n',
@@ -25,7 +37,7 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
                                  into=("DOMA_ELNO_SIGM","DOMA_ELGA_SIGM",
                                        "DOMA_ELNO_EPSI","DOMA_ELGA_EPSI",
                                        "DOMA_ELNO_EPME","DOMA_ELGA_EPME") ),
-           HISTOIRE        =FACT(statut='o',min=1,max=1,
+           HISTOIRE        =FACT(statut='o',
              RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,
                                                    evol_noli) ),
              EQUI_GD         =SIMP(statut='f',typ='TXM',defaut="VMIS_SG",
@@ -40,11 +52,21 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
          ),
 
          b_fatigue_multi   =BLOC(condition = "TYPE_CALCUL == 'FATIGUE_MULTI'",
-                                 fr="Plan critique dans le cas de la fatigue multiaxiale a grand nombre de cycles.",
+                                 fr="Plan critique dans le cas de la fatigue multiaxiale à grand nombre de cycles.",
+           OPTION        =SIMP(statut='o',typ='TXM',into=("DOMA_ELGA","DOMA_NOEUD") ),
            RESULTAT      =SIMP(statut='o',typ=(evol_elas, evol_noli) ),
            CHAM_MATER    =SIMP(statut='o',typ=(cham_mater) ),
            CRITERE       =SIMP(statut='o',typ='TXM',into=("MATAKE","DANG_VAN") ),
            METHODE       =SIMP(statut='o',typ='TXM',into=("CERCLE_EXACT",) ),
+           GROUP_MA      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**' ),
+           MAILLE        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**' ),
+           GROUP_NO      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**' ),
+           NOEUD         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**' ),
+           b_fati_mult_ma =BLOC(condition = "(GROUP_MA != None or MAILLE != None or GROUP_NO != None or NOEUD != None) and \
+                                              OPTION == 'DOMA_NOEUD'",
+               MODELE        =SIMP(statut='o',typ=modele ),
+               MAILLAGE      =SIMP(statut='o',typ=maillage ),
+           ),
          ),
 
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),

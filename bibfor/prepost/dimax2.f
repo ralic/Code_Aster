@@ -1,10 +1,10 @@
       SUBROUTINE DIMAX2 ( JDOM, NBPT, CUON, CVON, RAYON, CUPN, CVPN,
      &                    IRET )
       IMPLICIT   NONE
-      INTEGER             JDOM, NBPT, IRET
-      REAL*8              CUON, CVON, RAYON, CUPN, CVPN
+      INTEGER    JDOM, NBPT, IRET
+      REAL*8     CUON, CVON, RAYON, CUPN, CVPN
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/06/2002   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 26/05/2003   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -63,7 +63,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ------------------------------------------------------------------
       INTEGER    I
-      REAL*8     CUI, CVI, DIST
+      REAL*8     CUI, CVI, RAY0, DIST, EPSILO
 C     ------------------------------------------------------------------
 C
 C234567                                                              012
@@ -72,14 +72,16 @@ C234567                                                              012
       IRET = 0
       CUPN = 0.0D0
       CVPN = 0.0D0
+      RAY0 = RAYON
+      EPSILO = 1.0D-5
 
       DO 10 I=1, NBPT
          CUI = ZR(JDOM + (I-1)*2)
          CVI = ZR(JDOM + (I-1)*2 + 1)
          DIST = SQRT((CUON - CUI)**2 + (CVON - CVI)**2)
 
-         IF (DIST .GT. (RAYON+1.0D-9)) THEN
-            RAYON = DIST
+         IF ( DIST .GT. (RAY0*(1.0D0+EPSILO)) ) THEN
+            RAY0 = DIST
             CUPN = CUI
             CVPN = CVI
             IRET = 1

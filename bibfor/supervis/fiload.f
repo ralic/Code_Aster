@@ -1,12 +1,12 @@
       SUBROUTINE FILOAD(LPILE,PILE,ICLASS,MI,MR,ML,MC,IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER           LPILE,PILE(*),ICLASS(*),MI(*),IER
       REAL*8                                       MR(*)
       LOGICAL                                         ML(*)
       COMPLEX*16                                         MC(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF SUPERVIS  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,8 @@ C
       CHARACTER*19 KVAL
       INTEGER      LIVAL
       REAL*8       LRVAL(2)
+      INTEGER      IADR,ICSTE,ILG,ILON,IOPE1,IOPE2,IRE2,IRET
+      INTEGER      LADVA,LONUTI,LOPE1,LOPE2,LPLACE,LPROL,LXLGUT,NEXP
 C     ------------------------------------------------------------------
       COMMON /FICL01/ ICSTE , IOPE1, IOPE2, LOPE1, LOPE2
 C     ------------------------------------------------------------------
@@ -91,6 +93,9 @@ C  LA FONCTION EST DE TYPE TABULEE
          CALL JEVEUO(KVAL//'.PROL','L',LPROL)
          CALL FITABU(KVAL,1,ZK16(LPROL+2),MR(LPILE),RESU,IER)
          MR(LPILE) = RESU
+CCAR: IL FAUT METTRE A JOUR LE TYPE
+         ICLASS(LPILE) = MOD(KCLASS,10)
+CCAR: ET POUR LES COMPLEXES LE FAIRE EGALEMENT SUR LA VALEUR ??
       ENDIF
       CALL JEDEMA()
       END

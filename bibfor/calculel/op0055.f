@@ -3,7 +3,7 @@
       INTEGER             IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/03/2003   AUTEUR ASSIRE A.ASSIRE 
+C MODIF CALCULEL  DATE 07/10/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,9 +46,9 @@ C
       INTEGER       NBV, IFM, IRET, IRETEX, IRETNO, IRETOR, JEXTR,
      +              JNORM, JORIG, NIV, N1, N2, IOC
       REAL*8        PS1, PS2, R8PREM, ZERO
-      LOGICAL       CODE, LBID
       CHARACTER*8   K8B, RESU, NOMA, ENTIT1, ENTIT2
       CHARACTER*16  TYPE, OPER, TYPFON, MOTCLE(2), TYPMCL(2)
+      CHARACTER*24  NCNCIN
 C DEB-------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -77,7 +77,7 @@ C
       CALL GETVID ( TYPFON, 'NOEUD_ORIG'   , 1,1,0, K8B, N1 )
       CALL GETVID ( TYPFON, 'GROUP_NO_ORIG', 1,1,0, K8B, N2 )
       IF ( N1+N2 .EQ. 0 ) THEN
-         CALL GVERIF ( RESU, NOMA, TYPFON, ENTIT2, CODE )
+         CALL GVERIF ( RESU, NOMA, TYPFON, ENTIT2 )
       ELSE
          IOC = 1
          MOTCLE(1) = 'GROUP_MA'
@@ -87,43 +87,43 @@ C
          CALL FONFIS ( RESU, NOMA, TYPFON, IOC,  
      +                    2, MOTCLE, TYPMCL, 'G' )
       ENDIF
-      CALL GVERIF(RESU,NOMA,TYPFON,ENTIT1,CODE)
+      CALL GVERIF(RESU,NOMA,TYPFON,ENTIT1)
 C
 C
 C ---  MOT CLE FACTEUR : LEVRE_SUP
 C      ---------------------------
 C
-      CALL GVERIF(RESU,NOMA,'LEVRE_SUP',ENTIT2,CODE)
+      CALL GVERIF(RESU,NOMA,'LEVRE_SUP',ENTIT2)
 C
 C ---  MOT CLE FACTEUR : LEVRE_INF
 C      ---------------------------
 C
-      CALL GVERIF(RESU,NOMA,'LEVRE_INF',ENTIT2,CODE)
+      CALL GVERIF(RESU,NOMA,'LEVRE_INF',ENTIT2)
 C
 C ---  MOT CLE FACTEUR : NORMALE
 C      -------------------------
 C
-      CALL GVERIF(RESU,NOMA,'NORMALE',KBID,LBID)
+      CALL GVERIF(RESU,NOMA,'NORMALE',KBID)
 C
 C ---  MOT CLE FACTEUR : DTAN_ORIG
 C      ------------------------------
 C
-      CALL GVERIF(RESU,NOMA,'DTAN_ORIG'   ,KBID,LBID)
+      CALL GVERIF(RESU,NOMA,'DTAN_ORIG'   ,KBID)
 C
 C ---  MOT CLE FACTEUR : DTAN_EXTR
 C      --------------------------------
 C
-      CALL GVERIF(RESU,NOMA,'DTAN_EXTR'     ,KBID,LBID)
+      CALL GVERIF(RESU,NOMA,'DTAN_EXTR'     ,KBID)
 C
 C ---  MOT CLE FACTEUR : VECT_GRNO_ORIG
 C      --------------------------------
 C
-      CALL GVERIF(RESU,NOMA,'VECT_GRNO_ORIG',KBID,LBID)
+      CALL GVERIF(RESU,NOMA,'VECT_GRNO_ORIG',KBID)
 C
 C ---  MOT CLE FACTEUR : VECT_GRNO_EXTR
 C      --------------------------------
 C
-      CALL GVERIF(RESU,NOMA,'VECT_GRNO_EXTR',KBID,LBID)
+      CALL GVERIF(RESU,NOMA,'VECT_GRNO_EXTR',KBID)
 C
 C VERIFICATION DE L'ORTHOGONALITE DE LA NORMALE AU PLAN DES LEVRES
 C  ET DES 2 DIRECTIONS TANGENTES
@@ -159,14 +159,14 @@ C
      &                'OBJET POUR LE MOT CLE FOND')
 C
         CALL JEEXIN(RESU//'.LEVRESUP  .MAIL',IRET)
-C
         IF(IRET.NE.0) THEN
           CALL JEIMPO('MESSAGE',RESU//'.LEVRESUP  .MAIL',' ',
      &                  'OBJET POUR LE MOT CLE LEVRE_SUP')
 C
         ENDIF
 C
-        IF (CODE) THEN
+        CALL JEEXIN(RESU//'.LEVREINF  .MAIL',IRET)
+        IF(IRET.NE.0) THEN
             CALL JEIMPO('MESSAGE',RESU//'.LEVREINF  .MAIL',' ',
      &                'OBJET POUR LE MOT CLE LEVRE_INF')
         ENDIF
@@ -186,6 +186,10 @@ C
      &                  'OBJET POUR LE MOT CLE DTAN_EXTR')
         ENDIF
       ENDIF
+C
+      NCNCIN = '&&OP055.CONNECINVERSE  '
+      CALL JEEXIN ( NCNCIN, IRET )
+      IF (IRET .NE. 0) CALL JEDETR( NCNCIN )
 C
       CALL JEDEMA()
       END

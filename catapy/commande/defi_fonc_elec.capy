@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/12/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ DEFI_FONC_ELEC=OPER(nom="DEFI_FONC_ELEC",op=64,sd_prod=fonction,docu="U4.mk.10-e
               EXCLUS('COUR','COUR_SECO'), ),
          FREQ            =SIMP(statut='f',typ='R',defaut= 50.),
          SIGNAL          =SIMP(statut='f',typ='TXM',defaut="COMPLET",into=("COMPLET","CONTINU") ),
-         COUR            =FACT(statut='f',min=1,max='**',
+         COUR            =FACT(statut='f',max='**',
          fr="Définition du courant de court-circuit",
            regles=(UN_PARMI('PHI_CC_1','INTC_CC_1'),
                    UN_PARMI('PHI_CC_2','INTC_CC_2'),),
@@ -38,7 +38,7 @@ DEFI_FONC_ELEC=OPER(nom="DEFI_FONC_ELEC",op=64,sd_prod=fonction,docu="U4.mk.10-e
            INST_CC_INIT    =SIMP(statut='o',typ='R'),
            INST_CC_FIN     =SIMP(statut='o',typ='R'),
          ),
-         COUR_PRIN       =FACT(statut='f',min=1,max=1,
+         COUR_PRIN       =FACT(statut='f',
          fr="Définition du courant de court-circuit avec réenclenchement",
            regles=(UN_PARMI('PHI_CC_1','INTC_CC_1'),),
            INTE_CC_1       =SIMP(statut='o',typ='R'),
@@ -53,7 +53,7 @@ DEFI_FONC_ELEC=OPER(nom="DEFI_FONC_ELEC",op=64,sd_prod=fonction,docu="U4.mk.10-e
            INST_RENC_INIT  =SIMP(statut='f',typ='R',defaut= 0.0E+0),
            INST_RENC_FIN   =SIMP(statut='f',typ='R',defaut= 0.0E+0),
          ),
-         COUR_SECO       =FACT(statut='f',min=1,max='**',
+         COUR_SECO       =FACT(statut='f',max='**',
          fr="Définition du courant de court-circuit avec un intervalle de temps différent de celui de COUR_PRIN",
            regles=(UN_PARMI('PHI_CC_2','INTC_CC_2'),),
            INTE_CC_2       =SIMP(statut='o',typ='R'),

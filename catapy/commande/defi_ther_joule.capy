@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/12/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,7 @@ DEFI_THER_JOULE=OPER(nom="DEFI_THER_JOULE",op= 121,sd_prod=fonction,docu="U4.mk.
          TEMP_EXT_POSE   =SIMP(statut='f',typ='R',defaut= 15.0E+0),
          TEMP_EXT        =SIMP(statut='f',typ='R',defaut= 15.0E+0),
          TEMP_RESI_REF   =SIMP(statut='f',typ='R',defaut= 20.0E+0),
-         PARA_COND_1D    =FACT(statut='f',min=1,max='**',
+         PARA_COND_1D    =FACT(statut='f',max='**',
            INTE_CC         =SIMP(statut='f',typ='R',defaut= 0.0E+0),
            INTE_RENC       =SIMP(statut='f',typ='R',defaut= 0.0E+0),
            A               =SIMP(statut='f',typ='R',defaut= 1.0E+0),

@@ -1,7 +1,7 @@
       SUBROUTINE ECLAU1(NOMTE,SCHEMA)
       IMPLICIT   NONE
 C TOLE CRP_20
-C MODIF UTILIFOR  DATE 01/04/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 13/08/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -357,6 +357,8 @@ C -----------------------------------------------------------
        SCHEMA = 'QUAD_PG_4'
       ELSE IF(NOMTE.EQ.'MECPQU4') THEN
        SCHEMA = 'QUAD_PG_4'
+      ELSE IF(NOMTE.EQ.'MECPQS4') THEN
+       SCHEMA = 'QUAD_PG_1'
       ELSE IF(NOMTE.EQ.'MECPQU8') THEN
        SCHEMA = 'QUAD_PG_9'
       ELSE IF(NOMTE.EQ.'MECPQU9') THEN
@@ -495,12 +497,14 @@ C -----------------------------------------------------------
        SCHEMA = 'QUAD_PG_9'
       ELSE IF(NOMTE.EQ.'MEDPQU4') THEN
        SCHEMA = 'QUAD_PG_4'
+      ELSE IF (NOMTE.EQ.'MEDPQS4') THEN
+        SCHEMA = 'QUAD_PG_1'
       ELSE IF(NOMTE.EQ.'MEDPQU8') THEN
        SCHEMA = 'QUAD_PG_9'
       ELSE IF(NOMTE.EQ.'MEDPQU9') THEN
        SCHEMA = 'QUAD_PG_9'
       ELSE IF(NOMTE.EQ.'MEDPTR3') THEN
-       SCHEMA = 'TRIA_PG_3'
+       SCHEMA = 'TRIA_PG_1'
       ELSE IF(NOMTE.EQ.'MECA_DIS_TR_N') THEN
        SCHEMA = 'POI_PG_1'
       ELSE IF(NOMTE.EQ.'MECA_DIS_TR_L') THEN

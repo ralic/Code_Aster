@@ -1,9 +1,8 @@
        SUBROUTINE NIFN3D(NNO1  , NNO2  , NPG   , POIDSG, VFF1  , VFF2  ,
      &                   DFDE1 ,DFDN1, DFDK1 ,  DFDI, GEOM  ,  SIG   ,
-     &                   DEPLM,DDEPL,GONFLM,DGONFL,
-     &                   FINTU , FINTA )
+     &                   DEPLM,GONFLM, FINTU , FINTA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2002   AUTEUR VABHHTS J.TESELET 
+C MODIF ALGORITH  DATE 11/08/2003   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,16 +23,15 @@ C ======================================================================
        INTEGER       NNO1,NNO2, NPG
        REAL*8        DFDE1(*),DFDN1(*),DFDK1(*)
        REAL*8        POIDSG(NPG), VFF1(NNO1,NPG),VFF2(NNO2,NPG)
-       REAL*8        GEOM(3,NNO1)
+       REAL*8        GEOM(3,NNO1),DFDI(NNO1,3)
        REAL*8        SIG(7,NPG)
        REAL*8        FINTU(3,20), FINTA(2,8)
-       REAL*8        DFDI(NNO1,3)
-       REAL*8        DEPLM(3,NNO1),DDEPL(3,NNO1)
-       REAL*8        GONFLM(2,NNO2),DGONFL(2,NNO2)
-
+       REAL*8        DEPLM(3,NNO1), GONFLM(2,NNO2)
 C......................................................................
 C
 C     BUT:  CALCUL  DE L'OPTION FORC_NODA EN QUASI INCOMPRESSIBLE
+C                  DEFORMATION = 'PETIT'
+C     APPELEE PAR  TE0481F 
 C......................................................................
 C IN  NNO1    : NOMBRE DE NOEUDS DE L'ELEMENT LIES AUX DEPLACEMENTS
 C IN  NNO2    : NOMBRE DE NOEUDS DE L'ELEMENT LIES A LA PRESSION
@@ -46,6 +44,8 @@ C IN  DFDN1   : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
 C IN  DFDK1   : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
 C IN  GEOM    : COORDONEES DES NOEUDS
 C IN  SIG     : CONTRAINTES A L'INSTANT PRECEDENT
+C IN  DEPLM   : DEPLACEMENTS A L'INSTANT PRECEDENT
+C IN  GONFLM  : VARIABLES LIEES AU GONFLEMENT A L'INSTANT PRECEDENT
 C OUT DFDI    : DERIVEE DES FONCTIONS DE FORME  AU DERNIER PT DE GAUSS
 C OUT FINTU   : FORCES INTERIEURES ASSOCIEES AU DEPLACEMENT
 C OUT FINTA   : FORCES INTERIEURES ASSOCIEES A LA PRESSION ET GONFLEMENT
@@ -53,13 +53,10 @@ C......................................................................
 
       LOGICAL      GRAND, AXI
       INTEGER      KPG,N,I
-      REAL*8       DEF(6,20,3)
-      REAL*8       TMP, RAC2, RBID
-      REAL*8       F(3,3),POIDS,EPSM(6),DEPS(6),SIGMA(6)
-      REAL*8       GM,DG,DIVUM,DDIVU
-      REAL*8       R8DOT
+      REAL*8       TMP, RAC2, RBID,DEF(6,20,3)
+      REAL*8       F(3,3),POIDS,EPSM(6),SIGMA(6)
+      REAL*8       GM,DIVUM,  R8DOT
 C --------------------------------------------------------------------
-
 
 C - PRE REQUIS
       IF (NNO1 .GT. 20) CALL UTMESS('F','NIFN3D','DVP : TROP DE NOEUDS')
@@ -76,26 +73,18 @@ C - CALCUL POUR CHAQUE POINT DE GAUSS
       DO 800 KPG = 1,NPG
 C - CALCUL DU GONFLEMENT
         GM = 0.D0
-        DG = 0.D0
         DO 1 N = 1, NNO2
           GM = GM + VFF2(N,KPG)*GONFLM(2,N)
-          DG = DG + VFF2(N,KPG)*DGONFL(2,N)
  1      CONTINUE
 
 C      CALCUL DES ELEMENTS GEOMETRIQUES
         CALL R8INIR(6, 0.D0, EPSM,1)
-        CALL R8INIR(6, 0.D0, DEPS,1)
         CALL NMGEOM(3,NNO1,AXI,GRAND,GEOM,KPG,POIDSG(KPG),
      &              VFF1(1,KPG),DFDE1,DFDN1,DFDK1,DEPLM,POIDS,DFDI,
      &              F,EPSM,RBID)
-        CALL NMGEOM(3,NNO1,AXI,GRAND,GEOM,KPG,POIDSG(KPG),
-     &              VFF1(1,KPG),DFDE1,DFDN1,DFDK1,DDEPL,POIDS,DFDI,
-     &              F,DEPS,RBID)
         DIVUM = EPSM(1) + EPSM(2) + EPSM(3)
-        DDIVU = DEPS(1) + DEPS(2) + DEPS(3)
 
 C      CALCUL DE LA MATRICE B
-
         DO 35 N=1,NNO1
           DO 30 I=1,3
             DEF(1,N,I) =  F(I,1)*DFDI(N,1)
@@ -108,7 +97,6 @@ C      CALCUL DE LA MATRICE B
  35     CONTINUE
 
 C      CALCUL DES CONTRAINTES MECANIQUES A L'EQUILIBRE
-
         DO 40 I=1,3
           SIGMA(I) = SIG(I,KPG)
  40     CONTINUE
@@ -125,9 +113,8 @@ C        CALCUL DE FINT_U
  3      CONTINUE
 
 C        CALCUL DE FINT_P ET FINT_G
-
         DO  4 N = 1, NNO2
-          TMP = (DIVUM + DDIVU - GM - DG)*VFF2(N, KPG)
+          TMP = (DIVUM - GM )*VFF2(N, KPG)
           FINTA(1,N) = FINTA(1,N) + TMP*POIDS
 
           TMP = SIG(7,KPG)*VFF2(N,KPG)

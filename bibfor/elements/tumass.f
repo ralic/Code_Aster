@@ -1,7 +1,7 @@
       SUBROUTINE TUMASS(OPTION,ELREFE,NBRDDL,NVEC,TNVEC,B,MASS1,MASS,
      &                  PASS,KTEMP)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 03/07/2002   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -154,7 +154,7 @@ C     --- RECUPERATION DES ORIENTATIONS ---
 C       -- CALCUL DES TEMPERATURES INF, SUP ET MOY
 C          (MOYENNE DES NNO NOEUDS) ET DES COEF. DES POLY. DE DEGRE 2 :
 C          ------------------------------------------------------------
-      CALL TECAC2 ('NNN','PTEMPER',8,ITAB,IRET)
+      CALL TECACH ('NNN','PTEMPER',8,ITAB,IRET)
       ITEMP=ITAB(1)
       IF (ITEMP.GT.0) THEN
         NBPAR = 1

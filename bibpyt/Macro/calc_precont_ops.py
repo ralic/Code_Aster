@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 01/04/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF calc_precont_ops Macro  DATE 15/09/2003   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,6 +31,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   import copy
   import aster
   import string
+  import types
   from Accas import _F
   from Noyau.N_utils import AsType
   ier=0
@@ -178,6 +179,17 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   #     Recuperation des cables dans les concepts CABLE_BP
   #     et CABLE_BP_INACTIF
   # ------------------------------------------------------
+  if type(CABLE_BP) is not types.NoneType:
+    if type(CABLE_BP) is not types.TupleType:
+      CABLE_BP0 = CABLE_BP
+      CABLE_BP = []
+      CABLE_BP.append ( CABLE_BP0 )
+
+  if type(CABLE_BP_INACTIF) is not types.NoneType:
+    if type(CABLE_BP_INACTIF) is not types.TupleType:
+      CABLE_BP_INACTIF0 = CABLE_BP_INACTIF
+      CABLE_BP_INACTIF = []
+      CABLE_BP_INACTIF.append ( CABLE_BP_INACTIF0 )
 
   motscles={}
   motscles['RELA_CINE_BP']=[]

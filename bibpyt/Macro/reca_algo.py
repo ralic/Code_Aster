@@ -1,4 +1,4 @@
-#@ MODIF reca_algo Macro  DATE 13/01/2003   AUTEUR PABHHHH N.TARDIEU 
+#@ MODIF reca_algo Macro  DATE 04/07/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,9 @@ from Numeric import take
 import copy,os
 import LinearAlgebra 
 from Cata.cata import INFO_EXEC_ASTER
+from Cata.cata import DETRUIRE
 from Macro.recal import EXTRACT
+from Accas import _F
 
 
 def calcul_gradient(A,erreur):
@@ -107,6 +109,7 @@ def temps_CPU(self,restant_old,temps_iter_old):
    # Fonction controlant le temps CPU restant
    CPU=INFO_EXEC_ASTER(LISTE_INFO = ("CPU_RESTANT",))
    TEMPS=CPU['CPU_RESTANT',1]
+   DETRUIRE(CONCEPT=_F(NOM='CPU'))
    err=0
    # Indique une execution interactive
    if (TEMPS>1.E+9):
@@ -210,8 +213,8 @@ def actualise_lambda(l,val,new_val,A,erreur,new_J,old_J):
    Q=Numeric.matrixmultiply(Numeric.transpose(A),A) +l*id
    # Second membre du système
    d=Numeric.matrixmultiply(Numeric.transpose(A),erreur)
-   old_Q=0.5*Numeric.dot(Numeric.transpose(val),Numeric.dot(Q,val))+Numeric.dot(Numeric.transpose(val),d)
-   new_Q=0.5*Numeric.dot(Numeric.transpose(new_val),Numeric.dot(Q,new_val))+Numeric.dot(Numeric.transpose(new_val),d)
+   old_Q=old_J
+   new_Q=old_J+0.5*Numeric.dot(Numeric.transpose(new_val-val),Numeric.dot(Q,new_val-val))+Numeric.dot(Numeric.transpose(new_val-val),d)
    # Ratio de la décroissance réelle et de l'approx. quad.
    try:
       R=(old_J-new_J)/(old_Q-new_Q)

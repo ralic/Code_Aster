@@ -1,4 +1,4 @@
-# MODIF  DATE 20/03/2001   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 # TITRE TEST THM_D_PLAN_DPTR6, MASSIF POREUX SATURE CHAUFFE PAR UN FLUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,6 +134,7 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    PRE2 = 0.,
    PORO = 0.4,
    PRES_VAPE = 1.),
+                               COMP_THM = 'LIQU_SATU',
                                      ELAS=_F( 
    E = 225.E6,
    NU = 0.,

@@ -1,6 +1,6 @@
       SUBROUTINE GETCON(NOMRES,IOB,CTYPE,LCON,IADVAR,NOMOB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 11/02/2003   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,19 +51,24 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8     K8BID
       CHARACTER*4     TYPE
       CHARACTER*2     ACCES
-      INTEGER JRES,IRET,IBID,I,LOBJ
-      CHARACTER*32     NOML32, JEXNUM
+      CHARACTER*1     XOUS,GENR
+      INTEGER         JRES,IRET,IBID,I,LOBJ,IAD,KK
+      CHARACTER*32    NOML32, JEXNUM
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
       NOML32=NOMRES
       CALL JJVERN(NOML32,0,IRET)
+      CALL JELIRA(NOML32,'XOUS',IBID,XOUS)
+      CALL JELIRA(NOML32,'GENR',IBID,GENR)
       NOMOB='        '
       IF(IRET.EQ.0)THEN
 C     CET OBJET N'EXISTE PAS
          CTYPE=0
-      ELSE IF(IRET.EQ.2)THEN
+      ELSE IF(XOUS.EQ.'X')THEN
+C     ------------------------------------------------------------------
 C     CET OBJET EST UNE COLLECTION, ON VEUT SON ELEMENT NUMERO IOB
+C     ------------------------------------------------------------------
          CTYPE=0
          CALL JEEXIN(JEXNUM(NOML32,IOB),IRET)
          IF (IRET.LE.0) GOTO 999
@@ -111,10 +116,15 @@ C     LES VALEURS SONT DES CHAINES
 C     TYPE INCONNU
             CTYPE=0
          ENDIF
-      ELSE 
+      ELSE IF((XOUS.EQ.'S').AND.(GENR.NE.'N'))THEN
+C     ------------------------------------------------------------------
 C     CET OBJET EXISTE ET EST SIMPLE. ON PEUT AVOIR SA VALEUR
+C     ------------------------------------------------------------------
          CALL JEVEUO(NOML32,'L',JRES)
          CALL JELIRA(NOML32,'LONUTI',LCON,K8BID)
+         IF (LCON.EQ.0) THEN
+             CALL JELIRA(NOML32,'LONMAX',LCON,K8BID)
+         ENDIF
          CALL JELIRA(NOML32,'TYPELONG',IBID,TYPE)
          IF(TYPE.EQ.'R')THEN
 C     LES VALEURS SONT REELLES
@@ -152,6 +162,36 @@ C     LES VALEURS SONT DES CHAINES
 C     TYPE INCONNU
             CTYPE=0
          ENDIF
+      ELSE IF((XOUS.EQ.'S').AND.(GENR.EQ.'N'))THEN
+C     ------------------------------------------------------------------
+C     CET OBJET EST SIMPLE MAIS C EST UN REPERTOIRE DE NOMS
+C     ------------------------------------------------------------------
+         CALL JELIRA(NOML32,'NOMUTI',LCON,K8BID)
+         IF (LCON.EQ.0) THEN
+             CALL JELIRA(NOML32,'NOMMAX',LCON,K8BID)
+         ENDIF
+         CALL JELIRA(NOML32,'TYPELONG',IBID,TYPE)
+         CALL JEDETR('&&GETCON.PTEUR_NOM')
+         CALL WKVECT('&&GETCON.PTEUR_NOM','V V '//TYPE,LCON,IAD)
+         IF (TYPE.EQ.'K8') THEN
+           DO 51, KK=1,LCON
+             CALL JENUNO(JEXNUM(NOML32,KK),ZK8(IAD-1+KK))
+51         CONTINUE
+           CTYPE=4
+           IADVAR=LOC(ZK8(IAD))
+         ELSE IF (TYPE.EQ.'K16') THEN
+           DO 52, KK=1,LCON
+             CALL JENUNO(JEXNUM(NOML32,KK),ZK16(IAD-1+KK))
+52         CONTINUE
+           CTYPE=5
+           IADVAR=LOC(ZK16(IAD))
+         ELSE IF (TYPE.EQ.'K24') THEN
+           DO 53, KK=1,LCON
+             CALL JENUNO(JEXNUM(NOML32,KK),ZK24(IAD-1+KK))
+53         CONTINUE
+           CTYPE=6
+           IADVAR=LOC(ZK24(IAD))
+         END IF
       ENDIF
 
  999  CONTINUE

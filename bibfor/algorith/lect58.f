@@ -1,8 +1,8 @@
       SUBROUTINE LECT58 (IDEAS,NOMRES,MAIL,TYPRES,ACCES,LISTR8,
      &                   LISTIS,PRECIS,CRIT,EPSI)
-C     ------------------------------------------------------------------
+C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/09/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,14 +34,14 @@ C                        NUMEROS D'ORDRE A LIRE
 C     IN : PRECIS : INDICATEUR DE VERIFICATION DE LA PRECISION
 C     IN : CRIT : PRECISION : CRITERE RELATIF OU ABSOLU
 C     IN : EPSI : PRECISION DEMANDEE
-C     ------------------------------------------------------------------
+C     -----------------------------------------------------------------
       IMPLICIT NONE
       LOGICAL ASTOCK
       INTEGER IDEAS,PRECIS
       CHARACTER*(*) NOMRES,MAIL,TYPRES,ACCES,LISTR8,LISTIS,CRIT
       REAL*8 EPSI
 C
-C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
+C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ---------------------------
 C
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
@@ -60,13 +60,13 @@ C
 C
       CHARACTER*32 JEXNOM,JEXNUM
 C
-C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C----------  FIN  COMMUNS NORMALISES  JEVEUX  -------------------------
 C
       CHARACTER*6   NOMROU, KAR
       CHARACTER*8   K8BID, LABK8, NOMGD, LICMP(30), MAILLA
       CHARACTER*16  NOMSYM,MOTCLE(1),TYMOCL(1)
-      CHARACTER*19  CNS,NOMCH
-      CHARACTER*24  VABS,VORI,VCOR,VALMES
+      CHARACTER*19  CNS,NOMCH,PRFCHN
+      CHARACTER*24  VABS,VORI,VCOR,VALMES,NOOJB
       CHARACTER*80  LIGNE, REPEM1, REC(20)
       INTEGER NBABS, ITYPE, IDIR, NBNMES, ICHAMP, NBMESU
       INTEGER LABEL, LCORR, IBID, LORI
@@ -80,7 +80,7 @@ C
       LOGICAL TROUVE,ZCMPLX,FICAB,FICVA
 C
       DATA NOMROU/'LECT58'/
-C-----------------------------------------------------------------------
+C----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
@@ -343,6 +343,9 @@ C CREATION DE SD_RESULTAT DYNA_TRANS / DYNA_HARMO / HARM_GENE : TYPRES
      &        'INCOMPATIBLES AVEC DYNA_HARMO OU HARM_GENE')
 
       CALL RSCRSD(NOMRES,TYPRES,NBABS)
+      NOOJB='12345678.00000.NUME.PRNO'
+      CALL GNOMSD ( NOOJB,10,14)
+      PRFCHN=NOOJB(1:19)
       DO 200 NUMORD = 1,NBABS
         RVAL = ZR(LABS-1 +NUMORD)
         CALL NUMEOK(ACCES,NUMORD,RVAL,LISTR8,LISTIS,PRECIS,
@@ -448,7 +451,7 @@ C FIN TRAITEMENT DES ORIENTATIONS POUR DEPL
 
 C RECUPERATION DU NOM DU CHAMP POUR NUMORD : NOMCH
           CALL RSEXCH(NOMRES,NOMSYM,NUMORD,NOMCH,IRET)
-          CALL CNSCNO(CNS,' ','G',NOMCH)
+          CALL CNSCNO(CNS,PRFCHN,'G',NOMCH)
 C
           CALL RSNOCH(NOMRES,NOMSYM,NUMORD,' ')
           IF(ZCMPLX) THEN

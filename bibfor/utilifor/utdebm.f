@@ -1,6 +1,6 @@
       SUBROUTINE UTDEBM ( CH1 , SPGLU , TEXTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 08/09/1999   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILIFOR  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER* (*)        CH1
       CHARACTER*(*)             SPGLU , TEXTE
 C     ==================================================================
@@ -27,6 +27,7 @@ C     ==================================================================
       COMMON /UTINIF/  UNIT               , NBUNIT
       INTEGER          MXCOLS , ITABU , LIGCOU , COLCOU , IDF
       COMMON /UTINIP/  MXCOLS , ITABU , LIGCOU , COLCOU , IDF
+      INTEGER          NT
       PARAMETER      ( NT = 10 )
       CHARACTER*132    TAMPON
       COMMON /UTTAMP/  TAMPON(NT)
@@ -48,7 +49,7 @@ C     ------------------------------------------------------------------
       CHARACTER *16    NOMCMD,DATE
       CHARACTER *8     K8B
       INTEGER          CDEB , CFIN
-C     ------------------------------------------------------------------
+      INTEGER          IFIC,INIVO,IUTIL,IVERS,K,LC,LL,LXLGUT         
 C     ------------------------------------------------------------------
       CALL GETRES(K8B,K8B,NOMCMD)
       IDF  = INDEX('EFIDASX',CH1(1:1))
@@ -87,8 +88,8 @@ C
       LIGCOU = 1
       LL  = MIN(MXCOLS-10,LXLGUT(SPGLU))
       SPG = SPGLU(1:LL)
-C -- MESSAGE:     E             F             A             S
-      IF ( IDF.EQ.1 .OR. IDF.EQ.2 .OR. IDF.EQ.5 .OR. IDF.EQ.6 ) THEN
+C -- MESSAGE:     E             F             A 
+      IF ( IDF.EQ.1 .OR. IDF.EQ.2 .OR. IDF.EQ.5 ) THEN
         IF (IDF.EQ.1) NBERRE=NBERRE+1
         IF (IDF.EQ.2) NBERRF=NBERRF+1
         LC  = LXLGUT(NOMCMD)
@@ -102,17 +103,39 @@ C -- MESSAGE:     E             F             A             S
           TAMPON(1) (1 : COLCOU) = '<'//CH1(1:1)//'> <'//SPG1(1:LC)//
      &                             '> <'//SPG(1:LL)//'>  '
         ENDIF
+C -- MESSAGE:          S
+      ELSE IF ( IDF.EQ.6 ) THEN
+        IF (IDF.EQ.1) NBERRE=NBERRE+1
+        IF (IDF.EQ.2) NBERRF=NBERRF+1
+        LC  = LXLGUT(NOMCMD)
+        SPG1 = NOMCMD(1:LC)
+        IF ( SPG1 .EQ. SPG ) THEN
+          COLCOU = LDEB + LL + 3
+          TAMPON(1) (1 : COLCOU) = '<'//SPG(1:LL)//'>  '
+        ELSE
+          COLCOU = LDEB + LL + 3 + LC + 3
+          TAMPON(1) (1 : COLCOU) = '<'//SPG1(1:LC)//
+     &                             '> <'//SPG(1:LL)//'>  '
+        ENDIF
       ELSE
         COLCOU = LDEB + LL + 3
         TAMPON(1) (1 : COLCOU) = '<'//CH1(1:1)//'> <'//SPG(1:LL)//'>  '
       ENDIF
-      IF ( IDF.EQ.2 .OR. IDF.EQ.6 ) THEN
+      IF ( IDF.EQ.2 ) THEN
         CALL VERSIO(IVERS,IUTIL,INIVO,DATE,LEXP)
         WRITE(VERS,'(I2,''.'',I2,''.'',I2,'' '',A10)')
      &        IVERS,IUTIL,INIVO,DATE(1:10)
         LIGCOU = 2
         TAMPON(2) = TAMPON(1)
         TAMPON(1) = '<'//CH1(1:1)//'> <ASTER '//VERS//'>  '
+      ENDIF
+      IF ( IDF.EQ.6 ) THEN
+        CALL VERSIO(IVERS,IUTIL,INIVO,DATE,LEXP)
+        WRITE(VERS,'(I2,''.'',I2,''.'',I2,'' '',A10)')
+     &        IVERS,IUTIL,INIVO,DATE(1:10)
+        LIGCOU = 2
+        TAMPON(2) = TAMPON(1)
+        TAMPON(1) = '<ASTER '//VERS//'>  '
       ENDIF
 100   CONTINUE
       CALL UTRTAM ( TEXTE )

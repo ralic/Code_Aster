@@ -3,7 +3,7 @@
       CHARACTER*8 ELREFE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/12/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,63 +47,6 @@ C --------- FIN DECLARATIONS NORMALISEES  JEVEUX ---------------------
       REAL*8 X(3*27)
       CHARACTER*24 LIOBJ(NMAXOB)
       CHARACTER*16 ELREFL
-      LOGICAL INCO
 C DEB ------------------------------------------------------------------
-
-
-      NBOBJ = 5
-      CALL ASSERT(NMAXOB.GT.NBOBJ)
-      ELREFL = ELREFE
-      LIOBJ(1) = '&INEL.'//ELREFE//'.CARACTE'
-      LIOBJ(2) = '&INEL.'//ELREFE//'.FFORMES'
-      LIOBJ(3) = '&INEL.'//ELREFE//'.TRAVAIL'
-      LIOBJ(4) = '&INEL.'//ELREFL//'.A'
-      LIOBJ(5) = '&INEL.'//ELREFL//'.B'
-
-
-
-      CALL JEEXIN('&INEL.'//ELREFE//'.CARACTE',IRET)
-      IF (IRET.GT.0) GO TO 20
-
-      CALL CARREF(ELREFE,NDIM,NNO,NNOS,NBFPG,NBPG,X)
-
-
-      IF ((ELREFE(1:4).EQ.'HEXI') .OR. (ELREFE(1:5).EQ.'PENTI') .OR.
-     &    (ELREFE(1:5).EQ.'PYRAI') .OR.
-     &    (ELREFE(1:5).EQ.'TETRI')) INCO = .TRUE.
-
-C     ------------------------------------------------------------------
-      IF (ELREFE.EQ.'HEXA8   ' .OR. ELREFE.EQ.'HEXI8   ' .OR.
-     &    ELREFE.EQ.'HEXA20  ' .OR. ELREFE.EQ.'HEXS20  ' .OR.
-     &    ELREFE.EQ.'HEXD20  ' .OR. ELREFE.EQ.'TETRA10D' .OR.
-     &    ELREFE.EQ.'HEXI20  ' .OR. ELREFE.EQ.'HEXA27  ' .OR.
-     &    ELREFE.EQ.'TETRA4  ' .OR. ELREFE.EQ.'TETRI4  ' .OR.
-     &    ELREFE.EQ.'TETRA10 ' .OR. ELREFE.EQ.'TETRI10 ' .OR.
-     &    ELREFE.EQ.'PENTA6  ' .OR. ELREFE.EQ.'PENTA15 ' .OR.
-     &    ELREFE.EQ.'PENTA15D' .OR. ELREFE.EQ.'PYRAM13D' .OR.
-     &    ELREFE.EQ.'PYRAM5  ' .OR. ELREFE.EQ.'PYRAM13 ' .OR.
-     &    ELREFE.EQ.'HEXA8L  ' .OR. ELREFE.EQ.'TETRA4L ' .OR.
-     &    ELREFE.EQ.'PENTA6L ') THEN
-
-        CALL WKVECT('&INEL.'//ELREFE//'.TRAVAIL','G V R',
-     &              NNO* (133+36*NNO),ITRAV)
-
-        CALL INIOB1(NDIM,NNO,NNOS,NBFPG,ELREFE,X,NBPG)
-
-   10   CONTINUE
-
-C ------ INITIALISATION DE LA MATRICE "MAGIQUE" DE PASSAGE DES
-C        CONTRAINTES AUX POINTS DE GAUSS AUX CONTRAINTES AUX SOMMETS
-
-        IF (INCO) NBFPG = 1
-
-        CALL INMAT3(NDIM,NNO,NNOS,NBFPG,ELREFE,X,NBPG)
-
-C     ------------------------------------------------------------------
-      ELSE
-        CALL ASSERT(.FALSE.)
-      END IF
-
-   20 CONTINUE
-
+      CALL ASSERT(.FALSE.)
       END

@@ -1,8 +1,8 @@
-      SUBROUTINE ELPIV2(XJVMAX,MATR,NOMA,DEFICO,RESOCO,IDEBUT,LLF,
-     &                  LLF1,LLF2,NBLIAC,NDIM,KKMIN,PIVOT,INDIC)
+      SUBROUTINE ELPIV2(XJVMAX, NDIM, INDIC, NBLIAC, AJLIAI, SPLIAI,
+     +                    LLF, LLF1, LLF2, SPAVAN, NOMA, DEFICO, RESOCO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/10/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 07/07/2003   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,11 +20,11 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT      NONE
-      INTEGER IDEBUT,LLF,LLF1,LLF2,NBLIAC,INDIC,PIVOT,NDIM,KKMIN
-      REAL*8 XJVMAX
-      CHARACTER*8 NOMA
-      CHARACTER*19 MATR
-      CHARACTER*24 RESOCO,DEFICO
+      INTEGER       NDIM, INDIC, NBLIAC, AJLIAI, SPLIAI, LLF, LLF1, LLF2
+      INTEGER       SPAVAN
+      REAL*8        XJVMAX
+      CHARACTER*8   NOMA
+      CHARACTER*24  RESOCO, DEFICO
 C ======================================================================
 C     BUT         : ELIMINATION DES PIVOTS NULS
 C     APPELEE PAR : FRO2GD, FROLGD
@@ -49,316 +49,322 @@ C ======================================================================
 C ======================================================================
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C ======================================================================
-      INTEGER JVALE,KK1,KK2,KK1F,KK2F,JVA,NIV,ILIAC,JLIAC,IFM,KK
-      INTEGER NOTE2,NOTE1,NOTE12,NOTE,JLIOT,NBLIAI,JAPPAR
-      INTEGER PIVOT2,ICONTA,II,POS1,NUM1,JNOCO,LLIAC
-      CHARACTER*8  NOM1
-      CHARACTER*19 LIAC,LIOT
-      CHARACTER*24 APPARI,CONTNO
+      INTEGER       JVALE,KK1,KK2,KK1F,KK2F,JVA,NIV,ILIAC,JLIAC,IFM,KK
+      INTEGER       NOTE2,NOTE1,NOTE12,NOTE,JLIOT,NBLIAI,JAPPAR,LLF0
+      INTEGER       PIVOT2,ICONTA,II,POS1,NUM1,JNOCO,LLIAC,IBID,POSIT
+      INTEGER       BTOTAL,DEKLAG,PIVOT
+      REAL*8        COPMAX
+      CHARACTER*1   TYPEAJ, TYPESP
+      CHARACTER*2   TYPEC0, TYPEF0, TYPEF1, TYPEF2
+      CHARACTER*8   NOM1
+      CHARACTER*19  LIAC, LIOT, MATR
+      CHARACTER*24  APPARI, CONTNO
 C ======================================================================
       CALL INFNIV(IFM,NIV)
       CALL JEMARQ()
 C ======================================================================
+C --- LECTURE DES STRUCTURES DE DONNEES --------------------------------
+C ======================================================================
       CONTNO = DEFICO(1:16)//'.NOEUCO'
-      CALL JEVEUO(CONTNO,'L',JNOCO)
       APPARI = RESOCO(1:14)//'.APPARI'
-      CALL JEEXIN(APPARI,ICONTA)
-      IF (ICONTA.NE.0) THEN
-        CALL JEVEUO(APPARI,'L',JAPPAR)
-        NBLIAI = ZI(JAPPAR)
-      END IF
+      LIAC   = RESOCO(1:14)//'.LIAC'
+      LIOT   = RESOCO(1:14)//'.LIOT'
+      MATR   = RESOCO(1:14)//'.MATR'
 C ======================================================================
-      LIAC = RESOCO(1:14)//'.LIAC'
-      LIOT = RESOCO(1:14)//'.LIOT'
-C ======================================================================
-      CALL JEVEUO(LIAC,'E',JLIAC)
-      CALL JEVEUO(LIOT,'E',JLIOT)
+      CALL JEVEUO(CONTNO,'L',JNOCO )
+      CALL JEVEUO(APPARI,'L',JAPPAR)
+      CALL JEVEUO(LIAC  ,'E',JLIAC )
+      CALL JEVEUO(LIOT  ,'E',JLIOT )
       CALL JEVEUO(JEXNUM(MATR//'.VALE',1),'L',JVALE)
-      PIVOT = 0
-      XJVMAX = XJVMAX*1.D-08
+C ======================================================================
+C --- FIN DE LECTURE DES STRUCTURES DE DONNEES -------------------------
+C ======================================================================
+C --- INITIALISATION ---------------------------------------------------
+C ======================================================================
+      NBLIAI = ZI(JAPPAR )
+      IBID   = 0
+      PIVOT  = 0
+      DEKLAG = 0
+      TYPEAJ = 'A'
+      TYPESP = 'S'
+      TYPEC0 = 'C0'
+      TYPEF0 = 'F0'
+      TYPEF1 = 'F1'
+      TYPEF2 = 'F2'
+      COPMAX = XJVMAX * 1.0D-08
+      IF (NDIM.EQ.3) THEN
+         LLF0 = LLF
+      ELSE
+         LLF0 = 0
+      ENDIF
 C ======================================================================
 C --- VERIFICATION DE LA PRESENCE OU NON D'UN PIVOT NUL ----------------
 C --- SUR L'ENSEMBLE DES LIAISONS EN CONTACT ET ADHERENTES -------------
 C ======================================================================
-      DO 90 KK1 = 1,NBLIAC + LLF* (NDIM-1) + LLF1 + LLF2
-        DO 10 KK2 = 1,KK1
-          JVA = JVALE - 1 + (KK1-1)*KK1/2 + KK2
-          IF (ABS(ZR(JVA)).LT.XJVMAX) THEN
-            PIVOT = 1
-          ELSE
+      BTOTAL = NBLIAC + LLF + LLF1 + LLF2 - 1
+      DO 90 KK1 = 0, BTOTAL
+         ILIAC  = BTOTAL + 1 - KK1
+         LLIAC  = ZI(JLIAC-1+ILIAC)
+         CALL CFTYLI(RESOCO, ILIAC, POSIT)
+         GOTO (1000, 2000, 3000, 4000) POSIT
+ 1000    CONTINUE
+C ======================================================================
+C --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE CONTACT ----------------
+C ======================================================================
+         JVA = JVALE-1 + (ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2
+         DO 10 KK2 = 1, ILIAC + LLF0 - DEKLAG
+            JVA = JVA + 1
+            IF (ABS(ZR(JVA)).LT.COPMAX) THEN
+               PIVOT = 1
+            ELSE
 C ======================================================================
 C --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE ----------
 C ======================================================================
-            PIVOT = 0
-            GO TO 90
-          END IF
-   10   CONTINUE
+               PIVOT = 0
+               GOTO 90
+            END IF
+ 10      CONTINUE
 C ======================================================================
-C --- PIVOT NUL A OTER -------------------------------------------------
+C --- ON INCREMENTE LE VECTEUR DES LIAISONS OTEES LIOT ET ON PREPARE ---
+C --- L'IMPRESSION -----------------------------------------------------
 C ======================================================================
-        IF (KK1.LE.NBLIAC) THEN
-C ======================================================================
-C --- CAS D'UNE LIAISON DE CONTACT -------------------------------------
-C ======================================================================
-          LLIAC = ZI(JLIAC-1+KK1)
-          POS1 = ZI(JAPPAR+3* (LLIAC-1)+1)
-          NUM1 = ZI(JNOCO+ABS(POS1)-1)
-          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM1),NOM1)
-          WRITE (IFM,1000) 'CONTACT : NOEUD ',NOM1
-C          IF (NIV.EQ.2) THEN
-            WRITE (IFM,1010) 'CONTACT:LIAISON ',LLIAC
-C          END IF
-          ZI(JLIOT+4*NBLIAI) = ZI(JLIOT+4*NBLIAI) + 1
-          NOTE = ZI(JLIOT+4*NBLIAI)
-          ZI(JLIOT-1+NOTE) = ZI(JLIAC-1+KK1)
-C ======================================================================
-C --- MISE A JOUR DU NOMBRE DE LIAISONS DE CONTACT ---------------------
-C ======================================================================
-          NBLIAC = NBLIAC - 1
+         POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+         NUM1 = ZI(JNOCO+ABS(POS1)-1)
+         CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM1),NOM1)
+         WRITE (IFM,9000) 'CONTACT : NOEUD ',NOM1
+         IF (NIV.EQ.2) THEN
+            WRITE (IFM,9001) 'CONTACT : LIAISON ',LLIAC
+         END IF
+         ZI(JLIOT+4*NBLIAI) = ZI(JLIOT+4*NBLIAI) + 1
+         NOTE = ZI(JLIOT+4*NBLIAI)
+         ZI(JLIOT-1+NOTE) = LLIAC
 C ======================================================================
 C --- MISE A JOUR DU VECTEUR DES LIAISONS DE CONTACT -------------------
 C ======================================================================
-          DO 20 ILIAC = KK1,NBLIAC + LLF + LLF1 + LLF2
-             ZI(JLIAC-1+ILIAC) = ZI(JLIAC+ILIAC)
-   20     CONTINUE
+         CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
+     +                                 RESOCO,TYPESP,ILIAC,LLIAC,TYPEC0)
+         GOTO 100
+ 2000    CONTINUE
 C ======================================================================
-C --- PRISE EN COMPTE DE LA SUPPRESSION DE LA LIAISON DE CONTACT -------
-C --- AU NIVEAU DU FROTTEMENT ADHERENT ---------------------------------
+C --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE FROTTEMENT ADHERENT ----
+C --- (DANS LE CAS GENERAL EN 2D/SUIVANT LES DEUX DIRECTIONS EN 3D) ----
 C ======================================================================
-C --- FROTTEMENT ADHERENT SUIVANT LES DEUX DIRECTIONS ------------------
+         IF (NDIM.EQ.3) THEN
+            DEKLAG = DEKLAG + 1
+            JVA = JVALE-1 + (ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2
+            DO 20 KK2 = 1, ILIAC + LLF0 - DEKLAG
+               JVA = JVA + 1
+               IF (ABS(ZR(JVA)).LT.COPMAX) THEN
+                  PIVOT = 1
+               ELSE
 C ======================================================================
-          DO 40 ILIAC = NBLIAC + 1,NBLIAC + LLF
-             IF (ZI(JLIOT-1+NOTE).EQ.ZI(JLIAC-1+ILIAC)) THEN
-                LLF = LLF - 1
-                ZI(JLIOT+4*NBLIAI+1) = ZI(JLIOT+4*NBLIAI+1) + 1
-                NOTE12 = ZI(JLIOT+4*NBLIAI+1)
-                ZI(JLIOT-1+NOTE12+NBLIAI) = ZI(JLIAC-1+ILIAC)
-                DO 30 II = ILIAC,NBLIAC + LLF + LLF1 + LLF2
-                   ZI(JLIAC-1+II) = ZI(JLIAC+II)
-   30           CONTINUE
-             END IF
-   40     CONTINUE
+C --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE ----------
 C ======================================================================
-C --- FROTTEMENT ADHERENT SUIVANT LA PREMIERE DIRECTION ----------------
+                  PIVOT = 0
+               ENDIF
+ 20         CONTINUE
+            DO 30 KK2 = 1, ILIAC + LLF0 - DEKLAG + 1
+               JVA = JVA + 1
+               IF (ABS(ZR(JVA)).LT.COPMAX) THEN
+                  PIVOT2 = 1
+               ELSE
 C ======================================================================
-          DO 60 ILIAC = NBLIAC + LLF + 1,NBLIAC + LLF + LLF1
-             IF (ZI(JLIOT-1+NOTE).EQ.ZI(JLIAC-1+ILIAC)) THEN
-                LLF1 = LLF1 - 1
-                DO 50 II = ILIAC,NBLIAC + LLF + LLF1 + LLF2
-                   ZI(JLIAC-1+II) = ZI(JLIAC+II)
-   50           CONTINUE
-             END IF
-   60     CONTINUE
+C --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE ----------
 C ======================================================================
-C --- FROTTEMENT ADHERENT SUIVANT LA SECONDE DIRECTION -----------------
+                  PIVOT2 = 0
+               END IF
+ 30         CONTINUE
+            IF (PIVOT.EQ.0) THEN
+               IF (PIVOT2.EQ.0) THEN
 C ======================================================================
-          DO 80 ILIAC = NBLIAC+LLF+LLF1+1, NBLIAC+LLF+LLF1+LLF2
-             IF (ZI(JLIOT-1+NOTE).EQ.ZI(JLIAC-1+ILIAC)) THEN
-                LLF2 = LLF2 - 1
-                DO 70 II = ILIAC,NBLIAC + LLF + LLF1 + LLF2
-                   ZI(JLIAC-1+II) = ZI(JLIAC+II)
- 70             CONTINUE
-             END IF
- 80       CONTINUE
+C --- PAS D'ELIMINATION DE PIVOT ---------------------------------------
 C ======================================================================
-C --- VOIR UTILITE DE KKMIN ET DE INDIC EN DIMENSION 3 -----------------
-C --- PAS D'UTILITE EN DIMENSION 2 -------------------------------------
+                  GOTO 90
+               ELSE
 C ======================================================================
-          KKMIN = KK1
-          INDIC = -1
-          GO TO 100
+C --- ELIMINATION DU PIVOT NUL SUIVANT LA PREMIERE DIRECTION -----------
 C ======================================================================
-        ELSE IF ( KK1 .LE. (NBLIAC+LLF) ) THEN
+                  POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+                  NUM1 = ZI(JNOCO+ABS(POS1)-1)
+                  CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM1),NOM1)
+                 WRITE (IFM,9100) 'FROTTEMENT DIRECTION 2 : NOEUD ',NOM1
+                  IF (NIV.EQ.2) THEN
+              WRITE (IFM,9101) 'FROTTEMENT DIRECTION 2 : LIAISON ',LLIAC
+                  END IF
+                  ZI(JLIOT+4*NBLIAI+3) = ZI(JLIOT+4*NBLIAI+3) + 1
+                  NOTE2 = ZI(JLIOT+4*NBLIAI+3)
+                  ZI(JLIOT-1+NOTE2+3*NBLIAI) = LLIAC
 C ======================================================================
-C --- CAS D'UNE LIAISON ADHERENTE SUIVANT LA PREMIERE DIRECTION --------
+C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT ----------------
 C ======================================================================
-C --- ON VERIFIE SI LE PIVOT NUL EN DIRECTION 1 EST AUSSI --------------
-C --- UN PIVOT NUL EN DIRECTION 2 --------------------------------------
+                  CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
+     +                                 RESOCO,TYPESP,ILIAC,LLIAC,TYPEF0)
+                  POSIT = NBLIAC + LLF + LLF1 + LLF2 + 1
+                  CALL CFTABL(IBID,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
+     +                                 RESOCO,TYPEAJ,POSIT,LLIAC,TYPEF1)
+                  GOTO 100
+               ENDIF
+            ELSE
+               IF (PIVOT2.EQ.0) THEN
 C ======================================================================
-          KK = KK1 + LLF
-          PIVOT2 = 0
-          DO 91 KK2 = 1, KK
-             JVA = JVALE - 1 + ( KK - 1 ) * KK /2 + KK2
-             IF (ABS(ZR(JVA)).LT.XJVMAX) THEN
-                PIVOT2 = 1
-             ELSE
-                PIVOT2 = 0
-                GO TO 92
-             END IF
- 91       CONTINUE
- 92       CONTINUE
+C --- ELIMINATION DU PIVOT NUL SUIVANT LA PREMIERE DIRECTION -----------
 C ======================================================================
-C --- MISE A JOUR DU NOMBRE DE LIAISONS ADHERENTES ---------------------
+                  POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+                  NUM1 = ZI(JNOCO+ABS(POS1)-1)
+                  CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM1),NOM1)
+                 WRITE (IFM,9100) 'FROTTEMENT DIRECTION 1 : NOEUD ',NOM1
+                  IF (NIV.EQ.2) THEN
+              WRITE (IFM,9101) 'FROTTEMENT DIRECTION 1 : LIAISON ',LLIAC
+                  END IF
+                  ZI(JLIOT+4*NBLIAI+2) = ZI(JLIOT+4*NBLIAI+2) + 1
+                  NOTE1 = ZI(JLIOT+4*NBLIAI+2)
+                  ZI(JLIOT-1+NOTE1+2*NBLIAI) = LLIAC
 C ======================================================================
-          LLF = LLF - 1
+C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT ----------------
 C ======================================================================
-          IF (PIVOT2.EQ.1) THEN
+                  CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
+     +                                 RESOCO,TYPESP,ILIAC,LLIAC,TYPEF0)
+                  POSIT = NBLIAC + LLF + LLF1 + LLF2 + 1
+                  CALL CFTABL(IBID,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
+     +                                 RESOCO,TYPEAJ,POSIT,LLIAC,TYPEF2)
+                  GOTO 100
+               ELSE
 C ======================================================================
 C --- ELIMINATION DU PIVOT NUL SUIVANT LES DEUX DIRECTIONS -------------
 C ======================================================================
-             LLIAC = ZI(JLIAC-1+KK1)
-             POS1 = ZI(JAPPAR+3* (LLIAC-1)+1)
-             NUM1 = ZI(JNOCO+ABS(POS1)-1)
-             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM1),NOM1)
-             WRITE (IFM,1100) 'FROTTEMENT DIRECTIONS 1 ET 2 : NOEUD ',
-     &        NOM1
+                  POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+                  NUM1 = ZI(JNOCO+ABS(POS1)-1)
+                  CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM1),NOM1)
+               WRITE (IFM,9110) 'FROTTEMENT DIRECTIONS 1 ET 2 : NOEUD ',
+     &                                                              NOM1
+                  IF (NIV.EQ.2) THEN
+             WRITE (IFM,9111) 'FROTTEMENT DIRECTIONS 1 ET 2 : LIAISON ',
+     &                                                             LLIAC
+                  END IF
+                  ZI(JLIOT+4*NBLIAI+1) = ZI(JLIOT+4*NBLIAI+1) + 1
+                  NOTE12 = ZI(JLIOT+4*NBLIAI+1)
+                  ZI(JLIOT-1+NOTE12+NBLIAI) = LLIAC
+C ======================================================================
+C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT ----------------
+C ======================================================================
+                  CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
+     +                                 RESOCO,TYPESP,ILIAC,LLIAC,TYPEF0)
+                  GOTO 100
+               ENDIF
+            ENDIF
+         ELSE
+            JVA = JVALE-1 + (ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2
+            DO 40 KK2 = 1, ILIAC + LLF0 - DEKLAG
+               JVA = JVA + 1
+               IF (ABS(ZR(JVA)).LT.COPMAX) THEN
+                  PIVOT = 1
+               ELSE
+C ======================================================================
+C --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE ----------
+C ======================================================================
+                  PIVOT = 0
+                  GOTO 90
+               ENDIF
+ 40         CONTINUE
+            POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+            NUM1 = ZI(JNOCO+ABS(POS1)-1)
+            CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM1),NOM1)
+            WRITE (IFM,9010) 'FROTTEMENT : NOEUD ', NOM1
             IF (NIV.EQ.2) THEN
-              WRITE (IFM,1110) 'FROTTEMENT DIRECTIONS 1 ET 2:LIAISON ',
-     &          LLIAC
+               WRITE (IFM,9011) 'FROTTEMENT : LIAISON ', LLIAC
             END IF
             ZI(JLIOT+4*NBLIAI+1) = ZI(JLIOT+4*NBLIAI+1) + 1
             NOTE12 = ZI(JLIOT+4*NBLIAI+1)
             ZI(JLIOT-1+NOTE12+NBLIAI) = LLIAC
-            DO 94 ILIAC = KK1,NBLIAC + LLF + LLF1 + LLF2
-               ZI(JLIAC-1+ILIAC) = ZI(JLIAC+ILIAC)
- 94         CONTINUE
-          ELSE
 C ======================================================================
-C --- ELIMINATION DU PIVOT NUL SUIVANT LA PREMIERE DIRECTION -----------
+C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT ----------------
 C ======================================================================
-            LLIAC = ZI(JLIAC-1+KK1)
-            POS1 = ZI(JAPPAR+3* (LLIAC-1)+1)
-            NUM1 = ZI(JNOCO+ABS(POS1)-1)
-            CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM1),NOM1)
-            WRITE (IFM,1100) 'FROTTEMENT DIRECTION 1 : NOEUD ',NOM1
-            IF (NIV.EQ.2) THEN
-              WRITE (IFM,1110) 'FROTTEMENT DIRECTION 1:LIAISON ',LLIAC
-            END IF
+            CALL CFTABL(INDIC, NBLIAC, AJLIAI, SPLIAI, LLF, LLF1, LLF2,
+     +                             RESOCO, TYPESP, ILIAC, LLIAC, TYPEF0)
+            GOTO 100
+         ENDIF
+ 3000    CONTINUE
 C ======================================================================
-C --- MISE A JOUR DU VECTEUR DES LIAISONS DE CONTACT -------------------
+C --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE FROTTEMENT ADHERENT ----
+C --- SUIVANT LA PREMIERE DIRECTION EN 3D ------------------------------
 C ======================================================================
-            ZI(JLIOT+4*NBLIAI+2) = ZI(JLIOT+4*NBLIAI+2) + 1
-            NOTE1 = ZI(JLIOT+4*NBLIAI+2)
-            ZI(JLIOT-1+NOTE1+2*NBLIAI) = LLIAC
-            LLF2 = LLF2 + 1
-            ZI(JLIAC-1+NBLIAC+LLF+1+LLF1+LLF2) = LLIAC
-            DO 102 ILIAC = KK1,NBLIAC + LLF + LLF1 + LLF2
-               ZI(JLIAC-1+ILIAC) = ZI(JLIAC+ILIAC)
- 102        CONTINUE
-          END IF
+         JVA = JVALE-1 + (ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2
+         DO 50 KK2 = 1, ILIAC + LLF0 - DEKLAG
+            JVA = JVA + 1
+            IF (ABS(ZR(JVA)).LT.COPMAX) THEN
+               PIVOT = 1
+            ELSE
 C ======================================================================
-C --- VOIR UTILITE DE KKMIN ET DE INDIC EN DIMENSION 3 -----------------
-C --- PAS D'UTILITE EN DIMENSION 2 -------------------------------------
+C --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE ----------
 C ======================================================================
-          KKMIN = KK1
-          INDIC = -1
-          GO TO 100
+               PIVOT = 0
+               GOTO 90
+            ENDIF
+ 50      CONTINUE
+         POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+         NUM1 = ZI(JNOCO+ABS(POS1)-1)
+         CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM1),NOM1)
+         WRITE (IFM,9100) 'FROTTEMENT DIRECTION 1 : NOEUD ', NOM1
+         IF (NIV.EQ.2) THEN
+            WRITE (IFM,9101) 'FROTTEMENT DIRECTION 1 : LIAISON ', LLIAC
+         END IF
+         ZI(JLIOT+4*NBLIAI+1) = ZI(JLIOT+4*NBLIAI+1) + 1
+         NOTE12 = ZI(JLIOT+4*NBLIAI+1)
+         ZI(JLIOT-1+NOTE12+NBLIAI) = LLIAC
 C ======================================================================
-        ELSE IF (KK1.LE. (NBLIAC+2*LLF)) THEN
+C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT ----------------
 C ======================================================================
-C --- CAS D'UNE LIAISON ADHERENTE SUIVANT LA DEUXIEME DIRECTION --------
+         CALL CFTABL(INDIC, NBLIAC, AJLIAI, SPLIAI, LLF, LLF1, LLF2,
+     +                             RESOCO, TYPESP, ILIAC, LLIAC, TYPEF1)
+         GOTO 100
+ 4000    CONTINUE
 C ======================================================================
-          LLIAC = ZI(JLIAC-1+KK1-LLF)
-          POS1 = ZI(JAPPAR+3* (LLIAC-1)+1)
-          NUM1 = ZI(JNOCO+ABS(POS1)-1)
-          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM1),NOM1)
-          WRITE (IFM,1100) 'FROTTEMENT DIRECTION 2 : NOEUD ',NOM1
-          IF (NIV.EQ.2) THEN
-            WRITE (IFM,1110) 'FROTTEMENT DIRECTION 2:LIAISON ',LLIAC
-          END IF
+C --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE FROTTEMENT ADHERENT ----
+C --- SUIVANT LA SECONDE DIRECTION EN 3D -------------------------------
 C ======================================================================
-C --- MISE A JOUR DU NOMBRE DE LIAISONS DE FROTTEMENT ADHERENTES -------
+         JVA = JVALE-1 + (ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2
+         DO 60 KK2 = 1, ILIAC + LLF0 - DEKLAG
+            JVA = JVA + 1
+            IF (ABS(ZR(JVA)).LT.COPMAX) THEN
+               PIVOT = 1
+            ELSE
 C ======================================================================
-          LLF = LLF - 1
+C --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE ----------
 C ======================================================================
-C --- MISE A JOUR DU VECTEUR DES LIAISONS DE CONTACT -------------------
+               PIVOT = 0
+               GOTO 90
+            ENDIF
+ 60      CONTINUE
+         POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+         NUM1 = ZI(JNOCO+ABS(POS1)-1)
+         CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM1),NOM1)
+         WRITE (IFM,9100) 'FROTTEMENT DIRECTION 2 : NOEUD ', NOM1
+         IF (NIV.EQ.2) THEN
+            WRITE (IFM,9101) 'FROTTEMENT DIRECTION 2 : LIAISON ', LLIAC
+         END IF
+         ZI(JLIOT+4*NBLIAI+1) = ZI(JLIOT+4*NBLIAI+1) + 1
+         NOTE12 = ZI(JLIOT+4*NBLIAI+1)
+         ZI(JLIOT-1+NOTE12+NBLIAI) = LLIAC
 C ======================================================================
-            ZI(JLIOT+4*NBLIAI+3) = ZI(JLIOT+4*NBLIAI+3) + 1
-            NOTE2 = ZI(JLIOT+4*NBLIAI+3)
-            ZI(JLIOT-1+NOTE2+3*NBLIAI) = LLIAC
-            DO 96 ILIAC = 0,LLF2-1
-               ZI(JLIAC  +NBLIAC+LLF+1+LLF1+LLF2-ILIAC) =
-     &                          ZI(JLIAC-1+NBLIAC+LLF+1+LLF1+LLF2-ILIAC)
- 96         CONTINUE
-            LLF1 = LLF1 + 1
-            ZI(JLIAC-1+NBLIAC+LLF+1+LLF1) = LLIAC
-            DO 98 ILIAC = KK1-LLF-1,NBLIAC + LLF + LLF1 + LLF2
-               ZI(JLIAC-1+ILIAC) = ZI(JLIAC+ILIAC)
- 98         CONTINUE
+C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT ----------------
 C ======================================================================
-C --- VOIR UTILITE DE KKMIN ET DE INDIC EN DIMENSION 3 -----------------
-C --- PAS D'UTILITE EN DIMENSION 2 -------------------------------------
+         CALL CFTABL(INDIC, NBLIAC, AJLIAI, SPLIAI, LLF, LLF1, LLF2,
+     +                             RESOCO, TYPESP, ILIAC, LLIAC, TYPEF2)
+         GOTO 100
 C ======================================================================
-          KKMIN = KK1
-          INDIC = -1
-          GO TO 100
+ 90   CONTINUE
 C ======================================================================
-        ELSE IF (KK1.LE. (NBLIAC+2*LLF+LLF1)) THEN
-C ======================================================================
-C --- CAS D'UNE LIAISON ADHERENTE SUIVANT LA PREMIERE DIRECTION --------
-C ======================================================================
-          LLIAC = ZI(JLIAC-1+KK1-LLF)
-          POS1 = ZI(JAPPAR+3* (LLIAC-1)+1)
-          NUM1 = ZI(JNOCO+ABS(POS1)-1)
-          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM1),NOM1)
-          WRITE (IFM,1100) 'FROTTEMENT DIRECTION 1 : NOEUD ',NOM1
-          IF (NIV.EQ.2) THEN
-            WRITE (IFM,1110) 'FROTTEMENT DIRECTION 1:LIAISON ',LLIAC
-          END IF
-C ======================================================================
-C --- MISE A JOUR DU NOMBRE DE LIAISONS DE FROTTEMENT ADHERENTES -------
-C ======================================================================
-          LLF1 = LLF1 - 1
-C ======================================================================
-C --- MISE A JOUR DU VECTEUR DES LIAISONS DE CONTACT -------------------
-C ======================================================================
-          ZI(JLIOT+4*NBLIAI+1) = ZI(JLIOT+4*NBLIAI+1) + 1
-          NOTE12 = ZI(JLIOT+4*NBLIAI+1)
-          ZI(JLIOT-1+NOTE12+NBLIAI) = LLIAC
-          DO 104 ILIAC = KK1-LLF,NBLIAC + LLF + LLF1 + LLF2
-             ZI(JLIAC-1+ILIAC) = ZI(JLIAC+ILIAC)
- 104      CONTINUE
-C ======================================================================
-C --- VOIR UTILITE DE KKMIN ET DE INDIC EN DIMENSION 3 -----------------
-C --- PAS D'UTILITE EN DIMENSION 2 -------------------------------------
-C ======================================================================
-          KKMIN = KK1
-          INDIC = -1
-          GO TO 100
-C ======================================================================
-        ELSE
-C ======================================================================
-C --- CAS D'UNE LIAISON ADHERENTE SUIVANT LA DEUXIEME DIRECTION --------
-C ======================================================================
-          LLIAC = ZI(JLIAC-1+KK1-LLF)
-          POS1 = ZI(JAPPAR+3* (LLIAC-1)+1)
-          NUM1 = ZI(JNOCO+ABS(POS1)-1)
-          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM1),NOM1)
-          WRITE (IFM,1100) 'FROTTEMENT DIRECTION 2 : NOEUD ',NOM1
-          IF (NIV.EQ.2) THEN
-            WRITE (IFM,1110) 'FROTTEMENT DIRECTION 2:LIAISON ',LLIAC
-          END IF
-C ======================================================================
-C --- MISE A JOUR DU NOMBRE DE LIAISONS DE FROTTEMENT ADHERENTES -------
-C ======================================================================
-          LLF2 = LLF2 - 1
-C ======================================================================
-C --- MISE A JOUR DU VECTEUR DES LIAISONS DE CONTACT -------------------
-C ======================================================================
-          ZI(JLIOT+4*NBLIAI+1) = ZI(JLIOT+4*NBLIAI+1) + 1
-          NOTE12 = ZI(JLIOT+4*NBLIAI+1)
-          ZI(JLIOT-1+NOTE12+NBLIAI) = LLIAC
-          DO 106 ILIAC = KK1-LLF,NBLIAC + LLF + LLF1 + LLF2
-             ZI(JLIAC-1+ILIAC) = ZI(JLIAC+ILIAC)
- 106      CONTINUE
-C ======================================================================
-C --- VOIR UTILITE DE KKMIN ET DE INDIC EN DIMENSION 3 -----------------
-C --- PAS D'UTILITE EN DIMENSION 2 -------------------------------------
-C ======================================================================
-          KKMIN = KK1
-          INDIC = -1
-          GO TO 100
-C ======================================================================
-        END IF
-C ======================================================================
-   90 CONTINUE
-C ======================================================================
-  100 CONTINUE
+ 100  CONTINUE
 C ======================================================================
       CALL JEDEMA()
 C ======================================================================
- 1000 FORMAT (' PIVOT NUL OTE',A17,A8)
- 1010 FORMAT (' PIVOT NUL OTE',A17,I5)
- 1100 FORMAT (' PIVOT NUL OTE',A37,A8)
- 1110 FORMAT (' PIVOT NUL OTE',A37,I5)
+ 9000 FORMAT (' PIVOT NUL OTE ',A16,A8)
+ 9001 FORMAT (' PIVOT NUL OTE ',A18,I5)
+ 9010 FORMAT (' PIVOT NUL OTE ',A19,A8)
+ 9011 FORMAT (' PIVOT NUL OTE ',A21,I5)
+ 9100 FORMAT (' PIVOT NUL OTE ',A31,A8)
+ 9101 FORMAT (' PIVOT NUL OTE ',A33,I5)
+ 9110 FORMAT (' PIVOT NUL OTE ',A37,A8)
+ 9111 FORMAT (' PIVOT NUL OTE ',A39,I5)
+C ======================================================================
       END

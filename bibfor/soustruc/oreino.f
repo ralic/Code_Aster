@@ -1,13 +1,13 @@
       SUBROUTINE OREINO ( NOMA, LNOEUD, NBNO, NORI, NEXT, COOR, 
-     +                    CRIT, PREC, IER )
+     +                    CRIT, PREC,IERA, IER )
       IMPLICIT   NONE
-      INTEGER             LNOEUD(*), NBNO, NORI, NEXT, IER
+      INTEGER             LNOEUD(*), NBNO, NORI, NEXT, IER,IERA
       REAL*8              COOR(*), PREC
       CHARACTER*8         NOMA
       CHARACTER*(*)       CRIT
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 19/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF SOUSTRUC  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,11 +116,13 @@ C                         NE DEPASSE PAS LA TOLERANCE ---
          R8B = SQRT( R8B )
          IF ( R8B .GT. PREC ) THEN
             V2 = SQRT( V2 )
+            IF (IERA.EQ.0) THEN
+              CALL UTMESS('A','OREINO',
+     &       'NOEUD ELOIGNES A LA NORMALE AU FOND DE FISSURE')
+             IERA = IERA+1
+            ENDIF
             CALL JENUNO( JEXNUM(NOMNOE,INOD),NOMN)
-            CALL UTDEBM('A','OREINO','NOEUD ')
-            CALL UTIMPK('S',' ',1,NOMN)
-            CALL UTIMPR('S',' TROP ELOIGNE, DISTANCE ',1,V2)
-            CALL UTFINM
+            WRITE(*,*)'NOEUD ', NOMN,'TROP ELOIGNE DISTANCE',V2
             IER = IER + 1
          ENDIF
 C        --- VERIFICATION QUE LA PROJECTION EST BIEN

@@ -1,0 +1,108 @@
+      SUBROUTINE MERIBI(MODELE,CARA,CHSIGG,MATEL,NH)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER NH
+      CHARACTER*8 MODELE,CARA,MATEL
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 16/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C ======================================================================
+C     CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITE GEOMETRIQUE
+
+C     ------------------------------------------------------------------
+C IN  : MODELE : NOM DU MODELE
+C IN  : CARA   : CHAMP DE CARAC_ELEM
+C IN  : SIGG   : CHAMP DE CONTRAINTES AUX POINTS DE GAUSS
+C IN  : NH     : NUMERO DE L'HARMONIQUE DE FOURIER
+C VAR : MATEL  : NOM DU MATEL (N RESUELEM) PRODUIT
+C ----------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
+C     ------------------------------------------------------------------
+      REAL*8 TIME
+      CHARACTER*8 LPAIN(10),LPAOUT(1),MATE,CHARG
+      CHARACTER*16 OPTION
+      CHARACTER*24 LIGRMO,LCHIN(10),LCHOUT(1),CHSIGG
+      CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTREF,CHHARM
+      LOGICAL EXISIG,EXITIM
+      INTEGER ICODE,ILIRES,IRET,JLIRES
+
+      CALL JEMARQ()
+      IF (MODELE(1:1).EQ.' ') CALL UTMESS('F','MERIGE',
+     &                             'IL FAUT UN MODELE.')
+
+      MATE = ' '
+      CHARG = ' '
+      EXITIM = .FALSE.
+      TIME = 0.D0
+      OPTION = 'RIGI_GEOM'
+      CALL MECHAM(OPTION,MODELE,0,CHARG,CARA,NH,CHGEOM,CHCARA,CHHARM,
+     &            ICODE)
+      CALL MECHTE(MODELE,0,CHARG,MATE,EXITIM,TIME,CHTREF,CHTEMP)
+
+      CALL MEMARE('G',MATEL,MODELE,' ',CARA,OPTION)
+      CALL WKVECT(MATEL//'.LISTE_RESU','G V K24',1,JLIRES)
+
+      LPAOUT(1) = 'PMATUUR'
+      LCHOUT(1) = MATEL//'.ME001'
+
+      ILIRES = 0
+      LIGRMO = MODELE(1:8)//'.MODELE'
+      LPAIN(1) = 'PGEOMER'
+      LCHIN(1) = CHGEOM
+      LPAIN(2) = 'PCONTRR'
+      LCHIN(2) = CHSIGG
+      LPAIN(3) = 'PCAORIE'
+      LCHIN(3) = CHCARA(1)
+      LPAIN(4) = 'PCADISK'
+      LCHIN(4) = CHCARA(2)
+      LPAIN(5) = 'PCAGNPO'
+      LCHIN(5) = CHCARA(6)
+      LPAIN(6) = 'PCACOQU'
+      LCHIN(6) = CHCARA(7)
+      LPAIN(7) = 'PEFFORR'
+      LCHIN(7) = CHSIGG
+      LPAIN(8) = 'PHARMON'
+      LCHIN(8) = CHHARM
+      LPAIN(9) = 'PNBSP_I'
+      LCHIN(9) = CARA(1:8)//'.CANBSP'
+      OPTION = 'RIGI_MECA_GE'
+      CALL CALCUL('S',OPTION,LIGRMO,9,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G')
+      CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
+      IF (IRET.NE.0) THEN
+        ILIRES = ILIRES + 1
+        ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
+        CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
+      END IF
+
+      CALL JEDEMA()
+      END

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 29/08/2003   AUTEUR CIBHHLV L.VIVAN 
 # TITRE VALIDATION POST_RELEVE_T 3D EN DIFFERENTS REPERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,6 +23,8 @@
 #                  INDICE _C     REPERE: 'CYLINDRIQUE'
 #
 #       VALIDATION POST_RELEVE_T 3D, OPERANDE TRAC_DIR
+#                                    OPERANDE INVARIANT
+#                                    OPERANDE ELEM_PRINCIPAUX
 #
 #       A PARTIR D'UN CHEMIN
 #                D'UNE LISTE DE NOEUDS
@@ -118,6 +120,8 @@ CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,         MODELE=MO,
                                  EXCIT=_F(  CHARGE = CHARGE,    ),
                                 OPTION='SIGM_ELNO_DEPL'
                            )
+
+CALC_NO( reuse= RESU ,RESULTAT= RESU , OPTION='SIGM_NOEU_DEPL' )
 
 #======================================================================
 #
@@ -981,6 +985,83 @@ D2L_TDX=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
 IMPR_TABLE(   TABLE=D2L_TDX,
                 NOM_PARA=( 'ABSC_CURV', 'TRAC_DIR', )
              )
+
+
+#======================================================================
+#
+#                     OPERANDE  INVARIANT
+#
+#======================================================================
+#
+
+INVA_EL = POST_RELEVE_T(  ACTION=_F( NOEUD = ( 'N31', 'N28', ),
+                                     INTITULE = 'INVARIANT',
+                                     RESULTAT = RESU,
+                                     NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                     OPERATION = 'EXTRACTION',
+                                     INVARIANT = 'OUI',
+                                  ),
+             TITRE=( 'INVA_EL: LISTE DE NOEUDS P7 P8, INVARIANT, ',
+                     'A PARTIR DE SIGM_ELNO_DEPL', )
+                         )
+
+IMPR_TABLE(   TABLE=INVA_EL,
+              NOM_PARA=( 'NOM_CHAM', 'ABSC_CURV', 'NOEUD', 'VMIS', 'TRESCA', 'TRACE', 'DETER'),
+             )
+
+INVA_NO = POST_RELEVE_T(  ACTION=_F( NOEUD = ( 'N31', 'N28', ),
+                                     INTITULE = 'INVARIANT',
+                                     RESULTAT = RESU,
+                                     NOM_CHAM = 'SIGM_NOEU_DEPL',
+                                     OPERATION = 'EXTRACTION',
+                                     INVARIANT = 'OUI',
+                                  ),
+             TITRE=( 'INVA_NO: LISTE DE NOEUDS P7 P8, INVARIANT, ',
+                     'A PARTIR DE SIGM_NOEU_DEPL', )
+                         )
+
+IMPR_TABLE(   TABLE=INVA_NO,
+              NOM_PARA=( 'NOM_CHAM', 'ABSC_CURV', 'NOEUD', 'VMIS', 'TRESCA', 'TRACE', 'DETER'),
+             )
+
+
+#======================================================================
+#
+#                     OPERANDE  ELEM_PRINCIPAUX
+#
+#======================================================================
+#
+
+PRIN_EL = POST_RELEVE_T(  ACTION=_F( NOEUD = ( 'N31', 'N28', ),
+                                     INTITULE = 'INVARIANT',
+                                     RESULTAT = RESU,
+                                     NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                     OPERATION = 'EXTRACTION',
+                                     ELEM_PRINCIPAUX = 'OUI',
+                                  ),
+             TITRE=( 'PRIN_EL: LISTE DE NOEUDS P7 P8, ELEM_PRINCIPAUX, ',
+                     'A PARTIR DE SIGM_ELNO_DEPL', )
+                         )
+
+IMPR_TABLE(   TABLE=PRIN_EL,
+              NOM_PARA=( 'NOM_CHAM', 'ABSC_CURV', 'NOEUD', 'PRIN_1', 'PRIN_2', 'PRIN_3' )
+             )
+
+PRIN_NO = POST_RELEVE_T(  ACTION=_F( NOEUD = ( 'N31', 'N28', ),
+                                     INTITULE = 'INVARIANT',
+                                     RESULTAT = RESU,
+                                     NOM_CHAM = 'SIGM_NOEU_DEPL',
+                                     OPERATION = 'EXTRACTION',
+                                     ELEM_PRINCIPAUX = 'OUI',
+                                  ),
+             TITRE=( 'PRIN_NO: LISTE DE NOEUDS P7 P8, ELEM_PRINCIPAUX, ',
+                     'A PARTIR DE SIGM_NOEU_DEPL', )
+                         )
+
+IMPR_TABLE(   TABLE=PRIN_NO,
+              NOM_PARA=( 'NOM_CHAM', 'ABSC_CURV', 'NOEUD', 'PRIN_1', 'PRIN_2', 'PRIN_3' )
+             )
+
 
 FIN( )
 #

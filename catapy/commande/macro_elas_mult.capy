@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,18 +33,18 @@ MACRO_ELAS_MULT=MACRO(nom="MACRO_ELAS_MULT",op=macro_elas_mult_ops,sd_prod=macro
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
          NUME_DDL        =SIMP(statut='f',typ=(nume_ddl,CO)),
-         CHAR_MECA_GLOBAL=SIMP(statut='f',typ=char_meca,max='**'),
-         CHAR_CINE_GLOBAL=SIMP(statut='f',typ=char_meca,max='**'),
+         CHAR_MECA_GLOBAL=SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
+         CHAR_CINE_GLOBAL=SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
          LIAISON_DISCRET =SIMP(statut='f',typ='TXM',into=("OUI",)),
-         CAS_CHARGE      =FACT(statut='o',min=1,max='**',
+         CAS_CHARGE      =FACT(statut='o',max='**',
            regles=(UN_PARMI('NOM_CAS','MODE_FOURIER'),
                    UN_PARMI('CHAR_MECA','CHAR_CINE','VECT_ASSE'),),
            NOM_CAS         =SIMP(statut='f',typ='TXM' ),
            MODE_FOURIER    =SIMP(statut='f',typ='I' ),
            TYPE_MODE       =SIMP(statut='f',typ='TXM',defaut="SYME",into=("SYME","ANTI","TOUS") ),
-           CHAR_MECA       =SIMP(statut='f',typ=char_meca,max='**'),
-           CHAR_CINE       =SIMP(statut='f',typ=char_meca,max='**'),
-           OPTION          =SIMP(statut='f',typ='TXM',max='**',
+           CHAR_MECA       =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
+           CHAR_CINE       =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
+           OPTION          =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                                  into=("EFGE_ELNO_DEPL","EPOT_ELEM_DEPL","SIGM_ELNO_DEPL","SIEF_ELGA_DEPL",
                                        "SIGM_ELNO_CART","EFGE_ELNO_CART","DEGE_ELNO_DEPL","EPSI_ELNO_DEPL",
                                        "EPSI_ELGA_DEPL","EPSG_ELNO_DEPL","EPSG_ELGA_DEPL","EPSP_ELNO","EPSP_ELGA",
@@ -60,7 +60,7 @@ MACRO_ELAS_MULT=MACRO(nom="MACRO_ELAS_MULT",op=macro_elas_mult_ops,sd_prod=macro
            SOUS_TITRE      =SIMP(statut='f',typ='TXM',max='**'),
            VECT_ASSE       =SIMP(statut='f',typ=cham_no_depl_r),
          ),
-         SOLVEUR         =FACT(statut='d',min=1,max=1,
+         SOLVEUR         =FACT(statut='d',
            METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT") ),
            b_mult_front    = BLOC ( condition = "METHODE == 'MULT_FRONT' ",
                                     fr="Paramètres de la méthode multi frontale",

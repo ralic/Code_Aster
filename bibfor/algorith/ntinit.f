@@ -4,7 +4,7 @@
      &                  NBGRPA,IDEB,JDEB,NUMORD,TPSNP1,CRITHE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/09/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE                            DURAND C.DURAND
 C TOLE CRP_21
-C ----------------------------------------------------------------------
+C ---------------------------------------------------------------------
 C     THERMIQUE : INITIALISATIONS.
 C     *           ****
 C   -------------------------------------------------------------------
@@ -34,7 +34,7 @@ C       SENSIBILITE: PSNSLE,PSRENC.
 C       MSG: INFNIV.
 C       MANIP SD: VTCREB.
 C       LECTURE DONNEES: NTDOET,NTDOED.
-C       MATRICE: GCNCON,NUMERO.
+C       MATRICE: NUMERO.
 C
 C     FONCTIONS INTRINSEQUES:
 C       AUCUNE.
@@ -59,14 +59,14 @@ C 0.1. ==> ARGUMENTS
       CHARACTER*(*) INPSCO
 
 C 0.2. ==> COMMUNS
-C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------
       CHARACTER*8        ZK8
       CHARACTER*16                ZK16
       CHARACTER*24                          ZK24
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------
 
 C 0.3. ==> VARIABLES LOCALES
 
@@ -78,8 +78,8 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*8  K8BID,NOPASE
       CHARACTER*14 NUPOSS
       CHARACTER*16 TYPRES,NOMCMD
-      CHARACTER*24 TEMPIN,TEMPI0,VTEMP,VTEMPM,RESUIN,RESUID
-C ----------------------------------------------------------------------
+      CHARACTER*24 TEMPIN,TEMPI0,VTEMP,VTEMPM,RESUIN,RESUID,NOOJB
+C ---------------------------------------------------------------------
 
 C====
 C 1. PREALABLE
@@ -99,7 +99,9 @@ C====
 
 C                123456789012345678901234
       NUMEDD =  '12345678.NUMED          '
-      CALL GCNCON ( '_',NUMEDD(1:8) )
+      NOOJB='12345678.00000.NUME.PRNO'
+      CALL GNOMSD ( NOOJB,10,14 )
+      NUMEDD=NOOJB(1:14)
       CALL RSNUME(RESULT,'TEMP',NUPOSS)
       CALL NUMERO(NUPOSS,MODELE,INFCHA,SOLVEU,'VG',NUMEDD )
 
@@ -240,5 +242,5 @@ C====
       ZK16(JCRK+4) = 'RHO'
 
 
-C-----------------------------------------------------------------------
+C----------------------------------------------------------------------
       END

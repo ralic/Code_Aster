@@ -1,11 +1,10 @@
-      SUBROUTINE CALCN(NDT, NDI, S, B, VECN)
+      SUBROUTINE CALCN(S, B, VECN)
 C
       IMPLICIT      NONE
-      INTEGER       NDT, NDI
-      REAL*8        B, S(*), VECN(*)
+      REAL*8        B, S(6), VECN(6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,13 +32,15 @@ C --- : S      : DEVIATEUR DES CONTRAINTES -----------------------------
 C --- : B      : PARAMETRE DU CALCUL DE LA NORMALE ---------------------
 C OUT : VECN   : N = (B*S/SII+I)/SQRT(B**2+3) --------------------------
 C ======================================================================
-      INTEGER II
+      INTEGER II, NDT, NDI
       REAL*8  SII, RACINE, UN, TROIS
 C ======================================================================
 C --- INITIALISATION DE PARAMETRE --------------------------------------
 C ======================================================================
       PARAMETER       ( UN      =   1.0D0  )
       PARAMETER       ( TROIS   =   3.0D0  )
+C ======================================================================
+      COMMON /TDIM/   NDT , NDI
 C ======================================================================
       CALL JEMARQ ()
 C ======================================================================

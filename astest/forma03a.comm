@@ -1,6 +1,6 @@
-# MODIF  DATE 25/06/2002   AUTEUR JMBHH01 J.M.PROIX 
-# RESPONSABLE JMBHH01 J.M.PROIX
 
+# MODIF  DATE 01/07/2003   AUTEUR JMBHH01 J.M.PROIX 
+# RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ENONCE TP2 FORMATION THERMOPLASTICITE PLAQUE TROUEE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,16 +20,13 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'FORMA03A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='FORMA03A',
+              NIV_PUB_WEB='INTERNET',),);
 
 PRE_GIBI();
 
 M=LIRE_MAILLAGE(VERI_MAIL=_F(),);
-
 # PLAQUE TROUEE : CONTRAINTES PLANES
-#
-#
-
 
 MO=AFFE_MODELE(MAILLAGE=M,
                VERIF='MAILLE',
@@ -37,15 +34,9 @@ MO=AFFE_MODELE(MAILLAGE=M,
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),);
 # COURBE DE TRACTION
-#
-#
-
 
 CTRAC=DEFI_FONCTION(NOM_PARA='EPSI',
-                    VALE=(0.004,4.0,
-                          0.006,5.0,
-                          0.009,5.5,
-                          0.02,6.0,),
+                    VALE=(0.004,4.0,0.006,5.0,0.009,5.5,0.02,6.0,),
                     PROL_DROITE='CONSTANT',);
 
 MA=DEFI_MATERIAU(ELAS=_F(E=1000.0,
@@ -56,9 +47,6 @@ CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          MATER=MA,),);
 # CONDITIONS DE SYMETRIE (QUART DE PLAQUE)
-#
-#
-
 
 CH1=AFFE_CHAR_MECA(MODELE=MO,
                    FACE_IMPO=(_F(GROUP_MA=('LBC','LCD',),
@@ -66,38 +54,24 @@ CH1=AFFE_CHAR_MECA(MODELE=MO,
                               _F(GROUP_MA=('LGH','LHI','LIA',),
                                  DX=0.0,),),);
 # TRACTION REPARTIE SUR LE HAUT
-#
-#
-
 
 CH2=AFFE_CHAR_MECA(MODELE=MO,
                    FORCE_CONTOUR=_F(GROUP_MA='LFG',
                                     FY=1.0,),);
 # L INSTANT EST EGAL A LA VALEUR DE LA TRACTION SUR LFG
-#
-#
-
 
 F_DEPL=DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0,0.0,
-                          10.0,10.0,),);
+                     VALE=(0.0,0.0,10.0,10.0,),);
 # DISCRETISATION EN TEMPS
-#
-#
-
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=(_F(JUSQU_A=5.4,
-                                     NOMBRE=27,),
+                      INTERVALLE=(_F(JUSQU_A=1,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=5.4,
+                                     NOMBRE=22,),
                                   _F(JUSQU_A=6.0,
                                      NOMBRE=60,),),);
-                                     
-# PREMIER CALCUL SANS SOUCI JUSQU'A 5.4 MPA
-# RECHERCHE LINEAIRE ET SUBDIVISION DU PAS DE TEMPS
-# LE NOMBRE D'ITERATIONS POUR CONVERGER AUGMENTE
-#
-#
-
+# PREMIER CALCUL : ON RESTE ELASTIQUE
 
 RESUNL=STAT_NON_LINE(MODELE=MO,
                      CHAM_MATER=CM,
@@ -106,31 +80,30 @@ RESUNL=STAT_NON_LINE(MODELE=MO,
                                FONC_MULT=F_DEPL,),),
                      COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
                      INCREMENT=_F(LIST_INST=L_INST,
+                                  INST_FIN=1.0,),);
+# CALCUL SANS SOUCI JUSQU'A 5.4 MPA
+# SUBDIVISION DU PAS DE TEMPS
+# LE NOMBRE D'ITERATIONS POUR CONVERGER AUGMENTE
+
+RESUNL=STAT_NON_LINE(reuse =RESUNL,
+                     MODELE=MO,
+                     CHAM_MATER=CM,
+                     EXCIT=(_F(CHARGE=CH1,),
+                            _F(CHARGE=CH2,
+                               FONC_MULT=F_DEPL,),),
+                     COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
+                     ETAT_INIT=_F(EVOL_NOLI=RESUNL,),
+                     INCREMENT=_F(LIST_INST=L_INST,
                                   INST_FIN=5.4,
                                   SUBD_PAS=4,
-                                  SUBD_PAS_MINI=1.E-4,),
-                     NEWTON=_F(REAC_ITER=1,),);
-# DEUXIEME CALCUL QUI MENE A UNE NON CONVERGENCE A 5.42 MPA
+                                  SUBD_PAS_MINI=0.0001,),
+                     NEWTON=_F(REAC_ITER=1,),
+                     ARCHIVAGE=_F(LIST_INST=L_INST,),);
+# AU DELA DE 5.4 : METTRE UN COMMENTAIRE NON CONVERGENCE A 5.42 MPA
 # ON DEPASSE SANS DOUTE LA CHARGE LIMITE
-# 
-#RESUNL=STAT_NON_LINE(reuse=RESUNL,
-#                     ETAT_INIT=_F(EVOL_NOLI=RESUNL),
-#                     MODELE=MO,
-#                     CHAM_MATER=CM,
-#                     EXCIT=(_F(CHARGE=CH1,),
-#                            _F(CHARGE=CH2,
-#                               FONC_MULT=F_DEPL,),),
-#                     COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
-#                     INCREMENT=_F(LIST_INST=L_INST,
-#                                  SUBD_PAS=4,
-#                                  SUBD_PAS_MINI=1.E-4,),
-#                     NEWTON=_F(REAC_ITER=1,),
-#                     RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,),);
+# ON PEUT LE VOIR EN COMMENTANT INST_FIN=5.4
 #
 # INTERPOLATION DES CONTRAINTES ET VARIABLE INTERNES AUX NOEUDS
-#
-#
-
 
 RESUNL=CALC_ELEM(reuse =RESUNL,
                  MODELE=MO,
@@ -139,10 +112,6 @@ RESUNL=CALC_ELEM(reuse =RESUNL,
                  RESULTAT=RESUNL,);
 # DEPOUILLEMENTS DES RESULTATS
 # VALEURS MAXI DES CONTRAINTES EQUIVALENTES ET DES VARIABLES INTERNES
-#
-#
-#
-
 
 IMPR_RESU(MODELE=MO,
           RESU=(_F(RESULTAT=RESUNL,
@@ -151,56 +120,6 @@ IMPR_RESU(MODELE=MO,
                 _F(RESULTAT=RESUNL,
                    NOM_CHAM='VARI_ELGA',
                    VALE_MAX='OUI',),),);
-# COURBE SIYY AU POINT G EN FONCTION DU TEMPS (DONC DU CHARGEMENT)
-#
-#
-#
-
-
-SYYG=RECU_FONCTION(RESULTAT=RESUNL,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
-                   TOUT_ORDRE='OUI',
-                   NOM_CMP='SIYY',
-                   MAILLE='M176',
-                   GROUP_NO='G',);
-# COURBE DY AU POINT G EN FONCTION DU TEMPS (DONC DU CHARGEMENT)
-#
-#
-#
-
-
-UYG=RECU_FONCTION(RESULTAT=RESUNL,
-                  NOM_CHAM='DEPL',
-                  TOUT_ORDRE='OUI',
-                  NOM_CMP='DY',
-                  GROUP_NO='G',);
-
-IMPR_COURBE(FICHIER='AGRAF',
-            FORMAT='AGRAF',
-            TITRE_GRAPHIQUE='DY EN FONCTION DU TEMPS AU POINT G',
-            LEGENDE_X='TEMPS=F SUR LFG',
-            LEGENDE_Y='DY POINT G',
-            COURBE=_F(FONCTION=UYG,),);
-
-IMPR_COURBE(FICHIER='AGRAF',
-            FORMAT='AGRAF',
-            TITRE_GRAPHIQUE='SIYY EN FONCTION DE DY AU POINT G',
-            LEGENDE_X='DY',
-            LEGENDE_Y='SIYY',
-            COURBE=_F(FONC_X=UYG,
-                      FONC_Y=SYYG,),);
-#  DEPOUILLEMENT AVEC CASTEM 2000
-#
-#
-#
-
-
-IMPR_RESU(MODELE=MO,
-          RESU=_F(FORMAT='CASTEM',
-                  MAILLAGE=M,
-                  RESULTAT=RESUNL,
-                  NOM_CHAM=('DEPL','SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),
-                  INST=5.4,),);
 
 RESUNL=CALC_NO(reuse =RESUNL,
                RESULTAT=RESUNL,
@@ -210,21 +129,24 @@ TEST_RESU(RESU=(_F(RESULTAT=RESUNL,
                    INST=1.0,
                    NOM_CHAM='SIEF_NOEU_ELGA',
                    NOM_CMP='SIYY',
-                   GROUP_NO='B',REFERENCE='ANALYTIQUE',
+                   GROUP_NO='B',
                    VALE=3.0,
-                   PRECISION=1.E-2,),
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESUNL,
                    INST=1.0,
                    NOM_CHAM='SIEF_NOEU_ELGA',
-                   NOM_CMP='SIXX',REFERENCE='ANALYTIQUE',
+                   NOM_CMP='SIXX',
                    GROUP_NO='A',
                    VALE=-1.0,
-                   PRECISION=0.03),
+                   PRECISION=0.03,
+                   REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESUNL,
                    INST=5.4,
                    NOM_CHAM='SIEF_NOEU_ELGA',
-                   NOM_CMP='SIYY',REFERENCE='ANALYTIQUE',
+                   NOM_CMP='SIYY',
                    GROUP_NO='G',
-                   VALE=5.4,),),);
+                   VALE=5.4,
+                   REFERENCE='ANALYTIQUE',),),);
 
 FIN();

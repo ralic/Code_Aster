@@ -3,7 +3,7 @@
       IMPLICIT   NONE
       CHARACTER*16 OPTION,ELREFL
 C ......................................................................
-C MODIF ELEMENTS  DATE 03/07/2002   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -127,7 +127,7 @@ C=====RECUPERATION NOMBRE DE COUCHES ET DE SECTEURS ANGULAIRES
       END IF
 
       READ (ZK16(ICOMPO-1+2),'(I16)') NBVARI
-      CALL TECACH(.TRUE.,.TRUE.,'PVARIMR',7,JTAB)
+      CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
       LGPG = MAX(JTAB(6),1)*JTAB(7)
 
       CALL JEVECH('PGEOMER','L',IGEOM)
@@ -247,13 +247,13 @@ C===============================================================
 C     -- RECUPERATION DE LA TEMPERATURE :
 C     1- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
 C        -----------------------------------------
-      CALL TECAC2 ('ONN','PTEMPMR',8,ITABM,IRET)
+      CALL TECACH ('ONN','PTEMPMR',8,ITABM,IRET)
       ITEMPM=ITABM(1)
       IF (ITEMPM.GT.0) THEN
         NBPAR = 1
         NOMPAR = 'TEMP'
         TEMPNO = .TRUE.
-        CALL TECAC2 ('OON','PTEMPPR',8,ITABP,IRET)
+        CALL TECACH ('OON','PTEMPPR',8,ITABP,IRET)
         ITEMPP=ITABP(1)
 
 C       -- CALCUL DES TEMPERATURES INF, SUP ET MOY
@@ -282,7 +282,7 @@ C          ------------------------------------------------------------
       ELSE
 C     2- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
 C        -------------------------------------------------------
-        CALL TECACH(.TRUE.,.FALSE.,'PTEMPEF',1,ITEMP)
+        CALL TECACH('ONN','PTEMPEF',1,ITEMP,IRET)
         IF (ITEMP.GT.0) THEN
           TEMPNO = .FALSE.
           NBPAR = 1

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,20 +17,16 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 AIDE=PROC(nom="AIDE",op=42,docu="U4.02.01-g",
-            UIinfo={"groupes":("Modélisation",)},
-          fr="Interrogation sur le catalogue des commandes et les concepts produits",
-         regles=(AU_MOINS_UN('CONCEPT','TYPE_ELEM', ),),
-         FICHIER         =SIMP(statut='f',typ='TXM',defaut="RESULTAT"),
-         TYPE_ELEM       =FACT(fr="couple type_elem option",
-                               statut='f',min=1,max=1,
-           INITEL          =SIMP(statut='f',typ='TXM',defaut="NON",
-                                 into=("OUI","NON",) ),
-         ),
-         CONCEPT         =FACT(statut='f',min=1,max='**',
-           NOM             =SIMP(fr="liste des noms de concept", 
-                                 statut='f',typ='TXM',max='**',defaut="*"),
-           OPTION          =SIMP(fr="option d'édition de concept",
-                                 statut='f',typ='TXM',defaut="TOUT_TYPE",
+       UIinfo={"groupes":("Modélisation",)},
+       fr="Interrogation sur le catalogue des commandes et les concepts produits",
+       regles=(AU_MOINS_UN('CONCEPT','TYPE_ELEM', ),),
+       FICHIER     =SIMP(statut='f',typ='TXM',defaut="RESULTAT"),
+       TYPE_ELEM   =FACT(fr="couple type_elem option",statut='f',
+         INITEL       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
+                        ),
+       CONCEPT     =FACT(statut='f',max='**',
+         NOM          =SIMP(fr="liste des noms de concept",statut='f',typ='TXM',validators=NoRepeat(),max='**',defaut="*"),
+         OPTION       =SIMP(fr="option d'édition de concept",statut='f',typ='TXM',defaut="TOUT_TYPE",
                                  into=("TOUT_TYPE","CREER","A_CREER",) ),
          ),
 ) ;

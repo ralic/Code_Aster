@@ -1,4 +1,4 @@
-# MODIF  DATE 03/12/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,7 +52,7 @@ M[1]=LIRE_MAILLAGE( )
 ##IMPR_RESU(  RESU=_F( FORMAT = 'MED', MAILLAGE = M[1]))
 #
 MACR_INFO_MAIL(
-              VERSION_HOMARD='V5_5',
+              VERSION_HOMARD='V6_2',
               MAILLAGE=M[1],
               QUALITE='OUI',
               INTERPENETRATION='OUI',
@@ -155,7 +155,7 @@ for k in range(1,10):
 # 4.8. IMPRESSIONS POUR CREER LA BASE DU CAS-TEST HOMARD med_2d_carre_d1 A L'ITERATION K
 #
 ###   nomfic="MED_%d" %k
-###   DEFUFI (IMPRESSION=(_F(UNITE=40+k,NOM='nomfic') ),);
+###   DEFI_FICHIER (UNITE=40+k,FICHIER='nomfic');
 ###   IMPR_RESU ( RESU=_F( FICHIER='nomfic', FORMAT='MED',
 ###               RESULTAT=RESU[k], NOM_CHAM='ERRE_ELEM_NOZ1', NOM_CMP='ERREST'  ) ) ;
 #
@@ -207,7 +207,7 @@ for k in range(1,10):
    M[k+1]=CO('M_%d' % (k+1))
 #
    MACR_ADAP_MAIL(
-              VERSION_HOMARD='V5_5',
+              VERSION_HOMARD='V6_2',
               ADAPTATION=_F( 
                        LIBRE = 'RAFFINEMENT',
                        MAILLAGE_N = M[k],
@@ -238,22 +238,26 @@ TEST_RESU(RESU=(
        _F(  RESULTAT = RESU[4],   NUME_ORDRE = 1,  
             NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',  
             CRITERE = 'RELATIF',  PRECISION = 1.E-6,  
-            NOM_CMP = 'DX',       VALE = 5.093375E-03,    ),
+            NOM_CMP = 'DX',       VALE = 5.093375E-03, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.01' ),
        _F(  RESULTAT = RESU[4],   NUME_ORDRE = 1,  
             NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',  
             CRITERE = 'RELATIF',  PRECISION = 1.E-6,  
-            NOM_CMP = 'DY',       VALE = -2.7634976E-02,   ))
+            NOM_CMP = 'DY',       VALE = -2.7634976E-02, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.01' ))
           )
 #
 TEST_RESU(RESU=(
        _F(  RESULTAT = RESU[5],   NUME_ORDRE = 1,  
             NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',  
             CRITERE = 'RELATIF',  PRECISION = 1.E-6,  
-            NOM_CMP = 'DX',       VALE = 5.0939774E-03,    ),
+            NOM_CMP = 'DX',       VALE = 5.0939774E-03, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.01' ),
        _F(  RESULTAT = RESU[5],   NUME_ORDRE = 1,  
             NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',  
             CRITERE = 'RELATIF',  PRECISION = 1.E-6,  
-            NOM_CMP = 'DY',       VALE = -3.158715E-02,   ))
+            NOM_CMP = 'DY',       VALE = -3.158715E-02,
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.01' ))
           )
 #
 FIN( )

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2002   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE Calcul d'indicateur d'erreur en thermique lineaire
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,26 +27,23 @@
 #                            PREALABLES
 #-------------------------------------------------------------------------------
 DEBUT(CODE=_F( NOM = 'TPLL01J',NIV_PUB_WEB='INTERNET'))
+# Concepts a chaque iteration
+nbcalc = 3
+M=[None]*(nbcalc+0)
+MODE=[None]*nbcalc
+MATE=[None]*nbcalc
+CHA1=[None]*nbcalc
+RESU=[None]*nbcalc
 
 MATERI=DEFI_MATERIAU( THER=_F(  LAMBDA = 0.75, RHO_CP = 2.0))
-M=[None]*4
+#
 M[1]=LIRE_MAILLAGE( )
-
-# Maillage initial
-M[1]=DEFI_GROUP(reuse=M[1],MAILLAGE=M[1], 
-          CREA_GROUP_NO=_F( TOUT_GROUP_MA = 'OUI'))
-
-# Vecteurs resultats a chaque iteration
-MODE=[None]*3
-MATE=[None]*3
-CHA1=[None]*3
-RESU=[None]*3
 
 #-------------------------------------------------------------------------------
 #                     BOUCLE CALCUL INDICATEUR/REMAILLAGE
 #-------------------------------------------------------------------------------
-# En fait on fait 2 iterations
-for k in range(1,3):
+# En fait on fait nbcalc-1 iterations
+for k in range(1,nbcalc):
 
 # Affectation des materiaux/modele/chargement
    MATE[k]=AFFE_MATERIAU( MAILLAGE=M[k],
@@ -55,7 +52,7 @@ for k in range(1,3):
                       AFFE=_F( TOUT = 'OUI', MODELISATION = '3D',
                                       PHENOMENE = 'THERMIQUE'))
    CHA1[k]=AFFE_CHAR_THER( MODELE=MODE[k],
-             TEMP_IMPO=_F( GROUP_NO = 'F1INF',   TEMP = 100.),
+             TEMP_IMPO=_F( GROUP_MA = 'F1INF',   TEMP = 100.),
              FLUX_REP=_F( GROUP_MA = 'FLUX',    FLUN = -1200.),
              ECHANGE=_F( GROUP_MA = 'ECHA',  COEF_H = 30., TEMP_EXT = 140.))
 
@@ -64,7 +61,7 @@ for k in range(1,3):
    RESU[k]=THER_LINEAIRE( MODELE=MODE[k],
            CHAM_MATER=MATE[k], EXCIT=_F( CHARGE = CHA1[k]))
 
-   IMPR_RESU( RESU=_F(RESULTAT = RESU[k], TOUT_PARA='OUI',))
+###   IMPR_RESU( RESU=_F(RESULTAT = RESU[k], TOUT_PARA='OUI',))
 
 # Calcul de l'indicateur d'erreur
    RESU[k]=CALC_ELEM( reuse=RESU[k], MODELE=MODE[k],
@@ -74,15 +71,17 @@ for k in range(1,3):
 #              INFO=2,
               OPTION=('FLUX_ELNO_TEMP','ERTH_ELEM_TEMP','ERTH_ELNO_ELEM'))
 
-#   IMPR_RESU( RESU=_F(RESULTAT = RESU[k], TOUT_PARA='OUI',))
+   IMPR_RESU( RESU=_F(FORMAT='MED',
+                    RESULTAT = RESU[k]))
 
-# Subtilite PYTHON pour definir le nouveau maillage
-   M[k+1]=CO('M_%d' % (k+1))
-
+   if ( k < nbcalc-1 ) :
 # Adaptation du maillage en se basant sur la composante ERTABS du champ
-# ERTH_ELEM_TEMP de RESU[k]. Critere de raffinement =1/2.
+# ERTH_ELEM_TEMP de RESU[k]. Critere de raffinement = 2%.
 # Ancien maillage: M[k]. Maillage raffine: M[k+1]
-   MACR_ADAP_MAIL(
+#
+     M[k+1]=CO('M_%d' % (k+1))
+
+     MACR_ADAP_MAIL(
                   ADAPTATION=_F( 
                        LIBRE = 'RAFFINEMENT',
                        MAILLAGE_N = M[k],
@@ -91,7 +90,7 @@ for k in range(1,3):
                        INDICATEUR = 'ERTH_ELEM_TEMP',
                        NUME_ORDRE = 0,
                        NOM_CMP_INDICA = 'ERTABS',
-                       CRIT_RAFF_PE = 0.45,
+                       CRIT_RAFF_PE = 0.02,
                        NIVE_MAX = 5),
                  QUALITE='OUI',
                  INTERPENETRATION='NON' )
@@ -112,12 +111,13 @@ TEST_RESU(RESU=(
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
                 VALE = 4.1591873545047E-05,
                 VERSION='V6.2.1',            CRITERE='RELATIF')))
+###IMPR_RESU ( RESU=_F(MAILLAGE=M[2], IMPR_COOR='OUI') )
 TEST_RESU(RESU=(       
             _F( RESULTAT = RESU[2],          NUME_ORDRE = 0, 
                 NOM_CHAM = 'ERTH_ELEM_TEMP', MAILLE = 'M1', 
                 POINT =1,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
-                VALE = 3.9195534199102E-06,  PRECISION = 1.E-3,
-                VERSION='ASTER V6.2.1/HOMARD V4.3', CRITERE='RELATIF')))
+                VALE = 4.3627678192699E-05,  PRECISION = 1.E-3,
+                VERSION='ASTER V7.1.9/HOMARD V6.2', CRITERE='RELATIF')))
 
 FIN()

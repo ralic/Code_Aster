@@ -1,7 +1,7 @@
-      SUBROUTINE MDEXMA ( NOFIMD, NOMAMD, EXISTM, NDIM, CODRET )
+      SUBROUTINE MDEXMA ( NOFIMD, NOMAMD, OPTION, EXISTM, NDIM, CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/01/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,10 @@ C .  NOM   . E/S . TAILLE .           DESCRIPTION                      .
 C .____________________________________________________________________.
 C . NOFIMD .  E  .   1    . NOM DU FICHIER MED              .
 C . NOMAMD .  E  .   1    . NOM DU MAILLAGE MED VOULU                  .
+C . OPTION .  E  .   1    . QUE FAIT-ON SI LE MAILLAGE EST ABSENT :    .
+C .        .     .        . 0 : RIEN DE SPECIAL                        .
+C .        .     .        . 1 : ON IMPRIME LA LISTE DES MAILLAGES      .
+C .        .     .        .     PRESENTS                               .
 C . EXISTM .  S  .   1    . .TRUE. OU .FALSE., SELON QUE LE MAILLAGE   .
 C .        .     .        . EST PRESENT OU NON                         .
 C . NDIM   .  S  .   1    . LA DIMENSION DU MAILLAGE QUAND IL EXISTE   .
@@ -45,7 +49,7 @@ C
 C
       LOGICAL EXISTM
 C
-      INTEGER NDIM, CODRET
+      INTEGER OPTION, NDIM, CODRET
 C
 C 0.2. ==> COMMUNS
 C
@@ -62,6 +66,7 @@ C
       INTEGER IDFIMD, NBMAIE
       INTEGER IAUX, JAUX, KAUX
 C
+      CHARACTER*32 NOMA32
       CHARACTER*32 SAUX32
 C ______________________________________________________________________
 C
@@ -98,7 +103,11 @@ C
 C
 C 2.2. ==> RECHERCHE DU NUMERO ET DE LA DIMENSION DU MAILLAGE VOULU
 C
+C
+C               12345678901234567890123456789012
+      NOMA32 = '                                '
       LNOMAM = LXLGUT(NOMAMD)
+      NOMA32(1:LNOMAM) = NOMAMD(1:LNOMAM)
 C
       DO 22 , IAUX = 1 , NBMAIE
 C
@@ -118,7 +127,7 @@ C
       JAUX = LXLGUT(SAUX32)
 C
       IF ( JAUX.EQ.LNOMAM ) THEN
-        IF ( SAUX32(1:JAUX).EQ.NOMAMD(1:LNOMAM) ) THEN
+        IF ( SAUX32.EQ.NOMA32 ) THEN
           NDIM = KAUX
           EXISTM = .TRUE.
           GOTO 221
@@ -128,6 +137,29 @@ C
    22 CONTINUE
 C
       EXISTM = .FALSE.
+C
+C 2.3. ==> IMPRESSION EVENTUELLE DES MAILLAEGS PRESENTS
+C
+      IF ( OPTION.NE.0 ) THEN
+C
+        CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
+        CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
+        CALL UTIMPI ( 'L', 'NOMBRE DE MAILLAGES PRESENTS ', 1, NBMAIE )
+C
+        DO 23 , IAUX = 1 , NBMAIE
+C                   12345678901234567890123456789012
+          SAUX32 = '                                '
+          CALL EFMAAI ( IDFIMD, IAUX, SAUX32, KAUX, CODRET )
+          JAUX = LXLGUT(SAUX32)
+          CALL UTIMPK ( 'L',
+     >                '. MAILLAGE PRESENT : ', 1, SAUX32(1:JAUX) )
+   23   CONTINUE
+        CALL UTFINM ()
+        CALL UTMESS ( 'A', NOMPRO,
+     >   'LE MAILLAGE '''//NOMA32(1:LNOMAM)//
+     >   ''' EST INCONNU DANS LE FICHIER.' )
+C
+      ENDIF
 C
   221 CONTINUE
 C

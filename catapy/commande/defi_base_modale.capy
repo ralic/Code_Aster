@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,12 +20,12 @@ DEFI_BASE_MODALE=OPER(nom="DEFI_BASE_MODALE",op=  99,sd_prod=base_modale,
                      docu="U4.64.02-f",reentrant='f',
             UIinfo={"groupes":("Matrices/vecteurs",)},
          regles=(UN_PARMI('CLASSIQUE','RITZ','DIAG_MASS'),),
-         CLASSIQUE       =FACT(statut='f',min=1,max=1,
+         CLASSIQUE       =FACT(statut='f',
            INTERF_DYNA     =SIMP(statut='o',typ=interf_dyna_clas ),
            MODE_MECA       =SIMP(statut='o',typ=mode_meca,max='**' ),
            NMAX_MODE       =SIMP(statut='f',typ='I',defaut= 10 ),
          ),
-         RITZ            =FACT(statut='f',min=1,max='**',
+         RITZ            =FACT(statut='f',max='**',
            regles=(UN_PARMI('MODE_STAT','MODE_MECA','MULT_ELAS','BASE_MODALE'),),
            MODE_MECA       =SIMP(statut='f',typ=mode_meca,max='**'  ),
            NMAX_MODE       =SIMP(statut='f',typ='I',defaut= 999 ),
@@ -33,7 +33,7 @@ DEFI_BASE_MODALE=OPER(nom="DEFI_BASE_MODALE",op=  99,sd_prod=base_modale,
            MULT_ELAS       =SIMP(statut='f',typ=mult_elas ),
            BASE_MODALE     =SIMP(statut='f',typ=base_modale ),
          ),
-        DIAG_MASS        =FACT(statut='f',min=1,max='**',
+        DIAG_MASS        =FACT(statut='f',max='**',
            MODE_MECA       =SIMP(statut='o',typ=mode_meca,max='**'  ),
            MODE_STAT       =SIMP(statut='o',typ=(mode_stat_depl,mode_stat_acce,mode_stat_forc,) ),
          ),

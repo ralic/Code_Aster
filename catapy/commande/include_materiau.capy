@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ INCLUDE_MATERIAU=MACRO(nom="INCLUDE_MATERIAU",op=-14,docu="U4.43.02-b",
          TYPE_VALE       =SIMP(statut='o',typ='TXM',into=("NOMI","MINI","MAXI") ),
          NOM_MATER       =SIMP(statut='o',typ='TXM' ),  
          UNITE           =SIMP(statut='f',typ='I',defaut= 32 ),  
-         EXTRACTION      =FACT(statut='f',min=1,max=99,
+         EXTRACTION      =FACT(statut='f',max=99,
            COMPOR          =SIMP(statut='o',typ='TXM' ),  
            TEMP_EVAL       =SIMP(statut='o',typ='R' ),  
          ),

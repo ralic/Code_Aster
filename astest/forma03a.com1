@@ -1,0 +1,223 @@
+
+
+POURSUITE(CODE=_F(NOM='FORMA03A'),PAR_LOT='NON')
+
+#import Stanley
+#from Stanley import stanley
+#from Stanley import as_courbes
+
+#######################################################
+#
+# DEPOUILLEMENT AVEC STANLEY EN INTERACTIF
+#
+#######################################################
+
+#stanley.PRE_STANLEY()
+
+                       
+#######################################################
+#
+#  Courbe Sigma Theta sur le bord du trou en elasticite
+#
+#######################################################
+
+CERCLE=INTE_MAIL_2D(MAILLAGE=M,
+                    DEFI_CHEMIN=_F(GROUP_MA='CAB',),);
+
+STHETA=POST_RELEVE_T(ACTION=_F(INTITULE='STHETA',
+                               CHEMIN=CERCLE,
+                               RESULTAT=RESUNL,
+                               NOM_CHAM='SIEF_ELNO_ELGA',
+                               INST=1.0,
+                               NOM_CMP=('SIXX','SIYY','SIXY',),
+                               REPERE='POLAIRE',
+                               OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=STHETA,
+           FICHIER='RESULTAT',
+           FORMAT='EXCEL',);
+
+STCALC=RECU_FONCTION(TABLE=STHETA,
+                     PARA_X='ABSC_CURV',
+                     PARA_Y='SIYY',
+                     INTERPOL='LIN',
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',);
+R = 10.0;
+
+
+STTA = FORMULE(REEL = '''(REEL:S) = 1.+2.*COS(2.*(PI/2-S/R))''');
+#
+SMAX = EVAL("""PI/2*R""");
+
+
+LISABS=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=SMAX,
+                                    NOMBRE=30,),);
+
+STTAC=CALC_FONC_INTERP(FONCTION=STTA,NOM_PARA='ABSC_CURV',
+                       NOM_RESU='ANALYTIC',
+                       LIST_PARA=LISABS,
+                       INTERPOL='LIN',);
+
+DEFI_FICHIER(FICHIER='STHETA',
+                     UNITE=81,)
+
+IMPR_COURBE(FICHIER='STHETA',
+            FORMAT='EXCEL',
+            COURBE=(_F(FONCTION=STTAC,),
+                    _F(FONCTION=STCALC,),),);
+
+# COURBES AVEC XMGRACE EN INTERACTIF
+
+#sigtheta = as_courbes.Courbe()
+#sigtheta.Lire_x(STHETA,'ABSC_CURV')
+#sigtheta.Lire_y(STHETA,'SIYY')
+
+#sigtheta.Trace(titre="Sigma Theta suivant l'arc AB " )
+
+
+
+#######################################################
+#
+# COURBE SIYY AU POINT G EN FONCTION DU DEPLACEMENT 
+#
+#######################################################
+#
+
+SYY_G=POST_RELEVE_T(ACTION=_F(INTITULE='SYG',
+                              GROUP_NO='G',
+                              RESULTAT=RESUNL,
+                              NOM_CHAM='SIEF_NOEU_ELGA',
+                              NOM_CMP='SIYY',
+                              OPERATION='EXTRACTION',),);
+
+DY_G=POST_RELEVE_T(ACTION=_F(INTITULE='DYG',
+                             GROUP_NO='G',
+                             RESULTAT=RESUNL,
+                             NOM_CHAM='DEPL',
+                             NOM_CMP='DY',
+                             OPERATION='EXTRACTION',),);
+
+F_DY_G=RECU_FONCTION(TABLE=DY_G,
+                     PARA_X='INST',
+                     PARA_Y='DY',
+                     INTERPOL='LIN',);
+
+F_SYY_G=RECU_FONCTION(TABLE=SYY_G,
+                      PARA_X='INST',
+                      PARA_Y='SIYY',
+                      INTERPOL='LIN',);
+
+DEFI_FICHIER(FICHIER='SYYG',
+                     UNITE=82,)
+               
+
+
+IMPR_COURBE(FICHIER='SYYG',
+            FORMAT='EXCEL',
+            COURBE=(_F(FONCTION=F_DY_G,
+                       LEGENDE='Dy au point G',),
+                    _F(FONCTION=F_SYY_G,
+                       LEGENDE='Sigma YY au  point G',),),);
+
+
+# COURBES AVEC XMGRACE EN INTERACTIF
+
+#sigG_uyG = as_courbes.Courbe()
+#sigG_uyG.Lire_x(DY_G,'DY')
+#sigG_uyG.Lire_y(SYY_G,'SIYY')
+#sigG_uyG.Trace(titre="SigmaYY en fonction de Dy au point G " )
+
+
+
+                       
+#######################################################
+#
+# COURBE FORCE RESULTANTE EN HAUT EN FONCTION DU DEPLACEMENT
+#
+#######################################################
+#
+
+RESUNL=CALC_NO(reuse =RESUNL,
+               RESULTAT=RESUNL,
+               OPTION='FORC_NODA',
+               MODELE=MO,
+               CHAM_MATER=CM,);
+
+LH=INTE_MAIL_2D(MAILLAGE=M,
+                DEFI_CHEMIN=_F(GROUP_MA='LFG',),);
+
+FHAUT=POST_RELEVE_T(ACTION=_F(INTITULE='F_HAUT',
+                              CHEMIN=LH,
+                              RESULTAT=RESUNL,
+                              NOM_CHAM='FORC_NODA',
+                              RESULTANTE=('DX','DY','DZ',),
+                              OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=FHAUT)
+
+
+F_FY_G=RECU_FONCTION(TABLE=FHAUT,
+                     PARA_X='INST',
+                     PARA_Y='DY',
+                     INTERPOL='LIN',);
+
+DEFI_FICHIER(FICHIER='FYG',
+                     UNITE=83,)
+
+IMPR_COURBE(FICHIER='FYG',
+            FORMAT='EXCEL',
+            COURBE=(_F(FONCTION=F_DY_G,
+                       LEGENDE='Deplacement suivant Y au point G',),
+                    _F(FONCTION=F_FY_G,
+                       LEGENDE='Resultante de forces nodales suivant Y sur FG',),),);
+
+
+
+# COURBES AVEC XMGRACE EN INTERACTIF
+
+#FG_uyG = as_courbes.Courbe()
+#FG_uyG.Lire_x(DY_G,'DY')
+#FG_uyG.Lire_y(FHAUT,'DY')
+#FG_uyG.Trace(titre = "Resultante de Fy(FG) fonction de Dy(G)" )
+
+                  
+
+#######################################################
+#
+#  DEPOUILLEMENT AVEC CASTEM 2000
+#
+########################################################
+
+IMPR_RESU(MODELE=MO,
+          RESU=_F(FORMAT='CASTEM',
+                  MAILLAGE=M,
+                  RESULTAT=RESUNL,
+                  NOM_CHAM=('DEPL','SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),
+                  INST=(1.,5.4),
+                  FICHIER='CASTEM',),);
+
+                  
+#######################################################
+#
+#  DEPOUILLEMENT AVEC GMSH
+#
+#######################################################
+
+DEFI_FICHIER(FICHIER='GMSH',
+                     UNITE=36,)
+
+IMPR_RESU(MODELE=MO,
+          RESU=_F(FORMAT='GMSH',
+                  RESULTAT=RESUNL,
+                  NOM_CHAM=('DEPL','SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),
+                  INST=(1.,5.4),
+                  FICHIER='GMSH',),);
+
+
+
+FIN();
+
+
+                  

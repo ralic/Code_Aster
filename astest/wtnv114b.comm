@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 # TITRE TEST HM, 2D , MODELISATION THMC=LIQU_GAZ_ATM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -154,6 +154,7 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    PORO = 0.4,
    PRES_VAPE = 2269.8,
    DEGR_SATU = 1.),
+            COMP_THM = 'LIQU_GAZ_ATM', 
                                      ELAS=_F( 
    E = 225.E6,
    NU = 0.,

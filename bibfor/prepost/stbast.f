@@ -2,9 +2,10 @@
       IMPLICIT  NONE
       INTEGER             NFIE, NFIS, IFM
       LOGICAL             LGRCOU
+C TOLE CRS_513
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 02/12/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,27 +22,26 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C                                                                  
+C      FONCTION : LANCEMENT DE L'INTERFACE IDEAS (SUPERTAB)          
+C                                                                  
+C ======================================================================
 C
-C  =================================================================
-C  !                                                               !
-C  !   AUTEUR: J.F.LAMAUDIERE                       DATE:03/04/90  !
-C  !                                                               !
-C  =================================================================
-C  !                                                               !
-C  !   FONCTION : LANCEMENT DE L'INTERFACE SUPERTAB-TRIFOU         !
-C  !                                                               !
-C  !   REMARQUE : TOUTE ALTERATION DANS UN COMMON ENTRAINE UNE     !
-C  !              ALTERATION DANS L'AUTRE COMMON                   !
-C  !                                                               !
-C  =================================================================
+      CHARACTER*16 K16NOM
+      INTEGER      ULISOP
 C
-C
-      CALL DEFUFI ( NFIE, 'UNIVERSEL'      )
-      CALL DEFUFI ( NFIS, 'FICHIER-MODELE' )
+      IF ( ULISOP ( NFIE, K16NOM ) .EQ. 0 )  THEN 
+        CALL ULOPEN ( NFIE,' ','IDEAS','NEW','O')
+      ENDIF 
+      IF ( ULISOP ( NFIS, K16NOM ) .EQ. 0 )  THEN 
+        CALL ULOPEN ( NFIS,' ','FICHIER-MODELE','NEW','O')
+      ENDIF 
 C
       CALL PRESUP ( LGRCOU )
 C
       WRITE(NFIS,*) 'FIN'
       REWIND NFIS
 C
+      CALL ULDEFI ( -NFIE, ' ', ' ', ' ', ' ' )
+      CALL ULDEFI ( -NFIS, ' ', ' ', ' ', ' ' )
       END

@@ -4,7 +4,7 @@
       CHARACTER*(*)       QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,8 @@ C
       INTEGER       IBID, IRET, GD, JCELD, IACELK, L, LXLGUT
       CHARACTER*8   K8BID, NOGD
       CHARACTER*19  NOMOB
-      CHARACTER*24  REPK, QUESTL
+      CHARACTER*24 QUESTL
+      CHARACTER*32  REPK
 C DEB-------------------------------------------------------------------
 C
       CALL JEMARQ()

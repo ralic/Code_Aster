@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,5 +23,5 @@ IMPR_CHARGE=PROC(nom="IMPR_CHARGE",op= 158,
          FICHIER         =SIMP(statut='f',typ='TXM' ),
          FORMAT          =SIMP(statut='f',typ='TXM',defaut="IDEAS",into=("IDEAS",) ),
          VERSION         =SIMP(statut='f',typ='I',defaut= 5,into=( 5 ,) ),
-         CHARGE          =SIMP(statut='o',typ=char_meca,max='**', ),
+         CHARGE          =SIMP(statut='o',typ=char_meca,validators=NoRepeat(),max='**', ),
 )  ;

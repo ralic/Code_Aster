@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/03/2003   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 21/07/2003   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -154,7 +154,8 @@ C
            NUMGEN = ZK24(J2REFE+1)(1:14)
            CALL JEVEUO(NUMGEN//'.NUME.REFN','L',J3REFE)
            CALL GETTCO(ZK24(J3REFE),TYPREP)
-           IF (TYPREP(1:9).EQ.'MODE_MECA') THEN
+           IF ((TYPREP(1:9).EQ.'MODE_MECA').OR.
+     +         (TYPREP(1:9).EQ.'MODE_STAT')) THEN
                MATRIC = ZK24(IADRIF)
            ELSEIF (TYPREP(1:11).EQ.'BASE_MODALE') THEN
                MATRIC = ZK24(IADRIF+3)
@@ -677,7 +678,8 @@ C
       CALL WKVECT(KREFE//'.REFE','G V K24',3,LREFE)
       IF (MODE.EQ.BLANC) THEN
 C
-         IF (TYPREP(1:9).EQ.'MODE_MECA') THEN
+         IF ((TYPREP(1:9).EQ.'MODE_MECA').OR.
+     +       (TYPREP(1:9).EQ.'MODE_STAT')) THEN
              ZK24(LREFE  ) = ZK24(IADRIF)
          ELSEIF (TYPREP(1:11).EQ.'BASE_MODALE') THEN
              ZK24(LREFE  ) = ZK24(IADRIF+3)

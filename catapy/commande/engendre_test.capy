@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ ENGENDRE_TEST=PROC(nom="ENGENDRE_TEST",op=178,docu="U4.92.11-c",
       regles=(UN_PARMI('TOUT','CO'),),
          FICHIER         =SIMP(statut='f',typ='TXM',defaut="RESULTAT"),
          TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-         CO              =SIMP(statut='f',typ=assd,max='**'),
+         CO              =SIMP(statut='f',typ=assd,validators=NoRepeat(),max='**'),
          TYPE_TEST       =SIMP(statut='f',typ='TXM',defaut="SOMME",into=("SOMME","RESUME") ),
          FORMAT_R        =SIMP(statut='f',typ='TXM',defaut="1PE12.5"),
          PREC_R          =SIMP(statut='f',typ='TXM',defaut="1.E-5"),

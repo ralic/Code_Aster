@@ -6,7 +6,7 @@
       CHARACTER*(*)       BASZ, NJVPOI, NJVSEG, NJVTRI, NJVTET
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 25/04/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,10 +49,10 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      +             NBNOMX, NBPT, INO, IMA2, IMAV, IATYMA, JREFE, JTITR
       INTEGER      JTYPM, JDIME, JPOI, JSEG, JTRI, JTET, JOPT, JNPT,
      +             NBMAC, JMAIL, IM, JNUMOL
-      INTEGER      TSEG3(2,2), TSEG4(3,2), TTRI6(4,3), TTRI7(6,3),
-     +             TQUA4(2,3), TQUA8(6,3), TQUA9(8,3), TTET10(8,4),
+      INTEGER      TSEG3(2,2), TSEG4(3,2), TTRI6(4,3), TTRI7(4,3),
+     +             TQUA4(2,3), TQUA8(6,3), TQUA9(6,3), TTET10(8,4),
      +             TPEN6(3,4), TPEN15(16,4), TPYR5(2,4), THEX8(6,4),
-     +             THEX20(24,4), THEX27(48,4)
+     +             THEX20(24,4), THEX27(48,4),TTRI7B(6,3),TQUA9B(8,3)
       LOGICAL      LOGIC
       CHARACTER*1  BASE
       CHARACTER*8  K8B, NOMG, TYPM
@@ -92,25 +92,40 @@ C --- ECLATEMENT TRIA6 EN 4 TRIA3
       TTRI6(4,2) = 5
       TTRI6(4,3) = 6
 C
-C --- ECLATEMENT TRIA7 EN 6 TRIA3
+C --- ECLATEMENT TRIA7 EN 4 TRIA3 COMME TRIA6
+C --- CAR DX DY DZ INCONNUS SUR LE NOEUD 9 EN COQUE_3D
       TTRI7(1,1) = 1
       TTRI7(1,2) = 4
-      TTRI7(1,3) = 7
+      TTRI7(1,3) = 6
       TTRI7(2,1) = 4
       TTRI7(2,2) = 2
-      TTRI7(2,3) = 7
-      TTRI7(3,1) = 2
-      TTRI7(3,2) = 5
-      TTRI7(3,3) = 7
-      TTRI7(4,1) = 5
-      TTRI7(4,2) = 3
-      TTRI7(4,3) = 7
-      TTRI7(5,1) = 3
-      TTRI7(5,2) = 6
-      TTRI7(5,3) = 7
-      TTRI7(6,1) = 6
-      TTRI7(6,2) = 1
-      TTRI7(6,3) = 7
+      TTRI7(2,3) = 5
+      TTRI7(3,1) = 5
+      TTRI7(3,2) = 3
+      TTRI7(3,3) = 6
+      TTRI7(4,1) = 4
+      TTRI7(4,2) = 5
+      TTRI7(4,3) = 6
+C
+C --- ECLATEMENT TRIA7 EN 6 TRIA3
+C      TTRI7B(1,1) = 1
+C      TTRI7B(1,2) = 4
+C      TTRI7B(1,3) = 7
+C      TTRI7B(2,1) = 4
+C      TTRI7B(2,2) = 2
+C      TTRI7B(2,3) = 7
+C      TTRI7B(3,1) = 2
+C      TTRI7B(3,2) = 5
+C      TTRI7B(3,3) = 7
+C      TTRI7B(4,1) = 5
+C      TTRI7B(4,2) = 3
+C      TTRI7B(4,3) = 7
+C      TTRI7B(5,1) = 3
+C      TTRI7B(5,2) = 6
+C      TTRI7B(5,3) = 7
+C      TTRI7B(6,1) = 6
+C      TTRI7B(6,2) = 1
+C      TTRI7B(6,3) = 7
 C
 C --- ECLATEMENT QUAD4 EN 2 TRIA3
       TQUA4(1,1) = 1
@@ -140,31 +155,52 @@ C --- ECLATEMENT QUAD8 EN 6 TRIA3
       TQUA8(6,2) = 6
       TQUA8(6,3) = 7
 C
-C --- ECLATEMENT QUAD9 EN 8 TRIA3
+C --- ECLATEMENT QUAD9 EN 6 TRIA3 COMME QUAD8 
+C --- CAR DX DY DZ INCONNUS SUR LE NOEUD 9 EN COQUE_3D
       TQUA9(1,1) = 1
       TQUA9(1,2) = 5
-      TQUA9(1,3) = 9
-      TQUA9(2,1) = 1
-      TQUA9(2,2) = 9
-      TQUA9(2,3) = 8
-      TQUA9(3,1) = 8
-      TQUA9(3,2) = 9
+      TQUA9(1,3) = 8
+      TQUA9(2,1) = 5
+      TQUA9(2,2) = 2
+      TQUA9(2,3) = 6
+      TQUA9(3,1) = 6
+      TQUA9(3,2) = 3
       TQUA9(3,3) = 7
-      TQUA9(4,1) = 8
-      TQUA9(4,2) = 7
-      TQUA9(4,3) = 4
+      TQUA9(4,1) = 7
+      TQUA9(4,2) = 4
+      TQUA9(4,3) = 8
       TQUA9(5,1) = 5
-      TQUA9(5,2) = 2
-      TQUA9(5,3) = 6
+      TQUA9(5,2) = 7
+      TQUA9(5,3) = 8
       TQUA9(6,1) = 5
       TQUA9(6,2) = 6
-      TQUA9(6,3) = 9
-      TQUA9(7,1) = 9
-      TQUA9(7,2) = 6
-      TQUA9(7,3) = 3
-      TQUA9(8,1) = 9
-      TQUA9(8,2) = 3
-      TQUA9(8,3) = 7
+      TQUA9(6,3) = 7
+C      
+C --- ECLATEMENT QUAD9 EN 8 TRIA3
+C      TQUA9B(1,1) = 1
+C      TQUA9B(1,2) = 5
+C      TQUA9B(1,3) = 9
+C      TQUA9B(2,1) = 1
+C      TQUA9B(2,2) = 9
+C      TQUA9B(2,3) = 8
+C      TQUA9B(3,1) = 8
+C      TQUA9B(3,2) = 9
+C      TQUA9B(3,3) = 7
+C      TQUA9B(4,1) = 8
+C      TQUA9B(4,2) = 7
+C      TQUA9B(4,3) = 4
+C      TQUA9B(5,1) = 5
+C      TQUA9B(5,2) = 2
+C      TQUA9B(5,3) = 6
+C      TQUA9B(6,1) = 5
+C      TQUA9B(6,2) = 6
+C      TQUA9B(6,3) = 9
+C      TQUA9B(7,1) = 9
+C      TQUA9B(7,2) = 6
+C      TQUA9B(7,3) = 3
+C      TQUA9B(8,1) = 9
+C      TQUA9B(8,2) = 3
+C      TQUA9B(8,3) = 7
 C
 C --- ECLATEMENT TETRA10 EN 8 TETRA4
       TTET10(1,1) = 1
@@ -681,7 +717,8 @@ C
             NBTRI = NBTRI + 4
 C
          ELSE IF (TYPM .EQ. 'TRIA7') THEN
-            NBTRI = NBTRI + 6
+C            NBTRI = NBTRI + 6
+            NBTRI = NBTRI + 4
 C
          ELSE IF (TYPM .EQ. 'QUAD4') THEN
             NBTRI = NBTRI + 2
@@ -690,7 +727,8 @@ C
             NBTRI = NBTRI + 6
 C
          ELSE IF (TYPM .EQ. 'QUAD9') THEN
-            NBTRI = NBTRI + 8
+            NBTRI = NBTRI + 6
+C            NBTRI = NBTRI + 8
 C
          ELSE IF (TYPM .EQ. 'TETRA4') THEN 
             NBTET = NBTET + 1
@@ -911,7 +949,8 @@ C
          ELSEIF ( TYPM .EQ. 'TRIA7' ) THEN
 C                 -----------------
             NBPT = 3
-            DO 214 I = 1 , 6
+C            DO 214 I = 1 , 6
+            DO 214 I = 1 , 4
                IMAV = IMAV + 1
                NOMG = 'MA      '
                CALL CODENT ( IMAV, 'G', NOMG(3:8) )
@@ -980,7 +1019,8 @@ C
          ELSEIF ( TYPM .EQ. 'QUAD9' ) THEN
 C                 -----------------
             NBPT = 3
-            DO 220 I = 1 , 8
+C            DO 220 I = 1 , 8
+            DO 220 I = 1 , 6
                IMAV = IMAV + 1
                NOMG = 'MA      '
                CALL CODENT ( IMAV, 'G', NOMG(3:8) )

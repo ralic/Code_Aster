@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ IMPR_CO=PROC(nom="IMPR_CO",op=17,docu="U4.91.11-g",
          ATTRIBUT        =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","OUI") ),
          CONTENU         =SIMP(statut='f',typ='TXM',defaut="OUI",into=("NON","OUI") ),
          BASE            =SIMP(statut='f',typ='TXM',defaut="G",into=("","G","V","L") ),
-         CO              =SIMP(statut='f',typ=assd,max='**'),
+         CO              =SIMP(statut='f',typ=assd,validators=NoRepeat(),max='**'),
          CHAINE          =SIMP(statut='f',typ='TXM'),
          POSITION        =SIMP(statut='f',typ='I',defaut=1),
 )  ;

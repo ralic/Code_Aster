@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2002   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 # RESPONSABLE PABHHHH N. TARDIEU
 # TITRE SENSIBILITE AUX DONNEES MATERIAUX EN MECA_STATIQUE ORTHOTROPE 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -112,9 +112,8 @@ for i in range(n):
                           PARA_SENSI=PS[i],
                           NOM_COMPOSE=MATS[i].nom,
                           MOT_CLE=mot_cle[i],
+                          MOT_FACT='ELAS_ORTH_FO',
                           VALEUR=PS[i].nom ),);
-
-
 #
 # 3.3. Affectation des materiaux
 #
@@ -128,6 +127,7 @@ for i in range(n):
   MEMO_NOM_SENSI ( NOM=_F(NOM_SD='MATEMAIL',
                           PARA_SENSI=PS[i],
                           NOM_COMPOSE=CHMS[i].nom,
+                          MOT_FACT='AFFE',
                           MOT_CLE='MATER',
                           VALEUR='MAT' ),);
 

@@ -1,22 +1,24 @@
       INTEGER FUNCTION IUNIFI( NAME )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*)            NAME
 C
 C     ------------------------------------------------------------------
-C     RETOURNE L'UNITE LOGIQUE ATTACHEE AU NOM NAME
+C     RETOURNE L'UNITE LOGIQUE ATTACHEE AU NOM LOCAL NAME (DDNAME)
 C     ------------------------------------------------------------------
 C
-C IN  NAME   : CH*16 : NOM DONT ON RECHERCHE LE NUMERO D'UNITE LOGIQUE
-C OUT IUNIFI : IS   : NUMERO D'UNITE LOGIQUE ASSOCIE A "NAME"
-C                     RENVOI 0 SI LE NOM N'EST PAS DANS LES TABLES
+C IN  NAME   : CH*16 : NOM "LOCALE" DONT ON RECHERCHE LE NUMERO D'UNITE 
+C                      LOGIQUE ASSOCIEE
+C OUT IUNIFI : IS    : NUMERO D'UNITE LOGIQUE ASSOCIE A "NAME"
+C                      RENVOI 0 SI LE NOM N'EST PAS DANS LES TABLES
 C
 C     ------------------------------------------------------------------
 C     REMARQUE : SUPPOSE QUE LA DEFINITION DU COUPLE (UNITE LOGIQUE,NOM)
-C                EST DEJA FAITE (CF DEFUFI)
+C                EST DEJA FAITE (CF ULDEFI)
 C     REMARQUE : SI L'INITIALISATION N'A PAS ETE FAITE LA ROUTINE S'EN
-C                CHARGERA (APPEL A INITFI)
+C                CHARGERA (APPEL A ULINIT)
 C     ------------------------------------------------------------------
-C MODIF UTILIFOR  DATE 05/12/2001   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 10/10/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C RESPONSABLE D6BHHJP J.P.LEFEBVRE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,30 +36,26 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C     ------------------------------------------------------------------
-C     ROUTINE(S) UTILISEE(S) :
-C         INITFI
-C     ROUTINE(S) FORTRAN     :
-C         -
-C     ------------------------------------------------------------------
-C FIN IUNIFI
 C
-      PARAMETER              (MXFILE=100)
-      CHARACTER*16      DDNAME(MXFILE)
-      INTEGER          FIRST, UNITES(MXFILE) , NBFILE
-      COMMON/ CN01FI / FIRST, UNITES         , NBFILE
-      COMMON/ CC01FI / DDNAME
+      INTEGER          MXF
+      PARAMETER       (MXF=100)
+      CHARACTER*1      TYPEFI(MXF),ACCEFI(MXF),ETATFI(MXF),MODIFI(MXF)
+      CHARACTER*16     DDNAME(MXF)
+      CHARACTER*255    NAMEFI(MXF)
+      INTEGER          FIRST, UNITFI(MXF) , NBFILE
+      COMMON/ ASGFI1 / FIRST, UNITFI      , NBFILE
+      COMMON/ ASGFI2 / NAMEFI,DDNAME,TYPEFI,ACCEFI,ETATFI,MODIFI
 C
-      CHARACTER*16  NAME16
+      CHARACTER*16     NAME16
+      INTEGER          I
 C
-C     --- INITIALISATION (SI NECESSAIRE) ---
-      IF ( FIRST .NE. 15091989 ) CALL INITFI
+      IF ( FIRST .NE. 17111990 ) CALL ULINIT
 C
       NAME16 = NAME
       IUNIFI = 0
       DO 1 I = 1, NBFILE
         IF( NAME16 .EQ. DDNAME(I) ) THEN
-          IUNIFI = UNITES(I)
+          IUNIFI = UNITFI(I)
           GOTO 2
         ENDIF
    1  CONTINUE

@@ -1,6 +1,6 @@
       SUBROUTINE  GMLELT(MAXNOD, NBTYMA, NBMAIL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/09/2001   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF PREPOST  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C     --------------
 C
 C --- RECUPERATION DES NUMEROS D'UNITE LOGIQUE ASSOCIES AUX FICHIERS :
 C     --------------------------------------------------------------
-      IGMSH = IUNIFI('UNIVERSEL')
+      IGMSH = IUNIFI('GMSH')
 C
 C --- LECTURE DU NOMBRE D'ELEMENTS :
 C     ----------------------------

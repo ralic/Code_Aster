@@ -1,14 +1,14 @@
       SUBROUTINE INICNT (NUMINS, NEQ, DEFICO, FONACT,
-     +                   VECONT, LREAC, AUTOC1, AUTOC2)
+     +                   VECONT, LREAC, NUMEDD,AUTOC1, AUTOC2)
 C
       IMPLICIT      NONE
       LOGICAL       FONACT(4), LREAC(4)
       INTEGER       NUMINS, NEQ, VECONT(2)
       CHARACTER*19  AUTOC1, AUTOC2
-      CHARACTER*24  DEFICO
+      CHARACTER*24  DEFICO,NUMEDD
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/01/2003   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 27/05/2003   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -86,13 +86,15 @@ C ======================================================================
 C --- REACTUALISATION GEOMETRIQUE AUTOMATIQUE --------------------------
 C ======================================================================
          IF (VECONT(1).LT.0) THEN
-            CALL JEEXIN(AUTOC1, IBID)
+            CALL JEEXIN(AUTOC1//'.VALE', IBID)
             IF (IBID.EQ.0) THEN
-               CALL WKVECT(AUTOC1, 'V V R' , NEQ, JAUTO1)
-               CALL WKVECT(AUTOC2, 'V V R' , NEQ, JAUTO2)
+              CALL VTCREB(AUTOC1,NUMEDD,'V','R',NEQ)
+              CALL VTCREB(AUTOC2,NUMEDD,'V','R',NEQ)
+              CALL JEVEUO(AUTOC1//'.VALE','E',JAUTO1)
+              CALL JEVEUO(AUTOC2//'.VALE','E',JAUTO2)
             ELSE
-               CALL JEVEUO(AUTOC1,'E',JAUTO1)
-               CALL JEVEUO(AUTOC2,'E',JAUTO2)
+               CALL JEVEUO(AUTOC1//'.VALE','E',JAUTO1)
+               CALL JEVEUO(AUTOC2//'.VALE','E',JAUTO2)
             ENDIF
             DO 10 II = 1, NEQ
                ZR(JAUTO1-1+II) = 0.0D0

@@ -1,11 +1,10 @@
-      SUBROUTINE DRFDRS(N, Q, PARAME, H0, SIGC, RGDEV, U, DUDS, DFDS)
+      SUBROUTINE DRFDRS(Q, PARAME, H0, SIGC, RGDEV, U, DUDS, DFDS)
 C
       IMPLICIT    NONE
-      INTEGER     N
-      REAL*8      Q(*), PARAME(5), H0, SIGC, RGDEV, U, DUDS(*), DFDS(*)
+      REAL*8      Q(6), PARAME(5), H0, SIGC, RGDEV, U, DUDS(6), DFDS(6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,14 +37,19 @@ C --- : DUDS   : DU/DSIG -----------------------------------------------
 C OUT : DFDS   : DF/DSIG = (1/A)*((1/(SIGC*H0))**(1/A))*G**((1-A)/A)*Q -
 C ------------ :         - DU/DSIG  ------------------------------------
 C ======================================================================
-      INTEGER II
+      INTEGER II, NDT, NDI
       REAL*8  AGAMP, FACT1, FACT2, FACT3, FACT4, UN
+C ======================================================================
+C --- INITIALISATION DE PARAMETRES -------------------------------------
+C ======================================================================
+      PARAMETER       ( UN     =  1.0D0   )
+C ======================================================================
+      COMMON /TDIM/   NDT , NDI
 C ======================================================================
       CALL JEMARQ ()
 C ======================================================================
 C --- RECUPERATION DES VARIABLES D'ECROUISSAGES ------------------------
 C ======================================================================
-      UN = 1.0D0
       AGAMP = PARAME(2)
 C ======================================================================
 C --- VARIABLE INTERMEDIAIRE -------------------------------------------
@@ -59,7 +63,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL FINAL -----------------------------------------------------
 C ======================================================================
-      DO 10 II=1,N
+      DO 10 II=1,NDT
          DFDS(II) = FACT1*Q(II)-DUDS(II)
  10   CONTINUE
 C ======================================================================

@@ -1,13 +1,13 @@
-      SUBROUTINE LGLIND(NDT, NDI, NR, NBMAT, MATER, PARAME, GE, UE, Q,
+      SUBROUTINE LGLIND(NBMAT, MATER, PARAME, GE, UE, Q,
      +                  VECN, DEPS, DEVG, DEVGII, TRACEG, DY)
 C
       IMPLICIT      NONE
-      INTEGER       NDT, NDI, NR, NBMAT
-      REAL*8        MATER(NBMAT,2), PARAME(5), Q(*), VECN(*), GE, UE
-      REAL*8        DEPS(*), DEVG(*), DEVGII, TRACEG, DY(*)
+      INTEGER       NR, NBMAT
+      REAL*8        MATER(NBMAT,2), PARAME(5), Q(6), VECN(6), GE, UE
+      REAL*8        DEPS(6), DEVG(6), DEVGII, TRACEG, DY(10)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C --- : DEVGII : NORME DU DEVIATEUR DE G -------------------------------
 C --- : TRACEG : TRACE DU TENSEUR G ------------------------------------
 C --- : DY     : INCREMENTS (SIG, I1, GAMP, EVP, DELTA) ----------------
 C ======================================================================
-      INTEGER II
+      INTEGER II, NDT, NDI
       REAL*8  GAMMAX, MU, K, GAMCJS, SIGC, H0, HLODE, DGAMP, DDELTA
       REAL*8  DUDS(6), DFDS(6), G(6), DS(6), DINV, MUN, DEUX, TROIS, DIX
       REAL*8  DEVP
@@ -56,6 +56,8 @@ C ======================================================================
       PARAMETER       ( DEUX   =  2.0D0  )
       PARAMETER       ( TROIS  =  3.0D0  )
       PARAMETER       ( DIX    = 10.0D0  )
+C ======================================================================
+      COMMON /TDIM/   NDT , NDI
 C ======================================================================
       CALL JEMARQ ()
 C ======================================================================
@@ -72,15 +74,15 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE DUDS ---------------------------------------------------
 C ======================================================================
-      CALL DRUDRS(NDT, NDI, PARAME, Q, H0, SIGC, DUDS)
+      CALL DRUDRS(PARAME, Q, H0, SIGC, DUDS)
 C ======================================================================
 C --- CALCUL DE DFDS ---------------------------------------------------
 C ======================================================================
-      CALL DRFDRS(NDT, Q, PARAME, H0, SIGC, GE, UE, DUDS, DFDS)
+      CALL DRFDRS(Q, PARAME, H0, SIGC, GE, UE, DUDS, DFDS)
 C ======================================================================
 C --- CALCUL DE G ------------------------------------------------------
 C ======================================================================
-      CALL CALCG(NDT, NDI, DFDS, VECN, G, DEVG, TRACEG, DEVGII)
+      CALL CALCG(DFDS, VECN, G, DEVG, TRACEG, DEVGII)
 C ======================================================================
 C --- CALCUL DU PREMIER INCREMENT DE GAMP ------------------------------
 C ======================================================================

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,13 +37,13 @@ MACRO_MATR_AJOU=MACRO(nom="MACRO_MATR_AJOU",op=-13,docu="U4.66.11-c",sd_prod=mac
          GROUP_MA_FLUIDE =SIMP(statut='o',typ=grma),
          GROUP_MA_INTERF =SIMP(statut='o',typ=grma),
          MODELISATION    =SIMP(statut='o',typ='TXM',into=("PLAN","AXIS","3D")),
-         FLUIDE          =FACT(statut='o',min=1,max='**',
+         FLUIDE          =FACT(statut='o',max='**',
            RHO             =SIMP(statut='o',typ='R'),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",)),
            GROUP_MA        =SIMP(statut='f',typ=grma),
            MAILLE          =SIMP(statut='f',typ=ma),
          ),
-         DDL_IMPO        =FACT(statut='o',min=1,max='**',
+         DDL_IMPO        =FACT(statut='o',max='**',
            regles=(UN_PARMI('NOEUD','GROUP_NO'),
                    UN_PARMI('PRES_FLUIDE','PRES_SORTIE'),),
            NOEUD           =SIMP(statut='f',typ=no),
@@ -51,7 +51,7 @@ MACRO_MATR_AJOU=MACRO(nom="MACRO_MATR_AJOU",op=-13,docu="U4.66.11-c",sd_prod=mac
            PRES_FLUIDE     =SIMP(statut='f',typ='R'),
            PRES_SORTIE     =SIMP(statut='f',typ='R'),
          ),
-         ECOULEMENT      =FACT(statut='f',min=1,max='**',
+         ECOULEMENT      =FACT(statut='f',max='**',
            GROUP_MA_1      =SIMP(statut='o',typ=grma),
            GROUP_MA_2      =SIMP(statut='o',typ=grma),
            VNOR_1          =SIMP(statut='o',typ='R'),
@@ -68,13 +68,13 @@ MACRO_MATR_AJOU=MACRO(nom="MACRO_MATR_AJOU",op=-13,docu="U4.66.11-c",sd_prod=mac
          MATR_AMOR_AJOU  =SIMP(statut='f',typ=(CO,matr_asse)),
          MONO_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",),),
          MODE_STAT       =SIMP(statut='f',typ=(mode_stat_depl,mode_stat_acce,mode_stat_forc,),),
-         FORC_AJOU       =FACT(statut='f',min=1,max='**',
+         FORC_AJOU       =FACT(statut='f',max='**',
            DIRECTION     =SIMP(statut='o',typ='R',max=3),
-           NOEUD         =SIMP(statut='f',typ=no,max='**'),
-           GROUP_NO      =SIMP(statut='f',typ=grno,max='**'),
+           NOEUD         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+           GROUP_NO      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
            VECTEUR       =SIMP(statut='o',typ=(CO,vect_asse_gene)),
          ),
-         SOLVEUR         =FACT(statut='d',min=1,max=1,
+         SOLVEUR         =FACT(statut='d',
            METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC") ),
            b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),

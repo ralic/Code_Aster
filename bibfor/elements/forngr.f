@@ -1,5 +1,5 @@
       SUBROUTINE FORNGR ( OPTION , NOMTE )
-C MODIF ELEMENTS  DATE 22/11/2001   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 25/04/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C TOLE CRP_20
 C
       IMPLICIT NONE
 C
@@ -58,29 +59,21 @@ C
 C
 C---- DECLARATIONS LOCALES
 C
-      INTEGER I  ,  J  ,  K
-      INTEGER IN
-      INTEGER      JD
-      INTEGER II , JJ
-      INTEGER             KPGS
+      INTEGER I  ,  J  , IN , II , NVAL,  KPGS
 C
 C---- DECLARATIONS RIGIDITE GEOMETRIQUE
 C
-      REAL * 8 ETILD  ( 5 ) , STILD  ( 5 )
-      REAL * 8 BARS ( 9 , 9 )
+      REAL * 8 STILD  ( 5 )
 C
 C---- DECLARATIONS STANDARDS
 C
-      INTEGER IGEOM , ICONTM , IMATUN , IVECTU
-      INTEGER ITEMPM , ITEMPP
+      INTEGER IGEOM , ICONTM , IVECTU
       INTEGER LZI , LZR , JCARA
-      INTEGER NB1 , NB2 , INO
+      INTEGER NB1 , NB2 
 C
 C---- DECLARATIONS PROPRES COQUE_3D NON LINEAIRE
 C
-      REAL * 8 MATC ( 5 , 5 )
       INTEGER     INTE , INTSR , INTSN
-      INTEGER            KNTSR
       REAL * 8 EPTOT
       INTEGER     NPGE      , NPGSR , NPGSN
       PARAMETER ( NPGE = 3 )
@@ -89,13 +82,10 @@ C
       REAL * 8 VECNPH ( 9 , 3 )
       REAL * 8 VECTG ( 2 , 3 ) , VECTT ( 3 , 3 )
       REAL * 8 JM1 ( 3 , 3 ) , DETJ
-      REAL * 8 HSC ( 5 , 9 )
       REAL * 8 JDN1RI ( 9 , 51 ) , JDN1RC ( 9 , 51 )
       REAL * 8 JDN1NI ( 9 , 51 ) , JDN1NC ( 9 , 51 )
       REAL * 8                     JDN2RC ( 9 , 51 )
       REAL * 8                     JDN2NC ( 9 , 51 )
-      REAL * 8 J1DN3 ( 9 , 27 )
-      REAL * 8 BTILD3 ( 5 , 27 )
       REAL * 8 KSI3S2
 C
 C---- DECLARATIONS COUCHES
@@ -103,7 +93,6 @@ C
       INTEGER ICOMPO, NBCOU
       INTEGER ICOU
       REAL * 8 ZIC  , ZMIN , EPAIS , COEF
-      REAL * 8 T , TINF , TSUP , RAC2
 C
 C---- DECLARATIONS COQUE NON LINEAIRE
 C
@@ -119,6 +108,8 @@ C
       REAL * 8 DUDXRC ( 9 ) , DUDXNC ( 9 )
       REAL * 8 VECU ( 8 , 3 ) , VECTHE ( 9 , 3 )
       REAL * 8 VECPE  ( 51 )
+C    POUR_RESI_REFE_RELA
+      REAL*8 SIGTMP(5),FTEMP(51),EFFINT(51)
 C
 C---- DECLARATIONS ROTATION GLOBAL LOCAL AU NOEUDS
 C
@@ -181,7 +172,15 @@ C
 C
 C------- CONTRAINTES DE CAUCHY AUX POINTS DE GAUSS
 C
-         CALL JEVECH ( 'PCONTMR' , 'L' , ICONTM )
+         IF (OPTION.EQ.'FORC_NODA') THEN
+         
+            CALL JEVECH ( 'PCONTMR' , 'L' , ICONTM )
+            
+         ELSEIF (OPTION.EQ.'REFE_FORC_NODA') THEN
+         
+            CALL JEVECH('PREFCO','L',ICONTM)
+            
+         ENDIF
 C
 C______________________________________________________________________
 C
@@ -281,6 +280,14 @@ C
       CALL R8INIR ( 2 * 51 * 4 , 0.D0 , B1SRC , 1 )
 C
       CALL R8INIR ( 2 * 51 * 4 , 0.D0 , B2SRC , 1 )
+      
+C POUR RESI_REFE_RELA      
+
+      IF  (OPTION.EQ.'REFE_FORC_NODA') THEN
+      
+         CALL R8INIR(51,0.D0,FTEMP,1)
+         
+      ENDIF
 C
 C---- COMPTEUR DES POINTS D INTEGRATIONS ( EPAISSEUR * SURFACE )
 C
@@ -445,21 +452,24 @@ C
      &                       B1MNC , B2MNC      , B1MNI , B2MNI ,
      &                       B1MRI , B2MRI      , B1SRC , B2SRC ,
      &                       B1SU  , B2SU  )
+
+               IF  (OPTION.EQ.'FORC_NODA') THEN
+
 C
 C------- CONTRAINTES DE CAUCHY = PK2 AUX POINTS DE GAUSS
 C
-         STILD(1) = ZR ( ICONTM - 1 + ( KPGS - 1 ) * 6 + 1 )
-         STILD(2) = ZR ( ICONTM - 1 + ( KPGS - 1 ) * 6 + 2 )
-         STILD(3) = ZR ( ICONTM - 1 + ( KPGS - 1 ) * 6 + 4 )
-         STILD(4) = ZR ( ICONTM - 1 + ( KPGS - 1 ) * 6 + 5 )
-         STILD(5) = ZR ( ICONTM - 1 + ( KPGS - 1 ) * 6 + 6 )
+                   STILD(1) = ZR ( ICONTM - 1 + ( KPGS - 1 ) * 6 + 1 )
+                   STILD(2) = ZR ( ICONTM - 1 + ( KPGS - 1 ) * 6 + 2 )
+                   STILD(3) = ZR ( ICONTM - 1 + ( KPGS - 1 ) * 6 + 4 )
+                   STILD(4) = ZR ( ICONTM - 1 + ( KPGS - 1 ) * 6 + 5 )
+                   STILD(5) = ZR ( ICONTM - 1 + ( KPGS - 1 ) * 6 + 6 )
 C
 C
 C------------- FINT ( 6 * NB1 + 3 )  =     INTEGRALE  DE
 C              ( B2SU ( 5 , 6 * NB1 + 3 ) ) T * STILD ( 5 ) *
 C              POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 C
-               CALL BTSIG ( 6 * NB1 + 3 , 5 ,
+                  CALL BTSIG ( 6 * NB1 + 3 , 5 ,
      &                   ZR (LZR - 1 + 127 + INTSN - 1) * DETJ * COEF ,
      &                   B2SU , STILD , ZR ( IVECTU ) )
 C
@@ -467,6 +477,34 @@ C++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 C
 C------------- VARIABLES INTERNES INACTIVES COMPORTEMENT NON PLASTIQUE
 C
+C
+               ELSEIF  (OPTION.EQ.'REFE_FORC_NODA') THEN
+        
+C            CALCUL DES FORCES NODALES DE REFERENCE EN AFFECTANT
+C            LA VALEUR SIGM_REFE A CHAQUE CMP SUCCESSIVEMENT
+C            POUR CHAQUE POINT D'INTEGRATION
+
+                  CALL R8INIR(5,0.D0,SIGTMP,1)
+          
+                  DO 155 I=1,5
+               
+                    SIGTMP(I)=ZR(ICONTM)
+                  
+                    CALL BTSIG ( 6 * NB1 + 3 , 5 ,
+     &                   ZR (LZR - 1 + 127 + INTSN - 1) * DETJ * COEF ,
+     &                   B2SU , SIGTMP , EFFINT )
+C
+                    SIGTMP(I)=0.D0
+                  
+                    DO 156 J=1,51
+                  
+                       FTEMP(J) = FTEMP(J)+ABS(EFFINT(J))
+                     
+ 156                CONTINUE
+ 
+ 155              CONTINUE
+ 
+               ENDIF
 C
 C========== FIN BOUCLE NPGSN
 C
@@ -481,5 +519,15 @@ C---- FIN BOUCLE NBCOU
 C
  600  CONTINUE
 C
+C
+C      ON PREND LA VALEUR MOYENNE DES FORCES NODALES DE REFERENCE
+
+      IF  (OPTION.EQ.'REFE_FORC_NODA') THEN
+      
+         NVAL=NBCOU*NPGE*NPGSN*5
+         
+         CALL R8AXPY(51,1.D0/NVAL,FTEMP,1,ZR ( IVECTU ) ,1)
+         
+      ENDIF
 C
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/04/2002   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 # TITRE TEST THM, 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -130,6 +130,7 @@ ARGILE0=DEFI_MATERIAU(ELAS=_F(E=2.25000000E8,
                               NU=0.0,
                               RHO=2000.0,
                               ALPHA=7.9999999999999996E-06,),
+                               COMP_THM = 'LIQU_SATU',
                       THM_LIQU=_F(RHO=1000.0,
                                   UN_SUR_K=3.77E-09,
                                   ALPHA=1.E-4,

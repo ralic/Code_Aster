@@ -1,7 +1,7 @@
       SUBROUTINE DYLACH( NBPASE, INPSCO, INFCHA, FOMULT, MODELE, MATE,
      &                                       CARELE, VADIRI, VACHAM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/07/2002   AUTEUR CAMBIER S.CAMBIER 
+C MODIF ALGORITH  DATE 07/05/2003   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -150,13 +150,13 @@ C============================================
         
         CALL DISMOI('F','NOM_NUME_DDL',MASSE,'MATR_ASSE',IBID,
      &                                                   NUMDDL,IE)
-        CALL PSNSLE ( INPSCO, 0, 11, VEDIRI )
+        CALL PSNSLE ( INPSCO, 0, 13, VEDIRI )
         VADIRI = BLAN24          
         CALL VEDIME ( MODELE, CHARGE, INFOCH, TIME, TYPRES,
      &                TYPESE, NOPASE, VEDIRI)
         CALL ASASVE(VEDIRI,NUMDDL,TYPRES,VADIRI)
         
-        CALL PSNSLE ( INPSCO, 0, 10, VECHAM )
+        CALL PSNSLE ( INPSCO, 0, 12, VECHAM )
         VACHAM = BLAN24   
 
         CALL VECHMC(MODELE,CARELE,MATE,CHARGE,INFOCH,TIME,VECHAM)
@@ -221,7 +221,7 @@ C 3.2.3 ==> LES DIRICHLETS
 C
          IF ( TYPESE.EQ.0 .OR. TYPESE.EQ.2 ) THEN
           
-           CALL PSNSLE ( INPSCO, NRPASE, 11, VEDIRI )
+           CALL PSNSLE ( INPSCO, NRPASE, 13, VEDIRI )
 
            CALL VEDIME ( MODELE, CHARGE, INFOCH, TIME, 'R',
      &              TYPESE, NOPASE, VEDIRI)
@@ -239,7 +239,7 @@ C 3.2.4 ==> CHARGEMENTS DE NEUMANN + DERIV EULERIENNE
 C
          IF ( TYPESE.EQ.0 .OR. TYPESE.EQ.-1 .OR. TYPESE.EQ. 5) THEN
 
-           CALL PSNSLE ( INPSCO, NRPASE, 10, VECHAM )
+           CALL PSNSLE ( INPSCO, NRPASE, 12, VECHAM )
            TYPCAL = 'MECA'
            VAPRIN = BLAN24
 

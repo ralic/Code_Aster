@@ -1,6 +1,6 @@
       SUBROUTINE UTFINM
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,10 +17,11 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ==================================================================
       INTEGER          MXCOLS , ITABU , LIGCOU , COLCOU , IDF
       COMMON /UTINIP/  MXCOLS , ITABU , LIGCOU , COLCOU , IDF
+      INTEGER          NT
       PARAMETER      ( NT = 10 )
       CHARACTER*132    TAMPON
       COMMON /UTTAMP/  TAMPON(NT)
@@ -45,6 +46,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       CHARACTER*24   SPVR,CBID
+CCAR: AJOUT CHAINE RAISON
+      CHARACTER*132 RAISON
+      INTEGER       ICMD,IRET,L,LSPVR,NBL
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       LIGCOU = LIGCOU + 1
@@ -53,7 +57,13 @@ C     ------------------------------------------------------------------
          LIGCOU = 1
       ENDIF
       IF ( IDF .EQ. 6 ) THEN
+CC SI L EXCEPTION EST TRAPPEE PAR LE SUPERVISEUR
+CC ON NETTOIE LA BASE VOLATILE AU CAS OU ON RECREE LE CONCEPT
+CC DANS LE EXCEPT
+         CALL JEDETC('V','&&',1)
+         CALL JEDETC('V','_',1)
          CALL GETRES(SPVR,CBID,CBID)
+         CALL JEDETC('V',SPVR(1:6),1)
          IF ( SPVR .NE. '  ' ) THEN
             SPVR(20:24) = '.SPVR'
             CALL JEEXIN(SPVR,IRET)
@@ -65,13 +75,22 @@ C     ------------------------------------------------------------------
  1          CONTINUE
          ENDIF
       ENDIF
+
+CCAR: UTVTAM VIDE LE TAMPON. ON LE SAUVE DANS RAISON
+      RAISON=TAMPON(2)//TAMPON(3)
+
       CALL UTVTAM
       IF ( IDF .EQ. 2 ) THEN
          CALL JXVERI('ERREUR',' ')
          CALL JEFINI('ERREUR')
+CCAR: ON POURRAIT APPELER UEXCEP(20,RAISON) POUR REMONTER 
+CCAR: UNE EXCEPTION FATALE MAIS SANS PROVOQUER D'ABORT
       ELSE IF ( IDF .EQ. 6 ) THEN
          CALL GCUOPR(2, ICMD)
-         CALL JEFINI('NORMAL')
+CCAR: ON REMONTE UNE EXCEPTION AU LIEU DE FERMER LES BASES
+CCAR:    CALL JEDEMA()
+         CALL UEXCEP(21,RAISON)
+CCAR:    CALL JEFINI('NORMAL')
       ENDIF
       LIGCOU = 0
       COLCOU = 0

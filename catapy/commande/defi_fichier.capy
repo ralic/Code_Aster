@@ -1,0 +1,40 @@
+#& MODIF COMMANDE  DATE 10/10/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE D6BHHJP J.P.LEFEBVRE
+DEFI_FICHIER=PROC(nom="DEFI_FICHIER",op=26,docu="U4.12.03-a",
+                  UIinfo={"groupes":("Gestion du travail",)},
+                  fr="Gestion d une unité logique : ajout, suppression",
+
+            ACTION        =SIMP(statut='f',typ='TXM',into=("ASSOCIER","LIBERER"),defaut="ASSOCIER"),
+            UNITE         =SIMP(statut='o',typ='I' ,val_min=1),
+            b_associer    =BLOC(condition = "ACTION == 'ASSOCIER'",fr="Paramètres pour l ouverture du fichier",
+               TYPE          =SIMP(statut='f',typ='TXM',into=("ASCII","BINARY","LIBRE"),defaut="ASCII"),
+               b_type_ascii  =BLOC(condition = "TYPE == 'ASCII'",fr="Paramètres pour le type ASCII",
+                  NOM_SYSTEME   =SIMP(statut='f',typ='TXM',validators=LongStr(1,255)),
+                  FICHIER       =SIMP(statut='o',typ='TXM'),
+               ),
+               b_type_autre  =BLOC(condition = "TYPE != 'ASCII'",fr="Paramètres pour les types BINARY et LIBRE",
+                  regles=(AU_MOINS_UN('NOM_SYSTEME','FICHIER'),),
+                  NOM_SYSTEME   =SIMP(statut='f',typ='TXM',validators=LongStr(1,255)),
+                  FICHIER       =SIMP(statut='f',typ='TXM'),
+               ),
+               ACCES         =SIMP(statut='f',typ='TXM',into=("NEW","APPEND","OLD"),defaut="NEW"),
+            ),
+            INFO          =SIMP(statut='f',typ='I',into=(1,2) ),           
+           )

@@ -1,7 +1,7 @@
       SUBROUTINE CHCKMA (NOMU,CMD,DTOL)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 26/05/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C
       CHARACTER*24    COOVAL,CONNEX,NOMMAI,NOMNOE,NSOLO,MDOUBL
       INTEGER         NBMAIL , NBNOEU
       INTEGER         INSOLO , IMDOUB
-      LOGICAL         INDIC  , ALARME
+      LOGICAL         INDIC  , ALARME  , ERREUR
 C
       CALL JEMARQ ( )         
       CALL INFNIV(IFM,NIV)
@@ -81,13 +81,6 @@ C
       CALL DISMOI('F','NB_MA_MAILLA',NOMU,'MAILLAGE',NBMAIL,K8B,IRET)
       CALL DISMOI('F','NB_NO_MAILLA',NOMU,'MAILLAGE',NBNOEU,K8B,IRET)
 C
-C     -----------------------------------------------------------
-C     RECHERCHE DES NOEUDS ORPHELINS (ATTACHES A AUCUNE MAILLE)
-C     A PARTIR DE LA CONNECTIVITE INVERSE RENVOYEE PAR CNCINV
-C     -----------------------------------------------------------
-      NSOLO='&&CHCKMA.NSOLO          '
-      CALL WKVECT(NSOLO,'V V I',NBNOEU,INSOLO)
-C
       CALL JEVEUO(CONNEX,'L',IACONX)
       CALL JEVEUO(JEXATR(CONNEX,'LONCUM'),'L',ILCONX)
       CALL JEVEUO(COOVAL,'L',JCOOR)
@@ -97,10 +90,18 @@ C
       CALL JEVEUO(JEXATR(NCNCIN,'LONCUM'),'L',JDRVLC)
       CALL JEVEUO(JEXNUM(NCNCIN,1)       ,'L',JCNCIN)
 C
+C     -----------------------------------------------------------
+C     RECHERCHE DES NOEUDS ORPHELINS (ATTACHES A AUCUNE MAILLE)
+C     A PARTIR DE LA CONNECTIVITE INVERSE RENVOYEE PAR CNCINV
+C     -----------------------------------------------------------
+      NSOLO='&&CHCKMA.NSOLO          '
+      CALL WKVECT(NSOLO,'V V I',NBNOEU,INSOLO)
+C
       IT=0
       KNSO=0
       ALARME = .FALSE.
       WRITE(IFM,*) ' ====== VERIFICATION DU MAILLAGE ======'
+      WRITE(IFM,*)
       DO 10 JA=1,NBNOEU
          IADR = ZI(JDRVLC + JA-1)
          NBM  = ZI(JDRVLC + JA+1-1) -
@@ -138,10 +139,9 @@ C
       IT=0
       KMDB=0
       ALARME = .FALSE.
-      WRITE(IFM,*)
-      WRITE(IFM,*) ' ====== VERIFICATION DU MAILLAGE ======'
+      ERREUR = .FALSE.
       DO 100 IMA=1,NBMAIL
-        NBNM   = ZI(ILCONX-1+IMA+1)-ZI(ILCONX+IMA-1)
+        NBNM  = ZI(ILCONX-1+IMA+1)-ZI(ILCONX+IMA-1)
         IADR0 = ZI(JDRVLC + ZI(IACONX+1+IT-1)-1)
         NBM0  = ZI(JDRVLC + ZI(IACONX+1+IT-1)+1-1) -
      &          ZI(JDRVLC + ZI(IACONX+1+IT-1)-1)
@@ -158,6 +158,19 @@ C
             GOTO 9999
           ENDIF
  101    CONTINUE
+C
+C     SI NBM0 DIFFERENT DE I : UN NOEUD DE LA MAILLE EST PRESENT
+C     PLUSIEURS FOIS DANS LA CONNECTIVITE DE CELLE CI
+C     ON ARRETE EN ERREUR SUR MAILLE DEGENEREE
+C
+        IF (NBM0.NE.I) THEN
+            ERREUR=.TRUE.
+            CALL JENUNO(JEXNUM(NOMMAI,IMA),NOXA)
+            WRITE(IFM,*)
+            WRITE(IFM,*) ' LA MAILLE ',NOXA,'EST TOPOLOGIQUEMENT '//
+     &          'DEGENEREE : NOEUD REPETE DANS LA CONNECTIVITE'
+         ENDIF
+        NBM0 = I
 C
 C     TABMA CONTIENT LA LISTE DES MAILLES (HORS IMA) QUI 
 C     CONTIENNENT LE PREMIER NOEUD DE IMA
@@ -201,6 +214,10 @@ C
          CALL UTMESS('A',CMD,'- CHCKMA PHASE DE VERIFICATION DU'
      &   //' MAILLAGE - PRESENCE DE MAILLES DOUBLES')
       ENDIF
+      IF (ERREUR) THEN
+         CALL UTMESS('F',CMD,'- CHCKMA PHASE DE VERIFICATION DU'
+     &   //' MAILLAGE - MAILLES DEGENEREES')
+      ENDIF
 C
 C     -----------------------------------------------------------
 C     CALCUL POUR CHAQUE MAILLE DU RAPPORT MINIMUM ENTRE LA PLUS
@@ -236,9 +253,8 @@ C
               ALARME=.TRUE.
               CALL JENUNO(JEXNUM(NOMMAI,IMA),NOXA)
               WRITE(IFM,*)
-              WRITE(IFM,*) ' ====== VERIFICATION DU MAILLAGE ======'
-              WRITE(IFM,*) ' LA MAILLE POSSEDE DES NOEUDS CONFONDUS'
-              WRITE(IFM,*) ' GEOMETRIQUEMENT OU TOPOLOGIQUEMENT '
+              WRITE(IFM,*) ' LA MAILLE POSSEDE DES NOEUDS CONFONDUS'//
+     &     ' GEOMETRIQUEMENT '
               WRITE(IFM,*) ' MAILLE ',NOXA,' DM/DP =',DRAP
               ENDIF
             ENDIF

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # TITRE PLAQUE EN FLEXION ET CISAILLEMENT DANS SON PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,8 +115,7 @@ TEST_RESU(   CHAM_ELEM=_F(  CHAM_GD = SIG,
 #----------------------------------------------------------
 #
 
-DEFUFI(IMPRESSION=_F( NOM = 'DEF',
-                      UNITE = 38))
+DEFI_FICHIER( FICHIER= 'DEF', UNITE = 38 )
 
 IMPR_RESU(RESU=_F( RESULTAT = DEF,
                    FICHIER = 'DEF',

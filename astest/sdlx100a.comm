@@ -1,4 +1,4 @@
-# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # TITRE REPONSE TRANSITOIRE D UNE PLAQUE A UNE PRESSION ISSUE DE ENSIGHT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -173,8 +173,7 @@ TEST_FONCTION(VALEUR=(
 #--------------------------------------------------------------------
 #
 
-DEFUFI(IMPRESSION=_F( NOM = 'PRES',
-                      UNITE = 38))
+DEFI_FICHIER( FICHIER= 'PRES', UNITE = 38)
 
 IMPR_RESU( RESU=_F(  RESULTAT = PRES,
                     FICHIER = 'PRES',

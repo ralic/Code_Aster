@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 16/09/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,7 @@ C  ATTENTION : QUAND ON UTILISE TYPESD=' ', ON APPELLE LA ROUTINE JEDETC
 C              QUI EST TRES COUTEUSE EN CPU.
 C  IN   TYPESD : TYPE DE LA STRUCTURE DE DONNEE A DETRUIRE
 C          'NUME_DDL'     'PROF_CHNO'
-C          'MATR_ASSE'    'VECT_ASSE'
+C          'MATR_ASSE'    'VECT_ASSE'    'MATR_ASSE_GENE'
 C          'MATR_ELEM'    'VECT_ELEM'
 C          'VARI_COM'     'FONCTION'
 C          'TABLE'        'DEFI_CONT'    'RESO_CONT'
@@ -203,6 +203,16 @@ C     --------------------------------
         END IF
         CALL JEEXIN(TABLE//'.TITR',IRET)
         IF (IRET.NE.0) CALL JEDETR(TABLE//'.TITR')
+
+C     ------------------------------------------------------------------
+      ELSE IF (TYPESD.EQ.'MATR_ASSE_GENE') THEN
+C     -----------------------------------------
+        MATAS = NOMSD
+        CALL JEDETR(MATAS//'.DESC')
+        CALL JEDETR(MATAS//'.LIME')
+        CALL JEDETR(MATAS//'.CONL')
+        CALL JEDETR(MATAS//'.REFA')
+        CALL JEDETR(MATAS//'.VALE')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'MATR_ASSE') THEN
@@ -387,7 +397,6 @@ C     ------------------------------------
         CALL JEDETR(DEFICO//'.PSUNOCO')
         CALL JEDETR(DEFICO//'.NOMACO')
         CALL JEDETR(DEFICO//'.PNOMACO')
-        CALL JEDETR(DEFICO//'.NORMCO')
         CALL JEDETR(DEFICO//'.NDIMCO')
         CALL JEDETR(DEFICO//'.DDLCO')
         CALL JEDETR(DEFICO//'.MAESCL')
@@ -401,8 +410,9 @@ C     ------------------------------------
         CALL JEDETR(RESOCO//'.APPARI')
         CALL JEDETR(RESOCO//'.APMEMO')
         CALL JEDETR(RESOCO//'.APPOIN')
-        CALL JEDETR(RESOCO//'.APNORM')
-        CALL JEDETR(RESOCO//'.APTANG')
+        CALL JEDETR(RESOCO//'.NORINI')
+        CALL JEDETR(RESOCO//'.NORMCO')
+        CALL JEDETR(RESOCO//'.TANGCO')
         CALL JEDETR(RESOCO//'.APNOEU')
         CALL JEDETR(RESOCO//'.APDDL')
         CALL JEDETR(RESOCO//'.APCOEF')

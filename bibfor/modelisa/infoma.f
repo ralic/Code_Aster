@@ -1,6 +1,6 @@
-      SUBROUTINE INFOMA(NOMU)
+      SUBROUTINE INFOMA ( NOMU )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 16/06/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -132,6 +132,8 @@ C ----------------------------------
         IF (NBGRNO.NE.0) THEN
           WRITE (IFM,804) COMGRN,NBGRNO
           DO 60 I = 1,NBGRNO
+            CALL JEEXIN(JEXNUM(GRPNOV,I),IRET)
+            IF (IRET.EQ.0) GOTO 60
             CALL JENUNO(JEXNUM(GRPNOV,I),NOM)
             CALL JELIRA(JEXNUM(GRPNOV,I),'LONMAX',N1,KBID)
             WRITE (IFM,808) NOM,N1
@@ -141,6 +143,8 @@ C ----------------------------------
         IF (NBGRMA.NE.0) THEN
           WRITE (IFM,804) COMGRM,NBGRMA
           DO 70 I = 1,NBGRMA
+            CALL JEEXIN(JEXNUM(GRPMAV,I),IRET)
+            IF (IRET.EQ.0) GOTO 70
             CALL JENUNO(JEXNUM(GRPMAV,I),NOM)
             CALL JELIRA(JEXNUM(GRPMAV,I),'LONMAX',N1,KBID)
             WRITE (IFM,808) NOM,N1
@@ -178,6 +182,8 @@ C ----------------------------------
         IF (NBGRNO.NE.0) THEN
           WRITE (IFM,803) LISGRN
           DO 100 I = 1,NBGRNO
+            CALL JEEXIN(JEXNUM(GRPNOV,I),IRET)
+            IF (IRET.EQ.0) GOTO 100
             CALL JENUNO(JEXNUM(GRPNOV,I),NOM)
             CALL JEVEUO(JEXNUM(GRPNOV,I),'L',IAD)
             CALL JELIRA(JEXNUM(GRPNOV,I),'LONMAX',NBNO,KBID)
@@ -194,6 +200,8 @@ C ----------------------------------
         IF (NBGRMA.NE.0) THEN
           WRITE (IFM,803) LISGRM
           DO 110 I = 1,NBGRMA
+            CALL JEEXIN(JEXNUM(GRPMAV,I),IRET)
+            IF (IRET.EQ.0) GOTO 110
             CALL JENUNO(JEXNUM(GRPMAV,I),NOM)
             CALL JEVEUO(JEXNUM(GRPMAV,I),'L',IAD)
             CALL JELIRA(JEXNUM(GRPMAV,I),'LONMAX',NBMA,KBID)
@@ -217,7 +225,7 @@ C ----------------------------------
   703 FORMAT (100 (30X,5 (2X,I8),/))
   704 FORMAT (2X,I8,2X,A8,2X,I8,5 (2X,I8))
   801 FORMAT (A80)
-  802 FORMAT (/,'------------ LECTURE DU MAILLAGE ',A8,
+  802 FORMAT (/,'------------ MAILLAGE ',A8,
      &       ' - IMPRESSIONS NIVEAU ',I2,' ------------',/)
   803 FORMAT (/,15X,'------  ',A32,'  ------',/)
   804 FORMAT (/,A32,I6)

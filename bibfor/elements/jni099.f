@@ -3,7 +3,7 @@
       CHARACTER*8 ELREFE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/10/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/08/2003   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,7 +91,8 @@ C DEB -----------------------------------------------------------------
       ELSE IF (ELREFE.EQ.'QUAD4' .OR. ELREFE.EQ.'QUAD8' .OR.
      &         ELREFE.EQ.'QUAD4L' .OR. ELREFE.EQ.'QUA8D' .OR.
      &         ELREFE.EQ.'QUAS8' .OR. ELREFE.EQ.'QUAI4' .OR.
-     &         ELREFE.EQ.'QUAI8' .OR. ELREFE.EQ.'QUAD9') THEN
+     &         ELREFE.EQ.'QUAI8' .OR. ELREFE.EQ.'QUAD9' .OR.
+     &         ELREFE .EQ. 'QUAS4') THEN
 
         QUAD = .TRUE.
 

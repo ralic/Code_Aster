@@ -2,7 +2,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/10/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF MODELISA  DATE 01/09/2003   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +26,7 @@ C          IFM : FICHIER MESSAGES
 C          ILEC: 1=> PREMIERE LECTURE, 2=> SECONDE LECTURE
 C          INOM: 1=> LECTURE DU NOM,   0=> NOM IGNORE
 C          CNL : NUMERO DE LA LIGNE DANS UNE CHAINE
+C          DEBLIG : IN ET OUT DANS LIRITM
 C       OUT:
 C          NOM : ITEM DERRIERE "NOM="
 C          ICL, IV, RV, CV, DEBLIG : COMME LIRITM

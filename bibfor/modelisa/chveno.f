@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/05/2002   AUTEUR PABHHHH N.TARDIEU 
+C MODIF MODELISA  DATE 20/05/2003   AUTEUR G8BHHXD X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -187,7 +187,7 @@ C                    ----------------------
                      IF (TYPEL(1:3) .EQ. 'POI') THEN
                        IF (INDIC .EQ. 0) THEN
                          INDIC = 1
-                         GOTO 210
+                         GOTO 211
                        ELSE
 C ---                    CAS D'UN CONTACT POINT-POINT 
 C                        ----------------------------
@@ -276,7 +276,7 @@ C                      ----------------------
                        IF (TYPEL(1:3) .EQ. 'POI') THEN
                          IF (INDIC .EQ. 0) THEN
                            INDIC = 1
-                           GOTO 210
+                           GOTO 211
                          ELSE
 C                         
 C ---                      CAS D'UN CONTACT POINT-POINT 
@@ -330,7 +330,8 @@ C
                      ENDIF
  216              CONTINUE
                ENDIF
-               CALL JEDETR ('&&CHVENO.OBJET')
+ 211         CONTINUE
+             CALL JEDETR ('&&CHVENO.OBJET') 
  210        CONTINUE
  200     CONTINUE
  100  CONTINUE

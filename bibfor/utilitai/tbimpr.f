@@ -1,12 +1,9 @@
-      SUBROUTINE TBIMPR ( TABLE, FORMAZ, FICHIE, NPARIM, LIPAIM, 
-     +                    NPARPG, LIPAPG, FORMAR, FORMAC )
-      IMPLICIT   NONE
-      INTEGER             NPARIM, NPARPG
-      CHARACTER*(*)       TABLE, FORMAZ, FICHIE, LIPAIM(*), LIPAPG(*),
-     +                    FORMAR, FORMAC
+      SUBROUTINE TBIMPR ( TABLE, NOPASE, FORMAZ, FICHIE, 
+     >                    NPARIM, LIPAIM, 
+     >                    NPARPG, LIPAPG, FORMAR, FORMAC )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/07/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+C MODIF UTILITAI  DATE 22/07/2003   AUTEUR G8BHHXD X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,9 +20,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C      IMPRESSION DE LA TABLE "NOMTA".
+C      IMPRESSION DE LA TABLE "TABLE".
 C ----------------------------------------------------------------------
 C IN  : TABLE  : NOM D'UNE STRUCTURE "TABLE"
+C IN  : NOPASE : NOM DE L'EVENTUEL PARAMERE SENSIBLE ASSOCIE
 C IN  : FORMAZ : FORMAT D'IMPRESSION DE LA TABLE
 C IN  : FICHIE : NOM DU FICHIER D'IMPRESSION
 C IN  : NPARIM : NOMBRE DE PARAMETRES D'IMPRESSION
@@ -35,28 +33,43 @@ C IN  : LIPAPG : LISTE DES PARAMETRES DE PAGINATION
 C IN  : FORMAR : FORMAT D'IMPRESSION DES REELS
 C IN  : FORMAC : FORMAT D'IMPRESSION DES COMPLEXES
 C ----------------------------------------------------------------------
+C
+      IMPLICIT NONE
+C
+C 0.1. ==> ARGUMENTS
+C
+      INTEGER       NPARIM, NPARPG
+      CHARACTER*(*) TABLE, NOPASE
+      CHARACTER*(*) FORMAZ, FICHIE, LIPAIM(*), LIPAPG(*)
+      CHARACTER*(*)  FORMAR, FORMAC
+C
+C 0.2. ==> COMMUNS
+C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
       CHARACTER*8      ZK8
       CHARACTER*16             ZK16
       CHARACTER*24                      ZK24
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-C ----------------------------------------------------------------------
-      INTEGER      IFR, IUNIFI, IRET, JTBNP, NBPARA, NBLIGN,
-     +             LTITR, LONMAX, ITITR
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C 0.3. ==> VARIABLES LOCALES
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'TBIMPR' )
+C
+      INTEGER      IFR, IUNIFI, IRET, JTBNP, NBPARA, NBLIGN
+      INTEGER LTITR, LONMAX, ITITR
       CHARACTER*8  K8B, FORMAT
       CHARACTER*19 NOMTAB
       CHARACTER*24 NEWTAB
 C     ------------------------------------------------------------------
+C
+C====
+C 1. PREALABLES
+C====
 C
       CALL JEMARQ()
 C
@@ -64,10 +77,14 @@ C
       FORMAT = FORMAZ
       IFR = IUNIFI(FICHIE)
 C
+C====
+C  2. DECODAGE DES ARGUMENTS
+C====
+C
       CALL EXISD ( 'TABLE', NOMTAB, IRET )
       IF ( IRET .EQ. 0 ) THEN
-         CALL UTMESS('A','IMPR_TABLE','LA TABLE N''EXISTE PAS')
-         GOTO 9999
+        CALL UTMESS('A','IMPR_TABLE','LA TABLE N''EXISTE PAS')
+        GOTO 9999
       ENDIF
 C
       CALL JEVEUO ( NOMTAB//'.TBNP' , 'L', JTBNP )
@@ -78,7 +95,7 @@ C
          GOTO 9999
       ENDIF
       IF ( NBLIGN .EQ. 0 ) THEN
-         CALL UTMESS('A','IMPR_TABLE','PAS DE LIGNES DEFINIS') 
+         CALL UTMESS('A','IMPR_TABLE','PAS DE LIGNES DEFINIES') 
          GOTO 9999
       ENDIF
 CSV
@@ -99,6 +116,12 @@ C
                  WRITE(IFR,'(1X,A)') ZK80(LTITR+ITITR-1)
              ENDIF
  10      CONTINUE
+C
+C       SOUS-TITRE POUR LES CAS DE SENSIBILITE
+        IF ( NOPASE.NE.' ' ) THEN
+          WRITE (IFR,'(1X,A,1X,A)')
+     >                        '... SENSIBILITE AU PARAMETRE',NOPASE
+        ENDIF
       ENDIF
 C
       IF ( NPARPG .EQ. 0 ) THEN
@@ -127,7 +150,7 @@ C
 C               --- TRAITEMENT DE LA "PAGINATION" ---
 C
 C     ------------------------------------------------------------------
-         NEWTAB = '&&TBIMPR.PAGI'
+         NEWTAB = '&&'//NOMPRO//'.PAGI'
          CALL TBEXCP ( TABLE, 'V', NEWTAB, NPARIM, LIPAIM )
          CALL TBIMPG ( NEWTAB, IFR, NPARIM, LIPAIM, NPARPG, LIPAPG,
      +                                      FORMAT, FORMAR, FORMAC )

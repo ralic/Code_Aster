@@ -3,7 +3,7 @@
       INTEGER            IER
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,10 +103,8 @@ C
       CALL GETVTX(' ','PROL_DROITE_FONC',0,1,1,PROFGD(2:2),N15)
 C
       CALL GETVIS(' ','UNITE',1,1,1,IFSIG,L)
-      CALL ASOPEN ( IFSIG, ' ' )
 C
 C     --- INITIALISATION DE LA LECTURE ---
-      REWIND      IFSIG
       CALL LXUNIT(IFSIG,LRECL,IFM,'SIGMED1')
       CALL LXPOSI(1,1,0)
 C

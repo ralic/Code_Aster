@@ -1,228 +1,251 @@
-%& MODIF TYPELEM  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
-%            CONFIGURATION MANAGEMENT OF EDF VERSION                        
-% ======================================================================    
-% COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
-% THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY      
-% IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY      
-% THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR         
-% (AT YOUR OPTION) ANY LATER VERSION.                                       
-%                                                                           
-% THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT       
-% WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF                
-% MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU          
-% GENERAL PUBLIC LICENSE FOR MORE DETAILS.                                  
-%                                                                           
-% YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE         
-% ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,             
-%    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.            
-% ======================================================================    
+%& MODIF TYPELEM  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+%            CONFIGURATION MANAGEMENT OF EDF VERSION
+% ======================================================================
+% COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+% THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+% IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+% THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+% (AT YOUR OPTION) ANY LATER VERSION.
+%
+% THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+% WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+% MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+% GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+%
+% YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+% ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+%    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+% ======================================================================
 GENER_TH3D_3
 TYPE_GENE__
-ENTETE__ ELEMENT__ THER_HEXA20      MAILLE__ HEXA20   ELREFE__  HEXA20  FACE8 NB_GAUSS__ NELGA=FPG1
-ENTETE__ ELEMENT__ THER_HEXA27      MAILLE__ HEXA27   ELREFE__  HEXA27  FACE9 NB_GAUSS__ NELGA=FPG1
-ENTETE__ ELEMENT__ THER_HEXA8       MAILLE__ HEXA8    ELREFE__  HEXA8  FACE4 NB_GAUSS__ NELGA=FPG1
-ENTETE__ ELEMENT__ THER_PENTA15     MAILLE__ PENTA15  ELREFE__  PENTA15  FACE8  FACE6 NB_GAUSS__ NELGA=FPG1
-ENTETE__ ELEMENT__ THER_PENTA6      MAILLE__ PENTA6   ELREFE__  PENTA6  FACE4  FACE3 NB_GAUSS__ NELGA=FPG1
-ENTETE__ ELEMENT__ THER_PYRAM13     MAILLE__ PYRAM13  ELREFE__  PYRAM13  FACE8  FACE6 NB_GAUSS__ NELGA=FPG1
-    OPTION__             CHAR_THER_GRAI_F          -1
-    OPTION__             CHAR_THER_GRAI_R          -1
-    OPTION__             DURT_ELGA_META            -1
-    OPTION__             DURT_ELNO_META            -1
-    OPTION__             META_ELGA_TEMP            -1
-    OPTION__             META_ELNO_TEMP            -1
-    OPTION__             META_INIT                 -1
-    OPTION__             META_INIT_ELNO            -1
-    OPTION__             ERTH_ELEM_TEMP_R          -2
-    OPTION__             ERTH_ELEM_TEMP_F          -2
-    OPTION__             ERTH_ELNO_ELEM            -2
-ENTETE__ ELEMENT__ THER_PYRAM5      MAILLE__ PYRAM5   ELREFE__  PYRAM5  FACE4  FACE3 NB_GAUSS__ NELGA=FPG1
-    OPTION__             CHAR_THER_GRAI_F          -1
-    OPTION__             CHAR_THER_GRAI_R          -1
-    OPTION__             DURT_ELGA_META            -1
-    OPTION__             DURT_ELNO_META            -1
-    OPTION__             META_ELGA_TEMP            -1
-    OPTION__             META_ELNO_TEMP            -1
-    OPTION__             META_INIT                 -1
-    OPTION__             META_INIT_ELNO            -1
-    OPTION__             ERTH_ELEM_TEMP_R          -2
-    OPTION__             ERTH_ELEM_TEMP_F          -2
-    OPTION__             ERTH_ELNO_ELEM            -2
-ENTETE__ ELEMENT__ THER_TETRA10     MAILLE__ TETRA10  ELREFE__  TETRA10  FACE6 NB_GAUSS__ NELGA=FPG1
-ENTETE__ ELEMENT__ THER_TETRA4      MAILLE__ TETRA4   ELREFE__  TETRA4  FACE3 NB_GAUSS__ NELGA=FPG1
 
-MODE_LOCAL__ 
+ENTETE__ ELEMENT__ THER_HEXA20      MAILLE__ HEXA20
+   ELREFE__  H20       GAUSS__  RIGI=FPG27  MASS=FPG27  GANO=FPG8  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  FACE8
+ENTETE__ ELEMENT__ THER_HEXA27      MAILLE__ HEXA27
+   ELREFE__  H27       GAUSS__  RIGI=FPG27  MASS=FPG27  GANO=FPG8  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  FACE9
+ENTETE__ ELEMENT__ THER_HEXA8       MAILLE__ HEXA8
+   ELREFE__  HE8       GAUSS__  RIGI=FPG8  MASS=FPG8  GANO=FPG8  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  FACE4
+ENTETE__ ELEMENT__ THER_PENTA15     MAILLE__ PENTA15
+   ELREFE__  P15       GAUSS__  RIGI=FPG21  MASS=FPG21  GANO=FPG21  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  FACE8
+   ELREFE__  FACE6
+ENTETE__ ELEMENT__ THER_PENTA6      MAILLE__ PENTA6
+   ELREFE__  PE6       GAUSS__  RIGI=FPG6  MASS=FPG6  GANO=FPG6  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  FACE4
+   ELREFE__  FACE3
+ENTETE__ ELEMENT__ THER_PYRAM13     MAILLE__ PYRAM13
+   ELREFE__  P13       GAUSS__  RIGI=FPG27  MASS=FPG27  GANO=FPG5  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  FACE8
+   ELREFE__  FACE6
+   OPTION__   CHAR_THER_GRAI_F        -1
+   OPTION__   CHAR_THER_GRAI_R        -1
+   OPTION__   DURT_ELGA_META          -1
+   OPTION__   DURT_ELNO_META          -1
+   OPTION__   META_ELGA_TEMP          -1
+   OPTION__   META_ELNO_TEMP          -1
+   OPTION__   META_INIT               -1
+   OPTION__   META_INIT_ELNO          -1
+   OPTION__   ERTH_ELEM_TEMP_R        -2
+   OPTION__   ERTH_ELEM_TEMP_F        -2
+   OPTION__   ERTH_ELNO_ELEM          -2
+ENTETE__ ELEMENT__ THER_PYRAM5      MAILLE__ PYRAM5
+   ELREFE__  PY5       GAUSS__  RIGI=FPG5  MASS=FPG5  GANO=FPG5  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  FACE4
+   ELREFE__  FACE3
+   OPTION__   CHAR_THER_GRAI_F        -1
+   OPTION__   CHAR_THER_GRAI_R        -1
+   OPTION__   DURT_ELGA_META          -1
+   OPTION__   DURT_ELNO_META          -1
+   OPTION__   META_ELGA_TEMP          -1
+   OPTION__   META_ELNO_TEMP          -1
+   OPTION__   META_INIT               -1
+   OPTION__   META_INIT_ELNO          -1
+   OPTION__   ERTH_ELEM_TEMP_R        -2
+   OPTION__   ERTH_ELEM_TEMP_F        -2
+   OPTION__   ERTH_ELNO_ELEM          -2
+ENTETE__ ELEMENT__ THER_TETRA10     MAILLE__ TETRA10
+   ELREFE__  T10       GAUSS__  RIGI=FPG15  MASS=FPG15  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  FACE6
+ENTETE__ ELEMENT__ THER_TETRA4      MAILLE__ TETRA4
+   ELREFE__  TE4       GAUSS__  RIGI=FPG4  MASS=FPG4  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  FACE3
+
+MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CFTRC    = ADRSJEVN ELEM__         (I1       I2       )
-    CCAMASS  = CAMASS   ELEM__         (C        ALPHA    BETA     KAPPA    X        Y        
+    CCAMASS  = CAMASS   ELEM__         (C        ALPHA    BETA     KAPPA    X        Y
                                         Z        )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     NVITESR  = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
-    EDURTPG  = DURT_R   ELGA__ NELGA   (HV       )
+    EDURTPG  = DURT_R   ELGA__ RIGI     (HV       )
     EDURTNO  = DURT_R   ELNO__ IDEN__  (HV       )
     EENEDNO  = ENER_R   ELEM__         (TOTALE   )
-    EERREUR  = ERRETEMP ELEM__         (ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1   
-                                        TERMSA   TERMS2   TERMS1   TERMFL   TERMF2   TERMF1   
+    EERREUR  = ERRETEMP ELEM__         (ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1
+                                        TERMSA   TERMS2   TERMS1   TERMFL   TERMF2   TERMF1
                                         TERMEC   TERME2   TERME1   )
-    EERRENO  = ERRETEMP ELNO__ IDEN__  (ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1   
-                                        TERMSA   TERMS2   TERMS1   TERMFL   TERMF2   TERMF1   
+    EERRENO  = ERRETEMP ELNO__ IDEN__  (ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1
+                                        TERMSA   TERMS2   TERMS1   TERMFL   TERMF2   TERMF1
                                         TERMEC   TERME2   TERME1   )
     CGRAINF  = FLUX_F   ELEM__         (FLUX     FLUY     FLUZ     )
     CGRAINR  = FLUX_R   ELEM__         (FLUX     FLUY     FLUZ     )
-    EFLUXPG  = FLUX_R   ELGA__ NELGA   (FLUX     FLUY     FLUZ     )
+    EFLUXPG  = FLUX_R   ELGA__ RIGI     (FLUX     FLUY     FLUZ     )
     EFLUXNO  = FLUX_R   ELNO__ IDEN__  (FLUX     FLUY     FLUZ     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
-    EGGEOM_R = GEOM_R   ELGA__ NELGA   (X        Y        Z        )
+    EGGEOM_R = GEOM_R   ELGA__ RIGI     (X        Y        Z        )
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EHYDRNO  = HYDR_R   ELNO__ IDEN__  (HYDR     )
-    EHYDRPG  = HYDR_R   ELGA__ NELGA   (HYDR     )
+    EHYDRPG  = HYDR_R   ELGA__ RIGI     (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    KHI      R        RHO      )
-    EGINST_R = INST_R   ELGA__ NELGA   (INST     )
+    EGINST_R = INST_R   ELGA__ RIGI     (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
-    EGNEUT_F = NEUT_F   ELGA__ NELGA   (X1       X2       X3       X4       X5       X6       )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI     (X1       X2       X3       X4       X5       X6       )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     CDECENT  = NEUT_K24 ELEM__         (Z1       )
-    CREFER1  = NEUT_K24 ELEM__         (Z1       Z2       Z3       Z4       Z5       Z6       
-                                        Z7       Z8       Z9       Z10      Z11      Z12      
-                                        Z13      Z14      Z15      Z16      Z17      Z18      
+    CREFER1  = NEUT_K24 ELEM__         (Z1       Z2       Z3       Z4       Z5       Z6
+                                        Z7       Z8       Z9       Z10      Z11      Z12
+                                        Z13      Z14      Z15      Z16      Z17      Z18
                                         Z19      )
-    EGNEUT1R = NEUT_R   ELGA__ NELGA   (X1       )
-    EGNEUT_R = NEUT_R   ELGA__ NELGA   (X1       X2       X3       X4       X5       X6       )
+    EGNEUT1R = NEUT_R   ELGA__ RIGI     (X1       )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI     (X1       X2       X3       X4       X5       X6       )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     CSOURCF  = SOUR_F   ELEM__         (SOUR     )
-    ESOURCR  = SOUR_R   ELGA__ NELGA   (SOUR     )
+    ESOURCR  = SOUR_R   ELGA__ RIGI     (SOUR     )
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    EPHASIN_ = VAR2_R   ELGA__ NELGA   (V1       V2       V3       V4       V5       )
+    EPHASIN_ = VAR2_R   ELGA__ RIGI     (V1       V2       V3       V4       V5       )
     ZVARI1   = VARI_R   ELEM__         (VARI     )
-    EPHASPG_ = VARI_R   ELGA__ NELGA   (VARI     )
+    EPHASPG_ = VARI_R   ELGA__ RIGI     (VARI     )
     EPHASNO_ = VARI_R   ELNO__ IDEN__  (VARI     )
-    EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5       
-                                        V6       T0       T1       T2       T3       T4       
+    EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
+                                        V6       T0       T1       T2       T3       T4
                                         T5       T6       )
 
-VECTEUR__ 
+VECTEUR__
     MVECTTR = VTEM_R DDL_THER
 
-MATRICE__ 
+MATRICE__
     MMATTTR = MTEM_R DDL_THER DDL_THER
     MMATTSR = MTNS_R DDL_THER DDL_THER
 
-OPTION__ 
-    CHAR_DLAG_EVOLST    -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    CHAR_DLAG_EVOLTR    -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    CHAR_DLAG_SOUR_F    -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    CHAR_DLAG_SOUR_R    -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    CHAR_SENS_EVOL      61    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CMATERC  PMATSEN  
-                                     DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PVAPRIN  DDL_THER PVAPRMO  
-                              OUT__  MVECTTR  PVECTTR  
-    CHAR_SENS_EVOLNI    236   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  EHYDRPG  PHYDRPG  CMATERC  PMATERC  
-                                     CMATERC  PMATSEN  DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTMPCHF  
-                                     DDL_THER PTMPCHI  DDL_THER PVAPRIN  DDL_THER PVAPRMO  
-                              OUT__  MVECTTR  PVECTTI  MVECTTR  PVECTTR  
-    CHAR_THER_EVOL      61    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  
-                                     CTEMPSR  PTEMPSR  
-                              OUT__  MVECTTR  PVECTTR  
-    CHAR_THER_EVOLNI    236   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  EHYDRPG  PHYDRPG  CMATERC  PMATERC  
-                                     DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTMPCHF  DDL_THER PTMPCHI  
-                              OUT__  MVECTTR  PVECTTI  MVECTTR  PVECTTR  
-    CHAR_THER_GRAI_F    217   IN__   NGEOMER  PGEOMER  CGRAINF  PGRAINF  CMATERC  PMATERC  CTEMPSR  PTEMPSR  
-                              OUT__  MVECTTR  PVECTTR  
-    CHAR_THER_GRAI_R    217   IN__   NGEOMER  PGEOMER  CGRAINR  PGRAINR  CMATERC  PMATERC  
-                              OUT__  MVECTTR  PVECTTR  
-    CHAR_THER_SOUR_F    56    IN__   NGEOMER  PGEOMER  CSOURCF  PSOURCF  CTEMPSR  PTEMPSR  
-                              OUT__  MVECTTR  PVECTTR  
-    CHAR_THER_SOUR_R    55    IN__   NGEOMER  PGEOMER  ESOURCR  PSOURCR  
-                              OUT__  MVECTTR  PVECTTR  
-    CHAR_THER_TNL       525   IN__   NGEOMER  PGEOMER  EGNEUT1R PLAGRM   CMATERC  PMATERC  DDL_THER PTEMPEI  
-                                     DDL_THER PTEMPER  CTEMPSR  PTEMPSR  NVITESR  PVITESR  
-                              OUT__  EGNEUT1R PLAGRP   MVECTTR  PRESIDU  MVECTTR  PVECTTR  
-    COOR_ELGA           488   IN__   NGEOMER  PGEOMER  
-                              OUT__  EGGEOM_R PCOORPG  
-    DETE_ELNO_DLTE      -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    DLAG_NOEU_TEMP      -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    DURT_ELGA_META      552   IN__   CMATERC  PMATERC  EPHASPG_ PPHASIN  
-                              OUT__  EDURTPG  PDURT_R  
-    DURT_ELNO_META      552   IN__   CMATERC  PMATERC  EPHASPG_ PPHASIN  
-                              OUT__  EDURTNO  PDURT_R  
-    EPOT_ELEM_TEMP      66    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  CTEMPSR  PTEMPSR  
-                              OUT__  EENEDNO  PENERDR  
-    ERTH_ELEM_TEMP_F    3     IN__   CREFER1  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER  
-                                     CMATERC  PMATERC  CSOURCF  PSOURCR  DDL_THER PTEMP_M  DDL_THER PTEMP_P  
-                                     EVOISIN  PVOISIN  
-                              OUT__  EERREUR  PERREUR  
-    ERTH_ELEM_TEMP_R    3     IN__   CREFER1  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER  
-                                     CMATERC  PMATERC  ESOURCR  PSOURCR  DDL_THER PTEMP_M  DDL_THER PTEMP_P  
-                                     EVOISIN  PVOISIN  
-                              OUT__  EERREUR  PERREUR  
-    ERTH_ELNO_ELEM      4     IN__   EERREUR  PERREUR  
-                              OUT__  EERRENO  PERRENO  
-    FLUX_ELGA_SENS      62    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CMATERC  PMATSEN  
-                                     DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTEMSEN  
-                              OUT__  EFLUXPG  PFLUX_R  
-    FLUX_ELGA_TEMP      62    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  
-                                     CTEMPSR  PTEMPSR  
-                              OUT__  EFLUXPG  PFLUX_R  
-    FLUX_ELNO_SENS      63    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CMATERC  PMATSEN  
-                                     DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTEMSEN  
-                              OUT__  EFLUXNO  PFLUX_R  
-    FLUX_ELNO_TEMP      63    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  
-                                     CTEMPSR  PTEMPSR  
-                              OUT__  EFLUXNO  PFLUX_R  
-    HYDR_ELNO_ELGA      124   IN__   EHYDRPG  PHYDRPP  
-                              OUT__  EHYDRNO  PHYDRNOR 
-    INIT_MAIL_VOIS      99    IN__   NGEOMER  PGEOMER  
-                              OUT__  EVOISIN  PVOISIN  
-    MASS_THER           54    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR  
-                              OUT__  MMATTTR  PMATTTR  
-    MATR_NO_PG          119   IN__   NGEOMER  PGEOMER  
-                              OUT__  ZVARI1   PMANOPG  
-    META_ELGA_TEMP      64    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASPG_ PPHASIN  
-                                     DDL_THER PTEMPAR  DDL_THER PTEMPER  DDL_THER PTEMPIR  CTEMPSR  PTEMPSR  
-                              OUT__  EPHASPG_ PPHASOU  
-    META_ELNO_TEMP      64    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASPG_ PPHASIN  
-                                     DDL_THER PTEMPAR  DDL_THER PTEMPER  DDL_THER PTEMPIR  CTEMPSR  PTEMPSR  
-                              OUT__  EPHASNO_ PPHASNOU EPHASPG_ PPHASOU  
-    META_INIT           321   IN__   CCOMPOR  PCOMPOR  CMATERC  PMATERC  EPHASIN_ PPHASIN  DDL_THER PTEMPER  
-                              OUT__  EPHASPG_ PPHASOU  
-    META_INIT_ELNO      321   IN__   CCOMPOR  PCOMPOR  CMATERC  PMATERC  EPHASIN_ PPHASIN  DDL_THER PTEMPER  
-                              OUT__  EPHASNO_ PPHASNOU EPHASPG_ PPHASOU  
-    MTAN_RIGI_MASS      125   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPEI  
-                                     CTEMPSR  PTEMPSR  DDL_THER PTMPCHF  DDL_THER PTMPCHI  
-                              OUT__  MMATTTR  PMATTTR  
-    NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR  
-                              OUT__  EDCEL_I  PDCEL_I  
-    RESI_RIGI_MASS      126   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  EHYDRPG  PHYDRPG  CMATERC  PMATERC  
-                                     DDL_THER PTEMPEI  DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTMPCHF  
-                                     DDL_THER PTMPCHI  
-                              OUT__  EHYDRPG  PHYDRPP  MVECTTR  PRESIDU  
-    RIGI_THER           51    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR  
-                              OUT__  MMATTTR  PMATTTR  
-    RIGI_THER_CONV      314   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CDECENT  PNEUK24  CTEMPSR  PTEMPSR  
-                                     NVITESR  PVITESR  
-                              OUT__  MMATTSR  PMATTTR  
-    RIGI_THER_CONV_D    314   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CDECENT  PNEUK24  CTEMPSR  PTEMPSR  
-                                     NVITESR  PVITESR  
-                              OUT__  MMATTSR  PMATTTR  
-    RIGI_THER_CONV_T    522   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CDECENT  PNEUK24  DDL_THER PTEMPEI  
-                                     CTEMPSR  PTEMPSR  NVITESR  PVITESR  
-                              OUT__  MMATTSR  PMATTTR  
-    RIGI_THER_TRANS     521   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPEI  DDL_THER PTEMPER  
-                                     CTEMPSR  PTEMPSR  
-                              OUT__  MMATTTR  PMATTTR  
-    SOUR_ELGA_ELEC      319   IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  
-                                     CTEMPSR  PTEMPSR  
-                              OUT__  ESOURCR  PSOUR_R  
-    SYME_MTNS_R         222   IN__   MMATTSR  PNOSYM   
-                              OUT__  MMATTTR  PSYM     
-    TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER  
-                              OUT__  EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  
-    TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER  
-                              OUT__  ENGEOM_R PGEOM_R  ENINST_R PINST_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  
+OPTION__
+    CHAR_DLAG_EVOLST    -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    CHAR_DLAG_EVOLTR    -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    CHAR_DLAG_SOUR_F    -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    CHAR_DLAG_SOUR_R    -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    CHAR_SENS_EVOL      61    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CMATERC  PMATSEN
+                                     DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PVAPRIN  DDL_THER PVAPRMO
+                              OUT__  MVECTTR  PVECTTR
+    CHAR_SENS_EVOLNI    236   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  EHYDRPG  PHYDRPG  CMATERC  PMATERC
+                                     CMATERC  PMATSEN  DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTMPCHF
+                                     DDL_THER PTMPCHI  DDL_THER PVAPRIN  DDL_THER PVAPRMO
+                              OUT__  MVECTTR  PVECTTI  MVECTTR  PVECTTR
+    CHAR_THER_EVOL      61    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
+                                     CTEMPSR  PTEMPSR
+                              OUT__  MVECTTR  PVECTTR
+    CHAR_THER_EVOLNI    236   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  EHYDRPG  PHYDRPG  CMATERC  PMATERC
+                                     DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTMPCHF  DDL_THER PTMPCHI
+                              OUT__  MVECTTR  PVECTTI  MVECTTR  PVECTTR
+    CHAR_THER_GRAI_F    217   IN__   NGEOMER  PGEOMER  CGRAINF  PGRAINF  CMATERC  PMATERC  CTEMPSR  PTEMPSR
+                              OUT__  MVECTTR  PVECTTR
+    CHAR_THER_GRAI_R    217   IN__   NGEOMER  PGEOMER  CGRAINR  PGRAINR  CMATERC  PMATERC
+                              OUT__  MVECTTR  PVECTTR
+    CHAR_THER_SOUR_F    56    IN__   NGEOMER  PGEOMER  CSOURCF  PSOURCF  CTEMPSR  PTEMPSR
+                              OUT__  MVECTTR  PVECTTR
+    CHAR_THER_SOUR_R    55    IN__   NGEOMER  PGEOMER  ESOURCR  PSOURCR
+                              OUT__  MVECTTR  PVECTTR
+    CHAR_THER_TNL       525   IN__   NGEOMER  PGEOMER  EGNEUT1R PLAGRM   CMATERC  PMATERC  DDL_THER PTEMPEI
+                                     DDL_THER PTEMPER  CTEMPSR  PTEMPSR  NVITESR  PVITESR
+                              OUT__  EGNEUT1R PLAGRP   MVECTTR  PRESIDU  MVECTTR  PVECTTR
+    COOR_ELGA           488   IN__   NGEOMER  PGEOMER
+                              OUT__  EGGEOM_R PCOORPG
+    DETE_ELNO_DLTE      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    DLAG_NOEU_TEMP      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    DURT_ELGA_META      552   IN__   CMATERC  PMATERC  EPHASPG_ PPHASIN
+                              OUT__  EDURTPG  PDURT_R
+    DURT_ELNO_META      552   IN__   CMATERC  PMATERC  EPHASPG_ PPHASIN
+                              OUT__  EDURTNO  PDURT_R
+    EPOT_ELEM_TEMP      66    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
+                              OUT__  EENEDNO  PENERDR
+    ERTH_ELEM_TEMP_F    3     IN__   CREFER1  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  CSOURCF  PSOURCR  DDL_THER PTEMP_M  DDL_THER PTEMP_P
+                                     EVOISIN  PVOISIN
+                              OUT__  EERREUR  PERREUR
+    ERTH_ELEM_TEMP_R    3     IN__   CREFER1  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  ESOURCR  PSOURCR  DDL_THER PTEMP_M  DDL_THER PTEMP_P
+                                     EVOISIN  PVOISIN
+                              OUT__  EERREUR  PERREUR
+    ERTH_ELNO_ELEM      4     IN__   EERREUR  PERREUR
+                              OUT__  EERRENO  PERRENO
+    FLUX_ELGA_SENS      62    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CMATERC  PMATSEN
+                                     DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTEMSEN
+                              OUT__  EFLUXPG  PFLUX_R
+    FLUX_ELGA_TEMP      62    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
+                                     CTEMPSR  PTEMPSR
+                              OUT__  EFLUXPG  PFLUX_R
+    FLUX_ELNO_SENS      63    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CMATERC  PMATSEN
+                                     DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTEMSEN
+                              OUT__  EFLUXNO  PFLUX_R
+    FLUX_ELNO_TEMP      63    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
+                                     CTEMPSR  PTEMPSR
+                              OUT__  EFLUXNO  PFLUX_R
+    HYDR_ELNO_ELGA      124   IN__   EHYDRPG  PHYDRPP
+                              OUT__  EHYDRNO  PHYDRNOR
+    INIT_MAIL_VOIS      99    IN__   NGEOMER  PGEOMER
+                              OUT__  EVOISIN  PVOISIN
+    MASS_THER           54    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR
+                              OUT__  MMATTTR  PMATTTR
+    MATR_NO_PG          119   IN__   NGEOMER  PGEOMER
+                              OUT__  ZVARI1   PMANOPG
+    META_ELGA_TEMP      64    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASPG_ PPHASIN
+                                     DDL_THER PTEMPAR  DDL_THER PTEMPER  DDL_THER PTEMPIR  CTEMPSR  PTEMPSR
+                              OUT__  EPHASPG_ PPHASOU
+    META_ELNO_TEMP      64    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASPG_ PPHASIN
+                                     DDL_THER PTEMPAR  DDL_THER PTEMPER  DDL_THER PTEMPIR  CTEMPSR  PTEMPSR
+                              OUT__  EPHASNO_ PPHASNOU EPHASPG_ PPHASOU
+    META_INIT           321   IN__   CCOMPOR  PCOMPOR  CMATERC  PMATERC  EPHASIN_ PPHASIN  DDL_THER PTEMPER
+                              OUT__  EPHASPG_ PPHASOU
+    META_INIT_ELNO      321   IN__   CCOMPOR  PCOMPOR  CMATERC  PMATERC  EPHASIN_ PPHASIN  DDL_THER PTEMPER
+                              OUT__  EPHASNO_ PPHASNOU EPHASPG_ PPHASOU
+    MTAN_RIGI_MASS      125   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPEI
+                                     CTEMPSR  PTEMPSR  DDL_THER PTMPCHF  DDL_THER PTMPCHI
+                              OUT__  MMATTTR  PMATTTR
+    NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR
+                              OUT__  EDCEL_I  PDCEL_I
+    RESI_RIGI_MASS      126   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  EHYDRPG  PHYDRPG  CMATERC  PMATERC
+                                     DDL_THER PTEMPEI  DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTMPCHF
+                                     DDL_THER PTMPCHI
+                              OUT__  EHYDRPG  PHYDRPP  MVECTTR  PRESIDU
+    RIGI_THER           51    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR
+                              OUT__  MMATTTR  PMATTTR
+    RIGI_THER_CONV      314   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CDECENT  PNEUK24  CTEMPSR  PTEMPSR
+                                     NVITESR  PVITESR
+                              OUT__  MMATTSR  PMATTTR
+    RIGI_THER_CONV_D    314   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CDECENT  PNEUK24  CTEMPSR  PTEMPSR
+                                     NVITESR  PVITESR
+                              OUT__  MMATTSR  PMATTTR
+    RIGI_THER_CONV_T    522   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CDECENT  PNEUK24  DDL_THER PTEMPEI
+                                     CTEMPSR  PTEMPSR  NVITESR  PVITESR
+                              OUT__  MMATTSR  PMATTTR
+    RIGI_THER_TRANS     521   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPEI  DDL_THER PTEMPER
+                                     CTEMPSR  PTEMPSR
+                              OUT__  MMATTTR  PMATTTR
+    SOUR_ELGA_ELEC      319   IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
+                                     CTEMPSR  PTEMPSR
+                              OUT__  ESOURCR  PSOUR_R
+    SYME_MTNS_R         222   IN__   MMATTSR  PNOSYM
+                              OUT__  MMATTTR  PSYM
+    TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
+                              OUT__  EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R
+    TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
+                              OUT__  ENGEOM_R PGEOM_R  ENINST_R PINST_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
 

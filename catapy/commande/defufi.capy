@@ -1,4 +1,5 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+# RESPONSABLE D6BHHJP J.P.LEFEBVRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,8 +20,9 @@
 DEFUFI=PROC(nom="DEFUFI",op=21,docu="U4.12.01-e",
             UIinfo={"groupes":("Gestion du travail",)},
             fr="Modification / ajout d une unité logique en sortie en complément de celles définies dans DEBUT",
-         IMPRESSION      =FACT(statut='o',min=1,max='**',
-           NOM             =SIMP(statut='o',typ='TXM',max='**'),
-           UNITE           =SIMP(statut='o',typ='I' ),
-         ),
-)  ;
+
+            IMPRESSION = FACT(statut='o',max='**',
+              NOM           =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**'),
+              UNITE         =SIMP(statut='o',typ='I'  ,val_min=1),
+            ),                
+           )

@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 03/09/2002   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 22/07/2003   AUTEUR G8BHHXD X.DESROCHES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,8 +61,12 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
        l_commandes_sensibles_defaut=['THER_LINEAIRE',
                                      'THER_NON_LINE',
                                      'MECA_STATIQUE',
+                                     'STAT_NON_LINE',
                                      'DYNA_LINE_HARM',
-                                     'EXTR_RESU']
+                                     'DYNA_LINE_TRAN',
+                                     'EXTR_RESU',
+                                     'PROJ_CHAMP',
+                                     'CALC_G_THETA_T']
        l_commandes_a_deriver_defaut=['AFFE_MATERIAU',
                                      'AFFE_CHAR_MECA_F',
                                      'AFFE_CHAR_THER_F' ]

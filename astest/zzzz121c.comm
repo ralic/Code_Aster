@@ -1,4 +1,4 @@
-# MODIF  DATE 24/02/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL EN TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,11 +44,12 @@ MZERO=LIRE_MAILLAGE( )
 ###IMPR_RESU ( RESU=(_F ( MAILLAGE = MZERO ) ) ) ;
 #
 MACR_INFO_MAIL(
-              VERSION_HOMARD='V5_5',
+              VERSION_HOMARD='V6_2',
               MAILLAGE=MZERO,
               QUALITE='OUI',
               TAILLE='OUI',
-              INTERPENETRATION='OUI'
+              INTERPENETRATION='OUI',
+              CONNEXITE='OUI'
                )
 #
 # 3. CALCUL SUR LE MAILLAGE ZERO
@@ -147,7 +148,7 @@ REMEZERO=CALC_ELEM( reuse=REMEZERO,   RESULTAT=REMEZERO,
 # 4. ADAPTATION DU MAILLAGE DE ZERO VERS UN
 #
 MACR_ADAP_MAIL(
-              VERSION_HOMARD='V5_5',
+              VERSION_HOMARD='V6_2',
               ADAPTATION=_F( 
                        LIBRE = 'RAFFINEMENT',
                        MAILLAGE_N = MZERO,
@@ -194,7 +195,8 @@ MOTHUN=AFFE_MODELE(    MAILLAGE=MUN,
 # 5.3.2. CHARGEMENT
 #
 CHTHUN=AFFE_CHAR_THER(    MODELE=MOTHUN,
-    TEMP_IMPO=_F(  GROUP_NO = 'ORIGINE',     TEMP = 200.0,    ),SOURCE=(
+    TEMP_IMPO=_F(  GROUP_NO = 'ORIGINE',     TEMP = 200.0,    ),
+    SOURCE=(
        _F(  GROUP_MA = 'MOITIE1',    SOUR = 18000.,    ),
        _F(  GROUP_MA = 'MOITIE2',    SOUR = 22000.,    )),
    ECHANGE=_F( GROUP_MA = 'BORD_DRO',  COEF_H = 500.,  TEMP_EXT = 310., )
@@ -265,23 +267,35 @@ REMEUN=CALC_ELEM( reuse=REMEUN,   RESULTAT=REMEUN,
 #
 TEST_RESU(RESU=(
        _F(  RESULTAT = RETHUN,   NUME_ORDRE = 2,  
-              NOM_CHAM = 'TEMP',      GROUP_NO = 'OPPOSE',  
-              CRITERE = 'RELATIF',    PRECISION = 1.E-6,  
-              NOM_CMP = 'TEMP',       VALE = 3.097832E+02,     ),
+            NOM_CHAM = 'TEMP',      GROUP_NO = 'OPPOSE',  
+            CRITERE = 'RELATIF',    PRECISION = 1.E-6,  
+            NOM_CMP = 'TEMP',       VALE = 3.097832E+02, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.01' ),
        _F(  RESULTAT = REMEUN,   NUME_ORDRE = 3,  
-              NOM_CHAM = 'DEPL',      GROUP_NO = 'OPPOSE',  
-              CRITERE = 'RELATIF',    PRECISION = 1.E-6,  
-              NOM_CMP = 'DX',         VALE = 1.267359E-02,    ),
+            NOM_CHAM = 'DEPL',      GROUP_NO = 'OPPOSE',  
+            CRITERE = 'RELATIF',    PRECISION = 1.E-6,  
+            NOM_CMP = 'DX',         VALE = 1.267359E-02, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.01' ),
        _F(  RESULTAT = REMEUN,   NUME_ORDRE = 3,  
-              NOM_CHAM = 'DEPL',      GROUP_NO = 'OPPOSE',  
-              CRITERE = 'RELATIF',    PRECISION = 1.E-6,  
-              NOM_CMP = 'DY',         VALE = -2.511801E-02,   ))
+            NOM_CHAM = 'DEPL',      GROUP_NO = 'OPPOSE',  
+            CRITERE = 'RELATIF',    PRECISION = 1.E-6,  
+            NOM_CMP = 'DY',         VALE = -2.511801E-02, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.01' ))
           )
 #
 # 7. ADAPTATION DU MAILLAGE DE UN VERS DEUX
+#    REMARQUE : PAR RAPPORT A L'ADAPTATION PRECEDENTE, ON TESTE DES VARIANTES
+#               DE LA COMMANDE :
+#               . RAFFINEMENT ET DERAFFINEMENT AU LIEU DE RAFFINEMENT SEUL
+#               . SELECTION DE L'INDICATEUR PAR UN INSTANT AU LIEU
+#                 D'UN NUMERO D'ORDRE
+#               . SELECTION DU CHAMP A METTRE A JOUR PAR UN INSTANT AU LIEU
+#                 D'UN NUMERO D'ORDRE
+#               . DEUX CHAMPS A METTRE A JOUR
+#               . AUTRES OPTIONS D'ANALYSE DU MAILLAGE
 #
 MACR_ADAP_MAIL(
-              VERSION_HOMARD='V5_5',
+              VERSION_HOMARD='V6_2',
               ADAPTATION=_F( 
                        LIBRE = 'RAFF_DERA',
                        MAILLAGE_N = MUN,
@@ -289,22 +303,31 @@ MACR_ADAP_MAIL(
                        RESULTAT_N = REMEUN,
                        INDICATEUR = 'ERRE_ELGA_NORE',
                        NOM_CMP_INDICA = 'ERREST' ,
-                       NUME_ORDRE = 3,
+                       INST = 8.0,
                        CRIT_RAFF_PE = 0.03,
                        CRIT_DERA_PE = 0.25),
-              MAJ_CHAM=_F( 
+              MAJ_CHAM=(_F( 
                        RESULTAT   = RETHUN,
                        NOM_CHAM   = 'TEMP',
                        TYPE_CHAM  = 'NOEU_TEMP_R',
-                       NUME_ORDRE = 2,
-                       CHAM_MAJ   = CO("TEMPDEUX")),
+                       INST = 8.0,
+                       CHAM_MAJ   = CO("TEMP_8")),
+                        _F( 
+                       RESULTAT   = RETHUN,
+                       NOM_CHAM   = 'TEMP',
+                       TYPE_CHAM  = 'NOEU_TEMP_R',
+                       INST = 6.0,
+                       CHAM_MAJ   = CO("TEMP_6")),),
               QUALITE='OUI',
-              INTERPENETRATION='NON'
+              INTERPENETRATION='OUI',
+              CONNEXITE='OUI',
+              TAILLE='OUI',
+              INFO = 1
                )
 #
 ###IMPR_RESU ( RESU=(_F ( MAILLAGE = MDEUX ) ) ) ;
-###IMPR_CO ( CO = TEMPDEUX  ) ;
-###IMPR_RESU ( RESU=(_F ( CHAM_GD = TEMPDEUX ) ) ) ;
+###IMPR_CO ( CO = TEMP_8  ) ;
+###IMPR_RESU ( RESU=(_F ( CHAM_GD = TEMP_8 ) ) ) ;
 #
 # 7. CALCUL SUR LE MAILLAGE DEUX
 #
@@ -340,7 +363,7 @@ CHTHDEUX=AFFE_CHAR_THER(    MODELE=MOTHDEUX,
 RETHDEUX=THER_LINEAIRE(    MODELE=MOTHDEUX,
                              CHAM_MATER=MATEDEUX,
                              EXCIT=_F(  CHARGE = CHTHDEUX,   ),
-                             TEMP_INIT=_F(  CHAM_NO = TEMPDEUX,   ),
+                             TEMP_INIT=_F(  CHAM_NO = TEMP_8,   ),
                              INCREMENT=_F(  LIST_INST = INSTDEUX,   )
                          )
 #
@@ -381,17 +404,20 @@ REMEDEUX=MECA_STATIQUE(         MODELE=MOMEDEUX,
 #
 TEST_RESU(RESU=(
        _F(  RESULTAT = RETHDEUX,   NUME_ORDRE = 2,  
-              NOM_CHAM = 'TEMP',      GROUP_NO = 'OPPOSE',  
-              CRITERE = 'RELATIF',    PRECISION = 1.E-6,  
-              NOM_CMP = 'TEMP',       VALE = 3.113811E+02,     ),
+            NOM_CHAM = 'TEMP',      GROUP_NO = 'OPPOSE',  
+            CRITERE = 'RELATIF',    PRECISION = 1.E-6,  
+            NOM_CMP = 'TEMP',       VALE = 3.113811E+02, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.01'  ),
        _F(  RESULTAT = REMEDEUX,   NUME_ORDRE = 3,  
-              NOM_CHAM = 'DEPL',      GROUP_NO = 'OPPOSE',  
-              CRITERE = 'RELATIF',    PRECISION = 1.E-6,  
-              NOM_CMP = 'DX',         VALE = 1.271608E-02,    ),
+            NOM_CHAM = 'DEPL',      GROUP_NO = 'OPPOSE',  
+            CRITERE = 'RELATIF',    PRECISION = 1.E-6,  
+            NOM_CMP = 'DX',         VALE = 1.271608E-02, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.01' ),
        _F(  RESULTAT = REMEDEUX,   NUME_ORDRE = 3,  
-              NOM_CHAM = 'DEPL',      GROUP_NO = 'OPPOSE',  
-              CRITERE = 'RELATIF',    PRECISION = 1.E-6,  
-              NOM_CMP = 'DY',         VALE = -2.715298E-02,   ))
+            NOM_CHAM = 'DEPL',      GROUP_NO = 'OPPOSE',  
+            CRITERE = 'RELATIF',    PRECISION = 1.E-6,  
+            NOM_CMP = 'DY',         VALE = -2.715298E-02, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.01' ))
           )
 #
 FIN( )

@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 25/08/2003   AUTEUR ASSIRE A.ASSIRE 
 # TITRE COUDE EN FLEXION EN ELASTOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -299,7 +299,8 @@ U1=STAT_NON_LINE(
                 CHARGE = CHARP)),
                          INCREMENT=_F(
                 LIST_INST = LINST,
-                NUME_INST_FIN = 8),COMP_INCR=(
+                NUME_INST_FIN = 8
+                ),COMP_INCR=(
                          _F( GROUP_MA = 'BC',  RELATION = 'VMIS_ISOT_LINE', ),
                          _F( GROUP_MA = ( 'AB',  'CD',), RELATION = 'ELAS', )),
                             NEWTON=_F(
@@ -320,6 +321,8 @@ U1=CALC_ELEM( reuse=U1,
               CHAM_MATER=CHMAT,
               CARA_ELEM=CAREL)
 
+#IMPR_RESU(MODELE=MO,RESU=(_F(FORMAT='RESULTAT',RESULTAT=U1,MAILLE=M1,NUME_ORDRE=8,),))
+
 U1=CALC_ELEM( reuse=U1,
               OPTION=('VALE_NCOU_MAXI'),
               RESULTAT=U1,
@@ -328,6 +331,8 @@ U1=CALC_ELEM( reuse=U1,
               MODELE=MO,
               CHAM_MATER=CHMAT,
               CARA_ELEM=CAREL)
+
+#IMPR_RESU(MODELE=MO,RESU=(_F(FORMAT='RESULTAT',RESULTAT=U1,NOM_CHAM='EQUI_ELGA_SIGM',NOM_CMP='VMIS_SG',INST=MPFL,),))
 
 U1=CALC_NO( reuse=U1,
             OPTION='FORC_NODA', 
@@ -354,7 +359,7 @@ NCOU_I=CREA_CHAMP( OPERATION='EXTR',
                    TYPE_RESU='INST',
                  ) ;
 
-IMPR_RESU(RESU=_F( CHAM_GD=NCOU_I), ) ;
+#IMPR_RESU(RESU=_F( CHAM_GD=NCOU_I), ) ;
 
 # CALCUL DE LA ROTATION "GLOBALE" DANS LE COUDE EN FONCTION DE L'INSTANT
 
@@ -493,6 +498,14 @@ TEST_RESU(RESU=(
                   MAILLE='M1', POINT=3, SOUS_POINT=55, NOM_CMP = 'VMIS',
                   PRECISION = 0.01, NUME_ORDRE = 3, VALE=5.608141169E+07,
                   REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=U1, NOM_CHAM='EQUI_ELGA_SIGM',
+                  MAILLE='M1', POINT=2, SOUS_POINT=98, NOM_CMP = 'VMIS_SG',
+                  PRECISION = 0.01, NUME_ORDRE = 8, VALE=-1.550065323E+08,
+                  REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=U1, NOM_CHAM='EQUI_ELGA_SIGM',
+                  MAILLE='M1', POINT=3, SOUS_POINT=42, NOM_CMP = 'VMIS_SG',
+                  PRECISION = 0.01, NUME_ORDRE = 8, VALE=-7.143706272E+06,
+                  REFERENCE='NON_REGRESSION',),
                _F(RESULTAT=U1, NOM_CHAM='EQUI_ELGA_EPSI',
                   MAILLE='M1', POINT=1, SOUS_POINT=77, NOM_CMP = 'INVA_2',
                   PRECISION = 0.01, NUME_ORDRE = 4, VALE=2.590281477E-04,
@@ -501,8 +514,15 @@ TEST_RESU(RESU=(
                   MAILLE='M1', POINT=1, SOUS_POINT=8, NOM_CMP = 'INVA_2',
                   PRECISION = 0.01, NUME_ORDRE = 5, VALE=1.769279362E-04,
                   REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=U1, NOM_CHAM='EQUI_ELGA_EPSI',
+                  MAILLE='M1', POINT=1, SOUS_POINT=61, NOM_CMP = 'INVA_2SG',
+                  PRECISION = 0.01, NUME_ORDRE = 8, VALE=-3.527683756E-04,
+                  REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=U1, NOM_CHAM='EQUI_ELGA_EPSI',
+                  MAILLE='M1', POINT=3, SOUS_POINT=9, NOM_CMP = 'INVA_2SG',
+                  PRECISION = 0.01, NUME_ORDRE = 8, VALE=-8.940141939E-05,
+                  REFERENCE='NON_REGRESSION',),
                 ) );
-
 
 
 FIN( )

@@ -4,7 +4,7 @@ C     PARAMETRES SENSIBLES - RECUPERATION DU NOM COMPOSE
 C     *          *           **              *   *
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF UTILITAI  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -60,7 +60,7 @@ C====
 C
       CALL SEMECO ( 'RENC', NOSIMP, NOPASE,
      >              SAUX08,
-     >              NOCOMP, IAUX, SAUX08, SAUX08,
+     >              NOCOMP, IAUX, SAUX08, SAUX08, SAUX08,
      >              IRET )
 C
       END

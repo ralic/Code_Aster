@@ -1,26 +1,28 @@
-%& MODIF TYPELEM  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
-%            CONFIGURATION MANAGEMENT OF EDF VERSION                        
-% ======================================================================    
-% COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
-% THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY      
-% IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY      
-% THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR         
-% (AT YOUR OPTION) ANY LATER VERSION.                                       
-%                                                                           
-% THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT       
-% WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF                
-% MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU          
-% GENERAL PUBLIC LICENSE FOR MORE DETAILS.                                  
-%                                                                           
-% YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE         
-% ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,             
-%    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.            
-% ======================================================================    
+%& MODIF TYPELEM  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+%            CONFIGURATION MANAGEMENT OF EDF VERSION
+% ======================================================================
+% COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+% THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+% IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+% THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+% (AT YOUR OPTION) ANY LATER VERSION.
+%
+% THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+% WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+% MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+% GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+%
+% YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+% ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+%    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+% ======================================================================
 GENER_MECAB1
 TYPE_GENE__
-ENTETE__ ELEMENT__ MECABL2          MAILLE__ SEG2     ELREFE__  CABPOU NB_GAUSS__ NELGA=FPG1
 
-MODE_LOCAL__ 
+ENTETE__ ELEMENT__ MECABL2          MAILLE__ SEG2
+   ELREFE__  CABPOU    GAUSS__  NELGA=FPG1
+
+MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCACABL  = CACABL   ELEM__         (SECT     TENS     )
     ECODRET  = CODE_I   ELEM__         (IRET     )
@@ -47,92 +49,96 @@ MODE_LOCAL__
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     CVENTCX  = VENTCX_F ELEM__         (FCXP     )
 
-VECTEUR__ 
+VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
 
-MATRICE__ 
+MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
-OPTION__ 
-    ADD_SIGM            581   IN__   ECONTPG  PEPCON1  ECONTPG  PEPCON2  
-                              OUT__  ECONTPG  PEPCON3  
-    AMOR_MECA           50    IN__   CGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL  
-                                     CTEREFE  PTEMPER  
-                              OUT__  MMATUUR  PMATUUR  
-    CHAR_MECA_EPSI_R    -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    CHAR_MECA_FC1D1D    -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    CHAR_MECA_FF1D1D    161   IN__   CFORCEF  PFF1D1D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  
-                              OUT__  MVECTUR  PVECTUR  
-    CHAR_MECA_FR1D1D    161   IN__   CFORCER  PFR1D1D  NGEOMER  PGEOMER  
-                              OUT__  MVECTUR  PVECTUR  
-    CHAR_MECA_FRELEC    -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    CHAR_MECA_FRLAPL    163   IN__   CFLAPLA  PFLAPLA  NGEOMER  PGEOMER  CLISTMA  PLISTMA  
-                              OUT__  MVECTUR  PVECTUR  
-    CHAR_MECA_PESA_R    161   IN__   CCACABL  PCACABL  NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  
-                              OUT__  MVECTUR  PVECTUR  
-    CHAR_MECA_ROTA_R    -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    CHAR_MECA_SF1D1D    161   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  CFORCEF  PFF1D1D  NGEOMER  PGEOMER  
-                                     CTEMPSR  PTEMPSR  
-                              OUT__  MVECTUR  PVECTUR  
-    CHAR_MECA_SR1D1D    161   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  CFORCER  PFR1D1D  NGEOMER  PGEOMER  
-                                     CVENTCX  PVENTCX  NVITER   PVITER   
-                              OUT__  MVECTUR  PVECTUR  
-    CHAR_MECA_TEMP_R    162   IN__   NGEOMER  PGEOMER  
-                              OUT__  MVECTUR  PVECTUR  
-    ECIN_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    EFGE_ELNO_CART      380   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ECONTNO  PSIEFNOR 
-                              OUT__  EEFFONO  PEFFORR  
-    EPOT_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    FORC_NODA           164   IN__   ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  
-                              OUT__  MVECTUR  PVECTUR  
-    FULL_MECA           160   IN__   CCACABL  PCACABL  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  
-                                     NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPPR  CTEREFE  PTEREF   
-                                     ZVARIPG  PVARIMR  
-                              OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR  
-                                     MVECTUR  PVECTUR  
-    INDU_MUTU           -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    MASS_FLUI_STRU      -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    MASS_INER           -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    MASS_MECA           168   IN__   CCACABL  PCACABL  NGEOMER  PGEOMER  CMATERC  PMATERC  
-                              OUT__  MMATUUR  PMATUUR  
-    MASS_MECA_DIAG      -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    M_GAMMA             168   IN__   CCACABL  PCACABL  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  
-                              OUT__  MVECTUR  PVECTUR  
-    NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR  
-                              OUT__  EDCEL_I  PDCEL_I  
-    RAPH_MECA           160   IN__   CCACABL  PCACABL  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  
-                                     NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPPR  CTEREFE  PTEREF   
-                                     ZVARIPG  PVARIMR  
-                              OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR  
-    RIGI_FLUI_STRU      -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    RIGI_MECA           -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    RIGI_MECA_ELAS      -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    RIGI_MECA_GE        -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    RIGI_MECA_HYST      -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    RIGI_MECA_RO        -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
-    RIGI_MECA_TANG      160   IN__   CCACABL  PCACABL  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  
-                                     NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPPR  CTEREFE  PTEREF   
-                              OUT__  MMATUUR  PMATUUR  
-    SIEF_ELNO_ELGA      159   IN__   ECONTPG  PCONTRR  
-                              OUT__  ECONTNO  PSIEFNOR 
-    TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER  
-                              OUT__  EHYDRER  PHYDR_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  
-    VARI_ELNO_ELGA      159   IN__   ZVARIPG  PVARIGR  
-                              OUT__  ZVARINO  PVARINR  
+OPTION__
+    ADD_SIGM            581   IN__   ECONTPG  PEPCON1  ECONTPG  PEPCON2
+                              OUT__  ECONTPG  PEPCON3
+    AMOR_MECA           50    IN__   CGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL
+                                     CTEREFE  PTEMPER
+                              OUT__  MMATUUR  PMATUUR
+    CHAR_MECA_EPSI_R    -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    CHAR_MECA_FC1D1D    -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    CHAR_MECA_FF1D1D    161   IN__   CFORCEF  PFF1D1D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_FR1D1D    161   IN__   CFORCER  PFR1D1D  NGEOMER  PGEOMER
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_FRELEC    -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    CHAR_MECA_FRLAPL    163   IN__   CFLAPLA  PFLAPLA  NGEOMER  PGEOMER  CLISTMA  PLISTMA
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_PESA_R    161   IN__   CCACABL  PCACABL  NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_ROTA_R    -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    CHAR_MECA_SF1D1D    161   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  CFORCEF  PFF1D1D  NGEOMER  PGEOMER
+                                     CTEMPSR  PTEMPSR
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_SR1D1D    161   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  CFORCER  PFR1D1D  NGEOMER  PGEOMER
+                                     CVENTCX  PVENTCX  NVITER   PVITER
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_TEMP_R    162   IN__   NGEOMER  PGEOMER
+                              OUT__  MVECTUR  PVECTUR
+    ECIN_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    EFGE_ELNO_CART      380   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ECONTNO  PSIEFNOR
+                              OUT__  EEFFONO  PEFFORR
+    EPOT_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    FORC_NODA           164   IN__   ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
+                              OUT__  MVECTUR  PVECTUR
+    FULL_MECA           160   IN__   CCACABL  PCACABL  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
+                                     NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPPR  CTEREFE  PTEREF
+                                     ZVARIPG  PVARIMR
+                              OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
+                                     MVECTUR  PVECTUR
+    INDU_MUTU           -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    MASS_FLUI_STRU      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    MASS_INER           -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    MASS_MECA           168   IN__   CCACABL  PCACABL  NGEOMER  PGEOMER  CMATERC  PMATERC
+                              OUT__  MMATUUR  PMATUUR
+    MASS_MECA_DIAG      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    MECA_SENS_RAPH      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    M_GAMMA             168   IN__   CCACABL  PCACABL  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
+                              OUT__  MVECTUR  PVECTUR
+    NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR
+                              OUT__  EDCEL_I  PDCEL_I
+    RAPH_MECA           160   IN__   CCACABL  PCACABL  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
+                                     NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPPR  CTEREFE  PTEREF
+                                     ZVARIPG  PVARIMR
+                              OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
+    RIGI_FLUI_STRU      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    RIGI_MECA           -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    RIGI_MECA_ELAS      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    RIGI_MECA_GE        -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    RIGI_MECA_HYST      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    RIGI_MECA_RO        -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    RIGI_MECA_TANG      160   IN__   CCACABL  PCACABL  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
+                                     NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPPR  CTEREFE  PTEREF
+                              OUT__  MMATUUR  PMATUUR
+    SIEF_ELNO_ELGA      159   IN__   ECONTPG  PCONTRR
+                              OUT__  ECONTNO  PSIEFNOR
+    TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
+                              OUT__  EHYDRER  PHYDR_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
+    VARI_ELNO_ELGA      159   IN__   ZVARIPG  PVARIGR
+                              OUT__  ZVARINO  PVARINR
 

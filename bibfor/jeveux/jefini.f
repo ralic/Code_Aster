@@ -1,6 +1,6 @@
       SUBROUTINE JEFINI ( COND )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
+C MODIF JEVEUX  DATE 12/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,20 +64,23 @@ C     -------------  EDITION SEGMENTATION MEMOIRE ----------------------
         CALL JEIMPM ( 'MESSAGE' , '     JEFINI     ' // KCOND   )
       ENDIF
 C     -------------  LIBERATION FICHIER --------------------------------
-      DO 10 I = 1 , NBFIC
-         IF ( CLASSE(I:I) .NE. ' ' ) THEN
+      IF ( KCOND .NE. 'ERREUR  ' )   THEN
+        DO 10 I = 1 , NBFIC
+          IF ( CLASSE(I:I) .NE. ' ' ) THEN
             CALL JELIBF ( STAOU , CLASSE(I:I) )
-         ENDIF
-   10 CONTINUE
-C     -------------  DESALLOCATION MEMOIRE -----------------------------
-      CALL JXLIBM ( ISZON , LISZON )
+          ENDIF
+   10   CONTINUE
+C       -----------  DESALLOCATION MEMOIRE -----------------------------
+        CALL JXLIBM ( ISZON , LISZON )
 C
-      KDESMA = 0
-      KDESMA = 0
-      KPOSMA = 0
-      IF ( KCOND .EQ. 'ERREUR  ' )   THEN
+        KDESMA = 0
+        KDESMA = 0
+        KPOSMA = 0
+      ELSE 
         CALL JXABOR()
-      ELSE IF ( KCOND .NE. 'TEST    ') THEN
+      ENDIF
+C
+      IF ( KCOND .NE. 'TEST    ') THEN
         IFM = IUNIFI('ERREUR')
         IF (IFM .GT. 0) THEN
           WRITE(IFM,*) '<I>       FERMETURE DES BASES EFFECTUEE'
@@ -86,17 +89,12 @@ C
         IF (IFM .GT. 0) THEN
           CALL ENLIRD(LADATE)
           WRITE(IFM,*) '<I>       FIN D''EXECUTION LE : '//LADATE
-        ENDIF
 C
 C       --- ON FERME TOUT ---
+        ENDIF
 C
-        CALL ASCLOS
+        CALL ULCLOS
 C
-C       STOP
-C CCAR: REMPLACEMENT DU STOP PAR UN APPEL A XFINI
-C CCAR: (DEBRANCHEMENT VERS ASTERMODULE.C)
         CALL XFINI(19)
-C
       ENDIF
-C
       END

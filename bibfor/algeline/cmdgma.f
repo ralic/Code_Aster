@@ -3,7 +3,7 @@
       CHARACTER*(*)       MAILLA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/04/99   AUTEUR CIBHHPD P.DAVID 
+C MODIF ALGELINE  DATE 16/06/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER LIMIT,LONG,NDETR,NUGR,IGMA,N1,IRET,NGRMA,IANUGR,IALIGR
-      INTEGER I,JVG,JGG,NBMA,II
+      INTEGER I,JVG,JGG,NBMA,II,ADETR,NGRMAN
       CHARACTER*1   K1B
       CHARACTER*8   MA,NOMG
 C     ------------------------------------------------------------------
@@ -51,7 +51,6 @@ C     ------------------------------------------------------------------
       MA = MAILLA
       CALL JELIRA(MA//'.GROUPEMA','NMAXOC',NGRMA,K1B)
       CALL WKVECT ('&&CMDGMA.NUGRMA_A_DETR','V V I',NGRMA,IANUGR)
-
 
       CALL GETVIS('DETR_GROUP_MA','NB_MAILLE',1,1,1,LIMIT,N1)
 C     --------------------------------------------------------
@@ -64,7 +63,6 @@ C     --------------------------------------------------------
           END IF
 1       CONTINUE
       END IF
-
 
       CALL GETVEM(MA,'GROUP_MA','DETR_GROUP_MA','GROUP_MA',
      +                1,1,0,ZK8(1),NDETR)
@@ -84,22 +82,18 @@ C     ----------------------------------------------------------
 C     -- DESTRUCTION DES GROUPES DE MAILLES :
 C     ---------------------------------------
 C
-C     SI ON DETRUIT SIMPLEMENT LES OBJETS DE COLLECTION
-C     (LES 5 LIGNES CI-DESSOUS) ON SE PLANTE PLUS TARD DANS IRMAIL.
-C     => ON CHOISIT DE RECREER UNE COLLECTION ALLEGEE !
-C       (ET CA FAIT DU BOULOT !!!)
-C     DO 3, IGMA=1,NGRMA
-C       IF (ZI(IANUGR-1+IGMA).EQ.1) THEN
-C       END IF
-C 3   CONTINUE
+      ADETR = 0
+      DO 10, I= 1 , NGRMA
+         IF (ZI(IANUGR-1+I).NE.0) ADETR = ADETR + 1
+ 10   CONTINUE
 
-      CALL JEDUPO(MA//'.GROUPEMA','V','&&CMDGMA.GROUPEMA',
-     +            .FALSE.)
+      NGRMAN = NGRMA - ADETR
+
+      CALL JEDUPO(MA//'.GROUPEMA','V','&&CMDGMA.GROUPEMA',.FALSE.)
       CALL JEDETR(MA//'.GROUPEMA')
 
-      CALL JECREC(MA//'.GROUPEMA','G V I','NOM',
-     +            'DISPERSE','VARIABLE',NGRMA)
-
+      CALL JECREC(MA//'.GROUPEMA','G V I','NOM','DISPERSE',
+     +                                          'VARIABLE',NGRMAN)
 
       DO 3, I=1,NGRMA
         CALL JEEXIN(JEXNUM('&&CMDGMA.GROUPEMA',I),IRET)
@@ -116,7 +110,6 @@ C 3   CONTINUE
  4        CONTINUE
         END IF
  3    CONTINUE
-
 
       CALL JEDETR('&&CMDGMA.NUGRMA_A_DETR')
       CALL JEDETR('&&CMDGMA.LIGRMA_A_DETR')

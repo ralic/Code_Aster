@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ POST_DYNA_MODA_T=OPER(nom="POST_DYNA_MODA_T",op= 130,sd_prod=tabl_post_dyna,
             UIinfo={"groupes":("Post traitements",)},
         regles=(UN_PARMI('CHOC','RELA_EFFO_DEPL', ),),
          RESU_GENE       =SIMP(statut='o',typ=tran_gene ),
-         CHOC            =FACT(statut='f',min=1,max='**',
+         CHOC            =FACT(statut='f',max='**',
                                fr="Analyse des non linéarités de choc",
            INST_INIT       =SIMP(statut='f',typ='R',defaut= -1. ),  
            INST_FIN        =SIMP(statut='f',typ='R',defaut= 999. ),  
@@ -32,7 +32,7 @@ POST_DYNA_MODA_T=OPER(nom="POST_DYNA_MODA_T",op= 130,sd_prod=tabl_post_dyna,
            OPTION          =SIMP(statut='f',typ='TXM',defaut="USURE",into=("IMPACT","USURE") ),
            NB_CLASSE       =SIMP(statut='f',typ='I',defaut= 10 ),  
          ),
-         RELA_EFFO_DEPL  =FACT(statut='f',min=1,max=1,
+         RELA_EFFO_DEPL  =FACT(statut='f',
                                fr="Analyse des relationsnon linéaires effort-déplacement",
            NOEUD           =SIMP(statut='o',typ=no),
            NOM_CMP         =SIMP(statut='o',typ='TXM' ),  

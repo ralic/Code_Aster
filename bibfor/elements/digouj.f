@@ -8,7 +8,7 @@ C ----------------------------------------------------------------------
       CHARACTER*16      OPTION, COMPOR(*),NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/03/2000   AUTEUR ADBHHVV V.CANO 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C
       CHARACTER*8  NOMPAR,TYPE
       LOGICAL      PLASTI
 C
-      CALL TECACH(.TRUE.,.TRUE.,'PVARIMR',7,JTAB)
+      CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
       LGPG = MAX(JTAB(6),1)*JTAB(7)
 C
       IF (NC .NE. 2) THEN

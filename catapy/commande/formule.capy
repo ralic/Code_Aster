@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,8 +23,8 @@ FORMULE = FORM( nom='FORMULE',op=ops.build_formule,sd_prod=formule,
 
 ##### fonctions entieres interdites suite au probleme AL2003-072
 #####           regles=(UN_PARMI('REEL','ENTIER','COMPLEXE'),),
-#####           ENTIER   = SIMP(typ = 'shell',max=1),
+#####           ENTIER   = SIMP(typ = 'shell',),
 
-                REEL     = SIMP(typ = 'shell',max=1),
-                COMPLEXE = SIMP(typ = 'shell',max=1),
+                REEL     = SIMP(typ = 'shell',),
+                COMPLEXE = SIMP(typ = 'shell',),
 ) ;

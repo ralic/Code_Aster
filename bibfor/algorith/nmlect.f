@@ -4,7 +4,7 @@
      &                   INPSCO, PARCON )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 07/05/2003   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,6 @@ C ======================================================================
 C RESPONSABLE PBADEL P.BADEL
 C
       IMPLICIT NONE
-C
       INTEGER      NBPASE
 C
       REAL*8       PARMET(*), PARCRI(*), PARCON(*)
@@ -108,13 +107,9 @@ C
 C
 C -- SENSIBILITE : LECTURE DES NOMS DES PARAMETRES
 C
-      IF ( NOMCMD(1:13).EQ.'MECA_STATIQUE' ) THEN
-        IAUX = 1
-        CALL PSLECT ( ' ', IBID, BASENO, RESULT, IAUX,
+      IAUX = 1
+      CALL PSLECT ( ' ', IBID, BASENO, RESULT, IAUX,
      >                NBPASE, INPSCO, IRET )
-      ELSE
-        NBPASE = 0
-      ENDIF
 C
 C -- DONNEES MECANIQUES
 C

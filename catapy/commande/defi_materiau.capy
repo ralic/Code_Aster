@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,7 +49,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
 #
 # comportement élastique
 #
-           ELAS            =FACT(statut='f',min=0,max=1,
+           ELAS            =FACT(statut='f',
              E               =SIMP(statut='o',typ='R',val_min=0.E+0),
              NU              =SIMP(statut='o',typ='R',val_min=-1.E+0,val_max=0.5E+0),
              RHO             =SIMP(statut='f',typ='R'),
@@ -58,7 +58,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              AMOR_BETA       =SIMP(statut='f',typ='R'),
              AMOR_HYST       =SIMP(statut='f',typ='R'),
            ),
-           ELAS_FO         =FACT(statut='f',min=0,max=1,
+           ELAS_FO         =FACT(statut='f',
              regles=(PRESENT_PRESENT('ALPHA','TEMP_DEF_ALPHA'),),
              E               =SIMP(statut='o',typ=(fonction,formule)),
              NU              =SIMP(statut='o',typ=(fonction,formule)),
@@ -77,7 +77,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              VERI_P3         =SIMP(statut='c',typ='TXM',defaut="HYDR",into=("HYDR",) ),
              VERI_P4         =SIMP(statut='c',typ='TXM',defaut="SECH",into=("SECH",) ),
            ),
-           ELAS_FLUI       =FACT(statut='f',min=0,max=1,
+           ELAS_FLUI       =FACT(statut='f',
              E               =SIMP(statut='o',typ='R'),
              NU              =SIMP(statut='o',typ='R'),
              RHO             =SIMP(statut='o',typ='R'),
@@ -86,7 +86,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              COEF_MASS_AJOU  =SIMP(statut='o',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="ABSC",into=("ABSC",) ),
            ),
-           ELAS_ISTR       =FACT(statut='f',min=0,max=1,
+           ELAS_ISTR       =FACT(statut='f',
              E_L             =SIMP(statut='o',typ='R'),
              E_N             =SIMP(statut='o',typ='R'),
              NU_LT           =SIMP(statut='o',typ='R'),
@@ -96,7 +96,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              ALPHA_L         =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
              ALPHA_N         =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
            ),
-           ELAS_ISTR_FO    =FACT(statut='f',min=0,max=1,
+           ELAS_ISTR_FO    =FACT(statut='f',
              regles=(
                       PRESENT_PRESENT('ALPHA_L','TEMP_DEF_ALPHA'),
                       PRESENT_PRESENT('ALPHA_N','TEMP_DEF_ALPHA'),
@@ -113,7 +113,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              ALPHA_N         =SIMP(statut='f',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP","INST")),
            ),
-           ELAS_ORTH       =FACT(statut='f',min=0,max=1,
+           ELAS_ORTH       =FACT(statut='f',
              E_L             =SIMP(statut='o',typ='R'),
              E_T             =SIMP(statut='o',typ='R'),
              E_N             =SIMP(statut='f',typ='R'),
@@ -133,7 +133,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              YC              =SIMP(statut='f',typ='R',defaut= 1. ),
              S_LT            =SIMP(statut='f',typ='R',defaut= 1. ),
            ),
-           ELAS_ORTH_FO    =FACT(statut='f',min=0,max=1,
+           ELAS_ORTH_FO    =FACT(statut='f',
              regles=(
                       PRESENT_PRESENT('ALPHA_L','TEMP_DEF_ALPHA'),
                       PRESENT_PRESENT('ALPHA_N','TEMP_DEF_ALPHA'),
@@ -156,7 +156,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              ALPHA_N         =SIMP(statut='f',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP","INST",) ),
            ),
-           ELAS_THM        =FACT(statut='f',min=0,max=1,
+           ELAS_THM        =FACT(statut='f',
              RHO_S           =SIMP(statut='o',typ='R'),
              UN_SUR_KS       =SIMP(statut='o',typ='R'),
              E               =SIMP(statut='f',typ='R'),
@@ -165,7 +165,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              ALPHA_S         =SIMP(statut='f',typ='R'),
              ALPHA_D         =SIMP(statut='f',typ='R'),
            ),
-           SURF_ETAT_SATU  =FACT(statut='f',min=0,max=1,
+           SURF_ETAT_SATU  =FACT(statut='f',
              E_CHAR          =SIMP(statut='o',typ='R'),
              E_DECHAR        =SIMP(statut='o',typ='R'),
              XN              =SIMP(statut='f',typ='R'),
@@ -182,7 +182,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              COHE            =SIMP(statut='o',typ='R'),
              RESI_TRAC       =SIMP(statut='o',typ='R'),
            ),
-           CAM_CLAY_THM    =FACT(statut='f',min=0,max=1,
+           CAM_CLAY_THM    =FACT(statut='f',
              NU              =SIMP(statut='f',typ='R'),
              LAMBDA          =SIMP(statut='o',typ='R'),
              KAPA            =SIMP(statut='o',typ='R'),
@@ -198,7 +198,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              ALPHA3_PC       =SIMP(statut='f',typ='R'),
              ALPHA_S         =SIMP(statut='f',typ='R'),
                          ),
-           SURF_ETAT_NSAT  =FACT(statut='f',min=0,max=1,
+           SURF_ETAT_NSAT  =FACT(statut='f',
              E_CHAR          =SIMP(statut='o',typ='R'),
              E_DECHAR        =SIMP(statut='o',typ='R'),
              XN              =SIMP(statut='f',typ='R'),
@@ -222,7 +222,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              C_SURF_SATU     =SIMP(statut='f',typ='R'),
              D_SURF_SATU     =SIMP(statut='f',typ='R'),
            ),
-           ELAS_COQUE      =FACT(statut='f',min=0,max=1,
+           ELAS_COQUE      =FACT(statut='f',
              regles=(EXCLUS('MEMB_L','M_LLLL',),
                      PRESENT_PRESENT('MEMB_L','MEMB_LT', 'MEMB_T','MEMB_G_LT','FLEX_L','FLEX_LT',
                                      'FLEX_T','FLEX_G_LT','CISA_L','CISA_T',),
@@ -278,7 +278,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              RHO             =SIMP(statut='f',typ='R'),
              ALPHA           =SIMP(statut='f',typ='R'),
            ),
-           ELAS_COQUE_FO   =FACT(statut='f',min=0,max=1,
+           ELAS_COQUE_FO   =FACT(statut='f',
              regles=(EXCLUS('MEMB_L','M_LLLL',),
                      PRESENT_PRESENT('MEMB_L','MEMB_LT','MEMB_T','MEMB_G_LT','FLEX_L','FLEX_LT',
                                      'FLEX_T','FLEX_G_LT','CISA_L','CISA_T',),
@@ -334,11 +334,11 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              ALPHA           =SIMP(statut='f',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP","INST") ),
            ),
-           APPUI_ELAS      =FACT(statut='f',min=0,max=1,
+           APPUI_ELAS      =FACT(statut='f',
              E_N             =SIMP(statut='o',typ='R'),
              E_TAN           =SIMP(statut='f',typ='R',defaut= 0.E+0),
            ),
-           CABLE           =FACT(statut='f',min=0,max=1,
+           CABLE           =FACT(statut='f',
              E               =SIMP(statut='o',typ='R'),
              EC_SUR_E        =SIMP(statut='f',typ='R',defaut= 1.E-4 ),
              RHO             =SIMP(statut='f',typ='R'),
@@ -349,41 +349,41 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
 #
 # comportement mécanique non linéaire
 #
-           TRACTION        =FACT(statut='f',min=0,max=1,
+           TRACTION        =FACT(statut='f',
              SIGM            =SIMP(statut='o',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="EPSI",into=("EPSI",) ),
              VERI_P2         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
              VERI_P3         =SIMP(statut='c',typ='TXM',defaut="HYDR",into=("HYDR",) ),
              VERI_P4         =SIMP(statut='c',typ='TXM',defaut="SECH",into=("SECH",) ),
            ),
-           ECRO_LINE       =FACT(statut='f',min=0,max=1,
+           ECRO_LINE       =FACT(statut='f',
              D_SIGM_EPSI     =SIMP(statut='o',typ='R'),
              SY              =SIMP(statut='o',typ='R'),
            ),
-           ECRO_LINE_FO    =FACT(statut='f',min=0,max=1,
+           ECRO_LINE_FO    =FACT(statut='f',
              D_SIGM_EPSI     =SIMP(statut='o',typ=(fonction,formule)),
              SY              =SIMP(statut='o',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
            ),
-           BETON_ECRO_LINE =FACT(statut='f',min=0,max=1,
+           BETON_ECRO_LINE =FACT(statut='f',
              D_SIGM_EPSI     =SIMP(statut='o',typ='R'),
              SYT             =SIMP(statut='o',typ='R'),
              SYC             =SIMP(statut='f',typ='R'),
            ),
-           PRAGER          =FACT(statut='f',min=0,max=1,
+           PRAGER          =FACT(statut='f',
              C               =SIMP(statut='o',typ='R'),
            ),
-           PRAGER_FO       =FACT(statut='f',min=0,max=1,
+           PRAGER_FO       =FACT(statut='f',
              C               =SIMP(statut='o',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
            ),
-           ECRO_FLEJOU     =FACT(statut='f',min=0,max=1,
+           ECRO_FLEJOU     =FACT(statut='f',
              EP              =SIMP(statut='o',typ='R'),
              SY              =SIMP(statut='o',typ='R'),
              SU              =SIMP(statut='o',typ='R'),
              PUISS           =SIMP(statut='o',typ='R'),
            ),
-           TAHERI          =FACT(statut='f',min=0,max=1,
+           TAHERI          =FACT(statut='f',
              R_0             =SIMP(statut='o',typ='R'),
              ALPHA           =SIMP(statut='o',typ='R'),
              M               =SIMP(statut='o',typ='R'),
@@ -393,7 +393,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              C_INF           =SIMP(statut='o',typ='R'),
              S               =SIMP(statut='o',typ='R'),
            ),
-           TAHERI_FO       =FACT(statut='f',min=0,max=1,
+           TAHERI_FO       =FACT(statut='f',
              R_0             =SIMP(statut='o',typ=(fonction,formule)),
              ALPHA           =SIMP(statut='o',typ=(fonction,formule)),
              M               =SIMP(statut='o',typ=(fonction,formule)),
@@ -404,7 +404,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              S               =SIMP(statut='o',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
            ),
-           ROUSSELIER      =FACT(statut='f',min=0,max=1,
+           ROUSSELIER      =FACT(statut='f',
              D               =SIMP(statut='o',typ='R'),
              SIGM_1          =SIMP(statut='o',typ='R'),
              PORO_INIT       =SIMP(statut='o',typ='R'),
@@ -414,7 +414,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              D_SIGM_EPSI_NORM=SIMP(statut='f',typ='R',defaut= 1. ),
              AN              =SIMP(statut='f',typ='R',defaut= 0. ),
            ),
-           ROUSSELIER_FO   =FACT(statut='f',min=0,max=1,
+           ROUSSELIER_FO   =FACT(statut='f',
              D               =SIMP(statut='o',typ=(fonction,formule)),
              SIGM_1          =SIMP(statut='o',typ=(fonction,formule)),
              PORO_INIT       =SIMP(statut='o',typ=(fonction,formule)),
@@ -425,12 +425,12 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              AN              =SIMP(statut='f',typ='R',defaut= 0. ),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
            ),
-           ROUSS_VISC      =FACT(statut='f',min=0,max=1,
+           ROUSS_VISC      =FACT(statut='f',
              SIGM_0          =SIMP(statut='o',typ='R'),
              EPSI_0          =SIMP(statut='o',typ='R'),
              M               =SIMP(statut='o',typ='R'),
            ),
-           CHABOCHE        =FACT(statut='f',min=0,max=1,
+           CHABOCHE        =FACT(statut='f',
              R_I             =SIMP(statut='o',typ='R'),
              R_0             =SIMP(statut='o',typ='R'),
              B               =SIMP(statut='o',typ='R'),
@@ -441,7 +441,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              C1              =SIMP(statut='o',typ='R'),
              C2              =SIMP(statut='o',typ='R'),
            ),
-           CIN1_CHAB  =FACT(statut='f',min=0,max=1,
+           CIN1_CHAB  =FACT(statut='f',
              R_0             =SIMP(statut='o',typ='R'),
              R_I             =SIMP(statut='f',typ='R'),
              B               =SIMP(statut='f',typ='R',defaut= 0.0E+0),
@@ -451,7 +451,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              G_0             =SIMP(statut='o',typ='R'),
              A_I             =SIMP(statut='f',typ='R',defaut= 1.0E+0),
            ),
-           CIN1_CHAB_FO  =FACT(statut='f',min=0,max=1,
+           CIN1_CHAB_FO  =FACT(statut='f',
              R_0             =SIMP(statut='o',typ=(fonction,formule)),
              R_I             =SIMP(statut='o',typ=(fonction,formule)),
              B               =SIMP(statut='o',typ=(fonction,formule)),
@@ -462,7 +462,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              A_I             =SIMP(statut='o',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
            ),
-           CIN2_CHAB  =FACT(statut='f',min=0,max=1,
+           CIN2_CHAB  =FACT(statut='f',
              R_0             =SIMP(statut='o',typ='R'),
              R_I             =SIMP(statut='f',typ='R'),
              B               =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
@@ -474,7 +474,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              G2_0            =SIMP(statut='o',typ='R'),
              A_I             =SIMP(statut='f',typ='R',defaut= 1.E+0 ),
            ),
-           CIN2_CHAB_FO  =FACT(statut='f',min=0,max=1,
+           CIN2_CHAB_FO  =FACT(statut='f',
              R_0             =SIMP(statut='o',typ=(fonction,formule)),
              R_I             =SIMP(statut='o',typ=(fonction,formule)),
              B               =SIMP(statut='o',typ=(fonction,formule)),
@@ -487,7 +487,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              A_I             =SIMP(statut='o',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
            ),
-           VISCOCHAB       =FACT(statut='f',min=0,max=1,
+           VISCOCHAB       =FACT(statut='f',
              K_0             =SIMP(statut='o',typ='R'),
              A_K             =SIMP(statut='o',typ='R'),
              A_R             =SIMP(statut='o',typ='R'),
@@ -514,7 +514,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              G2_0            =SIMP(statut='o',typ='R'),
              A_I             =SIMP(statut='o',typ='R'),
            ),
-           VISCOCHAB_FO    =FACT(statut='f',min=0,max=1,
+           VISCOCHAB_FO    =FACT(statut='f',
              K_0             =SIMP(statut='o',typ=(fonction,formule)),
              A_K             =SIMP(statut='o',typ=(fonction,formule)),
              A_R             =SIMP(statut='o',typ=(fonction,formule)),
@@ -542,7 +542,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              A_I             =SIMP(statut='o',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
            ),
-           POLY_CFC        =FACT(statut='f',min=0,max=1,
+           POLY_CFC        =FACT(statut='f',
              TEXTURE         =SIMP(statut='o',typ=(tabl_texture) ),
              DL              =SIMP(statut='f',typ='R'),
              DA              =SIMP(statut='f',typ='R'),
@@ -558,7 +558,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              D1              =SIMP(statut='o',typ='R'),
              C2              =SIMP(statut='o',typ='R'),
            ),
-           POLY_CFC_FO     =FACT(statut='f',min=0,max=1,
+           POLY_CFC_FO     =FACT(statut='f',
              TEXTURE         =SIMP(statut='o',typ=(tabl_texture) ),
              DL              =SIMP(statut='o',typ=(fonction,formule)),
              DA              =SIMP(statut='o',typ=(fonction,formule)),
@@ -575,40 +575,40 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              C2              =SIMP(statut='o',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
            ),
-           LEMAITRE        =FACT(statut='f',min=0,max=1,
+           LEMAITRE        =FACT(statut='f',
              N               =SIMP(statut='o',typ='R'),
              UN_SUR_K        =SIMP(statut='o',typ='R'),
              UN_SUR_M        =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
            ),
-           ZIRC_CYRA2      =FACT(statut='f',min=0,max=1,
+           ZIRC_CYRA2      =FACT(statut='f',
              EPSI_FAB        =SIMP(statut='o',typ=(fonction,formule)),
              TEMP_RECUIT     =SIMP(statut='o',typ=(fonction,formule)),
              FLUX_PHI        =SIMP(statut='o',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="INST",into=("INST",) ),
            ),
-           ZIRC_EPRI       =FACT(statut='f',min=0,max=1,
+           ZIRC_EPRI       =FACT(statut='f',
              FLUX_PHI        =SIMP(statut='o',typ='R'),
              R_P             =SIMP(statut='o',typ='R'),
              THETA_MAX       =SIMP(statut='o',typ='R'),
            ),
-           LEMAITRE_FO     =FACT(statut='f',min=0,max=1,
+           LEMAITRE_FO     =FACT(statut='f',
              N               =SIMP(statut='o',typ=(fonction,formule)),
              UN_SUR_K        =SIMP(statut='o',typ=(fonction,formule)),
              UN_SUR_M        =SIMP(statut='o',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
            ),
-           GRAN_IRRA       =FACT(statut='f',min=0,max=1,
+           GRAN_IRRA       =FACT(statut='f',
              A               =SIMP(statut='f',typ='R',defaut= 0.E+0),
              B               =SIMP(statut='f',typ='R',defaut= 0.E+0),
              S               =SIMP(statut='f',typ='R',defaut= 0.E+0),
            ),
-           FLU_IRRA       =FACT(statut='f',min=0,max=1,
+           FLU_IRRA       =FACT(statut='f',
              QSR_K           =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
              BETA            =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
              PHI_ZERO        =SIMP(statut='f',typ='R',defaut= 1.E+20),
              L               =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
            ),
-           OHNO            =FACT(statut='f',min=0,max=1,
+           OHNO            =FACT(statut='f',
              R_I             =SIMP(statut='o',typ='R'),
              R_0             =SIMP(statut='o',typ='R'),
              B               =SIMP(statut='o',typ='R'),
@@ -629,7 +629,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              M4              =SIMP(statut='o',typ='R'),
              M5              =SIMP(statut='o',typ='R'),
                            ),
-           OHNO_FO         =FACT(statut='f',min=0,max=1,
+           OHNO_FO         =FACT(statut='f',
              R_I             =SIMP(statut='o',typ=(fonction,formule)),
              R_0             =SIMP(statut='o',typ=(fonction,formule)),
              B               =SIMP(statut='o',typ=(fonction,formule)),
@@ -651,7 +651,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              M5              =SIMP(statut='o',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
            ),
-           LMARC           =FACT(statut='f',min=0,max=1,
+           LMARC           =FACT(statut='f',
              DE_0            =SIMP(statut='o',typ='R'),
              R_0             =SIMP(statut='o',typ='R'),
              N               =SIMP(statut='o',typ='R'),
@@ -682,7 +682,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              R33             =SIMP(statut='o',typ='R'),
              R66             =SIMP(statut='o',typ='R'),
            ),
-           LMARC_FO        =FACT(statut='f',min=0,max=1,
+           LMARC_FO        =FACT(statut='f',
              DE_0            =SIMP(statut='o',typ=(fonction,formule)),
              R_0             =SIMP(statut='o',typ=(fonction,formule)),
              N               =SIMP(statut='o',typ=(fonction,formule)),
@@ -714,7 +714,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              R66             =SIMP(statut='o',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
            ),
-           VMIS_POUTRE     =FACT(statut='f',min=0,max=1,
+           VMIS_POUTRE     =FACT(statut='f',
              NP              =SIMP(statut='o',typ='R'),
              MEY             =SIMP(statut='o',typ='R'),
              MPY             =SIMP(statut='o',typ='R'),
@@ -726,7 +726,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              CBZ             =SIMP(statut='o',typ='R'),
              MPX             =SIMP(statut='o',typ='R'),
            ),
-           VMIS_POUTRE_FO  =FACT(statut='f',min=0,max=1,
+           VMIS_POUTRE_FO  =FACT(statut='f',
              NP              =SIMP(statut='o',typ=(fonction,formule)),
              MEY             =SIMP(statut='o',typ=(fonction,formule)),
              MPY             =SIMP(statut='o',typ=(fonction,formule)),
@@ -739,14 +739,14 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              MPX             =SIMP(statut='o',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
            ),
-           ARME            =FACT(statut='f',min=0,max=1,
+           ARME            =FACT(statut='f',
              KYE             =SIMP(statut='o',typ='R'),
              DLE             =SIMP(statut='o',typ='R'),
              KYP             =SIMP(statut='o',typ='R'),
              DLP             =SIMP(statut='o',typ='R'),
              KYG             =SIMP(statut='o',typ='R'),
            ),
-           ASSE_CORN       =FACT(statut='f',min=0,max=1,
+           ASSE_CORN       =FACT(statut='f',
              NU_1            =SIMP(statut='o',typ='R'),
              MU_1            =SIMP(statut='o',typ='R'),
              DXU_1           =SIMP(statut='o',typ='R'),
@@ -762,7 +762,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              KRX             =SIMP(statut='o',typ='R'),
              KRZ             =SIMP(statut='o',typ='R'),
            ),
-           DIS_CONTACT     =FACT(statut='f',min=0,max=1,
+           DIS_CONTACT     =FACT(statut='f',
              RIGI_NOR        =SIMP(statut='f',typ='R' ),
              DIST_1          =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
              DIST_2          =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
@@ -773,16 +773,27 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              JEU             =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
              KT_ULTM         =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
              EFFO_N_INIT     =SIMP(statut='f',typ=(fonction,formule)),
-             regles=(EXCLUS('RIGI_N_FO','RIGI_N_IRRA',),),
+             regles=(EXCLUS('RIGI_N_FO','RIGI_N_IRRA',),
+                     EXCLUS('RELA_MZ','ANGLE_1'),
+                     PRESENT_PRESENT('ANGLE_1','ANGLE_2','ANGLE_3','ANGLE_4',
+                                     'MOMENT_1','MOMENT_2','MOMENT_3','MOMENT_4'),),
              RIGI_N_IRRA     =SIMP(statut='f',typ=(fonction,formule)),
              RIGI_N_FO       =SIMP(statut='f',typ=(fonction,formule)),
              RELA_MZ         =SIMP(statut='f',typ=(fonction,formule)),
+             ANGLE_1         =SIMP(statut='f',typ=(fonction,formule)),
+             ANGLE_2         =SIMP(statut='f',typ=(fonction,formule)),
+             ANGLE_3         =SIMP(statut='f',typ=(fonction,formule)),
+             ANGLE_4         =SIMP(statut='f',typ=(fonction,formule)),
+             MOMENT_1        =SIMP(statut='f',typ=(fonction,formule)),
+             MOMENT_2        =SIMP(statut='f',typ=(fonction,formule)),
+             MOMENT_3        =SIMP(statut='f',typ=(fonction,formule)),
+             MOMENT_4        =SIMP(statut='f',typ=(fonction,formule)),
              C_PRAGER_MZ     =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="DRZ",into=("DRZ",) ),
              VERI_P2         =SIMP(statut='c',typ='TXM',defaut="INST",into=("INST",) ),
              VERI_P3         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
            ),
-           NADAI_B         =FACT(statut='f',min=0,max=1,
+           NADAI_B         =FACT(statut='f',
              F_C             =SIMP(statut='o',typ='R'),
              F_T             =SIMP(statut='o',typ='R'),
              CRIT_E_C        =SIMP(statut='o',typ='R'),
@@ -791,7 +802,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              EPSI_R_T        =SIMP(statut='o',typ='R'),
              FAC_T_C         =SIMP(statut='o',typ='R'),
            ),
-           BETON_DOUBLE_DP =FACT(statut='f',min=0,max=1,
+           BETON_DOUBLE_DP =FACT(statut='f',
              F_C             =SIMP(statut='o',typ=(fonction,formule)),
              F_T             =SIMP(statut='o',typ=(fonction,formule)),
              COEF_BIAX       =SIMP(statut='o',typ=(fonction,formule)),
@@ -806,7 +817,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              VERI_P3         =SIMP(statut='c',typ='TXM',defaut="HYDR",into=("HYDR",) ),
              VERI_P4         =SIMP(statut='c',typ='TXM',defaut="SECH",into=("SECH",) ),
            ),
-           LABORD_1D=FACT(statut='f',min=0 ,max=1,
+           LABORD_1D=FACT(statut='f',min=0 ,
              Y01             =SIMP(statut='o',typ='R'),
              Y02             =SIMP(statut='o',typ='R'),
              A1              =SIMP(statut='o',typ='R'),
@@ -817,7 +828,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              BETA2           =SIMP(statut='o',typ='R'),
              SIGF            =SIMP(statut='o',typ='R'),
            ),
-         MAZARS=FACT(statut='f',min=0 ,max=1,
+         MAZARS=FACT(statut='f',min=0 ,
              EPSD0           =SIMP(statut='o',typ='R'),
              BETA            =SIMP(statut='o',typ='R'),
              AC              =SIMP(statut='o',typ='R'),
@@ -825,7 +836,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              AT              =SIMP(statut='o',typ='R'),
              BT              =SIMP(statut='o',typ='R'),
            ),
-         MAZARS_FO=FACT(statut='f',min=0 ,max=1,
+         MAZARS_FO=FACT(statut='f',min=0 ,
              EPSD0           =SIMP(statut='o',typ=(fonction,formule)),
              BETA            =SIMP(statut='o',typ='R'),
              AC              =SIMP(statut='o',typ=(fonction,formule)),
@@ -834,7 +845,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              BT              =SIMP(statut='o',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
            ),
-          VENDOCHAB       =FACT(statut='f',min=0,max=1,
+          VENDOCHAB       =FACT(statut='f',
              S_VP            =SIMP(statut='o',typ='R'),
              SEDVP1          =SIMP(statut='o',typ='R'),
              SEDVP2          =SIMP(statut='o',typ='R'),
@@ -845,7 +856,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              A_D             =SIMP(statut='o',typ='R'),
              K_D             =SIMP(statut='o',typ='R'),
            ),
-           VENDOCHAB_FO    =FACT(statut='f',min=0,max=1,
+           VENDOCHAB_FO    =FACT(statut='f',
              S_VP            =SIMP(statut='o',typ=(fonction,formule)),
              SEDVP1          =SIMP(statut='o',typ=(fonction,formule)),
              SEDVP2          =SIMP(statut='o',typ=(fonction,formule)),
@@ -858,7 +869,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
              VERI_P2         =SIMP(statut='c',typ='TXM',defaut="X",into=("X",) ),
            ),
-           PINTO_MENEGOTTO =FACT(statut='f',min=0,max=1,
+           PINTO_MENEGOTTO =FACT(statut='f',
              SY              =SIMP(statut='o',typ='R'),
              EPSI_ULTM       =SIMP(statut='o',typ='R'),
              SIGM_ULTM       =SIMP(statut='o',typ='R'),
@@ -872,18 +883,20 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              C_PM            =SIMP(statut='f',typ='R',defaut= 0.5 ),
              A_PM            =SIMP(statut='f',typ='R',defaut= 6.0E-3 ),
            ),
-           BPEL_BETON      =FACT(statut='f',min=0,max=1,
+           BPEL_BETON      =FACT(statut='f',
              PERT_FLUA       =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
              PERT_RETR       =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
            ),
-           BPEL_ACIER      =FACT(statut='f',min=0,max=1,
+           BPEL_ACIER      =FACT(statut='f',
+            regles=(PRESENT_PRESENT('RELAX_1000','F_PRG',),
+                     PRESENT_PRESENT('MU0_RELAX','F_PRG',),),
              RELAX_1000      =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
              MU0_RELAX       =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
-             SY              =SIMP(statut='o',typ='R'),
-             FROT_COURB      =SIMP(statut='o',typ='R'),
-             FROT_LINE       =SIMP(statut='o',typ='R'),
+             F_PRG           =SIMP(statut='f',typ='R'),
+             FROT_COURB      =SIMP(statut='f',typ='R',defaut=0.E+0),
+             FROT_LINE       =SIMP(statut='f',typ='R',defaut=0.E+0),
            ),
-           CAM_CLAY      =FACT(statut='f',min=0,max=1,
+           CAM_CLAY      =FACT(statut='f',
              PORO            =SIMP(statut='o',typ='R'),
              LAMBDA          =SIMP(statut='o',typ='R'),
              KAPA            =SIMP(statut='o',typ='R'),
@@ -891,7 +904,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              PRES_CRIT       =SIMP(statut='o',typ='R'),
              PA              =SIMP(statut='o',typ='R'),
            ),
-           CJS             =FACT(statut='f',min=0,max=1,
+           CJS             =FACT(statut='f',
              BETA_CJS        =SIMP(statut='o',typ='R'),
              RM              =SIMP(statut='o',typ='R'),
              N_CJS           =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
@@ -907,13 +920,13 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              Q_INIT          =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
              R_INIT          =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
            ),
-           ECRO_ASYM_LINE  =FACT(statut='f',min=0,max=1,
+           ECRO_ASYM_LINE  =FACT(statut='f',
              DC_SIGM_EPSI    =SIMP(statut='o',typ='R'),
              SY_C            =SIMP(statut='o',typ='R'),
              DT_SIGM_EPSI    =SIMP(statut='o',typ='R'),
              SY_T            =SIMP(statut='o',typ='R'),
            ),
-           GRANGER_FP      =FACT(statut='f',min=0,max=1,
+           GRANGER_FP      =FACT(statut='f',
              J1              =SIMP(statut='f',typ='R'),
              J2              =SIMP(statut='f',typ='R'),
              J3              =SIMP(statut='f',typ='R'),
@@ -932,15 +945,15 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              TAUX_8          =SIMP(statut='f',typ='R'),
              QSR_K           =SIMP(statut='f',typ='R'),
            ),
-           V_GRANGER_FP    =FACT(statut='f',min=0,max=1,
+           V_GRANGER_FP    =FACT(statut='f',
              QSR_VEIL        =SIMP(statut='f',typ='R'),
              FONC_V          =SIMP(statut='f',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="INST",into=("INST",) ),
            ),
-           BAZANT_FD      =FACT(statut='f',min=0,max=1,
+           BAZANT_FD      =FACT(statut='f',
              LAM_VISC      =SIMP(statut='o',typ='R'),
            ),  
-           BETON_UMLV_FP   =FACT(statut='f',min=0 ,max=1,
+           BETON_UMLV_FP   =FACT(statut='f',min=0 ,
              K_RS            =SIMP(statut='o',typ='R'),
              ETA_RS          =SIMP(statut='o',typ='R'),
              K_IS            =SIMP(statut='o',typ='R'),
@@ -952,14 +965,14 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
 #
 # comportement thermique
 #
-           THER_NL         =FACT(statut='f',min=0,max=1,
+           THER_NL         =FACT(statut='f',
              regles=(UN_PARMI('BETA','RHO_CP', ),),
              LAMBDA          =SIMP(statut='o',typ=(fonction,formule)),
              BETA            =SIMP(statut='f',typ=(fonction,formule)),
              RHO_CP          =SIMP(statut='f',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
            ),
-           THER_HYDR       =FACT(statut='f',min=0,max=1,
+           THER_HYDR       =FACT(statut='f',
              LAMBDA          =SIMP(statut='o',typ=(fonction,formule)),
              BETA            =SIMP(statut='f',typ=(fonction,formule)),
              AFFINITE        =SIMP(statut='o',typ=(fonction,formule)),
@@ -968,22 +981,22 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("HYDR",) ),
              VERI_P2         =SIMP(statut='c',typ='TXM',defaut="HYDR",into=("HYDR",) ),
            ),
-           THER            =FACT(statut='f',min=0,max=1,
+           THER            =FACT(statut='f',
              LAMBDA          =SIMP(statut='o',typ='R'),
              RHO_CP          =SIMP(statut='f',typ='R'),
            ),
-           THER_FO         =FACT(statut='f',min=0,max=1,
+           THER_FO         =FACT(statut='f',
              LAMBDA          =SIMP(statut='o',typ=(fonction,formule)),
              RHO_CP          =SIMP(statut='f',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="INST",into=("INST",) ),
            ),
-           THER_ORTH       =FACT(statut='f',min=0,max=1,
+           THER_ORTH       =FACT(statut='f',
              LAMBDA_L        =SIMP(statut='o',typ='R'),
              LAMBDA_T        =SIMP(statut='o',typ='R'),
              LAMBDA_N        =SIMP(statut='f',typ='R'),
              RHO_CP          =SIMP(statut='f',typ='R'),
            ),
-           THER_COQUE      =FACT(statut='f',min=0,max=1,
+           THER_COQUE      =FACT(statut='f',
              COND_LMM        =SIMP(statut='o',typ='R'),
              COND_TMM        =SIMP(statut='o',typ='R'),
              COND_LMP        =SIMP(statut='o',typ='R'),
@@ -1001,7 +1014,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              CMAS_PP         =SIMP(statut='f',typ='R'),
              CMAS_SI         =SIMP(statut='f',typ='R'),
            ),
-           THER_COQUE_FO   =FACT(statut='f',min=0,max=1,
+           THER_COQUE_FO   =FACT(statut='f',
              COND_LMM        =SIMP(statut='o',typ=(fonction,formule)),
              COND_TMM        =SIMP(statut='o',typ=(fonction,formule)),
              COND_LMP        =SIMP(statut='o',typ=(fonction,formule)),
@@ -1019,22 +1032,22 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              CMAS_PP         =SIMP(statut='f',typ=(fonction,formule)),
              CMAS_SI         =SIMP(statut='f',typ=(fonction,formule)),
            ),
-           SECH_GRANGER    =FACT(statut='f',min=0,max=1,
+           SECH_GRANGER    =FACT(statut='f',
              A               =SIMP(statut='o',typ='R'),
              B               =SIMP(statut='o',typ='R'),
              QSR_K           =SIMP(statut='o',typ='R'),
              TEMP_0_C        =SIMP(statut='o',typ='R'),
            ),
-           SECH_MENSI      =FACT(statut='f',min=0,max=1,
+           SECH_MENSI      =FACT(statut='f',
              A               =SIMP(statut='o',typ='R'),
              B               =SIMP(statut='o',typ='R'),
            ),
-           SECH_BAZANT     =FACT(statut='f',min=0,max=1,
+           SECH_BAZANT     =FACT(statut='f',
              D1              =SIMP(statut='o',typ='R'),
              ALPHA_BAZANT    =SIMP(statut='o',typ='R'),
              N               =SIMP(statut='o',typ='R'),
            ),
-           SECH_NAPPE      =FACT(statut='f',min=0,max=1,
+           SECH_NAPPE      =FACT(statut='f',
              FONCTION        =SIMP(statut='o',typ=(nappe,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
              VERI_P2         =SIMP(statut='c',typ='TXM',defaut="TSEC",into=("TSEC",) ),
@@ -1042,7 +1055,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
 #
 # comportement métallurgique
 #
-           META_ACIER      =FACT(statut='f',min=0,max=1,
+           META_ACIER      =FACT(statut='f',
              TRC             =SIMP(statut='o',typ=(tabl_trc) ),
              AR3             =SIMP(statut='o',typ='R'),
              ALPHA           =SIMP(statut='o',typ='R'),
@@ -1056,7 +1069,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              D10             =SIMP(statut='f',typ='R'),
              WSR_K           =SIMP(statut='f',typ='R'),
            ),
-           META_ZIRC       =FACT(statut='f',min=0,max=1,
+           META_ZIRC       =FACT(statut='f',
              TDEQ            =SIMP(statut='o',typ='R'),
              N               =SIMP(statut='o',typ='R'),
              K               =SIMP(statut='o',typ='R'),
@@ -1068,14 +1081,14 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              AR              =SIMP(statut='o',typ='R'),
              BR              =SIMP(statut='o',typ='R'),
            ),
-           DURT_META       =FACT(statut='f',min=0,max=1,
+           DURT_META       =FACT(statut='f',
              F1_DURT         =SIMP(statut='o',typ='R'),
              F2_DURT         =SIMP(statut='o',typ='R'),
              F3_DURT         =SIMP(statut='o',typ='R'),
              F4_DURT         =SIMP(statut='o',typ='R'),
              C_DURT          =SIMP(statut='o',typ='R'),
            ),
-           ELAS_META       =FACT(statut='f',min=0,max=1,
+           ELAS_META       =FACT(statut='f',
              E               =SIMP(statut='o',typ='R'),
              NU              =SIMP(statut='o',typ='R'),
              F_ALPHA         =SIMP(statut='o',typ='R'),
@@ -1097,7 +1110,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              S_VP_MELANGE    =SIMP(statut='f',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="META",into=("META",)),
            ),
-           ELAS_META_FO    =FACT(statut='f',min=0,max=1,
+           ELAS_META_FO    =FACT(statut='f',
              regles=(
                       PRESENT_PRESENT('F_ALPHA','TEMP_DEF_ALPHA'),
                       PRESENT_PRESENT('C_ALPHA','TEMP_DEF_ALPHA'),
@@ -1125,7 +1138,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
              VERI_P2         =SIMP(statut='c',typ='TXM',defaut="META",into=("META",)),
            ),
-           META_ECRO_LINE  =FACT(statut='f',min=0,max=1,
+           META_ECRO_LINE  =FACT(statut='f',
              F1_D_SIGM_EPSI  =SIMP(statut='f',typ=(fonction,formule)),
              F2_D_SIGM_EPSI  =SIMP(statut='f',typ=(fonction,formule)),
              F3_D_SIGM_EPSI  =SIMP(statut='f',typ=(fonction,formule)),
@@ -1133,7 +1146,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              C_D_SIGM_EPSI   =SIMP(statut='f',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
            ),
-           META_TRACTION   =FACT(statut='f',min=0,max=1,
+           META_TRACTION   =FACT(statut='f',
              SIGM_F1         =SIMP(statut='f',typ=(fonction,formule)),
              SIGM_F2         =SIMP(statut='f',typ=(fonction,formule)),
              SIGM_F3         =SIMP(statut='f',typ=(fonction,formule)),
@@ -1142,7 +1155,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="EPSI",into=("EPSI",)),
              VERI_P2         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
            ),
-           META_VISC_FO    =FACT(statut='f',min=0,max=1,
+           META_VISC_FO    =FACT(statut='f',
              F1_ETA          =SIMP(statut='f',typ=(fonction,formule)),
              F1_N            =SIMP(statut='f',typ=(fonction,formule)),
              F1_C            =SIMP(statut='f',typ=(fonction,formule)),
@@ -1165,7 +1178,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              C_M             =SIMP(statut='f',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
            ),
-           META_PT         =FACT(statut='f',min=0,max=1,
+           META_PT         =FACT(statut='f',
              F1_K            =SIMP(statut='f',typ='R'),
              F2_K            =SIMP(statut='f',typ='R'),
              F3_K            =SIMP(statut='f',typ='R'),
@@ -1177,7 +1190,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
              VERI_P2         =SIMP(statut='c',typ='TXM',defaut="META",into=("META",) ),
            ),
-           META_RE         =FACT(statut='f',min=0,max=1,
+           META_RE         =FACT(statut='f',
              C_F1_THETA      =SIMP(statut='f',typ='R'),
              C_F2_THETA      =SIMP(statut='f',typ='R'),
              C_F3_THETA      =SIMP(statut='f',typ='R'),
@@ -1190,13 +1203,13 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
 #
 # comportement fluide
 #
-           FLUIDE          =FACT(statut='f',min=0,max=1,
+           FLUIDE          =FACT(statut='f',
              regles=(EXCLUS('CELE_C','CELE_R'),),
              RHO             =SIMP(statut='o',typ='R'),
              CELE_C          =SIMP(statut='f',typ='C'),
              CELE_R          =SIMP(statut='f',typ='R'),
            ),
-           PORO_JOINT      =FACT(statut='f',min=0,max=1,
+           PORO_JOINT      =FACT(statut='f',
              RHO_FLUI        =SIMP(statut='o',typ='R'),
              ENTRO_FLUI      =SIMP(statut='o',typ='R'),
              BIOT_M          =SIMP(statut='o',typ='R'),
@@ -1208,7 +1221,863 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              SOURCE_INIT     =SIMP(statut='o',typ='R'),
              OMEGA_0         =SIMP(statut='o',typ='R'),
            ),
-           THM_LIQU        =FACT(statut='f',min=0,max=1,
+# =================================================================================
+# COMPORTEMENT THERMO_HYDRO_MECANIQUE
+# LES DONNEES NECESSAIRES A LA DEFINITION DU MATERIAU SONT DEPENDANTES
+# DE LA LOI DE COUPLAGE THM DE LA RELATION
+# LE COMPORTEMENT DE COUPLAGE COMP_THM N EST VALABLE QUE POUR LES LOIS
+# DE COUPLAGE : LIQU_SATU,LIQU_GAZ,GAZ,LIQU_GAZ_ATM,LIQU_VAPE_GAZ,LIQU_VAPE
+# POUR LES LOIS DE COUPLAGE LIQU_SATU_GAT ET LIQU_NSAT_GAT
+# ON NE MODIFIE RIEN
+# LA CORRESPONDANCE AVEC LES VARIABLES CACHEES EST LA SUIVANTE :
+# 1 -->  LIQU_SATU
+# 2 -->  GAZ
+# 3 -->  LIQU_VAPE
+# 4 -->  LIQU_VAPE_GAZ
+# 5 -->  LIQU_GAZ
+# 6 -->  LIQU_GAZ_ATM
+# 7 -->  LIQU_SATU_GAT
+# 8 -->  LIQU_NSAT_GAT
+# =================================================================================
+           COMP_THM        = SIMP(statut='f', typ='TXM',
+                                  into = ( "LIQU_SATU"     ,
+                                           "LIQU_GAZ"      ,
+                                           "GAZ"           ,
+                                           "LIQU_GAZ_ATM"  ,
+                                           "LIQU_VAPE_GAZ" ,
+                                           "LIQU_VAPE"     ,
+                                           "LIQU_SATU_GAT" ,
+                                           "LIQU_NSAT_GAT" ,
+                                          ) ),
+# =================================================================================
+# --- LOI DE COUPLAGE DE TYPE LIQU_SATU -------------------------------------------
+# =================================================================================
+# --- PRESENCE OBLIGATOIRE DES MOT-CLES SUIVANT : ---------------------------------
+# --- THM_INIT, THM_DIFFU, THM_LIQU -----------------------------------------------
+# =================================================================================
+           b_liqusatu      = BLOC(condition = "COMP_THM == 'LIQU_SATU' ",
+                                 fr="Paramètres nécessaires pour une loi de couplage de type LIQU_SATU",
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_INIT   = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PRE1          = SIMP(statut='o',typ='R'),
+                                           PORO          = SIMP(statut='o',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           TEMP          = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES INUTILES   ----------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PRE2          = SIMP(statut='f',typ='R'),
+                                           PRES_VAPE     = SIMP(statut='f',typ='R'),
+                                           DEGR_SATU     = SIMP(statut='f',typ='R'),
+                                           PRES_ATMO     = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEE CACHEE ---------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           COMP_THM         = SIMP(statut='c',typ='R',defaut= 1.0,),
+                                             ),
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_DIFFU  = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           RHO           = SIMP(statut='o',typ='R'),
+                                           BIOT_COEF     = SIMP(statut='o',typ='R'),
+                                           PESA_X        = SIMP(statut='o',typ='R'),
+                                           PESA_Y        = SIMP(statut='o',typ='R'),
+                                           PESA_Z        = SIMP(statut='o',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           CP            = SIMP(statut='f',typ='R'),
+                                           PERM_IN       = SIMP(statut='f',typ=(fonction,formule)),
+                                           PERM_END      = SIMP(statut='f',typ=(fonction,formule)),
+                                                           regles = (EXCLUS('PERM_IN','PERM_END'),),
+                                           LAMBDA        = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_LAMBDA_TEMP = SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES INUTILES   ----------------------------------------
+# ---------------------------------------------------------------------------------
+                                           R_GAZ         = SIMP(statut='f',typ='R'),
+                                           SATU_PRES       =SIMP(statut='f',typ=(fonction,formule)),
+                                           D_SATU_PRES     =SIMP(statut='f',typ=(fonction,formule)),
+                                           PERM_LIQU       =SIMP(statut='f',typ=(fonction,formule)),
+                                           D_PERM_LIQU_SATU=SIMP(statut='f',typ=(fonction,formule)),
+                                           PERM_GAZ        =SIMP(statut='f',typ=(fonction,formule)),
+                                           D_PERM_SATU_GAZ =SIMP(statut='f',typ=(fonction,formule)),
+                                           D_PERM_PRES_GAZ =SIMP(statut='f',typ=(fonction,formule)),
+                                           FICK            =SIMP(statut='f',typ=(fonction,formule)),
+                                           D_FICK_TEMP     =SIMP(statut='f',typ=(fonction,formule)),
+                                           D_FICK_GAZ_PRES =SIMP(statut='f',typ=(fonction,formule)),
+                                           SIGMA_T         =SIMP(statut='f',typ=(fonction,formule)),
+                                           D_SIGMA_T       =SIMP(statut='f',typ=(fonction,formule)),
+                                           PERM_G_INTR     =SIMP(statut='f',typ=(fonction,formule)),
+                                           CHAL_VAPO       =SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
+                                           VERI_P2         =SIMP(statut='c',typ='TXM',defaut="SAT", into=("SAT" ,) ),
+                                           VERI_P3         =SIMP(statut='c',typ='TXM',defaut="PORO",into=("PORO",) ),
+                                           VERI_P4         =SIMP(statut='c',typ='TXM',defaut="PGAZ",into=("PGAZ",) ),
+                                           VERI_P5         =SIMP(statut='c',typ='TXM',defaut="PCAP",into=("PCAP",) ),
+                                           VERI_P6         =SIMP(statut='c',typ='TXM',defaut="ENDO",into=("ENDO",) ),
+                                             ),
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_LIQU   = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           RHO           = SIMP(statut='o',typ='R'),
+                                           UN_SUR_K      = SIMP(statut='o',typ='R'),
+                                           VISC          = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_VISC_TEMP   = SIMP(statut='o',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           ALPHA         = SIMP(statut='f',typ='R'),
+                                           CP            = SIMP(statut='f',typ='R'),
+                                           LAMBDA        = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_LAMBDA_TEMP = SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES INUTILES   ----------------------------------------
+# ---------------------------------------------------------------------------------
+                                           COEF_HENRY      =SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           VERI_P1       = SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+                                         ),
+# =================================================================================
+# --- MOT-CLE INUTILE -------------------------------------------------------------
+# =================================================================================
+           THM_GAZ         =FACT(statut='f',
+             MASS_MOL        =SIMP(statut='f',typ='R'),
+             CP              =SIMP(statut='f',typ='R'),
+             VISC            =SIMP(statut='f',typ=(fonction,formule)),
+             D_VISC_TEMP     =SIMP(statut='f',typ=(fonction,formule)),
+             LAMBDA          =SIMP(statut='f',typ=(fonction,formule)),
+             D_LAMBDA_TEMP   =SIMP(statut='f',typ=(fonction,formule)),
+             VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+           ),
+# =================================================================================
+# --- MOT-CLE INUTILE -------------------------------------------------------------
+# =================================================================================
+           THM_VAPE_GAZ    =FACT(statut='f',
+             MASS_MOL        =SIMP(statut='f',typ='R'),
+             CP              =SIMP(statut='f',typ='R'),
+             VISC            =SIMP(statut='f',typ=(fonction,formule)),
+             D_VISC_TEMP     =SIMP(statut='f',typ=(fonction,formule)),
+             VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+           ),
+                                 ),
+# =================================================================================
+# --- LOI DE COUPLAGE DE TYPE LIQU_GAZ --------------------------------------------
+# =================================================================================
+# --- PRESENCE OBLIGATOIRE DES MOT-CLES SUIVANT : ---------------------------------
+# --- THM_INIT, THM_DIFFU, THM_LIQU, THM_GAZ --------------------------------------
+# =================================================================================
+           b_liqugaz      = BLOC(condition = "COMP_THM == 'LIQU_GAZ' ",
+                                 fr="Paramètres nécessaires pour une loi de couplage de type LIQU_GAZ",
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_INIT   = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PRE1             = SIMP(statut='o',typ='R'),
+                                           PRE2             = SIMP(statut='o',typ='R'),
+                                           PORO             = SIMP(statut='o',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           TEMP             = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES INUTILES   ----------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PRES_VAPE        = SIMP(statut='f',typ='R'),
+                                           DEGR_SATU        = SIMP(statut='f',typ='R'),
+                                           PRES_ATMO        = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEE CACHEE ---------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           COMP_THM         = SIMP(statut='c',typ='R',defaut= 5.0,),
+                                             ),
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_DIFFU  = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           R_GAZ            = SIMP(statut='o',typ='R'),
+                                           RHO              = SIMP(statut='o',typ='R'),
+                                           BIOT_COEF        = SIMP(statut='o',typ='R'),
+                                           PESA_X           = SIMP(statut='o',typ='R'),
+                                           PESA_Y           = SIMP(statut='o',typ='R'),
+                                           PESA_Z           = SIMP(statut='o',typ='R'),
+                                           SATU_PRES        = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_SATU_PRES      = SIMP(statut='o',typ=(fonction,formule)),
+                                           PERM_LIQU        = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_PERM_LIQU_SATU = SIMP(statut='o',typ=(fonction,formule)),
+                                           PERM_GAZ         = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_PERM_SATU_GAZ  = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_PERM_PRES_GAZ  = SIMP(statut='o',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           CP               = SIMP(statut='f',typ='R'),
+                                           PERM_IN          = SIMP(statut='f',typ=(fonction,formule)),
+                                           PERM_END         = SIMP(statut='f',typ=(fonction,formule)),
+                                                           regles = (EXCLUS('PERM_IN','PERM_END'),),
+                                           LAMBDA           = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_LAMBDA_TEMP    = SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES INUTILES   ----------------------------------------
+# ---------------------------------------------------------------------------------
+                                           FICK             = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_FICK_TEMP      = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_FICK_GAZ_PRES  = SIMP(statut='f',typ=(fonction,formule)),
+                                           SIGMA_T          = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_SIGMA_T        = SIMP(statut='f',typ=(fonction,formule)),
+                                           PERM_G_INTR      = SIMP(statut='f',typ=(fonction,formule)),
+                                           CHAL_VAPO        = SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           VERI_P1          = SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
+                                           VERI_P2          = SIMP(statut='c',typ='TXM',defaut="SAT" ,into=("SAT" ,) ),
+                                           VERI_P3          = SIMP(statut='c',typ='TXM',defaut="PORO",into=("PORO",) ),
+                                           VERI_P4          = SIMP(statut='c',typ='TXM',defaut="PGAZ",into=("PGAZ",) ),
+                                           VERI_P5          = SIMP(statut='c',typ='TXM',defaut="PCAP",into=("PCAP",) ),
+                                           VERI_P6          = SIMP(statut='c',typ='TXM',defaut="ENDO",into=("ENDO",) ),
+                                             ) ,
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_LIQU   = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           RHO              = SIMP(statut='o',typ='R'),
+                                           UN_SUR_K         = SIMP(statut='o',typ='R'),
+                                           VISC             = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_VISC_TEMP      = SIMP(statut='o',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           ALPHA            = SIMP(statut='f',typ='R'),
+                                           CP               = SIMP(statut='f',typ='R'),
+                                           LAMBDA           = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_LAMBDA_TEMP    = SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES INUTILES   ----------------------------------------
+# ---------------------------------------------------------------------------------
+                                           COEF_HENRY       = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           VERI_P1          = SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+                                             ),
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_GAZ    = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           MASS_MOL        = SIMP(statut='o',typ='R'),
+                                           VISC            = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_VISC_TEMP     = SIMP(statut='o',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           CP              = SIMP(statut='f',typ='R'),
+                                           LAMBDA          = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_LAMBDA_TEMP   = SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           VERI_P1         = SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+                                             ),
+# =================================================================================
+# --- MOT-CLE INUTILE -------------------------------------------------------------
+# =================================================================================
+           THM_VAPE_GAZ    =FACT(statut='f',
+             MASS_MOL        =SIMP(statut='f',typ='R'),
+             CP              =SIMP(statut='f',typ='R'),
+             VISC            =SIMP(statut='f',typ=(fonction,formule)),
+             D_VISC_TEMP     =SIMP(statut='f',typ=(fonction,formule)),
+             VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+           ),
+                                 ),
+# =================================================================================
+# --- LOI DE COUPLAGE DE TYPE GAZ -------------------------------------------------
+# =================================================================================
+# --- PRESENCE OBLIGATOIRE DES MOT-CLES SUIVANT : ---------------------------------
+# --- THM_INIT, THM_DIFFU, THM_GAZ ------------------------------------------------
+# =================================================================================
+           b_gaz          = BLOC(condition = "COMP_THM == 'GAZ' ",
+                                 fr="Paramètres nécessaires pour une loi de couplage de type GAZ",
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_INIT   = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           TEMP             = SIMP(statut='o',typ='R'),
+                                           PRE1             = SIMP(statut='o',typ='R'),
+                                           PORO             = SIMP(statut='o',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES INUTILES   ----------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PRE2             = SIMP(statut='f',typ='R'),
+                                           PRES_VAPE        = SIMP(statut='f',typ='R'),
+                                           DEGR_SATU        = SIMP(statut='f',typ='R'),
+                                           PRES_ATMO        = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEE CACHEE ---------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           COMP_THM         = SIMP(statut='c',typ='R',defaut= 2.0,),
+                                             ),
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_DIFFU  = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           R_GAZ            = SIMP(statut='o',typ='R'),
+                                           RHO              = SIMP(statut='o',typ='R'),
+                                           BIOT_COEF        = SIMP(statut='o',typ='R'),
+                                           PESA_X           = SIMP(statut='o',typ='R'),
+                                           PESA_Y           = SIMP(statut='o',typ='R'),
+                                           PESA_Z           = SIMP(statut='o',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           CP               = SIMP(statut='f',typ='R'),
+                                           PERM_IN          = SIMP(statut='f',typ=(fonction,formule)),
+                                           PERM_END         = SIMP(statut='f',typ=(fonction,formule)),
+                                                           regles = (EXCLUS('PERM_IN','PERM_END'),),
+                                           LAMBDA           = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_LAMBDA_TEMP    = SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES INUTILES   ----------------------------------------
+# ---------------------------------------------------------------------------------
+                                           SATU_PRES       =SIMP(statut='f',typ=(fonction,formule)),
+                                           D_SATU_PRES     =SIMP(statut='f',typ=(fonction,formule)),
+                                           PERM_LIQU       =SIMP(statut='f',typ=(fonction,formule)),
+                                           D_PERM_LIQU_SATU=SIMP(statut='f',typ=(fonction,formule)),
+                                           PERM_GAZ        =SIMP(statut='f',typ=(fonction,formule)),
+                                           D_PERM_SATU_GAZ =SIMP(statut='f',typ=(fonction,formule)),
+                                           D_PERM_PRES_GAZ =SIMP(statut='f',typ=(fonction,formule)),
+                                           FICK            =SIMP(statut='f',typ=(fonction,formule)),
+                                           D_FICK_TEMP     =SIMP(statut='f',typ=(fonction,formule)),
+                                           D_FICK_GAZ_PRES =SIMP(statut='f',typ=(fonction,formule)),
+                                           SIGMA_T         =SIMP(statut='f',typ=(fonction,formule)),
+                                           D_SIGMA_T       =SIMP(statut='f',typ=(fonction,formule)),
+                                           PERM_G_INTR     =SIMP(statut='f',typ=(fonction,formule)),
+                                           CHAL_VAPO       =SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
+                                           VERI_P2         =SIMP(statut='c',typ='TXM',defaut="SAT",into=("SAT",) ),
+                                           VERI_P3         =SIMP(statut='c',typ='TXM',defaut="PORO",into=("PORO",) ),
+                                           VERI_P4         =SIMP(statut='c',typ='TXM',defaut="PGAZ",into=("PGAZ",) ),
+                                           VERI_P5         =SIMP(statut='c',typ='TXM',defaut="PCAP",into=("PCAP",) ),
+                                           VERI_P6         =SIMP(statut='c',typ='TXM',defaut="ENDO",into=("ENDO",) ),
+                                             ) ,
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_GAZ    = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           MASS_MOL         = SIMP(statut='o',typ='R'),
+                                           VISC             = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_VISC_TEMP      = SIMP(statut='o',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           CP               = SIMP(statut='f',typ='R'),
+                                           LAMBDA           = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_LAMBDA_TEMP    = SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           VERI_P1          = SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+                                             ),
+# =================================================================================
+# --- MOT-CLE INUTILE -------------------------------------------------------------
+# =================================================================================
+           THM_LIQU        =FACT(statut='f',
+             RHO             =SIMP(statut='f',typ='R'),
+             UN_SUR_K        =SIMP(statut='f',typ='R'),
+             ALPHA           =SIMP(statut='f',typ='R'),
+             CP              =SIMP(statut='f',typ='R'),
+             VISC            =SIMP(statut='f',typ=(fonction,formule)),
+             D_VISC_TEMP     =SIMP(statut='f',typ=(fonction,formule)),
+             LAMBDA          =SIMP(statut='f',typ=(fonction,formule)),
+             D_LAMBDA_TEMP   =SIMP(statut='f',typ=(fonction,formule)),
+             COEF_HENRY      =SIMP(statut='f',typ='R'),
+             VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+           ),
+# =================================================================================
+# --- MOT-CLE INUTILE -------------------------------------------------------------
+# =================================================================================
+           THM_VAPE_GAZ    =FACT(statut='f',
+             MASS_MOL        =SIMP(statut='f',typ='R'),
+             CP              =SIMP(statut='f',typ='R'),
+             VISC            =SIMP(statut='f',typ=(fonction,formule)),
+             D_VISC_TEMP     =SIMP(statut='f',typ=(fonction,formule)),
+             VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+           ),
+                                 ),
+# =================================================================================
+# --- LOI DE COUPLAGE DE TYPE LIQU_GAZ_ATM ----------------------------------------
+# =================================================================================
+# --- PRESENCE OBLIGATOIRE DES MOT-CLES SUIVANT : ---------------------------------
+# --- THM_INIT, THM_DIFFU, THM_LIQU, THM_GAZ --------------------------------------
+# =================================================================================
+           b_liqugazatm   = BLOC(condition = "COMP_THM == 'LIQU_GAZ_ATM' ",
+                                 fr="Paramètres nécessaires pour une loi de couplage de type LIQU_GAZ_ATM",
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_INIT   = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PRE1             = SIMP(statut='o',typ='R'),
+                                           PORO             = SIMP(statut='o',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           TEMP             = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES INUTILES   ----------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PRE2             = SIMP(statut='f',typ='R'),
+                                           PRES_VAPE        = SIMP(statut='f',typ='R'),
+                                           DEGR_SATU        = SIMP(statut='f',typ='R'),
+                                           PRES_ATMO        = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEE CACHEE ---------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           COMP_THM         = SIMP(statut='c',typ='R',defaut= 6.0,),
+                                             ),
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_DIFFU  = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           RHO              = SIMP(statut='o',typ='R'),
+                                           BIOT_COEF        = SIMP(statut='o',typ='R'),
+                                           PESA_X           = SIMP(statut='o',typ='R'),
+                                           PESA_Y           = SIMP(statut='o',typ='R'),
+                                           PESA_Z           = SIMP(statut='o',typ='R'),
+                                           SATU_PRES        = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_SATU_PRES      = SIMP(statut='o',typ=(fonction,formule)),
+                                           PERM_LIQU        = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_PERM_LIQU_SATU = SIMP(statut='o',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           CP               = SIMP(statut='f',typ='R'),
+                                           PERM_IN          = SIMP(statut='f',typ=(fonction,formule)),
+                                           PERM_END         = SIMP(statut='f',typ=(fonction,formule)),
+                                                           regles = (EXCLUS('PERM_IN','PERM_END'),),
+                                           LAMBDA           = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_LAMBDA_TEMP    = SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES INUTILES   ----------------------------------------
+# ---------------------------------------------------------------------------------
+             R_GAZ           =SIMP(statut='f',typ='R'),
+             PERM_GAZ        =SIMP(statut='f',typ=(fonction,formule)),
+             D_PERM_SATU_GAZ =SIMP(statut='f',typ=(fonction,formule)),
+             D_PERM_PRES_GAZ =SIMP(statut='f',typ=(fonction,formule)),
+             FICK            =SIMP(statut='f',typ=(fonction,formule)),
+             D_FICK_TEMP     =SIMP(statut='f',typ=(fonction,formule)),
+             D_FICK_GAZ_PRES =SIMP(statut='f',typ=(fonction,formule)),
+             SIGMA_T         =SIMP(statut='f',typ=(fonction,formule)),
+             D_SIGMA_T       =SIMP(statut='f',typ=(fonction,formule)),
+             PERM_G_INTR     =SIMP(statut='f',typ=(fonction,formule)),
+             CHAL_VAPO       =SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+             VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
+             VERI_P2         =SIMP(statut='c',typ='TXM',defaut="SAT", into=("SAT", ) ),
+             VERI_P3         =SIMP(statut='c',typ='TXM',defaut="PORO",into=("PORO",) ),
+             VERI_P4         =SIMP(statut='c',typ='TXM',defaut="PGAZ",into=("PGAZ",) ),
+             VERI_P5         =SIMP(statut='c',typ='TXM',defaut="PCAP",into=("PCAP",) ),
+             VERI_P6         =SIMP(statut='c',typ='TXM',defaut="ENDO",into=("ENDO",) ),
+                                             ) ,
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_LIQU   = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           RHO              = SIMP(statut='o',typ='R'),
+                                           UN_SUR_K         = SIMP(statut='o',typ='R'),
+                                           VISC             = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_VISC_TEMP      = SIMP(statut='o',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           ALPHA            = SIMP(statut='f',typ='R'),
+                                           CP               = SIMP(statut='f',typ='R'),
+                                           LAMBDA           = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_LAMBDA_TEMP    = SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES INUTILES   ----------------------------------------
+# ---------------------------------------------------------------------------------
+                                           COEF_HENRY       = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           VERI_P1          = SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+                                             ),
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_GAZ    = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           MASS_MOL         = SIMP(statut='o',typ='R'),
+                                           VISC             = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_VISC_TEMP      = SIMP(statut='o',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           CP               = SIMP(statut='f',typ='R'),
+                                           LAMBDA           = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_LAMBDA_TEMP    = SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES ---------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           VERI_P1          = SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+                                             ),
+# =================================================================================
+# --- MOT-CLE INUTILE -------------------------------------------------------------
+# =================================================================================
+           THM_VAPE_GAZ    =FACT(statut='f',
+             MASS_MOL        =SIMP(statut='f',typ='R'),
+             CP              =SIMP(statut='f',typ='R'),
+             VISC            =SIMP(statut='f',typ=(fonction,formule)),
+             D_VISC_TEMP     =SIMP(statut='f',typ=(fonction,formule)),
+             VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+           ),
+                                 ),
+# =================================================================================
+# --- LOI DE COUPLAGE DE TYPE LIQU_VAPE_GAZ ---------------------------------------
+# =================================================================================
+# --- PRESENCE OBLIGATOIRE DES MOT-CLES SUIVANT : ---------------------------------
+# --- THM_INIT, THM_DIFFU, THM_LIQU, THM_GAZ, THM_VAPE_GAZ ------------------------
+# =================================================================================
+           b_liquvapegaz  = BLOC(condition = "COMP_THM == 'LIQU_VAPE_GAZ' ",
+                                 fr="Paramètres nécessaires pour une loi de couplage de type LIQU_VAPE_GAZ",
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_INIT   = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PRE1             = SIMP(statut='o',typ='R'),
+                                           PRE2             = SIMP(statut='o',typ='R'),
+                                           PORO             = SIMP(statut='o',typ='R'),
+                                           PRES_VAPE        = SIMP(statut='o',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           TEMP             = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES INUTILES   ----------------------------------------
+# ---------------------------------------------------------------------------------
+                                           DEGR_SATU        = SIMP(statut='f',typ='R'),
+                                           PRES_ATMO        = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEE CACHEE ---------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           COMP_THM         = SIMP(statut='c',typ='R',defaut= 4.0,),
+                                             ),
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_DIFFU  = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           R_GAZ            = SIMP(statut='o',typ='R'),
+                                           RHO              = SIMP(statut='o',typ='R'),
+                                           BIOT_COEF        = SIMP(statut='o',typ='R'),
+                                           PESA_X           = SIMP(statut='o',typ='R'),
+                                           PESA_Y           = SIMP(statut='o',typ='R'),
+                                           PESA_Z           = SIMP(statut='o',typ='R'),
+                                           SATU_PRES        = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_SATU_PRES      = SIMP(statut='o',typ=(fonction,formule)),
+                                           PERM_LIQU        = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_PERM_LIQU_SATU = SIMP(statut='o',typ=(fonction,formule)),
+                                           PERM_GAZ         = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_PERM_SATU_GAZ  = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_PERM_PRES_GAZ  = SIMP(statut='o',typ=(fonction,formule)),
+                                           FICK             = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_FICK_TEMP      = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_FICK_GAZ_PRES  = SIMP(statut='o',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           CP               = SIMP(statut='f',typ='R'),
+                                           PERM_IN          = SIMP(statut='f',typ=(fonction,formule)),
+                                           PERM_END         = SIMP(statut='f',typ=(fonction,formule)),
+                                                           regles = (EXCLUS('PERM_IN','PERM_END'),),
+                                           LAMBDA           = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_LAMBDA_TEMP    = SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES INUTILES   ----------------------------------------
+# ---------------------------------------------------------------------------------
+                                           SIGMA_T          = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_SIGMA_T        = SIMP(statut='f',typ=(fonction,formule)),
+                                           PERM_G_INTR      = SIMP(statut='f',typ=(fonction,formule)),
+                                           CHAL_VAPO        = SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           VERI_P1          = SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
+                                           VERI_P2          = SIMP(statut='c',typ='TXM',defaut="SAT" ,into=("SAT" ,) ),
+                                           VERI_P3          = SIMP(statut='c',typ='TXM',defaut="PORO",into=("PORO",) ),
+                                           VERI_P4          = SIMP(statut='c',typ='TXM',defaut="PGAZ",into=("PGAZ",) ),
+                                           VERI_P5          = SIMP(statut='c',typ='TXM',defaut="PCAP",into=("PCAP",) ),
+                                           VERI_P6          = SIMP(statut='c',typ='TXM',defaut="ENDO",into=("ENDO",) ),
+                                             ) ,
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_LIQU   = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           RHO              = SIMP(statut='o',typ='R'),
+                                           UN_SUR_K         = SIMP(statut='o',typ='R'),
+                                           VISC             = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_VISC_TEMP      = SIMP(statut='o',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           ALPHA            = SIMP(statut='f',typ='R'),
+                                           CP               = SIMP(statut='f',typ='R'),
+                                           LAMBDA           = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_LAMBDA_TEMP    = SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES INUTILES   ----------------------------------------
+# ---------------------------------------------------------------------------------
+                                           COEF_HENRY       = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           VERI_P1          = SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+                                             ),
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_GAZ    = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           MASS_MOL         = SIMP(statut='o',typ='R'),
+                                           VISC             = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_VISC_TEMP      = SIMP(statut='o',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           CP               = SIMP(statut='f',typ='R'),
+                                           LAMBDA           = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_LAMBDA_TEMP    = SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           VERI_P1          = SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+                                             ),
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_VAPE_GAZ = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           MASS_MOL         = SIMP(statut='o',typ='R'),
+                                           CP               = SIMP(statut='o',typ='R'),
+                                           VISC             = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_VISC_TEMP      = SIMP(statut='o',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           VERI_P1          = SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+                                             ),
+                                 ),
+# =================================================================================
+# --- LOI DE COUPLAGE DE TYPE LIQU_VAPE -------------------------------------------
+# =================================================================================
+# --- PRESENCE OBLIGATOIRE DES MOT-CLES SUIVANT : ---------------------------------
+# --- THM_INIT, THM_DIFFU, THM_LIQU, THM_VAPE_GAZ ---------------------------------
+# =================================================================================
+           b_liquvape  = BLOC(condition = "COMP_THM == 'LIQU_VAPE' ",
+                                 fr="Paramètres nécessaires pour une loi de couplage de type LIQU_VAPE",
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_INIT   = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PRE1             = SIMP(statut='o',typ='R'),
+                                           PORO             = SIMP(statut='o',typ='R'),
+                                           PRES_VAPE        = SIMP(statut='o',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           TEMP             = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES INUTILES   ----------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PRE2             = SIMP(statut='f',typ='R'),
+                                           DEGR_SATU        = SIMP(statut='f',typ='R'),
+                                           PRES_ATMO        = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEE CACHEE ---------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           COMP_THM         = SIMP(statut='c',typ='R',defaut= 3.0,),
+                                             ),
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_DIFFU  = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           R_GAZ            = SIMP(statut='o',typ='R'),
+                                           RHO              = SIMP(statut='o',typ='R'),
+                                           BIOT_COEF        = SIMP(statut='o',typ='R'),
+                                           PESA_X           = SIMP(statut='o',typ='R'),
+                                           PESA_Y           = SIMP(statut='o',typ='R'),
+                                           PESA_Z           = SIMP(statut='o',typ='R'),
+                                           SATU_PRES        = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_SATU_PRES      = SIMP(statut='o',typ=(fonction,formule)),
+                                           PERM_LIQU        = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_PERM_LIQU_SATU = SIMP(statut='o',typ=(fonction,formule)),
+                                           PERM_GAZ         = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_PERM_SATU_GAZ  = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_PERM_PRES_GAZ  = SIMP(statut='o',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           CP               = SIMP(statut='f',typ='R'),
+                                           PERM_IN          = SIMP(statut='f',typ=(fonction,formule)),
+                                           PERM_END         = SIMP(statut='f',typ=(fonction,formule)),
+                                                           regles = (EXCLUS('PERM_IN','PERM_END'),),
+                                           LAMBDA           = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_LAMBDA_TEMP    = SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES INUTILES   ----------------------------------------
+# ---------------------------------------------------------------------------------
+                                           FICK             = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_FICK_TEMP      = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_FICK_GAZ_PRES  = SIMP(statut='f',typ=(fonction,formule)),
+                                           SIGMA_T          = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_SIGMA_T        = SIMP(statut='f',typ=(fonction,formule)),
+                                           PERM_G_INTR      = SIMP(statut='f',typ=(fonction,formule)),
+                                           CHAL_VAPO        = SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           VERI_P1          = SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
+                                           VERI_P2          = SIMP(statut='c',typ='TXM',defaut="SAT" ,into=("SAT" ,) ),
+                                           VERI_P3          = SIMP(statut='c',typ='TXM',defaut="PORO",into=("PORO",) ),
+                                           VERI_P4          = SIMP(statut='c',typ='TXM',defaut="PGAZ",into=("PGAZ",) ),
+                                           VERI_P5          = SIMP(statut='c',typ='TXM',defaut="PCAP",into=("PCAP",) ),
+                                           VERI_P6          = SIMP(statut='c',typ='TXM',defaut="ENDO",into=("ENDO",) ),
+                                             ) ,
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_LIQU   = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           RHO              = SIMP(statut='o',typ='R'),
+                                           UN_SUR_K         = SIMP(statut='o',typ='R'),
+                                           VISC             = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_VISC_TEMP      = SIMP(statut='o',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           ALPHA            = SIMP(statut='f',typ='R'),
+                                           CP               = SIMP(statut='f',typ='R'),
+                                           LAMBDA           = SIMP(statut='f',typ=(fonction,formule)),
+                                           D_LAMBDA_TEMP    = SIMP(statut='f',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES INUTILES   ----------------------------------------
+# ---------------------------------------------------------------------------------
+                                           COEF_HENRY       = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES ---------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           VERI_P1          = SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+                                             ),
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_VAPE_GAZ = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           MASS_MOL         = SIMP(statut='o',typ='R'),
+                                           CP               = SIMP(statut='o',typ='R'),
+                                           VISC             = SIMP(statut='o',typ=(fonction,formule)),
+                                           D_VISC_TEMP      = SIMP(statut='o',typ=(fonction,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           VERI_P1          = SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+                                             ),
+# =================================================================================
+# --- MOT-CLE INUTILE -------------------------------------------------------------
+# =================================================================================
+           THM_GAZ         =FACT(statut='f',
+             MASS_MOL        =SIMP(statut='f',typ='R'),
+             CP              =SIMP(statut='f',typ='R'),
+             VISC            =SIMP(statut='f',typ=(fonction,formule)),
+             D_VISC_TEMP     =SIMP(statut='f',typ=(fonction,formule)),
+             LAMBDA          =SIMP(statut='f',typ=(fonction,formule)),
+             D_LAMBDA_TEMP   =SIMP(statut='f',typ=(fonction,formule)),
+             VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+           ),
+                                 ),
+# =================================================================================
+           b_liqusatugat   = BLOC(condition = "COMP_THM == 'LIQU_SATU_GAT' ",
+                                 fr="Paramètres nécessaires pour une loi de couplage de type LIQU_SATU_GAT",
+           THM_LIQU        =FACT(statut='f',
              RHO             =SIMP(statut='o',typ='R'),
              UN_SUR_K        =SIMP(statut='f',typ='R'),
              ALPHA           =SIMP(statut='f',typ='R'),
@@ -1220,7 +2089,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              COEF_HENRY      =SIMP(statut='f',typ='R'),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
            ),
-           THM_GAZ         =FACT(statut='f',min=0,max=1,
+           THM_GAZ         =FACT(statut='f',
              MASS_MOL        =SIMP(statut='f',typ='R'),
              CP              =SIMP(statut='f',typ='R'),
              VISC            =SIMP(statut='f',typ=(fonction,formule)),
@@ -1229,14 +2098,14 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              D_LAMBDA_TEMP   =SIMP(statut='f',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
            ),
-           THM_VAPE_GAZ    =FACT(statut='f',min=0,max=1,
+           THM_VAPE_GAZ    =FACT(statut='f',
              MASS_MOL        =SIMP(statut='f',typ='R'),
              CP              =SIMP(statut='f',typ='R'),
              VISC            =SIMP(statut='f',typ=(fonction,formule)),
              D_VISC_TEMP     =SIMP(statut='f',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
            ),
-           THM_INIT        =FACT(statut='f',min=0,max=1,
+           THM_INIT        =FACT(statut='f',
              TEMP            =SIMP(statut='o',typ='R'),
              PRE1            =SIMP(statut='o',typ='R'),
              PRE2            =SIMP(statut='o',typ='R'),
@@ -1244,8 +2113,12 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              PRES_VAPE       =SIMP(statut='o',typ='R'),
              DEGR_SATU       =SIMP(statut='f',typ='R'),
              PRES_ATMO       =SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEE CACHEE ---------------------------------------------
+# ---------------------------------------------------------------------------------
+             COMP_THM         = SIMP(statut='c',typ='R',defaut= 7.0,),
            ),
-           THM_DIFFU       =FACT(statut='f',min=0,max=1,
+           THM_DIFFU       =FACT(statut='f',
              R_GAZ           =SIMP(statut='o',typ='R'),
              RHO             =SIMP(statut='f',typ='R'),
              CP              =SIMP(statut='f',typ='R'),
@@ -1256,6 +2129,8 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              PESA_Y          =SIMP(statut='f',typ='R'),
              PESA_Z          =SIMP(statut='f',typ='R'),
              PERM_IN         =SIMP(statut='f',typ=(fonction,formule)),
+             PERM_END       =SIMP(statut='f',typ=(fonction,formule)),
+                 regles=(EXCLUS('PERM_IN','PERM_END'),),
              PERM_LIQU       =SIMP(statut='f',typ=(fonction,formule)),
              D_PERM_LIQU_SATU=SIMP(statut='f',typ=(fonction,formule)),
              PERM_GAZ        =SIMP(statut='f',typ=(fonction,formule)),
@@ -1275,11 +2150,91 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              VERI_P3         =SIMP(statut='c',typ='TXM',defaut="PORO",into=("PORO",) ),
              VERI_P4         =SIMP(statut='c',typ='TXM',defaut="PGAZ",into=("PGAZ",) ),
              VERI_P5         =SIMP(statut='c',typ='TXM',defaut="PCAP",into=("PCAP",) ),
+             VERI_P6         =SIMP(statut='c',typ='TXM',defaut="ENDO",into=("ENDO",) ),
+           ),
+           ),
+           b_liqunsatgat   = BLOC(condition = "COMP_THM == 'LIQU_NSAT_GAT' ",
+                                 fr="Paramètres nécessaires pour une loi de couplage de type LIQU_NSAT_GAT",
+           THM_LIQU        =FACT(statut='f',
+             RHO             =SIMP(statut='o',typ='R'),
+             UN_SUR_K        =SIMP(statut='f',typ='R'),
+             ALPHA           =SIMP(statut='f',typ='R'),
+             CP              =SIMP(statut='f',typ='R'),
+             VISC            =SIMP(statut='f',typ=(fonction,formule)),
+             D_VISC_TEMP     =SIMP(statut='f',typ=(fonction,formule)),
+             LAMBDA          =SIMP(statut='f',typ=(fonction,formule)),
+             D_LAMBDA_TEMP   =SIMP(statut='f',typ=(fonction,formule)),
+             COEF_HENRY      =SIMP(statut='f',typ='R'),
+             VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+           ),
+           THM_GAZ         =FACT(statut='f',
+             MASS_MOL        =SIMP(statut='f',typ='R'),
+             CP              =SIMP(statut='f',typ='R'),
+             VISC            =SIMP(statut='f',typ=(fonction,formule)),
+             D_VISC_TEMP     =SIMP(statut='f',typ=(fonction,formule)),
+             LAMBDA          =SIMP(statut='f',typ=(fonction,formule)),
+             D_LAMBDA_TEMP   =SIMP(statut='f',typ=(fonction,formule)),
+             VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+           ),
+           THM_VAPE_GAZ    =FACT(statut='f',
+             MASS_MOL        =SIMP(statut='f',typ='R'),
+             CP              =SIMP(statut='f',typ='R'),
+             VISC            =SIMP(statut='f',typ=(fonction,formule)),
+             D_VISC_TEMP     =SIMP(statut='f',typ=(fonction,formule)),
+             VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",)),
+           ),
+           THM_INIT        =FACT(statut='f',
+             TEMP            =SIMP(statut='o',typ='R'),
+             PRE1            =SIMP(statut='o',typ='R'),
+             PRE2            =SIMP(statut='o',typ='R'),
+             PORO            =SIMP(statut='o',typ='R'),
+             PRES_VAPE       =SIMP(statut='o',typ='R'),
+             DEGR_SATU       =SIMP(statut='f',typ='R'),
+             PRES_ATMO       =SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEE CACHEE ---------------------------------------------
+# ---------------------------------------------------------------------------------
+             COMP_THM         = SIMP(statut='c',typ='R',defaut= 8.0,),
+           ),
+           THM_DIFFU       =FACT(statut='f',
+             R_GAZ           =SIMP(statut='o',typ='R'),
+             RHO             =SIMP(statut='f',typ='R'),
+             CP              =SIMP(statut='f',typ='R'),
+             BIOT_COEF       =SIMP(statut='f',typ='R'),
+             SATU_PRES       =SIMP(statut='f',typ=(fonction,formule)),
+             D_SATU_PRES     =SIMP(statut='f',typ=(fonction,formule)),
+             PESA_X          =SIMP(statut='f',typ='R'),
+             PESA_Y          =SIMP(statut='f',typ='R'),
+             PESA_Z          =SIMP(statut='f',typ='R'),
+             PERM_IN         =SIMP(statut='f',typ=(fonction,formule)),
+             PERM_END       =SIMP(statut='f',typ=(fonction,formule)),
+                 regles=(EXCLUS('PERM_IN','PERM_END'),),
+             PERM_LIQU       =SIMP(statut='f',typ=(fonction,formule)),
+             D_PERM_LIQU_SATU=SIMP(statut='f',typ=(fonction,formule)),
+             PERM_GAZ        =SIMP(statut='f',typ=(fonction,formule)),
+             D_PERM_SATU_GAZ =SIMP(statut='f',typ=(fonction,formule)),
+             D_PERM_PRES_GAZ =SIMP(statut='f',typ=(fonction,formule)),
+             FICK            =SIMP(statut='f',typ=(fonction,formule)),
+             D_FICK_TEMP     =SIMP(statut='f',typ=(fonction,formule)),
+             D_FICK_GAZ_PRES =SIMP(statut='f',typ=(fonction,formule)),
+             LAMBDA          =SIMP(statut='f',typ=(fonction,formule)),
+             D_LAMBDA_TEMP   =SIMP(statut='f',typ=(fonction,formule)),
+             SIGMA_T         =SIMP(statut='f',typ=(fonction,formule)),
+             D_SIGMA_T       =SIMP(statut='f',typ=(fonction,formule)),
+             PERM_G_INTR     =SIMP(statut='f',typ=(fonction,formule)),
+             CHAL_VAPO       =SIMP(statut='f',typ=(fonction,formule)),
+             VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
+             VERI_P2         =SIMP(statut='c',typ='TXM',defaut="SAT",into=("SAT",) ),
+             VERI_P3         =SIMP(statut='c',typ='TXM',defaut="PORO",into=("PORO",) ),
+             VERI_P4         =SIMP(statut='c',typ='TXM',defaut="PGAZ",into=("PGAZ",) ),
+             VERI_P5         =SIMP(statut='c',typ='TXM',defaut="PCAP",into=("PCAP",) ),
+             VERI_P6         =SIMP(statut='c',typ='TXM',defaut="ENDO",into=("ENDO",) ),
+           ),
            ),
 #
 # courbes et coefficients associés à la fatigue et au dommage
 #
-           FATIGUE         =FACT(statut='f',min=0,max=1,
+           FATIGUE         =FACT(statut='f',
              regles=(PRESENT_ABSENT('WOHLER','A_BASQUIN','BETA_BASQUIN'),
                      PRESENT_ABSENT('WOHLER','A0','A1','A2','A3','SL'),
                      PRESENT_ABSENT('A_BASQUIN','A0','A1','A2','A3','SL'),
@@ -1302,12 +2257,12 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="SIGM",into=("SIGM",) ),
              VERI_P2         =SIMP(statut='c',typ='TXM',defaut="EPSI",into=("EPSI",) ),
            ),
-           DOMMA_LEMAITRE  =FACT(statut='f',min=0,max=1,
+           DOMMA_LEMAITRE  =FACT(statut='f',
              S               =SIMP(statut='o',typ=(fonction,formule)),
              EPSP_SEUIL      =SIMP(statut='o',typ='R'),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
            ),
-           CISA_PLAN_CRIT  =FACT(statut='f',min=0,max=1,
+           CISA_PLAN_CRIT  =FACT(statut='f',
              CRITERE       =SIMP(statut='o',typ='TXM',into=("MATAKE","DANG_VAN") ),
 
              b_critere_matake =BLOC(condition="CRITERE=='MATAKE'",
@@ -1327,13 +2282,13 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
 #
 # autres comportements ...
 #
-           WEIBULL         =FACT(statut='f',min=0,max=1,
+           WEIBULL         =FACT(statut='f',
              M               =SIMP(statut='o',typ='R'),
              VOLU_REFE       =SIMP(statut='o',typ='R'),
              SIGM_REFE       =SIMP(statut='o',typ='R'),
              SEUIL_EPSP_CUMU =SIMP(statut='f',typ='R',defaut= 1.0E-6),
            ),
-           WEIBULL_FO      =FACT(statut='f',min=0,max=1,
+           WEIBULL_FO      =FACT(statut='f',
              M               =SIMP(statut='o',typ='R'),
              VOLU_REFE       =SIMP(statut='o',typ='R'),
              SIGM_CNV        =SIMP(statut='o',typ='R'),
@@ -1341,16 +2296,16 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              SEUIL_EPSP_CUMU =SIMP(statut='f',typ='R',defaut= 1.0E-6),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
            ),
-           NON_LOCAL       =FACT(statut='f',min=0,max=1,
+           NON_LOCAL       =FACT(statut='f',
              LONG_CARA       =SIMP(statut='o',typ='R'),
              COEF_RIGI_MINI  =SIMP(statut='f',typ='R'),
            ),
-           RUPT_FRAG       =FACT(statut='f',min=0,max=1,
+           RUPT_FRAG       =FACT(statut='f',
              GC              =SIMP(statut='o',typ='R'),
              SIGM_C          =SIMP(statut='f',typ='R'),
              SAUT_C          =SIMP(statut='f',typ='R'),
            ),
-           RCCM            =FACT(statut='f',min=0,max=1,
+           RCCM            =FACT(statut='f',
              SY_02           =SIMP(statut='f',typ='R'),
              SM              =SIMP(statut='f',typ='R'),
              SU              =SIMP(statut='f',typ='R'),
@@ -1359,7 +2314,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              N_KE            =SIMP(statut='f',typ='R'),
              M_KE            =SIMP(statut='f',typ='R'),
            ),
-           RCCM_FO         =FACT(statut='f',min=0,max=1,
+           RCCM_FO         =FACT(statut='f',
              SY_02           =SIMP(statut='f',typ=(fonction,formule)),
              SM              =SIMP(statut='f',typ=(fonction,formule)),
              SU              =SIMP(statut='f',typ=(fonction,formule)),
@@ -1368,7 +2323,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              M_KE            =SIMP(statut='f',typ=(fonction,formule)),
              VERI_P1         =SIMP(statut='c',typ='TXM',defaut="TEMP",into=("TEMP",) ),
            ),
-           LAIGLE          =FACT(statut='f',min=0,max=1,
+           LAIGLE          =FACT(statut='f',
              GAMMA_ULT       =SIMP(statut='o',typ='R'),
              GAMMA_E         =SIMP(statut='o',typ='R'),
              M_ULT           =SIMP(statut='o',typ='R'),

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # TITRE VIBRATIONS D'UN PENDULE EN ROTATION
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -200,7 +200,7 @@ MODE_1=MODE_ITER_SIMULT(       MATR_A=K_MODAL,
 # pour tester la possibilite d'imprimer un MODE_MECA au format 'IDEAS'
 # et de poursuivre la calcul apres l'avoir relu :
 #----------------------------------------------------------------------
-DEFUFI(IMPRESSION=_F(UNITE=75,NOM='MODEMECA'),)
+DEFI_FICHIER(UNITE=75,FICHIER='MODEMECA')
 IMPR_RESU(RESU=_F(RESULTAT=MODE_1,FORMAT='IDEAS',FICHIER='MODEMECA',),)
 
 MODE_2=LIRE_RESU(TYPE_RESU='MODE_MECA',FORMAT='IDEAS',UNITE=75,
@@ -216,9 +216,9 @@ MODE_2=LIRE_RESU(TYPE_RESU='MODE_MECA',FORMAT='IDEAS',UNITE=75,
            )
 
 #------------------------------------------------------------------------------------------------
-DEFUFI(IMPRESSION=_F(UNITE=76,NOM='MODEMEC1'),)
+DEFI_FICHIER(UNITE=76,FICHIER='MODEMEC1')
 IMPR_RESU(RESU=_F(RESULTAT=MODE_1,FORMAT='RESULTAT',FICHIER='MODEMEC1',TOUT_PARA='OUI',),)
-DEFUFI(IMPRESSION=_F(UNITE=77,NOM='MODEMEC2'),)
+DEFI_FICHIER(UNITE=77,FICHIER='MODEMEC2')
 IMPR_RESU(RESU=_F(RESULTAT=MODE_2,FORMAT='RESULTAT',FICHIER='MODEMEC2',TOUT_PARA='OUI',),)
 #------------------------------------------------------------------------------------------------
 
@@ -274,6 +274,3 @@ TEST_RESU(RESU=(
         )
 
 FIN()
-#
-#
-#

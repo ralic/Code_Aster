@@ -8,7 +8,7 @@ C
       CHARACTER*(*)  NJVSEG
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/02/2002   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF PREPOST  DATE 16/06/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,16 +89,19 @@ C
                   IF ( ZK8(JCNSC-1+K) .EQ. 'DX' ) THEN
                      IF (ZL(JCNSL-1+(LISTNO(INOE)-1)*NCMP+K)) THEN
                         VALX = ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+K)
+                        IF (ABS(VALX).LE.1.D-99) VALX = 0.D0
                      ENDIF
 
                   ELSEIF ( ZK8(JCNSC-1+K) .EQ. 'DY' ) THEN
                      IF (ZL(JCNSL-1+(LISTNO(INOE)-1)*NCMP+K)) THEN
                         VALY = ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+K)
+                        IF (ABS(VALY).LE.1.D-99) VALY = 0.D0
                      ENDIF
 
                   ELSEIF ( ZK8(JCNSC-1+K) .EQ. 'DZ' ) THEN
                      IF (ZL(JCNSL-1+(LISTNO(INOE)-1)*NCMP+K)) THEN
                         VALZ = ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+K)
+                        IF (ABS(VALZ).LE.1.D-99) VALZ = 0.D0
                      ENDIF
                   ENDIF
 

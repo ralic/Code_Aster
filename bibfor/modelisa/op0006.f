@@ -3,7 +3,7 @@
       INTEGER              IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,84 +42,36 @@ C
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      INTEGER       N1, NBAPNO, MXMATA, NBOCC, I, NGRO, NBMA, NBNO
-      INTEGER       K,JNOMO,JMESNO
-      CHARACTER*8   K8B, CHMAT, NOMAIL, NOMODE, TYPMCL(4)
-      CHARACTER*16  MOTCLE(4), TYPE, NOMCMD
-      CHARACTER*24  MESMAI, MESNOE
+      INTEGER       N1, NBAPNO, MXMATA, NBOCC, I, NBMA, K
+      CHARACTER*8   K8B, CHMAT, NOMAIL, NOMODE, TYPMCL(2)
+      CHARACTER*16  MOTCLE(2), TYPE, NOMCMD
+      CHARACTER*24  MESMAI
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFMAJ()
+
       NOMODE = ' '
-C
       CALL GETVID ( ' ', 'MODELE', 1,1,1, NOMODE, N1 )
-      IF (N1.GT.0) THEN
-         CALL JEVEUO(NOMODE//'.NOEUD','L',JNOMO)
-      ELSE
-         JNOMO=0
-      END IF
 C
       CALL GETFAC ( 'AFFE' , NBOCC )
-C
-      DO 20 I = 1 , NBOCC
-         CALL GETVID ( 'AFFE', 'GROUP_NO', I, 1, 0, K8B, NGRO )
-         IF ( NGRO .NE. 0  .AND.  N1 .EQ. 0 ) THEN
-            CALL UTMESS('F','OP0006','IL FAUT LE MODELE' )
-         ENDIF
-         CALL GETVID ( 'AFFE', 'NOEUD', I, 1, 0, K8B, NGRO )
-         IF ( NGRO .NE. 0  .AND.  N1 .EQ. 0 ) THEN
-            CALL UTMESS('F','OP0006','IL FAUT LE MODELE' )
-         ENDIF
- 20   CONTINUE
-C
       CALL GETRES ( CHMAT, TYPE, NOMCMD)
-C
       CALL GETVID ( ' ', 'MAILLAGE', 1,1,1, NOMAIL, N1 )
 C
       MOTCLE(1) = 'GROUP_MA'
       MOTCLE(2) = 'MAILLE'
-      MOTCLE(3) = 'GROUP_NO'
-      MOTCLE(4) = 'NOEUD'
       TYPMCL(1) = 'GROUP_MA'
       TYPMCL(2) = 'MAILLE'
-      TYPMCL(3) = 'GROUP_NO'
-      TYPMCL(4) = 'NOEUD'
 C
       MESMAI = '&&OP0006.MES_MAILLES'
-      MESNOE = '&&OP0006.MES_NOEUDS'
 C
       NBAPNO = NBOCC
       MXMATA = 0
       DO 10 I = 1 , NBOCC
-C
-         CALL RELIEM(NOMODE,NOMAIL,'NU_MAILLE','AFFE',I,2, MOTCLE(1),
-     +                                      TYPMCL(1), MESMAI, NBMA )
-         CALL RELIEM(NOMODE,NOMAIL,'NU_NOEUD','AFFE',I,2, MOTCLE(3),
-     +                                      TYPMCL(3), MESNOE, NBNO )
-
-
-C        -- ON VERIFIE QUE LES NOEUDS AFFECTES FONT PARTIE DU MODELE:
-         IF (NBNO.GT.0) THEN
-           CALL JEVEUO(MESNOE,'L',JMESNO)
-           IER=0
-           IF (JNOMO.NE.0) THEN
-              DO 11,K=1,NBNO
-                 IF (ZI(JNOMO-1+ZI(JMESNO-1+K)).EQ.0) IER=IER+1
- 11           CONTINUE
-           ELSE
-              IER=1
-           END IF
-           IF (IER.GT.0) CALL UTMESS('F','OP0006','ON CHERCHE A '
-     +     //'AFFECTER DES NOEUDS QUI N''APPARTIENNENT PAS AU MODELE.')
-         END IF
-
-
-
-         IF ( NBMA .NE. 0 )  CALL JEDETR ( MESMAI )
-         IF ( NBNO .NE. 0 )  CALL JEDETR ( MESNOE )
-         MXMATA = MXMATA + NBMA + NBNO
-C
+         CALL RELIEM(NOMODE,NOMAIL,'NU_MAILLE','AFFE',I,2, MOTCLE,
+     +                                      TYPMCL, MESMAI, NBMA )
+         CALL JEDETR ( MESMAI )
+         MXMATA = MXMATA + NBMA
  10   CONTINUE
 C
       CALL RCMATE ( CHMAT, NOMAIL, MXMATA, NBAPNO, NOMODE )

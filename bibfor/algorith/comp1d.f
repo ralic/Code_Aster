@@ -6,7 +6,7 @@
       REAL*8         VIM(*),VIP(*),SIGM(6),SIGP(*),EPS(6),DEPS(6)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/01/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 13/10/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,9 +144,16 @@ C
 C
          IF (VECTEU) THEN
             IF (ABS(DEPS(2)) .LE. R8MIEM()) THEN
-             CALL UTMESS('F','TE0248 COMP1D','INITIALISATION DE '//
-     &                 ' LA DICHOTOMIE IMPOSSIBLE - DEPLACEMENT '//
-     &                 ' EN Y NUL') 
+C               ALORS EPS(1)+DEPS(1)=0 CF PMFCOM ET TE0248
+C               ET SIGM=0, CF TE0248 
+C               APPEL A NMCOMP (POUR AVOIR DSIDEP) ET SORTIE
+                CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
+     +               ZR(IINSTM),ZR(IINSTP),TEMPM,TEMPP,TREF,HYDRGM,
+     +               HYDRGP,SECHGM,SECHGP,EPS,DEPS,SIGM,
+     +               VIM,OPTION,EPSANM,EPSANP,NZ,PHASM,
+     +               PHASP,LC,SIGP,VIP,DSIDEP,
+     +               CODRET)
+                GOTO 9999
             ELSEIF (DEPS(2).GT.ZERO) THEN
                XI = -0.99D0*DEPS(2)
                XM = XI

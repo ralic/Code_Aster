@@ -3,7 +3,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF POSTRELE  DATE 27/06/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -221,6 +221,13 @@ C
               ELSE
                  CALL RCVALE ( MATER, 'FATIGUE', 1, 'SIGM', SALTIJ, 1,
      +                                   'WOHLER', NADM, CODRET, 'F ' )
+         IF ( NADM .LT. 0 ) THEN
+            CALL UTDEBM ('A','WOHLER','NOMBRE DE CYCLES ADMISSIBLES'//
+     +                       ' NEGATIF, VERIFIER LA COURBE DE WOHLER')
+            CALL UTIMPR ('L','   CONTRAINTE CALCULEE = ',1,SALTIJ)
+            CALL UTIMPR ('L','   NADM = ',1,NADM)
+            CALL UTFINM ()
+         ENDIF
 C
                  UG = DBLE( NOCC ) / NADM
               ENDIF

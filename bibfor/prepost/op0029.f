@@ -3,7 +3,7 @@
       INTEGER    IER
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 03/06/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,7 +47,7 @@ C
       INTEGER           NBI, NBR, NBK, NBT, COL, NBCOL
       INTEGER           NBL, NB,LDEB, LFIN, DEB, FIN
       PARAMETER         ( NBCOL = 200)
-      INTEGER           VALI(NBCOL),LIM, TRUC
+      INTEGER           VALI(NBCOL),LIM, TRUC, ULISOP
       REAL*8            VALR(NBCOL)
       COMPLEX*16        CBID
       CHARACTER*8       FORM, RESULT, K8B
@@ -55,7 +55,7 @@ C
       CHARACTER*1       TY
       CHARACTER*3       TYP(NBCOL)
       CHARACTER*14      TYPTAB
-      CHARACTER*16      NOMCMD, PAR(NBCOL), PAR2(NBCOL)
+      CHARACTER*16      NOMCMD, PAR(NBCOL), PAR2(NBCOL),K16NOM
       CHARACTER*80      TIT,LIGNE, TITRE2(20), VAL, VALK(NBCOL)
       CHARACTER*2000    TAB
 C ======================================================================
@@ -72,7 +72,10 @@ C --- LE FORMAT
 C      
 C --- UNITE DU FICHIER 
       CALL GETVIS ( ' ', 'UNITE', 1,1,1, UNIT , IBID )
-      CALL ASOPEN ( UNIT, ' ' )
+      K16NOM = ' '
+      IF ( ULISOP ( UNIT, K16NOM ) .EQ. 0 )  THEN 
+        CALL ULOPEN ( UNIT,' ',' ','NEW','O')
+      ENDIF 
 C
 C --- NUMERO DU TABLEAU DANS LE FICHIER
       CALL GETVIS ( ' ', 'NUME_TABLE', 1,1,1, NUME , IBID )
@@ -237,7 +240,7 @@ C
 C  
  200  CONTINUE 
       CALL TITRE
-      CALL ASOPEN ( -UNIT, ' ' )           
+      CALL ULOPEN ( -UNIT,' ',' ',' ',' ' )           
 C ======================================================================
 2000  FORMAT(A)     
       CALL JEDEMA()

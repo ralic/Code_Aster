@@ -1,4 +1,4 @@
-# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -157,6 +157,7 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15000000E8,
                               NU=0.20000000000000001,
                               RHO=2670.0,
                               ALPHA=0.,),
+                      COMP_THM = 'LIQU_VAPE',
                       THM_LIQU=_F(RHO=1000.0,
                                   UN_SUR_K=0.,
                                   ALPHA=0.,

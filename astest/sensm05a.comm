@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2002   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
 # RESPONSABLE PABHHHH N. TARDIEU
 # TITRE SENSIBILITE AUX DONNEES MATERIAUX EN MECA_STATIQUE ORTHOTROPE 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -57,7 +57,7 @@ MEMO_NOM_SENSI ( NOM_ZERO = PS_ZERO ) ;
 #
 
 mot_cle =["E_L", "E_T", "E_N", "NU_LT", "NU_LN", "NU_TN", "G_LT", "G_LN", "G_TN" ]
-sensible=[2.E5,  1.E5,  3.E5,     0.4,     0.3,     0.4,   2.E5,   1.E5,   3.E5  ]
+sensible=[ 2.E5,  1.E5,  3.E5,     0.4,     0.3,     0.4,   2.E5,   1.E5,   3.E5 ]
 
 #
 # 2. Definition des parametres sensibles
@@ -75,7 +75,7 @@ for i in range(n):
 # 3. Prealable
 #
 PRE_GIBI()
-MAILLAGE=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),);
+MAILLAGE=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),);
 #
 # 3.1. Modele
 #
@@ -114,6 +114,7 @@ for i in range(n):
                           PARA_SENSI=PS[i],
                           NOM_COMPOSE=MATS[i].nom,
                           MOT_CLE=mot_cle[i],
+                          MOT_FACT='ELAS_ORTH_FO',
                           VALEUR=PS[i].nom ),);
 
 
@@ -131,6 +132,7 @@ for i in range(n):
                           PARA_SENSI=PS[i],
                           NOM_COMPOSE=CHMS[i].nom,
                           MOT_CLE='MATER',
+                          MOT_FACT='AFFE',
                           VALEUR='MAT' ),);
 
 #

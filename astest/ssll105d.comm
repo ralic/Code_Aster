@@ -1,0 +1,137 @@
+# MODIF  DATE 16/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+# TITRE FLAMBEMENT NON LINEAIRE POUTRE EN L
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+
+
+DEBUT(CODE=_F( NOM = 'SSLL105D',NIV_PUB_WEB='INTERNET'));
+
+PRE_GIBI();
+
+mail=LIRE_MAILLAGE();
+
+modele=AFFE_MODELE(MAILLAGE=mail,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='POU_D_E',),);
+
+cara_pou=AFFE_CARA_ELEM(MODELE=modele,
+                        POUTRE=_F(GROUP_MA='POUT',
+                                  SECTION='RECTANGLE',
+                                  CARA=('HY','HZ',),
+                                  VALE=(30.0,0.6,),),);
+
+alu=DEFI_MATERIAU(ELAS=_F(E=71240,
+                          NU=0.3,),);
+
+ch_mat=AFFE_MATERIAU(MAILLAGE=mail,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=alu,),);
+
+encast=AFFE_CHAR_MECA(MODELE=modele,
+                      DDL_IMPO=_F(GROUP_NO='A',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,
+                                  DRX=0.0,
+                                  DRY=0.0,
+                                  DRZ=0.0,),);
+
+fonc=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,0.0,1.0,1.0,),);
+
+list=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=1.0,
+                                  NOMBRE=10,),);
+
+effort=AFFE_CHAR_MECA(MODELE=modele,
+                      FORCE_NODALE=_F(GROUP_NO='C',
+                                      FX=1,),);
+
+res=STAT_NON_LINE(MODELE=modele,
+                  CHAM_MATER=ch_mat,
+                  CARA_ELEM=cara_pou,
+                  EXCIT=(_F(CHARGE=encast,),
+                         _F(CHARGE=effort,
+                            FONC_MULT=fonc,),),
+                  COMP_INCR=_F(RELATION='ELAS',
+                               DEFORMATION='PETIT',),
+                  INCREMENT=_F(LIST_INST=list,),
+                  NEWTON=_F(MATRICE='TANGENTE',),
+                  CRIT_FLAMB=_F(CHAR_CRIT=(-2.,0.),),
+                  );
+
+TEST_RESU(RESU=(
+                 _F(RESULTAT=res,
+                   INST=1.,
+                   PARA='CHAR_CRIT',
+                   VALE=-1.088,
+                   PRECISION=0.02,
+                   REFERENCE='ANALYTIQUE',),
+                   ),)
+
+
+
+DEFI_FICHIER(FICHIER='MODEFLAM',UNITE=36)
+
+IMPR_RESU(RESU=_F(FORMAT='GMSH',FICHIER='MODEFLAM',
+                  RESULTAT=res,NUME_ORDRE=(10),
+                  NOM_CHAM='MODE_FLAMB',),);
+
+
+effort2=AFFE_CHAR_MECA(MODELE=modele,
+                      FORCE_NODALE=_F(GROUP_NO='C',
+                                      FX=-1,),);
+
+res2=STAT_NON_LINE(MODELE=modele,
+                  CHAM_MATER=ch_mat,
+                  CARA_ELEM=cara_pou,
+                  EXCIT=(_F(CHARGE=encast,),
+                         _F(CHARGE=effort2,
+                            FONC_MULT=fonc,),),
+                  COMP_INCR=_F(RELATION='ELAS',
+                               DEFORMATION='PETIT',),
+                  INCREMENT=_F(LIST_INST=list,),
+                  NEWTON=_F(MATRICE='TANGENTE',),
+                  CRIT_FLAMB=_F(CHAR_CRIT=(-1., 0.),),
+                  );
+
+TEST_RESU(RESU=(
+                 _F(RESULTAT=res2,
+                   INST=1.,
+                   PARA='CHAR_CRIT',
+                   VALE=-0.68,
+                   PRECISION=0.02,
+                   REFERENCE='ANALYTIQUE',),
+                   ),)
+
+
+IMPR_RESU(RESU=_F(RESULTAT=res2,NUME_ORDRE=(10),
+                  NOM_CHAM='MODE_FLAMB',VALE_MAX='OUI',VALE_MIN='OUI'),);
+
+
+DEFI_FICHIER(FICHIER='MODEFLAM',UNITE=37,
+#NOM_SYSTEME='./REPE_OUT/modeflamb2.pos'
+)
+
+IMPR_RESU(RESU=_F(FORMAT='GMSH',FICHIER='MODEFLAM',
+                  RESULTAT=res2,NUME_ORDRE=(10),
+                  NOM_CHAM='MODE_FLAMB',),);
+
+FIN();

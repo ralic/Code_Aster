@@ -1,4 +1,4 @@
-# MODIF  DATE 17/06/2002   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 # RESPONSABLE O.BOITEAU
 # TITRE Validation de la sensibilite par rapport au coefficient d'echan
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -96,6 +96,7 @@ MEMO_NOM_SENSI(NOM=_F(NOM_SD='MAT',
                       PARA_SENSI=PS2,
                       NOM_COMPOSE='MAT_PS2',
                       VALEUR='PS2',
+                      MOT_FACT='THER_FO',
                       MOT_CLE='LAMBDA',));
 MAT_PS2=DEFI_MATERIAU(THER_FO=_F(LAMBDA = PS_UN,
                                  RHO_CP = PS_ZERO))
@@ -104,6 +105,7 @@ MEMO_NOM_SENSI(NOM=_F(NOM_SD='CMAT',
                       PARA_SENSI=PS2,
                       NOM_COMPOSE='CMAT_PS2',
                       VALEUR='MAT',
+                      MOT_FACT='AFFE',
                       MOT_CLE='MATER',));
 CMAT_PS2=AFFE_MATERIAU(MAILLAGE=MAIL,AFFE=_F(TOUT='OUI',MATER=MAT_PS2))
 #
@@ -127,6 +129,7 @@ MEMO_NOM_SENSI(NOM=_F(NOM_SD='CH_1',
                       PARA_SENSI=PS1,
                       NOM_COMPOSE='CH_1_PS1',
                       VALEUR='PS1',
+                      MOT_FACT='ECHANGE_PAROI',
                       MOT_CLE='COEF_H',));
 CH_1_PS1=AFFE_CHAR_THER_F(MODELE=MODTHER,
                           ECHANGE_PAROI=_F(GROUP_MA_1='INTERG',

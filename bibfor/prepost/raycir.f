@@ -1,5 +1,5 @@
       SUBROUTINE RAYCIR(JVECPG, JDTAU, JVECN, NBORDR, NBVEC, NOMMET)
-C MODIF PREPOST  DATE 08/04/2003   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 26/05/2003   AUTEUR F1BHHAJ J.ANGLES 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -92,7 +92,7 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
       CETIR = SQRT(3.0D0/4.0D0)
-      EPSILO = 1.0D-7
+      EPSILO = 1.0D-5
 C
       CALL WKVECT('&&RAYCIR.SECT1', 'V V R', NBORDR*2, JSEC1)
       CALL WKVECT('&&RAYCIR.SECT2', 'V V R', NBORDR*2, JSEC2)
@@ -413,9 +413,6 @@ C
                CVPN1 = CVPPE2
                CUPN2 = CUPN
                CVPN2 = CVPN
-               CUON = 0.0D0
-               CVON = 0.0D0
-               RAY3PT = 0.0D0
                CALL CER3PT (CUPN0, CVPN0, CUPN1, CVPN1,
      &                      CUPN2, CVPN2, CUON, CVON, RAY3PT)
 C
@@ -511,7 +508,7 @@ C
                CALL CER3PT (CUPN0, CVPN0, CUPN1, CVPN1,
      &                      CUPN2, CVPN2, CUON, CVON, RAY3PT)
 C
-               IF (CVON .LT. CVO1) THEN
+               IF (CUON .LT. CUO1) THEN
                   CALL DIMAX2(JDOM1, NBPTD1, CUON, CVON, RAY3PT,
      &                        CUPN, CVPN, IRETV)
                ELSE
@@ -536,6 +533,7 @@ C
                ZR(JCOORP + 11) = CVPN1
 C
                RAY3PT = R8MAEM()
+               K = 0
 C
                DO 120 I=1, 3
                   CUPN0 = ZR(JCOORP + I*2)
@@ -550,6 +548,10 @@ C
                   CALL DIMAX2(JCOORP, 4, CUOI, CVOI, RMIN3P,
      &                        CUPN, CVPN, IRET3P)
 C
+                  IF (IRET3P .EQ. 0) THEN
+                     K = K + 1
+                  ENDIF
+C
                   IF ((RMIN3P .LT. RAY3PT) .AND. (IRET3P .EQ. 0)) THEN
                      RAY3PT = RMIN3P
                      CUON = CUOI
@@ -563,8 +565,12 @@ C
                   ENDIF
 C
  120           CONTINUE
+               IF (K .EQ. 0) THEN
+                  CALL UTMESS('F', 'RAYCIR.2', 'AUCUN CERCLE N''EST '//
+     &                        ' CIRCONSCRIT AUX QUATRE POINTS.' )
+               ENDIF
 C
-               IF (CVON .LT. CVO1) THEN
+               IF (CUON .LT. CUO1) THEN
                   CALL DIMAX2(JDOM1, NBPTD1, CUON, CVON, RAY3PT,
      &                        CUPN, CVPN, IRETV)
                ELSE
@@ -673,7 +679,7 @@ C
  999  CONTINUE
 C
 C MENAGE
-
+C
       CALL JEDETR ('&&RAYCIR.SECT1')
       CALL JEDETR ('&&RAYCIR.SECT2')
       CALL JEDETR ('&&RAYCIR.SECT3')

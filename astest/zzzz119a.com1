@@ -1,0 +1,3 @@
+POURSUITE(CODE=_F(NOM = 'ZZZZ119A'));
+
+FIN(HDF=_F(FICHIER='./zzzz119a.hdf'));

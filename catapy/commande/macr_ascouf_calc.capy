@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,7 +39,7 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op= -20,sd_prod=macr_ascouf_calc_p
                                      "SOUS_EPAIS_COUDE"
                                      ) ),
 
-         CL_BOL_P2_GV    =FACT(statut='f',min=1,max=1,
+         CL_BOL_P2_GV    =FACT(statut='f',
            ANGLE           =SIMP(statut='o',typ='R' ),
            AZIMUT          =SIMP(statut='f',typ='R',defaut= 90. ),
          ),
@@ -52,7 +52,7 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op= -20,sd_prod=macr_ascouf_calc_p
          CHARGE          =SIMP(statut='f',typ=(CO,char_meca)),
          RESU_THER       =SIMP(statut='f',typ=(CO,evol_ther)),
 
-         AFFE_MATERIAU   =FACT(statut='o',min=1,max=3,
+         AFFE_MATERIAU   =FACT(statut='o',max=3,
            regles=(UN_PARMI('TOUT','GROUP_MA'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA        =SIMP(statut='f',typ='TXM',into=("COUDE","BOL") ),
@@ -60,19 +60,19 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op= -20,sd_prod=macr_ascouf_calc_p
            TEMP_REF        =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
          ),
 
-         PRES_REP        =FACT(statut='f',min=1,max=1,
+         PRES_REP        =FACT(statut='f',
            PRES            =SIMP(statut='o',typ='R' ),
            EFFE_FOND_P1    =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            PRES_LEVRE      =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
            FONC_MULT       =SIMP(statut='f',typ=(fonction,formule) ),
          ),
 
-         ECHANGE         =FACT(statut='f',min=1,max=1,
+         ECHANGE         =FACT(statut='f',
            COEF_H          =SIMP(statut='f',typ=(fonction,formule) ),
            TEMP_EXT        =SIMP(statut='f',typ=(fonction,formule) ),
          ),
 
-         TORS_P1         =FACT(statut='f',min=1,max=6,
+         TORS_P1         =FACT(statut='f',max=6,
            regles=(AU_MOINS_UN('FX','FY','FZ','MX','MY','MZ'),),
            FX              =SIMP(statut='f',typ='R' ),
            FY              =SIMP(statut='f',typ='R' ),
@@ -83,18 +83,18 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op= -20,sd_prod=macr_ascouf_calc_p
            FONC_MULT       =SIMP(statut='f',typ=(fonction,formule) ),
          ),
 
-         COMP_INCR       =FACT(statut='f',min=1,max=1,
+         COMP_INCR       =FACT(statut='f',
            RELATION        =SIMP(statut='o',typ='TXM',into=("VMIS_ISOT_TRAC",) ),
            VMIS_ISOT_TRAC  =SIMP(statut='c',typ='I',defaut= 2,into=( 2 ,) ),
          ),
 
-         COMP_ELAS       =FACT(statut='f',min=1,max=1,
+         COMP_ELAS       =FACT(statut='f',
            RELATION        =SIMP(statut='o',typ='TXM',into=("ELAS","ELAS_VMIS_TRAC") ),
            ELAS            =SIMP(statut='c',typ='I',defaut= 1,into=( 1 ,) ),
            ELAS_VMIS_TRAC  =SIMP(statut='c',typ='I',defaut= 1,into=( 1 ,) ),
          ),
 
-         SOLVEUR         =FACT(statut='d',min=1,max=1,
+         SOLVEUR         =FACT(statut='d',
            METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC") ),
            b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
@@ -117,7 +117,7 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op= -20,sd_prod=macr_ascouf_calc_p
            SYME            =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          ),
 
-         CONVERGENCE     =FACT(statut='d',min=1,max=1,
+         CONVERGENCE     =FACT(statut='d',
            RESI_GLOB_MAXI  =SIMP(statut='f',typ='R'),
            RESI_GLOB_RELA  =SIMP(statut='f',typ='R'),
            ITER_GLOB_MAXI  =SIMP(statut='f',typ='I',defaut=10),
@@ -130,7 +130,7 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op= -20,sd_prod=macr_ascouf_calc_p
            RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",into=("RUNGE_KUTTA_2","RUNGE_KUTTA_4","IMPLICITE")),
          ),
 
-         NEWTON          =FACT(statut='d',min=1,max=1,
+         NEWTON          =FACT(statut='d',
            REAC_INCR       =SIMP(statut='f',typ='I',defaut= 1 ),
            PREDICTION      =SIMP(statut='f',typ='TXM',into=("DEPL_CALCULE","TANGENTE","ELASTIQUE","EXTRAPOL") ),
            MATRICE         =SIMP(statut='f',typ='TXM',defaut="TANGENTE",into=("TANGENTE","ELASTIQUE") ),
@@ -138,12 +138,12 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op= -20,sd_prod=macr_ascouf_calc_p
            EVOL_NOLI       =SIMP(statut='f',typ=evol_noli),
          ),
 
-         RECH_LINEAIRE   =FACT(statut='f',min=1,max=1,
+         RECH_LINEAIRE   =FACT(statut='f',
            RESI_LINE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
            ITER_LINE_MAXI  =SIMP(statut='f',typ='I',defaut= 3),
          ),
 
-         INCREMENT       =FACT(statut='o',min=1,max=1,
+         INCREMENT       =FACT(statut='o',
            regles=(EXCLUS('NUME_INST_INIT','INST_INIT'),
                    EXCLUS('NUME_INST_FIN','INST_FIN'),),
            LIST_INST       =SIMP(statut='o',typ=listr8),
@@ -159,17 +159,17 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op= -20,sd_prod=macr_ascouf_calc_p
            COEF_SUBD_PAS_1 =SIMP(statut='f',typ='R',defaut= 1.0E+0),
          ),
 
-         THETA_3D        =FACT(statut='f',min=1,max='**',
+         THETA_3D        =FACT(statut='f',max='**',
            R_INF           =SIMP(statut='o',typ='R' ),
            R_SUP           =SIMP(statut='o',typ='R' ),
          ),
 
-         IMPR_TABLE      =FACT(statut='f',min=1,max=1,
+         IMPR_TABLE      =FACT(statut='f',
            regles=(UN_PARMI('TOUT_PARA','NOM_PARA', ),
             PRESENT_PRESENT('TOUT_PARA','ANGLE',    ),
             PRESENT_PRESENT('TOUT_PARA','R_CINTR',  ),
                    UN_PARMI('POSI_CURV_LONGI','POSI_ANGUL',),),
-           NOM_PARA        =SIMP(statut='f',typ='TXM',max=4,
+           NOM_PARA        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=4,
                                  into=("TRESCA_MEMBRANE",
                                        "TRESCA_MFLE",
                                        "TRESCA",
@@ -185,7 +185,7 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op= -20,sd_prod=macr_ascouf_calc_p
            TRANSFORMEE     =SIMP(statut='f',typ='TXM',defaut="COUDE",into=("COUDE","TUBE") ),
          ),
 
-         IMPRESSION      =FACT(statut='f',min=1,max=1,
+         IMPRESSION      =FACT(statut='f',
            FORMAT          =SIMP(statut='f',typ='TXM',defaut="RESULTAT",
                                  into=("RESULTAT","ASTER","IDEAS","CASTEM") ),
                                  

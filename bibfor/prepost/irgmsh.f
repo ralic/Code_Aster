@@ -8,7 +8,7 @@
       CHARACTER*(*)     NOMCON, CHAM(*),NOMCMP(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/03/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF PREPOST  DATE 07/07/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,23 +75,31 @@ C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
+C --- RECUPERATION DU MAILLAGE, NB_MAILLE, ...
+C
+      IF ( LRESU ) THEN
+         DO 30 IOR = 1 , NBORDR 
+            DO 32 ICH = 1 , NBCHAM
+               CALL RSEXCH(NOMCON,CHAM(ICH),ORDR(IOR),NOCH19,IRET)
+               IF ( IRET .EQ. 0 ) GOTO 34
+ 32         CONTINUE
+ 30      CONTINUE
+         CALL UTMESS('A','IRGMSH','AUCUN CHAMP TROUVE, PAS '//
+     +                            'D''IMPRESSION AU FORMAT "GMSH"')
+         GOTO 9999
+ 34      CONTINUE
+      ELSE
+         NOCH19 = NOMCON
+      ENDIF
+      CALL DISMOI ('F','NOM_MAILLA'  ,NOCH19,'CHAMP',IBID,NOMA,IERD)
+      CALL DISMOI ('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8B ,IERD)
+C
 C --- ECRITURE DE L'ENTETE DU FICHIER AU FORMAT GMSH
 C
       IF (.NOT.LGMSH) THEN
           CALL IRGMPF ( IFI, VERSIO )
           LGMSH = .TRUE.
       ENDIF
-C
-C
-C --- RECUPERATION DU MAILLAGE, NB_MAILLE, ...
-C
-      IF ( LRESU ) THEN
-         CALL RSEXCH ( NOMCON, CHAM(1), ORDR(1), NOCH19, IRET )
-      ELSE
-         NOCH19 = NOMCON
-      ENDIF
-      CALL DISMOI ('F','NOM_MAILLA'  ,NOCH19,'CHAMP',IBID,NOMA,IERD)
-      CALL DISMOI ('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8B ,IERD)
 C
 C --- RECUPERATION DES INSTANTS, FREQUENCES, ...
 C
@@ -219,6 +227,8 @@ C
       CALL JEDETR ( NJVHEX )
       CALL JEDETR ( '&&IRGMSH.PARA' )
       CALL JEDETC ( 'V', NOMAOU, 1 )
+C
+ 9999 CONTINUE      
 C
       CALL JEDEMA()
 C

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,13 +26,13 @@ def extr_mode_prod(FILTRE_MODE,**args):
 EXTR_MODE=OPER(nom="EXTR_MODE",op= 168,sd_prod=extr_mode_prod,
                docu="U4.52.12-d",reentrant='n',
             UIinfo={"groupes":("Résolution",)},
-         FILTRE_MODE     =FACT(statut='o',min=1,max='**',
+         FILTRE_MODE     =FACT(statut='o',max='**',
            regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE','NUME_MODE','NUME_MODE_EXCLU','FREQ_MIN','CRIT_EXTR',),),
            MODE            =SIMP(statut='o',typ=(mode_meca,mode_meca_c,mode_gene ) ),
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI","NON") ),
-           NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
-           NUME_MODE       =SIMP(statut='f',typ='I',max='**'),
-           NUME_MODE_EXCLU =SIMP(statut='f',typ='I',max='**'),
+           NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+           NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+           NUME_MODE_EXCLU =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
            FREQ_MIN        =SIMP(statut='f',typ='R' ),
            CRIT_EXTR       =SIMP(statut='f',typ='TXM',into=("MASS_EFFE_UN","MASS_GENE") ),
            b_freq_min      =BLOC(condition = "FREQ_MIN != None",  
@@ -44,7 +44,7 @@ EXTR_MODE=OPER(nom="EXTR_MODE",op= 168,sd_prod=extr_mode_prod,
            ),    
          ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
-         IMPRESSION      =FACT(statut='f',min=1,max=1,
+         IMPRESSION      =FACT(statut='f',
            CUMUL           =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
            CRIT_EXTR       =SIMP(statut='f',typ='TXM',defaut="MASS_EFFE_UN",into=("MASS_EFFE_UN","MASS_GENE") ),
          ),

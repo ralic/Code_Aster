@@ -1,4 +1,4 @@
-# MODIF  DATE 09/07/2002   AUTEUR CAMBIER S.CAMBIER 
+# MODIF  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 # RESPONSABLE S.CAMBIER
 # TITRE SENSIBILITE AUX MATERIAUX EN DYNAMIQUE HARMON. ISOTROPE 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -55,14 +55,16 @@ MEMO_NOM_SENSI ( NOM_ZERO = PS_ZERO ) ;
 #
 # 2. Definition des parametres sensibles
 #
-#           E      NU    FX    FY
-sensible=[3.6E10,  0.2,  10.,  3. ]
+mot_cle =[   "E", "NU", "FX", "FY" ]
+sensible=[3.6E10,  0.2,  10.,   3. ]
 n=len(sensible)
 PS=[None]*n
 
 for i in range(n):
   PS[i]=DEFI_PARA_SENSI(VALE=sensible[i])
-#
+  MEMO_NOM_SENSI ( NOM=_F(NOM_SD=PS[i].nom,
+                          PARA_SENSI=PS[i],
+                          NOM_COMPOSE=PS_UN.nom ),);
 #
 # 3. Prealable
 #
@@ -97,7 +99,12 @@ for i in range(n2):
                                     RHO = 2400. ,
                                     NU  = PSFONC[1],
                            )  ) ;
-
+  MEMO_NOM_SENSI ( NOM=_F(NOM_SD='MAT',
+                          PARA_SENSI=PS[i],
+                          NOM_COMPOSE=MATS[i].nom,
+                          MOT_CLE=mot_cle[i],
+                          MOT_FACT='ELAS_FO',
+                          VALEUR=PS[i].nom ),);
 #
 # 3.3. Affectation des materiaux
 #
@@ -110,8 +117,10 @@ for i in range(n2):
                         AFFE=_F(TOUT='OUI',MATER=MATS[i],),);
   MEMO_NOM_SENSI ( NOM=_F(NOM_SD='CHMAT',
                           PARA_SENSI=PS[i],
-                          NOM_COMPOSE=CHMS[i].nom ),);
-
+                          NOM_COMPOSE=CHMS[i].nom,
+                          MOT_CLE='MATER',
+                          MOT_FACT='AFFE',
+                          VALEUR='MAT' ),);
 #
 # 3.4. Chargements
 #
@@ -136,8 +145,11 @@ for i in range(n-nf,n):
                                        );
   MEMO_NOM_SENSI ( NOM=_F(NOM_SD='CH',
                           PARA_SENSI=PS[i],
-                          NOM_COMPOSE=CHS[i].nom ),);
-  
+                          NOM_COMPOSE=CHS[i].nom,
+                          MOT_CLE=mot_cle[i],
+                          MOT_FACT='FORCE_NODALE',
+                          VALEUR=PS[i].nom ),);
+#
 # 3.5 Premier membre
 #
 
@@ -169,9 +181,9 @@ for i in range(n):
 DYH=DYNA_LINE_HARM( MODELE=MO, CHAM_MATER=CHMAT,
                            MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
                            LIST_FREQ=LIFREQ,
-                              TOUT_CHAM='OUI',
-                              SENSIBILITE=tuple(PS),
-                              EXCIT=(_F( COEF_MULT_C = ('RI',1.,1.,), CHARGE = CH),)                                                           
+                           TOUT_CHAM='OUI',
+                           SENSIBILITE=tuple(PS),
+                           EXCIT=(_F( COEF_MULT_C = ('RI',1.,1.,), CHARGE = CH),)                                                           
                      )                              
 
 T_REF_R=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',

@@ -1,6 +1,6 @@
       SUBROUTINE DKTNLI(OPT,XYZL,UL,DUL,BTSIG,KTAN,EFFINT,PGL,MULTIC,
      +                  GRILLE,CODRET)
-C MODIF ELEMENTS  DATE 30/01/2002   AUTEUR VABHHTS J.TESELET 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -168,7 +168,7 @@ C     --------------------------------------------------------
 
       CALL JEVECH('PMATERC','L',IMATE)
 
-      CALL TECACH(.TRUE.,.TRUE.,'PCONTMR',7,JTAB)
+      CALL TECACH('OON','PCONTMR',7,JTAB,IRET)
       NBSP=JTAB(7)
       ICONTM=JTAB(1)
       IF (NPG.NE.JTAB(3)) CALL UTMESS('F','DKTNLI','STOP')
@@ -263,7 +263,7 @@ C     NBCOU : NOMBRE DE COUCHES
       READ (ZK16(ICOMPO-1+2),'(I16)') NBVAR
       CALL JEVECH('PNBSP_I','L',JNBSPI)
       NBCOU=ZI(JNBSPI-1+1)
-      CALL TECACH(.TRUE.,.TRUE.,'PVARIMR',7,JTAB)
+      CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
       IF (NBCOU.LE.0) CALL UTMESS('F','DKTNLI','NOMBRE DE COUCHES '//
      +                            ' NEGATIF OU NUL : '//
      +                            ZK16(ICOMPO-1+6))
@@ -283,11 +283,11 @@ C===============================================================
 C     -- RECUPERATION DE LA TEMPERATURE :
 C     1- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
 C        -----------------------------------------
-      CALL TECAC2 ('ONN','PTEMPMR',8,ITABM,IRET)
+      CALL TECACH ('ONN','PTEMPMR',8,ITABM,IRET)
       ITEMPM=ITABM(1)
       IF (ITEMPM.GT.0) THEN
         TEMPNO = .TRUE.
-        CALL TECAC2 ('OON','PTEMPPR',8,ITABP,IRET)
+        CALL TECACH ('OON','PTEMPPR',8,ITABP,IRET)
         ITEMPP=ITABP(1)
 C       -- CALCUL DES TEMPERATURES INF, SUP ET MOY
 C          (MOYENNE DES NNO NOEUDS) ET DES COEF. DES POLY. DE DEGRE 2 :
@@ -318,7 +318,7 @@ C          ------------------------------------------------------------
       ELSE
 C     2- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
 C        -------------------------------------------------------
-        CALL TECACH(.TRUE.,.FALSE.,'PTEMPEF',1,ITEMP)
+        CALL TECACH('ONN','PTEMPEF',1,ITEMP,IRET)
         IF (ITEMP.GT.0) THEN
           TEMPNO = .FALSE.
           NOMPU(1) = 'INST'

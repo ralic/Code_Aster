@@ -1,3 +1,21 @@
+#@ MODIF cata_champs Stanley  DATE 21/01/2003   AUTEUR ASSIRE A.ASSIRE 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
 '''Catalogue des champs de resultats Aster'''
 
 from Cata.cata import *
@@ -11,7 +29,7 @@ class CHAMP :
   def Calc_no(champ, contexte, numeros) :
 
     para = {
-      'reuse'	   : contexte.resultat,
+      'reuse'      : contexte.resultat,
       'RESULTAT'   : contexte.resultat,
       'MODELE'     : contexte.modele,
       'OPTION'     : champ.nom,
@@ -28,7 +46,7 @@ class CHAMP :
   def Calc_elem(champ, contexte, numeros) :
 
     para = {
-      'reuse'	   : contexte.resultat,
+      'reuse'      : contexte.resultat,
       'RESULTAT'   : contexte.resultat,
       'MODELE'     : contexte.modele,
       'OPTION'     : champ.nom,
@@ -64,7 +82,7 @@ class CHAMP :
     self.fonc(self, contexte, numeros)
     
 
-    	
+        
 # ----------------------------------------------------------------------
 
 
@@ -77,25 +95,23 @@ class CATA_CHAMPS :
   
     self.cata = {}
     self('DEPL'          , 'NOEU',[],                            "Deplacements aux noeuds")
-    self('TEMP'          , 'NOEU',[],                            "Temperature aux noeuds")
     self('SIEF_ELGA'     , 'ELGA',[],                            "Contraintes aux points de Gauss")
+    self('SIEF_ELGA_DEPL', 'ELGA',[],                            "Contraintes aux points de Gauss en lineaire")
     self('VARI_ELGA'     , 'ELGA',[],                            "Variables internes aux points de Gauss")
     self('SIEF_ELNO_ELGA', 'ELNO',['SIEF_ELGA','SIEF_ELGA_DEPL'],"Contraintes aux noeuds par element")
-    self('FLUX_ELNO_TEMP', 'ELNO',['TEMP']                      ,"Flux thermique aux noeuds par element")
     self('VARI_ELNO_ELGA', 'ELNO',['VARI_ELGA'],                 "Variables internes aux noeuds par element")
-    self('EQUI_ELGA_SIGM', 'ELGA',['SIEF_ELGA'],	             "Invariants des contraintes aux points de Gauss")
+    self('EQUI_ELGA_SIGM', 'ELGA',['SIEF_ELGA'],                     "Invariants des contraintes aux points de Gauss")
     self('EQUI_ELNO_SIGM', 'ELNO',['SIEF_ELNO_ELGA'],            "Invariants des contraintes aux noeuds par element")
-    self('EPSI_ELGA_DEPL', 'ELGA',['DEPL'],	                     "Deformations aux points de Gauss")
-    self('EPSI_ELNO_DEPL', 'ELNO',['DEPL'],	                     "Deformations aux noeuds par elements")
-    self('EPSG_ELGA_DEPL', 'ELGA',['DEPL'],	                     "Deformations de Green aux points de Gauss")
-    self('EPSG_ELNO_DEPL', 'ELNO',['DEPL'],	                     "Deformations de Green aux noeuds par elements")
-    self('EPME_ELNO_DEPL', 'ELNO',['DEPL'],	                     "Deformations mecaniques aux noeuds par elements")
+    self('EPSI_ELGA_DEPL', 'ELGA',['DEPL'],                          "Deformations aux points de Gauss")
+    self('EPSI_ELNO_DEPL', 'ELNO',['DEPL'],                          "Deformations aux noeuds par elements")
+    self('EPSG_ELGA_DEPL', 'ELGA',['DEPL'],                          "Deformations de Green aux points de Gauss")
+    self('EPSG_ELNO_DEPL', 'ELNO',['DEPL'],                          "Deformations de Green aux noeuds par elements")
+    self('EPME_ELNO_DEPL', 'ELNO',['DEPL'],                          "Deformations mecaniques aux noeuds par elements")
     self('EQUI_ELGA_EPSI', 'ELGA',['EPSI_ELGA_DEPL'],            "Invariants des deformations aux points de Gauss")
     self('EQUI_ELNO_EPSI', 'ELNO',['EPSI_ELNO_DEPL'],            "Invariants des deformations aux noeuds par element")
     self('ERRE_ELGA_NORE', 'ELGA',['SIEF_ELNO_ELGA'],            "Indicateurs d'erreur en residu aux points de Gauss")
     self('ERRE_ELNO_ELGA', 'ELNO',['ERRE_ELGA_NORE'],            "Indicateurs d'erreur en residu aux noeuds par element")
-    self('FORC_NODA'     , 'NOEU',['SIEF_ELGA'],                 "Forces nodales")
-    
+
      
   def __getitem__(self, nom_cham) :
        

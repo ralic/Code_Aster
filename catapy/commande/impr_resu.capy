@@ -1,26 +1,26 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 IMPR_RESU=PROC(nom="IMPR_RESU",op=39,docu="U4.91.01-g",
             UIinfo={"groupes":("Impression",)},
                fr="Impression du résultat d un calcul (différents formats)",
          MODELE          =SIMP(statut='f',typ=modele),
-         RESU            =FACT(statut='o',min=1,max='**',
+         RESU            =FACT(statut='o',max='**',
            FORMAT          =SIMP(statut='f',typ='TXM',defaut="RESULTAT",
                                  into=("RESULTAT","IDEAS","ASTER","CASTEM","ENSIGHT","MED","GMSH") ),
 
@@ -46,7 +46,7 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,docu="U4.91.01-g",
            b_sensibilite   =BLOC(condition="RESULTAT != None",
                                  fr="Définition des paramètres de sensibilité",
                                  ang="Definition of sensitivity parameters",
-             SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),max='**',
+             SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
                                    fr="Liste des paramètres de sensibilité.",
                                    ang="List of sensitivity parameters"),),
 
@@ -56,18 +56,18 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,docu="U4.91.01-g",
                      EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE','NOEUD_CMP',
                             'LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS','ANGL'),),
              TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI","NON") ),
-             NOM_CHAM        =SIMP(statut='f',typ='TXM',max='**'),
+             NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',into=C_NOM_CHAM_INTO()),
 
              TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-             NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
-             NUME_MODE       =SIMP(statut='f',typ='I',max='**'),
+             NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+             NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
              LIST_ORDRE      =SIMP(statut='f',typ=listis),
-             NOEUD_CMP       =SIMP(statut='f',typ='TXM',max='**'),
-             NOM_CAS         =SIMP(statut='f',typ='TXM',max='**'),
-             ANGL            =SIMP(statut='f',typ='R',max='**'),
-             FREQ            =SIMP(statut='f',typ='R',max='**'),
+             NOEUD_CMP       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
+             NOM_CAS         =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
+             ANGL            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+             FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
              LIST_FREQ       =SIMP(statut='f',typ=listr8),
-             INST            =SIMP(statut='f',typ='R',max='**'),
+             INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
              LIST_INST       =SIMP(statut='f',typ=listr8),
 
              b_acce_reel     =BLOC(condition="(FREQ != None)or(LIST_FREQ != None)or(INST != None)or(LIST_INST != None)",
@@ -95,18 +95,18 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,docu="U4.91.01-g",
            b_gmsh=BLOC(condition="""((CHAM_GD != None)or(RESULTAT != None))and((FORMAT == 'GMSH'))""",
                                  fr="sélection des composantes et des entités toplogiques",
              NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),
-             MAILLE          =SIMP(statut='f',typ=ma,max='**'),
-             GROUP_MA        =SIMP(statut='f',typ=grma,max='**'),
+             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+             GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            ),
 
            b_topologie=BLOC(condition="""((CHAM_GD != None)or(RESULTAT != None))and\
                                    ((FORMAT == 'RESULTAT')or(FORMAT == 'IDEAS')or(FORMAT == 'MED'))""",
                                    fr="sélection des entités toplogiques",
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-             NOEUD           =SIMP(statut='f',typ=no,max='**'),
-             GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
-             MAILLE          =SIMP(statut='f',typ=ma,max='**'),
-             GROUP_MA        =SIMP(statut='f',typ=grma,max='**'),
+             NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+             GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+             GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            ),
 
            b_valeurs         =BLOC(condition="(FORMAT == 'RESULTAT')",

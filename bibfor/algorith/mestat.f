@@ -3,7 +3,7 @@
      &                    LTPSZ,  SOLVEZ,
      &                    NBPASE, INPSCO  )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/09/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
-C ----------------------------------------------------------------------
+C ---------------------------------------------------------------------
 C     BUT:  FAIRE UN CALCUL DE MECANIQUE STATIQUE : K(T)*U = F(T)
 C           POUR LES DIFFERENTS INSTANTS "T" DE LTPS.
 C     IN: MODELZ : NOM D'1 MODELE
@@ -35,7 +35,7 @@ C         NBPASE : NOMBRE DE PARAMETRES SENSIBLES
 C         INPSCO : SD CONTENANT LA LISTE DES NOMS POUR LA SENSIBILITE
 C
 C     OUT: L'EVOL_ELAS  EST REMPLI (POUR SA PARTIE 'DEPL')
-C ----------------------------------------------------------------------
+C ---------------------------------------------------------------------
 C
       IMPLICIT NONE
 C
@@ -51,7 +51,7 @@ C
 C
 C 0.2. ==> COMMUNS
 C
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  -------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -66,7 +66,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  -------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
@@ -74,11 +74,10 @@ C
       PARAMETER ( NOMPRO = 'MESTAT' )
 C
       INTEGER JCHAR, JINF, NCHAR, NBVAL, IBID, IERD, ICHAR
-      INTEGER JVAL, ITPS, ITPS0
-      INTEGER IRET, IAUX
-      INTEGER NRPASE, NRORES
+      INTEGER JVAL, ITPS, ITPS0,IRET, IAUX,NRPASE, NRORES
+      INTEGER NINSTC
 C
-      REAL*8 TIME
+      REAL*8 TIME,INSTF,R8MAEM
       REAL*8 TPS1(4), TPS2(4), TPS3(4), TCPU, PARTPS(3)
 C
       CHARACTER*1 BASE
@@ -86,17 +85,15 @@ C
       CHARACTER*8  NOMODE, NOMA
       CHARACTER*14 NUPOSS
       CHARACTER*16 K16BID
-      CHARACTER*19 MATASS
-      CHARACTER*19 MAPREC
-      CHARACTER*19 VECASS
+      CHARACTER*19 MATASS,MAPREC,VECASS,CHDEPL
       CHARACTER*24 NUMEDD
       CHARACTER*24 CHNUMC
       CHARACTER*24 CHARGE, INFOCH, CRITER
-      CHARACTER*24 MODELE, CARELE, FOMULT
+      CHARACTER*24 MODELE, CARELE, FOMULT,NOOJB
 C
       LOGICAL MATCST, ASSMAT
 C
-C DEB-------------------------------------------------------------------
+C DEB------------------------------------------------------------------
 C====
 C 1. PREALABLES
 C====
@@ -191,7 +188,9 @@ C
 C 2.2. ==> NUMEROTATION ET CREATION DU PROFIL DE LA MATRICE
 C
       NUMEDD=  '12345678.NUMED'
-      CALL GCNCON ( '_',NUMEDD(1:8) )
+      NOOJB='12345678.00000.NUME.PRNO'
+      CALL GNOMSD ( NOOJB,10,14 )
+      NUMEDD=NOOJB(1:14)
 
       CALL GETRES (RESULT,K16BID,K16BID)
       CALL RSNUME(RESULT,'DEPL',NUPOSS)
@@ -208,17 +207,28 @@ C
       CALL UTTCPU(3, 'INIT', 4, TPS3)
 C
       CALL JEVEUO(LTPS//'           .VALE','L',JVAL)
-C
+      INSTF=R8MAEM()
+      CALL GETVR8(' ','INST_FIN',0,1,1,INSTF,IBID)
+
+
 C====
 C 2. BOUCLE 2 SUR LES PAS DE TEMPS
 C====
-C
+      NINSTC=0
       DO 2 , ITPS = 1 , NBVAL
-C
+
+C       SI LE PAS DE TEMPS A DEJA ETE CALCULE, ON SAUTE L'ITERATION
+        CALL RSEXCH(RESULT,'DEPL',ITPS,CHDEPL,IRET)
+        IF (IRET.EQ.0) GO TO 2
+
 C 2.1. ==> L'INSTANT
-C
         ITPS0 = ITPS
         TIME = ZR(JVAL-1+ITPS)
+
+C       -- SI ON A DEPASSE INSTF, ON SORT :
+        IF (TIME .GT. INSTF) GO TO 3
+
+        NINSTC=NINSTC+1
         PARTPS(1) = TIME
 C
 C 2.2. ==> BOUCLE 22 SUR LES RESOLUTIONS
@@ -233,7 +243,7 @@ C 2.2.1. ==> Y-A-T'IL ASSEMBLAGE DES MATRICES ?
 C
           IF ( NRORES.EQ.0 ) THEN
 C
-            IF ( .NOT.MATCST .OR. ITPS.EQ.1 ) THEN
+            IF ( .NOT.MATCST .OR. NINSTC.EQ.1 ) THEN
               ASSMAT = .TRUE.
             ELSE
               ASSMAT = .FALSE.
@@ -255,7 +265,7 @@ C
 C
 C 2.3. ==> CONTROLE DU TEMPS CPU
 C
-        IF ( .NOT.MATCST .OR. ITPS.EQ.1 ) THEN
+        IF ( .NOT.MATCST .OR. NINSTC.EQ.1 ) THEN
           TCPU = TPS1(4) + TPS2(4) + TPS3(4)
         ELSE
           TCPU = TPS3(4)
@@ -273,6 +283,7 @@ C
         ENDIF
 C
     2 CONTINUE
+    3 CONTINUE
 C
 C        -- MENAGE DES OBJETS PROVISOIRES:
  9999 CONTINUE

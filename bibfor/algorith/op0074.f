@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 21/07/2003   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,6 +75,7 @@ C
 C       --- CALCUL PAR SUPERPOSITION SUR BASE MODALE ---
 C
       IF (TYPREP.EQ.'MODE_MECA       '.OR.
+     &    TYPREP.EQ.'MODE_STAT       '.OR.
      &    TYPREP.EQ.'MODE_GENE       '.OR.
      &    TYPREP.EQ.'BASE_MODALE     ') THEN
           CALL MDTR74(NOMRES,NOMCMD)

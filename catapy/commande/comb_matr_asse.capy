@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,20 +38,20 @@ COMB_MATR_ASSE=OPER(nom="COMB_MATR_ASSE",op=  31,sd_prod=comb_matr_asse_prod,
                     docu="U4.72.01-g",reentrant='f',
             UIinfo={"groupes":("Résultats et champs",)},
          regles=(UN_PARMI('COMB_R','COMB_C','CALC_AMOR_GENE' ),),
-         COMB_R          =FACT(statut='f',min=1,max='**',
+         COMB_R          =FACT(statut='f',max='**',
            PARTIE          =SIMP(statut='f',typ='TXM',into=("REEL","IMAG") ),
            MATR_ASSE       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_temp_r,matr_asse_temp_c
                                                 ,matr_asse_pres_r,matr_asse_pres_c,matr_asse_gene_r,matr_asse_gene_c ) ),
            COEF_R          =SIMP(statut='o',typ='R' ),
          ),
-         COMB_C          =FACT(statut='f',min=1,max='**',
+         COMB_C          =FACT(statut='f',max='**',
            regles=(UN_PARMI('COEF_R','COEF_C' ),),
            MATR_ASSE       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_temp_r,matr_asse_temp_c
                                                 ,matr_asse_pres_r,matr_asse_pres_c,matr_asse_gene_r,matr_asse_gene_c ) ),
            COEF_R          =SIMP(statut='f',typ='R' ),
            COEF_C          =SIMP(statut='f',typ='C' ),
          ),
-         CALC_AMOR_GENE   =FACT(statut='f',min=1,max=1,
+         CALC_AMOR_GENE   =FACT(statut='f',
            regles=(UN_PARMI('AMOR_REDUIT','LIST_AMOR' ),),
            MASS_GENE    = SIMP(statut='f', typ=matr_asse_gene_r),
            RIGI_GENE    = SIMP(statut='f', typ=matr_asse_gene_r),

@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 01/09/2003   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
+C RESPONSABLE MCOURTOI M.COURTOIS
 C     OPERATEUR CREA_MAILLAGE
 C     ------------------------------------------------------------------
 
@@ -41,13 +42,15 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER I,LGNO,LGNU,NBECLA,NBMC,IRET,IAD,NUME,NBMA
-      PARAMETER (NBMC=5)
+      INTEGER     I,LGNO,LGNU,NBECLA,NBMC,IRET,IAD,NBMA,NBMST,IQTR,
+     &            NBVOLU,N1,NUMMA
+      PARAMETER   (NBMC=5)
+      REAL*8      EPAIS
       CHARACTER*1 K1B
       CHARACTER*4 CDIM
       CHARACTER*8 K8B,NOMAIN,NOMAOU,NEWMAI,NOGMA, PREFIX
-      CHARACTER*8 NOMG,NOMORI,KNUME
-      CHARACTER*16 TYPCON,NOMCMD
+      CHARACTER*8 NOMG,NOMORI,KNUME,PRFNO,PRFMA,PLAN,TRANS
+      CHARACTER*16 TYPCON,NOMCMD,OPTION
       CHARACTER*16 MOTFAC,TYMOCL(NBMC),MOTCLE(NBMC)
       CHARACTER*19 TABLE
       CHARACTER*24 NOMMAI,GRPMAI,TYPMAI,CONNEX,NODIME,GRPNOE,NOMNOE,
@@ -60,21 +63,22 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
+
       CALL INFMAJ()
+      CALL INFNIV(IFM,NIV)
 
-      CALL TITRE()
-
+      CALL GETRES ( NOMAOU, TYPCON, NOMCMD )
+      CALL GETVID ( ' ', 'MAILLAGE', 1,1,1, NOMAIN, N1 )
 
 C ----------------------------------------------------------------------
 C               TRAITEMENT DU MOT CLE "ECLA_PG"
 C ----------------------------------------------------------------------
 
-      CALL GETFAC('ECLA_PG',NBECLA)
+      CALL GETFAC ( 'ECLA_PG', NBECLA )
       IF (NBECLA.GT.0) THEN
-        CALL ECLPGM()
-        GO TO 300
+         CALL ECLPGM()
+         GO TO 300
       END IF
-
 
 C ----------------------------------------------------------------------
 C          TRAITEMENT DU MOT CLE "LINE_QUAD"
@@ -82,9 +86,6 @@ C ----------------------------------------------------------------------
 
       CALL GETFAC('LINE_QUAD',NBMOMA)
       IF (NBMOMA.GT.0) THEN
-
-        CALL GETRES(NOMAOU,TYPCON,NOMCMD)
-        CALL GETVID(' ','MAILLAGE',1,1,1,NOMAIN,N1)
 
         CALL GETVTX('LINE_QUAD','PREF_NOEUD',1,1,1,PREFIX,N1)
         CALL GETVIS('LINE_QUAD','PREF_NUME' ,1,1,1,NDINIT,N1)
@@ -94,28 +95,94 @@ C ----------------------------------------------------------------------
         MOTCLE(3) = 'TOUT'
         NOMJV          = '&&OP0167.LISTE_MA'
         CALL RELIEM(' ',NOMAIN,'NU_MAILLE','LINE_QUAD',1,3,MOTCLE,
-     &    MOTCLE,NOMJV,NBMA)
+     &              MOTCLE,NOMJV,NBMA)
         CALL JEVEUO(NOMJV,'L',JLIMA)
         CALL JEEXIN(NOMAIN//'.NOMACR',IRET)
         IF (IRET.NE.0) CALL UTMESS('F','OP0167','CREA_MAILLAGE : '
-     &  // 'L''OPTION LIN_QUAD NE TRAITE PAS LES MACROS MAILLES')
+     &  // 'L''OPTION LINE_QUAD NE TRAITE PAS LES MACROS MAILLES')
         CALL JEEXIN(NOMAIN//'.ABS_CURV',IRET)
         IF (IRET.NE.0) CALL UTMESS('F','OP0167','CREA_MAILLAGE : '
-     &  //  'L''OPTION LIN_QUAD NE TRAITE PAS LES ABS_CURV')
+     &  //  'L''OPTION LINE_QUAD NE TRAITE PAS LES ABSC_CURV')
 
-        CALL CMLQLQ(NOMAIN, NOMAOU, NBMA, ZI(JLIMA), PREFIX, NDINIT)
+        CALL CMLQLQ ( NOMAIN, NOMAOU, NBMA, ZI(JLIMA), PREFIX, NDINIT )
 
-       GOTO 300
+        GOTO 300
       END IF
 
+C ----------------------------------------------------------------------
+C          TRAITEMENT DU MOT CLE "MODI_MAILLE", OPTION "QUAD_TRIA3"
+C ----------------------------------------------------------------------
+
+      CALL GETFAC ( 'MODI_MAILLE', NBMOMA )
+      IF ( NBMOMA .GT. 0 ) THEN
+
+        IQTR = 0
+        DO 400 IOCC = 1,NBMOMA
+          CALL GETVTX ( 'MODI_MAILLE', 'OPTION', IOCC,1,1, OPTION, N1)
+          IF ( OPTION .EQ. 'QUAD_TRIA3' ) IQTR = IQTR + 1
+ 400    CONTINUE
+        IF ( IQTR .EQ. 0 ) THEN
+           GOTO 402
+        ELSEIF ( IQTR .GT. 1 ) THEN
+           CALL UTMESS('F','MODI_MAILLE','UNE SEULE OCCURRENCE DE '//
+     &                      '"QUAD_TRIA3"' )
+        ELSEIF ( IQTR.EQ.1 .AND. NBMOMA.NE.1 ) THEN
+           CALL UTMESS('F','MODI_MAILLE','UNE SEULE OCCURRENCE DE '//
+     &                      '"QUAD_TRIA3"' )
+        ENDIF
+
+        CALL GETVTX('MODI_MAILLE','PREF_MAILLE',1,1,1,PREFIX,N1)
+        CALL GETVIS('MODI_MAILLE','PREF_NUME'  ,1,1,1,NDINIT,N1)
+
+        MOTCLE(1) = 'MAILLE'
+        MOTCLE(2) = 'GROUP_MA'
+        MOTCLE(3) = 'TOUT'
+        NOMJV          = '&&OP0167.LISTE_MA'
+        CALL RELIEM ( ' ', NOMAIN, 'NU_MAILLE', 'MODI_MAILLE', 1, 3,
+     &                MOTCLE, MOTCLE, NOMJV, NBMA )
+        CALL JEVEUO ( NOMJV, 'L', JLIMA )
+
+        CALL CMQUTR ( 'G', NOMAIN, NOMAOU, NBMA, ZI(JLIMA), PREFIX,
+     &                NDINIT )
+
+        GOTO 300
+      END IF
+ 402  CONTINUE
+
+C ----------------------------------------------------------------------
+C                 TRAITEMENT DU MOT CLE "COQU_VOLU"
+C ----------------------------------------------------------------------
+
+      CALL GETFAC ( 'COQU_VOLU', NBVOLU )
+      IF ( NBVOLU .NE. 0 ) THEN
+C
+         CALL GETVR8 ('COQU_VOLU','EPAIS'      ,1,1,1,EPAIS,N1)
+         CALL GETVTX ('COQU_VOLU','PREF_NOEUD' ,1,1,1,PRFNO,N1)
+         CALL GETVTX ('COQU_VOLU','PREF_MAILLE',1,1,1,PRFMA,N1)
+         CALL GETVIS ('COQU_VOLU','PREF_NUME'  ,1,1,1,NUMMA,N1)
+         CALL GETVTX ('COQU_VOLU','PLAN'       ,1,1,1,PLAN ,N1)
+C
+         IF ( PLAN .EQ. 'MOY' ) THEN
+            TRANS = 'INF'
+            CALL GETVTX ('COQU_VOLU','TRANSLATION',1,1,1,TRANS,N1)
+         ENDIF
+
+         NOMJV  = '&&OP0167.LISTE_MAV'
+         CALL RELIEM ( ' ', NOMAIN, 'NU_MAILLE','COQU_VOLU', 1, 1,
+     +                   'GROUP_MA', 'GROUP_MA', NOMJV, NBMA )
+         CALL JEVEUO ( NOMJV, 'L', JMA )
+C
+         CALL CMCOVO ( NOMAIN, NOMAOU, NBMA, ZI(JMA), PRFNO,
+     +                 PRFMA, NUMMA, EPAIS, PLAN, TRANS )
+C
+         CALL JEDETR ( NOMJV )
+C
+         GOTO 300
+      END IF
 
 C ----------------------------------------------------------------------
 C               AURES MOTS CLES :
 C ----------------------------------------------------------------------
-
-      CALL GETRES(NOMAOU,TYPCON,NOMCMD)
-
-      CALL GETVID(' ','MAILLAGE',1,1,1,NOMAIN,N1)
 
       NOMMAV = NOMAIN//'.NOMMAI         '
       NOMNOV = NOMAIN//'.NOMNOE         '
@@ -192,9 +259,7 @@ C
         CALL WKVECT(NUME2,'V V I',NBMAIV,JNU2)
 C
         IAD = 1
-C DEBUT DE LA BOUCLE SUR LES OCCURENCES DE MODI_MAILLE
         DO 10 IOCC = 1,NBMOMA
-C POUR CHAQUE OCCURENCE L'ADRESSE PART DE 1
           ZI(JIAD+IOCC-1) = 1
           CALL GETVTX('MODI_MAILLE','PREF_NOEUD',IOCC,1,0,K8B,N1)
           IF (N1.NE.0) THEN
@@ -203,34 +268,19 @@ C POUR CHAQUE OCCURENCE L'ADRESSE PART DE 1
             LGNO = LXLGUT(ZK8(JPRO+IOCC-1))
          END IF
          CALL GETVIS('MODI_MAILLE','PREF_NUME',IOCC,1,0,IBID,N1)
-         IF (N1.NE.0) THEN
-           CALL GETVIS('MODI_MAILLE','PREF_NUME',IOCC,1,1,
-     +                  ZI(JNUM+IOCC-1),N1)
-         END IF
-C ON A RECUPERE LES PREF_NOEU ET PREF_NUM POUR CHAQUE OCCURENCE
-C ON FAIT APPEL A PALIM2 LES SORTIES SONT MOMANU MOMANO ET L'ADRESSE
-C QUI CORRESPOND AU NOMBRE DE MAILLES A MODIFIER POUR L OCCURENCE
-C COURANTE
-C
+         IF (N1.NE.0) CALL GETVIS('MODI_MAILLE','PREF_NUME',IOCC,1,1,
+     +                                           ZI(JNUM+IOCC-1),N1)
          CALL PALIM2('MODI_MAILLE',IOCC,NOMAIN,MOMANU,MOMANO,
      +                 ZI(JIAD+IOCC-1))
-C ON CREE DEUX VECTEURS DE DIMENSION LE NOMBRE DE MAILLES
-C A MODIFIER DANS LESQUELS ON RECOPIE LA LISTE DES NOEUDS
-C MOMANU ET MOMANO
-C
          IF (ZI(JIAD+IOCC-1)-1.LE.0) GOTO 10
 
          CALL WKVECT(LISI,'V V I',ZI(JIAD+IOCC-1)-1,JLII)
          CALL WKVECT(LISK,'V V K8',ZI(JIAD+IOCC-1)-1,JLIK)
 
          DO 14 II=1,ZI(JIAD+IOCC-1)-1
-           ZI(JLII+II-1) = ZI(JMOMNU+II-1)
-C
+           ZI(JLII +II-1) = ZI (JMOMNU+II-1)
            ZK8(JLIK+II-1) = ZK8(JMOMNO+II-1)
- 14     CONTINUE
-C ON CONCATENE LES DEUX LISTES DANS DEUX LISTES QUI
-C CONTIENDRONT LES NOMS ET NUMEROS POUR TOUTES LES OCCURENCES
-C
+ 14      CONTINUE
          CALL COCALI(MOMUTO,LISI,'I')
          CALL COCALI(MOMOTO,LISK,'K8')
          IAA = IAD
@@ -249,6 +299,18 @@ C LES AUTRES SE TROUVENT EN INCREMENTANT
          ZI(JNU2+IAA-1) = ZI(JNUM+IOCC-1)
          CALL JEDETR(LISI)
          CALL JEDETR(LISK)
+
+         IF ( NIV .GE. 1 ) THEN
+           WRITE(IFM,1000) IOCC
+           CALL GETVTX('MODI_MAILLE','OPTION',IOCC,1,1,OPTION,N1)
+           IF ( OPTION .EQ. 'TRIA6_7' ) THEN
+             WRITE(IFM,1002) ZI(JIAD+IOCC-1)-1, 'TRIA6', 'TRIA7'
+           ELSEIF ( OPTION .EQ. 'QUAD8_9' ) THEN
+             WRITE(IFM,1002) ZI(JIAD+IOCC-1)-1, 'QUAD8', 'QUAD9'
+           ELSEIF ( OPTION .EQ. 'SEG3_4' ) THEN
+             WRITE(IFM,1002) ZI(JIAD+IOCC-1)-1, 'SEG3', 'SEG4'
+           END IF
+         END IF
    10   CONTINUE
 C
         CALL JEVEUO(MOMUTO,'L',JMOMTU)
@@ -272,7 +334,12 @@ C ----------------------------------------------------------------------
         CALL WKVECT(CRMANO,'V V K8',NBMAIV,JCRMNO)
         NBMAJ1 = 0
         DO 20 IOCC = 1,NBCRMA
+          NBMST = NBMAJ1
           CALL PALIM3('CREA_MAILLE',IOCC,NOMAIN,CRMANU,CRMANO,NBMAJ1)
+          IF ( NIV .GE. 1 ) THEN
+            WRITE(IFM,1020) IOCC
+            WRITE(IFM,1022) NBMAJ1-NBMST
+          END IF
    20   CONTINUE
         CALL JEVEUO(CRMANU,'L',JCRMNU)
         CALL JEVEUO(CRMANO,'L',JCRMNO)
@@ -734,6 +801,10 @@ C ----------------------------------------------------------------------
               DO 280,IMA = 0,NBMA - 1
                 CALL JENONU(JEXNOM(NOMMAI,ZK8(JMAIL+IMA)),ZI(IAGMA+IMA))
   280         CONTINUE
+              IF ( NIV .GE. 1 ) THEN
+                WRITE(IFM,1010) IOCC
+                WRITE(IFM,1012) NOGMA, NBMA
+              END IF
             END IF
   290     CONTINUE
         END IF
@@ -742,13 +813,28 @@ C ----------------------------------------------------------------------
 C              TRAITEMENT DU MOT CLE DETR_GROUP_MA
 C ----------------------------------------------------------------------
 
-      CALL GETFAC('DETR_GROUP_MA',NBDGMA)
+      CALL GETFAC ( 'DETR_GROUP_MA', NBDGMA )
       IF (NBDGMA.EQ.1) CALL CMDGMA(NOMAOU)
 
-      CALL CARGEO(NOMAOU)
-
       CALL JEDETC('V','&&OP0167',1)
+
   300 CONTINUE
+
+      CALL TITRE()
+  
+      CALL CARGEO ( NOMAOU )
+
+C     IMPRESSIONS DU MOT CLE INFO :
+C     -----------------------------
+      CALL INFOMA ( NOMAOU )
+
+ 1000 FORMAT('MOT CLE FACTEUR "MODI_MAILLE", OCCURRENCE ',I4)
+ 1002 FORMAT('  MODIFICATION DE ',I6,' MAILLES ',A8,' EN ',A8)
+ 1010 FORMAT('MOT CLE FACTEUR "CREA_POI1", OCCURRENCE ',I4)
+ 1012 FORMAT('  CREATION DU GROUP_MA ',A8,' DE ',I6,' MAILLES POI1')
+ 1020 FORMAT('MOT CLE FACTEUR "CREA_MAILLE", OCCURRENCE ',I4)
+ 1022 FORMAT('  CREATION DE ',I6,' MAILLES')
+
       CALL JEDEMA()
 
       END

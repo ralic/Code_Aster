@@ -1,10 +1,9 @@
-      SUBROUTINE IB0MAI ( CMDUSR , IER )
+      SUBROUTINE IB0MAI ( IER )
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)       CMDUSR
       INTEGER                      IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 10/12/2001   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +22,6 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     MAIN  D'ANALYSE DE LA COMMANDE DE DEMARRAGE
 C     ------------------------------------------------------------------
-C IN  CMDUSR NOM INTERNE DE L'UNITE DES COMMANDES UTILISATEURS
 C OUT IER  CODE RETOUR
 C      1   PROCEDURE "DEBUT" ET "POURSUITE" NON TROUVEES
 C      2   ERREUR(S) DANS LA COMMANDE  "DEBUT" OU "POURSUITE"
@@ -34,9 +32,6 @@ C     ------------------------------------------------------------------
       INTEGER      LG(2), UNMEGA, IADZON
       LOGICAL      LERMEM
       LOGICAL      LMEMEX
-C      DATA         NOMCMD / 'DEBUT ' ,'POURSUITE' /
-C      DATA         LG     /    5     ,     9      /
-C     ------------------------------------------------------------------
 C
 C     --- MEMOIRE POUR LE GESTIONNAIRE D'OBJET ---
       UNMEGA = 1 024 * 1 024
@@ -88,8 +83,8 @@ C     --- ALLOCATION D'UNE BASE DE DONNEES DUMMY ---
       CALL JEINIF( 'DUMMY','DETRUIT',NOMF,'L', 250 , 100, 1 000 )
 C
 C-----------------AY------------------------
-      CALL DEFUFI(6,'MESSAGE')
-      CALL DEFUFI(9,'ERREUR')
+      CALL ULDEFI(6,'MESSAGE','A','N','N')
+      CALL ULDEFI(9,'ERREUR' ,'A','N','N')
       CALL UTINIT(2, 80, 1)
 C-----------------AY------------------------
 

@@ -3,7 +3,7 @@
       INTEGER            ICMD , ICOND, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 03/06/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C     --- IMPRESSION DE LA MARQUE DE FIN ---
 C
 C     --- DESACTIVATION DE L'UNITE COURANTE ---
       CALL LXUNIT( -1, 0  , 0 ,NOMSYM )
-      
+      CALL ULOPEN(-IREAD,' ',NOMSYM,' ',' ')
 C     --- DESACTIVATION DU PREFIXE CONCEPT
       PRFXCO='?'
       LPRFXC=1

@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/12/1999   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER      JEFFG, LMATER, ITREF, ITEMP, LSECT, LX,
+      INTEGER      JEFFG, LMATER, ITREF, ITEMP, LSECT, LX,IRET,
      +             LORIEN, JDEPL, I, J, KP, NBPAR, NNO, NC, NBRES
       PARAMETER   (        NBRES = 3 )
       REAL*8        VALRES(NBRES)
@@ -79,7 +79,7 @@ C
       CALL JEVECH ('PTEREF', 'L', ITREF )
       TREF = ZR(ITREF)
 C
-      CALL TECACH (.TRUE., .FALSE., 'PTEMPER', 1, ITEMP )
+      CALL TECACH ('ONN', 'PTEMPER', 1, ITEMP,IRET )
       IF ( ITEMP .EQ. 0 ) THEN
          NBPAR  = 0
          NOMPAR = ' '

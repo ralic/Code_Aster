@@ -4,7 +4,7 @@
       INTEGER                 IER,IPASS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 20/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,42 +25,32 @@ C TOLE CRP_7
 C    DECODAGE DE LA COMMANDE DEBUT OU POURSUITE
 C     ------------------------------------------------------------------
 C     ROUTINE(S) UTILISEE(S) :
-C         LXINIT  LXUNIT  LXDELI
-C         IB0MAI  IBBASE  IBCATA
-C     ROUTINE(S) FORTRAN     :
-C
-C     ------------------------------------------------------------------
-C     ------------------------------------------------------------------
-C     DEFINITION DES UNITES DE LECTURE/ECRITURE COMMANDE UTILISATEUR
-C      PARAMETER (IRDUSR=1 , LRECL=72)
+C        IBBASE  IBCATA
 C     ------------------------------------------------------------------
 C
       INTEGER    MXCMD
       PARAMETER (MXCMD = 500 )
-CCAR  CHARACTER*80 CMDUSR
       CHARACTER*8 CBID
       CHARACTER*16 NOMCMD
+      CHARACTER*80 FICHDF
       INTEGER IERIMP,ISTAT,ICMD
       REAL*8  XTT
 C
-C
-CCAR  CMDUSR=' '
       IER    = 0
       IF(IPASS .NE. 1) GOTO 9999
          CALL IBIMPR( IERIMP )
          CALL PRINIT( -1, 0 )
          CALL PRENTE
-CCAR     CALL PRTITR('C','LECTURE-ANALYSE DES COMMANDES UTILISATEURS')
          CALL UTINIT( 2 , 80 , 1 )
          CALL JVINIT( 2 , 80 , 1 )
-CCAR     IWRCMD = IUNIFI('MESSAGE')
-CCAR     CALL LXRWD
-CCAR     CALL LXUNIT( 0   , 0   , IWRCMD, CMDUSR )
-
+C
+C     --- LECTURE DU MOT CLE HDF ---
+C
+      IF ( IER .EQ. 0 ) CALL IBFHDF( IER , FICHDF )
 C
 C     --- LECTURE DU MOT CLE FACTEUR BASE ET ---
 C     --- ALLOCATION DES BASES DE DONNEES ---
-      IF ( IER .EQ. 0 ) CALL IBBASE( IER )
+      IF ( IER .EQ. 0 ) CALL IBBASE( IER , FICHDF )
       IF ( IER. EQ. 0 ) THEN
          CALL GETRES(CBID,CBID,NOMCMD)
          CALL FIINIT('G',NOMCMD)
@@ -73,10 +63,10 @@ C   -- STATS SUR LA COMMANDE DE DEMARRAGE --
       IF ( IER .EQ. 0 ) CALL EXSTAT( ISTAT, 0, XTT )
 C
 C     --- LECTURE DU MOT CLE FACTEUR CODE ---
-      IF ( IER .EQ. 0 ) CALL IBCODE( IER )
+      IF ( IER .EQ. 0 .AND. FICHDF .EQ. '  ') CALL IBCODE( IER )
 C
 C     --- LECTURE DU MOT CLE FACTEUR  CATALOGUE ---
-      IF ( IER .EQ. 0 ) CALL IBCATA( IER )
+      IF ( IER .EQ. 0 .AND. FICHDF .EQ. '  ') CALL IBCATA( IER )
 C
 C     --- LECTURE DU MOT CLE SIMPLE PAR LOT  ---
       IF ( IER .EQ. 0 ) CALL IBTLOT( LOT, IER )
@@ -88,9 +78,6 @@ C     --- STATS SUR LA COMMANDE DE DEMARRAGE  ---
       ISTAT = 2
       IF ( IER .EQ. 0 ) CALL EXSTAT( ISTAT, 0, XTT )
 C
-C     --- FIN DE LA COMMANDE DE DEMARRAGE          ---
-C     --- CALL GCUOPR( 1 : INDIQUE UNE FIN NORMALE ---
-C     --- DE LA COMMANDE DEBUT OU POURSUITE        ---
       IF ( IER .EQ. 0 ) CALL GCUOPR( 1, ICMD )
  9999 CONTINUE
       END

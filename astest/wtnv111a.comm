@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 # TITRE TEST THM, 3D, MASSIF POREUX SATURE CHAUFFE PAR UN FLUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -135,6 +135,7 @@ ARGILE0=DEFI_MATERIAU(     THM_LIQU=_F(
    PRE2 = 0.,
    PORO = 0.4,
    PRES_VAPE = 1.),
+                               COMP_THM = 'LIQU_SATU',
                                      ELAS=_F( 
    E = 225.E6,
    NU = 0.,

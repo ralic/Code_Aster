@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,7 +61,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
              CARA_ELEM       =SIMP(statut='f',typ=cara_elem ),
              MODE_FOURIER    =SIMP(statut='f',typ='I',defaut= 0 ),
            ),
-           CHARGE          =SIMP(statut='f',typ=char_meca,max='**' ),
+           CHARGE          =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**' ),
            b_charge        =BLOC (condition = "CHARGE != None",
              INST            =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
            ),
@@ -70,7 +70,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
          b_rigi_meca_lagr  =BLOC(condition = "OPTION=='RIGI_MECA_LAGR'",
            MODELE            =SIMP(statut='o',typ=modele ),
            CHAM_MATER        =SIMP(statut='o',typ=cham_mater ),
-           CHARGE            =SIMP(statut='f',typ=char_meca,max='**'  ),
+           CHARGE            =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'  ),
            b_charge        =BLOC(condition = "CHARGE != None",
              INST            =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
            ),
@@ -85,7 +85,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
              CHAM_MATER        =SIMP(statut='f',typ=cham_mater ),
              CARA_ELEM         =SIMP(statut='f',typ=cara_elem ),
            ),
-           CHARGE          =SIMP(statut='f',typ=char_meca,max='**' ),
+           CHARGE          =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**' ),
            b_charge        =BLOC(condition = "CHARGE != None",
              INST            =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
            ),
@@ -108,7 +108,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
          b_rigi_rota       =BLOC(condition = "OPTION=='RIGI_ROTA'",
            MODELE            =SIMP(statut='o',typ=modele ),
            CHAM_MATER        =SIMP(statut='o',typ=cham_mater ),
-           CHARGE            =SIMP(statut='o',typ=char_meca,max='**' ),
+           CHARGE            =SIMP(statut='o',typ=char_meca,validators=NoRepeat(),max='**' ),
            INST              =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
          ),
 
@@ -120,12 +120,12 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
            CHAM_MATER        =SIMP(statut='f',typ=cham_mater ),
            RIGI_MECA         =SIMP(statut='f',typ=matr_elem_depl_r ),
            MASS_MECA         =SIMP(statut='f',typ=matr_elem_depl_r ),
-           CHARGE            =SIMP(statut='f',typ=char_meca,max='**' ),
+           CHARGE            =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**' ),
          ),
 
          b_rigi_meca_hyst  =BLOC( condition = "OPTION=='RIGI_MECA_HYST'",
            MODELE            =SIMP(statut='o',typ=modele ),
-           CHARGE            =SIMP(statut='f',typ=char_meca ,max='**' ),
+           CHARGE            =SIMP(statut='f',typ=char_meca ,validators=NoRepeat(),max='**' ),
            CHAM_MATER        =SIMP(statut='f',typ=cham_mater ),
            CARA_ELEM         =SIMP(statut='f',typ=cara_elem ),
            RIGI_MECA         =SIMP(statut='o',typ=matr_elem_depl_r ),
@@ -139,7 +139,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
              CARA_ELEM         =SIMP(statut='f',typ=cara_elem ),
              MODE_FOURIER      =SIMP(statut='f',typ='I',defaut= 0 ),
            ),
-           CHARGE            =SIMP(statut='f',typ=char_ther,max='**' ),
+           CHARGE            =SIMP(statut='f',typ=char_ther,validators=NoRepeat(),max='**' ),
          ),
 
          b_mass_ther       =BLOC(condition = "OPTION=='MASS_THER'",
@@ -151,20 +151,20 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
          b_rigi_acou       =BLOC(condition = "(OPTION=='RIGI_ACOU') or (OPTION=='MASS_ACOU') or (OPTION=='AMOR_ACOU')",
            MODELE            =SIMP(statut='o',typ=modele ),
            CHAM_MATER        =SIMP(statut='o',typ=cham_mater ),
-           CHARGE            =SIMP(statut='f',typ=char_acou ,max='**' ),
+           CHARGE            =SIMP(statut='f',typ=char_acou ,validators=NoRepeat(),max='**' ),
          ),
 
          b_rigi_flui       =BLOC(condition = "(OPTION=='RIGI_FLUI_STRU') or (OPTION=='MASS_FLUI_STRU')",
            MODELE            =SIMP(statut='o',typ=modele ),
            CARA_ELEM         =SIMP(statut='o',typ=cara_elem ),
            CHAM_MATER        =SIMP(statut='o',typ=cham_mater ),
-           CHARGE            =SIMP(statut='o',typ=char_meca ,max='**' ),
+           CHARGE            =SIMP(statut='o',typ=char_meca ,validators=NoRepeat(),max='**' ),
            INST              =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
          ),
 
          b_impe_meca       =BLOC(condition = "(OPTION=='IMPE_MECA') or (OPTION=='ONDE_FLUI')",
            MODELE            =SIMP(statut='o',typ=modele ),
-           CHARGE            =SIMP(statut='o',typ=char_meca,max='**' ),
+           CHARGE            =SIMP(statut='o',typ=char_meca,validators=NoRepeat(),max='**' ),
            CHAM_MATER        =SIMP(statut='o',typ=cham_mater ),
          ),
 )  ;

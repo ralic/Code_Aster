@@ -1,12 +1,13 @@
       SUBROUTINE LRCAME ( NROFIC, NOCHMD, NOMAMD, NOMAAS,
      >                    NBVATO, TYPECH,
-     >                    NUMPT, NUMORD, NBCMPV, NCMPVA, NCMPVM,
+     >                    NBCMPV, NCMPVA, NCMPVM,
+     >                    IINST, NUMPT, NUMORD, INST, CRIT, PREC,
      >                    NOMGD, NCMPRF, JNOCMP, ADSL, ADSV, ADSD,
      >                    CODRET )
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/04/2003   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,6 +25,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C TOLE CRP_20
+C TOLE CRP_21
+C-----------------------------------------------------------------------
 C     LECTURE D'UN CHAMP - FORMAT MED
 C     -    -       - -            --
 C-----------------------------------------------------------------------
@@ -36,12 +40,16 @@ C                          DU FICHIER
 C        NOMAAS : NOM ASTER DU MAILLAGE
 C        NBVATO : NOMBRE DE VALEURS TOTALES
 C        TYPECH : TYPE DE CHAMP AUX ELEMENTS : ELEM/ELGA/ELNO/NOEU
-C        NUMPT  : NUMERO DE PAS DE TEMPS
-C        NUMORD : NUMERO D'ORDRE DU CHAMP
 C        NBCMPV : NOMBRE DE COMPOSANTES VOULUES
 C                 SI NUL, ON LIT LES COMPOSANTES A NOM IDENTIQUE
 C        NCMPVA : LISTE DES COMPOSANTES VOULUES POUR ASTER
 C        NCMPVM : LISTE DES COMPOSANTES VOULUES DANS MED
+C        IINST  : 1 SI LA DEMANDE EST FAITE SUR UN INSTANT, 0 SINON
+C        NUMPT  : NUMERO DE PAS DE TEMPS EVENTUEL
+C        NUMORD : NUMERO D'ORDRE EVENTUEL DU CHAMP
+C        INST   : INSTANT EVENTUEL
+C        CRIT   : CRITERE SUR LA RECHERCHE DU BON INSTANT
+C        PREC   : PRECISION SUR LA RECHERCHE DU BON INSTANT
 C        NOMGD  : NOM DE LA GRANDEUR ASSOCIEE AU CHAMP
 C        NCMPRF : NOMBRE DE COMPOSANTES DE REFERENCE DU CHAMP SIMPLE
 C        JNOCMP : ADRESSE DU NOM DES COMP. DE REF. DU CHAMP SIMPLE
@@ -57,25 +65,26 @@ C
       INTEGER NROFIC
       INTEGER ADSL, ADSV, ADSD
       INTEGER NBVATO, NCMPRF, JNOCMP
-      INTEGER NUMPT, NUMORD, NBCMPV
+      INTEGER NBCMPV
+      INTEGER IINST, NUMPT, NUMORD
       INTEGER CODRET
 C
       CHARACTER*4 TYPECH
       CHARACTER*8 NOMGD, NOMAAS
+      CHARACTER*8 CRIT
       CHARACTER*32 NOCHMD, NOMAMD
       CHARACTER*(*) NCMPVA, NCMPVM
 C
+      REAL*8 INST
+      REAL*8 PREC
+C
 C 0.2. ==> COMMUNS
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      CHARACTER*32       JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
       COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
       CHARACTER*8        ZK8
       CHARACTER*16                ZK16
       CHARACTER*24                          ZK24
@@ -95,7 +104,7 @@ C
       PARAMETER ( EDNOPF='                                ' )
 C
       INTEGER NTYMAX
-      PARAMETER (NTYMAX=28)
+      PARAMETER (NTYMAX=48)
       INTEGER EDNOEU
       PARAMETER (EDNOEU=3)
       INTEGER EDMAIL
@@ -108,25 +117,27 @@ C
       INTEGER NCMPUT
       INTEGER EXISTC
       INTEGER NDIM
+      INTEGER NPAS, ADINST, ADNUME
       INTEGER LGPROA
       INTEGER IFM, NIVINF
       INTEGER TYPENT, TYGEOM, NBTYP
       INTEGER NNOTYP(NTYMAX),NITTYP(NTYMAX)
       INTEGER TYPGEO(NTYMAX),LYGEOM(NTYMAX),LYPENT(NTYMAX)
-      INTEGER RENUMD(NTYMAX),RENULY(NTYMAX),NLYVAL(NTYMAX)
-      INTEGER I,J,NBTYLU, NBVALS,IGREL,ITYPEL,IALIEL,NEL,NBGREL
-      INTEGER JTYPMA,JLCONX,IMA,NBNOMA,NMATYP,IBID,NBMA
+      INTEGER RENUMD(NTYMAX),NLYVAL(NTYMAX)
+      INTEGER I,NBTYLU, NBVALS
+      INTEGER JTYPMA,JLCONX,NBNOMA,NMATYP
 C
       CHARACTER*8 SAUX08
-      CHARACTER*8 NOMTYP(NTYMAX),NOMMAI
+      CHARACTER*8 NOMTYP(NTYMAX)
+      CHARACTER*19 PREFIX
       CHARACTER*24 NUMCMP, NTNCMP, NTUCMP, NTVALE, NMCMFI(NTYMAX)
       CHARACTER*24 NTPROA, NMCMFL
       CHARACTER*32 NOMPRF
       CHARACTER*200 NOFIMD
       CHARACTER*2 K2BID
-      CHARACTER*1 K1BID
 C
       LOGICAL EXISTM, EXISTT
+      LOGICAL LOGAUX
 C
 C====
 C 1. PREALABLES
@@ -148,6 +159,7 @@ C               12   345678   9012345678901234
       NTUCMP = '&&'//NOMPRO//'.UNITECMP       '
       NTVALE = '&&'//NOMPRO//'.VALEUR         '
       NTPROA = '&&'//NOMPRO//'.PROFIL_ASTER   '
+      PREFIX = '&&'//NOMPRO//'.MED'
 C
 C 1.3. ==> NOM DU FICHIER MED
 C
@@ -187,7 +199,8 @@ C            ON RECUPERE SA DIMENSION.
 C
       ELSE
 C
-        CALL MDEXMA ( NOFIMD, NOMAMD, EXISTM, NDIM, CODRET )
+        IAUX = 1
+        CALL MDEXMA ( NOFIMD, NOMAMD, IAUX, EXISTM, NDIM, CODRET )
         IF ( .NOT.EXISTM ) THEN
           CALL UTMESS ( 'F', NOMPRO,
      >   'LE MAILLAGE '//NOMAMD//' EST INCONNU DANS '//NOFIMD )
@@ -237,6 +250,8 @@ C
 C
         IF ( CODRET.EQ.0 ) THEN
 C
+C 3.1.1. ==> LES BONS TYPES
+C
         IF ( LETYPE.EQ.0 ) THEN
           IAUX = LETYPE
         ELSE
@@ -251,6 +266,65 @@ C
           TYGEOM = TYPGEO(IAUX)
         ENDIF
 C
+C 3.1.2. ==> SI LE CHOIX S'EST FAIT AVEC UNE VALEUR D'INSTANT, ON REPERE
+C            LE NUMERO D'ORDRE ASSOCIE
+C
+        IF ( IINST.NE.0 ) THEN
+C
+          CALL MDCHIN ( NOFIMD, NOCHMD, TYPENT, TYGEOM, PREFIX,
+     >                  NPAS, CODRET )
+C
+          IF ( NPAS.NE.0 ) THEN
+            CALL JEVEUO(PREFIX//'.INST','L',ADINST)
+            CALL JEVEUO(PREFIX//'.NUME','L',ADNUME)
+            LOGAUX = .FALSE.
+            DO 312 , IAUX = 1 , NPAS
+              IF ( CRIT(1:4).EQ.'RELA' ) THEN
+                IF (ABS(ZR(ADINST-1+IAUX)-INST).LE.ABS(PREC*INST)) THEN
+                  LOGAUX = .TRUE.
+                ENDIF
+              ELSE IF ( CRIT(1:4).EQ.'ABSO' ) THEN
+                IF (ABS(ZR(ADINST-1+IAUX)-INST).LE.ABS(PREC)) THEN
+                  LOGAUX = .TRUE.
+                ENDIF
+              ENDIF
+              IF ( LOGAUX ) THEN
+                NUMPT = ZI(ADNUME+2*IAUX-2)
+                NUMORD = ZI(ADNUME+2*IAUX-1)
+                GOTO 3121
+              ENDIF
+  312       CONTINUE
+            CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
+            CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
+            CALL UTIMPK ( 'L', 'CHAMP : ', 1, NOCHMD )
+            CALL UTIMPR ( 'L', 'INSTANT VOULU : ', 1, INST )
+            CALL UTIMPI ( 'L', 'TYPENT : ', 1, TYPENT )
+            CALL UTIMPI ( 'L', 'TYPGEO : ', 1, TYPGEO )
+            CALL UTFINM ()
+            CALL UTMESS ( 'A', NOMPRO,
+     >             'INSTANT INCONNU POUR CE CHAMP ET CES SUPPORTS '//
+     >             'DANS LE FICHIER.' )
+            GOTO 31
+ 3121       CONTINUE
+C
+            IF ( NIVINF.GT.1 ) THEN
+              CALL UTDEBM ( 'I', NOMPRO, 'CHAMP ' )
+              CALL UTIMPK ( 'S', 'A LIRE : ', 1, NOCHMD )
+              CALL UTIMPI ( 'L', 'TYPENT : ', 1, TYPENT )
+              CALL UTIMPI ( 'L', 'TYPGEO : ', 1, TYPGEO )
+              CALL UTIMPR ( 'L', 'INSTANT VOULU : ', 1, INST )
+              CALL UTIMPI ( 'L', '--> NUMERO D ORDRE : ', 1, NUMORD )
+              CALL UTIMPI ( 'L',
+     >                   '--> NUMERO DE PAS DE TEMPS : ', 1, NUMPT )
+              CALL UTFINM ()
+            ENDIF
+            CALL JEDETC ( 'V', PREFIX, 1 )
+          ENDIF
+C
+        ENDIF
+C
+C 3.1.3. ==> RECHERCHE DES COMPOSANTES
+C
         CALL CODENT(LETYPE,'G',K2BID)
         NMCMFL = '&&'//NOMPRO//'.N0MCMP_FICHIE'//K2BID
 
@@ -259,32 +333,41 @@ C
      >                NBVATO, TYPENT, TYGEOM,
      >                EXISTC, NBCMFI, NMCMFL, NBVAL, CODRET )
         IF ( EXISTC.GE.3 ) THEN 
-           EXISTT = .TRUE.
-           NBTYLU = NBTYLU + 1
-           NMCMFI(NBTYLU) = NMCMFL
-           IF ( TYPECH.NE.'NOEU' ) THEN 
-              LYPENT(NBTYLU) = TYPENT
-              LYGEOM(NBTYLU) = TYGEOM
-              NLYVAL(NBTYLU) = NBVAL
-           ENDIF
+          EXISTT = .TRUE.
+          NBTYLU = NBTYLU + 1
+          NMCMFI(NBTYLU) = NMCMFL
+          IF ( TYPECH.NE.'NOEU' ) THEN 
+            LYPENT(NBTYLU) = TYPENT
+            LYGEOM(NBTYLU) = TYGEOM
+            NLYVAL(NBTYLU) = NBVAL
+          ENDIF
         ENDIF
 C
         ENDIF
+C
    31 CONTINUE
 C
       IF ( .NOT.EXISTT ) THEN
         CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
         CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
         CALL UTIMPK ( 'L', 'CHAMP : ', 1, NOCHMD )
-        CALL UTIMPI ( 'L', 'NUMERO D ORDRE : ', 1, NUMORD )
-        CALL UTIMPI ( 'L', 'NUMERO DE PAS DE TEMPS : ', 1, NUMPT )
+        IF ( IINST.NE.0 ) THEN
+          CALL UTIMPR ( 'L', 'INSTANT VOULU : ', 1, INST )
+        ELSE
+          CALL UTIMPI ( 'L', 'NUMERO D ORDRE : ', 1, NUMORD )
+          CALL UTIMPI ( 'L', 'NUMERO DE PAS DE TEMPS : ', 1, NUMPT )
+        ENDIF
         CALL UTFINM ()
         IF ( EXISTC.EQ.0 ) THEN 
          CALL UTMESS ( 'A', NOMPRO, 'CHAMP INCONNU.' )
         ELSEIF ( EXISTC.EQ.1 ) THEN 
          CALL UTMESS ( 'A', NOMPRO, 'IL MANQUE DES COMPOSANTES.' )
         ELSEIF ( EXISTC.EQ.2 ) THEN 
-         CALL UTMESS ( 'A', NOMPRO, 'AUCUNE VALEUR A CE NRO D ORDRE.' )
+         IF ( IINST.NE.0 ) THEN
+          CALL UTMESS ( 'A', NOMPRO, 'AUCUNE VALEUR A CET INSTANT.' )
+         ELSE
+          CALL UTMESS ( 'A', NOMPRO, 'AUCUNE VALEUR A CE NRO D ORDRE.' )
+         ENDIF
         ELSEIF ( EXISTC.EQ.4 ) THEN 
          CALL UTMESS ( 'A', NOMPRO, 'MAUVAIS NOMBRE DE VALEURS.' )
         ENDIF
@@ -313,6 +396,7 @@ C 3. TRAITEMENT DES CHAMPS AUX NOEUDS                             ====
 C=====================================================================
 C
       IF (TYPECH(1:4).EQ.'NOEU') THEN
+C
 C====
 C 3.1 LECTURE DES VALEURS
 C====
@@ -371,7 +455,8 @@ C
          CALL EFNEMA ( IDFIMD, NOMAMD, 1, 0, LYGEOM(LETYPE), 0,
      >                 NMATYP, CODRET )
          IF     (TYPECH(1:4).EQ.'ELNO') THEN
-            DO 72 I=1,NBTYP
+            NBNOMA = 0
+            DO 72 I=1,NTYMAX
                IF (LYGEOM(LETYPE).EQ.TYPGEO(I)) NBNOMA=NNOTYP(I)
   72        CONTINUE
          ELSEIF (TYPECH(1:4).EQ.'ELEM') THEN

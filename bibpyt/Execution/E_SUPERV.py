@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 01/04/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF E_SUPERV Execution  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -174,7 +174,7 @@ class SUPERV:
          print j.cr
          print ">> JDC.py : FIN RAPPORT"
          j.supprime()
-         return 0
+         return 1
 
       j.exec_compile()
       ier=0
@@ -283,12 +283,10 @@ class SUPERV:
    def ParLotMixte(self,j):
 
       j.set_par_lot("NON")
+
       try:
-         ier=j.BuildExec()
-         if ier : 
-            self.MESSAGE("ERREUR A L'EXECUTION - INTERRUPTION")
-            return 1   
-      except EOFError:
+         j.BuildExec()
+
          ier=0
          if not j.cr.estvide(): 
             self.MESSAGE("ERREUR A L'EXECUTION - INTERRUPTION")
@@ -299,12 +297,13 @@ class SUPERV:
 
          if j.fico!=None :
             os.system('cat ./fort.15 ./ficode >> ./fort.15')
+
          return ier
+
       except :
          self.MESSAGE("ERREUR INOPINEE - INTERRUPTION")
          traceback.print_exc()
          return 1   
-
 
    def main(self):
       """

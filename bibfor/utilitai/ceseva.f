@@ -1,6 +1,6 @@
       SUBROUTINE CESEVA(CESF,NPARA,LPARA,CESR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 07/07/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,10 +37,8 @@ C  EN CHAQUE POINT DE DISCRETISATION DE CESF, ON FERA "CALL FOINTE"
 C  POUR EVALUER LES FONCTIONS AFFECTEES A CE POINT.
 C  ON PASSERA EN PARAMETRES DES FONCTIONS, LES VALEURS DES CHAMPS
 C  DE LPARA AVEC COMME NOM DE PARAMETRE LE NOM DE LA CMP
-
 C  ON NE TRAITE QUE LES FONCTIONS REELLES F : R * R(* R,...) -> R
 C-----------------------------------------------------------------------
-
 C---- COMMUNS NORMALISES  JEVEUX
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -71,10 +69,7 @@ C     ------------------------------------------------------------------
       CHARACTER*19 F,P,R
       REAL*8 X,VALPU(NBPUMX)
 C     ------------------------------------------------------------------
-
       CALL JEMARQ()
-
-
 
 C     1- RECUPERATIONS D'INFOS DANS LE CHAMP DE FONCTIONS :
 C     ------------------------------------------------------------
@@ -97,7 +92,6 @@ C     ------------------------------------------------------------
       CALL DISMOI('F','TYPE_SCA',NOMGDF,'GRANDEUR',IB,TSCA,IB)
       IF (TSCA.NE.'K8') CALL UTMESS('F','CESEVA',
      &                              'IL FAUT CHAMP DE FONCTIONS SVP')
-
 
 C     2- ALLOCATION DU CHAM_ELEM_S RESULTAT ET RECUPERATION
 C        DES ADRESSES DE SES OBJETS   :
@@ -136,8 +130,6 @@ C     --------------------------------------------------------------
         ZI(JAD1-1+4* (IPARA-1)+3) = JPL
         ZI(JAD1-1+4* (IPARA-1)+4) = JPV
    10 CONTINUE
-
-
 
 C     4- EVALUATION DES FONCTIONS :
 C     ---------------------------------------
@@ -197,6 +189,7 @@ C           --------------------------
    60   CONTINUE
    70 CONTINUE
 
+      CALL CESTAS ( CESR )
 
 C     5- MENAGE :
 C     ---------------------------------------

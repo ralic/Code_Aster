@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 31/03/2003   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 23/05/2003   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -323,8 +323,11 @@ C           STOCKE LA LISTE DES FONCTIONS A IMPRIMER
             GOTO 200
          ENDIF
 C
-         CALL JEDETC('V','&&COURBE',1)
-         CALL JEDETC('V','&&PARTIE',1)
+C        SI EXCEL ON UTILISE LES NOMS TEMPORAIRES DANS FOIEXC
+         IF(FORMAT.NE.'EXCEL')THEN
+            CALL JEDETC('V','&&COURBE',1)
+            CALL JEDETC('V','&&PARTIE',1)
+         ENDIF
 C
  200  CONTINUE
 C
@@ -335,6 +338,8 @@ C          WRITE(6,*) 'IMPR_COURBE :',ZK24(LEXT+IC-1)
 C333     CONTINUE
         CALL FOIEXC(LISFON,FILE,IND,LISTR)
         CALL JEDETR('&&OP0141.TABEXCEL')
+        CALL JEDETC('V','&&COURBE',1)
+        CALL JEDETC('V','&&PARTIE',1)
       ENDIF
 C
  9999 CONTINUE

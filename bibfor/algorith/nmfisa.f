@@ -1,7 +1,7 @@
-      SUBROUTINE NMFISA(GEOM,B)
+      SUBROUTINE NMFISA(GEOM,B,KPG)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2002   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,11 +22,14 @@ C
 C ======================================================================
 
       IMPLICIT NONE
+      INTEGER KPG
       REAL*8  GEOM(2,4),B(2,8)
+      
      
 C***********************************************************************
 C
 C BUT:
+C     POUR LE POINT DE GAUSS KPG :
 C     CALCUL DE LA MATRICE B DONNANT LES SAUT PAR ELEMENTS A PARTIR DES 
 C     DEPLACEMENTS AUX NOEUDS : SU = B U
 C
@@ -42,43 +45,45 @@ C            SU   = BTILD ULOC
 C            ULOC = RTILD U  
 C
 C
-C IN  : GEOM
+C IN  : GEOM,KPG
 C OUT : B
 C I/O :
 C   
 C*********************************************************************
 
+      REAL*8  CO,SI, C, S,COEF(2)
 
+      CALL R8INIR(16, 0.D0, B ,1)
 
-      REAL*8  C, S
-
-      C = GEOM(1,2) - GEOM(1,1)
-      S = GEOM(2,2) - GEOM(2,1)
-            
-      C = C / SQRT(C*C+S*S)
-      S = S / SQRT(C*C+S*S)
+      COEF(2) = 0.5D0*(1.D0 - SQRT(3.D0)/3.D0)
+      COEF(1) = 0.5D0*(1.D0 + SQRT(3.D0)/3.D0)
       
-      
+      CO =   (GEOM(2,2) - GEOM(2,1))  
+      SI =  -(GEOM(1,2) - GEOM(1,1))
+
+      C = CO / SQRT(CO*CO + SI*SI)
+      S = SI / SQRT(CO*CO + SI*SI)
+               
 C SAISIE DE LA MATRICE B : APPLICATION LINEAIRE DONNANT LE SAUT DE 
 C DEPLACEMENT DANS L'ELEMENT (SU_N,SU_T) A PARTIR DES DEPLACEMENTS
-C AUX NOEUDS :
+C AUX NOEUDS :      
 
-      B(1,1) =  S/2
-      B(1,2) = -C/2
-      B(1,3) =  S/2
-      B(1,4) = -C/2
-      B(1,5) = -S/2
-      B(1,6) =  C/2
-      B(1,7) = -S/2
-      B(1,8) =  C/2
-      
-      B(2,1) = -C/2
-      B(2,2) = -S/2
-      B(2,3) = -C/2
-      B(2,4) = -S/2
-      B(2,5) =  C/2
-      B(2,6) =  S/2
-      B(2,7) =  C/2
-      B(2,8) =  S/2
+      B(1,1) =   C*COEF(KPG) 
+      B(1,2) =   S*COEF(KPG)
+      B(1,3) =   C*(1-COEF(KPG))
+      B(1,4) =   S*(1-COEF(KPG))
+      B(1,5) =  -C*(1-COEF(KPG))
+      B(1,6) =  -S*(1-COEF(KPG))
+      B(1,7) =  -C*COEF(KPG)
+      B(1,8) =  -S*COEF(KPG)
+
+      B(2,1) =   -S*COEF(KPG)
+      B(2,2) =    C*COEF(KPG)
+      B(2,3) =   -S*(1-COEF(KPG))
+      B(2,4) =    C*(1-COEF(KPG))
+      B(2,5) =    S*(1-COEF(KPG))
+      B(2,6) =   -C*(1-COEF(KPG))
+      B(2,7) =    S*COEF(KPG)
+      B(2,8) =   -C*COEF(KPG)
       
       END

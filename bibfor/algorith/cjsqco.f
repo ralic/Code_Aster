@@ -4,7 +4,7 @@
         IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/10/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,14 +61,14 @@ C ======================================================================
         CALL     LCPRSC(S,S,SII)
         SII    = SQRT(SII)
         SIIREL = SII / PREF
-        COS3TS = COS3T(NDT, S, PREF, EPSSIG)
+        COS3TS = COS3T(S, PREF, EPSSIG)
 
         CALL     CJSQIJ(S, I1, X, Q)
         CALL     LCDETE(Q,DETQ)
         CALL     LCPRSC(Q,Q,QII)
         QII    = SQRT(QII)
         QIIREL = QII / PREF
-        COS3TQ = COS3T(NDT, Q, PREF, EPSSIG)
+        COS3TQ = COS3T(Q, PREF, EPSSIG)
 C ======================================================================
 C --- CALCUL DE HT POUR LES ANGLES DE LODE DE S ET Q -------------------
 C ======================================================================

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,19 +17,119 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE GNICOLAS G.NICOLAS
+
+from Macro.macr_adap_mail_ops import macr_adap_mail_ops
+
 def macr_adap_mail_prod(self,MAJ_CHAM,ADAPTATION,**args):
-  mail1=ADAPTATION['MAILLAGE_N']
-  self.type_sdprod(mail1,maillage)
-  mail2=ADAPTATION['MAILLAGE_NP1']
-  self.type_sdprod(mail2,maillage)
+  maillage_np1=ADAPTATION['MAILLAGE_NP1']
+  self.type_sdprod(maillage_np1,maillage)
   if MAJ_CHAM == None:return None
+# Remarque : la liste qui suit doit etre conforme à son homologue de LIRE_CHAMP
   for ch in MAJ_CHAM:
     t=ch['TYPE_CHAM']
-    if t == 'NOEU_TEMP_R':self.type_sdprod(ch['CHAM_MAJ'],cham_no_temp_r)
-    if t == 'NOEU_DEPL_R':self.type_sdprod(ch['CHAM_MAJ'],cham_no_depl_r)
+    if t == "NOEU_DBEL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_dbel_r)
+    if t == "NOEU_DEPL_C":self.type_sdprod(ch['CHAM_MAJ'],cham_no_depl_c)
+    if t == "NOEU_DEPL_F":self.type_sdprod(ch['CHAM_MAJ'],cham_no_depl_f)
+    if t == "NOEU_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_depl_r)
+    if t == "NOEU_DURT_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_durt_r)
+    if t == "NOEU_ENER_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_ener_r)
+    if t == "NOEU_EPSI_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_epsi_r)
+    if t == "NOEU_ERREUR":self.type_sdprod(ch['CHAM_MAJ'],cham_no_erreur)
+    if t == "NOEU_FLUX_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_flux_r)
+    if t == "NOEU_GEOM_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_geom_r)
+    if t == "NOEU_G_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_g_depl_r)
+    if t == "NOEU_HYDR_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_hydr_r)
+    if t == "NOEU_INST_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_inst_r)
+    if t == "NOEU_INTE_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_inte_r)
+    if t == "NOEU_META_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_meta_r)
+    if t == "NOEU_NEUT_F":self.type_sdprod(ch['CHAM_MAJ'],cham_no_neut_f)
+    if t == "NOEU_NEUT_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_neut_r)
+    if t == "NOEU_PRES_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_pres_r)
+    if t == "NOEU_SIEF_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_sief_r)
+    if t == "NOEU_SOUR_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_sour_r)
+    if t == "NOEU_TEMP_F":self.type_sdprod(ch['CHAM_MAJ'],cham_no_temp_f)
+    if t == "NOEU_TEMP_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_temp_r)
+    if t == "NOEU_VAR2_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_var2_r)
+    if t == "NOEU_VNOR_C":self.type_sdprod(ch['CHAM_MAJ'],cham_no_vnor_c)
+    if t == "ELEM_DBEL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_dbel_r)
+    if t == "ELEM_DEPL_C":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_depl_c)
+    if t == "ELEM_DEPL_F":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_depl_f)
+    if t == "ELEM_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_depl_r)
+    if t == "ELEM_DURT_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_durt_r)
+    if t == "ELEM_ENER_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_ener_r)
+    if t == "ELEM_EPSI_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_epsi_r)
+    if t == "ELEM_ERREUR":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_erreur)
+    if t == "ELEM_FLUX_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_flux_r)
+    if t == "ELEM_GEOM_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_geom_r)
+    if t == "ELEM_G_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_g_depl)
+    if t == "ELEM_HYDR_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_hydr_r)
+    if t == "ELEM_INST_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_inst_r)
+    if t == "ELEM_INTE_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_inte_r)
+    if t == "ELEM_META_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_meta_r)
+    if t == "ELEM_NEUT_F":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_neut_f)
+    if t == "ELEM_NEUT_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_neut_r)
+    if t == "ELEM_PRES_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_pres_r)
+    if t == "ELEM_SIEF_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_sief_r)
+    if t == "ELEM_SOUR_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_sour_r)
+    if t == "ELEM_TEMP_F":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_temp_f)
+    if t == "ELEM_TEMP_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_temp_r)
+    if t == "ELEM_VARI_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_vari_r)
+    if t == "ELEM_VNOR_C":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_vnor_c)
+    if t == "ELNO_DBEL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_dbel_r)
+    if t == "ELNO_DEPL_C":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_depl_c)
+    if t == "ELNO_DEPL_F":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_depl_f)
+    if t == "ELNO_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_depl_r)
+    if t == "ELNO_DURT_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_durt_r)
+    if t == "ELNO_ENER_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_ener_r)
+    if t == "ELNO_EPSI_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_epsi_r)
+    if t == "ELNO_ERREUR":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_erreur)
+    if t == "ELNO_FLUX_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_flux_r)
+    if t == "ELNO_GEOM_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_geom_r)
+    if t == "ELNO_G_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_g_depl)
+    if t == "ELNO_HYDR_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_hydr_r)
+    if t == "ELNO_INST_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_inst_r)
+    if t == "ELNO_INTE_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_inte_r)
+    if t == "ELNO_META_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_meta_r)
+    if t == "ELNO_NEUT_F":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_neut_f)
+    if t == "ELNO_NEUT_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_neut_r)
+    if t == "ELNO_PRES_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_pres_r)
+    if t == "ELNO_SIEF_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_sief_r)
+    if t == "ELNO_SOUR_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_sour_r)
+    if t == "ELNO_TEMP_F":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_temp_f)
+    if t == "ELNO_TEMP_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_temp_r)
+    if t == "ELNO_VARI_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_vari_r)
+    if t == "ELNO_VNOR_C":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_vnor_c)
+    if t == "ELGA_DBEL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_dbel_r)
+    if t == "ELGA_DEPL_C":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_depl_c)
+    if t == "ELGA_DEPL_F":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_depl_f)
+    if t == "ELGA_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_depl_r)
+    if t == "ELGA_DURT_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_durt_r)
+    if t == "ELGA_ENER_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_ener_r)
+    if t == "ELGA_EPSI_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_epsi_r)
+    if t == "ELGA_ERREUR":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_erreur)
+    if t == "ELGA_FLUX_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_flux_r)
+    if t == "ELGA_GEOM_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_geom_r)
+    if t == "ELGA_G_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_g_depl)
+    if t == "ELGA_HYDR_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_hydr_r)
+    if t == "ELGA_INST_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_inst_r)
+    if t == "ELGA_INTE_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_inte_r)
+    if t == "ELGA_META_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_meta_r)
+    if t == "ELGA_NEUT_F":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_neut_f)
+    if t == "ELGA_NEUT_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_neut_r)
+    if t == "ELGA_PRES_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_pres_r)
+    if t == "ELGA_SIEF_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_sief_r)
+    if t == "ELGA_SOUR_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_sour_r)
+    if t == "ELGA_TEMP_F":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_temp_f)
+    if t == "ELGA_TEMP_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_temp_r)
+    if t == "ELGA_VARI_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_vari_r)
+    if t == "ELGA_VNOR_C":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_vnor_c)
+    if t == "NOEU_IRRA_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_irra_r)
+    if t == "ELEM_IRRA_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_irra_r)
+    if t == "ELNO_IRRA_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_irra_r)
+    if t == "ELGA_IRRA_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_irra_r)
   return None
 
-MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=-24,sd_prod=macr_adap_mail_prod,
+MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_adap_mail_prod,
                      fr="Adapter un maillage avec le logiciel HOMARD.",
                      ang="Mesh adaptation with HOMARD software.",
                      docu="U7.03.01-b",
@@ -40,8 +140,8 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=-24,sd_prod=macr_adap_mail_prod,
 #
 # 2. Version de HOMARD
 #
-         VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V5_5",
-                               into=("V5_5", "V5_N", "V5_N_PERSO"),
+         VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V6_2",
+                               into=("V6_2", "V6_N", "V6_N_PERSO"),
                            fr="Version de HOMARD",
                            ang="HOMARD release"),
 #
@@ -52,23 +152,33 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=-24,sd_prod=macr_adap_mail_prod,
                            fr="Langue des messages issus de HOMARD.",
                            ang="Language for HOMARD messages." ),
 #
-# 4. LE TYPE DE TRAITEMENT :
+# 4. Gestion des éléments autres que des simplexes
+#    Remarque : pour le moment on bride le choix 2
+#       0 : autres elements refuses (defaut)
+#       1 : raffinement sur les simplexes, mais autres acceptes
+#       2 : tous
 #
-         ADAPTATION      =FACT(statut='o',min=01,max=01,
+         NON_SIMPLEXE   = SIMP(statut='f',typ='I',defaut=0,into=(0,1),
+                          fr="Acceptation d'éléments quad, hexa et penta",
+                          ang="quad, hexa and penta elements allowed" ),
+#
+# 5. Le type de traitement :
+#
+         ADAPTATION      =FACT(statut='o',
                            fr="Type d'adaptation",
                            ang="Type of adaptation",
 #
-# 4.1. DEUX CHOIX D'ADAPTATION EXCLUSIFS :
+# 5.1. Deux choix d'adaptation exclusifs :
 #
-# 4.1.
-#      A. SELON UN INDICATEUR D'ERREUR, AVEC TROIS VARIANTES :
-#         . RAFFINEMENT ET DERAFFINEMENT
-#         . RAFFINEMENT SEUL
-#         . DERAFFINEMENT SEUL
-#      B. UNIFORME, AVEC TROIS VARIANTES :
-#         . RAFFINEMENT SEUL
-#         . DERAFFINEMENT SEUL
-#         . RIEN : LE MAILLAGE EST LE MEME A LA SORTIE ET A L'ENTREE
+# 5.1.
+#      A. Selon un indicateur d'erreur, avec trois variantes :
+#         . Raffinement et deraffinement
+#         . Raffinement seul
+#         . Deraffinement seul
+#      B. Uniforme, avec trois variantes :
+#         . Raffinement seul
+#         . Deraffinement seul
+#         . Rien : le maillage est le meme a la sortie et a l'entree
 #
            regles=(
                    UN_PARMI('LIBRE','UNIFORME'),
@@ -82,52 +192,74 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=-24,sd_prod=macr_adap_mail_prod,
                            fr="Adaptation uniforme.",
                            ang="Uniform adaptation" ),
 #
-# 4.2. QUEL QUE SOIT LE TYPE DE TRAITEMENT, IL FAUT DONNER  :
-#      A. LE CONCEPT DU MAILLAGE INITIAL
-#      B. LE CONCEPT DU MAILLAGE FINAL
+# 5.2. Quel que soit le type de traitement, il faut donner  :
+#      A. Le concept du maillage initial
+#      B. Le concept du maillage final
 #
-           MAILLAGE_N     = SIMP(statut='o',typ=(CO,maillage),
+           MAILLAGE_N     = SIMP(statut='o',typ=maillage,
                            fr="Maillage avant adaptation",
                            ang="Mesh before adaptation" ),
            MAILLAGE_NP1   = SIMP(statut='o',typ=(CO,maillage),
                            fr="Maillage apres adaptation",
                            ang="Mesh after adaptation" ),
 #
-# 4.3. POUR DE L'ADAPTATION LIBRE, IL FAUT L'INDICATEUR D'ERREUR
+# 5.3. Pour de l'adaptation libre, il faut l'indicateur d'erreur
 #
 #
            b_indicateur_d_erreur   =BLOC( condition = " LIBRE != None " ,
                            fr="Indicateur d'erreur",
                            ang="Error indicator",
 #
-# 4.3.1. LE NOM DU CONCEPT RESULTAT
+# 5.3.1. Le nom du concept resultat
 #
                            RESULTAT_N     = SIMP(statut='o',typ=(evol_elas,evol_noli,evol_ther) ,
                            fr="Resultat contenant l'indicateur d'erreur",
                            ang="Result with error indicator" ),
 #
-# 4.3.2. LE CHAMP D'INDICATEUR D'ERREUR
+# 5.3.2. Le champ d'indicateur d'erreur
 #
                            INDICATEUR     = SIMP(statut='o',typ='TXM',     
                            fr="Champ de l'indicateur d'erreur",
                            ang="Error indicator field" ),
 #
-# 4.3.3. LA COMPOSANTE RETENUE
+# 5.3.3. La composante retenue
 #
                            NOM_CMP_INDICA = SIMP(statut='o',typ='TXM',
                            fr="Composante retenue",
                            ang="Selected component" ),
 #
-# 4.3.4. LE NUMERO D'ORDRE
+# 5.3.4. Le paramètre temporel pour l'indicateur
 #
-                           NUME_ORDRE     = SIMP(statut='f',typ='I' ,
+                           regles=(EXCLUS('NUME_ORDRE','INST'),),
+#
+# 5.3.4.1. Soit le numero d'ordre
+#
+                           NUME_ORDRE     = SIMP(statut='f',typ='I',
                            fr="Numero d ordre",
                            ang="Rank" ),  
+#
+# 5.3.4.2. Soit l'instant
+# 5.3.4.2.1. Sa valeur
+#
+                           INST           = SIMP(statut='f',typ='R',
+                           fr="Instant associé",
+                           ang="Instant" ),
+#
+# 5.3.4.2.2. La précision du choix de l'instant
+#
+                           b_precision     =BLOC(condition="(INST != None)",
+                             PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3,
+                             fr="Précision sur le choix de l'instant associé",
+                             ang="Accuracy over instant choice" ),
+                             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),
+                             fr="Critère de précision sur le choix de l'instant associé",
+                             ang="Accuracy criterium over instant choice" ),),
+#
                            ) ,
 #
-# 4.4. LES CRITERES POUR DE L'ADAPTATION LIBRE :
-#        ABSOLU, RELATIF, EN PROPORTION D'ENTITE
-# 4.4.1. POUR LE RAFFINEMENT :
+# 5.4. Les criteres pour de l'adaptation libre :
+#        absolu, relatif, en proportion d'entite
+# 5.4.1. Pour le raffinement :
 #
            b_critere_de_raffinement =BLOC( condition = " ( LIBRE == 'RAFF_DERA' ) or ( LIBRE == 'RAFFINEMENT' ) " ,
                            fr="Critère de raffinement.",
@@ -144,7 +276,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=-24,sd_prod=macr_adap_mail_prod,
                                                    ang="Percentage of elements" ),  
                            ) ,
 #
-# 4.4.2. POUR LE DERAFFINEMENT :
+# 5.4.2. Pour le deraffinement :
 #
            b_critere_de_deraffinement =BLOC ( condition = " ( LIBRE == 'RAFF_DERA' ) or ( LIBRE == 'DERAFFINEMENT' ) " ,
                            fr="Critère de déraffinement.",
@@ -161,93 +293,153 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=-24,sd_prod=macr_adap_mail_prod,
                                                  ang="Percentage of elements" ),  
                            ) ,
 #
-# 4.5. LES NIVEAUX EXTREMES POUR LE MAILLAGE ADAPTE
-# 4.5.1. POUR LE RAFFINEMENT :
+# 5.5. Les niveaux extremes pour le maillage adapte
+# 5.5.1. Pour le raffinement :
 #
            b_niveau_maximum =BLOC ( condition = " ( LIBRE == 'RAFF_DERA' ) or ( LIBRE == 'RAFFINEMENT' ) or \
                                                   ( UNIFORME == 'RAFFINEMENT' ) " ,
-                             fr="Niveau maximum de profondeur de raffinement",
-                             ang="Maximum level for refinement",
-                             NIVE_MAX       = SIMP(statut='f',typ='I' ),  
+                           fr="Niveau maximum de profondeur de raffinement",
+                           ang="Maximum level for refinement",
+                           NIVE_MAX       = SIMP(statut='f',typ='I' ),
                            ) ,
 #
-# 4.5.2. POUR LE DERAFFINEMENT :
+# 5.5.2. Pour le deraffinement :
 #
            b_niveau_minimum =BLOC ( condition = " ( LIBRE == 'RAFF_DERA' ) or ( LIBRE == 'DERAFFINEMENT' ) or \
                                                   ( UNIFORME == 'DERAFFINEMENT' ) " ,
-                             fr="Niveau minimum de profondeur de déraffinement",
-                             ang="Minimum level for unrefinement",
-                             NIVE_MIN       = SIMP(statut='f',typ='I' ),
+                           fr="Niveau minimum de profondeur de déraffinement",
+                           ang="Minimum level for unrefinement",
+                           NIVE_MIN       = SIMP(statut='f',typ='I' ),
                            ) ,
+#
          ),
 #
-# 5. LA MISE A JOUR DE CHAMPS.
-#    PAR DEFAUT, RIEN NE SE FAIT
+# 6. Suivi d'une frontiere
 #
-         MAJ_CHAM        =FACT(statut='f',min=01,max='**',
+         MAILLAGE_FRONTIERE = SIMP(statut='f',typ=maillage,
+                           fr="Maillage de la frontiere à suivre",
+                           ang="Boundary mesh" ),
+#
+         b_frontiere   =BLOC( condition = " MAILLAGE_FRONTIERE != None " ,
+                           fr="Groupes définissant la frontière",
+                           ang="Groups which define the boundary",
+                           GROUP_MA       = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**' ),
+                           ) ,
+#
+# 7. Mise à jour de champs sur le nouveau maillage
+#
+         MAJ_CHAM        =FACT(statut='f',max='**',
                            fr="Mise à jour de champs sur le nouveau maillage.",
                            ang="Updating of fields over the new mesh.",
 #
-# 5.1. LE NOM DU RESULTAT DU CHAMP A INTERPOLER
+# 7.1. Le nom du champ qui contiendra le resultat de la mise a jour
+#
+           CHAM_MAJ       = SIMP(statut='o',typ=(CO,cham_gd),
+                           fr="Nom du champ qui contiendra le champ mis à jour",
+                           ang="Name of the field for the updated field"),
+#
+# 7.2. Le type du champ qui contiendra le resultat de la mise a jour
+#      Remarque : la liste qui suit doit etre conforme à son homologue de LIRE_CHAMP
+#
+           TYPE_CHAM      = SIMP(statut='o',typ='TXM',
+                                 into=("NOEU_DBEL_R",  "ELEM_DBEL_R",  "ELNO_DBEL_R",  "ELGA_DBEL_R",
+                                       "NOEU_DEPL_C",  "ELEM_DEPL_C",  "ELNO_DEPL_C",  "ELGA_DEPL_C",
+                                       "NOEU_DEPL_F",  "ELEM_DEPL_F",  "ELNO_DEPL_F",  "ELGA_DEPL_F",
+                                       "NOEU_DEPL_R",  "ELEM_DEPL_R",  "ELNO_DEPL_R",  "ELGA_DEPL_R",
+                                       "NOEU_DURT_R",  "ELEM_DURT_R",  "ELNO_DURT_R",  "ELGA_DURT_R",
+                                       "NOEU_ENER_R",  "ELEM_ENER_R",  "ELNO_ENER_R",  "ELGA_ENER_R",
+                                       "NOEU_EPSI_R",  "ELEM_EPSI_R",  "ELNO_EPSI_R",  "ELGA_EPSI_R",
+                                       "NOEU_ERREUR",  "ELEM_ERREUR",  "ELNO_ERREUR",  "ELGA_ERREUR",
+                                       "NOEU_FLUX_R",  "ELEM_FLUX_R",  "ELNO_FLUX_R",  "ELGA_FLUX_R",
+                                       "NOEU_GEOM_R",  "ELEM_GEOM_R",  "ELNO_GEOM_R",  "ELGA_GEOM_R",
+                                       "NOEU_G_DEPL_R","ELEM_G_DEPL_R","ELNO_G_DEPL_R","ELGA_G_DEPL_R",
+                                       "NOEU_HYDR_R",  "ELEM_HYDR_R",  "ELNO_HYDR_R",  "ELGA_HYDR_R",
+                                       "NOEU_INST_R",  "ELEM_INST_R",  "ELNO_INST_R",  "ELGA_INST_R",
+                                       "NOEU_INTE_R",  "ELEM_INTE_R",  "ELNO_INTE_R",  "ELGA_INTE_R",
+                                       "NOEU_META_R",  "ELEM_META_R",  "ELNO_META_R",  "ELGA_META_R",
+                                       "NOEU_NEUT_F",  "ELEM_NEUT_F",  "ELNO_NEUT_F",  "ELGA_NEUT_F",
+                                       "NOEU_NEUT_R",  "ELEM_NEUT_R",  "ELNO_NEUT_R",  "ELGA_NEUT_R",
+                                       "NOEU_PRES_R",  "ELEM_PRES_R",  "ELNO_PRES_R",  "ELGA_PRES_R",
+                                       "NOEU_SIEF_R",  "ELEM_SIEF_R",  "ELNO_SIEF_R",  "ELGA_SIEF_R",
+                                       "NOEU_SOUR_R",  "ELEM_SOUR_R",  "ELNO_SOUR_R",  "ELGA_SOUR_R",
+                                       "NOEU_TEMP_F",  "ELEM_TEMP_F",  "ELNO_TEMP_F",  "ELGA_TEMP_F",
+                                       "NOEU_TEMP_R",  "ELEM_TEMP_R",  "ELNO_TEMP_R",  "ELGA_TEMP_R",
+                                       "NOEU_VAR2_R",  "ELEM_VARI_R",  "ELNO_VARI_R",  "ELGA_VARI_R",
+                                       "NOEU_VNOR_C",  "ELEM_VNOR_C",  "ELNO_VNOR_C",  "ELGA_VNOR_C",
+                                       "NOEU_IRRA_R",  "ELEM_IRRA_R",  "ELNO_IRRA_R",  "ELGA_IRRA_R",),
+                           fr="Type du champ qui contiendra le champ mis à jour",
+                           ang="Type of the field for the updated field" ),
+#
+# 7.3. Le nom du resultat du champ a interpoler
 #
            RESULTAT       = SIMP(statut='o',
                                  typ=(evol_elas,evol_noli,evol_ther),
                            fr="Resultat contenant le champ à mettre à jour",
                            ang="Result with field to be updated" ),
 #
-# 5.2. LE NOM DU CHAMP A INTERPOLER
+# 7.4. Le nom du champ a interpoler
 #
            NOM_CHAM       = SIMP(statut='o',typ='TXM',
                            fr="Nom du champ à mettre à jour",
-                           ang="Name of the field to be updated" ),  
+                           ang="Name of the field to be updated" ),
 #
-# 5.3. LE NUMERO D'ORDRE POUR LE CHAMP A INTERPOLER
+# 7.5. Le paramètre temporel pour le champ a interpoler
+#
+                           regles=(EXCLUS('NUME_ORDRE','INST'),),
+#
+# 7.5.1. Soit le numero d'ordre
 #
            NUME_ORDRE     = SIMP(statut='f',typ='I',
                            fr="Numero d ordre du champ à mettre à jour",
-                           ang="Rank of the field to be updated" ),  
+                           ang="Rank of the field to be updated" ),
 #
-# 5.4. LE NOM DU CHAMP QUI CONTIENDRA LE RESULTAT DE LA MISE A JOUR
+# 7.5.2. Soit l'instant
+# 7.5.2.1. Sa valeur
 #
-           CHAM_MAJ       = SIMP(statut='o',typ=(CO,cham_gd),
-                           fr="Nom du champ qui contiendra le champ mis à jour",
-                           ang="Name of the field for the updated field"),
+           INST           = SIMP(statut='f',typ='R',
+                           fr="Instant associé",
+                           ang="Instant" ),
 #
-# 5.5. LE TYPE DU CHAMP QUI CONTIENDRA LE RESULTAT DE LA MISE A JOUR
+# 7.5.2.2. La précision du choix de l'instant
 #
-           TYPE_CHAM      = SIMP(statut='o',typ='TXM',     
-                                 into=("NOEU_TEMP_R","NOEU_DEPL_R"),
-                           fr="Type du champ qui contiendra le champ mis à jour",
-                           ang="Type of the field for the updated field" ),
+                           b_precision     =BLOC(condition="(INST != None)",
+                             PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3,
+                             fr="Précision sur le choix de l'instant associé",
+                             ang="Accuracy over instant choice" ),
+                             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),
+                             fr="Critère de précision sur le choix de l'instant associé",
+                             ang="Accuracy criterium over instant choice" ),),
          ),
 #
-# 6. INFORMATION SUR LE MAILLAGE : par defaut, on ne fait que les nombres
-#    A. NOMBRE DE NOEUDS ET ELEMENTS DU MAILLAGE
-#    B. QUALITE DES ELEMENTS DU MAILLAGE
-#    C. CONTROLE DE LA NON INTERPENETRATION DES ELEMENTS DU MAILLAGE
-#    D. CONNEXITE DU MAILLAGE
-#    E. TAILLE DES DIFFERENTS SOUS-DOMAINES
+# 8. Les options d'analyse de maillage ; par defaut, on ne fait que les nombres
+# 8.1. Nombre de noeuds et éléments
 #
          NOMBRE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
                           fr="Nombre de noeuds et éléments du maillage",
-                          ang="Number of nodes and elements in the mesh" ),
+                          ang="Number of nodes and éléments in the mesh" ),
+#
+# 8.2. Determination de la qualité des éléments du maillage
 #
          QUALITE        = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                           fr="Qualité du maillage",
                           ang="Mesh quality" ),
 #
-         INTERPENETRATION=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
-                          fr="Controle de la non interpénétration des éléments.",
-                          ang="Overlapping checking." ),
+# 8.3. Connexite du maillage
 #
          CONNEXITE      = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                           fr="Connexité du maillage.",
                           ang="Mesh connexity." ),
 #
+# 8.4. Taille des sous-domaines du maillage
+#
          TAILLE         = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                           fr="Tailles des sous-domaines du maillage.",
                           ang="Sizes of mesh sub-domains." ),
 #
-         MENAGE         = SIMP(statut='f',typ='TXM',into=("MAILLAGE","SOLUTION","TOUT") ),
+# 8.5. Controle de la non-interpenetration des éléments
+#
+         INTERPENETRATION=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+                          fr="Controle de la non interpénétration des éléments.",
+                          ang="Overlapping checking." ),
 #
 )  ;

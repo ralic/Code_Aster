@@ -1,11 +1,11 @@
-      FUNCTION TRACE(ND, S)
+      FUNCTION TRACE(NDI, S)
 C
       IMPLICIT      NONE
-      INTEGER       ND
-      REAL*8        S(*), TRACE
+      INTEGER       NDI
+      REAL*8        S(6), TRACE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C ======================================================================
       INTEGER II
 C ======================================================================
       TRACE = 0.0D0
-      DO 10 II=1,ND
+      DO 10 II=1,NDI
          TRACE = TRACE + S(II)
  10   CONTINUE
 C ======================================================================

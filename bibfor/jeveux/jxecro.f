@@ -1,6 +1,6 @@
       SUBROUTINE JXECRO ( IC , IADMI , IADDI , LSO , IDCO , IDOS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/03/98   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,7 +131,14 @@ C ----------- ON STOCKE LA LONGUEUR RESTANTE DE L'ENREGISTREMENT AU BOUT
             CALL JVDEBM ( 'S' , 'JXECRO01' , CMESS )
             CALL JVIMPI ( 'S' , ' ' , 1 , NBLMAX(IC) )
             CMESS ='DE LA BASE '//NOMBAS(IC)//' EST ATTEINT, '
-     &            //'MODIFIER LE PARAMETRE NMAX_ENRE DANS DEBUT'
+     &            //'IL FAUT RELANCER LE CALCUL EN '
+            CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
+            CMESS = 'MODIFIANT LE PARAMETRE NMAX_ENRE DANS DEBUT'
+            CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
+            CMESS ='OU EN PASSANT UNE TAILLE MAXIMUM DE BASE SUR LA '
+     &            //'LIGNE DE COMMANDE :'
+            CALL JVIMPK ( 'L' , ' ' , 1 , CMESS )
+            CMESS =' ARGUMENT "-max_base" SUIVI DE LA VALEUR EN Mo'
             CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
             CALL JVFINM ( )
  104        CONTINUE
@@ -162,8 +169,13 @@ C ----------- ON STOCKE LA LONGUEUR RESTANTE DE L'ENREGISTREMENT AU BOUT
               CALL JVDEBM ( 'S' , 'JXECRO02' , CMESS )
               CALL JVIMPI ( 'S' , ' ' , 1 , NBLMAX(IC) )
               CMESS ='DE LA BASE '//NOMBAS(IC)//' EST ATTEINT, '
-     &               //'MODIFIER LE PARAMETRE NMAX_ENRE DANS DEBUT'
+     &              //'IL FAUT RELANCER LE CALCUL EN '
               CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
+              CMESS = 'MODIFIANT LE PARAMETRE NMAX_ENRE DANS DEBUT'
+              CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
+              CMESS ='OU EN PASSANT UNE TAILLE MAXIMUM DE BASE SUR LA '
+     &            //'LIGNE DE COMMANDE : ARGUMENT -max_base'
+              CALL JVIMPK ( 'L' , ' ' , 1 , CMESS )
               CALL JVFINM ( )
  204          CONTINUE
               IITECR(IC) = KD
@@ -218,8 +230,13 @@ C
           CALL JVDEBM ( 'S' , 'JXECRO03' , CMESS )
           CALL JVIMPI ( 'S' , ' ' , 1 , NBLMAX(IC) )
           CMESS ='DE LA BASE '//NOMBAS(IC)//' EST ATTEINT, '
-     &          //'MODIFIER LE PARAMETRE NMAX_ENRE DANS DEBUT'
+     &           //'IL FAUT RELANCER LE CALCUL EN '
           CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
+          CMESS = 'MODIFIANT LE PARAMETRE NMAX_ENRE DANS DEBUT'
+          CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
+          CMESS ='OU EN PASSANT UNE TAILLE MAXIMUM DE BASE SUR LA '
+     &        //'LIGNE DE COMMANDE : ARGUMENT -max_base'
+          CALL JVIMPK ( 'L' , ' ' , 1 , CMESS )
           CALL JVFINM ( )
  304      CONTINUE
           CALL JXECRB (IC, KD, IADMO, LSO, IDCO, IDOS)

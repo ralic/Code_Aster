@@ -1,4 +1,4 @@
-# MODIF  DATE 04/11/2002   AUTEUR PABHHHH N.TARDIEU 
+# MODIF  DATE 07/05/2003   AUTEUR PABHHHH N.TARDIEU 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -459,7 +459,7 @@ TEST_TABLE(TABLE=TCONT,
                       VALE=1.,),
                    _F(NOM_PARA='NOEUD',
                       VALE_K='N787',),),
-           NOM_PARA='CONTACT',
+           NOM_PARA='CONT',
            VALE=2.,
            PRECISION=1.E-5,
            REFERENCE='NON_REGRESSION',
@@ -470,7 +470,7 @@ TEST_TABLE(TABLE=TCONT,
                       VALE=1.,),
                    _F(NOM_PARA='NOEUD',
                       VALE_K='N786',),),
-           NOM_PARA='CONTACT',
+           NOM_PARA='CONT',
            VALE=2.,
            PRECISION=1.E-5,
            REFERENCE='NON_REGRESSION',

@@ -4,7 +4,7 @@
       CHARACTER*(*)       MCFACT,       NOMAZ, NOMVEI, NOMVEK
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       N1, IER, KOTYP, IM, NUMA, ITYP, NUME, IBID, IATYMA,
      +              LGP, LGM, ILIST, KLIST, LXLGUT, NBMC, NBMA, JNOMA
       PARAMETER     ( NBMC = 3 )
-      LOGICAL       LOPT, LNOM, LNUME, GETEXM
+      LOGICAL       LOPT, LNOM, LNUME, GETEXM, LMAIL
       CHARACTER*8   K8B, NOMA, OPTION, OLDTYP, PRFM, NOMMAI, KNUME
       CHARACTER*16  TYMOCL(NBMC), MOTCLE(NBMC)
       CHARACTER*24  NOMAMA, NOMATY, NOMJV
@@ -77,13 +77,18 @@ C
         CALL JENONU ( JEXNOM('&CATA.TM.NOMTM',OLDTYP), KOTYP )
       ENDIF
 C
+      LMAIL = .FALSE.
+      LNUME = .FALSE.
       IF ( LNOM ) THEN
         CALL GETVTX ( MCFACT, 'PREF_MAILLE', IOCC,1,0, K8B, N1)
         IF ( N1 .NE. 0 ) THEN
           CALL GETVTX ( MCFACT, 'PREF_MAILLE', IOCC,1,1, PRFM, N1)
           LGP = LXLGUT(PRFM)
+          LMAIL = .TRUE.
+        ELSE
+          LGP = 0
+          PRFM = ' '
         ENDIF
-        LNUME = .FALSE.
         CALL GETVIS ( MCFACT, 'PREF_NUME', IOCC,1,0, IBID, N1)
         IF ( N1 .NE. 0 ) THEN
           LNUME = .TRUE.
@@ -111,7 +116,7 @@ C
             CALL UTMESS('E','PALIM2','LA MAILLE '//NOMMAI//
      +                       ' NE FAIT PAS PARTIE DU MAILLAGE '//NOMA )
          ELSE
-            IF ( LNOM ) THEN
+            IF ( LMAIL ) THEN
               IF ( LNUME ) THEN
                 CALL CODENT ( NUME, 'G', KNUME )
                 NUME = NUME + 1

@@ -6,7 +6,7 @@ C     COMMANDE:  THER_LINEAIRE & THER_NON_LINE
 C
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/06/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ALGORITH  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,23 +60,6 @@ C 0.1. ==> ARGUMENTS
       CHARACTER*24 STYPSE
 
 C 0.2. ==> COMMUNS
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-
 C 0.3. ==> VARIABLES LOCALES
 C
       CHARACTER*6 NOMPRO
@@ -85,12 +68,12 @@ C
       INTEGER NBMCRF, NBMCMX
       PARAMETER ( NBMCRF = 3, NBMCMX = 4 )
 C
-      INTEGER NBMOCL
-      INTEGER NBMC(NBMCRF), NBMCVR
-      CHARACTER*24 LIMOCL, LIVALE
+      INTEGER NBMOSI
+      INTEGER NBMC(NBMCRF), NBMCSR
+      CHARACTER*24 LIMOSI, LIVALE, LIMOFA
       CHARACTER*24 BLAN24
       CHARACTER*24 TYPEPS
-      CHARACTER*24 COREFE(NBMCRF), MCREFE(NBMCMX)
+      CHARACTER*24 COREFE(NBMCRF), MCSREF(NBMCMX)
 C
 C                    123456789012345678901234
       DATA BLAN24 / '                        ' /
@@ -105,12 +88,20 @@ C                4 : CARACTERISTIQUE ELEMENTAIRE (COQUES, ...)
 C                0 : AUTRE TYPE, DEPENDANT DE LA COMMANDE
 C====
 C                12   345678   9012345678901234
-      LIMOCL  = '&&'//NOMPRO//'_LIMOCL         '
+      LIMOSI  = '&&'//NOMPRO//'_LIMOSI         '
       LIVALE  = '&&'//NOMPRO//'_LIVALE         '
+      LIMOFA  = '&&'//NOMPRO//'_LIMOFA         '
 C
       CALL PSTYSE ( NBPASE, INPSCO, NOPASE,
-     >              TYPESE, TYPEPS, NBMOCL, LIMOCL, LIVALE )
-
+     >              TYPESE, TYPEPS, NBMOSI, LIMOSI, LIVALE, LIMOFA )
+C
+CGN      CALL UTDEBM ( 'I', NOMPRO, 'SENSIBILITE DEMANDEE' )
+CGN      CALL UTIMPK ( 'S', ' PAR RAPPORT AU CONCEPT :', 1, NOPASE )
+CGN      CALL UTIMPK ( 'L', 'APRES PSTYSE, TYPE : ', 1,TYPEPS )
+CGN      CALL UTIMPI ( 'L', '. CODE : ', 1, TYPESE )
+CGN      CALL UTIMPI ( 'L', '. NOMBRE DE MOTS-CLES : ', 1, NBMOSI )
+CGN      CALL UTFINM ()
+C
 C====
 C 2. TYPE DE SENSIBILITE
 C====
@@ -121,20 +112,20 @@ C
 C
         COREFE(1) = 'LAMBDA'
         NBMC(1) = 1
-        MCREFE(1) = 'LAMBDA'
+        MCSREF(1) = 'LAMBDA'
 C
         COREFE(2) = 'RHO_CP'
         NBMC(2) = 1
-        MCREFE(2) = 'RHO_CP'
+        MCSREF(2) = 'RHO_CP'
 C
         COREFE(3) = 'BETA'
         NBMC(3) = 1
-        MCREFE(3) = 'BETA'
+        MCSREF(3) = 'BETA'
 C
-        NBMCVR = 3
+        NBMCSR = 3
 C
-        CALL PSTYSS ( NBMCVR, NBMC, COREFE, MCREFE,
-     >                NBMOCL, LIVALE, NOPASE,
+        CALL PSTYSS ( NBMCSR, NBMC, COREFE, MCSREF,
+     >                NBMOSI, LIVALE, NOPASE,
      >                STYPSE )
 C
       ELSEIF ( TYPESE.EQ.0 ) THEN
@@ -154,19 +145,19 @@ C
 C
           COREFE(1) = 'SIGMA'
           NBMC(1) = 1
-          MCREFE(1) = 'SIGMA'
+          MCSREF(1) = 'SIGMA'
 C
           COREFE(2) = 'EPSILON'
           NBMC(2) = 1
-          MCREFE(2) = 'EPSILON'
+          MCSREF(2) = 'EPSILON'
 C
           COREFE(3) = 'TEMP_EXT'
           NBMC(3) = 1
-          MCREFE(3) = 'TEMP_EXT'
+          MCSREF(3) = 'TEMP_EXT'
 C
-          NBMCVR = 3
-          CALL PSTYST ( NBMCVR, NBMC, COREFE, MCREFE,
-     >                  NBMOCL, LIMOCL, LIVALE,
+          NBMCSR = 3
+          CALL PSTYST ( NBMCSR, NBMC, COREFE, MCSREF,
+     >                  NBMOSI, LIMOSI, LIVALE, LIMOFA,
      >                  STYPSE )
         ELSE
 
@@ -184,8 +175,8 @@ C====
 C 3. MENAGE
 C====
 C
-CC      print * ,'POUR ',NOPASE,' : ',stypse
-      CALL JEDETR ( LIMOCL )
+      CALL JEDETR ( LIMOSI )
       CALL JEDETR ( LIVALE )
+      CALL JEDETR ( LIMOFA )
 
       END

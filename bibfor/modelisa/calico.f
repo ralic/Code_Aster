@@ -1,7 +1,7 @@
       SUBROUTINE CALICO(CHARZ,NOMAZ,NOMOZ,NDIM,MOTFAZ)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/01/2003   AUTEUR PABHHHH N.TARDIEU 
+C MODIF MODELISA  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,6 @@ C '.NOMACO'  : LISTE DES NOEUDS DES MAILLES DE CONTACT         (NOMACO)
 C '.PNOMACO' : POINTEUR ASSOCIE                                (PNOMA)
 C '.MAMACO'  : INDICE DES MAILLES ADJACENTES A UNE MAILLE      (MAMACO)
 C '.PMAMACO' : POINTEUR ASSOCIE                                (PMAMA)
-C '.NORMCO'  : COMPOSANTES DES NORMALES AUX NOEUDS DE CONTACT  (NORMCO)
 C '.NDIMCO'  : LISTE D'ENTIERS UTILES (DIMENSION DES VECTEURS) (NDIMCO)
 C '.JSUPCO'  : JEU FICTIF (A SOUSTRAIRE AU VRAI JEU)           (JEUSUP)
 C '.JFO1CO'  : JEU FICTIF FONCTION (A SOUSTRAIRE AU VRAI JEU)  (JEUFO1)
@@ -67,30 +66,30 @@ C METHCO : TABLEAU DONNANT LES CARACTERISTIQUES DE LA METHODE
 C          DE TRAITEMENT DU CONTACT UNILATERAL
 C       METHCO (1) = NOMBRE DE ZONES DE CONTACT NZOCO
 C       POUR LA ZONE N :
-C       METHCO(1+9*(N-1)+1) = TYPE D'APPARIEMENT
+C       METHCO(1+10*(N-1)+1) = TYPE D'APPARIEMENT
 C         - -1 SI 'NON'
 C         -  0 SI 'NODAL' OU 'NODAL_SYME'
 C         -  1 SI 'MAIT_ESCL' OU 'MAIT_ESCL_SYME'
 C         -  2 SI 'TERRITOIRE'
 C         -  3 SI 'HIERARCHIQUE'
 C         -  4 SI NODAL ET DIRECTION FIXEE DANS LE FICHIER DE COMMANDES
-C       METHCO(1+9*(N-1)+2) = DEFINITION D UNE DIRECTION TANGENTE
+C       METHCO(1+10*(N-1)+2) = DEFINITION D UNE DIRECTION TANGENTE
 C                            (POUR LE FROTTEMENT)
 C         - 0 SI NON DEFINIE
 C         - 1 SI DEFINIE
-C       METHCO(1+9*(N-1)+3) = ORDRE MAITRE-ESCLAVE
+C       METHCO(1+10*(N-1)+3) = ORDRE MAITRE-ESCLAVE
 C         - 1 SI UTILISE     (APPARIEMENT SYMETRISE)
 C         - 0 SI PAS UTILISE (APPARIEMENT NON SYMETRISE)
-C       METHCO(1+9*(N-1)+4) = TYPE DE PROJECTION
+C       METHCO(1+10*(N-1)+4) = TYPE DE PROJECTION
 C         - 1 SI LINEAIRE
 C         - 2 SI QUADRATIQUE
-C       METHCO(1+9*(N-1)+5) = TYPE DE REACTUALISATION
+C       METHCO(1+10*(N-1)+5) = TYPE DE REACTUALISATION
 C         - +   1 SI PAR DOUBLE BOUCLE SYSTEMATIQUE
 C         - +/- 2 SI PAR VOISINAGE
 C         - +/- 3 SI PAR BOITE
 C         - > 0 SI ON PASSE D'ABORD PAR LE NOEUD LE PLUS PROCHE
 C         - < 0 SI ON CHERCHE DIRECTEMENT LA MAILLE LA PLUS PROCHE
-C       METHCO(1+9*(N-1)+6) = ALGORITHME UTILISE
+C       METHCO(1+10*(N-1)+6) = ALGORITHME UTILISE
 C         - -1    PENALISATION    CONTACT                    2D/3D
 C         -  0    CONTRAINTE      CONTACT                    2D/3D
 C         -  1    LAGRANGIEN      CONTACT                    2D/3D
@@ -99,16 +98,18 @@ C         -  3    PENALISATION    CONTACT ET FROTTEMENT      2D/3D
 C         -  4    LAGRANGIEN      CONTACT ET FROTTEMENT      3D
 C         -  5    PENALISATION    SEULEMENT SUR FROTTEMENT   2D/3D
 C         -  6    CONTINUE        CONTACT ET FROTTEMENT      2D/3D
-C       METHCO(1+9*(N-1)+7) = FREQUENCE DE REACTUALISATION GEOMETRIQUE
+C       METHCO(1+10*(N-1)+7) = FREQUENCE DE REACTUALISATION GEOMETRIQUE
 C         -  0    AUCUNE
 C         -  1    1 PAR PAS DE CHARGE
 C         -  2    2 PAR PAS DE CHARGE
-C       METHCO(1+9*(N-1)+8) = NORMALE UTILISEE
+C       METHCO(1+10*(N-1)+8) = NORMALE UTILISEE
 C         -  0    NORMALE MAITRE
 C         -  1    MOYENNE NORMALE MAITRE+ESCLAVE
-C       METHCO(1+9*(N-1)+9) = STOP SI MATRICE DE CONTACT SINGULIERE
+C       METHCO(1+10*(N-1)+9) = STOP SI MATRICE DE CONTACT SINGULIERE
 C         -  0    OUI
 C         -  1    NON
+C       METHCO(1+10*(N-1)+10) =NOMBRE DE PAQUETS POUR RESOLUTION DU 
+C              SYSTEME LINEAIRE 10 PAR DEFAUT
 C CHAMCO : CHAMP IMPACTE PAR LA CONDITION UNILATERALE POUR CHAQUE ZONE
 C          (DIM NZOCO)
 C         - +/-1 : DEPLACEMENT
@@ -140,7 +141,6 @@ C NOMACO : TABLEAU DONNANT POUR CHAQUE MAILLE DE CONTACT LA LISTE DES
 C          NOEUDS DE CONTACT DE LA MEME SURFACE QU'ELLE CONTIENT
 C PNOMA  : POINTEUR DE CE TABLEAU (DIM NMACO+1)
 C NNOMA  : DIMENSION DE NOMACO
-C NORMCO : COMPOSANTES DES NORMALES INITIALES AUX NOEUDS DE CONTACT
 C MAMACO : TABLEAU DONNANT POUR CHAQUE MAILLE DE CONTACT LA LISTE DES
 C          MAILLES DE CONTACT DE LA MEME SURFACE ADJACENTES
 C          (INDICE DANS CONTMA, PAS LE NUMERO DE MAILLE ABSOLU)
@@ -209,9 +209,9 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C ======================================================================
       INTEGER NZOCO,NSUCO,NMACO,NNOCO,NMANO,NNOMA,NMAMA,NESMAX
       INTEGER NBMA,NBNO,NTRAV,IOC,NOC,JDIM,NSURF,INDMTH,IBID,IER
-      INTEGER NBNO1,NBNO2,I1,I2,NESM,JCHAM,JCOEF,JDIR,NBMA1
+      INTEGER NBNO1,NBNO2,I1,I2,NESM,JCHAM,JCOEF,JDIR,NBMA1,INRE
       INTEGER JMETH,JZONE,JSUMA,JSUNO,JMACO,JNOCO,JDECMA,JDECNO
-      INTEGER JJSUP,JJFO1,JJFO2,JTANG,IFRO,IPENA,ICOMA,JCMCF,JECPD
+      INTEGER JJSUP,JJFO1,JJFO2,IFRO,IPENA,ICOMA,JCMCF,JECPD
       INTEGER REACCA,REACBS,REACBG,REACSI,JNOESC,JTGDEF,NOCC,NOCN
       INTEGER NNOQUA,JNOQUA,JNOQU,NBNOQU,JDECNQ,JNORLI,NBREAC
       REAL*8 DIST1,DIST2,COEF,SEUIL,DIR(3),DIR1(3)
@@ -221,9 +221,9 @@ C ======================================================================
       CHARACTER*16 MOTFAC,APPAR,PROJ,RECH,CHAM,K16BID,NOMCMD,TYPF,INTER
       CHARACTER*16 MODAX,TYPM,TYPN,PHENOM,MODELI,MOTCLE(2)
       CHARACTER*24 METHCO,CONTMA,CONTNO,PSURMA,PSURNO,PZONE,SANSNO,PSANS
-      CHARACTER*24 MANOCO,PMANO,NOMACO,PNOMA,NORMCO,MAMACO,PMAMA,NDIMCO
+      CHARACTER*24 MANOCO,PMANO,NOMACO,PNOMA,MAMACO,PMAMA,NDIMCO
       CHARACTER*24 JEUSUP,JEUFO1,JEUFO2,CHAMCO,COEFCO,NOZOCO,DIRCO
-      CHARACTER*24 CARACF,ECPDON,TANGCO,FROTE,PENAL,COMAFO,DEFICO,TANDEF
+      CHARACTER*24 CARACF,ECPDON,FROTE,PENAL,COMAFO,DEFICO,TANDEF
       CHARACTER*24 NOESCL,PNOQUA,CONOQU,NORLIS,LISMA
 C ======================================================================
 C --- INITIALISATION ---------------------------------------------------
@@ -278,9 +278,9 @@ C ======================================================================
       JEUFO2 = CHAR(1:8)//'.CONTACT.JFO2CO'
       CHAMCO = CHAR(1:8)//'.CONTACT.CHAMCO'
       COEFCO = CHAR(1:8)//'.CONTACT.COEFCO'
-      DIRCO = CHAR(1:8)//'.CONTACT.DIRCO'
-      FROTE = CHAR(1:8)//'.CONTACT.FROTE'
-      PENAL = CHAR(1:8)//'.CONTACT.PENAL'
+      DIRCO  = CHAR(1:8)//'.CONTACT.DIRCO'
+      FROTE  = CHAR(1:8)//'.CONTACT.FROTE'
+      PENAL  = CHAR(1:8)//'.CONTACT.PENAL'
       COMAFO = CHAR(1:8)//'.CONTACT.COMAFO'
       CARACF = CHAR(1:8)//'.CONTACT.CARACF'
       ECPDON = CHAR(1:8)//'.CONTACT.ECPDON'
@@ -289,7 +289,7 @@ C ======================================================================
       CONOQU = CHAR(1:8)//'.CONTACT.NOEUQU'
       NORLIS = CHAR(1:8)//'.CONTACT.NORLIS'
 C ======================================================================
-      CALL WKVECT(METHCO,'G V I',9*NZOCO+1,JMETH)
+      CALL WKVECT(METHCO,'G V I',10*NZOCO+1,JMETH)
       CALL WKVECT(CONTMA,'G V I',NMACO,JMACO)
       CALL WKVECT(CONTNO,'G V I',NNOCO,JNOCO)
       CALL WKVECT(JEUSUP,'G V R',NZOCO,JJSUP)
@@ -318,51 +318,51 @@ C ======================================================================
 C --- RECUPERATION DU TYPE D'APPARIEMENT -------------------------------
 C ======================================================================
         CALL GETVTX(MOTFAC,'APPARIEMENT',IOC,1,1,APPAR,NOC)
-        IF (APPAR(1:3).EQ.'NON') ZI(JMETH+9* (IOC-1)+1) = -1
-        IF (APPAR(1:5).EQ.'NODAL') ZI(JMETH+9* (IOC-1)+1) = 0
-        IF (APPAR(1:9).EQ.'MAIT_ESCL') ZI(JMETH+9* (IOC-1)+1) = 1
-        IF (APPAR(1:10).EQ.'TERRITOIRE') ZI(JMETH+9* (IOC-1)+1) = 2
-        IF (APPAR(1:12).EQ.'HIERARCHIQUE') ZI(JMETH+9* (IOC-1)+1) = 3
+        IF (APPAR(1:3).EQ.'NON') ZI(JMETH+10* (IOC-1)+1) = -1
+        IF (APPAR(1:5).EQ.'NODAL') ZI(JMETH+10* (IOC-1)+1) = 0
+        IF (APPAR(1:9).EQ.'MAIT_ESCL') ZI(JMETH+10* (IOC-1)+1) = 1
+        IF (APPAR(1:10).EQ.'TERRITOIRE') ZI(JMETH+10* (IOC-1)+1) = 2
+        IF (APPAR(1:12).EQ.'HIERARCHIQUE') ZI(JMETH+10* (IOC-1)+1) = 3
 C ======================================================================
 C --- APPARIEMENT SYMETRIQUE ? -----------------------------------------
 C ======================================================================
-        ZI(JMETH+9* (IOC-1)+3) = 0
-        IF (APPAR.EQ.'NODAL_SYME') ZI(JMETH+9* (IOC-1)+3) = 1
-        IF (APPAR.EQ.'MAIT_ESCL_SYME') ZI(JMETH+9* (IOC-1)+3) = 1
+        ZI(JMETH+10* (IOC-1)+3) = 0
+        IF (APPAR.EQ.'NODAL_SYME') ZI(JMETH+10* (IOC-1)+3) = 1
+        IF (APPAR.EQ.'MAIT_ESCL_SYME') ZI(JMETH+10* (IOC-1)+3) = 1
 C ======================================================================
 C --- RECUPERATION DU TYPE DE PROJECTION -------------------------------
 C ======================================================================
         CALL GETVTX(MOTFAC,'PROJECTION',IOC,1,1,PROJ,NOC)
-        ZI(JMETH+9* (IOC-1)+4) = 1
-        IF (PROJ.EQ.'QUADRATIQUE') ZI(JMETH+9* (IOC-1)+4) = 2
+        ZI(JMETH+10* (IOC-1)+4) = 1
+        IF (PROJ.EQ.'QUADRATIQUE') ZI(JMETH+10* (IOC-1)+4) = 2
 C ======================================================================
 C --- RECUPERATION DE L'ENVIRONNEMENT DE RECHERCHE ---------------------
 C ======================================================================
         CALL GETVTX(MOTFAC,'RECHERCHE',IOC,1,1,RECH,NOC)
-        ZI(JMETH+9* (IOC-1)+5) = 1
-        IF (APPAR.EQ.'NON') ZI(JMETH+9* (IOC-1)+5) = 0
-        IF (RECH(1:12).EQ.'NOEUD_BOUCLE') ZI(JMETH+9* (IOC-1)+5) = 1
-        IF (RECH(1:11).EQ.'NOEUD_VOISIN') ZI(JMETH+9* (IOC-1)+5) = 2
-        IF (RECH(1:12).EQ.'MAILLE_VOISIN') ZI(JMETH+9* (IOC-1)+5) = -2
-        IF (RECH(1:11).EQ.'NOEUD_BOITE') ZI(JMETH+9* (IOC-1)+5) = 3
-        IF (RECH(1:12).EQ.'MAILLE_BOITE') ZI(JMETH+9* (IOC-1)+5) = -3
+        ZI(JMETH+10* (IOC-1)+5) = 1
+        IF (APPAR.EQ.'NON') ZI(JMETH+10* (IOC-1)+5) = 0
+        IF (RECH(1:12).EQ.'NOEUD_BOUCLE') ZI(JMETH+10* (IOC-1)+5) = 1
+        IF (RECH(1:11).EQ.'NOEUD_VOISIN') ZI(JMETH+10* (IOC-1)+5) = 2
+        IF (RECH(1:12).EQ.'MAILLE_VOISIN') ZI(JMETH+10* (IOC-1)+5) = -2
+        IF (RECH(1:11).EQ.'NOEUD_BOITE') ZI(JMETH+10* (IOC-1)+5) = 3
+        IF (RECH(1:12).EQ.'MAILLE_BOITE') ZI(JMETH+10* (IOC-1)+5) = -3
 C ======================================================================
 C --- RECUPERATION DE LA METHODE ---------------------------------------
 C ======================================================================
         CALL GETVTX(MOTFAC,'METHODE',IOC,1,1,TYPM,NOC)
         IF (TYPM(1:8).EQ.'PENALISA') THEN
-          ZI(JMETH+9* (IOC-1)+6) = -1
+          ZI(JMETH+10* (IOC-1)+6) = -1
           CALL GETVR8(MOTFAC,'E_N',1,1,1,COEFPN,NOCN)
           ZR(JCMCF+6* (IOC-1)+2) = COEFPN
           INDMTH = 0
         ELSE IF (TYPM(1:8).EQ.'LAGRANGI') THEN
-          ZI(JMETH+9* (IOC-1)+6) = 1
+          ZI(JMETH+10* (IOC-1)+6) = 1
           INDMTH = 0
         ELSE IF (TYPM(1:8).EQ.'CONTRAIN') THEN
-          ZI(JMETH+9* (IOC-1)+6) = 0
+          ZI(JMETH+10* (IOC-1)+6) = 0
           INDMTH = 0
         ELSE IF (TYPM(1:8).EQ.'CONTINUE') THEN
-          ZI(JMETH+9* (IOC-1)+6) = 6
+          ZI(JMETH+10* (IOC-1)+6) = 6
           ZI(JECPD) = 1
         ELSE
           CALL UTMESS('F','CALICO',
@@ -381,12 +381,12 @@ C --- REACTUALISATION GEOMETRIQUE --------------------------------------
 C ======================================================================
           CALL GETVTX(MOTFAC,'REAC_GEOM',IOC,1,1,REAC,NOC)
           IF (REAC.EQ.'SANS') THEN
-             ZI(JMETH+9*(IOC-1)+7) =  0
+             ZI(JMETH+10*(IOC-1)+7) =  0
           ELSE IF (REAC.EQ.'AUTOMATI') THEN
-             ZI(JMETH+9*(IOC-1)+7) = -1
+             ZI(JMETH+10*(IOC-1)+7) = -1
           ELSE IF (REAC.EQ.'CONTROLE') THEN
              CALL GETVIS(MOTFAC,'NB_REAC_GEOM',IOC,1,1,NBREAC,NOC)
-             ZI(JMETH+9*(IOC-1)+7) = NBREAC
+             ZI(JMETH+10*(IOC-1)+7) = NBREAC
           ENDIF
 C ======================================================================
 C --- RECUPERATION DU JEU SUPPLEMENTAIRE MECANIQUE POUR LA ZONE IOC ----
@@ -419,11 +419,16 @@ C --- ARRET OU PAS SI MATRICE DE CONTACT SINGULIERE --------------------
 C ======================================================================
           CALL GETVTX(MOTFAC,'STOP_SINGULIER',IOC,1,1,ISTO,NOC)
           IF (ISTO.EQ.'OUI') THEN
-             ZI(JMETH+9*(IOC-1)+9) =  0
+             ZI(JMETH+10*(IOC-1)+9) =  0
           ELSE 
-             ZI(JMETH+9*(IOC-1)+9) =  1
+             ZI(JMETH+10*(IOC-1)+9) =  1
              ZI(JMETH+9) =  1
           ENDIF
+C ======================================================================
+C --- NOMBRE DE PAQUETS POUR LA RESOLUTION DES SYSTEMES LINEAIRES  -----
+C ======================================================================
+          CALL GETVIS(MOTFAC,'NB_RESOL',IOC,1,1,INRE,NOC)
+          ZI(JMETH+10*(IOC-1)+10) =  INRE
 C ======================================================================
 C --- MOT-CLES ASSOCIES A LA METHODE CONTINUE --------------------------
 C ======================================================================
@@ -490,9 +495,9 @@ C --- TYPE DE NORMALE --------------------------------------------------
 C ======================================================================
         CALL GETVTX(MOTFAC,'NORMALE',IOC,1,1,TYPN,NOC)
         IF (TYPN(1:6).EQ.'MAIT') THEN
-          ZI(JMETH+9* (IOC-1)+8) = 0
+          ZI(JMETH+10* (IOC-1)+8) = 0
         ELSE IF (TYPN(1:9).EQ.'MAIT_ESCL') THEN
-          ZI(JMETH+9* (IOC-1)+8) = 1
+          ZI(JMETH+10* (IOC-1)+8) = 1
         ELSE
           CALL UTMESS('F','CALICO',
      &               'NE CORRESPOND A AUCUNE METHODE DU MOT CLE NORMALE'
@@ -517,22 +522,22 @@ C ======================================================================
           ENDIF
           IF (NDIM.EQ.2) THEN
             IF (TYPM(1:8).EQ.'PENALISA') THEN
-              ZI(JMETH+9* (IOC-1)+6) = 3
-              IF (NOCN.NE.0) ZI(JMETH+9* (IOC-1)+6) = 5
+              ZI(JMETH+10* (IOC-1)+6) = 3
+              IF (NOCN.NE.0) ZI(JMETH+10* (IOC-1)+6) = 5
             ELSE IF (TYPM(1:8).EQ.'LAGRANGI') THEN
-              ZI(JMETH+9* (IOC-1)+6) = 2
+              ZI(JMETH+10* (IOC-1)+6) = 2
             END IF
           ELSE IF (NDIM.EQ.3) THEN
             IF (TYPM(1:8).EQ.'PENALISA') THEN
-              ZI(JMETH+9* (IOC-1)+6) = 3
-              IF (NOCN.NE.0) ZI(JMETH+9* (IOC-1)+6) = 5
+              ZI(JMETH+10* (IOC-1)+6) = 3
+              IF (NOCN.NE.0) ZI(JMETH+10* (IOC-1)+6) = 5
             ELSE IF (TYPM(1:8).EQ.'LAGRANGI') THEN
-              ZI(JMETH+9* (IOC-1)+6) = 4
+              ZI(JMETH+10* (IOC-1)+6) = 4
             END IF
           END IF
         END IF
         IF (IOC.GT.1) THEN
-          IF (ZI(JMETH+9* (IOC-1)+6).NE.ZI(JMETH+9* (IOC-2)+6)) THEN
+          IF (ZI(JMETH+10* (IOC-1)+6).NE.ZI(JMETH+10* (IOC-2)+6)) THEN
             CALL UTMESS('F','CALICO',
      &                  'METHODE ET LOIS DE FRICTION IDENTIQUES POUR '//
      &                  'TOUTES LES ZONES CONTACT-FROTTEMENT')
@@ -548,7 +553,7 @@ C ======================================================================
      &                  'UNE DIRECTION D''APPARIEMENT FIXE SI '//
      &                  'L''APPARIEMENT N''EST PAS NODAL')
           END IF
-          ZI(JMETH+9* (IOC-1)+1) = 4
+          ZI(JMETH+10* (IOC-1)+1) = 4
           ZR(JDIR+3* (IOC-1)) = DIR(1)
           ZR(JDIR+3* (IOC-1)+1) = DIR(2)
           IF (NDIM.EQ.3) THEN
@@ -560,18 +565,18 @@ C ======================================================================
 C ======================================================================
 C --- MOT-CLE VECT_Y ---------------------------------------------------
 C ======================================================================
-        ZI(JMETH+9* (IOC-1)+2) = 0
+        ZI(JMETH+10* (IOC-1)+2) = 0
         IF (TYPM(1:8).EQ.'LAGRANGI' .OR. TYPM(1:8).EQ.'PENALISA' .OR.
      &      TYPM(1:8).EQ.'CONTRAIN') THEN
           IF (NOCC.NE.0) THEN
             CALL GETVR8(MOTFAC,'VECT_Y',IOC,1,3,DIR,NOC)
-C            ZI(JMETH+9* (IOC-1)+2) = 0
+C            ZI(JMETH+10* (IOC-1)+2) = 0
             IF (NOC.NE.0) THEN
               IF (NDIM.EQ.2) THEN
                 CALL UTMESS('A','CALICO','LA COMMANDE VECT_Y'//
      &                      ' N''INTERVIENT PAS EN 2D.')
               ELSE
-                ZI(JMETH+9* (IOC-1)+2) = 1
+                ZI(JMETH+10* (IOC-1)+2) = 1
                 ZR(JTGDEF+ (IOC-1)*3  ) = DIR(1)
                 ZR(JTGDEF+ (IOC-1)*3+1) = DIR(2)
                 ZR(JTGDEF+ (IOC-1)*3+2) = DIR(3)
@@ -668,15 +673,12 @@ C ======================================================================
       PMANO = CHAR(1:8)//'.CONTACT.PMANOCO'
       NOMACO = CHAR(1:8)//'.CONTACT.NOMACO'
       PNOMA = CHAR(1:8)//'.CONTACT.PNOMACO'
-      NORMCO = CHAR(1:8)//'.CONTACT.NORMCO'
-      TANGCO = CHAR(1:8)//'.CONTACT.TANGCO'
       MAMACO = CHAR(1:8)//'.CONTACT.MAMACO'
       PMAMA = CHAR(1:8)//'.CONTACT.PMAMACO'
       NOZOCO = CHAR(1:8)//'.CONTACT.NOZOCO'
-      CALL WKVECT(TANGCO,'G V R',6*NNOCO,JTANG)
       CALL TABLCO(NOMA,NDIM,PZONE,NZOCO,NSUCO,NMACO,NNOCO,PSURMA,PSURNO,
      &            CONTMA,CONTNO,MANOCO,PMANO,NMANO,NOMACO,PNOMA,NNOMA,
-     &            NORMCO,MAMACO,PMAMA,NMAMA,NOZOCO)
+     &            MAMACO,PMAMA,NMAMA,NOZOCO)
 C ======================================================================
 C --- TABLEAU CONTENANT LES LONGUEURS DES DIFFERENTS VECTEURS ----------
 C --- ET LE NOMBRE DE NOEUDS ESCLAVES MAXIMUM POUR CHAQUE ZONE ---------
@@ -708,7 +710,7 @@ C ======================================================================
         IF (NSURF.EQ.2) THEN
           NBNO1 = ZI(JSUNO+I1) - ZI(JSUNO+I1-1)
           NBNO2 = ZI(JSUNO+I2) - ZI(JSUNO+I2-1)
-          IF (ZI(JMETH+9* (IOC-1)+3).EQ.0) THEN
+          IF (ZI(JMETH+10* (IOC-1)+3).EQ.0) THEN
             NESM = NESM + NBNO2
             NESMAX = NESMAX + NBNO2
           ELSE

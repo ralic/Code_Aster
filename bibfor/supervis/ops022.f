@@ -3,7 +3,7 @@
       INTEGER             ICMD , ICOND , IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 11/12/2001   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C
      &              REGOU, HHTBRI, HBSBRI, VALR1
       LOGICAL       IMPR, FIMA
       CHARACTER*8   NOMGEO, VARIAN, NOMRES, NOMASS, K8B1, K8B2, K8B3,
-     &              SAUGIB, DONGIB, NOPAR1, NOPAR2, PROGIB
+     &              DONGIB, NOPAR1, NOPAR2, PROGIB
       CHARACTER*16  TYPRES, NOMCMD, STATUT, FORMAT, FICHIE, TOBJ
       CHARACTER*128 REP, LOGIEL
 
@@ -195,13 +195,10 @@ C     --- ECRITURE SUR LE FICHIER .datg  DE LA PROCEDURE ---
 C
       UNITP = 71
       PROGIB = 'provgibi'
-      CALL DEFUFI( UNITP , PROGIB )
-C
-      SAUGIB = 'sauvgibi'
-      CALL DEFUFI( UNITS , SAUGIB )
+      CALL ULDEFI( UNITP , PROGIB , 'A', 'N', 'O')
 C
       DONGIB = 'donngib'
-      CALL DEFUFI( UNITD , DONGIB )
+      CALL ULDEFI( UNITD , DONGIB , 'A', 'N', 'O')
 C
 C     --- PROCEDURE DE MAILLAGE ---
 C
@@ -258,17 +255,15 @@ C
         CALL SMFMCF ( IERUSR )
       CALL SMFCMD ( IERUSR )
 C
-C     --- COMMANDE  DEFUFI, IMPR_RESU  ---
+C     --- COMMANDE  DEFI_FICHIER, IMPR_RESU  ---
 C
       IF ( IMPR ) THEN
 C
          IF ( NF .NE. 0 ) THEN
             ICMD = ICMD + 1
-            CALL SMDCMD ( ICMD, ' ', 'DEFUFI', IERUSR )
-              CALL SMDMCF ( 'IMPRESSION', IERUSR )
-                CALL PUTVTX ( 'NOM'   , 1, FICHIE, LFICHI, IERUSR)
-                CALL PUTVIS ( 'UNITE' , 1, UNITEF, IERUSR )
-              CALL SMFMCF ( IERUSR )
+            CALL SMDCMD ( ICMD, ' ', 'DEFI_FICHIER', IERUSR )
+            CALL PUTVTX ( 'FICHIER'   , 1, FICHIE, LFICHI, IERUSR)
+            CALL PUTVIS ( 'UNITE' , 1, UNITEF, IERUSR )
             CALL SMFCMD ( IERUSR )
          ENDIF
 C

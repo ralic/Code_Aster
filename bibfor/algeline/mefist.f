@@ -1,20 +1,21 @@
       SUBROUTINE MEFIST(MELFLU,NDIM,SOM,ALPHA,RU,PROMAS,PROVIS,MATMA,
      &                  NUMGRP,NUOR,FREQ,MASG,FACT,FACPAR,VITE,XINT,
      &                  YINT,RINT,Z,PHIX,PHIY,DEFM,
-     &                  ITYPG,ZG,HG,DG,TG,CDG,CPG,RUGG)
+     &                  ITYPG,ZG,HG,DG,TG,CDG,CPG,RUGG, BASE )
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       INTEGER      NDIM(14),NUMGRP(*),NUOR(*)
       REAL*8       FACT(*), FACPAR(*)
       REAL*8       SOM(9),ALPHA,RU,MATMA(*),FREQ(*),MASG(*),VITE(*)
       REAL*8       XINT(*),YINT(*),RINT(*),Z(*),PHIX(*),PHIY(*),DEFM(*)
-      CHARACTER*8  PROMAS,PROVIS
+      CHARACTER*8  PROMAS, PROVIS, BASE
       CHARACTER*19 MELFLU
       INTEGER      ITYPG(*)
       REAL*8       ZG(*),HG(*),DG(*),TG(*),CDG(*),CPG(*),RUGG(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/10/1999   AUTEUR KXBADNG A.ADOBES 
+C MODIF ALGELINE  DATE 16/09/2003   AUTEUR CIBHHLV L.VIVAN 
+C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,6 +85,8 @@ C IN  : CDG    : COEFFICIENTS DE TRAINEE DE CHAQUE TYPE DE GRILLE
 C IN  : CPG    : PENTES DU COEFFICIENT DE PORTANCE DE CHAQUE TYPE
 C                DE GRILLE
 C IN  : RUGG   : RUGOSITES DE CHAQUE TYPE DE GRILLE
+C  IN : BASE   : NOM DU CONCEPT DE TYPE MODE_MECA DEFINISSANT LA BASE
+C                MODALE DU SYSTEME AVANT PRISE EN COMPTE DU COUPLAGE
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -103,8 +106,18 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C ----------------------------------------------------------------------
-      INTEGER      I,J
-      CHARACTER*24 NOMCHA
+      INTEGER       I, J, NBPARA, IRET
+      PARAMETER    ( NBPARA = 5 )
+      COMPLEX*16    C16B
+      CHARACTER*8   TYPROF, NUGENE, TYPARA(NBPARA), MASGEN, AMOGEN,
+     +              RIGGEN, VALEK(3)
+      CHARACTER*16  NOPARA(NBPARA)
+      CHARACTER*19  NOMNUM, NOMSTO, NOMT19
+      CHARACTER*24  NOMCHA
+C
+      DATA NOPARA / 'NUME_VITE', 'VITE_FLUI',
+     +              'MATR_MASS', 'MATR_AMOR', 'MATR_RIGI' /
+      DATA TYPARA / 'I', 'R', 'K8', 'K8', 'K8' /
 C ----------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -122,6 +135,35 @@ C --- LECTURE DES DIMENSIONS
       NBFIN  = NBTOT + 4*(NIMA2)*(NIMA2+2*NIMA+1)
       NTYPG  = NDIM(13)
       NBGTOT = NDIM(14)
+C
+C --- ON CREE UN NUMME_DDL_GENE POUR STOCKER LES MATRICES
+C
+      CALL GCNCON ( '_' , NUGENE )
+C
+      NOMNUM = NUGENE//'      .NUME'
+      NOMSTO = NUGENE//'      .SLCS'
+      TYPROF = 'PLEIN   '
+C
+      CALL NUMMO1 ( NOMNUM, NOMSTO, BASE, NBMOD, TYPROF )
+C
+C --- ON GREFFE UNE STRUCTURE TABLE AU CONCEPT "MELFLU" POUR
+C     STOCKER LES MATRICES CREEES
+C
+      NOMT19 = ' '
+      CALL JEEXIN ( MELFLU//'.LTNT', IRET )
+      IF ( IRET .NE. 0 ) THEN
+         CALL LTNOTB ( MELFLU , 'MATR_GENE' , NOMT19 )
+         CALL DETRSD ( 'TABLE' , NOMT19 )
+      ELSE
+         CALL LTCRSD ( MELFLU , 'G' ) 
+      ENDIF
+      CALL LTNOTB ( MELFLU , 'MATR_GENE' , NOMT19 )
+C
+      CALL JEEXIN ( NOMT19//'.TBBA', IRET )
+      IF ( IRET .NE. 0 )  CALL DETRSD ( 'TABLE' , NOMT19 )
+C
+      CALL TBCRSD ( NOMT19, 'G' )
+      CALL TBAJPA ( NOMT19, NBPARA, NOPARA, TYPARA )
 C
 C --- TABLEAUX DE TRAVAIL - ALLOCATION MEMOIRE
       CALL WKVECT('&&MEFIST.TMP.PST','V V R',NBZ*5,IPST)
@@ -466,6 +508,21 @@ C
      &     ,'*******************'
       WRITE (IFM,*)
 C
+C ------ ON STOCKE LES MATRICES  ZR(IMATM), ZR(IMATA), ZR(IMATR)
+C
+         CALL GCNCON ( '_' , MASGEN )
+         CALL GCNCON ( '_' , AMOGEN )
+         CALL GCNCON ( '_' , RIGGEN )
+         VALEK(1) = MASGEN
+         VALEK(2) = AMOGEN
+         VALEK(3) = RIGGEN
+C
+         CALL MEFSMA ( ZR(IMATM), ZR(IMATA), ZR(IMATR), NUGENE,
+     +                                         MASGEN, AMOGEN, RIGGEN )
+C
+         CALL TBAJLI ( NOMT19, NBPARA, NOPARA,
+     +                                       NV, VIT0, C16B, VALEK, 0 )
+C
 C --- FIN DE BOUCLE SUR LES VITESSES D ECOULEMENT
  100  CONTINUE
 C
@@ -476,5 +533,6 @@ C
  7002 FORMAT (1P,1X,A,I4,A,D13.6,A,D13.6,A)
 C
       CALL JEDETC('V','&&MEFIST',1)
+C
       CALL JEDEMA()
       END

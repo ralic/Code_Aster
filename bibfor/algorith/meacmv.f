@@ -5,7 +5,7 @@
      >                    TYPESE, STYPSE, NOPASE, VAPRIN, REPRIN,
      >                    BASE, TPS1, TPS2, TPS3 )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,10 +85,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
       COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
       CHARACTER*8        ZK8
       CHARACTER*16               ZK16
       CHARACTER*24                        ZK24
@@ -389,8 +385,9 @@ C     ... DETERMINATION DE LA DERIVEE % DONNEES MATERIAUX        (MECA)
 
       IF ( TYPESE.EQ.-1 ) THEN
         TYPCAL = 'DLAG'
-        CALL NMDETE ( MODELE, MATE, CHARGE, INFOCH, NOPASE,
-     >                TIME, DERITE, LBID )
+        CALL NMDETE ( MODELE, MATE, CHARGE, INFOCH, TIME,
+     >                TYPESE, STYPSE, NOPASE,
+     >                DERITE, LBID )
       ELSE
         TYPCAL = 'MECA'
       ENDIF
@@ -409,14 +406,14 @@ C
 C
 C 3.6. ==> SECOND MEMBRE DEFINITIF : VECASS
 C
-C 3.6.1. ==>  0. CALCUL STANDARD
+C 3.6.1. ==>  0 : CALCUL STANDARD
 C            -1 : DERIVATION EULERIENNE (VIA UN CHAMP THETA)
-C             1. DERIVEE SANS INFLUENCE
-C             2. DERIVEE DE LA CL DE DIRICHLET
+C             1 : DERIVEE SANS INFLUENCE
+C             2 : DERIVEE DE LA CL DE DIRICHLET
 C             3 : PARAMETRE MATERIAU
 C             4 : CARACTERISTIQUE ELEMENTAIRE (COQUES, ...)
 C             5 : FORCE
-C             N. AUTRES DERIVEES
+C             N : AUTRES DERIVEES
 C
       IF ( TYPESE.EQ.0 ) THEN
         TYPCUM = 3
@@ -476,8 +473,8 @@ C
 36003   CONTINUE
       ELSEIF ( TYPCUM.EQ.4 ) THEN
         DO 36004 , K = 0, LONCM1
-        ZR(J2ND+K) = ZR(J2ND1+K) + ZR(J2ND2+K) + ZR(J2ND3+K)
-     >             + ZR(J2ND4+K)
+          ZR(J2ND+K) = ZR(J2ND1+K) + ZR(J2ND2+K) + ZR(J2ND3+K)
+     >               + ZR(J2ND4+K)
 36004   CONTINUE
       ELSE
         CALL UTDEBM ( 'A', NOMPRO, 'MAUVAISE VALEUR DE TYPCUM' )

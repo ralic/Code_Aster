@@ -1,0 +1,39 @@
+      FUNCTION VNMS12(SIGMA1,SIGMA2)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 29/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C--------------------------------------------------------
+C ELEMENT SHB8-PS A.COMBESCURE, S.BAGUET INSA LYON 2003 /   
+C-------------------------------------------------------
+C
+C CALCUL DE J2(SIGMA1*SIGMA2)
+C
+      IMPLICIT REAL*8 (A-H,O-Z)
+      REAL*8 SIGMA1(6),SIGMA2(6)
+      REAL*8 VNMS12
+C****
+      VNMS12=
+     & SIGMA1(1)*SIGMA2(1)+SIGMA1(2)*SIGMA2(2)+SIGMA1(3)*SIGMA2(3)+
+     &(-SIGMA1(1)*SIGMA2(2)-SIGMA1(2)*SIGMA2(3)-SIGMA1(3)*SIGMA2(1))
+     &*.5D0
+     &+.5D0*
+     &(-SIGMA2(1)*SIGMA1(2)-SIGMA2(2)*SIGMA1(3)-SIGMA2(3)*SIGMA1(1))
+     &+3.D0*(
+     &SIGMA1(4)*SIGMA2(4)+SIGMA1(5)*SIGMA2(5)+SIGMA1(6)*SIGMA2(6))
+
+      END

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/02/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 # TITRE FISSURATION PLANE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -182,7 +182,22 @@ gno = l_gno[1]
 print l_gno
 print aster.getcolljev("MA      .GROUPENO       ")
     
+dico_p = U.LIST_PARA()
+nbi=0
+for i in dico_p['ITER_GLOB'] :
+ nbi=nbi+i
+  
+TB2=CREA_TABLE(LISTE=(_F(LISTE_I=(1,),
+                         PARA='N1'),
+                      _F(LISTE_I=(nbi,),
+                         PARA='N2'))); 
 
+TEST_TABLE(TABLE=TB2,
+           REFERENCE='ANALYTIQUE',
+           FILTRE=_F(NOM_PARA='N1',
+                     VALE_I=1),
+           NOM_PARA='N2',
+           VALE_I=15);
 
 TEST_RESU (
   RESU = (

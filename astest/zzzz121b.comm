@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2002   AUTEUR G8BHHXD X.DESROCHES 
+# MODIF  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS TRIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,9 +113,9 @@ RESUZERO=CALC_ELEM( reuse=RESUZERO,   RESULTAT=RESUZERO,
 #
 # 3.7. IMPRESSIONS POUR CREER LA BASE DU CAS-TEST HOMARD med_3d_cube_d2 A L'ITERATION 0
 #
+###IMPR_RESU ( RESU=_F(MAILLAGE=MZERO, IMPR_COOR='OUI') )
 ###IMPR_RESU ( RESU=_F( FORMAT='MED',RESULTAT=RESUZERO, NOM_CHAM='ERRE_ELGA_NORE',NOM_CMP='ERREST' ) ) ;
 ###IMPR_RESU ( RESU=_F( RESULTAT=RESUZERO ) ) ;
-###IMPR_RESU ( RESU : ( RESULTAT : RESUZERO IMPR_COOR : 'OUI', GROUP_NO : ( OPPOSE ) ) ) ;
 #
 # 4. ADAPTATION DU MAILLAGE DE ZERO VERS UN
 #
@@ -132,7 +132,7 @@ MACR_ADAP_MAIL(
               QUALITE='OUI',
               INTERPENETRATION='NON'
                )
-
+###IMPR_RESU ( RESU=_F(MAILLAGE=MUN, IMPR_COOR='OUI') )
 #
 # 5. CALCUL SUR LE MAILLAGE UN
 # 5.1. MODELE MECANIQUE
@@ -196,23 +196,25 @@ RESUUN=CALC_ELEM( reuse=RESUUN,   RESULTAT=RESUUN,
 #
 ###IMPR_RESU ( RESU=_F( FORMAT='MED',RESULTAT=RESUUN, NOM_CHAM='ERRE_ELGA_NORE',NOM_CMP='ERREST' ) ) ;
 ###IMPR_RESU ( RESU=_F( RESULTAT=RESUUN ) ) ;
-###IMPR_RESU ( RESU : ( RESULTAT : RESUUN IMPR_COOR : 'OUI', GROUP_NO : ( OPPOSE ) ) ) ;
 #
 # 6. TEST DE NON REGRESSION
 #
 TEST_RESU(RESU=(
        _F(  RESULTAT = RESUUN, NUME_ORDRE = 1,
-              NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
-              CRITERE = 'RELATIF',  PRECISION = 1.E-6,
-              NOM_CMP = 'DX',       VALE = 2.66848E-02),
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-5,
+            NOM_CMP = 'DX',       VALE =  2.66755E-02, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.09'),
        _F(  RESULTAT = RESUUN, NUME_ORDRE = 1,
-              NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
-              CRITERE = 'RELATIF',  PRECISION = 2.5E-6,
-              NOM_CMP = 'DY',       VALE = 1.655606E-01),
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
+            CRITERE = 'RELATIF',  PRECISION = 2.5E-6,
+            NOM_CMP = 'DY',       VALE =  1.658803E-01, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.09'),
        _F(  RESULTAT = RESUUN, NUME_ORDRE = 1,
-              NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
-              CRITERE = 'RELATIF',  PRECISION = 1.E-6,
-              NOM_CMP = 'DZ',       VALE = -6.5219795E-02))
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-5,
+            NOM_CMP = 'DZ',       VALE = -6.575036E-02, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.09'))
           )
 
 #
@@ -227,19 +229,13 @@ MACR_ADAP_MAIL(
                        INDICATEUR = 'ERRE_ELGA_NORE',
                        NOM_CMP_INDICA = 'ERREST' ,
                        CRIT_RAFF_REL = 0.9,
-                         
                        NIVE_MAX = 8,
-                         
-                         
                        CRIT_DERA_REL = 0.25,
-                         
-                         
-                         
                        NIVE_MIN = 0),
               QUALITE='OUI',
               INTERPENETRATION='NON'
                )
-
+###IMPR_RESU ( RESU=_F(MAILLAGE=MDEUX, IMPR_COOR='OUI') )
 #
 # 8. CALCUL SUR LE MAILLAGE DEUX
 # 8.1. MODELE MECANIQUE
@@ -285,26 +281,25 @@ RESUDEUX=MECA_STATIQUE(         MODELE=MODEDEUX,
                               CHAM_MATER=MATEDEUX,
                                    EXCIT=_F(  CHARGE = CHARDEUX)
                          )
-
-#
-###IMPR_RESU ( RESU : ( RESULTAT : RESUDEUX IMPR_COOR : 'OUI'
-###                     GROUP_NO : ( OPPOSE ) ) ) ;
 #
 # 9. TEST DE NON REGRESSION
 #
 TEST_RESU(RESU=(
        _F(  RESULTAT = RESUDEUX, NUME_ORDRE = 1,
-              NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
-              CRITERE = 'RELATIF',  PRECISION = 1.E-6,
-              NOM_CMP = 'DX',       VALE = 9.192409E-02),
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-5,
+            NOM_CMP = 'DX',       VALE =  9.195670E-02, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.09'),
        _F(  RESULTAT = RESUDEUX, NUME_ORDRE = 1,
-              NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
-              CRITERE = 'RELATIF',  PRECISION = 1.E-6,
-              NOM_CMP = 'DY',       VALE = 3.5111227E-01),
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-5,
+            NOM_CMP = 'DY',       VALE =  3.511732E-01, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.09'),
        _F(  RESULTAT = RESUDEUX, NUME_ORDRE = 1,
-              NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
-              CRITERE = 'RELATIF',  PRECISION = 1.E-6,
-              NOM_CMP = 'DZ',       VALE = -2.50812112E-01))
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-5,
+            NOM_CMP = 'DZ',       VALE = -2.510371E-01, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.09'))
           )
 
 #

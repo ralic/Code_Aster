@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,11 +20,11 @@ DYNA_ALEA_MODAL=OPER(nom="DYNA_ALEA_MODAL",op= 131,sd_prod=tabl_intsp
                     ,fr="Calcule la réponse spectrale d une structure linéaire sous une excitation connue par sa DSP",
                      docu="U4.53.22-e",reentrant='n',
             UIinfo={"groupes":("Résolution",)},
-         BASE_MODALE     =FACT(statut='o',min=1,max=1,
+         BASE_MODALE     =FACT(statut='o',
            regles=(UN_PARMI('NUME_ORDRE','BANDE'),),
            MODE_MECA       =SIMP(statut='o',typ=mode_meca ),
-           BANDE           =SIMP(statut='f',typ='R',max=2),
-           NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
+           BANDE           =SIMP(statut='f',typ='R',validators=NoRepeat(),max=2),
+           NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
            b_bande =BLOC(condition = "BANDE != None",
              AMOR_UNIF       =SIMP(statut='o',typ='R' ),
            ),
@@ -35,7 +35,7 @@ DYNA_ALEA_MODAL=OPER(nom="DYNA_ALEA_MODAL",op= 131,sd_prod=tabl_intsp
          MODE_STAT       =SIMP(statut='f',typ=(mode_stat_depl,mode_stat_acce,mode_stat_forc,)),
 # MODE_STAT devrait etre dans EXCIT car est utile et obligatoire que si NOM_CMP=depl_r, on pourrait
 # ainsi rajouter un bloc du genre  b_mod_stat= BLOC(condition = "(GRANDEUR == None) or (GRANDEUR == 'DEPL_R')",        
-         EXCIT           =FACT(statut='o',min=1,max=1,
+         EXCIT           =FACT(statut='o',
            INTE_SPEC       =SIMP(statut='o',typ=tabl_intsp ),
            NUME_VITE_FLUI  =SIMP(statut='f',typ='I' ),
            OPTION          =SIMP(statut='f',typ='TXM',defaut="TOUT",into=("TOUT","DIAG",) ),
@@ -85,7 +85,7 @@ DYNA_ALEA_MODAL=OPER(nom="DYNA_ALEA_MODAL",op= 131,sd_prod=tabl_intsp
            ),  
                     
          ),
-         REPONSE         =FACT(statut='f',min=1,max=1,
+         REPONSE         =FACT(statut='f',
            regles=( ENSEMBLE('FREQ_MIN','FREQ_MAX'),),
            DERIVATION      =SIMP(statut='f',typ='I',defaut= 0,into=( 0 , 1 , 2 ,) ),
            OPTION          =SIMP(statut='f',typ='TXM',defaut="TOUT",into=("TOUT","DIAG") ),

@@ -21,7 +21,7 @@ C ======================================================================
       LOGICAL       INDITH
       CHARACTER*16  NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 26/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C     CALCUL DES TEMPERATURES AUX NOEUDS POUR LES ELEMENTS DE PLAQUE
 C     DKT, DST, DKQ, DSQ ET Q4G A PARTIR DE LA DONNEE DES TEMPERATURES
 C     EN ENTREE DE L'OPTION NON LINEAIRE .
@@ -82,8 +82,7 @@ C --- RECUPERATION DE LA TEMPERATURE :
 C     ==============================
 C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
 C        ---------------------------------------
-CCC      CALL TECACH(.TRUE.,.FALSE.,'PTEMPER',1,ITEMP)
-      CALL TECAC2 ('OON','PTEMPER',8,ITAB,IRET)
+      CALL TECACH ('OON','PTEMPER',8,ITAB,IRET)
       ITEMP=ITAB(1)
       IF (ITEMP.GT.0) THEN
         INDITH = .TRUE.
@@ -97,7 +96,7 @@ CCC      CALL TECACH(.TRUE.,.FALSE.,'PTEMPER',1,ITEMP)
       END IF
 C     -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS' :
 C        ------------------------------------------------------
-      CALL TECACH(.FALSE.,.FALSE.,'PTEMPEF',1,ITEMP)
+      CALL TECACH('NNN','PTEMPEF',1,ITEMP,IRET)
       IF (ITEMP.GT.0) THEN
         INDITH = .TRUE.
         NOMPU(1) = 'INST'

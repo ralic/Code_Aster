@@ -3,7 +3,7 @@
       INTEGER            IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 21/07/2003   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -158,7 +158,8 @@ C --- CAS DE LA SOUS-STRUCTURATION TRANSITOIRE
               ZK24(LDREFB) = MAILSK
               ZK24(LDREFB+1) = 'DEPL_R'
             ENDIF
-          ELSEIF (TYPREP(1:9).EQ.'MODE_MECA') THEN
+          ELSEIF ((TYPREP(1:9).EQ.'MODE_MECA').OR.
+     +           (TYPREP(1:9).EQ.'MODE_STAT')) THEN
             CALL TRAN75(NOMRES,TYPRES,RESIN,NOMCMD,K8BID)
 C
           ELSEIF (TYPREP(1:11).EQ.'BASE_MODALE') THEN
@@ -254,7 +255,8 @@ C
             ZK24(LDREFB) = MAILSK
             ZK24(LDREFB+1) = 'DEPL_R'
           ENDIF
-        ELSEIF (TYPREP(1:9).EQ.'MODE_MECA') THEN
+        ELSEIF ((TYPREP(1:9).EQ.'MODE_MECA').OR.
+     +          (TYPREP(1:9).EQ.'MODE_STAT')) THEN
           CALL HARM75(NOMRES,TYPRES,RESIN,NOMCMD,K8BID)
         ELSEIF (TYPREP(1:11).EQ.'BASE_MODALE') THEN
           CALL HARM75(NOMRES,TYPRES,RESIN,NOMCMD,K8BID)        

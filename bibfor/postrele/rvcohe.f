@@ -4,7 +4,7 @@
       INTEGER                                     I, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 30/01/2002   AUTEUR VABHHTS J.TESELET 
+C MODIF POSTRELE  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +81,7 @@ C
          CALL GETVTX ('ACTION','NOM_CHAM',I,1,1,NCHSYM,N1)
          CALL GETTCO(NRESU,TRESU)
 C
-         CALL UTDEBM('F','RVCOHE','ERREUR DANS LES DONNEES')
+         CALL UTDEBM('S','RVCOHE','ERREUR DANS LES DONNEES')
          CALL UTIMPI('L','POST-TRAITEMENT NUMERO ',1,I)
          CALL UTIMPK('L','   LE CHAMPS SYMBOLIQUE: ',1,NCHSYM)
          CALL UTIMPK('L','   N''EST PAS AUTORISE POUR LE RESULTAT: ',
@@ -123,7 +123,7 @@ C
                GOTO 10
             ENDIF
             IF ( .NOT. CHELOK ) THEN
-               CALL UTDEBM('F','RVCOHE','ERREUR DANS LES DONNEES')
+               CALL UTDEBM('S','RVCOHE','ERREUR DANS LES DONNEES')
                CALL UTIMPI('L','POST-TRAITEMENT NUMERO ',1,I)
                CALL UTIMPK('L','   LE OU LES CHAMP(S) ELEMENTAIRE(S)'//
      +                         ' MIS EN JEU EST OU SONT DONNES AUX '//
@@ -141,7 +141,7 @@ C        --- VERIFICATION SUR LES CMPS ---
                CALL JEVEUO(JEXNUM(XDNCMP,I),'L',ANOMCP)
                NOMCMP = ZK8(ANOMCP + J-1)
                IF ( IER .EQ. 1 ) THEN
-                  CALL UTDEBM('F','RVCOHE','ERREUR DANS LES DONNEES')
+                  CALL UTDEBM('S','RVCOHE','ERREUR DANS LES DONNEES')
                   CALL UTIMPI('L','POST-TRAITEMENT NUMERO ',1,I)
                ENDIF
                CALL UTIMPK('L','   LA COMPOSANTE DE NOM: ',1,NOMCMP)
@@ -168,7 +168,7 @@ C           /* LE LIEU DU POST TRAITEMENT EST UNE COURBE */
             NMAILI = ZK8(AMAICB)
             IF ( NMAICH .NE. NMAILI ) THEN
                IER = 0
-               CALL UTDEBM('F','RVCOHE','ERREUR DANS LES DONNEES')
+               CALL UTDEBM('S','RVCOHE','ERREUR DANS LES DONNEES')
                CALL UTIMPI('L','POST-TRAITEMENT NUMERO ',1,I)
                CALL UTIMPK('L','   LE MAILLAGE DE LA COURBE: ',1,NMAILI)
                CALL UTIMPK('S','EST DIFFERENT DU MAILLAGE DU '//
@@ -192,7 +192,7 @@ C           VERIFICATION D' EXISTENCE DES NOEUDS DANS LE MAILLAGE DU CHP
                   CALL JENONU(JEXNOM(NMAICH//'.GROUPENO',NOMGRN),N1)
                   IF ( N1 .EQ. 0 ) THEN
                      IF ( IER .EQ. 1 ) THEN
-                     CALL UTDEBM('F','RVCOHE','ERREUR DANS LES DONNEES')
+                     CALL UTDEBM('S','RVCOHE','ERREUR DANS LES DONNEES')
                         CALL UTIMPI('L','POST-TRAITEMENT NUMERO ',1,I)
                      ENDIF
                     CALL UTIMPK('L','   LE GROUPE DE NOEUDS: ',1,NOMGRN)
@@ -214,7 +214,7 @@ C           VERIFICATION D' EXISTENCE DES NOEUDS DANS LE MAILLAGE DU CHP
                   CALL JENONU(JEXNOM(NREPND,NOMND),N1)
                   IF ( N1 .EQ. 0 ) THEN
                      IF ( IER .EQ. 1 ) THEN
-                     CALL UTDEBM('F','RVCOHE','ERREUR DANS LES DONNEES')
+                     CALL UTDEBM('S','RVCOHE','ERREUR DANS LES DONNEES')
                         CALL UTIMPI('L','POST-TRAITEMENT NUMERO ',1,I)
                      ENDIF
                      CALL UTIMPK('L','   LE NOEUD: ',1,NOMGRN)

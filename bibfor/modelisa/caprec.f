@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/03/2003   AUTEUR ASSIRE A.ASSIRE 
+C MODIF MODELISA  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C -----------------
       INTEGER INDIK8,NDDLA
       INTEGER IDIMAX,JLIST,INO,JGRO,IN,INDNOE,LONLIS
       INTEGER JIND,IN1,INDLIS,JPRNM,NANC,JADD
-      REAL*8 R8B
+      REAL*8 R8B,DMIN,R8GAEM
       COMPLEX*16 C16B
       CHARACTER*1 K1BID
       CHARACTER*8 K8TMP,NOMNOE,NOMANC,NOMG,NOMAN1,NOMAN2
@@ -108,18 +108,22 @@ C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       IF (NBOCC.GT.0) THEN
 
 C ---  RECUPERATION DES INFORMATIONS UTILES - INITIALISATIONS
-C ---
         CALL DISMOI('F','NOM_MODELE',CHARGE,'CHARGE',IBID,MODELE,IRET)
         LIGRMO = MODELE//'.MODELE    '
 
         CALL DISMOI('F','NB_MA_MAILLA',MAILLA,'MAILLAGE',NBMAMA,K8B,
      &              IRET)
 
+C     CALCUL D'UNE DIMENSION DE REFERENCE : DMIN
+      CALL LTNOTB ( MAILLA, 'CARA_GEOM' , TABLE )
+      CALL TBLIVA(TABLE,1,'APPLAT_Z',IBID,0.D0,C16B,K1BID,'ABSO',
+     +             R8GAEM(),'AR_MIN',K1BID,IBID,DMIN,C16B,K1BID,IER )
+
+
 C --- NOM DE LA LISTE DE RELATIONS
         LISREL = '&&CAPREC.RLLISTE'
 
 C --- DIMENSION ASSOCIEE AU MODELE
-
         CALL DISMOI('F','Z_CST',MODELE,'MODELE',NDIMMO,K8B,IER)
         NDIMMO = 3
         IF (K8B.EQ.'OUI') NDIMMO = 2
@@ -324,7 +328,7 @@ C ---  A LIAISON_SOLIDE (CETTE LISTE EST NON REDONDANTE)
 
 C         NOMANC = ''
          NOMANC = K8VIDE
-         
+
          DO 145 INOMC = 1,NBNOM
            NUMCAB = ZI(JLSNOM-1+INOMC)
            NOMAN1 = ZK8(JLSAN1-1+INOMC)
@@ -336,7 +340,7 @@ C         NOMANC = ''
              DO 150 NANC = 1,2
 C               NOMANC = '        '
                NOMANC = K8VIDE
-                
+
                 IF (NANC.EQ.1) THEN
                   NOMANC = NOMAN1
                 END IF
@@ -432,7 +436,8 @@ C ---  CAS OU L'ON A UN NOEUD DE LA LISTE PORTANT LE DDL DRZ
 C ---  CAS OU AUCUN NOEUD DE LA LISTE NE PORTE LE DDL DRZ
 
                     ELSE IF (IDRZ.EQ.0) THEN
-                      CALL DRZ02D(LISNOE,LONLIS,CHARGE,TYPLAG,LISREL)
+                      CALL DRZ02D(LISNOE,LONLIS,CHARGE,TYPLAG,LISREL
+     &                            ,DMIN)
 
 C ---  FIN DU CAS 2D SANS DDL DE ROTATION
                     END IF
@@ -474,7 +479,8 @@ C ---  DE ROTATION
 
 C ---  CAS MASSIF (PAS DE COMPOSANTES DE ROTATION)
                     ELSE IF (IDRXYZ.EQ.0) THEN
-                      CALL DRZ03D(LISNOE,LONLIS,CHARGE,TYPLAG,LISREL)
+                      CALL DRZ03D(LISNOE,LONLIS,CHARGE,TYPLAG,LISREL
+     &                           ,DMIN)
 
 C ---  FIN DU CAS 3D MASSIF (IDRXYZ=0)
                     END IF

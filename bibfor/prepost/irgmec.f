@@ -7,7 +7,7 @@
       CHARACTER*24  CONNEX
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 16/06/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,6 +98,7 @@ C
                  CALL CESEXI('C',JCESD,JCESL,IMAOLD,IPT,ISP,ICMP,IAD)
                  IF (IAD.GT.0) THEN
                     VALE = ZR(JCESV-1+IAD)
+                    IF (ABS(VALE).LE.1.D-99) VALE = 0.D0
                     IADMAX=IAD
                  ELSE
                     VALE = 0.D0

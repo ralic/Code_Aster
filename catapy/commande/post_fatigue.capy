@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,13 +26,13 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=tabl_post_fatig,docu="U4.83.
                       regles=(PRESENT_PRESENT('CORR_KE','MATER'),
                               PRESENT_PRESENT('CORR_SIGM_MOYE','MATER'),
                               PRESENT_PRESENT('DOMMAGE','MATER'),),
-             HISTOIRE       = FACT(statut='o',min=1,max=1,
+             HISTOIRE       = FACT(statut='o',
                                  regles=(UN_PARMI('SIGM','EPSI'),),
                                  SIGM  = SIMP(statut='f',typ=(fonction,formule)),
                                  EPSI  = SIMP(statut='f',typ=(fonction,formule)),),
              COMPTAGE       = SIMP(statut='o',typ='TXM',into=("RAINFLOW","RCCM","NATUREL")),
              DELTA_OSCI     = SIMP(statut='f',typ='R',defaut= 0.0E+0),  
-             COEF_MULT      = FACT(statut='f',min=1,max=1,
+             COEF_MULT      = FACT(statut='f',
                                  KT    = SIMP(statut='o',typ='R'),),
              CORR_KE        = SIMP(statut='f',typ='TXM',into=("RCCM",)),
              DOMMAGE        = SIMP(statut='f',typ='TXM',into=("WOHLER","MANSON_COFFIN",
@@ -45,7 +45,7 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=tabl_post_fatig,docu="U4.83.
          ),
 
          b_periodique = BLOC( condition = "CHARGEMENT=='PERIODIQUE'",
-             HISTOIRE       = FACT(statut='o',min=1,max=1,
+             HISTOIRE       = FACT(statut='o',
                                  SIGM_XX  = SIMP(statut='o',typ=(fonction,formule)),
                                  SIGM_YY  = SIMP(statut='o',typ=(fonction,formule)),
                                  SIGM_ZZ  = SIMP(statut='o',typ=(fonction,formule)),
@@ -59,7 +59,7 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=tabl_post_fatig,docu="U4.83.
          ),
 
          b_quelconque = BLOC( condition = "CHARGEMENT=='QUELCONQUE'",
-             HISTOIRE       = FACT(statut='o',min=1,max=1,
+             HISTOIRE       = FACT(statut='o',
                                  SIGM_XX  = SIMP(statut='o',typ=(fonction,formule)),
                                  SIGM_YY  = SIMP(statut='o',typ=(fonction,formule)),
                                  SIGM_ZZ  = SIMP(statut='o',typ=(fonction,formule)),

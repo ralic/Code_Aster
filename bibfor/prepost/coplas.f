@@ -7,7 +7,7 @@ C
       CHARACTER*8   MATREV
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/01/2003   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 29/04/2003   AUTEUR EPICURE S.BUGAT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C ======================================================================
       INTEGER      ITOT13, ITOT14, ITOT15
       REAL*8       SIGMA, TEMP1, TEMP2, SIGMA1, SIGMA2, REST, PENT
       REAL*8       TEMPDI, LAMB1, LAMB2, TEMPD, COEF1, COEF2, RYA, PI
-      REAL*8       BETAA, BETAB, R8PI, VAL1, VAL2
+      REAL*8       BETAA, BETAB, R8PI, DK
       CHARACTER*1  K1BID
       CHARACTER*8  PROLN, K8B
       CHARACTER*16 PHENOM, PROLG
@@ -245,32 +245,22 @@ C ======================================================================
       RYA = (K1A * K1A)/(6 * PI * SIGMA * SIGMA)
       BETAA = 1 + 0.3D0 * TANH(36*RYA/(LREV+DEKLAG))
       BETAB = 1 + 0.5D0 * TANH(36*RYA/(LREV+DEKLAG))
-      IF (K1A.LT.KAL) THEN
-         K1ACP = K1A + DKMA
-      ELSE
-         VAL1 = BETAA*K1A
-         VAL2 = K1A + DKMA
-         IF (VAL1.GT.VAL2) THEN
-            K1ACP = VAL1
-            DKMA = K1ACP - K1A
-         ELSE
-            K1ACP = K1A + DKMA
+      IF (K1A.GT.KAL) THEN
+         DK = BETAA*K1A - K1A
+         IF (DK.GT.DKMA) THEN
+            DKMA = DK
          ENDIF
       ENDIF
       KAL = K1A
-      IF (K1B.LT.KBL) THEN
-         K1BCP = K1B + DKMB
-      ELSE
-         VAL1 = BETAB*K1B
-         VAL2 = K1B + DKMB
-         IF (VAL1.GT.VAL2) THEN
-            K1BCP = VAL1
-            DKMB = K1BCP - K1B
-         ELSE
-            K1BCP = K1B + DKMB
+      K1ACP = K1A + DKMA
+      IF (K1B.GT.KBL) THEN
+         DK = BETAB*K1B - K1B
+         IF (DK.GT.DKMB) THEN
+            DKMB = DK
          ENDIF
       ENDIF
       KBL = K1B
+      K1BCP = K1B + DKMB
 C ======================================================================
       CALL JEDEMA()
 C ======================================================================

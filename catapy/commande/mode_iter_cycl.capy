@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,26 +23,26 @@ MODE_ITER_CYCL=OPER(nom="MODE_ITER_CYCL",op=  80,sd_prod=mode_cycl,
          BASE_MODALE     =SIMP(statut='o',typ=base_modale ),
          NB_MODE         =SIMP(statut='f',typ='I',defaut= 999 ),
          NB_SECTEUR      =SIMP(statut='o',typ='I' ),
-         LIAISON         =FACT(statut='o',min=1,max=1,
+         LIAISON         =FACT(statut='o',
            DROITE          =SIMP(statut='o',typ='TXM' ),
            GAUCHE          =SIMP(statut='o',typ='TXM' ),
            AXE             =SIMP(statut='f',typ='TXM' ),
          ),
-         VERI_CYCL       =FACT(statut='f',min=1,max=1,
+         VERI_CYCL       =FACT(statut='f',
            PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
            CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF",) ),
            DIST_REFE       =SIMP(statut='f',typ='R' ),
          ),
-         CALCUL          =FACT(statut='o',min=1,max=1,
+         CALCUL          =FACT(statut='o',
            TOUT_DIAM       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           NB_DIAM         =SIMP(statut='f',typ='I',max='**'),
+           NB_DIAM         =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
            OPTION          =SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE"
                                 ,into=("PLUS_PETITE","CENTRE","BANDE") ),
            b_centre      =BLOC(condition = "OPTION == 'CENTRE'",
-             FREQ            =SIMP(statut='o',typ='R',min=1,max=1),
+             FREQ            =SIMP(statut='o',typ='R',),
            ),
            b_bande       =BLOC(condition = "OPTION == 'BANDE'",
-             FREQ            =SIMP(statut='o',typ='R',min=2,max=2),
+             FREQ            =SIMP(statut='o',typ='R',min=2,validators=NoRepeat(),max=2),
            ),
 #  NMAX_FREQ n a-t-il pas un sens qu avec OPTION CENTRE                                
            NMAX_FREQ       =SIMP(statut='f',typ='I',defaut= 10 ),

@@ -1,6 +1,6 @@
       SUBROUTINE ECRNEU(NBNODE,AMA,BMA,CMA,AMI,BMI,CMI,MIN,MAN,ITES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 20/07/99   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF STBTRIAS  DATE 11/08/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,20 +71,25 @@ C   !  **********************************************************  !
 C   !                                                              !
 C   ================================================================
 C
-      COMMON /IVARJE/ZI(1)
-      COMMON /RVARJE/ZR(1)
-      COMMON /CVARJE/ZC(1)
-      COMMON /LVARJE/ZL(1)
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      INTEGER      ZI
-      REAL*8       ZR
-      COMPLEX*16   ZC
-      LOGICAL      ZL,EXISDG
-      CHARACTER*8  ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32,JEXNUM,JEXNOM,JEXATR
-      CHARACTER*80 ZK80
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      CHARACTER*32 JEXNOM, JEXNUM
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C ---> DECLARATION DES VARIABLES POUR LE TYPE D'ECRITURE
 C
@@ -98,14 +103,16 @@ C
 C
 C  --> DECLARATION DES VARIABLES LOCALES
 C
-      CHARACTER*4 CT(3)
-      CHARACTER*8 CHNODE,CHSC
+      CHARACTER*4  CT(3)
+      CHARACTER*8  CHNODE,CHSC
       CHARACTER*12 CHENTI,CHNOMI,CHNOMA,AUT
       CHARACTER*13 CHLIGN,CHLIGE
-      CHARACTER*80 CHFONE(2)
-      REAL*8 X,Y,Z
-      INTEGER NBLIT,NBLIE,NBLIF
-      INTEGER NODE,ICNODE,ISC
+      CHARACTER*80 CHFONE(4)
+      REAL*8       X,Y,Z
+      INTEGER      NBLIT,NBLIE,NBLIF
+      INTEGER      NODE,ICNODE,ISC
+      LOGICAL      DIM3D
+      REAL*8       ZCTE
 C
 C  --------- FIN DECLARATION ---------
 C
@@ -117,6 +124,8 @@ C
       PRFNSY='  '
       CHFONE(1)='%FORMAT=(1*NOM_DE_NOEUD,3*COORD)'
       CHFONE(2)='%FORMAT=(1*NOM_DE_NOEUD,3*COORD,1*NOM_DE_SYSTEME)'
+      CHFONE(3)='%FORMAT=(1*NOM_DE_NOEUD,2*COORD)'
+      CHFONE(4)='%FORMAT=(1*NOM_DE_NOEUD,2*COORD,1*NOM_DE_SYSTEME)'
       CHENTI='NBOBJ=      '
       CHLIGN='NBLIGT=      '
       CHNODE='        '
@@ -126,6 +135,22 @@ C
       CHSC='        '
 C
       NBLIF=1
+C
+C --- RECUPERATION DES VECTEURS DE TRAVAIL :
+C     ------------------------------------
+      CALL JEVEUO('&&PRESUP.INFO.NOEUDS','L',JINFO)
+      CALL JEVEUO('&&PRESUP.COOR.NOEUDS','L',JCOOR)
+C
+C --- TEST SI MAILLAGE 2D OU 3D :
+C     ------------------------------------------------------
+      DIM3D = .FALSE.
+      ZCTE  = ZR(JCOOR-1+3)
+      DO 10 INODE = 2, NBNODE
+        IF (ZR(JCOOR-1+3*(INODE-1)+3).NE.ZCTE) THEN
+            DIM3D=.TRUE.
+            GOTO 10
+        ENDIF
+  10  CONTINUE
 C
       CALL CODENT(NBNODE,'G',CHENTI(7:12))
       CALL CODENT(MIN,'G',CHNOMI(7:12))
@@ -145,27 +170,44 @@ C
 C
       CALL JJMMAA(CT,AUT)
 C
-      WRITE (IMOD,'(A,4X,A,4X,A,3X,A,3X,A)')'COOR_3D','NOM=INDEFINI',
-     &     CHENTI ,CHLIGE,CHLIGN
+      IF (DIM3D) THEN
+        WRITE (IMOD,'(A,4X,A,4X,A,3X,A,3X,A)')'COOR_3D','NOM=INDEFINI',
+     &         CHENTI ,CHLIGE,CHLIGN
+      ELSE
+        WRITE (IMOD,'(A,4X,A,4X,A,3X,A,3X,A)')'COOR_2D','NOM=INDEFINI',
+     &         CHENTI ,CHLIGE,CHLIGN
+      ENDIF
+C
       WRITE(IMOD,'(11X,A,19X,A)') CHNOMI,CHNOMA
       WRITE(IMOD,'(11X,2A,12X,A,A2,A,A2,A,A4)')'AUTEUR=',AUT,'DATE=',
      &          CT(1)(1:2),'/',CT(2)(1:2),'/',CT(3)
       IF (ITES.EQ.0) THEN
-      WRITE(IMOD,'(A,7X,3(A,E15.8,1X))') '%','XMAX=',AMA,'YMAX=',
-     &      BMA,'ZMAX=',CMA
-      WRITE(IMOD,'(A,7X,3(A,E15.8,1X))') '%','XMIN=',AMI,'YMIN=',
-     &      BMI,'ZMIN=',CMI
+        IF (DIM3D) THEN
+          WRITE(IMOD,'(A,7X,3(A,E15.8,1X))') '%','XMAX=',AMA,'YMAX=',
+     &          BMA,'ZMAX=',CMA
+          WRITE(IMOD,'(A,7X,3(A,E15.8,1X))') '%','XMIN=',AMI,'YMIN=',
+     &          BMI,'ZMIN=',CMI
+        ELSE
+          WRITE(IMOD,'(A,7X,2(A,E15.8,1X))') '%','XMAX=',AMA,'YMAX=',
+     &          BMA
+          WRITE(IMOD,'(A,7X,2(A,E15.8,1X))') '%','XMIN=',AMI,'YMIN=',
+     &          BMI
+        ENDIF
       ENDIF
 C
       IF (ITES.EQ.0) THEN
-        WRITE(IMOD,'(A)') CHFONE(1)
+        IF (DIM3D) THEN
+          WRITE(IMOD,'(A)') CHFONE(1)
+        ELSE
+          WRITE(IMOD,'(A)') CHFONE(3)
+        ENDIF
       ELSE
-        WRITE(IMOD,'(A)') CHFONE(2)
+        IF (DIM3D) THEN
+          WRITE(IMOD,'(A)') CHFONE(2)
+        ELSE
+          WRITE(IMOD,'(A)') CHFONE(4)
+        ENDIF
       ENDIF
-
-C
-      CALL JEVEUO('&&PRESUP.INFO.NOEUDS','L',JINFO)
-      CALL JEVEUO('&&PRESUP.COOR.NOEUDS','L',JCOOR)
 C
       DO 15 I=1,NBNODE
         NODE   = ZI(JINFO-1+(I-1)*3+1)
@@ -178,7 +220,11 @@ C
         CALL CODENT(NODE,'G',CHNODE(3:8))
 C
         IF (ITES.EQ.0) THEN
-          WRITE (IMOD,'(2X,A,2X,3(1PE21.14,1X))') CHNODE,X,Y,Z
+          IF (DIM3D) THEN
+            WRITE (IMOD,'(2X,A,2X,3(1PE21.14,1X))') CHNODE,X,Y,Z
+          ELSE
+            WRITE (IMOD,'(2X,A,2X,2(1PE21.14,1X))') CHNODE,X,Y
+          ENDIF
         ELSE
           CALL CODNOP(CHSC,PRFNSY,1,2)
 C
@@ -188,7 +234,11 @@ C
           ISC=ISC+1
 C
           CALL CODENT(ISC,'G',CHSC(3:8))
-          WRITE (IMOD,'(2X,A,2X,3(1PE21.14,1X),A)') CHNODE,X,Y,Z,CHSC
+          IF (DIM3D) THEN
+            WRITE (IMOD,'(2X,A,2X,3(1PE21.14,1X),A)') CHNODE,X,Y,Z,CHSC
+          ELSE
+            WRITE (IMOD,'(2X,A,2X,2(1PE21.14,1X),A)') CHNODE,X,Y,CHSC
+          ENDIF
         ENDIF
    15 CONTINUE
  1599 CONTINUE

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,21 +23,21 @@ THER_NON_LINE_MO=OPER(nom="THER_NON_LINE_MO",op= 171,sd_prod=evol_ther,
          MODELE          =SIMP(statut='o',typ=modele ),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
          CARA_ELEM       =SIMP(statut='c',typ=cara_elem ),
-         EXCIT           =FACT(statut='o',min=1,max='**',
+         EXCIT           =FACT(statut='o',max='**',
            CHARGE          =SIMP(statut='o',typ=char_ther ),
            FONC_MULT       =SIMP(statut='c',typ=(fonction,formule) ),
          ),
-         TEMP_INIT       =FACT(statut='f',min=1,max=1,
+         TEMP_INIT       =FACT(statut='f',
            EVOL_THER       =SIMP(statut='f',typ=evol_ther ),
            NUME_INIT       =SIMP(statut='f',typ='I',defaut= 0 ),
          ),
-         CONVERGENCE     =FACT(statut='d',min=1,max=1,
+         CONVERGENCE     =FACT(statut='d',
            CRIT_TEMP_RELA  =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
            CRIT_ENTH_RELA  =SIMP(statut='f',typ='R',defaut= 1.E-2 ),
            ITER_GLOB_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
            ARRET           =SIMP(statut='c',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          ),
-         SOLVEUR         =FACT(statut='d',min=1,max=1,
+         SOLVEUR         =FACT(statut='d',
            METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC") ),
            b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),

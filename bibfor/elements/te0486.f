@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/12/2001   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
 C ----------------------------------------------------------------------
       INTEGER       IGEOM, IUM, IUP, IPRES, IRES, ICACO
-      INTEGER       NNO, INO, LZI, LZR, IADZI, IAZK24
+      INTEGER       NNO, INO, LZI, LZR, IADZI, IAZK24,IRET
       INTEGER       I, J, IN, KN, II, KOMPTN, KOMPTU, NB1, NB2
       INTEGER       IMATUU, IVECTU, IMATUN, INTSN, NPGSN
       INTEGER       IRCO3D, IFCO3D, ITEMPS, IERZ
@@ -71,7 +71,7 @@ C
 C
       IF (NOMTE(1:8).NE.'MEC3QU9H' .AND. NOMTE(1:8).NE.'MEC3TR7H') THEN
 C     --- AUTRES ELEMENTS QUE LA COQUE 3 D ---
-         CALL TECACH ( .FALSE., .FALSE., 'PPRESSR', 1, IPRES )
+         CALL TECACH ( 'NNN', 'PPRESSR', 1, IPRES,IRET )
 C
          IF ( IPRES .EQ. 0 ) THEN
             CALL JEVECH ( 'PFRCO3D', 'L', IPRES )

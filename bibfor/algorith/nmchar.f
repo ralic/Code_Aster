@@ -3,10 +3,11 @@
      &                   DEPDEL, LAMORT, VITPLU, ACCPLU, MASSE,
      &                   AMORT,  VITKM1, VITENT, NMODAM, VALMOD,
      &                   BASMOD, NREAVI, LIMPED, LONDE,  NONDP,
-     &                   CHONDP, TEMPLU, SECMBR)
+     &                   CHONDP, TEMPLU, NRPASE, NBPASE, INPSCO,
+     &                   NOPASE, SECMBR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/02/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 13/10/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,16 +31,19 @@ C TOLE CRP_21
       REAL*8        INST(3)
       LOGICAL       LAMORT, LIMPED, LONDE
       CHARACTER*4  MODE
+      CHARACTER*8  NOPASE
+      CHARACTER*13 INPSCO
       CHARACTER*19 LISCHA
-      CHARACTER*24 MODELE, MATE,   CARELE, NUMEDD, SECMBR
+      CHARACTER*24 MODELE, MATE,   CARELE, NUMEDD, SECMBR(8)
       CHARACTER*24 DEPMOI, DEPDEL, TEMPLU, COMPOR, CARCRI
       CHARACTER*24 ACCPLU, VITPLU, MASSE,  AMORT, TABTRA
       CHARACTER*24 VITKM1, VITENT, VALMOD, BASMOD, CHONDP
-      INTEGER       NMODAM, NREAVI, NONDP
+      INTEGER       NMODAM, NREAVI, NONDP,  NBPASE, NRPASE, IBID
 
 C ----------------------------------------------------------------------
 C
 C COMMANDE STAT_NON_LINE : CALCUL DES EFFORTS EXTERIEURS
+C COMMANDE DYNA_TRAN_EXPLI : CALCUL DU SECOND MEMBRE
 C
 C ----------------------------------------------------------------------
 
@@ -47,6 +51,7 @@ C     IN   MODE   : 'FIXE' -> CALCUL CHARGES FIXES
 C                   'SUIV' -> CALCUL CHARGES SUIVEUSES
 C                   'INER' -> CALCUL FORCES D'INERTIE
 C                   'TOUS' -> CALCUL CHARGES FIXES ET SUIVEUSES
+C                   'EXPL' -> CALCUL DES FORCES "EXPLICITES"
 C     IN   MODELE : MODELE
 C     IN   NUMEDD : NUME_DDL
 C     IN   MATE   : CHAMP MATERIAU
@@ -59,6 +64,9 @@ C     IN   DEPMOI : DEPLACEMENT              ('SUIV')
 C     IN   DEPDEL : INCREMENT DE DEPLACEMENT ('SUIV')
 C     IN   TEMPLU : TEMPERATURE T+ (POUTRES)
 C     IN   OLDTHM : PARAMETRES POUR VIELLE VERSION THM (DANS VECGME)
+C     IN   NRPASE : NUMERO DU PARAMETRE SENSIBLE (0=CALCUL CLASSIQUE)
+C     IN   NBPASE : NOMBRE DE PARAMETRES SENSIBLES
+C     IN   INPSCO : SD CONTENANT LISTE DES NOMS POUR SENSIBILITE
 C IN/JXOUT SECMBR : VECTEURS ASSEMBLES DES CHARGEMENTS ('FIXE' 'SUIV')
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
@@ -81,16 +89,15 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       INTEGER TYPESE
-      INTEGER      NEQ, IRET, JTRA
+      INTEGER      NEQ, IRET, JTRA, N, IE
       INTEGER      JDIDI, JDIDO, JMASS, JAMOR, JVITP, JACCP,JCNFS
       INTEGER      JCNFE, JCNLA, JVITKM,IONDP
       REAL*8       INSTAP, INSTAM
       CHARACTER*4 TYPCAL
-      CHARACTER*8  K8BID
-      CHARACTER*8 NOPASE
+      CHARACTER*8  K8BID,  VEMASE
       CHARACTER*24 CNFEDO, CNFEPI, CNDIDO, CNDIPI, CNFSDO, CNFSPI
       CHARACTER*24 VEFEDO, VEFEPI, VEDIDO, VEDIPI, VEFSDO
-      CHARACTER*24 VAFEDO, VADIDO, VAFSDO
+      CHARACTER*24 VAFEDO, VADIDO, VAFSDO, VAFEPI
       CHARACTER*24 CNDIDI, CNCINE
       CHARACTER*24 CHARGE, INFOCH, FOMULT
       CHARACTER*24 K24BLA, VECCOR, VEANEC, VAANEC
@@ -117,7 +124,7 @@ C    INITIALISATION
       VAFSDO = '&&VAFSDO'
       VADIDO = '&&VADIDO'
       INSTAP = INST(1)
-      TABTRA = '&&NMCHAR.TABTRA'
+      TABTRA = '&&TABTRA'
       VECCOR = '&&VECCOR'
       VEANEC = '&&VEANEC'
       VAANEC = '&&VAANEC'
@@ -133,14 +140,16 @@ C ======================================================================
 C                            CHARGEMENTS FIXES
 C ======================================================================
 
-      IF (MODE .EQ. 'FIXE' .OR. MODE .EQ. 'TOUS') THEN
+      IF (MODE.EQ.'FIXE' .OR. MODE.EQ.'TOUS' ) THEN
 
 C -- DEPLACEMENTS IMPOSES DONNES                             ---> CNDIDO
 
+        TYPESE=0
         CALL VEDIME ( MODELE, CHARGE, INFOCH, INSTAP, 'R',
-     >                TYPESE, NOPASE, VEDIDO)
+     &                TYPESE, NOPASE, VEDIDO)
         CALL ASASVE (VEDIDO, NUMEDD, 'R', VADIDO)
         CALL ASCOVA('D',VADIDO, FOMULT, 'INST', INSTAP, 'R', CNDIDO)
+
 
 C      CORRECTION POUR TENIR COMPTE DU TYPE DIRICHLET DIFFERENTIEL
         CALL EXISD('CHAMP_GD',CNDIDI, IRET)
@@ -160,11 +169,13 @@ C -- DEPLACEMENTS IMPOSES PILOTES                            ---> CNDIPI
 
 C -- CHARGEMENTS MECANIQUES DONNES                           ---> CNFEDO
 C
+C
         TYPCAL = 'MECA'
+        TYPESE=0
         CALL VECHME ( TYPCAL, MODELE, CHARGE, INFOCH, INST,
-     >                CARELE, MATE, TEMPLU, K24BLA,
-     >                VAPRIN, NOPASE, TYPESE, STYPSE,
-     >                VEFEDO )
+     &                CARELE, MATE, TEMPLU, K24BLA,
+     &                VAPRIN, NOPASE, TYPESE, STYPSE,
+     &                VEFEDO )
         CALL ASASVE (VEFEDO, NUMEDD, 'R', VAFEDO)
         CALL ASCOVA('D',VAFEDO, FOMULT, 'INST', INSTAP, 'R', CNFEDO)
 
@@ -173,7 +184,9 @@ C -- CHARGEMENTS MECANIQUES PILOTES                         ---> CNFEPI
 
         CALL VEFPME (MODELE, CARELE, MATE, CHARGE, INFOCH, INST, TEMPLU,
      &               VEFEPI, ' ')
-        CALL ASSVEC ('V',CNFEPI,1,VEFEPI,1.D0,NUMEDD,' ','ZERO',1)
+C        CALL ASSVEC ('V',CNFEPI,1,VEFEPI,1.D0,NUMEDD,' ','ZERO',1)
+        CALL ASASVE (VEFEPI, NUMEDD, 'R', VAFEPI)
+        CALL ASCOVA('D',VAFEPI, FOMULT, 'INST', INSTAP, 'R', CNFEPI)
 
 
 C -- CONDITIONS CINEMATIQUES IMPOSEES (INACTIF -> CNCINE EST NUL)
@@ -284,6 +297,89 @@ C -- ON LES RANGE DANS LE MEME VECTEUR QUE LES FORCES SUIVEUSES
      &                 VEANEC,VAANEC,INSTAM,ZR(JTRA))
            CALL R8AXPY(NEQ, -1.D0, ZR(JTRA), 1, ZR(JCNFS), 1)
         ENDIF
+        
+        
+      ELSE IF (MODE.EQ.'EXPL') THEN
+
+C ======================================================================
+C                        FORCES EXPLICITES
+C ======================================================================
+
+C -- FORCES EXPLICITES
+C -- ON LES TRAITE DE LA MEME FACON QUE LES FORCES D'INERTIE
+        INSTAM = INST(1) - INST(2)
+        CALL EXISD('CHAMP_GD',CNFSDO(1:19),IRET)
+        IF (IRET.EQ.0) THEN
+           CALL VTCREB (CNFSDO,NUMEDD,'V','R',NEQ)
+        END IF
+        CALL JELIRA(CNFSDO(1:19) // '.VALE','LONMAX',NEQ,K8BID)
+        CALL JEEXIN(TABTRA,IRET)
+        IF (IRET.EQ.0) THEN
+          CALL WKVECT(TABTRA,'V V R',NEQ,JTRA)
+        ELSE
+          CALL JEVEUO(TABTRA,'E',JTRA)
+        ENDIF
+        CALL JEVEUO(CNFSDO(1:19) // '.VALE','E',JCNFS)
+
+        IF (LAMORT) THEN
+           CALL JEVEUO(VITPLU(1:19)//'.VALE','L',JVITP)
+           CALL JEVEUT(AMORT(1:19) //'.&INT','L',JAMOR)
+           CALL MRMULT ('ZERO',JAMOR,ZR(JVITP),'R',ZR(JTRA),1)
+           CALL R8AXPY(NEQ, -1.D0, ZR(JTRA), 1, ZR(JCNFS), 1)
+        ENDIF
+        IF (NMODAM.NE.0) THEN
+           CALL JEVEUO(VITPLU(1:19)//'.VALE','L',JVITP)
+           CALL JEVEUO(VITKM1(1:19)//'.VALE','L',JVITKM)
+           CALL FMODAM(NEQ,ZR(JVITKM),VALMOD,BASMOD,ZR(JTRA))
+           IF (NREAVI.EQ.1)
+     &       CALL FMODAM(NEQ,ZR(JVITP),VALMOD,BASMOD,ZR(JTRA))
+           CALL R8AXPY(NEQ, -1.D0, ZR(JTRA), 1, ZR(JCNFS), 1)
+        ENDIF
+
+        IF (LIMPED) THEN
+           CALL FIMPED(MODELE,MATE,NUMEDD,NEQ,VITKM1,VITENT,VECCOR,
+     &                 VEANEC,VAANEC,INSTAM,ZR(JTRA))
+           CALL R8AXPY(NEQ, -1.D0, ZR(JTRA), 1, ZR(JCNFS), 1)
+        ENDIF
+
+
+      ELSE IF (MODE.EQ.'SENS') THEN
+
+C ======================================================================
+C                        CHARGEMENTS SENSIBILITE
+C ======================================================================
+
+C -- TYPE DE SENSIBILIE
+      CALL METYSE(NBPASE, INPSCO, NOPASE, TYPESE, STYPSE)
+
+C -- CHARGEMENT DU A LA DERIVATION (PARTIE COMPORTEMENT)    ---> CNFEDO
+
+       CALL VEMSME(MODELE,MATE,COMPOR,INPSCO,NRPASE,TYPESE,
+     &            NOPASE,VEMASE,STYPSE)
+       CALL ASSVEC ('V',CNFEDO,1,VEMASE,1.D0,NUMEDD,K24BLA,'ZERO',1)
+       CALL DETRSD('VECT_ELEM',VEMASE)
+
+C -- DERIVATION CHARGEMENTS MECANIQUES DONNES                ---> CNFEDO
+
+        TYPCAL = 'MECA'
+        CALL VECHME ( TYPCAL, MODELE, CHARGE, INFOCH, INST,
+     &                CARELE, MATE,   K24BLA, K24BLA,
+     &                VAPRIN, NOPASE, TYPESE, STYPSE,
+     &                VEFEDO )
+        CALL ASASVE (VEFEDO, NUMEDD, 'R', VAFEDO)
+        CALL ASCOVA('D',VAFEDO, FOMULT, 'INST', INSTAP, 'R', TABTRA)
+        CALL JELIRA(CNFEDO(1:19) // '.VALE','LONMAX',NEQ,K8BID)
+        CALL JEVEUO(TABTRA(1:19) // '.VALE','L',JTRA)
+        CALL JEVEUO(CNFEDO(1:19) // '.VALE','E',JCNFE)
+        CALL R8AXPY(NEQ, 1.D0, ZR(JTRA), 1, ZR(JCNFE), 1)
+
+C -- DERIVATION DEPLACEMENTS IMPOSES DONNES                  ---> CNDIDO
+
+        CALL VEDIME ( MODELE, CHARGE, INFOCH, INSTAP, 'R',
+     &                TYPESE, NOPASE, VEDIDO)
+        CALL ASASVE (VEDIDO, NUMEDD, 'R', VADIDO)
+        CALL ASCOVA('D',VADIDO, FOMULT, 'INST', INSTAP, 'R', CNDIDO)
+
 
 
 C ======================================================================
@@ -293,7 +389,6 @@ C ======================================================================
       ELSE
         CALL UTMESS('F','NMCHAR','MODE ' //MODE// ' NON RECONNU (DVLP)')
       END IF
-
 
       CALL JEDEMA()
       END

@@ -1,6 +1,6 @@
       SUBROUTINE CALFFX(ALIAS,XI,YI,TN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/12/2000   AUTEUR ADBHHPM P.MASSIN 
+C MODIF ELEMENTS  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,9 +37,6 @@ C     REAL*8       TAU1(3),TAU2(3)
       AL31(X) = 0.5D0*X* (X-1.D0)
       AL32(X) = - (X+1.D0)* (X-1.D0)
       AL33(X) = 0.5D0*X* (X+1.D0)
-      DAL31(U) = 0.5D0* (2.D0*U-1.D0)
-      DAL32(U) = -2.D0*U
-      DAL33(U) = 0.5D0* (2.D0*U+1.D0)
       UNS4 = 0.25D0
 C  ----------------------------------------------------------
 
@@ -53,25 +50,25 @@ C   LES FF EN XI,YI,ZI ET LEURS D
 
       ELSE IF (ALIAS(1:3).EQ.'SG3') THEN
 
-        TN(1) = 0.5D0* (1-XI)*XI
-        TN(2) = 0.5D0* (1+XI)*XI
-        TN(3) = 0.5D0* (1+XI)* (1-XI)
+        TN(1) = 0.5D0* (1.D0-XI)*XI
+        TN(2) = 0.5D0* (1.D0+XI)*XI
+        TN(3) = 0.5D0* (1.D0+XI)* (1-XI)
 
 
       ELSE IF (ALIAS(1:3).EQ.'TR3') THEN
 
-        TN(1) = 0.5D0* (1+YI)
+        TN(1) = 0.5D0* (1.D0+YI)
         TN(2) = -0.5D0* (XI+YI)
-        TN(3) = 0.5D0* (1+XI)
+        TN(3) = 0.5D0* (1.D0+XI)
 
       ELSE IF (ALIAS(1:3).EQ.'TR6') THEN
 
         TN(1) = 0.5D0* (1.D+00+YI)*YI
-        TN(2) = 0.5D0* (XI+YI)* (XI+YI+1)
+        TN(2) = 0.5D0* (XI+YI)* (XI+YI+1.D0)
         TN(3) = 0.5D0* (1.D+00+XI)*XI
-        TN(4) = - (1+YI)* (XI+YI)
-        TN(5) = - (1+XI)* (XI+YI)
-        TN(6) = (1+XI)* (1+YI)
+        TN(4) = - (1.D0+YI)* (XI+YI)
+        TN(5) = - (1.D0+XI)* (XI+YI)
+        TN(6) = (1.D0+XI)* (1.D0+YI)
 
       ELSE IF (ALIAS(1:3).EQ.'QU4') THEN
 
@@ -91,10 +88,10 @@ C   LES FF EN XI,YI,ZI ET LEURS D
         TN(2) = (1.D0-YI)* (1.D0-XI)* (-1.D0-XI-YI)*0.25D0
         TN(3) = (1.D0-YI)* (1.D0+XI)* (-1.D0+XI-YI)*0.25D0
         TN(4) = (1.D0+YI)* (1.D0+XI)* (-1.D0+XI+YI)*0.25D0
-        TN(5) = (1.D0-YI)* (1.D0-XI)* (1.D0+YI)*0.25D0
-        TN(6) = (1.D0-YI)* (1.D0-XI)* (1.D0+XI)*0.25D0
-        TN(7) = (1.D0-YI)* (1.D0+XI)* (1.D0+YI)*0.25D0
-        TN(8) = (1.D0+YI)* (1.D0-XI)* (1.D0+XI)*0.25D0
+        TN(5) = (1.D0-YI)* (1.D0-XI)* (1.D0+YI)*0.5D0
+        TN(6) = (1.D0-YI)* (1.D0-XI)* (1.D0+XI)*0.5D0
+        TN(7) = (1.D0-YI)* (1.D0+XI)* (1.D0+YI)*0.5D0
+        TN(8) = (1.D0+YI)* (1.D0-XI)* (1.D0+XI)*0.5D0
 
 
       ELSE IF (ALIAS(1:3).EQ.'QU9') THEN

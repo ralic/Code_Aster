@@ -8,7 +8,7 @@ C
         CHARACTER*8  MOD
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -134,7 +134,7 @@ C =================================================================
       MULT         = MATERD( 3,2)
       ME           = MATERD( 4,2)
       AE           = MATERD( 5,2)
-      SIGMP2       = SIGC*((MULT/ME**AE)**(1/(AE-1)))
+      SIGMP2       = SIGC*((MULT/ME**AE)**(UN/(AE-UN)))
       MATERD(14,2) = SIGMP2
 C =================================================================
 C --- VERIFICATION DE LA COHERENCE DES PARAMETRES : ---------------

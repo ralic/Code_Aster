@@ -5,7 +5,7 @@ C
       REAL*8        GAMP, PARAME(5), MATER(NBMAT,2)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/03/2002   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,7 +117,7 @@ C ======================================================================
             SGAMP = ZERO
 C ======================================================================
 C --- CALCUL DE M(GAMP) = ----------------------------------------------
-C ----- SIGC/SIGP2*(ME*SIGP2/SIGC+1)**(AE/A(GAMP)) ---------------------
+C ----- SIGC/SIGP2*(ME*SIGP2/SIGC)**(AE/A(GAMP)) -----------------------
 C ======================================================================
             FACT1 = SIGC/SIGP2
             FACT2 = ME*SIGP2/SIGC

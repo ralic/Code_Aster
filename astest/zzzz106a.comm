@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 29/08/2003   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CRITERES GEOMETRIQUES DANS DEFI_GROUP EN 3D 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,7 +34,7 @@ MA=DEFI_GROUP(  reuse=MA,   MAILLAGE=MA,
 MA=DEFI_GROUP(  reuse=MA,   MAILLAGE=MA,
                 CREA_GROUP_MA=( _F(  NOM = 'GM1', 
                                        OPTION = 'SPHERE',
-                                       NOEUD_CENTRE = 'N1',
+                                       GROUP_NO_CENTRE = 'GRN1',
                                        RAYON = 2.),
                                 _F(  NOM = 'GM2', 
                                        OPTION = 'CYLINDRE',

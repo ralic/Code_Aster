@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 04/02/2003   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 07/07/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,16 +132,6 @@ C
       CALL PKMATE ( NDIM, COEFD, COEFD3, COEFG, COEFG3 )
 C
 C     ------------------------------------------------------------------
-C                             LA TABLE
-C     ------------------------------------------------------------------
-      CALL TBCRSD ( NOMRES, 'G' )
-      IF ( NDIM .EQ. 3 ) THEN
-         CALL TBAJPA ( NOMRES, NBPAR1, NOMPA1, TYPPA1 )
-      ELSE
-         CALL TBAJPA ( NOMRES, NBPAR2, NOMPA2, TYPPA2 )
-      ENDIF
-C
-C     ------------------------------------------------------------------
 C                   LES INSTANTS DE POST-TRAITEMENT
 C     ------------------------------------------------------------------
       CALL TBEXIP ( DEPSUP, 'INST', EXIST, K8B )
@@ -153,6 +143,26 @@ C     ------------------------------------------------------------------
       ELSE
          NBINST = 1
       ENDIF
+C
+C     ------------------------------------------------------------------
+C                             LA TABLE
+C     ------------------------------------------------------------------
+      CALL TBCRSD ( NOMRES, 'G' )
+      IF ( NDIM .EQ. 3 ) THEN
+         IF ( EXIST ) THEN
+            CALL TBAJPA ( NOMRES, NBPAR1, NOMPA1, TYPPA1 )
+         ELSE
+            CALL TBAJPA ( NOMRES, NBPAR1-1, NOMPA1(2), TYPPA1(2) )
+         ENDIF
+      ELSE
+         IF ( EXIST ) THEN
+            CALL TBAJPA ( NOMRES, NBPAR2, NOMPA2, TYPPA2 )
+         ELSE
+            CALL TBAJPA ( NOMRES, NBPAR2-1, NOMPA2(2), TYPPA2(2) )
+         ENDIF
+      ENDIF
+C
+C     ------------------------------------------------------------------
 C
       ABSSUP = '&&OP0188.ABSC_CURV_SUP'
       ABSINF = '&&OP0188.ABSC_CURV_INF'
@@ -238,11 +248,29 @@ C
      +                 COEFD, COEFD3, COEFG, COEFG3, KG1(2), KG2(2) )
 C
          IF ( NDIM .EQ. 3 ) THEN
-            CALL TBAJLI ( NOMRES, NBPAR1, NOMPA1, 1, KG1, CBID, K8B, 0 )
-            CALL TBAJLI ( NOMRES, NBPAR1, NOMPA1, 2, KG2, CBID, K8B, 0 )
+            IF ( EXIST ) THEN
+               CALL TBAJLI ( NOMRES, NBPAR1, NOMPA1, 1, KG1,
+     +                       CBID, K8B, 0 )
+               CALL TBAJLI ( NOMRES, NBPAR1, NOMPA1, 2, KG2,
+     +                       CBID, K8B, 0 )
+            ELSE
+               CALL TBAJLI ( NOMRES, NBPAR1-1, NOMPA1(2), 1, KG1(2),
+     +                       CBID, K8B, 0 )
+               CALL TBAJLI ( NOMRES, NBPAR1-1, NOMPA1(2), 2, KG2(2),
+     +                       CBID, K8B, 0 )
+            ENDIF
          ELSE
-            CALL TBAJLI ( NOMRES, NBPAR2, NOMPA2, 1, KG1, CBID, K8B, 0 )
-            CALL TBAJLI ( NOMRES, NBPAR2, NOMPA2, 2, KG2, CBID, K8B, 0 )
+            IF ( EXIST ) THEN
+               CALL TBAJLI ( NOMRES, NBPAR2, NOMPA2, 1, KG1,
+     +                       CBID, K8B, 0 )
+               CALL TBAJLI ( NOMRES, NBPAR2, NOMPA2, 2, KG2,
+     +                       CBID, K8B, 0 )
+            ELSE
+               CALL TBAJLI ( NOMRES, NBPAR2-1, NOMPA2(2), 1, KG1(2),
+     +                       CBID, K8B, 0 )
+               CALL TBAJLI ( NOMRES, NBPAR2-1, NOMPA2(2), 2, KG2(2),
+     +                       CBID, K8B, 0 )
+            ENDIF
          ENDIF
 C
          IF ( EXIST ) THEN

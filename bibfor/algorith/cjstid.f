@@ -2,7 +2,7 @@
         IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/10/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -143,18 +143,18 @@ C ======================================================================
         CALL     LCPRSC(S,S,TRUC)
         SII    = SQRT(TRUC)
         SIIREL = SII/PREF
-        COS3TS = COS3T(NDT, S, PREF, EPSSIG)
+        COS3TS = COS3T(S, PREF, EPSSIG)
         HTS    = HLODE(GAMMA,COS3TS)
 C ======================================================================
         CALL     CJSQIJ(S, I1, X, Q)
         CALL     LCPRSC(Q,Q,TRUC)
         QII    = SQRT(TRUC)
-        COS3TQ = COS3T(NDT, Q, PREF, EPSSIG)
+        COS3TQ = COS3T(Q, PREF, EPSSIG)
         HTQ    = HLODE(GAMMA,COS3TQ)
 C ======================================================================
 C --- CALCUL DE Q ------------------------------------------------------
 C ======================================================================
-        CALL CALCQ(NDT, Q, GAMMA, PREF, EPSSIG, QQ)
+        CALL CALCQ(Q, GAMMA, PREF, EPSSIG, QQ)
 C ======================================================================
 C --- CALCUL DE PC (CONTRAINTE MOYENNE CRITIQUE) -----------------------
 C ======================================================================

@@ -1,13 +1,13 @@
       SUBROUTINE SEMECO ( CHOIX, NOSIMP, NOPASE,
      >                    PREF,
-     >                    NOCOMP, NBMOCL, LIMOCL, LIVALE,
+     >                    NOCOMP, NBMOCL, LIMOCL, LIVALE, LIMOFA,
      >                    IRET )
 C
 C     SENSIBILITE - MEMORISATION DES CORRESPONDANCES
 C     **            **               **
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF UTILITAI  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -67,6 +67,11 @@ C    SI CHOIX='E' ET NBMOCL NON NUL : LIVALE EST UNE DONNEE
 C    SI CHOIX='RENC' : LIVALE EST INUTILISE
 C    SI CHOIX='REMC' : LIVALE EST UNE SORTIE, ALLOUEE ICI, SI NBMOCL > 0
 C    SI CHOIX='S' : LIVALE EST INUTILISE
+C I/O LIMOFA  : NOM DE LA STRUCTURE K80 CONTENANT LES MOTS-CLES FACTEURS
+C    SI CHOIX='E' ET NBMOCL NON NUL : LIMOFA EST UNE DONNEE
+C    SI CHOIX='RENC' : LIMOFA EST INUTILISE
+C    SI CHOIX='REMC' : LIMOFA EST UNE SORTIE, ALLOUEE ICI, SI NBMOCL > 0
+C    SI CHOIX='S' : LIMOFA EST INUTILISE
 C OUT IRET    : CODE_RETOUR :
 C                     0 -> TOUT S'EST BIEN PASSE
 C                     1 -> LE COUPLE (NOSIMP,NOPASE) N'EST PAS RENSEIGNE
@@ -74,14 +79,18 @@ C                     2 -> LA STRUCTURE DE MEMORISATION EST INCONNUE
 C                     3 -> LA STRUCTURE COMPOSEE LIEE AU COUPLE
 C                          (NOSIMP,NOPASE) N'EST PAS LA BONNE
 C
-C  POUR CHAQUE MEMORISATION, NOUS AVONS DANS ZK80(I) :
+C  POUR CHAQUE MEMORISATION, NOUS AVONS DANS :
+C     . ZK80(I,1) :
 C       01-08 : NOM SIMPLE
 C       09-16 : NOM DU PARAMETRE SENSIBLE
 C       17-24 : NOM COMPOSE
-C       25-48 : BLANC SI AUCUN MOT-CLE N'EST RENSEIGNE
+C     . ZK80(I,2) :
+C       01-24 : BLANC SI AUCUN MOT-CLE N'EST RENSEIGNE
 C               NOM DU ZK80 QUI CONTIENT LA LISTE DES MOTS-CLES
-C       49-72 : BLANC SI AUCUN MOT-CLE N'EST RENSEIGNE
+C       25-48 : BLANC SI AUCUN MOT-CLE N'EST RENSEIGNE
 C               NOM DU ZK80 QUI CONTIENT LA LISTE DES VALEURS
+C       49-72 : BLANC SI AUCUN MOT-CLE N'EST RENSEIGNE
+C               NOM DU ZK80 QUI CONTIENT LA LISTE DES MOTS-CLES FACTEURS
 C     ------------------------------------------------------------------
 C
       IMPLICIT NONE
@@ -90,7 +99,7 @@ C 0.1. ==> ARGUMENTS
 C
       CHARACTER*(*) CHOIX, NOSIMP, NOPASE
       CHARACTER*(*) PREF
-      CHARACTER*(*) NOCOMP, LIMOCL, LIVALE
+      CHARACTER*(*) NOCOMP, LIMOCL, LIVALE, LIMOFA
       INTEGER NBMOCL
       INTEGER IRET
 C
@@ -116,7 +125,8 @@ C                           1234567890123
 C
       INTEGER LXLGUT
 C
-      INTEGER ADMOCL, ADVALE, ADMMEM, ADMEMC, ADMEVA
+      INTEGER ADMOCL, ADVALE, ADMOFA
+      INTEGER ADMMEM, ADMEMC, ADMEVA, ADMEMF
       INTEGER LONMAX, NUTI, NUMERO, LGNOCO
       INTEGER IAUX, JAUX, IER
 C
@@ -124,7 +134,7 @@ C
       CHARACTER*6 SAUX06(3)
       CHARACTER*8 NOSIM8, NOPAS8, NOCOM8, SAUX08
       CHARACTER*18 NOMMEM
-      CHARACTER*24 NOMMCL, NOMVAL
+      CHARACTER*24 NOMMCL, NOMVAL, NOMMFA
 C
       DATA SAUX06 / 'NOSIMP', 'NOPASE', 'NOCOMP' /
 C     ------------------------------------------------------------------
@@ -213,14 +223,14 @@ C
         CALL JEEXIN (NOMMEM,IER)
         IF (IER.EQ.0) THEN
           NUTI = 1
-          CALL WKVECT ( NOMMEM,'G V K80',NUTI,ADMMEM )
+          CALL WKVECT ( NOMMEM,'G V K80',2*NUTI,ADMMEM )
           CALL JEECRA ( NOMMEM,'LONUTI',NUTI,SAUX08 )
         ELSE
           CALL JELIRA ( NOMMEM,'LONMAX',LONMAX,SAUX08 )
           CALL JELIRA ( NOMMEM,'LONUTI',NUTI,SAUX08 )
           NUTI = NUTI + 1
-          IF (NUTI.GT.LONMAX) THEN
-            CALL JUVECA ( NOMMEM,2*LONMAX)
+          IF (2*NUTI.GT.LONMAX) THEN
+            CALL JUVECA ( NOMMEM,2*LONMAX )
           END IF
           CALL JEECRA ( NOMMEM,'LONUTI',NUTI,SAUX08 )
           CALL JEVEUO ( NOMMEM,'E',ADMMEM )
@@ -229,8 +239,8 @@ C
 C 3.2. ==> CONTROLE
 C
         DO 32 , IAUX = 1 , NUTI - 1
-          IF ( (ZK80(ADMMEM-1+IAUX) (1: 8).EQ.NOSIM8 ) .AND.
-     >         (ZK80(ADMMEM-1+IAUX) (9:16).EQ.NOPAS8) ) THEN
+          IF ( (ZK80(ADMMEM+2*IAUX-2) (1: 8).EQ.NOSIM8 ) .AND.
+     >         (ZK80(ADMMEM+2*IAUX-2) (9:16).EQ.NOPAS8) ) THEN
             CALL UTMESS ( 'F', NOMPRO, 'LA DERIVEE DE '//NOSIM8(1:8)//
      >              ' PAR RAPPORT A '//NOPAS8(1:8)//' EST DEJA NOMMEE.')
           ENDIF
@@ -257,7 +267,7 @@ C                   12345678
             ENDIF
           ENDIF
 C
-          ZK80(ADMMEM-1+NUTI) (8*(IAUX-1)+1:8*IAUX) = SAUX08
+          ZK80(ADMMEM+2*NUTI-2) (8*(IAUX-1)+1:8*IAUX) = SAUX08
 C
    33   CONTINUE
 C
@@ -267,18 +277,23 @@ C
 C
           CALL JEVEUO ( LIMOCL, 'L', ADMOCL )
           CALL JEVEUO ( LIVALE, 'L', ADVALE )
+          CALL JEVEUO ( LIMOFA, 'L', ADMOFA )
 C
           CALL CODENT ( NUTI, 'G', SAUX04 )
 C                  1234567890123           45   6789     01234
           NOMMCL = PREFIX              // '.M'//SAUX04//'     '
           NOMVAL = PREFIX              // '.V'//SAUX04//'     '
-          ZK80(ADMMEM-1+NUTI) (25:48) = NOMMCL
-          ZK80(ADMMEM-1+NUTI) (49:72) = NOMVAL
+          NOMMFA = PREFIX              // '.F'//SAUX04//'     '
+          ZK80(ADMMEM+2*NUTI-1) (01:24) = NOMMCL
+          ZK80(ADMMEM+2*NUTI-1) (25:48) = NOMVAL
+          ZK80(ADMMEM+2*NUTI-1) (49:72) = NOMMFA
 C
           CALL WKVECT ( NOMMCL,'G V K80',NBMOCL,ADMEMC )
           CALL JEECRA ( NOMMCL,'LONUTI',NBMOCL,SAUX08 )
           CALL WKVECT ( NOMVAL,'G V K80',NBMOCL,ADMEVA )
           CALL JEECRA ( NOMVAL,'LONUTI',NBMOCL,SAUX08 )
+          CALL WKVECT ( NOMMFA,'G V K80',NBMOCL,ADMEMF )
+          CALL JEECRA ( NOMMFA,'LONUTI',NBMOCL,SAUX08 )
           DO 342 , IAUX = 1 , NBMOCL
             JAUX = LXLGUT(ZK80(ADMOCL+IAUX-1))
             IF ( JAUX.NE.0 ) THEN
@@ -287,6 +302,10 @@ C
             JAUX = LXLGUT(ZK80(ADVALE+IAUX-1))
             IF ( JAUX.NE.0 ) THEN
               ZK80(ADMEVA+IAUX-1)(1:JAUX) = ZK80(ADVALE+IAUX-1)(1:JAUX)
+            ENDIF
+            JAUX = LXLGUT(ZK80(ADMOFA+IAUX-1))
+            IF ( JAUX.NE.0 ) THEN
+              ZK80(ADMEMF+IAUX-1)(1:JAUX) = ZK80(ADMOFA+IAUX-1)(1:JAUX)
             ENDIF
   342     CONTINUE
 C
@@ -310,9 +329,9 @@ C
           CALL JEVEUO ( NOMMEM, 'L', ADMMEM )
           CALL JELIRA ( NOMMEM, 'LONUTI', NUTI, SAUX08 )
           DO 41 , IAUX = 1 , NUTI
-            IF ( (ZK80(ADMMEM-1+IAUX) (1: 8).EQ.NOSIM8 ) .AND.
-     >           (ZK80(ADMMEM-1+IAUX) (9:16).EQ.NOPAS8) ) THEN
-              SAUX08 = ZK80(ADMMEM-1+IAUX) (17:24)
+            IF ( (ZK80(ADMMEM+2*IAUX-2) (1: 8).EQ.NOSIM8 ) .AND.
+     >           (ZK80(ADMMEM+2*IAUX-2) (9:16).EQ.NOPAS8) ) THEN
+              SAUX08 = ZK80(ADMMEM+2*IAUX-2) (17:24)
 C                             12345678
               IF ( SAUX08.EQ.'        ' ) THEN
                 IRET = 1
@@ -361,6 +380,7 @@ C
 C                  1234567890123           45   6789     01234
           NOMMCL = PREFIX              // '.M'//SAUX04//'     '
           NOMVAL = PREFIX              // '.V'//SAUX04//'     '
+          NOMMFA = PREFIX              // '.F'//SAUX04//'     '
           CALL JEEXIN (NOMMCL,IER)
 C
           IF ( IER.EQ.0 ) THEN
@@ -369,13 +389,17 @@ C
             CALL JEVEUO ( NOMMCL, 'L', ADMEMC )
             CALL JELIRA ( NOMMCL, 'LONUTI', NBMOCL, SAUX08 )
             CALL JEVEUO ( NOMVAL, 'L', ADMEVA )
+            CALL JEVEUO ( NOMMFA, 'L', ADMEMF )
             CALL WKVECT ( LIMOCL,'V V K80',NBMOCL,ADMOCL )
             CALL JEECRA ( LIMOCL,'LONUTI',NBMOCL,SAUX08 )
             CALL WKVECT ( LIVALE,'V V K80',NBMOCL,ADVALE )
             CALL JEECRA ( LIVALE,'LONUTI',NBMOCL,SAUX08 )
+            CALL WKVECT ( LIMOFA,'V V K80',NBMOCL,ADMOFA )
+            CALL JEECRA ( LIMOFA,'LONUTI',NBMOCL,SAUX08 )
             DO 43 , IAUX = 0 , NBMOCL-1
               ZK80(ADMOCL+IAUX) = ZK80(ADMEMC+IAUX)
               ZK80(ADVALE+IAUX) = ZK80(ADMEVA+IAUX)
+              ZK80(ADMOFA+IAUX) = ZK80(ADMEMF+IAUX)
    43       CONTINUE
 C          
           ENDIF

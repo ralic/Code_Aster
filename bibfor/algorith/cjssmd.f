@@ -2,7 +2,7 @@
         IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/10/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE HTQ ----------------------------------------------------
 C ======================================================================
-        RCOS3T = COS3T(NDT, Q, PREF, EPSSIG)
+        RCOS3T = COS3T(Q, PREF, EPSSIG)
         HTQ    = HLODE(GAMMA,RCOS3T)
 C ======================================================================
 C --- CALCUL DU SEUIL DU MECANISME DEVIATOIRE --------------------------

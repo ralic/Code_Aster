@@ -1,4 +1,4 @@
-#@ MODIF macro_miss_3d_ops Macro  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_miss_3d_ops Macro  DATE 29/09/2003   AUTEUR ACBHHCD G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,7 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
   if OPTION['TOUT']!=None:
       MODUL2='COMPLET'
   elif OPTION['MODULE']=='MISS_IMPE':
-      MODUL2='MISS_IMPE'
+      MODUL2='CALC_IMPE'
   elif OPTION['MODULE']=='MISS_EVOL':
       MODUL2='MISS_PTAS'
   elif OPTION['MODULE']=='PRE_MISS':

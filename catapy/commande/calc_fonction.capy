@@ -1,35 +1,47 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-#              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
-#              REDISTRIBUTION OF THIS FILE.
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE MCOURTOI M.COURTOIS
 def calc_fonction_prod(DERIVE,EXTRACTION,INTEGRE,ECART_TYPE,INVERSE,RMS,NOCI_SEISME,MAX,COMB,COMB_C,ENVELOPPE,
-                       SPEC_OSCI,ASSE,FFT,COMPOSE,CORR_ACCE,PUISSANCE,LISS_ENVELOP,NORME, **args):
-  if (RMS != None)        : return table
-  if (MAX != None)        : return table
+                       SPEC_OSCI,ASSE,FFT,COMPOSE,CORR_ACCE,PUISSANCE,LISS_ENVELOP,NORME,ABS, **args):
+  if (RMS         != None): return table
+  if (MAX         != None): return table
   if (NOCI_SEISME != None): return table
-  if (ECART_TYPE != None) : return table
-  if (INTEGRE != None)    : return fonction
-  if (DERIVE != None)     : return fonction
-  if (INVERSE != None)    : return fonction
-  if (COMB != None)       : return fonction
-  if (ENVELOPPE != None)  : return fonction
-  if (EXTRACTION != None) : return fonction
-  if (SPEC_OSCI != None)  : return fonction
-  if (COMB_C != None)     : return fonction_c
-  if (COMPOSE != None)    : return fonction
-  if (ASSE != None)       : return fonction
-  if (FFT != None)        : 
+  if (ECART_TYPE  != None): return table
+  if (INTEGRE     != None): return fonction
+  if (DERIVE      != None): return fonction
+  if (INVERSE     != None): return fonction
+  if (COMB        != None): return fonction
+  if (ENVELOPPE   != None): return fonction
+  if (EXTRACTION  != None): return fonction
+  if (SPEC_OSCI   != None): return fonction
+  if (COMB_C      != None): return fonction_c
+  if (COMPOSE     != None): return fonction
+  if (ASSE        != None): return fonction
+  if (FFT         != None): 
      vale=FFT.get_child('FONCTION').get_valeur()
      if (AsType(vale) == fonction )  : return fonction_c
      if (AsType(vale) == fonction_c) : return fonction
-  if (CORR_ACCE != None) : return fonction
-  if (LISS_ENVELOP != None)  : return fonction
-  if (PUISSANCE != None) : return fonction
-  if (NORME != None) : return table
+  if (CORR_ACCE   != None): return fonction
+  if (LISS_ENVELOP!= None): return fonction
+  if (PUISSANCE   != None): return fonction
+  if (ABS         != None): return fonction
+  if (NORME       != None): return table
   raise AsException("type de concept resultat non prevu")
 
 CALC_FONCTION=OPER(nom="CALC_FONCTION",op=  91,sd_prod=calc_fonction_prod
@@ -38,20 +50,20 @@ CALC_FONCTION=OPER(nom="CALC_FONCTION",op=  91,sd_prod=calc_fonction_prod
             UIinfo={"groupes":("Fonction",)},
          regles=(UN_PARMI('DERIVE','INTEGRE','SPEC_OSCI','MAX','COMB','COMB_C','ENVELOPPE','RMS',
                           'NOCI_SEISME','COMPOSE','EXTRACTION','ASSE','FFT','CORR_ACCE', 'PUISSANCE',
-                          'NORME','LISS_ENVELOP','ECART_TYPE','INVERSE'),),
-         FFT             =FACT(statut='f',min=1,max=1,fr="Calcul de la transformee de Fourier ou de son inverse",
+                          'NORME','LISS_ENVELOP','ECART_TYPE','INVERSE','ABS'),),
+         FFT             =FACT(statut='f',fr="Calcul de la transformee de Fourier ou de son inverse",
            FONCTION        =SIMP(statut='o',typ=(fonction,fonction_c,formule) )
          ),
-         DERIVE          =FACT(statut='f',min=1,max=1,fr="Calcul de la dérivée d une fonction",
+         DERIVE          =FACT(statut='f',fr="Calcul de la dérivée d une fonction",
            METHODE         =SIMP(statut='f',typ='TXM',defaut="DIFF_CENTREE",into=("DIFF_CENTREE",) ),
            FONCTION        =SIMP(statut='o',typ=(fonction,formule) ),
          ),
-         INTEGRE         =FACT(statut='f',min=1,max=1,fr="Calcul de l intégrale d une fonction",
+         INTEGRE         =FACT(statut='f',fr="Calcul de l intégrale d une fonction",
            METHODE         =SIMP(statut='f',typ='TXM',defaut="TRAPEZE",into=("SIMPSON","TRAPEZE") ),
            FONCTION        =SIMP(statut='o',typ=(fonction,formule)),
            COEF            =SIMP(statut='f',typ='R',defaut= 0.E+0,fr="Valeur de la constante d intégration" ),
          ),
-         RMS             =FACT(statut='f',min=1,max=1,fr="Calcul de la valeur RMS d une fonction",
+         RMS             =FACT(statut='f',fr="Calcul de la valeur RMS d une fonction",
            METHODE         =SIMP(statut='f',typ='TXM',defaut="TRAPEZE",into=("SIMPSON","TRAPEZE") ),
            FONCTION        =SIMP(statut='o',typ=(fonction,formule) ),
            INST_INIT       =SIMP(statut='f',typ='R',fr="Instant initial définissant le début du signal" ),
@@ -59,10 +71,10 @@ CALC_FONCTION=OPER(nom="CALC_FONCTION",op=  91,sd_prod=calc_fonction_prod
            CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
            PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
          ),
-         NOCI_SEISME     =FACT(statut='f',min=1,max=1,
+         NOCI_SEISME     =FACT(statut='f',
            FONCTION        =SIMP(statut='f',typ=(fonction,formule) ),
            SPEC_OSCI       =SIMP(statut='f',typ=(fonction,formule) ),
-           OPTION          =SIMP(statut='f',typ='TXM',defaut="TOUT",max='**',
+           OPTION          =SIMP(statut='f',typ='TXM',defaut="TOUT",validators=NoRepeat(),max='**',
                                  into=("INTE_ARIAS","POUV_DEST","INTE_SPEC","VITE_ABSO_CUMU",
                                        "DUREE_PHAS_FORT","MAXI","ACCE_SUR_VITE","TOUT",) ),
            INST_INIT       =SIMP(statut='f',typ='R'),
@@ -83,7 +95,7 @@ CALC_FONCTION=OPER(nom="CALC_FONCTION",op=  91,sd_prod=calc_fonction_prod
              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
            ),
          ),
-         LISS_ENVELOP    = FACT(statut='f',min=1,max=1,fr="Lissage d une enveloppe",
+         LISS_ENVELOP    = FACT(statut='f',fr="Lissage d une enveloppe",
            FONCTION        =SIMP(statut='o',typ=(fonction,formule) ),
            AMOR            =SIMP(statut='f',typ='R',max='**'),
            FREQ_MIN        =SIMP(statut='f',typ='R'),
@@ -108,7 +120,7 @@ CALC_FONCTION=OPER(nom="CALC_FONCTION",op=  91,sd_prod=calc_fonction_prod
                        AMOR_ECH    =SIMP(statut='f',typ='R',max='**'),
                               ),
          ),
-         SPEC_OSCI       =FACT(statut='f',min=1,max=1,fr="Calcul du spectre d oscillateur",
+         SPEC_OSCI       =FACT(statut='f',fr="Calcul du spectre d oscillateur",
            METHODE         =SIMP(statut='f',typ='TXM',defaut="NIGAM",into=("NIGAM",) ),
            FONCTION        =SIMP(statut='o',typ=(fonction,formule) ),
            AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
@@ -118,14 +130,17 @@ CALC_FONCTION=OPER(nom="CALC_FONCTION",op=  91,sd_prod=calc_fonction_prod
            NATURE          =SIMP(statut='f',typ='TXM',defaut="ACCE",into=("DEPL","VITE","ACCE") ),
            NATURE_FONC     =SIMP(statut='f',typ='TXM',defaut="ACCE",into=("DEPL","VITE","ACCE") ),
          ),
-         MAX             =FACT(statut='f',min=1,max=1,fr="Calcul des extrémas locaux d une fonction",
+         MAX             =FACT(statut='f',fr="Calcul des extrémas locaux d une fonction",
            FONCTION        =SIMP(statut='o',typ=(fonction,formule) ),
          ),
-         COMB            =FACT(statut='f',min=1,max='**',fr="Calcul d une combinaison linéaire réelle de fonctions",
+         ABS             =FACT(statut='f',fr="Calcul de la valeur absolue d une fonction",
+           FONCTION        =SIMP(statut='o',typ=(fonction,formule),),
+         ),
+         COMB            =FACT(statut='f',max='**',fr="Calcul d une combinaison linéaire réelle de fonctions",
            FONCTION        =SIMP(statut='o',typ=(fonction,formule) ),
            COEF            =SIMP(statut='o',typ='R',fr="Coefficient réel de la combinaison linéaire associée à la fonction" ),
          ),
-         COMB_C          =FACT(statut='f',min=1,max='**',fr="Calcul d une combinaison linéaire complexe de fonctions",
+         COMB_C          =FACT(statut='f',max='**',fr="Calcul d une combinaison linéaire complexe de fonctions",
            regles=(UN_PARMI('COEF_R','COEF_C'),),
            FONCTION        =SIMP(statut='o',typ=(fonction, fonction_c,formule) ),
            COEF_R          =SIMP(statut='f',typ='R',fr="Coefficient réel de la combinaison linéaire associée à la fonction" ),
@@ -134,37 +149,37 @@ CALC_FONCTION=OPER(nom="CALC_FONCTION",op=  91,sd_prod=calc_fonction_prod
          b_comb          =BLOC ( condition = " (COMB != None) or (COMB_C != None)",
              LIST_PARA      =SIMP(statut='f',typ=listr8 ),  
          ),
-         COMPOSE         =FACT(statut='f',min=1,max=1,fr="Calcul de la composition de deux fonctions FONC_RESU(FONC_PARA)",
+         COMPOSE         =FACT(statut='f',fr="Calcul de la composition de deux fonctions FONC_RESU(FONC_PARA)",
            FONC_RESU       =SIMP(statut='o',typ=(fonction,formule)),
            FONC_PARA       =SIMP(statut='o',typ=(fonction,formule)),
          ),
-         EXTRACTION      =FACT(statut='f',min=1,max=1,fr="Opération d extraction sur une fonction complexe",
+         EXTRACTION      =FACT(statut='f',fr="Opération d extraction sur une fonction complexe",
            FONCTION        =SIMP(statut='o',typ=fonction_c),
            PARTIE          =SIMP(statut='o',typ='TXM',into=("REEL","IMAG","MODULE","PHASE"),fr="Partie à extraire"),
          ),
-         ENVELOPPE       =FACT(statut='f',min=1,max=1,fr="Calcul de l enveloppe d une famille de fonctions",
+         ENVELOPPE       =FACT(statut='f',fr="Calcul de l enveloppe d une famille de fonctions",
            FONCTION        =SIMP(statut='o',typ=(fonction,formule),max='**' ),
            CRITERE         =SIMP(statut='f',typ='TXM',defaut="SUP",into=("SUP","INF"),fr="Type de l enveloppe" ),
          ),
-         ASSE            =FACT(statut='f',min=1,max=1,fr="Création à partir de la concatenation de fonctions",
+         ASSE            =FACT(statut='f',fr="Création à partir de la concatenation de fonctions",
            FONCTION        =SIMP(statut='o',typ=(fonction,formule),max='**' ),
            SURCHARGE       =SIMP(statut='f',typ='TXM',defaut="DROITE",into=("DROITE","GAUCHE")),
          ),
-          CORR_ACCE     =FACT(statut='f',min=1,max=1,fr="Correction d un accelerogramme reel",
+          CORR_ACCE     =FACT(statut='f',fr="Correction d un accelerogramme reel",
             CORR_DEPL       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
             FONCTION        =SIMP(statut='o',typ=(fonction,formule) ),
          ),
-         PUISSANCE       =FACT(statut='f',min=1,max=1,fr="Cacul du carré d'une fonction",
+         PUISSANCE       =FACT(statut='f',fr="Cacul du carré d'une fonction",
             FONCTION      =SIMP(statut='o', typ=(fonction,formule)),
             EXPOSANT      =SIMP(statut='f', typ='I', defaut=1 ),
          ),
-         NORME           =FACT(statut='f',min=1,max=1,fr="Cacul de la norme L2 d'une fonction",
+         NORME           =FACT(statut='f',fr="Cacul de la norme L2 d'une fonction",
             FONCTION      =SIMP(statut='o', typ=(fonction,formule)),
          ),     
-         INVERSE         =FACT(statut='f',min=1,max=1,fr="Cacul de l inverse d une fonction",
+         INVERSE         =FACT(statut='f',fr="Cacul de l inverse d une fonction",
             FONCTION      =SIMP(statut='o', typ=fonction),
          ),     
-         ECART_TYPE      =FACT(statut='f',min=1,max=1,fr="Cacul de l ecart-type d une fonction",
+         ECART_TYPE      =FACT(statut='f',fr="Cacul de l ecart-type d une fonction",
             METHODE       =SIMP(statut='f',typ='TXM',defaut="TRAPEZE",into=("SIMPSON","TRAPEZE") ),
             FONCTION      =SIMP(statut='o',typ=fonction),
             INST_INIT     =SIMP(statut='f',typ='R',fr="Instant initial définissant le début du signal" ),

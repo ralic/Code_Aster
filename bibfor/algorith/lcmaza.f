@@ -1,8 +1,8 @@
-      SUBROUTINE LCMAZA (NDIM, TYPMOD, IMATE, EPSM,
+      SUBROUTINE LCMAZA (NDIM, TYPMOD, IMATE,COMPOR, EPSM,
      &                   DEPS, VIM, TM,TP,TREF,
      &                   OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2002   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C ======================================================================
 
       IMPLICIT NONE
       CHARACTER*8        TYPMOD(2)
-      CHARACTER*16       OPTION
+      CHARACTER*16       COMPOR(*),OPTION
       INTEGER            NDIM, IMATE
       REAL*8             EPSM(6), DEPS(6), VIM(3), TM, TP, TREF
       REAL*8             SIG(6), VIP(3), DSIDEP(6,6)
@@ -78,6 +78,15 @@ C ======================================================================
 C                            INITIALISATION
 C ======================================================================
 C -- OPTION ET MODELISATION
+      IF ((.NOT.( COMPOR(1)(1:6) .EQ. 'MAZARS')).AND.
+     &   (.NOT.( COMPOR(1)(1:6) .EQ. 'KIT_HM')).AND.
+     &   (.NOT.( COMPOR(1)(1:7) .EQ. 'KIT_HHM')).AND.
+     &   (.NOT.( COMPOR(1)(1:7) .EQ. 'KIT_THM')).AND.
+     &   (.NOT.( COMPOR(1)(1:8) .EQ. 'KIT_THHM'))) THEN
+            CALL UTMESS('F','MAZARS_01',
+     &           ' COMPORTEMENT INATTENDU : '//COMPOR(1))
+      ENDIF
+
       RIGI  = (OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL')
       RESI  = (OPTION(1:4).EQ.'RAPH' .OR. OPTION(1:4).EQ.'FULL')
       CPLAN = (TYPMOD(1).EQ.'C_PLAN  ')
@@ -101,6 +110,12 @@ C    LECTURE DES CARACTERISTIQUES ELASTIQUES A TMAX
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
       NOMRES(3) = 'ALPHA'
+      IF ((((COMPOR(1)(1:6) .EQ. 'KIT_HM') .OR. 
+     &     (COMPOR(1)(1:7) .EQ. 'KIT_HHM') .OR.
+     &     (COMPOR(1)(1:7) .EQ. 'KIT_THM') .OR.
+     &     (COMPOR(1)(1:8) .EQ. 'KIT_THHM')).AND.
+     &     (COMPOR(11)(1:6) .EQ. 'MAZARS')).OR.
+     &     (COMPOR(1)(1:6) .EQ. 'MAZARS'))      THEN
       CALL RCVALA ( IMATE,'ELAS',1,'TEMP',TMAX,2,
      &              NOMRES,VALRES,CODRET, 'FM')
       CALL RCVALA ( IMATE,'ELAS',1,'TEMP',TMAX,1,
@@ -108,7 +123,8 @@ C    LECTURE DES CARACTERISTIQUES ELASTIQUES A TMAX
       IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
       E     = VALRES(1)
       NU    = VALRES(2)
-      ALPHA = VALRES(3)      
+      ALPHA = VALRES(3)
+      END IF      
       LAMBDA = E * NU / (1.D0+NU) / (1.D0 - 2.D0*NU)
       DEUXMU = E/(1.D0+NU)
 
@@ -119,7 +135,12 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
        NOMRES(4) = 'BC'
        NOMRES(5) = 'AT'
        NOMRES(6) = 'BT'
-
+      IF ((((COMPOR(1)(1:6) .EQ. 'KIT_HM') .OR. 
+     &     (COMPOR(1)(1:7) .EQ. 'KIT_HHM') .OR.
+     &     (COMPOR(1)(1:7) .EQ. 'KIT_THM') .OR.
+     &     (COMPOR(1)(1:8) .EQ. 'KIT_THHM')).AND.
+     &     (COMPOR(11)(1:6) .EQ. 'MAZARS')).OR.
+     &     (COMPOR(1)(1:6) .EQ. 'MAZARS' ))THEN
        CALL RCVALA(IMATE,'MAZARS',1,'TEMP',TMAX,6,
      &            NOMRES,VALRES,CODRET,'FM')
       EPSD0 = VALRES(1)
@@ -128,6 +149,7 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       BC    = VALRES(4)
       AT    = VALRES(5)
       BT    = VALRES(6)
+      END IF
 
 C ======================================================================
 C       CALCUL DES GRANDEURS UTILES QUELQUE SOIT OPTION
@@ -153,7 +175,6 @@ C  -  MISE A JOUR DE LA DEFORMATION TOTALE
       DO  30 K=4,NDIMSI
         EPS(K) = EPS(K)/RAC2
 30    CONTINUE
-
 
 C    CALCUL DE LA DEFORMATION ELASTIQUE (LA SEULE QUI CONTRIBUE 
 C    A FAIRE EVOLUER L'ENDOMMAGEMENT)

@@ -1,28 +1,29 @@
-      SUBROUTINE DRZ03D (LISNOZ ,LONLIS, CHARGZ, TYPLAZ, LISREZ)
+      SUBROUTINE DRZ03D (LISNOZ ,LONLIS, CHARGZ, TYPLAZ, LISREZ,DMIN)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/11/98   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF MODELISA  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
       CHARACTER*8  CHARGE
       CHARACTER*19 LISREL
       CHARACTER*24 LISNOE
       CHARACTER*(*) CHARGZ, LISNOZ, TYPLAZ, LISREZ
+      REAL*8 DMIN
 C -------------------------------------------------------
 C     BLOCAGE DES DEPLACEMENTS RELATIFS D'UNE LISTE DE NOEUDS
 C     SPECIFIEE PAR L'UTILISATEUR DANS LE CAS OU L' ON EST
@@ -49,12 +50,15 @@ C -------------------------------------------------------
 C  LISREL        - IN    - K19  - : NOM DE LA SD
 C                - JXVAR -      -   LISTE DE RELATIONS
 C -------------------------------------------------------
+C  DMIN          - IN    - R8 - : LONGUEUR DE L APLUS PETITE ARRETE
+C                                 DU MAILLAGE
+C -------------------------------------------------------
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ------
       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
+      REAL*8             ZR,RPETIT
       COMMON  / RVARJE / ZR(1)
       COMPLEX*16         ZC
       COMMON  / CVARJE / ZC(1)
@@ -102,6 +106,7 @@ C
       BETAC = (0.0D0,0.0D0)
       UN    = 1.0D0
       ZERO  = 0.0D0
+      RPETIT=1.D-6*DMIN
 C
 C --- MODELE ASSOCIE AU LIGREL DE CHARGE
 C
@@ -220,7 +225,7 @@ C
      +          -ZR(JCOOR-1+3*(INOA-1)+3)
 C
          J2 = J
-         IF (SQRT(B(1)*B(1)+B(2)*B(2)+B(3)*B(3)).GT.R8PREM()) THEN
+         IF (SQRT(B(1)*B(1)+B(2)*B(2)+B(3)*B(3)).GT.RPETIT) THEN
 C
              NOEUB = ZK8(ILISNO+J2-1)
              DO 70 K=J2+1, LONLIS
@@ -239,7 +244,7 @@ C ---    CALCUL DE N = B X C
 C
                 CALL PROVEC(B, C, N)
                 IF (SQRT(N(1)*N(1)+N(2)*N(2)+N(3)*N(3))
-     +              .LT.R8PREM()) THEN
+     +              .LT.RPETIT) THEN
                        GOTO 70
                 ELSE
                        K2 = K
@@ -493,9 +498,9 @@ C
                    XI  =  ZR(JCOOR-1+3*(INOI-1)+1)
                    YI  =  ZR(JCOOR-1+3*(INOI-1)+2)
                    ZIJ =  ZR(JCOOR-1+3*(INOI-1)+3)
-                   IF ((ABS(XI-X1).GT.R8PREM()).OR.
-     +                 (ABS(YI-Y1).GT.R8PREM()).OR.
-     +                 (ABS(ZIJ-Z1).GT.R8PREM())) THEN
+                   IF ((ABS(XI-X1).GT.RPETIT).OR.
+     +                 (ABS(YI-Y1).GT.RPETIT).OR.
+     +                 (ABS(ZIJ-Z1).GT.RPETIT)) THEN
                           IALIGN = 1
                           GOTO 170
                    ENDIF
@@ -617,7 +622,7 @@ C
                          B(3) =  ZR(JCOOR-1+3*(INOB-1)+3)
      +                          -ZR(JCOOR-1+3*(INOA-1)+3)
                          IF (SQRT(B(1)*B(1)+B(2)*B(2)+B(3)*B(3))
-     +                       .GT.R8PREM()) THEN
+     +                       .GT.RPETIT) THEN
                              I2    = I
                              INO2  = INOB
                              NOEUB = ZK8(ILISNO+I2-1)
@@ -634,7 +639,7 @@ C
                       N1(2) = -B(3)
                       N1(3) =  B(2)
 C
-                      IF (SQRT(B(3)*B(3)+B(2)*B(2)).LT.R8PREM()) THEN
+                      IF (SQRT(B(3)*B(3)+B(2)*B(2)).LT.RPETIT) THEN
 C
 C ---                ON FAIT UN AUTRE ESSAI AVEC N1 = J X B
 C
@@ -642,7 +647,7 @@ C
                          N1(2) =  ZERO
                          N1(3) = -B(1)
 C
-                         IF (SQRT(B(3)*B(3)+B(1)*B(1)).LT.R8PREM()) THEN
+                         IF (SQRT(B(3)*B(3)+B(1)*B(1)).LT.RPETIT) THEN
                              CALL UTMESS('F','DRZ03D',
      +                    'PROBLEME DANS LE CAS 3D OU LES NOEUDS SONT'//
      +                    ' ALIGNES, LA DISTANCE SEPARANT 2 NOEUDS'//
@@ -693,7 +698,7 @@ C
                          ABM(3) =  B(1)*M(2) - B(2)*M(1)
 C
                          IF (SQRT(ABM(1)*ABM(1)+ABM(2)*ABM(2)+
-     +                            ABM(3)*ABM(3)).GT.R8PREM()) THEN
+     +                            ABM(3)*ABM(3)).GT.RPETIT) THEN
                                     CALL UTMESS('F','DRZ03D',
      +                   'PROBLEME DANS LE CAS 3D OU LES NOEUDS SONT'//
      +                   ' ALIGNES ET OU POURTANT ON ARRIVE A TROUVER'//

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/03/2003   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # RESPONSABLE O.BOITEAU
 # TITRE Maillage adaptatif mecanique sur une poutre en flexion
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -188,7 +188,7 @@ for num_calc in range(0,nb_calc1) :
                        'ERRE_ELNO_ELGA',),);
                           
 # IMPRESSION FORMAT CASTEM I
-   DEFUFI(IMPRESSION=_F(NOM='IMPR',UNITE=55))
+   DEFI_FICHIER(FICHIER='IMPR',UNITE=55)
    IMPR_RESU(MODELE=MO[num_calc],
             RESU=_F(FORMAT='CASTEM',
                     MAILLAGE=MA[num_calc],

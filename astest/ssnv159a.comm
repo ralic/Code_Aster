@@ -1,4 +1,4 @@
-# MODIF  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
+# MODIF  DATE 06/10/2003   AUTEUR DURAND C.DURAND 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE DE LAIGLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -78,6 +78,7 @@ SOL=DEFI_MATERIAU(    ELAS=_F(  E     = 1500.E6,
                                    GAMMA_CJS =    0.7     ,
                                    SIGMA_P1  =    9.09E+6 ,
                                    PA        =     1.0E+5 ,  ),
+                               COMP_THM = 'LIQU_SATU',
                                THM_LIQU=_F(  
                                 RHO = 1000.,  
 #                               UN_SUR_K : 0.5E-9
@@ -257,7 +258,7 @@ U2=STAT_NON_LINE(
                 ),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-6,    
-                ITER_GLOB_MAXI = 20,    
+                ITER_GLOB_MAXI = 30,    
                 )
               )
 
@@ -336,7 +337,7 @@ TEST_RESU(RESU=(
                        NOM_CHAM = 'SIEF_NOEU_ELGA',    
                        NOM_CMP = 'SIXX',     
                        NUME_ORDRE = 23,  
-                       PRECISION = 1.E-5,   
+                       PRECISION = 3.E-3,   
                        REFERENCE='NON_REGRESSION',
                        VERSION = '6.2.24',
                        VALE = -9.5908410511583E+06,
@@ -399,7 +400,7 @@ TEST_RESU(RESU=(
                        NOM_CHAM = 'SIEF_NOEU_ELGA',    
                        NOM_CMP = 'SIYY',     
                        NUME_ORDRE = 23,  
-                       PRECISION = 1.E-5,   
+                       PRECISION = 3.E-3,   
                        REFERENCE='NON_REGRESSION',
                        VERSION = '6.2.24',
                        VALE = -9.6143327553915E+06,

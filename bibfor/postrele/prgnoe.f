@@ -6,7 +6,7 @@
       CHARACTER*(*)       MCF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C     ------------------------------------------------------------------
       COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32    JEXNOM, JEXNUM
 C     ------------------------------------------------------------------
-      INTEGER         N1, INO, NBNO, JVALE, JNOEU, JLSTN, IRET
+      INTEGER         N1, INO, NBNO, JVALE, JNOEU, JLSTN, IRET,IERA
       REAL*8          PREC
       CHARACTER*3     K3B
       CHARACTER*8     K8B, GRN, CRIT
@@ -80,13 +80,14 @@ C
  12      CONTINUE
       ENDIF
 C
+      IERA =0
       CALL GETVR8 ( MCF, 'PRECISION', IOCC,1,1, PREC, N1 )
       CALL GETVTX ( MCF, 'CRITERE'  , IOCC,1,1, CRIT, N1 )
 C
       CALL JEVEUO ( NOMA//'.COORDO    .VALE', 'L', JVALE )
 C
       CALL OREINO ( NOMA, ZI(JLSTN), NBNO, ZI(JLSTN), ZI(JLSTN+NBNO-1),
-     +              ZR(JVALE), CRIT, PREC, IRET )
+     +              ZR(JVALE), CRIT, PREC,IERA, IRET )
       IF ( IRET .NE. 0 ) CALL UTMESS('F','PRGNOE','ARRET SUR ERREURS')
 C
       CALL JEDEMA()

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,10 +22,13 @@ TEST_TABLE=PROC(nom="TEST_TABLE",op= 177,
             UIinfo={"groupes":("Impression",)},
          regles=(UN_PARMI('VALE','VALE_I','VALE_C', ),),
          FICHIER         =SIMP(statut='f',typ='TXM',defaut="RESULTAT"),
-#  concept table à créer
+#  concept table à tester
          TABLE           =SIMP(statut='o',typ=table),
 
-         FILTRE          =FACT(statut='f',min=1,max='**',
+         SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),
+                                 fr="Paramètre de sensibilité.",
+                                 ang="Sensitivity parameter"),
+         FILTRE          =FACT(statut='f',max='**',
            NOM_PARA        =SIMP(statut='o',typ='TXM' ),
            CRIT_COMP       =SIMP(statut='f',typ='TXM',defaut="EQ",
                                  into=("EQ","LT","GT","NE","LE","GE","VIDE",
@@ -51,5 +54,6 @@ TEST_TABLE=PROC(nom="TEST_TABLE",op= 177,
                                into=("ANALYTIQUE","SOURCE_EXTERNE","NON_REGRESSION","AUTRE_ASTER") ),
          b_version       =BLOC(condition = "REFERENCE == 'NON_REGRESSION'",
              VERSION         =SIMP(statut='f',typ='TXM' ),
+         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
          ),
 )  ;

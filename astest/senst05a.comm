@@ -1,4 +1,4 @@
-# MODIF  DATE 17/06/2002   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 # RESPONSABLE BOITEAU O.BOITEAU
 # TITRE validation de la sensibilite par rapport a la chaleur volumique et
 # a l'emissivite en thermique non-lineaire transitoire lumpe
@@ -106,6 +106,7 @@ MEMO_NOM_SENSI(NOM=(_F(NOM_SD='MAT',
                       PARA_SENSI=PS1,
                       NOM_COMPOSE='MAT_PS1',
                       VALEUR='PS1',
+                      MOT_FACT='THER_NL',
                       MOT_CLE='RHO_CP',),));
 MAT_PS1=DEFI_MATERIAU(THER_NL=_F( LAMBDA = PS_ZERO,RHO_CP = PS_UN))
 #
@@ -114,6 +115,7 @@ MEMO_NOM_SENSI(NOM=(_F(NOM_SD='CMAT',
                       PARA_SENSI=PS1,
                       NOM_COMPOSE='CMAT_PS1',
                       VALEUR='MAT',
+                      MOT_FACT='AFFE',
                       MOT_CLE='MATER',)));
 CMAT_PS1=AFFE_MATERIAU(MAILLAGE=MAILLAGE,AFFE=_F(TOUT='OUI',MATER=MAT_PS1))
 #
@@ -143,6 +145,7 @@ MEMO_NOM_SENSI(NOM=_F(NOM_SD='CH_1',
                       PARA_SENSI=PS2,
                       NOM_COMPOSE='CH_1_PS2',
                       VALEUR='PS2',
+                      MOT_FACT='RAYONNEMENT',
                       MOT_CLE='EPSILON',));
 CH_1_PS2=AFFE_CHAR_THER_F(MODELE=MODEPLAN,RAYONNEMENT=_F(GROUP_MA='BORD_DRO',
                           SIGMA=PS_ZERO,EPSILON=PS_UN,TEMP_EXT=PS_ZERO));

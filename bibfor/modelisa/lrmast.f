@@ -12,7 +12,7 @@ C     OUT
       INTEGER         NBNOEU,NBMAIL,NBCOOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 03/06/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -171,7 +171,7 @@ C
         INTEGER         DIMDBG(NBMDBG)
         INTEGER         NBTTIT(NBMTIT), NBTGRP(NBMGRP)
         INTEGER         NBTMAI(NBMMAX), NBTCOO(NBMCOO)
-        INTEGER         DEBLIG
+        INTEGER         DEBLIG,ULISOP
         INTEGER         FMTMAI(NBMMAX)
 C
         REAL*8          RV
@@ -184,7 +184,7 @@ C
         CHARACTER*8     NOM, TYPE, NOMG, NOMN
         CHARACTER*8     NOM1
         CHARACTER*14    CNL
-        CHARACTER*16    CMD
+        CHARACTER*16    CMD,K16NOM
         CHARACTER*24    GRPNOV, GRPMAV, CONXV
         CHARACTER*24    NOMDBG(50,NBMDBG)
         CHARACTER*80    CV,     DAT
@@ -201,8 +201,11 @@ C
 C
 C ---   INITIALISATION DU NB D'ERREUR
 C
-        IER = 0
-        CALL ASOPEN ( IFL, ' ' )
+        IER = 0 
+        K16NOM = ' ' 
+        IF ( ULISOP ( IFL, K16NOM ) .EQ. 0 )  THEN 
+          CALL ULOPEN ( IFL,' ',' ','NEW','O')
+        ENDIF 
 C
         CALL JEMARQ ( )
 C
@@ -707,7 +710,7 @@ C
 C
 C FERMETURE DU FICHIER
 C
-        CALL ASOPEN ( -IFL, ' ' )
+        CALL ULOPEN ( -IFL,' ',' ',' ',' ')
 C
         CALL JEDEMA ( )
         END

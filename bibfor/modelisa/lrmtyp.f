@@ -2,7 +2,7 @@
      >                    NNOTYP, NITTYP, TYPGEO, RENUMD )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/09/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF MODELISA  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C
 C 0.3. ==> VARIABLES LOCALES
 C
       INTEGER         ITYP, J, NBTMAX
-      PARAMETER       (NBTMAX = 28)
+      PARAMETER       (NBTMAX = 48)
 C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'LRMTYP' )
@@ -75,7 +75,12 @@ C     (LIE A LORDRE DEFINI DANS LE CATALOGUE TYPE_MAILLE.CATA)
      +              'QUAD8   ','QUAD88  ','QUAD9   ','QUAD99  ',
      +              'TETRA4  ','TETRA10 ','PENTA6  ','PENTA15 ',
      +              'PYRAM5  ','PYRAM13 ','HEXA8   ','HEXA20  ',
-     +              'HEXA27   ','TR3QU4','QU4TR3'/
+     +              'HEXA27  ','TR3QU4  ','QU4TR3  ','TR6TR3  ',
+     +              'TR3TR6  ','TR6QU4  ','QU4TR6  ','TR6QU8  ',
+     +              'QU8TR6  ','TR6QU9  ','QU9TR6  ','QU8TR3  ',
+     +              'TR3QU8  ','QU8QU4  ','QU4QU8  ','QU8QU9  ',
+     +              'QU9QU8  ','QU9QU4  ','QU4QU9  ','QU9TR3  ',
+     +              'TR3QU9  ','SEG32   ','SEG23   '/
       DATA NUMMED  /1,         102,       0,         103,    
      +              0,         0, 
      +                         203,       0,         206,
@@ -83,6 +88,11 @@ C     (LIE A LORDRE DEFINI DANS LE CATALOGUE TYPE_MAILLE.CATA)
      +              208,       0,         0,         0,
      +              304,       310,       306,       315,
      +              305,       313,       308,       320,
+     +              0,         0,         0,         0,
+     +              0,         0,         0,         0,
+     +              0,         0,         0,         0,
+     +              0,         0,         0,         0,
+     +              0,         0,         0,         0,
      +              0,         0,         0/
       DATA NSUP3D  /0,         1,         0,         1,    
      +              0,         0,
@@ -91,10 +101,20 @@ C     (LIE A LORDRE DEFINI DANS LE CATALOGUE TYPE_MAILLE.CATA)
      +              1,         0,         0,         0,
      +              0,         0,         0,         0,
      +              0,         0,         0,         0,
+     +              0,         0,         0,         0,
+     +              0,         0,         0,         0,
+     +              0,         0,         0,         0,
+     +              0,         0,         0,         0,
+     +              0,         0,         0,         0,
      +              0,         0,         0/
       DATA NSUP2D  /0,         1,         0,         1,    
      +              0,         0,
      +                         0,         0,         0,
+     +              0,         0,         0,         0,
+     +              0,         0,         0,         0,
+     +              0,         0,         0,         0,
+     +              0,         0,         0,         0,
+     +              0,         0,         0,         0,
      +              0,         0,         0,         0,
      +              0,         0,         0,         0,
      +              0,         0,         0,         0,

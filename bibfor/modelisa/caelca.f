@@ -1,10 +1,10 @@
       SUBROUTINE CAELCA(MODELE,CHMAT,CAELEM,IRANA1,
      &                  ICABL,NBNOCA,NUMACA,
-     &                  RELAX,EA,RH1000,MU0,SY,FRCO,FRLI,SA)
+     &                  RELAX,EA,RH1000,MU0,FPRG,FRCO,FRLI,SA)
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/05/98   AUTEUR H1BAXBG M.LAINET 
+C MODIF MODELISA  DATE 16/09/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C-----------------------------------------------------------------------
-C  DESCRIPTION : RECUPERATION DES CARACTERISTIQUES ELEMENTAIRES
+C  DESCRIPTION : RECUPERATION DES CARACTlERISTIQUES ELEMENTAIRES
 C  -----------   D'UN CABLE
 C                APPELANT : OP0180 , OPERATEUR DEFI_CABLE_BP
 C
@@ -54,7 +54,7 @@ C                    VALEUR DE LA RELAXATION A 1000 HEURES EN %
 C  OUT    : MU0    : REAL*8 , SCALAIRE
 C                    VALEUR DU COEFFICIENT DE RELAXATION DE L'ACIER
 C                    PRECONTRAINT
-C  OUT    : SY     : REAL*8 , SCALAIRE
+C  OUT    : FPRG  : REAL*8 , SCALAIRE
 C                    VALEUR DE LA CONTRAINTE LIMITE ELASTIQUE DE L'ACIER
 C  OUT    : FRCO   : REAL*8 , SCALAIRE
 C                    VALEUR DU COEFFICIENT DE FROTTEMENT EN COURBE
@@ -91,7 +91,7 @@ C ---------
       INTEGER       IRANA1, ICABL, NBNOCA(*)
       CHARACTER*19  NUMACA
       LOGICAL       RELAX
-      REAL*8        EA, RH1000, MU0, SY, FRCO, FRLI, SA
+      REAL*8        EA, RH1000, MU0, FPRG, FRCO, FRLI, SA
 C
 C VARIABLES LOCALES
 C -----------------
@@ -114,7 +114,7 @@ C
       CHARACTER*16  NOMELE
 C
       DATA          NOMELE /'MECA_BARRE      '/
-      DATA          BPELA  /'RELAX_10','MU0_RELA','SY      ',
+      DATA          BPELA  /'RELAX_10','MU0_RELA','F_PRG',
      &                      'FROT_COU','FROT_LIN'/
       DATA          YOUNG  /'E       '/
 C
@@ -276,7 +276,7 @@ C
          ENDIF
          IF ( ZK8(JVALK+ICSTE-1).EQ.BPELA(3) ) THEN
             TROUV3 = .TRUE.
-            SY = ZR(JVALR+ICSTE-1)
+            FPRG = ZR(JVALR+ICSTE-1)
          ENDIF
          IF ( ZK8(JVALK+ICSTE-1).EQ.BPELA(4) ) THEN
             TROUV4 = .TRUE.
@@ -300,7 +300,7 @@ C
      &               'AU MOINS UN PARAMETRE INDEFINI')
       ENDIF
       IF ( ( RH1000.LT.0.0D0 ) .OR. ( MU0 .LT.0.0D0 ) .OR.
-     &     ( SY    .LE.0.0D0 ) .OR. ( FRCO.LT.0.0D0 ) .OR.
+     &     ( FPRG .LE.0.0D0 ) .OR. ( FRCO.LT.0.0D0 ) .OR.
      &     ( FRLI  .LT.0.0D0 ) ) THEN
          WRITE(K3CAB,'(I3)') ICABL
          CALL UTMESS('F','CAELCA','RECUPERATION DES CARACTERISTIQUES '//

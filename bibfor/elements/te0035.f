@@ -1,6 +1,6 @@
       SUBROUTINE TE0035 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C     ------------------------
 C===============================================================
 C          -- RECUPERATION DE LA TEMPERATURE :
 C          -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-      CALL TECACH(.TRUE.,.FALSE.,'PTEMPER',1,ITEMP)
+      CALL TECACH('ONN','PTEMPER',1,ITEMP,IRET)
            IF (ITEMP.GT.0) THEN
              DO 10 I=1,NNO
                 TMOY(I)=ZR(ITEMP+3*(I-1)  )
@@ -95,7 +95,7 @@ C          -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
  10           CONTINUE
            ENDIF
 C          -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
-      CALL TECACH(.FALSE.,.FALSE.,'PTEMPEF',1,ITEMPF)
+      CALL TECACH('NNN','PTEMPEF',1,ITEMPF,IRET)
            IF (ITEMPF.GT.0) THEN
              NOMPU(1)='INST'
              NOMPU(2)='EPAIS'

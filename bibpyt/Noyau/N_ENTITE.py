@@ -1,4 +1,4 @@
-#@ MODIF N_ENTITE Noyau  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF N_ENTITE Noyau  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,6 +24,7 @@
 """
 
 import N_CR
+import N_VALIDATOR
 
 class ENTITE:
    """
@@ -32,8 +33,9 @@ class ENTITE:
       Elle ne peut etre instanciee et doit d abord etre specialisee
    """
    CR=N_CR.CR
+   factories={'validator':N_VALIDATOR.validatorFactory}
 
-   def __init__(self):
+   def __init__(self,validators=None):
       """
          Initialise les deux attributs regles et entites d'une classe dérivée
          à : pas de règles et pas de sous-entités.
@@ -46,6 +48,10 @@ class ENTITE:
       """
       self.regles=()
       self.entites={}
+      if validators:
+         self.validators=self.factories['validator'](validators)
+      else:
+         self.validators=validators
 
    def affecter_parente(self):
       """

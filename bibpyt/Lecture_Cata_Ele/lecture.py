@@ -1,4 +1,5 @@
-#@ MODIF lecture Lecture_Cata_Ele  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+#@ MODIF lecture Lecture_Cata_Ele  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+# RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -219,7 +220,7 @@ class MonParser(GenericASTBuilder):
         cata_op     ::=  cmodif ident  comlibr   OPTION__  IN__       l_opin1    OUT__     l_opou1
         cata_tm     ::=  cmodif TYPE_MAILLE__ l_tyma
         cata_gd     ::=  cmodif GRANDEUR_SIMPLE__  l_gdsimp GRANDEUR_ELEMENTAIRE__  l_gdelem
-        cata_tg     ::=  cmodif ident TYPE_GENE__  l_entetg  modes_locaux options
+        cata_tg     ::=  cmodif ident TYPE_GENE__  l_entete  modes_locaux options
         cata_te     ::=  cmodif ident TYPE_ELEM__  entete    modes_locaux options
         cata_ph     ::=  cmodif PHENOMENE_MODELISATION__ l_pheno
         '''
@@ -241,9 +242,12 @@ class MonParser(GenericASTBuilder):
         '''
         l_tyma      ::=  l_tyma tyma
         l_tyma      ::=  tyma
+        fampg       ::=  FAMILLE__  ident  entier
+        l_fampg     ::=  l_fampg fampg
+        l_fampg     ::=  fampg
+        elrefe      ::=  ELREFE__  ident  l_fampg
         l_elrefe    ::=  l_elrefe elrefe
         l_elrefe    ::=  elrefe
-        elrefe      ::=  ELREFE__  ident  FAMILLE__  ident  entier
         tyma        ::=  MAILLE__ ident entier  DIM__ entier  CODE__ chaine  l_elrefe
         '''
 
@@ -288,24 +292,35 @@ class MonParser(GenericASTBuilder):
 #   ---------------------------------------------------------
     def p_cata3(self, args):
         '''
-        entet1      ::=  ENTETE__  ELEMENT__ ident MAILLE__ ident  ELREFE__  l_ident
-        entete      ::=  entet1    l_decl_npg  l_decl_en
+        l_entete    ::=  l_entete  entete
+        l_entete    ::=  entete
+
+        entete      ::=  entet1    l_decl_en   l_decl_opt
+        entete      ::=  entet1                l_decl_opt
         entete      ::=  entet1    l_decl_en
-        entete      ::=  entet1    l_decl_npg
         entete      ::=  entet1
-        entetg      ::=  entete
-        entetg      ::=  entete    l_decl_opt
-        l_entetg    ::=  l_entetg  entetg
-        l_entetg    ::=  entetg
+
+        entet1      ::=  ENTETE__  ELEMENT__ ident MAILLE__ ident  l_elref1
+
+        l_elref1  ::=  l_elref1  elref1
+        l_elref1  ::=  elref1
+        elref1    ::=  ELREFE__ ident
+        elref1    ::=  ELREFE__ ident gauss2
+
+        gauss2    ::=  GAUSS__  l_gauss1
+        l_gauss1  ::=  l_gauss1  gauss1
+        l_gauss1  ::=  gauss1
+        gauss1    ::=  ident =  ident
+
         l_decl_opt  ::=  l_decl_opt  decl_opt
         l_decl_opt  ::=  decl_opt
         decl_opt    ::=  OPTION__  ident   entier
-        l_decl_npg  ::=  l_decl_npg  decl_npg
-        l_decl_npg  ::=  decl_npg
-        decl_npg    ::=  NB_GAUSS__  ident = ident
+
+
         l_decl_en   ::=  l_decl_en   decl_en
         l_decl_en   ::=  decl_en
         decl_en     ::=  ENS_NOEUD__  ident = l_entier
+
         modes_locaux ::=  MLOC   MLVE   MLMA
         options     ::=  OPTION__
         options     ::=  OPTION__   l_opt
@@ -352,7 +367,7 @@ class MonParser(GenericASTBuilder):
         pheno       ::=  PHENOMENE__ ident CODE__ chaine  l_modeli
         l_modeli    ::=  l_modeli modeli
         l_modeli    ::=  modeli
-        modeli      ::=  MODELISATION__ chaine CODE__ chaine l_affe_te
+        modeli      ::=  MODELISATION__ chaine DIM__ entier entier CODE__ chaine l_affe_te
         l_affe_te   ::=  l_affe_te  affe_te
         l_affe_te   ::=  affe_te
         affe_te     ::=  MAILLE__ ident ELEMENT__ ident
@@ -530,11 +545,31 @@ class creer_capy(GenericASTTraversal):
         del node._kids
 
     def n_tyma(self, node):
-        #                     0           1      2      3     4       5       6      7
+        #                     0       1     2      3     4       5       6      7
         #  tyma      ::=  MAILLE__  ident entier  DIM__ entier  CODE__ chaine  l_elrefe
            node.tyma=(node[1].attr,node[2].attr,node[4].attr,node[6].attr,node[7].l_elrefe)
            if len(node[6].attr) != 5 :
               ERR.mess('E',"le code d'un type de maille doit avoir 3 caractères exactement."+node.code)
+
+
+    def n_fampg(self, node):
+        #  fampg       ::=  FAMILLE__  ident  entier
+           node.fampg=(node[1].attr,node[2].attr,)
+
+    def n_l_fampg(self, node):
+        #    l_fampg      ::=  l_fampg fampg
+        #    l_fampg      ::=  fampg
+        node.l_fampg=[]
+        if len(node) == 2 :
+           node.l_fampg.extend(node[0].l_fampg)
+           node.l_fampg.append(node[1].fampg)
+        else :
+           node.l_fampg.append(node[0].fampg)
+        del node._kids
+
+    def n_elrefe(self, node):
+        #  elrefe      ::=  ELREFE__  ident  l_fampg
+           node.elrefe=(node[1].attr,node[2].l_fampg)
 
     def n_l_elrefe(self, node):
         #    l_elrefe      ::=  l_elrefe elrefe
@@ -546,11 +581,6 @@ class creer_capy(GenericASTTraversal):
         else :
            node.l_elrefe.append(node[0].elrefe)
         del node._kids
-
-    def n_elrefe(self, node):
-        #                     0         1       2        3     4
-        #  elrefe      ::=  ELREFE__  ident FAMILLE__  ident entier
-           node.elrefe=(node[1].attr,node[3].attr,node[4].attr)
 
     def n_cata_tm(self, node):
         #   cata_tm     ::=  cmodif  TYPE_MAILLE__ l_tyma
@@ -597,11 +627,16 @@ class creer_capy(GenericASTTraversal):
            node.l_affe_te.append(node[1].affe_te)
 
     def n_modeli(self, node):
-#       modeli      ::=  MODELISATION__ chaine CODE__ chaine l_affe_te
+#                             0           1     2      3      4     5       6       7
+#       modeli      ::=  MODELISATION__ chaine DIM__ entier entier CODE__ chaine l_affe_te
         ERR.contexte('Définition de la modélisation: '+node[1].attr)
-        node.modeli=(node[1].attr,node[4].l_affe_te,node[3].attr)
-        if len(node[3].attr) != 5 :
-           ERR.mess('E',"le code d'une modélisation doit avoir 3 caractères exactement: "+node[3].attr)
+        node.modeli=(node[1].attr,node[7].l_affe_te,node[6].attr,(node[3].attr,node[4].attr))
+        if len(node[6].attr) != 5 :
+           ERR.mess('E',"le code d'une modélisation doit avoir 3 caractères exactement: "+node[6].attr)
+        if not node[3].attr in ("0","1","2","3")  :
+           ERR.mess('E',"la 1eme dimension doit etre celle des élements 'principaux' (0,1,2, ou 3) : "+node[3].attr)
+        if not node[4].attr in ("2","3")  :
+           ERR.mess('E',"la 2eme dimension doit etre celle de l'espace (2 ou 3) : "+node[4].attr)
         ERR.contexte("","RAZ")
 
     def n_l_modeli(self, node):
@@ -880,19 +915,37 @@ class creer_capy(GenericASTTraversal):
             node.l_decl_opt.extend(node[0].l_decl_opt)
             node.l_decl_opt.append(node[1].decl_opt)
 
-    def n_decl_npg(self, node):
-#       decl_npg     ::=  NB_GAUSS__  ident = ident
-        node.decl_npg=(node[1].attr,node[3].attr)
-        if node[1].attr[0:5] != "NELGA" : ERR.mess('E',"Les variables désignant les nombres de points de Gauss doivent commencer par la chaine: 'NELGA'. "+node[1].attr+" est donc invalide.")
+    def n_gauss1(self, node):
+#       gauss1    ::=  ident =  ident
+        node.gauss1=(node[0].attr,node[2].attr)
 
-    def n_l_decl_npg(self, node):
-#       l_decl_npg  ::=  l_decl_npg  decl_npg
-#       l_decl_npg  ::=  decl_npg
-        node.l_decl_npg=[]
-        if len(node)==1 : node.l_decl_npg.append(node[0].decl_npg)
+    def n_l_gauss1(self, node):
+#       l_gauss1  ::=  l_gauss1  gauss1
+#       l_gauss1  ::=  gauss1
+        node.l_gauss1=[]
+        if len(node)==1 : node.l_gauss1.append(node[0].gauss1)
         if len(node)==2 :
-            node.l_decl_npg.extend(node[0].l_decl_npg)
-            node.l_decl_npg.append(node[1].decl_npg)
+            node.l_gauss1.extend(node[0].l_gauss1)
+            node.l_gauss1.append(node[1].gauss1)
+
+    def n_gauss2(self, node):
+#       gauss2    ::=  GAUSS__  l_gauss1
+        node.gauss2=node[1].l_gauss1
+
+    def n_elref1(self, node):
+#       elref1    ::=  ELREFE__ ident
+#       elref1    ::=  ELREFE__ ident gauss2
+        if len(node)==2 : node.elref1=(node[1].attr,None)
+        if len(node)==3 : node.elref1=(node[1].attr,node[2].gauss2)
+
+    def n_l_elref1(self, node):
+#       l_elref1  ::=  l_elref1  elref1
+#       l_elref1  ::=  elref1
+        node.l_elref1=[]
+        if len(node)==1 : node.l_elref1.append(node[0].elref1)
+        if len(node)==2 :
+            node.l_elref1.extend(node[0].l_elref1)
+            node.l_elref1.append(node[1].elref1)
 
     def n_decl_en(self, node):
 #       decl_en     ::=  ENS_NOEUD__  ident = l_entier
@@ -908,43 +961,35 @@ class creer_capy(GenericASTTraversal):
             node.l_decl_en.append(node[1].decl_en)
 
     def n_entet1(self, node):
-#                          0         1         2      3       4       5         6
-#       entet1      ::=  ENTETE__  ELEMENT__ ident MAILLE__ ident  ELREFE__  l_ident
-        node.entet1=(node[2].attr,node[4].attr,node[6].l_ident)
+#                          0         1         2      3       4       5
+#       entet1      ::=  ENTETE__  ELEMENT__ ident MAILLE__ ident  l_elref1
+        node.entet1=(node[2].attr,node[4].attr,node[5].l_elref1)
 
 
     def n_entete(self, node):
-#                          0         1             2
-#       entete      ::=  entet1    l_decl_npg  l_decl_en
+#                          0         1            2
+#       entete      ::=  entet1    l_decl_en   l_decl_opt
+#       entete      ::=  entet1                l_decl_opt
 #       entete      ::=  entet1    l_decl_en
-#       entete      ::=  entet1    l_decl_npg
 #       entete      ::=  entet1
         if len(node)==3:
-            node.entete=node[0].entet1 + (node[1].l_decl_npg,node[2].l_decl_en)
+            node.entete=node[0].entet1 +(node[1].l_decl_en,node[2].l_decl_opt)
         elif len(node)==1:
             node.entete=node[0].entet1 +(None,None)
         if len(node)==2:
             if node[1].type=="l_decl_en":
-                node.entete=node[0].entet1 +(None,node[1].l_decl_en,)
-            elif node[1].type=="l_decl_npg":
-                node.entete=node[0].entet1 +(node[1].l_decl_npg,None,)
+                node.entete=node[0].entet1 +(node[1].l_decl_en,None)
+            elif node[1].type=="l_decl_opt":
+                node.entete=node[0].entet1 +(None,node[1].l_decl_opt)
 
-    def n_entetg(self, node):
-#       entetg      ::=  entete
-#       entetg      ::=  entete  l_decl_opt
-        if len(node)==1:
-            node.entetg=node[0].entete + (None,)
-        elif len(node)==2:
-            node.entetg=node[0].entete + (node[1].l_decl_opt,)
-
-    def n_l_entetg(self, node):
-#       l_entetg  ::=  l_entetg  entetg
-#       l_entetg  ::=  entetg
-        node.l_entetg=[]
-        if len(node)==1 : node.l_entetg.append(node[0].entetg)
+    def n_l_entete(self, node):
+#       l_entete  ::=  l_entete  entete
+#       l_entete  ::=  entete
+        node.l_entete=[]
+        if len(node)==1 : node.l_entete.append(node[0].entete)
         if len(node)==2 :
-            node.l_entetg.extend(node[0].l_entetg)
-            node.l_entetg.append(node[1].entetg)
+            node.l_entete.extend(node[0].l_entete)
+            node.l_entete.append(node[1].entete)
 
 
 
@@ -953,10 +998,10 @@ class creer_capy(GenericASTTraversal):
 
     def n_cata_tg(self, node):
 #                          0      1      2            3            4         5
-#       cata_tg     ::=  cmodif ident  TYPE_GENE__  l_entetg  modes_locaux options
-#       cata_tg     ::=  cmodif ident  TYPE_GENE__  l_entetg  modes_locaux options
+#       cata_tg     ::=  cmodif ident  TYPE_GENE__  l_entete  modes_locaux options
+#       cata_tg     ::=  cmodif ident  TYPE_GENE__  l_entete  modes_locaux options
         node.cmodif=node[0].attr
-        if len(node)== 6 : node.cata_tg=(node[1].attr,node[3].l_entetg,node[4].modes_locaux,node[5].options)
+        if len(node)== 6 : node.cata_tg=(node[1].attr,node[3].l_entete,node[4].modes_locaux,node[5].options)
 
     def n_cata_te(self, node):
 #                          0      1      2           3           4         5

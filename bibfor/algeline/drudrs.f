@@ -1,11 +1,10 @@
-      SUBROUTINE DRUDRS(NDT, NDI, PARAME, Q, H0, SIGC, DUDSIG)
+      SUBROUTINE DRUDRS(PARAME, Q, H0, SIGC, DUDSIG)
 C
       IMPLICIT      NONE
-      INTEGER       NDT, NDI
-      REAL*8        Q(*), PARAME(5), H0, SIGC, DUDSIG(*)
+      REAL*8        Q(6), PARAME(5), H0, SIGC, DUDSIG(6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,10 +32,10 @@ C --- : PARAME : PARAMETRES D'ECROUISSAGES -----------------------------
 C --- : Q      : DG/DSIG -----------------------------------------------
 C --- : H0     : H0 = (1-GAMCJS)**(1/6) --------------------------------
 C --- : SIGC   : PARAMETRE MATERIAU ------------------------------------
-C OUT : DUDSIG : DUDSIG =   M(GAMP)*K(GAMP)*Q/(RAC(6)*SIGC*H0) ---------
+C OUT : DUDSIG : DUDSIG = - M(GAMP)*K(GAMP)*Q/(RAC(6)*SIGC*H0) ---------
 C ------------ :          - K(GAMP)*M(GAMP)*I/(3*SIGC) -----------------
 C ======================================================================
-      INTEGER II
+      INTEGER II, NDT, NDI
       REAL*8  MGAMP, KGAMP, FACT1, FACT2, MUN, TROIS, SIX
 C ======================================================================
 C --- INITIALISATION DE PARAMETRES -------------------------------------
@@ -44,6 +43,8 @@ C ======================================================================
       PARAMETER       ( MUN    = -1.0D0  )
       PARAMETER       ( TROIS  =  3.0D0  )
       PARAMETER       ( SIX    =  6.0D0  )
+C ======================================================================
+      COMMON /TDIM/   NDT , NDI
 C ======================================================================
       CALL JEMARQ ()
 C ======================================================================

@@ -5,7 +5,8 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/12/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,9 +40,9 @@ C   -------------------------------------------------------------------
       CHARACTER*8 ELREFE
       INTEGER I,NDIM,NNOS,NBFPG,NBPG(10)
       REAL*8 AL31,AL32,AL33,U,X0,Y0,Z0,AL,Z01,Z02,Z04,PFACE1,PFACE2
-      REAL*8 PFACE3,PFACE4,PMILI1,PMILI2,PMILI3,PMILI4,TNP1,TNP2,TNP3
-      REAL*8 TNP4,UXXI,UYYI,X1,X2,X3,X4,D1,D2,D3,D4
-      REAL*8 ZERO,UNDEMI,UN,DEUX,QUATRE,UNS4,UNS8,XBID(3*27)
+      REAL*8 PFACE3,PFACE4,PMILI1,PMILI2,PMILI3,PMILI4
+      REAL*8 X1,X2,X3,X4,D1,D2,D3,D4,XBID(3*27)
+      REAL*8 ZERO,UNDEMI,UN,DEUX,QUATRE,UNS4,UNS8
 
 C -----  FONCTIONS FORMULES
       AL31(U) = 0.5D00*U* (U-1.D00)
@@ -50,7 +51,6 @@ C -----  FONCTIONS FORMULES
 C DEB ------------------------------------------------------------------
 
       ELREFE = ELREFZ
-      CALL CARREF(ELREFE,NDIM,NNO,NNOS,NBFPG,NBPG,XBID)
       ZERO = 0.0D0
       UNDEMI = 0.5D0
       UN = 1.0D0
@@ -60,8 +60,7 @@ C DEB ------------------------------------------------------------------
       UNS8 = UN/8.0D0
 
 C     ------------------------------------------------------------------
-      IF (ELREFE.EQ.'HEXA8' .OR. ELREFE.EQ.'HEXI8' .OR.
-     &    ELREFE.EQ.'HEXA8L') THEN
+      IF (ELREFE.EQ.'HE8') THEN
 
         X0 = X(1)
         Y0 = X(2)
@@ -78,8 +77,7 @@ C     ------------------------------------------------------------------
         FF(8) = (UN-X0)* (UN+Y0)* (UN+Z0)*UNS8
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'HEXA20' .OR. ELREFE.EQ.'HEXS20' .OR.
-     &         ELREFE.EQ.'HEXD20' .OR. ELREFE.EQ.'HEXI20') THEN
+      ELSE IF (ELREFE.EQ.'H20') THEN
 
         X0 = X(1)
         Y0 = X(2)
@@ -108,7 +106,7 @@ C     ------------------------------------------------------------------
         FF(20) = (UN-X0)* (UN-Y0*Y0)* (UN+Z0)*UNS4
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'HEXA27') THEN
+      ELSE IF (ELREFE.EQ.'H27') THEN
 
         X0 = X(1)
         Y0 = X(2)
@@ -144,7 +142,7 @@ C     ------------------------------------------------------------------
         FF(27) = AL32(X0)*AL32(Y0)*AL32(Z0)
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'PENTA6' .OR. ELREFE.EQ.'PENTA6L') THEN
+      ELSE IF (ELREFE.EQ.'PE6') THEN
 
         X0 = X(1)
         Y0 = X(2)
@@ -159,7 +157,7 @@ C     ------------------------------------------------------------------
         FF(6) = UNDEMI* (UN-Y0-Z0)* (UN+X0)
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'PENTA15' .OR. ELREFE.EQ.'PENTA15D') THEN
+      ELSE IF (ELREFE.EQ.'P15') THEN
 
         X0 = X(1)
         Y0 = X(2)
@@ -187,8 +185,7 @@ C     ------------------------------------------------------------------
         FF(15) = DEUX*Y0*AL* (UN+X0)
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'TETRA4' .OR. ELREFE.EQ.'TETRI4' .OR.
-     &         ELREFE.EQ.'TETRA4L') THEN
+      ELSE IF (ELREFE.EQ.'TE4') THEN
 
         X0 = X(1)
         Y0 = X(2)
@@ -201,8 +198,7 @@ C     ------------------------------------------------------------------
         FF(4) = X0
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'TETRA10' .OR. ELREFE.EQ.'TETRA10D' .OR.
-     &         ELREFE.EQ.'TETRI10') THEN
+      ELSE IF (ELREFE.EQ.'T10') THEN
 
         X0 = X(1)
         Y0 = X(2)
@@ -222,7 +218,7 @@ C     ------------------------------------------------------------------
         FF(10) = QUATRE*X0*AL
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'PYRAM5') THEN
+      ELSE IF (ELREFE.EQ.'PY5') THEN
 
         X0 = X(1)
         Y0 = X(2)
@@ -249,7 +245,7 @@ C     ------------------------------------------------------------------
         END IF
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'PYRAM13' .OR. ELREFE.EQ.'PYRAM13D') THEN
+      ELSE IF (ELREFE.EQ.'P13') THEN
 
         X0 = X(1)
         Y0 = X(2)
@@ -371,6 +367,8 @@ C     ------------------------------------------------------------------
         X0 = X(1)
         Y0 = X(2)
 
+        CALL CARREF(ELREFE,NDIM,NNO,NNOS,NBFPG,NBPG,XBID)
+
         IF (NNO.EQ.3) THEN
           FF(1) = (UN+Y0)/DEUX
           FF(2) = - (X0+Y0)/DEUX
@@ -405,10 +403,12 @@ C     ------------------------------------------------------------------
      &         ELREFE.EQ.'QUAD8' .OR. ELREFE.EQ.'QUA8D' .OR.
      &         ELREFE.EQ.'QUAS8' .OR. ELREFE.EQ.'QUAI4' .OR.
      &         ELREFE.EQ.'QUAI8' .OR. ELREFE.EQ.'QUAD9' .OR.
-     &         ELREFE.EQ.'QUAD4D') THEN
+     &         ELREFE.EQ.'QUAD4D' .OR. ELREFE.EQ.'QUAS4') THEN
 
         X0 = X(1)
         Y0 = X(2)
+
+        CALL CARREF(ELREFE,NDIM,NNO,NNOS,NBFPG,NBPG,XBID)
 
         IF (NNO.EQ.4) THEN
           FF(1) = (UN+Y0)* (UN-X0)/QUATRE
@@ -483,10 +483,12 @@ C     ------------------------------------------------------------------
 
 C     ------------------------------------------------------------------
 
+      ELSE
+        CALL ASSERT(.FALSE.)
       END IF
 
       IF (DIMF.LT.NNO) THEN
-        CALL UTMESS('F','ELRFVF',' ERREUR PROGRAMMEUR'//
+        CALL UTMESS('F','ELRFVF',' ERREUR PROGRAMMEUR: '//
      &            'ECRASEMENT DE FF, DIMF EST INFERIEUR AU NB DE NOEUDS'
      &              )
       END IF

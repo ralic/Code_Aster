@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@ MACR_GOUJ2E_CALC=MACRO(nom="MACR_GOUJ2E_CALC",op=-23,sd_prod=evol_noli,
                       fr=" ",docu="U4.gj.20-b",reentrant='n',
             UIinfo={"groupes":("Outils métier",)},
          MAILLAGE        =SIMP(statut='o',typ=maillage),
-         DEFI_GOUJ       =FACT(statut='o',min=1,max=1,
+         DEFI_GOUJ       =FACT(statut='o',
            TYPE            =SIMP(statut='o',typ='TXM',into=("M33","M64","M90","M115","M155","M180","M186")),
            VARIANTE        =SIMP(statut='o',typ='TXM',into=("A","B","C","D","E","F","G","H","I","J","K","L","M",  
                                                             "N","O","P","Q","R","S","T","U","V","W","X","Y","Z")),
@@ -31,15 +31,15 @@ MACR_GOUJ2E_CALC=MACRO(nom="MACR_GOUJ2E_CALC",op=-23,sd_prod=evol_noli,
            FILET_JEU_HTA   =SIMP(statut='f',typ='I',max='**'),  
            FILET_JEU_HTB   =SIMP(statut='f',typ='I',max='**'),  
          ),
-         EXCIT           =FACT(statut='o',min=1,max=1,
+         EXCIT           =FACT(statut='o',
            TYPE_BLOCAGE    =SIMP(statut='o',typ='I',defaut=2,into=(1,2,3)),
            FORCE_GOUJ      =SIMP(statut='o',typ='R'),  
          ),
-         CALCUL          =FACT(statut='o',min=1,max=1,
+         CALCUL          =FACT(statut='o',
            TYPE_CALCUL     =SIMP(statut='o',typ='TXM',into=("ELASTIQUE","ELASTOPLASTIQUE")),
            NB_INCR         =SIMP(statut='o',typ='I'),  
          ),
-         IMPRESSION      =FACT(statut='f',min=1,max=1,
+         IMPRESSION      =FACT(statut='f',
            FORMAT          =SIMP(statut='f',typ='TXM',defaut="TABLE",    
                                  into=("RESULTAT","IDEAS","ASTER","CASTEM","ENSIGHT","MED","TABLE")),
            VERSION         =SIMP(statut='f',typ='I',defaut=5,into=(4,5)),

@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16 OPTION,NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 20/03/2002   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,6 +39,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER NBCOU,NPGH,NBSECT,NBFIBR,NBVARI,JCOMPO,JDCEL,JNBSP,ITAB(2)
+      INTEGER IRET
 
 
       CALL JEVECH('PDCEL_I','E',JDCEL)
@@ -47,7 +48,7 @@ C     PCOMPOR CONTIENT 1 SEULE CMP : NBVARI
 C     ET LES AUTRES INFO VIENNENT DE PNBSP_I
 C     SI PCOMPOR N'EST PAS FOURNI : NCMP_DYN = 0
 C     ------------------------------------------------
-      CALL TECACH(.TRUE.,.FALSE.,'PCOMPOR',2,ITAB)
+      CALL TECACH('ONN','PCOMPOR',2,ITAB,IRET)
       IF (ITAB(1).NE.0) THEN
         IF (ITAB(2).NE.1) CALL UTMESS('F','TE0496','STOP1')
         JCOMPO=ITAB(1)
@@ -62,7 +63,7 @@ C     DU NOMBRE DE SOUS-POINTS.
 C     SI LE CHAMP N'EST PAS DONNE, NBSPT=1
 C     (VARI_ELNO_TUYO PAR EXEMPLE)
 C     -----------------------------------------------------
-      CALL TECACH(.FALSE.,.FALSE.,'PNBSP_I',1,JNBSP)
+      CALL TECACH('NNN','PNBSP_I',1,JNBSP,IRET)
 
 
 

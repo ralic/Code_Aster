@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/02/2000   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 C
       CALL JEVECH ( 'PMATERC', 'L', LMATER )
-      CALL TECACH(.TRUE.,.FALSE.,'PTEMPER',1,ITEMPE)
+      CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
       IF ( ITEMPE .EQ. 0 ) THEN
          NBPAR  = 0
          NOMPAR = ' '

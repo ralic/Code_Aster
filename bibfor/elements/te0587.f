@@ -1,6 +1,6 @@
       SUBROUTINE TE0587(OPTION,NOMTE)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 02/10/2002   AUTEUR ASSIRE A.ASSIRE 
+C MODIF ELEMENTS  DATE 25/08/2003   AUTEUR ASSIRE A.ASSIRE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,7 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 
-      INTEGER NBCOUM,NBSECM,JNBSPI
+      INTEGER NBCOUM,NBSECM,JNBSPI,IRET
       CHARACTER*24 CARAC,FF,CHMAT,NOMCHA,NOMCMP
       CHARACTER*16 ELREFL
       CHARACTER*8  ELREFE
@@ -80,7 +80,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C=====RECUPERATION NOMBRE DE COUCHES ET DE SECTEURS ANGULAIRES
 
-      CALL TECACH(.FALSE.,.FALSE.,'PCOMPOR',1,ICOMPO)
+      CALL TECACH('NNN','PCOMPOR',1,ICOMPO,IRET)
       CALL JEVECH('PNBSP_I','L',JNBSPI)
       NBCOU=ZI(JNBSPI-1+1)
       NBSEC=ZI(JNBSPI-1+2)
@@ -158,7 +158,7 @@ C     -------------------------------------
         CALL JEVECH('PVARIGR','L',JIN)
 
         READ (ZK16(ICOMPO-1+2),'(I16)') NBVARI
-        CALL TECACH(.TRUE.,.TRUE.,'PVARIGR',7,JTAB)
+        CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
         LGPG = MAX(JTAB(6),1)*JTAB(7)
 
 
@@ -495,11 +495,13 @@ C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
 
               IF (OPTION.EQ.'EQUI_ELGA_SIGM') THEN
                 CALL FGEQUI(SIG,'SIGM',3,VEQG)
+                ZR(JOUT-1+2*KPGS-1) = VEQG(1)
+                ZR(JOUT-1+2*KPGS)   = VEQG(6)
               ELSE
                 CALL FGEQUI(SIG,'EPSI',3,VEQG)
+                ZR(JOUT-1+2*KPGS-1) = VEQG(1)
+                ZR(JOUT-1+2*KPGS)   = VEQG(5)
               ENDIF
-
-              ZR(JOUT-1+KPGS) = VEQG(1)
 
   310       CONTINUE
   320     CONTINUE
@@ -540,9 +542,11 @@ C ======== RAPPEL DES CONTRAINTES ====================
           ENDIF
         ELSEIF (NOMCHA.EQ.'EQUI_ELGA_SIGM') THEN
           CALL JEVECH('PCONTEQ','L',JIN)
-          NBCMP=1
+          NBCMP=2
           IF (NOMCMP(1:4).EQ.'VMIS') THEN
                 NUMCMP=1
+          ELSEIF (NOMCMP(1:7).EQ.'VMIS_SG') THEN
+                NUMCMP=2
           ELSE
            CALL UTMESS('A','VALE_NCOU_MAXI','CMP '//NOMCMP//
      &                ' NON TRAITEE, ON ABANDONNE')
@@ -570,9 +574,11 @@ C ======== RAPPEL DES CONTRAINTES ====================
           ENDIF
         ELSEIF (NOMCHA.EQ.'EQUI_ELGA_EPSI') THEN
           CALL JEVECH('PDEFOEQ','L',JIN)
-          NBCMP=1
+          NBCMP=2
           IF (NOMCMP(1:6).EQ.'INVA_2') THEN
                 NUMCMP=1
+          ELSEIF (NOMCMP(1:8).EQ.'INVA_2SG') THEN
+                NUMCMP=2
           ELSE
            CALL UTMESS('A','VALE_NCOU_MAXI','CMP '//NOMCMP//
      &                ' NON TRAITEE, ON ABANDONNE')

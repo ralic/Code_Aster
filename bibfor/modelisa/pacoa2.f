@@ -4,7 +4,7 @@
       CHARACTER*(*) LISI1Z, LISI2Z, NOMA1Z, NOMA2Z, LISO1Z, LISO2Z
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/05/2000   AUTEUR CIBHHAB N.RAHNI 
+C MODIF MODELISA  DATE 26/08/2003   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -162,14 +162,15 @@ C
       ELSE
          DO 30 I2 = 1, LONLI2
            NOMNO2 = ZK8(IDLIN2+I2-1)
-           CALL JENONU(JEXNOM(NOEUM1,NOMNO2),NUNO2)
-           CALL PACOOR(NOMA1,NUNO2,0,X2)
+           CALL JENONU(JEXNOM(NOEUM2,NOMNO2),NUNO2)
+           CALL PACOOR(NOMA2,NUNO2,0,X2)
            DMIN = R8GAEM()
            J1 = 0
            DO 40 I1 = 1, LONLI1
              NOMO1 = ZK8(IDLIN1+I1-1)
-             CALL JENONU(JEXNOM(NOEUM2,NOMO1),INO1)
-             CALL PACOOR(NOMA2,INO1,0,X1)
+             CALL JENONU(JEXNOM(NOEUM1,NOMO1),INO1)
+             CALL PACOOR(NOMA1,INO1,0,X1)
+
              D = PADIST( 3, X1, X2 )
              IF (D.LT.DMIN) THEN
                DMIN   = D

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ MODI_BASE_MODALE=OPER(nom="MODI_BASE_MODALE",op= 149,sd_prod=mode_meca,
          BASE            =SIMP(statut='o',typ=mode_meca ),
          BASE_ELAS_FLUI  =SIMP(statut='o',typ=melasflu ),
          NUME_VITE_FLUI  =SIMP(statut='o',typ='I' ),
-         NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
+         NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
          AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
          AMOR_UNIF       =SIMP(statut='f',typ='R' ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),

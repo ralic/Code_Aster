@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/10/2002   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -145,7 +145,7 @@ C        -------------------------------------------------------------
 C
 C ----   RECUPERATION DE L'INSTANT DE CALCUL
 C        -----------------------------------
-        CALL TECACH(.TRUE.,.FALSE.,'PTEMPSR',1,ITEMPS)
+        CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
         IF (ITEMPS.NE.0) THEN
            INSTAN = ZR(ITEMPS)
         ENDIF
@@ -163,7 +163,7 @@ C
 C ---   RECUPERATION EVENTUELLE DU CHAMP DE DEPLACEMENT A 
 C ---   L'INSTANT PRECEDENT :
 C       -------------------
-        CALL TECACH(.FALSE.,.FALSE.,'PDEPLM',1,IDEPLM)
+        CALL TECACH('NNN','PDEPLM',1,IDEPLM,IRET)
         IF (IDEPLM.NE.0) THEN
            CALL JEVECH('PDEPLM','L',IDEPMM)
         ENDIF
@@ -176,7 +176,7 @@ C
 C ---   RECUPERATION EVENTUELLE DU CHAMP DE CONTRAINTES A 
 C ---   L'INSTANT PRECEDENT :
 C       -------------------
-        CALL TECACH(.FALSE.,.FALSE.,'PCONTMR',1,IDSIGM)
+        CALL TECACH('NNN','PCONTMR',1,IDSIGM,IRET)
         IF (IDSIGM.NE.0) THEN
           CALL JEVECH('PCONTMR','L',IDSIGM)
         ENDIF

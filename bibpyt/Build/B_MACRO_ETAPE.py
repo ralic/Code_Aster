@@ -1,4 +1,4 @@
-#@ MODIF B_MACRO_ETAPE Build  DATE 01/04/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF B_MACRO_ETAPE Build  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,18 +59,21 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
                        fin = 'Fin Etape : '+self.nom)
 
       self.parent.cr.add(self.cr)
-      ret = self._Build()
+      try:
+         ier = self._Build()
+         if ier == 0 and self.jdc.par_lot == 'OUI':
+            # Traitement par lot
+            for e in self.etapes:
+                if not e.isactif():continue
+                ier=ier+e.Build()
 
-      ier=ret
-      if ret == 0 and self.jdc.par_lot == 'OUI':
-        # Traitement par lot
-        for e in self.etapes:
-          if not e.isactif():continue
-          ret=e.Build()
-          ier=ier+ret
-
-      self.reset_current_step()
-      return ier
+         self.reset_current_step()
+         return ier
+      except:
+         # Si une exception a ete levee, on se contente de remettre le step courant au pere 
+         # et on releve l'exception
+         self.reset_current_step()
+         raise
 
    def Build_alone(self):
       """
@@ -84,72 +87,46 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
 
    def _Build(self):
       """
-         Cette méthode réalise le traitement de construction pour 
+         Cette méthode réalise le traitement de construction pour
          l'objet lui meme
       """
       if CONTEXT.debug : print "MACRO_ETAPE._Build ",self.nom,self.definition.op
 
-      if self.definition.proc is not None:
-        # On est dans le cas d'une macro en Python. On evalue la fonction 
-        # self.definition.proc dans le contexte des valeurs de mots clés (d)
-        # La fonction proc doit demander la numerotation de la commande (appel de set_icmd)
-        try:
-          d=self.cree_dict_valeurs(self.mc_liste)
-          ier= apply(self.definition.proc,(self,),d)
-          if ier:self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+'ligne : '+str(self.appel[0])+' fichier : '+self.appel[1])
-          return ier
-        except AsException,e:
-          ier=1
-          self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+str(e))
-          return ier
-        except EOFError:
-          raise
-        except:
-          ier=1
-          l=traceback.format_exception(sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2])
-          self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+string.join(l))
-          return ier
+      ier=0
+      try:
+         if self.definition.proc is not None:
+            # On est dans le cas d'une macro en Python. On evalue la fonction 
+            # self.definition.proc dans le contexte des valeurs de mots clés (d)
+            # La fonction proc doit demander la numerotation de la commande (appel de set_icmd)
+            d=self.cree_dict_valeurs(self.mc_liste)
+            ier= apply(self.definition.proc,(self,),d)
+         elif self.macros.has_key(self.definition.op):
+            ier= self.macros[self.definition.op](self)
+         else:
+            # Pour presque toutes les commandes (sauf FORMULE et POURSUITE)
+            # le numero de la commande n est pas utile en phase de construction
+            # Néanmoins, on le calcule en appelant la methode set_icmd avec un
+            # incrément de 1
+            # un incrément de 1 indique que la commande compte pour 1 dans
+            # la numérotation globale
+            # un incrément de None indique que la commande ne sera pas numérotée.
+            self.set_icmd(1)
+            ier=self.codex.opsexe(self,self.icmd,-1,-self.definition.op)
 
-      elif self.macros.has_key(self.definition.op):
-        try:
-          ier= self.macros[self.definition.op](self)
-          if ier:self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+'ligne : '+str(self.appel[0])+' fichier : '+self.appel[1])
-          return ier
-        except AsException,e:
-          ier=1
-          self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+str(e))
-          return ier
-        except EOFError:
-          raise
-        except:
-          ier=1
-          l=traceback.format_exception(sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2])
-          self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+string.join(l))
-          return ier
-      else:
-        # Pour presque toutes les commandes (sauf FORMULE et POURSUITE)
-        # le numero de la commande n est pas utile en phase de construction
-        # Néanmoins, on le calcule en appelant la methode set_icmd avec un
-        # incrément de 1
-        # un incrément de 1 indique que la commande compte pour 1 dans 
-        # la numérotation globale
-        # un incrément de None indique que la commande ne sera pas numérotée.
-        self.set_icmd(1)
-        try:
-          ier=self.codex.opsexe(self,self.icmd,-1,-self.definition.op)
-          if ier:self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+'ligne : '+str(self.appel[0])+' fichier : '+self.appel[1])
-        except AsException,e:
-          ier=1
-          self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+str(e))
-          return ier
-        except EOFError:
-          raise
-        except:
-          ier=1
-          l=traceback.format_exception(sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2])
-          self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+string.join(l))
-          return ier
-        return ier
+         if ier:
+            self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+'ligne : '+str(self.appel[0])+' fichier : '+self.appel[1])
+
+      except AsException,e:
+         ier=1
+         self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+str(e))
+      except (EOFError,self.jdc.UserError):
+         raise
+      except:
+         ier=1
+         l=traceback.format_exception(sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2])
+         self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+string.join(l))
+
+      return ier
 
    def setmode(self,mode):
       """
@@ -444,7 +421,3 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
                sd= sdprod
                break
       return sd
-
-
-
-

@@ -4,7 +4,7 @@
       CHARACTER*(*)    NOMZ, LIMANZ(LONLIM), TYPZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/06/99   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF MODELISA  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C        -------------------------------------------------------
               LIMANO = LIMANZ(IGR)
               CALL JEEXIN (JEXNOM(GRNOMA,LIMANO),IRET)
               IF (IRET .EQ. 0) THEN
-                CALL UTMESS('F','VERIMA','LE GROUP_NO '//LIMANO//
+                CALL UTMESS('S','VERIMA','LE GROUP_NO '//LIMANO//
      +                      ' NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
               ENDIF
 10        CONTINUE
@@ -87,7 +87,7 @@ C        -------------------------------------------------------
               LIMANO = LIMANZ(INO)
               CALL JENONU (JEXNOM(NOEUMA,LIMANO),IRET)
               IF (IRET .EQ. 0) THEN
-                CALL UTMESS('F','VERIMA','LE NOEUD '//LIMANO//
+                CALL UTMESS('S','VERIMA','LE NOEUD '//LIMANO//
      +                     ' NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
               ENDIF
  20         CONTINUE
@@ -101,7 +101,7 @@ C        -------------------------------------------------------
               LIMANO = LIMANZ(IGR)
               CALL JEEXIN (JEXNOM(GRMAMA,LIMANO),IRET)
               IF (IRET .EQ. 0) THEN
-                CALL UTMESS('F','VERIMA','LE GROUP_MA '//LIMANO//
+                CALL UTMESS('S','VERIMA','LE GROUP_MA '//LIMANO//
      +                      ' NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
               ENDIF
  30         CONTINUE
@@ -115,13 +115,13 @@ C        -------------------------------------------------------
               LIMANO = LIMANZ(IMA)
               CALL JENONU (JEXNOM(MAILMA,LIMANO),IRET)
               IF (IRET .EQ. 0) THEN
-                CALL UTMESS('F','VERIMA','LA MAILLE '//LIMANO//
+                CALL UTMESS('S','VERIMA','LA MAILLE '//LIMANO//
      +                     ' NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
               ENDIF
  40        CONTINUE
 C
       ELSE
-           CALL UTMESS('F','VERIMA','LE TYPE '//TYPE//
+           CALL UTMESS('S','VERIMA','LE TYPE '//TYPE//
      +                    'D''OBJETS A VERIFIER N''EST PAS CORRECT : '//
      +                      'IL NE PEUT ETRE EGAL QU''A GROUP_NO OU '//
      +                      'NOEUD OU GROUP_MA OU MAILLE ')

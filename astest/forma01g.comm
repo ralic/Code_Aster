@@ -1,5 +1,5 @@
 
-# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 11/08/2003   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 # RESPONSABLE PABHHHH N.TARDIEU
 
 
@@ -188,9 +188,9 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
                    INST=10.0,
                    NOM_CHAM='EQUI_ELNO_SIGM',
                    TYPE_TEST='MAX',
-                   VALE=2.3603066735243E+08,
+                   VALE=2.4340779378589E+08,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='6.01.16',),),);
+                   VERSION='7.01.13',),),);
 
 
 # ORIENTATION DES NORMALES AUX COQUES

@@ -3,7 +3,7 @@
       INTEGER             IOCC, NBNO
       CHARACTER*(*)       MOFAZ, NOMAZ, LISNOZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/03/2003   AUTEUR ASSIRE A.ASSIRE 
+C MODIF MODELISA  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -53,7 +53,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32       JEXNUM , JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER        IRET, IDCOOR, JNOEU, NUMORI, NUMEXT, N1
+      INTEGER        IRET, IDCOOR, JNOEU, NUMORI, NUMEXT, N1,IERA
       REAL*8         TOLE
       CHARACTER*8    NOMA, CRIT, NOM1
       CHARACTER*16   MOTFAC, MOTCLE(2), TYPMCL(2)
@@ -67,6 +67,7 @@ C     ---------------
       MOTFAC = MOFAZ
       NOMA   = NOMAZ
       LISNOE = LISNOZ
+      IERA = 0
 C
       NOMNOE = NOMA//'.NOMNOE'
 C
@@ -100,7 +101,7 @@ C
 C --- ON ORDONNE :
 C     ----------
       CALL OREINO ( NOMA, ZI(JNOEU), NBNO, NUMORI, NUMEXT, ZR(IDCOOR),
-     +              CRIT, TOLE, IRET )
+     +              CRIT, TOLE,IERA, IRET )
       IF (IRET.NE.0) CALL UTMESS('F','CGNOSO','ARRET SUR ERREURS')
 C
       CALL JEDEMA()

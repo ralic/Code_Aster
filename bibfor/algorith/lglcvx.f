@@ -2,10 +2,10 @@
 C
       IMPLICIT    NONE
       INTEGER     NBMAT
-      REAL*8      SIG(*), MATER(NBMAT,2), VIN(*), SEUIL
+      REAL*8      SIG(6), MATER(NBMAT,2), VIN(*), SEUIL
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C --- CALCUL DE G(S) ----------------------------------------------
 C =================================================================
       CALL     LCPRSC(DEV, DEV, SII)
       SII    = SQRT  (SII)
-      RCOS3T = COS3T (NDT, DEV, PREF, LGLEPS)
+      RCOS3T = COS3T (DEV, PREF, LGLEPS)
       RHLODE = HLODE (GAMCJS, RCOS3T)
       RGDEV  = GDEV  (SII   , RHLODE)
 C =================================================================

@@ -1,6 +1,6 @@
       SUBROUTINE EPSAMC (NNO,NPG,NBSIG,NI,EPSANO,EPSANG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/09/97   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 12/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C.======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C      EPSAMC   -- CONSTRUCTION DU VECTEUR DES DEFORMATIONS ANELASTIQUES
@@ -41,23 +40,6 @@ C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
            REAL*8       NI(1), EPSANO(1), EPSANG(1)
-C.========================= DEBUT DECLARATIONS NORMALISEES  JEVEUX ====
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C.========================= FIN DECLARATIONS NORMALISEES  JEVEUX ====
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
@@ -70,16 +52,16 @@ C
 C
 C ---  BOUCLE SUR LES POINTS D'INTEGRATION 
 C      -----------------------------------
-         DO 20 IGAU = 1, NPG
+         DO 40 I   = 1, NNO
            DO 30 ISIG = 1, NBSIG
-             DO 40 I   = 1, NNO
+             DO 20 IGAU = 1, NPG
 C
               EPSANG(ISIG+NBSIG*(IGAU-1)) = EPSANG(ISIG+NBSIG*(IGAU-1))
      +                                     +EPSANO(ISIG+NBSIG*(I-1))
      +                                      *NI(I+NNO*(IGAU-1))
-  40         CONTINUE
+  20         CONTINUE
   30       CONTINUE
-  20     CONTINUE
+  40     CONTINUE
 C
 C.============================ FIN DE LA ROUTINE ======================
       END

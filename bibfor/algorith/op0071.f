@@ -3,7 +3,7 @@
       INTEGER             IERR
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 21/07/2003   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,8 @@ C NB_VECT DONNE PAR NUME_DDL_GENE
          CALL DISMOI('F', 'NOM_NUME_DDL', MATRAS, 'MATR_ASSE', IBID,
      +                                            NUMDD1,IER)
          CALL JEVEUO(BASEMO//'           .REFE','L',IADRIF)
-         IF ((TYPBAS.EQ.'MODE_MECA').OR.(TYPBAS.EQ.'MODE_GENE')) THEN
+         IF ((TYPBAS.EQ.'MODE_MECA').OR.(TYPBAS.EQ.'MODE_GENE').OR.
+     +        (TYPBAS.EQ.'MODE_STAT')) THEN
             MATRIC = ZK24(IADRIF)
          ELSE
             MATRIC = ZK24(IADRIF+2)

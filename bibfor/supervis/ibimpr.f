@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 28/03/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF SUPERVIS  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,34 +26,25 @@ C OUT IER     : IS  : CODE RETOUR D'EXECUTION
 C       = 0 ==> PAS DE PROBLEME
 C      /= 0 ==> PROBLEME A LA DEFINITION  DES UNITES LOGIQUES
 C     ------------------------------------------------------------------
-C     ROUTINE(S) UTILISEE(S) :
-C         DEFUFI
-C     ROUTINE(S) FORTRAN     :
-C         -
-C     ------------------------------------------------------------------
-C
-C     ------- COMMUN DEBUG SUPERVISEUR ---------------------------------
-C     ------------------------------------------------------------------
 C
 C     --- VARIABLES LOCALES --------------------------------------------
-      PARAMETER   ( MXIMPR = 13)
+      PARAMETER   ( MXIMPR = 5)
       CHARACTER*16    MOTFAC, NOMRES, CONCEP, NOMCMD
       CHARACTER*16    PRNOM (MXIMPR)
       INTEGER         PRUNIT, PLACE, PASSE
       SAVE                           PASSE
 C     ------------------------------------------------------------------
       CHARACTER*16  NOMPR (MXIMPR)
+      CHARACTER*1   TYPPR (MXIMPR) , AUTPR(MXIMPR)
       INTEGER       UNITPR (MXIMPR)   , PRESPR(MXIMPR)
       DATA          NOMPR  /'VIGILE'  , 'MESSAGE'   , 'RESULTAT',
-     +                      'ERREUR'  , 'COMMANDE'  , 'SEISME'  ,
-     +                      'GNUPLOT' , 'POSTSCRIPT', 'AGRAF'   ,
-     +                      'ASTER'   , 'IDEAS'     , 'CASTEM'  ,
-     +                      'MED'     /
+     +                      'ERREUR'  ,  'MED'      /
       DATA          UNITPR /    0     ,      6      ,     8     ,
-     +                          9     ,     21      ,    22     ,
-     +                         23     ,     24      ,    25     ,
-     +                         26     ,     30      ,    37     ,
-     +                         80     /
+     +                          9     ,    80       /
+      DATA          TYPPR /    'A'    ,    'A'      ,    'A'    ,
+     +                         'A'    ,    'B'      /
+      DATA          AUTPR /    'N'    ,    'N'      ,    'O'    ,
+     +                         'N'    ,    'O'      /
       DATA          PASSE  /    0     /
 C     ------------------------------------------------------------------
       IER = 0
@@ -70,7 +61,8 @@ C
 C     --- DEFINITION EVENTUELLE DES OPTIONS PAR DEFAUTS ---
       IF ( PASSE .EQ. 1) THEN
         DO 5 IMPR = 1, MXIMPR
-           CALL DEFUFI( UNITPR(IMPR) , NOMPR(IMPR) )
+           CALL ULDEFI(UNITPR(IMPR),NOMPR(IMPR),TYPPR(IMPR),'N',
+     &                 AUTPR(IMPR))
    5    CONTINUE
       ENDIF
 C
@@ -111,7 +103,7 @@ C
 C
 C        --- DEFINITION DES UNITES LOGIQUES DES IMPRESSIONS ---
          DO 10 IMPR = 1, NBNOM
-            CALL DEFUFI( PRUNIT , PRNOM(IMPR) )
+            CALL ULDEFI( PRUNIT , PRNOM(IMPR) , 'A' , 'N' , 'O')
   10     CONTINUE
   20  CONTINUE
 C

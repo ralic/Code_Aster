@@ -4,7 +4,7 @@
       CHARACTER*8         CHMAT, NOMAIL, NOMODE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,19 +42,17 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C ----------------------------------------------------------------------
 C
-      INTEGER       IBID, NOCC, I, NM, NT, JNCMP, JVALV, NBMA, NBNO,
-     +              JMAIL, JNOEU
+      INTEGER       IBID, NOCC, I, NM, NT, JNCMP, JVALV, NBMA, JMAIL
       REAL*8        TREF
       CHARACTER*4   OUI
-      CHARACTER*8   K8B, TYPMCL(4)
-      CHARACTER*16  MOTCLE(4)
-      CHARACTER*24  CHTREF, LIGRMO, MESMAI, MESNOE
+      CHARACTER*8   K8B, TYPMCL(2)
+      CHARACTER*16  MOTCLE(2)
+      CHARACTER*24  CHTREF,  MESMAI
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
       CHTREF = CHMAT//'.TEMPE_REF'
 C
-      LIGRMO = NOMODE//'.MODELE         '
 C
       CALL ALCART ( 'G', CHTREF, NOMAIL, 'TEMP_R', NBAPNO, MXMATA )
 C
@@ -68,50 +66,29 @@ C
 C
       MOTCLE(1) = 'GROUP_MA'
       MOTCLE(2) = 'MAILLE'
-      MOTCLE(3) = 'GROUP_NO'
-      MOTCLE(4) = 'NOEUD'
       TYPMCL(1) = 'GROUP_MA'
       TYPMCL(2) = 'MAILLE'
-      TYPMCL(3) = 'GROUP_NO'
-      TYPMCL(4) = 'NOEUD'
 C
       MESMAI = '&&RCTREF.MES_MAILLES'
-      MESNOE = '&&RCTREF.MES_NOEUDS'
 C
       DO 10 I = 1 , NOCC
-C
          CALL GETVR8 ( 'AFFE', 'TEMP_REF', I,1,1, TREF, NM )
-C
          IF ( NM .NE. 0 ) THEN
             ZR(JVALV) = TREF
-C
             CALL GETVTX ( 'AFFE', 'TOUT'  , I,1,1, OUI   , NT )
 
             IF ( NT .NE. 0 ) THEN
                CALL NOCART ( CHTREF, 1, K8B, K8B, 0, K8B, IBID, ' ', 1 )
-C
             ELSE
                CALL RELIEM(NOMODE, NOMAIL, 'NU_MAILLE', 'AFFE', I, 2,
      +                       MOTCLE(1), TYPMCL(1), MESMAI, NBMA )
-               CALL RELIEM(NOMODE, NOMAIL, 'NU_NOEUD', 'AFFE', I, 2,
-     +                       MOTCLE(3), TYPMCL(3), MESNOE, NBNO )
-C
                IF ( NBMA .NE. 0 ) THEN
                   CALL JEVEUO ( MESMAI, 'L', JMAIL )
                   CALL NOCART ( CHTREF, 3, K8B, 'NUM', NBMA, K8B,
      +                                              ZI(JMAIL), ' ', 1 )
                   CALL JEDETR ( MESMAI )
                ENDIF
-C
-               IF ( NBNO .NE. 0 ) THEN
-                  CALL JEVEUO ( MESNOE, 'L', JNOEU )
-                  CALL NOCART ( CHTREF, -3, K8B, 'NUM', NBNO, K8B,
-     +                                           ZI(JNOEU), LIGRMO, 1 )
-                  CALL JEDETR ( MESNOE )
-               ENDIF
-
             ENDIF
-C
          ENDIF
 C
  10   CONTINUE

@@ -1,4 +1,4 @@
-#@ MODIF E_MACRO_ETAPE Execution  DATE 01/04/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF E_MACRO_ETAPE Execution  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,26 +73,37 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
       Les seuls cas ou on appelle plusieurs fois Execute sont pour les
       commandes INCLUDE et INCLUDE_MATERIAU (appel dans op_init)
       """
-      if hasattr(self,"executed") and self.executed == 1:return
-      self.executed=1
+      if not self.jdc or self.jdc.par_lot != "NON" :
+         return
 
-      cr=self.report()
-      self.parent.cr.add(cr)
-      if not cr.estvide():
-        raise EOFError
+      if not hasattr(self,"executed") or self.executed == 0:
+         self.executed=1
 
-      # Apres l appel a Build  les executions de toutes les 
-      # sous commandes ont ete realisees
-      ier=self.Build()
-      if ier > 0 and ier != 9999:
-        # On termine le traitement
-        cr.fatal("Erreurs dans la construction de la macro %s" % self.nom)
-        raise EOFError
+         cr=self.report()
+         self.parent.cr.add(cr)
+         if not cr.estvide():
+           raise EOFError
 
-      self.setmode(1)
-      E_ETAPE.ETAPE.Exec(self)
-      self.setmode(2)
-      E_ETAPE.ETAPE.Exec(self)
+         try:
+             # Apres l appel a Build  les executions de toutes les 
+             # sous commandes ont ete realisees
+             ier=self.Build()
+         except self.codex.error:
+             self.detruit_sdprod()
+             raise
+
+         if ier > 0 :
+            # On termine le traitement
+            cr.fatal("Erreurs dans la construction de la macro %s" % self.nom)
+            raise EOFError
+
+         self.setmode(1)
+         E_ETAPE.ETAPE.Exec(self)
+         self.setmode(2)
+         E_ETAPE.ETAPE.Exec(self)
+
+      if hasattr(self,'postexec'):
+         self.postexec(self)
 
    def Execute_alone(self):
       """
@@ -123,7 +134,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
 
       ier=self.Build_alone()
 
-      if ier > 0 and ier != 9999:
+      if ier > 0 :
         # On termine le traitement
         cr.fatal("Erreurs dans la construction de la macro %s" % self.nom)
         raise EOFError
@@ -155,26 +166,32 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
       if self.etapes:has_etapes=1
       else: has_etapes=0
 
-      # Apres l appel a _Build  les executions de toutes les 
-      # sous commandes ont ete realisees sauf dans le cas des INCLUDE
-      ier = self._Build()
+      try:
+         # Apres l appel a _Build  les executions de toutes les 
+         # sous commandes ont ete realisees sauf dans le cas des INCLUDE
+         ier = self._Build()
 
-      if ier > 0 and ier != 9999:
-        # On termine le traitement
-        self.cr.fatal("Erreurs dans la construction de la macro %s" % self.nom)
-        raise EOFError
+         if ier > 0 :
+           # On termine le traitement
+           self.cr.fatal("Erreurs dans la construction de la macro %s" % self.nom)
+           raise EOFError
 
-      # La macro de type INCLUDE doit etre executee avant ses sous etapes
-      # principalement pour INCLUDE_MATERIAU qui doit definir un prefixe avant
-      self.setmode(1)
-      E_ETAPE.ETAPE.Exec(self)
-      self.setmode(2)
-      E_ETAPE.ETAPE.Exec(self)
+         # La macro de type INCLUDE doit etre executee avant ses sous etapes
+         # principalement pour INCLUDE_MATERIAU qui doit definir un prefixe avant
+         self.setmode(1)
+         E_ETAPE.ETAPE.Exec(self)
+         self.setmode(2)
+         E_ETAPE.ETAPE.Exec(self)
 
-      if has_etapes:
-         for e in self.etapes:
-           if e.isactif():
-              e.BuildExec()
+         if has_etapes:
+            for e in self.etapes:
+              if e.isactif():
+                 e.BuildExec()
 
+         if hasattr(self,'postexec'):
+            self.postexec(self)
+      except:
+         self.reset_current_step()
+         raise
 
       self.reset_current_step()

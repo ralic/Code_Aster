@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 21/03/2003   AUTEUR ASSIRE A.ASSIRE 
+C MODIF SOUSTRUC  DATE 01/07/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,9 +47,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      CHARACTER*8 MA,NOMA,NOGMA,KBID,NOGMA2,KPOS,OPTION,NOM1,NOM2,TOUT
+      CHARACTER*8 MA,NOMA,NOGMA,KBID,NOGMA2,KPOS,NOM1,NOM2,TOUT
       CHARACTER*8 ALARM
-      CHARACTER*16 CONCEP,CMD
+      CHARACTER*16 CONCEP,CMD,OPTION
       CHARACTER*24 LISMA
       CHARACTER*132 CARD
 C     ------------------------------------------------------------------
@@ -399,7 +399,7 @@ C       -------------------
 
 C            -- TRAITEMENT DE L'OPTION FACE_NORMALE :
 C               -----------------------------------
-          IF (OPTION.EQ.'FACE_NOR') THEN
+          IF (OPTION(1:12).EQ.'FACE_NORMALE') THEN
             CALL CGMAFN('CREA_GROUP_MA',IOCC,MA,LISMA,NBMA)
 
 C            -- TRAITEMENT DE L'OPTION SPHERE :
@@ -409,13 +409,18 @@ C               -----------------------------
 
 C            -- TRAITEMENT DE L'OPTION CYLINDRE :
 C               -------------------------------
-          ELSE IF (OPTION.EQ.'CYLINDRE') THEN
+          ELSE IF (OPTION(1:8).EQ.'CYLINDRE') THEN
             CALL CGMACY('CREA_GROUP_MA',IOCC,MA,LISMA,NBMA)
 
 C            -- TRAITEMENT DE L'OPTION BANDE :
 C               ----------------------------
           ELSE IF (OPTION(1:5).EQ.'BANDE') THEN
             CALL CGMABA('CREA_GROUP_MA',IOCC,MA,LISMA,NBMA)
+
+C            -- TRAITEMENT DE L'OPTION APPUI_LACHE :
+C               ----------------------------------
+          ELSE IF (OPTION(1:11).EQ.'APPUI_LACHE') THEN
+            CALL CGMAAL('CREA_GROUP_MA',IOCC,MA,LISMA,NBMA)
           END IF
 
 C        -- CREATION ET AFFECTATION DU GROUP_MA :

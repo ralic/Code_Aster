@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 31/01/2003   AUTEUR PABHHHH N.TARDIEU 
+#@ MODIF recal Macro  DATE 10/07/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,9 +53,9 @@ def transforme_list_Num(parametres,res_exp):
 def mes_concepts(list_concepts=[],base=None):
   # Fonction qui liste les concepts créés
    for e in base.etapes:
-      if e.__class__.__name__ == 'MACRO_ETAPE':
+      if e.nom in ('INCLUDE','MACR_RECAL',) :
         list_concepts=list(mes_concepts(list_concepts=list_concepts,base=e))
-      elif e.sd != None:
+      elif (e.sd != None) and (e.parent.nom=='INCLUDE') :
         nom_concept=e.sd.get_name()
         if not(nom_concept in list_concepts):
           list_concepts.append( nom_concept )
@@ -140,6 +140,7 @@ def calcul_F(self,UL,para,val,reponses):
       
       #on ajoute dans L tous ce qui est avant le premier paramètre 
       Fichier_Resu.append(pre_bloc)
+      Fichier_Resu.append('\n')
       #On ajoute la nouvelle valeur des parametres
       dim_para=len(para)
       for j in range(dim_para):

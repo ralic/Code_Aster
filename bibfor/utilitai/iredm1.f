@@ -8,7 +8,7 @@
      +                   AMORED(*), FREQ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C
       LAMOR = IAMOR .NE. 0
       CALL GETRES( K8B, K8B, NOMCMD )
       CALL GETVIS(' ','UNITE'     ,1,1,1,IFMIS ,NU)
-      CALL ASOPEN ( IFMIS, ' ' )
+      CALL ULOPEN( IFMIS,' ',' ','NEW','O')
       CALL GETVTX(' ','IMPR_MODE_STAT' ,1,1,1,IMPMOD,NI)
       CALL GETVTX(' ','IMPR_MODE_MECA' ,1,1,1,IMPMEC,NI)
       CALL GETVTX(' ','SOUS_TITRE',1,1,1,TITRE ,NTI)

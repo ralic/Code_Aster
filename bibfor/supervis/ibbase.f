@@ -1,9 +1,10 @@
-      SUBROUTINE IBBASE ( IER )
+      SUBROUTINE IBBASE ( IER , FICHDF)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER             IER
+      CHARACTER*(*)             FICHDF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 13/01/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF SUPERVIS  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -201,7 +202,13 @@ C
 C        --- RE-DEFINITION DE L'ENVIRONNEMENT SELON DESIRS UTILISATEUR -
 C
 C        --- INITIALISATION DE CHAQUE BASE ---
-         DO 300 IBASE = 1, MXBASE
+         IF ( FICHDF .NE. ' ') THEN
+            CALL JELIHD ('GLOBALE ',FICHDF,'G')  
+         ENDIF   
+         IDEB = 1
+         IF ( FICHDF .NE. ' ') IDEB = 2
+
+         DO 300 IBASE = IDEB, MXBASE
             CALL JEINIF( STIN(IBASE), STOUT(IBASE),
      +                   NOMBA(IBASE)(1:8), NOMBA(IBASE)(1:1),
      +                   BALGRE(IBASE),BANBBL(IBASE),BALGBL(IBASE)*KILO)

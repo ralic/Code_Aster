@@ -4,12 +4,12 @@
 C
       IMPLICIT      NONE
       INTEGER       ITMAX, NBMAT, NR, NVI, ICOMP, IRTET
-      REAL*8        TOLER, MATER(NBMAT, 2), DEPS(*), EPSD(*), SIGD(*)
-      REAL*8        VIND(*), SIGF(*), VINF(*), SEUIL, DEVG(*),DEVGII
+      REAL*8        TOLER, MATER(NBMAT, 2), DEPS(6), EPSD(6), SIGD(6)
+      REAL*8        VIND(*), SIGF(6), VINF(*), SEUIL, DEVG(6),DEVGII
       CHARACTER*8   MOD
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,7 +92,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL A PRIORI DE LA PROJECTION AU SOMMET -----------------------
 C ======================================================================
-      CALL CALCPJ(NDT, NDI, NBMAT, MATER, GAMP, EVP, SIGD, SIGE, LGLEPS,
+      CALL CALCPJ(NBMAT, MATER, GAMP, EVP, SIGD, SIGE, LGLEPS,
      +            INVARE, GAMPS, EVPS, INVARS, B)
 C ======================================================================
 C --- FAUT-IL FAIRE UNE PROJECTION AU SOMMET DU DOMAINE ? --------------
@@ -126,7 +126,7 @@ C --- LA PROJECTION AU SOMMET DU DOMAINE N'EST PAS RETENUE -------------
 C ======================================================================
 C --- CALCUL INITIAL (ITERATION 0) -------------------------------------
 C ======================================================================
-         CALL LGLINI(NDT, NDI, YD, NR, NBMAT, MATER, SEUIL, SIGD, DEPS,
+         CALL LGLINI(YD, NBMAT, MATER, SEUIL, SIGD, DEPS,
      +               DEVG, DEVGII, TRACEG, DY)
          ITER = 0
  1       CONTINUE
@@ -168,7 +168,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE F A L'ITERATION ITER + 1 -------------------------------
 C ======================================================================
-         CALL LGLDOM(NBMAT, MATER, NR, YF, FITER)
+         CALL LGLDOM(NBMAT, MATER, YF, FITER)
 C ======================================================================
 C --- A-T-ON CONVERGE ? ------------------------------------------------
 C ======================================================================
@@ -212,7 +212,7 @@ C ======================================================================
 C ======================================================================
 C --- NOUVEAU CALCUL PLASTIQUE -----------------------------------------
 C ======================================================================
-               CALL LGLITE(NDT, NDI, YF, NR, NBMAT, MATER, FITER,
+               CALL LGLITE(YF, NBMAT, MATER, FITER,
      +                     DEVG, DEVGII, TRACEG, DY)
                IRTETI = 1
             ELSE

@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 30/01/2002   AUTEUR VABHHTS J.PELLET 
+%& MODIF OPTIONS  DATE 20/05/2003   AUTEUR G8BHHXD X.DESROCHES 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +17,8 @@
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 % ======================================================================
 CHAR_MECA_ROTA_R
+        << CHAR_MECA_ROTA_R: (MOT-CLE : ROTATION): CALCUL DU SECOND MEMBRE
+           ELEMENTAIRE CORRESPONDANT AUX FORCES CENTRIFUGES >>
 OPTION__
    IN__
         PGEOMER  GEOM_R

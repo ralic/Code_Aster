@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 03/06/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,11 +41,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      APRNO, NCMP, NEC, IERD, GD, ITRESR(3), ITRESI(3)
+      INTEGER      ULISOP
       CHARACTER*4  CTYP, TYPE(3), CHA1, CHA2
       CHARACTER*8  K8B, NOMRES, MASSE, RIGI, NOMA, INTERF
       CHARACTER*8  MAEL, BASEMO
       CHARACTER*14 NUMDDL
-      CHARACTER*16 CONCEP, NOMCMD, TYPRES
+      CHARACTER*16 CONCEP, NOMCMD, TYPRES, K16NOM
       CHARACTER*19 KREFE, KINST, KNUME
       CHARACTER*24 NPRNO, REFE, DEEQ
       CHARACTER*24 NOMCH1, NOMCH2, KBID, MATRIC, CHAMNO, CHAMN1, CHAMN2
@@ -72,10 +73,13 @@ C     ----- RECUPERATION UNITE DE MISS ---
       CALL GETVIS ( ' ', 'UNITE', 1,1,1, IFMIS, NU )
       CALL GETVTX ( ' ', 'NOM'  , 1,1,1, FICHI, NF )
       IF ( NF .EQ. 0 ) THEN
-         CALL ASOPEN ( IFMIS, ' ' )
+        K16NOM = ' '
+        IF ( ULISOP ( IFMIS, K16NOM ) .EQ. 0 )  THEN 
+          CALL ULOPEN ( IFMIS,' ',' ','NEW','O')
+        ENDIF 
       ELSE
-         BASE = './tmp_miss3d/'//FICHI
-         CALL ASOPEN ( IFMIS, BASE )
+        BASE = './tmp_miss3d/'//FICHI
+        CALL ULOPEN ( IFMIS, BASE, ' ', 'NEW', 'O' )
       ENDIF
 C
       CALL GETVTX(' ','TITRE',1,1,1,TITRE,NTI)

@@ -1,4 +1,4 @@
-#@ MODIF V_JDC Validation  DATE 29/05/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF V_JDC Validation  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,6 +72,7 @@ class JDC(V_MCCOMPO.MCCOMPO):
             if not e.isvalid():
               valid = 0
               break
+        self.state="unchanged"
         self.valid = valid
         return self.valid
 

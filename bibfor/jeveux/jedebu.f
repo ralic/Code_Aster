@@ -1,6 +1,6 @@
       SUBROUTINE JEDEBU ( NBFI, LZON, IADZON, LMO, CMES, CVIG, IDB )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 25/09/2001   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,8 +102,6 @@ C ----------------------------------------------------------------------
       COMMON /JENVJE/  MSLOIS
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      INTEGER          L32IS
-      COMMON /IL32JE/  L32IS
       LOGICAL          LCRA
       COMMON /LENVJE/  LCRA
       INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
@@ -142,7 +140,6 @@ C -----------------  ENVIRONNEMENT MACHINE -----------------------------
       LOUA = LOUAEM()
       LCRA = LCRAEM()
       LUNDEF = ISNNEM()
-      L32IS = 32/LOIS
       MSLOIS = LOIS - 1
 C -----------------  NOMBRE DE BASES -----------------------------------
       NBFIC = MIN ( NBFI , N , LEN(CLASSE) )

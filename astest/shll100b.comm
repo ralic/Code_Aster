@@ -1,4 +1,4 @@
-# MODIF  DATE 03/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # TITRE  REPONSE HARMONIQUE D'UNE BARRE PAR SOUS-STRUCTURATION DYNAMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -595,8 +595,7 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHARM2,
 #----------------------------------------------------------
 #
 
-DEFUFI(IMPRESSION=_F( NOM = 'HARMDIR',
-                      UNITE = 38))
+DEFI_FICHIER( FICHIER= 'HARMDIR', UNITE = 38)
 
 IMPR_RESU(RESU=_F( RESULTAT = HARMDIR,
                   FICHIER = 'HARMDIR',

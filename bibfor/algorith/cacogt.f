@@ -1,23 +1,16 @@
-       SUBROUTINE CACOGT (OPTION,COMPOR,MECA,THMC,THER,HYDR,
-     >                           INMECA,INTHMC,INTHER,INHYDR,
-     >                           IMATE,
-     &                           NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,
-     &                           YAMEC,YAP1,NBPHA1,YAP2,NBPHA2,YATE,
-     &                           ADDEME,ADCOME,ADVIME,ADVITH,
-     &                           ADDEP1,ADCP11,ADCP12,
-     &                           ADDEP2,ADCP21,ADCP22,
-     &                           ADDETE,ADCOTE,
-     &                           CONGEM,CONGEP,
-     &                           VINTM,VINTP,
-     &                           DSDE,
-     &                           EPSV,DEPSV,P1,P2,DP1,DP2,T,DT,PHI,
-     &                           PVP,H11,H12,H21,RHO11,PHI0,PVP0,
-     &                           P10,P20,T0,SAT,RV0,
-     &                           G1D,G1F,G1C,J1D,J1F,J1C,J2,J3,G2,G3)
+       SUBROUTINE CACOGT (OPTION,COMPOR,MECA,THMC,THER,HYDR,IMATE,NDIM,
+     +               DIMDEF,DIMCON,NVIMEC,NVITH,YAMEC,YAP1,NBPHA1,YAP2,
+     +               NBPHA2,YATE,ADDEME,ADCOME,ADVIME,ADVITH,ADDEP1,
+     +               ADCP11,ADCP12,ADDEP2,ADCP21,ADCP22,ADDETE,ADCOTE,
+     +               CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,P1,P2,
+     +               DP1,DP2,T,DT,PHI,PVP,H11,H12,H21,RHO11,PHI0,PVP0,
+     +               P10,P20,T0,SAT,RV0,G1D,G1F,G1C,J1D,J1F,J1C,J2,J3,
+     +               G2,G3)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/09/2002   AUTEUR UFBHHLL C.CHAVANT 
+C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,8 +37,7 @@ C
 C  VARIABLES IN / OUT
 C
       IMPLICIT NONE
-      CHARACTER*16   OPTION,MECA,THMC,THER,HYDR,COMPOR(*)    
-      INTEGER  INMECA,INTHMC,INTHER,INHYDR
+      CHARACTER*16   OPTION,MECA,THMC,THER,HYDR,COMPOR(*)
       INTEGER        NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,IMATE
       INTEGER        YAMEC,YAP1,NBPHA1,YAP2,NBPHA2,YATE
       INTEGER        ADCOME,ADCP11,ADCP12,ADCP21,ADCP22,ADCOTE
@@ -62,8 +54,6 @@ C
 C
       REAL*8         SATM,EPSVM,PHIM,RHO11M,RHO12M,RHO21M,PVPM
       REAL*8         BIDON
-      INTEGER ELA,CJS,ENLGAT,ESUGAT,ESSGAT,EPSGAT,CAMCLA,LAIGLE
-      LOGICAL PORELA
 C       
       INTEGER  I,K
       REAL*8   S0GAT,RHO110,RHO120,RHO210
@@ -102,13 +92,13 @@ C  B.G. NONSAT
 C
 C  DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MATERIAU  
 C 
-      INTEGER     NELAS,NLIQ,NGAZ,NVAP,NHOM,NRESMA,NSAT,NINIG
-      PARAMETER   (NELAS=4,NLIQ=5,NGAZ=3,NVAP=3,NHOM=4,NSAT=2)
+      INTEGER     NLIQ,NGAZ,NVAP,NHOM,NRESMA,NSAT,NINIG
+      PARAMETER   (NLIQ=5,NGAZ=3,NVAP=3,NHOM=4,NSAT=2)
 C   NRESMA EST LE MAX DE NELAS,NLIQ,NGAZ,NVAP,NHOM
       PARAMETER   (NRESMA = 18)
-      REAL*8      ELAS(NELAS),LIQ(NLIQ),GAZ(NGAZ),VAP(NVAP),HOM(NHOM)
+      REAL*8      LIQ(NLIQ),GAZ(NGAZ),VAP(NVAP),HOM(NHOM)
       REAL*8      SATUR(NSAT)
-      CHARACTER*8 NCRA1(NELAS),NCRA2(NLIQ),NCRA3(NGAZ),NCRA4(NVAP)
+      CHARACTER*8 NCRA2(NLIQ),NCRA3(NGAZ),NCRA4(NVAP)
       CHARACTER*8 NCRA5(NHOM),NCRA6(NSAT)
       CHARACTER*2 CODRET(NRESMA)
 CCCCC
@@ -141,22 +131,22 @@ C BG
        DATA BGCR9 /'COEF_HENRY'/
 CCCCCC
 
-      DATA NCRA1 / 'E','NU','RHO','ALPHA' /
       DATA NCRA2 / 'RHO','UN_SUR_K','ALPHA','CP','VISC' /
       DATA NCRA3 / 'MASS_MOL','CP','VISC' /
       DATA NCRA4 / 'MASS_MOL','CP','VISC' /
       DATA NCRA5 / 'R_GAZ','RHO','CP','BIOT_COE' / 
       DATA NCRA6 / 'SATU_PRE','D_SATU_P' /
 C
-      DATA ELA    /1/
-      DATA CJS    /2/ 
-      DATA ENLGAT /3/
-      DATA ESSGAT /4/     
-      DATA EPSGAT /5/     
-      DATA ESUGAT /6/
-      DATA CAMCLA /7/
-      DATA LAIGLE /8/
       DATA RKBINI /250.D5/
+C **********************************************************************
+C --- AJOUT BIDON RF POUR COMPIL
+C --- CES VALEURS SONT NECESSAIRES POUR UNE LOI DE COUPLAGE AUTRE
+C --- QUE LIQU_SATU_GAT OU LIQU_NSAT_GAT 
+C **********************************************************************
+      ALPHA0 = 0.0D0
+      CS     = 0.0D0
+      BIOT   = 0.0D0
+      K0     = 0.0D0
 C
 C CALCUL EPSV AU TEMPS MOINS
       EPSVM=EPSV-DEPSV
@@ -164,14 +154,6 @@ C
 C INITIALISATION VARIABLE PORELA
 C 
 C
-      IF (YAMEC.EQ.1) THEN
-       PORELA = (INMECA.EQ.ELA)    .OR.
-     +          (INMECA.EQ.CJS)    .OR.
-     +          (INMECA.EQ.CAMCLA) .OR.
-     +          (INMECA.EQ.LAIGLE)
-      ELSE
-        PORELA = .FALSE.
-      ENDIF
 C **********************************************************************
 C  RECUPERATION DES DONNEES
 C **********************************************************************
@@ -190,7 +172,7 @@ C
  105     CONTINUE
       SY=SY/3.D0
 C
-          IF (INMECA.EQ.ESUGAT)THEN
+          IF (MECA.EQ.'SURF_ETAT_NSAT')THEN
 C         
             NBPAR  = 0
             VALPAR = 0.D0
@@ -222,19 +204,8 @@ C
 C   COEFFICIENTS MECANIQUES
 C
       IF (YAMEC.EQ.1) THEN
-        IF (PORELA) THEN
-           CALL RCVALA(IMATE,'ELAS',0,' ',0.D0,NELAS,
-     &                 NCRA1,ELAS,CODRET,'FM')
-           YOUNG=ELAS(1)
-           NU=ELAS(2)
-           RHOS=ELAS(3)
-           ALPHA0=ELAS(4)
-           K0=YOUNG/3.D0/(1.D0-2.D0*NU)
-           BIOT=HOM(4)
-           CS=(1.D0-BIOT)/K0
-        ENDIF
 C
-        IF (INMECA.EQ.ENLGAT) THEN
+        IF (MECA.EQ.'ELAS_THM') THEN
 C
 C  RECUPERATION DES COEFFICIENTS DU MATERIAU PORO_THM_GAT 
 C
@@ -388,7 +359,7 @@ C
       RDBTDT=3.D0*(RDKBDT*XMT+RKB*RDXMDT)
       BETAT=XMT
       ENDIF
-          IF (INMECA.EQ.EPSGAT)THEN
+          IF (MECA.EQ.'CAM_CLAY_THM')THEN
 C
       NBPAR  = 0
       VALPAR = 0.D0
@@ -431,7 +402,7 @@ C
       RBBP=1.D0-RKB*COMPS
       RDBBDT=-RDKBDT*COMPS
           ENDIF       
-          IF (INMECA.EQ.ESUGAT)THEN
+          IF (MECA.EQ.'SURF_ETAT_NSAT')THEN
             CALL RCVALA(IMATE,'THM_LIQU',0,' ',0.D0,NCOF,BGCR9,
      &               COFGAT,CODRET,'FM')
             HENRY=COFGAT(1)
@@ -569,32 +540,8 @@ C
       IF ((OPTION(1:9).EQ.'RAPH_MECA').OR.
      &   (OPTION(1:9).EQ.'FULL_MECA')) THEN
          IF (YAMEC.EQ.1) THEN
-          IF (INMECA.EQ.ELA   .OR.
-     +        INMECA.EQ.CJS   .OR.
-     +        INMECA.EQ.CAMCLA.OR.
-     +        INMECA.EQ.LAIGLE    ) THEN
-            VARIA=DEPSV
-            IF (YATE.EQ.1) THEN
-                VARIA=VARIA-3.D0*ALPHA0*DT 
-            ENDIF         
-            IF ((THMC.EQ.'LIQU_SATU').OR.(THMC.EQ.'GAZ')) THEN
-               VARIA=VARIA+DP1*CS
-               VINTP(ADVITH)=
-     &             BIOT-PHI0-(BIOT-VINTM(ADVITH)-PHI0)*EXP(-VARIA)
-            ENDIF
-            IF (THMC.EQ.'LIQU_GAZ_ATM') THEN
-               VARIA=VARIA+CS*(-SAT*DP1)
-               VINTP(ADVITH)=
-     &             BIOT-PHI0-(BIOT-VINTM(ADVITH)-PHI0)*EXP(-VARIA)
-            ENDIF
-            IF((THMC.EQ.'LIQU_VAPE_GAZ').OR.(THMC.EQ.'LIQU_GAZ'))THEN
-               VARIA=VARIA+CS*(DP2-SAT*DP1)
-               VINTP(ADVITH)=
-     &             BIOT-PHI0-(BIOT-VINTM(ADVITH)-PHI0)*EXP(-VARIA)
-            ENDIF
-          ENDIF
-          IF (INMECA.EQ.ENLGAT.OR.INMECA.EQ.ESSGAT
-     &                        .OR.INMECA.EQ.EPSGAT)THEN
+          IF (MECA.EQ.'ELAS_THM'.OR.MECA.EQ.'SURF_ETAT_SATU'
+     &                        .OR.MECA.EQ.'CAM_CLAY_THM')THEN
             VARIA=DEPSV
             IF (YATE.EQ.1) THEN
                 VARIA=VARIA-3.D0*BETAT*DT 
@@ -606,7 +553,7 @@ C
             ENDIF
 C
           ENDIF
-          IF (INMECA.EQ.ESUGAT)THEN
+          IF (MECA.EQ.'SURF_ETAT_NSAT')THEN
 C          CALCUL DE DN
             DSUC=DP2-DP1
             SUCN=ABS(DSUC)/ATMP
@@ -1277,8 +1224,8 @@ C   TERME SUIVANTE  EST SANS CONTROLE, TOUT LE MONDE Y PASSE
 C        DQ/DT  
              DSDE(ADCOTE,ADDETE)=DSDE(ADCOTE,ADDETE)+C0EPS
             IF (YAMEC.EQ.1) THEN
-             IF (INMECA.EQ.ENLGAT.OR.INMECA.EQ.ESSGAT
-     &                           .OR.INMECA.EQ.EPSGAT) THEN
+             IF (MECA.EQ.'ELAS_THM'.OR.MECA.EQ.'SURF_ETAT_SATU'
+     &                           .OR.MECA.EQ.'CAM_CLAY_THM') THEN
 C        DQ/DEPSILON
                DO 112 I=1,3
                   DSDE(ADCOTE,ADDEME+NDIM-1+I)=
@@ -1286,17 +1233,7 @@ C        DQ/DEPSILON
      &                   +RBTP*T
  112           CONTINUE
              ENDIF
-          IF (INMECA.EQ.ELA   .OR.
-     +        INMECA.EQ.CJS   .OR.
-     +        INMECA.EQ.CAMCLA.OR.
-     +        INMECA.EQ.LAIGLE    ) THEN
-               DO 102 I=1,3
-                  DSDE(ADCOTE,ADDEME+NDIM-1+I)=
-     &                   DSDE(ADCOTE,ADDEME+NDIM-1+I)
-     &                   +ALPHA0*YOUNG/(1.D0-2.D0*NU)*T
- 102           CONTINUE
-             ENDIF
-             IF (INMECA.EQ.ESUGAT) THEN
+             IF (MECA.EQ.'SURF_ETAT_NSAT') THEN
 C            CALCUL DE DQ/D(EPSILON)
                DO 114 I=1,3
                   DSDE(ADCOTE,ADDEME+NDIM-1+I)=
@@ -1337,19 +1274,12 @@ C
 C   TERME SUIVANTE  EST SANS CONTROLE, TOUT LE MONDE Y PASSE
             CONGEP(ADCOTE)=CONGEP(ADCOTE)+C0EPS*DT
             IF (YAMEC.EQ.1) THEN
-             IF (INMECA.EQ.ENLGAT.OR.INMECA.EQ.ESSGAT
-     &                           .OR.INMECA.EQ.EPSGAT) THEN
+             IF (MECA.EQ.'ELAS_THM'.OR.MECA.EQ.'SURF_ETAT_SATU'
+     &                           .OR.MECA.EQ.'CAM_CLAY_THM') THEN
                CONGEP(ADCOTE)=CONGEP(ADCOTE)
      &                  +RBTP*(T-DT/2)*DEPSV
              ENDIF
-          IF (INMECA.EQ.ELA   .OR.
-     +        INMECA.EQ.CJS   .OR.
-     +        INMECA.EQ.CAMCLA.OR.
-     +        INMECA.EQ.LAIGLE    ) THEN
-               CONGEP(ADCOTE)=CONGEP(ADCOTE)
-     &              +ALPHA0*YOUNG/(1.D0-2.D0*NU)*(T-DT/2)*DEPSV
-             ENDIF
-             IF (INMECA.EQ.ESUGAT) THEN
+             IF (MECA.EQ.'SURF_ETAT_NSAT') THEN
 C            CALCUL DE Q, PARTIE MECANIQUE
                CONGEP(ADCOTE)=CONGEP(ADCOTE)
      &                     +DC*(T-DT/2)*DEPSV

@@ -4,7 +4,7 @@ C
       REAL*8        GAMCJS, SIGC, PARAME(5), RGDEV, RUCPLA, DOMREV
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/03/2002   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,11 +33,12 @@ C --- : RGDEV  : FONCTION G(S) -----------------------------------------
 C --- : RUCPLA : CRITERE PLASTIQUE -------------------------------------
 C OUT : DOMREV : DOMAINE DE REVERSIBILITE (FORMULATION BIS) ------------
 C ======================================================================
-      REAL*8  AGAMP, H0, HLODE, MUN
+      REAL*8  AGAMP, H0, HLODE, MUN, UN
 C ======================================================================
 C --- INITIALISATION ---------------------------------------------------
 C ======================================================================
       PARAMETER       ( MUN    = -1.0D0  )
+      PARAMETER       (  UN    =  1.0D0  )
       AGAMP  = PARAME(2)
 C ======================================================================
 C --- CALCUL DE H0 = (1-GAMMA_CJS)**(1/6) ------------------------------
@@ -46,6 +47,6 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE FBIS = (G(S)/(SIG_C*H0))**(1/A(GAMP))-U(GAMP) ----------
 C ======================================================================
-      DOMREV = (RGDEV/(SIGC*H0))**(1/AGAMP) - RUCPLA
+      DOMREV = (RGDEV/(SIGC*H0))**(UN/AGAMP) - RUCPLA
 C ======================================================================
       END

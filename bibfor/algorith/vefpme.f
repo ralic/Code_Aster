@@ -7,7 +7,7 @@
       REAL*8 PARTPS(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/10/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,9 +59,10 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      PARAMETER (NBCHMX=12)
+      PARAMETER (NBCHMX=13)
       INTEGER JCHAR,JINF,JLVE,LONLIS,JTYP
       INTEGER IBID,IRET,NCHAR,ILVE,K,ICHA,NUMCHM
+      CHARACTER*5 SUFFIX
       CHARACTER*6 NOMLIG(NBCHMX),NOMPAF(NBCHMX),NOMPAR(NBCHMX)
       CHARACTER*6 NOMOPF(NBCHMX),NOMOPR(NBCHMX)
       CHARACTER*7 NOMCMP(3)
@@ -74,15 +75,15 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       COMPLEX*16 CBID
 
       DATA NOMLIG/'.FORNO','.F3D3D','.F2D3D','.F1D3D','.F2D2D','.F1D2D',
-     &     '.F1D1D','.PRESS','.FCO3D','.FCO2D','.FLUX','.PESAN'/
+     &   '.F1D1D','.PRESS','.FCO3D','.FCO2D','.FLUX','.PESAN','.VEASS'/
       DATA NOMOPF/'FORC_F','FF3D3D','FF2D3D','FF1D3D','FF2D2D','FF1D2D',
-     &     'FF1D1D','PRES_F','FFCO3D','FFCO2D','FLUX_F','PESA_R'/
+     &   'FF1D1D','PRES_F','FFCO3D','FFCO2D','FLUX_F','PESA_R','     '/
       DATA NOMPAF/'FORNOF','FF3D3D','FF2D3D','FF1D3D','FF2D2D','FF1D2D',
-     &     'FF1D1D','PRESSF','FFCO3D','FFCO2D','FLUXF','PESANR'/
+     &   'FF1D1D','PRESSF','FFCO3D','FFCO2D','FLUXF','PESANR','      '/
       DATA NOMOPR/'FORC_R','FR3D3D','FR2D3D','FR1D3D','FR2D2D','FR1D2D',
-     &     'FR1D1D','PRES_R','FRCO3D','FRCO2D','FLUX_R','PESA_R'/
+     &   'FR1D1D','PRES_R','FRCO3D','FRCO2D','FLUX_R','PESA_R','     '/
       DATA NOMPAR/'FORNOR','FR3D3D','FR2D3D','FR1D3D','FR2D2D','FR1D2D',
-     &     'FR1D1D','PRESSR','FRCO3D','FRCO2D','FLUXR','PESANR'/
+     &    'FR1D1D','PRESSR','FRCO3D','FRCO2D','FLUXR','PESANR','     '/
 
 
       CALL JEMARQ()
@@ -93,7 +94,6 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       LIGRMO = LIGREZ
       IF (LIGRMO.EQ.' ') LIGRMO = MODELE(1:8)//'.MODELE'
       IF (LVECHP.EQ.' ') LVECHP = '&&VEMFPI'
-
 
       BIDON = .TRUE.
       CALL JEEXIN(CHARGE,IRET)
@@ -117,7 +117,6 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
         CALL WKVECT(LVECHP//'.LISTE_RESU','V V K24',LONLIS,JLVE)
         CALL JEECRA(LVECHP//'.LISTE_RESU','LONUTI',0,K8BID)
       END IF
-
 
       CALL MEGEOM(MODELE,ZK24(JCHAR) (1:8),EXIGEO,CHGEOM)
       CALL MECARA(CARELE,EXICAR,CHCARA)
@@ -166,8 +165,13 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
             ELSE
               LIGREL = LIGRMO
             END IF
-            LCHIN(1) = LIGRCH(1:13)//NOMLIG(K)//'.DESC'
-            CALL EXISD('CHAMP_GD',LCHIN(1),IRET)
+            IF (NOMLIG(K).EQ.'.VEASS') THEN
+              SUFFIX = '     '
+            ELSE
+              SUFFIX = '.DESC'
+            END IF
+            LCHIN(1) = LIGRCH(1:13)//NOMLIG(K)//SUFFIX
+            CALL JEEXIN(LCHIN(1),IRET)
             IF (IRET.NE.0) THEN
               CALL JEVEUO(NOMCHA//'.TYPE','L',JTYP)
               IF (ZK8(JTYP).EQ.'MECA_RE ') THEN
@@ -181,10 +185,16 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
               CALL GCNCO2(NEWNOM)
               LCHOUT(1) (10:16) = NEWNOM(2:8)
               CALL CORICH('E',LCHOUT(1),ICHA,IBID)
-              CALL CALCUL('S',OPTION,LIGREL,13,LCHIN,LPAIN,1,LCHOUT,
+              IF (NOMLIG(K).EQ.'.VEASS') THEN
+                CALL JEVEUO(LCHIN(1),'L',JLCHIN)
+                CALL COPISD('CHAMP_GD','V',ZK8(JLCHIN),LCHOUT(1))
+              ELSE
+                CALL CALCUL('S',OPTION,LIGREL,13,LCHIN,LPAIN,1,LCHOUT,
      &                    LPAOUT,'V')
+              ENDIF
               ILVE = ILVE + 1
               ZK24(JLVE-1+ILVE) = LCHOUT(1)
+C              CALL JEIMPO('MESSAGE',LCHOUT(1),' ','VEFPME')
             END IF
    10     CONTINUE
         END IF

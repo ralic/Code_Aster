@@ -1,5 +1,5 @@
       SUBROUTINE TE0415(OPTIOZ,NOMTZ)
-C MODIF ELEMENTS  DATE 28/01/2003   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +81,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
         CALL JEVECH('PGEOMER','L',JGEOM)
         CALL JEVECH('PCACOQU','L',JCARA)
-        CALL TECACH(.FALSE.,.FALSE.,'PCOMPOR',1,ICOMPO)
+        CALL TECACH('NNN','PCOMPOR',1,ICOMPO,IRET)
 
 C
         CALL JEVECH('PCONTRR','L',ICHG)
@@ -249,7 +249,7 @@ C     --------------------------------------------------------
         CALL JEVECH('PVARIGR','L',ICHG)
         CALL JEVECH('PCOMPOR','L',ICOMPO)
         READ (ZK16(ICOMPO-1+2),'(I16)') NBVARI
-        CALL TECACH(.TRUE.,.TRUE.,'PVARIGR',7,JTAB)
+        CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
         LGPG = MAX(JTAB(6),1)*JTAB(7)
         CALL JEVECH('PNBSP_I','L',JNBSPI)
         NBCOU=ZI(JNBSPI-1+1)
@@ -399,7 +399,7 @@ C ------------------------------------------------------------
         CALL JEVECH('PVARIGR','L',ICHG)
         CALL JEVECH('PCOMPOR','L',ICOMPO)
         READ (ZK16(ICOMPO-1+2),'(I16)') NBVARI
-        CALL TECACH(.TRUE.,.TRUE.,'PVARIGR',7,JTAB)
+        CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
         LGPG = MAX(JTAB(6),1)*JTAB(7)
 
         CALL JEVECH('PNBSP_I','L',JNBSPI)

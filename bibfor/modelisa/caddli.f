@@ -1,6 +1,6 @@
       SUBROUTINE CADDLI(NOMCMD,MOTFAC,FONREE,CHAR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/09/2002   AUTEUR PABHHHH N.TARDIEU 
+C MODIF MODELISA  DATE 20/05/2003   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,6 +73,19 @@ C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
       CHARACTER*16 MOTCLE(NMOCL),MOTCL2(5),TYMOC2(5)
       CHARACTER*19 LIGRMO,LISREL
       CHARACTER*24 NOMNOE
+ 
+C--- Variables pour le mot-clef "LIAISON = ENCASTRE"      
+      CHARACTER*16 MOTLIA(NMOCL)
+      CHARACTER*72 VALLIA(NMOCL)
+      INTEGER NDLIA,LIAIMP(NMOCL)
+      CHARACTER*8 CMP1,CMP2,CMP3,CMP4,CMP5,CMP6   
+      INTEGER  ICMP1,ICMP2,ICMP3,ICMP4,ICMP5,ICMP6,ICMP7  
+      LOGICAL EXISDG 
+      INTEGER INDIK8
+      CHARACTER*8  NOMG,NOMCMP(NMOCL)
+      INTEGER INOM,NBCMP
+      CHARACTER*9 NOMTE
+      INTEGER IDX,IDY,IDZ,IDRX,IDRY,IDRZ
 C-------------------------------------------------------------
 
 
@@ -92,6 +105,7 @@ C
       LISREL = '&&CADDLI.RLLISTE'
       CALL GETFAC(MOTFAC,NDDLI)
       IF (NDDLI.EQ.0) GO TO 9999
+      
 C
 C ---------------------------------------------------
 C 1.  RECUPERATION DES MOTS-CLES DDL SOUS XXX_IMPO
@@ -107,18 +121,67 @@ C ---------------------------------------------------
         CALL UTFINM()
       END IF
       CALL GETMFM(MOTFAC,NMCL,MOTCLE,TYMOCL,N)
+
+C --- RECUPERATION DU MOT-CLEF "LIAISON"
+
+
+      I = 1
+      DO 9 J = 1,NMCL
+        IF (MOTCLE(J).EQ.'LIAISON') THEN
+          MOTLIA(I) = MOTCLE(J)
+          I = I + 1
+        END IF
+   9  CONTINUE
+      NDLIA = I-1
+      
+      
       I = 1
       DO 10 J = 1,NMCL
         IF (MOTCLE(J).NE.'TOUT' .AND. MOTCLE(J).NE.'GROUP_NO' .AND.
      +      MOTCLE(J).NE.'NOEUD' .AND. MOTCLE(J).NE.'GROUP_MA' .AND.
      +      MOTCLE(J).NE.'MAILLE' .AND. MOTCLE(J).NE.'EVOL_THER' .AND.
-     +      MOTCLE(J).NE.'DDL') THEN
+     +      MOTCLE(J).NE.'DDL'.AND.MOTCLE(J).NE.'LIAISON') THEN
+C---- PREDETERMINATION DES LIGNES CONTENANT DX, DY, DZ, DRX, DRY, DRZ
+          IF (MOTCLE(J).EQ.'DX') THEN
+           IDX = I
+          ENDIF
+          IF (MOTCLE(J).EQ.'DY') THEN
+           IDY = I
+          ENDIF
+          IF (MOTCLE(J).EQ.'DZ') THEN
+           IDZ = I
+          ENDIF
+          IF (MOTCLE(J).EQ.'DRX') THEN
+           IDRX = I
+          ENDIF
+          IF (MOTCLE(J).EQ.'DRY') THEN
+           IDRY = I
+          ENDIF
+          IF (MOTCLE(J).EQ.'DRZ') THEN
+           IDRZ = I
+          ENDIF
           MOTCLE(I) = MOTCLE(J)
           I = I + 1
         END IF
+       
    10 CONTINUE
       NDDLA = I - 1
 
+
+    
+C
+C --- RECUPERATION DES NOMS DES DDLS DISPO 
+C       -> STOCKAGE DANS NOMCMP (TABLEAU K8 de LONGUEUR NBCMP)
+C
+      NOMG = 'DEPL_R'
+      CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMG),'L',INOM)
+      CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMG),'LONMAX',NBCMP,K1BID)
+
+      NBCMP = NBCMP -1
+
+      DO 14 I = 1,NBCMP
+        NOMCMP(I) = ZK8(INOM-1+I)
+ 14   CONTINUE
 
 C --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
       CALL DISMOI('F','NOM_MODELE',CHAR(1:8),'CHARGE',IBID,MOD,IER)
@@ -144,6 +207,8 @@ C --- MAILLAGE ASSOCIE AU MODELE ---
       CALL JEVEUO(LIGRMO//'.PRNM','L',JPRNM)
 
 
+
+
 C ---------------------------------------------------
 C 2   ALLOCATION DE TABLEAUX DE TRAVAIL
 C ---------------------------------------------------
@@ -167,6 +232,23 @@ C                         DDLS IMPOSES PAR NOEUD
       CALL WKVECT('&&CADDLI.DIRECT','V V R',3*NBNOEU,JDIREC)
       CALL WKVECT('&&CADDLI.DIMENSION','V V I',NBNOEU,JDIMEN)
 
+C
+C ---  ON REGARDE S'IL Y A UN NOEUD DE LA LISTE 
+C
+      CMP1 = 'DX'
+      CMP2 = 'DY'
+      CMP3 = 'DZ'
+      CMP4 = 'DRX'
+      CMP5 = 'DRY'
+      CMP6 = 'DRZ'
+C
+      ICMP1 = INDIK8(NOMCMP,CMP1,1,NBCMP)
+      ICMP2 = INDIK8(NOMCMP,CMP2,1,NBCMP)
+      ICMP3 = INDIK8(NOMCMP,CMP3,1,NBCMP)
+      ICMP4 = INDIK8(NOMCMP,CMP4,1,NBCMP)
+      ICMP5 = INDIK8(NOMCMP,CMP5,1,NBCMP)
+      ICMP6 = INDIK8(NOMCMP,CMP6,1,NBCMP)
+
 C --------------------------------------------------------------
 C 3   BOUCLE SUR LES OCCURENCES DU MOT-CLE FACTEUR DDL IMPOSE
 C --------------------------------------------------------------
@@ -183,12 +265,11 @@ C        ----------------------------------------------
 
 
 C        3.2- RECUPERATION DE LA VALEUR IMPOSEE  (MOCLE(J)):
-C        ---------------------------------------------------
+C        ---------------------------------------------------        
         IF (FONREE.EQ.'REEL') THEN
           DO 20 J = 1,NDDLA
             CALL GETVR8(MOTFAC,MOTCLE(J),I,1,1,VALIMR(J),DDLIMP(J))
    20     CONTINUE
-
 
         ELSE IF (FONREE.EQ.'COMP') THEN
           DO 30 J = 1,NDDLA
@@ -203,6 +284,7 @@ C        ---------------------------------------------------
         END IF
 
 
+                              
 C        3.3- AFFECTATION DES RELATIONS LINEAIRES :
 C        ----------------------------------------------
 C       -- ON VERIFIE QUE SI EVOL_THER, IL EST EMPLOYE SEUL :
@@ -222,6 +304,36 @@ C       -- ON VERIFIE QUE SI EVOL_THER, IL EST EMPLOYE SEUL :
         DO 50 K = 1,NBNO
           INO = ZI(IALINO-1+K)
           CALL JENUNO(JEXNUM(NOMNOE,INO),NOMN)
+C---  GESTION DU MOT-CLEF "LIAISON"
+          DO 21 J = 1,NDLIA         
+            CALL GETVTX(MOTFAC,MOTLIA(J),I,1,1,VALLIA(J),LIAIMP(J))
+            IF (VALLIA(J).EQ.'ENCASTRE') THEN
+               IF (EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP1)) THEN
+                  VALIMR(IDX) = 0
+                  DDLIMP(IDX) = 1
+               ENDIF
+               IF (EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP2)) THEN
+                  VALIMR(IDY) = 0
+                  DDLIMP(IDY) = 1
+               ENDIF
+               IF (EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP3)) THEN
+                  VALIMR(IDZ) = 0
+                  DDLIMP(IDZ) = 1
+               ENDIF               
+               IF (EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP4)) THEN
+                  VALIMR(IDRX) = 0
+                  DDLIMP(IDRX) = 1
+               ENDIF     
+               IF (EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP5)) THEN
+                  VALIMR(IDRY) = 0
+                  DDLIMP(IDRY) = 1
+               ENDIF
+               IF (EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP6)) THEN
+                  VALIMR(IDRZ) = 0
+                  DDLIMP(IDRZ) = 1
+               ENDIF
+            ENDIF
+   21   CONTINUE 
 C
 C         -- CAS EVOL_THER/DDL (POUR AFFE_CHAR_THER_F):
 C         ---------------------------------------------

@@ -1,4 +1,4 @@
-#@ MODIF B_JDC Build  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF B_JDC Build  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,10 +95,7 @@ class JDC(CODE):
     for e in self.etapes:
       if not e.isactif():continue
       ret=e.Build()
-      if ret == 9999: # Il s'agit d'une commande de terminaison pas d'une erreur
-         pass
-      else:
-         ier=ier+ret
+      ier=ier+ret
       if ret == 0:
         e.update_context(self.g_context)
     #  On remet le contexte à blanc : impossible de créer des étapes

@@ -1,6 +1,6 @@
       SUBROUTINE TE0081(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/07/2002   AUTEUR CAMBIER S.CAMBIER 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,11 +126,11 @@ C      -------------------------------------------------
 
 C ---- RECUPERATION DU CHAMP DE L'HDRATATION SUR L'ELEMENT
 C      --------------------------------------------------
-      CALL TECACH(.FALSE.,.FALSE.,'PHYDRER',1,IHYDR)
+      CALL TECACH('NNN','PHYDRER',1,IHYDR,IRET)
 
 C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
 C      --------------------------------------------------
-      CALL TECACH(.FALSE.,.FALSE.,'PSECHER',1,ISECH)
+      CALL TECACH('NNN','PSECHER',1,ISECH,IRET)
 
 C ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
 C      ------------------------------------------------------------

@@ -1,11 +1,10 @@
-      SUBROUTINE CALCQ(NDT, S, GAMCJS, PREF, EPSSIG, Q)
+      SUBROUTINE CALCQ(S, GAMCJS, PREF, EPSSIG, Q)
 C
       IMPLICIT      NONE
-      INTEGER       NDT
-      REAL*8        S(*), GAMCJS, PREF, EPSSIG, Q(*)
+      REAL*8        S(6), GAMCJS, PREF, EPSSIG, Q(6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +35,7 @@ C OUT : Q      : DG/DSIG = 1/H(T)**5* ----------------------------------
 C ------------ :    ((1+GAMCJS*RCOS3T/2)*S/SII + -----------------------
 C ------------ :  + GAMCJS*RAC(54)/(6*SII**2)*DEV(D(DET(S))/D(S))) -----
 C ======================================================================
-      INTEGER II
+      INTEGER II, NDT, NDI
       REAL*8  SII, T(6), DEVT(6), INVH5, FACT1, FACT2
       REAL*8  RHLODE, HLODE, COS3T, RCOS3T
       REAL*8  UN, DEUX, CINQ, SIX
@@ -48,6 +47,8 @@ C ======================================================================
       PARAMETER       (  CINQ   =  5.0D0  )
       PARAMETER       (  SIX    =  6.0D0  )
 C ======================================================================
+      COMMON /TDIM/   NDT , NDI
+C ======================================================================
       CALL JEMARQ ()
 C ======================================================================
 C --- CALCUL DES VARIABLES UTILES --------------------------------------
@@ -56,7 +57,7 @@ C ======================================================================
       SII    = SQRT(SII)
       CALL     CJST(S,T)
       CALL     LCDEVI(T,DEVT)
-      RCOS3T = COS3T(NDT, S, PREF, EPSSIG)
+      RCOS3T = COS3T(S, PREF, EPSSIG)
       RHLODE = HLODE(GAMCJS, RCOS3T)
       INVH5  = UN/(RHLODE**CINQ)
 C ======================================================================

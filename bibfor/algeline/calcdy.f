@@ -1,13 +1,12 @@
-      SUBROUTINE CALCDY(NDT, NR, MU, K, F0, DEVG, DEVGII, TRACEG,
+      SUBROUTINE CALCDY(MU, K, F0, DEVG, DEVGII, TRACEG,
      +                  DFDL, DELTA, DY)
 C
       IMPLICIT      NONE
-      INTEGER       NDT, NR
-      REAL*8        MU, K, F0, DEVG(*), DEVGII, TRACEG
-      REAL*8        DFDL, DELTA, DY(*)
+      REAL*8        MU, K, F0, DEVG(6), DEVGII, TRACEG
+      REAL*8        DFDL, DELTA, DY(10)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +40,7 @@ C --- : DFDL   : DF/DLAMBDA --------------------------------------------
 C --- : DELTA  : DELTA LAMBDA INITIAL ----------------------------------
 C OUT : DY     : INCREMENTS DE L'ITERATION COURANTE --------------------
 C ======================================================================
-      INTEGER  II
+      INTEGER  II, NDT, NDI
       REAL*8   DDELTA, DGAMP, DSN(6), DINV, DEVP, MUN, DEUX, TROIS
 C ======================================================================
 C --- INITIALISATION DE PARAMETRES -------------------------------------
@@ -49,6 +48,8 @@ C ======================================================================
       PARAMETER       ( MUN    =  -1.0D0  )
       PARAMETER       ( DEUX   =   2.0D0  )
       PARAMETER       ( TROIS  =   3.0D0  )
+C ======================================================================
+      COMMON /TDIM/   NDT , NDI
 C ======================================================================
       CALL JEMARQ ()
 C ======================================================================

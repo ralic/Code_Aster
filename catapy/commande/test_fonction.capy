@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,12 +22,12 @@ TEST_FONCTION=PROC(nom="TEST_FONCTION",op= 135,fr="Extraction d une valeur numér
             UIinfo={"groupes":("Impression",)},
          FICHIER         =SIMP(statut='f',typ='TXM',defaut="RESULTAT"),
          TEST_NOOK       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
-         VALEUR          =FACT(statut='f',min=1,max='**',
+         VALEUR          =FACT(statut='f',max='**',
                                fr="Tester la valeur d une fonction ou d une nappe",
            regles=(UN_PARMI('VALE_REFE','VALE_REFE_C', ),),
            FONCTION        =SIMP(statut='o',typ=(fonction,formule) ),
-           NOM_PARA        =SIMP(statut='f',typ='TXM',max=2),
-           VALE_PARA       =SIMP(statut='o',typ='R',max=2),
+           NOM_PARA        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=2),
+           VALE_PARA       =SIMP(statut='o',typ='R'  ,validators=NoRepeat(),max=2),
            VALE_REFE       =SIMP(statut='f',typ='R' ),
            VALE_REFE_C     =SIMP(statut='f',typ='C' ),
            CRITERE         =SIMP(statut='f',typ='TXM',fr="Critère de comparaison avec la solution de référence",
@@ -40,7 +40,7 @@ TEST_FONCTION=PROC(nom="TEST_FONCTION",op= 135,fr="Extraction d une valeur numér
              VERSION         =SIMP(statut='f',typ='TXM' ),
            ),
          ),
-         ATTRIBUT        =FACT(statut='f',min=1,max='**',
+         ATTRIBUT        =FACT(statut='f',max='**',
                                fr="Tester la valeur d un attribut d une fonction ou d''une nappe",
            FONCTION        =SIMP(statut='o',typ=(fonction,formule) ),
            PARA            =SIMP(statut='f',typ='R' ),
@@ -56,7 +56,7 @@ TEST_FONCTION=PROC(nom="TEST_FONCTION",op= 135,fr="Extraction d une valeur numér
              VERSION         =SIMP(statut='f',typ='TXM' ),
            ),
          ),
-         TABL_INTSP      =FACT(statut='f',min=1,max='**',
+         TABL_INTSP      =FACT(statut='f',max='**',
                                fr="Tester la valeur d une fonction contenue dans une table interspectrale",
            regles=(UN_PARMI('NUME_ORDRE_I','NOEUD_I'),),
            INTE_SPEC       =SIMP(statut='o',typ=tabl_intsp ),

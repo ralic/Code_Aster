@@ -1,20 +1,20 @@
-#& MODIF ENTETE  DATE 18/03/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF ENTETE  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 import Accas
 from Accas import *
@@ -93,7 +93,7 @@ class listr8   (ASSD):
     """ retourne la liste des valeurs [ val1, ...] """
     vale=string.ljust(self.get_name(),19)+'.VALE'
     return list(aster.getvectjev(vale))
-   
+
 
 
 # maillage :
@@ -107,8 +107,8 @@ class maillage(ASSD):
     """ retourne la liste des groupes de mailles sous la forme :
         [ (gma1, nb mailles gma1, dime max des mailles gma1), ...] """
     return aster.GetMaillage(self.get_name(), "GROUP_MA")
-    
-    
+
+
 class squelette     (maillage):pass
 
 
@@ -135,7 +135,6 @@ class carte_hydr_r   (carte):pass
 class carte_inst_r   (carte):pass
 class carte_inte_r   (carte):pass
 class carte_irra_r   (carte):pass
-class carte_meta_r   (carte):pass
 class carte_neut_f   (carte):pass
 class carte_neut_r   (carte):pass
 class carte_pres_r   (carte):pass
@@ -169,7 +168,6 @@ class cham_elem_hydr_r(cham_elem):pass
 class cham_elem_inst_r(cham_elem):pass
 class cham_elem_inte_r(cham_elem):pass
 class cham_elem_irra_r(cham_elem):pass
-class cham_elem_meta_r(cham_elem):pass
 class cham_elem_neut_f(cham_elem):pass
 class cham_elem_neut_r(cham_elem):pass
 class cham_elem_pres_r(cham_elem):pass
@@ -194,6 +192,7 @@ class cham_no_durt_r   (cham_no):pass
 class cham_no_ener_r   (cham_no):pass
 class cham_no_epsi_r   (cham_no):pass
 class cham_no_erreur   (cham_no):pass
+class cham_no_facy_r   (cham_no):pass
 class cham_no_flux_r   (cham_no):pass
 class cham_no_g_depl_r (cham_no):pass
 class cham_no_geom_r   (cham_no):pass
@@ -201,7 +200,6 @@ class cham_no_hydr_r   (cham_no):pass
 class cham_no_inst_r   (cham_no):pass
 class cham_no_inte_r   (cham_no):pass
 class cham_no_irra_r   (cham_no):pass
-class cham_no_meta_r   (cham_no):pass
 class cham_no_neut_f   (cham_no):pass
 class cham_no_neut_r   (cham_no):pass
 class cham_no_pres_c   (cham_no):pass
@@ -227,6 +225,8 @@ class resultat(ASSD):
     return aster.GetResu(self.get_name(), "COMPOSANTES")
   def LIST_VARI_ACCES (self) :
     return aster.GetResu(self.get_name(), "VARI_ACCES")
+  def LIST_PARA (self) :
+    return aster.GetResu(self.get_name(), "PARAMETRES")
 
 class acou_harmo    (resultat):pass
 class base_modale     (resultat):pass
@@ -295,14 +295,18 @@ class nappe(fonction):pass
 # matr_asse :
 #--------------------------------
 class matr_asse(ASSD):pass
-class matr_asse_depl_c(matr_asse):pass
-class matr_asse_depl_r(matr_asse):pass
-class matr_asse_gene_r(matr_asse):pass
-class matr_asse_gene_c(matr_asse):pass
-class matr_asse_pres_c(matr_asse):pass
-class matr_asse_pres_r(matr_asse):pass
-class matr_asse_temp_c(matr_asse):pass
-class matr_asse_temp_r(matr_asse):pass
+
+class matr_asse_gene(matr_asse):pass
+class matr_asse_gene_r(matr_asse_gene):pass
+class matr_asse_gene_c(matr_asse_gene):pass
+
+class matr_asse_gd(matr_asse):pass
+class matr_asse_depl_c(matr_asse_gd):pass
+class matr_asse_depl_r(matr_asse_gd):pass
+class matr_asse_pres_c(matr_asse_gd):pass
+class matr_asse_pres_r(matr_asse_gd):pass
+class matr_asse_temp_c(matr_asse_gd):pass
+class matr_asse_temp_r(matr_asse_gd):pass
 
 # matr_elem :
 #--------------------------------
@@ -323,7 +327,7 @@ class table(ASSD):
       requete=string.ljust(key[0],24)
       tblp=string.ljust(self.get_name(),19)+'.TBLP'
       tabnom=list(aster.getvectjev(tblp))
-      for i in range(len(tabnom)) : 
+      for i in range(len(tabnom)) :
          if tabnom[i]==requete: break
       resu=aster.getvectjev(tabnom[i+2])
       if key[1]>len(resu) : raise KeyError

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF APLEXT UTILITAI  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF APLEXT UTILITAI  DATE 16/06/2003   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -40,7 +40,7 @@ void APLEXT(long *niv,long *nbd, _fcd nomF, long *ier)
 void aplext_(long *niv,long *nbd, char *nom, long *ier, unsigned long lnom)
 
 #elif defined HPUX
-void aplext(long *nic,long *nbd, char *nom, long *ier, unsigned long lnom)
+void aplext(long *niv,long *nbd, char *nom, long *ier, unsigned long lnom)
 
 #elif defined PPRO_NT
 #include <process.h>

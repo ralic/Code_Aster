@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,15 +33,15 @@ MACRO_PROJ_BASE=MACRO(nom="MACRO_PROJ_BASE",op=macro_proj_base_ops,docu="U4.63.1
             UIinfo={"groupes":("Matrices/vecteurs",)},
                       sd_prod=macro_proj_base_prod,
                       fr="Projection des matrices et/ou vecteurs assemblés sur une base de vecteurs",
-         BASE            =SIMP(statut='o',typ=(mode_meca,base_modale,mode_gene) ),
+         BASE            =SIMP(statut='o',typ=(mode_meca,mode_stat,base_modale,mode_gene) ),
          NB_VECT         =SIMP(statut='f',typ='I',defaut= 9999),
          PROFIL          =SIMP(statut='f',typ='TXM',defaut="DIAG",into=("PLEIN","DIAG") ),
-         MATR_ASSE_GENE  =FACT(statut='f',min=1,max='**',
+         MATR_ASSE_GENE  =FACT(statut='f',max='**',
            MATRICE         =SIMP(statut='o',typ=(CO,matr_asse)),
            MATR_ASSE       =SIMP(statut='f',typ=matr_asse_depl_r),
            MATR_ASSE_GENE  =SIMP(statut='f',typ=matr_asse_gene_r),
          ),
-         VECT_ASSE_GENE  =FACT(statut='f',min=1,max='**',
+         VECT_ASSE_GENE  =FACT(statut='f',max='**',
            VECTEUR         =SIMP(statut='o',typ=(CO,vect_asse)),
            TYPE_VECT       =SIMP(statut='f',typ='TXM',defaut="FORC"),
            VECT_ASSE       =SIMP(statut='f',typ=cham_no_depl_r),

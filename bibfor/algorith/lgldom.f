@@ -1,11 +1,11 @@
-      SUBROUTINE LGLDOM (NBMAT, MATER, NR, YF, FITER)
+      SUBROUTINE LGLDOM (NBMAT, MATER, YF, FITER)
 C
       IMPLICIT    NONE
-      INTEGER     NBMAT, NR
-      REAL*8      MATER(NBMAT,2), YF(*), FITER
+      INTEGER     NBMAT
+      REAL*8      MATER(NBMAT,2), YF(10), FITER
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C --- CALCUL DE G(S) ----------------------------------------------
 C =================================================================
       CALL     PSCAL (NDT, SN, SN, SNII)      
       SNII   = SQRT  (SNII)
-      RCOS3T = COS3T (NDT, SN, PREF, LGLEPS)
+      RCOS3T = COS3T (SN, PREF, LGLEPS)
       RHLODE = HLODE (GAMCJS, RCOS3T)
       RGDEV  = GDEV  (SNII  , RHLODE)
 C =================================================================

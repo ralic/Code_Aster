@@ -1,11 +1,10 @@
-      SUBROUTINE CALCG(N, ND, DFDS, VECN, G, DEVG, TRACEG, DEVGII)
+      SUBROUTINE CALCG(DFDS, VECN, G, DEVG, TRACEG, DEVGII)
 C
       IMPLICIT      NONE
-      INTEGER       N, ND
-      REAL*8        DFDS(*), VECN(*), G(*), DEVG(*), TRACEG, DEVGII
+      REAL*8        DFDS(6), VECN(6), G(6), DEVG(6), TRACEG, DEVGII
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,27 +35,29 @@ C --- : DEVG   : DEVIATEUR DE G ----------------------------------------
 C --- : TRACEG : PREMIER INVARIANT DE G --------------------------------
 C --- : DEVGII : NORME DU DEVIATEUR ------------------------------------
 C ======================================================================
-      INTEGER II
+      INTEGER II, NDT, NDI
       REAL*8  FACT1, TRACE
+C ======================================================================
+      COMMON /TDIM/   NDT , NDI
 C ======================================================================
       CALL JEMARQ ()
 C ======================================================================
 C --- CALCUL DE G ------------------------------------------------------
 C ======================================================================
-      CALL PSCAL(N, DFDS, VECN, FACT1)
-      DO 10 II=1,N
+      CALL PSCAL(NDT, DFDS, VECN, FACT1)
+      DO 10 II=1,NDT
          G(II) = DFDS(II) - FACT1*VECN(II)
  10   CONTINUE
 C ======================================================================
 C --- CALCUL DU DEVIATEUR DE G ET DE SA NORME --------------------------
 C ======================================================================
       CALL     LCDEVI(G,DEVG)
-      CALL     PSCAL (N, DEVG, DEVG, DEVGII)
+      CALL     PSCAL (NDT, DEVG, DEVG, DEVGII)
       DEVGII = SQRT  (DEVGII)
 C ======================================================================
 C --- CALCUL DU PREMIER INVARIANT DE G ---------------------------------
 C ======================================================================
-      TRACEG = TRACE(ND, G)
+      TRACEG = TRACE(NDI, G)
 C ======================================================================
       CALL JEDEMA ()
 C ======================================================================

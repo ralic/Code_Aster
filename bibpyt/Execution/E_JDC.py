@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 01/04/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF E_JDC Execution  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,8 +21,11 @@
 """
 """
 # Modules Python
+import sys, types,os
 
 # Modules Eficas
+from Noyau.N_Exception import AsException
+
 class JDC:
    """
    """
@@ -37,30 +40,28 @@ class JDC:
       for e in self.etapes:
         if CONTEXT.debug :
           print e,e.nom,e.isactif()
-        if e.isactif():
-           e.Exec()
-        # Si on rencontre la commande FIN (op=9999) au milieu du jeu
-        # de commandes on interrompt le traitement
-        if e.definition.op == 9999:break
-
+        try:
+           if e.isactif(): e.Exec()
+        except EOFError:
+           # L'exception EOFError a ete levee par l'operateur FIN
+           raise
 
    def BuildExec(self):
       """
-          Execution en fonction du mode d execution
+         Cette methode realise les passes de Build et d'Execution en mode par_lot="NON"
+         Elle est utilisee par le superviseur dans le cadre d'une execution par lot (voir ParLotMixte)
       """
-
       # initexec est defini dans le package Build et cette fonction (Exec)
-      # ne peut etre utilisee que si le module E_JDC est assemble avec le
-      # Build. 
+      # ne peut etre utilisee que si le module E_JDC est assemble avec le package Build
       self.initexec()
 
       # Pour etre sur de ne pas se planter sur l appel a set_context on le met d abord a blanc
       CONTEXT.unset_current_step()
       CONTEXT.set_current_step(self)
+
       # On reinitialise le compte-rendu self.cr
-      self.cr=self.CR(debut="CR de 1ere phase de construction de JDC en MIXTE",
-                     fin  ="fin CR de 1ere phase de construction de JDC en MIXTE",
-                    )
+      self.cr=self.CR(debut="CR d'execution de JDC en MIXTE",
+                     fin  ="fin CR d'execution de JDC en MIXTE")
 
       ret=self._Build()
       if ret != 0:
@@ -69,13 +70,67 @@ class JDC:
 
       self.g_context={}
       ier=0
-      for e in self.etapes:
-        if CONTEXT.debug : print e,e.nom,e.isactif()
-        if e.isactif():
-           e.BuildExec()
-        # Si on rencontre la commande FIN (op=9999) au milieu du jeu
-        # de commandes on interrompt le traitement
-        if e.definition.op == 9999:break
+
+      try:
+         for e in self.etapes:
+             if CONTEXT.debug : print e,e.nom,e.isactif()
+             if e.isactif(): e.BuildExec()
+
+      except self.codex.error,exc_val:
+         self.traiter_user_exception(exc_val)
+
+      except EOFError:
+         # L'exception EOFError a ete levee par l'operateur FIN
+         pass
+
+      CONTEXT.unset_current_step()
       return ier
 
+   def traiter_user_exception(self,exc_val):
+       """ Cette methode traite les exceptions en provenance du module d'execution
+           codex.FatalError et codex.error.
+       """
+       if isinstance(exc_val,self.codex.FatalError):
+          # erreur fatale levee et pas trappee, on ne ferme pas les bases
+          # on sort en erreur
+          raison=exc_val.__class__.__name__+" : "+str(exc_val)
+          self.cr.exception("Exception utilisateur levee mais pas interceptee.\n"
+                            "On ne ferme pas les bases et on sort en erreur.\n"+raison)
 
+       elif isinstance(exc_val,self.codex.error):
+          # erreur utilisateur levee et pas trappee, on ferme les bases en appelant la commande FIN
+          raison=exc_val.__class__.__name__+" : "+str(exc_val)
+          self.codex.impers()
+          self.cr.exception("<S> Exception utilisateur levee mais pas interceptee.\n"
+                            "Les bases sont fermees.\n"+raison)
+          self.fini_jdc()
+
+
+   def abort_jdc(self):
+      """ Cette methode termine le JDC par un abort
+      """
+      print ">> JDC.py : DEBUT RAPPORT"
+      print self.cr
+      print ">> JDC.py : FIN RAPPORT"
+      os.abort()
+
+   def fini_jdc(self):
+      """ Cette methode execute la commande FIN du catalogue 
+          pour terminer proprement le JDC
+      """
+      self.set_par_lot("NON")
+      fin_cmd=self.get_cmd("FIN")
+      try:
+             fin_cmd()
+      except:
+             pass
+
+   def get_cmd(self,nomcmd):
+      """
+          Méthode pour recuperer la definition d'une commande
+          donnee par son nom dans les catalogues declares
+          au niveau du jdc
+      """
+      for cata in self.cata:
+          if hasattr(cata,nomcmd):
+             return getattr(cata,nomcmd)

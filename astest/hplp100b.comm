@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 22/07/2003   AUTEUR G8BHHXD X.DESROCHES 
 # TITRE PLAQUE FISSUREE EN THERMOELASTICITE: CALCUL DE DG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -184,25 +184,48 @@ THETAF=CALC_THETA(      MODELE=MO,
 G1=CALC_G_THETA_T(         MODELE=MO,
                          RESULTAT=OUTMES,
                             THETA=THETAF,
-             SENSIBILITE=_F( THETA = THETAS),
                            CHARGE=(CH,F1,F2,),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),
-                       CHAM_MATER=CM,
-                           OPTION='CALC_DG')
+                       CHAM_MATER=CM)
+IMPR_TABLE(TABLE=G1)
+
+G1=CALC_G_THETA_T( reuse=G1,
+                   SENSIBILITE=(THETAS,),
+                           MODELE=MO,
+                         RESULTAT=OUTMES,
+                            THETA=THETAF,
+                           CHARGE=(CH,F1,F2,),
+                        SYME_CHAR='SYME',
+                        COMP_ELAS=_F( RELATION = 'ELAS',
+                                   DEFORMATION = 'PETIT'),
+                       CHAM_MATER=CM)
+IMPR_TABLE(TABLE=G1,SENSIBILITE=(THETAS,))
 
 G2=CALC_G_THETA_T(         MODELE=MO,
                          RESULTAT=OUTMES,
                             THETA=THETAF,
-             SENSIBILITE=_F( THETA = THETAS),
                            CHARGE=(CH,),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'GREEN'),
                        CHAM_MATER=CM,
-                           OPTION='CALC_DG',
                        ETAT_INIT=_F( SIGM = SIG3))
+IMPR_TABLE(TABLE=G2)
+
+G2=CALC_G_THETA_T( reuse=G2,
+                   SENSIBILITE=(THETAS,),
+                           MODELE=MO,
+                         RESULTAT=OUTMES,
+                            THETA=THETAF,
+                           CHARGE=(CH,),
+                        SYME_CHAR='SYME',
+                        COMP_ELAS=_F( RELATION = 'ELAS',
+                                   DEFORMATION = 'GREEN'),
+                       CHAM_MATER=CM,
+                       ETAT_INIT=_F( SIGM = SIG3))
+IMPR_TABLE(TABLE=G2,SENSIBILITE=(THETAS,))
 
 # -------------------------------------------------------------- #
 # SECOND CALCUL AVEC LES DEUX TYPES DE CHARGEMENTS
@@ -350,7 +373,8 @@ TEST_TABLE(       TABLE=G1,
                  VERSION='6.0.19')
 
 TEST_TABLE(       TABLE=G1,
-                NOM_PARA='DG',
+             SENSIBILITE=(THETAS,),
+                NOM_PARA='G',
                     VALE=-4.422828409E-1,
                PRECISION=1.E-9,
                REFERENCE='NON_REGRESSION',
@@ -366,7 +390,8 @@ TEST_TABLE(       TABLE=G2,
                  VERSION='6.0.19')
 
 TEST_TABLE(       TABLE=G2,
-                NOM_PARA='DG',
+             SENSIBILITE=(THETAS,),
+                NOM_PARA='G',
                      VALE=1.102553167E-2,
                PRECISION=1.E-9,
                REFERENCE='NON_REGRESSION',

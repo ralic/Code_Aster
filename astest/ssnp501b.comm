@@ -1,4 +1,4 @@
-# MODIF  DATE 07/01/2003   AUTEUR PABHHHH N.TARDIEU 
+# MODIF  DATE 07/05/2003   AUTEUR PABHHHH N.TARDIEU 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES SANS FROTTEMENT.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -168,7 +168,7 @@ TAB_CONT=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
                                  RESULTAT=RESU,
                                  NOM_CHAM='VALE_CONT',
                                  INST=4.0,
-                                 NOM_CMP=('CONTACT'),
+                                 NOM_CMP=('CONT'),
                                  OPERATION='EXTRACTION',),);
 
 

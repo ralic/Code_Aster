@@ -7,7 +7,7 @@
       CHARACTER*24 DEPDEL
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/01/2003   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 27/05/2003   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,14 +56,16 @@ C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-      INTEGER JDEPDE,JAUTO1,JAUTO2,II
-      REAL*8 AUTONO,TEMP1,TEMP2,R8PREM,TOLERA
+      INTEGER JDEPDE,JAUTO1,JAUTO2,II,IRET,JMAXDE
+      REAL*8 AUTONO,TEMP1,TEMP2,R8PREM,TOLERA,RMIN
+      CHARACTER*8  MAXDEP
 
       CALL JEMARQ()
 
       LREAC(1) = .TRUE.
       LREAC(3) = .TRUE.
 C --- CONVERGENCE GEOMETRIQUE MAIS ATTENTE POINT FIXE CONTACT
+C     =======================================================
       IF (LREAC(2)) THEN
         CALL NMIMPR('IMPR','CONV_OK',' ',0.D0,0)
         CALL NMIMPR('IMPR','FIXE_NON',' ',0.D0,0)
@@ -72,23 +74,35 @@ C --- CONVERGENCE GEOMETRIQUE MAIS ATTENTE POINT FIXE CONTACT
       ELSE
         VECONT(2) = VECONT(2) + 1
 C --- CORRESPOND A REAC_GEOM = AUTOMATIQUE
+C     =====================================
         IF (VECONT(1).LT.0) THEN
-          TOLERA = 1.0D-1
+          TOLERA = 5.0D-2
           TEMP1 = 0.D0
           TEMP2 = 0.D0
           CALL JEVEUO(DEPDEL(1:19)//'.VALE','L',JDEPDE)
-          CALL JEVEUO(AUTOC1,'E',JAUTO1)
-          CALL JEVEUO(AUTOC2,'E',JAUTO2)
+          CALL JEVEUO(AUTOC1//'.VALE','E',JAUTO1)
+          CALL JEVEUO(AUTOC2//'.VALE','E',JAUTO2)
           DO 10 II = 1,NEQ
             ZR(JAUTO2-1+II) = ZR(JAUTO2-1+II) + ZR(JAUTO1-1+II)
             ZR(JAUTO1-1+II) = ZR(JDEPDE-1+II) - ZR(JAUTO2-1+II)
    10     CONTINUE
-          DO 20 II = 1,NEQ
-            TEMP1 = MAX(ABS(ZR(JAUTO1-1+II)),TEMP1)
-            TEMP2 = MAX(ABS(ZR(JAUTO2-1+II)),TEMP2)
-   20     CONTINUE
-          IF (TEMP2.LT.R8PREM()) THEN
-            IF (TEMP1.GT.R8PREM()) THEN
+C  ---  CALCUL DU MAX DE LA NORME DU DEPL
+          CALL CNOMAX(AUTOC1,TEMP1)
+          CALL CNOMAX(AUTOC2,TEMP2)
+          MAXDEP='&&CVGCNT'
+          CALL JEEXIN(MAXDEP,IRET)
+C  ---  STOCKAGE DU MAX DE LA NORME DU DEPL
+          IF (IRET.EQ.0) THEN
+             CALL WKVECT(MAXDEP,'V V R',1,JMAXDE)
+             ZR(JMAXDE-1+1)=TEMP2
+             RMIN=R8PREM()
+          ELSE
+             CALL JEVEUO(MAXDEP,'E',JMAXDE)
+             ZR(JMAXDE-1+1)=MAX(ZR(JMAXDE-1+1),TEMP2)
+             RMIN=1.D-6*ZR(JMAXDE-1+1)
+          ENDIF
+          IF (TEMP2.LT.RMIN) THEN
+            IF (TEMP2.EQ.0.D0) THEN
               AUTONO = 10.0D0*TOLERA
             ELSE
               AUTONO = 1.D-1*TOLERA
@@ -103,12 +117,14 @@ C --- CORRESPOND A REAC_GEOM = AUTOMATIQUE
             LREAC(3) = .FALSE.
           END IF
 C --- CORRESPOND A REAC_GEOM = SANS
+C     =============================
         ELSE IF (VECONT(1).EQ.0) THEN
           CALL NMIMPR('IMPR','CONV_OK',' ',0.D0,0)
           CALL NMIMPR('IMPR','GEOM_MIN',' ',0.D0,0)
           LREAC(1) = .FALSE.
         ELSE
 C --- CORRESPOND A REAC_GEOM = CONTROLE
+C     =================================
           IF (VECONT(2).EQ.VECONT(1)) THEN
             CALL NMIMPR('IMPR','CONV_OK',' ',0.D0,0)
             CALL NMIMPR('IMPR','AUTO_GEO',' ',0.D0,VECONT(1))

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 25/03/2003   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,17 +18,21 @@
 % ======================================================================
 GENER_THAXD1
 TYPE_GENE__
-ENTETE__ ELEMENT__ THAXSL2          MAILLE__ SEG2     ELREFE__  SEG2 NB_GAUSS__ NELGA=FPG2
-ENTETE__ ELEMENT__ THAXSL3          MAILLE__ SEG3     ELREFE__  SEG3 SEG2 NB_GAUSS__ NELGA=FPG2
-    OPTION__             CHAR_THER_ACCE_R          -1
-    OPTION__             CHAR_THER_ACCE_X          -1
-    OPTION__             CHAR_THER_ACCE_Y          -1
-    OPTION__             CHAR_THER_FLUTNL          -1
-    OPTION__             FLUX_FLUI_X               -1
-    OPTION__             FLUX_FLUI_Y               -1
-    OPTION__             RESI_THER_COEH_F          -1
-    OPTION__             RESI_THER_COEH_R          -1
-    OPTION__             RIGI_THER_FLUTNL          -1
+
+ENTETE__ ELEMENT__ THAXSL2          MAILLE__ SEG2
+   ELREFE__  SEG2      GAUSS__  NELGA=FPG2
+ENTETE__ ELEMENT__ THAXSL3          MAILLE__ SEG3
+   ELREFE__  SEG3      GAUSS__  NELGA=FPG2
+   ELREFE__  SEG2
+   OPTION__   CHAR_THER_ACCE_R        -1
+   OPTION__   CHAR_THER_ACCE_X        -1
+   OPTION__   CHAR_THER_ACCE_Y        -1
+   OPTION__   CHAR_THER_FLUTNL        -1
+   OPTION__   FLUX_FLUI_X             -1
+   OPTION__   FLUX_FLUI_Y             -1
+   OPTION__   RESI_THER_COEH_F        -1
+   OPTION__   RESI_THER_COEH_R        -1
+   OPTION__   RIGI_THER_FLUTNL        -1
 
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )

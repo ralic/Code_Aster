@@ -2,10 +2,10 @@
 C
       IMPLICIT    NONE
       INTEGER     NBMAT, NVI
-      REAL*8      SIG(*), MATER(NBMAT,2), VIN(*)
+      REAL*8      SIG(6), MATER(NBMAT,2), VIN(*)
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -103,14 +103,14 @@ C --- CALCUL DE G(S) ----------------------------------------------
 C =================================================================
          CALL     LCPRSC(DEV, DEV, SII)
          SII    = SQRT  (SII)
-         RCOS3T = COS3T (NDT, DEV, PREF, LGLEPS)
+         RCOS3T = COS3T (DEV, PREF, LGLEPS)
          RHLODE = HLODE (GAMCJS, RCOS3T)
          RGDEV  = GDEV  (SII   , RHLODE)
 C =================================================================
 C --- CALCUL DE U(SIG, GAMP) --------------------------------------
 C =================================================================
          CALL     VARECR(GAMP, NBMAT, MATER, ZR(JPARA))
-         AGAMP  = ZR(JPARA+2)
+         AGAMP  = ZR(JPARA-1+2)
 C =================================================================
 C --- SI LE CRITERE PLASTIQUE EST NEGATIF ON REDECOUPE ------------
 C =================================================================

@@ -1,4 +1,5 @@
-#@ MODIF imprime Lecture_Cata_Ele  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+#@ MODIF imprime Lecture_Cata_Ele  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+# RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,6 +61,19 @@ def impr_cata(capy,nomfic,format,seq='oui'):
 
 
 #######################################################################################################
+# utilitaires :
+#######################################################################################################
+
+
+def txtpad(long,chaine):
+#---------------------------------------
+#   retourne une chaine de longueur "long" en complétant chaine par des "blancs"
+    if len(chaine) > long : return chaine[0:long]
+    chaine2=chaine+" "*(long-len(chaine))
+    return chaine2
+
+
+#######################################################################################################
 # sous_fonctions :
 #######################################################################################################
 
@@ -100,19 +114,19 @@ def imprime_cata(file2,capy,seq,format):
 
    #  impression du catalogue des TYPE_MAILLE__ :
    #-----------------------------------------
-       cata=capy.tm
+       cata=capy.tm  ; dico_bidon={};
        if cata :
            if seq=="non": file = open(file2+"/type_maille__.cata","w")
            file.write( cata.cmodif+"\n")
            imprime_copyright(file)
            file.write("TYPE_MAILLE__\n")
            for k in range(len(cata.ltm)):
-               file.write( "\nMAILLE__ %-8s   %-5s   DIM__  %-3s   CODE__  %-5s\n" %
-                         (cata.ltm[k][0],str(cata.ltm[k][1]), cata.ltm[k][2],cata.ltm[k][3]) )
+               catak=cata.ltm[k]
+               file.write( "\n\nMAILLE__ %-8s   %-5s   DIM__  %-1s   CODE__  %-5s" %  (catak[0],str(catak[1]), catak[2],catak[3]) )
                for elrefe in cata.ltm[k][4]:
-                    file.write( "   ELREFE__ %-8s  FAMILLE__ %-8s    %-3s\n" %
-                              (elrefe[0],elrefe[1],str(elrefe[2])) )
-           file.write( "\n")
+                  file.write( "\n   ELREFE__ %-8s  " % (elrefe[0]) )
+                  for fampg in elrefe[1] :
+                     file.write( "\n         FAMILLE__ %-8s    %-3s" % (fampg[0],str(fampg[1])) )
 
 
    #  impression du catalogue des PHENOMENE_MODELISATION__ :
@@ -125,10 +139,10 @@ def imprime_cata(file2,capy,seq,format):
            file.write( "PHENOMENE_MODELISATION__  " +"\n")
            for (ph,lmod,codph) in cata.l_pheno:
                file.write( "\n   PHENOMENE__  "+ph+"       CODE__  "+codph+"\n")
-               for (mod,laffe,codmod) in lmod:
-                   file.write( "\n       MODELISATION__  "+mod+"       CODE__  "+codmod+"\n")
+               for (mod,laffe,codmod,(d1,d2)) in lmod:
+                   file.write( "\n       MODELISATION__ %-16s   DIM__ %-1s %-1s   CODE__ %s\n" % (mod,d1,d2,codmod) )
                    for (tyma,tyel) in laffe:
-                       file.write( "              MAILLE__ "+tyma+"  ELEMENT__ "+tyel+"\n")
+                       file.write( "              MAILLE__ %-8s  ELEMENT__ %-16s\n" %(tyma,tyel))
            file.write( "\n")
 
 
@@ -157,7 +171,7 @@ def imprime_cata(file2,capy,seq,format):
    #  impression des catalogues des TYPE_GENE :
    #-------------------------------------------
        for cata in capy.tg:
-           nom,l_entetg,modlocs,opts=cata.cata_tg
+           nom,l_entete,modlocs,opts=cata.cata_tg
            if seq=="non": file = open(file2+"/"+string.lower(nom)+".cata","w")
            file.write( cata.cmodif +"\n")
            imprime_copyright(file)
@@ -165,31 +179,9 @@ def imprime_cata(file2,capy,seq,format):
            file.write( "TYPE_GENE__\n")
 
 
-           for entete in l_entetg:
-               l_decl_npg=entete[3];l_decl_en=entete[4];l_decl_opt=entete[5]
-
-               file.write( "ENTETE__ ")
-               file.write( "%s %-16s " %("ELEMENT__",entete[0]))
-               file.write( "%s %-8s " %("MAILLE__",entete[1]))
-
-               str1=''
-               for k in entete[2]: str1=str1+"  "+str(k)
-               file.write( "%-s%s" %("ELREFE__",str1))
-
-               if l_decl_npg :
-                   for decl in l_decl_npg :
-                       file.write( "%s %s=%s" %(" NB_GAUSS__",decl[0],str(decl[1])))
-               file.write( "\n")
-
-               if l_decl_en :
-                   for decl in l_decl_en :
-                       str1=''
-                       for k in decl[1]: str1=str1+"  "+str(k)
-                       file.write( "    %-20s %-20s  =   %s\n" %("ENS_NOEUD__",decl[0],str1))
-
-               if l_decl_opt :
-                   for decl in l_decl_opt :
-                       file.write( "    %-20s %-20s      %s\n" %("OPTION__",decl[0],str(decl[1])))
+           for entete in l_entete:
+               l_elref1=entete[2];l_decl_en=entete[3];l_decl_opt=entete[4]
+               impr_entete(file,entete,l_elref1,l_decl_en,l_decl_opt)
 
            #impression des modes locaux et des options
            impr_moloc_opt(file,modlocs,opts,format)
@@ -201,30 +193,12 @@ def imprime_cata(file2,capy,seq,format):
        for cata in capy.te:
            entete,modlocs,opts=cata.cata_te
            if seq=="non": file = open(file2+"/"+string.lower(entete[0])+".cata","w")
-           l_decl_npg=entete[3];l_decl_en=entete[4]
+           l_elref1=entete[2];l_decl_en=entete[3]
            file.write( cata.cmodif +"\n")
            imprime_copyright(file)
            file.write( entete[0]+"\n\n")
-           file.write( "TYPE_ELEM__\n")
-           file.write( "ENTETE__ ")
-           file.write( "%s %-16s " %("ELEMENT__",entete[0]))
-           file.write( "%s %-8s " %("MAILLE__",entete[1]))
-
-           str1=''
-           for k in entete[2]: str1=str1+"  "+str(k)
-           file.write( "%-s%s" %("ELREFE__",str1))
-
-           if l_decl_npg :
-               for decl in l_decl_npg :
-                   file.write( "%s %s=%s" %(" NB_GAUSS__",decl[0],str(decl[1])))
-           file.write( "\n")
-
-           if l_decl_en :
-               for decl in l_decl_en :
-                   str1=''
-                   for k in decl[1]: str1=str1+"  "+str(k)
-                   file.write( "    %-20s %-20s  =   %s\n" %("ENS_NOEUD__",decl[0],str1))
-
+           file.write( "\nTYPE_ELEM__ ")
+           impr_entete(file,entete,l_elref1,l_decl_en,None)
 
            #impression des modes locaux et des options
            impr_moloc_opt(file,modlocs,opts,format)
@@ -238,7 +212,9 @@ def imprime_copyright(file):
 #------------------------------------------------------------
    file.write('%            CONFIGURATION MANAGEMENT OF EDF VERSION                        '+"\n")
    file.write('% ======================================================================    '+"\n")
-   file.write('% COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    '+"\n")
+   # pour déjouer un bug de l'agla, on coupe la ligne suivante en 2 :
+   file.write('% COPY')
+   file.write(      'RIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    '+"\n")
    file.write('% THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY      '+"\n")
    file.write('% IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY      '+"\n")
    file.write('% THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR         '+"\n")
@@ -300,12 +276,12 @@ def tri_moloc(m1,m2):
 
 
 def impr_moloc_opt(file,modlocs,opts,format):
-#-------------------------------------------------
+#-------------------------------------------------------------------------------------
 #  impression des modes locaux et des options  pour un TYPE_ELEM__ ou 1 TYPE_GENE__
-#-------------------------------------------------
+#--------------------------------------------------------------------------------------
     MLOCs,MLVEs,MLMAs=modlocs
 
-    file.write( "\nMODE_LOCAL__ " +"\n")
+    file.write( "\n\nMODE_LOCAL__ " +"\n")
     MLOCs.sort(tri_moloc)
     for moloc in MLOCs:
         if moloc[2]=="ELEM__" :
@@ -350,6 +326,30 @@ def impr_moloc_opt(file,modlocs,opts,format):
            imprime_lk8(format,file,opt[3],8,decaln=37)
 
     file.write( "\n")
+
+
+def impr_entete(file,entete,l_elref1,l_decl_en,l_decl_opt):
+     file.write( "\nENTETE__ ")
+     file.write( "%s %-16s " %("ELEMENT__",entete[0]))
+     file.write( "%s %-8s " %("MAILLE__",entete[1]))
+
+     for elref1 in l_elref1 :
+        file.write( "\n   %-s  %-8s" %("ELREFE__",elref1[0]))
+
+        if elref1[1] :
+           file.write( "  GAUSS__")
+           for gauss1 in elref1[1] :
+              file.write("  %s=%s" %(gauss1[0],gauss1[1]))
+
+     if l_decl_en :
+         for decl in l_decl_en :
+             str1=''
+             for k in decl[1]: str1=str1+"  "+str(k)
+             file.write( "\n   %-12s %-6s  =   %s" %("ENS_NOEUD__",decl[0],str1))
+
+     if l_decl_opt :
+         for decl in l_decl_opt :
+             file.write( "\n   %-10s %-18s      %s" %("OPTION__",decl[0],str(decl[1])))
 
 
 
@@ -400,9 +400,11 @@ def imprime_ojb(file,capy):
      # retourne le nombre de points de la famille f de l'elrefe elrf et le numéro de la famille
      for tm in cata_tm.ltm :
        for elrefe in tm[4] :
-          if elrefe[0]==elrf and elrefe[1]==f :
-             ifpg=nofpg.jenonu(elrf+(8-len(elrf))*' '+f)
-             return (int(elrefe[2]),ifpg)
+          if elrefe[0]==elrf :
+             for fam in elrefe[1]:
+                if fam[0]==f :
+                   ifpg=nofpg.jenonu(txtpad(8,elrf)+f)
+                   return (int(fam[1]),ifpg)
      ERR.mess('E'," famille de Points de Gauss inconnue: "+f+" pour ELREFE: "+elrf)
 
 
@@ -414,6 +416,7 @@ def imprime_ojb(file,capy):
    noelrf=ut.cree_pn(d,nom='&CATA.TM.NOELRF',tsca='K8')
    nofpg=ut.cree_pn(d,nom='&CATA.TM.NOFPG',tsca='K16')
    nbno=ut.cree_co(d,nom='&CATA.TM.NBNO',tsca='I',tsca_pn='K8',contig='CONTIG',acces='NO',longv=1)
+   tmdim=ut.cree_co(d,nom='&CATA.TM.TMDIM',tsca='I',tsca_pn='K8',contig='CONTIG',acces='NO',longv=1)
    nbtm=len(cata.ltm)
 
    nb_elrf=0; nb_fpg=0
@@ -421,14 +424,17 @@ def imprime_ojb(file,capy):
        nomtm.ajout_nom(cata.ltm[k][0])
        nbno.cree_oc(nom=cata.ltm[k][0],long=1)
        nbno.ecri_co(nom=cata.ltm[k][0],indice=1,valeur=int(cata.ltm[k][1]))
+       tmdim.cree_oc(nom=cata.ltm[k][0],long=1)
+       tmdim.ecri_co(nom=cata.ltm[k][0],indice=1,valeur=int(cata.ltm[k][2]))
        for elrf in cata.ltm[k][4] :
           nom=elrf[0]
-          if not noelrf.dico.has_key(nom) :
-             nb_elrf=nb_elrf+1
-             noelrf.ajout_nom(nom)
-          nom=nom+(8-len(nom))*' '
-          nofpg.ajout_nom(nom+elrf[1])
-          nb_fpg=nb_fpg+1
+          assert not noelrf.dico.has_key(nom)
+          nb_elrf=nb_elrf+1
+          noelrf.ajout_nom(nom)
+          nom=txtpad(8,nom)
+          for fam in elrf[1]:
+             nb_fpg=nb_fpg+1
+             nofpg.ajout_nom(nom+fam[0])
 
    tmelrf=ut.cree_os(d,nom='&CATA.TM.TMELRF',tsca='I',long=nb_elrf)
    tmfpg=ut.cree_os(d,nom='&CATA.TM.TMFPG',tsca='I',long=nb_fpg)
@@ -436,10 +442,12 @@ def imprime_ojb(file,capy):
    for k in range(nbtm):
        nutyma=nomtm.jenonu(cata.ltm[k][0])
        for elrf in cata.ltm[k][4] :
-          nom=elrf[0]; ifpg=ifpg+1
+          nom=elrf[0];
           ielrf=noelrf.jenonu(nom)
           tmelrf.ecri_os(indice=ielrf,valeur=nutyma)
-          tmfpg.ecri_os(indice=ifpg,valeur=int(elrf[2]))
+          for fam in elrf[1]:
+             ifpg=ifpg+1
+             tmfpg.ecri_os(indice=ifpg,valeur=int(fam[1]))
 
    del cata
 
@@ -606,9 +614,25 @@ def imprime_ojb(file,capy):
           nb=nb+len(entete[2])
       return nb
 
+   # retourne le nombre total de "familles locales de PG" référencés dans les type_elem :
+   def nb_loc_fpg(capy):
+      nb=0
+      for cata in capy.te:
+          entete=cata.cata_te[0]
+          for elref1 in entete[2] :
+            if elref1[1] :
+               nb=nb+len(elref1[1])
+      return nb
+
 
 
    nbte=len(capy.te)
+   nblocfpg=nb_loc_fpg(capy)
+
+   nbopte=0
+   for cata in capy.te:
+       entete,modlocs,opts=cata.cata_te
+       if opts: nbopte=nbopte+len(opts)
 
    nomte=ut.cree_pn(d,nom='&CATA.TE.NOMTE',tsca='K16')
    typema=ut.cree_os(d,nom='&CATA.TE.TYPEMA',tsca='K8',long=nbte)
@@ -616,12 +640,8 @@ def imprime_ojb(file,capy):
    modeloc=ut.cree_co(d,nom='&CATA.TE.MODELOC',tsca='I',tsca_pn='K24',contig='CONTIG',acces='NU',longv=0)
    nbelrefe=ut.cree_os(d,nom='&CATA.TE.NBELREFE',tsca='I',long=2*nbte)
    noelrefe=ut.cree_os(d,nom='&CATA.TE.NOELREFE',tsca='K8',long=nb_elrefe(capy))
-
-
-   nbopte=0
-   for cata in capy.te:
-       entete,modlocs,opts=cata.cata_te
-       if opts: nbopte=nbopte+len(opts)
+   pnlocfpg=ut.cree_os(d,nom='&CATA.TE.PNLOCFPG',tsca='K32',long=nblocfpg)
+   nolocfpg=ut.cree_os(d,nom='&CATA.TE.NOLOCFPG',tsca='I',long=nblocfpg)
    optt2=ut.cree_os(d,nom='&CATA.TE.OPTT2',tsca='I',long=2*nbopte)
 
 
@@ -629,11 +649,11 @@ def imprime_ojb(file,capy):
    optnom=ut.cree_co(d,nom='&CATA.TE.OPTNOM',tsca='K8',tsca_pn='K8',contig='CONTIG',acces='NU',longv=0)
 
 
-   k=0 ; ioptte=0; ielrefe=0;
+   k=0 ; ioptte=0; ielrefe=0; iflpg=0;
    for cata in capy.te:
        k=k+1
        entete,modlocs,opts=cata.cata_te
-       l_decl_npg=entete[3];l_decl_en=entete[4]
+       l_elref1=entete[2];l_decl_en=entete[3]
        note=entete[0]
        print "<I> On va traiter le TYPE_ELEM: "+note
        ERR.contexte("Examen du catalogue de TYPE_ELEM__: "+note)
@@ -642,7 +662,7 @@ def imprime_ojb(file,capy):
        nomte.ajout_nom(note)
        nute=nomte.jenonu(nom=note)
        if nute != k :  ERR.mess('F',"bizarre !")
-       note2=note+" "*(16-len(note))
+       note2=txtpad(16,note)
 
        notm=entete[1]
        nutm=nomtm.jenonu(nom=notm)
@@ -653,12 +673,25 @@ def imprime_ojb(file,capy):
        typema.ecri_os(indice=nute,valeur=entete[1])
 
        # objets noelrefe et nbelrefe :
+       # ---------------------------------
        kelrefe=0
-       for elrefe in entete[2] :
+       for elref1 in entete[2] :
          kelrefe=kelrefe+1;ielrefe=ielrefe+1
-         noelrefe.ecri_os(indice=ielrefe,valeur=elrefe)
+         noelrefe.ecri_os(indice=ielrefe,valeur=elref1[0])
        nbelrefe.ecri_os(indice=2*(nute-1)+1,valeur=kelrefe)
        nbelrefe.ecri_os(indice=2*(nute-1)+2,valeur=ielrefe-kelrefe+1)
+
+       # objets pnlocfpg et nolocfpg :
+       # ---------------------------------
+       for elref1 in entete[2] :
+
+         if elref1[1] :
+            for gauss1 in elref1[1] :
+               iflpg=iflpg+1
+               noflpg=note2+txtpad(8,elref1[0])+txtpad(8,gauss1[0])
+               ifpg=nofpg.jenonu(txtpad(8,elref1[0])+gauss1[1])
+               pnlocfpg.ecri_os(indice=iflpg,valeur=noflpg)
+               nolocfpg.ecri_os(indice=iflpg,valeur=ifpg)
 
 
        # modes locaux :
@@ -682,9 +715,11 @@ def imprime_ojb(file,capy):
            if typept == "ELNO__"  :  nbpt=nno
            if typept == "ELGA__"  :
               nbpt=-999
-              for decl in l_decl_npg :
-                 if decl[0]== moloc[3] : (nbpt,ifpg)=elrefe_npg(capy.tm,nofpg,entete[2][0],decl[1])
-           if nbpt == -999 : ERR.mess('E',"Utilisation d'un nombre de points de Gauss indéfini.")
+              for decl in l_elref1[0][1] :
+                 if decl[0]== moloc[3] : (nbpt,ifpg)=elrefe_npg(capy.tm,nofpg,entete[2][0][0],decl[1])
+           if nbpt == -999 :
+               ERR.mess('E',"Utilisation d'un nombre de points de Gauss indéfini.")
+               assert 0
 
            if diff == "IDEN" :
               nbpt2=nbpt
@@ -803,12 +838,14 @@ def imprime_ojb(file,capy):
 
    for (ph,lmod,codph) in cata.l_pheno:
        phenomene.ajout_nom(ph)
-       modeli=ut.cree_co(d,nom='&CATA.'+ph,tsca='I',tsca_pn='K16',contig='CONTIG',acces='NU',longv=nbtm)
-       nommodeli=ut.cree_pn(d,nom='&CATA.'+ph+" "*(19-6-len(ph))+'.MODL',tsca='K16')
-       for (mod,laffe,codmod) in lmod:
+       modeli=ut.cree_co(d,nom='&CATA.'+ph,tsca='I',tsca_pn='K16',contig='CONTIG',acces='NU',longv=(nbtm+2))
+       nommodeli=ut.cree_pn(d,nom='&CATA.'+txtpad(13,ph)+'.MODL',tsca='K16')
+       for (mod,laffe,codmod,(d1,d2)) in lmod:
            mod=mod[1:len(mod)-1]
            nommodeli.ajout_nom(mod)
-           modeli.cree_oc(nom=mod,long=nbtm)
+           modeli.cree_oc(nom=mod,long=(nbtm+2))
+           modeli.ecri_co(nom=mod,indice=nbtm+1,valeur=int(d1))
+           modeli.ecri_co(nom=mod,indice=nbtm+2,valeur=int(d2))
            for (tyma,tyel) in laffe:
                modeli.ecri_co(nom=mod,indice=nomtm.jenonu(nom=tyma),valeur=nomte.jenonu(nom=tyel))
 
@@ -817,7 +854,8 @@ def imprime_ojb(file,capy):
 
    #  impression des obj :
    #-----------------------------------------
-   for nomojb in d.keys() :
+   likeys=d.keys(); likeys.sort()
+   for nomojb in likeys :
       ojb=d[nomojb]
       ojb.impr(file)
    ERR.mess('I',"Fin de la transformation de l'ENSEMBLE des catalogues en objets jeveux")
@@ -833,15 +871,15 @@ def degenerise(capy):
         dicte2[k]='a'
 
     for cata in capy.tg:
-        nogene,l_entetg,modlocs,opts=cata.cata_tg
+        nogene,l_entete,modlocs,opts=cata.cata_tg
 
         # on vérifie qu'un catalogue "générique" a bien un nom de la forme GENER_XXXX:
         if nogene[0:6]!="GENER_" :  ERR.mess('E','Le TYPE_GENE__: '+nogene+' doit avoir un nom de la forme : GENER_XXXX')
 
-        for entete in l_entetg:
-            l_decl_opt=entete[5]
+        for entete in l_entete:
+            l_decl_opt=entete[4]
 
-            entetg=entete[0:5]+(None,)
+            entete=entete[0:4]+(None,)
             cata2=copy.deepcopy(cata) ; del cata2.cata_tg; del cata2.cmodif
 
             if l_decl_opt :
@@ -856,7 +894,7 @@ def degenerise(capy):
                             opts2[iopt]=opt
             else:
                 opts2=opts
-            cata2.cata_te=entetg,modlocs,opts2
+            cata2.cata_te=entete,modlocs,opts2
 
 
            # on ajoute le TYPE_ELEM__ meme s'il y en a déjà un de meme nom  (TYPE_GENE__ "plus fort" que TYPE_ELEM__):

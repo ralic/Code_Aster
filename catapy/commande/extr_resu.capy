@@ -1,9 +1,20 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-#              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
-#              REDISTRIBUTION OF THIS FILE.
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 def extr_resu_prod(RESULTAT,**args):
   if AsType(RESULTAT) == evol_elas    : return evol_elas
@@ -24,35 +35,35 @@ def extr_resu_prod(RESULTAT,**args):
 
 EXTR_RESU=OPER(nom="EXTR_RESU",op=176,sd_prod=extr_resu_prod,docu="U4.71.04-c",reentrant='f',
             UIinfo={"groupes":("Résultats et champs",)},
-         RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,acou_harmo,mode_meca,          
-                                               mode_acou,mode_stat_depl,mode_stat_acce,mode_stat_forc,evol_ther,evol_noli,   
+         RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,acou_harmo,mode_meca,
+                                               mode_acou,mode_stat_depl,mode_stat_acce,mode_stat_forc,evol_ther,evol_noli,
                                                mult_elas,fourier_elas ) ),
 
-         SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),max='**',
+         SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
                                    fr="Liste des paramètres de sensibilité.",
                                    ang="List of sensitivity parameters"),
 
-         ARCHIVAGE       =FACT(statut='f',min=1,max=1,
+         ARCHIVAGE       =FACT(statut='f',
            regles=(  UN_PARMI('NUME_ORDRE', 'INST', 'FREQ', 'NUME_MODE',
                         'NOEUD_CMP', 'LIST_INST', 'LIST_FREQ', 'LIST_ORDRE',
                         'NOM_CAS', 'LIST_ARCH', 'PAS_ARCH' ),
                      EXCLUS( 'CHAM_EXCLU','NOM_CHAM' ),   ),
-           CHAM_EXCLU      =SIMP(statut='f',typ='TXM',max='**'),
-           NOM_CHAM        =SIMP(statut='f',typ='TXM',max='**'),
+           CHAM_EXCLU      =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',into=C_NOM_CHAM_INTO()),
            PRECISION       =SIMP(statut='f',typ='R',defaut=1.E-3 ),
            CRITERE         =SIMP(statut='f',typ='TXM',into=("RELATIF","ABSOLU"),defaut="RELATIF"),
            LIST_ARCH       =SIMP(statut='f',typ=listis),
            PAS_ARCH        =SIMP(statut='f',typ='I'),
-           NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
+           NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
            LIST_ORDRE      =SIMP(statut='f',typ=listis),
-           INST            =SIMP(statut='f',typ='R',max='**'),
+           INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
            LIST_INST       =SIMP(statut='f',typ=listr8),
-           FREQ            =SIMP(statut='f',typ='R',max='**'),
+           FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
            LIST_FREQ       =SIMP(statut='f',typ=listr8),
-           NUME_MODE       =SIMP(statut='f',typ='I',max='**'),
-           NOEUD_CMP       =SIMP(statut='f',typ='TXM',max='**'),
+           NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+           NOEUD_CMP       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
            NOM_CAS         =SIMP(statut='f',typ='TXM'),
                                ),
 
-         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),  
+         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
 )  ;

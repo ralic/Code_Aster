@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,8 @@
 MET3SEG3
 
 TYPE_ELEM__
-ENTETE__ ELEMENT__ MET3SEG3         MAILLE__ SEG3     ELREFE__  MET3SEG3 NB_GAUSS__ NELGA=FPG1
+ENTETE__ ELEMENT__ MET3SEG3         MAILLE__ SEG3
+   ELREFE__  MET3SEG3 GAUSS__ NELGA=FPG1
 
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
@@ -71,13 +72,14 @@ MODE_LOCAL__
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     TEMP_INF TEMP_SUP )
     ZVARIPG  = VARI_R   ELGA__ NELGA   (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
-    EDFEQPG  = EPSI_R   ELGA__ NELGA   (INVA_2   )
-    ECOEQPG  = SIEF_R   ELGA__ NELGA   (VMIS     )
+    EDFEQPG  = EPSI_R   ELGA__ NELGA   (INVA_2   INVA_2SG )
+    ECOEQPG  = SIEF_R   ELGA__ NELGA   (VMIS     VMIS_SG  )
     EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     )
     ENOMCMP  = NEUT_K24 ELEM__         (Z1       Z2)
     EMINMAX  = SPMA_R   ELGA__ NELGA   (MIN      MAX      NCOUMIN  NCOUMAX  NSECMIN  NSECMAX
                                         NPCOUMIN NPCOUMAX NPSECMIN NPSECMAX )
+    EREFCO   = PREC     ELEM__         (SIGM     )
 
 VECTEUR__
     MVECTUC = VDEP_C NDEPLAC
@@ -177,6 +179,9 @@ OPTION__
                                      NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARIPG  PVARIMP
                                      ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
+    REFE_FORC_NODA      585   IN__   CCAGEPO  PCAGEPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EREFCO   PREFCO
+                                     NGEOMER  PGEOMER  ENBSP_I  PNBSP_I
+                              OUT__  MVECTUR  PVECTUR
     RIGI_FLUI_STRU      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RIGI_MECA           582   IN__   CCAGEPO  PCAGEPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC

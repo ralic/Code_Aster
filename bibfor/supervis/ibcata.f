@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 08/03/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,10 +25,6 @@ C     ------------------------------------------------------------------
 C     ROUTINE(S) UTILISEE(S) :
 C         GETRES GETFAC GETVXX
 C         IBOPER
-C     ROUTINE(S) FORTRAN     :
-C         -
-C     ------------------------------------------------------------------
-C FIN IBCATA
 C     ------------------------------------------------------------------
       REAL*8        TEMPS(6)
       CHARACTER*8   NOMRES
@@ -53,7 +49,7 @@ C
      +    'ELEMBASE         ', 'BASE CATALOGUE ELEMENT             ',04/
 C     ------------------------------------------------------------------
 C
-      CALL DEFUFI(6,'MESSAGE')
+      CALL ULDEFI(6,'MESSAGE','A','N','N')
 C     --- LA ROUTINE NE S'INTERRESSE QU'AU MOT CLE FACTEUR "CATALOGUE" -
 C     --- DANS LA COMMANDE DEBUT                               
       IER    = 0

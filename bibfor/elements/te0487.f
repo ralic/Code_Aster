@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/04/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C ----------------------------------------------------------------------
       INTEGER       IGEOM, IDEPM, IDEPP, IPRES, ITEMP, IRES, ICACO
-      INTEGER       NNO, INO, LZI, IADZI, IAZK24, IER
+      INTEGER       NNO, INO, LZI, IADZI, IAZK24, IER,IRET
       REAL*8        VALPAR(4), PR
       CHARACTER*8   NOMAIL, NOMPAR(4),ELREFE
       CHARACTER*24  DESI
@@ -60,7 +60,7 @@ C
       CALL JEVECH ( 'PDEPLMR', 'L', IDEPM )
       CALL JEVECH ( 'PDEPLPR', 'L', IDEPP )
       CALL JEVECH ( 'PTEMPSR', 'L', ITEMP )
-      CALL TECACH ( .FALSE., .FALSE., 'PPRESSF', 1, IPRES )
+      CALL TECACH ( 'NNN', 'PPRESSF', 1, IPRES,IRET )
       IF ( IPRES .EQ. 0 ) THEN
          CALL JEVECH ( 'PFFCO3D', 'L', IPRES )
          CALL JEVECH ( 'PCACOQU', 'L', ICACO )

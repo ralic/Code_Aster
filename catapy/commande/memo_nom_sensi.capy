@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ MEMO_NOM_SENSI=PROC(nom="MEMO_NOM_SENSI",op=129,docu="U4.31.07-a",
          regles=(AU_MOINS_UN('NOM','NOM_ZERO','NOM_UN'),),
 
          NOM=FACT(statut='f',max='**',
-             regles=(PRESENT_PRESENT('MOT_CLE','VALEUR' ),),
+             regles=(PRESENT_PRESENT('MOT_CLE','VALEUR','MOT_FACT' ),),
 
              NOM_SD=SIMP(statut='o',typ='TXM',
                          fr="Nom de la structure de base",
@@ -38,6 +38,10 @@ MEMO_NOM_SENSI=PROC(nom="MEMO_NOM_SENSI",op=129,docu="U4.31.07-a",
              NOM_COMPOSE=SIMP(statut='f',typ='TXM',defaut=" ",
                          fr="Nom de la structure composée",
                          ang="Name of the built structure"),
+
+             MOT_FACT=SIMP(statut='f',typ='TXM',max='**',
+                         fr="Liste des mots clés facteurs concernés par la dérivation",
+                         ang="Factor keyword list involved in derivation"),
 
              MOT_CLE=SIMP(statut='f',typ='TXM',max='**',
                          fr="Liste des mots clés concernés par la dérivation",
@@ -53,7 +57,7 @@ MEMO_NOM_SENSI=PROC(nom="MEMO_NOM_SENSI",op=129,docu="U4.31.07-a",
                        fr="Nom de la fonction nulle",
                        ang="Name of the zero fonction"),
 
-         NOM_UN=SIMP  (statut='f',typ=fonction,
+         NOM_UN  =SIMP(statut='f',typ=fonction,
                        fr="Nom de la fonction unité",
                        ang="Name of the one fonction"),
 

@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF PREPOST  DATE 24/03/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF PREPOST  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C TOLE CRP_20
 C     PROCEDURE IMPR_RESU
 C     ------------------------------------------------------------------
@@ -232,6 +232,14 @@ C            (DANS LE CAS D'ENSIGHT ON ECRIRA DANS DES FICHIERS NOMMES)
          IF(FORM(1:7).EQ.'ENSIGHT') THEN
            IFI=IFIEN1
          ELSE
+           IFI=IUNIFI(FICH)
+           IF ( IFI .EQ. 0 ) THEN
+             IF ( FICH .EQ. 'CASTEM' ) THEN 
+               CALL ULOPEN (37,' ',FICH,'NEW','O')
+             ELSE  IF ( FICH .EQ. 'IDEAS' ) THEN  
+               CALL ULOPEN (30,' ',FICH,'NEW','O')
+             ENDIF
+           ENDIF
            IFI=IUNIFI(FICH)
          ENDIF
          IF(FORM(1:6).EQ.'CASTEM') IFC = IFI

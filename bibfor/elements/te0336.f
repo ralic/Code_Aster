@@ -1,7 +1,7 @@
       SUBROUTINE TE0336 ( OPTION , NOMTE )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 11/08/2003   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,8 +29,8 @@ C                    POUR LES DEFORMATIONS A PARTIR DE EPSI_ELGA_DEPL
 C                                                   OU EPME_ELGA_DEPL
 C                    (POUR LES DEFORMATIONS HORS THERMIQUES)
 C                AUX NOEUDS :
-C                    POUR LES CONTRAINTES  A PARTIR DE SIEF_ELNO_ELGA
-C                                                   OU SIGM_ELNO_DEPL
+C                    POUR LES CONTRAINTES  A PARTIR DE SIEF_ELGA
+C                                                   OU SIEF_ELGA_DEPL
 C                    POUR LES DEFORMATIONS A PARTIR DE EPSI_ELNO_DEPL
 C                                                   OU EPME_ELNO_DEPL
 C                    (POUR LES DEFORMATIONS HORS THERMIQUES)
@@ -71,7 +71,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8        ELREFE
       INTEGER            NNO ,    KP ,   I ,     K
       INTEGER            NCEQ,    IDCP,  ICONT,  IDEFO, IEQUIF, ICARAC
-      INTEGER            NPG
+      INTEGER            NPG , NNOS
       REAL*8             EQPG(NEQMAX*NPGMAX),    EQNO(NEQMAX*NNOMAX)
       REAL*8             SIGMA(6) ,DEFORM(6)
 C
@@ -107,6 +107,18 @@ C
       CALL JEVETE(CARAC,'L',ICARAC)
       NNO  = ZI(ICARAC)
       NPG  = ZI(ICARAC+2)
+C
+      IF (NOMTE(5:8).EQ.'TR3 ') THEN
+        NNOS = NNO
+      ELSE IF (NOMTE(5:8).EQ.'QU4 ') THEN
+        NNOS = NNO
+      ELSE IF (NOMTE(5:8).EQ.'TR6 ') THEN
+        NNOS = 3
+      ELSE IF (NOMTE(5:8).EQ.'QS8 ') THEN
+        NNOS = 4
+      ELSE IF (NOMTE(5:8).EQ.'QU8 ' .OR. NOMTE(5:8).EQ.'QU9 ') THEN
+        NNOS = 4
+      END IF
 C
       IF      ( OPTION(11:14) .EQ. 'EPSI' ) THEN
           CALL JEVECH('PDEFORR','L',IDEFO)
@@ -212,24 +224,31 @@ C
 C -       CONTRAINTES
 C
           ELSE IF ( OPTION(11:14) .EQ. 'SIGM' )  THEN
-              DO 203 INO = 1,NNO
-                  IDCP = (INO-1) * NCEQ
+              DO 303 KP = 1,NPG
+                  IDCP = (KP-1) * NCEQ
                   DO 209 I = 1,4
-                      SIGMA(I) = ZR(ICONT+(INO-1)*4+I-1)
+                      SIGMA(I) = ZR(ICONT+(KP-1)*4+I-1)
  209              CONTINUE
                   SIGMA(5) = 0.D0
                   SIGMA(6) = 0.D0
-                  CALL FGEQUI(SIGMA,'SIGM',2,EQNO(IDCP+1))
-203           CONTINUE
+                  CALL FGEQUI(SIGMA,'SIGM',2,EQPG(IDCP+1))
+303           CONTINUE
+C
+C -       EXTRAPOLATION AUX NOEUDS
+C
+              CALL PPGANO(NNOS,NPG,NCEQ,EQPG,ZR(IEQUIF))
+C
           ENDIF
 C
 C -       STOCKAGE
 C
-          DO 400 INO = 1,NNO
-              DO 500 J   = 1,NCEQ
-                  ZR(IEQUIF+NCEQ*(INO-1)-1+J) = EQNO(NCEQ*(INO-1)+J)
-500           CONTINUE
-400       CONTINUE
+          IF ( OPTION(11:14) .NE. 'SIGM' )  THEN
+             DO 400 INO = 1,NNO
+                DO 500 J   = 1,NCEQ
+                    ZR(IEQUIF+NCEQ*(INO-1)-1+J) = EQNO(NCEQ*(INO-1)+J)
+500             CONTINUE
+400          CONTINUE
+          ENDIF
 C
       ENDIF
 C

@@ -3,7 +3,7 @@
       INTEGER            ICMD , ICOND, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 03/06/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,8 +67,7 @@ C     --- ON EMPILE LE NOM SYMBOLIQUE DE L'UNITE DE LECTURE COURANTE ---
 C
 C     --- NOUVELLE UNITE DE LECTURE ---
       CALL GETVIS(' ','UNITE',1,1,1,IUNIT,L)
-      CALL ASOPEN ( IUNIT, ' ' ) 
-      CALL CODENT(IFILE, 'D0',NOMSYM(7:8) )
+      CALL CODENT(IUNIT, 'D0',NOMSYM(7:8) )
 C     --- ON IMPRIME OUI / NON  ---
 C
       CALL GETVIS(' ','INFO',1,1,1,IBID,L)

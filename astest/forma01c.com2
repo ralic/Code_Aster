@@ -1,0 +1,162 @@
+
+# AJOUT  
+# RESPONSABLE JMBHH01 J.M.PROIX
+# TITRE TRAVAUX PRATIQUES FORMATION DE BASE
+#        TUYAUTERIE COMPORTANT UN COUDE
+#     MODELISATION PAR DES ELEMENTS MASSIFS
+#     TEST DE CREA_MAILLAGE(OPTIONS COQU_VOLU, LINE_QUAD)
+#
+
+
+POURSUITE(CODE=_F(  NOM = 'FORMA01C'))
+
+PRE_GIBI(UNITE_GIBI=18,UNITE_MAILLAGE=21);
+
+MAIL1=LIRE_MAILLAGE(UNITE=21);
+
+MO = AFFE_MODELE (MAILLAGE = MAIL1,
+                  AFFE=_F(TOUT='OUI', PHENOMENE = 'MECANIQUE',
+                        MODELISATION='DKT'))
+
+MAIL1=MODI_MAILLAGE(reuse =MAIL1,
+                    MAILLAGE=MAIL1,
+                    ORIE_NORM_COQUE=_F(GROUP_MA='TUYAU',
+                                       VECT_NORM=(-1.0,0.0,0.0,),
+                                      GROUP_NO='A1',),
+                   MODELE=MO,);
+                    
+
+MAIL2L = CREA_MAILLAGE(MAILLAGE = MAIL1,
+                  COQU_VOLU =_F(NOM= 'VOLU',
+                                 GROUP_MA = 'TUYAU',
+                                 EPAIS =0.02,
+                                 PLAN='MOY',
+                                 TRANSLATION='INF',
+				 PREF_NOEUD='NL',
+				 PREF_MAILLE='ML',
+                                ))
+
+DEFI_GROUP(reuse =MAIL2L,
+                MAILLAGE=MAIL2L,
+                CREA_GROUP_NO=(_F(GROUP_MA='EFOND'),
+                               _F(OPTION='PLAN',
+                                  NOM='PLANY',
+                                  POINT=(3.6,3.6,0.0,),
+                                  VECT_NORMALE=(0.0,1.0,0.0,),
+                                  PRECISION=0.001,),
+                               _F(OPTION='PLAN',
+                                  NOM='SYMETRIE',
+                                  POINT=(0. ,0., 0.0,),
+                                  VECT_NORMALE=(0.0,0.0,1.0,),
+                                  PRECISION=0.001,),
+                               _F(OPTION='PLAN',
+                                  NOM='ENCAST',
+                                  POINT=(0., 0., 0.0,),
+                                  VECT_NORMALE=(0.0,1.0,0.0,),
+                                  PRECISION=0.001,),
+                               _F(INTERSEC=('EFOND','PLANY'),
+                                  NOM='PB',),),);
+				
+MAIL2=CREA_MAILLAGE( MAILLAGE  = MAIL2L,
+                    LINE_QUAD = _F(TOUT='OUI',
+                    ))
+
+
+
+MODMECA2=AFFE_MODELE(MAILLAGE=MAIL2,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),);
+
+MAT2=DEFI_MATERIAU(ELAS=_F(E=204000000000.0,
+                          NU=0.3,
+                          ALPHA=1.092e-05,),);
+
+#
+# CAS DE CHARGE MECANIQUE  1 FORCE   2 PRESSION
+# ORIENTATION DES NORMALES AUX COQUES RENTRANTES DANS LE TUYAU
+#
+#
+#
+
+
+MODI_MAILLAGE(reuse =MAIL2,
+                   MAILLAGE=MAIL2,
+                   ORIE_PEAU_3D=(_F(GROUP_MA='TUYAU',),
+                   ),
+                   MODELE=MODMECA2,);
+
+
+
+
+CHMAT2=AFFE_MATERIAU(MAILLAGE=MAIL2,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT2,),);
+
+
+PRES2 = 15000000.0;
+
+
+CHARP2=AFFE_CHAR_MECA(MODELE=MODMECA2,
+                      DDL_IMPO=(_F(GROUP_NO='ENCAST',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,),
+                                _F(GROUP_NO='SYMETRIE',
+                                   DZ=0.0,),),
+                      PRES_REP=_F(GROUP_MA='TUYAU',
+                                  PRES=PRES2,),);
+
+
+RESUP2=MECA_STATIQUE(MODELE=MODMECA2,
+                     CHAM_MATER=CHMAT2,
+                     EXCIT=_F(CHARGE=CHARP2,),
+                     );
+
+CALC_ELEM( reuse= RESUP2 ,RESULTAT= RESUP2 , MODELE=MODMECA2,
+                     CHAM_MATER=CHMAT2,
+                     EXCIT=_F(CHARGE=CHARP2,),
+                     OPTION='SIGM_ELNO_DEPL',);
+
+
+TABDEPP2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPB2',
+                                GROUP_NO='PB',
+                                RESULTAT=RESUP2,
+                                NOM_CHAM='DEPL',
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=TABDEPP2,);
+
+
+
+TEST_TABLE(TABLE=TABDEPP2,
+           NOM_PARA='DX',
+           VALE=-0.27661,
+           PRECISION=0.03,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=TABDEPP2,
+           NOM_PARA='DY',
+           VALE=0.44726,
+           PRECISION=0.03,
+           REFERENCE='AUTRE_ASTER',);
+
+
+DEFI_FICHIER(FICHIER='CASTEM',UNITE=37)
+
+IMPR_RESU(RESU=_F(FORMAT='CASTEM',FICHIER='CASTEM',MAILLAGE=MAIL2,RESULTAT=RESUP2,NOM_CHAM='DEPL'))
+
+DEFI_FICHIER(FICHIER='MSH',UNITE=39)
+
+IMPR_RESU(RESU=_F(FORMAT='GMSH',FICHIER='MSH',MAILLAGE=MAIL2,VERSION=1.2))
+
+DEFI_FICHIER(FICHIER='POS',UNITE=40)
+
+IMPR_RESU(RESU=_F(FORMAT='GMSH',FICHIER='POS',RESULTAT=RESUP2,VERSION=1.2,NOM_CHAM='DEPL'))
+
+
+FIN()
+
+
+

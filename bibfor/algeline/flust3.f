@@ -7,7 +7,8 @@
       CHARACTER*19 MELFLU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/06/2000   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ALGELINE  DATE 16/09/2003   AUTEUR CIBHHLV L.VIVAN 
+C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,8 +86,6 @@ C
       CALL JEMARQ()
       EPSIT = 1.D-5
       PI = R8PI()
-C
-C
 C
 C --- 1.RECUPERATION DES INFORMATIONS APPORTEES PAR LE CONCEPT ---
 C ---   TYPE_FLUI_STRU                                         ---
@@ -487,7 +486,7 @@ C --- 13.APPEL DE LA PROCEDURE DE RESOLUTION
      &              ZR(IXINT),ZR(IYINT),ZR(IRINT),ZR(IZ),ZR(IPHIX),
      &              ZR(IPHIY),ZR(IDEFM),
      &              ZI(JTYPG),ZR(IZG),ZR(ILONGG),ZR(ILARGG),ZR(IEPAIG),
-     &              ZR(ICDG),ZR(ICPG),ZR(IRUGG))
+     &              ZR(ICDG),ZR(ICPG),ZR(IRUGG), BASE )
 C
 C
 C --- 14.IMPRESSIONS DANS LE FICHIER RESULTAT SI DEMANDEES ---

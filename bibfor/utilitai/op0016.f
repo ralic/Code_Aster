@@ -1,6 +1,6 @@
       SUBROUTINE OP0016(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C
       IUNI=IMES
 C
       CALL GETVIS('IMPRESSION','UNITE',1,1,1,IUNI,NUNI)
-      CALL ASOPEN ( IUNI, ' ' )
+      CALL ULDEFI( IUNI,' ','A','N','O' )
       CALL GETVTX('IMPRESSION','NOM',1,1,1,FICH,NFIC)
       IF (NFIC.NE.0) THEN
 C        CALL LXCAPS(FICH)
@@ -72,7 +72,6 @@ C        CALL LXCAPS(FICH)
 C
 C
       CALL GETVTX(' ','ENTITE',0,1,1,NOMENT,N)
-C     CALL LXCAPS(NOMENT)
       IF ( N .EQ. 0 ) GOTO 9999
 C
       CALL GETVTX(' ','COMMENTAIRE',0,1,1,TXT,N)
@@ -82,7 +81,6 @@ C
 C
          NOMCLA = ' '
          CALL GETVTX(' ','CLASSE',0,1,1,NOMCLA,N)
-C        CALL LXCAPS(NOMCLA)
          WRITE(IUNI,*) ' '
          CALL JEIMPD(FICH,NOMCLA,TXT)
          WRITE(IUNI,*) ' '
@@ -97,7 +95,6 @@ C
 C
          NOMCLA = ' '
          CALL GETVTX(' ','CLASSE',0,1,1,NOMCLA,N)
-C        CALL LXCAPS(NOMCLA)
          WRITE(IUNI,*) ' '
          CALL JEIMPR(FICH,NOMCLA,TXT)
          WRITE(IUNI,*) ' '
@@ -105,7 +102,6 @@ C
       ELSE IF ( NOMENT(1:5) .EQ. 'OBJET' ) THEN
 C
          CALL GETVTX(' ','NOMOBJ',0,1,1,NOMOBJ,N)
-C        CALL LXCAPS(NOMOBJ)
          NOML32 = NOMOBJ
          CALL JJVERN(NOML32,0,IRET)
          WRITE(IUNI,*) ' '
@@ -187,9 +183,7 @@ C
 C
          NOMCLA = ' '
          CALL GETVTX(' ','CLASSE',0,1,1,NOMCLA,N)
-C        CALL LXCAPS(NOMCLA)
          CALL GETVTX(' ','NOMATR',0,1,1,NOM,N3)
-C        CALL LXCAPS(NOM)
          IF (N3.NE.0) THEN
             CALL JEPRAT(FICH,'$'//NOMCLA(1:1),NOM(1:8),' ',TXT)
             WRITE(IUNI,*) ' '
@@ -198,7 +192,6 @@ C
       ELSE IF ( NOMENT(1:8) .EQ. 'ATTRIBUT' ) THEN
 C
          CALL GETVTX(' ','NOMOBJ',0,1,1,NOMOBJ,N)
-C        CALL LXCAPS(NOMOBJ)
          CALL JEEXIN(NOMOBJ,IRET)
          WRITE(IUNI,*) ' '
          IF (IRET.EQ.0) THEN

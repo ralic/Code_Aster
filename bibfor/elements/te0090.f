@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER            NNO,KP,NPG,ICARAC,IFF,IPOIDS,IVF,IDFDE,IGEOM
-      INTEGER            IVECTU,K,I,IFORC,II
+      INTEGER            IVECTU,K,I,IFORC,II,IRET
       REAL*8             POIDS,R,FX,FY,NX,NY
       CHARACTER*24       CARAC,FF
       CHARACTER*8        ELREFE
@@ -70,7 +70,7 @@ C
       CALL JEVECH ( 'PVECTUR', 'E', IVECTU )
 
 C     POUR LE CAS DES FORCES SURFACIQUES EN 2D
-      CALL TECACH(.FALSE.,.FALSE.,'PNFORCER',1,IFORC)
+      CALL TECACH('NNN','PNFORCER',1,IFORC,IRET)
       IF ( IFORC .NE. 0 ) THEN
          CALL JEVECH('PNFORCER','L',IFORC)
       ELSE

@@ -1,25 +1,25 @@
       SUBROUTINE RESUCO(NUMORD,INSTAP,DEFICO,RESOCO,DEPTOT,DEPDEL,
      &                  DDEPLA,NOMA,CNSINR,ITERAT)
-C ======================================================================
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2003   AUTEUR PABHHHH N.TARDIEU 
-C TOLE CRP_20
+C MODIF ALGORITH  DATE 15/09/2003   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
 C (AT YOUR OPTION) ANY LATER VERSION.
-C
+
 C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-C
+
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
       IMPLICIT     NONE
       INTEGER NUMORD,ITERAT
       REAL*8 INSTAP
@@ -56,24 +56,32 @@ C ------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------
 C ======================================================================
+      LOGICAL LBID
       INTEGER IFM,NIV,ICONTA,POS1,POS2,NUM1,NUM2,NDIM,II,JJ,KK
       INTEGER JAPPAR,JCOCO,JLIAC,NBLIAC,JNOCO,JMACO,LLIAC,NBLIAI,NESCL
       INTEGER JAPJEU,JDEPDE,JDDEPL,IPENA
       INTEGER IBID,JCNSVR,JCNSLR,JDIM
       INTEGER JATMU,JAFMU,JMU,JDECAL,JAPPTR,JAPCOE,JAPDDL,NBDDL,NEQ,LMAT
-      INTEGER JAPJFY,JAPJFX,JAPCOF,JMETH,JJIAC,LLF,LLF1,LLF2,NESMAX
-      REAL*8 AJEUFX,AJEUFY,AJEUFT,RN,RNN,RT1,RT2,RT,COE,TESTMU,TESTCF
-      REAL*8 VAL1,VAL2,VARC,R8BID,RT11,RT12,RT21,RT22,R8PREM,R8MIEM
-      LOGICAL LBID
-      CHARACTER*7 CHAIN
-      CHARACTER*8 NOM1,NOM2,LICMPR(11)
+      INTEGER JAPJFY,JAPJFX,JAPCOF,JMETH,LLF,LLF1,LLF2,NESMAX
+      INTEGER JNORMO,JTANGO,JVECC
+      REAL*8 AJEUFX,AJEUFY,AJEUFT,RN,R,COE,TESTMU,TESTCF,PROD
+      REAL*8 VAL1,VAL2,VARC,R8BID,R8PREM,R8MIEM,PROJ,PROJ1,PROJ2
+      REAL*8 RNX,RNY,RNZ,RX,RY,RZ,RTAX,RTAY,RTAZ,RTGX,RTGY,RTGZ
+      CHARACTER*2  TYPEC0, TYPEF0, TYPEF1, TYPEF2
+      CHARACTER*7  CHAIN
+      CHARACTER*8  NOM1,NOM2,LICMPR(19),KVEC,FTMP
       CHARACTER*16 K16BID
-      CHARACTER*19 COCO,LIAC,ATMU,AFMU,MU,MATASS
+      CHARACTER*19 COCO,LIAC,ATMU,AFMU,MU,MATASS,CONVEC
       CHARACTER*19 K19BID,MATRIX(2)
       CHARACTER*24 APPARI,NDIMCO,METHCO,CONTNO,CONTMA,APPOIN,APCOEF
       CHARACTER*24 APDDL,APJEU,APCOFR,APJEFX,APJEFY,K24BID,PENAL
+      CHARACTER*24 TANGCO,NORMCO
 C ======================================================================
       CNSINR = '&&RESUCO.CNSINR'
+      TYPEC0 = 'C0'
+      TYPEF0 = 'F0'
+      TYPEF1 = 'F1'
+      TYPEF2 = 'F2'
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
 
@@ -107,44 +115,51 @@ C --- FORCER LA RECHERCHE DU NOM DE LA MATRASS
         CALL JEVEUO(COCO,'L',JCOCO)
         LIAC = RESOCO(1:14)//'.LIAC'
         CALL JEVEUO(LIAC,'L',JLIAC)
+        CONVEC = RESOCO(1:14)//'.CONVEC'
+        CALL JEVEUO(CONVEC,'L',JVECC)
         NDIM = ZI(JCOCO)
-        NBLIAC = ZI(JCOCO+1)
-        LLF = ZI(JCOCO+6)
-        LLF1 = ZI(JCOCO+7)
-        LLF2 = ZI(JCOCO+8)
+        NBLIAC = ZI(JCOCO+2)
+        LLF = ZI(JCOCO+5)
+        LLF1 = ZI(JCOCO+6)
+        LLF2 = ZI(JCOCO+7)
 
         CONTNO = DEFICO(1:16)//'.NOEUCO'
         CONTMA = DEFICO(1:16)//'.MAILCO'
         METHCO = DEFICO(1:16)//'.METHCO'
         NDIMCO = DEFICO(1:16)//'.NDIMCO'
-        PENAL = DEFICO(1:16)//'.PENAL'
+        PENAL  = DEFICO(1:16)//'.PENAL'
         APPOIN = RESOCO(1:14)//'.APPOIN'
         APCOEF = RESOCO(1:14)//'.APCOEF'
         APCOFR = RESOCO(1:14)//'.APCOFR'
-        APDDL = RESOCO(1:14)//'.APDDL'
-        APJEU = RESOCO(1:14)//'.APJEU'
+        NORMCO = RESOCO(1:14)//'.NORMCO'
+        TANGCO = RESOCO(1:14)//'.TANGCO'
+        APDDL  = RESOCO(1:14)//'.APDDL'
+        APJEU  = RESOCO(1:14)//'.APJEU'
         APJEFX = RESOCO(1:14)//'.APJEFX'
         APJEFY = RESOCO(1:14)//'.APJEFY'
-        ATMU = RESOCO(1:14)//'.ATMU'
-        AFMU = RESOCO(1:14)//'.AFMU'
-        MU = RESOCO(1:14)//'.MU'
+        ATMU   = RESOCO(1:14)//'.ATMU'
+        AFMU   = RESOCO(1:14)//'.AFMU'
+        MU     = RESOCO(1:14)//'.MU'
+
         CALL JEVEUO(DEPDEL(1:19)//'.VALE','L',JDEPDE)
         CALL JEVEUO(DDEPLA(1:19)//'.VALE','L',JDDEPL)
-        CALL JEVEUO(CONTNO,'L',JNOCO)
-        CALL JEVEUO(CONTMA,'L',JMACO)
-        CALL JEVEUO(METHCO,'L',JMETH)
+        CALL JEVEUO(CONTNO,'L',JNOCO )
+        CALL JEVEUO(CONTMA,'L',JMACO )
+        CALL JEVEUO(METHCO,'L',JMETH )
         CALL JEVEUO(APPOIN,'L',JAPPTR)
         CALL JEVEUO(APCOEF,'L',JAPCOE)
-        CALL JEVEUO(APDDL,'L',JAPDDL)
-        CALL JEVEUO(APJEU,'L',JAPJEU)
+        CALL JEVEUO(APDDL, 'L',JAPDDL)
+        CALL JEVEUO(APJEU, 'L',JAPJEU)
         CALL JEVEUO(APJEFX,'L',JAPJFX)
         CALL JEVEUO(APJEFY,'L',JAPJFY)
         CALL JEVEUO(APCOFR,'L',JAPCOF)
-        CALL JEVEUO(ATMU,'L',JATMU)
-        CALL JEVEUO(AFMU,'L',JAFMU)
-        CALL JEVEUO(MU,'L',JMU)
-        CALL JEVEUO(NDIMCO,'L',JDIM)
-        CALL JEVEUO(PENAL,'L',IPENA)
+        CALL JEVEUO(NORMCO,'L',JNORMO)
+        CALL JEVEUO(TANGCO,'L',JTANGO)
+        CALL JEVEUO(ATMU,  'L',JATMU )
+        CALL JEVEUO(AFMU,  'L',JAFMU )
+        CALL JEVEUO(MU,    'L',JMU   )
+        CALL JEVEUO(NDIMCO,'L',JDIM  )
+        CALL JEVEUO(PENAL, 'L',IPENA )
 
         NESMAX = ZI(JDIM+8)
 
@@ -152,222 +167,667 @@ C --- ECRITURE DES RELATIONS DE CONTACT A LA FIN DU PAS DE TEMPS
 
         IF (NIV.EQ.2) THEN
           WRITE (IFM,*)
-          WRITE (IFM,'(''<CONTACT_2> '',10X,169(''*''))')
-          WRITE (IFM,'(''<CONTACT_2> '',10X,''*'',11X,A28,128X,''*'')')
+          WRITE (IFM,'(''<CONTACT_2> '',10X,153(''*''))')
+          WRITE (IFM,'(''<CONTACT_2> '',10X,''*'',11X,A28,112X,''*'')')
      &      'LISTE DES COUPLES EN CONTACT'
-          WRITE (IFM,'(''<CONTACT_2> '',10X,''*'',15X,A14,I6,132X,
-     &    ''*'')')  'NUMERO D''ORDRE',NUMORD
           WRITE (IFM,
-     &    '(''<CONTACT_2> '',10X,''*'',15X,A7,3X,1PE12.5,
-     &      130X,''*'')') 'INSTANT',INSTAP
-          WRITE (IFM,'(''<CONTACT_2> '',10X,169(''*''))')
+     &    '(''<CONTACT_2> '',10X,''*'',15X,A14,I6,116X,          ''*'')'
+     &      ) 'NUMERO D''ORDRE',NUMORD
+          WRITE (IFM,
+     &'(''<CONTACT_2> '',10X,''*'',15X,A7,3X,1PE12.5,
+     &  114X,''*'')') 'INSTANT',INSTAP
+          WRITE (IFM,'(''<CONTACT_2> '',10X,153(''*''))')
 
-        IF (NBLIAC.EQ.0) WRITE (IFM,
-     &    '(''<CONTACT_2> '',10X,''*'',
-     &                                   18X,
-     &    A14,135X,''*'')') 'PAS DE CONTACT'
+          IF (NBLIAC.EQ.0) WRITE (IFM,
+     &'(''<CONTACT_2> '',10X,''*'',
+     &                               18X,
+     &A14,135X,''*'')') 'PAS DE CONTACT'
         END IF
 
 C ---- RECUPERATION DES DONNEES POUR CHAQUE LIAISON
 C ---- PREPARATION POUR L'ARCHIVAGE
 C --- CREATION DU CHAM_NO_S POUR LE CONTACT
-        LICMPR(1) = 'CONTACT'
-        LICMPR(2) = 'JEU'
-        LICMPR(3) = 'RNN'
-        LICMPR(4) = 'DUGT1'
-        LICMPR(5) = 'DUGT2'
-        LICMPR(6) = 'DUGT'
-        LICMPR(7) = 'RN'
-        LICMPR(8) = 'RT1'
-        LICMPR(9) = 'RT2'
-        LICMPR(10) = 'RT'
-        LICMPR(11) = 'MU'
+        LICMPR(1)  = 'CONT'
+        LICMPR(2)  = 'JEU'
+        LICMPR(3)  = 'RN'
+        LICMPR(4)  = 'RNX'
+        LICMPR(5)  = 'RNY'
+        LICMPR(6)  = 'RNZ'
+        LICMPR(7)  = 'GLIX'
+        LICMPR(8)  = 'GLIY'
+        LICMPR(9)  = 'GLI'
+        LICMPR(10) = 'RTAX'
+        LICMPR(11) = 'RTAY'
+        LICMPR(12) = 'RTAZ'
+        LICMPR(13) = 'RTGX'
+        LICMPR(14) = 'RTGY'
+        LICMPR(15) = 'RTGZ'
+        LICMPR(16) = 'RX'
+        LICMPR(17) = 'RY'
+        LICMPR(18) = 'RZ'
+        LICMPR(19) = 'R'
 
 C --- CREATION DU CHAM_NO_S POUR LE CONTACT
-        CALL CNSCRE(NOMA,'INFC_R',11,LICMPR,'V',CNSINR)
+        CALL CNSCRE(NOMA,'INFC_R',19,LICMPR,'V',CNSINR)
         CALL JEVEUO(CNSINR//'.CNSV','E',JCNSVR)
         CALL JEVEUO(CNSINR//'.CNSL','E',JCNSLR)
 
-        DO 60 II = 1,NBLIAI
-          VARC = 0.D0
-          RN = 0.D0
-          RNN = 0.D0
-          COE = 0.D0
-          RT1 = 0.D0
-          RT2 = 0.D0
-          AJEUFX = 0.D0
-          AJEUFY = 0.D0
-          AJEUFT = 0.D0
-          JDECAL = ZI(JAPPTR+II-1)
-          NBDDL = ZI(JAPPTR+II) - ZI(JAPPTR+II-1)
-          IF (ZI(JMETH+6).EQ.-1) THEN
-C  ---    METHODE PENALISEE EN CONTACT UNILATERAL
-            CALL CALADU(NEQ,NBDDL,ZR(JAPCOE+JDECAL),ZI(JAPDDL+JDECAL),
-     &                  ZR(JAFMU),RN)
-          ELSE
-C  ---    RECUPERATION DE AT.MU
-            CALL CALADU(NEQ,NBDDL,ZR(JAPCOE+JDECAL),ZI(JAPDDL+JDECAL),
-     &                  ZR(JATMU),RN)
-C  ---    RECUPERATION DE (ASG)T.MUSG
-            CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),ZI(JAPDDL+JDECAL),
-     &                  ZR(JATMU),RT11)
-C  ---    RECUPERATION DE (AG)T.MUG
-            CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),ZI(JAPDDL+JDECAL),
-     &                  ZR(JAFMU),RT12)
-            RT1 = RT11 + RT12
-            IF (NDIM.EQ.3) THEN
-C  ---      RECUPERATION DE (ASG)T.MUSG
-              CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
-     &                    ZI(JAPDDL+JDECAL),ZR(JATMU),RT21)
-C  ---      RECUPERATION DE (AG)T.MUG
-              CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
-     &                    ZI(JAPDDL+JDECAL),ZR(JAFMU),RT22)
-              RT2 = RT21 + RT22
-            END IF
-          END IF
-          CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),ZI(JAPDDL+JDECAL),
-     &                ZR(JDEPDE),VAL1)
-          CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),ZI(JAPDDL+JDECAL),
-     &                ZR(JDDEPL),VAL2)
-          AJEUFX = VAL1 + VAL2
-          IF (NDIM.EQ.3) THEN
-            CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
-     &                  ZI(JAPDDL+JDECAL),ZR(JDEPDE),VAL1)
-            CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
-     &                  ZI(JAPDDL+JDECAL),ZR(JDDEPL),VAL2)
-            AJEUFY = VAL1 + VAL2
-          END IF
+        DO 10 II = 1,NBLIAI
+           POS1 = ZI(JAPPAR+3*(II-1)+1)
+           NUM1 = ZI(JNOCO +POS1    -1)
+           ZR(JCNSVR-1+ (NUM1-1)*19+1 ) = 0.0D0
+           ZR(JCNSVR-1+ (NUM1-1)*19+2 ) = ZR(JAPJEU+II-1)
+           ZR(JCNSVR-1+ (NUM1-1)*19+3 ) = 0.0D0
+           ZR(JCNSVR-1+ (NUM1-1)*19+4 ) = 0.0D0
+           ZR(JCNSVR-1+ (NUM1-1)*19+5 ) = 0.0D0
+           ZR(JCNSVR-1+ (NUM1-1)*19+6 ) = 0.0D0
+           ZR(JCNSVR-1+ (NUM1-1)*19+7 ) = 0.0D0
+           ZR(JCNSVR-1+ (NUM1-1)*19+8 ) = 0.0D0
+           ZR(JCNSVR-1+ (NUM1-1)*19+9 ) = 0.0D0
+           ZR(JCNSVR-1+ (NUM1-1)*19+10) = 0.0D0
+           ZR(JCNSVR-1+ (NUM1-1)*19+11) = 0.0D0
+           ZR(JCNSVR-1+ (NUM1-1)*19+12) = 0.0D0
+           ZR(JCNSVR-1+ (NUM1-1)*19+13) = 0.0D0
+           ZR(JCNSVR-1+ (NUM1-1)*19+14) = 0.0D0
+           ZR(JCNSVR-1+ (NUM1-1)*19+15) = 0.0D0
+           ZR(JCNSVR-1+ (NUM1-1)*19+16) = 0.0D0
+           ZR(JCNSVR-1+ (NUM1-1)*19+17) = 0.0D0
+           ZR(JCNSVR-1+ (NUM1-1)*19+18) = 0.0D0
+           ZR(JCNSVR-1+ (NUM1-1)*19+19) = 0.0D0
+ 10     CONTINUE
+C
+        IF ( ZI(JMETH+6).EQ.-1 ) THEN
 C ======================================================================
-C --- METHODE PENALISATION --------------------------------------------
+C -- CAS DU CONTACT PENALISE -------------------------------------------
 C ======================================================================
-          IF (ZI(JMETH+6).EQ.3 .OR. ZI(JMETH+6).EQ.5) THEN
-             DO 10 KK = 1,NBLIAC
-                LLIAC = ZI(JLIAC+KK-1)
-                IF (LLIAC.EQ.II) THEN
-                   TESTMU = ZR(JMU-1+3*NBLIAI+LLIAC)
-                   TESTCF = SQRT(ZR(IPENA-1+2*LLIAC))
-                   IF (TESTCF.GT.R8MIEM()) THEN
-                      IF (ABS((TESTMU-TESTCF)/TESTCF).GT.R8PREM()) THEN
-                         VARC = 1.0D0
-                      ELSE
-                         VARC = 2.0D0
-                      END IF
-                   ELSE
-                      VARC = 2.0D0
-                   END IF
-                   RNN = ZR(JMU+KK-1)
-                   GO TO 20
-                END IF
-   10        CONTINUE
-   20        CONTINUE
+           DO 20 II = 1, NBLIAC
+              LLIAC  = ZI(JLIAC+II-1)
+              JDECAL = ZI(JAPPTR+LLIAC-1)
+              NBDDL  = ZI(JAPPTR+LLIAC) - ZI(JAPPTR+LLIAC-1)
+
+              PROJ   = ZR(JAFMU+ZI(JAPDDL+JDECAL)-1)
+     &                                      * ZR(JNORMO +3*(LLIAC-1))
+     &               + ZR(JAFMU+ZI(JAPDDL+JDECAL)-1+1)
+     &                                      * ZR(JNORMO +3*(LLIAC-1)+1)
+              RNZ = 0.0D0
+              IF (NDIM.EQ.3) THEN
+                 PROJ = PROJ
+     &                + ZR(JAFMU+ZI(JAPDDL+JDECAL)-1+2)
+     &                                      * ZR(JNORMO +3*(LLIAC-1)+2)
+                 RNZ = PROJ*ZR(JNORMO +3*(LLIAC-1)+2)
+              ENDIF
+              RNX = PROJ*ZR(JNORMO +3*(LLIAC-1))
+              RNY = PROJ*ZR(JNORMO +3*(LLIAC-1)+1)
+              RN     = SQRT(RNX**2+RNY**2+RNZ**2)
+              VARC   = 2.0D0
+              RX     = RNX
+              RY     = RNY
+              RZ     = RNZ
+              R      = SQRT(RX**2+RY**2+RZ**2)
+
+              POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+              NUM1 = ZI(JNOCO +POS1    -1)
+              ZR(JCNSVR-1+ (NUM1-1)*19+1)  = VARC
+              ZR(JCNSVR-1+ (NUM1-1)*19+3)  = RN
+              ZR(JCNSVR-1+ (NUM1-1)*19+4)  = RNX
+              ZR(JCNSVR-1+ (NUM1-1)*19+5)  = RNY
+              ZR(JCNSVR-1+ (NUM1-1)*19+6)  = RNZ
+              ZR(JCNSVR-1+ (NUM1-1)*19+16) = RX
+              ZR(JCNSVR-1+ (NUM1-1)*19+17) = RY
+              ZR(JCNSVR-1+ (NUM1-1)*19+18) = RZ
+              ZR(JCNSVR-1+ (NUM1-1)*19+19) = R
+ 20        CONTINUE
+        ELSE IF ( ZI(JMETH+6).EQ.0 .OR.
+     +            ZI(JMETH+6).EQ.1      ) THEN
 C ======================================================================
-C --- AUTRES METHODES -------------------------------------------------
+C -- CAS DU CONTACT EN CONTRAINTES ACTIVES OU LAGRANGIEN ---------------
 C ======================================================================
-          ELSE
-            DO 40 KK = 1,NBLIAC
-              LLIAC = ZI(JLIAC+KK-1)
-              IF (LLIAC.EQ.II) THEN
-                DO 30 JJ = 1,LLF + LLF1 + LLF2
-                  JJIAC = ZI(JLIAC+NBLIAC+JJ-1)
-                  IF (JJIAC.EQ.II) THEN
+           DO 30 II = 1, NBLIAC
+              LLIAC  = ZI(JLIAC+II-1)
+              JDECAL = ZI(JAPPTR+LLIAC-1)
+              NBDDL  = ZI(JAPPTR+LLIAC) - ZI(JAPPTR+LLIAC-1)
+
+              PROJ   = ZR(JATMU+ZI(JAPDDL+JDECAL)-1)
+     &                                      * ZR(JNORMO +3*(LLIAC-1))
+     &               + ZR(JATMU+ZI(JAPDDL+JDECAL)-1+1)
+     &                                      * ZR(JNORMO +3*(LLIAC-1)+1)
+              RNZ = 0.0D0
+              IF (NDIM.EQ.3) THEN
+                 PROJ = PROJ
+     &                + ZR(JATMU+ZI(JAPDDL+JDECAL)-1+2)
+     &                                      * ZR(JNORMO +3*(LLIAC-1)+2)
+                 RNZ  = PROJ * ZR(JNORMO +3*(LLIAC-1)+2)
+              ENDIF
+              RNX = PROJ*ZR(JNORMO +3*(LLIAC-1))
+              RNY = PROJ*ZR(JNORMO +3*(LLIAC-1)+1)
+              RN     = SQRT(RNX**2+RNY**2+RNZ**2)
+              VARC   = 2.0D0
+              RX     = RNX
+              RY     = RNY
+              RZ     = RNZ
+              R      = SQRT(RX**2+RY**2+RZ**2)
+              POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+              NUM1 = ZI(JNOCO +POS1    -1)
+              ZR(JCNSVR-1+ (NUM1-1)*19+1)  = VARC
+              ZR(JCNSVR-1+ (NUM1-1)*19+3)  = RN
+              ZR(JCNSVR-1+ (NUM1-1)*19+4)  = RNX
+              ZR(JCNSVR-1+ (NUM1-1)*19+5)  = RNY
+              ZR(JCNSVR-1+ (NUM1-1)*19+6)  = RNZ
+              ZR(JCNSVR-1+ (NUM1-1)*19+16) = RX
+              ZR(JCNSVR-1+ (NUM1-1)*19+17) = RY
+              ZR(JCNSVR-1+ (NUM1-1)*19+18) = RZ
+              ZR(JCNSVR-1+ (NUM1-1)*19+19) = R
+ 30        CONTINUE
+        ELSE IF ( ZI(JMETH+6).EQ.2 ) THEN
+C ======================================================================
+C -- CAS DU FROTTEMENT LAGRANGIEN EN DIMENSION 2 -----------------------
+C ======================================================================
+           DO 40 II = 1, NBLIAC + LLF
+              IF (ZK8(JVECC-1+II).EQ.TYPEC0) THEN
+                 LLIAC  = ZI(JLIAC+II-1)
+                 JDECAL = ZI(JAPPTR+LLIAC-1)
+                 NBDDL  = ZI(JAPPTR+LLIAC) - ZI(JAPPTR+LLIAC-1)
+                 PROJ   = ZR(JATMU+ZI(JAPDDL+JDECAL)-1)
+     &                                      * ZR(JNORMO +3*(LLIAC-1)  )
+     &                  + ZR(JATMU+ZI(JAPDDL+JDECAL)-1+1)
+     &                                      * ZR(JNORMO +3*(LLIAC-1)+1)
+                 RNX    = PROJ * ZR(JNORMO +3*(LLIAC-1)  )
+                 RNY    = PROJ * ZR(JNORMO +3*(LLIAC-1)+1)
+                 RN     = SQRT(RNX**2+RNY**2)
+                 CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),
+     &                               ZI(JAPDDL+JDECAL),ZR(JDEPDE),VAL1)
+                 CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),
+     &                               ZI(JAPDDL+JDECAL),ZR(JDDEPL),VAL2)
+                 AJEUFX = VAL1 + VAL2
+                 DO 50 KK = II+1, NBLIAC+LLF
+                    IF (ZI(JLIAC-1+KK).EQ.LLIAC) THEN
+C ======================================================================
+C --- ADHERENCE --------------------------------------------------------
+C ======================================================================
+                       VARC   = 1.0D0
+                       PROJ   = ZR(JATMU+ZI(JAPDDL+JDECAL)-1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)  )
+     &                        + ZR(JATMU+ZI(JAPDDL+JDECAL)-1+1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+1)
+                       RTAX   = PROJ * ZR(JTANGO +6*(LLIAC-1)  )
+                       RTAY   = PROJ * ZR(JTANGO +6*(LLIAC-1)+1)
+                       RTGX   = 0.0D0
+                       RTGY   = 0.0D0
+                       GOTO 100
+                    ENDIF
+ 50              CONTINUE
+C ======================================================================
+C --- GLISSEMENT -------------------------------------------------------
+C ======================================================================
+                 VARC   = 2.0D0
+                 PROJ   = ZR(JAFMU+ZI(JAPDDL+JDECAL)-1)
+     &                                       * ZR(JTANGO +6*(LLIAC-1)  )
+     &                  + ZR(JAFMU+ZI(JAPDDL+JDECAL)-1+1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+1)
+                 RTAX   = 0.0D0
+                 RTAY   = 0.0D0
+                 RTGX   = PROJ * ZR(JTANGO +6*(LLIAC-1)  )
+                 RTGY   = PROJ * ZR(JTANGO +6*(LLIAC-1)+1)
+ 100             CONTINUE
+                 RX     = RNX + RTAX + RTGX
+                 RY     = RNY + RTAY + RTGY
+                 R      = SQRT(RX**2+RY**2)
+                 POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+                 NUM1 = ZI(JNOCO +POS1    -1)
+                 ZR(JCNSVR-1+ (NUM1-1)*19+1 ) = VARC
+                 ZR(JCNSVR-1+ (NUM1-1)*19+3 ) = RN
+                 ZR(JCNSVR-1+ (NUM1-1)*19+4 ) = RNX
+                 ZR(JCNSVR-1+ (NUM1-1)*19+5 ) = RNY
+                 ZR(JCNSVR-1+ (NUM1-1)*19+7 ) = AJEUFX
+                 ZR(JCNSVR-1+ (NUM1-1)*19+10) = RTAX
+                 ZR(JCNSVR-1+ (NUM1-1)*19+11) = RTAY
+                 ZR(JCNSVR-1+ (NUM1-1)*19+13) = RTGX
+                 ZR(JCNSVR-1+ (NUM1-1)*19+14) = RTGY
+                 ZR(JCNSVR-1+ (NUM1-1)*19+16) = RX
+                 ZR(JCNSVR-1+ (NUM1-1)*19+17) = RY
+                 ZR(JCNSVR-1+ (NUM1-1)*19+19) = R
+              ENDIF
+ 40        CONTINUE
+        ELSE IF ( ZI(JMETH+6).EQ.3 ) THEN
+C ======================================================================
+C -- CAS DU FROTTEMENT PENALISE ----------------------------------------
+C ======================================================================
+           DO 60 II = 1, NBLIAC
+              VARC   = 2.0D0
+              LLIAC  = ZI(JLIAC+II-1)
+              JDECAL = ZI(JAPPTR+LLIAC-1)
+              NBDDL  = ZI(JAPPTR+LLIAC) - ZI(JAPPTR+LLIAC-1)
+              PROJ   = ZR(JATMU+ZI(JAPDDL+JDECAL)-1)
+     &                                      * ZR(JNORMO +3*(LLIAC-1))
+     &               + ZR(JATMU+ZI(JAPDDL+JDECAL)-1+1)
+     &                                      * ZR(JNORMO +3*(LLIAC-1)+1)
+              RNZ    = 0.0D0
+              RTGZ   = 0.0D0
+              AJEUFY = 0.0D0
+              IF (NDIM.EQ.3) THEN
+                 PROJ = PROJ
+     &                + ZR(JATMU+ZI(JAPDDL+JDECAL)-1+2)
+     &                                      * ZR(JNORMO +3*(LLIAC-1)+2)
+                 RNZ  = PROJ * ZR(JNORMO +3*(LLIAC-1)+2)
+                 CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
+     &                               ZI(JAPDDL+JDECAL),ZR(JDEPDE),VAL1)
+                 CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
+     &                               ZI(JAPDDL+JDECAL),ZR(JDDEPL),VAL2)
+                 AJEUFY = VAL1 + VAL2
+              ENDIF
+              RNX    = PROJ * ZR(JNORMO +3*(LLIAC-1)  )
+              RNY    = PROJ * ZR(JNORMO +3*(LLIAC-1)+1)
+              RN     = SQRT(RNX**2+RNY**2+RNZ**2)
+              CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),
+     &                               ZI(JAPDDL+JDECAL),ZR(JDEPDE),VAL1)
+              CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),
+     &                               ZI(JAPDDL+JDECAL),ZR(JDDEPL),VAL2)
+              AJEUFX = VAL1 + VAL2
+              AJEUFT = SQRT(AJEUFX**2+AJEUFY**2)
+              PROJ1  = ZR(JAFMU+ZI(JAPDDL+JDECAL)-1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)  )
+     &               + ZR(JAFMU+ZI(JAPDDL+JDECAL)-1+1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+1)
+              PROJ2  = ZR(JAFMU+ZI(JAPDDL+JDECAL)-1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+3)
+     &               + ZR(JAFMU+ZI(JAPDDL+JDECAL)-1+1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+4)
+              IF (NDIM.EQ.3) THEN
+                 PROJ1 = PROJ1
+     &               + ZR(JAFMU+ZI(JAPDDL+JDECAL)-1+2)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+2)
+                 PROJ2 = PROJ2
+     &               + ZR(JAFMU+ZI(JAPDDL+JDECAL)-1+2)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+5)
+                 RTGZ  = PROJ1 * ZR(JTANGO +6*(LLIAC-1)+2) +
+     &                   PROJ2 * ZR(JTANGO +6*(LLIAC-1)+5)
+              ENDIF
+              RTGX   = PROJ1 * ZR(JTANGO +6*(LLIAC-1)  ) +
+     &                 PROJ2 * ZR(JTANGO +6*(LLIAC-1)+3)
+              RTGY   = PROJ1 * ZR(JTANGO +6*(LLIAC-1)+1) +
+     &                 PROJ2 * ZR(JTANGO +6*(LLIAC-1)+4)
+              RTAX   = 0.0D0
+              RTAY   = 0.0D0
+              RTAZ   = 0.0D0
+              TESTMU = ZR(JMU-1+3*NBLIAI+LLIAC)
+              TESTCF = SQRT(ZR(IPENA-1+2*LLIAC))
+              IF (TESTCF.GT.R8MIEM()) THEN
+                 IF (ABS((TESTMU-TESTCF)/TESTCF).GT.R8PREM()) THEN
                     VARC = 1.0D0
-                    RNN = ZR(JMU+KK-1)
-                    IF ((JJ.GT.LLF) .AND. (JJ.LE. (LLF+LLF1))) THEN
-                      RT2 = 0.D0
-                    ELSE IF (JJ.GT. (LLF+LLF1) .AND.
-     &                       (JJ.LE. (LLF+LLF1+LLF2))) THEN
-                      RT1 = 0.D0
-                    END IF
-                    GO TO 50
-                  END IF
-   30           CONTINUE
-                VARC = 2.0D0
-                RNN = ZR(JMU+KK-1)
-                GO TO 50
-              END IF
-   40       CONTINUE
-   50       CONTINUE
-          END IF
+                    RTAX = RTGX
+                    RTAY = RTGY
+                    RTAZ = RTGZ
+                    RTGX = 0.0D0
+                    RTGY = 0.0D0
+                    RTGZ = 0.0D0
+                 ENDIF
+              ENDIF
+              RX     = RNX + RTAX + RTGX
+              RY     = RNY + RTAY + RTGY
+              RZ     = RNZ + RTAZ + RTGZ
+              R      = SQRT(RX**2+RY**2+RZ**2)
 
-          RN = RN/2.D0
-          RT1 = RT1/2.D0
-          RT2 = RT2/2.D0
-          AJEUFT = SQRT(AJEUFX**2+AJEUFY**2)
-          RT = SQRT(RT1**2+RT2**2)
-          IF (RN.NE.0.D0) COE = RT/RN
+              POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+              NUM1 = ZI(JNOCO +POS1    -1)
+              ZR(JCNSVR-1+ (NUM1-1)*19+1 ) = VARC
+              ZR(JCNSVR-1+ (NUM1-1)*19+3 ) = RN
+              ZR(JCNSVR-1+ (NUM1-1)*19+4 ) = RNX
+              ZR(JCNSVR-1+ (NUM1-1)*19+5 ) = RNY
+              ZR(JCNSVR-1+ (NUM1-1)*19+6 ) = RNZ
+              ZR(JCNSVR-1+ (NUM1-1)*19+7 ) = AJEUFX
+              ZR(JCNSVR-1+ (NUM1-1)*19+8 ) = AJEUFY
+              ZR(JCNSVR-1+ (NUM1-1)*19+9 ) = AJEUFT
+              ZR(JCNSVR-1+ (NUM1-1)*19+10) = RTAX
+              ZR(JCNSVR-1+ (NUM1-1)*19+11) = RTAY
+              ZR(JCNSVR-1+ (NUM1-1)*19+12) = RTAZ
+              ZR(JCNSVR-1+ (NUM1-1)*19+13) = RTGX
+              ZR(JCNSVR-1+ (NUM1-1)*19+14) = RTGY
+              ZR(JCNSVR-1+ (NUM1-1)*19+15) = RTGZ
+              ZR(JCNSVR-1+ (NUM1-1)*19+16) = RX
+              ZR(JCNSVR-1+ (NUM1-1)*19+17) = RY
+              ZR(JCNSVR-1+ (NUM1-1)*19+18) = RZ
+              ZR(JCNSVR-1+ (NUM1-1)*19+19) = R
 
+ 60        CONTINUE
+        ELSE IF ( ZI(JMETH+6).EQ.4 ) THEN
+C ======================================================================
+C -- CAS DU FROTTEMENT LAGRANGIEN EN DIMENSION 3 -----------------------
+C ======================================================================
+           DO 80 II = 1, NBLIAC+LLF+LLF1+LLF2
+              IF ( ZK8(JVECC-1+II).EQ.TYPEC0 ) THEN
+                 LLIAC  = ZI(JLIAC+II-1)
+                 JDECAL = ZI(JAPPTR+LLIAC-1)
+                 NBDDL  = ZI(JAPPTR+LLIAC) - ZI(JAPPTR+LLIAC-1)
+                 PROJ   = ZR(JATMU+ZI(JAPDDL+JDECAL)-1)
+     &                                      * ZR(JNORMO +3*(LLIAC-1))
+     &                  + ZR(JATMU+ZI(JAPDDL+JDECAL)-1+1)
+     &                                      * ZR(JNORMO +3*(LLIAC-1)+1)
+     &                  + ZR(JATMU+ZI(JAPDDL+JDECAL)-1+2)
+     &                                      * ZR(JNORMO +3*(LLIAC-1)+2)
+                 RNX    = PROJ * ZR(JNORMO +3*(LLIAC-1)  )
+                 RNY    = PROJ * ZR(JNORMO +3*(LLIAC-1)+1)
+                 RNZ    = PROJ * ZR(JNORMO +3*(LLIAC-1)+2)
+                 RN     = SQRT(RNX**2+RNY**2+RNZ**2)
+                 CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),
+     &                               ZI(JAPDDL+JDECAL),ZR(JDEPDE),VAL1)
+                 CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),
+     &                               ZI(JAPDDL+JDECAL),ZR(JDDEPL),VAL2)
+                 AJEUFX = VAL1 + VAL2
+                 CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
+     &                               ZI(JAPDDL+JDECAL),ZR(JDEPDE),VAL1)
+                 CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
+     &                               ZI(JAPDDL+JDECAL),ZR(JDDEPL),VAL2)
+                 AJEUFY = VAL1 + VAL2
+                 AJEUFT = SQRT(AJEUFX**2+AJEUFY**2)
+                 DO 90 KK = II+1, NBLIAC+LLF+LLF1+LLF2
+                    IF (ZI(JLIAC-1+KK).EQ.LLIAC) THEN
+                       IF (ZK8(JVECC-1+KK).EQ.TYPEF0) THEN
+C ======================================================================
+C --- ADHERENCE SUIVANT LES DEUX DIRECTIONS ----------------------------
+C ======================================================================
+                          VARC   = 1.0D0
+                          PROJ1  = ZR(JATMU+ZI(JAPDDL+JDECAL)-1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)  )
+     &                           + ZR(JATMU+ZI(JAPDDL+JDECAL)-1+1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+1)
+     &                           + ZR(JATMU+ZI(JAPDDL+JDECAL)-1+2)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+2)
+                          PROJ2  = ZR(JATMU+ZI(JAPDDL+JDECAL)-1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+3)
+     &                           + ZR(JATMU+ZI(JAPDDL+JDECAL)-1+1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+4)
+     &                           + ZR(JATMU+ZI(JAPDDL+JDECAL)-1+2)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+5)
+                          RTAX   = PROJ1 * ZR(JTANGO +6*(LLIAC-1)  ) +
+     &                             PROJ2 * ZR(JTANGO +6*(LLIAC-1)+3)
+                          RTAY   = PROJ1 * ZR(JTANGO +6*(LLIAC-1)+1) +
+     &                             PROJ2 * ZR(JTANGO +6*(LLIAC-1)+4)
+                          RTAZ   = PROJ1 * ZR(JTANGO +6*(LLIAC-1)+2) +
+     &                             PROJ2 * ZR(JTANGO +6*(LLIAC-1)+5)
+                          RTGX   = 0.0D0
+                          RTGY   = 0.0D0
+                          RTGZ   = 0.0D0
+                       ELSE IF (ZK8(JVECC-1+KK).EQ.TYPEF1) THEN
+C ======================================================================
+C --- ADHERENCE SUIVANT LA PREMIERE DIRECTION --------------------------
+C ======================================================================
+                          VARC   = 1.0D0
+                          PROJ1  = ZR(JATMU+ZI(JAPDDL+JDECAL)-1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)  )
+     &                           + ZR(JATMU+ZI(JAPDDL+JDECAL)-1+1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+1)
+     &                           + ZR(JATMU+ZI(JAPDDL+JDECAL)-1+2)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+2)
+                          RTAX   = PROJ1 * ZR(JTANGO +6*(LLIAC-1)  )
+                          RTAY   = PROJ1 * ZR(JTANGO +6*(LLIAC-1)+1)
+                          RTAZ   = PROJ1 * ZR(JTANGO +6*(LLIAC-1)+2)
+                          RTGX   = 0.0D0
+                          RTGY   = 0.0D0
+                          RTGZ   = 0.0D0
+                       ELSE IF (ZK8(JVECC-1+KK).EQ.TYPEF2) THEN
+C ======================================================================
+C --- ADHERENCE SUIVANT LA SECONDE DIRECTION ---------------------------
+C ======================================================================
+                          VARC   = 1.0D0
+                          PROJ2  = ZR(JATMU+ZI(JAPDDL+JDECAL)-1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+3)
+     &                           + ZR(JATMU+ZI(JAPDDL+JDECAL)-1+1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+4)
+     &                           + ZR(JATMU+ZI(JAPDDL+JDECAL)-1+2)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+5)
+                          RTAX   = PROJ2 * ZR(JTANGO +6*(LLIAC-1)+3)
+                          RTAY   = PROJ2 * ZR(JTANGO +6*(LLIAC-1)+4)
+                          RTAZ   = PROJ2 * ZR(JTANGO +6*(LLIAC-1)+5)
+                          RTGX   = 0.0D0
+                          RTGY   = 0.0D0
+                          RTGZ   = 0.0D0
+                       ENDIF
+                       GOTO 300
+                    ENDIF
+ 90              CONTINUE
+C ======================================================================
+C --- GLISSEMENT -------------------------------------------------------
+C ======================================================================
+                 VARC   = 2.0D0
+                 RTAX   = 0.0D0
+                 RTAY   = 0.0D0
+                 RTAZ   = 0.0D0
+                 PROJ1  = ZR(JAFMU+ZI(JAPDDL+JDECAL)-1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)  )
+     &                  + ZR(JAFMU+ZI(JAPDDL+JDECAL)-1+1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+1)
+     &                  + ZR(JAFMU+ZI(JAPDDL+JDECAL)-1+2)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+2)
+                 PROJ2  = ZR(JAFMU+ZI(JAPDDL+JDECAL)-1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+3)
+     &                  + ZR(JAFMU+ZI(JAPDDL+JDECAL)-1+1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+4)
+     &                  + ZR(JAFMU+ZI(JAPDDL+JDECAL)-1+2)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+5)
+                 RTGX   = PROJ1 * ZR(JTANGO +6*(LLIAC-1)  ) +
+     &                    PROJ2 * ZR(JTANGO +6*(LLIAC-1)+3)
+                 RTGY   = PROJ1 * ZR(JTANGO +6*(LLIAC-1)+1) +
+     &                    PROJ2 * ZR(JTANGO +6*(LLIAC-1)+4)
+                 RTGZ   = PROJ1 * ZR(JTANGO +6*(LLIAC-1)+2) +
+     &                    PROJ2 * ZR(JTANGO +6*(LLIAC-1)+5)
+ 300             CONTINUE
+                 RX     = RNX + RTAX + RTGX
+                 RY     = RNY + RTAY + RTGY
+                 RZ     = RNZ + RTAZ + RTGZ
+                 R      = SQRT(RX**2+RY**2+RZ**2)
+
+                 POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+                 NUM1 = ZI(JNOCO +POS1    -1)
+                 ZR(JCNSVR-1+ (NUM1-1)*19+1 ) = VARC
+                 ZR(JCNSVR-1+ (NUM1-1)*19+3 ) = RN
+                 ZR(JCNSVR-1+ (NUM1-1)*19+4 ) = RNX
+                 ZR(JCNSVR-1+ (NUM1-1)*19+5 ) = RNY
+                 ZR(JCNSVR-1+ (NUM1-1)*19+6 ) = RNZ
+                 ZR(JCNSVR-1+ (NUM1-1)*19+7 ) = AJEUFX
+                 ZR(JCNSVR-1+ (NUM1-1)*19+8 ) = AJEUFY
+                 ZR(JCNSVR-1+ (NUM1-1)*19+9 ) = AJEUFT
+                 ZR(JCNSVR-1+ (NUM1-1)*19+10) = RTAX
+                 ZR(JCNSVR-1+ (NUM1-1)*19+11) = RTAY
+                 ZR(JCNSVR-1+ (NUM1-1)*19+12) = RTAZ
+                 ZR(JCNSVR-1+ (NUM1-1)*19+13) = RTGX
+                 ZR(JCNSVR-1+ (NUM1-1)*19+14) = RTGY
+                 ZR(JCNSVR-1+ (NUM1-1)*19+15) = RTGZ
+                 ZR(JCNSVR-1+ (NUM1-1)*19+16) = RX
+                 ZR(JCNSVR-1+ (NUM1-1)*19+17) = RY
+                 ZR(JCNSVR-1+ (NUM1-1)*19+18) = RZ
+                 ZR(JCNSVR-1+ (NUM1-1)*19+19) = R
+
+              ENDIF
+ 80        CONTINUE
+        ELSE IF ( ZI(JMETH+6).EQ.5 ) THEN
+C ======================================================================
+C -- CAS DU FROTTEMENT PENALISE EN CONTACT -----------------------------
+C ======================================================================
+           DO 110 II = 1, NBLIAC
+              VARC   = 2.0D0
+              LLIAC  = ZI(JLIAC+II-1)
+              JDECAL = ZI(JAPPTR+LLIAC-1)
+              NBDDL  = ZI(JAPPTR+LLIAC) - ZI(JAPPTR+LLIAC-1)
+              PROJ   = ZR(JAFMU+ZI(JAPDDL+JDECAL)-1)
+     &                                      * ZR(JNORMO +3*(LLIAC-1))
+     &               + ZR(JAFMU+ZI(JAPDDL+JDECAL)-1+1)
+     &                                      * ZR(JNORMO +3*(LLIAC-1)+1)
+              RNZ    = 0.0D0
+              RTGZ   = 0.0D0
+              AJEUFY = 0.0D0
+              IF (NDIM.EQ.3) THEN
+                 PROJ = PROJ
+     &                + ZR(JAFMU+ZI(JAPDDL+JDECAL)-1+2)
+     &                                      * ZR(JNORMO +3*(LLIAC-1)+2)
+                 RNZ  = PROJ * ZR(JNORMO +3*(LLIAC-1)+2)
+                 CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
+     &                               ZI(JAPDDL+JDECAL),ZR(JDEPDE),VAL1)
+                 CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
+     &                               ZI(JAPDDL+JDECAL),ZR(JDDEPL),VAL2)
+                 AJEUFY = VAL1 + VAL2
+              ENDIF
+              RNX    = PROJ * ZR(JNORMO +3*(LLIAC-1)  )
+              RNY    = PROJ * ZR(JNORMO +3*(LLIAC-1)+1)
+              RN     = SQRT(RNX**2+RNY**2+RNZ**2)
+              CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),
+     &                               ZI(JAPDDL+JDECAL),ZR(JDEPDE),VAL1)
+              CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),
+     &                               ZI(JAPDDL+JDECAL),ZR(JDDEPL),VAL2)
+              AJEUFX = VAL1 + VAL2
+              AJEUFT = SQRT(AJEUFX**2+AJEUFY**2)
+              PROJ1  = ZR(JAFMU+ZI(JAPDDL+JDECAL)-1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)  )
+     &               + ZR(JAFMU+ZI(JAPDDL+JDECAL)-1+1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+1)
+              PROJ2  = ZR(JAFMU+ZI(JAPDDL+JDECAL)-1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+3)
+     &               + ZR(JAFMU+ZI(JAPDDL+JDECAL)-1+1)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+4)
+              IF (NDIM.EQ.3) THEN
+                 PROJ1 = PROJ1
+     &               + ZR(JAFMU+ZI(JAPDDL+JDECAL)-1+2)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+2)
+                 PROJ2 = PROJ2
+     &               + ZR(JAFMU+ZI(JAPDDL+JDECAL)-1+2)
+     &                                      * ZR(JTANGO +6*(LLIAC-1)+5)
+                 RTGZ  = PROJ1 * ZR(JTANGO +6*(LLIAC-1)+2) +
+     &                   PROJ2 * ZR(JTANGO +6*(LLIAC-1)+5)
+              ENDIF
+              RTGX   = PROJ1 * ZR(JTANGO +6*(LLIAC-1)  ) +
+     &                 PROJ2 * ZR(JTANGO +6*(LLIAC-1)+3)
+              RTGY   = PROJ1 * ZR(JTANGO +6*(LLIAC-1)+1) +
+     &                 PROJ2 * ZR(JTANGO +6*(LLIAC-1)+4)
+              RTAX   = 0.0D0
+              RTAY   = 0.0D0
+              RTAZ   = 0.0D0
+              TESTMU = ZR(JMU-1+3*NBLIAI+LLIAC)
+              TESTCF = SQRT(ZR(IPENA-1+2*LLIAC))
+              IF (TESTCF.GT.R8MIEM()) THEN
+                 IF (ABS((TESTMU-TESTCF)/TESTCF).GT.R8PREM()) THEN
+                    VARC = 1.0D0
+                    RTAX = RTGX
+                    RTAY = RTGY
+                    RTAZ = RTGZ
+                    RTGX = 0.0D0
+                    RTGY = 0.0D0
+                    RTGZ = 0.0D0
+                 ENDIF
+              ENDIF
+              RX     = RNX + RTAX + RTGX
+              RY     = RNY + RTAY + RTGY
+              RZ     = RNZ + RTAZ + RTGZ
+              R      = SQRT(RX**2+RY**2+RZ**2)
+
+              POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+              NUM1 = ZI(JNOCO +POS1    -1)
+              ZR(JCNSVR-1+ (NUM1-1)*19+1 ) = VARC
+              ZR(JCNSVR-1+ (NUM1-1)*19+3 ) = RN
+              ZR(JCNSVR-1+ (NUM1-1)*19+4 ) = RNX
+              ZR(JCNSVR-1+ (NUM1-1)*19+5 ) = RNY
+              ZR(JCNSVR-1+ (NUM1-1)*19+6 ) = RNZ
+              ZR(JCNSVR-1+ (NUM1-1)*19+7 ) = AJEUFX
+              ZR(JCNSVR-1+ (NUM1-1)*19+8 ) = AJEUFY
+              ZR(JCNSVR-1+ (NUM1-1)*19+9 ) = AJEUFT
+              ZR(JCNSVR-1+ (NUM1-1)*19+10) = RTAX
+              ZR(JCNSVR-1+ (NUM1-1)*19+11) = RTAY
+              ZR(JCNSVR-1+ (NUM1-1)*19+12) = RTAZ
+              ZR(JCNSVR-1+ (NUM1-1)*19+13) = RTGX
+              ZR(JCNSVR-1+ (NUM1-1)*19+14) = RTGY
+              ZR(JCNSVR-1+ (NUM1-1)*19+15) = RTGZ
+              ZR(JCNSVR-1+ (NUM1-1)*19+16) = RX
+              ZR(JCNSVR-1+ (NUM1-1)*19+17) = RY
+              ZR(JCNSVR-1+ (NUM1-1)*19+18) = RZ
+              ZR(JCNSVR-1+ (NUM1-1)*19+19) = R
+
+ 110       CONTINUE
+        ENDIF
+
+        DO 120 II = 1,NBLIAI
 
 C ----- RECHERCHE CONNECTIVITE
-
-          POS1 = ZI(JAPPAR+3* (II-1)+1)
-          NUM1 = ZI(JNOCO+POS1-1)
-          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM1),NOM1)
-          POS2 = ZI(JAPPAR+3* (II-1)+2)
-          IF (POS2.GT.0) THEN
-            CHAIN = 'MAILLE '
-            NUM2 = ZI(JMACO+POS2-1)
-            CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUM2),NOM2)
-          ELSE IF (POS2.LT.0) THEN
-            CHAIN = 'NOEUD '
-            NUM2 = ZI(JNOCO+ABS(POS2)-1)
-            CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM2),NOM2)
-          ELSE IF (POS2.EQ.0) THEN
-            CHAIN = ' '
-            NOM2 = ' '
-          END IF
-
+           POS1 = ZI(JAPPAR+3* (II-1)+1)
+           NUM1 = ZI(JNOCO+POS1-1)
+           CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM1),NOM1)
+           POS2 = ZI(JAPPAR+3* (II-1)+2)
+           IF (POS2.GT.0) THEN
+              CHAIN = 'MAILLE '
+              NUM2 = ZI(JMACO+POS2-1)
+              CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUM2),NOM2)
+           ELSE IF (POS2.LT.0) THEN
+              CHAIN = 'NOEUD '
+              NUM2 = ZI(JNOCO+ABS(POS2)-1)
+              CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM2),NOM2)
+           ELSE IF (POS2.EQ.0) THEN
+              CHAIN = ' '
+              NOM2 = ' '
+           ENDIF
 C ----- FIN RECHERCHE CONNECTIVITE
+           RN = ZR(JCNSVR-1+ (NUM1-1)*19+3 )
+           R  = ZR(JCNSVR-1+ (NUM1-1)*19+19)
 
-          IF (NIV.EQ.2) THEN
-            IF (VARC.GE.1.0D0) THEN
+C RAPPORT REACTION_TANGENTIELLE/REACTION_NORMALE           
+
+           COE = 0.0D0
+           IF ( RN.NE.0.D0 ) THEN
+              PROD = (ABS(R)-ABS(RN))
+              
+C  ON VERIFIE QUE LA RAECTION TANGENTIELLE EXISTE ET EST POSITIVE
+
+              IF ( PROD/ABS(R).LT.-R8PREM() ) THEN
+                 CALL UTMESS('F','RESUCO','NORME TANGENTIELLE
+     &             DE FROTTEMENT NEGATIVE')
+              ENDIF
+C               OUI -> CALCUL DU RAPPORT
+              COE = PROD/RN
+           ENDIF
+
+           IF (NIV.EQ.2) THEN
+              VARC   = ZR(JCNSVR-1+ (NUM1-1)*19+1 )
+              AJEUFT = ZR(JCNSVR-1+ (NUM1-1)*19+9 )
+              IF (VARC.NE.0.0D0) THEN
               WRITE (IFM,1001) '* ','LIAISON ACTIVE   ',II,' * NOEUD ',
      &          NOM1,' * ',CHAIN,NOM2,' *','JEU ',ZR(JAPJEU+II-1),' *',
-     &          'RNN ',RNN,' *','GLI ',AJEUFT,' *','RN  ',RN,' *',
-     &          'RT  ',RT,' *','MU  ',COE,' *'
-            ELSE
+     &          'RN ',RN,' *','GLI ',AJEUFT,' *','R  ',R,
+     &          ' *','RT/RN  ',COE,' *'
+              ELSE
               WRITE (IFM,1001) '* ','LIAISON INACTIVE ',II,' * NOEUD ',
      &          NOM1,' * ',CHAIN,NOM2,' *','JEU ',ZR(JAPJEU+II-1),' *',
-     &          'RNN ',RNN,' *','GLI ',AJEUFT,' *','RN  ',RN,' *',
-     &          'RT  ',RT,' *','MU  ',COE,' *'
-            END IF
-          END IF
+     &          'RN ',RN,' *','GLI ',AJEUFT,' *','R  ',R,
+     &          ' *','RT/RN  ',COE,' *'
+              ENDIF
+           ENDIF
 
-C --- RECUPERATION DES VALEURS DU CONTACT
+           ZL(JCNSLR-1+ (NUM1-1)*19+1 ) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+2 ) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+3 ) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+4 ) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+5 ) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+6 ) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+7 ) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+8 ) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+9 ) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+10) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+11) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+12) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+13) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+14) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+15) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+16) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+17) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+18) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+19) = .TRUE.
 
-          ZR(JCNSVR-1+ (NUM1-1)*11+1) = VARC
-          ZR(JCNSVR-1+ (NUM1-1)*11+2) = ZR(JAPJEU+II-1)
-          ZR(JCNSVR-1+ (NUM1-1)*11+3) = RNN
-          ZR(JCNSVR-1+ (NUM1-1)*11+4) = AJEUFX
-          ZR(JCNSVR-1+ (NUM1-1)*11+5) = AJEUFY
-          ZR(JCNSVR-1+ (NUM1-1)*11+6) = AJEUFT
-          ZR(JCNSVR-1+ (NUM1-1)*11+7) = RN
-          ZR(JCNSVR-1+ (NUM1-1)*11+8) = RT1
-          ZR(JCNSVR-1+ (NUM1-1)*11+9) = RT2
-          ZR(JCNSVR-1+ (NUM1-1)*11+10) = RT
-          ZR(JCNSVR-1+ (NUM1-1)*11+11) = COE
-          ZL(JCNSLR-1+ (NUM1-1)*11+1) = .TRUE.
-          ZL(JCNSLR-1+ (NUM1-1)*11+2) = .TRUE.
-          ZL(JCNSLR-1+ (NUM1-1)*11+3) = .TRUE.
-          ZL(JCNSLR-1+ (NUM1-1)*11+4) = .TRUE.
-          ZL(JCNSLR-1+ (NUM1-1)*11+5) = .TRUE.
-          ZL(JCNSLR-1+ (NUM1-1)*11+6) = .TRUE.
-          ZL(JCNSLR-1+ (NUM1-1)*11+7) = .TRUE.
-          ZL(JCNSLR-1+ (NUM1-1)*11+8) = .TRUE.
-          ZL(JCNSLR-1+ (NUM1-1)*11+9) = .TRUE.
-          ZL(JCNSLR-1+ (NUM1-1)*11+10) = .TRUE.
-          ZL(JCNSLR-1+ (NUM1-1)*11+11) = .TRUE.
-   60   CONTINUE
-
-        IF (NIV.EQ.2) THEN
-          WRITE (IFM,'(''<CONTACT_2> '',10X,169(''*''))')
+ 120   CONTINUE
+C ======================================================================
+       IF (NIV.EQ.2) THEN
+          WRITE (IFM,'(''<CONTACT_2> '',10X,153(''*''))')
           WRITE (IFM,*)
-        END IF
-      END IF
-
- 1001 FORMAT ('<CONTACT_2> ',10X,A2,A17,I5,A9,A8,A3,A7,A8,A2,A4,1PE12.5,
-     &       A2,A4,1PE12.5,A2,A4,1PE12.5,A2,A4,1PE12.5,A2,A4,1PE12.5,A2,
-     &       A4,1PE12.5,A2)
-
+       ENDIF
+      ENDIF
+C ======================================================================
       CALL JEDEMA()
-C-----------------------------------------------------------------------
+C ======================================================================
+ 1001 FORMAT ('<CONTACT_2> ',10X,A2,A17,I5,A9,A8,A3,A7,A8,A2,A4,1PE12.5,
+     &       A2,A4,1PE12.5,A2,A4,1PE12.5,A2,A4,1PE12.5,A2,A6,1PE12.5,A2)
+C ======================================================================
       END

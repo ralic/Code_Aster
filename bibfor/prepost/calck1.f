@@ -7,7 +7,7 @@ C
       CHARACTER*19 SIGMRV, SIGMDB, TBSCRV, TBSCMB
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF PREPOST  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C ======================================================================
       INTEGER JSIGMR, JSIGMB, JABSRV, JABSMB, IFIC
       REAL*8  ZERO, UN, DEUX, RAPPO, GAMMA1, GAMMA2, FA, FB, FAB
       REAL*8  A, B, PI, R8PI, VALMIN, ALPHA, BETA, Z, Z2, Z3, Z4, Z5
-      REAL*8  GAMX, GAMY, R8PREM, LDEFO
+      REAL*8  GAMX, GAMY, R8PREM, LDEFO, RTOLE
 C ======================================================================
 C --- INITIALISATION DE PARAMETRES -------------------------------------
 C ======================================================================
@@ -82,8 +82,9 @@ C ======================================================================
 C --- INITIALISATIONS DES VARIABLES REPRESENTANT LES FACTEURS ----------
 C --- D'INTENSITE ------------------------------------------------------
 C ======================================================================
-      K1A = ZERO
-      K1B = ZERO
+      K1A   = ZERO
+      K1B   = ZERO
+      RTOLE = 1.0D-10
 C ======================================================================
 C --- INITIALISATIONS DES VARIABLES NECESSAIRE AU CALCUL ---------------
 C ======================================================================
@@ -96,7 +97,7 @@ C --- VERIFICATION DE LA COHERENCE DE LA PROFONDEUR DU DEFAUT ET -------
 C --- DES ABSCISSES CURVILIGNES COTE REVETEMENT ET COTE METAL DE BASE --
 C ======================================================================
       LDEFO = ZR(JABSRV+NOREV-1) + ZR(JABSMB+NOMDB-1)
-      IF ( ABS(LDEFO - PRODEF) .GT. R8PREM() ) THEN
+      IF ( ABS(LDEFO - PRODEF) .GT. RTOLE ) THEN
          CALL UTMESS('F','CALCK1','LA LONGUEUR DU DEFAUT N EST PAS EN'//
      +              ' ACCORD AVEC LES TABLES DEFINIES COTE REVETEMENT'//
      +              ' ET COTE METAL DE BASE')
@@ -198,9 +199,10 @@ C --- CORRECTION PAR LES FACTEURS D'ELLIPTICITE ------------------------
 C ======================================================================
       RAPPO = A/B
       IF ( A.LE.B ) THEN
-         FAB = 1 / SQRT(1.0D0+1.464D0*(RAPPO**1.65D0))
+         FAB = 1.0D0 / SQRT(1.0D0+1.464D0*(RAPPO**1.65D0))
       ELSE
-         FAB = 1 / ( RAPPO * SQRT(1.0D0+1.464D0*((1/RAPPO)**1.65D0)))
+         FAB = 1.0D0 /
+     &         ( RAPPO * SQRT(1.0D0+1.464D0*((1.0D0/RAPPO)**1.65D0)))
       ENDIF
       K1A = K1A * FA * FAB
       K1B = K1B * FB * FAB

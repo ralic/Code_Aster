@@ -8,7 +8,7 @@ C
       CHARACTER*8   MOD
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C ======================================================================
-      INTEGER       JPARA, JDERIV, NDT, NDI, II, JJ
+      INTEGER       JPARA, JDERIV, NDT, NDI
       REAL*8        EPSSIG, SIGC, GAMCJS, PREF, SN(6), SNII, INVN, H0
       REAL*8        MUN, HLODE, GAMPN, RCOS3T, COS3T, RN, GN, UCN, GDEV
       REAL*8        UCRITP, DUDS(6), DUDG, DFDS(6), DFDG, TRACE
@@ -79,12 +79,8 @@ C ======================================================================
       DERIVE = '&&LGLJPL.DERIVE'
       CALL     WKVECT(PARECR,'V V R',5,JPARA )
       CALL     WKVECT(DERIVE,'V V R',4,JDERIV)
-      DO 10 II = 1,6
-         DO 20 JJ = 1,6
-            HOOK(II,JJ) = 0.0D0
-            DSDE(II,JJ) = 0.0D0
- 20      CONTINUE
- 10   CONTINUE
+      CALL     LCINMA ( 0.0D0, HOOK )
+      CALL     LCINMA ( 0.0D0, DSDE )
 C ======================================================================
 C --- RECUPERATION DE PARAMETRES MATERIAU ------------------------------
 C ======================================================================
@@ -112,21 +108,21 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DES VARIABLES INITIALES -----------------------------------
 C ======================================================================
-      RCOS3T = COS3T (NDT, SN, PREF, EPSSIG)
+      RCOS3T = COS3T (SN, PREF, EPSSIG)
       RN     = HLODE (GAMCJS, RCOS3T)
       GN     = GDEV  (SNII, RN)
       UCN    = UCRITP(NBMAT, MATER, ZR(JPARA), GN, INVN)
 C ======================================================================
 C --- CALCUL DE Q A L'ITERATION COURANTE -------------------------------
 C ======================================================================
-      CALL SOLREN(NDT, SN, NBMAT, MATER, Q)
+      CALL SOLREN(SN, NBMAT, MATER, Q)
 C ======================================================================
 C --- CALCUL DES DIFFERENTES DERIVEES ----------------------------------
 C ======================================================================
 C **********************************************************************
 C --- CALCUL DE DUDS ---------------------------------------------------
 C **********************************************************************
-      CALL DRUDRS(NDT, NDI, ZR(JPARA), Q, H0, SIGC, DUDS)
+      CALL DRUDRS(ZR(JPARA), Q, H0, SIGC, DUDS)
 C **********************************************************************
 C --- CALCUL DE DUDG ---------------------------------------------------
 C **********************************************************************
@@ -134,7 +130,7 @@ C **********************************************************************
 C **********************************************************************
 C --- CALCUL DE DFDS ---------------------------------------------------
 C **********************************************************************
-      CALL DRFDRS(NDT, Q, ZR(JPARA), H0, SIGC, GN, UCN, DUDS, DFDS)
+      CALL DRFDRS(Q, ZR(JPARA), H0, SIGC, GN, UCN, DUDS, DFDS)
 C **********************************************************************
 C --- CALCUL DE DFDG ---------------------------------------------------
 C **********************************************************************
@@ -143,7 +139,7 @@ C **********************************************************************
 C ======================================================================
 C --- CALCUL DE DSIG/DEPS ----------------------------------------------
 C ======================================================================
-      CALL CALCDS(NDT, HOOK, DEVG, DEVGII, DFDS, DFDG, DSDE)
+      CALL CALCDS(HOOK, DEVG, DEVGII, DFDS, DFDG, DSDE)
 C ======================================================================
 C --- DESTRUCTION DES VECTEURS INUTILES --------------------------------
 C ======================================================================

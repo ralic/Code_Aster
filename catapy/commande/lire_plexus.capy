@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,9 +27,9 @@ LIRE_PLEXUS=OPER(nom="LIRE_PLEXUS",op= 184,sd_prod=evol_char,
          MAILLAGE        =SIMP(statut='o',typ=maillage ),
          MODELE          =SIMP(statut='o',typ=modele ),
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-         NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
+         NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
          LIST_ORDRE      =SIMP(statut='f',typ=listis ),
-         INST            =SIMP(statut='f',typ='R',max='**'),
+         INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
          LIST_INST       =SIMP(statut='f',typ=listr8 ),
          b_prec_crit     =BLOC(condition = "LIST_INST != None or INST != None",
              PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),

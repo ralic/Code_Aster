@@ -1,9 +1,7 @@
       SUBROUTINE OP0166 ( IER )
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER             IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,21 +18,23 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-
 C
 C     COMMANDE:  PROJ_CHAMP
+C
+      IMPLICIT   NONE
+C
+C 0.1. ==> ARGUMENTS
+C
+      INTEGER            IER
+C
+C 0.2. ==> COMMUNS
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
       COMMON  / RVARJE / ZR(1)
       COMPLEX*16         ZC
       COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
       CHARACTER*8        ZK8
       CHARACTER*16                ZK16
       CHARACTER*24                          ZK24
@@ -44,29 +44,55 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      CHARACTER*4   TYPE ,CDIM1,CDIM2
-      CHARACTER*8   K8,K8B,NOMA1,NOMA2,EVO1,MODEL1,MODEL2
-      CHARACTER*16  TYPRES, NOMCMD,CORRES
-      CHARACTER*19  RESU, CHAM1, CHAM2, NUAGE1, NUAGE2,METHOD
+C 0.3. ==> VARIABLES LOCALES
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'OP0166' )
+C
+      INTEGER IAUX, JAUX, IRET
+      INTEGER IE, N1, N2, N3, NX
+      INTEGER IOC, NBOCC
+      INTEGER IEQ, NBEQUA
+      INTEGER IBID, KVALE
+      INTEGER NRPASS, NBPASS
+      INTEGER ADRECG
+C
+      CHARACTER*4   TYPE
+      CHARACTER*8   K8,K8BID,NOMA1,NOMA2,RESUIN
+      CHARACTER*8   LERES0, NOPASE
+      CHARACTER*16  TYPRES, NOMCMD
+      CHARACTER*19  RESUOU, CHAM1, CHAM2, NUAGE1, NUAGE2,METHOD
       CHARACTER*19  LMA, LNO, LMA1, LNO1, LMA2, LNO2
-      INTEGER       NDIM
+      CHARACTER*19  LERES1
+      CHARACTER*24 NORECG
+C
       LOGICAL ELTF
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
+      IER = 0
 C
-      CALL GETRES( RESU , TYPRES , NOMCMD )
+C               12   345678   9012345678901234
+      NORECG = '&&'//NOMPRO//'_PARA_SENSI     '
+C
+      CALL GETRES( RESUOU , TYPRES , NOMCMD )
       CALL TITRE
       CALL GETVTX(' ','METHODE' ,1,1,1, METHOD, N3 )
-
-
+C
+C     --- SENSIBILITE : NOMBRE DE PASSAGES ---
+      IAUX = 1
+      JAUX = 1
+      CALL PSRESE ( ' ', IBID, IAUX, RESUOU, JAUX,
+     >              NBPASS, NORECG, IRET )
+      CALL JEVEUO ( NORECG, 'L', ADRECG )
+C
 C     -- QUELQUES VERIFS. :
 C     ----------------------
       IF (METHOD.EQ.'ELEM') THEN
         ELTF=.TRUE.
 C       -- POUR L'INSTANT 'ELTFXX' N'EST PERMIS QUE POUR LES EVOL_XXX
-        CALL GETVID(' ','RESULTAT'       ,1,1,1, EVO1, N1 )
-        IF (N1.EQ.0) CALL UTMESS('F','OP0106',
+        CALL GETVID(' ','RESULTAT'       ,1,1,1, RESUIN, N1 )
+        IF (N1.EQ.0) CALL UTMESS('F',NOMPRO,
      &     'METHODE: ELEM AUTORISEE'
      &     //' SEULEMENT POUR LES RESULTATS EVOL_XXX.')
 
@@ -74,24 +100,55 @@ C       -- POUR L'INSTANT 'ELTFXX' N'EST PERMIS QUE POUR LES EVOL_XXX
         ELTF=.FALSE.
 C       -- POUR L'INSTANT 'NUAGE_DEG_*' N'EST PERMIS QUE POUR LES CHAMPS
         CALL GETVID(' ','CHAM_NO'       ,1,1,1, CHAM1, N1 )
-        IF (N1.EQ.0) CALL UTMESS('F','OP0106',
+        IF (N1.EQ.0) CALL UTMESS('F',NOMPRO,
      &     'METHODE: NUAGE_DEG__* AUTORISEE'
      &     //' SEULEMENT POUR LES CHAMPS.')
       ELSE
-        CALL UTMESS('F','OP0166','STOP 1')
+        CALL UTMESS('F',NOMPRO,'STOP 1')
       END IF
-
-
+C
+C============ DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES =============
+      DO 30 , NRPASS = 1 , NBPASS
+C
+C        POUR LE PASSAGE NUMERO NRPASS :
+C        . NOPASE : NOM DU PARAMETRE DE SENSIBILITE EVENTUELLEMENT
+C        . LERES1 : NOM DU CHAMP DE RESULTAT A COMPLETER
+C                   C'EST RESUOU POUR UN CALCUL STANDARD, UN NOM
+C                   COMPOSE A PARTIR DE RESUOU ET NOPASE POUR UN CALCUL
+C                   DE SENSIBILITE
+C        . LERES0 : IDEM POUR RESUIN
+C
+        NOPASE = ZK24(ADRECG+2*NRPASS-1)(1:8)
+        LERES1 = ZK24(ADRECG+2*NRPASS-2)(1:19)
+C
+C DANS LE CAS D'UN CALCUL STANDARD :
+C
+        IF ( NOPASE.EQ.' ' ) THEN
+C
+          LERES0 = RESUIN
+C
+C DANS LE CAS D'UN CALCUL DE DERIVE :
+C
+        ELSE
+C
+          CALL PSRENC ( RESUIN, NOPASE, LERES0, IRET )
+          IF ( IRET.NE.0 ) THEN
+            CALL UTMESS ('A', NOMCMD,
+     >  'IMPOSSIBLE DE TROUVER LE RESULTAT DERIVE ASSOCIE AU RESULTAT '
+     >  //RESUIN//' ET AU PARAMETRE SENSIBLE '//NOPASE)
+            GOTO 30
+          ENDIF
+C
+        ENDIF
+C
 C     1.-- CAS METHODE: 'ELEM' :
 C     ----------------------------
       IF (ELTF) THEN
-        CALL PJEFTE()
-      END IF
-
-
+        CALL PJEFTE ( TYPRES, LERES0, LERES1 )
+C
 C     2. -- CAS METHODE: 'NUAGE_DEG_0/1' :
 C     ---------------------------------
-      IF (.NOT.ELTF) THEN
+      ELSE
          CALL GETVID(' ','CHAM_NO'     ,1,1,1, CHAM1, N1 )
          CALL DISMOI('F', 'NOM_MAILLA', CHAM1, 'CHAMP', IBID, NOMA1, IE)
 
@@ -108,10 +165,10 @@ C
          CALL GETFAC ( 'VIS_A_VIS' , NBOCC )
          IF ( NBOCC .NE. 0 ) THEN
 C
-            CALL COPISD('CHAMP_GD','G',CHAM2,RESU)
-            CALL JELIRA(RESU//'.VALE','LONMAX',NBEQUA,K8B)
-            CALL JELIRA(RESU//'.VALE', 'TYPE' ,IBID  ,TYPE )
-            CALL JEVEUO(RESU//'.VALE','E',KVALE)
+            CALL COPISD('CHAMP_GD','G',CHAM2,LERES1)
+            CALL JELIRA(LERES1//'.VALE','LONMAX',NBEQUA,K8BID)
+            CALL JELIRA(LERES1//'.VALE', 'TYPE' ,IBID  ,TYPE )
+            CALL JEVEUO(LERES1//'.VALE','E',KVALE)
             IF ( TYPE(1:1) .EQ. 'R' ) THEN
                DO 10 IEQ = 0 , NBEQUA-1
                   ZR(KVALE+IEQ) = 0.D0
@@ -135,11 +192,11 @@ C
               NUAGE1 = '&&NUAGE1'
               NUAGE2 = '&&NUAGE2'
               CALL CHPNUA ( NX,CHAM1 , LMA1 , LNO1 , NUAGE1 )
-              CALL CHPNUA ( NX,RESU  , LMA2 , LNO2 , NUAGE2 )
+              CALL CHPNUA ( NX,LERES1  , LMA2 , LNO2 , NUAGE2 )
 C
               CALL PRONUA ( METHOD , NUAGE1 , NUAGE2 )
 C
-              CALL NUACHP ( NUAGE2 , LMA2 , LNO2 , RESU )
+              CALL NUACHP ( NUAGE2 , LMA2 , LNO2 , LERES1 )
 C
               CALL DETRSD ( 'NUAGE', NUAGE1 )
               CALL DETRSD ( 'NUAGE', NUAGE2 )
@@ -149,10 +206,10 @@ C
 C
          ELSE
 C
-            CALL COPISD('CHAMP_GD','G',CHAM2,RESU)
-            CALL JELIRA(RESU//'.VALE','LONMAX',NBEQUA,K8B)
-            CALL JELIRA(RESU//'.VALE', 'TYPE' ,IBID  ,TYPE )
-            CALL JEVEUO(RESU//'.VALE','E',KVALE)
+            CALL COPISD('CHAMP_GD','G',CHAM2,LERES1)
+            CALL JELIRA(LERES1//'.VALE','LONMAX',NBEQUA,K8BID)
+            CALL JELIRA(LERES1//'.VALE', 'TYPE' ,IBID  ,TYPE )
+            CALL JEVEUO(LERES1//'.VALE','E',KVALE)
             IF ( TYPE(1:1) .EQ. 'R' ) THEN
                DO 20 IEQ = 0 , NBEQUA-1
                   ZR(KVALE+IEQ) = 0.D0
@@ -168,17 +225,22 @@ C
             NUAGE1 = '&&NUAGE1'
             NUAGE2 = '&&NUAGE2'
             CALL CHPNUA ( NX,CHAM1 , LMA , LNO , NUAGE1 )
-            CALL CHPNUA ( NX,RESU  , LMA , LNO , NUAGE2 )
+            CALL CHPNUA ( NX,LERES1  , LMA , LNO , NUAGE2 )
 C
             CALL PRONUA ( METHOD , NUAGE1 , NUAGE2 )
 C
-            CALL NUACHP ( NUAGE2 , LMA , LNO , RESU )
+            CALL NUACHP ( NUAGE2 , LMA , LNO , LERES1 )
 C
             CALL DETRSD ( 'NUAGE', NUAGE1 )
             CALL DETRSD ( 'NUAGE', NUAGE2 )
 C
          ENDIF
       ENDIF
+C
+   30 CONTINUE
+C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
+C
+      CALL JEDETC('V','&&',1)
 C
       CALL JEDEMA()
       END

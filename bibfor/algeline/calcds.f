@@ -1,12 +1,10 @@
-      SUBROUTINE CALCDS(NDT, HOOK, DEVG, DEVGII, DFDS, DFDG, DSDE)
+      SUBROUTINE CALCDS(HOOK, DEVG, DEVGII, DFDS, DFDG, DSDE)
 C
       IMPLICIT   NONE
-      INTEGER    NDT
-      REAL*8     HOOK(6,6), DEVG(6), DEVGII, DFDS(6), DFDG
-      REAL*8     DSDE(6,6)
+      REAL*8     HOOK(6,6), DEVG(6), DEVGII, DFDS(6), DFDG, DSDE(6,6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +34,7 @@ C --- : DFDS   : DF/DS -------------------------------------------------
 C --- : DFDG   : DF/DGAMP ----------------------------------------------
 C OUT : DSDE   : DSIG/DEPS ---------------------------------------------
 C ======================================================================
-      INTEGER  I, J
+      INTEGER  I, J, NDT, NDI
       REAL*8   MAT(6,6), TMP(6,6), NUM(6,6), VEC(6)
       REAL*8   DEUX, TROIS, VAL, DENOM
 C ======================================================================
@@ -45,6 +43,8 @@ C ======================================================================
       PARAMETER       ( DEUX   = 2.0D0  )
       PARAMETER       ( TROIS  = 3.0D0  )
 C ======================================================================
+      COMMON /TDIM/   NDT , NDI
+C ======================================================================
       CALL JEMARQ ()
 C ======================================================================
 C --- CALCUL DU NUMERATEUR ---------------------------------------------
@@ -52,17 +52,18 @@ C ======================================================================
       CALL LCINMA ( 0.D0, DSDE )
       CALL LCINMA ( 0.D0, MAT  )
       CALL LCINMA ( 0.D0, TMP  )
+      CALL LCINMA ( 0.D0, NUM  )
       DO 10    I = 1,NDT
          DO 20 J = 1,NDT
             MAT(I,J) = DEVG(I)*DFDS(J)
  20      CONTINUE
  10   CONTINUE
-      CALL     LGLPMA(NDT, 6, HOOK, MAT, TMP)
-      CALL     LGLPMA(NDT, 6, TMP, HOOK, NUM)
+      CALL     LGLPMA(NDT, HOOK, MAT, TMP)
+      CALL     LGLPMA(NDT, TMP, HOOK, NUM)
 C ======================================================================
 C --- CALCUL DU DENOMINATEUR -------------------------------------------
 C ======================================================================
-      CALL     LGLPMV('ZERO',NDT,6,HOOK,DEVG,VEC)
+      CALL     LGLPMV('ZERO',NDT,HOOK,DEVG,VEC)
       CALL     PSCAL (NDT,DFDS,VEC,VAL)
       DENOM  = SQRT(DEUX/TROIS)*DFDG*DEVGII-VAL
 C ======================================================================
@@ -83,7 +84,6 @@ C ======================================================================
             DSDE(I,J) = ( TMP(I,J) + TMP(J,I) ) / DEUX
  60      CONTINUE
  50   CONTINUE
-
 C ======================================================================
       CALL JEDEMA ()
 C ======================================================================

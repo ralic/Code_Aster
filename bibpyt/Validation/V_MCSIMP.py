@@ -1,4 +1,4 @@
-#@ MODIF V_MCSIMP Validation  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF V_MCSIMP Validation  DATE 06/10/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -85,13 +85,27 @@ class MCSIMP:
           if cr == 'oui' :
             self.cr.fatal(string.join(("Mot-clé : ",self.nom," obligatoire non valorisé")))
           valid = 0
-        # type,into ...
-        valid = self.verif_type(cr=cr)*self.verif_into(cr=cr)*self.verif_card(cr=cr)
+        if v is None:
+           if cr == 'oui' :
+              self.cr.fatal("None n'est pas une valeur autorisée")
+           valid=0
+        else:
+           # type,into ...
+           valid = self.verif_type(val=v,cr=cr)*self.verif_into(cr=cr)*self.verif_card(cr=cr)
+           #
+           # On verifie les validateurs s'il y en a
+           #
+           if self.definition.validators and not self.definition.validators.verif(self.valeur):
+              if cr == 'oui' :
+                 self.cr.fatal(string.join(("Mot-clé : ",self.nom,"devrait avoir ",self.definition.validators.info())))
+              valid=0
+           # fin des validateurs
+           #
         self.valid = valid
         self.state = 'unchanged'
         # Si la validité du mot clé a changé, on le signale à l'objet parent
-        if old_valid:
-          if old_valid != self.valid : self.init_modif_up()
+        if not old_valid or old_valid != self.valid : 
+           self.init_modif_up()
         return self.valid
 
    def isoblig(self):
@@ -127,18 +141,15 @@ class MCSIMP:
    def verif_type(self,val=None,cr='non'):
       """
         FONCTION :
-         Cette méthode a plusieurs modes de fonctionnement liés à la valeur de val et de cr.
-         Si cr ne vaut pas 'oui' : elle ne remplit pas le compte-rendu self.cr
-         Si val vaut None, elle vérifie le type de self.valeur
-         Si val ne vaut pas None, elle vérifie le type de val
+         Cette methode verifie que le type de l'argument val est en conformite avec celui 
+         qui est declare dans la definition du mot cle simple.
+         Elle a plusieurs modes de fonctionnement liés à la valeur de cr.
+         Si cr vaut 'oui' : elle remplit le compte-rendu self.cr sinon elle ne le remplit pas.
         PARAMETRE DE RETOUR :
-         Cette méthode retourne une valeur booléenne qui vaut 1 si le type est correct ou 0 sinon
+         Cette méthode retourne une valeur booléenne qui vaut 1 si le type de val est correct ou 0 sinon
          
       """
-      if val != None:
-        valeur = val
-      else:
-        valeur = self.valeur
+      valeur = val
       if valeur == None :
         if cr == 'oui':
           self.cr.fatal("None n'est pas une valeur autorisée")

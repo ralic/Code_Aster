@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,7 +43,7 @@ COMB_CHAM_ELEM=OPER(nom="COMB_CHAM_ELEM",op= 139,sd_prod=comb_cham_elem_prod,ree
             UIinfo={"groupes":("Résultats et champs",)},
       regles=(UN_PARMI('COMB_R','COMB_C','COMB_FOURIER'),
               PRESENT_PRESENT('COMB_FOURIER','ANGL'),),
-      COMB_R          =FACT(statut='f',min=1,max='**',
+      COMB_R          =FACT(statut='f',max='**',
         PARTIE          =SIMP(statut='f',typ='TXM',into=("REEL","IMAG") ),
         COEF_R          =SIMP(statut='o',typ='R'),
         CHAM_ELEM       =SIMP(statut='o',
@@ -51,13 +51,13 @@ COMB_CHAM_ELEM=OPER(nom="COMB_CHAM_ELEM",op= 139,sd_prod=comb_cham_elem_prod,ree
                                    cham_elem_ener_r,cham_elem_crit_r,cham_elem_dbel_r,
                                    cham_elem_pres_r,cham_elem_sief_c ) ),
       ),
-      COMB_C          =FACT(statut='f',min=1,max='**',
+      COMB_C          =FACT(statut='f',max='**',
         regles=(UN_PARMI('COEF_R','COEF_C', ),),
         COEF_R          =SIMP(statut='f',typ='R'),
         COEF_C          =SIMP(statut='f',typ='C'),
         CHAM_ELEM       =SIMP(statut='o',typ=(cham_elem_sief_r) ),
       ),
-      COMB_FOURIER    =FACT(statut='f',min=1,max='**',
+      COMB_FOURIER    =FACT(statut='f',max='**',
         COEF_R          =SIMP(statut='f',typ='R',defaut= 1.),
         NUME_MODE       =SIMP(statut='o',typ='I'),
         TYPE_MODE       =SIMP(statut='o',typ='TXM',into=("SYME","ANTI") ),

@@ -5,7 +5,7 @@ C
       REAL*8        MATER(NBMAT,2), PARAME(5), RGDEV, INVAR1, UCRITP
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/03/2002   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,8 +63,8 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE U(SIG,GAMP) --------------------------------------------
 C ======================================================================
-      FACT1  = - MGAMP*KGAMP*RGDEV/(SQRT(SIX)*SIGC*H0)
-      FACT2  = - MGAMP*KGAMP*INVAR1/(TROIS*SIGC)
+      FACT1  =   MUN*MGAMP*KGAMP*RGDEV/(SQRT(SIX)*SIGC*H0)
+      FACT2  =   MUN*MGAMP*KGAMP*INVAR1/(TROIS*SIGC)
       FACT3  =   SGAMP*KGAMP
       UCRITP =   FACT1 + FACT2 + FACT3
 C ======================================================================

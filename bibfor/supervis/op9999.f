@@ -3,7 +3,7 @@
       INTEGER            ICOND , IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 13/01/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF SUPERVIS  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,9 +40,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      IEND, IVERI, IFM
-      CHARACTER*8  K8B, OUINON, OUIPER, TYPRES
+      INTEGER      IEND, IVERI, IFM, NOCC
+      CHARACTER*8  K8B, OUINON, OUIPER, TYPRES, OUIHDF
       CHARACTER*16 FCHIER
+      CHARACTER*80 FICH
       REAL*8       XTT, TEMPS(6)
 C     ------------------------------------------------------------------
 C
@@ -96,6 +97,13 @@ C
 C     --- RETASSAGE EVENTUEL DE LA GLOBALE
       CALL GETVTX(' ','RETASSAGE',1,1,1,OUINON,L)
       IF(OUINON .EQ. 'OUI') CALL JETASS('G')
+C
+C     --- SAUVEGARDE DE LA GLOBALE AU FORMAT HDF
+      CALL GETFAC ('HDF', NOCC)
+      IF (NOCC .EQ. 1) THEN
+        CALL GETVTX('HDF','FICHIER',1,1,1,FICH,L)
+        CALL JEIMHD(FICH,'G')
+      ENDIF
 C
 C     --- CLOTURE DES FICHIERS ---
       CALL JELIBF( 'SAUVE' , 'G' )

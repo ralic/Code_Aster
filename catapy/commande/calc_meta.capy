@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ CALC_META=OPER(nom="CALC_META",op=194,sd_prod=evol_ther,docu="U4.85.01-b",reentr
          MODELE          =SIMP(statut='o',typ=modele ),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
          RESULTAT        =SIMP(statut='o',typ=evol_ther ),
-         ETAT_INIT       =FACT(statut='o',min=1,max=1,
+         ETAT_INIT       =FACT(statut='o',
       regles=(UN_PARMI('NUME_INIT', 'INST_INIT', 'META_INIT',),),
            EVOL_THER       =SIMP(statut='f',typ=evol_ther ),
            NUME_INIT       =SIMP(statut='f',typ='I' ),  
@@ -33,7 +33,7 @@ CALC_META=OPER(nom="CALC_META",op=194,sd_prod=evol_ther,docu="U4.85.01-b",reentr
                              ),
            META_INIT       =SIMP(statut='f',typ=carte_var2_r ),
          ),
-         COMP_INCR       =FACT(statut='o',min=1,max='**',
+         COMP_INCR       =FACT(statut='o',max='**',
            RELATION        =SIMP(statut='o',typ='TXM',into=("ACIER","ZIRC",) ),
            ACIER           =SIMP(statut='c',typ='I',defaut=7,into=(7,) ),
            ZIRC            =SIMP(statut='c',typ='I',defaut=3,into=(3,) ),

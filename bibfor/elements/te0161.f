@@ -1,6 +1,6 @@
       SUBROUTINE TE0161 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,7 +120,7 @@ C          ------------------------------
          C1=1.D0
 
 C        POUR LE CAS DU VENT
-         CALL TECACH(.FALSE.,.FALSE.,'PVITER',1,IFORC)
+         CALL TECACH('NNN','PVITER',1,IFORC,IRET)
          IF ( IFORC .NE. 0 ) THEN
            NORMAL = .TRUE.
            OKVENT = .TRUE.
@@ -144,7 +144,7 @@ C          ------------------------------
          ELSEIF (NOMTE(1:15).EQ.'MECABL2') THEN
             NORMAL = ZK8(IFORC+3).EQ.'VENT'
          END IF
-         CALL TECACH ( .FALSE., .FALSE., 'PTEMPSR', 1, ITEMPS )
+         CALL TECACH ('NNN', 'PTEMPSR', 1, ITEMPS,IRET )
          IF ( ITEMPS .NE. 0 ) THEN
             X(4) = ZR(ITEMPS)
             NBPAR = 4
@@ -246,7 +246,7 @@ C           NORME DE LA VITESSE PERPENDICULAIRE
             VALPAV(1) = SQRT( VITE2 )
             IF ( VALPAV(1) .GT. R8MIN ) THEN
 C             RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
-              CALL TECACH(.TRUE.,.FALSE.,'PVENTCX',1,IFCX)
+              CALL TECACH('ONN','PVENTCX',1,IFCX,IRET)
               IF ( IFCX .LE. 0 ) GOTO  999
               IF ( ZK8(IFCX)(1:1) .EQ. '.' ) GOTO  999
               CALL FOINTE('FM',ZK8(IFCX),1,NOMPAV,VALPAV,FCX,IRET)

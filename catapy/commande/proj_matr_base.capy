@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ PROJ_MATR_BASE=OPER(nom="PROJ_MATR_BASE",op=  71,sd_prod=matr_asse_gene_prod,
                     docu="U4.63.12-f",reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
          regles=(UN_PARMI('MATR_ASSE','MATR_ASSE_GENE'),),            
-         BASE            =SIMP(statut='o',typ=(mode_meca,base_modale,mode_gene ) ),
+         BASE            =SIMP(statut='o',typ=(mode_meca,base_modale,mode_gene,mode_stat ) ),
          NUME_DDL_GENE   =SIMP(statut='o',typ=nume_ddl_gene ),
          MATR_ASSE       =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_depl_c) ),
          MATR_ASSE_GENE  =SIMP(statut='f',typ=(matr_asse_gene_r,matr_asse_gene_c) ),

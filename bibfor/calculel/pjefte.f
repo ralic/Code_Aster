@@ -1,8 +1,7 @@
-      SUBROUTINE PJEFTE()
-      IMPLICIT NONE
+      SUBROUTINE PJEFTE ( TYPRES, EVO1, RESU )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/01/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,31 +20,32 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     COMMANDE:  PROJ_CHAMP  METHODE:'ELEM'
 C ----------------------------------------------------------------------
+C
+      IMPLICIT   NONE
+C
+C 0.1. ==> ARGUMENTS
+C
+      CHARACTER*16 TYPRES
+      CHARACTER*(*) EVO1, RESU
+C
+C 0.2. ==> COMMUNS
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
+      CHARACTER*32 JEXNOM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
+C 0.3. ==> VARIABLES LOCALES
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'PJEFTE' )
 
       CHARACTER*4 CDIM1,CDIM2,EXIVOL
-      CHARACTER*8 K8B,NOMA1,NOMA2,EVO1,MODEL1,MODEL2
-      CHARACTER*16 TYPRES,NOMCMD,CORRES,CORRE1,CORRE2,CORRE3
+      CHARACTER*8 NOMA1,NOMA2,MODEL1,MODEL2
+      CHARACTER*16 CORRES,CORRE1,CORRE2,CORRE3
       CHARACTER*16 TYMOCL(5),MOTCLE(5)
-      CHARACTER*19 RESU
       INTEGER NDIM,NCAS,N1,NBOCC,IOCC,IE,IBID,NBNO2,NBMA1
       INTEGER IAGNO2,IAGMA1,K,JTYPM1,TYPM1
       INTEGER KK,LTMVOL(9),INDIIS
@@ -87,13 +87,11 @@ C      END DO
 C----------------------------------------------------------------------
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
-      CORRES = '&&PJEFTE.CORRESP'
-      CORRE1 = '&&PJEFTE.CORRES1'
-      CORRE2 = '&&PJEFTE.CORRES2'
-      CORRE3 = '&&PJEFTE.CORRES3'
-
-      CALL GETRES(RESU,TYPRES,NOMCMD)
-      CALL GETVID(' ','RESULTAT',1,1,1,EVO1,N1)
+C               12   345678   9012345678901234
+      CORRES = '&&'//NOMPRO//'.CORRESP'
+      CORRE1 = '&&'//NOMPRO//'.CORRES1'
+      CORRE2 = '&&'//NOMPRO//'.CORRES2'
+      CORRE3 = '&&'//NOMPRO//'.CORRES3'
 
       CALL GETVID(' ','MODELE_1',1,1,1,MODEL1,N1)
       CALL GETVID(' ','MODELE_2',1,1,1,MODEL2,N1)
@@ -116,7 +114,7 @@ C     --------------------------------------------------------
          END IF
       ELSE
          IF ( CDIM1.EQ.'OUI' .AND. CDIM2.NE.'OUI') THEN
-            CALL UTMESS('F','PJEFTE','ON NE PEUT PAS PROJETER UN '//
+            CALL UTMESS('F',NOMPRO,'ON NE PEUT PAS PROJETER UN '//
      +              'CHAMP D''UN MAILLAGE "2D" SUR UN MAILLAGE "3D".')
          ELSEIF ( CDIM1.NE.'OUI' .AND. CDIM2.EQ.'OUI') THEN
             NDIM = 3
@@ -165,7 +163,7 @@ C     --------------------------------------------------------
         ELSE IF (NCAS.EQ.4) THEN
           CALL PJ4DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES)
         ELSE
-          CALL UTMESS('F','PJEFTE','STOP 4')
+          CALL UTMESS('F',NOMPRO,'STOP 4')
         END IF
 
       ELSE
@@ -184,8 +182,8 @@ C        ----------------------------------------------
           MOTCLE(3) = 'TOUT_1'
           TYMOCL(3) = 'TOUT'
           CALL RELIEM(MODEL1,NOMA1,'NU_MAILLE','VIS_A_VIS',IOCC,3,
-     +                MOTCLE,TYMOCL,'&&PJEFTE.LIMANU1',NBMA1)
-          CALL JEVEUO('&&PJEFTE.LIMANU1','L',IAGMA1)
+     +                MOTCLE,TYMOCL,'&&'//NOMPRO//'.LIMANU1',NBMA1)
+          CALL JEVEUO('&&'//NOMPRO//'.LIMANU1','L',IAGMA1)
 
 
 C        -- RECUPERATION DE LA LISTE DE NOEUDS LNO2 :
@@ -201,8 +199,8 @@ C        ----------------------------------------------
           MOTCLE(5) = 'TOUT_2'
           TYMOCL(5) = 'TOUT'
           CALL RELIEM(MODEL2,NOMA2,'NU_NOEUD','VIS_A_VIS',IOCC,5,MOTCLE,
-     +                TYMOCL,'&&PJEFTE.LINONU2',NBNO2)
-          CALL JEVEUO('&&PJEFTE.LINONU2','L',IAGNO2)
+     +                TYMOCL,'&&'//NOMPRO//'.LINONU2',NBNO2)
+          CALL JEVEUO('&&'//NOMPRO//'.LINONU2','L',IAGNO2)
 
 
 
@@ -239,7 +237,7 @@ C        ----------------------------------------------
             CALL PJ4DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
      +                  ZI(IAGNO2),' ',' ',CORRE1)
           ELSE
-            CALL UTMESS('F','PJEFTE','STOP 5')
+            CALL UTMESS('F',NOMPRO,'STOP 5')
           END IF
 
 
@@ -253,8 +251,8 @@ C        ----------------------------------------------
             CALL COPISD('CORRESP_2_MAILLA','V',CORRE3,CORRE2)
           END IF
 
-          CALL JEDETR('&&PJEFTE.LIMANU1')
-          CALL JEDETR('&&PJEFTE.LINONU2')
+          CALL JEDETR('&&'//NOMPRO//'.LIMANU1')
+          CALL JEDETR('&&'//NOMPRO//'.LINONU2')
    30   CONTINUE
         CALL COPISD('CORRESP_2_MAILLA','V',CORRE2,CORRES)
         CALL DETRSD('CORRESP_2_MAILLA',CORRE1)
@@ -269,7 +267,7 @@ C        ----------------------------------------------
 C       3 -- PROJECTION DES CHAMPS DE EVO1 SUR MODEL2
 C          SUIVANT LA CORRESPONDANCE CORRES
 C       --------------------------------------------------------
-      CALL PJEFPR(NDIM,TYPRES,EVO1,RESU(1:8),MODEL2,CORRES)
+      CALL PJEFPR(TYPRES,EVO1(1:8),RESU(1:8),MODEL2,CORRES)
 
       CALL DETRSD('CORRESP_2_MAILLA',CORRES)
       CALL JEDETC('V',RESU(1:8),1)

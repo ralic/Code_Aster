@@ -1,6 +1,6 @@
       SUBROUTINE JEDETC ( CLAS , SOUCH , IPOS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 23/06/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,8 @@ C
      +                 DN2(N)
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
+      INTEGER          IFNIVO, NIVO
+      COMMON /JVNIVO/  IFNIVO, NIVO
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
      +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
@@ -74,7 +76,6 @@ C     ------------------------------------------------------------------
       CHARACTER*32     CRNOM,NOM32
       CHARACTER*1      KCLAS
 C DEB ------------------------------------------------------------------
-C J#DEB
       L = LEN ( SOUCH )
       IF ( IPOS + L .GT. 25 .OR. IPOS .LT. 0 .OR. L .EQ. 0 ) THEN
         CMESS = ' LONGUEUR OU POSITION DE LA SOUS-CHAINE '//SOUCH//
@@ -108,6 +109,10 @@ C J#DEB
                 IF ( IADDI(1) .GT. 0 ) THEN
                   LONOI = LONO(JLONO(IC)+IDATOS)*LTYP(JLTYP(IC)+IDATOS)
                   CALL JXLIBD ( 0, IDATOS , IC , IADDI , LONOI )
+                ENDIF
+                IF (NIVO .GE. 2) THEN
+                  CALL JVMESS('I','JEDETC','DESTRUCTION DE '//
+     +                         CRNOM(1:24))
                 ENDIF
                 CALL JJCREN ( CRNOM(1:24) , -1 , IRET )
                 NOMOS = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
@@ -173,10 +178,14 @@ C J#DEB
                 DO 2 K = 1 , IDNUM
                   IF ( ID(K) .GT. 0 ) THEN
                     NOM32 = RNOM ( JRNOM(IC) + ID(K) )
+                    IF (NIVO .GE. 2) THEN
+                      CALL JVMESS('I','JEDETC','DESTRUCTION DE '//
+     +                         NOM32)
+                    ENDIF
                     CALL JJCREN ( NOM32 , -2 , IRET )
                     CALL JJMZAT ( IC , ID(K) )
                   ENDIF
- 2              CONTINUE
+2               CONTINUE
                 CRNOM = RNOM ( JRNOM(IC) + IDATCO )
                 CALL JJLIBP ( IBACOL)
                 IADDI(1) = IADD (JIADD(IC) + 2*IDATCO-1)
@@ -184,6 +193,10 @@ C J#DEB
                 IF ( IADDI(1) .GT. 0 ) THEN
                   LONOI = LONO(JLONO(IC)+IDATCO)*LTYP(JLTYP(IC)+IDATCO)
                   CALL JXLIBD ( 0 ,IDATCO, IC , IADDI , LONOI )
+                ENDIF
+                IF (NIVO .GE. 2) THEN
+                  CALL JVMESS('I','JEDETC','DESTRUCTION DE '//
+     +                     CRNOM(1:24))
                 ENDIF
                 CALL JJCREN ( CRNOM(1:24) , -2 , IRET )
                 CALL JJMZAT ( IC , IDATCO )
@@ -194,5 +207,4 @@ C J#DEB
  160    CONTINUE
  100  CONTINUE
 C FIN ------------------------------------------------------------------
-C J#FIN
       END

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,13 +19,13 @@
 CALC_FLUI_STRU=OPER(nom="CALC_FLUI_STRU",op= 144,sd_prod=melasflu,
                     docu="U4.66.02-e",reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
-         VITE_FLUI       =FACT(statut='o',min=1,max=1,
+         VITE_FLUI       =FACT(statut='o',
                                fr="Définir la plage de vitesse fluide étudiée",
            VITE_MIN        =SIMP(statut='o',typ='R' ),
            VITE_MAX        =SIMP(statut='o',typ='R' ),
            NB_POIN         =SIMP(statut='o',typ='I' ),
          ),
-         BASE_MODALE     =FACT(statut='o',min=1,max=1,
+         BASE_MODALE     =FACT(statut='o',
                                
            regles=(UN_PARMI('AMOR_REDUIT','AMOR_UNIF'),),
            MODE_MECA       =SIMP(statut='o',typ=mode_meca ),
@@ -34,7 +34,7 @@ CALC_FLUI_STRU=OPER(nom="CALC_FLUI_STRU",op= 144,sd_prod=melasflu,
            AMOR_UNIF       =SIMP(statut='f',typ='R' ),
          ),
          TYPE_FLUI_STRU  =SIMP(statut='o',typ=type_flui_stru ),
-         IMPRESSION      =FACT(statut='f',min=1,max=1,
+         IMPRESSION      =FACT(statut='f',
                                fr="Choix des informations à imprimer dans le fichier RESULTAT",
            PARA_COUPLAGE   =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            DEFORMEE        =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),

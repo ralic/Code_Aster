@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/10/2001   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -184,7 +184,7 @@ C
      &     OPTION .EQ. 'CHAR_MECA_SR1D1D' ) THEN
 C          ------------------------------
 C        POUR LE CAS DU VENT
-         CALL TECACH(.FALSE.,.FALSE.,'PVITER',1,LFORC)
+         CALL TECACH('NNN','PVITER',1,LFORC,IRET)
          IF ( LFORC .NE. 0 ) THEN
            IF (NOMTE.EQ.'MECA_2D_BARRE') THEN
              CALL UTMESS('F','TE0155','OPTION NON DISPONIBLE')
@@ -204,7 +204,7 @@ C              ------------------------------
          CALL JEVECH('PFF1D1D','L',LFORC)
          NORMAL = ZK8(LFORC+3) .EQ. 'VENT'
          GLOBAL = ZK8(LFORC+3) .EQ. 'GLOBAL'
-         CALL TECACH ( .FALSE., .FALSE., 'PTEMPSR', 1, ITEMPS )
+         CALL TECACH ( 'NNN', 'PTEMPSR', 1, ITEMPS,IRET )
          IF ( ITEMPS .NE. 0 ) THEN
             VALPA1(4) = ZR(ITEMPS)
             VALPA2(4) = ZR(ITEMPS)
@@ -375,7 +375,7 @@ C          NORME DE LA VITESSE PERPENDICULAIRE
            VALPAV(1) = SQRT( VITE2 )
            IF ( VALPAV(1) .GT. R8MIN ) THEN
 C            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
-             CALL TECACH(.TRUE.,.FALSE.,'PVENTCX',1,IFCX)
+             CALL TECACH('ONN','PVENTCX',1,IFCX,IRET)
              IF ( IFCX .LE. 0 ) GOTO  999
              IF ( ZK8(IFCX)(1:1) .EQ. '.' ) GOTO  999
              CALL FOINTE('FM',ZK8(IFCX),1,NOMPAV,VALPAV,FCX,IRET)
@@ -396,7 +396,7 @@ C          NORME DE LA VITESSE PERPENDICULAIRE
            VALPAV(1) = SQRT( VITE2 )
            IF ( VALPAV(1) .GT. R8MIN ) THEN
 C            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
-             CALL TECACH(.TRUE.,.FALSE.,'PVENTCX',1,IFCX)
+             CALL TECACH('ONN','PVENTCX',1,IFCX,IRET)
              IF ( IFCX .LE. 0 ) GOTO  999
              IF ( ZK8(IFCX)(1:1) .EQ. '.' ) GOTO  999
              CALL FOINTE('FM',ZK8(IFCX),1,NOMPAV,VALPAV,FCX,IRET)

@@ -1,20 +1,15 @@
-        SUBROUTINE CAFHGT(OPTION,MECA,THMC,THER,HYDR,
-     >                      INMECA,INTHMC,INTHER,INHYDR,
-     >                             IMATE,
-     &                             NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,
-     &                             YAMEC,YAP1,NBPHA1,YAP2,NBPHA2,YATE,
-     &                             ADDEP1,ADDEP2,ADCP11,ADCP12,
-     &                             ADCP21,ADCP22,ADDEME,ADDETE,
-     &                             CONGEM,CONGEP,
-     &                             VINTM,VINTP,ADVIME,ADVITH,
-     &                             DSDE,
-     &                             EPSV,P1,P2,GRAP1,GRAP2,T,GRAT,
-     &                            PHI,PVP,RHO11,H11,H12,H21,T0,SAT,RV0,
-     &                             G1D,G1F,G1C,J1D,J1F,J1C,J2,J3,G2,G3)
+        SUBROUTINE CAFHGT(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF,
+     +                  DIMCON,NVIMEC,NVITH,YAMEC,YAP1,NBPHA1,YAP2,
+     +                  NBPHA2,YATE,ADDEP1,ADDEP2,ADCP11,ADCP12,ADCP21,
+     +                  ADCP22,ADDEME,ADDETE,CONGEM,CONGEP,VINTM,VINTP,
+     +                  ADVIME,ADVITH,DSDE,EPSV,P1,P2,GRAP1,GRAP2,T,
+     +                  GRAT,PHI,PVP,RHO11,H11,H12,H21,T0,SAT,RV0,G1D,
+     +                  G1F,G1C,J1D,J1F,J1C,J2,J3,G2,G3,PESA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2002   AUTEUR UFBHHLL C.CHAVANT 
+C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,7 +40,6 @@ C  VARIABLES IN / OUT
 C
       IMPLICIT NONE
       CHARACTER*16    OPTION,MECA,THMC,THER,HYDR     
-      INTEGER  INMECA,INTHMC,INTHER,INHYDR
       INTEGER         NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,IMATE
       INTEGER         YAMEC,YAP1,NBPHA1,YAP2,NBPHA2,YATE
       INTEGER         ADDEME,ADDEP1,ADDEP2,ADDETE

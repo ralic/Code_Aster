@@ -1,18 +1,14 @@
-        SUBROUTINE CAFTGT(OPTION,MECA,THMC,THER,HYDR,
-     >                     INMECA,INTHMC,INTHER,INHYDR,
-     >                       IMATE,
-     &                             NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,
-     &                             YAMEC,YAP1,NBPHA1,YAP2,NBPHA2,YATE,
-     &                             ADDETE,ADDEME,ADDEP1,ADDEP2,ADCOTE,
-     &                             CONGEM,CONGEP,
-     &                             VINTM,VINTP,ADVIME,ADVITH,
-     &                             DSDE,
-     &                             EPSV,P1,P2,T,GRAT,PHI,SAT,RV0,
-     &                             G1D,G1F,G1C,J1D,J1F,J1C,J2,J3,G2,G3)
+        SUBROUTINE CAFTGT(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF,
+     +                  DIMCON,NVIMEC,NVITH,YAMEC,YAP1,NBPHA1,YAP2,
+     +                  NBPHA2,YATE,ADDETE,ADDEME,ADDEP1,ADDEP2,ADCOTE,
+     +                  CONGEM,CONGEP,VINTM,VINTP,ADVIME,ADVITH,DSDE,
+     +                  EPSV,P1,P2,T,GRAT,PHI,SAT,RV0,G1D,G1F,G1C,J1D,
+     +                  J1F,J1C,J2,J3,G2,G3)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/09/2002   AUTEUR UFBHHLL C.CHAVANT 
+C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,7 +25,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C TOLE CRP_20
 C TOLE CRP_21
 C **********************************************************************
 C CLONE CE CALCFT POUR LES LOIS DU CERMES QUI N FIGURENT PLUS
@@ -42,7 +37,6 @@ C
       INTEGER ADDETE,ADDEME,ADDEP1,ADDEP2,ADCOTE
       INTEGER ADVIME,ADVITH
       CHARACTER*16 OPTION,MECA,THMC,THER,HYDR    
-      INTEGER  INMECA,INTHMC,INTHER,INHYDR
 C
       REAL*8 CONGEM(1:DIMCON),CONGEP(1:DIMCON)
       REAL*8 VINTM(1:NVIMEC+NVITH),VINTP(1:NVIMEC+NVITH)

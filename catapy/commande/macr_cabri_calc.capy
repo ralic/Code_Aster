@@ -1,0 +1,156 @@
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+from Macro.macr_cabri_calc_ops import macr_cabri_calc_ops
+   
+def macr_cabri_calc_prod(self,MODELE_THER,MODELE_MECA,CHAM_MATER,
+                         CHAR_THER,CHAR_MECA,RESU_THER,**args):
+  if MODELE_THER != None:
+   self.type_sdprod(MODELE_THER,modele)   
+  if MODELE_MECA != None:
+   self.type_sdprod(MODELE_MECA,modele)  
+  if RESU_THER != None:
+   self.type_sdprod(RESU_THER,evol_ther)     
+  if CHAM_MATER != None:
+   self.type_sdprod(CHAM_MATER,cham_mater)     
+  if CHAR_THER != None: 
+    for m in CHAR_THER:
+      self.type_sdprod(m['CHARGE'],char_ther)
+  if CHAR_MECA != None: 
+    for m in CHAR_MECA:
+      self.type_sdprod(m['CHARGE'],char_meca)
+  return evol_noli
+
+
+MACR_CABRI_CALC=MACRO(nom="MACR_CABRI_CALC",
+                      op=macr_cabri_calc_ops,
+                      sd_prod=macr_cabri_calc_prod,
+                      fr="Calcul d'une jonction boulonnée de tuyauterie",
+                      reentrant='n',
+                      UIinfo={"groupes":("Outils métier",)},
+                      MAILLAGE   = SIMP(statut='o',typ=maillage,),
+                      AFFE_MATERIAU = FACT(statut='o',max='**',
+                        regles=(UN_PARMI('TOUT','GROUP_MA',),),
+                        TOUT     = SIMP(statut='f',typ='TXM',into=("OUI",) ),
+                        GROUP_MA = SIMP(statut='f',typ='TXM',into=(
+                                                                  "BRIDE",
+                                                                  "GOUJON",
+                                                                  "ROND",
+                                                                  "ECROU",
+                                                                  "JOINT",) ),
+                        MATER    = SIMP(statut='o',typ=mater),
+                        TEMP_REF = SIMP(statut='d',typ='R',defaut= 25. ),
+                      ),                      
+                      CHAM_MATER = SIMP(statut = 'f',typ=(cham_mater,CO),),
+                      MODELE_THER= SIMP(statut = 'f',typ=(modele,CO),),
+                      
+                      DEFI_CHAR_THER = FACT(statut ='d',
+                        TEMP_INIT     = SIMP(statut='d',typ='R',defaut= 25.,),
+                        COEF_H_FLUI   = SIMP(statut='f',typ=fonction,),
+                        TEMP_EXT_FLUI = SIMP(statut='f',typ=fonction,),
+                        COEF_H_AIR    = SIMP(statut='f',typ=fonction,),
+                        TEMP_EXT_AIR  = SIMP(statut='f',typ=fonction,),
+                        LIST_INST     = SIMP(statut='f',typ=listr8),
+                      ),                      
+                      
+                      CHAR_THER  = FACT(statut = 'f',max=4,
+                        CHARGE    = SIMP(statut='o',typ=(char_ther,CO)),
+                        TYPE      = SIMP(statut='o',typ='TXM',
+                                 into=("BRIDE_FLUIDE","BRIDE_AIR","ECROU_GOUJON",
+                                       "BRIDE_JOINT"),)
+                                       ),
+
+                      RESU_THER  = SIMP(statut = 'f',typ=(evol_ther,CO),),                                       
+
+                                       
+                      MODELE_MECA= SIMP(statut = 'f',typ=(modele,CO),),
+
+                      DEFI_CHAR_MECA   = FACT(statut='o',
+                        PRETENS    = SIMP(statut='f',typ=fonction,),
+                        PRES_REP   = SIMP(statut='f',typ=fonction,),
+                        EFFE_FOND  = SIMP(statut='f',typ=fonction,),
+                      ),                                                             
+
+                      CHAR_MECA  = FACT(statut = 'f',max=11,
+                        CHARGE    = SIMP(statut='o',typ=(char_meca,CO)),
+                        TYPE      = SIMP(statut='o',typ='TXM',
+                                 into=("BLOC_BAS_GOUJ","BLOC_BAS_JOINT",
+                                       "BLOC_LAT_ALES","BLOC_LAT_NALES",
+                                       "PLAN_TUBE",
+                                       "PRES_FLU","EFFET_FOND",
+                                       "CONT_JOINT",
+                                       "DEFO_THER",
+                                       "SERR_ECROU_1","SERR_ECROU_2",),)
+                                       ),
+                     
+                      RELATION = SIMP(statut='f',typ='TXM',
+                                       into=('VMIS_ISOT_TRAC','ELAS','ELAS_VMIS_TRAC',),),
+                        
+                      SOLVEUR   = FACT(statut='d',
+                        METHODE  = SIMP(statut='d',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT",) ),
+                        b_mult_front = BLOC(condition = "METHODE == 'MULT_FRONT' ",
+                           fr="Paramètres de la méthode multi frontale",
+                           RENUM           = SIMP(statut='d',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
+                           NPREC           = SIMP(statut='d',typ='I',defaut=8),
+                           STOP_SINGULIER  = SIMP(statut='d',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+                           ),                 
+                      ),                                             
+                      INCREMENT = FACT(statut='f',
+                        regles=(EXCLUS('NUME_INST_INIT','INST_INIT'),
+                                EXCLUS('NUME_INST_FIN','INST_FIN'),),
+                        LIST_INST       =SIMP(statut='f',typ=listr8),
+                        EVOLUTION       =SIMP(statut='f',typ='TXM',defaut="CHRONOLOGIQUE",
+                                 into=("CHRONOLOGIQUE",) ),                                 
+                        NUME_INST_INIT  =SIMP(statut='f',typ='I'),
+                        INST_INIT       =SIMP(statut='f',typ='R'),
+                        NUME_INST_FIN   =SIMP(statut='f',typ='I'),
+                        INST_FIN        =SIMP(statut='f',typ='R'),
+                        PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3 ),
+                        SUBD_PAS        =SIMP(statut='f',typ='I',defaut=1),
+                        SUBD_PAS_MINI   =SIMP(statut='f',typ='R'),
+                        COEF_SUBD_PAS_1 =SIMP(statut='f',typ='R',defaut= 1.0E+0),
+                        OPTI_LIST_INST  =SIMP(statut='f',typ='TXM',into=("INCR_MAXI",),),
+                        NOM_CHAM        =SIMP(statut='f',typ='TXM',),
+                        NOM_CMP         =SIMP(statut='f',typ='TXM',),
+                        VALE            =SIMP(statut='f',typ='R'),
+                      ),
+                      NEWTON          =FACT(statut='d',
+                        REAC_INCR       =SIMP(statut='f',typ='I',defaut= 1 ),
+                        PREDICTION      =SIMP(statut='f',typ='TXM',into=("TANGENTE","ELASTIQUE","EXTRAPOL") ),
+                        MATRICE         =SIMP(statut='f',typ='TXM',defaut="TANGENTE",into=("TANGENTE","ELASTIQUE") ),
+                        PAS_MINI_ELAS   =SIMP(statut='f',typ='R',defaut=0.0E+0),
+                        REAC_ITER       =SIMP(statut='f',typ='I',defaut=0),
+                        EVOL_NOLI       =SIMP(statut='f',typ=evol_noli),
+                      ),
+                      CONVERGENCE     =FACT(statut='d',
+                        regles=(PRESENT_ABSENT('RESI_REFE_RELA','RESI_GLOB_MAXI','RESI_GLOB_RELA'),),
+                        SIGM_REFE       =SIMP(statut='f',typ='R'),
+                        EPSI_REFE       =SIMP(statut='f',typ='R'),
+                        FLUX_THER_REFE  =SIMP(statut='f',typ='R'),        
+                        RESI_REFE_RELA  =SIMP(statut='f',typ='R'),
+                        RESI_GLOB_MAXI  =SIMP(statut='f',typ='R'),
+                        RESI_GLOB_RELA  =SIMP(statut='f',typ='R'),
+                        ITER_GLOB_MAXI  =SIMP(statut='f',typ='I',defaut=10),
+                        ITER_GLOB_ELAS  =SIMP(statut='f',typ='I',defaut=25),
+                        TYPE_MATR_COMP  =SIMP(statut='f',typ='TXM',defaut="TANG_VIT",into=("TANG_VIT",)),
+                        RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
+                                 into=("IMPLICITE",)),
+                      ),
+                     );
+

@@ -1,4 +1,4 @@
-#@ MODIF N_ETAPE Noyau  DATE 03/09/2002   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF N_ETAPE Noyau  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -129,16 +129,10 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
                # On ne nomme le concept que dans le cas de non reutilisation 
                # d un concept
                sd.nom=nom
-         if self.jdc and self.jdc.par_lot == "NON" :
-            self.Execute()
-         return sd
       except AsException,e:
          raise AsException("Etape ",self.nom,'ligne : ',self.appel[0],
                               'fichier : ',self.appel[1],e)
       except EOFError:
-         # XXX Normalement le contexte courant doit etre le parent.
-         # Il n'y a pas de raison de remettre le contexte au parent
-         #self.reset_current_step()
          raise
       except :
          l=traceback.format_exception(sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2])
@@ -146,11 +140,14 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
                            'fichier : ',self.appel[1]+'\n',
                             string.join(l))
 
+      self.Execute()
+      return sd
+
    def Execute(self):
       """
-         Cette methode est prevue pour faire une execution dans le cas
-         ou par_lot == 'NON'
-         Par defaut, elle ne fait rien
+         Cette methode est un point d'entree prevu pour realiser une execution immediatement
+         apres avoir construit les mots cles et le concept produit.
+         Par defaut, elle ne fait rien. Elle doit etre surchargee dans une autre partie du programme.
       """
       return
 
@@ -183,16 +180,14 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
       else:
         sd_prod=self.definition.sd_prod
       # on teste maintenant si la SD est réutilisée ou s'il faut la créer
-      if self.reuse:
-        # Il est preferable de traiter cette erreur ultérieurement : ce n'est pas une erreur fatale
-        #if AsType(self.reuse) != sd_prod:
-        #  raise AsException("type de concept reutilise incompatible avec type produit")
+      if self.definition.reentrant != 'n' and self.reuse:
+        # Le concept produit est specifie reutilise (reuse=xxx). C'est une erreur mais non fatale.
+        # Elle sera traitee ulterieurement.
         self.sd=self.reuse
       else:
         self.sd= sd_prod(etape=self)
-        # Si reuse n'a pas ete donné, c'est une erreur. Ne pas corriger afin de la detecter ensuite
-        #if self.definition.reentrant == 'o':
-        #  self.reuse = self.sd
+        # Si l'operateur est obligatoirement reentrant et reuse n'a pas ete specifie, c'est une erreur. 
+        # On ne fait rien ici. L'erreur sera traiter par la suite.
       return self.sd
 
    def get_type_produit(self):

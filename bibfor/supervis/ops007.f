@@ -3,7 +3,7 @@
       INTEGER ICMD,ICOND,IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 11/08/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C     OPERATEUR DESTRUCTION DE CONCEPT
+C     OPERATEUR DESTRUCTION DE CONCEPT ET D'OBJETS JEVEUX
 C     ------------------------------------------------------------------
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -42,23 +42,15 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     ------------------------------------------------------------------
       CHARACTER*8 KBID
-      INTEGER LBID
-      CALL JEMARQ()
-      IF(ICOND.EQ.-1) THEN
-         CALL GETFAC('CONCEPT',NBOCC)
-         DO 1 IOCC = 1,NBOCC
-            CALL GETVID('CONCEPT','NOM',IOCC,1,0,KBID,NCON)
-            NCON = -NCON
-            CALL WKVECT('&&OPS007.NOMCON','V V K8',NCON,LCON)
-            CALL GETVID('CONCEPT','NOM',IOCC,1,NCON,ZK8(LCON),LBID)
-            DO 100 II =1,NCON
-               CALL GCDETC(ICMD,ZK8(LCON-1+II))
- 100        CONTINUE
-            CALL JEDETR('&&OPS007.NOMCON')
- 1       CONTINUE
-      ELSEIF(ICOND.EQ.1) THEN
-C ON NE VERIFIE RIEN
-      ELSE
+      CHARACTER*32 KCH
+      CHARACTER*16 TYPECO
+      INTEGER LBID, IEX
+C
+      CALL INFMAJ()
+      IF (ICOND.EQ.0) THEN
+         CALL JEMARQ()
+         CALL INFNIV(IFM,NIV)
+         IF (NIV.GT.1) LBID=JVINFO('AFFECT', NIV)
          CALL GETFAC('CONCEPT',NBOCC)
          DO 3 IOCC = 1,NBOCC
             CALL GETVID('CONCEPT','NOM',IOCC,1,0,KBID,NCON)
@@ -68,9 +60,55 @@ C ON NE VERIFIE RIEN
             DO 300 II=1,NCON
                CALL JEDETC('G',ZK8(LCON-1+II),1)
                CALL GCDETC(ICMD,ZK8(LCON-1+II))
+C
+               CALL GCUCON(0,ZK8(LCON-1+II),' ',IEX)
+               IF (IEX.NE.0) THEN
+C
+C   SI LE CONCEPT A DETRUIRE EST UNE FORMULE : APPEL A FIDETR
+C   POUR FAIRE LE MENAGE DANS LES COMMON '&&SYS FI'
+C
+                 CALL GETTCO(ZK8(LCON-1+II),TYPECO)
+                 IF (TYPECO.EQ.'FORMULE') THEN
+                    CALL FIDETR(ZK8(LCON-1+II),IPLACE)
+                 ENDIF
+               ELSE
+C
+C   SI LE CONCEPT A DETRUIRE N EXISTE PAS : ALARME
+C
+                 CALL UTMESS('A','DETRUIRE','LE CONCEPT '//
+     &                       'DE NOM '' ' // ZK8(LCON-1+II) //
+     &                       ' '' N''EXISTE PAS')
+               ENDIF
+C
  300        CONTINUE
             CALL JEDETR('&&OPS007.NOMCON')
  3       CONTINUE
+         CALL GETFAC('OBJET',NBOCC)
+         DO 2 IOCC = 1,NBOCC
+            CALL GETVID('OBJET','CHAINE',IOCC,1,0,KBID,NOBJ)
+            NOBJ = -NOBJ
+            CALL WKVECT('&&OPS007.NOMOBJ','V V K24',NOBJ,JOBJ)
+            CALL GETVID('OBJET','CHAINE',IOCC,1,NOBJ,ZK24(JOBJ),LBID)
+            CALL GETVIS('OBJET','POSITION',IOCC,1,0,LBID,NIPO)
+            NIPO = -NIPO
+            IF (NIPO .LT. NOBJ) THEN
+              CALL WKVECT('&&OPS007.NIPOSI','V V IS',NOBJ,JPO)
+              DO 201 K=NIPO+1,NOBJ
+                ZI(JPO+K-1) = 1
+ 201          CONTINUE 
+            ELSE
+              CALL WKVECT('&&OPS007.NIPOSI','V V IS',NIPO,JPO)
+            ENDIF
+            CALL GETVIS('OBJET','POSITION',IOCC,1,NIPO,ZI(JPO),LBID)
+            DO 105 II =1,NOBJ
+               KCH = ZK24(JOBJ+II-1)
+               L=INDEX(KCH,' ')
+               IF (L.GT.0) CALL JEDETC('G',KCH(1:L-1),ZI(JPO+II-1))
+ 105        CONTINUE
+            CALL JEDETR('&&OPS007.NOMOBJ')
+            CALL JEDETR('&&OPS007.NIPOSI')
+ 2       CONTINUE
+         IF (NIV.GT.1) LBID=JVINFO('AFFECT', 0)
+         CALL JEDEMA()
       ENDIF
-      CALL JEDEMA()
       END

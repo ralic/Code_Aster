@@ -1,11 +1,23 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-#              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
-#              REDISTRIBUTION OF THIS FILE.
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE VABHHTS J.PELLET
+
 def lire_resu_prod(TYPE_RESU,**args):
   if TYPE_RESU == "EVOL_CHAR" :  return evol_char
   if TYPE_RESU == "EVOL_THER" :  return evol_ther
@@ -17,12 +29,43 @@ def lire_resu_prod(TYPE_RESU,**args):
   if TYPE_RESU == "MODE_MECA" :  return mode_meca
   raise AsException("type de concept resultat non prevu")
 
+# pour éviter d'écrire 3 fois cette liste :
+def l_nom_cham_pas_elga(): return (
+     "ACCE", "ACCE_ABSOLU", "CRIT_ELNO_RUPT", "DCHA_ELNO_SIGM",
+     "DCHA_NOEU_SIGM", "DEDE_ELNO_DLDE", "DEDE_NOEU_DLDE", "DEGE_ELNO_DEPL", "DEGE_NOEU_DEPL",
+     "DEPL", "DEPL_ABSOLU", "DESI_ELNO_DLSI", "DESI_NOEU_DLSI", "DETE_ELNO_DLTE", "DETE_NOEU_DLTE",
+     "DURT_ELNO_META", "DURT_NOEU_META", "ECIN_ELEM_DEPL", "EFGE_ELNO_CART", "EFGE_ELNO_DEPL",
+     "EFGE_NOEU_CART", "EFGE_NOEU_DEPL", "ENDO_ELNO_SIGA", "ENDO_ELNO_SINO", "ENDO_NOEU_SINO",
+     "ENEL_ELNO_ELGA", "ENEL_NOEU_ELGA", "EPEQ_ELNO_TUYO", "EPGR_ELNO", "EPME_ELNO_DEPL",
+     "EPMG_ELNO_DEPL", "EPMG_NOEU_DEPL", "EPOT_ELEM_DEPL", "EPSA_ELNO", "EPSA_NOEU",
+     "EPSG_ELNO_DEPL", "EPSG_NOEU_DEPL", "EPSI_ELNO_DEPL", "EPSI_ELNO_TUYO", "EPSI_NOEU_DEPL",
+     "EPSP_ELNO", "EPSP_ELNO_ZAC", "EPSP_NOEU", "EPSP_NOEU_ZAC", "EQUI_ELNO_EPME", "EQUI_ELNO_EPSI",
+     "EQUI_ELNO_SIGM", "EQUI_NOEU_EPME", "EQUI_NOEU_EPSI", "EQUI_NOEU_SIGM", "ERRE_ELEM_NOZ1",
+     "ERRE_ELEM_NOZ2", "ERRE_ELNO_ELGA", "ERRE_NOEU_ELGA", "ERTH_ELEM_TEMP", "ERTH_ELNO_ELEM",
+     "ETOT_ELEM", "ETOT_ELNO_ELGA", "FLUX_ELNO_TEMP", "FLUX_NOEU_TEMP", "FORC_NODA", "FSUR_2D",
+     "FSUR_3D", "FVOL_2D", "FVOL_3D", "GRAD_NOEU_THETA", "HYDR_ELNO_ELGA", "HYDR_NOEU_ELGA",
+     "INTE_ELNO_ACTI", "INTE_ELNO_REAC", "INTE_NOEU_ACTI", "INTE_NOEU_REAC", "IRRA",
+     "META_ELNO_TEMP", "META_NOEU_TEMP", "PMPB_ELNO_SIEF", "PMPB_NOEU_SIEF",
+     "PRES", "PRES_DBEL_DEPL", "PRES_ELNO_DBEL", "PRES_ELNO_IMAG", "PRES_ELNO_REEL",
+     "PRES_NOEU_DBEL", "PRES_NOEU_IMAG", "PRES_NOEU_REEL",
+     "RADI_ELNO_SIGM", "RADI_NOEU_SIGM", "REAC_NODA",
+     "SIEF_ELNO", "SIEF_ELNO_ELGA", "SIEF_NOEU", "SIEF_NOEU_ELGA", "SIEQ_ELNO_TUYO",
+     "SIGM_ELNO_CART", "SIGM_ELNO_COQU", "SIGM_ELNO_DEPL", "SIGM_ELNO_SIEF",
+     "SIGM_ELNO_TUYO", "SIGM_ELNO_ZAC", "SIGM_NOEU_CART", "SIGM_NOEU_COQU",
+     "SIGM_NOEU_DEPL", "SIGM_NOEU_SIEF", "SIGM_NOEU_ZAC", "SIGM_NOZ1_ELGA",
+     "SIGM_NOZ2_ELGA", "SIPO_ELNO_DEPL", "SIPO_ELNO_SIEF", "SIPO_NOEU_DEPL",
+     "SIPO_NOEU_SIEF", "SIRE_ELNO_DEPL", "SIRE_NOEU_DEPL", "TEMP", "THETA",
+     "VALE_CONT", "VALE_NCOU_MAXI", "VARI_ELNO", "VARI_ELNO_COQU",
+     "VARI_ELNO_ELGA", "VARI_ELNO_TUYO", "VARI_NOEU", "VARI_NOEU_ELGA", "VARI_NON_LOCAL",
+     "VITE", "VITE_ABSOLU", "VITE_VENT",
+                           )
+
 LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,docu="U7.02.01-d",reentrant='n',
             UIinfo={"groupes":("Maillage",)},
                fr="Lecture de champs aux noeuds ou par éléments aux noeuds sur un fichier IDEAS ou EnSight",
 
 
-# 0 mots clés généraux :
+# 0) mots clés généraux :
 #----------------------
          TYPE_RESU       =SIMP(statut='o',typ='TXM',into=("EVOL_THER","EVOL_ELAS","EVOL_NOLI","MODE_MECA",
                                                           "DYNA_TRANS","DYNA_HARMO","HARM_GENE","EVOL_CHAR") ),
@@ -39,11 +82,11 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,docu="U7.02.01-d",r
          NB_VARI         =SIMP(statut='f',typ='I' ),
 
 
-# 1 blocs selon le format choisi :
+# 1) blocs selon le format choisi :
 #---------------------------------
 
 # 1-1 ideas dataset-58 :
-# ---------
+# ----------------------
          b_dataset_58 = BLOC(condition="FORMAT=='IDEAS_DS58'",
            UNITE           =SIMP(statut='f',typ='I',defaut= 19 ),
          ),
@@ -55,18 +98,17 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,docu="U7.02.01-d",r
                               regles=(PRESENT_PRESENT('CODE_DIR','DIRECTION','NOEUD',),),
                               CODE_DIR =SIMP(statut='f',typ='I',into=(1,2,3,) ),
                               DIRECTION=SIMP(statut='f',typ='R',min=3,max=3,),
-                              NOEUD    =SIMP(statut='f',typ=no,max='**'),),
+                              NOEUD    =SIMP(statut='f',typ=no,validators=NoRepeat(),max='**'),),
          ),
 
 # 1-2 ideas  :
 # ---------
          b_ideas         =BLOC(condition="FORMAT=='IDEAS'",
            UNITE           =SIMP(statut='f',typ='I',defaut= 19 ),
+           NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=l_nom_cham_pas_elga()),
            FORMAT_IDEAS    =FACT(statut='f',max='**',
              regles=(UN_PARMI('POSI_INST','POSI_FREQ'),),
-             NOM_CHAM        =SIMP(statut='o',typ='TXM',max='**',into=("TEMP","DEPL","VITE","ACCE","PRES","VARI_ELNO",
-                                                                     "SIEF_ELNO","EPSA_ELNO","TEMP_PEAU","VITE_VENT",
-                                                                     "FVOL_3D","FVOL_2D","FSUR_3D","FSUR_2D") ),
+             NOM_CHAM        =SIMP(statut='o',typ='TXM',into=l_nom_cham_pas_elga()),
              NUME_DATASET    =SIMP(statut='f',typ='I',into=(55,57,2414) ),
              RECORD_3        =SIMP(statut='f',typ='I',max=10),
              RECORD_6        =SIMP(statut='f',typ='I',max=10),
@@ -82,66 +124,41 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,docu="U7.02.01-d",r
 # -------------
          b_ensight       =BLOC(condition="FORMAT=='ENSIGHT'",
            NOM_FICHIER     =SIMP(statut='f',typ='TXM'),
+           NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=l_nom_cham_pas_elga()),
          ),
 
 # 1-4 med :
 # ---------
          b_med           =BLOC(condition = "FORMAT == 'MED'",fr="Nom du champ dans le fichier MED",
+           UNITE           =SIMP(statut='f',typ='I',defaut= 81, fr="Le fichier est : fort.n.",),
+           NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=l_nom_cham_pas_elga()),
            FORMAT_MED      =FACT(statut='f',max='**',
+             NOM_CHAM        =SIMP(statut='o',typ='TXM',into=l_nom_cham_pas_elga()),
              NOM_CHAM_MED    =SIMP(statut='o',typ='TXM',               fr="Nom du champ dans le fichier MED.",  ),
              NOM_CMP_IDEM    =SIMP(statut='f',typ='TXM',into=("OUI",), fr="Les composantes ont le meme nom dans MED et ASTER.", ),
              NOM_CMP         =SIMP(statut='f',typ='TXM',max='**',      fr="Nom des composantes dans ASTER.", ),
              NOM_CMP_MED     =SIMP(statut='f',typ='TXM',max='**',      fr="Nom des composantes dans MED.", ),
-             NOM_CHAM        =SIMP(statut='o',typ='TXM',max=1,into=("TEMP","DEPL","SIEF_ELNO","EPSA_ELNO","VARI_ELNO",) ),
            ),
-           UNITE           =SIMP(statut='f',typ='I',defaut= 81, fr="Le fichier est : fort.n.",),
                   ),
 
-# 2 blocs selon le type du résultat :
+# 2) blocs selon le type du résultat :
 #---------------------------------
-         b_evol_elas     =BLOC(condition="TYPE_RESU=='EVOL_ELAS'",
-           NOM_CHAM        =SIMP(statut='o',typ='TXM',max='**',
-                                 into=("DEPL",) ),
-         ),
-         b_evol_ther     =BLOC(condition="TYPE_RESU=='EVOL_THER'",
-           NOM_CHAM        =SIMP(statut='o',typ='TXM',max='**',
-                                 into=("TEMP","TEMP_PEAU") ),
-         ),
-         b_evol_char     =BLOC(condition="TYPE_RESU=='EVOL_CHAR'",
-           NOM_CHAM        =SIMP(statut='o',typ='TXM',max='**',
-                                 into=("PRES","VITE_VENT",
-                                       "FVOL_3D","FVOL_2D",
-                                       "FSUR_3D","FSUR_2D") ),
-         ),
-         b_evol_noli     =BLOC(condition="TYPE_RESU=='EVOL_NOLI'",
-           NOM_CHAM        =SIMP(statut='o',typ='TXM',max='**',
-                                 into=("DEPL","VITE","ACCE","VARI_ELNO",
-                                       "SIEF_ELNO","EPSA_ELNO") ),
-         ),
          b_mode_meca     =BLOC(condition="TYPE_RESU=='MODE_MECA'",
-           NOM_CHAM        =SIMP(statut='o',typ='TXM',max='**',
-                                 into=("DEPL",) 
-                                                 ),
-           MATR_A         =SIMP(statut='f',typ=matr_asse_depl_r,min=1,max=1,),
-           MATR_B         =SIMP(statut='f',typ=matr_asse_depl_r,min=1,max=1,),
-         ),
-         b_dyna          =BLOC(condition="((TYPE_RESU=='DYNA_TRANS') or (TYPE_RESU=='DYNA_HARMO') or\
-                                          (TYPE_RESU=='HARM_GENE')) and (FORMAT!='IDEAS_DS58')",
-           NOM_CHAM        =SIMP(statut='o',typ='TXM',max='**',
-                                 into=("DEPL","VITE","ACCE",) ),
+           MATR_A         =SIMP(statut='f',typ=matr_asse_depl_r,),
+           MATR_B         =SIMP(statut='f',typ=matr_asse_depl_r,),
          ),
 
 
-# 3 autres blocs :
+# 3) autres blocs :
 #---------------------------------
          b_extrac        =BLOC(condition="1",fr="accès à un champ dans la structure de données résultat",
            regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST','FREQ','LIST_FREQ'),),
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
-           INST            =SIMP(statut='f',typ='R',max='**'),
+           NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+           INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
            LIST_INST       =SIMP(statut='f',typ=listr8),
            LIST_ORDRE      =SIMP(statut='f',typ=listis),
-           FREQ            =SIMP(statut='f',typ='R',max='**'),
+           FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
            LIST_FREQ       =SIMP(statut='f',typ=listr8),
 
            b_acce_reel     =BLOC(condition="(INST != None)or(LIST_INST != None)or(FREQ != None)or(LIST_FREQ != None)",

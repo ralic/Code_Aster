@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF SOUSTRUC  DATE 28/04/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -288,6 +288,7 @@ C     -----------------
             ZI(IAGMAX-1+II)=ZI(IAGMA1-1+II)
  311      CONTINUE
  31     CONTINUE
+        ICOMPT = 0
         DO 32,I=1,NBGM2
           CALL JEVEUO(JEXNUM(DM(2)//'.GROUPEMA',I),'L',IAGMA2)
           CALL JELIRA(JEXNUM(DM(2)//'.GROUPEMA',I),'LONMAX',N,KBID)
@@ -299,7 +300,8 @@ C     -----------------
      +           //' ON IGNORE LE SECOND.')
             GO TO 32
           END IF
-          I1 = I + NBGM1
+          ICOMPT = ICOMPT + 1
+          I1 = NBGM1 + ICOMPT
           CALL JECROC(JEXNOM(MAG//'.GROUPEMA',NOGMA))
           CALL JEECRA(JEXNUM(MAG//'.GROUPEMA',I1),'LONMAX',N,KBID)
           CALL JEVEUO(JEXNUM(MAG//'.GROUPEMA',I1),'E',IAGMAX)
@@ -335,6 +337,7 @@ C     -----------------
             ZI(IAGNOX-1+II)=ZI(IAGNO1-1+II)
  331      CONTINUE
  33     CONTINUE
+        ICOMPT = 0
         DO 34,I=1,NBGN2
           CALL JEVEUO(JEXNUM(DM(2)//'.GROUPENO',I),'L',IAGNO2)
           CALL JELIRA(JEXNUM(DM(2)//'.GROUPENO',I),'LONMAX',N,KBID)
@@ -346,7 +349,8 @@ C     -----------------
      +           //' ON IGNORE LE SECOND.')
             GO TO 34
           END IF
-          I1=I+NBGN1
+          ICOMPT = ICOMPT + 1
+          I1 = NBGN1 + ICOMPT
           CALL JECROC(JEXNOM(MAG//'.GROUPENO',NOGNO))
           CALL JEECRA(JEXNUM(MAG//'.GROUPENO',I1),'LONMAX',N,KBID)
           CALL JEVEUO(JEXNUM(MAG//'.GROUPENO',I1),'E',IAGNOX)

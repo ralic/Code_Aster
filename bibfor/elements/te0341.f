@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/03/99   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
           VALRES(I) = ZERO
    10 CONTINUE
 C
-      CALL TECACH(.TRUE.,.FALSE.,'PTEMPER',1,ITEMPE)
+      CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
       IF ( ITEMPE .EQ. 0 ) THEN
          NBPAR  = 0
          NOMPAR = ' '

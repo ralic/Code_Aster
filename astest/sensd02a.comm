@@ -1,4 +1,4 @@
-# MODIF  DATE 09/07/2002   AUTEUR CAMBIER S.CAMBIER 
+# MODIF  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
 # RESPONSABLE S.CAMBIER
 # TITRE SENSIBILITE AUX MATERIAUX EN DYNAMIQUE HARMONIQUE ISOTROPE 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -58,8 +58,8 @@ MEMO_NOM_SENSI ( NOM_ZERO = PS_ZERO ) ;
 #
 # 2. Definition des parametres sensibles
 #
-#            E      NU
-sensible=[3.6E10,  0.2]
+mot_cle =[   "E", "NU" ]
+sensible=[3.6E10,  0.2 ]
 
 n=len(sensible)
 PS=[None]*n
@@ -67,6 +67,9 @@ PS=[None]*n
 
 for i in range(n):
   PS[i]=DEFI_PARA_SENSI(VALE=sensible[i])
+  MEMO_NOM_SENSI ( NOM=_F(NOM_SD=PS[i].nom,
+                          PARA_SENSI=PS[i],
+                          NOM_COMPOSE=PS_UN.nom));
 
 #ALPHA=DEFI_CONSTANTE(VALE=2.E-3,);
 #BETA=DEFI_CONSTANTE(VALE=3.E-1,);
@@ -78,7 +81,7 @@ BETA=DEFI_PARA_SENSI(VALE=3.E-1,);
 # 3. Prealable
 #
 PRE_GIBI()
-MAILLAGE=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),);
+MAILLAGE=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),);
 
 MAILLAGE=DEFI_GROUP(reuse=MAILLAGE,
                     MAILLAGE=MAILLAGE,
@@ -111,6 +114,12 @@ for i in range(n):
                              AMOR_ALPHA = ALPHA ,
                               AMOR_BETA = BETA ,
                                        ))
+  MEMO_NOM_SENSI ( NOM=_F(NOM_SD='MAT',
+                          PARA_SENSI=PS[i],
+                          NOM_COMPOSE=MATS[i].nom,
+                          MOT_CLE=mot_cle[i],
+                          MOT_FACT='ELAS_FO',
+                          VALEUR=PS[i].nom ),);
 #
 #
 # 3.3. Affectation des materiaux
@@ -124,8 +133,10 @@ for i in range(n):
                         AFFE=_F(TOUT='OUI',MATER=MATS[i],),);
   MEMO_NOM_SENSI ( NOM=_F(NOM_SD='CHMAT',
                           PARA_SENSI=PS[i],
-                          NOM_COMPOSE=CHMS[i].nom ),);
-                
+                          NOM_COMPOSE=CHMS[i].nom,
+                          MOT_CLE='MATER',
+                          MOT_FACT='AFFE',
+                          VALEUR='MAT' ),);
 #
 # 3.4. Chargements
 #

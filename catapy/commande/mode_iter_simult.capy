@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,7 +58,7 @@ MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45,sd_prod=mode_iter_simult_pr
                                fr="Calcul des modes de corps rigide, uniquement pour la méthode TRI_DIAG" ),
 
          b_flamb         =BLOC(condition = "TYPE_RESU == 'MODE_FLAMB'",
-           CALC_FREQ       =FACT(statut='d',min=0,max=1,
+           CALC_FREQ       =FACT(statut='d',min=0,
              OPTION          =SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE",into=("PLUS_PETITE","BANDE","CENTRE"),
                                    fr="Choix de l option et par conséquent du shift du problème modal" ),
              b_plus_petite =BLOC(condition = "OPTION == 'PLUS_PETITE'",fr="Recherche des plus petites valeurs propres",
@@ -66,12 +66,12 @@ MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45,sd_prod=mode_iter_simult_pr
              ),
              b_centre      =BLOC(condition = "OPTION == 'CENTRE'",
                                  fr="Recherche des valeurs propres les plus proches d une valeur donnée",
-               CHAR_CRIT       =SIMP(statut='o',typ='R',min=1,max=1,
+               CHAR_CRIT       =SIMP(statut='o',typ='R',
                                      fr="Charge critique autour de laquelle on cherche les charges critiques propres"),
              ),
              b_bande       =BLOC(condition = "(OPTION == 'BANDE')",
                                  fr="Recherche des valeurs propres dans une bande donnée",
-               CHAR_CRIT       =SIMP(statut='o',typ='R',min=2,max=2,
+               CHAR_CRIT       =SIMP(statut='o',typ='R',min=2,validators=NoRepeat(),max=2,
                                      fr="Valeur des deux charges critiques délimitant la bande de recherche"),
              ),           
              APPROCHE        =SIMP(statut='f',typ='TXM',defaut="REEL",into=("REEL","IMAG"),
@@ -87,7 +87,7 @@ MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45,sd_prod=mode_iter_simult_pr
          ),
 
          b_dynam        =BLOC(condition = "TYPE_RESU == 'DYNAMIQUE'",
-           CALC_FREQ       =FACT(statut='d',min=0,max=1,
+           CALC_FREQ       =FACT(statut='d',min=0,
              OPTION          =SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE",into=("PLUS_PETITE","BANDE","CENTRE"),
                                    fr="Choix de l option et par conséquent du shift du problème modal" ),
              b_plus_petite =BLOC(condition = "OPTION == 'PLUS_PETITE'",fr="Recherche des plus petites valeurs propres",
@@ -95,14 +95,14 @@ MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45,sd_prod=mode_iter_simult_pr
              ),
              b_centre       =BLOC(condition = "OPTION == 'CENTRE'",
                                   fr="Recherche des valeurs propres les plus proches d une valeur donnée",
-               FREQ            =SIMP(statut='o',typ='R',min=1,max=1,
+               FREQ            =SIMP(statut='o',typ='R',
                                      fr="Fréquence autour de laquelle on cherche les fréquences propres"),
-               AMOR_REDUIT     =SIMP(statut='f',typ='R',max=1,),
+               AMOR_REDUIT     =SIMP(statut='f',typ='R',),
                NMAX_FREQ       =SIMP(statut='f',typ='I',defaut= 10,val_min=0 ),
              ),
              b_bande         =BLOC(condition = "(OPTION == 'BANDE')",
                                    fr="Recherche des valeurs propres dans une bande donnée",
-               FREQ            =SIMP(statut='o',typ='R',min=2,max=2,
+               FREQ            =SIMP(statut='o',typ='R',min=2,validators=NoRepeat(),max=2,
                                      fr="Valeur des deux fréquences délimitant la bande de recherche"),
              ),           
              APPROCHE        =SIMP(statut='f',typ='TXM',defaut="REEL",into=("REEL","IMAG","COMPLEXE"),
@@ -117,7 +117,7 @@ MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45,sd_prod=mode_iter_simult_pr
            ),
          ),
 
-         VERI_MODE       =FACT(statut='d',min=0,max=1,
+         VERI_MODE       =FACT(statut='d',min=0,
            STOP_ERREUR     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 5.E-3,val_min=0.E+0 ),
            SEUIL           =SIMP(statut='f',typ='R',defaut= 1.E-6,val_min=0.E+0,

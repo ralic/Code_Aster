@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      &        IDSIG,IFF,ICOMPO,NPG,IPOIDS,IVF,IDFDE,ICARAC,NPG1,NPG2,
      &        NPG3,NPG4,IDFDK,IGAU,ISIG,INO,IGEOM,IDEPL,IDEFP,ITEMPE,
      &        ITREF,ITEMPS,IMATE,IDEFA,IDECPG,IHYDRE,ISECHE,NBVARI,
-     &        IVARI,K,NVI,NVIF,IBID,JTAB(7)
+     &        IVARI,K,NVI,NVIF,IBID,JTAB(7),IRET
       PARAMETER (MXCMEL=54)
       PARAMETER (NBRES=3)
       PARAMETER (NBSGM=4)
@@ -199,7 +199,7 @@ C        -------------------------------------------------------------
 C ---    RECUPERATION DES DEFORMATIONS ANELASTIQUES AUX NOEUDS
 C ---    DE L'ELEMENT :
 C        ------------
-        CALL TECACH(.TRUE.,.FALSE.,'PDEFAPR',1,IDEFA)
+        CALL TECACH('ONN','PDEFAPR',1,IDEFA,IRET)
 
 C ---    ON VERIFIE QUE LE MATERIAU EST ISOTROPE
 C ---    (POUR L'INSTANT PAS D'ORTHOTROPIE NI D'ISOTROPIE TRANSVERSE
@@ -219,7 +219,7 @@ C ---    RECUPERATION DU COMPORTEMENT DANS LE CAS DES CONTRAINTES
 C ---    PLANES :
 C        ---------------------------------------------------------
         IF (MODELI(1:2).EQ.'CP') THEN
-          CALL TECACH(.TRUE.,.FALSE.,'PCOMPOR',1,ICOMPO)
+          CALL TECACH('ONN','PCOMPOR',1,ICOMPO,IRET)
           IF (ICOMPO.NE.0) THEN
             COMPOR = ZK16(ICOMPO)
             IF (COMPOR.NE.'VMIS_ISOT_LINE' .AND.
@@ -267,7 +267,7 @@ C     -------------------------------
 C --- RECUPERATION DES VARIABLES INTERNES AUX PT D'INTEGRATION COURANT :
 C     -----------------------------------------------------------------
       CALL JEVECH('PVARIGR','L',IVARI)
-      CALL TECACH(.TRUE.,.TRUE.,'PVARIGR',7,JTAB)
+      CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
       NBVARI = MAX(JTAB(6),1)*JTAB(7)
 
 C --- VERIFICATION DU COMPORTEMENT FLUAGE :

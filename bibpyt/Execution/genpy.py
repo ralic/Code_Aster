@@ -1,4 +1,4 @@
-#@ MODIF genpy Execution  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF genpy Execution  DATE 13/10/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -134,9 +134,12 @@ class genpy:
       # Ce n'est pas necessaire pour les blocs qui sont tous crees
       # a la construction meme ceux conditionnes par des mots cles
       # simples non presents avec defaut
-      if v.label == 'SIMP' and v.statut != 'c' :
+##      pour ne pas imprimer les mots clés cachés dans le fichier code
+##      if v.label == 'SIMP' and v.statut != 'c' :
+      if v.label == 'SIMP' :
         # Mot cle simple
-        if v.defaut != None : args[k]=self.evalMCSIMP(v.defaut)
+        if v.defaut != None : 
+           if v.statut != 'c' : args[k]=self.evalMCSIMP(v.defaut)
       elif v.label == 'FACT' :
         if v.statut in ('d',) :
           # On cree un objet MCFACT avec valeur par defaut

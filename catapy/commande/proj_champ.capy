@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,7 @@ def proj_champ_prod(RESULTAT=None,CHAM_NO_REFE=None,**args ):
     if AsType(CHAM_NO_REFE) == cham_no_flux_r : return cham_no_flux_r
     raise AsException("type de concept resultat non prevu")
 
-PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,docu="U4.72.05-d",reentrant='n',
+PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,docu="U4.72.05-d",reentrant='f',
             UIinfo={"groupes":("Résultats et champs",)},
                 fr="Projection d'un champ aux noeuds sur les noeuds d'un autre maillage",
 #
@@ -49,34 +49,37 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,docu="U4.72.05-
            regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','LIST_INST','LIST_FREQ','LIST_ORDRE'),
                    EXCLUS('TOUT_CHAM','NOM_CHAM',), ),
            RESULTAT        =SIMP(statut='o',typ=(evol_ther,evol_elas,evol_noli,evol_char) ),
+           SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
+                               fr="Liste des paramètres de sensibilité.",
+                               ang="List of sensitivity parameters",),
            MODELE_1        =SIMP(statut='o',typ=modele),
            MODELE_2        =SIMP(statut='o',typ=modele),
 
            TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           NOM_CHAM        =SIMP(statut='f',typ='TXM',max='**'),
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
 
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           NUME_ORDRE      =SIMP(statut='f',typ='I',max='**' ),
+           NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),
            LIST_ORDRE      =SIMP(statut='f',typ=listis),
-           INST            =SIMP(statut='f',typ='R',max='**' ),
+           INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
            LIST_INST       =SIMP(statut='f',typ=listr8),
-           FREQ            =SIMP(statut='f',typ='R',max='**' ),
+           FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
            LIST_FREQ       =SIMP(statut='f',typ=listr8),
          ),
 
-         VIS_A_VIS       =FACT(statut='f',min=1,max='**',
+         VIS_A_VIS       =FACT(statut='f',max='**',
            regles=(AU_MOINS_UN('TOUT_1','GROUP_MA_1','MAILLE_1','GROUP_NO_1','NOEUD_1'),
                    AU_MOINS_UN('TOUT_2','GROUP_MA_2','MAILLE_2','GROUP_NO_2','NOEUD_2'),),
            TOUT_1          =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           GROUP_MA_1      =SIMP(statut='f',typ=grma,max='**'),
-           MAILLE_1        =SIMP(statut='f',typ=ma,max='**'),
-           GROUP_NO_1      =SIMP(statut='f',typ=grno,max='**'),
-           NOEUD_1         =SIMP(statut='f',typ=no,max='**'),
+           GROUP_MA_1      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           MAILLE_1        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           GROUP_NO_1      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+           NOEUD_1         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
            TOUT_2          =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           GROUP_MA_2      =SIMP(statut='f',typ=grma,max='**'),
-           MAILLE_2        =SIMP(statut='f',typ=ma,max='**'),
-           GROUP_NO_2      =SIMP(statut='f',typ=grno,max='**'),
-           NOEUD_2         =SIMP(statut='f',typ=no,max='**'),
+           GROUP_MA_2      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           MAILLE_2        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           GROUP_NO_2      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+           NOEUD_2         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
          ),
 
          TITRE           =SIMP(statut='f',typ='TXM',max='**' ),

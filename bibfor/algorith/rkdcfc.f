@@ -5,7 +5,7 @@
       IMPLICIT REAL*8(A-H,O-Z)
 C       ===============================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/09/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 25/04/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -186,6 +186,10 @@ C
    21       CONTINUE
             XSG=C1*ALMIC(LSG)
             TMX=TMX-XSG-C2*GAMMA(LSG)
+CJMP
+
+            PTQ(ISG)=UN-EXP(-B1*GVCUM(LSG))
+
             CRT=ABS(TMX)-TAU0-Q1*(HL*RRR+(UN-HL)*PTQ(ISG))
             CRT=CRT-Q2*(UN-EXP(-B2*GVCUM(LSG)))
             CRT=CRT+UD*D1*XSG*XSG/C1
@@ -223,13 +227,15 @@ C
           DEVCUM=DEVCUM+DEVI(I)**2
    27   CONTINUE
         DEVCUM=SQRT(DEVCUM/TD)
-        IF (DEVCUM.LE.ZE) THEN
-        ELSE
-        END IF
+CC        IF (DEVCUM.LE.ZE) THEN
+CC        ELSE
+CC        END IF
         DETAT=ZE
 C
 C --    DERIVEES DES VARIABLES INTERNES
 C
+CJMP
+        CALL R8INIR ( NVI , 0.D0 , DVIN , 1 )
         DO 5 I=1,6
           DVIN(I)=DEVI(I)
    5    CONTINUE

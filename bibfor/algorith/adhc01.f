@@ -1,7 +1,7 @@
       SUBROUTINE ADHC01 ( NBOPT, TABENT, TABREE, TABCAR, LGCAR )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/07/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ALGORITH  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,12 +19,13 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C RESPONSABLE GNICOLAS G.NICOLAS
+C-----------------------------------------------------------------------
 C TOLE CRP_20
-C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
 C      ADAPTATION PAR HOMARD - DECODAGE DE LA COMMANDE - PHASE 01
 C      --             -                       -                --
 C      ECRITURE DU FICHIER DE CONFIGURATION
-C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
 C
       IMPLICIT NONE
 C
@@ -38,46 +39,56 @@ C
       CHARACTER*(*) TABCAR(NBOPT)
 C
 C 0.2. ==> COMMUNS
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
 C 0.3. ==> VARIABLES LOCALES
 C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'ADHC01' )
 C
-      CHARACTER*20 FICLOC
-      PARAMETER ( FICLOC = 'HOMARD.Configuration' )
+      INTEGER LXLGUT
 C
       INTEGER IAUX, JAUX, KAUX
       INTEGER CODRET
       INTEGER NUFIHO
       INTEGER MODHOM, TYPRAF, TYPDER, TYPBIL
-      INTEGER NIVINF, IFM
       INTEGER TYPCRR, TYPCRD
       INTEGER NIVMIN, NIVMAX
       INTEGER NUMORD, NUMPT
       INTEGER NITER
       INTEGER CVSOLU
-      INTEGER LOMN, LOMNP1, LORN, LORNP1
+      INTEGER NBGRMA
+      INTEGER NOSMPX
+      INTEGER LOMN, LOMNP1
       INTEGER LNCPIN
       INTEGER LNMMN, LNMMN1
       INTEGER LNMDIN
-      INTEGER LMMN, LMMNP1, LMSN, LMSNP1, LMIN
+      INTEGER LNMDFR
+      INTEGER LMMN, LMMNP1
       INTEGER LHMN, LHMNP1
       INTEGER LLISTE
-      INTEGER LREPHC
       INTEGER LLANGU
       INTEGER BILNBR, BILQUA, BILINT, BILCXT, BILTAI
 C
       REAL*8 CRITDE, CRITRA
 C
-      CHARACTER*8 OMN, OMNP1, ORN, ORNP1
+      CHARACTER*8 OMN, OMNP1
       CHARACTER*8 NCPIN
+      CHARACTER*24 LIGRMA
       CHARACTER*32 NMDMN, NMDMN1
       CHARACTER*32 NMDIN
-      CHARACTER*72 FMMN, FMMNP1, FMSN, FMSNP1, FMIN
+      CHARACTER*32 NMDFR
+      CHARACTER*72 FMMN, FMMNP1
       CHARACTER*72 FHMN, FHMNP1
       CHARACTER*72 FLISTE
-      CHARACTER*72 REPHC
-      CHARACTER*100 FIHO
       CHARACTER*100 LIGBLA, LIGCOM, LIGNE
       CHARACTER*128 LANGUE
 C
@@ -92,17 +103,17 @@ C
       NUFIHO = TABENT(1)
       MODHOM = TABENT(2)
       NITER  = TABENT(3)
-      TYPRAF = TABENT(6)
-      TYPDER = TABENT(7)
+      TYPRAF = TABENT(4)
+      TYPDER = TABENT(5)
+      TYPCRR = TABENT(6)
+      TYPCRD = TABENT(7)
       CVSOLU = TABENT(8)
-      TYPCRR = TABENT(9)
-      TYPCRD = TABENT(10)
+      NBGRMA = TABENT(9)
+      NOSMPX = TABENT(10)
       NIVMAX = TABENT(11)
       NIVMIN = TABENT(12)
       NUMPT  = TABENT(15)
       NUMORD = TABENT(16)
-      IFM    = TABENT(29)
-      NIVINF = TABENT(30)
       BILNBR = TABENT(31)
       BILQUA = TABENT(32)
       BILCXT = TABENT(33)
@@ -129,21 +140,6 @@ C
         FMMNP1(1:LMMNP1) = TABCAR(12)(1:LMMNP1)
       ENDIF
 C
-      LMSN = LGCAR(13)
-      IF ( LMSN.GT.0 ) THEN
-        FMSN(1:LMSN) = TABCAR(13)(1:LMSN)
-      ENDIF
-C
-      LMSNP1 = LGCAR(14)
-      IF ( LMSNP1.GT.0 ) THEN
-        FMSNP1(1:LMSNP1) = TABCAR(14)(1:LMSNP1)
-      ENDIF
-C
-      LMIN = LGCAR(15)
-      IF ( LMIN.GT.0 ) THEN
-        FMIN(1:LMIN) = TABCAR(15)(1:LMIN)
-      ENDIF
-C
       LHMN = LGCAR(19)
       IF ( LHMN.GT.0 ) THEN
         FHMN(1:LHMN) = TABCAR(19)(1:LHMN)
@@ -164,21 +160,6 @@ C
         OMNP1(1:LOMNP1) = TABCAR(22)(1:LOMNP1)
       ENDIF
 C
-      LORN = LGCAR(23)
-      IF ( LORN.GT.0 ) THEN
-        ORN(1:LORN) = TABCAR(23)(1:LORN)
-      ENDIF
-C
-      LORNP1 = LGCAR(24)
-      IF ( LORNP1.GT.0 ) THEN
-        ORNP1(1:LORNP1) = TABCAR(24)(1:LORNP1)
-      ENDIF
-C
-      LREPHC = LGCAR(29)
-      IF ( LREPHC.GT.0 ) THEN
-        REPHC(1:LREPHC) = TABCAR(29)(1:LREPHC)
-      ENDIF
-C
       LNMMN = LGCAR(31)
       IF ( LNMMN.NE.0 ) THEN
         NMDMN(1:LNMMN) = TABCAR(31)(1:LNMMN)
@@ -189,14 +170,24 @@ C
         NMDMN1(1:LNMMN1) = TABCAR(32)(1:LNMMN1)
       ENDIF
 C
-      LNMDIN = LGCAR(35)
+      LNMDIN = LGCAR(33)
       IF ( LNMDIN.GT.0 ) THEN
-        NMDIN(1:LNMDIN) = TABCAR(35)(1:LNMDIN)
+        NMDIN(1:LNMDIN) = TABCAR(33)(1:LNMDIN)
+      ENDIF
+C
+      LNMDFR = LGCAR(34)
+      IF ( LNMDFR.GT.0 ) THEN
+        NMDFR(1:LNMDFR) = TABCAR(34)(1:LNMDFR)
       ENDIF
 C
       LLANGU = LGCAR(38)
       IF ( LLANGU.NE.0 ) THEN
         LANGUE(1:LLANGU) = TABCAR(38)(1:LLANGU)
+      ENDIF
+C
+      IF ( NBGRMA.GT.0 ) THEN
+        IAUX = LGCAR(39)
+        LIGRMA = TABCAR(39)(1:IAUX)
       ENDIF
 C
 C 1.3. ==> REELS
@@ -233,49 +224,16 @@ C====
 C 3. ECRITURE DU FICHIER, LIGNE APRES LIGNE
 C====
 C
-C 3.1. ==> OUVERTURE DU FICHIER
-C
-      JAUX = 1
-      KAUX = LEN(FICLOC)
-      IF ( LREPHC.GT.0 ) THEN
-        FIHO(1:LREPHC) = REPHC(1:LREPHC)
-        FIHO(LREPHC+1:LREPHC+1) = '/'
-        JAUX = JAUX + LREPHC + 1
-        KAUX = KAUX + LREPHC + 1
-      ENDIF
-      FIHO(JAUX:KAUX) = FICLOC
-      JAUX = KAUX + 1
-      KAUX = LEN(FIHO)
-      DO 31 , IAUX = JAUX , KAUX
-        FIHO(IAUX:IAUX) = ' '
- 31   CONTINUE
-C
-      IF ( NIVINF.GE.2 ) THEN
-        WRITE(IFM,*) 'FICHIER DE CONFIGURATION POUR HOMARD :'
-        WRITE(IFM,*) FIHO(1:KAUX)
-      ENDIF
-C
-      OPEN ( UNIT=NUFIHO, FILE=FIHO, ERR=311 )
-      GOTO 312
-C
- 311  CONTINUE
-      CALL UTMESS
-     > ('E',NOMPRO,'ERREUR A L OUVERTURE DU FICHIER DE CONFIGURATION')
-      WRITE(IFM,*) FIHO(1:KAUX)
-      CODRET = CODRET + 1
-C
- 312  CONTINUE
-C
-C 3.2. ==> LIGNE BLANCHE ET DE COMMENTAIRE
+C 3.1. ==> LIGNE BLANCHE ET DE COMMENTAIRE
 C
       JAUX = LEN(LIGBLA)
-      DO 32 , IAUX = 1 , JAUX
+      DO 31 , IAUX = 1 , JAUX
         LIGBLA(IAUX:IAUX) = ' '
- 32   CONTINUE
+ 31   CONTINUE
       LIGCOM = LIGBLA
       LIGCOM(1:1) = '#'
 C
-C 3.3. ==> L'INDISPENSABLE
+C 3.2. ==> L'INDISPENSABLE
 C
       LIGNE = LIGCOM
       LIGNE(3:13) = 'Generalites'
@@ -299,7 +257,7 @@ C
       LIGNE(1:12) = 'CCAssoci MED'
       WRITE (NUFIHO,30000) LIGNE
 C
-C 3.4. ==> LES OBJETS ET FICHIERS HOMARD
+C 3.3. ==> LES OBJETS ET FICHIERS HOMARD
 C
       LIGNE = LIGCOM
       LIGNE(3:12) = 'Les objets'
@@ -313,14 +271,6 @@ C
         WRITE (NUFIHO,30000) LIGNE
       ENDIF
 C
-      IF ( LORN.GT.0 ) THEN
-        LIGNE = LIGBLA
-        LIGNE(1:8) = 'RenumN__'
-        LIGNE(10:9+LORN) = ORN(1:LORN)
-        LIGNE(11+LORN:10+LORN+LHMN) = FHMN(1:LHMN)
-        WRITE (NUFIHO,30000) LIGNE
-      ENDIF
-C
       IF ( LOMNP1.GT.0 ) THEN
         LIGNE = LIGBLA
         LIGNE(1:8) = 'HOMaiNP1'
@@ -329,15 +279,7 @@ C
         WRITE (NUFIHO,30000) LIGNE
       ENDIF
 C
-      IF ( LORNP1.GT.0 ) THEN
-        LIGNE = LIGBLA
-        LIGNE(1:8) = 'RenumNP1'
-        LIGNE(10:9+LORNP1) = ORNP1(1:LORNP1)
-        LIGNE(11+LORNP1:10+LORNP1+LHMNP1) = FHMNP1(1:LHMNP1)
-        WRITE (NUFIHO,30000) LIGNE
-      ENDIF
-C
-C 3.5. ==> LES FICHIERS EXTERNES
+C 3.4. ==> LES FICHIERS EXTERNES
 C
       IF ( LMMN.GT.0 ) THEN
         LIGNE = LIGBLA
@@ -369,67 +311,55 @@ C
         WRITE (NUFIHO,30000) LIGNE
       ENDIF
 C
-      IF ( LMIN.GT.0 ) THEN
-        LIGNE = LIGBLA
-        LIGNE(1:8) = 'CCIndica'
-        LIGNE(10:9+LMIN) = FMIN(1:LMIN)
-        WRITE (NUFIHO,30000) LIGNE
-      ENDIF
-C
-      IF ( LMSN.GT.0 ) THEN
-        LIGNE = LIGBLA
-        LIGNE(1:8) = 'CCSolN__'
-        LIGNE(10:9+LMSN) = FMSN(1:LMSN)
-        WRITE (NUFIHO,30000) LIGNE
-      ENDIF
-C
-      IF ( LMSNP1.GT.0 ) THEN
-        LIGNE = LIGBLA
-        LIGNE(1:8) = 'CCSolNP1'
-        LIGNE(10:9+LMSNP1) = FMSNP1(1:LMSNP1)
-        WRITE (NUFIHO,30000) LIGNE
-      ENDIF
-C
       LIGNE = LIGBLA
       LIGNE(1:8) = 'PPBasFic'
       LIGNE(10:13) = 'INFO'
       WRITE (NUFIHO,30000) LIGNE
 C
-C 3.6. ==> PILOTAGE DE L'ADAPTATION
+C 3.5. ==> PILOTAGE DE L'ADAPTATION
 C
       IF ( MODHOM.EQ.1 ) THEN
 C
-C 3.6.1. ==> L'INDICATEUR D'ERREUR
+C 3.5.1. ==> L'INDICATEUR D'ERREUR
 C            SI LE NUMERO D'ORDRE EST INCONNU, ON VA CHERCHER CELUI QUI
 C            EST PRESENT DANS LA STRUCTURE DU RESULTAT
 C
-      IF ( LMIN.GT.0 ) THEN
+      IF ( LNCPIN.GT.0 ) THEN
+C
+        LIGNE = LIGBLA
+        LIGNE(1:8) = 'CCIndica'
+        LIGNE(10:9+LMMN) = FMMN(1:LMMN)
+        WRITE (NUFIHO,30000) LIGNE
+C
         LIGNE = LIGBLA
         LIGNE(1:8) = 'CCNoChaI'
         LIGNE(10:9+LNCPIN) = NCPIN(1:LNCPIN)
         LIGNE(11+LNCPIN:10+LNCPIN+LNMDIN) = NMDIN(1:LNMDIN)
         WRITE (NUFIHO,30000) LIGNE
+C
         LIGNE(1:8) = 'CCNumPTI'
         WRITE (NUFIHO,30010) LIGNE(1:8), NUMPT
+C
         LIGNE(1:8) = 'CCNumOrI'
         WRITE (NUFIHO,30010) LIGNE(1:8), NUMORD
+C
       ENDIF
 C
-C 3.6.2. ==> RAFFINEMENT
+C 3.5.2. ==> RAFFINEMENT
 C            ATTENTION : LES CRITERES SONT EN POURCENTAGE DANS HOMARD
 C
       LIGNE = LIGBLA
       LIGNE(1:8) = 'TypeRaff'
-      IF ( TYPRAF.EQ.0 ) THEN
+      IF ( TYPRAF.EQ.-1 ) THEN
+        LIGNE(10:17) = 'uniforme'
+      ELSEIF ( TYPRAF.EQ.0 ) THEN
         LIGNE(10:12) = 'non'
       ELSEIF ( TYPRAF.EQ.1 ) THEN
         LIGNE(10:14) = 'libre'
-      ELSEIF ( TYPRAF.EQ.2 ) THEN
-        LIGNE(10:17) = 'uniforme'
       ENDIF
       WRITE (NUFIHO,30000) LIGNE
 C
-      IF ( TYPRAF.EQ.1 ) THEN
+      IF ( TYPRAF.GT.0 ) THEN
         LIGNE = LIGBLA
         IF ( TYPCRR.EQ.1 ) THEN
           LIGNE(1:8) = 'SeuilHau'
@@ -448,21 +378,21 @@ C
         WRITE (NUFIHO,30010) LIGNE(1:8), NIVMAX
       ENDIF
 C
-C 3.6.3. ==> DERAFFINEMENT
+C 3.5.3. ==> DERAFFINEMENT
 C            ATTENTION : LES CRITERES SONT EN POURCENTAGE DANS HOMARD
 C
       LIGNE = LIGBLA
       LIGNE(1:10) = 'TypeDera'
-      IF ( TYPDER.EQ.0 ) THEN
+      IF ( TYPDER.EQ.-1 ) THEN
+        LIGNE(10:17) = 'uniforme'
+      ELSEIF ( TYPDER.EQ.0 ) THEN
         LIGNE(10:12) = 'non'
       ELSEIF ( TYPDER.EQ.1 ) THEN
         LIGNE(10:14) = 'libre'
-      ELSEIF ( TYPDER.EQ.2 ) THEN
-        LIGNE(10:17) = 'uniforme'
       ENDIF
       WRITE (NUFIHO,30000) LIGNE
 C
-      IF ( TYPDER.EQ.1 ) THEN
+      IF ( TYPDER.GT.0 ) THEN
         LIGNE = LIGBLA
         IF ( TYPCRD.EQ.1 ) THEN
           LIGNE(1:8) = 'SeuilBas'
@@ -483,14 +413,72 @@ C
 C
       ENDIF
 C
-C 3.6.3. ==> CONVERSION DE SOLUTION
+C 3.5.4. ==> CONVERSION DE SOLUTION
+C
+      IF ( CVSOLU.EQ.1 ) THEN
+C
+        LIGNE = LIGBLA
+        LIGNE(1:8) = 'CCSolNP1'
+        LIGNE(10:9+LMMNP1) = FMMNP1(1:LMMNP1)
+        WRITE (NUFIHO,30000) LIGNE
+C
+        LIGNE = LIGBLA
+        LIGNE(1:8) = 'CVSolNP1'
+        LIGNE(10:12) = 'OUI'
+        WRITE (NUFIHO,30000) LIGNE
+C
+        LIGNE = LIGBLA
+        LIGNE(1:8) = 'CCSolN__'
+        LIGNE(10:9+LMMN) = FMMN(1:LMMN)
+        WRITE (NUFIHO,30000) LIGNE
+C
+      ENDIF
+C
+C 3.5.5. ==> LE SUIVI DE LA FRONTIERE
+C
+      IF ( LNMDFR.GT.0 ) THEN
+C
+        LIGNE = LIGBLA
+        LIGNE(1:8) = 'SuivFron'
+        LIGNE(10:12) = 'OUI'
+        WRITE (NUFIHO,30000) LIGNE
+C
+        LIGNE = LIGBLA
+        LIGNE(1:8) = 'CCFronti'
+        LIGNE(10:9+LMMN) = FMMN(1:LMMN)
+        WRITE (NUFIHO,30000) LIGNE
+C
+        LIGNE = LIGBLA
+        LIGNE(1:10) = 'CCNoMFro "'
+        LIGNE(11:10+LNMDFR) = NMDFR(1:LNMDFR)
+        LIGNE(11+LNMDFR:11+LNMDFR) = '"'
+        WRITE (NUFIHO,30000) LIGNE
+C
+        IF ( NBGRMA.GT.0 ) THEN
+          CALL JEVEUO ( LIGRMA, 'L', IAUX )
+          DO 355 , JAUX = 1 , NBGRMA
+            LIGNE = LIGBLA
+            LIGNE(1:8) = 'CCGroFro'
+            KAUX = LXLGUT(ZK8(IAUX+JAUX-1))
+            LIGNE(10:9+KAUX) = ZK8(IAUX+JAUX-1)(1:KAUX)
+            WRITE (NUFIHO,30000) LIGNE
+  355     CONTINUE
+        ENDIF
+C
+      ENDIF
+C
+C 3.6. ==> QUE FAIRE DES ELEMENTS NON SIMPLEXES ?
 C
       LIGNE = LIGBLA
-      LIGNE(1:8) = 'CVSolNP1'
-      IF ( CVSOLU.EQ.1 ) THEN
-        LIGNE(10:12) = 'OUI'
+      LIGNE(1:8) = 'TypeElem'
+      IF ( NOSMPX.EQ.0 ) THEN
+C                        01234567
+        LIGNE (10:17) = 'SIMPLEXE'
+      ELSEIF ( NOSMPX.EQ.1 ) THEN
+C                        01234
+        LIGNE (10:14) = 'MIXTE'
       ELSE
-        LIGNE(10:12) = 'NON'
+        LIGNE (10:13) = 'TOUS'
       ENDIF
       WRITE (NUFIHO,30000) LIGNE
 C
@@ -516,12 +504,6 @@ C
         LIGNE(1:12) = 'EcriFiHO non'
       ENDIF
       WRITE (NUFIHO,30000) LIGNE
-C
-C 3.7. ==> FERMETURE DU FICHIER
-C
-      IF ( CODRET.EQ.0 ) THEN
-        CLOSE ( NUFIHO ) 
-      ENDIF
 C
 30000 FORMAT (A100)
 30010 FORMAT (A8,2X,I10)

@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*(*) MODELZ,COMPOZ
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 02/12/2002   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -312,8 +312,12 @@ C  POUR COMPORTEMENT KIT_
                   CALL GETVIS(MOCLEF(I),COMEL(ICOMEL),K,1,1,
      &                        NBVEL(ICOMEL),N1)
                   NBVARI = NBVARI + NBVEL(ICOMEL)
-                END IF
+                ENDIF
   120         CONTINUE
+              IF ((COMP(1:6).EQ.'KIT_HM').OR.(COMP(1:7).EQ.'KIT_HHM').
+     &         OR.(COMP(1:6).EQ.'KIT_TH')) THEN
+                CALL NMTHMC( COMP, COMEL(1), NCOMEL )
+              END IF
             ELSE IF (COMP(1:4).EQ.'META') THEN
               EXIST = GETEXM(MOCLEF(I),COMP)
               IF (EXIST) THEN

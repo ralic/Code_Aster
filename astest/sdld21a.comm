@@ -1,4 +1,4 @@
-# MODIF  DATE 03/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,8 +77,7 @@ DYNAHARM=DYNA_LINE_HARM( MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
 #----------------------------------------------------------
 #
 
-DEFUFI(IMPRESSION=_F( NOM = 'DYNAHARM',
-                      UNITE = 38))
+DEFI_FICHIER( FICHIER= 'DYNAHARM', UNITE = 38 )
 
 IMPR_RESU(RESU=_F( RESULTAT = DYNAHARM,
                   FICHIER = 'DYNAHARM',

@@ -1,6 +1,6 @@
       SUBROUTINE CGMASP (MOFAZ, IOCC, NOMAZ, LISMAZ, NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/10/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 29/08/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,8 +64,8 @@ C
 C --------- VARIABLES LOCALES ---------------------------
       CHARACTER*1    K1BID
       CHARACTER*8    NOMA, K8BID, NOMAIL, NOMCEN, NOMNOE
-      CHARACTER*16   MOTFAC
-      CHARACTER*24   LISMAI, NOEUMA
+      CHARACTER*16   MOTFAC, MOCLE(3)
+      CHARACTER*24   LISMAI
 C
       REAL*8         X0(3), X(3)
 C.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -77,8 +77,6 @@ C     ---------------
       MOTFAC = MOFAZ
       NOMA   = NOMAZ
       LISMAI = LISMAZ
-C
-      NOEUMA = NOMA//'.NOMNOE'
 C
       ZERO  = 0.0D0
 C
@@ -109,57 +107,10 @@ C     --------------------------------------------------
 C
 C --- RECUPERATION DU CENTRE DE LA SPHERE (OU DU CERCLE) :
 C     --------------------------------------------------
-      CALL GETVR8(MOTFAC,'POINT',IOCC,1,0,R8BID,NPOINT)
-      IF (NPOINT.EQ.0) THEN
-          CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD_CENTRE',
-     +        IOCC,1,0,K8BID,NBNO)
-          IF (NBNO.EQ.0) THEN
-              CALL UTMESS('F','CGMASP','ON DOIT UTILISER '//
-     +                'OBLIGATOIREMENT LE MOT-CLE POINT '//
-     +                'OU LE MOT-CLE NOEUD_CENTRE POUR '//
-     +                'L''OPTION SPHERE DE CREA_GROUP_MA POUR '//
-     +                'DEFINIR LE CENTRE DE LA SPHERE.')
-         ELSE
-              NBNO = -NBNO
-              IF (NBNO.NE.1) THEN
-                 CALL UTMESS('F','CGMASP','ON NE DOIT DONNER '//
-     +                       'QU''UN SEUL NOEUD POUR DEFINIR '//
-     +                       'LE CENTRE DE LA SPHERE. ')
-              ELSE
-                 CALL GETVEM(NOMA,'NOEUD',MOTFAC,
-     +               'NOEUD_CENTRE',IOCC,1,1,NOMCEN,NNO)
-C
-C ---       NUMERO DU NOEUD CENTRE DE LA SPHERE :
-C           -----------------------------------
-                  CALL JENONU(JEXNOM(NOEUMA,NOMCEN),NUMCEN)
-C
-C ---       COORDONNEES DU NOEUD CENTRE :
-C           ---------------------------
-                  X0(1) =  ZR(IDCOOR-1+3*(NUMCEN-1)+1)
-                  X0(2) =  ZR(IDCOOR-1+3*(NUMCEN-1)+2)
-                  IF (NDIM.EQ.3) THEN
-                     X0(3) =  ZR(IDCOOR-1+3*(NUMCEN-1)+3)
-                  ENDIF
-              ENDIF
-          ENDIF
-      ELSE
-          CALL GETVR8(MOTFAC,'POINT',IOCC,1,NDIM,X0,NB)
-         IF ( ABS(NB) .NE. NDIM ) THEN
-           CALL UTDEBM('F','CGMASP','ERREUR DANS LES DONNEES')
-           CALL UTIMPK('S',' MOT CLE FACTEUR ',1,MOTFAC)
-           CALL UTIMPI('S',' OCCURENCE ',1,IOCC)
-           IF ( NDIM .EQ. 2 ) THEN
-             CALL UTIMPI('L','LE MAILLAGE EST "PLAN" OU "Z_CST"',0,IBID)
-           ELSE
-             CALL UTIMPI('L','LE MAILLAGE EST "3D"',0,IBID)
-           ENDIF
-           CALL UTIMPI('L','IL Y A ',1,ABS(NB))
-           CALL UTIMPK('S',' VALEURS POUR LE MOT CLE ',1,'POINT')
-           CALL UTIMPI('L','IL EN FAUT ',1,NDIM)
-           CALL UTFINM()
-         ENDIF
-C
-      ENDIF
+      MOCLE(1) = 'POINT'
+      MOCLE(2) = 'NOEUD_CENTRE'
+      MOCLE(3) = 'GROUP_NO_CENTRE'
+      CALL UTCONO ( MOTFAC, MOCLE, IOCC, NOMA, NDIM, X0, IRET )
 C
 C --- RECUPERATION DU RAYON DE LA SPHERE :
 C     ----------------------------------

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,6 +23,9 @@ DEBUT=MACRO(nom="DEBUT",op=ops.build_debut ,docu="U4.11.01-g",repetable='n',
 
          PAR_LOT         =SIMP(fr="mode de traitement des commandes",statut='f',typ='TXM',
                            into=("OUI","NON"),defaut="OUI"),
+         HDF             =FACT(statut='f',min=1,max=1,
+           FICHIER         =SIMP(fr="nom du fichier hdf associe",statut='o',typ='TXM'),
+         ),
          BASE            =FACT(fr="définition des paramètres associés aux bases JEVEUX",
                                statut='f',min=1,max=3,
            FICHIER         =SIMP(fr="nom de la base",statut='o',typ='TXM',
@@ -42,7 +45,7 @@ DEBUT=MACRO(nom="DEBUT",op=ops.build_debut ,docu="U4.11.01-g",repetable='n',
            TITRE           =SIMP(statut='f',typ='TXM'),
            UNITE           =SIMP(statut='f',typ='I'),
          ),
-         CODE            =FACT(fr="définition d un nom pour l'esemble d'une étude",
+         CODE            =FACT(fr="définition d un nom pour l'ensemble d'une étude",
                                statut='f',min=1,max=1,
            NOM             =SIMP(statut='o',typ='TXM'),
            NIV_PUB_WEB     =SIMP(statut='o',typ='TXM',into=('INTERNET','INTRANET')),

@@ -1,7 +1,7 @@
-      SUBROUTINE LCLDSB (NDIM, TYPMOD, IMATE, EPSM,
-     &                   DEPS, VIM, OPTION, SIG, VIP,  DSIDEP)
+      SUBROUTINE LCLDSB (NDIM, TYPMOD, IMATE, COMPOR, EPSM, DEPS,
+     &                   VIM, TM,TP,TREF,OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2003   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,21 +20,22 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       CHARACTER*8        TYPMOD(2)
-      CHARACTER*16       OPTION
+      CHARACTER*16       COMPOR(*),OPTION
       INTEGER            NDIM, IMATE
-      REAL*8             EPSM(6), DEPS(6), VIM(2)
+      REAL*8             EPSM(6), DEPS(6), VIM(2), TM, TP, TREF
       REAL*8             SIG(6), VIP(2), DSIDEP(6,6)
 C ----------------------------------------------------------------------
-C     LOI DE COMPORTEMENT ELASTIQUE FRAGILE (EN DELOCALISE)
+C     LOI DE COMPORTEMENT D'ENDOMMAGEMENT (EN LOCAL)
 C
 C IN  NDIM    : DIMENSION DE L'ESPACE
 C IN  TYPMOD  : TYPE DE MODELISATION
 C IN  IMATE   : NATURE DU MATERIAU
-C IN  TEMP    : TEMPERATURE EN T+
-C IN  TREF    : TEMPERATURE DE REFERENCE
 C IN  EPSM    : DEFORMATION EN T-
 C IN  DEPS    : INCREMENT DE DEFORMATION
 C IN  VIM     : VARIABLES INTERNES EN T-
+C IN  TM      : TEMPERATURE EN T-
+C IN  TP      : TEMPERATURE EN T+
+C IN  TREF    : TEMPERATURE DE REFERENCE
 C IN  OPTION  : OPTION DEMANDEE
 C                 RIGI_MECA_TANG ->     DSIDEP
 C                 FULL_MECA      -> SIG DSIDEP VIP
@@ -47,7 +48,7 @@ C ----------------------------------------------------------------------
 C LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
       LOGICAL     RIGI, RESI,ELAS,MTG
       INTEGER     NDIMSI, K, L, I, J, M, N, P,T(3,3)
-      REAL*8      EPS(6),  TREPS, SIGEL(6)
+      REAL*8      EPS(6),  TREPS, SIGEL(6), KRON(6)
       REAL*8      RAC2,COEF
       REAL*8      RIGMIN, FD, D, ENER, TROISK, G
       REAL*8      TR(6), RTEMP2
@@ -61,6 +62,7 @@ C LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
       REAL*8      R8DOT
       REAL*8      TPS(6)
       PARAMETER  (RIGMIN = 1.D-3)
+      DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 C ----------------------------------------------------------------------
 C ======================================================================
 C                            INITIALISATION
@@ -79,13 +81,33 @@ C -- OPTION ET MODELISATION
       T(3,1)=5
       T(3,2)=6
       T(3,3)=3
+      
+      IF ((.NOT.( COMPOR(1)(1:15) .EQ. 'ENDO_ISOT_BETON')).AND.
+     &   (.NOT.( COMPOR(1)(1:6) .EQ. 'KIT_HM')).AND.
+     &   (.NOT.( COMPOR(1)(1:7) .EQ. 'KIT_HHM')).AND.
+     &   (.NOT.( COMPOR(1)(1:7) .EQ. 'KIT_THM')).AND.
+     &   (.NOT.( COMPOR(1)(1:8) .EQ. 'KIT_THHM'))) THEN
+            CALL UTMESS('F','ENDO_ISOT_BETON_01',
+     &           ' COMPORTEMENT INATTENDU : '//COMPOR(1))
+      ENDIF
 C    LECTURE DES CARACTERISTIQUES DU MATERIAU
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
+      NOMRES(3) = 'ALPHA'
+      IF ((((COMPOR(1)(1:6) .EQ. 'KIT_HM') .OR. 
+     &     (COMPOR(1)(1:7) .EQ. 'KIT_HHM') .OR.
+     &     (COMPOR(1)(1:7) .EQ. 'KIT_THM') .OR.
+     &     (COMPOR(1)(1:8) .EQ. 'KIT_THHM')).AND.
+     &     (COMPOR(11)(1:15) .EQ. 'ENDO_ISOT_BETON')).OR.
+     &     (COMPOR(1)(1:15) .EQ. 'ENDO_ISOT_BETON')) THEN
       CALL RCVALA ( IMATE,'ELAS',0,' ',0.D0,2,
      &              NOMRES,VALRES,CODRET, 'FM')
+      CALL RCVALA ( IMATE,'ELAS',3,' ',0.D0,1,
+     &              NOMRES(3),VALRES(3),CODRET(3), ' ')
+      IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
       E     = VALRES(1)
       NU    = VALRES(2)
+      ALPHA = VALRES(3)
       LAMBDA = E * NU / (1.D0+NU) / (1.D0 - 2.D0*NU)
       DEUXMU = E/(1.D0+NU)
 C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
@@ -128,6 +150,8 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
           ENDIF
         ENDIF
       ENDIF
+      ENDIF
+
 C    CALCUL DES CONTRAINTES (DANS CAS 'RAPH' OU 'FULL')
       IF (RESI) THEN
 C      MISE A JOUR DES DEFORMATIONS MECANIQUES
@@ -154,6 +178,20 @@ C - ON MET DANS EPS LES DEFORMATIONS REELLES
       ENDIF
 C     MATRICE TR = (XX XY XZ YY YZ ZZ) 
 C
+C    PRISE EN COMPTE DE LA TEMPERATURE
+C    POUR L'INSTANT LES COEFFICIENTS MATERIAUX
+C    NE DEPENDENT PAS DE LA TEMPERATURE
+C    SI DEVELOPPEMENT INTRODUIRE TMAX
+      IF (RESI) THEN
+      DO 30 K=1,NDIMSI
+        EPS(K) = EPS(K) - ALPHA * (TP - TREF) * KRON(K)
+30    CONTINUE 
+      ELSE
+      DO 35 K=1,NDIMSI
+        EPS(K) = EPS(K) - ALPHA * (TM - TREF) * KRON(K)
+35    CONTINUE 
+      ENDIF
+      
       TR(1) = EPS(1)
       TR(2) = EPS(4)
       TR(3) = EPS(5)

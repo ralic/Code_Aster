@@ -8,7 +8,7 @@ C TOLE CRP_20
       LOGICAL GRILLE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/01/2002   AUTEUR VABHHTS J.TESELET 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -278,10 +278,10 @@ C===============================================================
 C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 
 C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-      CALL TECAC2 ('NNN','PTEMPER',8,ITAB1,IRET)
+      CALL TECACH ('NNN','PTEMPER',8,ITAB1,IRET)
       ITEMP1=ITAB1(1)
       IF (ITEMP1.EQ.0) THEN
-        CALL TECAC2 ('NNN','PTEMPPR',8,ITAB2,IRET)
+        CALL TECACH ('NNN','PTEMPPR',8,ITAB2,IRET)
         ITEMP2=ITAB2(1)
         IF (ITEMP2.EQ.0) THEN
           ITEMP = 0
@@ -309,15 +309,15 @@ C
       ELSE
 
 C     -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS':
-      CALL TECACH(.TRUE.,.FALSE.,'PTEMPEF',1,ITEMP)
+      CALL TECACH('ONN','PTEMPEF',1,ITEMP,IRET)
         IF (ITEMP.GT.0) THEN
           NBPAR = 1
           NOMPAR = 'TEMP'
           NOMPU(1) = 'INST'
           NOMPU(2) = 'EPAIS'
-          CALL TECACH(.FALSE.,.FALSE.,'PTEMPSR',1,INST1)
+          CALL TECACH('NNN','PTEMPSR',1,INST1,IRET)
           IF (INST1.EQ.0) THEN
-            CALL TECACH(.FALSE.,.FALSE.,'PINSTPR',1,INST2)
+            CALL TECACH('NNN','PINSTPR',1,INST2,IRET)
             VALPU(1) = ZR(INST2)
           ELSE
             VALPU(1) = ZR(INST1)

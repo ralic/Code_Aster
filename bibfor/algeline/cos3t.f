@@ -1,11 +1,10 @@
-      FUNCTION COS3T (N, S, PREF, EPSSIG)
+      FUNCTION COS3T (S, PREF, EPSSIG)
 C
       IMPLICIT NONE
-      INTEGER  N
-      REAL*8   S(*), PREF, EPSSIG, COS3T
+      REAL*8   S(6), PREF, EPSSIG, COS3T
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,21 +32,22 @@ C --- : PREF   : PRESSION DE REFERENCE ---------------------------------
 C --- : EPSSIG : EPSILON DE TOLERANCE ----------------------------------
 C OUT : COS3T  = RAC(54)*DET(S)/(SII)**3 -------------------------------
 C ======================================================================
-      INTEGER DIMNDT
+      INTEGER NDT, NDI
       REAL*8  SII, SIIREL, DETS, UN, MUN
 C ======================================================================
 C --- INITIALISATION DE PARAMETRES -------------------------------------
 C ======================================================================
       PARAMETER       ( MUN    = -1.0D0  )
       PARAMETER       ( UN     =  1.0D0  )
-      DIMNDT = N
 C ======================================================================
-      CALL     PSCAL(DIMNDT, S, S, SII)
+      COMMON /TDIM/   NDT , NDI
+C ======================================================================
+      CALL     PSCAL(NDT, S, S, SII)
       SII    = SQRT(SII)
       SIIREL = SII/PREF
       IF ( SIIREL.GT.EPSSIG ) THEN
          CALL    LCDETE(S,DETS)
-         COS3T = SQRT(54.D0)*DETS/(SII**3)
+         COS3T = SQRT(54.D0)*DETS/(SII*SII*SII)
       ELSE
          COS3T = UN
       ENDIF

@@ -1,4 +1,4 @@
-#@ MODIF N_SIMP Noyau  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF N_SIMP Noyau  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,7 +45,7 @@ class SIMP(N_ENTITE.ENTITE):
 
    def __init__(self,typ,fr="",ang="",statut='f',into=None,defaut=None,
                      min=1,max=1,homo=1,position ='local',
-                     val_min = '**',val_max='**',docu=""):
+                     val_min = '**',val_max='**',docu="",validators=None):
      
       """
           Un mot-clé simple est caractérisé par les attributs suivants :
@@ -76,7 +76,7 @@ class SIMP(N_ENTITE.ENTITE):
 
           - docu
       """
-      N_ENTITE.ENTITE.__init__(self)
+      N_ENTITE.ENTITE.__init__(self,validators)
       # Initialisation des attributs
       if type(typ) == types.TupleType :
           self.type=typ
@@ -119,7 +119,8 @@ class SIMP(N_ENTITE.ENTITE):
             self.cr.fatal("L'attribut 'into' doit etre un tuple : %s" %`self.into`)
       if self.position not in ['local','global','global_jdc']:
          self.cr.fatal("L'attribut 'position' doit valoir 'local','global' ou 'global_jdc' : %s" %`self.position`)
-
+      if self.validators and not self.validators.verif_cata():
+         self.cr.fatal("Un des validateurs est incorrect. Raison : "+self.validators.cata_info)
 
    def __call__(self,val,nom,parent=None):
       """

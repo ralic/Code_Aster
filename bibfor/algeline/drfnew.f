@@ -1,12 +1,10 @@
-      SUBROUTINE DRFNEW(N, ND, DEVG, DEVGII, TRACEG, DFDS, DFDG, MU, K,
-     +                  DFDL)
+      SUBROUTINE DRFNEW(DEVG, DEVGII, TRACEG, DFDS, DFDG, MU, K, DFDL)
 C
       IMPLICIT      NONE
-      INTEGER       N, ND
-      REAL*8        DEVG(*), DEVGII, TRACEG, DFDS(*), DFDG, MU, K, DFDL
+      REAL*8        DEVG(6), DEVGII, TRACEG, DFDS(6), DFDG, MU, K, DFDL
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +38,7 @@ C --- : K      : PARAMETRE MATERIAU ------------------------------------
 C OUT : DFDL   : DF/DLAMBDA = - DF/DSIG.(2*MU*DEV(G) + K*TRACE(G)*I)
 C ------------ :                + DF/DGAMP*RAC(2/3)*GII
 C ======================================================================
-      INTEGER II
+      INTEGER II, NDT, NDI
       REAL*8  VECT1(6), SCAL1, MUN, DEUX, TROIS
 C ======================================================================
 C --- INITIALISATION DE PARAMETRES -------------------------------------
@@ -49,17 +47,19 @@ C ======================================================================
       PARAMETER       ( DEUX   =  2.0D0  )
       PARAMETER       ( TROIS  =  3.0D0  )
 C ======================================================================
+      COMMON /TDIM/   NDT , NDI
+C ======================================================================
       CALL JEMARQ ()
 C ======================================================================
 C --- CALCUL INTERMEDIAIRE ---------------------------------------------
 C ======================================================================
-      DO 10 II= 1,N
+      DO 10 II= 1,NDT
          VECT1(II) = DEUX*MU*DEVG(II)
  10   CONTINUE
-      DO 20 II= 1,ND
+      DO 20 II= 1,NDI
          VECT1(II) = VECT1(II) + K*TRACEG
  20   CONTINUE
-      CALL     PSCAL(N, DFDS, VECT1, SCAL1)
+      CALL     PSCAL(NDT, DFDS, VECT1, SCAL1)
 C ======================================================================
 C --- CALCUL FINAL -----------------------------------------------------
 C ======================================================================

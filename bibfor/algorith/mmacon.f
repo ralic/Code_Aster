@@ -1,7 +1,7 @@
       SUBROUTINE MMACON(NOMA,DEFICO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/09/2002   AUTEUR BSERRE B.SERRE 
+C MODIF ALGORITH  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C RECUPERONS D'ABORD LE NOMBRE TOTALE DES MAILLES DE CONTACT.
       MET =1
       NTMA = 0
       DO 10 IZONE = 1,NZOCO
-         MET=ZI(JMETH +9*(IZONE-1)+6)
+         MET=ZI(JMETH +10*(IZONE-1)+6)
          ISUMA = ZI(JZONE+IZONE-1) + 1
          IF (MET.NE.6) GOTO 10
           NBMA = ZI(JSUMA+ISUMA) - ZI(JSUMA+ISUMA-1)
@@ -145,25 +145,25 @@ C NOEUDS
             IF (NUTYP.EQ.7) ZI(JMAESC+3*NTMA+3*IM) = 3
             IF (NUTYP.EQ.9) ZI(JMAESC+3*NTMA+3*IM) = 6
             IF (NUTYP.EQ.12) ZI(JMAESC+3*NTMA+3*IM) = 4
-            IF (NUTYP.EQ.14) ZI(JMAESC+3*NTMA+3*IM) = 8
+            IF (NUTYP.EQ.14) ZI(JMAESC+3*NTMA+3*IM) = 9
             IF (NUTYP.EQ.16) ZI(JMAESC+3*NTMA+3*IM) = 9
           ELSE IF (TYCO.EQ.2) THEN
 C PGAUSS
             IF (NUTYP.EQ.2) ZI(JMAESC+3*NTMA+3*IM) = 2
             IF (NUTYP.EQ.4) ZI(JMAESC+3*NTMA+3*IM) = 2
             IF (NUTYP.EQ.7) ZI(JMAESC+3*NTMA+3*IM) = 3
-            IF (NUTYP.EQ.9) ZI(JMAESC+3*NTMA+3*IM) = 3
+            IF (NUTYP.EQ.9) ZI(JMAESC+3*NTMA+3*IM) = 6
             IF (NUTYP.EQ.12) ZI(JMAESC+3*NTMA+3*IM) = 4
-            IF (NUTYP.EQ.14) ZI(JMAESC+3*NTMA+3*IM) = 4
-            IF (NUTYP.EQ.16) ZI(JMAESC+3*NTMA+3*IM) = 4
+            IF (NUTYP.EQ.14) ZI(JMAESC+3*NTMA+3*IM) = 9
+            IF (NUTYP.EQ.16) ZI(JMAESC+3*NTMA+3*IM) = 9
           ELSE IF (TYCO.EQ.3) THEN
 C SIMPSON
             IF (NUTYP.EQ.2) ZI(JMAESC+3*NTMA+3*IM) = 3
             IF (NUTYP.EQ.4) ZI(JMAESC+3*NTMA+3*IM) = 3
             IF (NUTYP.EQ.7) ZI(JMAESC+3*NTMA+3*IM) = 6
             IF (NUTYP.EQ.9) ZI(JMAESC+3*NTMA+3*IM) = 6
-            IF (NUTYP.EQ.12) ZI(JMAESC+3*NTMA+3*IM) = 8
-            IF (NUTYP.EQ.14) ZI(JMAESC+3*NTMA+3*IM) = 8
+            IF (NUTYP.EQ.12) ZI(JMAESC+3*NTMA+3*IM) = 9
+            IF (NUTYP.EQ.14) ZI(JMAESC+3*NTMA+3*IM) = 9
             IF (NUTYP.EQ.16) ZI(JMAESC+3*NTMA+3*IM) = 9
           ELSE IF (TYCO.EQ.4) THEN
 C SIMPSON1

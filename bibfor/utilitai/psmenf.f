@@ -4,7 +4,7 @@ C     PARAMETRES SENSIBLES - MEMORISATION DES NOMS DES FONCTIONS
 C     *          *           **               *        *
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF UTILITAI  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C
 C
       CALL SEMECO ( 'PREFIXE', SAUX08, SAUX08,
      >               PREFIX,
-     >               SAUX08, IAUX, SAUX08, SAUX08,
+     >               SAUX08, IAUX, SAUX08, SAUX08, SAUX08,
      >               IRET )
 C
       NOMSTR = PREFIX // '.NOMF'

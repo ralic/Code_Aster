@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 04/03/2003   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 16/06/2003   AUTEUR JMBHH01 J.M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -173,7 +173,8 @@ class ETAT_SD :
     
     self.va  = self.contexte.resultat.LIST_VARI_ACCES() 
     self.cmp = self.contexte.resultat.LIST_NOM_CMP()       
-    self.ch  = self.contexte.resultat.LIST_CHAMPS()        
+    self.ch  = self.contexte.resultat.LIST_CHAMPS()
+#    print self.ch
     for nom_cham in self.ch.keys() :
       if nom_cham not in cata.Champs_presents() :
         del self.ch[nom_cham]
@@ -719,7 +720,7 @@ class DRIVER_GMSH(DRIVER) :
   
     if self.terminal : self.terminal.Fermer()
     self.Exporter(selection)
-    self.terminal = gmsh.GMSH('POST','fort.37')
+    self.terminal = gmsh.GMSH('POST','fort.33')
         
     
   def Exporter(self, selection) :
@@ -733,11 +734,9 @@ class DRIVER_GMSH(DRIVER) :
     type_champ = cata[selection.nom_cham].type
     a_detruire = []
     
-    DEFUFI(
-      IMPRESSION = _F(
-        UNITE = 37, 
-        NOM   = 'CASTEM'
-        )
+    DEFI_FICHIER(
+        UNITE = 33, 
+        FICHIER   = 'GMSH_POS'
       )
     
     if type_champ == 'ELNO' :     
@@ -803,7 +802,7 @@ class DRIVER_GMSH(DRIVER) :
       raise SELECTION.NonDeveloppe
       
         
-    para['FICHIER'] = 'CASTEM'
+    para['FICHIER'] = 'GMSH_POS'
     para['FORMAT']  =  'GMSH'
 
     if 'version_fichier_gmsh' in  env.__dict__.keys() :
@@ -816,7 +815,7 @@ class DRIVER_GMSH(DRIVER) :
     IMPR_RESU(
       MODELE = selection.contexte.modele,
       RESU   = para)
-    FERMER(UNITE = 37)
+    FERMER(UNITE = 33)
     
     if a_detruire : 
       DETRUIRE(

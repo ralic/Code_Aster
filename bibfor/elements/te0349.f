@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/03/2002   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      JEFFG, LMATER, ITREF, ITEMP, LSECT, LSECT2, LX,
-     +             LORIEN, JDEPL, I, J, KP, NBPAR, NNO, NC, NBRES
+     +             LORIEN, JDEPL, I, J, KP, NBPAR, NNO, NC, NBRES,IRET
       PARAMETER   (        NBRES = 3 )
       REAL*8        VALRES(NBRES)
       CHARACTER*2   CODRES(NBRES)
@@ -80,7 +80,7 @@ C
       CALL JEVECH ('PTEREF', 'L', ITREF )
       TREF = ZR(ITREF)
 C
-      CALL TECACH (.TRUE., .FALSE., 'PTEMPER', 1, ITEMP )
+      CALL TECACH ('ONN', 'PTEMPER', 1, ITEMP,IRET )
       IF ( ITEMP .EQ. 0 ) THEN
          NBPAR  = 0
          NOMPAR = ' '

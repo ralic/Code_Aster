@@ -1,6 +1,6 @@
       SUBROUTINE TE0286(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/10/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,7 +126,7 @@ C      -------------------------------------------
 C
 C ---- RECUPERATION  DU NUMERO D'HARMONIQUE
 C      ------------------------------------
-      CALL TECACH(.FALSE.,.FALSE.,'PHARMON',1,IHARMO)
+      CALL TECACH('NNN','PHARMON',1,IHARMO,IRET)
       IF (IHARMO.NE.0) THEN
         NH    = ZI(IHARMO)
         NHARM = DBLE(NH)

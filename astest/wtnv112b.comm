@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 # TITRE TEST HHM 3D, CALCUL DECOUPLE (S=0.5, DSDP=0)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -177,6 +177,7 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    PORO = 0.14,
    PRES_VAPE = 2269.8,
    DEGR_SATU = 0.5),
+          COMP_THM = 'LIQU_GAZ', 
                                      ELAS=_F( 
    E = 40.E9,
    NU = 0.,

@@ -1,4 +1,4 @@
-#@ MODIF N_FACT Noyau  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF N_FACT Noyau  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,7 +47,7 @@ class FACT(N_ENTITE.ENTITE):
    label = 'FACT'
 
    def __init__(self,fr="",ang="",docu="",regles=(),statut='f',defaut=None,
-                     min=0,max=1,**args):
+                     min=0,max=1,validators=None,**args):
      
       """
           Un mot-clé facteur est caractérisé par les attributs suivants :
@@ -70,6 +70,7 @@ class FACT(N_ENTITE.ENTITE):
 
           - docu
       """
+      N_ENTITE.ENTITE.__init__(self,validators)
       # Initialisation des attributs
       self.fr=fr
       self.ang=ang
@@ -147,5 +148,7 @@ class FACT(N_ENTITE.ENTITE):
          self.cr.fatal("L'attribut 'statut' doit valoir 'o','f','c' ou 'd' : %s" %`self.statut`)
       if type(self.docu) != types.StringType :
          self.cr.fatal("L'attribut 'docu' doit etre une chaine de caractères : %s" %`self.docu`)
+      if self.validators and not self.validators.verif_cata():
+         self.cr.fatal("Un des validateurs est incorrect. Raison : "+self.validators.cata_info)
       self.verif_cata_regles()
 

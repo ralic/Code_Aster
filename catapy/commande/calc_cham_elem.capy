@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -69,8 +69,8 @@ CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=calc_cham_elem_prod,
 
          regles=(EXCLUS('TOUT','GROUP_MA',),EXCLUS('TOUT','MAILLE',),),
          TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-         GROUP_MA        =SIMP(statut='f',typ=grma,max='**'),
-         MAILLE          =SIMP(statut='f',typ=ma,max='**'),
+         GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+         MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
 
 #
 #
@@ -189,7 +189,7 @@ CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=calc_cham_elem_prod,
 
 
 
-         EXCIT           =FACT(statut='f',min=1,max='**',
+         EXCIT           =FACT(statut='f',max='**',
                regles=(EXCLUS('FONC_MULT','COEF_MULT', ),),
                CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou)),
                FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),

@@ -1,9 +1,7 @@
       SUBROUTINE OP0177 ( IER )
-      IMPLICIT   NONE
-      INTEGER             IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 22/07/2003   AUTEUR G8BHHXD X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,24 +22,60 @@ C
 C     COMMANDE:  TEST_TABLE
 C
 C ----------------------------------------------------------------------
-      INTEGER      IBID, N1, N2, N3, IRET, IUNIFI, IFIC, NPARFI, 
-     +             VALI, REFI
+      IMPLICIT NONE
+C
+C 0.1. ==> ARGUMENTS
+C
+      INTEGER             IER
+C
+C 0.2. ==> COMMUNS
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
+C 0.3. ==> VARIABLES LOCALES
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER (NOMPRO='OP0177')
+C
+      INTEGER IBID, N1, N2, N3, IRET, IUNIFI, IFIC, NPARFI
+      INTEGER VALI, REFI
+      INTEGER NRPASS,NBPASS,ADRECG
+      INTEGER IAUX, JAUX
+C
       REAL*8       R8B, VALR, REFR, PREC
+C
       COMPLEX*16   CBID, VALC, REFC
+C
       CHARACTER*1  TYPR
       CHARACTER*4  TESTOK
-      CHARACTER*8  K8B, CRIT, CTYPE, TYPTES, TABLE
+      CHARACTER*8  K8B, CRIT, CTYPE, TYPTES, TABLE0
+      CHARACTER*8 LATABL,NOPASE
       CHARACTER*12 LABEL
       CHARACTER*16 NOMFI
       CHARACTER*19 NEWTAB, NEWTA1
       CHARACTER*24 PARA
+      CHARACTER*24 NORECG
+      CHARACTER*38 TITRES
       CHARACTER*80 VALK
 C     ------------------------------------------------------------------
 C
+C====
+C 1. PREALABLES
+C====
+C
       CALL JEMARQ()
       CALL INFMAJ()
+C
+      IER = 0
+C
       TESTOK = 'NOOK'
       LABEL  = ' '
+      NORECG = '&&'//NOMPRO//'_RESULTA_GD     '
 C
       CALL GETVTX ( ' ', 'FICHIER', 0,1,1, NOMFI, N1 )
       IF ( N1 .NE. 0 ) THEN
@@ -58,22 +92,10 @@ C
       ENDIF
       WRITE(IFIC,1000)
 C
-      CALL GETVID ( ' ', 'TABLE' ,1,1,1, TABLE, N1 )
-      LABEL(1:8) = TABLE
-      NEWTAB = TABLE
+      CALL GETVID ( ' ', 'TABLE' ,1,1,1, TABLE0, N1 )
+      LABEL(1:8) = TABLE0
 C
-C     ------------------------------------------------------------------
-C
-C                 --- TRAITEMENT DU MOT CLE "FILTRE" ---
-C
-C     ------------------------------------------------------------------
       CALL GETFAC ( 'FILTRE' , NPARFI )
-      IF ( NPARFI .NE. 0 ) THEN
-         NEWTA1 = '&&OP0177.FILTRE '
-         CALL TBIMFI ( NPARFI, NEWTAB, NEWTA1 )
-         NEWTAB = NEWTA1
-      ENDIF 
-C     ------------------------------------------------------------------
 C
       CALL GETVR8 ( ' ', 'PRECISION', 1,1,1, PREC, N1 )
       CALL GETVTX ( ' ', 'CRITERE'  , 1,1,1, CRIT, N1 )
@@ -87,10 +109,48 @@ C
 C
       CALL GETVTX ( ' ', 'NOM_PARA', 1,1,1, PARA, N1 )
 C
-      WRITE (IFIC,*) '---- TABLE: ', TABLE, ' NOM_PARA: ', PARA
-      CALL UTEST3 ( IFIC, ' ', 1 )
-C
       CALL GETVTX ( ' ', 'TYPE_TEST', 1,1,1, TYPTES, N1 )
+C
+C=======================================================================
+C -- SENSIBILITE : NOMBRE DE PASSAGES
+C=======================================================================
+      IAUX = 1
+      JAUX = 1
+      CALL PSRESE(' ',IBID,IAUX,TABLE0,JAUX,NBPASS,NORECG,IRET)
+      CALL JEVEUO(NORECG,'L',ADRECG)
+C=======================================================================
+C
+      DO 60,NRPASS = 1,NBPASS
+
+C      POUR LE PASSAGE NUMERO NRPASS :
+C      . NOM DU CHAMP DE RESULTAT OU DE GRANDEUR
+C      . NOM DU PARAMETRE DE SENSIBILITE
+
+      LATABL = ZK24(ADRECG+2*NRPASS-2) (1:8)
+      NOPASE = ZK24(ADRECG+2*NRPASS-1) (1:8)
+      IF (NOPASE.EQ.' ') THEN
+C                 12345678901234567890123456789012345678
+        TITRES = '                                      '
+      ELSE
+        TITRES = ' ... SENSIBILITE AU PARAMETRE '//NOPASE
+      END IF
+
+C
+C     ------------------------------------------------------------------
+C
+C                 --- TRAITEMENT DU MOT CLE "FILTRE" ---
+C
+C     ------------------------------------------------------------------
+      NEWTAB = LATABL
+      IF ( NPARFI .NE. 0 ) THEN
+         NEWTA1 = '&&'//NOMPRO//'.FILTRE '
+         CALL TBIMFI ( NPARFI, NEWTAB, NEWTA1 )
+         NEWTAB = NEWTA1
+      ENDIF 
+C     ------------------------------------------------------------------
+C
+      WRITE (IFIC,*) '---- TABLE: ', LATABL, ' NOM_PARA: ', PARA,TITRES
+      CALL UTEST3 ( IFIC, ' ', 1 )
 C
       IF ( N1. NE. 0 ) THEN
          CALL UTEST0 ( NEWTAB, PARA, TYPTES, TYPR, REFI, REFR, REFC, 
@@ -123,6 +183,8 @@ C
 C
  9999 CONTINUE
       IF ( NPARFI .NE. 0 )  CALL DETRSD ( 'TABLE' , NEWTA1 )
+   60 CONTINUE
+      CALL JEDETR(NORECG)
 C
 1000  FORMAT(/,80('-'))
       CALL JEDEMA ( )

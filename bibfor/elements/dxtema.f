@@ -5,7 +5,7 @@
       CHARACTER*8                     NOMPAR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,9 +53,9 @@ C
       NOMPAR = ' '
       VALPAR = 0.D0
 C
-      CALL TECAC2 ( 'NNN', 'PTEMPER', 8, ITAB ,IRET)
+      CALL TECACH ( 'NNN', 'PTEMPER', 8, ITAB ,IRET)
       ITEMPR=ITAB(1)
-      CALL TECACH(.FALSE.,.FALSE.,'PTEMPEF',1,ITEMPF)
+      CALL TECACH('NNN','PTEMPEF',1,ITEMPF,IRET)
 C
 C --- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
 C

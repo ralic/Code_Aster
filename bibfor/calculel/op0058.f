@@ -1,7 +1,7 @@
       SUBROUTINE OP0058(IER)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 26/08/2003   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,15 +41,13 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM,JEXNOM
+      CHARACTER*32 JEXNOM
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*6 NOMPRO
       PARAMETER (NOMPRO='OP0058')
@@ -57,7 +55,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER BUFIN1,IOROLD,IFM,NIV,LINST,IFREQ
       INTEGER LREFE,LMAT,LVALE,LDEPL,LFREQ,LACCE
       INTEGER NBORDR,IORDR,IORDR1,IORDR2,JORDR,IORDRM
-      INTEGER IRET,NCHAR,IRET1,IRET2,IRET3,IERD
+      INTEGER IRET,NCHAR,IRET1,IRET2,IRET3,IRET4,IERD
       INTEGER NH,NC,NOR,NBOPT,NP,NEQ,NBCHRE
       INTEGER IADOU,IADIN,IPUIS
       INTEGER IAUX,II,III,IB,J,JAUX,K,IBID,IE,INUME,IAD
@@ -74,10 +72,11 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*4 CTYP,TYPE,BUFCH,K4BID
       CHARACTER*8 K8B,RESUC1,RESUCO,MODELE,CARA,CRIT,NOMA,CHAREP,MA
       CHARACTER*8 PLAN,CARELE,NOMPA1,Z1Z2(2),KIORD,KIORDM
-      CHARACTER*8 LERES0,LERES1,NOPASE,NOMCMP
+      CHARACTER*8 LERES0,NOPASE,NOMCMP
       CHARACTER*13 INPSCO
       CHARACTER*14 NUME
       CHARACTER*16 NOMCMD,OPTION,OPTIO2,TYSD,PHENO,CONCEP,OPT1,NOMCHA
+      CHARACTER*19 LERES1
       CHARACTER*19 INFCHA,CARTEF,CARTEH,CARTET,CARTES,NOMGDF,NOMGDH,
      &             NOMGDT,NOMGDS
       CHARACTER*19 KNUM,KCHA,CHDYNR,CHACCE,MASSE,REFE,COMPOR,DCEL
@@ -91,7 +90,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*24 CHTETA,CHTESE,CHSIGM,DLAGSI,CHDESE,CHSIC,DLAGR
       CHARACTER*24 CHHYDR,CHSECH,CHVARI,CHDEPM
       CHARACTER*24 NORECG,NOCRRS,NOMS(2)
-      CHARACTER*24 STYPSE
+      CHARACTER*24 STYPSE, LIGRCH, LIGRMO
       CHARACTER*24 BLAN24,CHBID,CHSEQ,CHEEQ,CHCMP
 
       REAL*8 COEF,VALRES,VALIM,INST,TIME,R8B
@@ -192,7 +191,8 @@ C               12   345678   9012345678901234
         CALL TITRE
       END IF
 
-      CALL DISMOI('F','PHENOMENE',MODELE,'MODELE',IBID,PHENO,IERD)
+      CALL DISMOI('F','NOM_LIGREL',MODELE,'MODELE',IBID,LIGRMO,IERD)
+      CALL DISMOI('F','PHENOMENE' ,MODELE,'MODELE',IBID,PHENO,IERD)
       EXITIM = .FALSE.
       CALL JEEXIN(RESUCO//'           .INST',IRET)
       IF (IRET.NE.0) EXITIM = .TRUE.
@@ -288,7 +288,7 @@ C            12   345678
       JAUX = 1
       CALL PSRESE(' ',IBID,IAUX,RESUC1,JAUX,NBPASS,NORECG,IRET)
       CALL JEVEUO(NORECG,'L',ADRECG)
-      CALL WKVECT(NOCRRS,'V V K8',NBPASS,ADCRRS)
+      CALL WKVECT(NOCRRS,'V V K24',NBPASS,ADCRRS)
 C=======================================================================
       CALL GETVTX(' ','PLAN',0,1,1,PLAN,NPLAN)
       IF (NPLAN.NE.0) THEN
@@ -321,7 +321,7 @@ C                   DE SENSIBILITE
 C        . LERES0 : IDEM POUR RESUCO
 
         NOPASE = ZK24(ADRECG+2*NRPASS-1) (1:8)
-        LERES1 = ZK24(ADRECG+2*NRPASS-2) (1:8)
+        LERES1 = ZK24(ADRECG+2*NRPASS-2) (1:19)
 
 C DANS LE CAS D'UN CALCUL STANDARD :
 
@@ -348,6 +348,8 @@ C EN OUTPUT --> INFCHA ET INPSCO
      &                    NBPASE,INPSCO)
             ELSE IF (TYSD.EQ.'EVOL_ELAS') THEN
               CALL NMDOME(MODEL2,MATE2,CARA2,INFCHA,NBPASE,INPSCO)
+            ELSE IF (TYSD.EQ.'DYNA_TRANS') THEN
+              CALL NMDOME(MODEL2,MATE2,CARA2,INFCHA,NBPASE,INPSCO)
             ELSE
               CALL UTMESS('A',NOMCMD,'IMPOSSIBLE DE CALCULER'//
      &                    ' UN RESULTAT DERIVE POUR LE TYPE '//TYSD)
@@ -372,6 +374,8 @@ C DETERMINATION DU TYPE DE DERIVE: TYPESE ET STYPSE
           IF (TYSD.EQ.'EVOL_THER') THEN
             CALL NTTYSE(NBPASE,INPSCO,NOPASE,TYPESE,STYPSE)
           ELSE IF (TYSD.EQ.'EVOL_ELAS') THEN
+            CALL METYSE(NBPASE,INPSCO,NOPASE,TYPESE,STYPSE)
+          ELSE IF (TYSD.EQ.'DYNA_TRANS') THEN
             CALL METYSE(NBPASE,INPSCO,NOPASE,TYPESE,STYPSE)
           ELSE
             CALL UTMESS('A',NOMCMD,
@@ -649,10 +653,10 @@ C=======================================================================
                   GO TO 440
                 END IF
               END IF
-
               IF (TYPESE.NE.0) THEN
                 CHTESE = '&&'//NOMPRO//'.TEMP_SENSI'
-                CALL NMDETE(MODEL2,MATE2,CHARGE,INFOCH,NOPASE,TIME,
+                CALL NMDETE(MODEL2,MATE2,CHARGE,INFOCH,TIME,
+     >                      TYPESE, STYPSE, NOPASE,
      &                      CHTESE,LBID)
               END IF
 
@@ -665,7 +669,6 @@ C=======================================================================
               IF (IRET.GT.0) GO TO 70
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
    70       CONTINUE
-   80       CONTINUE
 C     ------------------------------------------------------------------
           ELSE IF (OPTION.EQ.'SIEF_ELNO_ELGA') THEN
             IF (PHENO(1:4).NE.'MECA') GO TO 490
@@ -791,7 +794,6 @@ C     ------------------------------------------------------------------
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
               CALL DETRSD('CHAMP_GD',CHFREQ)
   110       CONTINUE
-  120       CONTINUE
 C     ------------------------------------------------------------------
           ELSE IF (OPTION.EQ.'SIGM_NOZ1_ELGA' .OR.
      &             OPTION.EQ.'SIGM_NOZ2_ELGA') THEN
@@ -951,13 +953,16 @@ C     ------------------------------------------------------------------
      &                      OPTION,IRET1)
                 IF (IRET1.GT.0) GO TO 160
               ELSE IF (OPTION.EQ.'EQUI_ELNO_SIGM') THEN
-                CALL RSEXCH(RESUCO,'SIEF_ELNO_ELGA',IORDR,CHSIG,IRET1)
-                CALL RSEXCH(RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIG,IRET2)
+                CALL RSEXCH(RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,IRET1)
+                CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,IRET2)
                 CALL RSEXCH(RESUCO,'SIGM_ELNO_COQU',IORDR,CHSIC,IRET3)
-                IF (IRET1.GT.0 .AND. IRET2.GT.0 .AND. IRET3.GT.0) THEN
+                CALL RSEXCH(RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIC,IRET4)
+C
+                IF (IRET1.GT.0 .AND. IRET2.GT.0 .AND. IRET3.GT.0. 
+     &              AND. IRET4.GT.0) THEN
                   CALL UTMESS('A',NOMCMD,'ATTENTION : LES CHAMPS '//
-     &               'SIEF_ELNO_ELGA, SIGM_ELNO_DEPL ET SIGM_ELNO_COQU '
-     &                        //
+     &               'SIEF_ELGA_DEPL, SIEF_ELGA, SIGM_ELNO_COQU ET' //
+     &                 'SIGM_ELNO_DEPL '        //
      &                'SONT ABSENTS : ON NE PEUT PAS CALCULER L''OPTION'
      &                        //OPTION//' AVEC LA SD DE TYPE '//TYSD)
                   GO TO 440
@@ -965,62 +970,38 @@ C     ------------------------------------------------------------------
                 IF (TYSD.EQ.'EVOL_ELAS' .OR. TYSD.EQ.'DYNA_TRANS' .OR.
      &              TYSD.EQ.'MULT_ELAS' .OR.
      &              TYSD.EQ.'FOURIER_ELAS') THEN
-                  IF (IRET1.LE.0 .AND. IRET2.GT.0) THEN
-                    CALL UTMESS('A',NOMCMD,'ATTENTION : LE CHAMP '//
-     &                          'SIEF_ELNO_ELGA  EST UTILISE POUR '//
-     &                          'CALCULER L''OPTION'//OPTION//' AVEC '//
-     &                          'LA SD DE TYPE '//TYSD)
-                    CALL RSEXCH(RESUCO,'SIEF_ELNO_ELGA',IORDR,CHSIG,K)
-                  ELSE
-                    CALL RSEXCH(RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIG,K)
+C          champ d'entree pour elements isoparametriques
+                  IF (IRET1.LE.0) THEN
+                     CALL RSEXCH(RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,K)
                   END IF
-                  IF (IRET1.LE.0 .AND. IRET2.LE.0) THEN
-                    CALL UTMESS('A',NOMCMD,'ATTENTION : LES CHAMPS'//
-     &                          ' SIEF_ELNO_ELGA  ET SIGM_ELNO_DEPL '//
-     &                          'SONT TOUS LES 2 PRESENTS : ON UTILISE '
-     &                          //
-     &                          'SIGM_ELNO_DEPL POUR CALCULER L''OPTION'
-     &                          //OPTION//' AVEC LA SD DE TYPE '//TYSD//
-     &                          ' (EMETTRE UNE FICHE D''EVOLUTION SI '//
-     &                          'VOUS DESIREZ UTILISER PLUTOT '//
-     &                          'SIEF_ELNO_ELGA)')
-                    CALL RSEXCH(RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIG,K)
+C          champ d'entree pour coques                  
+                  IF (EXIPLA) THEN
+                    IF (IRET4.GT.0) THEN 
+                      CALL UTMESS('A',NOMCMD,'ATTENTION : LE CHAMP '//
+     &                 ' SIGM_ELNO_DEPL EST ABSENT : '        //
+     &                ' ON NE PEUT PAS CALCULER L''OPTION'
+     &                        //OPTION//' AVEC LA SD DE TYPE '//TYSD)
+                      GO TO 440
+                    ELSE
+                      CALL RSEXCH(RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIC,K)
+                    END IF 
                   END IF
                 ELSE IF (TYSD.EQ.'EVOL_NOLI') THEN
-                  IF (IRET1.GT.0 .AND. IRET2.LE.0) THEN
-                    CALL UTMESS('A',NOMCMD,'ATTENTION : LE CHAMP '//
-     &                          'SIGM_ELNO_DEPL  EST UTILISE POUR '//
-     &                          'CALCULER L''OPTION '//OPTION//
-     &                          ' AVEC LA SD DE TYPE '//TYSD)
-                    CALL RSEXCH(RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIG,K)
+                  IF (IRET2.LE.0) THEN
+                    CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,K)
                   END IF
-                  IF (IRET1.GT.0 .AND. IRET3.LE.0) THEN
-                    CALL UTMESS('A',NOMCMD,'ATTENTION : LE CHAMP '//
-     &                          'SIGM_ELNO_COQU  EST UTILISE POUR '//
-     &                          'CALCULER L''OPTION '//OPTION//
-     &                          ' AVEC LA SD DE TYPE '//TYSD)
-                    CALL RSEXCH(RESUCO,'SIGM_ELNO_COQU',IORDR,CHSIC,K)
-                  END IF
-                  IF (IRET1.LE.0 .AND. (IRET2.GT.0.OR.IRET3.GT.0)) THEN
-                    CALL RSEXCH(RESUCO,'SIEF_ELNO_ELGA',IORDR,CHSIG,K)
-                  END IF
-                  IF (IRET1.LE.0 .AND. IRET2.LE.0) THEN
-                    CALL UTMESS('A',NOMCMD,'ATTENTION : LES CHAMPS'//
-     &                          'SIEF_ELNO_ELGA  ET SIGM_ELNO_DEPL SONT'
-     &                          //' TOUS LES 2 PRESENTS : ON UTILISE '//
-     &                          'SIEF_ELNO_ELGA POUR CALCULER L''OPTION'
-     &                          //OPTION//' AVEC LA SD DE TYPE '//TYSD//
-     &                          ' (EMETTRE UNE FICHE D''EVOLUTION SI '//
-     &                          'VOUS DESIREZ UTILISER PLUTOT '//
-     &                          'SIGM_ELNO_DEPL)')
-                    CALL RSEXCH(RESUCO,'SIEF_ELNO_ELGA',IORDR,CHSIG,K)
-                  END IF
-                  IF (IRET1.LE.0 .AND. IRET3.LE.0) THEN
-                    CALL RSEXCH(RESUCO,'SIEF_ELNO_ELGA',IORDR,CHSIG,K)
-                    CALL RSEXCH(RESUCO,'SIGM_ELNO_COQU',IORDR,CHSIC,K)
+                  IF (EXIPLA) THEN
+                    IF (IRET3.GT.0) THEN
+                      CALL UTMESS('A',NOMCMD,'ATTENTION : LE CHAMP '//
+     &                 ' SIGM_ELNO_COQU EST ABSENT : '        //
+     &                ' ON NE PEUT PAS CALCULER L''OPTION'
+     &                        //OPTION//' AVEC LA SD DE TYPE '//TYSD)
+                      GO TO 440
+                    ELSE
+                      CALL RSEXCH(RESUCO,'SIGM_ELNO_COQU',IORDR,CHSIC,K)
+                    END IF                      
                   END IF
                 END IF
-                IF (IRET3.GT.0) CHSIC = CHSIG
               ELSE IF (OPTION.EQ.'CRIT_ELNO_RUPT') THEN
                 CALL RSEXC2(1,1,RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIG,
      &                      OPTION,IRET1)
@@ -1035,7 +1016,6 @@ C     ------------------------------------------------------------------
               IF (IRET.GT.0) GO TO 160
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   160       CONTINUE
-
 C     ------------------------------------------------------------------
           ELSE IF (OPTION.EQ.'VALE_NCOU_MAXI') THEN
 
@@ -1111,6 +1091,16 @@ C     ------------------------------------------------------------------
   180       CONTINUE
 C     ------------------------------------------------------------------
           ELSE IF (OPTION.EQ.'ERRE_ELGA_NORE') THEN
+C --------- VERIFICATION DU PERIMETRE D'UTILISATION
+            CALL GETVTX(' ','GROUP_MA',1,1,1,K8B,N1)
+            CALL GETVTX(' ','MAILLE'  ,1,1,1,K8B,N2)
+            IF (N1+N2.NE.0) THEN
+               CALL UTDEBM('A',NOMCMD,
+     &                  '! TOUT = OUI OBLIGATOIRE AVEC '//OPTION//'!')
+               CALL UTIMPK('L','PAS DE CALCUL DE CHAMP D''ERREUR',0,K8B)
+               CALL UTFINM
+               GOTO 530
+            ENDIF
             DO 190,IAUX = 1,NBORDR
               IORDR = ZI(JORDR+IAUX-1)
               CALL RSEXC2(1,3,RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIG,
@@ -1120,6 +1110,16 @@ C     ------------------------------------------------------------------
               CALL RSEXC2(3,3,RESUCO,'SIRE_ELNO_DEPL',IORDR,CHSIG,
      &                    OPTION,IRET)
               IF (IRET.GT.0) GO TO 190
+              CALL DISMOI('F','NOM_LIGREL',CHSIG,'CHAM_ELEM',IBID,
+     &                                            LIGRCH,IERD)
+              IF (LIGRCH.NE.LIGRMO) THEN 
+                 CALL UTDEBM('A',NOMCMD,'LE CHAMP DE CONTRAINTES '//
+     &                       'N''A PAS ETE CALCULE SUR TOUT LE MODELE')
+              CALL UTIMPK('L',' ON NE CALCULE PAS L''OPTION ',1,OPTION)
+                 CALL UTIMPI('S',' POUR LE NUME_ORDRE ',1,IORDR)
+                 CALL UTFINM
+                 GOTO 190
+              ENDIF
               CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
               TIME = ZR(IAINST)
               CALL MECHTI(NOMA,TIME,CHTIME)
@@ -1385,7 +1385,6 @@ C     ------------------------------------------------------------------
               IF (IRET.GT.0) GO TO 250
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   250       CONTINUE
-  260       CONTINUE
 C     ------------------------------------------------------------------
           ELSE IF (OPTION.EQ.'FLUX_ELNO_TEMP' .OR.
      &             OPTION.EQ.'FLUX_ELGA_TEMP') THEN
@@ -1498,7 +1497,6 @@ C NOTATION DE LA SD RESULTAT LERES1
   270         CONTINUE
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   280       CONTINUE
-  290       CONTINUE
 C     ------------------------------------------------------------------
           ELSE IF (OPTION.EQ.'PRES_ELNO_DBEL' .OR.
      &             OPTION.EQ.'PRES_DBEL_DEPL' .OR.
@@ -1998,7 +1996,7 @@ C     ------------------------------------------------------------------
 C============= FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =============
         IF (NEWCAL) THEN
           DO 470,IAUX = 1,NRPASS - 1
-            IF (ZK8(ADCRRS+IAUX-1).EQ.LERES1) THEN
+            IF (ZK24(ADCRRS+IAUX-1)(1:19).EQ.LERES1) THEN
               GO TO 480
             END IF
   470     CONTINUE
@@ -2030,7 +2028,7 @@ C============= FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =============
               END IF
   500       CONTINUE
   510     CONTINUE
-          ZK8(ADCRRS+NRPASS-1) = LERES1
+          ZK24(ADCRRS+NRPASS-1)(1:19) = LERES1
         END IF
   480 CONTINUE
 C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============

@@ -1,6 +1,6 @@
       SUBROUTINE TE0159(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2001   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C     -----------------------------------------------
      +           NOMTE.EQ.'MECA_DIS_TR_L') THEN
           CALL JEVECH('PCOMPOR','L',ICOMPO)
           IF (ZK16(ICOMPO) (1:4).EQ.'ELAS') GO TO 30
-          CALL TECACH(.TRUE.,.TRUE.,'PVARIGR',7,JTAB)
+          CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
           LGPG = MAX(JTAB(6),1)*JTAB(7)
           READ (ZK16(ICOMPO+1),'(I16)') NBVAR
           DO 10 I = 1,NBVAR
@@ -98,9 +98,9 @@ C     -----------------------------------------------
         CALL JEVECH('PVARINR','L',IVARNO)
         CALL JEVECH('PVARIGR','E',IVARGA)
 
-        CALL TECACH(.TRUE.,.TRUE.,'PVARINR',7,JTAB)
+        CALL TECACH('OON','PVARINR',7,JTAB,IRET)
         LGPG1= MAX(JTAB(6),1)*JTAB(7)
-        CALL TECACH(.TRUE.,.TRUE.,'PVARIGR',7,JTAB)
+        CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
         LGPG2= MAX(JTAB(6),1)*JTAB(7)
 
         IF (LGPG2.NE.NBVAR) CALL UTMESS('F','TE0159','STOP1')

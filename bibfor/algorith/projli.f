@@ -2,7 +2,7 @@
      &                  JEU,TANG,JEUFX,PRONOR,TANGDF,NDIM)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/05/2002   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 11/08/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,9 +56,12 @@ C ----------------------------------------------------------------------
 
 C --- CALCUL DE LA COORDONNEE PARAMETRIQUE LAMBDA DE M DANS AB
 
+C ----------------------------------------------------------------------
+
+C --- NORMALE MAITRE
+C     ===============
       IF (PRONOR.EQ.0 .OR. PRONOR.EQ.2) THEN
 
-C --- S'IL N'Y A PAS DE LISSAGE DES NORMALES
 
         NUMER = (COORDP(1)-COORDA(1))* (COORDB(1)-COORDA(1)) +
      &          (COORDP(2)-COORDA(2))* (COORDB(2)-COORDA(2))
@@ -105,6 +108,9 @@ C --- CALCUL DU JEU ET DE LA DIRECTION DE PROJECTION (UNITAIRE)
           NORM(2) = (COORDB(1)-COORDA(1))/SQRT(DENOM)
           NORM(3) = 0.D0
         END IF
+C
+C --- NORMALE MAITRE-ESCLAVE
+C     =======================
       ELSE
         DENOM = (COORDB(1)-COORDA(1))**2 + (COORDB(2)-COORDA(2))**2
         IF (NDIM.EQ.3) THEN
@@ -120,12 +126,14 @@ C --- CALCUL DU JEU ET DE LA DIRECTION DE PROJECTION (UNITAIRE)
           COEFB = AB(1)
           COEFC = - (COEFA*COORDA(1)+COEFB*COORDA(2))
         ELSE
+          VECSEG(1) = (COORDB(1)-COORDA(1))/SQRT(DENOM)
+          VECSEG(2) = (COORDB(2)-COORDA(2))/SQRT(DENOM)
+          VECSEG(3) = (COORDB(3)-COORDA(3))/SQRT(DENOM)
           COEFA = VECSEG(2)*TANG(3) - VECSEG(3)*TANG(2)
           COEFB = VECSEG(3)*TANG(1) - VECSEG(1)*TANG(3)
           COEFC = VECSEG(1)*TANG(2) - VECSEG(2)*TANG(1)
           COEFD = - (COEFA*COORDA(1)+COEFB*COORDA(2)+COEFC*COORDA(3))
         END IF
-
 
         COEFF = COEFA*NORM(1) + COEFB*NORM(2)
         IF (NDIM.EQ.3) COEFF = COEFF + COEFC*NORM(3)
@@ -144,6 +152,7 @@ C --- CALCUL DU JEU ET DE LA DIRECTION DE PROJECTION (UNITAIRE)
           ELSE
             COEFF = COEFA*COORDP(1) + COEFB*COORDP(2) + COEFC
           END IF
+
           IF (COEFF.NE.0.D0) THEN
             CALL UTMESS('F','PROJLI_02','LE VECTEUR NORMAL EST '//
      &                  'COLINEAIRE AU PLAN DE PROJECTION')

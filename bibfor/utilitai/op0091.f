@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/03/2003   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 28/04/2003   AUTEUR DURAND C.DURAND 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,6 +42,7 @@ C       -  INDICES NOCIVITE D'UN SEISME OUI         OUI
 C       -  CORRECTION DERIVE ACCELERO   OUI         NON
 C       -  LISSAGE D'ENVELOPPE SPECTRE  OUI         OUI
 C       -  INVERSE                      OUI         NON
+C       -  FONCTION VALEUR ABSOLUE      OUI         NON
 C     ------------------------------------------------------------------
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -71,8 +72,9 @@ C     ------------------------------------------------------------------
       INTEGER        I,NBFON,NBVAL,LTINI,LTFIN,LFINI,LFFIN,LCOEF
       INTEGER        L1, L2, NBMAX, NBPTS, LFON
       CHARACTER*19   NOMFO1, NOMFO2,NOMFI
-      INTEGER        N1, N2, N3, N4, N5, N6 , N7, N8, N9, N10, N11,
-     +               N12, N13, N14, N15, N16, N17, N18, N19, IOCC, IBID
+      INTEGER        N1,  N2,  N3,  N4,  N5,  N6 , N7,  N8,  N9,  N10,
+     +               N11, N12, N13, N14, N15, N16, N17, N18, N19, N20
+      INTEGER        IOCC, IBID
       INTEGER        NBPRMS, NBPMAX, NBPETY, IFM,NIV,EXPO1
       PARAMETER    ( NBPRMS=5, NBPMAX=2, NBPETY=6 )
       REAL*8         TINI, TFIN, BINF, BSUP, FINI, FFIN, EPSI, RMS,
@@ -129,8 +131,9 @@ C     --- NOM DU MOT CLE FACTEUR ---
       CALL GETFAC ( 'NORME'        , N15)
       CALL GETFAC ( 'PUISSANCE'    , N16)
       CALL GETFAC ( 'LISS_ENVELOP' , N17)
-      CALL GETFAC ( 'ECART_TYPE'   , N19)
       CALL GETFAC ( 'INVERSE'      , N18)
+      CALL GETFAC ( 'ECART_TYPE'   , N19)
+      CALL GETFAC ( 'ABS'          , N20)
       IF (N1.GT. 0) NOMOPE = 'ENVELOPPE       '
       IF (N2.GT. 0) NOMOPE = 'SPEC_OSCI       '
       IF (N3.GT. 0) NOMOPE = 'DERIVE          '
@@ -150,6 +153,7 @@ C     --- NOM DU MOT CLE FACTEUR ---
       IF (N17.GT.0) NOMOPE = 'LISS_ENVELOP    ' 
       IF (N18.GT.0) NOMOPE = 'INVERSE         ' 
       IF (N19.GT.0) NOMOPE = 'ECART_TYPE      ' 
+      IF (N20.GT.0) NOMOPE = 'ABS             ' 
 C
 C     ------------------------------------------------------------------
 C     ------------------- EXECUTION DE L'OPERATION DEMANDEE -----------
@@ -404,6 +408,14 @@ C
             CALL GETVID ( NOMOPE, 'FONCTION', IOCC,1,1, NOMFON, L )
             CALL FOCAMA ( SORTIE , NOMFON )
   50     CONTINUE 
+C
+C     ------------------------------------------------------------------
+      ELSEIF( NOMOPE .EQ. 'ABS' ) THEN
+C
+C        --- CALCUL DE LA VALEUR ABSOLUE D'UNE FONCTION ---
+C
+         CALL GETVID(NOMOPE,'FONCTION',1,1,1,NOMFO1,L1)
+         CALL FOCABS(NOMFO1,SORTIE,BASE)
 C
 C     ------------------------------------------------------------------
       ELSEIF( NOMOPE .EQ. 'COMB' ) THEN

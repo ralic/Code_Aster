@@ -1,6 +1,6 @@
       SUBROUTINE TE0347(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/11/1999   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,7 @@ C     --------------------------------------
          CALL JEVECH ( 'PCOMPOR', 'L', ICOMPO )
          CALL JEVECH ( 'PVARINR', 'E', ICHN   )
 
-         CALL TECACH(.TRUE.,.TRUE.,'PVARIGR',7,JTAB)
+         CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
          LGPG = MAX(JTAB(6),1)*JTAB(7)
          READ (ZK16(ICOMPO+1),'(I16)') NBVAR
 C
@@ -125,7 +125,7 @@ C       ==> ON CALCULE BT*SIGMA AU 2 NOEUDS
 C       - COMPORTEMENT ELAS : RECOPIE DES POINTS 1 ET 2
 C        QUI CONTIENNENT DEJA LES EFFORTS AUX NOEUDS
 C
-         CALL TECACH(.TRUE.,.FALSE.,'PCOMPOR',1,ICOMPO)
+         CALL TECACH('ONN','PCOMPOR',1,ICOMPO,IRET)
          COMPOR = ' '
          IF (ICOMPO.NE.0) THEN
             COMPOR = ZK16(ICOMPO)
@@ -139,7 +139,7 @@ C
               CALL JEVECH ( 'PMATERC', 'L', IMATE  )
               CALL JEVECH ( 'PCAGNPO', 'L', LSECT  )
               CALL JEVECH ( 'PCAORIE', 'L', LORIEN )
-              CALL TECACH(.TRUE.,.FALSE.,'PTEMPER',1,ITEMPE)
+              CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
 C
               IF ( ITEMPE .EQ. 0 ) THEN
                  NBPAR  = 0
@@ -183,8 +183,8 @@ C
               ELSE IF (OPTION.EQ.'FORC_NODA') THEN
                  CALL JEVECH ( 'PCONTMR', 'L', ICGP   )
                  CALL JEVECH ( 'PVECTUR', 'E', ICONTN )
-                 CALL TECACH(.TRUE.,.FALSE.,'PDEPLMR',1,IDEPLM)
-                 CALL TECACH(.TRUE.,.FALSE.,'PDEPLPR',1,IDEPLP)
+                 CALL TECACH('ONN','PDEPLMR',1,IDEPLM,IRET)
+                 CALL TECACH('ONN','PDEPLPR',1,IDEPLP,IRET)
 C
                  IF ( IDEPLM .EQ. 0 ) THEN
                     DO 30 I = 1,NEQ

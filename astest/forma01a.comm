@@ -1,5 +1,5 @@
 
-# MODIF  DATE 31/03/2003   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 20/05/2003   AUTEUR MABBAS M.ABBAS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 #
 #
@@ -116,6 +116,11 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODMECA,
                                     DRX=0.0,
                                     DRY=0.0,
                                     DRZ=0.0,),);
+
+# BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODMECA,
+#                         DDL_IMPO=_F(GROUP_NO='PA',
+#                                     LIAISON='ENCASTRE',)
+#                                     ,);
 
 CHARGT=AFFE_CHAR_MECA(MODELE=MODMECA,
                       FORCE_NODALE=_F(GROUP_NO='PB',
@@ -256,14 +261,19 @@ CHMAT2=AFFE_MATERIAU(MAILLAGE=MAIL2,
 #   AU POINT B : FORCE IMPOSEE
 #                FY = 100000. N (FX,FZ,MX,MY,MZ NULLES)
 
+# BLOQUAG2=AFFE_CHAR_MECA(MODELE=MODMECA2,
+#                         DDL_IMPO=_F(GROUP_NO='PA',
+#                                     DX=0.0,
+#                                     DY=0.0,
+#                                     DZ=0.0,
+#                                     DRX=0.0,
+#                                     DRY=0.0,
+#                                     DRZ=0.0,),);
+
 BLOQUAG2=AFFE_CHAR_MECA(MODELE=MODMECA2,
                         DDL_IMPO=_F(GROUP_NO='PA',
-                                    DX=0.0,
-                                    DY=0.0,
-                                    DZ=0.0,
-                                    DRX=0.0,
-                                    DRY=0.0,
-                                    DRZ=0.0,),);
+                                    LIAISON='ENCASTRE',)
+                                    ,);
 
 CHARGT2=AFFE_CHAR_MECA(MODELE=MODMECA2,
                       FORCE_NODALE=_F(GROUP_NO='PB',

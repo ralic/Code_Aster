@@ -1,8 +1,8 @@
-        SUBROUTINE CJSIDE( MOD, MATER, EPSD, DEPS, YD, GD, DY)
-        IMPLICIT NONE
+      SUBROUTINE CJSIDE( MOD, MATER, EPSD, DEPS, YD, GD, DY)
+      IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/10/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,9 +176,9 @@ C --- DONC LE TENSEUR QQ(SIGD) N'EXISTE PAS. ON PRENDRA ALORS ----------
 C --- A LA PLACE QQ(SIG_PREDICTION ELAS) -------------------------------
 C ======================================================================
         IF( QIIREL .LE. EPSSIG ) THEN
-           CALL CALCQ ( NDT, QE, GAMMA, PREF, EPSSIG, QQ)
+           CALL CALCQ ( QE, GAMMA, PREF, EPSSIG, QQ)
         ELSE
-           CALL CALCQ ( NDT, Q, GAMMA, PREF, EPSSIG, QQ)
+           CALL CALCQ ( Q, GAMMA, PREF, EPSSIG, QQ)
         ENDIF
         CALL LCPRSC(QQ,QQ,QQII)
         QQII = SQRT(QQII)
@@ -283,7 +283,7 @@ C ======================================================================
              DQIIDL = DQIIDL + QE(I)/QIIE * DQDL(I)
  125       CONTINUE
 
-           RCOS3T = COS3T(NDT, QE, PREF, EPSSIG)
+           RCOS3T = COS3T(QE, PREF, EPSSIG)
            CALL     CJST (QE,DQE)
            COEF5  = SQRT(TROIS/DEUX)*GAMMA/HTQE**CINQ/QIIE**TROIS
            COEF6  = - GAMMA*RCOS3T/(DEUX*HTQE**CINQ*QIIE**DEUX)
@@ -299,7 +299,7 @@ C ======================================================================
              DQIIDL = DQIIDL + Q(I)/QII * DQDL(I)
  120       CONTINUE
 
-           RCOS3T = COS3T(NDT, Q, PREF, EPSSIG)
+           RCOS3T = COS3T(Q, PREF, EPSSIG)
            CALL     CJST (Q,DQ)
            COEF5  = SQRT(TROIS/DEUX)*GAMMA/HTQ**CINQ/QII**TROIS
            COEF6  = - GAMMA*RCOS3T/(DEUX*HTQ**CINQ*QII**DEUX)

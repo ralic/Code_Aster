@@ -2,7 +2,7 @@
      &                  RESOCO,IESCL,CMULT)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/09/2002   AUTEUR BSERRE B.SERRE 
+C MODIF ALGORITH  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -93,17 +93,17 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
       INTEGER POSMIN,POSNO1,NUMNO1,POSNO2,NUMNO2,ISURF,IFM,NIV
       INTEGER OLDPOS,JDECMA,POSMA,NBMA,JDEC,NBNO,NUMMIN
       INTEGER JDIM,JZONE,JMACO,JNOCO,JSUNO,JMANO,JPOMA,JNOMA,JPONO
-      INTEGER JNORM,JDDL,JCOOR,JAPPAR,JAPMEM,JAPNOR,JSANS,JPSANS
-      INTEGER JPDDL,JCHAM,JTANG,JAPJFX,JMETH,JAPJFY,JAPTAN
+      INTEGER JNORMO,JDDL,JCOOR,JAPPAR,JAPMEM,JSANS,JPSANS
+      INTEGER JPDDL,JCHAM,JTANGO,JAPJFX,JMETH,JAPJFY,JNRINI
       INTEGER JAPPTR,JAPCOE,JAPDDL,JAPJEU,NSANS,JAPCOF
       INTEGER NBDDL1,NBDDL2,JDECAL,JDECDL,NESMAX,NDIM,JTGDEF
       REAL*8 COOR1(3),COOR2(3),R8GAEM,DMIN,DIST,PADIST
       REAL*8 XNORM(3),XTANG(6),NORME
       CHARACTER*24 NDIMCO,PZONE,CONTMA,CONTNO,PSURNO,SANSNO,PSANS
-      CHARACTER*24 MANOCO,PMANO,NOMACO,PNOMA,NORMCO,DDLCO,PDDL
-      CHARACTER*24 CHAMCO,TANGCO,METHCO,TANDEF
-      CHARACTER*24 APPARI,APPOIN,APMEMO,APJEFY,APTANG
-      CHARACTER*24 APCOEF,APDDL,APNORM,APJEU,APJEFX,APCOFR
+      CHARACTER*24 MANOCO,PMANO,NOMACO,PNOMA,DDLCO,PDDL
+      CHARACTER*24 CHAMCO,NORINI,NORMCO,TANGCO,METHCO,TANDEF
+      CHARACTER*24 APPARI,APPOIN,APMEMO,APJEFY
+      CHARACTER*24 APCOEF,APDDL,APJEU,APJEFX,APCOFR
 
 C ----------------------------------------------------------------------
 
@@ -117,42 +117,46 @@ C ======================================================================
 C --- LECTURE DES SD POUR LE CONTACT POTENTIEL
 
       NDIMCO = DEFICO(1:16)//'.NDIMCO'
-      PZONE = DEFICO(1:16)//'.PZONECO'
+      PZONE  = DEFICO(1:16)//'.PZONECO'
       CONTMA = DEFICO(1:16)//'.MAILCO'
       CONTNO = DEFICO(1:16)//'.NOEUCO'
       PSURNO = DEFICO(1:16)//'.PSUNOCO'
       SANSNO = DEFICO(1:16)//'.SSNOCO'
-      PSANS = DEFICO(1:16)//'.PSSNOCO'
+      PSANS  = DEFICO(1:16)//'.PSSNOCO'
       MANOCO = DEFICO(1:16)//'.MANOCO'
-      PMANO = DEFICO(1:16)//'.PMANOCO'
+      PMANO  = DEFICO(1:16)//'.PMANOCO'
       NOMACO = DEFICO(1:16)//'.NOMACO'
-      PNOMA = DEFICO(1:16)//'.PNOMACO'
-      NORMCO = DEFICO(1:16)//'.NORMCO'
-      TANGCO = DEFICO(1:16)//'.TANGCO'
+      PNOMA  = DEFICO(1:16)//'.PNOMACO'
       CHAMCO = DEFICO(1:16)//'.CHAMCO'
       METHCO = DEFICO(1:16)//'.METHCO'
       TANDEF = DEFICO(1:16)//'.TANDEF'
 
-      CALL JEVEUO(NDIMCO,'E',JDIM)
-      CALL JEVEUO(PZONE,'L',JZONE)
-      CALL JEVEUO(CONTMA,'L',JMACO)
-      CALL JEVEUO(CONTNO,'L',JNOCO)
-      CALL JEVEUO(PSURNO,'L',JSUNO)
-      CALL JEVEUO(SANSNO,'L',JSANS)
-      CALL JEVEUO(PSANS,'L',JPSANS)
-      CALL JEVEUO(MANOCO,'L',JMANO)
-      CALL JEVEUO(PMANO,'L',JPOMA)
-      CALL JEVEUO(NOMACO,'L',JNOMA)
-      CALL JEVEUO(PNOMA,'L',JPONO)
-      CALL JEVEUO(NORMCO,'L',JNORM)
-      CALL JEVEUO(TANGCO,'L',JTANG)
-      CALL JEVEUO(CHAMCO,'L',JCHAM)
-      CALL JEVEUO(METHCO,'L',JMETH)
+      CALL JEVEUO(NDIMCO,'E',JDIM  )
+      CALL JEVEUO(PZONE, 'L',JZONE )
+      CALL JEVEUO(CONTMA,'L',JMACO )
+      CALL JEVEUO(CONTNO,'L',JNOCO )
+      CALL JEVEUO(PSURNO,'L',JSUNO )
+      CALL JEVEUO(SANSNO,'L',JSANS )
+      CALL JEVEUO(PSANS, 'L',JPSANS)
+      CALL JEVEUO(MANOCO,'L',JMANO )
+      CALL JEVEUO(PMANO, 'L',JPOMA )
+      CALL JEVEUO(NOMACO,'L',JNOMA )
+      CALL JEVEUO(PNOMA, 'L',JPONO )
+      CALL JEVEUO(CHAMCO,'L',JCHAM )
+      CALL JEVEUO(METHCO,'L',JMETH )
+
+      NORINI = RESOCO(1:14)//'.NORINI'
+      NORMCO = RESOCO(1:14)//'.NORMCO'
+      TANGCO = RESOCO(1:14)//'.TANGCO'
+
+      CALL JEVEUO(NORINI,'L',JNRINI)
+      CALL JEVEUO(NORMCO,'E',JNORMO)
+      CALL JEVEUO(TANGCO,'E',JTANGO)
 
       CALL JEVEUO(NEWGEO(1:19)//'.VALE','L',JCOOR)
-      IF (ZI(JMETH+9* (IZONE-1)+2).EQ.1) THEN
+      IF (ZI(JMETH+10* (IZONE-1)+2).EQ.1) THEN
         CALL JEVEUO(TANDEF,'L',JTGDEF)
-        XTANG(1) = ZR(JTGDEF+3* (IZONE-1))
+        XTANG(1) = ZR(JTGDEF+3* (IZONE-1)  )
         XTANG(2) = ZR(JTGDEF+3* (IZONE-1)+1)
         XTANG(3) = ZR(JTGDEF+3* (IZONE-1)+2)
       END IF
@@ -177,27 +181,24 @@ C --- ADRESSES DES SD A LIRE ET / OU REMPLIR POUR LE CONTACT EFFECTIF
 
       IF (PHASE.EQ.'FINALE') THEN
         CHAMCO = DEFICO(1:16)//'.CHAMCO'
-        DDLCO = DEFICO(1:16)//'.DDLCO'
-        PDDL = DEFICO(1:16)//'.PDDLCO'
+        DDLCO  = DEFICO(1:16)//'.DDLCO'
+        PDDL   = DEFICO(1:16)//'.PDDLCO'
         APPOIN = RESOCO(1:14)//'.APPOIN'
         APCOEF = RESOCO(1:14)//'.APCOEF'
         APCOFR = RESOCO(1:14)//'.APCOFR'
-        APDDL = RESOCO(1:14)//'.APDDL'
-        APNORM = RESOCO(1:14)//'.APNORM'
-        APTANG = RESOCO(1:14)//'.APTANG'
-        APJEU = RESOCO(1:14)//'.APJEU'
+        APDDL  = RESOCO(1:14)//'.APDDL'
+        APJEU  = RESOCO(1:14)//'.APJEU'
         APJEFX = RESOCO(1:14)//'.APJEFX'
         APJEFY = RESOCO(1:14)//'.APJEFY'
+
         CALL JEVEUO(CHAMCO,'L',JCHAM)
-        CALL JEVEUO(DDLCO,'L',JDDL)
-        CALL JEVEUO(PDDL,'L',JPDDL)
+        CALL JEVEUO(DDLCO, 'L',JDDL)
+        CALL JEVEUO(PDDL,  'L',JPDDL)
         CALL JEVEUO(APPOIN,'E',JAPPTR)
         CALL JEVEUO(APCOEF,'E',JAPCOE)
         CALL JEVEUO(APCOFR,'E',JAPCOF)
-        CALL JEVEUO(APDDL,'E',JAPDDL)
-        CALL JEVEUO(APNORM,'E',JAPNOR)
-        CALL JEVEUO(APTANG,'E',JAPTAN)
-        CALL JEVEUO(APJEU,'E',JAPJEU)
+        CALL JEVEUO(APDDL, 'E',JAPDDL)
+        CALL JEVEUO(APJEU, 'E',JAPJEU)
         CALL JEVEUO(APJEFX,'E',JAPJFX)
         CALL JEVEUO(APJEFY,'E',JAPJFY)
       END IF
@@ -312,7 +313,6 @@ C --- RANGE DANS APJEU AUPARAVANT.
           ZI(JAPPAR+3* (IESCL-1)+1) = POSNO1
           ZI(JAPPAR+3* (IESCL-1)+2) = -POSMIN
           ZI(JAPPAR+3* (IESCL-1)+3) = REACTU
-          
 
           ZI(JAPMEM+4* (POSNO1-1)) = 1
           ZI(JAPMEM+4* (POSNO1-1)+1) = POSMIN
@@ -334,50 +334,33 @@ C --- RANGE DANS APJEU AUPARAVANT.
             END IF
             ZI(JAPPAR+3* (IESCL-1)+3) = 0
             IF (ZI(JMETH+8).EQ.0) THEN
-              ZR(JAPNOR+3* (IESCL-1)) = ZR(JNORM+3* (POSNO1-1))
-              ZR(JAPNOR+3* (IESCL-1)+1) = ZR(JNORM+3* (POSNO1-1)+1)
-              ZR(JAPNOR+3* (IESCL-1)+2) = ZR(JNORM+3* (POSNO1-1)+2)
-              IF (ZI(JMETH+6).GE.2) THEN
-                ZR(JAPTAN+6* (IESCL-1)) = ZR(JTANG+6* (POSNO1-1))
-                ZR(JAPTAN+6* (IESCL-1)+1) = ZR(JTANG+6* (POSNO1-1)+1)
-                ZR(JAPTAN+6* (IESCL-1)+2) = ZR(JTANG+6* (POSNO1-1)+2)
-                IF (NDIM.EQ.3) THEN
-                  ZR(JAPTAN+6* (IESCL-1)+3) = ZR(JTANG+6* (POSNO1-1)+3)
-                  ZR(JAPTAN+6* (IESCL-1)+4) = ZR(JTANG+6* (POSNO1-1)+4)
-                  ZR(JAPTAN+6* (IESCL-1)+5) = ZR(JTANG+6* (POSNO1-1)+5)
-                END IF
-              END IF
+              XNORM(1) = ZR(JNRINI+3* (POSNO1-1)  )
+              XNORM(2) = ZR(JNRINI+3* (POSNO1-1)+1)
+              XNORM(3) = ZR(JNRINI+3* (POSNO1-1)+2)
+
+C              ZR(JNORMO+3* (IESCL-1)  ) = ZR(JNRINI+3* (POSNO1-1)  )
+C              ZR(JNORMO+3* (IESCL-1)+1) = ZR(JNRINI+3* (POSNO1-1)+1)
+C              ZR(JNORMO+3* (IESCL-1)+2) = ZR(JNRINI+3* (POSNO1-1)+2)
             ELSE
-              XNORM(1) = (ZR(JNORM+3* (POSNO1-1))-
-     &                   ZR(JNORM+3* (POSMIN-1)))/2
-              XNORM(2) = (ZR(JNORM+3* (POSNO1-1)+1)-
-     &                   ZR(JNORM+3* (POSMIN-1)+1))/2
-              XNORM(3) = (ZR(JNORM+3* (POSNO1-1)+2)-
-     &                   ZR(JNORM+3* (POSMIN-1)+2))/2
-              CALL NORMEV(XNORM,NORME)
-              CALL CATANG(NDIM,XNORM,XTANG,ZI(JMETH+9* (IZONE-1)+2))
-              CALL R8COPY(6,XTANG,1,ZR(JTANG+6* (POSNO1-1)),1)
-              ZR(JAPNOR+3* (IESCL-1)) = XNORM(1)
-              ZR(JAPNOR+3* (IESCL-1)+1) = XNORM(2)
-              ZR(JAPNOR+3* (IESCL-1)+2) = XNORM(3)
-              IF (ZI(JMETH+6).GE.2) THEN
-                ZR(JAPTAN+6* (IESCL-1)) = XTANG(1)
-                ZR(JAPTAN+6* (IESCL-1)+1) = XTANG(2)
-                ZR(JAPTAN+6* (IESCL-1)+2) = XTANG(3)
-                IF (NDIM.EQ.3) THEN
-                  ZR(JAPTAN+6* (IESCL-1)+3) = XTANG(4)
-                  ZR(JAPTAN+6* (IESCL-1)+4) = XTANG(5)
-                  ZR(JAPTAN+6* (IESCL-1)+5) = XTANG(6)
-                END IF
-              END IF
+              XNORM(1) = ( ZR(JNRINI+3* (POSNO1-1)  )  -
+     &                     ZR(JNRINI+3* (POSMIN-1)  )) / 2
+              XNORM(2) = ( ZR(JNRINI+3* (POSNO1-1)+1)  -
+     &                     ZR(JNRINI+3* (POSMIN-1)+1)) / 2
+              XNORM(3) = ( ZR(JNRINI+3* (POSNO1-1)+2)  -
+     &                     ZR(JNRINI+3* (POSMIN-1)+2)) / 2
+
             END IF
+            CALL NORMEV(XNORM,NORME)
+            CALL CATANG(NDIM,XNORM,XTANG,ZI(JMETH+10* (IZONE-1)+2))
+            CALL R8COPY(3,XNORM,1,ZR(JNORMO+3* (IESCL-1)),1)
+            CALL R8COPY(6,XTANG,1,ZR(JTANGO+6* (IESCL-1)),1)
             IF (REAAPP.GT.0) THEN
               ZR(JAPJEU+IESCL-1) = (ZR(JCOOR+3* (NUMMIN-1))-COOR1(1))*
-     &                             ZR(JAPNOR+3* (IESCL-1)) +
+     &                             ZR(JNORMO+3* (IESCL-1)) +
      &                             (ZR(JCOOR+3* (NUMMIN-1)+1)-COOR1(2))*
-     &                             ZR(JAPNOR+3* (IESCL-1)+1) +
+     &                             ZR(JNORMO+3* (IESCL-1)+1) +
      &                             (ZR(JCOOR+3* (NUMMIN-1)+2)-COOR1(3))*
-     &                             ZR(JAPNOR+3* (IESCL-1)+2)
+     &                             ZR(JNORMO+3* (IESCL-1)+2)
               IF (ZI(JMETH+6).GE.3) THEN
                 ZR(JAPJFX+IESCL-1) = 0
                 IF (NDIM.EQ.3) ZR(JAPJFY+IESCL-1) = 0
@@ -391,17 +374,17 @@ C --- RANGE DANS APJEU AUPARAVANT.
               ZR(JAPCOE+JDECAL+K-1) = 1.D0*CMULT
               IF (MULNOR) THEN
                 ZR(JAPCOE+JDECAL+K-1) = ZR(JAPCOE+JDECAL+K-1)*
-     &                                  ZR(JAPNOR+3* (IESCL-1)+K-1)
+     &                                  ZR(JNORMO+3* (IESCL-1)+K-1)
               END IF
               IF (ZI(JMETH+6).GE.2) THEN
                 ZR(JAPCOF+JDECAL+K-1) = 1.D0*CMULT
                 ZR(JAPCOF+JDECAL+30*NESMAX+K-1) = 1.D0*CMULT
                 IF (MULNOR) THEN
                   ZR(JAPCOF+JDECAL+K-1) = ZR(JAPCOF+JDECAL+K-1)*
-     &                                    ZR(JAPTAN+6* (IESCL-1)+K-1)
+     &                                    ZR(JTANGO+6*(IESCL-1)+K-1)
                   IF (NDIM.EQ.3) THEN
                     ZR(JAPCOF+JDECAL+30*NESMAX+K-1) = ZR(JAPCOF+JDECAL+
-     &                30*NESMAX+K-1)*ZR(JAPTAN+6* (IESCL-1)+K+2)
+     &                30*NESMAX+K-1)*ZR(JTANGO+6* (IESCL-1)+K+2)
                   END IF
                 END IF
               END IF
@@ -414,17 +397,17 @@ C --- RANGE DANS APJEU AUPARAVANT.
                 ZR(JAPCOE+JDECAL+K-1) = -1.D0*CMULT
                 IF (MULNOR) THEN
                   ZR(JAPCOE+JDECAL+K-1) = ZR(JAPCOE+JDECAL+K-1)*
-     &                                    ZR(JAPNOR+3* (IESCL-1)+K-1)
+     &                                    ZR(JNORMO+3* (IESCL-1)+K-1)
                 END IF
                 IF (ZI(JMETH+6).GE.2) THEN
                   ZR(JAPCOF+JDECAL+K-1) = -1.D0*CMULT
                   ZR(JAPCOF+JDECAL+30*NESMAX+K-1) = -1.D0*CMULT
                   IF (MULNOR) THEN
                     ZR(JAPCOF+JDECAL+K-1) = ZR(JAPCOF+JDECAL+K-1)*
-     &                                      ZR(JAPTAN+6* (IESCL-1)+K-1)
+     &                                      ZR(JTANGO+6* (IESCL-1)+K-1)
                     IF (NDIM.EQ.3) THEN
                       ZR(JAPCOF+JDECAL+30*NESMAX+K-1) = ZR(JAPCOF+
-     &                  JDECAL+30*NESMAX+K-1)*ZR(JAPTAN+6* (IESCL-1)+K+
+     &                  JDECAL+30*NESMAX+K-1)*ZR(JTANGO+6* (IESCL-1)+K+
      &                  2)
                     END IF
                   END IF
@@ -531,49 +514,36 @@ C --- RANGE DANS APJEU AUPARAVANT.
             END IF
             ZI(JAPPAR+3* (IESCL-1)+3) = 0
             IF (ZI(JMETH+8).EQ.0) THEN
-              ZR(JAPNOR+3* (IESCL-1)) = ZR(JNORM+3* (POSNO1-1))
-              ZR(JAPNOR+3* (IESCL-1)+1) = ZR(JNORM+3* (POSNO1-1)+1)
-              ZR(JAPNOR+3* (IESCL-1)+2) = ZR(JNORM+3* (POSNO1-1)+2)
-              IF (ZI(JMETH+6).GE.2) THEN
-                ZR(JAPTAN+6* (IESCL-1)) = ZR(JTANG+6* (POSNO1-1))
-                ZR(JAPTAN+6* (IESCL-1)+1) = ZR(JTANG+6* (POSNO1-1)+1)
-                ZR(JAPTAN+6* (IESCL-1)+2) = ZR(JTANG+6* (POSNO1-1)+2)
-                IF (NDIM.EQ.3) THEN
-                  ZR(JAPTAN+6* (IESCL-1)+3) = ZR(JTANG+6* (POSNO1-1)+3)
-                  ZR(JAPTAN+6* (IESCL-1)+4) = ZR(JTANG+6* (POSNO1-1)+4)
-                  ZR(JAPTAN+6* (IESCL-1)+5) = ZR(JTANG+6* (POSNO1-1)+5)
-                END IF
-              END IF
+
+C              ZR(JNORMO+3* (IESCL-1)  ) = ZR(JNRINI+3* (POSNO1-1)  )
+C              ZR(JNORMO+3* (IESCL-1)+1) = ZR(JNRINI+3* (POSNO1-1)+1)
+C              ZR(JNORMO+3* (IESCL-1)+2) = ZR(JNRINI+3* (POSNO1-1)+2)
+
+              XNORM(1) = ZR(JNRINI+3* (POSNO1-1)  )
+              XNORM(2) = ZR(JNRINI+3* (POSNO1-1)+1)
+              XNORM(3) = ZR(JNRINI+3* (POSNO1-1)+2)
+
             ELSE
-              XNORM(1) = (ZR(JNORM+3* (POSNO1-1))-
-     &                   ZR(JNORM+3* (POSMIN-1)))/2
-              XNORM(2) = (ZR(JNORM+3* (POSNO1-1)+1)-
-     &                   ZR(JNORM+3* (POSMIN-1)+1))/2
-              XNORM(3) = (ZR(JNORM+3* (POSNO1-1)+2)-
-     &                   ZR(JNORM+3* (POSMIN-1)+2))/2
-              CALL NORMEV(XNORM,NORME)
-              CALL CATANG(NDIM,XNORM,XTANG,ZI(JMETH+9* (IZONE-1)+2))
-              CALL R8COPY(6,XTANG,1,ZR(JTANG+6* (POSNO1-1)),1)
-              ZR(JAPNOR+3* (IESCL-1)) = XNORM(1)
-              ZR(JAPNOR+3* (IESCL-1)+1) = XNORM(2)
-              ZR(JAPNOR+3* (IESCL-1)+2) = XNORM(3)
-              IF (ZI(JMETH+6).GE.2) THEN
-                ZR(JAPTAN+6* (IESCL-1)) = XTANG(1)
-                ZR(JAPTAN+6* (IESCL-1)+1) = XTANG(2)
-                ZR(JAPTAN+6* (IESCL-1)+2) = XTANG(3)
-                IF (NDIM.EQ.3) THEN
-                  ZR(JAPTAN+6* (IESCL-1)+3) = XTANG(4)
-                  ZR(JAPTAN+6* (IESCL-1)+4) = XTANG(5)
-                  ZR(JAPTAN+6* (IESCL-1)+5) = XTANG(6)
-                END IF
-              END IF
+              XNORM(1) = ( ZR(JNRINI+3* (POSNO1-1)  )  -
+     &                     ZR(JNRINI+3* (POSMIN-1)  )) / 2
+              XNORM(2) = ( ZR(JNRINI+3* (POSNO1-1)+1)  -
+     &                     ZR(JNRINI+3* (POSMIN-1)+1)) / 2
+              XNORM(3) = ( ZR(JNRINI+3* (POSNO1-1)+2)  -
+     &                     ZR(JNRINI+3* (POSMIN-1)+2)) / 2
+
             END IF
+
+            CALL NORMEV(XNORM,NORME)
+            CALL CATANG(NDIM,XNORM,XTANG,ZI(JMETH+10* (IZONE-1)+2))
+            CALL R8COPY(3,XNORM,1,ZR(JNORMO+3* (IESCL-1)),1)
+            CALL R8COPY(6,XTANG,1,ZR(JTANGO+6* (IESCL-1)),1)
+
             ZR(JAPJEU+IESCL-1) = (ZR(JCOOR+3* (NUMMIN-1))-COOR1(1))*
-     &                           ZR(JAPNOR+3* (IESCL-1)) +
+     &                           ZR(JNORMO+3* (IESCL-1)  ) +
      &                           (ZR(JCOOR+3* (NUMMIN-1)+1)-COOR1(2))*
-     &                           ZR(JAPNOR+3* (IESCL-1)+1) +
+     &                           ZR(JNORMO+3* (IESCL-1)+1) +
      &                           (ZR(JCOOR+3* (NUMMIN-1)+2)-COOR1(3))*
-     &                           ZR(JAPNOR+3* (IESCL-1)+2)
+     &                           ZR(JNORMO+3* (IESCL-1)+2)
             IF (ZI(JMETH+6).GE.3) THEN
               ZR(JAPJFX+IESCL-1) = 0
               IF (NDIM.EQ.3) ZR(JAPJFY+IESCL-1) = 0
@@ -584,17 +554,17 @@ C --- RANGE DANS APJEU AUPARAVANT.
               ZR(JAPCOE+JDECAL+K-1) = 1.D0*CMULT
               IF (MULNOR) THEN
                 ZR(JAPCOE+JDECAL+K-1) = ZR(JAPCOE+JDECAL+K-1)*
-     &                                  ZR(JAPNOR+3* (IESCL-1)+K-1)
+     &                                  ZR(JNORMO+3* (IESCL-1)+K-1)
               END IF
               IF (ZI(JMETH+6).GE.2) THEN
                 ZR(JAPCOF+JDECAL+K-1) = 1.D0*CMULT
                 ZR(JAPCOF+JDECAL+30*NESMAX+K-1) = 1.D0*CMULT
                 IF (MULNOR) THEN
                   ZR(JAPCOF+JDECAL+K-1) = ZR(JAPCOF+JDECAL+K-1)*
-     &                                    ZR(JAPTAN+6* (IESCL-1)+K-1)
+     &                                    ZR(JTANGO+6* (IESCL-1)+K-1)
                   IF (NDIM.EQ.3) THEN
                     ZR(JAPCOF+JDECAL+30*NESMAX+K-1) = ZR(JAPCOF+JDECAL+
-     &                30*NESMAX+K-1)*ZR(JAPTAN+6* (IESCL-1)+K+2)
+     &                30*NESMAX+K-1)*ZR(JTANGO+6* (IESCL-1)+K+2)
                   END IF
                 END IF
               END IF
@@ -606,17 +576,17 @@ C --- RANGE DANS APJEU AUPARAVANT.
               ZR(JAPCOE+JDECAL+K-1) = -1.D0*CMULT
               IF (MULNOR) THEN
                 ZR(JAPCOE+JDECAL+K-1) = ZR(JAPCOE+JDECAL+K-1)*
-     &                                  ZR(JAPNOR+3* (IESCL-1)+K-1)
+     &                                  ZR(JNORMO+3* (IESCL-1)+K-1)
               END IF
               IF (ZI(JMETH+6).GE.2) THEN
                 ZR(JAPCOF+JDECAL+K-1) = -1.D0*CMULT
                 ZR(JAPCOF+JDECAL+30*NESMAX+K-1) = -1.D0*CMULT
                 IF (MULNOR) THEN
                   ZR(JAPCOF+JDECAL+K-1) = ZR(JAPCOF+JDECAL+K-1)*
-     &                                    ZR(JAPTAN+6* (IESCL-1)+K-1)
+     &                                    ZR(JTANGO+6* (IESCL-1)+K-1)
                   IF (NDIM.EQ.3) THEN
                     ZR(JAPCOF+JDECAL+30*NESMAX+K-1) = ZR(JAPCOF+JDECAL+
-     &                30*NESMAX+K-1)*ZR(JAPTAN+6* (IESCL-1)+K+2)
+     &                30*NESMAX+K-1)*ZR(JTANGO+6* (IESCL-1)+K+2)
                   END IF
                 END IF
               END IF

@@ -1,4 +1,4 @@
-# MODIF  DATE 24/06/2002   AUTEUR F1BHHAJ J.ANGLES 
+# MODIF  DATE 11/08/2003   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 # TITRE FATIGUE - COMPTAGE DE CYCLES RAINFLOW - DOMMAGE-EQUIVALENTS- 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -154,7 +154,7 @@ NOM_CHAM='EPSI_ELGA_DEPL', RESULTAT=DEPL,
 CHSIGEQN=CALC_CHAM_ELEM(         MODELE=TRIDIM,
                               CHAM_MATER=MAT,
                                   OPTION='EQUI_ELNO_SIGM',
-                               CHAM_ELEM=CHSIGN           )
+                               CHAM_ELEM=CHSIGG           )
 
 CHSIGEQG=CALC_CHAM_ELEM(         MODELE=TRIDIM,
                               CHAM_MATER=MAT,

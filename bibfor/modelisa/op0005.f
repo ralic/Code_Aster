@@ -3,7 +3,7 @@
       INTEGER             IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,25 +46,30 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
+      INTEGER            NMOCL
+      PARAMETER         (NMOCL=200)
+      CHARACTER*16       MOTCLE(NMOCL)
       INTEGER            NBRC,NBMCLE,NBOBM,JRELCO,JNBOBJ,NIV,IBID,IOCC
       INTEGER            JTYPFO,IRC,JNOMRC,JVALRM,JVALCM,JVALKM
       INTEGER            IND,IFM,I,K,NBRCME,NBMOCL
-      INTEGER            LXLGUT,NBR,NBC,NBK
+      INTEGER            LXLGUT,NBR,NBC,NBK,NBK2
       CHARACTER*8        NOMMAT,K8BID
       CHARACTER*16       NOMRC,TYPMAT,MATERI
       CHARACTER*19       NOOBRC
+      CHARACTER*1        K1BID
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 
       NBRCME = 0
       CALL GETRES (NOMMAT, TYPMAT, MATERI)
-      CALL GETMNB ( NBRC,  NBOBM)
+      CALL GETMAT (NBRC,MOTCLE)
       CALL WKVECT('&&OP0005.RELCOM','V V K16',NBRC,JRELCO)
       CALL WKVECT('&&OP0005.NBOBJE','V V I'  ,NBRC,JNBOBJ)
       CALL WKVECT('&&OP0005.TYPFON','V V L'  ,NBRC,JTYPFO)
       DO 100 IRC = 1, NBRC
-        CALL GETMFA ('DEFI_MATERIAU',IRC,NOMRC,NBMOCL)
+        NOMRC=MOTCLE(IRC)
+        CALL GETFNS (NOMRC,NBMOCL)
         CALL GETFAC (NOMRC, IOCC)
         IF (IOCC .EQ. 1) THEN
            NBRCME = NBRCME + 1
@@ -118,6 +123,14 @@ C
 C
       IF ( NIV .EQ. 2 ) THEN
         DO 30 K=1,NBRCME
+          NOOBRC=NOMMAT//'.'//ZK16(JRELCO+K-1)(1:10)
+          CALL JEVEUO(NOOBRC//'.VALR', 'L', JVALRM)
+          CALL JEVEUO(NOOBRC//'.VALC', 'L', JVALCM)
+          CALL JEVEUO(NOOBRC//'.VALK', 'L', JVALKM)
+          CALL JELIRA(NOOBRC//'.VALR','LONUTI',NBR,K1BID)
+          CALL JELIRA(NOOBRC//'.VALC','LONUTI',NBC,K1BID)
+          CALL JELIRA(NOOBRC//'.VALK','LONUTI',NBK2,K1BID)
+          NBK=(NBK2-NBR-NBC)/2
           WRITE(IFM,'(1X,2A)')
      &                  'PARAMETRES DE LA RELATION : ',ZK16(JRELCO+K-1)
           WRITE(IFM,'(5(3X,A8,5X))') (ZK8(JVALKM-1+I),I=1,NBR)

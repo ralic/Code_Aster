@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 31/03/2003   AUTEUR ASSIRE A.ASSIRE 
+#& MODIF COMMUN  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',
+def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
            RELATION        =SIMP(statut='o',typ='TXM',defaut="VMIS_ISOT_TRAC",
                                  into=( "ELAS",
                                         "VMIS_ISOT_TRAC",
@@ -118,7 +118,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',
           ENDO_ISOT_BETON =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           MAZARS          =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           RUPT_FRAG       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
-          BARENBLATT      =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
+          BARENBLATT      =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           META_P_IL         =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           META_P_IL_PT       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           META_P_IL_RE       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
@@ -191,7 +191,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',
           VMIS_ASYM_LINE  =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
           BETON_UMLV_FP   =SIMP(statut='c',typ='I',defaut=20,into=(20,)),
 
-           RELATION_KIT    =SIMP(statut='f',typ='TXM',max='**',
+           RELATION_KIT    =SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(),
                                  into=(
 # MECA
                                        "ELAS",
@@ -202,6 +202,8 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',
                                        "SURF_ETAT_NSAT",
                                        "SURF_ETAT_SATU",
                                        "CAM_CLAY_THM",
+                                       "MAZARS",
+                                       "ENDO_ISOT_BETON",
 # THMC
                                        "GAZ",
                                        "LIQU_SATU",
@@ -217,6 +219,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',
 # HYDR
                                        "HYDR_UTIL",
                                        "HYDR",
+                                       "HYDR_ENDO",
 # MECA_META
                                        "ACIER",
                                        "ZIRC",
@@ -232,7 +235,9 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',
                                        "OHNO",
                                        "NADAI_B",
                                        "BETON_DOUBLE_DP",
-                                       ) ),
+                                       ),),
+                            
+                                        
            ELAS_THM        =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            SURF_ETAT_NSAT  =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            SURF_ETAT_SATU  =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
@@ -249,6 +254,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',
            THER_POLY       =SIMP(statut='c',typ='I',defaut=0,into=(0,)),
            HYDR_UTIL       =SIMP(statut='c',typ='I',defaut=0,into=(0,)),
            HYDR            =SIMP(statut='c',typ='I',defaut=0,into=(0,)),
+           HYDR_ENDO       =SIMP(statut='c',typ='I',defaut=0,into=(0,)),
            ACIER           =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
            ZIRC            =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
 
@@ -256,6 +262,6 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',
            ALGO_C_PLAN     =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
       regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           GROUP_MA        =SIMP(statut='f',typ=grma,max='**'),
-           MAILLE          =SIMP(statut='f',typ=ma,max='**'),
+           GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
          ) ;

@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 01/04/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF E_ETAPE Execution  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -164,6 +164,9 @@ class ETAPE:
       Les seuls cas ou on appelle plusieurs fois Execute sont pour les
       commandes INCLUDE et INCLUDE_MATERIAU (appel dans op_init)
       """
+      if not self.jdc or self.jdc.par_lot != "NON" :
+         return
+
       if hasattr(self,"executed") and self.executed == 1:return
       self.executed=1
 
@@ -178,15 +181,19 @@ class ETAPE:
       self.Exec()
       self.setmode(2)
       try:
-        self.Exec()
-      except ValueError,e:
-        if str(e) == "exit ASTER":
-          # Fin normale
-          raise EOFError
-        elif str(e) == "abort ASTER":
-          raise AsException("abort ASTER")
-        else:
+          self.Exec()
+      except self.codex.error:
+          self.detruit_sdprod()
           raise
+
+   def detruit_sdprod(self):
+      """ Cette méthode supprime le concept produit par la commande
+          du registre tenu par le JDC
+      """
+      try:
+          del self.jdc.sds_dict[self.sd.nom]
+      except:
+          pass
 
    def BuildExec(self):
       """ 
@@ -211,11 +218,5 @@ class ETAPE:
       self.setmode(1)
       self.Exec()
       self.setmode(2)
-      try:
-        self.Exec()
-      except ValueError,e:
-        if str(e) == "abort ASTER":
-          raise AsException("abort ASTER")
-        else:
-          raise
+      self.Exec()
 

@@ -1,8 +1,9 @@
       SUBROUTINE CMLQNA(NBMA  , NBNO  , LIMA  , CONNEZ, TYPEMA  ,
-     &                  MXAR  , MILIEU, NOMIMA, NOMIPE, MXNOMI)
+     &                  MXAR  , MILIEU, NOMIMA, NOMIPE, MXNOMI,
+     &                  NBTYMA, DEFARE )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 07/01/2003   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF PREPOST  DATE 16/06/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,13 +22,11 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
-
       INTEGER      NBMA,NBNO,LIMA(*),MXAR,MXNOMI,TYPEMA(*)
-      INTEGER      MILIEU(2,MXAR,NBNO),NOMIMA(12,NBMA),NOMIPE(2,*)
+      INTEGER      MILIEU(2,MXAR,NBNO),NOMIMA(12,NBMA),NOMIPE(2,*),
+     &             NBTYMA, DEFARE(2,0:12,NBTYMA)
       CHARACTER*(*) CONNEZ
       CHARACTER*24 CONNEX
-
-
 C ----------------------------------------------------------------------
 C                   DETERMINATION DES NOEUDS ARETES
 C ----------------------------------------------------------------------
@@ -62,97 +61,75 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER M, A, NO, MA, NBAR, NO1, NO2, TMP, I, NOMI, JTYP, TYMA
-      INTEGER JNOMA
-      INTEGER DEFARE(2,0:12,26)
+      INTEGER     JNOMA
       CHARACTER*8 KBID
-
-C    DANS L'ORDRE POI1, SEG2, SEG22, SEG3, SEG33, SEG4
-C                 TRIA3, TRIA33, TRIA6, TRIA66, TRIA7,
-C                 QUAD4, QUAD44, QUAD8, QUAD88, QUAD9, QUAD99,
-C                 TETRA4, TETRA10,
-C                 PENTA6, PENTA15,
-C                 PYRAM5, PYRAM13,
-C                 HEXA8,
-C                 HEXA20, HEXA27
-      DATA DEFARE /
-     &  26*0,  1,0,1,2,22*0, 26*0,  26*0,  26*0,  26*0,
-     &  3,0,1,2,2,3,3,1,18*0,  26*0,  26*0,  26*0,  26*0,
-     &  4,0,1,2,2,3,3,4,4,1,16*0,  26*0,  26*0,  26*0,  26*0,  26*0,
-     &  6,0,1,2,2,3,3,1,1,4,2,4,3,4,12*0,  26*0,
-     &  9,0,1,2,2,3,3,1,1,4,2,5,3,6,4,5,5,6,6,4,6*0,  26*0,
-     &  8,0,1,2,2,3,3,4,4,1,1,5,2,5,3,5,4,5,8*0,  26*0,
-     &  12,0,1,2,2,3,3,4,4,1,1,5,2,6,3,7,4,8,5,6,6,7,7,8,8,5,
-     &  26*0,  26*0 /
 C ----------------------------------------------------------------------
-
-
-
       CALL JEMARQ()
       CONNEX = CONNEZ
 
-
-C    INITIALISATION
+C --- INITIALISATION
 
       MXNOMI = 0
-
       DO 2 M = 1, NBMA
-        DO 3 A = 1,12
-          NOMIMA(A,M) = 0
- 3      CONTINUE
+         DO 3 A = 1,12
+            NOMIMA(A,M) = 0
+ 3       CONTINUE
  2    CONTINUE
 
       DO 5 NO = 1, NBNO
-        DO 6 A = 1, MXAR
-          MILIEU(1,A,NO) = 0
-          MILIEU(2,A,NO) = 0
- 6      CONTINUE
+         DO 6 A = 1, MXAR
+            MILIEU(1,A,NO) = 0
+            MILIEU(2,A,NO) = 0
+ 6       CONTINUE
  5    CONTINUE
 
-
       DO 10 M = 1, NBMA
-        MA = LIMA(M)
-        TYMA = TYPEMA(MA)
-        CALL JEVEUO(JEXNUM(CONNEX,MA),'L',JNOMA)
+         MA = LIMA(M)
+         TYMA = TYPEMA(MA)
+         CALL JEVEUO(JEXNUM(CONNEX,MA),'L',JNOMA)
 
-C      PARCOURS DES ARETES DE LA MAILLE COURANTE
-        NBAR = DEFARE(1,0,TYMA)
-        DO 20 A = 1, NBAR
+C ------ PARCOURS DES ARETES DE LA MAILLE COURANTE
 
-C        NOEUDS SOMMETS DE L'ARETE
-          NO1 = ZI(JNOMA-1 + DEFARE(1,A,TYMA))
-          NO2 = ZI(JNOMA-1 + DEFARE(2,A,TYMA))
+         NBAR = DEFARE(1,0,TYMA)
+         DO 20 A = 1, NBAR
 
-          IF (NO1 .GT. NO2) THEN
-            TMP = NO2
-            NO2 = NO1
-            NO1 = TMP
-          END IF
+C --------- NOEUDS SOMMETS DE L'ARETE
 
-C        EST-CE QUE L'ARETE EST DEJA REFERENCEE
-          DO 30 I = 1,MXAR
+            NO1 = ZI(JNOMA-1 + DEFARE(1,A,TYMA))
+            NO2 = ZI(JNOMA-1 + DEFARE(2,A,TYMA))
 
-C          ARETE DEJA REFERENCEE
-            IF (MILIEU(1,I,NO1) .EQ. NO2) THEN
-              NOMI = MILIEU(2,I,NO1)
-              GOTO 31
-
-C          NOUVELLE ARETE
-            ELSE IF (MILIEU(1,I,NO1) .EQ.0) THEN
-              MXNOMI = MXNOMI + 1
-              MILIEU(1,I,NO1) = NO2
-              MILIEU(2,I,NO1) = MXNOMI
-              NOMI = MXNOMI
-              GOTO 31
+            IF (NO1 .GT. NO2) THEN
+               TMP = NO2
+               NO2 = NO1
+               NO1 = TMP
             END IF
- 30       CONTINUE
-          CALL UTMESS('F','CMLQNA','ERREUR_DVP')
- 31       CONTINUE
 
-          NOMIMA(A,M)  = NOMI
-          NOMIPE(1,NOMI) = NO1
-          NOMIPE(2,NOMI) = NO2
+C --------- EST-CE QUE L'ARETE EST DEJA REFERENCEE
 
- 20     CONTINUE
+            DO 30 I = 1,MXAR
+
+C ------------ ARETE DEJA REFERENCEE
+               IF (MILIEU(1,I,NO1) .EQ. NO2) THEN
+                  NOMI = MILIEU(2,I,NO1)
+                  GOTO 31
+
+C ------------ NOUVELLE ARETE
+               ELSE IF (MILIEU(1,I,NO1) .EQ.0) THEN
+                  MXNOMI = MXNOMI + 1
+                  MILIEU(1,I,NO1) = NO2
+                  MILIEU(2,I,NO1) = MXNOMI
+                  NOMI = MXNOMI
+                  GOTO 31
+               END IF
+ 30         CONTINUE
+            CALL UTMESS('F','CMLQNA','ERREUR_DVP')
+ 31         CONTINUE
+
+            NOMIMA(A,M)  = NOMI
+            NOMIPE(1,NOMI) = NO1
+            NOMIPE(2,NOMI) = NO2
+
+ 20      CONTINUE
  10   CONTINUE
 
       CALL JEDEMA()

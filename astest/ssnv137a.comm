@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 16/09/2003   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE CABLE DE PRECONTRAINTE DANS UNE POUTRE DROITE EN BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,7 +58,7 @@ BETON=DEFI_MATERIAU(
 ACIER=DEFI_MATERIAU( 
                        ELAS=_F(  E = 1.85E+11,
                               NU = 0.),
-                 BPEL_ACIER=_F(  SY = 1.77E+9,
+                 BPEL_ACIER=_F(  F_PRG = 1.77E+9,
                               FROT_COURB = 0.,
                               FROT_LINE = 0.) )
 

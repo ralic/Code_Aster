@@ -1,7 +1,7 @@
       SUBROUTINE DELTAU(JRWORK, JNBPG, NBPGT, NBORDR, NMAINI, NBMAP,
      &                  NUMPAQ, TSPAQ, NOMMET, NOMCRI, CESR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/04/2003   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 26/05/2003   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,14 +73,14 @@ C---- COMMUNS NORMALISES  JEVEUX
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
-      INTEGER      I, J, K, N, JCERD, JCERL, JCERV, JAD
+      INTEGER      I, J, K, KWORK, N, JCERD, JCERL, JCERV, JAD
       INTEGER      IRET, IMAP, ICESD, ICESL, ICESV, IAD
       INTEGER      IPG, IVECT, IORDR, TNECES, TDISP, JVECPG, JVECTN
       INTEGER      JVECTU, JVECTV, NBVEC, NGAM, TAB2(18)
-      INTEGER      NBPG, NBPGP, L, JDTAUM, JRESUN, MNMAX(2)
+      INTEGER      NBPG, SOMPGW, NBPGP, L, JDTAUM, JRESUN, MNMAX(2)
       INTEGER      JVPG1, JVPG2, LOR8EM, LOISEM
       INTEGER      JVECN2, JVECU2, JVECV2, JVECN1, JVECU1, JVECV1
-      INTEGER      NBPAR, ICMP
+      INTEGER      NBPAR, ICMP, ADRS
 C
       REAL*8       EPSILO, DGAM, GAMMA, PI, R8PI, DPHI, TAB1(18), PHI
       REAL*8       GAMMAM, PHIM, DGAM2, DPHI2, DTAUM(2)
@@ -206,7 +206,14 @@ C POINT DE GAUSS DU PAQUET DE MAILLES.
       L = 1
       NBPG = 0
       NBPGP = 0
+      KWORK = 0
+      SOMPGW = 0
+C
       DO 400 IMAP=NMAINI, NMAINI+(NBMAP-1)
+         IF ( IMAP .GT. NMAINI ) THEN
+           KWORK = 1
+           SOMPGW = SOMPGW + ZI(JNBPG + IMAP-2)
+         ENDIF
          NBPG = ZI(JNBPG + IMAP-1)
 C SI LA MAILLE COURANTE N'A PAS DE POINTS DE GAUSS, LE PROGRAMME
 C PASSE DIRECTEMENT A LA MAILLE SUIVANTE.
@@ -300,11 +307,11 @@ C
             CALL JERAZO('&&DELTAU.VECTPG', TNECES, 1)
 C
             NBVEC = 209
-            CALL TAURLO(NBVEC, JVECTN, JVECTU, JVECTV, NBORDR, JRWORK,
-     &                  TSPAQ, IPG, JVECPG)
+            CALL TAURLO(NBVEC, JVECTN, JVECTU, JVECTV, NBORDR, KWORK,
+     &                  SOMPGW, JRWORK, TSPAQ, IPG, JVECPG)
 C
 C CALCUL DU MAX DES DELTA_TAU MAX ET DU VECTEUR NORMAL ASSOCIE POUR
-C LE POINT DE GAUSS COURANT.
+C LE POINT DE GAUSS COURANT DE LA MAILLE COURANTE.
 C
 C 1/ REMISE A ZERO DU VECTEUR DE TRAVAIL CONTENANT LES VALEURS DE
 C    DELTA_TAU POUR UN POINT DE GAUSS ET DU VECTEUR DE TRAVAIL
@@ -407,7 +414,7 @@ C
 C
                   NBVEC = 7
                   CALL TAURLO(NBVEC, JVECN2, JVECU2, JVECV2, NBORDR,
-     &                        JRWORK, TSPAQ, IPG, JVPG2)
+     &                        KWORK, SOMPGW, JRWORK, TSPAQ, IPG, JVPG2)
                ELSE
                   DGAM2 = 2.0D0*(PI/180.0D0)
                   DPHI2 = DGAM2/SIN(GAMMAM)
@@ -435,7 +442,7 @@ C
 C
                   NBVEC = 9
                   CALL TAURLO(NBVEC, JVECN2, JVECU2, JVECV2, NBORDR,
-     &                        JRWORK, TSPAQ, IPG, JVPG2)
+     &                        KWORK, SOMPGW, JRWORK, TSPAQ, IPG, JVPG2)
                ENDIF
 C
 C 4-1/ REMISE A ZERO DU VECTEUR DE TRAVAIL CONTENANT LES VALEURS DE
@@ -520,7 +527,7 @@ C
 C
                   NBVEC = 7
                   CALL TAURLO(NBVEC, JVECN1, JVECU1, JVECV1, NBORDR,
-     &                        JRWORK, TSPAQ, IPG, JVPG1)
+     &                        KWORK, SOMPGW, JRWORK, TSPAQ, IPG, JVPG1)
                ELSE
                   DGAM2 = 1.0D0*(PI/180.0D0)
                   DPHI2 = DGAM2/SIN(GAMMAM)
@@ -548,7 +555,7 @@ C
 C
                   NBVEC = 9
                   CALL TAURLO(NBVEC, JVECN1, JVECU1, JVECV1, NBORDR,
-     &                        JRWORK, TSPAQ, IPG, JVPG1)
+     &                        KWORK, SOMPGW, JRWORK, TSPAQ, IPG, JVPG1)
                ENDIF
 C
 C 5-1/ REMISE A ZERO DU VECTEUR DE TRAVAIL CONTENANT LES VALEURS DE
@@ -614,12 +621,13 @@ C
                C2 = VALNU/VALE
 C
                DO 540 I=1, NBORDR
-                  SIXX = ZR(JRWORK + 0 + (I-1)*TSPAQ + (IPG-1)*6)
-                  SIYY = ZR(JRWORK + 1 + (I-1)*TSPAQ + (IPG-1)*6)
-                  SIZZ = ZR(JRWORK + 2 + (I-1)*TSPAQ + (IPG-1)*6)
-                  SIXY = ZR(JRWORK + 3 + (I-1)*TSPAQ + (IPG-1)*6)
-                  SIXZ = ZR(JRWORK + 4 + (I-1)*TSPAQ + (IPG-1)*6)
-                  SIYZ = ZR(JRWORK + 5 + (I-1)*TSPAQ + (IPG-1)*6)
+                  ADRS = (I-1)*TSPAQ+KWORK*SOMPGW*6+(IPG-1)*6
+                  SIXX = ZR(JRWORK + ADRS + 0)
+                  SIYY = ZR(JRWORK + ADRS + 1)
+                  SIZZ = ZR(JRWORK + ADRS + 2)
+                  SIXY = ZR(JRWORK + ADRS + 3)
+                  SIXZ = ZR(JRWORK + ADRS + 4)
+                  SIYZ = ZR(JRWORK + ADRS + 5)
 C
 C CALCUL DE LA PRESSION IDROSTATIQUE MAXIMALE = Max_t(1/3 Tr[SIG])
 C

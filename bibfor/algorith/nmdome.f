@@ -1,6 +1,6 @@
       SUBROUTINE NMDOME(MODELE,MATE,CARELE,LISCHA,NBPASE,INPSCO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/02/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 06/10/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -324,9 +324,9 @@ C                                          OU AFFE_CHAR_MECA_F
             ELSE IF (TYPCHA.EQ.'FIXE_PIL') THEN
               ZI(JINF+ICH) = 5
               CALL DISMOI('F','PARA_INST',LCHIN(1:19),'CARTE',IBID,
-     &                    PARCHA,IERD)
+     &                  PARCHA,IERD)
               IF (PARCHA(1:3).EQ.'OUI') CALL UTMESS('F',NOMPRO,
-     &            'ON NE PEUT PILOTER UNE CHARGE FONCTION DU TEMPS')
+     &          'ON NE PEUT PILOTER UNE CHARGE FONCTION DU TEMPS')
             ELSE
               IF (AFFCHA(5:7).EQ.'_FO') THEN
                 ZI(JINF+ICH) = 2
@@ -372,10 +372,12 @@ C 3.2.5. ==> CHARGES DU TYPE NEUMANN (FORCE)
                 ZI(JINF+NCHAR+ICH) = 6
               ELSE IF (TYPCHA.EQ.'FIXE_PIL') THEN
                 ZI(JINF+NCHAR+ICH) = 5
-                CALL DISMOI('F','PARA_INST',LCHIN(1:19),'CARTE',IBID,
+                IF (NOMLIG(K).NE.'.VEASS') THEN
+                  CALL DISMOI('F','PARA_INST',LCHIN(1:19),'CARTE',IBID,
      &                      PARCHA,IERD)
-                IF (PARCHA(1:3).EQ.'OUI') CALL UTMESS('F',NOMPRO,
+                  IF (PARCHA(1:3).EQ.'OUI') CALL UTMESS('F',NOMPRO,
      &              'ON NE PEUT PILOTER UNE CHARGE FONCTION DU TEMPS')
+                ENDIF
               ELSE IF (TYPCHA(1:4).EQ.'SUIV') THEN
                 ZI(JINF+NCHAR+ICH) = 4
               ELSE IF (AFFCHA(5:7).EQ.'_FO') THEN
@@ -577,7 +579,8 @@ C ---- FONCTIONS MULTIPLICATIVES DES CHARGES
 
           CALL GETVID('EXCIT','FONC_MULT',INDIC,1,1,K24BID,N1)
 
-          IF (NOMCMD.EQ.'DYNA_NON_LINE') THEN
+          IF (NOMCMD.EQ.'DYNA_NON_LINE'.OR.
+     &     NOMCMD.EQ.'DYNA_TRAN_EXPLI') THEN
             CALL GETVID('EXCIT','ACCE',INDIC,1,1,K24BID,N2)
           ELSE
             N2 = 0

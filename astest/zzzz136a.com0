@@ -5,6 +5,8 @@
 #                  INDICE _C     REPERE: 'CYLINDRIQUE'
 #
 #       VALIDATION POST_RELEVE_T 3D, OPERANDE TRAC_DIR 
+#                                    OPERANDE INVARIANT
+#                                    OPERANDE ELEM_PRINCIPAUX
 #
 #       A PARTIR D'UN CHEMIN
 #                D'UNE LISTE DE NOEUDS
@@ -2169,6 +2171,110 @@ TEST_TABLE(      TABLE=D2L_TDX,
                      VALE=0.            )
 
 # ---------------------------------------------------------------------
+# OPERANDE  INVARIANT
+#
+
+TEST_TABLE(      TABLE=INVA_EL,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 0.00000E+00,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='VMIS',
+                     VALE= 8.48000E-01   )
+
+TEST_TABLE(      TABLE=INVA_EL,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 0.00000E+00,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='TRESCA',
+                     VALE= 8.56452E-01   )
+
+TEST_TABLE(      TABLE=INVA_EL,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 0.00000E+00,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='TRACE',
+                     VALE= -5.39478E-01   )
+
+TEST_TABLE(      TABLE=INVA_EL,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 0.00000E+00,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='DETER',
+                     VALE= 8.23975E-02   )
+
+TEST_TABLE(      TABLE=INVA_NO,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 0.00000E+00,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='VMIS',
+                     VALE= 8.48000E-01   )
+
+TEST_TABLE(      TABLE=INVA_NO,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 0.00000E+00,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='TRESCA',
+                     VALE= 8.56452E-01   )
+
+TEST_TABLE(      TABLE=INVA_NO,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 0.00000E+00,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='TRACE',
+                     VALE= -5.39478E-01   )
+
+TEST_TABLE(      TABLE=INVA_NO,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 0.00000E+00,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='DETER',
+                     VALE= 8.23975E-02   )
+
+# ---------------------------------------------------------------------
+# OPERANDE  ELEM_PRINCIPAUX
+#
+
+TEST_TABLE(      TABLE=PRIN_EL,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 5.00000E-01,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='PRIN_1',
+                     VALE= -3.01801E-01   )
+
+TEST_TABLE(      TABLE=PRIN_EL,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 5.00000E-01,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='PRIN_2',
+                     VALE= -1.23611E-01   )
+
+TEST_TABLE(      TABLE=PRIN_EL,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 5.00000E-01,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='PRIN_3',
+                     VALE=  3.40890E-01   )
+
+TEST_TABLE(      TABLE=PRIN_NO,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 5.00000E-01,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='PRIN_1',
+                     VALE= -3.01801E-01   )
+
+TEST_TABLE(      TABLE=PRIN_NO,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 5.00000E-01,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='PRIN_2',
+                     VALE= -1.23611E-01   )
+
+TEST_TABLE(      TABLE=PRIN_NO,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 5.00000E-01,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='PRIN_3',
+                     VALE=  3.40890E-01   )
 
 FIN( )
 #

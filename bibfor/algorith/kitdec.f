@@ -1,11 +1,13 @@
-       SUBROUTINE KITDEC(MOD,NBVARI,YAMEC,YAP1,YAP2,YATE,COMPOR,
-     >            MECA,THMC,THER,HYDR,
-     >            INMECA,INTHMC,INTHER,INHYDR,
-     >            NVIMEC,NVITH,ADVIME,ADVITH)
-C
-C
+       SUBROUTINE KITDEC(MOD, COMPOR, NBVARI, YAMEC, YATE, YAP1, YAP2,
+     +            MECA, THMC, THER, HYDR, IMATE, DEFGEM, DEFGEP, ADDEME,
+     +            ADDEP1, ADDEP2, ADDETE, NDIM, T0, P10, P20, PHI0,
+     +            PVP0, DEPSV, EPSV, DEPS, T, P1, P2, DT, DP1, DP2,
+     +            GRAT, GRAP1, GRAP2, NVIMEC, NVITH, ADVIME, ADVITH)
+C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/10/2002   AUTEUR UFBHHLL C.CHAVANT 
+C ======================================================================
+C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,263 +24,90 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C TOLE CRP_20
 C TOLE CRP_21
-C **********************************************************************
-C 
-C
-C    DECODAGE DE COMPOR ET DES SOUS COMPORTEMENTS EVENTUYELS
-C
-C **********************************************************************
-C IN CHARACTER*16 COMPOR(1) : COMPORTEMENT
-C IN CHARACTER*16  COMPOR(8:11) :SOUS COMPORTEMENTS
-C                  DANS L ORDRE EVENTUEL MECA THMC THER HYDR  
-C IN ENTIER YAMEC  : 1 SI Y A MECANIQUE
-C IN ENTIER YAP1   : 1 SI Y A UNE PRESSION
-C IN ENTIER YAP2   : 1 SI Y A DEUX PRESSIONS
-C IN ENTIER YATE   : 1 SI Y A THERMIQUE
-C OUT CHARACTER*16 : MECA ' ' SI PAS TROUVE
-C OUT CHARACTER*16 : THMC ' ' SI PAS TROUVE
-C OUT CHARACTER*16 : THER ' ' SI PAS TROUVE
-C OUT CHARACTER*16 : HYDR ' ' SI PAS TROUVE
+C ======================================================================
+      IMPLICIT      NONE
+      INTEGER       NBVARI, YAMEC, YATE, YAP1, YAP2, IMATE
+      INTEGER       ADDEME, ADDEP1, ADDEP2, ADDETE, NDIM
+      INTEGER       NVIMEC, NVITH, ADVIME, ADVITH
+      REAL*8        T0, P10, P20, PHI0, PVP0, DEPSV, EPSV, DEPS(6), T
+      REAL*8        P1, P2, GRAT(3), GRAP1(3), GRAP2(3), DP1, DP2, DT
+      REAL*8        DEFGEM(*), DEFGEP(*) 
+      CHARACTER*8   MOD(*)
+      CHARACTER*16  COMPOR(*), MECA, THMC, THER, HYDR
+C ======================================================================
+C --- RECUPERATION DU NOMBRE DE VARIABLES INTERNES ---------------------
+C --- ET DES DONNEES INITIALES -----------------------------------------
+C ======================================================================
 C OUT ENTIER : NVIMEC : NOMBRE DE VARIABLES INTERNES MECANIQUES
 C OUT ENTIER : NVITH  = NBVARI - NVIMEC
 C OUT ENTIER : ADVIME = 1 
 C OUT ENTIER : ADVITH = NVIMEC+1
-C
-C
-        IMPLICIT NONE
-C
-        CHARACTER*8     MOD
-        INTEGER         NBVARI,YAMEC,YAP1,YAP2,YATE,
-     >                  NVIMEC,NVITH,ADVIME,ADVITH
-        CHARACTER*16    COMPOR(*),MECA,THMC,THER,HYDR
-        INTEGER         INMECA,INTHMC,INTHER,INHYDR
-        
-
-C
-      INTEGER PRESEN,ABSENT,IBID1,IBID2
-      INTEGER ELA,CJS,ENLGAT,ESUGAT,ESSGAT,EPSGAT,CAMCLA,LAIGLE
-      DATA ELA    /1/
-      DATA CJS    /2/ 
-      DATA ENLGAT /3/
-      DATA ESSGAT /4/
-      DATA EPSGAT /5/
-      DATA ESUGAT /6/
-      DATA CAMCLA /7/
-      DATA LAIGLE /8/
-C
+C ======================================================================
+      INTEGER       IBID1, IBID2
+      REAL*8        RBID1, RBID2, RBID3, RBID4, RBID5, RBID6, RBID7
+      REAL*8        RBID8, RBID9, RBID10, RBID11, RBID12, RBID13, RBID14
+      REAL*8        RBID15, RBID16, RBID17, RBID18, RBID19, RBID20
+      REAL*8        RBID21, RBID22, RBID23, RBID24, RBID25, RBID26
+      REAL*8        RBID27, RBID28, RBID29, RBID30, RBID31, RBID32
+      REAL*8        RBID33, RBID34, RBID35, RBID36, RBID37, RBID38
+      REAL*8        RBID39, RBID40, RBID41, RBID42, RBID43, RBID44
+      REAL*8        RBID45
+C ======================================================================
+C --- INITIALISATIONS --------------------------------------------------
+C ======================================================================
       NVIMEC = 0
-      NVITH = 0
-C
-      IF ( COMPOR(1).EQ.'KIT_HM') THEN
-       PRESEN = YAP1*YAMEC
-       ABSENT = YAP2+YATE
-       IF ( PRESEN.NE.1.OR.ABSENT.NE.0) THEN
-         CALL UTMESS('F','KITDEC','INCOHERENCE COMPOR ET EQUATIONS')
-       ENDIF
-       MECA = COMPOR(8)
-       THMC = COMPOR(9)
-       HYDR = COMPOR(10)
-       IF(THMC.NE.'GAZ '.AND.
-     >    THMC.NE.'LIQU_SATU'.AND.
-     >    THMC.NE.'LIQU_GAZ_ATM') THEN
-         CALL UTMESS('F','KITDEC','COMPOR THMC NON VALIDE')
-       ENDIF
-       IF(HYDR.NE.'HYDR_UTIL'.AND.
-     >    HYDR.NE.'HYDR') THEN
-         CALL UTMESS('F','KITDEC','COMPOR HYDR NON VALIDE')
-       ENDIF
-       IF(MECA.EQ.'ELAS') THEN
-        NVIMEC = 0
-       ELSE IF(MECA.EQ.'CJS') THEN
-        CALL CJSNVI ( MOD, IBID1,IBID2, NVIMEC )
-       ELSE IF(MECA.EQ.'CAM_CLAY ') THEN
-        NVIMEC = 2
-       ELSE IF(MECA.EQ.'LAIGLE') THEN
-          CALL LGLNVI ( MOD, IBID1,IBID2, NVIMEC )
-       ELSE
-        CALL UTMESS('F','KITDEC','COMPOR MECA NON VALIDE')
-       ENDIF
-C         
-      ELSE IF ( COMPOR(1).EQ.'KIT_HHM') THEN
-       PRESEN = YAP1*YAP2*YAMEC
-       ABSENT = YATE
-       IF ( PRESEN.NE.1.OR.ABSENT.NE.0) THEN
-         CALL UTMESS('F','KITDEC','INCOHERENCE COMPOR ET EQUATIONS')
-       ENDIF
-       MECA = COMPOR(8)
-       THMC = COMPOR(9)
-       HYDR = COMPOR(10)
-       IF(THMC.NE.'LIQU_VAPE_GAZ'.AND.
-     >    THMC.NE.'LIQU_GAZ') THEN
-         CALL UTMESS('F','KITDEC','COMPOR THMC NON VALIDE')
-       ENDIF
-       IF(HYDR.NE.'HYDR_UTIL'.AND.
-     >    HYDR.NE.'HYDR') THEN
-         CALL UTMESS('F','KITDEC','COMPOR HYDR NON VALIDE')
-       ENDIF
-       IF(MECA.EQ.'ELAS') THEN
-        NVIMEC = 0
-       ELSE IF(MECA.EQ.'CJS') THEN
-        CALL CJSNVI ( MOD, IBID1,IBID2, NVIMEC )
-       ELSE IF(MECA.EQ.'CAM_CLAY ') THEN
-        NVIMEC = 2
-       ELSE IF(MECA.EQ.'LAIGLE') THEN
-          CALL LGLNVI ( MOD, IBID1,IBID2, NVIMEC )
-       ELSE
-        CALL UTMESS('F','KITDEC','COMPOR MECA NON VALIDE')
-       ENDIF
-C
-      ELSE IF ( COMPOR(1).EQ.'KIT_THH') THEN
-       PRESEN = YATE*YAP1*YAP2
-       ABSENT = YAMEC
-       IF ( PRESEN.NE.1.OR.ABSENT.NE.0) THEN
-         CALL UTMESS('F','KITDEC','INCOHERENCE COMPOR ET EQUATIONS')
-       ENDIF
-       THMC = COMPOR(8)
-       THER = COMPOR(9)
-       HYDR = COMPOR(10)
-       IF(THMC.NE.'LIQU_VAPE_GAZ'.AND.
-     >    THMC.NE.'LIQU_GAZ') THEN
-         CALL UTMESS('F','KITDEC','COMPOR THMC NON VALIDE')
-       ENDIF
-       IF(HYDR.NE.'HYDR_UTIL'.AND.
-     >    HYDR.NE.'HYDR') THEN
-         CALL UTMESS('F','KITDEC','COMPOR HYDR NON VALIDE')
-       ENDIF
-       IF(THER.NE.'THER_HOMO'.AND.
-     >    THER.NE.'THER_POLY') THEN
-         CALL UTMESS('F','KITDEC','COMPOR THER NON VALIDE')
-       ENDIF
-C
-      ELSE IF ( COMPOR(1).EQ.'KIT_THV') THEN
-       PRESEN = YATE*YAP1
-       ABSENT = MAX(YAMEC,YAP2)
-       IF ( PRESEN.NE.1.OR.ABSENT.NE.0) THEN
-         CALL UTMESS('F','KITDEC','INCOHERENCE COMPOR ET EQUATIONS')
-       ENDIF
-       THMC = COMPOR(8)
-       THER = COMPOR(9)
-       HYDR = COMPOR(10)
-       IF(THMC.NE.'LIQU_VAPE') THEN
-         CALL UTMESS('F','KITDEC','COMPOR THMC NON VALIDE')
-       ENDIF
-       IF(HYDR.NE.'HYDR_UTIL'.AND.
-     >    HYDR.NE.'HYDR') THEN
-         CALL UTMESS('F','KITDEC','COMPOR HYDR NON VALIDE')
-       ENDIF
-       IF(THER.NE.'THER_HOMO'.AND.
-     >    THER.NE.'THER_POLY') THEN
-         CALL UTMESS('F','KITDEC','COMPOR THER NON VALIDE')
-       ENDIF
-C
-      ELSE IF ( COMPOR(1).EQ.'KIT_THM') THEN
-       PRESEN = YATE*YAP1*YAMEC
-       ABSENT = YAP2
-       IF ( PRESEN.NE.1.OR.ABSENT.NE.0) THEN
-         CALL UTMESS('F','KITDEC','INCOHERENCE COMPOR ET EQUATIONS')
-       ENDIF
-       MECA = COMPOR(8)
-       THMC = COMPOR(9)
-       THER = COMPOR(10)
-       HYDR = COMPOR(11)
-       IF(MECA.EQ.'ELAS'.OR.
-     &    MECA.EQ.'ELAS_THM'.OR.
-     &    MECA.EQ.'SURF_ETAT_SATU') THEN
-        NVIMEC = 0
-       ELSE IF(MECA.EQ.'CAM_CLAY_THM') THEN
-        NVIMEC =6
-       ELSE IF(MECA.EQ.'CJS') THEN
-        CALL CJSNVI ( MOD, IBID1,IBID2, NVIMEC )
-       ELSE IF(MECA.EQ.'CAM_CLAY ') THEN
-        NVIMEC = 2
-       ELSE IF(MECA.EQ.'LAIGLE') THEN
-          CALL LGLNVI ( MOD, IBID1,IBID2, NVIMEC )
-       ELSE      
-        CALL UTMESS('F','KITDEC','COMPOR MECA NON VALIDE')
-       ENDIF
-       IF(THMC.NE.'LIQU_SATU'.AND.
-     &    THMC.NE.'LIQU_SATU_GAT'.AND.
-     >    THMC.NE.'LIQU_GAZ_ATM'.AND.
-     >    THMC.NE.'GAZ') THEN
-         CALL UTMESS('F','KITDEC','COMPOR THMC NON VALIDE')
-       ENDIF
-       IF(HYDR.NE.'HYDR_UTIL'.AND.
-     >    HYDR.NE.'HYDR') THEN
-         CALL UTMESS('F','KITDEC','COMPOR HYDR NON VALIDE')
-       ENDIF
-       IF(THER.NE.'THER_HOMO'.AND.
-     >    THER.NE.'THER_HOMO') THEN
-         CALL UTMESS('F','KITDEC','COMPOR THER NON VALIDE')
-       ENDIF
-C
-      ELSE IF ( COMPOR(1).EQ.'KIT_THHM') THEN
-       PRESEN = YATE*YAP1*YAP2*YAMEC
-       IF ( PRESEN.NE.1) THEN
-         CALL UTMESS('F','KITDEC','INCOHERENCE COMPOR ET EQUATIONS')
-       ENDIF
-       MECA = COMPOR(8)
-       THMC = COMPOR(9)
-       THER = COMPOR(10)
-       HYDR = COMPOR(11)
-       IF(MECA.EQ.'ELAS'.OR.
-     &    MECA.EQ.'SURF_ETAT_NSAT') THEN
-        NVIMEC = 0
-       ELSE IF(MECA.EQ.'CJS') THEN
-        CALL CJSNVI ( MOD, IBID1,IBID2, NVIMEC )
-       ELSE IF(MECA.EQ.'CAM_CLAY ') THEN
-        NVIMEC = 2
-       ELSE IF(MECA.EQ.'LAIGLE') THEN
-          CALL LGLNVI ( MOD, IBID1,IBID2, NVIMEC )
-       ELSE
-        CALL UTMESS('F','KITDEC','COMPOR MECA NON VALIDE')
-       ENDIF
-       IF(THMC.NE.'LIQU_VAPE_GAZ'.AND.
-     &    THMC.NE.'LIQU_NSAT_GAT'.AND.
-     >    THMC.NE.'LIQU_GAZ'.AND.
-     >    THMC.NE.'GAZ') THEN
-         CALL UTMESS('F','KITDEC','COMPOR THMC NON VALIDE')
-       ENDIF
-       IF(HYDR.NE.'HYDR_UTIL'.AND.
-     >    HYDR.NE.'HYDR') THEN
-         CALL UTMESS('F','KITDEC','COMPOR HYDR NON VALIDE')
-       ENDIF
-       IF(THER.NE.'THER_HOMO'.AND.
-     >    THER.NE.'THER_POLY') THEN
-         CALL UTMESS('F','KITDEC','COMPOR THER NON VALIDE')
-       ENDIF
-C
-      ELSE 
-         CALL UTMESS('F','KITDEC','COMPORTEMT INCONNU')
+      NVITH  = 0
+      THMC   = COMPOR( 8)
+      THER   = COMPOR( 9)
+      HYDR   = COMPOR(10)
+      MECA   = COMPOR(11)
+C ======================================================================
+      CALL THMRCP( 'INITIALI', IMATE, THMC, MECA, HYDR, THER,
+     +             T0, P10, P20, PHI0, PVP0, RBID1, RBID2, RBID3, RBID4,
+     +             RBID5, RBID6, RBID7, RBID8, RBID9, RBID10, RBID11,
+     +             RBID12, RBID13, RBID14, RBID15, RBID16, RBID17,
+     +             RBID18, RBID19, RBID20, RBID21, RBID22, RBID23,
+     +             RBID24, RBID25, RBID26, RBID27, RBID28, RBID29,
+     +             RBID30, RBID31, RBID32, RBID33, RBID34, RBID35,
+     +             RBID36, RBID37, RBID38, RBID39, RBID40, RBID41,
+     +             RBID42, RBID43, RBID44, RBID45 )
+C ======================================================================
+      IF (YAMEC.EQ.1) THEN
+         IF(MECA.EQ.'ELAS') THEN
+            NVIMEC = 0
+         ELSE IF(MECA.EQ.'CJS') THEN
+            CALL CJSNVI ( MOD, IBID1, IBID2, NVIMEC )
+         ELSE IF(MECA.EQ.'CAM_CLAY ') THEN
+            NVIMEC = 2
+         ELSE IF(MECA.EQ.'LAIGLE') THEN
+            CALL LGLNVI ( MOD, IBID1, IBID2, NVIMEC )
+         ELSE IF(MECA.EQ.'MAZARS') THEN
+            NVIMEC = 3
+         ELSE IF(MECA.EQ.'ENDO_ISOT_BETON') THEN
+            NVIMEC = 2
+         ELSE IF(MECA.EQ.'ELAS_THM') THEN
+            NVIMEC = 0
+         ELSE IF(MECA.EQ.'SURF_ETAT_SATU') THEN
+            NVIMEC = 0
+         ELSE IF(MECA.EQ.'SURF_ETAT_NSAT') THEN
+            NVIMEC = 0
+         ELSE IF(MECA.EQ.'CAM_CLAY_THM') THEN
+            NVIMEC = 6
+         ELSE
+            CALL UTMESS('F','KITDEC','COMPOR MECA NON VALIDE')
+         ENDIF
       ENDIF
-C
+C ======================================================================
       NVITH = NBVARI - NVIMEC
       ADVIME = 1
-      ADVITH = 1 + NVIMEC 
-C
-C     CODAGE DE MECA SUR UN ENTIER 
-C  
-      IF ( YAMEC.EQ.1) THEN  
-       IF (MECA.EQ.'ELAS') THEN
-        INMECA=ELA
-       ELSE IF (MECA.EQ.'CJS') THEN
-        INMECA=CJS
-       ELSE IF (MECA.EQ.'ELAS_THM') THEN
-        INMECA=ENLGAT
-       ELSE IF (MECA.EQ.'CAM_CLAY_THM') THEN
-        INMECA=EPSGAT
-       ELSE IF (MECA.EQ.'SURF_ETAT_SATU') THEN
-        INMECA=ESSGAT
-       ELSE IF (MECA.EQ.'SURF_ETAT_NSAT') THEN
-        INMECA=ESUGAT
-       ELSE IF (MECA.EQ.'CAM_CLAY ') THEN
-        INMECA=CAMCLA
-       ELSE IF (MECA.EQ.'LAIGLE') THEN
-        INMECA=LAIGLE
-       ELSE 
-            CALL UTMESS('F','KIT_DEC','COMPORTEMENT MECA '
-     >                //MECA(1:16)//' NON THM')
-       ENDIF
-      ENDIF
+      ADVITH = 1 + NVIMEC
+C ======================================================================
+C --- CALCUL DES VARIABLES ---------------------------------------------
+C ======================================================================
+      CALL CALCVA(  YAMEC, YATE, YAP1, YAP2, DEFGEM, DEFGEP,
+     +              ADDEME, ADDEP1, ADDEP2, ADDETE, NDIM,
+     +              T0, P10, P20, DEPSV, EPSV, DEPS, T, P1, P2,
+     +              GRAT, GRAP1, GRAP2, DP1, DP2, DT )
+C ======================================================================
       END

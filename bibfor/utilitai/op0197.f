@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 22/07/2003   AUTEUR G8BHHXD X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8  TAPAIT, K8BID, CARA, TYPARR(NBPARR), TYPARS(NBPARS),
      +             TYPART(NBPART), TABTRI, TYPARK(NBPARK), TABOUT,RESU,
      +             CHCOP1,CHCOP2
+      CHARACTER*8  NOPASE
       CHARACTER*16 OPTCAL(2), METHOD, NOMCMD, NOMRC, CONCEP, PARCAL(2),
      +             NOPARR(NBPARR), NOPARK(NBPARK), NOPARS(NBPARS),
      +             NOPART(NBPART), K16BID
@@ -64,8 +65,7 @@ C     ------------------------------------------------------------------
      +             IVAPA, IKVAL, IKVAK, IMC, IAINST, PREOR, DEROR,
      +             NBOLD, ICHCO
       REAL*8       MINI, MINIP, VINI, EPSI, MK, MKP, SIGINT, R8BID, 
-     +             VALR(NBPARR), TEST, PROINT, MAXCS, TPSMIN, TPSMAX,
-     +             R8PREC
+     +             VALR(NBPARR), TEST, PROINT, MAXCS, TPSMIN, TPSMAX
       COMPLEX*16   C16B
       LOGICAL      CALM, CALS, IMPR, DEPT, RECM, RECS
 C
@@ -82,6 +82,7 @@ C
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
+      IER = 0
 C     ------------------------------------------------------------------
       CALL GETRES (NOMRES,CONCEP,NOMCMD)
 C
@@ -607,8 +608,10 @@ C
       CALL UTIMPR('L','CONVERGENCE ATTEINTE =',1,TEST)
       CALL UTFINM
 C
-      CALL TBIMPR(TAPAIT,'EXCEL','MESSAGE',NTPSI+2,ZK16(INOPA),0,
-     +            K16BID,'1PE12.5',' ')
+      NOPASE = '        '
+      CALL TBIMPR ( TAPAIT, NOPASE, 'EXCEL', 'MESSAGE',
+     >              NTPSI+2, ZK16(INOPA),
+     >              0, K16BID, '1PE12.5', ' ')
      
       CALL DETRSD('TABLE',TAPAIT)
 C

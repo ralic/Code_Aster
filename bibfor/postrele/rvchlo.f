@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 14/01/98   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 06/10/2003   AUTEUR G8BHHXD X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -266,11 +266,11 @@ C
                DO 156, K = 1, NBCP*NBSP, 1
 C
                   ACC = 0.0D0
+                  IND = (J-1)*NBNM*NBSM*NBCP + K-1
 C
                   DO 156, L = 1, NBNM, 1
 C
-                     ACC = ACC + ZR(AVALCM + (J-1)*NBNM*NBSM*NBCP +
-     +                              (L-1)*NBSM*NBCP + K-1)
+                     ACC = ACC + ZR(AVALCM + IND + (L-1)*NBSM*NBCP )
 C
 157               CONTINUE
 C

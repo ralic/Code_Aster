@@ -1,4 +1,4 @@
-# MODIF  DATE 09/07/2002   AUTEUR CAMBIER S.CAMBIER 
+# MODIF  DATE 20/05/2003   AUTEUR MABBAS M.ABBAS 
 # TITRE  POUTRE ANALYSE HARMONIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -146,12 +146,19 @@ TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_F1,             NUME_ORDRE = 1,
 #--------------------------------------------#
 #
 
+# COND_LI2=AFFE_CHAR_MECA_C(   MODELE=MODELE,
+#                                 DDL_IMPO=_F(  NOEUD = 'N1',
+#                                            DX = ('RI',0.,0.,),  DY = ('RI',0.,0.,),
+#                                            DZ = ('RI',0.,0.,),
+#                                            DRX = ('RI',0.,0.,),  DRY = ('RI',0.,0.,),
+#                                            DRZ = ('RI',0.,0.,)),
+#                                  FORCE_POUTRE=_F( MAILLE = 'E1', FX = ('RI',0.,6.E2,))
+#                               )
+
 COND_LI2=AFFE_CHAR_MECA_C(   MODELE=MODELE,
                                 DDL_IMPO=_F(  NOEUD = 'N1',
-                                           DX = ('RI',0.,0.,),  DY = ('RI',0.,0.,),
-                                           DZ = ('RI',0.,0.,),
-                                           DRX = ('RI',0.,0.,),  DRY = ('RI',0.,0.,),
-                                           DRZ = ('RI',0.,0.,)),
+                                LIAISON = 'ENCASTRE',
+                                          ),
                                  FORCE_POUTRE=_F( MAILLE = 'E1', FX = ('RI',0.,6.E2,))
                               )
 

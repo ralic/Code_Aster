@@ -1,7 +1,7 @@
       SUBROUTINE COEFAM(IPAS,IRES,X,XSI0,CD)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,7 @@ C
 C --- LECTURE DU FICHIER DE DONNEES 
 C     =============================
   999    CONTINUE
-         CALL ASOPEN(UNIT,' ')
+         CALL ULOPEN(UNIT,' ',' ','NEW','O')
          READ (UNIT,*) NBLOC
 C
 C --- BLOC D'INITIALISATION
@@ -807,7 +807,7 @@ C
       CD = -CD
 C      
 C     FERMETURE DU FICHIER
-      CALL ASOPEN(-UNIT,' ')
+      IF (IRET .EQ. 0) CALL ULOPEN(-UNIT,' ',' ',' ',' ')
 C
  1000 CONTINUE
       CALL JEDEMA()

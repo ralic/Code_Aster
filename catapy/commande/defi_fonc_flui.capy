@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ DEFI_FONC_FLUI=OPER(nom="DEFI_FONC_FLUI",op= 142,sd_prod=fonction,
          MAILLAGE        =SIMP(statut='o',typ=(maillage) ),
          NOEUD_INIT      =SIMP(statut='o',typ=no),
          NOEUD_FIN       =SIMP(statut='o',typ=no),
-         VITE            =FACT(statut='o',min=1,max=1,
+         VITE            =FACT(statut='o',
            VALE            =SIMP(statut='f',typ='R',defaut= 1. ),
            PROFIL          =SIMP(statut='o',typ='TXM',into=("UNIFORME","LEONARD") ),
            NB_BAV          =SIMP(statut='f',typ='I',defaut= 0,into=( 0 , 2 , 3 ) ),

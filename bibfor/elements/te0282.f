@@ -1,7 +1,7 @@
       SUBROUTINE TE0282 ( OPTION , NOMTE )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 22/07/2003   AUTEUR G8BHHXD X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,7 @@ C                      MISE EN PLACE DE LA DERIVEE DE G.
 C       28/02/01 (OB): PRISE EN COMPTE DE CHARGEMENTS IDENTIQUEMENT
 C                      NULS (INITIALISES A ZERO OU NON). EN PARTICULIER
 C                      SUR L'AXE (XG=0) (AL2001-060).
+C      04/07/03 (GN): MISE EN PLACE DU MECANISME DES SENSIBILITES
 C-----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
@@ -86,7 +87,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER        NNO,NPG1,KP,IPOIDS,IVF,IDFDE,IGEOM,JIN,JVAL,ICODE
       INTEGER        IDEPL,IFORC,IPRES,ITHET,IGTHET,ITEMPS,COMPT,I,J,K
       INTEGER        IPREF,IFORF
-      INTEGER        IDGTHE,ITHETA,IDLAGD,IDEB,IFIN,IDFD2E
+      INTEGER        ITHETA,IDEPSE,IDEB,IFIN,IDFD2E
 
       REAL*8         XG,YG,UX,UY,FX,FY,THX,THY,THE, R8PREM
       REAL*8         TCLA,EPSI,PRES,CISA,DIVTHE,VALPAR(3)
@@ -150,7 +151,6 @@ C INIT. COMPLEMENTAIRES POUR LA DERIVATION DE G
       IF (OPTION(1:7).EQ.'CALC_DG') THEN
         DERIVL = .TRUE.
         DTCLA  = 0.D0
-        CALL JEVECH('PDGTHET','E',IDGTHE)
 
 C POINTEURS SUR LEURS DERIVEES SECONDES
 C (ATTENTION QU'EN NPG1 ET NNO=3, CF. INIT089)
@@ -180,10 +180,10 @@ C =====================================================================
       ENDIF
 
 C RECUPERATION DES CHAMPS LOCAUX (CARTE) ASSOCIES AU CALCUL DE LA
-C DERIV.: PVECTTH (THETA SENSIBILITE), PDLAGDE (DERIV. DEPLACEMENT)
+C DERIV.: PVECTTH (THETA SENSIBILITE), PDEPLSE (DERIV. DEPLACEMENT)
       IF (DERIVL) THEN
         CALL JEVECH('PVECTTH','L',ITHETA)
-        CALL JEVECH('PDLAGDE','L',IDLAGD)
+        CALL JEVECH('PDEPLSE','L',IDEPSE)
 
 C TEST DE LA NULLITE DU THETA SENSIBILITE
         IDEB = ITHETA
@@ -277,15 +277,15 @@ C ===========================================
 C 1 CALCULS COMPLEMENTAIRES POUR DG
 C ===========================================
 
-C CALCUL DE LA DERIVEE LAGRANGIENNE DU DEPLACEMENT (DLUX,DLUY),
+C CALCUL DE LA DERIVEE DU DEPLACEMENT (DLUX,DLUY),
 C DU VECTEUR THETA SENSIBILITE (THSX,THSY) ET DE SON GRADIENT
 C (THSXDE, THSYDE)
          IF (DERIVL) THEN
            DO 20 I = 1 , NNO
              VF  = ZR(IVF  +K+I-1)
              DFDE = ZR(IDFDE+K+I-1)
-             DLUX = DLUX + VF*ZR(IDLAGD+2*(I-1))
-             DLUY = DLUY + VF*ZR(IDLAGD+2*(I-1)+1)
+             DLUX = DLUX + VF*ZR(IDEPSE+2*(I-1))
+             DLUY = DLUY + VF*ZR(IDEPSE+2*(I-1)+1)
              THSX = THSX + VF*ZR(ITHETA+2*(I-1))
              THSY = THSY + VF*ZR(ITHETA+2*(I-1)+1)
              THSXDE = THSXDE + DFDE*ZR(ITHETA+2*(I-1))
@@ -314,9 +314,9 @@ C ===========================================
             DO 4 I = 1 , NNO
               DO 6 J = 1 , 2
                  PRESG(J) = PRESG(J) +
-     +                              ZR(IPRES+2*(I-1)+J-1)*ZR(IVF+K+I-1)
+     &                              ZR(IPRES+2*(I-1)+J-1)*ZR(IVF+K+I-1)
                  FORCG(J) = FORCG(J) +
-     +                              ZR(IFORC+2*(I-1)+J-1)*ZR(IVF+K+I-1)
+     &                              ZR(IFORC+2*(I-1)+J-1)*ZR(IVF+K+I-1)
  6            CONTINUE
  4         CONTINUE
          ENDIF
@@ -424,17 +424,24 @@ C =======================================================
 
 C =======================================================
 C CALCUL DU TAUX DE RESTITUTION G
+C REMARQUE : POUR LA DERIVEE, TCLA EST INUTILE.
+C            MAIS ON A BESOIN DE PROD SI TSENUL EST FAUX.
 C =======================================================
+C
+        IF ( .NOT.DERIVL .OR. .NOT.TSENUL ) THEN
 
          PROD = (DIVTHE*FX+DFXDE*THE)*UX + (DIVTHE*FY+DFYDE*THE)*UY
 
          TCLA = TCLA + PROD*POIDS
 
+        ENDIF
+
 C =======================================================
 C CALCUL DE LA DERIVEE DE G PAR RAPPORT A UNE VARIATION DE DOMAINE
 C =======================================================
-
-         IF (DERIVL) THEN
+C
+        IF ( DERIVL ) THEN
+C
            PROD1 = (DIVTHE*FX+DFXDE*THE)*DLUX +
      &             (DIVTHE*FY+DFYDE*THE)*DLUY
            DTCLA = DTCLA + POIDS*PROD1
@@ -458,11 +465,12 @@ C ======================================================================
 C EXIT EN CAS DE THETA FISSURE NUL PARTOUT
 9999  CONTINUE
 
-C ASSEMBLAGE FINAL DES TERMES DE G
-      ZR(IGTHET) = TCLA
-
-C ASSEMBLAGE FINAL DES TERMES DE DLAG(G)
-       IF (DERIVL) ZR(IDGTHE) = DTCLA
+C ASSEMBLAGE FINAL DES TERMES DE G OU DG
+       IF (DERIVL) THEN
+         ZR(IGTHET) = DTCLA
+       ELSE
+         ZR(IGTHET) = TCLA
+       ENDIF
 
       CALL JEDEMA()
       END

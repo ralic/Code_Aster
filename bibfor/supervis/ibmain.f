@@ -4,7 +4,7 @@
       INTEGER                 IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 20/06/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 03/06/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C     ------------------------------------------------------------------
       INTEGER     ISUI
 C
       IER    = 0
-      CMDUSR = 'CMD/USER'
+      CMDUSR = 'CMD   01'
 C
       PRFXCO='?'   
       LPRFXC=1 
@@ -79,6 +79,6 @@ C     --- INITIALISATION DE L"INTERCEPTION DE CERTAINS SIGNAUX
       CALL INISIG()
 
 C     --- INITIALISATION DE JEVEUX   ---
-      CALL IB0MAI( CMDUSR , IER )
+      CALL IB0MAI( IER )
 C
       END

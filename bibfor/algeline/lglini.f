@@ -1,13 +1,13 @@
-      SUBROUTINE LGLINI(NDT, NDI, YD, NR, NBMAT, MATER, F0, SIGD, DEPS,
+      SUBROUTINE LGLINI(YD, NBMAT, MATER, F0, SIGD, DEPS,
      +                  DEVG, DEVGII, TRACEG, DY)
 C
       IMPLICIT      NONE
-      INTEGER       NBMAT, NR, NDT, NDI
-      REAL*8        YD(*), MATER(NBMAT,2), F0, SIGD(*), DEPS(*)
-      REAL*8        DEVG(*), DEVGII, TRACEG, DY(*)
+      INTEGER       NBMAT
+      REAL*8        YD(10), MATER(NBMAT,2), F0, SIGD(6), DEPS(6)
+      REAL*8        DEVG(6), DEVGII, TRACEG, DY(10)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,6 @@ C ======================================================================
 C --- BUT : CALCUL INITIAL POUR LE PREMIER MULTIPLICATEUR PLASTIQUE ----
 C ======================================================================
 C IN  : YD     : (DEVIATEUR,1ER INVAVRIANT,GAMP,EVP,DELTA) ITERATION 0 -
-C --- : NR     : DIMENSION DE YD ---------------------------------------
 C --- : NBMAT  : NOMBRE DE PARAMETRES MATERIAU -------------------------
 C --- : MATER  : PARAMETRES MATERIAU -----------------------------------
 C --- : F0     : VALEUR SEUIL A L'ITERATION 0 --------------------------
@@ -59,7 +58,7 @@ C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C ======================================================================
       LOGICAL       TESTE
-      INTEGER       JPARA, JDERIV, II
+      INTEGER       JPARA, JDERIV, II, NDT, NDI
       REAL*8        SE(6), GAMP, DELTA, SIIE, PREF, EPSSIG
       REAL*8        GAMCJS, RCOS3T, COS3T, RE, HLODE, GDEV, GE, UE
       REAL*8        UCRITP, Q(6), VECN(6), IE, R8PREM
@@ -69,6 +68,8 @@ C ======================================================================
 C --- INITIALISATION DE PARAMETRES -------------------------------------
 C ======================================================================
       PARAMETER       ( EPSSIG  = 1.0D-8 )
+C ======================================================================
+      COMMON /TDIM/   NDT , NDI
 C ======================================================================
       CALL JEMARQ ()
 C ======================================================================
@@ -96,7 +97,7 @@ C --- CALCUL DES VARIABLES ELASTIQUES INITIALES ------------------------
 C ======================================================================
       CALL     PSCAL (NDT, SE, SE, SIIE)
       SIIE   = SQRT  (SIIE)
-      RCOS3T = COS3T (NDT, SE, PREF, EPSSIG)
+      RCOS3T = COS3T (SE, PREF, EPSSIG)
       RE     = HLODE (GAMCJS, RCOS3T)
       GE     = GDEV  (SIIE, RE)
       UE     = UCRITP(NBMAT, MATER, ZR(JPARA), GE, IE)
@@ -110,10 +111,10 @@ C ======================================================================
       IF (TESTE) THEN
          CALL   LCDEVI(SIGD,SI)
          INVN = TRACE (NDI,SIGD)
-         CALL   SOLREI(NDT, NDI, GAMP, SI, INVN, ZR(JPARA), NBMAT,
+         CALL   SOLREI(GAMP, SI, INVN, ZR(JPARA), NBMAT,
      +                 MATER, Q, VECN)
       ELSE
-         CALL   SOLREI(NDT, NDI, GAMP, SE, IE,   ZR(JPARA), NBMAT,
+         CALL   SOLREI(GAMP, SE, IE,   ZR(JPARA), NBMAT,
      +                 MATER, Q, VECN)
       ENDIF
 C ======================================================================
@@ -123,13 +124,14 @@ C ======================================================================
 C ======================================================================
 C --- PREMIERE INITIALISATION POUR GAMP = 0 ----------------------------
 C ======================================================================
-         CALL LGLIND(NDT, NDI, NR, NBMAT, MATER, ZR(JPARA), GE, UE, Q,
+         CALL LGLIND(NBMAT, MATER, ZR(JPARA), GE, UE, Q,
      +               VECN, DEPS, DEVG, DEVGII, TRACEG, DY)
       ELSE
 C ======================================================================
 C --- INITIALISATION DE NEWTON -----------------------------------------
 C ======================================================================
-         CALL LGLINN(NDT, NDI, NR, GAMP, NBMAT, MATER, ZR(JPARA),
+         CALL DERVAR(GAMP, NBMAT, MATER, ZR(JPARA), ZR(JDERIV))
+         CALL LGLINN(GAMP, NBMAT, MATER, ZR(JPARA),
      +               ZR(JDERIV), GE, IE, UE, Q, VECN, F0, DELTA, DEVG,
      +               DEVGII, TRACEG, DY)
       ENDIF

@@ -6,7 +6,7 @@ C     COMMANDE:  MECA_STATIQUE & STAT_NON_LINE
 C
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF UTILITAI  DATE 23/09/2003   AUTEUR F6BHHBO P.DEBONNIERES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,53 +51,57 @@ C
 C
 C 0.2. ==> COMMUNS
 C
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-C
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-C
 C 0.3. ==> VARIABLES LOCALES
 C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'METYSE' )
 C
       INTEGER NBMCRF, NBMCMX
-      PARAMETER ( NBMCRF = 3, NBMCMX = 12 )
+      PARAMETER ( NBMCRF = 13, NBMCMX = 14 )
 C
-      INTEGER NBMOCL
-      INTEGER NBMC(NBMCRF), NBMCVR
-      CHARACTER*24 LIMOCL, LIVALE
+      INTEGER NBMOSI
+      INTEGER NBMC(NBMCRF), NBMCSR
+      CHARACTER*24 LIMOSI, LIVALE, LIMOFA
       CHARACTER*24 BLAN24
       CHARACTER*24 TYPEPS
-      CHARACTER*24 COREFE(NBMCRF), MCREFE(NBMCMX)
+      CHARACTER*24 COREFE(NBMCRF), MCSREF(NBMCMX)
 C
 C                    123456789012345678901234
       DATA BLAN24 / '                        ' /
 C
 C====
-C 1. RECHERCHE GLOBALE DU TYPE
+C 1. RECHERCHE DU TYPE GENERIQUE
+C    PSTYSE RETOURNE LES INFORMATIONS SUIVANTES :
+C      TYPESE : ENTIER, TYPE GENERIQUE DE LA SENSIBILITE :
 C               -1 : DERIVATION EULERIENNE (VIA UN CHAMP THETA)
 C                1 : CALCUL INSENSIBLE
 C                2 : CONDITION AUX LIMITES DE DIRICHLET
 C                3 : PARAMETRE MATERIAU
 C                4 : CARACTERISTIQUE ELEMENTAIRE (COQUES, ...)
 C                0 : AUTRE TYPE, DEPENDANT DE LA COMMANDE
+C      TYPEPS : K24, TYPE PRECIS DE LA SENSIBILITE ('FORCE', ... )
+C      NBMOSI : NOMBRE DE MOTS-CLES OU INTERVIENT LE PARAMETRE NOPASE
+C      LIMOSI : LISTE DE CES MOTS-CLES SIMPLES
+C      LIVALE : LISTE DES VALEURS ASSOCIEES
+C      LIMOSI : LISTE DES MOTS-CLES FACTEURS ASSOCIES
 C====
 C                12   345678   9012345678901234
-      LIMOCL  = '&&'//NOMPRO//'_LIMOCL         '
+      LIMOSI  = '&&'//NOMPRO//'_LIMOSI         '
       LIVALE  = '&&'//NOMPRO//'_LIVALE         '
+      LIMOFA  = '&&'//NOMPRO//'_LIMOFA         '
 C
       CALL PSTYSE ( NBPASE, INPSCO, NOPASE,
-     >              TYPESE, TYPEPS, NBMOCL, LIMOCL, LIVALE )
+     >              TYPESE, TYPEPS, NBMOSI, LIMOSI, LIVALE, LIMOFA )
+C
+CGN      CALL UTDEBM ( 'I', NOMPRO, 'SENSIBILITE DEMANDEE' )
+CGN      CALL UTIMPK ( 'S', ' PAR RAPPORT AU CONCEPT :', 1, NOPASE )
+CGN      CALL UTIMPK ( 'L', 'APRES PSTYSE, TYPE : ', 1,TYPEPS )
+CGN      CALL UTIMPI ( 'L', '. CODE : ', 1,TYPESE )
+CGN      CALL UTIMPI ( 'L', '. NOMBRE DE MOTS-CLES : ', 1,NBMOSI )
+CGN      CALL UTFINM ()
 C
 C====
-C 2. TYPE DE SENSIBILITE
+C 2. PRECISION DU TYPE DE SENSIBILITE
 C====
 C
       STYPSE = BLAN24
@@ -105,29 +109,61 @@ C
       IF ( TYPESE.EQ.3 ) THEN
 C
         COREFE(1) = 'E'
-        NBMC(1) = 4
-        MCREFE(1) = 'E'
-        MCREFE(2) = 'E_L'
-        MCREFE(3) = 'E_T'
-        MCREFE(4) = 'E_N'
+        NBMC(1) = 1
+        MCSREF(1) = 'E'
 C
-        COREFE(2) = 'NU'
-        NBMC(2) = 4
-        MCREFE(5) = 'NU'
-        MCREFE(6) = 'NU_LT'
-        MCREFE(7) = 'NU_LN'
-        MCREFE(8) = 'NU_TN'
+        COREFE(2) = 'E_L'
+        NBMC(2) = 1
+        MCSREF(2) = 'E_L'
 C
-        COREFE(3) = 'G'
-        NBMC(3) = 3
-        MCREFE(9) = 'G_LT'
-        MCREFE(10) = 'G_LN'
-        MCREFE(11) = 'G_TN'
+        COREFE(3) = 'E_T'
+        NBMC(3) = 1
+        MCSREF(3) = 'E_T'
 C
-        NBMCVR = 3
+        COREFE(4) = 'E_N'
+        NBMC(4) = 1
+        MCSREF(4) = 'E_N'
 C
-        CALL PSTYSS ( NBMCVR, NBMC, COREFE, MCREFE,
-     >                NBMOCL, LIVALE, NOPASE,
+        COREFE(5) = 'NU'
+        NBMC(5) = 1
+        MCSREF(5) = 'NU'
+C
+        COREFE(6) = 'NU_LT'
+        NBMC(6) = 1
+        MCSREF(6) = 'NU_LT'
+C
+        COREFE(7) = 'NU_LN'
+        NBMC(7) = 1
+        MCSREF(7) = 'NU_LN'
+C
+        COREFE(8) = 'NU_TN'
+        NBMC(8) = 1
+        MCSREF(8) = 'NU_TN'
+C
+        COREFE(9) = 'G_LT'
+        NBMC(9) = 1
+        MCSREF(9) = 'G_LT'
+C
+        COREFE(10) = 'G_LN'
+        NBMC(10) = 1
+        MCSREF(10) = 'G_LN'
+C
+        COREFE(11) = 'G_TN'
+        NBMC(11) = 1
+        MCSREF(11) = 'G_TN'
+C
+        COREFE(12) = 'DSDE'
+        NBMC(12) = 1
+        MCSREF(12) = 'D_SIGM_EPSI'
+
+        COREFE(13) = 'SIGY'
+        NBMC(13) = 1
+        MCSREF(13) = 'SY'
+C
+        NBMCSR = 13
+C
+        CALL PSTYSS ( NBMCSR, NBMC, COREFE, MCSREF,
+     >                NBMOSI, LIVALE, NOPASE,
      >                STYPSE )
 C
       ELSEIF ( TYPESE.EQ.0 ) THEN
@@ -150,8 +186,8 @@ C====
 C 3. MENAGE
 C====
 C
-CC        print * ,'POUR ',NOPASE,' : ',stypse
-      CALL JEDETR ( LIMOCL )
+      CALL JEDETR ( LIMOSI )
       CALL JEDETR ( LIVALE )
+      CALL JEDETR ( LIMOFA )
 C
       END

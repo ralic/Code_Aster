@@ -6,7 +6,7 @@
       CHARACTER*(*)       MCFAC, MOCLE(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 29/08/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C     ------------------------------------------------------------------
       INTEGER      N1, N2, N3, NUMNO, I, IER, JCOOR
       REAL*8       R8B
       CHARACTER*8  K8B, NOEUD
+      CHARACTER*16 CONCEP, CMD
       CHARACTER*24 COORD, NOMNOE
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -54,9 +55,19 @@ C
       CALL GETVR8 ( MCFAC, MOCLE(1), IOCC,1,0, R8B, N1 )
       IF ( N1 .NE. 0 ) THEN
          CALL GETVR8 ( MCFAC, MOCLE(1), IOCC,1,NDIM, COOR, N1 )
-         IF ( N1 .NE. NDIM ) THEN
-            CALL UTDEBM('F','UTCONO','ERREUR DONNEES')
-            CALL UTIMPK('L','IL MANQUE DES VALEURS POUR ',1,MOCLE(1))
+         IF ( N1 .LT. NDIM ) THEN
+            CALL GETRES ( K8B, CONCEP, CMD )
+            CALL UTDEBM('F',CMD,'ERREUR DANS LES DONNEES')
+            CALL UTIMPK('S',' MOT CLE FACTEUR ',1,MCFAC)
+            CALL UTIMPI('S',' OCCURENCE ',1,IOCC)
+            IF ( NDIM .EQ. 2 ) THEN
+              CALL UTIMPI('L','LE MAILLAGE EST "PLAN" OU "Z_CST"',0,N1)
+            ELSE
+              CALL UTIMPI('L','LE MAILLAGE EST "3D"',0,N1)
+            ENDIF
+            CALL UTIMPI('L','IL Y A ',1,ABS(N1))
+            CALL UTIMPK('S',' VALEURS POUR LE MOT CLE ',1,MOCLE(1))
+            CALL UTIMPI('L','IL EN FAUT ',1,NDIM)
             CALL UTFINM()
          ENDIF
          IRET = 1
@@ -72,8 +83,12 @@ C
          CALL GETVID ( MCFAC, MOCLE(2), IOCC,1,1, NOEUD, N2 )
           CALL JENONU ( JEXNOM(NOMNOE,NOEUD), NUMNO )
           IF ( NUMNO .EQ. 0 ) THEN
-             CALL UTDEBM('F','UTCONO','ERREUR DONNEES')
-             CALL UTIMPK('L','LE NOEUD N''EXISTE PAS ',1,NOEUD)
+             CALL GETRES ( K8B, CONCEP, CMD )
+             CALL UTDEBM('F',CMD,'ERREUR DANS LES DONNEES')
+             CALL UTIMPK('S',' MOT CLE FACTEUR ',1,MCFAC)
+             CALL UTIMPI('S',' OCCURENCE ',1,IOCC)
+             CALL UTIMPK('L','POUR LE MOT CLE ',1,MOCLE(2))
+             CALL UTIMPK('S',' LE NOEUD N''EXISTE PAS ',1,NOEUD)
              CALL UTFINM()
           ENDIF
           DO 10 I = 1 , NDIM
@@ -88,11 +103,18 @@ C
           CALL GETVID ( MCFAC, MOCLE(3), IOCC,1,1, NOEUD, N3 )
           CALL UTNONO ( ' ', NOMAIL, 'NOEUD', NOEUD, K8B, IER )
           IF ( IER .EQ. 10 ) THEN
-             CALL UTDEBM('F','UTCONO','ERREUR DONNEES')
-             CALL UTIMPK('L','LE GROUP_NO N''EXISTE PAS ',1,NOEUD)
+             CALL GETRES ( K8B, CONCEP, CMD )
+             CALL UTDEBM('F',CMD,'ERREUR DANS LES DONNEES')
+             CALL UTIMPK('S',' MOT CLE FACTEUR ',1,MCFAC)
+             CALL UTIMPI('S',' OCCURENCE ',1,IOCC)
+             CALL UTIMPK('L','POUR LE MOT CLE ',1,MOCLE(3))
+             CALL UTIMPK('S',' LE GROUP_NO N''EXISTE PAS ',1,NOEUD)
              CALL UTFINM()
           ELSEIF ( IER .EQ. 1 ) THEN
-             CALL UTDEBM('A','UTCONO','TROP DE NOEUDS DANS LE GROUP_NO')
+             CALL GETRES ( K8B, CONCEP, CMD )
+             CALL UTDEBM('A',CMD,'TROP DE NOEUDS DANS LE GROUP_NO')
+             CALL UTIMPK('S',' MOT CLE FACTEUR ',1,MCFAC)
+             CALL UTIMPI('S',' OCCURENCE ',1,IOCC)
              CALL UTIMPK('L','  NOEUD UTILISE: ',1,K8B)
              CALL UTFINM( )
           ENDIF

@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/02/2000   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C
       CHARACTER*16 CH16
       REAL*8       UL(12), UG(12), PGL(3,3), KLC(12,12), KLV(78)
       REAL*8       FL(12), FE(12), PGL1(3,3), PGL2(3,3)
-      REAL*8       XFLY, XFLZ, XSIY, XSIZ
+      REAL*8       XFLY, XFLZ, XSIY, XSIZ,TRIGOM,X
 C     ------------------------------------------------------------------
       DATA NOMRES / 'E', 'NU', 'ALPHA'/
 C     ------------------------------------------------------------------
@@ -80,7 +80,7 @@ C
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 C
       CALL JEVECH ( 'PMATERC', 'L', LMATER )
-      CALL TECACH(.TRUE.,.FALSE.,'PTEMPER',1,ITEMPE)
+      CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
       IF ( ITEMPE .EQ. 0 ) THEN
          NBPAR  = 0
          NOMPAR = ' '
@@ -123,7 +123,8 @@ C
          CALL JEVECH ('PCAARPO', 'L',LRCOU)
          RAD    = ZR(LRCOU)
          ANGARC = ZR(LRCOU+1)
-         ANGS2  = ASIN( XL / ( DEUX * RAD ) )
+         X = XL / ( DEUX * RAD )
+         ANGS2  = TRIGOM('ASIN', X )
          XL     = RAD * ANGS2 * DEUX
       ENDIF
 C

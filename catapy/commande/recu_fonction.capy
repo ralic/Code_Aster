@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE MCOURTOI M.COURTOIS
 def recu_fonction_prod(RESULTAT=None,TABLE=None,OBSTACLE=None,
@@ -43,7 +43,7 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
 
          CHAM_GD         =SIMP(statut='f',typ=(cham_no_depl_r,cham_no_temp_r,cham_no_pres_r,cham_elem_sief_r,
                                                cham_elem_vari_r,cham_elem_epsi_r,cham_elem_flux_r,
-                                               cham_elem_pres_r,cham_elem_meta_r ) ),
+                                               cham_elem_pres_r,) ),
          RESULTAT        =SIMP(statut='f',typ=(evol_elas,dyna_trans,evol_noli,evol_ther,dyna_harmo ) ),
          RESU_GENE       =SIMP(statut='f',typ=tran_gene),
 #  concept table à créer
@@ -69,7 +69,7 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
                                    fr="Récupération de la fonction à partir d un concept melasflu",
            regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE'),),
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
+           NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
            NUME_MODE       =SIMP(statut='o',typ='I' ),
            PARA_X          =SIMP(statut='o',typ='TXM',into=("VITE_FLU",) ),
            PARA_Y          =SIMP(statut='o',typ='TXM',into=("FREQ","AMOR") ),
@@ -87,7 +87,7 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
              TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="FONCTION",into=("FONCTION","FONCTION_C") ),
            ),
 
-           FILTRE          =FACT(statut='f',min=1,max='**',
+           FILTRE          =FACT(statut='f',max='**',
               NOM_PARA        =SIMP(statut='o',typ='TXM' ),
               CRIT_COMP       =SIMP(statut='f',typ='TXM',defaut="EQ",
                                     into=("EQ","LT","GT","NE","LE","GE","VIDE",
@@ -119,20 +119,20 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
                    EXCLUS('GROUP_NO','NOEUD'),
                    EXCLUS('NOEUD_CHOC','GROUP_NO_CHOC'),
                    UN_PARMI('NOM_CHAM','NOM_PARA_RESU'),),
-           NOM_CHAM        =SIMP(statut='f',typ='TXM' ),
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',into=C_NOM_CHAM_INTO()),
            NOM_PARA_RESU   =SIMP(statut='f',typ='TXM' ),
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
+           NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
            LIST_ORDRE      =SIMP(statut='f',typ=listis ),
            TOUT_INST       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           INST            =SIMP(statut='f',typ='R',max='**'),
+           INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
            LIST_INST       =SIMP(statut='f',typ=listr8 ),
-           FREQ            =SIMP(statut='f',typ='R',max='**'),
+           FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
            LIST_FREQ       =SIMP(statut='f',typ=listr8 ),
            b_prec = BLOC ( condition = "(INST != None) or (LIST_INST != None) or (FREQ != None) or (LIST_FREQ != None)",
              PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
-             INTERP_NUME     =SIMP(statut='f',typ='TXM',max=2,into=("NON","LIN") ),
+             INTERP_NUME     =SIMP(statut='f',typ='TXM',into=("NON","LIN") ),
            ),
            NOM_CMP         =SIMP(statut='f',typ='TXM' ),
 
@@ -151,17 +151,17 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
 #           regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','TOUT_INST','LIST_INST','FREQ','LIST_FREQ'),),
            NOM_CHAM        =SIMP(statut='f',typ='TXM',into=("DEPL","VITE","ACCE","PTEM") ),
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
+           NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
            LIST_ORDRE      =SIMP(statut='f',typ=listis ),
            TOUT_INST       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           INST            =SIMP(statut='f',typ='R',max='**'),
+           INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
            LIST_INST       =SIMP(statut='f',typ=listr8 ),
-           FREQ            =SIMP(statut='f',typ='R',max='**'),
+           FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
            LIST_FREQ       =SIMP(statut='f',typ=listr8 ),
            b_prec = BLOC ( condition = "(INST != None) or (LIST_INST != None) or (FREQ != None) or (LIST_FREQ != None)",
              PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
-             INTERP_NUME     =SIMP(statut='f',typ='TXM',max=2,into=("NON","LIN") ),
+             INTERP_NUME     =SIMP(statut='f',typ='TXM',into=("NON","LIN") ),
            ),
            b_local_cham = BLOC ( condition = "NOM_CHAM!='PTEM'", fr="Opérandes de localisation du champ",
              regles=(AU_MOINS_UN('MAILLE','GROUP_MA','GROUP_NO','NOEUD','NOEUD_CHOC','GROUP_NO_CHOC'),

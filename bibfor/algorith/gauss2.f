@@ -1,6 +1,7 @@
       SUBROUTINE GAUSS2(ALIAS,TYPI,XPG,YPG,NORD,HPG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/08/2002   AUTEUR ADBHHPM P.MASSIN 
+C MODIF ALGORITH  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
+C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +32,7 @@ C          <--- HPG         : POIDS DES POINTS DE GAUSS
 C.......................................................................
 
       IMPLICIT NONE
-      REAL*8 XPG,YPG,HPG
+      REAL*8 XPG,YPG,HPG,a,b,w,v
       INTEGER NORD,TYPI
       CHARACTER*8 ALIAS
 C_______________________________________________________________________
@@ -123,58 +124,7 @@ C SIMPSON
 
       ELSE IF (ALIAS(1:3).EQ.'QU8') THEN
 
-        IF (TYPI.EQ.2) THEN
-C LES POINTS DE GAUSS
-          IF (NORD.EQ.1) THEN
-            XPG = -1/SQRT(3.D0)
-            YPG = 1/SQRT(3.D0)
-          ELSE IF (NORD.EQ.2) THEN
-            XPG = -1/SQRT(3.D0)
-            YPG = -1/SQRT(3.D0)
-          ELSE IF (NORD.EQ.3) THEN
-            XPG = 1/SQRT(3.D0)
-            YPG = -1/SQRT(3.D0)
-          ELSE IF (NORD.EQ.4) THEN
-            XPG = 1/SQRT(3.D0)
-            YPG = 1/SQRT(3.D0)
-          ELSE
-            CALL JXABOR()
-          END IF
-          HPG = 1.D0
-C LES NOEUDS
-        ELSE IF (TYPI.EQ.1) THEN
-
-          IF (NORD.EQ.1) THEN
-            XPG = -1.D0
-            YPG = 1.D0
-          ELSE IF (NORD.EQ.2) THEN
-            XPG = -1.D0
-            YPG = -1.D0
-          ELSE IF (NORD.EQ.3) THEN
-            XPG = 1.D0
-            YPG = -1.D0
-          ELSE IF (NORD.EQ.4) THEN
-            XPG = 1.D0
-            YPG = 1.D0
-          ELSE IF (NORD.EQ.5) THEN
-            XPG = -1.D0
-            YPG = 0.D0
-          ELSE IF (NORD.EQ.6) THEN
-            XPG = 0.D0
-            YPG = -1.D0
-          ELSE IF (NORD.EQ.7) THEN
-            XPG = 1.D0
-            YPG = 0.D0
-          ELSE IF (NORD.EQ.8) THEN
-            XPG = 0.D0
-            YPG = 1.D0
-          ELSE
-            CALL JXABOR()
-          END IF
-          HPG = 1.D0/2.D0
-
-C SIMPSON
-        ELSE IF (TYPI.EQ.3) THEN
+        IF ((TYPI.EQ.2).OR.(TYPI.EQ.1).OR.(TYPI.EQ.3)) THEN
           IF (NORD.EQ.1) THEN
             XPG = -1.D0
             YPG = 1.D0
@@ -193,24 +143,24 @@ C SIMPSON
             HPG = 1.D0/9.D0
           ELSE IF (NORD.EQ.5) THEN
             XPG = -1.D0
-            YPG = -0.D0
+            YPG = 0.D0
             HPG = 4.D0/9.D0
           ELSE IF (NORD.EQ.6) THEN
             XPG = 0.D0
-            YPG = -1.D0            
+            YPG = -1.D0
             HPG = 4.D0/9.D0
           ELSE IF (NORD.EQ.7) THEN
             XPG = 1.D0
-            YPG = 0.D0            
+            YPG = 0.D0
             HPG = 4.D0/9.D0
           ELSE IF (NORD.EQ.8) THEN
             XPG = 0.D0
-            YPG = 1.D0            
+            YPG = 1.D0
             HPG = 4.D0/9.D0
           ELSE IF (NORD.EQ.9) THEN
             XPG = 0.D0
-            YPG = 0.D0            
-            HPG = 16.D0/9.D0
+            YPG = 0.D0
+            HPG = 16.D0/9.D0  
           ELSE
             CALL JXABOR()
           END IF
@@ -287,78 +237,41 @@ C SIMPSON
       ELSE IF (ALIAS(1:3).EQ.'TR6') THEN
 
 C    POINTS DE GAUSS
-        IF (TYPI.EQ.2) THEN
+        IF ((TYPI.EQ.2).OR.(TYPI.EQ.1).OR.(TYPI.EQ.3)) THEN
+         A=0.445948490915965D0
+         B=0.091576213509771D0
+         W=0.111690794839005D0
+         V=0.054975871827661D0
           IF (NORD.EQ.1) THEN
-            XPG = -2/3.D0
-            YPG = 1/3.D0
+            XPG = 2.D0*A-1.D0
+            YPG = 2.D0*A-1.D0
+            HPG =W*4
           ELSE IF (NORD.EQ.2) THEN
-            XPG = -2/3.D0
-            YPG = -2/3.D0
+            XPG =2.D0*(1-2.D0*A)-1.D0 
+            YPG =2.D0*A-1.D0
+            HPG =W*4
           ELSE IF (NORD.EQ.3) THEN
-            XPG = 1/3.D0
-            YPG = -2/3.D0
-          ELSE
-            CALL JXABOR()
-          END IF
-          HPG = 2/3.D0
-C   NOEUDS
-        ELSE IF (TYPI.EQ.1) THEN
-          IF (NORD.EQ.1) THEN
-            XPG = -1.D0
-            YPG = 1.D0
-          ELSE IF (NORD.EQ.2) THEN
-            XPG = -1.D0
-            YPG = -1.D0
-          ELSE IF (NORD.EQ.3) THEN
-            XPG = 1.D0
-            YPG = -1.D0
+            XPG =2.D0*A-1.D0
+            YPG =2.D0*(1-2.D0*A)-1.D0
+            HPG =W*4
           ELSE IF (NORD.EQ.4) THEN
-            XPG = -1.D0
-            YPG = 0.D0
+            XPG =2.D0*(B)-1.D0 
+            YPG =2.D0*B-1.D0
+            HPG =V*4
           ELSE IF (NORD.EQ.5) THEN
-            XPG = 0.D0
-            YPG = -1.D0
+            XPG =2.D0*(1-2.D0*B)-1.D0 
+            YPG =2.D0*B-1.D0
+            HPG =V*4
           ELSE IF (NORD.EQ.6) THEN
-            XPG = 0.D0
-            YPG = 0.D0
-          ELSE
-            CALL JXABOR()
-          END IF
-          HPG = 2/6.D0
-C   SIMPSON
-        ELSE IF (TYPI.EQ.3) THEN
-          IF (NORD.EQ.1) THEN
-            XPG = -1.D0
-            YPG = 1.D0
-            HPG = 2.D0/15.D0
-          ELSE IF (NORD.EQ.2) THEN
-            XPG = -1.D0
-            YPG = -1.D0
-            HPG = 2.D0/15.D0
-          ELSE IF (NORD.EQ.3) THEN
-            XPG = 1.D0
-            YPG = -1.D0
-            HPG = 2.D0/15.D0
-          ELSE IF (NORD.EQ.4) THEN
-            XPG = -1.D0
-            YPG = 0.D0
-            HPG = 8.D0/15.D0
-          ELSE IF (NORD.EQ.5) THEN
-            XPG = 0.D0
-            YPG = -1.D0
-            HPG = 8.D0/15.D0
-          ELSE IF (NORD.EQ.6) THEN
-            XPG = 0.D0
-            YPG = 0.D0
-            HPG = 8.D0/15.D0
+            XPG =2.D0*B-1.D0
+            YPG =2.D0*(1-2.D0*B)-1.D0            
+            HPG =V*4
           ELSE
             CALL JXABOR()
           END IF
         ELSE
           CALL JXABOR()
         END IF
-
-
 
       ELSE IF (ALIAS(1:3).EQ.'SG2') THEN
 

@@ -1,6 +1,6 @@
       SUBROUTINE DMDPSE(MATER,TEMPE,HYDR,SECH,INSTAN,REPERE,D)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/10/2002   AUTEUR ASSIRE A.ASSIRE 
+C MODIF ELEMENTS  DATE 07/05/2003   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -173,7 +173,10 @@ C --------- SENSIBILITE PAR RAPPORT A NU
      &               (E*NU*UN)/ ((NU+UN)**2* (- (DEUX*NU)+UN)) +
      &               (E*UN)/ ((NU+UN)* (- (DEUX*NU)+UN))
 
-            D(1,3) = (NU*UN)/ ((NU+UN)* (- (DEUX*NU)+UN))
+            D(1,3) = (DEUX*E*NU*UN)/ ((NU+UN)* (- (DEUX*NU)+UN)**2) -
+     &               (E*NU*UN)/ ((NU+UN)**2* (- (DEUX*NU)+UN)) +
+     &               (E*UN)/ ((NU+UN)* (- (DEUX*NU)+UN))
+
 
             D(2,1) = (DEUX*E*NU*UN)/ ((NU+UN)* (- (DEUX*NU)+UN)**2) -
      &               (E*NU*UN)/ ((NU+UN)**2* (- (DEUX*NU)+UN)) +

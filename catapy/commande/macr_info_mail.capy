@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,11 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE GNICOLAS G.NICOLAS
-MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",op=-24,docu="U7.03.02-b",
+
+from Macro.macr_adap_mail_ops import macr_adap_mail_ops
+
+MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",op=macr_adap_mail_ops,
+                     docu="U7.03.02-b",
                      fr="Donner des informations sur un maillage.",
                      ang="To give information about a mesh.",
 #
@@ -27,8 +31,8 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",op=-24,docu="U7.03.02-b",
 #
 # 2. Version de HOMARD
 #
-         VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V5_5",
-                               into=("V5_5", "V5_N","V5_N_PERSO"),
+         VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V6_2",
+                               into=("V6_2", "V6_N", "V6_N_PERSO"),
                            fr="Version de HOMARD",
                            ang="HOMARD release"),
 #
@@ -39,38 +43,60 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",op=-24,docu="U7.03.02-b",
                            fr="Langue des messages issus de HOMARD.",
                            ang="Language for HOMARD messages." ),
 #
-# 4. Le nom du maillage a analyser
+# 4. Gestion des éléments autres que des simplexes
+#    Remarque : pour le moment, on bride le choix 2
+#       0 : autres elements refusés (defaut)
+#       1 : analyse exclusivement sur les simplexes, mais autres éléments acceptés
+#       2 : tous
+#
+         NON_SIMPLEXE   = SIMP(statut='f',typ='I',defaut=0,into=(0,1),
+                          fr="Acceptation d'éléments quad, hexa et penta",
+                          ang="quad, hexa and penta elements allowed" ),
+#
+# 5. Le nom du maillage a analyser
 #
          MAILLAGE       = SIMP(statut='o',typ=maillage,
                            fr="Maillage à analyser.",
                            ang="Mesh to be checked." ),
 #
-# 5. Les options ; par defaut, on ne fait que les nombres
-# 5.1. Nombre de noeuds et elements
+# 6. Suivi d'une frontiere
+#
+         MAILLAGE_FRONTIERE = SIMP(statut='f',typ=maillage,
+                           fr="Maillage de la frontiere à suivre",
+                           ang="Boundary mesh" ),
+#
+         b_frontiere   =BLOC( condition = " MAILLAGE_FRONTIERE != None " ,
+                           fr="Groupes définissant la frontière",
+                           ang="Groups which define the boundary",
+                           GROUP_MA       = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**' ),
+                           ) ,
+#
+# 7. Les options ; par defaut, on ne fait que les nombres
+# 7.1. Nombre de noeuds et elements
 #
          NOMBRE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
                           fr="Nombre de noeuds et éléments du maillage",
                           ang="Number of nodes and elements in the mesh" ),
 #
-# 5.2. Determination de la qualite des elements du maillage
+# 7.2. Determination de la qualite des elements du maillage
 #
          QUALITE        = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                           fr="Qualité du maillage",
                           ang="Mesh quality" ),
 #
-# 5.3. Connexite du maillage
+# 7.3. Connexite du maillage
 #
          CONNEXITE      = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                           fr="Connexité du maillage.",
                           ang="Mesh connexity." ),
 #
-# 5.4. Taille des sous-domaines du maillage
+# 7.4. Taille des sous-domaines du maillage
 #
          TAILLE         = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                           fr="Tailles des sous-domaines du maillage.",
                           ang="Sizes of mesh sub-domains." ),
 #
-# 5.5. Controle de la non-interpenetration des elements
+# 7.5. Controle de la non-interpenetration des elements
 #
          INTERPENETRATION=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                           fr="Controle de la non interpénétration des éléments.",

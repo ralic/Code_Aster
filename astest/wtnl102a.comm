@@ -1,5 +1,5 @@
 
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 # TITRE  - COUPLE TH ANALYTIQUE  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,6 +95,7 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=1.E7,
                                NU=0.0,
                                RHO=1.0,
                                ALPHA=0.0,),
+                       COMP_THM = 'LIQU_SATU',
                        THM_LIQU=_F(RHO=1.0,
                                    UN_SUR_K=0.0,
                                    ALPHA=0.0,

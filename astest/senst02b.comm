@@ -1,4 +1,4 @@
-# MODIF  DATE 17/06/2002   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 # RESPONSABLE O.BOITEAU
 # TITRE validation de la sensibilite par rapport a la temperature imposee
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,6 +140,7 @@ MEMO_NOM_SENSI(NOM=_F(NOM_SD='CH_1',
                       PARA_SENSI=PS1,
                       NOM_COMPOSE='CH_1_PS1',
                       VALEUR='PS1',
+                      MOT_FACT='TEMP_IMPO',
                       MOT_CLE='TEMP',));
 CH_1_PS1=AFFE_CHAR_THER_F(MODELE=MODEPLAN,
                     TEMP_IMPO=_F(GROUP_NO='ORIGINE',TEMP=PS_UN));
@@ -150,6 +151,7 @@ MEMO_NOM_SENSI(NOM=_F(NOM_SD='CH_2',
                       PARA_SENSI=PS2,
                       NOM_COMPOSE='CH_2_PS2',
                       VALEUR='PS2',
+                      MOT_FACT='FLUX_REP',
                       MOT_CLE='FLUN',));
 CH_2_PS2=AFFE_CHAR_THER_F(MODELE=MODEPLAN,
                     FLUX_REP=_F(GROUP_MA='BORD_DRO',FLUN=PS_UN));

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16 OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -151,7 +151,7 @@ C     ------------------------------------------------------------------
 C===============================================================
 C          -- RECUPERATION DE LA TEMPERATURE :
 C          -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-      CALL TECAC2 ('NNN','PTEMPER',8,JTAB,IRET)
+      CALL TECACH ('NNN','PTEMPER',8,JTAB,IRET)
       ITEMP=JTAB(1)
         IF (ITEMP.GT.0) THEN
           DO 50 I = 1,NNO
@@ -162,7 +162,7 @@ C          -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
    50     CONTINUE
         END IF
 C          -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
-      CALL TECACH(.FALSE.,.FALSE.,'PTEMPEF',1,ITEMP)
+      CALL TECACH('NNN','PTEMPEF',1,ITEMP,IRET)
         IF (ITEMP.GT.0) THEN
           NOMPU(1) = 'INST'
           NOMPU(2) = 'EPAIS'
@@ -284,7 +284,7 @@ C         ---------------------------------------
 
           IF (OPTION(1:9).EQ.'SIEF_ELGA') THEN
             CALL DXEFRO(NP,ZR(LZR-1+LT2EV),EFFGT,EFFIN2)
-            CALL TECACH(.TRUE.,.TRUE.,'PCONTRR',7,JTAB)
+            CALL TECACH('OON','PCONTRR',7,JTAB,IRET)
             NPG=JTAB(3)
             NBSP=JTAB(7)
             IF (NP.NE.NPG) CALL UTMESS('F','TE0033','STOP')

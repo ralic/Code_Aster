@@ -3,7 +3,7 @@
       CHARACTER*(*)       NOMRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 02/06/2003   AUTEUR G8BHHXD X.DESROCHES 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -196,17 +196,13 @@ C
          CALL GETVTX ( 'ACTION', 'NOM_CMP', IOCC,1,0, K8B, N1 )
          IF ( N1 .NE. 0 ) THEN
 C
-            CALL GETVTX ( 'ACTION', 'TRAC_NORMALE', IOCC,1,0, K8B, N11)
-            IF ( N11 .NE. 0 ) JTRAN = JTRAN  + 1
             CALL GETVTX ( 'ACTION', 'TRAC_NOR'    , IOCC,1,0, K8B, N12)
             IF ( N12 .NE. 0 ) JTRAN = JTRAN  + 1
 C
-            CALL GETVTX ( 'ACTION', 'TRAC_DIRECTION', IOCC,1,0, K8B,N13)
-            IF ( N13 .NE. 0 ) JTRAD = JTRAD  + 1
             CALL GETVTX ( 'ACTION', 'TRAC_DIR'      , IOCC,1,0, K8B,N14)
             IF ( N14 .NE. 0 ) JTRAD = JTRAD  + 1
 C
-            IF ( (N11+N12+N13+N14) .NE. 0 ) GOTO 24
+            IF ( (N12+N14) .NE. 0 ) GOTO 24
             JNCMP = JNCMP  + 1
             NBC = -N1
             CALL WKVECT ( '&&RVPARA.NCMP', 'V V K8', NBC, JCMP )

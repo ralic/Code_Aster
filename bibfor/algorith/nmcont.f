@@ -2,7 +2,7 @@
      &                   LMAT,LDSCON,CNNUL,ITERAT,LICCVG,CONV,DEPDEL,
      &                   LREAC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/09/2002   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,7 +103,7 @@ C ======================================================================
       CALL JEVEUO (APREAC,'E',JREAC)
       NZOCO  = ZI(JDIM+1)
       DO 10 IZONE = 1,NZOCO
-        CALL REACCO (PREMIE,ZI(JMETH+9*(IZONE-1)+1),ZI(JCHAM+IZONE-1),
+        CALL REACCO (PREMIE,ZI(JMETH+10*(IZONE-1)+1),ZI(JCHAM+IZONE-1),
      &               ZI(JREAC+4*(IZONE-1)))
  10   CONTINUE
 C ======================================================================

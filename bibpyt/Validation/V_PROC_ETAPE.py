@@ -1,4 +1,4 @@
-#@ MODIF V_PROC_ETAPE Validation  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF V_PROC_ETAPE Validation  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,29 +61,17 @@ class PROC_ETAPE(V_ETAPE.ETAPE):
       if self.state == 'unchanged' :
         return self.valid
       else:
-        valid = 1
-        if hasattr(self,'valid'):
-          old_valid = self.valid
-        else:
-          old_valid = None
-        # on teste les enfants
-        for child in self.mc_liste :
-          if not child.isvalid():
-            valid = 0
-            break
-        # on teste les règles de self
-        text_erreurs,test_regles = self.verif_regles()
-        if not test_regles :
-          if cr == 'oui' : self.cr.fatal(string.join(("Règle(s) non respectée(s) :", text_erreurs)))
-          valid = 0
+        valid=self.valid_child()
+
+        valid=valid * self.valid_regles(cr)
+
         if self.reste_val != {}:
           if cr == 'oui' :
             self.cr.fatal("Mots cles inconnus :" + string.join(self.reste_val.keys(),','))
           valid=0
-        self.valid = valid
-        self.state = 'unchanged'
-        if old_valid:
-          if old_valid != self.valid : self.init_modif_up()
+
+        self.set_valid(valid)
+
         return self.valid
 
 

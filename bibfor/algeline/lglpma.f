@@ -1,11 +1,11 @@
-        SUBROUTINE LGLPMA(N,DIM,A,B,C)
+        SUBROUTINE LGLPMA(N,A,B,C)
 C
         IMPLICIT    NONE
-        INTEGER     N, DIM
-        REAL*8      A(DIM,DIM), B(DIM,DIM), C(DIM,DIM)
+        INTEGER     N
+        REAL*8      A(6,6), B(6,6), C(6,6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,7 @@ C ======================================================================
         REAL*8    V
         DO 1 I = 1 , N
           DO 2 J = 1 , N
-          V = 0.D0
+          V = 0.0D0
             DO 3 K = 1 , N
                V = V + A(I,K)*B(K,J)
  3          CONTINUE

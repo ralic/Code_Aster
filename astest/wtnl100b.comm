@@ -1,5 +1,5 @@
 
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
 # TITRE  - CONSOLIDATION DE TERZAGHI  CAS 3D  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,6 +57,7 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=1.E7,
                                NU=0.0,
                                RHO=2800.0,
                                ALPHA=1.0000000000000001E-05,),
+                       COMP_THM = 'LIQU_SATU',
                        THM_LIQU=_F(RHO=1000.0,
                                    UN_SUR_K=0.0,
                                    ALPHA=1.E-4,

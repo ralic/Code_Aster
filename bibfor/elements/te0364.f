@@ -1,7 +1,7 @@
        SUBROUTINE TE0364(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/08/2002   AUTEUR ADBHHPM P.MASSIN 
+C MODIF ELEMENTS  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER MGEOM,MDEPL,IDEPM,IJ,L,MALEK,INDNOR
 
       REAL*8 XC,YC,PDS,ERR,ESS,JAC,JACM,LAMBDA,R(3,3),E(3,3),G(3,3)
-      REAL*8 MMAT(56,56),C(3,3),FFE(9),FFM(9),TAU1(3),TAU2(3),NORM(3)
+      REAL*8 MMAT(81,81),C(3,3),FFE(9),FFM(9),TAU1(3),TAU2(3),NORM(3)
       REAL*8 C1(3),C2(3),C3(3),H1(3),H2(3),H(3,3),A(3,3),B(3,3)
       REAL*8 GEOMM(3),GEOME(3),DEPLE(6),D1(3),D2(3),D3(3),D(3,3),M(3,3)
       REAL*8 DEPLM(6),RESE(3),F(3,3),MCH(56,56),MPR(56,56),MM1(3,3)
@@ -158,6 +158,20 @@ C
         NDDL = 72
         NDIM = 3
         MAIT = 'QU8'
+      ELSE IF (NOMTE.EQ.'CFQ8T6') THEN
+        ESC = 'QU8'
+        NNM = 6
+        NNE = 8
+        NDDL = 66
+        NDIM = 3
+        MAIT = 'TR6'
+      ELSE IF (NOMTE.EQ.'CFT6Q8') THEN
+        ESC = 'TR6'
+        NNM = 8
+        NNE = 6
+        NDDL = 60
+        NDIM = 3
+        MAIT = 'QU8'
       ELSE IF (NOMTE.EQ.'CFQ4T3') THEN
         ESC = 'QU4'
         NNM = 3
@@ -172,6 +186,13 @@ C
         NDDL = 30
         NDIM = 3
         MAIT = 'QU4'
+      ELSE IF (NOMTE.EQ.'CFQ9Q9') THEN
+        ESC = 'QU9'
+        NNM = 9
+        NNE = 9
+        NDDL = 81
+        NDIM = 3
+        MAIT = 'QU9'
       ELSE
         CALL UTMESS('F','TE0364', 'NOM DE L ELEMENT INCONNU')
       END IF

@@ -1,7 +1,7 @@
       SUBROUTINE OP0129 (IER)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,17 +28,6 @@ C
       INTEGER IER
 C
 C 0.2. ==> COMMUNS
-C
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-C
 C 0.3. ==> VARIABLES LOCALES
 C
       CHARACTER*6 NOMPRO
@@ -52,7 +41,7 @@ C
       CHARACTER*3 TYPE
       CHARACTER*8 NOPASE, NOMFON
       CHARACTER*16 MOTCLE
-      CHARACTER*24 LIMOCL, LIVALE
+      CHARACTER*24 LIMOFA, LIMOCL, LIVALE
       CHARACTER*80 NOMSD, NOCOMP
 C DEB ------------------------------------------------------------------
 C====
@@ -61,8 +50,10 @@ C====
 C
       CALL JEMARQ()
       CALL INFMAJ()
+      IER = 0
 C
 C               12   345678   9012345678901234
+      LIMOFA = '&&'//NOMPRO//'_MOT_FAC        '
       LIMOCL = '&&'//NOMPRO//'_MOT_CLE        '
       LIVALE = '&&'//NOMPRO//'_VALEUR         '
 C
@@ -108,8 +99,23 @@ C                   1234567890123456
           CALL UTGETV ( MOTFAC, MOTCLE, IOCC, LIVALE, IAUX, TYPE )
           IF ( IAUX.NE.NBMOCL ) THEN
             CALL UTDEBM ( 'A', NOMPRO, 'ERREURS SUR LES DONNEES' )
-            CALL UTIMPI ( 'L', 'NOMBRE DE MOT-CLES : ', 1, NBMOCL )
-            CALL UTIMPI ( 'L', 'NOMBRE DE VALEURS  : ', 1, IAUX )
+            CALL UTIMPI ( 'L', 'NOMBRE DE MOTS-CLES : ', 1, NBMOCL )
+            CALL UTIMPI ( 'L', 'NOMBRE DE VALEURS   : ', 1, IAUX )
+            CALL UTFINM
+            CALL UTMESS ( 'F', NOMPRO, 'IL FAUT LE MEME NOMBRE.' )
+          ENDIF
+
+        ENDIF
+C
+        IF ( NBMOCL.NE.0 ) THEN
+C                   1234567890123456
+          MOTCLE = 'MOT_FACT        '
+          CALL UTGETV ( MOTFAC, MOTCLE, IOCC, LIMOFA, IAUX, TYPE )
+          IF ( IAUX.NE.NBMOCL ) THEN
+            CALL UTDEBM ( 'A', NOMPRO, 'ERREURS SUR LES DONNEES' )
+            CALL UTIMPI ( 'L', 'NOMBRE DE MOTS-CLES : ', 1, NBMOCL )
+            CALL UTIMPI (
+     >      'L', 'NOMBRE DE MOTS-CLES FACTEURS : ', 1, IAUX )
             CALL UTFINM
             CALL UTMESS ( 'F', NOMPRO, 'IL FAUT LE MEME NOMBRE.' )
           ENDIF
@@ -118,11 +124,12 @@ C                   1234567890123456
 C
         CALL SEMECO ( 'E', NOMSD, NOPASE,
      >                SAUX01,
-     >                NOCOMP, NBMOCL, LIMOCL, LIVALE, IRET )
+     >                NOCOMP, NBMOCL, LIMOCL, LIVALE, LIMOFA, IRET )
 C
         CALL JEDETR ( LIMOCL )
         IF ( NBMOCL.NE.0 ) THEN
           CALL JEDETR ( LIVALE )
+          CALL JEDETR ( LIMOFA )
         ENDIF
 C
    10 CONTINUE

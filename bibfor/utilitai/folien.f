@@ -6,7 +6,7 @@
       CHARACTER*19                SORTIE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 07/05/2003   AUTEUR DURAND C.DURAND 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -341,7 +341,7 @@ C
          CALL JELIBE ( PROL )
 C
       ELSEIF ( NAPP ) THEN
-         CALL WKVECT ( PROL, BASE//' V K8', 6+2*NBFONC, JPROS )
+         CALL WKVECT ( PROL, BASE//' V K16', 6+2*NBFONC, JPROS )
          ZK16(JPROS  ) = 'NAPPE   '
          ZK16(JPROS+1) = 'LOG LOG '
          ZK16(JPROS+2) = NOPAR1

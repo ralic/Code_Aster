@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  REAL*8  (A-H,O-Z)
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 02/10/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C TOLE CRP_6
 C     CALCUL
 C       - ENERGIE DE DEFORMATION
@@ -72,7 +72,7 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          VALRES(I) = ZERO
  10   CONTINUE
 C
-      CALL TECACH(.TRUE.,.FALSE.,'PTEMPER',1,ITEMPE)
+      CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
       IF ( ITEMPE .EQ. 0 ) THEN
          NBPAR  = 0
          NOMPAR = ' '

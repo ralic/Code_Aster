@@ -1,0 +1,1434 @@
+      SUBROUTINE SHB8PS(OPTION,XETEMP,D,PROPEL,WORK,RE,OUT)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 06/10/2003   AUTEUR JMBHH01 J.M.PROIX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C--------------------------------------------------------
+C ELEMENT SHB8-PS A.COMBESCURE, S.BAGUET INSA LYON 2003 /
+C-------------------------------------------------------
+C TOLE CRP_20
+C               ELEMENT SHB8
+
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER IOP,IBID,IDPLA(5),LAG,IRDC,IPROPE
+      REAL*8 EYG(5),ENU(5),PRORIE
+      REAL*8 XE(24),D(*),PROPEL(*),WORK(24),RE(24,24),OUT(*)
+      REAL*8 XXG5(5),PXG5(5),XCOQ(3,4),BKSIP(3,8,5),B(3,8)
+      REAL*8 XELOC(24),XCENT(3),PPP(3,3),PPPT(3,3)
+      REAL*8 XL(3,4),XXX(3),YYY(3),BGLOC(6,24)
+      REAL*8 BGLOCT(24,6),TMPTAB(6,24),TMPKE(24,24),CMATLO(6,6)
+      REAL*8 XXVB(3),HIJ(6),XKSTAB(24,24),TMPKE2(24,24)
+      REAL*8 GB(8,4),GS(8,4),VB(8,3),XXGB(3,4)
+      REAL*8 XK11(8,8),XK22(8,8),XK33(8,8),RR2(3,3),XK12(8,8)
+      REAL*8 XK21(8,8),XK13(8,8),XK23(8,8),XK31(8,8),XK32(8,8)
+      REAL*8 XR(3,3),XRT(3,3),LAMBDA
+
+      REAL*8 DEPS(6),DUSDX(9),UE(3,8),SIG(6),XELOCP(24)
+      REAL*8 UDEF(24),XXLOC(24),XLOC12(24)
+      REAL*8 DEPSLO(6),SIGLOC(6),STOT(6)
+      REAL*8 SIGEL(6),DSIGP(6)
+
+      REAL*8 F(3,8),BSIG(24),SIGMAG(6),ULOC(3,8),PQIALF(3,4)
+      REAL*8 QIALFA(3,4),FHG(3,8),RR12(3,3),RR1(3,3),FHG24(24)
+
+      REAL*8 DIREC(3),V(3),X56(3),X67(3),X78(3),X85(3),X12(3)
+      REAL*8 X23(3),X34(3),X41(3),VSUP(3)
+      REAL*8 V1234(3),V4123(3),VINF(3)
+
+      REAL*8 SITMP1(8,8),SITMP2(8,8)
+
+      REAL*8 XCOQ14(3),XCOQ23(3),XCOQ34(3),XCOQ12(3)
+      REAL*8 XKP(24,24),BKP(3,4)
+
+      REAL*8 XMASSE(8,8)
+
+      REAL*8 FQ(24)
+      REAL*8 XETEMP(24),XX1(3),XX2(3),XXN1(3),XX5(3)
+      REAL*8 HOOKE(36)
+
+      CHARACTER*16 OPTION
+
+      DATA ICLE/0/
+
+CCCCCCCCCCCCCC ENTREES CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C          ICLE=2    ON CALCULE LA MATRICE DE RAIDEUR
+C    OPTION=RIGI_MECA    ON CALCULE LA MATRICE DE RAIDEUR
+C          ICLE=3    ON CALCULE LA MATRICE DE MASSE
+C          ICLE=4    ON CALCULE LA MATRICE TANGENTE
+C          ICLE=5    ON CALCULE LES FORCES DE PRESSION
+C          ICLE=7    ON CALCULE LES CONTRAINTES
+C    OPTION=SIEF_ELGA_DEPL    ON CALCULE LES CONTRAINTES
+C          ICLE=8    ON CALCULE BSIGMA
+C          ICLE=9    ON CALCULE KSIGMA
+C          ICLE=10   ON CALCULE KP
+C          D         MATRICE D'ELASTICITE
+C          PROPEL    PROPRIETES ELASTIQUES (1)=YUNG (2)=NU
+C                                          (3)=RO   (4)=ALPHA
+C          WORK      TABLEAU DE TRAVAIL
+CCCCCCCCCCCCCC SORTIE CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+C          RE        MATRICE
+C          OUT       VECTEUR FORCE OU VECTEUR CONTRAINTE AUX NOEUDS
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+C INITIALISATIONS
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C INFOS:
+C XE EST RANGE COMME CA:
+C (XNOEUD1 YNOEUD1 ZNOEUD1, XNOEUD2 YNOEUD2 ZNOEUD2,...)
+C DANS SHB8_TEST_NUM: ATTENTION A LA NUMEROTATION DES NOEUDS
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+      DATA GB/1.D0,1.D0,-1.D0,-1.D0,-1.D0,-1.D0,1.D0,1.D0,1.D0,-1.D0,
+     &     -1.D0,1.D0,-1.D0,1.D0,1.D0,-1.D0,1.D0,-1.D0,1.D0,-1.D0,1.D0,
+     &     -1.D0,1.D0,-1.D0,-1.D0,1.D0,-1.D0,1.D0,1.D0,-1.D0,1.D0,-1.D0/
+
+C VB: COORD DES NOEUDS DANS REPERE DE REFERENCE
+
+      DATA VB/-1.D0,1.D0,1.D0,-1.D0,-1.D0,1.D0,1.D0,-1.D0,-1.D0,-1.D0,
+     &     1.D0,1.D0,-1.D0,-1.D0,1.D0,1.D0,-1.D0,-1.D0,-1.D0,-1.D0,1.D0,
+     &     1.D0,1.D0,1.D0/
+
+C ON DEFINI LES POINTS GAUSS ET LES POIDS
+
+      XXG5(1) = -0.906179845938664D0
+      XXG5(2) = -0.538469310105683D0
+      XXG5(3) = 0.D0
+      XXG5(4) = 0.538469310105683D0
+      XXG5(5) = 0.906179845938664D0
+
+      PXG5(1) = 0.236926885056189D0
+      PXG5(2) = 0.478628670499366D0
+      PXG5(3) = 0.568888888888889D0
+      PXG5(4) = 0.478628670499366D0
+      PXG5(5) = 0.236926885056189D0
+
+      UNS8 = 1.D0/8.D0
+      UNS3 = 1.D0/3.D0
+
+
+C -----------------------------------------------------
+C ON VERIFIE QUE LA CONNECTIVITE DONNE UN REPERE DIRECT
+C SI CE N EST PAS LE CAS ON PERMUTE LES NOEUDS
+C -----------------------------------------------------
+
+C     ON FAIT UNE COPIE DE XETEMP DANS XE
+      DO 10 I = 1,24
+        XE(I) = XETEMP(I)
+   10 CONTINUE
+C     ON CALCULE LES VECTEURS X2-X1 X4-X1 X5-X1
+      DO 20 I = 1,3
+        XX1(I) = XETEMP(I+3) - XETEMP(I)
+        XX2(I) = XETEMP(I+9) - XETEMP(I)
+        XX5(I) = XETEMP(I+12) - XETEMP(I)
+   20 CONTINUE
+C     ON CALCULE LE PRODUIT VECTORIEL X2-X1 ^ X4-X1
+      XXN1(1) = XX1(2)*XX2(3) - XX1(3)*XX2(2)
+      XXN1(2) = XX1(3)*XX2(1) - XX1(1)*XX2(3)
+      XXN1(3) = XX1(1)*XX2(2) - XX1(2)*XX2(1)
+C     ON CALCULE LE PRODUIT SCALAIRE AVEC X5-X1
+      PRORIE = 0.D0
+      DO 30 I = 1,3
+        PRORIE = PRORIE + XXN1(I)*XX5(I)
+   30 CONTINUE
+C     SI MAL ORIENTE ON CHANGE L ORIENTATION DE L ELEMENT
+      IF (PRORIE.LE.0.D0) THEN
+        CALL UTMESS('A','SHB8','MAUVAISE ORIENTATION DE L ELEMENT !')
+      END IF
+C -----------------------------------------------------
+
+
+C TYPE DE LOI DE COMPORTEMENT:
+C     IRDC = 1 : SHB8 TYPE PLEXUS
+C     IRDC = 2 : C.P.
+C     IRDC = 3 : 3D COMPLETE
+      IRDC = OUT(1)
+C \\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+C //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
+      IF (OPTION.EQ.'RIGI_MECA') THEN
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C                                                                  C
+C ON CALCULE LA RAIDEUR : SORTIE DANS RE                           C
+C                                                                  C
+C SI IETAN = 1 , ALORS ON CALCULE AUSSI                            C
+C                LA MATRICE TANGENTE PLASTIQUE                     C
+C                                                                  C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+        IETAN = PROPEL(13)
+
+C INTIALISATION LONGUEUR DES COTES
+C CALCUL DES COEFF D ELANCEMENT A METTRE DANS LA MATRICE DE CPT
+
+        XXL1 = 0.D0
+        XXL2 = 0.D0
+        TT1 = 0.D0
+        TT2 = 0.D0
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+C STABILISATION ADAPTATIVE EN FONCTION DE LA DISTORTION DE L'ELEMENT
+
+        DO 40 I = 1,3
+C DISTANCE ENTRE 1 ET 5 (EPAISSEUR)
+          TT1 = TT1 + (XE(I+12)-XE(I))**2
+C DISTANCE ENTRE 3 ET 7 (EPAISSEUR)
+          TT2 = TT2 + (XE(I+18)-XE(I+6))**2
+C DISTANCE ENTRE 1 ET 2
+          XXL1 = XXL1 + (XE(I+3)-XE(I))**2
+C DISTANCE ENTRE 2 ET 3
+          XXL2 = XXL2 + (XE(I+6)-XE(I+3))**2
+   40   CONTINUE
+        XXL1 = SQRT(XXL1)
+        XXL2 = SQRT(XXL2)
+        TT1 = 0.5D0* (SQRT(TT1)+SQRT(TT2))
+        COELA1 = 5.D0/6.D0
+        COELA2 = 5.D0/6.D0
+C ELANCEMENT DANS DIRECTION 2
+        ELT = 6.D0*TT1/XXL1
+        IF (COELA1.GT.ELT) COELA1 = ELT
+C ELANCEMENT DANS DIRECTION 1
+        ELT = 6.D0*TT1/XXL2
+        IF (COELA2.GT.ELT) COELA2 = ELT
+C POUR L'INSTANT, ON NE MET PAS EN SERVICE:
+        COELA1 = 1.D0
+        COELA2 = 1.D0
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+        IF (IETAN.EQ.1) THEN
+          EYG(1) = PROPEL(3)
+          EYG(2) = PROPEL(4)
+          EYG(3) = PROPEL(5)
+          EYG(4) = PROPEL(6)
+          EYG(5) = PROPEL(7)
+C          ENU(1) = PROPEL(8)
+C          ENU(2) = PROPEL(9)
+C          ENU(3) = PROPEL(10)
+C          ENU(4) = PROPEL(11)
+C          ENU(5) = PROPEL(12)
+C          DO 50 I = 1,5
+CC     SI IDPLA(I)=1, POINT GAUSS (I) PLASTIQUE
+C            IDPLA(I) = RE(I,1)
+C   50     CONTINUE
+        END IF
+
+C      CALL ZDANUL(RE,576)
+C      CALL ZDANUL(CMATLO,36)
+        CALL R8INIR(576,0.D0,RE,1)
+        CALL R8INIR(36,0.D0,CMATLO,1)
+
+C        IELEM = WORK(1)
+
+C ON DEFINI CMATLO: MATRICE DE COMPORTEMENT
+
+        XNU = PROPEL(2)
+C        XNU_B = XNU/ (1-XNU)
+        LAMBDA = PROPEL(1)*PROPEL(2)/ (1-PROPEL(2)*PROPEL(2))
+        XMU = 0.5D0*PROPEL(1)/ (1+PROPEL(2))
+        CMATLO(1,1) = LAMBDA + 2*XMU
+        CMATLO(2,2) = LAMBDA + 2*XMU
+        IF (IRDC.EQ.1) THEN
+C COMPORTEMENT SHB8 PLEXUS
+          CMATLO(3,3) = PROPEL(1)
+        END IF
+
+        IF (IRDC.EQ.2) THEN
+C COMPORTEMENT C.P.
+          CMATLO(3,3) = 0
+        END IF
+
+        CMATLO(1,2) = LAMBDA
+        CMATLO(2,1) = LAMBDA
+        CMATLO(4,4) = XMU
+        CMATLO(5,5) = XMU
+        CMATLO(6,6) = XMU
+
+        IF (IRDC.EQ.3) THEN
+C COMPORTEMENT LOI TRIDIM MMC 3D
+          XNU = PROPEL(2)
+          XCOOEF = PROPEL(1)/ ((1+XNU)* (1-2*XNU))
+          CMATLO(1,1) = (1-XNU)*XCOOEF
+          CMATLO(2,2) = (1-XNU)*XCOOEF
+          CMATLO(3,3) = (1-XNU)*XCOOEF
+          CMATLO(1,2) = XNU*XCOOEF
+          CMATLO(2,1) = XNU*XCOOEF
+          CMATLO(1,3) = XNU*XCOOEF
+          CMATLO(3,1) = XNU*XCOOEF
+          CMATLO(2,3) = XNU*XCOOEF
+          CMATLO(3,2) = XNU*XCOOEF
+          CMATLO(4,4) = (1-2*XNU)*0.5D0*XCOOEF
+          CMATLO(5,5) = (1-2*XNU)*0.5D0*XCOOEF
+          CMATLO(6,6) = (1-2*XNU)*0.5D0*XCOOEF
+        END IF
+
+C CALCUL DE BKSIP(3,8,IP) DANS REPERE DE REFERENCE
+C      BKSIP(1,*,IP) = VECTEUR BX AU POINT GAUSS IP
+C      BKSIP(2,*,IP) = VECTEUR BY AU POINT GAUSS IP
+C      BKSIP(3,*,IP) = VECTEUR BZ AU POINT GAUSS IP
+
+        CALL SHBKSI(5,XXG5,BKSIP)
+
+C DEBUT DE LA BOUCLE SUR LES 5 PTS GAUSS
+
+        DO 160 IP = 1,5
+
+C DEFINITION DES 4 POINTS  COQUES
+
+          ZETA = XXG5(IP)
+          ZLAMB = 0.5D0* (1.D0-ZETA)
+          DO 70 I = 1,4
+            DO 60 J = 1,3
+              XCOQ(J,I) = ZLAMB*XE((I-1)*3+J) +
+     &                    (1.D0-ZLAMB)*XE((I-1+4)*3+J)
+   60       CONTINUE
+   70     CONTINUE
+
+C CALCUL DE PPP 3*3 PASSAGE DE GLOBAL A LOCAL,COQUE
+C XCENT : COORD GLOBAL DU CENTRE DE L'ELEMENT
+
+          CALL RLOSHB(XCOQ,XCENT,PPP,XL,XXX,YYY,RBID)
+
+C CALCUL DE B EN GLOBAL
+
+C ATTENTION A L'ORDRE DE EPSILON:
+C  FARID DANS SON PAPIER: 11 22 33 12 13 23
+C  HARID DANS PLEXUS:     11 22 33 12 23 13
+
+
+C ON RAJOUTE LES TERMES H1,X . G1  , H2,X . G2
+C                   ET  H1,Y . G1  , H2,Y . G2
+C AVEC H1   = Y.Z    H2   = X.Z
+C DONC H1,X =0       H2,X = Z
+C ET   H1,Y =Z       H2,Y = 0
+
+C DONC IL NE RESTE PLUS QU'A CALCULER G1 ET G2, ET A AJOUTER A BKSIP
+
+          CALL SHCALB(BKSIP(1,1,IP),XE,B,AJAC)
+
+C IL FAUT:  EPS_LOCAL=BGLOB .U_NODAL_GLOBAL
+C ON CALCULE BGLOC LA MATRICE B(6,24) UGLOBAL ---> EPS LOCAL
+
+          CALL SHASBG(BGLOC,B,PPP)
+
+C IL FAUT TRANSPOSER BGLOC
+
+C         CALL AEQBT(BGLOCT,BGLOC,6,24)
+          DO 90 I = 1,6
+            DO 80 J = 1,24
+              BGLOCT(J,I) = BGLOC(I,J)
+   80       CONTINUE
+   90     CONTINUE
+
+
+
+C CALCUL DE LA MATRICE TANGENTE PLASTIQUE:
+
+
+C IL NE RESTE PLUS QU'A FAIRE: BGLOCT * C * BGLOC
+
+C         CALL ZDANUL(TMPTAB,144)
+C         CALL ZDANUL(TMPKE,576)
+C         CALL ZDANUL(TMPKE2,576)
+          CALL R8INIR(144,0.D0,TMPTAB,1)
+          CALL R8INIR(576,0.D0,TMPKE,1)
+          CALL R8INIR(576,0.D0,TMPKE2,1)
+
+          CALL MULMAT(6,6,24,CMATLO,BGLOC,TMPTAB)
+          CALL MULMAT(24,6,24,BGLOCT,TMPTAB,TMPKE2)
+
+C ASSEMBLAGE: KE=KE + POIDS*JACOBIAN*TMPKE
+
+          DO 110 J = 1,8
+            DO 100 I = 1,24
+              TMPKE(I, (J-1)*3+1) = TMPKE2(I,J)
+              TMPKE(I, (J-1)*3+2) = TMPKE2(I,J+8)
+              TMPKE(I, (J-1)*3+3) = TMPKE2(I,J+16)
+  100       CONTINUE
+  110     CONTINUE
+C         CALL ZDANUL(TMPKE2,576)
+          CALL R8INIR(576,0.D0,TMPKE2,1)
+          DO 130 I = 1,8
+            DO 120 J = 1,24
+              TMPKE2((I-1)*3+1,J) = TMPKE(I,J)
+              TMPKE2((I-1)*3+2,J) = TMPKE(I+8,J)
+              TMPKE2((I-1)*3+3,J) = TMPKE(I+16,J)
+  120       CONTINUE
+  130     CONTINUE
+          DO 150 J = 1,24
+            DO 140 I = 1,24
+              RE(I,J) = RE(I,J) + 4.D0*AJAC*PXG5(IP)*TMPKE2(I,J)
+  140       CONTINUE
+  150     CONTINUE
+  160   CONTINUE
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C                                                                  C
+C MATRICE DE STABILISATION : PAS DE BOUCLE SUR LES POINTS DE GAUSS C
+C                                                                  C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+C  ON A BESOIN DES VECTEURS GAMMA(8, ALPHA=1 A 4) = GS(8,4)
+
+        DO 170 I = 1,24
+          XELOC(I) = XE(I)
+  170   CONTINUE
+
+C ATTENTION, RR, MATRICE DU CORROTATIONNEL EST RANGEE PAR LIGNES!
+
+        CALL SHBROT(XELOC,RR2)
+        CALL SHVROT(RR2,XELOC,1)
+        CALL SHBBAR(XELOC,B,VOL)
+
+C CALCUL DES FONCTIONS DE FORME  GS
+C XXGB = X  * GB
+
+        DO 190 J = 1,3
+          DO 180 IA = 1,4
+            XXGB(J,IA) = HOUXGB(XELOC(J),IA)
+  180     CONTINUE
+  190   CONTINUE
+
+C GS = (BBB)  * XXGB
+
+        DO 210 I = 1,8
+          DO 200 J = 1,4
+            GS(I,J) = 0.D0
+  200     CONTINUE
+  210   CONTINUE
+        DO 240 J = 1,3
+          DO 230 IA = 1,4
+            DO 220 I = 1,8
+              GS(I,IA) = GS(I,IA) + B(J,I)*XXGB(J,IA)
+  220       CONTINUE
+  230     CONTINUE
+  240   CONTINUE
+
+C GS = GB - GS
+
+        DO 260 I = 1,4
+          DO 250 J = 1,8
+            GS(J,I) = (GB(J,I)-GS(J,I))*UNS8
+  250     CONTINUE
+  260   CONTINUE
+
+C CALCUL DE XXVB = X * VB
+
+        XXVB(1) = -XELOC(1) + XELOC(4) + XELOC(7) - XELOC(10) -
+     &            XELOC(13) + XELOC(16) + XELOC(19) - XELOC(22)
+        XXVB(2) = -XELOC(2) - XELOC(5) + XELOC(8) + XELOC(11) -
+     &            XELOC(14) - XELOC(17) + XELOC(20) + XELOC(23)
+        XXVB(3) = -XELOC(3) - XELOC(6) - XELOC(9) - XELOC(12) +
+     &            XELOC(15) + XELOC(18) + XELOC(21) + XELOC(24)
+
+C CALCUL DES RELATIONS CONTRAINTES ET DEFORMATIONS GENERALISEES
+
+        HIJ(1) = UNS3*XXVB(2)*XXVB(3)/XXVB(1)
+        HIJ(2) = UNS3*XXVB(1)*XXVB(3)/XXVB(2)
+        HIJ(3) = UNS3*XXVB(2)*XXVB(1)/XXVB(3)
+        HIJ(4) = UNS3*XXVB(3)
+        HIJ(5) = UNS3*XXVB(1)
+        HIJ(6) = UNS3*XXVB(2)
+
+C CALCUL DES COEFS A METTRE DANS KIJ POUR COMPOSER KSTAB
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C ANCIENNE PROG A FARID (PLEXUS):
+C      XK1101=(LAMBDA+2*XMU)*HIJ(1)+XMU*HIJ(2)
+C      XK1102=UNS3*((LAMBDA+2*XMU)*HIJ(1)+XMU*(HIJ(2)+HIJ(3)))
+C      XK2201=(LAMBDA+2*XMU)*HIJ(2)+XMU*HIJ(1)
+C      XK2202=UNS3*((LAMBDA+2*XMU)*HIJ(2)+XMU*(HIJ(1)+HIJ(3)))
+C      XK3301=XMU*(HIJ(1)+HIJ(2))
+C      XK3302=UNS3*(PROPEL(1)*HIJ(3)+XMU*(HIJ(1)+HIJ(2)))
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+C   ICI IL FAUT PRENDRE LA MOYENNE DES MODULES D'YOUNG TANGENTS
+
+C POUR LE SHB8 PLASTIQUE ET NON_LINEAIRE, METTRE IETAN A 1 DANS RIGID.FF
+C SINON METTRE IETAN A 0
+
+        IF (IETAN.EQ.1) THEN
+          YOUNGT = (EYG(1)+EYG(2)+EYG(3)+EYG(4)+EYG(5))/5.D0
+        ELSE
+          YOUNGT = PROPEL(1)
+        END IF
+
+C POUR RESOUDRE LE CISAILLEMENT TRANSVERSE:
+
+        YOUNGT = YOUNGT*0.5D0* (COELA1+COELA2)
+        LAMBDA = YOUNGT*PROPEL(2)/ (1-PROPEL(2)*PROPEL(2))
+        XMU = 0.5D0*YOUNGT/ (1+PROPEL(2))
+
+        XK1101 = (LAMBDA+2.D0*XMU)*HIJ(1)
+        XK1102 = UNS3* ((LAMBDA+2.D0*XMU)*HIJ(1))
+        XK2201 = (LAMBDA+2.D0*XMU)*HIJ(2)
+        XK2202 = UNS3* ((LAMBDA+2.D0*XMU)*HIJ(2))
+        XK3301 = 0.D0
+        IF (IRDC.EQ.1) THEN
+C COMPORTEMENT SHB8 PLEXUS
+          XK3302 = YOUNGT*HIJ(3)*UNS3
+        END IF
+
+        IF (IRDC.EQ.2) THEN
+C COMPORTEMENT C.P.
+          XK3302 = 0.D0
+        END IF
+
+        IF (IRDC.EQ.3) THEN
+C COMPORTEMENT LOI TRIDIM MMC 3D
+          XK1101 = XCOOEF* (1-XNU)*HIJ(1)
+          XK1102 = UNS3* (XCOOEF* (1-XNU)*HIJ(1))
+          XK2201 = XCOOEF* (1-XNU)*HIJ(2)
+          XK2202 = UNS3* (XCOOEF* (1-XNU)*HIJ(2))
+          XK3301 = 0.D0
+          XK3302 = XCOOEF* (1-XNU)*HIJ(3)*UNS3
+        END IF
+
+C      CALL ZDANUL(XK12,64)
+C      CALL ZDANUL(XK21,64)
+C      CALL ZDANUL(XK13,64)
+C      CALL ZDANUL(XK23,64)
+C      CALL ZDANUL(XK31,64)
+C      CALL ZDANUL(XK32,64)
+C      CALL ZDANUL(XK33,64)
+
+        CALL R8INIR(64,0.D0,XK12,1)
+        CALL R8INIR(64,0.D0,XK21,1)
+        CALL R8INIR(64,0.D0,XK13,1)
+        CALL R8INIR(64,0.D0,XK23,1)
+        CALL R8INIR(64,0.D0,XK31,1)
+        CALL R8INIR(64,0.D0,XK32,1)
+        CALL R8INIR(64,0.D0,XK33,1)
+        DO 280 J = 1,8
+          DO 270 I = 1,8
+
+C IL FAUT CALCULER K11 K22 K33 MATRICES 8*8
+
+            XK11(I,J) = XK1101*GS(I,3)*GS(J,3) + XK1102*GS(I,4)*GS(J,4)
+            XK22(I,J) = XK2201*GS(I,3)*GS(J,3) + XK2202*GS(I,4)*GS(J,4)
+            XK33(I,J) = XK3301*GS(I,3)*GS(J,3) + XK3302*GS(I,4)*GS(J,4)
+  270     CONTINUE
+  280   CONTINUE
+
+C ASSEMBLAGE DE KSTAB
+
+        CALL SHAKST(XKSTAB,XK11,XK22,XK33,XK12,XK21,XK13,XK23,XK31,
+     &                  XK32)
+
+
+C REMISE EN ORDRE DE KSTAB
+
+        DO 300 J = 1,8
+          DO 290 I = 1,24
+            TMPKE(I, (J-1)*3+1) = XKSTAB(I,J)
+            TMPKE(I, (J-1)*3+2) = XKSTAB(I,J+8)
+            TMPKE(I, (J-1)*3+3) = XKSTAB(I,J+16)
+  290     CONTINUE
+  300   CONTINUE
+C      CALL ZDANUL(XKSTAB,576)
+        CALL R8INIR(576,0.D0,XKSTAB,1)
+        DO 320 I = 1,8
+          DO 310 J = 1,24
+            XKSTAB((I-1)*3+1,J) = TMPKE(I,J)
+            XKSTAB((I-1)*3+2,J) = TMPKE(I+8,J)
+            XKSTAB((I-1)*3+3,J) = TMPKE(I+16,J)
+  310     CONTINUE
+  320   CONTINUE
+
+C IL FAUT REPASSER DANS LE REPERE GLOBAL AVEC RR2^T . KSTAB . RR2
+C EN FAIT C'EST RR2. KSTAB .RR2^T CAR RR2 RANGEE PAR LIGNES
+
+        CALL SHAKSG(XKSTAB,RR2)
+
+C RAJOUT DE KSTAB A KE
+
+        DO 340 J = 1,24
+          DO 330 I = 1,24
+            RE(I,J) = RE(I,J) + XKSTAB(I,J)
+  330     CONTINUE
+  340   CONTINUE
+      END IF
+
+C \\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+C //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
+      IF (OPTION.EQ.'SIEF_ELGA_DEPL') THEN
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C                                                                  C
+C ON CALCULE LES CONTRAINTES : SORTIE DANS OUT(30)                 C
+C                       CONTRAINTES LOCALES DANS CHAQUE COUCHE     C
+C                       SUR LA CONFIGURATION 1                     C
+C  LE DEPLACEMENT NODAL A L'AIR D'ETRE DANS WORK(1 A 24)           C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C      CALL ZDANUL(CMATLO,36)
+        CALL R8INIR(36,0.D0,CMATLO,1)
+
+C UE: INCREMENT DE DEPLACEMENT NODAL, REPERE GLOBAL
+
+C XE: DEBUT DU PAS
+        DO 360 J = 1,8
+          DO 350 I = 1,3
+            UE(I,J) = WORK((J-1)*3+I)
+  350     CONTINUE
+  360   CONTINUE
+C      IGRDDEP = D(1)
+        LAG = PROPEL(3)
+
+C ON DEFINIT CMATLO LOI MODIFIEE SHB8
+
+        LAMBDA = PROPEL(1)*PROPEL(2)/ (1-PROPEL(2)*PROPEL(2))
+        XMU = 0.5D0*PROPEL(1)/ (1+PROPEL(2))
+        CMATLO(1,1) = LAMBDA + 2*XMU
+        CMATLO(2,2) = LAMBDA + 2*XMU
+        IF (IRDC.EQ.1) THEN
+C COMPORTEMENT SHB8 PLEXUS
+          CMATLO(3,3) = PROPEL(1)
+        END IF
+
+        IF (IRDC.EQ.2) THEN
+C COMPORTEMENT C.P.
+          CMATLO(3,3) = 0
+        END IF
+
+        CMATLO(1,2) = LAMBDA
+        CMATLO(2,1) = LAMBDA
+        CMATLO(4,4) = XMU
+        CMATLO(5,5) = XMU
+        CMATLO(6,6) = XMU
+
+        IF (IRDC.EQ.3) THEN
+C COMPORTEMENT LOI TRIDIM MMC 3D
+          XNU = PROPEL(2)
+          XCOOEF = PROPEL(1)/ ((1+XNU)* (1-2*XNU))
+          CMATLO(1,1) = (1-XNU)*XCOOEF
+          CMATLO(2,2) = (1-XNU)*XCOOEF
+          CMATLO(3,3) = (1-XNU)*XCOOEF
+          CMATLO(1,2) = XNU*XCOOEF
+          CMATLO(2,1) = XNU*XCOOEF
+          CMATLO(1,3) = XNU*XCOOEF
+          CMATLO(3,1) = XNU*XCOOEF
+          CMATLO(2,3) = XNU*XCOOEF
+          CMATLO(3,2) = XNU*XCOOEF
+          CMATLO(4,4) = (1-2*XNU)*0.5D0*XCOOEF
+          CMATLO(5,5) = (1-2*XNU)*0.5D0*XCOOEF
+          CMATLO(6,6) = (1-2*XNU)*0.5D0*XCOOEF
+        END IF
+
+C CALCUL DE BKSIP(3,8,IP) DANS REPERE DE REFERENCE
+C      BKSIP(1,*,IP) = VECTEUR BX AU POINT GAUSS IP
+C      BKSIP(2,*,IP) = VECTEUR BY AU POINT GAUSS IP
+C      BKSIP(3,*,IP) = VECTEUR BZ AU POINT GAUSS IP
+
+        CALL SHBKSI(5,XXG5,BKSIP)
+
+        DO 450 IP = 1,5
+
+C DEFINITION DES 4 POINTS  COQUES
+
+          ZETA = XXG5(IP)
+          ZLAMB = 0.5D0* (1.D0-ZETA)
+          DO 380 J = 1,3
+            DO 370 I = 1,4
+              XCOQ(J,I) = ZLAMB*XE((I-1)*3+J) +
+     &                    (1.D0-ZLAMB)*XE((I-1+4)*3+J)
+  370       CONTINUE
+  380     CONTINUE
+
+C CALCUL DE PPP 3*3 PASSAGE DE GLOBAL A LOCAL,COQUE
+C XCENT : COORD GLOBAL DU CENTRE DE L'ELEMENT
+
+C         CALL RLOSHB(XCOQ,XCENT,PPP,XL,XXX,YYY,IBID)
+          CALL RLOSHB(XCOQ,XCENT,PPP,XL,XXX,YYY,RBID)
+
+C CALCUL DE B : U_GLOBAL ---> EPS_GLOBAL
+
+          CALL SHCALB(BKSIP(1,1,IP),XE,B,AJAC)
+
+C CALCUL DE EPS DANS LE REPERE GLOBAL: 1 POUR DEFORMATIONS LINEAIRES
+C                                     2 POUR TERMES CARRES EN PLUS
+          DO 390 I = 1,6
+            DEPS(I) = 0.D0
+  390     CONTINUE
+          IF (LAG.EQ.1) THEN
+C ON AJOUTE LA PARTIE NON-LINEAIRE DE EPS
+            CALL DSDX3D(2,B,UE,DEPS,DUSDX,8)
+          ELSE
+            CALL DSDX3D(1,B,UE,DEPS,DUSDX,8)
+          END IF
+
+C SORTIE DE DUSDX DANS PROPEL(1 A 9 * 5 PT DE GAUSS)
+C POUR UTILISATION ULTERIEURE DANS Q8PKCN_SHB8
+
+C         CALL AEQBT(PPPT,PPP,3,3)
+          DO 410 I = 1,3
+            DO 400 J = 1,3
+              PPPT(J,I) = PPP(I,J)
+  400       CONTINUE
+  410     CONTINUE
+          RR12(1,1) = DUSDX(1)
+          RR12(1,2) = DUSDX(2)
+          RR12(1,3) = DUSDX(3)
+          RR12(2,1) = DUSDX(4)
+          RR12(2,2) = DUSDX(5)
+          RR12(2,3) = DUSDX(6)
+          RR12(3,1) = DUSDX(7)
+          RR12(3,2) = DUSDX(8)
+          RR12(3,3) = DUSDX(9)
+          CALL MULMAT(3,3,3,PPPT,RR12,RR2)
+          CALL MULMAT(3,3,3,RR2,PPP,RR12)
+          DUSDX(1) = RR12(1,1)
+          DUSDX(2) = RR12(1,2)
+          DUSDX(3) = RR12(1,3)
+          DUSDX(4) = RR12(2,1)
+          DUSDX(5) = RR12(2,2)
+          DUSDX(6) = RR12(2,3)
+          DUSDX(7) = RR12(3,1)
+          DUSDX(8) = RR12(3,2)
+          DUSDX(9) = RR12(3,3)
+          DO 420 I = 1,9
+            PROPEL(I+ (IP-1)*9) = DUSDX(I)
+  420     CONTINUE
+          DO 430 I = 1,6
+            DEPSLO(I) = 0.D0
+            SIGLOC(I) = 0.D0
+  430     CONTINUE
+          CALL CHRP3D(PPP,DEPS,DEPSLO,2)
+
+C CALCUL DE SIGMA DANS LE REPERE LOCAL
+
+          CALL MULMAT(6,6,1,CMATLO,DEPSLO,SIGLOC)
+
+C CONTRAINTES ECRITES SOUS LA FORME:
+C               [SIG] = [S_11, S_22, S_33, S_12, S_23, S_13]
+          DO 440 I = 1,6
+C ON LAISSE LES CONTRAINTES DANS LE REPERE LOCAL POUR LA PLASTICITE
+            OUT((IP-1)*6+I) = SIGLOC(I)
+  440     CONTINUE
+  450   CONTINUE
+      END IF
+
+C \\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+C //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
+      IF (OPTION.EQ.'FORC_NODA') THEN
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C                                                                  C
+C ON CALCULE BSIGMA: SORTIE DANS OUT(24)                           C
+C                    ENTREE DE SIGMA DANS WORK(DIM=30)             C
+C                    ENTREE DU MATERIAU DANS D(1) ET D(2)          C
+C                    ENTREE DE QIALFA PAS PRECEDENT               C
+C                                      DANS RE(1 A 12)             C
+C                              QIALFA(J,I)=RE(J+(I-1)*3)          C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+        LAG = D(3)
+C      CALL ZDANUL(SITMP2,64)
+        CALL R8INIR(64,0.D0,SITMP2,1)
+        DO 470 J = 1,8
+          DO 460 I = 1,3
+            F(I,J) = 0.D0
+  460     CONTINUE
+  470   CONTINUE
+
+C CALCUL DE BKSIP(3,8,IP) DANS REPERE DE REFERENCE
+C      BKSIP(1,*,IP) = VECTEUR BX AU POINT GAUSS IP
+C      BKSIP(2,*,IP) = VECTEUR BY AU POINT GAUSS IP
+C      BKSIP(3,*,IP) = VECTEUR BZ AU POINT GAUSS IP
+
+        CALL SHBKSI(5,XXG5,BKSIP)
+        DO 540 IP = 1,5
+
+C RECHERCHE DE SIGMA DU POINT DE GAUSS GLOBAL
+
+          DO 480 I = 1,6
+
+C C'EST LES CONTRAINTES LOCALES POUR POUVOIR TRAITER LA PLASTICITE AVANT
+C LES CONTRAINTES SONT PASSEES DANS LA CONFI.
+C A LA FIN DU PAS DANS Q8PKCN
+
+            SIGLOC(I) = WORK((IP-1)*6+I)
+  480     CONTINUE
+          ZETA = XXG5(IP)
+          ZLAMB = 0.5D0* (1.D0-ZETA)
+          DO 500 J = 1,3
+            DO 490 I = 1,4
+              XCOQ(J,I) = ZLAMB*XE((I-1)*3+J) +
+     &                    (1.D0-ZLAMB)*XE((I-1+4)*3+J)
+  490       CONTINUE
+  500     CONTINUE
+C         CALL RLOSHB(XCOQ,XCENT,PPP,XL,XXX,YYY,IBID)
+          CALL RLOSHB(XCOQ,XCENT,PPP,XL,XXX,YYY,RBID)
+
+C PASSAGE DES CONTRAINTES AU REPERE GLOBAL
+
+          CALL CHRP3D(PPP,SIGLOC,SIGMAG,1)
+
+          CALL SHCALB(BKSIP(1,1,IP),XE,B,AJAC)
+
+C CALCUL DE BQ.SIGMA SI LAGRANGIEN TOTAL
+
+          IF (LAG.EQ.1) THEN
+            CALL SHASKS(SIGMAG,B,SITMP1)
+            DO 520 J = 1,8
+              DO 510 I = 1,8
+                SITMP2(I,J) = SITMP2(I,J) +
+     &                           4D0*AJAC*PXG5(IP)*SITMP1(I,J)
+  510         CONTINUE
+  520       CONTINUE
+          END IF
+
+C CALCUL DE B.SIGMA EN GLOBAL
+
+          POIDS = 4D0*AJAC*PXG5(IP)
+          DO 530 K = 1,8
+            F(1,K) = F(1,K) + POIDS* (B(1,K)*SIGMAG(1)+B(2,K)*SIGMAG(4)+
+     &               B(3,K)*SIGMAG(6))
+            F(2,K) = F(2,K) + POIDS* (B(1,K)*SIGMAG(4)+B(2,K)*SIGMAG(2)+
+     &               B(3,K)*SIGMAG(5))
+            F(3,K) = F(3,K) + POIDS* (B(1,K)*SIGMAG(6)+B(2,K)*SIGMAG(5)+
+     &               B(3,K)*SIGMAG(3))
+  530     CONTINUE
+
+C SI LAGRANGIEN TOTAL: RAJOUT DE FQ A F
+
+  540   CONTINUE
+        IF (LAG.EQ.1) THEN
+C         CALL ZDANUL(TMPKE,576)
+          CALL R8INIR(576,0.D0,TMPKE,1)
+          DO 570 KK = 1,3
+            DO 560 I = 1,8
+              DO 550 J = 1,8
+                TMPKE(I+ (KK-1)*8,J+ (KK-1)*8) = SITMP2(I,J)
+  550         CONTINUE
+  560       CONTINUE
+  570     CONTINUE
+C         CALL ZDANUL(TMPKE2,576)
+          CALL R8INIR(576,0.D0,TMPKE2,1)
+          DO 590 J = 1,8
+            DO 580 I = 1,24
+              TMPKE2(I, (J-1)*3+1) = TMPKE(I,J)
+              TMPKE2(I, (J-1)*3+2) = TMPKE(I,J+8)
+              TMPKE2(I, (J-1)*3+3) = TMPKE(I,J+16)
+  580       CONTINUE
+  590     CONTINUE
+C         CALL ZDANUL(TMPKE,576)
+          CALL R8INIR(576,0.D0,TMPKE,1)
+          DO 610 I = 1,8
+            DO 600 J = 1,24
+              TMPKE((I-1)*3+1,J) = TMPKE2(I,J)
+              TMPKE((I-1)*3+2,J) = TMPKE2(I+8,J)
+              TMPKE((I-1)*3+3,J) = TMPKE2(I+16,J)
+  600       CONTINUE
+  610     CONTINUE
+          CALL MULMAT(24,24,1,TMPKE,PROPEL,FQ)
+          DO 620 K = 1,8
+            F(1,K) = F(1,K) + FQ((K-1)*3+1)
+            F(2,K) = F(2,K) + FQ((K-1)*3+2)
+            F(3,K) = F(3,K) + FQ((K-1)*3+3)
+  620     CONTINUE
+        END IF
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+C ON CALCULE LA STABILISATION POUR LE CALCUL DE B.SIGMA
+C UE EST DANS PROPEL!
+C ON A BESOIN DU MATERIAU AUSSI!
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+        XYOUNG = D(1)
+        XNU = D(2)
+        LAMBDA = XYOUNG*XNU/ (1-XNU*XNU)
+        XMU = 0.5D0*XYOUNG/ (1+XNU)
+
+C DEPLACEMENT NODAL, REPERE GLOBAL : DANS PROPEL(1 A 24)
+
+        DO 630 I = 1,24
+          XXLOC(I) = XE(I)
+          XELOCP(I) = XE(I) - PROPEL(I)
+          XLOC12(I) = XE(I) - 0.5D0*PROPEL(I)
+  630   CONTINUE
+
+C ATTENTION, RR, MATRICE DU CORROTATIONNEL EST RANGEE PAR LIGNES!
+
+        CALL SHBROT(XXLOC,RR2)
+        CALL SHBROT(XELOCP,RR1)
+        CALL SHBROT(XLOC12,RR12)
+        CALL SHVROT(RR2,XXLOC,1)
+        CALL SHVROT(RR1,XELOCP,1)
+        CALL SHVROT(RR12,XLOC12,1)
+
+C  ON A BESOIN DES VECTEURS GAMMA(8, ALPHA=1 A 4) = GS(8,4)
+C  ORIGINE DE XLOC12 PAS BONNE, MAIS PAS GRAVE :
+C  DIFFERENTIELLES DANS B
+
+        CALL SHBBAR(XLOC12,B,VOL)
+
+
+C CALCUL DEPLACEMENT DEFORMANT DANS REPERE 1/2 PAS:
+
+        DO 640 I = 1,24
+          UDEF(I) = XXLOC(I) - XELOCP(I)
+  640   CONTINUE
+
+C CALCUL DES FONCTIONS DE FORME  GS
+C XXGB = X  * GB
+
+        DO 660 IA = 1,4
+          DO 650 J = 1,3
+            XXGB(J,IA) = HOUXGB(XLOC12(J),IA)
+  650     CONTINUE
+  660   CONTINUE
+
+C GS = (BBB)  * XXGB
+
+        DO 680 J = 1,4
+          DO 670 I = 1,8
+            GS(I,J) = 0.D0
+  670     CONTINUE
+  680   CONTINUE
+        DO 710 J = 1,3
+          DO 700 IA = 1,4
+            DO 690 I = 1,8
+              GS(I,IA) = GS(I,IA) + B(J,I)*XXGB(J,IA)
+  690       CONTINUE
+  700     CONTINUE
+  710   CONTINUE
+
+C GS = GB - GS
+
+        DO 730 I = 1,4
+          DO 720 J = 1,8
+            GS(J,I) = (GB(J,I)-GS(J,I))*UNS8
+  720     CONTINUE
+  730   CONTINUE
+
+C CALCUL DE XXVB = X * VB
+
+        XXVB(1) = -XLOC12(1) + XLOC12(4) + XLOC12(7) -
+     &            XLOC12(10) - XLOC12(13) + XLOC12(16) +
+     &            XLOC12(19) - XLOC12(22)
+        XXVB(2) = -XLOC12(2) - XLOC12(5) + XLOC12(8) +
+     &            XLOC12(11) - XLOC12(14) - XLOC12(17) +
+     &            XLOC12(20) + XLOC12(23)
+        XXVB(3) = -XLOC12(3) - XLOC12(6) - XLOC12(9) -
+     &            XLOC12(12) + XLOC12(15) + XLOC12(18) +
+     &            XLOC12(21) + XLOC12(24)
+
+C CALCUL DES RELATIONS CONTRAINTES ET DEFORMATIONS GENERALISEES
+
+        HIJ(1) = UNS3*XXVB(2)*XXVB(3)/XXVB(1)
+        HIJ(2) = UNS3*XXVB(1)*XXVB(3)/XXVB(2)
+        HIJ(3) = UNS3*XXVB(2)*XXVB(1)/XXVB(3)
+        HIJ(4) = UNS3*XXVB(3)
+        HIJ(5) = UNS3*XXVB(1)
+        HIJ(6) = UNS3*XXVB(2)
+
+C CALCUL DES DEFORMATIONS GENERALISEES
+
+        DO 760 IA = 1,4
+          DO 750 J = 1,3
+            AUX = 0.D0
+            DO 740 I = 1,8
+              AUX = AUX + GS(I,IA)*UDEF((I-1)*3+J)
+  740       CONTINUE
+            PQIALF(J,IA) = AUX
+  750     CONTINUE
+  760   CONTINUE
+
+C CALCUL DES CONTRAINTES GENERALISEES
+
+        DO 780 I = 1,4
+          DO 770 J = 1,3
+            QIALFA(J,I) = RE(J+ (I-1)*3,1)
+  770     CONTINUE
+  780   CONTINUE
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C              PROGRAMMATION FARID (PLEXUS)                        C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C       QIALFA(1,1) = QIALFA(1,1)
+C       QIALFA(2,2) = QIALFA(2,2)
+C       QIALFA(3,3) = QIALFA(3,3) + XMU*((HIJ(2)+HIJ(1))*PQIALF(3,3))
+C       QIALFA(1,2) = QIALFA(1,2)
+C       QIALFA(2,3) = QIALFA(2,3) + ((LAMBDA+2.D0*XMU)*HIJ(2)
+C      !           + XMU*HIJ(1))*PQIALF(2,3)
+C       QIALFA(1,3) = QIALFA(1,3) + ((LAMBDA+2.D0*XMU)*HIJ(1)
+C      !           + XMU*HIJ(2))*PQIALF(1,3)
+C       QIALFA(2,1) = QIALFA(2,1)
+C       QIALFA(3,2) = QIALFA(3,2)
+C       QIALFA(3,1) = QIALFA(3,1)
+C       QIALFA(1,4) = QIALFA(1,4) + UNS3*((LAMBDA+2.D0*XMU)*HIJ(1)
+C      !          + XMU*(HIJ(2)+HIJ(3)))*PQIALF(1,4)
+C       QIALFA(2,4) = QIALFA(2,4) + UNS3*((LAMBDA+2.D0*XMU)*HIJ(2)
+C      !           + XMU*(HIJ(1)+HIJ(3)))*PQIALF(2,4)
+C       QIALFA(3,4) = QIALFA(3,4) + UNS3*(XYOUNG*HIJ(3)
+C     !          + XMU*(HIJ(1)+HIJ(2)))*PQIALF(3,4)
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+        IF (IRDC.EQ.1) THEN
+          QIALFA(1,1) = QIALFA(1,1)
+          QIALFA(2,2) = QIALFA(2,2)
+          QIALFA(3,3) = QIALFA(3,3)
+          QIALFA(1,2) = QIALFA(1,2)
+          QIALFA(2,3) = QIALFA(2,3) +
+     &                   ((LAMBDA+2.D0*XMU)*HIJ(2))*PQIALF(2,3)
+          QIALFA(1,3) = QIALFA(1,3) +
+     &                   ((LAMBDA+2.D0*XMU)*HIJ(1))*PQIALF(1,3)
+          QIALFA(2,1) = QIALFA(2,1)
+          QIALFA(3,2) = QIALFA(3,2)
+          QIALFA(3,1) = QIALFA(3,1)
+          QIALFA(1,4) = QIALFA(1,4) +
+     &                   UNS3* ((LAMBDA+2*XMU)*HIJ(1))*PQIALF(1,4)
+          QIALFA(2,4) = QIALFA(2,4) +
+     &                   UNS3* ((LAMBDA+2*XMU)*HIJ(2))*PQIALF(2,4)
+C COMPORTEMENT SHB8 PLEXUS
+          QIALFA(3,4) = QIALFA(3,4) + XYOUNG*HIJ(3)*UNS3*PQIALF(3,4)
+        END IF
+
+        IF (IRDC.EQ.2) THEN
+          QIALFA(1,1) = QIALFA(1,1)
+          QIALFA(2,2) = QIALFA(2,2)
+          QIALFA(3,3) = QIALFA(3,3)
+          QIALFA(1,2) = QIALFA(1,2)
+          QIALFA(2,3) = QIALFA(2,3) +
+     &                   ((LAMBDA+2.D0*XMU)*HIJ(2))*PQIALF(2,3)
+          QIALFA(1,3) = QIALFA(1,3) +
+     &                   ((LAMBDA+2.D0*XMU)*HIJ(1))*PQIALF(1,3)
+          QIALFA(2,1) = QIALFA(2,1)
+          QIALFA(3,2) = QIALFA(3,2)
+          QIALFA(3,1) = QIALFA(3,1)
+          QIALFA(1,4) = QIALFA(1,4) +
+     &                   UNS3* ((LAMBDA+2*XMU)*HIJ(1))*PQIALF(1,4)
+          QIALFA(2,4) = QIALFA(2,4) +
+     &                   UNS3* ((LAMBDA+2*XMU)*HIJ(2))*PQIALF(2,4)
+C COMPORTEMENT C.P.
+          QIALFA(3,4) = QIALFA(3,4)
+        END IF
+        IF (IRDC.EQ.3) THEN
+C COMPORTEMENT LOI TRIDIM MMC 3D
+          XCOOEF = XYOUNG/ ((1+XNU)* (1-2*XNU))
+          QIALFA(1,1) = QIALFA(1,1)
+          QIALFA(2,2) = QIALFA(2,2)
+          QIALFA(3,3) = QIALFA(3,3)
+          QIALFA(1,2) = QIALFA(1,2)
+          QIALFA(2,3) = QIALFA(2,3) +
+     &                   ((XCOOEF* (1-XNU))*HIJ(2))*PQIALF(2,3)
+          QIALFA(1,3) = QIALFA(1,3) +
+     &                   ((XCOOEF* (1-XNU))*HIJ(1))*PQIALF(1,3)
+          QIALFA(2,1) = QIALFA(2,1)
+          QIALFA(3,2) = QIALFA(3,2)
+          QIALFA(3,1) = QIALFA(3,1)
+          QIALFA(1,4) = QIALFA(1,4) +
+     &                   UNS3* ((XCOOEF* (1-XNU))*HIJ(1))*PQIALF(1,4)
+          QIALFA(2,4) = QIALFA(2,4) +
+     &                   UNS3* ((XCOOEF* (1-XNU))*HIJ(2))*PQIALF(2,4)
+          QIALFA(3,4) = QIALFA(3,4) +
+     &                   XCOOEF* (1-XNU)*HIJ(3)*UNS3*PQIALF(3,4)
+        END IF
+CCCCCCCCCCCCCCCCCCC
+
+C SAUVEGARDE DES FORCES DE STABILISATION
+
+        DO 800 I = 1,4
+          DO 790 J = 1,3
+            RE(J+ (I-1)*3,1) = QIALFA(J,I)
+  790     CONTINUE
+  800   CONTINUE
+
+C CALCUL DES FORCES DE HOURGLASS FHG
+
+        DO 820 I = 1,8
+          DO 810 J = 1,3
+            FHG(J,I) = 0.D0
+  810     CONTINUE
+  820   CONTINUE
+        DO 850 J = 1,3
+          DO 840 I = 1,8
+            DO 830 IA = 1,4
+              FHG(J,I) = FHG(J,I) + QIALFA(J,IA)*GS(I,IA)
+  830       CONTINUE
+  840     CONTINUE
+  850   CONTINUE
+C ON REPASSE AU REPERE GLOBAL
+        DO 870 I = 1,3
+          DO 860 J = 1,8
+            FHG24((J-1)*3+I) = FHG(I,J)
+  860     CONTINUE
+  870   CONTINUE
+        CALL SHVROT(RR12,FHG24,2)
+
+C RAJOUT DE LA STABILISATION AU B SIGMA DEJA CALCULE
+
+        DO 890 J = 1,3
+          DO 880 I = 1,8
+            F(J,I) = F(J,I) + FHG24((I-1)*3+J)
+  880     CONTINUE
+  890   CONTINUE
+
+C ATTENTION A L'ORDRE DE OUT
+
+        DO 910 I = 1,3
+          DO 900 J = 1,8
+            OUT((J-1)*3+I) = F(I,J)
+  900     CONTINUE
+  910   CONTINUE
+      END IF
+
+C \\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+C //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
+
+
+      IF (OPTION.EQ.'RIGI_MECA_GE') THEN
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C CALCUL DE K.SIGMA                                                C
+C          EN ENTREE DANS WORK : SIGMA NORMALEMENT LONGUEUR 30     C
+C                         PROPEL(1): 1 POUR RE=RE+KSIGMA           C
+C                         PROPEL(1): 0 POUR RE=KSIGMA              C
+C             SORTIE           : RE(24*24)=RE(24*24)+KSIGMA        C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+C CALCUL DE B (1 2 3) AUX 5 POINTS DE GAUSS
+
+        CALL SHBKSI(5,XXG5,BKSIP)
+        DO 930 J = 1,8
+          DO 920 I = 1,8
+            SITMP2(I,J) = 0.D0
+  920     CONTINUE
+  930   CONTINUE
+
+C DEBUT DE LA BOUCLE SUR LES 5 PTS GAUSS
+
+        DO 990 IP = 1,5
+
+C CALCUL DE B
+
+          CALL SHCALB(BKSIP(1,1,IP),XE,B,AJAC)
+
+C CALCUL DE MATRICE DE PASSAGE POUR POUVOIR CALCULER LES
+C CONTRAINTES DANS LE REPERE GLOBAL
+
+          DO 940 I = 1,6
+C C'EST LES CONTRAINTES LOCALES POUR POUVOIR TRAITER LA PLASTICITE AVANT
+            SIGLOC(I) = WORK((IP-1)*6+I)
+  940     CONTINUE
+          ZETA = XXG5(IP)
+          ZLAMB = 0.5D0* (1.D0-ZETA)
+          DO 960 J = 1,3
+            DO 950 I = 1,4
+              XCOQ(J,I) = ZLAMB*XE((I-1)*3+J) +
+     &                    (1.D0-ZLAMB)*XE((I-1+4)*3+J)
+  950       CONTINUE
+  960     CONTINUE
+          CALL RLOSHB(XCOQ,XCENT,PPP,XL,XXX,YYY,RBID)
+
+C PASSAGE DES CONTRAINTES AU REPERE GLOBAL
+
+          CALL CHRP3D(PPP,SIGLOC,SIGMAG,1)
+          CALL SHASKS(SIGMAG,B,SITMP1)
+          DO 980 J = 1,8
+            DO 970 I = 1,8
+              SITMP2(I,J) = SITMP2(I,J) +
+     &                         4D0*AJAC*PXG5(IP)*SITMP1(I,J)
+  970       CONTINUE
+  980     CONTINUE
+  990   CONTINUE
+C      CALL ZDANUL(TMPKE,576)
+        CALL R8INIR(576,0.D0,TMPKE,1)
+        DO 1020 KK = 1,3
+          DO 1010 I = 1,8
+            DO 1000 J = 1,8
+              TMPKE(I+ (KK-1)*8,J+ (KK-1)*8) = SITMP2(I,J)
+ 1000       CONTINUE
+ 1010     CONTINUE
+ 1020   CONTINUE
+
+C ON MET DE L'ORDRE:
+
+C      CALL ZDANUL(TMPKE2,576)
+        CALL R8INIR(576,0.D0,TMPKE2,1)
+        DO 1040 J = 1,8
+          DO 1030 I = 1,24
+            TMPKE2(I, (J-1)*3+1) = TMPKE(I,J)
+            TMPKE2(I, (J-1)*3+2) = TMPKE(I,J+8)
+            TMPKE2(I, (J-1)*3+3) = TMPKE(I,J+16)
+ 1030     CONTINUE
+ 1040   CONTINUE
+C      CALL ZDANUL(TMPKE,576)
+        CALL R8INIR(576,0.D0,TMPKE,1)
+        DO 1060 I = 1,8
+          DO 1050 J = 1,24
+            TMPKE((I-1)*3+1,J) = TMPKE2(I,J)
+            TMPKE((I-1)*3+2,J) = TMPKE2(I+8,J)
+            TMPKE((I-1)*3+3,J) = TMPKE2(I+16,J)
+ 1050     CONTINUE
+ 1060   CONTINUE
+
+        IPROPE = PROPEL(1)
+        IF (IPROPE.EQ.0) THEN
+C       CALL SHIFTD(TMPKE,RE,576)
+            CALL R8COPY(576,TMPKE,1,RE,1)
+         ENDIF
+C      IF(IPROPE.EQ.1) CALL AEQAPB(RE,TMPKE,576)
+        IF(IPROPE.EQ.1) THEN
+           CALL R8AXPY(576,1.D0,TMPKE,1,RE,1)
+        ENDIF
+      END IF
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+C \\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+C //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
+      IF (ICLE.EQ.3) THEN
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C                                                                  C
+C   CALCUL DE LA MATRICE DE MASSE                                  C
+C           ENTREE: PROPEL(1) = MASSE VOLUMIQUE                    C
+C                 XE(1 A 14)= COORDONNEES DES NOEUDS               C
+C           SORTIE: RE(24,24) = MATRICE MASSE                      C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+        XRO = PROPEL(1)
+C      CALL ZDANUL(RE,576)
+        CALL R8INIR(576,0.D0,RE,1)
+
+C CALCUL DU PLAN MOYEN:
+
+        DO 1080 J = 1,3
+          DO 1070 I = 1,4
+            XCOQ(J,I) = 0.5D0*XE((I-1)*3+J) + 0.5D0*XE((I-1+4)*3+J)
+ 1070     CONTINUE
+ 1080   CONTINUE
+C CALCUL DE LA SURFACE MOYENNE:
+C        DO 1090 J = 1,3
+C          X12(J) = (XCOQ(J,1)+XCOQ(J,2))*0.5D0
+C          X34(J) = (XCOQ(J,3)+XCOQ(J,4))*0.5D0
+C          X23(J) = (XCOQ(J,2)+XCOQ(J,3))*0.5D0
+C          X41(J) = (XCOQ(J,4)+XCOQ(J,1))*0.5D0
+C 1090   CONTINUE
+C        DO 1100 J = 1,3
+C          V1234(J) = X34(J) - X12(J)
+C          V4123(J) = X23(J) - X41(J)
+C 1100   CONTINUE
+
+C CALCUL DE V4123 ^ V1234:
+
+C        VINF(1) = V4123(2)*V1234(3) - V4123(3)*V1234(2)
+C        VINF(2) = V4123(3)*V1234(1) - V4123(1)*V1234(3)
+C        VINF(3) = V4123(1)*V1234(2) - V4123(2)*V1234(1)
+
+C CALCUL DU VOLUME DE L'ELEMENT:
+
+        CALL SHBKSI(5,XXG5,BKSIP)
+        CALL SHCALB(BKSIP(1,1,3),XE,B,AJAC)
+C        XVOLUME = AJAC*8.
+C      CALL ZDANUL(XMASSE,64)
+        CALL R8INIR(64,0.D0,XMASSE,1)
+        XXXMAS = 0.D0
+        DO 1110 I = 1,8
+          XMASSE(I,I) = (8.D0/27.D0)*AJAC*XRO
+          XXXMAS = XXXMAS + XMASSE(I,I)
+ 1110   CONTINUE
+        DO 1130 I = 1,8
+          DO 1120 J = 1,8
+            IF (I.NE.J) THEN
+             XMASSE(I,J)=(1.D0/64.D0)*(2.D0+VB(I,1)*VB(J,1)*2.D0/3.D0)*
+     &                      (2.D0+VB(I,2)*VB(J,2)*2.D0/3.D0)*
+     &                      (2.D0+VB(I,3)*VB(J,3)*2.D0/3.D0)*AJAC*XRO
+              XXXMAS = XXXMAS + XMASSE(I,I)
+            END IF
+ 1120     CONTINUE
+ 1130   CONTINUE
+C      CALL ZDANUL(TMPKE,576)
+        CALL R8INIR(576,0.D0,TMPKE,1)
+        DO 1160 K = 1,3
+          DO 1150 I = 1,8
+            DO 1140 J = 1,8
+              TMPKE(I+ (K-1)*8,J+ (K-1)*8) = XMASSE(I,J)
+ 1140       CONTINUE
+ 1150     CONTINUE
+ 1160   CONTINUE
+        DO 1180 J = 1,8
+          DO 1170 I = 1,24
+            TMPKE2(I, (J-1)*3+1) = TMPKE(I,J)
+            TMPKE2(I, (J-1)*3+2) = TMPKE(I,J+8)
+            TMPKE2(I, (J-1)*3+3) = TMPKE(I,J+16)
+ 1170     CONTINUE
+ 1180   CONTINUE
+C      CALL ZDANUL(RE,576)
+        CALL R8INIR(576,0.D0,RE,1)
+        DO 1200 I = 1,8
+          DO 1190 J = 1,24
+            RE((I-1)*3+1,J) = TMPKE2(I,J)
+            RE((I-1)*3+2,J) = TMPKE2(I+8,J)
+            RE((I-1)*3+3,J) = TMPKE2(I+16,J)
+ 1190     CONTINUE
+ 1200   CONTINUE
+      END IF
+
+C \\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+C //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
+      IF (OPTION.EQ.'ECOUL_PLAS') THEN
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C                                                                    C
+C   CALCUL DE LA PROJECTION PLASTIQUE                                C
+C                                                                    C
+C          EN ENTREE DANS PROPEL(1:30)  : SIGMA INCR CONTRAINTE      C
+C                         PROPEL(31:60) : SIGMA CONTRAINTE DEBUT PAS C
+C                         PROPEL(61:70) : VAR INTERNES (2 AUX 5 PG)  C
+C                                         P ET IPLA DEBUT PAS        C
+C             SORTIE DANS OUT(1:30)  : SIGMA CONTRAINTE FIN PAS      C
+C                         WORK(1:10) : VAR INTERNES FIN PAS          C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCFCCC
+
+        YOUNG = D(1)
+        XNU = D(2)
+
+C --- BOUCLE PTS GAUSS
+        DO 1230 IP = 1,5
+
+C     CONTRAINTES PKII FIN DE PAS
+C         DO I=1,6
+C            OUT((IP-1)*6+I)=PROPEL(30+(IP-1)*6+I)+PROPEL((IP-1)*6+I)
+C         CONTINUE
+
+C     ON COURT-CIRCUITE LA PLASTICITE !!!
+C      GOTO 9999
+
+C     ON CALCULE LA LIMITE ELASTIQUE ASSOCIEE
+C     A LA DEFO PLAS CUMULEE
+C     ------------------------------------
+C     -- SORTIES --
+C     PENTE :
+C     SIGELA : LIMITE ELASTIQUE
+C     -- ENTREES --
+C     P : DEFO PLASTIQUE CUMULEE
+C     SIG/EPS : CONTR/DEFO PLAS SUR LA COURBE DE TRACTION
+C     NCOURB : NUM COURBE
+C     LCOURB : NB PTS / COURBE
+C     ICLE=1 ON VEUT LA PENTE
+C     ICLE=2 ON VEUT LA LIMITE ELASTIQUE
+C     TET : TEMPERATURE  TREF : TEMPERATURE DE REF
+C     IBI=0/1 COURBES NE DEPENDENT PAS/DEPENDENT DE LA TEMP
+C     LINCOU=0/1 INTERPOLATION PARABOLIQUE/LINEAIRE DES COURBES
+C     DEPSPL : INCR DE DEFO PLAS EQUIV
+C     HPAS : PAS DE TEMPS
+
+          P = PROPEL(60+ (IP-1)*2+1)
+          ICLE = 2
+          TET = 0.D0
+          TREF = 0.D0
+          IBI = 0
+          HPAS = 1.D0
+          NCOURB = 1
+          LINCOU = 1
+          TEST = PROPEL(101)
+
+C           RECUPERATION DE LA COURBE DE TRACTION
+          IMAT = PROPEL(100)
+        CALL RCTRAC(IMAT,'TRACTION','SIGM',0.D0,JPROLP,JVALEP,LCOURB,EM)
+
+          CALL RCFONC('V','TRACTION',JPROLP,JVALEP,LCOURB,RBID,RBID,
+     &                RBID,P,SIGELA,PENTE,AIRERP,RBID,RBID)
+
+
+C     CALCUL DE LA CONTRAINTE DE VON MISES
+          STAR = VONMIS(OUT((IP-1)*6+1))
+C     CALCUL DE LA CONTRAINTE DE VON MISES AU DEBUT DU PAS
+          S0 = VONMIS(PROPEL(30+ (IP-1)*6+1))
+
+C ---  SI ON EST PLASTIQUE
+C          IF (SIGELA* (1.D0+1.1D0*TEST).LE.STAR) THEN
+          IF(STAR.GT.SIGELA) THEN
+
+C     ON SE PLACE SUR LA SURFACE DE CHARGE
+C     ------------------------------------
+C     SORTIES
+C     SIGEL : CONTR SUR LA SURF DE CHARGE
+C     DSIGP : INCR CONTR HORS DE LA SURF DE CHARGE
+C     ENTREES
+C     STOT=OUT((IP-1)*6+1) : CONTRAINTE ELASTIQUE EN FIN DE PAS
+C     PROPEL(30+(IP-1)*6+1): CONTRAINTE ELASTIQUE DEBUT DE PAS
+C     PROPEL((IP-1)*6+1) : INCREMENT CONTRAINTE ELASTIQUE
+C     STEST = 10-3 * SIGELA
+C     S0 : TENSEUR EQUIV CORRESP A LA CONTR EN DEBUT DE PAS
+C      CALL SHIFTD(OUT((IP-1)*6+1),STOT,6)
+            CALL LCEQVN(6,OUT((IP-1)*6+1),STOT)
+            STEST = 1.D-3*SIGELA
+            CALL SIGELP(PROPEL(30+ (IP-1)*6+1),PROPEL((IP-1)*6+1),SIGEL,
+     &                  DSIGP,STOT,STEST,12,S0,SIGELA,STAR)
+
+C     ON CONSTRUIT LA MATRICE DE HOOKE
+C      CALL ZDANUL(HOOKE,36)
+            CALL R8INIR(36,0.D0,HOOKE,1)
+            ELT1 = YOUNG/ (1.D0+XNU)/ (1.D0-2.D0*XNU)
+            HOOKE(1) = ELT1
+            HOOKE(2) = XNU*ELT1
+            HOOKE(7) = HOOKE(2)
+            HOOKE(8) = ELT1
+C     ON MET LIGNE ET COLONNE DE D A 0 POUR NE
+C     PAS AVOIR DE CONTRAINTE SIGMA ZZ
+C       HOOKE(15)=RAI
+            ELT1 = 0.5D0*YOUNG/ (1.D0+XNU)
+            HOOKE(22) = ELT1
+            ELT1 = ELT1*5.D0/6.D0
+            HOOKE(29) = ELT1
+            HOOKE(36) = ELT1
+
+C     ON FAIT L ECOULEMENT
+C     SORTIES
+C     SI : VON MISES DU TENSEUR DE CONTRAINTES EN EQUIL
+C     DEPSPL : INCR DEFO PLAS
+C     EPST : DEFO PLAS CUMULEE FIN DE PAS
+C     ITER : NB ITERATIONS INTERNES PR CONVERGER
+C     SN : VON MISES DU TENSEUR DE CONTRAINTES SUR LA SURF DE CHARGE
+C     ENTREES
+C     STAR : VON MISES DEFO TOTALE
+C     SIGELA : LIMITE ELASTIQUE DEBUT PAS
+C     EPSTAR : DEFO PLAS CUMULEE DEBUT DE PAS
+C     TET : TEMPERATURE
+C     HOOKE : LOI DE HOOKE
+C     WORK : TABLEAU DE TRAVAIL
+C     SIG/EPS : CONTR/DEFO COURBE DE TRACTION
+C     IP : NUM DU POINT
+C     SIGEL : CONTR SUR LA SURF DE CHARGE
+C     DSIGP : INCR DE CONTRAINTE HORS DE LA SURF DE CHARGE
+C     ITMAX : NB ITERATIONS MAX POUR LA PLASTICITE
+C
+            ITMAX = PROPEL(102)
+            EPSTAR = PROPEL(60+ (IP-1)*2+1)
+            CALL PRJSHB(12,STAR,SIGELA,PENTE,6,SI,DEPSPL,EPST,
+     &                  EPSTAR,ITER,SN,TET,HOOKE,PANTIN,SIG,EPS,IP,
+     &                  SIGEL,DSIGP,TEST,TREF,ALFAH,HPAS,STOT,
+     &                  NCOURB,LINCOU,IBI,IMAT,ITMAX)
+C     1 NCOURB,LCOURB,LINCOU,IBI,IMAT)
+
+C     MISE A JOUR DES VAR INTERNES FIN DE PAS
+            WORK((IP-1)*2+1) = PROPEL(60+ (IP-1)*2+1) + DEPSPL
+            WORK((IP-1)*2+2) = 1
+
+C     MISE A JOUR CONTRAINTE FIN DE PAS
+            DO 1210 I = 1,6
+              OUT((IP-1)*6+I) = SIGEL(I)
+ 1210       CONTINUE
+
+
+C ---  SI ON EST ELASTIQUE
+          ELSE
+C     VAR INTERNES FIN DE PAS
+            DO 1220 I = 1,2
+              WORK((IP-1)*2+I) = PROPEL(60+ (IP-1)*2+I)
+ 1220       CONTINUE
+
+          END IF
+
+ 1230   CONTINUE
+C --- FIN BOUCLE PTS GAUSS
+
+
+      END IF
+
+      END

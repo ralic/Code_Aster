@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_DERIVATION Build  DATE 03/09/2002   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF B_SENSIBILITE_DERIVATION Build  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -221,7 +221,7 @@ class SENSIBILITE_DERIVATION :
        mc_derive = None
        for child in etape.mc_liste :
          if child.nature == 'MCSIMP' :
-           mc_derive = self.derive_mcsimp(child,new_jdc)
+           mc_derive = self.derive_mcsimp(None,child,new_jdc)
            if mc_derive :
              liste.append(mc_derive)
          elif child.nature in ('MCFACT','MCBLOC') :
@@ -243,9 +243,9 @@ class SENSIBILITE_DERIVATION :
        liste = []
        for child in mc.mc_liste :
          if child.nature == 'MCSIMP' :
-           mc_derive = self.derive_mcsimp(child,new_jdc)
+           mc_derive = self.derive_mcsimp(mc,child,new_jdc)
            if mc_derive :
-            liste.append(mc_derive)
+             liste.append(mc_derive)
          elif child.nature == 'MCBLOC' :
            liste = liste + self.derive_mccompo(child,new_jdc)
 #
@@ -261,10 +261,11 @@ class SENSIBILITE_DERIVATION :
          liste = liste + self.derive_mccompo(child,new_jdc)
        return liste 
    
-   def derive_mcsimp(self,mcsimp,new_jdc) :
+   def derive_mcsimp(self,mcfact,mcsimp,new_jdc) :
        """
        Dérive le mcsimp passé en argument
-       Retourne None ou le mot-clé concerné par une dérivation
+       Retourne None ou le tuple (mot-clé facteur, mot-clé simple, valeur) concerné
+       par la dérivation
        """ 
        assert type(mcsimp.valeur) not in (types.ListType,types.TupleType), "Cas non traité : MCSIMP avec valeur == liste"
 #       print 'Ancien :',mcsimp.valeur,' de type ',type(mcsimp.valeur)
@@ -272,7 +273,7 @@ class SENSIBILITE_DERIVATION :
        if type(mcsimp.valeur) == types.FloatType :
          mcsimp.valeur = self.reel
        elif mcsimp.valeur in self.d_nom_s_c.keys() :
-         mc_derive = (mcsimp.nom,mcsimp.valeur)
+         mc_derive = (mcfact,mcsimp,mcsimp.valeur)
          mcsimp.valeur = self.d_nom_s_c[mcsimp.valeur]
        elif type(mcsimp.valeur) == types.InstanceType :
          if isinstance(mcsimp.valeur,new_jdc.g_context['fonction']) :
@@ -298,12 +299,19 @@ class SENSIBILITE_DERIVATION :
        if l_mc_derives :
          texte_mc = ",MOT_CLE=("
          texte_va = ",VALEUR=("
+         texte_mf = ",MOT_FACT=("
          for mot_cle in l_mc_derives :
-           texte_mc = texte_mc + "'%s',"%(mot_cle[0])
-           texte_va = texte_va + "'%s',"%(mot_cle[1].nom)
+           if mot_cle[0] :
+             aux = mot_cle[0].nom
+           else :
+             aux = " "
+           texte_mf = texte_mf + "'%s',"%(aux)
+           texte_mc = texte_mc + "'%s',"%(mot_cle[1].nom)
+           texte_va = texte_va + "'%s',"%(mot_cle[2].nom)
+         texte_mf = texte_mf + ")\n"
          texte_mc = texte_mc + ")\n"
          texte_va = texte_va + ")\n"
-         texte = texte + texte_mc + texte_va
+         texte = texte + texte_mf + texte_mc + texte_va
        texte = texte + "));\n"
        if self.DEBUG :
          print ".... ", texte
@@ -366,4 +374,3 @@ if __name__ == "__main__" :
 #    print "Commande ASTER pour 'CH1' + ",param," = 'gabuzome : \n",derivation.get_texte_memo_nom_sensi_compose('CH1',param,'gabuzome',d_param[param])
   print "Commande ASTER pour ZERO : ", derivation.get_texte_memo_nom_sensi_zero('fonc_0')
   print "Commande ASTER pour UN   : ", derivation.get_texte_memo_nom_sensi_un('fonc_1')
- 

@@ -1,6 +1,6 @@
       SUBROUTINE CALFFJ(ALIAS,XI,YI,IGEOM,TN,JAC,IAXIS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/12/2000   AUTEUR ADBHHPM P.MASSIN 
+C MODIF ELEMENTS  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -163,26 +163,33 @@ C--------------------------------------------------------------------
 
       ELSE IF (ALIAS.EQ.'TR6') THEN
 
-        TN(1) = 0.5D0* (1.D+00+YI)*YI
+        TN(1) = 0.5D0* (1.D0+YI)*YI
         TN(2) = 0.5D0* (XI+YI)* (XI+YI+1)
-        TN(3) = 0.5D0* (1.D+00+XI)*XI
+        TN(3) = 0.5D0* (1.D0+XI)*XI
         TN(4) = - (1.D0+YI)* (XI+YI)
         TN(5) = - (1.D0+XI)* (XI+YI)
         TN(6) = (1.D0+XI)* (1.D0+YI)
 
         AJ(1,1) = 0.D+00
-        AJ(1,2) = 0.5D0* (2*XI+2*YI+1.D0)
-        AJ(1,3) = 0.5D0* (2*XI+1.D0)
+        AJ(1,2) = 0.5D0* (2.D0*XI+2.D0*YI+1.D0)
+        AJ(1,3) = 0.5D0* (2.D0*XI+1.D0)
         AJ(1,4) = - (1.D0+YI)
         AJ(1,5) = - (1.D0+YI+2.D0*XI)
         AJ(1,6) = (1.D0+YI)
 
-        AJ(2,1) = 0.5D0* (2.D0*YI+1)
-        AJ(2,2) = 0.5D0* (2.D0*XI+2.D0*YI+1)
+        AJ(2,1) = 0.5D0* (2.D0*YI+1.D0)
+        AJ(2,2) = 0.5D0* (2.D0*XI+2.D0*YI+1.D0)
         AJ(2,3) = 0.D+00
-        AJ(2,4) = - (1.D+00+XI+2.D0*YI)
+        AJ(2,4) = - (1.D0+XI+2.D0*YI)
         AJ(2,5) = - (1.D0+XI)
         AJ(2,6) = (1.D0+XI)
+        
+        DXDE = 0.D0
+        DXDK = 0.D0
+        DYDE = 0.D0
+        DYDK = 0.D0
+        DZDE = 0.D0
+        DZDK = 0.D0
 
 
         DO 40 I = 1,6

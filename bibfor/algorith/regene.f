@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES, RESGEN
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/05/2002   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ALGORITH  DATE 21/07/2003   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -206,7 +206,8 @@ C-----------------------------------------------------------------------
       ELSE
 C-----------------------------------------------------------------------
          CALL JEVEUO(BASMOD//'           .REFE','L',IADRIF)
-         IF (TYPREP(1:9) .EQ. 'MODE_MECA') THEN
+         IF ((TYPREP(1:9) .EQ. 'MODE_MECA') .OR. (TYPREP(1:9) .EQ.
+     +     'MODE_STAT')) THEN
            MATRIC = ZK24(IADRIF)
            CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBID,
      +                 NUMEDD,IRET)

@@ -6,7 +6,7 @@
      &                   LREAC,  CNVFRE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/10/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -295,11 +295,11 @@ C -- CONTROLE DES CODES RETOUR QUI CONDITIONNENT LA CONVERGENCE
 C    PAR RAPPORT AU PILOTAGE
       IF (LICCVG(1) .GE. 1) THEN
         CONVER = .FALSE.
-        MARQ(6) = 'X'
+        MARQ(7) = 'X'
       END IF
 
       IF (LICCVG(1) .LT. 0) THEN
-        MARQ(6) = 'S'
+        MARQ(7) = 'S'
         FINPAS  = .TRUE.
       END IF
 

@@ -1,6 +1,6 @@
       SUBROUTINE TUSIEF(OPTION,ELREFE,NBRDDL,B,VIN,MAT,PASS,VTEMP)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 03/07/2002   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -118,7 +118,7 @@ C
       NOMRES(3) = 'ALPHA'
 C
       IF (OPTION(1:14) .EQ. 'SIEF_ELGA_DEPL') THEN
-         CALL TECAC2 ('NNN','PTEMPER',8,ITAB,IRET)
+         CALL TECACH ('NNN','PTEMPER',8,ITAB,IRET)
          ITEMP=ITAB(1)
          IF ( ITEMP .EQ. 0 ) THEN
             NBPAR  = 0
@@ -191,7 +191,7 @@ C
 C===============================================================
 C        -- RECUPERATION DE LA TEMPERATURE :
 C        -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-         CALL TECAC2 ('NNN','PTEMPER',8,ITAB,IRET)
+         CALL TECACH ('NNN','PTEMPER',8,ITAB,IRET)
          ITEMP=ITAB(1)
          IF (ITEMP.GT.0) THEN
             DO 02 I = 1,NNO
@@ -202,7 +202,7 @@ C        -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
 02          CONTINUE
          END IF
 C        -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
-         CALL TECACH(.FALSE.,.FALSE.,'PTEMPEF',1,ITEMP)
+         CALL TECACH('NNN','PTEMPEF',1,ITEMP,IRET)
          IF (ITEMP.GT.0) THEN
             NOMPU(1) = 'INST'
             NOMPU(2) = 'EPAIS'

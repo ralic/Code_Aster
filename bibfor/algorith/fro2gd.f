@@ -1,8 +1,8 @@
-      SUBROUTINE FRO2GD (DEFICO,RESOCO,LMAT,LDSCON,NOMA,
+       SUBROUTINE FRO2GD (DEFICO,RESOCO,LMAT,LDSCON,NOMA,
      &                   CINE,RESU,DEPTOT,ITERAT,LREAC,DEPDEL,ISTO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/10/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,7 +70,7 @@ C VAR RESU    : INCREMENT "DDEPLA" DE DEPLACEMENT DEPUIS DEPTOT
 C                 EN ENTREE : SOLUTION OBTENUE SANS TRAITER LE CONTACT
 C                 EN SORTIE : SOLUTION CORRIGEE PAR LE CONTACT
 C ======================================================================
-C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------
+C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
 C ======================================================================
       CHARACTER*32       JEXNUM , JEXNOM
       INTEGER            ZI
@@ -94,22 +94,25 @@ C ======================================================================
       INTEGER      IBID,IER,IFM,NIV,NDECI,ISINGU,NPVNEG,JAPJFX
       INTEGER      ICONTA,II,JJ,KK,IDEBUT,ILIAC,KCOUNT,NUMIN,KKMIN
       INTEGER      JRESU,JDEPP,JMU,JCMU,JATMU,POSMA,NDIM,NEQMAX
-      INTEGER      JDELT0,JDELTA,JLIAC,JVALE,JCOCO,JCM1A,JRCINE,JVA
-      INTEGER      NEQ,NESCL,NBLIAC,NBLIAI,NBLIAP,INDIC
+      INTEGER      JDELT0,JDELTA,JLIAC,JVALE,JCOCO,JRCINE,JVA
+      INTEGER      NEQ,NESCL,NBLIAC,NBLIAI,NBLIAP,INDIC,INDFAC
       INTEGER      LLIAC,LLJAC,POS1,POS2,NUM1,NUM2,JDECAL,NBDDL
       INTEGER      JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JNOCO,JMACO
-      INTEGER      NBLCIN,NBLFIN,JLIOT,IOTE
-      INTEGER      LLF,JAPCOF,IFROT,LFMIN,JAFMU,PIVOT,ZERO
-      INTEGER      LLKAC,IIKAC,ICOUNT,LCOUNT,LIND,LLFN,IFRO,JDEPDE
+      INTEGER      NBLCIN,NBLFIN,JLIOT,IOTE,LLF1,LLF2,NESMAX,BTOTAL
+      INTEGER      LLF,JAPCOF,IFROT,LFMIN,JAFMU,PIVOT,ZERO,JLIGLI
+      INTEGER      LLKAC,IIKAC,ICOUNT,LCOUNT,LIND,LLFN,IFRO,JVECC
+      INTEGER      AJLIAI, SPLIAI, POSIT, DEKLAG, POSIT2, SPAVAN,COMPT0
       REAL*8       R8MAEM,R8PREM,AJEU,RHO,RHORHO,AADELT
       REAL*8       X1,VAL,VAL1,VAL2,ZMU,XFORC,XJVMAX,XJVMIN
       REAL*8       AJEUFX,XPDT,XK,XCOMP,XQUOT,XCOS,XSIN,XXX
       COMPLEX*16   CBID
+      CHARACTER*1  TYPEAJ
+      CHARACTER*2  TYPEC0, TYPEF0
       CHARACTER*8  NOM1,NOM2
       CHARACTER*14 CHAIN
-      CHARACTER*19 LIAC,LIOT,MU,ATMU,DELT0,DELTA,CM1A,MATR,COCO,AFMU
+      CHARACTER*19 LIAC,LIOT,MU,ATMU,DELT0,DELTA,COCO,AFMU,CONVEC
       CHARACTER*24 APPARI,APPOIN,APCOEF,APJEU,APDDL,COEFMU
-      CHARACTER*24 CONTNO,CONTMA,APCOFR,FROTE,MACONT,APJEFX
+      CHARACTER*24 CONTNO,CONTMA,APCOFR,FROTE,MACONT,APJEFX,LIAIGL
 C ======================================================================
 C             INITIALISATIONS DES OBJETS ET DES ADRESSES
 C ======================================================================
@@ -142,8 +145,6 @@ C MU     : MULTIPLICATEURS DE LAGRANGE DU CONTACT (DOIVENT ETRE > 0)
 C COEFMU : COEFFICIENT PAR LEQUEL IL FAUT MULTIPLIER MU AVANT DE
 C          TESTER SON SIGNE (-1 SI CONDITION EN PRESSION OU TEMPERATURE)
 C ATMU   : FORCES DE CONTACT
-C CM1A   : C-1.AT AVEC C MATRICE DE RIGIDITE TANGENTE,
-C          ET A MATRICE DE CONTACT (AT SA TRANSPOSEE)
 C ======================================================================
       CONTNO   = DEFICO(1:16)//'.NOEUCO'
       CONTMA   = DEFICO(1:16)//'.MAILCO'
@@ -156,16 +157,16 @@ C ======================================================================
       APDDL    = RESOCO(1:14)//'.APDDL'
       LIAC     = RESOCO(1:14)//'.LIAC'
       LIOT     = RESOCO(1:14)//'.LIOT'
+      CONVEC   = RESOCO(1:14)//'.CONVEC'
       MU       = RESOCO(1:14)//'.MU'
       COEFMU   = RESOCO(1:14)//'.COEFMU'
       ATMU     = RESOCO(1:14)//'.ATMU'
       AFMU     = RESOCO(1:14)//'.AFMU'
       DELT0    = RESOCO(1:14)//'.DEL0'
       DELTA    = RESOCO(1:14)//'.DELT'
-      CM1A     = RESOCO(1:14)//'.CM1A'
-      MATR     = RESOCO(1:14)//'.MATR'
+      COCO     = RESOCO(1:14)//'.COCO'
       FROTE    = DEFICO(1:16)//'.FROTE'
-C
+C ======================================================================
       CALL JEVEUO (CONTNO,'L',JNOCO )
       CALL JEVEUO (CONTMA,'L',JMACO )
       CALL JEVEUO (APPARI,'L',JAPPAR)
@@ -177,6 +178,7 @@ C
       CALL JEVEUO (APDDL, 'L',JAPDDL)
       CALL JEVEUO (LIAC,  'E',JLIAC )
       CALL JEVEUO (LIOT,  'E',JLIOT )
+      CALL JEVEUO (CONVEC,'E',JVECC )
       CALL JEVEUO (MU,    'E',JMU   )
       CALL JEVEUO (COEFMU,'L',JCMU  )
       CALL JEVEUO (ATMU,  'E',JATMU )
@@ -184,31 +186,37 @@ C
       CALL JEVEUO (DELT0, 'E',JDELT0)
       CALL JEVEUO (DELTA, 'E',JDELTA)
       CALL JEVEUO (FROTE, 'L',IFRO  )
+      CALL JEVEUO (COCO,  'E',JCOCO )
       CALL JEVEUO (RESU(1:19)//'.VALE'  ,'E',JRESU)
       CALL JEVEUO (DEPTOT(1:19)//'.VALE','E',JDEPP)
-      CALL JEVEUO (DEPDEL(1:19)//'.VALE', 'L', JDEPDE)
 C ======================================================================
       NBLIAI = NESCL
 C ======================================================================
       MACONT = ZK24(ZI(LDSCON+1))
       CALL JEECRA (MACONT(1:19)//'.REFA','DOCU',IBID,'ASSE')
       NEQ = ZI(LMAT+2)
-      CALL JEVEUO (JEXNUM(MATR//'.VALE',1),'E',JVALE)
 C ======================================================================
 C --- SOUVENIRS DE L'ETAT DE CONTACT -> ON NE PEUT PAS S'EN SERVIR
 C --- AU DEBUT CAR SI ON A REAPPARIE LES LIAISONS SONT DIFFERENTES
 C ======================================================================
-C --- NBLIAC : NOMBRE DE LIAISONS ACTIVES
-C --- LLF    : NOMBRE DE LIAISONS ADHERENTES
+C --- NBLIAC : NOMBRE DE LIAISONS ACTIVES ------------------------------
+C --- LLF    : NOMBRE DE LIAISONS ADHERENTES (DEUX DIRECTIONS) ---------
 C ======================================================================
-      COCO   = RESOCO(1:14)//'.COCO'
-      CALL     JEVEUO (COCO,'E',JCOCO)
-      NDIM   = ZI(JCOCO)
-      NBLIAC = ZI(JCOCO+1)
-      LLF    = ZI(JCOCO+6)
-      KKMIN  = 0
+      NDIM   = ZI(JCOCO  )
+      INDIC  = ZI(JCOCO+1)
+      NBLIAC = ZI(JCOCO+2)
+      AJLIAI = ZI(JCOCO+3)
+      SPLIAI = ZI(JCOCO+4)
+      LLF    = ZI(JCOCO+5)
+      LLF1   = ZI(JCOCO+6)
+      LLF2   = ZI(JCOCO+7)
 C ======================================================================
-C                             INITIALISATIONS
+C --- INITIALISATION DE VARIABLES --------------------------------------
+C ======================================================================
+      TYPEAJ = 'A'
+      TYPEC0 = 'C0'
+      TYPEF0 = 'F0'
+      NESMAX = 0
 C ======================================================================
 C --- CREATION DE DELTA0 = C-1B
 C ======================================================================
@@ -216,28 +224,21 @@ C ======================================================================
          ZR(JDELT0-1+II) = ZR(JRESU-1+II)
          ZR(JRESU -1+II) = 0.0D0
  1    CONTINUE
-C ======================================================================
-C --- CALCUL DE -A.DEPTOT ET RANGEMENT DANS APJEU
-C --- (UNIQUEMENT POUR LES CL SANS APPARIEMENT,
-C --- C'EST-A-DIRE POUR P, T, OU U RIGIDE : LORSQUE POSMA = 0)
-C ======================================================================
-      DO 2 II = 1,NBLIAI
-         POSMA = ZI(JAPPAR+3*(II-1)+2)
-         IF (POSMA.EQ.0) THEN
-            JDECAL = ZI(JAPPTR+II-1)
-            NBDDL  = ZI(JAPPTR+II) - ZI(JAPPTR+II-1)
-            CALL CALADU (NEQ,NBDDL,ZR(JAPCOE+JDECAL),
-     &           ZI(JAPDDL+JDECAL),ZR(JDEPP),VAL)
-            ZR(JAPJEU+II-1) = ZR(JAPJEU+II-1) - VAL
-         END IF
- 2    CONTINUE
+      XJVMAX   = 0.0D0
 C ======================================================================
 C --- DETECTION DES COUPLES DE NOEUDS INTERPENETRES A L'INITIALISATION -
 C --- (IL EST NEGATIF LORSQU'IL Y A INTERPENETRATION -> LIAISON ACTIVE)-
 C ======================================================================
-      IF(ITERAT.EQ.0) THEN
-         NBLIAC = 0
-         ZI(JLIOT+4*NBLIAI)   = 0
+      IF (ITERAT.EQ.0) THEN
+         NBLIAC   = 0
+         AJLIAI   = 0
+         SPLIAI   = 0
+         LLF      = 0
+         LLF1     = 0
+         LLF2     = 0
+         INDFAC   = 1
+         INDIC    = 0
+         ZI(JLIOT+4*NBLIAI  ) = 0
          ZI(JLIOT+4*NBLIAI+1) = 0
          ZI(JLIOT+4*NBLIAI+2) = 0
          ZI(JLIOT+4*NBLIAI+3) = 0
@@ -245,12 +246,12 @@ C ======================================================================
             ZR(JMU-1+3*NBLIAI+II) = 0.D0
             ZR(JMU-1+  NBLIAI+II) = 0.D0
             ZR(JMU-1+         II) = 0.D0
-            ZR(JAPJFX-1+II)=0.D0
+            ZR(JAPJFX-1+II) = 0.D0
             AJEU = ZR(JAPJEU+II-1)
-            IF ( AJEU.LT.0.0D0 ) THEN
-               INDIC = 0
-               NBLIAC = NBLIAC + 1
-               ZI(JLIAC-1+NBLIAC) = II
+            IF ( AJEU.LT.0.0D0 .AND. AJEU.GT.0.0D0) THEN
+               POSIT  = NBLIAC + LLF + 1
+               CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
+     +                                    RESOCO,TYPEAJ,POSIT,II,TYPEC0)
                IF (NIV.GE.2) THEN
                   POS1 = ZI(JAPPAR+3*(II-1)+1)
                   NUM1 = ZI(JNOCO+POS1-1)
@@ -276,39 +277,42 @@ C ======================================================================
 C ======================================================================
 C --- TOUTES LES LIAISONS DE CONTACT SONT CONSIDEREES ADHERENTES -------
 C ======================================================================
-         LLF = 0
-         DO 7 II = 1, NBLIAC
-            LLIAC = ZI(JLIAC-1+II)
-            LLF   = LLF + 1
-            ZI(JLIAC-1+NBLIAC+LLF)   = LLIAC
+         BTOTAL = NBLIAC + LLF
+         DO 7 II = 1, BTOTAL
+            LLIAC  = ZI(JLIAC-1+II)
+            POSIT  = NBLIAC + LLF + 1
+            CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
+     +                                 RESOCO,TYPEAJ,POSIT,LLIAC,TYPEF0)
             ZR(JMU-1+3*NBLIAI+LLIAC) = 0.0D0
  7       CONTINUE
 C ======================================================================
       ELSE
+         SPLIAI = 0
+         AJLIAI = 0
+         INDIC  = 0
+         INDFAC = 1
 C ======================================================================
 C --- TRAITEMENT DU CONTACT APRES REACTUALISATION GEOMETRIQUE ----------
 C ======================================================================
-         IF(LREAC(1)) THEN
+         IF (LREAC(1)) THEN
+            BTOTAL  = NBLIAC + LLF
             DO 5 II = 1,NBLIAI
                AJEU = ZR(JAPJEU+II-1)
                IF (AJEU.LT.0.0D0) THEN
                   TROUAC = .FALSE.
-                  DO 940, JJ=1,NBLIAC
-                     IF(ZI(JLIAC-1+JJ).EQ.II) THEN
+                  DO 940 JJ = 1, BTOTAL
+                     IF (ZI(JLIAC-1+JJ).EQ.II) THEN
                         TROUAC = .TRUE.
                      ENDIF
  940              CONTINUE
-                  IF(.NOT.TROUAC) THEN
-                     NBLIAC = NBLIAC + 1
-                     DO 211 JJ=1,LLF
-                        ZI(JLIAC+NBLIAC+LLF-JJ) =
-     &                       ZI(JLIAC-1+NBLIAC+LLF-JJ)
- 211                 CONTINUE
-                     ZI(JLIAC-1+NBLIAC) = II
+                  IF (.NOT.TROUAC) THEN
+                   POSIT = NBLIAC + LLF + 1
+                   CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
+     +                                    RESOCO,TYPEAJ,POSIT,II,TYPEC0)
                   ENDIF
                ENDIF
  5          CONTINUE 
-         END IF
+         ENDIF
       ENDIF
 C ======================================================================
 C --- FIN DE LA PRISE EN COMPTE DU FROTTEMENT A L'INITIATION
@@ -323,79 +327,25 @@ C ======================================================================
       DO 122 II = 1,NEQ
          ZR(JDELTA-1+II) = ZR(JDELT0-1+II) - ZR(JRESU-1+II)
  122  CONTINUE
+ 300  CONTINUE
 C ======================================================================
 C --- CALCUL DE A.C-1.AT S'IL EXISTE AU MOINS UNE LIAISON DE CONTACT ---
 C ======================================================================
       IF (NBLIAC.NE.0) THEN
-         IDEBUT = 1
 C ======================================================================
 C --- CALCUL DE -A.C-1.AT COLONNE PAR COLONNE (A PARTIR DE IDEBUT)
 C ======================================================================
-         XJVMAX = 0.D0
-         XJVMIN = 1.D0/R8PREM()
-         DO 20 ILIAC = IDEBUT,NBLIAC+LLF
-            LLIAC = ZI(JLIAC+ILIAC-1)
-C ======================================================================
-C --- CALCUL DE CHAQUE COLONNE DE AT (UNE PAR LIAISON ACTIVE)
-C ======================================================================
-            IF(ILIAC.GT.NBLIAC) THEN
-               CALL JEVEUO(JEXNUM(CM1A,LLIAC+NBLIAI),'E',JCM1A)
-            ELSE
-               CALL JEVEUO(JEXNUM(CM1A,LLIAC),'E',JCM1A)
-            ENDIF
-            DO 202 KK = 1, NEQ
-               ZR(JCM1A-1+KK) = 0.0D0
- 202        CONTINUE
-            JDECAL = ZI(JAPPTR+LLIAC-1)
-            NBDDL = ZI(JAPPTR+LLIAC) - ZI(JAPPTR+LLIAC-1)
-            IF(ILIAC.GT.NBLIAC) THEN
-               CALL CALATM (NEQ,NBDDL,1.D0,ZR(JAPCOF+JDECAL),
-     &              ZI(JAPDDL+JDECAL),ZR(JCM1A))
-            ELSE
-               CALL CALATM (NEQ,NBDDL,1.D0,ZR(JAPCOE+JDECAL),
-     &              ZI(JAPDDL+JDECAL),ZR(JCM1A))
-            ENDIF
-C ======================================================================
-C --- CALCUL DE C-1.AT (EN TENANT COMPTE DES CHARGES CINEMATIQUES)
-C ======================================================================
-            CALL JEVEUO (CINE(1:19)//'.VALE','E',JRCINE)
-            CALL NMRLDL (LMAT,ZR(JRCINE),ZR(JCM1A))
-C ======================================================================
-C - CALCUL DE -A.C-1.AT (REDUITE AUX LIAISONS ACTIVES)
-C - (STOCKAGE DE LA MOITIE PAR SYMETRIE)
-C ======================================================================
-            DO 23 JJ = 1, ILIAC
-               LLJAC = ZI(JLIAC-1+JJ)
-               JVA = JVALE-1+(ILIAC-1)*ILIAC/2+JJ
-               ZR(JVA) = 0.0D0
-               JDECAL = ZI(JAPPTR+LLJAC-1)
-               NBDDL = ZI(JAPPTR+LLJAC) - ZI(JAPPTR+LLJAC-1)
-               IF(JJ.GT.NBLIAC) THEN
-                  CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL),
-     &                 ZI(JAPDDL+JDECAL),ZR(JCM1A),VAL)
-               ELSE
-                  CALL CALADU (NEQ,NBDDL,ZR(JAPCOE+JDECAL),
-     &                 ZI(JAPDDL+JDECAL),ZR(JCM1A),VAL)
-               ENDIF
-               ZR(JVA) = ZR(JVA) - VAL
-               IF(ABS(ZR(JVA)).GT.XJVMAX) XJVMAX = ABS(ZR(JVA))
-               IF(ABS(ZR(JVA)).LT.XJVMIN) XJVMIN = ABS(ZR(JVA)) 
- 23         CONTINUE
-C     
-            IF(ILIAC.GT.NBLIAC) THEN
-               CALL JELIBE(JEXNUM(CM1A,LLIAC+NBLIAI))
-            ELSE
-               CALL JELIBE(JEXNUM(CM1A,LLIAC))
-            ENDIF
-C
- 20      CONTINUE
+         SPAVAN = SPLIAI
+         CALL CFACAT(NDIM, INDIC, NBLIAC, AJLIAI, SPLIAI, LLF, LLF1,
+     +    LLF2,INDFAC,NESMAX,DEFICO,RESOCO,LMAT,CINE,NBLIAI,XJVMAX)
 C ======================================================================
 C --- ELIMINATION DES PIVOTS NULS
 C ======================================================================
-        ZERO = 0
-        CALL ELPIV2(XJVMAX, MATR, NOMA, DEFICO, RESOCO, IDEBUT, LLF,
-     &                      ZERO,ZERO,NBLIAC, NDIM, KKMIN, PIVOT, INDIC)
-        IF (INDIC .EQ. -1 .AND. PIVOT .EQ. 1) GOTO 100
+         CALL ELPIV2(XJVMAX, NDIM, INDIC, NBLIAC, AJLIAI, SPLIAI,
+     +                    LLF, LLF1, LLF2, SPAVAN, NOMA, DEFICO, RESOCO)
+         IF (INDIC .EQ. -1) THEN
+            GOTO 300
+         ENDIF
 C ======================================================================
 C --- FACTORISATION LDLT DE -A.C-1.AT
 C ======================================================================
@@ -410,115 +360,96 @@ C --- FACTORISERAIT LA FACTORISEE, CE QUI EST GENANT, CAR FACTORISATION
 C --- EN PLACE)
 C ======================================================================
          CALL JEECRA (MACONT(1:19)//'.REFA','DOCU',IBID,'ASSE')
-         IF (IDEBUT.LE.NBLIAC+LLF) THEN
-            CALL TLDLGG (2,LDSCON,IDEBUT,NBLIAC+LLF,0,NDECI,ISINGU,
-     &           NPVNEG,IER)
-
-C--- LA MATRICE DE CONTACT EST-ELLE SINGULIERE?
+C ======================================================================
+         IF (INDFAC.LE.(NBLIAC+LLF)) THEN
+            CALL TLDLGG (2,LDSCON,INDFAC,NBLIAC+LLF,0,NDECI,ISINGU,
+     &                                                       NPVNEG,IER)
+            INDFAC = NBLIAC + LLF + 1
+C ======================================================================
+C --- LA MATRICE DE CONTACT EST-ELLE SINGULIERE?
+C ======================================================================
             IF (IER.GT.ISTO) THEN
                CALL UTMESS ('F','FRO2GD','ARRET SUR MATRICE SINGULIERE')
             ENDIF
-         END IF
+         ENDIF
 C ======================================================================
 C --- SECOND MEMBRE : ON MET JEU(DEPTOT) - A.DELT0 DANS MU
+C ======================================================================
+C --- INITIALISATION DU SECOND MEMBRE ----------------------------------
 C ======================================================================
          DO 25 II = 1,2*NBLIAI
             ZR(JMU-1+II)= 0.D0
  25      CONTINUE
-         DO 30 ILIAC = 1, NBLIAC+LLF
-            LLIAC = ZI(JLIAC-1+ILIAC)
-            JDECAL = ZI(JAPPTR+LLIAC-1)
-            NBDDL = ZI(JAPPTR+LLIAC) - ZI(JAPPTR+LLIAC-1)
-            IF(ILIAC.GT.NBLIAC) THEN
 C ======================================================================
-C --- CALCUL DE MU_SG DEPUIS LE DEBUT DU PAS DE TEMPS ------------------
+C --- APPEL DE LA ROUTINE DE CALCUL DU SECOND MEMBRE -------------------
 C ======================================================================
-               CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL),
-     &              ZI(JAPDDL+JDECAL),ZR(JDELT0),VAL1)
-               CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL),
-     &              ZI(JAPDDL+JDECAL),ZR(JDEPDE),VAL2)
-               VAL = VAL1 + VAL2
-            ELSE
-C ======================================================================
-C --- CALCUL DE MU_C ---------------------------------------------------
-C ======================================================================
-               CALL CALADU (NEQ,NBDDL,ZR(JAPCOE+JDECAL),
-     &              ZI(JAPDDL+JDECAL),ZR(JDELT0),VAL)
-               ZR(JMU+ILIAC-1) = ZR(JAPJEU+LLIAC-1)
-            ENDIF
-            ZR(JMU+ILIAC-1) = ZR(JMU+ILIAC-1) - VAL
- 30      CONTINUE
+         CALL CFADU(RESOCO, DEPDEL, NEQ, NDIM, NBLIAI, NBLIAC, LLF,
+     +                                               LLF1, LLF2, NESMAX)
 C ======================================================================
 C --- RESOLUTION POUR OBTENIR MU : -A.C-1.AT.MU = JEU(DEPTOT) - A.DELT0
 C ======================================================================
-C ON TRUANDE LA SD MATR_ASSE POUR NE RESOUDRE LE SYSTEME QUE
-C DE 1 A NBLIAC :
+C --- ON TRUANDE LA SD MATR_ASSE POUR NE RESOUDRE LE SYSTEME QUE -------
+C --- DE 1 A NBLIAC : --------------------------------------------------
 C ======================================================================
-         NEQMAX= ZI(LDSCON+2)
+         NEQMAX = ZI(LDSCON+2)
          ZI(LDSCON+2) = NBLIAC+LLF
          CALL RLDLGG (LDSCON,ZR(JMU),CBID,1)
          ZI(LDSCON+2) = NEQMAX
 C ======================================================================
-C --- CALCUL DE DELTA = DELT0 - C-1.AT.MU
+C --- ON REORDONNE LE VECTEUR MU ---------------------------------------
 C ======================================================================
-         DO 41 ILIAC = 1,NBLIAC+LLF
-            LLIAC = ZI(JLIAC-1+ILIAC)
-            IF (ILIAC.GT.NBLIAC) THEN
-               CALL JEVEUO (JEXNUM(CM1A,LLIAC+NBLIAI),'L',JCM1A)
-               DO 42 KK = 1,NEQ
-                  ZR(JDELTA-1+KK) = ZR(JDELTA-1+KK) -
-     &                 ZR(JCM1A-1+KK)*ZR(JMU-1+ILIAC)
- 42            CONTINUE
-               CALL JELIBE (JEXNUM(CM1A,LLIAC+NBLIAI))
-            ELSE
-               CALL JEVEUO (JEXNUM(CM1A,LLIAC),'L',JCM1A)
-               DO 43 KK = 1,NEQ
-                  ZR(JDELTA-1+KK) = ZR(JDELTA-1+KK) -
-     &                 ZR(JCM1A-1+KK)*ZR(JMU-1+ILIAC)
- 43            CONTINUE
-               CALL JELIBE (JEXNUM(CM1A,LLIAC))
-            ENDIF
- 41      CONTINUE
+         CALL CFMAJM(RESOCO, NDIM, NBLIAC, LLF, LLF1, LLF2)
+C ======================================================================
+C --- CALCUL DE DELTA = DELT0 - C-1.AT.MU ------------------------------
+C ======================================================================
+         CALL CFMAJU(RESOCO, NEQ, NDIM, NBLIAI, NBLIAC, LLF, LLF1, LLF2)
 C ======================================================================
 C --- LES LIAISONS CONSIDEREES GLISSANTES LE SONT-ELLES VRAIMENT ? -----
 C ======================================================================
          LFMIN = 0
          IF (LLF.LT.NBLIAC) THEN
-            DO 710 II = 1, NBLIAC
-               LLIAC = ZI(JLIAC-1+II)
-               XK    = ZR(IFRO-1+LLIAC)
-               TROUAC = .FALSE.
-               DO 72 JJ = 1, LLF
-                  IF(ZI(JLIAC-1+NBLIAC+JJ).EQ.LLIAC) TROUAC = .TRUE.
- 72            CONTINUE
-               IF (.NOT.TROUAC) THEN
+            BTOTAL = NBLIAC + LLF
+            DO 710 II = 1, BTOTAL
+               LLIAC  = ZI(JLIAC-1+II)
+               IF (ZK8(JVECC-1+II).EQ.TYPEC0) THEN
+                  DO 720 JJ = II+1, BTOTAL
+                     IF (ZI(JLIAC-1+JJ).EQ.LLIAC) THEN
+                        GOTO 710
+                     ENDIF
+ 720              CONTINUE
+                  DO  7131 IOTE= 1, ZI(JLIOT+4*NBLIAI+1)
+                     IF (ZI(JLIOT-1+IOTE+NBLIAI).EQ.LLIAC) GOTO 710
+ 7131             CONTINUE
+                  XK     = ZR(IFRO-1+LLIAC)
                   JDECAL = ZI(JAPPTR+LLIAC-1)
                   NBDDL  = ZI(JAPPTR+LLIAC) - ZI(JAPPTR+LLIAC-1)
                   CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),
-     &                 ZI(JAPDDL+JDECAL),ZR(JDELTA),VAL)
+     &                                 ZI(JAPDDL+JDECAL),ZR(JDELTA),VAL)
                   AJEUFX = ZR(JAPJFX-1+LLIAC) + VAL
                   CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),
-     &                 ZI(JAPDDL+JDECAL),ZR(JRESU),VAL)
+     &                                  ZI(JAPDDL+JDECAL),ZR(JRESU),VAL)
                   AJEUFX = AJEUFX + VAL
                   XPDT = ZR(JMU+3*NBLIAI-1+LLIAC)*AJEUFX
                   IF (XPDT.LT.0.D0) THEN
 C ======================================================================
 C --- LA LIAISON EST EN FAITE ADHERENTE --------------------------------
 C ======================================================================
+                     POSIT = NBLIAC + LLF + 1
+                     CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,
+     +                       LLF1,LLF2,RESOCO,TYPEAJ,POSIT,LLIAC,TYPEF0)
                      LFMIN = LFMIN + 1
-                     ZI(JLIAC-1+NBLIAC+LLF+LFMIN)= LLIAC
                      ZR(JMU-1+3*NBLIAI+LLIAC)=0.D0
                   ELSE IF (XPDT.EQ.0.D0) THEN
 C ======================================================================
 C --- LA LIAISON EST BIEN GLISSANTE ------------------------------------
 C --- ON MET A JOUR MU_G EN FONCTION DE L'INCREMENT DE DEPLACEMENT -----
 C ======================================================================
-                    CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),
+                     CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL),
      &                                 ZI(JAPDDL+JDECAL),ZR(JDELT0),VAL)
-                    AJEUFX = ZR(JAPJFX-1+LLIAC) + VAL
-                    XCOMP = ABS( AJEUFX )
-                    XCOS  = AJEUFX / XCOMP
-                    ZR(JMU+3*NBLIAI-1+LLIAC) = XK*XCOS
+                     AJEUFX = ZR(JAPJFX-1+LLIAC) + VAL
+                     XCOMP = ABS( AJEUFX )
+                     XCOS  = AJEUFX / XCOMP
+                     ZR(JMU+3*NBLIAI-1+LLIAC) = XK * XCOS
                   ENDIF
                ENDIF
  710        CONTINUE
@@ -529,45 +460,14 @@ C --- S'IL EXISTE AU MOINS UNE LIAISON ADHERENTE SUPPLEMENTAIRE, -------
 C --- ON NE PREND PAS EN COMPTE LES INCREMENTS DE DEPLACEMENTS CALCULES-
 C --- ET ON RECOMMENCE LES CALCULS (NOTAMMENT POUR MU_SG) --------------
 C ======================================================================
-               LLF   = LLF+LFMIN
                GO TO 100
             ENDIF
          ENDIF
 C ======================================================================
 C --- LES LIAISONS CONSIDEREES ADHERENTES LE SONT-ELLES VRAIMENT ? -----
 C ======================================================================
-         KCOUNT = 0
-         IF ( LLF .NE. 0 ) THEN
-            DO 78 JJ = NBLIAC+1,NBLIAC+LLF
-               LLJAC = ZI(JLIAC-1+JJ)
-               XK    = ZR(IFRO-1+LLJAC)
-               XCOMP = ABS( ZR(JMU-1+JJ) )
-               DO 79 KK = 1,NBLIAC
-                  LLKAC = ZI(JLIAC-1+KK)
-                  IF ( LLKAC .EQ. LLJAC ) THEN
-                     XQUOT = 0.0D0
-                     IF ( ZR(JMU-1+KK) .GT. 0.0D0 ) THEN
-                        XQUOT = XCOMP/ZR(JMU-1+KK)
-                     ENDIF
-                     IF ( ABS(XQUOT) .GE. XK ) THEN
-                        KCOUNT = KCOUNT + 1
-                        XCOS   = ZR(JMU-1+JJ)/XCOMP
-                        ZR(JMU+3*NBLIAI-1+LLJAC) = XCOS * XK
-                     ELSE
-C ======================================================================
-C --- DECALAGE DES INDICES DES LIAISONS EN CONTACT ---------------------
-C ======================================================================
-                        IF (JJ-NBLIAC-KCOUNT.GT.0) THEN
-                           ZI(JLIAC-1-KCOUNT+JJ)=LLJAC
-                           ZR(JMU  -1-KCOUNT+JJ)=ZR(JMU-1+JJ)
-                        ENDIF
-                        ZR(JMU+3*NBLIAI-1+LLJAC)=0.0D0
-                     ENDIF
-                  ENDIF
- 79            CONTINUE
- 78         CONTINUE
-         ENDIF
-        LLF = LLF - KCOUNT
+         CALL CFADH(NDIM, INDIC, NBLIAC, NBLIAI, AJLIAI, SPLIAI,
+     +                                  LLF, LLF1, LLF2, RESOCO, DEFICO)
       ENDIF
 C ======================================================================
 C --- CALCUL DE RHO ET MISE A JOUR DE L'ENSEMBLE DES LIAISONS ACTIVES --
@@ -589,22 +489,20 @@ C -- S'IL Y A DES LIAISONS NON ACTIVES : CALCUL DE RHO -----------------
 C ======================================================================
       ELSE IF (NBLIAC.LT.NBLIAI) THEN
 C ======================================================================
+         BTOTAL = NBLIAC + LLF
          DO 70 II = 1, NBLIAI
-C ======================================================================
-            TROUAC = .FALSE.
 C ======================================================================
 C - LA LIAISON II EST-ELLE ACTIVE ? (-> TROUAC) ------------------------
 C ======================================================================
-            DO 700 ILIAC = 1, NBLIAC
-               IF (ZI(JLIAC-1+ILIAC).EQ.II) TROUAC = .TRUE.
+            DO 700 ILIAC = 1, BTOTAL
+               IF (ZI(JLIAC-1+ILIAC).EQ.II) GOTO 70
  700        CONTINUE
 C ======================================================================
 C - CALCUL DE A.DELTA SI LA LIAISON II N'EST PAS ACTIVE
 C ======================================================================
-            IF (.NOT.TROUAC) THEN
-               JDECAL = ZI(JAPPTR+II-1)
-               NBDDL = ZI(JAPPTR+II) - ZI(JAPPTR+II-1)
-               CALL CALADU (NEQ,NBDDL,ZR(JAPCOE+JDECAL),
+            JDECAL = ZI(JAPPTR+II-1)
+            NBDDL = ZI(JAPPTR+II) - ZI(JAPPTR+II-1)
+            CALL CALADU (NEQ,NBDDL,ZR(JAPCOE+JDECAL),
      &                              ZI(JAPDDL+JDECAL),ZR(JDELTA),AADELT)
 C ======================================================================
 C - SI A.DELTA EST POSITIF POUR II : CALCUL DE E(DEPTOT) - A.RESU
@@ -612,25 +510,24 @@ C - RHO = MIN ( ( E(DEPTOT) - A.RESU )II / (A.DELTA)II )
 C - ON STOCKE DANS LLMIN LE NUMERO DE LA LIAISON REALISANT LE
 C - MINIMUM (CE SERA LA LIAISON LA PLUS VIOLEE)
 C ======================================================================
-               IF (AADELT.GT.R8PREM()) THEN
+            IF (AADELT.GT.R8PREM()) THEN
 C ======================================================================
 C -  ON NE PREND PAS EN COMPTE UNE LIAISON A PIVOT NUL
 C ======================================================================
-                  DO  71 IOTE= 1,ZI(JLIOT+4*NBLIAI)
-                     IF (ZI(JLIOT-1+IOTE).EQ.II) GOTO 70
- 71               CONTINUE
+               DO  71 IOTE= 1,ZI(JLIOT+4*NBLIAI)
+                  IF (ZI(JLIOT-1+IOTE).EQ.II) GOTO 70
+ 71            CONTINUE
 C ======================================================================
 C -  FIN ELIMINATION LIAISON A PIVOT NUL
 C ======================================================================
-                  DELPOS = .TRUE.
-                  CALL CALADU(NEQ,NBDDL,ZR(JAPCOE+JDECAL),
+               DELPOS = .TRUE.
+               CALL CALADU(NEQ,NBDDL,ZR(JAPCOE+JDECAL),
      &                                  ZI(JAPDDL+JDECAL),ZR(JRESU),VAL)
-                  AJEU = ZR(JAPJEU+II-1) - VAL
-                  AJEU = AJEU/AADELT
-                  IF (AJEU.LT.RHO) THEN
-                     RHO = AJEU
-                     NUMIN = II
-                  ENDIF
+               AJEU = ZR(JAPJEU+II-1) - VAL
+               AJEU = AJEU/AADELT
+               IF (AJEU.LT.RHO) THEN
+                  RHO = AJEU
+                  NUMIN = II
                ENDIF
             ENDIF
  70      CONTINUE
@@ -651,12 +548,9 @@ C --- SI RHO < 1 (AU MOINS UNE LIAISON SUPPOSEE NON ACTIVE EST VIOLEE) :
 C --- ON AJOUTE A L'ENSEMBLE DES LIAISONS ACTIVES LA PLUS VIOLEE (LLMIN)
 C ======================================================================
       IF (RHORHO.LT.1.0D0) THEN
-         NBLIAC = NBLIAC + 1
-         INDIC = 1
-         DO 124 II = 0,LLF-1
-            ZI(JLIAC-1+NBLIAC+LLF-II) = ZI(JLIAC-1+NBLIAC+LLF-II-1)
- 124     CONTINUE
-         ZI(JLIAC-1+NBLIAC) = NUMIN
+         POSIT = NBLIAC + LLF + 1
+         CALL CFTABL( INDIC, NBLIAC, AJLIAI, SPLIAI, LLF, LLF1, LLF2,
+     +                             RESOCO, TYPEAJ, POSIT, NUMIN, TYPEC0)
 C ======================================================================
 C --- LA LIAISON EST SUPPOSEE GLISSANTE
 C ======================================================================
@@ -696,94 +590,30 @@ C ======================================================================
 C ======================================================================
       IF (NBLIAC.EQ.0) GO TO 9999
 C ======================================================================
-C --- ON ENLEVE TOUTES LES LIAISONS DE FROTTEMENT POUR LESQUELLES ------
-C --- LA PRESSION EST NEGATIVE -----------------------------------------
-C ======================================================================
-      LCOUNT = 0
-      DO 80 JJ = 1, LLF
-         LLJAC = ZI(JLIAC-1+NBLIAC+JJ)
-         DO 90 II = 1,NBLIAC
-            LLIAC = ZI(JLIAC-1+II)
-            IF ( LLJAC .EQ. LLIAC ) THEN
-               IF ( ZR(JMU-1+II) .LT. 0.D0 ) THEN
-                  LCOUNT = LCOUNT + 1
-               ELSE
-                  IF ( (JJ-LCOUNT.GT.0) ) THEN
-                     ZI(JLIAC-1+NBLIAC+JJ-LCOUNT) = 
-     +                                             ZI(JLIAC-1+NBLIAC+JJ)
-                     ZR(JMU  -1+NBLIAC+JJ-LCOUNT) = 
-     +                                             ZR(JMU  -1+NBLIAC+JJ)
-                  ENDIF
-               ENDIF
-               GO TO 80
-            ENDIF
- 90      CONTINUE
- 80   CONTINUE
-C ======================================================================
-C --- NOMBRE FINAL DE LIAISONS ADHERENTES ------------------------------
-C ======================================================================
-      LLF = LLF - LCOUNT
-C ======================================================================
 C --- ON ENLEVE TOUTES LES LIAISONS DE CONTACT POUR LESQUELLES ---------
 C --- LA PRESSION EST NEGATIVE -----------------------------------------
 C ======================================================================
-      KCOUNT = 0
-      DO 130 II = 1,NBLIAC
-         LLIAC = ZI(JLIAC-1+II)
-         IF ( ZR(JMU-1+II).LT.0.0D0 ) THEN
-            KCOUNT = KCOUNT + 1
-            ZR(JMU+3*NBLIAI-1+LLIAC) = 0.0D0
-         ELSE
-            IF(II-KCOUNT.GT.0) THEN
-               ZI(JLIAC-1+II-KCOUNT) = ZI(JLIAC-1+II)
-               ZR(JMU-1+II-KCOUNT) = ZR(JMU-1+II)
-            ENDIF
-         ENDIF
- 130  CONTINUE
-C ======================================================================
-C --- AJUSTEMENT DES LIAISONS DE FROTTEMENTS ---------------------------
-C ======================================================================
-         DO 88 II = 1,LLF
-            ZI(JLIAC-1+II+NBLIAC-KCOUNT) = ZI(JLIAC-1+II+NBLIAC)
-            ZR(JMU  -1+II+NBLIAC-KCOUNT) = ZR(JMU  -1+II+NBLIAC)
- 88      CONTINUE
-C ======================================================================
-C --- NOMBRE FINAL DE LIAISONS DE CONTACT ------------------------------
-C ======================================================================
-      NBLIAC = NBLIAC - KCOUNT
+      CALL CFNEG(RESOCO, NDIM, INDIC, NBLIAI, NBLIAC, AJLIAI, SPLIAI,
+     +                                                  LLF, LLF1, LLF2)
 C ======================================================================
 C --- CALCUL DE AT.MU --------------------------------------------------
 C ======================================================================
-         DO 123 ILIAC = 1, NBLIAC+LLF
-            LLIAC  = ZI(JLIAC+ILIAC-1)
-            JDECAL = ZI(JAPPTR+LLIAC-1)
-            NBDDL = ZI(JAPPTR+LLIAC) - ZI(JAPPTR+LLIAC-1)
-            IF ( ILIAC.LE.NBLIAC ) THEN
-               CALL CALATM (NEQ,NBDDL,ZR(JMU+ILIAC-1),
-     +                   ZR(JAPCOE+JDECAL),ZI(JAPDDL+JDECAL),ZR(JATMU))
-            ELSE
-               CALL CALATM(NEQ,NBDDL,ZR(JMU+ILIAC-1),
-     +                   ZR(JAPCOF+JDECAL),ZI(JAPDDL+JDECAL),ZR(JATMU))
-            ENDIF
- 123     CONTINUE
+      CALL CFATMU(NEQ , NESMAX, NDIM, NBLIAC, LLF, LLF1, LLF2, RESOCO)
 C ======================================================================
 C --- CALCUL DE AFMU ---------------------------------------------------
 C ======================================================================
-      DO 140 II = 1, NBLIAI
-         XFORC =  0.0D0
-         DO 160 KK = 1,NBLIAC
-            LLKAC = ZI(JLIAC-1+KK)
-            IF ( LLKAC.EQ.II ) THEN
-               XFORC = ZR(JMU-1+KK)
-               GO TO 170
-            ENDIF
- 160     CONTINUE
- 170     CONTINUE
-         JDECAL = ZI(JAPPTR+II-1)
-         NBDDL  = ZI(JAPPTR+II) - ZI(JAPPTR+II-1)
-         ZMU    = XFORC * ZR(JMU-1+3*NBLIAI+II)
-         CALL CALATM(NEQ,NBDDL,ZMU,ZR(JAPCOF+JDECAL),
-     +                                      ZI(JAPDDL+JDECAL),ZR(JAFMU))
+      COMPT0 = 0
+      DO 140 ILIAC = 1, NBLIAC + LLF
+         IF (ZK8(JVECC-1+ILIAC).EQ.TYPEC0) THEN
+            COMPT0 = COMPT0 + 1
+            LLIAC  = ZI(JLIAC-1+ILIAC)
+            JDECAL = ZI(JAPPTR+LLIAC-1)
+            NBDDL  = ZI(JAPPTR+LLIAC) - ZI(JAPPTR+LLIAC-1)
+            XFORC  = ZR(JMU-1+COMPT0)
+            ZMU    = XFORC * ZR(JMU-1+3*NBLIAI+LLIAC)
+            CALL CALATM(NEQ, NBDDL, ZMU, ZR(JAPCOF+JDECAL),
+     +                                     ZI(JAPDDL+JDECAL), ZR(JAFMU))
+         ENDIF
  140  CONTINUE
 C ======================================================================
  9999 CONTINUE
@@ -799,8 +629,6 @@ C ======================================================================
       IF ( NIV .EQ. 2 ) WRITE(IFM,*)'NBLIACF',NBLIAC,'LLFF',LLF
 C      IF ( NBLIAC.NE.NBLCIN ) PRIMCV(2) = 100
 C      IF ( LLF   .NE.NBLFIN ) PRIMCV(2) = 100
-      ZI(JCOCO+1) = NBLIAC
-      ZI(JCOCO+6) = LLF
 C ======================================================================
 C --- CALCUL DES JEUX FINAUX -------------------------------------------
 C ======================================================================
@@ -824,6 +652,14 @@ C ======================================================================
      +                                                   ZR(JAPJEU+II-1)
  200     CONTINUE
       END IF
+C ======================================================================
+      ZI(JCOCO+1) = INDIC
+      ZI(JCOCO+2) = NBLIAC
+      ZI(JCOCO+3) = AJLIAI
+      ZI(JCOCO+4) = SPLIAI
+      ZI(JCOCO+5) = LLF
+      ZI(JCOCO+6) = LLF1
+      ZI(JCOCO+7) = LLF2
 C ======================================================================
  999  CONTINUE
 C ======================================================================

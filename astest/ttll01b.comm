@@ -1,4 +1,4 @@
-# MODIF  DATE 03/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # TITRE CHOC THERMIQUE SUR UN MUR INFINI QUAD8 - TEMP_INIT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -153,8 +153,7 @@ _F( RESULTAT = TEMPE2,  INST = 0.1,  NOM_CHAM = 'TEMP',
 # TEST DE IMPR_RESU
 #----------------------------------------------------------
 
-DEFUFI(IMPRESSION=_F(    NOM = 'TEMPE',
-                      UNITE = 37))
+DEFI_FICHIER( FICHIER = 'TEMPE', UNITE = 37 ) 
 
 #
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2003   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,26 +44,26 @@ REST_BASE_PHYS=OPER(nom="REST_BASE_PHYS",op=  75,sd_prod=rest_base_phys_prod,
          
          MODE_MECA       =SIMP(statut='f',typ=mode_meca ),
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-         NUME_ORDRE      =SIMP(statut='f',typ='I',max='**' ),  
+         NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),  
          TOUT_INST       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-         INST            =SIMP(statut='f',typ='R',max='**' ),  
+         INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),  
          LIST_INST       =SIMP(statut='f',typ=listr8 ),
-         FREQ            =SIMP(statut='f',typ='R',max='**' ),  
+         FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),  
          LIST_FREQ       =SIMP(statut='f',typ=listr8 ),
          CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("ABSOLU","RELATIF") ),
          PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),  
          INTERPOL        =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","LIN") ),
          MULT_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          CORR_STAT       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-         NOM_CHAM        =SIMP(statut='f',typ='TXM',max=8,defaut="ACCE",   
+         NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=8,defaut="ACCE",   
                                into=("DEPL","VITE","ACCE","ACCE_ABSOLU","EFGE_ELNO_DEPL","SIPO_ELNO_DEPL",                 
                                      "SIGM_ELNO_DEPL","FORC_NODA",) ),
          TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-         GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
-         NOEUD           =SIMP(statut='f',typ=no,max='**'),
+         GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+         NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
  
          ACCE_MONO_APPUI =SIMP(statut='f',typ=(fonction,formule)),
-         DIRECTION       =SIMP(statut='f',typ='R',max='**' ),
+         DIRECTION       =SIMP(statut='f',typ='R',min=3,max=3 ),
 
          SQUELETTE       =SIMP(statut='f',typ=squelette ),
          SOUS_STRUC      =SIMP(statut='f',typ='TXM' ),  

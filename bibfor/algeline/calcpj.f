@@ -1,13 +1,13 @@
-      SUBROUTINE CALCPJ(NDT, NDI, NBMAT, MATER, GAMP, EVP, SIGD, SIGE, 
+      SUBROUTINE CALCPJ(NBMAT, MATER, GAMP, EVP, SIGD, SIGE, 
      +                  EPSSIG, INVARE, GAMPS, INVARS, EVPS, B)
 C
       IMPLICIT      NONE
-      INTEGER       NBMAT, NDT, NDI
-      REAL*8        MATER(NBMAT,2), GAMP, EVP, SIGD(*), SIGE(*), EPSSIG
+      INTEGER       NBMAT
+      REAL*8        MATER(NBMAT,2), GAMP, EVP, SIGD(6), SIGE(6), EPSSIG
       REAL*8        INVARE, GAMPS, INVARS, EVPS, B
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C ======================================================================
-      INTEGER       JPARA, JPARA2
+      INTEGER       JPARA, JPARA2, NDT, NDI
       REAL*8        MU, SIGC, SIG(6), SD(6), SGAMP, MGAMP, BPRIME
       REAL*8        ZERO, UN, DEUX, TROIS, SE(6), TRACE
       REAL*8        SIGII, SIIE, INVAR, EPSULT, GAMULT, K
@@ -74,6 +74,8 @@ C ======================================================================
       PARAMETER       ( DEUX     =  2.0D0   )
       PARAMETER       ( TROIS    =  3.0D0   )
       PARAMETER       ( EPSULT   =  1.0D-03 )
+C ======================================================================
+      COMMON /TDIM/   NDT , NDI
 C ======================================================================
       CALL JEMARQ ()
 C ======================================================================
@@ -122,7 +124,7 @@ C ======================================================================
          CALL     LCDEVI(SIG,SD)
          INVAR  = TRACE (NDI,SIG)
          CALL     VARECR(GAMP, NBMAT, MATER, ZR(JPARA2))
-         B      = BPRIME(NBMAT,MATER,ZR(JPARA2),NDT,INVAR,SD,EPSSIG)
+         B      = BPRIME(NBMAT,MATER,ZR(JPARA2),INVAR,SD,EPSSIG)
       ENDIF
 C ======================================================================
 C --- DESTRUCTION DES VECTEURS INUTILES --------------------------------
