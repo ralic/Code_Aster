@@ -1,4 +1,5 @@
-#@ MODIF __init__ Validation  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF __init__ Validation  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,8 +19,6 @@
 #                                                                       
 #                                                                       
 # ======================================================================
-
-# -*- coding: iso-8859-1 -*-
 
 """
    Ce package contient la fonctionnalité de validation des objets de type OBJECT. 

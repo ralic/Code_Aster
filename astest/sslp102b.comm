@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE TAUX DE RESTITUTION AVEC ETAT INITIAL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,8 +48,7 @@ EPSINI=DEFI_FONCTION(   NOM_PARA='X',
                          PROL_GAUCHE='LINEAIRE'
                          )
 
-ZERO = FORMULE(REEL="""(REEL:X,REEL:Y) =
-0.D0 """)
+ZERO = FORMULE(NOM_PARA=('X','Y'),VALE='0.')
 
 CH=AFFE_CHAR_MECA_F(       MODELE=MO,DDL_IMPO=(
                            _F(  GROUP_NO = 'GRNM2',      DY = ZERO),
@@ -195,8 +194,7 @@ G14=CALC_G_THETA_T(        MODELE=MO,
 #  POUR TEST INFORMATIQUE: CHARGEMENT PESANTEUR ET FORCE_INTERNE
 #--------------------------------------------------------------------
 
-DIX = FORMULE(REEL="""(REEL:X,REEL:Y) =
-10.D0 """)
+DIX = FORMULE(NOM_PARA=('X','Y'),VALE='10.')
 
 CHPESA1=AFFE_CHAR_MECA(       MODELE=MO,
                              PESANTEUR=(10., 0., -1., 0.,) )

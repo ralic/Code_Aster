@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE PLAQUE FISSUREE AVEC PRESSION LEVRE FISSURE (CALCUL G,K1,K2 )
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,8 +40,7 @@ CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
                                      _F(  NOEUD = 'N451',  DX = 0.)),
                             PRES_REP=_F(  GROUP_MA = 'GRMA4', PRES = 1.) )
 
-PRESF = FORMULE(REEL="""(REEL:X,REEL:Y) =
-1.""")
+PRESF  = FORMULE(NOM_PARA=('X','Y'),VALE='1.')
 
 CHFONC=AFFE_CHAR_MECA_F(  MODELE=MO, 
                             PRES_REP=_F(  GROUP_MA = 'GRMA4',

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # RESPONSABLE O.BOITEAU
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -353,8 +353,8 @@ for num_calc in range(0,nb_calc1) :
 #        On teste une variable PYTHON (erreur en energie)
 #-------------------------------------------------------------------
 
-ERREEN0=FORMULE(REEL="""(REEL:BIDON)=eren0*1.d0""")
-ERREEN2=FORMULE(REEL="""(REEL:BIDON)=eren2*1.d0""")        
+ERREEN0=FORMULE(VALE='eren0*1.',NOM_PARA='BIDON')
+ERREEN2=FORMULE(VALE='eren2*1.',NOM_PARA='BIDON')
 TEST_FONCTION(VALEUR=(
     _F(FONCTION=ERREEN0,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-8,
        VALE_REFE=1.0077761341151E+01,REFERENCE='NON_REGRESSION'),

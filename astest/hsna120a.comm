@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE Propagation d'un reseau de fissures en fatigue thermomecanique 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,8 +78,8 @@ LIST=DEFI_LIST_REEL(INTERVALLE=(_F(JUSQU_A=10.0,
                     DEBUT=0.0,);
 #
 
-TEP_F = FORMULE(REEL="""(REEL:INST) =
-        (70.-50.*COS((PI/5.)*INST)) """)
+TEP_F = FORMULE(NOM_PARA='INST',
+                VALE='(70.-50.*cos((pi/5.)*INST)) ')
 
 TEMP_F=CALC_FONC_INTERP(FONCTION=TEP_F,    LIST_PARA=LIST,
                            NOM_PARA='INST',

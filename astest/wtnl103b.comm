@@ -1,4 +1,4 @@
-# MODIF  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 21/09/2004   AUTEUR PBADEL P.BADEL 
 # ======================================================================
 # TITRE : SIMULATION D'EXCAVATION EN COMPORTEMENT HYDRO-MECANIQUE ------
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -214,7 +214,7 @@ except aster.NonConvergenceError:
                                          SUBD_PAS_MINI  = 1,),
                        NEWTON      = _F( MATRICE        = 'TANGENTE',
                            PAS_MINI_ELAS  = 201.0,
-                                         REAC_ITER      = 4001,),
+                                         REAC_ITER_ELAS      = 1000,),
                        CONVERGENCE = _F( RESI_GLOB_RELA = 1E-06,
                                          ITER_GLOB_MAXI = 25,
                                          ITER_GLOB_ELAS = 4000,

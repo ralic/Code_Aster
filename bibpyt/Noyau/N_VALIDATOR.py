@@ -1,4 +1,4 @@
-#@ MODIF N_VALIDATOR Noyau  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_VALIDATOR Noyau  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-
 
 """
    Ce module contient toutes les classes necessaires pour
@@ -174,16 +173,6 @@ class Valid:
        """
        return into_courant
 
-   def is_eval(self,valeur):
-       """
-           Cette méthode indique si valeur est un objet de type EVAL ou autre
-           que l'on ne cherchera pas à evaluer et qui doit etre considere
-           comme toujours valide. Si c'est un objet de ce type elle retourne
-           la valeur 1 sinon la valeur 0
-       """
-       return type(valeur) == types.InstanceType and valeur.__class__.__name__ in ('EVAL',
-                    'entier','reel','chaine', 'complexe','liste','PARAMETRE_EVAL')
-
    def is_param(self,valeur):
        """
            Cette méthode indique si valeur est un objet de type PARAMETRE
@@ -194,9 +183,9 @@ class Valid:
    def is_unknown(self,valeur):
        """
            Cette méthode indique si valeur est un objet de type inconnu
-           c'est à dire ni de type EVAL ni de type PARAMETRE
+           c'est à dire pas de type PARAMETRE
        """
-       return type(valeur) == types.InstanceType and valeur.__class__.__name__ not in ('EVAL',
+       return type(valeur) == types.InstanceType and valeur.__class__.__name__ not in (
                     'entier','reel','chaine', 'complexe','liste','PARAMETRE_EVAL','PARAMETRE')
 
 class ListVal(Valid):
@@ -343,9 +332,7 @@ class PairVal(ListVal):
 
       def verif_item(self,valeur):
           if type(valeur) == types.InstanceType:
-             if self.is_eval(valeur):
-                return 1
-             elif self.is_param(valeur):
+             if self.is_param(valeur):
                 valeur=valeur.valeur
              else:
                 return 0

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/09/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+#& MODIF COMMANDE  DATE 17/09/2004   AUTEUR F6BHHBO P.DEBONNIERES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                PRESENT_PRESENT('BARCELONE','CAM_CLAY','ELAS'),
                PRESENT_PRESENT('CAM_CLAY','ELAS'),
                PRESENT_PRESENT('LAIGLE','ELAS'),
-               PRESENT_PRESENT('DRUCKER_PRAGER','ELAS'),
+               PRESENT_PRESENT('DRUCK_PRAGER','ELAS'),
                EXCLUS('MAZARS','MAZARS_FO'),
                PRESENT_PRESENT('BAZANT_FD','ELAS_FO'),
                EXCLUS('GLRC','GLRC_FO'),
@@ -2591,7 +2591,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              SIGMA_P1        =SIMP(statut='o',typ='R'),
              PA              =SIMP(statut='o',typ='R'),
            ),
-           DRUCKER_PRAGER  =FACT(statut='f',
+           DRUCK_PRAGER  =FACT(statut='f',
              ALPHA           =SIMP(statut='o',typ='R'),
              SY              =SIMP(statut='o',typ='R'),
              P_ULTM          =SIMP(statut='o',typ='R'),
@@ -2665,7 +2665,22 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
            
 ####  MONOCRISTAL
            
-           
+           DRUCK_PRAGER_FO  =FACT(statut='f',
+             ALPHA           =SIMP(statut='o',typ=(fonction_sdaster,formule)),
+             SY              =SIMP(statut='o',typ=(fonction_sdaster,formule)),
+             P_ULTM          =SIMP(statut='o',typ=(fonction_sdaster,formule)),
+             ECROUISSAGE = SIMP(statut='o',typ='TXM',into=("LINEAIRE","PARABOLIQUE")),
+             b_lineaire =BLOC(condition="ECROUISSAGE=='LINEAIRE'",
+                                    fr="Loi de comportement de type Drucker Prager avec un ecrouissage lineaire",
+                    H               =SIMP(statut='o',typ=(fonction_sdaster,formule)),
+                    TYPE_DP         =SIMP(statut='c',typ='R',defaut= 1.0,),
+             ),
+             b_parabolique =BLOC(condition="ECROUISSAGE=='PARABOLIQUE'",
+                                    fr="Loi de comportement de type Drucker Prager avec un ecrouissage parabolique",
+                    SY_ULTM         =SIMP(statut='o',typ=(fonction_sdaster,formule)),
+                    TYPE_DP         =SIMP(statut='c',typ='R',defaut= 2.0,),
+             ),
+           ),
            
            
            INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),

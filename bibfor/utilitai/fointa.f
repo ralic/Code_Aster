@@ -5,7 +5,7 @@
       CHARACTER*(*)       NOMPU(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,6 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C     ------------------------------------------------------------------
       INTEGER      IPAR(10), MXPARA, NBPF, I1
       CHARACTER*1  CBID
-      CHARACTER*2  BL
       CHARACTER*16 NOMP(10)
 C ----------------------------------------------------------------------
 C PARAMETER ASSOCIE AU MATERIAU CODE
@@ -101,7 +100,6 @@ C
 C     ------------------------------------------------------------------
       NPAR(1) = 0
       NPAR(2) = 0
-      BL   = ' '
       NOMF = ' '
       JPRO = ZI(IPIF+1)
       JPAR = ZI(IPIF+2)
@@ -123,38 +121,8 @@ C
       ELSEIF (ZK16(JPRO).EQ.'INTERPRE') THEN
 C             ------------------------
          NOMF = ZK16(JPRO+5)
-         MXPARA = 10
-         CALL FONBPA(NOMF,ZK16(JPRO),CBID,MXPARA,NBPF,NOMP)
-         DO 70 I1 = 1,NBPF
-            IPAR(I1) = 0
-            DO 72 NUPAR = 1,NBPU
-               IF (NOMPU(NUPAR).EQ.NOMP(I1)) THEN
-                  IF (IPAR(I1).EQ.0) THEN
-                     IPAR(I1) = NUPAR
-                  ELSE
-                     IER = 120
-                   CALL UTDEBM('A','FOINTA','ERREUR A L''INTERPOLATION')
-                     CALL UTIMPK('S',' FONCTION',1,NOMF)
-                     CALL UTIMPK('L',' PARAMETRE',NBPU,NOMPU)
-                     CALL UTIMPK('S',' EN DOUBLE',0,BL)
-                     CALL UTFINM()
-                     GOTO 9999
-                  ENDIF
-               ENDIF
- 72         CONTINUE
-            IF (IPAR(I1).EQ.0) THEN
-               IER = 130
-               CALL UTDEBM('A','FOINTA','ERREUR A L''INTERPOLATION')
-               CALL UTIMPK('S',' FONCTION',1,NOMF)
-               CALL UTIMPK('L',' PARAMETRES ATTENDUS',NBPF,NOMP)
-               CALL UTIMPK('L',' PARAMETRES RECUS   ',NBPU,NOMPU)
-               CALL UTFINM()
-               GOTO 9999
-            ENDIF
- 70      CONTINUE
-         CALL FIINTE('F',NOMF,NBPF,IPAR,VALPU,RESU,IER)
+         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,RESU)
         GOTO 9999
-
 C
 C --- AUTRES TYPES DE FONCTION
 C

@@ -1,0 +1,176 @@
+# MODIF  DATE 20/09/2004   AUTEUR BOYERE E.BOYERE 
+# TITRE TP ANALYSE MODALE TPAM2
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE BOYERE E.BOYERE
+#-------------------------------------------------------------------
+#                 CORRIGE TP ANALYSE MODAL N2 (FORMAT NEW6)
+#                        MODES DE CORPS RIGIDE
+#
+#
+# PARAMETRE D'EXECUTION DE CETTE ETUDE: 100MO
+#
+# MODE D'EMPLOI:
+# --------------
+# MEG;'FICHIER/OUVRIR' AVEC TPAM1.PRET; BOUTON 'GO'
+# AU FIL DES QUESTIONS
+# COMPLETER LES PARTIES ADHOC NOTIFIEES PAR UN "...A COMPLETER..."
+# COMMENTARISER ET DECOMMENTARISER LES "FIN();" INTERMEDIAIRES EN
+# METTANT DANS UNE CHAINE LES LIGNES SUIVANTES QUI NE SERAIENT PAS
+# VALIDES SYNTAXIQUEMENT (EN V6, LE SUPERVISEUR ANALYSE LA TOTALITE
+# DU FICHIER SANS TENIR COMPTE DE L'EMPLACEMENT DU MOT FIN()).
+# EXEMPLE:
+#.        .........
+#        < PARTIE DU .COMM VALIDE SUR LAQUELLE ON VEUT TRAVAILLER>
+#  #FIN();
+#  CH1=AFFE_CHAR_MECA(MODELE=MO,...A COMPLETER....
+#         ..........
+#       <PARTIE DU .COMM NON VALIDE QUI NE NOUS INTERESSE PAS>
+#       <POUR L'INSTANT                                      >
+#         ..........
+#  FIN();  <FIN FINAL>
+#
+# DEVIENT
+#         ..........
+#  FIN();
+#  X="""CH1=AFFE_CHAR_MECA(MODELE=MO,...A COMPLETER....
+#         ..........
+#  FIN();"""
+#
+#-------------------------------------------------------------------
+# IMPORT PYTHON
+#import os
+#import string
+#import copy
+#import Gnuplot
+#import Numeric
+#directory = "/home/xxx/ASTER/TP_MODAL/TPAM2/"
+
+#-------------------------------------------------------------------
+#                       CALCUL ASTER
+#-------------------------------------------------------------------
+DEBUT(CODE=_F(NOM ='FORMA11B',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON')
+
+# LECTURE MAILLAGE ET AFFECTATION MATERIAU/MODELE
+ACIER=DEFI_MATERIAU(ELAS=_F(E=1.E8,
+                            NU=0.3,
+                            RHO=1.E4,),);
+MAYA=LIRE_MAILLAGE();
+MATER=AFFE_MATERIAU(MAILLAGE=MAYA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ACIER,),);
+STRUCTUR=AFFE_MODELE(MAILLAGE=MAYA,
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='3D',),);
+
+# CALCULS DES MATRICES DE MASSE ET DE RIGIDITE
+K_ELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                      MODELE=STRUCTUR,
+                      CHAM_MATER=MATER,);
+M_ELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                      MODELE=STRUCTUR,
+                      CHAM_MATER=MATER,);
+NUMERO=NUME_DDL(MATR_RIGI=K_ELEM,);
+K_ASSE=ASSE_MATRICE(MATR_ELEM=K_ELEM,
+                    NUME_DDL=NUMERO,);
+
+M_ASSE=ASSE_MATRICE(MATR_ELEM=M_ELEM,
+                    NUME_DDL=NUMERO,);
+
+#--------------------------------------------------------------------
+# ANALYSE MODALE
+# QUESTION 1: CALCUL BANDE AVEC SORENSEN    
+
+MODE_SOB=MODE_ITER_SIMULT(MATR_A=K_ASSE,
+                          MATR_B=M_ASSE,
+                          METHODE='SORENSEN',
+                          CALC_FREQ=_F(OPTION='BANDE',
+                                       FREQ=(0.0,2800.0,),),
+                          TITRE='1/ METHODE DE SORENSEN',);
+
+# IMPRESSIONS DES PARAMETRES EN SUS DANS .RESU   
+IMPR_RESU(RESU=_F(RESULTAT=MODE_SOB,
+                  TOUT_CHAM='NON',
+                  TOUT_PARA='OUI',),);
+
+# IMPRESSION FORMAT CASTEM DES MODES PROPRES
+IMPR_RESU(FORMAT='CASTEM',UNITE=55,
+          RESU=(_F(
+                   MAILLAGE=MAYA,),
+                _F(
+                   RESULTAT=MODE_SOB,),),);
+
+# AFFICHAGE GIBI INTERACTIF VIA PYTHON
+#os.system('cp %spost.dcas .' %directory)
+#os.system('/logiciels/aster/outils/gibi2000.x post.dcas')   
+
+# FIN DE LA QUESTION 1.
+#FIN();
+
+# QUESTION 2: CALCUL BANDE AVEC LANCZOS AVEC OU SANS OPTION MODE RIGIDE    
+
+MODE_LAS=MODE_ITER_SIMULT(MATR_A=K_ASSE,
+                          MATR_B=M_ASSE,
+                          METHODE='TRI_DIAG',
+                          OPTION='MODE_RIGIDE',
+                          CALC_FREQ=_F(OPTION='BANDE',
+                                       FREQ=(0.0,2800.0,),),
+                          VERI_MODE=_F(STOP_ERREUR='NON',),
+                          TITRE='2/ METHODE DE LANCZOS AVEC OPTION MODE RIGIDE',);
+IMPR_RESU(RESU=_F(RESULTAT=MODE_LAS,
+                  TOUT_CHAM='NON',
+                  TOUT_PARA='OUI',),);
+MODE_LAA=MODE_ITER_SIMULT(MATR_A=K_ASSE,
+                          MATR_B=M_ASSE,
+                          METHODE='TRI_DIAG',
+                          OPTION='MODE_RIGIDE',
+                          CALC_FREQ=_F(OPTION='BANDE',
+                                       FREQ=(0.0,2800.0,),),
+                          TITRE='2/ METHODE DE LANCZOS AVEC OPTION',);
+IMPR_RESU(RESU=_F(RESULTAT=MODE_LAA,
+                  TOUT_CHAM='NON',
+                  TOUT_PARA='OUI',),);
+
+# TEST_RESU UNIQUEMENT POUR FAIRE CAS TEST
+TEST_RESU(RESU=(_F(RESULTAT=MODE_LAA,
+                   NUME_ORDRE=11,
+                   PARA='FREQ',
+                   VALE=2470.841,
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.3.11',)))
+
+# FIN DE LA QUESTION 2.
+#FIN();
+
+# QUESTION 3: CALCUL DES 16 PLUS PETITES AVEC SORENSEN
+# NE MARCHE PAS : TRES MAUVAIS EXEMPLE !!!
+# IL VAUT MIEUX UTILISER l'OPTION BANDE
+
+#MODE_SOP=MODE_ITER_SIMULT(MATR_A=K_ASSE,
+#                           MATR_B=M_ASSE,
+#                           METHODE='SORENSEN',
+#                           CALC_FREQ=_F(OPTION='PLUS_PETITE',
+#                                        NMAX_FREQ=16,),
+#                           TITRE='1/ METHODE DE SORENSEN',);
+#IMPR_RESU(RESU=_F(RESULTAT=MODE_SOP,
+#                  TOUT_CHAM='NON',
+#                  TOUT_PARA='OUI',),);
+
+FIN();

@@ -1,4 +1,4 @@
-#@ MODIF codex Build  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF codex Build  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,6 @@
 #                                                                       
 #                                                                       
 # ======================================================================
-
 
 """
    Module emulant un code de calcul dans Accas
@@ -97,26 +96,9 @@ def debut(cmd,lot):
 
    return lot,0
 
-def myeval(cmd,texte_eval):
-   """
-      Fonctionnalite du code permettant d'evaluer des expressions
-      Entrees :
-              - cmd : objet ETAPE demandant l'evaluation
-              - texte_eval : expression a evaluer
-   """
-   print "myeval ",cmd.nom,texte_eval
-   return 0
-
 def ops1(cmd):
    """
       Fonction OPS de la macro INCLUDE
-   """
-   print cmd.getres()
-   return 0
-
-def ops5(cmd):
-   """
-      Fonction OPS de la macro FORMULE
    """
    print cmd.getres()
    return 0
@@ -131,7 +113,6 @@ def ops14(cmd):
 ops={
      1:ops1,
      2:ops1,
-     5:ops5,
      14:ops14,
      }
 

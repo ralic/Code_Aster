@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 07/09/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+%& MODIF TYPELEM  DATE 17/09/2004   AUTEUR F6BHHBO P.DEBONNIERES 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -416,7 +416,7 @@ OPTION__
     MECA_SENS_RAPH      540   IN__   CSOUSOP  PARSENS  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  ECONTPG  PCONTMS
                                      ECONTPG  PCONTPR  DDL_MECA PDEPLMR  DDL_MECA PDEPLMS  DDL_MECA PDEPLPR
                                      DDL_MECA PDEPLPS  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARIPG  PVARIMR
-                                     ZVARIPG  PVARIMS  ZVARIPG  PVARIPR
+                                     ZVARIPG  PVARIMS  ZVARIPG  PVARIPR  ECONTPG  PCOPARS
                               OUT__  ECONTPG  PCONTPS  ZVARIPG  PVARIPS
     M_GAMMA             82    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR

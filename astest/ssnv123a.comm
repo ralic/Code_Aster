@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE MASSIF REPOSANT SUR UN MATELAS ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -144,9 +144,8 @@ TEST_RESU(CHAM_NO=(
 #----------------------------------------------------------------------
 
 
-T = FORMULE(REEL="""(REEL:Y,REEL:Z) =
-3. + ( 4. * Y * Z ) +
-                             ( 5. * Y * Y )  + ( 5. * Z * Z ) """)
+T = FORMULE(NOM_PARA=('Y','Z'),VALE='''
+3. + ( 4. * Y * Z ) + ( 5. * Y * Y )  + ( 5. * Z * Z ) ''')
 
 CHT3=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_F', MAILLAGE=MA,
                         AFFE=_F(  TOUT = 'OUI',

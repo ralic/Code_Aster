@@ -44,16 +44,16 @@ STCALC=RECU_FONCTION(TABLE=STHETA,
 R = 10.0;
 
 
-STTA = FORMULE(REEL = '''(REEL:S) = 1.+2.*COS(2.*(PI/2-S/R))''');
+STTA = FORMULE(NOM_PARA='S',VALE='1.+2.*cos(2.*(pi/2-S/R))');
 #
-SMAX = EVAL("""PI/2*R""");
+SMAX = pi/2*R
 
 
 LISABS=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=SMAX,
                                     NOMBRE=30,),);
 
-STTAC=CALC_FONC_INTERP(FONCTION=STTA,NOM_PARA='ABSC_CURV',
+STTAC=CALC_FONC_INTERP(FONCTION=STTA,NOM_PARA='S',
                        NOM_RESU='ANALYTIC',
                        LIST_PARA=LISABS,
                        INTERPOL='LIN',);

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # RESPONSABLE BOITEAU O.BOITEAU
 # TITRE validation de la sensibilite par rapport a la source imposee et
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -94,14 +94,14 @@ A4=140.0;
 A5=-120.0;
 A6=10.0;
 
-PS1P = FORMULE(REEL="""(REEL:INST) =10.+EPSA""");
-PS1M = FORMULE(REEL="""(REEL:INST) =10.-EPSA""");
-PS2P = FORMULE(REEL="""(REEL:INST) =140.+EPSA""");
-PS2M = FORMULE(REEL="""(REEL:INST) =140.-EPSA""");
-T_OPP = FORMULE(REEL="""(REEL:INST) = A2*(1.D0+0.1D0*INST)""");
-COEFH = FORMULE(REEL="""(REEL:INST) = A3*(1.D0+0.3D0*INST)""");
-T_ORI = FORMULE(REEL="""(REEL:INST) = A1*(1.D0+0.1D0*INST)""");
-FLUXR = FORMULE(REEL="""(REEL:INST) = A5*(1.D0+0.2D0*INST)""");
+PS1P = FORMULE(NOM_PARA='INST',VALE='10.+EPSA');
+PS1M = FORMULE(NOM_PARA='INST',VALE='10.-EPSA');
+PS2P = FORMULE(NOM_PARA='INST',VALE='140.+EPSA');
+PS2M = FORMULE(NOM_PARA='INST',VALE='140.-EPSA');
+T_OPP = FORMULE(NOM_PARA='INST',VALE=' A2*(1.+0.1*INST)');
+COEFH = FORMULE(NOM_PARA='INST',VALE=' A3*(1.+0.3*INST)');
+T_ORI = FORMULE(NOM_PARA='INST',VALE=' A1*(1.+0.1*INST)');
+FLUXR = FORMULE(NOM_PARA='INST',VALE=' A5*(1.+0.2*INST)');
 #
 # 3. Prealable
 #
@@ -352,8 +352,8 @@ for k in range(1,4):
 # Elles sont definies comme des fonctions ASTER pour pouvoir avoir recourt
 # a TEST_FONCTION et pour pouvoir transmettre des donnees provenant de PYTHON
     print "" 
-    DFA1=FORMULE(REEL="""(REEL:INST) =dfps1*1.""")  
-    DFA2=FORMULE(REEL="""(REEL:INST) =dfps2*1.""")
+    DFA1=FORMULE(NOM_PARA='INST',VALE=str(eval('dfps1')) )  
+    DFA2=FORMULE(NOM_PARA='INST',VALE=str(eval('dfps2')) )
     print ""
   
 #

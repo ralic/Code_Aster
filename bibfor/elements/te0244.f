@@ -1,6 +1,6 @@
       SUBROUTINE TE0244 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 20/09/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,12 +66,13 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8        BETA,DBETA,LAMBDA,R8BID,DFDX(9),DFDY(9),POIDS,TPGM,
      &              R,TPG,THETA,DELTAT,DTPGDX,DTPGDY,COORSE(18),TPGBUF,
      &              VECTT(9),VECTI(9),LAMBS,TEMS,DLAMBD,FLUXS(2),
-     &              CPS,PREC,R8PREM,DTPGMX,DTPGMY,DTPGPX,DTPGPY
+     &              CPS,PREC,R8PREM,DTPGMX,DTPGMY,DTPGPX,DTPGPY,
+     &              DIFF,TPSEC
       INTEGER       NDIM,NNO,NNOS,KP,NPG,I,J,K,ITEMPS,JGANO,
      &              IPOIDS,IVF,IDFDE,IGEOM,IMATE,ICOMP,IFON(3),
      &              ITEMP,IVECTT,IVECTI,C(6,9),ISE,NSE,NNOP2,IMATSE,
      &              IVAPRI,IVAPRM,IFONS(3),TETYPS,IFM,NIV,IRET,
-     &              NPG2,IPOID2,IVF2,IDFDE2
+     &              NPG2,IPOID2,IVF2,IDFDE2,ISECHF,ISECHI
       LOGICAL       LSENS,LSTAT,LAXI
 
 C====
@@ -133,18 +134,33 @@ C====
       CALL JEVECH('PVECTTI','E',IVECTI)
 
 C====
-C 1.4 PREALABLES LIES A L'HYDRATATION
+C 1.4 PREALABLES LIES A L'HYDRATATION ET AU SECHAGE
 C====
-
-      IF ( (ZK16(ICOMP)(1:5).EQ.'SECH_')     .OR.
-     &     (ZK16(ICOMP)(1:9).EQ.'THER_HYDR'))     THEN
-        CALL UTMESS('F','TE0243','PAS D ELEMENTS LUMPES POUR'//
-     &              'HYDRATATION ET SECHAGE')
+       IF(ZK16(ICOMP)(1:5).EQ.'SECH_') THEN
+         IF (LSENS) CALL UTMESS('F',NOMPRO,
+     &     'OPTION SENSIBILITE NON DEVELOPPEE EN SECHAGE')
+         IF(ZK16(ICOMP)(1:12).EQ.'SECH_GRANGER'.OR.
+     &      ZK16(ICOMP)(1:10).EQ.'SECH_NAPPE') THEN
+           CALL JEVECH('PTMPCHI','L',ISECHI)
+           CALL JEVECH('PTMPCHF','L',ISECHF)
+         ELSE
+C          POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE
+C          ISECHI ET ISECHF SONT FICTIFS
+           ISECHI = ITEMP
+           ISECHF = ITEMP
+         ENDIF
+      ENDIF
+        
+      IF ( (ZK16(ICOMP)(1:9).EQ.'THER_HYDR')) THEN
+        CALL UTMESS('F','TE0244','PAS D ELEMENTS LUMPES POUR'//
+     &              'HYDRATATION ')
       ENDIF
 
       DELTAT = ZR(ITEMPS+1)
       THETA  = ZR(ITEMPS+2)
-      CALL NTFCMA (ZI(IMATE),IFON)
+      IF(ZK16(ICOMP)(1:5).NE.'SECH_') THEN
+         CALL NTFCMA (ZI(IMATE),IFON)
+      ENDIF
 
 C====
 C 1.5 PREALABLES LIES AUX CALCULS DE SENSIBILITE PART II
@@ -198,6 +214,8 @@ C====
 C ----- 2EME FAMILLE DE PTS DE GAUSS/BOUCLE SUR LES SOUS-ELEMENTS
 
       DO 200 ISE=1,NSE
+
+        IF (ZK16(ICOMP)(1:5).EQ.'THER_') THEN
 
         DO 305 I=1,NNO
           DO 305 J=1,2
@@ -399,6 +417,67 @@ C FIN DU IF LSENS
 C FIN DE BOUCLE SUR LES PT DE GAUSS
 401     CONTINUE
 
+       ELSE IF (ZK16(ICOMP)(1:5).EQ.'SECH_') THEN
+
+C        CALCULS DU TERME DE RIGIDITE DE L'OPTION
+
+        DO 307 I=1,NNO
+          DO 307 J=1,2
+            COORSE(2*(I-1)+J) = ZR(IGEOM-1+2*(C(ISE,I)-1)+J)
+307     CONTINUE
+
+          DO 310 KP=1,NPG
+            K=(KP-1)*NNO
+            CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,COORSE,DFDX,DFDY,POIDS)
+            R      = 0.D0
+            TPG    = 0.D0
+            DTPGDX = 0.D0
+            DTPGDY = 0.D0
+            TPSEC  = 0.D0
+            DO 308 I=1,NNO
+              R      = R      + COORSE(2*(I-1)+1)     *ZR(IVF+K+I-1)
+              TPG    = TPG    + ZR(ITEMP-1+C(ISE,I))  *ZR(IVF+K+I-1)
+              DTPGDX = DTPGDX + ZR(ITEMP-1+C(ISE,I))  *DFDX(I)
+              DTPGDY = DTPGDY + ZR(ITEMP-1+C(ISE,I))  *DFDY(I)
+              TPSEC  = TPSEC  + ZR(ISECHI-1+C(ISE,I)) *ZR(IVF+K+I-1)
+308         CONTINUE
+            CALL RCDIFF(ZI(IMATE), ZK16(ICOMP), TPSEC,  TPG, DIFF )
+            IF (LAXI) POIDS = POIDS*R
+C
+            DO 309 I=1,NNO
+               VECTT(C(ISE,I)) = VECTT(C(ISE,I)) 
+     &         + POIDS *( 
+     &           -(1.0D0-THETA)*DIFF*(DFDX(I)*DTPGDX+DFDY(I)*DTPGDY) )
+               VECTI(C(ISE,I)) = VECTT(C(ISE,I))
+309         CONTINUE
+310       CONTINUE 
+
+C  CALCULS DU TERME DE MASSE DE L'OPTION
+
+       DO 311 I=1,NNO
+          DO 311 J=1,2
+            COORSE(2*(I-1)+J) = ZR(IGEOM-1+2*(C(ISE,I)-1)+J)
+311     CONTINUE
+
+          DO 314 KP=1,NPG2
+            K=(KP-1)*NNO
+            CALL DFDM2D(NNO,KP,IPOID2,IDFDE2,COORSE,DFDX,DFDY,POIDS)
+            R      = 0.D0
+            TPG    = 0.D0
+            DO 312 I=1,NNO
+              R      = R      + COORSE(2*(I-1)+1)     *ZR(IVF2+K+I-1)
+              TPG    = TPG    + ZR(ITEMP-1+C(ISE,I))  *ZR(IVF2+K+I-1)
+312         CONTINUE
+            IF (LAXI) POIDS = POIDS*R
+C
+            DO 313 I=1,NNO
+               VECTT(C(ISE,I)) = VECTT(C(ISE,I)) + POIDS *
+     &          ( TPG/DELTAT*ZR(IVF2+K+I-1) )
+               VECTI(C(ISE,I)) = VECTT(C(ISE,I))
+313         CONTINUE
+314       CONTINUE 
+
+        ENDIF
 C FIN DE BOUCLE SUR LES SOUS-ELEMENTS
 200   CONTINUE
 

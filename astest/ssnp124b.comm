@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 17/09/2004   AUTEUR F6BHHBO P.DEBONNIERES 
 # RESPONSABLE ROMEO R.FERNANDES
 # ======================================================================
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE (MODELISATION D_PLAN)
@@ -28,7 +28,7 @@ MAILLAGE = LIRE_MAILLAGE( );
 
 MATER    = DEFI_MATERIAU(  ELAS    = _F(  E  = 5800.0E6,
                                           NU = 0.3  ,),
-                           DRUCKER_PRAGER = _F(  ECROUISSAGE = 'PARABOLIQUE',
+                           DRUCK_PRAGER = _F(  ECROUISSAGE = 'PARABOLIQUE',
                                           ALPHA       =    0.33      ,
                                           P_ULTM      =    0.01      ,
                                           SY          =    2.57E6    ,

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 17/09/2004   AUTEUR F6BHHBO P.DEBONNIERES 
 # RESPONSABLE ROMEO R.FERNANDES
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE DE TYPE
@@ -56,7 +56,7 @@ SOL      = DEFI_MATERIAU( ELAS     = _F( E            = 5800.E6,
                                          NU           = 0.3,  
                                          ALPHA        = 1.E-5, ),
           
-                           DRUCKER_PRAGER = _F(  ECROUISSAGE = 'PARABOLIQUE',
+                           DRUCK_PRAGER = _F(  ECROUISSAGE = 'PARABOLIQUE',
                                           ALPHA       =    0.33      ,
                                           P_ULTM      =    0.01      ,
                                           SY          =    2.57E6    ,

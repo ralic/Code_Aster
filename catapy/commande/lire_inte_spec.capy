@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,16 +16,19 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-LIRE_INTE_SPEC=OPER(nom="LIRE_INTE_SPEC",op= 116,sd_prod=tabl_intsp,
+
+from Macro.lire_inte_spec_ops import lire_inte_spec_ops
+
+LIRE_INTE_SPEC=MACRO(nom="LIRE_INTE_SPEC",op=lire_inte_spec_ops,sd_prod=tabl_intsp,
                     fr="Lecture sur un fichier externe de  fonctions complexes pour créer une matrice interspectrale",
                     reentrant='n',
             UIinfo={"groupes":("Fonction",)},
          UNITE           =SIMP(statut='o',typ='I' ),
          FORMAT          =SIMP(statut='f',typ='TXM',defaut="MODULE_PHASE",into=("REEL_IMAG","MODULE_PHASE") ),
-         NOM_PARA        =SIMP(statut='f',typ='TXM',
+         NOM_PARA        =SIMP(statut='f',typ='TXM',defaut="FREQ",
                                into=("DX","DY","DZ","DRX","DRY","DRZ","TEMP",
                                      "INST","X","Y","Z","EPSI","FREQ","PULS","AMOR","ABSC",) ),
-         NOM_RESU        =SIMP(statut='f',typ='TXM' ),
+         NOM_RESU        =SIMP(statut='f',typ='TXM',defaut="DSP" ),
          INTERPOL        =SIMP(statut='f',typ='TXM',max=2,into=("NON","LIN","LOG") ),
          PROL_DROITE     =SIMP(statut='f',typ='TXM',into=("CONSTANT","LINEAIRE","EXCLU") ),
          PROL_GAUCHE     =SIMP(statut='f',typ='TXM',into=("CONSTANT","LINEAIRE","EXCLU") ),

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # RESPONSABLE BOITEAU O.BOITEAU
 # TITRE validation de la sensibilite par rapport a la chaleur volumique et
 # a l'emissivite en thermique non-lineaire transitoire lumpe
@@ -89,9 +89,9 @@ A3=DEFI_CONSTANTE(VALE=1.E-8);
 A4=DEFI_CONSTANTE(VALE=500.0);
 PS1P=DEFI_CONSTANTE(VALE=2.0001);
 PS1M=DEFI_CONSTANTE(VALE=1.9999);
-PS2P = FORMULE(REEL="""(REEL:INST) =0.3+EPSA""");
-PS2M = FORMULE(REEL="""(REEL:INST) =0.3-EPSA""");
-T_ORI = FORMULE(REEL="""(REEL:INST) = 100.*(1.D0+0.1D0*INST)""");
+PS2P = FORMULE(NOM_PARA='INST',VALE='0.3+EPSA');
+PS2M = FORMULE(NOM_PARA='INST',VALE='0.3-EPSA');
+T_ORI = FORMULE(NOM_PARA='INST',VALE='100.*(1.E0+0.1E0*INST)');
 LAMB = DEFI_CONSTANTE(VALE=0.75);
 #
 # 3. Prealable
@@ -345,8 +345,8 @@ for k in range(1,4):
 # Elles sont definies comme des fonctions ASTER pour pouvoir avoir recourt
 # a TEST_FONCTION et pour pouvoir transmettre des donnees provenant de PYTHON
     print "" 
-    DFA1=FORMULE(REEL="""(REEL:INST) =dfps1*1.""")  
-    DFA2=FORMULE(REEL="""(REEL:INST) =dfps2*1.""")
+    DFA1=FORMULE(NOM_PARA='INST',VALE=str(eval('dfps1')) )
+    DFA2=FORMULE(NOM_PARA='INST',VALE=str(eval('dfps2')) )
     print ""
   
 #

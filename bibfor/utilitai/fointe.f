@@ -5,7 +5,7 @@
       REAL*8              VALPU(*), RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,6 +100,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       INTEGER      IPAR(10)
       CHARACTER*16 NOMP(10)
+      CHARACTER*16 TYPFON
 C     ------------------------------------------------------------------
 C     FONCTION EN LIGNE
 C
@@ -125,6 +126,12 @@ C
       CHVALE = NOMFON//'.VALE'
       CHPARA = NOMFON//'.PARA'
 
+      CALL JEVEUT(CHPROL,'L',LPROL)
+      IF (ZK16(LPROL).EQ.'INTERPRE') THEN
+C     ------------------------ CAS DES FORMULES ------------------------
+         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,RESU)
+         GOTO 9999
+      ENDIF
 C
       DO 10 I = 1, MXSAVE
          IF ( NOMFON .EQ. SVNOMF(I) ) THEN
@@ -138,41 +145,6 @@ C
          ENDIF
    10 CONTINUE
 C     --- MEMORISATION DES INFORMATIONS NOUVELLES ---
-      CALL JEVEUT(CHPROL,'L',LPROL)
-      IF (ZK16(LPROL).EQ.'INTERPRE') THEN
-C
-C        -- CALCUL DE LA FONCTION INTERPRETEE ---
-         CALL FONBPA(NOMFON,ZK16(LPROL),CBID,MXPARA,NBPF,NOMP)
-         DO 70 I1 = 1,NBPF
-            IPAR(I1) = 0
-            DO 72 NUPAR = 1,NBPU
-               IF (NOMPU(NUPAR).EQ.NOMP(I1)) THEN
-                  IF (IPAR(I1).EQ.0) THEN
-                     IPAR(I1) = NUPAR
-                  ELSE
-                     IER = 120
-                   CALL UTDEBM('A','FOINTE','ERREUR A L''INTERPOLATION')
-                     CALL UTIMPK('S',' FONCTION',1,NOMFON)
-                     CALL UTIMPK('L',' PARAMETRE',NBPU,NOMPU)
-                     CALL UTIMPK('S',' EN DOUBLE',0,BL)
-                     CALL UTFINM()
-                     GOTO 9999
-                  ENDIF
-               ENDIF
- 72         CONTINUE
-            IF (IPAR(I1).EQ.0) THEN
-               IER = 130
-               CALL UTDEBM('A','FOINTE','ERREUR A L''INTERPOLATION')
-               CALL UTIMPK('S',' FONCTION',1,NOMFON)
-               CALL UTIMPK('L',' PARAMETRES ATTENDUS',NBPF,NOMP)
-               CALL UTIMPK('L',' PARAMETRES RECUS   ',NBPU,NOMPU)
-               CALL UTFINM()
-               GOTO 9999
-            ENDIF
- 70      CONTINUE
-         CALL FIINTE('F',NOMF,NBPF,IPAR,VALPU,RESU,IER)
-         GOTO 9999
-      ENDIF
       ISVNXT = NEXTSV(ISVNXT)
       ISAVE  = ISVNXT
 

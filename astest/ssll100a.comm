@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE STRUCTURE SYMETRIQUE DE POUTRES AVEC UN COUDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -228,10 +228,10 @@ TEST_RESU(CHAM_NO=(
 #======================================================================
 
 
-T = FORMULE(REEL="""(REEL:INST,REEL:Y,REEL:Z) =
+T = FORMULE(NOM_PARA=('INST','Y','Z'),VALE='''
         2. * INST * ( 3. + ( 4. * Y * Z ) +
                         ( 5. * Y * Y )  + ( 5. * Z * Z ) )
-                 """)
+                 ''')
 
 T1=5.
 
@@ -251,9 +251,9 @@ E3=2.9E+11
 #E_F=DEFI_FONCTION(  NOM_PARA='TEMP',
 #                        VALE=( T1, E1,  T2, E2,  T3, E3, )  )
 #
-E_F = FORMULE(REEL="""(REEL:TEMP) =
+E_F = FORMULE(NOM_PARA='TEMP',VALE='''
         ( 1.910E+4 * TEMP * TEMP ) + ( 9.045E+7 * TEMP ) + 1.80005E+11
-                    """)
+                    ''')
 
 
 NU1=0.3
@@ -265,9 +265,9 @@ NU3=0.35
 #NU_F=DEFI_FONCTION(  NOM_PARA='TEMP',
 #                         VALE=( T1, NU1,  T2, NU2,  T3, NU3, )  )
 #
-NU_F = FORMULE(REEL="""(REEL:TEMP) =
+NU_F = FORMULE(NOM_PARA='TEMP',VALE='''
         ( -2.0E-8 * TEMP * TEMP ) + ( 7.044E-5 * TEMP ) + 0.2996
-                  """)
+                  ''')
 
 MATER_F=DEFI_MATERIAU(  ELAS_FO=_F(  E = E_F,      NU = NU_F,
                                      TEMP_DEF_ALPHA=0.0,   

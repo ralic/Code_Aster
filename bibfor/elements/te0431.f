@@ -1,6 +1,6 @@
       SUBROUTINE TE0431(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 21/09/2004   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,10 +59,10 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      VECTEU = ((OPTION.EQ.'FULL_MECA').OR.(OPTION.EQ.'RAPH_MECA').OR.
-     &        (OPTION.EQ.'FORC_NODA').OR.(OPTION.EQ.'CHAR_MECA_TEMP_R'))
-      MATRIC = ((OPTION.EQ.'FULL_MECA').OR.(OPTION.EQ.'RIGI_MECA_TANG')
-     &          .OR.(OPTION.EQ.'RIGI_MECA'))
+      VECTEU = ((OPTION(1:9).EQ.'FULL_MECA').OR.(OPTION.EQ.'RAPH_MECA')
+     &   .OR.(OPTION.EQ.'FORC_NODA').OR.(OPTION.EQ.'CHAR_MECA_TEMP_R'))
+      MATRIC = ((OPTION(1:9).EQ.'FULL_MECA').OR.
+     &          (OPTION(1:9).EQ.'RIGI_MECA'))
 
 
 C - FONCTIONS DE FORMES ET POINTS DE GAUSS
@@ -84,8 +84,9 @@ C - PARAMETRES EN ENTREE
       ELSEIF (OPTION.EQ.'RIGI_MECA') THEN
         CALL JEVECH('PMATERC','L',IMATE)
         
-      ELSE IF (OPTION.EQ.'FULL_MECA'.OR.OPTION.EQ.'RAPH_MECA'.OR.
-     &         OPTION.EQ.'RIGI_MECA_TANG') THEN
+      ELSE IF (OPTION(1:9).EQ.'FULL_MECA'.OR.
+     &         OPTION.EQ.'RAPH_MECA'.OR.
+     &         OPTION(1:10).EQ.'RIGI_MECA_') THEN
         CALL JEVECH('PCONTMR','L',ICONTM)
         CALL JEVECH('PCARCRI','L',ICARCR)
         CALL JEVECH('PCOMPOR','L',ICOMPO)
@@ -214,7 +215,7 @@ C - CHAR_MECA_TEMP_R : SIG = SIGMA THERMIQUE
           
 C - RAPH_MECA, FULL_MECA, RIGI_MECA_ : ON PASSE PAR LA LDC 1D
 
-        IF (OPTION.EQ.'RAPH_MECA'.OR.OPTION.EQ.'FULL_MECA'.OR.
+        IF (OPTION.EQ.'RAPH_MECA'.OR.OPTION(1:9).EQ.'FULL_MECA'.OR.
      &      OPTION(1:10).EQ.'RIGI_MECA_') THEN
           
           SIGM = ZR(ICONTM+KPG-1)
@@ -246,47 +247,9 @@ C - CALCUL DE LA DEFORMATION DEPS11
      &             SIGM,ZR(IVARIM+(KPG-1)*LGPG),
      &             TEMPM,TEMPP,ZR(ITREF),
      &             SIG,ZR(IVARIP+(KPG-1)*LGPG),RIG,COD)
-C          write (6,*) 'DEPS = ',DEPS
-
-C - LDC 1D TEMPORAIRE (POUR TEST DE L'ELEMENT)
-C   QUAND ON PASSERA AUX VRAIES LDC : PASSER COD(KPG) POUR GESTION
-C   DES CODES RETOURS : CF. NMPL2D
-C --- CARACTERISTIQUES ELASTIQUES A TMOINS
-C
-C          CALL RCVALA(ZI(IMATE),'ELAS',1,'TEMP',TEMPM,1,
-C     &                'E',EM,CODRES,'FM')
-C          CALL RCVALA(ZI(IMATE),'ELAS',1,'TEMP',TEMPP,1,
-C     &                'ALPHA',ALPHAM,CODRES,' ')
-C          IF (CODRES.NE.'OK') ALPHAM = 0.D0
-C
-CC --- CARACTERISTIQUES ELASTIQUES A TPLUS
-C
-C          CALL RCVALA(ZI(IMATE),'ELAS',1,'TEMP',TEMPP,1,
-C     &                'E',EP,CODRES,'FM')
-C          CALL RCVALA(ZI(IMATE),'ELAS',1,'TEMP',TEMPP,1,
-C     &                'ALPHA',ALPHAP,CODRES,' ')
-C          IF (CODRES.NE.'OK') ALPHAP = 0.D0
-C          
-C          NOMRES(1) = 'E'
-C          CALL RCVALA(ZI(IMATE),' ','ELAS',0,' ',0.D0,1,
-C     &                 NOMRES,VALRES,CODRET, 'FM')
-
-C          write (6,*) 'OPTION = ',OPTION,
-C     &                ' ; VIM = ',ZR(IVARIM+(KPG-1)*LGPG)
-C
-C          CALL NM1DIS(ZI(IMATE),TEMPM,TEMPP,ZR(ITREF),EM,EP,ALPHAM,
-C     &                ALPHAP,SIGM,DEPS,ZR(IVARIM+(KPG-1)*LGPG),OPTION,
-C     &                ZK16(ICOMPO),SIG,VIP,RIG)
-C          write (6,*) 'RIG = ',RIG
           
-          IF (OPTION.EQ.'RAPH_MECA'.OR.OPTION.EQ.'FULL_MECA') THEN
-C            SIG=VALRES(1)*EPS
-C            ZR(IVARIP+(KPG-1)*LGPG)=VIP
+          IF (OPTION.EQ.'RAPH_MECA'.OR.OPTION(1:9).EQ.'FULL_MECA') THEN
             ZR(ICONTP+KPG-1)=SIG
-C          write (6,*) 'VIP = ',VIP
-C          ELSEIF (OPTION(1:10).EQ.'RIGI_MECA_'.
-C     &            OR.OPTION.EQ.'FULL_MECA') THEN
-C            RIG=VALRES(1)
           ENDIF
 
         ENDIF
@@ -313,9 +276,6 @@ C            RIG=VALRES(1)
 C
 C                 RIGIDITE ELASTIQUE
                   TMP=B(I,N)*RIG*B(J,M)*ZR(IPOIDS+KPG-1)*JAC*DENSIT
-C                  write (6,*) 'I,N,J,M,B(I,N),B(J,M),TMP',
-C     &                    I,N,J,M,B(I,N),B(J,M),TMP
-C
 C                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                   IF (J.LE.J1) THEN
                      KK = KKD + 3*(M-1)+J

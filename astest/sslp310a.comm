@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE BIBLIO_18 FISSURE PRESSURISEE DANS UN DOMAINE PLAN ILLIMITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,17 +44,17 @@ MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
                                 'LPOP8',  'LPOP8S', ))
                  )
 
-EXP1 = FORMULE(REEL="""(REEL :X) = ( EXP(X) ) """)
-EXP5 = FORMULE(REEL="""(REEL :X) = ( EXP(5. * X) ) """)
+EXP1 = FORMULE(NOM_PARA='X',VALE='( exp(X) ) ')
+EXP5 = FORMULE(NOM_PARA='X',VALE='( exp(5. * X) ) ')
 
-SINH1 = FORMULE(REEL="""(REEL :X) = ( SINH(X) ) """)
-SINH5 = FORMULE(REEL="""(REEL :X) = ( SINH(5. * X) ) """)
+SINH1 = FORMULE(NOM_PARA='X',VALE='( sinh(X) ) ')
+SINH5 = FORMULE(NOM_PARA='X',VALE='( sinh(5. * X) ) ')
 
-COSH1 = FORMULE(REEL="""(REEL :X) = ( COSH(X) ) """)
-COSH5 = FORMULE(REEL="""(REEL :X) = ( COSH(5. * X) ) """)
+COSH1 = FORMULE(NOM_PARA='X',VALE='( cosh(X) ) ')
+COSH5 = FORMULE(NOM_PARA='X',VALE='( cosh(5. * X) ) ')
 
-COS1 = FORMULE(REEL="""(REEL :X) = ( COS(X) ) """)
-COS5 = FORMULE(REEL="""(REEL :X) = ( COS(2.4048255577 * X))""")
+COS1 = FORMULE(NOM_PARA='X',VALE='( cos(X) ) ')
+COS5 = FORMULE(NOM_PARA='X',VALE='( cos(2.4048255577 * X))')
 
 CL=AFFE_CHAR_MECA(   MODELE=MO, 
 

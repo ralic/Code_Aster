@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 17/08/2004   AUTEUR DURAND C.DURAND */
+/* MODIF astermodule supervis  DATE 20/09/2004   AUTEUR DURAND C.DURAND */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -1546,6 +1546,50 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
         return ;
 }
 
+void DEFSPSPP(FIINTF,fiintf,_IN char *nomfon,_IN int lfon,_IN INTEGER *nbpu,_IN char *param,_IN int lpara,_IN double *val,
+		               _OUT double *resu)
+{
+
+        PyObject *res  = (PyObject*)0 ;
+        PyObject *tup_par;
+        PyObject *tup_val;
+        char *nfon	= (char*)0 ;
+        char *npar	= (char*)0 ;
+        char *kvar;
+        int i;
+
+        _DEBUT(fiintf) ;
+        						DSCRUTE(*val); ISCRUTE(*nbpu) ;
+                                                        SSCRUTE(PyString_AsString(PyObject_CallMethod(commande,"retnom",""))) ;
+                                                        FSSCRUTE(nomfon,lfon) ; FSSCRUTE(param,lpara) ;
+        						ASSERT(EstPret(motcle,lcle)!=0);
+                                                        ASSERT(commande!=(PyObject*)0);
+        tup_par = PyTuple_New( *nbpu ) ;
+        tup_val = PyTuple_New( *nbpu ) ;
+        for(i=0;i<*nbpu;i++){
+        			    OBSCRUTE(tup_par);
+           kvar = param + i*lpara;
+           PyTuple_SetItem( tup_par, i, PyString_FromStringAndSize(kvar,lpara) ) ;
+        }
+        for(i=0;i<*nbpu;i++){
+        			    OBSCRUTE(tup_val);
+           PyTuple_SetItem( tup_val, i, PyFloat_FromDouble(val[i]) ) ;
+        }
+
+        res=PyObject_CallMethod(commande,"fiintf","s#OO",nomfon,lfon,tup_par,tup_val);
+
+        if (res == NULL)MYABORT("erreur dans la partie Python");
+        					       OBSCRUTE(res);
+                                                       ASSERT(PyFloat_Check(res)) ;
+
+        *resu=PyFloat_AsDouble(res);
+
+        Py_DECREF(res); 	       /*  decrement sur le refcount du retour */
+        _FIN(fiintf) ;
+        return ;
+}
+
+
 void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
                               _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT INTEGER *val,_OUT INTEGER *nbval )
 {
@@ -1802,82 +1846,6 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
         _FIN(getvtx_) ;
         return ;
 }
-
-void DEFSSPPPSP(GETFTX,getftx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
-                              _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT char *txval,_IN int ltx,_OUT INTEGER *nbval)
-{
-        /*
-
-          Procedure GETFTX pour le FORTRAN : destinee a l'usage (exclusif) par OPS005
-          Cette fonction retourne - dans une tableau de chaines de caracteres fortran -
-          une formule ASTER stockee dans le jeu de commande.
-
-          Entrees :
-            le nom d un mot cle facteur : motfac (string)
-            le nom d un mot cle simple ou sous mot cle : motcle (string)
-            le numero de l occurence du mot cle facteur : iocc (entier)
-            le numero de l argument demande (obsolete =1): iarg (entier)
-            le nombre max de valeur attendues dans val : mxval (entier)
-          Retourne :
-            le tableau des valeurs attendues : txval (tableau de string)
-            ATTENTION : txval arrive avec une valeur par defaut
-            le nombre de valeurs effectivement retournees : nbval (entier)
-               si pas de valeur nbval =0
-               si plus de valeur que mxval nbval <0 et valeur abs = nbre valeurs
-               si moins de valeurs que mxval nbval>0 et egal au nombre retourne
-        */
-        PyObject *res  = (PyObject*)0 ;
-        PyObject *tup  = (PyObject*)0 ;
-        int ok         = 0 ;
-        int nval       = 0 ;
-        int k          = 0 ;
-        char *mfc      = (char*)0 ;
-        char *mcs      = (char*)0 ;
-
-        _DEBUT(getftx_) ;
-                                                        SSCRUTE(PyString_AsString(PyObject_CallMethod(commande,"retnom",""))) ;
-                                                        FSSCRUTE(motfac,lfac); FSSCRUTE(motcle,lcle);
-                                                        ISCRUTE(*mxval);ISCRUTE(ltx) ; ISCRUTE(*iocc);
-                                                        /*ASSERT((*iocc>0)||(FindLength(motfac,lfac)==0));*/
-
-        mfc=fstr1(motfac,lfac);
-        mcs=fstr2(motcle,lcle);
-                                                        ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvtx","ssiii",mfc,mcs,*iocc,*iarg,*mxval);
-
-        /*  si le retour est NULL : exception Python a transferer
-            normalement a l appelant mais FORTRAN ??? */
-        if (res == NULL)MYABORT("erreur dans la partie Python");
-
-                                                        OBSCRUTE(res);
-
-        ok = PyArg_ParseTuple(res,"lO",nbval,&tup);
-        if (!ok)MYABORT("erreur au decodage d'une chaine dans le module C aster.getftx");
-
-                                                        ISCRUTE(*nbval) ;
-                                                        OBSCRUTE(tup);
-        nval=*nbval;
-        if(*nbval < 0)nval=*mxval;
-
-        if( nval > 0 ){
-                /*
-                le tableau de mxval chaines et interprete comme une chaine de mxval*ltx
-                caracteres.
-                */
-                                                        ISCRUTE(PyString_Size(PyTuple_GetItem(tup,0))) ;
-                                                        ASSERT(PyString_Size(PyTuple_GetItem(tup,0))<=(*mxval)*ltx) ;
-                convertxt(1,tup,txval,(*mxval)*ltx);
-                                                        ISCRUTE((*mxval)*ltx) ;
-                                                        FSSCRUTE(txval,(*mxval)*ltx) ;
-        }
-
-
-        Py_DECREF(res);                /*  decrement sur le refcount du retour */
-        _FIN(getftx_) ;
-        return ;
-}
-
-
 
 void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN int lcle,_IN INTEGER *iocc,
                               _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT char *txval,_IN int ltx,_OUT INTEGER *nbval)
@@ -3228,99 +3196,6 @@ PyObject *args;
         return temp;
 }
 
-#define CALL_MYEVAL(a,b,c,d,e)  CALLSPPPP(MYEVAL,myeval,a,b,c,d,e)
-extern void DEFSPPPP(MYEVAL,myeval,char* ,int , INTEGER* , INTEGER* , double *,INTEGER* ) ;
-
-static PyObject* aster_myeval(self, args)
-PyObject *self; /* Not used */
-PyObject *args;
-{
-        PyObject *temp = (PyObject*)0 ;
-        INTEGER ier=0 ;
-        INTEGER iclass=0 ;
-        INTEGER ival=0 ;
-        double rval[2] ; /* contient un nombre reel ou un nombre complexe */
-        char *cmdusr="                                                                          ";
-
-        _DEBUT(aster_myeval) ;
-        if (!PyArg_ParseTuple(args, "Os",&temp,&cmdusr)) return NULL;
-
-        /* On empile le nouvel appel */
-        commande=empile(temp);
-
-        if(PyErr_Occurred()){
-            fprintf(stderr,"Warning: une exception n'a pas ete traitée\n");
-            PyErr_Print();
-            fprintf(stderr,"Warning: on l'annule pour continuer mais elle aurait\n\
-                            etre traitée avant\n");
-            PyErr_Clear();
-        }
-
-        fflush(stderr) ;
-        fflush(stdout) ;
-
-        try(1){
-                /*  appel du sous programme myeval */
-                CALL_MYEVAL (cmdusr,&iclass,&ival,rval,&ier);
-
-                /* On depile l appel */
-                commande = depile();
-                if(ier != 0){
-                                                                                 ISCRUTE(ier) ;
-                        PyErr_SetString(PyExc_ValueError, "erreur evaluation ASTER");
-                        return NULL;
-                }
-                if(iclass == 1 || iclass == 2){
-                        return PyFloat_FromDouble(rval[0]);
-                }
-                else if(iclass == 5){
-
-                        PyObject *complexe  = (PyObject*)0 ;
-                        PyObject *objet     = (PyObject*)0 ;
-                        const char *repr    = "RI" ; /* type de representation */
-
-                                                                                 DSCRUTE(rval[0]) ; DSCRUTE(rval[1]) ;
-
-                        /* ici, rval contient la partie reelle et la partie imaginaire  du  */
-                        /* complexe a stocker dans un tuple                                 */
-                        /* (repre,reelle,imaginaire)), destine a etre traite par la         */
-                        /* methode Traite_DEFI_VALEUR de la classe EXECUTION (commandes.py) */
-
-
-                        /* Creation d'une liste et stockage du type et des deux reels */
-
-                        complexe = PyTuple_New( 3 ) ;
-
-                        PyTuple_SetItem( complexe, 0, (objet=PyString_FromString(repr)) ) ;
-                                                                                 REFSCRUTE(objet) ;
-                                                                                 ASSERT(objet->ob_refcnt==1) ;
-                        PyTuple_SetItem( complexe, 1, PyFloat_FromDouble(rval[0]) ) ;
-                        PyTuple_SetItem( complexe, 2, PyFloat_FromDouble(rval[1]) ) ;
-
-                        return complexe ;
-                }
-                else if(iclass == 6){
-                        return PyInt_FromLong(ival);
-                }
-                else{
-                                                                                 ISCRUTE(iclass) ;
-                        PyErr_SetString(PyExc_ValueError, "erreur evaluation ASTER");
-                        return NULL;
-                }
-        }
-        finally{
-                /* On depile l appel */
-                commande = depile();
-
-                /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
-                TraitementFinAster( exception_status ) ;
-
-                _FIN(aster_myeval) ;
-                return NULL;
-        }
-}
-
-
 
 void TraitementFinAster( _IN int val )
 {
@@ -3678,7 +3553,6 @@ static PyMethodDef aster_methods[] = {
                 {"repdex" ,     aster_repdex ,            METH_VARARGS},
                 {"mdnoma" ,     aster_mdnoma ,            METH_VARARGS},
                 {"mdnoch" ,     aster_mdnoch ,            METH_VARARGS},
-                {"myeval" ,     aster_myeval ,            METH_VARARGS},
                 {"argv" ,       aster_argv ,              METH_VARARGS},
                 {"prepcompcham",aster_prepcompcham,       METH_VARARGS},
                 {"getvectjev" , aster_getvectjev ,        METH_VARARGS, getvectjev_doc},

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE  PLAQUE CARREE TOURNEE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,9 +65,9 @@ CHAM_MAT=AFFE_MATERIAU(MAILLAGE=MA,
 PO = 1.0;
 
 
-P = FORMULE(REEL ="""(REEL:X,REEL:Y,
-                    REEL:Z) = PO*SIN(PI*(COS(3*PI/18.)*COS(PI/9.)*X+SIN(PI/9.)*COS(3*PI/18.)*Y-
-SIN(3*PI/18.)*Z))*SIN(PI*( -SIN(PI/9.)*X + COS(PI/9.)*Y))""");
+P = FORMULE(NOM_PARA=('X','Y','Z'),VALE='''
+                    PO*sin(pi*(cos(3*pi/18.)*cos(pi/9.)*X+sin(pi/9.)*cos(3*pi/18.)*Y-
+sin(3*pi/18.)*Z))*sin(pi*( -sin(pi/9.)*X + cos(pi/9.)*Y))''');
 
 CHA=AFFE_CHAR_MECA(MODELE=MO,
                    LIAISON_OBLIQUE=(_F(GROUP_NO='O',

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE CHAUFFAGE D UN MILIEU POREUX SANS AIR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,9 +89,9 @@ LIPCAP=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=70000.0,
                                     PAS=1000.0,),);
 
-SL = FORMULE(REEL = '''(REEL:PCAP) = (((PCAP/(6.81E3))**(1./0.37)+1.)**(-1./1.37))''');
+SL = FORMULE(NOM_PARA='PCAP',VALE='(((PCAP/(6.81E3))**(1./0.37)+1.)**(-1./1.37))')
 
-DSL = FORMULE(REEL = '''(REEL:PCAP) = (-1/(1.37*0.37))*(((PCAP/(6.81E3))**(1./0.37)
+DSL = FORMULE(NOM_PARA='PCAP',VALE=''' (-1/(1.37*0.37))*(((PCAP/(6.81E3))**(1./0.37)
 +1.)**(-2.37/1.37))*((PCAP**(0.63/0.37))/((6.81E3)**(1./0.37)))''');
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -120,14 +120,14 @@ LISAT=DEFI_LIST_REEL(DEBUT=0.0,
 #  POUR L EAU :
 # -----------
 
-PERM = FORMULE(REEL = '''(REEL:SAT) = (1/(TANH(4.9896)+TANH(4.2504)))
-*TANH(9.24*(SAT-0.54))+1/(TANH(4.9896)+
-TANH(4.2504))*TANH(4.9896)''');
+PERM = FORMULE(NOM_PARA='SAT',VALE='''(1/(tanh(4.9896)+tanh(4.2504)))
+*tanh(9.24*(SAT-0.54))+1/(tanh(4.9896)+
+tanh(4.2504))*tanh(4.9896)''');
 
 
-DPERM = FORMULE(REEL = '''(REEL:SAT) = (36.96/(TANH(4.9896)
-+TANH(4.2504)))
-*EXP(-18.48*(SAT+0.54))/((EXP(-18.48*SAT)+EXP(-9.9792))**2)''');
+DPERM = FORMULE(NOM_PARA='SAT',VALE='''(36.96/(tanh(4.9896)
++tanh(4.2504)))
+*exp(-18.48*(SAT+0.54))/((exp(-18.48*SAT)+exp(-9.9792))**2)''');
 
 
 
@@ -151,13 +151,13 @@ DPERML=CALC_FONC_INTERP(FONCTION=DPERM,
 #  POUR LE MELANGE GAZEUX :
 # -----------------------
 
-PG = FORMULE(REEL = '''(REEL:SAT) = (1/(TANH(2.8749)+TANH(4.8951)))
-*TANH(7.77*(0.37-SAT))
-+(1/(TANH(2.8749)+TANH(4.8951)))*TANH(4.8951)''');
+PG = FORMULE(NOM_PARA='SAT',VALE=''' (1/(tanh(2.8749)+tanh(4.8951)))
+*tanh(7.77*(0.37-SAT))
++(1/(tanh(2.8749)+tanh(4.8951)))*tanh(4.8951)''');
 
-DPG = FORMULE(REEL = '''(REEL:SAT) = (-31.08/(TANH(2.8749)+TANH(4.8951)))
-*EXP(15.54*(SAT+0.37))
-/((EXP(15.54*SAT)+EXP(5.7498))**2.)''');
+DPG = FORMULE(NOM_PARA='SAT',VALE='''(-31.08/(tanh(2.8749)+tanh(4.8951)))
+*exp(15.54*(SAT+0.37))
+/((exp(15.54*SAT)+exp(5.7498))**2.)''');
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -180,7 +180,7 @@ LISA=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.0,
                                    PAS=0.1,),);                        
 
-LAS = FORMULE(REEL ='''(REEL:SAT) = 0.4*SAT''');
+LAS = FORMULE(NOM_PARA='SAT',VALE='0.4*SAT');
                                              
 LS=CALC_FONC_INTERP(FONCTION=LAS,
                        NOM_PARA='SAT',
@@ -270,8 +270,7 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                              VALE=0.0,),),);
                              
 
-
-FPRES = FORMULE(REEL = '''(REEL:X,REEL:Y,REEL:Z) = 0.0 ''');
+FPRES = FORMULE(NOM_PARA=('X','Y','Z'),VALE=' 0.0 ');
 
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE  PLAQUE CARREE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,7 +54,7 @@ CHAM_MAT=AFFE_MATERIAU(AFFE=_F(MATER=MAT,
                                TOUT='OUI',),
                        MAILLAGE=MA,);
 PO=1.0
-P=FORMULE(REEL="""(REEL:X,REEL:Y)=PO*SIN(PI*X)*SIN(PI*Y)""");
+P = FORMULE(NOM_PARA=('X','Y'),VALE='PO*sin(pi*X)*sin(pi*Y)''');
 
 CHA=AFFE_CHAR_MECA(DDL_IMPO=(_F(
                                 DX=0.0,

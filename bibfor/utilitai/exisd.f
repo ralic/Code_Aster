@@ -4,7 +4,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -187,9 +187,7 @@ C     -----------------------------------
 C     -----------------------------------
         CH = NOMSD
         CALL JEEXIN(CH//'.PROL',I1)
-        CALL JEEXIN(CH//'.VALE',I2)
-        CALL JEEXIN(CH//'.ADVA',I3)
-        IF (I1*(I2+I3).NE.0) GO TO 20
+        IF (I1.NE.0) GO TO 20
 
       ELSE
         CALL UTMESS('F','EXISD',' LE MOT CLE :'//TYP2SD//

@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 21/09/2004   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,7 +89,7 @@ C
       LCOELA = .FALSE.
       IF ( OPTION.EQ.'FULL_MECA'      .OR.
      +     OPTION.EQ.'RAPH_MECA'      .OR.
-     +     OPTION.EQ.'RIGI_MECA_TANG' ) THEN
+     +     OPTION(1:10).EQ.'RIGI_MECA_' ) THEN
         CALL JEVECH('PMATERC','L',JMATE)
         CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRE2)
         IF (PHENOM.EQ.'ELAS_COQUE') LCOELA = .TRUE.
@@ -196,9 +196,9 @@ C     ------------------------------------
 C
 C     -- OPTIONS NON-LINEAIRES :
 C     --------------------------
-      ELSEIF ( OPTION.EQ.'FULL_MECA'      .OR.
-     +         OPTION.EQ.'RAPH_MECA'      .OR.
-     +         OPTION.EQ.'RIGI_MECA_TANG' ) THEN
+      ELSEIF ( OPTION(1:9).EQ.'FULL_MECA'.OR.
+     +         OPTION.EQ.'RAPH_MECA'     .OR.
+     +         OPTION(1:10).EQ.'RIGI_MECA_' ) THEN
 C
         CALL JEVECH('PDEPLMR','L',JDEPM)
         CALL JEVECH('PDEPLPR','L',JDEPR)
@@ -257,7 +257,7 @@ C
           CALL UTMESS('F','TE0031',NOMTE//' NON IMPLANTE.')
         END IF
 C
-        IF (OPTION.EQ.'FULL_MECA') THEN
+        IF (OPTION(1:9).EQ.'FULL_MECA') THEN
           CALL JEVECH('PMATUUR','E',JMATR)
           CALL JEVECH('PVECTUR','E',JVECT)
           CALL UTPSLG(NNO,6,PGL,MATLOC,ZR(JMATR))
@@ -265,7 +265,7 @@ C
         ELSE IF (OPTION.EQ.'RAPH_MECA') THEN
           CALL JEVECH('PVECTUR','E',JVECT)
           CALL UTPVLG(NNO,6,PGL,VECLOC,ZR(JVECT))
-        ELSE IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
+        ELSE IF (OPTION(1:10).EQ.'RIGI_MECA_') THEN
           CALL JEVECH('PMATUUR','E',JMATR)
           CALL UTPSLG(NNO,6,PGL,MATLOC,ZR(JMATR))
         END IF

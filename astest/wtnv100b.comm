@@ -1,4 +1,4 @@
-# MODIF  DATE 17/08/2004   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -158,8 +158,7 @@ DEPL_3=AFFE_CHAR_MECA(    MODELE=MODELE,FACE_IMPO=(
                                           DX = 1.))
                            )
 
-F = FORMULE(REEL="""(REEL :INST) =
-- COEF2(INST) / 2.0 """)
+F = FORMULE(NOM_PARA='INST',VALE='- COEF2(INST) / 2.0 ')
 
 COEF3=CALC_FONC_INTERP(    FONCTION=F,
                              LIST_PARA=TEMPS2,

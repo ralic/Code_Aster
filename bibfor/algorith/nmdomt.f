@@ -1,7 +1,7 @@
       SUBROUTINE NMDOMT (METHOD, PARMET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/02/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 21/09/2004   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,8 @@ C                 6 : NOM CONCEPT EVOL_NOLI SI PREDICTION 'DEPL_CALCULE'
 C OUT PARMET  : PARAMETRES DE LA METHODE
 C                 1 : REAC_INCR
 C                 2 : REAC_ITER
+C                 3 : PAS_MINI_ELAS
+C                 4 : REAC_ITER_ELAS
 C                10 : ITER_LINE_MAXI
 C                11 : RESI_LINE_RELA
 C                12 : ITER_LINE_CRIT
@@ -70,6 +72,12 @@ C ----------------------------------------------------------------------
         CALL UTMESS('F','NMDOMT',' REAC_ITER NEGATIF')
       ELSE
         PARMET(2) = REITER
+      ENDIF
+      CALL GETVIS('NEWTON','REAC_ITER_ELAS',1,1,1,REITER,IRET)
+      IF(REITER.LT.0) THEN
+        CALL UTMESS('F','NMDOMT',' REAC_ITER_ELAS NEGATIF')
+      ELSE
+        PARMET(4) = REITER
       ENDIF
       
       CALL GETVR8('NEWTON','PAS_MINI_ELAS',1,1,1,PASMIN,IRET)

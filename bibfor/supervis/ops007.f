@@ -3,7 +3,7 @@
       INTEGER ICMD,ICOND,IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF SUPERVIS  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,16 +63,7 @@ C
                CALL GCDETC(ICMD,ZK8(LCON-1+II))
 C
                CALL GCUCON(0,ZK8(LCON-1+II),' ',IEX)
-               IF (IEX.NE.0) THEN
-C
-C   SI LE CONCEPT A DETRUIRE EST UNE FORMULE : APPEL A FIDETR
-C   POUR FAIRE LE MENAGE DANS LES COMMON '&&SYS FI'
-C
-                 CALL GETTCO(ZK8(LCON-1+II),TYPECO)
-                 IF (TYPECO.EQ.'FORMULE') THEN
-                    CALL FIDETR(ZK8(LCON-1+II),IPLACE)
-                 ENDIF
-               ELSE
+               IF (IEX.EQ.0) THEN
 C
 C   SI LE CONCEPT A DETRUIRE N EXISTE PAS : ALARME
 C

@@ -1,0 +1,216 @@
+# MODIF  DATE 20/09/2004   AUTEUR BOYERE E.BOYERE 
+# TITRE TP ANALYSE MODALE TPAM3
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE BOYERE E.BOYERE
+#-------------------------------------------------------------------
+#                 CORRIGE TP ANALYSE MODAL N3 (FORMAT NEW6)
+#                            MACRO_MODE_MECA
+#
+#
+# PARAMETRE D'EXECUTION DE CETTE ETUDE: 100MO
+#
+# MODE D'EMPLOI:
+# --------------
+# MEG;'FICHIER/OUVRIR' AVEC TPAM1.PRET; BOUTON 'GO'
+# AU FIL DES QUESTIONS
+# COMPLETER LES PARTIES ADHOC NOTIFIEES PAR UN "...A COMPLETER..."
+# COMMENTARISER ET DECOMMENTARISER LES "FIN();" INTERMEDIAIRES EN
+# METTANT DANS UNE CHAINE LES LIGNES SUIVANTES QUI NE SERAIENT PAS
+# VALIDES SYNTAXIQUEMENT (EN V6, LE SUPERVISEUR ANALYSE LA TOTALITE
+# DU FICHIER SANS TENIR COMPTE DE L'EMPLACEMENT DU MOT FIN()).
+# EXEMPLE:
+#.        .........
+#        < PARTIE DU .COMM VALIDE SUR LAQUELLE ON VEUT TRAVAILLER>
+#  #FIN();
+#  CH1=AFFE_CHAR_MECA(MODELE=MO,...A COMPLETER....
+#         ..........
+#       <PARTIE DU .COMM NON VALIDE QUI NE NOUS INTERESSE PAS>
+#       <POUR L'INSTANT                                      >
+#         ..........
+#  FIN();  <FIN FINAL>
+#
+# DEVIENT
+#         ..........
+#  FIN();
+#  X="""CH1=AFFE_CHAR_MECA(MODELE=MO,...A COMPLETER....
+#         ..........
+#  FIN();"""
+#
+#-------------------------------------------------------------------
+# IMPORT PYTHON
+#import os
+#import string
+#import copy
+#import Gnuplot
+#import Numeric
+#directory = "/home/xxx/ASTER/TP_MODAL/TPAM3/"
+
+#-------------------------------------------------------------------
+#                       CALCUL ASTER
+#-------------------------------------------------------------------
+DEBUT(CODE=_F(NOM ='FORMA11C',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON')
+
+# LECTURE MAILLAGE ET AFFECTATION MATERIAU/MODELE
+MAYA=LIRE_MAILLAGE();
+STRUC=AFFE_MODELE(MAILLAGE=MAYA,
+                  AFFE=_F(GROUP_MA='TOUT',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DKT',),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.7600000000E10,
+                            NU=0.16600000000000001,
+                            RHO=2244.0,),);
+MATER=AFFE_MATERIAU(MAILLAGE=MAYA,
+                    AFFE=_F(GROUP_MA='TOUT',
+                            MATER=ACIER,),);
+CARA=AFFE_CARA_ELEM(MODELE=STRUC,
+                    COQUE=_F(GROUP_MA='TOUT',
+                             EPAIS=0.30499999999999999,),);
+
+# AFFECTATION CL
+FIXA=AFFE_CHAR_MECA(MODELE=STRUC,
+                    DDL_IMPO=_F(GROUP_NO='FIXA',
+                                DX=0.0,
+                                DY=0.0,
+                                DZ=0.0,
+                                DRX=0.0,
+                                DRY=0.0,
+                                DRZ=0.0,),);
+
+# CALCULS DES MATRICES DE MASSE ET DE RIGIDITE
+K_ELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                      MODELE=STRUC,
+                      CHAM_MATER=MATER,
+                      CARA_ELEM=CARA,
+                      CHARGE=FIXA,);
+M_ELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                      MODELE=STRUC,
+                      CHAM_MATER=MATER,
+                      CARA_ELEM=CARA,
+                      CHARGE=FIXA,);
+NUMERO=NUME_DDL(MATR_RIGI=K_ELEM,);
+K_ASSE=ASSE_MATRICE(MATR_ELEM=K_ELEM,
+                    NUME_DDL=NUMERO,);
+M_ASSE=ASSE_MATRICE(MATR_ELEM=M_ELEM,
+                    NUME_DDL=NUMERO,);
+
+#--------------------------------------------------------------------
+# ANALYSE MODALE
+# QUESTION PRELIMINAIRE: PESER LE MODELE ET EVALUER LE NBRE DE MODES
+
+TABL_MAS=POST_ELEM(MODELE=STRUC,
+                   CHAM_MATER=MATER,
+                   CARA_ELEM=CARA,
+                   MASS_INER=_F(TOUT='OUI',),);
+
+IMPR_TABLE(TABLE=TABL_MAS,);
+IMPR_STURM(MATR_A=K_ASSE,
+           MATR_B=M_ASSE,
+           FREQ_MAX=4.0,);
+
+# FIN DE LA QUESTION 0.
+#FIN();
+
+# QUESTION 1: CALCUL BANDE DES MODES PAR SORENSEN 
+
+MODES=MODE_ITER_SIMULT(MATR_A=K_ASSE,
+                       MATR_B=M_ASSE,
+                       CALC_FREQ=_F(OPTION='BANDE',
+                                    FREQ=(0.0,4.0,),),);
+
+# TEST_RESU UNIQUEMENT POUR FAIRE CAS TEST
+TEST_RESU(RESU=(_F(RESULTAT=MODES,
+                   NUME_ORDRE=1,
+                   PARA='FREQ',
+                   VALE=1.13856,
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.3.11',)))
+
+# ON LES NORMALISE AVEC LA NORME INFINIE SUR TOUTES LES COMPOSANTES
+# DES NOEUDS PHYSIQUES TOUT EN REQUIERANT LE CALCUL DES MASSES
+# EFFECTIVES UNITAIRES.
+MODES=NORM_MODE(reuse =MODES,
+                MODE=MODES,
+                NORME='TRAN_ROTA',
+                MASS_INER=TABL_MAS,);
+
+# ON TRIE LES MODES.
+MODEST=EXTR_MODE(FILTRE_MODE=_F(MODE=MODES,
+                                CRIT_EXTR='MASS_EFFE_UN',),
+                 IMPRESSION=_F(CUMUL='OUI',),);
+
+# IMPRESSION FORMAT CASTEM DES MODES PROPRES
+IMPR_RESU(FORMAT='CASTEM',
+          RESU=_F(
+                  MAILLAGE=MAYA,
+                  RESULTAT=MODEST,),);
+# AFFICHAGE GIBI INTERACTIF VIA PYTHON
+#os.system('cp %spost.dcas .' %directory)
+#os.system('/logiciels/aster/outils/gibi2000.x post.dcas')   
+
+# FIN DE LA QUESTION 1.
+#FIN();
+
+# QUESTION 2: ON REALISE LES TROIS OPERATIONS EN UNE 
+# (EN COUPANT EN 2 INTERVALLES) VIA MACR_ADAP_MAIL
+
+MODES2=MACRO_MODE_MECA(MATR_A=K_ASSE,
+                       MATR_B=M_ASSE,
+                       CALC_FREQ=_F(FREQ_MIN=0.0,
+                                    FREQ_MAX=4.0,
+                                    NB_BLOC_FREQ=2,),
+                       NORM_MODE=_F(MASS_INER=TABL_MAS,
+                                    NORME='TRAN_ROTA',),
+                       FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',),
+                       IMPRESSION=_F(CUMUL='OUI',),);
+
+# FIN DE LA QUESTION 2.
+#FIN();
+
+# QUESTION 3: ON REALISE LES TROIS OPERATIONS EN UNE
+# (EN COUPANT EN 4 INTERVALLES) VIA MACR_ADAP_MAIL
+
+MODES4=MACRO_MODE_MECA(MATR_A=K_ASSE,
+                       MATR_B=M_ASSE,
+                       CALC_FREQ=_F(FREQ_MIN=0.0,
+                                    FREQ_MAX=4.0,
+                                    NB_BLOC_FREQ=4,),
+                       NORM_MODE=_F(MASS_INER=TABL_MAS,
+                                    NORME='TRAN_ROTA',),
+                       FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',),
+                       IMPRESSION=_F(CUMUL='OUI',),);
+
+# FIN DE LA QUESTION 3.
+#FIN();
+
+# QUESTION 4: IDEM VIA LANCZOS
+
+MODEL4=MACRO_MODE_MECA(MATR_A=K_ASSE,
+                       MATR_B=M_ASSE,
+                       METHODE='TRI_DIAG',
+                       VERI_MODE=_F(SEUIL=1e-05,),
+                       CALC_FREQ=_F(FREQ_MIN=0.0,
+                                    FREQ_MAX=4.0,
+                                    NB_BLOC_FREQ=4,),
+                       NORM_MODE=_F(MASS_INER=TABL_MAS,
+                                    NORME='TRAN_ROTA',),
+                       FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',),
+                       IMPRESSION=_F(CUMUL='OUI',),);
+
+FIN();

@@ -14,7 +14,7 @@ C          = 0  RESUL ABSENT
 C          < 0  RESUL PRESENT MAIS PAS DU BON CONCEPT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 11/04/97   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,14 +39,6 @@ C         -
 C     ------------------------------------------------------------------
 C FIN GCDETC
 C     ------------------------------------------------------------------
-C
-C
-C     ------- COMMUN DEBUG SUPERVISEUR ---------------------------------
-      LOGICAL         LDBG
-      INTEGER                IFV
-      COMMON /CXSU00/ LDBG , IFV
-C     ------------------------------------------------------------------
-C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)

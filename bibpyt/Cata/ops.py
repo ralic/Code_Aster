@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF ops Cata  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,6 @@
 # ======================================================================
 
 
-
 # Modules Python
 import types
 import string,linecache,os,traceback,re
@@ -28,7 +27,6 @@ import pickle
 # Modules Eficas
 import Accas
 from Accas import ASSD
-from Noyau.N_FONCTION import formule
 
 try:
    import aster
@@ -338,7 +336,7 @@ def subst_materiau(text,NOM_MATER,EXTRACTION,UNITE_LONGUEUR):
            m=regmcs.match(l)
            if m: # On a trouve un mot cle simple commentarise
              if m.group(3) == "EVAL":
-               ll.append("  "+m.group(1)+' = EVAL("'+m.group(4)+"("+str(TEMP)+')"),')
+               ll.append("  "+m.group(1)+' = '+m.group(4)+"("+str(TEMP)+'),')
              elif m.group(3) == "SUPPR":
                pass
              else:
@@ -409,25 +407,6 @@ def INCLUDE_MATERIAU(self,NOM_AFNOR,TYPE_MODELE,VARIANTE,TYPE_VALE,NOM_MATER,
 
     self.make_contexte(f,self.text)
 
-def build_formule(self,**args):
-  """
-  Fonction ops de la macro FORMULE appelée lors de la phase de Build
-  """
-  from Build import B_utils
-  for mc in self.mc_liste:
-###    if mc.nom in ('REEL','ENTIER','COMPLEXE'):
-    if mc.nom in ('REEL','COMPLEXE'):
-      texte= self.sd.get_name()+ string.strip(mc.valeur)
-      mc.valeur=B_utils.ReorganisationDe(texte,80)
-  # ATTENTION : FORMULE est une des rares commandes qui a besoin de
-  # connaitre son numero d execution avant d etre construite
-  self.set_icmd(1)
-  # La macro formule doit etre executee. Seules les macros qui ont
-  # un numero d'op sont executees lors des phases suivantes
-  self.definition.op = -5
-  ier=self.codex.opsexe(self,self.icmd,-1,-self.definition.op)
-  return ier
-
 def build_procedure(self,**args):
     """
     Fonction ops de la macro PROCEDURE appelée lors de la phase de Build
@@ -440,17 +419,3 @@ def build_procedure(self,**args):
     icmd=0
     #ier=self.codex.opsexe(self,icmd,-1,3)
     return ier
-
-def build_retour(self,**args):
-    """
-    Fonction ops de la macro RETOUR appelée lors de la phase de Build
-    """
-    ier=0
-    # Pour presque toutes les commandes (sauf FORMULE et POURSUITE)
-    # le numero de la commande n est pas utile en phase de construction
-    # On ne numérote pas une macro RETOUR (incrément=None)
-    self.set_icmd(None)
-    icmd=0
-    #ier=self.codex.opsexe(self,icmd,-1,2)
-    return ier
-

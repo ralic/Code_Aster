@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE CALCUL DE FLUX THERMIQUE (2D PLAN_DIAG)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,7 +50,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
 #-----------------------------------------------------------------
 # CHAMP DE TEMPERATURE LINEAIRE => FLUX CONSTANT
 # ===============================================
-FTEMPL = FORMULE(REEL="""(REEL:X,REEL:Y) = 2.*X +3.*Y   """)
+FTEMPL = FORMULE(NOM_PARA=('X','Y'),VALE='2.*X +3.*Y')
 #
 CHTEMPL = CREA_CHAMP(OPERATION='AFFE',
                     TYPE_CHAM='NOEU_TEMP_F',
@@ -172,7 +172,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
 #-----------------------------------------------------------------
 # CHAMP DE TEMPERATURE QUADRATIQUE => FLUX LINEAIRE
 # ==================================================
-FTEMPQ = FORMULE(REEL="""(REEL:X,REEL:Y) = 2.*X*X +3.*Y*Y   """)
+FTEMPQ = FORMULE(NOM_PARA=('X','Y'),VALE=' 2.*X*X +3.*Y*Y')
 #
 CHTEMPQ = CREA_CHAMP(OPERATION='AFFE',
                     TYPE_CHAM='NOEU_TEMP_F',

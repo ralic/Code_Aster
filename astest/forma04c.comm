@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # RESPONSABLE O.BOITEAU
 # TITRE Maillage adaptatif mecanique sur une poutre en flexion
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -276,10 +276,10 @@ for num_calc in range(0,nb_calc1) :
 # On teste des variables PYTHON (erreur en energie et en fleche)
 #-------------------------------------------------------------------
 
-ERREFL0=FORMULE(REEL="""(REEL:BIDON)=erfl0*1.d0""")
-ERREEN0=FORMULE(REEL="""(REEL:BIDON)=eren0*1.d0""") 
-ERREFL4=FORMULE(REEL="""(REEL:BIDON)=erfl4*1.d0""")
-ERREEN4=FORMULE(REEL="""(REEL:BIDON)=eren4*1.d0""")        
+ERREFL0=FORMULE(VALE='erfl0*1.',NOM_PARA='BIDON')
+ERREEN0=FORMULE(VALE='eren0*1.',NOM_PARA='BIDON')
+ERREFL4=FORMULE(VALE='erfl4*1.',NOM_PARA='BIDON')
+ERREEN4=FORMULE(VALE='eren4*1.',NOM_PARA='BIDON')
 TEST_FONCTION(VALEUR=(
     _F(FONCTION=ERREFL0,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-4,CRITERE='RELATIF',
        VALE_REFE=1.06929296E-01,REFERENCE='NON_REGRESSION',VERSION = '7.2.24'),

@@ -1,4 +1,5 @@
-#@ MODIF __init__ Accas  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF __init__ Accas  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +18,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 
-# -*- coding: iso-8859-1 -*-
 
 """
    Ce package contient les classes qui seront effectivement utilisees dans les applications. 
@@ -33,8 +33,8 @@
 
 # permet de se proteger de l'oubli de carte coding
 # ce warning deviendra fatal en python 2.4
-# import warnings
-# warnings.filterwarnings('error','Non-ASCII character.*pep-0263',DeprecationWarning)
+#import warnings
+#warnings.filterwarnings('error','Non-ASCII character.*pep-0263',DeprecationWarning)
 
 from A_JDC_CATA import JDC_CATA
 from A_OPER import OPER
@@ -44,7 +44,6 @@ from A_FORM import FORM
 from A_BLOC import BLOC
 from A_FACT import FACT
 from A_SIMP import SIMP
-from A_EVAL import EVAL
 
 from A_JDC import JDC
 from A_ETAPE import ETAPE

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE FONCTIONS, NAPPES, FORMULES.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -335,8 +335,7 @@ LR1=DEFI_LIST_REEL(  DEBUT=INST0,
 
 # ------------------ FORMULE 1 -----------------------------------
 
-SIa = FORMULE(REEL="""(REEL:INST) =
-SIN(INST) """)
+SIa = FORMULE(NOM_PARA='INST',VALE='sin(INST)')
 
 SI=CALC_FONC_INTERP(        FONCTION=SIa,    LIST_PARA=LI1,
                             NOM_PARA='INST',
@@ -348,6 +347,7 @@ SI=CALC_FONC_INTERP(        FONCTION=SIa,    LIST_PARA=LI1,
 IMPR_COURBE(     COURBE=_F(  FONCTION = SI),
                              FORMAT='AGRAF',  UNITE=8 )
 
+val=sin(INST9)
 TEST_FONCTION(ATTRIBUT=( 
                 _F(  FONCTION = SI,  ATTR = 'NOM_PARA',
                                  ATTR_REFE = 'INST'),
@@ -361,11 +361,11 @@ TEST_FONCTION(ATTRIBUT=(
                                  ATTR_REFE = 'EXCLU')),
                   
                 VALEUR=_F(  FONCTION = SI,  VALE_PARA = 7.,
-                                 VALE_REFE = EVAL("""SIN(INST9)"""))  )
+                                 VALE_REFE = val)  )
 
 # ------------------ FORMULE 2 -----------------------------------
 
-COa = FORMULE(REEL="""(REEL:INST) = COS(INST) """)
+COa = FORMULE(NOM_PARA='INST',VALE='cos(INST)')
 
 CO=CALC_FONC_INTERP(        FONCTION=COa,    LIST_PARA=LI1,
                             NOM_PARA='INST',
@@ -387,7 +387,7 @@ X1=INST0 + (199. * PAS0 )
 X2=INST9
 X0=7.
 
-Y0=EVAL("""COa(X1)+(X0-X1)*(COa(X2)-COa(X1))/(X2-X1)""")
+Y0=COa(X1)+(X0-X1)*(COa(X2)-COa(X1))/(X2-X1)
 
 TEST_FONCTION(ATTRIBUT=( 
                 _F(  FONCTION = CO,  ATTR = 'NOM_PARA',
@@ -675,7 +675,7 @@ TEST_TABLE(      TABLE=RMS_CO,
 #
 #=======================================================================
 
-UN1 = FORMULE(REEL=""" (REEL:INST) = INST """)
+UN1 = FORMULE(NOM_PARA='INST',VALE='INST')
 
 F5=CALC_FONC_INTERP(FONCTION=UN1,
                     LIST_PARA=LI1,
@@ -740,8 +740,12 @@ LINST=( 0., 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10,
 
 # - EXCITATION ---------------------------------------------------------
 
-Fa = FORMULE(REEL="""(REEL:INST) =
-COS(OMEGA*INST) """)
+#Fa = FORMULE(NOM_PARA='INST',VALE='cos(OMEGA*INST)')
+def fFa(INST) : 
+    return cos(OMEGA*INST)
+   
+Fa = FORMULE(NOM_PARA='INST',VALE='fFa(INST)')
+
 
 ACCE='ACCE'
 
@@ -776,26 +780,25 @@ SOA=CALC_FONCTION( SPEC_OSCI=_F(  FONCTION = F,
 # - SOLUTION EXACTE ASSOCIEE A L EXCITATION ----------------------------
 #   SOLUTION EN DEPLACEMENT
 
-DEP = FORMULE(REEL="""(REEL:INST,REEL:FREQ,REEL:AMOR) =
+DEP = FORMULE(NOM_PARA=('INST','FREQ','AMOR'),VALE='''
 (1./
-   (((2.*PI*FREQ)**2 - OMEGA**2 )**2 +(2.*AMOR*2.*PI*FREQ*OMEGA)**2))*(((2.*PI*FREQ)**2 - OMEGA**2)*
-   COS(OMEGA*INST) + 2.*AMOR*2.*PI*FREQ*
-   OMEGA*SIN(OMEGA*INST) - ( ((2.*PI*FREQ)**2 - OMEGA**2)*COS(2.*PI*
-   FREQ*INST)+ AMOR*((2.*PI*FREQ)**2 + OMEGA**2 )*SIN(2.*PI*FREQ*INST))
-   *EXP(-AMOR*2.*PI*FREQ*INST) )   """)
+   (((2.*pi*FREQ)**2 - OMEGA**2 )**2 +(2.*AMOR*2.*pi*FREQ*OMEGA)**2))*(((2.*pi*FREQ)**2 - OMEGA**2)*
+   cos(OMEGA*INST) + 2.*AMOR*2.*pi*FREQ*
+   OMEGA*sin(OMEGA*INST) - ( ((2.*pi*FREQ)**2 - OMEGA**2)*cos(2.*pi*
+   FREQ*INST)+ AMOR*((2.*pi*FREQ)**2 + OMEGA**2 )*sin(2.*pi*FREQ*INST))
+   *exp(-AMOR*2.*pi*FREQ*INST) )   ''')
 
 #   SOLUTION EN VITESSE
 
-VIT = FORMULE(REEL="""(REEL:INST,REEL:FREQ,REEL:AMOR) =
-(2.*PI*FREQ) * DEP(INST,FREQ,AMOR)  """)
+VIT = FORMULE(NOM_PARA=('INST','FREQ','AMOR'),VALE='''
+(2.*pi*FREQ) * DEP(INST,FREQ,AMOR)  ''')
 
 #   SOLUTION EN ACCELERATION
 
-ACC = FORMULE(REEL="""(REEL:INST,REEL:FREQ,REEL:AMOR) =
-(2.*PI*FREQ)**2 * DEP(INST,FREQ,AMOR)  """)
+ACC = FORMULE(NOM_PARA=('INST','FREQ','AMOR'),VALE='''
+(2.*pi*FREQ)**2 * DEP(INST,FREQ,AMOR)  ''')
 
-DE11a = FORMULE(REEL="""(REEL:INST) =
-DEP(INST,FREQ1,AMOR1) """)
+DE11a = FORMULE(NOM_PARA='INST',VALE='''DEP(INST,FREQ1,AMOR1) ''')
 
 DE11=CALC_FONC_INTERP(  FONCTION=DE11a, 
                         NOM_PARA='INST', VALE_PARA=LINST   )
@@ -805,7 +808,7 @@ DE11M=CALC_FONCTION( MAX=_F(  FONCTION = DE11)    )
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOD, NOM_PARA = ('AMOR','FREQ',),
                                 VALE_PARA = ( AMOR1, FREQ1,),
-                                VALE_REFE = EVAL("""DE11a(INSTM11)"""),
+                                VALE_REFE = DE11a(INSTM11),
                             REFERENCE='ANALYTIQUE',) )
 
 TEST_TABLE(      TABLE=DE11M,FILTRE=(
@@ -814,10 +817,9 @@ TEST_TABLE(      TABLE=DE11M,FILTRE=(
                            _F(  NOM_PARA = 'INST',
                              VALE = INSTM11)),
                   NOM_PARA='MAXI',
-                      VALE=EVAL("""DE11a(INSTM11)""")   )
+                      VALE=DE11a(INSTM11)  )
 
-VI11a = FORMULE(REEL="""(REEL:INST) =
-VIT(INST,FREQ1,AMOR1) """)
+VI11a = FORMULE(NOM_PARA='INST',VALE='''VIT(INST,FREQ1,AMOR1) ''')
 
 VI11=CALC_FONC_INTERP( FONCTION=VI11a,
                        NOM_PARA='INST', VALE_PARA=LINST   )
@@ -827,7 +829,7 @@ VI11M=CALC_FONCTION( MAX=_F(  FONCTION = VI11)   )
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOV, NOM_PARA = ('AMOR','FREQ',),
                                 VALE_PARA = ( AMOR1, FREQ1,),
-                                VALE_REFE = EVAL("""VI11a(INSTM11)"""),
+                                VALE_REFE = VI11a(INSTM11),
                             REFERENCE='ANALYTIQUE',) )
 
 TEST_TABLE(      TABLE=VI11M,FILTRE=(
@@ -836,10 +838,9 @@ TEST_TABLE(      TABLE=VI11M,FILTRE=(
                            _F(  NOM_PARA = 'INST',
                              VALE = INSTM11)),
                   NOM_PARA='MAXI',
-                      VALE=EVAL("""VI11a(INSTM11)""")   )
+                      VALE=VI11a(INSTM11)  )
 
-AC11a = FORMULE(REEL="""(REEL:INST) =
-ACC(INST,FREQ1,AMOR1) """)
+AC11a = FORMULE(NOM_PARA='INST',VALE='''ACC(INST,FREQ1,AMOR1) ''')
 
 AC11=CALC_FONC_INTERP( FONCTION=AC11a,
                        NOM_PARA='INST', VALE_PARA=LINST   )
@@ -849,7 +850,7 @@ AC11M=CALC_FONCTION( MAX=_F(  FONCTION = AC11)    )
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOA, NOM_PARA = ('AMOR','FREQ',),
                                 VALE_PARA = ( AMOR1, FREQ1,),
-                                VALE_REFE = EVAL("""AC11a(INSTM11)"""),
+                                VALE_REFE =AC11a(INSTM11),
                             REFERENCE='ANALYTIQUE',) )
 
 TEST_TABLE(      TABLE=AC11M,FILTRE=(
@@ -858,10 +859,9 @@ TEST_TABLE(      TABLE=AC11M,FILTRE=(
                            _F(  NOM_PARA = 'INST',
                              VALE = INSTM11)),
                   NOM_PARA='MAXI',
-                      VALE=EVAL("""AC11a(INSTM11)""")   )
+                      VALE=AC11a(INSTM11)   )
 
-DE21a = FORMULE(REEL="""(REEL:INST) =
-DEP(INST,FREQ2,AMOR1) """)
+DE21a = FORMULE(NOM_PARA='INST',VALE='''DEP(INST,FREQ2,AMOR1) ''')
 
 DE21=CALC_FONC_INTERP(   FONCTION=DE21a,
                          NOM_PARA='INST', VALE_PARA=LINST   )
@@ -871,7 +871,7 @@ DE21M=CALC_FONCTION( MAX=_F(  FONCTION = DE21)    )
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOD, NOM_PARA = ('AMOR','FREQ',),
                                 VALE_PARA = ( AMOR1, FREQ2,),
-                                VALE_REFE = EVAL("""DE21a(INSTM21)"""),
+                                VALE_REFE = DE21a(INSTM21),
                             REFERENCE='ANALYTIQUE',) )
 
 TEST_TABLE(      TABLE=DE21M,FILTRE=(
@@ -880,10 +880,9 @@ TEST_TABLE(      TABLE=DE21M,FILTRE=(
                            _F(  NOM_PARA = 'INST',
                              VALE = INSTM21)),
                   NOM_PARA='MAXI',
-                      VALE=EVAL("""DE21a(INSTM21)""")   )
+                      VALE=DE21a(INSTM21)   )
 
-VI21a = FORMULE(REEL="""(REEL:INST) =
-VIT(INST,FREQ2,AMOR1) """)
+VI21a = FORMULE(NOM_PARA='INST',VALE='''VIT(INST,FREQ2,AMOR1) ''')
 
 VI21=CALC_FONC_INTERP(   FONCTION=VI21a,
                          NOM_PARA='INST', VALE_PARA=LINST   )
@@ -893,7 +892,7 @@ VI21M=CALC_FONCTION( MAX=_F(  FONCTION = VI21)    )
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOV, NOM_PARA = ('AMOR','FREQ',),
                                 VALE_PARA = ( AMOR1, FREQ2,),
-                                VALE_REFE = EVAL("""VI21a(INSTM21)"""),
+                                VALE_REFE = VI21a(INSTM21),
                             REFERENCE='ANALYTIQUE',) )
 
 TEST_TABLE(      TABLE=VI21M,FILTRE=(
@@ -902,10 +901,9 @@ TEST_TABLE(      TABLE=VI21M,FILTRE=(
                            _F(  NOM_PARA = 'INST',
                              VALE = INSTM21)),
                   NOM_PARA='MAXI',
-                      VALE=EVAL("""VI21a(INSTM21)""")   )
+                      VALE=VI21a(INSTM21)   )
 
-AC21a = FORMULE(REEL="""(REEL:INST) =
-ACC(INST,FREQ2,AMOR1) """)
+AC21a = FORMULE(NOM_PARA='INST',VALE='''ACC(INST,FREQ2,AMOR1) ''')
 
 AC21=CALC_FONC_INTERP(   FONCTION=AC21a,
                          NOM_PARA='INST', VALE_PARA=LINST   )
@@ -915,7 +913,7 @@ AC21M=CALC_FONCTION( MAX=_F(  FONCTION = AC21)   )
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOA, NOM_PARA = ('AMOR','FREQ',),
                                 VALE_PARA = ( AMOR1, FREQ2,),
-                                VALE_REFE = EVAL("""AC21a(INSTM21)"""),
+                                VALE_REFE = AC21a(INSTM21),
                             REFERENCE='ANALYTIQUE',) )
 
 TEST_TABLE(      TABLE=AC21M,FILTRE=(
@@ -924,10 +922,9 @@ TEST_TABLE(      TABLE=AC21M,FILTRE=(
                            _F(  NOM_PARA = 'INST',
                              VALE = INSTM21)),
                   NOM_PARA='MAXI',
-                      VALE=EVAL("""AC21a(INSTM21)""")   )
+                      VALE=AC21a(INSTM21)   )
 
-DE31a = FORMULE(REEL="""(REEL:INST) =
-DEP(INST,FREQ3,AMOR1) """)
+DE31a = FORMULE(NOM_PARA='INST',VALE='''DEP(INST,FREQ3,AMOR1) ''')
 
 DE31=CALC_FONC_INTERP(  FONCTION=DE31a,
                         NOM_PARA='INST', VALE_PARA=LINST   )
@@ -937,7 +934,7 @@ DE31M=CALC_FONCTION( MAX=_F(  FONCTION = DE31)    )
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOD, NOM_PARA = ('AMOR','FREQ',),
                                 VALE_PARA = ( AMOR1, FREQ3,),
-                                VALE_REFE = EVAL("""DE31a(INSTM31)"""),
+                                VALE_REFE = DE31a(INSTM31),
                             REFERENCE='ANALYTIQUE',) )
 
 TEST_TABLE(      TABLE=DE31M,FILTRE=(
@@ -946,10 +943,9 @@ TEST_TABLE(      TABLE=DE31M,FILTRE=(
                            _F(  NOM_PARA = 'INST',
                              VALE = INSTM31)),
                   NOM_PARA='MAXI',
-                      VALE=EVAL("""DE31a(INSTM31)""")   )
+                      VALE=DE31a(INSTM31)  )
 
-VI31a = FORMULE(REEL="""(REEL:INST) =
-VIT(INST,FREQ3,AMOR1) """)
+VI31a = FORMULE(NOM_PARA='INST',VALE='''VIT(INST,FREQ3,AMOR1) ''')
 
 VI31=CALC_FONC_INTERP(  FONCTION=VI31a,
                         NOM_PARA='INST', VALE_PARA=LINST   )
@@ -959,7 +955,7 @@ VI31M=CALC_FONCTION( MAX=_F(  FONCTION = VI31)    )
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOV, NOM_PARA = ('AMOR','FREQ',),
                                 VALE_PARA = ( AMOR1, FREQ3,),
-                                VALE_REFE = EVAL("""VI31a(INSTM31)"""),
+                                VALE_REFE = VI31a(INSTM31),
                             REFERENCE='ANALYTIQUE',) )
 
 TEST_TABLE(      TABLE=VI31M,FILTRE=(
@@ -968,10 +964,9 @@ TEST_TABLE(      TABLE=VI31M,FILTRE=(
                            _F(  NOM_PARA = 'INST',
                              VALE = INSTM31)),
                   NOM_PARA='MAXI',
-                      VALE=EVAL("""VI31a(INSTM31)""")   )
+                      VALE=VI31a(INSTM31)   )
 
-AC31a = FORMULE(REEL="""(REEL:INST) =
-ACC(INST,FREQ3,AMOR1) """)
+AC31a = FORMULE(NOM_PARA='INST',VALE='''ACC(INST,FREQ3,AMOR1) ''')
 
 AC31=CALC_FONC_INTERP(  FONCTION=AC31a,
                         NOM_PARA='INST', VALE_PARA=LINST   )
@@ -981,7 +976,7 @@ AC31M=CALC_FONCTION( MAX=_F(  FONCTION = AC31)    )
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOA, NOM_PARA = ('AMOR','FREQ',),
                                 VALE_PARA = ( AMOR1, FREQ3,),
-                                VALE_REFE = EVAL("""AC31a(INSTM31)"""),
+                                VALE_REFE = AC31a(INSTM31),
                             REFERENCE='ANALYTIQUE',) )
 
 TEST_TABLE(      TABLE=AC31M,FILTRE=(
@@ -990,10 +985,9 @@ TEST_TABLE(      TABLE=AC31M,FILTRE=(
                            _F(  NOM_PARA = 'INST',
                              VALE = INSTM31)),
                   NOM_PARA='MAXI',
-                      VALE=EVAL("""AC31a(INSTM31)""")   )
+                      VALE=AC31a(INSTM31)   )
 
-DE12a = FORMULE(REEL="""(REEL:INST) =
-DEP(INST,FREQ1,AMOR2) """)
+DE12a = FORMULE(NOM_PARA='INST',VALE='''DEP(INST,FREQ1,AMOR2) ''')
 
 DE12=CALC_FONC_INTERP(   FONCTION=DE12a,
                          NOM_PARA='INST', VALE_PARA=LINST   )
@@ -1003,7 +997,7 @@ DE12M=CALC_FONCTION( MAX=_F(  FONCTION = DE12)    )
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOD, NOM_PARA = ('AMOR','FREQ',),
                                 VALE_PARA = ( AMOR2, FREQ1,),
-                                VALE_REFE = EVAL("""DE12a(INSTM12)"""),
+                                VALE_REFE = DE12a(INSTM12),
                             REFERENCE='ANALYTIQUE',) )
 
 TEST_TABLE(      TABLE=DE12M,FILTRE=(
@@ -1012,10 +1006,9 @@ TEST_TABLE(      TABLE=DE12M,FILTRE=(
                            _F(  NOM_PARA = 'INST',
                              VALE = INSTM12)),
                   NOM_PARA='MAXI',
-                      VALE=EVAL("""DE12a(INSTM12)""")   )
+                      VALE=DE12a(INSTM12)   )
 
-VI12a = FORMULE(REEL="""(REEL:INST) =
-VIT(INST,FREQ1,AMOR2) """)
+VI12a = FORMULE(NOM_PARA='INST',VALE='''VIT(INST,FREQ1,AMOR2) ''')
 
 VI12=CALC_FONC_INTERP(   FONCTION=VI12a,
                          NOM_PARA='INST', VALE_PARA=LINST   )
@@ -1025,7 +1018,7 @@ VI12M=CALC_FONCTION( MAX=_F(  FONCTION = VI12)    )
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOV, NOM_PARA = ('AMOR','FREQ',),
                                 VALE_PARA = ( AMOR2, FREQ1,),
-                                VALE_REFE = EVAL("""VI12a(INSTM12)"""),
+                                VALE_REFE = VI12a(INSTM12),
                             REFERENCE='ANALYTIQUE',) )
 
 TEST_TABLE(      TABLE=VI12M,FILTRE=(
@@ -1034,10 +1027,9 @@ TEST_TABLE(      TABLE=VI12M,FILTRE=(
                            _F(  NOM_PARA = 'INST',
                              VALE = INSTM12)),
                   NOM_PARA='MAXI',
-                      VALE=EVAL("""VI12a(INSTM12)""")   )
+                      VALE=VI12a(INSTM12)   )
 
-AC12a = FORMULE(REEL="""(REEL:INST) =
-ACC(INST,FREQ1,AMOR2) """)
+AC12a = FORMULE(NOM_PARA='INST',VALE='''ACC(INST,FREQ1,AMOR2) ''')
 
 AC12=CALC_FONC_INTERP(   FONCTION=AC12a,
                          NOM_PARA='INST', VALE_PARA=LINST   )
@@ -1047,7 +1039,7 @@ AC12M=CALC_FONCTION( MAX=_F(  FONCTION = AC12)    )
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOA, NOM_PARA = ('AMOR','FREQ',),
                                 VALE_PARA = ( AMOR2, FREQ1,),
-                                VALE_REFE = EVAL("""AC12a(INSTM12)"""),
+                                VALE_REFE = AC12a(INSTM12),
                             REFERENCE='ANALYTIQUE',) )
 
 TEST_TABLE(      TABLE=AC12M,FILTRE=(
@@ -1056,10 +1048,9 @@ TEST_TABLE(      TABLE=AC12M,FILTRE=(
                            _F(  NOM_PARA = 'INST',
                              VALE = INSTM12)),
                   NOM_PARA='MAXI',
-                      VALE=EVAL("""AC12a(INSTM12)""")   )
+                      VALE=AC12a(INSTM12)   )
 
-DE22a = FORMULE(REEL="""(REEL:INST) =
-DEP(INST,FREQ2,AMOR2) """)
+DE22a = FORMULE(NOM_PARA='INST',VALE='''DEP(INST,FREQ2,AMOR2) ''')
 
 DE22=CALC_FONC_INTERP(  FONCTION=DE22a,
                         NOM_PARA='INST', VALE_PARA=LINST   )
@@ -1069,7 +1060,7 @@ DE22M=CALC_FONCTION( MAX=_F(  FONCTION = DE22)    )
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOD, NOM_PARA = ('AMOR','FREQ',),
                                 VALE_PARA = ( AMOR2, FREQ2,),
-                                VALE_REFE = EVAL("""DE22a(INSTM22)"""),
+                                VALE_REFE = DE22a(INSTM22),
                             REFERENCE='ANALYTIQUE',) )
 
 TEST_TABLE(      TABLE=DE22M,FILTRE=(
@@ -1078,10 +1069,9 @@ TEST_TABLE(      TABLE=DE22M,FILTRE=(
                            _F(  NOM_PARA = 'INST',
                              VALE = INSTM22)),
                   NOM_PARA='MAXI',
-                      VALE=EVAL("""DE22a(INSTM22)""")   )
+                      VALE=DE22a(INSTM22)   )
 
-VI22a = FORMULE(REEL="""(REEL:INST) =
-VIT(INST,FREQ2,AMOR2) """)
+VI22a = FORMULE(NOM_PARA='INST',VALE='''VIT(INST,FREQ2,AMOR2) ''')
 
 VI22=CALC_FONC_INTERP(   FONCTION=VI22a,
                          NOM_PARA='INST', VALE_PARA=LINST   )
@@ -1091,7 +1081,7 @@ VI22M=CALC_FONCTION( MAX=_F(  FONCTION = VI22)    )
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOV, NOM_PARA = ('AMOR','FREQ',),
                                 VALE_PARA = ( AMOR2, FREQ2,),
-                                VALE_REFE = EVAL("""VI22a(INSTM22)"""),
+                                VALE_REFE = VI22a(INSTM22),
                             REFERENCE='ANALYTIQUE',) )
 
 TEST_TABLE(      TABLE=VI22M,FILTRE=(
@@ -1100,10 +1090,9 @@ TEST_TABLE(      TABLE=VI22M,FILTRE=(
                            _F(  NOM_PARA = 'INST',
                              VALE = INSTM22)),
                   NOM_PARA='MAXI',
-                      VALE=EVAL("""VI22a(INSTM22)""")   )
+                      VALE=VI22a(INSTM22)   )
 
-AC22a = FORMULE(REEL="""(REEL:INST) =
-ACC(INST,FREQ2,AMOR2) """)
+AC22a = FORMULE(NOM_PARA='INST',VALE='''ACC(INST,FREQ2,AMOR2) ''')
 
 AC22=CALC_FONC_INTERP(  FONCTION=AC22a, 
                         NOM_PARA='INST', VALE_PARA=LINST   )
@@ -1113,7 +1102,7 @@ AC22M=CALC_FONCTION( MAX=_F(  FONCTION = AC22)    )
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOA, NOM_PARA = ('AMOR','FREQ',),
                                 VALE_PARA = ( AMOR2, FREQ2,),
-                                VALE_REFE = EVAL("""AC22a(INSTM22)"""),
+                                VALE_REFE = AC22a(INSTM22),
                             REFERENCE='ANALYTIQUE',) )
 
 TEST_TABLE(      TABLE=AC22M,FILTRE=(
@@ -1122,10 +1111,9 @@ TEST_TABLE(      TABLE=AC22M,FILTRE=(
                            _F(  NOM_PARA = 'INST',
                              VALE = INSTM22)),
                   NOM_PARA='MAXI',
-                      VALE=EVAL("""AC22a(INSTM22)""")   )
+                      VALE=AC22a(INSTM22)   )
 
-DE32a = FORMULE(REEL="""(REEL:INST) =
-DEP(INST,FREQ3,AMOR2) """)
+DE32a = FORMULE(NOM_PARA='INST',VALE='''DEP(INST,FREQ3,AMOR2) ''')
 
 DE32=CALC_FONC_INTERP(   FONCTION=DE32a, 
                          NOM_PARA='INST', VALE_PARA=LINST   )
@@ -1138,16 +1126,15 @@ TEST_TABLE(      TABLE=DE32M,FILTRE=(
                            _F(  NOM_PARA = 'INST',
                              VALE = INSTM32)),
                   NOM_PARA='MAXI',
-                      VALE=EVAL("""DE32a(INSTM32)""")   )
+                      VALE=DE32a(INSTM32)   )
 
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOD, NOM_PARA = ('AMOR','FREQ',),
                                 VALE_PARA = ( AMOR2, FREQ3,),
-                                VALE_REFE = EVAL("""DE32a(INSTM32)"""),
+                                VALE_REFE = DE32a(INSTM32),
                             REFERENCE='ANALYTIQUE',) )
 
-VI32a = FORMULE(REEL="""(REEL:INST) =
-VIT(INST,FREQ3,AMOR2) """)
+VI32a = FORMULE(NOM_PARA='INST',VALE='''VIT(INST,FREQ3,AMOR2) ''')
 
 VI32=CALC_FONC_INTERP(  FONCTION=VI32a, 
                         NOM_PARA='INST', VALE_PARA=LINST   )
@@ -1157,7 +1144,7 @@ VI32M=CALC_FONCTION( MAX=_F(  FONCTION = VI32)    )
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOV, NOM_PARA = ('AMOR','FREQ',),
                                 VALE_PARA = ( AMOR2, FREQ3,),
-                                VALE_REFE = EVAL("""VI32a(INSTM32)"""),
+                                VALE_REFE = VI32a(INSTM32),
                             REFERENCE='ANALYTIQUE',) )
 
 TEST_TABLE(      TABLE=VI32M,FILTRE=(
@@ -1166,10 +1153,9 @@ TEST_TABLE(      TABLE=VI32M,FILTRE=(
                            _F(  NOM_PARA = 'INST',
                              VALE = INSTM32)),
                   NOM_PARA='MAXI',
-                      VALE=EVAL("""VI32a(INSTM32)""")   )
+                      VALE=VI32a(INSTM32)   )
 
-AC32a = FORMULE(REEL="""(REEL:INST) =
-ACC(INST,FREQ3,AMOR2) """)
+AC32a = FORMULE(NOM_PARA='INST',VALE='''ACC(INST,FREQ3,AMOR2) ''')
 
 AC32=CALC_FONC_INTERP(  FONCTION=AC32a, 
                         NOM_PARA='INST', VALE_PARA=LINST   )
@@ -1179,7 +1165,7 @@ AC32M=CALC_FONCTION( MAX=_F(  FONCTION = AC32)    )
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOA, NOM_PARA = ('AMOR','FREQ',),
                                 VALE_PARA = ( AMOR2, FREQ3,),
-                                VALE_REFE = EVAL("""AC32a(INSTM32)"""),
+                                VALE_REFE = AC32a(INSTM32),
                             REFERENCE='ANALYTIQUE',) )
 
 TEST_TABLE(      TABLE=AC32M,FILTRE=(
@@ -1188,7 +1174,7 @@ TEST_TABLE(      TABLE=AC32M,FILTRE=(
                            _F(  NOM_PARA = 'INST',
                              VALE = INSTM32)),
                   NOM_PARA='MAXI',
-                      VALE=EVAL("""AC32a(INSTM32)""")   )
+                      VALE=AC32a(INSTM32)   )
 
 #=======================================================================
 #
@@ -1203,34 +1189,34 @@ IMPR_COURBE(   COURBE=_F(  FONCTION = ENV1) )
 
 TEST_FONCTION(VALEUR=( 
                 _F(  FONCTION = ENV1, NOM_PARA = 'INST',
-                          VALE_PARA = INST0, VALE_REFE = EVAL("""COa(INST0)"""),
+                          VALE_PARA = INST0, VALE_REFE = COa(INST0),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = ENV1, NOM_PARA = 'INST',
-                          VALE_PARA = INST1, VALE_REFE = EVAL("""COa(INST1)"""),
+                          VALE_PARA = INST1, VALE_REFE = COa(INST1),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = ENV1, NOM_PARA = 'INST',
-                          VALE_PARA = INST2, VALE_REFE = EVAL("""SIa(INST2)"""),
+                          VALE_PARA = INST2, VALE_REFE = SIa(INST2),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = ENV1, NOM_PARA = 'INST',
-                          VALE_PARA = INST3, VALE_REFE = EVAL("""SIa(INST3)"""),
+                          VALE_PARA = INST3, VALE_REFE = SIa(INST3),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = ENV1, NOM_PARA = 'INST', CRITERE = 'ABSOLU',
-                          VALE_PARA = INST4, VALE_REFE = EVAL("""SIa(INST4)"""),
+                          VALE_PARA = INST4, VALE_REFE = SIa(INST4),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = ENV1, NOM_PARA = 'INST',
-                          VALE_PARA = INST5, VALE_REFE = EVAL("""SIa(INST5)"""),
+                          VALE_PARA = INST5, VALE_REFE = SIa(INST5),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = ENV1, NOM_PARA = 'INST',
-                          VALE_PARA = INST6, VALE_REFE = EVAL("""COa(INST6)"""),
+                          VALE_PARA = INST6, VALE_REFE = COa(INST6),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = ENV1, NOM_PARA = 'INST',
-                          VALE_PARA = INST7, VALE_REFE = EVAL("""COa(INST7)"""),
+                          VALE_PARA = INST7, VALE_REFE = COa(INST7),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = ENV1, NOM_PARA = 'INST',
-                          VALE_PARA = INST8, VALE_REFE = EVAL("""COa(INST8)"""),
+                          VALE_PARA = INST8, VALE_REFE = COa(INST8),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = ENV1, NOM_PARA = 'INST',
-                          VALE_PARA = INST9, VALE_REFE = EVAL("""COa(INST9)"""),
+                          VALE_PARA = INST9, VALE_REFE = COa(INST9),
                      REFERENCE = 'ANALYTIQUE',))
                 )
 
@@ -1241,31 +1227,31 @@ IMPR_COURBE(   COURBE=_F(  FONCTION = ENV2, LIST_PARA = LR1) )
 
 TEST_FONCTION(VALEUR=( 
                 _F(  FONCTION = ENV2, NOM_PARA = 'INST', CRITERE = 'ABSOLU',
-                          VALE_PARA = INST0, VALE_REFE = EVAL("""SIa(INST0)"""),
+                          VALE_PARA = INST0, VALE_REFE = SIa(INST0),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = ENV2, NOM_PARA = 'INST',
-                          VALE_PARA = INST1, VALE_REFE = EVAL("""SIa(INST1)"""),
+                          VALE_PARA = INST1, VALE_REFE = SIa(INST1),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = ENV2, NOM_PARA = 'INST',
-                          VALE_PARA = INST2, VALE_REFE = EVAL("""COa(INST2)"""),
+                          VALE_PARA = INST2, VALE_REFE = COa(INST2),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = ENV2, NOM_PARA = 'INST',
-                          VALE_PARA = INST3, VALE_REFE = EVAL("""COa(INST3)"""),
+                          VALE_PARA = INST3, VALE_REFE = COa(INST3),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = ENV2, NOM_PARA = 'INST',
-                          VALE_PARA = INST4, VALE_REFE = EVAL("""COa(INST4)"""),
+                          VALE_PARA = INST4, VALE_REFE = COa(INST4),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = ENV2, NOM_PARA = 'INST',
-                          VALE_PARA = INST5, VALE_REFE = EVAL("""COa(INST5)"""),
+                          VALE_PARA = INST5, VALE_REFE = COa(INST5),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = ENV2, NOM_PARA = 'INST',
-                          VALE_PARA = INST6, VALE_REFE = EVAL("""SIa(INST6)"""),
+                          VALE_PARA = INST6, VALE_REFE = SIa(INST6),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = ENV2, NOM_PARA = 'INST',
-                          VALE_PARA = INST7, VALE_REFE = EVAL("""SIa(INST7)"""),
+                          VALE_PARA = INST7, VALE_REFE = SIa(INST7),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = ENV2, NOM_PARA = 'INST',
-                          VALE_PARA = INST8, VALE_REFE = EVAL("""SIa(INST8)"""),
+                          VALE_PARA = INST8, VALE_REFE = SIa(INST8),
                      REFERENCE = 'ANALYTIQUE',),
                 ) )
 
@@ -1284,34 +1270,34 @@ TEST_FONCTION(ATTRIBUT=(
                 _F(  FONCTION = DER1, ATTR = 'NOM_RESU', ATTR_REFE = 'VITE')),VALEUR=(
                   
                 _F(  FONCTION = DER1, NOM_PARA = 'INST',
-                          VALE_PARA = INST0, VALE_REFE = EVAL("""COa(INST0)"""),
+                          VALE_PARA = INST0, VALE_REFE = COa(INST0),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = DER1, NOM_PARA = 'INST',
-                          VALE_PARA = INST1, VALE_REFE = EVAL("""COa(INST1)"""),
+                          VALE_PARA = INST1, VALE_REFE = COa(INST1),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = DER1, NOM_PARA = 'INST',
-                          VALE_PARA = INST2, VALE_REFE = EVAL("""COa(INST2)"""),
+                          VALE_PARA = INST2, VALE_REFE = COa(INST2),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = DER1, NOM_PARA = 'INST',
-                          VALE_PARA = INST3, VALE_REFE = EVAL("""COa(INST3)"""),
+                          VALE_PARA = INST3, VALE_REFE = COa(INST3),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = DER1, NOM_PARA = 'INST',
-                          VALE_PARA = INST4, VALE_REFE = EVAL("""COa(INST4)"""),
+                          VALE_PARA = INST4, VALE_REFE = COa(INST4),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = DER1, NOM_PARA = 'INST',
-                          VALE_PARA = INST5, VALE_REFE = EVAL("""COa(INST5)"""),
+                          VALE_PARA = INST5, VALE_REFE = COa(INST5),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = DER1, NOM_PARA = 'INST',
-                          VALE_PARA = INST6, VALE_REFE = EVAL("""COa(INST6)"""),
+                          VALE_PARA = INST6, VALE_REFE = COa(INST6),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = DER1, NOM_PARA = 'INST',
-                          VALE_PARA = INST7, VALE_REFE = EVAL("""COa(INST7)"""),
+                          VALE_PARA = INST7, VALE_REFE = COa(INST7),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = DER1, NOM_PARA = 'INST',
-                          VALE_PARA = INST8, VALE_REFE = EVAL("""COa(INST8)"""),
+                          VALE_PARA = INST8, VALE_REFE = COa(INST8),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = DER1, NOM_PARA = 'INST',
-                          VALE_PARA = INST9, VALE_REFE = EVAL("""COa(INST9)"""),
+                          VALE_PARA = INST9, VALE_REFE = COa(INST9),
                      REFERENCE = 'ANALYTIQUE',))
                 )
 
@@ -1323,34 +1309,34 @@ TEST_FONCTION(
                 ATTRIBUT=_F(  FONCTION = INT1, ATTR = 'NOM_RESU', ATTR_REFE = 'DEPL'),VALEUR=(
                   
                 _F(  FONCTION = INT1, NOM_PARA = 'INST', CRITERE = 'ABSOLU',
-                          VALE_PARA = INST0, VALE_REFE = EVAL("""SIa(INST0)"""),
+                          VALE_PARA = INST0, VALE_REFE = SIa(INST0),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = INT1, NOM_PARA = 'INST',
-                          VALE_PARA = INST1, VALE_REFE = EVAL("""SIa(INST1)"""),
+                          VALE_PARA = INST1, VALE_REFE = SIa(INST1),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = INT1, NOM_PARA = 'INST',
-                          VALE_PARA = INST2, VALE_REFE = EVAL("""SIa(INST2)"""),
+                          VALE_PARA = INST2, VALE_REFE = SIa(INST2),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = INT1, NOM_PARA = 'INST',
-                          VALE_PARA = INST3, VALE_REFE = EVAL("""SIa(INST3)"""),
+                          VALE_PARA = INST3, VALE_REFE = SIa(INST3),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = INT1, NOM_PARA = 'INST', CRITERE = 'ABSOLU',
-                          VALE_PARA = INST4, VALE_REFE = EVAL("""SIa(INST4)"""),
+                          VALE_PARA = INST4, VALE_REFE = SIa(INST4),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = INT1, NOM_PARA = 'INST',
-                          VALE_PARA = INST5, VALE_REFE = EVAL("""SIa(INST5)"""),
+                          VALE_PARA = INST5, VALE_REFE = SIa(INST5),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = INT1, NOM_PARA = 'INST',
-                          VALE_PARA = INST6, VALE_REFE = EVAL("""SIa(INST6)"""),
+                          VALE_PARA = INST6, VALE_REFE = SIa(INST6),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = INT1, NOM_PARA = 'INST',
-                          VALE_PARA = INST7, VALE_REFE = EVAL("""SIa(INST7)"""),
+                          VALE_PARA = INST7, VALE_REFE = SIa(INST7),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = INT1, NOM_PARA = 'INST',
-                          VALE_PARA = INST8, VALE_REFE = EVAL("""SIa(INST8)"""),
+                          VALE_PARA = INST8, VALE_REFE = SIa(INST8),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = INT1, NOM_PARA = 'INST', CRITERE = 'ABSOLU',
-                          VALE_PARA = INST9, VALE_REFE = EVAL("""SIa(INST9)"""),
+                          VALE_PARA = INST9, VALE_REFE = SIa(INST9),
                      REFERENCE = 'ANALYTIQUE',))
                 )
 
@@ -1358,41 +1344,52 @@ DER2=CALC_FONCTION( DERIVE=_F(  FONCTION = CO) )
 
 IMPR_COURBE(   COURBE=_F(  FONCTION = DER2, LIST_PARA = LR1) )
 
+v0=-SIa(INST0)
+v1=-SIa(INST1)
+v2=-SIa(INST2)
+v3=-SIa(INST3)
+v4=-SIa(INST4)
+v5=-SIa(INST5)
+v6=-SIa(INST6)
+v7=-SIa(INST7)
+v8=-SIa(INST8)
+v9=-SIa(INST9)
+
 TEST_FONCTION(ATTRIBUT=( 
                 _F(  FONCTION = CO, ATTR = 'NOM_RESU', ATTR_REFE = 'DEPL'),
                 _F(  FONCTION = DER2, ATTR = 'NOM_RESU', ATTR_REFE = 'VITE')),VALEUR=(
                   
                 _F(  FONCTION = DER2, NOM_PARA = 'INST',
                           CRITERE = 'ABSOLU', PRECISION = 0.02,
-                          VALE_PARA = INST0, VALE_REFE = EVAL("""-SIa(INST0)"""),
+                          VALE_PARA = INST0, VALE_REFE = v0,
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = DER2, NOM_PARA = 'INST',
-                          VALE_PARA = INST1, VALE_REFE = EVAL("""-SIa(INST1)"""),
+                          VALE_PARA = INST1, VALE_REFE = v1,
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = DER2, NOM_PARA = 'INST',
-                          VALE_PARA = INST2, VALE_REFE = EVAL("""-SIa(INST2)"""),
+                          VALE_PARA = INST2, VALE_REFE = v2,
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = DER2, NOM_PARA = 'INST',
-                          VALE_PARA = INST3, VALE_REFE = EVAL("""-SIa(INST3)"""),
+                          VALE_PARA = INST3, VALE_REFE = v3,
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = DER2, NOM_PARA = 'INST', CRITERE = 'ABSOLU',
-                          VALE_PARA = INST4, VALE_REFE = EVAL("""-SIa(INST4)"""),
+                          VALE_PARA = INST4, VALE_REFE = v4,
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = DER2, NOM_PARA = 'INST',
-                          VALE_PARA = INST5, VALE_REFE = EVAL("""-SIa(INST5)"""),
+                          VALE_PARA = INST5, VALE_REFE = v5,
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = DER2, NOM_PARA = 'INST',
-                          VALE_PARA = INST6, VALE_REFE = EVAL("""-SIa(INST6)"""),
+                          VALE_PARA = INST6, VALE_REFE = v6,
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = DER2, NOM_PARA = 'INST',
-                          VALE_PARA = INST7, VALE_REFE = EVAL("""-SIa(INST7)"""),
+                          VALE_PARA = INST7, VALE_REFE = v7,
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = DER2, NOM_PARA = 'INST',
-                          VALE_PARA = INST8, VALE_REFE = EVAL("""-SIa(INST8)"""),
+                          VALE_PARA = INST8, VALE_REFE = v8,
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = DER2, NOM_PARA = 'INST',
                           CRITERE = 'ABSOLU', PRECISION = 0.02,
-                          VALE_PARA = INST9, VALE_REFE = EVAL("""-SIa(INST9)"""),
+                          VALE_PARA = INST9, VALE_REFE = v9,
                      REFERENCE = 'ANALYTIQUE',))
                 )
 
@@ -1405,34 +1402,34 @@ TEST_FONCTION(
                 ATTRIBUT=_F(  FONCTION = INT2, ATTR = 'NOM_RESU', ATTR_REFE = 'DEPL'),VALEUR=(
                   
                 _F(  FONCTION = INT2, NOM_PARA = 'INST',
-                          VALE_PARA = INST0, VALE_REFE = EVAL("""COa(INST0)"""),
+                          VALE_PARA = INST0, VALE_REFE = COa(INST0),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = INT2, NOM_PARA = 'INST',
-                          VALE_PARA = INST1, VALE_REFE = EVAL("""COa(INST1)"""),
+                          VALE_PARA = INST1, VALE_REFE = COa(INST1),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = INT2, NOM_PARA = 'INST',
-                          VALE_PARA = INST2, VALE_REFE = EVAL("""COa(INST2)"""),
+                          VALE_PARA = INST2, VALE_REFE = COa(INST2),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = INT2, NOM_PARA = 'INST',
-                          VALE_PARA = INST3, VALE_REFE = EVAL("""COa(INST3)"""),
+                          VALE_PARA = INST3, VALE_REFE = COa(INST3),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = INT2, NOM_PARA = 'INST',
-                          VALE_PARA = INST4, VALE_REFE = EVAL("""COa(INST4)"""),
+                          VALE_PARA = INST4, VALE_REFE = COa(INST4),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = INT2, NOM_PARA = 'INST',
-                          VALE_PARA = INST5, VALE_REFE = EVAL("""COa(INST5)"""),
+                          VALE_PARA = INST5, VALE_REFE = COa(INST5),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = INT2, NOM_PARA = 'INST',
-                          VALE_PARA = INST6, VALE_REFE = EVAL("""COa(INST6)"""),
+                          VALE_PARA = INST6, VALE_REFE = COa(INST6),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = INT2, NOM_PARA = 'INST',
-                          VALE_PARA = INST7, VALE_REFE = EVAL("""COa(INST7)"""),
+                          VALE_PARA = INST7, VALE_REFE = COa(INST7),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = INT2, NOM_PARA = 'INST',
-                          VALE_PARA = INST8, VALE_REFE = EVAL("""COa(INST8)"""),
+                          VALE_PARA = INST8, VALE_REFE = COa(INST8),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = INT2, NOM_PARA = 'INST',
-                          VALE_PARA = INST9, VALE_REFE = EVAL("""COa(INST9)"""),
+                          VALE_PARA = INST9, VALE_REFE = COa(INST9),
                      REFERENCE = 'ANALYTIQUE',))
                 )
 
@@ -1442,9 +1439,9 @@ TEST_FONCTION(
 #
 #=======================================================================
 
-SICO = FORMULE(REEL="""(REEL:INSTA,REEL:INSTB) =
-2. * SIN((PI/4)+((INSTA-INSTB)/2.)) *
-                          COS((PI/4)-((INSTA+INSTB)/2.))  """)
+SICO = FORMULE(NOM_PARA=('INSTA','INSTB'),VALE='''
+2. * sin((pi/4)+((INSTA-INSTB)/2.)) *
+                          cos((pi/4)-((INSTA+INSTB)/2.))  ''')
 
 LST=DEFI_LIST_REEL(  VALE=( INST0, INST1, INST2, INST3, INST4,
                                  INST5, INST6, INST7, INST8, INST9, )  )
@@ -1460,34 +1457,34 @@ COM0=CALC_FONCTION(  LIST_PARA=LST,COMB=(
 
 TEST_FONCTION(VALEUR=( 
                 _F(  FONCTION = COM0, NOM_PARA = 'INST',
-                  VALE_PARA = INST0, VALE_REFE = EVAL("""SICO(INST0,INST0)"""),
+                  VALE_PARA = INST0, VALE_REFE = SICO(INST0,INST0),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = COM0, NOM_PARA = 'INST',
-                  VALE_PARA = INST1, VALE_REFE = EVAL("""SICO(INST1,INST1)"""),
+                  VALE_PARA = INST1, VALE_REFE = SICO(INST1,INST1),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = COM0, NOM_PARA = 'INST',
-                  VALE_PARA = INST2, VALE_REFE = EVAL("""SICO(INST2,INST2)"""),
+                  VALE_PARA = INST2, VALE_REFE = SICO(INST2,INST2),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = COM0, NOM_PARA = 'INST',
-                  VALE_PARA = INST3, VALE_REFE = EVAL("""SICO(INST3,INST3)"""),
+                  VALE_PARA = INST3, VALE_REFE = SICO(INST3,INST3),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = COM0, NOM_PARA = 'INST',
-                  VALE_PARA = INST4, VALE_REFE = EVAL("""SICO(INST4,INST4)"""),
+                  VALE_PARA = INST4, VALE_REFE = SICO(INST4,INST4),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = COM0, NOM_PARA = 'INST',
-                  VALE_PARA = INST5, VALE_REFE = EVAL("""SICO(INST5,INST5)"""),
+                  VALE_PARA = INST5, VALE_REFE = SICO(INST5,INST5),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = COM0, NOM_PARA = 'INST',
-                  VALE_PARA = INST6, VALE_REFE = EVAL("""SICO(INST6,INST6)"""),
+                  VALE_PARA = INST6, VALE_REFE = SICO(INST6,INST6),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = COM0, NOM_PARA = 'INST',
-                  VALE_PARA = INST7, VALE_REFE = EVAL("""SICO(INST7,INST7)"""),
+                  VALE_PARA = INST7, VALE_REFE = SICO(INST7,INST7),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = COM0, NOM_PARA = 'INST',
-                  VALE_PARA = INST8, VALE_REFE = EVAL("""SICO(INST8,INST8)"""),
+                  VALE_PARA = INST8, VALE_REFE = SICO(INST8,INST8),
                      REFERENCE = 'ANALYTIQUE',),
                 _F(  FONCTION = COM0, NOM_PARA = 'INST',
-                  VALE_PARA = INST9, VALE_REFE = EVAL("""SICO(INST9,INST9)"""),
+                  VALE_PARA = INST9, VALE_REFE = SICO(INST9,INST9),
                      REFERENCE = 'ANALYTIQUE',))
                 )
 
@@ -1727,15 +1724,17 @@ TEST_FONCTION(VALEUR=(
 # VALIDATION DE CALC_FONC_INTERP POUR UNE NAPPE
 # VALIDATION DE LA DESTRUCTION D UNE FORMULE
 #
-NAP = FORMULE(REEL="""(REEL:INST,REEL:FREQ,REEL:AMOR) =
-(1./(((2.*PI*FREQ)**2 - OMEGA**2 )**2 +(2.*AMOR*2.*PI*FREQ*OMEGA)**2))*(((2.*PI*FREQ)**2 - OMEGA**2)*COS(OMEGA*INST) + 2.*AMOR*2.*PI*FREQ*
-   OMEGA*SIN(OMEGA*INST) - ( ((2.*PI*FREQ)**2 - OMEGA**2)*COS(2.*PI*FREQ*INST)+ AMOR*((2.*PI*FREQ)**2 + OMEGA**2 )*SIN(2.*PI*FREQ*INST))*EXP(-AMOR*2.*PI*FREQ*INST) )   """)
+NAP = FORMULE(NOM_PARA=('INST','FREQ','AMOR'),VALE='''
+(1./(((2.*pi*FREQ)**2 - OMEGA**2 )**2 +(2.*AMOR*2.*pi*FREQ*OMEGA)**2))*(((2.*pi*FREQ)**2 -
+OMEGA**2)*cos(OMEGA*INST) + 2.*AMOR*2.*pi*FREQ*
+   OMEGA*sin(OMEGA*INST) - ( ((2.*PI*FREQ)**2 - OMEGA**2)*cos(2.*pi*FREQ*INST)+ AMOR*((2.*pi*FREQ)**2 + OMEGA**2
+   )*sin(2.*pi*FREQ*INST))*exp(-AMOR*2.*pi*FREQ*INST) )   ''')
 #
 FREQ1=5.
 #
-NAP1=FORMULE(REEL="""(REEL:INST,REEL:AMOR) =NAP(INST,FREQ1,AMOR) """)
+NAP1 = FORMULE(NOM_PARA=('INST','AMOR'),VALE='''NAP(INST,FREQ1,AMOR) ''')
 DETRUIRE(CONCEPT=_F(NOM='NAP1'))
-NAP1=FORMULE(REEL="""(REEL:INST,REEL:AMOR) =NAP(INST,FREQ1,AMOR) """)
+NAP1 = FORMULE(NOM_PARA=('INST','AMOR'),VALE='''NAP(INST,FREQ1,AMOR) ''')
 #
 NAP2 = CALC_FONC_INTERP ( FONCTION = NAP1,
        NOM_RESU = 'VIT',

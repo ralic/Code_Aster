@@ -1,4 +1,4 @@
-# MODIF  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE SECHAGE EN 2D AXISYMETRIQUE  - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,25 +119,21 @@ C_EQ_I10=51.6
 
 C_EQ_E10=69.1
 
-FL_INT05 = FORMULE(REEL="""(REEL:TEMP) =
-(0.5*BETA / ((C_0 - C_EQ_I05 )**2)
-  * (TEMP - (2.*C_0 - C_EQ_I05 ))*(TEMP - C_EQ_I05 ))
-   """)
+FL_INT05 = FORMULE(NOM_PARA='TEMP',
+                   VALE='''(0.5*BETA / ((C_0 - C_EQ_I05 )**2)
+  * (TEMP - (2.*C_0 - C_EQ_I05 ))*(TEMP - C_EQ_I05 ))''')
 
-FL_EXT05 = FORMULE(REEL="""(REEL:TEMP) =
-(0.5*BETA / ((C_0 - C_EQ_E05 )**2)
-  * (TEMP - (2.*C_0 - C_EQ_E05 ))*(TEMP - C_EQ_E05 ))
-   """)
+FL_EXT05 = FORMULE(NOM_PARA='TEMP',
+                   VALE='''(0.5*BETA / ((C_0 - C_EQ_E05 )**2)
+  * (TEMP - (2.*C_0 - C_EQ_E05 ))*(TEMP - C_EQ_E05 ))''')
 
-FL_INT10 = FORMULE(REEL="""(REEL:TEMP) =
-(0.5*BETA / ((C_0 - C_EQ_I10 )**2)
-  * (TEMP - (2.*C_0 - C_EQ_I10 ))*(TEMP - C_EQ_I10 ))
-   """)
+FL_INT10 = FORMULE(NOM_PARA='TEMP',
+                   VALE='''(0.5*BETA / ((C_0 - C_EQ_I10 )**2)
+  * (TEMP - (2.*C_0 - C_EQ_I10 ))*(TEMP - C_EQ_I10 ))''')
 
-FL_EXT10 = FORMULE(REEL="""(REEL:TEMP) =
-(0.5*BETA / ((C_0 - C_EQ_E10 )**2)
-  * (TEMP - (2.*C_0 - C_EQ_E10 ))*(TEMP - C_EQ_E10 ))
-   """)
+FL_EXT10 = FORMULE(NOM_PARA='TEMP',
+                   VALE='''(0.5*BETA / ((C_0 - C_EQ_E10 )**2)
+  * (TEMP - (2.*C_0 - C_EQ_E10 ))*(TEMP - C_EQ_E10 ))''')
 
 LIST0=DEFI_LIST_REEL(  DEBUT=0.,INTERVALLE=(
                          _F(  JUSQU_A = 50.,    PAS = 10.,  ),

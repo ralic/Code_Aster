@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 21/09/2004   AUTEUR PBADEL P.BADEL 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -119,6 +119,7 @@ DYNA_TRAN_EXPLI=OPER(nom="DYNA_TRAN_EXPLI",op= 69,sd_prod=evol_noli,reentrant='f
            PREDICTION      =SIMP(statut='f',typ='TXM',into=("TANGENTE","ELASTIQUE") ),
            MATRICE         =SIMP(statut='f',typ='TXM',defaut="TANGENTE",into=("TANGENTE","ELASTIQUE") ),
            REAC_ITER       =SIMP(statut='f',typ='I',defaut= 0),
+           REAC_ITER_ELAS  =SIMP(statut='f',typ='I',defaut=0),
            PAS_MINI_ELAS   =SIMP(statut='f',typ='R',defaut=0.0E+0),
          ),
          SOLVEUR         =FACT(statut='d',

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,13 +17,10 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 def calc_fonc_interp_prod(FONCTION,**args):
-  if AsType(FONCTION)==nappe_sdaster      : return nappe_sdaster
+  if AsType(FONCTION)  ==nappe_sdaster    : return nappe_sdaster
   elif AsType(FONCTION)==fonction_sdaster : return fonction_sdaster
   elif AsType(FONCTION)==fonction_c       : return fonction_c
-  elif AsType(FONCTION)==formule          :
-     dict=FONCTION.etape.cree_dict_valeurs(FONCTION.etape.mc_liste)
-     if   dict['REEL']    !=None : return fonction_sdaster
-     elif dict['COMPLEXE']!=None : return fonction_c
+  elif AsType(FONCTION)==formule          : return fonction_sdaster
   raise AsException("type de concept resultat non prevu")
 
 CALC_FONC_INTERP=OPER(nom="CALC_FONC_INTERP",op= 134,sd_prod=calc_fonc_interp_prod,

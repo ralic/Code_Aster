@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,6 @@
 #                                                                       
 # ======================================================================
 
-
 """
 """
 # Modules Python
@@ -30,11 +29,10 @@ import traceback
 # Module Eficas
 from Noyau.N_utils import prbanner
 from Noyau.N_utils import AsType
-from Noyau import N_MCSIMP,N_MCFACT,N_MCBLOC,N_MCLIST,N_EVAL,N_ASSD
+from Noyau import N_MCSIMP,N_MCFACT,N_MCBLOC,N_MCLIST,N_ASSD
 from Noyau import N_FACT,N_BLOC,N_SIMP
 from Noyau.N_Exception import AsException
 from Noyau.N_ASSD import ASSD
-from Noyau.N_EVAL import EVAL
 import B_utils
 from B_CODE import CODE
 import B_OBJECT
@@ -315,17 +313,12 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       tup_avant=valeur[1]
       list_apres=[]
       for k in tup_avant :
-          if isinstance(k,N_EVAL.EVAL):
-              k=k(self)
-              if CONTEXT.debug : print "valeur evaluee: ",k
-          elif isinstance(k,N_ASSD.ASSD):
+          if isinstance(k,N_ASSD.ASSD):
               if not k.etape:
                  # Il s'agit d'un concept issu d'une poursuite, on l'evalue
                  k=self.codex.getvectjev(k.get_name())
-                 #k=self.codex.myeval(self,'('+k.get_name()+')')
               else:
                  k=k.etape[leType]
-              if isinstance(k,N_EVAL.EVAL):k=k(self)
              
               if CONTEXT.debug : print "valeur evaluee: ",k
           if type(k) in ( types.TupleType ,types.ListType) :
@@ -425,6 +418,25 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       self.jdc.alea=Random(100)
       self.jdc.alea.jumpahead(jump)
       return None
+
+   def fiintf(self,nom_fonction,nom_param,val):
+      """
+         Cette methode permet d'appeler une formule python depuis le fortran
+         Elle évalue les concepts FORMULE
+      """
+      nom_fonction=string.strip(nom_fonction)
+      nom_param   =map(string.strip,nom_param)
+      objet_sd    =self.parent.get_sd_avant_etape(nom_fonction,self)
+      if len(nom_param)!=len(val) :
+         self.cr.fatal("""<E> <FORMULE> nombre de valeurs différent du nombre de paramètres""")
+         return None
+# appel de fonction definie dans le corps du jeu de commandes
+      if self.gettco(nom_fonction)=='FORMULE':
+           send_val=[]
+           for param in objet_sd.nompar :
+               send_val.append(val[nom_param.index(param)])
+           res = objet_sd(*send_val)
+      return res
 
    def getvr8(self,nom_motfac,nom_motcle,iocc,iarg,mxval):
       """
@@ -566,13 +578,9 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       """
       if sd.__class__.__name__ == 'reel':
          k=sd.etape['R8']
-         if isinstance(k,EVAL):
-            k=k(self)
          return 1,k
       elif sd.__class__.__name__ == 'entier':
          k=sd.etape['IS']
-         if isinstance(k,EVAL):
-            k=k(self)
          return 1,k
       else:
          return 0,0
@@ -605,8 +613,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
             if type(dico_mcsimp[name]) in (types.ListType,types.TupleType) : obj=dico_mcsimp[name][0]
             else                                                           : obj=dico_mcsimp[name]
             if type(obj)==types.InstanceType :
-               if obj.__class__.__name__=='EVAL' : lty.append('R8')
-               else                              : lty.append(obj.__class__.__name__)
+               lty.append(obj.__class__.__name__)
             if type(obj)==types.FloatType        : lty.append('R8')
             if type(obj)==types.StringType       :
                 if string.strip(obj) in ('RI','MP') : lty.append('C8')

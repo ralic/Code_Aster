@@ -1,4 +1,5 @@
-#@ MODIF __init__ Outils  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF __init__ Outils  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,5 +18,4 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-# -*- coding: iso-8859-1 -*-
 

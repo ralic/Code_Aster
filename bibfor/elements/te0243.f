@@ -1,6 +1,6 @@
       SUBROUTINE TE0243 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 20/09/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,8 +46,8 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      REAL*8             BETA,LAMBDA,THETA,DELTAT,KHI,TPG
-      REAL*8             DFDX(9),DFDY(9),POIDS,R,R8BID
+      REAL*8             BETA,LAMBDA,THETA,DELTAT,KHI,TPG,TPSEC
+      REAL*8             DFDX(9),DFDY(9),POIDS,R,R8BID,DIFF
       REAL*8             DTPGDX,DTPGDY
       REAL*8             COORSE(18),VECTT(9)
       CHARACTER*8        ELREFE
@@ -55,6 +55,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER            ICOMP,ITEMPI,IVERES,JGANO,IPOID2,NPG2
       INTEGER            C(6,9),ISE,NSE,NNOP2,IVF2,IDFDE2
+      INTEGER            ISECHI,ISECHF
 C ----------------------------------------------------------------------
 C PARAMETER ASSOCIE AU MATERIAU CODE
 C
@@ -80,26 +81,38 @@ C
       CALL JEVECH('PCOMPOR','L',ICOMP)
       CALL JEVECH('PRESIDU','E',IVERES)
 C
-      IF ( (ZK16(ICOMP)(1:5).EQ.'SECH_')     .OR.
-     &     (ZK16(ICOMP)(1:9).EQ.'THER_HYDR'))     THEN
-        CALL UTMESS('F','TE0243','PAS D ELEMENTS LUMPES POUR'//
-     &              'HYDRATATION ET SECHAGE')
+  
+      IF ( (ZK16(ICOMP)(1:9).EQ.'THER_HYDR'))THEN
+        CALL UTMESS('F','TE0244','PAS D ELEMENTS LUMPES POUR'//
+     &               'HYDRATATION ')
       ENDIF
+C
+      IF ( (ZK16(ICOMP)(1:5).EQ.'SECH_')) THEN
+        IF(ZK16(ICOMP)(1:12).EQ.'SECH_GRANGER'.OR.
+     &     ZK16(ICOMP)(1:10).EQ.'SECH_NAPPE') THEN
+           CALL JEVECH('PTMPCHI','L',ISECHI)
+           CALL JEVECH('PTMPCHF','L',ISECHF)
+        ELSE
+C          POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE
+C          ISECHI ET ISECHF SONT FICTIFS
+           ISECHI = ITEMPI
+           ISECHF = ITEMPI
+        ENDIF
+      ENDIF
+
 C
       DELTAT = ZR(ITEMPS+1)
       THETA  = ZR(ITEMPS+2)
       KHI    = ZR(ITEMPS+3)
+
 C     CALCUL LUMPE
 C     ------------
 C  CALCUL ISO-P2 : ELTS P2 DECOMPOSES EN SOUS-ELTS LINEAIRES
 
       CALL CONNEC ( NOMTE, NSE, NNOP2, C )
-
       DO 10 I=1,NNOP2
             VECTT(I)=0.D0
 10    CONTINUE
-
-C ----- TERME DE RIGIDITE : 2EME FAMILLE DE PTS DE GAUSS ---------
 
 C BOUCLE SUR LES SOUS-ELEMENTS
 
@@ -109,8 +122,13 @@ C BOUCLE SUR LES SOUS-ELEMENTS
           DO 205 J=1,2
               COORSE(2*(I-1)+J) = ZR(IGEOM-1+2*(C(ISE,I)-1)+J)
 205     CONTINUE
-
+C
+        IF (ZK16(ICOMP)(1:5).EQ.'THER_') THEN
+C
         CALL NTFCMA (ZI(IMATE),IFON)
+
+C ----- TERME DE RIGIDITE : 2EME FAMILLE DE PTS DE GAUSS ---------
+
         DO 101 KP=1,NPG
           K=(KP-1)*NNO
           CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,COORSE,DFDX,DFDY,POIDS )
@@ -162,6 +180,55 @@ C
      &                         BETA/DELTAT*KHI*ZR(IVF2+K+I-1)
 404       CONTINUE
 401     CONTINUE
+
+        ELSE IF (ZK16(ICOMP)(1:5).EQ.'SECH_') THEN
+
+        DO 203 KP=1,NPG
+          K=(KP-1)*NNO
+          CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,COORSE,DFDX,DFDY,POIDS)
+          R      = 0.D0
+          TPG    = 0.D0
+          DTPGDX = 0.D0
+          DTPGDY = 0.D0
+          TPSEC  = 0.D0
+          DO 201 I=1,NNO
+            R      = R      + COORSE(2*(I-1)+1)     *ZR(IVF+K+I-1)
+            TPG    = TPG    + ZR(ITEMPI-1+C(ISE,I)) *ZR(IVF+K+I-1)
+            DTPGDX = DTPGDX + ZR(ITEMPI-1+C(ISE,I)) *DFDX(I)
+            DTPGDY = DTPGDY + ZR(ITEMPI-1+C(ISE,I)) *DFDY(I)
+            TPSEC  = TPSEC  + ZR(ISECHF-1+C(ISE,I)) *ZR(IVF+K+I-1)
+201       CONTINUE
+          CALL RCDIFF(ZI(IMATE), ZK16(ICOMP), TPSEC,  TPG,  DIFF )
+          IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
+C
+          DO 202 I=1,NNO
+             K=(KP-1)*NNO
+             VECTT(C(ISE,I)) = VECTT(C(ISE,I))  + POIDS *
+     &         THETA*DIFF*(DFDX(I)*DTPGDX+DFDY(I)*DTPGDY)
+202       CONTINUE
+203     CONTINUE
+
+C ------- TERME DE MASSE : 3EME FAMILLE DE PTS DE GAUSS -----------
+
+        DO 303 KP=1,NPG2
+          K=(KP-1)*NNO
+          CALL DFDM2D(NNO,KP,IPOID2,IDFDE2,COORSE,DFDX,DFDY,POIDS)
+          R      = 0.D0
+          TPG    = 0.D0
+          DO 301 I=1,NNO
+            R      = R      + COORSE(2*(I-1)+1)     *ZR(IVF2+K+I-1)
+            TPG    = TPG    + ZR(ITEMPI-1+C(ISE,I)) *ZR(IVF2+K+I-1)
+301       CONTINUE
+          IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
+C
+          DO 302 I=1,NNO
+             K=(KP-1)*NNO
+             VECTT(C(ISE,I)) = VECTT(C(ISE,I))  
+     &       +POIDS*(1.D0/DELTAT*KHI*ZR(IVF2+K+I-1)*TPG )
+302       CONTINUE
+303     CONTINUE
+
+        ENDIF
 
 200   CONTINUE
 

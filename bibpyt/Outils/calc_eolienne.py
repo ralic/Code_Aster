@@ -1,4 +1,4 @@
-#@ MODIF calc_eolienne Outils  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF calc_eolienne Outils  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-
 
 #
 # LISTE DES FONCTIONS, MACROS et CATALOGUES
@@ -1150,41 +1149,41 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
     if test == 'OUI':
       # FC3 poutre           
       if MODELISATION == 'POUTRE' :
-        FC3 = FORMULE(REEL = """(REEL:X,REEL:Y,REEL:Z) = -(EXP((Z+231.21)/20.187))/0.3""")
+        FC3 = FORMULE(NOM_PARA=('X','Y','Z'),VALE=' -(exp((Z+231.21)/20.187))/0.3')
       else :
       # FC3 coque et 3D
-        FC3 = FORMULE(REEL = """(REEL:X,REEL:Y,REEL:Z) = - (
-          (3.E-5-(1.E4*Z))+((-6.E-8*(ATAN(Y/(X+1.E-8)))*(ATAN(Y/(X+1.E-8)))*(ATAN(Y/(X+1.E-8)))*(ATAN(Y/(X+1.E-8)))+2.E-5*(ATAN(Y/(X+1.E-8)))*(ATAN(Y/(X+1.E-8)))*(ATAN(Y/(X+1.E-8)))
-          -0.0021*(ATAN(Y/(X+1.E-8)))*(ATAN(Y/(X+1.E-8)))+0.0224*(ATAN(Y/(X+1.E-8)))+0.9328)*
-          (0.5*"""+str(RAUMER)+"""*1.6**2)))""")
+        FC3 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='''- (
+          (3.E-5-(1.E4*Z))+((-6.E-8*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))+2.E-5*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))
+          -0.0021*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))+0.0224*(atan(Y/(X+1.E-8)))+0.9328)*
+          (0.5*'''+str(RAUMER)+'''*1.6**2)))''')
     else :
       if MODELISATION == 'POUTRE' :   
-        FC3 = FORMULE(REEL = """(REEL:X,REEL:Y,REEL:Z) = -(""" 
-           +str(teta0)+"""+("""
-           +str(teta1)+""")*(Z-("""+str(alpha1)+"""))+("""
-           +str(teta2)+""")*((Z-("""+str(alpha2)+"""))*(Z-("""+str(alpha1)+"""))-("""+str(beta2)+"""))+("""
-           +str(teta3)+""")*( (Z-("""+str(alpha3)+"""))*((Z-("""+str(alpha2)+"""))*(Z-("""+str(alpha1)+"""))-("""
-                           +str(beta2)+"""))-("""+str(beta3)+""")*(Z-("""+str(alpha1)+"""))))/"""+str(l_elem_stream))
+        FC3 = FORMULE(NOM_PARA=('X','Y','Z'),VALE=''' -('''
+           +str(teta0)+'''+('''
+           +str(teta1)+''')*(Z-('''+str(alpha1)+'''))+('''
+           +str(teta2)+''')*((Z-('''+str(alpha2)+'''))*(Z-('''+str(alpha1)+'''))-('''+str(beta2)+'''))+('''
+           +str(teta3)+''')*( (Z-('''+str(alpha3)+'''))*((Z-('''+str(alpha2)+'''))*(Z-('''+str(alpha1)+'''))-('''
+                           +str(beta2)+'''))-('''+str(beta3)+''')*(Z-('''+str(alpha1)+'''))))/'''+str(l_elem_stream))
       else :
         r_bas = (DEXT_HAUT_BASE + DEXT_BAS_FUT)/4.0   # rayon moyen de la base
         deux_pi_r_bas = 2.0*math.pi*r_bas             # rayon moyen de la base multiplie par 2*pi
         int_dp_etoil = -4.83893                       # valeur de l integrale de la fonction de repartition de pression
 
-        FC3 = FORMULE(REEL = """(REEL:X,REEL:Y,REEL:Z) = -(
-           (("""+str(H_BASE)+"""-Z)*1.0E+4)+(
-           ((("""+str(teta0)+"""+"""
-           +str(teta1)+"""*(Z-"""+str(alpha1)+""")+"""
-           +str(teta2)+"""*((Z-"""+str(alpha2)+""")*(Z-"""+str(alpha1)+""")-"""+str(beta2)+""")+"""
-           +str(teta3)+"""*( (Z-"""+str(alpha3)+""")*((Z-"""+str(alpha2)+""")*(Z-"""+str(alpha1)+""")-"""
-                           +str(beta2)+""")-"""+str(beta3)+"""*(Z-"""+str(alpha1)+""")))/"""+str(l_elem_stream)+""")-"""
-          +str(deux_pi_r_bas)+"""*(("""+str(H_BASE)+"""-Z)*1.0E+4))*
-          ((-6.E-8*(ATAN(Y/(X+1.E-8)))*(ATAN(Y/(X+1.E-8)))*(ATAN(Y/(X+1.E-8)))*(ATAN(Y/(X+1.E-8)))+2.E-5*(ATAN(Y/(X+1.E-8)))*(ATAN(Y/(X+1.E-8)))*(ATAN(Y/(X+1.E-8)))
-          -0.0021*(ATAN(Y/(X+1.E-8)))*(ATAN(Y/(X+1.E-8)))+0.0224*(ATAN(Y/(X+1.E-8)))+0.9328))/("""+str(r_bas)+"""*"""+str(int_dp_etoil)+""")))""")     
+        FC3 = FORMULE(NOM_PARA=('X','Y','Z'),VALE=''' -(
+           (('''+str(H_BASE)+'''-Z)*1.0E+4)+(
+           ((('''+str(teta0)+'''+'''
+           +str(teta1)+'''*(Z-'''+str(alpha1)+''')+'''
+           +str(teta2)+'''*((Z-'''+str(alpha2)+''')*(Z-'''+str(alpha1)+''')-'''+str(beta2)+''')+'''
+           +str(teta3)+'''*( (Z-'''+str(alpha3)+''')*((Z-'''+str(alpha2)+''')*(Z-'''+str(alpha1)+''')-'''
+                           +str(beta2)+''')-'''+str(beta3)+'''*(Z-'''+str(alpha1)+''')))/'''+str(l_elem_stream)+''')-'''
+          +str(deux_pi_r_bas)+'''*(('''+str(H_BASE)+'''-Z)*1.0E+4))*
+          ((-6.E-8*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))+2.E-5*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))
+          -0.0021*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))+0.0224*(atan(Y/(X+1.E-8)))+0.9328))/('''+str(r_bas)+'''*'''+str(int_dp_etoil)+''')))''')     
           
     if CHARGEMENT['VENT'] == 'OUI' :
       FV0 = CHARGEMENT['FORCE_VENT_FUT']
     else :
-      FV0 = FORMULE(REEL = """(REEL:X,REEL:Y,REEL:Z) = 0.0*Z""")
+      FV0 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='0.0*Z')
 
     if MODELISATION == 'POUTRE' :
       CH=AFFE_CHAR_MECA_F(MODELE=__MO[j],

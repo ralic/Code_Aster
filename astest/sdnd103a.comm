@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE RESSORT AVEC UNE NON-LINEARITE SOUMIS A UNE ACCELERATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,12 +44,10 @@ METHOD2='DEVOGE'
 
 #
 # EMPLOI DE FORMULE POUR DEFINIR L ACCELERATION ET LA NON-LINEARITE----
-ACCE_X = FORMULE(REEL="""(REEL:INST) =
-A0*SIN(W0*INST) *
-                  (-W0**2 +(K0/M0)*(1. - ABS(A0*SIN(W0*INST))/X0))
-                """)
-f_NLIN = FORMULE(REEL="""(REEL:DX) =
-K0*DX*((ABS(DX)-1.E-6)/X0) """)
+ACCE_X = FORMULE(NOM_PARA='INST',VALE='''A0*sin(W0*INST) *
+                  (-W0**2 +(K0/M0)*(1. - abs(A0*sin(W0*INST))/X0))
+                ''')
+f_NLIN = FORMULE(NOM_PARA='DX',VALE='K0*DX*((abs(DX)-1.E-6)/X0) ')
 
 
 NON_LIN=CALC_FONC_INTERP(FONCTION=f_NLIN,
@@ -244,21 +242,20 @@ TR_PH_D=REST_BASE_PHYS(  RESU_GENE=TRAN_GEE,  LIST_INST=L_RECU,
 
 #
 
-DEPL_R = FORMULE(REEL="""(REEL:INST) =
-A0 * SIN(W0*INST) """)
+DEPL_R = FORMULE(NOM_PARA='INST',VALE='A0 * sin(W0*INST) ')
 
 TEST_RESU(RESU=( _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
                     NUME_ORDRE = 1,       VALE = 2.37254),
            _F(  RESULTAT = TR_PH_D,  NUME_ORDRE = 1,  NOM_CHAM = 'DEPL',
-             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""DEPL_R( 2.) """)),
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = DEPL_R( 2.) ),
            _F(  RESULTAT = TR_PH_D,  NUME_ORDRE = 2,  NOM_CHAM = 'DEPL',
-             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""DEPL_R( 6.) """)),
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = DEPL_R( 6.) ),
            _F(  RESULTAT = TR_PH_D,  NUME_ORDRE = 3,  NOM_CHAM = 'DEPL',
-             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""DEPL_R( 10.) """)),
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = DEPL_R( 10.) ),
            _F(  RESULTAT = TR_PH_D,  NUME_ORDRE = 4,  NOM_CHAM = 'DEPL',
-             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""DEPL_R( 14.) """)),
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = DEPL_R( 14.) ),
            _F(  RESULTAT = TR_PH_D,  NUME_ORDRE = 5,  NOM_CHAM = 'DEPL',
-             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""DEPL_R( 18.) """)))
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = DEPL_R( 18.) ))
            )
 
 #
@@ -268,26 +265,25 @@ TR_PH_V=REST_BASE_PHYS(  RESU_GENE=TRAN_GEE,  LIST_INST=L_RECU,
 
 #
 
-VITE_R = FORMULE(REEL="""(REEL:INST) =
-A0 * W0 * COS(W0*INST) """)
+VITE_R = FORMULE(NOM_PARA='INST',VALE='A0 * W0 * cos(W0*INST) ')
 
 TEST_RESU(RESU=( _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
                     NUME_ORDRE = 1,       VALE = 2.37254),
            _F(  RESULTAT = TR_PH_V,  NUME_ORDRE = 1,  NOM_CHAM = 'VITE',
              NOEUD = 'N01', NOM_CMP = 'DX', CRITERE = 'ABSOLU',
-             VALE = EVAL("""VITE_R( 2.) """)),
+             VALE = VITE_R( 2.) ),
            _F(  RESULTAT = TR_PH_V,  NUME_ORDRE = 2,  NOM_CHAM = 'VITE',
              NOEUD = 'N01', NOM_CMP = 'DX', CRITERE = 'ABSOLU',
-             VALE = EVAL("""VITE_R( 6.) """)),
+             VALE = VITE_R( 6.) ),
            _F(  RESULTAT = TR_PH_V,  NUME_ORDRE = 3,  NOM_CHAM = 'VITE',
              NOEUD = 'N01', NOM_CMP = 'DX', CRITERE = 'ABSOLU',
-             VALE = EVAL("""VITE_R( 10.) """)),
+             VALE = VITE_R( 10.) ),
            _F(  RESULTAT = TR_PH_V,  NUME_ORDRE = 4,  NOM_CHAM = 'VITE',
              NOEUD = 'N01', NOM_CMP = 'DX', CRITERE = 'ABSOLU',
-             VALE = EVAL("""VITE_R( 14.) """)),
+             VALE = VITE_R( 14.) ),
            _F(  RESULTAT = TR_PH_V,  NUME_ORDRE = 5,  NOM_CHAM = 'VITE',
              NOEUD = 'N01', NOM_CMP = 'DX', CRITERE = 'ABSOLU',
-             VALE = EVAL("""VITE_R( 18.) """)))
+             VALE = VITE_R( 18.) ))
            )
 
 #
@@ -297,21 +293,20 @@ TR_PH_A=REST_BASE_PHYS(  RESU_GENE=TRAN_GEE,  LIST_INST=L_RECU,
 
 #
 
-ACCE_R = FORMULE(REEL="""(REEL:INST) =
--A0*W0*W0*SIN(W0*INST) """)
+ACCE_R = FORMULE(NOM_PARA='INST',VALE='-A0*W0*W0*sin(W0*INST) ')
 
 TEST_RESU(RESU=( _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
                     NUME_ORDRE = 1,       VALE = 2.37254),
            _F(  RESULTAT = TR_PH_A,  NUME_ORDRE = 1,  NOM_CHAM = 'ACCE',
-             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""ACCE_R( 2.) """)),
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = ACCE_R( 2.) ),
            _F(  RESULTAT = TR_PH_A,  NUME_ORDRE = 2,  NOM_CHAM = 'ACCE',
-             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""ACCE_R( 6.) """)),
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = ACCE_R( 6.) ),
            _F(  RESULTAT = TR_PH_A,  NUME_ORDRE = 3,  NOM_CHAM = 'ACCE',
-             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""ACCE_R( 10.) """)),
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = ACCE_R( 10.) ),
            _F(  RESULTAT = TR_PH_A,  NUME_ORDRE = 4,  NOM_CHAM = 'ACCE',
-             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""ACCE_R( 14.) """)),
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = ACCE_R( 14.) ),
            _F(  RESULTAT = TR_PH_A,  NUME_ORDRE = 5,  NOM_CHAM = 'ACCE',
-             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""ACCE_R( 18.) """)))
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = ACCE_R( 18.) ))
            )
 
 #=======================================================================

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      IFM, NIV, INUMEX, N1, LNOVA, NBNOVA, ITYPFO, NBVALR,
-     +             NBVAL, LVAL, NBVAL2, LVALE, LFON, IVAL, LPROL,JPFI,
+     +             NBVAL, LVAL, NBVAL2, LVALE, LFON, IVAL,JPFI,
      +             LFITA, N2, NBVALF, LPARA, LVALF,LONT, I, JVALS,N3
       REAL*8       RVAL
       LOGICAL      COMPL
@@ -106,28 +106,22 @@ C --- NAPPE OU FONCTION
 C
       IF (TYPCO(1:7).EQ.'FORMULE') THEN
 C                 
-C ---    FORMULE COMPLEXE OU REEL
+C ---    FORMULE REELLE
+C ---    FORMULE (( COMPLEXE ))
 C
-         CALL FITYPF ( NOMFIN(1:8), ITYPFO )
-         IF ( ITYPFO .EQ. 35 ) THEN
-            COMPL = .TRUE.
-         ELSE
-            COMPL = .FALSE.
-         ENDIF
+         COMPL = .FALSE.
          CALL JEVEUO ( NOMFIN//'.NOVA', 'L', LNOVA )
          CALL JELIRA ( NOMFIN//'.NOVA', 'LONUTI', NBNOVA, K8B )
+         CALL WKVECT ( '&&OP0134.NOVA', 'V V K8', NBNOVA, LNOVA )
       ELSEIF (TYPCO(1:8).EQ.'FONCTION') THEN
-         CALL JEVEUO ( NOMFIN//'.PROL', 'L', LPROL )
          NBNOVA=1
          CALL WKVECT ( '&&OP0134.NOVA', 'V V K8', NBNOVA, LNOVA )
-         ZK8(LNOVA)=ZK16(LPROL+3-1)(1:8)
          IF (TYPCO(1:10).EQ.'FONCTION_C') THEN
             COMPL = .TRUE.
          ELSE
             COMPL = .FALSE.
          ENDIF
       ELSEIF (TYPCO(1:5).EQ.'NAPPE') THEN
-         CALL JEVEUO ( NOMFIN//'.PROL', 'L', LPROL )
          NBNOVA=2
          CALL WKVECT ( '&&OP0134.NOVA', 'V V K8', NBNOVA, LNOVA )
          COMPL = .FALSE.

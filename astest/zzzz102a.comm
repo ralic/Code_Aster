@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE LIRE_FONCTION ET SPECTRE D'OSCILLATEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,11 +59,12 @@ TEST_TABLE(      TABLE=MAXLBEWA,FILTRE=(
                       VALE=-6.38000E-01              )
 
 G=9.81
+UNSURG=1/G
 
 SLBEWA=CALC_FONCTION(
                  SPEC_OSCI=_F(  FONCTION = LBEWA,
                             NATURE = 'ACCE', AMOR_REDUIT = ( 0.01, ),
-                            NORME = EVAL("""(1. / G)"""))  )
+                            NORME = UNSURG)  )
 
 MSLBEWA=CALC_FONCTION(    MAX=_F(  FONCTION = SLBEWA)  )
 
@@ -77,10 +78,11 @@ TEST_TABLE(      TABLE=MSLBEWA,FILTRE=(
                   NOM_PARA='MAXI',
                       VALE=3.56676E+01               )
 
+VAL=6.38000E-01 * G
 TEST_FONCTION(
          VALEUR=_F(  FONCTION = SLBEWA,        NOM_PARA = ('AMOR', 'FREQ',),
                   VALE_PARA = ( 0.01, 35.5, ),
-                  VALE_REFE = EVAL("""(6.38000E-01 * G)"""), PRECISION = 5.E-2),ATTRIBUT=(
+                  VALE_REFE = VAL, PRECISION = 5.E-2),ATTRIBUT=(
        _F(  FONCTION = SLBEWA,         ATTR = 'NOM_PARA',
                   PARA = 0.01,                ATTR_REFE = 'AMOR'),
        _F(  FONCTION = SLBEWA,         ATTR = 'NOM_RESU',
@@ -103,11 +105,12 @@ SLBEWD=CALC_FONCTION(
                             NORME = 1.)  )
 
 OMEGA2=4. * pi * pi * 35.5 * 35.5
+VAL= 6.38000E-01 / OMEGA2
 
 TEST_FONCTION(
          VALEUR=_F(  FONCTION = SLBEWD,        NOM_PARA = ('AMOR', 'FREQ',),
                   VALE_PARA = ( 0.01, 35.5, ),
-                  VALE_REFE = EVAL("""6.38000E-01 / OMEGA2 """),
+                  VALE_REFE = VAL,
                   PRECISION = 5.E-2),
        ATTRIBUT=_F(  FONCTION = SLBEWD,         ATTR = 'NOM_RESU',
                   PARA = 0.01,                ATTR_REFE = 'DEPL')

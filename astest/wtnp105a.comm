@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,8 +72,8 @@ LI2=DEFI_LIST_REEL(DEBUT=-1.E9,
                                   _F(JUSQU_A=1.E9,
                                      NOMBRE=500,),),);
                       
-LI1=DEFI_LIST_REEL(DEBUT=0.10000000000000001,
-                   INTERVALLE=_F(JUSQU_A=0.98999999999999999,
+LI1=DEFI_LIST_REEL(DEBUT=0.1,
+                   INTERVALLE=_F(JUSQU_A=0.99,
                                  PAS=1.E-2,),);
 
 
@@ -85,8 +85,7 @@ LI1=DEFI_LIST_REEL(DEBUT=0.10000000000000001,
 #
 
 
-SLO = FORMULE(REEL = '''(REEL:PCAP) = 
-                0.4''');
+SLO = FORMULE(NOM_PARA='PCAP',VALE='0.4');
 
 SATUBO=CALC_FONC_INTERP(FONCTION=SLO,
                         LIST_PARA=LI2,
@@ -106,12 +105,12 @@ DSATBO=DEFI_CONSTANTE(VALE=0.,);
 
 FICK=DEFI_CONSTANTE(VALE=6.E-10,);
 
-KINTBO=DEFI_CONSTANTE(VALE=9.9999999999999995E-20,);
+KINTBO=DEFI_CONSTANTE(VALE=1.E-19,);
 HENRY=DEFI_CONSTANTE(VALE=50000.,);
 
 
-MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15000000E8,
-                              NU=0.20000000000000001,
+MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
+                              NU=0.2,
                               RHO=2670.0,
                               ALPHA=0.,),
                       COMP_THM = 'LIQU_AD_GAZ_VAPE',
@@ -222,7 +221,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                               ),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),
-                 RECH_LINEAIRE=_F(RESI_LINE_RELA=0.10000000000000001,
+                 RECH_LINEAIRE=_F(RESI_LINE_RELA=0.1,
                                   ITER_LINE_MAXI=3,),
                  CONVERGENCE=_F(
                                 RESI_GLOB_RELA=1.E-6,

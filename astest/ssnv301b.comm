@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE CYLINDRE SOUMIS A CHOC THERMIQUE ET CHARGEMENT MECANIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -390,9 +390,9 @@ MODEL2=AFFE_MODELE(    MAILLAGE=MAYA,
 #                                VALE=( 0.,     195.E9,
 #                                       100.,   175.5E9,    )
 #                     )
-E_FO = FORMULE(REEL="""(REEL:TEMP) =
+E_FO = FORMULE(NOM_PARA='TEMP',VALE='''
         195.E9 + ( TEMP * ( 175.5E9 - 195.E9 ) / 100. )
-                    """)
+                    ''')
 
 NU_FO=DEFI_FONCTION(       NOM_PARA='TEMP',
                                  VALE=( 0.,     0.3,
@@ -408,17 +408,17 @@ ALPHA_FO=DEFI_FONCTION(       NOM_PARA='TEMP',
 #                                 VALE=( 0.,     2857.504E6,
 #                                        100.,   1979.695E6, )
 #                     )
-ET_FO = FORMULE(REEL="""(REEL:TEMP) =
+ET_FO = FORMULE(NOM_PARA='TEMP',VALE='''
         2857.504E6 + ( TEMP * ( 1979.695E6 - 2857.504E6 ) / 100. )
-                    """)
+                    ''')
 #
 #SY_FO=DEFI_FONCTION(       NOM_PARA='TEMP',
 #                                 VALE=( 0.,     181.E6,
 #                                        100.,   145.E6,     )
 #                     )
-SY_FO = FORMULE(REEL="""(REEL:TEMP) =
+SY_FO = FORMULE(NOM_PARA='TEMP',VALE='''
         181.E6 + ( TEMP * ( 145.E6 - 181.E6 ) / 100. )
-                    """)
+                    ''')
 
 MAT2=DEFI_MATERIAU(      ELAS_FO=_F(  E = E_FO,
                                          NU = NU_FO,

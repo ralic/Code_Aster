@@ -1,4 +1,4 @@
-# MODIF  DATE 05/07/2004   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE BARREAU FISSURE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,8 +40,8 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
                             MODELISATION='3D',),
                      );        
 
-LN=FORMULE(REEL="""(REEL:X,REEL:Y,REEL:Z)=Z-12.5 """);
-LT=FORMULE(REEL="""(REEL:X,REEL:Y,REEL:Z)=X-10. """);                       
+LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-12.5 ');
+LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-10. ');                       
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
                     DEFI_FISS=_F(

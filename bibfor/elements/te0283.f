@@ -1,6 +1,6 @@
       SUBROUTINE TE0283(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 20/09/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,8 +53,10 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       REAL*8 BETA,LAMBDA,THETA,DELTAT,KHI,TPG
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS
       REAL*8 DTPGDX,DTPGDY,DTPGDZ,RBID
+      REAL*8 TPSEC, DIFF
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER JGANO,NNO,KP,NPG1,I,ITEMPS,IFON(3),L,NDIM
+      INTEGER ISECHI,ISECHF
       INTEGER ICOMP,ITEMPI,IVERES,NNOS
 C ----------------------------------------------------------------------
 C PARAMETER ASSOCIE AU MATERIAU CODE
@@ -74,48 +76,98 @@ C DEB ------------------------------------------------------------------
       CALL JEVECH('PCOMPOR','L',ICOMP)
       CALL JEVECH('PRESIDU','E',IVERES)
 
+      IF ((ZK16(ICOMP) (1:9).EQ.'THER_HYDR')) THEN
+        CALL UTMESS('F','TE0279','PAS D ELEMENTS LUMPES POUR'//
+     &              'HYDRATATION')
+      END IF
+
       DELTAT = ZR(ITEMPS+1)
       THETA = ZR(ITEMPS+2)
       KHI = ZR(ITEMPS+3)
-      CALL NTFCMA(ZI(IMATE),IFON)
 
-      DO 30 KP = 1,NPG1
-        L = (KP-1)*NNO
-        CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+      IF (ZK16(ICOMP) (1:5).NE.'THER_') THEN
+
+        CALL NTFCMA(ZI(IMATE),IFON)
+
+        DO 30 KP = 1,NPG1
+          L = (KP-1)*NNO
+          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
      &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
-        TPG = 0.D0
-        DTPGDX = 0.D0
-        DTPGDY = 0.D0
-        DTPGDZ = 0.D0
-        DO 10 I = 1,NNO
-          TPG = TPG + ZR(ITEMPI+I-1)*ZR(IVF+L+I-1)
-          DTPGDX = DTPGDX + ZR(ITEMPI+I-1)*DFDX(I)
-          DTPGDY = DTPGDY + ZR(ITEMPI+I-1)*DFDY(I)
-          DTPGDZ = DTPGDZ + ZR(ITEMPI+I-1)*DFDZ(I)
-   10   CONTINUE
+          TPG = 0.D0
+          DTPGDX = 0.D0
+          DTPGDY = 0.D0
+          DTPGDZ = 0.D0
+          DO 10 I = 1,NNO
+            TPG = TPG + ZR(ITEMPI+I-1)*ZR(IVF+L+I-1)
+            DTPGDX = DTPGDX + ZR(ITEMPI+I-1)*DFDX(I)
+            DTPGDY = DTPGDY + ZR(ITEMPI+I-1)*DFDY(I)
+            DTPGDZ = DTPGDZ + ZR(ITEMPI+I-1)*DFDZ(I)
+   10     CONTINUE
 
-        CALL RCFODE(IFON(2),TPG,LAMBDA,RBID)
+          CALL RCFODE(IFON(2),TPG,LAMBDA,RBID)
 
-        DO 20 I = 1,NNO
-          ZR(IVERES+I-1) = ZR(IVERES+I-1) +
+          DO 20 I = 1,NNO
+            ZR(IVERES+I-1) = ZR(IVERES+I-1) +
      &                     POIDS*THETA*LAMBDA* (DFDX(I)*DTPGDX+
      &                     DFDY(I)*DTPGDY+DFDZ(I)*DTPGDZ)
-   20   CONTINUE
-   30 CONTINUE
+   20     CONTINUE
+   30   CONTINUE
 
-      DO 60 KP = 1,NPG1
-        L = (KP-1)*NNO
-        TPG = 0.D0
-        DO 40 I = 1,NNO
-          TPG = TPG + ZR(ITEMPI+I-1)*ZR(IVF+L+I-1)
-   40   CONTINUE
+        DO 60 KP = 1,NPG1
+          L = (KP-1)*NNO
+          TPG = 0.D0
+          DO 40 I = 1,NNO
+            TPG = TPG + ZR(ITEMPI+I-1)*ZR(IVF+L+I-1)
+   40     CONTINUE
 
-        CALL RCFODE(IFON(1),TPG,BETA,RBID)
+          CALL RCFODE(IFON(1),TPG,BETA,RBID)
 
-        DO 50 I = 1,NNO
-          ZR(IVERES+I-1) = ZR(IVERES+I-1) +
+          DO 50 I = 1,NNO
+            ZR(IVERES+I-1) = ZR(IVERES+I-1) +
      &                     POIDS*BETA/DELTAT*KHI*ZR(IVF+L+I-1)
-   50   CONTINUE
-   60 CONTINUE
+   50     CONTINUE
+   60   CONTINUE
+
+      ELSE IF (ZK16(ICOMP) (1:5).EQ.'SECH_') THEN
+
+C --- SECHAGE
+
+        IF (ZK16(ICOMP) (1:12).EQ.'SECH_GRANGER' .OR.
+     &      ZK16(ICOMP) (1:10).EQ.'SECH_NAPPE') THEN
+          CALL JEVECH('PTMPCHI','L',ISECHI)
+          CALL JEVECH('PTMPCHF','L',ISECHF)
+        ELSE
+C          POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE
+C          ISECHI ET ISECHF SONT FICTIFS
+          ISECHI = ITEMPI
+          ISECHF = ITEMPI
+        END IF
+        DO 70 KP = 1,NPG1
+          L = (KP-1)*NNO
+          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                  ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
+          TPG    = 0.D0
+          DTPGDX = 0.D0
+          DTPGDY = 0.D0
+          DTPGDZ = 0.D0
+          TPSEC  = 0.D0
+          DO 80 I = 1,NNO
+            TPG   = TPG   + ZR(ITEMPI+I-1)*ZR(IVF+L+I-1)
+            TPSEC = TPSEC + ZR(ISECHF+I-1)*ZR(IVF+L+I-1)
+            DTPGDX = DTPGDX + ZR(ITEMPI+I-1)*DFDX(I)
+            DTPGDY = DTPGDY + ZR(ITEMPI+I-1)*DFDY(I)
+            DTPGDZ = DTPGDZ + ZR(ITEMPI+I-1)*DFDZ(I)
+   80     CONTINUE
+          CALL RCDIFF(ZI(IMATE),ZK16(ICOMP),TPSEC,TPG,DIFF)
+CCDIR$ IVDEP
+          DO 90 I = 1,NNO
+            ZR(IVERES+I-1) = ZR(IVERES+I-1) +
+     &                       POIDS* (1.D0/DELTAT*KHI*ZR(IVF+L+I-1)*TPG+
+     &                       THETA*DIFF* (DFDX(I)*DTPGDX+DFDY(I)*DTPGDY+
+     &                       DFDZ(I)*DTPGDZ))
+   90     CONTINUE
+   70   CONTINUE
+
+      ENDIF
 C FIN ------------------------------------------------------------------
       END

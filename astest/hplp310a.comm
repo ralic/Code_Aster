@@ -1,4 +1,4 @@
-# MODIF  DATE 11/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE BIBLIO_35  FISSURE RADIALE INTERNE DANS UN CYLINDRE EPAIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,20 +52,18 @@ RHO=2.
 TP=0.
 
 #
-T1F = FORMULE(REEL="""(REEL:TPV) =
-TPV+((4.*SIGMA0*(1.-NU)*LOG(RHO/R1))
-                                /(SQRT(3.)*E*ALPHA))
-              """)
+T1F = FORMULE(NOM_PARA='TPV',
+              VALE='''TPV+((4.*SIGMA0*(1.-NU)*log(RHO/R1))
+                                /(sqrt(3.)*E*ALPHA)) ''')
 
 #
 # ATTENTION : LA GENERATION DU MAILLAGE .MGIB A PARTIR DU FICHIER
 # .DATG FAIT APPARAITRE DES NOEUDS EN 0. A SUPPRIMER, SINON LE
 # LOG N'EST PAS DEFINI.
 #
-F_T = FORMULE(REEL="""(REEL:X,REEL:Y) =
-(T1F(TP)-((T1F(TP)-TP)*
-               LOG((SQRT((X*X)+(Y*Y)))/R1))/(LOG(RHO/R1))
-                )""")
+F_T = FORMULE(NOM_PARA=('X','Y'),
+              VALE='''(T1F(TP)-((T1F(TP)-TP)*
+               log((sqrt((X*X)+(Y*Y)))/R1))/(log(RHO/R1)))''')
 
 TEMP_IMP=CREA_CHAMP(  OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
                          MAILLAGE=MA,

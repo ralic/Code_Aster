@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF ENTETE  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@ from Accas import *
 from Accas import _F
 import string
 import Numeric
-from math import sin,cos,tan,asin,acos,atan,sinh,cosh,tanh,exp,log,log10
+from math import sin,cos,tan,asin,acos,atan2,atan,sinh,cosh,tanh,exp,log,log10
 from math import sqrt,pi
 import ops
 
@@ -377,12 +377,31 @@ class fonction_sdaster(fonction_class):
       """
       Retourne deux listes de valeurs : abscisses et ordonnées
       """
-      vale=string.ljust(self.get_name(),19)+'.VALE'
-      lbl=list(aster.getvectjev(vale))
-      dim=len(lbl)/2
-      lx=lbl[0:dim]
-      ly=lbl[dim:2*dim]
-      return [lx,ly]
+      if self.etape.nom=='DEFI_FONCTION' :
+        lbl=list(self.etape['VALE'])
+        dim=len(lbl)
+        lx=[lbl[i] for i in range(0,dim,2)]
+        ly=[lbl[i] for i in range(1,dim,2)]
+        return [lx,ly]
+      else :
+        vale=string.ljust(self.get_name(),19)+'.VALE'
+        lbl=list(aster.getvectjev(vale))
+        dim=len(lbl)/2
+        lx=lbl[0:dim]
+        ly=lbl[dim:2*dim]
+        return [lx,ly]
+   def __call__(self,val):
+      lx,ly=self.Valeurs()
+      n=len(lx)
+      if val in lx : return ly[lx.index(val)]
+      lx.append(val)
+      lx.sort()
+      indic=lx.index(val)
+      if indic==0   :
+         if self.etape['PROL_GAUCHE']=='CONSTANT':return ly[0]
+      if indic==n :
+         if self.etape['PROL_DROITE']=='CONSTANT':return ly[n-1]
+      return (ly[indic-1]+(ly[indic]-ly[indic-1])*(val-lx[indic-1])/(lx[indic+1]-lx[indic-1]))
 class para_sensi(fonction_sdaster):
    def Parametres(self):pass
 class fonction_c(fonction_class):
@@ -390,16 +409,24 @@ class fonction_c(fonction_class):
       """
       Retourne trois listes de valeurs : abscisses, parties réelles et imaginaires.
       """
-      vale=string.ljust(self.get_name(),19)+'.VALE'
-      lbl=list(aster.getvectjev(vale))
-      dim=len(lbl)/3
-      lx=lbl[0:dim]
-      lr=[]
-      li=[]
-      for i in range(dim):
-         lr.append(lbl[dim+2*i])
-         li.append(lbl[dim+2*i+1])
-      return [lx,lr,li]
+      if self.etape.nom=='DEFI_FONCTION' :
+        lbl=list(self.etape['VALE_C'])
+        dim=len(lbl)
+        lx=[lbl[i] for i in range(0,dim,3)]
+        lr=[lbl[i] for i in range(1,dim,3)]
+        li=[lbl[i] for i in range(2,dim,3)]
+        return [lx,lr,li]
+      else :
+        vale=string.ljust(self.get_name(),19)+'.VALE'
+        lbl=list(aster.getvectjev(vale))
+        dim=len(lbl)/3
+        lx=lbl[0:dim]
+        lr=[]
+        li=[]
+        for i in range(dim):
+           lr.append(lbl[dim+2*i])
+           li.append(lbl[dim+2*i+1])
+        return [lx,lr,li]
 class nappe_sdaster(fonction_class):
    def Valeurs(self):
       """

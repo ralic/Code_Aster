@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE FORMATION DE BASE A L'UTILISATION D'ASTER - TP DYNAMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -181,7 +181,8 @@ OMEGA = 121.0;
 #
 
 
-EVOL_FY = FORMULE(REEL = '''(REEL:INST) = COS(OMEGA*INST)''');
+EVOL_FY = FORMULE(VALE='cos(OMEGA*INST)',
+                  NOM_PARA='INST');
 #
 #
 #

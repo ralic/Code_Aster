@@ -1,9 +1,9 @@
       SUBROUTINE OPS005( ICMD , ICOND, IER )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER            ICMD , ICOND, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF SUPERVIS  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,106 +39,31 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-C     ------- COMMUN DEBUG SUPERVISEUR ---------------------------------
-      LOGICAL         LDBG
-      INTEGER                IFV
-      COMMON /CXSU00/ LDBG , IFV
-C     ------------------------------------------------------------------
-C
+      CHARACTER*1  KBID
       CHARACTER*8  NOMRES, NOMPAR
       CHARACTER*16 TYPRES, NOMCMD
-      CHARACTER*19 NOMFON, NOMFO2
-      CHARACTER*24 OBJTMP
-C     ------- COMMUN FORMULE
-      CHARACTER*80 CARTE
-      COMMON /LXCC02/    CARTE
-      INTEGER            ILECT, IECR, LRECL, IEOF, ICOL, ILIG
-      COMMON /LXCN02/    ILECT, IECR, LRECL, IEOF, ICOL, ILIG
-
-      INTEGER NOMBRE
-      PARAMETER(NOMBRE=50)
-      CHARACTER*80 FTEXT(NOMBRE)
-      COMMON /CXFO01/FTEXT
-
-      COMMON /CXFO00/LPOS
-      CHARACTER*19 RESUFI,RESTMP
+      CHARACTER*19 NOMFON
+      INTEGER      LPROL,  LNOVA,    NK,    IR
 C     ------------------------------------------------------------------
-      IF (LDBG) CALL FIDUMP(IFV,'>>>   MEMOIRE "FI" DANS OPS005')
       CALL JEMARQ()
-      OBJTMP = '&FI.XXXX.&&OPS005__.&CSTE'
-      IF (ICOND.EQ.-1) THEN
-        CALL GETRES(NOMRES,TYPRES,NOMCMD)
-C LORSQUE LPOS EST PLUS GRAND QUE 0, LXLIRE LIT DANS FTEXT
-        LPOS=1
-        IEOF=0
-        ICOL=LRECL+1
-        ILIG=0
-        IERUSR=0
-        RESUFI='   .&&SMFIDF'
-C ON CHERCHE LE TYPE DE FONCTION
-        CALL GETFTX(' ','REEL',1,1,NOMBRE,FTEXT,LL)
-        IF(LL.EQ.1)THEN
-C    ON A UNE FONCTION REELLE
-          CALL FIPREP('FONCTION_R',RESUFI,'L',NOMRES,IERUSR)
-        ELSE
-CCC-CD          CALL GETFTX(' ','ENTIER',1,1,NOMBRE,FTEXT,LL)
-CCC-CD          IF(LL.EQ.1)THEN
-CCC-CDC    ON A UNE FONCTION ENTIERE
-CCC-CD            CALL FIPREP('FONCTION_I',RESUFI,'L',NOMRES,IERUSR)
-CCC-CD          ELSE
-            CALL GETFTX(' ','COMPLEXE',1,1,NOMBRE,FTEXT,LL)
-            IF(LL.EQ.1)THEN
-C    ON A UNE FONCTION COMPLEXE
-              CALL FIPREP('FONCTION_C',RESUFI,'L',NOMRES,IERUSR)
-            ELSE
-              IERUSR=IERUSR+1
-              CALL UTMESS('E','OPERATEUR FORMULE (ERREUR 10A)',
-     +             ' MOT CLE ATTENDU PARMI REEL ENTIER COMPLEXE')
-            ENDIF
-CCC-CD          ENDIF
-        ENDIF
-C ON REMET LPOS A 0 POUR QUE LXLIRE LISE DANS DES FICHIERS
-        LPOS=0
-        CALL SMVRES(ICMD,1,NOMRES,IER,IERUSR)
-        IF(IERUSR.EQ.0)THEN
-          RESTMP=NOMRES
-          CALL JEDUPC('L',RESUFI,1,'L',RESTMP,.FALSE.)
-        ENDIF
-        CALL JEDETC('L',RESUFI,1)
-
-        CALL FIRMPQ('LONUTI',ICSTE)
-        CALL CODENT(ICMD,'D0',OBJTMP(5:8))
-        CALL WKVECT(OBJTMP,'L V I',1,LCSTE)
-        ZI(LCSTE) = ICSTE
-        IER=IERUSR
-
-      ELSEIF (ICOND.EQ.1) THEN
-         CALL GETRES(NOMFON,TYPRES,NOMCMD)
-         NOMFO2(1:08) = NOMFON
-         NOMFO2(9:19) = '.&&OPS005'
-         CALL JEDUPC('L',NOMFON,1,'L',NOMFO2,.FALSE.)
-         CALL JEDETC('L',NOMFON,1)
-      ELSEIF (ICOND.EQ.0) THEN
-         CALL CODENT(ICMD,'D0',OBJTMP(5:8))
-         CALL JEVEUO(OBJTMP,'L',LCSTE)
-         ICSTE = ZI(LCSTE)
-         CALL JEDETR(OBJTMP)
-         CALL GETRES(NOMFON,TYPRES,NOMCMD)
-         NOMFO2(1:08) = NOMFON
-         NOMFO2(9:19) = '.&&OPS005'
-         CALL JEDUPC('L',NOMFO2,1,'G',NOMFON,.FALSE.)
-         CALL JEDETC('L',NOMFO2,1)
 C
-         NOMPAR = '  '
-         NOMRES = 'TOUTRESU'
-         CALL WKVECT(NOMFON//'.PROL','G V K16',6,LPROL)
-         ZK16(LPROL)   = 'INTERPRE'
-         ZK16(LPROL+1) = 'INTERPRE'
-         ZK16(LPROL+2) =  NOMPAR
-         ZK16(LPROL+3) =  NOMRES
-         ZK16(LPROL+4) = 'II      '
-         ZK16(LPROL+5) = NOMFON
+      CALL GETRES(NOMFON,TYPRES,NOMCMD)
 C
+      IF (ICOND.EQ.0) THEN 
+        NOMPAR = '  '
+        NOMRES = 'TOUTRESU'
+        CALL WKVECT(NOMFON//'.PROL','G V K16',6,LPROL)
+        ZK16(LPROL)   = 'INTERPRE'
+        ZK16(LPROL+1) = 'INTERPRE'
+        ZK16(LPROL+2) =  NOMPAR
+        ZK16(LPROL+3) =  NOMRES
+        ZK16(LPROL+4) = 'II      '
+        ZK16(LPROL+5) = NOMFON
+        CALL GETVTX(' ','NOM_PARA',1,1,1,KBID,NK)
+        IF (NK.NE.1) NK=-NK
+        CALL WKVECT(NOMFON//'.NOVA','G V K8',NK,LNOVA)
+        CALL GETVTX(' ','NOM_PARA',1,1,NK,ZK8(LNOVA),IR)
       ENDIF
+C
       CALL JEDEMA()
       END

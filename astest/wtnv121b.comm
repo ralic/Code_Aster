@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE MOUILLAGE D'UNE COLONNE EN BETON AVEC LOI D'ENDOMMMAGEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -76,7 +76,7 @@ LI3=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A=1.,  
                                  PAS=0.1,),);  
   
-EN = FORMULE(REEL = '''(REEL:ENDO) = (1.e-13*(1.+1.e6*ENDO**3))''');  
+EN = FORMULE(NOM_PARA='ENDO',VALE='(1.e-13*(1.+1.e6*ENDO**3))')
   
 KENDO=CALC_FONC_INTERP(FONCTION=EN,  
                       LIST_PARA=LI3,  
@@ -90,7 +90,7 @@ LI2=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A=5.E8,  
                                  PAS=1.E5,),);  
   
-SL = FORMULE(REEL = '''(REEL:PCAP) = (1.+(PCAP*2.1433E-8)**1.825)**(-0.57609)''');  
+SL = FORMULE(NOM_PARA='PCAP',VALE='(1.+(PCAP*2.1433E-8)**1.825)**(-0.57609)')  
   
 SATU=CALC_FONC_INTERP(FONCTION=SL,  
                       LIST_PARA=LI2,  
@@ -99,8 +99,8 @@ SATU=CALC_FONC_INTERP(FONCTION=SL,
                       PROL_GAUCHE='CONSTANT',  
                       INFO=2,);  
   
-DSL = FORMULE(REEL = '''(REEL:PCAP) = -2.2565573E-8*(PCAP*2.1433E-8)**0.825  
-          *(1+(PCAP*2.143365E-8)**1.825)**-1.57609''');  
+DSL = FORMULE(NOM_PARA='PCAP',VALE='''-2.2565573E-8*(PCAP*2.1433E-8)**0.825  
+          *(1+(PCAP*2.143365E-8)**1.825)**-1.57609''') 
   
 DSATU=CALC_FONC_INTERP(FONCTION=DSL,  
                        LIST_PARA=LI2,  
@@ -115,9 +115,8 @@ LI1=DEFI_LIST_REEL(DEBUT=1.E-3,
                                  PAS=0.001,),);  
   
   
-PERM = FORMULE(REEL = '''(REEL:  
-                                 SAT) = SAT**0.5*(1-(1-SAT  
-                      **(1. / 0.57609))**0.57609)**2''');  
+PERM = FORMULE(NOM_PARA='SAT',VALE=''' SAT**0.5*(1-(1-SAT  
+                      **(1. / 0.57609))**0.57609)**2''')
   
 PERML=CALC_FONC_INTERP(FONCTION=PERM,  
                        LIST_PARA=LI1,  
@@ -126,12 +125,11 @@ PERML=CALC_FONC_INTERP(FONCTION=PERM,
                        PROL_GAUCHE='CONSTANT',  
                        INFO=2,);  
   
-DPERM = FORMULE(REEL = '''(REEL:  
-                                  SAT) = 0.5*SAT**(-0.5)  
+DPERM = FORMULE(NOM_PARA='SAT',VALE=''' 0.5*SAT**(-0.5)  
                     *(1.-(1.-SAT**(1. / 0.57609))**0.57609)**2  
                     +2.*SAT**0.5*(SAT**((1.-0.57609) / 0.57609)  
                     *(1.-SAT**(1. / 0.57609))**(0.57609-1.))*(1.-(1.-SAT  
-                    **(1. / 0.57609))**0.57609)''');  
+                    **(1. / 0.57609))**0.57609)''')  
   
 DPERML=CALC_FONC_INTERP(FONCTION=DPERM,  
                         LIST_PARA=LI1,  
@@ -142,9 +140,8 @@ DPERML=CALC_FONC_INTERP(FONCTION=DPERM,
   
 #####PERMEABILITE RELATIVE AU GAZ ET SA DERIVEE  
   
-PG = FORMULE(REEL = '''(REEL:  
-                                  SAT) = (1.-SAT)**0.5  
-                     *(1.-SAT**(1. / 0.57609))**(2.*0.57609)''');  
+PG = FORMULE(NOM_PARA='SAT',VALE='''  (1.-SAT)**0.5  
+                     *(1.-SAT**(1. / 0.57609))**(2.*0.57609)''')
   
 PERMG=CALC_FONC_INTERP(FONCTION=PG,  
                        LIST_PARA=LI1,  
@@ -153,11 +150,10 @@ PERMG=CALC_FONC_INTERP(FONCTION=PG,
                        PROL_GAUCHE='CONSTANT',  
                        INFO=2,);  
   
-DPG = FORMULE(REEL = '''(REEL:  
-                                   SAT) = -0.5*(1.-SAT)**(-0.5)  
+DPG = FORMULE(NOM_PARA='SAT',VALE=''' -0.5*(1.-SAT)**(-0.5)  
                      *(1.-SAT**(1. / 0.57609))**(2.*0.57609)  
                      -2.*(1.-SAT)**0.5*SAT**((1. / 0.57609)-1.)  
-                     *(1.-SAT**(1. / 0.57609))**(2.*0.57609-1.)''');  
+                     *(1.-SAT**(1. / 0.57609))**(2.*0.57609-1.)''')  
   
 DPERMG=CALC_FONC_INTERP(FONCTION=DPG,  
                         LIST_PARA=LI1,  

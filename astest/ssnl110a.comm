@@ -1,4 +1,4 @@
-# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE RESSORT NON LINEAIRE INCLUANT DU FROTTEMENT DE COULOMB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,8 +39,7 @@ FRIG=DEFI_FONCTION(   NOM_PARA='INST',
                            VALE=( 0., 1., 10., 0., ) )
 
 #################################################################
-FRIGBIS = FORMULE(REEL="""(REEL:INST) =
-INST """)
+FRIGBIS = FORMULE(NOM_PARA='INST',VALE='INST')
 
 L_INST=DEFI_LIST_REEL(  DEBUT=0.,
                            INTERVALLE=_F(  JUSQU_A = 9., PAS = 0.5) )
@@ -56,91 +55,90 @@ NOM_PARA='INST',
 
 #################################################################
 
-FRIGG = FORMULE(REEL="""(REEL:INST) =
-(-1./10.)*INST + 1.""")
+FRIGG = FORMULE(NOM_PARA='INST',VALE='(-1./10.)*INST + 1.')
 
 RES1=CREA_CHAMP(  OPERATION='AFFE', 
                       TYPE_CHAM='NOEU_IRRA_R',
                       MAILLAGE=MA,
                       AFFE=_F( TOUT = 'OUI', NOM_CMP = 'IRRA', 
-                            VALE = (EVAL("""FRIGG(0.5)"""),))      
+                            VALE = FRIGG(0.5))      
                   )
 
 RES2=CREA_CHAMP(  OPERATION='AFFE', 
                      TYPE_CHAM='NOEU_IRRA_R',
                       MAILLAGE=MA,
                       AFFE=_F( TOUT = 'OUI', NOM_CMP = 'IRRA', 
-                            VALE = (EVAL("""FRIGG(1.)"""),))      
+                            VALE = FRIGG(1.))      
                   )
 
 RES3=CREA_CHAMP(  OPERATION='AFFE', 
                       TYPE_CHAM='NOEU_IRRA_R',
                       MAILLAGE=MA,
                       AFFE=_F( TOUT = 'OUI', NOM_CMP = 'IRRA', 
-                            VALE = (EVAL("""FRIGG(1.5)"""),))      
+                            VALE = FRIGG(1.5))      
                   )
 
 RES4=CREA_CHAMP(  OPERATION='AFFE', 
                       TYPE_CHAM='NOEU_IRRA_R',
                       MAILLAGE=MA,
                       AFFE=_F( TOUT = 'OUI', NOM_CMP = 'IRRA', 
-                            VALE = (EVAL("""FRIGG(2.)"""),))      
+                            VALE = FRIGG(2.))      
                   )
 
 RES5=CREA_CHAMP(  OPERATION='AFFE', 
                       TYPE_CHAM='NOEU_IRRA_R',
                       MAILLAGE=MA,
                       AFFE=_F( TOUT = 'OUI', NOM_CMP = 'IRRA', 
-                            VALE = (EVAL("""FRIGG(2.5)"""),))      
+                            VALE = FRIGG(2.5))      
                   )
 
 RES6=CREA_CHAMP(  OPERATION='AFFE', 
                       TYPE_CHAM='NOEU_IRRA_R',
                       MAILLAGE=MA,
                       AFFE=_F( TOUT = 'OUI', NOM_CMP = 'IRRA', 
-                            VALE = (EVAL("""FRIGG(3.0)"""),))      
+                            VALE = FRIGG(3.0))      
                   )
 
 RES7=CREA_CHAMP(  OPERATION='AFFE', 
                       TYPE_CHAM='NOEU_IRRA_R',
                       MAILLAGE=MA,
                       AFFE=_F( TOUT = 'OUI', NOM_CMP = 'IRRA', 
-                            VALE = (EVAL("""FRIGG(3.5)"""),))      
+                            VALE = FRIGG(3.5))      
                   )
 
 RES8=CREA_CHAMP(  OPERATION='AFFE', 
                       TYPE_CHAM='NOEU_IRRA_R',
                       MAILLAGE=MA,
                       AFFE=_F( TOUT = 'OUI', NOM_CMP = 'IRRA', 
-                            VALE = (EVAL("""FRIGG(4.0)"""),))     
+                            VALE = FRIGG(4.0))     
                   )
 
 RES9=CREA_CHAMP(  OPERATION='AFFE', 
                       TYPE_CHAM='NOEU_IRRA_R',
                       MAILLAGE=MA,
                       AFFE=_F( TOUT = 'OUI', NOM_CMP = 'IRRA', 
-                            VALE = (EVAL("""FRIGG(4.5)"""),))      
+                            VALE = FRIGG(4.5))      
                   )
 
 RES10=CREA_CHAMP(  OPERATION='AFFE', 
                       TYPE_CHAM='NOEU_IRRA_R',
                       MAILLAGE=MA,
                       AFFE=_F( TOUT = 'OUI', NOM_CMP = 'IRRA', 
-                            VALE = (EVAL("""FRIGG(5.0)"""),))     
+                            VALE = FRIGG(5.0))     
                   )
 
 RES11=CREA_CHAMP(  OPERATION='AFFE', 
                       TYPE_CHAM='NOEU_IRRA_R',
                       MAILLAGE=MA,
                       AFFE=_F( TOUT = 'OUI', NOM_CMP = 'IRRA', 
-                            VALE = (EVAL("""FRIGG(5.5)"""),))     
+                            VALE = FRIGG(5.5))     
                   )
 
 RES12=CREA_CHAMP(  OPERATION='AFFE', 
                       TYPE_CHAM='NOEU_IRRA_R',
                       MAILLAGE=MA,
                       AFFE=_F( TOUT = 'OUI', NOM_CMP = 'IRRA', 
-                            VALE = (EVAL("""FRIGG(6.0)"""),))     
+                            VALE = FRIGG(6.0))     
                   )
 
 FLUENC1=CREA_RESU(  

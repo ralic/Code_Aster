@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE TEST DE L'ESTIMATEUR EN RESIDU SUR UN CYLINDRE CREUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,25 +50,25 @@ CM=AFFE_MATERIAU(      MAILLAGE=M,AFFE=(
                                      _F( GROUP_MA = 'DOM2',  MATER = MA2))
                        )
 
-F1 = FORMULE(REEL="""(REEL:R) =
+F1 = FORMULE(NOM_PARA='R',VALE='''
 1.15385*(2*-0.98097+0.91333)+2*0.76923*(-0.98097
                 -(-1.11741/R**2))
-                """)
+                ''')
 
-F2 = FORMULE(REEL="""(REEL:R) =
+F2 = FORMULE(NOM_PARA='R',VALE='''
 1.15385*(2*-0.98097+0.91333)+2*0.76923*(-0.98097
                 +(-1.11741/R**2))
-                """)
+                ''')
 
-F3 = FORMULE(REEL="""(REEL:R) =
+F3 = FORMULE(NOM_PARA='R',VALE='''
 0.57692*(2*-1.34405+0.91333)+2*0.38461*(-1.34405
                 -(-0.30048/R**2))
-                """)
+                ''')
 
-F4 = FORMULE(REEL="""(REEL:R) =
+F4 = FORMULE(NOM_PARA='R',VALE='''
 0.57692*(2*-1.34405+0.91333)+2*0.38461*(-1.34405
                 +(-0.30048/R**2))
-                """)
+                ''')
 
 CH=AFFE_CHAR_MECA(          MODELE=MO,FACE_IMPO=(
                               _F( GROUP_MA = 'GRMA1',  DY = 0.),
@@ -94,43 +94,43 @@ RESU=CALC_ELEM(     reuse=RESU,
 TEST_RESU(RESU=(       
         _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
           MAILLE = 'M1',     POINT = 1, NOM_CMP = 'SIXX',
-          VALE = EVAL("""F1(1.) """),      PRECISION = 0.07),
+          VALE = F1(1.) ,      PRECISION = 0.07),
         _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
           MAILLE = 'M1',     POINT = 1, NOM_CMP = 'SIYY',
           VALE = 0.19518,              PRECISION = 0.15),
         _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
           MAILLE = 'M1',     POINT = 1, NOM_CMP = 'SIZZ',
-          VALE = EVAL("""F2(1.) """),       PRECISION = 0.02),
+          VALE = F2(1.) ,       PRECISION = 0.02),
 
         _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
           MAILLE = 'M2',     POINT = 2, NOM_CMP = 'SIXX',
-          VALE = EVAL("""F1(1.5) """),      PRECISION = 0.02),
+          VALE = F1(1.5) ,      PRECISION = 0.02),
         _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
           MAILLE = 'M2',     POINT = 2, NOM_CMP = 'SIYY',
           VALE = 0.19518,              PRECISION = 0.06),
         _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
           MAILLE = 'M2',     POINT = 2, NOM_CMP = 'SIZZ',
-          VALE = EVAL("""F2(1.5) """),      PRECISION = 0.02),
+          VALE = F2(1.5) ,      PRECISION = 0.02),
 
         _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
           MAILLE = 'M3',     POINT = 2, NOM_CMP = 'SIXX',
-          VALE = EVAL("""F3(1.5) """),      PRECISION = 0.02),
+          VALE = F3(1.5) ,      PRECISION = 0.02),
         _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
           MAILLE = 'M3',     POINT = 2, NOM_CMP = 'SIYY',
           VALE = -0.32135,             PRECISION = 0.02),
         _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
           MAILLE = 'M3',     POINT = 2, NOM_CMP = 'SIZZ',
-          VALE = EVAL("""F4(1.5) """),      PRECISION = 0.02),
+          VALE = F4(1.5),      PRECISION = 0.02),
 
         _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
           MAILLE = 'M4',     POINT = 3, NOM_CMP = 'SIXX',
-          VALE = EVAL("""F3(2.) """),       PRECISION = 0.02),
+          VALE = F3(2.) ,       PRECISION = 0.02),
         _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
           MAILLE = 'M4',     POINT = 3, NOM_CMP = 'SIYY',
           VALE = -0.32135,             PRECISION = 0.02),
         _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
           MAILLE = 'M4',     POINT = 3, NOM_CMP = 'SIZZ',
-          VALE = EVAL("""F4(2.) """),       PRECISION = 0.02))
+          VALE = F4(2.),       PRECISION = 0.02))
            )
 
 TEST_RESU(RESU=(

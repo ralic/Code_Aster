@@ -1,0 +1,218 @@
+# MODIF  DATE 20/09/2004   AUTEUR BOYERE E.BOYERE 
+# TITRE TP ANALYSE MODALE TPAM4
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE BOYERE E.BOYERE
+#-------------------------------------------------------------------
+#                 CORRIGE TP ANALYSE MODAL N4 (FORMAT NEW6)
+#                            MODE_ITER_INV
+#
+#
+# PARAMETRE D'EXECUTION DE CETTE ETUDE: 200MO
+#
+# MODE D'EMPLOI:
+# --------------
+# MEG;'FICHIER/OUVRIR' AVEC TPAM1.PRET; BOUTON 'GO'
+# AU FIL DES QUESTIONS
+# COMPLETER LES PARTIES ADHOC NOTIFIEES PAR UN "...A COMPLETER..."
+# COMMENTARISER ET DECOMMENTARISER LES "FIN();" INTERMEDIAIRES EN
+# METTANT DANS UNE CHAINE LES LIGNES SUIVANTES QUI NE SERAIENT PAS
+# VALIDES SYNTAXIQUEMENT (EN V6, LE SUPERVISEUR ANALYSE LA TOTALITE
+# DU FICHIER SANS TENIR COMPTE DE L'EMPLACEMENT DU MOT FIN()).
+# EXEMPLE:
+#.        .........
+#        < PARTIE DU .COMM VALIDE SUR LAQUELLE ON VEUT TRAVAILLER>
+#  #FIN();
+#  CH1=AFFE_CHAR_MECA(MODELE=MO,...A COMPLETER....
+#         ..........
+#       <PARTIE DU .COMM NON VALIDE QUI NE NOUS INTERESSE PAS>
+#       <POUR L'INSTANT                                      >
+#         ..........
+#  FIN();  <FIN FINAL>
+#
+# DEVIENT
+#         ..........
+#  FIN();
+#  X="""CH1=AFFE_CHAR_MECA(MODELE=MO,...A COMPLETER....
+#         ..........
+#  FIN();"""
+#
+#-------------------------------------------------------------------
+# IMPORT PYTHON
+#import os
+#import string
+#import copy
+#import Gnuplot
+#import Numeric
+#directory = "/home/xxx/ASTER/TP_MODAL/TPAM4/"
+
+#-------------------------------------------------------------------
+#                       CALCUL ASTER
+#-------------------------------------------------------------------
+DEBUT(CODE=_F(NOM ='FORMA11D',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON')
+
+# LECTURE MAILLAGE ET AFFECTATION MATERIAU/MODELE
+MAYA=LIRE_MAILLAGE();
+MODL=AFFE_MODELE(MAILLAGE=MAYA,
+                 AFFE=(_F(GROUP_MA='MANCHONS',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='POU_D_T',),
+                       _F(GROUP_MA='CUVE_TUB',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DKT',),
+                       _F(GROUP_MA='SUPGUID',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DKT',),
+                       _F(GROUP_MA='RENF_SUP',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DKT',),),);
+Z = 0.0;
+IMANCH=(2.6876E-04/64);
+JMANCH=(2.6876E-04/32);
+SMANCH=(2.8098E-01/64);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.10000000000E11,
+                            NU=0.29999999999999999,
+                            RHO=7850.0,),);
+MANCHON=DEFI_MATERIAU(ELAS=_F(E=3.15000000000E11,
+                              NU=0.29999999999999999,
+                              RHO=7850.0,),);
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAYA,
+                    AFFE=(_F(GROUP_MA='CUVE_TUB',
+                             MATER=ACIER,),
+                          _F(GROUP_MA='SUPGUID',
+                             MATER=ACIER,),
+                          _F(GROUP_MA='RENF_SUP',
+                             MATER=ACIER,),
+                          _F(GROUP_MA='MANCHONS',
+                             MATER=MANCHON,),),);
+PARAM=AFFE_CARA_ELEM(MODELE=MODL,
+                     POUTRE=_F(GROUP_MA='MANCHONS',
+                               SECTION='GENERALE',
+                               CARA=('A','IZ','IY','JX','AY','AZ',),
+                               VALE=(SMANCH,IMANCH,IMANCH,JMANCH,Z,Z,),),
+                     COQUE=(_F(GROUP_MA='CUVE_128',
+                               EPAIS=0.128,),
+                            _F(GROUP_MA='CUVE_060',
+                               EPAIS=0.059999999999999998,),
+                            _F(GROUP_MA='CUVE_200',
+                               EPAIS=0.20000000000000001,),
+                            _F(GROUP_MA='CUVE_230',
+                               EPAIS=0.23000000000000001,),
+                            _F(GROUP_MA='CUVE_450',
+                               EPAIS=0.45000000000000001,),
+                            _F(GROUP_MA='CUVE_160',
+                               EPAIS=0.16,),
+                            _F(GROUP_MA='CUVE_252',
+                               EPAIS=0.252,),
+                            _F(GROUP_MA='CUVE_264',
+                               EPAIS=0.26400000000000001,),
+                            _F(GROUP_MA='CUVE_166',
+                               EPAIS=0.16600000000000001,),
+                            _F(GROUP_MA='CUVE_170',
+                               EPAIS=0.17000000000000001,),
+                            _F(GROUP_MA='CUVE_81',
+                               EPAIS=0.081000000000000003,),
+                            _F(GROUP_MA='CUVE_77',
+                               EPAIS=0.076999999999999999,),
+                            _F(GROUP_MA='SUPGUID',
+                               EPAIS=0.1143,),
+                            _F(GROUP_MA='RENF_SUP',
+                               EPAIS=0.042999999999999997,),),);
+
+# AFFECTATION CL
+CONDLIM=AFFE_CHAR_MECA(MODELE=MODL,
+                       DDL_IMPO=(_F(GROUP_NO='SUPP_CUV',
+                                    DX=0.0,
+                                    DY=0.0,
+                                    DZ=0.0,
+                                    DRX=0.0,
+                                    DRY=0.0,
+                                    DRZ=0.0,),
+                                 _F(GROUP_NO='ENCASS1',
+                                    DX=0.0,
+                                    DY=0.0,
+                                    DZ=0.0,
+                                    DRX=0.0,
+                                    DRY=0.0,
+                                    DRZ=0.0,),),);
+
+# CALCULS DES MATRICES DE MASSE ET DE RIGIDITE
+K_ELEM1=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                       MODELE=MODL,
+                       CHAM_MATER=CHMAT,
+                       CARA_ELEM=PARAM,
+                       CHARGE=CONDLIM,);
+M_ELEM1=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                       MODELE=MODL,
+                       CHAM_MATER=CHMAT,
+                       CARA_ELEM=PARAM,
+                       CHARGE=CONDLIM,);
+NUM1=NUME_DDL(MATR_RIGI=K_ELEM1,);
+K_ASSE1=ASSE_MATRICE(MATR_ELEM=K_ELEM1,
+                     NUME_DDL=NUM1,);
+M_ASSE1=ASSE_MATRICE(MATR_ELEM=M_ELEM1,
+                     NUME_DDL=NUM1,);
+
+#--------------------------------------------------------------------
+# ANALYSE MODALE
+# QUESTION 1 : CALCUL BANDE PAR SORENSEN VIA MODE_ITER_SIMULT
+
+
+MODES=MODE_ITER_SIMULT(MATR_A=K_ASSE1,
+                       MATR_B=M_ASSE1,
+                       CALC_FREQ=_F(OPTION='BANDE',
+                                    FREQ=(1.0,117.0,),),);
+
+# TEST_RESU UNIQUEMENT POUR FAIRE CAS TEST
+TEST_RESU(RESU=(_F(RESULTAT=MODES,
+                   NUME_ORDRE=1,
+                   PARA='FREQ',
+                   VALE=46.7756,
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.3.11',)))
+
+IMPR_RESU(RESU=_F(RESULTAT=MODES,
+                  TOUT_CHAM='NON',
+                  TOUT_PARA='OUI',),);
+
+# IMPRESSION FORMAT CASTEM DES MODES PROPRES
+IMPR_RESU(FORMAT='CASTEM',UNITE=55,
+          RESU=_F(
+                  MAILLAGE=MAYA,
+                  RESULTAT=MODES,),);
+
+# AFFICHAGE GIBI INTERACTIF VIA PYTHON
+#os.system('cp %spost.dcas .' %directory)
+#os.system('/logiciels/aster/outils/gibi2000.x post.dcas')   
+
+# FIN DE LA QUESTION 1.
+#FIN();
+
+# QUESTION 2: CALCUL OPTION PROCHE VIA MODE_ITER_INV 
+
+MODEINV=MODE_ITER_INV(MATR_A=K_ASSE1,
+                      MATR_B=M_ASSE1,
+                      CALC_FREQ=_F(OPTION='PROCHE',
+                                   FREQ=106.0,),);
+IMPR_RESU(RESU=_F(RESULTAT=MODEINV,
+                  TOUT_CHAM='NON',
+                  TOUT_PARA='OUI',),);
+
+FIN();

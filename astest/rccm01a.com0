@@ -272,7 +272,7 @@ T1b=110.0
 
 T2b=70.0
 
-Tb = FORMULE(REEL="""(REEL:X) =  T1b*X+T2b """)
+Tb = FORMULE(NOM_PARA='X',VALE='T1b*X+T2b ')
 
 CHT0b=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
                       AFFE=_F(  TOUT = 'OUI', NOM_CMP = 'TEMP', VALE = 0.0) )

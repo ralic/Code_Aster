@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE CALCUL DE LA PUISSANCE D'USURE D'UN PATIN FROTTANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -94,14 +94,33 @@ MODES=MODE_ITER_INV(   MATR_A=MATRRIGI,  MATR_B=MATRMASS,
 OMEGA=2.*pi
 
 #
-ACCELER1 = FORMULE(REEL="""(REEL:INST) =
-15.*SIN (OMEGA *INST)""")
-ACCELER2 = FORMULE(REEL="""(REEL:INST) =
-1.5*SIN (OMEGA *INST)""")
-ACCELER3 = FORMULE(REEL="""(REEL:INST) =
-1.01*SIN (OMEGA *INST)""")
-ACCELER4 = FORMULE(REEL="""(REEL:INST) =
-0.99*SIN (OMEGA *INST)""")
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=12.,
+                                   NOMBRE =10000,),);
+ACCE1    = FORMULE(NOM_PARA='INST',VALE='15.*sin (OMEGA *INST)')
+ACCELER1 = CALC_FONC_INTERP(FONCTION=ACCE1,
+                            LIST_PARA=LINST,
+                            NOM_PARA = 'INST',
+                            PROL_GAUCHE='CONSTANT',
+                            PROL_DROITE='CONSTANT' )
+ACCE2    = FORMULE(NOM_PARA='INST',VALE='1.5*sin (OMEGA *INST)')
+ACCELER2 = CALC_FONC_INTERP(FONCTION=ACCE2,
+                            LIST_PARA=LINST,
+                            NOM_PARA = 'INST',
+                            PROL_GAUCHE='CONSTANT',
+                            PROL_DROITE='CONSTANT' )
+ACCE3    = FORMULE(NOM_PARA='INST',VALE='1.01*sin (OMEGA *INST)')
+ACCELER3 = CALC_FONC_INTERP(FONCTION=ACCE3,
+                            LIST_PARA=LINST,
+                            NOM_PARA = 'INST',
+                            PROL_GAUCHE='CONSTANT',
+                            PROL_DROITE='CONSTANT' )
+ACCE4    = FORMULE(NOM_PARA='INST',VALE='0.99*sin (OMEGA *INST)')
+ACCELER4 = CALC_FONC_INTERP(FONCTION=ACCE4,
+                            LIST_PARA=LINST,
+                            NOM_PARA = 'INST',
+                            PROL_GAUCHE='CONSTANT',
+                            PROL_DROITE='CONSTANT' )
 
 SEISME=CALC_CHAR_SEISME(   MATR_MASS=MATRMASS,
                          DIRECTION=( 1., 0., 0., ),  MONO_APPUI='OUI' )
@@ -568,7 +587,7 @@ TEST_TABLE(    TABLE=TTA3,
                         NOM_PARA='PUIS_USURE',
                              VALE=2.261641E-4,
                          CRITERE='RELATIF',
-                        PRECISION=0.0008)
+                        PRECISION=0.0140)
 
 #
 TEST_TABLE(    TABLE=TTD3,

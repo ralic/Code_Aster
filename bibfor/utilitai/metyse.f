@@ -6,7 +6,7 @@ C     COMMANDE:  MECA_STATIQUE & STAT_NON_LINE
 C
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/09/2003   AUTEUR F6BHHBO P.DEBONNIERES 
+C MODIF UTILITAI  DATE 17/09/2004   AUTEUR F6BHHBO P.DEBONNIERES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C
       PARAMETER ( NOMPRO = 'METYSE' )
 C
       INTEGER NBMCRF, NBMCMX
-      PARAMETER ( NBMCRF = 13, NBMCMX = 14 )
+      PARAMETER ( NBMCRF = 17, NBMCMX = 17 )
 C
       INTEGER NBMOSI
       INTEGER NBMC(NBMCRF), NBMCSR
@@ -160,7 +160,23 @@ C
         NBMC(13) = 1
         MCSREF(13) = 'SY'
 C
-        NBMCSR = 13
+        COREFE(14) = 'ALPHA'
+        NBMC(14) = 1
+        MCSREF(14) = 'ALPHA'
+
+        COREFE(15) = 'SY_ULTM'
+        NBMC(15) = 1
+        MCSREF(15) = 'SY_ULTM'
+C
+        COREFE(16) = 'P_ULTM'
+        NBMC(16) = 1
+        MCSREF(16) = 'P_ULTM'
+
+        COREFE(17) = 'H'
+        NBMC(17) = 1
+        MCSREF(17) = 'H'
+C
+        NBMCSR = 17
 C
         CALL PSTYSS ( NBMCSR, NBMC, COREFE, MCSREF,
      >                NBMOSI, LIVALE, NOPASE,
@@ -181,6 +197,7 @@ C
         ENDIF
 C
       ENDIF
+C
 C
 C====
 C 3. MENAGE

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE ECHANGE_PAROI EN THERMIQUE LINEAIRE TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -156,38 +156,38 @@ TSTAT=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
 
 #
 
-GRAD = FORMULE(REEL="""(REEL:BIDON) =
-COEFH*(TEMPD-TEMPG)/(CONDUC+COEFH*LONTOT)""")
+GRAD = FORMULE(NOM_PARA='BIDON',VALE='''
+COEFH*(TEMPD-TEMPG)/(CONDUC+COEFH*LONTOT)''')
 
-TINTG = FORMULE(REEL="""(REEL:X) =
-TEMPG + COEFH*(TEMPD-TEMPG)/(CONDUC+COEFH*LONTOT)*X """)
+TINTG = FORMULE(NOM_PARA='X',VALE='''
+TEMPG + COEFH*(TEMPD-TEMPG)/(CONDUC+COEFH*LONTOT)*X ''')
 
-TINTD = FORMULE(REEL="""(REEL:X) =
-TEMPD - COEFH*(TEMPD-TEMPG)/(CONDUC+COEFH*LONTOT)*(LONMAX-X)""")
+TINTD = FORMULE(NOM_PARA='X',VALE='''
+TEMPD - COEFH*(TEMPD-TEMPG)/(CONDUC+COEFH*LONTOT)*(LONMAX-X)''')
 #
 
 TEST_RESU(CHAM_NO=(  _F(  CHAM_GD = TSTAT,
                          NOEUD = 'N3',
                          NOM_CMP = 'TEMP',
-                         VALE = EVAL("""TINTG(0.25)"""),
+                         VALE = TINTG(0.25),
                          CRITERE = 'RELATIF',
                          PRECISION = 1.E-6),
                        _F(  CHAM_GD = TSTAT,
                          NOEUD = 'N5',
                          NOM_CMP = 'TEMP',
-                         VALE = EVAL("""TINTG(0.495)"""),
+                         VALE = TINTG(0.495),
                          CRITERE = 'RELATIF',
                          PRECISION = 1.E-6),
                        _F(  CHAM_GD = TSTAT,
                          NOEUD = 'N101',
                          NOM_CMP = 'TEMP',
-                         VALE = EVAL("""TINTD(0.505)"""),
+                         VALE = TINTD(0.505),
                          CRITERE = 'RELATIF',
                          PRECISION = 1.E-6),
                        _F(  CHAM_GD = TSTAT,
                          NOEUD = 'N103',
                          NOM_CMP = 'TEMP',
-                         VALE = EVAL("""TINTD(0.75)"""),
+                         VALE = TINTD(0.75),
                          CRITERE = 'RELATIF',
                          PRECISION = 1.E-6))
             )

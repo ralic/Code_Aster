@@ -6,7 +6,7 @@
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
 
-C MODIF ELEMENTS  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 21/09/2004   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,9 @@ C     TOUTES LES ENTREES ET LES SORTIES SONT DANS LE REPERE LOCAL.
 C     (MEME SI LES TABLEAUX SONT DIMMENSIONNES EN 3D)
 C     ------------------------------------------------------------------
 C     IN  OPT  : OPTION NON LINEAIRE A CALCULER
-C                  'RAPH_MECA' ,'FULL_MECA', OU 'RIGI_MECA_TANG'
+C                  'RAPH_MECA'
+C                  'FULL_MECA'      OU 'FULL_MECA_ELAS' 
+C                  'RIGI_MECA_TANG' OU 'RIGI_MECA_ELAS'
 C     IN  XYZL : COORDONNEES DES NOEUDS
 C     IN  UL   : DEPLACEMENT A L'INSTANT T "-"
 C     IN  DUL  : INCREMENT DE DEPLACEMENT
@@ -164,8 +166,8 @@ C --DEB
 
 C     2 BOOLEENS COMMODES :
 C     ---------------------
-      VECTEU = ((OPT.EQ.'FULL_MECA') .OR. (OPT.EQ.'RAPH_MECA'))
-      MATRIC = ((OPT.EQ.'FULL_MECA') .OR. (OPT.EQ.'RIGI_MECA_TANG'))
+      VECTEU = ((OPT(1:9).EQ.'FULL_MECA').OR.(OPT.EQ.'RAPH_MECA'))
+      MATRIC = ((OPT(1:9).EQ.'FULL_MECA').OR.(OPT(1:9).EQ.'RIGI_MECA'))
 C     RECUPERATION DES OBJETS &INEL ET DES CHAMPS PARAMETRES :
 C     --------------------------------------------------------
       DKT = .FALSE.

@@ -11,7 +11,7 @@ C IN  ICMD  : IS   : NUMERO D'ORDRE DE LA COMMANDE
 C IN  CP    : IS   : PREMIER CARACTERE DES CONCEPTS A DETRUIRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 11/04/97   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,15 +28,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C     ------------------------------------------------------------------
-
-C
-C
-C     ------- COMMUN DEBUG SUPERVISEUR ---------------------------------
-      LOGICAL         LDBG
-      INTEGER                IFV
-      COMMON /CXSU00/ LDBG , IFV
-C     ------------------------------------------------------------------
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI

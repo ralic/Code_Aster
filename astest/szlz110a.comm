@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE CALCUL DU DOMMAGE DE LEMAITRE-SERMAGE (CALC_ELEM)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -331,7 +331,7 @@ MOTHER=AFFE_MODELE(MAILLAGE=MAILLAGE,
 # RHO_CP ET LAMBDA DEPENDENT DU TEMPS
 # <RESUTHER>
 # ============================================
-T_CONST = FORMULE(REEL = """(REEL :INST) = 20.0 """);
+T_CONST = FORMULE(NOM_PARA='INST',VALE='20.0 ');
 TEMPCSTE=AFFE_CHAR_THER_F(MODELE=MOTHER,
                           TEMP_IMPO=_F(TOUT='OUI',
                                        TEMP=T_CONST,),);
@@ -386,7 +386,7 @@ BLOCAGES=AFFE_CHAR_MECA(MODELE=MODMECA,
                                       DZ=0.0,),),);
 
 STRESS=100.E+6;
-FCREEP_Z = FORMULE(REEL = """(REEL :INST) = STRESS/1.E-4 """);
+FCREEP_Z = FORMULE(NOM_PARA='INST',VALE='STRESS/1.E-4 ');
 
 # VITESSE DE DEPLACEMENT IMPOSE
 # ------------------------------------

@@ -1,4 +1,4 @@
-#@ MODIF genpy Execution  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF genpy Execution  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,6 @@
 #                                                                       
 #                                                                       
 # ======================================================================
-
 
 """
    Ce module contient la classe VISITEUR genpy
@@ -157,9 +156,6 @@ class genpy:
           # On appelle supprime pour eliminer toute reference arriere
           # sur mcf en particulier parent
           mcf.supprime()
-
-  def visitEVAL(self,node):
-    self.sdname = 'EVAL("""'+node.valeur+'""")'
 
   def evalMCSIMP(self,object):
     if type(object) == types.TupleType :

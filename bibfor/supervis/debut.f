@@ -4,7 +4,7 @@
       INTEGER                 IER,IPASS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,6 @@ C     --- ALLOCATION DES BASES DE DONNEES ---
       IF ( IER .EQ. 0 ) CALL IBBASE( IER , FICHDF )
       IF ( IER. EQ. 0 ) THEN
          CALL GETRES(CBID,CBID,NOMCMD)
-         CALL FIINIT('G',NOMCMD)
 C        -- INITIALISATION DE LA FONCTION NULLE : '&FOZERO'
          CALL FOZERO('&FOZERO')
       ENDIF

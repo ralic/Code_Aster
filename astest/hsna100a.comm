@@ -1,4 +1,4 @@
-# MODIF  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE SECHAGE EN 2D AXISYMETRIQUE  - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,25 +121,21 @@ C_EQ_I10=51.6
 
 C_EQ_E10=69.1
 
-FL_INT05 = FORMULE(REEL="""(REEL:TEMP) =
-(0.5*BETA / ((C_0 - C_EQ_I05 )**2)
-  * (TEMP - (2.*C_0 - C_EQ_I05 ))*(TEMP - C_EQ_I05 ))
-   """)
+FL_INT05 = FORMULE(NOM_PARA='TEMP',
+                   VALE='''(0.5*BETA / ((C_0 - C_EQ_I05 )**2)
+  * (TEMP - (2.*C_0 - C_EQ_I05 ))*(TEMP - C_EQ_I05 ))''')
 
-FL_EXT05 = FORMULE(REEL="""(REEL:TEMP) =
-(0.5*BETA / ((C_0 - C_EQ_E05 )**2)
-  * (TEMP - (2.*C_0 - C_EQ_E05 ))*(TEMP - C_EQ_E05 ))
-   """)
+FL_EXT05 = FORMULE(NOM_PARA='TEMP',
+                   VALE='''(0.5*BETA / ((C_0 - C_EQ_E05 )**2)
+  * (TEMP - (2.*C_0 - C_EQ_E05 ))*(TEMP - C_EQ_E05 ))''')
 
-FL_INT10 = FORMULE(REEL="""(REEL:TEMP) =
-(0.5*BETA / ((C_0 - C_EQ_I10 )**2)
-  * (TEMP - (2.*C_0 - C_EQ_I10 ))*(TEMP - C_EQ_I10 ))
-   """)
+FL_INT10 = FORMULE(NOM_PARA='TEMP',
+                   VALE='''(0.5*BETA / ((C_0 - C_EQ_I10 )**2)
+  * (TEMP - (2.*C_0 - C_EQ_I10 ))*(TEMP - C_EQ_I10 ))''')
 
-FL_EXT10 = FORMULE(REEL="""(REEL:TEMP) =
-(0.5*BETA / ((C_0 - C_EQ_E10 )**2)
-  * (TEMP - (2.*C_0 - C_EQ_E10 ))*(TEMP - C_EQ_E10 ))
-   """)
+FL_EXT10 = FORMULE(NOM_PARA='TEMP',
+                   VALE='''(0.5*BETA / ((C_0 - C_EQ_E10 )**2)
+  * (TEMP - (2.*C_0 - C_EQ_E10 ))*(TEMP - C_EQ_E10 ))''')
 
 LIST0=DEFI_LIST_REEL(  DEBUT=0.,INTERVALLE=(
                          _F(  JUSQU_A = 50.,    PAS = 10.,  ),
@@ -370,7 +366,7 @@ MAT=DEFI_MATERIAU(             THER=_F( RHO_CP = 0.0E-3,
 CM=AFFE_MATERIAU(    MAILLAGE=MAGE,
                             AFFE=_F( TOUT = 'OUI',      
                                   MATER = MAT,     
-                                  TEMP_REF = 0.,
+                                  TEMP_REF = 15.,
                                   SECH_REF = C_0 )       )
 
 #
@@ -439,22 +435,21 @@ TEST_RESU(
 
 #
 
-RESUSTAT=MECA_STATIQUE( 
-                          MODELE=MOMECA,
-                      CHAM_MATER=CM,EXCIT=(
-                           _F(  CHARGE = CHMECA,                   ),
-                           _F(  CHARGE = CHME,                     )),
-                       LIST_INST=LISTMECA,
-                         SOLVEUR=_F(  METHODE = 'LDLT',         
-                                   RENUM = 'RCMK',                    )
+RESUSTAT=MECA_STATIQUE( MODELE=MOMECA,
+                        CHAM_MATER=CM,
+                        EXCIT=(_F(CHARGE = CHMECA,  ),
+                               _F(CHARGE = CHME,    )),
+                        LIST_INST=LISTMECA,
+                        SOLVEUR=_F(METHODE = 'LDLT',         
+                                   RENUM   = 'RCMK', )
                        )
 
 #
 
 TEST_RESU( 
            RESU=_F(  RESULTAT = RESUSTAT,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 32, 
-             GROUP_NO = 'A2',   NOM_CMP = 'DX',    VALE = -2.745902E-01, 
-             REFERENCE = 'NON_REGRESSION', VERSION = '7.3.1' )
+             GROUP_NO = 'A2',   NOM_CMP = 'DX',    VALE = -2.780327E-01, 
+             REFERENCE = 'NON_REGRESSION', VERSION = '7.3.21' )
             )
 
 #

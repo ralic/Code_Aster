@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 17/09/2004   AUTEUR F6BHHBO P.DEBONNIERES 
 # ======================================================================
 # TITRE CAS-TEST POUR LA VALIDATION DE l'OPTION INDI_LOCA_ELGA POUR ----
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -42,7 +42,7 @@ MODELE=AFFE_MODELE( MAILLAGE=MAILLAGE,
                            
 MATER1 = DEFI_MATERIAU(ELAS = _F( E  = 5800.0E6,
                                       NU = 0.3,),
-                     DRUCKER_PRAGER = _F(
+                     DRUCK_PRAGER = _F(
                                     SY_ULTM     =    0.47E6    ,
                                    ALPHA = 0.33,
                                    SY = 2.11E6,
@@ -51,7 +51,7 @@ MATER1 = DEFI_MATERIAU(ELAS = _F( E  = 5800.0E6,
 
 MATER2 = DEFI_MATERIAU(ELAS = _F( E  = 5800.0E6,
                                       NU = 0.3,),
-                     DRUCKER_PRAGER = _F( SY_ULTM     =    0.44E6    ,
+                     DRUCK_PRAGER = _F( SY_ULTM     =    0.44E6    ,
                                    ALPHA = 0.33,
                                    SY = 2.E6,
                                    P_ULTM = 0.01,
@@ -170,10 +170,11 @@ U = CALC_ELEM(
               RESULTAT   = U,
               NUME_ORDRE = (19,last_iter),
               );
-              
-IMPR_RESU(RESU=_F(RESULTAT=U,
-                  NUME_ORDRE = (19,last_iter),
-                  NOM_CHAM   = ('INDI_LOCA_ELGA',),),);
+############################################################
+#IMPR_RESU(RESU=_F(RESULTAT=U,
+#                  NUME_ORDRE = (19,last_iter),
+#                  NOM_CHAM   = ('INDI_LOCA_ELGA',),),);
+############################################################
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=U,
@@ -192,7 +193,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR1',
                    MAILLE='M1',
                    POINT=1,
-                   VALE=-3.33062E+01,
+                   VALE=-3.24192E+01,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),
@@ -213,7 +214,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR2',
                    MAILLE='M1',
                    POINT=2,
-                   VALE=3.21273E+01,
+                   VALE=3.154595E+01,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),
@@ -234,7 +235,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR3',
                    MAILLE='M1',
                    POINT=3,
-                   VALE=2.31227E+01,
+                   VALE=2.48749E+01,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),
@@ -255,7 +256,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR4',
                    MAILLE='M1',
                    POINT=4,
-                   VALE=-2.04369E+01,
+                   VALE=-2.24798E+01,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),
@@ -327,7 +328,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR1',
                    MAILLE='M11',
                    POINT=1,
-                   VALE=3.32259E+01,
+                   VALE=3.25127E+01,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),
@@ -348,7 +349,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR1',
                    MAILLE='M1',
                    POINT=1,
-                   VALE=-3.16213E+01,
+                   VALE=-3.15318E+01,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),
@@ -369,7 +370,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR2',
                    MAILLE='M1',
                    POINT=2,
-                   VALE=3.19764E+01,
+                   VALE=3.19692E+01,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),
@@ -390,7 +391,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR3',
                    MAILLE='M1',
                    POINT=3,
-                   VALE=2.18539E+01,
+                   VALE=2.19104E+01,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),
@@ -411,7 +412,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR4',
                    MAILLE='M1',
                    POINT=4,
-                   VALE=-1.87459E+01,
+                   VALE=-1.88238E+01,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),
@@ -483,7 +484,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR1',
                    MAILLE='M11',
                    POINT=1,
-                   VALE=3.30101E+01,
+                   VALE=3.29656E+01,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),

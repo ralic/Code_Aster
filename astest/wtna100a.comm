@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE CALCUL DE RESATURATION D UNE BO PAR UNE BG SUR UN BI-MATERIAUX BO-BG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,9 +81,8 @@ LI1=DEFI_LIST_REEL(DEBUT=1.E-5,
 
 
 
-LTBO=DEFI_CONSTANTE(VALE=0.59999999999999998,);
-LSO = FORMULE(REEL = '''(REEL:SAT) = 
-                (0.35*SAT)''');
+LTBO=DEFI_CONSTANTE(VALE=0.6,);
+LSO = FORMULE(NOM_PARA='SAT',VALE='(0.35*SAT)');
 
 LSBO=CALC_FONC_INTERP(FONCTION=LSO,
                         LIST_PARA=LI1,
@@ -93,7 +92,7 @@ LSBO=CALC_FONC_INTERP(FONCTION=LSO,
                         INFO=2,);
 DLSBO=DEFI_CONSTANTE(VALE=0.35,);
 
-SL = FORMULE(REEL = '''(REEL:PCAP) = 0.99*(1.-PCAP*6.E-9)''');
+SL = FORMULE(NOM_PARA='PCAP',VALE='0.99*(1.-PCAP*6.E-9)');
 
 SATUBO=CALC_FONC_INTERP(FONCTION=SL,
                         LIST_PARA=LI2,
@@ -103,7 +102,7 @@ SATUBO=CALC_FONC_INTERP(FONCTION=SL,
                         INFO=2,);
 
 
-DSL = FORMULE(REEL = '''(REEL:PCAP) = -6.E-9*0.99''');
+DSL = FORMULE(NOM_PARA='PCAP',VALE='-6.E-9*0.99');
 
 DSATBO=CALC_FONC_INTERP(FONCTION=DSL,
                         LIST_PARA=LI2,
@@ -113,7 +112,7 @@ DSATBO=CALC_FONC_INTERP(FONCTION=DSL,
                         INFO=2,);
 
 
-PERM = FORMULE(REEL = '''(REEL:SAT) = SAT''');
+PERM = FORMULE(NOM_PARA='SAT',VALE='SAT');
 
 PERM11BO=CALC_FONC_INTERP(FONCTION=PERM,
                           LIST_PARA=LI1,
@@ -123,7 +122,7 @@ PERM11BO=CALC_FONC_INTERP(FONCTION=PERM,
                           INFO=2,);
 
 
-DPERMBO = FORMULE(REEL = '''(REEL:SAT) = 1.''');
+DPERMBO = FORMULE(NOM_PARA='SAT',VALE='1.');
 
 DPR11BO=CALC_FONC_INTERP(FONCTION=DPERMBO,
                          LIST_PARA=LI1,
@@ -133,7 +132,7 @@ DPR11BO=CALC_FONC_INTERP(FONCTION=DPERMBO,
                          INFO=2,);
 
 
-PERM2BO = FORMULE(REEL = '''(REEL:SAT) = 1.-SAT''');
+PERM2BO = FORMULE(NOM_PARA='SAT',VALE='1.-SAT');
 
 PERM21BO=CALC_FONC_INTERP(FONCTION=PERM2BO,
                           LIST_PARA=LI1,
@@ -143,7 +142,7 @@ PERM21BO=CALC_FONC_INTERP(FONCTION=PERM2BO,
                           INFO=2,);
 
 
-DPERM2BO = FORMULE(REEL = '''(REEL:SAT) = -1.''');
+DPERM2BO = FORMULE(NOM_PARA='SAT',VALE='-1.');
 
 DPR21BO=CALC_FONC_INTERP(FONCTION=DPERM2BO,
                          LIST_PARA=LI1,
@@ -156,17 +155,17 @@ DPR21BO=CALC_FONC_INTERP(FONCTION=DPERM2BO,
 #
 
 
-DM8=DEFI_CONSTANTE(VALE=9.9999999999999995E-08,);
+DM8=DEFI_CONSTANTE(VALE=1.E-07,);
 
-KINTBO=DEFI_CONSTANTE(VALE=9.9999999999999995E-21,);
+KINTBO=DEFI_CONSTANTE(VALE=1.E-20,);
 
 MATERBO=DEFI_MATERIAU(ELAS=_F(E=1.9E+20,
-                              NU=0.20000000000000001,
+                              NU=0.2,
                               RHO=2670.0,
                               ALPHA=0.,),
                       COMP_THM = 'LIQU_GAZ',
                       THM_LIQU=_F(RHO=1000.0,
-                                  UN_SUR_K=5.0000000000000003E-10,
+                                  UN_SUR_K=5.E-10,
                                   ALPHA=1.E-4,
                                   CP=4180.0,
                                   VISC=VISCOLIQ,
@@ -175,17 +174,17 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=1.9E+20,
                                  CP=1000.0,
                                  VISC=VISCOGAZ,
                                  D_VISC_TEMP=ZERO,),
-                      THM_VAPE_GAZ=_F(MASS_MOL=0.017999999999999999,
+                      THM_VAPE_GAZ=_F(MASS_MOL=0.018,
                                       CP=1870.0,
                                       VISC=VISCOGAZ,
                                       D_VISC_TEMP=ZERO,),
                       THM_INIT=_F(TEMP=293.0,
                                   PRE1=0.0,
                                   PRE2=1.E5,
-                                  PORO=0.34999999999999998,
+                                  PORO=0.35,
                                   PRES_VAPE=2320.0,
-                                  DEGR_SATU=0.57420000000000004,),
-                      THM_DIFFU=_F(R_GAZ=8.3149999999999995,
+                                  DEGR_SATU=0.5742,),
+                      THM_DIFFU=_F(R_GAZ=8.315,
                                    RHO=2670.0,
                                    CP=482.0,
                                    BIOT_COEF=1.0,
@@ -207,7 +206,7 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=1.9E+20,
 # PROPRIETES DE LA B.G.
 #
 
-KINTBG=DEFI_CONSTANTE(VALE=9.9999999999999998E-20,);
+KINTBG=DEFI_CONSTANTE(VALE=1.E-19,);
 
 # CONDUCTIVITE THERMIQUE DE LA BG
 #
@@ -215,9 +214,8 @@ KINTBG=DEFI_CONSTANTE(VALE=9.9999999999999998E-20,);
 
 
 
-LTBG=DEFI_CONSTANTE(VALE=0.59999999999999998,);
-LSG = FORMULE(REEL = '''(REEL:SAT) = 
-                (0.05*SAT)''');
+LTBG=DEFI_CONSTANTE(VALE=0.6,);
+LSG = FORMULE(NOM_PARA='SAT',VALE='(0.05*SAT)');
 
 LSBG=CALC_FONC_INTERP(FONCTION=LSG,
                         LIST_PARA=LI1,
@@ -228,12 +226,12 @@ LSBG=CALC_FONC_INTERP(FONCTION=LSG,
 DLSBG=DEFI_CONSTANTE(VALE=0.05,);
 
 MATERBG=DEFI_MATERIAU(ELAS=_F(E=1.9E+20,
-                              NU=0.20000000000000001,
+                              NU=0.2,
                               RHO=2670.0,
                               ALPHA=0.0,),
                       COMP_THM = 'LIQU_GAZ',
                       THM_LIQU=_F(RHO=1000.0,
-                                  UN_SUR_K=5.0000000000000003E-10,
+                                  UN_SUR_K=5.E-10,
                                   ALPHA=1.E-4,
                                   CP=4180.0,
                                   VISC=VISCOLIQ,
@@ -242,17 +240,17 @@ MATERBG=DEFI_MATERIAU(ELAS=_F(E=1.9E+20,
                                  CP=1000.0,
                                  VISC=VISCOGAZ,
                                  D_VISC_TEMP=ZERO,),
-                      THM_VAPE_GAZ=_F(MASS_MOL=0.017999999999999999,
+                      THM_VAPE_GAZ=_F(MASS_MOL=0.018,
                                       CP=1870.0,
                                       VISC=UN,
                                       D_VISC_TEMP=ZERO,),
                       THM_INIT=_F(TEMP=293.0,
                                   PRE1=0.0,
                                   PRE2=1.E5,
-                                  PORO=0.050000000000000003,
+                                  PORO=0.05,
                                   PRES_VAPE=2320.0,
-                                  DEGR_SATU=0.81179999999999997,),
-                      THM_DIFFU=_F(R_GAZ=8.3149999999999995,
+                                  DEGR_SATU=0.8118,),
+                      THM_DIFFU=_F(R_GAZ=8.315,
                                    RHO=2670.0,
                                    CP=706.0,
                                    BIOT_COEF=1.0,
@@ -346,11 +344,11 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  INCREMENT=_F(LIST_INST=INST1,),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=10,),
-                 CONVERGENCE=_F(RESI_GLOB_MAXI=1.0000000000000001E-05,
+                 CONVERGENCE=_F(RESI_GLOB_MAXI=1.0E-05,
                                 ITER_GLOB_MAXI=150,
                                 ARRET='NON',
                                 ITER_INTE_MAXI=5,),
-                 PARM_THETA=0.56999999999999995,
+                 PARM_THETA=0.57,
                  ARCHIVAGE=_F(PAS_ARCH=1,),);
 
 U0=CALC_ELEM(reuse =U0,

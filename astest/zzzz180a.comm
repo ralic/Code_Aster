@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE TEST ANALYTIQUE DE LA GENERATION DE FONCTIONS ALEATOIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -269,9 +269,9 @@ PF22=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = F22,
 ##############################
 
 #ON ECRIT LA FCT LOG POUR POUVOIR COMPARER LES VALEURS EN ECHELLE LOG DANS TEST_FONCTION                                  
-FLOG = FORMULE(REEL="""(REEL:DSP) =LOG(DSP) """)
+FLOG = FORMULE(NOM_PARA='DSP',VALE='log(DSP)')
 LX=DEFI_LIST_REEL( VALE=(tuple(power(10,arange(-10,10,.01)))))
-FFLOG=CALC_FONC_INTERP(        FONCTION=FLOG,    LIST_PARA=LX,
+FFLOG=CALC_FONC_INTERP(     FONCTION=FLOG,    LIST_PARA=LX,
                             NOM_PARA='DSP',
                             NOM_RESU='LOG',
                             PROL_GAUCHE='EXCLU',  PROL_DROITE='EXCLU',

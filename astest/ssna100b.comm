@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE TUBE DE BREE (METHODE ZAC)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,8 +75,7 @@ MAILLAGE=MA,
 #                         PROL_DROITE  : 'CONSTANT'
 #                          );
 
-FONC1 = FORMULE(REEL="""(REEL:X,REEL:Y) =
-(-(SQRT(X*X+Y*Y)-10.06)*1.D3) """)
+FONC1 = FORMULE(NOM_PARA=('X','Y'),VALE='(-(sqrt(X*X+Y*Y)-10.06)*1.E3)')
 
 TP1=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
 MAILLAGE=MA,
@@ -225,8 +224,7 @@ CHZAC2=POST_ZAC(
 
 #                        );
 
-FONC2 = FORMULE(REEL="""(REEL:X,REEL:Y) =
-(-(SQRT(X*X+Y*Y)-10.06)*250.) """)
+FONC2 = FORMULE(NOM_PARA=('X','Y'),VALE='(-(sqrt(X*X+Y*Y)-10.06)*250.)')
 
 TP2=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
 MAILLAGE=MA,

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE CHAUFFAGE D UN MILIEU POREUX DESATURE AVEC AIR DISSOUS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,8 +69,8 @@ LI2=DEFI_LIST_REEL(DEBUT=0,
                                   _F(JUSQU_A=1.E9,
                                      NOMBRE=100,),),);
                       
-LI1=DEFI_LIST_REEL(DEBUT=0.10000000000000001,
-                   INTERVALLE=_F(JUSQU_A=0.98999999999999999,
+LI1=DEFI_LIST_REEL(DEBUT=0.1,
+                   INTERVALLE=_F(JUSQU_A=0.99,
                                  PAS=1.E-2,),);
 
 
@@ -78,7 +78,7 @@ LI1=DEFI_LIST_REEL(DEBUT=0.10000000000000001,
 HENRY=DEFI_CONSTANTE(VALE=50000.,);
 
 
-SLO = FORMULE(REEL = '''(REEL:PCAP) = 
+SLO = FORMULE(NOM_PARA='PCAP',VALE='''
                 (0.5-1.E-12*(PCAP-3700.+1.E5))''');
 
 SATUBO=CALC_FONC_INTERP(FONCTION=SLO,
@@ -198,7 +198,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  INCREMENT=_F(LIST_INST=INST1, ),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),
-                 RECH_LINEAIRE=_F(RESI_LINE_RELA=0.10000000000000001,
+                 RECH_LINEAIRE=_F(RESI_LINE_RELA=0.1,
                                   ITER_LINE_MAXI=3,),
                  CONVERGENCE=_F(
                                 RESI_GLOB_RELA=1.E-6,

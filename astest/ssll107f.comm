@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE VALIDATION DE MACR_CARA_POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -222,7 +222,7 @@ MEST5=CALC_NO(reuse =MEST5,
               
 R = 0.025;
 
-UX = EVAL("""FTOT/E/PI/R/R""");
+UX = FTOT/E/pi/R/R
 
 
 

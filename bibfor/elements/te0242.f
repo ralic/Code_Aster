@@ -1,6 +1,6 @@
       SUBROUTINE TE0242 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 20/09/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,11 +49,12 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*8        ELREFE
       REAL*8             LAMBDA,R8BID,RHOCP,DELTAT
       REAL*8             DFDX(9),DFDY(9),POIDS,R,THETA,KHI,TPGI
-      REAL*8             MT(9,9),COORSE(18)
+      REAL*8             MT(9,9),COORSE(18),DIFF,TPSEC,TPG
       INTEGER            NDIM,NNO,NNOS,KP,NPG,I,J,IJ,K,ITEMPS,IFON(3)
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER            ICOMP,ITEMPI,IMATTT,JGANO,IPOID2,NPG2
       INTEGER            C(6,9),ISE,NSE,NNOP2,IVF2,IDFDE2
+      INTEGER            ISECHF,ISECHI
 C DEB ------------------------------------------------------------------
       CALL ELREF1(ELREFE)
       IF (NOMTE(5:7).EQ.'QL9') ELREFE='QU4'
@@ -71,10 +72,23 @@ C
       CALL JEVECH('PCOMPOR','L',ICOMP)
       CALL JEVECH('PMATTTR','E',IMATTT)
 C
-      IF ( (ZK16(ICOMP)(1:5).EQ.'SECH_')     .OR.
-     &     (ZK16(ICOMP)(1:9).EQ.'THER_HYDR'))     THEN
-        CALL UTMESS('F','TE0243','PAS D ELEMENTS LUMPES POUR'//
-     &              'HYDRATATION ET SECHAGE')
+C
+      IF ( (ZK16(ICOMP)(1:9).EQ.'THER_HYDR')) THEN
+         CALL UTMESS('F','TE0243','PAS D ELEMENTS LUMPES POUR'//
+     &               'HYDRATATION ')
+      ENDIF
+C
+      IF ( (ZK16(ICOMP)(1:5).EQ.'SECH_')) THEN
+        IF(ZK16(ICOMP)(1:12).EQ.'SECH_GRANGER'.OR.
+     &     ZK16(ICOMP)(1:10).EQ.'SECH_NAPPE') THEN
+           CALL JEVECH('PTMPCHI','L',ISECHI)
+           CALL JEVECH('PTMPCHF','L',ISECHF)
+        ELSE
+C            POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE
+C            ISECHI ET ISECHF SONT FICTIFS
+           ISECHI = ITEMPI
+           ISECHF = ITEMPI
+        ENDIF
       ENDIF
 C
       DELTAT= ZR(ITEMPS+1)
@@ -92,8 +106,6 @@ C  CALCUL ISO-P2 : ELTS P2 DECOMPOSES EN SOUS-ELTS LINEAIRES
             MT(I,J)=0.D0
 10    CONTINUE
 
-C ----- TERME DE RIGIDITE : 2EME FAMILLE DE PTS DE GAUSS ---------
-
 C BOUCLE SUR LES SOUS-ELEMENTS
 
       DO 200 ISE=1,NSE
@@ -103,58 +115,124 @@ C BOUCLE SUR LES SOUS-ELEMENTS
               COORSE(2*(I-1)+J) = ZR(IGEOM-1+2*(C(ISE,I)-1)+J)
 205     CONTINUE
 
-        CALL NTFCMA (ZI(IMATE),IFON)
-        DO 101 KP=1,NPG
-          K=(KP-1)*NNO
-          CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,COORSE,DFDX,DFDY,POIDS )
-          R      = 0.D0
-          TPGI   = 0.D0
-          DO 102 I=1,NNO
-            R      = R      + COORSE(2*(I-1)+1)     * ZR(IVF+K+I-1)
-            TPGI   = TPGI   + ZR(ITEMPI-1+C(ISE,I)) * ZR(IVF+K+I-1)
-102       CONTINUE
-          IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
-          CALL RCFODE (IFON(2),TPGI,LAMBDA,R8BID)
 C
-          IJ = IMATTT - 1
-          DO 103 I=1,NNO
+        IF (ZK16(ICOMP)(1:5).EQ.'THER_') THEN
+
+C ----- TERME DE RIGIDITE : 2EME FAMILLE DE PTS DE GAUSS ---------
+
+          CALL NTFCMA (ZI(IMATE),IFON)
+          DO 101 KP=1,NPG
+            K=(KP-1)*NNO
+            CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,COORSE,DFDX,DFDY,POIDS )
+            R      = 0.D0
+            TPGI   = 0.D0
+            DO 102 I=1,NNO
+              R      = R      + COORSE(2*(I-1)+1)     * ZR(IVF+K+I-1)
+              TPGI   = TPGI   + ZR(ITEMPI-1+C(ISE,I)) * ZR(IVF+K+I-1)
+102         CONTINUE
+            IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
+            CALL RCFODE (IFON(2),TPGI,LAMBDA,R8BID)
+C
+            IJ = IMATTT - 1
+            DO 103 I=1,NNO
 CDIR$ IVDEP
-            DO 103 J=1,NNO
-              IJ = IJ + 1
-              MT(C(ISE,I),C(ISE,J)) = MT(C(ISE,I),C(ISE,J))+POIDS*
+              DO 103 J=1,NNO
+                IJ = IJ + 1
+                MT(C(ISE,I),C(ISE,J)) = MT(C(ISE,I),C(ISE,J))+POIDS*
      &               LAMBDA*THETA*(DFDX(I)*DFDX(J)+DFDY(I)*DFDY(J))
-103       CONTINUE
-101     CONTINUE
+103         CONTINUE
+101       CONTINUE
 
 C ------- TERME DE MASSE : 3EME FAMILLE DE PTS DE GAUSS -----------
 
-        DO 405 I=1,NNO
-          DO 405 J=1,2
-             COORSE(2*(I-1)+J) = ZR(IGEOM-1+2*(C(ISE,I)-1)+J)
-405     CONTINUE
+          DO 405 I=1,NNO
+            DO 405 J=1,2
+               COORSE(2*(I-1)+J) = ZR(IGEOM-1+2*(C(ISE,I)-1)+J)
+405       CONTINUE
 
-        CALL NTFCMA (ZI(IMATE),IFON)
-        DO 401 KP=1,NPG2
-          K=(KP-1)*NNO
-          CALL DFDM2D ( NNO,KP,IPOID2,IDFDE2,COORSE,DFDX,DFDY,POIDS )
-          R      = 0.D0
-          TPGI   = 0.D0
-          DO 402 I=1,NNO
-            R      = R      + COORSE(2*(I-1)+1)     * ZR(IVF2+K+I-1)
-            TPGI   = TPGI   + ZR(ITEMPI-1+C(ISE,I)) * ZR(IVF2+K+I-1)
-402       CONTINUE
-          IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
-          CALL RCFODE (IFON(1),TPGI,R8BID, RHOCP)
+          CALL NTFCMA (ZI(IMATE),IFON)
+          DO 401 KP=1,NPG2
+            K=(KP-1)*NNO
+            CALL DFDM2D ( NNO,KP,IPOID2,IDFDE2,COORSE,DFDX,DFDY,POIDS )
+            R      = 0.D0
+            TPGI   = 0.D0
+            DO 402 I=1,NNO
+              R      = R      + COORSE(2*(I-1)+1)     * ZR(IVF2+K+I-1)
+              TPGI   = TPGI   + ZR(ITEMPI-1+C(ISE,I)) * ZR(IVF2+K+I-1)
+402         CONTINUE
+            IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
+            CALL RCFODE (IFON(1),TPGI,R8BID, RHOCP)
 C
-          IJ = IMATTT - 1
-          DO 403 I=1,NNO
+            IJ = IMATTT - 1
+            DO 403 I=1,NNO
 CDIR$ IVDEP
-            DO 403 J=1,NNO
-              IJ = IJ + 1
-              MT(C(ISE,I),C(ISE,J)) = MT(C(ISE,I),C(ISE,J))+POIDS*
-     &             KHI*RHOCP*ZR(IVF2+K+I-1)*ZR(IVF2+K+J-1)/DELTAT
-403       CONTINUE
-401     CONTINUE
+              DO 403 J=1,NNO
+                IJ = IJ + 1
+                MT(C(ISE,I),C(ISE,J)) = MT(C(ISE,I),C(ISE,J))+POIDS*
+     &               KHI*RHOCP*ZR(IVF2+K+I-1)*ZR(IVF2+K+J-1)/DELTAT
+403         CONTINUE
+401       CONTINUE
+
+C --- SECHAGE
+
+        ELSE IF (ZK16(ICOMP)(1:5).EQ.'SECH_') THEN
+
+C ----- TERME DE RIGIDITE : 2EME FAMILLE DE PTS DE GAUSS ---------
+
+          DO 203 KP=1,NPG
+            K=(KP-1)*NNO
+            CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,COORSE,DFDX,DFDY,POIDS)
+            R      = 0.D0
+            TPG    = 0.D0
+            TPSEC  = 0.D0
+            DO 201 I=1,NNO
+              R      = R      + COORSE(2*(I-1)+1)     *ZR(IVF+K+I-1)
+              TPG    = TPG    + ZR(ITEMPI-1+C(ISE,I)) *ZR(IVF+K+I-1)
+              TPSEC  = TPSEC  + ZR(ISECHF-1+C(ISE,I)) *ZR(IVF+K+I-1)
+201         CONTINUE
+            IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
+            CALL RCDIFF(ZI(IMATE), ZK16(ICOMP), TPSEC, TPG, DIFF )
+C
+            IJ = IMATTT - 1
+            DO 202 I=1,NNO
+C
+              DO 202 J=1,NNO
+                IJ = IJ + 1
+                MT(C(ISE,I),C(ISE,J)) = MT(C(ISE,I),C(ISE,J))
+     &               + POIDS*(
+     &                 DIFF*THETA*(DFDX(I)*DFDX(J)+DFDY(I)*DFDY(J)))
+202         CONTINUE
+203       CONTINUE
+
+C ------- TERME DE MASSE : 3EME FAMILLE DE PTS DE GAUSS -----------
+
+          DO 301 I=1,NNO
+            DO 301 J=1,2
+               COORSE(2*(I-1)+J) = ZR(IGEOM-1+2*(C(ISE,I)-1)+J)
+301       CONTINUE
+
+          DO 304 KP=1,NPG2
+            K=(KP-1)*NNO
+            CALL DFDM2D ( NNO,KP,IPOID2,IDFDE2,COORSE,DFDX,DFDY,POIDS )
+            R      = 0.D0
+            DO 302 I=1,NNO
+              R      = R      + COORSE(2*(I-1)+1)     *ZR(IVF2+K+I-1)
+302         CONTINUE
+            IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
+C
+            IJ = IMATTT - 1
+            DO 303 I=1,NNO
+C
+              DO 303 J=1,NNO
+                IJ = IJ + 1
+                MT(C(ISE,I),C(ISE,J)) = MT(C(ISE,I),C(ISE,J))
+     &               + POIDS*(
+     &                 KHI*ZR(IVF2+K+I-1)*ZR(IVF2+K+J-1)/DELTAT  )
+303         CONTINUE
+304       CONTINUE
+      ENDIF
+
+C FIN DE LA BOUCLE SUR LES SOUS-ELEMENTS
 
 200   CONTINUE
 

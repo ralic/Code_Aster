@@ -1,4 +1,4 @@
-# MODIF  DATE 11/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE CALCUL DE K1, K2 EN DP ET CP SUR UNE PLAQUE CIRCULAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,57 +39,55 @@ A0=8.6602540379999E-01
 
 A1=0.5
 
-UXTEST = FORMULE(REEL="""(REEL:X,REEL:Y) =
-ATAN2(-X*A1+Y*A0,X*A0+Y*A1)
-                 """)
+UXTEST = FORMULE(NOM_PARA=('X','Y'),VALE='atan2(-X*A1+Y*A0,X*A0+Y*A1)')
 
-UXDP = FORMULE(REEL="""(REEL:X,REEL:Y) =
-2.593124823D-5 *
-        ( K1*COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
-            *(KDP-COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)))
-         +K2* SIN(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
-            *(KDP+2.0+COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1))))
-                 """)
+UXDP = FORMULE(NOM_PARA=('X','Y'),VALE='''
+2.593124823E-5 *
+        ( K1*cos(atan2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
+            *(KDP-cos(atan2(-X*A1+Y*A0,X*A0+Y*A1)))
+         +K2* sin(atan2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
+            *(KDP+2.0+cos(atan2(-X*A1+Y*A0,X*A0+Y*A1))))
+                 ''')
 
-UYDP = FORMULE(REEL="""(REEL:X,REEL:Y) =
-2.593124823D-5 *
-      (   K1* SIN(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
-            *(KDP-COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)))
-         -K2* COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
-            *(KDP-2.0+COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1))))
-                 """)
+UYDP = FORMULE(NOM_PARA=('X','Y'),VALE='''
+2.593124823E-5 *
+      (   K1* sin(atan2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
+            *(KDP-cos(atan2(-X*A1+Y*A0,X*A0+Y*A1)))
+         -K2* cos(atan2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
+            *(KDP-2.0+cos(atan2(-X*A1+Y*A0,X*A0+Y*A1))))
+                 ''')
 
-UXCP = FORMULE(REEL="""(REEL:X,REEL:Y) =
-2.593124823D-5 *
-      (   K1* COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
-            *(KCP-COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)))
-         +K2* SIN(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
-            *(KCP+2.0+COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1))))
-                 """)
+UXCP = FORMULE(NOM_PARA=('X','Y'),VALE='''
+2.593124823E-5 *
+      (   K1* cos(atan2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
+            *(KCP-cos(atan2(-X*A1+Y*A0,X*A0+Y*A1)))
+         +K2* sin(atan2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
+            *(KCP+2.0+cos(atan2(-X*A1+Y*A0,X*A0+Y*A1))))
+                 ''')
 
-UYCP = FORMULE(REEL="""(REEL:X,REEL:Y) =
-2.593124823D-5 *
-      (   K1* SIN(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
-            *(KCP-COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)))
-         -K2* COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
-            *(KCP-2.0+COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1))))
-                 """)
+UYCP = FORMULE(NOM_PARA=('X','Y'),VALE='''
+2.593124823E-5 *
+      (   K1* sin(atan2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
+            *(KCP-cos(atan2(-X*A1+Y*A0,X*A0+Y*A1)))
+         -K2* cos(atan2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
+            *(KCP-2.0+cos(atan2(-X*A1+Y*A0,X*A0+Y*A1))))
+                 ''')
 
-U1CP = FORMULE(REEL="""(REEL:X,REEL:Y) =
+U1CP = FORMULE(NOM_PARA=('X','Y'),VALE='''
 A0*UXCP(X,Y)- A1*UYCP(X,Y)
-                 """)
+                 ''')
 
-U2CP = FORMULE(REEL="""(REEL:X,REEL:Y) =
+U2CP = FORMULE(NOM_PARA=('X','Y'),VALE='''
 +A1*UXCP(X,Y)+ A0*UYCP(X,Y)
-                 """)
+                 ''')
 
-U1DP = FORMULE(REEL="""(REEL:X,REEL:Y) =
+U1DP = FORMULE(NOM_PARA=('X','Y'),VALE='''
 A0*UXDP(X,Y)- A1*UYDP(X,Y)
-                 """)
+                 ''')
 
-U2DP = FORMULE(REEL="""(REEL:X,REEL:Y) =
+U2DP = FORMULE(NOM_PARA=('X','Y'),VALE='''
 +A1*UXDP(X,Y)+ A0*UYDP(X,Y)
-                 """)
+                 ''')
 
 # ---------------------------------------------------------------------
 M=LIRE_MAILLAGE()

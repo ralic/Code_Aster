@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE PLAQUE FISSUREE EN THERMOELASTICITE: CALCUL DE DG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,12 +41,9 @@ DEBUT(   CODE=_F( NOM = 'HPLP100B',NIV_PUB_WEB='INTERNET')  )
 
 MA=LIRE_MAILLAGE(   )
 
-FONC1 = FORMULE(REEL="""(REEL:X,REEL:Y) =
-1.E-8*(X**2)+1.E-6*Y+5.E-2""")
-FONC2 = FORMULE(REEL="""(REEL:X,REEL:Y) =
-1.E-8*(Y**2)+1.E-6*X+5.E-2""")
-FONC3 = FORMULE(REEL="""(REEL:X,REEL:Y) =
-1.E-8*(Y*X)+5.E-2""")
+FONC1 = FORMULE(NOM_PARA=('X','Y'),VALE='1.E-8*(X**2)+1.E-6*Y+5.E-2')
+FONC2 = FORMULE(NOM_PARA=('X','Y'),VALE='1.E-8*(Y**2)+1.E-6*X+5.E-2')
+FONC3 = FORMULE(NOM_PARA=('X','Y'),VALE='1.E-8*(Y*X)+5.E-2')
 
 # -------------------------------------------------------------- #
 # PREMIER CALCUL AVEC LES DEUX TYPES DE CHARGEMENTS

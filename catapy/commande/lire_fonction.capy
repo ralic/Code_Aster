@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,8 +20,9 @@
 from Macro.lire_fonction_ops import lire_fonction_ops
 
 def lire_fonction_prod(self,TYPE,**args):
-  if   (TYPE == 'FONCTION'): return fonction_sdaster
-  elif (TYPE == 'NAPPE'   ): return nappe_sdaster
+  if   (TYPE == 'FONCTION')  : return fonction_sdaster
+  elif (TYPE == 'FONCTION_C'): return fonction_c
+  elif (TYPE == 'NAPPE'   )  : return nappe_sdaster
   raise AsException("type de concept resultat non prevu")
 
 LIRE_FONCTION=MACRO(nom="LIRE_FONCTION",op=lire_fonction_ops,sd_prod=lire_fonction_prod,
@@ -29,11 +30,19 @@ LIRE_FONCTION=MACRO(nom="LIRE_FONCTION",op=lire_fonction_ops,sd_prod=lire_foncti
                    reentrant='n',
             UIinfo={"groupes":("Fonction",)},
          FORMAT          =SIMP(statut='f',typ='TXM',into=("LIBRE",),defaut="LIBRE"  ),
-         TYPE            =SIMP(statut='f',typ='TXM',into=("FONCTION","NAPPE"),defaut="FONCTION"  ),
+         TYPE            =SIMP(statut='f',typ='TXM',into=("FONCTION","FONCTION_C","NAPPE"),defaut="FONCTION"  ),
          SEPAR           =SIMP(statut='f',typ='TXM',into=("None",",",";","/"),defaut="None" ),
          INDIC_PARA      =SIMP(statut='f',typ='I',min=2,max=2,defaut=[1,1]),
          b_fonction      =BLOC(condition = "TYPE=='FONCTION' ",
            INDIC_RESU      =SIMP(statut='f',typ='I',min=2,max=2,defaut=[1,2]), ),
+         b_fonction_c    =BLOC(condition = "TYPE=='FONCTION_C' ",
+           FORMAT_C        =SIMP(statut='f',typ='TXM',defaut="REEL_IMAG",into=("REEL_IMAG","MODULE_PHASE") ),
+           b_reel_imag     =BLOC(condition = "FORMAT_C=='REEL_IMAG' ",
+             INDIC_REEL      =SIMP(statut='o',typ='I',min=2,max=2,defaut=[1,2]),
+             INDIC_IMAG      =SIMP(statut='o',typ='I',min=2,max=2,defaut=[1,3]), ) ,
+           b_modu_phas     =BLOC(condition = "FORMAT_C=='MODULE_PHASE' ",
+             INDIC_MODU      =SIMP(statut='o',typ='I',min=2,max=2,defaut=[1,2]),
+             INDIC_PHAS      =SIMP(statut='o',typ='I',min=2,max=2,defaut=[1,3]), ), ),
          b_nappe         =BLOC(condition = "TYPE=='NAPPE' ",
            NOM_PARA_FONC   =SIMP(statut='o',typ='TXM',into=C_PARA_FONCTION() ),
            INDIC_ABSCISSE  =SIMP(statut='o',typ='I',min=2,max=2,),

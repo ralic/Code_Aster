@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 # TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_N
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -252,31 +252,39 @@ QPI2=4.* pi * pi
 FREQ=NORM_MODE(reuse=FREQ,   MODE=FREQ,   NORME='MASS_GENE',
                      TITRE='NORME MASS_GENE'        )
 
+r1=QPI2 *  5.5274 ** 2
+r2=QPI2 * 10.8868 ** 2
+r3=QPI2 * 15.9155 ** 2
+r4=QPI2 * 20.4606 ** 2
+r5=QPI2 * 24.3840 ** 2
+r6=QPI2 * 27.5664 ** 2
+r7=QPI2 * 29.9113 ** 2
+r8=QPI2 * 31.3474 ** 2
 TEST_RESU(RESU=(
     _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-            NUME_ORDRE = 1,         VALE = EVAL("""QPI2 *  5.5274 ** 2 """)),
+            NUME_ORDRE = 1,         VALE = r1),
     _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-            NUME_ORDRE = 2,         VALE = EVAL("""QPI2 * 10.8868 ** 2 """)),
+            NUME_ORDRE = 2,         VALE = r2),
     _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-            NUME_ORDRE = 3,         VALE = EVAL("""QPI2 * 15.9155 ** 2 """)),
+            NUME_ORDRE = 3,         VALE = r3),
     _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-            NUME_ORDRE = 4,         VALE = EVAL("""QPI2 * 20.4606 ** 2 """)),
+            NUME_ORDRE = 4,         VALE = r4),
     _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-            NUME_ORDRE = 5,         VALE = EVAL("""QPI2 * 24.3840 ** 2 """)),
+            NUME_ORDRE = 5,         VALE = r5),
     _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-            NUME_ORDRE = 6,         VALE = EVAL("""QPI2 * 27.5664 ** 2 """)),
+            NUME_ORDRE = 6,         VALE = r6),
     _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-            NUME_ORDRE = 7,         VALE = EVAL("""QPI2 * 29.9113 ** 2 """)),
+            NUME_ORDRE = 7,         VALE = r7),
     _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-            NUME_ORDRE = 8,         VALE = EVAL("""QPI2 * 31.3474 ** 2 """)),
+            NUME_ORDRE = 8,         VALE = r8),
 #
      _F( RESULTAT = FREQ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
                                  NOEUD = 'P1',NOM_CMP = CMP,VALE = 4.0781E-2),
@@ -318,31 +326,39 @@ TEST_RESU(RESU=(
 FREQ=NORM_MODE(reuse=FREQ,   MODE=FREQ,   NORME='RIGI_GENE',
                      TITRE='NORME RIGI_GENE'        )
 
+s1=1./ (QPI2 *  5.5274 ** 2)
+s2=1./ (QPI2 * 10.8868 ** 2)
+s3=1./ (QPI2 * 15.9155 ** 2)
+s4=1./ (QPI2 * 20.4606 ** 2)
+s5=1./ (QPI2 * 24.3840 ** 2)
+s6=1./ (QPI2 * 27.5664 ** 2)
+s7=1./ (QPI2 * 29.9113 ** 2)
+s8=1./ (QPI2 * 31.3474 ** 2)
 TEST_RESU(RESU=(
     _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-            NUME_ORDRE = 1,         VALE = EVAL("""1./ (QPI2* 5.5274 ** 2)""")),
+            NUME_ORDRE = 1,         VALE = s1),
     _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-            NUME_ORDRE = 2,         VALE = EVAL("""1./ (QPI2*10.8868 ** 2)""")),
+            NUME_ORDRE = 2,         VALE = s2),
     _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-            NUME_ORDRE = 3,         VALE = EVAL("""1./ (QPI2*15.9155 ** 2)""")),
+            NUME_ORDRE = 3,         VALE = s3),
     _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-            NUME_ORDRE = 4,         VALE = EVAL("""1./ (QPI2*20.4606 ** 2)""")),
+            NUME_ORDRE = 4,         VALE = s4),
     _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-            NUME_ORDRE = 5,         VALE = EVAL("""1./ (QPI2*24.3840 ** 2)""")),
+            NUME_ORDRE = 5,         VALE = s5),
     _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-            NUME_ORDRE = 6,         VALE = EVAL("""1./ (QPI2*27.5664 ** 2)""")),
+            NUME_ORDRE = 6,         VALE = s6),
     _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-            NUME_ORDRE = 7,         VALE = EVAL("""1./ (QPI2*29.9113 ** 2)""")),
+            NUME_ORDRE = 7,         VALE = s7),
     _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,
-            NUME_ORDRE = 8,         VALE = EVAL("""1./ (QPI2*31.3474 ** 2)""")),
+            NUME_ORDRE = 8,         VALE = s8),
 
 #
      _F( RESULTAT = FREQ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
@@ -538,11 +554,9 @@ TEST_RESU(RESU=(
 
 
 
-TY = FORMULE(REEL="""(REEL:Y) =
-3. + ( 4. * Y  ) """)
+TY = FORMULE(NOM_PARA='Y',VALE='3. + ( 4. * Y  )')
 
-TX = FORMULE(REEL="""(REEL:X) =
-1. + ( 2. * X  ) """)
+TX = FORMULE(NOM_PARA='X',VALE='1. + ( 2. * X  )')
 
 CHT=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_F', MAILLAGE=MA,AFFE=(
                       _F(  NOEUD = ('P1',  'P3', 'P4','P6',),

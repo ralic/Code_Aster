@@ -1,7 +1,7 @@
       SUBROUTINE NSLDC(MODELE,MATE,COMPOR,INPSCO,NRPASE,TYPESE,NOPASE,
      &                 STYPSE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2003   AUTEUR F6BHHBO P.DEBONNIERES 
+C MODIF ALGORITH  DATE 17/09/2004   AUTEUR F6BHHBO P.DEBONNIERES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -70,7 +70,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
       PARAMETER ( NOMPRO = 'NSLDC' )
       
       INTEGER NCHINX,NCHOUX
-      PARAMETER (NCHINX = 14, NCHOUX = 2)
+      PARAMETER (NCHINX = 15, NCHOUX = 2)
       
       INTEGER IBID,IAUX,JAUX,IFM,NIV,JDUTMP,JDEPMS,NEQ
       REAL*8       RBID
@@ -171,7 +171,7 @@ C    -----------------------------------------------------
       LCHIN(5) = DUTMP
 
       LPAIN(6) = 'PCONTMS'
-      LCHIN(6) = SIGTMP
+      LCHIN(6) = SIGMOS
 
       LPAIN(7) = 'PVARIMS'
       LCHIN(7) = VARMOS
@@ -196,6 +196,9 @@ C    -----------------------------------------------------
  
       LPAIN(14) = 'PARSENS'
       LCHIN(14) = CHDERI
+
+      LPAIN(15) = 'PCOPARS'
+      LCHIN(15) = SIGTMP
             
 
 

@@ -5,7 +5,7 @@
       CHARACTER*(*)       NOMF,       NOMPU(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,7 +55,7 @@ C     ------------------------------------------------------------------
       INTEGER      LPROL, NUPAR, MXPARA, NBPF, I, I1, I2, LVALE,
      +             LFONC, NBVALE
       REAL*8       LINLIN, LINLOG, LOGLOG, LOGLIN, X, X1, Y1, X2, Y2
-      REAL*8       RESU(2), EPSI, TOLE, R8PREM, R8VIDE, VALR
+      REAL*8       EPSI, TOLE, R8PREM, R8VIDE, VALR
       CHARACTER*1  COLI, K1BID, BL
       CHARACTER*16 INTERP, PROLGD
       CHARACTER*19 NOMFON
@@ -100,38 +100,8 @@ C
 C --- CALCUL DE LA FONCTION INTERPRETEE ---
 C
       IF ( ZK16(LPROL) .EQ. 'INTERPRE' ) THEN
-         CALL FONBPA ( NOMFON, ZK16(LPROL), K1BID, MXPARA, NBPF, NOMP )
-         DO 70 I1 = 1,NBPF
-            IPAR(I1) = 0
-            DO 72 NUPAR = 1,NBPU
-               IF (NOMPU(NUPAR).EQ.NOMP(I1)) THEN
-                  IF (IPAR(I1).EQ.0) THEN
-                     IPAR(I1) = NUPAR
-                  ELSE
-                     IER = 120
-                   CALL UTDEBM('F','FOINTC','ERREUR A L''INTERPOLATION')
-                     CALL UTIMPK('S',' FONCTION ',1,NOMFON)
-                     CALL UTIMPK('L',' PARAMETRE ',NBPU,NOMPU)
-                     CALL UTIMPK('S',' EN DOUBLE',0,BL)
-                     CALL UTFINM()
-                     GOTO 9999
-                  ENDIF
-               ENDIF
- 72         CONTINUE
-            IF (IPAR(I1).EQ.0) THEN
-               IER = 130
-               CALL UTDEBM('F','FOINTC','ERREUR A L''INTERPOLATION')
-               CALL UTIMPK('S',' FONCTION ',1,NOMFON)
-               CALL UTIMPK('L',' PARAMETRES ATTENDUS ',NBPF,NOMP)
-               CALL UTIMPK('L',' PARAMETRES RECUS    ',NBPU,NOMPU)
-               CALL UTFINM()
-               GOTO 9999
-            ENDIF
- 70      CONTINUE
-         CALL FIINTC ( 'F', NOMF, NBPF, IPAR, VALPU, RESU, IER )
-         RESURE = RESU(1)
-         RESUIM = RESU(2)
-C
+         CALL UTMESS('F','FOINTC','POUR L''INSTANT, ON NE TRAITE '
+     +              //'PAS LES FORMULES COMPLEXES')
          GOTO 9999
 C
       ENDIF
