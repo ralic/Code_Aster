@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 04/02/2004   AUTEUR CAMBIER S.CAMBIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,7 +34,7 @@ def calc_fonction_prod(DERIVE,EXTRACTION,INTEGRE,ECART_TYPE,INVERSE,RMS,NOCI_SEI
   if (COMPOSE     != None): return fonction
   if (ASSE        != None): return fonction
   if (FFT         != None): 
-     vale=FFT.get_child('FONCTION').get_valeur()
+     vale=FFT['FONCTION']
      if (AsType(vale) == fonction )  : return fonction_c
      if (AsType(vale) == fonction_c) : return fonction
   if (CORR_ACCE   != None): return fonction

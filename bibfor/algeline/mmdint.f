@@ -1,7 +1,7 @@
-      SUBROUTINE  MMDINT ( NEQNS, XADJ, ADJNCY, DHEAD, DFORW,
+      SUBROUTINE  MMDINT ( NEQNS, XADJ, DHEAD, DFORW,
      1                     DBAKW, QSIZE, LLIST, MARKER )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/01/2002   AUTEUR JFBHHUC C.ROSE 
+C MODIF ALGELINE  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +35,7 @@ C        ALGORITHM.
 C
 C     INPUT PARAMETERS -
 C        NEQNS  - NUMBER OF EQUATIONS.
-C        (XADJ,ADJNCY) - ADJACENCY STRUCTURE.
+C        XADJ   - ADJACENCY STRUCTURE.
 C
 C     OUTPUT PARAMETERS -
 C        (DHEAD,DFORW,DBAKW) - DEGREE DOUBLY LINKED STRUCTURE.
@@ -45,7 +45,7 @@ C        MARKER - MARKER VECTOR.
 C
 C***************************************************************
 C
-         INTEGER    ADJNCY(*), DBAKW(*) , DFORW(*) , DHEAD(*) ,
+         INTEGER    DBAKW(*) , DFORW(*) , DHEAD(*) ,
      1              LLIST(*) , MARKER(*), QSIZE(*)
          INTEGER    XADJ(*)
          INTEGER    FNODE , NDEG  , NEQNS , NODE

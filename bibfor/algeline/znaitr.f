@@ -1,10 +1,10 @@
       SUBROUTINE ZNAITR
-     &   (IDO, BMAT, N, K, NP, NB, RESID, RNORM, V, LDV, H, LDH, 
+     &   (IDO, BMAT, N, K, NP, RESID, RNORM, V, LDV, H, LDH, 
      &    IPNTR, WORKD, INFO, ALPHA)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,7 +48,7 @@ C  COMPUTED AND RETURNED.
 C
 C\USAGE:
 C  CALL ZNAITR
-C     ( IDO, BMAT, N, K, NP, NB, RESID, RNORM, V, LDV, H, LDH, 
+C     ( IDO, BMAT, N, K, NP, RESID, RNORM, V, LDV, H, LDH, 
 C       IPNTR, WORKD, INFO )
 C
 C\ARGUMENTS
@@ -88,11 +88,6 @@ C          CURRENT SIZE OF V AND H.
 C
 C  NP      INTEGER.  (INPUT)
 C          NUMBER OF ADDITIONAL ARNOLDI STEPS TO TAKE.
-C
-C  NB      INTEGER.  (INPUT)
-C          BLOCKSIZE TO BE USED IN THE RECURRENCE.          
-C          ONLY WORK FOR NB = 1 RIGHT NOW.  THE GOAL IS TO HAVE A 
-C          PROGRAM THAT IMPLEMENT BOTH THE BLOCK AND NON-BLOCK METHOD.
 C
 C  RESID   COMPLEX*16 ARRAY OF LENGTH N.  (INPUT/OUTPUT)
 C          ON INPUT:  RESID CONTAINS THE RESIDUAL VECTOR R_{K}.
@@ -255,7 +250,7 @@ C     | SCALAR ARGUMENTS |
 C     %------------------%
 C
       CHARACTER*1 BMAT
-      INTEGER IDO, INFO, K, LDH, LDV, N, NB, NP
+      INTEGER IDO, INFO, K, LDH, LDV, N, NP
       REAL*8 RNORM, ALPHA
 C
 C     %-----------------%
@@ -433,7 +428,7 @@ C           | IF IN REVERSE COMMUNICATION MODE AND |
 C           | RSTART = .TRUE. FLOW RETURNS HERE.   |
 C           %--------------------------------------%
 C
-            CALL ZGETV0 (IDO, BMAT, ITRY, .FALSE., N, J, V, LDV, 
+            CALL ZGETV0 (IDO, BMAT, .FALSE., N, J, V, LDV, 
      &                   RESID, RNORM, IPNTR, WORKD, IERR, ALPHA)
             IF (IDO .NE. 99) GO TO 9000
             IF (IERR .LT. 0) THEN

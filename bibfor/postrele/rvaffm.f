@@ -8,7 +8,7 @@
       CHARACTER*(*)       MCF, REP, OPTION, NOMTAB, QUANT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -136,7 +136,7 @@ C
             CALL RVTAMO ( ZR(ASDMO), ZK8(ANOCP), NBCP, NBCO, NBSP,
      +                    NOMTAB, IOCC, NCHEFF, I1, IOC, ISD )
          ELSE
-            CALL RVRCCM ( ZR(ASDMO), ZK8(ANOCP), NBCP, NBCO, NBSP,
+            CALL RVRCCM ( ZR(ASDMO), NBCP, NBCO, NBSP,
      +                    NOMTAB, IOCC, NCHEFF, I1, IOC, ISD )
          ENDIF
 100   CONTINUE

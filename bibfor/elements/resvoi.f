@@ -1,9 +1,9 @@
-      SUBROUTINE RESVOI ( MOZ , MAZ , BASZ, CHVOIZ )
+      SUBROUTINE RESVOI ( MOZ , MAZ , CHVOIZ )
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)       MOZ,  MAZ,  BASZ, CHVOIZ
+      CHARACTER*(*)       MOZ,  MAZ, CHVOIZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/09/2002   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF ELEMENTS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

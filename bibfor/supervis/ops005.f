@@ -3,7 +3,7 @@
       INTEGER            ICMD , ICOND, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 01/04/2003   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 24/11/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C     ------- COMMUN FORMULE
       COMMON /LXCN02/    ILECT, IECR, LRECL, IEOF, ICOL, ILIG
 
       INTEGER NOMBRE
-      PARAMETER(NOMBRE=20)
+      PARAMETER(NOMBRE=50)
       CHARACTER*80 FTEXT(NOMBRE)
       COMMON /CXFO01/FTEXT
 

@@ -1,11 +1,11 @@
       SUBROUTINE TBIMEX ( TABLE, IFR, NPARIM, LIPAIM, FORMAZ,
-     +                    FORMAR, FORMAC )
+     +                    FORMAR)
       IMPLICIT   NONE
       INTEGER             IFR, NPARIM
-      CHARACTER*(*)       TABLE, LIPAIM(*), FORMAZ, FORMAR, FORMAC
+      CHARACTER*(*)       TABLE, LIPAIM(*), FORMAZ, FORMAR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/07/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,6 @@ C IN  : NPARIM : NOMBRE DE PARAMETRES D'IMPRESSION
 C IN  : LIPAIM : LISTE DES PARAMETRES D'IMPRESSION
 C IN  : FORMAT : FORMAT D'IMPRESSION DE LA TABLE
 C IN  : FORMAR : FORMAT D'IMPRESSION DES REELS
-C IN  : FORMAC : FORMAT D'IMPRESSION DES COMPLEXES
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI

@@ -4,7 +4,7 @@
       REAL*8                    VALE(*),EPS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 29/09/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF UTILIFOR  DATE 13/02/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,49 +33,50 @@ C     ------------------------------------------------------------------
       INTEGER   INCRS, IS9
       REAL*8    DIFF
 C
+C     --- RIEN A FAIRE SI NBVALE=0 OU 1 (ET NE PAS MODIFIER NBVALE)
 C
 C     --- TRI BULLE ---
       IF ( NBVALE .GT. 1 ) THEN
-C         --- CHOIX DE L'INCREMENT ---
-          INCRS = 1
-          IS9   = NBVALE / 9
- 10       CONTINUE
-          IF (INCRS .LT. IS9) THEN
-             INCRS = 3*INCRS+1
-             GOTO 10
-          ENDIF
+C        --- CHOIX DE L'INCREMENT ---
+         INCRS = 1
+         IS9   = NBVALE / 9
+ 10      CONTINUE
+         IF (INCRS .LT. IS9) THEN
+            INCRS = 3*INCRS+1
+            GOTO 10
+         ENDIF
 C
-C         --- REMONTEE DES BULLES ---
-120       CONTINUE
-          DO 150 J=INCRS+1,NBVALE
-             L = J-INCRS
-130          CONTINUE
-             IF ( L.GT.0) THEN
-                IF ( VALE(L) .GT. VALE(L+INCRS) ) THEN
-C                  --- PERMUTATION ---
-                   DIFF          = VALE(L)
-                   VALE(L)       = VALE(L+INCRS)
-                   VALE(L+INCRS) = DIFF
-                   L = L - INCRS
-                   GOTO 130
-               ENDIF
-             ENDIF
-150       CONTINUE
-          INCRS = INCRS/3
-          IF (INCRS.GE.1) GOTO 120
-      ENDIF
-C
-C     --- SUPPRESSION DES VALEURS MULTIPLES ---
-      IF ( EPS .GE. 0.D0 ) THEN
-         J=1
-         DO 301 I=2,NBVALE
-            DIFF = VALE(I)-VALE(J)
-            IF( DIFF .GT. EPS ) THEN
-              J       = J + 1
-              VALE(J) = VALE(I)
+C        --- REMONTEE DES BULLES ---
+120      CONTINUE
+         DO 150 J=INCRS+1,NBVALE
+            L = J-INCRS
+130         CONTINUE
+            IF ( L.GT.0) THEN
+               IF ( VALE(L) .GT. VALE(L+INCRS) ) THEN
+C                 --- PERMUTATION ---
+                  DIFF          = VALE(L)
+                  VALE(L)       = VALE(L+INCRS)
+                  VALE(L+INCRS) = DIFF
+                  L = L - INCRS
+                  GOTO 130
+              ENDIF
             ENDIF
-  301    CONTINUE
-         NBVALE = J
+150      CONTINUE
+         INCRS = INCRS/3
+         IF (INCRS.GE.1) GOTO 120
+C
+C        --- SUPPRESSION DES VALEURS MULTIPLES ---
+         IF ( EPS .GE. 0.D0 ) THEN
+            J=1
+            DO 301 I=2,NBVALE
+               DIFF = VALE(I)-VALE(J)
+               IF( DIFF .GT. EPS ) THEN
+                 J       = J + 1
+                 VALE(J) = VALE(I)
+               ENDIF
+  301       CONTINUE
+            NBVALE = J
+         ENDIF
       ENDIF
 C
       END

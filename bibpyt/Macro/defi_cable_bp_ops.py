@@ -1,4 +1,4 @@
-#@ MODIF defi_cable_bp_ops Macro  DATE 21/03/2003   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF defi_cable_bp_ops Macro  DATE 19/01/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -102,7 +102,7 @@ def defi_cable_bp_ops(self,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
       print '  # ---------------------------------------------------------------------------'
       print ' '
       ier=ier+1
-      self.cr.fatal("""Erreur defi_cable_bp""")
+      self.cr.fatal("""<F> <DEFI_CABLE_BP> Erreur dans la macro""")
       return ier
 
 
@@ -163,7 +163,7 @@ def defi_cable_bp_ops(self,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
           print '  # ---------------------------------------------------------------------------'
           print ' '
           ier=ier+1
-          self.cr.fatal("""Erreur defi_cable_bp""")
+          self.cr.fatal("""<F> <DEFI_CABLE_BP> Erreur dans la macro""")
           return ier
         if i.has_key('GROUP_NO_ANCRAGE') == 1: 
           __PC1 = i['GROUP_NO_ANCRAGE'][0]
@@ -199,7 +199,7 @@ def defi_cable_bp_ops(self,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
           print '  # ---------------------------------------------------------------------------'
           print ' '
           ier=ier+1
-          self.cr.fatal("""Erreur defi_cable_bp""")
+          self.cr.fatal("""<F> <DEFI_CABLE_BP> Erreur dans la macro""")
           return ier
         if i.has_key('GROUP_NO_ANCRAGE') == 1: 
           __PC1 = i['GROUP_NO_ANCRAGE'][1]

@@ -1,6 +1,6 @@
       SUBROUTINE TE0198(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,11 +29,11 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 
-      CHARACTER*8   MODELI, ELREFE
-      CHARACTER*24  CARAC, FF
+      CHARACTER*8   MODELI
       REAL*8        BSIGMA(81), SIGTH(162), REPERE(7)
       REAL*8        NHARM, INSTAN
-      INTEGER       NBSIGM
+      INTEGER       NBSIGM,NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO
+      INTEGER       DIMMOD
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -52,32 +52,15 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      CALL ELREF1(ELREFE)
-
-C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
-C ---- GEOMETRIE ET INTEGRATION
-C      ------------------------
-      CARAC = '&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-
-      FF = '&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS = IFF
-      IVF = IPOIDS + NPG1
-      IDFDE = IVF + NPG1*NNO
-      IDFDK = IDFDE + NPG1*NNO
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
 
 C --- INITIALISATIONS :
 C     -----------------
       ZERO = 0.0D0
       INSTAN = ZERO
       NHARM = ZERO
-      BIDON = ZERO
-      NDIM = 3
-      NDIM2 = 2
       MODELI(1:2) = NOMTE(3:4)
+      DIMMOD = 3
 
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
@@ -87,7 +70,7 @@ C      -----------------------------------------
         SIGTH(I) = ZERO
    10 CONTINUE
 
-      DO 20 I = 1,NDIM*NNO
+      DO 20 I = 1,DIMMOD*NNO
         BSIGMA(I) = ZERO
    20 CONTINUE
 
@@ -101,7 +84,7 @@ C      ------------------------
 
 C ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
 C      ------------------------------------------------------------
-      CALL ORTREP(ZI(IMATE),NDIM2,REPERE)
+      CALL ORTREP(ZI(IMATE),NDIM,REPERE)
 
 C ---- RECUPERATION DU CHAMP DE TEMPERATURE SUR L'ELEMENT
 C      --------------------------------------------------
@@ -133,23 +116,22 @@ C      ------------------------------------
 C ---- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT :
 C      ------------
-      CALL SIGTMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IGEOM),
+      CALL SIGTMC(MODELI,NNO,DIMMOD,NBSIG,NPG1,ZR(IVF),ZR(IGEOM),
      &            ZR(ITEMPE),ZR(ITREF),ZR(IHYDR),ZR(ISECH),INSTAN,
      &            ZI(IMATE),REPERE,OPTION,SIGTH)
 
 C ---- CALCUL DU VECTEUR DES FORCES D'ORIGINE THERMIQUE/HYDRIQUE
 C ---- OU DE SECHAGE (BT*SIGTH)
 C      ----------------------------------------------------------
-      CALL BSIGMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
-     &            ZR(IDFDK),BIDON,ZR(IPOIDS),ZR(IGEOM),NHARM,SIGTH,
-     &            BSIGMA)
+      CALL BSIGMC(MODELI,NNO,DIMMOD,NBSIG,NPG1,IPOIDS,IVF,IDFDE, 
+     +              ZR(IGEOM), NHARM, SIGTH, BSIGMA )
 
 C ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE AVEC LE
 C ---- VECTEUR DES FORCES D'ORIGINE THERMIQUE
 C      -------------------------------------
       CALL JEVECH('PVECTUR','E',IVECTU)
 
-      DO 30 I = 1,NDIM*NNO
+      DO 30 I = 1,DIMMOD*NNO
         ZR(IVECTU+I-1) = BSIGMA(I)
    30 CONTINUE
 

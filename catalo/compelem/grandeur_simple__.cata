@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 29/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+%& MODIF COMPELEM  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -28,11 +28,11 @@ GRANDEUR_SIMPLE__
 <<  CAARPO : CARACTERISTIQUES DES ELEMENTS DE POUTRE COURBE
                 RCOURB : RAYON DE COURBURE
                 ORIE_ARC : TROISIEME ANGLE NAUTIQUE DEFINISSANT LE PLAN DE L ARC
-                C_FLEX, I_SIGM : COEFFICIENT DE FLEXIBILITE ET INDICE DE 
+                C_FLEX, I_SIGM : COEFFICIENT DE FLEXIBILITE ET INDICE DE
                 CONTRAINTES DANS LES DIRECTIONS Y ET Z
-                C_FLEX_Y, I_SIGM_Y : COEFFCIENT DE FLEXIBILITE ET INDICE DE 
+                C_FLEX_Y, I_SIGM_Y : COEFFCIENT DE FLEXIBILITE ET INDICE DE
                 CONTRAINTES DANS LA DIRECTION Y
-                C_FLEX_Y, I_SIGM_Y : COEFFCIENT DE FLEXIBILITE ET INDICE DE 
+                C_FLEX_Y, I_SIGM_Y : COEFFCIENT DE FLEXIBILITE ET INDICE DE
                 CONTRAINTES DANS LA DIRECTION Z
                  >>
     CAARPO   = R    RCOURB   ORIE_ARC C_FLEX   I_SIGM   C_FLEX_Y I_SIGM_Y C_FLEX_Z I_SIGM_Z
@@ -86,22 +86,22 @@ GRANDEUR_SIMPLE__
                     M73      M74      M75      M76      M77      M78      REPM
     CAFI_R   = R    XG       YG       AIRE
 <<  CAGEBA : CARACTERISTIQUES DES SECTIONS DE BARRE CERCLE OU RECTANGLE :
-               HY1, EPY1, HY2, EPY2 : DIMENSION DE LA SECTION RECTANGULAIRE ET 
+               HY1, EPY1, HY2, EPY2 : DIMENSION DE LA SECTION RECTANGULAIRE ET
                EPAISSEUR SUIVANT Y AUX NOEUDS 1 ET 2
-               HZ1, EPZ1, HZ2, EPZ2 : DIMENSION DE LA SECTION RECTANGULAIRE ET 
+               HZ1, EPZ1, HZ2, EPZ2 : DIMENSION DE LA SECTION RECTANGULAIRE ET
                EPAISSEUR SUIVANT Z AUX NOEUDS 1 ET 2
-               R1, EP1, R2, EP2 : RAYON EXTERNE  ET EPAISSEUR DE LA SECTION 
+               R1, EP1, R2, EP2 : RAYON EXTERNE  ET EPAISSEUR DE LA SECTION
                CIRCULAIRE AUX NOEUDS 1 ET 2
                TSEC : TYPE DE SECTION
                >>
     CAGEBA   = R    HY1      HZ1      EPY1     EPZ1     HY2      HZ2      EPY2     EPZ2
                     R1       EP1      R2       EP2      TSEC
 <<  CAGEPO : CARACTERISTIQUES DES SECTIONS DE POUTRE CERCLE OU RECTANGLE :
-               HY1, EPY1, HY2, EPY2 : DIMENSION DE LA SECTION RECTANGULAIRE ET 
+               HY1, EPY1, HY2, EPY2 : DIMENSION DE LA SECTION RECTANGULAIRE ET
                EPAISSEUR SUIVANT Y AUX NOEUDS 1 ET 2
-               HZ1, EPZ1, HZ2, EPZ2 : DIMENSION DE LA SECTION RECTANGULAIRE ET 
+               HZ1, EPZ1, HZ2, EPZ2 : DIMENSION DE LA SECTION RECTANGULAIRE ET
                EPAISSEUR SUIVANT Z AUX NOEUDS 1 ET 2
-               R1, EP1, R2, EP2 : RAYON EXTERNE  ET EPAISSEUR DE LA SECTION 
+               R1, EP1, R2, EP2 : RAYON EXTERNE  ET EPAISSEUR DE LA SECTION
                CIRCULAIRE AUX NOEUDS 1 ET 2
                TSEC : TYPE DE SECTION
                >>
@@ -123,14 +123,14 @@ GRANDEUR_SIMPLE__
                     RZ2      RT2      AI2      JG2      IYR22    IZR22    TVAR
     CAMASS   = R    C        ALPHA    BETA     KAPPA    X        Y        Z
 <<  CAORIE : ORIENTATION DES REPERES LOCAUX DES POUTRES ET TUYAUX
-             ALPHA    BETA     GAMMA  : 3 angles nautiques pour la maille SEG2 
+             ALPHA    BETA     GAMMA  : 3 angles nautiques pour la maille SEG2
              (ou le 1er noeud d une maille SEG3 ou SEG4)
-             ALPHA2    BETA2     GAMMA2  : 3 angles nautiques pour le 2eme 
+             ALPHA2    BETA2     GAMMA2  : 3 angles nautiques pour le 2eme
              noeud d une maille SEG3 ou SEG4
-             ALPHA3    BETA3     GAMMA3  : 3 angles nautiques pour le 3eme 
+             ALPHA3    BETA3     GAMMA3  : 3 angles nautiques pour le 3eme
              noeud d une maille SEG3 ou SEG4
-             ALPHA4    BETA4     GAMMA4  : 3 angles nautiques pour le 4eme 
-             noeud d une maille SEG3 
+             ALPHA4    BETA4     GAMMA4  : 3 angles nautiques pour le 4eme
+             noeud d une maille SEG3
              ICOUDE    DN1N2     RCOURB ANGCOU ANGZZK  : caracteristiques
               d un tuyau courbe
                    >>
@@ -138,13 +138,13 @@ GRANDEUR_SIMPLE__
                     GAMMA3   ALPHA4   BETA4    GAMMA4   ICOUDE   DN1N2    RCOURB   ANGCOU
                     ANGZZK
     CAPOUF   = R    B_T      B_N      B_TN     A_FLUI   A_CELL   COEF_ECH
-<<  CARCRI : PARAMETRES  DE CONVERGENCE POUR STAT_NON_LINE 
+<<  CARCRI : PARAMETRES  DE CONVERGENCE POUR STAT_NON_LINE
        ITECREL = NB ITERATIONS MAXI A CONVERGENCE (ITER_INTE_MAXI == ITECREL)
        MACOMP   = TYPE DE JACOBIEN A T+DT (TYPE_MATR_COMP == MACOMP)
        RESCREL  = VALEUR TOLERANCE DE CONVERGENCE (RESI_INTE_RELA == RESCREL)
        ITEDEC  = NOMBRE D INCREMENTS POUR LE  REDECOUPAGE LOCAL DU PAS DE TEMPS
        (ITER_INTE_PAS  == ITEDEC)
-       INTLOC = TYPE D INTEGRATION LOCAL POUR LA LOI DE COMPORTEMENT  
+       INTLOC = TYPE D INTEGRATION LOCAL POUR LA LOI DE COMPORTEMENT
        (RESO_INTE == INTLOC)
        THETA = PARAMETRE DE LA THETA METHODE
 >>
@@ -164,14 +164,19 @@ GRANDEUR_SIMPLE__
  >>
     COMPOR   = K16  RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1  XXXX2   KIT1
                     KIT2     KIT3     KIT4     KIT5     KIT6     KIT7     KIT8     KIT9
+<<  CORR : CORROSION
+>>
+    CORR_R   = R    CORR
+
 <<  CRRU_R: CRITERES DE RUPTURE DANS LES COUCHES (POST-TRAITEMENT)
-        CRIL  : CRITERE DE RUPTURE EN TRACTION SUIVANT L (1ERE DIR ORTHOTROPIE)
-        CRILP : CRITERE DE RUPTURE EN COMPRESSION SUIVANT L
-        CRIT :  CRITERE DE RUPTURE EN TRACTION SUIVANT T (2NDE DIR ORTHOTROPIE)
-        CRITP : CRITERE DE RUPTURE EN COMPRESSION SUIVANT T
+        SIGL :  CONTRAINTE SUIVANT LA 1ERE DIR ORTHOTROPIE
+        SIGT :  CONTRAINTE SUIVANT LA 2EME DIR ORTHOTROPIE
+        SIGLT :  CONTRAINTE DE CISAILLEMENT
+        CRIL  : CRITERE DE RUPTURE SUIVANT LA 1ERE DIR ORTHOTROPIE
+        CRIT :  CRITERE DE RUPTURE SUIVANT LA 2NDE DIR ORTHOTROPIE
         CRILT : CRITERE DE RUPTURE EN CISAILLEMENT SUIVANT LT
         CRITH : CRITERE DE TSAI-HILL >>
-    CRRU_R   = R    CRIL     CRILP    CRIT     CRITP    CRILT    CRITH
+    CRRU_R   = R    SIGL  SIGT  SIGLT  CRIL     CRIT   CRILT    CRITH
     DBEL_R   = R    DB
     DCEL_I   = I    NPG_DYN  NCMP_DYN
     DDLI_C   = C    C
@@ -218,7 +223,16 @@ GRANDEUR_SIMPLE__
                     WI1      WO1      GONF     EPXX     EPYY     EPZZ     EPXY     EPXZ
                     EPYZ     D1       D1X      D1Y      D1Z      D2       D2X      D2Y
                     D2Z      D3       D3X      D3Y      D3Z
-    DOMMAG   = R    DOMA
+
+<<  DOMMAG   : DOMMAGE
+       DOMA     :
+       TRIAX    : TAUX DE TRIAXIALITE
+       SI_ENDO  : CONTRAINTE EQUIVALENTE D'ENDOMMAGEMENT
+       COENDO   : CONTRAINTE EQUIVALENTE D'ENDOMMAGEMENT NORMALISEE
+       DOM_LEM  : ENDOMMAGEMENT DE LEMAITRE
+       D_CUMULE : ENDOMMAGEMENT DE LEMAITRE  CUMULE >>
+    DOMMAG   = R    DOMA     TRIAX    SI_ENDO  COENDO   DOM_LEM  D_CUMULE
+
     DURT_R   = R    HV
     ENER_R   = R    TOTALE   TRAC_COM TORSION  MEMBRANE FLEXION  FLEX_Y   FLEX_Z   PLAN_XY
                     PLAN_XZ  DX       DY       DZ       DRX      DRY      DRZ
@@ -313,8 +327,8 @@ GRANDEUR_SIMPLE__
     FREQ_R   = R    FREQ
     FTHM_F   = K8   PFLU     PFLU1    PFLU2    PTHER
     FTHM_R   = R    PFLU     PFLU1    PFLU2    PTHER
-    G        = R    GTHETA   FIC1     FIC2     K1       K2
-    GEOM_R   = R    X        Y        Z
+    G        = R    GTHETA   FIC1     FIC2     K1       K2       K3
+    GEOM_R   = R    X        Y        Z        W
     G_DEPL_R = R    D_DX_X   D_DX_Y   D_DX_Z   D_DY_X   D_DY_Y   D_DY_Z   D_DZ_X   D_DZ_Y
                     D_DZ_Z
     HARMON   = I    NH
@@ -322,11 +336,18 @@ GRANDEUR_SIMPLE__
     IMPE_C   = C    IMPE
     IMPE_F   = K8   IMPE
     IMPE_R   = R    IMPE
+<<  IND_LOCA : INDICATEUR DE LOCALISATION
+        INDICE : INDICATEUR DE CONTACT
+        DIR1   : PREMIERE DIRECTION DE LOCALISATION
+        DIR2   : DEUXIEME DIRECTION DE LOCALISATION
+        DIR3   : TROISIEME DIRECTION DE LOCALISATION
+        DIR4   : QUATRIEME DIRECTION DE LOCALISATION >>
+    IND_LOCA   = R   INDICE    DIR1     DIR2     DIR3    DIR4
 <<  INFC_R : INFORMATIONS RELATIVES AU CONTACT
         CONT   : INDICATEUR DE CONTACT
         JEU    : JEU ENTRE LE NOEUD ESCLAVE ET LA MAILLE MAITRE ASSOCIEE
         RN     : MULTIPLICATEUR DE LAGRANGE ET NORME DE RN
-        RNX    : COMPOSANTE X DU VECTEUR DE FORCE DUES AU CONTACT 
+        RNX    : COMPOSANTE X DU VECTEUR DE FORCE DUES AU CONTACT
         RNY    : COMPOSANTE Y DU VECTEUR DE FORCE DUES AU CONTACT
         RNZ    : COMPOSANTE Z DU VECTEUR DE FORCE DUES AU CONTACT
         GLIX   : NORME DU DEPLACEMENT TANGENT EN X POUR CHAQUE LIAISON
@@ -338,13 +359,13 @@ GRANDEUR_SIMPLE__
         RTGX   : COMPOSANTE X DES FORCES DES NOEUDS GLISSANTS
         RTGY   : COMPOSANTE Y DES FORCES DES NOEUDS GLISSANTS
         RTGZ   : COMPOSANTE Z DES FORCES DES NOEUDS GLISSANTS
-        RX     : COMPOSANTE X DE LA SOMME RN RTG ET RTA 
-        RY     : COMPOSANTE Y DE LA SOMME RN RTG ET RTA 
-        RZ     : COMPOSANTE Z DE LA SOMME RN RTG ET RTA 
+        RX     : COMPOSANTE X DE LA SOMME RN RTG ET RTA
+        RY     : COMPOSANTE Y DE LA SOMME RN RTG ET RTA
+        RZ     : COMPOSANTE Z DE LA SOMME RN RTG ET RTA
         R      : NORME DE R_TOT >>
-    INFC_R   = R    CONT     JEU      RN    RNX   RNY  RNZ   
+    INFC_R   = R    CONT     JEU      RN    RNX   RNY  RNZ
                     GLIX     GLIY     GLI
-                    RTAX     RTAY     RTAZ  
+                    RTAX     RTAY     RTAZ
                     RTGX     RTGY     RTGZ
                     RX       RY       RZ    R
     INST_R   = R    INST     DELTAT   THETA    KHI      R        RHO
@@ -359,6 +380,10 @@ GRANDEUR_SIMPLE__
                     NPSECMIN NPSECMAX
     NBSP_I   = I    NBFIBR   COQ_NCOU   GRI_NCOU   TUY_NCOU   TUY_NSEC
     NEUT_F   = K8   X1       X2       X3       X4       X5       X6       X7       X8
+                    X9       X10      X11      X12      X13      X14      X15      X16
+                    X17      X18      X19      X20      X21      X22      X23      X24
+                    X25      X26      X27      X28      X29      X30
+    NEUT_I   = I    X1       X2       X3       X4       X5       X6       X7       X8
                     X9       X10      X11      X12      X13      X14      X15      X16
                     X17      X18      X19      X20      X21      X22      X23      X24
                     X25      X26      X27      X28      X29      X30
@@ -377,7 +402,7 @@ GRANDEUR_SIMPLE__
     PILO_K   = K16  TYPE
     PILO_R   = R    A0       A1       A2       A3       ETA
     POSI     = I    POS
-    PREC     = R    PREC     SIGM     EPSI     FTHERM   FHYDR1   FHYDR2
+    PREC     = R    PREC     SIGM     EPSI     FHYDR1   FHYDR2   FTHERM
 <<  PRES_C/_F/_R : PRESSION
     PRES : PRESSION (NORMALE A LA SURFACE).
          SI C EST UN CHARGEMENT: P>0 EST APPLIQUEE SELON L OPPOSE DE LA NORMALE.
@@ -412,8 +437,8 @@ GRANDEUR_SIMPLE__
     EP : EPAISSEUR DE LA TUYAUTERIE
     SN : AMPLITUDE DE VARIARTION DES CONTRAINTES LINEARISEES
     SALT : AMPLITUDE DE CONTRAINTE
-    U_TOTAL : FACTEUR D USAGE  
-    TYPEKE : TYPE DE CALCUL DE KE : SOIT KE_MECA, SOIT KE_MIXTE  
+    U_TOTAL : FACTEUR D USAGE
+    TYPEKE : TYPE DE CALCUL DE KE : SOIT KE_MECA, SOIT KE_MIXTE
      >>
     RCCM_R   = R    C1     C2       C3       K1       K2       K3       TYPE
                     E      E_AMBI   NU       ALPHA    E_REFE   SM       M_KE
@@ -433,7 +458,7 @@ GRANDEUR_SIMPLE__
                     MX       MY       MZ       SIGN     SITX     SITY     SITZ     VMIS
                     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  SN       SVY      SVZ
                     SMT      SMFY     SMFZ
-<<  QXX QXY QYX QYY QZX QZY : CONTRAINTES GENERALISEES 
+<<  QXX QXY QYX QYY QZX QZY : CONTRAINTES GENERALISEES
                                POUR ASSUMED STRAIN QUAS4 >>
     SIEF_R   = R    SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     N        VY
                     VZ       MT       MFY      MFZ      BX       NXX      NYY      NXY
@@ -446,7 +471,7 @@ GRANDEUR_SIMPLE__
                     FH12Y    FH12Z    ENT12    M21      FH21X    FH21Y    FH21Z    ENT21
                     M22      FH22X    FH22Y    FH22Z    ENT22    QPRIM    FHTX     FHTY
                     FHTZ     SIMAX    SIMIN    QXX      QXY      QYX      QYY      QZX
-                    QZY      Q2XX      Q2XY      Q2YX      Q2YY      Q2ZX     Q2ZY
+                    QZY      Q2XX     Q2XY     Q2YX     Q2YY     Q2ZX     Q2ZY
     SIZZ_R   = R    SIZZ
     SOUR_F   = K8   SOUR     VNOR
     SOUR_R   = R    SOUR     VNOR
@@ -493,4 +518,3 @@ GRANDEUR_ELEMENTAIRE__
    VSIZ_R 1 SIZZ_R
    VTEM_R 1 TEMP_R
    VVAR_R 1 VANL_R
-

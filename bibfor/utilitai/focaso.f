@@ -1,14 +1,13 @@
       SUBROUTINE FOCASO(NOMFON,METHOD,NBAMOR,AMOR,NBFREQ,FREQ,NORME,
-     +                                Q0,V0,NATURE,NATURF,SPECTR,BASE)
+     +                                NATURE,NATURF,SPECTR,BASE)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)     NOMFON,METHOD,      NATURE,NATURF,SPECTR
       INTEGER                         NBAMOR,     NBFREQ
       REAL*8                                 AMOR(*),   FREQ(*),NORME
-      REAL*8                                 Q0,V0
       CHARACTER*1                                                BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,8 +33,6 @@ C IN  NBAMOR : IS  : NOMBRE D'AMORTISSEMENT
 C IN  AMOR   : R8  : LISTE DES AMORTISSEMENTS
 C IN  NBFREQ : IS  : NOMBRE DE FREQUENCES
 C IN  FREQ   : R8  : LISTE DES FREQUENCES
-C IN  Q0     : R8  : DEPLACEMENT INITIAL
-C IN  V0     : R8  : VITESSE INITIALE
 C IN  NATURE : K8  : NATURE DU SPECTRE
 C IN  NATURF : K8  : NATURE DE LA FONCTION
 C OUT SPECTR : K8  : NOM DU SPECTRE D'OSCILLATEUR A CREER

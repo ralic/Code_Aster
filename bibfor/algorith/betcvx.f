@@ -1,9 +1,9 @@
-        SUBROUTINE BETCVX (IMAT,NMAT,MATER,SIG,VIND,VINF,ELGEOM,
-     &                     NVI,TOLER,NSEUIL)
+        SUBROUTINE BETCVX (NMAT,MATER,SIG,VIND,VINF,ELGEOM,
+     &                     NVI,NSEUIL)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,17 +40,15 @@ C       ----------------------------------------------------------------
 C       IN  SIG    :  CONTRAINTE
 C       IN  VIND   :  VARIABLES INTERNES = ( PC PT THETA ) A T
 C       IN  VINF   :  VARIABLES INTERNES = ( PC PT THETA ) A T+DT
-C       IN  IMAT   :  ADRESSE DU MATERIAU CODE
 C       IN  NMAT   :  DIMENSION MATER
 C       IN  MATER  :  COEFFICIENTS MATERIAU A TEMP
 C       IN  ELGEOM :  TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES AUX
 C                     LOIS DE COMPORTEMENT
-C       IN  TOLER  :  TOLERANCE DE CONVERGENCE LOCALE
 C       VAR NSEUIL :  SEUIL ELASTIQUE PRECEDENT / NOUVEAU SEUIL CALCULE
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NVI , NMAT , NSEUIL
+        INTEGER         NVI , NMAT , NSEUIL
         REAL*8          PC, PT ,   SIG(6) , DEV(6) , VIND(*), VINF(*)
-        REAL*8          MATER(NMAT,2),TOLER , ELGEOM(*)
+        REAL*8          MATER(NMAT,2), ELGEOM(*)
         REAL*8          FCP , FTP, FC , FT , BETA
 C        REAL*8          ALPHA
         REAL*8          RAC2 , UN , DEUX , TROIS

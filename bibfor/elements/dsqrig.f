@@ -1,4 +1,4 @@
-      SUBROUTINE DSQRIG ( XYZL, OPTION, PGL, RIG, ENER )
+      SUBROUTINE DSQRIG ( NOMTE, XYZL, OPTION, PGL, RIG, ENER )
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,9 +18,9 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       REAL*8        XYZL(4,*), PGL(*), RIG(*), ENER(*)
-      CHARACTER*(*) OPTION
+      CHARACTER*16  OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 06/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DSQ (AVEC CISAILLEMENT)
 C     ------------------------------------------------------------------
@@ -74,8 +74,6 @@ C                   -----(8,12)  -----(8,12)
       REAL*8 KMPMT(8,8), KMPM(8,8), MEMBCF(8,8), BCAPM(2,8), R8GAEM
       REAL*8 BSIGTH(24), ENERTH, CTOR, UN, ZERO, ETA, EXCENT, QSI
       LOGICAL ELASCO, EXCE, INDITH
-      CHARACTER*8  TYPELE
-      CHARACTER*24 DESR
 
 C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
       INTEGER   NPG,NNO,NC
@@ -91,7 +89,6 @@ C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
       PARAMETER (LWGT=LETA+NPG+NNO+2*NC)
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-      TYPELE = 'MEDSQU4 '
 C
       ZERO   = 0.0D0
       UN     = 1.0D0
@@ -117,8 +114,7 @@ C
       CALL R8INIR(96,ZERO,KMAPB,1)
       CALL R8INIR(16,ZERO,BCAPM,1)
 C
-      DESR = '&INEL.'//TYPELE//'.DESR'
-      CALL JEVETE(DESR,' ',LZR)
+      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
 
       CALL JEVECH('PCACOQU','L',JCOQU)
       CTOR = ZR(JCOQU+3)
@@ -144,9 +140,9 @@ C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
 
 C     ---- CALCUL DE LA MATRICE PB -------------------------------------
       IF (EXCE) THEN
-        CALL DSQDI2(XYZL,DF,DCI,DMF,DFC,DMC,PB,PM)
+        CALL DSQDI2(NOMTE,XYZL,DF,DCI,DMF,DFC,DMC,PB,PM)
       ELSE
-        CALL DSQDIS(XYZL,DF,DCI,PB)
+        CALL DSQDIS(NOMTE,XYZL,DF,DCI,PB)
       ENDIF
 C
 C --- BOUCLE SUR LES POINTS D'INTEGRATION :
@@ -443,7 +439,7 @@ C
         CALL JEVECH('PDEPLAR','L',JDEPG)
         CALL UTPVGL(4,6,PGL,ZR(JDEPG),DEPL)
         CALL DXQLOE(FLEX,MEMB,MEFL,CTOR,MULTIC,DEPL,ENER)
-        CALL BSTHPL(TYPELE,BSIGTH,INDITH)
+        CALL BSTHPL(NOMTE(1:8),BSIGTH,INDITH)
         IF (INDITH) THEN
           DO 330 I = 1, 24
             ENERTH = ENERTH + DEPL(I)*BSIGTH(I)

@@ -4,7 +4,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/10/96   AUTEUR KXBADNG N.GAY 
+C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,7 @@ C
       DO 44 ITS = 1,MAXITS
         IF (RESTRT) THEN
 C
-          CALL PACOU1 (X,FVEC,NP,R,WORK,SQRT(EPS),VECR1,VECR2,TYPFLU,
+          CALL PACOU1 (X,FVEC,R,WORK,SQRT(EPS),VECR1,VECR2,TYPFLU,
      &                 VECR3,AMOR,MASG,VECR4,VECR5,VECI1,VG,INDIC,NBM,
      &                 NMODE,NT)
           CALL PACOU4 (R,N,C,D,SING)

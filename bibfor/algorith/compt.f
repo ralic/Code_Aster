@@ -1,8 +1,8 @@
          SUBROUTINE COMPT ( NBPT,FN,OFFSET,T,ELAPSE,NBCHOC,TCHOCM,
-     &                      TCHMAX,TCHMIN,NBREBO,TREBOM,TCHOCT )
+     &                      TCHMAX,TCHMIN,NBREBO,TREBOM,TCHOCT,NBINST )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/11/95   AUTEUR ACBHHJA G.JACQUART 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,6 +32,7 @@ C OUT : NBREBO : NB DE REBONDS ( RETOUR AU SEUIL )
 C OUT : TCHOCM : TEMPS DE CHOC GLOBAL MOYEN
 C OUT : TREBOM : TEMPS DE REBOND MOYEN
 C OUT : TCHOCT : TEMPS DE CHOC CUMULE
+C IN  : NBINST : NB D'INSTANTS TOTAL DU CALCUL TRANSITOIRE
 C ----------------------------------------------------------------------
 C
          IMPLICIT REAL *8 (A-H,O-Z)
@@ -65,9 +66,12 @@ C
              ENDIF
 C
              IDECH = 0
-             DO 15 J = 1,NBPAS
-               IF (ABS(FN(I+J)).GT.OFFSET) IDECH =1
- 15          CONTINUE
+             JFIN=MIN(I+NBPAS,NBINST)
+             IF (JFIN.GT.(I+1)) THEN
+                DO 15 J = I+1,JFIN
+                  IF (ABS(FN(J)).GT.OFFSET) IDECH =1
+ 15             CONTINUE
+             ENDIF
 C
              IF ( IDECH.EQ.0 .AND. ICHOC.EQ.1 ) THEN
 C

@@ -1,15 +1,15 @@
       SUBROUTINE PRCCM6 ( NOMRES, NBFT, NBORDR, PARASG, COURBE, LINTI,
-     +                    INTITU, NOMMAT, PARA, SM, NCHEFF, RCCMPM,
-     +                    RCCMSN, SNTHER, FATIZH, FATISP )
+     +                    INTITU, SM, NCHEFF, RCCMPM,
+     +                    RCCMSN, SNTHER, FATIZH )
       IMPLICIT   NONE
       INTEGER             NBFT, NBORDR
-      REAL*8              SM, PARA(*)
-      LOGICAL             RCCMPM, RCCMSN, SNTHER, FATIZH, FATISP, LINTI
+      REAL*8              SM
+      LOGICAL             RCCMPM, RCCMSN, SNTHER, FATIZH, LINTI
       CHARACTER*16        NCHEFF
-      CHARACTER*(*)       NOMRES, COURBE, NOMMAT, PARASG, INTITU
+      CHARACTER*(*)       NOMRES, COURBE, PARASG, INTITU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 23/01/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,9 +99,9 @@ C
 C
       IK  = IK + 1
 C
-      IF ( RCCMPM .OR. RCCMSN .OR. FATISP ) THEN
+      IF ( RCCMPM .OR. RCCMSN ) THEN
 C
-         CALL PRCCM9 ( RCCMPM, RCCMSN, SNTHER, .FALSE., FATISP, 
+         CALL PRCCM9 ( RCCMPM, RCCMSN, SNTHER, .FALSE., 
      +                         TYPTAB, NPARA, NOPARA, TYPARA )
 C
       DO 10 IOCC = 1, NBFT
@@ -243,7 +243,7 @@ C
             VALER(IP4) = VALOR(IP4)
          ENDIF
 C
-         IF ( RCCMSN .OR. FATISP ) THEN
+         IF ( RCCMSN ) THEN
             CALL JELIRA ( JEXNUM(NCHEFF//'.INST1  ',IOCC), 'LONMAX',
      +                                                     NBCHEF, K8B )
             CALL JEVEUO ( JEXNUM(NCHEFF//'.INST1  ',IOCC), 'L', JINST )
@@ -289,23 +289,6 @@ C
                IP12 = IP
                VALER(IP12) = ZR(JSNTE+ICHEF1-1)
             ENDIF
-            IF ( FATISP ) THEN
-               IP = IP + 1
-               IP13 = IP
-               VALOR(IP13) = ZR(JINST+ICHEF1-1)
-               IP16 = IP
-               VALER(IP16) = ZR(JINST+ICHEF1-1)
-               IP = IP + 1
-               IP14 = IP
-               VALOR(IP14) = ZR(JINS2+ICHEF1-1)
-               IP17 = IP
-               VALER(IP17) = ZR(JINS2+ICHEF1-1)
-               IP = IP + 1
-               IP15 = IP
-               VALOR(IP15) = ZR(JSPO+ICHEF1-1)
-               IP18 = IP
-               VALER(IP18) = ZR(JSPE+ICHEF1-1)
-            ENDIF
             DO 22 ICHEF1 = 2 , NBCHEF
                IF ( ZR(JSNO +ICHEF1-1) .GT. VALOR(IP3) ) THEN
                   VALOR(IP1) = ZR(JINST+ICHEF1-1)
@@ -329,39 +312,7 @@ C
                      VALER(IP12) = ZR(JSNTE+ICHEF1-1)
                   ENDIF
                ENDIF
-               IF ( FATISP ) THEN
-                  IF ( ZR(JSPO+ICHEF1-1) .GT. VALOR(IP15) ) THEN
-                     VALOR(IP13) = ZR(JINST+ICHEF1-1)
-                     VALOR(IP14) = ZR(JINS2+ICHEF1-1)
-                     VALOR(IP15) = ZR(JSPO +ICHEF1-1)
-                  ENDIF
-                  IF ( ZR(JSPE+ICHEF1-1) .GT. VALER(IP18) ) THEN
-                     VALER(IP16) = ZR(JINST+ICHEF1-1)
-                     VALER(IP17) = ZR(JINS2+ICHEF1-1)
-                     VALER(IP18) = ZR(JSPE +ICHEF1-1)
-                  ENDIF
-               ENDIF
  22         CONTINUE
-            IF ( FATISP ) THEN
-               CALL PRCCM3 ( NOMMAT, PARA, SM, VALOR(IP3), VALOR(IP15),
-     +                       KEO, SALTO, NADMO )
-               USAO = DBLE(NBCYCL) / NADMO
-               CALL PRCCM3 ( NOMMAT, PARA, SM, VALER(IP6), VALER(IP18),
-     +                       KEE, SALTE, NADME )
-               USAE = DBLE(NBCYCL) / NADME
-               IP = IP + 1
-               VALOR(IP) = KEO
-               VALER(IP) = KEE
-               IP = IP + 1
-               VALOR(IP) = SALTO
-               VALER(IP) = SALTE
-               IP = IP + 1
-               VALOR(IP) = NADMO
-               VALER(IP) = NADME
-               IP = IP + 1
-               VALOR(IP) = USAO
-               VALER(IP) = USAE
-            ENDIF
          ENDIF
          NUMORI = 0
          CALL TBAJLI ( NOMRES, NPARA, NOPARA, VALOI, VALOR,

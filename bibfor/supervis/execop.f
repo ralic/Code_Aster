@@ -3,7 +3,7 @@
       INTEGER            ICMD  , ICOND , IERTOT, IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 11/03/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

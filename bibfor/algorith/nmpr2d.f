@@ -1,7 +1,7 @@
-      SUBROUTINE NMPR2D(AXI,MODE,NNO,NPG,POIDSG,VFF,DFF,GEOM,P,
-     &                  VECT,MATC)
+      SUBROUTINE NMPR2D ( NDIM,AXI,MODE,NNO,NPG,IPOIDS,IVF,IDFDE,
+     &                    GEOM,P,VECT,MATC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/08/97   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,8 +22,7 @@ C ======================================================================
       IMPLICIT NONE
 
       LOGICAL AXI
-      INTEGER MODE,NNO,NPG
-      REAL*8  POIDSG(NPG),VFF(NNO,NPG),DFF(NNO,NPG)
+      INTEGER MODE,NNO,NPG,IPOIDS,IVF,IDFDE
       REAL*8  GEOM(2,NNO),P(2,NPG)
       REAL*8  VECT(2,NNO),MATC(2,NNO,2,NNO)
 
@@ -43,8 +42,23 @@ C IN  P       PRESSION AUX POINTS D'INTEGRATION (ET CISAILLEMENT)
 C OUT VECT    VECTEUR SECOND MEMBRE                      (MODE = 1)
 C OUT MATC    MATRICE CARREE NON SYMETRIQUE DE RIGIDITE  (MODE = 2)
 C.......................................................................
-
-      INTEGER KPG,N,I,M,J
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      INTEGER KPG,N,I,M,J,KP,NDIM
       REAL*8  COVA(3,3),METR(2,2),JAC,CNVA(3,2)
       REAL*8  T1,T2,T,ACV(2,2),R
 
@@ -54,10 +68,11 @@ C    INITIALISATION
       IF (MODE.EQ.2) CALL R8INIR(NNO*NNO*4,0.D0,MATC,1)
 
 
-
 C    INTEGRATION AUX POINTS DE GAUSS
 
       DO 100 KPG = 1,NPG
+
+        KP = (KPG-1)*NNO
 
 C      ON NE SAIT PAS TRAITER LE CISAILLEMENT SUIVEUR
         IF (P(2,KPG) .NE. 0.D0) CALL UTMESS('F','NMPR2D',
@@ -67,7 +82,7 @@ C      VERIFICATION QUE L'ELEMENT N'EST PAS CONFONDU AVEC L'AXE
         IF (AXI) THEN
           R = 0.D0
           DO 2 N = 1,NNO
-            R = R + VFF(N,KPG)*GEOM(1,N)
+            R = R + ZR(IVF+N+KP-1)*GEOM(1,N)
  2        CONTINUE
           IF (R.EQ.0.D0) THEN
             IF (P(1,KPG).NE.0.D0) CALL UTMESS('F','NMPR2D',
@@ -78,15 +93,15 @@ C      VERIFICATION QUE L'ELEMENT N'EST PAS CONFONDU AVEC L'AXE
 
 
 C      CALCUL DES ELEMENTS GEOMETRIQUES DIFFERENTIELS
-        CALL SUBAC1(AXI,NNO,VFF(1,KPG),DFF(1,KPG),GEOM,COVA)
+        CALL SUBAC1(NDIM,AXI,NNO,KPG,IVF,IDFDE,GEOM,COVA)
         CALL SUMETR(COVA,METR,JAC)
 
 C      CALCUL DU SECOND MEMBRE
         IF (MODE.EQ.1) THEN
           DO 10 N = 1,NNO
           DO 11 I = 1,2
-              VECT(I,N) = VECT(I,N) - POIDSG(KPG)*JAC * P(1,KPG)
-     &                    * COVA(I,3)*VFF(N,KPG)
+              VECT(I,N)=VECT(I,N)-ZR(IPOIDS+KPG-1)*JAC*P(1,KPG)
+     &                    * COVA(I,3)*ZR(IVF+N+KP-1)
  11       CONTINUE
  10       CONTINUE
 
@@ -98,9 +113,11 @@ C      CALCUL DE LA RIGIDITE
           DO 21 I=1,2
             DO 30 M=1,NNO
             DO 31 J=1,2
-              T1 = DFF(N,KPG)*CNVA(I,1) *  VFF(M,KPG)*COVA(J,3)
-              T2 = DFF(N,KPG)*COVA(I,3) * VFF(M,KPG)*CNVA(J,1)
-              T  = POIDSG(KPG) * P(1,KPG) * JAC * (T1 - T2)
+              T1 = ZR(IDFDE-1+NDIM*KP+NDIM*(N-1)+1)*CNVA(I,1) *
+     &             ZR(IVF+M+KP-1)*COVA(J,3)
+              T2 = ZR(IDFDE-1+NDIM*KP+NDIM*(N-1)+1)*COVA(I,3) *
+     &             ZR(IVF+M+KP-1)*CNVA(J,1)
+              T  = ZR(IPOIDS+KPG-1) * P(1,KPG) * JAC * (T1 - T2)
               MATC(I,N,J,M) = MATC(I,N,J,M) + T
  31         CONTINUE
  30         CONTINUE
@@ -112,8 +129,9 @@ C       TERME COMPLEMENTAIRE EN AXI
             DO 40 N = 1,NNO
               DO 50 M = 1,NNO
               DO 51 J = 1,2
-                T1 = VFF(N,KPG)*VFF(M,KPG)*CNVA(3,2)*COVA(J,3)
-                T  = POIDSG(KPG) * P(1,KPG) * JAC * T1
+                T1 = ZR(IVF+N+KP-1)*ZR(IVF+M+KP-1)*
+     &               CNVA(3,2)*COVA(J,3)
+                T  = ZR(IPOIDS+KPG-1) * P(1,KPG) * JAC * T1
                 MATC(1,N,J,M) = MATC(1,N,J,M) + T
  51           CONTINUE
  50           CONTINUE

@@ -1,5 +1,6 @@
       SUBROUTINE PJ2DAP(INO2,GEOM2,MA2,GEOM1,TRIA3,COBARY,ITR3,NBTROU,
-     &                  BTDI,BTVR,BTNB,BTLC,BTCO,IFM,NIV)
+     &                  BTDI,BTVR,BTNB,BTLC,BTCO,IFM,NIV,
+     &                  LDMAX,DISTMA)
       IMPLICIT NONE
       REAL*8 COBARY(3),GEOM1(*),GEOM2(*),BTVR(*)
       INTEGER ITR3,NBTROU,BTDI(*),BTNB(*),BTLC(*),BTCO(*),TRIA3(*)
@@ -7,7 +8,7 @@
       CHARACTER*8 MA2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 16/02/2004   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +69,8 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*8 KB,NONO2
       LOGICAL OK
 
+      LOGICAL LDMAX
+      REAL*8  DISTMA
 C DEB ------------------------------------------------------------------
 C     NTR3=TRIA3(1)
       NBTROU = 0
@@ -107,7 +110,11 @@ C     -- 2. : SI ECHEC DE LA RECHERCHE PRECEDENTE, ON
 C        CHERCHE LE TRIA3 ITR3 LE PLUS PROCHE DE INO2 :
 C     -------------------------------------------------------
       IF (NBTROU.EQ.0) THEN
-        DMIN = R8MAEM()
+        IF ( LDMAX ) THEN
+          DMIN = DISTMA
+        ELSE
+          DMIN = R8MAEM()
+        ENDIF
 C       -- PARCOURS DES MAILLES CANDIDATES :
 C       DO 2,I=1,NTR3  % ON PARCOURT TOUS LES TRIA3
 
@@ -134,9 +141,10 @@ C       -- ON RECHERCHE LA GROSSE BOITE CANDIDATE :
    30     CONTINUE
    40   CONTINUE
 
-C       -- SI LE NOEUD EST PROJETE SUR UNE MAILLE LOINTAINE,
-C          ON INFORME :
-        IF (NIV.GT.0) THEN
+C       S'IL N'Y A PAS DE DISTANCE MINIMALE IMPOSEE, LE NOEUD EST 
+C          OBLIGATOIREMENT PROJETE
+C       SI LE NOEUD EST PROJETE SUR UNE MAILLE LOINTAINE, ON INFORME :
+        IF ((NIV.GT.0).AND.(.NOT.LDMAX)) THEN
           DMIN = SQRT(DMIN)
           RTR3 = RTR3** (1.D0/2.D0)
           IF (DMIN/RTR3.GT.1.D-1) THEN

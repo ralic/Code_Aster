@@ -1,4 +1,4 @@
-# MODIF  DATE 02/12/2002   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN DEFORMATIONS PLANES (CHABOCHE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -321,8 +321,7 @@ SOLNL3=STAT_NON_LINE(
                              CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,  
                                            RESI_GLOB_RELA = 1.E-8,  
                                            RESI_INTE_RELA = 1.E-8,  
-                                           ITER_INTE_MAXI = 30,  
-                                           TYPE_MATR_COMP = 'TANG_VIT',  
+                                           ITER_INTE_MAXI = 30,    
                                           ),
                                  SOLVEUR=_F(  SYME = 'NON',  )
                          )
@@ -390,7 +389,6 @@ SOLNL4=STAT_NON_LINE(
                                            RESI_GLOB_RELA = 1.E-8,  
                                            RESI_INTE_RELA = 1.E-8,  
                                            ITER_INTE_MAXI = 30,  
-                                           TYPE_MATR_COMP = 'TANG_VIT',  
                                           ),
                                  SOLVEUR=_F(  SYME = 'NON',  )
                          )
@@ -457,8 +455,7 @@ SOLNL5=STAT_NON_LINE(
                              CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,  
                                            RESI_GLOB_RELA = 1.E-8,  
                                            RESI_INTE_RELA = 1.E-8,  
-                                           ITER_INTE_MAXI = 30,  
-                                           TYPE_MATR_COMP = 'TANG_VIT',  
+                                           ITER_INTE_MAXI = 30,   
                                           ),
                                  SOLVEUR=_F(  SYME = 'NON',  )
                          )
@@ -538,5 +535,22 @@ IMPR_RESU(RESU= _F( FORMAT='RESULTAT',
                     NUME_ORDRE = 7 ,
                   ),
           );
-FIN()
-#
+
+# 
+#  validation de NOM_CMP de IMPR_RESU au format CASTEM sur un nombre limite de
+#  deformations
+# 
+
+DEFI_FICHIER(FICHIER='CASTEM',UNITE=37)
+  
+IMPR_RESU(MODELE= DPLAN,
+          RESU= _F(FICHIER='CASTEM',
+                   FORMAT='CASTEM',
+                   MAILLAGE=CARRE,
+                   RESULTAT=SOLNL2,
+                   NUME_ORDRE=13,
+                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CMP = ('EPXX','EPXY',)
+                   ));
+
+FIN();

@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 04/12/2001   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF UTILITAI  DATE 22/03/2004   AUTEUR G8BHHXD X.DESROCHES 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,12 +89,13 @@ C --- RECUPERATION DU NIVEAU D'IMPRESSION
           NOPARR(2) = 'FREQ'
         ELSE IF (TYPRES(1:9).EQ.'EVOL_THER' .OR.
      &           TYPRES(1:9).EQ.'EVOL_ELAS' .OR.
+     &           TYPRES(1:9).EQ.'MULT_ELAS' .OR.
      &           TYPRES(1:9).EQ.'EVOL_NOLI' .OR.
      &           TYPRES(1:10).EQ.'DYNA_TRANS') THEN
           NOPARR(2) = 'INST'
         ELSE
           CALL UTMESS('F','PEEPOT','ON ATTEND UN CONCEPT '//
-     &                '"MODE_MECA" OU "EVOL_ELAS"'//
+     &                '"MODE_MECA" OU "EVOL_ELAS" OU "MULT_ELAS"'//
      &                ' OU "EVOL_THER" OU "DYNA_TRANS" OU "EVOL_NOLI"')
         END IF
       END IF
@@ -155,6 +156,7 @@ C        --- ON RECUPERE LES INSTANTS ---
       END IF
 
       DO 70 IORD = 1,NBORDR
+        CALL JEMARQ()
         ICHEML = 0
         NUMORD = ZI(JORD+IORD-1)
         INST = ZR(JINS+IORD-1)
@@ -172,7 +174,7 @@ C        --- ON RECUPERE LES INSTANTS ---
             CALL RSEXCH(RESUL,'DEPL',NUMORD,DEPLA,IRE1)
             IF (IRE1.GT.0) THEN
               CALL RSEXCH(RESUL,'TEMP',NUMORD,DEPLA,IRE2)
-              IF (IRE2.GT.0) GO TO 70
+              IF (IRE2.GT.0) GO TO 72
             END IF
           END IF
         END IF
@@ -297,6 +299,8 @@ C        --- ON CALCULE L'ENERGIE TOTALE ---
    60   CONTINUE
         CALL JEDETR('&&PEEPOT.PAR')
         IF (ICHEML.NE.0) CALL JEDETR(CHELEM)
+   72   CONTINUE
+        CALL JEDEMA()
    70 CONTINUE
 
    80 CONTINUE

@@ -1,0 +1,219 @@
+# MODIF  DATE 16/12/2003   AUTEUR VABHHTS J.PELLET 
+# RESPONSABLE PBADEL P.BADEL
+# TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET ENDO_ISOT_BETON
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# ---------------------------------------------------------------------
+# MODELISATION 2D C_PLAN COUPLAGE FLUAGE PROPRE UMLV ET ENDO_ISTO_BETON
+# ---------------------------------------------------------------------
+
+DEBUT(CODE=_F( NOM = 'SSNV169C',NIV_PUB_WEB='INTERNET'))
+
+PRE_GIBI()
+
+M=LIRE_MAILLAGE( )
+
+M=DEFI_GROUP( reuse=M,
+              MAILLAGE=M,
+              CREA_GROUP_NO=_F( GROUP_MA = 'L_INF')
+           )
+
+M=DEFI_GROUP( reuse=M,
+              MAILLAGE=M,
+              CREA_GROUP_NO=_F( GROUP_MA = 'L_SUP')
+            )
+
+M=DEFI_GROUP( reuse=M,
+              MAILLAGE=M,
+              CREA_GROUP_NO=_F( GROUP_MA = 'L_GCH')
+            )
+
+M=DEFI_GROUP( reuse=M,
+              MAILLAGE=M,
+              CREA_GROUP_NO=_F( GROUP_MA = 'L_DRT')
+            )
+
+MO=AFFE_MODELE( MAILLAGE=M,
+                AFFE=_F( TOUT = 'OUI',
+               PHENOMENE = 'MECANIQUE',
+          MODELISATION = 'C_PLAN')
+              )
+
+FONC1=DEFI_FONCTION( NOM_PARA='SECH',
+                     PROL_DROITE='LINEAIRE',
+                     PROL_GAUCHE='LINEAIRE',
+                     VALE=(0.0, 0.0, 1.0, 1.0,)
+                   )
+
+E=DEFI_FONCTION( NOM_PARA='TEMP',
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',
+                 VALE=(0.0, 31000., 1.0, 31000.,)
+               )
+
+NU=DEFI_FONCTION( NOM_PARA='TEMP',
+                  PROL_DROITE='LINEAIRE',
+                  PROL_GAUCHE='LINEAIRE',
+                  VALE=(0.0,0.2,1.0,0.2,)
+                ),
+
+BETON=DEFI_MATERIAU( ELAS_FO =_F( E = E,
+                                  NU = NU ,
+                                  FONC_DESORP = FONC1
+                                  ),
+                     BETON_ECRO_LINE=_F( SYT = 3.0,
+                                    D_SIGM_EPSI = -6000.,
+                                    SYC = 30.),
+                     BETON_UMLV_FP =_F( K_RS   = 1.2E+5,
+                                        ETA_RS = 2.21E+10,
+                                        K_IS   = 6.22E+4,
+                                        ETA_IS = 4.16E+10,
+                                        K_RD   = 3.86E+4,
+                                        ETA_RD = 6.19E+10,
+                                        ETA_ID = 1.64e+12,
+                                      ),
+                  )
+
+CM=AFFE_MATERIAU(  MAILLAGE=M,
+                   AFFE=_F( TOUT = 'OUI',MATER = BETON, TEMP_REF = 20.) )
+
+SECH=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
+                        AFFE=_F( TOUT = 'OUI',
+                              NOM_CMP = 'TEMP',
+                              VALE = 1.)
+                       )
+
+TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
+                         AFFE=_F(
+                               TOUT = 'OUI',
+                               NOM_CMP = 'TEMP',
+                               VALE = 20.)
+                       )
+
+# rap_pic : pourcentage de la force au pic
+rap_pic=.6
+
+FORCE=DEFI_FONCTION( NOM_PARA='INST',
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='LINEAIRE',
+                     VALE=(0.0, 0.0, 1., 3.*rap_pic/2., 31536010., 3.*rap_pic/2.)
+                   )
+
+CH10=AFFE_CHAR_MECA( MODELE=MO,
+                     DDL_IMPO=_F( GROUP_NO = 'L_INF',
+                                  DY       = 0.
+                               )
+                    )
+CH11=AFFE_CHAR_MECA( MODELE=MO,
+                     DDL_IMPO=_F( GROUP_NO = 'L_GCH',
+                                  DX       = 0.
+                                )
+                   )
+CH12=AFFE_CHAR_MECA( MODELE=MO,
+                     LIAISON_UNIF=_F( GROUP_NO = 'L_DRT',
+                                      DDL = 'DX'
+                                )
+                   )
+CH2=AFFE_CHAR_MECA_F( MODELE=MO,
+                      FORCE_NODALE=_F( GROUP_NO = 'L_SUP',
+                                       FY = FORCE),
+            LIAISON_UNIF=_F( GROUP_NO = 'L_SUP',
+                                      DDL = 'DY'
+                                )
+                    )
+
+CH3=AFFE_CHAR_MECA( MODELE        = MO,
+                    TEMP_CALCULEE = TEMP,
+                    SECH_CALCULEE = SECH
+                  )
+
+heure=3600.
+jour=24.*heure
+annee=365.25*jour
+mois=annee/12.
+L_INST=DEFI_LIST_REEL(  DEBUT=-1.0,INTERVALLE=(
+             _F( JUSQU_A = 0.0,       NOMBRE = 1),
+             _F( JUSQU_A = 1.0,       NOMBRE = 1),
+             _F( JUSQU_A = annee, NOMBRE = 120),)
+           )
+
+
+U=STAT_NON_LINE( MODELE=MO,
+                 CHAM_MATER=CM,EXCIT=( _F(CHARGE = CH10),
+                             _F(CHARGE = CH11),
+                   _F(CHARGE = CH12),
+                   _F(CHARGE = CH2),
+                   _F(CHARGE = CH3)
+                 ),
+       COMP_INCR=_F(
+                 RELATION = 'KIT_DDI',
+                 RELATION_KIT=('BETON_UMLV_FP','ENDO_ISOT_BETON'),
+                               ALGO_C_PLAN = 'DEBORST',),
+                 INCREMENT=_F(LIST_INST = L_INST,
+                              NUME_INST_FIN = 104),
+                 NEWTON=_F(PREDICTION = 'TANGENTE',
+                           MATRICE = 'TANGENTE',
+            REAC_ITER = 1),
+                 CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-6,
+                                ITER_GLOB_MAXI = 25,
+                                ITER_INTE_MAXI = 1000)
+              )
+
+CHAMELG=CALC_CHAM_ELEM(    MODELE=MO,
+                             CHAM_MATER=CM,
+                             OPTION='COOR_ELGA' )
+
+TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMELG,
+                          MAILLE = 'M1',
+                          POINT = 1,
+                          NOM_CMP = 'W',
+                          REFERENCE = 'ANALYTIQUE',
+                          PRECISION = 1.E-9,
+                          VALE=  (1./4.)  )   )
+TEST_RESU(RESU=(
+      _F( RESULTAT = U,
+          NOM_CHAM = 'SIEF_ELGA',
+          MAILLE = 'M1',
+          POINT = 1,
+          NUME_ORDRE = 104,
+          NOM_CMP = 'SIYY',
+          VALE = 1.8E+0,
+          PRECISION = 0.0001,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'VARI_ELGA',
+          MAILLE = 'M1',
+          POINT = 1,
+          NUME_ORDRE = 104,
+          NOM_CMP = 'V5',
+          VALE = 3.10881E-5,
+          PRECISION = 0.0001,
+          REFERENCE = 'NON_REGRESSION'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'VARI_ELGA',
+          MAILLE = 'M1',
+          POINT = 1,
+          NUME_ORDRE = 104,
+          NOM_CMP = 'V22',
+          VALE = 1.54698E-1,
+          PRECISION = 0.0001,
+          REFERENCE = 'NON_REGRESSION'),
+           )),
+
+FIN()
+#

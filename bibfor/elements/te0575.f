@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,37 +70,16 @@ C
       REAL*8             EPSSM(MXCMEL), SIGMM(NBCONT), SIGMA(NBCONT)
       REAL*8             INTEG1, INTEG2, INTEG
       REAL*8             DFDX(9), DFDY(9)
-      CHARACTER*8        ELREFE,MODELI
-      CHARACTER*24       CARAC,FF
+      CHARACTER*8        MODELI
 C
 C
-      CALL ELREF1(ELREFE)
       MODELI(1:2) = NOMTE(3:4)
 C
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
 C      ------------------------
 C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-C
-      IPOIDS = IFF
-      IVF    = IPOIDS+NPG1
-      IDFDE  = IVF   +NPG1*NNO
-      IDFDK  = IDFDE +NPG1*NNO
-      NPG    = NPG1
-C
-      IF(NOMTE(5:7).EQ.'TR3' .OR. NOMTE(5:7).EQ.'QU4' ) THEN
-        NNOS = NNO
-      ELSE IF(NOMTE(5:7).EQ.'TR6' .OR. NOMTE(5:7).EQ.'QU8' .OR.
-     +        NOMTE(5:7).EQ.'QS8' .OR. NOMTE(5:7).EQ.'QU9' ) THEN
-        NNOS = NNO/2
-      ENDIF
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
@@ -113,8 +92,6 @@ C     -----------------
       DEUX        = 2.0D0
       INSTAN      = ZERO
       NHARM       = ZERO
-      BIDON       = ZERO
-      NDIM        = 2
       ENELEM      = ZERO
 C
       DO 10 I = 1, NBNOMX
@@ -184,17 +161,15 @@ C
 C ---   CALCUL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE
 C ---   CORRESPONDANT AU CHAMP DE DEPLACEMENT COURANT :
 C       ---------------------------------------------
-        CALL EPS1MC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
-     +              ZR(IDFDK),BIDON,ZR(IPOIDS),ZR(IGEOM),
-     +              ZR(IDEPL),NHARM,EPSS)
+        CALL EPS1MC(MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+     +              ZR(IGEOM),ZR(IDEPL),NHARM,EPSS)
 C
 C ---   CALCUL EVENTUEL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE
 C ---   CORRESPONDANT AU CHAMP DE DEPLACEMENT A L'INSTANT PRECEDENT :
 C       -----------------------------------------------------------
         IF (IDEPLM.NE.0) THEN
-          CALL EPS1MC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
-     +                ZR(IDFDK),BIDON,ZR(IPOIDS),ZR(IGEOM),
-     +                ZR(IDEPMM),NHARM,EPSSM)
+          CALL EPS1MC(MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+     +                ZR(IGEOM),ZR(IDEPMM),NHARM,EPSSM)
            ENDIF
 C
       ENDIF
@@ -210,8 +185,7 @@ C  --   JACOBIEN*POIDS_INTEGRATION (DANS LA VARIABLE POIDS)
 C  --   AU POINT D'INTEGRATION COURANT :
 C       ------------------------------
 C
-         CALL DFDM2D (NNO,ZR(IPOIDS+IGAU-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     +               ZR(IGEOM),DFDX,DFDY,POIDS)
+         CALL DFDM2D ( NNO,IGAU,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
 C
          IF (MODELI(1:2).EQ.'AX') THEN
              RAYON = 0.D0
@@ -350,7 +324,7 @@ C
         ELSE
 C
           NCMP = 1
-        CALL PPGANO(NNOS,NPG,NCMP,ENERPG,ZR(IDENER))
+          CALL PPGAN2 ( JGANO, NCMP, ENERPG, ZR(IDENER) )
         ENDIF
 C
 C ---- OPTION ETOT_ELEM

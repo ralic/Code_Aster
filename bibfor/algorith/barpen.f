@@ -4,7 +4,7 @@
       REAL*8              COOR(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/05/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,7 @@ C     ------------------------------------------------------------------
             IF ( I .EQ. 1 ) THEN
                N1 = 1
                N2 = 2
-               N3 = 5
+               N3 = 7
             ELSEIF ( I .EQ. 2 ) THEN
                N1 = 1
                N2 = 3

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,8 +102,7 @@ C
 C
 C---1.4---MODES DYNAMIQUES
 C
-      CALL RECMOD ( MODMEC, NBMODE, NINDEX, NBAMOR, 
-     &              BANDE, TYMMEC, GRDMOD )
+      CALL RECMOD ( MODMEC, NBMODE, NBAMOR, BANDE, TYMMEC, GRDMOD )
       CALL JEVEUO(MODMEC//'           .FREQ','L',IADFRQ)
 C
       ILAMOR = 1

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,17 +20,17 @@ GENER_THPL_2
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ THPLQU4          MAILLE__ QUAD4
-   ELREFE__  QUAD4     GAUSS__  NELGA=FPG1
-   ELREFE__  SEG2
+   ELREFE__  QU4     GAUSS__  RIGI=FPG4   MASS=FPG4  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  SE2     GAUSS__  RIGI=FPG2
 ENTETE__ ELEMENT__ THPLQU8          MAILLE__ QUAD8
-   ELREFE__  QUAD8     GAUSS__  NELGA=FPG2
-   ELREFE__  SEG3
+   ELREFE__  QU8     GAUSS__  RIGI=FPG9   MASS=FPG9  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1 
+   ELREFE__  SE3     GAUSS__  RIGI=FPG4
 ENTETE__ ELEMENT__ THPLQU9          MAILLE__ QUAD9
-   ELREFE__  QUAD9     GAUSS__  NELGA=FPG2
-   ELREFE__  SEG3
+   ELREFE__  QU9     GAUSS__  RIGI=FPG9   MASS=FPG9  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  SE3     GAUSS__  RIGI=FPG4
 ENTETE__ ELEMENT__ THPLTR3          MAILLE__ TRIA3
-   ELREFE__  TRIA3     GAUSS__  NELGA=FPG2
-   ELREFE__  SEG2
+   ELREFE__  TR3     GAUSS__  RIGI=FPG1   MASS=FPG3  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  SE2     GAUSS__  RIGI=FPG2
 
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
@@ -42,7 +42,7 @@ MODE_LOCAL__
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     NVITESR  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
     NDEPLAR  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
-    EDURTPG  = DURT_R   ELGA__ NELGA   (HV       )
+    EDURTPG  = DURT_R   ELGA__ RIGI    (HV       )
     EDURTNO  = DURT_R   ELNO__ IDEN__  (HV       )
     EENEDNO  = ENER_R   ELEM__         (TOTALE   )
     EERREUR  = ERRETEMP ELEM__         (ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1
@@ -53,17 +53,18 @@ MODE_LOCAL__
                                         TERMEC   TERME2   TERME1   )
     CGRAINF  = FLUX_F   ELEM__         (FLUX     FLUY     )
     CGRAINR  = FLUX_R   ELEM__         (FLUX     FLUY     )
-    EFLUXPG  = FLUX_R   ELGA__ NELGA   (FLUX     FLUY     )
+    EFLUXPG  = FLUX_R   ELGA__ MASS    (FLUX     FLUY     )
     EFLUXNO  = FLUX_R   ELNO__ IDEN__  (FLUX     FLUY     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
-    EGGEOM_R = GEOM_R   ELGA__ NELGA   (X        Y        )
+    EGGEOM_R = GEOM_R   ELGA__ MASS    (X        Y        )
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W)
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EHYDRNO  = HYDR_R   ELNO__ IDEN__  (HYDR     )
-    EHYDRPG  = HYDR_R   ELGA__ NELGA   (HYDR     )
+    EHYDRPG  = HYDR_R   ELGA__ MASS    (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    KHI      R        RHO      )
-    EGINST_R = INST_R   ELGA__ NELGA   (INST     )
+    EGINST_R = INST_R   ELGA__ MASS    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
-    EGNEUT_F = NEUT_F   ELGA__ NELGA   (X1       X2       X3       X4       X5       X6       )
+    EGNEUT_F = NEUT_F   ELGA__ MASS    (X1       X2       X3       X4       X5       X6       )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     CDECENT  = NEUT_K24 ELEM__         (Z1       )
     CREFER1  = NEUT_K24 ELEM__         (Z1       Z2       Z3       Z4       Z5       Z6
@@ -72,17 +73,17 @@ MODE_LOCAL__
                                         Z19      )
     ECASECT  = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       )
-    EGNEUT1R = NEUT_R   ELGA__ NELGA   (X1       )
-    EGNEUT_R = NEUT_R   ELGA__ NELGA   (X1       X2       X3       X4       X5       X6       )
+    EGNEUT1R = NEUT_R   ELGA__ MASS    (X1       )
+    EGNEUT_R = NEUT_R   ELGA__ MASS    (X1       X2       X3       X4       X5       X6       )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     CSOURCF  = SOUR_F   ELEM__         (SOUR     )
-    ESOURCR  = SOUR_R   ELGA__ NELGA   (SOUR     )
+    ESOURCR  = SOUR_R   ELGA__ MASS    (SOUR     )
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    ETEMPPG  = TEMP_R   ELGA__ NELGA   (TEMP     )
+    ETEMPPG  = TEMP_R   ELGA__ MASS    (TEMP     )
     ETEMPNO  = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    EPHASIN_ = VAR2_R   ELGA__ NELGA   (V1       V2       V3       V4       V5       )
+    EPHASIN_ = VAR2_R   ELGA__ MASS    (V1       V2       V3       V4       V5       )
     ZVARI1   = VARI_R   ELEM__         (VARI     )
-    EPHASPG_ = VARI_R   ELGA__ NELGA   (VARI     )
+    EPHASPG_ = VARI_R   ELGA__ RIGI    (VARI     )
     EPHASNO_ = VARI_R   ELNO__ IDEN__  (VARI     )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
                                         V6       T0       T1       T2       T3       T4
@@ -137,7 +138,7 @@ OPTION__
                                      DDL_THER PTEMPER  CTEMPSR  PTEMPSR  NVITESR  PVITESR
                               OUT__  EGNEUT1R PLAGRP   MVECTTR  PRESIDU  MVECTTR  PVECTTR
     COOR_ELGA           479   IN__   NGEOMER  PGEOMER
-                              OUT__  EGGEOM_R PCOORPG
+                              OUT__  EGGEOP_R PCOORPG
     DETE_ELNO_DLTE      591   IN__   DDL_THER PDLAGTE  NGEOMER  PGEOMER  DDL_THER PTEMPER  NDEPLAR  PVECTTH
                               OUT__  ETEMPNO  PDETENO
     DLAG_NOEU_TEMP      596   IN__   ETEMPPG  PDEULTG  NGEOMER  PGEOMER  DDL_THER PTEMPER  NDEPLAR  PVECTTH

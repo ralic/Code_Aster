@@ -1,10 +1,10 @@
-        SUBROUTINE CHBRES ( MOD, IMAT, NMAT, MATERD, MATERF, MATCST,
-     1                      TEMPF, YD ,  YF,   DEPS,   DY,     R )
+        SUBROUTINE CHBRES ( MOD, NMAT, MATERD, MATERF,
+     1                      YD ,  YF,   DEPS,   DY,     R )
         IMPLICIT REAL*8 (A-H,O-Z)
 
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,19 +27,16 @@ C                    DY = ( DSIG DX1 DX2 DP (DEPS3) )
 C                    Y  = ( SIG  X1  X2  P  (EPS3)  )
 C                    R  = ( G    L   J   F  (Q)     )
 C       IN  MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATERD :  COEFFICIENTS MATERIAU A T
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           MATCST :  'OUI' SI MATERIAU CONSTANT SUR DT
-C           TEMPF  :  TEMPERATURE A T + DT
 C           YD     :  VARIABLES A T       = ( SIGD VIND (EPSD3)  )
 C           YF     :  VARIABLES A T + DT  = ( SIGF VINF (EPSF3)  )
 C           DY     :  SOLUTION ESSAI      = ( DSIG DVIN (DEPS3) )
 C           DEPS   :  INCREMENT DE DEFORMATION
 C       OUT R      :  SYSTEME NL A T + DT
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NDT , NDI , NMAT
+        INTEGER         NDT , NDI , NMAT
         REAL*8          D23
         PARAMETER       ( D23  =  .66666666666666D0 )
 C
@@ -56,11 +53,10 @@ C
         REAL*8          H1,  H2   , CHBCIN
 C
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
-        REAL*8          SEUIL , TEMPF
+        REAL*8          SEUIL
         REAL*8          RI,  RO,  B,  K,  W,  A1,  A2,  C1,  C2, NU
 C
         CHARACTER*8     MOD
-        CHARACTER*3     MATCST
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT , NDI
 C       ----------------------------------------------------------------
@@ -118,7 +114,7 @@ C
 C
 C - FF (T+DT)
 C
-        CALL CHBCVX ( IMAT, NMAT, MATERF, TEMPF, SIGF , YF(NDT+1),SEUIL)
+        CALL CHBCVX ( NMAT, MATERF, SIGF , YF(NDT+1),SEUIL)
         FF = - SEUIL
 C
 C - QF  (T+DT)  EN CP

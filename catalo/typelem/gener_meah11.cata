@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 26/01/2004   AUTEUR VABHHTS J.PELLET 
 % RESPONSABLE UFBHHLL C.CHAVANT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -21,12 +21,12 @@ GENER_MEAH11
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ HHM_AXIS_SE3     MAILLE__ SEG3
-   ELREFE__  SEG3      GAUSS__  NELGA=FPG2
+   ELREFE__  SE3        GAUSS__  RIGI=FPG4
 
 MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       PRE1     PRE2     )
     CFLUXF   = FTHM_F   ELEM__         (PFLU1    PFLU2    )
-    EFLUXE   = FTHM_R   ELGA__ NELGA   (PFLU1    PFLU2    )
+    EFLUXE   = FTHM_R   ELGA__ RIGI   (PFLU1    PFLU2    )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    )
     CPRESSF  = PRES_F   ELEM__         (PRES     )

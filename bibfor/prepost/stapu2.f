@@ -1,11 +1,11 @@
       SUBROUTINE STAPU2(NBOBST,NBPT,NBPAIR,TEMPS,FCHO,VGLI,DLOC,COEF,
      &                  ANG,WK1,WK2,WK3,WK4,WK5,WK6,IDEBUT,NBLOC,NBVAL,
-     &                  INOE,IMPR,ISUPP,NBINST,TMPVU,PUSURN,VUSTUB,
+     &                  INOE,ISUPP,NBINST,TMPVU,PUSURN,VUSTUB,
      &                  VUSOB,PUS,PMOYE,POURPU,POUPRE)
 
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/02/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,6 @@ C IN  : FCHO   : VECTEUR DES FORCES DE CHOC
 C IN  : VGLI   : VECTEUR DES VITESSES DE GLISSEMENT
 C IN  : NBLOC  : NB DE BLOCS POUR LE MOYENNAGE
 C IN  : INOE   : NUMERO DE NOEUD TRAITE
-C IN  : IMPR   : IMPRESSION
 C OUT : PUSURN : PUISSANCE D'USURE MOYENNEE
 C-----------------------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -66,7 +65,7 @@ C     REAL*8   TMPV(10)
         PUS(JDG) = ZERO
         OCCURE(JDG) = 0
         DO 20 IBL = 1,NBLOC
-          CALL PUSUR2(JDG,NBPAIR,NBVAL,COEF,ANG,
+          CALL PUSUR2(JDG,NBVAL,ANG,
      &                WK1((IBL-1)*NBVAL+IDEBUT),
      &                WK2((IBL-1)*NBVAL+IDEBUT),
      &                WK3((IBL-1)*NBVAL+IDEBUT),

@@ -1,8 +1,8 @@
-      SUBROUTINE CFADU(RESOCO, DEPDEL, NEQ, NDIM, NBLIAI, NBLIAC, LLF,
+      SUBROUTINE CFADU(RESOCO, DEPDEL, NEQ, NDIM, NBLIAC, LLF,
      +                                               LLF1, LLF2, NESMAX)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/05/2003   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ======================================================================
        IMPLICIT      NONE
-       INTEGER       NEQ, NDIM, NBLIAI, NBLIAC, LLF, LLF1, LLF2, NESMAX
+       INTEGER       NEQ, NDIM, NBLIAC, LLF, LLF1, LLF2, NESMAX
        CHARACTER*24  RESOCO, DEPDEL
 C ======================================================================
 C ----------------------------------------------------------------------

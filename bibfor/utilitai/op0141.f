@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/05/2003   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*19  NOMFON, NOMFX, NOMFY, LISTR, LISTRS, RESU
       CHARACTER*1   K1BID
       CHARACTER*24  LISFON
+      CHARACTER*14  NUMDDL
 C     ----------------------------------------------------------------
 C
 C     --- VERIFICATION SUPPLEMENTAIRE ---
@@ -155,7 +156,7 @@ C     PARTIE IMPRESSION DES DIRECTIVES
                ZK16(LPRO+4) = PROLGD
             ENDIF
             IF ( FORMAT.EQ.'AGRAF'   ) THEN
-               CALL FOECAG('COURBE',NBCOUR,IC,NOMFON,IUL,IPS,IND,IRET)
+               CALL FOECAG('COURBE',IC,NOMFON,IUL,IPS,IND,IRET)
             ELSE
                CALL FOECGN('COURBE',NBCOUR,IC,NOMFON,IUL,IPS,IND,IRET)
             ENDIF
@@ -276,7 +277,14 @@ C
                BASEMO = ZK24(JREFE)(1:8)
                CALL JEVEUO(BASEMO//'           .REFE','L',JREFE)
                RAIDE = ZK24(JREFE+2)(1:8)
-            CALL DISMOI('F','NOM_MAILLA',RAIDE,'MATR_ASSE',IBID,NOMA,IE)
+               IF (RAIDE.NE.' ') THEN
+                 CALL DISMOI('F','NOM_MAILLA',RAIDE,'MATR_ASSE',
+     +                       IBID,NOMA,IE)
+               ELSE
+                 NUMDDL = ZK24(JREFE+1)(1:14)
+                 CALL DISMOI('F','NOM_MAILLA',NUMDDL,'NUME_DDL',
+     +                       IBID,NOMA,IE)
+               ENDIF
                CALL UTNONO(' ',NOMA,'NOEUD',NOMGR,NOEUD,IRET)
                IF (IRET.EQ.10) THEN
                   CALL UTMESS('F','OP0141',
@@ -302,7 +310,7 @@ C
          IF     ( FORMAT .EQ. 'RESULTAT' ) THEN
             CALL FOIMPR(NOMFON,IMPR,FILE,IND,LISTR)
          ELSEIF ( FORMAT .EQ. 'COMMANDE' ) THEN
-            CALL FOECCF(NOMFON,IUL,IND,LISTR)
+            CALL FOECCF(NOMFON,IUL,IND)
          ELSEIF ( FORMAT .EQ. 'SEISME'   ) THEN
             CALL FOECFD(NOMFON,IUL,IND,LISTR)
          ELSEIF ( FORMAT .EQ. 'AGRAF'    ) THEN

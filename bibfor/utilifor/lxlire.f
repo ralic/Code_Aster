@@ -20,7 +20,7 @@ C       4   TEXTE            CVAL DE TYPE CHARACTER*(*) DE LONGUEUR IVAL
 C       5   SEPARATEUR       CVAL DE TYPE CHARACTER*(*) DE LONGUEUR 1
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 13/02/2001   AUTEUR DURAND C.DURAND 
+C MODIF UTILIFOR  DATE 24/11/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C     VARIABLES GLOBALES DE LECTURE-ECRITURE ---------------------------
 C     ------------------------------------------------------------------
 C     ------- COMMUN FORMULE
       INTEGER NOMBRE
-      PARAMETER(NOMBRE=20)
+      PARAMETER(NOMBRE=50)
       CHARACTER*80 FTEXT(NOMBRE)
       COMMON /CXFO00/LPOS
       COMMON /CXFO01/FTEXT

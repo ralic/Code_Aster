@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/02/2004   AUTEUR NICOLAS O.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,6 +27,7 @@ def lire_resu_prod(TYPE_RESU,**args):
   if TYPE_RESU == "DYNA_HARMO" : return dyna_harmo
   if TYPE_RESU == "HARM_GENE" :  return harm_gene
   if TYPE_RESU == "MODE_MECA" :  return mode_meca
+  if TYPE_RESU == "MODE_MECA_C" : return mode_meca_c
   raise AsException("type de concept resultat non prevu")
 
 # pour éviter d'écrire 3 fois cette liste :
@@ -68,7 +69,8 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,docu="U7.02.01-d",r
 # 0) mots clés généraux :
 #----------------------
          TYPE_RESU       =SIMP(statut='o',typ='TXM',into=("EVOL_THER","EVOL_ELAS","EVOL_NOLI","MODE_MECA",
-                                                          "DYNA_TRANS","DYNA_HARMO","HARM_GENE","EVOL_CHAR") ),
+                                                          "MODE_MECA_C","DYNA_TRANS","DYNA_HARMO","HARM_GENE",
+                                                          "EVOL_CHAR") ),
 
          FORMAT          =SIMP(statut='o',typ='TXM',into=("IDEAS","IDEAS_DS58","ENSIGHT","MED") ),
 
@@ -105,6 +107,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,docu="U7.02.01-d",r
 # ---------
          b_ideas         =BLOC(condition="FORMAT=='IDEAS'",
            UNITE           =SIMP(statut='f',typ='I',defaut= 19 ),
+#           TEST            =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON" ),
            NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=l_nom_cham_pas_elga()),
            FORMAT_IDEAS    =FACT(statut='f',max='**',
              regles=(UN_PARMI('POSI_INST','POSI_FREQ'),),
@@ -143,7 +146,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,docu="U7.02.01-d",r
 
 # 2) blocs selon le type du résultat :
 #---------------------------------
-         b_mode_meca     =BLOC(condition="TYPE_RESU=='MODE_MECA'",
+         b_mode_meca     =BLOC(condition="(TYPE_RESU=='MODE_MECA')or(TYPE_RESU=='MODE_MECA_C')",
            MATR_A         =SIMP(statut='f',typ=matr_asse_depl_r,),
            MATR_B         =SIMP(statut='f',typ=matr_asse_depl_r,),
          ),

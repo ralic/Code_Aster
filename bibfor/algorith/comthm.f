@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 06/10/2003   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -109,14 +109,15 @@ C ======================================================================
       LOGICAL       CERMES 
       INTEGER       I,NVIMEC,NVITH,ADVIME,ADVITH
       REAL*8        P1,DP1,GRAP1(3),P2,DP2,GRAP2(3),T,DT,GRAT(3)
-      REAL*8        PHI,PVP,H11,H12,H21,RHO11,EPSV,DEPS(6),DEPSV
+      REAL*8        PHI,PVP,PAD,H11,H12,H21,H22,RHO11,EPSV,DEPS(6),DEPSV
       REAL*8        T0,P10,P20,PHI0,PVP0,SAT,RV0
       REAL*8        G1D,G1F,G1C,J1D,J1F,J1C,J2,J3,G2,G3,MAMOVG
       REAL*8        RGAZ, RHOD, CPD, BIOT, SATM, SATUR,DSATUR, PESA(3)
       REAL*8        PERMFH, PERMLI, DPERML, PERMGZ,DPERMS, DPERMP, FICK
-      REAL*8        DFICKT, DFICKG, LAMBDD,DLAMBD, RHOL, UNSURK, ALPHA
-      REAL*8        CPL, LAMBDL,DLAMBL, VISCL, DVISCL, CPG, LAMBDG
-      REAL*8        DLAMBG,VISCG, DVISCG, MAMOLG, CPVG, VISCVG, DVISVG
+      REAL*8        DFICKT, DFICKG, LAMBP,DLAMBP, RHOL, UNSURK
+      REAL*8        CPL, LAMBS,DLAMBS, VISCL, DVISCL, CPG, LAMBT
+      REAL*8        DLAMBT,VISCG, DVISCG, MAMOLG, CPVG, VISCVG, DVISVG
+      REAL*8        FICKAD,DFADT,KH,LAMBCT, ALPHA
       CHARACTER*16  MECA,THMC,THER,HYDR
 C ======================================================================
 C --- RECUPERATION DES DONNEES INITIALES -------------------------------
@@ -139,10 +140,9 @@ C ======================================================================
 C --- CALCUL DES RESIDUS ET DES MATRICES TANGENTES ---------------------
 C ======================================================================
       IF (CERMES) THEN
-         CALL CACOGT(OPTION,COMPOR,MECA,THMC,THER,HYDR,IMATE,NDIM,
-     +               DIMDEF,DIMCON,NVIMEC,NVITH,YAMEC,YAP1,NBPHA1,YAP2,
-     +               NBPHA2,YATE,ADDEME,ADCOME,ADVIME,ADVITH,ADDEP1,
-     +               ADCP11,ADCP12,ADDEP2,ADCP21,ADCP22,ADDETE,ADCOTE,
+         CALL CACOGT(OPTION,MECA,THMC,HYDR,IMATE,NDIM,DIMDEF,DIMCON,
+     +               NVIMEC,NVITH,YAMEC,YATE,ADDEME,ADCOME,ADVITH,
+     +               ADDEP1,ADCP11,ADCP12,ADDEP2,ADCP21,ADDETE,ADCOTE,
      +               CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,P1,P2,
      +               DP1,DP2,T,DT,PHI,PVP,H11,H12,H21,RHO11,PHI0,PVP0,
      +               P10,P20,T0,SAT,RV0,G1D,G1F,G1C,J1D,J1F,J1C,J2,J3,
@@ -153,9 +153,10 @@ C ======================================================================
      +                    NBPHA1,YAP2,NBPHA2,YATE,ADDEME,ADCOME,ADVIME,
      +                    ADVITH,ADDEP1,ADCP11,ADCP12,ADDEP2,ADCP21,
      +                    ADCP22,ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,
-     +                    VINTP,DSDE,EPSV,DEPSV,P1,P2,DP1,DP2,T,DT,PHI,
-     +                    PVP,H11,H12,H21,RHO11,PHI0,PVP0,P10,P20,T0,
-     +                    SAT,RETCOM)
+     +                    VINTP,DSDE,DEPS,EPSV,DEPSV,P1,P2,DP1,DP2,
+     +                    T,DT,PHI,
+     +                    PVP,PAD,H11,H12,H21,H22,KH,RHO11,PHI0,PVP0,
+     +                    P10,P20,T0,SAT,RETCOM,CRIT,BIOT)
          IF (RETCOM.NE.0) THEN
             GOTO 9000
          ENDIF
@@ -165,11 +166,10 @@ C --- CALCUL DES GRANDEURS MECANIQUES PURES UNIQUEMENT SI YAMEC = 1 ----
 C ======================================================================
       IF (YAMEC.EQ.1) THEN 
          CALL CALCME(OPTION,COMPOR,MECA,IMATE,TYPMOD,CRIT,INSTAM,INSTAP,
-     +               T0,NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,YAMEC,YAP1,
-     +               NBPHA1,YAP2,NBPHA2,YATE,ADDEME,ADCOME,ADDETE,
-     +               DEFGEM,CONGEM,CONGEP,VINTM,VINTP,ADVIME,ADVITH,
-     +               ADDEP1,ADDEP2,DSDE,DEPS,DEPSV,PHI,P1,P2,T,DT,PHI0,
-     +               RETCOM)
+     +               T0,NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,YATE,ADDEME,
+     +               ADCOME,ADDETE,DEFGEM,CONGEM,CONGEP,VINTM,VINTP,
+     +               ADVIME,ADVITH,ADDEP1,ADDEP2,DSDE,DEPS,DEPSV,PHI,
+     +               P1,P2,T,DT,PHI0,RETCOM,DP1,DP2,SAT,BIOT)
          IF ( RETCOM.NE.0) THEN
             GOTO 9000
          ENDIF
@@ -178,41 +178,39 @@ C ======================================================================
 C --- RECUPERATION DES DONNEES MATERIAU FINALES ------------------------
 C ======================================================================
       IF (.NOT.CERMES) THEN
-         CALL THMLEC(IMATE, THMC, MECA, HYDR, THER,
-     +                   T0, P10, P20, PHI0, PVP0, T, P1, P2, PHI,
-     +         VINTP(1), SAT, PVP, RGAZ, RHOD, CPD, BIOT, SATM, SATUR,
-     +                   DSATUR, PESA, PERMFH, PERMLI, DPERML, PERMGZ,
-     +                   DPERMS, DPERMP, FICK, DFICKT, DFICKG, LAMBDD,
-     +                   DLAMBD, RHOL, UNSURK, ALPHA, CPL, LAMBDL,
-     +                   DLAMBL, VISCL, DVISCL, MAMOLG, CPG, LAMBDG,
-     +                   DLAMBG, VISCG, DVISCG, MAMOVG, CPVG, VISCVG,
-     +                   DVISVG)
+         CALL THMLEC(IMATE, THMC, MECA, HYDR, THER, T, P1, P2,
+     +               PHI, VINTP(1), PVP, PAD, RGAZ, BIOT, SATUR,
+     +               DSATUR, PESA, PERMFH, PERMLI, DPERML, PERMGZ,
+     +               DPERMS, DPERMP, FICK, DFICKT, DFICKG, LAMBP,
+     +               DLAMBP, UNSURK, ALPHA, LAMBS, DLAMBS, VISCL,
+     +               DVISCL, MAMOLG, LAMBT, DLAMBT, VISCG, DVISCG,
+     +               MAMOVG, FICKAD, DFADT, LAMBCT)
       ENDIF
 C ======================================================================
 C --- CALCUL DES FLUX HYDRAULIQUES UNIQUEMENT SI YAP1 = 1 --------------
 C ======================================================================
       IF (YAP1.EQ.1) THEN
          IF (CERMES) THEN
-            CALL CAFHGT(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF,
-     +                  DIMCON,NVIMEC,NVITH,YAMEC,YAP1,NBPHA1,YAP2,
-     +                  NBPHA2,YATE,ADDEP1,ADDEP2,ADCP11,ADCP12,ADCP21,
-     +                  ADCP22,ADDEME,ADDETE,CONGEM,CONGEP,VINTM,VINTP,
-     +                  ADVIME,ADVITH,DSDE,EPSV,P1,P2,GRAP1,GRAP2,T,
-     +                  GRAT,PHI,PVP,RHO11,H11,H12,H21,T0,SAT,RV0,G1D,
-     +                  G1F,G1C,J1D,J1F,J1C,J2,J3,G2,G3,PESA)
+            CALL CAFHGT(OPTION,THMC,HYDR,IMATE,NDIM,DIMDEF,
+     +                  DIMCON,NVIMEC,NVITH,YAMEC,YATE,ADDEP1,ADDEP2,
+     +                  ADCP11,ADCP12,ADCP21,ADDEME,ADDETE,CONGEP,
+     +                  DSDE,P1,P2,GRAP1,GRAP2,T,GRAT,PHI,PVP,RHO11,
+     +                  H11,H12,T0,SAT,RV0,G1F,J1D,J1F,J1C,
+     +                  J2,J3,G2,PESA)
          ELSE
-            CALL CALCFH(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF,
-     +                    DIMCON,NVIMEC,NVITH,YAMEC,YATE,ADDEP1,ADDEP2,
+            CALL CALCFH(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF, 
+     +                    DIMCON,NVIMEC,NVITH,YAMEC,YATE,ADDEP1,ADDEP2, 
      +                    ADCP11,ADCP12,ADCP21,ADCP22,ADDEME,ADDETE,
      +                    VINTM, VINTP,
      +                    CONGEM,CONGEP,ADVIME,ADVITH,DSDE,P1,P2,
-     +                    GRAP1,GRAP2,T,GRAT,PHI,PVP,RHO11,H11,H12,H21,
-     +                    RGAZ, RHOD, CPD, BIOT, SATUR, DSATUR,
+     +                    GRAP1,GRAP2,T,GRAT,PHI,PVP,PAD,RHO11,H11,H12,
+     +                    H21,H22,RGAZ, RHOD, CPD, BIOT, SATUR, DSATUR,
      +                    PESA, PERMFH, PERMLI, DPERML, PERMGZ, DPERMS,
-     +                    DPERMP, FICK, DFICKT, DFICKG, LAMBDD, DLAMBD,
-     +                    RHOL, UNSURK, ALPHA,  CPL, LAMBDL,
-     +                    DLAMBL,
-     +                    VISCL, DVISCL, MAMOLG,CPG, LAMBDG, DLAMBG,
+     +                    DPERMP, FICK, DFICKT, DFICKG,FICKAD,DFADT,
+     +                    LAMBP, DLAMBP,KH,
+     +                    RHOL, UNSURK, ALPHA,  CPL, LAMBS,
+     +                    DLAMBS,
+     +                    VISCL, DVISCL, MAMOLG,CPG, LAMBT, DLAMBT,
      +                    VISCG,
      +                    DVISCG, MAMOVG, CPVG, VISCVG, DVISVG, RETCOM)
             IF ( RETCOM.NE.0) THEN
@@ -225,26 +223,24 @@ C --- CALCUL DU FLUX THERMIQUE UNIQUEMENT SI YATE = 1 ------------------
 C ======================================================================
       IF (YATE.EQ.1) THEN
          IF (CERMES) THEN
-            CALL CAFTGT(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF,
-     +                  DIMCON,NVIMEC,NVITH,YAMEC,YAP1,NBPHA1,YAP2,
-     +                  NBPHA2,YATE,ADDETE,ADDEME,ADDEP1,ADDEP2,ADCOTE,
-     +                  CONGEM,CONGEP,VINTM,VINTP,ADVIME,ADVITH,DSDE,
-     +                  EPSV,P1,P2,T,GRAT,PHI,SAT,RV0,G1D,G1F,G1C,J1D,
-     +                  J1F,J1C,J2,J3,G2,G3)
+            CALL CAFTGT(OPTION,THMC,HYDR,IMATE,NDIM,DIMDEF,
+     +                  DIMCON,NVIMEC,NVITH,YAMEC,YAP1,YAP2,
+     +                  ADDETE,ADDEME,ADDEP1,ADDEP2,ADCOTE,
+     +                  CONGEP,DSDE,P1,T,GRAT,SAT)
          ELSE
-            CALL CALCFT(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF,
-     +                    DIMCON,NVIMEC,NVITH,YAMEC,YAP1,NBPHA1,YAP2,
-     +                    NBPHA2,YATE,ADDETE,ADDEME,ADDEP1,ADDEP2,
-     +                    ADCOTE,CONGEM,CONGEP,VINTM,VINTP,ADVIME,
-     +                    ADVITH,DSDE,EPSV,P1,P2,T,GRAT,PHI,SAT,PVP,
-     +                    RGAZ, RHOD, CPD, BIOT, SATM, SATUR,
-     +                    DSATUR, PESA, PERMFH, PERMLI, DPERML, PERMGZ,
-     +                    DPERMS, DPERMP, FICK, DFICKT, DFICKG, LAMBDD,
-     +                    DLAMBD, RHOL, UNSURK, ALPHA, CPL, LAMBDL,
-     +                    DLAMBL, VISCL, DVISCL, MAMOLG, CPG, LAMBDG,
-     +                    DLAMBG,
-     +                    VISCG, DVISCG, MAMOVG, CPVG, VISCVG, DVISVG,
-     +                    RETCOM)
+            CALL CALCFT(OPTION,MECA,THMC,HYDR,IMATE,NDIM,DIMDEF,
+     +                 DIMCON,NVIMEC,NVITH,YAMEC,YAP1,NBPHA1,YAP2,
+     +                 NBPHA2,YATE,ADDETE,ADDEME,ADDEP1,ADDEP2,
+     +                 ADCOTE,CONGEM,CONGEP,VINTM,VINTP,ADVIME,
+     +                 ADVITH,DSDE,EPSV,P1,P2,T,GRAT,PHI,SAT,PVP,
+     +                 RGAZ, RHOD, CPD, BIOT, SATM, SATUR,
+     +                 DSATUR, PESA, PERMFH, PERMLI, DPERML, PERMGZ,
+     +                 DPERMS, DPERMP, FICK, DFICKT, DFICKG, LAMBP,
+     +                 DLAMBP, RHOL, UNSURK, ALPHA, CPL, LAMBS,
+     +                 DLAMBS, VISCL, DVISCL, MAMOLG, CPG, LAMBT,
+     +                 DLAMBT,
+     +                 VISCG, DVISCG, MAMOVG, CPVG, VISCVG, DVISVG,
+     +                 RETCOM,LAMBCT)
             IF ( RETCOM.NE.0) THEN
                GOTO 9000
             ENDIF

@@ -1,14 +1,14 @@
-      SUBROUTINE DIGOUJ (OPTION,COMPOR,NNO,NBT,NEQ,NC,ICODMA,ULM,DUL,
+      SUBROUTINE DIGOUJ (OPTION,COMPOR,NNO,NBT,NEQ,NC,ICODMA,DUL,
      &                   SIM,VARIM,PGL,KLV,KLC,VARIP,FONO,SIP,NOMTE)
 C ----------------------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER NBT,NEQ,ICODMA,NC
-      REAL*8  ULM(NEQ),DUL(NEQ),SIM(NEQ),SIP(NEQ),VARIM(*)
+      REAL*8  DUL(NEQ),SIM(NEQ),SIP(NEQ),VARIM(*)
       REAL*8  PGL(3,3),KLV(NBT),VARIP(*),FONO(NEQ),KLC(NEQ,NEQ)
       CHARACTER*16      OPTION, COMPOR(*),NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

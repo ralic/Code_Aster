@@ -1,6 +1,6 @@
       SUBROUTINE TE0022(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C.......................................................................
       CHARACTER*16 NOMTE,OPTION
       REAL*8 SIGMA(162),REPERE(7),INSTAN,NHARM
       REAL*8 SIGM2(162)
-      INTEGER NBSIGM
+      INTEGER NBSIGM,NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO
       LOGICAL LSENS
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -59,9 +59,6 @@ C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
 C      ------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
-
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
 
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
@@ -113,8 +110,8 @@ C      -------------------------------------------
 C ---- CALCUL DES CONTRAINTES 'VRAIES' SUR L'ELEMENT
 C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
 C      ------------------------------------
-      CALL SIGVMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
-     &            ZR(IDFDN),ZR(IDFDK),ZR(IPOIDS),ZR(IGEOM),ZR(IDEPL),
+      CALL SIGVMC(MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
+     &            ZR(IGEOM),ZR(IDEPL),
      &            ZR(ITEMPE),ZR(ITREF),INSTAN,REPERE,ZI(IMATE),NHARM,
      &            SIGMA,.FALSE.)
 
@@ -124,8 +121,8 @@ C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
 C ATTENTION!! POUR L'INSTANT(30/9/02) ON DOIT AVOIR SIGMA_THERMIQUE=0
 C      ------------------------------------
       IF (LSENS) THEN
-        CALL SIGVMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
-     &              ZR(IDFDN),ZR(IDFDK),ZR(IPOIDS),ZR(IGEOM),ZR(IDEPS),
+        CALL SIGVMC(MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
+     &              ZR(IGEOM),ZR(IDEPS),
      &              ZR(ITEMPE),ZR(ITREF),INSTAN,REPERE,ZI(IMATE),NHARM,
      &              SIGM2,.TRUE.)
         DO 20 I = 1,NBSIG*NPG1

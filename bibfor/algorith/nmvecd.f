@@ -5,7 +5,7 @@
      &                    ETATF, IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/06/2000   AUTEUR SABMTEC P.LACLERGUE 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -265,7 +265,7 @@ C   ================================
         P2DXHI=0.D0
       ELSE
         IF (MATCST.EQ.'NAP') THEN
-          CALL NMVEKX (IMATE, TP, XHI, NB, KXHI, DKXIDX)
+          CALL NMVEKX (IMATE, TP, XHI, KXHI, DKXIDX)
           MATE(9,2) = KXHI
         ENDIF
 C

@@ -1,6 +1,6 @@
       SUBROUTINE JEIMPO ( CUNIT , NOMLU , PARM , MESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 04/11/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CFT_726 CFT_720 CRP_18 CRS_508 CRS_512
+C TOLE CFT_726 CFT_720 CRP_18 CRP_4 CRS_508 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER *(*)      CUNIT , NOMLU , PARM , MESS
 C     ------------------------------------------------------------------
@@ -213,13 +213,13 @@ C           ----------- COLLECTION CONTIGUE
              LONOI = LONO ( JLONO(ICLACO) + IXDESO ) * LTYPI
              LONOI = LONOI / ISZON ( JISZON + IBACOL + IVNMAX )
              IADMI = IBDESO
-             IDECI = ( IDATOC - 1 ) * LONOI / LOIS
+             IDECI = ( IDATOC - 1 ) * LONOI 
            ELSE
              IBLONO = IADM ( JIADM(ICLACO) + IXLONO )
              LONOI = LTYPI * ( ISZON(JISZON+IBLONO-1+IDATOC+1) -
      +                         ISZON(JISZON+IBLONO-1+IDATOC ) )
              IADMI = IBDESO
-             IDECI = (LTYPI*(ISZON(JISZON+IBLONO-1+IDATOC)-1)) / LOIS
+             IDECI = (LTYPI*(ISZON(JISZON+IBLONO-1+IDATOC)-1)) 
            ENDIF
            CALL JJIMPO(CUNIT,IADMI,IDECI,IDATOC,GENRI,TYPEI,LTYPI,LONOI,
      +                   MESS , PARM)

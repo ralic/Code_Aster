@@ -1,9 +1,9 @@
-      SUBROUTINE NUACNO ( NUAGE, LMA, LNO, CHNO )
+      SUBROUTINE NUACNO ( NUAGE, LNO, CHNO )
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)       NUAGE, LMA, LNO, CHNO
+      CHARACTER*(*)       NUAGE, LNO, CHNO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/01/98   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,6 @@ C ======================================================================
 C     PASSAGE D'UNE UNE SD NUAGE A SD CHAM_NO
 C
 C IN  NUAGE  : NOM DE LA SD NUAGE
-C IN  LMA    : LISTE DES MAILLES A PRENDRE EN COMPTE
 C IN  LNO    : LISTE DES NOEUDS A PRENDRE EN COMPTE
 C IN  CHNO   : NOM DE LA SD CHAM_NO
 C     ------------------------------------------------------------------

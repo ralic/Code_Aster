@@ -3,7 +3,7 @@
      +            NOMA,NBGRN,NOGN,NBGRM,NOGM,
      +                  LMASU,NOMAI,NONOE,VERSIO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 01/12/2000   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF PREPOST  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,8 @@ C     ------------------------------------------------------------------
       REAL*8 COORDO(*),R(3),BIDON,RCSF
       INTEGER CONNEX(*),TYPMA(*),POINT(*),TYPEL(*)
       INTEGER NODSUP(32),NODAST(32),PERMUT(MAXNOD,*),CODGRA(*),CODPHY(*)
-      INTEGER ICODNO,ICODMA,VERSIO,CODPHD(*), ITRI7, IQUA9, ISEG4
+      INTEGER ICODNO,ICODMA,VERSIO,CODPHD(*)
+      INTEGER ITRI7, IQUA9, ISEG4, IHEX27
       LOGICAL LMASU,LPOUT,LMOD
       CHARACTER*8 KBID
 C ---------------------------------------------------------------------
@@ -80,6 +81,7 @@ C ---------------------------------------------------------------------
       ITRI7 = 0
       IQUA9 = 0
       ISEG4 = 0
+      IHEX27 = 0
 C
 C     RECHERCHE DE LA PRESENCE DE POUTRES
 C
@@ -188,7 +190,12 @@ C       - RECUPERATION DU NOMBRE DE NOEUDS DE L'ELEMENT
         NNOE=POINT(IMA+1)-IPOIN
 CCC
         CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPE),NOMTM)
-        IF ( NOMTM .EQ. 'TRIA7' ) THEN
+        IF ( NOMTM .EQ. 'HEXA27' ) THEN
+           IF (IHEX27.EQ.0) CALL UTMESS('I','IRMASU','HEXA27 ELEMENT '//
+     +                      'INEXISTANT DANS IDEAS, CONVERTI EN HEXA20')
+           IHEX27 = 1
+           NNOE = NNOE - 7
+        ELSE IF ( NOMTM .EQ. 'TRIA7' ) THEN
            IF (ITRI7.EQ.0) CALL UTMESS('I','IRMASU','TRIA7 ELEMENT '//
      +                      'INEXISTANT DANS IDEAS, CONVERTI EN TRIA6')
            ITRI7 = 1
@@ -234,7 +241,10 @@ CJMPESSAI          ICOD2=CODPHD(ITYPE)
 C
 C       - ELEMENTS NON DISPONIBLES DANS IDEAS
         IF (CODPHD(TYPMA(IMA)).EQ.6000) THEN
-          CALL UTMESS('A','IRMASU', 'ELEMENT HEXA27 NON DISPONIBLE'
+          CALL UTMESS('A','IRMASU', 'ELEMENT PYRAM5 NON DISPONIBLE'
+     &          //' DANS IDEAS')
+        ELSE IF (CODPHD(TYPMA(IMA)).EQ.6001) THEN
+          CALL UTMESS('A','IRMASU', 'ELEMENT PYRAM13 NON DISPONIBLE'
      &          //' DANS IDEAS')
         ENDIF
         IF((ICOD2.GT.10000).OR.(ICOD2.LT.0))THEN
@@ -307,6 +317,9 @@ C         - MAILLE PRISE EN COMPTE SI TYPE D'ELEMENT DIFFERENT DE 0
           IF(LMOD)THEN
             IF(TYPEL(ZI(IAGRMA-1+JM)).EQ.0) GOTO 756
           ENDIF
+          ITYPE=TYPMA(ZI(IAGRMA-1+JM))
+          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPE),NOMTM)
+          IF((NOMTM.EQ.'PYRAM5').OR.(NOMTM.EQ.'PYRAM13')) GOTO 756
           NBM2=NBM2+1
           ZI(JMAGR-1+NBM2)=ZI(IAGRMA-1+JM)
           IF(LMASU) THEN

@@ -1,9 +1,9 @@
-      SUBROUTINE EFDF3D ( POIDSG, NNO2, DFRDE2, DFRDN2, DFRDK2,
-     &                            NNO1, DFRDE1, DFRDN1, DFRDK1,
+      SUBROUTINE EFDF3D ( IPOIDS, KPG, NNO2, IDFDE2,
+     &                                 NNO1, DFRDE1, DFRDN1, DFRDK1,
      &                    COOR, DFDX, DFDY, DFDZ, POIDS )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/08/2000   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,10 +22,9 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
-      INTEGER  NNO1, NNO2
+      INTEGER  NNO1, NNO2, IPOIDS, KPG, IDFDE2
       REAL*8   DFRDE1(*),DFRDN1(*),DFRDK1(*)
-      REAL*8   DFRDE2(*),DFRDN2(*),DFRDK2(*)
-      REAL*8   POIDSG, POIDS, COOR(*),DFDX(*),DFDY(*), DFDZ(*)
+      REAL*8   POIDS, COOR(*),DFDX(*),DFDY(*), DFDZ(*)
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES DERIVEES DES FONCTIONS DE FORME
 C               P1 PAR RAPPORT A UNE GEOMETRIE P2
@@ -39,29 +38,37 @@ C IN  COOR    : COORDONEES DES NOEUDS
 C OUT DFDX    : DERIVEE DES FONCTIONS DE FORME P1 / P2
 C OUT DFDY    : DERIVEE DES FONCTIONS DE FORME P1 / P2
 C OUT POIDS   : POIDS DU POINT DE GAUSS EN GEOMETRIE REELLE
-
-C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
-
-      CHARACTER*8        NOMAIL
-      INTEGER            I, J, II, IADZI, IAZK24
-      REAL*8             G(3,3), JAC, DE, DN, DK, R8GAEM
-      REAL*8             J11,J12,J13,J21,J22,J23,J31,J32,J33
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      CHARACTER*8   NOMAIL
+      INTEGER       I, J, K, II, IADZI, IAZK24
+      REAL*8        POIDSG, G(3,3), JAC, DE, DN, DK, R8GAEM
+      REAL*8        J11,J12,J13,J21,J22,J23,J31,J32,J33
 
 
       CALL R8INIR(9, 0.D0, G,1)
+      POIDSG = ZR(IPOIDS+KPG-1)
 
       DO 100 I=1,NNO2
+        K  = 3*NNO2*(KPG-1)
         II = 3*(I-1)
-        DE = DFRDE2(II+1)
-        DN = DFRDN2(II+1)
-        DK = DFRDK2(II+1)
+        DE = ZR(IDFDE2-1+K+II+1)
+        DN = ZR(IDFDE2-1+K+II+2)
+        DK = ZR(IDFDE2-1+K+II+3)
         DO 101 J=1,3
           G(1,J) = G(1,J) + COOR(II+J) * DE
           G(2,J) = G(2,J) + COOR(II+J) * DN
@@ -84,7 +91,7 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       IF(ABS(JAC).LE.1.D0/R8GAEM()) THEN
          CALL TECAEL(IADZI,IAZK24)
          NOMAIL= ZK24(IAZK24-1+3)(1:8)
-         CALL UTMESS('F','DFDM3D',
+         CALL UTMESS('F','EFDF3D',
      &     ' LA TRANSFORMATION GEOMETRIQUE EST SINGULIERE'
      &   //' POUR LA MAILLE :'//NOMAIL//' (JACOBIEN =0.)')
       ENDIF

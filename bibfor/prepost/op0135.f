@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,7 +135,7 @@ C
          WRITE(LABEL(6:17),'(1P,E12.5)' ) VALPU(NBPU)
 C
          IF (ZK16(LPROL).EQ. 'FONCT_C') THEN
-           CALL FOINT3(NOMFON,1,K8B,VALPU(1),EPSIF,RESURE,RESUIM,IRET)
+           CALL FOINT3(NOMFON,VALPU(1),EPSIF,RESURE,RESUIM,IRET)
            IF ( OUINON .EQ. 'OUI' ) THEN
               K12 = ZK16(LPROL+2)
               TESTOK = ' OK '

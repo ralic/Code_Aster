@@ -1,7 +1,7 @@
       SUBROUTINE OP0171 (IER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,10 +72,11 @@ C
       CHARACTER*24 MODELE,MATE,CARELE,FOMULT,CHARGE,INFOCH
       CHARACTER*24 NOMCH,VTEMP,VTEMPM,VTEMPP,VEC2ND
       CHARACTER*24 RESULT,LIGRMO,TEMPEV,TEMPIN
-      CHARACTER*24 TIME,NUMEDD,MEDIRI,MATASS
+      CHARACTER*24 TIME,MEDIRI,MATASS,NOOJB,NUMEDD
       CHARACTER*24 CNDIRP,CNCHCI,CNCHTP
       CHARACTER*24 CHLAPM,CHLAPP,CNRESI
       CHARACTER*76 FMT
+      CHARACTER*132 RAISON
 C
 C ----------------------------------------------------------------------
 C
@@ -163,16 +164,13 @@ C
       TIME   = RESULT(1:8)//'.CHTPS'
 C
 C --- NUMEROTATION ET CREATION DU PROFIL DE LA MATRICE
-C
-      NUMEDD=  '12345678.NUMED'
-      CALL GCNCON('_',NUMEDD(1:8))
+      NOOJB='12345678.00000.NUME.PRNO'
+      CALL GNOMSD ( NOOJB,10,14 )
+      NUMEDD=NOOJB(1:14)
       CALL NUMERO (' ',MODELE,INFCHA,SOLVEU,'VG',NUMEDD)
-C
+
       CALL VTCREB (VTEMP,NUMEDD,'V','R',NEQ)
 C
-C ======================================================================
-C                   CAS D UNE REPRISE
-C ======================================================================
 C
       CALL GETVID('TEMP_INIT','EVOL_THER',1,1,1,TEMPEV,N1)
       IF(N1 .GT. 0) THEN
@@ -186,7 +184,6 @@ C
            END IF
         END IF
         CALL VTCOPY (TEMPIN, VTEMP, IERR)
-        CALL JEDETC ('G',RESULT(1:8),1)
        END IF
 C ======================================================================
 C
@@ -333,8 +330,8 @@ C
 C
             IF ((PARCRI(9).EQ.0).AND.(ITERL.GE.ITMAXL)) THEN
               WRITE (IFM,FMT)
-              CALL UTMESS('S','OP0171','LE NOMBRE D''ITERATIONS MAXIMUM'
-     &                    //' EST ATTEINT')
+              CALL UTEXCP(22,NOMPRO,'ARRET : LE NOMBRE D''ITERATIONS'
+     &             //'MAXIMUM EST ATTEINT')
             ENDIF
 C
           ENDIF

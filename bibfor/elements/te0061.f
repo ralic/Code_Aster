@@ -1,6 +1,6 @@
       SUBROUTINE TE0061(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,6 @@ C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -68,9 +67,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      &       LAMBOS(3),TRACE,DTEMPX,DTEMPY,DTEMPZ,DTEMMX,DTEMMY,DTEMMZ,
      &       FLULOS(3),FLUGLS(3),TEMS,R8PREM,ZERO,DELTAT,CP,R8DGRD,
      &       ALPHA,BETA,DTEMDX,DTEMDY,DTEMDZ
-      INTEGER JGANO,IPOIDS,IVF,IDFDE,IDFDN,IDFDK,IGEOM,IMATE,IMATSE,NNO,
-     &        KP,NPG1,I,ITEMP,ITPS,IVAPRI,IVAPRM,TETYPS,N1,N2,NDIM,JVAL,
-     &        IVECTT,ICAMAS,L,K,NUNO,INO,IRET,NNOS
+      INTEGER JGANO,IPOIDS,IVF,IDFDE,IGEOM,IMATE,IMATSE,NNO,
+     &        KP,NPG1,I,ITEMP,ITPS,IVAPRI,IVAPRM,TETYPS,N1,N2,NDIM,
+     &        IVECTT,ICAMAS,L,NUNO,INO,IRET,NNOS
       LOGICAL ANISO,GLOBAL,LSENS,LSTAT
 
 C====
@@ -79,10 +78,6 @@ C====
       ZERO = 0.0D0
       PREC = R8PREM()
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
-      DO 10 I = 1,1
-   10 CONTINUE
 
 C====
 C 1.2 PREALABLES LIES AUX CALCULS DE SENSIBILITE
@@ -266,9 +261,8 @@ C      ------------------------------
         DO 90 KP = 1,NPG1
 
           L = (KP-1)*NNO
-          K = (KP-1)*NNO*3
-          CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &                ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POIDS)
+          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                  ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
 
           TEM = ZERO
           DTEMDX = ZERO
@@ -401,9 +395,8 @@ C       ------------------------------
         DO 160 KP = 1,NPG1
 
           L = (KP-1)*NNO
-          K = (KP-1)*NNO*3
-          CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &                ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POIDS)
+          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                  ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
 
           DTEMDX = ZERO
           DTEMDY = ZERO
@@ -514,9 +507,8 @@ C       ------------------------------
         DO 210 KP = 1,NPG1
 
           L = (KP-1)*NNO
-          K = (KP-1)*NNO*3
-          CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &                ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POIDS)
+          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                  ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
           TEM = ZERO
           DO 170 I = 1,NNO
 C CALCUL DE T- (OU (DT/DS)- EN SENSI)

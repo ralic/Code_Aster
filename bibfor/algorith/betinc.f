@@ -1,9 +1,9 @@
-        SUBROUTINE BETINC ( MATERF, NMAT, ELGEOM, SIGE, NSEUIL, DPC,
+        SUBROUTINE BETINC ( MATERF, NMAT, SIGE, NSEUIL, DPC,
      &                      DPT, SIGF, VERIFC, VERIFT )
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,8 +26,6 @@ C                   AVEC UN SEUIL EN COMPRESSION ET UN SEUIL EN TRACTION
 C       INCREMENTATION DE LA CONTRAINTE APRES CONVERGENCE
 C       IN  MATERF :  COEFFICIENTS MATERIAU A T+DT
 C           NMAT   :  DIMENSION MATER
-C           ELGEOM :  TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES
-C                     AUX LOIS DE COMPORTEMENT
 C           SIGE   :  CONTRAINTE A T+DT (PREDICTION ELASTIQUE)
 C           NSEUIL :  SEUIL D'ELASTICITE ACTIVE
 C           DPC    :  INCREMENT DE MULTIPLICATEUR PLASTIQUE APRES
@@ -41,7 +39,7 @@ C           VERIFT :  TEST DE VALIDITE DE LA PROJECTION AU SOMMET DU
 C                     CONE TRACTION
 C       ----------------------------------------------------------------
         INTEGER         NMAT, NSEUIL, I
-        REAL*8          MATERF(NMAT,2), ELGEOM(*), DPC, DPT
+        REAL*8          MATERF(NMAT,2), DPC, DPT
         REAL*8          UN  ,  D23 , RAC2 , DEUX , TROIS
         REAL*8          SIGE(6), SIGF(6)
         PARAMETER       ( UN   = 1.D0   )

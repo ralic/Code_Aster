@@ -3,7 +3,7 @@
       CHARACTER*8         FOND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF PREPOST  DATE 30/03/2004   AUTEUR PROIA E.PROIA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,17 +50,17 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
      +             KNOLS, KNOLI, JNOFO, JINTS, JINTI, NUTYP, IPAS,
      +             NUMEXT, KNULS, KNULI, IFM, NIV, IATYMA, NTTRI6,
      +             NTQUA8, NTQUA9, JTGOR, JTGEX, NO1, NO2, NO3,
-     +             NBINST, JINST, IIN, JNFT,IERA
+     +             NBINST, JINST, IIN, JNFT, IERA, JTYPM
       PARAMETER  ( NBPAR1=12 )
       REAL*8       R8B, COEFD, COEFD3, COEFG, COEFG3, X0(3), D1, D2,
      +             D, RMAX, EPSI, VECNOR(3), X1, X2, Y1, Y2, Z1, Z2,
-     +             KG2(10), KG1(10), VECTY(3), VO(3), VE(3), RMAXEM,
-     +             DMAX, ABSC, VP(3), TGOR(3), TGEX(3), DINST,
+     +             KG2(10),KG1(10),KGBID(10),VECTY(3),VO(3),VE(3),
+     +             RMAXEM,DMAX, ABSC, VP(3), TGOR(3), TGEX(3), DINST,
      +             PRECI, PREC, PRECV, PRECN
       COMPLEX*16   CBID
-      LOGICAL      EXTGOR, EXTGEX, EXIST
+      LOGICAL      EXTGOR, EXTGEX, EXIST, TYPLIN, TYPQUA
       CHARACTER*2  TYPPA1(NBPAR1)
-      CHARACTER*8  K8B, NOMRES, NOMA, CRITI, CRITN
+      CHARACTER*8  K8B, NOMRES, NOMA, CRITI, CRITN, TYPM
       CHARACTER*16 NOMCMD, CONCEP,NOMPA1(NBPAR1), MOTFAC
       CHARACTER*19 DEPSU2, DEPIN2
       CHARACTER*24 NOESUP, ABSSUP, DXSUP, DYSUP, DZSUP, NOEINF, ABSINF,
@@ -79,6 +79,23 @@ C DEB ------------------------------------------------------------------
       CALL INFNIV ( IFM , NIV )
 
       CALL GETRES ( NOMRES , CONCEP , NOMCMD )
+
+      FONNOE = FOND//'.FOND      .TYPE'
+      CALL JEEXIN ( FONNOE, IRET )
+      IF (IRET.EQ.0) CALL UTMESS('F',NOMCMD,'BUG: MANQUE .TYPE')
+      CALL JEVEUO ( FONNOE, 'L', JTYPM )
+      TYPM = ZK8(JTYPM)
+      IF ( TYPM(1:4) .EQ. 'SEG2' ) THEN
+         IPAS = 1
+      ELSEIF ( TYPM(1:4) .EQ. 'SEG3' ) THEN
+         IPAS = 2
+      ELSEIF ( TYPM(1:4) .EQ. 'SEG4' ) THEN
+         IPAS = 3
+      ELSE
+         CALL UTMESS('F',NOMCMD,'BUG: TYPE INCONNU '//TYPM )
+      ENDIF
+      CALL GETVTX ( ' ', 'TOUT', 1,1,1, K8B, N1 )
+      IF ( N1 .NE. 0 )  IPAS = 1
 
       FONNOE = FOND//'.FOND      .NOEU'
       CALL JEEXIN ( FONNOE, IRET )
@@ -221,17 +238,8 @@ C --- GROUP_MA LEVRE_INF --> GROUP_NO LEVRE_INF
          ZR(JCOORI-1+3*(IN-1)+2) = ZR(IDCOOR-1+3*(ZI(JNOLI+IN-1)-1)+2)
          ZR(JCOORI-1+3*(IN-1)+3) = ZR(IDCOOR-1+3*(ZI(JNOLI+IN-1)-1)+3)
  22   CONTINUE
-
-      IPAS = 1
-      NUTYP = ZI(IATYMA-1+ZI(JLIMA))
-      IF ( NUTYP .EQ. NTTRI6 ) THEN
-         IPAS = 2
-      ELSEIF ( NUTYP .EQ. NTQUA8 ) THEN
-         IPAS = 2
-      ELSEIF ( NUTYP .EQ. NTQUA9 ) THEN
-         IPAS = 2
-      END IF
-C ---------------------------------------------------------------------
+C     -----------------------------------------------------------------
+C
       DEPSU2 = '&&PKFOND.DEPL_SUP'
       DEPIN2 = '&&PKFOND.DEPL_INF'
 
@@ -274,6 +282,7 @@ C                           IDENTIQUES
 C     --- BOUCLE SUR LES INSTANTS ---
 
       DO 100 IIN = 1 , NBINST
+         CALL JEMARQ()
          IF ( EXIST ) THEN
             DINST = ZR(JINST+IIN-1)
             CALL TBEXTB ( DEPSUP, 'V', DEPSU2, 1, 'INST', 'EQ',
@@ -391,9 +400,9 @@ C        DEFINISSANT LA LEVRE SUPERIEURE
 
          CALL CGNOP0 ( NBNOLS, ZR(JCOORS), X0, VECNOR, PREC, NBTRLS,
      +                 ZI(JINTS))
-         DO 30 IN = 1 , NBTRLS
+         DO 210 IN = 1 , NBTRLS
             ZI(JINTS+IN-1) = ZI(JNOLS+ZI(JINTS+IN-1)-1)
- 30      CONTINUE
+ 210     CONTINUE
 
 C ------ CALCUL DE L'INTERSECTION DU PLAN AVEC LES NOEUDS DES MAILLES
 C        DEFINISSANT LA LEVRE INFERIEURE
@@ -402,9 +411,9 @@ C        DEFINISSANT LA LEVRE INFERIEURE
 
          CALL CGNOP0 ( NBNOLI, ZR(JCOORI), X0, VECNOR, PREC, NBTRLI,
      +                 ZI(JINTI))
-         DO 32 IN = 1 , NBTRLI
+         DO 220 IN = 1 , NBTRLI
             ZI(JINTI+IN-1) = ZI(JNOLI+ZI(JINTI+IN-1)-1)
- 32      CONTINUE
+ 220     CONTINUE
 
          PREC = 10.D0 * PREC
 
@@ -655,7 +664,7 @@ C ------ ON CALCULE LES K1, K2, K3
 
          CALL PKCALC ( NDIM, NBVAL, ABSSUP, DXSUP, DYSUP, DZSUP,
      +                 ABSINF, DXINF, DYINF, DZINF,
-     +                 COEFD, COEFD3, COEFG, COEFG3, KG1(3), KG2(3) )
+     +                 COEFD,COEFD3,COEFG,COEFG3,KG1(3),KG2(3),KGBID(3))
 
          IF ( INF .EQ. 1 ) THEN
             ABSC = 0.D0
@@ -701,11 +710,14 @@ C ------ ON CALCULE LES K1, K2, K3
             CALL DETRSD ( 'TABLE', DEPIN2 )
          ENDIF
 
+         CALL JEDEMA()
  100  CONTINUE
 
       CALL JEDETR ( MESNOE )
-      CALL JEDETR ( '&&PKDEPL.DEPL_SUP'     )
-      CALL JEDETR ( '&&PKDEPL.DEPL_INF'     )
+      CALL EXISD ( 'TABLE', '&&PKDEPL.DEPL_SUP', IRET)
+      IF (IRET.NE.0)  CALL DETRSD ( 'TABLE', '&&PKDEPL.DEPL_SUP' )
+      CALL EXISD ( 'TABLE', '&&PKDEPL.DEPL_INF', IRET)
+      IF (IRET.NE.0)  CALL DETRSD ( 'TABLE', '&&PKDEPL.DEPL_INF' )
       CALL JEDETR ( '&&PKFOND_LIST_NOEUD'     )
       CALL JEDETR ( '&&PKFOND_NOEU_LEV_SUP'   )
       CALL JEDETR ( '&&PKFOND_NOEU_LEV_INF'   )

@@ -1,6 +1,6 @@
       SUBROUTINE  TE0175(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/04/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,15 +30,13 @@ C              ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 C
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER            IDFDE,IDFDK,IGEOM,IDINO,ICARAC
-      INTEGER            IINTE,IPRES,IMATE,IFREQ
-      INTEGER            NNO,INO,I
-      REAL*8             OMERHO, PI, DFDX(9), DFDY(9), JAC
+      INTEGER            IDFDE,IGEOM,IDINO
+      INTEGER            IINTE,IPRES,IMATE,IFREQ,NPG,IPOIDS,IVF
+      INTEGER            NNO,INO,I,NDIM,NNOS,JGANO,MATER
+      REAL*8             OMERHO,PI,DFDX(9),DFDY(9),JAC,R8B,R8PI,RHO
       CHARACTER*2        CODRET
-      CHARACTER*8        ELREFE
       CHARACTER*16       NOMTE,OPTION
-      CHARACTER*24       CARAC,FF
-      COMPLEX*16         VITX   ,VITY
+      COMPLEX*16         VITX,VITY
 C
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -46,8 +44,6 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /CVARJE/ZC(1)
       COMMON /LVARJE/ZL(1)
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      COMMON /NOMAJE/PGC
-      CHARACTER*6 PGC
       INTEGER ZI
       REAL*8 ZR
       COMPLEX*16 ZC
@@ -62,22 +58,7 @@ C
 C
       CALL JEMARQ()
 
-      CALL ELREF1(ELREFE)
-C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,' ',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
-      NPG3 = ZI(ICARAC+4)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,' ',IFF)
-      IPOIDS=IFF   +(NPG1+NPG2)*(1+3*NNO)
-      IVF   =IPOIDS+NPG3
-      IDFDE =IVF   +NPG3*NNO
-      IDFDK =IDFDE +NPG3*NNO
-      NPG   =NPG3
+      CALL ELREF4(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PINTEAC','E',IINTE)
@@ -96,14 +77,10 @@ C
 C
 C    BOUCLE SUR LES NOEUDS
 C
-      POIDS=1.D0
       DO 101 INO = 1,NPG
-C
         IDINO = IINTE + (INO-1) * 2 -1
-        K = (INO-1)*NNO
 C
-        CALL DFDM2D ( NNO, POIDS,ZR(IDFDE+K),
-     &   ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,JAC   )
+        CALL DFDM2D(NNO,INO,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,JAC)
 C
        VITX     = (0.0D0 ,0.0D0 )
        VITY     = (0.0D0 ,0.0D0 )

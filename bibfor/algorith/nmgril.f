@@ -1,9 +1,9 @@
       SUBROUTINE NMGRIL ( IMATE, TYPMOD, COMPOR, OPTION, EPSM, DEPS,
-     +                    SIGM, VIM, TM, TP, TREF, SIGP, VIP, DSIDEP )
+     +               SIGM, VIM, TM, TP, TREF, SIGP, VIP, DSIDEP,CODRET )
 C TOLE CRP_6
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/01/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,9 +76,9 @@ C     ------------------------------------------------------------------
 C
 C     ARGUMENTS
 C
-      INTEGER       IMATE
+      INTEGER       IMATE,CODRET
       CHARACTER*8   TYPMOD(*)
-      CHARACTER*16  COMPOR(3),OPTION
+      CHARACTER*16  COMPOR(*),OPTION
       REAL*8        EPSM(6),DEPS(6),SIGM(6),VIM(*)
       REAL*8        TM,TP,TREF
       REAL*8        SIGP(6),VIP(*),DSIDEP(6,6)
@@ -115,33 +115,37 @@ C
       REAL*8        ALPH,E,ET,SIGY
       REAL*8        DSDEP1, DSDEP2,DSDEM1, DSDEM2,DSDE1,DSDE2
       REAL*8        SIGMG(3),SIGML(3)
-      REAL*8        DH(3,3),SIGL(3),DEPSG(3),DEPSL(3)
+      REAL*8        DH(3,3),SIGL(3),DEPSG(3),DEPSL(3),EPSMG(3),EPSML(3)
       REAL*8        PGL(3,3),ROT(3,3), XAB1(3,3)
       REAL*8        EM,EP,ALPHAM,ALPHAP
       CHARACTER*2  CODRES
-      LOGICAL       CINE,ISOT,PINTO,PCTNZR
+      LOGICAL       CINE,ISOT,PINTO,PCTNZR,COM1D,VECTEU
 C     ------------------------------------------------------------------
       RAC2=SQRT(2.D0)
       ISOT = .FALSE.
       CINE = .FALSE.
       PINTO = .FALSE.
+      COM1D=.FALSE.
+      CODRET=0
 C
       IF ( COMPOR(1)(1:16) .EQ. 'GRILLE_ISOT_LINE') THEN
-       ISOT = .TRUE.
+          ISOT = .TRUE.
       ELSE IF ( COMPOR(1)(1:16) .EQ. 'GRILLE_CINE_LINE') THEN
-       CINE = .TRUE.
+          CINE = .TRUE.
       ELSE IF ( COMPOR(1)(1:16) .EQ. 'GRILLE_PINTO_MEN') THEN
-       PINTO = .TRUE.
+          PINTO = .TRUE.
       ELSE
-          CALL UTMESS('F','NMGRIL_01',
-     &           ' COMPORTEMENT INATTENDU : '//COMPOR(1))
+          COM1D=.TRUE.
+          IF ((COMPOR(5)(1:7).NE.'DEBORST').AND.
+     &        (COMPOR(1)(1:4).NE.'SANS')) THEN
+                CALL UTMESS('F','BARRES','UTILISER ALGO_1D="DEBORST"'//
+     &              ' SOUS COMP_INCR POUR LE COMPORTEMENT '//COMPOR(1))
+          ENDIF
       ENDIF
+C
 C
 C     -- 1 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
-C
-      CALL NMMABA (IMATE,COMPOR,E,ALPH,ET,SIGY,
-     &             NCSTPM,CSTPM)
 C
       CALL JEVECH ('PGEOMER' , 'L' , JGEOM)
       CALL DXTPGL ( ZR(JGEOM) , PGL )
@@ -206,10 +210,12 @@ C     DEFORMATIONS PLUS REPERE GLOBAL
 C
       DO 1 I=1,2
          DEPSG(I) = DEPS(I)
+         EPSMG(I) = EPSM(I)
          SIGMG(I)= SIGM(I)
   1   CONTINUE
+      EPSMG(3)= EPSM(4)*RAC2
       DEPSG(3)= DEPS(4)*RAC2
-      SIGMG(3)= SIGM(4)/RAC2
+      SIGMG(3)= SIGM(4)
 C
       PI =  4.D0*ATAN(1.D0)
       PHI= 0.D0
@@ -222,108 +228,62 @@ C
 C  ON RESTITUE A SIGML SA VRAIE VALEUR
 C
       IF (PCTNZR) THEN
-       SIGML(2) = SIGML(2)*PCL/PCT
+          SIGML(2) = SIGML(2)*PCL/PCT
       ELSE
-       SIGML(2) = 0.D0
+          SIGML(2) = 0.D0
       ENDIF
 C
-C     DEFORMATIONS PLUS REPERE LOCAL
+C     DEFORMATIONS REPERE LOCAL
 C
+      CALL INSDRF(EPSMG,PHI,EPSML)
       CALL INSDRF(DEPSG,PHI,DEPSL)
 C
 C     CALCUL DES CONTRAINTES PLUS DANS REPERE LOCAL
 C     ET VARIABLES INTERNES
 C
-C --- CARACTERISTIQUES ELASTIQUES A TMOINS
 
-      CALL RCVALA(IMATE,'ELAS',1,'TEMP',TM,1,'E',EM,CODRES,'FM')
-      CALL RCVALA(IMATE,'ELAS',1,'TEMP',TM,1,'ALPHA',ALPHAM,
-     &            CODRES,' ')
-      IF (CODRES.NE.'OK') ALPHAM = 0.D0
+      CALL NMCO1D(IMATE,COMPOR,OPTION,EPSML(1),
+     &            DEPSL(1),SIGML(1),VIM(1),TM,TP,
+     &            TREF,SIGL(1),VIP(1),
+     &            DSDE1,CODRET)
 
-C --- CARACTERISTIQUES ELASTIQUES A TPLUS
-
-      CALL RCVALA(IMATE,'ELAS',1,'TEMP',TP,1,'E',EP,CODRES,'FM')
-      CALL RCVALA(IMATE,'ELAS',1,'TEMP',TP,1,'ALPHA',ALPHAP,
-     &            CODRES,' ')
-      IF (CODRES.NE.'OK') ALPHAP = 0.D0
-
-      IF ( ISOT) THEN
-C       CALL NM1DIS(TM,TP,E,ET,ALPH,SIGY,
-C     >              SIGML(1),DEPSL(1),VIM(1),VIM(2),OPTION,
-C     >              SIGL(1),VIP(1),VIP(2),DSDEM1,DSDEP1)
-        CALL NM1DIS(IMATE,TM,TP,TREF,EM,EP,ALPHAM,ALPHAP,SIGML(1),
-     &            DEPSL(1),VIM(1),OPTION,COMPOR,SIGL(1),VIP(1),DSDEP1)
-        DSDEM1=DSDEP1
-       IF (PCTNZR) THEN
-C       CALL NM1DIS(TM,TP,E,ET,ALPH,SIGY,
-C     >              SIGML(2),DEPSL(2),VIM(3),VIM(4),OPTION,
-C     >              SIGL(2),VIP(3),VIP(4),DSDEM2,DSDEP2)
-        CALL NM1DIS(IMATE,TM,TP,TREF,EM,EP,ALPHAM,ALPHAP,SIGML(2),
-     &            DEPSL(2),VIM(3),OPTION,COMPOR,SIGL(2),VIP(3),DSDEP2)
-        DSDEM2=DSDEP2
-       ELSE
-        SIGL(2) = 0.D0
-        VIP(3)  = 0.D0
-        VIP(4)  = 0.D0
-        DSDEM2  = E
-        DSDEP2  = E
-       ENDIF
+      IF (PCTNZR) THEN
+        IF ( COM1D) THEN
+            CALL UTMESS('F','GRILLES','UTILISER POURCENTAGE'//
+     &            ' ARMTURE DIR 2 = 0 POUR '//COMPOR(1))
+        ELSE IF (PINTO) THEN
+          CALL NMCO1D(IMATE,COMPOR,OPTION,EPSML(2),
+     &            DEPSL(2),SIGML(2),VIM(1+NVARPI),TM,TP,
+     &            TREF,SIGL(2),VIP(1+NVARPI),
+     &            DSDE2,CODRET)
+        ELSE
+          CALL NMCO1D(IMATE,COMPOR,OPTION,EPSML(2),
+     &            DEPSL(2),SIGML(2),VIM(3),TM,TP,
+     &            TREF,SIGL(2),VIP(3),
+     &            DSDE2,CODRET) 
+        ENDIF
+      ELSE 
+C RAPPEL A NMMABA POUR LA DIRECTION 2 : C EST SALE MAIS LA DIRECTION 
+C 2 NE DEVRAIT PLUS VIVRE LONGTEMPS (P.B. 12/03/2004)     
+        CALL NMMABA (IMATE,COMPOR,E,ALPH,ET,SIGY,
+     &             NCSTPM,CSTPM)
+        IF (COM1D) THEN
+              SIGL(2) = 0.D0
+              DSDE2  = E
+        ELSE IF (CINE.OR.ISOT) THEN
+              SIGL(2) = 0.D0
+              VIP(3)  = 0.D0
+              VIP(4)  = 0.D0
+              DSDE2  = E
+        ELSE IF (PINTO) THEN
+              SIGL(2) = 0.D0
+              DO 2 I = 1 , NVARPI
+                  VIP(NVARPI+I)  = 0.D0
+2             CONTINUE
+              DSDE2  = CSTPM(1)
+        ENDIF       
       ENDIF
-      IF ( CINE) THEN
-C       CALL NM1DCI(TM,TP,E,ET,ALPH,SIGY,
-C     >              SIGML(1),DEPSL(1),VIM(1),VIM(2),OPTION,
-C     >              SIGL(1),VIP(1),VIP(2),DSDEM1,DSDEP1)
-        CALL NM1DCI(IMATE,TM,TP,TREF,EM,EP,ALPHAM,ALPHAP,SIGML(1),
-     &            DEPSL(1),VIM(1),OPTION,SIGL(1),VIP(1),DSDEP1)
-        DSDEM1=DSDEP1
-       IF (PCTNZR) THEN
-C       CALL NM1DCI(TM,TP,E,ET,ALPH,SIGY,
-C     >              SIGML(2),DEPSL(2),VIM(3),VIM(4),OPTION,
-C     >              SIGL(2),VIP(3),VIP(4),DSDEM2,DSDEP2)
-        CALL NM1DCI(IMATE,TM,TP,TREF,EM,EP,ALPHAM,ALPHAP,SIGML(2),
-     &            DEPSL(2),VIM(3),OPTION,SIGL(2),VIP(3),DSDEP2)
-        DSDEM2=DSDEP2
-       ELSE
-        SIGL(2) = 0.D0
-        VIP(3)  = 0.D0
-        VIP(4)  = 0.D0
-        DSDEM2  = E
-        DSDEP2  = E
-       ENDIF
-      ENDIF
-C
-C  CHOIX DSDE SELON OPTION
-C
-      IF ( OPTION(1:14) .EQ. 'RIGI_MECA_TANG' ) THEN
-       DSDE1 = DSDEM1
-       DSDE2 = DSDEM2
-      ELSE IF ( OPTION(1:9)  .EQ. 'FULL_MECA' ) THEN
-       DSDE1 = DSDEP1
-       DSDE2 = DSDEP2
-      ENDIF
-      IF ( PINTO) THEN
-       CALL NM1DPM(OPTION,NVARPI,
-     >             ALPH,TM,
-     >             NCSTPM,CSTPM,
-     >             SIGML(1),VIM(1),
-     >             TP,DEPSL(1),
-     >             VIP(1),SIGL(1),DSDE1)
-       IF (PCTNZR) THEN
-       CALL NM1DPM(OPTION,NVARPI,
-     >             ALPH,TM,
-     >             NCSTPM,CSTPM,
-     >             SIGML(2),VIM(1+NVARPI),
-     >             TP,DEPSL(2),
-     >             VIP(1+NVARPI),SIGL(2),DSDE2)
-       ELSE
-        SIGL(2) = 0.D0
-        DO 2 I = 1 , NVARPI
-         VIP(NVARPI+I)  = 0.D0
-    2   CONTINUE
-        DSDE2  = CSTPM(1)
-       ENDIF
-      ENDIF
+      
 C
 C   MULTIPLICATION CONTRAINTES DANS DIR 2
 C   PAR % ARMATURE
@@ -336,20 +296,20 @@ C
 C
       IF ( (OPTION(1:14) .EQ. 'RIGI_MECA_TANG').OR.
      >     ( OPTION(1:9)  .EQ. 'FULL_MECA' )) THEN
-       DH(1,1) = DSDE1
-       DH(2,2) = DSDE2 *PCT/PCL
-       DH(3,3) = 1.D-7*DSDE1
-       CALL UTBTAB ('ZERO', 3 , 3 , DH , ROT , XAB1 , DH )
+          DH(1,1) = DSDE1
+          DH(2,2) = DSDE2 *PCT/PCL
+          DH(3,3) = 1.D-7*DSDE1
+          CALL UTBTAB ('ZERO', 3 , 3 , DH , ROT , XAB1 , DH )
 C
-       DO 3 I=1,2
-       DO 4 J=1,2
-          DSIDEP(I,J) = DH(I,J)
-  4    CONTINUE
-         DSIDEP(4,I) = DH(3,I)*RAC2
-         DSIDEP(I,4) = DH(I,3)*RAC2
-  3    CONTINUE
-       DSIDEP(4,4) = DH(3,3)*2.D0
-       DSIDEP(3,3) = 1.D-7*DSDE1
-C
+          DO 3 I=1,2
+              DO 4 J=1,2
+                  DSIDEP(I,J) = DH(I,J)
+  4           CONTINUE
+              DSIDEP(4,I) = DH(3,I)*RAC2
+              DSIDEP(I,4) = DH(I,3)*RAC2
+  3        CONTINUE
+           DSIDEP(4,4) = DH(3,3)*2.D0
+           DSIDEP(3,3) = 1.D-7*DSDE1
       ENDIF
+      
       END

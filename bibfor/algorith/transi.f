@@ -3,14 +3,14 @@
      &                  REFEXT,IMFEXT,FEXTTR,FEXTT0,
      &                  MASGI,AMORI,PULSI,PHII,
      &                  TYPCH,NBSEG,RC,ALPHA,BETA,GAMMA,ORIG,THETA,
-     &                  VITG,DEPG,AMOR,PULS,PULSD,OMEGAF,AA,BB,OLD,
+     &                  VITG,DEPG,AMOR,PULSD,OMEGAF,AA,BB,OLD,
      &                  S0,Z0,SR0,ZA1,ZA2,ZA3,ZA4,ZA5,ZITR,ZIN,MTRANS,
      &                  AMOR00,PULS00,ACCG0,VITG0,DEPG0,
      &                  ICONFB,TCONF1,FTEST0,IER)
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/05/2000   AUTEUR KXBADNG T.KESTENS 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C ---------
       INTEGER     TYPCH(*), NBSEG(*)
       REAL*8      RC(NP3,*), ALPHA(2,*), BETA(2,*), GAMMA(2,*),
      &            ORIG(3,*), THETA(NP3,*),
-     &            VITG(*), DEPG(*), AMOR(*), PULS(*), PULSD(*),
+     &            VITG(*), DEPG(*), AMOR(*), PULSD(*),
      &            OMEGAF(*), AA(*), BB(*), OLD(9,*)
       COMPLEX*16  S0(*), Z0(*), SR0(*), ZA1(*), ZA2(*), ZA3(*),
      &            ZA4(NP4,*), ZA5(NP4,*), ZITR(*), ZIN(*)
@@ -124,7 +124,7 @@ C
 C 2.5 VERIFICATION QUE L'ON N'A PAS ATTEINT UNE BUTEE
 C
       ICHTR = 0
-      CALL COMPTR(NP1,NP2,NP3,NBM,NBNL,TTRANS,ICHTR,DEPG,VITG,
+      CALL COMPTR(NP1,NP2,NP3,NBM,NBNL,ICHTR,DEPG,VITG,
      &            PHII,TYPCH,NBSEG,ALPHA,BETA,GAMMA,ORIG,RC,THETA,OLD)
 C
 C 2.6 SI LE SYSTEME EST EN PHASE DE VOL A L'ISSUE DU REGIME TRANSITOIRE,

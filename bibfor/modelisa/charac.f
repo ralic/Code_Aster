@@ -3,7 +3,7 @@
       CHARACTER*4       FONREE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/01/2002   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C
 C
 C --- NOMS DE LIGREL, MAILLAGE , DIMENSION DU PB
 C
-      CALL CAGENE ( FONREE, CHAR, OPER, LIGRMO, NOMA, NDIM )
+      CALL CAGENE ( CHAR, OPER, LIGRMO, NOMA, NDIM )
 C
       FONR2 = 'COMP'
       IF ( OPER(15:16) .EQ. '_F' )  FONR2 = 'FONC'

@@ -1,6 +1,6 @@
       SUBROUTINE DXEFGI(NOMTE,XYZL,PGL,EPSINI,SIGT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/06/99   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 18/11/2003   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C     -----------------
         GRILLE = .FALSE.
       END IF
       IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
-     +    NOMTE(1:8).EQ.'MEGRDKT ') THEN
+     +    NOMTE(1:8).EQ.'MEGRDKT ' .OR. NOMTE(1:8).EQ.'MEDKTG3 ') THEN
 
         NPG = 3
         NNO = 3
@@ -93,7 +93,8 @@ C      -------------------------------------------------
 
       ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
      +         NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
-     +         NOMTE(1:8).EQ.'MEQ4QU4 ') THEN
+     +         NOMTE(1:8).EQ.'MEQ4QU4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEDKQG4 ') THEN
         NPG = 4
         NNO = 4
 

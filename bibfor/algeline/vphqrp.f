@@ -4,7 +4,7 @@
       REAL*8             MAT(MXEQ,1),WK(NEQ,1),W(1),Z(1)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/09/96   AUTEUR D6BHHBQ B.QUINNEZ 
+C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,7 +97,7 @@ C        --- FORMATION DE LA MATRICE IDENTITE DANS Z
          DO 30 I=1,NEQ*NEQ,NEQ+1
             Z(I) = 1.D0
    30    CONTINUE
-         CALL VPZRBK (Z,MAT,WK(1,N2),NEQ,NEQ,NEQ,K,L)
+         CALL VPZRBK (Z,MAT,WK(1,N2),NEQ,NEQ,K,L)
       ENDIF
 C
 C     --- CALCUL DES VALEURS PROPRES (ET DES VECTEURS PROPRES)

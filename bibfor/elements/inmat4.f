@@ -5,7 +5,7 @@
       REAL*8 MGANO(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -99,7 +99,7 @@ C     -------------------------------------------------
         DO 70,K = 1,NNOS
           MGANOS(K,K) = 1.D0
    70   CONTINUE
-        CALL INMAT5(ELREFA,NNO,NNOS,NPG,NOFPG,MGANOS,MGANO2)
+        CALL INMAT5(ELREFA,NNO,NNOS,NPG,MGANOS,MGANO2)
         GO TO 80
       END IF
 
@@ -107,7 +107,7 @@ C     -------------------------------------------------
 C     -- AUTRES CAS : GAUSS -> SOMMETS -> NOEUDS
 C     -------------------------------------------
       CALL INMAT6(ELREFA,NOFPG,MGANOS)
-      CALL INMAT5(ELREFA,NNO,NNOS,NPG,NOFPG,MGANOS,MGANO2)
+      CALL INMAT5(ELREFA,NNO,NNOS,NPG,MGANOS,MGANO2)
       GO TO 80
 
 

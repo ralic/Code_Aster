@@ -1,5 +1,6 @@
-# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
-# TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS (ELEMENT TUYAU)
+# MODIF  DATE 08/12/2003   AUTEUR JMBHH01 J.M.PROIX 
+# RESPONSABLE JMBHH01 J.M.PROIX
+# TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS ELEMENT TUYAU_6M MACRO_ELAS_MULT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +18,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# MODELISATION : 6 MODES DE FOURIER
 
 DEBUT(CODE=_F(  NOM = 'SSLL106C',NIV_PUB_WEB='INTERNET'))
 
@@ -36,8 +36,7 @@ MO=AFFE_MODELE(        MAILLAGE=MA,
 
 
 CAREL=AFFE_CARA_ELEM(   MODELE=MO,
-                INFO=2,
-                 #VERIF:'MAILLE'
+              #  INFO=2,
                  POUTRE=_F(
        GROUP_MA = 'TOUT',
  SECTION = 'CERCLE',
@@ -180,51 +179,46 @@ CHAR9B=AFFE_CHAR_MECA_F(   MODELE=MO,
 
 
 RESU=MACRO_ELAS_MULT(            MODELE=MO,
-                                CHAM_MATER=CHMAT,
-
-             # SOLVEUR : ( METHODE   :  'MULT_FRONT'  )
-             #  SOLVEUR : ( METHODE   :  'LDLT'
-             #             STOP_SINGULIER  :  'NON')
-                                  CARA_ELEM=CAREL,
+                                CHAM_MATER=CHMAT,CARA_ELEM=CAREL,
         CHAR_MECA_GLOBAL=CHAR0,CAS_CHARGE=(
                    _F(
             NOM_CAS = 'CHARGE NUMERO 1 ',
             CHAR_MECA = CHAR1,
             SOUS_TITRE = 'FX LOCAL',
-            OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL',
+            OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL','DEGE_ELNO_DEPL',
                          'EFGE_ELNO_DEPL',
                          )),
                    _F(
             NOM_CAS = 'CHARGE NUMERO 2',
             CHAR_MECA = CHAR2,
             SOUS_TITRE = 'FY LOCAL ',
-            OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL',
+            OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL','DEGE_ELNO_DEPL',
                          )),
                    _F(
             NOM_CAS = 'CHARGE NUMERO 3',
             CHAR_MECA = CHAR3,
             SOUS_TITRE = 'FZ LOCAL ',
-            OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL',
+            OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL','DEGE_ELNO_DEPL',
                          )),
                    _F(
             NOM_CAS = 'CHARGE NUMERO 4 ',
             CHAR_MECA = CHAR4,
             SOUS_TITRE = 'MX LOCAL',
-            OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL',
+            OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL','DEGE_ELNO_DEPL',
                          'EFGE_ELNO_DEPL',
                          )),
                    _F(
             NOM_CAS = 'CHARGE NUMERO 5',
             CHAR_MECA = CHAR5,
             SOUS_TITRE = 'MY LOCAL ',
-            OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL',
+            OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL','DEGE_ELNO_DEPL',
                          'EFGE_ELNO_DEPL',
                          )),
                    _F(
             NOM_CAS = 'CHARGE NUMERO 6',
             CHAR_MECA = CHAR6,
             SOUS_TITRE = 'MZ LOCAL ',
-            OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL',
+            OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL','DEGE_ELNO_DEPL',
                          'EFGE_ELNO_DEPL',
                          )),
                    _F(
@@ -574,6 +568,110 @@ _F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO_DEPL',
       NOM_CAS = 'CHARGE NUMERO91'))
 
       )
+
+# Solutions analytiques pour les deformations generalisees de poutre DEGE_ELNO_DEPL
+L=5.0
+E=2.E11
+Nu=0.3
+G=E/2/(1.0+Nu)
+REXT=0.04
+EP=0.008
+import math
+PI=math.pi
+IF=PI*(REXT**4-(REXT-EP)**4)/4
+JX=2.0*IF
+SU=PI*(REXT**2-(REXT-EP)**2)
+print 'SU, IF =',SU,IF
+
+# Solution analytique chargement 1 Fx local = 500
+EPXX=500./E/SU
+# Solution analytique chargement 2 Fy local = 500
+GAXY=500./G/SU
+KZF=500*L/E/IF
+# Solution analytique chargement 3 Fz local = 500
+GAXZ=500./G/SU
+KYF=-500*L/E/IF
+# Solution analytique chargement 4 Mx local = 500
+GAT=500/G/JX
+# Solution analytique chargement 2 My local = 500
+KYM=500/E/IF
+# Solution analytique chargement 3 Mz local = 500
+KZM=500/E/IF
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 1 ',
+                   NOM_CHAM='DEGE_ELNO_DEPL',
+                   NOM_CMP='EPXX',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   VALE=EPXX,
+                   PRECISION=1.E-2,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 2 ',
+                   NOM_CHAM='DEGE_ELNO_DEPL',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   NOM_CMP='GAXY',
+                   VALE=GAXY,
+                   PRECISION=33.E-2,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 3 ',
+                   NOM_CHAM='DEGE_ELNO_DEPL',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   NOM_CMP='GAXZ',
+                   VALE=GAXZ,
+                   PRECISION=33.E-2,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 2 ',
+                   NOM_CHAM='DEGE_ELNO_DEPL',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   NOM_CMP='KZ',
+                   VALE=KZF,
+                   PRECISION=1.3E-2,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 3 ',
+                   NOM_CHAM='DEGE_ELNO_DEPL',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   NOM_CMP='KY',
+                   VALE=KYF,
+                   PRECISION=1.3E-2,
+                   REFERENCE='ANALYTIQUE',),
+               _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 4 ',
+                   NOM_CHAM='DEGE_ELNO_DEPL',
+                   NOM_CMP='GAT',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   VALE=GAT,
+                   PRECISION=1.E-2,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 5 ',
+                   NOM_CHAM='DEGE_ELNO_DEPL',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   NOM_CMP='KY',
+                   VALE=KYM,
+                   PRECISION=1.E-2,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 6 ',
+                   NOM_CHAM='DEGE_ELNO_DEPL',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   NOM_CMP='KZ',
+                   VALE=KZM,
+                   PRECISION=1.E-2,
+                   REFERENCE='ANALYTIQUE',),),);
+
+
 
 
 # DILATATION THERMIQUE

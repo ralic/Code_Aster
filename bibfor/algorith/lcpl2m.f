@@ -1,9 +1,8 @@
-        SUBROUTINE LCPL2M ( LOI,   MOD,   IMAT, NMAT, MATERF, TEMPD,
-     1                      TEMPF, TIMED, TIMEF,DEPS, EPSD,YD,YF,NMOD,R)
+        SUBROUTINE LCPL2M (NMAT, NMOD)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,34 +24,13 @@ C       INTEGRATION ELASTO-PLASTIQUE SUR DT DE Y = ( SIG , VIN )
 C
 C       CALCUL DES TERMES DU SYSTEME A T+DT = R
 C       ----------------------------------------------------------------
-C       IN  LOI    :  MODELE DE COMPORTEMENT
-C           NMOD   :  DIMENSION  DRDY
-C           MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
+C       IN  NMOD   :  DIMENSION  DRDY
 C           NMAT   :  DIMENSION MATER
-C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           TEMPD  :  TEMPERATURE A T
-C           TEMPF  :  TEMPERATURE A T+DT
-C           TIMED  :  INSTANT  T
-C           TIMEF  :  INSTANT T+DT
-C           DEPS   :  INCREMENT DE DEFORMATION
-C           EPSD   :  DEFORMATION A T
-C           YD     :  VARIABLES A T   = ( SIGD  VIND  (EPSD3)   )
-C           YF     :  VARIABLES A T+DT= ( SIGF  VINF  (EPSF3)   )
-C       OUT R      :  TERMES DU SYSTEME A T+DT
+C
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NMAT,    NMOD
-C
+        INTEGER         NMAT,    NMOD
         INTEGER         NDT,    NDI
-C
-        REAL*8          TEMPD,          TEMPF, TIMED, TIMEF
-        REAL*8          EPSD(6),   DEPS(6)
-        REAL*8          R(NMOD)
-        REAL*8          YD(NMOD) , YF(NMOD)
-        REAL*8          MATERF(NMAT,2)
-C
-        CHARACTER*8     MOD
-        CHARACTER*16    LOI
+
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------

@@ -6,7 +6,7 @@
       CHARACTER*(*)       LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -146,7 +146,6 @@ C
             ZR(JVALV1-1+2) = 0.D0
             ZR(JVALV1-1+3) = 0.D0
           ELSE
-            CALL FOZERO('&FOZERO')
             ZK8(JVALV1-1+1) = '&FOZERO'
             ZK8(JVALV1-1+2) = '&FOZERO'
             ZK8(JVALV1-1+3) = '&FOZERO'
@@ -164,7 +163,6 @@ C
             ZR(JVALV2-1+2) = 0.D0
             ZR(JVALV2-1+3) = 0.D0
           ELSE
-            CALL FOZERO('&FOZERO')
             ZK8(JVALV2-1+1) = '&FOZERO'
             ZK8(JVALV2-1+2) = '&FOZERO'
             ZK8(JVALV2-1+3) = '&FOZERO'

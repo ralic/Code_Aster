@@ -1,10 +1,10 @@
-      SUBROUTINE PIQSYM ( X, Y, Z, QUAR1, QUAR2, QUAR3, QUAR4 )
+      SUBROUTINE PIQSYM ( X, Y, QUAR1, QUAR2, QUAR3, QUAR4 )
       IMPLICIT   NONE 
       REAL*8              X, Y, Z
       LOGICAL             QUAR1, QUAR2, QUAR3, QUAR4
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 11/11/98   AUTEUR CIBHHME R.MEDDOURI 
+C MODIF SOUSTRUC  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -3,7 +3,7 @@
       INTEGER            IER
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C     ----------------------------------------------------------------
       REAL*8          RVAL
       CHARACTER*80    CVAL
 C
-      CHARACTER*16    ORIGIN, NAT, IDENT, ORG, FMT
+      CHARACTER*16    ORIGIN, NAT, ORG, FMT
       CHARACTER*16    FVA, NOMRES, FFO
       CHARACTER*19    NOMFON
       CHARACTER*24    NOMPAR,NOMVAR
@@ -84,7 +84,6 @@ C     --- INITIALISATION DIVERS ---
       NOMPAR = ' '
       NOMVAR = ' '
       NOMRES = ' '
-      IDENT  = ' '
       NBPARA = 0
 C
       CALL GETRES(NOMFON,CONCEP,NOMCMD)
@@ -268,17 +267,6 @@ C        --- ORG  ---
 C
 C
    70    CONTINUE
-C        --- IDENT ---
-         IF (ICLASS.EQ.3 .OR.ICLASS.EQ.4) THEN
-            IDENT = CVAL(1:IVAL)
-         ELSE
-            IER = IER + 1
-            IF (IER .GT. IERMAX ) GOTO 999
-            CALL UTMESS('E',NOMCMD//'(ERREUR 12)','L''ARGUMENT DU '//
-     +                  'MOT CLE "IDENT" DOIT ETRE UN "TEXTE" OU '//
-     +                  '"IDENTIFICATEUR".')
-         ENDIF
-      GOTO 1
 C
 C
    80    CONTINUE
@@ -388,7 +376,7 @@ C            --- SIGNAL SPECTRE D'OSCILLATEUR SISPOUX ---
             CALL WKVECT('&&OP0083.NOMBRE.DE.PT','V V R',NPS, LVAR )
             CALL WKVECT('&&OP0083.SPECTRE   ','V V R',NBPARA*NPS,LSPEC)
             CALL WKVECT(PARA,'G V R',NBPARA, LPARA)
-            CALL FOLENA(NOMCMD,IFSIG,NPS,ZR(LVAR),NBPARA,ZR(LPARA),
+            CALL FOLENA(NOMCMD,NPS,ZR(LVAR),NBPARA,ZR(LPARA),
      +                                                   ZR(LSPEC),IER)
 C
 C           --- CREATION DE LA NAPPE RESULTAT ---
@@ -462,7 +450,7 @@ C
             CALL WKVECT(VALE,'G V R',2*NPS, LVAR )
             CALL JEECRA(VALE,'LONUTI',2*NPS,' ')
             LFON = LVAR + NPS
-            CALL FOLEFO(IFSIG,ORG,PAS,IDENT,NPS,FVA,FFO,NOMCMD,
+            CALL FOLEFO(IFSIG,ORG,PAS,NPS,FVA,FFO,NOMCMD,
      +                  ZR(LVAR),ZR(LFON),IER)
             IF (IER .GT. IERMAX ) GOTO 999
             CALL WKVECT(PROL,'G V K16',5, LPROL )

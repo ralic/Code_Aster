@@ -10,7 +10,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -460,7 +460,7 @@ C
 C
             IAD1 = ZZPRNO(ILIMNU,N1,1)
             CALL CORDD2(IDPRN1,IDPRN2,ILIMNU,ICODGE,NEC,NCMP,N1,
-     +                 K1,NDDL1,ZI(IAPSDL-1+NMXCMP*(K1-1)+1))
+     +                 NDDL1,ZI(IAPSDL-1+NMXCMP*(K1-1)+1))
             ZI(IANULO-4+3*K1+1) = N1
             ZI(IANULO-4+3*K1+2) = IAD1
             ZI(IANULO-4+3*K1+3) = NDDL1

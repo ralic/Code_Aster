@@ -1,9 +1,11 @@
       SUBROUTINE PROJTR (NUTYP,NDIM,NBNO,PROJ,COORDA,COORDB,COORDC,
      &                   COORDP,NORM,COORDM,COEF,OLDJEU,JEU,
-     &                   TANG,PRONOR,TANGDF,VLISSA)
+     &                   TANG,PRONOR,TANGDF,VLISSA,VERIP,
+     &                   TOLE,ARETE,NOEUD)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/05/2002   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 05/04/2004   AUTEUR MABBAS M.ABBAS 
+C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +28,11 @@ C
       INTEGER      NUTYP,NBNO,PROJ,PRONOR,TANGDF,NDIM
       REAL*8       COORDA(3),COORDB(3),COORDC(3),COORDP(3),NORM(3)
       REAL*8       COORDM(3),COEF(NBNO),OLDJEU,JEU,VLISSA(9)
+      REAL*8       VERIP
+      REAL*8       TOLE
+      INTEGER      ARETE(3)
+      INTEGER      NOEUD(3)
+
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELEE PAR : PROJEC / PROJQU
@@ -43,7 +50,24 @@ C IN  COORDA : COORDONNEES DU SOMMET A DU TRIANGLE
 C IN  COORDB : COORDONNEES DU SOMMET B DU TRIANGLE
 C IN  COORDC : COORDONNEES DU SOMMET C DU TRIANGLE
 C IN  COORDP : COORDONNEES DU NOEUD ESCLAVE P
-C OUT NORM   : NORMALE ENTRANTE A LA MAILLE MAITRE
+C IN  TANGDF : INDICATEUR DE PRESENCE D'UN VECT_Y DEFINI PAR 
+C              L'UTILISATEUR
+C               0 PAS DE VECT_Y
+C               1 UN VECT_Y EST DEFINI
+C IN  PRONOR : INDICATEUR DES NORMALES D'APPARIEMENT ET DU LISSAGE
+C               0 MAIT ET PAS DE LISSAGE
+C               1 MAIT_ESCL ET PAS DE LISSAGE
+C               2 MAIT ET LISSAGE
+C               3 MAIT_ESCL ET LISSAGE
+C IN  VLISSA : NORMALES LISSEES
+C IN  VERIP  : VALEUR DU LAMBDA_MAX POUR PROJECTION HORS ZONE
+C               <0 PROJECTION HORS ZONE INTERDITE
+C               >0 PROJECTION HORS ZONE AUTORISEE ET LIMITEE
+C IN  TOLE   : TOLERANCE POUR DETECTER LA PROJECTION SUR UNE
+C              ARETE OU UN NOEUD. SI ELLE EST NEGATIVE, LES TESTS NE 
+C              SERONT PAS FAIT
+C I/O NORM   : NORMALE ENTRANTE A LA MAILLE MAITRE
+C I/O TANG   : VECTEUR TANGENT 
 C OUT COORDM : COORDONNEES DE LA "PROJECTION" M
 C OUT COEF   : VALEURS EN M DES FONCTIONS DE FORME ASSOCIEES
 C              AUX NOEUDS MAITRES
@@ -51,6 +75,16 @@ C OUT OLDJEU : JEU AVANT CORRECTION DES PROJECTIONS TOMBANT HORS DE
 C              LA MAILLE MAITRE
 C OUT JEU    : JEU DANS LA DIRECTION (NORM) DE LA NORMALE ENTRANTE
 C              A LA MAILLE MAITRE (PM.NORM)
+C OUT ARETE  : DETECTION DE PROJECTION SUR ARETE
+C                 (1: SUR L'ARETE, 2: NON)
+C              ARETE(1) : SEGMENT AC
+C              ARETE(2) : SEGMENT AB
+C              ARETE(3) : SEGMENT BC
+C OUT NOEUD  : DETECTION DE PROJECTION SUR NOEUD 
+C                 (1: SUR LE NOEUD, 2: NON)
+C              NOEUD(1) : NOEUD A
+C              NOEUD(2) : NOEUD B
+C              NOEUD(3) : NOEUD C
 C
 C ----------------------------------------------------------------------
 C
@@ -63,6 +97,20 @@ C
       REAL*8  RBID,R3BID(3),R6BID(6),R1,ALPHA,BETA,GAMMA
       REAL*8  NORME,R8PI,INORM(3)
       CHARACTER*32   JEXNOM
+      REAL*8  OUTSID(3)
+      REAL*8  KSI1P,KSI2P,KSI3P
+
+C ----------------------------------------------------------------------
+C --- CONTROLE DE LA PROJECTION HORS ZONE
+C --- C'EST-A-DIRE QUE LE NOEUD ESCLAVE SE PROJETE HORS DE LA MAILLE
+C --- MAITRE (OUTSID = .TRUE.)
+C --- ON L'AUTORISE DANS UNE CERTAINE MESURE (VERIPI>0) OU ON
+C --- L'INTERDIT (VERIP<0)
+C ----------------------------------------------------------------------
+      OUTSID(1) = -1.D0  
+      OUTSID(2) = -1.D0  
+      OUTSID(3) = -1.D0  
+
 C
 C ----------------------------------------------------------------------
 C
@@ -77,7 +125,7 @@ C ======================================================================
 C          PROJECTION SUR LE TRIA3 OU LE TRIA6 SUPPOSE PLAN
 C ======================================================================
 C
-      IF ((NUTYP.EQ.NTTRI3).OR.(PROJ.EQ.1)) THEN
+
 C
 C --- SI PAS DE LISSAGE DES NORMALES
 C
@@ -114,14 +162,29 @@ C
             KSI1 = - R8DOT (3,W,1,AC,1) / DENOM
             KSI2 =   R8DOT (3,W,1,AB,1) / DENOM
             KSI3 = 1.D0 - KSI1 - KSI2
-C
+C --- SAUVEGARDE DES VALEURS AVANT EVENTUEL RABATTEMENT
+            KSI1P = KSI1
+            KSI2P = KSI2
+            KSI3P = KSI3
+
+C --- ON RABAT EVENTUELLEMENT LA PROJECTION SUR L'ARETE
             IF ((KSI1.LT.0.D0).OR.(KSI2.LT.0.D0).OR.
      &           (KSI3.LT.0.D0)) THEN
                ABSAC = R8DOT (3,AB,1,AC,1) / LAC
                ACSAB = R8DOT (3,AB,1,AC,1) / LAB
                ABSBC = R8DOT (3,AB,1,BC,1) / LBC
                ACSBC = R8DOT (3,AC,1,BC,1) / LBC
+               IF (KSI1.LT.0.D0) THEN 
+                  OUTSID(1) = ABS(KSI1)
+               END IF
+               IF (KSI2.LT.0.D0) THEN 
+                  OUTSID(2) = ABS(KSI2)
+               END IF
+               IF (KSI3.LT.0.D0) THEN 
+                  OUTSID(3) = ABS(KSI3)
+               END IF
                CALL AJUSTT (ABSAC,ACSAB,ABSBC,ACSBC,KSI1,KSI2)
+               
             END IF
 C
 C --- CALCUL DES COORDONNEES CARTESIENNES DE M ("PROJECTION" DE P)
@@ -290,18 +353,34 @@ C
            B2A2(3) = 0.D0
          ENDIF
          CALL PROJLI(COORA2,COORB2,COORM2,C2A2,R3BID,
-     &               KSI1,RBID,RBID,R6BID,RBID,1,TANGDF,NDIM)
+     &               KSI1,RBID,RBID,R6BID,RBID,1,TANGDF,NDIM,VERIP)
          CALL PROJLI(COORA2,COORC2,COORM2,B2A2,R3BID,
-     &               KSI2,RBID,RBID,R6BID,RBID,1,TANGDF,NDIM)
+     &               KSI2,RBID,RBID,R6BID,RBID,1,TANGDF,NDIM,VERIP)
          KSI3 = 1.D0 - KSI1 - KSI2
-C
+C --- SAUVEGARDE DES VALEURS AVANT EVENTUEL RABATTEMENT
+            KSI1P = KSI1
+            KSI2P = KSI2
+            KSI3P = KSI3
+
+C --- ON RABAT EVENTUELLEMENT LA PROJECTION SUR L'ARETE 
          IF ((KSI1.LT.0.D0).OR.(KSI2.LT.0.D0).OR.
      &       (KSI3.LT.0.D0)) THEN
             ABSAC = R8DOT (3,AB,1,AC,1) / LAC
             ACSAB = R8DOT (3,AB,1,AC,1) / LAB
             ABSBC = R8DOT (3,AB,1,BC,1) / LBC
             ACSBC = R8DOT (3,AC,1,BC,1) / LBC
+            IF (KSI1.LT.0.D0) THEN 
+                  OUTSID(1) = ABS(KSI1)
+            END IF
+            IF (KSI2.LT.0.D0) THEN 
+                  OUTSID(2) = ABS(KSI2)
+            END IF
+            IF (KSI3.LT.0.D0) THEN 
+                  OUTSID(3) = ABS(KSI3)
+            END IF
             CALL AJUSTT (ABSAC,ACSAB,ABSBC,ACSBC,KSI1,KSI2)
+            
+
          END IF
 C
 C --- CALCUL DES VALEURS DES FONCTIONS DE FORME DES NOEUDS EN M
@@ -345,7 +424,7 @@ C
      &         (COORDM(2)-COORDP(2))*NORM(2) +
      &         (COORDM(3)-COORDP(3))*NORM(3)
       ENDIF
-      ENDIF
+
       
 C
 C ======================================================================
@@ -357,7 +436,60 @@ C
      &               'LA PROJECTION QUADRATIQUE POUR LES TRIANGLES '
      &               //'N''EST PAS DISPONIBLE')
       END IF
-C
-C ----------------------------------------------------------------------
-C
+
+     
+C --- PROJECTION HORS ZONE DETECTEE
+      IF ((OUTSID(1).GT.0.D0).OR.(OUTSID(2).GT.0.D0)
+     &                        .OR.(OUTSID(3).GT.0.D0)) THEN
+C         PROJECTION HORS ZONE AUTORISEE    
+           
+         IF ((JEU.LT.0.D0) .AND. (VERIP.GT.0.D0)) THEN
+C             RABATTEMENT NON AUTORISE         
+            IF ((OUTSID(1).GT.VERIP).OR.(OUTSID(2).GT.VERIP).OR.
+     &       (OUTSID(3).GT.VERIP)) THEN
+              JEU = ABS(JEU)*1.D14
+            ENDIF
+C            
+         ELSE IF ((JEU.LT.0.D0) .AND. (VERIP.LT.0.D0)) THEN
+C             PROJECTION HORS ZONE INTERDITE
+
+              CALL UTMESS('A','PROJTR_03','LE NOEUD ESCLAVE SE '//
+     &                'PROJETE EN DEHORS DE LA MAILLE MAITRE.'  //
+     &                'VERIFIEZ VOS SURFACES OU AUGMENTEZ TOLE_PROJ' )
+                 
+         ENDIF        
+      ENDIF      
+
+
+C --- VERIFICATIONS DES PROJECTIONS SUR ARETES ET NOEUDS
+
+      IF (TOLE.GE.0.D0) THEN
+        ARETE(1) = 0
+        ARETE(2) = 0
+        ARETE(3) = 0
+        NOEUD(1) = 0
+        NOEUD(2) = 0
+        NOEUD(3) = 0
+        IF (ABS(KSI1P).LE.TOLE) THEN
+            ARETE(3) = 1    
+        END IF
+        IF (ABS(KSI2P).LE.TOLE) THEN
+            ARETE(1) = 1    
+        END IF
+        IF (ABS(KSI3P).LE.TOLE) THEN
+            ARETE(2) = 1    
+        END IF
+        IF ((ARETE(1).EQ.1).AND.
+     &      (ARETE(2).EQ.1)) THEN
+            NOEUD(1) = 1    
+        END IF
+        IF ((ARETE(2).EQ.1).AND.
+     &      (ARETE(3).EQ.1)) THEN
+            NOEUD(2) = 1    
+        END IF
+        IF ((ARETE(1).EQ.1).AND.
+     &      (ARETE(3).EQ.1)) THEN
+            NOEUD(3) = 1    
+        END IF
+      ENDIF
       END

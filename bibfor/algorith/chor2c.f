@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C                                                                       
 C                                                                       
 C ======================================================================
-C RESPONSABLE S.CAMBIER
+C RESPONSABLE CAMBIER S.CAMBIER
 C ----------------------------------------------------------------------
 C      TRANSFORMATION D'UNE COLLECTION DE CHAM_NO A VALEURS REELLES EN
 C      UNE COLLECTION DE CHAM_NO A VALEURS COMPLEXES AVEC PARTIE

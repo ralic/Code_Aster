@@ -1,0 +1,485 @@
+# MODIF  DATE 01/12/2003   AUTEUR MABBAS M.ABBAS 
+
+# TITRE TESTS DE CONTACT POUR LES ELEMENTS QUADRATIQUES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'SSNV167B',NIV_PUB_WEB='INTERNET'))
+
+MA = LIRE_MAILLAGE()
+
+MO=AFFE_MODELE(
+                MAILLAGE=MA,
+                AFFE=_F(  TOUT = 'OUI',
+                       PHENOMENE = 'MECANIQUE',
+                       MODELISATION = '3D')  )
+
+MA = MODI_MAILLAGE( reuse=MA,  MAILLAGE=MA,   MODELE=MO,
+                    ORIE_PEAU_3D=_F(  GROUP_MA = ('CONT1','CONT2')))
+
+
+MAT=DEFI_MATERIAU(     ELAS=_F(  E = 200000.,
+                                  NU = 0.3,
+                             ALPHA = 1.E-4),
+                 )
+
+CHMAT=AFFE_MATERIAU( MAILLAGE=MA,
+                     AFFE=_F(  TOUT = 'OUI',  MATER = MAT,
+                               TEMP_REF = 0.)
+                    )
+
+
+
+CHBLO = AFFE_CHAR_MECA(    MODELE=MO,
+                 DDL_IMPO=(_F(  GROUP_NO =
+                      ( 'NH5','NH6','NH18','NH17','NH19','NH20'), DZ = -0.2 ),
+                           _F(  GROUP_NO = 'NH8', DX=0.0, DY=0.0, DZ = -0.2),
+                           _F(  GROUP_NO = 'NH7', DX=0.0, DZ = -0.2),
+                           _F(  GROUP_NO = 'NB4', DX=0.0, DY=0.0, DZ=0.0),
+                           _F(  GROUP_NO = 'NB3', DX=0.0, DZ=0.0),
+                           _F(  GROUP_NO = 
+                      ('NB1','NB9','NB2','NB10','NB11','NB12'), DZ=0.0),))
+
+CHCO1 = AFFE_CHAR_MECA(    MODELE=MO,
+                          CONTACT = _F( GROUP_MA_MAIT='CONT2',
+                                        GROUP_MA_ESCL='CONT1',
+                                        PROJECTION = 'LINEAIRE',
+                                        REAC_GEOM = 'CONTROLE',
+                                        NB_REAC_GEOM = 5,
+                                      ),
+                          INFO =2)
+
+CHCO2 = AFFE_CHAR_MECA(    MODELE=MO,
+                          CONTACT = _F( GROUP_MA_MAIT='CONT2',
+                                        GROUP_MA_ESCL='CONT1',
+                                        PROJECTION = 'QUADRATIQUE',
+                                        REAC_GEOM = 'CONTROLE',
+                                        NB_REAC_GEOM = 5,
+                                      ),
+                          INFO =2)
+                          
+                          
+LIST=DEFI_LIST_REEL(    DEBUT=0.,
+                           INTERVALLE=_F(  JUSQU_A = 1.,  NOMBRE = 1)
+                         )
+
+SOL1 = STAT_NON_LINE( MODELE=MO,
+                     CHAM_MATER=CHMAT,
+                     INFO=2,
+                    EXCIT=(
+                         _F(CHARGE = CHBLO),
+                         _F(CHARGE = CHCO1),
+                         ),
+                         COMP_ELAS=_F(RELATION = 'ELAS'),
+                         INCREMENT=_F( 
+                         LIST_INST = LIST,),)
+                         
+                         
+SOL1=CALC_NO(reuse =SOL1,
+            MODELE = MO,           
+              RESULTAT=SOL1,
+              EXCIT=(
+              _F(CHARGE = CHBLO),
+              _F(CHARGE = CHCO1),
+                          ),
+              OPTION='REAC_NODA',); 
+                                     
+
+IMPR_RESU(RESU=_F(RESULTAT=SOL1,NOM_CHAM='DEPL'))
+IMPR_RESU(RESU=_F(RESULTAT=SOL1,NOM_CHAM='REAC_NODA'))
+
+
+TEST_RESU(RESU=(
+                 _F(RESULTAT=SOL1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N1',
+                   VALE=-1.000000E-1,
+                   INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION = 1.0E-5,
+                   ),
+                 _F(RESULTAT=SOL1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N2',
+                   VALE=-1.000000E-1,
+                   INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION = 1.0E-5,
+                   ),
+                 _F(RESULTAT=SOL1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N3',
+                   VALE=-1.000000E-1,
+                   INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION = 1.0E-5,
+                   ),                                    
+               
+                 _F(RESULTAT=SOL1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N4',
+                   VALE=-1.000000E-1,
+                   INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION = 1.0E-5,
+                   ),  
+                 _F(RESULTAT=SOL1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N9',
+                   VALE=-1.000000E-1,
+                   INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION = 1.0E-5,
+                   ),
+                 _F(RESULTAT=SOL1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N10',
+                   VALE=-1.000000E-1,
+                   INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION = 1.0E-5,
+                   ),
+                 _F(RESULTAT=SOL1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N11',
+                   VALE=-1.000000E-1,
+                   INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION = 1.0E-5,
+                   ),                                    
+               
+                 _F(RESULTAT=SOL1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N12',
+                   VALE=-1.000000E-1,
+                   INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION = 1.0E-5,
+                   ),                                                           
+                   ),);
+                   
+
+TEST_RESU(RESU=(
+                 _F(RESULTAT=SOL1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DZ',
+                   NOEUD='N1',
+                   VALE=-3.33333E+03,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),
+                 _F(RESULTAT=SOL1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DZ',
+                   NOEUD='N2',
+                   VALE=-3.33333E+03,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),
+                 _F(RESULTAT=SOL1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DZ',
+                   NOEUD='N3',
+                   VALE=-3.33333E+03,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),                                   
+               
+                 _F(RESULTAT=SOL1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DZ',
+                   NOEUD='N4',
+                   VALE=-3.33333E+03,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),  
+                 _F(RESULTAT=SOL1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DZ',
+                   NOEUD='N9',
+                   VALE=1.33333E+04,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),
+                 _F(RESULTAT=SOL1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DZ',
+                   NOEUD='N10',
+                   VALE=1.33333E+04,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),
+                 _F(RESULTAT=SOL1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DZ',
+                   NOEUD='N11',
+                   VALE=1.33333E+04,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),                                   
+               
+                 _F(RESULTAT=SOL1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DZ',
+                   NOEUD='N12',
+                   VALE=1.33333E+04,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),                                                          
+                   ),);      
+
+
+SOL2 = STAT_NON_LINE( MODELE=MO,
+                     CHAM_MATER=CHMAT,
+                     INFO=2,
+                    EXCIT=(
+                         _F(CHARGE = CHBLO),
+                         _F(CHARGE = CHCO2),
+                         ),
+                         COMP_ELAS=_F(RELATION = 'ELAS'),
+                         INCREMENT=_F( 
+                         LIST_INST = LIST,),)
+                         
+                         
+SOL2=CALC_NO(reuse =SOL2,
+            MODELE = MO,           
+              RESULTAT=SOL2,
+              EXCIT=(
+              _F(CHARGE = CHBLO),
+              _F(CHARGE = CHCO2),
+                          ),
+              OPTION='REAC_NODA',); 
+                                     
+
+IMPR_RESU(RESU=_F(RESULTAT=SOL2,NOM_CHAM='DEPL'))
+IMPR_RESU(RESU=_F(RESULTAT=SOL2,NOM_CHAM='REAC_NODA'))
+
+
+
+
+
+
+
+
+
+
+
+TEST_RESU(RESU=(
+                 _F(RESULTAT=SOL2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N1',
+                   VALE=-1.37191E-01,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),
+                 _F(RESULTAT=SOL2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N2',
+                   VALE=-1.36701E-01,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),
+                 _F(RESULTAT=SOL2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N3',
+                   VALE=-1.37147E-01,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),                                    
+               
+                 _F(RESULTAT=SOL2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N4',
+                   VALE=-1.37643E-01,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),  
+                 _F(RESULTAT=SOL2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N9',
+                   VALE=-1.49467E-01,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),
+                 _F(RESULTAT=SOL2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N10',
+                   VALE=-1.49413E-01,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),
+                 _F(RESULTAT=SOL2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N11',
+                   VALE=-1.50258E-01,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),                                    
+               
+                 _F(RESULTAT=SOL2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N12',
+                   VALE=-1.50277E-01,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),                                                           
+                   ),);
+                   
+
+TEST_RESU(RESU=(
+                 _F(RESULTAT=SOL2,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DZ',
+                   NOEUD='N1',
+                   VALE=0.0,
+                   INST=1,
+                   CRITERE = 'ABSOLU',
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),
+                 _F(RESULTAT=SOL2,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DZ',
+                   NOEUD='N2',
+                   VALE=0.0,
+                   INST=1,
+                   CRITERE = 'ABSOLU',
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),
+                 _F(RESULTAT=SOL2,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DZ',
+                   NOEUD='N3',
+                   VALE=0.0,
+                   INST=1,
+                   CRITERE = 'ABSOLU',
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),                                   
+               
+                 _F(RESULTAT=SOL2,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DZ',
+                   NOEUD='N4',
+                   VALE=0.0,
+                   INST=1,
+                   CRITERE = 'ABSOLU',
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),  
+                 _F(RESULTAT=SOL2,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DZ',
+                   NOEUD='N9',
+                   VALE=4.61708E+03,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),
+                 _F(RESULTAT=SOL2,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DZ',
+                   NOEUD='N10',
+                   VALE=4.62103E+03,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),
+                 _F(RESULTAT=SOL2,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DZ',
+                   NOEUD='N11',
+                   VALE=4.56602E+03,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),                                   
+               
+                 _F(RESULTAT=SOL2,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DZ',
+                   NOEUD='N12',
+                   VALE=4.56538E+03,
+                   INST=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.2.04',
+                   PRECISION = 1.0E-5,
+                   ),                                                          
+                   ),); 
+                   
+
+FIN()
+
+
+

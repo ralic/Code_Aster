@@ -8,7 +8,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 23/12/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,12 +117,12 @@ C
          ELSE IF ( DOCU .EQ. 'SGT3') THEN
             CALL RVECHC(DIM,SSCH19,SDLIEU,SDEVAL,ZI(ANBNDF),ZI(ACLOCF))
          ELSE IF ( DOCU .EQ. 'CHMM') THEN
-            CALL RVECHM(DIM,SSCH19,SDLIEU,SDEVAL)
+            CALL RVECHM(SSCH19,SDLIEU,SDEVAL)
          ELSE IF ( DOCU .EQ. 'LSTN') THEN
             IF ( TYPAFF .EQ. 'N' ) THEN
-               CALL RVECHN(DIM,SSCH19,SDLIEU,SDEVAL)
+               CALL RVECHN(SSCH19,SDLIEU,SDEVAL)
             ELSE
-               CALL RVECHE(DIM,SSCH19,SDLIEU,SDEVAL)
+               CALL RVECHE(SSCH19,SDLIEU,SDEVAL)
             ENDIF
          ELSE
 C           /* AUTRE LIEU DE POST-TRAITEMENT

@@ -1,6 +1,6 @@
       SUBROUTINE ATASMO(AZ,NUMEDZ,RTBLOC,ATAZ,BASEZ,NBLIG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/03/2003   AUTEUR PABHHHH N.TARDIEU 
+C MODIF MODELISA  DATE 03/11/2003   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C.======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C     ATASMO  --  LE BUT DE CETTE ROUTINE EST DE CREER LA MATR_ASSE
@@ -135,10 +134,13 @@ C
         CALL JEVEUO(JEXNUM(A,I),'L',IDLIGM)      
         DO 20 J = 1,NEQ
           ZR(IDA+K-1) = ZR(IDLIGM+J-1)                    
-          K = K + 1 
+           
+          K = K + 1
  20     CONTINUE 
         CALL JELIBE(JEXNUM(A,I))         
  10   CONTINUE  
+
+
 C     
 C     INDCOL EST LE NOMBRE DE TERMES NON NULS PAR COLONNE DE A
 C     ICUM EST LE NOMBRE DE TERMES NON NULS DE A
@@ -148,6 +150,7 @@ C
       CALL WKVECT('&&ATASMO.ICOL','V V I',NEQ,ID2)      
       K = 1
       ICUM = 0 
+      IDEC = 0
       DO 30 I = 1,NEQ
         INDCOL = 0
         DO 40 M = 1,NBLIG
@@ -157,10 +160,18 @@ C
              K = K + 1
              INDCOL = INDCOL + 1        
            ENDIF     
-   40   CONTINUE      
+   40   CONTINUE
+      IF (INDCOL.NE.0 .AND. IDEC.EQ.0) THEN
+         IPREM = I
+         IDEC = 1
+      ENDIF
+      
+            
         ZI(ID2+I-1) = INDCOL
         ICUM = ICUM + INDCOL      
-   30 CONTINUE                              
+   30 CONTINUE  
+   
+                                  
 C
 C
 C      
@@ -207,6 +218,7 @@ C
 C     INDIC EST LE NOMBRE DE TERMES STOCKES PAR LIGNE DE ATA    
       CALL WKVECT('&&ATASMO.INDIC','V V I',NEQ,ID3)
 C      ICUM = 0
+
       K1 = 2
       DO 70 I = 2 , NEQ
         INDIC = 0
@@ -217,10 +229,10 @@ C      ICUM = 0
            ZI(ID3 +K1 -1) = 1
            K1 = K1 + 1
         ELSE           
-           DO 80 J = 2 , I 
+           DO 80 J = IPREM , I 
               SOM = ZERO
               IBORJ = ZI(ID2 +J -1)
-              IF(IBORJ.EQ.0) THEN
+              IF (IBORJ.EQ.0 ) THEN
                  CONTINUE
               ELSE  
                  DO 90 L = 1 , ZI(ID2 +I -1)        
@@ -228,10 +240,10 @@ C      ICUM = 0
                     SOM =SOM + ZR(IDA +(L1-1)*NEQ + (J-1))*
      +                         ZR(IDA +(L1-1)*NEQ + (I-1))
   90             CONTINUE 
-                 ZR(IDVALE +K -1) = SOM
-                 ZI(IHCOL +K -1) = J
-                 K = K + 1
-                 INDIC = INDIC + 1 
+                  ZR(IDVALE +K -1) = SOM
+                  ZI(IHCOL +K -1) = J
+                  K = K + 1
+                  INDIC = INDIC + 1
               ENDIF 
   80       CONTINUE
            ZI(ID3 +K1 -1) = INDIC          
@@ -239,6 +251,8 @@ C      ICUM = 0
         ENDIF
         ICUM = ICUM + ZI(ID2 +I -1)
   70  CONTINUE               
+ 
+
 C       
       CALL JELIBE(JEXNUM(KVALE,NBLC))  
 C 

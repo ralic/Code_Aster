@@ -1,8 +1,8 @@
-        SUBROUTINE LMAJPL ( MOD, IMAT, NMAT, MATER, DSDE )
+        SUBROUTINE LMAJPL ( MOD, NMAT, MATER, DSDE )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,6 @@ C                  :  MATRICE SYMETRIQUE DE COMPORTEMENT TANGENT
 C                     COHERENT A T OU T+DT
 C       ----------------------------------------------------------------
 C       IN  MOD    :  TYPE DE MODELISATION
-C           IMAT   :  CODE MATERIAU
 C           NMAT   :  DIMENSION MATER
 C           MATER  :  COEFFICIENTS MATERIAU
 C           NMOD   :  DIMENSION DRDY
@@ -40,7 +39,7 @@ C
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C       ----------------------------------------------------------------
         LOGICAL         FAUX
-        INTEGER         NDT , NDI , NMAT , NMOD, IMAT
+        INTEGER         NDT , NDI , NMAT , NMOD
         INTEGER         N1,  N2,  N3,  N4
         REAL*8          UN , ZERO, Z
         PARAMETER       ( UN   =  1.D0   )

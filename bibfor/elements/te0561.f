@@ -1,6 +1,6 @@
       SUBROUTINE TE0561 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,8 +28,7 @@ C                   'ALPH_ELGA_ZAC'
 C          NOMTE  : NOM DU TYPE ELEMENT
 C ----------------------------------------------------------------------
       PARAMETER         ( NBRES = 4 , NCMP = 4)
-      CHARACTER*24       CARAC,FF,CHMAT
-      CHARACTER*8        NOMRES(NBRES),ELREFE
+      CHARACTER*8        NOMRES(NBRES)
       CHARACTER*2        CODRET(NBRES)
       REAL*8             VALRES(NBRES)
       REAL*8             DEFOPP(54),DEFORP(54),DEFORE(54),DEFOTH
@@ -37,8 +36,8 @@ C ----------------------------------------------------------------------
       REAL*8             TREF,TRCP
       REAL*8             DFDX(9),DFDY(9),TPG,POIDS,X,Y,EPSP(5),EPSE(5)
       INTEGER            NNO,KP,I,K,ITEMPE,ITREF,IDEPLP,IDEPLE,IALPHA
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE
-      INTEGER            NPG,NPG1,ICONTP
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
+      INTEGER            NPG,NNOS,ICONTP,JGANO,NDIM
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
@@ -59,20 +58,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
 C
-      CALL ELREF1(ELREFE)
-C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS = IFF
-      IVF    = IPOIDS+NPG1
-      IDFDE  = IVF   +NPG1*NNO
-      IDFDK  = IDFDE +NPG1*NNO
-      NPG    = NPG1
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -100,8 +86,7 @@ C
 C
         DO 101 KP = 1 , NPG
           K=(KP-1)*NNO
-          CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                  ZR(IGEOM),DFDX,DFDY,POIDS )
+          CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
           X   = 0.D0
           Y   = 0.D0
           TPG = 0.D0

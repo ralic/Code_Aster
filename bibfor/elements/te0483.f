@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       LOGICAL AXI
       INTEGER NDIM,NNO,NPG
-      INTEGER IPOI,IVF,JGANO,IDFDE,IDFDK,IDFDN,NNOS
+      INTEGER IPOI,IVF,JGANO,IDFDE,NNOS
       INTEGER IGEOM,IMATE,IDEPL,ITEMPS,IECHLI
 
 
@@ -61,9 +61,6 @@ C ......................................................................
 
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOI,IVF,IDFDE,JGANO)
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
-
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -73,9 +70,8 @@ C ......................................................................
 
 
 C - CALCUL DE LA CONTRIBUTION ELEMENTAIRE A LA CHARGE LIMITE
-
-      CALL NMHOLI(NDIM,AXI,NNO,NPG,ZR(IVF),ZR(IDFDE),ZR(IDFDN),
-     &            ZR(IDFDK),ZR(IPOI),ZI(IMATE),ZR(ITEMPS),ZR(IGEOM),
-     &            ZR(IDEPL),ZR(IECHLI))
+      CALL NMHOLI(NDIM, AXI, NNO, NPG, IPOI, IVF, IDFDE,
+     &            ZI(IMATE),
+     &            ZR(ITEMPS), ZR(IGEOM), ZR(IDEPL), ZR(IECHLI))
 
       END

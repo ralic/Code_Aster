@@ -1,6 +1,9 @@
-      SUBROUTINE DSQDIS ( XYZL , DF , DCI , AN )
+      SUBROUTINE DSQDIS ( NOMTE, XYZL , DF , DCI , AN )
+      IMPLICIT  NONE
+      REAL*8   XYZL(3,*), DF(3,3), DCI(2,2), AN(4,12)
+      CHARACTER*16  NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/07/2001   AUTEUR RATEAU G.RATEAU 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,16 +20,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8   XYZL(3,*)
-      REAL*8   DF(3,3)
-      REAL*8   DCI(2,2)
-      REAL*8   AN(4,12)
 C     -------------------------------------------------------
 C     MATRICE AN(4,12) DU CISAILLEMENT POUR LE DSQ
 C     -------------------------------------------------------
 C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -42,16 +39,13 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      CHARACTER*8   TYPELE
-      CHARACTER*24  DESR
+      INTEGER LZR, K, IC, INT, J, I
       REAL*8  QSI,ETA,PETA,META,PQSI,MQSI,ZERO
       REAL*8  L(4) , C(4) , S(4)
       REAL*8  X(4) , Y(4)
       REAL*8  HFT2(2,6)
       REAL*8  TB(6,12)
       REAL*8  TA(6,4)
-      REAL*8  BCB(2,12)
-      REAL*8  BCA(2,4)
       REAL*8  DT(2,6)
       REAL*8  DIB(2,12)
       REAL*8  DIA(2,4)
@@ -78,10 +72,8 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
       ZERO = 0.D0
       FAUX = .FALSE.
-      TYPELE = 'MEDSQU4 '
 C
-      DESR = '&INEL.'//TYPELE//'.DESR'
-      CALL JEVETE( DESR ,' ',LZR )
+      CALL JEVETE( '&INEL.'//NOMTE(1:8)//'.DESR' ,' ',LZR )
 C
       CALL GQUAD4 (XYZL , ZR(LZR))
       C(1) = ZR(LZR-1+LCOS)

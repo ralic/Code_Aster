@@ -1,12 +1,12 @@
-      SUBROUTINE FIOPE2(NCODOP,LPILE,PILE,ICLASS,MI,MR,ML,MC,IER)
+      SUBROUTINE FIOPE2(NCODOP,LPILE,ICLASS,MI,MR,ML,MC,IER)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER           NCODOP,LPILE,PILE(*),ICLASS(*),MI(*),IER
+      INTEGER           NCODOP,LPILE,ICLASS(*),MI(*),IER
       REAL*8                                        MR(*)
       LOGICAL                                          ML(*)
       COMPLEX*16                                          MC(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 26/03/97   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF SUPERVIS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,6 @@ C     EFFECTUER UNE OPERATION BINAIRE       (FONCTIONS INTERPRETEES)
 C     ------------------------------------------------------------------
 C PARAMETRES D ENTREE :
 C     NCODOP  : CODE OPERATION
-C     PILE    : PILE DES OPERANDES
 C     MI,MR,ML,MC: TABLE DES CONSTANTES ENTIERES, REELLES, ...
 C OUT IER     : CODE DE RETOUR
 C     ------------------------------------------------------------------

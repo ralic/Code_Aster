@@ -1,7 +1,7 @@
       SUBROUTINE TE0505 ( OPTION , NOMTE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,6 @@ C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -44,35 +43,19 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      CHARACTER*24       CARAC,FF
-      CHARACTER*8         ELREFE
       REAL*8             DFDX(9),DFDY(9),POIDS,R,TPG,RBID
-      REAL*8             ULOC(2,9),DBETA,UL(2,10),JACOB(10),COEF
+      REAL*8             ULOC(2,9),DBETA,UL(2,10),JACOB(10)
       REAL*8             BETAA,TPN,BETAI,DUPGDX(9),DUPGDY(9)
       REAL*8             XKPT,XKPTT(9),DTPGDX(9),DTPGDY(9)
       REAL*8             VECT(50),RES(50),DBPGDX(9),DBPGDY(9)
       REAL*8             XR,XRR,XAUX,RR,TPG0,XK1,XK0,PN,PNP1
-      INTEGER            NNO,KP,NPG1,NPG2,I,K,ITEMPS,IVECTT,IFON(3)
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE
+      INTEGER            KP,I,K,ITEMPS,IVECTT,IFON(3),IGEOM,IMATE
       INTEGER            IVITE,ITEMP,ITEMPI,ILAGRM,ILAGRP,IVERES
       INTEGER            NBVF,JVALF,IDIM
-C
+      INTEGER            NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO
 C DEB ------------------------------------------------------------------
 C
-      CALL ELREF1(ELREFE)
-C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF   ,'L',IFF   )
-      IPOIDS=IFF   +NPG1*(1+3*NNO)
-      IVF   =IPOIDS+NPG2
-      IDFDE =IVF   +NPG2*NNO
-      IDFDK =IDFDE +NPG2*NNO
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM )
       CALL JEVECH('PMATERC','L',IMATE )
@@ -106,12 +89,11 @@ C
    20    CONTINUE
    10 CONTINUE
 C
-      DO 101 KP=1,NPG2
+      DO 101 KP=1,NPG
         UL(1,KP) = 0.D0
         UL(2,KP) = 0.D0
         K=(KP-1)*NNO
-        CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                ZR(IGEOM),DFDX,DFDY,POIDS )
+        CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
         R      = 0.D0
         TPG    = 0.D0
         TPG0   = 0.D0
@@ -140,32 +122,30 @@ C
         XKPTT(KP) = XK1 - XK0
 C
  101    CONTINUE
-        CALL PROJET(2, NPG2, NNO, VECT, RES)
+        CALL PROJET(2, NPG, NNO, VECT, RES)
 C
-        DO 110 KP = 1,NPG2
-        K = (KP -1)*NNO
-        CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                ZR(IGEOM),DFDX,DFDY,POIDS )
-        DBPGDX(KP) = 0.D0
-        DBPGDY(KP) = 0.D0
-        DUPGDX(KP) = 0.D0
-        DUPGDY(KP) = 0.D0
+        DO 110 KP = 1,NPG
+          K = (KP -1)*NNO
+          CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
+          DBPGDX(KP) = 0.D0
+          DBPGDY(KP) = 0.D0
+          DUPGDX(KP) = 0.D0
+          DUPGDY(KP) = 0.D0
 C
-        DO 120 I = 1, NNO
-        DUPGDX(KP) = DUPGDX(KP) + RES(I)*DFDX(I)
-        DUPGDY(KP) = DUPGDY(KP) + RES(I)*DFDY(I)
-        TPN        = RES(I)
-        CALL RCFODI(IFON(1), TPN, BETAI, RBID)
-        DBPGDX(KP) = DBPGDX(KP) + BETAI*DFDX(I)
-        DBPGDY(KP) = DBPGDY(KP) + BETAI*DFDY(I)
- 120    CONTINUE
+          DO 120 I = 1, NNO
+            DUPGDX(KP) = DUPGDX(KP) + RES(I)*DFDX(I)
+            DUPGDY(KP) = DUPGDY(KP) + RES(I)*DFDY(I)
+            TPN        = RES(I)
+            CALL RCFODI(IFON(1), TPN, BETAI, RBID)
+            DBPGDX(KP) = DBPGDX(KP) + BETAI*DFDX(I)
+            DBPGDY(KP) = DBPGDY(KP) + BETAI*DFDY(I)
+ 120      CONTINUE
 C
  110    CONTINUE
 C
-         DO 103 KP = 1,NPG2
+         DO 103 KP = 1,NPG
          K=(KP-1)*NNO
-         CALL DFDM2D (NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                ZR(IGEOM),DFDX,DFDY,POIDS )
+         CALL DFDM2D (NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
 C
          DO 104 I = 1, NNO
         ZR(IVERES+I-1) = ZR(IVERES+I-1) + JACOB(KP)*ZR(IVF+K+I-1)*

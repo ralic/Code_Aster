@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE CALCUL D AMORTISSEMENT AJOUTE EN ECOULEMENT ANNULAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -463,22 +463,22 @@ MODFLOT=MODE_ITER_SIMULT(     MATR_A=RAIDFL,
 
 TEST_RESU(RESU=(_F( RESULTAT = MODBIS, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                NUME_ORDRE = 1,  VALE = 12.5),
+                NUME_ORDRE = 1,  VALE = 12.5, REFERENCE='ANALYTIQUE',),
           _F( RESULTAT = MODBIS, PARA = 'AMOR_REDUIT',
                 CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                NUME_ORDRE = 1,  VALE = 0.00011),
+                NUME_ORDRE = 1,  VALE = 0.00011, REFERENCE='ANALYTIQUE',),
           _F( RESULTAT = MODCRIT, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                NUME_ORDRE = 1,  VALE = 12.5),
+                NUME_ORDRE = 1,  VALE = 12.5, REFERENCE='ANALYTIQUE',),
           _F( RESULTAT = MODCRIT, PARA = 'AMOR_REDUIT',
                 CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                NUME_ORDRE = 1,  VALE = 0.0000138),
+                NUME_ORDRE = 1,  VALE = 0.0000138, REFERENCE='ANALYTIQUE',),
           _F( RESULTAT = MODFLOT, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                NUME_ORDRE = 1,  VALE = 12.5),
+                NUME_ORDRE = 1,  VALE = 12.5, REFERENCE='ANALYTIQUE',),
           _F( RESULTAT = MODFLOT, PARA = 'AMOR_REDUIT',
                 CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                NUME_ORDRE = 1,  VALE = -0.00066))
+                NUME_ORDRE = 1,  VALE = -0.00066, REFERENCE='ANALYTIQUE',))
            )
 
 FIN()

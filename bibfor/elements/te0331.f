@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION II
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,34 +51,21 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*2        CODRET(4), CODRES
-      CHARACTER*24       CARAC,FF
-      CHARACTER*8        NOMRES(4),ELREFE
+      CHARACTER*8        NOMRES(4)
       CHARACTER*16       OPTCAL(12), PHENOM
       REAL*8             SIG(6),SIGI,DSIGWB,VALRES(4),EPSGI,R8BID
       REAL*8             POIDS,R,VOLUME,VOLACT,DVOL,SEUIL,M,V0
       REAL*8             CONG(4),EPSQ(4),DFDX(9),DFDY(9),PP,PPT
       REAL*8             TC(6),TDP(6),SIGOLD,SIGNEW,SREF,TPG,TMOY
 
-      INTEGER            NNO,KP,NPG,K,II,IWEIB,JTAB(7)
+      INTEGER            NNO,KP,NPG,K,II,IWEIB,JTAB(7),NNOS,JGANO,NDIM
       INTEGER            IDEFG,ISSOPT,INO,IPOPP,IPOPPT
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IMATE
+      INTEGER            IPOIDS,IVF,IDFDE,IMATE
       INTEGER            IGEOM,ICONG,IVARIG
       INTEGER            ISIGIE,ISIGIS,ITEMPE,ICOMPO,NBVARI
 C     ------------------------------------------------------------------
 C
-      CALL ELREF1(ELREFE)
-C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO=ZI(ICARAC)
-      NPG=ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF   ,'L',IFF   )
-      IPOIDS=IFF
-      IVF   = IPOIDS+NPG
-      IDFDE = IVF   +NPG*NNO
-      IDFDK = IDFDE +NPG*NNO
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
       POIDS=0.D0
       DSIGWB=0.D0
@@ -181,8 +168,8 @@ C=================================================================
          DO 200 KP=1,NPG
             K=(KP-1)*NNO
             R=0.D0
-            CALL DFDM2D (NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                   ZR(IGEOM),DFDX,DFDY,POIDS)
+            CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,
+     &                  POIDS)
             IF (NOMTE(3:4).EQ.'AX') THEN
                DO 160 II=1,NNO
                   R=R+ZR(IGEOM+2*II-2)*ZR(IVF+K+II-1)
@@ -241,8 +228,8 @@ C=================================================================
          DO 300 KP=1,NPG
             R=0.D0
             K=(KP-1)*NNO
-            CALL DFDM2D (NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                   ZR(IGEOM),DFDX,DFDY,POIDS)
+            CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,
+     &                  POIDS)
             IF (NOMTE(3:4).EQ.'AX') THEN
                DO 170 II=1,NNO
                   R=R+ZR(IGEOM+2*II-2)*ZR(IVF+K+II-1)
@@ -305,8 +292,8 @@ C=================================================================
          DO 400 KP=1,NPG
             R=0.D0
             K=(KP-1)*NNO
-            CALL DFDM2D (NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                   ZR(IGEOM),DFDX,DFDY,POIDS)
+            CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,
+     &                  POIDS)
             IF (NOMTE(3:4).EQ.'AX') THEN
                DO 210 II=1,NNO
                   R=R+ZR(IGEOM+2*II-2)*ZR(IVF+K+II-1)
@@ -378,8 +365,7 @@ C=================================================================
             DO 175 II=1,4
                CONG(II)=ZR(ICONG+(4*KP)-5+II)
  175        CONTINUE
-            CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                    ZR(IGEOM),DFDX,DFDY,POIDS )
+            CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
             IF (NOMTE(3:4).EQ.'AX') THEN
                DO 240 II=1,NNO
                   R=R+ZR(IGEOM+2*II-2)*ZR(IVF+K+II-1)

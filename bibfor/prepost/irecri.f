@@ -17,7 +17,7 @@ C
       LOGICAL                                   LRESU,LCOR
       LOGICAL           LSUP,LINF,              LMAX,LMIN,LMOD,LGMSH
 C-----------------------------------------------------------------------
-C MODIF PREPOST  DATE 24/03/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF PREPOST  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -305,7 +305,7 @@ C
       IF (FORM .EQ. 'GMSH') THEN
       
          CALL IRGMSH ( NOMCON, IFI, NBCHAM, CHAM, LRESU, NBORDR, ORDR,
-     +         NBCMP, NOMCMP, NBMAT, NUMMAI, VERSIO, IOCC, LGMSH )
+     +         NBCMP, NOMCMP, NBMAT, NUMMAI, VERSIO, LGMSH )
 C
 C     -----------------------------
 C     TRAITEMENT DES AUTRES FORMATS
@@ -321,6 +321,7 @@ C     *******************************************
       NBRK16 = 0
 C
       DO 21 IORDR = 1,NBORDR
+        CALL JEMARQ()
 C       --- FORMAT 'CASTEM'
         IF(FORM.EQ.'CASTEM'.AND.LRESU) THEN
           CALL IRPACA(NOMCON,IFI,NBORDR,IORDR,ORDR,NBACC,
@@ -339,7 +340,7 @@ C           - MESSAGE NUMERO D'ORDRE NON LICITE
             CALL CODENT(ORDR(IORDR),'G',CHNUMO)
             CALL UTMESS('A','IRECRI',' NUMERO D''ORDRE '//
      +                                 CHNUMO//' NON LICITE ')
-            GOTO 21
+            GOTO 22
           ENDIF
           LORDR=.TRUE.
         ENDIF
@@ -451,6 +452,8 @@ C       --- IMPRESSION  DE LA TABLE SI FORMAT 'CASTEM'
           ZI(JLAST-1+6) = ZI(JLAST-1+6) + 1
           CALL JEDETR('&&IRPACA.TABL.CASTEM')
         ENDIF
+   22   CONTINUE
+        CALL JEDEMA()
    21 CONTINUE
 C
       IF(LRESU.AND.FORM.EQ.'CASTEM'.AND.NBORDR.NE.0) THEN

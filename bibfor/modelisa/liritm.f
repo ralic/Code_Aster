@@ -1,8 +1,8 @@
-        SUBROUTINE LIRITM(IFL,IFM,ICL,IV,RV,CV,CNL,DEBLIG,ILEC)
+        SUBROUTINE LIRITM(IFL,ICL,IV,RV,CV,CNL,DEBLIG,ILEC)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/10/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,6 @@ C                                         JUSQU'EN FIN DE LIGNE
 C       ----------------------------------------------------------------
 C       IN  DEBLIG      = -1    >  LIRE ITEM EN DEBUT DE LIGNE SUIVANTE
 C           IFL                 >  NUMERO LOGIQUE FICHIER MAILLAGE
-C           IFM                 >  NUMERO LOGIQUE FICHIER MESSAGE
 C           ILEC        = 1     >  PREMIERE LECTURE DU FICHIER
 C                       = 2     >  SECONDE  LECTURE DU FICHIER
 C       OUT DEBLIG      = 0     >  ITEM LUT DANS LA LIGNE
@@ -45,7 +44,7 @@ C           RV                  >  REEL LU
 C           CV                  >  CHAINE LUE
 C           CNL                 >  NUMERO LIGNE (CHAINE)
 C       ----------------------------------------------------------------
-        INTEGER         IFL , IFM , ICL , IV , IDEB  , DEBLIG,  ILEC
+        INTEGER         IFL , ICL , IV , IDEB  , DEBLIG,  ILEC
         REAL*8          RV
         CHARACTER*(*)   CV
         CHARACTER*80    LIG
@@ -55,7 +54,7 @@ C       ----------------------------------------------------------------
         COMMON          /OPMAIL/        NOP
 C
         IF(DEBLIG.EQ.-1)THEN
-        CALL LIRLIG(IFL,IFM,CNL,LIG,ILEC)
+        CALL LIRLIG(IFL,CNL,LIG,ILEC)
         IDEB   = 1
         DEBLIG = 1
         ELSE
@@ -71,7 +70,7 @@ C
 C - FIN DE LIGNE OU COMMENTAIRE
 C
         IF(ICL.EQ.-1.OR.(ICL.EQ.5.AND.CV(1:1).EQ.'%'))THEN
-        CALL LIRLIG(IFL,IFM,CNL,LIG,ILEC)
+        CALL LIRLIG(IFL,CNL,LIG,ILEC)
         IDEB   = 1
         DEBLIG = 1
         GOTO 1

@@ -5,7 +5,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -140,6 +140,7 @@ C
         REAL*8          TEMD,         TEMF,      DETEMP
         REAL*8          HYDD,         HYDF,      DEHYDR
         REAL*8          SECD,         SECF,      DESECH
+        CHARACTER*132   RAISON
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
@@ -166,13 +167,13 @@ C
         ENDIF
 C
         IF ( COMP(1)(1:15) .EQ. 'BETON_DOUBLE_DP') THEN
-        CALL PLASBE ( NDIM,  TYPMOD, IMAT,  COMP,  CRIT,
-     1                TIMED, TIMEF, TEMPD, TEMPF, TREF,
+        CALL PLASBE ( TYPMOD, IMAT,  COMP,  CRIT,
+     1                TEMPD, TEMPF, TREF,
      2                HYDRD, HYDRF, SECHD, SECHF,
      3                EPSDT, DEPST, SIGD,  VIND,  OPT, ELGEOM,
      4                SIGF,  VINF,  DSDE,  ICOMP, NVI,  IRTET)
         ELSE
-        CALL PLASTI ( NDIM,  TYPMOD, IMAT,  COMP,  CRIT,
+        CALL PLASTI ( TYPMOD, IMAT,  COMP,  CRIT,
      1                TIMED, TIMEF, TEMPD, TEMPF, TREF,
      2                HYDRD, HYDRF, SECHD, SECHF,
      3                EPSDT, DEPST, SIGD,  VIND,  OPT,
@@ -193,14 +194,17 @@ C --    CAS DE NON CONVERGENCE LOCALE / REDECOUPAGE DU PAS DE TEMPS
 C
  1      CONTINUE
 C
-        IF ( NPAL .EQ. 0 ) CALL UTMESS ('S','REDECE',
-     1    ' REDECOUPAGE DEMANDE APRES NON CONVERGENCE LOCAL :'//
-     2    ' MODIFIER ITER_INTE_PAS DANS L OPTION CONVERGENCE')
+        IF ( NPAL .EQ. 0 ) THEN
+            CALL UTEXCP(23,'REDECE',
+     1          'REDECOUPAGE DEMANDE APRES NON CONVERGENCE '
+     2    //'LOCAL : MODIFIER ITER_INTE_PAS DANS L''OPTION CONVERGENCE')
+        ENDIF
 C
-        IF ( ICOMP .GT. 3 ) CALL UTMESS ('S','REDECE',
-     1    ' REDECOUPAGE EXCESSIF DU PAS DE TEMPS INTERNE :'//
-     2    ' REDUISEZ VOTRE PAS DE TEMPS OU AUGMENTER'//
-     3    ' ABS(ITER_INTE_PAS)')
+        IF ( ICOMP .GT. 3 ) THEN
+            CALL UTEXCP(23,'REDECE','REDECOUPAGE EXCESSIF DU PAS DE'
+     1       //' TEMPS INTERNE : REDUISEZ VOTRE PAS DE TEMPS OU'
+     3       //' AUGMENTER ABS(ITER_INTE_PAS)')
+        ENDIF
 C
         IF ( ICOMP .GE. 1 ) NPAL = 2 * NPAL
         ICOMP = ICOMP + 1
@@ -248,13 +252,13 @@ C --        REACTUALISATION DES VARIABLES POUR L INCREMENT SUIVANT
 C
 C
             IF ( COMP(1)(1:15) .EQ. 'BETON_DOUBLE_DP') THEN
-              CALL PLASBE ( NDIM,  TYPMOD,  IMAT,   COMP,   CRIT,  TD,
-     1                    TF,    TEMD,   TEMF,   TREF,  HYDD, HYDF,
+              CALL PLASBE ( TYPMOD,  IMAT,   COMP,   CRIT,
+     1                    TEMD,   TEMF,   TREF,  HYDD, HYDF,
      2                    SECD, SECF, EPS,   DEPS,
      3                    SD,    VD,     OPT,  ELGEOM,  SIGF,   VINF,
      4                    DSDELO,  ICOMP,   NVI,  IRTET)
             ELSE
-              CALL PLASTI ( NDIM,  TYPMOD,  IMAT,   COMP,   CRIT,  TD,
+              CALL PLASTI ( TYPMOD,  IMAT,   COMP,   CRIT,  TD,
      1                    TF,    TEMD,   TEMF,   TREF,  HYDD, HYDF,
      2                    SECD, SECF,   EPS,   DEPS,
      2                    SD,    VD,     OPT,    SIGF,   VINF,

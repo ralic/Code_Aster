@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/03/2004   AUTEUR G8BHHXD X.DESROCHES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -104,7 +104,7 @@ POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=post_elem_prod,docu="U4.81.22-e",r
                        ANGLE          = SIMP(statut='f',typ='I',defaut=0),
                        MODE_FOURIER   = SIMP(statut='f',typ='I',defaut=0),
                        CHAM_GD        = SIMP(statut='f',typ=(cham_no_depl_r,cham_no_temp_r,cham_elem_ener_r) ),
-                       RESULTAT       = SIMP(statut='f',typ=(mode_meca,evol_elas,evol_ther,evol_noli,dyna_trans) ),
+                       RESULTAT       = SIMP(statut='f',typ=(mode_meca,evol_elas,evol_ther,evol_noli,dyna_trans,mult_elas) ),
                        PRECISION      = SIMP(statut='f',typ='R',defaut= 1.0E-3),
                        CRITERE        = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU")),
                        TOUT_ORDRE     = SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -365,6 +365,7 @@ POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=post_elem_prod,docu="U4.81.22-e",r
                                GROUP_MA      = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
                                GROUP_MA_INTE = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
                                CARA_GEOM     = SIMP(statut='f',typ=tabl_cara_geom),
+                               RT            = SIMP(statut='f',typ='R'),
                                LAPL_PHI      = SIMP(statut='f',typ=evol_ther),
                                LAPL_PHI_Y    = SIMP(statut='f',typ=evol_ther),
                                LAPL_PHI_Z    = SIMP(statut='f',typ=evol_ther),

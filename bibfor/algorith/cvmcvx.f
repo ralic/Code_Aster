@@ -1,8 +1,8 @@
-      SUBROUTINE CVMCVX ( IMAT, NMAT, MATER, TEMP, SIG ,VIN, SEUIL )
+      SUBROUTINE CVMCVX ( NMAT, MATER, SIG ,VIN, SEUIL )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,18 +29,16 @@ C                       ET    D    = SIG - 1/3 TR(SIG) I
 C       ----------------------------------------------------------------
 C       IN  SIG    :  CONTRAINTE
 C       IN  VIN    :  VARIABLES INTERNES = ( X1, X2, P, R, Q, XXI, E3 )
-C       IN  IMAT   :  ADRESSE DU MATERIAU CODE
 C       IN  NMAT   :  DIMENSION MATER
-C       IN  TEMP   :  TEMPERATURE
-C       IN  MATER  :  COEFFICIENTS MATERIAU A TEMP
+C       IN  MATER  :  COEFFICIENTS MATERIAU A TEMPERATURE
 C       OUT SEUIL  :  SEUIL  ELASTICITE
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NDT , NDI , NMAT
+        INTEGER         NDT , NDI , NMAT
         REAL*8          SIG(6)   , X1(6)   , X2(6)   , DEV(6) , VIN(*)
         REAL*8          VTMP(6)  , XXI(6)
         REAL*8          DIFC1  , DIFC2
         REAL*8          KOOH(6,6), AR , R  , K  , Q  , C1D , C2D
-        REAL*8          MATER(NMAT,2)      , TEMP    , SEUIL
+        REAL*8          MATER(NMAT,2)      , SEUIL
         REAL*8          LCNRTS
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT , NDI

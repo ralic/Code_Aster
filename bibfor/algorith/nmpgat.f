@@ -1,14 +1,10 @@
-        SUBROUTINE NMPGAT(OPTION,TYPMOD,IMATE,COMPOR,CRIT,MECA,
-     &                       TM,DT, TREF,DEPS,PHI0,
+        SUBROUTINE NMPGAT(OPTION,IMATE,TM,DT, TREF,DEPS,PHI0,
      &                       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,        
-     &                       ADDEME,ADCOME,ADDETE,
-     &                       DEFGEM,CONGEM,CONGEP,
-     &                       VINTM,VINTP,ADVIME,ADVITH,
-     &                       ADDEP1,ADDEP2, 
-     &                       DSDE)
+     &                       ADDEME,ADCOME,ADDETE,CONGEM,CONGEP,
+     &                       VINTM,VINTP,ADVIME,DSDE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/10/2000   AUTEUR UFBHHLL C.CHAVANT 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,10 +25,10 @@ C TOLE CRP_20
 C TOLE CRP_21
        IMPLICIT NONE
        INTEGER NDIM,DIMDEF,DIMCON,NVIMEC,NVITH
-       INTEGER ADDEME,ADDETE,ADDEP1,ADDEP2
-       INTEGER ADCOME,ADVIME,ADVITH,IMATE
+       INTEGER ADDEME,ADDETE
+       INTEGER ADCOME,ADVIME,IMATE
        INTEGER YAMEC,YATE
-       CHARACTER*16 OPTION,COMPOR(*),MECA
+       CHARACTER*16 OPTION
        REAL*8       DEPS(6),RFRT,KRON(6),SIGMDV(6)
        REAL*8       DEPSDV(6)
        REAL*8       DFFD(6,6),RFRS(6),ZMRFRT(6),DRFRS(6)
@@ -41,8 +37,6 @@ C TOLE CRP_21
        REAL*8       CONGEM(1:DIMCON),CONGEP(1:DIMCON)
        REAL*8       VINTM(1:NVIMEC+NVITH),VINTP(1:NVIMEC+NVITH)
        REAL*8       DSDE(1:DIMCON,1:DIMDEF)
-       REAL*8       DEFGEM(1:DIMDEF)
-       CHARACTER*8  TYPMOD(2)
 
 C.......................................................................
 C SET BUT NEVER USED
@@ -52,7 +46,7 @@ C      GAMA                IST               RAC2             RDBTDE
 C    RDBTDP             RDEEDP             RDKBDP               RHOS
 C      TALS
       INTEGER I,J,K,I1,J1,I2,J2,I3,II,JJ,KK,LL,I4,J4
-      REAL*8  DT,TM,TF,TREF, CRIT(*)
+      REAL*8  DT,TM,TF,TREF
       REAL*8  DSIDT(6,6),DSIDEP(6,6)
       REAL*8  RKB,RKBM,RDKBDT,NU,REEM,RLAM,R2GM
       REAL*8  REE,RDEEDT,RLA,R2G,RDLADT,RD2GDT

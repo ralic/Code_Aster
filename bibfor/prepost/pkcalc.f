@@ -1,16 +1,16 @@
       SUBROUTINE PKCALC ( NDIM, NBVAL, ABSSUP, DXSUP, DYSUP,  
      +                    DZSUP, ABSINF, DXINF, DYINF, DZINF, 
-     +                    COEFD, COEFD3, COEFG, COEFG3, KG1, KG2 )
+     +                    COEFD, COEFD3, COEFG, COEFG3,KG1,KG2,KG3)
       IMPLICIT   NONE
-      INTEGER             NDIM, NBVAL
-      REAL*8              COEFD, COEFD3, COEFG, COEFG3, KG1(*), KG2(*)
+      INTEGER             NDIM,NBVAL
+      REAL*8              COEFD,COEFD3,COEFG,COEFG3,KG1(*),KG2(*),KG3(*)
       CHARACTER*24        ABSSUP, DXSUP, DYSUP, DZSUP, 
      +                    ABSINF, DXINF, DYINF, DZINF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/07/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 30/03/2004   AUTEUR PROIA E.PROIA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2001  EDF R&D WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -49,7 +49,8 @@ C
      +             JDZS, JDXI, JDYI, JDZI, JSAUTX, JSAUTY, JSAUTZ,
      +             ISIGX, ISIGY, ISIGZ
       REAL*8       R8B, R, R1, R2, K1, K2, K3, G, RMAXEM, R8PREM,
-     +             DXS, DYS, DZS, DXI, DYI, DZI, Y1, Y2, VK1, VK2, VK3
+     +             DXS, DYS, DZS, DXI, DYI, DZI, Y1, Y2, VK1, VK2, VK3,
+     +             DE, RN
       CHARACTER*8  K8B
 C DEB ------------------------------------------------------------------
 C
@@ -226,10 +227,10 @@ C
             VK1 = ISIGX * SQRT(K1)
             VK2 = ISIGY * SQRT(K2)
             IF ( NDIM. EQ .2 ) THEN
-               WRITE(IFM,1010) R1 , VK1 , VK2 , G
+            WRITE(IFM,1010) R1 , VK1 , VK2 , G
             ELSEIF( NDIM. EQ. 3) THEN
                VK3 = ISIGZ * SQRT(K3)
-               WRITE(IFM,1010) R1 , VK1 , VK2 , VK3 , G
+               WRITE(IFM,1010) R1 , VK1 , VK2 ,VK3, G
             ENDIF
          ENDIF
  202  CONTINUE
@@ -242,6 +243,71 @@ C
          KG2(6) = ISIGZ * SQRT ( KG2(6) )
       ENDIF
 C
+C-----------------------------------------------------------------------
+C                  METHODE 3
+C
+C-----------------------------------------------------------------------
+C
+        IF ( NIV .EQ. 2 )  THEN
+         IF ( NDIM. EQ .2 ) THEN
+            WRITE(IFM,1040)
+         ELSEIF( NDIM. EQ. 3) THEN
+            WRITE(IFM,1041)
+         ENDIF
+      ENDIF
+      DO 300 I = 1 , 8 , 1
+         KG3(I) = 0.D0
+ 300  CONTINUE
+      DO 310 I = 2 , 8 , 2
+         KG3(I) = 0.D0
+ 310  CONTINUE
+     
+       RN=ZR(JABSCS+NBVAL)
+       DE=0.D0
+       K1=0.D0
+       K2=0.D0
+       K3=0.D0
+       DE=RN
+       DO 302 I = 1 , NBVAL
+         R1 = ZR(JABSCS+I-1)
+         R2 = ZR(JABSCS+I-1+1)
+         Y1 = ZR(JSAUTX+I-1)
+         K1 = K1+(ABS(SQRT(Y1)*SQRT(R2)*(R2-R1)))
+         Y1 = ZR(JSAUTY+I-1)
+         K2 = K2+(ABS(SQRT(Y1)*SQRT(R2)*(R2-R1)))
+          IF ( NDIM .EQ. 3 ) THEN
+            Y1 = ZR(JSAUTZ+I-1)
+            K3 = K3 +(ABS(SQRT(Y1)*SQRT(R2)*(R2-R1)))
+          ENDIF   
+  302    CONTINUE   
+            IF ( NIV .EQ. 2 ) THEN
+            VK1 = 2*ISIGX * (K1/(DE**(2)))
+            VK2 = 2*ISIGY * (K2/(DE**(2)))
+            G  = COEFG *(VK2**(2)+VK1**(2))
+             IF ( NDIM. EQ .2 ) THEN
+               WRITE(IFM,1010) VK1, VK2, G
+               KG3(1)=VK1
+               KG3(2)=VK1
+               KG3(3)=VK2
+               KG3(4)=VK2
+               KG3(5)=G
+               KG3(6)=G
+             ELSEIF( NDIM. EQ. 3) THEN
+               VK3 = 2*ISIGZ * (K3/DE**(2))
+              G =COEFG*(VK2**(2)+VK1**(2))
+     +         +(COEFG3*(VK3)**(2))
+               WRITE(IFM,1010) VK1,VK2,VK3,G
+               KG3(1)=VK1
+               KG3(2)=VK1
+               KG3(3)=VK2
+               KG3(4)=VK2
+               KG3(5)=VK3
+               KG3(6)=VK3
+               KG3(7)=G
+               KG3(8)=G
+             ENDIF
+            ENDIF        
+      
       CALL JEDETR ( '&&PKCALC.SAUT_DX' )
       CALL JEDETR ( '&&PKCALC.SAUT_DY' )
       IF ( NDIM .EQ. 3 )  CALL JEDETR ( '&&PKCALC.SAUT_DZ' )
@@ -254,13 +320,19 @@ C
  1010 FORMAT(1P, 7(2X,E12.5))
  1011 FORMAT(1P,10(2X,E12.5))
  1020 FORMAT(/,'--> METHODE 1 : ',/,'   ABSC_CURV_1',
-     +         '   ABSC_CURV_2       K1            K2             G')
+     +         '   ABSC_CURV_2        K1            K2            G')
  1021 FORMAT(/,'--> METHODE 1 : ',/,'   ABSC_CURV_1',
-     +'   ABSC_CURV_2       K1            K2             K3          G')
- 1030 FORMAT(/,'--> METHODE 2 : ',/
-     +         '    ABSC_CURV        K1            K2             G')
- 1031 FORMAT(/,'--> METHODE 2 : ',/
-     +'   ABSC_CURV_2       K1            K2             K3          G')
-C
-      CALL JEDEMA ( )
+     +'   ABSC_CURV_2     K1              K2             K3',
+     +'            G')
+ 1030 FORMAT(/,'--> METHODE 2 : ',/   
+     +'   ABSC_CURV         K1             K2            G')
+ 1031 FORMAT(/,'--> METHODE 2 : ',/   
+     +'   ABSC_CURV_2       K1            K2           K3',
+     +'             G')
+ 1040 FORMAT(/,'--> METHODE 3 : ',/
+     +'       K1            K2            G')
+ 1041 FORMAT(/,'--> METHODE 3 : ',/ 
+     +'       K1            K2            K3           G')   
+      
+      CALL JEDEMA ()
       END

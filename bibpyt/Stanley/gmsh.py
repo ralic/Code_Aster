@@ -1,4 +1,4 @@
-#@ MODIF gmsh Stanley  DATE 01/07/2003   AUTEUR JMBHH01 J.M.PROIX 
+#@ MODIF gmsh Stanley  DATE 05/04/2004   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,8 @@
 # ======================================================================
 import os, signal
 from popen2 import Popen3
-import env
+
+log = 1
 
 def Mesh(maillage, **para) :
 
@@ -46,20 +47,20 @@ def Mesh(maillage, **para) :
 # =========================================================================
 
 
-def GMSH(mode, fichier) :
+def GMSH(mode, fichier, param) :
 
     """
       mode     : MAIL (gmsh produit le fichier) ou POST (gmsh lit le fichier)
       fichier  : nom du fichier d'echange
-      env      : environnement
+      param    : parametres d'environnement
     """
-
-    if   env.mode == 'LOCAL' :
-      return GMSH_LOCAL(mode, fichier) 
-    elif env.mode == 'DISTANT' :
-      return GMSH_DISTANT(mode, fichier)
-    elif env.mode == 'WINDOWS' :
-      return GMSH_WINDOWS(mode, fichier)
+    
+    if   param['mode'] == 'LOCAL' :
+      return GMSH_LOCAL(mode, fichier, param) 
+    elif param['mode'] == 'DISTANT' :
+      return GMSH_DISTANT(mode, fichier, param)
+    elif param['mode'] == 'WINDOWS' :
+      return GMSH_WINDOWS(mode, fichier, param)
     else :
       raise "Mode d'environnement incorrect"
     
@@ -67,29 +68,55 @@ def GMSH(mode, fichier) :
 
 class GMSH_DISTANT :
 
-  def __init__(self, mode, fichier) :
-        
+  def __init__(self, mode, fichier, param) :
+
     """
       mode     : MAIL (gmsh produit le fichier) ou POST (gmsh lit le fichier)
       fichier  : nom du fichier d'echange
-      env      : environnement
+      param    : parametres d'environnement
     """
-  
+
 #  Mode post-traitement
 
     if mode == 'POST' :
-      ex_gmsh = env.gmsh
-      mdis = env.machine_gmsh
-      fdis = env.rep_gmsh + '/' + fichier + '.pos'
-      fmdis = env.login_gmsh + '@' + mdis + ":" + fdis
-      mdis = '-l ' + env.login_gmsh + ' ' + mdis 
-      os.system("rcp " + fichier + " " + fmdis)
-      os.system("rsh " + mdis + " '" + ex_gmsh + " " + fdis + "'")
-      os.system("rsh " + mdis + " rm " + fdis)
-     
+
+      mdis = param['machine_gmsh']
+      ex_gmsh = param['machine_gmsh_exe'] + ' -display ' + os.environ['DISPLAY']
+      fdis = param['machine_gmsh_tmp'] + '/' + fichier + '.pos'
+      fmdis = param['machine_gmsh_login'] + '@' + mdis + ":" + fdis
+      mdis = '-l ' + param['machine_gmsh_login'] + ' ' + mdis 
+
+      txt = "rcp " + fichier + " " + fmdis
+      if log==1:
+        print "Commandes lancées :"
+        print txt
+      os.system(txt)
+
+      if param['SKIN']=='OUI':
+        fw=open('skin.pos','w')
+        fw.write( 'Merge "' + param['machine_gmsh_tmp'] + '/' + fichier + '.pos' + '";' +'\n' )
+        fw.write( 'Plugin(Skin).iView=-1;' +'\n' )
+        fw.write( 'Plugin(Skin).Run;' +'\n' )
+        fw.write( 'Delete View[0];' +'\n' )
+        fw.close()
+        if log==1:
+          print   "rcp skin.pos " + param['machine_gmsh_login'] + '@' + param['machine_gmsh'] + ":" + param['machine_gmsh_tmp'] + '/skin.pos'
+          print   "rsh " + mdis + " '" + ex_gmsh + " " + param['machine_gmsh_tmp'] + '/skin.pos' + "'"
+          print   "rsh " + mdis + " 'rm " + fdis + "'"
+          print   "rsh " + mdis + " 'rm " + param['machine_gmsh_tmp'] + '/skin.pos' + "'"
+        os.system("rcp skin.pos " + param['machine_gmsh_login'] + '@' + param['machine_gmsh'] + ":" + param['machine_gmsh_tmp'] + '/skin.pos')
+        os.system("rsh " + mdis + " '" + ex_gmsh + " " + param['machine_gmsh_tmp'] + '/skin.pos' + "'")
+        os.system("rsh " + mdis + " 'rm " + fdis + "'")
+        os.system("rsh " + mdis + " 'rm " + param['machine_gmsh_tmp'] + '/skin.pos' + "'")
+      else:
+        if log==1:
+          print   "rsh " + mdis + " '" + ex_gmsh + " " + fdis + "'"
+          print   "rsh " + mdis + " 'rm " + fdis + "'"
+        os.system("rsh " + mdis + " '" + ex_gmsh + " " + fdis + "'")
+        os.system("rsh " + mdis + " 'rm " + fdis + "'")
+
     if mode == 'MAIL' :
       raise  'NON DVP' 
-    
 
   def Terminal_ouvert(self) : return 0
   
@@ -108,25 +135,37 @@ class GMSH_DISTANT :
       
 class GMSH_LOCAL :
 
-
-  def __init__(self, mode, fichier) :
+  def __init__(self, mode, fichier, param) :
         
     """
       mode     : MAIL (gmsh produit le fichier) ou POST (gmsh lit le fichier)
       fichier  : nom du fichier d'echange
-      env      : environnement
+      param    : parametres d'environnement
     """
   
 #  Mode post-traitement
     if mode == 'POST' :
-      ex_gmsh = env.gmsh
       os.rename(fichier, fichier + '.pos')
-      shell = env.gmsh + ' ' + fichier + '.pos'
+
+      if param['SKIN']=='OUI':
+        fw=open('skin.pos','w')
+        fw.write( 'Merge "' + fichier + '.pos' + '";' +'\n' )
+        fw.write( 'Plugin(Skin).iView=-1;' +'\n' )
+        fw.write( 'Plugin(Skin).Run;' +'\n' )
+        fw.write( 'Delete View[0];' +'\n' )
+        fw.close()
+        shell = param['gmsh'] + ' skin.pos'
+      else:
+        shell = param['gmsh'] + ' ' + fichier + '.pos'
+
+      if log==1:
+        print "Commandes lancées :"
+        print shell
+
       self.controle = Popen3(shell)  
      
     if mode == 'MAIL' :
       raise  'NON DVP' 
-    
 
   def Terminal_ouvert(self) :
   
@@ -146,14 +185,11 @@ class GMSH_LOCAL :
 
     if self.Terminal_ouvert() :
       os.kill(self.controle.pid, signal.SIGTERM)
-
-
     
   def Attendre(self) :
   
 # Attend que l'on quitte gmsh
 
-  
     self.controle.wait()
     self.Fermer()
 
@@ -161,29 +197,54 @@ class GMSH_LOCAL :
 
 class GMSH_WINDOWS :
 
-  def __init__(self, mode, fichier) :
+  def __init__(self, mode, fichier, param) :
         
     """
       mode     : MAIL (gmsh produit le fichier) ou POST (gmsh lit le fichier)
       fichier  : nom du fichier d'echange
-      env      : environnement
+      param    : parametres d'environnement
     """
   
 #  Mode post-traitement
 
     if mode == 'POST' :
-      mdis = env.machine_gmsh
+      mdis = param['machine_gmsh']
       os.rename(fichier, fichier + '.pos')
 
-# Syntaxe generale de smbclient : smbclient '\\cli70xx\temp' -N -c 'rm fic; put fic'
-      if env.user_win == '':
-        os.system(env.smbclient + " '\\\\" + mdis + "\\" + env.rep_gmsh + "' -N -c 'rm " + fichier + ".pos ; put " + fichier + ".pos'")
+      # Syntaxe generale de smbclient : smbclient '\\cli70xx\temp' -N -c 'rm fic; put fic'
+      # Copie du fort.33.pos
+      if param['machine_gmsh_login'] == '':
+        if log==1:
+          print "Commandes lancées :"
+          print param['smbclient'] + " '\\\\" + mdis + "\\" + param['machine_gmsh_tmp'] + "' -N -c 'rm " + fichier + ".pos ; put " + fichier + ".pos'"
+        os.system(param['smbclient'] + " '\\\\" + mdis + "\\" + param['machine_gmsh_tmp'] + "' -N -c 'rm " + fichier + ".pos ; put " + fichier + ".pos'")
       else:
-        os.system(env.smbclient + " '\\\\" + mdis + "\\" + env.rep_gmsh + "' " + env.user_pass + " -U " + env.user_win + " -c 'rm " + fichier + ".pos ; put " + fichier + ".pos'")
+        if log==1:
+          print "Commandes lancées :"
+          print param['smbclient'] + " '\\\\" + mdis + "\\" + param['machine_gmsh_tmp'] + "' " + "******" + " -U " + param['machine_gmsh_login'] + " -c 'rm " + fichier + ".pos ; put " + fichier + ".pos'"
+        os.system(param['smbclient'] + " '\\\\" + mdis + "\\" + param['machine_gmsh_tmp'] + "' " + param['machine_gmsh_pass'] + " -U " + param['machine_gmsh_login'] + " -c 'rm " + fichier + ".pos ; put " + fichier + ".pos'")
+
+      # Creation et copie du skin.pos
+      if param['SKIN']=='OUI':
+        fw=open('skin.pos','w')
+        fw.write( 'Merge "' + fichier + '.pos' + '";' +'\n' )
+        fw.write( 'Plugin(Skin).iView=-1;' +'\n' )
+        fw.write( 'Plugin(Skin).Run;' +'\n' )
+        fw.write( 'Delete View[0];' +'\n' )
+        fw.close()
+        if param['machine_gmsh_login'] == '':
+          txt = param['smbclient'] + " '\\\\" + mdis + "\\" + param['machine_gmsh_tmp'] + "' -N -c 'rm skin.pos ; put skin.pos'"
+          if log==1:
+            print txt
+          os.system(txt)
+        else:
+          if log==1:
+            print param['smbclient'] + " '\\\\" + mdis + "\\" + param['machine_gmsh_tmp'] + "' " + "******" + " -U " + param['machine_gmsh_login'] + " -c 'rm skin.pos ; put skin.pos'"
+          os.system(param['smbclient'] + " '\\\\" + mdis + "\\" + param['machine_gmsh_tmp'] + "' " + param['machine_gmsh_pass'] + " -U " + param['machine_gmsh_login'] + " -c 'rm skin.pos ; put skin.pos'")
 
     if mode == 'MAIL' :
       raise  'NON DVP' 
-    
+
   def Terminal_ouvert(self) : return 0
   
 # Retourne 1 si le terminal est ouvert, 0 sinon

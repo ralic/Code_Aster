@@ -1,4 +1,4 @@
-# MODIF  DATE 17/12/2002   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE MUR PLAN EN THERMIQUE STATIONNAIRE (HEXA8)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,9 +61,11 @@ TEMPE=THER_LINEAIRE(        MODELE=MOTH,
              CHAM_MATER=CHMAT, EXCIT=_F( CHARGE = CHTH)
              )
 
-T2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
-                 NOM_CHAM='TEMP', RESULTAT=TEMPE,
-                   NUME_ORDRE=2)
+TEMPE=CALC_ELEM( reuse=TEMPE,MODELE=MOTH,
+                 RESULTAT=TEMPE,
+                 CHAM_MATER=CHMAT,
+                 OPTION=('FLUX_ELNO_TEMP',
+                 'FLUX_ELGA_TEMP',),);
 
 SEG1=INTE_MAIL_3D( MAILLAGE=MAIL,
                    PRECISION=1.E-06,
@@ -79,39 +81,30 @@ SEG2=INTE_MAIL_3D( MAILLAGE=MAIL,
 
 #
 
-TR1=POST_RELEVE_T( ACTION=(  _F(  INTITULE = 'ACTION_1',
-                           CHEMIN = SEG1, CHAM_GD = T2,
-                           NOM_CMP = 'TEMP', OPERATION = 'EXTRACTION'),
-                            _F(  INTITULE = 'ACTION_2',
-                           CHEMIN = SEG2, CHAM_GD = T2,
-                           NOM_CMP = 'TEMP', OPERATION = 'EXTRACTION')))
-
-#
-
 TR2=POST_RELEVE_T( ACTION=_F(  INTITULE = 'ACTION_1',
                                CHEMIN = SEG1, RESULTAT = TEMPE,
                                NOM_CHAM = 'TEMP', TOUT_ORDRE = 'OUI',
                                NOM_CMP = 'TEMP', OPERATION = 'EXTRACTION'))
 
-FLUXN=CALC_CHAM_ELEM( MODELE=MOTH,  TEMP=T2,
-                      CHAM_MATER=CHMAT,   OPTION='FLUX_ELNO_TEMP')
-
-FLUXG=CALC_CHAM_ELEM( MODELE=MOTH,  TEMP=T2,
-                      CHAM_MATER=CHMAT,   OPTION='FLUX_ELGA_TEMP')
-
 #
 
 
-TEST_RESU(CHAM_NO=(
-   _F( CHAM_GD = T2, GROUP_NO = 'A',     NOM_CMP = 'TEMP', VALE = 100.0),
-   _F( CHAM_GD = T2, GROUP_NO = 'B',     NOM_CMP = 'TEMP', VALE =  20.0),
-   _F( CHAM_GD = T2, GROUP_NO = 'G',     NOM_CMP = 'TEMP', VALE =  60.0),
-                   ),
-          CHAM_ELEM=(
-   _F( CHAM_GD = FLUXN, MAILLE = 'M1', POINT = 3, NOM_CMP = 'FLUX', VALE = 960.0),
-   _F( CHAM_GD = FLUXN, MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0),
-   _F( CHAM_GD = FLUXG, MAILLE = 'M1', POINT = 3, NOM_CMP = 'FLUX', VALE = 960.0),
-   _F( CHAM_GD = FLUXG, MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0),
+TEST_RESU(RESU=(
+   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='TEMP',
+   GROUP_NO = 'A',     NOM_CMP = 'TEMP', VALE = 100.0),
+   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='TEMP',
+   GROUP_NO = 'B',     NOM_CMP = 'TEMP', VALE =  20.0),
+   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='TEMP',
+   GROUP_NO = 'G',     NOM_CMP = 'TEMP', VALE =  60.0),
+   
+   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELNO_TEMP',
+   MAILLE = 'M1', POINT = 3, NOM_CMP = 'FLUX', VALE = 960.0),
+   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELNO_TEMP',
+   MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0),
+   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELGA_TEMP',
+   MAILLE = 'M1', POINT = 3, NOM_CMP = 'FLUX', VALE = 960.0),
+   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELGA_TEMP',
+   MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0),
                     ),
           ) ;
 

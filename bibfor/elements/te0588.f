@@ -1,7 +1,9 @@
-      SUBROUTINE TE0588(OPTION,NOMTE)
+      SUBROUTINE TE0588 ( OPTION, NOMTE )
+      IMPLICIT   NONE
+      CHARACTER*16        OPTION, NOMTE
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/06/2002   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +21,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
 C
 C     BUT:       POUR LES ELEMENTS PLAQUES ET COQUES , CALCUL DES
 C                CONTRAINTES EQUIVALENTES AUX NOEUDS SUIVANTES
@@ -39,17 +40,6 @@ C
 C     ENTREES :  OPTION : OPTION DE CALCUL
 C                NOMTE  : NOM DU TYPE ELEMENT
 C ----------------------------------------------------------------------
-      PARAMETER         (NNOMAX = 27 , NEQMAX = 6 )
-C ----------------------------------------------------------------------
-      INTEGER            ICONT, IEQUIF
-      INTEGER            IDCP  , J,   I, INO, JIN
-      INTEGER            NNO   , NCEQ
-      REAL*8             EQNO(NEQMAX*NNOMAX)
-C      CHARACTER*8        ELREFE
-      CHARACTER*8        ALIAS
-      CHARACTER*16       NOMTE,OPTION
-      CHARACTER*24       CHCTE
-C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
@@ -67,17 +57,23 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+
+      INTEGER            ICONT, IEQUIF, NNOMAX, NEQMAX
+      INTEGER            IDCP, J, I, INO, JIN, NCEQ
+      INTEGER            NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO
+      PARAMETER         (NNOMAX = 27 , NEQMAX = 6 )
+      REAL*8             EQNO(NEQMAX*NNOMAX), ZERO
+C ----------------------------------------------------------------------
 C
-C      CALL ELREF1(ELREFE)
-      ALIAS=NOMTE(1:8)
+      IF (NOMTE(1:8).EQ.'MEC3QU9H' .OR. NOMTE(1:8).EQ.'MEC3TR7H') THEN
+         CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESI','L',JIN)
+         NNO   = ZI(JIN)
+      ELSE
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
+      ENDIF
       NCEQ = 6
       ZERO = 0.0D0
 C
-C
-C      CHCTE = '&INEL.'//ELREFE//'.DESI'
-      CHCTE = '&INEL.'//ALIAS//'.DESI'
-      CALL JEVETE(CHCTE,'L',JIN)
-      NNO   = ZI(JIN)
 C
 C --- RECUPERATION DU CHAMP DE CONTRAINTES AUX NOEUDS DE L'ELEMENT
 C --- POUR LEQUEL ON VA CALCULER LA CONTRAINTE EQUIVALENTE .

@@ -1,10 +1,10 @@
-      SUBROUTINE DRFDRG(PARAME, DERPAR, H0, SIGC, RGDEV, U, DUDG, DF)
+      SUBROUTINE DRFDRG(PARAME, DERPAR, H0, SIGC, RGDEV, DUDG, DF)
 C
       IMPLICIT      NONE
-      REAL*8        H0, SIGC, RGDEV, U, DUDG, DF, PARAME(5), DERPAR(4)
+      REAL*8        H0, SIGC, RGDEV, DUDG, DF, PARAME(5), DERPAR(4)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,6 @@ C --- : DERPAR : DERIVEES DES PARAMETRES D'ECROUISSAGE -----------------
 C --- : H0     : H0 = (1-GAMCJS)**(1/6) --------------------------------
 C --- : SIGC   : PARAMETRE DU MODELE -----------------------------------
 C --- : RGDEV  : G(S) --------------------------------------------------
-C --- : U      : CRITERE PLASTIQUE -------------------------------------
 C --- : DUDG   : DU/DGAMP ----------------------------------------------
 C OUT : DF     : DF/DGAMP = - ((1/A(GAMP))**2)*   ----------------------
 C ------------ :              ((G/(SIGC*H0))**(1/A(GAMP))*  ------------

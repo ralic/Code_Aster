@@ -8,7 +8,7 @@
       INTEGER NRPASE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/05/2003   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,14 +144,30 @@ C
 C
 C     --- RECUPERATION DES CONDITIONS INITIALES ---
 C
+         CALL JEEXIN(DYNA1(1:8)//'           .REFE',IRE)
+         IF (IRE.GT.0) THEN
+           LCREA = .FALSE.
+         ENDIF 
+
          NUME = 0
          CALL GETVID('ETAT_INIT','DEPL_INIT',1,1,1,CHAMP,NDI)
          IF (NDI.GT.0) THEN
             INCHAC = 1
             CHAM2 = '&&OP0048.DEPINI'
-            CALL VTCREB (CHAM2, NUMEDD, 'V', 'R', NEQ)
-            CALL VTCOPY(CHAMP,CHAM2,IRET)
-            CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
+            IF (NRPASE.EQ.0) THEN 
+              CALL VTCREB (CHAM2, NUMEDD, 'V', 'R', NEQ)
+              CALL VTCOPY(CHAMP,CHAM2,IRET)
+              CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
+            ELSE
+              CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
+              DO 10 IEQ=1,NEQ
+                ZR(JVALE-1+IEQ)=0.D0
+10            CONTINUE
+              CALL UTDEBM('A',NOMCMD,
+     &          'DEPLACEMENTS INITIAUX IMPOSES NULS POUR LES '//
+     &          'CALCULS DE SENSIBILITE')
+              CALL UTFINM()
+            ENDIF
             CALL R8COPY(NEQ,ZR(JVALE),1,DEPINI,1)
          ELSE
             CALL UTMESS('I',NOMCMD,'DEPLACEMENTS INITIAUX NULS.')
@@ -161,9 +177,20 @@ C
          IF (NVI.GT.0) THEN
             INCHAC = 1
             CHAM2 = '&&OP0048.VITINI'
-            CALL VTCREB (CHAM2, NUMEDD, 'V', 'R', NEQ)
-            CALL VTCOPY(CHAMP,CHAM2,IRET)
-            CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
+            IF (NRPASE.EQ.0) THEN 
+              CALL VTCREB (CHAM2, NUMEDD, 'V', 'R', NEQ)
+              CALL VTCOPY(CHAMP,CHAM2,IRET)
+              CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
+            ELSE
+              CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
+              DO 20 IEQ=1,NEQ
+                ZR(JVALE-1+IEQ)=0.D0
+20            CONTINUE
+              CALL UTDEBM('A',NOMCMD,
+     &          'VITESSES INITIALES IMPOSEES NULLES POUR LES '//
+     &          'CALCULS DE SENSIBILITE')
+              CALL UTFINM()
+            ENDIF
             CALL R8COPY(NEQ,ZR(JVALE),1,VITINI,1)
          ELSE
             CALL UTMESS('I',NOMCMD,'VITESSES INITIALES NULLES.')

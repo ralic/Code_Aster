@@ -1,9 +1,9 @@
-      SUBROUTINE IBCAEL(TYPE,BATITR)
+      SUBROUTINE IBCAEL(TYPE)
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)     TYPE,BATITR
+      CHARACTER*(*)     TYPE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 21/06/2001   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

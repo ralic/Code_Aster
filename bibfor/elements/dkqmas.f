@@ -1,6 +1,6 @@
-      SUBROUTINE DKQMAS ( XYZL , OPTION , PGL , MAS , ENER )
+      SUBROUTINE DKQMAS ( NOMTE, XYZL , OPTION , PGL , MAS , ENER )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/11/2001   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,10 +17,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8        XYZL(3,*) , PGL(*)
-      CHARACTER*(*) OPTION
-      REAL*8        MAS(*) , ENER(*)
+      IMPLICIT NONE
+      REAL*8        XYZL(3,*) , PGL(*) , MAS(*) , ENER(*)
+      CHARACTER*16  OPTION , NOMTE
 C     ------------------------------------------------------------------
 C     MATRICE MASSE DE L'ELEMENT DE PLAQUE DKQ
 C     ------------------------------------------------------------------
@@ -31,7 +30,6 @@ C     OUT MAS    : MATRICE DE RIGIDITE
 C     OUT ENER   : TERMES POUR ENER_CIN (ECIN_ELEM_DEPL)
 C     ------------------------------------------------------------------
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -47,16 +45,14 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER      INT , II(8) , JJ(8), LL(16), P
+      INTEGER      I, J, K, I1, I2, LZR, INT, II(8), JJ(8), LL(16)
+      INTEGER      JDEPG, JCOQU
       REAL*8       ROE , RHO , EPAIS, ROF, ZERO, DOUZE
-      REAL*8       DETJ , WGT, NFX(12), NFY(12), NMI(4), NMX(8), NMY(8)
-      REAL*8       WKQ(12) , DEPL(24)
-      REAL*8       FLEX(12,12)
-      REAL*8       MEMB(8,8) , AMEMB(64)
-      REAL*8       MEFL(8,12)
-      REAL*8       MASLOC(300), MASGLO(300)
-      CHARACTER*24 DESR
-      CHARACTER*8  TYPELE
+      REAL*8       DETJ , WGT, NFX(12), NFY(12), NMI(4)
+      REAL*8       WKQ(12) , DEPL(24), MASLOC(300), MASGLO(300)
+      REAL*8       FLEX(12,12), MEMB(8,8) , MEFL(8,12), AMEMB(64)
+      REAL*8       UNQUAR, UNDEMI, UN, NEUF, EXCENT, XINERT
+      REAL*8       R8GAEM, COEFM, WGTF, WGTMF
       LOGICAL      EXCE, INER
 C
 C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
@@ -88,6 +84,8 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
+      CALL JEVETE ( '&INEL.'//NOMTE(1:8)//'.DESR' , ' ' , LZR )
+C
       ZERO   =  0.0D0
       UNQUAR =  0.25D0
       UNDEMI =  0.5D0
@@ -95,13 +93,10 @@ C
       NEUF   =  9.0D0
       DOUZE  = 12.0D0
 C
-      TYPELE = 'MEDKQU4 '
       CALL DXROEP ( RHO , EPAIS )
       ROE = RHO * EPAIS
       ROF = RHO*EPAIS*EPAIS*EPAIS/DOUZE
       EXCENT = ZERO
-      DESR = '&INEL.'//TYPELE//'.DESR'
-      CALL JEVETE ( DESR , ' ' , LZR )
 C
       CALL JEVECH ('PCACOQU', 'L', JCOQU)
       CTOR   = ZR(JCOQU+3)

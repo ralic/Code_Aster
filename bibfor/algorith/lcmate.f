@@ -1,11 +1,11 @@
         SUBROUTINE LCMATE ( LOI,   MOD,   IMAT,   NMAT,   TEMPD,  TEMPF,
-     1                      HYDRD, HYDRF, SECHD,  SECHF,  TIMED,  TIMEF,
+     1                      HYDRD, HYDRF, SECHD,  SECHF,
      2                      TYPMA, BZ,    MATERD, MATERF, MATCST, NDT,
      3                      NDI,   NR,    NVI,    VIND)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/03/2002   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,8 +35,6 @@ C           HYDRD  :  HYDRATATION A L'INSTANT PRECEDENT
 C           HYDRF  :  HYDRATATION A L'INSTANT DU CALCUL
 C           SECHD  :  SECHAGE A L'INSTANT PRECEDENT
 C           SECHF  :  SECHAGE A L'INSTANT DU CALCUL
-C           TIMED  :  INSTANT  T
-C           TIMEF  :  INSTANT  T+DT
 C           BZ     :  VARIABLE LOGIQUE :
 C                    'VRAI' POUR CALCULER AVEC LE MODELE POLY PILVIN
 C                    'FAUX' POUR CALCULER AVEC LE MODELE POLY B.Z.
@@ -54,7 +52,7 @@ C           NVI    :  NB DE VARIABLES INTERNES
 C       ----------------------------------------------------------------
         INTEGER         IMAT, NMAT, NDT , NDI  , NR , NVI, I
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
-        REAL*8          VIND(*), TIMED,  TIMEF
+        REAL*8          VIND(*)
         REAL*8          HYDRD , HYDRF , SECHD , SECHF
         CHARACTER*16    LOI
         CHARACTER*8     MOD,    TYPMA
@@ -101,7 +99,7 @@ C
      1                 MATERF, MATCST, TYPMA,  NDT,   NDI , NR , NVI )
 C
       ELSEIF ( LOI(1:8) .EQ. 'POLY_CFC' ) THEN
-         CALL CFCMAT ( MOD,    IMAT,   NMAT,   TEMPD, TEMPF, MATERD,
+         CALL CFCMAT ( IMAT,   NMAT,   TEMPD, TEMPF, MATERD,
      1                 MATERF, MATCST, NDT,    NDI ,  NR ,   NVI , BZ )
 C
       ELSEIF ( LOI(1:7)  .EQ. 'NADAI_B' ) THEN
@@ -114,7 +112,7 @@ C
      1                 MATERF, MATCST, TYPMA,  NDT,   NDI , NR , NVI )
 C
       ELSEIF ( LOI(1:6) .EQ. 'LAIGLE' ) THEN
-         CALL LGLMAT ( MOD, IMAT, NMAT, TEMPD, TEMPF, MATERD,
+         CALL LGLMAT ( MOD, IMAT, NMAT, TEMPD, MATERD,
      1                 MATERF, MATCST, NDT, NDI, NR, NVI )
       ENDIF
 C

@@ -5,7 +5,7 @@
       CHARACTER*(*)       LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,6 @@ C
       ZK8(JNCMP-1+1) = 'FLUN'
       ZK8(JNCMP-1+2) = 'FLUN_INF'
       ZK8(JNCMP-1+3) = 'FLUN_SUP'
-      CALL FOZERO('&FOZERO')
       ZK8(JVALV-1+1) = '&FOZERO'
       ZK8(JVALV-1+2) = '&FOZERO'
       ZK8(JVALV-1+3) = '&FOZERO'

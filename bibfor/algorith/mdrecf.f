@@ -13,7 +13,7 @@
       CHARACTER*16       TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/07/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 20/01/2004   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,14 +72,15 @@ C
       REAL*8        UN, T, ALPHA
       REAL*8        COEF
       CHARACTER*8   K8BID, INTERP, PROLGD, MODSTA, MODCOR
-      CHARACTER*8   MATASS, MAILLA, MONMOT(2)
+      CHARACTER*8   MATASS, MAILLA, MONMOT(2),BLANC
       CHARACTER*14  NUMDDL
       CHARACTER*16  NOMCMD, NOMP(MXPARA)
       CHARACTER*19  CHANNO, FONCT, FACCE
       CHARACTER*19  CHAMNO, CHAMN2
       CHARACTER*24  DEEQ
       LOGICAL       LFORC
-C
+C     ------------------------------------------------------------------
+      DATA BLANC    /'        '/
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       IER = 0
@@ -88,6 +89,7 @@ C ---    CALCUL TRANSITOIRE CLASSIQUE
      +    (TYPBAS(1:9).EQ.'MODE_STAT')) THEN
          CALL JEVEUO(BASEMO//'           .REFE','L',JDRIF)
          MATASS =  ZK24(JDRIF)(1:8)
+         IF (MATASS.EQ.BLANC) MATASS =  ZK24(JDRIF+2)(1:8)
          CALL DISMOI('F','NOM_MAILLA'  ,MATASS,'MATR_ASSE',
      +          IB,MAILLA,IER)
          CALL DISMOI('F','NOM_NUME_DDL',MATASS,'MATR_ASSE',

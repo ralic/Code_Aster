@@ -1,4 +1,4 @@
-#@ MODIF N_MCBLOC Noyau  DATE 03/09/2002   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF N_MCBLOC Noyau  DATE 04/02/2004   AUTEUR CAMBIER S.CAMBIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,15 +81,38 @@ class MCBLOC(N_MCCOMPO.MCCOMPO):
           
       """
       dico={}
-      for v in self.mc_liste:
-        val = v.get_valeur()
-        if type(val)==types.DictionaryType:
-          for i,w in val.items():
-            dico[i]=w
-        else :
-          dico[v.nom]=val
+      for mocle in self.mc_liste:
+        if mocle.isBLOC():
+           # Si mocle est un BLOC, on inclut ses items dans le dictionnaire
+           # représentatif de la valeur de self. Les mots-clés fils de blocs sont
+           # donc remontés au niveau supérieur.
+           dico.update(mocle.get_valeur())
+        else:
+           dico[mocle.nom]=mocle.get_valeur()
+
+      # On rajoute tous les autres mots-clés locaux possibles avec la valeur
+      # par défaut ou None
+      # Pour les mots-clés facteurs, on ne traite que ceux avec statut défaut ('d')
+      # et caché ('c')
+      # On n'ajoute aucune information sur les blocs. Ils n'ont pas de défaut seulement
+      # une condition.
+      for k,v in self.definition.entites.items():
+        if not dico.has_key(k):
+           if v.label == 'SIMP':
+              # Mot clé simple
+              dico[k]=v.defaut
+           elif v.label == 'FACT':
+                if v.statut in ('c','d') :
+                   # Mot clé facteur avec défaut ou caché provisoire
+                   dico[k]=v(val=None,nom=k,parent=self)
+                   # On demande la suppression des pointeurs arrieres
+                   # pour briser les eventuels cycles
+                   dico[k].supprime()
+                else:
+                   dico[k]=None
+
       return dico
-  
+
    def isBLOC(self):
       """
           Indique si l'objet est un BLOC

@@ -1,14 +1,14 @@
       SUBROUTINE IREDM1 ( MASSE, NOMA, BASEMO, NBMODE, NBMODS, IAMOR,
-     +                    MASS , RIGI , AMOR , AMORED, FREQ,
+     +                    MASS , RIGI , AMORED, FREQ,
      +                    SMASS, SRIGI, SAMOR, CMASS, CRIGI, CAMOR )
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*8        MASSE, NOMA, BASEMO
-      REAL*8             MASS(*), RIGI(*), AMOR(*), SMASS(*), SRIGI(*),
+      REAL*8             MASS(*), RIGI(*), SMASS(*), SRIGI(*),
      +                   SAMOR(*), CMASS(*),CRIGI(*), CAMOR(*),
      +                   AMORED(*), FREQ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

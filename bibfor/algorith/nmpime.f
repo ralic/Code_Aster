@@ -1,10 +1,10 @@
-      SUBROUTINE NMPIME(OPTION,COMPOR,ALPHA,TREF,
+      SUBROUTINE NMPIME(OPTION,ALPHA,
      &           XLONG0,A,XLONGM,DLONG0,
      >           NCSTPM,CSTPM,
      >           VIM,EFFNOM,TEMPM,TEMPP,
      &           VIP,EFFNOP,KLV,FONO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/03/99   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,13 +26,13 @@ C -----------------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
       PARAMETER   (NEQ = 6,NBT = 21,NVAR=8)
 
-      CHARACTER*(*) COMPOR,OPTION
+      CHARACTER*(*) OPTION
       REAL*8        XLONG0,A,XLONGM
       REAL*8        ALPHA
       INTEGER       NCSTPM
       REAL*8        CSTPM(NCSTPM)
       REAL*8        TMOINS,TPLUS,DLONG0
-      REAL*8        TEMPM,TEMPP,TREF,EFFNOM,VIM(NVAR)
+      REAL*8        TEMPM,TEMPP,EFFNOM,VIM(NVAR)
       REAL*8        EFFNOP,VIP(NVAR),FONO(NEQ),KLV(NBT)
 C -----------------------------------------------------------------
 C
@@ -42,11 +42,9 @@ C    POUR UN ELEMENT BARRE DE TYPE MECA_ BARRE
 C
 C -----------------------------------------------------------------
 C IN  : E      : MODULE D'YOUNG
-C       COMPOR : LOI DE COMPORTEMENT
 C       XLONG0 : LONGUEUR DE L'ELEMENT DE BARRE AU REPOS
 C       A      : SECTION DE LA BARRE
 C       ALPHA  : COEFFICIENT DE DILATATION THERMIQUE
-C       TERF   : TEMPERATURE DE REFERENCE
 C       NCSTPM : NOMBRE DE CONSTANTES DE MATERIAU
 C       CSTPM  : CONSTANTES DE MATERIAU :
 C           E      : MODULE D'YOUNG
@@ -118,7 +116,7 @@ C
 C
 C --- CALCUL DU COEFFICIENT NON NUL DE LA MATRICE TANGENTE
 C
-      IF ( OPTION(1:14) .EQ. 'RIGI_MECA_TANG'.OR.
+      IF ( OPTION(1:10) .EQ. 'RIGI_MECA_'.OR.
      &     OPTION(1:9)  .EQ. 'FULL_MECA'         ) THEN
 C
              XRIG= DSDE*A/XLONG0

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 13/01/2004   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE CALCUL DE CHARGE LIMITE EN 3D - METHODE DE NORTON-HOFF
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,8 +115,16 @@ ECHL = POST_ELEM(
 
 RESU=CALC_ELEM(reuse=RESU,       MODELE=MO,
                       CHAM_MATER=CHMAT,
-                         RESULTAT=RESU,
-                        OPTION='EPSI_ELNO_DEPL'
+                      RESULTAT=RESU,
+                      EXCIT=(
+                             _F(CHARGE = CH_CL),
+                             _F(CHARGE = INCOMP),
+                             _F(CHARGE = CH1,)
+                            ),
+                        OPTION=('EPSI_ELNO_DEPL',
+                                'SIEF_ELNO_ELGA',
+                                'ERRE_ELGA_NORE',
+                                'ERRE_ELNO_ELGA',),
                    )
 
 
@@ -144,5 +152,37 @@ TEST_RESU(RESU=(
          RESULTAT = RESU, NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 1,
          NOEUD = 'N1', MAILLE = 'MA1', NOM_CMP = 'EPXX', VALE = 0.04807692)
   ))
+#---------------------------------------------------------------
+#
+#  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
+#---------------------------------------------------------------
+
+TEST_RESU(RESU=(             
+           _F( RESULTAT = RESU,
+               NUME_ORDRE = 1,  
+               NOM_CHAM = 'ERRE_ELGA_NORE',   
+               CRITERE = 'RELATIF',    
+               PRECISION = 0.001,
+               POINT = 1,
+               MAILLE='MA1',    
+               NOM_CMP = 'NUEST',      
+               VALE = 9.8000335371758, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
+             ),
+            );
+
+TEST_RESU(RESU=(             
+           _F( RESULTAT = RESU,
+               NUME_ORDRE = 1,  
+               NOM_CHAM = 'ERRE_ELNO_ELGA',   
+               CRITERE = 'RELATIF',    
+               PRECISION = 0.001,
+               NOEUD= 'N1',
+               MAILLE='MA1',    
+               NOM_CMP = 'ERREST',      
+               VALE = 2.2433786491081, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
+             ),
+            );
 
 FIN()

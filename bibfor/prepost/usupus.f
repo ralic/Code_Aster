@@ -2,7 +2,7 @@
       IMPLICIT REAL *8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/04/99   AUTEUR CIBHHPD P.DAVID 
+C MODIF PREPOST  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C
 C
       CALL GETVR8(' ','PUIS_USURE',1,1,1,PUUSUR,N1)
       IF ( N1 .NE. 0 ) THEN
-         CALL IMPUS ( IFIRES, 0, 0, PUUSUR )
+         CALL IMPUS ( IFIRES, 0, PUUSUR )
          GOTO 9999
       ENDIF
 C

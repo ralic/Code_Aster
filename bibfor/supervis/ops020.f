@@ -3,7 +3,7 @@
       INTEGER             ICMD , ICOND , IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 02/10/2002   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF SUPERVIS  DATE 10/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
      +             LRENUM, NPREC, LPRECO, LKSTOP, INFO, NMAXIT,
      +             IERUSR, I8, I16, I80, NTIT, NBMATE, NRM,
      +             NRLI,I16V(2),NIREMP, NIVGIB, LSYME, IRTHET,
-     +             LMATR, LRINTE, NCON,LARRET, NIN, NFI, JPARA, NBPARA,
+     +             LRINTE, NCON,LARRET, NIN, NFI, JPARA, NBPARA,
      +             REAINC, LPREDI, LMATRI, REAITE, ILIMAX, NEWT,
      +             NPRED, LFORMA, VERSIO, NIMP, NCLIM, KB1, LB1(3), NAZ
       INTEGER      N3, N4, N5, NMATE, NCARA, NFOFI, NCHTHE, NTHER
@@ -71,7 +71,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*8  SYME, NOFISS
       CHARACTER*16 TYPRES, NOMCMD, METHOD, RENUM, PRECON,
      +             NOMRES, K16B1, K16B2, K16V(2),
-     +             K16B3, ARRET, MATR, RINTE, TYPCOU, RELCO,
+     +             K16B3, ARRET, RINTE, TYPCOU, RELCO,
      +             PREDI , MATRI, FORMAT, EVOL
       CHARACTER*80 MONTIT
 C     ------------------------------------------------------------------
@@ -262,8 +262,6 @@ C
        CALL GETVR8 ( 'CONVERGENCE','RESI_INTE_RELA', 1,1,1,RINREL,N1)
        CALL GETVIS ( 'CONVERGENCE','ITER_INTE_MAXI', 1,1,1,IINMAX,N1)
        CALL GETVIS ( 'CONVERGENCE','ITER_INTE_PAS',  1,1,1,IINPAS,N1)
-       CALL GETVTX ( 'CONVERGENCE','TYPE_MATR_COMP', 1,1,1,MATR,N1)
-       CALL GETLTX ( 'CONVERGENCE','TYPE_MATR_COMP', 1,1,1,LMATR,N1)
        CALL GETVTX ( 'CONVERGENCE','RESO_INTE',      1,1,1,RINTE,N1)
        CALL GETLTX ( 'CONVERGENCE','RESO_INTE',      1,1,1,LRINTE,N1)
       ENDIF
@@ -798,7 +796,6 @@ C
            CALL PUTVR8 ( 'RESI_INTE_RELA', 1,RINREL,IERUSR)
            CALL PUTVIS ( 'ITER_INTE_MAXI', 1,IINMAX,IERUSR)
            CALL PUTVIS ( 'ITER_INTE_PAS' , 1,IINPAS,IERUSR)
-           CALL PUTVTX ( 'TYPE_MATR_COMP', 1,MATR,LMATR,IERUSR)
            CALL PUTVTX ( 'RESO_INTE'     , 1,RINTE,LRINTE,IERUSR)
           CALL SMFMCF ( IERUSR )
         ENDIF

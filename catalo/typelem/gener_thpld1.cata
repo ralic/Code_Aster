@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 26/01/2004   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,10 +20,10 @@ GENER_THPLD1
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ THPLSL2          MAILLE__ SEG2
-   ELREFE__  SEG2      GAUSS__  NELGA=FPG2
+   ELREFE__  SE2        GAUSS__  RIGI=FPG4
 ENTETE__ ELEMENT__ THPLSL3          MAILLE__ SEG3
-   ELREFE__  SEG3      GAUSS__  NELGA=FPG2
-   ELREFE__  SEG2
+   ELREFE__  SE3        GAUSS__  RIGI=FPG4
+   ELREFE__  SE2        GAUSS__  RIGI=FPG2
    OPTION__   CHAR_THER_ACCE_R        -1
    OPTION__   CHAR_THER_ACCE_X        -1
    OPTION__   CHAR_THER_ACCE_Y        -1
@@ -38,13 +38,13 @@ MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCOEFHF  = COEH_F   ELEM__         (H        )
     CCOEFHR  = COEH_R   ELEM__         (H        )
-    ECOEFHR  = COEH_R   ELGA__ NELGA   (H        )
+    ECOEFHR  = COEH_R   ELGA__ RIGI   (H        )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     NACCELR  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
     NDEPLAR  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
     CFLUXNF  = FLUN_F   ELEM__         (FLUN     )
-    EFLUXNR  = FLUN_R   ELGA__ NELGA   (FLUN     )
+    EFLUXNR  = FLUN_R   ELGA__ RIGI   (FLUN     )
     CFLUXVF  = FLUX_F   ELEM__         (FLUX     FLUY     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    KHI      R        RHO      )
@@ -52,7 +52,7 @@ MODE_LOCAL__
     CRAYONR  = RAYO_R   ELEM__         (SIGMA    EPSIL    TPINF    )
     CT_EXTF  = TEMP_F   ELEM__         (TEMP     )
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    ET_EXTR  = TEMP_R   ELGA__ NELGA   (TEMP     )
+    ET_EXTR  = TEMP_R   ELGA__ RIGI   (TEMP     )
 
 VECTEUR__
     MVECTTR = VTEM_R DDL_THER

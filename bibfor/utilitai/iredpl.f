@@ -3,7 +3,7 @@
       CHARACTER*(*)       MACR, FICH
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/03/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
-      FICH='IDEAS'
+C      FICH='IDEAS'
 C
       IFC = IUNIFI(FICH)
       ZERO = 0.D0

@@ -1,9 +1,9 @@
-        SUBROUTINE LCRESI( LOI,  MOD,  IMAT, NMAT, MATERD,MATERF,MATCST,
-     1                   TEMPD, TEMPF,TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R )
+        SUBROUTINE LCRESI( LOI,  MOD,  IMAT, NMAT, MATERD,MATERF,
+     1                   TEMPF,TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R )
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2001   AUTEUR ADBHHVV V.CANO 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,8 +28,6 @@ C           IMAT   :  NOM DU MATERIAU
 C           NMAT   :  DIMENSION MATER
 C           MATERD :  COEFFICIENTS MATERIAU A T
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           MATCST :  'OUI' SI MATERIAU CONSTANT SUR DT
-C           TEMPD  :  TEMPERATURE A T
 C           TEMPF  :  TEMPERATURE A T+DT
 C           TIMED  :  INSTANT  T
 C           TIMEF  :  INSTANT  T+DT
@@ -45,10 +43,9 @@ C
         REAL*8          DEPS(6)  , EPSD(6)
         REAL*8          R(*) , YD(*) ,  YF(*), DY(*)
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
-        REAL*8          TEMPD, TEMPF,   TIMED, TIMEF
+        REAL*8          TEMPF,   TIMED, TIMEF
         CHARACTER*8     MOD
         CHARACTER*16    LOI
-        CHARACTER*3     MATCST
 C       ----------------------------------------------------------------
 C
 C         IF    ( LOI(1:8) . EQ. 'ROUSS_PR' ) THEN
@@ -56,24 +53,24 @@ C         CALL RSLRES ( MOD,   IMAT, NMAT, MATERD, MATERF, MATCST,
 C     1                 TEMPF, YD,   YF,   DEPS,   DY,     R )
 C
       IF     ( LOI(1:8) .EQ. 'CHABOCHE' ) THEN
-         CALL CHBRES ( MOD,   IMAT, NMAT, MATERD, MATERF, MATCST,
-     1                 TEMPF, YD,   YF,   DEPS,   DY,     R )
+         CALL CHBRES ( MOD, NMAT, MATERD, MATERF,
+     1                 YD,   YF,   DEPS,   DY,     R )
 C
       ELSEIF ( LOI(1:4) .EQ. 'OHNO' ) THEN
-         CALL ONORES ( MOD,   IMAT, NMAT, MATERD, MATERF, MATCST,
-     1                 TEMPF, YD,   YF,   DEPS,   DY,     R )
+         CALL ONORES ( MOD,  NMAT, MATERD, MATERF,
+     1                 YD,   YF,   DEPS,   DY,     R )
 C
       ELSEIF ( LOI(1:5) .EQ. 'LMARC' ) THEN
-         CALL LMARES ( MOD,   IMAT, NMAT, MATERD, MATERF, MATCST, TEMPF,
+         CALL LMARES ( MOD, NMAT, MATERD, MATERF,
      1                 TIMED, TIMEF, YD,  YF,     DEPS,   DY,     R )
 C
       ELSEIF ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN
-         CALL CVMRES ( MOD,   IMAT, NMAT, MATERD, MATERF, MATCST, TEMPF,
+         CALL CVMRES ( MOD,   NMAT, MATERD, MATERF,
      1                 TIMED, TIMEF, YD,  YF,  EPSD,  DEPS,  DY,  R )
 C
       ELSEIF ( LOI(1:7)  .EQ. 'NADAI_B' ) THEN
-         CALL INSRES ( MOD,   IMAT, NMAT, MATERD, MATERF, MATCST,
-     1                 TEMPF, YD,   YF,   DEPS,   DY,     R )
+         CALL INSRES ( MOD, NMAT, MATERD, MATERF,
+     1                 YD,   YF,   DEPS,   DY,     R )
       ENDIF
 C
       END

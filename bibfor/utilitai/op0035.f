@@ -1,7 +1,7 @@
       SUBROUTINE OP0035 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/12/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF UTILITAI  DATE 03/02/2004   AUTEUR ASSIRE A.ASSIRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,8 +44,8 @@ C DECLARATION VARIABLES LOCALES
       CHARACTER*8  RESULT,TYPVAL,K8BID
       CHARACTER*16 TYPE, NOMCMD,K16BID
       COMPLEX*16   CBID
-      INTEGER      NBVAL,JKVAL,JTVAL,IBID,K
-      REAL*8       RVAL
+      INTEGER      NBVAL,JKVAL,JTVAL,IBID,K,ULNUME,UL
+      REAL*8       RVAL,RBID
 C
       CALL JEMARQ()
       CALL INFMAJ
@@ -59,10 +59,15 @@ C=======================================================================
       NBVAL=-NBVAL
       CALL WKVECT('&&LISTE_INFO','V V K16',NBVAL,JKVAL)
       CALL WKVECT('&&TYPE_INFO','V V K8',NBVAL,JTVAL)
-      DO 20 K=1,NBVAL
-        ZK8(JTVAL+K-1) = 'R'
- 20   CONTINUE
+
       CALL GETVTX(' ','LISTE_INFO',0,1,NBVAL,ZK16(JKVAL),IBID)
+      DO 20 K=1,NBVAL
+        IF ( ZK16(JKVAL+K-1) .EQ. 'CPU_RESTANT' ) THEN
+          ZK8(JTVAL+K-1) = 'R'
+        ELSEIF ( ZK16(JKVAL+K-1) .EQ. 'UNITE_LIBRE' ) THEN
+          ZK8(JTVAL+K-1) = 'I'
+        ENDIF
+ 20   CONTINUE
 
       CALL TBCRSD ( RESULT, 'G' )
       CALL TBAJPA ( RESULT, NBVAL, ZK16(JKVAL), ZK8(JTVAL) )
@@ -71,6 +76,11 @@ C=======================================================================
         IF ( ZK16(JKVAL+K-1) .EQ. 'CPU_RESTANT' ) THEN
           CALL UTTCPU (0,'    ',1,RVAL)
           CALL TBAJLI(RESULT,NBVAL,ZK16(JKVAL+K-1),IBID,RVAL,
+     &                CBID,K8BID,0)
+        ENDIF 
+        IF ( ZK16(JKVAL+K-1) .EQ. 'UNITE_LIBRE' ) THEN
+          UL = ULNUME ()
+          CALL TBAJLI(RESULT,NBVAL,ZK16(JKVAL+K-1),UL,RBID,
      &                CBID,K8BID,0)
         ENDIF 
  100  CONTINUE      

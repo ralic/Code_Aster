@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 02/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE CYLINDRE ENCASTRE SOUS POIDS PROPRE ET PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,50 +81,51 @@ CHAR_PR=AFFE_CHAR_MECA_F(   MODELE=MODELE,
                                          PRES = F_Y)
                           )
 
-DEF0_GR=MACRO_ELAS_MULT(        MODELE=MODELE,
+DEF0=MACRO_ELAS_MULT(        MODELE=MODELE,
                              CHAM_MATER=CHMAT,
-                             CHAR_MECA_GLOBAL=CLIM,
-                             CAS_CHARGE=_F( 
+                             CHAR_MECA_GLOBAL=CLIM,CAS_CHARGE=(
+                             _F( 
                                           MODE_FOURIER = 1,
                                             
                                           TYPE_MODE = 'SYME',
-                                          CHAR_MECA = CHAR_GR)
-                     )
-
-DEF0_PR=MACRO_ELAS_MULT(        MODELE=MODELE,
-                             CHAM_MATER=CHMAT,
-                             CHAR_MECA_GLOBAL=CLIM,
-                             CAS_CHARGE=_F( 
+                                          CHAR_MECA = CHAR_GR),
+                             _F( 
                                           MODE_FOURIER = 1,
                                             
                                           TYPE_MODE = 'SYME',
-                                          CHAR_MECA = CHAR_PR)
+                                          CHAR_MECA = CHAR_PR))
                      )
 
 U0_GR=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=DEF0_GR,
+NOM_CHAM='DEPL', RESULTAT=DEF0,
                     NUME_ORDRE=1
                   )
 
 U0_PR=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=DEF0_PR,
-                    NUME_ORDRE=1
+NOM_CHAM='DEPL', RESULTAT=DEF0,
+                    NUME_ORDRE=2
                   )
 
 #
 # CALCUL DES CONTRAINTES
-SIG0_GR=CALC_CHAM_ELEM(    MODELE=MODELE,
-                             CHAM_MATER=CHMAT,
-                             OPTION='SIGM_ELNO_DEPL',
-                             DEPL=U0_GR,
-                             MODE_FOURIER=1 )
 
-SIG0_PR=CALC_CHAM_ELEM(    MODELE=MODELE,
-                             CHAM_MATER=CHMAT,
-                             OPTION='SIGM_ELNO_DEPL',
-                             DEPL=U0_PR,
-                             MODE_FOURIER=1 )
+DEF0=CALC_ELEM( reuse= DEF0, RESULTAT= DEF0,
+                MODELE=MODELE,
+                CHAM_MATER=CHMAT,
+                OPTION=('SIGM_ELNO_DEPL',),
+                )
 
+SIG0_GR=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+                      RESULTAT=DEF0,
+                      NUME_ORDRE=1,
+                      NOM_CHAM='SIGM_ELNO_DEPL'
+                  )
+
+SIG0_PR=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+                      RESULTAT=DEF0,
+                      NUME_ORDRE=2,
+                      NOM_CHAM='SIGM_ELNO_DEPL'
+                  )
 # RECOMBINAISONS DE FOURIER EN DEPLACEMENTS ET CONTRAINTES
 # POUR TETA = 0. (GRAVITE) ET TETA = 0. (PRESSION)
 U_GR=COMB_CHAM_NO( 

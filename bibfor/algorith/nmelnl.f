@@ -3,7 +3,7 @@
      &                   DLAGTG, DEPS, DENERG, DSIG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 02/12/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -389,7 +389,7 @@ C====================================================================
       ENDIF
 
 C - CALCUL DE LA MATRICE DE RIGIDITE TANGENTE
-      IF ( OPTION(1:14) .EQ. 'RIGI_MECA_TANG' .OR.
+      IF ( OPTION(1:10) .EQ. 'RIGI_MECA_' .OR.
      &     OPTION(1:9)  .EQ. 'FULL_MECA' ) THEN
 
         DO 60, K=1,NDIMSI
@@ -409,7 +409,7 @@ C      TERME LINEAIRE
  100    CONTINUE
 
 C      TERME NON LINEAIRE
-        IF (NONLIN) THEN
+        IF ((NONLIN).AND.(OPTION(11:14).NE.'ELAS')) THEN
           COEF = DEUXMU*RPRIM/(1.5D0*DEUXMU+RPRIM) - G
           COEF = COEF * 3.D0 / (2.D0*EPSEQ*EPSEQ)
           DO 110 K = 1,NDIMSI

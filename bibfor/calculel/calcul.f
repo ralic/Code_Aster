@@ -3,7 +3,7 @@
 
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -231,7 +231,7 @@ C     -- VERIF PAS DE DOUBLONS DANS LPAOU2 :
 
 C     3- DEBCAL FAIT DES INITIALISATIONS ET MET LES OBJETS EN MEMOIRE :
 C     -----------------------------------------------------------------
-      CALL DEBCAL(OPTION,LIGREL,NIN2,LCHIN2,LPAIN2,NOU2,LCHOU2,LPAOU2)
+      CALL DEBCAL(OPTION,LIGREL,NIN2,LCHIN2,LPAIN2,NOU2,LCHOU2)
 
 
 C     4- ALLOCATION DES RESULTATS ET DES CHAMPS LOCAUX:
@@ -282,7 +282,7 @@ C           ------------------------------------------------------
               GO TO 70
             END IF
 
-            CALL EXTRAI(NIN2,LCHIN2,LPAIN2,NOMPAR,LIGREL,OPT,NUTE)
+            CALL EXTRAI(NIN2,LCHIN2,LPAIN2,NOMPAR,LIGREL)
    70     CONTINUE
 
 

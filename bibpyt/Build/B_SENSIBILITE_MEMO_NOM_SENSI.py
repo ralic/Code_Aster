@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_MEMO_NOM_SENSI Build  DATE 03/09/2002   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF B_SENSIBILITE_MEMO_NOM_SENSI Build  DATE 16/03/2004   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,6 +54,7 @@ class SENSIBILITE_MEMO_NOM_SENSI :
                         1, le paramètre sensible est déjà dans la liste
        """
        if param_sensi in self.l_param_sensi :
+         print "Le paramètre sensible ", param_sensi, " est déjà dans la liste."
          codret = 1
        else :
          codret = 0
@@ -76,38 +77,48 @@ class SENSIBILITE_MEMO_NOM_SENSI :
 # 
    def add_nom_compose(self,nom_simple,param_sensi,nom_compose) :
        """
-       Ajoute un nom composé.
+       Ajoute un nom composé dans la structure de mémorisation.
+       'nom_compose' est le nom associé à la dérivation de 'nom_simple' par rapport
+       à 'param_sensi'.
        Code de retour : 0, tout va bien
                         1, le paramètre sensible est inconnu dans la liste
                         2, un nom composé existe déjà
        """
-#       print ">>>> dans add_nom_compose, nom_simple  = ", nom_simple
-#       print ">>>> dans add_nom_compose, param_sensi = ", param_sensi
-#       print ">>>> dans add_nom_compose, l_param_sensi = ", self.l_param_sensi
+###       print ">>>> dans add_nom_compose, nom_simple  = ", nom_simple
+###       print ">>>> dans add_nom_compose, param_sensi = ", param_sensi
+###       print ">>>> dans add_nom_compose, l_param_sensi = ", self.l_param_sensi
        if self.d_noms_composes.has_key((nom_simple,param_sensi)) :
+         print "Un nom composé existe déjà pour ",nom_simple," et ",param_sensi,"."
          codret = 2
        elif param_sensi in self.l_param_sensi :
          codret = 0
          self.d_noms_composes[(nom_simple,param_sensi)] = nom_compose
        else :
+         print "Le paramètre sensible ", param_sensi, " est inconnu dans la liste."
          codret = 1
        return codret
 #
-   def get_nom_compose(self,nom_simple,param_sensi) :
+   def get_nom_compose(self,nom_simple,param_sensi,message=None) :
        """
        Pour un un nom simple et un paramètre sensible donnés :
         1. Code de retour : 0, tout va bien
-                        1, le paramètre sensible est inconnu dans la liste
-                       2, aucun nom composé n'a été défini
+                            1, le paramètre sensible est inconnu dans la liste
+                            2, aucun nom composé n'a été défini
         2. Le nom composé associé
        """
+###       print ">>>> dans get_nom_compose, nom_simple  = ", nom_simple
+###       print ">>>> dans get_nom_compose, param_sensi = ", param_sensi
        nom_compose= None
        if self.d_noms_composes.has_key((nom_simple,param_sensi)) :
          codret = 0
          nom_compose = self.d_noms_composes[(nom_simple,param_sensi)]
        elif param_sensi not in self.l_param_sensi :
+         if ( message ) :
+           print "Le paramètre sensible ", param_sensi, " est inconnu dans la liste."
          codret = 1
        else :
+         if ( message ) :
+           print "Aucun nom composé n'a été défini pour ",nom_simple," et ",param_sensi,"."
          codret = 2
        return codret, nom_compose
 #
@@ -127,6 +138,7 @@ class SENSIBILITE_MEMO_NOM_SENSI :
              d_nom_s_c[le_nom_simple] = valeur
        else :
          d_nom_s_c = None
+         print "Le paramètre sensible ", param_sensi, " est inconnu dans la liste."
          codret = 1
        return codret, d_nom_s_c
 #
@@ -148,6 +160,7 @@ class SENSIBILITE_MEMO_NOM_SENSI :
              l_noms_simples.append(le_nom_simple)
        else :
          l_noms_simples = None
+         print "Le paramètre sensible ", param_sensi, " est inconnu dans la liste."
          codret = 1
        return codret, l_noms_simples
 #
@@ -171,6 +184,7 @@ class SENSIBILITE_MEMO_NOM_SENSI :
            self.d_param_commande[param_sensi] = liste
          codret = 0
        else :
+         print "Le paramètre sensible ", param_sensi, " est inconnu dans la liste."
          codret = 1
 #       print self.d_param_commande
        return codret
@@ -189,6 +203,7 @@ class SENSIBILITE_MEMO_NOM_SENSI :
            l_commandes = []
          codret = 0
        else :
+         print "Le paramètre sensible ", param_sensi, " est inconnu dans la liste."
          l_commandes = None
          codret = 1
        return codret, l_commandes
@@ -217,9 +232,10 @@ if __name__ == "__main__" :
   print "Dictionnaire des noms composés : ",memo_nom_sensi.get_d_noms_composes()
   print memo_nom_sensi.get_nom_compose('CH1','PS2')
   print memo_nom_sensi.get_nom_compose('CH1','PS3')
+  print memo_nom_sensi.get_nom_compose('CH2','PS2','0')
   print memo_nom_sensi.get_nom_compose('CH2','PS2')
   l_param = ['PS1','PS2','PS3']
   for param in l_param :
-    print "Noms simples associés à ",param," :" , memo_nom_sensi.get_l_noms_simples(param)
-    print "Noms s/c associés à ",param,"     :" , memo_nom_sensi.get_d_nom_s_c(param)
+    print ". Noms simples associés à ",param," :" , memo_nom_sensi.get_l_noms_simples(param)
+    print ". Noms s/c associés à ",param,"     :" , memo_nom_sensi.get_d_nom_s_c(param)
 

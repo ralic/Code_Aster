@@ -1,7 +1,7 @@
       SUBROUTINE OP0001 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/02/2003   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,7 +126,7 @@ C
       IF ( FMT(1:5) .EQ. 'ASTER' ) THEN
           CALL LRMAST ( NOMU,NOMMAI,NOMNOE,COOVAL,COODSC,COOREF,
      >                  GRPNOE,GRPMAI,CONNEX,TITRE,TYPMAI,ADAPMA,
-     >                  IFM,IFL,NIV,NBNOEU,NBMAIL,NBCOOR )
+     >                  IFM,IFL,NBNOEU,NBMAIL,NBCOOR )
 C
 C --- LECTURE DU MAILLAGE AU FORMAT MED
 C
@@ -150,8 +150,7 @@ C
           CALL GETVTX('ABSC_CURV','TOUT',1,1,1,TOTM,N1)
           IF(N1.NE.0) THEN
             ITOUT = 1
-            CALL ABSCUR(GRPMAI,CONNEX,TYPMAI,COOVAL,NOMU,
-     >                       NOMG,ITOUT)
+            CALL ABSCUR(CONNEX,TYPMAI,COOVAL,NOMU,ITOUT)
 C
           ENDIF
         ELSE

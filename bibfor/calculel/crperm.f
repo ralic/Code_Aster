@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/05/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -204,8 +204,7 @@ C
             IF ( CHAM(IC) .EQ. 'DEPL' ) THEN
                CALL CNTRAN ( ZI(JLINO), NBNO2, CHS1, CHS2 )
             ELSE
-               CALL CETRAN ( ZI(JLIM1), ZI(JLIM2), NBMA, MA1, MA2,
-     +                                                  CHS1, CHS2 )
+               CALL CETRAN ( ZI(JLIM1), ZI(JLIM2), NBMA, CHS1, CHS2 )
             ENDIF         
 C
  20      CONTINUE

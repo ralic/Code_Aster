@@ -1,8 +1,8 @@
       SUBROUTINE PROJLI(COORDA,COORDB,COORDP,NORM,COORDM,LAMBDA,OLDJEU,
-     &                  JEU,TANG,JEUFX,PRONOR,TANGDF,NDIM)
+     &                  JEU,TANG,JEUFX,PRONOR,TANGDF,NDIM,VERIP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/08/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 28/10/2003   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C ======================================================================
       INTEGER PRONOR,TANGDF,NDIM
       REAL*8 COORDA(3),COORDB(3),COORDP(3),NORM(3),VECSEG(3)
       REAL*8 COORDM(3),LAMBDA,OLDJEU,JEU
-      REAL*8 TANG(6),JEUFX
+      REAL*8 TANG(6),JEUFX,VERIP
 
 C ----------------------------------------------------------------------
 C ROUTINE APPELEE PAR : PROJSE
@@ -38,6 +38,9 @@ C IN  COORDA : COORDONNEES DU SOMMET A DU TRIANGLE
 C IN  COORDB : COORDONNEES DU SOMMET B DU TRIANGLE
 C IN  COORDP : COORDONNEES DU NOEUD ESCLAVE P
 C IN  NDIM   : DIMENSION DU PB
+C IN  VERIP  : VALEUR DU LAMBDA_MAX POUR PROJECTION HORS ZONE
+C               <0 PROJECTION HORS ZONE INTERDITE
+C               >0 PROJECTION HORS ZONE AUTORISEE ET LIMITEE
 C OUT NORM   : NORMALE ENTRANTE A LA MAILLE MAITRE
 C OUT COORDM : COORDONNEES DE LA "PROJECTION" M
 C OUT LAMBDA : COORDONNEE PARAMETRIQUE DE LA "PROJECTION" M
@@ -45,12 +48,33 @@ C OUT OLDJEU : JEU AVANT CORRECTION DES PROJECTIONS TOMBANT HORS DE
 C              LA MAILLE MAITRE
 C OUT JEU    : JEU DANS LA DIRECTION (NORM) DE LA NORMALE ENTRANTE
 C              A LA MAILLE MAITRE (PM.NORM)
-C
+C IN  TANG   : VECTEUR TANGENT 
+C OUT JEUFX  : JEU PROJETE SUR LE VECTEUR TANGENT
+C IN  PRONOR : INDICATEUR DES NORMALES D'APPARIEMENT ET DU LISSAGE
+C               0 MAIT ET PAS DE LISSAGE
+C               1 MAIT_ESCL ET PAS DE LISSAGE
+C               2 MAIT ET LISSAGE
+C               3 MAIT_ESCL ET LISSAGE
+C IN  TANGDF : INDICATEUR DE PRESENCE D'UN VECT_Y DEFINI L'UTILISATEUR
+C               0 PAS DE VECT_Y
+C               1 UN VECT_Y EST DEFINI
 C ----------------------------------------------------------------------
 
       INTEGER K
       REAL*8 NUMER,DENOM,R8DOT,COEFA,COEFC,COEFD
       REAL*8 AB(3),AM(3),ABSAM,COEFB,COEFF,XNORM(3)
+      REAL*8 OUTSID 
+
+
+C ----------------------------------------------------------------------
+C --- CONTROLE DE LA PROJECTION HORS ZONE
+C --- C'EST-A-DIRE QUE LE NOEUD ESCLAVE SE PROJETE HORS DE LA MAILLE
+C --- MAITRE (OUTSID = .TRUE.
+C --- ON L'AUTORISE DANS UNE CERTAINE MESURE (VERIPI>0) OU ON
+C --- L'INTERDIT (VERIP<0)
+C ----------------------------------------------------------------------
+      OUTSID = -1.D0     
+C ----------------------------------------------------------------------
 
 C ----------------------------------------------------------------------
 
@@ -76,8 +100,15 @@ C     ===============
         END IF
 
         LAMBDA = NUMER/DENOM
-        IF (LAMBDA.LT.0.D0) LAMBDA = 0.D0
-        IF (LAMBDA.GT.1.D0) LAMBDA = 1.D0
+C --- PROJECTION HORS ZONE        
+        IF (LAMBDA.LT.0.D0) THEN
+            OUTSID = ABS(LAMBDA)
+            LAMBDA = 0.D0
+        ENDIF
+        IF (LAMBDA.GT.1.D0) THEN
+            OUTSID = LAMBDA-1.D0
+            LAMBDA = 1.D0
+        ENDIF
 
 C --- CALCUL DES COORDONNEES CARTESIENNES DE M ("PROJECTION" DE P)
 
@@ -180,13 +211,16 @@ C     =======================
         ELSE
           LAMBDA = -SQRT(NUMER)/SQRT(DENOM)
         END IF
+C --- PROJECTION HORS ZONE        
         IF (LAMBDA.LT.0.D0) THEN
+          OUTSID = ABS(LAMBDA)
           LAMBDA = 0.D0
           COORDM(1) = COORDA(1)
           COORDM(2) = COORDA(2)
           COORDM(3) = COORDA(3)
         ELSE
           IF (LAMBDA.GT.1.D0) THEN
+            OUTSID = LAMBDA-1.D0
             LAMBDA = 1.D0
             COORDM(1) = COORDB(1)
             COORDM(2) = COORDB(2)
@@ -204,12 +238,30 @@ C ----------------------------------------------------------------------
      &      (COORDM(2)-COORDP(2))*NORM(2)
       IF (NDIM.EQ.3) JEU = JEU + (COORDM(3)-COORDP(3))*NORM(3)
       CALL CATANG(3,NORM,TANG,TANGDF)
+C --- PROJECTION HORS ZONE DETECTEE
+      IF (OUTSID.GT.0.D0) THEN
+C         PROJECTION HORS ZONE AUTORISEE    
+
+           
+         IF ((JEU.LT.0.D0) .AND. (VERIP.GT.0.D0)) THEN
+C             RABATTEMENT NON AUTORISE                 
+            IF (OUTSID.GT.VERIP) THEN
+              JEU = ABS(JEU)*1.D14
+            ENDIF
+         ELSE IF ((JEU.LT.0.D0) .AND. (VERIP.LT.0.D0)) THEN
+C             PROJECTION HORS ZONE INTERDITE
+C
+              CALL UTMESS('A','PROJLI_03','LE NOEUD ESCLAVE SE '//
+     &                'PROJETE EN DEHORS DE LA MAILLE MAITRE.'//
+     &                'VERIFIEZ VOS SURFACES OU AUGMENTEZ TOLE_PROJ' )
+C                 
+         ENDIF        
+      ENDIF
+ 
       JEUFX = (COORDM(1)-COORDP(1))*TANG(1) +
      &        (COORDM(2)-COORDP(2))*TANG(2)
       IF (NDIM.EQ.3) THEN
         JEUFX = JEUFX + (COORDM(3)-COORDP(3))*TANG(3)
-      END IF
-
-C ----------------------------------------------------------------------
-
+      END IF      
+      
       END

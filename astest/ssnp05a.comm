@@ -1,4 +1,4 @@
-# MODIF  DATE 03/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 05/04/2004   AUTEUR F6BHHBO P.DEBONNIERES 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (VISCOELASTICITE CYRANO3)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -163,6 +163,7 @@ U=STAT_NON_LINE(
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
+                       PARM_THETA = 0.5,
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-6,
                 ITER_GLOB_MAXI = 25,
@@ -228,6 +229,7 @@ U2=STAT_NON_LINE(
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
+                       PARM_THETA = 0.5,
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-6,
                 ITER_GLOB_MAXI = 25,

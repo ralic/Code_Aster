@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+# MODIF  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,8 +121,8 @@ CTAC=AFFE_CHAR_MECA(MODELE=MODE,
                                FROTTEMENT='COULOMB',
                                COULOMB=0.3,
                                COEF_MATR_FROT=0.9,
-                               GROUP_MA_1='LMAI',
-                               GROUP_MA_2='LESC',
+                               GROUP_MA_MAIT='LMAI',
+                               GROUP_MA_ESCL='LESC',
                                ),);
 
 #---------------------------------------------------------------------

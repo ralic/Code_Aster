@@ -1,4 +1,4 @@
-#@ MODIF macro_proj_base_ops Macro  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_proj_base_ops Macro  DATE 19/01/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +38,7 @@ def macro_proj_base_ops(self,BASE,NB_VECT,MATR_ASSE_GENE,VECT_ASSE_GENE,PROFIL,*
       elif m['MATR_ASSE_GENE']:  motscles['MATR_ASSE_GENE']=m['MATR_ASSE_GENE']
       else:
           ier=ier+1
-          self.cr.fatal("MATR_ASSE et MATR_ASSE_GENE absents")
+          self.cr.fatal("<F> <MACRO_PROJ_BASE> MATR_ASSE et MATR_ASSE_GENE absents")
           return ier
       self.DeclareOut('mm',m['MATRICE'])
       mm=PROJ_MATR_BASE(BASE=BASE,NUME_DDL_GENE=_num,**motscles)
@@ -51,7 +51,7 @@ def macro_proj_base_ops(self,BASE,NB_VECT,MATR_ASSE_GENE,VECT_ASSE_GENE,PROFIL,*
       elif v['VECT_ASSE_GENE']:  motscles['VECT_ASSE_GENE']=v['VECT_ASSE_GENE']
       else:
           ier=ier+1
-          self.cr.fatal("MATR_ASSE et MATR_ASSE_GENE absents")
+          self.cr.fatal("<F> <MACRO_PROJ_BASE>MATR_ASSE et MATR_ASSE_GENE absents")
           return ier
       motscles['TYPE_VECT']=v['TYPE_VECT']
       self.DeclareOut('vv',v['VECTEUR'])

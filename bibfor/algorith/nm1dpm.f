@@ -6,7 +6,7 @@
      >           VIP,SIGP,DSDE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/03/99   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF ALGORITH  DATE 02/12/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -341,7 +341,7 @@ C
         VIP(7)=PLASTI
         VIP(8)=FLBG
 C
-        IF (OPTION(1:9) .EQ. 'FULL_MECA' ) THEN
+        IF (OPTION .EQ. 'FULL_MECA' ) THEN
 C
 C --- CALCUL DE LA PENTE
 C
@@ -368,6 +368,11 @@ C
               ENDIF
             ENDIF
           ENDIF
+        
+        ELSE IF (OPTION.EQ.'FULL_MECA_ELAS') THEN
+          
+          DSDE=E
+                    
         ENDIF
 C
       ELSEIF (OPTION(1:14) .EQ. 'RIGI_MECA_TANG') THEN
@@ -385,6 +390,11 @@ C
         ELSE
           DSDE=E
         ENDIF
+        
+      ELSEIF (OPTION(1:14).EQ.'RIGI_MECA_ELAS') THEN
+
+        DSDE=E  
+        
       ENDIF
 C
 C ----------------------------------------------------------------

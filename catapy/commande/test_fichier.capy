@@ -1,0 +1,42 @@
+#& MODIF COMMANDE  DATE 30/03/2004   AUTEUR MCOURTOI M.COURTOIS 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+# RESPONSABLE MCOURTOI M.COURTOIS
+
+from Macro.test_fichier_ops import test_fichier_ops
+
+TEST_FICHIER=MACRO(nom="TEST_FICHIER", op=test_fichier_ops,
+                   docu="U4.92.04-a",
+                   UIinfo={"groupes":("Impression",)},
+                   
+   FICHIER         =SIMP(statut='f',typ='TXM',defaut="RESULTAT"),
+   NOM_SYSTEME     =SIMP(statut='o',typ='TXM',validators=LongStr(1,255)),
+   NB_CHIFFRE      =SIMP(statut='f',typ='I',defaut=6),
+   EPSILON         =SIMP(statut='f',typ='R',defaut=1.E-14),
+
+   VALE_K          =SIMP(statut='o',typ='TXM' ),
+   REFERENCE       =SIMP(statut='f',typ='TXM',
+                         into=("ANALYTIQUE","SOURCE_EXTERNE","NON_REGRESSION","AUTRE_ASTER") ),
+
+   b_version       =BLOC(condition = "REFERENCE == 'NON_REGRESSION'",
+      VERSION         =SIMP(statut='f',typ='TXM' ),
+   ),
+
+   INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
+)

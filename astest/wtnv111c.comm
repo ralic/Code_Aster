@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 19/04/2004   AUTEUR ROMEO R.FERNANDES 
 # TITRE TEST THM_D_PLAN_DPTR6, MASSIF POREUX SATURE CHAUFFE PAR UN FLUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,13 +67,6 @@ DPERGSA=DEFI_CONSTANTE(    VALE=0.)
 
 DPERGPG=DEFI_CONSTANTE(    VALE=0.)
 
-#
-# COEFFICIENT DE FICK
-# UNITE METRES CARRES PAR SECONDES
-#
-FICK    = DEFI_CONSTANTE ( VALE = 1.E-7)
-DFICKTE = DEFI_CONSTANTE ( VALE = 0.   )
-DFICKPG = DEFI_CONSTANTE ( VALE = 0.   )
 
 DCONDLI = DEFI_CONSTANTE ( VALE = 0.   )
 CONDGAZ = DEFI_CONSTANTE ( VALE = 0.02 )
@@ -95,17 +88,13 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    ALPHA = 8.E-6,
    CP = 2.85E6,
    VISC = UN,
-   D_VISC_TEMP = ZERO,
-   LAMBDA = CONDLIQ,
-   D_LAMBDA_TEMP = ZERO),
+   D_VISC_TEMP = ZERO,),
 #
                               THM_GAZ=_F( 
    MASS_MOL = 28.96E-3,
    CP = 1000.,
    VISC = UN,
-   D_VISC_TEMP = ZERO,
-   LAMBDA = UN,
-   D_LAMBDA_TEMP = ZERO),                     
+   D_VISC_TEMP = ZERO,),                     
 #
                               THM_DIFFU=_F( 
    R_GAZ = 8.315,
@@ -123,11 +112,7 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    PERM_GAZ = PERMGAZ,
    D_PERM_SATU_GAZ = DPERGSA,
    D_PERM_PRES_GAZ = DPERGPG,
-   FICK = FICK,
-   D_FICK_TEMP = DFICKTE,
-   D_FICK_GAZ_PRES = DFICKPG,
-   LAMBDA = CONDHOMO,
-   D_LAMBDA_TEMP = DCONDHO),
+   LAMB_T = CONDHOMO,),
                               THM_INIT=_F( 
    TEMP = 273.,
    PRE1 = 0.,
@@ -164,7 +149,7 @@ MESTAT=STAT_NON_LINE(   MODELE=MODELE,
                           CHAM_MATER=CHMAT0,
                           EXCIT=_F( CHARGE = CHAR0),
                           COMP_INCR=_F( RELATION = 'KIT_THM',
-                      RELATION_KIT = ('ELAS', 'LIQU_SATU', 'THER_HOMO', 'HYDR_UTIL',)),
+                      RELATION_KIT = ('ELAS', 'LIQU_SATU', 'HYDR_UTIL',)),
 
                          INCREMENT=_F( LIST_INST = LI),
                           NEWTON=_F( MATRICE = 'TANGENTE',
@@ -191,8 +176,7 @@ TEST_RESU(
              NOM_CHAM = 'DEPL', 
              NOM_CMP = 'TEMP',
              NOEUD = 'N3',   
-             VALE = 2.94118E-01,   
-             CRITERE = 'ABSOLU',
+             VALE = 2.94118E-01, 
              PRECISION = 1.E-4)
            )
 
@@ -201,8 +185,7 @@ TEST_RESU(
              NOM_CHAM = 'DEPL', 
              NOM_CMP = 'TEMP',
              NOEUD = 'N6',   
-             VALE = 1.47059E-01,   
-             CRITERE = 'ABSOLU',
+             VALE = 1.47059E-01, 
              PRECISION = 1.E-4)
            )
 
@@ -211,10 +194,20 @@ TEST_RESU(
              NOM_CHAM = 'DEPL', 
              NOM_CMP = 'TEMP',
              NOEUD = 'N9',   
-             VALE = 1.47059E-01,   
-             CRITERE = 'ABSOLU',
+             VALE = 1.47059E-01,  
              PRECISION = 1.E-4)
            )
+         
+TEST_RESU( 
+           RESU=_F(  RESULTAT = MESTAT,         NUME_ORDRE = 1,
+             NOM_CHAM='SIEF_ELGA',
+             NOM_CMP='SIXX',
+             VALE=-2.3606751129179E+02,
+             PRECISION=1.E-5,
+             MAILLE='M1',
+             POINT=6,
+             REFERENCE='NON_REGRESSION',
+             VERSION = '7.2.26', ),);
+
 
 FIN()
-#

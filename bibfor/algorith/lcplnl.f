@@ -5,7 +5,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -140,8 +140,8 @@ C
 C
 C --    CALCUL DE LA SOLUTION D ESSAI INITIALE DU SYSTEME NL EN DY
 C
-        CALL LCINIT ( LOI,   TYPESS, ESSAI, MOD,  IMAT, NMAT, MATERD,
-     &                MATERF,MATCST, TEMPD,  TEMPF,TIMED,TIMEF,YD,
+        CALL LCINIT ( LOI,   TYPESS, ESSAI, MOD, NMAT,
+     &                MATERF,TIMED,TIMEF,YD,
      &                EPSD,  DEPS,   DY )
 C               CALL LCIMVN ( 'DY0 =' , NR , DY )
 C
@@ -156,14 +156,14 @@ C
 C
 C --    CALCUL DES TERMES DU SYSTEME A T+DT = -R(DY)
 C
-        CALL LCRESI ( LOI,   MOD,   IMAT, NMAT, MATERD,MATERF,MATCST,
-     &                TEMPD, TEMPF,TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R )
+        CALL LCRESI ( LOI,   MOD,   IMAT, NMAT, MATERD,MATERF,
+     &                TEMPF,TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R )
 C               CALL LCIMVN ( 'R =' , NR , R )
 C
 C --    CALCUL DU JACOBIEN DU SYSTEME A T+DT = DRDY(DY)
 C
-        CALL LCJACB ( LOI,   MOD,   IMAT, NMAT, MATERD, MATERF,MATCST,
-     &                  TEMPD, TEMPF, TIMED,TIMEF,YD,     YF,    DEPS,
+        CALL LCJACB ( LOI,   MOD,   IMAT, NMAT, MATERF,
+     &                  TIMED,TIMEF,     YF,    DEPS,
      &                  EPSD,  DY,    NMOD,  DRDY )
 C               CALL LCIMMN ( 'DRDY =' , NR ,NR, DRDY )
 C

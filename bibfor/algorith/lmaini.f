@@ -1,9 +1,9 @@
-        SUBROUTINE LMAINI ( TYPESS, ESSAI, MOD,   IMAT,  NMAT,
-     &                      MATERF, TEMPD, TIMED, TIMEF, YD,  DEPS, DY)
+        SUBROUTINE LMAINI ( TYPESS, ESSAI, MOD,  NMAT,
+     &                      MATERF, TIMED, TIMEF, YD,  DEPS, DY)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,10 +26,8 @@ C               CALCUL SOLUTION ESSAI DY =( DSIG DX DX1 DX2 DV )
 C                           AVEC       Y = ( SIG  X  X1  X2  V )
 C       IN  ESSAI  :  VALEUR DE LA SOLUTION D ESSAI
 C           MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           TEMPD  :  TEMPERATURE A T
 C           TIMED  :  INSTANT  T
 C           TIMEF  :  INSTANT  T+DT
 C           YD     :  VARIABLES A T   = ( SIG  VIN  )
@@ -42,7 +40,7 @@ C                               3 = ESSAI
 C       OUT DY     :  SOLUTION ESSAI  = ( DSIG DVIN )
 C       ----------------------------------------------------------------
 C
-        INTEGER         NDT , NDI , TYPESS , NMAT , IMAT
+        INTEGER         NDT , NDI , TYPESS , NMAT
 C
         REAL*8          YD(*)     , DY(*),  ESSAI
         REAL*8          HOOK(6,6) , DFDS(6)
@@ -57,7 +55,7 @@ C
         REAL*8          RM,  M,    P,     P1,  P2
         REAL*8          ZZ,         NORMX,      SEUIL
 C
-        REAL*8          MATERF(NMAT,2) , TEMPD , TIMED , TIMEF
+        REAL*8          MATERF(NMAT,2) , TIMED , TIMEF
 C
         CHARACTER*8     MOD
 C       ----------------------------------------------------------------
@@ -103,11 +101,10 @@ C
 C - SOLUTION INITIALE = EXPLICITE
 C
                 ELSEIF ( TYPESS .EQ. 2 ) THEN
-                   CALL LMACVX ( IMAT, NMAT, MATERF , TEMPD, SIG,
-     1                           YD(NDT+1), SEUIL )
+                   CALL LMACVX ( NMAT, MATERF , SIG, YD(NDT+1), SEUIL )
                    DT = TIMEF - TIMED
-                   YV = LMACIN ( IMAT , NMAT , MATERF , V )
-                   CALL LMAFS ( IMAT , NMAT , MATERF , SIG , X , DFDS )
+                   YV = LMACIN ( NMAT , MATERF , V )
+                   CALL LMAFS ( NMAT , MATERF , SIG , X , DFDS )
 C
 C - DV
                    IF ( SEUIL .LT. 0.D0 ) SEUIL = 0.D0

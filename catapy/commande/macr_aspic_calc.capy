@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +17,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE F1BHHAJ J.ANGLES
+from Macro.macr_aspic_calc_ops import macr_aspic_calc_ops
+
 def macr_aspic_calc_prod(self,MODELE,CHAM_MATER,CARA_ELEM,FOND_FISS_1,FOND_FISS_2,CHARGE,RESU_THER,**args):
   if MODELE      != None:self.type_sdprod(MODELE,modele)
   if CHAM_MATER  != None:self.type_sdprod(CHAM_MATER,cham_mater)
@@ -27,7 +29,7 @@ def macr_aspic_calc_prod(self,MODELE,CHAM_MATER,CARA_ELEM,FOND_FISS_1,FOND_FISS_
   if RESU_THER   != None:self.type_sdprod(RESU_THER,evol_ther)
   return evol_noli
 
-MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=-17,sd_prod=macr_aspic_calc_prod,
+MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=macr_aspic_calc_ops,sd_prod=macr_aspic_calc_prod,
                     fr=" ",docu="U4.pc.20-b",reentrant='n',
             UIinfo={"groupes":("Outils métier",)},
          regles=(UN_PARMI('COMP_INCR','COMP_ELAS'),),
@@ -152,7 +154,6 @@ MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=-17,sd_prod=macr_aspic_calc_prod,
            RESI_INTE_RELA  =SIMP(statut='f',typ='R',defaut=1.0E-6),
            ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut=10),
            ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut=0),
-           TYPE_MATR_COMP  =SIMP(statut='f',typ='TXM',defaut="TANG_VIT",into=("TANG_VIT",)),
            RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",into=("RUNGE_KUTTA_2","RUNGE_KUTTA_4","IMPLICITE")),
          ),
 
@@ -213,5 +214,4 @@ MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=-17,sd_prod=macr_aspic_calc_prod,
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
 
          TITRE           =SIMP(statut='f',typ='TXM'),
-)  ;
-# debut entete
+)

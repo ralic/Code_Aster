@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF ops Cata  DATE 12/11/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -69,7 +69,7 @@ def build_debut(self,**args):
    self.definition.op=None
    return ier
 
-def POURSUITE(self,PAR_LOT,CODE,HDF,**args):
+def POURSUITE(self,PAR_LOT,CODE,HDF=None,**args):
    """
        Fonction sdprod de la macro POURSUITE
    """

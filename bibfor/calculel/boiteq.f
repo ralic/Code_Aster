@@ -1,7 +1,7 @@
       SUBROUTINE BOITEQ(CNOEUD,NOEPAN,NPAN,MINMAX,PAN)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF CALCULEL  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -414,7 +414,7 @@ C ----------- MIN
               CALL MTPROD(W20,NC,0,NC,0,NNO,CNOEUD,3,J,1,NOEPAN(P0),W2)
               CALL FORME3(XMIN(1,J),TYPEMA,W30,NNO,NC)
               CALL MTPROD(W30,NC,0,NC,0,NNO,CNOEUD,3,J,1,NOEPAN(P0),W3)
-              CALL FORME4(XMIN(1,J),TYPEMA,W40,NNO,NC)
+              CALL FORME4(TYPEMA,W40,NNO,NC)
               CALL MTPROD(W40,1,0,1,0,NNO,CNOEUD,3,J,1,NOEPAN(P0),W4)
               S = MM(1,J) - HQ2*(2.D0*ABS(W2(3))+ABS(W2(1))+ABS(W2(2)))
      &                    - HQ3*(ABS(W3(1))+ABS(W3(2))) - HQ4*ABS(W4)
@@ -426,7 +426,7 @@ C ----------- MAX
               CALL MTPROD(W20,NC,0,NC,0,NNO,CNOEUD,3,J,1,NOEPAN(P0),W2)
               CALL FORME3(XMAX(1,J),TYPEMA,W30,NNO,NC)
               CALL MTPROD(W30,NC,0,NC,0,NNO,CNOEUD,3,J,1,NOEPAN(P0),W3)
-              CALL FORME4(XMIN(1,J),TYPEMA,W40,NNO,NC)
+              CALL FORME4(TYPEMA,W40,NNO,NC)
               CALL MTPROD(W40,1,0,1,0,NNO,CNOEUD,3,J,1,NOEPAN(P0),W4)
               S = MM(2,J) + HQ2*(2.D0*ABS(W2(3))+ABS(W2(1))+ABS(W2(2)))
      &                    + HQ3*(ABS(W3(1))+ABS(W3(2))) + HQ4*ABS(W4)
@@ -442,7 +442,7 @@ C --------- MAJORATION EXTREMA POUR PAN
               CALL MMPROD(W20,NC,0,NC,0,NNO,W0,NNO,0,0,1,W2)
               CALL FORME3(XRMIN(1,J),TYPEMA,W30,NNO,NC)
               CALL MMPROD(W30,NC,0,NC,0,NNO,W0,NNO,0,0,1,W3)
-              CALL FORME4(XRMIN(1,J),TYPEMA,W40,NNO,NC)
+              CALL FORME4(TYPEMA,W40,NNO,NC)
               CALL MMPROD(W40,1,0,1,0,NNO,W0,NNO,0,0,1,W4)
               S = R(J) - HQ2*(2.D0*ABS(W2(3))+ABS(W2(1))+ABS(W2(2)))
      &                 - HQ3*(ABS(W3(1))+ABS(W3(2))) - HQ4*ABS(W4)
@@ -452,7 +452,7 @@ C --------- MAJORATION EXTREMA POUR PAN
                 CALL MMPROD(W20,NC,0,NC,0,NNO,W0,NNO,0,0,1,W2)
                 CALL FORME3(XRMAX,TYPEMA,W30,NNO,NC)
                 CALL MMPROD(W30,NC,0,NC,0,NNO,W0,NNO,0,0,1,W3)
-                CALL FORME4(XRMAX,TYPEMA,W40,NNO,NC)
+                CALL FORME4(TYPEMA,W40,NNO,NC)
                 CALL MMPROD(W40,1,0,1,0,NNO,W0,NNO,0,0,1,W4)
                 S = RM + HQ2*(2.D0*ABS(W2(3))+ABS(W2(1))+ABS(W2(2)))
      &                 + HQ3*(ABS(W3(1))+ABS(W3(2))) + HQ4*ABS(W4)

@@ -1,4 +1,5 @@
-# MODIF  DATE 11/12/2001   AUTEUR DURAND C.DURAND 
+
+# MODIF  DATE 16/12/2003   AUTEUR DURAND C.DURAND 
 # TITRE CALCUL DE G THERMO-ELASTIQUE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,221 +20,231 @@
 # ======================================================================
 # MODELISATION AXISYMETRIQUE
 #
-#
-DEBUT(   CODE=_F(  NOM = 'HPLV102A',NIV_PUB_WEB='INTERNET') )
 
-M=LIRE_MAILLAGE(  )
+DEBUT(CODE=_F(NOM='HPLV102A',
+              NIV_PUB_WEB='INTERNET',),);
 
+M=LIRE_MAILLAGE();
 #--------------------------------------------------------------------
 #               DEBUT DU THERMIQUE                                  #
 #--------------------------------------------------------------------
 
-MOTH=AFFE_MODELE(      MAILLAGE=M,
-                         VERIF='MAILLE',
-                           AFFE=_F(  TOUT = 'OUI',
-                                  PHENOMENE = 'THERMIQUE',
-                                  MODELISATION = 'AXIS') )
+MOTH=AFFE_MODELE(MAILLAGE=M,
+                 VERIF='MAILLE',
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='THERMIQUE',
+                         MODELISATION='AXIS',),);
 
-MATH=DEFI_MATERIAU(    THER=_F(  RHO_CP = 0., LAMBDA = 1.) )
+MATH=DEFI_MATERIAU(THER=_F(LAMBDA=1.0,
+                           RHO_CP=0.0,),);
 
-CMTH=AFFE_MATERIAU(    MAILLAGE=M,
-                              AFFE=_F(  TOUT = 'OUI',
-                                     MATER = MATH))
+CMTH=AFFE_MATERIAU(MAILLAGE=M,
+                   AFFE=_F(TOUT='OUI',
+                           MATER=MATH,),);
 
-CHTH=AFFE_CHAR_THER(       MODELE=MOTH,TEMP_IMPO=(
-                          _F(  GROUP_NO = 'GRNO3', TEMP = 0.0),
-                          _F(  NOEUD = 'N3',    TEMP = -1.0),
-                          _F(  GROUP_NO = 'GRNO5', TEMP = -1.0)) )
+CHTH=AFFE_CHAR_THER(MODELE=MOTH,
+                    TEMP_IMPO=(_F(GROUP_NO='GRNO3',
+                                  TEMP=0.0,),
+                               _F(NOEUD='N3',
+                                  TEMP=-1.0,),
+                               _F(GROUP_NO='GRNO5',
+                                  TEMP=-1.0,),),);
 
-METH=CALC_MATR_ELEM(         MODELE=MOTH,
-                                CHARGE=CHTH,
-                            CHAM_MATER=CMTH,
-                               OPTION='RIGI_THER' )
+METH=CALC_MATR_ELEM(OPTION='RIGI_THER',
+                    MODELE=MOTH,
+                    CHAM_MATER=CMTH,
+                    CHARGE=CHTH,);
 
-VETH=CALC_VECT_ELEM(         CHARGE=CHTH,
-                               OPTION='CHAR_THER' )
+VETH=CALC_VECT_ELEM(OPTION='CHAR_THER',
+                    CHARGE=CHTH,);
 
-NUTH=NUME_DDL(            MATR_RIGI=METH )
+NUTH=NUME_DDL(MATR_RIGI=METH,);
 
-KTH=ASSE_MATRICE(        MATR_ELEM=METH,
-                              NUME_DDL=NUTH )
+KTH=ASSE_MATRICE(MATR_ELEM=METH,
+                 NUME_DDL=NUTH,);
 
-FTH=ASSE_VECTEUR(        VECT_ELEM=VETH,
-                              NUME_DDL=NUTH )
+FTH=ASSE_VECTEUR(VECT_ELEM=VETH,
+                 NUME_DDL=NUTH,);
 
-KTH=FACT_LDLT(      reuse=KTH,     MATR_ASSE=KTH  )
+KTH=FACT_LDLT(reuse =KTH,
+              MATR_ASSE=KTH,);
 
-TEMP=RESO_LDLT(           MATR_FACT=KTH,
-                               CHAM_NO=FTH  )
-
+TEMP=RESO_LDLT(MATR_FACT=KTH,
+               CHAM_NO=FTH,);
 #--------------------------------------------------------------------
 #               FIN DU THERMIQUE                                    #
 #--------------------------------------------------------------------
 
+MO=AFFE_MODELE(MAILLAGE=M,
+               VERIF='MAILLE',
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='AXIS',),);
 
+MA=DEFI_MATERIAU(ELAS=_F(E=200000.0,
+                         NU=0.3,
+                         ALPHA=1e-06,),);
 
-MO=AFFE_MODELE(            MAILLAGE=M,
-                                   VERIF='MAILLE',
-                                  AFFE=_F(  TOUT = 'OUI',
-                                         PHENOMENE = 'MECANIQUE',
-                                         MODELISATION = 'AXIS') )
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=MA,
+                         TEMP_REF=0.0,),);
 
-MA=DEFI_MATERIAU(            ELAS=_F(  E = 200000.,
-                                         NU = 0.3,
-                                         ALPHA = 0.000001) )
+CH=AFFE_CHAR_MECA(MODELE=MO,
+                  TEMP_CALCULEE=TEMP,
+                  DDL_IMPO=(_F(GROUP_NO='GRNM1',
+                               DX=0.0,),
+                            _F(GROUP_NO='GRNM2',
+                               DY=0.0,),),);
 
-CM=AFFE_MATERIAU(        MAILLAGE=M,
-                                  AFFE=_F(  TOUT = 'OUI',
-                                         MATER = MA,
-                                         TEMP_REF = 0.) )
+ME=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                  MODELE=MO,
+                  CHAM_MATER=CM,
+                  CHARGE=CH,);
 
-CH=AFFE_CHAR_MECA(          MODELE=MO,
-                         TEMP_CALCULEE=TEMP,DDL_IMPO=(
-                               _F(  GROUP_NO = 'GRNM1', DX = 0.),
-                               _F(  GROUP_NO = 'GRNM2', DY = 0.)) )
+VE=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                  CHARGE=CH,
+                  CHAM_MATER=CM,);
 
-ME=CALC_MATR_ELEM(        MODELE=MO,
-                               CHARGE=CH,
-                           CHAM_MATER=CM,
-                              OPTION='RIGI_MECA' )
+NU=NUME_DDL(MATR_RIGI=ME,);
 
-VE=CALC_VECT_ELEM(         CHARGE=CH,
-                            CHAM_MATER=CM,
-                               OPTION='CHAR_MECA' )
+K=ASSE_MATRICE(MATR_ELEM=ME,
+               NUME_DDL=NU,);
 
-NU=NUME_DDL(            MATR_RIGI=ME )
+F=ASSE_VECTEUR(VECT_ELEM=VE,
+               NUME_DDL=NU,);
 
-K=ASSE_MATRICE(        MATR_ELEM=ME,
-                              NUME_DDL=NU )
+K=FACT_LDLT(reuse =K,
+            MATR_ASSE=K,);
 
-F=ASSE_VECTEUR(        VECT_ELEM=VE,
-                              NUME_DDL=NU  )
-
-K=FACT_LDLT(      reuse=K,     MATR_ASSE=K   )
-
-DEPLA=RESO_LDLT(           MATR_FACT=K,
-                               CHAM_NO=F   )
-
+DEPLA=RESO_LDLT(MATR_FACT=K,
+                CHAM_NO=F,);
 #--------------------------------------------------------------------
 #               CALCUL DE G SUR 4 COURONNES                         #
 #--------------------------------------------------------------------
 
+THETA1=CALC_THETA(MODELE=MO,
+                  DIRECTION=(1.0,0.0,0.0,),
+                  THETA_2D=_F(NOEUD='N3',
+                              MODULE=1.0,
+                              R_INF=1.0,
+                              R_SUP=4.0,),);
 
-THETA1=CALC_THETA(       MODELE=MO,
-                          THETA_2D=_F(  NOEUD = 'N3',
-                                     MODULE = 1.0,
-                                     R_INF = 1.0,
-                                     R_SUP = 4.),
-                         DIRECTION=(1.,0.,0.,) )
+CHAM1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                 OPERATION='EXTR',
+                 RESULTAT=THETA1,
+                 NOM_CHAM='THETA',);
 
-G1=CALC_G_THETA_T(          MODELE=MO,
-                               DEPL=DEPLA,
-                         CHAM_MATER=CM,
-                              THETA=THETA1,
-                             CHARGE=CH,
-                          COMP_ELAS=_F( RELATION = 'ELAS',
-                                     DEFORMATION = 'PETIT')
-                      )
+G1=CALC_G_THETA_T(MODELE=MO,
+                  CHAM_MATER=CM,
+                  THETA=CHAM1,
+                  DEPL=DEPLA,
+                  CHARGE=CH,
+                  COMP_ELAS=_F(RELATION='ELAS',
+                               DEFORMATION='PETIT',),);
 
-THETA2=CALC_THETA(       MODELE=MO,
-                          THETA_2D=_F(  NOEUD = 'N3',
-                                     MODULE = 1.0,
-                                     R_INF = 0.5,
-                                     R_SUP = 4.5),
-                        DIRECTION=(1.,0.,0.,) )
+THETA2=CALC_THETA(MODELE=MO,
+                  DIRECTION=(1.0,0.0,0.0,),
+                  THETA_2D=_F(NOEUD='N3',
+                              MODULE=1.0,
+                              R_INF=0.5,
+                              R_SUP=4.5,),);
 
-G2=CALC_G_THETA_T(          MODELE=MO,
-                               DEPL=DEPLA,
-                         CHAM_MATER=CM,
-                              THETA=THETA2,
-                             CHARGE=CH,
-                          COMP_ELAS=_F( RELATION = 'ELAS',
-                                     DEFORMATION = 'PETIT')
-                      )
+G2=CALC_G_THETA_T(MODELE=MO,
+                  CHAM_MATER=CM,
+                  THETA=THETA2,
+                  DEPL=DEPLA,
+                  CHARGE=CH,
+                  COMP_ELAS=_F(RELATION='ELAS',
+                               DEFORMATION='PETIT',),);
 
-THETA3=CALC_THETA(       MODELE=MO,
-                          THETA_2D=_F(  NOEUD = 'N3',
-                                     MODULE = 1.0,
-                                     R_INF = 1.5,
-                                     R_SUP = 3.5),
-                        DIRECTION=(1.,0.,0.,) )
+THETA3=CALC_THETA(MODELE=MO,
+                  DIRECTION=(1.0,0.0,0.0,),
+                  THETA_2D=_F(NOEUD='N3',
+                              MODULE=1.0,
+                              R_INF=1.5,
+                              R_SUP=3.5,),);
 
-G3=CALC_G_THETA_T(          MODELE=MO,
-                               DEPL=DEPLA,
-                         CHAM_MATER=CM,
-                              THETA=THETA3,
-                             CHARGE=CH,
-                          COMP_ELAS=_F( RELATION = 'ELAS',
-                                     DEFORMATION = 'PETIT')
-                      )
+G3=CALC_G_THETA_T(MODELE=MO,
+                  CHAM_MATER=CM,
+                  THETA=THETA3,
+                  DEPL=DEPLA,
+                  CHARGE=CH,
+                  COMP_ELAS=_F(RELATION='ELAS',
+                               DEFORMATION='PETIT',),);
 
-THETA4=CALC_THETA(       MODELE=MO,
-                          THETA_2D=_F( NOEUD = 'N3',
-                                    MODULE = 1.0,
-                                    R_INF = 1.,
-                                    R_SUP = 4.5),
-                       DIRECTION=(1.,0.,0.,) )
+THETA4=CALC_THETA(MODELE=MO,
+                  DIRECTION=(1.0,0.0,0.0,),
+                  THETA_2D=_F(NOEUD='N3',
+                              MODULE=1.0,
+                              R_INF=1.0,
+                              R_SUP=4.5,),);
 
-G4=CALC_G_THETA_T(          MODELE=MO,
-                               DEPL=DEPLA,
-                         CHAM_MATER=CM,
-                              THETA=THETA4,
-                             CHARGE=CH,
-                          COMP_ELAS=_F( RELATION = 'ELAS',
-                                     DEFORMATION = 'PETIT')
-                      )
-
+G4=CALC_G_THETA_T(MODELE=MO,
+                  CHAM_MATER=CM,
+                  THETA=THETA4,
+                  DEPL=DEPLA,
+                  CHARGE=CH,
+                  COMP_ELAS=_F(RELATION='ELAS',
+                               DEFORMATION='PETIT',),);
 #--------------------------------------------------------------------
 #            TEST DES RESULTATS DE G                                #
 #--------------------------------------------------------------------
 
+TEST_TABLE(TABLE=G1,
+           NOM_PARA='G',
+           VALE=1.4778e-06,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(       TABLE=G1,
-                       NOM_PARA='G',
-                           VALE=1.4778E-6,
-                      PRECISION=0.02, REFERENCE='ANALYTIQUE',   )
+TEST_TABLE(TABLE=G2,
+           NOM_PARA='G',
+           VALE=1.4778e-06,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(       TABLE=G2,
-                       NOM_PARA='G',
-                           VALE=1.4778E-6,
-                      PRECISION=0.02, REFERENCE='ANALYTIQUE',   )
+TEST_TABLE(TABLE=G3,
+           NOM_PARA='G',
+           VALE=1.4778e-06,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(       TABLE=G3,
-                       NOM_PARA='G',
-                           VALE=1.4778E-6,
-                      PRECISION=0.02, REFERENCE='ANALYTIQUE',   )
-
-TEST_TABLE(       TABLE=G4,
-                       NOM_PARA='G',
-                           VALE=1.4778E-6,
-                      PRECISION=0.02, REFERENCE='ANALYTIQUE',   )
-                      
-
+TEST_TABLE(TABLE=G4,
+           NOM_PARA='G',
+           VALE=1.4778e-06,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE',);
 #--------------------------------------------------------------------
 #            TEST DES RESULTATS DE G NON REGRESSION                 #
 #--------------------------------------------------------------------
 
+TEST_TABLE(TABLE=G1,
+           NOM_PARA='G',
+           VALE=1.45872200784e-06,
+           PRECISION=1e-09,
+           REFERENCE='NON_REGRESSION',
+           VERSION='6.0.39',);
 
-TEST_TABLE(       TABLE=G1,
-                       NOM_PARA='G',
-                           VALE=1.4587220078386E-06,
-        PRECISION=1.E-9, REFERENCE='NON_REGRESSION',VERSION='6.0.39')
+TEST_TABLE(TABLE=G2,
+           NOM_PARA='G',
+           VALE=1.45906342396e-06,
+           PRECISION=1e-09,
+           REFERENCE='NON_REGRESSION',
+           VERSION='6.0.39',);
 
-TEST_TABLE(       TABLE=G2,
-                       NOM_PARA='G',
-                           VALE=1.4590634239584E-06,
-                      PRECISION=1.E-9,REFERENCE='NON_REGRESSION',VERSION='6.0.39')
+TEST_TABLE(TABLE=G3,
+           NOM_PARA='G',
+           VALE=1.45868894774e-06,
+           PRECISION=1e-09,
+           REFERENCE='NON_REGRESSION',
+           VERSION='6.0.39',);
 
-TEST_TABLE(       TABLE=G3,
-                       NOM_PARA='G',
-                           VALE=1.4586889477432E-06,
-                      PRECISION=1.E-9,REFERENCE='NON_REGRESSION',VERSION='6.0.39')
+TEST_TABLE(TABLE=G4,
+           NOM_PARA='G',
+           VALE=1.45911565609e-06,
+           PRECISION=1e-09,
+           REFERENCE='NON_REGRESSION',
+           VERSION='6.0.39',);
 
-TEST_TABLE(       TABLE=G4,
-                       NOM_PARA='G',
-                           VALE=1.4591156560879E-06,
-                      PRECISION=1.E-9,REFERENCE='NON_REGRESSION',VERSION='6.0.39' )
-
-
-FIN( )
+FIN();
 #

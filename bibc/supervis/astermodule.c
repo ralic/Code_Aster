@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 26/09/2003   AUTEUR DURAND C.DURAND */
+/* MODIF astermodule supervis  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -61,14 +61,14 @@
 #endif
 #define _UNUSED
 
-/* Pour définir les appels et signatures de fonctions appelables en Fortran 
+/* Pour définir les appels et signatures de fonctions appelables en Fortran
  * On utilise l'operateur de concatenation ## du préprocesseur C (cpp) pour ajouter l'underscore
  * au nom en majuscule ou minuscule de la fonction à définir ou à appeler.
  * Pour les anciens compilateurs non ANSI, utiliser un commentaire vide à la place.
  * Pour appeler une subroutine Fortran de nom SUB avec un argument string et 2 arguments autres, faire:
  * #define CALL_SUB(a,b,c) CALLSPP(SUB,sub,a,b,c)
  * puis : CALL_SUB(a,b,c)
- * Pour définir une fonction C de nom SUB avec un argument string et 2 arguments autres, 
+ * Pour définir une fonction C de nom SUB avec un argument string et 2 arguments autres,
  * appelable depuis le fortran, faire:
  * void DEFSPP(SUB,sub,char * nomobj,int lnom,double *d,INTEGER *i)
  * {
@@ -135,8 +135,11 @@
 #define CALLSSPPPPP(UN,LN,a,b,c,d,e,f,g)                     F_FUNC(UN,LN)(a,b,c,d,e,f,g,strlen(a),strlen(b))
 #define DEFSPSP(UN,LN,a,la,b,c,lc,d)                      STDCALL(UN,LN)(a,b,c,d,la,lc)
 #define CALLSPSP(UN,LN,a,b,c,d)                           F_FUNC(UN,LN)(a,b,c,d,strlen(a),strlen(c))
+#define CALLSSSP(UN,LN,a,b,c,d)                           F_FUNC(UN,LN)(a,b,c,d,strlen(a),strlen(b),strlen(c))
+#define CALLSSSSP(UN,LN,a,b,c,d,e)                           F_FUNC(UN,LN)(a,b,c,d,e,strlen(a),strlen(b),strlen(c),strlen(d))
+#define CALLSSSSPPS(UN,LN,a,b,c,d,e,f,g)                  F_FUNC(UN,LN)(a,b,c,d,e,f,g,strlen(a),strlen(b),strlen(c),strlen(d),strlen(g))
 #define DEFSPSPP(UN,LN,a,la,b,c,lc,d,e)                      STDCALL(UN,LN)(a,b,c,d,e,la,lc)
-#define DEFSPSSP(UN,LN,a,la,b,c,lc,d,ld,e)                      STDCALL(UN,LN)(a,b,c,d,e,la,lc,ld) 
+#define DEFSPPSSP(UN,LN,a,la,b,c,d,ld,e,le,f)                      STDCALL(UN,LN)(a,b,c,d,e,f,la,ld,le)
 #define DEFSSS(UN,LN,a,la,b,lb,c,lc)    STDCALL(UN,LN)(a,b,c,la,lb,lc)
 #define CALLSSS(UN,LN,a,b,c)    F_FUNC(UN,LN)(a,b,c,strlen(a),strlen(b),strlen(c))
 #define DEFPS(UN,LN,a,b,lb)                      STDCALL(UN,LN)(a,b,lb)
@@ -144,7 +147,9 @@
 #define DEFPSSP(UN,LN,a,b,lb,c,lc,d)    STDCALL(UN,LN)(a,b,c,d,lb,lc)
 #define CALLPPS(UN,LN,a,b,c)    F_FUNC(UN,LN)(a,b,c,strlen(c))
 #define DEFPPS(UN,LN,a,b,c,lc)    STDCALL(UN,LN)(a,b,c,lc)
+#define DEFSSSP(UN,LN,a,la,b,lb,c,lc,d)    STDCALL(UN,LN)(a,b,c,d,la,lb,lc)
 #define DEFSSSSP(UN,LN,a,la,b,lb,c,lc,d,ld,e)    STDCALL(UN,LN)(a,b,c,d,e,la,lb,lc,ld)
+#define DEFSSSSPPS(UN,LN,a,la,b,lb,c,lc,d,ld,e,f,g,lg)    STDCALL(UN,LN)(a,b,c,d,e,f,g,la,lb,lc,ld,lg)
 #define DEFSSPSPP(UN,LN,a,la,b,lb,c,d,ld,e,f)    STDCALL(UN,LN)(a,b,c,d,e,f,la,lb,ld)
 #define FCALLSSPSPP(UN,LN,a,la,b,lb,c,d,ld,e,f)    F_FUNC(UN,LN)(a,b,c,d,e,f,la,lb,ld)
 #define DEFSPSPPPS(UN,LN,a,la,b,c,lc,d,e,f,g,lg)    STDCALL(UN,LN)(a,b,c,d,e,f,g,la,lc,lg)
@@ -194,10 +199,13 @@
 #define DEFSSPPPSP(UN,LN,a,la,b,lb,c,d,e,f,lf,g)    STDCALL(UN,LN)(a,la,b,lb,c,d,e,f,lf,g)
 #define CALLSSPPPSP(UN,LN,a,b,c,d,e,f,g)                     F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,e,f,strlen(f),g)
 #define CALLSSPPPPP(UN,LN,a,b,c,d,e,f,g)                     F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,e,f,g)
-#define DEFSPSP(UN,LN,a,la,b,c,lc,d)                      STDCALL(UN,LN)(a,la,b,c,lc,d) 
+#define DEFSPSP(UN,LN,a,la,b,c,lc,d)                      STDCALL(UN,LN)(a,la,b,c,lc,d)
 #define CALLSPSP(UN,LN,a,b,c,d)                     F_FUNC(UN,LN)(a,strlen(a),b,c,strlen(c),d)
-#define DEFSPSPP(UN,LN,a,la,b,c,lc,d,e)                      STDCALL(UN,LN)(a,la,b,c,lc,d,e) 
-#define DEFSPSSP(UN,LN,a,la,b,c,lc,d,ld,e)                      STDCALL(UN,LN)(a,la,b,c,lc,d,ld,e) 
+#define CALLSSSP(UN,LN,a,b,c,d)                     F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,strlen(c),d)
+#define CALLSSSSP(UN,LN,a,b,c,d,e)                     F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,strlen(c),d,strlen(d),e)
+#define CALLSSSSPPS(UN,LN,a,b,c,d,e,f,g)                     F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,strlen(c),d,strlen(d),e,f,g,strlen(g))
+#define DEFSPSPP(UN,LN,a,la,b,c,lc,d,e)                      STDCALL(UN,LN)(a,la,b,c,lc,d,e)
+#define DEFSPPSSP(UN,LN,a,la,b,c,d,ld,e,le,f)                      STDCALL(UN,LN)(a,la,b,c,d,ld,e,le,f)
 #define DEFSSS(UN,LN,a,la,b,lb,c,lc)    STDCALL(UN,LN)(a,la,b,lb,c,lc)
 #define CALLSSS(UN,LN,a,b,c)    F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,strlen(c))
 #define DEFPS(UN,LN,a,b,lb)                      STDCALL(UN,LN)(a,b,lb)
@@ -205,7 +213,9 @@
 #define DEFPSSP(UN,LN,a,b,lb,c,lc,d)    STDCALL(UN,LN)(a,b,lb,c,lc,d)
 #define CALLPPS(UN,LN,a,b,c)    F_FUNC(UN,LN)(a,b,c,strlen(c))
 #define DEFPPS(UN,LN,a,b,c,lc)    STDCALL(UN,LN)(a,b,c,lc)
+#define DEFSSSP(UN,LN,a,la,b,lb,c,lc,d)    STDCALL(UN,LN)(a,la,b,lb,c,lc,d)
 #define DEFSSSSP(UN,LN,a,la,b,lb,c,lc,d,ld,e)    STDCALL(UN,LN)(a,la,b,lb,c,lc,d,ld,e)
+#define DEFSSSSPPS(UN,LN,a,la,b,lb,c,lc,d,ld,e,f,g,lg)    STDCALL(UN,LN)(a,la,b,lb,c,lc,d,ld,e,f,g,lg)
 #define DEFSSPSPP(UN,LN,a,la,b,lb,c,d,ld,e,f)    STDCALL(UN,LN)(a,la,b,lb,c,d,ld,e,f)
 #define FCALLSSPSPP(UN,LN,a,la,b,lb,c,d,ld,e,f)    F_FUNC(UN,LN)(a,la,b,lb,c,d,ld,e,f)
 #define DEFSPSPPPS(UN,LN,a,la,b,c,lc,d,e,f,g,lg)    STDCALL(UN,LN)(a,la,b,c,lc,d,e,f,g,lg)
@@ -302,7 +312,7 @@ enum ENUM_LOGICAL { FORTRAN_TRUE=-1, FORTRAN_FALSE=0} ;
 #define TISCRUTE(n,entier)
 #define DSCRUTE(reel)
 #define TDSCRUTE(n,reel)
-#define OBSCRUTE(obj) 
+#define OBSCRUTE(obj)
 #define SSCRUTE(chaine)
 #define REFSCRUTE(objet)
 #define FSSCRUTE(chaine,longueur)
@@ -366,7 +376,7 @@ void TraitementFinAster( _IN int val ) ;
 /*
  *   Emulation d'exceptions en C : on utilise le couple de fonctions systemes setjmp/longjmp
  *   pour reproduire le comportement des exceptions en C.
- *   Pour initier une exception, le Fortran doit appeler la fonction XFINI 
+ *   Pour initier une exception, le Fortran doit appeler la fonction XFINI
  *   avec en argument le code de l'exception.
  *   La fonction XFINI fait appel à longjmp pour effectuer le debranchement necessaire.
  *
@@ -374,9 +384,11 @@ void TraitementFinAster( _IN int val ) ;
  *   le try doit etre traitée :  par une exception (si try(1)) ou par un abort (si try(0))
  */
 
-#define CodeFinAster       19 
-#define CodeAbortAster     20 
-#define CodeErrorAster     21 
+#define CodeFinAster       19
+#define CodeAbortAster     20
+#define CodeErrorAster     21
+#define CodeNonConvergenceAster     22
+#define CodeEchecComportementAster  23
 
 int exception_status=-1;
 #define REASONMAX 800
@@ -426,6 +438,14 @@ void TraiteErreur( _IN int code )
                 abort();
                 break ;
         case CodeErrorAster :
+                abort();
+                break ;
+
+        /* exceptions particularisées */
+        case CodeNonConvergenceAster :
+                abort();
+                break ;
+        case CodeEchecComportementAster :
                 abort();
                 break ;
         default :
@@ -481,8 +501,13 @@ static char *NomCas          = "        ";
     doivent etre des objets de la classe AsterError (numero equivalent 21) ou d'une classe
     derivee.
  */
+/* exceptions de base */
 static PyObject *AsterError = (PyObject*)0 ; /* Ce type d'exception est levee sur appel de XFINI avec le parametre 21 */
 static PyObject *FatalError = (PyObject*)0 ; /* Ce type d'exception (derive de AsterError) est levee sur appel de XFINI avec le parametre 20 */
+
+/* exceptions particularisées */
+static PyObject *NonConvergenceError = (PyObject*)0 ; /* Exception non convergence */
+static PyObject *EchecComportementError = (PyObject*)0 ; /* Exception échec intégration du comportement */
 
 void initExceptions(PyObject *dict)
 {
@@ -491,6 +516,12 @@ void initExceptions(PyObject *dict)
         /* type d'exception Fatale derivee de AsterError */
         FatalError = PyErr_NewException("aster.FatalError", AsterError, NULL);
         if(FatalError != NULL) PyDict_SetItemString(dict, "FatalError", FatalError);
+        
+        /* Exceptions particularisées */
+        NonConvergenceError = PyErr_NewException("aster.NonConvergenceError", AsterError, NULL);
+        if(NonConvergenceError != NULL) PyDict_SetItemString(dict, "NonConvergenceError", NonConvergenceError);
+        EchecComportementError = PyErr_NewException("aster.EchecComportementError", AsterError, NULL);
+        if(EchecComportementError != NULL) PyDict_SetItemString(dict, "EchecComportementError", EchecComportementError);
 }
 
 /*
@@ -553,7 +584,7 @@ static char * blan="                                                            
             PyErr_Print(); \
             fprintf(stderr,"Warning: on l'annule pour continuer mais elle aurait du etre traitée avant\n"); \
             PyErr_Clear(); \
-        } 
+        }
 
 
 static char nom_fac[256];        /* utilise par fstr1 */
@@ -570,7 +601,7 @@ static char nom_cmd[256];        /* utilise par fstr3 */
  *   compteur de références associé à chaque objet.
  *   Tous les objets sont partagés. Seules des références à des objets peuvent
  *   etre acquises.
- *   Si une fonction a acquis une référence sur un objet elle doit la traiter 
+ *   Si une fonction a acquis une référence sur un objet elle doit la traiter
  *   proprement, soit en la transférant (habituellement à l'appelant), soit en
  *   la relachant (par appel à Py_DECREF ou Py_XDECREF).
  *   Quand une fonction transfere la propriété d'une référence, l'appelant recoit
@@ -579,7 +610,7 @@ static char nom_cmd[256];        /* utilise par fstr3 */
  *   Dans l'autre sens, quand un appelant passe une référence à une fonction, il y a
  *   deux possibilités : la fonction vole une référence à l'objet ou elle ne le fait
  *   pas. Peu de fonctions (de l'API Python) volent des références : les deux exceptions
- *   les plus notables sont PyList_SetItem() et PyTuple_SetItem() qui volent une 
+ *   les plus notables sont PyList_SetItem() et PyTuple_SetItem() qui volent une
  *   référence à l'item qui est inséré dans la liste ou dans le tuple.
  *   Ces fonctions qui volent des références existent, en général, pour alléger
  *   la programmation.
@@ -593,6 +624,7 @@ void TraiteMessageErreur( _IN char * message )
 {
         printf("%s\n",message);
         if(PyErr_Occurred())PyErr_Print();
+        abort();
         if(exception_flag[niveau]==1){
           int l;
           exception_flag[niveau]=0;
@@ -764,7 +796,7 @@ void DEFSP(GETFAC,getfac,_IN char *nomfac, _IN int lfac, _OUT INTEGER *occu)
         PyObject *res  = (PyObject*)0 ;
 
         _DEBUT(getfac_) ;
-                                                        FSSCRUTE(nomfac,lfac) ; 
+                                                        FSSCRUTE(nomfac,lfac) ;
                                                         ASSERT(EstPret(nomfac,lfac)!=0);
                                                         ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"getfac","s",fstr1(nomfac,lfac));
@@ -830,7 +862,7 @@ int conv_un_c8( _IN PyObject *tup, _OUT double *val)
         }
         else if(PyTuple_Check(tup)){
            /* On est dans le cas d'un complexe représenté par un triplet : "RI" ou "MP",x,y */
-           if(!PyArg_ParseTuple(tup,"sdd",&repres,&x,&y)) 
+           if(!PyArg_ParseTuple(tup,"sdd",&repres,&x,&y))
                      MYABORT("erreur dans la partie Python");
                                                                                      SSCRUTE(repres) ;
                                                                                      ASSERT((strcmp(repres,"RI")==0)||(strcmp(repres,"MP")==0)) ;
@@ -1033,16 +1065,19 @@ void STDCALL(GETRAN,getran)(_OUT double *rval)
 
 
 
-void STDCALL(INIRAN,iniran)()
+void DEFP(INIRAN,iniran,_IN INTEGER *jump)
 {
         /*
           Procedure INIRAN pour le FORTRAN : recupere un réel aleatoire (loi uniforme 0-1) du module python Random
+          avec un shift eventuel de jump termes
         */
 
         PyObject *res  = (PyObject*)0 ;
 
         _DEBUT(iniran) ;
-        res=PyObject_CallMethod(commande,"iniran","");
+                                                           ISCRUTE(*jump);
+        res=PyObject_CallMethod(commande,"iniran","i",*jump);
+                                                           ISCRUTE(*jump);
         _FIN(iniran) ;
         return ;
 }
@@ -1142,48 +1177,16 @@ void DEFPS(GETMAT,getmat,_OUT INTEGER *nbarg,_OUT char *motcle,_IN int lcle)
         return ;
 }
 
-
-void DEFSP(GETFNS,getfns,_IN char *nomfac, _IN int lfac, _OUT INTEGER *nbsimp)
-{
-        /*
-          Procedure GETFNS pour le FORTRAN
-          Routine a l usage de DEFI_MATERIAU : consultation du catalogue (et non de l etape)
-          Entrees :
-            le nom d un mot cle facteur : nomfac (string)
-          Retourne :
-            le nombre max de mots cles simples sous les mots cles facteurs portant le nom nomfac
-            en effet, avec les blocs, plusieurs nomfac peuvent exister (ex : THM_DIFFU)
-        */
-        PyObject *res  = (PyObject*)0 ;
-
-        _DEBUT(getyyy_) ;
-                                                        FSSCRUTE(nomfac,lfac) ; 
-                                                        ASSERT(EstPret(nomfac,lfac)!=0);
-                                                        ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getfns","s",fstr1(nomfac,lfac));
-
-        /*  si le retour est NULL : exception Python a transferer
-            normalement a l appelant mais FORTRAN ??? */
-        if (res == NULL)MYABORT("erreur dans la partie Python");
-
-        *nbsimp=PyInt_AsLong(res);
-                                                        ISCRUTE(*nbsimp);
-
-        Py_DECREF(res);                /*  decrement sur le refcount du retour */
-        _FIN(getfns_) ;
-        return ;
-}
-
-
-void DEFSPSSP(GETMFM,getmfm,_IN char *nomfac,_IN int lfac,_IN INTEGER *nbval,_OUT char *motcle,
-                       _IN int lcle,_OUT char *type,_IN int ltyp, _OUT INTEGER *nbarg)
+void DEFSPPSSP(GETMJM,getmjm,_IN char *nomfac,_IN int lfac,_IN INTEGER *iocc,_IN INTEGER *nbval,
+                            _OUT char *motcle,_IN int lcle,_OUT char *type,_IN int ltyp, _OUT INTEGER *nbarg)
 {
 
         /*
-          Procedure GETMFM : emule la procedure equivalente ASTER
+          Procedure GETMJM : emule la procedure equivalente ASTER
            Retourne les nbval premiers mots cles du mot cle facteur nomfac du catalogue de la commande en cours
           Entrees :
            nomfac : nom du mot cle facteur
+           iocc   : numero d occurence du mot cle facteur
            nbval  : nombre de mots cles facteurs demandes
           Retourne :
            motcle : liste des mots cles du mot cle facteur demande
@@ -1202,13 +1205,15 @@ void DEFSPSSP(GETMFM,getmfm,_IN char *nomfac,_IN int lfac,_IN INTEGER *nbval,_OU
         int          k = 0 ;
 
 
-        _DEBUT(getmfm_) ;
+        _DEBUT(getmjm_) ;
+                                                                        ISCRUTE(*iocc);
                                                                         ISCRUTE(*nbval);
                                                                         FSSCRUTE(nomfac,lfac) ; ISCRUTE(ltyp);
                                                                         ASSERT(ltyp>0);
         for ( k=0 ;k<ltyp ; k++ ) type[k]=' ' ;
                                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getmfm","si",fstr2(nomfac,lfac),*nbval);
+        res=PyObject_CallMethod(commande,"getmjm","sii",fstr2(nomfac,lfac),*iocc,*nbval);
+                                                                        ISCRUTE(*iocc);
                                                                         ISCRUTE(*nbval);
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
@@ -1231,13 +1236,13 @@ void DEFSPSSP(GETMFM,getmfm,_IN char *nomfac,_IN int lfac,_IN INTEGER *nbval,_OU
         if ( nval > 0 ){
                 converltx(nval,lnom,motcle,lcle); /* conversion  */
                 converltx(nval,lty,type,ltyp);
-        }
+       }
 
 
         /*
         A.Y.
         A la demande des developpeurs (J. Pellet), le nom des concepts retourne par
-        la methode EXECUTION.getmfm (par exemple grma) est ici remplace par
+        la methode EXECUTION.getmjm (par exemple grma) est ici remplace par
         la chaine CO (pour COncept).
         les types retournes sont donc parmi les valeurs : R8 , C8 , IS , TX et CO.
         */
@@ -1256,7 +1261,7 @@ void DEFSPSSP(GETMFM,getmfm,_IN char *nomfac,_IN int lfac,_IN INTEGER *nbval,_OU
         }
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
-        _FIN("getmfm_") ;
+        _FIN("getmjm_") ;
         return ;
 }
 
@@ -1389,7 +1394,7 @@ void DEFSSPPPPP(GETVC8,getvc8,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
                 Si le mot-cle simple est recherche sous un mot-cle facteur et uniquement dans ce cas,
                 le numero d'occurrence (*iocc) doit etre strictement positif.
                 Si le mot-cle simple est recherche sans un mot-cle facteur iocc n'est pas utilise
-                
+
         */
         if( isalpha(mfc[0])&&(*iocc<=0) )
         {
@@ -1420,7 +1425,7 @@ void DEFSSPPPPP(GETVC8,getvc8,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
                                                         ISCRUTE(*nbval) ;
                                                         TDSCRUTE(nval,val) ;
 
-        Py_DECREF(res);    
+        Py_DECREF(res);
         _FIN(getvc8_) ;
         return ;
 }
@@ -1465,7 +1470,7 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
                 Si le mot-cle simple est recherche sous un mot-cle facteur et uniquement dans ce cas,
                 le numero d'occurrence (*iocc) doit etre strictement positif.
                 Si le mot-cle simple est recherche sans un mot-cle facteur iocc n'est pas utilise
-                
+
         */
         if( isalpha(mfc[0])&&(*iocc<=0) )
         {
@@ -1542,7 +1547,7 @@ void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
                 Si le mot-cle simple est recherche sous un mot-cle facteur et uniquement dans ce cas,
                 le numero d'occurrence (*iocc) doit etre strictement positif.
                 Si le mot-cle simple est recherche sans un mot-cle facteur iocc n'est pas utilise
-                
+
         */
         if( isalpha(mfc[0])&&(*iocc<=0) )
         {
@@ -1635,7 +1640,7 @@ void DEFSSPPPPP(GETVLS,getvls,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
                 Si le mot-cle simple est recherche sous un mot-cle facteur et uniquement dans ce cas,
                 le numero d'occurrence (*iocc) doit etre strictement positif.
                 Si le mot-cle simple est recherche sans un mot-cle facteur iocc n'est pas utilise
-                
+
         */
         if( isalpha(mfc[0])&&(*iocc<=0) )
         {
@@ -1712,7 +1717,7 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
                 Si le mot-cle simple est recherche sous un mot-cle facteur et uniquement dans ce cas,
                 le numero d'occurrence (*iocc) doit etre strictement positif.
                 Si le mot-cle simple est recherche sans un mot-cle facteur iocc n'est pas utilise
-                
+
         */
         if( isalpha(mfc[0])&&(*iocc<=0) )
         {
@@ -1750,7 +1755,7 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
         /* ATTENTION : il ne faut decrementer le compteur de references de res
          *             qu'apres en avoir fini avec l'utilisation de tup.
          *             NE PAS decrementer le compteur de references de tup car
-         *             la disparition de res entrainera un decrement automatique 
+         *             la disparition de res entrainera un decrement automatique
          *             du compteur de tup (res=(nbval,tup))
          */
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
@@ -1791,7 +1796,7 @@ void DEFSSPPPSP(GETFTX,getftx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
 
         _DEBUT(getftx_) ;
                                                         SSCRUTE(PyString_AsString(PyObject_CallMethod(commande,"retnom",""))) ;
-                                                        FSSCRUTE(motfac,lfac); FSSCRUTE(motcle,lcle); 
+                                                        FSSCRUTE(motfac,lfac); FSSCRUTE(motcle,lcle);
                                                         ISCRUTE(*mxval);ISCRUTE(ltx) ; ISCRUTE(*iocc);
                                                         /*ASSERT((*iocc>0)||(FindLength(motfac,lfac)==0));*/
 
@@ -1876,7 +1881,7 @@ void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
                 Si le mot-cle simple est recherche sous un mot-cle facteur et uniquement dans ce cas,
                 le numero d'occurrence (*iocc) doit etre strictement positif.
                 Si le mot-cle simple est recherche sans un mot-cle facteur iocc n'est pas utilise
-                
+
         */
         if( isalpha(mfc[0])&&(*iocc<=0) )
         {
@@ -2511,12 +2516,12 @@ void gcncon2_(char *type,char *resul,int ltype,int lresul)
  * Pour conserver le lien entre le code de calcul en Fortran et le superviseur
  * en Python, on memorise la commande courante.
  * Cette commande est celle que le fortran interroge lors de ses appels à l'API
- * GETXXX. 
+ * GETXXX.
  * Cette commande courante est enregistrée dans une pile de commandes car avec le
  * mécanisme des macros, une commande peut avoir des sous commandes qui sont
  * appelées pendant l'exécution de la commande principale.
  * La fonction empile doit etre appelée avant l'exécution d'une commande (appel à oper,
- * par exemple) et la fonction depile doit etre appelée après l'exécution de cette 
+ * par exemple) et la fonction depile doit etre appelée après l'exécution de cette
  * commande.
  */
 static PyObject * empile(PyObject *c)
@@ -2576,10 +2581,72 @@ static PyObject * depile()
 
 PyObject * get_active_command()
 {
-        /* 
+        /*
          * Retourne un pointeur sur la commande active
          */
    return commande;
+}
+
+#define CALL_PRCOCH(nomce,nomcs,nomcmp,ktype,itopo,nval,groups) CALLSSSSPPS(PRCOCH,prcoch,nomce,nomcs,nomcmp,ktype,itopo,nval,groups)
+void DEFSSSSPPS(PRCOCH,prcoch,char *,int,char *,int,char *,int,char *,int,INTEGER *,INTEGER *,char *,int);
+
+static PyObject* aster_prepcompcham(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+        char *nomce;
+        char *nomcs;
+        char *nomcmp;
+        char *ktype;
+        char *groups;
+        PyObject *list;
+        INTEGER nval=0;
+        int k;
+        int long_nomcham=8;
+        INTEGER itopo;
+
+        _DEBUT(aster_prepcompcham) ;
+
+        if (!PyArg_ParseTuple(args, "sssslO:prepcompcham",&nomce,&nomcs,&nomcmp,&ktype,&itopo,&list)) return NULL;
+
+        nval=PyList_Size(list);
+
+
+        if (nval > 0) {
+          groups = (char *)malloc(nval*long_nomcham*sizeof(char));
+          converltx(nval,list,groups,long_nomcham); /* conversion  */
+        }
+        /* on ne peut passer a fortran une chaine non allouee
+           a cause du strlen() que l'on va faire dessus au moment du passage
+           c -> fortran
+        */
+        else {
+          groups = (char *)malloc(long_nomcham*sizeof(char));
+          groups = strcpy(groups,"        ");
+        }
+
+
+
+        try(1){
+                                SSCRUTE(nomce);
+                                SSCRUTE(nomcs);
+                                SSCRUTE(nomcmp);
+                                SSCRUTE(ktype);
+                                ISCRUTE(itopo);
+                                ISCRUTE(nval);
+                                FSSCRUTE(groups,nval*long_nomcham);
+          CALL_PRCOCH(nomce,nomcs,nomcmp,ktype,&itopo,&nval,groups);
+          Py_INCREF( Py_None ) ;
+          _FIN(aster_prepcompcham) ;
+          free(groups);
+          return Py_None;
+        }
+        catch(CodeAbortAster){
+          /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
+          PyErr_SetString(PyExc_KeyError, "Concept inexistant");
+          _FIN(aster_prepcompcham) ;
+          return NULL;
+        }
 }
 
 #define CALL_GETCON(nomsd,iob,ctype,lcon,iaddr,nomob) CALLSPPPPS(GETCON,getcon,nomsd,iob,ctype,lcon,iaddr,nomob)
@@ -2754,7 +2821,7 @@ PyObject *args;
 
         if (!PyArg_ParseTuple(args, "s:getcolljev",&nomsd)) return NULL;
 
-/* Taille de la collection */     
+/* Taille de la collection */
         nbval = 1;
         val = (INTEGER *)malloc((nbval)*sizeof(INTEGER));
         nom = (char *)malloc(24*sizeof(char));
@@ -2902,9 +2969,9 @@ PyObject *args;
    Arguments :
      IN Nom du maillage
      IN Nature des informations recherchees
-          GROUP_MA   -> Liste des groupes de mailles 
+          GROUP_MA   -> Liste des groupes de mailles
           GROUP_NO   -> Liste des groupes de noeuds
-          
+
      OUT liste
        'GROUP_MA' -> Liste des groupes de mailles
        'GROUP_NO' -> Liste des groupes de noeuds
@@ -2919,16 +2986,16 @@ PyObject *args;
         char *ligpno, *ligpma;
         INTEGER *linbma, *linbno, *lidima;
    PyObject *liste, *tuple;
-        
+
    if (!PyArg_ParseTuple(args, "ss",&noma, &mode)) return NULL;
 
-/* Identifiant de la SD Maillage */     
+/* Identifiant de la SD Maillage */
    nbval = 2;
    val = (INTEGER *)malloc((nbval)*sizeof(INTEGER));
    nom = (char *)malloc(24*sizeof(char));
    strcpy(nom, "LIST_GROUP");
 
-/* Taille de la SD maillage : nbr GROUP_NO, nbr GROUP_MA */     
+/* Taille de la SD maillage : nbr GROUP_NO, nbr GROUP_MA */
         CALL_TAILSD(nom, noma, val, &nbval);
 
    nbgpno = val[0];
@@ -2943,8 +3010,8 @@ PyObject *args;
    liste = PyList_New(0);
 
 /* Liste des GROUP_MA */
-        
-     if (strcmp(mode,"GROUP_MA") == 0)  
+
+     if (strcmp(mode,"GROUP_MA") == 0)
           {
           for (i=0; i<nbgpma; i++)
           {
@@ -2959,8 +3026,8 @@ PyObject *args;
           }
 
 /* Liste des GROUP_NO */
-        
-        if (strcmp(mode,"GROUP_NO") == 0)       
+
+        if (strcmp(mode,"GROUP_NO") == 0)
           {
           for (i=0; i<nbgpno; i++)
      {
@@ -2979,7 +3046,7 @@ PyObject *args;
           free(linbma);
           free(lidima);
           return liste;
-        
+
 }
 
 static PyObject* aster_GetResu(self, args)
@@ -2995,8 +3062,8 @@ PyObject *args;
           COMPOSANTES -> Liste des composantes des champs
           VARI_ACCES  -> Variables d'acces
           PARAMETRES  -> Parametres
-          
-          
+
+
      OUT dico
        Si 'CHAMPS'
        dico['NOM_CHAM'] -> [] si le champ n'est pas calcule
@@ -3008,10 +3075,10 @@ PyObject *args;
 
        Si 'VARI_ACCES'
        dico['NOM_VA']   -> Liste des valeurs de la variable d'acces
-       
+
        Si 'PARAMETRES'
        dico['NOM_VA']   -> Liste des valeurs du parametre
-       
+
 */
 
 {
@@ -3023,25 +3090,25 @@ PyObject *args;
    char nomch[16], ctype, nomva[16];
    int i, lo, nb;
    PyObject *dico, *liste, *key;
-        
+
    if (!PyArg_ParseTuple(args, "ss",&nomsd, &mode)) return NULL;
-        
+
 /* Identifiant de la SD resultat */	
    nbval = 1;
    val = (INTEGER *)malloc((nbval)*sizeof(INTEGER));
    nom = (char *)malloc(24*sizeof(char));
    strcpy(nom, "LIST_RESULTAT");
 
-/* Taille de la SD resultat : nbr champs, nbr paras, nbr numeros d'ordre */     
+/* Taille de la SD resultat : nbr champs, nbr paras, nbr numeros d'ordre */
 	CALL_TAILSD(nom, nomsd, val, &nbval);
    nbchmx = val[0];
    nbpamx = val[1];
    nbord  = val[2];
 
-   if (strcmp(mode,"CHAMPS") == 0 || strcmp(mode,"COMPOSANTES") == 0)   
+   if (strcmp(mode,"CHAMPS") == 0 || strcmp(mode,"COMPOSANTES") == 0)
 
 /* Construction du dictionnaire : cle d'acces = nom du champ */
-        
+
           {
      liord  = (INTEGER *)malloc(nbord*sizeof(INTEGER));
      liscmp = (char *)malloc(500*8*sizeof(char));
@@ -3053,50 +3120,50 @@ PyObject *args;
        lo = 16;
        while (nomch[lo-1] == ' ')  lo--;
        key = PyString_FromStringAndSize(nomch,lo);
-          
+
        liste = PyList_New(0);
 
        if (strcmp(mode,"CHAMPS") == 0)
-              { 
+              {
               for (i=0; i<nbord; i++)
               PyList_Append(liste,PyInt_FromLong(liord[i]));
               }
-              
+
             if (strcmp(mode,"COMPOSANTES") == 0)
-              { 
+              {
               for (i=0; i<nbcmp; i++)
                 {
                 nom = &(liscmp[i*8]);
                 lo = 8; while (nom[lo-1] == ' ')  lo--;
                 PyList_Append(liste,PyString_FromStringAndSize(nom,lo));
                 }
-              }     
-              
+              }
+
             PyDict_SetItem(dico,key,liste);
             };
-          
+
           free(liord);
           }
 
-        
-        else if (strcmp(mode,"VARI_ACCES") == 0 )   
-        
+
+        else if (strcmp(mode,"VARI_ACCES") == 0 )
+
 /* Extraction des variables d'acces */
 
           {
           ival  = (INTEGER *)malloc(nbord*sizeof(INTEGER));
           rval  = (double * )malloc(nbord*sizeof(double) );
-          
+
           dico = PyDict_New();
           for (numva=0; numva<=nbpamx; numva++)
             {
             CALL_RSACVA(nomsd, &numva, nomva, &ctype, ival, rval, &ier);
-            if (ier != 0) continue; 
-            
+            if (ier != 0) continue;
+
             lo = 16;
             while (nomva[lo-1] == ' ') lo--;
             key = PyString_FromStringAndSize(nomva,lo);
-          
+
             liste = PyList_New(0);
             if (ctype == 'I')
               for (i=0; i<nbord; i++)
@@ -3104,31 +3171,31 @@ PyObject *args;
             else
               for (i=0; i<nbord; i++)
                 PyList_Append(liste,PyFloat_FromDouble(rval[i]));
-                  
+
             PyDict_SetItem(dico,key,liste);
             };
-          
+
           free(ival);
           free(rval);
           }
-        else if (strcmp(mode,"PARAMETRES") == 0 )   
+        else if (strcmp(mode,"PARAMETRES") == 0 )
 
 /* Extraction des parametres */
 
           {
           ival  = (INTEGER *)malloc(nbord*sizeof(INTEGER));
           rval  = (double * )malloc(nbord*sizeof(double) );
-          
+
           dico = PyDict_New();
           for (numva=0; numva<=nbpamx; numva++)
             {
             CALL_RSACPA(nomsd, &numva, nomva, &ctype, ival, rval, &ier);
-            if (ier != 0) continue; 
-            
+            if (ier != 0) continue;
+
             lo = 16;
             while (nomva[lo-1] == ' ') lo--;
             key = PyString_FromStringAndSize(nomva,lo);
-          
+
             liste = PyList_New(0);
             if (ctype == 'I')
               for (i=0; i<nbord; i++)
@@ -3136,16 +3203,16 @@ PyObject *args;
             else
               for (i=0; i<nbord; i++)
                 PyList_Append(liste,PyFloat_FromDouble(rval[i]));
-                  
+
             PyDict_SetItem(dico,key,liste);
             };
-          
+
           free(ival);
           free(rval);
           };
 
         return dico;
-          
+
 }
 
 
@@ -3263,7 +3330,7 @@ PyObject *args;
 extern void STDCALL(IMPERS,impers)();
 #define CALL_IMPERS() F_FUNC(IMPERS,impers)()
 
-static PyObject * aster_impers(self)
+static PyObject * aster_impers(self,args)
 PyObject *self; /* Not used */
 {
         _DEBUT(aster_impers) ;
@@ -3502,6 +3569,15 @@ void TraitementFinAster( _IN int val )
         case CodeErrorAster :
                 PyErr_SetString(AsterError, exception_reason);
                 break ;
+
+        /* exceptions particularisées */
+        case CodeNonConvergenceAster :
+                PyErr_SetString(NonConvergenceError, exception_reason);
+                break ;
+        case CodeEchecComportementAster :
+                PyErr_SetString(EchecComportementError, exception_reason);
+                break ;
+
         default :
                 MESSAGE("code erreur INCONNU !!!!") ;
                 ISCRUTE(val) ;
@@ -3538,7 +3614,7 @@ int RecupNomCas(void)
                                                                 ASSERT(longueur[0]>0);
                   NomCas = (char*)(malloc((longueur[0]+1)*sizeof(char))) ;
                   BLANK(NomCas,longueur[0]); /* initialisation a blanc */
-                  NomCas[longueur[0]]='\0'; 
+                  NomCas[longueur[0]]='\0';
                                                                 ASSERT(NomCas!=(char*)0);
                   ltx = longueur[0];
                   CALL_GETVTX ( "CODE","NOM",iocc,iarg,mxval, NomCas ,&nbval) ;
@@ -3822,6 +3898,7 @@ static PyMethodDef aster_methods[] = {
                 {"mdnoch" ,     aster_mdnoch ,            METH_VARARGS},
                 {"myeval" ,     aster_myeval ,            METH_VARARGS},
                 {"argv" ,       aster_argv ,              METH_VARARGS},
+                {"prepcompcham",aster_prepcompcham,       METH_VARARGS},
                 {"getvectjev" , aster_getvectjev ,        METH_VARARGS, getvectjev_doc},
                 {"getcolljev" , aster_getcolljev ,        METH_VARARGS, getcolljev_doc},
                 {"GetResu",     aster_GetResu,            METH_VARARGS},

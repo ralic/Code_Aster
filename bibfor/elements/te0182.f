@@ -1,6 +1,6 @@
       SUBROUTINE TE0182(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C*
       COMPLEX*16         RHOSZ
       INTEGER            IPOIDS,IVF,IDFDX,IDFDY,IGEOM, IMATE
       INTEGER            NDIM,NNO,NDI,IPG,NPG1,IMATTT,IECH
-      INTEGER            IDEC,JDEC,KDEC,LDEC
+      INTEGER            IDEC,JDEC,KDEC,LDEC,NNOS,NPG2,JGANO
       INTEGER            NBPG(10)
 C
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -60,29 +60,10 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C**
-      CALL ELREF1(ELREFE)
-
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG2,IPOIDS,IVF,IDFDX,JGANO)
 C**
-      CHCTE = '&INEL.'//ELREFE//'.CARACTE'
-      CALL JEVETE(CHCTE,'L',JIN)
-      NDIM = ZI(JIN+1-1)
-      NNO = ZI(JIN+2-1)
-      NBFPG = ZI(JIN+3-1)
-      NDI = NNO*(NNO+1)/2
-      DO 111 I = 1,NBFPG
-         NBPG(I) = ZI(JIN+3-1+I)
-  111 CONTINUE
-      NPG1 = NBPG(1)
-      NPG2 = NBPG(2)
-C
-      CHVAL = '&INEL.'//ELREFE//'.FFORMES'
-      CALL JEVETE(CHVAL,'L',JVAL)
-C
-      IPOIDS = JVAL + (NDIM+1)*NNO*NNO
-      IPOIDS = IPOIDS + NPG1 + NPG1*NNO*(NDIM+1)
-      IVF    = IPOIDS + NPG2
-      IDFDX  = IVF    + NPG2 * NNO
       IDFDY  = IDFDX  + 1
+      NDI = NNO*(NNO+1)/2
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
 C**

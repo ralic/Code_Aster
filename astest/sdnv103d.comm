@@ -1,4 +1,4 @@
-# MODIF  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,8 +63,8 @@ CH=AFFE_CHAR_MECA(
             _F(APPARIEMENT  = 'MAIT_ESCL',
                REAC_GEOM    = 'CONTROLE',
                NB_REAC_GEOM = 2,
-               GROUP_MA_1='RIGID',
-               GROUP_MA_2='SZZ',
+               GROUP_MA_MAIT='RIGID',
+               GROUP_MA_ESCL='SZZ',
                FROTTEMENT = 'COULOMB',
                COEF_MATR_FROT = 0.4,
                COULOMB = 0.25,
@@ -168,24 +168,24 @@ DEPL_B1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN B1',
                                 OPERATION='EXTRACTION',),);
 
 
-IMPR_COURBE(FORMAT='AGRAF',
-            FICHIER='AGRAF',
-            LEGENDE_X='INSTANT (S)',
-            LEGENDE_Y='DEPLACEMENT DY',
-            COURBE=(_F(TABLE=VITE_A2,
-                       PARA_X='INST',
-                       PARA_Y='DY',
-                       LEGENDE='VITE EN A2',),
-                   _F(TABLE=DEPL_A1,
-                       PARA_X='INST',
-                       PARA_Y='DY',
-                       LEGENDE='DEPL EN A1',),
-                   _F(TABLE=DEPL_B1,
-                       PARA_X='INST',
-                       PARA_Y='DY',
-                       LEGENDE='DEPL EN B1',),
-                                           ));
-
+#IMPR_COURBE(FORMAT='AGRAF',
+#            FICHIER='AGRAF',
+#            LEGENDE_X='INSTANT (S)',
+#            LEGENDE_Y='DEPLACEMENT DY',
+#            COURBE=(_F(TABLE=VITE_A2,
+#                       PARA_X='INST',
+#                       PARA_Y='DY',
+#                       LEGENDE='VITE EN A2',),
+#                   _F(TABLE=DEPL_A1,
+#                       PARA_X='INST',
+#                       PARA_Y='DY',
+#                       LEGENDE='DEPL EN A1',),
+#                   _F(TABLE=DEPL_B1,
+#                       PARA_X='INST',
+#                       PARA_Y='DY',
+#                       LEGENDE='DEPL EN B1',),
+#                                           ));
+#
 #####################################################
 # TESTS DE DEPLACEMENTS, VITESSES ET ACCELERATIONS
 #####################################################

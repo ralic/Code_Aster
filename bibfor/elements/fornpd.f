@@ -1,5 +1,5 @@
       SUBROUTINE FORNPD ( OPTION , NOMTE )
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -190,10 +190,9 @@ C
            CALL MAHSMS(0,NB1,ZR(JGEOM),KSI3S2,INTSR,ZR(LZR),HEPA,VECTN,
      &                                             VECTG,VECTT,HSFM,HSS)
 C
-           CALL HSJ1MS(ZR(JGEOM),INTE,INTSR,ZR(LZR),HEPA,VECTG,VECTT,
-     &                                             HSFM,HSS,HSJ1M,HSJ1S)
+           CALL HSJ1MS(HEPA,VECTG,VECTT,HSFM,HSS,HSJ1M,HSJ1S)
 C
-           CALL BTDMSR(NB1,NB2,ZR(JGEOM),KSI3S2,INTSR,ZR(LZR),HEPA,
+           CALL BTDMSR(NB1,NB2,KSI3S2,INTSR,ZR(LZR),HEPA,
      &                                     VECTPT,HSJ1M,HSJ1S,BTDM,BTDS)
  120    CONTINUE
 C
@@ -202,16 +201,14 @@ C
           CALL MAHSF(1,NB1,ZR(JGEOM),KSI3S2,INTSN,ZR(LZR),HEPA,VECTN,
      &                                                  VECTG,VECTT,HSF)
 C
-          CALL HSJ1F(ZR(JGEOM),INTE,INTSN,ZR(LZR),HEPA,VECTG,VECTT,HSF,
-     &                                                  KWGT,HSJ1FX,WGT)
+          CALL HSJ1F(INTSN,ZR(LZR),HEPA,VECTG,VECTT,HSF,KWGT,HSJ1FX,WGT)
 C
           WGT=COEF*WGT
 C
-          CALL BTDFN(1,NB1,NB2,ZR(JGEOM),KSI3S2,INTSN,ZR(LZR),HEPA,
+          CALL BTDFN(1,NB1,NB2,KSI3S2,INTSN,ZR(LZR),HEPA,
      &                                               VECTPT,HSJ1FX,BTDF)
 C
-          CALL BTDMSN(1,NB1,ZR(JGEOM),INTE,INTSN,NPGSR,ZR(LZR),BTDM,
-     &                                                  BTDF,BTDS,BTILD)
+          CALL BTDMSN(1,NB1,INTSN,NPGSR,ZR(LZR),BTDM,BTDF,BTDS,BTILD)
 C
           KPGS = KPGS + 1
           K1=6*(KPGS-1)

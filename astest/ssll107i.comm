@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 04/11/2003   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE VALIDATION DE POST_ELEM MOT CLE FACTEUR CARA_GEOM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@ TCARA=MACR_CARA_POUTRE(   GROUP_MA_BORD='LEXT',
                                 GROUP_MA_INTE='LINT',
    # UNIQUEMENT POUR NE PAS AVOIR DE MATRICE SINGULIERE:
                                NOEUD='N1' )
-
+IMPR_TABLE(TABLE=TCARA)
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
@@ -33,6 +33,13 @@ TEST_TABLE(     TABLE=TCARA,
                  NOM_PARA='CT',
                 PRECISION=0.003,
                      VALE=5401.97       )
+
+TEST_TABLE(     TABLE=TCARA,
+                  FILTRE=_F(  NOM_PARA = 'LIEU',
+                           VALE_K = '.9000003'),
+                 NOM_PARA='RT',
+                 REFERENCE='ANALYTIQUE',
+                     VALE=10.000       )
 
 FIN( )
 #

@@ -1,4 +1,4 @@
-      SUBROUTINE DKQRIG ( XYZL, OPTION, PGL, RIG, ENER )
+      SUBROUTINE DKQRIG ( NOMTE, XYZL, OPTION, PGL, RIG, ENER )
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,9 +18,9 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT  NONE
       REAL*8        XYZL(4,*), PGL(*), RIG(*), ENER(*)
-      CHARACTER*(*) OPTION
+      CHARACTER*16  OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 06/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DKQ
 C     ------------------------------------------------------------------
@@ -56,7 +56,6 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 FLEX(144),MEMB(64),MEFL(96)
       REAL*8 BSIGTH(24),ENERTH, EXCENT, R8GAEM, UN, CTOR
       LOGICAL ELASCO, EXCE, INDITH
-      CHARACTER*8 TYPELE
 
 C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
       INTEGER NPG,NNO,NC
@@ -74,11 +73,11 @@ C     ------------------------------------------------------------------
 
       CALL JEMARQ()
 C
+      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
+C
       UN = 1.0D0
       ENERTH = 0.0D0
-      TYPELE = 'MEDKQU4'
-      CALL JEVETE('&INEL.MEDKQU4 .DESR',' ',LZR)
-
+C
       CALL JEVECH('PCACOQU','L',JCOQU)
       CTOR   = ZR(JCOQU+3)
       EXCENT = ZR(JCOQU+4)
@@ -132,7 +131,7 @@ C           ----- CALCUL DU PRODUIT BMT.DMF.BF -------------------------
         CALL JEVECH('PDEPLAR','L',JDEPG)
         CALL UTPVGL(4,6,PGL,ZR(JDEPG),DEPL)
         CALL DXQLOE(FLEX,MEMB,MEFL,CTOR,MULTIC,DEPL,ENER)
-        CALL BSTHPL(TYPELE,BSIGTH,INDITH)
+        CALL BSTHPL(NOMTE(1:8),BSIGTH,INDITH)
         IF (INDITH) THEN
           DO 20 I = 1, 24
             ENERTH = ENERTH + DEPL(I)*BSIGTH(I)

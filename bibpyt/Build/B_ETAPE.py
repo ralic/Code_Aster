@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF B_ETAPE Build  DATE 04/02/2004   AUTEUR CAMBIER S.CAMBIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,7 @@ import traceback
 # Module Eficas
 from Noyau.N_utils import prbanner
 from Noyau.N_utils import AsType
-from Noyau import N_MCFACT,N_MCBLOC,N_MCLIST,N_EVAL,N_ASSD
+from Noyau import N_MCSIMP,N_MCFACT,N_MCBLOC,N_MCLIST,N_EVAL,N_ASSD
 from Noyau import N_FACT,N_BLOC,N_SIMP
 from Noyau.N_Exception import AsException
 from Noyau.N_ASSD import ASSD
@@ -87,17 +87,6 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       """
       if mode in (1,2):
          self.modexec=mode
-
-   def get_cmd(self,nomcmd):
-      """ 
-          Méthode pour recuperer la definition d'une commande
-          donnee par son nom dans les catalogues declares
-          au niveau du jdc
-          Appele par un ops d'une macro en Python
-      """
-      for cata in self.jdc.cata:
-        if hasattr(cata,nomcmd):
-          return getattr(cata,nomcmd)
 
    def getres(self):
       """
@@ -416,17 +405,22 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
          Cette methode retourne un reel aleatoire
       """
 
-      valeur=self.parent.alea.random()
+      if self.jdc.alea==None :
+      # le generateur n'a pas ete initialise, on l'initialise
+         bidon=self.iniran(0)
+      valeur=self.jdc.alea.random()
       resu=(valeur,)
       return resu
 
-   def iniran(self,):
+   def iniran(self,jump=0):
       """
-         Cette methode retourne un reel aleatoire
+         Cette methode initialise le generateur de nombres pseudo-aleatoires,
+          et fait faire un saut de jump termes dans la suite de nombre.
       """
 
       from random import Random
-      self.parent.alea=Random(100.)
+      self.jdc.alea=Random(100)
+      self.jdc.alea.jumpahead(jump)
       return None
 
    def getvr8(self,nom_motfac,nom_motcle,iocc,iarg,mxval):
@@ -580,43 +574,59 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       else:
          return 0,0
 
-   def getfns(self,nom_motfac):
-      """
-         Retourne le nombre max de mots cles simples sous les mots cles facteurs 
-         portant le nom nomfac
-           motfac   : nom du mot cle facteur
-      """
-      if CONTEXT.debug : prbanner("getmnb")
-      assert(hasattr(self,'nom')),"self n'a pas d'attribut nom PB"
-      nom_motfac=string.strip(nom_motfac)
-      return self.definition.getfns(nom_motfac)
-
-   def getmfm(self,motfac,nbval):
+   def getmjm(self,motfac,iocc,nbval):
       """
          Retourne des informations sur le mot cle facteur motfac du catalogue de la commande nomcmd
            motfac   : nom du mot cle facteur
-           nbval    : nombre de sous mots cles demandes
-                       si le nombre effectif est superieur ne retourne que nbval sous mots cles
+           iocc     : numero d occurence du mot cle facteur
          Retour:
-           motcle : liste des sous mots cles (limitee a une taille de nbval)
+           motcle : liste des sous mots cles
            typ    : liste des types des sous mots cles
            nbarg  : nombre total d arguments du mot cle facteur(a priori ne doit etre utilise que par le superviseur)
       """
-      if CONTEXT.debug : prbanner("getmfm %s %d " %(motfac,nbval))
       motfac=string.strip(motfac)
-      return self.definition.getmfm(motfac,nbval)
+      if motfac!='' :
+         mcfact=self.get_mocle(motfac)
+         if mcfact==None :
+             return ([],[])
+         else : mcfact=mcfact[iocc]
+      else :
+         mcfact=self
+      # On a trouvé le mot cle facteur
+      dico_mcsimp=mcfact.cree_dict_valeurs(mcfact.mc_liste)
+      lmc=[]
+      lty=[]
+      for name in dico_mcsimp.keys() :
+         if dico_mcsimp[name] != None :
+           child=mcfact.definition.get_entite(name)
+           if child and child.label == 'SIMP':
+             lmc.append(name)
+             lty.append(B_utils.Typast(child.type))
+      return (lmc,lty)
+
 
    def getmat(self):
       """
           Retourne :
-            le nombre de mots cles facteur sous la commande, y compris en eliminant les blocs
-            la liste de leur noms
-            Attention : les doublons sont elimines
+            la liste des noms de mots cles facteur sous l etape
       """
-      if CONTEXT.debug : prbanner("getmat")
-      assert(hasattr(self,'nom')),"self n'a pas d'attribut nom PB"
-      return self.definition.getmat()
+      liste=self.getlfact()
+      return (liste,)
 
+   def getlfact(self):
+      """
+          Retourne :
+            la liste des noms de mots cles facteurs sous l etape
+      """
+      liste=[]
+      for child in self.mc_liste :
+        if isinstance(child,N_MCFACT.MCFACT) :
+          liste.append(child.nom)
+        elif isinstance(child,N_MCLIST.MCList) :
+          liste.append(child[0].nom)
+        elif isinstance(child,N_MCBLOC.MCBLOC) :
+          liste= liste+child.getlfact()
+      return liste
 
    def gcucon(self,icmd,resul,concep):
       """

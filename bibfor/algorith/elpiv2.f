@@ -1,8 +1,8 @@
       SUBROUTINE ELPIV2(XJVMAX, NDIM, INDIC, NBLIAC, AJLIAI, SPLIAI,
-     +                    LLF, LLF1, LLF2, SPAVAN, NOMA, DEFICO, RESOCO)
+     +                    LLF, LLF1, LLF2, NOMA, DEFICO, RESOCO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/07/2003   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,6 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT      NONE
       INTEGER       NDIM, INDIC, NBLIAC, AJLIAI, SPLIAI, LLF, LLF1, LLF2
-      INTEGER       SPAVAN
       REAL*8        XJVMAX
       CHARACTER*8   NOMA
       CHARACTER*24  RESOCO, DEFICO

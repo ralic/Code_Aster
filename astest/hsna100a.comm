@@ -1,4 +1,4 @@
-# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 06/04/2004   AUTEUR JOUMANA J.EL-GHARIB 
 # TITRE SECHAGE EN 2D AXISYMETRIQUE  - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -428,10 +428,11 @@ RESUMECA=STAT_NON_LINE(
               )
 
 #
+# VALEURS DE REFERENCE ASTER DE LA VERSION 7.2.25
 
 TEST_RESU( 
            RESU=_F(  RESULTAT = RESUMECA,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 32, 
-             GROUP_NO = 'A2',   NOM_CMP = 'DX',    VALE = -1.840E-01,    )
+             GROUP_NO = 'A2',   NOM_CMP = 'DX',    VALE = -1.8582096E-01, REFERENCE = 'NON_REGRESSION',   )
             )
 
 #

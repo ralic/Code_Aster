@@ -4,7 +4,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -263,7 +263,7 @@ C
 
 
         CALL CJSELA ( MOD, CRIT, MATERF, DEPSTH, SIGD, SIGF,
-     &                NVI, VIND, VINF ,NIVCJS)
+     &                NVI, VIND, VINF)
 
 
 C

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/10/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 29/01/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,19 +22,33 @@ DEFI_FICHIER=PROC(nom="DEFI_FICHIER",op=26,docu="U4.12.03-a",
                   fr="Gestion d une unité logique : ajout, suppression",
 
             ACTION        =SIMP(statut='f',typ='TXM',into=("ASSOCIER","LIBERER"),defaut="ASSOCIER"),
-            UNITE         =SIMP(statut='o',typ='I' ,val_min=1),
             b_associer    =BLOC(condition = "ACTION == 'ASSOCIER'",fr="Paramètres pour l ouverture du fichier",
                TYPE          =SIMP(statut='f',typ='TXM',into=("ASCII","BINARY","LIBRE"),defaut="ASCII"),
                b_type_ascii  =BLOC(condition = "TYPE == 'ASCII'",fr="Paramètres pour le type ASCII",
                   NOM_SYSTEME   =SIMP(statut='f',typ='TXM',validators=LongStr(1,255)),
+                  b_nom_systeme_present =BLOC(condition="NOM_SYSTEME == None",
+                                              fr="Sans nom de fichier,l unite logique est nécessaire",
+                      UNITE         =SIMP(statut='o',typ='I' ,val_min=1),
+                  ),
+                  b_nom_systeme_absent =BLOC(condition="NOM_SYSTEME != None",
+                                             fr="Avec un nom de fichier,l unite logique est facultative",
+                      UNITE         =SIMP(statut='f',typ='I' ,val_min=1),
+                  ),
                   FICHIER       =SIMP(statut='o',typ='TXM'),
+                  ACCES         =SIMP(statut='f',typ='TXM',into=("NEW","APPEND","OLD"),defaut="NEW"),
                ),
                b_type_autre  =BLOC(condition = "TYPE != 'ASCII'",fr="Paramètres pour les types BINARY et LIBRE",
-                  regles=(AU_MOINS_UN('NOM_SYSTEME','FICHIER'),),
+                  regles=(AU_MOINS_UN('NOM_SYSTEME','UNITE'),),
+                  UNITE         =SIMP(statut='f',typ='I' ,val_min=1),
                   NOM_SYSTEME   =SIMP(statut='f',typ='TXM',validators=LongStr(1,255)),
                   FICHIER       =SIMP(statut='f',typ='TXM'),
+                  ACCES         =SIMP(statut='f',typ='TXM',into=("NEW","OLD"),defaut="NEW"),
                ),
-               ACCES         =SIMP(statut='f',typ='TXM',into=("NEW","APPEND","OLD"),defaut="NEW"),
             ),
-            INFO          =SIMP(statut='f',typ='I',into=(1,2) ),           
+            b_liberer    =BLOC(condition = "ACTION == 'LIBERER'",fr="Paramètres pour la fermeture du fichier",
+                  regles=(UN_PARMI('NOM_SYSTEME','UNITE'),),
+                  UNITE         =SIMP(statut='f',typ='I' ,val_min=1),
+                  NOM_SYSTEME   =SIMP(statut='f',typ='TXM',validators=LongStr(1,255)),
+           ),
+           INFO          =SIMP(statut='f',typ='I',into=(1,2) ),           
            )

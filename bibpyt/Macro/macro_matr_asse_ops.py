@@ -1,4 +1,4 @@
-#@ MODIF macro_matr_asse_ops Macro  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_matr_asse_ops Macro  DATE 19/01/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,7 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
          renum='RCMK'
       if renum not in ('SANS','RCMK'):
         ier=ier+1
-        self.cr.fatal("Avec methode LDLT, RENUM doit etre SANS ou RCMK.")
+        self.cr.fatal("<F> <MACRO_MATR_ASSE> Avec methode LDLT, RENUM doit etre SANS ou RCMK.")
         return ier
     elif methode=='MULT_FRONT':
       if SOLVEUR['RENUM']:
@@ -53,7 +53,7 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
          renum='MDA'
       if renum not in ('MDA','MD','METIS'):
         ier=ier+1
-        self.cr.fatal("Avec methode MULT_FRONT, RENUM doit etre MDA, MD ou RCMK.")
+        self.cr.fatal("<F> <MACRO_MATR_ASSE> Avec methode MULT_FRONT, RENUM doit etre MDA, MD ou RCMK.")
         return ier
     elif methode=='GCPC':
       if SOLVEUR['RENUM']:
@@ -62,7 +62,7 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
          renum='SANS'
       if renum not in ('SANS','RCMK'):
         ier=ier+1
-        self.cr.fatal("Avec methode GCPC, RENUM doit etre SANS ou RCMK.")
+        self.cr.fatal("<F> <MACRO_MATR_ASSE> Avec methode GCPC, RENUM doit etre SANS ou RCMK.")
         return ier
   else:
     methode='MULT_FRONT'
@@ -97,29 +97,29 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
     if iocc == 1 and lnume == 1 and option not in ('RIGI_MECA','RIGI_MECA_LAGR',
                                                    'RIGI_THER','RIGI_ACOU')      :
       ier=ier+1
-      self.cr.fatal("UNE DES OPTIONS DOIT ETRE RIGI_MECA OU RIGI_THER OU RIGI_ACOU OU RIGI_MECA_LAGR")
+      self.cr.fatal("<F> <MACRO_MATR_ASSE> UNE DES OPTIONS DOIT ETRE RIGI_MECA OU RIGI_THER OU RIGI_ACOU OU RIGI_MECA_LAGR")
       return ier
 
     if m['SIEF_ELGA']!=None and option!='RIGI_GEOM':
       ier=ier+1
-      self.cr.fatal("SIEF_ELGA N EST ADMIS QU AVEC L OPTION RIGI_GEOM")
+      self.cr.fatal("<F> <MACRO_MATR_ASSE> SIEF_ELGA N EST ADMIS QU AVEC L OPTION RIGI_GEOM")
       return ier
 
     if m['MODE_FOURIER']!=None and option not in ('RIGI_MECA','RIGI_FLUI_STRU','RIGI_THER'):
       ier=ier+1
-      self.cr.fatal("MODE_FOURIER N EST ADMIS QU AVEC UNE DES OPTIONS RIGI_MECA RIGI_FLUI_STRU RIGI_THER")
+      self.cr.fatal("<F> <MACRO_MATR_ASSE> MODE_FOURIER N EST ADMIS QU AVEC UNE DES OPTIONS RIGI_MECA RIGI_FLUI_STRU RIGI_THER")
       return ier
 
     if (m['THETA']!=None or m['PROPAGATION']!=None) and option!='RIGI_MECA_LAGR':
       ier=ier+1
-      self.cr.fatal("PROPAGATION ET,OU THETA NE SONT ADMIS QU AVEC L OPTION RIGI_MECA_LAGR")
+      self.cr.fatal("<F> <MACRO_MATR_ASSE> PROPAGATION ET,OU THETA NE SONT ADMIS QU AVEC L OPTION RIGI_MECA_LAGR")
       return ier
 
     motscles={'OPTION':option}
     if option == 'AMOR_MECA':
        if (not lrigel or not lmasel):
           ier=ier+1
-          self.cr.fatal("""POUR CALCULER AMOR_MECA, IL FAUT AVOIR CALCULE
+          self.cr.fatal("""<F> <MACRO_MATR_ASSE> POUR CALCULER AMOR_MECA, IL FAUT AVOIR CALCULE
                            RIGI_MECA ET MASS_MECA AUPARAVANT (DANS LE MEME APPEL)""")
           return ier
        if CHAM_MATER != None:
@@ -155,27 +155,3 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
     self.DeclareOut('mm',m['MATRICE'])
     mm=ASSE_MATRICE(MATR_ELEM=__a,NUME_DDL=num)
   return ier
-
-
-def macro_matr_asse_prod(self,NUME_DDL,MATR_ASSE,**args):
-  if not MATR_ASSE:  raise AsException("Impossible de typer les concepts resultats")
-  if not NUME_DDL:  raise AsException("Impossible de typer les concepts resultats")
-  self.type_sdprod(NUME_DDL,nume_ddl)
-  for m in MATR_ASSE:
-    opti=m['OPTION']
-
-    if opti in ( "RIGI_MECA","RIGI_FLUI_STRU","RIGI_MECA_LAGR" ,
-       "MASS_MECA" , "MASS_FLUI_STRU" ,"RIGI_GEOM" ,"RIGI_ROTA",
-       "AMOR_MECA","IMPE_MECA","MASS_ID_MDEP_R","MASS_ID_MDNS_R",
-       "ONDE_FLUI","MASS_MECA_DIAG" ) : t=matr_asse_depl_r
-
-    if opti in ( "RIGI_ACOU","MASS_ACOU","AMOR_ACOU",) : t=matr_asse_pres_c
-
-    if opti in ( "RIGI_THER","MASS_THER","RIGI_THER_CONV" ,
-       "RIGI_THER_CONV_D","MASS_ID_MTEM_R","MASS_ID_MTNS_R",) : t=matr_asse_temp_r
-
-    if opti == "RIGI_MECA_HYST"   : t= matr_asse_depl_c
-
-    self.type_sdprod(m['MATRICE'],t)
-  return None
-

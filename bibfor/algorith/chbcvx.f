@@ -1,8 +1,8 @@
-        SUBROUTINE CHBCVX ( IMAT, NMAT, MATER, TEMP, SIG ,VIN, SEUIL )
+        SUBROUTINE CHBCVX ( NMAT, MATER, SIG ,VIN, SEUIL )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,15 +28,13 @@ C                       ET    D    = SIG - 1/3 TR(SIG) I
 C       ----------------------------------------------------------------
 C       IN  SIG    :  CONTRAINTE
 C       IN  VIN    :  VARIABLES INTERNES = ( X1 X2 P )
-C       IN  IMAT   :  ADRESSE DU MATERIAU CODE
 C       IN  NMAT   :  DIMENSION MATER
-C       IN  TEMP   :  TEMPERATURE
 C       IN  MATER  :  COEFFICIENTS MATERIAU A TEMP
 C       OUT SEUIL  :  SEUIL  ELASTICITE
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NDT , NDI , NMAT
+        INTEGER         NDT , NDI , NMAT
         REAL*8          P ,   SIG(6) , X1(6) , X2(6) , DEV(6) , VIN(*)
-        REAL*8          MATER(NMAT,2) , TEMP, RI , RO , B , SEUIL
+        REAL*8          MATER(NMAT,2) , RI , RO , B , SEUIL
         REAL*8          LCNRTS , CHBISO
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT , NDI

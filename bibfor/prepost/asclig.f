@@ -8,7 +8,7 @@
       LOGICAL         FLAG
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/03/2002   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C     ------------------------------------------------------------------
-      INTEGER      ISEP0, IGR, ISEP, IPOS, NBGRNO, I8, I, J, NBSEP,
+      INTEGER      ISEP0, IGR, ISEP, IPOS, NBGRNO, I8, I9, I, J, NBSEP,
      &             K, I16V(5), NBPARA, JPARA, IRET, I8V(6), I80, ICOOR,
      &             NBNOL, JGRN, LT1
       REAL*8       VECTY(3), PI, R8PI, ACOUR, ASEPR, X, Y, Z, ANGSEC,
@@ -90,6 +90,7 @@ C
       PSICIR = .FALSE.
 C
       I8  = 8
+      I9  = 9
       I80 = 80
       GRPNOE = MAILLA//'.GROUPENO        '
       COORD  = MAILLA//'.COORDO    .VALE'
@@ -157,6 +158,7 @@ C
                CALL SMDCMD ( ICMD, NOPOSD, 'POST_RCCM', IERUSR )
                CALL PUTVID ( 'MATER',        1, MATER, IERUSR )
                CALL PUTVID ( 'MAILLAGE',     1, MAILLA, IERUSR )
+               CALL PUTVTX ( 'TYPE_RESU_MECA',1,'EVOLUTION',I9,IERUSR)
                CALL PUTVTX ( 'OPTION', 1, OPER(2) ,I8, IERUSR)        
                CALL SMDMCF ( 'TRANSITOIRE', IERUSR )
                 CALL PUTVID ( 'RESULTAT', 1, NOMRES, IERUSR )
@@ -372,6 +374,7 @@ C
         CALL SMDCMD ( ICMD, NOPOSD, 'POST_RCCM', IERUSR )
         CALL PUTVID ( 'MATER',        1, MATER, IERUSR )
         CALL PUTVID ( 'MAILLAGE',     1, MAILLA, IERUSR )        
+        CALL PUTVTX ( 'TYPE_RESU_MECA', 1, 'EVOLUTION', I9, IERUSR)
         CALL PUTVTX ( 'OPTION', 1, OPER(2) ,I8, IERUSR)        
         CALL SMDMCF ( 'TRANSITOIRE', IERUSR )
           CALL PUTVID ( 'RESULTAT', 1, NOMRES, IERUSR )

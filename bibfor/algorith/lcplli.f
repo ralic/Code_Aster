@@ -1,10 +1,9 @@
-        SUBROUTINE LCPLLI ( LOI, MOD,  IMAT, NMAT, MATERD,MATERF,MATCST,
-     1                      NR,  NVI,TEMPD, TEMPF,TIMED,TIMEF,DEPS,EPSD,
-     2                      SIGD,  VIND, SIGF, VINF)
+        SUBROUTINE LCPLLI ( MOD, NMAT, NR, NVI,EPSD,
+     2                      SIGD, VIND, SIGF, VINF)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,18 +27,8 @@ C
 C       ON RESOUD DONC          DRDY DY - R = 0
 C       ET ON REACTUALISE       YF = YD + DY
 C       ----------------------------------------------------------------
-C       IN  LOI    :  MODELE DE COMPORTEMENT
-C           MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
+C       IN  MOD    :  TYPE DE MODELISATION
 C           NMAT   :  DIMENSION MATER
-C           MATERD :  COEFFICIENTS MATERIAU A T
-C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           MATCST :  'OUI' SI MATERIAU CONSTANT SUR DT
-C           TEMPD  :  TEMPERATURE A T
-C           TEMPF  :  TEMPERATURE A T+DT
-C           TIMED  :  INSTANT  T
-C           TIMEF  :  INSTANT T+DT
-C           DEPS   :  INCREMENT DE DEFORMATION
 C           EPSD   :  DEFORMATION A T
 C           SIGD   :  CONTRAINTE A T
 C           VIND   :  VARIABLES INTERNES A T
@@ -55,7 +44,7 @@ C           DY     :  INCREMENT DES VARIABLES = ( DSIG  DVIN  (DEPS3)  )
 C           YD     :  VARIABLES A T   = ( SIGD  VIND  (EPSD3)   )
 C           YF     :  VARIABLES A T+DT= ( SIGF  VINF  (EPSF3)   )
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NMAT,    NMOD
+        INTEGER         NMAT,    NMOD
         REAL*8          ZERO   , UN
 C
         PARAMETER       ( NMOD = 25     )
@@ -66,17 +55,14 @@ C
 C
         LOGICAL         FAUX
 C
-        REAL*8          TEMPD,          TEMPF, TIMED, TIMEF
-        REAL*8          HOOK(6,6),      EPSD(6),   DEPS(6)
+        REAL*8          HOOK(6,6),      EPSD(6)
         REAL*8          SIGD(6),        SIGF(6)
         REAL*8          VIND(*),        VINF(*)
         REAL*8          R(NMOD),        DRDY(NMOD,NMOD)
         REAL*8          DY(NMOD),       YD(NMOD) , YF(NMOD)
-        REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2), Z
+        REAL*8          Z
 C
         CHARACTER*8     MOD
-        CHARACTER*16    LOI
-        CHARACTER*3     MATCST
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
@@ -105,13 +91,11 @@ C         RESOLUTION DU SYSTEME LINEAIRE DRDY DY  = R
 C
 C --      CALCUL DES TERMES DU SYSTEME A T+DT = R
 C
-          CALL LCPL2M ( LOI,   MOD,   IMAT, NMAT, MATERF, TEMPD, TEMPF,
-     1                  TIMED, TIMEF, DEPS, EPSD, YD,  YF, NMOD,  R )
+          CALL LCPL2M (NMAT,NMOD)
 C
 C --      CALCUL DE L OPERATEUR LINEAIRE DU SYSTEME  = DRDY
 C
-          CALL LCPLMA ( LOI,   MOD,   IMAT, NMAT, MATERF, TEMPD, TEMPF,
-     1                  TIMED, TIMEF, DEPS, EPSD, YD,  YF, NMOD,  DRDY)
+          CALL LCPLMA (NMAT,NMOD)
 C
 C --      RESOLUTION DU SYSTEME LINEAIRE DRDY.DY = R
 C

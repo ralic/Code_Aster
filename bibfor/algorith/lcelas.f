@@ -1,11 +1,11 @@
-        SUBROUTINE LCELAS ( LOI,   MOD,  IMAT,  NMAT,  MATERD, MATERF,
-     1                      MATCST,NVI,  TEMPD, TEMPF, TIMED,  TIMEF,
-     2                      DEPS,  EPSD, SIGD , VIND,  SIGF,   VINF,
+        SUBROUTINE LCELAS ( LOI,   MOD, NMAT,  MATERD, MATERF,
+     1                      MATCST,NVI,
+     2                      DEPS, SIGD , VIND,  SIGF,   VINF,
      3                      THETA )
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,30 +25,23 @@ C ======================================================================
 C       ----------------------------------------------------------------
 C       INTEGRATION ELASTIQUE SUR DT
 C       IN  LOI    :  NOM DU MODELE DE COMPORTEMENT
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           MOD    :  MODELISATION
 C           NMAT   :  DIMENSION MATER
 C           MATERD :  COEFFICIENTS MATERIAU A T
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           MATCST :  'OUI' SI MATERIAU CONSTANT SUR DT
-C           TEMPD  :  TEMPERATURE A T
-C           TEMPF  :  TEMPERATURE A T+DT
-C           TIMED  :  INSTANT  T
-C           TIMEF  :  INSTANT  T+DT
 C           VIND   :  VARIABLES INTERNES A T
-C           EPSD   :  DEFORMATION A T
 C           SIGD   :  CONTRAINTE  A T
 C       VAR DEPS   :  INCREMENT DE DEFORMATION
 C       OUT SIGF   :  CONTRAINTE A T+DT
 C           VINF   :  VARIABLES INTERNES A T+DT
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NMAT , NDT    , NDI , NVI
+        INTEGER         NMAT , NDT    , NDI , NVI
 C
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
-        REAL*8          TEMPD, TEMPF,   TIMED, TIMEF, THETA
+        REAL*8          THETA
         REAL*8          SIGD(6) ,       SIGF(6)
         REAL*8          VIND(*) ,       VINF(*)
-        REAL*8          EPSD(6) ,       DEPS(6)
+        REAL*8          DEPS(6)
 C
         CHARACTER*8     MOD
         CHARACTER*16    LOI
@@ -63,7 +56,7 @@ C
      1      LOI(1:4)  .EQ. 'OHNO'        .OR.
      1      LOI(1:7)  .EQ. 'NADAI_B'     .OR.
      1      LOI(1:6)  .EQ. 'LAIGLE'          ) THEN
-          CALL LCELIN ( MOD, NMAT, MATERD, MATERF, MATCST,
+          CALL LCELIN ( MOD, NMAT, MATERD, MATERF,
      1                  NVI, DEPS, SIGD, VIND, SIGF, VINF )
 C
       ELSEIF (LOI(1:8) .EQ. 'ROUSS_PR'  .OR.

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfwsv utilitai  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF hdfwsv utilitai  DATE 04/11/2003   AUTEUR D6BHHJP J.P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -75,6 +75,8 @@
     dimsf[0] = *lsv;
   } else if ((istat=strcmp(vtype,"I"))==0) {    
     type_id = H5T_NATIVE_LONG; 
+  } else if ((istat=strcmp(vtype,"S"))==0) {    
+    type_id = H5T_NATIVE_INT; 
   } else if ((istat=strcmp(vtype,"L"))==0) {    
     type_id = H5T_NATIVE_HBOOL; 
   } else if ((istat=strcmp(vtype,"K"))==0) {    

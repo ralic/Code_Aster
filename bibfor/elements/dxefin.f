@@ -1,4 +1,7 @@
       SUBROUTINE DXEFIN ( NOMTE, DEPL, EFFGT)
+      IMPLICIT  NONE
+      REAL*8        DEPL(24), EFFGT(32)
+      CHARACTER*16  NOMTE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,11 +19,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT  NONE
-      REAL*8       DEPL(24), EFFGT(32)
-      CHARACTER*16 NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 06/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C
 C     CALCUL DES EFFORTS GENERALISES POUR LES ELEMENTS DE PLAQUE
 C     DKT, DST, DKQ, DSQ ET Q4G, DANS LE REPERE LOCAL A L'ELEMENT
@@ -49,12 +49,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      I, ICOMPX, JGEOM, JMATE, LZI, LZR, NNO
+      INTEGER      I, ICOMPX, JGEOM, JMATE, LZR, NNO
       REAL*8       PGL(3,3), SIGTH(32), TMOY(4), TSUP(4), TINF(4),
      +             XYZL(3,4), ZERO
       LOGICAL      INDITH
       CHARACTER*16 OPTION
-      CHARACTER*24 DESI, DESR
 C     ------------------------------------------------------------------
 C
 C --- INITIALISATIONS :
@@ -74,27 +73,27 @@ C
         TSUP(I) = ZERO
    20 CONTINUE
 C
-C --- RECUPERATION DES COORDONNEES DES CONNECTIVITES :
-C     ----------------------------------------------
+      CALL JEVECH('PMATERC','L',JMATE)
       CALL JEVECH('PGEOMER','L',JGEOM)
 C
-C --- RECUPERATION DU MATERIAU :
-C     ------------------------
-      CALL JEVECH('PMATERC','L',JMATE)
-C
-      DESI = '&INEL.'//NOMTE(1:8)//'.DESI'
-      CALL JEVETE(DESI,'L',LZI)
-      DESR = '&INEL.'//NOMTE(1:8)//'.DESR'
-      CALL JEVETE(DESR,'L',LZR)
-      NNO = ZI(LZI)
-C
-C --- CONSTRUCTION DE LA MATRICE DE PASSAGE GLOBAL --> LOCAL :
-C     ------------------------------------------------------
-      IF (NNO.EQ.3) THEN
-        CALL DXTPGL(ZR(JGEOM),PGL)
-      ELSE IF (NNO.EQ.4) THEN
+      IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
+     +    NOMTE(1:8).EQ.'MEGRDKT'  .OR. NOMTE(1:8).EQ.'MEDKTG3 ') THEN
+         NNO = 3
+         CALL DXTPGL(ZR(JGEOM),PGL)
+
+      ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEDKQG4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEQ4QU4 ') THEN
+        NNO = 4
         CALL DXQPGL(ZR(JGEOM),PGL)
+
+      ELSE
+          CALL UTMESS('F','DXEFIN','LE TYPE D''ELEMENT : '//NOMTE(1:8)//
+     +                'N''EST PAS PREVU.')
       END IF
+C
+      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR','L',LZR)
 C
 C --- CALCUL DES COORDONNEES LOCALES DES CONNECTIVITES :
 C     ------------------------------------------------

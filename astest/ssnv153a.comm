@@ -1,4 +1,4 @@
-# MODIF  DATE 26/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CONTACT/FROTTEMENT POULIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,8 +82,8 @@ CHA1=AFFE_CHAR_MECA(
 CHA2=AFFE_CHAR_MECA(
                      MODELE=MO,
                      CONTACT=_F( 
-                     GROUP_MA_1 = 'SURFESCL',      
-                     GROUP_MA_2 = 'SURFMAIT',      
+                     GROUP_MA_ESCL = 'SURFESCL',      
+                     GROUP_MA_MAIT = 'SURFMAIT',      
                      INTEGRATION = 'NOEUD',    
                      COEF_REGU_CONT = 10.,  
                      LISSAGE ='OUI',  

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/09/2001   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 13/01/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,35 +43,24 @@ C
       CALL GETFAC ('DDL_IMPO',NDDLI)
       CALL GETFAC ('FACE_IMPO',NFACI)
       NCMP=0
-C ---------------------------------------------------
-C     RECUPERATION DES MOTS-CLES DDL SOUS FACE_IMPO
-C     MOTCLE(J) : K8 CONTENANT LE J-EME MOT-CLE DDL
-C     NDDLA     : NOMBRE DE MOTS CLES DU TYPE DDL
-C ---------------------------------------------------
-      CALL GETMFM('FACE_IMPO',0   ,MOTCLE,TYMOCL,N)
-      NMCL = -N
-      IF (NMCL.GT.NMOCL) THEN
-          CALL UTDEBM('F','DDLFAC','NOMBRE DE MOTCLES SUPERIEUR AU MAX')
-          CALL UTIMPI('L','NMAXOCL= ',1,NMOCL)
-          CALL UTIMPI('L','NMOCL  = ',1,NMCL)
-          CALL UTFINM()
-      ENDIF
-      CALL GETMFM('FACE_IMPO',NMCL,MOTCLE,TYMOCL,N)
-      I =1
-      DO 10 J = 1, NMCL
-        IF(MOTCLE(J).NE.'MAILLE'.AND.MOTCLE(J).NE.'GROUP_MA'.AND.
-     &     MOTCLE(J).NE.'DNOR'.AND.MOTCLE(J).NE.'DTAN') THEN
-          MOTCLE(I) = MOTCLE(J)
-          I = I + 1
-        ENDIF
-10    CONTINUE
-      NDDLA = NMCL - 4
 C
       IF (NFACI.NE.0.AND.NDDLI.NE.0) THEN
 C ---------------------------------------------------------
 C     BOUCLE SUR LES OCCURENCES DU MOT-CLE FACTEUR FACE_IMPO
 C ---------------------------------------------------------
        DO 160 IOCC = 1, NFACI
+        CALL GETMJM('FACE_IMPO',IOCC-1,   0,MOTCLE,TYMOCL,N)
+        NMCL = ABS(N)
+        CALL GETMJM('FACE_IMPO',IOCC-1,NMCL,MOTCLE,TYMOCL,N)
+        I =1
+        DO 10 J = 1, NMCL
+          IF(MOTCLE(J).NE.'MAILLE'.AND.MOTCLE(J).NE.'GROUP_MA'.AND.
+     &       MOTCLE(J).NE.'DNOR'.AND.MOTCLE(J).NE.'DTAN') THEN
+            MOTCLE(I) = MOTCLE(J)
+            I = I + 1
+          ENDIF
+10      CONTINUE
+        NDDLA = I - 1
         ICMP = 0
         IF (FONREE.EQ.'REEL') THEN
           DO 40  J = 1, NDDLA

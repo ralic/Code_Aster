@@ -4,7 +4,7 @@
       CHARACTER*(*)     NOMF,     NOMPU(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/07/95   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C IER = 160 : PAS ASSEZ DE PARAMETRES
 C IER = 170 : INTERPOLATION SUR LES PARAMETRES DE LA NAPPE NON PERMISE
 C ----------------------------------------------------------------------
       EPSI   = SQRT ( R8PREM() )
-      CALL FOINT3 (NOMF, NBPU, NOMPU, VALPU, EPSI, RESURE, RESUIM, IER)
+      CALL FOINT3 (NOMF, VALPU, EPSI, RESURE, RESUIM, IER)
       IF ( IER .NE. 0 ) CALL UTMESS('F','FOINRI',
      +                  'ERREUR RENCONTREE LORS DE L''INTERPOLATION.')
 C

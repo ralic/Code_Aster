@@ -1,9 +1,9 @@
-        SUBROUTINE STKCOO(IFL,ICL,IV,RV,CV,CNL,MCL,NBM,NUM,COO,NNO,DIM,
+        SUBROUTINE STKCOO(IFL,ICL,IV,RV,CV,CNL,MCL,NBM,NUM,COO,NNO,
      +  IRTETI)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 01/09/2003   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C       ----------------------------------------------------------------
 C       IN      IFL,ICL,IV,RV,CV,CNL = VOIR LIRITM
 C               MCL             = MOTS CLES TYPE COORDONNEE
 C               NBM             = NB DE MOTS CLES TYPE COORDONNEE
-C               DIM             = DIMENSION OBJET COORDONNEE
 C               COO             = NOMU.COORDO.VALE
 C               NNO             = NOMU.NOMNOE
 C               NUM             = NUMERO DU NOEUD COURANT
@@ -36,7 +35,7 @@ C               (RETURN 2)      = LIGNE SUIVANTE  (MOT CLE FINSF TROUVE
 C                                                  OU ERREUR DETECTE)
 C       ----------------------------------------------------------------
 C
-        INTEGER         DEBLIG,         DIM(NBM)
+        INTEGER         DEBLIG
         REAL*8          RV
         CHARACTER*8     MCL(NBM), NOM,  NOMN
         CHARACTER*14    CNL
@@ -90,7 +89,7 @@ C
 C - LIRE ITEM SUIVANT =  NOM DU NOEUD ?
 C
  7      CONTINUE
-        CALL LIRITM(IFL,IFM,ICL,IV,RV,CV,CNL,DEBLIG,2)
+        CALL LIRITM(IFL,ICL,IV,RV,CV,CNL,DEBLIG,2)
  9      CONTINUE
 C
 C - ITEM = MOT  CLE FIN  OU FINSF ?
@@ -122,7 +121,7 @@ C
  10     CONTINUE
 C
         DO 6 I = 1,NUMTCL
-        CALL LIRITM(IFL,IFM,ICL,IV,RV,CV,CNL,DEBLIG,2)
+        CALL LIRITM(IFL,ICL,IV,RV,CV,CNL,DEBLIG,2)
         IF(ICL.EQ.1)RV = IV
         ZR(IDEC+I-1) = RV
  6      CONTINUE

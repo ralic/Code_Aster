@@ -3,7 +3,7 @@
       IMPLICIT REAL *8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/04/99   AUTEUR CIBHHPD P.DAVID 
+C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,11 +50,10 @@ C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
       CALL JEMARQ()
       IFIRES = IUNIFI('RESULTAT')
       NBPT = 0
-      IMPR = 2
 C
       CALL GETVR8(' ','PUIS_USURE',1,1,1,PUUSUR,N1)
       IF ( N1 .NE. 0 ) THEN
-         CALL IMPUS ( IFIRES, 0, 0, PUUSUR )
+         CALL IMPUS ( IFIRES, 0, PUUSUR )
          GOTO 9999
       ENDIF
 C
@@ -134,7 +133,7 @@ C
      +                    COEF,ANG,
      +                    ZR(JWK1),ZR(JWK2),ZR(JWK3),ZR(JWK4),
      +                    ZR(JWK5),ZR(JWK6),IDEBUT,NBLOC,NBVAL,
-     +                    ICHOC,IMPR,ISUPP,NBINST,TEMPS,PUUSUR,
+     +                    ICHOC,ISUPP,NBINST,TEMPS,PUUSUR,
      +                    VUSTUB,VUSOB,PUS,PMOYE,POURPU,POUPRE)
 C
             CALL JEDETR('&&USURPU.WK1')

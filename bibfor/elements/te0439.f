@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/08/2003   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,6 @@ C                'EQUI_ELNO_EPSI'
 C
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -66,34 +65,16 @@ C     ------------------------------------------------------------------
       INTEGER            NNO, NPG, NNOS
       REAL*8             EQNO(NEQMAX*NNOMAX), SIGMA(6), DEFORM(6)
       REAL*8             EQPG(NEQMAX*NPGMAX)
-      CHARACTER*8        ELREFE
-      CHARACTER*24       CARAC
 C     ------------------------------------------------------------------
 
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+C
       IF ( OPTION(11:14) .EQ. 'EPSI' )  THEN
           NCEQ = 5
       ELSE IF (OPTION(11:14) .EQ. 'SIGM' )  THEN
           NCEQ = 6
       ENDIF
 
-      CALL ELREF1(ELREFE)
-      CARAC = '&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE ( CARAC, 'L', ICARAC )
-      NNO = ZI(ICARAC)
-      NPG  = ZI(ICARAC+3)
-C
-      IF (NOMTE(5:8).EQ.'TR3 ') THEN
-        NNOS = NNO
-      ELSE IF (NOMTE(5:8).EQ.'QU4 ') THEN
-        NNOS = NNO
-      ELSE IF (NOMTE(5:8).EQ.'TR6 ') THEN
-        NNOS = 3
-      ELSE IF (NOMTE(5:8).EQ.'QS8 ') THEN
-        NNOS = 4
-      ELSE IF (NOMTE(5:8).EQ.'QU8 ' .OR. NOMTE(5:8).EQ.'QU9 ') THEN
-        NNOS = 4
-      END IF
-C
       DO 10 I  = 1,NCEQ*NNO
           EQNO(I) = 0.0D0
  10   CONTINUE
@@ -136,7 +117,7 @@ C     -----------------------------------
 C
 C -      EXTRAPOLATION AUX NOEUDS :
 C
-         CALL PPGANO(NNOS,NPG,NCEQ,EQPG,ZR(IEQUIF))
+         CALL PPGAN2 ( JGANO, NCEQ, EQPG, ZR(IEQUIF) )
 C
        ELSE
          CALL UTMESS('F','TE0439','OPTION INCONNUE : '//OPTION)

@@ -1,4 +1,4 @@
-# MODIF  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 02/03/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # RESPONSABLE O.BOITEAU
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -175,7 +175,7 @@ for num_calc in range(0,nb_calc1) :
                     NOM_CHAM=('TEMP','FLUX_ELNO_TEMP',
                               'ERTH_ELNO_ELEM',)
                      ),);
-   FERMER(UNITE=55)
+   DEFI_FICHIER(ACTION='LIBERER',UNITE=55)
 
 # AFFICHAGE GIBI INTERACTIF TEMP + FLUX + INDICATEURS EN RESIDU 
 #   os.system('sed s/numcalc/'+str(num_calc)+'/g /home/boiteau/ASTER/TP_INDIC/TP21/post1.dgibi > post1.dgibi')

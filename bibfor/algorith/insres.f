@@ -1,9 +1,9 @@
-        SUBROUTINE INSRES ( MOD, IMAT, NMAT, MATERD, MATERF, MATCST,
-     1                      TEMPF, YD ,  YF,   DEPS,   DY,     R )
+        SUBROUTINE INSRES ( MOD, NMAT, MATERD, MATERF,
+     1                      YD ,  YF,   DEPS,   DY,     R )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ============================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,19 +26,16 @@ C                    DY = ( DSIG   DP   (DEPS3) )
 C                    Y  = ( SIG    P    (EPS3)  )
 C                    R  = ( G      F    (Q)     )
 C       IN  MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATERD :  COEFFICIENTS MATERIAU A T
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           MATCST :  'OUI' SI MATERIAU CONSTANT SUR DT
-C           TEMPF  :  TEMPERATURE A T + DT
 C           YD     :  VARIABLES A T       = ( SIGD VIND (EPSD3)  )
 C           YF     :  VARIABLES A T + DT  = ( SIGF VINF (EPSF3)  )
 C           DY     :  SOLUTION ESSAI      = ( DSIG DVIN (DEPS3) )
 C           DEPS   :  INCREMENT DE DEFORMATION
 C       OUT R      :  SYSTEME NL A T + DT
 C       -------------------------------------------------------------
-        INTEGER         IMAT, NDT , NDI , NMAT
+        INTEGER         NDT , NDI , NMAT
 C
         REAL*8          HOOKF(6,6), DKOOH(6,6)
         REAL*8          SIGF(6)   , DSIG(6) ,    SIGD(6) ,  DFDS(6)
@@ -49,11 +46,10 @@ C
         REAL*8          R(*)      , DY(*)   , YD(*) , YF(*)
 C
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
-        REAL*8          SEUIL , LCS, KPIC, R0, TEMPF
+        REAL*8          SEUIL , LCS, KPIC, R0
         REAL*8          I1, J2, J3, RCOS3T, HP, TAU , RAC2
 C
         CHARACTER*8     MOD
-        CHARACTER*3     MATCST
 C       ------------------------------------------------------------
         COMMON /TDIM/   NDT , NDI
 C       ------------------------------------------------------------

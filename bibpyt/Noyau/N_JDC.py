@@ -1,4 +1,4 @@
-#@ MODIF N_JDC Noyau  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF N_JDC Noyau  DATE 04/02/2004   AUTEUR CAMBIER S.CAMBIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -100,6 +100,7 @@ NONE = None
       self.condition_context={}
       self.index_etape_courante=0
       self.UserError="UserError"
+      self.alea = None
 
    def compile(self):
       """
@@ -109,8 +110,7 @@ NONE = None
       """
       try:
         if self.appli != None : 
-           self.appli.affiche_infos('Compilation du fichier de commandes \
-                                     en cours ...')
+           self.appli.affiche_infos('Compilation du fichier de commandes en cours ...')
         self.proc_compile=compile(self.procedure,self.nom,'exec')
       except SyntaxError,e:
         if CONTEXT.debug : traceback.print_exc()
@@ -152,8 +152,7 @@ NONE = None
                if isinstance(sd,ASSD):self.sds_dict[sdnom]=sd
 
          if self.appli != None : 
-            self.appli.affiche_infos('Interprétation du fichier de \
-                                      commandes en cours ...')
+            self.appli.affiche_infos('Interprétation du fichier de commandes en cours ...')
          # On sauve le contexte pour garder la memoire des constantes
          # En mode edition (EFICAS) ou lors des verifications le contexte 
          # est recalculé
@@ -312,7 +311,7 @@ NONE = None
       """
       if self.appli :
          # Si le JDC est relié à une application maitre, on délègue la recherche
-         file= self.appli.get_file(unite,fic_origine)
+         file,text= self.appli.get_file(unite,fic_origine)
       else:
          file = None
          if unite != None:
@@ -323,9 +322,11 @@ NONE = None
                                " a l unite %s" % unite)
          if not os.path.exists(file):
             raise AsException("%s n'est pas un fichier existant" % unite)
-      fproc=open(file,'r')
-      text=string.replace(fproc.read(),'\r\n','\n')
-      fproc.close()
+         fproc=open(file,'r')
+         text=fproc.read()
+         fproc.close()
+      if file == None : return None,None
+      text=string.replace(text,'\r\n','\n')
       linecache.cache[file]=0,0,string.split(text,'\n'),file
       return file,text
 
@@ -394,9 +395,12 @@ NONE = None
       if index_etape >= self.index_etape_courante:
          # On calcule le contexte en partant du contexte existant
          d=self.current_context
+         if self.index_etape_courante==0 and self.context_ini:
+            d.update(self.context_ini)
          liste_etapes=self.etapes[self.index_etape_courante:index_etape]
       else:
          d=self.current_context={}
+         if self.context_ini:d.update(self.context_ini)
          liste_etapes=self.etapes
 
       for e in liste_etapes:
@@ -409,3 +413,14 @@ NONE = None
 
    def get_global_contexte(self):
       return self.g_context.copy()
+
+   def get_cmd(self,nomcmd):
+      """
+          Méthode pour recuperer la definition d'une commande
+          donnee par son nom dans les catalogues declares
+          au niveau du jdc
+      """
+      for cata in self.cata:
+          if hasattr(cata,nomcmd):
+             return getattr(cata,nomcmd)
+

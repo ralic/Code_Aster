@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 10/07/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF recal Macro  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ import Numeric
 import types
 import Gnuplot
 import Cata
-from Cata.cata import *
+from Cata.cata import INCLUDE,DETRUIRE
 from Accas import _F
 
 import os
@@ -66,7 +66,7 @@ def detr_concepts(self):
      liste_concepts=mes_concepts(base=self.parent)
      for e in liste_concepts:
         nom = string.strip(e)
-        DETRUIRE( CONCEPT =self.g_context['_F'](NOM = nom))
+        DETRUIRE( CONCEPT =self.g_context['_F'](NOM = nom),INFO=1)
         if self.jdc.g_context.has_key(nom) : del self.jdc.g_context[nom]
      del(liste_concepts)
 
@@ -101,10 +101,7 @@ def calcul_F(self,UL,para,val,reponses):
          index_fin = string.index(fichier,'FIN(')
          #on restreind fichier en enlevant 'FIN();'
          fichier = fichier[:index_fin]   
-      except :
-         #on va dans l'except si on a modifié le fichier au moins une fois 
-         index_retour = string.index(fichier,'RETOUR')
-         fichier=fichier[:index_retour]
+      except : pass
       #--------------------------------------------------------------------------------
       #on cherche à délimiter le bloc des parametres dans le fichier
       #Tout d'abord on cherche les indices  d'apparition des paras dans le fichier 
@@ -158,8 +155,6 @@ def calcul_F(self,UL,para,val,reponses):
       for i in range(len(reponses)):
          Fichier_Resu.append('F = EXTRACT('+str(reponses[i][0])+','+"'"+str(reponses[i][1])+"'"+','+"'"+str(reponses[i][2])+"'"+')'+'\n')
          Fichier_Resu.append('Lrep.append(F)'+'\n')
-      #on ajoute à RETOUR
-      Fichier_Resu.append('RETOUR();\n')
       
       #ouverture du fichier fort.3 et mise a jour de celui ci
       x=open('fort.'+str(UL),'w')
@@ -289,6 +284,14 @@ def compare__dim_rep__dim_RESU_EXP(REPONSES,RESU_EXP):
       txt="\nVous avez entré " +str(len(REPONSES))+ " réponses et "+str(len(RESU_EXP))+ " expériences ; On doit avoir autant de réponses que de résultats expérimentaux"
    return txt
 
+def compare__dim_poids__dim_RESU_EXP(POIDS,RESU_EXP):
+   # POIDS et Y sont deux arguments qui doivent avoir la meme dimension
+   # pour éviter l'arret du programme
+   txt=""
+   if( len(POIDS) != len(RESU_EXP)):
+      txt="\nVous avez entré " +str(len(POIDS))+ " poids et "+str(len(RESU_EXP))+ " expériences ; On doit avoir autant de poids que de résultats expérimentaux"
+   return txt
+
 
 def verif_fichier(UL,PARAMETRES,REPONSES):
 #On verifie les occurences des noms des PARAMETRES et REPONSES 
@@ -348,7 +351,7 @@ def verif_UNITE(GRAPHIQUE,UNITE_RESU):
 
 
 
-def gestion(UL,PARAMETRES,REPONSES,RESU_EXP,GRAPHIQUE,UNITE_RESU):
+def gestion(UL,PARAMETRES,REPONSES,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU):
    #Cette methode va utiliser les methodes de cette classe declarée ci_dessus
    #test  est un boolean: test=0 -> pas d'erreur
    #                      test=1 -> erreur détectée
@@ -377,6 +380,8 @@ def gestion(UL,PARAMETRES,REPONSES,RESU_EXP,GRAPHIQUE,UNITE_RESU):
 
    #on verifie que l'on a autant de réponses que de résultats expérimentaux
    texte = texte + compare__dim_rep__dim_RESU_EXP(REPONSES,RESU_EXP)
+   #on verifie que l'on a autant de poids que de résultats expérimentaux
+   texte = texte + compare__dim_poids__dim_RESU_EXP(POIDS,RESU_EXP)
 
    #on verifie les types des arguments de chaque sous liste de PARAMETRES et REPONSES
       #verification du type stringet type float des arguments de PARAMETRES

@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/05/2003   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF MODELISA  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,13 +117,12 @@ C           POUR CERTAINS CHARGEMENTS
      +                       .AND.IMF1.EQ.0.AND.IMF2.EQ.0) GOTO 200 
             ENDIF
 C
-            IF ( MOTFAC .EQ. 'CONTACT' .OR.
-     +           MOTFAC .EQ. 'LIAISON_UNIL_NO' ) THEN
+            IF ( MOTFAC .EQ. 'CONTACT' ) THEN
                NBMC = 4
-               VALMC(1) = 'GROUP_MA_1'
-               VALMC(2) = 'GROUP_MA_2'
-               VALMC(3) = 'MAILLE_1'
-               VALMC(4) = 'MAILLE_2'
+               VALMC(1) = 'GROUP_MA_ESCL'
+               VALMC(2) = 'GROUP_MA_MAIT'
+               VALMC(3) = 'MAILLE_ESCL'
+               VALMC(4) = 'MAILLE_MAIT'
                TYPMC(1) = 'GROUP_MA'
                TYPMC(2) = 'GROUP_MA'
                TYPMC(3) = 'MAILLE'

@@ -1,7 +1,7 @@
-      SUBROUTINE EFP2P1(NOMTE, NPG, VFF2, DFF2, VFF1, DFF1, NNO1)
+      SUBROUTINE EFP2P1(NOMTE, NPG2, IVF2, IDFF2, VFF1, DFF1, NNO1)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/08/2000   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,23 +21,39 @@ C ======================================================================
 
       IMPLICIT NONE
       CHARACTER*16 NOMTE
-      INTEGER      NPG, NNO1
-      REAL*8       VFF2, DFF2, VFF1, DFF1
+      INTEGER      NPG2, NNO1
+      INTEGER      IVF2, IDFF2
+      REAL*8       VFF1, DFF1
 
 C ----------------------------------------------------------------------
 C      CALCUL DES FONCTIONS DE FORME P1 A PARTIR DES FONCTIONS P2
 C ----------------------------------------------------------------------
 C IN  NOMTE  NOM DE L'ELEMENT
-C IN  NPG    NOMBRE DE POINTS DE GAUSS
+C IN  NPG2   NOMBRE DE POINTS DE GAUSS
 C IN  VFF2   VALEUR  DES FONCTIONS DE FORME P2
 C IN  DFF2   DERIVEE DES FONCTIONS DE FORME P2
 C OUT VFF1   VALEUR  DES FONCTIONS DE FORME P1
 C OUT DFF1   DERIVEE DES FONCTIONS DE FORME P1
 C OUT NNO1   NOMBRE DE NOEUDS P1
 C ----------------------------------------------------------------------
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER  A(8,3), NNO2
-
 
       IF (NOMTE(5:7) .EQ. 'TR6') THEN
         NNO2   = 6
@@ -50,7 +66,7 @@ C ----------------------------------------------------------------------
         A(3,1) = 5
         A(3,2) = 6
 
-        CALL EF212D(NPG,A,NNO2,VFF2,DFF2,NNO1,VFF1,DFF1)
+        CALL EF212D(NPG2,A,NNO2,IVF2,IDFF2,NNO1,VFF1,DFF1)
 
 
       ELSE IF (NOMTE(5:7) .EQ. 'QS8' .OR.
@@ -67,7 +83,7 @@ C ----------------------------------------------------------------------
         A(4,1) = 8
         A(4,2) = 7
 
-        CALL EF212D(NPG,A,NNO2,VFF2,DFF2,NNO1,VFF1,DFF1)
+        CALL EF212D(NPG2,A,NNO2,IVF2,IDFF2,NNO1,VFF1,DFF1)
 
 
       ELSE IF (NOMTE(5:11) .EQ. '_HEXA20' .OR.
@@ -101,8 +117,7 @@ C ----------------------------------------------------------------------
         A(8,2) = 19
         A(8,3) = 20
 
-        CALL EF213D(NPG,A,NNO2,VFF2,DFF2,NNO1,VFF1,DFF1)
-
+        CALL EF213D ( NPG2, A, NNO2, IVF2, IDFF2, NNO1, VFF1, DFF1 )
 
       ELSE IF (NOMTE(5:12) .EQ. '_PENTA15') THEN
         NNO2 = 15
@@ -127,8 +142,7 @@ C ----------------------------------------------------------------------
         A(6,2) = 14
         A(6,3) = 15
 
-        CALL EF213D(NPG,A,NNO2,VFF2,DFF2,NNO1,VFF1,DFF1)
-
+        CALL EF213D ( NPG2, A, NNO2, IVF2, IDFF2, NNO1, VFF1, DFF1 )
 
       ELSE IF (NOMTE(5:12) .EQ. '_TETRA10') THEN
         NNO2 = 10
@@ -147,8 +161,7 @@ C ----------------------------------------------------------------------
         A(4,2) = 9
         A(4,3) = 10
 
-        CALL EF213D(NPG,A,NNO2,VFF2,DFF2,NNO1,VFF1,DFF1)
-
+        CALL EF213D ( NPG2, A, NNO2, IVF2, IDFF2, NNO1, VFF1, DFF1 )
 
       ELSE
         CALL UTMESS('F','EFP2P1','ELEMENT NON PREVU')

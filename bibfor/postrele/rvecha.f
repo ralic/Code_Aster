@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 17/01/97   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,7 +124,7 @@ C
             ZR(ATABR) = ROR(1 + (I-1)*NBPARA)
 C
             CALL RVCHLO(EPSI,SSCH19,NBCP,1,1,1,1,M,ZI(ATABF),1,
-     +               ZR(ATABR),NBPARA,VAL(PTADR + (I-1)*NBCP))
+     +               ZR(ATABR),VAL(PTADR + (I-1)*NBCP))
 C
 100       CONTINUE
 C
@@ -133,7 +133,7 @@ C
          ZR(ATABR) = REX(1 + (N-1)*NBPARA)
 C
          CALL RVCHLO(EPSI,SSCH19,NBCP,1,1,1,1,M,ZI(ATABF),1,
-     +               ZR(ATABR),NBPARA,VAL(PTADR + N*NBCP))
+     +               ZR(ATABR),VAL(PTADR + N*NBCP))
 C
          PTADR = PTADR + (N+1)*NBCP
 C
@@ -155,7 +155,7 @@ C
             NBSM = ZI(APNSP + M-1)
 C
             CALL RVCHLO(EPSI,SSCH19,NBCP,NBCO,NBSP,NBCM,NBSM,M,
-     +                  ZI(ATABF),NBPT,ZR(ATABR),NBPARA,VAL(PTADR))
+     +                  ZI(ATABF),NBPT,ZR(ATABR),VAL(PTADR))
 C
 C
             PTADR = PTADR + 2*NBCP*NBCO*NBSP

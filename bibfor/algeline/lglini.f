@@ -7,7 +7,7 @@ C
       REAL*8        DEVG(6), DEVGII, TRACEG, DY(10)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C ======================================================================
       LOGICAL       TESTE
       INTEGER       JPARA, JDERIV, II, NDT, NDI
       REAL*8        SE(6), GAMP, DELTA, SIIE, PREF, EPSSIG
-      REAL*8        GAMCJS, RCOS3T, COS3T, RE, HLODE, GDEV, GE, UE
+      REAL*8        GAMCJS, RCOS3T, COS3T, RE, HLODE, GDEV, GE
       REAL*8        UCRITP, Q(6), VECN(6), IE, R8PREM
       REAL*8        SI(6), INVN, TRACE
       CHARACTER*16  PARECR, DERIVE
@@ -100,7 +100,6 @@ C ======================================================================
       RCOS3T = COS3T (SE, PREF, EPSSIG)
       RE     = HLODE (GAMCJS, RCOS3T)
       GE     = GDEV  (SIIE, RE)
-      UE     = UCRITP(NBMAT, MATER, ZR(JPARA), GE, IE)
 C ======================================================================
 C --- CALCUL DE Q ET DE N ----------------------------------------------
 C ======================================================================
@@ -124,15 +123,15 @@ C ======================================================================
 C ======================================================================
 C --- PREMIERE INITIALISATION POUR GAMP = 0 ----------------------------
 C ======================================================================
-         CALL LGLIND(NBMAT, MATER, ZR(JPARA), GE, UE, Q,
+         CALL LGLIND(NBMAT, MATER, ZR(JPARA), GE, Q,
      +               VECN, DEPS, DEVG, DEVGII, TRACEG, DY)
       ELSE
 C ======================================================================
 C --- INITIALISATION DE NEWTON -----------------------------------------
 C ======================================================================
          CALL DERVAR(GAMP, NBMAT, MATER, ZR(JPARA), ZR(JDERIV))
-         CALL LGLINN(GAMP, NBMAT, MATER, ZR(JPARA),
-     +               ZR(JDERIV), GE, IE, UE, Q, VECN, F0, DELTA, DEVG,
+         CALL LGLINN(NBMAT, MATER, ZR(JPARA),
+     +               ZR(JDERIV), GE, IE, Q, VECN, F0, DELTA, DEVG,
      +               DEVGII, TRACEG, DY)
       ENDIF
 C ======================================================================

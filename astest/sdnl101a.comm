@@ -1,4 +1,5 @@
-# MODIF  DATE 13/06/2002   AUTEUR PBBHHPB P.BADEL 
+
+# MODIF  DATE 28/10/2003   AUTEUR DURAND C.DURAND 
 # TITRE PORTEE DE CABLES SOUMISE A DES EFFORTS ELECTRODYNAMIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,771 +26,1001 @@
 #     - LA METHODE DU GRADIENT CONJUGUE AVEC OPTION OUI
 #
 #
+
+DEBUT(CODE=_F(NOM='SDNL101A',
+              NIV_PUB_WEB='INTERNET',),);
 #
 
-DEBUT(   CODE=_F(  NOM = 'SDNL101A',NIV_PUB_WEB='INTERNET') )
+MA=LIRE_MAILLAGE();
 
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=(_F(GROUP_MA='CABLE',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='CABLE',),
+                     _F(GROUP_MA='CHARP',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='POU_D_E',),),);
+
+MAT1=DEFI_MATERIAU(CABLE=_F(E=54000000000.0,
+                            RHO=2761.0,),);
+
+MAT2=DEFI_MATERIAU(CABLE=_F(E=63700000000.0,
+                            RHO=110841.0,),);
+
+MAT3=DEFI_MATERIAU(CABLE=_F(E=63700000000.0,
+                            RHO=104173.0,),);
+
+MAT4=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
+                           NU=0.3,
+                           RHO=7800.0,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=(_F(GROUP_MA=('CC1','CC2',),
+                             MATER=MAT1,),
+                          _F(GROUP_MA='CH1',
+                             MATER=MAT2,),
+                          _F(GROUP_MA='CH2',
+                             MATER=MAT3,),
+                          _F(GROUP_MA='CHARP',
+                             MATER=MAT4,),),);
+
+CHA1=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=_F(GROUP_NO=('P1','P2','P3','P4',),
+                                DX=0.0,
+                                DY=0.0,
+                                DZ=0.0,
+                                DRX=0.0,
+                                DRY=0.0,
+                                DRZ=0.0,),
+                    LIAISON_DDL=(_F(GROUP_NO=('P5','P9',),
+                                    DDL=('DX','DX',),
+                                    COEF_MULT=(1.0,-1.0,),
+                                    COEF_IMPO=0.0,),
+                                 _F(GROUP_NO=('P5','P9',),
+                                    DDL=('DY','DY',),
+                                    COEF_MULT=(1.0,-1.0,),
+                                    COEF_IMPO=0.0,),
+                                 _F(GROUP_NO=('P5','P9',),
+                                    DDL=('DZ','DZ',),
+                                    COEF_MULT=(1.0,-1.0,),
+                                    COEF_IMPO=0.0,),
+                                 _F(GROUP_NO=('P6','P10',),
+                                    DDL=('DX','DX',),
+                                    COEF_MULT=(1.0,-1.0,),
+                                    COEF_IMPO=0.0,),
+                                 _F(GROUP_NO=('P6','P10',),
+                                    DDL=('DY','DY',),
+                                    COEF_MULT=(1.0,-1.0,),
+                                    COEF_IMPO=0.0,),
+                                 _F(GROUP_NO=('P6','P10',),
+                                    DDL=('DZ','DZ',),
+                                    COEF_MULT=(1.0,-1.0,),
+                                    COEF_IMPO=0.0,),
+                                 _F(GROUP_NO=('P7','P11',),
+                                    DDL=('DX','DX',),
+                                    COEF_MULT=(1.0,-1.0,),
+                                    COEF_IMPO=0.0,),
+                                 _F(GROUP_NO=('P7','P11',),
+                                    DDL=('DY','DY',),
+                                    COEF_MULT=(1.0,-1.0,),
+                                    COEF_IMPO=0.0,),
+                                 _F(GROUP_NO=('P7','P11',),
+                                    DDL=('DZ','DZ',),
+                                    COEF_MULT=(1.0,-1.0,),
+                                    COEF_IMPO=0.0,),
+                                 _F(GROUP_NO=('P8','P12',),
+                                    DDL=('DX','DX',),
+                                    COEF_MULT=(1.0,-1.0,),
+                                    COEF_IMPO=0.0,),
+                                 _F(GROUP_NO=('P8','P12',),
+                                    DDL=('DY','DY',),
+                                    COEF_MULT=(1.0,-1.0,),
+                                    COEF_IMPO=0.0,),
+                                 _F(GROUP_NO=('P8','P12',),
+                                    DDL=('DZ','DZ',),
+                                    COEF_MULT=(1.0,-1.0,),
+                                    COEF_IMPO=0.0,),),);
+
+CHA2=AFFE_CHAR_MECA(MODELE=MO,
+                    PESANTEUR=(9.81,0.0,0.0,-1.0,),);
+
+CHA3=AFFE_CHAR_MECA(MODELE=MO,
+                    INTE_ELEC=(_F(GROUP_MA='CC1',
+                                  GROUP_MA_2='CC2',),
+                               _F(GROUP_MA='CC2',
+                                  GROUP_MA_2='CC1',),),);
+
+CHA4=AFFE_CHAR_MECA(MODELE=MO,
+                    INTE_ELEC=(_F(GROUP_MA='CC1',
+                                  GROUP_MA_2='CC1',),
+                               _F(GROUP_MA='CC2',
+                                  GROUP_MA_2='CC2',),),);
+
+CARA=AFFE_CARA_ELEM(MODELE=MO,
+                    POUTRE=_F(GROUP_MA='CHARP',
+                              SECTION='CERCLE',
+                              CARA=('R','EP',),
+                              VALE=(0.3,0.3,),),
+                    CABLE=(_F(GROUP_MA=('CC1','CC2',),
+                              SECTION=0.00171,),
+                           _F(GROUP_MA='CH1',
+                              SECTION=0.000628,),
+                           _F(GROUP_MA='CH2',
+                              SECTION=0.000942,),),);
+
+F1=DEFI_FONC_ELEC(SIGNAL='CONTINU',
+                  COUR=_F(INTE_CC_1=54559.0,
+                          TAU_CC_1=0.12,
+                          PHI_CC_1=1.5,
+                          INTE_CC_2=54559.0,
+                          TAU_CC_2=0.12,
+                          PHI_CC_2=181.5,
+                          INST_CC_INIT=0.0,
+                          INST_CC_FIN=0.5,),);
 #
 
-MA=LIRE_MAILLAGE( )
-
-MO=AFFE_MODELE(   MAILLAGE=MA,AFFE=(
-                        _F( GROUP_MA = 'CABLE', PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'CABLE'),
-                        _F( GROUP_MA = 'CHARP',
-                       PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'POU_D_E')) )
-
-MAT1=DEFI_MATERIAU(   CABLE=_F(  E = 5.40E10,  RHO = 2761.) )
-
-MAT2=DEFI_MATERIAU(   CABLE=_F(  E = 6.37E10,  RHO = 110841.))
-
-MAT3=DEFI_MATERIAU(   CABLE=_F(  E = 6.37E10,  RHO = 104173.))
-
-MAT4=DEFI_MATERIAU(   ELAS=_F(  E = 2.10E11,  NU = 0.3,  RHO = 7800.))
-
-CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,AFFE=(
-                          _F(  GROUP_MA = ('CC1','CC2',), MATER = MAT1),
-                          _F(  GROUP_MA = ('CH1',), MATER = MAT2),
-                          _F(  GROUP_MA = ('CH2',), MATER = MAT3),
-                          _F(  GROUP_MA = 'CHARP', MATER = MAT4)) )
-
-CHA1=AFFE_CHAR_MECA(   MODELE=MO,LIAISON_DDL=(
-              _F( GROUP_NO = ('P5','P9',),
-              DDL = ('DX','DX',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.),
-              _F( GROUP_NO = ('P5','P9',),
-              DDL = ('DY','DY',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.),
-              _F( GROUP_NO = ('P5','P9',),
-              DDL = ('DZ','DZ',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.),
-              _F( GROUP_NO = ('P6','P10',),
-              DDL = ('DX','DX',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.),
-              _F( GROUP_NO = ('P6','P10',),
-              DDL = ('DY','DY',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.),
-              _F( GROUP_NO = ('P6','P10',),
-              DDL = ('DZ','DZ',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.),
-              _F( GROUP_NO = ('P7','P11',),
-              DDL = ('DX','DX',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.),
-              _F( GROUP_NO = ('P7','P11',),
-              DDL = ('DY','DY',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.),
-              _F( GROUP_NO = ('P7','P11',),
-              DDL = ('DZ','DZ',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.),
-              _F( GROUP_NO = ('P8','P12',),
-              DDL = ('DX','DX',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.),
-              _F( GROUP_NO = ('P8','P12',),
-              DDL = ('DY','DY',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.),
-              _F( GROUP_NO = ('P8','P12',),
-              DDL = ('DZ','DZ',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.)),
-            DDL_IMPO=_F( GROUP_NO = ('P1','P2','P3','P4',), DX = 0., DY = 0., DZ = 0.,
-                                        DRX = 0., DRY = 0., DRZ = 0.))
-
-CHA2=AFFE_CHAR_MECA(   MODELE=MO,
-                          PESANTEUR=(9.81,0.,0.,-1.,) )
-
-CHA3=AFFE_CHAR_MECA(   MODELE=MO,INTE_ELEC=(
-            _F( GROUP_MA = 'CC1', GROUP_MA_2 = 'CC2'),
-            _F( GROUP_MA = 'CC2', GROUP_MA_2 = 'CC1')) )
-
-CHA4=AFFE_CHAR_MECA(   MODELE=MO,INTE_ELEC=(
-            _F( GROUP_MA = 'CC1', GROUP_MA_2 = 'CC1'),
-            _F( GROUP_MA = 'CC2', GROUP_MA_2 = 'CC2')) )
-
-CARA=AFFE_CARA_ELEM(   MODELE=MO,CABLE=(
-              _F(  GROUP_MA = ('CC1','CC2',),  SECTION = 1.71E-3),
-              _F(  GROUP_MA = ('CH1',),  SECTION = 6.28E-4),
-              _F(  GROUP_MA = ('CH2',),  SECTION = 9.42E-4)),
-             POUTRE=_F(  SECTION = 'CERCLE',
-                      GROUP_MA = ('CHARP',),
-                      CARA = ('R','EP',),
-                      VALE = (0.30,0.30,)) )
-
-F1=DEFI_FONC_ELEC(   SIGNAL='CONTINU',
-          COUR=_F(  INTE_CC_1 = 54559.,
-                      TAU_CC_1 = 0.120, PHI_CC_1 = 1.5,
-                      INTE_CC_2 = 54559.,
-                      TAU_CC_2 = 0.120, PHI_CC_2 = 181.5,
-                     INST_CC_INIT = 0., INST_CC_FIN = 0.5))
-
-#
-
-F2=DEFI_FONC_ELEC(   SIGNAL='CONTINU',
-          COUR=_F(  INTE_CC_1 = 54559.,
-                      TAU_CC_1 = 0.120, PHI_CC_1 = 1.5,
-                      INTE_CC_2 = 54559.,
-                      TAU_CC_2 = 0.120, PHI_CC_2 = 1.5,
-                     INST_CC_INIT = 0., INST_CC_FIN = 0.5) )
-
+F2=DEFI_FONC_ELEC(SIGNAL='CONTINU',
+                  COUR=_F(INTE_CC_1=54559.0,
+                          TAU_CC_1=0.12,
+                          PHI_CC_1=1.5,
+                          INTE_CC_2=54559.0,
+                          TAU_CC_2=0.12,
+                          PHI_CC_2=1.5,
+                          INST_CC_INIT=0.0,
+                          INST_CC_FIN=0.5,),);
 #
 # L_INSTA= DEFI_LIST_REEL ( DEBUT: -0.1
 #                           INTERVALLE : (JUSQU_A: 4.0 NOMBRE: 41)
 #                         ) ;
 
-L_INST1=DEFI_LIST_REEL(   DEBUT=-0.1,INTERVALLE=(
-                             _F( JUSQU_A = -0.05, NOMBRE = 1),
-                             _F( JUSQU_A = 0.0, NOMBRE = 1))
-                         )
+L_INST1=DEFI_LIST_REEL(DEBUT=-0.1,
+                       INTERVALLE=(_F(JUSQU_A=-0.05,
+                                      NOMBRE=1,),
+                                   _F(JUSQU_A=0.0,
+                                      NOMBRE=1,),),);
 
-L_INST2=DEFI_LIST_REEL(    DEBUT=0.0,
-                             INTERVALLE=_F( JUSQU_A = 0.5, NOMBRE = 5)
-                         )
+L_INST2=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=_F(JUSQU_A=0.5,
+                                     NOMBRE=5,),);
 
-L_INST21=DEFI_LIST_REEL(    DEBUT=0.5,
-                             INTERVALLE=_F( JUSQU_A = 1.0, NOMBRE = 5)
-                         )
+L_INST21=DEFI_LIST_REEL(DEBUT=0.5,
+                        INTERVALLE=_F(JUSQU_A=1.0,
+                                      NOMBRE=5,),);
 
-L_INST3=DEFI_LIST_REEL(    DEBUT=1.0,
-                             INTERVALLE=_F( JUSQU_A = 1.5, NOMBRE = 5)
-                         )
+L_INST3=DEFI_LIST_REEL(DEBUT=1.0,
+                       INTERVALLE=_F(JUSQU_A=1.5,
+                                     NOMBRE=5,),);
 
-L_INST31=DEFI_LIST_REEL(    DEBUT=1.5,
-                             INTERVALLE=_F( JUSQU_A = 2.0, NOMBRE = 5)
-                         )
+L_INST31=DEFI_LIST_REEL(DEBUT=1.5,
+                        INTERVALLE=_F(JUSQU_A=2.0,
+                                      NOMBRE=5,),);
 
-L_INST4=DEFI_LIST_REEL(    DEBUT=2.0,
-                             INTERVALLE=_F( JUSQU_A = 2.5, NOMBRE = 5)
-                         )
+L_INST4=DEFI_LIST_REEL(DEBUT=2.0,
+                       INTERVALLE=_F(JUSQU_A=2.5,
+                                     NOMBRE=5,),);
 
-L_INST41=DEFI_LIST_REEL(    DEBUT=2.5,
-                             INTERVALLE=_F( JUSQU_A = 3.0, NOMBRE = 5)
-                         )
+L_INST41=DEFI_LIST_REEL(DEBUT=2.5,
+                        INTERVALLE=_F(JUSQU_A=3.0,
+                                      NOMBRE=5,),);
 
-L_INST5=DEFI_LIST_REEL(    DEBUT=3.0,
-                             INTERVALLE=_F( JUSQU_A = 3.5, NOMBRE = 5)
-                         )
+L_INST5=DEFI_LIST_REEL(DEBUT=3.0,
+                       INTERVALLE=_F(JUSQU_A=3.5,
+                                     NOMBRE=5,),);
 
-L_INST51=DEFI_LIST_REEL(    DEBUT=3.5,
-                             INTERVALLE=_F( JUSQU_A = 4.0, NOMBRE = 5)
-                         )
+L_INST51=DEFI_LIST_REEL(DEBUT=3.5,
+                        INTERVALLE=_F(JUSQU_A=4.0,
+                                      NOMBRE=5,),);
 
-L_ARCHI=DEFI_LIST_ENTI(   DEBUT=1,
-                             INTERVALLE=_F( JUSQU_A = 42, PAS = 1)
-                         )
+L_ARCHI=DEFI_LIST_ENTI(DEBUT=1,
+                       INTERVALLE=_F(JUSQU_A=42,
+                                     PAS=1,),);
 
-RESU=STAT_NON_LINE(
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                         CARA_ELEM=CARA,EXCIT=(
-                             _F(
-                CHARGE = CHA1), _F(
-                CHARGE = CHA2)),
-                         INCREMENT=_F(
-                LIST_INST = L_INST1,
-                NUME_INST_FIN = 1),
-                         COMP_ELAS=_F(
-                GROUP_MA = (
-                  'CABLE',  ),
-                RELATION = 'CABLE',
-                DEFORMATION = 'GREEN'),
-                         COMP_INCR=_F(
-                GROUP_MA = (
-                  'CHARP',  ),
-                RELATION = 'ELAS'),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-6,
-                ITER_GLOB_MAXI = 50),
-                            NEWTON=_F(
-                REAC_ITER = 1),
-                           SOLVEUR=_F(
-                METHODE = 'GCPC',
-                PRE_COND = 'LDLT_INC',
-                RESI_RELA = 1.E-12,
-                NMAX_ITER = 80)
-              )
-
+RESU=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARA,
+                   EXCIT=(_F(CHARGE=CHA1,),
+                          _F(CHARGE=CHA2,),),
+                   COMP_INCR=_F(RELATION='ELAS',
+                                GROUP_MA='CHARP',),
+                   COMP_ELAS=_F(RELATION='CABLE',
+                                DEFORMATION='GREEN',
+                                GROUP_MA='CABLE',),
+                   INCREMENT=_F(LIST_INST=L_INST1,
+                                NUME_INST_FIN=1,),
+                   NEWTON=_F(REAC_ITER=1,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                  ITER_GLOB_MAXI=50,),
+                   SOLVEUR=_F(METHODE='GCPC',
+                              PRE_COND='LDLT_INC',
+                              RESI_RELA=1e-12,
+                              NMAX_ITER=80,),);
 #
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
-             PARA = 'INST',             VALE = -5.00000E-02),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
-             PARA = 'ITER_GLOB',        VALE_I = 0,
-             CRITERE = 'ABSOLU',        PRECISION = 20.E0),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-07,
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-02,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
-             CRITERE = 'ABSOLU',        PRECISION = 2.E0,
-             PARA = 'ITER_LINE',        VALE_I = 0))
-           )
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   PARA='INST',
+                   VALE=-0.05,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   PARA='ITER_GLOB',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=20.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   PARA='RESI_GLOB_RELA',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1e-07,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   PARA='RESI_GLOB',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.01,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   PARA='ITER_LINE',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=2.0,),),);
 
-RESU=STAT_NON_LINE( reuse=RESU,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                         CARA_ELEM=CARA,EXCIT=(
-                             _F(
-                CHARGE = CHA1), _F(
-                CHARGE = CHA2)),
-                         INCREMENT=_F(
-                LIST_INST = L_INST1,
-                INST_INIT = -0.05),
-                         COMP_ELAS=_F(
-                GROUP_MA = (
-                  'CABLE',  ),
-                RELATION = 'CABLE',
-                DEFORMATION = 'GREEN'),
-                         COMP_INCR=_F(
-                GROUP_MA = (
-                  'CHARP',  ),
-                RELATION = 'ELAS'),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-6,
-                ITER_GLOB_MAXI = 50),
-                            NEWTON=_F(
-                REAC_ITER = 1),
-                           SOLVEUR=_F(
-                METHODE = 'MULT_FRONT'),
-                         ARCHIVAGE=_F(
-                NUME_INIT = 1,
-                DETR_NUME_SUIV = 'OUI')
-              )
+RESU=STAT_NON_LINE(reuse =RESU,
+                   MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARA,
+                   EXCIT=(_F(CHARGE=CHA1,),
+                          _F(CHARGE=CHA2,),),
+                   COMP_INCR=_F(RELATION='ELAS',
+                                GROUP_MA='CHARP',),
+                   COMP_ELAS=_F(RELATION='CABLE',
+                                DEFORMATION='GREEN',
+                                GROUP_MA='CABLE',),
+                   INCREMENT=_F(LIST_INST=L_INST1,
+                                INST_INIT=-0.05,),
+                   ETAT_INIT=_F(EVOL_NOLI=RESU,),
+                   NEWTON=_F(REAC_ITER=1,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                  ITER_GLOB_MAXI=50,),
+                   SOLVEUR=_F(METHODE='MULT_FRONT',),
+                   ARCHIVAGE=_F(NUME_INIT=1,
+                                DETR_NUME_SUIV='OUI',),);
 
-RESU=CALC_ELEM( reuse=RESU,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=RESU,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                         CARA_ELEM=CARA
-              )
-
+RESU=CALC_ELEM(reuse =RESU,
+               MODELE=MO,
+               CHAM_MATER=CHMAT,
+               CARA_ELEM=CARA,
+               RESULTAT=RESU,
+               OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
 #--------------------------------------------------------------------
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
-             PARA = 'INST',             VALE = 0.00000E+00),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
-             PARA = 'ITER_GLOB',        VALE_I = 0,
-             CRITERE = 'ABSOLU',        PRECISION = 20.E0),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-07,
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-02,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
-             PARA = 'ITER_LINE',        VALE_I = 0,
-             CRITERE = 'ABSOLU',        PRECISION = 2.E0))
-           )
-
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   PARA='INST',
+                   VALE=0.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   PARA='ITER_GLOB',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=20.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   PARA='RESI_GLOB_RELA',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1e-07,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   PARA='RESI_GLOB',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.01,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   PARA='ITER_LINE',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=2.0,),),);
 #--------------------------------------------------------------------
 
-RESU=DYNA_NON_LINE( reuse=RESU,
-                    MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    CARA_ELEM=CARA,
-                    EXCIT=(
-                       _F(  CHARGE = CHA1),
-                       _F(  CHARGE = CHA2),
-                       _F(  CHARGE = CHA3, FONC_MULT = F1)),
-                    INCREMENT=_F( LIST_INST = L_INST2),
-                    NEWMARK=_F(),
-                    ETAT_INIT=_F(
-###CDURAND###                      INST_INIT = 0.,
-                                   EVOL_NOLI = RESU),
-                    COMP_ELAS=_F( GROUP_MA = ('CABLE',), RELATION = 'CABLE',
-                               DEFORMATION = 'GREEN'),
-                    COMP_INCR=_F( GROUP_MA = ('CHARP',), RELATION = 'ELAS'),
-                    CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6, ITER_GLOB_MAXI = 100),
-                    NEWTON=_F( REAC_ITER = 1),
-                    SOLVEUR=_F( METHODE = 'MULT_FRONT')
-                      )
-
+RESU=DYNA_NON_LINE(reuse =RESU,
+                   MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARA,
+                   EXCIT=(_F(CHARGE=CHA1,),
+                          _F(CHARGE=CHA2,),
+                          _F(CHARGE=CHA3,
+                             FONC_MULT=F1,),),
+                   COMP_INCR=_F(RELATION='ELAS',
+                                GROUP_MA='CHARP',),
+                   COMP_ELAS=_F(RELATION='CABLE',
+                                DEFORMATION='GREEN',
+                                GROUP_MA='CABLE',),
+                   ETAT_INIT=_F(EVOL_NOLI=RESU,),
+                   INCREMENT=_F(LIST_INST=L_INST2,),
+                   NEWMARK=_F(),
+                   NEWTON=_F(REAC_ITER=1,),
+                   SOLVEUR=_F(METHODE='MULT_FRONT',),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                  ITER_GLOB_MAXI=100,),);
 #
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 6,
-             PARA = 'INST',             VALE = 5.00000E-01),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 6,
-             PARA = 'ITER_GLOB',        VALE_I = 0,
-             CRITERE = 'ABSOLU',        PRECISION = 4.E0),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 6,
-             CRITERE = 'ABSOLU',
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 6,
-             CRITERE = 'ABSOLU',        PRECISION = 20.,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 6,
-             CRITERE = 'ABSOLU',        PRECISION = 2.E0,
-             PARA = 'ITER_LINE',        VALE_I = 0))
-           )
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=6,
+                   PARA='INST',
+                   VALE=0.5,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=6,
+                   PARA='ITER_GLOB',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=4.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=6,
+                   PARA='RESI_GLOB_RELA',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=6,
+                   PARA='RESI_GLOB',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=20.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=6,
+                   PARA='ITER_LINE',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=2.0,),),);
 
-RESU=DYNA_NON_LINE( reuse=RESU,
-                    MODELE=MO,
-                    CHAM_MATER=CHMAT, 
-                    CARA_ELEM=CARA,
-                    EXCIT=(
-                           _F(  CHARGE = CHA1),
-                           _F(  CHARGE = CHA2),
-                           _F(  CHARGE = CHA3, FONC_MULT = F1)),
-                    INCREMENT=_F( LIST_INST = L_INST21),
-                    NEWMARK=_F(),
-                    ETAT_INIT=_F(
-###CDURAND###                     INST_INIT = 0.5,
-                                  EVOL_NOLI = RESU),
-                    COMP_ELAS=_F( GROUP_MA = ('CABLE',), RELATION = 'CABLE',
-                                  DEFORMATION = 'GREEN'),
-                    COMP_INCR=_F( GROUP_MA = ('CHARP',), RELATION = 'ELAS'),
-                    CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6, ITER_GLOB_MAXI = 100),
-                    NEWTON=_F( REAC_ITER = 1),
-                    SOLVEUR=_F( METHODE = 'LDLT', )
-                      )
-
+RESU=DYNA_NON_LINE(reuse =RESU,
+                   MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARA,
+                   EXCIT=(_F(CHARGE=CHA1,),
+                          _F(CHARGE=CHA2,),
+                          _F(CHARGE=CHA3,
+                             FONC_MULT=F1,),),
+                   COMP_INCR=_F(RELATION='ELAS',
+                                GROUP_MA='CHARP',),
+                   COMP_ELAS=_F(RELATION='CABLE',
+                                DEFORMATION='GREEN',
+                                GROUP_MA='CABLE',),
+                   ETAT_INIT=_F(EVOL_NOLI=RESU,),
+                   INCREMENT=_F(LIST_INST=L_INST21,),
+                   NEWMARK=_F(),
+                   NEWTON=_F(REAC_ITER=1,),
+                   SOLVEUR=_F(METHODE='LDLT',),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                  ITER_GLOB_MAXI=100,),);
 #
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 11,
-             PARA = 'INST',             VALE = 1.00000E+00),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 11,
-             PARA = 'ITER_GLOB',        VALE_I = 0,
-             CRITERE = 'ABSOLU',        PRECISION = 4.E0),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 11,
-             CRITERE = 'ABSOLU',
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 11,
-             CRITERE = 'ABSOLU',        PRECISION = 20.,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 11,
-             CRITERE = 'ABSOLU',        PRECISION = 2.E0,
-             PARA = 'ITER_LINE',        VALE_I = 0))
-           )
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=11,
+                   PARA='INST',
+                   VALE=1.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=11,
+                   PARA='ITER_GLOB',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=4.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=11,
+                   PARA='RESI_GLOB_RELA',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=11,
+                   PARA='RESI_GLOB',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=20.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=11,
+                   PARA='ITER_LINE',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=2.0,),),);
 
-RESU=DYNA_NON_LINE( reuse=RESU,
-                    MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    CARA_ELEM=CARA,
-                    EXCIT=(
-                           _F(  CHARGE = CHA1),
-                           _F(  CHARGE = CHA2),
-                           _F(  CHARGE = CHA3, FONC_MULT = F1)),
-                    INCREMENT=_F( LIST_INST = L_INST3),
-                    NEWMARK=_F(),
-                    ETAT_INIT=_F(
-###CDURAND###                     INST_INIT = 1., 
-                                  EVOL_NOLI = RESU),
-                    COMP_ELAS=_F( GROUP_MA = ('CABLE',), RELATION = 'CABLE',
-                               DEFORMATION = 'GREEN'),
-                    COMP_INCR=_F( GROUP_MA = ('CHARP',), RELATION = 'ELAS'),
-                    CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6, ITER_GLOB_MAXI = 100),
-                    NEWTON=_F( REAC_ITER = 1),
-                    SOLVEUR=_F( METHODE = 'GCPC',
-                                PRE_COND = 'LDLT_INC',
-                                NMAX_ITER = 250,
-                                RESI_RELA = 1.E-8)
-                                      )
-
+RESU=DYNA_NON_LINE(reuse =RESU,
+                   MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARA,
+                   EXCIT=(_F(CHARGE=CHA1,),
+                          _F(CHARGE=CHA2,),
+                          _F(CHARGE=CHA3,
+                             FONC_MULT=F1,),),
+                   COMP_INCR=_F(RELATION='ELAS',
+                                GROUP_MA='CHARP',),
+                   COMP_ELAS=_F(RELATION='CABLE',
+                                DEFORMATION='GREEN',
+                                GROUP_MA='CABLE',),
+                   ETAT_INIT=_F(EVOL_NOLI=RESU,),
+                   INCREMENT=_F(LIST_INST=L_INST3,),
+                   NEWMARK=_F(),
+                   NEWTON=_F(REAC_ITER=1,),
+                   SOLVEUR=_F(METHODE='GCPC',
+                              PRE_COND='LDLT_INC',
+                              RESI_RELA=1e-08,
+                              NMAX_ITER=250,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                  ITER_GLOB_MAXI=100,),);
 #
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 16,
-             PARA = 'INST',             VALE = 1.50000E+00),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 16,
-             PARA = 'ITER_GLOB',        VALE_I = 0,
-             CRITERE = 'ABSOLU',        PRECISION = 4.E0),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 16,
-             CRITERE = 'ABSOLU',
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 16,
-             CRITERE = 'ABSOLU',        PRECISION = 20.,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 16,
-             CRITERE = 'ABSOLU',        PRECISION = 2.E0,
-             PARA = 'ITER_LINE',        VALE_I = 0))
-           )
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=16,
+                   PARA='INST',
+                   VALE=1.5,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=16,
+                   PARA='ITER_GLOB',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=4.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=16,
+                   PARA='RESI_GLOB_RELA',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=16,
+                   PARA='RESI_GLOB',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=20.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=16,
+                   PARA='ITER_LINE',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=2.0,),),);
 
-RESU=DYNA_NON_LINE( reuse=RESU,
-                    MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    CARA_ELEM=CARA,
-                    EXCIT=(
-                           _F(  CHARGE = CHA1),
-                           _F(  CHARGE = CHA2),
-                           _F(  CHARGE = CHA3, FONC_MULT = F1)),
-                    INCREMENT=_F( LIST_INST = L_INST31),
-                    NEWMARK=_F(),
-                    ETAT_INIT=_F(
-###CDURAND###                    INST_INIT = 1.5,
-                                 EVOL_NOLI = RESU),
-                    COMP_ELAS=_F( GROUP_MA = ('CABLE',), RELATION = 'CABLE',
-                               DEFORMATION = 'GREEN'),
-                    COMP_INCR=_F( GROUP_MA = ('CHARP',), RELATION = 'ELAS'),
-                    CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6, ITER_GLOB_MAXI = 100),
-                    NEWTON=_F( REAC_ITER = 1),
-                    SOLVEUR=_F( METHODE = 'GCPC',
-                              PRE_COND = 'LDLT_INC',
-                              NMAX_ITER = 250,
-                              RESI_RELA = 1.E-8)
-                                      )
-
+RESU=DYNA_NON_LINE(reuse =RESU,
+                   MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARA,
+                   EXCIT=(_F(CHARGE=CHA1,),
+                          _F(CHARGE=CHA2,),
+                          _F(CHARGE=CHA3,
+                             FONC_MULT=F1,),),
+                   COMP_INCR=_F(RELATION='ELAS',
+                                GROUP_MA='CHARP',),
+                   COMP_ELAS=_F(RELATION='CABLE',
+                                DEFORMATION='GREEN',
+                                GROUP_MA='CABLE',),
+                   ETAT_INIT=_F(EVOL_NOLI=RESU,),
+                   INCREMENT=_F(LIST_INST=L_INST31,),
+                   NEWMARK=_F(),
+                   NEWTON=_F(REAC_ITER=1,),
+                   SOLVEUR=_F(METHODE='GCPC',
+                              PRE_COND='LDLT_INC',
+                              RESI_RELA=1e-08,
+                              NMAX_ITER=250,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                  ITER_GLOB_MAXI=100,),);
 #
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 21,
-             PARA = 'INST',             VALE = 2.00000E+00),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 21,
-             PARA = 'ITER_GLOB',        VALE_I = 0,
-             CRITERE = 'ABSOLU',         PRECISION = 4.E0),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 21,
-             CRITERE = 'ABSOLU',
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 21,
-             CRITERE = 'ABSOLU',        PRECISION = 25.,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 21,
-             PARA = 'ITER_LINE',        VALE_I = 0,
-             CRITERE = 'ABSOLU',         PRECISION = 2.E0))
-           )
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=21,
+                   PARA='INST',
+                   VALE=2.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=21,
+                   PARA='ITER_GLOB',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=4.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=21,
+                   PARA='RESI_GLOB_RELA',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=21,
+                   PARA='RESI_GLOB',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=25.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=21,
+                   PARA='ITER_LINE',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=2.0,),),);
 
-RESU=DYNA_NON_LINE( reuse=RESU,
-                    MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    CARA_ELEM=CARA,
-                    EXCIT=(
-                           _F(  CHARGE = CHA1),
-                           _F(  CHARGE = CHA2),
-                           _F(  CHARGE = CHA3, FONC_MULT = F1)),
-                    INCREMENT=_F( LIST_INST = L_INST4),
-                    NEWMARK=_F(),
-                    ETAT_INIT=_F(
-###CDURAND###                    INST_INIT = 2.,
-                                 EVOL_NOLI = RESU),
-                    COMP_ELAS=_F( GROUP_MA = ('CABLE',), RELATION = 'CABLE',
-                               DEFORMATION = 'GREEN'),
-                    COMP_INCR=_F( GROUP_MA = ('CHARP',), RELATION = 'ELAS'),
-                    CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6, ITER_GLOB_MAXI = 100),
-                    NEWTON=_F( REAC_ITER = 1),
-                    SOLVEUR=_F( METHODE = 'GCPC',
-                              PRE_COND = 'LDLT_INC',
-                              NMAX_ITER = 230,
-                              RESI_RELA = 1.E-8)
-                                      )
-
+RESU=DYNA_NON_LINE(reuse =RESU,
+                   MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARA,
+                   EXCIT=(_F(CHARGE=CHA1,),
+                          _F(CHARGE=CHA2,),
+                          _F(CHARGE=CHA3,
+                             FONC_MULT=F1,),),
+                   COMP_INCR=_F(RELATION='ELAS',
+                                GROUP_MA='CHARP',),
+                   COMP_ELAS=_F(RELATION='CABLE',
+                                DEFORMATION='GREEN',
+                                GROUP_MA='CABLE',),
+                   ETAT_INIT=_F(EVOL_NOLI=RESU,),
+                   INCREMENT=_F(LIST_INST=L_INST4,),
+                   NEWMARK=_F(),
+                   NEWTON=_F(REAC_ITER=1,),
+                   SOLVEUR=_F(METHODE='GCPC',
+                              PRE_COND='LDLT_INC',
+                              RESI_RELA=1e-08,
+                              NMAX_ITER=230,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                  ITER_GLOB_MAXI=100,),);
 #
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 26,
-             PARA = 'INST',             VALE = 2.50000E+00),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 26,
-             PARA = 'ITER_GLOB',        VALE_I = 0,
-             CRITERE = 'ABSOLU',         PRECISION = 4.E0),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 26,
-             CRITERE = 'ABSOLU',
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 26,
-             CRITERE = 'ABSOLU',        PRECISION = 90.,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 26,
-             PARA = 'ITER_LINE',        VALE_I = 0,
-             CRITERE = 'ABSOLU',         PRECISION = 2.E0))
-           )
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=26,
+                   PARA='INST',
+                   VALE=2.5,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=26,
+                   PARA='ITER_GLOB',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=4.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=26,
+                   PARA='RESI_GLOB_RELA',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=26,
+                   PARA='RESI_GLOB',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=90.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=26,
+                   PARA='ITER_LINE',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=2.0,),),);
 
-RESU=DYNA_NON_LINE( reuse=RESU,
-                    MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    CARA_ELEM=CARA,
-                    EXCIT=(
-                           _F(  CHARGE = CHA1),
-                           _F(  CHARGE = CHA2),
-                           _F(  CHARGE = CHA3, FONC_MULT = F1)),
-                    INCREMENT=_F( LIST_INST = L_INST41),
-                    NEWMARK=_F(),
-                    ETAT_INIT=_F(
-###CDURAND###                  INST_INIT = 2.5,
-                               EVOL_NOLI = RESU),
-                    COMP_ELAS=_F( GROUP_MA = ('CABLE',), RELATION = 'CABLE',
-                               DEFORMATION = 'GREEN'),
-                    COMP_INCR=_F( GROUP_MA = ('CHARP',), RELATION = 'ELAS'),
-                    CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6, ITER_GLOB_MAXI = 100),
-                    NEWTON=_F( REAC_ITER = 1),
-                    SOLVEUR=_F( METHODE = 'LDLT', )
-                                      )
-
+RESU=DYNA_NON_LINE(reuse =RESU,
+                   MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARA,
+                   EXCIT=(_F(CHARGE=CHA1,),
+                          _F(CHARGE=CHA2,),
+                          _F(CHARGE=CHA3,
+                             FONC_MULT=F1,),),
+                   COMP_INCR=_F(RELATION='ELAS',
+                                GROUP_MA='CHARP',),
+                   COMP_ELAS=_F(RELATION='CABLE',
+                                DEFORMATION='GREEN',
+                                GROUP_MA='CABLE',),
+                   ETAT_INIT=_F(EVOL_NOLI=RESU,),
+                   INCREMENT=_F(LIST_INST=L_INST41,),
+                   NEWMARK=_F(),
+                   NEWTON=_F(REAC_ITER=1,),
+                   SOLVEUR=_F(METHODE='LDLT',),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                  ITER_GLOB_MAXI=100,),);
 #
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 31,
-             PARA = 'INST',             VALE = 3.00000E+00),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 31,
-             PARA = 'ITER_GLOB',        VALE_I = 0,
-             CRITERE = 'ABSOLU',         PRECISION = 5.E0),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 31,
-             CRITERE = 'ABSOLU',
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 31,
-             CRITERE = 'ABSOLU',        PRECISION = 20.,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 31,
-             PARA = 'ITER_LINE',        VALE_I = 0,
-             CRITERE = 'ABSOLU',         PRECISION = 2.E0))
-           )
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=31,
+                   PARA='INST',
+                   VALE=3.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=31,
+                   PARA='ITER_GLOB',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=5.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=31,
+                   PARA='RESI_GLOB_RELA',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=31,
+                   PARA='RESI_GLOB',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=20.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=31,
+                   PARA='ITER_LINE',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=2.0,),),);
 
-RESU=DYNA_NON_LINE( reuse=RESU,
-                    MODELE=MO,
-                    CHAM_MATER=CHMAT, 
-                    CARA_ELEM=CARA,
-                    EXCIT=(
-                           _F(  CHARGE = CHA1),
-                           _F(  CHARGE = CHA2),
-                           _F(  CHARGE = CHA3, FONC_MULT = F1)),
-                    INCREMENT=_F( LIST_INST = L_INST5),
-                    NEWMARK=_F(),
-                    ETAT_INIT=_F(
-###CDURAND###                     INST_INIT = 3.,
-                                  EVOL_NOLI = RESU),
-                    COMP_ELAS=_F( GROUP_MA = ('CABLE',), RELATION = 'CABLE',
-                               DEFORMATION = 'GREEN'),
-                    COMP_INCR=_F( GROUP_MA = ('CHARP',), RELATION = 'ELAS'),
-                    CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6, ITER_GLOB_MAXI = 100),
-                    NEWTON=_F( REAC_ITER = 1),
-                    SOLVEUR=_F( METHODE = 'GCPC',
-                              PRE_COND = 'LDLT_INC',
-                              NMAX_ITER = 250,
-                              RESI_RELA = 1.E-8)
-                                      )
-
+RESU=DYNA_NON_LINE(reuse =RESU,
+                   MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARA,
+                   EXCIT=(_F(CHARGE=CHA1,),
+                          _F(CHARGE=CHA2,),
+                          _F(CHARGE=CHA3,
+                             FONC_MULT=F1,),),
+                   COMP_INCR=_F(RELATION='ELAS',
+                                GROUP_MA='CHARP',),
+                   COMP_ELAS=_F(RELATION='CABLE',
+                                DEFORMATION='GREEN',
+                                GROUP_MA='CABLE',),
+                   ETAT_INIT=_F(EVOL_NOLI=RESU,),
+                   INCREMENT=_F(LIST_INST=L_INST5,),
+                   NEWMARK=_F(),
+                   NEWTON=_F(REAC_ITER=1,),
+                   SOLVEUR=_F(METHODE='GCPC',
+                              PRE_COND='LDLT_INC',
+                              RESI_RELA=1e-08,
+                              NMAX_ITER=250,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                  ITER_GLOB_MAXI=100,),);
 #
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 36,
-             PARA = 'INST',             VALE = 3.50000E+00),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 36,
-             PARA = 'ITER_GLOB',        VALE_I = 0,
-             CRITERE = 'ABSOLU',         PRECISION = 4.E0),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 36,
-             CRITERE = 'ABSOLU',
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 36,
-             CRITERE = 'ABSOLU',        PRECISION = 400.,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 36,
-             CRITERE = 'ABSOLU',         PRECISION = 2.E0,
-             PARA = 'ITER_LINE',        VALE_I = 0))
-           )
-
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=36,
+                   PARA='INST',
+                   VALE=3.5,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=36,
+                   PARA='ITER_GLOB',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=4.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=36,
+                   PARA='RESI_GLOB_RELA',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=36,
+                   PARA='RESI_GLOB',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=400.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=36,
+                   PARA='ITER_LINE',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=2.0,),),);
 #
 
-RESU=DYNA_NON_LINE( reuse=RESU,
-                    MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    CARA_ELEM=CARA,
-                    EXCIT=(
-                           _F(  CHARGE = CHA1),
-                           _F(  CHARGE = CHA2),
-                           _F(  CHARGE = CHA3, FONC_MULT = F1)),
-                    INCREMENT=_F( LIST_INST = L_INST51),
-                    NEWMARK=_F(),
-                    ETAT_INIT=_F(
-###CDURAND###                     INST_INIT = 3.5, 
-                                  EVOL_NOLI = RESU),
-                    COMP_ELAS=_F( GROUP_MA = ('CABLE',), RELATION = 'CABLE',
-                               DEFORMATION = 'GREEN'),
-                    COMP_INCR=_F( GROUP_MA = ('CHARP',), RELATION = 'ELAS'),
-                    CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6, ITER_GLOB_MAXI = 100),
-                    NEWTON=_F( REAC_ITER = 1),
-                    SOLVEUR=_F( METHODE = 'GCPC',
-                              PRE_COND = 'LDLT_INC',
-                              NMAX_ITER = 330,
-                              RESI_RELA = 1.E-8)
-                                      )
-
+RESU=DYNA_NON_LINE(reuse =RESU,
+                   MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARA,
+                   EXCIT=(_F(CHARGE=CHA1,),
+                          _F(CHARGE=CHA2,),
+                          _F(CHARGE=CHA3,
+                             FONC_MULT=F1,),),
+                   COMP_INCR=_F(RELATION='ELAS',
+                                GROUP_MA='CHARP',),
+                   COMP_ELAS=_F(RELATION='CABLE',
+                                DEFORMATION='GREEN',
+                                GROUP_MA='CABLE',),
+                   ETAT_INIT=_F(EVOL_NOLI=RESU,),
+                   INCREMENT=_F(LIST_INST=L_INST51,),
+                   NEWMARK=_F(),
+                   NEWTON=_F(REAC_ITER=1,),
+                   SOLVEUR=_F(METHODE='GCPC',
+                              PRE_COND='LDLT_INC',
+                              RESI_RELA=1e-08,
+                              NMAX_ITER=330,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                  ITER_GLOB_MAXI=100,),);
 #
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 41,
-             PARA = 'INST',             VALE = 4.00000E+00),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 41,
-             PARA = 'ITER_GLOB',        VALE_I = 0,
-             CRITERE = 'ABSOLU',         PRECISION = 3.E0),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 41,
-             CRITERE = 'ABSOLU',
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 41,
-             CRITERE = 'ABSOLU',        PRECISION = 800.,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = RESU,           NUME_ORDRE = 41,
-             CRITERE = 'ABSOLU',         PRECISION = 2.E0,
-             PARA = 'ITER_LINE',        VALE_I = 0))
-           )
-
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   PARA='INST',
+                   VALE=4.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   PARA='ITER_GLOB',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=3.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   PARA='RESI_GLOB_RELA',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   PARA='RESI_GLOB',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=800.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   PARA='ITER_LINE',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=2.0,),),);
 #
 
-
-D1=DIST_LIGN_3D(
-           RESULTAT=RESU,  MODELE=MO,  TOUT_ORDRE='OUI',
-           GROUP_MA_1='CC1',  GROUP_MA_2='CC2')
-
+D1=DIST_LIGN_3D(MODELE=MO,
+                RESULTAT=RESU,
+                TOUT_ORDRE='OUI',
+                GROUP_MA_1='CC1',
+                GROUP_MA_2='CC2',);
 # VERIFICATION   DEPLACEMENTS
 
-TEST_RESU(RESU=(
-       _F(  RESULTAT = RESU, NOM_CHAM = 'DEPL',
-              NUME_ORDRE = 41, NOEUD = 'N5',  NOM_CMP = 'DY',
-                    VALE = -1.981,  PRECISION = 2.E-4),
-       _F(  RESULTAT = RESU, NOM_CHAM = 'DEPL',
-              NUME_ORDRE = 41, NOEUD = 'N5',  NOM_CMP = 'DZ',
-                    VALE = -1.846,  PRECISION = 3.E-4),
-       _F(  RESULTAT = RESU, NOM_CHAM = 'DEPL',
-              NUME_ORDRE = 41, NOEUD = 'N14', NOM_CMP = 'DY',
-                    VALE = -4.108,  PRECISION = 2.E-4),
-       _F(  RESULTAT = RESU, NOM_CHAM = 'DEPL',
-              NUME_ORDRE = 41, NOEUD = 'N14', NOM_CMP = 'DZ',
-                    VALE = 3.229,  PRECISION = 2.E-4))
-              )
-
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N5',
+                   VALE=-1.981,
+                   PRECISION=0.0002,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N5',
+                   VALE=-1.846,
+                   PRECISION=0.0003,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N14',
+                   VALE=-4.108,
+                   PRECISION=0.0002,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N14',
+                   VALE=3.229,
+                   PRECISION=0.0002,),),);
 # VERIFICATION   EFFORTS
 
-TEST_RESU(RESU=(
-       _F(  RESULTAT = RESU, NOM_CHAM = 'SIEF_ELGA',
-              NUME_ORDRE = 21, MAILLE = 'M1',
-              POINT = 1,    NOM_CMP = 'N',
-              REFERENCE='NON_REGRESSION', VERSION='6.02.02',
-                    VALE = 7.550E4, PRECISION = 2.E-4),
-       _F(  RESULTAT = RESU, NOM_CHAM = 'SIEF_ELGA',
-              NUME_ORDRE = 41, MAILLE = 'M9',
-              POINT = 1,    NOM_CMP = 'N',
-              REFERENCE='NON_REGRESSION', VERSION='6.02.02',
-                    VALE = 2.256E4, PRECISION = 2.E-4))
-              )
-
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=21,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='N',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=75500.0,
+                   PRECISION=0.0002,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='6.02.02',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='N',
+                   MAILLE='M9',
+                   POINT=1,
+                   VALE=22560.0,
+                   PRECISION=0.0002,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='6.02.02',),),);
 # VERIFICATION FONCTION
 
-TEST_FONCTION(
-     VALEUR=_F(  FONCTION = D1,
-              VALE_PARA = 4.0, VALE_REFE = 6.6876)
-              )
-
+TEST_FONCTION(VALEUR=_F(FONCTION=D1,
+                        VALE_PARA=4.0,
+                        VALE_REFE=6.6876,),);
 #---------------------------------------------------------------------
 
-RESU=CALC_ELEM( reuse=RESU,      MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                       CARA_ELEM=CARA,
-                        RESULTAT=RESU,
-                      NUME_ORDRE=41,
-                          OPTION=(
-                          'SIEF_ELNO_ELGA','SIGM_ELNO_SIEF',
-                                   'SIPO_ELNO_SIEF', )
-                     )
-
+RESU=CALC_ELEM(reuse =RESU,
+               MODELE=MO,
+               CHAM_MATER=CHMAT,
+               CARA_ELEM=CARA,
+               RESULTAT=RESU,
+               NUME_ORDRE=41,
+               OPTION=('SIEF_ELNO_ELGA','SIGM_ELNO_SIEF','SIPO_ELNO_SIEF',),);
 #---------------------------------------------------------------------
 # LE CALCUL EST ELASTIQUE LINEAIRE, LA REFERENCE EST SIGM_ELNO_DEPL
 
-
-TEST_RESU(RESU=(
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIGM_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M17',
-              NOEUD = 'N19',    NOM_CMP = 'SIXX',
-              REFERENCE = 'AUTRE_ASTER',    VALE = -5.53705E+07),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIGM_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M17',
-              NOEUD = 'N20',    NOM_CMP = 'SIXX',
-              PRECISION = 0.002,
-              REFERENCE = 'AUTRE_ASTER',    VALE = -1.54670E+06),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIGM_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M17',
-              NOEUD = 'N19',    NOM_CMP = 'SIXY',
-              REFERENCE = 'AUTRE_ASTER',    VALE = 2.90880E+04),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIGM_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M17',
-              NOEUD = 'N20',    NOM_CMP = 'SIXY',
-              REFERENCE = 'AUTRE_ASTER',    VALE = 2.90880E+04),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIGM_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M17',
-              NOEUD = 'N19',    NOM_CMP = 'SIXZ',
-              REFERENCE = 'AUTRE_ASTER',    VALE = -2.97541E+05),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIGM_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M17',
-              NOEUD = 'N20',    NOM_CMP = 'SIXZ',
-              REFERENCE = 'AUTRE_ASTER',    VALE = -2.97541E+05),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIGM_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M20',
-              NOEUD = 'N25',    NOM_CMP = 'SIXX',
-              PRECISION = 0.013,
-              REFERENCE = 'AUTRE_ASTER',    VALE = -1.18460E+07),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIGM_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M20',
-              PRECISION = 0.034,
-              NOEUD = 'N26',    NOM_CMP = 'SIXX',
-              REFERENCE = 'AUTRE_ASTER',    VALE = -1.31672E+06),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIGM_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M20',
-              NOEUD = 'N25',    NOM_CMP = 'SIXY',
-              PRECISION = 0.006,
-              REFERENCE = 'AUTRE_ASTER',    VALE = -1.46042E+04),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIGM_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M20',
-              NOEUD = 'N26',    NOM_CMP = 'SIXY',
-              PRECISION = 0.006,
-              REFERENCE = 'AUTRE_ASTER',    VALE = -1.46042E+04),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIGM_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M20',
-              NOEUD = 'N25',    NOM_CMP = 'SIXZ',
-              PRECISION = 0.010,
-              REFERENCE = 'AUTRE_ASTER',    VALE = 5.48529E+04),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIGM_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M20',
-              NOEUD = 'N26',    NOM_CMP = 'SIXZ',
-              PRECISION = 0.010,
-              REFERENCE = 'AUTRE_ASTER',    VALE = 5.48529E+04))
-            )
-
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIGM_ELNO_SIEF',
+                   NOM_CMP='SIXX',
+                   MAILLE='M17',
+                   NOEUD='N19',
+                   VALE=-55370500.0,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIGM_ELNO_SIEF',
+                   NOM_CMP='SIXX',
+                   MAILLE='M17',
+                   NOEUD='N20',
+                   VALE=-1546700.0,
+                   PRECISION=0.002,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIGM_ELNO_SIEF',
+                   NOM_CMP='SIXY',
+                   MAILLE='M17',
+                   NOEUD='N19',
+                   VALE=29088.0,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIGM_ELNO_SIEF',
+                   NOM_CMP='SIXY',
+                   MAILLE='M17',
+                   NOEUD='N20',
+                   VALE=29088.0,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIGM_ELNO_SIEF',
+                   NOM_CMP='SIXZ',
+                   MAILLE='M17',
+                   NOEUD='N19',
+                   VALE=-297541.0,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIGM_ELNO_SIEF',
+                   NOM_CMP='SIXZ',
+                   MAILLE='M17',
+                   NOEUD='N20',
+                   VALE=-297541.0,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIGM_ELNO_SIEF',
+                   NOM_CMP='SIXX',
+                   MAILLE='M20',
+                   NOEUD='N25',
+                   VALE=-11846000.0,
+                   PRECISION=0.013,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIGM_ELNO_SIEF',
+                   NOM_CMP='SIXX',
+                   MAILLE='M20',
+                   NOEUD='N26',
+                   VALE=-1316720.0,
+                   PRECISION=0.034,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIGM_ELNO_SIEF',
+                   NOM_CMP='SIXY',
+                   MAILLE='M20',
+                   NOEUD='N25',
+                   VALE=-14604.2,
+                   PRECISION=0.006,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIGM_ELNO_SIEF',
+                   NOM_CMP='SIXY',
+                   MAILLE='M20',
+                   NOEUD='N26',
+                   VALE=-14604.2,
+                   PRECISION=0.006,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIGM_ELNO_SIEF',
+                   NOM_CMP='SIXZ',
+                   MAILLE='M20',
+                   NOEUD='N25',
+                   VALE=54852.9,
+                   PRECISION=0.01,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIGM_ELNO_SIEF',
+                   NOM_CMP='SIXZ',
+                   MAILLE='M20',
+                   NOEUD='N26',
+                   VALE=54852.9,
+                   PRECISION=0.01,
+                   REFERENCE='AUTRE_ASTER',),),);
 #---------------------------------------------------------------------
 # LE CALCUL EST ELASTIQUE LINEAIRE, LA REFERENCE EST SIPO_ELNO_DEPL
 
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIPO_ELNO_SIEF',
+                   NOM_CMP='SN',
+                   MAILLE='M17',
+                   NOEUD='N19',
+                   VALE=-542541.0,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIPO_ELNO_SIEF',
+                   NOM_CMP='SN',
+                   MAILLE='M17',
+                   NOEUD='N20',
+                   VALE=-542541.0,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIPO_ELNO_SIEF',
+                   NOM_CMP='SVY',
+                   MAILLE='M17',
+                   NOEUD='N19',
+                   VALE=29088.0,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIPO_ELNO_SIEF',
+                   NOM_CMP='SVY',
+                   MAILLE='M17',
+                   NOEUD='N20',
+                   VALE=29088.0,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIPO_ELNO_SIEF',
+                   NOM_CMP='SVZ',
+                   MAILLE='M17',
+                   NOEUD='N19',
+                   VALE=-297541.0,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIPO_ELNO_SIEF',
+                   NOM_CMP='SVZ',
+                   MAILLE='M17',
+                   NOEUD='N20',
+                   VALE=-297541.0,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIPO_ELNO_SIEF',
+                   NOM_CMP='SMT',
+                   MAILLE='M17',
+                   NOEUD='N19',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIPO_ELNO_SIEF',
+                   NOM_CMP='SMT',
+                   MAILLE='M17',
+                   NOEUD='N20',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIPO_ELNO_SIEF',
+                   NOM_CMP='SMFY',
+                   MAILLE='M17',
+                   NOEUD='N19',
+                   VALE=54545300.0,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIPO_ELNO_SIEF',
+                   NOM_CMP='SMFY',
+                   MAILLE='M17',
+                   NOEUD='N20',
+                   VALE=-995667.0,
+                   PRECISION=0.004,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIPO_ELNO_SIEF',
+                   NOM_CMP='SMFZ',
+                   MAILLE='M17',
+                   NOEUD='N19',
+                   VALE=-5560070.0,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=41,
+                   NOM_CHAM='SIPO_ELNO_SIEF',
+                   NOM_CMP='SMFZ',
+                   MAILLE='M17',
+                   NOEUD='N20',
+                   VALE=-130309.0,
+                   PRECISION=0.006,
+                   REFERENCE='AUTRE_ASTER',),),);
 
-TEST_RESU(RESU=(
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIPO_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M17',
-              NOEUD = 'N19',    NOM_CMP = 'SN',
-              REFERENCE = 'AUTRE_ASTER',    VALE = -5.42541E+05),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIPO_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M17',
-              NOEUD = 'N20',    NOM_CMP = 'SN',
-              REFERENCE = 'AUTRE_ASTER',    VALE = -5.42541E+05),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIPO_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M17',
-              NOEUD = 'N19',    NOM_CMP = 'SVY',
-              REFERENCE = 'AUTRE_ASTER',    VALE = 2.90880E+04),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIPO_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M17',
-              NOEUD = 'N20',    NOM_CMP = 'SVY',
-              REFERENCE = 'AUTRE_ASTER',    VALE = 2.90880E+04),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIPO_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M17',
-              NOEUD = 'N19',    NOM_CMP = 'SVZ',
-              REFERENCE = 'AUTRE_ASTER',    VALE = -2.97541E+05),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIPO_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M17',
-              NOEUD = 'N20',    NOM_CMP = 'SVZ',
-              REFERENCE = 'AUTRE_ASTER',    VALE = -2.97541E+05),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIPO_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M17',
-              NOEUD = 'N19',    NOM_CMP = 'SMT',
-              REFERENCE = 'AUTRE_ASTER',
-              CRITERE = 'ABSOLU',         VALE = 0.),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIPO_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M17',
-              NOEUD = 'N20',    NOM_CMP = 'SMT',
-              REFERENCE = 'AUTRE_ASTER',
-              CRITERE = 'ABSOLU',         VALE = 0.),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIPO_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M17',
-              NOEUD = 'N19',    NOM_CMP = 'SMFY',
-              REFERENCE = 'AUTRE_ASTER',    VALE = 5.45453E+07),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIPO_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M17',
-              NOEUD = 'N20',    NOM_CMP = 'SMFY',
-              PRECISION = 0.004,
-              REFERENCE = 'AUTRE_ASTER',    VALE = -9.95667E+05),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIPO_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M17',
-              NOEUD = 'N19',    NOM_CMP = 'SMFZ',
-              REFERENCE = 'AUTRE_ASTER',    VALE = -5.56007E+06),
-       _F(  RESULTAT = RESU,   NOM_CHAM = 'SIPO_ELNO_SIEF',
-              NUME_ORDRE = 41,     MAILLE = 'M17',
-              NOEUD = 'N20',    NOM_CMP = 'SMFZ',
-              PRECISION = 0.006,
-              REFERENCE = 'AUTRE_ASTER',    VALE = -1.30309E+05))
-            )
-
-FIN()
+FIN();
 #

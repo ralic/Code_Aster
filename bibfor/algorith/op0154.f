@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 16/02/2004   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,8 @@ C
       CHARACTER*19  GEOMI, GEOMF,GEOM1
       CHARACTER*24  COORJV
       REAL*8        LTCHAR, PT(3), PT2(3), DIR(3), ANGL
+      
+      REAL*8        AXE1(3),AXE2(3),PERP(3)
       
 C -DEB------------------------------------------------------------------
 C
@@ -169,6 +171,56 @@ C     ---------------------------------------
             ENDIF
             CALL ROTAMA ( GEOMI, PT, DIR, ANGL, BIDIM )
  10      CONTINUE
+      ENDIF
+C
+C
+C     --- TRAITEMENT DU MOT CLEF  "SYMETRIE" :
+C     ---------------------------------------
+      CALL GETFAC ( 'SYMETRIE', NBOCC )
+      IF ( NBOCC .NE. 0 ) THEN
+         GEOMI = MA//'.COORDO'
+         DO 20 I = 1 , NBOCC
+            CALL GETVR8 ( 'SYMETRIE', 'POINT', I, 1, 0, PT,   DIM )
+            CALL GETVR8 ( 'SYMETRIE', 'AXE_1', I, 1, 0, AXE1, N1 )
+            CALL GETVR8 ( 'SYMETRIE', 'AXE_2', I, 1, 0, AXE2, N2 )
+
+C           DIM, N1, N2 = 2 OU 3 ==> IMPOSE PAR LES CATALOGUES
+C           EN 2D : DIM=N1=2    , AXE_2 N'EXISTE PAS N2=0
+C           EN 3D : DIM=N1=N2=3
+            IF ( DIM .EQ. -2) THEN
+               IF ( N1 .NE. DIM ) THEN
+                  CALL UTMESS('F','OP0154','OPTION SYMETRIE : LA '
+     +         //'DIMENSION DE POINT ET AXE_1 DOIT ETRE IDENTIQUE.')
+               ENDIF
+               IF ( N2 .NE. 0 ) THEN
+                  CALL UTMESS('A','OP0154','OPTION SYMETRIE : '
+     +         //'AXE_2 EST INUTILE EN 2D, IL EST IGNORE.')
+               ENDIF
+               CALL GETVR8 ( 'SYMETRIE', 'POINT', I, 1, 2, PT,   DIM )
+               CALL GETVR8 ( 'SYMETRIE', 'AXE_1', I, 1, 2, AXE1, N1 )
+C              CONSTRUCTION DU VECTEUR PERPENDICULAIRE A Z ET AXE1
+               PERP(1) = -AXE1(2)
+               PERP(2) =  AXE1(1)
+               PERP(3) =  0.0D0
+            ELSE
+               IF ( N1 .NE. DIM ) THEN
+                 CALL UTMESS('F','OP0154','OPTION SYMETRIE : LA '
+     +        //'DIMENSION DE POINT ET AXE_1 DOIT ETRE IDENTIQUE.')
+               ENDIF
+               IF ( N2 .NE. DIM ) THEN
+                 CALL UTMESS('F','OP0154','OPTION SYMETRIE : LA '
+     +        //'DIMENSION DE POINT ET AXE_2 DOIT ETRE IDENTIQUE.')
+               ENDIF
+               CALL GETVR8 ( 'SYMETRIE', 'POINT', I, 1, 3, PT,   DIM )
+               CALL GETVR8 ( 'SYMETRIE', 'AXE_1', I, 1, 3, AXE1, N1 )
+               CALL GETVR8 ( 'SYMETRIE', 'AXE_2', I, 1, 3, AXE2, N2 )
+C              CONSTRUCTION DU VECTEUR PERPENDICULAIRE A AXE1 ET AXE2
+               PERP(1) = AXE1(2)*AXE2(3) - AXE1(3)*AXE2(2)
+               PERP(2) = AXE1(3)*AXE2(1) - AXE1(1)*AXE2(3)
+               PERP(3) = AXE1(1)*AXE2(2) - AXE1(2)*AXE2(1)
+            ENDIF
+            CALL SYMEMA( GEOMI, PERP, PT)
+ 20      CONTINUE
       ENDIF
 C
 C

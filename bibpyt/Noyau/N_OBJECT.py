@@ -1,4 +1,4 @@
-#@ MODIF N_OBJECT Noyau  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF N_OBJECT Noyau  DATE 04/02/2004   AUTEUR CAMBIER S.CAMBIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,4 +88,11 @@ class OBJECT:
         return self.definition.defaut
       else:
         return val
+
+   def reparent(self,parent):
+      """
+         Cette methode sert a reinitialiser la parente de l'objet
+      """
+      self.parent=parent
+      self.jdc=parent.jdc
 

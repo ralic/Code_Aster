@@ -1,7 +1,7 @@
       SUBROUTINE LECT82(NODE,NBNODE,INUM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 21/07/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF STBTRIAS  DATE 10/02/2004   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -84,7 +84,7 @@ C
       IDRO=1
       INUM=1
       DO  669 I=1,NBNODE*2,2
-        IF (NOD82(I).NE.0) THEN 
+        IF ((NOD82(I).NE.0)) THEN 
           NODE(IDRO)=NOD82(I)
           NODE(IDRO+1)=NOD82(I+1)
           IDRO=IDRO+2
@@ -98,6 +98,6 @@ C
           IDRO=IDRO-2
           INUM = INUM - 1
         ENDIF  
-      ENDIF         
+      ENDIF  
   669 CONTINUE
       END

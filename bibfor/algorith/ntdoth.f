@@ -5,7 +5,7 @@ C
 C     THERMIQUE - DONNEES EN THERMIQUE
 C     *           **         **
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -233,8 +233,8 @@ C 3.2.4. ==> ON REGARDE LES CHARGES DU TYPE DIRICHLET
             DO 3241 , NRPASE = 1 , NBPASE
               NOPASE = ZK8(ADCHSE+NRPASE-1)
               IF ( NOPASE.NE.'        ' ) THEN
-                CALL TELLME ( 'F', 'NOM_FONCTION', LCHIN(1:19), NOPASE,
-     &                        K24BID, IBID, REPK, IERD )
+                CALL TELLME ( 'F', 'NOM_FONCTION', LCHIN(1:19), 
+     &                NOPASE,REPK, IERD )
                 IF ( REPK.EQ.'OUI' ) THEN
                   CALL PSTYPA ( NBPASE, INPSCO, NOMCHA, NOPASE,
      >                          TYPEPS(0) )
@@ -302,7 +302,7 @@ C
                 NOPASE = ZK8(ADCHSE+NRPASE-1)
                 IF ( NOPASE.NE.'        ' ) THEN
                   CALL TELLME ( 'F', 'NOM_FONCTION', LCHIN(1:19),
-     &                           NOPASE, K24BID, IBID, REPK, IERD )
+     &                  NOPASE, REPK, IERD )
                   IF ( REPK.EQ.'OUI' ) THEN
                     CALL PSTYPA ( NBPASE, INPSCO, NOMCHA, NOPASE,
      >                            TYPEPS(K) )

@@ -3,7 +3,7 @@
       INTEGER                      IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 29/01/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,8 +83,8 @@ C     --- ALLOCATION D'UNE BASE DE DONNEES DUMMY ---
       CALL JEINIF( 'DUMMY','DETRUIT',NOMF,'L', 250 , 100, 1 000 )
 C
 C-----------------AY------------------------
-      CALL ULDEFI(6,'MESSAGE','A','N','N')
-      CALL ULDEFI(9,'ERREUR' ,'A','N','N')
+      CALL ULDEFI(6,' ','MESSAGE','A','N','N')
+      CALL ULDEFI(9,' ','ERREUR' ,'A','N','N')
       CALL UTINIT(2, 80, 1)
 C-----------------AY------------------------
 

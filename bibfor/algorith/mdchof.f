@@ -2,12 +2,12 @@
      &                  NBNL,TYPCH,NBSEG,PHII,NOMCH,
      &                  CHOC,ALPHA,BETA,GAMMA,ORIG,RC,THETA,
      &                  VITG,DEPG,VITG0,DEPG0,
-     &                  OLD,OLDIA,INDNEW,FMRES,FMOD,FTMP,
+     &                  OLD,OLDIA,FMRES,FMOD,FTMP,
      &                  TESTC,ITFORN,TOLN)
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/05/2000   AUTEUR KXBADNG T.KESTENS 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C ---------
       REAL*8       CHOC(5,*), ALPHA(2,*), BETA(2,*), GAMMA(2,*),
      &             ORIG(6,*), RC(NP3,*), THETA(NP3,*),
      &             VITG(*), DEPG(*), VITG0(*), DEPG0(*), OLD(9,*)
-      INTEGER      OLDIA(*), INDNEW
+      INTEGER      OLDIA(*)
       REAL*8       FMRES(*), FMOD(*), FTMP(*)
       INTEGER      TESTC, ITFORN(*)
       REAL*8       TOLN

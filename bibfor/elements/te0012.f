@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,14 +55,12 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*8 ELREFE
       REAL*8 A(3,3,27,27),MATP(27,27),MATV(378)
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),TPG,POIDS,RHO
-      INTEGER IPOIDS,IVF,IDFDE,IDFDN,IDFDK,IGEOM,IMATE
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER JGANO,NNO,KP,I,J,K,IMATUU,ITEMPE,IACCE,IVECT
-      INTEGER IJKL,IK,L,JVAL,NDIM,NPG,NDDL,NVEC
+      INTEGER IJKL,IK,L,NDIM,NPG,NDDL,NVEC
       INTEGER IDIAG,NNOS
       INTEGER IVITE,IECIN,IFREQ
-      REAL*8 TRACE,ALFA,SOMME,WGT
-      REAL*8 MASVIT(27)
-      REAL*8 R8DOT
+      REAL*8 TRACE,ALFA,WGT,MASVIT(27),R8DOT
 C.......................................................................
 
       CALL ELREF1(ELREFE)
@@ -73,12 +71,6 @@ C.......................................................................
       END IF
       NDDL = 3*NNO
       NVEC = NDDL* (NDDL+1)/2
-
-      IDFDE = IVF + NPG*NNO
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
-      DO 10 I = 1,1
-   10 CONTINUE
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -99,13 +91,11 @@ C    BOUCLE SUR LES POINTS DE GAUSS
 
       DO 90 KP = 1,NPG
         L = (KP-1)*NNO
-        K = (KP-1)*NNO*3
-        CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &              ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POIDS)
-
+        CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
         TPG = 0.0D0
         DO 60 I = 1,NNO
-          TPG = TPG + ZR(ITEMPE+I-1)*ZR(IVF+K+I-1)
+          TPG = TPG + ZR(ITEMPE+I-1)*ZR(IVF+L+I-1)
    60   CONTINUE
         CALL RCVALA(ZI(IMATE),PHENOM,1,'TEMP',TPG,1,'RHO',RHO,CODRET,
      &              'FM')

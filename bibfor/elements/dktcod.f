@@ -1,7 +1,12 @@
-      SUBROUTINE DKTCOD(XYZL,OPTION,PGL,ICOU,INIV,DEPL,CDL,MULTIC,
-     +                  GRILLE)
+      SUBROUTINE DKTCOD ( NOMTE, XYZL, OPTION, PGL, ICOU, INIV, DEPL,
+     +                    CDL, MULTIC, GRILLE )
+      IMPLICIT NONE
+      INTEGER       ICOU, INIV
+      REAL*8        XYZL(3,*),PGL(3,*), DEPL(*), CDL(*)
+      LOGICAL       GRILLE
+      CHARACTER*16  NOMTE, OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/06/99   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,14 +23,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8 XYZL(3,*),PGL(3,*)
-      REAL*8 DEPL(*)
-      REAL*8 CDL(*)
-      CHARACTER*16 OPTION
-      INTEGER ICOU
-      INTEGER INIV
-      LOGICAL GRILLE
 C     ------------------------------------------------------------------
 C     CONTRAINTES ET DEFORMATIONS DE L'ELEMENT DE PLAQUE DKT
 C     ------------------------------------------------------------------
@@ -40,7 +37,6 @@ C          3 POUR UN MATERIAU ORTHOTROPE (MEGRDKT / MEGRDKQ)
 C     OUT CDL    : CONTRAINTES OU DEFORMATIONS AUX NOEUDS DANS LE REPERE
 C                  INTRINSEQUE A L'ELEMENT
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -56,8 +52,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      CHARACTER*8 TYPELE
-      CHARACTER*24 DESR
+      INTEGER MULTIC,LZR,NE,INE,JCACO,K,J,I,IE
       REAL*8 DEPF(9),DEPM(6)
       REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2),DFC(3,2)
       REAL*8 H(3,3),D1I(2,2),D2I(2,4)
@@ -66,10 +61,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 HFT2(2,6),HLT2(4,6)
       REAL*8 VT(2),LAMBDA(4)
       REAL*8 EPS(3),SIG(3),DCIS(2),CIST(2),X3I,EPAIS
-
-      REAL*8 DISTN
-
-      INTEGER MULTIC
       LOGICAL ELASCO
 C     ------------------ PARAMETRAGE TRIANGLE --------------------------
       INTEGER NPG,NC,NNO
@@ -92,20 +83,13 @@ C     ------------------ PARAMETRAGE TRIANGLE --------------------------
       PARAMETER (LT2VE=LT1VE+9)
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-
-      IF (GRILLE) THEN
-        TYPELE = 'MEGRDKT '
-      ELSE
-        TYPELE = 'MEDKTR3 '
-      END IF
-
-      DESR = '&INEL.'//TYPELE//'.DESR'
-      CALL JEVETE(DESR,' ',LZR)
+      
+      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
       IF (OPTION(6:9).EQ.'ELGA') THEN
-        NE = NPG
+        NE  = NPG
         INE = 0
       ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
-        NE = NNO
+        NE  = NNO
         INE = NPG
       END IF
 C     ----- RAPPEL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,

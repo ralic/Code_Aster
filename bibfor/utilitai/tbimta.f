@@ -1,4 +1,4 @@
-      SUBROUTINE TBIMTA ( TABLE, IFR, NPARIM, LIPAIM, FORMAR, FORMAC )
+      SUBROUTINE TBIMTA ( TABLE, IFR, NPARIM, LIPAIM, FORMAR)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,9 +18,9 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT   NONE
       INTEGER             IFR, NPARIM
-      CHARACTER*(*)       TABLE, FORMAR, FORMAC, LIPAIM(*)
+      CHARACTER*(*)       TABLE, FORMAR, LIPAIM(*)
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 06/11/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C TOLE CRS_602
 C      IMPRESSION DE LA TABLE AU FORMAT "TABLEAU"
 C ----------------------------------------------------------------------
@@ -29,7 +29,6 @@ C IN  : IFR    : NUMERO D'UNITE LOGIQUE D'IMPRESSION
 C IN  : NPARIM : NOMBRE DE PARAMETRES D'IMPRESSION
 C IN  : LIPAIM : LISTE DES PARAMETRES D'IMPRESSION
 C IN  : FORMAR : FORMAT D'IMPRESSION DES REELS
-C IN  : FORMAC : FORMAT D'IMPRESSION DES COMPLEXES
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI

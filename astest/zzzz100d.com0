@@ -30,14 +30,14 @@ IMPR_COURBE(FICHIER ='AGRAF',
             TITRE_GRAPHIQUE='parametres par defaut F02',
             LEGENDE_X='frequence',
             LEGENDE_Y='acceleration',
+            FREQ_MARQUEUR=1,
             COURBE=(_F( FONCTION =F02,
                         LEGENDE='spectre brut',
                         COULEUR='NOIR'  ),
                     _F( FONCTION =FR_02a,
                         LEGENDE='spectre lisse',
                         COULEUR='ROUGE',
-                        MARQUEUR='CARRE',
-                        FREQ_MARQUEUR=1 ),
+                        MARQUEUR='CARRE',),
                    )
            ),
             
@@ -64,14 +64,14 @@ IMPR_COURBE(FICHIER ='AGRAF',
             TITRE_GRAPHIQUE='F02 TOLE_LISS=10',
             LEGENDE_X='frequence',
             LEGENDE_Y='acceleration',
+            FREQ_MARQUEUR=1,
             COURBE=(_F( FONCTION =F02,
                         LEGENDE='spectre brut',
                         COULEUR='NOIR' ),
                     _F( FONCTION =FR_02b,
                         LEGENDE='spectre lisse',
                         COULEUR='ROUGE',
-                        MARQUEUR='CARRE',
-                        FREQ_MARQUEUR=1  ),
+                        MARQUEUR='CARRE',),
                    )
            ),
            
@@ -96,14 +96,14 @@ IMPR_COURBE(FICHIER ='AGRAF',
             TITRE_GRAPHIQUE='F02 TOLE_LISS=50',
             LEGENDE_X='frequence',
             LEGENDE_Y='acceleration',
+            FREQ_MARQUEUR=1,
             COURBE=(_F( FONCTION =F02,
                         LEGENDE='spectre brut',
                         COULEUR='NOIR' ),
                     _F( FONCTION =FR_02c,
                         LEGENDE='spectre lisse',
                         COULEUR='ROUGE',
-                        MARQUEUR='CARRE',
-                        FREQ_MARQUEUR=1  ),
+                        MARQUEUR='CARRE',),
                    )
            ),
            
@@ -129,14 +129,14 @@ IMPR_COURBE(FICHIER ='AGRAF',
             TITRE_GRAPHIQUE='echantillonnage force F02',
             LEGENDE_X='frequence',
             LEGENDE_Y='acceleration',
+            FREQ_MARQUEUR=1,
             COURBE=(_F( FONCTION =F02,
                         LEGENDE='spectre brut',
                         COULEUR='NOIR' ),
                     _F( FONCTION =FR_02d,
                         LEGENDE='spectre lisse',
                         COULEUR='ROUGE',
-                        MARQUEUR='CARRE',
-                        FREQ_MARQUEUR=1  ),
+                        MARQUEUR='CARRE',),
                    )
            ),
            
@@ -159,14 +159,14 @@ IMPR_COURBE(FICHIER ='AGRAF',
             TITRE_GRAPHIQUE='F02 TOLE_LISS=50, freq_creux=7.85',
             LEGENDE_X='frequence',
             LEGENDE_Y='acceleration',
+            FREQ_MARQUEUR=1,
             COURBE=(_F( FONCTION =F02,
                         LEGENDE='spectre brut',
                         COULEUR='NOIR' ),
                     _F( FONCTION =FR_02e,
                         LEGENDE='spectre lisse',
                         COULEUR='ROUGE',
-                        MARQUEUR='CARRE',
-                        FREQ_MARQUEUR=1  ),
+                        MARQUEUR='CARRE',),
                    )
            ),
                      
@@ -197,6 +197,7 @@ IMPR_COURBE(
             LEGENDE_Y='acceleration',
             BORNE_X=(0.01,100.0),
             BORNE_Y=(0.01,10.0),
+            FREQ_MARQUEUR=1,
             COURBE=(
                _F(
                FONCTION =F05,
@@ -208,7 +209,6 @@ IMPR_COURBE(
                LEGENDE='spectre lisse',
                COULEUR='ROUGE',
                MARQUEUR='CARRE',
-               FREQ_MARQUEUR=1,
                   ),
                    )
            ),           
@@ -240,6 +240,7 @@ IMPR_COURBE(
             LEGENDE_Y='acceleration',
             BORNE_X=(0.01,100.0),
             BORNE_Y=(0.01,10.0),
+            FREQ_MARQUEUR=1,
             COURBE=(
                _F(
                FONCTION =F05,
@@ -251,7 +252,6 @@ IMPR_COURBE(
                LEGENDE='spectre lisse',
                COULEUR='ROUGE',
                MARQUEUR='CARRE',
-               FREQ_MARQUEUR=1,
                   ),
                    )
            ),           
@@ -278,6 +278,7 @@ IMPR_COURBE(
             LEGENDE_Y='acceleration',
             BORNE_X=(0.01,100.0),
             BORNE_Y=(0.01,10.0),
+            FREQ_MARQUEUR=1,
             COURBE=(
                _F(
                FONCTION =SPECTB,
@@ -289,7 +290,6 @@ IMPR_COURBE(
                LEGENDE='spectre lisse',
                COULEUR='ROUGE',
                MARQUEUR='CARRE',
-               FREQ_MARQUEUR=1,
                   ),
                    )
            ),
@@ -318,6 +318,7 @@ IMPR_COURBE(
             TITRE_GRAPHIQUE='SRB echantillonnage force ',
             LEGENDE_X='frequence',
             LEGENDE_Y='acceleration',
+            FREQ_MARQUEUR=1,
             COURBE=(
                _F(
                FONCTION =SPECTB,
@@ -329,7 +330,6 @@ IMPR_COURBE(
                LEGENDE='spectre lisse',
                COULEUR='ROUGE',
                MARQUEUR='CARRE',
-               FREQ_MARQUEUR=1,
                   ),
                    )
            ),

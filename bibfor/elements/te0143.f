@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/02/2000   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C TOLE  CRP_6
+C-----------------------------------------------------------------------
 C     CALCULE LA MATRICE DE RIGIDITE GEOMETRIQUE ELEMENTAIRE DES
 C     ELEMENTS DE POUTRE D'EULER ET DE TIMOSHENKO
 C     ------------------------------------------------------------------
@@ -142,7 +144,7 @@ C        --- CALCUL DE LA MATRICE DE RIGIDITE GEOMETRIQUE ---
          CALL JEVECH('PEFFORR','L',LDEP)
          CALL JEVECH('PMATUUR','E',LMAT)
          IF ( ITYPE.NE.10 )  THEN
-            CALL PTKG00(0,ZR(LDEP),A,A2,XIZ,XIZ2,XIY,XIY2,XL,EY,EZ,MAT)
+            CALL PTKG00(ZR(LDEP),A,A2,XIZ,XIZ2,XIY,XIY2,XL,EY,EZ,MAT)
          ELSE
             CALL UTMESS('A','ELEMENTS DE POUTRE (TE0143)',
      +                       'RIGIDITE GEOMETRIQUE NON DEFINIE POUR '//

@@ -1,6 +1,7 @@
-      SUBROUTINE GENERE(R,DIM,V,X,DSEED,KF)
+      SUBROUTINE GENERE(R,DIM,V,X)
+C RESPONSABLE CAMBIER S.CAMBIER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF ALGORITH  DATE 05/11/2003   AUTEUR CAMBIER S.CAMBIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C       POUR CHAQUE POINT DE LA DISCRETISATION FREQUENTIELLE CALCULE
 C                   V = R*X
 C ----------------------------------------------------------------------
@@ -37,16 +38,16 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          DIM
-      REAL*8           TT ,R8ALEA
-      REAL*8          DSEED
+      INTEGER          DIM, I, J
+      REAL*8           TT ,U, R8PI, PI
       COMPLEX*16       R(DIM,DIM),V(DIM),PHI,X(DIM)
 C     -----------------------------------------------------------------
       PI =R8PI()
       DO 10 I=1,DIM
-        CALL NBALEA (DSEED,R8ALEA)
-        R8ALEA = R8ALEA * 2.D0 * PI
-        PHI = DCMPLX(0.D0,R8ALEA)
+
+        CALL GETRAN ( U )
+        U = U * 2.D0 * PI
+        PHI = DCMPLX(0.D0,U)
         X(I) = EXP(PHI)
         V(I) = DCMPLX(0.D0,0.D0)
    10 CONTINUE

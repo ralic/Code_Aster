@@ -1,13 +1,13 @@
       SUBROUTINE ASSTOC(MOME,RESU,NOMSY,NEQ,ZRCREP,NDIR,COMDIR,
-     + TYPCDI,GLOB,PRIM,SECON)
+     + TYPCDI,GLOB,PRIM)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER           NEQ,       NDIR(*)
       CHARACTER*(*)     MOME,RESU,NOMSY, TYPCDI
       REAL*8                                ZRCREP(NEQ,*)
-      LOGICAL           COMDIR,GLOB,PRIM,SECON
+      LOGICAL           COMDIR,GLOB,PRIM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

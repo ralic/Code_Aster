@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 29/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+%& MODIF COMPELEM  DATE 16/03/2004   AUTEUR PBADEL P.BADEL 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -40,6 +40,9 @@ PHENOMENE_MODELISATION__
        MODELISATION__ 'GRILLE'           DIM__ 2 3   CODE__ 'GRI'
               MAILLE__ TRIA3     ELEMENT__ MEGRDKT
 
+       MODELISATION__ 'GRILLE_MEMBRANE'  DIM__ 2 3   CODE__ 'GRM'
+              MAILLE__ TRIA3     ELEMENT__ MEGRTR3
+      
        MODELISATION__ 'COQUE_AXIS'       DIM__ 1 2   CODE__ 'CQA'
               MAILLE__ SEG3      ELEMENT__ MECXSE3
 
@@ -126,6 +129,11 @@ PHENOMENE_MODELISATION__
        MODELISATION__ 'DKT'              DIM__ 2 3   CODE__ 'DKT'
               MAILLE__ TRIA3     ELEMENT__ MEDKTR3
               MAILLE__ QUAD4     ELEMENT__ MEDKQU4
+              MAILLE__ SEG2      ELEMENT__ MEBODKT
+
+       MODELISATION__ 'DKTG'             DIM__ 2 3   CODE__ 'DTG'
+              MAILLE__ TRIA3     ELEMENT__ MEDKTG3
+              MAILLE__ QUAD4     ELEMENT__ MEDKQG4
               MAILLE__ SEG2      ELEMENT__ MEBODKT
 
        MODELISATION__ 'DST'              DIM__ 2 3   CODE__ 'DST'
@@ -285,6 +293,11 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA6     ELEMENT__ HHM_AXIS_TR6D
               MAILLE__ SEG3      ELEMENT__ HHM_AXIS_SE3
 
+       MODELISATION__ 'AXIS_HH2MD'        DIM__ 2 2   CODE__ 'AA3'
+              MAILLE__ QUAD8     ELEMENT__ HH2M_AXIS_QU8D
+              MAILLE__ TRIA6     ELEMENT__ HH2M_AXIS_TR6D
+              MAILLE__ SEG3      ELEMENT__ HH2M_AXIS_SE3
+
        MODELISATION__ 'AXIS_HMD'         DIM__ 2 2   CODE__ 'AH7'
               MAILLE__ QUAD8     ELEMENT__ HM_AXIS_QU8D
               MAILLE__ TRIA6     ELEMENT__ HM_AXIS_TR6D
@@ -295,10 +308,20 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA6     ELEMENT__ THH_AXIS_TR6D
               MAILLE__ SEG3      ELEMENT__ THH_AXIS_SE3
 
+       MODELISATION__ 'AXIS_THH2D'        DIM__ 2 2   CODE__ 'AA1'
+              MAILLE__ QUAD8     ELEMENT__ THH2_AXIS_QU8D
+              MAILLE__ TRIA6     ELEMENT__ THH2_AXIS_TR6D
+              MAILLE__ SEG3      ELEMENT__ THH2_AXIS_SE3
+
        MODELISATION__ 'AXIS_THHMD'       DIM__ 2 2   CODE__ 'AH9'
               MAILLE__ QUAD8     ELEMENT__ THHM_AXIS_QU8D
               MAILLE__ TRIA6     ELEMENT__ THHM_AXIS_TR6D
               MAILLE__ SEG3      ELEMENT__ THHM_AXIS_SE3
+
+       MODELISATION__ 'AXIS_THH2MD'       DIM__ 2 2   CODE__ 'AA2'
+              MAILLE__ QUAD8     ELEMENT__ THH2M_AXIS_QU8D
+              MAILLE__ TRIA6     ELEMENT__ THH2M_AXIS_TR6D
+              MAILLE__ SEG3      ELEMENT__ THH2M_AXIS_SE3
 
        MODELISATION__ 'AXIS_THMD'        DIM__ 2 2   CODE__ 'AH0'
               MAILLE__ QUAD8     ELEMENT__ THM_AXIS_QU8D
@@ -312,6 +335,14 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA6     ELEMENT__ HHM_DPTR6D
               MAILLE__ SEG2      ELEMENT__ HHM_D_PLAN_SE2
               MAILLE__ SEG3      ELEMENT__ HHM_D_PLAN_SE3
+
+       MODELISATION__ 'D_PLAN_HH2MD'      DIM__ 2 2   CODE__ 'DA3'
+              MAILLE__ QUAD8     ELEMENT__ HH2M_DPQ8D
+              MAILLE__ QUAD4     ELEMENT__ HH2M_DPQ4D
+              MAILLE__ TRIA3     ELEMENT__ HH2M_DPTR3D
+              MAILLE__ TRIA6     ELEMENT__ HH2M_DPTR6D
+              MAILLE__ SEG2      ELEMENT__ HH2M_D_PLAN_SE2
+              MAILLE__ SEG3      ELEMENT__ HH2M_D_PLAN_SE3
 
        MODELISATION__ 'D_PLAN_HMD'       DIM__ 2 2   CODE__ 'DH7'
               MAILLE__ QUAD8     ELEMENT__ HM_DPQ8D
@@ -329,6 +360,14 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ THH_D_PLAN_SE2
               MAILLE__ SEG3      ELEMENT__ THH_D_PLAN_SE3
 
+       MODELISATION__ 'D_PLAN_THH2D'      DIM__ 2 2   CODE__ 'DA1'
+              MAILLE__ QUAD8     ELEMENT__ THH2_DPQ8D
+              MAILLE__ QUAD4     ELEMENT__ THH2_DPQ4D
+              MAILLE__ TRIA3     ELEMENT__ THH2_DPTR3D
+              MAILLE__ TRIA6     ELEMENT__ THH2_DPTR6D
+              MAILLE__ SEG2      ELEMENT__ THH2_D_PLAN_SE2
+              MAILLE__ SEG3      ELEMENT__ THH2_D_PLAN_SE3
+
        MODELISATION__ 'D_PLAN_THHMD'     DIM__ 2 2   CODE__ 'DH9'
               MAILLE__ QUAD8     ELEMENT__ THHM_DPQ8D
               MAILLE__ QUAD4     ELEMENT__ THHM_DPQ4D
@@ -336,6 +375,14 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA6     ELEMENT__ THHM_DPTR6D
               MAILLE__ SEG2      ELEMENT__ THHM_D_PLAN_SE2
               MAILLE__ SEG3      ELEMENT__ THHM_D_PLAN_SE3
+
+       MODELISATION__ 'D_PLAN_THH2MD'     DIM__ 2 2   CODE__ 'DA2'
+              MAILLE__ QUAD8     ELEMENT__ THH2M_DPQ8D
+              MAILLE__ QUAD4     ELEMENT__ THH2M_DPQ4D
+              MAILLE__ TRIA3     ELEMENT__ THH2M_DPTR3D
+              MAILLE__ TRIA6     ELEMENT__ THH2M_DPTR6D
+              MAILLE__ SEG2      ELEMENT__ THH2M_D_PLAN_SE2
+              MAILLE__ SEG3      ELEMENT__ THH2M_D_PLAN_SE3
 
        MODELISATION__ 'D_PLAN_THMD'      DIM__ 2 2   CODE__ 'DH0'
               MAILLE__ QUAD8     ELEMENT__ THM_DPQ8D

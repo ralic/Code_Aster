@@ -1,9 +1,9 @@
         SUBROUTINE CJSJID( MOD, MATER, EPSD, DEPS,
-     &                     YD, YF, GD, R, SIGNE, DRDY,NIVCJS)
+     &                     YD, YF, GD, R, SIGNE, DRDY)
         IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,7 +96,6 @@ C        REAL*8       KOOHNL(6,6)
         REAL*8        EPSSIG,PREF,QINIT
         REAL*8        KRON(6), IDEN6(6,6)
         CHARACTER*8   MOD
-        CHARACTER*4   NIVCJS
 C ======================================================================
         PARAMETER     ( MUN5   =-1.5D0  )
         PARAMETER     ( D12    = 0.5D0  )

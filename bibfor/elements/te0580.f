@@ -1,5 +1,7 @@
-      SUBROUTINE TE0580(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+      SUBROUTINE TE0580 ( OPTION, NOMTE )
+      IMPLICIT  NONE
+      CHARACTER*16        OPTION, NOMTE
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,7 +18,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C     OPTION: SIGM_ELNO_COQU ET VARI_ELNO_COQU
 C     ------------------------------------------------------------------
@@ -37,19 +38,23 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER JNUMC,JSIGM,ICOU,JNBSPI,IRET
-      INTEGER NNO,NBCOU,NPG,NBSP,JCONT,NUSP,IPG,ICMP,JGEOM
-      INTEGER NORDO,JTAB(7),LZR,LT2EV
-      INTEGER JVARN,JVARI,ICM,NCMP,INO
-      REAL*8 VPG(24),VNO(24),PGL(3,3)
-      CHARACTER*16 OPTION,NOMTE
-      CHARACTER*8  ELREFE
-      CHARACTER*24 DESR
-      LOGICAL GRILLE
-
-
-      CALL ELREF1(ELREFE)
-
+      INTEGER    NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO
+      INTEGER    JNUMC,JSIGM,ICOU,JNBSPI,IRET
+      INTEGER    NBCOU,NBSP,JCONT,NUSP,IPG,ICMP,JGEOM
+      INTEGER    NORDO,JTAB(7),LZR,LT2EV
+      INTEGER    JVARN,JVARI,NCMP,INO
+      REAL*8     VPG(24),VNO(24),PGL(3,3)
+      LOGICAL    GRILLE
+C     ------------------------------------------------------------------
+C
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
+C
+      IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
+        GRILLE = .TRUE.
+      ELSE
+        GRILLE = .FALSE.
+      END IF
+C
       IF (OPTION(1:14).EQ.'SIGM_ELNO_COQU') THEN
         CALL JEVECH('PSIGNOD','E',JSIGM)
         CALL JEVECH('PGEOMER','L',JGEOM)
@@ -60,15 +65,11 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CALL JEVECH('PNUMCOR','L',JNUMC)
 
       IF (NOMTE.EQ.'MEDKTR3' .OR. NOMTE.EQ.'MEGRDKT') THEN
-        NNO=3
-        NPG=3
         IF (OPTION(1:14).EQ.'SIGM_ELNO_COQU') THEN
           CALL DXTPGL(ZR(JGEOM),PGL)
           LT2EV = 51
         END IF
       ELSE IF (NOMTE.EQ.'MEDKQU4 ') THEN
-        NNO=4
-        NPG=4
         IF (OPTION(1:14).EQ.'SIGM_ELNO_COQU') THEN
           CALL DXQPGL(ZR(JGEOM),PGL)
           LT2EV = 81
@@ -77,15 +78,8 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
 C
       IF (OPTION(1:14).EQ.'SIGM_ELNO_COQU') THEN
-        DESR = '&INEL.'//ELREFE//'.DESR'
-        CALL JEVETE(DESR,'L',LZR)
+        CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR','L',LZR)
         CALL DXREPE(NNO,PGL,ZR(LZR))
-      END IF
-
-      IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
-        GRILLE = .TRUE.
-      ELSE
-        GRILLE = .FALSE.
       END IF
 
 
@@ -113,8 +107,7 @@ C
 
       IF (GRILLE) THEN
         IF (NORDO.NE.0) CALL UTMESS('F','TE0580',
-     +                           ' NIVE_COUCHE NE PEUT ETRE QUE "MOY"'
-     +                              )
+     +                           ' NIVE_COUCHE NE PEUT ETRE QUE "MOY"')
         NUSP=ICOU
       ELSE
         NUSP=3*(ICOU-1) + NORDO +2
@@ -129,12 +122,9 @@ C
             VPG(6*(IPG-1)+ICMP)= ZR( JCONT-1+(IPG-1)*6*NBSP + 
      +                              (NUSP-1)*6+ICMP )
  2        CONTINUE
-          DO 3,ICMP=4,6
-            VPG(6*(IPG-1)+ICMP)=VPG(6*(IPG-1)+ICMP)/SQRT(2.D0)
- 3        CONTINUE
  1      CONTINUE
 C       -- PASSAGE GAUSS -> NOEUDS :
-        CALL PPGANO ( NNO , NPG , 6 , VPG ,  VNO )
+        CALL PPGAN2 ( JGANO, 6, VPG ,  VNO )
 C       -- PASSAGE DANS LE REPERE DE L'UTILISATEUR :
         CALL DXSIRO(NNO,ZR(LZR-1+LT2EV),VNO,ZR(JSIGM))
 
@@ -144,7 +134,7 @@ C       -- PASSAGE DANS LE REPERE DE L'UTILISATEUR :
             VPG(IPG) = ZR(JVARI-1+(IPG-1)*NCMP*NBSP+(NUSP-1)*NCMP+ICMP)
  5        CONTINUE
 C         -- PASSAGE GAUSS -> NOEUDS :
-          CALL PPGANO ( NNO , NPG , 1 , VPG ,  VNO )
+          CALL PPGAN2 ( JGANO, 1, VPG ,  VNO )
           DO 6, INO=1,NNO
             ZR(JVARN-1 + (INO-1)*NCMP + ICMP) = VNO(INO)
  6        CONTINUE

@@ -3,7 +3,7 @@
       INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,15 +23,13 @@ C ======================================================================
 C     ECRITURE DES CATALOGUES D'ELEMENTS COMPILES
 C     ------------------------------------------------------------------
 C
-      CHARACTER*80  TITRE
       INTEGER       OUIELT
 C     ------------------------------------------------------------------
 C
       CALL GETFAC( 'ELEMENT '  , OUIELT )
 C     
       IF ( OUIELT .NE. 0 ) THEN
-         TITRE = ' '
-         CALL IBCAEL('ECRIRE',TITRE)
+         CALL IBCAEL('ECRIRE')
       ENDIF
 C
       END

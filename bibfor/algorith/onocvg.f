@@ -3,7 +3,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C       ----------------------------------------------------------------
-C       CHABOCHE        : CONTROLE DE LA CONVERGENCE
+C       OHNO            : CONTROLE DE LA CONVERGENCE
 C                                  DE LA CONFORMITE DE LA SOLUTION DP
 C                                  ET DE LA RE-INTEGRATION
 C                                  ET DU REDECOUPAGE DU PAS DE TEMPS
@@ -59,6 +59,7 @@ C
         REAL*8          DER(10),  DP
         CHARACTER*10    CDP,      CTOL,  CITER, CINTG
         SAVE            ITSUP,TER
+        CHARACTER*132   RAISON
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT , NDI
 C       ----------------------------------------------------------------
@@ -140,11 +141,11 @@ C
                 ELSE
                 CALL CODENT(INTG,'G',CINTG)
                 CALL CODREE(ABS(DP),'E',CDP)
-                CALL UTMESS('S','OHNO','ERREUR D INTEGRATION '//
-     1          '- ESSAI D INTEGRATION  NUMERO '//CINTG//
+                CALL UTEXCP(23,'OHNO','ERREUR D''INTEGRATION '//
+     1          '- ESSAI D''INTEGRATION  NUMERO '//CINTG//
      2          '- CONVERGENCE VERS  UNE SOLUTION NON CONFORME '//
      3          '- INCREMENT DE DEFORMATION CUMULEE NEGATIVE = -'//CDP//
-     4          '- CHANGER LA TAILLE D INCREMENT')
+     4          '- CHANGER LA TAILLE D''INCREMENT')
                 ENDIF
                 ENDIF
 C
@@ -237,11 +238,11 @@ C
                         ELSE
                         CALL CODENT(ITER,'G',CITER)
                         CALL CODREE(TOLER,'E',CTOL)
-                        CALL UTMESS ('S','OHNO',' ERREUR'//
+                        CALL UTEXCP(23,'OHNO','ERREUR'//
      1                  ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
      2                  ' - CONVERGENCE REGULIERE MAIS TROP LENTE'//
      3                  ' - ERREUR > '//CTOL//
-     4                  ' - DIMINUER LA TAILLE D INCREMENT')
+     4                  ' - DIMINUER LA TAILLE D''INCREMENT')
                         ENDIF
                         ENDIF
 C
@@ -260,10 +261,10 @@ C
                     ELSE
                     CALL CODENT(ITER,'G',CITER)
                     CALL CODREE(TOLER,'E',CTOL)
-                    CALL UTMESS ('S','OHNO',' ERREUR'//
+                    CALL UTEXCP(23,'OHNO','ERREUR'//
      1              ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
      2              ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
-     4              ' - DIMINUER LA TAILLE D INCREMENT')
+     4              ' - DIMINUER LA TAILLE D''INCREMENT')
                     ENDIF
                     ENDIF
 C
@@ -282,10 +283,10 @@ C
                   ELSE
                   CALL CODENT(ITER,'G',CITER)
                   CALL CODREE(TOLER,'E',CTOL)
-                  CALL UTMESS ('S','OHNO',' ERREUR'//
+                  CALL UTEXCP(23,'OHNO','ERREUR'//
      1            ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
      2            ' - ERREUR > '//CTOL//
-     4            ' - DIMINUER LA TAILLE D INCREMENT')
+     4            ' - DIMINUER LA TAILLE D''INCREMENT')
                   ENDIF
                   ENDIF
 C

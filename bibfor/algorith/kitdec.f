@@ -6,7 +6,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 15/03/2004   AUTEUR JOUMANA J.EL-GHARIB 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,7 +52,7 @@ C ======================================================================
       REAL*8        RBID27, RBID28, RBID29, RBID30, RBID31, RBID32
       REAL*8        RBID33, RBID34, RBID35, RBID36, RBID37, RBID38
       REAL*8        RBID39, RBID40, RBID41, RBID42, RBID43, RBID44
-      REAL*8        RBID45
+      REAL*8        RBID45,RBID46,RBID47,RBID48,RBID49,RBID50,RBID51
 C ======================================================================
 C --- INITIALISATIONS --------------------------------------------------
 C ======================================================================
@@ -64,14 +64,16 @@ C ======================================================================
       MECA   = COMPOR(11)
 C ======================================================================
       CALL THMRCP( 'INITIALI', IMATE, THMC, MECA, HYDR, THER,
-     +             T0, P10, P20, PHI0, PVP0, RBID1, RBID2, RBID3, RBID4,
-     +             RBID5, RBID6, RBID7, RBID8, RBID9, RBID10, RBID11,
-     +             RBID12, RBID13, RBID14, RBID15, RBID16, RBID17,
-     +             RBID18, RBID19, RBID20, RBID21, RBID22, RBID23,
-     +             RBID24, RBID25, RBID26, RBID27, RBID28, RBID29,
-     +             RBID30, RBID31, RBID32, RBID33, RBID34, RBID35,
-     +             RBID36, RBID37, RBID38, RBID39, RBID40, RBID41,
-     +             RBID42, RBID43, RBID44, RBID45 )
+     +           T0, P10, P20, PHI0, PVP0, RBID1, RBID2, 
+     +           RBID3, RBID4,RBID5, RBID6,
+     +           RBID7, RBID8, RBID9, RBID10, RBID11,RBID12, 
+     +           RBID13, RBID14,
+     +           RBID15, RBID16, RBID17,RBID18, RBID19, RBID20,
+     +           RBID21, RBID22, RBID23,RBID24, RBID25, RBID26,
+     +           RBID27, RBID28, RBID29,RBID30, RBID31, RBID32,
+     +           RBID33, RBID34, RBID35,RBID36, RBID37, RBID38,
+     +           RBID39, RBID40, RBID41,RBID42, RBID43, RBID44,RBID45,
+     +           RBID46,RBID47,RBID48,RBID49,RBID50,RBID51,RBID5) 
 C ======================================================================
       IF (YAMEC.EQ.1) THEN
          IF(MECA.EQ.'ELAS') THEN
@@ -80,6 +82,8 @@ C ======================================================================
             CALL CJSNVI ( MOD, IBID1, IBID2, NVIMEC )
          ELSE IF(MECA.EQ.'CAM_CLAY ') THEN
             NVIMEC = 2
+         ELSE IF(MECA.EQ.'BARCELONE') THEN
+            NVIMEC = 5
          ELSE IF(MECA.EQ.'LAIGLE') THEN
             CALL LGLNVI ( MOD, IBID1, IBID2, NVIMEC )
          ELSE IF(MECA.EQ.'MAZARS') THEN
@@ -94,6 +98,8 @@ C ======================================================================
             NVIMEC = 0
          ELSE IF(MECA.EQ.'CAM_CLAY_THM') THEN
             NVIMEC = 6
+         ELSE IF(MECA.EQ.'DRUCKER_PRAGER') THEN
+            NVIMEC = 3
          ELSE
             CALL UTMESS('F','KITDEC','COMPOR MECA NON VALIDE')
          ENDIF

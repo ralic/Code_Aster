@@ -6,7 +6,7 @@
       CHARACTER*(*)                                 LIGRCZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 27/06/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,7 +96,7 @@ C
 C
          CALL GETFAC ( 'ECHANGE_PAROI', NECHP )
          IF ( NECHP .NE. 0 ) THEN
-            CALL LIGECP ( CHAR, NOMA, NBT1, LLIG, LNEMA, NGREL )
+            CALL LIGECP ( NOMA, NBT1, LLIG, LNEMA, NGREL )
             LONLIG = LONLIG + LLIG
             LONEMA = LONEMA + LNEMA
             NBGREL = NBGREL + NGREL

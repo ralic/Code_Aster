@@ -1,4 +1,4 @@
-# MODIF  DATE 26/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 30/03/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE COQUE HELICOIDALE (POUTRE VRILLEE) SOUS CHARGES CONCENTREES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,12 +115,86 @@ TEST_RESU(CHAM_NO=(
               GROUP_NO = 'A',      NOM_CMP = 'DZ',           VALE = -1.72E-3))
             )
 
-#  IMPR_RESU ( MODELE: MODELE_1
-#              RESU: (FICHIER: 'RESULTAT'
-#                     CHAM_GD : VECASS   )   ) ;
+#---------------------------------------------------------------------
+# TEST IMPR_RESU/GMSH 1.0 MAILLAGE
+fich='MA10'
+DEFI_FICHIER(FICHIER=fich,
+             NOM_SYSTEME='./REPE_OUT/'+fich+'.pos')
 
+IMPR_RESU ( MODELE=MODELE_1,
+            RESU=_F(FICHIER=fich,
+                    FORMAT='GMSH',
+                    VERSION=1.0,
+                    MAILLAGE=MAILLA_1 )   ) ;
+
+TEST_FICHIER(NOM_SYSTEME='./REPE_OUT/'+fich+'.pos',
+             NB_CHIFFRE=6,
+             EPSILON=1.E-14,
+             VALE_K='c9a6b5c983c903473b0dc9f744f854dd',
+             REFERENCE='NON_REGRESSION',
+             VERSION='7.2.23',
+             INFO=1)
 
 #---------------------------------------------------------------------
+# TEST IMPR_RESU/GMSH 1.0 RESU
+fich='DEP10'
+DEFI_FICHIER(FICHIER=fich,
+             NOM_SYSTEME='./REPE_OUT/'+fich+'.pos')
 
+IMPR_RESU ( MODELE=MODELE_1,
+            RESU=_F(FICHIER=fich,
+                    FORMAT='GMSH',
+                    VERSION=1.0,
+                    CHAM_GD=DEFZ   )   ) ;
+
+TEST_FICHIER(NOM_SYSTEME='./REPE_OUT/'+fich+'.pos',
+             NB_CHIFFRE=6,
+             EPSILON=1.E-14,
+             VALE_K='5efe690d77815ebb0306837191f2de42',
+             REFERENCE='NON_REGRESSION',
+             VERSION='7.2.23',
+             INFO=1)
+
+#---------------------------------------------------------------------
+# TEST IMPR_RESU/GMSH 1.0 MAILLAGE
+fich='MA12'
+DEFI_FICHIER(FICHIER=fich,
+             NOM_SYSTEME='./REPE_OUT/'+fich+'.pos')
+
+IMPR_RESU ( MODELE=MODELE_1,
+            RESU=_F(FICHIER=fich,
+                    FORMAT='GMSH',
+                    VERSION=1.2,
+                    MAILLAGE=MAILLA_1 )   ) ;
+
+TEST_FICHIER(NOM_SYSTEME='./REPE_OUT/'+fich+'.pos',
+             NB_CHIFFRE=6,
+             EPSILON=1.E-14,
+             VALE_K='c9a6b5c983c903473b0dc9f744f854dd',
+             REFERENCE='NON_REGRESSION',
+             VERSION='7.2.23',
+             INFO=1)
+
+#---------------------------------------------------------------------
+# TEST IMPR_RESU/GMSH 1.0 RESU
+fich='DEP12'
+DEFI_FICHIER(FICHIER=fich,
+             NOM_SYSTEME='./REPE_OUT/'+fich+'.pos')
+
+IMPR_RESU ( MODELE=MODELE_1,
+            RESU=_F(FICHIER=fich,
+                    FORMAT='GMSH',
+                    VERSION=1.2,
+                    CHAM_GD=DEFZ   )   ) ;
+
+TEST_FICHIER(NOM_SYSTEME='./REPE_OUT/'+fich+'.pos',
+             NB_CHIFFRE=6,
+             EPSILON=1.E-14,
+             VALE_K='83c72ff286779c343c150bd3e68a7a44',
+             REFERENCE='NON_REGRESSION',
+             VERSION='7.2.23',
+             INFO=1)
+
+#---------------------------------------------------------------------
 FIN()
 #

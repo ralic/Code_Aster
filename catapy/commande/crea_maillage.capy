@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 27/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 # RESPONSABLE MCOURTOI M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,7 +119,11 @@ CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage,
          ECLA_PG         =FACT(statut='f',
                                fr="Eclatement des mailles en petites mailles contenant chacune un seul point de gauss",
            MODELE          =SIMP(statut='o',typ=modele ),
+           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            SHRINK          =SIMP(statut='f',typ='R',defaut= 0.9, fr="Facteur de réduction" ),
+           TAILLE_MIN      =SIMP(statut='f',typ='R',defaut= 0.0, fr="Taille minimale d'un coté" ),
          ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
 #

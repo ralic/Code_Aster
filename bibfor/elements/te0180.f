@@ -1,6 +1,6 @@
       SUBROUTINE TE0180(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,7 @@ C.......................................................................
 
       CHARACTER*16 NOMTE,OPTION
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS
-      INTEGER IPOIDS,IVF,IDFDE,IDFDN,IDFDK,IGEOM
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM
       INTEGER JGANO,NNO,KP,NPG1,I,J,IMATTT,NDI
 
 
@@ -55,11 +55,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
       NDI = NNO* (NNO+1)/2
-      DO 10 I = 1,1
-   10 CONTINUE
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATTTC','E',IMATTT)
@@ -72,9 +68,8 @@ C    BOUCLE SUR LES POINTS DE GAUSS
 
       DO 50 KP = 1,NPG1
 
-        K = (KP-1)*NNO*3
-        CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &              ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POIDS)
+        CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
 
         DO 40 I = 1,NNO
           DO 30 J = 1,I
@@ -86,7 +81,5 @@ C    BOUCLE SUR LES POINTS DE GAUSS
    40   CONTINUE
 
    50 CONTINUE
-      DO 60 I = 1,NDI
-   60 CONTINUE
 
       END

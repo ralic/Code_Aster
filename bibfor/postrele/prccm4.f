@@ -1,4 +1,4 @@
-      SUBROUTINE PRCCM4 ( RCCMPM, RCCMSN, SNTHER, FATIZH, FATISP, 
+      SUBROUTINE PRCCM4 ( RCCMPM, RCCMSN, SNTHER, FATIZH, 
      +                    TYPTAB, NPARA, NOPARA, TYPARA )
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,11 +19,11 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT   NONE
       INTEGER             NPARA
-      LOGICAL             RCCMPM, RCCMSN, SNTHER, FATIZH, FATISP
+      LOGICAL             RCCMPM, RCCMSN, SNTHER, FATIZH
       CHARACTER*8         TYPARA(*)
       CHARACTER*16        NOPARA(*), TYPTAB
 C     ------------------------------------------------------------------
-C MODIF POSTRELE  DATE 23/01/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
 C
 C     POST_RCCM: LISTE DES PARAMETRES DE LA TABLE SUIVANT LES OPTIONS
 C
@@ -75,7 +75,7 @@ C
          TYPARA(NPARA) = 'K16'
       ENDIF
 C
-      CALL PRCCM9 ( RCCMPM, RCCMSN, SNTHER, FATIZH, FATISP, TYPTAB,
+      CALL PRCCM9 ( RCCMPM, RCCMSN, SNTHER, FATIZH, TYPTAB,
      +                      NPARA, NOPARA, TYPARA )
 C
       END

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 10/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -148,7 +148,6 @@ MACR_CABRI_CALC=MACRO(nom="MACR_CABRI_CALC",
                         RESI_GLOB_RELA  =SIMP(statut='f',typ='R'),
                         ITER_GLOB_MAXI  =SIMP(statut='f',typ='I',defaut=10),
                         ITER_GLOB_ELAS  =SIMP(statut='f',typ='I',defaut=25),
-                        TYPE_MATR_COMP  =SIMP(statut='f',typ='TXM',defaut="TANG_VIT",into=("TANG_VIT",)),
                         RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
                                  into=("IMPLICITE",)),
                       ),

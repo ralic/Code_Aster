@@ -1,6 +1,8 @@
       SUBROUTINE TE0238 ( OPTION , NOMTE )
+      IMPLICIT NONE
+      CHARACTER*16        OPTION , NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/04/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,8 +19,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*16        OPTION , NOMTE
 C     IN   K16   OPTION : NOM DE L'OPTION A CALCULER
 C     IN   K16   NOMTE  : NOM DU TYPE_ELEMENT
 C     -----------------------------------------------------------------
@@ -27,7 +27,6 @@ C     UNIQUEMENT (UTILE POUR LE CHAINAGE ASTER-VARIA)
 C         OPTION TRAITEE  ==>  VNOR_ELEM_DEPL
 C     -----------------------------------------------------------------
 C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -43,35 +42,24 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-C     REAL*8        PGL(3,3) , XYZL(3,4)
-C     REAL*8        DEPL(24)
-C     REAL*8        ALPHA , BETA , R8DGRD
-      REAL*8        NORME
-      REAL*8        NORMAL(3)
-      CHARACTER*8   ELREFE
-      CHARACTER*24  DESI
-      INTEGER       NNO, JGEOM, JDEPG
+      REAL*8        NORME, NORMAL(3)
+      INTEGER       JGEOM, JDEPG, JVITN
+C     ----------------------------------------------------------------
 C
       IF (OPTION .NE. 'VNOR_ELEM_DEPL') THEN
-         CALL UTMESS ('E' , 'TE0238' , 'OPTION NON TRAITEE')
+         CALL UTMESS ('F' , 'TE0238' , 'OPTION NON TRAITEE')
       ENDIF
 C
-      CALL ELREF1(ELREFE)
-
-      IF (ELREFE.NE.'MEDKTR3'.AND.ELREFE.NE.'MEGRDKT') THEN
-C
-         CALL UTMESS ('F' , 'TE0238' , 'CE CALCUL EST DEDIE AU TRIA3')
+      IF ( NOMTE(1:7).NE.'MEDKTR3' .AND. NOMTE(1:7).NE.'MEGRDKT' ) THEN
+         CALL UTMESS ('F', 'TE0238' , 'CE CALCUL EST DEDIE AU TRIA3')
       ENDIF
 C
-      CALL JEVECH ('PGEOMER' , 'L' , JGEOM)
-      CALL JEVECH ('PDEPLAC' , 'L' , JDEPG)
+      CALL JEVECH ( 'PGEOMER' , 'L' , JGEOM )
+      CALL JEVECH ( 'PDEPLAC' , 'L' , JDEPG )
+      CALL JEVECH ( 'PVITNOR' , 'E' , JVITN )
 C
-      DESI = '&INEL.'//ELREFE//'.DESI'
-      CALL JEVETE(DESI,'L',LZI)
-C
-C     ----------------------------------------------------------------
-      CALL JEVECH ('PVITNOR', 'E', JVITN )
-      CALL CNORM (ZR(JGEOM), NORMAL )
-      CALL NORMEV ( NORMAL,NORME )
+      CALL CNORM  ( ZR(JGEOM), NORMAL )
+      CALL NORMEV ( NORMAL, NORME )
       CALL DKTVIT ( ZC(JDEPG) ,NORMAL, ZC(JVITN))
+C
       END

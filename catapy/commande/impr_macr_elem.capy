@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 04/02/2004   AUTEUR ACBHHCD G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,11 +30,12 @@ IMPR_MACR_ELEM=PROC(nom="IMPR_MACR_ELEM",op= 160,
            VERSION          =SIMP(statut='f',typ='I',defaut= 5,into=( 5 ,) ),
          ),             
          b_miss_3d       =BLOC(condition = "FORMAT == 'MISS_3D'",
+           regles=(EXCLUS('AMOR_REDUIT','LIST_AMOR'),),
            UNITE           =SIMP(statut='f',typ='I',defaut= 26 ),
            SOUS_TITRE      =SIMP(statut='f',typ='TXM',max='**'),
            AMOR_REDUIT     =SIMP(statut='f',typ='R'  ,max='**'),
+           LIST_AMOR       =SIMP(statut='f',typ=listr8 ),
            GROUP_MA_INTERF =SIMP(statut='o',typ=grma ,max='**'),
-#  Ces trois mots cles sont-ils dans le bon bloc et avec le bon statut        
            GROUP_MA_FLU_STR=SIMP(statut='f',typ=grma,max='**'),
            GROUP_MA_FLU_SOL=SIMP(statut='f',typ=grma,max='**'),
            GROUP_MA_SOL_SOL=SIMP(statut='f',typ=grma,max='**'),

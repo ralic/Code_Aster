@@ -1,4 +1,4 @@
-#@ MODIF macro_miss_3d_ops Macro  DATE 29/09/2003   AUTEUR ACBHHCD G.DEVESA 
+#@ MODIF macro_miss_3d_ops Macro  DATE 04/11/2003   AUTEUR ACBHHCD G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,13 +29,13 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
   ier=0
   # On importe les definitions des commandes a utiliser dans la macro
   # Le nom de la variable doit etre obligatoirement le nom de la commande
-  FERMER        =self.get_cmd('FERMER')
+  DEFI_FICHIER  =self.get_cmd('DEFI_FICHIER')
   EXEC_LOGICIEL =self.get_cmd('EXEC_LOGICIEL')
   # La macro compte pour 1 dans la numerotation des commandes
   #self.icmd=1
   self.set_icmd(1)
 
-  FERMER(UNITE=UNITE_IMPR_ASTER)
+  DEFI_FICHIER(ACTION='LIBERER',UNITE=UNITE_IMPR_ASTER)
 
   import aster 
   loc_fic=aster.repout()

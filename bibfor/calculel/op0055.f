@@ -3,7 +3,7 @@
       INTEGER             IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/10/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,8 +68,8 @@ C
 C ---  MOTS CLES FACTEUR : FOND ET FOND_FERME
 C      ------------------------------------
 C
-      CALL GETFAC ( 'FOND', NBV )
-      IF (NBV.GT.0) TYPFON = 'FOND'
+      CALL GETFAC ( 'FOND_FISS', NBV )
+      IF (NBV.GT.0) TYPFON = 'FOND_FISS'
       CALL GETFAC ( 'FOND_FERME', NBV )
       IF (NBV.GT.0) TYPFON = 'FOND_FERME'
       ENTIT1 = 'NOEUD'

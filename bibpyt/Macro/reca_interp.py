@@ -1,4 +1,4 @@
-#@ MODIF reca_interp Macro  DATE 13/01/2003   AUTEUR PABHHHH N.TARDIEU 
+#@ MODIF reca_interp Macro  DATE 19/01/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 import os
 import Numeric
 import Macro
-from Macro.recal import *
+from Macro.recal import calcul_F
 
 #===========================================================================================
 # INTERPOLATION, CALCUL DE SENSIBILITE, ETC....
@@ -28,8 +28,9 @@ from Macro.recal import *
 #--------------------------------------
 class Sim_exp :
 
-   def __init__ (self,result_exp) :
+   def __init__ (self,result_exp,poids) :
       self.resu_exp = result_exp
+      self.poids = poids
 
 # Distance verticale d'un point M à une ligne brisée composée de n points
              
@@ -53,7 +54,7 @@ class Sim_exp :
 
 
 # La Fonction Interpole ,interpole une et une seule F_calc sur F_exp et renvoie l'erreur seulement
-   def Interpole (self, F_calc,experience) :   #ici on passe en argument "une" experience
+   def Interpole (self, F_calc,experience,poids) :   #ici on passe en argument "une" experience
       n = 0
       resu_num = F_calc
       n_exp = len(experience)    # nombre de points sur la courbe expérimentale num.i    
@@ -67,14 +68,14 @@ class Sim_exp :
          n = n + 1         # on totalise le nombre de points valables
       err = Numeric.ones(n, Numeric.Float) 
       for i in xrange(n) :
-          err[i] = stockage[i]
+          err[i] = poids*stockage[i]
       return  err
 
    #cette fonction appelle la fonction interpole et retourne les sous fonctionnelle J et l'erreur
    def multi_interpole(self,L_F, reponses):    #on interpole toutes les reponses une à une en appelent la methode interpole
       L_erreur=[]
       for i in range(len(reponses)):   
-         err = self.Interpole(L_F[i],self.resu_exp[i])
+         err = self.Interpole(L_F[i],self.resu_exp[i],self.poids[i])
          L_erreur.append(err)
       #on transforme L_erreur en tab num
       dim=[]
@@ -97,7 +98,7 @@ class Sim_exp :
    def multi_interpole_sensib(self,L_F,reponses):    
       L_erreur=[]
       for i in range(len(reponses)):   
-         err = self.Interpole(L_F[i],self.resu_exp[i])
+         err = self.Interpole(L_F[i],self.resu_exp[i],self.poids[i])
          L_erreur.append(err)
       #on transforme L_erreur en tab num
       return L_erreur
@@ -121,7 +122,7 @@ class Sim_exp :
             fic.write('\n Problème de division par zéro dans la normalisation de la fonctionnelle.')
             fic.write('\n Une des valeurs de la fonctionnelle initiale est nulle ou inférieure à la précision machine :'+ str(L_J_init))
             fic.close()
-            self.cr.fatal("Problème de division par zéro dans la normalisation de la fonctionnelle.\nUne des valeurs de la fonctionnelle initiale est nulle ou inférieure à la précision machine :"+ str(L_J_init))
+            self.cr.fatal("<F> <MACR_RECAL> Problème de division par zéro dans la normalisation de la fonctionnelle.\nUne des valeurs de la fonctionnelle initiale est nulle ou inférieure à la précision machine :"+ str(L_J_init))
             return
             
       J = Numeric.sum(L_J)
@@ -155,7 +156,7 @@ class Sim_exp :
                   fic.write('\n Probleme de division par zéro dans le calcul de la matrice de sensiblité')
                   fic.write('\n Le parametre '+para[k]+'est nul ou plus petit que la précision machine')
                   fic.close() 
-                  self.cr.fatal("Probleme de division par zéro dans le calcul de la matrice de sensiblité.\n Le parametre "+para[k]+"est nul ou plus petit que la précision machine")
+                  self.cr.fatal("<F> <MACR_RECAL> Probleme de division par zéro dans le calcul de la matrice de sensiblité.\n Le parametre "+para[k]+"est nul ou plus petit que la précision machine")
                   return
       #on construit la matrice de sensiblité sous forme d'un tab num
       dim =[]

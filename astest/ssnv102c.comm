@@ -1,4 +1,4 @@
-# MODIF  DATE 13/06/2002   AUTEUR PBBHHPB P.BADEL 
+# MODIF  DATE 10/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  ESSAI DE TRACTION-CISAILLEMENT 3D (VISC_TAHERI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -170,7 +170,6 @@ SOLNL=STAT_NON_LINE(
                 ITER_GLOB_MAXI = 20,
                 ITER_INTE_MAXI = 20,
                 ITER_INTE_PAS = 10,
-                TYPE_MATR_COMP = 'TANG_VIT',
                 RESI_GLOB_RELA = 1.E-6),
                      RECH_LINEAIRE=_F( 
                 ITER_LINE_MAXI = 4,

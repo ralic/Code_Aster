@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,32 +51,18 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) ,ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*24       CARAC,FF
-      CHARACTER*8        ELREFE
       CHARACTER*16       OPTCAL(12)
       REAL*8             SIG(6),TRIAX,VOLU,RSR0,NUMEMA,DEPSEQ
       REAL*8             POIDS,R,VOLUME,DVOL,SIGM,SIGEQ
       REAL*8             DFDX(9),DFDY(9)
       REAL*8             CONG(4),VARIGP,VARIGM,SDRSRP,SDRSRM,CROIS
       INTEGER            NNO,KP,NPG,K,IRITRA,ICOMPO,JTAB(7)
-      INTEGER            ISSOPT,IMA,NBVARI,IPOPP
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK
-      INTEGER            IGEOM,ICONG,IVARPG,ISDRMR,ISDRPR
+      INTEGER            ISSOPT,IMA,NBVARI,IPOPP,NDIM,NNOS,JGANO
+      INTEGER            IPOIDS,IVF,IDFDE,II,IRET,IADZI,IVARMG,IAZK24
+      INTEGER            IGEOM,ICONG,IVARPG,ISDRMR,ISDRPR,KQ
 C     ------------------------------------------------------------------
 C
-      CALL ELREF1(ELREFE)
-C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO=ZI(ICARAC)
-      NPG=ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF   ,'L',IFF   )
-      IPOIDS=IFF
-      IVF   = IPOIDS+NPG
-      IDFDE = IVF   +NPG*NNO
-      IDFDK = IDFDE +NPG*NNO
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
 C     RECUPERATION DU NUMERO DE LA MAILLE :
 C     -------------------------------------
@@ -137,8 +123,7 @@ C
          DO 200 KP=1,NPG
             K=(KP-1)*NNO
             R=0.D0
-            CALL DFDM2D (NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                   ZR(IGEOM),DFDX,DFDY,POIDS)
+            CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
             IF (NOMTE(3:4).EQ.'AX') THEN
                DO 160 II=1,NNO
                   R=R+ZR(IGEOM+2*II-2)*ZR(IVF+K+II-1)
@@ -184,8 +169,7 @@ C
             R=0.D0
             SDRSRM = ZR(ISDRMR+KP-1)
             K=(KP-1)*NNO
-            CALL DFDM2D (NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                   ZR(IGEOM),DFDX,DFDY,POIDS)
+            CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
             IF (NOMTE(3:4).EQ.'AX') THEN
                DO 170 II=1,NNO
                   R=R+ZR(IGEOM+2*II-2)*ZR(IVF+K+II-1)
@@ -224,8 +208,7 @@ C
          DO 400 KP=1,NPG
             R=0.D0
             K=(KP-1)*NNO
-            CALL DFDM2D (NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                   ZR(IGEOM),DFDX,DFDY,POIDS)
+            CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
             IF (NOMTE(3:4).EQ.'AX') THEN
                DO 210 II=1,NNO
                   R=R+ZR(IGEOM+2*II-2)*ZR(IVF+K+II-1)
@@ -279,8 +262,7 @@ C
  175        CONTINUE
             VARIGM=ZR(IVARMG+NBVARI*(KP-1)+IPOPP-1)
             VARIGP=ZR(IVARPG+NBVARI*(KP-1)+IPOPP-1)
-            CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                    ZR(IGEOM),DFDX,DFDY,POIDS )
+            CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
             IF (NOMTE(3:4).EQ.'AX') THEN
                DO 240 II=1,NNO
                   R=R+ZR(IGEOM+2*II-2)*ZR(IVF+K+II-1)

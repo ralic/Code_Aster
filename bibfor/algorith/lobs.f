@@ -1,8 +1,8 @@
-      SUBROUTINE LOBS(NBOBSE, NUINS0, LOBSER, INSTAM, INSTAP,
+      SUBROUTINE LOBS(NBOBSE, NUINS0, LOBSER, INSTAP,
      &                 NUOBSE, LISINS, LISOBS)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2003   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,7 +25,7 @@ C ======================================================================
       CHARACTER*19 LISOBS
       CHARACTER*24 LISINS
       INTEGER NBOBSE, NUINS0, NUOBSE
-      REAL*8 INSTAM, INSTAP
+      REAL*8 INSTAP
       LOGICAL LOBSER
 C ----------------------------------------------------------------------
 C

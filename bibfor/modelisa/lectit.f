@@ -3,7 +3,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/10/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C
 C - LIRE LIGNE SUIVANTE
 C
  4      CONTINUE
-        CALL LIRLIG(IFL,IFM,CNL,LIG,1)
+        CALL LIRLIG(IFL,CNL,LIG,1)
 C
         IF(NBG.GE.1)WRITE(IFM,*)'       LIRLIG :',CNL,LIG
 C

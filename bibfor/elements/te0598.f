@@ -1,6 +1,6 @@
       SUBROUTINE TE0598 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,13 +71,26 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
       INTEGER            NBRES
       PARAMETER         ( NBRES=3 )
 C
       CHARACTER*2        CODRET(NBRES)
-      CHARACTER*8        NOMRES(NBRES),ELREFE
+      CHARACTER*8        NOMRES(NBRES), ELREFE
       CHARACTER*16       PHENOM
-      CHARACTER*24       CARAC,FF
 C
       REAL*8             COORSE(18),VECTT(9)
       REAL*8             R
@@ -92,55 +105,41 @@ C
       REAL*8             DELTAT, THTIMP, UNMTHE
       REAL*8             VALRES(NBRES)
 C
-      INTEGER            IGEOM, IVECTT, ICARAC
-      INTEGER            IFF, IPOIDS, IVF, IDFDE, IDFDK
-      INTEGER            NNO, NPG1, NPG2, NPG3, NSE, NNOP2, C(6,9), ISE
+      INTEGER            IGEOM, IVECTT
+      INTEGER            NSE, NNOP2, C(6,9), ISE
       INTEGER            KP, I, K, IDEB, IFIN, NUNO
       INTEGER            IMATE, ICAMAS
-      INTEGER            ITEMPM, ITEMPP, IDLAGT
-      INTEGER            ITHETA
-      INTEGER            ITEMPS
+      INTEGER            ITEMPM, ITEMPP, IDLAGT, ITHETA, ITEMPS
+      INTEGER            NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO,
+     +                   NPG2,IPOID2,IVF2,IDFDE2
 C
       LOGICAL THTNUL
       LOGICAL AXI
       LOGICAL TRANSI
       LOGICAL ANISO, GLOBAL
+C     -----------------------------------------------------------------
 C
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      CALL ELREF1(ELREFE)
+      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QU4'
+      IF (NOMTE(5:7).EQ.'TL6') ELREFE='TR3'
 C
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      CALL ELREF4(ELREFE,'NOEU',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,IDFDE2,
+     +            JGANO)
+      CALL ELREF4(ELREFE,'MASS',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
+     +            JGANO)
 C====
 C 1. INITIALISATIONS
 C====
 C
 C 1.1. ==> LES INDISPENSABLES
 C
-      CALL ELREF1(ELREFE)
       EPSI = R8PREM ()
-C
-C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
-      NPG3 = ZI(ICARAC+4)
 C
       CALL JEVECH('PVECTTH','L',ITHETA)
       CALL JEVECH('PGEOMER','L',IGEOM )
       CALL JEVECH('PVECTTR','E',IVECTT)
 C
-      CALL CONNEC ( NOMTE, ZR(IGEOM), NSE, NNOP2, C )
+      CALL CONNEC ( NOMTE, NSE, NNOP2, C )
 C
       DO 101 , I = 1 , NNOP2
         VECTT(I)=0.D0
@@ -183,9 +182,6 @@ C
       ENDIF
 C
 C 2.2. ==> FIN DES INITIALISATIONS
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
 C
       CALL JEVECH('PMATERC','L',IMATE )
       CALL JEVECH('PTEMPSR','L',ITEMPS)
@@ -261,18 +257,12 @@ C
  2412     CONTINUE
         ENDIF
 C
-        IPOIDS=IFF   +NPG1*(1+3*NNO)
-        IVF   =IPOIDS+NPG2
-        IDFDE =IVF   +NPG2*NNO
-        IDFDK =IDFDE +NPG2*NNO
-C
 C 2.4.2. ==> BOUCLE SUR LES POINTS DE GAUSS
 C
-        DO 242 , KP = 1 , NPG2
+        DO 242 , KP = 1 , NPG
 C
           K = (KP-1)*NNO
-          CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     >                  ZR(IGEOM),DFDX,DFDY,POIDS )
+          CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
 C
 C 2.4.2.1. ==> EN TRANSITOIRE, CALCUL DE LA DERIVEE DE T ET DE SON
 C              GRADIENT A L'INSTANT PRECEDENT.
@@ -503,17 +493,12 @@ C
 C
 C TERME DE RIGIDITE : 2EME FAMILLE DE PTS DE GAUSS ---------
 C
-        IPOIDS=IFF   +NPG1*(1+3*NNO)
-        IVF   =IPOIDS+NPG2
-        IDFDE =IVF   +NPG2*NNO
-        IDFDK =IDFDE +NPG2*NNO
 C
-        DO 2520 , KP = 1 , NPG2
+        DO 2520 , KP = 1 , NPG
 C
           K = (KP-1)*NNO
 C
-          CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     >                  COORSE,DFDX,DFDY,POIDS )
+          CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,COORSE,DFDX,DFDY,POIDS )
 C
 C 2.5.2.1. ==> EN TRANSITOIRE, CALCUL DU GRADIENT DE LA DERIVEE DE T
 C              A L'INSTANT PRECEDENT
@@ -682,17 +667,11 @@ C ------------ TERME DE MASSE : 3EME FAMILLE DE PTS DE GAUSS -----------
 C
           IF ( TRANSI ) THEN
 C
-          IPOIDS=IFF   +(NPG1+NPG2)*(1+3*NNO)
-          IVF   =IPOIDS+NPG3
-          IDFDE =IVF   +NPG3*NNO
-          IDFDK =IDFDE +NPG3*NNO
-C
-          DO 2530 , KP = 1 , NPG3
+          DO 2530 , KP = 1 , NPG2
 C
           K = (KP-1)*NNO
 C
-          CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     >                  COORSE,DFDX,DFDY,POIDS )
+          CALL DFDM2D ( NNO,KP,IPOID2,IDFDE2,COORSE,DFDX,DFDY,POIDS )
 C
 C 2.5.3.1. ==>  CALCUL DES TEMPERATURES AUX DEUX INSTANTS,
 C              ET DE LA DERIVEE DE T A L'INSTANT PRECEDENT
@@ -707,7 +686,7 @@ C
           DLAGTG = 0.D0
           IF ( THTNUL ) THEN
             DO 25311 , I = 1 , NNO
-              R8AUX = ZR(IVF+K+I-1)
+              R8AUX = ZR(IVF2+K+I-1)
               TMO    = TMO    + ZR(ITEMPM+C(ISE,I)-1)*R8AUX
               TPL    = TPL    + ZR(ITEMPP+C(ISE,I)-1)*R8AUX
               DLAGTG = DLAGTG + ZR(IDLAGT+C(ISE,I)-1)*R8AUX
@@ -715,7 +694,7 @@ C
           ELSE
             DIVTHT  = 0.D0
             DO 25312 , I = 1 , NNO
-              R8AUX = ZR(IVF+K+I-1)
+              R8AUX = ZR(IVF2+K+I-1)
               TMO    = TMO    + ZR(ITEMPM+C(ISE,I)-1)*R8AUX
               TPL    = TPL    + ZR(ITEMPP+C(ISE,I)-1)*R8AUX
               DLAGTG = DLAGTG + ZR(IDLAGT+C(ISE,I)-1)*R8AUX
@@ -734,13 +713,13 @@ C
             R = 0.D0
             IF ( THTNUL ) THEN
               DO 2532 , I = 1 , NNO
-                R      = R      +  COORSE(2*I-1)*ZR(IVF+K+I-1)
+                R      = R      +  COORSE(2*I-1)*ZR(IVF2+K+I-1)
  2532         CONTINUE
             ELSE
               THETAR = 0.D0
               DO 2533 , I = 1 , NNO
-                R      = R      +  COORSE(2*I-1)*ZR(IVF+K+I-1)
-                THETAR = THETAR + ZR(ITHETA+2*C(ISE,I)-2)*ZR(IVF+K+I-1)
+                R      = R      +  COORSE(2*I-1)*ZR(IVF2+K+I-1)
+                THETAR = THETAR + ZR(ITHETA+2*C(ISE,I)-2)*ZR(IVF2+K+I-1)
  2533         CONTINUE
               DIVTHT = DIVTHT + THETAR / R
             ENDIF
@@ -755,7 +734,7 @@ C
 C
 CCDIR$ IVDEP
             DO 25331 , I = 1 , NNO
-              VECTT(C(ISE,I)) = VECTT(C(ISE,I)) + R8AUX * ZR(IVF+K+I-1)
+              VECTT(C(ISE,I)) = VECTT(C(ISE,I)) + R8AUX * ZR(IVF2+K+I-1)
 25331       CONTINUE
 C
 C         . TERMES APPARAISSANT SI THETA N'EST PAS NUL
@@ -766,7 +745,7 @@ C
 C
 CCDIR$ IVDEP
             DO 25332 , I = 1 , NNO
-              VECTT(C(ISE,I)) = VECTT(C(ISE,I)) + R8AUX * ZR(IVF+K+I-1)
+              VECTT(C(ISE,I)) = VECTT(C(ISE,I)) + R8AUX * ZR(IVF2+K+I-1)
 25332       CONTINUE
 C
           ENDIF

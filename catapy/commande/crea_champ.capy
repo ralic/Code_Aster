@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,6 +27,8 @@ def crea_champ_prod(TYPE_CHAM,**args):
      uu="cham_no_"+grandeur
   elif TYPE_CHAM[0:2] == "EL"    :
      uu="cham_elem_"+grandeur
+  elif TYPE_CHAM[0:5] == "SOUR_"    :
+     uu="cham_elem_sour_"+grandeur
   else :
      raise AsException("type de concept resultat non prevu")
 
@@ -105,11 +107,15 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
              CHAM_GD         =SIMP(statut='o',typ=(cham_gd)),
                              ),
          b_extr          =BLOC(condition = "OPERATION == 'EXTR'",
-             regles=(UN_PARMI('MAILLAGE','RESULTAT'),),
+             regles=(UN_PARMI('MAILLAGE','FISSURE','RESULTAT'),),
              MAILLAGE        =SIMP(statut='f',typ=(maillage) ),
+             FISSURE         =SIMP(statut='f',typ=(fiss_xfem) ),
              RESULTAT        =SIMP(statut='f',typ=(resultat) ),
              b_extr_maillage =BLOC(condition = "MAILLAGE != None",
                  NOM_CHAM        =SIMP(statut='o',typ='TXM',into=("GEOMETRIE",)),
+                                  ),
+             b_extr_fissure  =BLOC(condition = "FISSURE != None",
+                 NOM_CHAM        =SIMP(statut='o',typ='TXM',into=("LTNO","LNNO","GRLTNO","GRLNNO",)),
                                   ),
              b_extr_resultat =BLOC(condition = "RESULTAT != None",
                  regles=(EXCLUS('TYPE_MAXI','NUME_ORDRE','INST','FREQ','NUME_MODE',

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/02/2004   AUTEUR GRANET S.GRANET 
 # TITRE TEST THM, D_PLAN_DPTR6
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,15 +114,11 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=2.25000000E8,
                                    ALPHA=1.E-4,
                                    CP=2.850000E6,
                                    VISC=UN,
-                                   D_VISC_TEMP=ZERO,
-                                   LAMBDA=CONDLIQ,
-                                   D_LAMBDA_TEMP=ZERO,),
+                                   D_VISC_TEMP=ZERO,),
                        THM_GAZ=_F(MASS_MOL=0.02896,
                                   CP=1000.0,
                                   VISC=UN,
-                                  D_VISC_TEMP=ZERO,
-                                  LAMBDA=UN,
-                                  D_LAMBDA_TEMP=ZERO,),
+                                  D_VISC_TEMP=ZERO,),
                        THM_INIT=_F(TEMP=273.0,
                                    PRE1=0.0,
                                    PRE2=0.0,
@@ -143,11 +139,8 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=2.25000000E8,
                                     PERM_GAZ=PERMGAZ,
                                     D_PERM_SATU_GAZ=DPERGSA,
                                     D_PERM_PRES_GAZ=DPERGPG,
-                                    FICK=FICK,
-                                    D_FICK_TEMP=DFICKTE,
-                                    D_FICK_GAZ_PRES=DFICKPG,
-                                    LAMBDA=CONDHOMO,
-                                    D_LAMBDA_TEMP=DCONDHO,),);
+                                    LAMB_T=CONDHOMO,
+                                    ),);
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
@@ -176,7 +169,7 @@ MESTAT=STAT_NON_LINE(MODELE=MODELE,
                      CHAM_MATER=CHMAT0,
                      EXCIT=_F(CHARGE=CHAR0,),
                      COMP_INCR=_F(RELATION='KIT_THM',
-                                  RELATION_KIT=('ELAS','LIQU_SATU','THER_HOMO','HYDR_UTIL'),),
+                                  RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),),
                      INCREMENT=_F(LIST_INST=LI,),
                      NEWTON=_F(MATRICE='TANGENTE',
                                REAC_ITER=20,),

@@ -1,7 +1,7 @@
       SUBROUTINE OP0155 ( IER )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/07/2003   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -190,7 +190,7 @@ C
 C 3.6. ==> IMPRESSION DES FONCTIONS
 C
         IF ( IMPRFO .EQ. 'OUI' ) THEN
-          CALL TBIMFO ( NEWTAB, FICHIE, FORMAR, FORMAC )
+          CALL TBIMFO ( NEWTAB, FICHIE)
         ENDIF
 C
 C 3.7. ==> MENAGE EVENTUEL

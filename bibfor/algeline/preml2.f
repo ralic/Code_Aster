@@ -6,7 +6,7 @@
      +     CHAINE,SUIV,PLACE,NBASS,NCBLOC,LGBLOC,NBLOC,
      +     LGIND,NBSND,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/01/2002   AUTEUR JFBHHUC C.ROSE 
+C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,7 +77,7 @@ C*************************************************************
 C     CALL UTTCPU(3,'DEBUT',6,TEMPS)
 C*************************************************************
       CALL FACSMB(N1,NBSND,SUPND,INVSUP,PAREND,XADJ1,ADJNC1,ANC,NOUV,
-     +     FILS,FRERE,DIAG,COL,LOCAL,GLOBAL,ADRESS,LFRONT,
+     +     FILS,FRERE,LOCAL,GLOBAL,ADRESS,LFRONT,
      +     NBLIGN,LGSN,DEBFAC,DEBFSN,CHAINE,PLACE,NBASS,
      +     DELG,LGIND,IER)
       IF(IER.NE.0) GOTO 999
@@ -142,7 +142,7 @@ C     CALL UTTCPU(5,'DEBUT',6,TEMPS)
 C*************************************************************
       CALL MLTPAS(N1,NBSND,SUPND,XADJ1,ADJNC1,ANC,NOUV,SEQ,GLOBAL,
      +     ADRESS,NBLIGN,LGSN,NBLOC,NCBLOC,LGBLOC,DIAG,COL,
-     +     LMAT,PLACE,DELG)
+     +     LMAT,PLACE)
 C     PRNO,DEEQ,NEC,LBD2,NRL,RL,MARKER)
 
 C*************************************************************

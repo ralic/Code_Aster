@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",op=55,sd_prod=fond_fiss,docu="U4.82.01-f",reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
                     fr="Définition de lèvres et d un fond de fissure en 3D",
-         regles=(UN_PARMI('FOND','FOND_FERME'),
+         regles=(UN_PARMI('FOND_FISS','FOND_FERME'),
                  EXCLUS('FOND_FERME','DTAN_ORIG'),
                  EXCLUS('FOND_FERME','DTAN_EXTR'),
                       EXCLUS('FOND_FERME','VECT_GRNO_ORIG'),
@@ -31,7 +31,7 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",op=55,sd_prod=fond_fiss,docu="U4.82.01-
                       EXCLUS('DTAN_ORIG','VECT_GRNO_ORIG'),
                       EXCLUS('DTAN_EXTR','VECT_GRNO_EXTR') ,),
            MAILLAGE        =SIMP(statut='o',typ=maillage ),
-           FOND            =FACT(statut='f',
+           FOND_FISS       =FACT(statut='f',
              regles=(UN_PARMI('GROUP_NO','NOEUD','GROUP_MA','MAILLE'),
                      EXCLUS('NOEUD_ORIG','GROUP_NO_ORIG'),
                           EXCLUS('NOEUD_EXTR','GROUP_NO_EXTR'),),

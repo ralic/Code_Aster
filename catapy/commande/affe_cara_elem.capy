@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 04/11/2003   AUTEUR ACBHHCD G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -230,7 +230,14 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
            NOEUD_CENTRE    =SIMP(statut='f',typ=no),
            COOR_CENTRE     =SIMP(statut='f',typ='R',max='**'),
          ),
-
+         
+         RIGI_MISS_3D    =FACT(statut='f',max='**',
+           GROUP_MA_POI1   =SIMP(statut='o',typ=ma,max=1),
+           GROUP_MA_SEG2   =SIMP(statut='f',typ=ma,max=1),
+           FREQ_EXTR       =SIMP(statut='o',typ='R',max=1),
+           UNITE_RESU_IMPE =SIMP(statut='f',typ='I',defaut=30),
+         ),
+         
          ASSE_GRIL       =FACT(statut='f',max='**',
            regles=(UN_PARMI('MAILLE','GROUP_MA'),),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),

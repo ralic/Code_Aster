@@ -3,7 +3,7 @@
       CHARACTER*(*)     FONREZ, CHARGZ, NOMAZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/05/2001   AUTEUR CIBHHBC N.SELLALI 
+C MODIF MODELISA  DATE 16/02/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,9 @@ C
       CHARACTER*24  LISNOE
       REAL*8        COEMUR(3), DIRECT(6), BETA
       INTEGER       IDIM(3),NBELQU
-      DATA  DIRECT /0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0/
+      INTEGER       NSANS,NZOCO,JDIM,IZONE,JDEC,K,JPSANS,JSANS,JSANSN
+      CHARACTER*24  NDIMCO,PSANS,SANSNO,SANSNQ
+      DATA  DIRECT /0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0/    
 C
 C ----------------------------------------------------------------------
 C
@@ -88,6 +90,16 @@ C
       IDIM(2)   =  0
       IDIM(3)   =  0
 C
+      SANSNQ=CHAR(1:8)//'.CONTACT.SANSNQ'     
+      NDIMCO=CHAR(1:8)//'.CONTACT.NDIMCO'
+      PSANS=CHAR(1:8)//'.CONTACT.PSSNOCO'
+      SANSNO=CHAR(1:8)//'.CONTACT.SSNOCO'    
+      CALL JEVEUO (NDIMCO,'L',JDIM)
+      CALL JEVEUO(PSANS, 'L',JPSANS)
+      CALL JEVEUO(SANSNO,'L',JSANS)
+      CALL JEVEUO(SANSNQ,'L',JSANSN)
+      NZOCO = ZI(JDIM+1)
+C	    
       NBELQU = NBELQU / 3
       DO 10 II = 1,NBELQU
          NO(1) = ZI(JLIST+3*(II-1)-1+1)
@@ -96,6 +108,29 @@ C
          CALL JENUNO (JEXNUM(NOMA//'.NOMNOE',NO(1)),NONO(1))
          CALL JENUNO (JEXNUM(NOMA//'.NOMNOE',NO(2)),NONO(2))
          CALL JENUNO (JEXNUM(NOMA//'.NOMNOE',NO(3)),NONO(3))
+C 
+C VERIFICATION QUE LE NOEUD LIE AU NOEUD MILIEU N'EST PAS 
+C EXCLU DU CONTACT (SANS_GROUP_NO)
+C ON NE FAIT PAS LA LIAISON SI SANS_NOEUD_QUAD='OUI'
+C	 
+         DO 20 IZONE = 1,NZOCO     
+           IF (ZI(JSANSN+IZONE-1).EQ.1) THEN
+            NSANS=ZI(JPSANS+IZONE)-ZI(JPSANS+IZONE-1)
+            JDEC=ZI(JPSANS+IZONE-1)
+            DO 30 K = 1,NSANS
+               IF (NO(1).EQ.ZI(JSANS+JDEC+K-1)) THEN
+                  GO TO 10
+               END IF
+               IF (NO(2).EQ.ZI(JSANS+JDEC+K-1)) THEN
+                  GO TO 10
+               END IF
+               IF (NO(3).EQ.ZI(JSANS+JDEC+K-1)) THEN
+                  GO TO 10
+               END IF
+  30        CONTINUE
+           ENDIF
+  20     CONTINUE 
+C	 
          DDL(1) = 'DX'
          DDL(2) = 'DX'
          DDL(3) = 'DX'

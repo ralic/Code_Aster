@@ -1,4 +1,4 @@
-#@ MODIF B_utils Build  DATE 07/01/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF B_utils Build  DATE 13/01/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -106,27 +106,62 @@ def ReorganisationDe( texte , LongueurSousChaine=80 ) :
         """
         assert(type(texte)==types.StringType)
 
+        # on change les chaines '**' (puissance), 'E+' 'E-' (puissance de 10) pour les
+        # proteger lors du decoupage suivant les separateurs
+        texte=string.replace(texte,'**','#1#')
+        texte=string.replace(texte,'E+','#2#')
+        texte=string.replace(texte,'E-','#3#')
+        texte=string.replace(texte,'e+','#4#')
+        texte=string.replace(texte,'e-','#5#')
+        texte=string.replace(texte,'D+','#6#')
+        texte=string.replace(texte,'D-','#7#')
+        texte=string.replace(texte,'d+','#8#')
+        texte=string.replace(texte,'d-','#9#')
         # conversion de texte en une liste de sous-chaines
         liste=string.split('('+string.strip(texte)+')','\n')
         # dans le cas d'une chaine trop longue (>LongueurSousChaine) :
         # on eclate suivant les separateurs de la liste l_separ
-        l_separ=['+','-','/']
-        for separ in l_separ :
-          liste2=[]
-          for sous_chaine in liste :
-              uneChaine = string.strip( sous_chaine) # elimination des blancs inutiles.
-              if ( len(uneChaine) > LongueurSousChaine ) :
-                     liste3=string.split(uneChaine,separ)
-                     for i in range(1,len(liste3),2) :
-                         liste3[i]=separ+liste3[i]
-                     liste2=liste2+liste3
-              else : liste2.append(sous_chaine)
-          liste=liste2
+        l_separ=['+','-','/','*','(',')']
+        liste2=[]
+        LongueurSousChaine=LongueurSousChaine/2
+        for sous_chaine in liste :
+            uneChaine = string.strip( sous_chaine) # elimination des blancs inutiles.
+            if ( len(uneChaine) > LongueurSousChaine ) :
+               liste3=[]
+               ttt=uneChaine[:LongueurSousChaine]
+               j=0
+               while(ttt.rfind(l_separ[j])<0):j=j+1
+               liste3.append(ttt[:ttt.rfind(l_separ[j])])
+               reste=ttt[ttt.rfind(l_separ[j]):]
+               i=0
+               for i in range(1,len(uneChaine)/LongueurSousChaine) :
+                   ttt=uneChaine[i*LongueurSousChaine:(i+1)*LongueurSousChaine]
+                   j=0
+                   while(ttt.find(l_separ[j])<0):j=j+1
+                   liste3.append(reste+ttt[:ttt.find(l_separ[j])])
+                   k=0
+                   while(ttt.rfind(l_separ[k])<0):k=k+1
+                   liste3.append(ttt[ttt.find(l_separ[j]):ttt.rfind(l_separ[k])])
+                   reste=ttt[ttt.rfind(l_separ[k]):]
+               ttt=uneChaine[(i+1)*LongueurSousChaine:]
+               liste3.append(reste+ttt)
+               liste2=liste2+liste3
+            else : liste2.append(uneChaine)
 
         # Construction dans apres de texte modifie.
         apres = ''
+        LongueurSousChaine=LongueurSousChaine*2
         for sous_chaine in liste2 :
                 uneChaine = string.strip( sous_chaine) # elimination des blancs inutiles.
+                uneChaine = string.replace(uneChaine,'#1#','**')
+                uneChaine = string.replace(uneChaine,'#2#','E+')
+                uneChaine = string.replace(uneChaine,'#3#','E-')
+                uneChaine = string.replace(uneChaine,'#4#','e+')
+                uneChaine = string.replace(uneChaine,'#5#','e-')
+                uneChaine = string.replace(uneChaine,'#6#','D+')
+                uneChaine = string.replace(uneChaine,'#7#','D-')
+                uneChaine = string.replace(uneChaine,'#8#','d+')
+                uneChaine = string.replace(uneChaine,'#9#','d-')
                 if ( len(uneChaine) > LongueurSousChaine ) :
                         sys.stderr.write("ERREUR detectee dans Decoupe\n" )
                         print ">",uneChaine,"<"

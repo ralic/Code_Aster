@@ -1,6 +1,6 @@
       SUBROUTINE DXBSIG (NOMTE, XYZL , PGL , SIGMA, BSIGMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/01/98   AUTEUR CIBHHLB L.BOURHRARA 
+C MODIF ELEMENTS  DATE 02/02/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,8 +77,8 @@ C     -----------------------------------------------------
          DISTN = ZR(JCOQU+6)
       ENDIF
 C
-      IF (NOMTE(1:8) .EQ.'MEDKTR3 '.OR.NOMTE(1:8) .EQ.'MEDSTR3 '
-     + .OR. NOMTE(1:8).EQ.'MEGRDKT ') THEN
+      IF (NOMTE(1:8) .EQ.'MEDKTR3 '.OR.NOMTE(1:8) .EQ.'MEDSTR3 '.OR. 
+     +    NOMTE(1:8) .EQ.'MEGRDKT '.OR.NOMTE(1:8) .EQ.'MEDKTG3 ') THEN
           NPG   = 3
           NNO   = 3
 C
@@ -87,7 +87,7 @@ C      -------------------------------------------------
          CALL GTRIA3 (XYZL , ZR(LZR))
 C
       ELSEIF (NOMTE(1:8) .EQ.'MEDKQU4 '.OR.NOMTE(1:8) .EQ.'MEDSQU4 '
-     +        .OR.NOMTE(1:8) .EQ.'MEQ4QU4 ') THEN
+     +.OR.NOMTE(1:8) .EQ.'MEQ4QU4 '.OR.NOMTE(1:8) .EQ.'MEDKQG4 ') THEN
           NPG   = 4
           NNO   = 4
 C

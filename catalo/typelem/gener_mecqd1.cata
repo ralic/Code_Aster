@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 26/01/2004   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,11 +20,11 @@ GENER_MECQD1
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MECXSE3          MAILLE__ SEG3
-   ELREFE__  SEG3      GAUSS__  NELGA=FPG2
+   ELREFE__  SE3      GAUSS__  RIGI=FPG4
 ENTETE__ ELEMENT__ METCSE3          MAILLE__ SEG3
-   ELREFE__  SEG3      GAUSS__  NELGA=FPG2
+   ELREFE__  SE3      GAUSS__  RIGI=FPG4
 ENTETE__ ELEMENT__ METDSE3          MAILLE__ SEG3
-   ELREFE__  SEG3      GAUSS__  NELGA=FPG2
+   ELREFE__  SE3      GAUSS__  RIGI=FPG4
 
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
@@ -42,7 +42,7 @@ MODE_LOCAL__
     EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       MY       MZ       REP      )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
-    EHYDRER  = HYDR_R   ELGA__ NELGA   (HYDR     )
+    EHYDRER  = HYDR_R   ELGA__ RIGI   (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
@@ -53,15 +53,15 @@ MODE_LOCAL__
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
                                         Z        )
-    ECONTPG  = SIEF_R   ELGA__ NELGA   (SIXX     SIYY     SIZZ     SIXZ     )
-    EEFFOPG  = SIEF_R   ELGA__ NELGA   (NXX      NYY      NXY      MXX      MYY      MXY      )
+    ECONTPG  = SIEF_R   ELGA__ RIGI   (SIXX     SIYY     SIZZ     SIXZ     )
+    EEFFOPG  = SIEF_R   ELGA__ RIGI   (NXX      NYY      NXY      MXX      MYY      MXY      )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIXZ     )
     EEFFONO  = SIEF_R   ELNO__ IDEN__  (NXX      NYY      NXY      MXX      MYY      MXY      )
     EEFFRNO  = SIEF_R   ELNO__ IDEN__  (NXX      NYY      NXY      MXX      MYY      MXY      )
     CTEMPEF  = TEMP_F   ELEM__         (TEMP     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     TEMP_INF TEMP_SUP )
-    ZVARIPG  = VARI_R   ELGA__ NELGA   (VARI     )
+    ZVARIPG  = VARI_R   ELGA__ RIGI   (VARI     )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -118,6 +118,8 @@ OPTION__
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
+    FULL_MECA_ELAS      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     MASS_ID_MDEP_R      97    IN__   NGEOMER  PGEOMER
                               OUT__  MMATUUR  PMATRIC
     MASS_INER           227   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC
@@ -142,8 +144,8 @@ OPTION__
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     RIGI_MECA           221   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER
                               OUT__  MMATUUR  PMATUUR
-    RIGI_MECA_ELAS      221   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER
-                              OUT__  MMATUUR  PMATUUR
+    RIGI_MECA_ELAS      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     RIGI_MECA_GE        -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RIGI_MECA_HYST      50    IN__   CGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  CTEREFE  PTEMPER

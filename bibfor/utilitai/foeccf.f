@@ -1,10 +1,10 @@
-      SUBROUTINE FOECCF( NOMF , IUNI , IND , FONINS )
+      SUBROUTINE FOECCF( NOMF , IUNI , IND )
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)      NOMF ,              FONINS
+      CHARACTER*(*)      NOMF
       INTEGER                   IUNI , IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

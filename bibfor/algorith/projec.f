@@ -3,7 +3,7 @@
      &                   JEU,DDL,NBNO,JDECAL,TANG,JEUFX,COFX,COFY)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ALGORITH  DATE 05/04/2004   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -96,12 +96,14 @@ C
       INTEGER      JCOOR,JDDL,JPDDL,JNOCO,JMACO,JNOMA,JPONO,JDEC,IATYMA
       INTEGER      NBDDL1,NBDDL2,NTPOI1,NTSEG2,NTSEG3,NTTRI3,NTTRI6
       INTEGER      NTQUA4, NTQUA8, NTQUA9,JTGDEF,JMETH,PRONOR,JLISSA
-      INTEGER      JNORLI,JNRINI
+      INTEGER      JNORLI,JNRINI,JVERIP
       REAL*8       COOR(27),COORDP(3),COORDM(3),R8DOT,COEFNO(9),PM(3)
       REAL*8       XNORM(3),XTANG(6)
       CHARACTER*19 NLISSA
       CHARACTER*24 CONTNO,DDLCO,PDDL,CONTMA,NOMACO,PNOMA,TANDEF
-      CHARACTER*24 METHCO,NORLIS,NORINI
+      CHARACTER*24 METHCO,NORLIS,NORINI,VERIPE
+      REAL*8       TOLE
+      INTEGER      ARETE(3),NOEUD(3)
 C
 C ----------------------------------------------------------------------
 C
@@ -117,6 +119,7 @@ C
       METHCO = DEFICO(1:16)//'.METHCO'
       NORLIS = DEFICO(1:16)//'.NORLIS'
       NORINI = RESOCO(1:14)//'.NORINI'
+      VERIPE = DEFICO(1:16)//'.VERIPE'       
 C
       CALL JEVEUO (NEWGEO(1:19)//'.VALE','L',JCOOR)
       CALL JEVEUO (DDLCO, 'L',JDDL)
@@ -128,6 +131,7 @@ C
       CALL JEVEUO (METHCO,'L',JMETH)
       CALL JEVEUO (NORLIS,'L',JNORLI)
       CALL JEVEUO (NORINI,'L',JNRINI)
+      CALL JEVEUO (VERIPE,'L',JVERIP)
 C
 C ----------------------------------------------------------------------
 C     PRONOR EST UN INDICATEUR DES NORMALES D'APPARIEMMENT ET
@@ -293,21 +297,26 @@ C
          TANG(3) = ZR(JTGDEF+3*(IZONE-1)+2)
       ENDIF
       IF ((NUTYP.EQ.NTSEG2).OR.(NUTYP.EQ.NTSEG3)) THEN
-        CALL PROJSE (NUTYP,NDIM,NBNO,REAPRO,COOR(1),COOR(4),COOR(7),
+        CALL PROJSE (NUTYP,NDIM,REAPRO,COOR(1),COOR(4),COOR(7),
      &           COORDP,NORM,COORDM,COEFNO,
      &           OLDJEU,JEU,TANG,JEUFX,PRONOR,ZI(JMETH+10*(IZONE-1)+2),
-     &           ZR(JLISSA))
+     &           ZR(JLISSA),
+     &           ZR(JVERIP+(IZONE-1)))
       ELSE IF ((NUTYP.EQ.NTTRI3).OR.(NUTYP.EQ.NTTRI6)) THEN
+        TOLE=1D-2
         CALL PROJTR (NUTYP,NDIM,NBNO,REAPRO,COOR(1),COOR(4),
      &               COOR(7),COORDP,NORM,COORDM,COEFNO,
      &               OLDJEU,JEU,TANG,PRONOR,ZI(JMETH+10*(IZONE-1)+2),
-     &               ZR(JLISSA))
+     &               ZR(JLISSA),
+     &               ZR(JVERIP+(IZONE-1)),
+     &               TOLE,ARETE,NOEUD)
       ELSE IF ((NUTYP.EQ.NTQUA4).OR.(NUTYP.EQ.NTQUA8).OR.
      &                              (NUTYP.EQ.NTQUA9)) THEN
         CALL PROJQU (NUTYP,NDIM,NBNO,REAPRO,COOR(1),COOR(4),
      &               COOR(7),COOR(10),COORDP,NORM,COORDM,COEFNO,
      &               OLDJEU,JEU,TANG,PRONOR,ZI(JMETH+10*(IZONE-1)+2),
-     &               ZR(JLISSA))
+     &               ZR(JLISSA),
+     &               ZR(JVERIP+(IZONE-1)))
       ELSE
         CALL UTMESS ('F','PROJEC_05','ON NE SAIT PAS TRAITER CE '
      &               //'TYPE DE MAILLE')
@@ -359,4 +368,5 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEDEMA()
+      
       END

@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,6 @@ C
       IF (FONREE.EQ.'REEL') THEN
          ZR(JVALV) = 0.D0
       ELSE
-         CALL FOZERO('&FOZERO')
          ZK8(JVALV) = '&FOZERO'
       END IF
       CALL NOCART ( CARTE, 1, ' ', 'NOM', 0, ' ', 0, LIGRMO, NCMP)

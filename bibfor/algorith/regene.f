@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES, RESGEN
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/07/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 20/01/2004   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,13 +58,14 @@ C
       REAL*8       FREQ,GENEK,GENEM,OMEG2,RBID
       COMPLEX*16   CBID
       CHARACTER*1  K1BID
-      CHARACTER*8  BASMOD,RESPRO,KBID,K8B,MODMEC,MAILSK,MODGEN
+      CHARACTER*8  BASMOD,RESPRO,KBID,K8B,MODMEC,MAILSK,MODGEN,BLANC
       CHARACTER*14 NUMDDL
       CHARACTER*16 DEPL,NOMPAR(5),TYPREP
       CHARACTER*19 CHAMNO,KINT,KREFE,CHAMNE,RAID,NUMGEN,PROFNO
       CHARACTER*24 CHAMOL,MATRIC,INDIRF,CREFE(2),NUMEDD
 C
 C-----------------------------------------------------------------------
+      DATA BLANC    /'        '/
       DATA DEPL   /'DEPL            '/
       DATA NOMPAR /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE'/
 C-----------------------------------------------------------------------
@@ -206,21 +207,25 @@ C-----------------------------------------------------------------------
       ELSE
 C-----------------------------------------------------------------------
          CALL JEVEUO(BASMOD//'           .REFE','L',IADRIF)
-         IF ((TYPREP(1:9) .EQ. 'MODE_MECA') .OR. (TYPREP(1:9) .EQ.
-     +     'MODE_STAT')) THEN
-           MATRIC = ZK24(IADRIF)
+         IF (TYPREP(1:9) .EQ. 'BASE_MODA') THEN
+           NUMEDD = ZK24(IADRIF+1)
+           NUMDDL = NUMEDD(1:14)
+           CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQ,K8B,IRET)
+           CALL WKVECT('&&REGENE.BASEMODE','V V R',NBMOD*NEQ,IDBASE)
+           CALL COPMO2(BASMOD,NEQ,NUMDDL,NBMOD,ZR(IDBASE))         
+         ELSE
+           IF (TYPREP(1:9) .EQ. 'MODE_MECA') THEN
+             MATRIC = ZK24(IADRIF)
+           ELSEIF (TYPREP(1:9) .EQ. 'MODE_STAT') THEN
+             MATRIC = ZK24(IADRIF)
+             IF (MATRIC(1:8).EQ.BLANC) MATRIC = ZK24(IADRIF+2)
+           ENDIF  
            CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBID,
      +                 NUMEDD,IRET)
            NUMDDL = NUMEDD(1:14)
            CALL DISMOI('F','NB_EQUA',MATRIC,'MATR_ASSE',NEQ,K8B,IRET)
            CALL WKVECT('&&REGENE.BASEMODE','V V R',NBMOD*NEQ,IDBASE)
            CALL COPMOD(BASMOD,'DEPL',NEQ,NUMDDL,NBMOD,ZR(IDBASE))
-         ELSEIF (TYPREP(1:9) .EQ. 'BASE_MODA') THEN
-           NUMEDD = ZK24(IADRIF+1)
-           NUMDDL = NUMEDD(1:14)
-           CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQ,K8B,IRET)
-           CALL WKVECT('&&REGENE.BASEMODE','V V R',NBMOD*NEQ,IDBASE)
-           CALL COPMO2(BASMOD,NEQ,NUMDDL,NBMOD,ZR(IDBASE))         
          ENDIF
 C
 CC

@@ -1,6 +1,6 @@
       SUBROUTINE TE0517(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 15/12/2003   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,7 +16,6 @@ C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C                                                                       
 C                                                                       
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -54,8 +53,9 @@ C
       PARAMETER ( ZERO = 0.0D+00)
 
       REAL*8 PGL(3,3),FL(2*NC), D1B3(2,3),KSI1,TMAX(2),TMIN(2),XIY,XIZ
+      REAL*8 SIGFIB
 
-      INTEGER NBFIB,KP,ADR,NCOMP,I
+      INTEGER NBFIB,KP,ADR,NCOMP,I,CARA,NE,JACF,NCARFI
       INTEGER ICHN,ICHG,ICOMPO,NBVAR,LGPG,ICGP,ICONTN,IORIEN,IVECTU
 C
 C ----------------------------------------------------------------------
@@ -90,23 +90,6 @@ C  A QUOI SERT-ELLE, POUR CET ELEMENT ?
         CALL UTMESS('F','TE0517',
      &              'OPTION "VARI_ELNO_ELGA" IMPOSSIBLE ACTUELLEMENT')
 
-C        CALL JEVECH ( 'PVARINR', 'E', ICHN   )
-C        CALL JEVECH ( 'PVARIGR', 'L', ICHG   )
-C        CALL JEVECH ( 'PCOMPOR', 'L', ICOMPO )
-C --- NOMBRE DE VARIABLE INTERNE DE LA LOI DE COMPORTEMENT
-C        READ (ZK16(ICOMPO-1+2),'(I16)') NBVAR
-
-C        CALL TECACH('OON','PVARINR',7,JTAB,IRET)
-
-C        LGPG = NBVAR*NBFIB
-C        DO 110 I = 1,LGPG
-C          DO 112 KP = 1 , 3
-C            ADR = ICHG-1+LGPG*(KP-1)+I
-C            ZR(ICHN     +I-1)=ZR(ICHN     +I-1)+ZR(ADR)*D1B3(1,KP)
-C            ZR(ICHN+LGPG+I-1)=ZR(ICHN+LGPG+I-1)+ZR(ADR)*D1B3(2,KP)
-C112       CONTINUE
-C110     CONTINUE
-
 C     --------------------------------------
       ELSEIF ( OPTION .EQ. 'SIEF_ELNO_ELGA' .OR.
      &         OPTION .EQ. 'FORC_NODA'  ) THEN
@@ -123,45 +106,52 @@ C     --------------------------------------
 C !!!   MAGOUILLE POUR STOCKER LES FORCES INTEGREES !!!
 C       ELLES SONT DEJA CALCULEES ET STOCKEES APRES LES FIBRES
 C         ON RECUPERE L'EFFORT STOCKE AUX NOEUDS 1 ET 2
-        DO 210 I = 1 , NC
+        DO 200 I = 1 , NC
           FL(I)    = ZERO
           FL(I+NC) = ZERO
-          DO 212 KP = 1 , 3
+          DO 202 KP = 1 , 3
             ADR = ICGP+(NBFIB+NCOMP)*(KP-1)+ NBFIB + I - 1
             FL(I)   = FL(I)   +ZR(ADR)*D1B3(1,KP)
             FL(I+NC)= FL(I+NC)+ZR(ADR)*D1B3(2,KP)
-212       CONTINUE
-210     CONTINUE
+202       CONTINUE
+200     CONTINUE
 C !!!   FIN MAGOUILLE !!!
 
+C !!!   A CAUSE DE LA PLASTIFICATION DE LA SECTION LES EFFORTS
+C          N,MFY,MFZ DOIVENT ETRE RECALCULES POUR LES NOEUDS 1 ET 2
+        FL(1)    = ZERO
+        FL(5)    = ZERO
+        FL(6)    = ZERO
+        FL(1+NC) = ZERO
+        FL(5+NC) = ZERO
+        FL(6+NC) = ZERO
+
+C       POUR LES NOEUDS 1 ET 2
+C          CALCUL DES CONTRAINTES
+C          CALCUL DES EFFORTS GENERALISES A PARTIR DES CONTRAINTES
+        DO 220 NE = 1 , 2
+          DO 230 I= 1 , NBFIB
+             SIGFIB = ZERO
+             DO 240 KP = 1 , 3
+              ADR = ICGP+(NBFIB+NCOMP)*(KP-1) + I - 1
+              SIGFIB = SIGFIB + ZR(ADR)*D1B3(NE,KP)
+240          CONTINUE
+             IF ( I .EQ. 1 ) THEN
+               TMAX(NE) = SIGFIB
+               TMIN(NE) = SIGFIB
+             ELSE
+               IF ( SIGFIB .GT. TMAX(NE) ) TMAX(NE) = SIGFIB
+               IF ( SIGFIB .LT. TMIN(NE) ) TMIN(NE) = SIGFIB
+             ENDIF
+             ADR  = NC*(NE-1)
+             CARA = JACF+(I-1)*NCARFI
+             FL(1+ADR) = FL(1+ADR) + SIGFIB*ZR(CARA+2)
+             FL(5+ADR) = FL(5+ADR) + SIGFIB*ZR(CARA+2)*ZR(CARA+1)
+             FL(6+ADR) = FL(6+ADR) - SIGFIB*ZR(CARA+2)*ZR(CARA)
+230       CONTINUE
+220     CONTINUE
+
         IF (OPTION .EQ. 'SIEF_ELNO_ELGA' ) THEN
-C         TAUX DE TRAVAIL CORRESPONDANT AUX EFFORTS GENERALISES
-C         CARACTERISTIQUE MECANIQUE DE LA SECTION
-          XIY = ZERO
-          XIZ = ZERO
-          AA = ZERO
-          DO 220 I = 1 , NBFIB
-            ADR = JACF+(I-1)*NCARFI
-            AA = AA + ZR(ADR+2)
-            XIY = XIY + ZR(ADR+2)*ZR(ADR+1)*ZR(ADR+1)
-            XIZ = XIZ + ZR(ADR+2)*ZR(ADR)*ZR(ADR)
-220       CONTINUE
-
-          ADR = JACF
-          TMAX(1)=FL(1)/AA +FL( 5)*ZR(ADR+1)/XIY -FL( 6)*ZR(ADR)/XIZ
-          TMIN(1)=TMAX(1)
-          TMAX(2)=FL(8)/AA +FL(12)*ZR(ADR+1)/XIY -FL(13)*ZR(ADR)/XIZ
-          TMIN(2)=TMAX(2)
-          DO 230 I= 2 , NBFIB
-            ADR = JACF+(I-1)*NCARFI
-            SIGM=FL(1)/AA +FL( 5)*ZR(ADR+1)/XIY -FL( 6)*ZR(ADR)/XIZ
-            IF ( SIGM .GT.  TMAX(1) ) TMAX(1) = SIGM
-            IF ( SIGM .LT.  TMIN(1) ) TMIN(1) = SIGM
-            SIGM=FL(8)/AA +FL(12)*ZR(ADR+1)/XIY -FL(13)*ZR(ADR)/XIZ
-            IF ( SIGM .GT.  TMAX(2) ) TMAX(2) = SIGM
-            IF ( SIGM .LT.  TMIN(2) ) TMIN(2) = SIGM
-230      CONTINUE
-
           DO 310 I = 1 , NC
             ZR(ICONTN+I-1) = FL(I)
 310       CONTINUE
@@ -172,7 +162,6 @@ C         CARACTERISTIQUE MECANIQUE DE LA SECTION
 312       CONTINUE
           ZR(ICONTN+2*(NC+1)+1-1) = TMAX(2)
           ZR(ICONTN+2*(NC+1)+2-1) = TMIN(2)
-
         ELSEIF ( OPTION .EQ. 'FORC_NODA' ) THEN
 C         AU NOEUD 1 ON DOIT PRENDRE -FORCE POUR VERIFIER L'EQUILIBRE
           DO 410 I = 1 , NC

@@ -1,17 +1,17 @@
       SUBROUTINE IRGMPV ( IFI, LRESU, NOMCON, CHAMSY, NBORDR, PARA,  
-     +                    NOCMP, NBPOI, NBSEG, NBTRI, NBQUA, NBTET, 
-     +                    NBPYR, NBPRI, NBHEX, SCAL, VECT, TENS, VERSIO)
+     +                    NOCMP, NBEL, SCAL, VECT, TENS, VERSIO)
       IMPLICIT NONE
 C
-      INTEGER        NBPOI, NBSEG, NBTRI, NBTET, IFI, NBORDR, LCH,ICH
-      INTEGER        NBQUA, NBPYR, NBPRI, NBHEX, VERSIO
+      INTEGER        IFI, NBORDR, LCH,ICH, VERSIO
       REAL*8         PARA(*)
       LOGICAL        LRESU, SCAL, VECT, TENS
       CHARACTER*8    NOCMP
       CHARACTER*(*)  NOMCON, CHAMSY
+C     NBRE POUR CHAQUE TYPE D'ELEMENT
+      INTEGER        NBEL(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/02/2003   AUTEUR PBADEL P.BADEL 
+C MODIF PREPOST  DATE 13/02/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,10 +32,31 @@ C
 C     BUT :   ECRITURE D'UN RESULTAT AU FORMAT GMSH
 C
 C     ------------------------------------------------------------------
-      INTEGER      IOR,I,LXLGUT
+      INTEGER      IOR,LXLGUT
       CHARACTER*19 K19B
       CHARACTER*36 K36B
+      INTEGER     NBPOI, NBSEG, NBTRI, NBTET, NBQUA, NBPYR, NBPRI, NBHEX
+      INTEGER      TYPPOI, TYPSEG, TYPTRI, TYPTET, TYPQUA,
+     +             TYPPYR, TYPPRI, TYPHEX
+      CHARACTER*32 JEXNOM
 C     ------------------------------------------------------------------
+C
+      CALL JENONU ( JEXNOM('&CATA.TM.NOMTM', 'POI1'   ), TYPPOI )
+      CALL JENONU ( JEXNOM('&CATA.TM.NOMTM', 'SEG2'   ), TYPSEG )
+      CALL JENONU ( JEXNOM('&CATA.TM.NOMTM', 'TRIA3'  ), TYPTRI )
+      CALL JENONU ( JEXNOM('&CATA.TM.NOMTM', 'QUAD4'  ), TYPQUA )
+      CALL JENONU ( JEXNOM('&CATA.TM.NOMTM', 'TETRA4' ), TYPTET )
+      CALL JENONU ( JEXNOM('&CATA.TM.NOMTM', 'PYRAM5' ), TYPPYR )
+      CALL JENONU ( JEXNOM('&CATA.TM.NOMTM', 'PENTA6' ), TYPPRI )
+      CALL JENONU ( JEXNOM('&CATA.TM.NOMTM', 'HEXA8' ) , TYPHEX )
+      NBPOI=NBEL(TYPPOI)
+      NBSEG=NBEL(TYPSEG)
+      NBTRI=NBEL(TYPTRI)
+      NBQUA=NBEL(TYPQUA)
+      NBTET=NBEL(TYPTET)
+      NBPYR=NBEL(TYPPYR)
+      NBPRI=NBEL(TYPPRI)
+      NBHEX=NBEL(TYPHEX)
 C
       WRITE(IFI,1000) '$View'
 C
@@ -58,10 +79,10 @@ C
          LCH = LXLGUT(NOMCON)
          K19B(1:LCH) = NOMCON(1:LCH)
          ICH=LCH+1
-         K36B(ICH:ICH) = '_'
+         K19B(ICH:ICH) = '_'
          LCH=LXLGUT(NOCMP)
          K19B(ICH+1:ICH+LCH) = NOCMP(1:LCH)
-         K36B(ICH+LCH+1:ICH+LCH+1) = ' '
+         K19B(ICH+LCH+1:ICH+LCH+1) = ' '
          WRITE(IFI,1022) K19B(1:ICH+LCH+1), NBORDR
       ENDIF
 C

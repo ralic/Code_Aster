@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 16/12/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,6 +36,11 @@ IMPR_COURBE=PROC(nom="IMPR_COURBE",op= 141,fr="Impression, sur fichiers",
            LEGENDE_Y       =SIMP(statut='f',typ='TXM',fr="Légende associée à l axe des ordonnées" ),
            FREQ_GRILLE_X   =SIMP(statut='f',typ='I',defaut= 0,fr="Fréquence de tracage du quadrillage vertical" ),
            FREQ_GRILLE_Y   =SIMP(statut='f',typ='I',defaut= 0,fr="Fréquence de tracage du quadrillage horizontal" ),
+           TRI             =SIMP(statut='f',typ='TXM',defaut="N",
+                                 fr="Choix du tri effectué sur les abcisses ou sur les ordonnées",
+                                 into=("N","X","Y","XY","YX") ),
+           FREQ_MARQUEUR   =SIMP(statut='f',typ='I',defaut= 0,
+                                 fr="Fréquence d impression du marqueur associé à la courbe", ),          
          ), 
          b_excel = BLOC(condition = "(FORMAT=='EXCEL')",fr="Mots-clés propres au format Excel",
            BORNE_X         =SIMP(statut='f',typ='R',min=2,max=2,fr="Intervalles de variation des abcisses"),
@@ -116,12 +121,5 @@ IMPR_COURBE=PROC(nom="IMPR_COURBE",op= 141,fr="Impression, sur fichiers",
                                        "PLUS","X","CERCLE","CERCLE_P","CARRE_P",
                                        "LOSANGE_P","CERCLE_P_X","LOSANGE_P_X",
                                        "CERCLE_X","CARRE_X","LOSANGE_X") ),
-            b_agraf =BLOC(condition = "(FORMAT=='AGRAF')",fr="Mots-clés propres à AGRAF",
-              TRI             =SIMP(statut='f',typ='TXM',defaut="N",
-                                    fr="Choix du tri effectué sur les abcisses ou sur les ordonnées",
-                                    into=("N","X","Y","XY","YX") ),
-              FREQ_MARQUEUR   =SIMP(statut='f',typ='I',defaut= 0,
-                                    fr="Fréquence d impression du marqueur associé à la courbe", ),          
-            ), 
          ),
 )  ;

@@ -1,6 +1,6 @@
       SUBROUTINE TE0286(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,14 +31,12 @@ C ENTREES  ---> OPTION : OPTION DE CALCUL
 C          ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 C
-      CHARACTER*8        MODELI,ELREFE
-      CHARACTER*24       CARAC,FF
+      CHARACTER*8        MODELI
       REAL*8             SIGMA(162), BSIGMA(81), REPERE(7)
       REAL*8             INSTAN, NHARM
       INTEGER            NBSIGM
 C
 C ----- DEBUT --- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -55,24 +53,12 @@ C ----- DEBUT --- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CALL ELREF1(ELREFE)
-
       MODELI(1:2) = NOMTE(3:4)
 C
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
 C      ------------------------
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS=IFF
-      IVF   =IPOIDS+NPG1
-      IDFDE =IVF   +NPG1*NNO
-      IDFDK =IDFDE +NPG1*NNO
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
 C --- INITIALISATIONS :
 C     -----------------
@@ -81,8 +67,6 @@ C     -----------------
       UNDEMI      = 0.5D0
       INSTAN      = ZERO
       NHARM       = ZERO
-      BIDON       = ZERO
-      NDIM        = 2
       NDIM2       = 2
       IF (MODELI(1:2).EQ.'FO') THEN
         NDIM = 3
@@ -92,7 +76,7 @@ C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
       NBSIG  = NBSIGM(MODELI)
 C
-      DO 10 I = 1, NBSIG*NPG1
+      DO 10 I = 1, NBSIG*NPG
          SIGMA(I) = ZERO
  10   CONTINUE
 C
@@ -135,23 +119,20 @@ C
 C ---- CALCUL DES CONTRAINTES 'VRAIES' SUR L'ELEMENT
 C ---- (I.E.  1/2*SIGMA_MECA - SIGMA_THERMIQUES)
 C      ------------------------------------
-      CALL SIMTEP(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
-     +            ZR(IDFDK),BIDON,ZR(IPOIDS),ZR(IGEOM),ZR(IDEPL),
-     +            ZR(ITEMPE),ZR(ITREF),INSTAN,REPERE,ZI(IMATE),
-     +            NHARM,SIGMA)
+      CALL SIMTEP(MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+     +            ZR(IGEOM),ZR(IDEPL),ZR(ITEMPE),ZR(ITREF),INSTAN,
+     +            REPERE,ZI(IMATE),NHARM,SIGMA)
 C
 C ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA)
 C      -----------------------------------------------
-      CALL BSIGMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
-     +            ZR(IDFDK),BIDON,ZR(IPOIDS),ZR(IGEOM),NHARM,
-     +            SIGMA,BSIGMA)
+      CALL BSIGMC ( MODELI, NNO, NDIM, NBSIG, NPG, IPOIDS, IVF, IDFDE,
+     +              ZR(IGEOM), NHARM, SIGMA, BSIGMA )
 C
 C ---- CALCUL DU TERME EPSTH_T*D*EPSTH
 C      -------------------------------
-      CALL ETHDST(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
-     +            ZR(IDFDK),BIDON,ZR(IPOIDS),ZR(IGEOM),ZR(IDEPL),
-     +            ZR(ITEMPE),ZR(ITREF),INSTAN,REPERE,ZI(IMATE),
-     +            OPTION,ENTHTH)
+      CALL ETHDST(MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+     +            ZR(IGEOM),ZR(IDEPL),ZR(ITEMPE),ZR(ITREF),INSTAN,
+     +            REPERE,ZI(IMATE),OPTION,ENTHTH)
 C
 C ---- CALCUL DE L'ENERGIE POTENTIELLE :
 C ----        1/2*UT*K*U - UT*FTH + 1/2*EPSTHT*D*EPSTH :

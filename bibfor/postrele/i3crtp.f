@@ -1,12 +1,12 @@
-      SUBROUTINE I3CRTP(EPSI,SEUIL,S,P,CR,IRET)
+      SUBROUTINE I3CRTP(EPSI,S,P,CR,IRET)
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       INTEGER IRET
-      REAL*8  EPSI,SEUIL,S(3,*),P(*),CR(*)
+      REAL*8  EPSI,S(3,*),P(*),CR(*)
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 05/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF POSTRELE  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,6 @@ C     CALCUL DES COORDONNEES DE REF DU POINT DE CORDO (X,Y) DANS LE
 C     TRIANGLE DE SOMMETS S
 C     ------------------------------------------------------------------
 C IN  EPSI   : R : PRECISION
-C IN  SEUIL  : R : SEUIL
 C IN  P      : R : COORDONNEES DU POINT
 C IN  S      : R : TABLE(1..3,1..3) DES COORDONNEES DES SOMMETS
 C OUT CR     : R : TABLE(1..2)      DES COORDONNEES DE REF DE P

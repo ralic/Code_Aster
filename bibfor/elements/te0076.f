@@ -1,6 +1,6 @@
       SUBROUTINE TE0076 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,6 @@ C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -50,31 +49,22 @@ C
       CHARACTER*2        CODRET(NBRES)
       CHARACTER*8        NOMRES(NBRES),ELREFE
       CHARACTER*16       PHENOM
-      CHARACTER*24       CARAC,FF
       REAL*8             VALRES(NBRES)
       REAL*8             DFDX(9),DFDY(9),POIDS,R,THETA,FLUGLO(2)
-      REAL*8             LAMBOR(2),ORIG(2),DIRE(2),P(2,2),POINT(2)
+      REAL*8             LAMBOR(2),ORIG(2),P(2,2),POINT(2)
       REAL*8             FLULOC(2),LAMBDA
       REAL*8             MRIGT(9,9),COORSE(18)
-      INTEGER            NNO,KP,NPG1,I,J,K,ITEMPS,IMATTT
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE
+      INTEGER            NNO,KP,NPG,I,J,K,ITEMPS,IMATTT,NNOS
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE,JGANO,NDIM
       INTEGER            C(6,9),ISE,NSE,NNOP2
       LOGICAL            ANISO,GLOBAL
 C
       CALL ELREF1(ELREFE)
-      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QUAD4L'
-
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
+      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QU4'
+      IF (NOMTE(5:7).EQ.'TL6') ELREFE='TR3'
 C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF   ,'L',IFF   )
-      IPOIDS=IFF
-      IVF   =IPOIDS+NPG1
-      IDFDE =IVF   +NPG1*NNO
-      IDFDK =IDFDE +NPG1*NNO
+      CALL ELREF4(ELREFE,'RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
+     +            JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM )
       CALL JEVECH('PMATERC','L',IMATE )
@@ -119,7 +109,7 @@ C
           ENDIF
         ENDIF
 C
-      CALL CONNEC ( NOMTE, ZR(IGEOM), NSE, NNOP2, C )
+      CALL CONNEC ( NOMTE, NSE, NNOP2, C )
 
       DO 11 I=1,NNOP2
          DO 11 J=1,NNOP2
@@ -135,10 +125,9 @@ C --- CALCUL ISO-P2 : BOUCLE SUR LES SOUS-ELEMENTS -------
               COORSE(2*(I-1)+J) = ZR(IGEOM-1+2*(C(ISE,I)-1)+J)
 105      CONTINUE
 
-        DO 101 KP=1,NPG1
+        DO 101 KP=1,NPG
           K=(KP-1)*NNO
-          CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                  COORSE,DFDX,DFDY,POIDS )
+          CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,COORSE,DFDX,DFDY,POIDS )
           IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
              R = 0.D0
              DO 102 I=1,NNO
@@ -196,5 +185,4 @@ C MISE SOUS FORME DE VECTEUR
            IJ = IJ + 1
            ZR(IJ)=MRIGT(I,J)
 106   CONTINUE
-
       END

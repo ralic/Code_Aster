@@ -6,7 +6,7 @@
       CHARACTER*19        NOMSTO, NOMNUM
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/10/2001   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ALGORITH  DATE 25/03/2004   AUTEUR OUGLOVA A.OUGLOVA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C
       INTEGER      IBID, IDDEEQ, LLDESC, NUEQ, NTBLOC, NBLOC, IALIME,
      +             IACONL, IAREFE, IADESC, I, J, IMATRA, IADIA, IABLO, 
      +             IHCOL, IBLO, LDBLO, N1BLOC, N2BLOC, IADMOD, IRET,
-     +             IDVEC1, IDVEC2, IDBASE
+     +             IDVEC2, IDBASE
       REAL*8       PIJ, R8DOT
       CHARACTER*8  K8B
       CHARACTER*16 TYPBAS
@@ -90,9 +90,14 @@ C
       CALL WKVECT ( RESU//'.DESC', 'G V I', 3, IADESC )
       ZI(IADESC)   = 2
       ZI(IADESC+1) = NUEQ
-      ZI(IADESC+2) = 2
+C   On teste la hauteur maximale des colonnes de la matrice
+C   si cette hauteur vaut 1, on suppose que le stockage est diagonal
+      IF (ZI(LLDESC+3).EQ.1) THEN
+        ZI(IADESC+2) = 1
+      ELSE
+        ZI(IADESC+2) = 2
+      ENDIF  
 C
-      CALL WKVECT ( '&&PROJMR.VECTASS1', 'V V R', NEQ, IDVEC1 )
       CALL WKVECT ( '&&PROJMR.VECTASS2', 'V V R', NEQ, IDVEC2 )
       CALL WKVECT ( '&&PROJMR.BASEMO','V V R',NBMO*NEQ,IDBASE)
 C ----- CONVERSION DE BASEMO A LA NUMEROTATION NU
@@ -125,23 +130,19 @@ C
 C
          DO 30 I = N1BLOC , N2BLOC
 C
-            CALL R8COPY(NEQ,ZR(IDBASE+(I-1)*NEQ),1,ZR(IDVEC1),1)
-            CALL ZERLAG ( ZR(IDVEC1), NEQ, ZI(IDDEEQ) )
-C
 C --------- CALCUL PRODUIT MATRICE*MODE I
 C
-            CALL MRMULT ( 'ZERO', IMATRA, ZR(IDVEC1),'R',ZR(IDVEC2),1)
+            CALL MRMULT ( 'ZERO', IMATRA, ZR(IDBASE+(I-1)*NEQ),
+     &                    'R',ZR(IDVEC2),1)
+            CALL ZERLAG ( ZR(IDVEC2), NEQ, ZI(IDDEEQ) )
 C
 C --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
 C
             DO 40 J = (I-ZI(IHCOL+I-1)+1) , I
 C
-               CALL R8COPY(NEQ,ZR(IDBASE+(J-1)*NEQ),1,ZR(IDVEC1),1)
-               CALL ZERLAG ( ZR(IDVEC1), NEQ, ZI(IDDEEQ) )
-C
 C ------------ PRODUIT SCALAIRE VECTASS * MODE
 C
-               PIJ = R8DOT( NEQ, ZR(IDVEC1), 1, ZR(IDVEC2), 1 )
+               PIJ = R8DOT( NEQ, ZR(IDBASE+(J-1)*NEQ),1,ZR(IDVEC2),1)
 C
 C ------------ STOCKAGE DANS LE .VALE A LA BONNE PLACE (1 BLOC)
 C
@@ -152,7 +153,6 @@ C
          CALL JELIBE ( JEXNUM(RESU//'.VALE', IBLO) )
  20   CONTINUE
 C
-      CALL JEDETR('&&PROJMR.VECTASS1')
       CALL JEDETR('&&PROJMR.VECTASS2')
       CALL JEDETR('&&PROJMR.BASEMO')
 C

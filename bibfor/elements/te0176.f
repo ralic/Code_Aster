@@ -1,6 +1,6 @@
       SUBROUTINE TE0176(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,12 +29,11 @@ C              ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 C
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*8        ELREFE
       CHARACTER*16       NOMTE,OPTION
-      CHARACTER*24       CARAC,FF
       REAL*8             DFDX(9),DFDY(9),POIDS
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IJ
       INTEGER            NNO,KP,NPG1,I,J,IMATTT,NDI
+      INTEGER            NDIM,NNOS,JGANO
 C
 C
 C
@@ -55,21 +54,9 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CALL ELREF1(ELREFE)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
 C
-      CARAC = '&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO = ZI(ICARAC)
       NDI = NNO*(NNO+1)/2
-      NPG1 = ZI(ICARAC+2)
-C
-      FF = '&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-C
-      IPOIDS = IFF
-      IVF    = IPOIDS + NPG1
-      IDFDE  = IVF    + NPG1*NNO
-      IDFDK  = IDFDE  + NPG1*NNO
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATTTC','E',IMATTT)
@@ -82,9 +69,7 @@ C    BOUCLE SUR LES POINTS DE GAUSS
 C
       DO 101 KP=1,NPG1
 C
-        K = (KP-1)*NNO
-        CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),
-     &        ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,POIDS )
+        CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
 C
           IJ=IMATTT - 1
           DO 106 I=1,NNO

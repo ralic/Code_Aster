@@ -1,14 +1,13 @@
-      SUBROUTINE PRAFFM ( MCF, SDLIEU, SDEVAL, SDMOY, OPTION, SM,
-     +                    SNORIG, SNEXTR, SNFLEX, ICHEF )
+      SUBROUTINE PRAFFM ( MCF, SDLIEU, SDEVAL, SDMOY,
+     +                    SNORIG, SNEXTR, SNFLEX)
       IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8              SM, SNORIG(*), SNEXTR(*), SNFLEX(*)
-      CHARACTER*16        OPTION
+      REAL*8              SNORIG(*), SNEXTR(*), SNFLEX(*)
       CHARACTER*19        SDEVAL
       CHARACTER*24        SDLIEU, SDMOY
       CHARACTER*(*)       MCF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 11/03/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +30,6 @@ C     ------------------------------------------------------------------
 C IN  SDLIEU : K : SD DU LIEU TRAITEE
 C IN  SDEVAL : K : SD DE L' EVALUATION DE LA QUANTITE SUR CE LIEU
 C IN  SDMOY  : K : SD DES MOYENNES
-C IN  OPTION : K : NOM DE L' OPTION   TRAITEE
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -79,7 +77,7 @@ C
          IF ( MCF(1:5) .EQ. 'PM_PB' ) THEN
             CALL PRNIV0 ( ZR(ASDMO), NBCP, NBCO, NBSP, SNORIG )
          ELSEIF ( MCF(1:2) .EQ. 'SN' ) THEN
-            CALL PRNIV1 ( ZR(ASDMO), ZK8(ANOCP), NBCP, NBCO, NBSP,
+            CALL PRNIV1 ( ZR(ASDMO), NBCP, NBCO, NBSP,
      +                    SNORIG, SNEXTR, SNFLEX )
          ENDIF
 100   CONTINUE

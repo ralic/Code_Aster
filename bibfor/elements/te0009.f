@@ -1,6 +1,6 @@
       SUBROUTINE TE0009(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*8 MODELI
       REAL*8 BSIGM(81),NHARM,GEO(81),SIGTMP(162),FTEMP(81)
       INTEGER JGANO,NNO,KP,K,NPG1,I,J,IVECTU,NDIM
-      INTEGER IPOIDS,IVF,IDFDE,IDFDK,IDFDN,IGEOM
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM
       INTEGER ICONTM,NBSIGM
 C DEB ------------------------------------------------------------------
       MODELI(1:2) = NOMTE(3:4)
@@ -54,9 +54,6 @@ C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
 C      ------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
-
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
 
       ZERO = 0.0D0
       NHARM = ZERO
@@ -96,9 +93,8 @@ C ----     CONTRAINTES AUX POINTS D'INTEGRATION
 
 C ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA) :
 C      --------------------------------------------------
-        CALL BSIGMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
-     &              ZR(IDFDN),ZR(IDFDK),ZR(IPOIDS),GEO,NHARM,ZR(ICONTM),
-     &              BSIGM)
+        CALL BSIGMC (MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE, 
+     +              GEO, NHARM, ZR(ICONTM), BSIGM )
 
 C ---- AFFECTATION DU VECTEUR EN SORTIE :
 C      ----------------------------------
@@ -114,10 +110,8 @@ C      ----------------------------------
         DO 50 I = 1,NBSIG*NPG1
 
           SIGTMP(I) = ZR(ICONTM)
-          CALL BSIGMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
-     &                ZR(IDFDN),ZR(IDFDK),ZR(IPOIDS),GEO,NHARM,SIGTMP,
-     &                BSIGM)
-
+          CALL BSIGMC (MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE, 
+     +              GEO, NHARM, SIGTMP, BSIGM )
           DO 40 J = 1,NDIM*NNO
             FTEMP(J) = FTEMP(J) + ABS(BSIGM(J))
    40     CONTINUE

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE LIBRE ET ENCASTREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -303,22 +303,28 @@ MODGLO2=REST_BASE_PHYS(   RESU_GENE=RESGEN,
 #
 TEST_RESU(RESU=(_F( RESULTAT = MODGLO, PARA = 'FREQ', 
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2, 
-                NUME_ORDRE = 1,  VALE = 8.7266),
+                NUME_ORDRE = 1,  VALE = 8.7266,
+                REFERENCE = 'ANALYTIQUE',),
           _F( RESULTAT = MODGLO, PARA = 'FREQ', 
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2, 
-                NUME_ORDRE = 2,  VALE = 21.3042),
+                NUME_ORDRE = 2,  VALE = 21.3042,
+                REFERENCE = 'ANALYTIQUE',),
           _F( RESULTAT = MODGLO, PARA = 'FREQ', 
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2, 
-                NUME_ORDRE = 3,  VALE = 53.5542),
+                NUME_ORDRE = 3,  VALE = 53.5542,
+                REFERENCE = 'ANALYTIQUE',),
           _F( RESULTAT = MODGLO, PARA = 'FREQ', 
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2, 
-                NUME_ORDRE = 4,  VALE = 68.2984),
+                NUME_ORDRE = 4,  VALE = 68.2984,
+                REFERENCE = 'ANALYTIQUE',),
           _F( RESULTAT = MODGLO, PARA = 'FREQ', 
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2, 
-                NUME_ORDRE = 5,  VALE = 77.7448),
+                NUME_ORDRE = 5,  VALE = 77.7448,
+                REFERENCE = 'ANALYTIQUE',),
           _F( RESULTAT = MODGLO, PARA = 'FREQ', 
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2, 
-                NUME_ORDRE = 6,  VALE = 136.0471)))
+                NUME_ORDRE = 6,  VALE = 136.0471,
+                REFERENCE = 'ANALYTIQUE',)))
 
 #
 ########################################################################
@@ -470,19 +476,19 @@ MODGL2=CALC_ELEM( reuse=MODGL2,     MODELE=MODELE1,
 
 #
 TEST_RESU(RESU=(
-          _F( RESULTAT = MODGL1, PARA = 'FREQ', 
+          _F( RESULTAT = MODGL1, PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
                 CRITERE = 'RELATIF', PRECISION = 1.E-2, 
                 NUME_ORDRE = 4,  VALE = 33.7119),
-          _F( RESULTAT = MODGL1, PARA = 'FREQ', 
+          _F( RESULTAT = MODGL1, PARA = 'FREQ', REFERENCE = 'ANALYTIQUE', 
                 CRITERE = 'RELATIF', PRECISION = 1.E-2, 
                 NUME_ORDRE = 5,  VALE = 49.4558),
-          _F( RESULTAT = MODGL1, PARA = 'FREQ', 
+          _F( RESULTAT = MODGL1, PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
                 CRITERE = 'RELATIF', PRECISION = 1.E-2, 
                 NUME_ORDRE = 6,  VALE = 61.0513),
-          _F( RESULTAT = MODGL1, PARA = 'FREQ', 
+          _F( RESULTAT = MODGL1, PARA = 'FREQ', REFERENCE = 'ANALYTIQUE', 
                CRITERE = 'RELATIF', PRECISION = 1.E-2, 
                 NUME_ORDRE = 7,  VALE = 87.5160),
-          _F( RESULTAT = MODGL1, PARA = 'FREQ', 
+          _F( RESULTAT = MODGL1, PARA = 'FREQ', REFERENCE = 'ANALYTIQUE', 
                CRITERE = 'RELATIF', PRECISION = 1.E-2, 
                 NUME_ORDRE = 8,  VALE = 87.5160)))
 

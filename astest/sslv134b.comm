@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+# MODIF  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,7 +71,7 @@ CHAMDEPL=CALC_ELEM( reuse=CHAMDEPL,       MODELE=MO,
                          RESULTAT=CHAMDEPL )
 
 FISS=DEFI_FOND_FISS(    MAILLAGE=MA,
-                          FOND=_F(  GROUP_MA = 'LFF1',
+                          FOND_FISS=_F(  GROUP_MA = 'LFF1',
                                  GROUP_NO_ORIG = 'NFF1',
                                  GROUP_NO_EXTR = 'NFF2'),
                           LEVRE_SUP=_F(  GROUP_MA = 'LEVINFS'),

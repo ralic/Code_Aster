@@ -1,9 +1,9 @@
-        SUBROUTINE CVMINI (TYPESS, ESSAI, MOD,IMAT,NMAT,MATERF,TEMPD,
+        SUBROUTINE CVMINI (TYPESS, ESSAI, MOD, NMAT, MATERF,
      1                      TIMED,  TIMEF, YD, EPSD,DEPS,DY)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/08/2002   AUTEUR F6BHHBO P.DEBONNIERES 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,10 +30,8 @@ C          AVEC         Y =  ( SIG  X1  X2  P  R  Q  XXI  (EPS3) )
 C       ----------------------------------------------------------------
 C       IN  ESSAI  :  VALEUR DE LA SOLUTION D ESSAI
 C           MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           TEMPD  :  TEMPERATURE A T
 C           TIMED  :  TEMPS A T
 C           TIMEF  :  TEMPS A T+DT
 C           YD     :  VARIABLES A T   =  ( SIG X1 X2 P R (EPS3) )
@@ -49,7 +47,7 @@ C       OUT DY     :  SOLUTION ESSAI  = ( DSIG DX1 DX2 DP DR (DEPS3))
 C                            OU  ( SIG  X1  X2  P  R  Q  XXI  (EPS3))
 C       ----------------------------------------------------------------
 C
-        INTEGER         IMAT    , NDT    , NDI , TYPESS , NMAT
+        INTEGER         NDT    , NDI , TYPESS , NMAT
         INTEGER         ITMAX   , ICOMP
         INTEGER         IOPTIO  , IDNR  , NOPT
 C
@@ -63,7 +61,7 @@ C
         REAL*8          R         , DR      , Q      , DQ
 C
         REAL*8          TIMED     , TIMEF   , DT    , SEUIL
-        REAL*8          MATERF(NMAT,2)      , TEMPD
+        REAL*8          MATERF(NMAT,2)
 C
         REAL*8          K0   , AK  , N   , ALP
         REAL*8          B    , MR  , GR   , MU  , QM , Q0
@@ -142,8 +140,7 @@ C
             CCIN = AI + (1.D0-AI) * EXP( -B*P )
             DT    = TIMEF - TIMED
 C - DP
-            CALL CVMCVX ( IMAT, NMAT, MATERF, TEMPD,
-     1                    SIG, YD(NDT+1), SEUIL)
+            CALL CVMCVX ( NMAT, MATERF,SIG, YD(NDT+1), SEUIL)
             IF ( SEUIL .LE. 0.D0)THEN
               DP   = 0.D0
               DO 1, I=1,6

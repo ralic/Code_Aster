@@ -3,7 +3,7 @@
      &                 TREF,VIM,EFFNOP,VIP,KLV,FONO)
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/11/1999   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 02/12/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,17 +116,21 @@ C
 C
 C --- CALCUL DU COEFFICIENT NON NUL DE LA MATRICE TANGENTE
 C
-      IF ( OPTION(1:14) .EQ. 'RIGI_MECA_TANG'.OR.
+      IF ( OPTION(1:10) .EQ. 'RIGI_MECA_'.OR.
      &     OPTION(1:9)  .EQ. 'FULL_MECA'         ) THEN
 C
-         IF ( OPTION(1:14) .EQ. 'RIGI_MECA_TANG' ) THEN
-           XRIG= DSDEM*A/XLONG0
+         IF (OPTION(11:14).EQ.'ELAS') THEN
+           XRIG=E*A/XLONG0
          ELSE
-           XRIG= DSDEP*A/XLONG0
+           IF ( OPTION(1:14) .EQ. 'RIGI_MECA_TANG' ) THEN
+             XRIG= DSDEM*A/XLONG0
+           ELSE
+             XRIG= DSDEP*A/XLONG0
+           ENDIF
          ENDIF
-            KLV(1)  =  XRIG
-            KLV(7)  = -XRIG
-            KLV(10)  = XRIG
+         KLV(1)  =  XRIG
+         KLV(7)  = -XRIG
+         KLV(10)  = XRIG
       ENDIF
 C
 C --- CALCUL DES FORCES NODALES

@@ -1,6 +1,6 @@
-      SUBROUTINE ULDEFI( UNIT, NAME, TYPF, ACCES, AUTOR )
+      SUBROUTINE ULDEFI( UNIT, FICNOM, DDNOM, TYPF, ACCES, AUTOR )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/10/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF UTILITAI  DATE 29/01/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,17 +20,19 @@ C ======================================================================
 C RESPONSABLE D6BHHJP J.P.LEFEBVRE
       IMPLICIT NONE
       INTEGER            UNIT
-      CHARACTER*(*)            NAME, TYPF, ACCES, AUTOR
+      CHARACTER*(*)            FICNOM, DDNOM, TYPF, ACCES, AUTOR
 C     ------------------------------------------------------------------
 C     DEFINITION DE LA CORRESPONDANCE UN NOM UTILISATEUR ET UN NUMERO
 C     D'UNITE LOGIQUE
 C     ------------------------------------------------------------------
-C IN  UNIT   : IS   : NUMERO D'UNITE LOGIQUE
-C IN  NAME   : CH*16 : NOM ASSOCIE AU NUMERO D'UNITE LOGIQUE UNIT
-C IN  TYPF   : CH*1 : A -> ASCII, B -> BINAIRE, L -> LIBRE
+C IN  UNIT   : IS    : NUMERO D'UNITE LOGIQUE
+C IN  FICNOM : CH*(*): NOM DU FICHIER ASSOCIE (FICHIER DE TYPE LIBRE
+C                      UNIQUEMENT)
+C IN  DDNOM  : CH*16 : NOM ASSOCIE AU NUMERO D'UNITE LOGIQUE UNIT
+C IN  TYPF   : CH*1  : A -> ASCII, B -> BINAIRE, L -> LIBRE
 C IN  ACCES  : N -> NEW, O -> OLD, A -> APPEND
 C IN  AUTOR  : O-> AUTORISE A LA MODIFICATION, N-> N'AUTORISE PAS
-
+C
 C     ------------------------------------------------------------------
 C     CONVENTION : SI UNIT <= 0 ALORS ON RETIRE LE NOM "NAME" DES TABLES
 C     ------------------------------------------------------------------
@@ -61,8 +63,8 @@ C
       COMMON/ ASGFI1 / FIRST, UNITFI      , NBFILE
       COMMON/ ASGFI2 / NAMEFI,DDNAME,TYPEFI,ACCEFI,ETATFI,MODIFI
 C
-      CHARACTER*16     NAME16
-      CHARACTER*8      K8B
+      CHARACTER*16     NAME16,NOFI
+      CHARACTER*8      K8B 
       CHARACTER*1      K1TYP,K1ACC,K1AUT
       INTEGER          IFILE,ILIBRE
 C     ------------------------------------------------------------------
@@ -70,7 +72,7 @@ C
 C     --- INITIALISATION (SI NECESSAIRE) ---
       IF ( FIRST .NE. 17111990 ) CALL ULINIT
 C
-      NAME16 = NAME
+      NAME16 = DDNOM
       K1TYP  = TYPF
       K1ACC  = ACCES
       K1AUT  = AUTOR
@@ -82,6 +84,17 @@ C       --- ON RETIRE LE NAMEFI DE LA TABLE ----
             IF ( MODIFI(IFILE) .EQ. 'O' ) THEN   
               IF ( ETATFI(IFILE) .EQ. 'O' ) THEN   
                 CLOSE ( UNIT=-UNIT )
+              ENDIF
+              K1ACC = ACCEFI(IFILE)
+              IF ( TYPEFI(IFILE)(1:1).EQ.'L' .AND. K1ACC.EQ.'N' ) THEN
+C
+C     DANS LE CAS D'UN FICHIER DE TYPE LIBRE (PAR EXEMPLE MED) ON  
+C     RECOPIE fort.xx DANS LE FICHIER DE NOM NAMEFI S'IL EST != ' '
+C
+                IF ( NAMEFI(IFILE) .NE. ' ') THEN
+                  CALL CODENT ( -UNIT, 'G', K8B )
+                  CALL CPFILE('M','fort.'//K8B,NAMEFI(IFILE))
+                ENDIF
               ENDIF
               NAMEFI(IFILE) = ' '
               DDNAME(IFILE) = ' '
@@ -148,9 +161,21 @@ C           --- RECHERCHE DE LA DERNIERE PLACE LIBRE ---
             ENDIF 
             ILIBRE = NBFILE
           ENDIF
-C  
+
           CALL CODENT ( UNIT, 'G', K8B )
-          NAMEFI(ILIBRE) = 'fort.'//K8B
+          IF ( K1TYP .EQ. 'L' ) THEN
+C
+C     DANS LE CAS D'UN FICHIER DE TYPE LIBRE (PAR EXEMPLE MED) ON  
+C     RECOPIE LE FICHIER DE NOM FICNOM DANS fort.xx 
+C
+            NAMEFI(ILIBRE) = FICNOM
+            IF ( K1ACC .EQ. 'O' ) THEN
+              CALL CPFILE('M',FICNOM,'fort.'//K8B)
+            ENDIF
+          ELSE
+            NAMEFI(ILIBRE) = 'fort.'//K8B
+          ENDIF
+C  
           DDNAME(ILIBRE) = NAME16  
           UNITFI(ILIBRE) = UNIT
           TYPEFI(ILIBRE) = K1TYP

@@ -4,7 +4,7 @@
       REAL*8             XYZG1(3,*), RHO, EPAIS, MASS, CDG(*), INERTI(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/01/97   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,13 +25,11 @@ C     CALCULE LE CDG ET LA MASSE D'UNE MAILLE TRIA ET QUAD
 C
 C     ------------------------------------------------------------------
       CHARACTER*8  ALIAS
-      CHARACTER*24 CHVAL,CHCTE
       REAL*8       JAC,NX,NY,NZ,SX(9,9),SY(9,9),SZ(9,9),ZERO
       REAL*8       PGL(3,3), XYZL1(3,4)
       REAL*8       XYZG(3,8), XYZL(3,8)
       REAL*8       IGXX, IGYY, IGXY, MATINE(6), IGZZ
       REAL*8       INERT0(6)
-      INTEGER      NBPG(10)
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
@@ -72,27 +70,12 @@ C --- RECUPERATION DES DONNEES RELATIVES A L'INTEGRATION DES ELEMENTS
 C --- DE TYPE 'FACE6' ET 'FACE8' :
 C     -------------------------
       IF ( NNOE .EQ. 3 ) THEN
-         ALIAS = 'FACE6'
+         ALIAS = 'TR6'
       ELSEIF( NNOE .EQ. 4 ) THEN
-         ALIAS = 'FACE8'
+         ALIAS = 'QU8'
       ENDIF
-C
-      CHCTE = '&INEL.'//ALIAS//'.CARACTE'
-      CALL JEVETE(CHCTE,'L',JIN)
-      NDIM = ZI(JIN+1-1)
-      NNO = ZI(JIN+2-1)
-      NBFPG = ZI(JIN+3-1)
-      DO 10 I = 1,NBFPG
-         NBPG(I) = ZI(JIN+3-1+I)
-  10  CONTINUE
-      NPG1 = NBPG(1)
-C
-      CHVAL = '&INEL.'//ALIAS//'.FFORMES'
-      CALL JEVETE(CHVAL,'L',JVAL)
-C
-      IPOIDS = JVAL + (NDIM+1)*NNO*NNO
-      IVF    = IPOIDS + NPG1
-      IDFDX  = IVF    + NPG1 * NNO
+      CALL ELREF4 ( ALIAS, 'RIGI', NDIM, NNO, NNOS, NPG1, IPOIDS, IVF,
+     &              IDFDX, JGANO )
       IDFDY  = IDFDX  + 1
 C
       ROEP = RHO * EPAIS

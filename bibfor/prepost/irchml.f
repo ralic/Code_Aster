@@ -11,7 +11,7 @@ C
      +                  NUMORD,NCMP,NUCMP(*),NIVE
       LOGICAL           LCOR,LSUP,LINF,LMAX,LMIN,LRESU
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 02/12/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -217,14 +217,14 @@ C
         IF (ITYPE.EQ.1) THEN
           CALL IRCERL(IFI,NBEL,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
      +       ZR(JCELV),ZK8(IAD),ZK8(JNOEL),LOC,ZI(JCELD),
-     +       ZI(JCNX),ZI(JPNT),ZK8(JNMN),NUMORD,NBCMPT,ZI(JNCMP),
+     +       ZI(JCNX),ZI(JPNT),ZK8(JNMN),NBCMPT,ZI(JNCMP),
      +       NBNOT,NUMNOE,NBMAC,ZI(JLISTE),
      +       LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,
      +       LCOR,NDIM,ZR(JCOOR),NOLILI(1:19), FORMR, NCMP,NUCMP )
         ELSE IF (ITYPE.EQ.2) THEN
           CALL IRCECL(IFI,NBEL,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
      +       ZC(JCELV),ZK8(IAD),ZK8(JNOEL),LOC,ZI(JCELD),
-     +       ZI(JCNX),ZI(JPNT),ZK8(JNMN),NUMORD,NBCMPT,ZI(JNCMP),
+     +       ZI(JCNX),ZI(JPNT),ZK8(JNMN),NBCMPT,ZI(JNCMP),
      +       NBNOT,NUMNOE,NBMAC,ZI(JLISTE),
      +       LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,
      +       LCOR,NDIM,ZR(JCOOR),NOLILI(1:19), FORMR, NCMP,NUCMP )
@@ -252,14 +252,14 @@ C ---------------------------------------------------------------------
          CALL JELIRA('&&IRADHS.PERMUTA','LONMAX',LON1,K1BID)
          MAXNOD=ZI(JPERM-1+LON1)
          IF (ITYPE.EQ.1) THEN
-            CALL IRCERS(IFI,NBEL,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
+            CALL IRCERS(IFI,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
      +                  ZR(JCELV),NOMGD,ZK8(IAD),TITRE,ZK8(JNOEL),LOC,
      +                  ZI(JCELD),ZI(JNBNM),ZI(JPERM),MAXNOD,
      +                  ZI(JTYPM),NOMSD,NOMSYM,NUMORD,NBMAT,NUMMAI,
-     +                  LMASU,NCMP,NUCMP)
+     +                  LMASU,NCMP,NUCMP,NBCMP,ZI(JNCMP),NOMCMP)
          ELSE IF (ITYPE.EQ.2) THEN
-            CALL IRCECS(IFI,NBEL,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
-     +                  ZC(JCELV),NOMGD,ZK8(IAD),TITRE,ZK8(JNOEL),LOC,
+            CALL IRCECS(IFI,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
+     +                  ZC(JCELV),ZK8(IAD),TITRE,ZK8(JNOEL),LOC,
      +                  ZI(JCELD),ZI(JNBNM),ZI(JPERM),MAXNOD,
      +                  ZI(JTYPM),NOMSD,NOMSYM,NUMORD,NBMAT,NUMMAI,
      +                  LMASU,NCMP,NUCMP)
@@ -284,10 +284,10 @@ C ---------------------------------------------------------------------
          IF(ITYPE.EQ.1) THEN
            CALL JEVEUO(NOMMA//'.TYPMAIL','L',JTYPM)
            IF (LOC.EQ.'ELNO') THEN
-             CALL IRCECA(IFI,NBEL,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
-     +                  ZR(JCELV),NOMGD,ZK8(IAD),ZK8(JNOEL),
-     +                  ZI(JCELD),ZI(JNBNM),MAXNOD,ZI(JTYPM),NOMSD,
-     +                  NOMSYM,NBMAT,NUMMAI,LRESU,NBCMP,NOMCMP,IMOD,
+             CALL IRCECA(IFI,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
+     +                  ZR(JCELV),NOMGD,ZK8(IAD),
+     +                  ZI(JCELD),ZI(JNBNM),ZI(JTYPM),
+     +                  NOMSYM,NBMAT,LRESU,NBCMP,NOMCMP,IMOD,
      +                  NCMP,NUCMP,NIVE)
            ELSEIF (LOC.EQ.'ELGA') THEN
              CALL UTMESS('A','IRCHML','ON NE SAIT PAS ECRIRE DES '

@@ -6,7 +6,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 05/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF POSTRELE  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C
       MAXITR = 10
       ZERO   = 0.0D0
       UN     = 1.0D0
-      CALL I3AFK2(EPSI,S,FK,IRET)
+      CALL I3AFK2(S,FK,IRET)
       A = FK(1,1)
       B = FK(2,1)
       C = FK(3,1)

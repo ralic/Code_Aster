@@ -1,9 +1,8 @@
       SUBROUTINE OP0028(IER)
-      IMPLICIT   NONE
-      INTEGER    IER
+C RESPONSABLE CAMBIER S.CAMBIER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 05/11/2003   AUTEUR CAMBIER S.CAMBIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,13 +20,16 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C
-C     GENE_VARI_ALEA
+C     GENE_VARI_ALEA : GENERATION DE VARIABLE ALEATOIRE 
 C
 C ----------------------------------------------------------------------
-      INTEGER      N1, IBID
+      IMPLICIT   NONE
+      INTEGER    IER
+
+      INTEGER      N1, IBID, JUMP
       REAL*8       MOYEN, A, B, DELTA, GEVAT1, GEVAT2, GEVAT3, SUM
       COMPLEX*16   CBID
-      CHARACTER*8  K8B, RESULT, INIT
+      CHARACTER*8  K8B, RESULT
       CHARACTER*16 NOMCMD, CONCEP, CTYPE
 C DEB ------------------------------------------------------------------
 C
@@ -40,18 +42,17 @@ C
 C
       CALL GETVTX ( ' ', 'TYPE'    , 1,1,1, CTYPE, N1 )
       CALL GETVR8 ( ' ', 'VALE_MOY', 1,1,1, MOYEN, N1 )
-      CALL GETVR8 ( ' ', 'DELTA'   , 1,1,1, DELTA, N1 )
-      CALL GETVR8 ( ' ', 'A'       , 1,1,1, A    , N1 )
-      CALL GETVR8 ( ' ', 'B'       , 1,1,1, B    , N1 )
-      CALL GETVTX ( ' ', 'INIT'    , 1,1,1, INIT , N1 ) 
-      
-      IF (INIT(1:3).EQ.'OUI') CALL INIRAN()
+      CALL GETVR8 ( ' ', 'BORNE_INF'       , 1,1,1, A    , N1 )
+
+      CALL GETVIS ( ' ', 'INIT_ALEA'    , 0,1,1, JUMP , N1 )       
+      IF (N1 .NE. 0) CALL INIRAN(JUMP)
 C
       CALL TBCRSD ( RESULT, 'G')
       CALL TBAJPA ( RESULT, 1, 'NBRE', 'R' )
 C
       IF ( CTYPE(1:12) .EQ. 'EXP_TRONQUEE' ) THEN
 C                            
+         CALL GETVR8 ( ' ', 'BORNE_SUP'       , 1,1,1, B    , N1 )
          SUM = GEVAT1(A,B,MOYEN)
 C
       ELSEIF ( CTYPE(1:13) .EQ. 'EXPONENTIELLE' ) THEN
@@ -60,7 +61,8 @@ C
 C
       ELSEIF ( CTYPE(1:5) .EQ.'GAMMA' ) THEN
 C
-         SUM = GEVAT3(A,MOYEN,DELTA) 
+        CALL GETVR8 ( ' ', 'COEF_VAR'   , 1,1,1, DELTA, N1 )
+        SUM = GEVAT3(A,MOYEN,DELTA) 
 C
       ENDIF
 C

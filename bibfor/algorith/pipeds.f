@@ -1,7 +1,7 @@
       SUBROUTINE PIPEDS(NDIM, TYPMOD, TAU,IMATE, SIGM, VIM,EPSM,
      &                  EPSPC, EPSDC, ETAMIN,ETAMAX,A0, A1,A2,A3,ETAS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2003   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,12 +77,7 @@ C -- OPTION ET MODELISATION
 
 C -- CAS DE L'ENDOMMAGEMENT SATURE
       IF (NINT(VIM(2)) .EQ. 2) THEN
-        A0 = 0.D0
-        A1 = 0.D0
-        A2 = R8VIDE()
-        A3 = R8VIDE()
-        ETAS = R8VIDE()
-        GOTO 9999
+        GOTO 666
       END IF
 
 C -- LECTURE DES CARACTERISTIQUES THERMOELASTIQUES
@@ -219,8 +214,7 @@ C -- DIAGONALISATION AVEC TRI EN VAL RELATIVE CROISSANT
         IF (.NOT.((CRIT1.GT.0.D0).AND.(CRITP1.GT.0.D0))) THEN
           IF (CRIT1.LT.0.D0) THEN
             IF (NSOL.EQ.1) THEN
-              NSOL=0
-              ETA=ETAMIN
+              GOTO 666
             ELSE
               NSOL=-1
             ENDIF
@@ -326,7 +320,7 @@ C -- CAS A UNE SOLUTION
         Z(3)=Z(1)
         DO 200 ITER = 1, NITMAX
           IF (ABS(Y(3)) .LE. EPSTOL*SEUREL*TAU) GOTO 201
-          IF (MOD(ITER,5) .NE. 0) THEN
+          IF (MOD(ITER,3) .NE. 0) THEN
             CALL ZEROG2(X,Y,Z,ITER)
           ELSE
             CALL ZEROD2(X,Y,Z)
@@ -334,7 +328,8 @@ C -- CAS A UNE SOLUTION
           CALL CRITET(EPSP,EPSD,X(3),LAMBDA,DEUXMU,FPD,SEUIL,
      &             Y(3),Z(3))
 200     CONTINUE
-        CALL UTMESS('F','PIPEDS-1 ','NOMBRE MAX D''ITERATIONS ATTEINT')
+C        CALL UTMESS('F','PIPEDS-1 ','NOMBRE MAX D''ITERATIONS ATTEINT')
+        GOTO 666
 201     CONTINUE
 C        write (6,*) 'ITER-3 = ',ITER
         ETA=X(3)
@@ -352,12 +347,7 @@ C    ET ON RACCOURCIT L'INTERVALLE EN UTILISANT LA DERIVEE
 C     TEST D'ARRET POUR UN MINIMUM AU-DESSUS DE 0
           ITER=ITER+1
           IF (ITER.GT.NITMAX) THEN
-C            write (6,*) 'ETAMIN = ',ETAMIN,' ; ETAMAX = ',ETAMAX
-C            write (6,*) 'ETA1 = ',ETA1,' ; CRIT1 = ',CRIT1,
-C     &                     ' ; CRITP1',CRITP1
-C            write (6,*) 'ETA2 = ',ETA2,' ; CRIT2 = ',CRIT2,
-C     &                     ' ; CRITP2',CRITP2
-            CALL UTMESS('F','PIPEDS-0 ','NOMBRE MAX ITERATIONS ATTEINT')
+            GOTO 666
           ENDIF
           IF ((ABS(CRITP1*(ETA2-ETA1)).LT.EPSTOL*SEUREL*TAU).AND.
      &            (ABS(CRITP2*(ETA2-ETA1)).LT.EPSTOL*SEUREL*TAU)) THEN
@@ -414,7 +404,7 @@ C       write (6,*) 'ITER-4 = ',ITER
           Z(3)=Z(2)
           DO 400 ITER = 1, NITMAX
             IF (ABS(Y(3)) .LE. EPSTOL*SEUREL*TAU) GOTO 401
-            IF (MOD(ITER,5) .NE. 0) THEN
+            IF (MOD(ITER,3) .NE. 0) THEN
               CALL ZEROG2(X,Y,Z,ITER)
             ELSE
               CALL ZEROD2(X,Y,Z)
@@ -422,7 +412,8 @@ C       write (6,*) 'ITER-4 = ',ITER
             CALL CRITET(EPSP,EPSD,X(3),LAMBDA,DEUXMU,FPD,SEUIL,
      &             Y(3),Z(3))
 400       CONTINUE
-          CALL UTMESS('F','PIPEDS-2 ','NOMBRE MAX ITERATIONS ATTEINT')
+          GOTO 666
+C          CALL UTMESS('F','PIPEDS-2 ','NOMBRE MAX ITERATIONS ATTEINT')
 401       CONTINUE
 C          write (6,*) 'ITER-5 = ',ITER
           ETA1=X(3)
@@ -438,7 +429,7 @@ C          write (6,*) 'ITER-5 = ',ITER
           Z(3)=Z(2)
           DO 500 ITER = 1, NITMAX
             IF (ABS(Y(3)) .LE. EPSTOL*SEUREL*TAU) GOTO 501
-            IF (MOD(ITER,5) .NE. 0) THEN
+            IF (MOD(ITER,3) .NE. 0) THEN
               CALL ZEROG2(X,Y,Z,ITER)
             ELSE
               CALL ZEROD2(X,Y,Z)
@@ -446,7 +437,8 @@ C          write (6,*) 'ITER-5 = ',ITER
             CALL CRITET(EPSP,EPSD,X(3),LAMBDA,DEUXMU,FPD,SEUIL,
      &             Y(3),Z(3))
 500       CONTINUE
-          CALL UTMESS('F','PIPEDS-3 ','NOMBRE MAX ITERATIONS ATTEINT')
+          GOTO 666
+C          CALL UTMESS('F','PIPEDS-3 ','NOMBRE MAX ITERATIONS ATTEINT')
 501       CONTINUE
 C          write (6,*) 'ITER-5b = ',ITER
           ETA2=X(3)
@@ -457,10 +449,10 @@ C          write (6,*) 'ITER-5b = ',ITER
       ENDIF
          
       IF (NSOL.EQ.0) THEN
-        ETAS=ETA
-        CALL CRITET(EPSP,EPSD,ETA,LAMBDA,DEUXMU,FPD,SEUILA,
-     &             CRIT1,CRITP)
-        A0=CRIT1/SEUREL
+        ETAS=1.D0
+C        CALL CRITET(EPSP,EPSD,ETA,LAMBDA,DEUXMU,FPD,SEUILA,
+C     &             CRIT1,CRITP)
+C        A0=CRIT1/SEUREL
       ELSE
         SEUIL=SEUILA
         ETAS=R8VIDE()
@@ -492,5 +484,15 @@ C ======================================================================
           A3=R8VIDE()
         ENDIF
       ENDIF
+      GOTO 9999
+ 
+ 666  CONTINUE
+      A0 = 0.D0
+      A1 = 0.D0
+      A2 = R8VIDE()
+      A3 = R8VIDE()
+      ETAS = R8VIDE()
+     
+      
  9999 CONTINUE
       END

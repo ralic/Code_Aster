@@ -6,7 +6,7 @@
       CHARACTER*19                SORTIE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/03/2003   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER        LF, L, K, LAMOR, NBFREQ, LFREQ,NBVALU
       INTEGER        I,NBVAL,LTINI,LTFIN,LFINI,LFFIN,LVAR,NS
       INTEGER        NBMAX, NBPTS,IBID,JOPT,LPRO, NBOPT    
-      REAL*8         COEF, RBID, Q0, V0, NORME, AMOR, VALIND(14)
+      REAL*8         COEF, RBID, NORME, AMOR, VALIND(14)
       REAL*8         TINI, TFIN, BINF, BSUP, FINI, FFIN, EPSI, RMS,
      +               AMAX,VMAX,DMAX, ARIAS, PDES, CAV, DPHFOR,PESA, 
      +               ISPEC,VALINF, VALSUP,ASURV,DEUXG,PI,R8PI
@@ -248,7 +248,7 @@ C
 C          --- INTEGRATION D'UN SIGNAL TEMPOREL ---
 C
 C             --- FONCTION A INTEGRER ---
-            CALL FOVECA(NOMOPE,1,NOMFON,IER)
+            CALL FOVECA(NOMOPE,NOMFON,IER)
             IF (IER .NE. 0 ) GOTO 9999
 C
             CALL GETVR8(NOMOPE,'COEF',1,1,1,COEF,L)
@@ -361,12 +361,10 @@ C
 C        --- SPECTRE D'OSCILLATEUR DU SIGNAL TEMPOREL ---
 C
 C              --- FONCTION A TRANSFORMER ---
-            CALL FOVECA(NOMOPE,1,NOMFON,IER)
+            CALL FOVECA(NOMOPE,NOMFON,IER)
             IF (IER .NE. 0 ) GOTO 9999
 C
 C              --- CONDITIONS INITIALES ---
-            Q0 = 0.0D0
-            V0 = 0.0D0
 C
             CALL UTMESS('I','INTENSITE SPECTRALE','ON CALCULE'
      &      //' LE SPECTRE DE REPONSE D OSCILLATEUR EN VITESSE,'
@@ -374,7 +372,7 @@ C
 C
 C           --- CALCUL DU SPECTRE D'OSCILLATEUR ---
             CALL FOCASO(NOMFON,'NIGAM',1,AMOR,NBFREQ,ZR(LFREQ),
-     +                  NORME,Q0,V0,'VITE','ACCE',SORTIE,BASE)
+     +                  NORME,'VITE','ACCE',SORTIE,BASE)
 C
 C
 C           --- SRO A ETUDIER : "SORTIE"            ---

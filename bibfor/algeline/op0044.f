@@ -1,7 +1,7 @@
       SUBROUTINE OP0044(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,7 +108,7 @@ C VARIABLES LOCALES
       REAL*8 TOLSEP, TOLAJU, TOLV, ERRF, FCORIG, OMECOR, PRECDC, OMEG,
      &  DET1, DET2, FR, AM, ZAM(3), ZFR(3), SEUIL, FMIN, FMAX, R8DEPI,
      &  OMEGA2, OMGMIN, OMGMAX, RBID, DEPI, R8VIDE, UNDF
-      CHARACTER*1 TYPE, CTYP, TYPER
+      CHARACTER*1 CTYP, TYPER
       CHARACTER*8  OPTIOV, MODES, KNEGA
       CHARACTER*16 NOMCMD, TYPCON, OPTIOM, OPTIOF, OPTIOR, TYPRES
       CHARACTER*19 MASSE, RAIDE, AMOR, DYNAM
@@ -294,8 +294,6 @@ C     --- VERIFICATION DES "REFE" ---
 
 C     --- CREATION DE LA MATRICE DYNAMIQUE ---
       TYPER = 'R'
-      TYPE  = 'R'
-      IF (LAMOR.NE.0) TYPE = 'C'
       DYNAM = '&&OP0044.DYNAMIQUE'
       CALL MTDEFS(DYNAM,RAIDE,'V',TYPER)
 
@@ -388,7 +386,7 @@ C     ------------------------------------------------------------------
       CALL WKVECT('&&OP0044.POSITION.DDL' ,'V V I',NEQ*MXDDL,LDDL )
       CALL WKVECT('&&OP0044.DDL.BLOQ.CINE','V V I',NEQ      ,LPROD)
       CALL VPDDL(RAIDE, MASSE, NEQ, NBLAGR, NBCINE, NEQACT, ZI(LDDL),
-     &           ZI(LPROD), IERD, TYPE)
+     &           ZI(LPROD), IERD)
       IF (IERD .NE. 0) GOTO 9999
 
 C     ==================================================================

@@ -1,6 +1,8 @@
       SUBROUTINE TE0032 ( OPTION , NOMTE )
+      IMPLICIT NONE
+      CHARACTER*16        OPTION , NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,9 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
 C     -----------------------------------------------------------------
-      CHARACTER*16        OPTION , NOMTE
 C     IN  OPTION : NOM DE L'OPTION A CALCULER
 C     IN  NOMTE  : NOM DU TYPE_ELEMENT
 C     -----------------------------------------------------------------
@@ -46,29 +46,27 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      INTEGER      NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO,LZR
+      INTEGER      I, J, IER, IPLAN, JGEOM, JCOQU, JVECG, JPRES, ITEMPS
+      INTEGER      IADZI, IAZK24, LPESA
       REAL*8       PGL(3,3) , XYZL(3,4) , PGLO(3)  , PLOC(3)
       REAL*8       VECL(24) , FOR(6,4)  , RHO      , EPAIS
-      REAL*8       PCL , PCT , COEFRO
-      REAL*8       VALPAR(4), DIST , EXCENT , PR , UNDEMI
+      REAL*8       PCL , PCT , COEFRO, UNDEMI
+      REAL*8       VALPAR(4), DIST , EXCENT , PR
       LOGICAL      GLOBAL, LOCAPR
-      CHARACTER*8  NOMPAR(4), MOPLAN, NOMAIL,ELREFE
-      CHARACTER*24 DESI , DESR
+      CHARACTER*8  NOMPAR(4), MOPLAN, NOMAIL
 C DEB ------------------------------------------------------------------
-      CALL ELREF1(ELREFE)
+C
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
+C
       UNDEMI = 0.5 D0
       IPLAN  = 0
 C
-
       CALL JEVECH ('PGEOMER', 'L', JGEOM)
       CALL JEVECH ('PCACOQU', 'L', JCOQU)
       CALL JEVECH ('PVECTUR', 'E', JVECG)
 C
-      DESI = '&INEL.'//ELREFE//'.DESI'
-      CALL JEVETE(DESI,'L',LZI)
-      NNO = ZI(LZI)
-C
-      DESR = '&INEL.'//ELREFE//'.DESR'
-      CALL JEVETE(DESR,'L',LZR)
+      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR','L',LZR)
 C
       IF (     NNO .EQ. 3) THEN
          CALL DXTPGL ( ZR(JGEOM) , PGL )
@@ -267,21 +265,12 @@ C
   270    CONTINUE
       ENDIF
 C
-      IF (     NOMTE(1:8) .EQ. 'MEDKTR3 ' ) THEN
-         CALL DXTFOR ( 'MEDKTR3 ' , GLOBAL , XYZL , PGL , FOR , VECL )
-C
-      ELSE IF( NOMTE(1:8) .EQ. 'MEGRDKT ' ) THEN
-         CALL DXTFOR ( 'MEGRDKT ' , GLOBAL , XYZL , PGL , FOR , VECL )
-C
-      ELSE IF( NOMTE(1:8) .EQ. 'MEDSTR3 ' ) THEN
-         CALL DXTFOR ( 'MEDSTR3 ' , GLOBAL , XYZL , PGL , FOR , VECL )
-      ELSE IF( NOMTE(1:8) .EQ. 'MEDKQU4 ' ) THEN
-         CALL DXQFOR ( 'MEDKQU4 ' , GLOBAL , XYZL , PGL , FOR , VECL )
-      ELSE IF( NOMTE(1:8) .EQ. 'MEDSQU4 ' ) THEN
-         CALL DXQFOR ( 'MEDSQU4 ' , GLOBAL , XYZL , PGL , FOR , VECL )
-      ELSE IF( NOMTE(1:8) .EQ. 'MEQ4QU4 ' ) THEN
-         CALL DXQFOR ( 'MEQ4QU4 ' , GLOBAL , XYZL , PGL , FOR , VECL )
+      IF (     NNO .EQ. 3 ) THEN
+         CALL DXTFOR ( NOMTE(1:8) , GLOBAL , XYZL , PGL , FOR , VECL )
+      ELSE IF( NNO .EQ. 4 ) THEN
+         CALL DXQFOR ( NOMTE(1:8) , GLOBAL , XYZL , PGL , FOR , VECL )
       ENDIF
+
       CALL UTPVLG ( NNO , 6 , PGL , VECL , ZR(JVECG) )
 C
  9999 CONTINUE

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER IER
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 30/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,13 +45,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
-      CHARACTER*6 NOMPRO
-      PARAMETER (NOMPRO='OP0038')
 
-      REAL*8 TIME,ALPHA,FREQ,COEF
-      CHARACTER*1 BASE,TYPCOE
+      REAL*8 TIME,ALPHA,COEF
+      CHARACTER*1 BASE
       CHARACTER*4 CTYP
-      CHARACTER*8 K8B,MODELE,CARA,DEPL,CHAM,TEMP,NOMA,VITE,PLAN
+      CHARACTER*8 K8B,MODELE,CARA,CHAM,TEMP,NOMA,PLAN
       CHARACTER*8 K8BID
       CHARACTER*14 NUME
       CHARACTER*16 TYPE,OPER,OPTION,OPT2
@@ -65,87 +63,38 @@ C DEB ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
       BASE = 'G'
-      TYPCOE = ' '
-      ZERO = 0.0D0
       COEF = 1.D0
       CCOEF = (1.D0,1.D0)
-      RPLAN = ZERO
       CHFREQ = ' '
       K24B = ' '
 
 
       CALL GETRES(CHELEM,TYPE,OPER)
+
+      CALL GETVID(' ','ACCE',0,1,0,OPTION,N1)
+      IF (N1.NE.0) THEN
+         CALL UTMESS('A','CALC_CHAM_ELEM',
+     &   'POUR PRENDRE EN COMPTE LES TERMES D''INERTIE IL EST PREFER'//
+     &   'ABLE D''UTILISER LA COMMANDE "CALC_ELEM". LE MOT CLE "ACCE"'//
+     &   ' N''EST PAS TRAITE ET LES RESULTATS RISQUENT D''ETRE FAUX.')
+      ENDIF
+
       KCHA = '&&OP0038.CHARGES'
       CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP)
       CALL JEVEUO(KCHA,'E',JCHA)
 
       CALL EXLIMA(' ','G',MODELE,CHELEM,LIGREL)
 
-      FREQ = 1.D0
       EXITIM = .FALSE.
       PRESS = ' '
       CALL GETVTX(' ','OPTION',0,1,1,OPTION,N1)
-      CALL GETVID(' ','DEPL',0,1,1,DEPL,N2)
-      CALL GETVID(' ','VITE',0,1,1,VITE,NV2)
       CALL GETVID(' ','TEMP',0,1,1,TEMP,N3)
       CALL GETVID(' ','PRES',0,1,1,PRESS,N4)
-      CALL GETVID(' ','CHAM_ELEM',0,1,1,CHAM,N5)
       CALL GETVR8(' ','INST',0,1,1,TIME,N6)
       CALL GETVIS(' ','MODE_FOURIER',0,1,1,NH,N7)
-      CALL GETVR8(' ','FREQ',0,1,1,FREQ,N8)
-      CALL GETVTX(' ','PLAN',0,1,1,PLAN,N9)
-      IF (N2.NE.0) CHAMGD = DEPL
-      IF (NV2.NE.0) CHAMGD = VITE
       IF (N3.NE.0) CHTEMP = TEMP
-      IF (N5.NE.0) CHAMGD = CHAM
       IF (N6.NE.0) EXITIM = .TRUE.
       IF (N7.EQ.0) NH = 0
-      IF (OPTION.EQ.'EFGE_ELNO_DEPL') THEN
-        CALL MECHAM(OPTION,MODELE,NCHAR,ZK8(JCHA),CARA,NH,CHGEOM,CHCARA,
-     &              CHHARM,IRET)
-        NOMA = CHGEOM(1:8)
-        IF (N9.NE.0) THEN
-          IF (PLAN.EQ.'MAIL') THEN
-            RPLAN = DBLE(0)
-          ELSE IF (PLAN.EQ.'SUP') THEN
-            RPLAN = DBLE(1)
-          ELSE IF (PLAN.EQ.'INF') THEN
-            RPLAN = DBLE(-1)
-          ELSE IF (PLAN.EQ.'MOY') THEN
-            RPLAN = DBLE(2)
-          END IF
-        END IF
-        CHFREQ = '&&OP0038.FREQ'
-        CALL MECACT('V',CHFREQ,'MAILLA',NOMA,'FREQ_R',1,'FREQ',IBID,
-     &              RPLAN,C16B,K8B)
-      END IF
-      IF (N2.NE.0 .AND. N5.NE.0) CALL UTMESS('F','CALC_CHAM_ELEM',
-     &                      'ERREUR: "DEPL" ET "CHAM_ELEM" IMPOSSIBLE !'
-     &                                )
-
-      IF (OPTION.EQ.'SIGM_ELNO_LAGR' .OR.
-     &    OPTION.EQ.'SIEF_ELGA_LAGR') THEN
-        CALL GETVID(' ','THETA',0,1,1,SDTHET,N10)
-        CALL GETVR8(' ','PROPAGATION',0,1,1,ALPHA,N11)
-        IF (N10.EQ.0) THEN
-          CALL UTMESS('F','CALC_CHAM_ELEM',
-     &                'ERREUR:             IL N Y A PAS DE CHAMPS THETA'
-     &                )
-        ELSE
-
-C ---  RECUPERATION DU CHAMNO DE THETA DE LA S.D. SDTHET DE TYPE
-C ---   THETA_GEOM
-C       ----------
-          CALL RSEXCH(SDTHET,'THETA',0,THETA,IRET)
-          IF (IRET.GT.0) THEN
-            CALL UTMESS('F',NOMPRO,'LE CHAMP DE THETA EST INEXISTANT'//
-     &                  ' DANS LA STRUCTURE DE DONNEES '//SDTHET//
-     &                  ' DE '//'TYPE THETA_GEOM .')
-          END IF
-          THETA1 = THETA
-        END IF
-        IF (N11.EQ.0) ALPHA = 0.0D0
-      END IF
 
       CALL MECHAM(OPTION,MODELE,NCHAR,ZK8(JCHA),CARA,NH,CHGEOM,CHCARA,
      &            CHHARM,IRET)
@@ -156,139 +105,11 @@ C       ----------
       IF (EXITIM) CALL MECHTI(NOMA,TIME,CHTIME)
       CALL MECHNC(NOMA,' ',0,CHNUMC)
 
-C     -- OPTIONS DE MECANIQUE:
-C     ------------------------
-      IF (OPTION.EQ.'SIGM_ELNO_DEPL' .OR.
-     &    OPTION.EQ.'SIPO_ELNO_DEPL' .OR.
-     &    OPTION.EQ.'SIEF_ELGA_DEPL' .OR.
-     &    OPTION.EQ.'EQUI_ELNO_SIGM' .OR.
-     &    OPTION.EQ.'EQUI_ELGA_SIGM' .OR.
-     &    OPTION.EQ.'EQUI_ELNO_EPSI' .OR.
-     &    OPTION.EQ.'EQUI_ELGA_EPSI' .OR.
-     &    OPTION.EQ.'SIGM_ELNO_CART' .OR.
-     &    OPTION.EQ.'EPSI_ELNO_DEPL' .OR.
-     &    OPTION.EQ.'DEGE_ELNO_DEPL' .OR.
-     &    OPTION.EQ.'EFGE_ELNO_DEPL' .OR.
-     &    OPTION.EQ.'EPOT_ELEM_DEPL' .OR.
-     &    OPTION.EQ.'ENEL_ELNO_ELGA' .OR. OPTION.EQ.'ENEL_ELGA' .OR.
-     &    OPTION.EQ.'ECIN_ELEM_DEPL') THEN
-        IF (NCHAR.NE.0 .AND. CTYP.NE.'MECA') CALL UTMESS('F',
-     &      'CALC_CHAM_ELEM',
-     &      'ERREUR: LA CHARGE DOIT ETRE UNE CHARGE MECANIQUE!')
-        IF (OPTION.EQ.'EQUI_ELNO_SIGM' .OR.
-     &      OPTION.EQ.'EQUI_ELGA_SIGM') CHSIG = CHAMGD
-        IF (OPTION.EQ.'ENEL_ELGA' .OR.
-     &      OPTION.EQ.'ENEL_ELNO_ELGA') CHSIG = CHAMGD
-        IF (OPTION.EQ.'EQUI_ELNO_EPSI' .OR.
-     &      OPTION.EQ.'EQUI_ELGA_EPSI') CHEPS = CHAMGD
-        IF (OPTION.EQ.'ECIN_ELEM_DEPL') THEN
-          IF (NV2.NE.0) THEN
-            FREQ = 1.D0
-            CALL UTMESS('I',NOMPRO,'CHAMP DE VITESSE DONNE.')
-          ELSE
-            CALL UTMESS('I',NOMPRO,'CHAMP DE DEPLACEMENT DONNE.')
-            FREQ = (R8DEPI()*FREQ)**2
-          END IF
-          CHFREQ = '&&OP0038.FREQ'
-          CALL MECACT('V',CHFREQ,'MAILLA',NOMA,'FREQ_R',1,'FREQ',IBID,
-     &                FREQ,C16B,K8B)
-        END IF
-
-C====================================================================
-C        CALCUL DES EFFORTS SUR DES MODELES DE POUTRES A LA POUX
-C====================================================================
-        CHAREP = ' '
-        CALL DISMOI('F','EXI_POUX',MODELE,'MODELE',IBID,K8B,IERD)
-        IF (K8B(1:3).EQ.'OUI') THEN
-          IOCC = 0
-          CALL COCHRE(ZK8(JCHA),NCHAR,NBCHRE,IOCC)
-          IF (NBCHRE.GT.1) THEN
-            CALL UTMESS('F',NOMPRO,'VOTRE CHARGEMENT CONTIENT PLUS '//
-     &                  'D''UNE CHARGE REPARTIE. LE CALCUL N''EST PAS '
-     &                  //'POSSIBLE POUR LES MODELE DE POUTRE.')
-          ELSE IF (NBCHRE.EQ.1) THEN
-            TYPCOE = 'R'
-            IF (OPTION.EQ.'SIGM_ELNO_DEPL' .OR.
-     &          OPTION.EQ.'SIPO_ELNO_DEPL' .OR.
-     &          OPTION.EQ.'EFGE_ELNO_DEPL') THEN
-              CALL GETVID('EXCIT','FONC_MULT',IOCC,1,1,K8BID,L1)
-              IF (L1.NE.0) THEN
-                IF (N6.EQ.0) THEN
-                  CALL UTMESS('F',NOMPRO,'L''UTILISATION DU MOT-CLE '//
-     &                        'FONC_MULT DOIT ETRE ACCOMPAGNEE DE CELLE'
-     &                        //'DU MOT-CLE INST')
-                END IF
-                CALL FOINT0
-                CALL FOINTE('F ',K8BID,1,'INST',TIME,COEF,IBID)
-              ELSE
-                CALL GETVR8('EXCIT','COEF_MULT',IOCC,1,1,COEF,L3)
-              END IF
-              CALL GETVID('EXCIT','CHARGE',IOCC,1,1,CHAREP,IRET)
-            END IF
-          END IF
-        END IF
-C====================================================================
-        CALL MECHTE(MODELE,NCHAR,ZK8(JCHA),MATE,EXITIM,TIME,CHTREF,
-     &              CHTEMP)
-        IBID = 0
-        CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,CHTEMP,
-     &              CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,CHEPS,CHFREQ,
-     &              CHMASS,K24B,CHAREP,TYPCOE,COEF,CCOEF,K24B,K24B,
-     &              CHELEM,LIGREL,BASE,K24B,K24B,K24B,K24B,K24B,K24B,
-     &              K8BID,IBID,IRET)
-        CALL DETRSD('CHAMP_GD',CHTEMP)
-
-        IF (OPTION.EQ.'ECIN_ELEM_DEPL') CALL DETRSD('CHAMP_GD',CHFREQ)
-
-      ELSE IF (OPTION.EQ.'SIGM_ELNO_LAGR' .OR.
-     &         OPTION.EQ.'SIEF_ELGA_LAGR') THEN
-        IF (NCHAR.NE.0 .AND. CTYP.NE.'MECA') THEN
-          CALL UTMESS('F','CALC_CHAM_ELEM',
-     &               'ERREUR: LA CHARGE DOIT ETRE UNE CHARGE MECANIQUE!'
-     &                )
-        END IF
-
-        CALL MECHTE(MODELE,NCHAR,ZK8(JCHA),MATE,EXITIM,TIME,CHTREF,
-     &              CHTEMP)
-        CALL MECAL2(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,CHTEMP,
-     &              CHTREF,CHTIME,CHNUMC,CHHARM,CHFREQ,CHMASS,THETA1,
-     &              ALPHA,ZK8(JCHA),' ',' ',CHELEM,LIGREL)
-        CALL DETRSD('CHAMP_GD',CHTEMP)
-
-C     ------------------------------------------------------------------
-C     --- OPTIONS DE CALCUL DU TAUX DE TRIAXIALITE DES CONTRAINTES, ET
-C     --- DE LA CONTRAINTE D'ENDOMAGEMENT :
-C     ------------------------------------------------------------------
-      ELSE IF (OPTION.EQ.'ENDO_ELNO_SIGM') THEN
-
-        IF (NCHAR.NE.0 .AND. CTYP.NE.'MECA') CALL UTMESS('F',
-     &      'CALC_CHAM_ELEM',
-     &      'ERREUR: LA CHARGE DOIT ETRE UNE CHARGE MECANIQUE!')
-
-        CALL DISMOI('F','TYPE_CHAMP',CHAMGD,'CHAM_ELEM',IB,NUME,IE)
-
-        IF (NUME(1:4).EQ.'ELGA') THEN
-          OPT2 = 'ENDO_ELNO_SIGA'
-        ELSE IF (NUME(1:4).EQ.'ELNO') THEN
-          OPT2 = 'ENDO_ELNO_SINO'
-        ELSE
-          CALL UTMESS('F',NOMPRO,
-     &          ' ERREUR: LE CHAMP DE ENDO_ELNO_SIGM DOIT ETRE CALCULE '
-     &                //' A PARTIR DU CHAMP SIEF_ELGA_DEPL OU DU CHAMP '
-     &                //' SIGM_ELNO_DEPL')
-        END IF
-
-        CALL MECHTE(MODELE,NCHAR,ZK8(JCHA),MATE,EXITIM,TIME,CHTREF,
-     &              CHTEMP)
-
-        CALL COENDO(OPT2,MODELE,LIGREL,MATE,CHTEMP,CHAMGD,CHELEM)
-
-        CALL DETRSD('CHAMP_GD',CHTEMP)
 
 C        -- OPTIONS DE THERMIQUE:
 C        ------------------------
-      ELSE IF (OPTION.EQ.'FLUX_ELNO_TEMP' .OR.
-     &         OPTION.EQ.'FLUX_ELGA_TEMP') THEN
+      IF (OPTION.EQ.'FLUX_ELNO_TEMP' .OR.
+     &    OPTION.EQ.'FLUX_ELGA_TEMP') THEN
         CHAMGD = ' '
         CHTREF = ' '
         IBID = 0
@@ -321,9 +142,6 @@ C        ------------------------
 
         CALL MECOAC(OPTION,MODELE,LIGREL,MATE,PRESS,CHELEM)
 
-      ELSE IF (OPTION.EQ.'PRES_DBEL_DEPL') THEN
-
-        CALL MECOA1(OPTION,MODELE,LIGREL,MATE,DEPL,CHELEM)
 
 C        -- OPTIONS INCONNUES:
 C        ---------------------

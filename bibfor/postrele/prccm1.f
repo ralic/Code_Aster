@@ -9,7 +9,7 @@
       CHARACTER*(*)       MCF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/11/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -200,7 +200,7 @@ C ---    EXTRACTION DU CHAMP DE CONTRAINTES AUX EXTREMITES DU CHEMIN
 C ---    --> SP1O ET SP1E ET CALCUL DES CONTRAINTES LINEARISEES SN1O
 C ---    ET SN1E EN CES MEMES NOEUDS :
 C ======================================================================
-            CALL PRSNSP ( MCF, IOCC, TYPCO, COURBE, XNOMCP, XNUMCP,  
+            CALL PRSNSP ( MCF, IOCC, TYPCO, COURBE, XNOMCP,  
      +                    NLSMAC, NLSNAC, NCH19, SM,
      +                    SN1O, SN1E, SNFL, SP1O, SP1E, ICHEF1 )
 C ======================================================================
@@ -254,7 +254,7 @@ C ---       EXTRACTION DU CHAMP DE CONTRAINTES AUX EXTREMITES DU CHEMIN
 C ---       --> SP2O ET SP2E ET CALCUL DES CONTRAINTES LINEARISEES SN2O
 C ---       ET SN2E EN CES MEMES NOEUDS :
 C ======================================================================
-               CALL PRSNSP ( MCF, IOCC, TYPCO, COURBE, XNOMCP, XNUMCP,
+               CALL PRSNSP ( MCF, IOCC, TYPCO, COURBE, XNOMCP,
      +                       NLSMAC, NLSNAC, NCH19, SM,
      +                       SN2O, SN2E, SNFL, SP2O, SP2E, ICHEF2 )
 C ======================================================================
@@ -387,7 +387,7 @@ C ---  EXTRACTION DU CHAMP DE CONTRAINTES AUX EXTREMITES DU CHEMIN
 C ---  --> SP2O ET SP2E ET CALCUL DES CONTRAINTES LINEARISEES SN2O ET
 C ---  SN2E EN CES MEMES NOEUDS :
 C ======================================================================
-               CALL PRSNSP ( MCF, IOCC2, TYPCO, COURBE, XNOMCP, XNUMCP,
+               CALL PRSNSP ( MCF, IOCC2, TYPCO, COURBE, XNOMCP,
      +                       NLSMAC, NLSNAC, NCH19, SM,
      +                       SN2O, SN2E, SNFL, SP2O, SP2E, ICHEF2 )
 C ======================================================================

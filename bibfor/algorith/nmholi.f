@@ -1,8 +1,8 @@
-      SUBROUTINE NMHOLI(NDIM  , AXI   , NNO   , NPG   , VFF   ,
-     &                  DFDE  , DFDN  , DFDK  , POIDSG, IMATE ,
+      SUBROUTINE NMHOLI(NDIM  , AXI   , NNO   , NPG   , IPOIDS,
+     &                  IVF   , IDFDE , IMATE ,
      &                  INST  , GEOM  , DEPL  , CHLIM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2002   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,9 +21,8 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       LOGICAL AXI
-      INTEGER NDIM, NNO, NPG, IMATE
-      REAL*8  GEOM(NDIM, NNO), POIDSG(NPG), VFF(NNO,NPG), DFDE(*)
-      REAL*8  DFDN(*), DFDK(*), DEPL(NDIM,NNO), INST, CHLIM(3)
+      INTEGER NDIM, NNO, NPG, IMATE, IPOIDS, IVF, IDFDE
+      REAL*8  GEOM(NDIM, NNO), DEPL(NDIM,NNO), INST, CHLIM(3)
 
 C --------------------------------------------------------------------
 C        CALCUL DES TERMES POUR LE POST TRAITEMENT CHARGE_LIMITE
@@ -49,7 +48,7 @@ C -------------------------------------------------------------------
 
       INTEGER KPG, NDIMSI
       REAL*8  EPS(6), POIDS, EPSNO, SY, M, AM, EPSH
-      REAL*8  DFDI(27,3), FBID(3,3), R, RBID, R8NRM2
+      REAL*8  DFDI(27,3), FBID(3,3), R, R8NRM2
       REAL*8  RAC23
 
       CHARACTER*2 COD
@@ -73,9 +72,8 @@ C -- CARACTERISTIQUES
 
 C -- DEFORMATION
 
-        CALL NMGEOM (NDIM,NNO,AXI,.FALSE.,GEOM,KPG,POIDSG(KPG),
-     &               VFF(1,KPG),DFDE,DFDN,DFDK,DEPL,
-     &               POIDS,DFDI,FBID,EPS,R)
+        CALL NMGEOM (NDIM,NNO,AXI,.FALSE.,GEOM,KPG,IPOIDS,IVF,IDFDE,
+     &               DEPL,POIDS,DFDI,FBID,EPS,R)
         EPSH = (EPS(1)+EPS(2)+EPS(3))/3
         EPS(1)=EPS(1)-EPSH
         EPS(2)=EPS(2)-EPSH

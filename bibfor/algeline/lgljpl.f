@@ -1,14 +1,13 @@
-      SUBROUTINE LGLJPL(MOD, NBMAT, MATER, SIG, DEVG, DEVGII, NVI, VIN,
-     +                  DSDE)
+      SUBROUTINE LGLJPL(MOD,NBMAT,MATER,SIG,DEVG,DEVGII,VIN,DSDE)
 C
       IMPLICIT      NONE
-      INTEGER       NBMAT, NVI
+      INTEGER       NBMAT
       REAL*8        MATER(NBMAT,2), SIG(6), VIN(*), DSDE(6,6)
       REAL*8        DEVG(6), DEVGII
       CHARACTER*8   MOD
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +35,6 @@ C --- : MATER  : PARAMETRES MATERIAU -----------------------------------
 C --- : SIG    : TENSEUR DES CONTRAINTES -------------------------------
 C --- : DEVG   : DEVIATEUR DU TENSEUR G --------------------------------
 C --- : DEVGII : NORME DU DEVIATEUR DE G -------------------------------
-C --- : NVI    : NOMBRE DE VARIABLE INTERNES ---------------------------
 C --- : VIN    : VARIABLES INTERNES ------------------------------------
 C OUT : DSDE   : DSIG/DEPS ---------------------------------------------
 C ======================================================================
@@ -59,7 +57,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C ======================================================================
       INTEGER       JPARA, JDERIV, NDT, NDI
       REAL*8        EPSSIG, SIGC, GAMCJS, PREF, SN(6), SNII, INVN, H0
-      REAL*8        MUN, HLODE, GAMPN, RCOS3T, COS3T, RN, GN, UCN, GDEV
+      REAL*8        MUN, HLODE, GAMPN, RCOS3T, COS3T, RN, GN, GDEV
       REAL*8        UCRITP, DUDS(6), DUDG, DFDS(6), DFDG, TRACE
       REAL*8        Q(6), HOOK(6,6)
       CHARACTER*16  PARECR, DERIVE
@@ -111,7 +109,6 @@ C ======================================================================
       RCOS3T = COS3T (SN, PREF, EPSSIG)
       RN     = HLODE (GAMCJS, RCOS3T)
       GN     = GDEV  (SNII, RN)
-      UCN    = UCRITP(NBMAT, MATER, ZR(JPARA), GN, INVN)
 C ======================================================================
 C --- CALCUL DE Q A L'ITERATION COURANTE -------------------------------
 C ======================================================================
@@ -130,11 +127,11 @@ C **********************************************************************
 C **********************************************************************
 C --- CALCUL DE DFDS ---------------------------------------------------
 C **********************************************************************
-      CALL DRFDRS(Q, ZR(JPARA), H0, SIGC, GN, UCN, DUDS, DFDS)
+      CALL DRFDRS(Q, ZR(JPARA), H0, SIGC, GN, DUDS, DFDS)
 C **********************************************************************
 C --- CALCUL DE DFDG ---------------------------------------------------
 C **********************************************************************
-      CALL DRFDRG(ZR(JPARA), ZR(JDERIV), H0, SIGC, GN, UCN, DUDG, DFDG)
+      CALL DRFDRG(ZR(JPARA), ZR(JDERIV), H0, SIGC, GN, DUDG, DFDG)
 C **********************************************************************
 C ======================================================================
 C --- CALCUL DE DSIG/DEPS ----------------------------------------------

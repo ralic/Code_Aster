@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 16/03/2004   AUTEUR GALENNE E.GALENNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ CALC_G_THETA_T=OPER(nom="CALC_G_THETA_T",op=53,sd_prod=tabl_calc_g_th,
                  EXCLUS('COMP_ELAS','COMP_INCR'),),
          MODELE          =SIMP(statut='o',typ=modele),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
-         THETA           =SIMP(statut='o',typ=theta_geom),
+         THETA           =SIMP(statut='o',typ=(theta_geom,cham_no_depl_r),),
          DEPL            =SIMP(statut='f',typ=cham_no_depl_r),
          RESULTAT        =SIMP(statut='f',typ=(evol_elas,evol_noli),),
 
@@ -63,7 +63,6 @@ CALC_G_THETA_T=OPER(nom="CALC_G_THETA_T",op=53,sd_prod=tabl_calc_g_th,
                ELAS            =SIMP(statut='f',typ='I',defaut=1,into=(1,) ),
                VMIS_ISOT_TRAC  =SIMP(statut='f',typ='I',defaut=2,into=(2,) ),
                VMIS_ISOT_LINE  =SIMP(statut='f',typ='I',defaut=2,into=(2,) ),
-               VMIS_CINE_LINE  =SIMP(statut='f',typ='I',defaut=7,into=(7,) ),
                DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT",into=("PETIT","PETIT_REAC") ),
       regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
                TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),

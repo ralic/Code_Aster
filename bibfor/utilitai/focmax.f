@@ -11,7 +11,7 @@
        CHARACTER*24   VALE
 C      -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/12/2000   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,7 @@ C
 C --- CALCUL DE VMAX :
 C     ----------------            
 C
-       CALL FOVECA(NOMOPE,1,NOMFON,IER)
+       CALL FOVECA(NOMOPE,NOMFON,IER)
 C
        IF (IER .NE. 0 ) GOTO 9999
  
@@ -107,7 +107,7 @@ C
 C --- CALCUL DE DMAX :
 C     ----------------            
 C              
-      CALL FOVECA(NOMOPE,1,NOMVIT,IER)
+      CALL FOVECA(NOMOPE,NOMVIT,IER)
       IF (IER .NE. 0 ) GOTO 9999
 C
 C     --- AINSI ON OBTIENT PAR INTEGRATION X(T) ("NOMDEP") ---

@@ -1,17 +1,17 @@
       SUBROUTINE WP3VEC (APPR,OPT,NBFREQ,NBVECT,NEQ,SHIFT,
-     +                   VPR,VPI,VECP,LMASSE,MXRESF,
+     +                   VPR,VPI,VECP,MXRESF,
      +                   RESUFI,RESUFR,LAGR,VAUC)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*1   APPR
       CHARACTER*(*) OPT
-      INTEGER       NBFREQ,NBVECT,NEQ,LMASSE,LAGR(*),
+      INTEGER       NBFREQ,NBVECT,NEQ,LAGR(*),
      &              RESUFI(MXRESF,*),MXRESF
       COMPLEX*16    VECP(NEQ,*),SHIFT,VAUC(2*NEQ,*)
       REAL*8        RESUFR(MXRESF,*),VPR(*),VPI(*)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,7 +42,6 @@ C IN  NBFREQ : I : NOMBRE DE MODES DEMANDES
 C IN  NBVECT : I : NOMBRE DE VECTEURS DE LANCZOS
 C IN  NEQ    : I : TAILLE DES MATRICES DU PB QUADRATIQUE
 C IN  SHIFT  : C : VALEUR DU DECALAGE
-C IN  LMASSE : I : POINTEUR SUR LE DESCRIPTEUR DE LA MATRICE DE MASSE
 C IN  LAGR   : I : INDICATEUR DES NON-LAGRANGE
 C IN  VAUC   : C : MODES DU PB QUADRATIQUE COMPLET
 C VAR VPR    : R : IN  : PARTIE REELLE DES VALEURS PROPRE DU PB REDUIT
@@ -72,6 +71,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     ------------------------------------------------------------------
       REAL*8     SI,MOD2,A,B,NMABP,NMABM,AM,OM
+      REAL*8     EPS, R8MIEM
       INTEGER    I,J,K,AV1,AV2,IADIND,NBREEL,NBCMPP,
      +           NBCMPC,NBFRGA
       COMPLEX*16 DES,VPQ,MHU,VPP,VPM
@@ -101,6 +101,7 @@ C --- 1.1. PARTITION (OPERATEUR REEL)
       NBCMPC = 0
       NBREEL = 0
 C*****************************************************************
+      EPS = R8MIEM()**(2.0D+0 / 3.0D+0)
       
       CALL WKVECT('&&WP3VEC.INDIC.PART.VP','V V I',NBVECT,IADIND)
       DO 1 J = 1, NBVECT
@@ -108,7 +109,7 @@ C*****************************************************************
 1     CONTINUE
       DO 2 J = 1, NBVECT
          IF ( ZI(IADIND + J-1) .EQ. -2 ) THEN
-            IF ( VPI(J) .EQ. 0.D0 ) THEN
+            IF ( ABS(VPI(J)) .EQ. 0.D0 ) THEN
                ZI(IADIND + J-1) = 0
                NBREEL = NBREEL + 1
             ELSE
@@ -116,12 +117,12 @@ C*****************************************************************
                TROUVE = .FALSE.
 3              CONTINUE
                IF ( (.NOT. TROUVE ) .AND. ( K .LE. NBVECT) ) THEN
-                  IF ( ( ZI(IADIND + K-1) .EQ. -2 ) .AND.
-     +                 ( DCMPLX(VPR(J),VPI(J)) .EQ.
-     +              DCONJG(DCMPLX(VPR(K),VPI(K))) ) ) THEN
+           A=ABS(DCMPLX(VPR(J),VPI(J))-DCONJG(DCMPLX(VPR(K),VPI(K))))
+                  IF (( ZI(IADIND + K-1) .EQ. -2 ) .AND.
+     +               (A.EQ.0.D0)) THEN
                       TROUVE = .TRUE.
                       NBCMPC = NBCMPC + 1
-                      IF ( VPI(J) .GE. 0.D0 ) THEN
+                      IF ( VPI(J) .GT. 0.D0 ) THEN
                          ZI(IADIND + J-1) =  1
                          ZI(IADIND + K-1) = -1
                       ELSE
@@ -172,12 +173,13 @@ C
       ENDIF
 C
 C --- 1.2. DETERMINATION DE NB FREQUENCES GARDEES
-      NBFRGA = NBREEL + NBCMPP + NBCMPC
+C      NBFRGA = NBREEL + NBCMPP + NBCMPC
+      NBFRGA = NBCMPC
 C
 C --- 1.3. ELIMINATION DES CONJUGUES (OPERATEUR REEL) -- COMPACTAGE --
       K = 1
       DO 4 J = 1, NBVECT
-         IF ( ZI(IADIND + J-1) .GT. 0 ) THEN
+         IF (ZI(IADIND + J-1).GT.0) THEN
             IF ( K .NE. J ) THEN
                VPR(K)           = VPR(J)
                VPI(K)           = VPI(J)
@@ -192,6 +194,7 @@ C --- 1.3. ELIMINATION DES CONJUGUES (OPERATEUR REEL) -- COMPACTAGE --
          ENDIF
 4     CONTINUE
 
+
 C
 C     ---------- FIN DE PARTITION TEST ET ELIMINATION -----------------
 C     ----------    AU NIVEAU DE L' OPERATEUR REEL    -----------------
@@ -202,6 +205,7 @@ C --- 2. CALCUL DES SOLUTIONS PROPRES DU PB QUADRATIQUE ---
          CALL WKVECT('&&WP3VEC.VEC.AUX.C2','V V C',NEQ,AV2)
       ENDIF
       DO 10 J = 1, NBFRGA
+      IF (ZI(IADIND + J-1).GT.0) THEN
          A    = VPR(J)
          B    = VPI(J)
          MHU  = DCMPLX(A,B)
@@ -211,61 +215,91 @@ C --- 2. CALCUL DES SOLUTIONS PROPRES DU PB QUADRATIQUE ---
             A      =  A*MOD2
             B      = -B*MOD2
          ELSE IF ( OPT .EQ. 'CENTRE' ) THEN
+            DES=DCMPLX(0.D0,0.D0)
             IF ( APPR .EQ. 'R' ) THEN
                DES = DCMPLX(1.D0,0.D0)-DCMPLX(4.D0*SI*SI,0.D0)*MHU*MHU
                DES = SQRT(DES)
                VPQ = .5D0*(DCMPLX(1.D0,0.D0)-DCMPLX(0.D0,2.D0*SI)*MHU +
      &                                                         DES)/MHU
-               VPP = VPQ + SHIFT               
-               CALL WPTEST(LAGR,LMASSE,VAUC(1,J),VAUC(NEQ+1,J),VPP,NEQ,
-     +                     NMABP,ZC(AV1),ZC(AV2))
+               VPP = VPQ + SHIFT
+               CALL WPTEST(LAGR,VAUC(1,J),VAUC(NEQ+1,J),VPP,NEQ,NMABP)
                VPQ = .5D0*(DCMPLX(1.D0,0.D0)-DCMPLX(0.D0,2.D0*SI)*MHU -
      &                                                         DES)/MHU
                VPM = VPQ + SHIFT
-               CALL WPTEST(LAGR,LMASSE,VAUC(1,J),VAUC(NEQ+1,J),VPM,NEQ,
-     +                  NMABM,ZC(AV1),ZC(AV2))
+               CALL WPTEST(LAGR,VAUC(1,J),VAUC(NEQ+1,J),VPM,NEQ,NMABM)
             ELSE
                DES = -DCMPLX(SI*SI,0.D0)*MHU*MHU + DCMPLX(SI,0.D0)*MHU
                DES =  SQRT(DES)
                VPQ = -DCMPLX(0.D0,SI) + DES/MHU
                VPP =  VPQ + SHIFT
-               CALL WPTEST(LAGR,LMASSE,VAUC(1,J),VAUC(NEQ+1,J),VPP,NEQ,
-     +                  NMABP,ZC(AV1),ZC(AV2))
+               CALL WPTEST(LAGR,VAUC(1,J),VAUC(NEQ+1,J),VPP,NEQ,NMABP)
                VPQ = -DCMPLX(0.D0,SI) - DES/MHU
                VPM =  VPQ + SHIFT
-               CALL WPTEST(LAGR,LMASSE,VAUC(1,J),VAUC(NEQ+1,J),VPM,NEQ,
-     +                  NMABM,ZC(AV1),ZC(AV2))
+               CALL WPTEST(LAGR,VAUC(1,J),VAUC(NEQ+1,J),VPM,NEQ,NMABM)
             ENDIF
             IF (NMABM .LT. NMABP ) THEN
                A = DBLE (VPM)
                B = DIMAG(VPM)
+               EPS=NMABM
             ELSE
                A = DBLE (VPP)
                B = DIMAG(VPP)
+               EPS=NMABP
+            ENDIF
+            IF (EPS.GT.1.D-5) THEN
+              ZI(IADIND + J-1)=0
+              NBFRGA=NBFRGA-1
             ENDIF
          ENDIF
          VPR(J) = A
          VPI(J) = B
+      ENDIF
 10    CONTINUE
-C
+
+C --- 1.3. ELIMINATION DES VALEURS FAUSSES -- RECOMPACTAGE --
+      K = 1
+      DO 44 J = 1, NBFRGA
+         IF (ZI(IADIND + J-1).GT.0) THEN
+            IF ( K .NE. J ) THEN
+               VPR(K)           = VPR(J)
+               VPI(K)           = VPI(J)
+               ZI(IADIND + K-1) = ZI(IADIND + J-1)
+               DO 55, I = 1, NEQ, 1
+                  VECP(I,K) = VECP(I,J)
+                  VAUC(I,K) = VAUC(I,J)
+                  VAUC(I+NEQ,K) = VAUC(I+NEQ,J)
+55              CONTINUE
+            ENDIF
+            K = K + 1
+         ENDIF
+44     CONTINUE
+
 C --- 3. SELECTION DES VALEURS PROPRES (PB QUADRATIQUE)
       DO 20, J = 1, NBFRGA, 1
-      IF ( (ZI(IADIND + J-1).EQ.1 ).AND.( VPI(J).LT.0.D0) ) THEN
+      IF ( (ZI(IADIND + J-1).EQ.1 ).AND.(VPI(J).LT.0.D0) ) THEN
             VPI(J) = -VPI(J)
             DO 21 I = 1, NEQ
                VECP(I,J) = DCONJG(VECP(I,J))
+               VAUC(I,J) = DCONJG(VAUC(I,J))
+               VAUC(I+NEQ,J) = DCONJG(VAUC(I+NEQ,J))
 21          CONTINUE
          ENDIF
 20    CONTINUE
 C
+C --- 5. PREPARATION DE RESUFR
+       IF (NBFREQ.GE.NBFRGA) THEN
+         NBFREQ=NBFRGA
+       ENDIF  
+
 C --- 4. TRI (DANS LE SPECTRE ET DE PRESENTATION) DES VALEURS PROPRES-
       CALL WPORDO(1,SHIFT,VPR,VPI,VECP,NBFRGA,NEQ)
       CALL WPORDO(0,SHIFT,VPR,VPI,VECP,NBFREQ,NEQ)
 C
+
 C --- 5. PREPARATION DE RESUFR
-      DO 30 J = 1, NBFREQ 
-         AM          = VPR(J)*VPR(J)
-         OM          = VPI(J)*VPI(J)
+      DO 30 J = 1, NBFREQ
+         AM          = VPR(J)**2
+         OM          = VPI(J)**2
          RESUFI(J,1) = J
          RESUFR(J,2) = OM
          RESUFR(J,3) = -VPR(J)/SQRT(OM + AM)

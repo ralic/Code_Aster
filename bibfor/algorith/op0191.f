@@ -1,6 +1,6 @@
       SUBROUTINE OP0191(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/08/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 26/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,6 +106,7 @@ C
       CALL WKVECT('&&CHRPEL.NOM_CHAM','V V K16',NBCHAM,JCHA)
       DO 1 IORD = 1 , NBORDR
          DO 11 ICHAM = 1 , NBCHAM
+            CALL JEMARQ()
             CALL GETVTX ('MODI_CHAM','NOM_CHAM',ICHAM,1,1,
      +                   ZK16(JCHA-1+ICHAM),N0)
             CALL GETVTX ('MODI_CHAM','NOM_CMP' ,ICHAM,1,0,K8B,N1)
@@ -130,6 +131,7 @@ C
      +                     ' LE CHAMP DE TYPE: '//TYCH//' CHAMP : '
      +                     //RESUIN)
             ENDIF
+            CALL JEDEMA()
  11      CONTINUE
  1    CONTINUE
       IF(NIV.EQ.2) CALL RSINFO(RESUOU,'MESSAGE')

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/08/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,48 +48,21 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      CHARACTER*24 CARAC,FF
-      CHARACTER*8 ELREFE
-      REAL*8 S
-      INTEGER I,ICHG,ICHN,ICARAC,JMAT,IC,IFF,IPOIDS,IVF,JTAB(7)
-      INTEGER NNO,NPG,NPG1,NCMP,NNOS,NCMP2,KP,K,LGPG,ICOMPO
-      INTEGER LGPG1,IRET
+      INTEGER ICHG,ICHN,IPOIDS,IVF,JTAB(7),LGPG1,NDIM,IRET
+      INTEGER NNO,NPG,NCMP,NNOS,NCMP2,LGPG,IDFDE,JGANO
 C     ------------------------------------------------------------------
 
-      CALL ELREF1(ELREFE)
-      IF (ELREFE.EQ.'XXXXXXXX') ELREFE=NOMTE(1:8)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
+C NOMBRE DE COMPOSANTES DES CONTRAINTES SUPPLEMENTAIRES
       NCMP2 = 0
       IF ((NOMTE(1:2).EQ.'SO') .OR. (NOMTE(1:2).EQ.'SN')) THEN
-C NOMBRE DE COMPOSANTES DES CONTRAINTES SUPPLEMENTAIRES
         NCMP2 = 7
+      ELSEIF (NOMTE(1:2).EQ.'MI') THEN
+        NCMP2 = 1
       END IF
 
-      IF (NOMTE(1:2).EQ.'MI') NCMP2 = 1
 
-      CARAC = '&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      FF = '&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS = IFF
-      IVF = IPOIDS + NPG1
-
-      NPG = NPG1
-      IF (NOMTE(5:8).EQ.'TR3 ') THEN
-        NNOS = NNO
-      ELSE IF (NOMTE(5:8).EQ.'QU4 ') THEN
-        NNOS = NNO
-      ELSE IF (NOMTE(5:8).EQ.'TR6 ') THEN
-        NNOS = 3
-      ELSE IF (NOMTE(5:8).EQ.'QS8 ') THEN
-        NNOS = 4      
-      ELSE IF (NOMTE(5:8).EQ.'QS4 ') THEN
-        NNOS = 4
-      ELSE IF (NOMTE(5:8).EQ.'QU8 ' .OR. NOMTE(5:8).EQ.'QU9 ') THEN
-        NNOS = 4
-      END IF
 C
       IF (OPTION.EQ.'SIEF_ELNO_ELGA  ') THEN
 C     ---------------------------------------
@@ -138,10 +111,10 @@ C     ---------------------------------------
       END IF
 
 C --- CHAMELEM(NOEUD) = P * CHAMELEM(GAUSS)
-
+C
       IF (OPTION(6:9).EQ.'ELNO') THEN
 
-        CALL PPGANO(NNOS,NPG,NCMP,ZR(ICHG),ZR(ICHN))
+         CALL PPGAN2 ( JGANO, NCMP, ZR(ICHG), ZR(ICHN))
 
       ELSE
 

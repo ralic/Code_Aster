@@ -1,4 +1,4 @@
-#@ MODIF __init__ Accas  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF __init__ Accas  DATE 04/02/2004   AUTEUR CAMBIER S.CAMBIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,5 +66,5 @@ from Noyau.N__F import _F
 from Noyau.N_Exception import AsException
 from Noyau.N_utils import AsType
 
-from Noyau.N_VALIDATOR import Valid,RangeVal,OrdList,NoRepeat,LongStr,EnumVal,CardVal,TypeVal,InstanceVal,OrVal,AndVal
+from Noyau.N_VALIDATOR import Valid,RangeVal,OrdList,NoRepeat,LongStr,EnumVal,CardVal,TypeVal,InstanceVal,OrVal,AndVal,PairVal
 

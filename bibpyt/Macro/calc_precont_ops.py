@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 15/09/2003   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF calc_precont_ops Macro  DATE 19/01/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -107,7 +107,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   # Teste si INST_INIT est bien plus petit que INST_FIN
   if __TMAX <= __TMIN:
     ier=ier+1
-    self.cr.fatal("""ERREUR : INST_FIN PLUS PETIT QUE INST_INIT""")
+    self.cr.fatal("""<F> <CALC_PRECONT> ERREUR : INST_FIN PLUS PETIT QUE INST_INIT""")
     return ier
 
   # Cree la liste d'instant __L2 allant de __TMIN a __TMAX et contenant 

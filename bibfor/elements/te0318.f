@@ -1,6 +1,6 @@
       SUBROUTINE TE0318 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C ----------------------------------------------------------------------
 C CALCUL DU FLUX AU CARRE AUX POINTS DE GAUSS
@@ -28,7 +28,6 @@ C IN  OPTION : OPTION DE CALCUL
 C IN  NOMTE  : NOM DU TYPE ELEMENT
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -47,32 +46,18 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       CHARACTER*2        CODRET(2)
-      CHARACTER*8        NOMRES(2),ELREFE
+      CHARACTER*8        NOMRES(2)
       CHARACTER*16       PHENOM
-      CHARACTER*24       CARAC,FF
-      REAL*8             DFDX(9),DFDY(9),TPG,POIDS,LAMBDA,TR(8),A,B
-      REAL*8             LAMBOR(2),P(2,2),POINT(2),ORIG(2),DIRE(2)
-      REAL*8             FLUGLO(2),FLULOC(2),VALRES(2),FLUGLC(2)
-      INTEGER            NNO,KP,I,K,ITEMPE,ITEMP,INST,IFLUX
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE
-      INTEGER            NPG,NPG1,NPG2,NPG3
+      REAL*8             DFDX(9),DFDY(9),TPG,POIDS,LAMBDA,A,B
+      REAL*8             LAMBOR(2),P(2,2),POINT(2),ORIG(2)
+      REAL*8             FLUGLO(2),FLULOC(2),VALRES(2)
+      REAL*8             ALPHA,R8DGRD,FLUXX,FLUXY,XU,YU,XNORM
+      INTEGER            NDIM,NNO,NNOS,KP,J,K,ITEMPE,ITEMP,IFLUX,NUNO
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE,NPG,JGANO,ICAMAS
       LOGICAL            ANISO,GLOBAL
 C DEB ------------------------------------------------------------------
-      CALL ELREF1(ELREFE)
 C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS = IFF   + NPG1*(1+3*NNO)
-      IVF    = IPOIDS + NPG2
-      IDFDE  = IVF    + NPG2*NNO
-      IDFDK  = IDFDE  + NPG2*NNO
-      NPG    = NPG2
+      CALL ELREF4(' ','MASS',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM )
       CALL JEVECH('PMATERC','L',IMATE )
@@ -122,8 +107,7 @@ C
       B = 0.D0
       DO 101 KP=1,NPG
         K=(KP-1)*NNO
-        CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                ZR(IGEOM),DFDX,DFDY,POIDS )
+        CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
         TPG   = 0.0D0
         FLUXX = 0.0D0
         FLUXY = 0.0D0

@@ -2,7 +2,7 @@
      &                   LMAT,LDSCON,CNNUL,ITERAT,LICCVG,CONV,DEPDEL,
      &                   LREAC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,7 +103,7 @@ C ======================================================================
       CALL JEVEUO (APREAC,'E',JREAC)
       NZOCO  = ZI(JDIM+1)
       DO 10 IZONE = 1,NZOCO
-        CALL REACCO (PREMIE,ZI(JMETH+10*(IZONE-1)+1),ZI(JCHAM+IZONE-1),
+        CALL REACCO (PREMIE,ZI(JMETH+10*(IZONE-1)+1),
      &               ZI(JREAC+4*(IZONE-1)))
  10   CONTINUE
 C ======================================================================
@@ -130,7 +130,7 @@ C ======================================================================
 C ======================================================================
 C     PROJECTION (NOEUDS MAITRES, DDLS MAITRES, COEFFICIENTS, JEU)
 C ======================================================================
-         CALL PROJCO (INST,NOMA,NEWGEO,DEFICO,RESOCO)
+         CALL PROJCO (NOMA,NEWGEO,DEFICO,RESOCO)
 C ======================================================================
 C --- SAUVEGARDE DU JEU EN DEBUT DE PAS DE TEMPS EN CAS DE REDECOUPAGE -
 C ======================================================================
@@ -187,8 +187,8 @@ C ======================================================================
       ISTO = ZI(JMETH+9)
 C ======================================================================
       IF(ZI(JMETH+6).EQ.-1) THEN
-         CALL ALGOCP(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CNNUL,DDEPLA,
-     &        DEPPLU,ITERAT,LREAC,CONV,DEPDEL)    
+         CALL ALGOCP(DEFICO,RESOCO,LMAT,LDSCON,DDEPLA,
+     &        DEPPLU,LREAC,DEPDEL)    
       ELSE IF(ZI(JMETH+6).EQ.0) THEN
          CALL ALGOCO(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CNNUL,DDEPLA,
      &   DEPPLU,LICCVG,ISTO)
@@ -205,7 +205,7 @@ C ======================================================================
          CALL FROLGD(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CNNUL,DDEPLA,
      &        DEPPLU,ITERAT,LREAC,CONV,DEPDEL,ISTO)
       ELSE IF(ZI(JMETH+6).EQ.5) THEN
-         CALL FROGDP(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CNNUL,DDEPLA,
+         CALL FROGDP(DEFICO,RESOCO,LMAT,LDSCON,DDEPLA,
      &        DEPPLU,ITERAT,LREAC,CONV,DEPDEL)
       ENDIF
 C

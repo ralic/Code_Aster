@@ -1,11 +1,11 @@
-      SUBROUTINE ELRFDF(ELREFZ,X,DIMD,DFF,NNO,NDERIV)
+      SUBROUTINE ELRFDF(ELREFZ,X,DIMD,DFF,NNO,NDIM)
       IMPLICIT NONE
-      INTEGER DIMD,NNO,NDERIV
+      INTEGER DIMD,NNO,NDIM
       REAL*8 X(*),DFF(3,*)
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +36,7 @@ C        X      : POINT DE CALCUL DES F FORMES ET DERIVEES
 C        DIMD   : DIMENSION DE DFF
 C   OUT  DFF    : FONCTIONS DE FORMES EN XI,YI,ZI
 C        NNO    : NOMBRE DE NOEUDS
-C        NDERIV : NOMBRE DE COMPOSANTES
+C        NDIM : DIMENSION TOPOLOGIQUE DE L'ELREFE
 C   -------------------------------------------------------------------
       CHARACTER*8 ELREFE
       INTEGER I,J
@@ -72,7 +72,7 @@ C     ------------------------------------------------------------------
         Y0 = X(2)
         Z0 = X(3)
         NNO = 8
-        NDERIV = 3
+        NDIM = 3
 
         DFF(1,1) = - (UN-Y0)* (UN-Z0)*UNS8
         DFF(2,1) = - (UN-X0)* (UN-Z0)*UNS8
@@ -112,7 +112,7 @@ C     ------------------------------------------------------------------
         Y0 = X(2)
         Z0 = X(3)
         NNO = 20
-        NDERIV = 3
+        NDIM = 3
 
         DFF(1,1) = - (UN-Y0)* (UN-Z0)* (-DEUX*X0-Y0-Z0-UN)*UNS8
         DFF(2,1) = - (UN-X0)* (UN-Z0)* (-X0-DEUX*Y0-Z0-UN)*UNS8
@@ -201,7 +201,7 @@ C     ------------------------------------------------------------------
         Y0 = X(2)
         Z0 = X(3)
         NNO = 27
-        NDERIV = 3
+        NDIM = 3
 
         DFF(1,1) = DAL31(X0)*AL31(Y0)*AL31(Z0)
         DFF(2,1) = AL31(X0)*DAL31(Y0)*AL31(Z0)
@@ -292,7 +292,7 @@ C     ------------------------------------------------------------------
         Y0 = X(2)
         Z0 = X(3)
         NNO = 6
-        NDERIV = 3
+        NDIM = 3
         AL = (UN-Y0-Z0)
 
         DFF(1,1) = -Y0*UNDEMI
@@ -326,7 +326,7 @@ C     ------------------------------------------------------------------
         Y0 = X(2)
         Z0 = X(3)
         NNO = 15
-        NDERIV = 3
+        NDIM = 3
         AL = UN - Y0 - Z0
 
         DFF(1,1) = (-Y0* (DEUX*Y0-DEUX-X0)-Y0* (UN-X0))/DEUX
@@ -396,7 +396,7 @@ C     ------------------------------------------------------------------
         Y0 = X(2)
         Z0 = X(3)
         NNO = 4
-        NDERIV = 3
+        NDIM = 3
 
         DFF(1,1) = ZERO
         DFF(2,1) = UN
@@ -418,7 +418,7 @@ C     ------------------------------------------------------------------
         Y0 = X(2)
         Z0 = X(3)
         NNO = 10
-        NDERIV = 3
+        NDIM = 3
         AL = UN - X0 - Y0 - Z0
 
         DFF(1,1) = ZERO
@@ -459,7 +459,7 @@ C     ------------------------------------------------------------------
         Y0 = X(2)
         Z0 = X(3)
         NNO = 5
-        NDERIV = 3
+        NDIM = 3
         Z01 = UN - Z0
         Z04 = (UN-Z0)*QUATRE
 
@@ -515,7 +515,7 @@ C     ------------------------------------------------------------------
         Y0 = X(2)
         Z0 = X(3)
         NNO = 13
-        NDERIV = 3
+        NDIM = 3
         Z01 = UN - Z0
         Z02 = (UN-Z0)*DEUX
 
@@ -611,41 +611,106 @@ C     ------------------------------------------------------------------
         END IF
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'FACE4   ') THEN
+      ELSE IF (ELREFE.EQ.'TR3') THEN
+
+        NNO = 3
+        NDIM = 2
+
+        DFF(1,1) = -UN
+        DFF(1,2) = +UN
+        DFF(1,3) = ZERO
+        DFF(2,1) = -UN
+        DFF(2,2) = ZERO
+        DFF(2,3) = +UN
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFE.EQ.'TR6') THEN
+
+        X0 = X(1)
+        Y0 = X(2)
+        NNO = 6
+        NDIM = 2
+        AL = UN - X0 - Y0
+
+        DFF(1,1) = UN - QUATRE*AL
+        DFF(1,2) = -UN + QUATRE*X0
+        DFF(1,3) = ZERO
+        DFF(1,4) = QUATRE* (AL-X0)
+        DFF(1,5) = QUATRE*Y0
+        DFF(1,6) = -QUATRE*Y0
+        DFF(2,1) = UN - QUATRE*AL
+        DFF(2,2) = ZERO
+        DFF(2,3) = -UN + QUATRE*Y0
+        DFF(2,4) = -QUATRE*X0
+        DFF(2,5) = QUATRE*X0
+        DFF(2,6) = QUATRE* (AL-Y0)
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFE.EQ.'TR7') THEN
+
+        X0 = X(1)
+        Y0 = X(2)
+        NNO = 7
+        NDIM = 2
+
+        DFF(1,1) = -TROIS + 4.0D0*X0 + 7.0D0*Y0 - 6.0D0*X0*Y0 
+     &                    - 3.0D0*Y0*Y0
+        DFF(1,2) = -UN + 4.0D0*X0 + 3.0D0*Y0 - 6.0D0*X0*Y0
+     &                    - 3.0D0*Y0*Y0
+        DFF(1,3) = 3.0D0*Y0*( UN - 2.0D0*X0 - Y0 )
+        DFF(1,4) = 4.0D0*( UN - 2.0D0*X0 - 4.0D0*Y0 + 6.0D0*X0*Y0
+     &                        + 3.0D0*Y0*Y0 )
+        DFF(1,5) = 4.0D0*Y0*( -2.0D0 + 6.0D0*X0 + 3.0D0*Y0 )
+        DFF(1,6) = 4.0D0*Y0*( -4.0D0 + 6.0D0*X0 + 3.0D0*Y0 )
+        DFF(1,7) = 27.D0*Y0*( UN - 2.0D0*X0 - Y0 )
+
+        DFF(2,1) = -TROIS + 4.0D0*Y0 + 7.0D0*X0 - 6.0D0*X0*Y0 
+     &                    - 3.0D0*X0*X0
+        DFF(2,2) = 3.0D0*X0*( UN - 2.0D0*Y0 - X0 )
+        DFF(2,3) = -UN + 4.0D0*Y0 + 3.0D0*X0 - 6.0D0*X0*Y0
+     &                    - 3.0D0*X0*X0
+        DFF(2,4) = 4.0D0*X0*( -4.0D0 + 6.0D0*Y0 + 3.0D0*X0 )
+        DFF(2,5) = 4.0D0*X0*( -2.0D0 + 6.0D0*Y0 + 3.0D0*X0 )
+        DFF(2,6) = 4.0D0*( UN - 2.0D0*Y0 - 4.0D0*X0 + 6.0D0*X0*Y0
+     &                        + 3.0D0*X0*X0 )
+        DFF(2,7) = 27.D0*X0*( UN - 2.0D0*Y0 - X0 )
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFE.EQ.'QU4') THEN
 
         X0 = X(1)
         Y0 = X(2)
         NNO = 4
-        NDERIV = 2
+        NDIM = 2
 
-        DFF(1,1) = - (UN-Y0)*UNS4
-        DFF(1,2) = (UN-Y0)*UNS4
-        DFF(1,3) = (UN+Y0)*UNS4
-        DFF(1,4) = - (UN+Y0)*UNS4
-        DFF(2,1) = - (UN-X0)*UNS4
-        DFF(2,2) = - (UN+X0)*UNS4
-        DFF(2,3) = (UN+X0)*UNS4
-        DFF(2,4) = (UN-X0)*UNS4
+        DFF(1,1) = -(UN-Y0)*UNS4
+        DFF(1,2) =  (UN-Y0)*UNS4
+        DFF(1,3) =  (UN+Y0)*UNS4
+        DFF(1,4) = -(UN+Y0)*UNS4
+        DFF(2,1) = -(UN-X0)*UNS4
+        DFF(2,2) = -(UN+X0)*UNS4
+        DFF(2,3) =  (UN+X0)*UNS4
+        DFF(2,4) =  (UN-X0)*UNS4
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'FACE8   ') THEN
+      ELSE IF (ELREFE.EQ.'QU8') THEN
 
         X0 = X(1)
         Y0 = X(2)
         NNO = 8
-        NDERIV = 2
+        NDIM = 2
 
         DFF(1,1) = -UNS4* (UN-Y0)* (-DEUX*X0-Y0)
         DFF(2,1) = -UNS4* (UN-X0)* (-DEUX*Y0-X0)
 
-        DFF(1,2) = UNS4* (UN-Y0)* (DEUX*X0-Y0)
+        DFF(1,2) =  UNS4* (UN-Y0)* ( DEUX*X0-Y0)
         DFF(2,2) = -UNS4* (UN+X0)* (-DEUX*Y0+X0)
 
         DFF(1,3) = UNS4* (UN+Y0)* (DEUX*X0+Y0)
         DFF(2,3) = UNS4* (UN+X0)* (DEUX*Y0+X0)
 
         DFF(1,4) = -UNS4* (UN+Y0)* (-DEUX*X0+Y0)
-        DFF(2,4) = UNS4* (UN-X0)* (DEUX*Y0-X0)
+        DFF(2,4) =  UNS4* (UN-X0)* ( DEUX*Y0-X0)
 
         DFF(1,5) = -DEUX*X0* (UN-Y0)*UNDEMI
         DFF(2,5) = - (UN-X0*X0)*UNDEMI
@@ -660,12 +725,12 @@ C     ------------------------------------------------------------------
         DFF(2,8) = -DEUX*Y0* (UN-X0)*UNDEMI
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'FACE9   ') THEN
+      ELSE IF (ELREFE.EQ.'QU9') THEN
 
         X0 = X(1)
         Y0 = X(2)
         NNO = 9
-        NDERIV = 2
+        NDIM = 2
 
         DFF(1,1) = DAL31(X0)*AL31(Y0)
         DFF(2,1) = AL31(X0)*DAL31(Y0)
@@ -687,175 +752,27 @@ C     ------------------------------------------------------------------
         DFF(2,9) = AL32(X0)*DAL32(Y0)
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'FACE3   ') THEN
-
-        NNO = 3
-        NDERIV = 2
-
-        DFF(1,1) = -UN
-        DFF(1,2) = +UN
-        DFF(1,3) = ZERO
-        DFF(2,1) = -UN
-        DFF(2,2) = ZERO
-        DFF(2,3) = +UN
-
-C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'FACE6   ') THEN
-
-        X0 = X(1)
-        Y0 = X(2)
-        NNO = 6
-        NDERIV = 2
-        AL = UN - X0 - Y0
-
-        DFF(1,1) = UN - QUATRE*AL
-        DFF(1,2) = -UN + QUATRE*X0
-        DFF(1,3) = ZERO
-        DFF(1,4) = QUATRE* (AL-X0)
-        DFF(1,5) = QUATRE*Y0
-        DFF(1,6) = -QUATRE*Y0
-        DFF(2,1) = UN - QUATRE*AL
-        DFF(2,2) = ZERO
-        DFF(2,3) = -UN + QUATRE*Y0
-        DFF(2,4) = -QUATRE*X0
-        DFF(2,5) = QUATRE*X0
-        DFF(2,6) = QUATRE* (AL-Y0)
-
-C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'TRIA3' .OR. ELREFE.EQ.'TRIA3H' .OR.
-     &         ELREFE.EQ.'TRIA3L' .OR. ELREFE.EQ.'TRIA6D  ' .OR.
-     &         ELREFE.EQ.'TRIL6   ' .OR. ELREFE.EQ.'TRIA6' .OR.
-     &         ELREFE.EQ.'TRIA6H' .OR. ELREFE.EQ.'TRII3   ' .OR.
-     &         ELREFE.EQ.'TRII6   ' .OR. ELREFE.EQ.'TRIA7 ' .OR.
-     &         ELREFE.EQ.'TRIA3D  ') THEN
-
-        X0 = X(1)
-        Y0 = X(2)
-        NDERIV = 2
-
-        IF (NNO.EQ.3) THEN
-          DFF(1,1) = ZERO
-          DFF(1,2) = -UNDEMI
-          DFF(1,3) = +UNDEMI
-          DFF(2,1) = +UNDEMI
-          DFF(2,2) = -UNDEMI
-          DFF(2,3) = ZERO
-        ELSE IF (NNO.EQ.6) THEN
-          DFF(1,1) = ZERO
-          DFF(1,2) = X0 + Y0 + UNDEMI
-          DFF(1,3) = X0 + UNDEMI
-          DFF(1,4) = - (UN+Y0)
-          DFF(1,5) = -DEUX*X0 - Y0 - UN
-          DFF(1,6) = Y0 + UN
-          DFF(2,1) = Y0 + UNDEMI
-          DFF(2,2) = X0 + Y0 + UNDEMI
-          DFF(2,3) = ZERO
-          DFF(2,4) = -DEUX*Y0 - X0 - UN
-          DFF(2,5) = - (UN+X0)
-          DFF(2,6) = X0 + UN
-        ELSE IF (NNO.EQ.7) THEN
-          DFF(1,1) = ZERO - TROIS* (Y0+UN)* (DEUX*X0+Y0+UN)/8.D0
-          DFF(1,2) = X0 + Y0 + UNDEMI -
-     &               TROIS* (Y0+UN)* (DEUX*X0+Y0+UN)/8.D0
-          DFF(1,3) = X0 + UNDEMI - TROIS* (Y0+UN)* (DEUX*X0+Y0+UN)/8.D0
-          DFF(1,4) = - (UN+Y0) + 12.0D0* (Y0+UN)* (DEUX*X0+Y0+UN)/8.D0
-          DFF(1,5) = -DEUX*X0 - Y0 - UN +
-     &               12.0D0* (Y0+UN)* (DEUX*X0+Y0+UN)/8.D0
-          DFF(1,6) = Y0 + UN + 12.0D0* (Y0+UN)* (DEUX*X0+Y0+UN)/8.D0
-          DFF(1,7) = -27.D0* (Y0+UN)* (DEUX*X0+Y0+UN)/8.D0
-          DFF(2,1) = Y0 + UNDEMI - TROIS* (X0+UN)* (DEUX*Y0+X0+UN)/8.D0
-          DFF(2,2) = X0 + Y0 + UNDEMI -
-     &               TROIS* (X0+UN)* (DEUX*Y0+X0+UN)/8.D0
-          DFF(2,3) = ZERO - TROIS* (X0+UN)* (DEUX*Y0+X0+UN)/8.D0
-          DFF(2,4) = -DEUX*Y0 - X0 - UN +
-     &               12.0D0* (X0+UN)* (DEUX*Y0+X0+UN)/8.D0
-          DFF(2,5) = - (UN+X0) + 12.0D0* (X0+UN)* (DEUX*Y0+X0+UN)/8.D0
-          DFF(2,6) = X0 + UN + 12.0D0* (X0+UN)* (DEUX*Y0+X0+UN)/8.D0
-          DFF(2,7) = -27.D0* (X0+UN)* (DEUX*Y0+X0+UN)/8.D0
-        END IF
-
-C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'QUAD4' .OR. ELREFE.EQ.'QUAD4L' .OR.
-     &         ELREFE.EQ.'QUAD8   ' .OR. ELREFE.EQ.'QUA8D   ' .OR.
-     &         ELREFE.EQ.'QUAS8   ' .OR. ELREFE.EQ.'QUAI4   ' .OR.
-     &         ELREFE.EQ.'QUAI8   ' .OR. ELREFE.EQ.'QUAD9   ' .OR.
-     &         ELREFE.EQ.'QUAD4D  ' .OR. ELREFE.EQ.'QUAS4') THEN
-
-        X0 = X(1)
-        Y0 = X(2)
-        NDERIV = 2
-
-        IF (NNO.EQ.4) THEN
-          DFF(1,1) = - (UN+Y0)/QUATRE
-          DFF(1,2) = - (UN-Y0)/QUATRE
-          DFF(1,3) = (UN-Y0)/QUATRE
-          DFF(1,4) = (UN+Y0)/QUATRE
-          DFF(2,1) = (UN-X0)/QUATRE
-          DFF(2,2) = - (UN-X0)/QUATRE
-          DFF(2,3) = - (UN+X0)/QUATRE
-          DFF(2,4) = (UN+X0)/QUATRE
-        ELSE IF (NNO.EQ.8) THEN
-          DFF(1,1) = UNS4* (UN+Y0)* (-Y0+DEUX*X0)
-          DFF(1,2) = UNS4* (UN-Y0)* (Y0+DEUX*X0)
-          DFF(1,3) = UNS4* (UN-Y0)* (-Y0+DEUX*X0)
-          DFF(1,4) = UNS4* (UN+Y0)* (Y0+DEUX*X0)
-          DFF(1,5) = -UNDEMI* (UN-Y0**2)
-          DFF(1,6) = -X0* (UN-Y0)
-          DFF(1,7) = UNDEMI* (UN-Y0**2)
-          DFF(1,8) = -X0* (UN+Y0)
-          DFF(2,1) = UNS4* (UN-X0)* (-X0+DEUX*Y0)
-          DFF(2,2) = UNS4* (UN-X0)* (X0+DEUX*Y0)
-          DFF(2,3) = UNS4* (UN+X0)* (-X0+DEUX*Y0)
-          DFF(2,4) = UNS4* (UN+X0)* (X0+DEUX*Y0)
-          DFF(2,5) = -Y0* (UN-X0)
-          DFF(2,6) = -UNDEMI* (UN-X0**2)
-          DFF(2,7) = -Y0* (UN+X0)
-          DFF(2,8) = UNDEMI* (UN-X0**2)
-        ELSE IF (NNO.EQ.9) THEN
-          DFF(1,1) = Y0* (Y0+UN)* (DEUX*X0-UN)/QUATRE
-          DFF(1,2) = Y0* (Y0-UN)* (DEUX*X0-UN)/QUATRE
-          DFF(1,3) = Y0* (Y0-UN)* (DEUX*X0+UN)/QUATRE
-          DFF(1,4) = Y0* (Y0+UN)* (DEUX*X0+UN)/QUATRE
-          DFF(1,5) = (Y0+UN)* (Y0-UN)* (DEUX*X0-UN)/ (-DEUX)
-          DFF(1,6) = -Y0* (Y0-UN)*X0
-          DFF(1,7) = (Y0-UN)* (Y0+UN)* (DEUX*X0+UN)/ (-DEUX)
-          DFF(1,8) = -Y0* (Y0+UN)*X0
-          DFF(1,9) = DEUX*X0* (Y0-UN)* (Y0+UN)
-          DFF(2,1) = X0* (X0-UN)* (DEUX*Y0+UN)/QUATRE
-          DFF(2,2) = X0* (X0-UN)* (DEUX*Y0-UN)/QUATRE
-          DFF(2,3) = X0* (X0+UN)* (DEUX*Y0-UN)/QUATRE
-          DFF(2,4) = X0* (X0+UN)* (DEUX*Y0+UN)/QUATRE
-          DFF(2,5) = - (X0-UN)*X0*Y0
-          DFF(2,6) = - (X0-UN)* (X0+UN)* (2*Y0-UN)/DEUX
-          DFF(2,7) = - (X0+UN)*X0*Y0
-          DFF(2,8) = - (X0-UN)* (X0+UN)* (2*Y0+UN)/DEUX
-          DFF(2,9) = DEUX*Y0* (X0-UN)* (X0+UN)
-        END IF
-
-C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'SEG2   ' .OR. ELREFE.EQ.'CABPOU ' .OR.
-     &         ELREFE.EQ.'THCOSE2') THEN
+      ELSE IF (ELREFE.EQ.'SE2') THEN
         NNO = 2
-        NDERIV = 1
+        NDIM = 1
 
         DFF(1,1) = -UNDEMI
         DFF(1,2) = UNDEMI
 
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'SEG3   ' .OR. ELREFE.EQ.'THCOSE3' .OR.
-     &         ELREFE.EQ.'MET3SEG3' .OR. ELREFE.EQ.'MET6SEG3') THEN
+      ELSE IF (ELREFE.EQ.'SE3') THEN
         X0 = X(1)
         NNO = 3
-        NDERIV = 1
+        NDIM = 1
 
         DFF(1,1) = X0 - UNDEMI
         DFF(1,2) = X0 + UNDEMI
         DFF(1,3) = -DEUX*X0
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFE.EQ.'MET3SEG4') THEN
+      ELSE IF (ELREFE.EQ.'SE4') THEN
         X0 = X(1)
         NNO = 4
-        NDERIV = 1
+        NDIM = 1
 
         X1 = -1.D0
         X2 = 1.D0
@@ -873,11 +790,16 @@ C     ------------------------------------------------------------------
         D4 = (X4-X1)* (X4-X2)* (X4-X3)
         DFF(1,4) = ((X0-X1)* (X0-X2)+ (X0-X1)* (X0-X3)+
      &             (X0-X2)* (X0-X3))/D4
+
+C     ------------------------------------------------------------------
+      ELSE
+        CALL ASSERT(.FALSE.)
       END IF
+
 
 C     ------------------------------------------------------------------
 
-      IF (DIMD.LT. (NNO*NDERIV)) THEN
+      IF (DIMD.LT. (NNO*NDIM)) THEN
         CALL UTMESS('F','ELRFDF',' ERREUR PROGRAMMEUR '//
      &          'ECRASEMENT DE DFF, DIMF EST INFERIEUR AU NB DE NOEUDS '
      &              //'* NB CMPS')

@@ -7,7 +7,7 @@
       CHARACTER*16                    TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ALGORITH  DATE 22/03/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,13 +57,12 @@ C
 C
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      PARAMETER     ( MXPARA = 10 )
-      INTEGER       IPAR(MXPARA), I, J, K, IPT, NBPF, NBPT
+      INTEGER       I, J, K
       REAL*8        UN, T, ALPHA
       CHARACTER*1   COLI
       CHARACTER*8   K8B
       CHARACTER*16  INTERP, PROLGD
-      CHARACTER*16  NOMCMD, NOMP(MXPARA)
+      CHARACTER*16  NOMCMD
       CHARACTER*19  CHANNO, FONCT
       LOGICAL       LFORC
       CHARACTER*1 K1BID
@@ -72,7 +71,6 @@ C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       IER = 0
-      EPSI = SQRT( R8PREM() )
       LFORC = .FALSE.
       NOMCMD = 'DYNA_TRAN_MODAL'
       CALL GETVIS('EXCIT','NUME_MODE',1,1,0,IBID,NF)
@@ -113,87 +111,17 @@ C
            CALL GETVID('EXCIT','FONC_MULT',I,1,1,FONCT ,N1)
          ENDIF
          IF (N1.NE.0) THEN
-            CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-            CALL FONBPA(FONCT,ZK16(LPROL),K8B,MXPARA,NBPF,NOMP)
-            IPAR(1) = 0
-            DO 22 I1 = 1,NBPF
-               IF (NOMP(I1).EQ.'INST') THEN
-                  IF (IPAR(1).EQ.0) THEN
-                     IPAR(1) = 1
-                  ELSE
-                     IER = IER + 1
-                   CALL UTDEBM('E','MDFEXT','ERREUR A L''INTERPOLATION')
-                     CALL UTIMPK('S',' FONCTION: ',1,FONCT)
-                     CALL UTIMPK('L',' PARAMETRE: ',1,'INST')
-                     CALL UTIMPK('S',' EN DOUBLE.',0,' ')
-                     CALL UTFINM()
-                     GOTO 9999
-                  ENDIF
+            DO 30 K = 1,NBPAS
+               CALL FOINTE('F',FONCT,1,'INST',T,ALPHA,IER)
+               IF (LFORC) THEN
+                  FEXT(NUMOR,K) = ALPHA
+               ELSE
+                 DO 32 J = 1,NEQGEN
+                   FEXT(J,K) = FEXT(J,K) + ALPHA * ZR(JVALE+J-1)
+ 32              CONTINUE
                ENDIF
- 22         CONTINUE
-            IF (IPAR(1).EQ.0) THEN
-               IER = IER + 1
-               CALL UTDEBM('E','MDFEXT','ERREUR A L''INTERPOLATION')
-               CALL UTIMPK('S',' FONCTION: ',1,FONCT)
-               CALL UTIMPK('L',' PARAMETRES ATTENDUS:',1,'INST')
-               CALL UTIMPK('L',' PARAMETRES RECUS   :',NBPF,NOMP)
-               CALL UTFINM()
-               GOTO 9999
-            ENDIF
-C
-C           --- FONCTION FORMULE ---
-            IF (ZK16(LPROL).EQ.'INTERPRE') THEN
-               DO 30 K = 1,NBPAS
-                  CALL FIINTE('F',FONCT,NBPF,IPAR,T,ALPHA,IER)
-                  IF (LFORC) THEN
-                    FEXT(NUMOR,K) = ALPHA
-                  ELSE
-                    DO 32 J = 1,NEQGEN
-                      FEXT(J,K) = FEXT(J,K) + ALPHA * ZR(JVALE+J-1)
- 32                 CONTINUE
-                  ENDIF
-                  T = TINIT + ( K * DT )
- 30            CONTINUE
-C
-C           --- FONCTION CLASSIQUE ---
-            ELSEIF (ZK16(LPROL).EQ.'FONCTION') THEN
-               CALL JEVEUO(FONCT//'.VALE','L',LVAR)
-               CALL JELIRA(FONCT//'.VALE','LONUTI',NBPT,K1BID)
-               NBPT   = NBPT / 2
-               LFON   = LVAR + NBPT
-               INTERP = ZK16(LPROL+1)
-               PROLGD = ZK16(LPROL+4)
-               IPT = 1
-               DO 40 K = 1,NBPAS
-                  CALL FOLOCX(ZR(LVAR),NBPT,T,PROLGD,IPT,EPSI,COLI,IRET)
-                  IF (IRET.NE.0) THEN
-                     IER = IER + 1
-                     CALL UTDEBM('E','MDFEXT',
-     +                           'PROBLEME RENCONTRE DANS FOLOCX')
-                     CALL UTIMPK('L',' POUR LA FONCTION:',1,FONCT)
-                     CALL UTFINM()
-                     GOTO 9999
-                  ENDIF
-                  CALL FOCOLI ( IPT,COLI,INTERP,ZR(LVAR),ZR(LFON),
-     +                                          T , ALPHA , IER ,
-     +                   FONCT,ZK16(LPROL),MXPARA,NOMP,IPAR,'INST',1,T )
-                  IF (IER.NE.0) GOTO 9999
-                  IF (LFORC) THEN
-                     FEXT(NUMOR,K) = ALPHA
-                  ELSE
-                     DO 42 J = 1,NEQGEN
-                        FEXT(J,K) = FEXT(J,K) + ALPHA * ZR(JVALE+J-1)
- 42                  CONTINUE
-                  ENDIF
-                  T = TINIT + ( K * DT )
- 40            CONTINUE
-C
-            ELSE
-               IER = IER + 1
-               CALL UTMESS('E','MDFEXT',
-     +                     'FONCTION '//FONCT//' NON TRAITEE.')
-               GOTO 9999
-            ENDIF
+               T = TINIT + ( K * DT )
+ 30         CONTINUE
 C
          ELSE
             ALPHA = UN

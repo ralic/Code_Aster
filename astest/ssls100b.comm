@@ -1,21 +1,21 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUS PRESSION DKT  170 N - 296 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(    CODE=_F(  NOM = 'SSLS100B',NIV_PUB_WEB='INTERNET') )
@@ -70,110 +70,88 @@ CHPE=AFFE_CHAR_MECA(   MODELE=MODEL,
                       PESANTEUR=( 10., 0., 0., -1.,                 )   )
 
 CARELEM=AFFE_CARA_ELEM(   MODELE=MODEL,
-                               COQUE=_F(  
+                               COQUE=_F(
        GROUP_MA = 'TOUT',
   EPAIS = 0.1) )
 
-MATELEM=CALC_MATR_ELEM(   MODELE=MODEL,        CHARGE=CINE,
-                               CARA_ELEM=CARELEM,   CHAM_MATER=CHMAT,
-                               OPTION='RIGI_MECA' )
-
-VEPR=CALC_VECT_ELEM(   CHARGE=(CINE, PRES, ),  CARA_ELEM=CARELEM,
-                               CHAM_MATER=CHMAT, OPTION='CHAR_MECA' )
-
-VEF3=CALC_VECT_ELEM(   CHARGE=(CINE, CHF3, ),  CARA_ELEM=CARELEM,
-                               CHAM_MATER=CHMAT, OPTION='CHAR_MECA' )
-
-VEPE=CALC_VECT_ELEM(   CHARGE=(CINE, CHPE, ),  CARA_ELEM=CARELEM,
-                               CHAM_MATER=CHMAT, OPTION='CHAR_MECA' )
-
-NU=NUME_DDL(         MATR_RIGI=MATELEM )
-
-MATASS=ASSE_MATRICE(     MATR_ELEM=MATELEM,   NUME_DDL=NU )
-
-VEPRAS=ASSE_VECTEUR(     VECT_ELEM=VEPR,      NUME_DDL=NU )
-
-VEF3AS=ASSE_VECTEUR(     VECT_ELEM=VEF3,      NUME_DDL=NU )
-
-VEPEAS=ASSE_VECTEUR(     VECT_ELEM=VEPE,      NUME_DDL=NU )
-
-MATASS=FACT_LDLT(      reuse=MATASS,  MATR_ASSE=MATASS,
-                                PRE_COND='DIAG'                 )
-
-DEPR=RESO_LDLT(        MATR_FACT=MATASS,   CHAM_NO=VEPRAS)
-
-DEF3=RESO_LDLT(        MATR_FACT=MATASS,   CHAM_NO=VEF3AS)
-
-DEPE=RESO_LDLT(        MATR_FACT=MATASS,   CHAM_NO=VEPEAS)
+DEP=MACRO_ELAS_MULT(MODELE=MODEL,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CARELEM,
+                    CHAR_MECA_GLOBAL=CINE,
+                    CAS_CHARGE=(_F(NOM_CAS='CHARGE1',
+                                   CHAR_MECA=PRES,),
+                                _F(NOM_CAS='CHARGE2',
+                                   CHAR_MECA=CHF3,),
+                                _F(NOM_CAS='CHARGE3',
+                                   CHAR_MECA=CHPE,),),);
 
 #--------------------------------------------------------------------
 
-TEST_RESU(CHAM_NO=(
+TEST_RESU(RESU=(
      # DEPLACEMENTS PRESSION
-        
-          _F(  CHAM_GD = DEPR, CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # O
-            NOEUD = 'O',          NOM_CMP = 'DZ',     VALE = -170.6251),
-          _F(  CHAM_GD = DEPR, CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # A
-            NOEUD = 'A',          NOM_CMP = 'DZ',     VALE = 0.),
-          _F(  CHAM_GD = DEPR, CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # B
-            NOEUD = 'B',          NOM_CMP = 'DZ',     VALE = 0.),
-          _F(  CHAM_GD = DEPR, CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # C
-            NOEUD = 'C',          NOM_CMP = 'DZ',     VALE = 0.),
-          _F(  CHAM_GD = DEPR, CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # D
-            NOEUD = 'D',          NOM_CMP = 'DZ',        VALE = -95.9766),
-          _F(  CHAM_GD = DEPR, CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # E
-            NOEUD = 'E',          NOM_CMP = 'DZ',        VALE = -95.9766),
-          _F(  CHAM_GD = DEPR, CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # F
-            NOEUD = 'F',          NOM_CMP = 'DZ',        VALE = -78.897),
+
+          _F(  RESULTAT = DEP, NUME_ORDRE=1, NOM_CHAM='DEPL', CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # O
+REFERENCE='ANALYTIQUE', NOEUD = 'O', NOM_CMP = 'DZ', VALE = -170.6251),
+          _F(  RESULTAT = DEP, NUME_ORDRE=1, NOM_CHAM='DEPL', CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # A
+REFERENCE='ANALYTIQUE', NOEUD = 'A', NOM_CMP = 'DZ', VALE = 0.),
+          _F(  RESULTAT = DEP, NUME_ORDRE=1, NOM_CHAM='DEPL', CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # B
+REFERENCE='ANALYTIQUE', NOEUD = 'B',          NOM_CMP = 'DZ',     VALE = 0.),
+          _F(  RESULTAT = DEP, NUME_ORDRE=1, NOM_CHAM='DEPL', CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # C
+REFERENCE='ANALYTIQUE', NOEUD = 'C',          NOM_CMP = 'DZ',     VALE = 0.),
+          _F(  RESULTAT = DEP, NUME_ORDRE=1, NOM_CHAM='DEPL', CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # D
+REFERENCE='ANALYTIQUE', NOEUD = 'D', NOM_CMP = 'DZ', VALE = -95.9766),
+          _F(  RESULTAT = DEP, NUME_ORDRE=1, NOM_CHAM='DEPL', CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # E
+REFERENCE='ANALYTIQUE', NOEUD = 'E',          NOM_CMP = 'DZ',        VALE = -95.9766),
+          _F(  RESULTAT = DEP, NUME_ORDRE=1, NOM_CHAM='DEPL', CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # F
+REFERENCE='ANALYTIQUE', NOEUD = 'F',          NOM_CMP = 'DZ',        VALE = -78.897),
      # DEPLACEMENTS F3
-        
-          _F(  CHAM_GD = DEF3, CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # O
-            NOEUD = 'O',          NOM_CMP = 'DZ',     VALE = -170.6251),
-          _F(  CHAM_GD = DEF3, CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # A
-            NOEUD = 'A',          NOM_CMP = 'DZ',     VALE = 0.),
-          _F(  CHAM_GD = DEF3, CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # B
-            NOEUD = 'B',          NOM_CMP = 'DZ',     VALE = 0.),
-          _F(  CHAM_GD = DEF3, CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # C
-            NOEUD = 'C',          NOM_CMP = 'DZ',     VALE = 0.),
-          _F(  CHAM_GD = DEF3, CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # D
-            NOEUD = 'D',          NOM_CMP = 'DZ',        VALE = -95.9766),
-          _F(  CHAM_GD = DEF3, CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # E
-            NOEUD = 'E',          NOM_CMP = 'DZ',        VALE = -95.9766),
-          _F(  CHAM_GD = DEF3, CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # F
-            NOEUD = 'F',          NOM_CMP = 'DZ',        VALE = -78.897),
+
+          _F(  RESULTAT = DEP, NUME_ORDRE=2, NOM_CHAM='DEPL', CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # O
+REFERENCE='ANALYTIQUE', NOEUD = 'O', NOM_CMP = 'DZ', VALE = -170.6251),
+          _F(  RESULTAT = DEP, NUME_ORDRE=2, NOM_CHAM='DEPL', CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # A
+REFERENCE='ANALYTIQUE', NOEUD = 'A', NOM_CMP = 'DZ', VALE = 0.),
+          _F(  RESULTAT = DEP, NUME_ORDRE=2, NOM_CHAM='DEPL', CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # B
+REFERENCE='ANALYTIQUE', NOEUD = 'B',          NOM_CMP = 'DZ',     VALE = 0.),
+          _F(  RESULTAT = DEP, NUME_ORDRE=2, NOM_CHAM='DEPL', CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # C
+REFERENCE='ANALYTIQUE', NOEUD = 'C',          NOM_CMP = 'DZ',     VALE = 0.),
+          _F(  RESULTAT = DEP, NUME_ORDRE=2, NOM_CHAM='DEPL', CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # D
+REFERENCE='ANALYTIQUE', NOEUD = 'D', NOM_CMP = 'DZ', VALE = -95.9766),
+          _F(  RESULTAT = DEP, NUME_ORDRE=2, NOM_CHAM='DEPL', CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # E
+REFERENCE='ANALYTIQUE', NOEUD = 'E',          NOM_CMP = 'DZ',        VALE = -95.9766),
+          _F(  RESULTAT = DEP, NUME_ORDRE=2, NOM_CHAM='DEPL', CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # F
+REFERENCE='ANALYTIQUE', NOEUD = 'F',          NOM_CMP = 'DZ',        VALE = -78.897),
      # DEPLACEMENTS PESANTEUR
-        
-          _F(  CHAM_GD = DEPE, CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # O
-            NOEUD = 'O',          NOM_CMP = 'DZ',     VALE = -170.6251),
-          _F(  CHAM_GD = DEPE, CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # A
-            NOEUD = 'A',          NOM_CMP = 'DZ',     VALE = 0.),
-          _F(  CHAM_GD = DEPE, CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # B
-            NOEUD = 'B',          NOM_CMP = 'DZ',     VALE = 0.),
-          _F(  CHAM_GD = DEPE, CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # C
-            NOEUD = 'C',          NOM_CMP = 'DZ',     VALE = 0.),
-          _F(  CHAM_GD = DEPE, CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # D
-            NOEUD = 'D',          NOM_CMP = 'DZ',        VALE = -95.9766),
-          _F(  CHAM_GD = DEPE, CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # E
-            NOEUD = 'E',          NOM_CMP = 'DZ',        VALE = -95.9766),
-          _F(  CHAM_GD = DEPE, CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # F
-            NOEUD = 'F',          NOM_CMP = 'DZ',        VALE = -78.897))
-          )
+
+          _F(  RESULTAT = DEP, NUME_ORDRE=3, NOM_CHAM='DEPL', CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # O
+REFERENCE='ANALYTIQUE', NOEUD = 'O', NOM_CMP = 'DZ', VALE = -170.6251),
+          _F(  RESULTAT = DEP, NUME_ORDRE=3, NOM_CHAM='DEPL', CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # A
+REFERENCE='ANALYTIQUE', NOEUD = 'A', NOM_CMP = 'DZ', VALE = 0.),
+          _F(  RESULTAT = DEP, NUME_ORDRE=3, NOM_CHAM='DEPL', CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # B
+REFERENCE='ANALYTIQUE', NOEUD = 'B',          NOM_CMP = 'DZ',     VALE = 0.),
+          _F(  RESULTAT = DEP, NUME_ORDRE=3, NOM_CHAM='DEPL', CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # C
+REFERENCE='ANALYTIQUE', NOEUD = 'C',          NOM_CMP = 'DZ',     VALE = 0.),
+          _F(  RESULTAT = DEP, NUME_ORDRE=3, NOM_CHAM='DEPL', CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # D
+REFERENCE='ANALYTIQUE', NOEUD = 'D', NOM_CMP = 'DZ', VALE = -95.9766),
+          _F(  RESULTAT = DEP, NUME_ORDRE=3, NOM_CHAM='DEPL', CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # E
+REFERENCE='ANALYTIQUE', NOEUD = 'E',          NOM_CMP = 'DZ',        VALE = -95.9766),
+          _F(  RESULTAT = DEP, NUME_ORDRE=3, NOM_CHAM='DEPL', CRITERE = 'RELATIF',  PRECISION = 0.5E-2,  # F
+REFERENCE='ANALYTIQUE', NOEUD = 'F',          NOM_CMP = 'DZ',        VALE = -78.897),),
+          );
 
 #--------------------------------------------------------------------
 
-EFPR=CALC_CHAM_ELEM(  MODELE=MODEL,        DEPL=DEPR,
-                          OPTION='EFGE_ELNO_DEPL',
-                           CHAM_MATER=CHMAT,  CARA_ELEM=CARELEM )
-
-COPR=CALC_CHAM_ELEM(  MODELE=MODEL,        DEPL=DEPR,
-                          OPTION='SIGM_ELNO_DEPL',
-                           CHAM_MATER=CHMAT,  CARA_ELEM=CARELEM )
+DEP=CALC_ELEM( reuse= DEP ,RESULTAT= DEP ,MODELE=MODEL,
+               NUME_ORDRE=1,CHAM_MATER=CHMAT,
+               CARA_ELEM=CARELEM,OPTION=('EFGE_ELNO_DEPL',),
+                )
 
 #--------------------------------------------------------------------
-RELEVE_1=POST_RELEVE_T( 
-                   ACTION=_F(  NOEUD = ( 'O',  'A',  'B',  'C',  'D',  'E',  'F', ), 
+RELEVE_1=POST_RELEVE_T(
+                   ACTION=_F(  NOEUD = ( 'O',  'A',  'B',  'C',  'D',  'E',  'F', ),
                             INTITULE = 'EFGE_R',
-                            CHAM_GD = EFPR,
+                            RESULTAT=DEP,
+                            NUME_ORDRE=1,
+                            NOM_CHAM='EFGE_ELNO_DEPL',
                             NOM_CMP = ( 'MXX', 'MYY', ),
                             OPERATION = 'EXTRACTION')
                           )
@@ -182,6 +160,7 @@ TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'O'),
                   NOM_PARA='MXX',
+                 REFERENCE='ANALYTIQUE',
                  PRECISION=0.5E-2,
                       VALE=-0.08125       )
 
@@ -189,6 +168,7 @@ TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'O'),
                   NOM_PARA='MYY',
+                 REFERENCE='ANALYTIQUE',
                  PRECISION=0.5E-2,
                       VALE=-0.08125       )
 
@@ -196,6 +176,7 @@ TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'A'),
                   NOM_PARA='MXX',
+                 REFERENCE='ANALYTIQUE',
                  PRECISION=3.0E-2,
                       VALE=0.1250       )
 
@@ -203,6 +184,7 @@ TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'A'),
                   NOM_PARA='MYY',
+                 REFERENCE='ANALYTIQUE',
                  PRECISION=9.0E-2,
                       VALE=0.0375       )
 
@@ -210,6 +192,7 @@ TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'B'),
                   NOM_PARA='MXX',
+                 REFERENCE='ANALYTIQUE',
                  PRECISION=3.0E-2,
                       VALE=0.08125       )
 
@@ -217,6 +200,7 @@ TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'B'),
                   NOM_PARA='MYY',
+                 REFERENCE='ANALYTIQUE',
                  PRECISION=3.0E-2,
                       VALE=0.08125       )
 
@@ -224,6 +208,7 @@ TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'C'),
                   NOM_PARA='MXX',
+                 REFERENCE='ANALYTIQUE',
                  PRECISION=9.0E-2,
                       VALE=0.0375       )
 
@@ -231,6 +216,7 @@ TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'C'),
                   NOM_PARA='MYY',
+                 REFERENCE='ANALYTIQUE',
                  PRECISION=3.0E-2,
                       VALE=0.1250       )
 
@@ -238,6 +224,7 @@ TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'D'),
                   NOM_PARA='MXX',
+                 REFERENCE='ANALYTIQUE',
                  PRECISION=2.5E-2,
                       VALE=-0.02969       )
 
@@ -245,6 +232,7 @@ TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'D'),
                   NOM_PARA='MYY',
+                 REFERENCE='ANALYTIQUE',
                  PRECISION=2.0E-2,
                       VALE=-0.05156       )
 
@@ -252,6 +240,7 @@ TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'E'),
                   NOM_PARA='MXX',
+                 REFERENCE='ANALYTIQUE',
                  PRECISION=2.5E-2,
                       VALE=-0.05156       )
 
@@ -259,6 +248,7 @@ TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'E'),
                   NOM_PARA='MYY',
+                 REFERENCE='ANALYTIQUE',
                  PRECISION=2.5E-2,
                       VALE=-0.02969       )
 
@@ -266,6 +256,7 @@ TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'F'),
                   NOM_PARA='MXX',
+                 REFERENCE='ANALYTIQUE',
                  PRECISION=2.0E-2,
                       VALE=-0.02925       )
 
@@ -273,6 +264,7 @@ TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'F'),
                   NOM_PARA='MYY',
+                 REFERENCE='ANALYTIQUE',
                  PRECISION=2.5E-2,
                       VALE=-0.02925       )
 

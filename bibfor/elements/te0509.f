@@ -1,6 +1,6 @@
       SUBROUTINE TE0509 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,8 +118,7 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
-      CHARACTER*24       CARAC,FF
-      CHARACTER*8        ELREFE
+      INTEGER            NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO
       REAL*8             MX0Y, MX0Z
       REAL*8             DFDX(9),DFDY(9)
 C
@@ -139,13 +138,11 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*6        PGC
-      COMMON  / NOMAJE / PGC
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
 C --- INITIALISATIONS :
 C     ---------------
-      CALL ELREF1(ELREFE)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
       ZERO   = 0.0D0
       SPHIDS = ZERO
       MX0Y   = ZERO
@@ -153,23 +150,6 @@ C     ---------------
       U1Y    = ZERO
       U1Z    = ZERO
       SOMEG2 = ZERO
-C
-C --- CARACTERISTIQUES DU TYPE D'ELEMENT
-C --- GEOMETRIE ET INTEGRATION :
-C     ------------------------
-C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF   ,'L',IFF   )
-      IPOIDS = IFF
-      IVF    = IPOIDS+NPG1
-      IDFDE  = IVF   +NPG1*NNO
-      IDFDK  = IDFDE +NPG1*NNO
-      NPG    = NPG1
 C
 C --- RECUPERATION DES COORDONNEES DES CONNECTIVITES DE L'ELEMENT :
 C     -----------------------------------------------------------
@@ -204,8 +184,8 @@ C   ---    CALCUL DES DERIVEES DES FONCTIONS DE FORME  ET DU PRODUIT
 C   ---    JACOBIEN*POIDS_INTEGRATION (DANS LA VARIABLE POIDS)
 C   ---    AU POINT D'INTEGRATION COURANT :
 C          ------------------------------
-            CALL DFDM2D ( NNO,ZR(IPOIDS+IGAU-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     +                    ZR(IGEOM),DFDX,DFDY,POIDS )
+            CALL DFDM2D(NNO,IGAU,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,
+     &                  POIDS)
 C
 C   ---    CALCUL DE SOMME/S_ELEMENT(PHI.DS) :
 C          ---------------------------------
@@ -249,8 +229,8 @@ C ---    CALCUL DES DERIVEES DES FONCTIONS DE FORME  ET DU PRODUIT
 C ---    JACOBIEN*POIDS_INTEGRATION (DANS LA VARIABLE POIDS)
 C ---    AU POINT D'INTEGRATION COURANT :
 C        ------------------------------
-          CALL DFDM2D ( NNO,ZR(IPOIDS+IGAU-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     +                  ZR(IGEOM),DFDX,DFDY,POIDS )
+          CALL DFDM2D(NNO,IGAU,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,
+     &                POIDS)
 C
 C ---    CALCUL DES CONTRAINTES SIGMA_XY = D(PSI_Y)/DY ET
 C ---    SIGMA_XZ = D(PSI_Y)/DZ  AU POINT D'INTEGRATION COURANT :
@@ -305,8 +285,7 @@ C ---    CALCUL DES DERIVEES DES FONCTIONS DE FORME  ET DU PRODUIT
 C ---    JACOBIEN*POIDS_INTEGRATION (DANS LA VARIABLE POIDS)
 C ---    AU POINT D'INTEGRATION COURANT :
 C        ------------------------------
-          CALL DFDM2D ( NNO,ZR(IPOIDS+IGAU-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     +                  ZR(IGEOM),DFDX,DFDY,POIDS )
+          CALL DFDM2D(NNO,IGAU,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
 C
 C ---    CALCUL DES CONTRAINTES SIGMA_XY = D(PSI_Z)/DY ET
 C ---    SIGMA_XZ = D(PSI_Z)/DZ  AU POINT D'INTEGRATION COURANT :
@@ -349,14 +328,14 @@ C
 C --- BOUCLE SUR LES POINTS D'INTEGRATION :
 C     -----------------------------------
         DO 70 IGAU = 1, NPG
-          K=(IGAU-1)*NNO
+          K=(IGAU-1)*NNO*2
 C
 C ---    CALCUL DES DERIVEES DES FONCTIONS DE FORME  ET DU PRODUIT
 C ---    JACOBIEN*POIDS_INTEGRATION (DANS LA VARIABLE POIDS)
 C ---    AU POINT D'INTEGRATION COURANT :
 C        ------------------------------
-          CALL DFDM2D ( NNO,ZR(IPOIDS+IGAU-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     +                  ZR(IGEOM),DFDX,DFDY,POIDS )
+          CALL DFDM2D(NNO,IGAU,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
+
 C
 C ---    CALCUL D(PSI_Y)/DY, D(PSI_Y)/DZ ET D(PSI_Z)/DY, D(PSI_Z)/DZ
 C ---    AU POINT D'INTEGRATION COURANT :
@@ -416,8 +395,8 @@ C   ---    CALCUL DES DERIVEES DES FONCTIONS DE FORME  ET DU PRODUIT
 C   ---    JACOBIEN*POIDS_INTEGRATION (DANS LA VARIABLE POIDS)
 C   ---    AU POINT D'INTEGRATION COURANT :
 C          ------------------------------
-            CALL DFDM2D ( NNO,ZR(IPOIDS+IGAU-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     +                    ZR(IGEOM),DFDX,DFDY,POIDS )
+            CALL DFDM2D(NNO,IGAU,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,
+     &                  POIDS)
 C
 C   ---    CALCUL DE SOMME/S_ELEMENT(OMEGA**2.DS) :
 C          --------------------------------------

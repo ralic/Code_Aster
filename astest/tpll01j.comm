@@ -1,4 +1,4 @@
-# MODIF  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 # TITRE Calcul d'indicateur d'erreur en thermique lineaire
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -100,16 +100,16 @@ for k in range(1,nbcalc):
 TEST_RESU(RESU=(       
             _F( RESULTAT = RESU[1],          NUME_ORDRE = 0, 
                 NOM_CHAM = 'ERTH_ELEM_TEMP', MAILLE = 'MA1', 
-                POINT =1,                    PRECISION = 5.E-8,
+                POINT =1,                    PRECISION = 1.E-5,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
-                VALE = 4.1591873545047E-05,
+                VALE = 4.1591876225226E-05,
                 VERSION='V6.2.1',            CRITERE='RELATIF')))
 TEST_RESU(RESU=(       
             _F( RESULTAT = RESU[1],          NUME_ORDRE = 0, 
                 NOM_CHAM = 'ERTH_ELNO_ELEM', MAILLE = 'MA1',
-                NOEUD = 'NO4',               PRECISION = 5.E-8,
+                NOEUD = 'NO4',               PRECISION = 1.E-5,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
-                VALE = 4.1591873545047E-05,
+                VALE = 4.1591876225226E-05,
                 VERSION='V6.2.1',            CRITERE='RELATIF')))
 ###IMPR_RESU ( RESU=_F(MAILLAGE=M[2], IMPR_COOR='OUI') )
 TEST_RESU(RESU=(       
@@ -117,7 +117,7 @@ TEST_RESU(RESU=(
                 NOM_CHAM = 'ERTH_ELEM_TEMP', MAILLE = 'M1', 
                 POINT =1,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
-                VALE = 4.3627678192699E-05,  PRECISION = 1.E-3,
+                VALE = 4.3627678192699E-05,  PRECISION = 1.E-5,
                 VERSION='ASTER V7.1.9/HOMARD V6.2', CRITERE='RELATIF')))
 
 FIN()

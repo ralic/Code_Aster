@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/10/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -435,7 +435,7 @@ C
             WRITE(IFR,4002) IV
             WRITE(IFR,*)
             WRITE(CHAM19(17:19),'(I3.3)') IV
-            CALL IRDEPL(CHAM19,IFR,'RESULTAT',K8BID,K8BID,K8BID,NOMSYM,
+            CALL IRDEPL(CHAM19,IFR,'RESULTAT',K8BID,K8BID,NOMSYM,
      &             IBID,IBID,IBID,IBID,IBID,IBID,LBID,LCOR,NBNO,IBID,6,
      &             NOMCMP,LSUP,RBID,LINF,RBID,LMAX,LMIN,LRESU,FORMAR,
      &             NIVE)

@@ -1,6 +1,6 @@
       SUBROUTINE TE0079 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,16 +28,13 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
-      CHARACTER*24       CARAC,FF
-      CHARACTER*8        ELREFE
       REAL*8             DFDX(9),DFDY(9),POIDS,R
       REAL*8             COORSE(18),VECTT(9)
-      INTEGER            NNO,KP,NPG1,NPG2,I,K,IVECTT,ISOUR
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM
+      INTEGER            NDIM,NNO,NNOS,KP,NPG,I,K,IVECTT,ISOUR
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,JGANO
       INTEGER            NNOP2,C(6,9),ISE,NSE
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -54,26 +51,20 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CALL ELREF1(ELREFE)
+      CALL ELREF4(' ','MASS',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS=IFF + NPG1*(1+3*NNO)
-      IVF   =IPOIDS+NPG2
-      IDFDE =IVF   +NPG2*NNO
-      IDFDK =IDFDE +NPG2*NNO
+
+C      CALL TECAEL(IADZI,IAZK24)
+C      write(6,*) '--->>> OPTION ', OPTION
+C      write(6,1000) NOMTE, ZK24(IAZK24-1+3)(1:8), NPG, NNO
+C 1000 FORMAT(1P,'-->> maille ',A16,' ',A8, ' NPG ', I2, ' NNO = ',I2 )
+
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PSOURCR','L',ISOUR)
       CALL JEVECH('PVECTTR','E',IVECTT)
 C
-      CALL CONNEC ( NOMTE, ZR(IGEOM), NSE, NNOP2, C )
+      CALL CONNEC ( NOMTE, NSE, NNOP2, C )
 
       DO 10 I=1,NNOP2
         VECTT(I)=0.D0
@@ -88,10 +79,9 @@ C BOUCLE SUR LES SOUS-ELEMENTS
             COORSE(2*(I-1)+J) = ZR(IGEOM-1+2*(C(ISE,I)-1)+J)
 105     CONTINUE
 
-        DO 101 KP=1,NPG2
+        DO 101 KP=1,NPG
           K=(KP-1)*NNO
-          CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                  COORSE,DFDX,DFDY,POIDS )
+          CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,COORSE,DFDX,DFDY,POIDS )
           IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
              R = 0.D0
              DO 102 I=1,NNO
@@ -100,6 +90,8 @@ C BOUCLE SUR LES SOUS-ELEMENTS
              POIDS = POIDS*R
           ENDIF
 CDIR$ IVDEP
+CCC      write(6,*)  '--->>> ZR(ISOUR+',KP,'-1) = ', ZR(ISOUR+KP-1)
+
           DO 103 I=1,NNO
              K=(KP-1)*NNO
              VECTT(C(ISE,I)) = VECTT(C(ISE,I)) + POIDS

@@ -1,4 +1,5 @@
-# MODIF  DATE 25/08/2003   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 08/12/2003   AUTEUR JMBHH01 J.M.PROIX 
+# RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE COUDE EN FLEXION EN ELASTOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +33,7 @@ def EXTRACT(Table,Para,Champ):
   __nb_temp = 0
 # Boucle de lecture sur les temps
   while 1: 
-#   Si on n'a pas lu tous les temps
+#   Si on n a pas lu tous les temps
     try:
 #     alors on lit les 2 champs abscisse et ordonnee
         __Result[__nb_temp][0] = Table[Para,__nb_temp+1]
@@ -60,8 +61,8 @@ def EXTRACT(Table,Para,Champ):
 #           -------------------------------------
 # USAGE :
 #  RESULTAT : resultat
-#  GROUP_NO_ORIG : un groupe d'un noeud definissant l'entree du coude (A)
-#  GROUP_NO_EXTR : un groupe d'un noeud definissant la sortie du coude (B)
+#  GROUP_NO_ORIG : un groupe d un noeud definissant l entree du coude (A)
+#  GROUP_NO_EXTR : un groupe d un noeud definissant la sortie du coude (B)
 # 
 #              /
 #           A /
@@ -153,8 +154,8 @@ def macr_rota_globale_ops(self,RESULTAT,GROUP_NO_ORIG,GROUP_NO_EXTR,**args):
 #           -----------------------------------------
 # USAGE :
 #  RESULTAT : resultat
-#  GROUP_NO_ORIG : un groupe d'un noeud definissant l'entree du coude (A)
-#  GROUP_NO_EXTR : un groupe d'un noeud definissant la sortie du coude (B)
+#  GROUP_NO_ORIG : un groupe d un noeud definissant l entree du coude (A)
+#  GROUP_NO_EXTR : un groupe d un noeud definissant la sortie du coude (B)
 # 
 #              /
 #           A /
@@ -176,7 +177,7 @@ MACR_ROTA_GLOBALE=MACRO(nom="MACR_ROTA_GLOBALE",op=macr_rota_globale_ops,sd_prod
 
 # ======================================================================
 
-DEBUT( CODE=_F( NOM = 'SSNL117B',NIV_PUB_WEB='INTERNET'),)
+DEBUT( CODE=_F( NOM = 'SSNL117B',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON')
 
 
 MOMENTMZ=1.
@@ -315,13 +316,15 @@ U1=STAT_NON_LINE(
               )
 
 U1=CALC_ELEM( reuse=U1,
-              OPTION=('EPSI_ELGA_DEPL', 'SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA', 'EQUI_ELGA_SIGM', 'EQUI_ELGA_EPSI'),
+              OPTION=('EPSI_ELGA_DEPL', 'SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA', 
+              'EQUI_ELGA_SIGM', 'EQUI_ELGA_EPSI','DEGE_ELNO_DEPL'),
               RESULTAT=U1,
               MODELE=MO,
               CHAM_MATER=CHMAT,
               CARA_ELEM=CAREL)
 
 #IMPR_RESU(MODELE=MO,RESU=(_F(FORMAT='RESULTAT',RESULTAT=U1,MAILLE=M1,NUME_ORDRE=8,),))
+
 
 U1=CALC_ELEM( reuse=U1,
               OPTION=('VALE_NCOU_MAXI'),
@@ -361,7 +364,7 @@ NCOU_I=CREA_CHAMP( OPERATION='EXTR',
 
 #IMPR_RESU(RESU=_F( CHAM_GD=NCOU_I), ) ;
 
-# CALCUL DE LA ROTATION "GLOBALE" DANS LE COUDE EN FONCTION DE L'INSTANT
+# CALCUL DE LA ROTATION "GLOBALE" DANS LE COUDE EN FONCTION DE L INSTANT
 
 RG = MACR_ROTA_GLOBALE( RESULTAT=U1, 
                         GROUP_NO_ORIG='B', 
@@ -411,7 +414,7 @@ TEST_RESU(RESU=(
           )
 
 
-# NON REGRESSION :
+# NON REGRESSION 
 
 
 TEST_RESU(CHAM_ELEM=(
@@ -523,6 +526,78 @@ TEST_RESU(RESU=(
                   PRECISION = 0.01, NUME_ORDRE = 8, VALE=-8.940141939E-05,
                   REFERENCE='NON_REGRESSION',),
                 ) );
+
+# A l extremite D
+TAB1=POST_RELEVE_T(ACTION=_F(INTITULE='POST',
+                             GROUP_NO='D',
+                             RESULTAT=U1,
+                             NOM_CHAM='DEGE_ELNO_DEPL',
+                             TOUT_CMP='OUI',
+                             OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=TAB1)
+
+# partie droite
+K=1.
+PI=Numeric.pi
+Lambda=EP*RC/RMOY/RMOY
+EPS = EXTRACT(TAB1,'INST','EPXX')
+CX  = EXTRACT(TAB1,'INST','GAT')
+CY  = EXTRACT(TAB1,'INST','KY')
+CZ  = EXTRACT(TAB1,'INST','KZ')
+EN   = EPS
+ET   = RMOY*CX/2
+EFY  = RMOY*CY/K
+EFZ  = RMOY*CZ/K
+print 'EN=',EN
+print 'ET=',ET
+print 'EFY=',EFY
+print 'CZ=',CZ
+print 'EFZ=',EFZ
+
+ALPHAN=1
+ALPHAT=1
+GAMMAC=8/9/(Lambda**(0.66667))
+GAMMAD=1
+ALPHAF=PI/4*GAMMAD
+ESTAR  = ((ALPHAN*EN)**2+(ALPHAT*ET)**2+(ALPHAF*EFY)**2+(ALPHAF*EFZ)**2)**(0.5)
+
+print 'Point D, E*=',ESTAR
+
+# coude
+K=max(1.0,1.65/Lambda)
+# A l entree C du coude
+TAB2=POST_RELEVE_T(ACTION=_F(INTITULE='POST',
+                             GROUP_NO='C',
+                             RESULTAT=U1,
+                             NOM_CHAM='DEGE_ELNO_DEPL',
+                             TOUT_CMP='OUI',
+                             OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=TAB2)
+   
+EPS = EXTRACT(TAB2,'INST','EPXX')
+CX  = EXTRACT(TAB2,'INST','GAT')
+CY  = EXTRACT(TAB2,'INST','KY')
+CZ  = EXTRACT(TAB2,'INST','KZ')
+EN   = EPS
+ET   = RMOY*CX/2
+EFY  = RMOY*CY/K
+EFZ  = RMOY*CZ/K
+print 'EN=',EN
+print 'ET=',ET
+print 'EFY=',EFY
+print 'CZ=',CZ
+print 'EFZ=',EFZ
+
+ALPHAN=1
+ALPHAT=1
+GAMMAC=8/9*(Lambda**(-0.66667))
+GAMMA=max(1,GAMMAC)
+ALPHAF=PI/4*GAMMA
+ESTAR  = ((ALPHAN*EN)**2+(ALPHAT*ET)**2+(ALPHAF*EFY)**2+(ALPHAF*EFZ)**2)**(0.5)
+
+print 'Point C, E*=',ESTAR
 
 
 FIN( )

@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/10/2003   AUTEUR UFBHHLL C.CHAVANT 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +53,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER            IPOIDS,IVF,IDFDX,IDFDY,IGEOM,I,J,L,IFLUXF
-      INTEGER            NDIM,NNO,IPG,NPG1,IRES,IFLUX,ITEMPS
+      INTEGER            NDIM,NNO,IPG,NPG1,IRES,IFLUX,ITEMPS,JGANO
       INTEGER            IDEC,JDEC,KDEC,LDEC,JVAL,INO,JNO
       INTEGER            NBPG(10),IOPT,IRET,IFORC,NBFPG,JIN
       REAL*8             NX,NY,NZ,SX(9,9),SY(9,9),SZ(9,9),JAC,VALPAR(4)
@@ -87,7 +87,8 @@ C     ------------------------------------------------------------------
 C  CETTE ROUTINE FAIT UN CALCUL EN THHM , HM , HHM , THH ,THM
 C     ------------------------------------------------------------------
 C
-      CALL ELREF1(ELREFE)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDX,JGANO)
+C
       AXI = .FALSE.
       TRAITE = .FALSE.
       DPLAN = .FALSE.
@@ -102,8 +103,6 @@ C
      > ISTHT3,ISTHQ4,ISTHT6,ISTHQ8,
      > NNOMAX,NVOMAX,NSOMAX,
      > NNOS,VOISIN,NBVOS,P2P1,LUMPED)
-C
-
 C
       IF ( ISTHF8.OR.ISTHF6) THEN
 C       SI MODELISATION = THHM
@@ -177,22 +176,6 @@ C
          CALL JEVECH ( 'PFR2D3D', 'L', IFORC )
       END IF
 C
-C
-      CHCTE = '&INEL.'//ELREFE//'.CARACTE'
-      CALL JEVETE ( CHCTE, 'L', JIN )
-      NDIM  = ZI(JIN+1-1)
-      NNO   = ZI(JIN+2-1)
-      NBFPG = ZI(JIN+3-1)
-      DO 10 I = 1,NBFPG
-         NBPG(I) = ZI(JIN+3-1+I)
- 10   CONTINUE
-      NPG1 = NBPG(1)
-C
-      CHVAL = '&INEL.'//ELREFE//'.FFORMES'
-      CALL JEVETE ( CHVAL, 'L', JVAL )
-C
-      IPOIDS = JVAL + (NDIM+1)*NNO*NNO
-      IVF    = IPOIDS + NPG1
       IDFDX  = IVF    + NPG1 * NNO
       IDFDY  = IDFDX  + 1
 C

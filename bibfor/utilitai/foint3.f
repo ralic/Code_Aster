@@ -1,11 +1,10 @@
-      SUBROUTINE FOINT3 (NOMF, NBPU, NOMPU, VALPU, EPSI,
-     +                                      RESURE, RESUIM, IER)
+      SUBROUTINE FOINT3 (NOMF, VALPU, EPSI, RESURE, RESUIM, IER)
       IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8                              VALPU(*),RESURE(*),RESUIM(*)
-      CHARACTER*(*)     NOMF,     NOMPU(*)
+      REAL*8                   VALPU(*),RESURE(*),RESUIM(*)
+      CHARACTER*(*)     NOMF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,9 +24,7 @@ C ======================================================================
 C     INTERPOLATION POUR FONCTION COMPLEXE A VARIABLE REELLE
 C     ------------------------------------------------------------------
 C IN  : NOMF  : NOM DE LA FONCTION_C
-C IN  : NBPU  : NOMBRE DE PARAMETRES UTILISATEUR
 C IN  : VALPU : VALEUR DU PARAMETRE UTILISATEUR
-C IN  : NOMPU : NOM DES PARAMETRES UTILISATEUR
 C OUT : RESURE: PARTIE REELLE DU RESULTAT DE L'INTERPOLATION
 C OUT : RESUIM: PARTIE IMAGINAIRE DU RESULTAT DE L'INTERPOLATION
 C OUT : IER   : CODE RETOUR

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE PLAQUE RECTANGULAIRE SIMPLEMENT APPUIEE COMPRIMEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,34 +70,20 @@ CARAC_1=AFFE_CARA_ELEM(   MODELE=MODELE_1,
                                                              )
                            )
 
-#
-
 MATELE_1=CALC_MATR_ELEM(   MODELE=MODELE_1,     CHARGE=CHARGE_1,
                                CARA_ELEM=CARAC_1,
                                CHAM_MATER=CH_MAT_1,
                                OPTION='RIGI_MECA' )
 
-#
-
-VEL=CALC_VECT_ELEM(   CHARGE=CHARGE_1,  OPTION='CHAR_MECA' )
-
-#
-
 NU=NUME_DDL(   MATR_RIGI=MATELE_1 )
 
 MATASS_1=ASSE_MATRICE(   MATR_ELEM=MATELE_1,   NUME_DDL=NU )
 
-VECASS=ASSE_VECTEUR(   VECT_ELEM=VEL,        NUME_DDL=NU )
-
-#
-
-MATASS_2=FACT_LDLT(         MATR_ASSE=MATASS_1, 
-                           STOP_SINGULIER='NON'
-                       )
-
-#
-
-VECASS=RESO_LDLT(reuse=VECASS, MATR_FACT=MATASS_2,     CHAM_NO=VECASS)
+RESU=MECA_STATIQUE(MODELE=MODELE_1,
+                   CHAM_MATER=CH_MAT_1,
+                   CARA_ELEM=CARAC_1,
+                   EXCIT=_F(CHARGE=CHARGE_1,),
+                   );
 
 #
 #
@@ -106,11 +92,9 @@ VECASS=RESO_LDLT(reuse=VECASS, MATR_FACT=MATASS_2,     CHAM_NO=VECASS)
 ###### ETAT DE CONTRAINTES
 #
 
-SIGMA_1=CALC_CHAM_ELEM(        MODELE=MODELE_1,         
-                                CHAM_MATER=CH_MAT_1,         
-                                      DEPL=VECASS,
-                                 CARA_ELEM=CARAC_1,          
-                                    OPTION='SIEF_ELGA_DEPL'  )
+SIGMA_1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
+                    RESULTAT=RESU, NUME_ORDRE=1,
+                    NOM_CHAM='SIEF_ELGA_DEPL' ),
 
 #
 #
@@ -131,6 +115,7 @@ RIGASG_1=ASSE_MATRICE(MATR_ELEM=RIGELG_1,NUME_DDL=NU)
 
 #
 #
+  
 ##### RESOLUTION DU PROBLEME DE VALEURS PROPRES
 #
 #
@@ -139,9 +124,9 @@ MOD_1=MODE_ITER_SIMULT(                   MATR_A=MATASS_1,
                                               MATR_B=RIGASG_1,
 ######                             NUME_MODE_NEGA        : 'NON'
                 TYPE_RESU='MODE_FLAMB',
-                CALC_FREQ=_F(  NMAX_FREQ = 9,    DIM_SOUS_ESPACE = 30,         ),
+                CALC_FREQ=_F(  NMAX_FREQ = 9,    DIM_SOUS_ESPACE = 30,       ),
                             )
-
+ 
 #
 #
 #
@@ -197,3 +182,4 @@ FIN()
 ##
 ##
 #FIN();
+        

@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/09/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 25/03/2004   AUTEUR OUGLOVA A.OUGLOVA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*8 MATEL,MAILLA
       CHARACTER*14 NU,RESOCO,COM
       CHARACTER*16 DEFICO,TYP2SD,CORRES
-      CHARACTER*19 CHAMP,MATAS,VECAS,TABLE,SOLVEU,CNS,CES,CNO,CEL,FNC
+      CHARACTER*19 CHAMP,MATAS,TABLE,SOLVEU,CNS,CES,CNO,CEL,FNC
       CHARACTER*19 LIGREL,CARTE,NUAGE,LIGRET
 
 C -DEB------------------------------------------------------------------
@@ -357,6 +357,7 @@ C     -------------------------------------
         CALL ASSDE1(COM//'.PHAS')
         CALL ASSDE1(COM//'.EPAN')
         CALL ASSDE1(COM//'.INST')
+        CALL ASSDE1(COM//'.CORR')
         CALL JEDETR(COM//'.EXISTENCE')
 
 C     ------------------------------------------------------------------

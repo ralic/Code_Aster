@@ -1,13 +1,13 @@
       SUBROUTINE PRCCM0 ( NBOPT, OPTION, NBFT, NPARA, NOPARA, TYPARA,  
-     +                  RCCMPM, RCCMSN, SNTHER, FATIZH, FATISP, TYPTAB )
+     +                  RCCMPM, RCCMSN, SNTHER, FATIZH, TYPTAB )
       IMPLICIT   NONE
       INTEGER             NBOPT, NBFT, NPARA
-      LOGICAL             RCCMPM, RCCMSN, SNTHER, FATIZH, FATISP
+      LOGICAL             RCCMPM, RCCMSN, SNTHER, FATIZH
       CHARACTER*8         TYPARA(*)
       CHARACTER*16        OPTION(*), NOPARA(*), TYPTAB
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 17/09/97   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,6 @@ C     ------------------------------------------------------------------
 C DEB ------------------------------------------------------------------
 C
       FATIZH = .FALSE.
-      FATISP = .FALSE.
       RCCMSN = .FALSE.
       RCCMPM = .FALSE.
       SNTHER = .FALSE.
@@ -49,12 +48,10 @@ C
  12         CONTINUE
          ELSEIF ( OPTION(I) .EQ. 'FATIGUE_ZH210' ) THEN
             FATIZH = .TRUE.
-         ELSEIF ( OPTION(I) .EQ. 'FATIGUE_SPMAX' ) THEN
-            FATISP = .TRUE.
          ENDIF
  10   CONTINUE
 C
-      CALL PRCCM4 ( RCCMPM, RCCMSN, SNTHER, FATIZH, FATISP, 
+      CALL PRCCM4 ( RCCMPM, RCCMSN, SNTHER, FATIZH, 
      +                      TYPTAB, NPARA, NOPARA, TYPARA )
 C
       END

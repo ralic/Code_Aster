@@ -10,7 +10,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -330,7 +330,7 @@ CCC         MXSGEL = MXSGEL + 100
                   I1 = 2
                   I2 = 2
                ENDIF
-               CALL I3FMVN(NIL,TETE,QUEUE,DESC,SUCC,PREC,DESCTM,MAILLE,
+               CALL I3FMVN(NIL,DESC,SUCC,PREC,DESCTM,MAILLE,
      +                     CONEX,VLC,LND,NBND,I1,NBMA,LMA)
                IF ( (TF1 .EQ. -1) .AND. ( TF2 .EQ. -1) ) THEN
                   IF ( NBMA .LE. 1 ) THEN
@@ -368,11 +368,11 @@ CCC         MXSGEL = MXSGEL + 100
                ZI(AROM1 + J-1) = LMA(J)
 120         CONTINUE
             PTSGEL = PTSGEL + 1
-            CALL I3LCHS(NIL,TETE,QUEUE,SUCC,PREC,DESC,LMA(2),NBMA-1)
+            CALL I3LCHS(NIL,TETE,QUEUE,SUCC,PREC,LMA(2),NBMA-1)
 100      CONTINUE
          LMA(1) = MAILLE
          NBMA   = 1
-         CALL I3LCHS(NIL,TETE,QUEUE,SUCC,PREC,DESC,LMA,NBMA)
+         CALL I3LCHS(NIL,TETE,QUEUE,SUCC,PREC,LMA,NBMA)
          FINI = ( (TETE .EQ. NIL) .OR. FINI .OR. FIND )
          GOTO 10
       ENDIF

@@ -4,7 +4,7 @@
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -195,7 +195,7 @@ C          IPARAM(5) = NCONV: NUMBER OF "CONVERGED" RITZ VALUES.
 C          THIS REPRESENTS THE NUMBER OF RITZ VALUES THAT SATISFY
 C          THE CONVERGENCE CRITERION.
 C
-C          IPARAM(6) = IUPD
+C          IPARAM(6) = IUPD (NOT USED)
 C          NO LONGER REFERENCED. IMPLICIT RESTARTING IS ALWAYS USED.  
 C
 C          IPARAM(7) = MODE
@@ -458,10 +458,10 @@ C     %---------------%
 C     | LOCAL SCALARS |
 C     %---------------%
 C
-      INTEGER    BOUNDS, IERR, IH, IQ, ISHIFT, IUPD, IW, 
+      INTEGER    BOUNDS, IERR, IH, IQ, ISHIFT, IW, 
      &           LDH, LDQ, LEVEC, MODE, MSGLVL, MXITER, NB,
      &           NEV0, NEXT, NP, RITZ, J
-      SAVE       BOUNDS, IH, IQ, ISHIFT, IUPD, IW,
+      SAVE       BOUNDS, IH, IQ, ISHIFT, IW,
      &           LDH, LDQ, LEVEC, MODE, MSGLVL, MXITER, NB,
      &           NEV0, NEXT, NP, RITZ
       REAL*8 R8PREM
@@ -492,7 +492,6 @@ C        %--------------------------------------------%
 C        | REVISION 2 PERFORMS ONLY IMPLICIT RESTART. |
 C        %--------------------------------------------%
 C
-         IUPD   = 1
          MODE   = IPARAM(7)
 C
          IF (N .LE. 0) THEN
@@ -603,7 +602,7 @@ C     | CARRY OUT THE IMPLICITLY RESTARTED ARNOLDI ITERATION. |
 C     %-------------------------------------------------------%
 C
       CALL ZNAUP2  
-     &   ( IDO, BMAT, N, WHICH, NEV0, NP, TOL, RESID, MODE, IUPD,
+     &   ( IDO, BMAT, N, WHICH, NEV0, NP, TOL, RESID,
      &     ISHIFT, MXITER, V, LDV, WORKL(IH), LDH, WORKL(RITZ), 
      &     WORKL(BOUNDS), WORKL(IQ), LDQ, WORKL(IW), 
      &     IPNTR, WORKD, RWORK, INFO, NEQACT, ALPHA )

@@ -6,7 +6,7 @@
       REAL*8       EPAIS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 01/09/2003   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGELINE  DATE 15/12/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -591,7 +591,8 @@ C
       CALL JEDETR ( '&&CMCOVO.NEW_NOEUDS' )
       CALL JEDETR ( '&&CMCOVO.NOEUDS' )
       CALL JEDETR ( '&&CMCOVO.TRAV' )
-
+      CALL JEDETR ( '&&CMCOVO.NORM_NO' )
+C     --------------------------------
       CALL JEDETR ( NORMNO )
       CALL JEDETR ( LISMA  )
       CALL JEDETR ( NONUMA )

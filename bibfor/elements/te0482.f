@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/06/2002   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,32 +48,14 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       LOGICAL  AXI
-      INTEGER  NDIM, NNO, NPG
-      INTEGER  ICARAC, IFF, IPOIDS, IVF, IDFDE, IDFDK
-      INTEGER  IGEOM, IMATE, IDEPL, ITEMPS, IECHLI
-      REAL*8   RBID
-      
-      CHARACTER*8        ELREFE
-      CHARACTER*24 CARAC, FF
+      INTEGER  NDIM, NNO, NPG, IPOIDS, IVF, IDFDE
+      INTEGER  IGEOM, IMATE, IDEPL, ITEMPS, IECHLI, NNOS, JGANO
 C ......................................................................
 
 
       AXI  = NOMTE(3:4).EQ.'AX'
-      NDIM = 2
 
-      CALL ELREF1(ELREFE)
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO = ZI(ICARAC)
-      NPG = ZI(ICARAC+2)
-
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS = IFF
-      IVF    = IPOIDS+ NPG
-      IDFDE  = IVF   + NPG*NNO
-      IDFDK  = IDFDE + NPG*NNO
-
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -84,8 +66,8 @@ C ......................................................................
 
 C - CALCUL DE LA CONTRIBUTION ELEMENTAIRE A LA CHARGE LIMITE
 
-      CALL NMHOLI(NDIM, AXI, NNO, NPG, ZR(IVF),
-     &            ZR(IDFDE), RBID, ZR(IDFDK), ZR(IPOIDS), ZI(IMATE),
+      CALL NMHOLI(NDIM, AXI, NNO, NPG, IPOIDS, IVF, IDFDE,
+     &            ZI(IMATE),
      &            ZR(ITEMPS), ZR(IGEOM), ZR(IDEPL), ZR(IECHLI))
 
       END

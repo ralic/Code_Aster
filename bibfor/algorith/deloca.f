@@ -1,12 +1,12 @@
-      SUBROUTINE  DELOCA(NDIM, OPTION, TYPMOD, NPG, POIDSG, NNO2,
-     &                 VFF2, DFDE2, DFDN2, DFDK2, DFDI2,
+      SUBROUTINE  DELOCA(NDIM, OPTION, TYPMOD, NPG, IPOIDS, NNO2,
+     &                 IVF2, IDFDE2, DFDI2,
      &                 NNO1, VFF1, DFDE1,DFDN1, DFDK1, DFDI1, GEOMI,
      &                 IMATE, COMPOR, CARCRI, RLAG, TREF, TM, TP,
      &                 DEPLM, SIGM, DDEPL, LGPG, VARIM, VARDEP, LAGRP,
      &                 PROJEC, RESIDU, GRAD, ENEREL, VARIP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/02/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,16 +31,15 @@ C RESPONSABLE PBADEL P.BADEL
       CHARACTER*8  TYPMOD
       CHARACTER*16 OPTION, COMPOR(3)
       INTEGER      NDIM, NNO1, NNO2, NPG, IMATE, LGPG
-      REAL*8       POIDSG(NPG)
-      REAL*8       VFF1(NNO1,NPG), DFDE1(*), DFDN1(*), DFDK1(*)
-      REAL*8       VFF2(NNO2,NPG), DFDE2(*), DFDN2(*), DFDK2(*)
+      INTEGER      IPOIDS, IVF2, IDFDE2
+      REAL*8       VFF1(NNO1,NPG)
       REAL*8       DFDI1(NNO1,NDIM), DFDI2(NNO2, NDIM)
       REAL*8       GEOMI(NDIM,NNO2), CARCRI(*)
       REAL*8       RLAG, RESIDU(NNO1)
       REAL*8       TREF, TM(NNO2), TP(NNO2)
       REAL*8       DEPLM(NDIM,NNO2), SIGM(2*NDIM,NPG), DDEPL(NDIM,NNO2)
       REAL*8       VARIM(LGPG,NPG), VARDEP(NNO1), LAGRP(0:NDIM,NPG)
-      REAL*8       PROJEC(0:*)
+      REAL*8       PROJEC(0:*),DFDE1(*), DFDN1(*), DFDK1(*)
       REAL*8       VARIP(LGPG,NPG), GRAD(0:NDIM,NPG), ENEREL
 
 C.......................................................................
@@ -87,23 +86,37 @@ C......................................................................
 
       LOGICAL AXI, TRIDIM
       INTEGER KPG, N, M, KK, L, I, K, NDIMSI
-      REAL*8  EPSM(9), DEPS(9), R, T1, POIDS, SIGMA(6), RAC2
+      REAL*8  EPSM(9), DEPS(9), R, T1, POIDS,SIGMA(6),RAC2
       REAL*8  LISSEP(0:3), TEMPM, TEMPP
       REAL*8  GEOMM(3*27), RES(0:3)
       REAL*8  EPSBID(9), DRESDA(0:3,0:3)
       REAL*8  PONDER(0:3), BAMAL(0:3), ENECMP
-      REAL*8  LB, DI(0:3), LAGRDI(0:3), DVIDA(0:3, 0:3), ENELOC
-      REAL*8  IDEN(0:3, 0:3), R8BID, NRJ
+      REAL*8  LB, DI(0:3), LAGRDI(0:3), DVIDA(0:3, 0:3),ENELOC
+      REAL*8  IDEN(0:3, 0:3), NRJ
       CHARACTER*2 K2BID
-      
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       DATA IDEN /1.D0, 0.D0, 0.D0, 0.D0,
      &           0.D0, 1.D0, 0.D0, 0.D0,
      &           0.D0, 0.D0, 1.D0, 0.D0,
      &           0.D0, 0.D0, 0.D0, 1.D0 /
 
-
 C -- INITIALISATION
-
       IF (NNO2*NDIM .GT. 27*3) CALL UTMESS('F','DELOCA',
      &     'MAUVAIS DIMENSIONNEMENT DE GEOMI')
 
@@ -128,23 +141,23 @@ C -- CALCUL DES DEFORMATIONS
 C        CALCUL DE F POUR DT  =>  DF, RM  ET DFDIM
           CALL R8COPY(NDIM*NNO2,GEOMI,1,GEOMM,1)
           CALL R8AXPY(NDIM*NNO2,1.D0,DEPLM,1,GEOMM,1)
-          CALL NMGEOM(NDIM,NNO2,AXI,.TRUE.,GEOMM,KPG,POIDSG(KPG),
-     &                VFF2(1,KPG),DFDE2,DFDN2,DFDK2,DDEPL,POIDS,
+          CALL NMGEOM(NDIM,NNO2,AXI,.TRUE.,GEOMM,KPG,IPOIDS,
+     &                IVF2,IDFDE2,DDEPL,POIDS,
      &                DFDI2,DEPS,EPSBID,R)
 
 C        CALCUL DE F EN T-  =>  FM
-          CALL NMGEOM(NDIM,NNO2,AXI,.TRUE.,GEOMI,KPG,POIDSG(KPG),
-     &                VFF2(1,KPG),DFDE2,DFDN2,DFDK2,DEPLM,POIDS,
+          CALL NMGEOM(NDIM,NNO2,AXI,.TRUE.,GEOMI,KPG,IPOIDS,
+     &                IVF2,IDFDE2,DEPLM,POIDS,
      &                DFDI2,EPSM,EPSBID,R)
 
         ELSE
 
-          CALL NMGEOM(NDIM,NNO2,AXI,.FALSE.,GEOMI,KPG,POIDSG(KPG),
-     &                VFF2(1,KPG),DFDE2,DFDN2,DFDK2,DDEPL,POIDS,
+          CALL NMGEOM(NDIM,NNO2,AXI,.FALSE.,GEOMI,KPG,IPOIDS,
+     &                IVF2,IDFDE2,DDEPL,POIDS,
      &                DFDI2,EPSBID,DEPS,R)
 
-          CALL NMGEOM(NDIM,NNO2,AXI,.FALSE.,GEOMI,KPG,POIDSG(KPG),
-     &                VFF2(1,KPG),DFDE2,DFDN2,DFDK2,DEPLM,POIDS,
+          CALL NMGEOM(NDIM,NNO2,AXI,.FALSE.,GEOMI,KPG,IPOIDS,
+     &                IVF2,IDFDE2,DEPLM,POIDS,
      &                DFDI2,EPSBID,EPSM,R)
 
         END IF
@@ -152,8 +165,8 @@ C        CALCUL DE F EN T-  =>  FM
 
 C -- DERIVEE DES FONCTIONS DE FORME P1 PAR RAPPORT A GEOMETRIE P2
 
-      CALL EFDF21(NDIM, AXI, GEOMI, KPG, POIDSG(KPG),
-     &                  NNO2, VFF2(1,KPG), DFDE2, DFDN2, DFDK2,
+      CALL EFDF21(NDIM, AXI, GEOMI, KPG, IPOIDS,
+     &                  NNO2, IVF2, IDFDE2,
      &                  NNO1, DFDE1, DFDN1, DFDK1,
      &                  POIDS, DFDI1, R)
 
@@ -165,12 +178,13 @@ C -- TEMPERATURE ET VARIABLE DELOCALISEE AU POINT DE GAUSS
         CALL R8INIR(4,0.D0,LISSEP,1)
 
         DO 20 N=1,NNO2
-          TEMPM = TEMPM + TM(N)*VFF2(N,KPG)
-          TEMPP = TEMPP + TP(N)*VFF2(N,KPG)
+          TEMPM = TEMPM + TM(N)*ZR(IVF2+N+(KPG-1)*NNO2-1)
+          TEMPP = TEMPP + TP(N)*ZR(IVF2+N+(KPG-1)*NNO2-1)
  20     CONTINUE
 
         DO 25 N = 1, NNO1
           LISSEP(0) = LISSEP(0) + VARDEP(N)*VFF1(N,KPG)
+C     &                ZR(IVF1+N+(KPG-1)*NNO2-1)
           LISSEP(1) = LISSEP(1) + VARDEP(N)*DFDI1(N,1)
           LISSEP(2) = LISSEP(2) + VARDEP(N)*DFDI1(N,2)
  25     CONTINUE
@@ -267,7 +281,7 @@ C -- CALCUL DU RESIDU
 
         ELSE
           DO 50 N = 1,NNO1
-            T1 = VFF1(N,KPG) * RES(0)
+            T1 =  VFF1(N,KPG) * RES(0)
      &         + DFDI1(N,1)  * RES(1)
      &         + DFDI1(N,2)  * RES(2)
             RESIDU(N) = RESIDU(N) + T1 * POIDS
@@ -281,14 +295,16 @@ C      CALCUL DE KT ELEMENTAIRE (PARTIE TRIANGULAIRE INF SEULEMENT)
 
           DO 60 N = 1, NNO1
             DO 70 M = 1,N
-              T1 = VFF1(N,KPG) * ( DRESDA(0,0) * VFF1(M,KPG)
-     &            + DRESDA(0,1) * DFDI1(M,1) + DRESDA(0,2) * DFDI1(M,2)
+              T1 = VFF1(N,KPG)*(DRESDA(0,0) *
+     &            VFF1(M,KPG)
+     &            + DRESDA(0,1)*DFDI1(M,1)+DRESDA(0,2)*DFDI1(M,2)
      &            + DRESDA(0,3) * DFDI1(M,3) )
 
               DO 75 L = 1, 3
-                T1 = T1 + DFDI1(N,L) * ( DRESDA(L,0) * VFF1(M,KPG)
-     &            + DRESDA(L,1) * DFDI1(M,1) + DRESDA(L,2) * DFDI1(M,2)
-     &            + DRESDA(L,3) * DFDI1(M,3) )
+                T1 = T1 + DFDI1(N,L) * ( DRESDA(L,0) *
+     &               VFF1(M,KPG)
+     &            + DRESDA(L,1)*DFDI1(M,1)+DRESDA(L,2)*DFDI1(M,2)
+     &            + DRESDA(L,3)*DFDI1(M,3) )
  75           CONTINUE
 
               PROJEC(KK) = PROJEC(KK) + T1 * POIDS
@@ -300,9 +316,10 @@ C      CALCUL DE KT ELEMENTAIRE (PARTIE TRIANGULAIRE INF SEULEMENT)
 
           DO 80 N = 1, NNO1
             DO 90 M = 1,N
-              T1 = VFF1(N,KPG)* ( DRESDA(0,0) * VFF1(M,KPG)
+              T1 = VFF1(N,KPG)* ( DRESDA(0,0) *
+     &            VFF1(M,KPG)
      &         + DRESDA(0,1) * DFDI1(M,1) + DRESDA(0,2) * DFDI1(M,2) )
-     &         + DFDI1(N,1) * ( DRESDA(1,0) * VFF1(M,KPG)
+     &         + DFDI1(N,1)*(DRESDA(1,0)* VFF1(M,KPG)
      &         + DRESDA(1,1) * DFDI1(M,1) + DRESDA(1,2) * DFDI1(M,2) )
      &         + DFDI1(N,2) * ( DRESDA(2,0) * VFF1(M,KPG)
      &         + DRESDA(2,1) * DFDI1(M,1) + DRESDA(2,2) * DFDI1(M,2) )

@@ -1,8 +1,8 @@
-        SUBROUTINE VERNMB(ICL,IV,CNL,IER,IRTETI)
+        SUBROUTINE VERNMB(ICL,CNL,IER,IRTETI)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/10/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C               CNL     =       NUMERO LIGNE
 C       OUT     IER     =       0 > VRAI ( RETURN )
 C                       =       1 > FAUX ( RETURN 1 )
 C       ----------------------------------------------------------------
-        INTEGER         ICL , IER , IV
+        INTEGER         ICL , IER
         CHARACTER*14    CNL
         CHARACTER*16    CMD
         COMMON          /OPMAIL/                CMD

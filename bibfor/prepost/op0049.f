@@ -1,6 +1,6 @@
       SUBROUTINE OP0049 ( IERR )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF PREPOST  DATE 15/12/2003   AUTEUR REZETTE C.REZETTE 
 C TOLE CRS_513
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,6 +56,7 @@ C
       CALL INFMAJ()
       CALL GETVIS(' ','UNITE_GIBI'     ,0,1,1,NFIGI,N1)
       CALL GETVIS(' ','UNITE_MAILLAGE' ,0,1,1,NFIAS,N1)
+      K16NOM ='                '
       IF ( ULISOP ( NFIGI, K16NOM ) .EQ. 0 )  THEN 
         CALL ULOPEN ( NFIGI,' ',' ','NEW','O')
       ENDIF 
@@ -92,6 +93,10 @@ C
 C
       CALL GIECAS(NFIAS,NDIM,NBOBJ)
 C
+      IF ( ULISOP ( NFIGI, K16NOM ) .NE. 0 )  THEN 
+        CALL ULOPEN ( -NFIGI,' ',' ','NEW','O')
+      ENDIF
+
       CALL JEDETC('V','&&GILIRE',1)
       GOTO 99999
 C

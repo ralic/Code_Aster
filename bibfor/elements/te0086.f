@@ -1,6 +1,6 @@
       SUBROUTINE TE0086 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/08/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,11 +29,11 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
-      CHARACTER*8      MODELI,ELREFE
-      CHARACTER*24     CARAC,FF
+      CHARACTER*8      MODELI
       REAL*8           SIGMA(54), REPERE(7),SIGM2(54)
-      REAL*8           NHARM, INSTAN, BIDON
-      LOGICAL          LSENS
+      REAL*8           NHARM, INSTAN, DEPLA(36),CONTNO(54)
+      LOGICAL          CPX,LSENS
+      
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
@@ -52,50 +52,19 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CALL ELREF1(ELREFE)
-
-      MODELI(1:2) = NOMTE(3:4)
-C
-C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
-C ---- GEOMETRIE ET INTEGRATION
-C      ------------------------
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
-      NPG3 = ZI(ICARAC+4)
-      NPG4 = ZI(ICARAC+5)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-C
-      IF ( (OPTION.EQ.'SIGM_ELNO_DEPL')
-     &     .OR.(OPTION.EQ.'SIGM_ELNO_SENS') ) THEN
-        IF(NOMTE(5:7).EQ.'TR3' .OR. NOMTE(5:7).EQ.'QU4' .OR.
-     &     NOMTE(5:7).EQ.'QS4') THEN
-           NNOS = NNO
-           IPOIDS = IFF + NPG1*(1+3*NNO)
-           IVF  = IPOIDS+NPG2
-           IDFDE = IVF  +NPG2*NNO
-           IDFDK = IDFDE +NPG2*NNO
-           NPG  = NPG2
-        ELSE IF(NOMTE(5:7).EQ.'TR6' .OR. NOMTE(5:7).EQ.'QU8' .OR.
-     &          NOMTE(5:7).EQ.'QS8' .OR. NOMTE(5:7).EQ.'QU9' ) THEN
-           NNOS = NNO/2
-           IPOIDS = IFF + (NPG1+NPG2+NPG3)*(1+3*NNO)
-           IVF  = IPOIDS+NPG4
-           IDFDE = IVF  +NPG4*NNO
-           IDFDK = IDFDE +NPG4*NNO
-           NPG  = NPG4
-        ENDIF
+      IF ( OPTION(6:9) .EQ.'ELNO' ) THEN
+        CALL ELREF4(' ','GANO',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
       ELSE
-         IPOIDS = IFF
-         IVF    = IPOIDS+NPG1
-         IDFDE  = IVF   +NPG1*NNO
-         IDFDK  = IDFDE +NPG1*NNO
-         NPG    = NPG1
+        CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
       ENDIF
+      MODELI(1:2) = NOMTE(3:4)
+      
+      CPX = OPTION .EQ. 'SIGM_ELNO_DEPL_C'
+      IF (CPX) THEN
+        NITER = 2
+      ELSE
+        NITER = 1
+      END IF
 C
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
@@ -108,8 +77,6 @@ C     -----------------
       ZERO     = 0.0D0
       INSTAN   = ZERO
       NHARM    = ZERO
-      BIDON    = ZERO
-      NDIM     = 2
       IF (OPTION(11:14).EQ.'SENS') THEN
         LSENS = .TRUE.
       ELSE
@@ -118,7 +85,7 @@ C     -----------------
 C
       DO 10 I = 1, NBSIG2*NPG
          SIGMA(I)  = ZERO
- 10   CONTINUE
+10    CONTINUE
 C
 C ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
 C      ----------------------------------------------
@@ -134,7 +101,12 @@ C      ------------------------------------------------------------
 C
 C ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 C      --------------------------------------------------
-      CALL JEVECH('PDEPLAR','L',IDEPL)
+      NBINCO = NNO*NDIM
+      IF (CPX) THEN
+        CALL JEVECH('PDEPLAC','L',IDEPLC)
+      ELSE
+        CALL JEVECH('PDEPLAR','L',IDEPL)
+      END IF
 C
 C ---- RECUPERATION DU CHAMP DE DEPLACEMENT DERIVE SUR L'ELEMENT
 C      ---------------------------------------------------------
@@ -147,17 +119,37 @@ C
 C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE
 C      -------------------------------------------
       CALL JEVECH('PTEREF','L',ITREF)
-C
-C ---- RECUPERATION DU VECTEUR DES CONTRAINTES EN SORTIE
-C      -------------------------------------------------
-      CALL JEVECH('PCONTRR','E',ICONT)
+
+
+      DO 150 ITER = 1,NITER
+
+        DO 20 I = 1,NBSIG*NPG
+          SIGMA(I) = ZERO
+20      CONTINUE
+
+        IF (CPX) THEN
+          IF (ITER.EQ.1) THEN
+            DO 30 I = 1,NBINCO
+              DEPLA(I) = DBLE(ZC(IDEPLC-1+I))
+30          CONTINUE
+          ELSE
+            DO 40 I = 1,NBINCO
+              DEPLA(I) = DIMAG(DCMPLX(ZC(IDEPLC-1+I)))
+40          CONTINUE
+          END IF
+        ELSE
+          DO 50 I = 1,NBINCO
+            DEPLA(I) = ZR(IDEPL-1+I)
+50        CONTINUE
+        END IF
+
 C
 C ---- CALCUL DES CONTRAINTES 'VRAIES' AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT :
 C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
 C      ------------------------------------
-      CALL SIGVMC(MODELI,NNO,NDIM,NBSIG1,NPG,ZR(IVF),ZR(IDFDE),ZR(IDFDK)
-     +            ,BIDON,ZR(IPOIDS),ZR(IGEOM),ZR(IDEPL),ZR(ITEMPE),
+      CALL SIGVMC(MODELI,NNO,NDIM,NBSIG1,NPG,IPOIDS,IVF,IDFDE,
+     +            ZR(IGEOM),DEPLA,ZR(ITEMPE),
      +            ZR(ITREF),INSTAN,REPERE,ZI(IMATE),NHARM,SIGMA,.FALSE.)
 C
 C
@@ -167,29 +159,67 @@ C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
 C ATTENTION!! POUR L'INSTANT(30/9/02) ON DOIT AVOIR SIGMA_THERMIQUE=0
 C      ------------------------------------
       IF (LSENS) THEN
-        CALL SIGVMC(MODELI,NNO,NDIM,NBSIG1,NPG,ZR(IVF),ZR(IDFDE),
-     +            ZR(IDFDK),
-     +            BIDON,ZR(IPOIDS),ZR(IGEOM),ZR(IDEPS),ZR(ITEMPE),
-     +            ZR(ITREF),INSTAN,REPERE,ZI(IMATE),NHARM,SIGM2,.TRUE.)
-        DO 15 I=1, NBSIG*NPG
+          DO 60 I = 1,NBINCO
+            DEPLA(I) = ZR(IDEPS-1+I)
+60        CONTINUE
+        CALL SIGVMC(MODELI,NNO,NDIM,NBSIG1,NPG,IPOIDS,IVF,IDFDE,
+     +              ZR(IGEOM),DEPLA,ZR(ITEMPE),ZR(ITREF),
+     +              INSTAN,REPERE,ZI(IMATE),NHARM,SIGM2,.TRUE.)
+        DO 70 I=1, NBSIG*NPG
           SIGMA(I) = SIGMA(I) + SIGM2(I)
-15      CONTINUE
+70      CONTINUE
       ENDIF
 C
       IF (OPTION(6:9).EQ.'ELGA') THEN
+      
+        CALL JEVECH('PCONTRR','E',ICONT)
+          
 C         --------------------
 C ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES CONTRAINTES AUX
 C ---- POINTS D'INTEGRATION
 C      --------------------
-        DO 60 IGAU = 1, NPG
-        DO 60 ISIG = 1, NBSIG
+        DO 80 IGAU = 1, NPG
+        DO 80 ISIG = 1, NBSIG
           ZR(ICONT+NBSIG*(IGAU-1)+ISIG-1) = SIGMA(NBSIG*(IGAU-1)+ISIG)
-60     CONTINUE
+80     CONTINUE
 C
       ELSE
 C
-        CALL PPGANO (NNOS,NPG,NBSIG,SIGMA,ZR(ICONT))
+        CALL PPGAN2(JGANO,NBSIG,SIGMA,CONTNO)
 C
-      ENDIF
 C
+C ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE
+C ---- AVEC LE VECTEUR DES CONTRAINTES AUX NOEUDS
+C      ------------------------------------------
+
+        IF (CPX) THEN
+          CALL JEVECH('PCONTRC','E',ICONT)
+          IF (ITER.EQ.1) THEN
+            DO 100 INO = 1,NNO
+              DO 90 J = 1,NBSIG
+                ZC(ICONT+NBSIG* (INO-1)-1+J) = CONTNO(NBSIG* (INO-1)+J)
+   90         CONTINUE
+  100       CONTINUE
+          ELSE
+            DO 120 INO = 1,NNO
+              DO 110 J = 1,NBSIG
+                ZC(ICONT+NBSIG* (INO-1)-1+J) = DCMPLX(DBLE(ZC(ICONT+
+     &                                 NBSIG*(INO-1)-1+J)),DBLE(CONTNO
+     &                                 (NBSIG*(INO-1)+J)))
+  110         CONTINUE
+  120       CONTINUE
+          END IF
+        ELSE 
+          CALL JEVECH('PCONTRR','E',ICONT)
+          DO 140 INO = 1,NNO
+            DO 130 J = 1,NBSIG
+              ZR(ICONT+NBSIG* (INO-1)-1+J) = CONTNO(NBSIG* (INO-1)+J)
+  130       CONTINUE
+  140     CONTINUE
+        END IF
+      END IF
+
+  150 CONTINUE
+  
+
       END

@@ -1,4 +1,4 @@
-      SUBROUTINE DSTRIG(XYZL,OPTION,PGL,RIG,ENER)
+      SUBROUTINE DSTRIG(NOMTE,XYZL,OPTION,PGL,RIG,ENER)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,9 +18,9 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT  NONE
       REAL*8        XYZL(3,*), PGL(*), RIG(*), ENER(*)
-      CHARACTER*(*) OPTION
+      CHARACTER*16  OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 06/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DST (AVEC CISAILLEMENT)
 C     ------------------------------------------------------------------
@@ -56,7 +56,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 XAB7(3,2),XAB8(6,2),XAB9(3,6)
 C                   ----(9,9)  ---(9,9)  ---(9,9)
       REAL*8 KF11(81),KFC(81),KFB(81),KF12(9,3)
-      REAL*8 KMF11(6,9),KMF2(6,3),KMF(6,9)
+      REAL*8 KMF11(6,9),KMF(6,9)
 C                   ----(3,3) --(3,3) ---(3,3)
       REAL*8 KF22(9),KA(9),KAA(9)
 C                   ----(9,9)  -----(9,9)  ----(6,6)
@@ -69,8 +69,6 @@ C                   ----(6,9)  -----(6,9)
       REAL*8 BSIGTH(24),ENERTH
       REAL*8 ETA, EXCENT, UN, QSI, R8GAEM, ZERO
       LOGICAL      ELASCO, EXCE, INDITH
-      CHARACTER*8  TYPELE
-      CHARACTER*24 DESR
 
 C     ------------------ PARAMETRAGE TRIANGLE --------------------------
       INTEGER NPG,NC,NNO
@@ -101,7 +99,6 @@ C     ------------------------------------------------------------------
      +             6, 12, 18, 24, 30, 36 /
 C     ----------------------------------------------------------------
       CALL JEMARQ()
-      TYPELE = 'MEDSTR3 '
 C
       ZERO = 0.0D0
       UN   = 1.0D0
@@ -113,8 +110,7 @@ C
       CALL R8INIR(36,ZERO,KMF12A,1)
       ENERTH = ZERO
 C
-      DESR = '&INEL.'//TYPELE//'.DESR'
-      CALL JEVETE(DESR,' ',LZR)
+      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
 
       CALL JEVECH('PCACOQU','L',JCOQU)
       CTOR = ZR(JCOQU+3)
@@ -348,7 +344,7 @@ C         --------------------------------------
         CALL JEVECH('PDEPLAR','L',JDEPG)
         CALL UTPVGL(3,6,PGL,ZR(JDEPG),DEPL)
         CALL DXTLOE(FLEX,MEMB,MEFL,CTOR,MULTIC,DEPL,ENER)
-         CALL BSTHPL(TYPELE,BSIGTH,INDITH)
+         CALL BSTHPL(NOMTE(1:8),BSIGTH,INDITH)
          IF (INDITH) THEN
            DO 180 I = 1, 18
             ENERTH = ENERTH + DEPL(I)*BSIGTH(I)

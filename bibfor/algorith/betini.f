@@ -1,10 +1,10 @@
-        SUBROUTINE BETINI ( MATERF, NMAT, ELGEOM, SIG, SIGEQ,  SIGH,
+        SUBROUTINE BETINI ( MATERF, NMAT, SIG, SIGEQ,  SIGH,
      &                      COEFA, COEFB, COEFAR, COEFBR, CONECO,
      &                      CONETR )
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2000   AUTEUR CIBHHBC B.CIREE 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,8 +30,6 @@ C       MODIFIES
 C       IN  MATERF :  COEFFICIENTS MATERIAU A T+DT
 C           NMAT   :  DIMENSION MATER
 C           SIG    :  CONTRAINTE A T+DT (PREDICTION ELASTIQUE)
-C           ELGEOM :  TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES
-C                     AUX LOIS DE COMPORTEMENT
 C       OUT SIGEQ  :  CONTRAINTE EQUIVALENTE
 C           SIGH   :  CONTRAINTE HYDROSTATIQUE
 C           COEFA  :  TERMES CONSTANTS DU SYSTEME LINEAIRE A RESOUDRE
@@ -48,7 +46,7 @@ C           CONETR :  LIMITE SUPERIEURE DE FT POUR LA PROJECTION AU
 C                     SOMMET DU CONE DE TRACTION
 C       ----------------------------------------------------------------
         INTEGER         NMAT
-        REAL*8          MATERF(NMAT,2), ELGEOM(*)
+        REAL*8          MATERF(NMAT,2)
         REAL*8          COEFA(2,2), COEFB(2),COEFAR(2,2), COEFBR(2)
         REAL*8          MUN, UN, D23, D13, RAC2, DEUX, TROIS, ZERO
         PARAMETER       ( MUN  = -1.D0  )

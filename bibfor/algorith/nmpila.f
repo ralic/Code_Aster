@@ -1,9 +1,8 @@
       SUBROUTINE NMPILA(NEQ   , DU    , DU0   , DU1   , C     ,
-     &                  DTAU  , DUREF , NBEFFE, ETA   ,
-     &                  LICCVG)
+     &                  DTAU  , NBEFFE, ETA   , LICCVG)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/02/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,8 +22,8 @@ C ======================================================================
 C RESPONSABLE PBADEL P.BADEL
 
       IMPLICIT NONE
-      INTEGER  NEQ, LICCVG(2), NBEFFE
-      REAL*8   DU(NEQ), DU0(NEQ), DU1(NEQ), DUREF(NEQ)
+      INTEGER  NEQ, LICCVG, NBEFFE
+      REAL*8   DU(NEQ), DU0(NEQ), DU1(NEQ)
       REAL*8   C(NEQ), DTAU, ETA(2)
 
 C ----------------------------------------------------------------------
@@ -37,9 +36,8 @@ C IN  DU0    CORRECTION DE DEPLACEMENT POUR CHARGEMENT CONSTANT
 C IN  DU1    CORRECTION DE DEPLACEMENT POUR CHARGEMENT PILOTE
 C IN  C      COEFFICIENT DU PRODUIT SCALAIRE
 C IN  DTAU   SECOND MEMBRE DE L'EQUATION DE PILOTAGE
-C IN  DUREF  INCREMENT DE DEPLACEMENT DU PAS PRECEDENT (REFERENCE)
 C OUT ETA    ETA_PILOTAGE
-C OUT LICCVG CODE DE CONVERGENCE
+C OUT LICCVG CODE RETOUR (0 = OK, 1 = PAS DE SOLUTION)
 C ----------------------------------------------------------------------
 
       INTEGER I, NRAC
@@ -48,6 +46,9 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 
 
+
+      LICCVG = 0
+      
 C -- CALCUL DES COEFFICIENTS DU POLYNOME DE DEGRE 2
 
       DTAU2 = DTAU**2
@@ -70,23 +71,21 @@ C -- RESOLUTION DE L'EQUATION
 
 C    PAS DE RACINE -> ON MINIMISE LA CONTRAINTE (CONV. INTERDITE)
       IF (NRAC.EQ.0) THEN
-        NBEFFE    = 1
-        LICCVG(1) = 1
-        ETA(1)    = - R1 / (2.D0*R2)
+        LICCVG = 1
+        GOTO 9999
 
 C    RACINE DOUBLE
       ELSE IF (NRAC.EQ.1) THEN
         NBEFFE    = 1
-        LICCVG(1) = 0
         ETA(1)    = RAC(1)
 
 C    DEUX RACINES
       ELSE
         NBEFFE    = 2
-        LICCVG(1) = 0
-        LICCVG(2) = 0
         ETA(1)    = RAC(1)
         ETA(2)    = RAC(2)
               
       END IF
+      
+ 9999 CONTINUE      
       END

@@ -1,8 +1,8 @@
-      SUBROUTINE SIGMMC (MODELI,NNO,NDIM,NBSIG,NPG,NI,DNIDX,DNIDY,DNIDZ,
-     +                   POIDS,XYZ,DEPL,TEMPE,INSTAN,REPERE,MATER,
+      SUBROUTINE SIGMMC (MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+     +                   XYZ,DEPL,TEMPE,INSTAN,REPERE,MATER,
      +                   NHARM,SIGMA,LSENS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/10/2002   AUTEUR ASSIRE A.ASSIRE 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,14 +33,9 @@ C    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE
 C                                   A L'ELEMENT
 C    NPG            IN     I        NOMBRE DE POINTS D'INTEGRATION
 C                                   DE L'ELEMENT
-C    NI(1)          IN     R        FONCTIONS DE FORME
-C    DNIDX(1)       IN     R        DERIVEES DES FONCTIONS DE FORME
-C                                   / X SUR L'ELEMENT DE REFERENCE
-C    DNIDY(1)       IN     R        DERIVEES DES FONCTIONS DE FORME
-C                                   / Y SUR L'ELEMENT DE REFERENCE
-C    DNIDZ(1)       IN     R        DERIVEES DES FONCTIONS DE FORME
-C                                   / Z SUR L'ELEMENT DE REFERENCE
-C    POIDS(1)       IN     R        POIDS D'INTEGRATION
+C    IPOIDS         IN     I        POIDS D'INTEGRATION
+C    IVF            IN     I        FONCTIONS DE FORME
+C    IDFDE          IN     I        DERIVEES DES FONCTIONS DE FORME
 C    XYZ(1)         IN     R        COORDONNEES DES CONNECTIVITES
 C    DEPL(1)        IN     R        VECTEUR DES DEPLACEMENTS SUR
 C                                   L'ELEMENT
@@ -56,9 +51,24 @@ C                                   CALCUL (V->SENSIBILITE, F->STANDARD)
 C    SIGMA(1)       OUT    R        CONTRAINTES AUX POINTS D'INTEGRATION
 C
 C.========================= DEBUT DES DECLARATIONS ====================
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C -----  ARGUMENTS
            CHARACTER*8  MODELI
-           REAL*8       NI(1),DNIDX(1), DNIDY(1), DNIDZ(1), POIDS(1)
            REAL*8       XYZ(1), DEPL(1), TEMPE(1), REPERE(7), SIGMA(1)
            REAL*8       INSTAN, NHARM
            LOGICAL      LSENS
@@ -96,18 +106,18 @@ C
 C
             DO 40 IDIM = 1, NDIM2
                XYZGAU(IDIM) = XYZGAU(IDIM) +
-     +                        NI(I+NNO*(IGAU-1))*XYZ(IDIM+NDIM2*(I-1))
+     +                   ZR(IVF+I+NNO*(IGAU-1)-1)*XYZ(IDIM+NDIM2*(I-1))
   40         CONTINUE
 C
-             TEMPG     = TEMPG     + NI(I+NNO*(IGAU-1))*TEMPE(I)
+             TEMPG = TEMPG + ZR(IVF+I+NNO*(IGAU-1)-1)*TEMPE(I)
   30      CONTINUE
 C
 C  --      CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS DU
 C  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION
 C  --      COURANT : (EPS_1) = (B)*(UN)
 C          ----------------------------
-          CALL BMATMC(IGAU, NBSIG, MODELI, XYZ, NI, DNIDX, DNIDY,
-     +                DNIDZ, POIDS, NNO, NHARM, JACGAU, B)
+          CALL BMATMC(IGAU, NBSIG, MODELI, XYZ, IPOIDS,IVF,IDFDE,
+     +                NNO, NHARM, JACGAU, B)
 C
 C  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 C  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)

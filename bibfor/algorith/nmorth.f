@@ -1,7 +1,7 @@
-      SUBROUTINE NMORTH (NDIM,TYPMOD,IMATE,COMPOR,PHENOM,
+      SUBROUTINE NMORTH (NDIM,TYPMOD,IMATE,PHENOM,
      &                   TEMP,TREF,OPTION,EPS,SIG,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER            NDIM,IMATE
       CHARACTER*8        TYPMOD(*)
-      CHARACTER*16       COMPOR(4),OPTION,PHENOM
+      CHARACTER*16       OPTION,PHENOM
       REAL*8             TEMP,TREF
       REAL*8             EPS(6),SIG(6),DSIDEP(6,6)
 C ----------------------------------------------------------------------
@@ -30,7 +30,6 @@ C
 C IN  NDIM    : DIMENSION DE L'ESPACE
 C IN  TYPMOD  : TYPE DE MODELISATION
 C IN  IMATE   : ADRESSE DU MATERIAU CODE
-C IN  COMPOR  : COMPORTEMENT : RELCOM ET DEFORM
 C IN  PHENOM  : TYPE D'ELASTICITE
 C                 ELAS_ORTH : ORTHOTROPE
 C                 ELAS_GITR : ISOTROPE TRANSVERSE
@@ -200,7 +199,7 @@ C
 C
 C - CALCUL DE LA RIGIDITE TANGENTE
 C
-      IF ( OPTION(1:14) .EQ. 'RIGI_MECA_TANG' .OR.
+      IF ( OPTION(1:10) .EQ. 'RIGI_MECA_' .OR.
      &     OPTION(1:9)  .EQ. 'FULL_MECA' ) THEN
         DO 20 I=1,NDIMSI
           DO 30 J=1,NDIMSI

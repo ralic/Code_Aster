@@ -4,7 +4,7 @@
       CHARACTER*24        DEPSUP, DEPINF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/05/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -262,8 +262,11 @@ C
  9999 CONTINUE
 
       CALL JEDETR ( KNUM )
-      CALL JEDETR ( '&&PKDEPL_NOEU_LEV_SUP'   )
-      CALL JEDETR ( '&&PKDEPL_NOEU_LEV_INF'   )
+      CALL JEDETR ( '&&PKDEPL_LIST_NOEUD'   )
+      CALL JEDETR ( '&&PKDEPL_NOEU_LEV_SUP' )
+      CALL JEDETR ( '&&PKDEPL_NOEU_LEV_INF' )
+      CALL JEDETR ( '&&PKDEPL_MAILLE_LEV_SUP' )
+      CALL JEDETR ( '&&PKDEPL_MAILLE_LEV_INF' )
  
       CALL JEDEMA ( )
       END

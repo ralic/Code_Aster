@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C     SI PCOMPOR N'EST PAS FOURNI : NCMP_DYN = 0
 C     ------------------------------------------------
       CALL TECACH('ONN','PCOMPOR',2,ITAB,IRET)
       IF (ITAB(1).NE.0) THEN
-        IF (ITAB(2).NE.1) CALL UTMESS('F','TE0496','STOP1')
+        IF (ITAB(2).NE.1) CALL UTMESS('F','TE0547','STOP1')
         JCOMPO=ITAB(1)
         READ (ZK16(JCOMPO-1+1),'(I16)') NBVARI
       ELSE

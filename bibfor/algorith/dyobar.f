@@ -11,7 +11,7 @@
       CHARACTER*24        DEPPLU, SIGPLU, VARPLU, VITPLU, ACCPLU
       CHARACTER*24        VALPLU, ACCENT, DEPENT, VITENT
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 22/11/2001   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/12/2003   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,6 +52,7 @@ C     --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------------
       INTEGER       IRET, TABI(2), IOCC, INOEUD, ICMP
       INTEGER       JDEPP, JVITP, JACCP, JDEPEN, JVITEN, JACCEN
       REAL*8        VALR, TABR(2)
+      CHARACTER*13  RESULT, CONCEP, NOMCMD
       COMPLEX*16    CBID
       CHARACTER*16  TABK(4)
       CHARACTER*16  NPARAN(6), NPARAS(7)
@@ -64,23 +65,40 @@ C
      +              'MAILLE'  , 'POINT' , 'VALE' /
 C DEB------------------------------------------------------------------
 C
+      CALL GETRES(RESULT,CONCEP,NOMCMD)
+C
       CALL JEMARQ()
-
+C
       CALL DESAGG(VALPLU,DEPPLU,SIGPLU,VARPLU,K24BID,K24BID,K24BID,
      &            K24BID,K24BID)
-      CALL JEVEUO(DEPPLU(1:19)//'.VALE','L',JDEPP)
-      CALL JEVEUO(VITPLU(1:19)//'.VALE','L',JVITP)
-      CALL JEVEUO(ACCPLU(1:19)//'.VALE','L',JACCP)
-      IF (NBMODS.NE.0) THEN
-        CALL JEVEUO(DEPENT(1:19)//'.VALE','L',JDEPEN)
-        CALL JEVEUO(VITENT(1:19)//'.VALE','L',JVITEN)
-        CALL JEVEUO(ACCENT(1:19)//'.VALE','L',JACCEN)
-      END IF
-
-      TABI(1) = INST
-      TABR(1) = INSTAP
+      CALL JEVEUO(DEPPLU(1:19)//'.VALE','L',JDEPP) 
 C
-      DO 10 IOCC = 1 , NBOBS
+      IF(NOMCMD(1:13).EQ.'STAT_NON_LINE')THEN
+         DO 10 IOCC = 1 , NBOBS 
+            IF (  NCHAM(IOCC)(1:4).NE.'DEPL'     .AND.
+     &            NCHAM(IOCC)(1:9).NE.'SIEF_ELGA'.AND.
+     &            NCHAM(IOCC)(1:9).NE.'VARI_ELGA') THEN
+                CALL UTDEBM('F','DYOBAR','ERREUR FATALE')
+                CALL UTIMPK('L','LE CHAMP',1,NCHAM(IOCC)(1:11))
+                CALL UTIMPK('S','EST INCOMPATIBLE AVEC'//
+     +               ' LE MODE',1,NOMCMD(1:13))
+                CALL UTFINM()
+             ENDIF
+ 10       CONTINUE
+       ELSE
+          CALL JEVEUO(VITPLU(1:19)//'.VALE','L',JVITP) 
+          CALL JEVEUO(ACCPLU(1:19)//'.VALE','L',JACCP)
+          CALL JEVEUO(DEPENT(1:19)//'.VALE','L',JDEPEN)
+          CALL JEVEUO(VITENT(1:19)//'.VALE','L',JVITEN)
+          CALL JEVEUO(ACCENT(1:19)//'.VALE','L',JACCEN)
+       ENDIF
+
+       TABI(1) = INST
+       TABR(1) = INSTAP
+C
+C
+      DO 20 IOCC = 1 , NBOBS 
+C
 C
          TABK(1) = NCHAM(IOCC)
 C
@@ -176,7 +194,7 @@ C                 ---------------------------------
 C
          ENDIF
 C
- 10   CONTINUE
+ 20   CONTINUE
 C
       CALL JEDEMA()
       END

@@ -1,6 +1,6 @@
       SUBROUTINE DISMME(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 16/12/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,6 @@ C
 C ----------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
-      CHARACTER*8  NOGDCO
       CHARACTER*7  TYPMAT
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
@@ -51,9 +50,9 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       REAL*8 ZR
       COMPLEX*16 ZC
-      LOGICAL ZL
+      LOGICAL ZL,ZEROSD
       CHARACTER*8 ZK8,MO
-      CHARACTER*16 ZK16,PHENO
+      CHARACTER*16 ZK16
       CHARACTER*24 ZK24
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
@@ -76,7 +75,12 @@ C
          REPK='SYMETRI'
          DO 1, I=1,NBRESU
            CALL DISMRE(CODMES,QUESTI,ZK24(IALIRE-1+I),REPI,TYPMAT,I1)
-           IF ((I1.NE.-1).AND.(TYPMAT.EQ.'NON_SYM')) REPK='NON_SYM'
+           IF ((I1.EQ.0).AND.(TYPMAT.EQ.'NON_SYM')) THEN
+              IF (.NOT.ZEROSD('RESUELEM',ZK24(IALIRE-1+I)))  THEN
+                 REPK='NON_SYM'
+                 GO TO 9999
+              END IF
+           END IF
  1       CONTINUE
       ELSE IF (QUESTI.EQ.'CHAM_MATER') THEN
          REPK=ZK24(IAREFE-1+4)

@@ -1,6 +1,6 @@
       SUBROUTINE PJ3DTR(CORTR3,CORRES,NUTM3D,NOTM3D)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/05/99   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -519,7 +519,7 @@ C     -----------------------------------------------------------
 C       2.2.2 :
 C       CALCUL DES F. DE FORME AUX NOEUDS POUR LE POINT KSI,ETA,DZETA:
 C       --------------------------------------------------------------
-        CALL CALCFF(NOTM,NBNO,KSI,ETA,DZETA,XIN,YIN,ZIN,FF,DFF)
+        CALL CALCFF(NOTM,KSI,ETA,DZETA,XIN,YIN,ZIN,FF,DFF)
         DO 22,INO=1,NBNO
           NUNO=ZI(IACNX1+ ZI(ILCNX1-1+IMA1)-2+INO)
           ZI(I2CONU-1+IDECA2+INO)=NUNO

@@ -6,7 +6,7 @@
      > NSOM,VOISIN,NBVOS,P2P1,LUMPED)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/06/2003   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 08/12/2003   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,57 +89,57 @@ C OUT NBVOS  : NBVOS(1,NSOMAX) : NOMBRE DE VOISINS D UN SOMMET < NVOMAX
 C OUT NSOM   : NOMBRE DE NOEUDS SOMMETS
       INTEGER IS
       INTEGER IL,NLUMP
-      PARAMETER (NLUMP=68)
+      PARAMETER (NLUMP=104)
       CHARACTER*16 ELLUM(NLUMP)
 
       LOGICAL TROUVE
 C
       INTEGER NTHMS3,IHM3
-      PARAMETER (NTHMS3=12)
+      PARAMETER (NTHMS3=18)
       CHARACTER*16 THMS3(NTHMS3)
 C
       INTEGER NTHMS2,IHM2
-      PARAMETER (NTHMS2=10)
+      PARAMETER (NTHMS2=16)
       CHARACTER*16 THMS2(NTHMS2)
 C
       INTEGER NTHMT3
-      PARAMETER (NTHMT3=20)
+      PARAMETER (NTHMT3=26)
       CHARACTER*16 THMT3(NTHMT3)
 C
       INTEGER NTHMQ4,IHM4
-      PARAMETER (NTHMQ4=20)
+      PARAMETER (NTHMQ4=26)
       CHARACTER*16 THMQ4(NTHMQ4)
 C
       INTEGER NTHMT6,IHM6
-      PARAMETER (NTHMT6=22)
+      PARAMETER (NTHMT6=28)
       CHARACTER*16 THMT6(NTHMT6)
 C
       INTEGER NTHMQ8,IHM8
-      PARAMETER (NTHMQ8=22)
+      PARAMETER (NTHMQ8=28)
       CHARACTER*16 THMQ8(NTHMQ8)
 C
       INTEGER NTHMF8,IHF8
-      PARAMETER (NTHMF8=6)
+      PARAMETER (NTHMF8=9)
       CHARACTER*16 THMF8(NTHMF8)
 C
       INTEGER NTHMF6,IHF6
-      PARAMETER (NTHMF6=6)
+      PARAMETER (NTHMF6=9)
       CHARACTER*16 THMF6(NTHMF6)
 C
       INTEGER NHMH10,IHH10
-      PARAMETER (NHMH10=12)
+      PARAMETER (NHMH10=15)
       CHARACTER*16 THMH10(NHMH10)
 C
       INTEGER NHMH13,IHH13
-      PARAMETER (NHMH13=12)
+      PARAMETER (NHMH13=15)
       CHARACTER*16 THMH13(NHMH13)
 C
       INTEGER NHMH15,IHH15
-      PARAMETER (NHMH15=12)
+      PARAMETER (NHMH15=15)
       CHARACTER*16 THMH15(NHMH15)
 C
       INTEGER NHMH20,IHH20
-      PARAMETER (NHMH20=12)
+      PARAMETER (NHMH20=15)
       CHARACTER*16 THMH20(NHMH20)
       
 C
@@ -154,28 +154,40 @@ C     THMS3  : NOM DE CES ELEMENTS
 C     ISTHS3  : TRUE SI APPARTIENT A CETTE FAMILLE
       DATA THMS3 / 
      > 'THHM_D_PLAN_SE3 ',
+     > 'THH2M_D_PLAN_SE3',
      > 'HM_D_PLAN_SE3   ',
      > 'HHM_D_PLAN_SE3  ',
+     > 'HH2M_D_PLAN_SE3 ',
      > 'THH_D_PLAN_SE3  ',
+     > 'THH2_D_PLAN_SE3 ',
      > 'THM_D_PLAN_SE3  ',
      > 'THHM_AXIS_SE3   ',
+     > 'THH2M_AXIS_SE3   ',
      > 'HM_AXIS_SE3     ',
      > 'HHM_AXIS_SE3    ',
+     > 'HH2M_AXIS_SE3    ',
      > 'THH_AXIS_SE3    ',
+     > 'THH2_AXIS_SE3   ',
      > 'THM_AXIS_SE3    ',
      > 'THV_AXIS_SE3    ',
      > 'THV_D_PLAN_SE3  ' /
 C
       DATA THMS2 / 
      > 'THHM_D_PLAN_SE2 ',
+     > 'THH2M_D_PLAN_SE2',
      > 'HM_D_PLAN_SE2   ',
      > 'HHM_D_PLAN_SE2  ',
+     > 'HH2M_D_PLAN_SE2 ',
      > 'THH_D_PLAN_SE2  ',
+     > 'THH2_D_PLAN_SE2 ',
      > 'THM_D_PLAN_SE2  ',
      > 'THHM_AXIS_SE2   ',
+     > 'THH2M_AXIS_SE2   ',
      > 'HM_AXIS_SE2     ',
      > 'HHM_AXIS_SE2    ',
+     > 'HH2M_AXIS_SE2    ',
      > 'THH_AXIS_SE2    ',
+     > 'THH2_AXIS_SE2   ',
      > 'THM_AXIS_SE2    ' /
 C      
       
@@ -190,12 +202,15 @@ C
      > 'THH_DPTR3       ','THM_DPTR3       ',
      > 'THHM_DPTR3      ', 'THHM_AXIS_TR3   ',
      > 'HM_AXIS_TR3     ', 'HHM_AXIS_TR3    ',
-     > 'THH_AXIS_TR3    ','THM_AXIS_TR3    ',     
+     > 'THH_AXIS_TR3    ', 'THM_AXIS_TR3    ',    
      > 'HM_DPTR3D       ','HHM_DPTR3D      ',
-     > 'THH_DPTR3D      ','THM_DPTR3D      ',
+     > 'THH_DPTR3D      ','THH2_DPTR3D     ',
+     > 'THM_DPTR3D      ','HH2M_DPTR3D     ',
      > 'THHM_DPTR3D     ','THHM_AXIS_TR3D  ',
+     > 'THH2M_DPTR3D    ','THH2M_AXIS_TR3D ',
      > 'HM_AXIS_TR3D    ','HHM_AXIS_TR3D   ',
-     > 'THH_AXIS_TR3D   ','THM_AXIS_TR3D   '  /
+     > 'THH_AXIS_TR3D   ','THH2_AXIS_TR3D  ',
+     > 'THM_AXIS_TR3D   ' ,'HH2M_AXIS_TR3D  ' /
 C
 C     NTHMQ4 : NOMBRE  D ELEMENT DE LA FAMILLE THM ET
 C     SUPPORTES PAR UNE MAILLE QUAD4
@@ -209,10 +224,13 @@ C
      > 'HM_AXIS_QU4     ','HHM_AXIS_QU4    ',
      > 'THH_AXIS_QU4    ','THM_AXIS_QU4    ',
      > 'HM_DPQ4D        ','HHM_DPQ4D       ',
-     > 'THH_DPQ4D       ', 'THM_DPQ4D       ',
+     > 'THH_DPQ4D       ','THH2_DPQ4D      ',
+     > 'THM_DPQ4D       ','HH2M_DPQ4D      ',
      > 'THHM_DPQ4D      ','THHM_AXIS_QU4D  ',
+     > 'THH2M_DPQ4D     ','THH2M_AXIS_QU4D ',
      > 'HM_AXIS_QU4D    ','HHM_AXIS_QU4D   ',
-     > 'THH_AXIS_QU4D   ','THM_AXIS_QU4D   ' /
+     > 'THH_AXIS_QU4D   ','THH2_AXIS_QU4D  ',
+     > 'THM_AXIS_QU4D   ','HH2M_AXIS_QU4D  ' /
 C
 C     NTHMT6 : NOMBRE  D ELEMENT DE LA FAMILLE THM ET
 C     SUPPORTES PAR UNE MAILLE TR6
@@ -225,13 +243,15 @@ C
      > 'THHM_DPTR6      ','THHM_AXIS_TR6   ',
      > 'HM_AXIS_TR6     ','HHM_AXIS_TR6    ',
      > 'THH_AXIS_TR6    ','THM_AXIS_TR6    ',
-     
      > 'HHM_DPTR6D      ','THH_DPTR6D      ',
+     > 'THH2_DPTR6D     ','THH2_AXIS_TR6D  ',
      > 'THM_DPTR6D      ','THHM_DPTR6D     ',
      > 'HM_DPTR6D       ','HM_AXIS_TR6D    ',
      > 'HHM_AXIS_TR6D   ','THH_AXIS_TR6D   ',
      > 'THM_AXIS_TR6D   ','THHM_AXIS_TR6D  ',
-     > 'THV_DPTR6D      ','THV_AXIS_TR6D   '/
+     > 'THV_DPTR6D      ','THV_AXIS_TR6D   ',
+     > 'THH2M_DPTR6D    ','THH2M_AXIS_TR6D ',
+     > 'HH2M_AXIS_TR6D  ','HH2M_DPTR6D      '/
 C
 C     NTHMQ8 : NOMBRE  D ELEMENT DE LA FAMILLE THM ET
 C     SUPPORTES PAR UNE MAILLE QUAD8
@@ -245,11 +265,14 @@ C
      > 'HM_AXIS_QU8     ','HHM_AXIS_QU8    ',
      > 'THH_AXIS_QU8    ','THM_AXIS_QU8    ', 
      > 'HM_DPQ8D        ','HHM_DPQ8D       ',
-     > 'THH_DPQ8D       ','THM_DPQ8D       ',
+     > 'THH_DPQ8D       ','THH2_DPQ8D      ',
+     > 'THM_DPQ8D       ','THM_AXIS_QU8D   ',
      > 'THHM_DPQ8D      ','THHM_AXIS_QU8D  ',
+     > 'THH2M_DPQ8D     ','THH2M_AXIS_QU8D ',
      > 'HM_AXIS_QU8D    ','HHM_AXIS_QU8D   ',
-     > 'THH_AXIS_QU8D   ','THM_AXIS_QU8D   ',
-     > 'THV_DPQ8D       ','THV_AXIS_QU8D   ' /
+     > 'THH_AXIS_QU8D   ','THH2_AXIS_QU8D  ',
+     > 'THV_DPQ8D       ','THV_AXIS_QU8D   ' ,
+     > 'HH2M_DPQ8D      ','HH2M_AXIS_QU8D  ' /
 C
 C
 C     NTHMF6 : NOMBRE  D ELEMENT DE LA FAMILLE THM ET
@@ -260,10 +283,13 @@ C     ISTHF6  : TRUE SI APPARTIENT A CETTE FAMILLE
 C
       DATA THMF6 / 
      > 'HHM_FACE6       ',
+     > 'HH2M_FACE6      ',
      > 'HM_FACE6        ',
      > 'THH_FACE6       ',
+     > 'THH2_FACE6      ',
      > 'THV_FACE6       ',
      > 'THHM_FACE6      ',
+     > 'THH2M_FACE6     ',
      > 'THM_FACE6       '/
 C
 C     NTHMF8 : NOMBRE  D ELEMENT DE LA FAMILLE THM ET
@@ -274,10 +300,13 @@ C     ISTHF8  : TRUE SI APPARTIENT A CETTE FAMILLE
 C
       DATA THMF8 / 
      > 'HHM_FACE8       ',
+     > 'HH2M_FACE8      ',
      > 'HM_FACE8        ',
      > 'THH_FACE8       ',
+     > 'THH2_FACE8      ',
      > 'THV_FACE8       ',
      > 'THHM_FACE8      ',
+     > 'THH2M_FACE8     ',
      > 'THM_FACE8       '/
 C
 C
@@ -294,10 +323,13 @@ C
      > 'THHM_TETRA10     ',
      > 'THM_TETRA10      ', 
      > 'HHM_TETRA10D     ',
+     > 'HH2M_TETRA10D     ',
      > 'HM_TETRA10D      ',
      > 'THH_TETRA10D     ',
+     > 'THH2_TETRA10D    ',
      > 'THV_TETRA10D     ',
      > 'THHM_TETRA10D    ',
+     > 'THH2M_TETRA10D   ',
      > 'THM_TETRA10D     '/
 C
 C
@@ -314,10 +346,13 @@ C
      > 'THHM_PYRAM13     ',
      > 'THM_PYRAM13      ',
      > 'HHM_PYRAM13D     ',
+     > 'HH2M_PYRAM13D    ',
      > 'HM_PYRAM13D      ',
      > 'THH_PYRAM13D     ',
+     > 'THH2_PYRAM13D    ',
      > 'THV_PYRAM13D     ',
      > 'THHM_PYRAM13D    ',
+     > 'THH2M_PYRAM13D   ',
      > 'THM_PYRAM13D     '/
 C
 C
@@ -334,10 +369,13 @@ C
      > 'THHM_PENTA15     ',
      > 'THM_PENTA15      ', 
      > 'HHM_PENTA15D     ',
+     > 'HH2M_PENTA15D     ',
      > 'HM_PENTA15D      ',
      > 'THH_PENTA15D     ',
+     > 'THH2_PENTA15D    ',
      > 'THV_PENTA15D     ',
      > 'THHM_PENTA15D    ',
+     > 'THH2M_PENTA15D   ',
      > 'THM_PENTA15D     '/
 C
 C
@@ -354,10 +392,13 @@ C
      > 'THHM_HEXA20      ',
      > 'THM_HEXA20       ',
      > 'HHM_HEXA20D      ',
+     > 'HH2M_HEXA20D      ',
      > 'HM_HEXA20D       ',
      > 'THH_HEXA20D      ',
+     > 'THH2_HEXA20D     ',
      > 'THV_HEXA20D      ',
      > 'THHM_HEXA20D     ',
+     > 'THH2M_HEXA20D    ',
      > 'THM_HEXA20D      '/
 C
 C
@@ -431,6 +472,44 @@ C
        ELLUM(67) = 'THV_PENTA15D    '
        ELLUM(68) = 'THV_HEXA20D     '
 C  
+       ELLUM(69) = 'THH2_HEXA20D    '
+       ELLUM(70) = 'THH2_PENTA15D   '
+       ELLUM(71) = 'THH2_PYRAM13D   '
+       ELLUM(72) = 'THH2_TETRA10D    '
+       ELLUM(73) = 'THH2_AXIS_QU8D  '
+       ELLUM(74) = 'THH2_DPQ8D       '
+       ELLUM(75) = 'THH2_AXIS_TR6D  '
+       ELLUM(76) = 'THH2_DPTR6D     '
+       ELLUM(77) = 'THH2_AXIS_QU4D  '
+       ELLUM(78) = 'THH2_DPQ4D      '
+       ELLUM(79) =  'THH2_AXIS_TR3D  '
+       ELLUM(80) =  'THH2_DPTR3D     '
+C
+       ELLUM(81) = 'THH2M_DPTR3D     '
+       ELLUM(82) = 'THH2M_AXIS_TR3D  '
+       ELLUM(83) = 'THH2M_DPQ4D      '
+       ELLUM(84) = 'THH2M_AXIS_QU4D  '
+       ELLUM(85) = 'THH2M_DPTR6D     '
+       ELLUM(86) = 'THH2M_AXIS_TR6D  '
+       ELLUM(87) = 'THH2M_DPQ8D      '
+       ELLUM(88) = 'THH2M_AXIS_QU8D  '
+       ELLUM(89) = 'THH2M_TETRA10D   '
+       ELLUM(90) = 'THH2M_PYRAM13D   '
+       ELLUM(91) = 'THH2M_PENTA15D   '
+       ELLUM(92) = 'THH2M_HEXA20D    '
+C
+       ELLUM(93) = 'HH2M_DPTR3D      '
+       ELLUM(94) = 'HH2M_AXIS_TR3D   '
+       ELLUM(95) = 'HH2M_DPQ4D       '
+       ELLUM(96) = 'HH2M_AXIS_QU4D   '
+       ELLUM(97) = 'HH2M_DPTR6D      '
+       ELLUM(98) = 'HH2M_AXIS_TR6D   '
+       ELLUM(99) = 'HH2M_DPQ8D       '
+       ELLUM(100) = 'HH2M_AXIS_QU8D   '
+       ELLUM(101) = 'HH2M_TETRA10D    '     
+       ELLUM(102) = 'HH2M_PYRAM13D    '
+       ELLUM(103) = 'HH2M_PENTA15D    '
+       ELLUM(104) = 'HH2M_HEXA20D     '
 C
       TROUVE  = .FALSE.
       ISTHT3  = .FALSE.
@@ -684,10 +763,12 @@ C
       IF (TRAITE) THEN
        IF ( NOMTE(6:9).EQ.'AXIS'
      >    .OR.NOMTE(4:7) .EQ.'AXIS'
-     >    .OR.NOMTE(5:8).EQ.'AXIS')THEN
+     >    .OR.NOMTE(5:8) .EQ.'AXIS'
+     >    .OR.NOMTE(7:10).EQ.'AXIS')THEN
          AXI = .TRUE.
        ENDIF
        IF ( NOMTE(6:7).EQ.'DP'
+     >    .OR.NOMTE(7:8) .EQ.'DP'
      >    .OR.NOMTE(4:5) .EQ.'DP'
      >    .OR.NOMTE(5:6).EQ.'DP')THEN
          DPLAN = .TRUE.

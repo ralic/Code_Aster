@@ -1,9 +1,9 @@
-       SUBROUTINE  NMEL2D(NNO, NPG, POIDSG, VFF, DFDE, DFDK,
+       SUBROUTINE  NMEL2D(NNO, NPG, IPOIDS, IVF, IDFDE,
      &             GEOM, TYPMOD, OPTION, IMATE, COMPOR, LGPG, CRIT, T,
      &             HYDR, SECH, TREF, DEPL, DFDI, PFF, DEF, SIG, VI,
      &             MATUU, VECTU, CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,11 +23,10 @@ C ======================================================================
 C TOLE CRP_21
        IMPLICIT NONE
 
-       INTEGER       NNO, NPG, IMATE, LGPG, CODRET
+       INTEGER       NNO,NPG,IMATE,LGPG,CODRET,IPOIDS,IVF,IDFDE
        CHARACTER*8   TYPMOD(*)
        CHARACTER*16  OPTION, COMPOR(4)
 
-       REAL*8        POIDSG(NPG), VFF(NNO,NPG), DFDE(*), DFDK(*)
        REAL*8        GEOM(2,NNO), CRIT(3), T(NNO), TREF
        REAL*8        HYDR(NNO), SECH(NNO)
        REAL*8        DEPL(1:2,1:NNO), DFDI(NNO,2)
@@ -66,11 +65,28 @@ C OUT VI      : VARIABLES INTERNES    (RAPH_MECA ET FULL_MECA)
 C OUT MATUU   : MATRICE DE RIGIDITE PROFIL (RIGI_MECA_TANG ET FULL_MECA)
 C OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
 C......................................................................
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER  ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER  KPG,KK,N,I,M,J,J1,KL,PQ,KKD
       LOGICAL  GRDEPL, GRROTA, AXI, CPLAN
       REAL*8   DSIDEP(6,6),F(3,3),EPS(6),R,SIGMA(6),FTF,DETF
-      REAL*8   POIDS,TEMP,TMP1,TMP2,DUM,SIGP(6),HYDRG,SECHG
+      REAL*8   POIDS,TEMP,TMP1,TMP2,SIGP(6),HYDRG,SECHG
 
       INTEGER INDI(4),INDJ(4)
       REAL*8  RIND(4),RAC2
@@ -106,17 +122,16 @@ C - DE L HYDRATATION ET DU SECHAGE AU POINT DE GAUSS
         SECHG = 0.D0
         TEMP = 0.D0
         DO 15 N=1,NNO
-          TEMP = TEMP + T(N)*VFF(N,KPG)
-          SECHG = SECHG + SECH(N)*VFF(N,KPG)
+          TEMP = TEMP + T(N)*ZR(IVF+N+(KPG-1)*NNO-1)
+          SECHG = SECHG + SECH(N)*ZR(IVF+N+(KPG-1)*NNO-1)
  15     CONTINUE
 
 
 C - CALCUL DES ELEMENTS GEOMETRIQUES
 
 C      CALCUL DE DFDI, F, EPS, R (EN AXI) ET POIDS
-        CALL NMGEOM(2,NNO,AXI,GRDEPL,GEOM,KPG,POIDSG(KPG),
-     &              VFF(1,KPG),DFDE,DUM,DFDK,DEPL,POIDS,DFDI,
-     &              F,EPS,R)
+        CALL NMGEOM(2,NNO,AXI,GRDEPL,GEOM,KPG,IPOIDS,IVF,IDFDE,
+     &              DEPL,POIDS,DFDI,F,EPS,R)
 
 C      CALCUL DES PRODUITS SYMETR. DE F PAR N,
         DO 120 N=1,NNO
@@ -131,12 +146,12 @@ C      CALCUL DES PRODUITS SYMETR. DE F PAR N,
 C      TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
         IF (AXI) THEN
           DO 124 N=1,NNO
-            DEF(3,N,1) = F(3,3)*VFF(N,KPG)/R
+            DEF(3,N,1) = F(3,3)*ZR(IVF+N+(KPG-1)*NNO-1)/R
  124      CONTINUE
         ENDIF
 
 C      CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
-        IF ( (OPTION(1:16) .EQ. 'RIGI_MECA_TANG'
+        IF ( (OPTION(1:10) .EQ. 'RIGI_MECA_'
      &  .OR.  OPTION(1: 9) .EQ. 'FULL_MECA'    ) .AND. GRDEPL) THEN
           DO 125 N=1,NNO
             DO 126 M=1,N
@@ -157,7 +172,7 @@ C - LOI DE COMPORTEMENT : S(E) ET DS/DE
 
 C - CALCUL DE LA MATRICE DE RIGIDITE
 
-        IF ( OPTION(1:16) .EQ. 'RIGI_MECA_TANG'
+        IF ( OPTION(1:10) .EQ. 'RIGI_MECA_'
      &  .OR. OPTION(1: 9) .EQ. 'FULL_MECA'    ) THEN
 
           DO 130 N=1,NNO
@@ -188,7 +203,8 @@ C                 RIGIDITE GEOMETRIQUE
 
 C                  TERME DE CORRECTION AXISYMETRIQUE
                     IF (AXI .AND. I.EQ.1) THEN
-                      TMP1 = TMP1+VFF(N,KPG)*VFF(M,KPG)/(R*R)*SIGMA(3)
+                      TMP1=TMP1+ZR(IVF+N+(KPG-1)*NNO-1)*
+     &                     ZR(IVF+M+(KPG-1)*NNO-1)/(R*R)*SIGMA(3)
                     END IF
                   ENDIF
 
@@ -231,7 +247,7 @@ C          CONVERSION LAGRANGE -> CAUCHY
               SIG(PQ,KPG) = 0.D0
               DO 200 KL = 1,4
                 FTF = (F(INDI(PQ),INDI(KL))*F(INDJ(PQ),INDJ(KL)) +
-     &              F(INDI(PQ),INDJ(KL))*F(INDJ(PQ),INDI(KL)))*RIND(KL)
+     &          F(INDI(PQ),INDJ(KL))*F(INDJ(PQ),INDI(KL)))*RIND(KL)
                 SIG(PQ,KPG) =  SIG(PQ,KPG)+ FTF*SIGMA(KL)
  200          CONTINUE
               SIG(PQ,KPG) = SIG(PQ,KPG)/DETF

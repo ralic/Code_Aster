@@ -1,6 +1,6 @@
       SUBROUTINE TE0476 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,15 +26,7 @@ C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C .....................................................................
-      CHARACTER*24       TRAV,CHVAL,CHCTE
-      INTEGER            NNO,NPG1,I,IMATUU,NDIM,NBFPG,JVAL,IDFDY,IMATE
-      INTEGER            IPOIDS,IVF,IDFDX,IGEOM,IINSTM,IINSTP,IDEPLM
-      INTEGER            ITRAV,JIN,IDEPLP,ICOMPO,ICARCR,IPESA,ICONTM
-      INTEGER            ITREF,IVECTU,ICONTP,LI,JCRET
-      CHARACTER*8        ELREFE
-      INTEGER            NBPG(10)
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -50,30 +42,16 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
+      INTEGER            NNO,NPG1,IMATUU,NDIM,IMATE
+      INTEGER            IPOIDS,IVF,IDFDX,IGEOM,IINSTM,IINSTP,IDEPLM
+      INTEGER            IDEPLP,ICOMPO,ICARCR,IPESA,ICONTM
+      INTEGER            ITREF,IVECTU,ICONTP,LI,JCRET,NNOS,JGANO
+C                             ( 2*27,2*27)       27*27
+      REAL*8             TRAV1(2916),      TRAV2(729), TRAV3(729)
+C     -----------------------------------------------------------------
 
-C - FONCTIONS DE FORMES, POINTS DE GAUSS ET VECTEUR DE TRAVAIL
-      CALL ELREF1(ELREFE)
-
-      CHCTE = '&INEL.'//ELREFE//'.CARACTE'
-      CALL JEVETE(CHCTE,'L',JIN)
-      NDIM = ZI(JIN+1-1)
-      NNO = ZI(JIN+2-1)
-      NBFPG = ZI(JIN+3-1)
-      DO 111 I = 1,NBFPG
-         NBPG(I) = ZI(JIN+3-1+I)
-  111 CONTINUE
-      NPG1 = NBPG(1)
-C
-      CHVAL = '&INEL.'//ELREFE//'.FFORMES'
-      CALL JEVETE(CHVAL,'L',JVAL)
-C
-      IPOIDS = JVAL + (NDIM+1)*NNO*NNO
-      IVF    = IPOIDS + NPG1
-      IDFDX  = IVF    + NPG1 * NNO
-C
-
-      TRAV = '&INEL.'//ELREFE//'.TRAVAIL'
-      CALL JEVETE(TRAV,'L',ITRAV)
+C - FONCTIONS DE FORMES, POINTS DE GAUSS
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDX,JGANO)
 
 C - PARAMETRES EN ENTREE
       CALL JEVECH('PGEOMER','L',IGEOM)
@@ -126,10 +104,8 @@ C
 C
 C        OPTION RIGI_MECA_TANG :         ARGUMENTS EN T-
           CALL SOSU3D(NNO, NPG1, ZR(IPOIDS), ZR(IVF), ZR(IDFDX),
-     &          ZR(IGEOM), NOMTE, OPTION,
-     &          ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
-     &          ZR(ITREF), ZR(IDEPLM),
-     &          ZR(ITRAV),ZR(ITRAV+5*NNO*NNO),ZR(ITRAV+10*NNO*NNO),
+     &          ZR(IGEOM), OPTION,ZI(IMATE),ZR(ICARCR),
+     &          ZR(ITREF), ZR(IDEPLM),TRAV1, TRAV2, TRAV3,
      &          ZR(ICONTM), ZR(IMATUU), ZR(IVECTU),
      &          ZR(IDEPLM),ZR(IPESA),ZR(IINSTM), ZR(IINSTP))
         ELSE
@@ -140,10 +116,8 @@ C
             ZR(IDEPLP+LI-1)=ZR(IDEPLM+LI-1)+ZR(IDEPLP+LI-1)
  10        CONTINUE
           CALL SOSU3D(NNO, NPG1, ZR(IPOIDS), ZR(IVF), ZR(IDFDX),
-     &          ZR(IGEOM), NOMTE, OPTION,
-     &          ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
-     &          ZR(ITREF), ZR(IDEPLP),
-     &          ZR(ITRAV),ZR(ITRAV+5*NNO*NNO),ZR(ITRAV+10*NNO*NNO),
+     &          ZR(IGEOM), OPTION,ZI(IMATE),ZR(ICARCR),
+     &          ZR(ITREF), ZR(IDEPLP),TRAV1, TRAV2, TRAV3,
      &          ZR(ICONTP), ZR(IMATUU), ZR(IVECTU),
      &          ZR(IDEPLM),ZR(IPESA),ZR(IINSTM), ZR(IINSTP))
 

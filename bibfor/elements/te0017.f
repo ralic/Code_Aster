@@ -1,6 +1,8 @@
-      SUBROUTINE TE0017(OPTION,NOMTE)
+      SUBROUTINE TE0017 ( OPTION, NOMTE )
+      IMPLICIT     NONE
+      CHARACTER*16        OPTION, NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,47 +27,40 @@ C          ELEMENTS ISOPARAMETRIQUES 3D
 C          OPTION : 'CHAR_MECA_FORC_F '
 
 C     ENTREES  ---> OPTION : OPTION DE CALCUL
-C          ---> NOMTE  : NOM DU TYPE ELEMENT
+C              ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*8 MATER,NOMPAR(4)
-      CHARACTER*16 NOMTE,OPTION
-      REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS,FX,FY,FZ
-      REAL*8 VALPAR(4)
-      INTEGER IPOIDS,IVF,IDFDE,IDFDN,IDFDK,IGEOM,IMATE
-      INTEGER JGANO,NNO,KP,NPG1,II,JJ,I,J,IVECTU,ITEMPE
-
-
-
-C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      COMMON /IVARJE/ZI(1)
-      COMMON /RVARJE/ZR(1)
-      COMMON /CVARJE/ZC(1)
-      COMMON /LVARJE/ZL(1)
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      INTEGER ZI
-      REAL*8 ZR
-      COMPLEX*16 ZC
-      LOGICAL ZL
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER      IPOIDS,IVF,IDFDE,IGEOM,ITEMPS,IFORC,IER
+      INTEGER      JGANO,NNO,NDL,KP,NPG1,II,I,L,IVECTU,NDIM,NNOS
+      REAL*8       DFDX(27),DFDY(27),DFDZ(27),POIDS,FX,FY,FZ
+      REAL*8       XX,YY,ZZ,VALPAR(4)
+      CHARACTER*8  NOMPAR(4)
+C     ------------------------------------------------------------------
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
-      DO 10 I = 1,1
-   10 CONTINUE
 
       CALL JEVECH('PGEOMER','L',IGEOM)
-
       CALL JEVECH('PVECTUR','E',IVECTU)
       CALL JEVECH('PTEMPSR','L',ITEMPS)
       CALL JEVECH('PFF3D3D','L',IFORC)
+
       VALPAR(4) = ZR(ITEMPS)
       NOMPAR(1) = 'X'
       NOMPAR(2) = 'Y'
@@ -82,28 +77,27 @@ C    BOUCLE SUR LES POINTS DE GAUSS
       DO 50 KP = 1,NPG1
 
         L = (KP-1)*NNO
-        K = (KP-1)*NNO*3
-        CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &              ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POIDS)
+        CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
 
         XX = 0.D0
         YY = 0.D0
         ZZ = 0.D0
         DO 30 I = 1,NNO
-          XX = XX + ZR(IGEOM+3* (I-1))*ZR(IVF+L+I-1)
+          XX = XX + ZR(IGEOM+3*I-3)*ZR(IVF+L+I-1)
           YY = YY + ZR(IGEOM+3*I-2)*ZR(IVF+L+I-1)
           ZZ = ZZ + ZR(IGEOM+3*I-1)*ZR(IVF+L+I-1)
    30   CONTINUE
         VALPAR(1) = XX
         VALPAR(2) = YY
         VALPAR(3) = ZZ
-        CALL FOINTE('FM',ZK8(IFORC),4,NOMPAR,VALPAR,FX,IER)
+        CALL FOINTE('FM',ZK8(IFORC  ),4,NOMPAR,VALPAR,FX,IER)
         CALL FOINTE('FM',ZK8(IFORC+1),4,NOMPAR,VALPAR,FY,IER)
         CALL FOINTE('FM',ZK8(IFORC+2),4,NOMPAR,VALPAR,FZ,IER)
 
         DO 40 I = 1,NNO
           II = 3* (I-1)
-          ZR(IVECTU+II) = ZR(IVECTU+II) + POIDS*ZR(IVF+L+I-1)*FX
+          ZR(IVECTU+II  ) = ZR(IVECTU+II  ) + POIDS*ZR(IVF+L+I-1)*FX
           ZR(IVECTU+II+1) = ZR(IVECTU+II+1) + POIDS*ZR(IVF+L+I-1)*FY
           ZR(IVECTU+II+2) = ZR(IVECTU+II+2) + POIDS*ZR(IVF+L+I-1)*FZ
 

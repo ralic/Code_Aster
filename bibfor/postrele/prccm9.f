@@ -1,13 +1,13 @@
-      SUBROUTINE PRCCM9 ( RCCMPM, RCCMSN, SNTHER, FATIZH, FATISP, 
+      SUBROUTINE PRCCM9 ( RCCMPM, RCCMSN, SNTHER, FATIZH,
      +                    TYPTAB, NPARA, NOPARA, TYPARA )
       IMPLICIT   NONE
       INTEGER             NPARA
-      LOGICAL             RCCMPM, RCCMSN, SNTHER, FATIZH, FATISP
+      LOGICAL             RCCMPM, RCCMSN, SNTHER, FATIZH
       CHARACTER*8         TYPARA(*)
       CHARACTER*16        NOPARA(*), TYPTAB
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 01/05/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF POSTRELE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,26 +118,7 @@ C
             NOPARA(NPARA) = 'SN'
             TYPARA(NPARA) = 'R'
          ENDIF
-         IF ( .NOT.RCCMSN .AND. FATISP ) THEN
-            NPARA = NPARA + 1
-            NOPARA(NPARA) = 'INST_SN_1'
-            TYPARA(NPARA) = 'R'
-            NPARA = NPARA + 1
-            NOPARA(NPARA) = 'INST_SN_2'
-            TYPARA(NPARA) = 'R'
-            NPARA = NPARA + 1
-            NOPARA(NPARA) = 'SN'
-            TYPARA(NPARA) = 'R'
-         ENDIF
-         IF ( FATISP ) THEN
-            NPARA = NPARA + 1
-            NOPARA(NPARA) = 'INST_SP_1'
-            TYPARA(NPARA) = 'R'
-            NPARA = NPARA + 1
-            NOPARA(NPARA) = 'INST_SP_2'
-            TYPARA(NPARA) = 'R'
-         ENDIF
-         IF ( FATISP .OR. FATIZH ) THEN
+         IF ( FATIZH ) THEN
             NPARA = NPARA + 1
             NOPARA(NPARA) = 'SP'
             TYPARA(NPARA) = 'R'
@@ -149,14 +130,6 @@ C
             TYPARA(NPARA) = 'R'
             NPARA = NPARA + 1
             NOPARA(NPARA) = 'NADM'
-            TYPARA(NPARA) = 'R'
-         ENDIF
-         IF ( FATISP ) THEN
-            NPARA = NPARA + 1
-            NOPARA(NPARA) = 'NB_OCCUR'
-            TYPARA(NPARA) = 'I'
-            NPARA = NPARA + 1
-            NOPARA(NPARA) = 'DOMMAGE'
             TYPARA(NPARA) = 'R'
          ENDIF
          IF ( FATIZH ) THEN
@@ -184,7 +157,7 @@ C
             NOPARA(NPARA) = 'RESU_2'
             TYPARA(NPARA) = 'K8'
          ENDIF
-         IF ( RCCMSN .OR. FATISP .OR. FATIZH ) THEN
+         IF ( RCCMSN .OR. FATIZH ) THEN
             NPARA = NPARA + 1
             NOPARA(NPARA) = 'INST_2'
             TYPARA(NPARA) = 'R'
@@ -210,12 +183,12 @@ C
                TYPARA(NPARA) = 'R'
             ENDIF
          ENDIF
-         IF ( .NOT.RCCMSN .AND. ( FATIZH .OR. FATISP ) ) THEN
+         IF ( .NOT.RCCMSN .AND. FATIZH ) THEN
             NPARA = NPARA + 1
             NOPARA(NPARA) = 'SN'
             TYPARA(NPARA) = 'R'
          ENDIF
-         IF ( FATISP .OR. FATIZH ) THEN
+         IF ( FATIZH ) THEN
             NPARA = NPARA + 1
             NOPARA(NPARA) = 'SP'
             TYPARA(NPARA) = 'R'
@@ -227,14 +200,6 @@ C
             TYPARA(NPARA) = 'R'
             NPARA = NPARA + 1
             NOPARA(NPARA) = 'NADM'
-            TYPARA(NPARA) = 'R'
-         ENDIF
-         IF ( FATISP ) THEN
-            NPARA = NPARA + 1
-            NOPARA(NPARA) = 'NB_OCCUR'
-            TYPARA(NPARA) = 'I'
-            NPARA = NPARA + 1
-            NOPARA(NPARA) = 'DOMMAGE'
             TYPARA(NPARA) = 'R'
          ENDIF
          IF ( FATIZH ) THEN

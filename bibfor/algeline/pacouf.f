@@ -1,9 +1,9 @@
       SUBROUTINE PACOUF(X,FVECT,VECR1,VECR2,TYPFLU,VECR3,AMOR,MASG,
-     +                  VECR4,VECR5,VECI1,VGAP,INDIC,NBM,NMODE,N)
+     +                  VECR4,VECR5,VECI1,VGAP,INDIC,NBM,NMODE)
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/10/97   AUTEUR KXBADNG N.GAY 
+C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C --- CALCUL DES COEFFICIENTS DE MASSE, RAIDEUR ET AMORTISSEMENT ---
 C --- AJOUTE                                                     ---
 C
       CALL COEFMO(TYPFLU,ZRIGI,NBM,NMODE,INDIC,X,PULSC,VGAP,XSI0,
-     &            MASG,VECI1,VECR1,VECR2,VECR3,VECR4,VECR5,
+     &            VECI1,VECR1,VECR2,VECR3,VECR4,VECR5,
      &            XMF,XKF,XCF)
 C
 C --- CALCUL DE LA FONCTION ---

@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,9 +47,9 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER            NNO,KP,I,K,ITEMPE,ITREF,IDEPL,ICONT,MATER,NNOS
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER            IDEFOR,ITHET,IALPH,IFORC
-      INTEGER            NPG,NPG1,NPG2,NPG3,NPG4,NCMP,NBRES
+      INTEGER            NPG,NCMP,NBRES,NDIM,JGANO
       PARAMETER         ( NBRES = 3 )
 C
       REAL*8             VALRES(NBRES),CONTPG(54)
@@ -58,48 +58,23 @@ C
       REAL*8             DFDX(9),DFDY(9),TPG,POIDS,X,Y,EPS(5),LA,DEMU
       REAL*8             DUDM(7),DTDM(7),DFDM(7),ALPHA,TGD(2)
 C
-      CHARACTER*24       CARAC, FF
-      CHARACTER*8        NOMRES(NBRES),ELREFE
+      CHARACTER*8        NOMRES(NBRES)
       CHARACTER*2        CODRET(NBRES)
 C ......................................................................
 C
-      CALL ELREF1(ELREFE)
-
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
-      NPG3 = ZI(ICARAC+4)
-      NPG4 = ZI(ICARAC+5)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
       IF ( OPTION.EQ.'SIGM_ELNO_LAGR' ) THEN
         IF(NOMTE(5:7).EQ.'TR3' .OR. NOMTE(5:7).EQ.'QU4' ) THEN
-           NNOS = NNO
-           IPOIDS = IFF + NPG1*(1+3*NNO)
-           IVF  = IPOIDS+NPG2
-           IDFDE = IVF  +NPG2*NNO
-           IDFDK = IDFDE +NPG2*NNO
-           NPG  = NPG2
+          CALL ELREF4(' ','MASS',NDIM,NNO,NNOS,NPG,IPOIDS,
+     &                     IVF,IDFDE,JGANO)
         ELSE IF(NOMTE(5:7).EQ.'TR6' .OR. NOMTE(5:7).EQ.'QU8' .OR.
      &        NOMTE(5:7).EQ.'QS8' .OR. NOMTE(5:7).EQ.'QU9' ) THEN
-           NNOS = NNO/2
-           IPOIDS = IFF + (NPG1+NPG2+NPG3)*(1+3*NNO)
-           IVF  = IPOIDS+NPG4
-           IDFDE = IVF  +NPG4*NNO
-           IDFDK = IDFDE +NPG4*NNO
-           NPG  = NPG4
+          CALL ELREF4(' ','NOEU_S',NDIM,NNO,NNOS,NPG,IPOIDS,
+     &                     IVF,IDFDE,JGANO)
         ENDIF
       ELSE
-         IPOIDS = IFF
-         IVF    = IPOIDS+NPG1
-         IDFDE  = IVF   +NPG1*NNO
-         IDFDK  = IDFDE +NPG1*NNO
-         NPG    = NPG1
+        CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,
+     &                   IVF,IDFDE,JGANO)
       ENDIF
-C
       NCMP = 4
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
@@ -124,8 +99,7 @@ C
 C
       DO 101 KP=1,NPG
         K=(KP-1)*NNO
-        CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                ZR(IGEOM),DFDX,DFDY,POIDS )
+        CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
         X   = 0.D0
         Y   = 0.D0
         TPG = 0.D0
@@ -253,7 +227,7 @@ C
 C
       ELSE
 C
-        CALL PPGANO(NNOS,NPG,NCMP,CONTPG,ZR(ICONT))
+        CALL PPGAN2(JGANO,NCMP,CONTPG,ZR(ICONT))
 C
       ENDIF
       END

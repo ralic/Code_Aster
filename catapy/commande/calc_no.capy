@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 08/12/2003   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,4 +94,8 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,docu="U4.81.02-f",reentr
          TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
          MAILLE          =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
+         GROUP_MA_RESU   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+         MAILLE_RESU     =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
+         GROUP_NO_RESU   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+         NOEUD_RESU      =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
 )  ;

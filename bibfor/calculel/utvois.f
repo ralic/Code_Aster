@@ -3,7 +3,7 @@
      &                  IDFDX,IDFDX2,IDFDY,IDFDY2,NPGF,NPGF2,LLUMPE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C RESPONSABLE  O.BOITEAU
+C RESPONSABLE BOITEAU O.BOITEAU
 C TOLE CRP_21
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  CALCUL DES CARACTERISTIQUES DES MAILLES
@@ -59,7 +59,8 @@ C CORPS DU PROGRAMME
 
 C DECLARATION PARAMETRES D'APPELS
       INTEGER NARET,NSOMM,NSOMM2,ITYP,NDEGRE,IDFDX,IDFDX2,IDFDY,IDFDY2,
-     &        NPGF,NPGF2,NBELR
+     &        NPGF,NPGF2,NBELR, NDIM, NNO, NNOS, NPG1, IPOIDS, 
+     &                  IVF, JGANO
       REAL*8 POINC1,POINC2,POIDS1(9),POIDS2(9)
       LOGICAL L2D,LMAJ,LLUMPE
       CHARACTER*8 ELREFE,ELREF2,TYPMAC
@@ -128,7 +129,7 @@ C HEXAEDRE --> FACE4 OU FACE8 OU FACE9
           NARET = 6
           ITYP = 1
           IF(TYPMAC(5:5).EQ.'8') THEN
-            ELREFE = 'FACE4'
+            ELREFE = 'QU4'
             NSOMM = 4
             NDEGRE = 1
             DO 31 I=1,4
@@ -139,7 +140,7 @@ C HEXAEDRE --> FACE4 OU FACE8 OU FACE9
               CALL UTMESS('F','UTVOIS',
      &        '! PAS DE LUMPE EN 3D P2: HEXA20_D --> FACE8_D !')
             ENDIF
-            ELREFE = 'FACE8'
+            ELREFE = 'QU8'
             NSOMM = 8
             NDEGRE = 2
             DO 32 I=1,4
@@ -153,7 +154,7 @@ C HEXAEDRE --> FACE4 OU FACE8 OU FACE9
               CALL UTMESS('F','UTVOIS',
      &        '! PAS DE LUMPE EN 3D P2: HEXA27 --> FACE9_D !')
             ENDIF
-            ELREFE = 'FACE9'
+            ELREFE = 'QU9'
             NSOMM = 9
             NDEGRE = 2
             DO 34 I=1,4
@@ -170,8 +171,8 @@ C PENTAEDRE --> FACE3/4 OU 6/8
           NARET = 5
           ITYP = 2
           IF( TYPMAC(6:6).EQ.'6') THEN
-            ELREFE = 'FACE3'
-            ELREF2 = 'FACE4'
+            ELREFE = 'TR3'
+            ELREF2 = 'QU4'
             NSOMM = 3
             NSOMM2 = 4
             NDEGRE = 1
@@ -186,8 +187,8 @@ C PENTAEDRE --> FACE3/4 OU 6/8
               CALL UTMESS('F','UTVOIS',
      &        '! PAS DE LUMPE EN 3D P2: PENTA15_D --> FACE6/8_D !')
             ENDIF
-            ELREFE = 'FACE6'
-            ELREF2 = 'FACE8'
+            ELREFE = 'TR6'
+            ELREF2 = 'QU8'
             NSOMM = 6
             NSOMM2 = 8
             NDEGRE = 2
@@ -210,7 +211,7 @@ C TETRADRE --> FACE3 OU FACE6
           NARET = 4
           ITYP = 3
           IF( TYPMAC(6:6).EQ.'4') THEN
-            ELREFE = 'FACE3'
+            ELREFE = 'TR3'
             NSOMM = 3
             NDEGRE = 1
             DO 42 I=1,3
@@ -221,7 +222,7 @@ C TETRADRE --> FACE3 OU FACE6
               CALL UTMESS('F','UTVOIS',
      &        '! PAS DE LUMPE EN 3D P2: TETRA10_D --> FACE6_D !')
             ENDIF
-            ELREFE = 'FACE6'
+            ELREFE = 'TR6'
             NSOMM = 6
             NDEGRE = 2
             DO 43 I=1,3
@@ -236,31 +237,39 @@ C TETRADRE --> FACE3 OU FACE6
      &           '! CALCUL NARET/NSOMM 3D: TYPELEM INCONNU !')
         ENDIF
 
-C RECUPERATION DES ADRESSES JEVEUX DE LA GEOMETRIE ET DES FONCTIONS
-C DE FORME DES FACES
-        CHVAL = '&INEL.'//ELREFE//'.FFORMES'
-        CALL JEEXIN(CHVAL,IRET)
-        IF (IRET.LE.0) CALL UTMESS('F','UTVOIS',
-     &              '! L''OBJET CHVAL DES FACES EST INEXISTANT !')
-        IF (NARET.EQ.5) THEN
-          CHVAL2 = '&INEL.'//ELREF2//'.FFORMES'
-          CALL JEEXIN(CHVAL2,IRET)
+        IF (L2D) THEN
+          CHVAL = '&INEL.'//ELREFE//'.FFORMES'
+          CALL JEEXIN(CHVAL,IRET)
           IF (IRET.LE.0) CALL UTMESS('F','UTVOIS',
-     &             '! L''OBJET CHVAL2 DES FACES EST INEXISTANT !')
-        ENDIF
-
-C RECUPERATION DES ADRESSES DES FFORMES DES FACES
-C NEWTON-COTES ON IMPOSE NPGF = NSOMM
-        NPGF = NSOMM
-        CALL JEVEUO(CHVAL,'L',IFFBUF)
-        IDFDX  = IFFBUF + NSOMM*NPGF
-        IDFDY  = IDFDX  + 1
-        IF(NARET.EQ.5) THEN
+     &              '! L''OBJET CHVAL DES SEGMENTS EST INEXISTANT !')
+          IF (NARET.EQ.5) THEN
+            CHVAL2 = '&INEL.'//ELREF2//'.FFORMES'
+            CALL JEEXIN(CHVAL2,IRET)
+            IF (IRET.LE.0) CALL UTMESS('F','UTVOIS',
+     &             '! L''OBJET CHVAL2 DES SEGMENTS EST INEXISTANT !')
+          ENDIF
+          NPGF = NSOMM
+          CALL JEVEUO(CHVAL,'L',IFFBUF)
+          IDFDX  = IFFBUF + NSOMM*NPGF
+          IDFDY  = IDFDX  + 1
+          IF(NARET.EQ.5) THEN
 C NEWTON-COTES ON IMPOSE NPGF2 = NSOMM2
-          NPGF2 = NSOMM2
-          CALL JEVEUO(CHVAL2,'L',IFFBUF)
-          IDFDX2  = IFFBUF + NSOMM2*NPGF2
-          IDFDY2  = IDFDX2  + 1
+            NPGF2 = NSOMM2
+            CALL JEVEUO(CHVAL2,'L',IFFBUF)
+            IDFDX2  = IFFBUF + NSOMM2*NPGF2
+            IDFDY2  = IDFDX2  + 1
+          ENDIF
+        ELSE
+          CALL ELREF4 ( ELREFE, 'MASS', NDIM, NNO, NNOS, NPG1, IPOIDS, 
+     &                  IVF, IDFDX, JGANO )
+          IDFDY  = IDFDX  + 1
+          NPGF = NSOMM
+          IF(NARET.EQ.5) THEN
+            CALL ELREF4 ( ELREF2, 'MASS', NDIM, NNO, NNOS, NPG1, IPOIDS,
+     &                    IVF, IDFDX2, JGANO )
+            IDFDY2  = IDFDX2  + 1
+            NPGF2 = NSOMM2
+          ENDIF
         ENDIF
 
       ENDIF

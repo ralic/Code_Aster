@@ -1,6 +1,6 @@
       SUBROUTINE JECREO ( NOMLU , LISTAT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 04/11/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,10 +44,8 @@ C     ------------------------------------------------------------------
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C     ------------------------------------------------------------------
-C
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-C
 C     ------------------------------------------------------------------
       CHARACTER *75    CMESS
       CHARACTER *1     TYPEI , GENRI
@@ -117,6 +115,8 @@ C
              IV = LOC8
            ELSE IF ( TYPEI .EQ. 'L' ) THEN
              IV = LOLS
+           ELSE IF ( TYPEI .EQ. 'S' ) THEN
+             IV = LOR8/2
            ELSE
              CMESS = 'TYPE INVALIDE '//CVAL(3)(1:LVAL(3))
              CALL JVMESS ( 'S' , 'JECREO09' , CMESS )

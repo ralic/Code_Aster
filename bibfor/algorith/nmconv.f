@@ -6,7 +6,7 @@
      &                   LREAC,  CNVFRE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/10/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -140,6 +140,12 @@ C ----------------------------------------------------------------------
 
       CALL JEMARQ()
       FINPAS = .FALSE.
+      DO 2 K = 1,NBCOL
+        INFO(K) = -1.D0
+        MARQ(K) = ' '
+        TEST(K) = .FALSE.
+ 2    CONTINUE
+
 
 
 C ======================================================================
@@ -153,6 +159,28 @@ CJMP      ECHLDC = LICCVG(2) .NE. 0
         CALL NMIMPR('IMPR','ECHEC_LDC',' ',0.D0,0)
         GOTO 9999
       END IF
+
+
+
+C ======================================================================
+C                  CONTROLE DES CODES RETOUR DU PILOTAGE
+C ======================================================================
+
+C    ECHEC DANS LA RESOLUTION DE L'EQUATION DE PILOTAGE
+      IF (LICCVG(1) .EQ. 1) THEN
+        ECHLDC = .TRUE.
+        CONVER = .FALSE.
+        CALL NMIMPR('IMPR','ECHEC_PIL',' ',0.D0,0)
+        GOTO 9999
+      END IF
+
+C    LE PILOTAGE A ATTEINT LES BORNES
+      IF (LICCVG(1) .EQ. -1) THEN
+        MARQ(7) = 'B'
+        FINPAS  = .TRUE.
+      END IF
+
+
 
 C ======================================================================
 C          TRAITEMENT DES CODES RETOUR DE L'EQUILIBRE
@@ -203,9 +231,6 @@ C                         EXAMEN DE LA CONVERGENCE
 C ======================================================================
 
       DO 10 K = 1,NBCOL
-        INFO(K) = -1.D+00
-        MARQ(K) = ' '
-        TEST(K) = .FALSE.
         IF ( IND(K) .NE. 0 ) THEN 
            TEST(K) = (PARCRI(IND(K)) .NE. R8VIDE())
         ENDIF
@@ -289,20 +314,6 @@ C -- ON UTILISE RESI_GLOB_MAXI
          ENDIF
       ENDIF
       
-
-C -- CONTROLE DES CODES RETOUR QUI CONDITIONNENT LA CONVERGENCE
-
-C    PAR RAPPORT AU PILOTAGE
-      IF (LICCVG(1) .GE. 1) THEN
-        CONVER = .FALSE.
-        MARQ(7) = 'X'
-      END IF
-
-      IF (LICCVG(1) .LT. 0) THEN
-        MARQ(7) = 'S'
-        FINPAS  = .TRUE.
-      END IF
-
 
 C -- IMPRESSIONS
 

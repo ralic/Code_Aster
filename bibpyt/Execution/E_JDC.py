@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF E_JDC Execution  DATE 04/02/2004   AUTEUR CAMBIER S.CAMBIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -124,13 +124,3 @@ class JDC:
              fin_cmd()
       except:
              pass
-
-   def get_cmd(self,nomcmd):
-      """
-          Méthode pour recuperer la definition d'une commande
-          donnee par son nom dans les catalogues declares
-          au niveau du jdc
-      """
-      for cata in self.cata:
-          if hasattr(cata,nomcmd):
-             return getattr(cata,nomcmd)

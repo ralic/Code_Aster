@@ -1,7 +1,7 @@
        SUBROUTINE ALGOCL(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CINE,RESU,
      &                   DEPTOT,ITERAT,LREAC,ISTO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -410,7 +410,7 @@ C ======================================================================
 C ======================================================================
 C --- APPEL DE LA ROUTINE DE CALCUL DU SECOND MEMBRE -------------------
 C ======================================================================
-         CALL CFADU(RESOCO, K24BID, NEQ, NDIM, NBLIAI, NBLIAC, LLF, 
+         CALL CFADU(RESOCO, K24BID, NEQ, NDIM, NBLIAC, LLF, 
      +                                               LLF1, LLF2, NESMAX)
 C ======================================================================
 C RESOLUTION POUR OBTENIR MU : -A.C-1.AT.MU = JEU(DEPTOT) - A.DELT0

@@ -1,4 +1,4 @@
-      SUBROUTINE  ASSTHM(NNO, NNOS,NPG, POIDSG, VFF, DFDE, DFDN, DFDK,
+      SUBROUTINE  ASSTHM(NNO, NNOS,NPG, IPOIDS, IVF, IDFDE,
      &                   GEOM, NOMTE,CRIT,TREF,DEPLM,DEPLP,
      &                   CONTM,CONTP,VARIM,VARIP,
      &                   DEFGEM,DEFGEP,
@@ -10,7 +10,7 @@
      >                   NVOMAX,NNOMAX,NSOMAX,NBVOS,VOISIN,P2P1,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,15 +30,22 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C ======================================================================
-       IMPLICIT NONE
 C
-       INTEGER      NNO,NNOS, NPG, IMATE,DIMDEF,DIMCON
-       INTEGER      DIMMAT,IBID
+       IMPLICIT NONE
+       INTEGER      DIMMAT
        PARAMETER    (DIMMAT=120)
+       INTEGER      NVOMAX,NNOMAX,NSOMAX,CODRET
+       INTEGER      VOISIN(NVOMAX,NNOMAX)
+       INTEGER      NBVOS(NSOMAX)
+       INTEGER      NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,IMATE,DIMDEF,DIMCON
        INTEGER      NBVARI,NDDL,NMEC,NP1,NP2,NDIM
-       CHARACTER*16 NOMTE, OPTION,COMPOR(*)
-       REAL*8       POIDSG(NPG),VFF(NNO,NPG),DFDE(*),DFDN(*),DFDI(NNO,3)
-       REAL*8       DFDK(*),GEOM(NDIM,NNO),CRIT(*),POIDS
+       INTEGER      MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5)
+       INTEGER      YAMEC,YAP1,YAP2,YATE  
+       INTEGER      ADDEME,ADDEP1,ADDEP2,ADDETE ,II,JJ 
+       INTEGER      KPG,I,J,N,M,K,KJI
+       INTEGER      N1,N2,IDL,IDL1M,IIDL,IIDL1,IIDL2
+       REAL*8       DFDI(NNO,3)
+       REAL*8       GEOM(NDIM,NNO),CRIT(*),POIDS
        REAL*8       DEPLP(NDDL,NNO),DEPLM(NDDL,NNO)
        REAL*8       CONTM(DIMCON*NPG),CONTP(DIMCON*NPG)
        REAL*8       VARIM(NBVARI*NPG),VARIP(NBVARI*NPG)
@@ -47,18 +54,12 @@ C
        REAL*8       TREF,DEFGEM(DIMDEF),DEFGEP(DIMDEF)
        REAL*8       DRDS(DIMDEF,DIMCON),DRDE(DIMDEF,DIMDEF)
        REAL*8       DSDE(DIMCON,DIMDEF),B(DIMDEF,NDDL*NNO)
-       REAL*8       R(DIMDEF)  
-       INTEGER      MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5)
-       INTEGER      YAMEC,YAP1,YAP2,YATE  
-       INTEGER      ADDEME,ADDEP1,ADDEP2,ADDETE ,II,JJ 
+       REAL*8       R(DIMDEF),FACDG  
+       REAL*8       DT,TA,TA1,RTHMC,R8PREM
+       LOGICAL      AXI,P2P1
        CHARACTER*2  CODMES
        CHARACTER*8  TYPMOD(2)
-       LOGICAL AXI,P2P1
-       INTEGER NVOMAX,NNOMAX,NSOMAX,CODRET
-       INTEGER VOISIN(NVOMAX,NNOMAX)
-       INTEGER NBVOS(NSOMAX)
-       REAL*8 FACDG
-       CHARACTER*16  THMC, LOI
+       CHARACTER*16 NOMTE, OPTION, COMPOR(*), THMC, LOI
 C.......................................................................
 C
 C     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA
@@ -101,10 +102,6 @@ C OUT MATUU   : MATRICE DE RIGIDITE PROFIL (RIGI_MECA_TANG ET FULL_MECA)
 C OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
 C......................................................................
 C
-      INTEGER KPG,I,J,N,M,G,KK,K,KJI
-      REAL*8  DT,TA,TA1,RTHMC,R8PREM
-      INTEGER N1,N2,IDL,IDL1M,IIDL,IIDL1,IIDL2
-      REAL*8          VARBIO,VARLQ,VARVP,RELA,RELBIO,RELLIQ,RELVP,USVARL
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER  ZI
       COMMON  / IVARJE / ZI(1)
@@ -168,13 +165,13 @@ C
  5       CONTINUE
       ENDIF
 C
-C **********************************************************************
+C *********************************************************************
 C     CALCUL POUR CHAQUE POINT DE GAUSS : BOUCLE SUR KPG
 
       LOI = ' '
       CALL RCVALA(IMATE, 'THM_INIT', 0, ' ', 0.D0, 1, 'COMP_THM',
      +                                             RTHMC, CODMES, 'FM')
-      THMC = COMPOR( 8)
+      THMC = COMPOR(8)
       IF ( (RTHMC-1.0D0).LT.R8PREM() ) THEN
          LOI = 'LIQU_SATU'
       ELSE IF ( (RTHMC-2.0D0).LT.R8PREM() ) THEN
@@ -191,6 +188,8 @@ C     CALCUL POUR CHAQUE POINT DE GAUSS : BOUCLE SUR KPG
          LOI = 'LIQU_SATU_GAT'
       ELSE IF ( (RTHMC-8.0D0).LT.R8PREM() ) THEN
          LOI = 'LIQU_NSAT_GAT'
+      ELSE IF ( (RTHMC-9.0D0).LT.R8PREM() ) THEN
+         LOI = 'LIQU_AD_GAZ_VAPE'
       ENDIF
       IF (THMC.NE.LOI) THEN
          CALL UTMESS('F','ASSTHM','IL Y A INCOHRENCE ENTRE LA LOI'//
@@ -202,8 +201,8 @@ C     CALCUL POUR CHAQUE POINT DE GAUSS : BOUCLE SUR KPG
 C        CALCUL DE LA MATRICE B AU POINT DE GAUSS
 C
          CALL CABTHM(NDDL,NNO,NNOS,
-     >               DIMDEF,NDIM,NPG,KPG,POIDSG,DFDE,DFDN,DFDK,
-     &               DFDI,GEOM,POIDS,VFF,B,NMEC,YAMEC,ADDEME,YAP1,
+     >               DIMDEF,NDIM,NPG,KPG,IPOIDS,IVF,IDFDE,
+     &               DFDI,GEOM,POIDS,B,NMEC,YAMEC,ADDEME,YAP1,
      &               ADDEP1,YAP2,ADDEP2,YATE,ADDETE,NP1,NP2,AXI,
      >               NVOMAX,NNOMAX,NSOMAX,NBVOS,VOISIN,P2P1)
 
@@ -238,8 +237,7 @@ C
      &          R,DRDS,DSDE,DRDE,CODRET)
        IF ( CODRET.NE.0) THEN
          GOTO 9000
-       ENDIF
-            
+       ENDIF             
 C
 C
 C  CONTRIBUTION DU POINT DE GAUSS KPG A LA MATRICE TANGENTE ET 
@@ -276,7 +274,6 @@ C
           IDL1M = NMEC+1
           IF(OPTION(1:16).EQ.'RIGI_MECA_TANG' .OR.
      >      OPTION(1:9).EQ.'FULL_MECA') THEN
-
             DO 200 N=NNOS+1,NNO
                N1 = VOISIN(1,N)
                N2 = VOISIN(2,N)
@@ -312,7 +309,6 @@ C
  115           CONTINUE                        
             ENDIF
          ENDIF
-C
 C     RESIDU
 C
          IF((OPTION(1:9).EQ.'FULL_MECA' .OR.

@@ -1,11 +1,11 @@
-         SUBROUTINE PLASTI ( NDIM,  TYPMOD, IMAT,  COMP,  CRIT, TIMED,
+         SUBROUTINE PLASTI ( TYPMOD, IMAT,  COMP,  CRIT, TIMED,
      1                       TIMEF, TEMPD, TEMPF, TREF, HYDRD, HYDRF,
      2                       SECHD, SECHF, EPSDT, DEPST, SIGD, VIND,
      3                       OPT,SIGF, VINF, DSDE, ICOMP, NVI, IRTETI)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/02/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,8 +144,7 @@ C
 C       ================================================================
 C       ARGUMENTS
 C
-C       IN      NDIM    DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
-C               TYPMOD  TYPE DE MODELISATION
+C       IN      TYPMOD  TYPE DE MODELISATION
 C               IMAT    ADRESSE DU MATERIAU CODE
 C               COMP    COMPORTEMENT DE L ELEMENT
 C                       COMP(1) = RELATION DE COMPORTEMENT (CHABOCHE...)
@@ -220,7 +219,7 @@ C       MULTIPLIES PAR RACINE DE 2 > PRISE EN COMPTE DES DOUBLES
 C       PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 C
 C       ----------------------------------------------------------------
-        INTEGER         IMAT , NDIM   , NDT   , NDI   , NR  , NVI
+        INTEGER         IMAT , NDT   , NDI   , NR  , NVI
         INTEGER         ITMAX, ICOMP  , JFIS1
         INTEGER         NMAT , IOPTIO , IDNR
         INTEGER         IRTET, IRTETI, K, L
@@ -292,12 +291,12 @@ C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
         CALL LCMATE ( LOI, MOD, IMAT, NMAT, TEMPD, TEMPF, HYDRD, HYDRF,
-     1                SECHD, SECHF, TIMED , TIMEF, TYPMA, BZ, MATERD,
+     1                SECHD, SECHF, TYPMA, BZ, MATERD,
      2                MATERF, MATCST, NDT , NDI , NR, NVI, VIND)
 C
 C --    RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
 C
-        CALL LCDEDI ( IMAT,  NMAT,  MATERD, MATERF, TEMPD, TEMPF, TREF,
+        CALL LCDEDI ( NMAT,  MATERD, MATERF, TEMPD, TEMPF, TREF,
      &                DEPST, EPSDT, DEPS,   EPSD )
 C
 C               CALL LCIMVE ( 'DEPST = ', DEPST )
@@ -307,7 +306,7 @@ C               CALL LCIMVE ( 'EPSD = ' , EPSD )
 C
 C --    RETRAIT ENDOGENNE ET RETRAIT DE DESSICCATION
 C
-        CALL LCDEHY ( IMAT,  NMAT,  MATERD, MATERF, HYDRD,  HYDRF,
+        CALL LCDEHY ( NMAT,  MATERD, MATERF, HYDRD,  HYDRF,
      &                SECHD, SECHF, DEPS,   EPSD )
 C
 C --    SEUIL A T > ETAT ELASTIQUE OU PLASTIQUE A T
@@ -340,15 +339,15 @@ C
 C
 C --    INTEGRATION ELASTIQUE SUR DT
 C
-        CALL LCELAS ( LOI  ,MOD ,  IMAT,  NMAT, MATERD, MATERF, MATCST,
-     1                NVI,  TEMPD, TEMPF, TIMED,TIMEF,  DEPS,   EPSD,
+        CALL LCELAS ( LOI  ,MOD , NMAT, MATERD, MATERF, MATCST,
+     1                NVI,  DEPS,
      2                SIGD ,VIND,  SIGF,  VINF, THETA )
 C
 C --    TEST DE FISSURATION POUR NADAI_B , SI LE BETON EST FISSURE
 C       LE TRAITEMENT EST EFFECTUE DANS INSTEF
 C
        IF ( LOI(1:7) .EQ. 'NADAI_B') THEN
-          CALL INSTEF ( IMAT, NMAT, MATERF, SIGD, SIGF, VIND, VINF,
+          CALL INSTEF ( NMAT, MATERF, SIGD, SIGF, VIND, VINF,
      1    ETATF, EPSD, DEPS, DSDE, JFIS1, NVI, MOD )
 C
          IF ( JFIS1 .EQ. 1 ) GOTO 10
@@ -404,10 +403,10 @@ C --    TEST DE FISSURATION POUR NADAI_B , SI LE BETON EST FISSURE
 C       LE TRAITEMENT EST EFFECTUE DANS INSTEF
 C
        IF ( LOI(1:7) .EQ. 'NADAI_B') THEN
-          CALL INSTEF ( IMAT, NMAT, MATERF, SIGD, SIGF, VIND, VINF,
+          CALL INSTEF ( NMAT, MATERF, SIGD, SIGF, VIND, VINF,
      1    ETATF, EPSD, DEPS, DSDE, JFIS1, NVI, MOD )
        ELSE IF ( LOI(1:6) .EQ. 'LAIGLE') THEN
-          CALL LGLDCM( NMAT, MATERF, SIGF, NVI, VINF )
+          CALL LGLDCM( NMAT, MATERF, SIGF, VINF )
        ENDIF
    10  CONTINUE
 C
@@ -432,34 +431,30 @@ C
 C
           IF ( OPT .EQ. 'RIGI_MECA_TANG' ) THEN
           IF (ETATD.EQ.'ELASTIC'.OR.JFIS1.EQ.1.OR.LOI.EQ.'LAIGLE') THEN
-            CALL LCJELA ( LOI  , MOD ,  IMAT,  NMAT, MATERD, NVI,
-     1                    TEMPD, TIMED, DEPS,  EPSD, SIGD ,  VIND, DSDE)
+            CALL LCJELA ( LOI  , MOD , NMAT, MATERD, VIND, DSDE)
             ELSEIF ( ETATD .EQ. 'PLASTIC' .AND. JFIS1 .EQ. 0 ) THEN
 C   ------> ELASTOPLASTICITE ==> TYPMA = 'VITESSE '
 C   ------> VISCOPLASTICITE  ==> TYPMA = 'COHERENT '==> CALCUL ELASTIQUE
                 IF     ( TYPMA .EQ. 'COHERENT' ) THEN
-                CALL LCJELA ( LOI  , MOD ,  IMAT,  NMAT, MATERD, NVI,
-     1                    TEMPD, TIMED, DEPS,  EPSD, SIGD ,  VIND, DSDE)
+                CALL LCJELA ( LOI  , MOD , NMAT, MATERD,  VIND, DSDE)
                 ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
                CALL LCJPLA ( LOI  , MOD ,  IMAT,  NMAT, MATERD, NVI,
-     2              TEMPD, TIMED, DEPS,  EPSD, SIGD ,  VIND, DSDE, VIND,
+     2              TEMPD, DEPS, SIGD ,  VIND, DSDE, VIND,
      3              THETA, DT, DEVG, DEVGII)
                 ENDIF
             ENDIF
 C
           ELSEIF ( OPT .EQ . 'FULL_MECA' ) THEN
                 IF  ( ETATF .EQ. 'ELASTIC' .OR. JFIS1 .EQ. 1 ) THEN
-            CALL LCJELA ( LOI  , MOD ,  IMAT,  NMAT, MATERF, NVI,
-     1                    TEMPF, TIMEF, DEPS,  EPSD, SIGF ,  VINF, DSDE)
+            CALL LCJELA ( LOI  , MOD , NMAT, MATERF, VINF, DSDE)
             ELSEIF ( ETATF .EQ. 'PLASTIC' .AND. JFIS1 .EQ. 0 ) THEN
 C   ------> ELASTOPLASTICITE ==>  TYPMA = 'VITESSE '
 C   ------> VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
                 IF     ( TYPMA .EQ. 'COHERENT' ) THEN
-                CALL LCJPLC ( LOI  , MOD ,  IMAT,  NMAT, MATERD, NVI,
-     1                    TEMPD, TIMED, DEPS,  EPSD, SIGF ,  VINF, DSDE)
+                CALL LCJPLC ( LOI  , MOD ,  NMAT, MATERD, DSDE)
                 ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
                CALL LCJPLA ( LOI  , MOD ,  IMAT,  NMAT, MATERD, NVI,
-     2              TEMPD, TIMED, DEPS,  EPSD, SIGF ,  VINF, DSDE, VIND,
+     2              TEMPD, DEPS, SIGF ,  VINF, DSDE, VIND,
      3              THETA, DT, DEVG, DEVGII)
                 ENDIF
             ENDIF

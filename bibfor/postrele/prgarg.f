@@ -1,15 +1,15 @@
       SUBROUTINE PRGARG ( MCF, MCS, NXDNOM, NXDNUM, NCHEFF, NBORDM,
-     +                    RCCMPM, RCCMSN, FATISP, SNTHER )
+     +                    RCCMPM, RCCMSN, SNTHER )
       IMPLICIT   NONE
       INTEGER             NBORDM
-      LOGICAL             RCCMPM, RCCMSN, SNTHER, FATISP
+      LOGICAL             RCCMPM, RCCMSN, SNTHER
       CHARACTER*(*)       MCF, MCS
       CHARACTER*16                                  NCHEFF
       CHARACTER*24                  NXDNOM, NXDNUM
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 12/05/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,7 +112,7 @@ C
          NLSPE5 = NCHEFF//'.VPMPBE5'
          NLSPE6 = NCHEFF//'.VPMPBE6'
       ENDIF
-      IF ( RCCMSN .OR. FATISP ) THEN
+      IF ( RCCMSN ) THEN
          NLSNU1 = NCHEFF//'.INST1  '
          NLSNU2 = NCHEFF//'.INST2  '
          NLSSNO = NCHEFF//'.VALSNO '
@@ -152,7 +152,7 @@ C
         CALL JECREC(NLSPE5,'V V R','NU','DISPERSE','VARIABLE',NBPOST)
         CALL JECREC(NLSPE6,'V V R','NU','DISPERSE','VARIABLE',NBPOST)
       ENDIF
-      IF ( RCCMSN .OR. FATISP ) THEN
+      IF ( RCCMSN ) THEN
         CALL JECREC(NLSNU1,'V V R','NU','DISPERSE','VARIABLE',NBPOST)
         CALL JECREC(NLSNU2,'V V R','NU','DISPERSE','VARIABLE',NBPOST)
         CALL JECREC(NLSSNO,'V V R','NU','DISPERSE','VARIABLE',NBPOST)
@@ -259,7 +259,7 @@ C
             CALL JECROC(JEXNUM(NLSPE6,IOCC))
             CALL JEECRA(JEXNUM(NLSPE6,IOCC),'LONMAX',NBORDR,' ')
          ENDIF
-         IF ( RCCMSN .OR. FATISP ) THEN
+         IF ( RCCMSN ) THEN
             CALL JECROC(JEXNUM(NLSNU1,IOCC))
             CALL JEECRA(JEXNUM(NLSNU1,IOCC),'LONMAX',NBORD2,' ')
             CALL JECROC(JEXNUM(NLSNU2,IOCC))

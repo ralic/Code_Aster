@@ -5,7 +5,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 04/11/2003   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -223,8 +223,6 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
             DO 41 I = 1,NBNO
               IV = 1
               JD = ITBMP + I - 1
-C             CALL CRLINU ('NOM', MLGNNO, 1, IBID, ZK8(JD),
-C     +                      NBMTRD, ZI(JDNW), ZI(JDDI), KK )
               CALL AFFDIS(NDIM,IREP,ETA,CAR(NC),ZR(IRGNO+6*I-6),JDC,
      +                    JDV,IVR,IV,KMA,NCMP,L,IFM)
               CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP)
@@ -240,12 +238,15 @@ C
       CALL JEDETR('&&TMPRIGNO')
       CALL JEDETR('&&TMPRIGTO')
       CALL JEDETR('&&TMPAMOTO')
-      CALL JEDETR(TMPNDK)
-      CALL JEDETR(TMPVDK)
-      CALL JEDETR(TMPNDM)
-      CALL JEDETR(TMPVDM)
-      CALL JEDETR(TMPNDA)
-      CALL JEDETR(TMPVDA)
+      CALL GETFAC('RIGI_MISS_3D',NBORM)
+      IF (NBORM.EQ.0) THEN
+         CALL JEDETR(TMPNDK)
+         CALL JEDETR(TMPVDK)
+         CALL JEDETR(TMPNDM)
+         CALL JEDETR(TMPVDM)
+         CALL JEDETR(TMPNDA)
+         CALL JEDETR(TMPVDA)
+      ENDIF
 C
       CALL JEDEMA()
       END

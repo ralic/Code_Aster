@@ -1,9 +1,9 @@
-        SUBROUTINE RSLJPL(LOI,MOD,IMAT,NMAT,MATER,TEMP,SIG,VIN,VIND,
+        SUBROUTINE RSLJPL(LOI,IMAT,NMAT,MATER,TEMP,SIG,VIN,VIND,
      &                    DEPS,THETA,DT,DSDE)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/01/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,8 +23,7 @@ C ======================================================================
 C       ----------------------------------------------------------------
 C       ROUSSELIER :  MATRICE SYMETRIQUE DE COMPORTEMENT TANGENT
 C            COHERENT ELASTO-PLASTIQUE EN VITESSE A T+DT OU T
-C       IN  MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
+C       IN  IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           TEMP   :  TEMPERATURE
 C           MATER  :  COEFFICIENTS MATERIAU
@@ -48,7 +47,6 @@ C
         REAL*8          NDEPS, NSIG, LCNRTS, LCNRTE, THETA
         REAL*8          DPUISS, PUISS, GP, DT
 C
-        CHARACTER*8     MOD
         CHARACTER*16    LOI
 C
         PARAMETER       ( ZERO  = 0.D0   )

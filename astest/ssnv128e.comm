@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+# MODIF  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,8 +71,8 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                    )
 #
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_1     = 'SBATI',
-                               GROUP_MA_2     = 'SCONTA',
+                    CONTACT=_F(GROUP_MA_MAIT     = 'SBATI',
+                               GROUP_MA_ESCL     = 'SCONTA',
                                APPARIEMENT    = 'NODAL',
                                RECHERCHE      = 'NOEUD_BOUCLE',
                                NORMALE        = 'MAIT',
@@ -85,8 +85,8 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     )
 #
 CHA3=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_1     = 'SBATI',
-                               GROUP_MA_2     = 'SCONTA',
+                    CONTACT=_F(GROUP_MA_MAIT     = 'SBATI',
+                               GROUP_MA_ESCL     = 'SCONTA',
                                APPARIEMENT    = 'MAIT_ESCL',
                                RECHERCHE      = 'NOEUD_BOUCLE',
                                NORMALE        = 'MAIT',

@@ -2,8 +2,7 @@
      &                  DEPMOI,SIGMOI,VARMOI,VARDEM,LAGDEM,NBPASE,
      &                  INPSCO)
 
-
-C MODIF ALGORITH  DATE 07/05/2003   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,9 +71,10 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       REAL*8 VALCMP(4),PREC,R8VIDE,RBID,INST
       COMPLEX*16 CBID
       CHARACTER*8 NOMCMP(4),LPAIN(1),LPAOUT(2),CRITER,K8BID
+      CHARACTER*8 NOPASE
       CHARACTER*16 OPT
       CHARACTER*24 LIGRMO,LIGRDE,EVOL,LCHIN(1),LCHOUT(2),TYPE
-      CHARACTER*24 CHAMP,CHGEOM,K24BID
+      CHARACTER*24 CHAMP,CHGEOM,RESUID,STRUCT,K24BID
 
 C      DATA         NOMCMP    /'VALEUR', 'GRAD_X', 'GRAD_Y', 'GRAD_Z'/
 C      DATA         VALCMP    / 0.D0   ,  0.D0   ,  0.D0   ,  0.D0   /
@@ -96,6 +96,8 @@ C -- PAS D'ETAT INITIAL EN PRESENCE D'UN CONCEPT REENTRANT
      &    'SURCHARGE D''UN RESULTAT SANS DEFINIR D''ETAT INITIAL : '//
      &    'ON PREND UN ETAT INITIAL NUL')
 
+      CALL GETVID('ETAT_INIT','EVOL_NOLI',1,1,1,EVOL,NOCC)
+      EVONOL = NOCC .GT. 0
 
       DO 10 NRPASE = NBPASE,0,-1
         IAUX = NRPASE
@@ -110,8 +112,6 @@ C ======================================================================
 C         ETAT INITIAL DEFINI PAR UN CONCEPT DE TYPE EVOL_NOLI
 C ======================================================================
 
-        CALL GETVID('ETAT_INIT','EVOL_NOLI',1,1,1,EVOL,NOCC)
-        EVONOL = NOCC .GT. 0
         IF (EVONOL) THEN
           COMPOM = ' '
 
@@ -156,69 +156,84 @@ C      ACCES PAR NUMERO D'ORDRE
             INST = ZR(JINST)
           END IF
 
+          IF ( NRPASE.GT.0 ) THEN
+            IAUX = NRPASE
+            JAUX = 1
+            CALL PSNSLE ( INPSCO, IAUX, JAUX, NOPASE )
+            CALL PSRENC ( EVOL, NOPASE, RESUID, IRET )
+            IF ( IRET.NE.0 ) THEN
+              CALL UTDEBM ( 'A','NMDOET', 'CODE DE RETOUR DE PSRENC' )
+              CALL UTIMPI ( 'S', ': ', 1, IRET )
+              CALL UTFINM
+              CALL UTMESS ( 'F','NMDOET', 'LA DERIVEE DE '//EVOL//
+     >            ' PAR RAPPORT A '//NOPASE//' EST INTROUVABLE.')
+            ENDIF
+            STRUCT = RESUID
+          ELSE
+            STRUCT = EVOL
+          END IF 
 
-C -- LECTURE DES DEPLACEMENTS
+C -- LECTURE DES DEPLACEMENTS (OU DERIVE) 
 
-          CALL RSEXCH(EVOL,'DEPL',NUME,CHAMP,IRET)
+          CALL RSEXCH(STRUCT,'DEPL',NUME,CHAMP,IRET)
           IF (IRET.NE.0) CALL UTMESS('F','NMDOET',
-     &                               'LE CHAMP DE DEPL_R '//
+     &                               'LE CHAMP DE DEPL_R (OU DERIVE)'//
      &                              'N''EST PAS TROUVE DANS LE CONCEPT '
-     &                               //EVOL)
+     &                               //STRUCT)
           CALL VTCOPY(CHAMP,DEPMOI,IRET)
 
+C -- LECTURE DES CONTRAINTES AUX POINTS DE GAUSS (OU DERIVE) 
 
-C -- LECTURE DES CONTRAINTES AUX POINTS DE GAUSS
-
-          CALL RSEXCH(EVOL,'SIEF_ELGA',NUME,CHAMP,IRET)
+          CALL RSEXCH(STRUCT,'SIEF_ELGA',NUME,CHAMP,IRET)
           IF (IRET.EQ.0) THEN
             CALL COPISD('CHAMP_GD','V',CHAMP,SIGMOI)
           ELSE
 
 C        CONTRAINTES AUX NOEUDS : PASSAGE AUX POINTS DE GAUSS
-            CALL RSEXCH(EVOL,'SIEF_ELNO',NUME,CHAMP,IRET)
+            CALL RSEXCH(STRUCT,'SIEF_ELNO',NUME,CHAMP,IRET)
             IF (IRET.NE.0) CALL UTMESS('F','NMDOET',
-     &                                 'LE CHAMP DE SIEF_R '//
+     &                              'LE CHAMP DE SIEF_R (OU DERIVE) '//
      &                              'N''EST PAS TROUVE DANS LE CONCEPT '
-     &                                 //EVOL)
+     &                                 //STRUCT)
             CALL COPISD('CHAM_ELEM_S','V',COMPOR,SIGMOI)
             CALL MENOGA('SIEF_ELGA_ELNO  ',LIGRMO,COMPOR,CHAMP,SIGMOI,
-     &                  K24BID,K24BID,K24BID,K24BID)
+     &                  K24BID)
           END IF
 
 C         CHARGEMENTS DE TYPE PRECONTRAINTE (LE CAS ECHEANT)
           CALL NMSIGI(LIGRMO,COMPOR,SIGMOI)
 
-C -- LECTURE DES VARIABLES INTERNES AUX POINTS DE GAUSS
+C -- LECTURE DES VARIABLES INTERNES AUX POINTS DE GAUSS (OU DERIVE) 
 
-          CALL RSEXCH(EVOL,'COMPORTEMENT',NUME,COMPOM,IRET)
+          CALL RSEXCH(STRUCT,'COMPORTEMENT',NUME,COMPOM,IRET)
           IF (IRET.NE.0) COMPOM = ' '
 
-          CALL RSEXCH(EVOL,'VARI_ELGA',NUME,CHAMP,IRET)
+          CALL RSEXCH(STRUCT,'VARI_ELGA',NUME,CHAMP,IRET)
           IF (IRET.EQ.0) THEN
             CALL COPISD('CHAMP_GD','V',CHAMP,VARMOI)
-            CALL VRCOMP(COMPOM,COMPOR,VARMOI)
+            IF (NRPASE.EQ.NBPASE) CALL VRCOMP(COMPOM,COMPOR,VARMOI)
           ELSE
 
 C        VARIABLES INTERNES AUX NOEUDS : PASSAGE AUX POINTS DE GAUSS
-            CALL RSEXCH(EVOL,'VARI_ELNO',NUME,CHAMP,IRET)
+            CALL RSEXCH(STRUCT,'VARI_ELNO',NUME,CHAMP,IRET)
             IF (IRET.NE.0) CALL UTMESS('F','NMDOET','LE CHAMP '//
-     &                    'DE VARI_R N''EST PAS TROUVE DANS LE CONCEPT '
-     &                                 //EVOL)
+     &                    'DE VARI_R (OU DERIVE) N''EST PAS TROUVE'
+     &                               //' DANS LE CONCEPT '//STRUCT)
 
-            CALL VRCOMP(COMPOM,COMPOR,CHAMP)
+            IF (NRPASE.EQ.NBPASE) CALL VRCOMP(COMPOM,COMPOR,CHAMP)
             CALL COPISD('CHAM_ELEM_S','V',COMPOR,VARMOI)
             CALL MENOGA('VARI_ELGA_ELNO  ',LIGRMO,COMPOR,CHAMP,VARMOI,
-     &                  K24BID,K24BID,K24BID,K24BID)
+     &                  K24BID)
           END IF
 
 
 C -- LECTURE DES VARIABLES NON LOCALES
 
           IF (MODEDE.NE.' ') THEN
-            CALL RSEXCH(EVOL,'VARI_NON_LOCAL',NUME,CHAMP,IRET)
+            CALL RSEXCH(STRUCT,'VARI_NON_LOCAL',NUME,CHAMP,IRET)
             IF (IRET.NE.0) CALL UTMESS('F','NMDOET','LE CHAMP DE '//
-     &               'VARI_NON_LOCAL N''EST PAS TROUVE DANS LE CONCEPT '
-     &                                 //EVOL)
+     &                'VARI_NON_LOCAL (OU DERIVE) N''EST PAS TROUVE'
+     &                               //' DANS LE CONCEPT '//STRUCT)
             CALL VTCOPY(CHAMP,VARDEM,IRET)
           END IF
 
@@ -226,10 +241,10 @@ C -- LECTURE DES VARIABLES NON LOCALES
 C -- LECTURE DES MULTIPLICATEURS DE LAGRANGE NON LOCAUX
 
           IF (MODEDE.NE.' ') THEN
-            CALL RSEXCH(EVOL,'LANL_ELGA',NUME,CHAMP,IRET)
+            CALL RSEXCH(STRUCT,'LANL_ELGA',NUME,CHAMP,IRET)
             IF (IRET.NE.0) CALL UTMESS('F','NMDOET','LE CHAMP DE '//
      &                    'LANL_ELGA N''EST PAS TROUVE DANS LE CONCEPT '
-     &                                 //EVOL)
+     &                                 //STRUCT)
             CALL COPISD('CHAMP_GD','V',CHAMP,LAGDEM)
           END IF
 
@@ -257,7 +272,8 @@ C -- LECTURE DES CONTRAINTES AUX POINTS DE GAUSS
 
           CALL GETVID('ETAT_INIT','SIGM',1,1,1,CHAMP,NOCC)
 
-          IF (NOCC.NE.0 .AND. NBPASE.GT.0) CALL UTMESS('F','NMDOET',
+          IF (NOCC.NE.0 .AND. NBPASE.GT.0 .AND. NRPASE.EQ.0 )
+     &        CALL UTMESS('F','NMDOET',
      &        'POUR FAIRE UNE REPRISE AVEC'//
      &        'UN CALCUL DE SENSIBILITE, IL FAUT RENSEIGNER '//
      &        '"EVOL_NOLI" DANS "ETAT_INIT"')
@@ -276,7 +292,7 @@ C        PASSAGE NOEUDS -> POINTS DE GAUSS LE CAS ECHEANT
             IF (TYPE.EQ.'ELNO') THEN
               CALL COPISD('CHAM_ELEM_S','V',COMPOR,SIGMOI)
               CALL MENOGA('SIEF_ELGA_ELNO  ',LIGRMO,COMPOR,CHAMP,SIGMOI,
-     &                    K24BID,K24BID,K24BID,K24BID)
+     &                    K24BID)
             ELSE
               CALL COPISD('CHAMP_GD','V',CHAMP,SIGMOI)
             END IF
@@ -304,13 +320,13 @@ C      PREPARATION POUR CREER UN CHAMP NUL
 
 C        PASSAGE NOEUDS -> POINTS DE GAUSS LE CAS ECHEANT
             IF (TYPE.EQ.'ELNO') THEN
-              CALL VRCOMP(' ',COMPOR,CHAMP)
+              IF (NRPASE.EQ.NBPASE) CALL VRCOMP(' ',COMPOR,CHAMP)
               CALL COPISD('CHAM_ELEM_S','V',COMPOR,VARMOI)
               CALL MENOGA('VARI_ELGA_ELNO  ',LIGRMO,COMPOR,CHAMP,VARMOI,
-     &                    K24BID,K24BID,K24BID,K24BID)
+     &                    K24BID)
             ELSE
               CALL COPISD('CHAMP_GD','V',CHAMP,VARMOI)
-              CALL VRCOMP(' ',COMPOR,VARMOI)
+              IF (NRPASE.EQ.NBPASE) CALL VRCOMP(' ',COMPOR,VARMOI)
             END IF
           END IF
 

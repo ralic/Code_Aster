@@ -1,5 +1,4 @@
-
-# MODIF  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE PLAQUE ENCASTREE SOUSMISE A UNE FLEXION PAR DES POUTRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +21,6 @@
 # MODELISATION POU_D_E ET DKQ
 #
 
-
 DEBUT(CODE=_F(NOM='SSNL107C',
               NIV_PUB_WEB='INTERNET',),);
 
@@ -38,7 +36,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(GROUP_MA='S1',
                         PHENOMENE='MECANIQUE',
                         MODELISATION='DKT',),
-                     _F(GROUP_MA=('COQU1','COQU2',),
+                     _F(GROUP_MA=('COQU1','COQU2','POUT1','POUT2'),
                         PHENOMENE='MECANIQUE',
                         MODELISATION='DIS_TR',),
                      _F(GROUP_MA='POUTRE',
@@ -56,7 +54,7 @@ CARA=AFFE_CARA_ELEM(MODELE=MO,
                     COQUE=_F(GROUP_MA='S1',
                              EPAIS=0.1,
                              COQUE_NCOU=19,),
-                    DISCRET=_F(GROUP_MA=('COQU1','COQU2',),
+                    DISCRET=_F(GROUP_MA=('COQU1','COQU2','POUT1','POUT2'),
                                CARA='M_TR_D_N',
                                VALE=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,),),);
 
@@ -94,13 +92,13 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 CHA2=AFFE_CHAR_MECA_F(VERI_NORM='NON',
                       MODELE=MO,
                       CONTACT=(_F(APPARIEMENT='NODAL',
-                                  GROUP_MA_1='COQU1',
-                                  GROUP_MA_2='POUT1',
+                                  GROUP_MA_MAIT='COQU1',
+                                  GROUP_MA_ESCL='POUT1',
                                   VECT_NORM_2=(0.0,0.0,-1.0,),
                                   DIST_2=FONCC,),
                                _F(APPARIEMENT='NODAL',
-                                  GROUP_MA_1='COQU2',
-                                  GROUP_MA_2='POUT2',
+                                  GROUP_MA_MAIT='COQU2',
+                                  GROUP_MA_ESCL='POUT2',
                                   VECT_NORM_2=(0.0,0.0,-1.0,),),),);
 #
 #
@@ -140,6 +138,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='N45',
+                   REFERENCE='ANALYTIQUE',
                    VALE=-0.19005,
                    PRECISION=0.001,),
                 _F(RESULTAT=RESU,
@@ -147,6 +146,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='N46',
+                   REFERENCE='ANALYTIQUE',
                    VALE=-0.19005,
                    PRECISION=0.001,),
                 _F(RESULTAT=RESU,
@@ -155,6 +155,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CMP='N',
                    MAILLE='M21',
                    NOEUD='N3',
+                   REFERENCE='ANALYTIQUE',
                    VALE=-0.00475126,
                    PRECISION=0.01,),
                 _F(RESULTAT=RESU,
@@ -163,6 +164,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CMP='N',
                    MAILLE='M22',
                    NOEUD='N1',
+                   REFERENCE='ANALYTIQUE',
                    VALE=-0.00475126,
                    PRECISION=0.01,),),);
 

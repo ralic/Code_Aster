@@ -1,6 +1,6 @@
       SUBROUTINE TE0189 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/04/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,11 +31,9 @@ C        ENTREES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
-      CHARACTER*8        ELREFE
       CHARACTER*16       OPTION , NOMTE
-      CHARACTER*24       CARAC
-      INTEGER            IDINO,ICARAC,INO,NNO
-      INTEGER            IPDEB,IPREE,IPIMA,IPRES
+      INTEGER            IDINO,INO,NNO,NNOS,NDIM,JGANO,NPG1
+      INTEGER            IPDEB,IPREE,IPIMA,IPRES,IPOIDS,IVF,IDFDE
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
@@ -54,11 +52,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CALL ELREF1(ELREFE)
-
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO=ZI(ICARAC)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
 C
       CALL JEVECH('PPRESSC','L',IPRES)
 C

@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -145,7 +145,7 @@ C     NOEUD 2 EFGE(7)  = N   EFGE(8)  = VY   EFGE(9)  = VZ
 C             EFGE(10) = MT  EFGE(11) = MFY  EFGE(12) = MFZ
 C
          CALL JEVECH ( 'PCONTRR' , 'E' , JEFFO )
-         CALL POSIGR ( NOMTE, KLC, E, NU, RHO, ALPHA, EFGE, ZR(JEFFO) )
+         CALL POSIGR ( NOMTE, EFGE, ZR(JEFFO) )
 C
       ELSEIF ( OPTION .EQ. 'SIGM_ELNO_DEPL_C') THEN
          CALL JEVECH ( 'PCONTRC' , 'E' , JEFFO )
@@ -162,7 +162,7 @@ C     NOEUD 2 EFGE(7)  = N   EFGE(8)  = VY   EFGE(9)  = VZ
 C             EFGE(10) = MT  EFGE(11) = MFY  EFGE(12) = MFZ
 C
          CALL JEVECH ( 'PCONTPO' , 'E' , JEFFO )
-         CALL POSIPR ( NOMTE, KLC, E, NU, RHO, ALPHA, EFGE, ZR(JEFFO) )
+         CALL POSIPR ( NOMTE, EFGE, ZR(JEFFO) )
 C
       ELSEIF ( OPTION .EQ. 'SIPO_ELNO_DEPL_C' ) THEN
          CALL JEVECH ( 'PCONTPC' , 'E' , JEFFO )
@@ -177,7 +177,7 @@ C
             EFGE(K) = ZR(JEFGE+K-1)
  12      CONTINUE
          CALL JEVECH ( 'PCONTRR' , 'E' , JEFFO )
-         CALL POSIGR ( NOMTE, KLC, E, NU, RHO, ALPHA, EFGE, ZR(JEFFO) )
+         CALL POSIGR ( NOMTE, EFGE, ZR(JEFFO) )
 C
       ELSEIF ( OPTION .EQ. 'SIPO_ELNO_SIEF' ) THEN
          CALL JEVECH ( 'PSIEFNOR' , 'L' , JEFGE )
@@ -188,7 +188,7 @@ C
             EFGE(K) = ZR(JEFGE+K-1)
  22      CONTINUE
          CALL JEVECH ( 'PCONTPO' , 'E' , JEFFO )
-         CALL POSIPR ( NOMTE, KLC, E, NU, RHO, ALPHA, EFGE, ZR(JEFFO) )
+         CALL POSIPR ( NOMTE, EFGE, ZR(JEFFO) )
 C
       ELSE
          CH16 = OPTION

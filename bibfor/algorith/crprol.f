@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 26/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,6 +111,7 @@ C
       CNSINR = '&&RS1D3D.CNSINR'
 C
       DO 1 IORD = 1 , NBINST
+         CALL JEMARQ()
 C
 C ------ ON EXTRAIT LA SOUS-TABLE POUR L'INSTANT COURANT
 C
@@ -274,6 +275,7 @@ C
          CALL JEDETR ( TABRES )
          CALL JEDETR ( TABVAL )
 C
+         CALL JEDEMA()
  1    CONTINUE
       CALL JEDETR ( KNUM   )
       CALL JEDETR ( TABPDG )

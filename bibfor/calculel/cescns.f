@@ -1,6 +1,6 @@
       SUBROUTINE CESCNS(CESZ,MGANOZ,BASE,CNSZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,6 @@ C     LA MEME ALGORITHME QUE POUR TYPCES='ELNO'.
 C  3) S'IL Y A DES SOUS POINTS, ON S'ARRETE EN ERREUR <F>
 
 C-----------------------------------------------------------------------
-
 C---- COMMUNS NORMALISES  JEVEUX
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -68,18 +67,16 @@ C---- COMMUNS NORMALISES  JEVEUX
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
-      INTEGER IMA,IBID,NCMP,ICMP,JCNSL,JCNSV
-      INTEGER JCESD,JCESV,JCESL,NBMA,IRET,NBNO
-      INTEGER INO,NUNO,NBPT,IAD1
-      INTEGER ILCNX1,IACNX1
-      INTEGER JCESK,JCESC,NBNOT,JNBNO,IEQ
-      CHARACTER*1 KBID
-      CHARACTER*8 MA,NOMGD
-      CHARACTER*3 TSCA
+      INTEGER      IMA,IBID,NCMP,ICMP,JCNSL,JCNSV
+      INTEGER      JCESD,JCESV,JCESL,NBMA,IRET,NBNO
+      INTEGER      INO,NUNO,NBPT,IAD1,ILCNX1,IACNX1
+      INTEGER      JCESK,JCESC,NBNOT,JNBNO,IEQ
+      CHARACTER*1  KBID
+      CHARACTER*3  TSCA
+      CHARACTER*8  MA,NOMGD
       CHARACTER*19 CES,CNS,CES1
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-
 
       CES = CESZ
       CNS = CNSZ
@@ -87,9 +84,7 @@ C     ------------------------------------------------------------------
 C     1- ON TRANSFORME CES EN CHAM_ELEM_S/ELNO:
 C     --------------------------------------------
       CES1 = '&&CESCNS.CES1'
-      CALL CESCES(CES,'ELNO',' ',' ',MGANOZ,'V',CES1)
-
-
+      CALL CESCES(CES,'ELNO',' ',' ','V',CES1)
 
 
 C     2. RECUPERATION DE :
@@ -109,7 +104,9 @@ C     --------------------------------------------------------------
       CALL JEVEUO(CES1//'.CESL','L',JCESL)
       MA = ZK8(JCESK-1+1)
       NOMGD = ZK8(JCESK-1+2)
-      IF (ZK8(JCESK-1+3).NE.'ELNO') CALL UTMESS('F','CESCNS','STOP1')
+      IF (ZK8(JCESK-1+3).NE.'ELNO') THEN
+        CALL UTMESS('F','CESCNS','ON NE TRAITE QUE DES CHAMPS "ELNO"')
+      ENDIF
       CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMA,KBID,IBID)
       CALL DISMOI('F','NB_NO_MAILLA',MA,'MAILLAGE',NBNOT,KBID,IBID)
       CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
@@ -121,16 +118,16 @@ C     --------------------------------------------------------------
      &                        'LE NOMBRE DE SOUS-POINTS NE PEUT ETRE >1'
      &                             )
 
-      IF (TSCA.NE.'R') CALL UTMESS('F','CESCNS','DES REELS SVP !')
-
-
-
+      IF (TSCA.EQ.'R') THEN
+      ELSEIF (TSCA.EQ.'C') THEN
+      ELSE
+        CALL UTMESS('F','CESCNS','DES REELS OU DES COMPLEXES SVP !')
+      ENDIF
 
 C     3- ALLOCATION DE CNS :
 C     -------------------------------------------
+      IF ( NOMGD .EQ. 'VARI_R' ) NOMGD = 'VAR2_R'
       CALL CNSCRE(MA,NOMGD,NCMP,ZK8(JCESC),BASE,CNS)
-
-
 
 C------------------------------------------------------------------
 C     4- REMPLISSAGE DE CNS.CNSL ET CNS.CNSV :
@@ -154,8 +151,13 @@ C     -------------------------------------------
             NUNO = ZI(IACNX1+ZI(ILCNX1-1+IMA)-2+INO)
             IEQ = (NUNO-1)*NCMP + ICMP
             ZL(JCNSL-1+IEQ) = .TRUE.
-            IF(ZI(JNBNO-1+NUNO).EQ.0) ZR(JCNSV-1+IEQ)=0.D0
-            ZR(JCNSV-1+IEQ) = ZR(JCNSV-1+IEQ) + ZR(JCESV-1+IAD1)
+            IF (TSCA.EQ.'R') THEN
+               IF(ZI(JNBNO-1+NUNO).EQ.0) ZR(JCNSV-1+IEQ)=0.D0
+               ZR(JCNSV-1+IEQ) = ZR(JCNSV-1+IEQ) + ZR(JCESV-1+IAD1)
+            ELSEIF (TSCA.EQ.'C') THEN
+               IF(ZI(JNBNO-1+NUNO).EQ.0) ZC(JCNSV-1+IEQ)=(0.D0,0.D0)
+               ZC(JCNSV-1+IEQ) = ZC(JCNSV-1+IEQ) + ZC(JCESV-1+IAD1)
+            ENDIF
             ZI(JNBNO-1+NUNO) = ZI(JNBNO-1+NUNO) + 1
 
    10     CONTINUE
@@ -164,7 +166,11 @@ C     -------------------------------------------
         DO 30,NUNO = 1,NBNOT
           IEQ = (NUNO-1)*NCMP + ICMP
           IF (ZL(JCNSL-1+IEQ)) THEN
-            ZR(JCNSV-1+IEQ) = ZR(JCNSV-1+IEQ)/ZI(JNBNO-1+NUNO)
+            IF (TSCA.EQ.'R') THEN
+              ZR(JCNSV-1+IEQ) = ZR(JCNSV-1+IEQ)/ZI(JNBNO-1+NUNO)
+            ELSEIF (TSCA.EQ.'C') THEN
+              ZC(JCNSV-1+IEQ) = ZC(JCNSV-1+IEQ)/ZI(JNBNO-1+NUNO)
+            ENDIF
           END IF
    30   CONTINUE
 

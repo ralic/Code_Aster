@@ -1,8 +1,10 @@
-      SUBROUTINE RC3200
+      SUBROUTINE RC3200 ( PMPB, SN, FATIGU, MATER )
       IMPLICIT   NONE
+      LOGICAL             PMPB, SN, FATIGU
+      CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,9 +24,6 @@ C ======================================================================
 C     ------------------------------------------------------------------
 C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
 C
-C     ------------------------------------------------------------------
-      INTEGER      N1
-      CHARACTER*8  MATER
 C DEB ------------------------------------------------------------------
 C
 C     ------------------------------------------------------------------
@@ -36,8 +35,6 @@ C
 C     ------------------------------------------------------------------
 C              RECUPERATION DES CARACTERISTIQUES MATERIAU
 C     ------------------------------------------------------------------
-C
-      CALL GETVID ( ' ', 'MATER', 1,1,1, MATER, N1 )
 C
       CALL RC32MA ( MATER )
 C
@@ -71,13 +68,13 @@ C --- CALCUL DES AMPLITUDES DE CONTRAINTES
 C     CALCUL DU FACTEUR D'USAGE 
 C     -------------------------
 C
-      CALL RC32AC ( MATER )
+      CALL RC32AC ( PMPB, SN, FATIGU, MATER )
 C
 C
 C --- STOCKAGE DES RESULTATS
 C     ----------------------
 C
-      CALL RC32RS
+      CALL RC32RS ( PMPB, SN, FATIGU )
 C
       CALL JEDETC ( 'V' , '&&RC3200' , 1 )
 C

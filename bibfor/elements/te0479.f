@@ -1,6 +1,6 @@
       SUBROUTINE TE0479 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,6 @@ C     POUR LES ELEMENTS ISOPARAMETRIQUES 2D
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -43,29 +42,12 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      CHARACTER*24       CARAC,FF
-      CHARACTER*8        ELREFE
-      INTEGER            NNO,KP
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IGEOM
-      INTEGER            NPG,NPG1
-      INTEGER            ICOPG,INO
-      REAL*8             XX,YY
+      INTEGER            NDIM,NNO,NNOS,NPG,JGANO,KP,ICOPG,INO
+      INTEGER            IDFDE,IPOIDS,IVF,IGEOM
+      REAL*8             XX,YY,RBID81(81),POIDS
 C DEB ------------------------------------------------------------------
-      CALL ELREF1(ELREFE)
 C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-C     ON UTILISE SYSTEMATIQUEMENT LA PREMIERE FAMILLE DE POINTS DE GAUSS
-C     CAR C'EST ELLE QUI EST UTILISEE POUR RIGI_MECA ET RIGI_THER
-C     DANS TE0081, TE0076, TE0190 ET TE0260
-      NPG  = NPG1
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS = IFF
-      IVF    = IPOIDS+NPG1
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
 C ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
 C      ----------------------------------------------
@@ -80,8 +62,14 @@ C
           XX=XX+ZR(IGEOM+2*(INO-1)+0)*ZR(IVF+(KP-1)*NNO+INO-1)
           YY=YY+ZR(IGEOM+2*(INO-1)+1)*ZR(IVF+(KP-1)*NNO+INO-1)
    50   CONTINUE
-        ZR(ICOPG+2*(KP-1)+0)=XX
-        ZR(ICOPG+2*(KP-1)+1)=YY
+        ZR(ICOPG+3*(KP-1)+0)=XX
+        ZR(ICOPG+3*(KP-1)+1)=YY
+        CALL DFDM2D (NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),RBID81,RBID81,POIDS)
+C       EN AXI R C'EST XX
+        IF (NOMTE(3:4).EQ.'AX') THEN
+          POIDS=POIDS*XX          
+        ENDIF
+        ZR(ICOPG+3*(KP-1)+2)=POIDS
   100 CONTINUE
 C
       END

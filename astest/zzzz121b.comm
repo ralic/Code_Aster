@@ -1,4 +1,4 @@
-# MODIF  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 12/11/2003   AUTEUR CIBHHLV L.VIVAN 
 # TITRE COUPLAGE ASTER_HOMARD - CAS TRIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,8 +105,7 @@ RESUZERO=CALC_ELEM( reuse=RESUZERO,   RESULTAT=RESUZERO,
                 MODELE=MODEZERO,
                CHAM_MATER=MATEZERO,
                     EXCIT=_F(  CHARGE = CHARZERO),
-              OPTION=( 'SIEF_ELGA_DEPL', 
-                       'SIGM_ELNO_DEPL', 
+              OPTION=( 'SIGM_ELNO_DEPL', 
                        'ERRE_ELGA_NORE', )
                       )
 
@@ -186,8 +185,7 @@ RESUUN=CALC_ELEM( reuse=RESUUN,   RESULTAT=RESUUN,
                 MODELE=MODEUN,
                CHAM_MATER=MATEUN,
                     EXCIT=_F(  CHARGE = CHARUN),
-              OPTION=( 'SIEF_ELGA_DEPL', 
-                       'SIGM_ELNO_DEPL', 
+              OPTION=( 'SIGM_ELNO_DEPL', 
                        'ERRE_ELGA_NORE', )
                     )
 

@@ -1,9 +1,10 @@
       REAL*8 FUNCTION GEVAT1 ( A, B, WMOY )
+C RESPONSABLE CAMBIER S.CAMBIER
       IMPLICIT NONE
       REAL*8   A, B, WMOY
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/11/2003   AUTEUR CAMBIER S.CAMBIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,9 +23,8 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C  GENERATEUR DE VARIABLE ALEATOIRE DU MODELE PROBABILISTE 
-C  PARAMETRIQUE A SUPPORT COMPACT (TYPE 1).
-C
-C  LA PROCEDURE EST DUE AU PROFESSEUR CHRISTIAN SOIZE (2001).
+C  PARAMETRIQUE A SUPPORT COMPACT (TYPE 1), C.A.D. UNE LOI 
+C  EXPONENTIELLE TRONQUEE
 C
 C  A    : BORNE INFERIEURE DU SUPPORT DE LA LOI DE PROBABILITE DE 
 C         LA VARIABLE ALEATOIRE W.
@@ -41,15 +41,15 @@ C
      +                     - B*EXP(-B*K))/(EXP(-A*K) - EXP(-B*K)))
 C
       IF (A.GE.B) THEN
-         CALL UTDEBM('F','GEVAT1',' A > B ')
-         CALL UTIMPR('L','   A = ', 1, A )
-         CALL UTIMPR('L','   B = ', 1, B )
-         CALL UTFINM
+        CALL UTDEBM('F','GEVAT1','ON DOIT AVOIR BORNE_INF < BORNE_SUP ')
+        CALL UTIMPR('L','   BORNE_INF = ', 1, A )
+        CALL UTIMPR('L','   BORNE_SUP = ', 1, B )
+        CALL UTFINM
       ELSE IF (WMOY.LE.A.OR.WMOY.GE.B) THEN
-         CALL UTDEBM('F','GEVAT1','WMOY TROP GRAND OU TROP PETIT')
-         CALL UTIMPR('L','   A = ', 1, A )
-         CALL UTIMPR('S',' < WMOY = ', 1, WMOY )
-         CALL UTIMPR('S',' < B = ', 1, B )
+         CALL UTDEBM('F','GEVAT1','VALE_MOY TROP GRAND OU TROP PETIT')
+         CALL UTIMPR('L','  BORNE_INF  = ', 1, A )
+         CALL UTIMPR('S',' < VALE_MOY = ', 1, WMOY )
+         CALL UTIMPR('S',' < BORNE_SUP= ', 1, B )
          CALL UTFINM
       ENDIF
 C

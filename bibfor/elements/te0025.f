@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER JGANO,NBSIGM,NDIM,NNO,I,NNOS,NPG,JVAL,IPOIDS,IVF,IDFDE,
-     &        IDFDN,IDFDK,NBSIG,IGAU,ISIG,INO,IGEOM,IDEPL,ITEMPE,ITREF,
+     &        NBSIG,IGAU,ISIG,INO,IGEOM,IDEPL,ITEMPE,ITREF,
      &        ITEMPS,IDEFO,IMATE,IHYDRE,ISECHE,IRET,JTAB(3)
       REAL*8 EPSM(162),EPSNO(162),REPERE(7),TEMPE(27)
       REAL*8 HYDR(27),SECH(27)
@@ -76,10 +76,7 @@ C          L'HYDRATATION, IL FAUT SE SOUMETTRE ...
       ELSE
         CALL ASSERT(.FALSE.)
       END IF
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
-      DO 10 I = 1,1
-   10 CONTINUE
+
 
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
@@ -167,9 +164,10 @@ C ----                    ET EPSI_MECA - EPSI_THERMIQUES POUR LES
 C ----                    OPTIONS EPME ET EPMG :
 C      ---------------------------------------
       CALL TECACH('NNN','PMATERC',1,IMATE,IRET)
-      CALL EPSVMC(MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),ZR(IDFDE),ZR(IDFDN),
-     &            ZR(IDFDK),ZR(IPOIDS),ZR(IGEOM),ZR(IDEPL),TEMPE,TREF,
-     &            HYDR,SECH,INSTAN,ZI(IMATE),REPERE,NHARM,OPTION,EPSM)
+      CALL EPSVMC(MODELI, NNO, NDIM, NBSIG, NPG, IPOIDS,IVF,
+     +            IDFDE,ZR(IGEOM), ZR(IDEPL),
+     +            TEMPE, TREF, HYDR, SECH, INSTAN,
+     +            ZI(IMATE), REPERE, NHARM, OPTION, EPSM)
 
       IF (OPTION(6:9).EQ.'ELGA') THEN
 C         --------------------

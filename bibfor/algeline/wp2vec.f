@@ -1,17 +1,17 @@
       SUBROUTINE WP2VEC (APPR,OPT,NBFREQ,NBVECT,NEQ,SHIFT,YH,YB,VR,
-     +                   NLIVR,NPIVOT,VPR,VPI,VECP,LMASSE,MXRESF,
+     +                   NLIVR,VPR,VPI,VECP,MXRESF,
      +                   RESUFI,RESUFR,LAGR)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*1   APPR
       CHARACTER*(*) OPT
-      INTEGER       NBFREQ,NBVECT,NEQ,NPIVOT,LMASSE,LAGR(*)
+      INTEGER       NBFREQ,NBVECT,NEQ,LAGR(*)
       INTEGER       RESUFI(MXRESF,*)
       COMPLEX*16    VECP(NEQ,*),SHIFT
       REAL*8        RESUFR(MXRESF,*),YH(NEQ,*),YB(NEQ,*)
       REAL*8        VPR(*),VPI(*),VR(NLIVR,*)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/05/97   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,14 +37,12 @@ C --> STOCKAGE D'UN SEUL COUPLE PARMI 2 CONJUGUES
 C     -----------------------------------------------------------------
 C IN  APPR   : K : INDICATEUR D' APPROCHE 'R' OU 'I'
 C IN  OPT    : K : OPTION : 'CENTRE' OU 'PLUS_PETITE'
-C IN  NPIVOT : I : LIE AU DDL DE LAGRANGE
 C IN  NBFREQ : I : NOMBRE DE MODES DEMANDES
 C IN  NBVECT : I : NOMBRE DE VECTEURS DE LANCZOS
 C IN  NEQ    : I : TAILLE DES MATRICES DU PB QUADRATIQUE
 C IN  SHIFT  : R : VALEUR DU DECALAGE
 C IN  YH     : R : PARTIE HAUTE DES VECTEURS DE LANCZOS
 C IN  YB     : R : PARTIE BASSE DES VECTEURS DE LANCZOS
-C IN  LMASSE : I : POINTEUR SUR LE DESCRIPTEUR DE LA MATRICE DE MASSE
 C IN  LAGR   : I : INDICATEUR DES NON-LAGRANGE
 C VAR VPR    : R : IN  : PARTIE REELLE DES VALEURS PROPRE DU PB REDUIT
 C            :   : OUT : PARTIE REELLE DES VALEURS PROPRE DU PB QUAD
@@ -76,7 +74,7 @@ C
 C     ------------------------------------------------------------------
       REAL*8     AIMAG,R8DEPI
       REAL*8     SI,MOD2,A,B,E,NMABP,NMABM,AM,OM
-      REAL*8     SEUIL
+      REAL*8     SEUIL, EPS
       INTEGER    I,J,K,AV1,AV2,AV,IVEC,IADIND,NBREEL,NBCMPP,BCCMPC
       COMPLEX*16 DES,VPQ,MHU,VPP,VPM,C
       LOGICAL    TROUVE
@@ -110,7 +108,7 @@ C --- 1.1. PARTITION (OPERATEUR REEL)
 1     CONTINUE
       DO 2 J = 1, NBVECT
          IF ( ZI(IADIND + J-1) .EQ. -2 ) THEN
-            IF ( VPI(J) .EQ. 0.D0 ) THEN
+            IF ( ABS(VPI(J)) .LT. 1.D-7 ) THEN
                ZI(IADIND + J-1) = 0
                NBREEL = NBREEL + 1
             ELSE
@@ -120,7 +118,7 @@ C --- 1.1. PARTITION (OPERATEUR REEL)
                IF ( (.NOT. TROUVE ) .AND. ( K .LE. NBVECT) ) THEN
                   IF ( ( ZI(IADIND + K-1) .EQ. -2 ) .AND.
      +                 ( DCMPLX(VPR(J),VPI(J)) .EQ.
-     +                   DCONJG(DCMPLX(VPR(K),VPI(K))) ) ) THEN
+     +                   DCONJG(DCMPLX(VPR(K),VPI(K)))) ) THEN
                       TROUVE = .TRUE.
                       NBCMPC = NBCMPC + 1
                       IF ( VPI(J) .GE. 0.D0 ) THEN
@@ -174,7 +172,7 @@ C
       ENDIF
 C
 C --- 1.2. DETERMINATION DE NB FREQUENCES GARDEES
-      NBFRGA = NBREEL + NBCMPP + NBCMPC
+      NBFRGA =NBCMPC
 C
 C --- 1.3. ELIMINATION DES CONJUGUES (OPERATEUR REEL) -- COMPACTAGE --
       K = 1
@@ -202,6 +200,7 @@ C --- 2. CALCUL DES SOLUTIONS PROPRES DU PB QUADRATIQUE ---
          CALL WKVECT('&&WP2VEC.VEC.AUX.C ','V V C',NEQ,AV )
       ENDIF
       DO 10 J = 1, NBFRGA
+      IF (ZI(IADIND + J-1).GT.0) THEN
          A    = VPR(J)
          B    = VPI(J)
          MHU  = DCMPLX(A,B)
@@ -219,38 +218,56 @@ C --- 2. CALCUL DES SOLUTIONS PROPRES DU PB QUADRATIQUE ---
                VPQ = .5D0*(DCMPLX(1.D0,0.D0)-DCMPLX(0.D0,2.D0*SI)*MHU +
      &                                                         DES)/MHU
                VPP = VPQ + SHIFT
-               CALL WPTEST(LAGR,LMASSE,VECP(1,J),ZC(AV),VPP,NEQ,NMABP,
-     +                     ZC(AV1),ZC(AV2))
+               CALL WPTEST(LAGR,VECP(1,J),ZC(AV),VPP,NEQ,NMABP)
                VPQ = .5D0*(DCMPLX(1.D0,0.D0)-DCMPLX(0.D0,2.D0*SI)*MHU -
      &                                                         DES)/MHU
                VPM = VPQ + SHIFT
-               CALL WPTEST(LAGR,LMASSE,VECP(1,J),ZC(AV),VPM,NEQ,NMABM,
-     +                  ZC(AV1),ZC(AV2))
+               CALL WPTEST(LAGR,VECP(1,J),ZC(AV),VPM,NEQ,NMABM)
             ELSE
                DES = -DCMPLX(SI*SI,0.D0)*MHU*MHU + DCMPLX(SI,0.D0)*MHU
                DES =  SQRT(DES)
                VPQ = -DCMPLX(0.D0,SI) + DES/MHU
                VPP =  VPQ + SHIFT
-               CALL WPTEST(LAGR,LMASSE,VECP(1,J),ZC(AV),VPP,NEQ,NMABP,
-     +                  ZC(AV1),ZC(AV2))
+               CALL WPTEST(LAGR,VECP(1,J),ZC(AV),VPP,NEQ,NMABP)
                VPQ = -DCMPLX(0.D0,SI) - DES/MHU
                VPM =  VPQ + SHIFT
-               CALL WPTEST(LAGR,LMASSE,VECP(1,J),ZC(AV),VPM,NEQ,NMABM,
-     +                  ZC(AV1),ZC(AV2))
+               CALL WPTEST(LAGR,VECP(1,J),ZC(AV),VPM,NEQ,NMABM)
             ENDIF
             IF (NMABM .LT. NMABP ) THEN
                A = DBLE (VPM)
                B = DIMAG(VPM)
+               EPS=NMABM
             ELSE
                A = DBLE (VPP)
                B = DIMAG(VPP)
+               EPS=NMABP
             ENDIF
-         ELSE
-         ENDIF
+            IF (EPS.GT.1.D-6) THEN
+              ZI(IADIND + J-1)=0
+              NBFRGA=NBFRGA-1
+            ENDIF
+            ENDIF
          VPR(J) = A
          VPI(J) = B
+      ENDIF
 10    CONTINUE
 C
+C --- 1.3. ELIMINATION DES VALEURS FAUSSES -- RECOMPACTAGE --
+      K = 1
+      DO 44 J = 1, NBFRGA
+         IF ( ZI(IADIND + J-1) .GT. 0 ) THEN
+            IF ( K .NE. J ) THEN
+               VPR(K)           = VPR(J)
+               VPI(K)           = VPI(J)
+               ZI(IADIND + K-1) = ZI(IADIND + J-1)
+               DO 55, I = 1, NLIVR, 1
+                  VR(I,K) = VR(I,J)
+55              CONTINUE
+            ENDIF
+            K = K + 1
+         ENDIF
+44     CONTINUE
+
 C --- 3. SELECTION DES VALEURS PROPRES (PB QUADRATIQUE)
       DO 20, J = 1, NBFRGA, 1
          IF ( (ZI(IADIND + J-1).EQ.1 ).AND.( VPI(J).LT.0.D0) ) THEN
@@ -261,19 +278,24 @@ C --- 3. SELECTION DES VALEURS PROPRES (PB QUADRATIQUE)
          ENDIF
 20    CONTINUE
 C
+C --- 5. PREPARATION DE RESUFR
+       IF (NBFREQ.GE.NBFRGA) THEN
+         NBFREQ=NBFRGA
+       ENDIF  
+
 C --- 4. TRI (DANS LE SPECTRE ET DE PRESENTATION) DES VALEURS PROPRES-
       CALL WPORDO(1,SHIFT,VPR,VPI,VECP,NBFRGA,NEQ)
       CALL WPORDO(0,SHIFT,VPR,VPI,VECP,NBFREQ,NEQ)
 C
-C --- 5. PREPARATION DE RESUFR
       DO 30 J = 1, NBFREQ
          AM          = VPR(J)*VPR(J)
          OM          = VPI(J)*VPI(J)
          RESUFI(J,1) = J
-C --         RESUFI(J,1) = J + NPIVOT
          RESUFR(J,2) = OM
          RESUFR(J,3) = -VPR(J)/SQRT(OM + AM)
 30    CONTINUE
+
+C       NBVECT=NBFRGA
 C
 C --- 6. DESTRUCTION DES OJB TEMPORAIRES
 C

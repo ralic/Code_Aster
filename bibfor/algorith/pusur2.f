@@ -1,8 +1,8 @@
-        SUBROUTINE PUSUR2(JDG,NBPAIR,NBPT,COEF,ANG,FN,VT1,VT2,
+        SUBROUTINE PUSUR2(JDG,NBPT,ANG,FN,VT1,VT2,
      &                     ANGLE,T,PUSE,NOCCUR)
 C***********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/04/98   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,7 @@ C
 C-----------------------------------------------------------------------
 
       IMPLICIT REAL *8 (A-H,O-Z)
-      REAL*8 ANG(*),COEF(*),FN(*),VT1(*),VT2(*),ANGLE(*),T(*),
+      REAL*8 ANG(*),FN(*),VT1(*),VT2(*),ANGLE(*),T(*),
      &       PUSE,TMP
 C
         ZERO=0.00D00

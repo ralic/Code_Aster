@@ -1,18 +1,17 @@
         SUBROUTINE CALCME(OPTION,COMPOR,MECA,IMATE,TYPMOD,
      +                       CRIT,INSTAM, INSTAP, TREF,
      +                       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,        
-     +                       YAMEC,YAP1,NBPHA1,YAP2,NBPHA2,YATE,
-     +                       ADDEME,ADCOME,ADDETE,
+     +                       YATE,ADDEME,ADCOME,ADDETE,
      +                       DEFGEM,CONGEM,CONGEP,
      +                       VINTM,VINTP,ADVIME,ADVITH,
      +                       ADDEP1,ADDEP2,
      +                       DSDE,
-     +                       DEPS,DEPSV,PHI,P1,P2,T,DT,PHI0,RETCOM
-     +                      )
+     +                       DEPS,DEPSV,PHI,P1,P2,T,DT,PHI0,RETCOM,
+     +                       DP1,DP2,SAT,BIOT)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,7 +55,7 @@ C ======================================================================
       LOGICAL       MECTRU
       INTEGER       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,ADDEME,ADDETE,ADDEP1
       INTEGER       ADDEP2,ADCOME,ADVIME,ADVITH,IMATE
-      INTEGER       YAMEC,YAP1,NBPHA1,YAP2,NBPHA2,YATE,RETCOM
+      INTEGER       YATE,RETCOM
       REAL*8        DEFGEM(1:DIMDEF)
       REAL*8        CONGEM(1:DIMCON),CONGEP(1:DIMCON)
       REAL*8        VINTM(1:NVIMEC+NVITH),VINTP(1:NVIMEC+NVITH)
@@ -98,6 +97,9 @@ C
       CHARACTER*8  BGCR7(NSATM)
       CHARACTER*16 COMPLG
 C ======================================================================
+C    VARIABLES LOCALES POUR L'APPEL AU MODELE DE BARCELONE
+      REAL*8  DSIDP1(6),DP1,DP2,SAT,BIOT
+C ======================================================================
       INTEGER NDT,NDI
       COMMON /TDIM/   NDT  , NDI
 C
@@ -118,9 +120,11 @@ C ======================================================================
       IF (  (MECA.EQ.'ELAS')            .OR.
      +      (MECA.EQ.'CJS')             .OR.
      +      (MECA.EQ.'CAM_CLAY')        .OR.
+     +      (MECA.EQ.'BARCELONE')       .OR.
      +      (MECA.EQ.'LAIGLE')          .OR.
+     +      (MECA.EQ.'DRUCKER_PRAGER')  .OR.
      +      (MECA.EQ.'MAZARS')          .OR.
-     +      (MECA.EQ.'ENDO_ISOT_BETON')      ) THEN
+     +      (MECA.EQ.'ENDO_ISOT_BETON') ) THEN
          CALL RCVALA(IMATE,'ELAS',0,' ',0.D0,NELAS,
      +                                           NCRA1,ELAS,CODRET,'FM')
          YOUNG  = ELAS(1)
@@ -180,7 +184,7 @@ C
          ENDIF
       ENDIF
 C ======================================================================
-C --- LOI CJS OU LOI DE LAIGLE -----------------------------------------
+C --- LOI CJS, LOI LAIGLE OU LOI DRUCKER_PRAGER ------------------------
 C ======================================================================
       MECTRU = .FALSE.
       IF (MECA.EQ.'CJS') THEN
@@ -203,6 +207,13 @@ C ======================================================================
      >              DEFGEM(ADDEME+NDIM),DEPS,CONGEM(ADCOME),
      >              VINTM,OPTION,R8BID,CONGEP(ADCOME),VINTP, 
      >              DSDEME)
+      ENDIF
+      IF (MECA.EQ.'DRUCKER_PRAGER') THEN
+         MECTRU = .TRUE.
+         TF = T + DT
+         CALL LCDRPR(TYPMOD,OPTION,IMATE,CONGEM(ADCOME),
+     +               T,TF,TREF,DEPS,VINTM,VINTP,
+     +               CONGEP(ADCOME),DSDEME,RETCOM)
       ENDIF
       IF (MECTRU) THEN
          IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
@@ -256,6 +267,39 @@ C ======================================================================
      >             DSDE(ADCOME-1+I,ADDEME+NDIM-1+2)+
      >             DSDE(ADCOME-1+I,ADDEME+NDIM-1+3))/3.D0
  406        CONTINUE
+         ENDIF
+        ENDIF
+      ENDIF
+C ======================================================================
+C --- LOI BARCELONE ----------------------------------------------------
+C ======================================================================
+      IF (MECA.EQ.'BARCELONE') THEN
+        TF = T + DT
+        CALL NMBARC(  NDIM, IMATE, CRIT, SAT, BIOT,
+     &                      T,TF, 
+     >                      DEPS, 
+     >                      CONGEM(ADCOME), VINTM, OPTION, 
+     >                      CONGEP(ADCOME), VINTP, 
+     >                      DSDEME,P1,P2,DP1,DP2,
+     &                      DSIDP1)
+        IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
+     >            (OPTION(1:9).EQ.'FULL_MECA')) THEN
+          DO 412 I = 1 , 2*NDIM
+           DO 411 J = 1 , 2*NDIM
+            DSDE(ADCOME+I-1,ADDEME+NDIM+J-1)=DSDEME(I,J)
+  411     CONTINUE
+  412     CONTINUE
+C ======================================================================
+C --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
+C --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
+C ======================================================================
+         IF (YATE.EQ.1) THEN
+            DO 416 I=1,3 
+                  DSDE(ADCOME-1+I,ADDETE)=-ALPHA0*
+     >            (DSDE(ADCOME-1+I,ADDEME+NDIM-1+1)+
+     >             DSDE(ADCOME-1+I,ADDEME+NDIM-1+2)+
+     >             DSDE(ADCOME-1+I,ADDEME+NDIM-1+3))/3.D0
+ 416        CONTINUE
          ENDIF
         ENDIF
       ENDIF
@@ -634,8 +678,7 @@ C
             ATMP = INIGAT(2)
             CALL PRCIPE(CONGEP,DIMCON,S1,S2,S3,NDIM)
             CALL STATVT(IMATE,MECA,DIMCON,ADCOME,CONGEP,ATMP,S3,P1,P2,
-     &                      T,DT,PHI0,J1,J2,J3, BT,DF,DC,RDBTDT,RDBTP1,
-     &                      RDBTP2,PHI)
+     &                  J1,J2,J3, BT,DF,DC,RDBTDT,RDBTP1,RDBTP2,PHI)
 C
 C     CHECK FOR TENSILE FAILURE
 C
@@ -658,7 +701,7 @@ C     CHECK FOR SHEAR FAILURE
 C
 400   CONTINUE
       SUC=P2-P1
-      CALL STRENT(COHES,ANPHI,S1,S3,SMEAN,SUC,SUCM,
+      CALL STRENT(COHES,ANPHI,S1,SMEAN,SUC,
      &            SUCC,SUCP1,SUCP2,SMAX,T)
       SR=SMAX
       IF(SR.LT.0.95D0) GO TO 500
@@ -802,14 +845,10 @@ C ======================================================================
 C --- LOI ELASTOPLASTIQUE SATURE THM -----------------------------------
 C ======================================================================
       IF (MECA.EQ.'CAM_CLAY_THM') THEN
-       CALL  NMPGAT(OPTION,TYPMOD,IMATE,COMPOR,CRIT,MECA,
-     &                       T,DT, TREF,DEPS,PHI0,
-     &                       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,        
-     &                       ADDEME,ADCOME,ADDETE,
-     &                       DEFGEM,CONGEM,CONGEP,
-     &                       VINTM,VINTP,ADVIME,ADVITH,
-     &                       ADDEP1,ADDEP2, 
-     &                       DSDE)
+       CALL  NMPGAT(OPTION,IMATE,T,DT, TREF,DEPS,PHI0,
+     &              NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,        
+     &              ADDEME,ADCOME,ADDETE,CONGEM,CONGEP,
+     &              VINTM,VINTP,ADVIME,DSDE)
        ENDIF
 C ======================================================================
       END

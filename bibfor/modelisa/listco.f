@@ -1,7 +1,7 @@
-      SUBROUTINE LISTCO (MOTFAZ,NOMO,NOMAZ,IOC,NTRAV,NBMA,NBNO,NBNOQU,
+      SUBROUTINE LISTCO (MOTFAZ,NOMAZ,IOC,NTRAV,NBMA,NBNO,NBNOQU,
      &                   LISTMA,LISTNO,LISTQU,CHARZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/01/2003   AUTEUR PABHHHH N.TARDIEU 
+C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C
 C
       INTEGER       IOC,NTRAV,NBMA,NBNO,LISTMA(NBMA),LISTNO(NBNO)
       INTEGER       NBNOQU, LISTQU(3*NBNOQU)
-      CHARACTER*(*) MOTFAZ,NOMAZ,CHARZ,NOMO
+      CHARACTER*(*) MOTFAZ,NOMAZ,CHARZ
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELEE PAR : CALICO
@@ -60,13 +60,13 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      NG,NGR,NMAI,N1,N2,NBMAIL,NB,NUMAIL
+      INTEGER      NG,NGR,NMAI,N1,N2,NBMAIL,NB,NUMAIL,NOC
       INTEGER      II1,II2,IPMA,IPNO,INO,JCOOR,NOUNDF
       INTEGER      JGRO,JBID,JDES,IBID,IATYMA,ITYP,NUTYP
       INTEGER      N1Q, N2Q, IPQU, NOEUSO, NOEUMI, NBNOMI
       CHARACTER*1  K1BID
       CHARACTER*8  K8BID,NOMA,NOMTM,CHAR,MOTCLE,TYMOCL(4)
-      CHARACTER*16 MOTFAC,MOTCLV(4)
+      CHARACTER*16 MOTFAC,MOTCLV(4),TYPF
       CHARACTER*24 LISMA
 C
 C ----------------------------------------------------------------------
@@ -77,21 +77,29 @@ C
       MOTFAC = MOTFAZ
       NOMA   = NOMAZ
       CHAR   = CHARZ
+      CALL GETVTX (MOTFAC,'METHODE',IOC,1,1,TYPF,NOC)
+
+CCC
+CCC
+CCC   modifie le 8/12/03, en attendant l'evolution de RELIEM.
+CCC   Le GETVEM verifie que les mailles appartiennent au maillage,
+CCC   RELIEM est en doublon avec GETVEM.
+CCC
 C
 C --- VERIFICATION QUE LES MAILLES DE CONTACT APPATIENNENT AU MODELE
 C
-      MOTCLV(1) = 'GROUP_MA_1'
-      TYMOCL(1) = 'GROUP_MA'
-      MOTCLV(2) = 'MAILLE_1'
-      TYMOCL(2) = 'MAILLE'
-      MOTCLV(3) = 'GROUP_MA_2'
-      TYMOCL(3) = 'GROUP_MA'
-      MOTCLV(4) = 'MAILLE_2'
-      TYMOCL(4) = 'MAILLE'
-      LISMA = '&&CALICO.VERIF'
-      CALL RELIEM(NOMO,NOMA,'NU_MAILLE',MOTFAC,IOC,2,MOTCLV,
-     &                TYMOCL,LISMA,IBID)
-      CALL JEDETR(LISMA)
+CCC      MOTCLV(1) = 'GROUP_MA_ESCL'
+CCC      TYMOCL(1) = 'GROUP_MA'
+CCC      MOTCLV(2) = 'MAILLE_ESCL'
+CCC      TYMOCL(2) = 'MAILLE'
+CCC      MOTCLV(3) = 'GROUP_MA_MAIT'
+CCC      TYMOCL(3) = 'GROUP_MA'
+CCC      MOTCLV(4) = 'MAILLE_MAIT'
+CCC      TYMOCL(4) = 'MAILLE'
+CCC      LISMA = '&&CALICO.VERIF'
+CCC      CALL RELIEM(NOMO,NOMA,'NU_MAILLE',MOTFAC,IOC,2,MOTCLV,
+CCC     &                TYMOCL,LISMA,IBID)
+CCC      CALL JEDETR(LISMA)
 C
 C --- AFFECTATION DU TABLEAU DE TRAVAIL ET INITIALISATION
 C
@@ -107,62 +115,131 @@ C      REMPLISSAGE DE LA LISTE DE MAILLES ET DE LA LISTE DE NOEUDS
 C ======================================================================
 C
       CALL JEVEUO(NOMA//'.TYPMAIL','L',IATYMA)
+
+      IF(TYPF(1:8).EQ.'CONTINUE') THEN  
+
+C ----- METHODE CONTINUE : ON STOCKE D ABORD ----------
+C       LES ESCLAVES
+C ----------------------------------------------------    
 C
-C --- MOT-CLE GROUP_MA_1
+C --- MOT-CLE GROUP_MA_ESCL
 C
-         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_1',
-     &            IOC,1,0,K8BID,NG)
+         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_ESCL',
+     &                                       IOC,1,0,K8BID,NG)
          IF (NG.NE.0) THEN
              MOTCLE = 'GROUP_MA'
              NG = - NG
-             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_1',
-     &                IOC,1,NG,ZK8(JBID),NGR)
+             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_ESCL',
+     &                                          IOC,1,NG,ZK8(JBID),NGR)
              CALL EXNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),
      &                   NBMA,NBNO,NBNOQU,LISTMA,LISTNO,
      &                   LISTQU,IPMA, IPNO, IPQU)
          END IF
 C
-C --- MOT-CLE MAILLE_1
+C --- MOT-CLE MAILLE_ESCL
 C
-         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_1',
-     &          IOC,1,0,K8BID,NBMA)
+         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_ESCL',
+     &                                     IOC,1,0,K8BID,NBMA)
          IF (NBMA.NE.0) THEN
              MOTCLE = 'MAILLE'
              NBMA = -NBMA
-             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_1',
-     &              IOC,1,NBMA,ZK8(JBID),NMAI)
+             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_ESCL',
+     &                                       IOC,1,NBMA,ZK8(JBID),NMAI)
              CALL EXNOEL(CHAR,NOMA,MOTCLE,0,ZK8(JBID),NBMA,
      &                   NBNO,NBNOQU,LISTMA,LISTNO,LISTQU,
      &                   IPMA, IPNO, IPQU)
          ENDIF
 C
-C --- MOT-CLE GROUP_MA_2
+C --- MOT-CLE GROUP_MA_MAIT
 C
-         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_2',
-     &            IOC,1,0,K8BID,NG)
+         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_MAIT',
+     &                                       IOC,1,0,K8BID,NG)
          IF (NG.NE.0) THEN
              MOTCLE = 'GROUP_MA'
              NG = -NG
-             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_2',
-     &                IOC,1,NG,ZK8(JBID),NGR)
+             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_MAIT',
+     &                                         IOC,1,NG,ZK8(JBID),NGR)
              CALL EXNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),
      &                   NBMA,NBNO,NBNOQU,LISTMA,LISTNO,
      &                   LISTQU,IPMA, IPNO, IPQU)
          END IF
 C
-C --- MOT-CLE MAILLE_2
+C --- MOT-CLE MAILLE_MAIT
 C
-         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_2',
+         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_MAIT',
      &          IOC,1,0,K8BID,NB)
          IF (NB.NE.0) THEN
              MOTCLE = 'MAILLE'
              NB = -NB
-             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_2',
+             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_MAIT',
      &              IOC,1,NB,ZK8(JBID),NMAI)
              CALL EXNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),
      &                   NBMA,NBNO,NBNOQU,LISTMA,LISTNO,
      &                   LISTQU,IPMA, IPNO, IPQU)
          ENDIF
+
+       ELSE
+C
+C ------------LES AUTRES METHODES ON STOCKE D ABORD LES MAITRES
+
+C
+C --- MOT-CLE GROUP_MA_MAIT
+C
+         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_MAIT',
+     &                                       IOC,1,0,K8BID,NG)
+         IF (NG.NE.0) THEN
+             MOTCLE = 'GROUP_MA'
+             NG = - NG
+             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_MAIT',
+     &                                          IOC,1,NG,ZK8(JBID),NGR)
+             CALL EXNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),
+     &                   NBMA,NBNO,NBNOQU,LISTMA,LISTNO,
+     &                   LISTQU,IPMA, IPNO, IPQU)
+         END IF
+C
+C --- MOT-CLE MAILLE_MAIT
+C
+         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_MAIT',
+     &                                     IOC,1,0,K8BID,NBMA)
+         IF (NBMA.NE.0) THEN
+             MOTCLE = 'MAILLE'
+             NBMA = -NBMA
+             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_MAIT',
+     &                                       IOC,1,NBMA,ZK8(JBID),NMAI)
+             CALL EXNOEL(CHAR,NOMA,MOTCLE,0,ZK8(JBID),NBMA,
+     &                   NBNO,NBNOQU,LISTMA,LISTNO,LISTQU,
+     &                   IPMA, IPNO, IPQU)
+         ENDIF
+C
+C --- MOT-CLE GROUP_MA_ESCL
+C
+         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_ESCL',
+     &                                       IOC,1,0,K8BID,NG)
+         IF (NG.NE.0) THEN
+             MOTCLE = 'GROUP_MA'
+             NG = -NG
+             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_ESCL',
+     &                                          IOC,1,NG,ZK8(JBID),NGR)
+             CALL EXNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),
+     &                   NBMA,NBNO,NBNOQU,LISTMA,LISTNO,
+     &                   LISTQU,IPMA, IPNO, IPQU)
+         END IF
+C
+C --- MOT-CLE MAILLE_ESCL
+C
+         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_ESCL',
+     &                                     IOC,1,0,K8BID,NB)
+         IF (NB.NE.0) THEN
+             MOTCLE = 'MAILLE'
+             NB = -NB
+             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_ESCL',
+     &                                         IOC,1,NB,ZK8(JBID),NMAI)
+             CALL EXNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),
+     &                   NBMA,NBNO,NBNOQU,LISTMA,LISTNO,
+     &                   LISTQU,IPMA, IPNO, IPQU)
+         ENDIF
+       ENDIF
+
 C
 C --- VERIFICATIONS ET ECRITURES
 C

@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 27/06/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C
 C    
       IF ( NBFAC.NE.0 ) THEN
          CALL ALCAR0 ( NOMA, MOTFAC, 2, MOTCLS, TYPMCL, NBET )
-         CALL CAIMPE ( CHAR, LIGRMO, NBFAC, NBET, NOMA, NDIM, FONREE )
+         CALL CAIMPE ( CHAR, LIGRMO, NBFAC, NBET, NOMA, FONREE )
       ENDIF
 C
       END

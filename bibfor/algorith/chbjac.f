@@ -1,9 +1,9 @@
-        SUBROUTINE CHBJAC ( MOD, IMAT, NMAT, MATERF, TEMPF,
+        SUBROUTINE CHBJAC ( MOD, NMAT, MATERF,
      1                      YF,   DY,   NMOD,  DRDY)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,16 +30,14 @@ C                            ( DJDS  DJDX1  DJDX2  DJDP (DJDE3) )
 C                            ( DFDS  DFDX1  DFDX2  DFDP (DFDE3) )
 C                            ((DQDS)(DQDX1)(DQDX2)(DQDP)(DQDE3) )
 C       IN  MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           TEMPF  :  TEMPERATURE A T+DT
 C           YF     :  VARIABLES A T + DT =  ( SIGF X1F X2F PF (EPS3F) )
 C           DY     :  SOLUTION           =  ( DSIG DX1 DX2 DP (DEPS3) )
 C           NMOD   :  DIMENSION DECLAREE DRDY
 C       OUT DRDY   :  JACOBIEN DU SYSTEME NON LINEAIRE
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NDT , NDI , NMAT , NMOD
+        INTEGER         NDT , NDI , NMAT , NMOD
         REAL*8          MUN , UN  , ZERO , D23 , D13
         PARAMETER       ( MUN  = -1.D0  )
         PARAMETER       ( UN   = 1.D0   )
@@ -60,7 +58,7 @@ C
         REAL*8          DQDS(6),  DQDX1(6),  DQDX2(6),  DQDP,   DQDE3
 C
         REAL*8          VTMP1(6), VTMP2(6) , MTMP(6,6),  DEDE3(6)
-        REAL*8          MATERF(NMAT,2),       TEMPF
+        REAL*8          MATERF(NMAT,2)
         REAL*8          RI,  RO,  B,  K, W, A1, A2, C1, C2, NU
         REAL*8          H1,  H2,  H3, H4
 C

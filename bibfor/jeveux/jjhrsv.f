@@ -1,6 +1,6 @@
       SUBROUTINE JJHRSV(IDTS,NBVAL,IADMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 04/11/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,16 +42,18 @@ C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / IVARJE / ZI(1)
 C ----------------------------------------------------------------------
       INTEGER          IRET,JADR,KADM,NBV,K,LONOI,LTYPI
-      INTEGER          HDFTSD,HDFRSV,HDFCLD,IR,KITAB
+      INTEGER          HDFTSD,HDFRSV,HDFCLD,IR,KITAB,ICONV
       CHARACTER*1      TYPEI
       CHARACTER*75     CMESS
 C DEB ------------------------------------------------------------------
+      ICONV = 0
       IRET = HDFTSD(IDTS,TYPEI,LTYPI,NBV)
       IF (IRET .NE. 0) THEN
         CMESS='ERREUR DE RELECTURE DES PARAMETRES DU DATASET HDF'
         CALL JVMESS('F','JJHRSV01',CMESS)
       ENDIF 
       IF ( TYPEI .EQ. 'I' ) THEN
+        ICONV = 1
         IF ( LOIS .LT. LTYPI ) THEN
           LONOI = NBVAL*LTYPI
           CALL JJALLS(LONOI,'V',TYPEI,LOIS,'INIT',ZI,JADR,KADM)
@@ -59,7 +61,7 @@ C DEB ------------------------------------------------------------------
           ISZON(JISZON+ISZON(JISZON+KADM-4)-4) = ISTAT(4)
           IR = ISZON(JISZON + KADM - 3 ) 
           KITAB = JK1ZON+(KADM-1)*LOIS+IR+1
-          IRET = HDFRSV(IDTS,NBV,K1ZON(KITAB))
+          IRET = HDFRSV(IDTS,NBV,K1ZON(KITAB),ICONV)
           DO 1 K=1,NBV
             ISZON(JISZON+IADMI-1+K)=ISZON(JISZON+KADM-1+K)
  1        CONTINUE        
@@ -67,12 +69,12 @@ C DEB ------------------------------------------------------------------
         ELSE
           IR = ISZON(JISZON + IADMI - 3 ) 
           KITAB = JK1ZON+(IADMI-1)*LOIS+IR+1
-          IRET = HDFRSV(IDTS,NBV,K1ZON(KITAB))
+          IRET = HDFRSV(IDTS,NBV,K1ZON(KITAB),ICONV)
         ENDIF 
       ELSE
         IR    = ISZON(JISZON+IADMI-3) 
         KITAB = JK1ZON+(IADMI-1)*LOIS+IR+1
-        IRET = HDFRSV(IDTS,NBV,K1ZON(KITAB))
+        IRET = HDFRSV(IDTS,NBV,K1ZON(KITAB),ICONV)
       ENDIF   
       IF (IRET .NE. 0) THEN
         CMESS='RELECTURE AU FORMAT HDF IMPOSSIBLE '

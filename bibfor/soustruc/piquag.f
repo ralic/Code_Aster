@@ -1,16 +1,16 @@
-      SUBROUTINE PIQUAG ( EPSI, RIP, REP, RIT, RET, BET, ESO, HSO, H1,
+      SUBROUTINE PIQUAG ( EPSI, RIP, REP, RIT, RET, BET, ESO, HSO,
      +                    H2, H3, L3, L4, L5, L6, TETAF, XMAX, YMAX,
-     +                    ZMAX, LMAX, NT, MAILLA, NOGRNO, TYPSOU )
+     +                    LMAX, NT, MAILLA, NOGRNO, TYPSOU )
       IMPLICIT   NONE 
       INTEGER             NT
-      REAL*8              EPSI, RIP, REP, RIT, RET, BET, ESO, HSO, H1,
+      REAL*8              EPSI, RIP, REP, RIT, RET, BET, ESO, HSO,
      +                    H2, H3, L3, L4, L5, L6, TETAF, XMAX, YMAX,
-     +                    ZMAX, LMAX
+     +                    LMAX
       CHARACTER*8         TYPSOU
       CHARACTER*8         MAILLA, NOGRNO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 25/09/2002   AUTEUR GREFFET N.GREFFET 
+C MODIF SOUSTRUC  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,7 +117,7 @@ C
 C------------------------ ROTATION DU PIQUAGE ROND ---------------------
 C
          IF ( ROTATI ) THEN
-            CALL PIQROT ( X1, Y1, Z1, TETAX,
+            CALL PIQROT ( X1, Y1, TETAX,
      +                    NT, RET, RIT, REP, TETAF, EPSI  )
          ENDIF
 C
@@ -144,7 +144,7 @@ C
 C
 C-------------------- RETOUR DANS LE PREMIER QUART  --------------------
 C
-         CALL PIQSYM ( X1, Y1, Z1, QUAR1, QUAR2, QUAR3, QUAR4 )
+         CALL PIQSYM ( X1, Y1, QUAR1, QUAR2, QUAR3, QUAR4 )
 C 
          R1 = SQRT( X1**2 + Y1**2 )
 C
@@ -181,9 +181,9 @@ C
          CALL PIQPLA (X1, Y1, Z1, XP, YP, ZP, ZONE7,ZONE8, L4,L6, EPSI)
 C
          IF ( PLAQ ) THEN
-            CALL PIQSYM ( XP, YP, ZP, QUAR1, QUAR2, QUAR3, QUAR4 )
+            CALL PIQSYM ( XP, YP, QUAR1, QUAR2, QUAR3, QUAR4 )
 C
-            CALL PIQSYM ( XP, YP, ZP, QUAR1, QUAR2, QUAR3, QUAR4 )
+            CALL PIQSYM ( XP, YP, QUAR1, QUAR2, QUAR3, QUAR4 )
          ENDIF
 C
 C------------ TRANSFORMATION PIQUAGE CARRE ---> PIQUAGE ----------------
@@ -193,9 +193,9 @@ C
      &                 ZONE4, ZONE5, ZONE6, ZONE7, ZONE8, TYPSOU )
 C
          IF ( PIQU ) THEN
-            CALL PIQSYM ( X, Y, Z, QUAR1, QUAR2, QUAR3, QUAR4 )
+            CALL PIQSYM ( X, Y, QUAR1, QUAR2, QUAR3, QUAR4 )
 C
-            CALL PIQSYM ( X, Y, Z, QUAR1, QUAR2, QUAR3, QUAR4 )
+            CALL PIQSYM ( X, Y, QUAR1, QUAR2, QUAR3, QUAR4 )
          ENDIF
 C
 C--------------------- ALLONGEMENT DU PIQUAGE --------------------------
@@ -203,7 +203,7 @@ C
          IF ( ALLONG ) CALL PIQALL (X, RET, RIT, REP, XMAX,LMAX, EPSI)
 C
          IF ( ALLO ) THEN
-            CALL PIQSYM (X, Y, Z, QUAR1, QUAR2, QUAR3, QUAR4)
+            CALL PIQSYM (X, Y, QUAR1, QUAR2, QUAR3, QUAR4)
 C
          ENDIF
 C

@@ -1,10 +1,9 @@
       SUBROUTINE TE0133 ( OPTION , NOMTE )
       IMPLICIT NONE
       CHARACTER*16       OPTION , NOMTE
-      CHARACTER*8        ELREFE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,28 +45,17 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER   ICARAC, NNO, NNOS, NPG2, NCMP, IHYDRP, IHYDRN
+      INTEGER   NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO,
+     +          NCMP, IHYDRP, IHYDRN
 C DEB ------------------------------------------------------------------
 C
-      CALL ELREF1(ELREFE)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
-      CALL JEVETE ( '&INEL.'//ELREFE//'.CARAC', 'L', ICARAC )
-      NNO  = ZI(ICARAC)
-C      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
       NCMP = 1
-C
-      NNOS = NNO
-      IF ( NOMTE(5:7) .EQ. 'TR6' ) THEN
-         NNOS = 3
-      ELSEIF ( NOMTE(5:7) .EQ. 'QU8' .OR.
-     &         NOMTE(5:7) .EQ. 'QU9' ) THEN
-         NNOS = 4
-      ENDIF
 C
       CALL JEVECH ( 'PHYDRPP' , 'L', IHYDRP )
       CALL JEVECH ( 'PHYDRNOR', 'E', IHYDRN )
 C
-      CALL PPGANO ( NNOS , NPG2 , NCMP , ZR(IHYDRP) ,  ZR(IHYDRN) )
+      CALL PPGAN2 ( JGANO , NCMP , ZR(IHYDRP) ,  ZR(IHYDRN) )
 C FIN ------------------------------------------------------------------
       END

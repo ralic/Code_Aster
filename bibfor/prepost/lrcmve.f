@@ -5,7 +5,7 @@
      >                    ADSL,   ADSV,   ADSD,
      >                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/02/2003   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 16/12/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -116,7 +116,6 @@ C               12   345678   9012345678901234
       NNUMMA = '&&'//NOMPRO//'.NUMEROMA       '
       CALL WKVECT ( NNUMMA, 'V V I', NMATYP , JNUMMA )
 C
-      CALL JXVERI(' ',' ')
       CALL JEVEUO ( NTVALE, 'L', ADVALE )
       IF ( NBCMPV.NE.0 ) THEN
         CALL JEVEUO ( NCMPVM, 'L', ADNCVM )

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL,ELREFA
+      LOGICAL ZL
       COMMON /LVARJE/ZL(1)
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
@@ -59,7 +59,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER NBSIGM,NBNOEU,NBNOSO,NBDIM,NBPAR
+      INTEGER NBSIGM,NBDIM,NBPAR
       INTEGER IRET,NPG1,IPOIDS,IVF,IDFDE,JGANO
       INTEGER MXCMEL,NBPGMX,NBRES,I,K,NNO,NNOS,NPG
       INTEGER NBSIG,IGAU,INDIC,INO,NDIM,NDIM1,IADZI,JTAB(3)
@@ -134,15 +134,7 @@ C     --------------------------------------------
 
 C ----     DIMENSION DE L'ELEMENT :
       NDIM = NBDIM(NOMTE)
-      ELREFA = (NDIM.EQ.3) .AND. (NOMTE(3:4).NE.'FO')
-      IF (ELREFA) THEN
-        CALL ELREF4(' ','RIGI',NDIM1,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,
-     &              JGANO)
-      ELSE
-        NNO = NBNOEU(' ')
-        NNOS = NBNOSO(NOMTE)
-      END IF
-
+      CALL ELREF4(' ','RIGI',NDIM1,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
 C ----     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
       NBSIG = NBSIGM(MODELI)
@@ -167,8 +159,8 @@ C     ------------------------------------------------------------------
 
       IF (ICONPG.NE.0) THEN
         CALL TECACH('OOO','PCONTPG',3,JTAB,IRET)
-        NPG = JTAB(3)
-        IF (ELREFA) CALL ASSERT(NPG.EQ.NPG1)
+        NPG1 = JTAB(3)
+        CALL ASSERT(NPG.EQ.NPG1)
 
 
 C ---    AFFECTATION DU VECTEUR DE TRAVAIL SIGMA REPRESENTANT
@@ -242,13 +234,8 @@ C        -------------------------------------------------------------
 
 C ---    CALCUL DES VALEURS AUX NOEUDS :
 C        -------------------------------
-        IF (ELREFA) THEN
-          CALL PPGAN2(JGANO,1,TRIAX,TRIAXN)
-          CALL PPGAN2(JGANO,1,SENDO,SENDON)
-        ELSE
-          CALL PPGANO(NNOS,NPG,1,TRIAX,TRIAXN)
-          CALL PPGANO(NNOS,NPG,1,SENDO,SENDON)
-        END IF
+        CALL PPGAN2(JGANO,1,TRIAX,TRIAXN)
+        CALL PPGAN2(JGANO,1,SENDO,SENDON)
 
 
 C     ------------------------------------------------------------------

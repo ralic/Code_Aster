@@ -1,6 +1,10 @@
-      SUBROUTINE DSQDI2 ( XYZL, DF, DCI, DMF, DFC, DMC, AN, AM )
+      SUBROUTINE DSQDI2 ( NOMTE, XYZL, DF, DCI, DMF, DFC, DMC, AN, AM )
+      IMPLICIT  NONE
+      REAL*8    XYZL(3,*), DF(3,3), DMC(3,2), DFC(3,2), DCI(2,2),
+     +          DMF(3,3), AN(4,12), AM(4,8)
+      CHARACTER*16  NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/07/2001   AUTEUR RATEAU G.RATEAU 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,8 +21,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C TOLE CRP_20
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
 C  
 C  DSQDI2 -- DETERMINATION DES MATRICES AN ET AM QUI SONT TELLES QUE
 C            ALPHA = AN*UN + AM*UM   
@@ -70,27 +74,7 @@ C                                 AUX INCONNUES DE FLEXION UN
 C    AM(4,8)        OUT   R       MATRICE RELIANT LES ROTATIONS ALPHA
 C                                 AUX INCONNUES DE MEMBRANE UM
 C
-C -----  ARGUMENTS
-          REAL*8   XYZL(3,*)
-          REAL*8   DF(3,3), DMC(3,2), DFC(3,2), DCI(2,2),DMF(3,3)
-          REAL*8   AN(4,12), AM(4,8)
-C -----  VARIABLES LOCALES
-          CHARACTER*8   TYPELE
-          CHARACTER*24  DESR
-          REAL*8        QSI,ETA,PETA,META,PQSI,MQSI
-          REAL*8        L(4)
-          REAL*8        X(4) , Y(4)
-          REAL*8        HFT2(2,6), DFCBFA(2,4), HMFT2(2,6)
-          REAL*8        DFCBFB(2,12), DCIDFB(2,12), BFA(3,4) 
-          REAL*8        DMCTBM(2,8), AB(4,12), AW(4,12), DCIDMC(2,8) 
-          REAL*8        BFB(3,12), BM(3,8), AL(4,8)
-          REAL*8        BCB(2,12), BCA(2,4), BCM(2,8)
-          REAL*8        DFCBCA(2,4), DB(2,4), DCB(2,12)
-          REAL*8        AA(4,4), AAI(4,4)
-          LOGICAL       FAUX
-C
 C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -106,6 +90,20 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C -----  VARIABLES LOCALES
+      INTEGER           LZR,I, J, K, IC, INT
+          REAL*8        QSI,ETA,ZERO,UNDEMI,UN,DEUX,TROIS
+          REAL*8        L(4)
+          REAL*8        X(4) , Y(4)
+          REAL*8        HFT2(2,6), DFCBFA(2,4), HMFT2(2,6)
+          REAL*8        DFCBFB(2,12), DCIDFB(2,12), BFA(3,4) 
+          REAL*8        DMCTBM(2,8), AB(4,12), AW(4,12), DCIDMC(2,8) 
+          REAL*8        BFB(3,12), BM(3,8), AL(4,8)
+          REAL*8        BCB(2,12), BCA(2,4), BCM(2,8)
+          REAL*8        DB(2,4), DCB(2,12)
+          REAL*8        AA(4,4), AAI(4,4)
+          LOGICAL       FAUX
+C
 C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
       INTEGER NPG , NC , NNO
       INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE
@@ -144,10 +142,7 @@ C
           AW(I,J) = ZERO
   20  CONTINUE
 C
-      TYPELE = 'MEDSQU4 '
-C
-      DESR = '&INEL.'//TYPELE//'.DESR'
-      CALL JEVETE( DESR ,' ',LZR )
+      CALL JEVETE( '&INEL.'//NOMTE(1:8)//'.DESR' ,' ',LZR )
 C
       CALL GQUAD4 (XYZL , ZR(LZR))
       L(1) = ZR(LZR-1+LCOTE)

@@ -1,12 +1,12 @@
-         SUBROUTINE PLASBE ( NDIM,  TYPMOD, IMAT,  COMP,  CRIT,
-     1                       TIMED, TIMEF, TEMPD, TEMPF, TREF,
+         SUBROUTINE PLASBE ( TYPMOD, IMAT,  COMP,  CRIT,
+     1                       TEMPD, TEMPF, TREF,
      2                       HYDRD, HYDRF, SECHD, SECHF, EPSDT,
      3                       DEPST, SIGD,  VIND,  OPT, ELGEOM, SIGF,
      4                       VINF,  DSDE,  ICOMP, NVI,  IRTETI)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,8 +85,7 @@ C
 C       ================================================================
 C       ARGUMENTS
 C
-C       IN      NDIM    DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
-C               TYPMOD  TYPE DE MODELISATION
+C       IN      TYPMOD  TYPE DE MODELISATION
 C               IMAT    ADRESSE DU MATERIAU CODE
 C               COMP    COMPORTEMENT DE L ELEMENT
 C                       COMP(1) = RELATION DE COMPORTEMENT (CHABOCHE...)
@@ -113,8 +112,6 @@ C                                 N = NOMBRE DE PALIERS
 C               ELGEOM  TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES
 C                       AUX LOIS DE COMPORTEMENT (DIMENSION MAXIMALE
 C                       FIXEE EN DUR)
-C               TIMED   INSTANT T
-C               TIMEF   INSTANT T+DT
 C               TEMPD   TEMPERATURE A T
 C               TEMPF   TEMPERATURE A T+DT
 C               TREF    TEMPERATURE DE REFERENCE
@@ -178,7 +175,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C       ----------------------------------------------------------------
-        INTEGER         IMAT , NDIM   , NDT   , NDI   , NR  , NVI
+        INTEGER         IMAT , NDT   , NDI   , NR  , NVI
         INTEGER         ITMAX, ICOMP
         INTEGER         NMAT , IRTET , IRTETI, NSEUI4
         INTEGER         NSEUIL, NSEUI1, NSEUI2, NSEUI3, NSEUII
@@ -192,7 +189,7 @@ C
 C
         REAL*8          CRIT(*)
         REAL*8          VIND(*),     VINF(*)
-        REAL*8          TIMED,       TIMEF,     TEMPD,    TEMPF  , TREF
+        REAL*8          TEMPD,    TEMPF  , TREF
         REAL*8          HYDRD , HYDRF , SECHD , SECHF , ELGEOM(*)
         REAL*8          EPSD(6),     DEPS(6),   EPSF(6)
         REAL*8          EPSDT(6),    DEPST(6)
@@ -253,12 +250,12 @@ C
 C
 C --    RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
 C
-        CALL LCDEDI ( IMAT,  NMAT,  MATERD, MATERF, TEMPD, TEMPF, TREF,
+        CALL LCDEDI ( NMAT,  MATERD, MATERF, TEMPD, TEMPF, TREF,
      &                DEPST, EPSDT, DEPS,   EPSD )
 C
 C --    RETRAIT ENDOGENNE ET RETRAIT DE DESSICCATION
 C
-        CALL LCDEHY ( IMAT,  NMAT,  MATERD, MATERF, HYDRD,  HYDRF,
+        CALL LCDEHY ( NMAT,  MATERD, MATERF, HYDRD,  HYDRF,
      &                SECHD, SECHF, DEPS,   EPSD )
 C
 C --    SEUIL A T > ETAT ELASTIQUE OU PLASTIQUE A T
@@ -286,7 +283,7 @@ C
 C       CALL LCELAS ( LOI  ,MOD ,  IMAT,  NMAT, MATERD, MATERF, MATCST,
 C    1                NVI,  TEMPD, TEMPF, TIMED,TIMEF,  DEPS,   EPSD,
 C    2                SIGD ,VIND,  SIGE,  VINF )
-        CALL LCELIN ( MOD ,  NMAT, MATERD, MATERF, MATCST,
+        CALL LCELIN ( MOD ,  NMAT, MATERD, MATERF,
      1                NVI,   DEPS,  SIGD, VIND,   SIGE,   VINF )
         VINF(3) = TEMPF
         IF(TEMPF.LT.TMPMX) VINF(3) = TMPMX
@@ -295,8 +292,8 @@ C
 C
 C --    PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
 C
-        CALL BETCVX ( IMAT, NMAT, MATERF, SIGF, VIND, VINF,
-     1                ELGEOM, NVI, TOLER, NSEUIL)
+        CALL BETCVX ( NMAT, MATERF, SIGF, VIND, VINF,
+     1                ELGEOM, NVI, NSEUIL)
 C
         IF ( NSEUIL .GE. 0 ) THEN
 C
@@ -305,13 +302,12 @@ C
            ETATF = 'PLASTIC'
 C
            NSEUI1 = NSEUIL
-           CALL LCPLBE ( LOI,    TOLER, ITMAX,  MOD,  IMAT, NMAT,
-     1                   MATERD, MATERF,NVI,    SIGD, VIND, SIGF,
-     3                   VINF,   ICOMP, ELGEOM, NSEUIL, IRTET)
+           CALL LCPLBE ( TOLER, ITMAX, NMAT, MATERF,NVI, VIND, SIGF,
+     1                   VINF, ELGEOM, NSEUIL, IRTET)
 C           GOTO (1), IRTET
 C
-           CALL BETCVX ( IMAT, NMAT, MATERF,  SIGF, VIND,
-     1                   VINF, ELGEOM, NVI,   TOLER, NSEUIL)
+           CALL BETCVX ( NMAT, MATERF,  SIGF, VIND,
+     1                   VINF, ELGEOM, NVI, NSEUIL)
            NSEUI2 = NSEUIL
 C
            IF ( NSEUI2 .GT. 0 ) THEN
@@ -341,13 +337,12 @@ C
                  NSEUIL = NSEUI2
               ENDIF
               CALL LCEQVN ( NDT  ,  SIGE , SIGF )
-              CALL LCPLBE ( LOI,    TOLER, ITMAX,  MOD,  IMAT, NMAT,
-     1                      MATERD, MATERF,NVI,    SIGD, VIND, SIGF,
-     3                      VINF,   ICOMP, ELGEOM, NSEUIL, IRTET)
+              CALL LCPLBE ( TOLER, ITMAX, NMAT, MATERF,NVI,VIND,SIGF,
+     1                      VINF, ELGEOM, NSEUIL, IRTET)
 C              GOTO (1), IRTET
 C
-              CALL BETCVX ( IMAT, NMAT, MATERF, SIGF, VIND,
-     1                      VINF, ELGEOM, NVI,  TOLER, NSEUIL)
+              CALL BETCVX ( NMAT, MATERF, SIGF, VIND,
+     1                      VINF, ELGEOM, NVI, NSEUIL)
               NSEUI3 = NSEUIL
            ENDIF
 C
@@ -374,13 +369,12 @@ C
                  NSEUIL = NSEUI3
               ENDIF
               CALL LCEQVN ( NDT  ,  SIGE , SIGF )
-              CALL LCPLBE ( LOI,    TOLER, ITMAX,  MOD,  IMAT, NMAT,
-     1                      MATERD, MATERF,NVI,    SIGD, VIND, SIGF,
-     3                      VINF,   ICOMP, ELGEOM, NSEUIL, IRTET)
+              CALL LCPLBE ( TOLER, ITMAX, NMAT, MATERF,NVI, VIND, SIGF,
+     1                      VINF, ELGEOM, NSEUIL, IRTET)
 C              GOTO (1), IRTET
 C
-              CALL BETCVX ( IMAT, NMAT, MATERF, SIGF, VIND,
-     1                      VINF, ELGEOM, NVI,  TOLER, NSEUIL)
+              CALL BETCVX ( NMAT, MATERF, SIGF, VIND,
+     1                      VINF, ELGEOM, NVI, NSEUIL)
               NSEUI4 = NSEUIL
            ENDIF
 C
@@ -405,13 +399,12 @@ C
               NSEUIL = 22
               NSEUI4 = NSEUIL
               CALL LCEQVN ( NDT  ,  SIGE , SIGF )
-              CALL LCPLBE ( LOI,    TOLER, ITMAX,  MOD,  IMAT, NMAT,
-     1                      MATERD, MATERF,NVI,    SIGD, VIND, SIGF,
-     3                      VINF,   ICOMP, ELGEOM, NSEUIL, IRTET)
+              CALL LCPLBE ( TOLER,ITMAX,NMAT,MATERF,NVI,VIND,SIGF,
+     3                      VINF,ELGEOM,NSEUIL,IRTET )
 C             GOTO (1), IRTET
 C
-              CALL BETCVX ( IMAT, NMAT, MATERF, SIGF, VIND,
-     1                      VINF, ELGEOM, NVI,  TOLER, NSEUIL)
+              CALL BETCVX ( NMAT, MATERF, SIGF, VIND,
+     1                      VINF, ELGEOM, NVI, NSEUIL)
            ENDIF
 C
            IF ( NSEUIL .GE. 0 ) THEN
@@ -455,10 +448,9 @@ C    1                    TEMPD, TIMED, DEPS,  EPSD, SIGD ,  VIND, DSDE)
 C   ------> ELASTOPLASTICITE ==> TYPMA = 'VITESSE '
 C   ------> VISCOPLASTICITE  ==> TYPMA = 'COHERENT '==> CALCUL ELASTIQUE
                 IF     ( TYPMA .EQ. 'COHERENT' ) THEN
-                CALL LCJELA ( LOI  , MOD ,  IMAT,  NMAT, MATERD, NVI,
-     1                    TEMPD, TIMED, DEPS,  EPSD, SIGD ,  VIND, DSDE)
+                CALL LCJELA ( LOI  , MOD ,  NMAT, MATERD,VIND, DSDE)
                 ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
-               CALL BETJPL (MOD, IMAT, NMAT, MATERD, SIGD,
+               CALL BETJPL (MOD, NMAT, MATERD, SIGD,
      1                      VIND, ELGEOM, DSDE)
                 ENDIF
             ENDIF
@@ -472,10 +464,9 @@ C    1                    TEMPF, TIMEF, DEPS,  EPSD, SIGF ,  VINF, DSDE)
 C   ------> ELASTOPLASTICITE ==>  TYPMA = 'VITESSE '
 C   ------> VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
                 IF     ( TYPMA .EQ. 'COHERENT' ) THEN
-                CALL LCJPLC ( LOI  , MOD ,  IMAT,  NMAT, MATERD, NVI,
-     1                    TEMPD, TIMED, DEPS,  EPSD, SIGF ,  VINF, DSDE)
+                CALL LCJPLC ( LOI  , MOD ,  NMAT, MATERD, DSDE)
                 ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
-               CALL BETJPL (MOD, IMAT, NMAT, MATERD, SIGF,
+               CALL BETJPL (MOD, NMAT, MATERD, SIGF,
      1                      VINF, ELGEOM, DSDE)
                 ENDIF
             ENDIF
@@ -504,8 +495,8 @@ C
         GOTO 9999
  1      CONTINUE
         IRTETI = 1
-        CALL BETIMP ( IMAT, NMAT, MATERF, TEMPF, SIGF, VIND, VINF,
-     1                ELGEOM, NVI, NSEUI1, NSEUI2, NSEUI3, NSEUI4,
+        CALL BETIMP ( NMAT, MATERF, SIGF, VIND, VINF,
+     1                ELGEOM, NSEUI1, NSEUI2, NSEUI3, NSEUI4,
      2                SIGE, SIGD)
 C
         CALL TECAEL ( IADZI, IAZK24 )

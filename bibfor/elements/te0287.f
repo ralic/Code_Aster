@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,8 +46,9 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER            NNO,KP,NPG1,II,JJ,I,J,K,IMATUU,ITEMPE,NBRES
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER            KD1,KD2,IJ1,IJ2,IDEPL,IFORC,MATER,ITHET,IALPH
+      INTEGER            NNOS,JGANO,NDIM
       PARAMETER         ( NBRES = 2 )
 C
       REAL*8             VALRES(NBRES),BIDON(7),BIDON1(7),TGD(2)
@@ -55,24 +56,11 @@ C
       REAL*8             XG,YG,CP1,CP2,CP3,DP1,DP2,DP3,TPG,VFI,VFJ
       REAL*8             A11,A12,A21,A22,A,AAX
 C
-      CHARACTER*24       CARAC, FF
-      CHARACTER*8        NOMRES(NBRES),ELREFE
+      CHARACTER*8        NOMRES(NBRES)
       CHARACTER*2        CODRET(NBRES)
 C ......................................................................
 C
-      CALL ELREF1(ELREFE)
-
-      CARAC = '&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS=IFF
-      IVF   =IPOIDS+NPG1
-      IDFDE =IVF   +NPG1*NNO
-      IDFDK =IDFDE +NPG1*NNO
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
 C
@@ -97,8 +85,7 @@ C
 C
       DO 101 KP=1,NPG1
         K=(KP-1)*NNO
-        CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                ZR(IGEOM),DFDX,DFDY,POIDS )
+        CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
         R   = 0.D0
         XG  = 0.D0
         YG  = 0.D0

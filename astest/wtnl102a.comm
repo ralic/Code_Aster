@@ -1,5 +1,5 @@
 
-# MODIF  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/02/2004   AUTEUR GRANET S.GRANET 
 # TITRE  - COUPLE TH ANALYTIQUE  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -101,15 +101,11 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=1.E7,
                                    ALPHA=0.0,
                                    CP=1.0,
                                    VISC=UN,
-                                   D_VISC_TEMP=ZERO,
-                                   LAMBDA=LAMBDA,
-                                   D_LAMBDA_TEMP=ZERO,),
+                                   D_VISC_TEMP=ZERO,),
                        THM_GAZ=_F(MASS_MOL=0.02896,
                                   CP=1.0,
                                   VISC=BIDON,
-                                  D_VISC_TEMP=BIDON,
-                                  LAMBDA=LAMBDA,
-                                  D_LAMBDA_TEMP=ZERO,),
+                                  D_VISC_TEMP=BIDON,),
                        THM_VAPE_GAZ=_F(MASS_MOL=0.017999999999999999,
                                        CP=1.0,
                                        VISC=BIDON,
@@ -134,11 +130,7 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=1.E7,
                                     PERM_GAZ=BIDON,
                                     D_PERM_SATU_GAZ=BIDON,
                                     D_PERM_PRES_GAZ=BIDON,
-                                    FICK=BIDON,
-                                    D_FICK_TEMP=BIDON,
-                                    D_FICK_GAZ_PRES=BIDON,
-                                    LAMBDA=LAMBDA,
-                                    D_LAMBDA_TEMP=ZERO,),);
+                                    LAMB_T=LAMBDA,),);
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
@@ -159,7 +151,7 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
                     CHAM_MATER=CHMAT0,
                     EXCIT=_F(CHARGE=CHAR,),
                     COMP_INCR=_F(RELATION='KIT_THM',
-                                 RELATION_KIT=('ELAS','LIQU_SATU','THER_HOMO','HYDR_UTIL'),),
+                                 RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),),
                     ETAT_INIT=_F(DEPL=PINIT,),
                     INCREMENT=_F(LIST_INST=LI,
                                  NUME_INST_FIN=10,),

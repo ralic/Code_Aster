@@ -4,7 +4,7 @@
       CHARACTER*(*)      TRANGE, NOMRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/03/2003   AUTEUR BOYERE E.BOYERE 
+C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C
      +            ZK8(IDNINT),
      +            NOMRES )
       ELSE
-      CALL STATIM(NBCHOC,NBPT,ZR(IDINST),ZR(IDDLOC),ZR(IDFCHO),
+      CALL STATIM(NBCHOC,NBPT,ZR(IDINST),ZR(IDFCHO),
      +            ZR(IDVGLI),ZR(IDVINT),ZR(IDWK1),ZR(IDWK2),ZR(IDWK3),
      +            TDEBUT,TFIN,NBBLOC,OFFSET,TREPOS,NBCLAS,ZK8(IDNCHO),
      +            ZK8(IDNINT),

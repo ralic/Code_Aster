@@ -1,4 +1,4 @@
-# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,7 +115,7 @@ RESU=CALC_ELEM( reuse=RESU,
 FOND=DEFI_FOND_FISS(
                             MAILLAGE=MA,
 
-                              FOND=_F(
+                      FOND_FISS=_F(
                       GROUP_MA = 'LFF'),
                     NORMALE=(0., 0., 1.,),
                     DTAN_ORIG=(1., 0., 0.,),

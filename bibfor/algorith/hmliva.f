@@ -1,14 +1,13 @@
       SUBROUTINE HMLIVA(OPTION,MECA,THER,HYDR,IMATE,NDIM,DIMDEF,DIMCON,
-     +                  NVIMEC,NVITH,YAMEC,YAP1,NBPHA1,YAP2,NBPHA2,
-     +                  YATE,ADDEME,ADCOME,ADVIME,ADVITH,ADDEP1,ADCP11,
-     +                  ADCP12,ADDEP2,ADCP21,ADCP22,ADDETE,ADCOTE,
-     +                  CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,P1,P2,
-     +                  DP1,DP2,T,DT,PHI,PVP,H11,H12,H21,RHO11,PHI0,
-     +                  PVP0,P10,P20,T0,SAT,RETCOM,THMC)
+     +                  NVIMEC,NVITH,YAMEC,YATE,ADDEME,ADCOME,
+     +                  ADVITH,ADDEP1,ADCP11,ADCP12,ADDETE,ADCOTE,
+     +                  CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,P1,
+     +                  DP1,T,DT,PHI,PVP,H11,H12,RHO11,PHI0,
+     +                  PVP0,SAT,RETCOM,THMC)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,15 +41,15 @@ C                       = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
 C ======================================================================
       IMPLICIT      NONE
       INTEGER       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,IMATE
-      INTEGER       YAMEC,YAP1,NBPHA1,YAP2,NBPHA2,YATE,RETCOM
-      INTEGER       ADCOME,ADCP11,ADCP12,ADCP21,ADCP22,ADCOTE
-      INTEGER       ADDEME,ADDEP1,ADDEP2,ADDETE,ADVIME,ADVITH
+      INTEGER       YAMEC,YATE,RETCOM
+      INTEGER       ADCOME,ADCP11,ADCP12,ADCOTE
+      INTEGER       ADDEME,ADDEP1,ADDETE,ADVITH
       REAL*8        CONGEM(DIMCON),CONGEP(DIMCON)
       REAL*8        VINTM(NVIMEC+NVITH),VINTP(NVIMEC+NVITH)
       REAL*8        DSDE(DIMCON,DIMDEF)
-      REAL*8        EPSV,DEPSV,P1,DP1,P2,DP2,T,DT
-      REAL*8        PHI,PVP,H11,H12,H21,RHO11
-      REAL*8        PHI0,PVP0,P10,P20,T0
+      REAL*8        EPSV,DEPSV,P1,DP1,T,DT
+      REAL*8        PHI,PVP,H11,H12,RHO11
+      REAL*8        PHI0,PVP0
       REAL*8        BMPH,UMS,SAT2,PHIDS
       CHARACTER*16  OPTION,MECA,THER,HYDR,THMC
 C ======================================================================
@@ -59,7 +58,7 @@ C ======================================================================
       INTEGER      I,IADZI,IAZK24
       REAL*8       SATM,EPSVM,PHIM,RHO11M,RHO12M,PVPM,BIDON,RHO110,DPVP
       REAL*8       DPVPT,DPVPL,YOUNG,NU,BIOT,K0,CS,ALPHA0,ALPLIQ,CLIQ
-      REAL*8       CP11,CP12,SAT,DSATP1,MAMOLV,VARBIO,VARLQ,VARVP
+      REAL*8       CP11,CP12,SAT,DSATP1,MAMOLV,VARBIO,VARLQ,VARVP,EM
       REAL*8       R,RHO0,C0EPS,CSIGM,VARIA,ALP11,ALP12,UMPRHS,RHO12
       CHARACTER*8  NOMAIL
 C ======================================================================
@@ -96,6 +95,7 @@ C ======================================================================
       REAL*8       RBID33, RBID34, RBID35, RBID36, RBID37, RBID38
       REAL*8       RBID39, RBID40, RBID41, RBID42, RBID43
       REAL*8       RBID50, RBID51, RBID52, RBID53, RBID54, RBID55
+      REAL*8       RBID45,RBID46,RBID47,RBID48,RBID49,RBID56,RBID57
       REAL*8       ELAS(NELAS)
       CHARACTER*2  CODRET(NELAS)
       CHARACTER*8  NCRA1(NELAS)
@@ -125,16 +125,14 @@ C =====================================================================
       PVPM = VINTM(ADVITH+2) + PVP0
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
      +             RBID1, RBID2, RBID3, RBID4, RBID5, T, RBID40,
-     +             PVPM-P1+DP1,
-     +             RBID6,
-     +             RBID7, RBID8, RBID9, RBID10, R, RHO0, CSIGM,
-     +             BIOT, SATM, RBID42, RBID43, RBID14, RBID15,
-     +             RBID16,
-     +             RBID17, RBID18, RBID19, RBID20, RBID21, RBID22,
-     +             RBID23, RBID24, RBID25, RHO110, CLIQ, ALPLIQ, CP11,
-     +             RBID26, RBID27, RBID28, RBID29, RBID30, RBID31,
-     +             RBID32, RBID33, RBID34, RBID35, MAMOLV, CP12,
-     +             RBID38, RBID39)
+     +             PVPM-P1+DP1,RBID6,RBID7,RBID8,
+     +             RBID9, RBID10, R, RHO0, CSIGM,BIOT, SATM, RBID42,
+     +             RBID43, RBID14, RBID15, RBID16,RBID17, RBID18,
+     +             RBID19, RBID20, RBID21, RBID22,RBID23, RBID24,
+     +             RBID25, RHO110, CLIQ, ALPLIQ, CP11,RBID26,
+     +             RBID27, RBID28, RBID29, RBID30, RBID31,RBID32,
+     +             RBID33, RBID34, RBID35, MAMOLV, CP12,RBID38,
+     +             RBID39,RBID45,RBID46,RBID47,RBID48,RBID49,EM,RBID57)
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
@@ -148,10 +146,10 @@ C =====================================================================
           CS     = (1.D0-BIOT)/K0
       ELSE
 C =====================================================================
-C --- EN ABSENCE DE MECA ALPHA0 = 0 et 1/KS = 0 -----------------------
+C --- EN ABSENCE DE MECA ALPHA0 = 0 et 1/KS = 0 ou COEF EM. -----------
 C =====================================================================
         ALPHA0 = 0.D0
-        CS     = 0.D0
+        CS     = EM
         BIOT   = PHI0
         PHI    = PHI0
         PHIM   = PHI0
@@ -310,20 +308,16 @@ C =====================================================================
 C --- ON PEUT MAINTENANT CALCULER SAT DANS LE CAS LIQU_VAPE -----------
 C =====================================================================
       CALL THMRCP( 'SATURATI', IMATE, THMC, MECA, HYDR, THER,
-     +             RBID1, RBID2, RBID3, RBID4, RBID5, RBID50,
-     +             PVP-P1,
-     +             RBID41,
-     +             RBID6,
-     +             RBID7, RBID8, RBID9, RBID10, RBID51, RBID52,
-     +             RBID53,
-     +             RBID54, RBID41, SAT, DSATP1, RBID14, RBID15,
-     +             RBID16,
-     +             RBID17, RBID18, RBID19, RBID20, RBID21, RBID22,
-     +             RBID23, RBID24, RBID25, RHO110, RBID53, RBID52,
-     +             RBID51,
-     +             RBID26, RBID27, RBID28, RBID29, RBID30, RBID31,
-     +             RBID32, RBID33, RBID34, RBID35, RBID54, RBID55,
-     +             RBID38, RBID39)
+     +             RBID1, RBID2, RBID3, RBID4, RBID5, RBID50,PVP-P1,
+     +             RBID41,RBID6,RBID7, RBID8,
+     +             RBID9, RBID10, RBID51, RBID52,RBID53,RBID54, RBID41,
+     +             SAT, DSATP1, RBID14, RBID15,RBID16,
+     +             RBID17, RBID18,RBID19, RBID20, RBID21, RBID22,
+     +             RBID23, RBID24,RBID25, RHO110, RBID53, RBID52,
+     +             RBID51,RBID26,RBID27, RBID28, RBID29, RBID30, 
+     +             RBID31,RBID32,RBID33, RBID34, RBID35, RBID54, 
+     +             RBID55,RBID38, RBID39,RBID45,RBID46,RBID47,RBID48,
+     +             RBID49,RBID56,RBID57)
 C =====================================================================
 C --- RECUPERATION DE LA VARIABLE INTERNE SAT A L'INSTANT PLUS --------
 C =====================================================================

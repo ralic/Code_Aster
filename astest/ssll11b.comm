@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 09/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE TREILLIS DE BARRES ARTICULEES TRAITE UNIQUEMENT DES LIAISONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -365,14 +365,24 @@ RESULTAT=STNL1,
                          NUME_ORDRE=2
                      )
 
-EFGE1=CALC_CHAM_ELEM(        MODELE=MOD,
-                              CARA_ELEM=CAREL,
-                             CHAM_MATER=CHMAT,
-                                   DEPL=DEPL1,EXCIT=(
-                                  _F(  CHARGE = CHARGE1),
-                                        _F(  CHARGE = CHARGE2)),
-                                 OPTION='EFGE_ELNO_DEPL'
+STL1 = CREA_RESU(OPERATION='AFFE',
+                 TYPE_RESU='EVOL_ELAS',
+                 NOM_CHAM='DEPL',
+                 AFFE=_F(CHAM_GD=DEPL1,
+                         INST=0.,
                          )
+                );
+
+
+STL1=CALC_ELEM(reuse=STL1, RESULTAT=STL1,
+               MODELE=MOD,
+               CARA_ELEM=CAREL,
+               CHAM_MATER=CHMAT,
+               INST=0.,
+               EXCIT=(_F(  CHARGE = CHARGE1),
+                      _F(  CHARGE = CHARGE2)),
+               OPTION='EFGE_ELNO_DEPL'
+                      )
 
 #
 # LA CALCUL STATIQUE (MECA_STATIQUE) DONNE LA SOLUTION DE REFERENCE
@@ -396,26 +406,34 @@ TEST_RESU(CHAM_NO=(   _F(  CHAM_GD = DEPL1,
                         NOEUD = 'C3',
                         NOM_CMP = 'DY',
                         VALE = -6.98771E-05,
-                        REFERENCE = 'AUTRE_ASTER')),CHAM_ELEM=(
-            _F(  CHAM_GD = EFGE1,
+                        REFERENCE = 'AUTRE_ASTER')),RESU=(
+            _F(  RESULTAT = STL1,
+                        INST=0.,
+                        NOM_CHAM='EFGE_ELNO_DEPL',
                         NOM_CMP = 'N',
                         MAILLE = 'CD',
                         NOEUD = 'C3',
                         VALE = 1.22625E+04,
                         REFERENCE = 'AUTRE_ASTER'),
-                      _F(  CHAM_GD = EFGE1,
+                      _F(  RESULTAT = STL1,
+                        INST=0.,
+                        NOM_CHAM='EFGE_ELNO_DEPL',
                         NOM_CMP = 'MFZ',
                         MAILLE = 'CD',
                         NOEUD = 'C3',
                         VALE = 1.93887E+03,
                         REFERENCE = 'AUTRE_ASTER'),
-                      _F(  CHAM_GD = EFGE1,
+                      _F(  RESULTAT = STL1,
+                        INST=0.,
+                        NOM_CHAM='EFGE_ELNO_DEPL',
                         NOM_CMP = 'N',
                         MAILLE = 'BD',
                         NOEUD = 'D4',
                         VALE = -1.64519E+04,
                         REFERENCE = 'AUTRE_ASTER'),
-                      _F(  CHAM_GD = EFGE1,
+                      _F(  RESULTAT = STL1,
+                        INST=0.,
+                        NOM_CHAM='EFGE_ELNO_DEPL',
                         NOM_CMP = 'MFZ',
                         MAILLE = 'BD',
                         NOEUD = 'D4',

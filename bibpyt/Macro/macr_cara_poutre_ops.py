@@ -1,4 +1,4 @@
-#@ MODIF macr_cara_poutre_ops Macro  DATE 28/01/2003   AUTEUR JMBHH01 J.M.PROIX 
+#@ MODIF macr_cara_poutre_ops Macro  DATE 19/01/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,6 +44,11 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
   NUME_DDL        =self.get_cmd('NUME_DDL')
   ASSE_VECTEUR    =self.get_cmd('ASSE_VECTEUR')
   POST_ELEM       =self.get_cmd('POST_ELEM')
+  CALC_ELEM       =self.get_cmd('CALC_ELEM')
+  INTE_MAIL_2D    =self.get_cmd('INTE_MAIL_2D')
+  POST_RELEVE_T   =self.get_cmd('POST_RELEVE_T')
+  IMPR_TABLE      =self.get_cmd('IMPR_TABLE')
+  IMPR_CO         =self.get_cmd('IMPR_CO')
   # La macro compte pour 1 dans la numerotation des commandes
   #self.icmd=1
   self.set_icmd(1)
@@ -56,7 +61,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 #  if GROUP_MA_BORD and GROUP_MA:
 #     if not LIAISON:
 #        ier=ier+1
-#        self.cr.fatal("Avec GROUP_MA, il faut obligatoirement preciser LIAISON, LONGUEUR ET MATERIAU")
+#        self.cr.fatal("<F> <MACR_CARA_POUTRE> Avec GROUP_MA, il faut obligatoirement preciser LIAISON, LONGUEUR ET MATERIAU")
 #        return ier
 #
   __nomlma=LIRE_MAILLAGE(UNITE=UNITE_MAILLAGE,)
@@ -94,12 +99,12 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 # --- =     OU DU  CENTRE DE TORSION/CISAILLEMENT                      =
 # --- =        DES COEFFICIENTS DE CISAILLEMENT                        =
 # --- =     ET DE L INERTIE DE GAUCHISSEMENT                           =
+# --- =        DU RAYON DE TORSION SUR TOUT LE MAILLAGE 
 # --- = ON CREE UN MODELE PLAN 2D THERMIQUE REPRESENTANT LA SECTION    =
 # --- = DE LA POUTRE CAR ON A A RESOUDRE DES E.D.P. AVEC DES LAPLACIENS=
 #     ==================================================================
 
   if GROUP_MA_BORD and not GROUP_MA:
-
 # --- TRANSFORMATION DES GROUP_MA EN GROUP_NO SUR-LESQUELS
 # --- ON POURRA APPLIQUER DES CONDITIONS DE TEMPERATURE IMPOSEE :
 #     ---------------------------------------------------------
@@ -113,6 +118,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
      __nomlma=DEFI_GROUP(reuse=__nomlma,
                          MAILLAGE=__nomlma,
                          **motscles)
+  
 
 
 # --- CREATION D UN MAILLAGE IDENTIQUE AU PREMIER A CECI PRES
@@ -286,6 +292,61 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
                             SOLVEUR=_F(STOP_SINGULIER='NON',),
                            )
 
+# --- CALCUL DU RAYON DE TORSION :
+#     --------------------------
+
+#    CALCUL DU RAYON DE TORSION EXTERNE : rtext
+
+     __tempe1=CALC_ELEM(reuse=__tempe1,
+                       RESULTAT=__tempe1,
+                       MODELE=__nomoth,
+                       CHAM_MATER=__chmath,
+                       TOUT_ORDRE='OUI',
+                       OPTION='FLUX_ELNO_TEMP',
+                      )
+
+     __chem=INTE_MAIL_2D(MAILLAGE=__nomapi,
+                         DEFI_CHEMIN=_F(GROUP_MA=GROUP_MA_BORD),
+                         INFO=2,)
+
+     __flun=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX_NORM',
+                             CHEMIN=__chem,
+                             RESULTAT=__tempe1,
+                             NOM_CHAM='FLUX_ELNO_TEMP',
+                             TRAC_NOR='OUI',
+                             NOM_CMP=('FLUX','FLUY'),
+                             OPERATION='MOYENNE'))
+
+     __m1=abs(__flun['TRAC_NOR',3])
+     __m2=abs(__flun['TRAC_NOR',4])
+     __rtext=max(__m1,__m2)
+     
+ #    CALCUL DU RAYON DE TORSION : rt
+ #    rt = max ( rtext , 2*AIRE(TROU)/L(TROU) )
+ 
+     if args.has_key('GROUP_MA_INTE'):
+       if args['GROUP_MA_INTE'] != None :
+         if type(args['GROUP_MA_INTE'])==types.StringType :
+           l_group_ma_inte=[args['GROUP_MA_INTE'],]
+         else:
+           l_group_ma_inte=args['GROUP_MA_INTE']
+         for i in range(0,len(l_group_ma_inte)):
+           __chem=INTE_MAIL_2D(MAILLAGE=__nomapi,
+                               DEFI_CHEMIN=_F(GROUP_MA=l_group_ma_inte[i]),
+                               INFO=2,)
+           __flun=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX_NORM',
+                                          CHEMIN=__chem,
+                                          RESULTAT=__tempe1,
+                                          NOM_CHAM='FLUX_ELNO_TEMP',
+                                          TRAC_NOR='OUI',
+                                          NOM_CMP=('FLUX','FLUY'),
+                                          OPERATION='MOYENNE'))
+           __m1=(abs(__flun['TRAC_NOR',3])+abs(__flun['TRAC_NOR',4]))/2.
+           if __m1 > __rtext :
+             __rtext=__m1
+
+     __rt=__rtext
+         
 # --- CALCUL DE LA CONSTANTE DE TORSION :
 #     ---------------------------------
 
@@ -295,18 +356,21 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
         if lgmaint != None :
            motscles['CARA_POUTRE']=_F(CARA_GEOM=nomres,
                                    LAPL_PHI=__tempe1,
+                                   RT=__rt,
                                    TOUT='OUI',
                                    OPTION='CARA_TORSION',
                                    GROUP_MA_INTE=args['GROUP_MA_INTE'],)
         else:
            motscles['CARA_POUTRE']=_F(CARA_GEOM=nomres,
-                                   LAPL_PHI=__tempe1,
-                                   TOUT='OUI',
-                                   OPTION='CARA_TORSION',      )
+                                    LAPL_PHI=__tempe1,
+                                    RT=__rt,  
+                                    TOUT='OUI',
+                                    OPTION='CARA_TORSION',      )
      nomres=POST_ELEM(reuse=nomres,
                       MODELE=__nomoth,
                       CHAM_MATER=__chmath,
                       **motscles  )
+ 
 
 # --- CALCUL DES COEFFICIENTS DE CISAILLEMENT ET DES COORDONNEES DU
 # --- CENTRE DE CISAILLEMENT/TORSION :
@@ -320,6 +384,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
                                      LAPL_PHI_Z=__tempe3,
                                      TOUT='OUI',
                                      OPTION='CARA_CISAILLEMENT',),  )
+     
 
 #
 #     ------------------------------------------------------------
@@ -484,10 +549,12 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
                                      TOUT='OUI',
                                      OPTION='CARA_GAUCHI'),  )
 
+     
 #
 #     ==================================================================
 # --- = CALCUL DE LA CONSTANTE DE TORSION SUR CHAQUE GROUPE            =
-# --- =     ET DU  CENTRE DE TORSION/CISAILLEMENT                      =
+# --- =     ET DU RAYON DE TORSION SUR CHAQUE GROUPE                   =
+# --- =        DU  CENTRE DE TORSION/CISAILLEMENT                      =
 # --- =        DES COEFFICIENTS DE CISAILLEMENT                        =
 #     ==================================================================
 #
@@ -512,11 +579,11 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 
      if len(l_group_ma)!=len(l_group_ma_bord):
         ier=ier+1
-        self.cr.fatal("GROUP_MA et GROUP_MA_BORD incoherents")
+        self.cr.fatal("<F> <MACR_CARA_POUTRE> GROUP_MA et GROUP_MA_BORD incoherents")
         return ier
      if args.has_key('NOEUD') and (len(l_group_ma)!=len(l_noeud)):
         ier=ier+1
-        self.cr.fatal("GROUP_MA et NOEUD incoherents")
+        self.cr.fatal("<F> <MACR_CARA_POUTRE> GROUP_MA et NOEUD incoherents")
         return ier
 
      for i in range(0,len(l_group_ma_bord)):
@@ -658,15 +725,71 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
                                CHAM_MATER=__chmath,
                                EXCIT=_F(CHARGE=__chart3, ),
                                SOLVEUR=_F(STOP_SINGULIER='NON',)         )
+        
+# --- CALCUL DU RAYON DE TORSION :
+#     --------------------------
 
+#    CALCUL DU RAYON DE TORSION EXTERNE : rtext
+
+        __tempe1=CALC_ELEM(reuse=__tempe1,
+                            RESULTAT=__tempe1,
+                            MODELE=__nomoth,
+                            CHAM_MATER=__chmath,
+                            TOUT_ORDRE='OUI',
+                            OPTION='FLUX_ELNO_TEMP',
+                           )
+
+        __chem=INTE_MAIL_2D(MAILLAGE=__nomapi,
+                            DEFI_CHEMIN=_F(GROUP_MA=l_group_ma_bord[i]),
+                            INFO=2,)
+
+        __flun=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX_NORM',
+                                       CHEMIN=__chem,
+                                       RESULTAT=__tempe1,
+                                       NOM_CHAM='FLUX_ELNO_TEMP',
+                                       TRAC_NOR='OUI',
+                                       NOM_CMP=('FLUX','FLUY'),
+                                       OPERATION='MOYENNE'))
+
+        __m1=abs(__flun['TRAC_NOR',3])
+        __m2=abs(__flun['TRAC_NOR',4])
+        __rtext=max(__m1,__m2)
+
+#    CALCUL DU RAYON DE TORSION : rt
+#    rt = max ( rtext , 2*AIRE(TROU)/L(TROU) )
+
+        if args.has_key('GROUP_MA_INTE'):
+          if args['GROUP_MA_INTE'] != None :
+            if type(args['GROUP_MA_INTE'])==types.StringType :
+              l_group_ma_inte=[args['GROUP_MA_INTE'],]
+            else:
+              l_group_ma_inte=args['GROUP_MA_INTE']
+            for j in range(0,len(l_group_ma_inte)):
+              __chem=INTE_MAIL_2D(MAILLAGE=__nomapi,
+                                  DEFI_CHEMIN=_F(GROUP_MA=l_group_ma_inte[j]),
+                                  INFO=2,)
+              __flun=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX_NORM',
+                                             CHEMIN=__chem,
+                                             RESULTAT=__tempe1,
+                                             NOM_CHAM='FLUX_ELNO_TEMP',
+                                             TRAC_NOR='OUI',
+                                             NOM_CMP=('FLUX','FLUY'),
+                                             OPERATION='MOYENNE'))        
+              __m1=(abs(__flun['TRAC_NOR',3])+abs(__flun['TRAC_NOR',4]))/2.
+              if __m1 > __rtext :
+                __rtext=__m1
+
+        __rt=__rtext
+                
 # --- CALCUL DE LA CONSTANTE DE TORSION :
 #     ---------------------------------
-
+             
         nomres=POST_ELEM(reuse=nomres,
                          MODELE=__nomoth,
                          CHAM_MATER=__chmath,
                          CARA_POUTRE=_F(CARA_GEOM=nomres,
                                         LAPL_PHI=__tempe1,
+                                        RT=__rt,
                                         GROUP_MA=l_group_ma[i],
                                         OPTION='CARA_TORSION' ),     )
 
@@ -685,6 +808,6 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
                                         MATERIAU=args['MATERIAU'],
                                         LIAISON =args['LIAISON'],
                                         OPTION='CARA_CISAILLEMENT' ),   )
+  IMPR_TABLE(TABLE=nomres)
 
   return ier
-

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 26/01/2004   AUTEUR F1BHHAJ J.ANGLES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,17 +53,24 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
 
          b_fatigue_multi   =BLOC(condition = "TYPE_CALCUL == 'FATIGUE_MULTI'",
                                  fr="Plan critique dans le cas de la fatigue multiaxiale à grand nombre de cycles.",
+           TYPE_CHARGE   =SIMP(statut='o',typ='TXM',into=("PERIODIQUE","NON_PERIODIQUE") ),
            OPTION        =SIMP(statut='o',typ='TXM',into=("DOMA_ELGA","DOMA_NOEUD") ),
            RESULTAT      =SIMP(statut='o',typ=(evol_elas, evol_noli) ),
            CHAM_MATER    =SIMP(statut='o',typ=(cham_mater) ),
-           CRITERE       =SIMP(statut='o',typ='TXM',into=("MATAKE","DANG_VAN") ),
-           METHODE       =SIMP(statut='o',typ='TXM',into=("CERCLE_EXACT",) ),
            GROUP_MA      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**' ),
            MAILLE        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**' ),
            GROUP_NO      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**' ),
            NOEUD         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**' ),
-           b_fati_mult_ma =BLOC(condition = "(GROUP_MA != None or MAILLE != None or GROUP_NO != None or NOEUD != None) and \
-                                              OPTION == 'DOMA_NOEUD'",
+           b_period       =BLOC(condition = "TYPE_CHARGE == 'PERIODIQUE'",
+               CRITERE       =SIMP(statut='o',typ='TXM',into=("MATAKE","DANG_VAN_MODI_AC") ),
+               METHODE       =SIMP(statut='o',typ='TXM',into=("CERCLE_EXACT",) ),
+           ),
+           b_non_period   =BLOC(condition = "TYPE_CHARGE == 'NON_PERIODIQUE'",
+               CRITERE       =SIMP(statut='o',typ='TXM',into=("DOMM_MAXI","DANG_VAN_MODI_AV") ),
+               PROJECTION    =SIMP(statut='o',typ='TXM',into=("UN_AXE", "DEUX_AXES") ),
+               DELTA_OSCI    = SIMP(statut='f',typ='R',defaut= 0.0E+0),  
+           ),
+           b_fati_grmano  =BLOC(condition = "(GROUP_MA != None or MAILLE != None or GROUP_NO != None or NOEUD != None)",
                MODELE        =SIMP(statut='o',typ=modele ),
                MAILLAGE      =SIMP(statut='o',typ=maillage ),
            ),

@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+# MODIF  DATE 04/02/2004   AUTEUR CIBHHPD D.NUNEZ 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE  : PLAQUE STRATIFIEE SOUMISE A 4 CHARGEMETNS ELEMENTAIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -191,21 +191,9 @@ CALC_ELEM(   reuse = RESU1,
 IMPR_RESU ( MODELE=MO,
             RESU =_F( RESULTAT = RESU1,
                       NOEUD = ('N10'),
-                      NOM_CHAM = 'CRIT_ELNO_RUPT',
-                      NOM_CMP = ('CRIL','CRILP',
-                                 'CRIT','CRITP',
-                                 'CRILT','CRITH')
-                      ),
+                      NOM_CHAM = ('SIGM_ELNO_DEPL','CRIT_ELNO_RUPT'),),
            )
 #
-IMPR_RESU ( MODELE=MO,
-            RESU =_F( RESULTAT = RESU1,
-                      NOEUD = ('N10'),
-                      NOM_CHAM = 'SIGM_ELNO_DEPL',
-                      NOM_CMP = ('SIXX','SIYY','SIXY')
-                      ),
-           ),
-
 
 R1S1INF = CALC_ELEM( MODELE=MO,
                      CHAM_MATER=CHAM_MAT,

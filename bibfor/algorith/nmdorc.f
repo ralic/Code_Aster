@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*(*) MODELZ,COMPOZ
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 02/03/2004   AUTEUR JMBHH01 J.M.PROIX 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -53,10 +53,10 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
       PARAMETER (DIMAKI=9)
       PARAMETER (NCMPMA=7+DIMAKI)
-      LOGICAL EXIST,GETEXM
+      LOGICAL EXIST,GETEXM,EXICP,EXI1D
       CHARACTER*8 NOMA,NOMGRD,NOMCMP(NCMPMA),K8B,TYPMCL(2)
       CHARACTER*16 COMP,DEFO,MOCLEF(2),K16BID,NOMCMD,MOCLES(2)
-      CHARACTER*16 VALCMP(NCMPMA),TXCP
+      CHARACTER*16 VALCMP(NCMPMA),TXCP,TX1D
       CHARACTER*19 COMPOR
       CHARACTER*24 LIGRMO,MODELE,MESMAI
       CHARACTER*50 CHAIN1, CHAIN2
@@ -314,6 +314,25 @@ C  POUR COMPORTEMENT KIT_
                   NBVARI = NBVARI + NBVEL(ICOMEL)
                 ENDIF
   120         CONTINUE
+  
+              EXICP = GETEXM(MOCLEF(I),'ALGO_C_PLAN')
+              EXI1D = GETEXM(MOCLEF(I),'ALGO_1D')
+              IF (EXICP) THEN
+                CALL GETVTX(MOCLEF(I),'ALGO_C_PLAN',K,1,1,TXCP,N1)
+                IF (TXCP.EQ.'DEBORST') NBVARI = NBVARI + 4
+              END IF
+              IF (EXI1D) THEN
+                CALL GETVTX(MOCLEF(I),'ALGO_1D',K,1,1,TX1D,N1)
+                IF (TX1D.EQ.'DEBORST') THEN
+                   IF(TXCP.EQ.'DEBORST')THEN
+                      CALL UTMESS('F','NMDORC','1D OU C_PLAN ?')
+                   ELSE
+                      NBVARI = NBVARI + 4
+                      TXCP=TX1D
+                   ENDIF
+                ENDIF
+              END IF
+              
               IF ((COMP(1:6).EQ.'KIT_HM').OR.(COMP(1:7).EQ.'KIT_HHM').
      &         OR.(COMP(1:6).EQ.'KIT_TH')) THEN
                 CALL NMTHMC( COMP, COMEL(1), NCOMEL )
@@ -345,11 +364,24 @@ C  POUR COMPORTEMENT KIT_
               IF (EXIST) THEN
                 CALL GETVIS(MOCLEF(I),COMP,K,1,1,NBVARI,N1)
 
-                EXIST = GETEXM(MOCLEF(I),'ALGO_C_PLAN')
-                IF (EXIST) THEN
-                  CALL GETVTX(MOCLEF(I),'ALGO_C_PLAN',K,1,1,TXCP,N1)
-                  IF (TXCP.EQ.'DEBORST') NBVARI = NBVARI + 4
-                END IF
+                 EXICP = GETEXM(MOCLEF(I),'ALGO_C_PLAN')
+                 EXI1D = GETEXM(MOCLEF(I),'ALGO_1D')
+                 IF (EXICP) THEN
+                   CALL GETVTX(MOCLEF(I),'ALGO_C_PLAN',K,1,1,TXCP,N1)
+                   IF (TXCP.EQ.'DEBORST') NBVARI = NBVARI + 4
+                 END IF
+                 IF (EXI1D) THEN
+                    CALL GETVTX(MOCLEF(I),'ALGO_1D',K,1,1,TX1D,N1)
+                    IF (TX1D.EQ.'DEBORST') THEN
+                    IF(TXCP.EQ.'DEBORST')THEN
+                        CALL UTMESS('F','NMDORC','1D OU C_PLAN ?')
+                    ELSE
+                       NBVARI = NBVARI + 4
+                       TXCP=TX1D
+                    ENDIF
+                 ENDIF
+               END IF
+              
               END IF
             END IF
 

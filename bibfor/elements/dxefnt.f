@@ -1,6 +1,6 @@
       SUBROUTINE DXEFNT(NOMTE,XYZL,PGL,TSUP,TINF,TMOY,SIGT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/02/99   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 18/11/2003   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,7 +104,7 @@ C     --------------------------
 
 
         IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
-     +      NOMTE(1:8).EQ.'MEGRDKT') THEN
+     +      NOMTE(1:8).EQ.'MEGRDKT'  .OR. NOMTE(1:8).EQ.'MEDKTG3 ') THEN
 
           NNO = 3
 
@@ -113,6 +113,7 @@ C      -------------------------------------------------
           CALL GTRIA3(XYZL,ZR(LZR))
 
         ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
+     +           NOMTE(1:8).EQ.'MEDKQG4 ' .OR.
      +           NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
      +           NOMTE(1:8).EQ.'MEQ4QU4 ') THEN
           NNO = 4

@@ -1,7 +1,7 @@
-      SUBROUTINE BSIGMC (MODELI,NNO,NDIM,NBSIG,NPG,NI,DFRDE,DFRDN,
-     +                   DFRDK,POIDS,XYZ,NHARM,SIGMA,BSIGMA)
+      SUBROUTINE BSIGMC ( MODELI, NNO, NDIM, NBSIG, NPG, IPOIDS,
+     +                    IVF, IDFDE, XYZ, NHARM, SIGMA, BSIGMA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/01/96   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,14 +33,9 @@ C    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE
 C                                   A L'ELEMENT
 C    NPG            IN     I        NOMBRE DE POINTS D'INTEGRATION
 C                                   DE L'ELEMENT
-C    NI(1)          IN     R        FONCTIONS DE FORME
-C    DFRDE(1)       IN     R        DERIVEES DES FONCTIONS DE FORME
-C                                   / X SUR L'ELEMENT DE REFERENCE
-C    DFRDN(1)       IN     R        DERIVEES DES FONCTIONS DE FORME
-C                                   / Y SUR L'ELEMENT DE REFERENCE
-C    DFRDK(1)       IN     R        DERIVEES DES FONCTIONS DE FORME
-C                                   / Z SUR L'ELEMENT DE REFERENCE
-C    POIDS(1)       IN     R        POIDS D'INTEGRATION
+C    IVF            IN     I        POINTEUR FONCTIONS DE FORME
+C    IPOIDS         IN     I        POINTEUR POIDS D'INTEGRATION
+C    IDFDE          IN     I        PT DERIVEES DES FONCTIONS DE FORME
 C    XYZ(1)         IN     R        COORDONNEES DES CONNECTIVITES
 C    NHARM          IN     R        NUMERO D'HARMONIQUE
 C    SIGMA(1)       IN     R        CONTRAINTES AUX POINTS D'INTEGRATION
@@ -50,7 +45,6 @@ C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
            CHARACTER*8  MODELI
-           REAL*8       NI(1), DFRDE(1), DFRDN(1), DFRDK(1), POIDS(1)
            REAL*8       XYZ(1), SIGMA(1), BSIGMA(1), NHARM
 C -----  VARIABLES LOCALES
            REAL*8       B(486), JACGAU
@@ -74,8 +68,8 @@ C  --      CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS DU
 C  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION 
 C  --      COURANT : (EPS_1) = (B)*(UN)
 C          ----------------------------
-          CALL BMATMC(IGAU, NBSIG, MODELI, XYZ, NI, DFRDE, DFRDN, 
-     +                DFRDK, POIDS, NNO, NHARM, JACGAU, B)
+          CALL BMATMC ( IGAU, NBSIG, MODELI, XYZ, IPOIDS, IVF, IDFDE,
+     +                  NNO, NHARM, JACGAU, B)
 C
 C  --      CALCUL DU PRODUIT (BT)*(SIGMA)*JACOBIEN*POIDS
 C          ---------------------------------------------

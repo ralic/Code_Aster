@@ -1,7 +1,7 @@
       SUBROUTINE OP0046 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 27/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,21 +47,20 @@ C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'OP0046' )
 C
-      INTEGER IBID, NBID, NH , NBCHRE
+      INTEGER IBID, NBID, NH , NBCHRE , NBCHAR
       INTEGER N1, N4, N5, N7
-      INTEGER IOPT, JOPT, NOPT, IERD, IORDR, NBMAX
+      INTEGER IOPT, JOPT, NOPT, IERD, IORDR, NBMAX , ICH
       INTEGER NCHAR, JCHAR, NUMCHA, NCHA, NPLAN, NPLA
       INTEGER IOCC, NFON, JINF, IAINST
       INTEGER IRET
       INTEGER NBPASE
-      INTEGER DEB
 C
-      REAL*8       TEMPS, TIME , ALPHA, RPLAN, ZERO
+      REAL*8       TEMPS, TIME , ALPHA
       REAL*8 PARMET(30), PARCRI(11), PARCON(5)
 C
       CHARACTER*1  BASE, TYPCOE
       CHARACTER*8  K8B, RESULT, LISTPS, TEMP, NOMODE, NOMA
-      CHARACTER*8  NOMFON, CHAREP, PLAN, MODEDE
+      CHARACTER*8  NOMFON, CHAREP, PLAN, MODEDE , NOMCHA
       CHARACTER*13 INPSCO
       CHARACTER*16 NOSY
       CHARACTER*16 METHOD(6)
@@ -105,10 +104,8 @@ C
       TYPCOE = ' '
       CHAREP = ' '
       K24B = ' '
-      ZERO   = 0.0D0
       ALPHA  = 0.D0
       CALPHA = (0.D0 , 0.D0)
-      RPLAN  = ZERO
       NFON   = 0
 C
 C -- LECTURE DES OPERANDES DE LA COMMANDE
@@ -121,8 +118,28 @@ C
      &             CARCRI, MODEDE, SOLVDE,
      &             NBPASE, K8B, INPSCO, PARCON )
 C
+C -- VERIFICATION QUE LE CHARGEMENT N EST PAS UN CHARGEMENT DE CONTACT
+C
+      CHARGE = LISCHA // '.LCHA'
+      INFOCH = LISCHA // '.INFC'
       FOMULT = LISCHA//'.FCHA'
 C
+      CALL JEEXIN ( CHARGE, IRET )
+      IF ( IRET .NE. 0 ) THEN
+         CALL JEVEUO ( INFOCH, 'L', JINF )
+         CALL JEVEUO ( CHARGE, 'L', JCHAR )
+         NBCHAR = ZI(JINF)
+         DO 9 ICH = 1, NBCHAR
+            NOMCHA = ZK24(JCHAR+ICH-1)(1:8)
+            CALL JEEXIN ( NOMCHA//'.CONTACT.METHCO', IRET )
+            IF ( IRET .NE. 0 )  THEN
+               CALL UTMESS('F',NOMPRO,'CHARGE DE CONTACT NON TRAITEE')
+            ENDIF
+  9      CONTINUE
+      ENDIF
+C
+C ---
+C      
       CALL GETVID(' ','LIST_INST',0,1,1,LISTPS,N4)
       IF (N4.EQ.0) THEN
          CALL GETVR8(' ','INST',0,1,1,TEMPS,N5)
@@ -140,51 +157,17 @@ C
      >              LISTPS, SOLVEU,
      >              NBPASE, INPSCO )
 C
-C ---- CALCUL DES OPTIONS
+C ---- CALCUL DE L'OPTION SIEF_ELGA_DEPL OU RIEN
 C
-      CHARGE = LISCHA//'.LCHA'
-      INFOCH = LISCHA//'.INFC'
       NOMODE = MODELE(1:8)
       LIGREL = NOMODE//'.MODELE'
 C
       CALL DISMOI('F','NOM_MAILLA',NOMODE,'MODELE',IBID,NOMA,IERD)
       CALL DISMOI('F','NB_CHAMP_MAX',RESULT,'RESULTAT',NBMAX,K8B,IERD)
-      CALL GETVTX(' ','OPTION',0,1,0,K8B,N7)
-      NOPT = -N7
-      IF (NOPT.GT.0) CALL UTMESS('A',NOMPRO,
-     &   'LE MOT CLE OPTION SERA SUPPRIME EN VERSION 7.3')
-C
-C-> ON RAJOUTE L'OPTION 'SIEF_ELGA_DEPL' EN PLUS
-      NOPT = NOPT + 1
-      CALL JEEXIN('&&OP0046.OPTION',IER)
-      IF(IER.NE.0) CALL JEDETR ('&&OP0046.OPTION')
-      CALL WKVECT('&&OP0046.OPTION','V V K16',NOPT,JOPT)
-      ZK16(JOPT)= 'SIEF_ELGA_DEPL'
-      CALL GETVTX(' ','OPTION',0,1,NOPT-1,ZK16(JOPT+1),IBID)
-C
+      CALL GETVTX(' ','OPTION',0,1,1,NOSY,N7)
 
-      LSIEF = .TRUE.
-      DEB = 1
-      DO 10 IOPT = 1,NOPT-1
-         IF(ZK16(JOPT+IOPT).EQ.'SANS')  LSIEF = .FALSE.
- 10   CONTINUE
-
-C-> ON TRAITE LE CAS OU IL Y A SEULEMENT L'OPTION = 'SANS'
-         IF(.NOT.LSIEF .AND. NOPT.EQ.2) THEN
-           DO 11 IORDR = 1, NBMAX
-             CALL RSEXCH(RESULT,'DEPL',IORDR,CHAMGD,IRET)
-             IF (IRET.GT.0) GOTO 11
-             IF (IRET.EQ.0) GOTO 9999
-  11       CONTINUE
-C-> ON TRAITE LE CAS OU IL Y A  L'OPTION = 'SANS' ET D'AUTRES OPTIONS
-C   DANS CE CAS ON NE FAIT PAS SIEF_ELGA_DEPL QUI EST EN PREMIERE PLACE
-C   ON COMMENCE A ZK16(JOPT +2)
-         ELSEIF (.NOT.LSIEF.AND. NOPT.GT.2) THEN
-           DEB = 2
-         ENDIF
-C
-C
-
+      IF (NOSY.EQ.'SANS') GO TO 9999
+      
       EXIPOU = .FALSE.
 
       CALL DISMOI('F','EXI_POUX' ,MODELE,'MODELE',IBID,K8B,IERD)
@@ -224,126 +207,38 @@ C     -----------------------------------------------
       ENDIF
       CALL MECHNC (NOMA,' ',0,CHNUMC)
 C
-C     BOUCLE SUR LES OPTIONS DE MECANIQUE :
-C     -----------------------------------
+C     BOUCLE SUR LES OPTIONS DE MECANIQUE : SIEF_ELGA_DEPL OU SANS
+C     ------------------------------------------------------------
       CALL JEVEUO(LISTPS//'           .VALE','L',IAINST)
       EXITIM = .TRUE.
-      DO 55 IOPT = DEB,NOPT
-         NOSY = ZK16(JOPT-1+IOPT)
-         IF (NOSY.EQ.'SANS') GO TO 55
-         DO 13 IORDR = 1,NBMAX
+      DO 13 IORDR = 1,NBMAX
 C
-            IF      ( ZK16(JOPT-1+IOPT) .EQ. 'EFGE_ELNO_DEPL' ) THEN
-              CALL GETVTX(' ','PLAN'        ,0,1,1,PLAN,  NPLAN)
-              IF (NPLAN.NE.0) THEN
-                CALL GETVTX(' ','PLAN',1,1,1,PLAN,NPLA)
-              IF (PLAN.EQ.'MAIL') THEN
-                RPLAN = DBLE(0)
-              ELSEIF (PLAN.EQ.'SUP') THEN
-                RPLAN = DBLE(1)
-              ELSEIF (PLAN.EQ.'INF') THEN
-                RPLAN = DBLE(-1)
-              ELSEIF (PLAN.EQ.'MOY') THEN
-                RPLAN = DBLE(2)
-              ENDIF
-              CHFREQ = '&&OP0046.FREQ'
-              CALL MECACT('V',CHFREQ,'MAILLA',NOMA,'FREQ_R',1,
-     >                    'FREQ',IBID,RPLAN,C16B,K8B)
-              ENDIF
-            ENDIF
+         CALL RSEXCH(RESULT,'DEPL',IORDR,CHAMGD,IRET)
+         IF (IRET.GT.0) GOTO 13
 C
-            IF      ( ZK16(JOPT-1+IOPT) .EQ. 'EQUI_ELGA_EPSI' ) THEN
-            CALL RSEXCH(RESULT,'EPSI_ELGA_DEPL',IORDR,CHEPS,IRET)
-              IF (IRET.GT.0) THEN
-                 CALL UTMESS('A',NOMPRO,
-     >           ' LE CHAMP DE NOM SYMBOLIQUE EPSI_ELGA_DEPL EST'
-     >           // ' OBLIGATOIRE POUR OPTION '//ZK16(JOPT-1+IOPT))
-                   GOTO 13
-              ENDIF
+         CALL RSEXCH(RESULT,NOSY,IORDR,CHAMEL,IRET)
+         CALL MECHAM(NOSY,NOMODE,NCHA,TEMP,CARELE(1:8),NH,
+     >                           CHGEOM,CHCARA,CHHARM,IRET )
+         IF (IRET.NE.0) GOTO 13
+         TIME = ZR(IAINST-1+IORDR)
+         CALL MECHTI(CHGEOM(1:8),TIME,CHTIME)
+         CALL MECHTE(NOMODE,NCHA,TEMP,MATE,EXITIM,TIME,
+     >                                              CHTREF,CHTEMP )
 C
-            ELSE IF ( ZK16(JOPT-1+IOPT) .EQ. 'EQUI_ELNO_EPSI' ) THEN
-            CALL RSEXCH(RESULT,'EPSI_ELNO_DEPL',IORDR,CHEPS,IRET)
-              IF (IRET.GT.0) THEN
-                 CALL UTMESS('A',NOMPRO,
-     >           ' LE CHAMP DE NOM SYMBOLIQUE EPSI_ELNO_DEPL EST'
-     >           // ' OBLIGATOIRE POUR OPTION '//ZK16(JOPT-1+IOPT))
-                   GOTO 13
-              ENDIF
+         IF ( EXIPOU .AND. NFON.NE.0 ) THEN
+           CALL FOINTE('F ',NOMFON,1,'INST',TIME,ALPHA,IER)
+         ENDIF
 C
-            ELSE IF ( ZK16(JOPT-1+IOPT) .EQ. 'EQUI_ELGA_EPME' ) THEN
-            CALL RSEXCH(RESULT,'EPME_ELGA_DEPL',IORDR,CHEPS,IRET)
-              IF (IRET.GT.0) THEN
-                 CALL UTMESS('A',NOMPRO,
-     >           ' LE CHAMP DE NOM SYMBOLIQUE EPME_ELGA_DEPL EST'
-     >           // ' OBLIGATOIRE POUR OPTION '//ZK16(JOPT-1+IOPT))
-                   GOTO 13
-              ENDIF
+         IBID = 0
+         CALL MECALC(NOSY,NOMODE,CHAMGD,CHGEOM,MATE,CHCARA,CHTEMP,
+     >               CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,CHEPS,
+     >               CHFREQ,CHMASS,K24B,CHAREP,TYPCOE,ALPHA,CALPHA,
+     >               K24B,K24B,CHAMEL,LIGREL,BASE,
+     >               K24B,K24B,K24B,K24B,
+     >               K24B, K24B, K8B, IBID, IRET )
 C
-            ELSE IF ( ZK16(JOPT-1+IOPT) .EQ. 'EQUI_ELNO_EPME' ) THEN
-            CALL RSEXCH(RESULT,'EPME_ELNO_DEPL',IORDR,CHEPS,IRET)
-              IF (IRET.GT.0) THEN
-                 CALL UTMESS('A',NOMPRO,
-     >           ' LE CHAMP DE NOM SYMBOLIQUE EPME_ELNO_DEPL EST'
-     >           // ' OBLIGATOIRE POUR OPTION '//ZK16(JOPT-1+IOPT))
-                   GOTO 13
-              ENDIF
-C
-            ELSE IF ( ZK16(JOPT-1+IOPT) .EQ. 'EQUI_ELGA_SIGM' ) THEN
-              CALL RSEXCH(RESULT,'SIEF_ELGA_DEPL',IORDR,CHSIG,IRET)
-                IF (IRET.GT.0) THEN
-                   CALL UTMESS('A',NOMPRO,
-     >              ' LE CHAMP DE NOM SYMBOLIQUE SIEF_ELGA_DEPL EST'
-     >             // ' OBLIGATOIRE POUR OPTION '//ZK16(JOPT-1+IOPT))
-                   GOTO 13
-                ENDIF
-C
-            ELSE IF ( ZK16(JOPT-1+IOPT) .EQ. 'EQUI_ELNO_SIGM' ) THEN
-              CALL RSEXCH(RESULT,'SIGM_ELNO_DEPL',IORDR,CHSIG,IRET)
-                IF (IRET.GT.0) THEN
-                   CALL UTMESS('A',NOMPRO,
-     >              ' LE CHAMP DE NOM SYMBOLIQUE SIGM_ELNO_DEPL EST'
-     >             // ' OBLIGATOIRE POUR OPTION '//ZK16(JOPT-1+IOPT))
-                   GOTO 13
-                ENDIF
-C
-            ELSE IF ( ZK16(JOPT-1+IOPT) .EQ. 'SIEF_ELNO_ELGA' ) THEN
-               CALL RSEXCH(RESULT,'SIEF_ELGA_DEPL',IORDR,CHAMGD,IRET)
-               IF (IRET.GT.0) THEN
-                   CALL UTMESS('A',NOMPRO,
-     >             ' LE CHAMP DE NOM SYMBOLIQUE SIEF_ELGA_DEPL EST'
-     >             // ' OBLIGATOIRE POUR OPTION '//ZK16(JOPT-1+IOPT))
-                   GOTO 13
-               ENDIF
-C
-            ELSE
-               CALL RSEXCH(RESULT,'DEPL',IORDR,CHAMGD,IRET)
-               IF (IRET.GT.0) GOTO 13
-            ENDIF
-C
-            CALL RSEXCH(RESULT,NOSY,IORDR,CHAMEL,IRET)
-            CALL MECHAM(NOSY,NOMODE,NCHA,TEMP,CARELE(1:8),NH,
-     >                              CHGEOM,CHCARA,CHHARM,IRET )
-            IF (IRET.NE.0) GOTO 13
-            TIME = ZR(IAINST-1+IORDR)
-            CALL MECHTI(CHGEOM(1:8),TIME,CHTIME)
-            CALL MECHTE(NOMODE,NCHA,TEMP,MATE,EXITIM,TIME,
-     >                                                 CHTREF,CHTEMP )
-C
-            IF ( EXIPOU .AND. NFON.NE.0 ) THEN
-              CALL FOINTE('F ',NOMFON,1,'INST',TIME,ALPHA,IER)
-            ENDIF
-C
-            IBID = 0
-            CALL MECALC(NOSY,NOMODE,CHAMGD,CHGEOM,MATE,CHCARA,CHTEMP,
-     >                  CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,CHEPS,
-     >                  CHFREQ,CHMASS,K24B,CHAREP,TYPCOE,ALPHA,CALPHA,
-     >                  K24B,K24B,CHAMEL,LIGREL,BASE,
-     >                  K24B,K24B,K24B,K24B,
-     >                  K24B, K24B, K8B, IBID, IRET )
-C
-            CALL RSNOCH(RESULT,NOSY,IORDR,' ')
- 13      CONTINUE
- 55   CONTINUE
+         CALL RSNOCH(RESULT,NOSY,IORDR,' ')
+ 13   CONTINUE
 C
  9999 CONTINUE
 C
@@ -353,6 +248,5 @@ C
       CALL JEDETC('V',RESULT,1)
       CALL JEDETC('V','.CODI',20)
       CALL JEDETC('V','.MATE_CODE',9)
-99999 CONTINUE
       CALL JEDEMA()
       END

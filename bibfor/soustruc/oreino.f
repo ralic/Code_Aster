@@ -7,7 +7,7 @@
       CHARACTER*(*)       CRIT
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF SOUSTRUC  DATE 08/12/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,7 +118,7 @@ C                         NE DEPASSE PAS LA TOLERANCE ---
             V2 = SQRT( V2 )
             IF (IERA.EQ.0) THEN
               CALL UTMESS('A','OREINO',
-     &       'NOEUD ELOIGNES A LA NORMALE AU FOND DE FISSURE')
+     &                        'NOEUD ELOIGNES A LA NORMALE AU SEGMENT')
              IERA = IERA+1
             ENDIF
             CALL JENUNO( JEXNUM(NOMNOE,INOD),NOMN)

@@ -1,9 +1,9 @@
-       SUBROUTINE INSJAC ( MOD, IMAT, NMAT, MATERF, TEMPF,
+       SUBROUTINE INSJAC ( MOD, NMAT, MATERF,
      1                      YF,   DY,   NMOD,  DRDY)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,16 +29,14 @@ C                            ( DFDS  DFDP   (DFDE3) )
 C                            ((DQDS)(DQDP)  (DQDE3) )
 C
 C       IN  MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           TEMPF  :  TEMPERATURE A T+DT
 C           YF     :  VARIABLES A T + DT =  ( SIG  KAPA  (EPS3F) )
 C           DY     :  SOLUTION           =  ( DSIG DP    (DEPS3) )
 C           NMOD   :  DIMENSION DECLAREE DRDY
 C       OUT DRDY   :  JACOBIEN DU SYSTEME NON LINEAIRE
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NDT , NDI , NMAT , NMOD
+        INTEGER         NDT , NDI , NMAT , NMOD
         REAL*8          MUN , UN  , ZERO
         PARAMETER       ( MUN  = -1.D0  )
         PARAMETER       ( UN   = 1.D0   )
@@ -53,7 +51,7 @@ C
         REAL*8          DFDS(6)  , DFDP   ,  DFDE3
         REAL*8          DQDS(6)  , DQDP   ,  DQDE3
 C
-        REAL*8          MATERF(NMAT,2), TEMPF
+        REAL*8          MATERF(NMAT,2)
         REAL*8          DP , LCS, KPIC, HP, TAU , R0 , KRUP
         REAL*8          H1 , H2 , H3 , H4
 C

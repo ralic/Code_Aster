@@ -11,7 +11,7 @@
       CHARACTER*19        NOMT19
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 15/01/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,7 +115,7 @@ C ------------ USURE EN VE
                ENDIF
                VOLUME = VOLOBS(I)
                IF ( VOLUME .GT. R8PREM() ) THEN
-                  CALL MOUVEO ( ARETE, RCARTE, ADEBOB, AFINOB, ANGVA, 
+                  CALL MOUVEO ( ARETE, RCARTE, ADEBOB, AFINOB, 
      &                          ANGARE, AMAXOB, PROFOB, VOLUME, EPAIS )
                   TYPUOB(I) = 3
                ENDIF
@@ -187,7 +187,7 @@ C ------------ USURE EN VE
                ENDIF
                VOLUME = VOLOBS(I)
                IF ( VOLUME .GT. R8PREM() ) THEN
-                  CALL MOUVEO ( ARETE, RCARTE, ADEBOB, AFINOB, ANGVA, 
+                  CALL MOUVEO ( ARETE, RCARTE, ADEBOB, AFINOB, 
      &                          ANGARE, AMAXOB, PROFOB, VOLUME, EPAIS )
                   TYPUOB(I) = 3
                ENDIF
@@ -210,7 +210,7 @@ C ------------ USURE EN VE 2E ENCOCHE
                ENDIF
                VOLUME = VOLOBS(I)
                IF ( VOLUME .GT. R8PREM() ) THEN
-                  CALL MOUVEO ( ARETE, RCARTE, ADEBOB, AFINOB, ANGVA, 
+                  CALL MOUVEO ( ARETE, RCARTE, ADEBOB, AFINOB, 
      &                          ANGARE, AMAXOB, PROFOB, VOLUME, EPAIS )
                   TYPUOB(I) = 5
                ENDIF

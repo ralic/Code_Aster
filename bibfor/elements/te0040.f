@@ -1,6 +1,8 @@
-      SUBROUTINE TE0040(OPTION,NOMTE)
+      SUBROUTINE TE0040 ( OPTION, NOMTE )
+      IMPLICIT NONE
+       CHARACTER*16       OPTION, NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/06/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+C MODIF ELEMENTS  DATE 04/02/2004   AUTEUR CIBHHPD D.NUNEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,49 +19,27 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-      IMPLICIT NONE
 C
 C     BUT:       POUR LES COQUES EN MATERIAUX COMPOSITES, CALCUL DES
-C                6 CRITERES DE RUPTURE AUX NOEUDS DANS UNE COUCHE
+C                4 CRITERES DE RUPTURE AUX NOEUDS DANS UNE COUCHE
 C               
 C                IL FAUT AU PREALABLE FAIRE SIGM_ELNO_DEPL 
 C
 C     DANS CET ORDRE :
 C
-C     LES 6 CRITERES  :
-C       - CRIL: SUIVANT L EN TRACTION (1ERE DIR. D'ORTH ) (= 1 VALEUR)
-C       - CRILP: SUIVANT L EN COMPRESSION                 (= 1 VALEUR)
-C       - CRIT: SUIVANT T EN TRACTION (2EME DIR. D'ORTH ) (= 1 VALEUR)
-C       - CRITP: SUIVANT T EN TRACTION                    (= 1 VALEUR)
-C       - CRILT: EN CISAILLEMENT SUIVANT LT              (= 1 VALEUR)
-C       - CRITH: CRITERE DE TSAI-HILL                    (= 1 VALEUR)
+C     LES 4 CRITERES  :
+C       - CRIL: SUIVANT LA 1ERE DIR. D'ORTH      (= 1 VALEUR)
+C       - CRIT: SUIVANT LA 2EME DIR. D'ORTH      (= 1 VALEUR)
+C       - CRILT: EN CISAILLEMENT SUIVANT LT      (= 1 VALEUR)
+C       - CRITH: CRITERE DE TSAI-HILL            (= 1 VALEUR)
 C
 C     OPTION  :  'CRIT_ELNO_RUPT'
 C
 C     ENTREES :  OPTION : OPTION DE CALCUL
 C                NOMTE  : NOM DU TYPE ELEMENT
-
-       INTEGER            ICONT,IMATE,ICRIT,JNUMCO
-       INTEGER            JIN,INO,J,I,ICOU,I1
-       INTEGER            NNO,NNOMAX,MATCOD ,IBID 
-       PARAMETER         (NNOMAX = 27 )
-       REAL*8             R8BID,ZERO
-       REAL*8             SIGL,SIGT,SIGLT
-       REAL*8             CRIL(NNOMAX),CRIT(NNOMAX),CRILT(NNOMAX)
-       REAL*8             CRILP(NNOMAX),CRITP(NNOMAX)
-       REAL*8             CRITH(NNOMAX)
-       REAL*8             XT,XC,YT,YC,SLT
-       REAL*8             LIM(5)
-       CHARACTER*2        CODRET(27),VAL
-       CHARACTER*3        NUM
-       CHARACTER*8        ELREFE,NOMRES(27)
-       CHARACTER*10       PHENOM
-       CHARACTER*16       NOMTE,OPTION
-       CHARACTER*24       CHCTE
-
 C
+C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
        INTEGER            ZI
        COMMON  / IVARJE / ZI(1)
        REAL*8             ZR
@@ -75,16 +55,29 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
        CHARACTER*80                                              ZK80
        COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-C
-       ZERO = 0.D0
-C      
-       CALL ELREF1(ELREFE)
+
+      INTEGER      NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO
+       INTEGER            ICONT,IMATE,ICRIT,JNUMCO, JGEOM
+       INTEGER            INO,J,I,ICOU,NNOMAX,MATCOD
+       PARAMETER         (NNOMAX = 27 )
+       REAL*8             R8BID,ZERO
+       REAL*8             SIGL(NNOMAX),SIGT(NNOMAX),SIGLT(NNOMAX)
+       REAL*8             CRIL(NNOMAX),CRIT(NNOMAX),CRILT(NNOMAX)
+       REAL*8             CRILP(NNOMAX),CRITP(NNOMAX)
+       REAL*8             CRITH(NNOMAX)
+       REAL*8             XT,XC,YT,YC,SLT,X,Y, ORIEN , ORIENR
+       REAL*8             LIM(5),PGL(2,2),SIGM(24),VAR(2),PI,R8PI
+       CHARACTER*2        CODRET(27),VAL
+       CHARACTER*3        NUM
+       CHARACTER*8        NOMRES(27)
+       CHARACTER*10       PHENOM
+C     ------------------------------------------------------------------
 C
        CALL JEMARQ()
 C
-       CHCTE = '&INEL.'//ELREFE//'.DESI'
-       CALL JEVETE(CHCTE,'L',JIN)
-       NNO   = ZI(JIN)
+       ZERO = 0.D0
+C
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
 C
 C --- RECUPERATION DU CHAMP DE CONTRAINTES AUX NOEUDS DE L'ELEMENT
 C --- POUR LEQUEL ON VA CALCULER LES SIX CRITERES DE RUPTURE .
@@ -95,9 +88,10 @@ C     -------------------------------------------------
        CALL JEVECH('PMATERC','L',IMATE)
        CALL JEVECH('PCRITER','E',ICRIT)
        CALL JEVECH('PNUMCOR','L',JNUMCO)
+       CALL JEVECH('PGEOMER','L',JGEOM)
        ICOU=ZI(JNUMCO)
        MATCOD = ZI(IMATE)
-
+      
 C --- RECUPERATION DES VALEURS LIMITES DE CONTRAINTE
 C     ----------------------------------------------
 
@@ -126,54 +120,84 @@ C     LIMITE EN COMPRESSION SUIVANT T
        YC=LIM(4)
       
 C     LIMITE EN CISAILLEMENT SUIVANT LT 
-       SLT=LIM(5)    
-                       
+       SLT=LIM(5)
+       
+C --- RECUPERATION DE L'ORIENTATION DE LA COUCHE
+C     -------------------------------------------
+       DO 12 J = 1,2
+         CALL CODENT(J,'G',VAL)
+         NOMRES(J) = 'C'//NUM//'_V'//VAL
+   12  CONTINUE
+ 
+       CALL RCVALA(MATCOD,'ELAS_COQMU',0,' ',R8BID,2,NOMRES,VAR,
+     &            CODRET,'FM')
+     
+       ORIEN= VAR(2) 
+       PI=R8PI()
+       ORIENR = (ORIEN*PI)/180
+ 
+C --- PASSAGE DES CONTRAINTES DU REPERE DE LA COQUE
+C     AU REPERE LOCAL DE LA COUCHE DEFINI PAR ORIEN
+C     -------------------------------------------------------
+       
+       PGL(1,1) = COS(ORIENR)
+       PGL(2,1) =-SIN(ORIENR)
+       PGL(1,2) = SIN(ORIENR)
+       PGL(2,2) = COS(ORIENR)
+       
+       CALL DXSIRO(NNO,PGL,ZR(ICONT),SIGM)
       
 C --- CALCUL DES CRITERES AUX NOEUDS :
 C     -----------------------------------
        DO 10 INO = 1,NNO
-         SIGL  = ZR(ICONT + (INO-1)*6)
-         SIGT  = ZR(ICONT +1 + (INO-1)*6)
-         SIGLT = ZR(ICONT +3 + (INO-1)*6)
-C 
+         SIGL(INO)  = SIGM(1 + (INO-1)*6)
+         SIGT(INO)  = SIGM(2 + (INO-1)*6)
+         SIGLT(INO) = SIGM(4 + (INO-1)*6)
+C
+
+        IF (SIGL(INO).GT.ZERO) THEN 
+              X=XT
+        ELSE 
+              X=XC
+        ENDIF
+        IF (SIGT(INO).GT.ZERO) THEN 
+              Y=YT
+        ELSE 
+              Y=YC
+        ENDIF
+
 C--- PREMIER CRITERE        
-         IF (SIGL.GT.ZERO) THEN
-            CRIL(INO) = SIGL/XT
-            CRILP(INO) = ZERO
-         ELSE
-            CRIL(INO) = ZERO
-            CRILP(INO) = SIGL/XC
-         ENDIF
+
+        CRIL(INO) = SIGL(INO)/X
 C
 C--- DEUXIEME CRITERE
-         IF (SIGT.GT.ZERO) THEN
-            CRIT(INO) = SIGT/YT
-            CRITP(INO) = ZERO
-         ELSE
-            CRIT(INO) = ZERO
-            CRITP(INO) = SIGT/YC
-         ENDIF
+
+        CRIT(INO) = SIGT(INO)/Y
 C
 C--- TROISIEME CRITERE         
-         CRILT(INO) = SIGLT/SLT
+        CRILT(INO) = (ABS(SIGLT(INO)))/SLT
 C
 C--- QUATRIEME CRITERE
-         CRITH(INO) =   (SIGL*SIGL)/(XT*XT)
-     &                - (SIGL*SIGT)/(XT*XT)
-     &                + (SIGT*SIGT)/(YT*YT)
-     &                + (SIGLT*SIGLT)/(SLT*SLT)             
+
+         CRITH(INO) =   (SIGL(INO)*SIGL(INO))/(X*X)
+     &                - (SIGL(INO)*SIGT(INO))/(X*X)
+     &                + (SIGT(INO)*SIGT(INO))/(Y*Y)
+     &                + (SIGLT(INO)*SIGLT(INO))/(SLT*SLT) 
+           
 C           
 10     CONTINUE
 C
 C ---- STOCKAGE :
 C      --------
        DO 20 INO = 1,NNO
-              ZR(ICRIT+(INO-1)*6) = CRIL(INO)
-              ZR(ICRIT+1+(INO-1)*6) = CRILP(INO) 
-              ZR(ICRIT+2+(INO-1)*6) = CRIT(INO)
-              ZR(ICRIT+3+(INO-1)*6) = CRITP(INO)
-              ZR(ICRIT+4+(INO-1)*6) = CRILT(INO)
-              ZR(ICRIT+5+(INO-1)*6) = CRITH(INO)
+              ZR(ICRIT+(INO-1)*7) = SIGL(INO)
+              ZR(ICRIT+1+(INO-1)*7) = SIGT(INO) 
+              ZR(ICRIT+2+(INO-1)*7) = SIGLT(INO)
+              ZR(ICRIT+3+(INO-1)*7) = CRIL(INO)
+              ZR(ICRIT+4+(INO-1)*7) = CRIT(INO) 
+              ZR(ICRIT+5+(INO-1)*7) = CRILT(INO)
+              ZR(ICRIT+6+(INO-1)*7) = CRITH(INO)
+
 20     CONTINUE
 C
        CALL JEDEMA()

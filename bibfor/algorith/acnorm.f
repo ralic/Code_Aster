@@ -1,7 +1,7 @@
       SUBROUTINE ACNORM(NDIM,NNOCO,NOMA,NEWGEO,RESOCO,DEFICO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -180,7 +180,7 @@ C   ---   CALCUL DES NORMALES
               XNORM(3) = 0.D0
             ELSE IF ((NDIM.EQ.3) .AND. ((NUTYP.EQ.NTSEG2).OR.
      &               (NUTYP.EQ.NTSEG3))) THEN
-              CALL CANORM(COORMA,VECSEG,N1,NDIM,NUTYP,1)
+              CALL CANORM(COORMA,VECSEG,NDIM,NUTYP,1)
               XNORM(1) = XNORM(1) + VECSEG(2)*XTANG(3) -
      &                   VECSEG(3)*XTANG(2)
               XNORM(2) = XNORM(2) + VECSEG(3)*XTANG(1) -
@@ -188,7 +188,7 @@ C   ---   CALCUL DES NORMALES
               XNORM(3) = XNORM(3) + VECSEG(1)*XTANG(2) -
      &                   VECSEG(2)*XTANG(1)
             ELSE
-              CALL CANORM(COORMA,VECNOR,N1,NDIM,NUTYP,1)
+              CALL CANORM(COORMA,VECNOR,NDIM,NUTYP,1)
               DO 30 K = 1,3
                 XNORM(K) = XNORM(K) + VECNOR(K)
    30         CONTINUE

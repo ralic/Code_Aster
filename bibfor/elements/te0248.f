@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/01/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 25/03/2004   AUTEUR OUGLOVA A.OUGLOVA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,28 +53,29 @@ C ***************** FIN COMMUNS NORMALISES JEVEUX **********************
 
 C *************** DECLARATION DES VARIABLES LOCALES ********************
 
-      INTEGER NEQ,NBT,NVAMAX,IMATE,IGEOM,IORIE,ITREF,ISECT,IINSTM
+      INTEGER NEQ,NBT,NVAMAX,IMATE,IGEOM,IORIE,ITREF,ISECT,IINSTM,IVARMP
       INTEGER IINSTP,IDEPLM,IDEPLP,ICONTM,IVARIM,ITEMPM,ITEMPP,ICOMPO
       INTEGER ICARCR,IMATUU,IVECTU,ICONTP,NNO,NC,IVARIP,JCRET,NBVARI
+      INTEGER JTAB(7),IRET
       PARAMETER (NEQ=6,NBT=21,NVAMAX=8)
       CHARACTER*16 COMPEL
 
 C   CONSTANTES POUR INTO MENEGOTTO
 
-      INTEGER NCSTPM
+      INTEGER NCSTPM,CODRET
       PARAMETER (NCSTPM=13)
       REAL*8 CSTPM(NCSTPM)
 
-      REAL*8 E,ALPHA
+      REAL*8 E,ALPHA,EPSM
       REAL*8 A,XLONG0,XLONGM,TREF,SIGY,DSDE
       REAL*8 PGL(3,3)
       REAL*8 DUL(NEQ),UML(NEQ),DLONG
-      REAL*8 KLV(NBT),VIP(NVAMAX),VIM(NVAMAX)
+      REAL*8 KLV(NBT),VIP(NVAMAX),VIM(NVAMAX),CORRM,CORRP
       REAL*8 TEMPM,TEMPP,EFFNOM,EFFNOP,FONO(NEQ)
       REAL*8 W(6),ANG1(3),XD(3),MATUU(21),VECTU(6)
-      REAL*8 DEPLM(6),DEPLP(6),DSIDEP(6,6)
-      REAL*8 SIGP(6),SIGM(6),EPS(6),DEPS(6),R8MIEM
-      INTEGER I,J,IK
+      REAL*8 DEPLM(6),DEPLP(6),DSIDEP(6,6),SIGX,EPSX,DEPX,SIGXP
+      REAL*8 SIGP(6),SIGM(6),EPS(6),DEPS(6),R8MIEM,ETAN,R8VIDE
+      INTEGER I,J,IK,ICORRM,ICORRP
 
       LOGICAL VECTEU
 
@@ -84,6 +85,7 @@ C ********************* DEBUT DE LA SUBROUTINE *************************
 
       OPTION = OPTIOZ
       NOMTE = NOMTEZ
+      CODRET=0
 C --- PARAMETRES EN ENTREE
 
       CALL JEVECH('PMATERC','L',IMATE)
@@ -102,14 +104,19 @@ C --- PARAMETRES EN ENTREE
       CALL JEVECH('PCOMPOR','L',ICOMPO)
       CALL JEVECH('PCARCRI','L',ICARCR)
 
+      CALL JEVECH('PCORRMR','L',ICORRM)
+      CORRM = ZR(ICORRM)
+      CALL JEVECH('PCORRPR','L',ICORRP)
+      CORRP = ZR(ICORRP)
+
 C --- PARAMETRES EN SORTIE
 
 
-      IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
+      IF (OPTION(1:10).EQ.'RIGI_MECA_') THEN
         CALL JEVECH('PMATUUR','E',IMATUU)
         IVARIP = IVARIM
         ICONTP = ICONTM
-      ELSE IF (OPTION.EQ.'FULL_MECA') THEN
+      ELSE IF (OPTION(1:9).EQ.'FULL_MECA') THEN
         CALL JEVECH('PMATUUR','E',IMATUU)
         CALL JEVECH('PVECTUR','E',IVECTU)
         CALL JEVECH('PCONTPR','E',ICONTP)
@@ -240,20 +247,22 @@ C     ---------------------------------------------------
       IF (ZK16(ICOMPO).EQ.'ELAS' .OR.
      &    ZK16(ICOMPO).EQ.'VMIS_ISOT_LINE' .OR.
      &    ZK16(ICOMPO).EQ.'VMIS_ISOT_TRAC' .OR.
+     &    ZK16(ICOMPO).EQ.'CORR_ACIER' .OR.     
      &    ZK16(ICOMPO).EQ.'VMIS_CINE_LINE') THEN
 C     ---------------------------------------------------
 
 C --- RECUPERATION DES CARACTERISTIQUES DU MATERIAU
 
+        EPSM = (UML(4)-UML(1))/XLONG0
         CALL NMICLB(OPTION,ZK16(ICOMPO),ZI(IMATE),XLONG0,A,DLONG,EFFNOM,
      &              TEMPM,TEMPP,TREF,ZR(IVARIM),EFFNOP,ZR(IVARIP),KLV,
-     &              FONO)
+     &              FONO,EPSM,CORRM,CORRP)
 
-        IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
+        IF (OPTION(1:10).EQ.'RIGI_MECA_') THEN
           CALL UTPSLG(NNO,NC,PGL,KLV,MATUU)
         ELSE
           ZR(ICONTP) = EFFNOP
-          IF (OPTION.EQ.'FULL_MECA') THEN
+          IF (OPTION(1:9).EQ.'FULL_MECA') THEN
             CALL UTPSLG(NNO,NC,PGL,KLV,MATUU)
           END IF
           CALL UTPVLG(NNO,NC,PGL,FONO,VECTU)
@@ -272,10 +281,10 @@ C        RECUPERATION DES CARACTERISTIQUES DU MATERIAU
      &              DLONG,EFFNOM,TEMPM,TEMPP,TREF,ZR(IVARIM),ZR(ICONTP),
      &              ZR(IVARIP),KLV,FONO)
 
-        IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
+        IF (OPTION(1:10).EQ.'RIGI_MECA_') THEN
           CALL UTPSLG(NNO,NC,PGL,KLV,MATUU)
         ELSE
-          IF (OPTION.EQ.'FULL_MECA') THEN
+          IF (OPTION(1:9).EQ.'FULL_MECA') THEN
             CALL UTPSLG(NNO,NC,PGL,KLV,MATUU)
           END IF
           CALL UTPVLG(NNO,NC,PGL,FONO,VECTU)
@@ -298,15 +307,15 @@ C        RECUPERATION DES CARACTERISTIQUES DU MATERIAU
         VIM(6) = ZR(IVARIM+5)
         VIM(7) = ZR(IVARIM+6)
         VIM(8) = ZR(IVARIM+7)
-        CALL NMPIME(OPTION,ZK16(ICOMPO),ALPHA,TREF,XLONG0,A,XLONGM,
+        CALL NMPIME(OPTION,ALPHA,XLONG0,A,XLONGM,
      &              DLONG,NCSTPM,CSTPM,VIM,EFFNOM,TEMPM,TEMPP,VIP,
      &              EFFNOP,KLV,FONO)
 
-        IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
+        IF (OPTION(1:10).EQ.'RIGI_MECA_') THEN
           CALL UTPSLG(NNO,NC,PGL,KLV,MATUU)
         ELSE
           ZR(ICONTP) = EFFNOP
-          IF (OPTION.EQ.'FULL_MECA') THEN
+          IF (OPTION(1:9).EQ.'FULL_MECA') THEN
             CALL UTPSLG(NNO,NC,PGL,KLV,MATUU)
           END IF
           ZR(IVARIP) = VIP(1)
@@ -326,80 +335,58 @@ C     ------------
 
         CALL R8INIR(NEQ,0.D0,FONO,1)
         CALL R8INIR(NBT,0.D0,KLV,1)
-C RECUP DE E ET ALPHA
-        COMPEL = 'ELAS'
-        CALL NMMABA(ZI(IMATE),COMPEL,E,ALPHA,DSDE,SIGY,NCSTPM,CSTPM)
-
-        SIGM(1) = EFFNOM/A
-        SIGM(2) = 0.D0
-        SIGM(3) = 0.D0
-        SIGM(4) = 0.D0
-        SIGM(5) = 0.D0
-        SIGM(6) = 0.D0
-
-        EPS(1) = (UML(4)-UML(1))/XLONG0
-        EPS(2) = 0.D0
-        EPS(3) = 0.D0
-        EPS(4) = 0.D0
-        EPS(5) = 0.D0
-        EPS(6) = 0.D0
-
-        DEPS(1) = DLONG/XLONG0
-        DEPS(2) = - (EPS(1)+DEPS(1))
-C             VALEUR FORFAITAIRE POUR LE CAS OU EPS=DEPS=0
-        IF (ABS(DEPS(2)).LE.R8MIEM()) THEN
-          IF (ABS(TEMPP-TEMPM).LE.R8MIEM()) THEN
-            DEPS(2) = -0.5D0*SIGM(1)/E
-          ELSE
-            DEPS(2) = -0.5D0*ALPHA* (TEMPP-TEMPM)
-          END IF
-        END IF
-        DEPS(3) = 0.D0
-        DEPS(4) = 0.D0
-        DEPS(5) = 0.D0
-        DEPS(6) = 0.D0
-
-        CALL COMP1D(OPTION,SIGM,EPS,DEPS,TREF,TEMPM,TEMPP,ZR(IVARIM),
-     &              ZR(IVARIP),SIGP,DSIDEP)
-
         VECTEU = ((OPTION(1:9).EQ.'FULL_MECA') .OR.
-     &           (OPTION(1:9).EQ.'RAPH_MECA'))
+     &              (OPTION(1:9).EQ.'RAPH_MECA'))
+     
+     
+        CALL JEVECH ('PCOMPOR','L',ICOMPO)
+        IF ((ZK16(ICOMPO-1+5)(1:7).NE.'DEBORST').AND.
+     &      (ZK16(ICOMPO)(1:4).NE.'SANS')) THEN
+          CALL UTMESS('F','BARRES','UTILISER ALGO_1D="DEBORST"'//
+     &     ' SOUS COMP_INCR POUR LE COMPORTEMENT '//ZK16(ICOMPO))
+        ELSE
 
-        IF (VECTEU) THEN
+            SIGX=EFFNOM/A
+            EPSX=(UML(4)-UML(1))/XLONG0
+            DEPX=DLONG/XLONG0
+            
+            IF (VECTEU) THEN
+               CALL TECACH('OON','PVARIMP',7,JTAB,IRET)
+               NBVARI = MAX(JTAB(6),1)*JTAB(7)
+               IVARMP=JTAB(1)       
+               CALL R8COPY(NBVARI,ZR(IVARMP),1,ZR(IVARIP),1)
+            ENDIF
+            
+          CALL COMP1D(OPTION,SIGX,EPSX,DEPX,TREF,TEMPM,TEMPP,ZR(IVARIM),
+     &       ZR(IVARIP),SIGXP,ETAN,CODRET,CORRM,CORRP)
 
-C ---       STOCKAGE DE L'EFFORT NORMAL
+            IF (VECTEU) THEN
 
-          ZR(ICONTP) = SIGP(1)*A
+C ---          STOCKAGE DE L'EFFORT NORMAL
+               ZR(ICONTP) = SIGXP*A
 
 
-C ---       CALCUL DES FORCES NODALES
+C ---          CALCUL DES FORCES NODALES
 
-          FONO(1) = -SIGP(1)*A
-          FONO(4) = SIGP(1)*A
-          FONO(2) = -SIGP(2)*A
-          FONO(5) = SIGP(2)*A
+               FONO(1) = -SIGXP*A
+               FONO(4) =  SIGXP*A
+C
+            END IF
 
-        END IF
+C ---       CALCUL DE LA MATRICE TANGENTE
 
-C ---    CALCUL DE LA MATRICE TANGENTE
+            KLV(1) = ETAN
+            KLV(7) = -ETAN
+            KLV(10) = ETAN
 
-        IF (OPTION.NE.'RAPH_MECA') THEN
-          IK = 1
-          DO 60 I = 1,NEQ
-            DO 50 J = 1,I
-              KLV(IK) = DSIDEP(I,J)*A/XLONG0
-              IK = IK + 1
-   50       CONTINUE
-   60     CONTINUE
-        END IF
-
+        ENDIF
 
 C ---  PASSAGE DE KLV ET FONO DU REPERE LOCAL AU REPERE GLOBAL
 
-        IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
+        IF (OPTION(1:10).EQ.'RIGI_MECA_') THEN
           CALL UTPSLG(NNO,NC,PGL,KLV,MATUU)
         ELSE
-          IF (OPTION.EQ.'FULL_MECA') THEN
+          IF (OPTION(1:9).EQ.'FULL_MECA') THEN
             CALL UTPSLG(NNO,NC,PGL,KLV,MATUU)
           END IF
           CALL UTPVLG(NNO,NC,PGL,FONO,VECTU)
@@ -410,21 +397,21 @@ C     ----------
 C     ----------
 
       IF (NOMTE.EQ.'MECA_BARRE') THEN
-        IF ((OPTION.EQ.'RIGI_MECA_TANG') .OR.
-     &      (OPTION.EQ.'FULL_MECA')) THEN
+        IF ((OPTION(1:10).EQ.'RIGI_MECA_') .OR.
+     &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
           DO 70 I = 1,21
             ZR(IMATUU+I-1) = MATUU(I)
    70     CONTINUE
         END IF
-        IF (OPTION.NE.'RIGI_MECA_TANG') THEN
+        IF (OPTION(1:10).NE.'RIGI_MECA_') THEN
           DO 80 I = 1,6
             ZR(IVECTU+I-1) = VECTU(I)
    80     CONTINUE
         END IF
 
       ELSE IF (NOMTE.EQ.'MECA_2D_BARRE') THEN
-        IF ((OPTION.EQ.'RIGI_MECA_TANG') .OR.
-     &      (OPTION.EQ.'FULL_MECA')) THEN
+        IF ((OPTION(1:10).EQ.'RIGI_MECA_') .OR.
+     &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
           ZR(IMATUU) = MATUU(1)
           ZR(IMATUU+1) = MATUU(2)
           ZR(IMATUU+2) = MATUU(3)
@@ -436,7 +423,7 @@ C     ----------
           ZR(IMATUU+8) = MATUU(14)
           ZR(IMATUU+9) = MATUU(15)
         END IF
-        IF (OPTION.NE.'RIGI_MECA_TANG') THEN
+        IF (OPTION(1:10).NE.'RIGI_MECA_') THEN
 
           ZR(IVECTU) = VECTU(1)
           ZR(IVECTU+1) = VECTU(2)
@@ -449,7 +436,7 @@ C     ----------
       IF (OPTION(1:9).EQ.'FULL_MECA' .OR.
      &    OPTION(1:9).EQ.'RAPH_MECA') THEN
         CALL JEVECH('PCODRET','E',JCRET)
-        ZI(JCRET) = 0
+        ZI(JCRET) = CODRET
       END IF
 
       END

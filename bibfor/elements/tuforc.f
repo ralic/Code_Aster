@@ -1,7 +1,6 @@
-      SUBROUTINE TUFORC(OPTION,ELREFE,NBRDDL,B,F,VIN,VOUT,MAT,PASS,
-     &                  VTEMP)
+      SUBROUTINE TUFORC(OPTION,NOMTE,NBRDDL,B,F,VIN,VOUT,MAT,PASS,VTEMP)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,14 +18,13 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
-      CHARACTER*16 OPTION,ELREFL
+
+      CHARACTER*16 OPTION,NOMTE
 C    - FONCTION REALISEE:  CALCUL DES OPTIONS FORC_NODA ET
 C      EFGE_ELNO_DEPL ELEMENT: MET3SEG3 MET6SEG3 MET3SEG4
       INTEGER NBRES,NBRDDL,NBSECM,NBCOUM,NVAL
       PARAMETER (NBRES=9)
-      CHARACTER*24 CARAC,FF,CHMAT
       CHARACTER*8 NOMRES(NBRES),NOMPAR,NOMPU(2)
-      CHARACTER*8 ELREFE
       CHARACTER*2 CODRET(NBRES)
       REAL*8 VALRES(NBRES),VALPAR,VALPU(2),H,A,L,E,NU
       PARAMETER (NBSECM=32,NBCOUM=10)
@@ -40,13 +38,14 @@ C      EFGE_ELNO_DEPL ELEMENT: MET3SEG3 MET6SEG3 MET3SEG4
       REAL*8 BETA,CISAIL,FI,G,POIDS,R,R8PI,OMEGA,XPG(4)
       REAL*8 PGL1(3,3),PGL2(3,3),PGL3(3,3),RAYON,THETA
       REAL*8 CP(2,2),CV(2,2),CO(4,4),SI(4,4),TK(4),PGL4(3,3)
-      INTEGER NNO,NPG,NBCOU,NBSEC,M,ICARAC
+      INTEGER NNO,NPG,NBCOU,NBSEC,M
       INTEGER IPOIDS,IVF,ICOUDE,ICOUD2,ICOMPX
       INTEGER IMATE,ITEMP,ICAGEP,IGEOM,NBPAR,I1,I2,IH,MMT
       INTEGER IGAU,ICOU,ISECT,I,J,JIN,JOUT,IRET,INO,KPGS
-      INTEGER IFF,LORIEN,INDICE,K,ICONTM
-      INTEGER IBID,IER,JTREF,IP,JMAT,IC,KP,NNOS,NLIG,NCOL
-      INTEGER NPG1,IXF,JNBSPI,ITAB(8),NITER,ITER
+      INTEGER LORIEN,INDICE,K,ICONTM
+      INTEGER IBID,IER,JTREF,IP,IC,KP
+      INTEGER JNBSPI,ITAB(8),NITER,ITER
+      INTEGER NDIM,NNOS,JCOOPG,IDFDK,JDFD2,JGANO
       REAL*8 ALPHA,TMOY1,TINF1,TSUP1,HHK,COE1,ALPHAF,BETAF
       REAL*8 ALPHAM,BETAM,XA,XB,XC,XD
       REAL*8 SIGTMP(4)
@@ -66,9 +65,11 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,JCOOPG,IVF,IDFDK,
+     &            JDFD2,JGANO)
+
       PI = R8PI()
       DEUXPI = 2.D0*PI
-      ELREFL = ELREFE
       IF (OPTION(15:16).EQ.'_C') THEN
         ICOMPX = 1
         NITER = 2
@@ -95,22 +96,12 @@ C     -- CALCUL DES POIDS DES COUCHES ET DES SECTEURS:
       POISEC(2*NBSEC) = 4.D0/3.D0
       POISEC(2*NBSEC+1) = 1.D0/3.D0
 
-      CARAC = '&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      FF = '&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      NNO = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-C      NPG2 = ZI(ICARAC+3)
-      M = ZI(ICARAC+6)
-      NPG = NPG1
-      IXF = IFF
-      IPOIDS = IXF + NPG
-      IVF = IPOIDS + NPG
-      CHMAT = '&INEL.'//ELREFL//'M1'
-      CALL JEVETE(CHMAT,'L',JMAT)
+      M = 3
+      IF (NOMTE.EQ.'MET6SEG3') M = 6
+
+
       DO 30 I = 1,NPG
-        XPG(I) = ZR(IXF-1+I)
+        XPG(I) = ZR(JCOOPG-1+I)
    30 CONTINUE
       CALL JEVECH('PCAORIE','L',LORIEN)
       CALL CARCOU(ZR(LORIEN),L,PGL,RAYON,THETA,PGL1,PGL2,PGL3,PGL4,NNO,
@@ -158,15 +149,16 @@ C      NPG2 = ZI(ICARAC+3)
               SIG(3) = ZR(INDICE+4)
               SIG(4) = ZR(INDICE+5)
               IF (ICOUDE.EQ.0) THEN
-                CALL BCOUDE(IGAU,ICOU,ISECT,L,H,A,M,OMEGA,NPG,NNO,NBCOU,
-     &                      NBSEC,ZR(IVF),MMT,B)
+                CALL BCOUDE(IGAU,ICOU,ISECT,L,H,A,M,NNO,NBCOU,
+     &                      NBSEC,ZR(IVF),ZR(IDFDK),ZR(JDFD2),MMT,B)
               ELSE IF (ICOUDE.EQ.1) THEN
                 FI = (ISECT-1)*DEUXPI/ (2.D0*NBSEC)
                 COSFI = COS(FI)
                 SINFI = SIN(FI)
                 L = THETA* (RAYON+R*SINFI)
-                CALL BCOUDC(IGAU,ICOU,ISECT,L,H,A,M,OMEGA,NPG,XPG,NNO,
-     &                      NBCOU,NBSEC,ZR(IVF),RAYON,THETA,MMT,B)
+                CALL BCOUDC(IGAU,ICOU,ISECT,H,A,M,OMEGA,XPG,NNO,
+     &                      NBCOU,NBSEC,ZR(IVF),ZR(IDFDK),ZR(JDFD2),
+     &                      RAYON,THETA,MMT,B)
               END IF
               DO 60 I = 1,4
                 DO 50 J = 1,NBRDDL
@@ -193,68 +185,69 @@ C PASSAGE DU REPERE LOCAL AU REPERE GLOBAL
         DO 110,I = 1,NBRDDL
           ZR(JOUT-1+I) = F(I)
   110   CONTINUE
-      ELSEIF  (OPTION.EQ.'REFE_FORC_NODA') THEN
+      ELSE IF (OPTION.EQ.'REFE_FORC_NODA') THEN
         CALL R8INIR(NBRDDL,0.D0,VTEMP,1)
         CALL JEVECH('PREFCO','L',ICONTM)
         CALL JEVECH('PVECTUR','E',JOUT)
-        DO 41 I = 1,NBRDDL
+        DO 120 I = 1,NBRDDL
           F(I) = 0.D0
-   41   CONTINUE
-        DO 101 IGAU = 1,NPG
-          DO 91 ICOU = 1,2*NBCOU + 1
+  120   CONTINUE
+        DO 190 IGAU = 1,NPG
+          DO 180 ICOU = 1,2*NBCOU + 1
             IF (MMT.EQ.0) THEN
               R = A
             ELSE
               R = A + (ICOU-1)*H/ (2.D0*NBCOU) - H/2.D0
             END IF
-            DO 81 ISECT = 1,2*NBSEC + 1
+            DO 170 ISECT = 1,2*NBSEC + 1
               IF (ICOUDE.EQ.0) THEN
-                CALL BCOUDE(IGAU,ICOU,ISECT,L,H,A,M,OMEGA,NPG,NNO,NBCOU,
-     &                      NBSEC,ZR(IVF),MMT,B)
+                CALL BCOUDE(IGAU,ICOU,ISECT,L,H,A,M,NNO,NBCOU,
+     &                      NBSEC,ZR(IVF),ZR(IDFDK),ZR(JDFD2),MMT,B)
               ELSE IF (ICOUDE.EQ.1) THEN
                 FI = (ISECT-1)*DEUXPI/ (2.D0*NBSEC)
                 COSFI = COS(FI)
                 SINFI = SIN(FI)
                 L = THETA* (RAYON+R*SINFI)
-                CALL BCOUDC(IGAU,ICOU,ISECT,L,H,A,M,OMEGA,NPG,XPG,NNO,
-     &                      NBCOU,NBSEC,ZR(IVF),RAYON,THETA,MMT,B)
+                CALL BCOUDC(IGAU,ICOU,ISECT,H,A,M,OMEGA,XPG,NNO,
+     &                      NBCOU,NBSEC,ZR(IVF),ZR(IDFDK),ZR(JDFD2),
+     &                      RAYON,THETA,MMT,B)
               END IF
-              DO 61 I = 1,4
-                DO 51 J = 1,NBRDDL
+              DO 140 I = 1,4
+                DO 130 J = 1,NBRDDL
                   MAT(J,I) = B(I,J)
-   51           CONTINUE
-   61         CONTINUE
+  130           CONTINUE
+  140         CONTINUE
               POIDS = ZR(IPOIDS-1+IGAU)*POICOU(ICOU)*POISEC(ISECT)*
      &                (L/2.D0)*H*DEUXPI/ (4.D0*NBCOU*NBSEC)*R
               IRET = 0
-C  POUR CHAQUE CMP de SIGM_REFE, STOCKAGE DU VECTEUR VOUT DANS F
+C  POUR CHAQUE CMP DE SIGM_REFE, STOCKAGE DU VECTEUR VOUT DANS F
               CALL R8INIR(4,0.D0,SIGTMP,1)
-              DO 82 J=1,4
-                 SIGTMP(J) = ZR(ICONTM)
-                 CALL PRODMV(0,MAT,NBRDDL,NBRDDL,4,SIGTMP,4,
-     &                      VOUT,NBRDDL,IRET)
-                 SIGTMP(J) = 0.D0
-                 DO 71 I = 1,NBRDDL
-                    VTEMP(I) = VTEMP(I) + ABS(VOUT(I)*POIDS)
-   71            CONTINUE
-   82         CONTINUE
-   81       CONTINUE
-   91     CONTINUE
-  101   CONTINUE
+              DO 160 J = 1,4
+                SIGTMP(J) = ZR(ICONTM)
+                CALL PRODMV(0,MAT,NBRDDL,NBRDDL,4,SIGTMP,4,VOUT,NBRDDL,
+     &                      IRET)
+                SIGTMP(J) = 0.D0
+                DO 150 I = 1,NBRDDL
+                  VTEMP(I) = VTEMP(I) + ABS(VOUT(I)*POIDS)
+  150           CONTINUE
+  160         CONTINUE
+  170       CONTINUE
+  180     CONTINUE
+  190   CONTINUE
 C      ON PREND LA VALEUR MOYENNE DES FORCES NODALES DE REFERENCE
-        NVAL=NPG*(2*NBCOU+1)*(2*NBSEC+1)*4
+        NVAL = NPG* (2*NBCOU+1)* (2*NBSEC+1)*4
         CALL R8AXPY(NBRDDL,1.D0/NVAL,VTEMP,1,F,1)
         CALL R8INIR(NBRDDL,0.D0,VTEMP,1)
-  
+
 C PASSAGE DU REPERE LOCAL AU REPERE GLOBAL
         IF (ICOUDE.EQ.0) THEN
           CALL VLGGL(NNO,NBRDDL,PGL,F,'LG',PASS,VTEMP)
         ELSE
           CALL VLGGLC(NNO,NBRDDL,PGL1,PGL2,PGL3,PGL4,F,'LG',PASS,VTEMP)
         END IF
-        DO 111,I = 1,NBRDDL
+        DO 200,I = 1,NBRDDL
           ZR(JOUT-1+I) = F(I)
-  111   CONTINUE
+  200   CONTINUE
       ELSE IF (OPTION(1:14).EQ.'EFGE_ELNO_DEPL') THEN
         CALL JEVECH('PMATERC','L',IMATE)
         NOMRES(1) = 'E'
@@ -306,12 +299,12 @@ C          -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
         CALL TECACH('ONN','PTEMPER',8,ITAB,IRET)
         ITEMP = ITAB(1)
         IF (ITEMP.GT.0) THEN
-          DO 120 I = 1,NNO
+          DO 210 I = 1,NNO
             CALL DXTPIF(ZR(ITEMP+3* (I-1)),ZL(ITAB(8)+3* (I-1)))
             TMOY(I) = ZR(ITEMP+3* (I-1))
             TINF(I) = ZR(ITEMP+3* (I-1)+1)
             TSUP(I) = ZR(ITEMP+3* (I-1)+2)
-  120     CONTINUE
+  210     CONTINUE
         END IF
 C          -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
         CALL TECACH('NNN','PTEMPEF',1,ITEMP,IRET)
@@ -326,53 +319,53 @@ C          -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
           CALL FOINTE('FM',ZK8(ITEMP),2,NOMPU,VALPU,TINF1,IER)
           VALPU(2) = +H/2.D0
           CALL FOINTE('FM',ZK8(ITEMP),2,NOMPU,VALPU,TSUP1,IER)
-          DO 130,I = 1,NNO
+          DO 220,I = 1,NNO
             TMOY(I) = TMOY1
             TINF(I) = TINF1
             TSUP(I) = TSUP1
-  130     CONTINUE
+  220     CONTINUE
         END IF
-        DO 150,IGAU = 1,NPG
+        DO 240,IGAU = 1,NPG
           TEMPGI(IGAU) = 0.D0
           TEMPGM(IGAU) = 0.D0
           TEMPGS(IGAU) = 0.D0
-          DO 140,K = 1,NNO
+          DO 230,K = 1,NNO
             HHK = ZR(IVF-1+NNO* (IGAU-1)+K)
             TEMPGI(IGAU) = HHK*TINF(K) + TEMPGI(IGAU)
             TEMPGM(IGAU) = HHK*TMOY(K) + TEMPGM(IGAU)
             TEMPGS(IGAU) = HHK*TSUP(K) + TEMPGS(IGAU)
-  140     CONTINUE
-  150   CONTINUE
+  230     CONTINUE
+  240   CONTINUE
         CALL JEVECH('PTEREF','L',JTREF)
         TREF = ZR(JTREF)
 C  CONTRUCTION DE LA MATRICE H(I,J) = MATRICE DES VALEURS DES
 C  FONCTIONS DE FORMES AUX POINT DE GAUSS
-        DO 170,K = 1,NNO
-          DO 160,IGAU = 1,NPG
+        DO 260,K = 1,NNO
+          DO 250,IGAU = 1,NPG
             HK(K,IGAU) = ZR(IVF-1+NNO* (IGAU-1)+K)
-  160     CONTINUE
-  170   CONTINUE
+  250     CONTINUE
+  260   CONTINUE
         IF (ICOMPX.EQ.0) THEN
           CALL JEVECH('PDEPLAR','L',JIN)
         ELSE
           CALL JEVECH('PDEPLAC','L',JIN)
         END IF
 C     2 ITERATION EN COMPLEXE
-        DO 380 ITER = 1,NITER
+        DO 470 ITER = 1,NITER
           IF (ICOMPX.EQ.1) THEN
             IF (ITER.EQ.1) THEN
-              DO 180 I = 1,NBRDDL
+              DO 270 I = 1,NBRDDL
                 VIN(I) = DBLE(ZC(JIN+I-1))
-  180         CONTINUE
+  270         CONTINUE
             ELSE
-              DO 190 I = 1,NBRDDL
+              DO 280 I = 1,NBRDDL
                 VIN(I) = DIMAG(ZC(JIN+I-1))
-  190         CONTINUE
+  280         CONTINUE
             END IF
           ELSE
-            DO 200 I = 1,NBRDDL
+            DO 290 I = 1,NBRDDL
               VIN(I) = ZR(JIN-1+I)
-  200       CONTINUE
+  290       CONTINUE
           END IF
           IF (ICOUDE.EQ.0) THEN
             CALL VLGGL(NNO,NBRDDL,PGL,VIN,'GL',PASS,VTEMP)
@@ -380,33 +373,35 @@ C     2 ITERATION EN COMPLEXE
             CALL VLGGLC(NNO,NBRDDL,PGL1,PGL2,PGL3,PGL4,VIN,'GL',PASS,
      &                  VTEMP)
           END IF
-          DO 250 IGAU = 1,NPG
+          DO 340 IGAU = 1,NPG
             COE1 = (TEMPGI(IGAU)+TEMPGS(IGAU)+TEMPGM(IGAU))/3.D0 - TREF
             SIGTH(1) = (C(1,1)+C(1,2))*COE1*ALPHA
             SIGTH(2) = (C(2,1)+C(2,2))*COE1*ALPHA
-            DO 210,I = 1,6
+            DO 300,I = 1,6
               EFG(I) = 0.D0
-  210       CONTINUE
-            DO 230 ICOU = 1,2*NBCOU + 1
+  300       CONTINUE
+            DO 320 ICOU = 1,2*NBCOU + 1
               IF (MMT.EQ.0) THEN
                 R = A
               ELSE
                 R = A + (ICOU-1)*H/ (2.D0*NBCOU) - H/2.D0
               END IF
-              DO 220 ISECT = 1,2*NBSEC + 1
+              DO 310 ISECT = 1,2*NBSEC + 1
                 FI = (ISECT-1)*DEUXPI/ (2.D0*NBSEC)
                 IF (ICOUDE.EQ.0) THEN
                   COSFI = COS(FI)
                   SINFI = SIN(FI)
-                  CALL BCOUDE(IGAU,ICOU,ISECT,L,H,A,M,OMEGA,NPG,NNO,
-     &                        NBCOU,NBSEC,ZR(IVF),MMT,B)
+                  CALL BCOUDE(IGAU,ICOU,ISECT,L,H,A,M,NNO,
+     &                        NBCOU,NBSEC,ZR(IVF),ZR(IDFDK),ZR(JDFD2),
+     &                        MMT,B)
                 ELSE IF (ICOUDE.EQ.1) THEN
 C               FI = FI - OMEGA
                   COSFI = COS(FI)
                   SINFI = SIN(FI)
                   L = THETA* (RAYON+R*SINFI)
-                  CALL BCOUDC(IGAU,ICOU,ISECT,L,H,A,M,OMEGA,NPG,XPG,NNO,
-     &                        NBCOU,NBSEC,ZR(IVF),RAYON,THETA,MMT,B)
+                  CALL BCOUDC(IGAU,ICOU,ISECT,H,A,M,OMEGA,XPG,NNO,
+     &                        NBCOU,NBSEC,ZR(IVF),ZR(IDFDK),ZR(JDFD2),
+     &                        RAYON,THETA,MMT,B)
                 END IF
                 CALL PROMAT(C,4,4,4,B,4,4,NBRDDL,MAT)
                 IRET = 0
@@ -419,16 +414,16 @@ C               FI = FI - OMEGA
                 EFG(4) = EFG(4) - POIDS*SIG(3)*R
                 EFG(5) = EFG(5) - POIDS* (SIG(1)-SIGTH(1))*R*COSFI
                 EFG(6) = EFG(6) + POIDS* (SIG(1)-SIGTH(1))*R*SINFI
-  220         CONTINUE
-  230       CONTINUE
-            DO 240,I = 1,6
+  310         CONTINUE
+  320       CONTINUE
+            DO 330,I = 1,6
               FPG(IGAU,I) = EFG(I)
-  240       CONTINUE
-  250     CONTINUE
+  330       CONTINUE
+  340     CONTINUE
           IF ((NNO.EQ.3) .AND. (NPG.EQ.3)) THEN
 C      POUR NE PAS SUPPRIMER LA SAVANTE PROGRAMMATION DE PATRICK
-            DO 270 IGAU = 1,NPG
-              DO 260 INO = 1,NNO
+            DO 360 IGAU = 1,NPG
+              DO 350 INO = 1,NNO
                 IF (ICOUDE.EQ.0) THEN
                   CO(IGAU,INO) = 1.D0
                   SI(IGAU,INO) = 0.D0
@@ -438,9 +433,9 @@ C      POUR NE PAS SUPPRIMER LA SAVANTE PROGRAMMATION DE PATRICK
                   SI(IGAU,INO) = SIN((1.D0+XPG(IGAU))*THETA/2.D0-
      &                           TK(INO))
                 END IF
-  260         CONTINUE
-  270       CONTINUE
-            DO 310,INO = 1,NNO
+  350         CONTINUE
+  360       CONTINUE
+            DO 400,INO = 1,NNO
               IF (INO.EQ.1) THEN
                 IH = 2
                 IP = 1
@@ -452,10 +447,10 @@ C      POUR NE PAS SUPPRIMER LA SAVANTE PROGRAMMATION DE PATRICK
                 I1 = 3
                 I2 = 1
               ELSE
-                DO 280,I = 1,6
+                DO 370,I = 1,6
                   FNO(I) = FPG(2,I)
-  280           CONTINUE
-                GO TO 290
+  370           CONTINUE
+                GO TO 380
               END IF
               CP(1,1) = CO(1,IH)*CO(1,3) + SI(1,IH)*SI(1,3)
               CP(1,2) = -CO(1,IH)*SI(1,3) + SI(1,IH)*CO(1,3)
@@ -511,46 +506,44 @@ C      POUR NE PAS SUPPRIMER LA SAVANTE PROGRAMMATION DE PATRICK
               FNO(6) = (HK(IH,I2)*FPG(I1,6)-HK(IH,I1)*FPG(I2,6)-
      &                 FPG(2,6)* (HK(3,I1)*HK(IH,I2)-HK(3,I2)*HK(IH,
      &                 I1)))/ (HK(1,1)*HK(2,3)-HK(1,3)*HK(2,1))
-  290         CONTINUE
-              DO 300,I = 1,6
+  380         CONTINUE
+              DO 390,I = 1,6
                 VOUT(6* (INO-1)+I) = FNO(I)
-  300         CONTINUE
-  310       CONTINUE
+  390         CONTINUE
+  400       CONTINUE
           ELSE
-            DO 340 IC = 1,6
-              DO 320 KP = 1,NPG
+            DO 430 IC = 1,6
+              DO 410 KP = 1,NPG
                 VPG(KP) = FPG(KP,IC)
-  320         CONTINUE
+  410         CONTINUE
               NNOS = 2
-              NLIG = NINT(ZR(JMAT))
-              NCOL = NINT(ZR(JMAT+1))
-              CALL TUGANO(ZR(JMAT+2),NLIG,NCOL,NNOS,NNO,NPG,VPG,VNO)
-              DO 330 I = 1,NNO
+              CALL PPGAN2(JGANO,1,VPG,VNO)
+              DO 420 I = 1,NNO
                 VOUT(6* (I-1)+IC) = VNO(I)
-  330         CONTINUE
-  340       CONTINUE
+  420         CONTINUE
+  430       CONTINUE
           END IF
           IF (ICOMPX.EQ.1) THEN
             CALL JEVECH('PEFFORC','E',JOUT)
             IF (ITER.EQ.1) THEN
-              DO 350 J = 1,6*NNO
+              DO 440 J = 1,6*NNO
                 ZC(JOUT-1+J) = VOUT(J)
-  350         CONTINUE
+  440         CONTINUE
             ELSE
-              DO 360 J = 1,6*NNO
+              DO 450 J = 1,6*NNO
                 ZC(JOUT-1+J) = DCMPLX(DBLE(ZC(JOUT-1+J)),DBLE(VOUT(J)))
-  360         CONTINUE
+  450         CONTINUE
             END IF
           ELSE
             CALL JEVECH('PEFFORR','E',JOUT)
-            DO 370 J = 1,6*NNO
+            DO 460 J = 1,6*NNO
               ZR(JOUT-1+J) = VOUT(J)
-  370       CONTINUE
+  460       CONTINUE
           END IF
-  380   CONTINUE
+  470   CONTINUE
       ELSE
         CALL UTMESS('F','TE0585','L''OPTION "'//OPTION//
      &              '" EST NON PREVUE')
       END IF
-  390 CONTINUE
+  480 CONTINUE
       END

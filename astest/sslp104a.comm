@@ -1,4 +1,4 @@
-# MODIF  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+# MODIF  DATE 19/01/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE POUTRE CANTILEVER . VALIDATION DE LA METHODE ARLEQUIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,12 +24,26 @@
 
 DEBUT(  CODE=_F(  NOM = 'SSLP104A',NIV_PUB_WEB='INTERNET') );
 
-MAIL=LIRE_MAILLAGE();
+PRE_GMSH(UNITE_GMSH=19,UNITE_MAILLAGE=20);
+
+MA1=LIRE_MAILLAGE(UNITE=20);
+
+PRE_GMSH(UNITE_GMSH=22,UNITE_MAILLAGE=21);
+
+MA2=LIRE_MAILLAGE(UNITE=21);
+
+MAIL=ASSE_MAILLAGE(MAILLAGE_1=MA1,
+                   MAILLAGE_2=MA2,
+                   OPERATION='SUPERPOSE')
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA='GM7',),
                                _F(GROUP_MA='GM8',), ),);
+
+DEFI_FICHIER(FICHIER='mail',UNITE=24)
+IMPR_RESU(RESU=_F(FORMAT='RESULTAT',MAILLAGE=MAIL,FICHIER='mail'))
+
 
 ELAS=DEFI_MATERIAU(ELAS=_F(E=300.0,
                            NU=0.29999999999999999,),);
@@ -54,6 +68,7 @@ DPL=AFFE_CHAR_MECA(MODELE=MOD,
 
 # CREATION DES RELATIONS DE COUPLAGE ARLEQUIN ENTRE LES GROUPES
 # DE MAILLES GM2 ET GM3 SUR LA ZONE DE RECOUVREMENT GM2
+
 
 ARL=AFFE_CHAR_MECA(MODELE=MOD,
                    ARLEQUIN=_F(GROUP_MA_1='GM2',
@@ -92,6 +107,7 @@ CHF=INTE_MAIL_2D(MAILLAGE=MAIL,
 CHG=INTE_MAIL_2D(MAILLAGE=MAIL,
                  DEFI_CHEMIN=_F(GROUP_MA='GM10',),);
 
+
 S229 = POST_RELEVE_T( ACTION=_F( CHAM_GD = SGM, 
                                  CHEMIN = CHF,
                                  TOUT_CMP = 'OUI',  
@@ -123,81 +139,90 @@ S429 = POST_RELEVE_T( ACTION=_F( CHAM_GD = SGM,
 TEST_TABLE( TABLE = S229, 
             NOM_PARA = 'SIXX',
             FILTRE = _F( NOM_PARA = 'NOEUD',
-                         VALE_K = 'N229'),
-            VALE = 4.60690E-01,
-            REFERENCE = 'AUTRE_ASTER',
+                         VALE_K = 'N66'),
+            VALE = 5.17142E-01,
+            REFERENCE = 'NON_REGRESSION',
+            VERSION= '7.02.04',
             PRECISION = 4.0E-3,
             CRITERE = 'ABSOLU', )
 
 TEST_TABLE( TABLE = S229, 
             NOM_PARA = 'SIYY',
             FILTRE = _F( NOM_PARA = 'NOEUD',
-                         VALE_K = 'N229'),
-            VALE = 5.31469E-03,
-            REFERENCE = 'AUTRE_ASTER',
+                         VALE_K = 'N66'),
+            VALE = 4.32994E-02,
+            REFERENCE = 'NON_REGRESSION',
+            VERSION= '7.02.04',
             PRECISION = 3.0E-3,
             CRITERE = 'ABSOLU', )
 
 TEST_TABLE( TABLE = S229, 
             NOM_PARA = 'SIXY',
             FILTRE = _F( NOM_PARA = 'NOEUD',
-                         VALE_K = 'N229'),
-            VALE = -2.39723E-03,
-            REFERENCE = 'AUTRE_ASTER',
+                         VALE_K = 'N66'),
+            VALE = -1.64789E-02,
+            REFERENCE = 'NON_REGRESSION',
+            VERSION= '7.02.04',
             PRECISION = 3.0E-3,
             CRITERE = 'ABSOLU', )
 
 TEST_TABLE( TABLE = S164, 
             NOM_PARA = 'SIXX',
             FILTRE = _F( NOM_PARA = 'NOEUD',
-                         VALE_K = 'N164'),
-            VALE = 3.77117E-01,
-            REFERENCE = 'AUTRE_ASTER',
+                         VALE_K = 'N44'),
+            VALE = 3.61106E-01,
+            REFERENCE = 'NON_REGRESSION',
+            VERSION= '7.02.04',
             PRECISION = 3.0E-3,
             CRITERE = 'ABSOLU', )
 
 TEST_TABLE( TABLE = S164, 
             NOM_PARA = 'SIYY',
             FILTRE = _F( NOM_PARA = 'NOEUD',
-                         VALE_K = 'N164'),
-            VALE = 1.76333E-03,
-            REFERENCE = 'AUTRE_ASTER',
+                         VALE_K = 'N44'),
+            VALE = 2.55503E-02,
+            REFERENCE = 'NON_REGRESSION',
+            VERSION= '7.02.04',
             PRECISION = 3.0E-3,
             CRITERE = 'ABSOLU', )
 
 TEST_TABLE( TABLE = S164, 
             NOM_PARA = 'SIXY',
             FILTRE = _F( NOM_PARA = 'NOEUD',
-                         VALE_K = 'N164'),
-            VALE = -1.08189E-04,
-            REFERENCE = 'AUTRE_ASTER',
+                         VALE_K = 'N44'),
+            VALE = -9.578E-03,
+            REFERENCE = 'NON_REGRESSION',
+            VERSION= '7.02.04',
             PRECISION = 3.0E-3,
             CRITERE = 'ABSOLU', )
 
 TEST_TABLE( TABLE = S429, 
             NOM_PARA = 'SIXX',
             FILTRE = _F( NOM_PARA = 'NOEUD',
-                         VALE_K = 'N429'),
-            VALE = 3.70859E-01,
-            REFERENCE = 'AUTRE_ASTER',
+                         VALE_K = 'N355'),
+            VALE = 3.55106E-01,
+            REFERENCE = 'NON_REGRESSION',
+            VERSION= '7.02.04',
             PRECISION = 3.0E-3,
             CRITERE = 'ABSOLU', )
 
 TEST_TABLE( TABLE = S429, 
             NOM_PARA = 'SIYY',
             FILTRE = _F( NOM_PARA = 'NOEUD',
-                         VALE_K = 'N429'),
-            VALE = 9.58460E-04,
-            REFERENCE = 'AUTRE_ASTER',
+                         VALE_K = 'N355'),
+            VALE = 1.83894E-02,
+            REFERENCE = 'NON_REGRESSION',
+            VERSION= '7.02.04',
             PRECISION = 3.0E-3,
             CRITERE = 'ABSOLU', )
 
 TEST_TABLE( TABLE = S429, 
             NOM_PARA = 'SIXY',
             FILTRE = _F( NOM_PARA = 'NOEUD',
-                         VALE_K = 'N429'),
-            VALE = 3.39382E-04,
-            REFERENCE = 'AUTRE_ASTER',
+                         VALE_K = 'N355'),
+            VALE = -1.21316E-02,
+            REFERENCE = 'NON_REGRESSION',
+            VERSION= '7.02.04',
             PRECISION = 3.0E-3,
             CRITERE = 'ABSOLU', )
 

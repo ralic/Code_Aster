@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+# MODIF  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -90,7 +90,7 @@ CHAMDEP=CALC_ELEM( reuse=CHAMDEP,
               )
 
 FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
-                              FOND=_F( GROUP_NO = ('P0',)),
+                           FOND_FISS=_F( GROUP_NO = ('P0',)),
                            NORMALE=(0., 1., 0.,)
                       )
 

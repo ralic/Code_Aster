@@ -2,13 +2,13 @@
      +                  TOL,ITER,X0,MX,ERR,IEXCL,PLACE,IQUOTI,NPREC)
       IMPLICIT REAL*8 (A-H,O-Z)
 C
-      REAL*8 X(NEQ,1),MX(NEQ,1),COETOL,ERR,X0(*)
+      REAL*8 X(NEQ,1),MX(NEQ,*),COETOL,ERR,X0(NEQ)
       REAL*8 VALP
       INTEGER PLACE,IEXCL(*),IMODE,NEQ,MXITER,ITER
       INTEGER LMASSE,LRAIDE,LDYNAM
 C     ----------------------- ------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/03/98   AUTEUR D6BHHBQ B.QUINNEZ 
+C MODIF ALGELINE  DATE 18/11/2003   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,10 +62,8 @@ C
         X0MX = X0MX + X0(IEQ)*MX(IEQ,IMODE)
    30 CONTINUE
 C
-      WSIGNE = 1.D0
-      IF (X0MX.LE.0.D0) WSIGNE = -1.D0
-      COEF = 1.D0/SQRT(WSIGNE*X0MX)
-      COEFT = WSIGNE*COEF
+      COEF = 1.D0/SQRT(ABS(X0MX))
+      COEFT = SIGN(1.D0,X0MX)*COEF
       DO 40 IEQ = 1,NEQ
         X0(IEQ) = COEF*X0(IEQ)
         MX(IEQ,IMODE) = COEFT*MX(IEQ,IMODE)
@@ -98,10 +96,8 @@ C        --- CALCUL DE XN.M.XN ---
   130   CONTINUE
 C
 C        --- NORMALISATION DE XN ---
-        WSIGNE = 1.D0
-        IF (XMX.LT.0.D0) WSIGNE = -1.D0
-        COEF = 1.D0/SQRT(XMX*WSIGNE)
-        COEFT = WSIGNE*COEF
+        COEF = 1.D0/SQRT(ABS(XMX))
+        COEFT = SIGN(1.D0,XMX)*COEF
         DO 140 IEQ = 1,NEQ
           X0(IEQ) = COEF*X0(IEQ)
           MX(IEQ,IMODE) = COEFT*MX(IEQ,IMODE)

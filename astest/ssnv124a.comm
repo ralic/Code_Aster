@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 13/01/2004   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE CALCUL DE CHARGE LIMITE EN 2D - METHODE DE NORTON-HOFF
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -201,7 +201,15 @@ TEST_TABLE(TABLE=ECHL1,
 RESU1=CALC_ELEM( reuse =RESU1,
   MODELE=MO,
   CHAM_MATER=CHMAT,
-  OPTION = ('EPSI_ELNO_DEPL','EQUI_ELNO_EPSI'),
+  EXCIT = (
+    _F(CHARGE=CH_CL),
+    _F(CHARGE=INCOMP),
+    _F(CHARGE=CH0),
+    _F(CHARGE=CH_PILO1)
+    ),
+  OPTION = ('EPSI_ELNO_DEPL','EQUI_ELNO_EPSI',
+            'SIEF_ELNO_ELGA',
+            'ERRE_ELGA_NORE','ERRE_ELNO_ELGA',),
   RESULTAT=RESU1
   )
 
@@ -226,6 +234,39 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    CRITERE='RELATIF',
                    PRECISION=1.E-4,
                    REFERENCE= 'ANALYTIQUE'),),);
+
+#--------------------------------------------------------------------------------
+#
+#  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
+
+TEST_RESU(RESU=(             
+           _F( RESULTAT = RESU1,
+               INST = 1.69897,  
+               NOM_CHAM = 'ERRE_ELGA_NORE',   
+               CRITERE = 'RELATIF',    
+               PRECISION = 0.001,
+               POINT = 1,
+               MAILLE='M1',    
+               NOM_CMP = 'NUEST',      
+               VALE = 4.6684503217777, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
+             ),
+            );
+
+TEST_RESU(RESU=(             
+           _F( RESULTAT = RESU1,
+               INST = 1.69897,  
+               NOM_CHAM = 'ERRE_ELNO_ELGA',   
+               CRITERE = 'RELATIF',    
+               PRECISION = 0.001,
+               NOEUD= 'N3',
+               MAILLE='M1',    
+               NOM_CMP = 'ERREST',      
+               VALE = 1.0094464831948, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
+             ),
+            );
+
 
 FIN()
 

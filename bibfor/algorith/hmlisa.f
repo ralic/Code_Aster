@@ -1,13 +1,12 @@
       SUBROUTINE HMLISA(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF,
      +                  DIMCON,NVIMEC,NVITH,YAMEC,YATE,ADDEME,ADCOME,
-     +                  ADVIME,ADVITH,ADDEP1,ADCP11,ADCP12,ADDEP2,
-     +                  ADCP21,ADCP22,ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,
-     +                  VINTP,DSDE,EPSV,DEPSV,P1,DP1,T,DT,PHI,PVP,H11,
-     +                  H12,H21,RHO11,PHI0,PVP0,P10,T0,SAT,RETCOM)
+     +                  ADVITH,ADDEP1,ADCP11,ADDETE,ADCOTE,CONGEM,
+     +                  CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,P1,
+     +                  DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,12 +40,12 @@ C                       = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
 C ======================================================================
       IMPLICIT      NONE
       INTEGER       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,IMATE,YAMEC,YATE
-      INTEGER       ADCOME,ADCP11,ADCP12,ADCP21,ADCP22,ADCOTE
-      INTEGER       ADDEME,ADDEP1,ADDEP2,ADDETE,ADVIME,ADVITH,RETCOM
+      INTEGER       ADCOME,ADCP11,ADCOTE
+      INTEGER       ADDEME,ADDEP1,ADDETE,ADVITH,RETCOM
       REAL*8        CONGEM(DIMCON),CONGEP(DIMCON)
       REAL*8        VINTM(NVIMEC+NVITH),VINTP(NVIMEC+NVITH)
       REAL*8        DSDE(DIMCON,DIMDEF),EPSV,DEPSV,P1,DP1,T,DT
-      REAL*8        PHI,PVP,H11,H12,H21,RHO11,PHI0,PVP0,P10,T0
+      REAL*8        PHI,RHO11,PHI0
       CHARACTER*16  OPTION,MECA,THER,THMC,HYDR
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
@@ -54,7 +53,7 @@ C ======================================================================
       INTEGER      I,IADZI,IAZK24
       REAL*8       EPSVM,PHIM,RHO11M,RHO110,RHO0,C0EPS,CSIGM,VARIA,ALP11
       REAL*8       YOUNG,NU,BIOT,K0,CS,ALPHA0,ALPLIQ,CLIQ,CP11,SAT,N
-      REAL*8       VARBIO,VARLQ,VARVP,UMPRHS
+      REAL*8       VARBIO,VARLQ,VARVP,UMPRHS,EM
       CHARACTER*8  NOMAIL
 C ======================================================================
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -88,7 +87,8 @@ C ======================================================================
       REAL*8       RBID21, RBID22, RBID23, RBID24, RBID25, RBID26
       REAL*8       RBID27, RBID28, RBID29, RBID30, RBID31, RBID32
       REAL*8       RBID33, RBID34, RBID35, RBID36, RBID37, RBID38
-      REAL*8       RBID39, RBID40
+      REAL*8       RBID39, RBID40,RBID45,RBID46,RBID47,RBID48,RBID49
+      REAL*8       RBID50
       REAL*8       ELAS(NELAS)
       CHARACTER*2  CODRET(NELAS)
       CHARACTER*8  NCRA1(NELAS)
@@ -111,15 +111,15 @@ C =====================================================================
 C --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 C =====================================================================
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
-     +             RBID1, RBID2, RBID3, RBID4, RBID5, T, P1, RBID40,
-     +             RBID6,
-     +             RBID7, RBID8, RBID9, RBID10, RBID11, RHO0, CSIGM,
-     +             BIOT, RBID12, SAT, RBID13, RBID14, RBID15, RBID16,
-     +             RBID17, RBID18, RBID19, RBID20, RBID21, RBID22,
-     +             RBID23, RBID24, RBID25, RHO110, CLIQ, ALPLIQ, CP11,
-     +             RBID26, RBID27, RBID28, RBID29, RBID30, RBID31,
-     +             RBID32, RBID33, RBID34, RBID35, RBID36, RBID37,
-     +             RBID38, RBID39)
+     +            RBID1, RBID2, RBID3, RBID4, RBID5, T, P1, RBID40,
+     +            RBID6,
+     +            RBID7, RBID8, RBID9, RBID10, RBID11, RHO0, CSIGM,
+     +            BIOT, RBID12, SAT, RBID13, RBID14, RBID15, RBID16,
+     +            RBID17,RBID18, RBID19, RBID20, RBID21, RBID22,
+     +            RBID23,RBID24, RBID25, RHO110, CLIQ, ALPLIQ, CP11,
+     +            RBID26,RBID27, RBID28, RBID29, RBID30, RBID31,
+     +            RBID32,RBID33, RBID34, RBID35, RBID36, RBID37,RBID38,
+     +            RBID39,RBID45,RBID46,RBID47,RBID48,RBID49,EM,RBID50)
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
@@ -133,10 +133,10 @@ C =====================================================================
          CS     = (1.D0-BIOT) / K0
       ELSE
 C =====================================================================
-C --- EN ABSENCE DE MECA ALPHA0 = 0 et 1/KS = 0 -----------------------
+C --- EN ABSENCE DE MECA ALPHA0 = 0 et 1/KS = 0 OU EM ----------------
 C =====================================================================
          ALPHA0 = 0.D0
-         CS     = 0.D0
+         CS     = EM
          BIOT   = PHI0
          PHI    = PHI0
          PHIM   = PHI0

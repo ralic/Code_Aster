@@ -1,4 +1,4 @@
-      SUBROUTINE DKTRIG(XYZL,OPTION,PGL,RIG,ENER,MULTIC,GRILLE)
+      SUBROUTINE DKTRIG(NOMTE,XYZL,OPTION,PGL,RIG,ENER,MULTIC,GRILLE)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,9 +19,9 @@ C ======================================================================
       IMPLICIT  NONE
       REAL*8        XYZL(3,*), PGL(*), RIG(*), ENER(*)
       LOGICAL       GRILLE
-      CHARACTER*(*) OPTION
+      CHARACTER*16  OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 06/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DKT
 C     ------------------------------------------------------------------
@@ -57,7 +57,6 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8       FLEX(81),MEMB(36),MEFL(54)
       REAL*8       BSIGTH(24), ENERTH, CTOR
       LOGICAL      ELASCO, INDITH
-      CHARACTER*8  TYPELE
 C     ------------------ PARAMETRAGE TRIANGLE --------------------------
       INTEGER   NPG,NC,NNO
       INTEGER   LDETJ,LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN
@@ -79,13 +78,7 @@ C     ------------------ PARAMETRAGE TRIANGLE --------------------------
 C     ------------------------------------------------------------------
       ENERTH = 0.0D0
 C
-      IF ( GRILLE ) THEN
-         CALL JEVETE('&INEL.MEGRDKT .DESR','E',LZR)
-         TYPELE = 'MEGRDKT'
-      ELSE
-         CALL JEVETE('&INEL.MEDKTR3 .DESR','E',LZR)
-         TYPELE = 'MEDKTR3'
-      ENDIF
+      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR','E',LZR)
 C
       CALL JEVECH('PCACOQU','L',JCOQU)
 C
@@ -157,7 +150,7 @@ C
          CALL JEVECH('PDEPLAR','L',JDEPG)
          CALL UTPVGL(3,6,PGL,ZR(JDEPG),DEPL)
          CALL DXTLOE(FLEX,MEMB,MEFL,CTOR,MULTIC,DEPL,ENER)
-         CALL BSTHPL(TYPELE,BSIGTH,INDITH)
+         CALL BSTHPL(NOMTE(1:8),BSIGTH,INDITH)
          IF (INDITH) THEN
            DO 20 I = 1, 18
             ENERTH = ENERTH + DEPL(I)*BSIGTH(I)

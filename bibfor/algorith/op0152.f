@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C     --- FIN DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*8   CHAR,NUMGEN,MODGEN, NOMTMP,MATGEN,LPAIN(2),LPAOUT(1)
       CHARACTER*9   OPTION
       CHARACTER*14  NU,NUM,NUDDL
-      CHARACTER*16  TYPE(3),RK16
+      CHARACTER*16  RK16
       CHARACTER*16  TYPRES,NOMCOM
       CHARACTER*19  CH19,VECSO1,VECSO2
       CHARACTER*19  MAX,MAY,MAZ,VESTO1,VESTO2,CHAMNO,PHIB19
@@ -76,7 +76,6 @@ C     --- FIN DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*72  K72B
       COMPLEX*16    C16B,CBID
 C -----------------------------------------------------------------
-       DATA TYPE /'DEPL','VITE','ACCE'/
        DATA NOMCMP /'INST    ','DELTAT  ','THETA   ',
      &             'KHI     ','R       ','RHO     '/
        DATA TPS    /0.0D0,2*1.0D0,3*0.0D0/
@@ -198,7 +197,7 @@ C--------- RECUPERATION DU MATERIAU FLUIDE----------------------------
 
 C--------CALCUL DE LA MATRICE ASSEMBLEE DE RIGIDITE DU FLUIDE---------
 
-        CALL RIGFLU(MOFLUI,TIME,NOMCMP,TYPE,TPS,N2,CHAR,MATE,SOLVEU,
+        CALL RIGFLU(MOFLUI,TIME,NOMCMP,TPS,N2,CHAR,MATE,SOLVEU,
      &              MA,NU)
 
 C=====================================================================
@@ -336,7 +335,7 @@ C OU BIEN CAS DE MODES RESTITUES SUR MAILLAGE SQUELETTE
              NBMO=NBMODE
          ENDIF
 
-        CALL MAMODG(MODEL,NOMSTO,NOMNUM,NOMRES,ITXSTO,ITYSTO,ITZSTO,
+        CALL MAMODG(MODEL,NOMSTO,NOMRES,ITXSTO,ITYSTO,ITZSTO,
      &              IPRSTO,IADIRG,NBMO,MAX,MAY,MAZ,NBLOC)
        ELSE
 

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/10/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,13 +44,20 @@ C     ------------------
       PARAMETER (NMAXOB=30)
       INTEGER ADOBJ(NMAXOB)
       CHARACTER*24 NOOBJ(NMAXOB)
-      CHARACTER*1 K1BID
+      CHARACTER*1 K1BID,BASE
       CHARACTER*8 EXIELE
 
 C DEB-------------------------------------------------------------------
 
       CALL DISMOI('F','EXI_ELEM',LIGREL,'LIGREL',IBID,EXIELE,IERD)
-      IF (EXIELE(1:3).EQ.'NON') GO TO 20
+      IF (EXIELE(1:3).EQ.'OUI') THEN
+        CALL JELIRA(LIGREL//'.LIEL','CLAS',IBID,BASE)
+      ELSE
+C       -- UN LIGREL QUI N'A PAS D'ELEMENTS VIENT FORCEMENT
+C          D'UN MODELE QUI DOIT AVOIR DES SOUS-STRUCTURES STATIQUES
+        CALL JELIRA(LIGREL(1:8)//'.SSSA','CLAS',IBID,BASE)
+        GO TO 20
+      END IF
 
       CALL JELIRA(LIGREL//'.LIEL','NUTIOC',NGR,K1BID)
       DO 10 IGREL = 1,NGR
@@ -58,7 +65,7 @@ C DEB-------------------------------------------------------------------
    10 CONTINUE
 
    20 CONTINUE
-      CALL CREPRN(LIGREL,' ','G',LIGREL(1:19)//'.PRNM',
+      CALL CREPRN(LIGREL,' ',BASE,LIGREL(1:19)//'.PRNM',
      &            LIGREL(1:19)//'.PRNS')
 
    30 CONTINUE

@@ -1,13 +1,13 @@
-      SUBROUTINE MTCONL(NBCOMB,TYPCST,CONST,TYPMAT,LMAT,TYPRES,LRES)
+      SUBROUTINE MTCONL(NBCOMB,TYPCST,CONST,LMAT,TYPRES,LRES)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER           NBCOMB,                    LMAT(*),    LRES
-      CHARACTER*(*)            TYPCST(*),   TYPMAT(*)
+      CHARACTER*(*)            TYPCST(*)
       CHARACTER*(*)                                     TYPRES
       REAL*8                          CONST(*)
       CHARACTER*1 TYPREZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/01/97   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,6 @@ C     -----------------------------------------------------------------
 C IN  NBCOMB : I : NOMBRE DE MATRICES A COMBINER
 C IN  TYPCST : K1: TYPE DES CONSTANTES (R OU C)
 C IN  CONST  : R : TABLEAU DE R*8    DES COEFICIENTS
-C IN  TYPMAT : K1: TYPE DES MATRICES   (R OU C)
 C IN  LMAT   : I : TABLEAU DES POINTEURS DES MATRICES
 C IN  TYPRES : K1: TYPE DES MATRICES   (R OU C)
 C IN  LRES   : I : POINTEUR DE MATRICE RESULTAT

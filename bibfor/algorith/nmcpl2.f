@@ -1,7 +1,7 @@
       SUBROUTINE NMCPL2(COMPOR,TYPMOD,OPTION,OPTIO2,CP,NVV,CRIT,DEPS,
      &                  DSIDEP,NDIM,SIGP,VIP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/07/2000   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 02/03/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,24 +41,25 @@ C VAR SIGP    : CONTRAINTES A L'INSTANT ACTUEL
 C VAR VIP     : LES 4 DERNIERES SONT RELATIVES A LA METHODE DE BORST 
 
       IMPLICIT NONE
-      INTEGER      NDIMSI,K,L,IRET,NDIM,NVV,NBVARI
+      INTEGER      NDIMSI,K,L,IRET,NDIM,NVV,NBVARI,CP
       CHARACTER*8  TYPMOD(*)
       CHARACTER*16 OPTION,OPTIO2
       CHARACTER*16       COMPOR(*)
       REAL*8       VIP(*),DEPZZ,DEPS(*),RAC2,CRIT(3),DSIDEP(6,6),SIGP(*)
-      LOGICAL CP,MATRIC,VECTEU
+      REAL*8 DEPY,DEPZ,D11,D22,D33,D12,D13,D21,D23,D31,D32,DELTA,DY,DZ
+      REAL*8 SIGY,SIGZ,DEPX,SIGX,VIP1,VIP2,VIP3,VIP4
+      LOGICAL MATRIC,VECTEU
 
-      REAL*8 D22,D21EPS,SCM(4),SIGPEQ,PRECR
+      REAL*8 D21EPS,SCM(4),SIGPEQ,PRECR
 
       RAC2 = SQRT(2.D0)
       NDIMSI = 2*NDIM
       IRET=0
 
-C    MATRIC = OPTION .EQ. 'FULL_MECA' .OR. OPTION .EQ. 'RIGI_MECA_TANG'
-      MATRIC = OPTION .EQ. 'FULL_MECA' 
+C     MATRIC = OPTION .EQ. 'FULL_MECA' .OR. OPTION .EQ. 'RIGI_MECA_TANG'
       VECTEU = OPTION .EQ. 'FULL_MECA' .OR. OPTION .EQ. 'RAPH_MECA'
 
-      IF (CP) THEN
+      IF (CP.EQ.2) THEN
 C        ON REMET LES CHOSES DANS L'ETAT OU ON LES A TROUVEES
          NBVARI=NVV+4
          WRITE (COMPOR(2),'(I16)') NBVARI
@@ -95,7 +96,8 @@ C        ON REMET LES CHOSES DANS L'ETAT OU ON LES A TROUVEES
 
          ENDIF
 
-         IF (MATRIC) THEN
+C         IF (MATRIC) THEN
+          IF ( OPTION .EQ. 'FULL_MECA') THEN 
             DO 136 K=1,NDIMSI
 
                IF (K.EQ.3) GO TO 136
@@ -110,6 +112,74 @@ C        ON REMET LES CHOSES DANS L'ETAT OU ON LES A TROUVEES
  137           CONTINUE
  136        CONTINUE
 
+         ENDIF
+         
+      ELSEIF (CP.EQ.1) THEN
+      
+C        ON REMET LES CHOSES DANS L'ETAT OU ON LES A TROUVEES
+         NBVARI=NVV+4
+         WRITE (COMPOR(2),'(I16)') NBVARI
+         TYPMOD(1)='COMP1D'
+         OPTION=OPTIO2
+         IRET=0
+
+            DEPX=DEPS(1)
+            DEPY=DEPS(2)
+            DEPZ=DEPS(3)
+            D11=DSIDEP(1,1)
+            D12=DSIDEP(1,2)
+            D13=DSIDEP(1,3)
+            D21=DSIDEP(2,1)
+            D22=DSIDEP(2,2)
+            D23=DSIDEP(2,3)
+            D31=DSIDEP(3,1)
+            D32=DSIDEP(3,2)
+            D33=DSIDEP(3,3)
+
+            DELTA=D22*D33-D32*D23
+            DY=D23*D31-D21*D33
+            DZ=D32*D21-D31*D22
+            SIGX=SIGP(1)
+            SIGY=SIGP(2)
+            SIGZ=SIGP(3)
+            
+         IF (VECTEU) THEN
+            VIP1=DEPY+(D23*SIGZ-D33*SIGY-DY*DEPX)/DELTA
+            VIP2=DY/DELTA
+            VIP3=DEPZ+(D32*SIGY-D22*SIGZ-DZ*DEPX)/DELTA
+            VIP4=DZ/DELTA
+
+            VIP(NVV+1)=VIP1
+            VIP(NVV+2)=VIP2
+            VIP(NVV+3)=VIP3
+            VIP(NVV+4)=VIP4
+
+            SCM(1)=(D12*D23-D22*D13)*SIGZ+(D13*D32-D12*D33)*SIGY
+            SCM(1)=SCM(1)/DELTA
+            SCM(2)=0.D0
+            SCM(3)=0.D0
+            SCM(4)=0.D0
+
+            DO 140 K=1,NDIMSI
+               SIGP(K)=SIGP(K)+SCM(K)
+ 140        CONTINUE
+
+            SIGPEQ=0.D0
+            DO 141 K = 1,NDIMSI
+              SIGPEQ     = SIGPEQ + SIGP(K)**2
+ 141        CONTINUE
+ 
+C            SIGPEQ = SQRT(SIGPEQ)
+            SIGPEQ = ABS(SIGX)
+            PRECR=CRIT(3)*SIGPEQ
+            IF (ABS(SIGP(2)).GT.PRECR) IRET=3
+            IF (ABS(SIGP(3)).GT.PRECR) IRET=3
+
+         ENDIF
+
+C         IF (MATRIC) THEN
+          IF ( OPTION .EQ. 'FULL_MECA') THEN 
+             DSIDEP(1,1)=D11+(D12*DY+D13*DZ)/DELTA
          ENDIF
 
       ENDIF

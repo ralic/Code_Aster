@@ -1,6 +1,6 @@
       SUBROUTINE TE0290 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,12 +27,9 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
-      CHARACTER*24       CARAC
-      CHARACTER*8        ELREFE
-      REAL*8             COOR(8),DX(4),DY(4),NX(9),NY(9),LON(4),SENS
+      REAL*8             COOR(8),DX(4),DY(4),NX(9),NY(9),SENS
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -47,24 +44,11 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*6        PGC
-      COMMON  / NOMAJE / PGC
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CALL ELREF1(ELREFE)
       CALL JEMARQ()
 
-
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,' ',ICARAC)
-      NNO=ZI(ICARAC)
-      IF(NOMTE(5:6).EQ.'QU') THEN
-         NSOM = 4
-      ELSE IF(NOMTE(5:6).EQ.'TR') THEN
-         NSOM = 3
-      ELSE
-      CALL UTMESS('F','TE0290','ELEMENT NON 2D: PAS DE CALC_NOEU_BORD')
-      ENDIF
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NSOM,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PVECTUR','E',IVECTU)

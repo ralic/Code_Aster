@@ -1,9 +1,8 @@
-        SUBROUTINE STKTIT(IFL,ICL,IV,RV,CV,CNL,MCL,NBM,NLT,TIT,
-     +                    DIM,IRTETI)
+        SUBROUTINE STKTIT(IFL,ICL,IV,RV,CV,CNL,MCL,NBM,NLT,TIT,IRTETI)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +25,6 @@ C       ----------------------------------------------------------------
 C       IN      IFL,ICL,IV,RV,CV,CNL = VOIR LIRITM
 C               MCL             = MOTS CLES TYPE TITRE
 C               NBM             = NB DE MOTS CLES TYPE TITRE
-C               DIM             = DIMENSION OBJET TITRE (INUTILE ICI)
 C               TIT             = NOMU//'           .TITR'
 C               NLT             = NUMERO LIGNE COURANTE DU TITRE
 C       OUT     (RETURN)        = MOT CLE SUIVANT (MOT CLE NON RECONNU)
@@ -35,7 +33,7 @@ C               (RETURN 2)      = LIGNE SUIVANTE  (MOT CLE FINSF TROUVE
 C                                                  OU ERREUR DETECTE)
 C       ----------------------------------------------------------------
 C
-        INTEGER         DEBLIG, DIM(NBM)
+        INTEGER         DEBLIG
         REAL*8          RV
         CHARACTER*8     MCL(NBM)
         CHARACTER*14    CNL
@@ -65,7 +63,6 @@ C
       CALL JEMARQ()
         PGC = 'OP0001'
         IRTETI = 0
-        IFM = IUNIFI('MESSAGE')
 C
 C - ITEM = MOT CLE TYPE TITRE ?
 C
@@ -79,7 +76,7 @@ C
 C - LIRE LIGNE SUIVANTE
 C
  4      CONTINUE
-        CALL LIRLIG(IFL,IFM,CNL,LIG,2)
+        CALL LIRLIG(IFL,CNL,LIG,2)
 C
 C - LIRE PREMIER ITEM DE LA LIGNE
 C

@@ -1,4 +1,8 @@
       SUBROUTINE DXTEMP ( NOMTE, TSUP, TINF, TMOY, INDITH )
+      IMPLICIT  NONE
+      REAL*8        TMOY(4), TINF(4), TSUP(4)
+      LOGICAL       INDITH
+      CHARACTER*16  NOMTE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,12 +20,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT  NONE
-      REAL*8        TMOY(4), TINF(4), TSUP(4)
-      LOGICAL       INDITH
-      CHARACTER*16  NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C     CALCUL DES TEMPERATURES AUX NOEUDS POUR LES ELEMENTS DE PLAQUE
 C     DKT, DST, DKQ, DSQ ET Q4G A PARTIR DE LA DONNEE DES TEMPERATURES
 C     EN ENTREE DE L'OPTION NON LINEAIRE .
@@ -50,10 +50,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER       I, IBID, IER, ITEMP, JCARA, LZI, NNO, ITAB(8), IRET
+      INTEGER       I, IBID, IER, ITEMP, JCARA, NNO, ITAB(8), IRET
       REAL*8        DEUX, EPAIS, TINF1, TMOY1, TSUP1, VALPU(2), ZERO
       CHARACTER*8   NOMPU(2)
-      CHARACTER*24  DESI
 C     ------------------------------------------------------------------
 C
 C --- INITIALISATIONS :
@@ -74,9 +73,18 @@ C     ------------------------------------------
       CALL JEVECH('PCACOQU','L',JCARA)
       EPAIS  = ZR(JCARA)
 C
-      DESI = '&INEL.'//NOMTE(1:8)//'.DESI'
-      CALL JEVETE(DESI,'L',LZI)
-      NNO = ZI(LZI)
+      IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
+     +    NOMTE(1:8).EQ.'MEGRDKT'  .OR. NOMTE(1:8).EQ.'MEDKTG3 ') THEN
+         NNO = 3
+      ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEDKQG4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEQ4QU4 ') THEN
+        NNO = 4
+      ELSE
+          CALL UTMESS('F','DXTEMP','LE TYPE D''ELEMENT : '//NOMTE(1:8)//
+     +                'N''EST PAS PREVU.')
+      END IF
 C
 C --- RECUPERATION DE LA TEMPERATURE :
 C     ==============================

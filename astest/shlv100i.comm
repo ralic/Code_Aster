@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 09/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE REPONSE HARMONIQUE CYLINDRE EN D.P. (TRIA6 QUAD8) AXISYM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -98,16 +98,28 @@ KHA=FACT_LDLT(      reuse=KHA,   MATR_ASSE=KHA                              )
 DEPLA=RESO_LDLT(         MATR_FACT=KHA,
                              CHAM_NO=VAS                              )
 
-SIGMA=CALC_CHAM_ELEM(       MODELE=MO,
-                           DEPL=DEPLA,
-                              OPTION='SIGM_ELNO_DEPL',
-                          CHAM_MATER=CM                               )
+DEP=CREA_RESU(OPERATION='AFFE',
+              TYPE_RESU='EVOL_ELAS',
+              NOM_CHAM='DEPL',
+              AFFE=_F(CHAM_GD=DEPLA,
+                      INST=0.,
+                      ),
+                );
+                
+
+DEP=CALC_ELEM(reuse=DEP, RESULTAT=DEP,
+              MODELE=MO,
+              OPTION='SIGM_ELNO_DEPL',
+              INST=0.,
+              CHAM_MATER=CM                               )
 
 #--------------------------------------------------------------------
 RELEVE_1=POST_RELEVE_T( 
         ACTION=_F(  INTITULE = 'EXT_SIGM',
                  NOEUD = ('N8', 'N174', 'N5', 'N170', 'N3', 'N159',),
-                 CHAM_GD = SIGMA,
+                 RESULTAT = DEP,
+                 INST=0.,
+                 NOM_CHAM='SIGM_ELNO_DEPL',
                  NOM_CMP = ('SIXX', 'SIYY', 'SIZZ', 'SIXY',),
                  OPERATION = 'EXTRACTION') )
 
@@ -140,64 +152,88 @@ TEST_RESU(CHAM_NO=(
             _F(  CHAM_GD = DEPLA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
            GROUP_NO = 'F',        NOM_CMP = 'DX',           VALE = 4.6716E-3),
             _F(  CHAM_GD = DEPLA,    CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
-           GROUP_NO = 'F',        NOM_CMP = 'DY',           VALE = 0.)),CHAM_ELEM=(
+           GROUP_NO = 'F',        NOM_CMP = 'DY',           VALE = 0.)),RESU=(
 
 
    # CONTRAINTES
 
               
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M2',     GROUP_NO = 'A',        NOM_CMP = 'SIXX',         VALE = -1.),
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M2',     GROUP_NO = 'A',        NOM_CMP = 'SIYY',         VALE = 0.20055),
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M2',     GROUP_NO = 'A',        NOM_CMP = 'SIZZ',         VALE = 1.6685),
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
 MAILLE = 'M2',     GROUP_NO = 'A',        NOM_CMP = 'SIXY',         VALE = 0.),
 #
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
 MAILLE = 'M59',     GROUP_NO = 'B',        NOM_CMP = 'SIXX',        VALE = 0.),
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M59',     GROUP_NO = 'B',        NOM_CMP = 'SIYY',        VALE = 0.20021),
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M59',     GROUP_NO = 'B',        NOM_CMP = 'SIZZ',        VALE = 0.66738),
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
 MAILLE = 'M59',     GROUP_NO = 'B',        NOM_CMP = 'SIXY',        VALE = 0.),
 #
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M1',     GROUP_NO = 'C',        NOM_CMP = 'SIXX',         VALE = -1.),
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M1',     GROUP_NO = 'C',        NOM_CMP = 'SIYY',         VALE = 0.20055),
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M1',     GROUP_NO = 'C',        NOM_CMP = 'SIZZ',         VALE = 1.6685),
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
 MAILLE = 'M1',     GROUP_NO = 'C',        NOM_CMP = 'SIXY',         VALE = 0.),
 #
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
 MAILLE = 'M55',     GROUP_NO = 'D',        NOM_CMP = 'SIXX',        VALE = 0.),
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M55',     GROUP_NO = 'D',        NOM_CMP = 'SIYY',        VALE = 0.20021),
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M55',     GROUP_NO = 'D',        NOM_CMP = 'SIZZ',        VALE = 0.66738),
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
 MAILLE = 'M55',     GROUP_NO = 'D',        NOM_CMP = 'SIXY',        VALE = 0.),
 #   
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M1',     GROUP_NO = 'E',        NOM_CMP = 'SIXX',         VALE = -1.),
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M1',     GROUP_NO = 'E',        NOM_CMP = 'SIYY',        VALE = 0.20055),
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M1',     GROUP_NO = 'E',        NOM_CMP = 'SIZZ',         VALE = 1.6685),
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
 MAILLE = 'M1',     GROUP_NO = 'E',        NOM_CMP = 'SIXY',         VALE = 0.),
 #
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
 MAILLE = 'M56',     GROUP_NO = 'F',        NOM_CMP = 'SIXX',        VALE = 0.),
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M56',     GROUP_NO = 'F',        NOM_CMP = 'SIYY',        VALE = 0.20021),
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M56',     GROUP_NO = 'F',        NOM_CMP = 'SIZZ',        VALE = 0.66738),
-            _F(  CHAM_GD = SIGMA,    CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+            _F(  RESULTAT = DEP , INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
 MAILLE = 'M56',     GROUP_NO = 'F',        NOM_CMP = 'SIXY',        VALE = 0.))
 #
 

@@ -1,8 +1,8 @@
-       SUBROUTINE NIFN3G(NNO1  , NNO2  , NPG   , POIDSG, VFF1  , VFF2  ,
-     &                   DFDE1 ,DFDN1, DFDK1 ,  DFDI, GEOM  ,  SIG   ,
+       SUBROUTINE NIFN3G(NNO1  , NNO2  , NPG   , IPOIDS, IVF1  , IVF2  ,
+     &                   IDFDE1 ,  DFDI, GEOM  ,  SIG   ,
      &                   DEPLM,GONFLM, FINTU , FINTA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/08/2003   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,9 +21,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
        IMPLICIT NONE
-       INTEGER       NNO1,NNO2, NPG
-       REAL*8        DFDE1(*),DFDN1(*),DFDK1(*)
-       REAL*8        POIDSG(NPG), VFF1(NNO1,NPG),VFF2(NNO2,NPG)
+       INTEGER       NNO1,NNO2,NPG,IPOIDS,IVF1,IVF2,IDFDE1
        REAL*8        GEOM(3,NNO1),DFDI(NNO1,3)
        REAL*8        SIG(7,NPG)
        REAL*8        FINTU(3,20), FINTA(2,8)
@@ -52,7 +50,22 @@ C OUT DFDI    : DERIVEE DES FONCTIONS DE FORME  AU DERNIER PT DE GAUSS
 C OUT FINTU   : FORCES INTERIEURES ASSOCIEES AU DEPLACEMENT
 C OUT FINTA   : FORCES INTERIEURES ASSOCIEES A LA PRESSION ET GONFLEMENT
 C......................................................................
-
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       LOGICAL      GRAND, AXI
       INTEGER      KPG,N,I,IND(3,3)
       REAL*8       TMP, RBID,POIDS,POIDS0,GM,JM
@@ -82,18 +95,18 @@ C - CALCUL POUR CHAQUE POINT DE GAUSS
 C - CALCUL DU GONFLEMENT
         GM = 0.D0
         DO 1 N = 1, NNO2
-          GM = GM + VFF2(N,KPG)*GONFLM(2,N)
+          GM = GM + ZR(IVF2+N+(KPG-1)*NNO2-1)*GONFLM(2,N)
  1      CONTINUE
 
 C      CALCUL DES ELEMENTS GEOMETRIQUES
 C   CALCUL DU POIDS DU PT DE GAUSS CONFIG INITIALE ET FM
-        CALL NMGEOM(3,NNO1,AXI,GRAND,GEOM,KPG,POIDSG(KPG),
-     &              VFF1(1,KPG),DFDE1,DFDN1,DFDK1,DEPLM,POIDS0,DFDI,
+        CALL NMGEOM(3,NNO1,AXI,GRAND,GEOM,KPG,IPOIDS,
+     &              IVF1,IDFDE1,DEPLM,POIDS0,DFDI,
      &              FM,EPSBID,RBID)
 
 C     CALCUL DE DFDI SUR LA CONFIGURATION ACTUELLE
-        CALL NMGEOM(3,NNO1,AXI,GRAND,GEOMM,KPG,POIDSG(KPG),
-     &              VFF1(1,KPG),DFDE1,DFDN1,DFDK1,DEPLM,POIDS,DFDI,
+        CALL NMGEOM(3,NNO1,AXI,GRAND,GEOMM,KPG,IPOIDS,
+     &              IVF1,IDFDE1,DEPLM,POIDS,DFDI,
      &              FBID,EPSBID,RBID)
 
 C   CALCUL DU GRADIENT DE LA TRANSFORMATION POUR LA LOI DE COMPORTEMENT
@@ -118,10 +131,10 @@ C        CALCUL DE FINT_U
 
 C        CALCUL DE FINT_P ET FINT_G
         DO  4 N = 1, NNO2
-          TMP = (JM - 1.D0 - GM)*VFF2(N, KPG)
+          TMP = (JM - 1.D0 - GM)*ZR(IVF2+N+(KPG-1)*NNO2-1)
           FINTA(1,N) = FINTA(1,N) + TMP*POIDS0
 
-          TMP = SIG(7,KPG)*VFF2(N,KPG)
+          TMP = SIG(7,KPG)*ZR(IVF2+N+(KPG-1)*NNO2-1)
           FINTA(2,N) = FINTA(2,N) + TMP*POIDS0
  4      CONTINUE
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 30/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,29 +97,6 @@ TEST_RESU(RESU=(
              NOEUD = 'NO763',  NOM_CMP = 'PRES',  VALE_C = ('MP',6.2426,15.2186,)))
             )
 
-DEPRES=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_C',
-NOM_CHAM='DEPL',  RESULTAT=DYNAHARM,  NUME_ORDRE=01)
-
-CHNODBEL=CALC_CHAM_ELEM(      MODELE=COLONNE,
-                              CHAM_MATER=CHAMPMAT,
-                               DEPL=DEPRES,
-                                  OPTION='PRES_DBEL_DEPL'
-                            )
-
-TEST_RESU(CHAM_ELEM=(
-             _F( CHAM_GD = CHNODBEL,
-              MAILLE = 'MA1',
-              NOEUD = 'NO1',   NOM_CMP = 'DB',  VALE = 109.9),
-             _F( CHAM_GD = CHNODBEL,
-              MAILLE = 'MA1',
-              NOEUD = 'NO780', NOM_CMP = 'DB',  VALE = 109.9),
-             _F( CHAM_GD = CHNODBEL,
-              MAILLE = 'MA57',
-              NOEUD = 'NO751', NOM_CMP = 'DB',  VALE = 109.9),
-             _F( CHAM_GD = CHNODBEL,
-              MAILLE = 'MA57',
-              NOEUD = 'NO763', NOM_CMP = 'DB',  VALE = 109.9))
-             )
 
 DYNAHARM=CALC_ELEM( reuse=DYNAHARM,     MODELE=COLONNE,   CHAM_MATER=CHAMPMAT,
                             TOUT_ORDRE='OUI',

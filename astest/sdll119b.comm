@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE FAISCEAU DE POUTRES SOUS EXCITATION FLUIDELASTIQUE AXIALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -225,55 +225,26 @@ TENSION=AFFE_CHAR_MECA(
                            )
 
 #
-#--------------------------------------------
-# CONSTITUTION ET ASSEMBLAGE DU VECTEUR FORCE
-#--------------------------------------------
-#
-
-VELT=CALC_VECT_ELEM( 
-                    CHARGE=TENSION,
-                CHAM_MATER=CHMAT,
-                 CARA_ELEM=CARA,
-                    OPTION='CHAR_MECA'
-                           )
-
-#
-
-VECT=ASSE_VECTEUR( 
-                VECT_ELEM=VELT,
-                 NUME_DDL=NUM
-                         )
-
-#
 #--------------------------------
 # RESOLUTION DU PROBLEME STATIQUE
 #--------------------------------
-#
 
-RAID=FACT_LDLT(   MATR_ASSE=MATR)
+RESU=MECA_STATIQUE(MODELE=MODELE,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARA,
+                   EXCIT=(_F(CHARGE=TENSION,),
+                          _F(CHARGE=CHARG,),),);
 
-#
-
-DEPL=RESO_LDLT( 
-                MATR_FACT=RAID,
-                  CHAM_NO=VECT
-                      )
-
-#
 #---------------------------------
 # CALCUL DES CONTRAINTES ASSOCIEES
 #---------------------------------
-#
 
-CONTR=CALC_CHAM_ELEM( 
-                    MODELE=MODELE,
-                      DEPL=DEPL,
-                    OPTION='SIEF_ELGA_DEPL',
-                 CARA_ELEM=CARA,
-                CHAM_MATER=CHMAT
-                           )
-
-#
+CONTR=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                 OPERATION='EXTR',
+                 RESULTAT=RESU,
+                 NOM_CHAM='SIEF_ELGA_DEPL',
+                 NUME_ORDRE=1,);
+                 
 #----------------------------------------------------
 # CONSTITUTION ET ASSEMBLAGE DE LA MATRICE DE RAIDEUR
 # POUTRES ROTULEES - ROTULEES SOUS PRE-CONTRAINTE
@@ -476,7 +447,7 @@ TEST_FONCTION(
                    FONCTION = AMOR_1,
                    VALE_PARA = 4.000000E+00,
                    VALE_REFE = 2.264757E-01,
-                   PRECISION = 1.E-05,
+                   PRECISION = 1.5E-05,
                    REFERENCE = 'NON_REGRESSION',
                    VERSION = '5.02.26')
                )
@@ -524,7 +495,7 @@ TEST_FONCTION(
                    FONCTION = AMOR_2,
                    VALE_PARA = 4.000000E+00,
                    VALE_REFE = 2.141491E-01,
-                   PRECISION = 1.E-05,
+                   PRECISION = 1.5E-05,
                    REFERENCE = 'NON_REGRESSION',
                    VERSION = '5.02.26')
                )

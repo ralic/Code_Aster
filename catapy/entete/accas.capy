@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF ENTETE  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,6 +20,7 @@ import Accas
 from Accas import *
 from Accas import _F
 import string
+import Numeric
 
 import ops
 
@@ -65,6 +66,7 @@ class char_cine_ther  (ASSD):pass
 class char_meca       (ASSD):pass
 class char_ther       (ASSD):pass
 class courbe          (ASSD):pass
+class fiss_xfem       (ASSD):pass
 class fond_fiss       (ASSD):pass
 class interf_dyna_clas(ASSD):pass
 class interspfact     (ASSD):pass
@@ -95,6 +97,19 @@ class listr8   (ASSD):
     return list(aster.getvectjev(vale))
 
 
+# post-traitement :
+#--------------------------------
+class post_comp_cham_el :
+  def __init__(self,valeurs,maille=None,point=None,sous_point=None) :
+    self.valeurs=valeurs
+    self.maille=maille
+    self.point=point
+    self.sous_point=sous_point
+
+class post_comp_cham_no :
+  def __init__(self,valeurs,noeud=None) :
+    self.valeurs=valeurs
+    self.noeud=noeud
 
 # maillage :
 #--------------------------------
@@ -144,11 +159,48 @@ class carte_temp_f   (carte):pass
 class carte_temp_r   (carte):pass
 class carte_var2_r   (carte):pass
 class carte_vnor_c   (carte):pass
+class carte_corr_r   (carte):pass
 
 
 # cham_gd/cham_elem :
 #--------------------------------
-class cham_elem(cham_gd):pass
+class cham_elem(cham_gd):
+
+  def EXTR_COMP(self,comp,lgma,topo=0) :
+    """ retourne les valeurs de la composante comp du champ sur la liste
+        de groupes de mailles lgma avec eventuellement l'info de la 
+        topologie si topo>0. Si lgma est une liste vide, c'est equivalent
+        a un TOUT='OUI' dans les commandes aster
+        Attributs retourne
+          - self.valeurs : Numeric.array contenant les valeurs
+        Si on a demande la topo  :
+          - self.maille  : numero de mailles
+          - self.point   : numero du point dans la maille
+          - self.sous_point : numero du sous point dans la maille """
+    
+  
+    ncham=self.get_name()
+    ncham=ncham+(8-len(ncham))*' '
+    nchams=ncham[0:7]+'S'
+    ncmp=comp+(8-len(comp))*' '
+    
+    aster.prepcompcham(ncham,nchams,ncmp,"EL      ",topo,lgma)
+    
+    valeurs=Numeric.array(aster.getvectjev(nchams+(19-len(ncham))*' '+'.V'))
+    
+    if (topo>0) :
+      maille=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.M'))
+      point=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.P'))
+      sous_point=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.SP'))
+    else :
+      maille=None
+      point=None
+      sous_point=None
+    
+    aster.prepcompcham("__DETR__",nchams,ncmp,"EL      ",topo,lgma)
+    
+    return post_comp_cham_el(valeurs,maille,point,sous_point)
+    
 class cham_elem_crit_r(cham_elem):pass
 class cham_elem_dbel_r(cham_elem):pass
 class cham_elem_depl_c(cham_elem):pass
@@ -183,7 +235,37 @@ class cham_elem_vnor_c(cham_elem):pass
 
 # cham_gd/cham_no :
 #--------------------------------
-class cham_no(cham_gd):pass
+class cham_no(cham_gd):  
+
+  def EXTR_COMP(self,comp,lgno,topo=0) :
+    """ retourne les valeurs de la composante comp du champ sur la liste
+        de groupes de noeuds lgno avec eventuellement l'info de la 
+        topologie si topo>0. Si lgno est une liste vide, c'est equivalent
+        a un TOUT='OUI' dans les commandes aster
+        Attributs retourne
+          - self.valeurs : Numeric.array contenant les valeurs
+        Si on a demande la topo (i.e. self.topo = 1) :
+          - self.noeud  : numero de noeud """
+    
+  
+    ncham=self.get_name()
+    ncham=ncham+(8-len(ncham))*' '
+    nchams=ncham[0:7]+'S'
+    ncmp=comp+(8-len(comp))*' '
+    
+    aster.prepcompcham(ncham,nchams,ncmp,"NO      ",topo,lgno)
+    
+    valeurs=Numeric.array(aster.getvectjev(nchams+(19-len(ncham))*' '+'.V'))
+    
+    if (topo>0) :
+      noeud=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.N'))
+    else :
+      noeud=None
+    
+    aster.prepcompcham("__DETR__",nchams,ncmp,"NO      ",topo,lgno)
+    
+    return post_comp_cham_no(valeurs,noeud)
+
 class cham_no_dbel_r   (cham_no):pass
 class cham_no_depl_c   (cham_no):pass
 class cham_no_depl_f   (cham_no):pass
@@ -378,4 +460,3 @@ class vect_elem_depl_r(vect_elem):pass
 class vect_elem_pres_c(vect_elem):pass
 class vect_elem_pres_r(vect_elem):pass
 class vect_elem_temp_r(vect_elem):pass
-

@@ -1,0 +1,42 @@
+#& MODIF COMMANDE  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,docu="U4.44.12-e",reentrant='f',
+            UIinfo={"groupes":("Modélisation",)},
+               fr="Définition des caratéristiques d''une fissure avec XFEM",
+
+    MODELE                =SIMP(statut='o',typ=modele),
+    DEFI_FISS             =FACT(statut='o',max=01,
+      regles              =(UN_PARMI('GROUP_MA_FISS','FONC_LT'),
+                            ENSEMBLE('FONC_LT','FONC_LN'),
+                            ENSEMBLE('GROUP_MA_FISS','GROUP_MA_FOND')),
+      FONC_LT             =SIMP(statut='f',typ=(fonction,formule) ),
+      FONC_LN             =SIMP(statut='f',typ=(fonction,formule) ),
+      GROUP_MA_FISS       =SIMP(statut='f',typ=grma,max=01),
+      GROUP_MA_FOND       =SIMP(statut='f',typ=grma),
+    ),
+    GROUP_MA_ENRI         =SIMP(statut='o',typ=grma,max=01),
+    ORIE_FOND             =FACT(statut='o',max=01,
+      PFON_INI            =SIMP(statut='o',typ='R',max=03),
+      VECT_ORIE           =SIMP(statut='o',typ='R',max=03),
+      PT_ORIGIN           =SIMP(statut='o',typ='R',max=03),
+    ),
+    INFO                  =SIMP(statut='f',typ='I',defaut= 1,into=(1,2,3,) ),
+
+)  ;

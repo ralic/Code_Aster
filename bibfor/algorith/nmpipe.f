@@ -1,10 +1,10 @@
       SUBROUTINE NMPIPE(MODELE, LIGRPI, CARTYP, CARETA, MATE  , COMPOR,
-     &                  VALMOI, DEPDEL, DDEPL0, DDEPL1, PROFCH, TAU   ,
-     &                  NBEFFE, ETA   , LICCVG, BORNE, TYPILO)
+     &                  VALMOI, DEPDEL, DDEPL0, DDEPL1, TAU   ,
+     &                  NBEFFE, ETA   , LICCVG, TYPILO)
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,10 +25,10 @@ C PROPRIETAIRE E.LORENTZ
 
       IMPLICIT NONE
 
-      INTEGER      LICCVG(2), NBEFFE
-      REAL*8       TAU, ETA(2),BORNE(2),TPS(6)
+      INTEGER      LICCVG, NBEFFE
+      REAL*8       TAU, ETA(2),TPS(6)
       CHARACTER*16 TYPILO
-      CHARACTER*19 DDEPL0, DDEPL1, PROFCH, LIGRPI, CARTYP, CARETA
+      CHARACTER*19 DDEPL0, DDEPL1, LIGRPI, CARTYP, CARETA
       CHARACTER*24 MODELE, MATE, COMPOR, VALMOI, DEPDEL
 
 C ----------------------------------------------------------------------
@@ -43,13 +43,11 @@ C IN  VALMOI K24 ETAT EN T-
 C IN  DEPDEL K24 INCREMENT DE DEPLACEMENT
 C IN  DDEPL0 K19 VARIATION DE DEPLACEMENT K-1.F0
 C IN  DDEPL1 K19 VARIATION DE DEPLACEMENT K-1.F1
-C IN  PROFCH K19 PROF_CHNO (POUR DETERMINER LES DDL PHYSIQUES)
 C IN  TAU    R8  SECOND MEMBRE DE L'EQUATION DE PILOTAGE
-C IN  BORNE   R8 BORNE(1) = ETAMAX ; BORNE(2) = ETAMIN ; R8VIDE SI NC
 C IN  TYPILO K16 TYPE PILOTAGE : PRED_ELAS OU DEFORMATION
 C OUT NBEFFE  I  NOMBRE DE SOLUTIONS EFFECTIVES
 C OUT ETA    R8  ETA_PILOTAGE
-C OUT LICCVG  I  VAUT 1 S'IL N'Y A PAS DE SOLUTION EXACTE, 0 SINON
+C OUT LICCVG  I  VAUT 1 S'IL N'Y A PAS DE SOLUTION, 0 SINON
 C ----------------------------------------------------------------------
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
@@ -73,11 +71,11 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
 
-      LOGICAL      EXIGEO,ESOLU,IND(5)
-      INTEGER      NBMA, NBPT, ICMP, MA, PT, NPG, NSOL, NDDL, I, NBGMAX
+      LOGICAL      EXIGEO,IND(5)
+      INTEGER      NBMA, NBPT, ICMP, MA, PT, NPG, NDDL, I, NBGMAX
       INTEGER      JCESD, JCESL, JCESV, JA0A1, JA0, JA1, JA2, JA3,JTRAV
       INTEGER      JDEPDE,JDEP0, JDEP1, IRET, IDEEQ,IBID, JA4
-      REAL*8       PROETA(2), NRM1, NRM2, FMAX, R8VIDE
+      REAL*8       NRM1, NRM2, R8VIDE
       COMPLEX*16   CBID
       CHARACTER*8  LPAIN(12), LPAOUT(1), K8BID,CPAR
       CHARACTER*19 COPILO, COPILS,CTAU
@@ -105,7 +103,7 @@ C    INITIALISATION
       CPAR='A0'
       CALL MECACT('V',CTAU,'LIGREL',LIGRPI,'PILO_R', 1, CPAR,
      &            IBID, TAU, CBID, K8BID)
-
+      LICCVG = 0
 
 C    CALCUL DES FORMES LINEAIRES LOCALES
 
@@ -175,46 +173,43 @@ C -- ESPACE MEMOIRE POUR LE TABLEAU A0,A1
 
 
 C -- LECTURE DES COMPOSANTES DU CHAM_ELEM_S
-      ESOLU=.TRUE.
-      FMAX=TAU
+C  -- A T ON REMPLI CODE-RETOUR ? OUI -> PAS DE SOLUTION
       DO 10 MA = 1,NBMA
         DO 20 PT = 1,NBPT
-C  -- A T ON REMPLI ETA ? OUI -> ON MAXIMISE
-          CALL CESEXI('C',JCESD,JCESL,MA,PT,1,1,JA0)
-          CALL CESEXI('C',JCESD,JCESL,MA,PT,1,5,JA1)
-          IF (JA1.NE.0) THEN
-            IF (ZR(JCESV-1 + JA1).NE.R8VIDE()) THEN
-              ESOLU=.FALSE.
-              IF (ZR(JCESV-1 + JA0).GT.FMAX) THEN
-                ETA(1)=ZR(JCESV-1 + JA1)
-                FMAX=ZR(JCESV-1 + JA0)
-              ENDIF
-            ENDIF
-          ENDIF
  20     CONTINUE
  10   CONTINUE
 
-      IF (ESOLU) THEN
-        ICMP = 0
-        DO 100 MA = 1,NBMA
-          DO 200 PT = 1,NBPT
-            CALL CESEXI('C',JCESD,JCESL,MA,PT,1,1,JA0)
-            CALL CESEXI('C',JCESD,JCESL,MA,PT,1,2,JA1)
-            CALL CESEXI('C',JCESD,JCESL,MA,PT,1,3,JA2)
-            CALL CESEXI('C',JCESD,JCESL,MA,PT,1,4,JA3)
-            IF (JA0.NE.0) THEN
-              ZR(JA0A1 + ICMP    ) = ZR(JCESV-1 + JA0)
-              ZR(JA0A1 + ICMP + 1) = ZR(JCESV-1 + JA1)
+      ICMP = 0
+      DO 100 MA = 1,NBMA
+        DO 200 PT = 1,NBPT
+          CALL CESEXI('C',JCESD,JCESL,MA,PT,1,1,JA0)
+          CALL CESEXI('C',JCESD,JCESL,MA,PT,1,2,JA1)
+          CALL CESEXI('C',JCESD,JCESL,MA,PT,1,3,JA2)
+          CALL CESEXI('C',JCESD,JCESL,MA,PT,1,4,JA3)
+          CALL CESEXI('C',JCESD,JCESL,MA,PT,1,5,JA4)
+
+C        LECTURE DU CODE RETOUR
+          IF (JA4.NE.0) THEN
+            IF (ZR(JCESV-1 + JA4).NE.R8VIDE()) THEN
+              LICCVG = 1
+              GOTO 9999
+            ENDIF
+          ENDIF
+
+C        COEFFICIENTS DE LA OU DES DROITES
+          IF (JA0.NE.0) THEN
+            ZR(JA0A1 + ICMP    ) = ZR(JCESV-1 + JA0)
+            ZR(JA0A1 + ICMP + 1) = ZR(JCESV-1 + JA1)
+            ICMP = ICMP+2
+            IF (ZR(JCESV-1 + JA2).NE.R8VIDE()) THEN
+              ZR(JA0A1 + ICMP ) = ZR(JCESV-1 + JA2)
+              ZR(JA0A1 + ICMP + 1) = ZR(JCESV-1 + JA3)
               ICMP = ICMP+2
-              IF (ZR(JCESV-1 + JA2).NE.R8VIDE()) THEN
-                ZR(JA0A1 + ICMP ) = ZR(JCESV-1 + JA2)
-                ZR(JA0A1 + ICMP + 1) = ZR(JCESV-1 + JA3)
-                ICMP = ICMP+2
-              ENDIF
-            END IF
- 200      CONTINUE
- 100    CONTINUE
-        NPG = ICMP / 2
+            ENDIF
+          END IF
+ 200    CONTINUE
+ 100  CONTINUE
+      NPG = ICMP / 2
 
 
 C ======================================================================
@@ -224,34 +219,13 @@ C ======================================================================
 
 C -- RESOLUTION DE L'EQUATION P(U(ETA)) = TAU
 
-        CALL PIPERE(NPG, ZR(JA0A1), TAU, NSOL, PROETA)
+      CALL PIPERE(NPG, ZR(JA0A1), TAU, NBEFFE, ETA)
 
-        IF (NSOL .EQ. 0) THEN
-          NBEFFE    = 1
-          LICCVG(1) = 1
-          ETA(1)    = PROETA(1)
-          CALL PIPEMI(NPG, ZI(JTRAV), ZR(JA0A1), ETA(1))
-
-C    UNE SOLUTION
-        ELSE IF (NSOL .EQ. 1) THEN
-          NBEFFE    = 1
-          LICCVG(1) = 0
-          ETA(1)    = PROETA(1)
-
-
-C    DEUX SOLUTIONS
-        ELSE IF (NSOL .EQ. 2) THEN
-          NBEFFE    = 2
-          ETA(1)    = PROETA(1)
-          ETA(2)    = PROETA(2)
-          LICCVG(1) = 0
-          LICCVG(2) = 0
-        END IF
-
-      ELSE
-        NBEFFE    = 1
-        LICCVG(1) = 1
-      ENDIF
-
+      IF (NBEFFE .EQ. 0) THEN
+        LICCVG = 1
+        GOTO 9999
+      END IF
+        
+ 9999 CONTINUE
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-#@ MODIF reca_algo Macro  DATE 04/07/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF reca_algo Macro  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +71,8 @@ class Dimension:
    
 #------------------------------------------
 def cond(matrix):
-    e=LinearAlgebra.eigenvalues(matrix)
+    e1=LinearAlgebra.eigenvalues(matrix)
+    e=map(abs,e1)
     size=len(e)
     e=Numeric.sort(e)
     try:
@@ -82,7 +83,7 @@ def cond(matrix):
 
 #-----------------------------------------
 def norm(matrix):
-    e=LinearAlgebra.eigenvalues(matrix)
+    e=LinearAlgebra.Heigenvalues(matrix)
     size=len(e)
     e=Numeric.sort(e)
     norm=e[size-1]
@@ -109,7 +110,7 @@ def temps_CPU(self,restant_old,temps_iter_old):
    # Fonction controlant le temps CPU restant
    CPU=INFO_EXEC_ASTER(LISTE_INFO = ("CPU_RESTANT",))
    TEMPS=CPU['CPU_RESTANT',1]
-   DETRUIRE(CONCEPT=_F(NOM='CPU'))
+   DETRUIRE(CONCEPT=_F(NOM='CPU'),INFO=1)
    err=0
    # Indique une execution interactive
    if (TEMPS>1.E+9):
@@ -129,7 +130,7 @@ def temps_CPU(self,restant_old,temps_iter_old):
             temps_iter=(temps_iter_old + (restant_old-restant))/2.
          if ((temps_iter>0.96*restant)or(restant<0.)):
             err=1
-            self.cr.fatal("Arret de MACR_RECAL par manque de temps CPU")
+            self.cr.fatal("<F> <MACR_RECAL> Arret de MACR_RECAL par manque de temps CPU")
    return restant,temps_iter,err
 
 
@@ -200,7 +201,7 @@ def Levenberg_bornes(self,val,Dim,val_init,borne_inf,borne_sup,A,erreur,l,ul_out
              res.write('\n\nval_ini= '+Numeric.array2string(val_init,array_output=1,separator=','))
              res.write('\n\nborne_inf= '+Numeric.array2string(borne_inf,array_output=1,separator=','))
              res.write('\n\nborne_sup= '+Numeric.array2string(borne_sup,array_output=1,separator=','))
-             self.cr.fatal("Erreur dans l'algorithme de bornes de MACR_RECAL")
+             self.cr.fatal("<F> <MACR_RECAL> Erreur dans l'algorithme de bornes de MACR_RECAL")
              return 
    newval=copy.copy(val+dval)
    return newval,s,l,Act

@@ -1,14 +1,14 @@
-      SUBROUTINE MEFINT(NBZ,NBCYL,NBGRP,NBMOD,NBNOE,NBDDL,IROT,NUMNOG,  
+      SUBROUTINE MEFINT(NBZ,NBGRP,NBMOD,NBNOE,NBDDL,IROT,NUMNOG,  
      &                  NBNOG,ZINT,DEFM,PHIX,PHIY,Z,NUM)                
       IMPLICIT REAL*8 (A-H,O-Z)                                         
 C                                                                       
-      INTEGER     NBZ,NBCYL,NBGRP,NBMOD,NBNOE,NBDDL                     
+      INTEGER     NBZ,NBGRP,NBMOD,NBNOE,NBDDL                     
       INTEGER     IROT(3),NUMNOG(NBGRP),NBNOG(NBGRP),NUM(NBZ)           
       REAL*8      ZINT(NBZ,NBGRP),DEFM(6*NBNOE,NBMOD),Z(*)              
       REAL*8      PHIX(NBZ,NBGRP,NBMOD),PHIY(NBZ,NBGRP,NBMOD)           
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/01/97   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,10 +36,9 @@ C     OPTION DE CALCUL   : CALC_FLUI_STRU , CALCUL DES PARAMETRES DE
 C     COUPLAGE FLUIDE-STRUCTURE POUR UNE CONFIGURATION DE TYPE "FAISCEAU
 C     DE TUBES SOUS ECOULEMENT AXIAL"                                   
 C ----------------------------------------------------------------------
-C IN  : NBZ    : NOMBRE DE NOEUDS DE LA DISCRETISATION AXIALE           
-C IN  : NBCYL  : NOMBRE DE CYLINDRES                                    
+C IN  : NBZ    : NOMBRE DE NOEUDS DE LA DISCRETISATION AXIALE
 C IN  : NBGRP  : NOMBRE DE GROUPES D EQUIVALENCE                        
-C IN  : NBMOD  : NOMBRE DE MODES                                        
+C IN  : NBMOD  : NOMBRE DE MODES                                  
 C IN  : NBNOE  : NOMBRE DE NOEUDS DU MAILLAGE                           
 C IN  : NBDDL  : NOMBRE DE DEGRES DE LIBERTE                            
 C IN  : IROT   : INDICE DE PERMUTATION CIRCULAIRE DU CHANGEMENT DE      

@@ -5,7 +5,7 @@
       CHARACTER*8         NOMIN  , NOMOUT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 21/12/98   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 29/01/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,7 +123,7 @@ C
       DO 300 K=1,NBEXT
          CALL CODENT(K,'G',NOMBA2(6:7))
          CALL CODENT(K,'G',NOMBA1(6:7))
-         CALL CPFILE (NOMBA2,NOMBA1)
+         CALL CPFILE ('M',NOMBA2,NOMBA1)
  300  CONTINUE
 C FIN ------------------------------------------------------------------
       END

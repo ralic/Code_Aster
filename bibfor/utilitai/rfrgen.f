@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/03/2003   AUTEUR BOYERE E.BOYERE 
+C MODIF UTILITAI  DATE 29/03/2004   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,14 +40,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      PARAMETER    (MXPARA=10)
-      INTEGER      IPAR(MXPARA)
       CHARACTER*1  TYPE,COLI,K1BID
       CHARACTER*4  INTERP(2), INTRES
       CHARACTER*8  K8B, CRIT, NOEUD, CMP, NOMA, NOMACC, NOMMOT, BASEMO
       CHARACTER*8  MONMOT(2), NOGNO
       CHARACTER*14 NUME
-      CHARACTER*16 NOMCMD, TYPCON, NOMCHA, NOMSY, NOMP(MXPARA)
+      CHARACTER*16 NOMCMD, TYPCON, NOMCHA, NOMSY
       CHARACTER*19 NOMFON, KNUME, KINST, RESU, MATRAS, FONCT
 C     ------------------------------------------------------------------
 C
@@ -148,17 +146,27 @@ C
          CALL JEVEUO(RESU//'.DESC','L',LDESC)
          NBMODE = ZI(LDESC+1)
          NOMSY = 'DEPL'
-         CALL VPRECU ( BASEMO, NOMSY,-1,IBID, '&&RFRGEN.VECTEUR.PROPRE',
-     +                 0, K8B, K8B,  K8B, K8B,
-     +                 NEQ, MXMODE, TYPE, NBPARI, NBPARR, NBPARK )
-         CALL JEVEUO('&&RFRGEN.VECTEUR.PROPRE','L',IDBASE)
-         IF ( TYPE .NE. 'R' ) THEN
-            CALL UTMESS('F',NOMCMD,
+         IF (MATRAS.NE.' ') THEN
+           CALL VPRECU ( BASEMO, NOMSY,-1,IBID, '&&RFRGEN.VECT.PROPRE',
+     +                   0, K8B, K8B,  K8B, K8B,
+     +                   NEQ, MXMODE, TYPE, NBPARI, NBPARR, NBPARK )
+           CALL JEVEUO('&&RFRGEN.VECT.PROPRE','L',IDBASE)
+           IF ( TYPE .NE. 'R' ) THEN
+              CALL UTMESS('F',NOMCMD,
      +               ' ON NE TRAITE PAS LE TYPE DE MODES "'//TYPE//'".')
-         ENDIF
+           ENDIF
 C
-         CALL DISMOI('F','NOM_NUME_DDL',MATRAS,'MATR_ASSE',IBID,NUME,IE)
-         CALL DISMOI('F','NOM_MAILLA'  ,MATRAS,'MATR_ASSE',IBID,NOMA,IE)
+           CALL DISMOI('F','NOM_NUME_DDL',MATRAS,'MATR_ASSE',IBID,NUME,
+     +                 IE)
+           CALL DISMOI('F','NOM_MAILLA'  ,MATRAS,'MATR_ASSE',IBID,NOMA,
+     +                 IE)
+         ELSE
+           NUME = ZK24(LREFE+1)(1:14)
+           CALL DISMOI('F','NOM_MAILLA',NUME,'NUME_DDL',IBID,NOMA,IE)
+           CALL DISMOI('F','NB_EQUA'   ,NUME,'NUME_DDL',NEQ,K8B,IE)
+           CALL WKVECT('&&RFRGEN.VECT.PROPRE','V V R',NEQ*NBMODE,IDBASE)
+           CALL COPMO2(BASEMO,NEQ,NUME,NBMODE,ZR(IDBASE))
+         ENDIF
          CALL GETVID(' ','GROUP_NO',0,1,1,NOGNO,NGN)
          IF (NGN.NE.0) THEN
            CALL JENONU(JEXNOM(NOMA//'.GROUPENO',NOGNO),IGN2)
@@ -192,37 +200,6 @@ C           --- ACCE_MONO_APPUI COMPATIBLE UNIQUEMENT AVEC ACCELERATION
                GOTO 9999
             ENDIF
             ZK16(LPRO+3)(5:8) = '_ABS'
-            CALL JEVEUO(FONCT//'.PROL','L',JPROL)
-            CALL FONBPA(FONCT,ZK16(JPROL),K8B,MXPARA,NBPF,NOMP)
-            IPAR(1) = 0
-            DO 20 I1 = 1,NBPF
-               IF (NOMP(I1).EQ.'INST') THEN
-                  IF (IPAR(1).EQ.0) THEN
-                     IPAR(1) = 1
-                  ELSE
-                     CALL UTDEBM('F','RFRGEN',
-     &                           'ERREUR A L''INTERPOLATION')
-                     CALL UTIMPK('S',' FONCTION: ',1,FONCT)
-                     CALL UTIMPK('L',' PARAMETRE: ',1,'INST')
-                     CALL UTIMPK('S',' EN DOUBLE.',0,' ')
-                     CALL UTFINM()
-                  ENDIF
-               ENDIF
- 20         CONTINUE
-            IF (IPAR(1).EQ.0) THEN
-               CALL UTDEBM('F','RFRGEN','ERREUR A L''INTERPOLATION')
-               CALL UTIMPK('S',' FONCTION: ',1,FONCT)
-               CALL UTIMPK('L',' PARAMETRES ATTENDUS:',1,'INST')
-               CALL UTIMPK('L',' PARAMETRES RECUS   :',NBPF,NOMP)
-               CALL UTFINM()
-            ENDIF
-            IF (ZK16(JPROL).EQ.'FONCTION') THEN
-               CALL JEVEUO(FONCT//'.VALE','L',JVAR)
-               CALL JELIRA(FONCT//'.VALE','LONUTI',NBPT,K1BID)
-               NBPT   = NBPT / 2
-               JFON   = JVAR + NBPT
-               IPT = 1
-            ENDIF
          ENDIF
 C        --------------------------------------------------------------
          CALL WKVECT(NOMFON//'.VALE','G V R',2*NBORDR,LVAR)
@@ -264,36 +241,13 @@ C
                ZR(LFON+IORDR) = ZR(LFON+IORDR) + REP
  100        CONTINUE
          ENDIF
-         CALL JEDETR( '&&RFRGEN.VECTEUR.PROPRE' )
+         CALL JEDETR( '&&RFRGEN.VECT.PROPRE' )
 C
 C        --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT ---
          IF (NFONCT.NE.0) THEN
             DO 110 I = 0, NBORDR-1
                IRET = 0
-               IF (ZK16(JPROL).EQ.'INTERPRE') THEN
-                  CALL FIINTE('F',FONCT,NBPF,IPAR,ZR(JINST+I),ALPHA,IER)
-               ELSEIF (ZK16(JPROL).EQ.'FONCTION') THEN
-                  CALL FOLOCX(ZR(JVAR),NBPT,ZR(JINST+I),
-     +                        ZK16(JPROL+4),IPT,EPSI,COLI,IRET)
-                  IF (IRET.NE.0) THEN
-                     CALL UTDEBM('F','RFRGEN',
-     +                           'PROBLEME RENCONTRE DANS FOLOCX')
-                     CALL UTIMPK('L',' POUR LA FONCTION: ',1,FONCT)
-                     CALL UTIMPI('L',' CODE RETOUR: ',1,IRET)
-                     CALL UTFINM()
-                  ENDIF
-                  CALL FOCOLI (IPT,COLI,ZK16(JPROL+1),ZR(JVAR),
-     +                         ZR(JFON),ZR(JINST+I),ALPHA,IRET,
-     +                         FONCT,ZK16(JPROL),MXPARA,NOMP,IPAR,
-     +                         'INST',1,ZR(JINST+I))
-                  IF (IRET.NE.0) THEN
-                     CALL UTDEBM('F','RFRGEN',
-     +                           'PROBLEME RENCONTRE DANS FOCOLI')
-                     CALL UTIMPK('L',' POUR LA FONCTION: ',1,FONCT)
-                     CALL UTIMPI('L',' CODE RETOUR: ',1,IRET)
-                     CALL UTFINM()
-                  ENDIF
-               ENDIF
+               CALL FOINTE('F',FONCT,1,'INST',ZR(JINST+I),ALPHA,IER)
 C              --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT ---
                ZR(LFON+I) = ZR(LFON+I) + ALPHA
  110        CONTINUE

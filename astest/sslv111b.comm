@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 12/11/2003   AUTEUR CIBHHLV L.VIVAN 
 # TITRE ESTIMATEUR D'ERREUR SUR UNE PLAQUE TROUEE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,8 +96,7 @@ RESU=CALC_ELEM(  reuse=RESU,      MODELE=MO,
                       CHAM_MATER=CM,
                         RESULTAT=RESU,
                       TOUT_ORDRE='OUI',
-                          OPTION=( 'SIEF_ELGA_DEPL',
-                                   'SIGM_NOZ1_ELGA', 'ERRE_ELEM_NOZ1',
+                          OPTION=( 'SIGM_NOZ1_ELGA', 'ERRE_ELEM_NOZ1',
                                    'SIGM_NOZ2_ELGA', 'ERRE_ELEM_NOZ2',
                                    'SIRE_ELNO_DEPL',
                                    'ERRE_ELGA_NORE',  )

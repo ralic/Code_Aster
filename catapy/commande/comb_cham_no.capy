@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 04/02/2004   AUTEUR CAMBIER S.CAMBIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,18 +19,18 @@
 # RESPONSABLE G8BHHXD X.DESROCHES
 def comb_cham_no_prod(COMB_R,COMB_C,COMB_FOURIER,**args):
   if COMB_C != None:
-    type_mat = AsType(COMB_C.get_child('CHAM_NO').get_valeur())
+    type_mat = AsType(COMB_C[0]['CHAM_NO'])
     if type_mat in  (cham_no_depl_c,cham_no_depl_r) : return cham_no_depl_c
     if type_mat in  (cham_no_temp_c,cham_no_temp_r) : return cham_no_temp_c
     if type_mat in  (cham_no_pres_c,cham_no_pres_r) : return cham_no_pres_c
   elif COMB_R != None:
-    type_mat = AsType(COMB_R.get_child('CHAM_NO').get_valeur())
+    type_mat = AsType(COMB_R[0]['CHAM_NO'])
     if type_mat in  (cham_no_depl_c,cham_no_depl_r) : return cham_no_depl_r
     if type_mat in  (cham_no_temp_c,cham_no_temp_r) : return cham_no_temp_r
     if type_mat in  (cham_no_pres_c,cham_no_pres_r) : return cham_no_pres_r
     if type_mat ==  matr_asse_gene_r : return matr_asse_gene_r
   elif COMB_FOURIER != None:
-    type_mat = AsType(COMB_FOURIER.get_child('CHAM_NO').get_valeur())
+    type_mat = AsType(COMB_FOURIER[0]['CHAM_NO'])
     if type_mat == cham_no_temp_r : return cham_no_temp_r
     if type_mat == cham_no_depl_r : return cham_no_depl_r
   raise AsException("type de concept resultat non prevu")

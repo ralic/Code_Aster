@@ -1,6 +1,6 @@
       SUBROUTINE JELIHD ( NOMF, FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 04/11/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -141,7 +141,7 @@ C ----------------------------------------------------------------------
       EQUIVALENCE     (IK32,K32),(IK8,K8)
       INTEGER          IGENR(1),ITYPE(1),IDOCU(1),IORIG(1),IRNOM(1)
       INTEGER          I,K,KTEMP1,KTEMP2,LON,LON2,IC,LCARAO,IADRS,LONOK
-      INTEGER          LONGJ,JJPREM,ITAB,JTAB
+      INTEGER          LONGJ,JJPREM,ITAB,JTAB,ICONV
       EQUIVALENCE     (IGENR,GENR),(ITYPE,TYPE),
      &                (IDOCU,DOCU),(IORIG,ORIG),(IRNOM,RNOM)
 C     ------------------------------------------------------------------
@@ -167,6 +167,7 @@ C DEB ------------------------------------------------------------------
       IPGCA = IPGC
       IPGC  = -2
 C
+      ICONV = 0
       KCLAS = CLAS
       KNOM  = NOMF
       KNOMF = NOMF
@@ -544,7 +545,7 @@ C
      &            (IDEHC+ISZON(JISZON+IADMI-1+ILOREP))*LOIS
             IRET1=HDFTSD(IDT2,TYPEB,LTYPB,NBVAL)
             KITAB=JK1ZON+(IADMI-1)*LOIS+ISZON(JISZON+IADMI-1+IDENO)+1
-            IRET1=HDFRSV(IDT2,NBVAL,K1ZON(KITAB))
+            IRET1=HDFRSV(IDT2,NBVAL,K1ZON(KITAB),ICONV)
             IADM(JIADM(IC)+IDOS) = IADMI
             ICLAS  = IC
             ICLAOS = IC

@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+# MODIF  DATE 05/04/2004   AUTEUR ASSIRE A.ASSIRE 
 # TITRE TOLE ONDULEE EN TRACTION (MISES ECR. ISOT. 2D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ ACIER=DEFI_MATERIAU(       ELAS=_F( E = 2000., NU = 0.3),
 
 CM=AFFE_MATERIAU(   MAILLAGE=M,  AFFE=_F( TOUT = 'OUI',MATER = ACIER))
 
-CH_LA=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
+CH_LIM=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
            _F( GROUP_NO = 'BOUT1',  DX = 0.),
            _F( GROUP_NO = 'PO',     DY = 0.))
            )
@@ -63,7 +63,7 @@ U2=STAT_NON_LINE(
                              _F( 
                 CHARGE = CH_FO,
                 FONC_MULT = RAMPE), _F( 
-                CHARGE = CH_LA)),
+                CHARGE = CH_LIM)),
                          COMP_INCR=_F( 
                 RELATION = 'VMIS_ISOT_LINE'),
                          INCREMENT=_F( 
@@ -118,6 +118,44 @@ TEST_RESU(RESU=(
          VALE = 5.7249254143005E+02))
          )
 
+
+#==============================================================
+# IMPRESSION DU RESULTAT SUR UN BOUT DU MAILLAGE 
+# ----------------------------------------------------------
+
+MA3=CREA_MAILLAGE( MAILLAGE=M,
+                   ECLA_PG=_F( MODELE = MO,
+                               SHRINK = 0.90,
+                               GROUP_MA='EXTR1',
+                               TAILLE_MIN = 0.1,
+                              )
+                  )
+
+#
+
+U3B=CREA_RESU( OPERATION='ECLA_PG', TYPE_RESU='EVOL_NOLI',
+            ECLA_PG=_F( MODELE_INIT = MO,
+                        RESU_INIT = U2,
+                        MAILLAGE = MA3,
+                        GROUP_MA='EXTR1',
+                        NOM_CHAM = ('SIEF_ELGA','VARI_ELGA',))
+                 )
+#
+
+TEST_RESU(RESU=(  
+       _F(  RESULTAT = U3B,    NUME_ORDRE = 1,
+         NOM_CHAM = 'SIEF_ELGA', TYPE_TEST = 'SOMM_ABS',
+         VALE = 4.6550E+02),
+       _F(  RESULTAT = U3B,    NUME_ORDRE = 5,
+         NOM_CHAM = 'SIEF_ELGA', TYPE_TEST = 'SOMM_ABS',
+         VALE = 2.3275E+03),
+       _F(  RESULTAT = U3B,    NUME_ORDRE = 5,
+         NOM_CHAM = 'VARI_ELGA', TYPE_TEST = 'SOMM_ABS',
+         VALE = 0.0000E+00))
+         )
+
+
+
 #==============================================================
 
 U2=STAT_NON_LINE( reuse=U2,
@@ -126,7 +164,7 @@ U2=STAT_NON_LINE( reuse=U2,
                              _F( 
                 CHARGE = CH_FO,
                 FONC_MULT = RAMPE), _F( 
-                CHARGE = CH_LA)),
+                CHARGE = CH_LIM)),
                          COMP_INCR=_F( 
                 RELATION = 'VMIS_ISOT_LINE'),
                          ETAT_INIT=_F( 
@@ -156,9 +194,9 @@ U2=CALC_ELEM( reuse=U2,
 TEST_RESU(RESU=(
 
     _F(  RESULTAT = U2,  NUME_ORDRE = 10,  NOM_CHAM = 'SIEF_ELNO_ELGA',
-    MAILLE = 'M1', NOEUD = 'N289',    NOM_CMP = 'SIXX',   VALE = 98.453),
+    MAILLE = 'M1', NOEUD = 'N249',    NOM_CMP = 'SIXX',   VALE = 98.453),
     _F(  RESULTAT = U2,  NUME_ORDRE = 10,  NOM_CHAM = 'VARI_ELNO_ELGA',
-    MAILLE = 'M13', NOEUD = 'N235',    NOM_CMP = 'V1',    VALE = 0.17870))
+    MAILLE = 'M13', NOEUD = 'N226',    NOM_CMP = 'V1',    VALE = 0.17870))
     )
 
 # =======================================================
@@ -177,7 +215,7 @@ V=STAT_NON_LINE(
                 EVOL_NOLI = U2),
 # CHARGE BIDON (ATTENTION: PAS DE CHARGE DE TYPE DIRICHLET)
                              EXCIT=_F( 
-                CHARGE = CH_LA),
+                CHARGE = CH_LIM),
                        CONVERGENCE=_F( 
                 ITER_GLOB_MAXI = 0,
 # CONVERGENCE BIDON
@@ -200,10 +238,11 @@ TEST_RESU(RESU=(
     PRECISION = 1.E-2, GROUP_NO = 'X',    NOM_CMP = 'DY',   VALE = -0.2804),
 
     _F(  RESULTAT = V,  NUME_ORDRE = 10,  NOM_CHAM = 'SIEF_ELNO_ELGA',
-    MAILLE = 'M1', NOEUD = 'N289',    NOM_CMP = 'SIXX',   VALE = 98.453),
+    MAILLE = 'M1', NOEUD = 'N249',    NOM_CMP = 'SIXX',   VALE = 98.453),
     _F(  RESULTAT = V,  NUME_ORDRE = 10,  NOM_CHAM = 'VARI_ELNO_ELGA',
-    MAILLE = 'M13', NOEUD = 'N235',    NOM_CMP = 'V1',    VALE = 0.17870))
+    MAILLE = 'M13', NOEUD = 'N226',    NOM_CMP = 'V1',    VALE = 0.17870))
     )
+
 
 FIN()
 #

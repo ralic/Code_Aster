@@ -6,22 +6,22 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
 C TOLE CRP_20
@@ -45,6 +45,9 @@ C DEB ------------------------------------------------------------------
 
       ELREFA = ELREFZ
 C     ------------------------------------------------------------------
+C LES ELEMENTS 3D
+C     ------------------------------------------------------------------
+
       IF (ELREFA.EQ.'HE8') THEN
         NDIM = 3
         NNO = 8
@@ -492,22 +495,328 @@ C     ------------------------------------------------------------------
         YIN(13) = -0.5D0
         ZIN(13) = +0.5D0
 
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFA.EQ.'TR3') THEN
+        NDIM = 2
+        NNO = 3
+        NNOS = 3
+        VOL = 1.D0/2.D0
+
+        NBFPG = 5
+        NBPG(1) = NNO
+        NBPG(2) = NNOS
+        NBPG(3) = 1
+        NBPG(4) = 3
+        NBPG(5) = 3
+        
+        FAPG(1) = 'NOEU'
+        FAPG(2) = 'NOEU_S'
+        FAPG(3) = 'FPG1'
+        FAPG(4) = 'FPG3'
+        FAPG(5) = 'COT3'
+
+        XIN(1) = 0.D0
+        YIN(1) = 0.D0
+
+        XIN(2) = +1.D0
+        YIN(2) =  0.D0
+
+        XIN(3) =  0.D0
+        YIN(3) = +1.D0
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFA.EQ.'TR6') THEN
+        NDIM = 2
+        NNO = 6
+        NNOS = 3
+        VOL = 1.D0/2.D0
+
+        NBFPG = 6
+        NBPG(1) = NNO
+        NBPG(2) = NNOS
+        NBPG(3) = 1
+        NBPG(4) = 3
+        NBPG(5) = 4
+        NBPG(6) = 6
+
+        FAPG(1) = 'NOEU'
+        FAPG(2) = 'NOEU_S'
+        FAPG(3) = 'FPG1'
+        FAPG(4) = 'FPG3'
+        FAPG(5) = 'FPG4'
+        FAPG(6) = 'FPG6'
+
+        XIN(1) = 0.D0
+        YIN(1) = 0.D0
+
+        XIN(2) = +1.D0
+        YIN(2) =  0.D0
+
+        XIN(3) =  0.D0
+        YIN(3) = +1.D0
+
+        XIN(4) = 0.5D0
+        YIN(4) = 0.D0
+
+        XIN(5) = 0.5D0
+        YIN(5) = 0.5D0
+
+        XIN(6) = 0.D0
+        YIN(6) = 0.5D0
+
+C     -------------------------------------------------------
+      ELSE IF (ELREFA.EQ.'TR7') THEN
+        NDIM = 2
+        NNO = 7
+        NNOS = 3
+        VOL  = 1.D0/2.D0
+
+        NBFPG = 5
+        NBPG(1) = NNO
+        NBPG(2) = NNOS
+        NBPG(3) = 1
+        NBPG(4) = 3
+        NBPG(5) = 6
+
+        FAPG(1) = 'NOEU'
+        FAPG(2) = 'NOEU_S'
+        FAPG(3) = 'FPG1'
+        FAPG(4) = 'FPG3'
+        FAPG(5) = 'FPG6'
+
+        XIN(1) = 0.D0
+        YIN(1) = 0.D0
+
+        XIN(2) = +1.D0
+        YIN(2) =  0.D0
+
+        XIN(3) =  0.D0
+        YIN(3) = +1.D0
+
+        XIN(4) = 0.5D0
+        YIN(4) = 0.D0
+
+        XIN(5) = 0.5D0
+        YIN(5) = 0.5D0
+
+        XIN(6) = 0.D0
+        YIN(6) = 0.5D0
+
+        XIN(7) = 1.0D0/3.0D0
+        YIN(7) = 1.0D0/3.0D0
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFA.EQ.'QU4') THEN
+        NDIM = 2
+        NNO = 4
+        NNOS = 4
+        VOL = 4.D0
+
+        NBFPG = 5
+        NBPG(1) = NNO
+        NBPG(2) = NNOS
+        NBPG(3) = 1
+        NBPG(4) = 4
+        NBPG(5) = 9
+
+        FAPG(1) = 'NOEU'
+        FAPG(2) = 'NOEU_S'
+        FAPG(3) = 'FPG1'
+        FAPG(4) = 'FPG4'
+        FAPG(5) = 'FPG9'
+
+        XIN(1) = -1.D0
+        YIN(1) = -1.D0
+
+        XIN(2) = +1.D0
+        YIN(2) = -1.D0
+
+        XIN(3) = +1.D0
+        YIN(3) = +1.D0
+
+        XIN(4) = -1.D0
+        YIN(4) = +1.D0
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFA.EQ.'QU8') THEN
+        NDIM = 2
+        NNO = 8
+        NNOS = 4
+        VOL = 4.D0
+
+        NBFPG = 5
+        NBPG(1) = NNO
+        NBPG(2) = NNOS
+        NBPG(3) = 1
+        NBPG(4) = 4
+        NBPG(5) = 9
+
+        FAPG(1) = 'NOEU'
+        FAPG(2) = 'NOEU_S'
+        FAPG(3) = 'FPG1'
+        FAPG(4) = 'FPG4'
+        FAPG(5) = 'FPG9'
+
+        XIN(1) = -1.D0
+        YIN(1) = -1.D0
+
+        XIN(2) = +1.D0
+        YIN(2) = -1.D0
+
+        XIN(3) = +1.D0
+        YIN(3) = +1.D0
+
+        XIN(4) = -1.D0
+        YIN(4) = +1.D0
+
+        XIN(5) = 0.D0
+        YIN(5) = -1.D0
+
+        XIN(6) = +1.D0
+        YIN(6) = +0.D0
+
+        XIN(7) = 0.D0
+        YIN(7) = +1.D0
+
+        XIN(8) = -1.D0
+        YIN(8) = +0.D0
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFA.EQ.'QU9') THEN
+        NDIM = 2
+        NNO = 9
+        NNOS = 4
+        VOL = 4.D0
+
+        NBFPG = 5
+        NBPG(1) = NNO
+        NBPG(2) = NNOS
+        NBPG(3) = 1
+        NBPG(4) = 4
+        NBPG(5) = 9
+
+        FAPG(1) = 'NOEU'
+        FAPG(2) = 'NOEU_S'
+        FAPG(3) = 'FPG1'
+        FAPG(4) = 'FPG4'
+        FAPG(5) = 'FPG9'
+
+        XIN(1) = -1.D0
+        YIN(1) = -1.D0
+
+        XIN(2) = +1.D0
+        YIN(2) = -1.D0
+
+        XIN(3) = +1.D0
+        YIN(3) = +1.D0
+
+        XIN(4) = -1.D0
+        YIN(4) = +1.D0
+
+        XIN(5) =  0.D0
+        YIN(5) = -1.D0
+
+        XIN(6) = +1.D0
+        YIN(6) = +0.D0
+
+        XIN(7) =  0.D0
+        YIN(7) = +1.D0
+
+        XIN(8) = -1.D0
+        YIN(8) = +0.D0
+
+        XIN(9) =  0.D0
+        YIN(9) =  0.D0
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFA.EQ.'SE2') THEN
+        NDIM = 1
+        NNO = 2
+        NNOS = 2
+        VOL = 2.D0
+
+        NBFPG = 6
+        NBPG(1) = NNO
+        NBPG(2) = NNOS
+        NBPG(3) = 1
+        NBPG(4) = 2
+        NBPG(5) = 3
+        NBPG(6) = 4
+        FAPG(1) = 'NOEU'
+        FAPG(2) = 'NOEU_S'
+        FAPG(3) = 'FPG1'
+        FAPG(4) = 'FPG2'
+        FAPG(5) = 'FPG3'
+        FAPG(6) = 'FPG4'
+
+        XIN(1) = -1.D0
+        XIN(2) = +1.D0
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFA.EQ.'SE3') THEN
+        NDIM = 1
+        NNO = 3
+        NNOS = 2
+        VOL = 2.D0
+
+        NBFPG = 6
+        NBPG(1) = NNO
+        NBPG(2) = NNOS
+        NBPG(3) = 1
+        NBPG(4) = 2
+        NBPG(5) = 3
+        NBPG(6) = 4
+        FAPG(1) = 'NOEU'
+        FAPG(2) = 'NOEU_S'
+        FAPG(3) = 'FPG1'
+        FAPG(4) = 'FPG2'
+        FAPG(5) = 'FPG3'
+        FAPG(6) = 'FPG4'
+
+        XIN(1) = -1.D0
+        XIN(2) = +1.D0
+        XIN(3) = 0.D0
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFA.EQ.'SE4') THEN
+        NDIM = 1
+        NNO = 4
+        NNOS = 2
+        VOL = 2.D0
+
+        NBFPG = 6
+        NBPG(1) = NNO
+        NBPG(2) = NNOS
+        NBPG(3) = 1
+        NBPG(4) = 2
+        NBPG(5) = 3
+        NBPG(6) = 4
+        FAPG(1) = 'NOEU'
+        FAPG(2) = 'NOEU_S'
+        FAPG(3) = 'FPG1'
+        FAPG(4) = 'FPG2'
+        FAPG(5) = 'FPG3'
+        FAPG(6) = 'FPG4'
+
+        XIN(1) = -1.D0
+        XIN(2) = +1.D0
+        XIN(3) = -1.D0/3.D0
+        XIN(4) = +1.D0/3.D0
+
+
+C     ------------------------------------------------------------------
       ELSE
         CALL ASSERT(.FALSE.)
       END IF
 
-C     ------------------------------------------------------------------
       DO 150 I = 0,NNO - 1
         X(NDIM*I+1) = XIN(I+1)
-        IF ((NDIM.EQ.2) .OR. (NDIM.EQ.3)) THEN
+        IF (NDIM.EQ.2) THEN
           X(NDIM*I+2) = YIN(I+1)
+        ELSE IF (NDIM.EQ.3) THEN
+          X(NDIM*I+2) = YIN(I+1)
+          X(NDIM*I+3) = ZIN(I+1)
         END IF
   150 CONTINUE
-
-      IF (NDIM.EQ.3) THEN
-        DO 160 I = 0,NNO - 1
-          X(NDIM*I+3) = ZIN(I+1)
-  160   CONTINUE
-      END IF
 
       END

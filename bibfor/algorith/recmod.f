@@ -1,13 +1,13 @@
-      SUBROUTINE RECMOD ( MODMEC, NBMODE, NINDEX, NBAMOR, BANDE, 
+      SUBROUTINE RECMOD ( MODMEC, NBMODE, NBAMOR, BANDE, 
      +                    TYMMEC, GRDMOD )
       IMPLICIT   NONE
-      INTEGER             NBMODE, NINDEX, NBAMOR
+      INTEGER             NBMODE, NBAMOR
       REAL*8              BANDE(2)
       CHARACTER*8         MODMEC, TYMMEC
       CHARACTER*16        GRDMOD
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/05/2000   AUTEUR CIBHHAB N.RAHNI 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

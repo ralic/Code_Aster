@@ -1,6 +1,6 @@
       SUBROUTINE TE0115 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/10/2002   AUTEUR ASSIRE A.ASSIRE 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,11 +29,12 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
-      CHARACTER*8        MODELI,ELREFE
+      CHARACTER*8        MODELI
       CHARACTER*16       OPTION,NOMTE
-      CHARACTER*24       CARAC,FF
+
       REAL*8             SIGMA(54), REPERE(7), INSTAN, NHARM
-      INTEGER            NBSIGM
+      INTEGER            NBSIGM,NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,DIMMOD
+      INTEGER            IDFDE,JGANO
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
@@ -53,24 +54,10 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CALL ELREF1(ELREFE)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
       MODELI(1:2) = NOMTE(3:4)
-C
-C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
-C ---- GEOMETRIE ET INTEGRATION
-C      ------------------------
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS=IFF
-      IVF   =IPOIDS+NPG1
-      IDFDE =IVF   +NPG1*NNO
-      IDFDK =IDFDE +NPG1*NNO
-C
+      DIMMOD = 3
+
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
       NBSIG  = NBSIGM(MODELI)
@@ -80,9 +67,6 @@ C     -----------------
       ZERO     = 0.0D0
       INSTAN   = ZERO
       NHARM    = ZERO
-      BIDON    = ZERO
-      NDIM     = 3
-      NDIM2    = 2
 C
       DO 10 I = 1, NBSIG*NPG1
          SIGMA(I) = ZERO
@@ -98,7 +82,7 @@ C      ------------------------
 C
 C ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
 C      ------------------------------------------------------------
-      CALL ORTREP(ZI(IMATE),NDIM2,REPERE)
+      CALL ORTREP(ZI(IMATE),NDIM,REPERE)
 C
 C ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 C      --------------------------------------------------
@@ -126,8 +110,8 @@ C ---- CALCUL DES CONTRAINTES 'VRAIES' AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT :
 C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
 C      ------------------------------------
-      CALL SIGVMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),ZR(IDFDK)
-     +            ,BIDON,ZR(IPOIDS),ZR(IGEOM),ZR(IDEPL),ZR(ITEMPE),
+      CALL SIGVMC(MODELI,NNO,DIMMOD,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
+     +            ZR(IGEOM),ZR(IDEPL),ZR(ITEMPE),
      +            ZR(ITREF),INSTAN,REPERE,ZI(IMATE),NHARM,SIGMA,.FALSE.)
 C
 C ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES CONTRAINTES AUX

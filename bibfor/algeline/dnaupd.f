@@ -3,7 +3,7 @@
      &   IPARAM, IPNTR, WORKD, WORKL, LWORKL, INFO, NEQACT, ALPHA)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -189,7 +189,7 @@ C          IPARAM(5) = NCONV: NUMBER OF "CONVERGED" RITZ VALUES.
 C          THIS REPRESENTS THE NUMBER OF RITZ VALUES THAT SATISFY
 C          THE CONVERGENCE CRITERION.
 C
-C          IPARAM(6) = IUPD
+C          IPARAM(6) = IUPD (NOT USED)
 C          NO LONGER REFERENCED. IMPLICIT RESTARTING IS ALWAYS USED.
 C
 C          IPARAM(7) = MODE
@@ -446,11 +446,11 @@ C     %---------------%
 C     | LOCAL SCALARS |
 C     %---------------%
 
-      INTEGER BOUNDS, IERR, IH, IQ, ISHIFT, IUPD, IW,
+      INTEGER BOUNDS, IERR, IH, IQ, ISHIFT, IW,
      &  LDH, LDQ, MODE, MSGLVL, MXITER, NB,
      &  NEV0, NEXT, NP, RITZI, RITZR, J
 C DUE TO CRS512 INTEGER LEVEC
-      SAVE BOUNDS, IH, IQ, ISHIFT, IUPD, IW, LDH, LDQ,
+      SAVE BOUNDS, IH, IQ, ISHIFT, IW, LDH, LDQ,
      &  MODE, MSGLVL, MXITER, NB, NEV0, NEXT,
      &  NP, RITZI, RITZR
 C DUE TO CRS512 SAVE LEVEC
@@ -483,7 +483,6 @@ C        %--------------------------------------------%
 C        | REVISION 2 PERFORMS ONLY IMPLICIT RESTART. |
 C        %--------------------------------------------%
 
-         IUPD   = 1
          MODE   = IPARAM(7)
          IF (N .LE. 0) THEN
            IERR = -1
@@ -593,7 +592,7 @@ C     | CARRY OUT THE IMPLICITLY RESTARTED ARNOLDI ITERATION. |
 C     %-------------------------------------------------------%
 
       CALL DNAUP2
-     &  ( IDO, BMAT, N, WHICH, NEV0, NP, TOL, RESID, MODE, IUPD,
+     &  ( IDO, BMAT, N, WHICH, NEV0, NP, TOL, RESID,
      &   ISHIFT, MXITER, V, LDV, WORKL(IH), LDH, WORKL(RITZR),
      &   WORKL(RITZI), WORKL(BOUNDS), WORKL(IQ), LDQ, WORKL(IW),
      &   IPNTR, WORKD, INFO, NEQACT, ALPHA)

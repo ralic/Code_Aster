@@ -4,7 +4,7 @@
       CHARACTER*(*)       MOTFAC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,8 +31,8 @@ C     -----------------------------------------------------------------
 C ENTREE:
 C        RESU   : NOM DU CONCEPT RESULTAT DE L'OPERATEUR
 C        NOMA   : NOM DU MAILLAGE
-C        MOTFAC : MOT-CLE FACTEUR :'FOND' OU 'FOND_FERME' OU 'LEVRE_SUP'
-C                                  OU 'LEVRE_INF'
+C        MOTFAC : MOT-CLE FACTEUR :'FOND_FISS' OU 'FOND_FERME' OU
+C                                  'LEVRE_SUP' OU 'LEVRE_INF'
 C                 OU MOT-CLE : 'NORMALE' OU 'DTAN_ORIG'
 C                                        OU 'DTAN_EXTR'
 C        NOUM   : 'NOEUD' OU 'MAILLE'

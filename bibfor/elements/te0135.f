@@ -1,6 +1,6 @@
       SUBROUTINE TE0135 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,11 +51,10 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8             DFDX(9),DFDY(9),POIDS,R,R8BID
       REAL*8             DTPGDX,DTPGDY,CHAL,AFFINI,ARR
       REAL*8             TZ0,R8T0,DIFF, TPSEC
-      CHARACTER*24       CARAC,FF
-      CHARACTER*8        ELREFE
       CHARACTER*2        CODRET
-      INTEGER            NNO,KP,NPG1,NPG2,I,K,ITEMPS,IFON(3)
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE
+      CHARACTER*8        ELREFE
+      INTEGER            NNO,KP,NNOS,NPG2,I,K,ITEMPS,IFON(3),NDIM,JGANO
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER            ICOMP,IHYDR,IHYDRP,ITEMPI,ITEMPR,IVERES
       INTEGER            ISECHI, ISECHF
 C ----------------------------------------------------------------------
@@ -68,21 +67,12 @@ C
 C DEB ------------------------------------------------------------------
 C
       CALL ELREF1(ELREFE)
-      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QUAD4L'
-
-      TZ0 = R8T0()
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
+      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QU4'
+      IF (NOMTE(5:7).EQ.'TL6') ELREFE='TR3'
 C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF   ,'L',IFF   )
-      IPOIDS=IFF   +NPG1*(1+3*NNO)
-      IVF   =IPOIDS+NPG2
-      IDFDE =IVF   +NPG2*NNO
-      IDFDK =IDFDE +NPG2*NNO
+      CALL ELREF4(ELREFE,'MASS',NDIM,NNO,NNOS,NPG2,IPOIDS,IVF,
+     &            IDFDE,JGANO)
+      TZ0 = R8T0()
 C
       CALL JEVECH('PGEOMER','L',IGEOM )
       CALL JEVECH('PMATERC','L',IMATE )
@@ -110,8 +100,7 @@ C          ISECHI ET ISECHF SONT FICTIFS
         ENDIF
         DO 201 KP=1,NPG2
           K=(KP-1)*NNO
-          CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                  ZR(IGEOM),DFDX,DFDY,POIDS )
+          CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
           R      = 0.D0
           TPG    = 0.D0
           DTPGDX = 0.D0
@@ -156,8 +145,7 @@ C --------------
 C
         DO 101 KP=1,NPG2
           K=(KP-1)*NNO
-          CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                  ZR(IGEOM),DFDX,DFDY,POIDS )
+          CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
           R      = 0.D0
           TPG    = 0.D0
           DTPGDX = 0.D0

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE PLAQUE CARREE MINCE ENCASTREE SUR UN BORD (GUYAN)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -94,22 +94,22 @@ MODE1=MODE_ITER_SIMULT(  MATR_A=MATASSR1,      MATR_B=MATASSM1,
 
 
 TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
            CRITERE = 'RELATIF',     PRECISION = 1.E-2,
            NUME_ORDRE = 1,       VALE = 8.7266),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
            CRITERE = 'RELATIF',     PRECISION = 1.E-2,
            NUME_ORDRE = 2,       VALE = 21.3042),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
            CRITERE = 'RELATIF',     PRECISION = 1.E-2,
            NUME_ORDRE = 3,       VALE = 53.5542),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
            CRITERE = 'RELATIF',     PRECISION = 1.E-2,
            NUME_ORDRE = 4,       VALE = 68.2984),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
            CRITERE = 'RELATIF',     PRECISION = 1.E-2,
            NUME_ORDRE = 5,       VALE = 77.7448),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
            CRITERE = 'RELATIF',     PRECISION = 1.7E-2,
            NUME_ORDRE = 6,       VALE = 136.0471))
     )

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/06/2003   AUTEUR CIBHHPD D.NUNEZ 
+# MODIF  DATE 12/11/2003   AUTEUR CIBHHLV L.VIVAN 
 # TITRE VALIDATION DE LA COMMANDE PROJ_CHAMP/ELEM (EN 2D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,10 +51,6 @@ LR=DEFI_LIST_REEL(  VALE=3.2 )
 MEST1=MECA_STATIQUE(   MODELE=MO1,  CHAM_MATER=CM1,
                LIST_INST=LR, EXCIT=_F( CHARGE = CHM1))
 
-MEST1=CALC_ELEM(reuse=MEST1,  MODELE=MO1,   CHAM_MATER=CM1,
-                     OPTION='SIEF_ELGA_DEPL',
-                     RESULTAT=MEST1,   TOUT_ORDRE='OUI' )
-
 # 2EME CALCUL SUR LE MAILLAGE MA2 :
 # --------------------------------
 
@@ -76,11 +72,6 @@ MEST2=PROJ_CHAMP(RESULTAT=MEST1,      METHODE='ELEM',
 MEST2=CALC_ELEM(reuse=MEST2,  MODELE=MO2,   CHAM_MATER=CM2,
                      OPTION='SIEF_ELGA_DEPL',
                      RESULTAT=MEST2,   TOUT_ORDRE='OUI' )
-
-#   IMPR_RESU(RESU:(MAILLAGE:MA1));
-#   IMPR_RESU(RESU:(MAILLAGE:MA2));
-#   IMPR_RESU(RESU:(RESULTAT:MEST1));
-#   IMPR_RESU(RESU:(RESULTAT:MEST2));
 
 
 # LE CHAMP SIEF_ELGA_DEPL DOIT ETRE HOMOGENE :
@@ -105,7 +96,7 @@ TEST_RESU(RESU=(
 
 # pour valider la possibilite de projeter sur un modele filaire :
 #------------------------------------------------------------------
-# IMPR_RESU(RESU=_F(RESULTAT=MEST1,NOM_CHAM='DEPL'),)
+#
 MO3=AFFE_MODELE(MAILLAGE=MA1,
 AFFE= _F( MAILLE = ('M73','M74',), PHENOMENE = 'MECANIQUE', MODELISATION = 'BARRE'),)
 

@@ -1,10 +1,10 @@
       SUBROUTINE PASNOC ( NBEL, LIGREL, NBGREL, LONGR, NCMPMX, VALE,
      +                    NOMCMP,  CELD, CONNEX, POINT, 
-     +                    NUCMPU,  LILI, NBNOEU,
+     +                    LILI, NBNOEU,
      +                    BASE, GRAN, NOMA , CHAMN )
       IMPLICIT REAL*8 (A-H,O-Z)
 C
-      INTEGER           LIGREL(*),LONGR(*),NUCMPU(*),CELD(*),CONNEX(*),
+      INTEGER           LIGREL(*),LONGR(*),CELD(*),CONNEX(*),
      +                  POINT(*),DESCR
       COMPLEX*16        VALE(*)
       CHARACTER*(*)     BASE, CHAMN,
@@ -12,7 +12,7 @@ C
       CHARACTER*8       NOMCMP(*)
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/10/2001   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF CALCULEL  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

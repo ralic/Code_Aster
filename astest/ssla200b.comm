@@ -1,4 +1,4 @@
-# MODIF  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 09/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE AXISYMETRIQUE
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -231,7 +231,7 @@ MAT4=DEFI_MATERIAU(    ELAS_ISTR_FO=_F(  E_L = FO1,
                                         RHO = 6700.,
                                         ALPHA_L = FO3,
                                         ALPHA_N = FO15,
-                                        VERI_P1 = 'TEMP',TEMP_DEF_ALPHA=11.7),
+                                        TEMP_DEF_ALPHA=11.7),
                          THER=_F(  RHO_CP = 2.7,
                                 LAMBDA = 0.4) )
 
@@ -269,7 +269,7 @@ MAT6=DEFI_MATERIAU(    ELAS_ORTH_FO=_F(  E_L = FO1,
                                         ALPHA_L = FO3,
                                         ALPHA_T = FO15,
                                         ALPHA_N = FO15,
-                                        VERI_P1 = 'TEMP',TEMP_DEF_ALPHA=0.),
+                                        TEMP_DEF_ALPHA=0.),
                          THER=_F(  RHO_CP = 2.5,
                                 LAMBDA = 1.7) )
 
@@ -1105,134 +1105,6 @@ TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL4,
                           TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.5E-10, VERSION = '6.0.24',
                    VALE = 1.7506231547418E+06))
-
-CHAMEL5=CALC_CHAM_ELEM(        MODELE=MO,
-                             CHAM_MATER=CHMAT,
-                              CARA_ELEM=CARA1,
-                             GROUP_MA='GMA8',EXCIT=(
-                             _F(  CHARGE = CHMEC,
-                                     FONC_MULT = FO11),
-                             _F(  CHARGE = CHMECF,
-                                     FONC_MULT = FO12)),
-                             DEPL=CHAMNO1,
-                             OPTION='EPOT_ELEM_DEPL' )
-
-TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL5,
-                          TYPE_TEST = 'SOMM_ABS',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.5E-10, VERSION = '6.3.20',
-                   VALE = 1.0888334282828E+08))
-
-CHAMEL6=CALC_CHAM_ELEM(        MODELE=MO,
-                             CHAM_MATER=CHMAT,
-                              CARA_ELEM=CARA1,
-                             GROUP_MA='GMA8',EXCIT=(
-                             _F(  CHARGE = CHMEC,
-                                     FONC_MULT = FO11),
-                             _F(  CHARGE = CHMECF,
-                                     FONC_MULT = FO12)),
-                             DEPL=CHAMNO1,
-                             OPTION='EPSI_ELNO_DEPL' )
-
-TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL6,
-                          TYPE_TEST = 'SOMM_ABS',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.5E-10, VERSION = '6.0.24',
-                   VALE = 1.6288852221200E+05))
-
-CHAMEL7=CALC_CHAM_ELEM(        MODELE=MO,
-                             CHAM_MATER=CHMAT,
-                              CARA_ELEM=CARA1,
-                             GROUP_MA='GMA8',EXCIT=(
-                             _F(  CHARGE = CHMEC,
-                                     FONC_MULT = FO11),
-                             _F(  CHARGE = CHMECF,
-                                     FONC_MULT = FO12)),
-                             DEPL=CHAMNO1,
-                             OPTION='SIEF_ELGA_DEPL' )
-
-TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL7,
-                          TYPE_TEST = 'SOMM_ABS',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.5E-10, VERSION = '6.0.24',
-                   VALE = 2.0387867411936E+05))
-
-CHAMEL8=CALC_CHAM_ELEM(        MODELE=MO,
-                             CHAM_MATER=CHMAT,
-                              CARA_ELEM=CARA1,
-                             GROUP_MA='GMA8',EXCIT=(
-                             _F(  CHARGE = CHMEC,
-                                     FONC_MULT = FO11),
-                             _F(  CHARGE = CHMECF,
-                                     FONC_MULT = FO12)),
-                             DEPL=CHAMNO1,
-                             OPTION='SIGM_ELNO_DEPL' )
-
-TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL8,
-                          TYPE_TEST = 'SOMM_ABS',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.5E-10, VERSION = '6.0.24',
-                   VALE = 3.9635839238074E+05))
-
-CHAMEL9=CALC_CHAM_ELEM(        MODELE=MO,
-                             CHAM_MATER=CHMAT,
-                              CARA_ELEM=CARA1,
-                             GROUP_MA='GMA8',EXCIT=(
-                             _F(  CHARGE = CHMEC,
-                                     FONC_MULT = FO11),
-                             _F(  CHARGE = CHMECF,
-                                     FONC_MULT = FO12)),
-                             CHAM_ELEM=CHAMEL1,
-                             OPTION='EQUI_ELGA_SIGM' )
-
-TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL9,
-                          TYPE_TEST = 'SOMM_ABS',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.5E-10, VERSION = '6.0.24',
-                   VALE = 7.9280694950031E+05))
-
-CHAMEL10=CALC_CHAM_ELEM(        MODELE=MO,
-                              CHAM_MATER=CHMAT,
-                               CARA_ELEM=CARA1,
-                              GROUP_MA='GMA8',EXCIT=(
-                              _F(  CHARGE = CHMEC,
-                                      FONC_MULT = FO11),
-                              _F(  CHARGE = CHMECF,
-                                      FONC_MULT = FO12)),
-                              CHAM_ELEM=CHAMEL2,
-                              OPTION='EQUI_ELGA_EPSI' )
-
-TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL10,
-                          TYPE_TEST = 'SOMM_ABS',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.5E-10, VERSION = '6.0.24',
-                   VALE = 1.4355990898969E+05))
-
-CHAMEL11=CALC_CHAM_ELEM(        MODELE=MO,
-                              CHAM_MATER=CHMAT,
-                               CARA_ELEM=CARA1,
-                              GROUP_MA='GMA8',EXCIT=(
-                              _F(  CHARGE = CHMEC,
-                                      FONC_MULT = FO11),
-                              _F(  CHARGE = CHMECF,
-                                      FONC_MULT = FO12)),
-                              CHAM_ELEM=CHAMEL1,
-                              OPTION='EQUI_ELNO_SIGM' )
-
-TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL11,
-                          TYPE_TEST = 'SOMM_ABS',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.5E-10, VERSION = '7.01.13',
-                   VALE = 1.3515957314584E+06))
-
-CHAMEL12=CALC_CHAM_ELEM(        MODELE=MO,
-                              CHAM_MATER=CHMAT,
-                               CARA_ELEM=CARA1,
-                              GROUP_MA='GMA8',EXCIT=(
-                              _F(  CHARGE = CHMEC,
-                                      FONC_MULT = FO11),
-                              _F(  CHARGE = CHMECF,
-                                      FONC_MULT = FO12)),
-                              CHAM_ELEM=CHAMEL4,
-                              OPTION='EQUI_ELNO_EPSI' )
-
-TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL12,
-                          TYPE_TEST = 'SOMM_ABS',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.5E-10, VERSION = '6.0.24',
-                   VALE = 3.5349659521307E+05))
 
 TABLE1=POST_ELEM(        MODELE=MO,
                         CHAM_MATER=CHMAT,

@@ -1,9 +1,9 @@
-        SUBROUTINE LCDEDI ( IMAT,  NMAT,  MATERD, MATERF, TD, TF, TR,
+        SUBROUTINE LCDEDI ( NMAT,  MATERD, MATERF, TD, TF, TR,
      &                      DEPST, EPSDT, DEPSM,  EPSDM )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,8 +44,7 @@ C       ON PEUT DONC - SOIT TRAVAILLER AVEC EPST ET AJOUTER SIGTH APRES
 C                    - SOIT TRAVAILLER AVEC EPS = EPST - EPSTH
 C                      CE QUI EST FAIT ICI
 C       ----------------------------------------------------------------
-C       IN  IMAT    ADRESSE DU MATERIAU CODE
-C               NMAT    DIMENSION  DE MATER
+C       IN      NMAT    DIMENSION  DE MATER
 C               MATERD  COEFFICIENTS MATERIAU A T
 C               MATERF  COEFFICIENTS MATERIAU A T+DT
 C               TD      TEMPERATURE DEBUT INCREMENT
@@ -56,7 +55,7 @@ C               EPSDT   DEFORMATION TOTALE A T
 C       OUT     DEPSM   INCREMENT DE DEFORMATION MECANIQUE
 C               EPSDM   DEFORMATION MECANIQUE A T
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NDT  , NDI , NMAT
+        INTEGER         NDT  , NDI , NMAT
         CHARACTER*2     CE
         REAL*8          TD,  TF , TR
         REAL*8          EPSDT(6), DEPST(6)

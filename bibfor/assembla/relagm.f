@@ -1,6 +1,6 @@
-      SUBROUTINE RELAGM(NU,MO,MA,NM,NL,NEWN,OLDN)
+      SUBROUTINE RELAGM(MO,MA,NM,NL,NEWN,OLDN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 11/04/97   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,6 @@ C
 C     ARGUMENTS:
 C     ----------
       CHARACTER*8 MO,MA
-      CHARACTER*14 NU
       INTEGER NM,NL,NEWN(*),OLDN(*)
 C ----------------------------------------------------------------------
 C     BUT:

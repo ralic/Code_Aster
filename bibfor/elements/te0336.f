@@ -1,7 +1,7 @@
       SUBROUTINE TE0336 ( OPTION , NOMTE )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/08/2003   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,17 +66,14 @@ C                DIMENSIONNE  A  NEQMAX CMP MAX * 9 NO MAX
 C ----------------------------------------------------------------------
       PARAMETER         ( NPGMAX = 9 , NNOMAX = 9 , NEQMAX = 6 )
 C ----------------------------------------------------------------------
-      CHARACTER*24       CARAC
       CHARACTER*16       OPTION , NOMTE
-      CHARACTER*8        ELREFE
-      INTEGER            NNO ,    KP ,   I ,     K
-      INTEGER            NCEQ,    IDCP,  ICONT,  IDEFO, IEQUIF, ICARAC
+      INTEGER            NNO ,    KP ,   I
+      INTEGER            NCEQ,    IDCP,  ICONT,  IDEFO, IEQUIF
       INTEGER            NPG , NNOS
       REAL*8             EQPG(NEQMAX*NPGMAX),    EQNO(NEQMAX*NNOMAX)
       REAL*8             SIGMA(6) ,DEFORM(6)
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -93,7 +90,8 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CALL ELREF1(ELREFE)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+
       IF ( OPTION(11:14) .EQ. 'EPSI' )  THEN
           NCEQ = 5
       ELSEIF ( OPTION(11:14) .EQ. 'EPME' )  THEN
@@ -101,24 +99,6 @@ C
       ELSE IF (OPTION(11:14) .EQ. 'SIGM' )  THEN
           NCEQ = 6
       ENDIF
-C
-C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG  = ZI(ICARAC+2)
-C
-      IF (NOMTE(5:8).EQ.'TR3 ') THEN
-        NNOS = NNO
-      ELSE IF (NOMTE(5:8).EQ.'QU4 ') THEN
-        NNOS = NNO
-      ELSE IF (NOMTE(5:8).EQ.'TR6 ') THEN
-        NNOS = 3
-      ELSE IF (NOMTE(5:8).EQ.'QS8 ') THEN
-        NNOS = 4
-      ELSE IF (NOMTE(5:8).EQ.'QU8 ' .OR. NOMTE(5:8).EQ.'QU9 ') THEN
-        NNOS = 4
-      END IF
 C
       IF      ( OPTION(11:14) .EQ. 'EPSI' ) THEN
           CALL JEVECH('PDEFORR','L',IDEFO)
@@ -236,7 +216,7 @@ C
 C
 C -       EXTRAPOLATION AUX NOEUDS
 C
-              CALL PPGANO(NNOS,NPG,NCEQ,EQPG,ZR(IEQUIF))
+              CALL PPGAN2 ( JGANO, NCEQ, EQPG, ZR(IEQUIF) )
 C
           ENDIF
 C

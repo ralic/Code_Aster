@@ -1,13 +1,13 @@
-      SUBROUTINE RVRCCM ( T, CMP, NBCP, NBCO, NBSP, NOMTAB,
+      SUBROUTINE RVRCCM ( T, NBCP, NBCO, NBSP, NOMTAB,
      +                    IOCC, NCHEFF, I1, IOC, ISD )
       IMPLICIT   NONE
       INTEGER             IOCC, I1, NBCP, NBCO, NBSP, IOC, ISD
       REAL*8              T(*)
       CHARACTER*16        NCHEFF
-      CHARACTER*(*)       CMP(*), NOMTAB
+      CHARACTER*(*)       NOMTAB
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/11/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,6 @@ C     ------------------------------------------------------------------
 C     CALCUL DU TRESCA MOYEN
 C     ------------------------------------------------------------------
 C IN  T     : R : TABLE DES VALEURS
-C IN  CMP   : K : NOM DES COMPOSANTES
 C IN  NBCP  : I : NBR DE CMP
 C IN  NBCO  : I : NBR DE COUCHES
 C IN  NBSP  : I : NBR DE SOUS-POINTS

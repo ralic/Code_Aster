@@ -1,10 +1,10 @@
-        SUBROUTINE CFCMAT ( MOD,    IMAT,   NMAT,   TEMPD, TEMPF,
+        SUBROUTINE CFCMAT ( IMAT,   NMAT,   TEMPD, TEMPF,
      1                      MATERD, MATERF, MATCST, NDT,   NDI,
      2                      NR , NVI , BZ )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/97   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,6 @@ C                    VARIABLES INTERNES : EVI, EVCUM,
 C                                         BETGR, ALMIC, GVCUM
 C       ----------------------------------------------------------------
 C       IN  IMAT   :  ADRESSE DU MATERIAU CODE
-C           MOD    :  TYPE DE MODELISATION
 C           NMAT   :  DIMENSION  DE MATER
 C           TEMPD  :  TEMPERATURE  A T
 C           TEMPF  :  TEMPERATURE  A T+DT
@@ -52,7 +51,7 @@ C       ----------------------------------------------------------------
         INTEGER         NMAT, NDT, NDI, NR, NVI
         REAL*8          MATERD(NMAT,2), MATERF(NMAT,2), TEMPD, TEMPF
         REAL*8          EPSI
-        CHARACTER*8     MOD, NOM, NOMC(18)
+        CHARACTER*8     NOM, NOMC(18)
         CHARACTER*2     BL2, FB2, CERR(18)
         CHARACTER*3     MATCST
         LOGICAL         BZ

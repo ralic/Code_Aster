@@ -1,9 +1,9 @@
-       SUBROUTINE  NMEL3D(NNO, NPG, POIDSG, VFF, DFDE, DFDN, DFDK,
+       SUBROUTINE  NMEL3D(NNO, NPG, IPOIDS, IVF, IDFDE,
      &             GEOM, TYPMOD, OPTION, IMATE, COMPOR, LGPG, CRIT, T,
      &             HYDR, SECH, TREF, DEPL, DFDI, PFF, DEF, SIG, VI,
      &             MATUU, VECTU, CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,12 +23,10 @@ C ======================================================================
 C TOLE CRP_21
        IMPLICIT NONE
 C
-       INTEGER       NNO, NPG, IMATE, LGPG, CODRET
+       INTEGER       NNO,NPG,IMATE,LGPG,CODRET,IPOIDS,IVF,IDFDE
        CHARACTER*8   TYPMOD(*)
        CHARACTER*16  OPTION, COMPOR(4)
-C
-       REAL*8        POIDSG(NPG), VFF(NNO,NPG), DFDE(*), DFDN(*)
-       REAL*8        DFDK(*), GEOM(3,NNO), CRIT(3), T(NNO), TREF
+       REAL*8        GEOM(3,NNO), CRIT(3), T(NNO), TREF
        REAL*8        HYDR(NNO), SECH(NNO)
        REAL*8        DEPL(1:3,1:NNO), DFDI(NNO,3)
        REAL*8        PFF(6,NNO,NNO),  DEF(6,NNO,3)
@@ -68,7 +66,24 @@ C OUT MATUU   : MATRICE DE RIGIDITE PROFIL (RIGI_MECA_TANG ET FULL_MECA)
 C OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
 C......................................................................
 C
-      INTEGER  KPG,KK,N,I,M,J,J1,K,KL,PQ,KKD
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER  ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+      INTEGER  KPG,KK,N,I,M,J,J1,KL,PQ,KKD
       LOGICAL  GRDEPL, GRROTA
       REAL*8   DSIDEP(6,6),F(3,3),EPS(6),R,SIGMA(6),FTF,DETF
       REAL*8   POIDS,TEMP,TMP1,TMP2,HYDRG,SECHG
@@ -103,17 +118,16 @@ C
         HYDRG = HYDR(KPG)
         SECHG = 0.D0
         DO 15 N=1,NNO
-          TEMP = TEMP + T(N)*VFF(N,KPG)
-          SECHG = SECHG + SECH(N)*VFF(N,KPG)
+          TEMP = TEMP + T(N)*ZR(IVF+N+(KPG-1)*NNO-1)
+          SECHG = SECHG + SECH(N)*ZR(IVF+N+(KPG-1)*NNO-1)
  15     CONTINUE
 C
 C
 C - CALCUL DES ELEMENTS GEOMETRIQUES
 C
 C      CALCUL DE DFDI, F, EPS, R (EN AXI) ET POIDS
-        CALL NMGEOM(3,NNO,.FALSE.,GRDEPL,GEOM,KPG,POIDSG(KPG),
-     &              VFF(1,KPG),DFDE,DFDN,DFDK,DEPL,POIDS,DFDI,
-     &              F,EPS,R)
+        CALL NMGEOM(3,NNO,.FALSE.,GRDEPL,GEOM,KPG,IPOIDS,IVF,IDFDE,
+     &              DEPL,POIDS,DFDI,F,EPS,R)
 C
 C      CALCUL DES PRODUITS SYMETR. DE F PAR N,
         DO 120 N=1,NNO
@@ -128,7 +142,7 @@ C      CALCUL DES PRODUITS SYMETR. DE F PAR N,
  120    CONTINUE
 C
 C      CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
-        IF ( (OPTION(1:16) .EQ. 'RIGI_MECA_TANG'
+        IF ( (OPTION(1:10) .EQ. 'RIGI_MECA_'
      &  .OR.  OPTION(1: 9) .EQ. 'FULL_MECA'    ) .AND. GRDEPL) THEN
           DO 125 N=1,NNO
             DO 126 M=1,N
@@ -151,7 +165,7 @@ C
 C
 C - CALCUL DE LA MATRICE DE RIGIDITE
 C
-        IF ( OPTION(1:16) .EQ. 'RIGI_MECA_TANG'
+        IF ( OPTION(1:10) .EQ. 'RIGI_MECA_'
      &  .OR. OPTION(1: 9) .EQ. 'FULL_MECA'    ) THEN
 C
           DO 130 N=1,NNO

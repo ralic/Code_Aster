@@ -1,6 +1,6 @@
       SUBROUTINE CESFUS(NBCHS,LICHS,LCUMUL,LCOEFR,BASE,CES3Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -162,10 +162,20 @@ C     --------------------------------------------------------
             NBSP = ZI(JCE1D-1+5+4* (IMA-1)+2)
             NCMP = ZI(JCE1D-1+5+4* (IMA-1)+3)
             IF (NBPT*NBSP*NCMP.EQ.0) GO TO 50
-            IF (ZI(JNBPT-1+IMA).NE.NBPT) CALL UTMESS('F','CESFUS',
+
+            IF (ZI(JNBPT-1+IMA).NE.0) THEN
+              IF (ZI(JNBPT-1+IMA).NE.NBPT)   CALL UTMESS('F','CESFUS',
      &          'NOMBRE DE POINTS DIFFERENTS.')
-            IF (ZI(JNBSP-1+IMA).NE.NBSP) CALL UTMESS('F','CESFUS',
+            ELSE
+                 IF (NBPT.EQ.0) ZI(JNBPT-1+IMA)=NBPT
+            END IF
+
+            IF (ZI(JNBSP-1+IMA).NE.0) THEN
+              IF (ZI(JNBSP-1+IMA).NE.NBSP) CALL UTMESS('F','CESFUS',
      &          'NOMBRE DE SOUS-POINTS DIFFERENTS.')
+            ELSE
+                 IF (NBSP.EQ.0) ZI(JNBSP-1+IMA)=NBSP
+            END IF
    50     CONTINUE
         END IF
         CALL JELIBE(CES1//'.CESK')

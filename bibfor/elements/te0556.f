@@ -1,6 +1,6 @@
       SUBROUTINE TE0556 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/04/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C
       INTEGER            IPOIDS,IVF,IDFDX,IDFDY,IGEOM,JIN,NBFPG,I,J
       INTEGER            NDIM,NNO,IPG,NPG1,INO,JNO,JVAL
       INTEGER            IDEC,JDEC,KDEC,LDEC,IRES,IMATE,IVITE
-      INTEGER            NBPG(10),II,MATER
+      INTEGER            NBPG(10),II,MATER,NNOS,JGANO
       REAL*8             JAC,NX,NY,NZ,SX(9,9),SY(9,9),SZ(9,9)
       REAL*8             VALRES(3),E,NU,LAMBDA,MU,RHO
       REAL*8             RHOCP,RHOCS
@@ -64,25 +64,7 @@ C
       CHARACTER*24       CHVAL,CHCTE
 C     ------------------------------------------------------------------
 C
-      CALL ELREF1(ELREFE)
-
-C
-      CHCTE = '&INEL.'//ELREFE//'.CARACTE'
-      CALL JEVETE ( CHCTE, 'L', JIN )
-      NDIM  = ZI(JIN+1-1)
-      NNO   = ZI(JIN+2-1)
-      NBFPG = ZI(JIN+3-1)
-      DO 10 I = 1,NBFPG
-         NBPG(I) = ZI(JIN+3-1+I)
- 10   CONTINUE
-      NPG1 = NBPG(1)
-C
-      CHVAL = '&INEL.'//ELREFE//'.FFORMES'
-      CALL JEVETE ( CHVAL, 'L', JVAL )
-C
-      IPOIDS = JVAL + (NDIM+1)*NNO*NNO
-      IVF    = IPOIDS + NPG1
-      IDFDX  = IVF    + NPG1 * NNO
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDX,JGANO)
       IDFDY  = IDFDX  + 1
 C
       CALL JEVECH ( 'PGEOMER', 'L', IGEOM )

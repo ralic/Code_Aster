@@ -1,9 +1,9 @@
-      SUBROUTINE INSINI ( TYPESS, ESSAI, MOD, IMAT, NMAT,
-     &                      MATERF, TEMPD, YD,  DEPS, DY  )
+      SUBROUTINE INSINI ( TYPESS, ESSAI, MOD, NMAT,
+     &                      MATERF, YD,  DEPS, DY  )
       IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,10 +25,8 @@ C   NADAI_BETON : CALCUL SOLUTION ESSAI DY = ( DSIG  DP (DEPS3))
 C                               AVEC     Y  = ( SIG  P  (EPS3))
 C       IN  ESSAI  :  VALEUR DE LA SOLUTION D ESSAI
 C           MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           TEMPD  :  TEMPERATURE A T
 C           YD     :  VARIABLES A T   = ( SIG  VIN  (EPS3)  )
 C       VAR DEPS   :  INCREMENT DE DEFORMATION
 C           TYPESS :  TYPE DE SOLUTION D ESSAI
@@ -39,7 +37,7 @@ C                               3 = ESSAI
 C       OUT DY     :  SOLUTION ESSAI  = ( DSIG DVIN (DEPS3) )
 C       ----------------------------------------------------------------
 C
-        INTEGER         IMAT, NDT , NDI , TYPESS , NMAT
+        INTEGER         NDT , NDI , TYPESS , NMAT
         REAL*8          UN  , ZERO
         PARAMETER       ( UN   = 1.D0   )
         PARAMETER       ( ZERO = 0.D0   )
@@ -54,7 +52,7 @@ C
         REAL*8          LCS  , KPIC , KRUP
         REAL*8          SEUIL, I1, J2, J3, RCOS3T
 C
-        REAL*8          MATERF(NMAT,2) , TEMPD
+        REAL*8          MATERF(NMAT,2)
 C
         CHARACTER*8     MOD
 C       ----------------------------------------------------------------

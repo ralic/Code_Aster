@@ -6,7 +6,7 @@
       CHARACTER*8         NOMFON(*) 
 C----------------------------------------------------------------------*
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/02/99   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 22/03/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,29 +52,20 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      IPAR, IER, I
+      INTEGER      IER, I
       REAL*8       ZERO, ALPHA
       CHARACTER*8  NOMPAR 
 C ----------------------------------------------------------------------
 C
       NOMPAR = 'INST'
-      IPAR   = 1
       ZERO   = 0.0D0
       CALL R8INIR ( NEQ , ZERO , F , 1 )
       DO 10 I = 1 , NBEXCI
          IF (IDESCF(I).EQ.1) THEN
-           IF (NOMFON(I+NBEXCI).EQ.'INTERPRE') THEN
-             CALL FIINTE('F',NOMFON(I),1,IPAR,T,ALPHA,IER)
-           ELSE
-             CALL FOINTE('F ',NOMFON(I),1,NOMPAR,T,ALPHA,IER)
-           ENDIF
+           CALL FOINTE('F ',NOMFON(I),1,NOMPAR,T,ALPHA,IER)
            CALL R8AXPY ( NEQ , ALPHA , ZR(LIAD(I)) , 1 , F , 1 )
          ELSEIF(IDESCF(I).EQ.2) THEN
-           IF (NOMFON(I+NBEXCI).EQ.'INTERPRE') THEN
-             CALL FIINTE('F',NOMFON(I),1,IPAR,T,ALPHA,IER)
-           ELSE
-             CALL FOINTE('F ',NOMFON(I),1,NOMPAR,T,ALPHA,IER)
-           ENDIF
+           CALL FOINTE('F ',NOMFON(I),1,NOMPAR,T,ALPHA,IER)
            F(INUMOR(I))=F(INUMOR(I))+ALPHA
          ELSEIF(IDESCF(I).EQ.3) THEN
            CALL R8AXPY ( NEQ , COEFM(I) , ZR(LIAD(I)) , 1 , F , 1 )

@@ -1,4 +1,4 @@
-#@ MODIF N_ETAPE Noyau  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF N_ETAPE Noyau  DATE 16/03/2004   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -352,6 +352,23 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
         l.extend(child.get_sd_utilisees())
       return l
 
+   def get_sd_mcs_utilisees(self):
+      """ 
+          Retourne la ou les SD utilisée par self sous forme d'un dictionnaire :
+          . Si aucune sd n'est utilisée, le dictionnaire est vide.
+          . Sinon, les clés du dictionnaire sont les mots-clés derrière lesquels on
+            trouve des sd ; la valeur est la liste des sd attenante.
+            Exemple : { 'VALE_F': [ <Cata.cata.para_sensi instance at 0x9419854>,
+                                    <Cata.cata.para_sensi instance at 0x941a204> ],
+                        'MODELE': [<Cata.cata.modele instance at 0x941550c>] }
+      """
+      dico = {}
+      for child in self.mc_liste:
+        daux = child.get_sd_mcs_utilisees()
+        for cle in daux.keys():
+          dico[cle] = daux[cle]
+      return dico
+
    def reparent(self,parent):
      """
          Cette methode sert a reinitialiser la parente de l'objet
@@ -361,3 +378,40 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
      self.etape=self
      for mocle in self.mc_liste:
         mocle.reparent(self)
+
+   def get_cmd(self,nomcmd):
+      """
+          Méthode pour recuperer la definition d'une commande
+          donnee par son nom dans les catalogues declares
+          au niveau du jdc
+          Appele par un ops d'une macro en Python
+      """
+      return self.jdc.get_cmd(nomcmd)
+
+   def copy_intern(self,etape):
+      """
+          Méthode permettant lors du processus de recopie de copier
+          les elements internes d'une etape dans une autre
+      """
+      return
+
+   def full_copy(self,parent=None):
+       """
+          Méthode permettant d'effectuer une copie complète
+          d'une étape (y compris concept produit, éléments internes)
+          Si l'argument parent est fourni, la nouvelle étape
+          aura cet objet comme parent.
+       """
+       new_etape = self.copy()
+       new_etape.copy_reuse(self)
+       new_etape.copy_sdnom(self)
+       if parent: new_etape.reparent(parent)
+       if self.sd :
+          new_sd = self.sd.__class__(etape=new_etape)
+          new_etape.sd = new_sd
+          if self.reuse == None :
+             new_etape.parent.NommerSdprod(new_sd,self.sd.nom)
+          else :
+             new_sd.nom = self.sd.nom
+       new_etape.copy_intern(self)
+       return new_etape

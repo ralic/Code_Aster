@@ -1,9 +1,8 @@
       SUBROUTINE OP0027 ( IER )
-      IMPLICIT   NONE
-      INTEGER    IER
+C RESPONSABLE CAMBIER S.CAMBIER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 05/11/2003   AUTEUR CAMBIER S.CAMBIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,6 +26,8 @@ C     L'INFORMATION DISPONIBLE POUR DES MATRICES GENERALISEES
 C     SYMETRIQUES DEFINIES POSITIVES.
 C
 C ----------------------------------------------------------------------
+      IMPLICIT   NONE
+      INTEGER    IER
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
@@ -45,10 +46,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER      IRET, N1, NBLOC, N, I, M, IAK,IADR,IADR1,IADR2,IBID,
-     +             IBLO, IDESC, IALIME, IACONL, IAREFE, IAREFA, IADESC
+      INTEGER      IRET, N1, NBLOC, N, I, M, IAK,IADR,IADR1,IADR2,IBID
+      INTEGER      IBLO, IDESC, IALIME, IACONL, IAREFE, IAREFA, IADESC
+      INTEGER      JUMP
+      
       REAL*8       DELTA
-      CHARACTER*8  NOMRES, NOMMAT, K8B, INIT
+      CHARACTER*8  NOMRES, NOMMAT, K8B
       CHARACTER*16 NOMCMD, CONCEP
 C DEB ------------------------------------------------------------------
 C
@@ -60,10 +63,10 @@ C
       CALL GETRES ( NOMRES, CONCEP, NOMCMD )
 C      
       CALL GETVID ( ' ', 'MATR_MOYEN', 1,1,1, NOMMAT, N1 )
-      CALL GETVR8 ( ' ', 'DELTA'     , 1,1,1, DELTA,  N1 )
-      CALL GETVTX ( ' ', 'INIT'      , 1,1,1, INIT,   N1 )
+      CALL GETVR8 ( ' ', 'COEF_VAR'     , 1,1,1, DELTA,  N1 )
 C
-      IF (INIT(1:3).EQ.'OUI') CALL INIRAN()
+      CALL GETVIS ( ' ', 'INIT_ALEA'    , 0,1,1, JUMP , N1 )       
+      IF (N1 .NE. 0) CALL INIRAN(JUMP)
       
       CALL JEVEUO (NOMMAT//'           .DESC','L',IDESC)
       N = ZI(IDESC+1)     

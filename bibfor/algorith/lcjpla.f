@@ -1,10 +1,10 @@
         SUBROUTINE LCJPLA (LOI , MOD , IMAT , NMAT , MATER , NVI , TEMP,
-     1                     TIME, DEPS , EPSD , SIG , VIN   , DSDE, VIND,
+     1                     DEPS , SIG , VIN   , DSDE, VIND,
      2                     THETA, DT, DEVG, DEVGII)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/03/2002   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,35 +31,33 @@ C           NMAT   :  DIMENSION MATER
 C           MATER  :  COEFFICIENTS MATERIAU
 C           NVI    :  NB VARIABLES INTERNES
 C           TEMP   :  TEMPERATURE
-C           TIME   :  INSTANT
 C           DEPS   :  INCREMENT DE DEFORMATION
-C           EPSD   :  DEFORMATION A T
 C           SIG    :  CONTRAINTE
 C           VIN    :  VARIABLES INTERNES
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C       ----------------------------------------------------------------
         INTEGER         IMAT, NMAT , NVI
-        REAL*8          DSDE(6,6),DEVG(*),DEVGII,SIG(6),EPSD(6),DEPS(6)
-        REAL*8          VIN(*), VIND(*),TIME,TEMP,THETA,DT,MATER(NMAT,2)
+        REAL*8          DSDE(6,6),DEVG(*),DEVGII,SIG(6),DEPS(6)
+        REAL*8          VIN(*), VIND(*),TEMP,THETA,DT,MATER(NMAT,2)
         CHARACTER*8     MOD
         CHARACTER*16    LOI
 C       ----------------------------------------------------------------
         IF     ( LOI(1:8) .EQ. 'ROUSS_PR' .OR. 
      1           LOI(1:10) .EQ. 'ROUSS_VISC' ) THEN           
-          CALL  RSLJPL(LOI,MOD,IMAT,NMAT,MATER,TEMP,SIG,VIN,VIND,DEPS,
+          CALL  RSLJPL(LOI,IMAT,NMAT,MATER,TEMP,SIG,VIN,VIND,DEPS,
      1                 THETA,DT,DSDE)
 C
         ELSEIF ( LOI(1:8) .EQ. 'CHABOCHE'    ) THEN
-          CALL  CHBJPL(MOD,IMAT,NMAT,MATER,TEMP,SIG,VIN,DSDE)
+          CALL  CHBJPL(MOD,NMAT,MATER,SIG,VIN,DSDE)
 C
         ELSEIF ( LOI(1:4) .EQ. 'OHNO'      ) THEN
-          CALL  ONOJPL(MOD,IMAT,NMAT,MATER,TEMP,SIG,VIN,DSDE)
+          CALL  ONOJPL(MOD,NMAT,MATER,SIG,VIN,DSDE)
 C
         ELSEIF ( LOI(1:7)  .EQ. 'NADAI_B'    ) THEN
-          CALL  INSJPL(MOD,IMAT,NMAT,MATER,TEMP,SIG,VIN,DSDE)
+          CALL  INSJPL(MOD,NMAT,MATER,SIG,VIN,DSDE)
 C
         ELSEIF ( LOI(1:6) .EQ. 'LAIGLE'   ) THEN
-          CALL  LGLJPL(MOD,NMAT,MATER,SIG,DEVG,DEVGII,NVI,VIN,DSDE)
+          CALL  LGLJPL(MOD,NMAT,MATER,SIG,DEVG,DEVGII,VIN,DSDE)
 C
         ENDIF
 C

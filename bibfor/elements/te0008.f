@@ -1,6 +1,6 @@
       SUBROUTINE TE0008 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,36 +42,17 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      CHARACTER*8        MODELI,ELREFE
-      CHARACTER*24       CARAC,FF
+      CHARACTER*8        MODELI
       REAL*8             NHARM, BSIGM(18),GEO(18),SIGTMP(36),FTEMP(18)
       INTEGER            NBSIGM
 C DEB ------------------------------------------------------------------
-      CALL ELREF1(ELREFE)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
       MODELI(1:2) = NOMTE(3:4)
-C
-
-C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
-C ---- GEOMETRIE ET INTEGRATION
-C      ------------------------
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS=IFF
-      IVF   =IPOIDS+NPG1
-      IDFDE =IVF   +NPG1*NNO
-      IDFDK =IDFDE +NPG1*NNO
 C
 C --- INITIALISATIONS :
 C     -----------------
       ZERO  = 0.0D0
       NHARM = ZERO
-      BIDON = ZERO
-      NDIM = 2
 C
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
@@ -113,8 +94,8 @@ C ----     CONTRAINTES AUX POINTS D'INTEGRATION
 C
 C ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA) :
 C      --------------------------------------------------
-        CALL BSIGMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
-     +            ZR(IDFDK),BIDON,ZR(IPOIDS),GEO,NHARM,ZR(ICONTM),BSIGM)
+      CALL BSIGMC (MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE, 
+     +              GEO, NHARM, ZR(ICONTM), BSIGM )
 C
 C ---- AFFECTATION DU VECTEUR EN SORTIE :
 C      ----------------------------------
@@ -131,9 +112,9 @@ C      ----------------------------------
         DO 200 I=1,NBSIG*NPG1
           
           SIGTMP(I)=ZR(ICONTM)
-          CALL BSIGMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
-     &                ZR(IDFDK),BIDON,ZR(IPOIDS),GEO,NHARM,
-     &                SIGTMP,BSIGM)
+          CALL BSIGMC (MODELI, NNO, NDIM, NBSIG, NPG1, IPOIDS, IVF,
+     +                 IDFDE,GEO, NHARM, SIGTMP, BSIGM )
+ 
           
           DO 21 J=1,NDIM*NNO
             FTEMP(J) = FTEMP(J)+ABS(BSIGM(J))

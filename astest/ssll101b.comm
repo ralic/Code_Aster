@@ -1,4 +1,4 @@
-# MODIF  DATE 26/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE PROBLEME DE HOVGAARD : CALCUL DES EFFORTS POU_C_T + POU_D_T
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,29 +107,10 @@ CARA_ELE=AFFE_CARA_ELEM( MODELE=MODELE,POUTRE=(
                      GROUP_NO_CENTRE = 'CENT'))
                   )
 
-#
-# MATRICE DE RIGIDITE ELEMENTAIRE
-
-RIGI_ELE=CALC_MATR_ELEM( MODELE=MODELE,  OPTION='RIGI_MECA',
-                CHAM_MATER=CHAMPMAT,
-                CARA_ELEM=CARA_ELE,
-                   CHARGE=( CON_LIM,  ) )
-
-#
-# NUMEROTATION DES DDL
-
-NUME_DDL=NUME_DDL(  MATR_RIGI=RIGI_ELE)
-
-#
-# MATRICE DE RIGIDITE GLOBALE
-
-RIGIDITE=ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,  NUME_DDL=NUME_DDL )
-
 # ----------------------------------------------------------------------
 # CALCUL STATIQUE
-#  0) FACTORISATION DE LA MATRICE  RIGIDITE
 
-RIGI_FAC=FACT_LDLT( MATR_ASSE=RIGIDITE )
+#CHARGEMENT 1
 
 CH1=AFFE_CHAR_MECA( MODELE=MODELE,
                  PESANTEUR=(-9.81, 0., 0., 1.,) )
@@ -166,14 +147,15 @@ MAILLAGE=MAILLAGE,AFFE=(
        _F( NOEUD = 'N1100',   NOM_CMP = 'TEMP',VALE = 4.722200000E+02))
          )
 
+
+
+#CHARGEMENT 2
+
 CH2=AFFE_CHAR_MECA( MODELE=MODELE,
                  TEMP_CALCULEE=TEMPER )
+                 
 
-#
-
-# DEFINITION DES CAS DE CHARGES
-
-# FORCES PONCTUELLES APPLIQUEES AUX NOEUDS DANS LA DIRECTION -Z
+#CHARGEMENT 3
 
 CH3=AFFE_CHAR_MECA( MODELE=MODELE,FORCE_NODALE=(
              _F( NOEUD = 'N200',    FZ = -6.248970000E+02),
@@ -191,199 +173,315 @@ CH3=AFFE_CHAR_MECA( MODELE=MODELE,FORCE_NODALE=(
              _F( NOEUD = 'N1400',   FZ = -1.765800000E+02))
                )
 
-#
-# -------------------- CAS DE CHARGE N  1  --------------------
-# VECTEUR ELEMENTAIRE
+RESU=MACRO_ELAS_MULT(MODELE=MODELE,
+                    CHAM_MATER=CHAMPMAT,
+                    CARA_ELEM=CARA_ELE,
+                    CHAR_MECA_GLOBAL=CON_LIM,
+                    CAS_CHARGE=(_F(NOM_CAS='CHARGE1',
+                                   CHAR_MECA=CH1,),
+                                _F(NOM_CAS='CHARGE2',
+                                   CHAR_MECA=CH2,),
+                                _F(NOM_CAS='CHARGE3',
+                                   CHAR_MECA=CH3,),
+                                ),
+);
 
-VE_1=CALC_VECT_ELEM(  OPTION='CHAR_MECA',
-                CHAM_MATER=CHAMPMAT,
-                 CARA_ELEM=CARA_ELE,
-               CHARGE=(CON_LIM,
-                       CH1,     ) )
 
-# VECTEUR GLOBAL
+RESU=CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,MODELE=MODELE,
+                              CARA_ELEM=CARA_ELE,
+                              CHAM_MATER=CHAMPMAT,
+                              EXCIT=_F( CHARGE = CH1),
+                              OPTION=('EFGE_ELNO_DEPL'),
+                              NUME_ORDRE=1,
+                )
+RESU=CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,MODELE=MODELE,
+                              CARA_ELEM=CARA_ELE,
+                             CHAM_MATER=CHAMPMAT,
+                              EXCIT=_F( CHARGE = CH2),
+                             OPTION=('EFGE_ELNO_DEPL',),
+                             NUME_ORDRE=2,
+               )
 
-POIDS_PR=ASSE_VECTEUR(VECT_ELEM=VE_1,     NUME_DDL=NUME_DDL)
+RESU=CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,MODELE=MODELE,
+                              CARA_ELEM=CARA_ELE,
+                             CHAM_MATER=CHAMPMAT,
+                              EXCIT=_F( CHARGE = CH3),
+                             OPTION=('EFGE_ELNO_DEPL',),
+                             NUME_ORDRE=3,
+               )
+                          
+TEST_RESU(RESU=(
 
-# RESOLUTION
+#DEPLACEMENT
 
-POIDS_PR=RESO_LDLT(reuse=POIDS_PR,MATR_FACT=RIGI_FAC,CHAM_NO=POIDS_PR )
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=1,
+         NOEUD = 'N300', NOM_CMP = 'DX', VALE = -0.1658E-3),
 
-TEST_RESU(CHAM_NO=(
-         _F( CHAM_GD = POIDS_PR, NOEUD = 'N300', NOM_CMP = 'DX', VALE = -0.1658E-3),
-         _F( CHAM_GD = POIDS_PR, NOEUD = 'N300', NOM_CMP = 'DY', VALE = -0.2040E-4,
-                                               PRECISION = 8.E-3),
-         _F( CHAM_GD = POIDS_PR, NOEUD = 'N300', NOM_CMP = 'DZ', VALE = -0.8010E-5),
-         _F( CHAM_GD = POIDS_PR, NOEUD = 'N500', NOM_CMP = 'DX', VALE = -0.2397E-3),
-         _F( CHAM_GD = POIDS_PR, NOEUD = 'N500', NOM_CMP = 'DY', VALE = 0.1777E-3),
-         _F( CHAM_GD = POIDS_PR, NOEUD = 'N500', NOM_CMP = 'DZ', VALE = -0.2681E-3),
-         _F( CHAM_GD = POIDS_PR, NOEUD = 'N700', NOM_CMP = 'DX', VALE = -0.1855E-3),
-         _F( CHAM_GD = POIDS_PR, NOEUD = 'N700', NOM_CMP = 'DY', VALE = 0.1775E-3),
-         _F( CHAM_GD = POIDS_PR, NOEUD = 'N700', NOM_CMP = 'DZ', VALE = -0.3940E-3),
-         _F( CHAM_GD = POIDS_PR, NOEUD = 'N900', NOM_CMP = 'DX', VALE = -0.1278E-3),
-         _F( CHAM_GD = POIDS_PR, NOEUD = 'N900', NOM_CMP = 'DY', VALE = 0.1774E-3),
-         _F( CHAM_GD = POIDS_PR, NOEUD = 'N900', NOM_CMP = 'DZ', VALE = -0.4977E-3),
-         _F( CHAM_GD = POIDS_PR, NOEUD = 'N1100', NOM_CMP = 'DX', VALE = 0.0,
-                                                  CRITERE = 'ABSOLU'),
-         _F( CHAM_GD = POIDS_PR, NOEUD = 'N1100', NOM_CMP = 'DY', VALE = 0.5682E-4),
-         _F( CHAM_GD = POIDS_PR, NOEUD = 'N1100', NOM_CMP = 'DZ', VALE = -0.2207E-3))
-          )
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=1,
+         NOEUD = 'N300', NOM_CMP = 'DY', VALE = -0.2040E-4,PRECISION = 8.E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=1,
+         NOEUD = 'N300', NOM_CMP = 'DZ', VALE = -0.8010E-5),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=1,
+         NOEUD = 'N500', NOM_CMP = 'DX', VALE = -0.2397E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=1,
+         NOEUD = 'N500', NOM_CMP = 'DY', VALE = 0.1777E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=1,
+         NOEUD = 'N500', NOM_CMP = 'DZ', VALE = -0.2681E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=1,
+         NOEUD = 'N700', NOM_CMP = 'DX', VALE = -0.1855E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=1,
+         NOEUD = 'N700', NOM_CMP = 'DY', VALE = 0.1775E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=1,
+         NOEUD = 'N700', NOM_CMP = 'DZ', VALE = -0.3940E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=1,
+         NOEUD = 'N900', NOM_CMP = 'DX', VALE = -0.1278E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=1,
+         NOEUD = 'N900', NOM_CMP = 'DY', VALE = 0.1774E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=1,
+         NOEUD = 'N900', NOM_CMP = 'DZ', VALE = -0.4977E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=1,
+         NOEUD = 'N1100', NOM_CMP = 'DX', VALE = 0.0,CRITERE = 'ABSOLU'),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=1,
+         NOEUD = 'N1100', NOM_CMP = 'DY', VALE = 0.5682E-4),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=1,
+         NOEUD = 'N1100', NOM_CMP = 'DZ', VALE = -0.2207E-3),
+   
+# EFFORT GENERALISE   
+   
+          
+   _F( RESULTAT = RESU, NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=1,
+   MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'N',VALE = -2276.,PRECISION = 5.E-3),
+   
+   _F( RESULTAT = RESU, NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=1,
+   MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'VY',VALE = -161.1),
+   
+   _F( RESULTAT = RESU, NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=1,
+   MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'VZ',VALE = -10.095,PRECISION = 5.E-3),
+   
+   _F( RESULTAT = RESU, NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=1,
+   MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'MT', VALE = -53.40),
+   
+   _F( RESULTAT = RESU, NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=1,
+   MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'MFY',VALE = -89.66),
+   
+   _F( RESULTAT = RESU, NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=1,
+   MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'MFZ',VALE = -158.5),
+   
+   _F( RESULTAT = RESU, NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=1,
+   MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'N',VALE = 10.095,PRECISION = 5.E-3),
+   
+   _F( RESULTAT = RESU, NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=1,
+   MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'VY',VALE = -161.1),
+   
+   _F( RESULTAT = RESU, NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=1,
+   MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'VZ',VALE = 1165.,PRECISION = 5.E-3),
+   
+   _F( RESULTAT = RESU, NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=1,
+   MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'MT',VALE = 15.60,PRECISION = 5.E-3),
+   
+   _F( RESULTAT = RESU, NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=1,
+   MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'MFY',VALE = 1260.5,PRECISION = 5.E-3),
+   
+   _F( RESULTAT = RESU, NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=1,
+   MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'MFZ',VALE = 290.1,),),
+           );
 
-#
-# EFFORT EN REPERE LOCAL
 
-EFFORT_P=CALC_CHAM_ELEM(MODELE=MODELE,  OPTION='EFGE_ELNO_DEPL',
-                CHAM_MATER=CHAMPMAT, CARA_ELEM=CARA_ELE,
-               EXCIT=_F(  CHARGE = CH1),      DEPL=POIDS_PR )
+## FIN DES TESTS DE LA CHARGE 1
 
-TEST_RESU(CHAM_ELEM=(
-   _F( CHAM_GD = EFFORT_P,MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'N',VALE = -2276.,
-                                                       PRECISION = 5.E-3),
-   _F( CHAM_GD = EFFORT_P,MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'VY',VALE = -161.1),
-   _F( CHAM_GD = EFFORT_P,MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'VZ',VALE = -10.095,
-                                                       PRECISION = 5.E-3),
-   _F( CHAM_GD = EFFORT_P,MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'MT', VALE = -53.40),
-   _F( CHAM_GD = EFFORT_P,MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'MFY',VALE = -89.66),
-   _F( CHAM_GD = EFFORT_P,MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'MFZ',VALE = -158.5),
-   _F( CHAM_GD = EFFORT_P,MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'N',VALE = 10.095,
-                                                       PRECISION = 5.E-3),
-   _F( CHAM_GD = EFFORT_P,MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'VY',VALE = -161.1),
-   _F( CHAM_GD = EFFORT_P,MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'VZ',VALE = 1165.,
-                                                       PRECISION = 5.E-3),
-   _F( CHAM_GD = EFFORT_P,MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'MT',VALE = 15.60,
-                                                       PRECISION = 5.E-3),
-   _F( CHAM_GD = EFFORT_P,MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'MFY',VALE = 1260.5,
-                                                       PRECISION = 5.E-3),
-   _F( CHAM_GD = EFFORT_P,MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'MFZ',VALE = 290.1))
-           )
+TEST_RESU(RESU=(
 
-#
-# -------------------- CAS DE CHARGE N  2  --------------------
-# VECTEUR ELEMENTAIRE
+#DEPLACEMENT
+ 
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=2,
+         NOEUD = 'N300', NOM_CMP = 'DX', VALE = -6.1418E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=2,
+         NOEUD = 'N300', NOM_CMP = 'DY', VALE = -13.090E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=2,
+         NOEUD = 'N300', NOM_CMP = 'DZ', VALE = 16.799E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=2,
+         NOEUD = 'N500', NOM_CMP = 'DX', VALE = -10.302E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=2,
+         NOEUD = 'N500', NOM_CMP = 'DY', VALE = -8.132E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=2,
+         NOEUD = 'N500', NOM_CMP = 'DZ', VALE = 19.723E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=2,
+         NOEUD = 'N700', NOM_CMP = 'DX', VALE = -11.370E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=2,
+         NOEUD = 'N700', NOM_CMP = 'DY', VALE = -5.383E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=2,
+         NOEUD = 'N700', NOM_CMP = 'DZ', VALE = 16.135E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=2,
+         NOEUD = 'N900', NOM_CMP = 'DX', VALE = -12.238E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=2,
+         NOEUD = 'N900', NOM_CMP = 'DY', VALE = -2.633E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=2,
+         NOEUD = 'N900', NOM_CMP = 'DZ', VALE = 12.262E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=2,
+         NOEUD = 'N1100', NOM_CMP = 'DX', VALE = -6.308E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=2,
+         NOEUD = 'N1100', NOM_CMP = 'DY', VALE = 1.542E-3),
+         
+         _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=2,
+         NOEUD = 'N1100', NOM_CMP = 'DZ', VALE = 1.931E-3),
 
-VE_2=CALC_VECT_ELEM(  OPTION='CHAR_MECA',
-                CHAM_MATER=CHAMPMAT,
-                 CARA_ELEM=CARA_ELE,
-               CHARGE=(CON_LIM,
-                       CH2,     ) )
+#EFFORT GENERALISE
 
-# VECTEUR GLOBAL
+   _F( RESULTAT = RESU,MAILLE = 'E1', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=2,
+   NOEUD = 'N100',NOM_CMP = 'N',VALE = -7431.),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E1', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=2,
+   NOEUD = 'N100',NOM_CMP = 'VY',VALE = -7613.),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E1', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=2,
+   NOEUD = 'N100',NOM_CMP = 'VZ',VALE = 2791.),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E1', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=2,
+   NOEUD = 'N100',NOM_CMP = 'MT',VALE = 1615.),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E1', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=2,
+   NOEUD = 'N100',NOM_CMP = 'MFY',VALE = -6193.),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E1', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=2,
+   NOEUD = 'N100',NOM_CMP = 'MFZ',VALE = -14712.),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E14', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=2,
+   NOEUD = 'N1500',NOM_CMP = 'N',VALE = -2791.),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E14', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=2,
+   NOEUD = 'N1500',NOM_CMP = 'VY',VALE = -7613.),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E14', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=2,
+   NOEUD = 'N1500',NOM_CMP = 'VZ',VALE = -7433.),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E14', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=2,
+   NOEUD = 'N1500',NOM_CMP = 'MT',VALE = 7052.),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E14', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=2,
+   NOEUD = 'N1500',NOM_CMP = 'MFY',VALE = -10460.),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E14', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=2,
+   NOEUD = 'N1500',NOM_CMP = 'MFZ',VALE = 8862.,),),
+           );
 
-DILAT_TH=ASSE_VECTEUR(VECT_ELEM=VE_2,     NUME_DDL=NUME_DDL)
+## FIN DES TESTS DE LA CHARGE 2
 
-# RESOLUTION
+TEST_RESU(RESU=(
 
-DILAT_TH=RESO_LDLT(reuse=DILAT_TH,MATR_FACT=RIGI_FAC,CHAM_NO=DILAT_TH )
+# DEPLACEMENTS
 
-TEST_RESU(CHAM_NO=(
-         _F( CHAM_GD = DILAT_TH, NOEUD = 'N300', NOM_CMP = 'DX', VALE = -6.1418E-3),
-         _F( CHAM_GD = DILAT_TH, NOEUD = 'N300', NOM_CMP = 'DY', VALE = -13.090E-3),
-         _F( CHAM_GD = DILAT_TH, NOEUD = 'N300', NOM_CMP = 'DZ', VALE = 16.799E-3),
-         _F( CHAM_GD = DILAT_TH, NOEUD = 'N500', NOM_CMP = 'DX', VALE = -10.302E-3),
-         _F( CHAM_GD = DILAT_TH, NOEUD = 'N500', NOM_CMP = 'DY', VALE = -8.132E-3),
-         _F( CHAM_GD = DILAT_TH, NOEUD = 'N500', NOM_CMP = 'DZ', VALE = 19.723E-3),
-         _F( CHAM_GD = DILAT_TH, NOEUD = 'N700', NOM_CMP = 'DX', VALE = -11.370E-3),
-         _F( CHAM_GD = DILAT_TH, NOEUD = 'N700', NOM_CMP = 'DY', VALE = -5.383E-3),
-         _F( CHAM_GD = DILAT_TH, NOEUD = 'N700', NOM_CMP = 'DZ', VALE = 16.135E-3),
-         _F( CHAM_GD = DILAT_TH, NOEUD = 'N900', NOM_CMP = 'DX', VALE = -12.238E-3),
-         _F( CHAM_GD = DILAT_TH, NOEUD = 'N900', NOM_CMP = 'DY', VALE = -2.633E-3),
-         _F( CHAM_GD = DILAT_TH, NOEUD = 'N900', NOM_CMP = 'DZ', VALE = 12.262E-3),
-         _F( CHAM_GD = DILAT_TH, NOEUD = 'N1100', NOM_CMP = 'DX', VALE = -6.308E-3),
-         _F( CHAM_GD = DILAT_TH, NOEUD = 'N1100', NOM_CMP = 'DY', VALE = 1.542E-3),
-         _F( CHAM_GD = DILAT_TH, NOEUD = 'N1100', NOM_CMP = 'DZ', VALE = 1.931E-3))
-        )
+        _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=3,
+        NOEUD = 'N300', NOM_CMP = 'DX', VALE = -0.1651E-3),
+        
+        _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=3,
+        NOEUD = 'N300', NOM_CMP = 'DY', VALE = -0.2080E-4),
+        
+        _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=3,
+        NOEUD = 'N300', NOM_CMP = 'DZ', VALE = -0.9516E-5),
+        
+        _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=3,
+        NOEUD = 'N500', NOM_CMP = 'DX', VALE = -0.2386E-3),
+        
+        _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=3,
+        NOEUD = 'N500', NOM_CMP = 'DY', VALE = 0.1773E-3),
+        
+        _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=3,
+        NOEUD = 'N500', NOM_CMP = 'DZ', VALE = -0.2697E-3),
+        
+        _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=3,
+        NOEUD = 'N700', NOM_CMP = 'DX', VALE = -0.1848E-3),
+        
+        _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=3,
+        NOEUD = 'N700', NOM_CMP = 'DY', VALE = 0.1771E-3),
+        
+        _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=3,
+        NOEUD = 'N700', NOM_CMP = 'DZ', VALE = -0.3948E-3),
+        
+        _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=3,
+        NOEUD = 'N900', NOM_CMP = 'DX', VALE = -0.1274E-3),
+        
+        _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=3,
+        NOEUD = 'N900', NOM_CMP = 'DY', VALE = 0.1770E-3),
+        
+        _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=3,
+        NOEUD = 'N900', NOM_CMP = 'DZ', VALE = -0.4964E-3),
+        
+        _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=3,
+        NOEUD = 'N1100', NOM_CMP = 'DX', VALE = 0.0,CRITERE = 'ABSOLU'),
+        
+        _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=3,
+        NOEUD = 'N1100', NOM_CMP = 'DY', VALE = 0.5674E-4),
+        
+        _F( RESULTAT = RESU, NOM_CHAM='DEPL', NUME_ORDRE=3,
+        NOEUD = 'N1100', NOM_CMP = 'DZ', VALE = -0.2186E-3),
 
-#
-# EFFORT EN REPERE LOCAL
+# EFFORTS GENERALISE
 
-EFFORT_T=CALC_CHAM_ELEM(MODELE=MODELE,  OPTION='EFGE_ELNO_DEPL',
-                CHAM_MATER=CHAMPMAT, CARA_ELEM=CARA_ELE,
-               EXCIT=_F(  CHARGE = CH2),    DEPL=DILAT_TH )
+   _F( RESULTAT = RESU,MAILLE = 'E1', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=3,
+   NOEUD = 'N100',NOM_CMP = 'N',  VALE = -2273.),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E1', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=3,
+   NOEUD = 'N100',NOM_CMP = 'VY', VALE = -161.1),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E1', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=3,
+   NOEUD = 'N100',NOM_CMP = 'VZ', VALE = -9.810),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E1', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=3,
+   NOEUD = 'N100',NOM_CMP = 'MT', VALE = -53.02),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E1', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=3,
+   NOEUD = 'N100',NOM_CMP = 'MFY',VALE = -89.53),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E1', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=3,
+   NOEUD = 'N100',NOM_CMP = 'MFZ',VALE = -158.63),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E14', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=3,
+   NOEUD = 'N1500',NOM_CMP = 'N',VALE = 9.810),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E14', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=3,
+   NOEUD = 'N1500',NOM_CMP = 'VY',VALE = -161.1),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E14', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=3,
+   NOEUD = 'N1500',NOM_CMP = 'VZ',VALE = 1168.),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E14', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=3,
+   NOEUD = 'N1500',NOM_CMP = 'MT',VALE = 11.90,PRECISION = 5.E-3),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E14', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=3,
+   NOEUD = 'N1500',NOM_CMP = 'MFY',VALE = 1261.),
+   
+   _F( RESULTAT = RESU,MAILLE = 'E14', NOM_CHAM='EFGE_ELNO_DEPL', NUME_ORDRE=3,
+   NOEUD = 'N1500',NOM_CMP = 'MFZ',VALE = 289.7,),),
+           );
 
-TEST_RESU(CHAM_ELEM=(
-   _F( CHAM_GD = EFFORT_T,MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'N',VALE = -7431.),
-   _F( CHAM_GD = EFFORT_T,MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'VY',VALE = -7613.),
-   _F( CHAM_GD = EFFORT_T,MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'VZ',VALE = 2791.),
-   _F( CHAM_GD = EFFORT_T,MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'MT',VALE = 1615.),
-   _F( CHAM_GD = EFFORT_T,MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'MFY',VALE = -6193.),
-   _F( CHAM_GD = EFFORT_T,MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'MFZ',VALE = -14712.),
-   _F( CHAM_GD = EFFORT_T,MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'N',VALE = -2791.),
-   _F( CHAM_GD = EFFORT_T,MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'VY',VALE = -7613.),
-   _F( CHAM_GD = EFFORT_T,MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'VZ',VALE = -7433.),
-   _F( CHAM_GD = EFFORT_T,MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'MT',VALE = 7052.),
-   _F( CHAM_GD = EFFORT_T,MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'MFY',VALE = -10460.),
-   _F( CHAM_GD = EFFORT_T,MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'MFZ',VALE = 8862.))
-           )
+## FIN DES TESTS DE LA CHARGE 3
 
-#
-# -------------------- CAS DE CHARGE N  3  --------------------
-# VECTEUR ELEMENTAIRE
-
-VE_3=CALC_VECT_ELEM(  OPTION='CHAR_MECA',
-                CHAM_MATER=CHAMPMAT,
-                 CARA_ELEM=CARA_ELE,
-               CHARGE=(CON_LIM,
-                       CH3,     ) )
-
-# VECTEUR GLOBAL
-
-FORCE_PO=ASSE_VECTEUR(VECT_ELEM=VE_3,     NUME_DDL=NUME_DDL)
-
-# RESOLUTION
-
-FORCE_PO=RESO_LDLT(reuse=FORCE_PO,MATR_FACT=RIGI_FAC,CHAM_NO=FORCE_PO )
-
-TEST_RESU(CHAM_NO=(
-        _F( CHAM_GD = FORCE_PO, NOEUD = 'N300', NOM_CMP = 'DX', VALE = -0.1651E-3),
-        _F( CHAM_GD = FORCE_PO, NOEUD = 'N300', NOM_CMP = 'DY', VALE = -0.2080E-4),
-        _F( CHAM_GD = FORCE_PO, NOEUD = 'N300', NOM_CMP = 'DZ', VALE = -0.9516E-5),
-        _F( CHAM_GD = FORCE_PO, NOEUD = 'N500', NOM_CMP = 'DX', VALE = -0.2386E-3),
-        _F( CHAM_GD = FORCE_PO, NOEUD = 'N500', NOM_CMP = 'DY', VALE = 0.1773E-3),
-        _F( CHAM_GD = FORCE_PO, NOEUD = 'N500', NOM_CMP = 'DZ', VALE = -0.2697E-3),
-        _F( CHAM_GD = FORCE_PO, NOEUD = 'N700', NOM_CMP = 'DX', VALE = -0.1848E-3),
-        _F( CHAM_GD = FORCE_PO, NOEUD = 'N700', NOM_CMP = 'DY', VALE = 0.1771E-3),
-        _F( CHAM_GD = FORCE_PO, NOEUD = 'N700', NOM_CMP = 'DZ', VALE = -0.3948E-3),
-        _F( CHAM_GD = FORCE_PO, NOEUD = 'N900', NOM_CMP = 'DX', VALE = -0.1274E-3),
-        _F( CHAM_GD = FORCE_PO, NOEUD = 'N900', NOM_CMP = 'DY', VALE = 0.1770E-3),
-        _F( CHAM_GD = FORCE_PO, NOEUD = 'N900', NOM_CMP = 'DZ', VALE = -0.4964E-3),
-        _F( CHAM_GD = FORCE_PO, NOEUD = 'N1100', NOM_CMP = 'DX', VALE = 0.0,
-                                                  CRITERE = 'ABSOLU'),
-        _F( CHAM_GD = FORCE_PO, NOEUD = 'N1100', NOM_CMP = 'DY', VALE = 0.5674E-4),
-        _F( CHAM_GD = FORCE_PO, NOEUD = 'N1100', NOM_CMP = 'DZ', VALE = -0.2186E-3))
-            )
-
-#
-# EFFORT EN REPERE LOCAL
-
-EFFOR_PO=CALC_CHAM_ELEM(MODELE=MODELE,  OPTION='EFGE_ELNO_DEPL',
-                CHAM_MATER=CHAMPMAT, CARA_ELEM=CARA_ELE,
-               EXCIT=_F( CHARGE = CH3),       DEPL=FORCE_PO )
-
-TEST_RESU(CHAM_ELEM=(
-   _F( CHAM_GD = EFFOR_PO,MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'N',  VALE = -2273.),
-   _F( CHAM_GD = EFFOR_PO,MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'VY', VALE = -161.1),
-   _F( CHAM_GD = EFFOR_PO,MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'VZ', VALE = -9.810),
-   _F( CHAM_GD = EFFOR_PO,MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'MT', VALE = -53.02),
-   _F( CHAM_GD = EFFOR_PO,MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'MFY',VALE = -89.53),
-   _F( CHAM_GD = EFFOR_PO,MAILLE = 'E1',NOEUD = 'N100',NOM_CMP = 'MFZ',VALE = -158.63),
-   _F( CHAM_GD = EFFOR_PO,MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'N',VALE = 9.810),
-   _F( CHAM_GD = EFFOR_PO,MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'VY',VALE = -161.1),
-   _F( CHAM_GD = EFFOR_PO,MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'VZ',VALE = 1168.),
-   _F( CHAM_GD = EFFOR_PO,MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'MT',VALE = 11.90,
-                                                       PRECISION = 5.E-3),
-   _F( CHAM_GD = EFFOR_PO,MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'MFY',VALE = 1261.),
-   _F( CHAM_GD = EFFOR_PO,MAILLE = 'E14',NOEUD = 'N1500',NOM_CMP = 'MFZ',VALE = 289.7))
-           )
-
-SIGMA_PO=CALC_CHAM_ELEM(MODELE=MODELE,  OPTION='SIGM_ELNO_DEPL',
-                CHAM_MATER=CHAMPMAT, CARA_ELEM=CARA_ELE,
-               EXCIT=_F( CHARGE = CH3),    DEPL=FORCE_PO )
-
-#
-
-SIGPO_PO=CALC_CHAM_ELEM(MODELE=MODELE,  OPTION='SIPO_ELNO_DEPL',
-                CHAM_MATER=CHAMPMAT, CARA_ELEM=CARA_ELE,
-               EXCIT=_F( CHARGE = CH3),        DEPL=FORCE_PO )
 
 # ----------------------------------------------------------------------
 FIN()

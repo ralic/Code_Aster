@@ -1,12 +1,12 @@
-      SUBROUTINE FIOPE1(NCODOP,LPILE,PILE,ICLASS,MI,MR,ML,MC,IER)
+      SUBROUTINE FIOPE1(NCODOP,LPILE,ICLASS,MI,MR,ML,MC,IER)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER           NCODOP,LPILE,PILE(*),ICLASS(*),MI(*),IER
+      INTEGER           NCODOP,LPILE,ICLASS(*),MI(*),IER
       REAL*8                                              MR(*)
       LOGICAL                                                ML(*)
       COMPLEX*16                                                MC(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 02/10/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF SUPERVIS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,11 +23,12 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C TOLE CRP_6
+C
 C     EFFECTUER UNE OPERATION UNAIRE   (FONCTIONS INTERPRETEES)
 C     ------------------------------------------------------------------
 C IN  NCODOP  : CODE OPERATION
 C VAR LPILE   : SOMMET DE PILE
-C VAR PILE    : PILE DES OPERANDES
 C VAR MI,MR,ML,MC : TABLE DES CONSTANTES ENTIERES, REELLES, ...
 C OUT IER     : CODE DE RETOUR
 C     ------------------------------------------------------------------

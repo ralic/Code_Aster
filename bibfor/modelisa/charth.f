@@ -3,7 +3,7 @@
       CHARACTER*4 FONREE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/10/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C     ------------------------------------------------------------------
 
 C --- NOMS DE LIGREL, MAILLAGE , DIMENSION DU PB
 
-      CALL CAGENE(FONREE,CHAR,OPER,LIGRMO,NOMA,NDIM)
+      CALL CAGENE(CHAR,OPER,LIGRMO,NOMA,NDIM)
 
 C --- ALLOCATION DU LIGREL DE CHARGE (MOTS-CLE: TEMP_IMPO,
 C                          ECHANGE_PAROI, LIAISON_DDL, LIAISON_GROUP )

@@ -2,7 +2,7 @@
      +                  PERM,NBSN,SUPND,ADRESS,PARENT,GSSUBS,FCTNZS,
      +                  FCTOPS,DHEAD,QSIZE,LLIST,MARKER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/01/2002   AUTEUR JFBHHUC C.ROSE 
+C MODIF ALGELINE  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,7 +87,7 @@ C        ------------------------------------------------
 C        INITIALIZATION FOR THE MINIMUM DEGREE ALGORITHM.
 C        ------------------------------------------------
       NOFSUB = 0
-      CALL MMDINT(NEQNS,XADJ,ADJNCY,DHEAD,INVP,PERM,QSIZE,LLIST,MARKER)
+      CALL MMDINT(NEQNS,XADJ,DHEAD,INVP,PERM,QSIZE,LLIST,MARKER)
 C
 C        ----------------------------------------------
 C        NUM COUNTS THE NUMBER OF ORDERED NODES PLUS 1.

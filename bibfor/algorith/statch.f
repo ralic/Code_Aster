@@ -9,7 +9,7 @@
       CHARACTER*8 NOECHO(*), INTITU(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/03/2003   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,7 @@ C-----------------------------------------------------------------------
         DT = TEMPS(2) - TEMPS(1)
       END IF
       IDEBUT = INT((TDEBUT-TEMPS(1))/DT) + 1
-      IFIN = MAX(INT((TFIN-TEMPS(1))/DT)+1,NBPT)
+      IFIN = MIN(INT((TFIN-TEMPS(1))/DT)+1,NBPT)
       NBPAS = IFIN - IDEBUT + 1
       IF (NBLOC.EQ.0) NBLOC = 1
       NBVAL = NBPAS/NBLOC
@@ -287,14 +287,14 @@ C       ------------------------------------------------------------
           FXRMSC = FXRMSC + FNRMSC**2
           FXMAXT = MAX(FXMAXT,FNMAX)
           FXMINT = MIN(FXMINT,FNMIN)
-          IF (IMPR.EQ.2) CALL IMPFN0(IFIRES,0,IBL,FNMOYT,FNMOYC,FNRMST,
+          IF (IMPR.EQ.2) CALL IMPFN0(IFIRES,IBL,FNMOYT,FNMOYC,FNRMST,
      &                               FNRMSC,FNMAX)
    80   CONTINUE
         FXMOYT = FXMOYT/NBLOC
         FXMOYC = FXMOYC/NBLOC
         FXRMST = SQRT(FXRMST/NBLOC)
         FXRMSC = SQRT(FXRMSC/NBLOC)
-        IF (IBL.GT.1 .AND. IMPR.EQ.2) CALL IMPFN0(IFIRES,0,0,FXMOYT,
+        IF (IBL.GT.1 .AND. IMPR.EQ.2) CALL IMPFN0(IFIRES,0,FXMOYT,
      &      FXMOYC,FXRMST,FXRMSC,FXMAXT)
         VALEK(3) = TVAR(6)
         PARA(1) = FXMOYT
@@ -368,14 +368,14 @@ C       -------------------------------------------------------
           TCHOCT = ZERO
           CALL COMPT(NBVAL,WK1((IBL-1)*NBVAL+IDEBUT),OFFSET,TEMPS,
      &               TREPOS,NBCHOC,TCHOCM,TCHMAX,TCHMIN,NBREBO,TREBOM,
-     &               TCHOCT)
+     &               TCHOCT,NBPT)
           TCHOMA = MAX(TCHOMA,TCHMAX)
           TCHOMI = MIN(TCHOMI,TCHMIN)
           TCHOCG = TCHOCG + TCHOCT
           TREBOG = TREBOG + NBREBO*TREBOM
           NBCHOT = NBCHOT + NBCHOC
           NBREBT = NBREBT + NBREBO
-          IF (IMPR.EQ.2) CALL IMPC0(IFIRES,0,IBL,NBCHOC,TCHOCM,TCHMAX,
+          IF (IMPR.EQ.2) CALL IMPC0(IFIRES,IBL,NBCHOC,TCHOCM,TCHMAX,
      &                              TCHMIN,NBREBO,TREBOM,TCHOCT,TEMPS,
      &                              NBVAL)
   110   CONTINUE
@@ -390,7 +390,7 @@ C       -------------------------------------------------------
           TREBMY = ZERO
         END IF
         IF (IBL.GT.1 .AND. IMPR.EQ.2) THEN
-          CALL IMPC0(IFIRES,0,0,NBCHOT,TCHOMY,TCHOMA,TCHOMI,NBREBT,
+          CALL IMPC0(IFIRES,0,NBCHOT,TCHOMY,TCHOMA,TCHOMI,NBREBT,
      &               TREBMY,TCHOCG,TEMPS,NBLOC*NBVAL)
         END IF
         VALEK(3) = TVAR(9)

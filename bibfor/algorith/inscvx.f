@@ -1,8 +1,8 @@
-        SUBROUTINE INSCVX ( IMAT, NMAT, MATER, TEMP, SIG ,VIN, SEUIL )
+        SUBROUTINE INSCVX ( NMAT, MATER, SIG ,VIN, SEUIL )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ==============================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,15 +32,13 @@ C
 C       --------------------------------------------------------------
 C       IN  SIG    :  CONTRAINTE
 C       IN  VIN    :  VARIABLES INTERNES = (KAPA)
-C       IN  IMAT   :  ADRESSE DU MATERIAU CODE
 C       IN  NMAT   :  DIMENSION MATER
-C       IN  TEMP   :  TEMPERATURE
-C       IN  MATER  :  COEFFICIENTS MATERIAU A TEMP
+C       IN  MATER  :  COEFFICIENTS MATERIAU
 C       OUT SEUIL  :  SEUIL  ELASTICITE
 C       --------------------------------------------------------------
-        INTEGER         IMAT, NDT , NDI , NMAT
+        INTEGER         NDT , NDI , NMAT
         REAL*8          KAPA, TAU, HP,  SIG(6) ,  VIN(*)
-        REAL*8          MATER(NMAT,2) , TEMP, LCS  , KPIC , R0
+        REAL*8          MATER(NMAT,2) , LCS  , KPIC , R0
         REAL*8          SEUIL, I1, J2, J3, RCOS3T , KRUP
 C       --------------------------------------------------------------
         COMMON /TDIM/   NDT , NDI

@@ -1,6 +1,6 @@
       SUBROUTINE DIAGP3(TENS,VECP,VALP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2003   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 02/12/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,10 +32,8 @@ C ----------------------------------------------------------------------
       REAL*8  TRACE,X(6),Y(6),DET(4),D12,D13,D23,RTEMP,NORM(3)
       REAL*8  A,B,C,R8PI,THETA,R8MIEM
       REAL*8  F,G
-      REAL*8  TPS(6),TOL
+      REAL*8  TPS(6)
       
-      TOL=1.D-6
-
 C      CALL UTTCPU(88,'DEBUT',6,TPS)
       
 
@@ -150,7 +148,6 @@ C -- CAS DE 3 VALEURS PROPRES EGALES
       DO 4010 I=1,3
         VECP(I,1)=VECP(I,IND)/A
 4010  CONTINUE
-C      write (6,*) '1er VP : ',VECP(1,1),VECP(2,1),VECP(3,1)
 
 C -- AUTRES VECTEURS PROPRES : ON PASSE DANS LE SOUS-ESPACE
 C    ORTHOGONAL AU PREMIER VECTEUR PROPRE
@@ -210,14 +207,17 @@ C -- ON CHERCHE L'ANGLE DONT EST TOURNE LE REPERE PROPRE
 
         F=2.D0*C
         G=A-B
-C        THETA=ATAN2(2.D0*C,A-B)
-        THETA=ATAN2(F,G)
-        THETA=THETA/2.D0
+        IF (ABS(F).LT.R8MIEM()) THEN
+          THETA=0.D0
+        ELSE
+          THETA=ATAN2(F,G)
+          THETA=THETA/2.D0
+        ENDIF
         
 C -- EST-CE THETA OU THETA+PI/2 ?
 
         RTEMP=(A-B)*COS(2.D0*THETA)+2.D0*C*SIN(2.D0*THETA)
-        IF (RTEMP*(VALP(1)-VALP(2)).LT.0.D0)
+        IF (RTEMP*(VALP(2)-VALP(3)).LT.0.D0)
      &     THETA=THETA+R8PI()/2.D0
      
 C        write (6,*) 'THETA =',THETA
@@ -249,21 +249,21 @@ C        write (6,*) 'THETA =',THETA
           VALP(3)=RTEMP
         ENDIF
       
-        Y(1)=TENS(1)
-        Y(2)=TENS(4)
-        Y(3)=TENS(6)
-        Y(4)=TENS(2)
-        Y(5)=TENS(3)
-        Y(6)=TENS(5)
-        CALL BGTOBP(Y,X,VECP)
+C        Y(1)=TENS(1)
+C        Y(2)=TENS(4)
+C        Y(3)=TENS(6)
+C        Y(4)=TENS(2)
+C        Y(5)=TENS(3)
+C        Y(6)=TENS(5)
+C        CALL BGTOBP(Y,X,VECP)
        
-        IF ((ABS(X(1)-VALP(1)).GT.TOL).OR.
-     &      (ABS(X(2)-VALP(2)).GT.TOL).OR.
-     &      (ABS(X(3)-VALP(3)).GT.TOL)) THEN
+C        IF ((ABS(X(1)-VALP(1)).GT.TOL).OR.
+C     &      (ABS(X(2)-VALP(2)).GT.TOL).OR.
+C     &      (ABS(X(3)-VALP(3)).GT.TOL)) THEN
 C          write (6,*) 'X(1) = ',X(1),' ; VALP(1) = ',VALP(1)
 C          write (6,*) 'X(2) = ',X(2),' ; VALP(2) = ',VALP(2)
 C          write (6,*) 'X(3) = ',X(3),' ; VALP(3) = ',VALP(3)
-        ENDIF
+C        ENDIF
       
       DO 200 I=1,3
         VALP(I)=VALP(I)+TRACE

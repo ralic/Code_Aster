@@ -1,9 +1,9 @@
-        SUBROUTINE BETIMP (IMAT,NMAT,MATER,TEMP,SIG,VIND,VINF,ELGEOM,
-     &                     NVI,NSEUI1,NSEUI2,NSEUI3,NSEUI4,SIGE,SIGD)
+        SUBROUTINE BETIMP (NMAT,MATER,SIG,VIND,VINF,ELGEOM,
+     &                     NSEUI1,NSEUI2,NSEUI3,NSEUI4,SIGE,SIGD)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,10 +41,8 @@ C       ----------------------------------------------------------------
 C       IN  SIG    :  CONTRAINTE
 C       IN  VIND   :  VARIABLES INTERNES = ( PC PT THETA ) A T
 C       IN  VINF   :  VARIABLES INTERNES = ( PC PT THETA ) A T+DT
-C       IN  IMAT   :  ADRESSE DU MATERIAU CODE
 C       IN  NMAT   :  DIMENSION MATER
-C       IN  TEMP   :  TEMPERATURE
-C       IN  MATER  :  COEFFICIENTS MATERIAU A TEMP
+C       IN  MATER  :  COEFFICIENTS MATERIAU
 C       IN  ELGEOM :  TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES AUX
 C                     LOIS DE COMPORTEMENT
 C       IN  NSEUI1 :  CRITERE ACTIVE LORS DE LA PREMIERE RESOLUTION
@@ -70,10 +68,10 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-        INTEGER         IMAT, NVI , NMAT , NSEUI4, IFM, NIV
+        INTEGER         NMAT , NSEUI4, IFM, NIV
         INTEGER         NSEUI1, NSEUI2, NSEUI3
         REAL*8          PC, PT, SIG(6), SIGE(6), SIGD(6), DEV(6), LC
-        REAL*8          MATER(NMAT,2),TEMP , ELGEOM(*), VIND(*), VINF(*)
+        REAL*8          MATER(NMAT,2),ELGEOM(*), VIND(*), VINF(*)
         REAL*8          FC , FT , BETA
         REAL*8          RAC2 , ZERO , UN , DEUX , TROIS
         REAL*8          LCNRTS , KU , KE , FCOMP , FTRAC

@@ -1,9 +1,9 @@
-      SUBROUTINE ETHDST (MODELI,NNO,NDIM,NBSIG,NPG,NI,DNIDX,DNIDY,DNIDZ,
-     +                   POIDS,XYZ,DEPL,TEMPE,TREF,INSTAN,REPERE,MATER,
+      SUBROUTINE ETHDST (MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+     +                   XYZ,DEPL,TEMPE,TREF,INSTAN,REPERE,MATER,
      +                   OPTION,ENTHTH)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/10/2002   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,14 +35,9 @@ C    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE
 C                                   A L'ELEMENT
 C    NPG            IN     I        NOMBRE DE POINTS D'INTEGRATION
 C                                   DE L'ELEMENT
-C    NI(1)          IN     R        FONCTIONS DE FORME
-C    DNIDX(1)       IN     R        DERIVEES DES FONCTIONS DE FORME
-C                                   / X SUR L'ELEMENT DE REFERENCE
-C    DNIDY(1)       IN     R        DERIVEES DES FONCTIONS DE FORME
-C                                   / Y SUR L'ELEMENT DE REFERENCE
-C    DNIDZ(1)       IN     R        DERIVEES DES FONCTIONS DE FORME
-C                                   / Z SUR L'ELEMENT DE REFERENCE
-C    POIDS(1)       IN     R        POIDS D'INTEGRATION
+C    IPOIDS         IN     I        POIDS D'INTEGRATION
+C    IVF            IN     I        FONCTIONS DE FORME
+C    IDFDE          IN     I        DERIVEES DES FONCTIONS DE FORME
 C    XYZ(1)         IN     R        COORDONNEES DES CONNECTIVITES
 C    DEPL(1)        IN     R        VECTEUR DES DEPLACEMENTS SUR
 C                                   L'ELEMENT
@@ -57,14 +52,30 @@ C    OPTION         IN     K16      OPTION DE CALCUL
 C    ENTHTH         OUT    R        SOMME(EPSTH_T*D*EPSTH)
 C
 C.========================= DEBUT DES DECLARATIONS ====================
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C -----  ARGUMENTS
+           INTEGER      IPOIDS,IVF,IDFDE
            CHARACTER*8  MODELI
            CHARACTER*16 OPTION
-           REAL*8       NI(*),DNIDX(*), DNIDY(*), DNIDZ(*), POIDS(*)
            REAL*8       XYZ(*), DEPL(*), TEMPE(*), REPERE(7)
            REAL*8       INSTAN, ENTHTH
 C -----  VARIABLES LOCALES
-           INTEGER      I, MATER, NBSIG, NDIM, NNO, NPG,K,IGAU,L
+           INTEGER      I, MATER, NBSIG, NDIM, NNO, NPG,K,IGAU
            CHARACTER*16 K16BID
            REAL*8       SIGTH(162),HYDR(27),SECH(27),TREF,ZERO,RAYON
            REAL*8       EPSITH(162),ENTHPG,DFDX(27),DFDY(27),DFDZ(27)
@@ -86,13 +97,13 @@ C
 C
 C --- CALCUL DES CONTRAINTES MECANIQUES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------
-      CALL EPTHMC(MODELI,NNO,NDIM,NBSIG,NPG,NI,TEMPE,TREF,HYDR,SECH,
-     +           INSTAN,MATER,OPTION,EPSITH)
+      CALL EPTHMC(MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),TEMPE,TREF,HYDR,
+     +            SECH,INSTAN,MATER,OPTION,EPSITH)
 C
 C --- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------
-      CALL SIGTMC(MODELI,NNO,NDIM,NBSIG,NPG,NI,XYZ,TEMPE,TREF,HYDR,
-     +            SECH,INSTAN,MATER,REPERE,K16BID,SIGTH)
+      CALL SIGTMC(MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,TEMPE,TREF,
+     +            HYDR,SECH,INSTAN,MATER,REPERE,K16BID,SIGTH)
 C
 C --- CALCUL DES CONTRAINTES TOTALES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------
@@ -100,19 +111,16 @@ C      ---------------------------------------------------------
          ENTHPG=0.D0
 C ----  CALCUL DU JACOBIEN*POIDS - CAS MASSIF 3D
          IF (MODELI(1:2).EQ.'CA'.OR.MODELI(1:2).EQ.'TA') THEN
-             L = (IGAU-1)*NNO
-             K = 3*L + 1     
-            CALL DFDM3D ( NNO,POIDS(IGAU),DNIDX(K),DNIDY(K),DNIDZ(K),
-     &                 XYZ,DFDX,DFDY,DFDZ,POIDI)
+            CALL DFDM3D ( NNO, IGAU, IPOIDS, IDFDE,
+     &                    XYZ, DFDX, DFDY, DFDZ, POIDI )
 C ----  CALCUL DU JACOBIEN*POIDS - CAS MASSIF 2D
          ELSE
-            K=(IGAU-1)*NNO+1
-            CALL DFDM2D (NNO,POIDS(IGAU),DNIDX(K),DNIDY(K),
-     &               XYZ,DFDX,DFDY,POIDI)
+            K=(IGAU-1)*NNO
+            CALL DFDM2D ( NNO,IGAU, IPOIDS,IDFDE,XYZ,DFDX,DFDY,POIDI)
             IF (MODELI(1:2).EQ.'AX') THEN
                RAYON = 0.D0
                DO 41 I = 1, NNO
-                  RAYON = RAYON + NI(K-1+I)*XYZ(2*(I-1)+1)
+                  RAYON = RAYON + ZR(IVF+K-1+I)*XYZ(2*(I-1)+1)
   41           CONTINUE
                POIDI=POIDI*RAYON
             ENDIF

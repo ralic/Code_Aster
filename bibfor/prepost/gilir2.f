@@ -3,7 +3,7 @@
       INTEGER    NFIC, NIV, NDIM, NBOBO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/12/1999   AUTEUR D6BHHAM A.M.DONORE 
+C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,7 +109,7 @@ C
 C
 C            --- LECTURE DES GROUPES DE NOEUDS NOMMES ---
              LEGRNO = .TRUE.
-             CALL GILIG2 ( NFIC, NDIM, NBOBNO, NIV )
+             CALL GILIG2 ( NFIC, NBOBNO, NIV )
 C
 C            --- LECTURE DES COORDONNEES ---
              NBVAL = NBOBLU * ( NDIM + 1 )
@@ -131,7 +131,7 @@ C
 C
 C            --- LECTURE DES GROUPES DE NOEUDS NOMMES ---
              IF ( LEGRNO ) GOTO 1
-             CALL GILIG3 ( NFIC, NDIM, NBOBNO, NIV, NBOBLU )
+             CALL GILIG3 ( NFIC, NBOBNO, NIV, NBOBLU )
              GOTO 1
 C
           ELSEIF ( IPILE .EQ. 33 ) THEN

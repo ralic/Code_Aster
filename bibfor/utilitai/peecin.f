@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 04/12/2001   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF UTILITAI  DATE 26/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -191,6 +191,7 @@ C            RECUPERATION DES INSTANTS
      &            C16B,K8B)
 
       DO 70 IORD = 1,NBORDR
+        CALL JEMARQ()
         NUMORD = ZI(JORD+IORD-1)
         INST = ZR(JINS+IORD-1)
         VALER(1) = INST
@@ -207,11 +208,11 @@ C            RECUPERATION DES INSTANTS
 C   SI RESULTAT TRANSITOIRE ON RECUPERE LE CHAMP DE VITESSE
             IF (EXITIM) THEN
               CALL RSEXCH(RESUL,'VITE',NUMORD,DEPLA,IRET)
-              IF (IRET.GT.0) GO TO 70
+              IF (IRET.GT.0) GO TO 72
 C   SINON RESULTAT MODAL ET ON RECUPERE LE CHAMP DE DEPLACEMENT
             ELSE
               CALL RSEXCH(RESUL,'DEPL',NUMORD,DEPLA,IRET)
-              IF (IRET.GT.0) GO TO 70
+              IF (IRET.GT.0) GO TO 72
             END IF
           END IF
 C   SI RESULTAT TRANSITOIRE (OMEGA**2=1.0) :
@@ -347,6 +348,8 @@ C        --- ON CALCULE L'ENERGIE TOTALE ---
           END IF
    60   CONTINUE
         CALL JEDETR('&&PEECIN.PAR')
+   72   CONTINUE
+        CALL JEDEMA()
    70 CONTINUE
 
  1000 FORMAT (1P,' ------>',/,

@@ -1,11 +1,10 @@
-        SUBROUTINE LCPLBE ( LOI,   TOLER, ITMAX,  MOD,    IMAT,   NMAT,
-     1                      MATERD,MATERF,NVI,    SIGD,   VIND,   SIGF,
-     2                      VINF,  ICOMP, ELGEOM, NSEUIL, IRTETI)
+        SUBROUTINE LCPLBE ( TOLER, ITMAX, NMAT, MATERF, NVI, VIND,
+     &                      SIGF, VINF, ELGEOM, NSEUIL, IRTETI )
 C        IMPLICIT REAL*8 (A-H,O-Z)
          IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,23 +39,17 @@ C                                       DYI+1 = DYI + DDYI  (DYO DEBUT)
 C       ET ON REACTUALISE               YF = YD + DY
 C       ----------------------------------------------------------------
 C
-C       IN  LOI    :  MODELE DE COMPORTEMENT
-C           TOLER  :  TOLERANCE DE CONVERGENCE LOCALE
+C       IN  TOLER  :  TOLERANCE DE CONVERGENCE LOCALE
 C           ITMAX  :  NOMBRE MAXI D'ITERATIONS LOCALES
-C           MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
-C           MATERD :  COEFFICIENTS MATERIAU A T
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
 C           TEMPD  :  TEMPERATURE A T
 C           TEMPF  :  TEMPERATURE A T+DT
 C           TIMED  :  INSTANT  T
 C           TIMEF  :  INSTANT T+DT
 C           EPSD   :  DEFORMATION A T
-C           SIGD   :  CONTRAINTE A T
 C           VIND   :  VARIABLES INTERNES A T
 C           NVI    :  NB VARIABLES INTERNES
-C           ICOMP  :  COMPTEUR POUR LE REDECOUPAGE DU PAS DE TEMPS
 C           ELGEOM :  TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES
 C                     AUX LOIS DE COMPORTEMENT
 C       VAR NSEUIL :  INDICE DE CRITERE ACTIVE
@@ -66,19 +59,17 @@ C                  :  OUT : CONTRAINTE ELASTOPLASTIQUE A T+DT
 C       OUT VINF   :  VARIABLES INTERNES A T+DT
 C           IRTETI = 1:  CONTROLE DU REDECOUPAGE DU PAS DE TEMPS
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NMAT, ICOMP , NSEUIL
+        INTEGER         NMAT, NSEUIL
 C
         INTEGER         ITMAX, NPROJS, NESSAI, OSCI
         INTEGER         NDT, NDI, NVI, ITER1, ITER2, ITER3, ITER4
 C
         REAL*8          TOLER, ZERO, R8PREM, PRECM
         PARAMETER       ( ZERO =  0.D0   )
-        REAL*8          SIGD(6),        SIGF(6)
+        REAL*8          SIGF(6)
         REAL*8          VIND(*),        VINF(*)
-        REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2), ELGEOM(*)
+        REAL*8          MATERF(NMAT,2), ELGEOM(*)
 C
-        CHARACTER*8     MOD
-        CHARACTER*16    LOI
 C
         REAL*8          FCOMP, FCOMP3, FTRAC, FTRAC3, SIGE(6)
         REAL*8          SIGEQ, SIGH, DFCDLC, DFTDLT, CSEC
@@ -106,7 +97,7 @@ C
 C
 C --  CALCUL DES COEFFICIENTS CONSTANTS DU SYSTEME NON LINEAIRE
 C
-      CALL BETINI ( MATERF, NMAT, ELGEOM, SIGE, SIGEQ, SIGH,
+      CALL BETINI ( MATERF, NMAT, SIGE, SIGEQ, SIGH,
      &              COEFA, COEFB, COEFAR, COEFBR, CONECO, CONETR)
 C
       EPSI =  1.D-6
@@ -300,7 +291,7 @@ C
                VINF(1) = VIND(1) + DPC
                VINF(2) = VIND(2) + DPT
                VINF (NVI) = 1.D0 * NESSAI
-               CALL BETINC ( MATERF, NMAT, ELGEOM, SIGE, NESSAI, DPC,
+               CALL BETINC ( MATERF, NMAT, SIGE, NESSAI, DPC,
      &                       DPT, SIGF, VERIFC, VERIFT )
                IF (VERIFT .GT. ZERO .OR. NSEUIL .GT. 4) THEN
                   NPROJS = NESSAI
@@ -474,7 +465,7 @@ C
                VINF(1) = VIND(1) + DPC
                VINF(2) = VIND(2) + DPT
                VINF (NVI) = 1.D0 * NESSAI
-               CALL BETINC ( MATERF, NMAT, ELGEOM, SIGE, NESSAI, DPC,
+               CALL BETINC ( MATERF, NMAT, SIGE, NESSAI, DPC,
      &                       DPT, SIGF, VERIFC, VERIFT )
                IF (VERIFC .GT. ZERO .OR. NSEUIL .GT. 4) THEN
                   NPROJS = NESSAI
@@ -654,7 +645,7 @@ C
                VINF(1) = VIND(1) + DPC
                VINF(2) = VIND(2) + DPT
                VINF (NVI) = 1.D0 * NESSAI
-               CALL BETINC ( MATERF, NMAT, ELGEOM, SIGE, NESSAI, DPC,
+               CALL BETINC ( MATERF, NMAT, SIGE, NESSAI, DPC,
      &                       DPT, SIGF, VERIFC, VERIFT )
                IF (VERIFC .GT. ZERO .OR. NSEUIL .GT. 4) THEN
                   NPROJS = NESSAI
@@ -943,7 +934,7 @@ C
             VINF(1) = VIND(1) + DPC
             VINF(2) = VIND(2) + DPT
             VINF (NVI) = 1.D0 * NSEUIL
-            CALL BETINC ( MATERF, NMAT, ELGEOM, SIGE, NSEUIL, DPC, DPT,
+            CALL BETINC ( MATERF, NMAT, SIGE, NSEUIL, DPC, DPT,
      &                    SIGF, VERIFC, VERIFT )
          ENDIF
 C

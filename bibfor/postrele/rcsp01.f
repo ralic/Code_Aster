@@ -1,11 +1,11 @@
       SUBROUTINE RCSP01 ( NBM, ADRM, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB,
-     +                    NBTH, CHTH, IOCS, SP6 )
+     +                    NBTH, IOCS, SP6 )
       IMPLICIT   NONE
-      INTEGER             NBM, ADRM(*), IPT, NBTH, CHTH(*), IOCS
+      INTEGER             NBM, ADRM(*), IPT, NBTH, IOCS
       REAL*8              SP3, SP4, SP5, ALPHAA, ALPHAB, SP6
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  

@@ -1,8 +1,8 @@
-        SUBROUTINE ONOJPL ( MOD,IMAT,NMAT,MATER,TEMP,SIG,VIN,DSDE )
+        SUBROUTINE ONOJPL ( MOD,NMAT,MATER,SIG,VIN,DSDE )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,15 +24,13 @@ C       CHABOCHE   :  MATRICE SYMETRIQUE DE COMPORTEMENT TANGENT
 C                     ELASTO_PLASTIQUE EN VITESSE A T OU T+DT
 C       ----------------------------------------------------------------
 C       IN  MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
-C           TEMP   :  TEMPERATURE
 C           MATER  :  COEFFICIENTS MATERIAU
 C           SIG    :  CONTRAINTES
 C           VIN    :  VARIABLES INTERNES
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NDT , NDI , NMAT
+        INTEGER         NDT , NDI , NMAT
         REAL*8          UN , D23
         PARAMETER       ( D23  =  .66666666666666D0 )
         PARAMETER       ( UN   =  1.D0   )
@@ -43,7 +41,7 @@ C
         REAL*8       VTMP(6),     VTMP1(6),  VTMP2(6)
 C
         REAL*8       RI,  R0, B, PHI,  A1, A2, C1, C2, GAMMA1, GAMMA2
-        REAL*8       MATER(NMAT,2) , TEMP
+        REAL*8       MATER(NMAT,2)
         REAL*8       H1 , H2 , H3 , H4 , H5 , D, XI1, XI2, M1, M2
         REAL*8       NORMX1, NORMX2, SCR1, SCR2
         REAL*8       X3(6), X4(6), X5(6)

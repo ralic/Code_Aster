@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,34 +44,22 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER            NBRES,NNO,KP,NPG1,NPG2,I,J,K,LCASTR
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE
+      INTEGER            NBRES,NNO,KP,NNOS,NPG2,I,J,K,LCASTR
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
+      INTEGER            NDIM,JGANO
       PARAMETER         ( NBRES=2 )
       REAL*8             VALRES(NBRES)
       REAL*8             RHO, XG, YG, DEPI, R8DEPI, ZERO
       REAL*8             DFDX(9),DFDY(9),POIDS,R,X(9),Y(9),VOLUME
       REAL*8             MATINE(6), XXI, YYI, XYI, R8BID
       CHARACTER*2        CODRET(NBRES)
-      CHARACTER*8        NOMRES(NBRES),ELREFE
-      CHARACTER*24       CARAC, FF
+      CHARACTER*8        NOMRES(NBRES)
 C     ------------------------------------------------------------------
 C
-      CALL ELREF1(ELREFE)
+      CALL ELREF4(' ','MASS',NDIM,NNO,NNOS,NPG2,IPOIDS,IVF,IDFDE,JGANO)
 C
       ZERO = 0.D0
       DEPI = R8DEPI()
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS = IFF    + NPG1*(1+3*NNO)
-      IVF    = IPOIDS + NPG2
-      IDFDE  = IVF    + NPG2*NNO
-      IDFDK  = IDFDE  + NPG2*NNO
 C
       CALL JEVECH('PMATERC','L',IMATE)
 C
@@ -99,8 +87,7 @@ C     --- BOUCLE SUR LES POINTS DE GAUSS ---
       VOLUME = ZERO
       DO 100 KP = 1,NPG2
          K = (KP-1) * NNO
-         CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                     ZR(IGEOM),DFDX,DFDY,POIDS )
+         CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
          IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
             R = ZERO
             DO 102 I = 1,NNO

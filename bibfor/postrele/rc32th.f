@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 06/11/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,6 +57,7 @@ C DEB ------------------------------------------------------------------
 C
       MOTCLF = 'RESU_THER'
       CALL GETFAC ( MOTCLF, NBTHER )
+      IF (NBTHER.EQ.0) GOTO 9999
 C
       NOCMP(1) = 'SIXX'
       NOCMP(2) = 'SIYY'
@@ -168,5 +169,6 @@ C
 C
  10   CONTINUE
 C
+9999  CONTINUE
       CALL JEDEMA( )
       END

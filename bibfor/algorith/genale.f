@@ -1,7 +1,7 @@
-      SUBROUTINE GENALE(VEC1,VEC2,R,V,X,DIM,LONG,LONV,LN,TT,DSEED)
+      SUBROUTINE GENALE(VEC1,VEC2,R,V,X,DIM,LONG,LONV,LN)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/97   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,6 @@ C           X     : VECTEUR DE TRAVAIL (BRUIT BLANC)
 C                               V(FREQ) = R(FREQ) * X(FREQ)
 C           DIM   : DIMENSION DE LA MATRICE DE TRAVAIL
 C           LN    : NOMBRE DE POINTS DE LA DISCRETISATION
-C           TT    : TEMPS TOTAL DES FONCTIONS GENEREES POUR UN TIRAGE
 C           NALEA : NOMBRE ALEATOIRE POUR INITIALISER LE GENERATEUR
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -47,11 +46,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          DIM
       REAL*8           VEC1(LONG),VEC2(LONV)
-      REAL*8          DSEED
       COMPLEX*16       R(DIM,DIM),V(DIM),X(DIM)
 C     ------------------------------------------------------------------
       LN2=LN*2
-C     DSEED = DBLE(NALEA)
       DO 10 KF=1,LN
         ICOMP = 0
         DO 20 J=1,DIM
@@ -63,7 +60,7 @@ C     DSEED = DBLE(NALEA)
    30     CONTINUE
    20   CONTINUE
 C
-        CALL GENERE(R,DIM,V,X,DSEED,KF)
+        CALL GENERE(R,DIM,V,X)
 C
         DO 40 KK=1,DIM
           IX = KF   + (KK-1)*LN2

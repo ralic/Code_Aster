@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 16/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+#& MODIF COMMUN  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,6 +47,8 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "EFGE_ELNO_DEPL",
                         "EFGE_NOEU_CART",
                         "EFGE_NOEU_DEPL",
+                        "ENDO_ELGA",
+                        "ENDO_ELNO_ELGA",
                         "ENDO_ELNO_SIGA",
                         "ENDO_ELNO_SINO",
                         "ENDO_NOEU_SINO",
@@ -107,6 +109,7 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "HYDR_ELGA",
                         "HYDR_ELNO_ELGA",
                         "HYDR_NOEU_ELGA",
+                        "INDI_LOCA_ELGA",
                         "INTE_ELNO_ACTI",
                         "INTE_ELNO_REAC",
                         "INTE_NOEU_ACTI",
@@ -158,6 +161,7 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "SIPO_NOEU_SIEF",
                         "SIRE_ELNO_DEPL",
                         "SIRE_NOEU_DEPL",
+                        "SOUR_ELGA_ELEC",
                         "TEMP",
                         "THETA",
                         "VALE_CONT",

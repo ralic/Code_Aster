@@ -6,7 +6,7 @@
       CHARACTER*19        NOMSTO, NOMNUM
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/10/2001   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ALGORITH  DATE 25/03/2004   AUTEUR OUGLOVA A.OUGLOVA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C
       INTEGER      IBID, IDDEEQ, LLDESC, NUEQ, NTBLOC, NBLOC, IALIME,
      +             IACONL, IAREFE, IADESC, I, J, K, IMATRA, IADIA,  
      +             IABLO, IHCOL, IBLO, LDBLO, N1BLOC, N2BLOC, IADMOD, 
-     +             IRET, IDVEC1, IDVEC2, IDVEC3, IDBASE
+     +             IRET, IDVEC2, IDVEC3, IDBASE
       COMPLEX*16   PIJ
       CHARACTER*8  K8B
       CHARACTER*16 TYPBAS
@@ -90,9 +90,14 @@ C
       CALL WKVECT ( RESU//'.DESC', 'G V I', 3, IADESC )
       ZI(IADESC)   = 2
       ZI(IADESC+1) = NUEQ
-      ZI(IADESC+2) = 2
+C   On teste la hauteur maximale des colonnes de la matrice
+C   si cette hauteur vaut 1, on suppose que le stockage est diagonal
+      IF (ZI(LLDESC+3).EQ.1) THEN
+        ZI(IADESC+2) = 1
+      ELSE
+        ZI(IADESC+2) = 2
+      ENDIF  
 C
-      CALL WKVECT ( '&&PROJMC.VECTASS1', 'V V R', NEQ, IDVEC1 )
       CALL WKVECT ( '&&PROJMC.VECTASS2', 'V V C', NEQ, IDVEC2 )
       CALL WKVECT ( '&&PROJMC.VECTASS3', 'V V C', NEQ, IDVEC3 )
       CALL WKVECT ( '&&PROJMC.BASEMO','V V R',NBMO*NEQ,IDBASE)
@@ -126,28 +131,25 @@ C
 C
          DO 30 I = N1BLOC , N2BLOC
 C
-            CALL R8COPY(NEQ,ZR(IDBASE+(I-1)*NEQ),1,ZR(IDVEC1),1)
-            CALL ZERLAG ( ZR(IDVEC1), NEQ, ZI(IDDEEQ) )
             DO 32 K = 1 , NEQ
-               ZC(IDVEC2+K-1) = DCMPLX(ZR(IDVEC1+K-1),0.0D0)
+              ZC(IDVEC2+K-1)=DCMPLX(ZR(IDBASE+(I-1)*NEQ+K-1),0.0D0)
  32         CONTINUE
 C
 C --------- CALCUL PRODUIT MATRICE*MODE I
 C
-            CALL MCMULT ( 'ZERO', IMATRA, ZC(IDVEC2),'C',ZC(IDVEC3),1)
+            CALL MCMULT ('ZERO',IMATRA, ZC(IDVEC2),'C',ZC(IDVEC3),1)
+            CALL ZECLAG (ZC(IDVEC3), NEQ, ZI(IDDEEQ))
 C
 C --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
 C
             DO 40 J = (I-ZI(IHCOL+I-1)+1) , I
 C
-              CALL R8COPY(NEQ,ZR(IDBASE+(J-1)*NEQ),1,ZR(IDVEC1),1)
-              CALL ZERLAG ( ZR(IDVEC1), NEQ, ZI(IDDEEQ) )
-C
 C ----------- PRODUIT SCALAIRE VECTASS * MODE
 C
               PIJ = DCMPLX(0.D0,0.D0)
               DO 42 K = 1 , NEQ
-                PIJ = PIJ + ZC(IDVEC3+K-1)*DCMPLX(ZR(IDVEC1+K-1),0.0D0)
+                PIJ = PIJ + ZC(IDVEC3+K-1)*
+     &                DCMPLX(ZR(IDBASE+(J-1)*NEQ+K-1),0.0D0)
  42           CONTINUE
 C
 C ----------- STOCKAGE DANS LE .VALE A LA BONNE PLACE (1 BLOC)
@@ -159,7 +161,6 @@ C
          CALL JELIBE ( JEXNUM(RESU//'.VALE', IBLO) )
  20   CONTINUE
 C
-      CALL JEDETR('&&PROJMC.VECTASS1')
       CALL JEDETR('&&PROJMC.VECTASS2')
       CALL JEDETR('&&PROJMC.VECTASS3')
       CALL JEDETR('&&PROJMC.BASEMO')

@@ -1,10 +1,10 @@
-      SUBROUTINE DXRIG(NOMTE,MATLOC)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      SUBROUTINE DXRIG ( NOMTE, MATLOC )
+      IMPLICIT NONE
       REAL*8       MATLOC(300)
       CHARACTER*16 NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/07/2001   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,6 @@ C     ---> POUR DKT/DST MATELEM = 3 * 6 DDL = 171 TERMES STOCKAGE SYME
 C     ---> POUR DKQ/DSQ MATELEM = 4 * 6 DDL = 300 TERMES STOCKAGE SYME
 C     ------------------------------------------------------------------
 C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -49,69 +48,61 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER      MULTIC
+      INTEGER      NNO, MULTIC, JGEOM
       LOGICAL      GRILLE
-      REAL*8       PGL(3,3),XYZL(3,4),ENER(3)
+      REAL*8       PGL(3,3), XYZL(3,4), ENER(3)
       CHARACTER*16 OPTION
-      CHARACTER*24 DESI,DESR
 C     ------------------------------------------------------------------
       OPTION = 'RIGI_MECA'
 C
-      DESI = '&INEL.'//NOMTE(1:8)//'.DESI'
-      CALL JEVETE(DESI,'L',LZI)
-      NNO = ZI(LZI)
-C
-      DESR = '&INEL.'//NOMTE(1:8)//'.DESR'
-      CALL JEVETE(DESR,'L',LZR)
-C
-      IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
-        GRILLE = .TRUE.
-      ELSE
-        GRILLE = .FALSE.
-      END IF
-C
 C ---  RECUPERATION DES COORDONNEES DES CONNECTIVITES :
 C      ----------------------------------------------
-      CALL JEVECH('PGEOMER','L',JGEOM)
+      CALL JEVECH ( 'PGEOMER', 'L', JGEOM )
 C
-C ---  CONSTRUCTION DES MATRICES DE PASSAGE DU REPERE LOCAL
-C ---  AU REPERE GLOBAL :
-C      ----------------
-      IF (NNO.EQ.3) THEN
-        CALL DXTPGL(ZR(JGEOM),PGL)
-      ELSE IF (NNO.EQ.4) THEN
-        CALL DXQPGL(ZR(JGEOM),PGL)
-      END IF
-C
-C ---  CALCUL DES COORDONNEES LOCALES DES CONNECTIVITES :
-C      ------------------------------------------------
-      CALL UTPVGL(NNO,3,PGL,ZR(JGEOM),XYZL)
-C
-C ---  CALCUL LA MATRICE DE RIGIDITE ELASTIQUE :
-C      ------------------------------------------------
-      IF(NOMTE(1:8).EQ.'MEDKTR3 '.OR.NOMTE(1:8).EQ.'MEGRDKT ') THEN
-C
-          CALL DKTRIG(XYZL, OPTION, PGL, MATLOC, ENER, MULTIC, GRILLE)
-C
-      ELSEIF (NOMTE(1:8) .EQ.'MEDSTR3 ') THEN
-C
-          CALL DSTRIG(XYZL, OPTION, PGL, MATLOC, ENER)
-C
-      ELSEIF (NOMTE(1:8) .EQ.'MEDKQU4 ') THEN
-C
-          CALL DKQRIG(XYZL, OPTION, PGL, MATLOC, ENER)
-C
-      ELSEIF (NOMTE(1:8) .EQ.'MEDSQU4 ') THEN
-C
-          CALL DSQRIG(XYZL, OPTION, PGL, MATLOC, ENER)
-C
-      ELSEIF (NOMTE(1:8) .EQ.'MEQ4QU4 ') THEN
-C
-          CALL Q4GRIG(XYZL, OPTION, PGL, MATLOC, ENER)
-C
+      IF ( NOMTE(1:8) .EQ. 'MEGRDKT ' ) THEN
+         GRILLE = .TRUE.
+         NNO = 3
+         CALL DXTPGL ( ZR(JGEOM), PGL )
+         CALL UTPVGL ( NNO, 3, PGL, ZR(JGEOM), XYZL )
+         CALL DKTRIG ( NOMTE, XYZL, OPTION, PGL, MATLOC, ENER, MULTIC,
+     +                 GRILLE)
+
+      ELSEIF ( NOMTE(1:8) .EQ. 'MEDKTR3 ' .OR.
+     +         NOMTE(1:8) .EQ. 'MEDKTG3 ' ) THEN
+         GRILLE = .FALSE.
+         NNO = 3
+         CALL DXTPGL ( ZR(JGEOM), PGL )
+         CALL UTPVGL ( NNO, 3, PGL, ZR(JGEOM), XYZL )
+         CALL DKTRIG ( NOMTE, XYZL, OPTION, PGL, MATLOC, ENER, MULTIC,
+     +                 GRILLE)
+
+      ELSEIF ( NOMTE(1:8) .EQ. 'MEDSTR3 ' ) THEN
+         NNO = 3
+         CALL DXTPGL ( ZR(JGEOM), PGL )
+         CALL UTPVGL ( NNO, 3, PGL, ZR(JGEOM), XYZL )
+         CALL DSTRIG ( NOMTE, XYZL, OPTION, PGL, MATLOC, ENER)
+
+      ELSEIF ( NOMTE(1:8) .EQ. 'MEDKQU4 ' .OR.
+     +         NOMTE(1:8) .EQ. 'MEDKQG4 ' ) THEN
+         NNO = 4
+         CALL DXQPGL ( ZR(JGEOM), PGL )
+         CALL UTPVGL ( NNO, 3, PGL, ZR(JGEOM), XYZL )
+         CALL DKQRIG ( NOMTE, XYZL, OPTION, PGL, MATLOC, ENER)
+
+      ELSEIF ( NOMTE(1:8) .EQ. 'MEDSQU4 ' ) THEN
+         NNO = 4
+         CALL DXQPGL ( ZR(JGEOM), PGL )
+         CALL UTPVGL ( NNO, 3, PGL, ZR(JGEOM), XYZL )
+         CALL DSQRIG ( NOMTE, XYZL, OPTION, PGL, MATLOC, ENER)
+
+      ELSEIF ( NOMTE(1:8) .EQ. 'MEQ4QU4 ' ) THEN
+         NNO = 4
+         CALL DXQPGL ( ZR(JGEOM), PGL )
+         CALL UTPVGL ( NNO, 3, PGL, ZR(JGEOM), XYZL )
+         CALL Q4GRIG ( NOMTE, XYZL, OPTION, PGL, MATLOC, ENER)
+
       ELSE
-         CALL UTMESS('F','DXRIG','LE TYPE D''ELEMENT : '//NOMTE(1:8)
-     +               //'N''EST PAS PREVU.')
-      ENDIF
+        CALL UTMESS('F','DXRIG','ELEMENT NON TRAITE '//NOMTE)
+      END IF
 C
       END

@@ -1,0 +1,80 @@
+%& MODIF OPTIONS  DATE 25/03/2004   AUTEUR OUGLOVA A.OUGLOVA 
+%            CONFIGURATION MANAGEMENT OF EDF VERSION
+% ======================================================================
+% COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+% THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+% IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+% THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+% (AT YOUR OPTION) ANY LATER VERSION.                                   
+%                                                                       
+% THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+% WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+% MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+% GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+%                                                                       
+% YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+% ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+%    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+% ======================================================================
+FULL_MECA_ELAS
+OPTION__
+   IN__
+        PCAMASS  CAMASS
+        PGEOMER  GEOM_R
+        PMATERC  ADRSJEVE
+        PCOMPOR  COMPOR
+        PCARCRI  CARCRI
+        PCAGNPO  CAGNPO
+        PCAGNBA  CAGNBA
+        PCADISK  CADISK
+        PCACABL  CACABL
+        PCAORIE  CAORIE
+        PCACOQU  CACOQU
+        PCAGEPO  CAGEPO
+        PTEREF   TEMP_R
+        PINSTMR  INST_R
+        PINSTPR  INST_R
+        PDEPLMR  DEPL_R
+        PDEPLPR  DEPL_R
+        PCONTMR  SIEF_R
+        PVARIMR  VARI_R
+        PTEMPMR  TEMP_R
+        PTEMPPR  TEMP_R
+        PTEMPEF  TEMP_F
+        PHYDRMR  HYDR_R
+        PHYDRPR  HYDR_R
+        PIRRAMR  IRRA_R
+        PIRRAPR  IRRA_R
+        PSECHMR  TEMP_R
+        PSECHPR  TEMP_R
+        PPHASMR  VARI_R
+        PPHASPR  VARI_R
+        PITERAT  NEUT_R
+        PSTADYN  STAOUDYN
+        PDDEPLA  DEPL_R
+        PDEPKM1  DEPL_R
+        PVITKM1  DEPL_R
+        PACCKM1  DEPL_R
+        PVITPLU  DEPL_R
+        PACCPLU  DEPL_R
+        PROMKM1  DEPL_R
+        PROMK    DEPL_R
+        PVARIMP  VARI_R
+        PTEMPER  TEMP_R
+        PPESANR  PESA_R
+        PDEFAMR  EPSI_R
+        PDEFAPR  EPSI_R
+        PDEPENT  DEPL_R
+        PVITENT  DEPL_R
+        PVARDEP  VANL_R
+        PNBSP_I  NBSP_I
+        PFIBRES  CAFI_R
+          PCORRMR  CORR_R
+             PCORRPR  CORR_R        
+   OUT__
+PMATUUR MDEP_R RESL__
+PMATUNS MDNS_R RESL__
+PVECTUR VDEP_R RESL__
+PCONTPR SIEF_R ELGA__
+PVARIPR VARI_R ELGA__
+PCODRET CODE_I ELEM__

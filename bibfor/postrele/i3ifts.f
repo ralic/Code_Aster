@@ -1,14 +1,14 @@
       SUBROUTINE I3IFTS(EPSI,K,F,DESC,DESCTM,CONEXK,COORDO,
-     +                  SGT,ATRV,BTRV,NBPT,LSTPT,FINK,FIND)
+     +                  SGT,NBPT,LSTPT,FINK)
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       INTEGER K,DESC(*),DESCTM(*),CONEXK(*),NBPT,LSTPT(*),F
       REAL*8  EPSI,SGT(*),COORDO(*)
-      LOGICAL FIND,ATRV,BTRV,FINK
+      LOGICAL FINK
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/08/97   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,9 +36,6 @@ C IN  F      : I : NUMERO LOCALE DE LA FACE TRAITEE
 C IN  CONEXK : I : CONNECTIVITE DE LA MAILLE POINTEE
 C IN  COORDO : R : TABLE GLOBALE DES COORDONEES
 C IN  SGT    : R : COORDONNEES DES POINTS A ET B -
-C VAR ATRV   : L : INDICATEUR DE RENCONTRE DE A   !--> IE DESC_SGT
-C VAR BTRV   : L : INDICATEUR DE RENCONTRE DE B  -
-C VAR FIND   : L : INDICATEUR DE FIN DE REPERAGE NIVEAU OMEGA
 C VAR FINK   : L : INDICATEUR DE FIN DE REPERAGE NIVEAU MAILLE 3D
 C OUT NBPT   : I : NOMBRE DE POINT TROUVE
 C            :   : CONVENTION NBPT = -2 <=> CARD(INTER) = INFINI
@@ -215,14 +212,13 @@ C        DONC ACTION = VIDE
             NBPT                      = NBPT + 1
          ENDIF
       ELSE IF ( TYPSL .EQ. 'INDE' ) THEN
-         CALL I3IDFS(EPSI,K,F,NBA,DESC,DESCTM,SGT,ATRV,BTRV,CS,
-     +               NBPT,LSTPT,FINK,FIND)
+         CALL I3IDFS(EPSI,K,F,NBA,SGT,CS,NBPT,LSTPT,FINK)
          FINK = .TRUE.
          IF ( NBPT .EQ. 0 ) THEN
             CALL I3PDM2(EPSI,E3,CS,NBA,SGT,   DJALA1)
             CALL I3PDM2(EPSI,E3,CS,NBA,SGT(4),DJALA2)
             IF ( DJALA1 .AND. DJALA2 ) THEN
-               CALL I3CRTP(EPSI,EPSI,CS,SGT,ZR(LSTPT(5)),IRET)
+               CALL I3CRTP(EPSI,CS,SGT,ZR(LSTPT(5)),IRET)
                IF ( IRET .NE. 0 ) THEN
                   CALL UTDEBM('F','I3IFTS',
      +                        'UNE FACE DEGENEREE EST DETECTEE')
@@ -235,7 +231,7 @@ C        DONC ACTION = VIDE
                ZI(LSTPT(3)) = 0
                ZI(LSTPT(4)) = 0
                ZI(LSTPT(6)) = 1
-               CALL I3CRTP(EPSI,EPSI,CS,SGT(4),ZR(LSTPT(5)+2),IRET)
+               CALL I3CRTP(EPSI,CS,SGT(4),ZR(LSTPT(5)+2),IRET)
                IF ( IRET .NE. 0 ) THEN
                   CALL UTDEBM('F','I3IFTS',
      +                        'UNE FACE DEGENEREE EST DETECTEE')
@@ -264,8 +260,8 @@ C        DONC ACTION = VIDE
                ENDIF
                CALL I3PDM2(EPSI,E3,CS,NBA,SGT(I),DJALA1)
                IF ( DJALA1 ) THEN
-                  CALL I3CRTP(EPSI,EPSI,CS,SGT(J),ZR(LSTPT(5)),IRET)
-                  CALL I3CRTP(EPSI,EPSI,CS,SGT(I),ZR(LSTPT(5)+2),IRET)
+                  CALL I3CRTP(EPSI,CS,SGT(J),ZR(LSTPT(5)),IRET)
+                  CALL I3CRTP(EPSI,CS,SGT(I),ZR(LSTPT(5)+2),IRET)
                   IF ( IRET .EQ. -1 ) THEN
                       CALL UTDEBM('F','I3IQPS',
      +                            'UNE FACE DEGENEREE EST DETECTEE')
@@ -283,7 +279,7 @@ C        DONC ACTION = VIDE
             ELSE
                CALL I3PDM2(EPSI,E3,CS,NBA,SGT,DJALA1)
                IF ( DJALA1 ) THEN
-                  CALL I3CRTP(EPSI,EPSI,CS,SGT,ZR(LSTPT(5)+2),IRET)
+                  CALL I3CRTP(EPSI,CS,SGT,ZR(LSTPT(5)+2),IRET)
                   IF ( IRET .EQ. -1 ) THEN
                      CALL UTDEBM('F','I3IQPS',
      +                               'UNE FACE DEGENEREE EST DETECTEE')
@@ -300,7 +296,7 @@ C        DONC ACTION = VIDE
                ELSE
                   CALL I3PDM2(EPSI,E3,CS,NBA,SGT(4),DJALA1)
                   IF ( DJALA1 ) THEN
-                     CALL I3CRTP(EPSI,EPSI,CS,SGT(4),ZR(LSTPT(5)+2),
+                     CALL I3CRTP(EPSI,CS,SGT(4),ZR(LSTPT(5)+2),
      +                           IRET)
                      IF ( IRET .EQ. -1 ) THEN
                          CALL UTDEBM('F','I3IQPS',

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE CROSSE SOUS CHARGEMENTS DIVERS (AVEC SOUS-STRUCTURATION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -153,7 +153,9 @@ MAG0=DEFI_MAILLAGE(
     DEFI_NOEUD=_F( TOUT = 'OUI', INDEX = (1,0,1,8,))
           )
 
-MAG=ASSE_MAILLAGE(  MAILLAGE=(MAG0,MA,))
+MAG=ASSE_MAILLAGE( MAILLAGE_1=MAG0,
+                   MAILLAGE_2=MA,
+                   OPERATION='SOUS_STR')
 
 #  -------------------
 
@@ -247,19 +249,6 @@ U2S_2=DEPL_INTERNE(   DEPL_GLOBAL=U2S_123,  MAILLE='S_2',
 
 U2S_3=DEPL_INTERNE(   DEPL_GLOBAL=U2S_123,  MAILLE='S_3',
                             NOM_CAS='CHF2' )
-
-#=======================================================================
-#
-#  POST-TRAITEMENTS :
-#
-#=======================================================================
-
-
-SIG1=CALC_CHAM_ELEM(    MODELE=MOG,   CHAM_MATER=CHMATG,
-                               OPTION='SIGM_ELNO_DEPL',  DEPL=U1)
-
-SIG1S_2=CALC_CHAM_ELEM(    MODELE=MO_1,  CHAM_MATER=CHMAT,
-                               OPTION='SIGM_ELNO_DEPL',  DEPL=U1S_2)
 
 #=======================================================================
 #
@@ -435,7 +424,9 @@ MAG0B=DEFI_MAILLAGE(
     DEFI_GROUP_NO=_F( TOUT = 'OUI', PREFIXE = 'Z', INDEX = (1,0,1,7,))
     )
 
-MAGB=ASSE_MAILLAGE(  MAILLAGE=(MAG0B,MA,))
+MAGB=ASSE_MAILLAGE(  MAILLAGE_1=MAG0B,
+                     MAILLAGE_2=MA,
+                     OPERATION='SOUS_STR')
 
 MOGB=AFFE_MODELE( MAILLAGE=MAGB,
       AFFE=_F( GROUP_MA = 'GRSD1', MODELISATION = 'D_PLAN', PHENOMENE = 'MECANIQUE'),

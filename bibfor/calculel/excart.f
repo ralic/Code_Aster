@@ -1,8 +1,8 @@
-      SUBROUTINE EXCART(CHIN,LIGREL,IMODAT,IPARG)
+      SUBROUTINE EXCART(IMODAT,IPARG)
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,13 +23,10 @@ C RESPONSABLE                            VABHHTS J.PELLET
 C     ARGUMENTS:
 C     ----------
       INTEGER IMODAT,IPARG
-      CHARACTER*19 LIGREL
-      CHARACTER*19 CHIN
 C ----------------------------------------------------------------------
 C     ENTREES:
 C       IGR   : NUMERO DU GREL A TRAITER (COMMON)
 C       IMODAT : INDICE DANS LA COLLECTION MODELOC
-C       CHIN  : NOM DU CHAMP GLOBAL
 C ----------------------------------------------------------------------
       COMMON /CAII01/IGD,NEC,NCMPMX,IACHIN,IACHLO,IICHIN,IANUEQ,LPRNO,
      &       ILCHLO
@@ -80,7 +77,7 @@ C     -------------------------------------------
           CALL UTMESS('F',' EXCART','A FAIRE ...')
         ELSE
           NCMP=LGCATA/NBPOIN
-          CALL EXCAR2(CHIN,LIGREL,NGRMX,DESC,ZI(MODLOC-1+5),LGCATA)
+          CALL EXCAR2(NGRMX,DESC,ZI(MODLOC-1+5),LGCATA)
 C         ON DUPPLIQUE LES VALEURS PAR LA FIN POUR NE PAS
 C         LES ECRASER :
           DO 77,IEL=NBELGR,1,-1
@@ -103,7 +100,7 @@ C     -----------------------
 C     3-  CAS: CART -> ELEM :
 C     -----------------------
       ELSE IF (ITYPLO.EQ.1) THEN
-        CALL EXCAR2(CHIN,LIGREL,NGRMX,DESC,ZI(MODLOC-1+5),LGCATA)
+        CALL EXCAR2(NGRMX,DESC,ZI(MODLOC-1+5),LGCATA)
 
 
       END IF

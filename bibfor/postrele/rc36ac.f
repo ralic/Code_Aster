@@ -6,7 +6,7 @@
       CHARACTER*24        NCNCIN, CHINDI, CHCARA, CHRESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 27/06/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -87,7 +87,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      IG, NBGR, NBSIGR, JNSG, IS, IS1, IOC1, NOCC, NUMGR, 
      +             JCOMBI, JPRESA, JPRESB, JMOMEA, JMOMEB, JNBOCC,
-     +             NBTH1, JTH1, NBTH2, JTH2, NBCRS, NBCIN, NBCCA,
+     +             NBTH1, JTH1, NBTH2, NBCRS, NBCIN, NBCCA,
      +             JCHMAT, JMAT, JCESD, JCESV, JCESL, JCINV, JCIND,
      +             JCCAV, JCCAD, IM, IMA, NBPT, DECRS, DECIN, DECCA,
      +             IPT, INO, ADRM, NBM, ICMP, IAD, JCONX1, JCONX2, 
@@ -322,15 +322,14 @@ C
               ENDIF
 C
               NBTH2 = 0
-              JTH2  = 1
               IOC2=0
 C
 C ----------- CALCUL DU SN
 C
               SN = 0.D0
               CALL RC36SN ( NBM, ZI(ADRM), IPT, C, CARA, MATPI, PPI, 
-     +                      MPI, MATPJ, PPJ, MPJ, MSE, NBTH1, ZI(JTH1),
-     +                                 NBTH2, ZI(JTH2),IOC1,IOC2, SN )
+     +                      MPI, MATPJ, PPJ, MPJ, MSE, NBTH1,
+     +                      NBTH2,IOC1,IOC2, SN )
               SNMAX = MAX ( SNMAX , SN )
 C
 C ----------- CALCUL DU SP
@@ -340,9 +339,8 @@ C
         SPMECA = 0.D0
         SPTHER = 0.D0
               CALL RC36SP ( NBM, ZI(ADRM), IPT, C, K, CARA, MATPI, PPI,
-     +                      MPI, MATPJ, PPJ, MPJ, MSE, NBTH1, ZI(JTH1),
-     +                            NBTH2, ZI(JTH2),IOC1,IOC2, SP 
-     +               ,TYPEKE,SPMECA,SPTHER )
+     +                      MPI, MATPJ, PPJ, MPJ, MSE, NBTH1,
+     +                      NBTH2, IOC1,IOC2, SP,TYPEKE,SPMECA,SPTHER )
 C
 C ----------- CALCUL DU SALT
 C

@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -284,7 +284,7 @@ C
 C
 C  .REFE
       CHAMNO(20:24) = '.REFE'
-      CALL WKVECT(CHAMNO,'G V K24',1,IREFE)
+      CALL WKVECT(CHAMNO,'G V K24',2,IREFE)
       ZK24(IREFE+1-1) = NOMA//'                '
 C
 C  .VALE

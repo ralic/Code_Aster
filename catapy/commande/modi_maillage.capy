@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+#& MODIF COMMANDE  DATE 16/02/2004   AUTEUR MJBHHPE J.L.FLEJOU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,8 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage,
             UIinfo={"groupes":("Maillage",)},
       regles=(AU_MOINS_UN('ORIE_CONTACT','DEFORME','EQUE_PIQUA','ORIE_PEAU_2D',
                        'ORIE_PEAU_3D','ORIE_NORM_COQUE','PLAQ_TUBE','MODI_MAILLE',
-                       'TRANSLATION','ROTATION','MODI_BASE','ECHELLE','ORIE_SHB8'),
+                       'TRANSLATION','ROTATION','MODI_BASE','ECHELLE','ORIE_SHB8','SYMETRIE',
+                       ),
               PRESENT_ABSENT('ORIE_CONTACT','DEFORME','EQUE_PIQUA','ORIE_PEAU_2D',
                        'ORIE_PEAU_3D','ORIE_NORM_COQUE','PLAQ_TUBE','MODI_MAILLE',),
               PRESENT_ABSENT('DEFORME','ORIE_CONTACT','EQUE_PIQUA','ORIE_PEAU_2D',
@@ -42,7 +43,12 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage,
                        'ORIE_PEAU_3D','ORIE_NORM_COQUE','PLAQ_TUBE',),
               EXCLUS('EQUE_PIQUA','PLAQ_TUBE'),
               EXCLUS('EQUE_PIQUA','TUBE_COUDE'),
-              EXCLUS('ROTATION','MODI_BASE'),),
+              EXCLUS('ROTATION','MODI_BASE'),
+              EXCLUS('SYMETRIE','ROTATION'),
+              EXCLUS('SYMETRIE','TRANSLATION'),
+              EXCLUS('SYMETRIE','MODI_BASE'),
+              EXCLUS('SYMETRIE','ECHELLE'),
+              ),
          MAILLAGE        =SIMP(statut='o',typ=maillage ),
 
          ORIE_CONTACT    =FACT(statut='f',
@@ -127,6 +133,14 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage,
            POIN_2           =SIMP(statut='f',typ='R',min=2,max=3),
            DIR              =SIMP(statut='f',typ='R',min=2,max=3),
          ),
-
+         SYMETRIE        =FACT(statut='f',max='**',
+                          fr = "Symétrie du maillage par rapport à un plan en 3D ou à une droite en 2D.",
+           POINT           =SIMP(statut='o',typ='R',min=2,max=3,
+                            fr="Point appartenant à la droite ou au plan."),
+           AXE_1           =SIMP(statut='o',typ='R',min=2,max=3,
+                            fr="Vecteur directeur de la droite ou 1er vecteur appartenant au plan."),
+           AXE_2           =SIMP(statut='f',typ='R',min=3,max=3,
+                            fr="2nd vecteur appartenant du plan."),
+         ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
 )  ;

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -185,8 +185,7 @@ C                   -----------
          CALL MEDOME ( MODELE, MATE, CARA, KCHA, NCHAR, CTYP )
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
-         CALL PECAGE ( RESU, MODELE, MATE, CARA, NCHAR, ZK8(JCHA), NH,
-     +                 NBOCC )
+         CALL PECAGE ( RESU, MODELE, NBOCC )
 
       ENDIF
 
@@ -199,7 +198,7 @@ C                   -------------
          CALL MEDOME ( MODELE, MATE, CARA, KCHA, NCHAR, CTYP )
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
-         CALL PECAPO ( RESU, MODELE, MATE, CARA, NCHAR, ZK8(JCHA), NH,
+         CALL PECAPO ( RESU, MODELE, CARA, NCHAR, ZK8(JCHA), NH,
      +                 NBOCC )
 
       ENDIF

@@ -1,4 +1,4 @@
-#@ MODIF B_OBJECT Build  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF B_OBJECT Build  DATE 16/12/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,6 +24,7 @@
 import string,types
 
 # Modules Eficas
+from Noyau.N_MCSIMP import MCSIMP
 from Noyau.N_MCFACT import MCFACT
 from Noyau.N_MCBLOC import MCBLOC
 from Noyau.N_MCLIST import MCList
@@ -75,3 +76,28 @@ class OBJECT:
              if taille : break
       return taille
 
+   def getlfact(self):
+      """
+          Retourne :
+            la liste des noms de mots cles facteur sous l etape
+      """
+      liste=[]
+      for child in self.mc_liste :
+        if isinstance(child,MCFACT) :
+          liste.append(child.nom)
+        elif isinstance(child,MCBLOC) :
+          liste= liste+child.getlfact()
+      return liste
+
+   def getlsimp(self):
+      """
+          Retourne :
+            la liste des noms de mots cles simples sous self
+      """
+      liste=[]
+      for child in self.mc_liste :
+        if isinstance(child,MCSIMP) :
+          liste.append(child)
+        elif isinstance(child,MCBLOC) :
+          liste= liste+child.getlsimp()
+      return liste

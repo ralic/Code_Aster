@@ -4,22 +4,22 @@
       CHARACTER*(*) ELREFZ
       INTEGER NBPG,NDIM
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
 C TOLE CRP_20
@@ -38,10 +38,12 @@ C   -------------------------------------------------------------------
       INTEGER I,NPAR,NPI,IX,IY,IZ,NPX,NPYZ
       INTEGER NNO,NNOS,NBFPG,NBPG1(10),INO,IFAM,INDIK8
       REAL*8 XPG(27),YPG(27),ZPG(27),HPG(27),A(3),H(3)
-      REAL*8 ATY(7),ATZ(7),HT(7)
+      REAL*8 ATY(7),ATZ(7),HT(7),U,T
       REAL*8 AA,BB,CC,HH,H1,H2,H3,RAC5,RAC15,A1,B1,B6,C1,C8,D1,D12
-      REAL*8 P1,P2,P3,XXG5(5),PXG5(5)
+      REAL*8 P1,P2,P3,XXG5(5),PXG5(5),XA,XB,XC,XD
       REAL*8 ZERO,UNQUAR,UNDEMI,UN,DEUX,XNO(3*27),VOL
+C -----  FONCTIONS FORMULES
+      T(U) = 2.0D0*U - 1.0D0
 C DEB ------------------------------------------------------------------
 
       ELREFA = ELREFZ
@@ -52,10 +54,10 @@ C DEB ------------------------------------------------------------------
       UN = 1.0D0
       DEUX = 2.0D0
 
-
 C     -- CALCUL DE NBPG,NDIM,VOL,NNO,XNO :
 C     ------------------------------------
       CALL ELRACA(ELREFA,NDIM,NNO,NNOS,NBFPG,NOFPG,NBPG1,XNO,VOL)
+
       IFAM = INDIK8(NOFPG,FAPG,1,NBFPG)
       CALL ASSERT(IFAM.GT.0)
       NBPG = NBPG1(IFAM)
@@ -73,7 +75,7 @@ C     -----------------------------------------
           IF (NDIM.GE.2) YPG(INO) = XNO(NDIM* (INO-1)+2)
           IF (NDIM.EQ.3) ZPG(INO) = XNO(NDIM* (INO-1)+3)
    10   CONTINUE
-        GO TO 120
+        GO TO 170
       END IF
 
 
@@ -89,7 +91,7 @@ C            NUMEROTES EN PREMIER :
           IF (NDIM.GE.2) YPG(INO) = XNO(NDIM* (INO-1)+2)
           IF (NDIM.EQ.3) ZPG(INO) = XNO(NDIM* (INO-1)+3)
    20   CONTINUE
-        GO TO 120
+        GO TO 170
       END IF
 
 
@@ -106,19 +108,19 @@ C     -----------------------------------------
           IF (NDIM.EQ.3) ZPG(1) = ZPG(1) + XNO(NDIM* (INO-1)+3)
    30   CONTINUE
         XPG(1) = XPG(1)/NNO
-        YPG(1) = YPG(1)/NNO
-        ZPG(1) = ZPG(1)/NNO
+        IF (NDIM.GE.2) YPG(1) = YPG(1)/NNO
+        IF (NDIM.EQ.3) ZPG(1) = ZPG(1)/NNO
         HPG(1) = VOL
-        GO TO 120
+        GO TO 170
       END IF
 
 
 C     ------------------------------------------------------------------
       IF (ELREFA.EQ.'HE8' .OR. ELREFA.EQ.'H20' .OR.
      &    ELREFA.EQ.'H27') THEN
-     
-        NPAR=0
-        
+
+        NPAR = 0
+
         IF (FAPG.EQ.'FPG8') THEN
 C --------- FORMULE DE QUADRATURE DE GAUSS A 2 POINTS DANS CHAQUE
 C           DIRECTION ( ORDRE 3 )
@@ -152,28 +154,28 @@ C           DIRECTION ( ORDRE 5 )
    40       CONTINUE
    50     CONTINUE
    60   CONTINUE
-   
+
         IF (FAPG.EQ.'SHB5') THEN
-C --------- FORMULE DE QUADRATURE DE GAUSS A 5 POINTS DANS 
+C --------- FORMULE DE QUADRATURE DE GAUSS A 5 POINTS DANS
 C           L EPAISSEUR POUR LE SHB8, AU CENTRE DE L'ELEMENT
           XXG5(1) = -0.906179845938664D0
           XXG5(2) = -0.538469310105683D0
-          XXG5(3) =  0.D0
-          XXG5(4) =  0.538469310105683D0
-          XXG5(5) =  0.906179845938664D0
-C
-          PXG5(1) =  0.236926885056189D0
-          PXG5(2) =  0.478628670499366D0
-          PXG5(3) =  0.568888888888889D0
-          PXG5(4) =  0.478628670499366D0
-          PXG5(5) =  0.236926885056189D0
-             
-          DO 140 IZ = 1,5
-             XPG(IZ) = 0.D0
-             YPG(IZ) = 0.D0
-             ZPG(IZ) = XXG5(IZ)
-             HPG(IZ) = PXG5(IZ)
- 140      CONTINUE
+          XXG5(3) = 0.D0
+          XXG5(4) = 0.538469310105683D0
+          XXG5(5) = 0.906179845938664D0
+
+          PXG5(1) = 0.236926885056189D0
+          PXG5(2) = 0.478628670499366D0
+          PXG5(3) = 0.568888888888889D0
+          PXG5(4) = 0.478628670499366D0
+          PXG5(5) = 0.236926885056189D0
+C         IL FAUT MULTIPLIER LES POIDS PAR 4 POUR OBTENIR VOL=8
+          DO 70 IZ = 1,5
+            XPG(IZ) = 0.D0
+            YPG(IZ) = 0.D0
+            ZPG(IZ) = XXG5(IZ)
+            HPG(IZ) = PXG5(IZ)*4.D0
+   70     CONTINUE
 
         END IF
 C     ------------------------------------------------------------------
@@ -269,15 +271,15 @@ C --------- FORMULE DE HAMMER
         END IF
 
         NPI = 0
-        DO 80 IX = 1,NPX
-          DO 70 IY = 1,NPYZ
+        DO 90 IX = 1,NPX
+          DO 80 IY = 1,NPYZ
             NPI = NPI + 1
             XPG(NPI) = A(IX)
             YPG(NPI) = ATY(IY)
             ZPG(NPI) = ATZ(IY)
             HPG(NPI) = H(IX)*HT(IY)
-   70     CONTINUE
-   80   CONTINUE
+   80     CONTINUE
+   90   CONTINUE
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFA.EQ.'TE4' .OR. ELREFA.EQ.'T10') THEN
@@ -292,13 +294,13 @@ C                   ORDRE 2 EN X Y Z
           BB = (5.D00+3.D00*RAC5)/20.D00
           HH = UN/24.D00
           NPI = 0
-          DO 90 I = 1,4
+          DO 100 I = 1,4
             NPI = NPI + 1
             XPG(NPI) = AA
             YPG(NPI) = AA
             ZPG(NPI) = AA
             HPG(NPI) = HH
-   90     CONTINUE
+  100     CONTINUE
           ZPG(2) = BB
           YPG(3) = BB
           XPG(4) = BB
@@ -317,12 +319,12 @@ C                   ORDRE 3 EN X Y Z
           YPG(1) = AA
           ZPG(1) = AA
           HPG(1) = H1
-          DO 100 I = 2,5
+          DO 110 I = 2,5
             XPG(I) = BB
             YPG(I) = BB
             ZPG(I) = BB
             HPG(I) = H2
-  100     CONTINUE
+  110     CONTINUE
           ZPG(3) = CC
           YPG(4) = CC
           XPG(5) = CC
@@ -595,23 +597,176 @@ C     -------------------------------------------------------------
           HPG(26) = D12
           HPG(27) = D12
 
-          DO 110 I = 1,27
+          DO 120 I = 1,27
             HPG(I) = HPG(I)*UNQUAR* (UN-ZPG(I))* (UN-ZPG(I))
-  110     CONTINUE
+  120     CONTINUE
         END IF
 
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFA.EQ.'TR3' .OR. ELREFA.EQ.'TR6' .OR.
+     &         ELREFA.EQ.'TR7' ) THEN
+
+       IF (FAPG.EQ.'FPG1') THEN
+          XPG(1) = UN/3.D0
+          YPG(1) = UN/3.D0
+          HPG(1) = UN/DEUX
+        ELSE IF (FAPG.EQ.'FPG3') THEN
+          XPG(1) = UN/6.D00
+          YPG(1) = UN/6.D00
+          XPG(2) = 2.D0/3.D0
+          YPG(2) = UN/6.D00
+          XPG(3) = UN/6.D00
+          YPG(3) = 2.D0/3.D0
+          HPG(1) = UN/6.D00
+          HPG(2) = UN/6.D00
+          HPG(3) = UN/6.D00
+        ELSEIF (FAPG.EQ.'FPG4') THEN
+          XPG(1) = 0.2D00
+          YPG(1) = 0.2D00
+          XPG(2) = 0.6D00
+          YPG(2) = 0.2D00
+          XPG(3) = 0.2D00
+          YPG(3) = 0.6D00
+          XPG(4) = UN/3.D0
+          YPG(4) = UN/3.D0
+          HPG(1) =  25.D00/96.D00
+          HPG(2) =  25.D00/96.D00
+          HPG(3) =  25.D00/96.D00
+          HPG(4) = -27.D00/96.D00
+        ELSEIF (FAPG.EQ.'FPG6') THEN
+          P1 = 0.111690794839005D0
+          P2 = 0.054975871827661D0
+          XA = 0.445948490915965D0
+          XB = 0.091576213509771D0
+          XPG(3) = ( T(XB) + UN ) / DEUX
+          YPG(3) = ( T(UN-DEUX*XB) + UN ) / DEUX
+          XPG(1) = ( T(XB) + UN ) / DEUX
+          YPG(1) = ( T(XB) + UN ) / DEUX
+          XPG(2) = ( T(UN-DEUX*XB) + UN ) / DEUX
+          YPG(2) = ( T(XB) + UN ) / DEUX
+          XPG(6) = ( T(UN-DEUX*XA) + UN ) / DEUX
+          YPG(6) = ( T(XA) + UN ) / DEUX
+          XPG(4) = ( T(XA) + UN ) / DEUX
+          YPG(4) = ( T(UN-DEUX*XA) + UN ) / DEUX
+          XPG(5) = ( T(XA) + UN ) / DEUX
+          YPG(5) = ( T(XA) + UN ) / DEUX
+          HPG(1) = P2
+          HPG(2) = P2
+          HPG(3) = P2
+          HPG(4) = P1
+          HPG(5) = P1
+          HPG(6) = P1
+        ELSE IF (FAPG.EQ.'COT3') THEN
+          XPG(1) = UNDEMI
+          YPG(1) = UNDEMI
+          XPG(2) = ZERO
+          YPG(2) = UNDEMI
+          XPG(3) = UNDEMI
+          YPG(3) = ZERO
+          HPG(1) = UN/6.D00
+          HPG(2) = UN/6.D00
+          HPG(3) = UN/6.D00
+        ELSE
+          CALL ASSERT(.FALSE.)
+        END IF
+
+C     ------------------------------------------------------------------
+      ELSE IF ( ELREFA.EQ.'QU4' .OR. ELREFA.EQ.'QU8' .OR. 
+     &          ELREFA.EQ.'QU9') THEN
+
+        IF (FAPG.EQ.'FPG1') THEN
+          XPG(1) = ZERO
+          YPG(1) = ZERO
+          HPG(1) = 4.D0
+        ELSEIF (FAPG.EQ.'FPG4') THEN
+          XPG(1) = -0.577350269189626D00
+          YPG(1) = -0.577350269189626D00
+          XPG(2) =  0.577350269189626D00
+          YPG(2) = -0.577350269189626D00
+          XPG(3) =  0.577350269189626D00
+          YPG(3) =  0.577350269189626D00
+          XPG(4) = -0.577350269189626D00
+          YPG(4) =  0.577350269189626D00
+          HPG(1) = UN
+          HPG(2) = UN
+          HPG(3) = UN
+          HPG(4) = UN
+        ELSEIF (FAPG.EQ.'FPG9') THEN
+          HPG(1) = 25.D0/81.0D0
+          HPG(2) = 25.D0/81.0D0
+          HPG(3) = 25.D0/81.0D0
+          HPG(4) = 25.D0/81.0D0
+          HPG(5) = 40.D0/81.0D0
+          HPG(6) = 40.D0/81.0D0
+          HPG(7) = 40.D0/81.0D0
+          HPG(8) = 40.D0/81.0D0
+          HPG(9) = 64.D0/81.0D0
+          XPG(1) = -0.774596669241483D0
+          YPG(1) = -0.774596669241483D0
+          XPG(2) =  0.774596669241483D0
+          YPG(2) = -0.774596669241483D0
+          XPG(3) =  0.774596669241483D0
+          YPG(3) =  0.774596669241483D0
+          XPG(4) = -0.774596669241483D0
+          YPG(4) =  0.774596669241483D0
+          XPG(5) = ZERO
+          YPG(5) = -0.774596669241483D0
+          XPG(6) =  0.774596669241483D0
+          YPG(6) = ZERO
+          XPG(7) = ZERO
+          YPG(7) =  0.774596669241483D0
+          XPG(8) = -0.774596669241483D0
+          YPG(8) = ZERO
+          XPG(9) = ZERO
+          YPG(9) = ZERO
+        ELSE
+          CALL ASSERT(.FALSE.)
+        END IF
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFA.EQ.'SE2' .OR. ELREFA.EQ.'SE3' .OR.
+     &         ELREFA.EQ.'SE4') THEN
+
+        IF (FAPG.EQ.'FPG2') THEN
+          XPG(1) = 0.577350269189626D0
+          XPG(2) = -XPG(1)
+          HPG(1) = UN
+          HPG(2) = HPG(1)
+
+        ELSE IF (FAPG.EQ.'FPG3') THEN
+          XPG(1) = -0.774596669241483D0
+          XPG(2) = 0.D0
+          XPG(3) = 0.774596669241483D0
+          HPG(1) = 0.555555555555556D0
+          HPG(2) = 0.888888888888889D0
+          HPG(3) = 0.555555555555556D0
+
+        ELSE IF (FAPG.EQ.'FPG4') THEN
+          XPG(1) = 0.339981043584856D0
+          XPG(2) = -XPG(1)
+          XPG(3) = 0.861136311594053D0
+          XPG(4) = -XPG(3)
+          HPG(1) = 0.652145154862546D0
+          HPG(2) = HPG(1)
+          HPG(3) = 0.347854845137454D0
+          HPG(4) = HPG(3)
+        END IF
+
+
+C     ------------------------------------------------------------------
       ELSE
         CALL ASSERT(.FALSE.)
+
       END IF
 
 
-  120 CONTINUE
+  170 CONTINUE
 C     ------------------------------------------------------------------
-      DO 130 I = 1,NBPG
+      DO 180 I = 1,NBPG
         POIPG(I) = HPG(I)
         COOPG(NDIM* (I-1)+1) = XPG(I)
         IF (NDIM.GE.2) COOPG(NDIM* (I-1)+2) = YPG(I)
         IF (NDIM.EQ.3) COOPG(NDIM* (I-1)+3) = ZPG(I)
-  130 CONTINUE
+  180 CONTINUE
 
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 08/03/2004   AUTEUR VABHHTS J.PELLET 
 # TITRE CYLINDRE EN C.P. (TRIA3 QUAD4) AXISYM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,139 +56,119 @@ CH=AFFE_CHAR_MECA(         MODELE=MO,
                               DDL_IMPO=_F(  GROUP_NO = 'F',       DY = 0.),
                               PRES_REP=_F(  GROUP_MA = 'GRMA13',  PRES = 60.))
 
-ME=CALC_MATR_ELEM(         MODELE=MO,
-                                CHARGE=CH,
-                            CHAM_MATER=CM,
-                               OPTION='RIGI_MECA'   )
 
-VE=CALC_VECT_ELEM(         CHARGE=CH,
-                            CHAM_MATER=CM,
-                               OPTION='CHAR_MECA'   )
+RESU=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CM,
+                   EXCIT=_F(CHARGE=CH,),
+                   );
+                   
+RESU=CALC_ELEM( reuse= RESU ,RESULTAT=RESU ,
+                             MODELE=MO,
+                             NUME_ORDRE=1,
+                             CHAM_MATER=CM,
+                             EXCIT=_F(CHARGE=CH),
+                             OPTION=('EPSI_ELNO_DEPL',),
+                )
 
-NU=NUME_DDL(            MATR_RIGI=ME           )
+RESU=CALC_ELEM( reuse= RESU ,RESULTAT=RESU ,
+                             NUME_ORDRE=1,
+                             MODELE=MO,
+                             CHAM_MATER=CM,
+                             EXCIT=_F(CHARGE=CH),
+                             OPTION=('SIGM_ELNO_DEPL',),
+                )
 
-K=ASSE_MATRICE(        MATR_ELEM=ME,
-                              NUME_DDL=NU )
+RESU=CALC_ELEM( reuse= RESU, RESULTAT=RESU ,
+                             MODELE=MO,
+                             NUME_ORDRE=1,
+                             CHAM_MATER=CM,
+                             EXCIT=_F(CHARGE=CH),
+                             OPTION=('ENDO_ELNO_SIGA',),
+                )
+                
+RESU=CALC_ELEM( reuse= RESU, RESULTAT=RESU ,
+                             MODELE=MO,
+                             NUME_ORDRE=1,
+                             CHAM_MATER=CM,
+                             EXCIT=_F(CHARGE=CH),
+                             OPTION=('ENDO_ELNO_SINO',),
+                )
 
-F=ASSE_VECTEUR(        VECT_ELEM=VE,
-                              NUME_DDL=NU           )
 
-K=FACT_LDLT(      reuse=K,     MATR_ASSE=K            )
 
-DEPLA=RESO_LDLT(           MATR_FACT=K,
-                               CHAM_NO=F            )
-
-DEFO=CALC_CHAM_ELEM(         MODELE=MO,
-                           DEPL=DEPLA,
-                                OPTION='EPSI_ELNO_DEPL',
-                            CHAM_MATER=CM           )
-
-SIG_NO=CALC_CHAM_ELEM(         MODELE=MO,
-                           DEPL=DEPLA,
-                                OPTION='SIGM_ELNO_DEPL',
-                            CHAM_MATER=CM           )
-
-SIG_GA=CALC_CHAM_ELEM(         MODELE=MO,
-                            DEPL=DEPLA,
-                                 OPTION='SIEF_ELGA_DEPL',
-                             CHAM_MATER=CM           )
-
-ENDO1=CALC_CHAM_ELEM(         MODELE=MO,
-                            CHAM_ELEM=SIG_GA,
-                               OPTION='ENDO_ELNO_SIGM',
-                           CHAM_MATER=CM            )
-
-ENDO2=CALC_CHAM_ELEM(         MODELE=MO,
-                            CHAM_ELEM=SIG_NO,
-                               OPTION='ENDO_ELNO_SIGM',
-                           CHAM_MATER=CM            )
-
-TEST_RESU(CHAM_NO=(
+TEST_RESU(RESU=(
    # DEPLACEMENTS
         
-         _F(  CHAM_GD = DEPLA,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
-                REFERENCE = 'ANALYTIQUE',
+         _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+         CRITERE = 'RELATIF',  PRECISION = 1.E-3, REFERENCE = 'ANALYTIQUE',
          GROUP_NO = 'A',     NOM_CMP = 'DX',            VALE = 59.E-6),
-         _F(  CHAM_GD = DEPLA,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
-                REFERENCE = 'ANALYTIQUE',
+         _F(  RESULTAT  = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+         CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE = 'ANALYTIQUE',
          GROUP_NO = 'B',     NOM_CMP = 'DX',            VALE = 40.E-6),
-         _F(  CHAM_GD = DEPLA,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
-                REFERENCE = 'ANALYTIQUE',
+         _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+         CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE = 'ANALYTIQUE',
          GROUP_NO = 'E',     NOM_CMP = 'DX',            VALE = 59.E-6),
-         _F(  CHAM_GD = DEPLA,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
-                REFERENCE = 'ANALYTIQUE',
-         GROUP_NO = 'F',     NOM_CMP = 'DX',            VALE = 40.E-6)),CHAM_ELEM=(
-
+         _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+         CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE = 'ANALYTIQUE',
+         GROUP_NO = 'F',     NOM_CMP = 'DX',            VALE = 40.E-6),
 
     # DEFORMATIONS
              
 
-           _F(  CHAM_GD = DEFO,    CRITERE = 'RELATIF',    PRECISION = 0.03,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 0.03, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'A',    MAILLE = 'M119',    NOM_CMP = 'EPXX',       VALE = -4.5E-4),
-           _F(  CHAM_GD = DEFO,    CRITERE = 'ABSOLU',     PRECISION = 0.01,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'A',    MAILLE = 'M119',    NOM_CMP = 'EPYY',       VALE = 0.),
-           _F(  CHAM_GD = DEFO,    CRITERE = 'RELATIF',    PRECISION = 0.01,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'A',    MAILLE = 'M119',    NOM_CMP = 'EPZZ',       VALE = 5.9E-4),
-           _F(  CHAM_GD = DEFO,    CRITERE = 'ABSOLU',     PRECISION = 0.01,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'A',    MAILLE = 'M119',    NOM_CMP = 'EPXY',       VALE = 0.),
 
-           _F(  CHAM_GD = DEFO,    CRITERE = 'RELATIF',    PRECISION = 0.06,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 0.06, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'B',    MAILLE = 'M1',      NOM_CMP = 'EPXX',       VALE = -0.6E-4),
-           _F(  CHAM_GD = DEFO,    CRITERE = 'ABSOLU',     PRECISION = 0.01,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'B',    MAILLE = 'M1',      NOM_CMP = 'EPYY',       VALE = 0.),
-           _F(  CHAM_GD = DEFO,    CRITERE = 'RELATIF',    PRECISION = 0.01,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'B',    MAILLE = 'M1',      NOM_CMP = 'EPZZ',       VALE = 2.E-4),
-           _F(  CHAM_GD = DEFO,    CRITERE = 'ABSOLU',     PRECISION = 0.01,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'B',    MAILLE = 'M1',      NOM_CMP = 'EPXY',       VALE = 0.),
 
-           _F(  CHAM_GD = DEFO,    CRITERE = 'RELATIF',    PRECISION = 0.03,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU,NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 0.03, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'E',    MAILLE = 'M120',    NOM_CMP = 'EPXX',       VALE = -4.5E-4),
-           _F(  CHAM_GD = DEFO,    CRITERE = 'ABSOLU',     PRECISION = 0.01,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'E',    MAILLE = 'M120',    NOM_CMP = 'EPYY',       VALE = 0.),
-           _F(  CHAM_GD = DEFO,    CRITERE = 'RELATIF',    PRECISION = 0.01,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'E',    MAILLE = 'M120',    NOM_CMP = 'EPZZ',       VALE = 5.9E-4),
-           _F(  CHAM_GD = DEFO,    CRITERE = 'ABSOLU',     PRECISION = 0.01,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'E',    MAILLE = 'M120',    NOM_CMP = 'EPXY',       VALE = 0.),
 
-           _F(  CHAM_GD = DEFO,    CRITERE = 'RELATIF',    PRECISION = 0.03,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 0.03, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'F',    MAILLE = 'M5',      NOM_CMP = 'EPXX',       VALE = -0.6E-4),
-           _F(  CHAM_GD = DEFO,    CRITERE = 'ABSOLU',     PRECISION = 0.01,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'F',    MAILLE = 'M5',      NOM_CMP = 'EPYY',       VALE = 0.),
-           _F(  CHAM_GD = DEFO,    CRITERE = 'RELATIF',    PRECISION = 0.01,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'F',    MAILLE = 'M5',      NOM_CMP = 'EPZZ',       VALE = 2.E-4),
-           _F(  CHAM_GD = DEFO,    CRITERE = 'ABSOLU',     PRECISION = 0.01,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'F',    MAILLE = 'M5',      NOM_CMP = 'EPXY',       VALE = 0.))
            )
 
 #--------------------------------------------------------------------
-
-TOTO=CREA_RESU(   OPERATION = 'AFFE',
-                  TYPE_RESU = 'EVOL_ELAS',
-                  NOM_CHAM  ='DEPL',
-                  AFFE      =_F( CHAM_GD=DEPLA,
-                                 INST=0. , ),
-              )
-
-TOTO=CALC_ELEM(  reuse=TOTO, RESULTAT=TOTO,
-                 MODELE=MO,
-                 OPTION='SIGM_ELNO_DEPL',
-                 CHAM_MATER=CM           )
 
 LIGNE=INTE_MAIL_2D(  MAILLAGE=M,
                      DEFI_SEGMENT=_F(  GROUP_NO_ORIG = 'A',
@@ -199,10 +179,11 @@ LIGNE=INTE_MAIL_2D(  MAILLAGE=M,
 
 T1=POST_RCCM(  MAILLAGE=M,
                MATER=MA,
+               TYPE_RESU_MECA='EVOLUTION',
                OPTION='PM_PB',
                SEGMENT=_F(  CHEMIN = LIGNE,
                             INTITULE = 'RCCM', ),
-               TRANSITOIRE=_F(  RESULTAT=TOTO,
+               TRANSITOIRE=_F(  RESULTAT=RESU,
                                 NOM_CHAM='SIGM_ELNO_DEPL', ),
              )
 
@@ -239,153 +220,153 @@ TEST_TABLE(  TABLE=T1,
 
 #-----------------------------------------------------------------
 
-TEST_RESU(CHAM_ELEM=(
+TEST_RESU(RESU=(
              
-           _F(  CHAM_GD = SIG_NO,   CRITERE = 'RELATIF',    PRECISION = 6.E-2,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 6.E-2, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'A',    MAILLE = 'M119',    NOM_CMP = 'SIXX',       VALE = -60.),
-           _F(  CHAM_GD = SIG_NO,   CRITERE = 'ABSOLU',     PRECISION = 1.1,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.1, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'A',    MAILLE = 'M119',    NOM_CMP = 'SIYY',       VALE = 0.),
-           _F(  CHAM_GD = SIG_NO,   CRITERE = 'RELATIF',    PRECISION = 1.5E-2,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.5E-2, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'A',    MAILLE = 'M119',    NOM_CMP = 'SIZZ',       VALE = 100.),
-           _F(  CHAM_GD = SIG_NO,   CRITERE = 'ABSOLU',     PRECISION = 1.2,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.2, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'A',    MAILLE = 'M119',    NOM_CMP = 'SIXY',       VALE = 0.))
            )
 
-TEST_RESU(CHAM_ELEM=(
+TEST_RESU(RESU=(
              
-           _F(  CHAM_GD = ENDO1,    CRITERE = 'RELATIF',    PRECISION = 0.15,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
+           CRITERE = 'RELATIF',    PRECISION = 0.15, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'A',    MAILLE = 'M119',    NOM_CMP = 'TRIAX',      VALE = 9.5893E-2),
-           _F(  CHAM_GD = ENDO1,    CRITERE = 'RELATIF',    PRECISION = 0.01,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
+           CRITERE = 'RELATIF',    PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'A',    MAILLE = 'M119',    NOM_CMP = 'SI_ENDO',      VALE = 130.265))
            )
 
-TEST_RESU(CHAM_ELEM=(
+TEST_RESU(RESU=(
              
-           _F(  CHAM_GD = ENDO2,    CRITERE = 'RELATIF',    PRECISION = 0.15,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
+           CRITERE = 'RELATIF',    PRECISION = 0.15, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'A',    MAILLE = 'M119',    NOM_CMP = 'TRIAX',      VALE = 9.5893E-2),
-           _F(  CHAM_GD = ENDO2,    CRITERE = 'RELATIF',    PRECISION = 0.01,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
+           CRITERE = 'RELATIF',    PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'A',    MAILLE = 'M119',    NOM_CMP = 'SI_ENDO',      VALE = 130.265))
            )
 
 #-----------------------------------------------------------------
 
-TEST_RESU(CHAM_ELEM=(
+TEST_RESU(RESU=(
              
-           _F(  CHAM_GD = SIG_NO,   CRITERE = 'ABSOLU',     PRECISION = 1.,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1., REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'B',    MAILLE = 'M1',      NOM_CMP = 'SIXX',       VALE = 0.),
-           _F(  CHAM_GD = SIG_NO,   CRITERE = 'ABSOLU',     PRECISION = 0.5,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 0.5, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'B',    MAILLE = 'M1',      NOM_CMP = 'SIYY',       VALE = 0.),
-           _F(  CHAM_GD = SIG_NO,   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'B',    MAILLE = 'M1',      NOM_CMP = 'SIZZ',       VALE = 40.),
-           _F(  CHAM_GD = SIG_NO,   CRITERE = 'ABSOLU',     PRECISION = 0.15,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 0.15, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'B',    MAILLE = 'M1',      NOM_CMP = 'SIXY',       VALE = 0.))
            )
 
-TEST_RESU(CHAM_ELEM=(
+TEST_RESU(RESU=(
              
-           _F(  CHAM_GD = ENDO1,    CRITERE = 'RELATIF',    PRECISION = 0.05,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
+           CRITERE = 'RELATIF',    PRECISION = 0.05, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'B',    MAILLE = 'M1',      NOM_CMP = 'TRIAX',      VALE = 3.3333E-1),
-           _F(  CHAM_GD = ENDO1,    CRITERE = 'RELATIF',    PRECISION = 0.05,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
+           CRITERE = 'RELATIF',    PRECISION = 0.05, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'B',    MAILLE = 'M1',      NOM_CMP = 'SI_ENDO',      VALE = 40.0))
            )
 
-TEST_RESU(CHAM_ELEM=(
+TEST_RESU(RESU=(
              
-           _F(  CHAM_GD = ENDO2,    CRITERE = 'RELATIF',    PRECISION = 0.05,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU,  NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
+           CRITERE = 'RELATIF',    PRECISION = 0.05, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'B',    MAILLE = 'M1',      NOM_CMP = 'TRIAX',      VALE = 3.3333E-1),
-           _F(  CHAM_GD = ENDO2,    CRITERE = 'RELATIF',    PRECISION = 0.01,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU,  NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
+           CRITERE = 'RELATIF',    PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'B',    MAILLE = 'M1',      NOM_CMP = 'SI_ENDO',      VALE = 40.0))
            )
 
 #-----------------------------------------------------------------
 
-TEST_RESU(CHAM_ELEM=(
+TEST_RESU(RESU=(
              
-           _F(  CHAM_GD = SIG_NO,   CRITERE = 'RELATIF',    PRECISION = 6.E-2,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 6.E-2, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'E',    MAILLE = 'M120',    NOM_CMP = 'SIXX',       VALE = -60.),
-           _F(  CHAM_GD = SIG_NO,   CRITERE = 'ABSOLU',     PRECISION = 1.1,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.1, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'E',    MAILLE = 'M120',    NOM_CMP = 'SIYY',       VALE = 0.),
-           _F(  CHAM_GD = SIG_NO,   CRITERE = 'RELATIF',    PRECISION = 1.5E-2,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.5E-2, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'E',    MAILLE = 'M120',    NOM_CMP = 'SIZZ',       VALE = 100.),
-           _F(  CHAM_GD = SIG_NO,   CRITERE = 'ABSOLU',     PRECISION = 1.2,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.2, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'E',    MAILLE = 'M120',    NOM_CMP = 'SIXY',       VALE = 0.))
            )
 
-TEST_RESU(CHAM_ELEM=(
+TEST_RESU(RESU=(
              
-           _F(  CHAM_GD = ENDO1,    CRITERE = 'RELATIF',    PRECISION = 0.15,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
+           CRITERE = 'RELATIF',    PRECISION = 0.15, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'E',    MAILLE = 'M120',    NOM_CMP = 'TRIAX',      VALE = 9.5893E-2),
-           _F(  CHAM_GD = ENDO1,    CRITERE = 'RELATIF',    PRECISION = 0.01,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
+           CRITERE = 'RELATIF',    PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'E',    MAILLE = 'M120',    NOM_CMP = 'SI_ENDO',      VALE = 130.265))
            )
 
-TEST_RESU(CHAM_ELEM=(
+TEST_RESU(RESU=(
              
-           _F(  CHAM_GD = ENDO2,    CRITERE = 'RELATIF',    PRECISION = 0.15,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
+           CRITERE = 'RELATIF',    PRECISION = 0.15, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'E',    MAILLE = 'M120',    NOM_CMP = 'TRIAX',      VALE = 9.5893E-2),
-           _F(  CHAM_GD = ENDO2,    CRITERE = 'RELATIF',    PRECISION = 0.01,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
+           CRITERE = 'RELATIF',    PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'E',    MAILLE = 'M120',    NOM_CMP = 'SI_ENDO',      VALE = 130.265))
            )
 
 #-----------------------------------------------------------------
 
-TEST_RESU(CHAM_ELEM=(
+TEST_RESU(RESU=(
              
-           _F(  CHAM_GD = SIG_NO,   CRITERE = 'ABSOLU',     PRECISION = 1.,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1., REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'F',    MAILLE = 'M5',      NOM_CMP = 'SIXX',       VALE = 0.),
-           _F(  CHAM_GD = SIG_NO,   CRITERE = 'ABSOLU',     PRECISION = 0.5,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 0.5, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'F',    MAILLE = 'M5',      NOM_CMP = 'SIYY',       VALE = 0.),
-           _F(  CHAM_GD = SIG_NO,   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'RELATIF',    PRECISION = 1.E-2, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'F',    MAILLE = 'M5',      NOM_CMP = 'SIZZ',       VALE = 40.),
-           _F(  CHAM_GD = SIG_NO,   CRITERE = 'ABSOLU',     PRECISION = 0.15,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 0.15, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'F',    MAILLE = 'M5',      NOM_CMP = 'SIXY',       VALE = 0.))
            )
 
-TEST_RESU(CHAM_ELEM=(
+TEST_RESU(RESU=(
              
-           _F(  CHAM_GD = ENDO1,    CRITERE = 'RELATIF',    PRECISION = 0.05,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
+           CRITERE = 'RELATIF',    PRECISION = 0.05, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'F',    MAILLE = 'M5',      NOM_CMP = 'TRIAX',      VALE = 3.3333E-1),
-           _F(  CHAM_GD = ENDO1,    CRITERE = 'RELATIF',    PRECISION = 0.05,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
+           CRITERE = 'RELATIF',    PRECISION = 0.05,  REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'F',    MAILLE = 'M5',      NOM_CMP = 'SI_ENDO',      VALE = 40.0))
            )
 
-TEST_RESU(CHAM_ELEM=(
+TEST_RESU(RESU=(
              
-           _F(  CHAM_GD = ENDO2,    CRITERE = 'RELATIF',    PRECISION = 0.05,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
+           CRITERE = 'RELATIF',    PRECISION = 0.05, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'F',    MAILLE = 'M5',      NOM_CMP = 'TRIAX',      VALE = 3.3333E-1),
-           _F(  CHAM_GD = ENDO2,    CRITERE = 'RELATIF',    PRECISION = 0.01,
-                REFERENCE = 'ANALYTIQUE',
+           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
+           CRITERE = 'RELATIF',    PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'F',    MAILLE = 'M5',      NOM_CMP = 'SI_ENDO',      VALE = 40.0))
            )
 

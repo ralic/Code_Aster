@@ -1,7 +1,7 @@
-      SUBROUTINE EPS2MC (MODELI,NNO,NDIM,NBSIG,NPG,NI,DNIDX,DNIDY,DNIDZ,
-     +                   POIDS,XYZ,DEPL,EPS2)
+      SUBROUTINE EPS2MC (MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+     +                   XYZ,DEPL,EPS2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/01/98   AUTEUR CIBHHLB L.BOURHRARA 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,14 +33,9 @@ C    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE
 C                                   A L'ELEMENT
 C    NPG            IN     I        NOMBRE DE POINTS D'INTEGRATION
 C                                   DE L'ELEMENT
-C    NI(1)          IN     R        FONCTIONS DE FORME
-C    DNIDX(1)       IN     R        DERIVEES DES FONCTIONS DE FORME
-C                                   / X SUR L'ELEMENT DE REFERENCE
-C    DNIDY(1)       IN     R        DERIVEES DES FONCTIONS DE FORME
-C                                   / Y SUR L'ELEMENT DE REFERENCE
-C    DNIDZ(1)       IN     R        DERIVEES DES FONCTIONS DE FORME
-C                                   / Z SUR L'ELEMENT DE REFERENCE
-C    POIDS(1)       IN     R        POIDS D'INTEGRATION
+C    IVF            IN     I        POINTEUR FONCTIONS DE FORME
+C    IPOIDS         IN     I        POINTEUR POIDS D'INTEGRATION
+C    IDFDE          IN     I        PT DERIVEES DES FONCTIONS DE FORME
 C    XYZ(1)         IN     R        COORDONNEES DES CONNECTIVITES
 C    DEPL(1)        IN     R        VECTEUR DES DEPLACEMENTS SUR
 C                                   L'ELEMENT
@@ -48,11 +43,25 @@ C    EPS2(1)        OUT    R        DEFORMATIONS DU SECOND ORDRE
 C                                   AUX POINTS D'INTEGRATION
 C
 C.========================= DEBUT DES DECLARATIONS ====================
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C -----  ARGUMENTS
            CHARACTER*8  MODELI
-           REAL*8       NI(1),DNIDX(1), DNIDY(1), DNIDZ(1), POIDS(1)
            REAL*8       XYZ(1), DEPL(1), EPS2(1)
-           REAL*8       NHARM
 C -----  VARIABLES LOCALES
            REAL*8       DFDX(27),DFDY(27),DFDZ(27)
            REAL*8       JACOB
@@ -89,14 +98,11 @@ C ----  CAS MASSIF 3D
 C       -------------
       IF (MODELI(1:2).EQ.'CA') THEN
 C
-          L = (IGAU-1)*NNO
-          K = 3*L + 1
-C
 C ----    CALCUL DES DERIVEES DES FONCTIONS DE FORME SUR L'ELEMENT
 C ----    REEL ET DU PRODUIT JACOBIEN*POIDS (DANS JACOB) :
 C         ----------------------------------------------
-         CALL DFDM3D ( NNO,POIDS(IGAU),DNIDX(K),DNIDY(K),DNIDZ(K),
-     +                 XYZ,DFDX,DFDY,DFDZ,JACOB)
+         CALL DFDM3D ( NNO, IGAU, IPOIDS, IDFDE,
+     +                 XYZ, DFDX, DFDY, DFDZ, JACOB )
 C
 C ----    CALCUL DES DERIVEES DES DEPLACEMENTS :
 C         ------------------------------------
@@ -138,13 +144,12 @@ C       ------------------------------------------------------------
       ELSEIF (MODELI(1:2).EQ.'CP'.OR.MODELI(1:2).EQ.'DP'.
      +     OR.MODELI(1:2).EQ.'AX') THEN
 C
-          K = (IGAU-1)*NNO + 1
+          K = (IGAU-1)*NNO
 C
 C ----    CALCUL DES DERIVEES DES FONCTIONS DE FORME SUR L'ELEMENT
 C ----    REEL ET DU PRODUIT JACOBIEN*POIDS (DANS JACOB) :
 C         ----------------------------------------------
-         CALL DFDM2D ( NNO,POIDS(IGAU),DNIDX(K),DNIDY(K),XYZ,
-     +                 DFDX,DFDY,JACOB)
+         CALL DFDM2D ( NNO,IGAU, IPOIDS,IDFDE,XYZ,DFDX,DFDY,JACOB)
 C
 C ----    CALCUL DES DERIVEES DES DEPLACEMENTS :
 C         ------------------------------------
@@ -158,8 +163,8 @@ C
 C
             IF (MODELI(1:2).EQ.'AX') THEN
               IDECNO = 2*(I-1)
-              RAYON = RAYON + NI(I+K-1)*XYZ(1+IDECNO)
-              DX    = DX    + NI(I+K-1)*DEPL(1+IDECNO)
+              RAYON = RAYON + ZR(IVF+I+K-1)*XYZ(1+IDECNO)
+              DX    = DX    + ZR(IVF+I+K-1)*DEPL(1+IDECNO)
             ENDIF
  40      CONTINUE
 C

@@ -8,7 +8,7 @@
      &                  LICCVG)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 25/03/2004   AUTEUR OUGLOVA A.OUGLOVA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C TOLE CRP_21
       CHARACTER*24 DEPENT,VITENT,RIGID,MEMASS,MEAMOR,AMORT
       LOGICAL LAMORT,PREMIE
 C ----------------------------------------------------------------------
-C  METHODE DE NEWTON : DECISION DE REFLAMBEMENT ET CHOIX DE LA MATRICE
+C  METHODE DE NEWTON : DECISION DE REASSEMBLAGE ET CHOIX DE LA MATRICE
 C ----------------------------------------------------------------------
 
 C IN       PHASE  K10  PHASE DE 'PREDICTION' OU 'CORRECTION' OU :
@@ -126,6 +126,11 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
       INTEGER LDSOR,ICODE,NEQ,ICO,IVEC,INIT,DEFO,LJEVEU,LVEC
       CHARACTER*8 RESULT
       CHARACTER*16 K16BID
+
+      INTEGER IAREFE,NBSS,IRES
+      CHARACTER*8 K8B
+
+
       DATA VERESI,VEDIRI/'&&RESIDU.LISTE_RESU','&&DIRICH.LISTE_RESU'/
       DATA MERIGI,MESUIV/'&&MEMRIG.LISTE_RESU','&&MATGME.LISTE_RESU'/
       DATA MEAMOR/'&&NMMATR.AMORT'/
@@ -172,7 +177,7 @@ C -- INCREMENT DE DEPLACEMENT NUL EN PREDICTION
 
 
 C ======================================================================
-C                   REFLAMBEMENT OU NON DE LA MATRICE
+C                   REASSEMBLAGE OU NON DE LA MATRICE
 C ======================================================================
 
       REINCR = NINT(PARMET(1))
@@ -188,9 +193,9 @@ C -- PASSAGE A LA MATRICE ELASTIQUE EN-DESSOUS DE PAS_MINI_ELAS
       PASMIN = PARMET(3)
       IF (ABS(INSTAP-INSTAM) .LT. PASMIN) THEN
         REINCR = 1
-        REITER = 0
-        METPRE = 'ELASTIQUE'
-        METCOR = 'ELASTIQUE'
+C        REITER = 0
+        METPRE = 'SECANTE'
+        METCOR = 'SECANTE'
       END IF
 
 C -- PHASE DE CORRECTION
@@ -198,7 +203,7 @@ C -- PHASE DE CORRECTION
       IF (PHASE.EQ.'CORRECTION' .OR. PHASE.EQ.'FORCES_INT') THEN
 
 C      CORRECTION TANGENTE
-        IF (METCOR.EQ.'TANGENTE') THEN
+        IF ((METCOR.EQ.'TANGENTE').OR.(METCOR.EQ.'SECANTE')) THEN
           REASMA = .FALSE.
           IF (REITER.NE.0) REASMA = MOD(ITERAT+1,REITER) .EQ. 0
 
@@ -208,7 +213,11 @@ C      CORRECTION ELASTIQUE
         END IF
 
         IF (REASMA) THEN
-          OPTION = 'FULL_MECA'
+          IF (METCOR.EQ.'TANGENTE') THEN
+            OPTION = 'FULL_MECA'
+          ELSE
+            OPTION = 'FULL_MECA_ELAS'
+          ENDIF
         ELSE
           OPTION = 'RAPH_MECA'
         END IF
@@ -221,6 +230,9 @@ C -- PHASE DE PREDICTION
 C      PREDICTION TANGENTE
         IF (METPRE.EQ.'TANGENTE') THEN
           OPTION = 'RIGI_MECA_TANG'
+
+        ELSE IF (METPRE.EQ.'SECANTE') THEN
+          OPTION = 'RIGI_MECA_ELAS'
 
 C      PREDICTION ELASTIQUE OU EXTRAPOLATION
         ELSE
@@ -260,7 +272,7 @@ C ======================================================================
 
 
 C ======================================================================
-C                         FLAMBEMENT DES MATRICES
+C                         ASSEMBLAGE DES MATRICES
 C ======================================================================
 
       IF (REASMA) THEN
@@ -298,12 +310,19 @@ C -- CALCUL DES MATRICES ELEMENTAIRES D AMORTISSEMENT
 
 C -- AU PREMIER PASSAGE, INITIALISATION DES MATRICES MATASS
 C -- ET MASSE
+        MAESCL = DEFICO(1:16)//'.MAESCL'
+        CALL JEEXIN(MAESCL,IECPCO)
+
+C -- ASSEMBLAGE DE LA MATRICE DE MASSE ( PAS POUR LA METHODE
+C -- CONTINUE)  
+        IF (IECPCO.GT.0) GO TO 25
           IF (PREMIE) THEN
             PREMIE = .FALSE.
             CALL ASMATR(1,MEMASS,' ',NUMEDD,SOLVEU,LISCHA,'ZERO','V',1,
      &                  MASSE)
             CALL MTDSCR(MASSE)
           END IF
+   25       CONTINUE
 
           LIMAT(1) = RIGID
           LIMAT(2) = MASSE
@@ -321,6 +340,21 @@ C -- CALCUL DE LA MATRICE MATASS
           CALL MTCMBL(NBMAT,TYPE,COEF2,TYPE,LIMAT,TYPMAT,MATASS,NOMDDL,
      &                ' ',' ',.TRUE.)
 
+C   NECESSAIRE POUR LA PRISE EN COMPTE DE MACRO-ELEMENT STATIQUE
+          CALL DISMOI('F','NB_SS_ACTI',MODELE,'MODELE',NBSS,K8B,IRET)
+          IF (NBSS.GT.0) THEN
+            CALL JEEXIN('&&SSRIGI.REFE_RESU',IRES)
+            IF (IRES.EQ.0) THEN
+              CALL MEMARE('V','&&SSRIGI',MODELE(1:8),MATE,CARELE,
+     &                    'RIGI_MECA')
+              CALL JEVEUO('&&SSRIGI.REFE_RESU','E',IAREFE)
+              ZK24(IAREFE-1+3) (1:3) = 'OUI'
+              CALL ASMATR(1,'&&SSRIGI',' ',NUMEDD,SOLVEU,LISCHA,'ZERO',
+     &                    'V',1,'&&ASRSST')
+              CALL MTDSCR('&&ASRSST')
+            END IF
+          END IF  
+C   FIN MACRO-ELEMENT STATIQUE
 
 C === CAS DE LA STATIQUE ===
 
@@ -328,6 +362,21 @@ C === CAS DE LA STATIQUE ===
 
 
           CALL ASASMA(MERIGI,MEDIRI,NUMEDD,MATASS,SOLVEU,LISCHA)
+C   NECESSAIRE POUR LA PRISE EN COMPTE DE MACRO-ELEMENT STATIQUE
+          CALL DISMOI('F','NB_SS_ACTI',MODELE,'MODELE',NBSS,K8B,IRET)
+          IF (NBSS.GT.0) THEN
+            CALL JEEXIN('&&SSRIGI.REFE_RESU',IRES)
+            IF (IRES.EQ.0) THEN
+              CALL MEMARE('V','&&SSRIGI',MODELE(1:8),MATE,CARELE,
+     &                    'RIGI_MECA')
+              CALL JEVEUO('&&SSRIGI.REFE_RESU','E',IAREFE)
+              ZK24(IAREFE-1+3) (1:3) = 'OUI'
+              CALL ASMATR(1,'&&SSRIGI',' ',NUMEDD,SOLVEU,LISCHA,'ZERO',
+     &                    'V',1,'&&ASRSST')
+              CALL MTDSCR('&&ASRSST')
+            END IF
+          ENDIF
+C   FIN MACRO-ELEMENT STATIQUE
           
 
 C      PRISE EN COMPTE DE LA MATRICE TANGENTE DES FORCES SUIVEUSES

@@ -5,7 +5,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/07/2000   AUTEUR CIBHHAB N.RAHNI 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C....... LK = .FALSE. INDIQUE QU'ON NE CALCULE PAS LES TERMES DE RAIDEUR
             IF ( LOCFL0(I) ) THEN
             write(*,*) 'CALVOL ::::TPFL',tpfl
                CALL COEFMO(TPFL,LK,NBM,I,INDIC,R8B1,PULS00(I),VGAP,
-     &                     XSI0(I),MASGI,VECI1,VECR1,VECR2,VECR3,VECR4,
+     &                     XSI0(I),VECI1,VECR1,VECR2,VECR3,VECR4,
      &                     VECR5,R8B2,C16B,XCF)
                AMFLU0(I,I) = XCF/MASGI(I)
             ENDIF

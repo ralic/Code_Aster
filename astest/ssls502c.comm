@@ -1,4 +1,5 @@
-# MODIF  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+
+# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 08/06/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -25,209 +26,243 @@
 #    EXTREMITES SUR DES DIAPHRAGMES RIGIDES
 #  - MODELISATION AVEC DES ELEMENTS 'DKT'(TRIA3) '
 #---------------------------------------------------------------------
-#
 
-DEBUT(CODE=_F(NOM='SSLS502C',NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NOM='SSLS502C',
+              NIV_PUB_WEB='INTERNET',),);
+
 PRE_GIBI();
-MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),);
-MO=AFFE_MODELE(AFFE=_F(TOUT='OUI',
+
+MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),);
+
+MO=AFFE_MODELE(MAILLAGE=MAIL,
+               AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='DKT',),
-               MAILLAGE=MAIL,);
+                       MODELISATION='DKT',),);
+
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
-                                 GROUP_MA='CD',
+                CREA_GROUP_NO=_F(GROUP_MA='CD',
+                                 OPTION='NOEUD_ORDO',
                                  NOM='CD',
-                                 GROUP_NO_EXTR='D',
-                                 GROUP_NO_ORIG='C',),);
+                                 GROUP_NO_ORIG='C',
+                                 GROUP_NO_EXTR='D',),);
+
 CAR_ELE=AFFE_CARA_ELEM(MODELE=MO,
-                       COQUE=_F(ANGL_REP=(0.0,0.0),
-                                GROUP_MA='TOUT_ELT',
-                                EPAIS=6.1E-3,),);
-MAT=DEFI_MATERIAU(ELAS_COQUE=_F(CISA_T=1.E10,
-                                CISA_L=1.E10,
-                                MEMB_G_LT=7.625000E6,
-                                FLEX_LT=20.89738407,
-                                MEMB_T=1.13441700E8,
+                       COQUE=_F(GROUP_MA='TOUT_ELT',
+                                EPAIS=0.0061,
+                                ANGL_REP=(0.0,0.0,),),);
+
+MAT=DEFI_MATERIAU(ELAS_COQUE=_F(MEMB_L=18692840.0,
+                                MEMB_LT=6739280.0,
+                                MEMB_T=113441700.0,
+                                MEMB_G_LT=7625000.0,
                                 FLEX_L=57.96338137,
-                                MEMB_LT=6.739280E6,
+                                FLEX_LT=20.89738407,
                                 FLEX_T=351.7638047,
                                 FLEX_G_LT=23.64385417,
-                                MEMB_L=1.8692840E7,),);
-CHAM_MAT=AFFE_MATERIAU(AFFE=_F(MATER=MAT,
-                               TOUT='OUI',),
-                       MAILLAGE=MAIL,);
-CHA=AFFE_CHAR_MECA(DDL_IMPO=(_F(GROUP_MA='BA',
+                                CISA_L=10000000000.0,
+                                CISA_T=10000000000.0,),);
+
+CHAM_MAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MAT,),);
+
+CHA=AFFE_CHAR_MECA(MODELE=MO,
+                   DDL_IMPO=(_F(GROUP_MA='BA',
+                                DX=0.0,
                                 DZ=0.0,
-                                DX=0.0,
                                 DRY=0.0,),
-                             _F(GROUP_MA=('AD','BC'),
+                             _F(GROUP_MA=('AD','BC',),
                                 DX=0.0,
-                                DRZ=0.0,
-                                DRY=0.0,),
+                                DRY=0.0,
+                                DRZ=0.0,),
                              _F(GROUP_MA='CD',
                                 DY=0.0,
-                                DRZ=0.0,
-                                DRX=0.0,),),
-                   MODELE=MO,
+                                DRX=0.0,
+                                DRZ=0.0,),),
                    FORCE_ARETE=_F(GROUP_MA='BC',
                                   FZ=-448.276,),);
-RESU=MECA_STATIQUE(CHAM_MATER=CHAM_MAT,
-                   MODELE=MO,
+
+RESU=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CHAM_MAT,
                    CARA_ELEM=CAR_ELE,
                    EXCIT=_F(CHARGE=CHA,),);
+
 RESU=CALC_ELEM(reuse =RESU,
-               NIVE_COUCHE='SUP',
-               RESULTAT=RESU,
-               NUME_COUCHE=1,
-               CHAM_MATER=CHAM_MAT,
                MODELE=MO,
+               CHAM_MATER=CHAM_MAT,
                CARA_ELEM=CAR_ELE,
+               RESULTAT=RESU,
+               TOUT_ORDRE='OUI',
                OPTION='SIGM_ELNO_DEPL',
-               TOUT_ORDRE='OUI',);
-DEP_DZ=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='TAB_DZ ',
+               NUME_COUCHE=1,
+               NIVE_COUCHE='SUP',);
+
+DEP_DZ=POST_RELEVE_T(ACTION=_F(INTITULE='TAB_DZ ',
                                GROUP_NO='CD',
-                               NOM_CMP='DZ',
                                RESULTAT=RESU,
-                               NOM_CHAM='DEPL',),);
-DEP_NORM=POST_RELEVE_T(ACTION=_F(AXE_Z=(0.0,1.0,0.0),
-                                 OPERATION='EXTRACTION',
-                                 ORIGINE=(0.0,0.0,0.0),
-                                 REPERE='CYLINDRIQUE',
-                                 INTITULE='TAB_NORM',
+                               NOM_CHAM='DEPL',
+                               NOM_CMP='DZ',
+                               OPERATION='EXTRACTION',),);
+
+DEP_NORM=POST_RELEVE_T(ACTION=_F(INTITULE='TAB_NORM',
                                  GROUP_NO='CD',
-                                 NOM_CMP=('DX','DY','DZ'),
                                  RESULTAT=RESU,
-                                 NOM_CHAM='DEPL',),);
-SIGMA=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                              INTITULE='TAB_SIGM ',
-                              TOUT_CMP='OUI',
+                                 NOM_CHAM='DEPL',
+                                 NOM_CMP=('DX','DY','DZ',),
+                                 REPERE='CYLINDRIQUE',
+                                 ORIGINE=(0.0,0.0,0.0,),
+                                 AXE_Z=(0.0,1.0,0.0,),
+                                 OPERATION='EXTRACTION',),);
+
+SIGMA=POST_RELEVE_T(ACTION=_F(INTITULE='TAB_SIGM ',
                               GROUP_NO='CD',
                               RESULTAT=RESU,
-                              NOM_CHAM='SIGM_ELNO_DEPL',),);
-DEPZ=RECU_FONCTION(TABLE=DEP_DZ,
-                   PARA_Y='DZ',
-                   PARA_X='ABSC_CURV',);
-DEPNOR=RECU_FONCTION(TABLE=DEP_NORM,
-                     PARA_Y='DX',
-                     PARA_X='ABSC_CURV',);
-SIGX=RECU_FONCTION(TABLE=SIGMA,
-                   PARA_Y='SIXX',
-                   PARA_X='ABSC_CURV',); 
-SIGY=RECU_FONCTION(TABLE=SIGMA,
-                   PARA_Y='SIYY',
-                   PARA_X='ABSC_CURV',);
+                              NOM_CHAM='SIGM_ELNO_DEPL',
+                              TOUT_CMP='OUI',
+                              OPERATION='EXTRACTION',),);
 
-IMPR_COURBE(COURBE=(_F(FONCTION=DEPZ,),
-                    _F(FONCTION=DEPNOR,),),
-            FICHIER='AGRAF',
+DEPZ=RECU_FONCTION(TABLE=DEP_DZ,
+                   PARA_X='ABSC_CURV',
+                   PARA_Y='DZ',);
+
+DEPNOR=RECU_FONCTION(TABLE=DEP_NORM,
+                     PARA_X='ABSC_CURV',
+                     PARA_Y='DX',);
+
+SIGX=RECU_FONCTION(TABLE=SIGMA,
+                   PARA_X='ABSC_CURV',
+                   PARA_Y='SIXX',);
+
+SIGY=RECU_FONCTION(TABLE=SIGMA,
+                   PARA_X='ABSC_CURV',
+                   PARA_Y='SIYY',);
+
+IMPR_COURBE(FICHIER='AGRAF',
             FORMAT='AGRAF',
-            TITRE_GRAPHIQUE='dep_norm fonction de abscisse curviligne',);
-IMPR_COURBE(COURBE=_F(FONCTION=SIGX,),
-FICHIER='AGRAF',
-FORMAT='AGRAF',
-TITRE_GRAPHIQUE='sigma XX fonction de abscisse curviligne',); 
-IMPR_COURBE(COURBE=_F(FONCTION=SIGY,),
-FICHIER='AGRAF',
-FORMAT='AGRAF',
-TITRE_GRAPHIQUE='sigma YY fonction de abscisse curviligne',);
-IMPR_RESU(RESU=_F(MAILLAGE=MAIL,
-FORMAT='CASTEM',
-RESULTAT=RESU,
-NOM_CHAM=('DEPL','SIGM_ELNO_DEPL'),),
-MODELE=MO,);
+            TITRE_GRAPHIQUE='dep_norm fonction de abscisse curviligne',
+            COURBE=(_F(FONCTION=DEPZ,),
+                    _F(FONCTION=DEPNOR,),),);
+
+IMPR_COURBE(FICHIER='AGRAF',
+            FORMAT='AGRAF',
+            TITRE_GRAPHIQUE='sigma XX fonction de abscisse curviligne',
+            COURBE=_F(FONCTION=SIGX,),);
+
+IMPR_COURBE(FICHIER='AGRAF',
+            FORMAT='AGRAF',
+            TITRE_GRAPHIQUE='sigma YY fonction de abscisse curviligne',
+            COURBE=_F(FONCTION=SIGY,),);
+
+IMPR_RESU(MODELE=MO,
+          RESU=_F(FORMAT='CASTEM',
+                  MAILLAGE=MAIL,
+                  RESULTAT=RESU,
+                  NOM_CHAM=('DEPL','SIGM_ELNO_DEPL',),),);
+
 IMPR_TABLE(TABLE=SIGMA,
-NOM_PARA=('NOEUD','SIXX','SIYY'),
-FORMAT='MOT_CLE',);
+           FORMAT='MOT_CLE',
+           NOM_PARA=('NOEUD','SIXX','SIYY',),);
 #
 #---------------------------------------------------------------------
 #          TEST REFERENCE EXPERIMENTALE 
 #---------------------------------------------------------------------
-#
-TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
-                   RESULTAT=RESU,
-                   PRECISION=0.05,
-                   VALE=1.35E-3,
-                   GROUP_NO='F',
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   NUME_ORDRE=1,),
-_F(NOM_CHAM='DEPL',
-RESULTAT=RESU,
-PRECISION=0.05,
-VALE=-2.46E-3,
-GROUP_NO='C',
-NOM_CMP='DZ',
-NUME_ORDRE=1,),
-_F(NOM_CHAM='DEPL',
-RESULTAT=RESU,
-PRECISION=0.52,
-VALE=0.35E-03,
-GROUP_NO='D',
-NOM_CMP='DZ',
-NUME_ORDRE=1,),),);
+                   GROUP_NO='F',
+                   VALE=0.00135,
+                   PRECISION=0.05,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='C',
+                   VALE=-0.00246,
+                   PRECISION=0.05,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='D',
+                   VALE=0.00035,
+                   PRECISION=0.52,
+                   REFERENCE='SOURCE_EXTERNE',),),);
+
 TEST_RESU(RESU=_F(RESULTAT=RESU,
-MAILLE='M368',
-NUME_ORDRE=1,
-NOM_CHAM='SIGM_ELNO_DEPL',
-GROUP_NO='F',
-NOM_CMP='SIXX',
-VALE=1.9E6,
-PRECISION=0.15,),);
+                  NUME_ORDRE=1,
+                  NOM_CHAM='SIGM_ELNO_DEPL',
+                  NOM_CMP='SIXX',
+                  MAILLE='M368',
+                  GROUP_NO='F',
+                  VALE=1900000.0,
+                  PRECISION=0.15,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
 TEST_RESU(RESU=_F(RESULTAT=RESU,
-MAILLE='M368',
-NUME_ORDRE=1,
-NOM_CHAM='SIGM_ELNO_DEPL',
-GROUP_NO='F',
-NOM_CMP='SIYY',
-VALE=1.55E6,
-PRECISION=0.15,),);
+                  NUME_ORDRE=1,
+                  NOM_CHAM='SIGM_ELNO_DEPL',
+                  NOM_CMP='SIYY',
+                  MAILLE='M368',
+                  GROUP_NO='F',
+                  VALE=1550000.0,
+                  PRECISION=0.15,
+                  REFERENCE='SOURCE_EXTERNE',),);
 #
 #---------------------------------------------------------------------
 #          TEST REFERENCE BATOZ
 #---------------------------------------------------------------------
-#
-TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
-RESULTAT=RESU,
-PRECISION=0.1,
-VALE=1.325E-3,
-GROUP_NO='F',
-NOM_CMP='DX',
-NUME_ORDRE=1,),
-_F(NOM_CHAM='DEPL',
-RESULTAT=RESU,
-PRECISION=0.05,
-VALE=-2.45E-3,
-GROUP_NO='C',
-NOM_CMP='DZ',
-NUME_ORDRE=1,),
-_F(NOM_CHAM='DEPL',
-RESULTAT=RESU,
-PRECISION=0.05,
-VALE=0.51E-03,
-GROUP_NO='D',
-NOM_CMP='DZ',
-NUME_ORDRE=1,),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='F',
+                   VALE=0.001325,
+                   PRECISION=0.1,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='C',
+                   VALE=-0.00245,
+                   PRECISION=0.05,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='D',
+                   VALE=0.00051,
+                   PRECISION=0.05,
+                   REFERENCE='ANALYTIQUE',),),);
 #
 #---------------------------------------------------------------------
 #              TEST SIGMA
 #---------------------------------------------------------------------
-#
+
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
-MAILLE='M368',
-NUME_ORDRE=1,
-NOM_CHAM='SIGM_ELNO_DEPL',
-GROUP_NO='F',
-NOM_CMP='SIXX',
-VALE=1.68E6,
-PRECISION=0.05,),
-_F(RESULTAT=RESU,
-MAILLE='M368',
-NUME_ORDRE=1,
-NOM_CHAM='SIGM_ELNO_DEPL',
-GROUP_NO='F',
-NOM_CMP='SIYY',
-VALE=1.8E6,
-PRECISION=0.01,),),);
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='M368',
+                   GROUP_NO='F',
+                   VALE=1680000.0,
+                   PRECISION=0.05,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIYY',
+                   MAILLE='M368',
+                   GROUP_NO='F',
+                   VALE=1800000.0,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),),);
+
 FIN();

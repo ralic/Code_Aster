@@ -1,6 +1,6 @@
       SUBROUTINE TE0376 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,8 +30,7 @@ C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
       PARAMETER         ( NBRES=10)
-      CHARACTER*24       CARAC,FF,CHMAT
-      CHARACTER*8        NOMRES(NBRES),ELREFE
+      CHARACTER*8        NOMRES(NBRES)
       CHARACTER*2        BL2, CODRET(NBRES)
       REAL*8             VALRES(NBRES),CG(54)
       REAL*8             DDZDZ,DDRXDZ,DDRYDZ,VX,VY,MT,S,JJ,EPS(5),C1
@@ -39,8 +38,8 @@ C
       REAL*8             A11,A12,A22,A33,G12,E1,E2,E3,DELTA
       REAL*8             NU12,NU21,NU23,NU32,NU13,NU31
       INTEGER            NNO,KP,I,K,ITEMPE,ITREF,IDEPL,ICONT
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE
-      INTEGER            NPG,NPG1,NPG2,NCMP,NBV
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
+      INTEGER            NPG1,NNOS,NCMP,NBV,NDIM,JGANO
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
@@ -60,20 +59,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CALL ELREF1(ELREFE)
-C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS = IFF + (NPG1+NPG2)*(1+3*NNO)
-      IVF  = IPOIDS+NNO
-      IDFDE = IVF  +NNO*NNO
-      IDFDK = IDFDE +NNO*NNO
+      CALL ELREF4(' ','NOEU',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
 C
       NCMP = 4
 C
@@ -118,8 +104,7 @@ C
 C
       DO 101 KP=1,NNO
         K=(KP-1)*NNO
-        CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                ZR(IGEOM),DFDX,DFDY,POIDS )
+        CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
         X   = 0.D0
         Y   = 0.D0
         TPG = 0.D0

@@ -1,11 +1,11 @@
-      SUBROUTINE STBAST ( NFIE, NFIS, IFM, LGRCOU )
+      SUBROUTINE STBAST ( NFIE, NFIS, LGRCOU )
       IMPLICIT  NONE
-      INTEGER             NFIE, NFIS, IFM
+      INTEGER             NFIE, NFIS
       LOGICAL             LGRCOU
 C TOLE CRS_513
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,6 @@ C
       WRITE(NFIS,*) 'FIN'
       REWIND NFIS
 C
-      CALL ULDEFI ( -NFIE, ' ', ' ', ' ', ' ' )
-      CALL ULDEFI ( -NFIS, ' ', ' ', ' ', ' ' )
+      CALL ULDEFI ( -NFIE, ' ', ' ', ' ', ' ', ' ' )
+      CALL ULDEFI ( -NFIS, ' ', ' ', ' ', ' ', ' ' )
       END

@@ -1,6 +1,6 @@
       SUBROUTINE TE0219 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
@@ -29,17 +29,15 @@ C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
       CHARACTER*2        CODRET
-      CHARACTER*8        MATER,GRXF,GRYF,NOMPAR(3),ELREFE
-      CHARACTER*24       CARAC,FF
+      CHARACTER*8        GRXF,GRYF,NOMPAR(3)
       REAL*8             DFDX(9),DFDY(9),POIDS,X,Y,VALRES
       REAL*8             COORSE(18),VECTT(9),GRX,GRY,VALPAR(3)
-      INTEGER            NNO,KP,NPG1,I,K,IVECTT,IGRAI
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE
-      INTEGER            NNOP2,C(6,9),ISE,NSE
+      INTEGER            NDIM,NNO,NNOS,KP,NPG,I,K,IVECTT,IGRAI
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE,JGANO
+      INTEGER            NNOP2,C(6,9),ISE,NSE,ITEMPS,J,IER
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -57,18 +55,7 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      CALL ELREF1(ELREFE)
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS=IFF
-      IVF   =IPOIDS+NPG1
-      IDFDE =IVF   +NPG1*NNO
-      IDFDK =IDFDE +NPG1*NNO
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
 
@@ -94,7 +81,7 @@ C
       CALL RCVALA ( ZI(IMATE),'THER',1,'INST',0.D0,1,'LAMBDA',VALRES,
      &              CODRET, 'FM')
 C
-      CALL CONNEC ( NOMTE, ZR(IGEOM), NSE, NNOP2, C )
+      CALL CONNEC ( NOMTE, NSE, NNOP2, C )
 
       DO 10 I=1,NNOP2
         VECTT(I)=0.D0
@@ -108,10 +95,9 @@ C
             COORSE(2*(I-1)+J) = ZR(IGEOM-1+2*(C(ISE,I)-1)+J)
 105     CONTINUE
 C
-        DO 101 KP=1,NPG1
+        DO 101 KP=1,NPG
           K=(KP-1)*NNO
-          CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                  COORSE,DFDX,DFDY,POIDS )
+          CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,COORSE,DFDX,DFDY,POIDS )
           X = 0.D0
           Y = 0.D0
           DO 102 I=1,NNO

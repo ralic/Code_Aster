@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 26/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -294,13 +294,14 @@ C
       IPREC = 0
       NOMSY = 'DEPL'
       DO 100 I = 1 , NBMR
+         CALL JEMARQ()
          MODEIN = ZK8(JNOM+I-1)
          CALL JELIRA(JEXNUM(KMODE,I),'LONUTI',NBMODE,K1B)
          IF ( NBMODE .EQ. 0 ) THEN
             CALL UTDEBM('A',NOMCMD,'***** ALARME *****')
             CALL UTIMPK('L','PAS DE MODE EXTRAIT POUR ',1,MODEIN)
             CALL UTFINM
-            GOTO 100
+            GOTO 102
          ENDIF
          CALL JEVEUO(JEXNUM(KMODE,I),'L',JORDR)
          CALL VPRECU ( MODEIN, NOMSY, NBMODE, ZI(JORDR), KVEC, 
@@ -330,6 +331,8 @@ C
          CALL JEDETR ( KVALI )
          CALL JEDETR ( KVALR )
          CALL JEDETR ( KVALK )
+ 102     CONTINUE
+         CALL JEDEMA()
  100  CONTINUE
       CALL JEDETR ( KMODE )
       CALL JEDETR ( '&&OP0168.NOM_MODE' )
@@ -429,6 +432,8 @@ C
          ENDIF
       ENDIF
       CALL JEDETR ( '&&OP0168.NUME_ORDRE' )
+C
+      CALL TITRE()
 C
  1000 FORMAT(/,50X,'M A S S E      E F F E C T I V E      ',
      +              'U N I T A I R E')

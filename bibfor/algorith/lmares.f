@@ -1,10 +1,10 @@
-        SUBROUTINE LMARES ( MOD,   IMAT, NMAT, MATERD, MATERF, MATCST,
-     1                      TEMPF, TIMED, TIMEF, YD, YF, DEPS, DY, RES )
-        IMPLICIT REAL*8 (A-H,O-Z)
+      SUBROUTINE LMARES ( MOD, NMAT, MATERD, MATERF,
+     1                    TIMED, TIMEF, YD, YF, DEPS, DY, RES )
+      IMPLICIT REAL*8 (A-H,O-Z)
 C
-C       ================================================================
+C     ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,12 +29,9 @@ C                    DY   = ( DSIG DX  DX1 DX2 DV )
 C                    Y    = ( SIG  X   X1  X2  V  )
 C                    RES  = ( G    L   J   F   K  )
 C       IN  MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATERD :  COEFFICIENTS MATERIAU A T
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           MATCST :  'OUI' SI MATERIAU CONSTANT SUR DT
-C           TEMPF  :  TEMPERATURE A T + DT
 C           TIMED  :  INSTANT  T
 C           TIMEF  :  INSTANT  T+DT
 C           YD     :  VARIABLES A T       = ( SIGD VIND )
@@ -43,7 +40,7 @@ C           DY     :  SOLUTION ESSAI      = ( DSIG DVIN )
 C           DEPS   :  INCREMENT DE DEFORMATION
 C       OUT RES    :  SYSTEME NL A T + DT
 C       ----------------------------------------------------------------
-        INTEGER         NDT , NDI , NMAT , IMAT
+        INTEGER         NDT , NDI , NMAT
 C
         REAL*8          HOOKF(6,6), DKOOH(6,6)
         REAL*8          SIGF(6)   , DSIG(6) ,    SIGD(6) ,    DFDS(6)
@@ -60,12 +57,11 @@ C
 C
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
         REAL*8          TIMED          ,TIMEF,  DT
-        REAL*8          SEUIL, TEMPF ,   NU ,   NORMX ,     ZZ
+        REAL*8          SEUIL, NU ,   NORMX ,     ZZ
         REAL*8          DE0, N,   K,   B,   A0
         REAL*8          RM,    RM1,  M,   M1,    P,     P1,  P2
 C
         CHARACTER*8     MOD
-        CHARACTER*3     MATCST
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT , NDI
 C       ----------------------------------------------------------------
@@ -101,10 +97,9 @@ C
         CALL LCOPIL  ( 'ISOTROPE' , MOD , MATERD(1,1) , DKOOH )
 C
         DT = TIMEF - TIMED
-        YV = LMACIN ( IMAT , NMAT , MATERF , V )
-        CALL LMAFS  ( IMAT , NMAT , MATERF , SIGF , X , DFDS )
-        CALL LMACVX ( IMAT , NMAT , MATERF , TEMPF, SIGF,
-     1                           YF(NDT+1), SEUIL )
+        YV = LMACIN ( NMAT , MATERF , V )
+        CALL LMAFS  ( NMAT , MATERF , SIGF , X , DFDS )
+        CALL LMACVX ( NMAT , MATERF , SIGF, YF(NDT+1), SEUIL )
 C       CAS DE DIVERGENCE
         IF ( SEUIL .GE. 1.D6 ) SEUIL = 1.D6
 C

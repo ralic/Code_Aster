@@ -1,11 +1,11 @@
       SUBROUTINE CALCMI( NP1,NBM,DT0,DT,
      &                   VITG,DEPG,VITG0,DEPG0,FMOD,FMOD0, 
-     &                   MASG0,AMOR,AMOR0,PULS,PULS0,
+     &                   AMOR,AMOR0,PULS,PULS0,
      &                   TRANS,PULSD,S0,Z0,SR0,ZA1,ZA2,ZA3,ZIN)
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/05/2000   AUTEUR KXBADNG T.KESTENS 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C ---------
       REAL*8      DT0, DT,
      &            VITG(*), DEPG(*), VITG0(*), DEPG0(*),
      &            FMOD(*), FMOD0(*),
-     &            MASG0(*), AMOR(*), AMOR0(*), PULS(*), PULS0(*),
+     &            AMOR(*), AMOR0(*), PULS(*), PULS0(*),
      &            TRANS(2,2,*), PULSD(*)
       COMPLEX*16  S0(*), Z0(*), SR0(*), ZA1(*), ZA2(*), ZA3(*), ZIN(*)
 C

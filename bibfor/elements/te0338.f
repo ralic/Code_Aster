@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,16 +60,14 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 EQUI(6),PP,PPT,VKPACT
       REAL*8 SIGOLD,SIGNEW,TPG,TMOY
 
-      INTEGER I,K,KP,KT,NDIM,ICOMPO,NBVARI,IPOPP,IPOPPT
-      INTEGER JGANO,IPOIDS,IVF,IDFDN,IDFDE,IDFDK,NPG,NNO,NNOS
+      INTEGER I,KP,KT,NDIM,ICOMPO,NBVARI,IPOPP,IPOPPT
+      INTEGER JGANO,IPOIDS,IVF,IDFDE,NPG,NNO,NNOS
       INTEGER IMATE,IGEOM,ICONG,IVARIG,ISSOPT,IWEIB,IDEFG,NBVP
       INTEGER ISIGIE,ISIGIS,ITEMPE,INO,JTAB(7),IRET
 
 C======================== CORPS DU PROGRAMME ===========================
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
 
       NBVP = 3
 
@@ -181,10 +179,8 @@ C VOLUME PLASTIFIE
           PP = ZR(IVARIG+NBVARI* (KP-1)+IPOPP-1)
           IF (PP.GE.SEUIL) THEN
             KT = (KP-1)*NNO
-            K = (KP-1)*NNO*3
-            CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &                  ZR(IDFDK+K),ZR(IGEOM),DFDBID,DFDBID,DFDBID,
-     &                  POIDS)
+            CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                    ZR(IGEOM),DFDBID,DFDBID,DFDBID,POIDS)
             DVPG = POIDS
             VKP = VKP + DVPG
             DO 20,I = 1,6,1
@@ -246,10 +242,8 @@ C VOLUME PLASTIFIE
           PP = ZR(IVARIG+NBVARI* (KP-1)+IPOPP-1)
           IF (PP.GE.SEUIL) THEN
             KT = (KP-1)*NNO
-            K = (KP-1)*NNO*3
-            CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &                  ZR(IDFDK+K),ZR(IGEOM),DFDBID,DFDBID,DFDBID,
-     &                  POIDS)
+            CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                    ZR(IGEOM),DFDBID,DFDBID,DFDBID,POIDS)
             DVPG = POIDS
             VKP = VKP + DVPG
             DO 60,I = 1,6,1
@@ -308,11 +302,9 @@ C     -------------------------------------------------------------
           PP = ZR(IVARIG+NBVARI* (KP-1)+IPOPP-1)
           SIGNEW = 0.D0
           IF (PP.GE.SEUIL) THEN
-            K = (KP-1)*NNO*3
             KT = (KP-1)*NNO
-            CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &                  ZR(IDFDK+K),ZR(IGEOM),DFDBID,DFDBID,DFDBID,
-     &                  POIDS)
+            CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                    ZR(IGEOM),DFDBID,DFDBID,DFDBID,POIDS)
             DVPG = POIDS
             PPT = ZR(IVARIG+NBVARI* (KP-1)+IPOPPT-1)
             IF (PPT.EQ. (1.D0)) THEN
@@ -349,11 +341,9 @@ C     ----------------------------------------------------
         DO 150,KP = 1,NPG,1
           PP = ZR(IVARIG+NBVARI* (KP-1)+IPOPP-1)
           IF (PP.GE.SEUIL) THEN
-            K = (KP-1)*NNO*3
             KT = (KP-1)*NNO
-            CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &                  ZR(IDFDK+K),ZR(IGEOM),DFDBID,DFDBID,DFDBID,
-     &                  POIDS)
+            CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                    ZR(IGEOM),DFDBID,DFDBID,DFDBID,POIDS)
             DVPG = POIDS
             PPT = ZR(IVARIG+NBVARI* (KP-1)+IPOPPT-1)
             SIG1 = 0.D0

@@ -1,6 +1,6 @@
       SUBROUTINE TE0078 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,6 @@ C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -59,39 +58,33 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*2   CODRET(NBRES)
       CHARACTER*8   NOMRES(NBRES),ELREFE
       CHARACTER*16  PHENOM,OPTION,NOMTE,PHESEN
-      CHARACTER*24  CARAC,FF
       REAL*8        VALRES(NBRES),DFDX(9),DFDY(9),POIDS,R,TPG,THETA,CP,
      &              ORIG(2),LAMBOR(2),LAMBDA,FLUGLO(2),FLULOC(2),P(2,2),
      &              POINT(2),COORSE(18),VECTT(9),PREC,R8PREM,CPS,LAMBS,
      &              LAMBOS(2),TRACE,DTEMPX,DTEMPY,DTEMMX,DTEMMY,TEMS,
      &              FLUGLS(2),FLULOS(2),DELTAT,ALPHA,R8DGRD,DTPGDX,
      &              DTPGDY,XNORM,XU,YU
-      INTEGER       NNO,KP,NPG1,NPG2,NPG3,I,J,K,ITEMPS,IVECTT,ICARAC,
-     &              NNOP2,C(6,9),ISE,NSE,NUNO,IPOIDS,IVF,IDFDE,IDFDK,
+      INTEGER       NDIM,NNO,NNOS,KP,NPG,I,J,K,ITEMPS,IVECTT,JGANO,
+     &              NNOP2,C(6,9),ISE,NSE,NUNO,IPOIDS,IVF,IDFDE,
      &              IGEOM,IMATE,IMATSE,IVAPRI,IVAPRM,TETYPS,ITEMP,
-     &              ICAMAS,IFF,IRET
+     &              ICAMAS,IRET,NPG2,IPOID2,IVF2,IDFDE2
       LOGICAL       ANISO,GLOBAL,LSENS,LSTAT
 
-      CALL ELREF1(ELREFE)
-      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QUAD4L'
+      PREC = R8PREM()
 
 C====
 C 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 C====
-      PREC = R8PREM()
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
-      NPG3 = ZI(ICARAC+4)
+C
+      CALL ELREF1(ELREFE)
+      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QU4'
+      IF (NOMTE(5:7).EQ.'TL6') ELREFE='TR3'
+C
+      CALL ELREF4(ELREFE,'NOEU',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,IDFDE2,
+     +            JGANO)
+      CALL ELREF4(ELREFE,'MASS',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
+     +            JGANO)
 
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS=IFF   +NPG1*(1+3*NNO)
-      IVF   =IPOIDS+NPG2
-      IDFDE =IVF   +NPG2*NNO
-      IDFDK =IDFDE +NPG2*NNO
 C====
 C 1.2 PREALABLES LIES AUX CALCULS DE SENSIBILITE
 C====
@@ -254,10 +247,9 @@ C====
 
       IF (NOMTE(6:6).NE.'L') THEN
 
-        DO 101 KP=1,NPG2
+        DO 101 KP=1,NPG
           K=(KP-1)*NNO
-          CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                  ZR(IGEOM),DFDX,DFDY,POIDS )
+          CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
           R      = 0.D0
           TPG    = 0.D0
           DTPGDX = 0.D0
@@ -371,7 +363,7 @@ C    POUR LES ELEMENTS LUMPES
 C====
 
 C  CALCUL ISO-P2 : ELTS P2 DECOMPOSES EN SOUS-ELTS LINEAIRES
-        CALL CONNEC ( NOMTE, ZR(IGEOM), NSE, NNOP2, C )
+        CALL CONNEC ( NOMTE, NSE, NNOP2, C )
         DO 10 I=1,NNOP2
           VECTT(I)=0.D0
 10      CONTINUE
@@ -384,14 +376,9 @@ C BOUCLE SUR LES SOUS-ELEMENTS
             DO 205 J=1,2
               COORSE(2*(I-1)+J) = ZR(IGEOM-1+2*(C(ISE,I)-1)+J)
 205       CONTINUE
-          IPOIDS=IFF   +NPG1*(1+3*NNO)
-          IVF   =IPOIDS+NPG2
-          IDFDE =IVF   +NPG2*NNO
-          IDFDK =IDFDE +NPG2*NNO
-          DO 201 KP=1,NPG2
+          DO 201 KP=1,NPG
             K=(KP-1)*NNO
-            CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                    COORSE,DFDX,DFDY,POIDS )
+            CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,COORSE,DFDX,DFDY,POIDS )
             R      = 0.D0
             TPG    = 0.D0
             DTPGDX = 0.D0
@@ -483,26 +470,20 @@ C====
 C 3.2 CALCULS TERMES DE MASSE (STD ET/OU SENSIBLE)
 C    POUR LES ELEMENTS LUMPES
 C====
-C ------- TERME DE MASSE : 3EME FAMILLE DE PTS DE GAUSS -----------
 
-          IPOIDS=IFF   +(NPG1+NPG2)*(1+3*NNO)
-          IVF   =IPOIDS+NPG3
-          IDFDE =IVF   +NPG3*NNO
-          IDFDK =IDFDE +NPG3*NNO
           DO 305 I=1,NNO
             DO 305 J=1,2
               COORSE(2*(I-1)+J) = ZR(IGEOM-1+2*(C(ISE,I)-1)+J)
 305       CONTINUE
-          DO 301 KP=1,NPG3
+          DO 301 KP=1,NPG2
             K=(KP-1)*NNO
-            CALL DFDM2D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                  COORSE,DFDX,DFDY,POIDS )
+            CALL DFDM2D(NNO,KP,IPOID2,IDFDE2,COORSE,DFDX,DFDY,POIDS )
             R      = 0.D0
             TPG    = 0.D0
             DO 302 I=1,NNO
 C CALCUL DE T- (OU (DT/DS)- EN SENSI)
-              R      = R      + COORSE(2*(I-1)+1)    * ZR(IVF+K+I-1)
-              TPG    = TPG    + ZR(ITEMP-1+C(ISE,I)) * ZR(IVF+K+I-1)
+              R      = R      + COORSE(2*(I-1)+1)    * ZR(IVF2+K+I-1)
+              TPG    = TPG    + ZR(ITEMP-1+C(ISE,I)) * ZR(IVF2+K+I-1)
 302         CONTINUE
 C CALCUL DE SENSIBILITE PART X (SENSIBILITE / CP).
             IF (TETYPS.EQ.2) THEN
@@ -510,7 +491,7 @@ C CALCUL DE SENSIBILITE PART X (SENSIBILITE / CP).
               DO 261 I=1,NNO
 C CALCUL DE (T- - T+)
                 TEMS=TEMS+(ZR(IVAPRM-1+C(ISE,I))-ZR(IVAPRI-1+C(ISE,I)))
-     &                *ZR(IVF+K+I-1)
+     &                *ZR(IVF2+K+I-1)
 261           CONTINUE
             ENDIF
 
@@ -525,13 +506,13 @@ C CALCUL DE (T- - T+)
 
             DO 303 I=1,NNO
               VECTT(C(ISE,I)) = VECTT(C(ISE,I)) + POIDS
-     &                      * ( CP/DELTAT*ZR(IVF+K+I-1)*TPG )
+     &                      * ( CP/DELTAT*ZR(IVF2+K+I-1)*TPG )
 303         CONTINUE
 C CALCUL DE SENSIBILITE PART XI (SENSIBILITE / CP)
             IF (TETYPS.EQ.2) THEN
               DO 271 I=1,NNO
                 VECTT(C(ISE,I)) = VECTT(C(ISE,I)) + POIDS*
-     &                            CPS/DELTAT*ZR(IVF+K+I-1)*TEMS
+     &                            CPS/DELTAT*ZR(IVF2+K+I-1)*TEMS
 271           CONTINUE
             ENDIF
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+# MODIF  DATE 06/04/2004   AUTEUR JOUMANA J.EL-GHARIB 
 # TITRE COUPLAGE FLUAGE/BETON_DOUBLE_DP - TRACTION UNIAXIALE EN D_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -146,8 +146,7 @@ BETON=DEFI_MATERIAU(            ELAS_FO=_F( E = E,
                                             ECRO_COMP_P_PIC = 'LINEAIRE',
                                             ECRO_TRAC_P_PIC = 'LINEAIRE'),
                               ECRO_LINE_FO=_F( D_SIGM_EPSI = ECRO,
-                                            SY = FT,
-                                            VERI_P1 = 'TEMP'),
+                                            SY = FT,),
                                   CHABOCHE=_F( R_I = 4.1,
                                             R_0 = 4.0,
                                             B = 0.0001,
@@ -652,45 +651,45 @@ TEST_TABLE(  TABLE=RELEVE_3,
                 NOM_PARA='SIXX',FILTRE=( 
                   _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
                   _F(  NOM_PARA = 'INST',     VALE = 10.)),
-                    VALE=2.6505653139383E+00,
+                    VALE=1.3782953684785E+00,
                PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='5.4.12'
+               REFERENCE='NON_REGRESSION',       VERSION='7.2.25'
            )
 
 TEST_TABLE(  TABLE=RELEVE_3,
               NOM_PARA='EPXX',FILTRE=( 
               _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
                   _F(  NOM_PARA = 'INST',     VALE = 10.)),
-                    VALE=6.0380072733438E-07,
+                    VALE=3.6221961613412E-07,
                PRECISION=2.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='5.4.12'
+               REFERENCE='NON_REGRESSION',       VERSION='7.2.25'
            )
 
 TEST_TABLE(  TABLE=RELEVE_3,
                 NOM_PARA='SIXX',FILTRE=( 
                   _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
                   _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=4.6142248045405E+00,
+                    VALE=3.3363289731692E+00,
                PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='5.4.12'
+               REFERENCE='NON_REGRESSION',       VERSION='7.2.25'
            )
 
 TEST_TABLE(  TABLE=RELEVE_3,
               NOM_PARA='EPXX',FILTRE=( 
               _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
                   _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=2.0311482438521E-05,
+                    VALE=1.5219596906058E-05,
                PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='5.4.12'
+               REFERENCE='NON_REGRESSION',       VERSION='7.2.25'
            )
 
 TEST_TABLE(  TABLE=RELEVE_3,
               NOM_PARA='EPXX',FILTRE=( 
               _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSP'),
                   _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=8.4457712349403E-04,
+                    VALE=8.7007295068442E-04,
                PRECISION=5.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='5.4.12'
+               REFERENCE='NON_REGRESSION',       VERSION='7.2.25'
            )
 
 ################################################
@@ -802,45 +801,45 @@ TEST_TABLE(  TABLE=RELEVE_4,
                 NOM_PARA='SIXX',FILTRE=( 
                   _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
                   _F(  NOM_PARA = 'INST',     VALE = 10.)),
-                    VALE=2.6505653139348E+00,
+                    VALE=1.3782953775786E+00,
                PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='5.4.12'
+               REFERENCE='NON_REGRESSION',       VERSION='7.2.25'
            )
 
 TEST_TABLE(  TABLE=RELEVE_4,
               NOM_PARA='EPXX',FILTRE=( 
               _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
                   _F(  NOM_PARA = 'INST',     VALE = 10.)),
-                    VALE=6.0380072743338E-07,
+                    VALE=3.6221961620259E-07,
                PRECISION=2.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='5.4.12'
+               REFERENCE='NON_REGRESSION',       VERSION='7.2.25'
            )
 
 TEST_TABLE(  TABLE=RELEVE_4,
                 NOM_PARA='SIXX',FILTRE=( 
                   _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
                   _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=4.6142147021911E+00,
+                    VALE=3.3363251977141E+00,
                PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='5.4.12'
+               REFERENCE='NON_REGRESSION',       VERSION='7.2.25'
            )
 
 TEST_TABLE(  TABLE=RELEVE_4,
               NOM_PARA='EPXX',FILTRE=( 
               _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
                   _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=2.0311454796914E-05,
+                    VALE=1.5219584906297E-05,
                PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='5.4.12'
+               REFERENCE='NON_REGRESSION',       VERSION='7.2.25'
            )
 
 TEST_TABLE(  TABLE=RELEVE_4,
               NOM_PARA='EPXX',FILTRE=( 
               _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSP'),
                   _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=8.4457745774823E-04,
+                    VALE=8.7007309579022E-04,
                PRECISION=5.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='5.4.12'
+               REFERENCE='NON_REGRESSION',       VERSION='7.2.25'
            )
 
 FIN()

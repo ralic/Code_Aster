@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+# MODIF  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,9 +26,14 @@ PRE_GIBI()
 
 MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),)
 
+DEFI_GROUP(reuse=MA,
+           MAILLAGE=MA,
+           CREA_GROUP_NO=_F( GROUP_MA = 'LFF1', NOM='LFF1'),
+           )
+
 MA=MODI_MAILLAGE( reuse=MA,   MAILLAGE=MA,
                         MODI_MAILLE=_F(  OPTION = 'NOEUD_QUART',
-                                      GROUP_MA_FOND = 'LFF1')
+                                      GROUP_NO_FOND = 'LFF1')
                       )
 
 MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA, 
@@ -130,7 +135,7 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
                               MATER = MAT) )
 
 FISS=DEFI_FOND_FISS(    MAILLAGE=MA,
-                          FOND=_F(  GROUP_MA = 'LFF1',
+                          FOND_FISS=_F(  GROUP_MA = 'LFF1',
                                  GROUP_NO_ORIG = 'NFF1',
                                  GROUP_NO_EXTR = 'NFF2'),
                           LEVRE_SUP=_F(  GROUP_MA = 'LEVINFS'),

@@ -1,6 +1,6 @@
       SUBROUTINE JJLCHD (ID, IC, IDFIC, IDTS, NGRP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -87,7 +87,7 @@ C     ------------------------------------------------------------------
       CHARACTER*32     NOMO,NGRC,D32,NOM32
       CHARACTER*8      NREP(2)
       CHARACTER*1      GENRI,TYPEI,TYPEB
-      INTEGER          COL(1),JCOL,ITAB(1),IDA,JCTAB,NBOB,IDO,IDGR
+      INTEGER          COL(1),JCOL,ITAB(1),IDA,JCTAB,NBOB,IDO,IDGR,ICONV
       INTEGER          HDFRSV,HDFOPG,HDFCLG,HDFNBO,HDFOPD,HDFCLD,HDFTSD
       INTEGER          IADMI,IADDI(2),LTYPI,LONOI,ISTA1,ISTA2,LTYPB,LON
       INTEGER          IBACOL,IRET,K,IX,IXIADD,IXIADM,IXMARQ,IXDESO,IDGC
@@ -95,6 +95,7 @@ C     ------------------------------------------------------------------
       DATA             NREP / 'T_HCOD' , 'T_NOM' /
       DATA             D32 /'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'/
 C DEB ------------------------------------------------------------------
+      ICONV  = 0
       ICLAS  = IC
       ICLACO = IC
       IDATCO = ID
@@ -133,7 +134,7 @@ C     ----------- OBJETS ATTRIBUTS DE COLLECTION
               CALL JVMESS('F','JJLCHD01',CMESS)
             ENDIF
             IADMI = 0
-            IF ( K .EQ. IDIADM .OR. K .EQ. IDMARQ ) THEN
+            IF (K.EQ.IDIADM .OR. K.EQ.IDMARQ .OR. K.EQ.IDIADD) THEN
 C --------- MISE EN MEMOIRE SANS LECTURE SUR FICHIER HDF
               CALL JJALLS(LONOI, GENRI, TYPEI, LTYPI, 'INIT',
      &                    ITAB, JCTAB, IADMI )
@@ -161,7 +162,7 @@ C
      &            (IDEHC+ISZON(JISZON+IADMI-1+ILOREP))*LOIS
             IRET=HDFTSD(IDT2,TYPEB,LTYPB,NBVAL)
             KITAB=JK1ZON+(IADMI-1)*LOIS+ISZON(JISZON+IADMI-1+IDENO)+1
-            IRET=HDFRSV(IDT2,NBVAL,K1ZON(KITAB))
+            IRET=HDFRSV(IDT2,NBVAL,K1ZON(KITAB),ICONV)
             IRET=HDFCLG(IDGR)
             IADM(JIADM(IC)+IX) = IADMI
             IRET = HDFCLD(IDT2)

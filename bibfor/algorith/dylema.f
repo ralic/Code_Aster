@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C                                                                       
 C                                                                       
 C ======================================================================
-C RESPONSABLE S.CAMBIER
+C RESPONSABLE CAMBIER S.CAMBIER
 C ----------------------------------------------------------------------
 C
 C DYNAMIQUE: LECTURE DES MATRICES ASSEMBLEES EN ENTREE DE DYNA_LINE_HARM

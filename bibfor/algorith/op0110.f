@@ -3,7 +3,7 @@
       INTEGER             IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,7 +96,7 @@ C
          IF ( NBMA .EQ. 0 ) THEN
             CALL UTMESS('F',NOMCMD,'PAS DE MAILLES FOURNIES')
          ENDIF
-         CALL SQU110 ( NOMRES,NOMA,NBMA,ZI(JNUM),ZK8(JNOM),TRANS,ANGL)
+         CALL SQU110 ( NOMRES,NOMA,NBMA,ZK8(JNOM),TRANS,ANGL)
          CALL JEDETR ( NOMVEI )
          CALL JEDETR ( NOMVEK )
       ENDIF

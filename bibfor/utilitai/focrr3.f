@@ -6,7 +6,7 @@
       CHARACTER*19        NOMFON, RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 17/11/2003   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,9 +96,9 @@ C
       ENDIF
       CALL JEDETR ( '&&FOCRR3.PARA.ACCES' )
       ILON = LXLGUT( NOPARA )
-      IF ( ILON .GT. 8 ) THEN
+      IF ( ILON .GT. 16 ) THEN
          CALL UTDEBM('A',NOMCMD,'PARAMETRE TROP LONG, IL SERA ')
-         CALL UTIMPK('S','TRONQUE: ', 1, NOPARA(1:8) )
+         CALL UTIMPK('S','TRONQUE: ', 1, NOPARA(1:16) )
          CALL UTFINM
       ENDIF
 C

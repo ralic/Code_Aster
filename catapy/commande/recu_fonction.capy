@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 06/01/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,7 +49,6 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
 #  concept table à créer
          TABLE           =SIMP(statut='f',typ=table),
          BASE_ELAS_FLUI  =SIMP(statut='f',typ=melasflu),
-         REPERE          =SIMP(statut='f',typ='TXM',into=("POLAIRE","GLOBAL") ),
          OBSTACLE        =SIMP(statut='f',typ=obstacle),
 
          b_tran_gene = BLOC ( condition = "RESU_GENE != None",
@@ -209,6 +208,10 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
            SOUS_POINT      =SIMP(statut='f',typ='I' ),
            NOEUD_CHOC      =SIMP(statut='f',typ=no),
            GROUP_NO_CHOC   =SIMP(statut='f',typ=grno),
+         ),
+         b_obstacle = BLOC ( condition = "OBSTACLE != None",
+                              fr="Choix du repère",
+            REPERE          =SIMP(statut='f',typ='TXM',into=("POLAIRE","GLOBAL") ),
          ),
 ###
          NOM_PARA        =SIMP(statut='f',typ='TXM',

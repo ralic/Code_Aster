@@ -4,7 +4,7 @@
       CHARACTER*(*)                       CVAL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 03/06/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF UTILIFOR  DATE 29/01/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C     --- INITIALISATION DES TABLEAUX ET DU FORMAT D'ECRITURE ---
       ENDIF
 C
 C     ---- APPEL A ULDEFI SUR L'UNITE DE LECTURE : COHERENCE ASTER -----
-      CALL ULDEFI( IREAD , CVAL , 'A' , 'N' , 'O')
+      CALL ULDEFI( IREAD , ' ', CVAL , 'A' , 'N' , 'O')
 C
       CH8   = CVAL
       IF ( IREAD .LT. 0 ) THEN

@@ -3,7 +3,7 @@
         IMPLICIT  NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/03/2002   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,19 +45,19 @@ C ======================================================================
          CALL RSLCVX ( IMAT, NMAT, MATERF, TEMPF, SIGF, VIND, SEUIL )
 C ======================================================================
       ELSEIF ( LOI(1:8) .EQ. 'CHABOCHE' ) THEN
-         CALL CHBCVX ( IMAT, NMAT, MATERF, TEMPF, SIGF, VIND, SEUIL )
+         CALL CHBCVX ( NMAT, MATERF, SIGF, VIND, SEUIL )
 C ======================================================================
       ELSEIF ( LOI(1:4) .EQ. 'OHNO'   ) THEN
-         CALL ONOCVX ( IMAT, NMAT, MATERF, TEMPF, SIGF, VIND, SEUIL )
+         CALL ONOCVX ( NMAT, MATERF, SIGF, VIND, SEUIL )
 C ======================================================================
       ELSEIF ( LOI(1:5) .EQ. 'LMARC'    ) THEN
-         CALL LMACVX ( IMAT, NMAT, MATERF, TEMPF, SIGF, VIND, SEUIL )
+         CALL LMACVX ( NMAT, MATERF, SIGF, VIND, SEUIL )
 C ======================================================================
       ELSEIF ( LOI(1:9) .EQ. 'VISCOCHAB') THEN
-         CALL CVMCVX ( IMAT, NMAT, MATERF, TEMPF, SIGF, VIND, SEUIL )
+         CALL CVMCVX ( NMAT, MATERF, SIGF, VIND, SEUIL )
 C ======================================================================
       ELSEIF ( LOI(1:7)  .EQ. 'NADAI_B') THEN
-         CALL INSCVX ( IMAT, NMAT, MATERF, TEMPF, SIGF, VIND, SEUIL )
+         CALL INSCVX ( NMAT, MATERF, SIGF, VIND, SEUIL )
 C ======================================================================
       ELSEIF ( LOI(1:6)  .EQ. 'LAIGLE') THEN
          CALL LGLCVX ( SIGF, VIND, NMAT, MATERF, SEUIL)

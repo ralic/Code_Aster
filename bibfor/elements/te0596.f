@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/04/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,55 +47,24 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CHARACTER*24       CARAC,FF
-      CHARACTER*8        ELREFE
-
-C
       REAL*8             POIDS, DFDX(9), DFDY(9)
       REAL*8             EPSI, R8PREM,  DLAGTE(18), GRADT(2)
       REAL*8             THETAX, THETAY
-C
-      INTEGER            IGEOM, ICARAC
-      INTEGER            IFF, IPOIDS, IVF, IDFDE, IDFDK
-      INTEGER            NNO, NPG, NPG1, NPG2, NNOS, NCMP
-      INTEGER            KP, I, K, IDEB, IFIN
+      INTEGER            IGEOM, NCMP, KP, I, K, IDEB, IFIN
       INTEGER            ITEMP, IDEULT, IDLAGT, ITHETA
+      INTEGER            NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO
 C
       LOGICAL THTNUL
+C     -----------------------------------------------------------------
 C
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
-C====
-C 1. INITIALISATIONS ET CONTROLE DE LA NULLITE DE THETA
-C====
-C
-      CALL ELREF1(ELREFE)
       EPSI = R8PREM ()
 C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
-      IF (NOMTE(5:8).EQ.'TR3 ' .OR. NOMTE(5:8).EQ.'QU4 ') THEN
-        NNOS = NNO
-      ELSE
-        NNOS = (NNO-MOD(NNO,2))/2
-      ENDIF
-C
-      CALL JEVECH('PGEOMER','L',IGEOM)
-      CALL JEVECH('PTEMPER','L',ITEMP)
+      CALL JEVECH('PGEOMER','L',IGEOM )
+      CALL JEVECH('PTEMPER','L',ITEMP )
       CALL JEVECH('PVECTTH','L',ITHETA)
       CALL JEVECH('PDEULTG','L',IDEULT)
-C
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS = IFF   +NPG1*(1+3*NNO)
-      IVF    = IPOIDS+NPG2
-      IDFDE  = IVF   +NPG2*NNO
-      IDFDK  = IDFDE +NPG2*NNO
-      NPG    = NPG2
-C
       CALL JEVECH('PDLAGTE','E',IDLAGT)
 C
       IDEB = ITHETA
@@ -107,17 +76,12 @@ C
         ENDIF
   102 CONTINUE
 C
-C====
-C 2. BOUCLE SUR LES POINTS DE GAUSS POUR LE CALCUL DE LA DERIVEE
-C    LAGRANGIENNE DE T
-C====
 C
       DO 20 , KP = 1 , NPG
 C
         K = (KP-1)*NNO
 C
-        CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     >                ZR(IGEOM),DFDX,DFDY,POIDS )
+        CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
 C
         IF ( THTNUL ) THEN
 C
@@ -154,11 +118,8 @@ C
 C
   200 CONTINUE
 C
-C====
-C 3. PASSAGE AUX NOEUDS
-C====
 C
       NCMP = 1
-      CALL PPGANO (NNOS,NPG,NCMP,DLAGTE,ZR(IDLAGT))
+      CALL PPGAN2 ( JGANO, NCMP, DLAGTE, ZR(IDLAGT) )
 C
       END

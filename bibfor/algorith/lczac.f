@@ -2,7 +2,7 @@
      &                  EPS   , SIG   , DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/02/2000   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 02/12/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C ----------------------------------------------------------------------
 C -- INITIALISATION
 
       CPLAN  = TYPMOD(1) .EQ. 'C_PLAN'
-      RIGI   = OPTION .EQ. 'RIGI_MECA_TANG' .OR. OPTION .EQ. 'FULL_MECA'
+      RIGI   = OPTION(1:10).EQ.'RIGI_MECA_' .OR. OPTION .EQ. 'FULL_MECA'
       NDIMSI = 2*NDIM
 
 

@@ -4,7 +4,7 @@
       CHARACTER*(*)       FICH ,               CHAMNO(*) , NOMSYM
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 02/03/99   AUTEUR SABJLMA P.LATRUBESSE 
+C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -128,7 +128,7 @@ C
          NCMPMX = 6
          CALL IRMAD1 ( FICH,VERSIO,NBNO,ZI(IAPRNO),ZI(IANUEQ),NEC,
      +                 ZI(IAEC),NCMPMX,ITYPE,NSTAT,CHAMNO,
-     +                 NOMGD,ZK8(IAD),NOMSYM,ZK8(JNO),ZI(JNU) )
+     +                 ZK8(IAD),NOMSYM,ZI(JNU) )
       ELSE
          CALL GETRES(K8B,K8B,NOMCMD)
          CALL UTMESS('E',NOMCMD//'.IRMAD0','  DESOLE ON NE SAIT PAS '

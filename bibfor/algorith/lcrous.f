@@ -1,9 +1,9 @@
-      SUBROUTINE LCROUS (TOLER, ITMAX, MOD, IMAT, NMAT, MATERF, NVI,
+      SUBROUTINE LCROUS (TOLER, ITMAX, IMAT, NMAT, MATERF, NVI,
      1                   TEMPF, DEPS, SIGD, VIND, THETA, LOI, DT, 
      2                   SIGF, VINF, IRTET)
         IMPLICIT NONE
 C       ================================================================
-C MODIF ALGORITH  DATE 28/01/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,6 @@ C       ----------------------------------------------------------------
 C
 C       IN  TOLER  :  TOLERANCE DE CONVERGENCE LOCALE NEWT
 C           ITMAX  :  NOMBRE MAXI D'ITERATIONS LOCALES
-C           MOD    :  TYPE DE MODELISATION
 C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
@@ -76,7 +75,6 @@ C
         PARAMETER       ( D13 = .3333333333D0 )
         PARAMETER       ( TROIS = 3.D0 )
 C 
-        CHARACTER*8     MOD
         CHARACTER*16    LOI
         CHARACTER*24    ZK24
 
@@ -356,7 +354,7 @@ C -- ERREURS--------------------------------------------------------
      &    'IL Y A PROBABLEMENT UNE ERREUR DANS LA PROGRAMMATION')
       GOTO 9999
  45   CONTINUE
-      CALL UTMESS('S','LCROUS','OVERFLOW NUMERIQUE : '//
+      CALL UTEXCP(23,'LCROUS','OVERFLOW NUMERIQUE : '//
      &    'LA PLASTICITE CUMULEE EXPLOSE DANS RSLPHI')
       GOTO 9999
 C

@@ -1,8 +1,8 @@
-        SUBROUTINE INSJPL ( MOD,IMAT,NMAT,MATER,TEMP,SIG,VIN,DSDE )
+        SUBROUTINE INSJPL ( MOD,NMAT,MATER,SIG,VIN,DSDE )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,15 +24,13 @@ C       NADAI_BETON   :  MATRICE SYMETRIQUE DE COMPORTEMENT TANGENT
 C                        ELASTO_PLASTIQUE EN VITESSE A T OU T+DT
 C       ----------------------------------------------------------------
 C       IN  MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
-C           TEMP   :  TEMPERATURE
 C           MATER  :  COEFFICIENTS MATERIAU
 C           SIG    :  CONTRAINTES
 C           VIN    :  VARIABLES INTERNES
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C       --------------------------------------------------------------
-        INTEGER         IMAT, NDT , NDI , NMAT
+        INTEGER         NDT , NDI , NMAT
         REAL*8          UN
         PARAMETER       ( UN     =  1.D0   )
 C
@@ -41,7 +39,7 @@ C
         REAL*8          HOOK(6,6),   DSDE(6,6), DFDS(6)
         REAL*8          VTMP(6),     VTMP1(6)
 C
-        REAL*8          MATER(NMAT,2) , TEMP
+        REAL*8          MATER(NMAT,2)
         REAL*8          KAPA  , DFDP , HP, TAU , R0 , KRUP
         REAL*8          LCS, KPIC, H3, D
 C

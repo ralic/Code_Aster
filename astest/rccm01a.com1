@@ -1,5 +1,5 @@
 # AJOUT
-# TITRE VALIDATION DE L'OPERATEUR POST_RCCM (GROUP_NO, NOEUD et VALE_INST)
+# TITRE VALIDATION DE L'OPERATEUR POST_RCCM (GROUP_NO, NOEUD et DETAILS)
 
 POURSUITE( CODE=_F(  NOM = 'RCCM01A') )
 
@@ -20,7 +20,8 @@ MA=DEFI_GROUP(reuse=MA,  MAILLAGE=MA,
 #--------------------------------------------------------------------------------
 
 PMPB4=POST_RCCM(         MATER=MAT,  MAILLAGE=MA,
-                        TYPE_RESU='VALE_INST',
+                        TYPE_RESU='DETAILS',
+                   TYPE_RESU_MECA='EVOLUTION',
                            OPTION='PM_PB',
                             TITRE='INST PM_PB, RESULTAT: RESU1',
                           SEGMENT=_F(  NOEUD =('N22','N34','N36','N12'),
@@ -260,7 +261,8 @@ TEST_TABLE(    TABLE=PMPB4,
 #--------------------------------------------------------------------------------
 
 PMPB5=POST_RCCM(         MATER=MAT,  MAILLAGE=MA,
-                        TYPE_RESU='VALE_INST',
+                        TYPE_RESU='DETAILS',
+                   TYPE_RESU_MECA='EVOLUTION',
                            OPTION='PM_PB',
                             TITRE='PM_PB, RESULTAT: RESU2',
                           SEGMENT=_F(  NOEUD =('N22','N34','N36','N12'),),
@@ -493,7 +495,8 @@ TEST_TABLE(    TABLE=PMPB5,
 #--------------------------------------------------------------------------------
 
 PMPB6=POST_RCCM(         MATER=MAT,  MAILLAGE=MA,
-                        TYPE_RESU='VALE_INST',
+                        TYPE_RESU='DETAILS',
+                   TYPE_RESU_MECA='EVOLUTION',
                            OPTION='PM_PB',
                             TITRE='PM_PB, RESULTAT: RESUTH',
                           SEGMENT=_F(  NOEUD =('N22','N34','N36','N12'),
@@ -737,7 +740,8 @@ TEST_TABLE(    TABLE=PMPB6,
 #--------------------------------------------------------------------------------
 
 SN4=POST_RCCM(         MATER=MAT,  MAILLAGE=MA,
-                      TYPE_RESU='VALE_INST',
+                      TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='EVOLUTION',
                          OPTION='SN',
                           TITRE='SN, RESULTAT: RESU2 AVEC RESUTH',
                         SEGMENT=_F(  NOEUD =('N22','N34','N36','N12'),
@@ -1017,7 +1021,8 @@ TEST_TABLE(    TABLE=SN4,
 #--------------------------------------------------------------------------------
 
 SN5=POST_RCCM(         MATER=MAT,  MAILLAGE=MA,
-                      TYPE_RESU='VALE_INST',
+                      TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='EVOLUTION',
                          OPTION='SN',
                           TITRE='SN, RESULTAT: RESUTH AVEC RESUTH',
                         SEGMENT=_F(  NOEUD =('N22','N34','N36','N12'),
@@ -1309,7 +1314,8 @@ TEST_TABLE(    TABLE=SN5,
 #--------------------------------------------------------------------------------
 
 SN6=POST_RCCM(         MATER=MAT,  MAILLAGE=MA,
-                      TYPE_RESU='VALE_INST',
+                      TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='EVOLUTION',
                          OPTION='SN',
                           TITRE='SN, RESULTAT: RESU2',
                         SEGMENT=_F(  NOEUD =('N22','N34','N36','N12',),),
@@ -1352,8 +1358,9 @@ TEST_TABLE(    TABLE=SN6,
 
 FAT3=POST_RCCM(        MATER = MAT, 
                     MAILLAGE = MA,
-                   TYPE_RESU = 'VALE_INST',
-                      OPTION = 'FATIGUE_SPMAX',
+              TYPE_RESU_MECA = 'EVOLUTION',
+                   TYPE_RESU = 'DETAILS',
+                      OPTION = 'FATIGUE_ZH210',
                        TITRE = 'FATIGUE_SPMAX, RESULTAT: RESU2',
                      SEGMENT =_F(  GROUP_NO = 'LIGNE',),
                  TRANSITOIRE =_F(  RESULTAT = RESU2,
@@ -1756,7 +1763,8 @@ TEST_TABLE(    TABLE=FAT3,
 
 FAT4=POST_RCCM(        MATER = MAT,  
                     MAILLAGE = MA,
-                   TYPE_RESU = 'VALE_INST',
+                   TYPE_RESU = 'DETAILS',
+              TYPE_RESU_MECA = 'EVOLUTION',
                       OPTION = 'FATIGUE_ZH210',
                        TITRE = 'FATIGUE_ZH210, RESULTAT: RESU2',
                      SEGMENT =_F(  GROUP_NO = 'LIGNE',
@@ -2063,7 +2071,8 @@ MAT2=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
 
 FAT5=POST_RCCM(        MATER = MAT2,  
                     MAILLAGE = MA,
-                   TYPE_RESU = 'VALE_INST',
+                   TYPE_RESU = 'DETAILS',
+              TYPE_RESU_MECA = 'EVOLUTION',
                       OPTION = 'FATIGUE_ZH210',
                        TITRE = 'FATIGUE_ZH210, RESULTAT: RESU2+RESUTH',
                      SEGMENT =_F(  GROUP_NO = 'LIGNE',

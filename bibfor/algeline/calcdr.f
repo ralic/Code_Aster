@@ -1,13 +1,13 @@
       SUBROUTINE CALCDR( NBMAT, MATER, PARAME, DERIVE,
-     +                          G, I, U, Q, DEVG, DEVGII, TRACEG, DFDL)
+     +                          G, I, Q, DEVG, DEVGII, TRACEG, DFDL)
 C
       IMPLICIT      NONE
       INTEGER       NBMAT
-      REAL*8        MATER(NBMAT,2), PARAME(5), DERIVE(4), G, I, U
+      REAL*8        MATER(NBMAT,2), PARAME(5), DERIVE(4), G, I
       REAL*8        Q(6), DEVG(6), DEVGII, TRACEG, DFDL
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,6 @@ C --- : PARAME : VARIABLES D'ECROUISSAGE -------------------------------
 C --- : DERIVE : DERIVEES DES VARIABLES D'ECROUISSAGE ------------------
 C --- : G      : G(S) A L'ITERATION COURANTE ---------------------------
 C --- : I      : 1ER INVARIANT DES CONTRAINTES A L'ITERATION COURANTE --
-C --- : U      : CRITERE PLASTIQUE A L'ITERATION COURANTE --------------
 C --- : Q      : DG/DS A L'ITERATION COURANTE --------------------------
 C --- : DEVG   : DEVIATEUR DU TENSEUR G, DIRECTION D'ECOULEMENT --------
 C --- : DEVGII : NORME DE DEVG -----------------------------------------
@@ -74,11 +73,11 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE DFDS ---------------------------------------------------
 C ======================================================================
-      CALL DRFDRS(Q, PARAME, H0, SIGC, G, U, DUDS, DFDS)
+      CALL DRFDRS(Q, PARAME, H0, SIGC, G, DUDS, DFDS)
 C ======================================================================
 C --- CALCUL DE DFDG ---------------------------------------------------
 C ======================================================================
-      CALL DRFDRG(PARAME, DERIVE, H0, SIGC, G, U, DUDG, DFDG)
+      CALL DRFDRG(PARAME, DERIVE, H0, SIGC, G, DUDG, DFDG)
 C ======================================================================
 C --- CALCUL DE DFDL ---------------------------------------------------
 C ======================================================================

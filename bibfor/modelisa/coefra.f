@@ -1,7 +1,7 @@
       SUBROUTINE COEFRA(IPAS,IRES,X,XSI0,CK)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF MODELISA  DATE 12/11/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,13 +50,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER     IPAS, IRES
-      INTEGER     JBORNE, JCOEFF, JVIRED, NBVAL1, NBVAL2, NBVAL3
+      INTEGER     JBORNE, JCOEFF, JVIRED
       REAL*8      CK,   XSI0
 C
-      INTEGER      UNIT, IUNIT, NBORCK, NCKMAX, NBOMAX, NBLOC, IRET
-      REAL*8       ZERO, BORNCK(20),BOCK1(20),COEFCK(20,11),COEF1(20,11)
-      REAL*8       VRMIN, VRMAX
-      CHARACTER*24 NOM1, NOM2, NOM3, NOM4
+      INTEGER      NBORCK, NCKMAX, IRET
+      REAL*8       ZERO, BORNCK(20),COEFCK(20,11)
+      CHARACTER*24 NOM1, NOM2, NOM3
 C              
 C-----------------------------------------------------------------------
 C
@@ -64,21 +63,16 @@ C
 C      
       X = DBLE(ABS(X))
       NCKMAX = 11
-      NBOMAX = 20
       ZERO = 0.0D0
 C
       NOM1 = '&&COEFRA.CKI'
       NOM2 = '&&COEFRA.CKR1'
       NOM3 = '&&COEFRA.CKR2'
-      NOM4 = '&&OP0143.UNIT_FAISCEAU'
 C
       IF (IRES .EQ. 0) THEN
          CK = ZERO
          GO TO 1000
       ENDIF
-C      
-      CALL JEVEUO(NOM4,'L',IUNIT)
-      UNIT = ZI(IUNIT-1+2)           
 C      
 C --- ON TESTE L'EXISTENCE DU VECTEUR DE COEFFICIENTS
 C     POUR LA CORRELATION RELATIVE A IPAS ET IRES
@@ -88,76 +82,8 @@ C     ===============================================
 C
 C --- LECTURE DU FICHIER DE DONNEES 
 C     =============================
-  999    CONTINUE       
-         CALL ULOPEN(UNIT,' ',' ','NEW','O')
-         READ (UNIT,*) NBLOC
-C
-C --- BLOC D'INITIALISATION
-         DO 10 I = 1,NBOMAX
-           BOCK1 (I) = ZERO
-           BORNCK(I) = ZERO
-           DO 20 J = 1,NCKMAX
-              COEF1 (I,J) = ZERO
-              COEFCK(I,J) = ZERO
- 20        CONTINUE     
- 10      CONTINUE
-C
-         DO 30 KK = 1,NBLOC 
-            READ (UNIT,*) IPAS1
-            READ (UNIT,*) IRES1
-            READ (UNIT,*) NB1  
-            IF(IPAS1 .EQ. IPAS .AND. IRES1 .EQ. IRES) THEN
-               NBVAL1 = 3
-               NBVAL2 = NB1 + NB1*NCKMAX
-               NBVAL3 = 2
-               CALL WKVECT (NOM1,'V V I',NBVAL1,JBORNE)
-               CALL WKVECT (NOM2,'V V R',NBVAL2,JCOEFF)
-               CALL WKVECT (NOM3,'V V R',NBVAL3,JVIRED)               
-               ZI(JBORNE-1+1) = IPAS1
-               ZI(JBORNE-1+2) = IRES1                              
-               ZI(JBORNE-1+3) = NB1
-               ZR(JVIRED-1+1) = VRMIN
-               ZR(JVIRED-1+2) = VRMAX               
-               READ (UNIT,*) (BOCK1(I),I = 1,NB1),VRMIN,VRMAX
-               DO 40 I = 1,NB1
-                 ZR( JCOEFF+I-1 ) = BOCK1(I)
-  40           CONTINUE
-C
-               ZR(JVIRED-1+1) = VRMIN
-               ZR(JVIRED-1+2) = VRMAX
-C               
-               K = 1                 
-               DO 50 I = 1, NB1     
-                 READ (UNIT,*) (COEF1(I,J),J = 1,NCKMAX)
-                 DO 60 J = 1,NCKMAX
-                   ZR(JCOEFF+NB1+K-1) = COEF1(I,J)
-                   K = K + 1 
-   60           CONTINUE               
-  50           CONTINUE
-C
-               NBORCK = NB1         
-C
-               DO 70 I = 1,NB1
-                  BORNCK(I) = BOCK1(I)
-                  DO 80 J = 1,NCKMAX 
-                     COEFCK(I,J) = COEF1(I,J)              
-  80             CONTINUE
-  70          CONTINUE
-               GO TO 120
-            ELSE  
-               READ (UNIT,*) (BOCK1(I),I = 1,NB1),VRMIN,VRMAX  
-               DO 90 I = 1, NB1  
-                 READ (UNIT,*) (COEF1(I,J),J = 1,NCKMAX)
-   90          CONTINUE
-               READ (UNIT,*)
-            ENDIF 
-  30     CONTINUE   
-         IF(IPAS1 .NE. IPAS .OR. IRES1 .NE. IRES) THEN
-            CALL UTMESS('F','CALC_FLUI_STRU','<COEFRA> LE NUMERO'// 
-     &                ' DE CORRELATION ET/OU LE TYPE DE RESEAU'//
-     &                ' PASSES DANS LE FICHIER DE COMMANDE NE '//
-     &                ' SONT PAS COHERANTS AVEC LE FICHIER .71')
-         ENDIF
+         CALL COEFRL(NOM1,NOM2,NOM3,NCKMAX,IPAS,IRES,BORNCK,
+     &               NBORCK,COEFCK,IPAS1,IRES1)
       ELSE 
          CALL JEVEUO(NOM1,'L',JBORNE)
          CALL JEVEUO(NOM2,'L',JCOEFF)
@@ -174,24 +100,20 @@ C
                  K = K + 1           
   110           CONTINUE
   100       CONTINUE
-         VRMIN = ZR(JVIRED-1+1)
-         VRMAX = ZR(JVIRED-1+2)
          ELSE
            CALL JEDETR(NOM1)
            CALL JEDETR(NOM2)
            CALL JEDETR(NOM3)
-           GO TO 999
+           CALL COEFRL(NOM1,NOM2,NOM3,NCKMAX,IPAS,IRES,BORNCK,
+     &                 NBORCK,COEFCK,IPAS1,IRES1)
          ENDIF                               
       ENDIF
       IF(IPAS1 .NE. IPAS .OR. IRES1 .NE. IRES) THEN
          CALL UTMESS('F','CALC_FLUI_STRU','<COEFRA> LE NUMERO'// 
      &                ' DE CORRELATION ET/OU LE TYPE DE RESEAU'//
      &                ' PASSES DANS LE FICHIER DE COMMANDE NE '//
-     &                ' SONT PAS COHERANTS AVEC LE FICHIER .71')
-      ENDIF
-C
-  120  CONTINUE
-     
+     &                ' SONT PAS COHERENTS AVEC LE FICHIER .71')
+      ENDIF     
 C
 C **********************************************************************
 C ***                  FAISCEAU EN PAS CARRE LIGNE                   ***
@@ -786,9 +708,6 @@ C
 C --- INVERSION DE CK POUR CONVENTION DE SIGNE ET FIN DE COEFR.
 C
       CK = -CK
-C
-C     FERMETURE DU FICHIER
-      IF (IRET .EQ. 0) CALL ULOPEN(-UNIT,' ',' ',' ',' ')
 C
  1000 CONTINUE
       CALL JEDEMA()

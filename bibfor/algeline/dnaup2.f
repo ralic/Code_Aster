@@ -1,10 +1,10 @@
       SUBROUTINE DNAUP2
-     &   ( IDO, BMAT, N, WHICH, NEV, NP, TOL, RESID, MODE, IUPD,
+     &   ( IDO, BMAT, N, WHICH, NEV, NP, TOL, RESID,
      &     ISHIFT, MXITER, V, LDV, H, LDH, RITZR, RITZI, BOUNDS,
      &     Q, LDQ, WORKL, IPNTR, WORKD, INFO, NEQACT, ALPHA)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -22,7 +22,7 @@ C
 C ARGUMENTS
 C
 C  IDO, BMAT, N, WHICH, NEV, TOL, RESID: SAME AS DEFINED IN DNAUPD.
-C  MODE, ISHIFT, MXITER: SEE THE DEFINITION OF IPARAM IN DNAUPD.
+C  ISHIFT, MXITER: SEE THE DEFINITION OF IPARAM IN DNAUPD.
 C
 C  NP    INTEGER.  (INPUT/OUTPUT)
 C        CONTAINS THE NUMBER OF IMPLICIT SHIFTS TO APPLY DURING
@@ -42,10 +42,6 @@ C        UPPER HESSENBERG MATRIX HAS SPLIT OFF AND CONTAINS "UNWANTED"
 C        RITZ VALUES.
 C        UPON TERMINATION OF THE IRA ITERATION, NP CONTAINS NUMBER
 C        OF "CONVERGED" WANTED RITZ VALUES.
-C
-C  IUPD  INTEGER.  (INPUT)
-C        IUPD .EQ. 0: USE EXPLICIT RESTART INSTEAD IMPLICIT UPDATE.
-C        IUPD .NE. 0: USE IMPLICIT UPDATE.
 C
 C  V     DOUBLE PRECISION N BY (NEV+NP) ARRAY.  (INPUT/OUTPUT)
 C        THE ARNOLDI BASIS VECTORS ARE RETURNED IN THE FIRST NEV
@@ -209,7 +205,7 @@ C     %------------------%
 
       CHARACTER*1 BMAT
       CHARACTER*2 WHICH
-      INTEGER IDO, INFO, ISHIFT, IUPD, MODE, LDH, LDQ, LDV, MXITER,
+      INTEGER IDO, INFO, ISHIFT, LDH, LDQ, LDV, MXITER,
      &  N, NEV, NP, NEQACT
       REAL*8 TOL, ALPHA
 
@@ -354,7 +350,7 @@ C     %----------------------------------------------------------%
 C     | COMPUTE THE FIRST NEV STEPS OF THE ARNOLDI FACTORIZATION |
 C     %----------------------------------------------------------%
 
-      CALL DNAITR (IDO, BMAT, N, 0, NEV, MODE, RESID, RNORM, V, LDV,
+      CALL DNAITR (IDO, BMAT, N, 0, NEV, RESID, RNORM, V, LDV,
      &             H, LDH, IPNTR, WORKD, INFO, ALPHA)
 
 C     %---------------------------------------------------%
@@ -407,7 +403,7 @@ C        %-----------------------------------------------------------%
          IDO = 0
    20    CONTINUE
          UPDATE = .TRUE.
-         CALL DNAITR (IDO, BMAT, N, NEV, NP, MODE, RESID, RNORM, V, LDV,
+         CALL DNAITR (IDO, BMAT, N, NEV, NP, RESID, RNORM, V, LDV,
      &                H, LDH, IPNTR, WORKD, INFO, ALPHA)
 
 C        %---------------------------------------------------%

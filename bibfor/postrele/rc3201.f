@@ -1,14 +1,15 @@
-      SUBROUTINE RC3201(LIEU,IG,IOCS,SEISME,NPASS,MATER,SNMAX,SPMAX,
-     &                  SPMECM,SPTHEM,SAMAX,UTOT,SM)
+      SUBROUTINE RC3201 ( OPMPB, OSN, OFATIG, LIEU, IG, IOCS, SEISME,
+     &                    NPASS, MATER, SNMAX, SPMAX, SPMECM,
+     &                    SPTHEM, SAMAX, UTOT, SM, VPMPB, FACTUS )
       IMPLICIT   NONE
-      INTEGER IG,IOCS,NPASS
-      REAL*8 SNMAX,SPMAX,SAMAX,UTOT,SM
-      LOGICAL SEISME
-      CHARACTER*4 LIEU
-      CHARACTER*8 MATER
+      INTEGER             IG, IOCS, NPASS
+      REAL*8              SNMAX,SPMAX,SAMAX,UTOT,SM,VPMPB(*),FACTUS(*)
+      LOGICAL             OPMPB, OSN, OFATIG, SEISME
+      CHARACTER*4         LIEU
+      CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF POSTRELE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +26,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE  CRP_20
 C     ------------------------------------------------------------------
 C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
 C     CALCUL DES AMPLITUDES DE CONTRAINTES
@@ -64,24 +66,29 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
      &        NSCY,NS,JMSN,JNSITU,NSITUP,NSITUQ,INDI,JIST
       REAL*8 PPI,PPJ,PQI,PQJ,SALTIJ,SALIJS,UG,SN,SP,SMM,SNS,SPS,MPI(6),
      &       MPJ(6),MQI(6),MQJ(6),MSE(6),MATPI(8),MATPJ(8),MATQI(8),
-     &       MATQJ(8),SALTSE
+     &       MATQJ(8),SALTSE, UGS
       REAL*8 TYPEKE,SPMECA,SPTHER,SPMECS,SPTHES,SPTHEM,SPMECM
-      REAL*8 KEMECA,KETHER,KEMECS,KETHES
+      REAL*8 KEMECA,KETHER,KEMECS,KETHES,PM,PB,PMPB,PMS,PBS,PMPBS
       CHARACTER*8 K8B
+CCC
+      CHARACTER*2  CODRET
+      LOGICAL     ENDUR
+      INTEGER     NOCC
+      REAL*8      NADM
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
-      CALL JEVEUO('&&RC3200.SITU_NUMERO','L',JNSITU)
+      CALL JEVEUO('&&RC3200.SITU_NUMERO'    ,'L',JNSITU)
       CALL JEVEUO('&&RC3200.SITU_COMBINABLE','L',JCOMBI)
-      CALL JEVEUO('&&RC3200.SITU_PRES_A','L',JPRESA)
-      CALL JEVEUO('&&RC3200.SITU_PRES_B','L',JPRESB)
-      CALL JEVEUO('&&RC3200.SITU_NB_OCCUR','L',JNBOCC)
+      CALL JEVEUO('&&RC3200.SITU_PRES_A'    ,'L',JPRESA)
+      CALL JEVEUO('&&RC3200.SITU_PRES_B'    ,'L',JPRESB)
+      CALL JEVEUO('&&RC3200.SITU_NB_OCCUR'  ,'L',JNBOCC)
 
       CALL JELIRA(JEXNUM('&&RC3200.LES_GROUPES',IG),'LONMAX',NBSIGR,K8B)
       CALL JEVEUO(JEXNUM('&&RC3200.LES_GROUPES',IG),'L',JNSG)
       IF (NIV.GE.2) THEN
         WRITE (IFM,1000) IG,NBSIGR
-        WRITE (IFM,1002) (ZI(JNSG+I1-1),I1=1,NBSIGR)
+        WRITE (IFM,1002) (ZI(JNSITU+ZI(JNSG+I1-1)-1),I1=1,NBSIGR)
       END IF
 
       IF (IOCS.EQ.0) THEN
@@ -100,6 +107,9 @@ C DEB ------------------------------------------------------------------
         CALL WKVECT('&&RC3201.MATRICE_SALT_B','V V R',NDIM,JMSAB)
         CALL WKVECT('&&RC3201.MATRICE_SALT_S','V V R',NDIM,JMSAS)
       END IF
+C
+      UGS = 0.D0
+C
       NS = 0
       NSCY = 0
       IF (SEISME) THEN
@@ -110,26 +120,46 @@ C DEB ------------------------------------------------------------------
         CALL RCMO02('A',NSITUP,MSE)
         CALL RCMA02('A',IOCS,MATPI)
         NSITUQ = 0
+        PM = 0.D0
+        PB = 0.D0
+        PMPB = 0.D0
         SN = 0.D0
         SP = 0.D0
         SPMECA = 0.D0
         SPTHER = 0.D0
         TYPEKE = MATPI(8)
-        CALL RC32SN(LIEU,SEISME,NSITUP,PPI,MSE,NSITUQ,PPI,MSE,MSE,SN)
-        CALL RC32SP(LIEU,SEISME,NSITUP,PPI,MSE,NSITUQ,PPI,MSE,MSE,SP,
-     &              TYPEKE,SPMECA,SPTHER)
-        CALL RC32SA(MATER,MATPI,MATPI,SN,SP,TYPEKE,SPMECA,SPTHER,
-     &              KEMECA,KETHER,SALTSE,SM)
+        IF ( OPMPB ) THEN
+          CALL RC32PM(LIEU,SEISME,PPI,MSE,PPI,MSE,MSE,PM,PB,PMPB)
+          VPMPB(5*(IOCS-1)+1) = PM
+          VPMPB(5*(IOCS-1)+2) = PB
+          VPMPB(5*(IOCS-1)+3) = PMPB
+        ENDIF
+        IF ( OSN ) THEN
+          CALL RC32SN(LIEU,SEISME,NSITUP,PPI,MSE,NSITUQ,PPI,MSE,MSE,SN)
+          VPMPB(5*(IOCS-1)+4) = SN
+        ENDIF
+        IF ( OFATIG ) THEN
+          CALL RC32SP(LIEU,SEISME,NSITUP,PPI,MSE,NSITUQ,PPI,MSE,MSE,SP,
+     &                TYPEKE,SPMECA,SPTHER)
+          CALL RC32SA(MATER,MATPI,MATPI,SN,SP,TYPEKE,SPMECA,SPTHER,
+     &                KEMECA,KETHER,SALTSE,SM)
+          VPMPB(5*(IOCS-1)+5) = SALTSE
+        ENDIF
         IF (NIV.GE.2) THEN
-          WRITE (IFM,*) '  SEISME,   SN = ',SN
-          WRITE (IFM,*) '            SP = ',SP
-          IF (TYPEKE.GT.0.D0) THEN
+          IF ( OPMPB ) THEN
+            WRITE (IFM,*) '  SEISME,   PM = ',PM
+            WRITE (IFM,*) '            PB = ',PB
+            WRITE (IFM,*) '          PMPB = ',PMPB
+          ENDIF
+          IF ( OSN )    WRITE (IFM,*) '  SEISME,   SN = ',SN
+          IF ( OFATIG ) WRITE (IFM,*) '  SEISME,   SP = ',SP
+          IF (TYPEKE.GT.0.D0 .AND. OFATIG ) THEN
             WRITE (IFM,*) '            SPMECA = ',SPMECA
             WRITE (IFM,*) '            SPTHER = ',SPTHER
             WRITE (IFM,*) '            KEMECA = ',KEMECA
             WRITE (IFM,*) '            KETHER = ',KETHER
           END IF
-          WRITE (IFM,*) '          SALT = ',SALTSE
+          IF ( OFATIG ) WRITE (IFM,*) '          SALT = ',SALTSE
         END IF
       ELSE
         MSE(1) = 0.D0
@@ -148,11 +178,10 @@ C --- SITUATION P :
         IF (.NOT.ZL(JCOMBI+IOC1-1)) GO TO 20
         IF (IOC1.EQ.IOCS) GO TO 20
         I1 = I1 + 1
-
         ZI(JNOC-1+2* (I1-1)+1) = ZI(JNBOCC+2*IOC1-2)
         ZI(JNOC-1+2* (I1-1)+2) = ZI(JNBOCC+2*IOC1-2)
-        ZI(JIST-1+2* (I1-1)+1) = IOC1
-        ZI(JIST-1+2* (I1-1)+2) = IOC1
+        ZI(JIST-1+2* (I1-1)+1) = ZI(JNSITU+ZI(JNSG+IS1-1)-1)
+        ZI(JIST-1+2* (I1-1)+2) = ZI(JNSITU+ZI(JNSG+IS1-1)-1)
 
         NSITUP = ZI(JNSITU+IOC1-1)
         NSITUQ = 0
@@ -163,24 +192,85 @@ C --- SITUATION P :
         PPJ = ZR(JPRESB+IOC1-1)
         CALL RCMO02('B',NSITUP,MPJ)
         CALL RCMA02('B',IOC1,MATPJ)
+        PMS = 0.D0
+        PM  = 0.D0
+        PBS = 0.D0
+        PB  = 0.D0
+        PMPBS = 0.D0
+        PMPB  = 0.D0
         SNS = 0.D0
-        SN = 0.D0
+        SN  = 0.D0
         SPS = 0.D0
-        SP = 0.D0
+        SP  = 0.D0
         SPMECA = 0.D0
         SPTHER = 0.D0
         SPMECS = 0.D0
         SPTHES = 0.D0
         INDI = 4*NBSIG2* (I1-1) + 4* (I1-1)
 
-        CALL RC32SN(LIEU,.FALSE.,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,MSE,SN)
-        CALL RC32SN(LIEU,.FALSE.,NSITUP,PPJ,MPJ,NSITUQ,PPI,MPI,MSE,SN)
+        IF ( OPMPB ) THEN
+          CALL RC32PM(LIEU,.FALSE.,PPI,MPI,PPJ,MPJ,MSE,PM,PB,PMPB)
+          CALL RC32PM(LIEU,.FALSE.,PPJ,MPJ,PPI,MPI,MSE,PM,PB,PMPB)
+          VPMPB(5*(IS1-1)+1) = PM
+          VPMPB(5*(IS1-1)+2) = PB
+          VPMPB(5*(IS1-1)+3) = PMPB
+        ENDIF
+        IF ( OSN ) THEN
+          CALL RC32SN(LIEU,.FALSE.,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,MSE,SN)
+          CALL RC32SN(LIEU,.FALSE.,NSITUP,PPJ,MPJ,NSITUQ,PPI,MPI,MSE,SN)
+          VPMPB(5*(IS1-1)+4) = SN
+        ENDIF
         IF (SEISME) THEN
+          IF ( OPMPB ) THEN
+            CALL RC32PM(LIEU,SEISME,PPI,MPI,PPJ,MPJ,MSE,PMS,PBS,PMPBS)
+            CALL RC32PM(LIEU,SEISME,PPJ,MPJ,PPI,MPI,MSE,PMS,PBS,PMPBS)
+          ENDIF
+          IF ( OSN ) THEN
           CALL RC32SN(LIEU,SEISME,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,MSE,SNS)
           CALL RC32SN(LIEU,SEISME,NSITUP,PPJ,MPJ,NSITUQ,PPI,MPI,MSE,SNS)
+          ENDIF
         END IF
         SNMAX = MAX(SNMAX,SNS,SN)
-        IF (NIV.GE.2) WRITE (IFM,1010) IOC1,SN
+        IF (NIV.GE.2) THEN
+          IF ( OPMPB .AND. OSN ) THEN
+            WRITE (IFM,1010) NSITUP, SN, PM, PB, PMPB
+          ELSEIF ( OPMPB ) THEN
+            WRITE (IFM,1012) NSITUP, PM, PB, PMPB
+          ELSEIF ( OSN ) THEN
+            WRITE (IFM,1014) NSITUP, SN
+          END IF
+        END IF
+C
+        IF ( (OPMPB .OR. OSN) .AND. .NOT.OFATIG ) GOTO 20
+C
+        NOCC = ZI(JNBOCC+2*IOC1-2)
+        SP = 0.D0
+        SPMECA = 0.D0
+        SPTHER = 0.D0
+        SPMECS = 0.D0
+        SPTHES = 0.D0
+        CALL RC32SP(LIEU,.FALSE.,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,MSE,SP,
+     &              TYPEKE,SPMECA,SPTHER)
+        CALL RC32SA ( MATER, MATPI, MATPJ, SN, SP, TYPEKE,
+     &                SPMECA, SPTHER,KEMECA,KETHER,SALTIJ, SMM )
+        IF (NIV.GE.2)  WRITE (IFM,2050) NSITUP, SALTIJ
+        CALL LIMEND( MATER,SALTIJ,ENDUR)
+        IF (ENDUR) THEN
+          UG=0.D0
+        ELSE
+          CALL RCVALE ( MATER, 'FATIGUE', 1, 'SIGM', SALTIJ, 1,
+     +                                   'WOHLER', NADM, CODRET, 'F ' )
+          IF ( NADM .LT. 0 ) THEN
+            CALL UTDEBM ('A','WOHLER','NOMBRE DE CYCLES ADMISSIBLES'//
+     +                       ' NEGATIF, VERIFIER LA COURBE DE WOHLER')
+            CALL UTIMPR ('L','   CONTRAINTE CALCULEE = ',1,SALTIJ)
+            CALL UTIMPR ('L','   NADM = ',1,NADM)
+            CALL UTFINM ()
+          ENDIF
+          UG = DBLE( NOCC ) / NADM
+        ENDIF
+        VPMPB(5*(IS1-1)+5) = UG
+        IF (NIV.GE.2)  WRITE (IFM,2060) NSITUP, UG
 
 C ----- 2/ CALCUL DU SALT(I,J) A PARTIR DU SN(P,Q) ET SP(I,J)
 
@@ -294,7 +384,7 @@ C ------- CALCUL DU SN(P,Q), ON A 4 COMBINAISONS
      &                  SNS)
           END IF
           SNMAX = MAX(SNMAX,SNS,SN)
-          IF (NIV.GE.2) WRITE (IFM,1020) IOC1,IOC2,SN
+          IF (NIV.GE.2) WRITE (IFM,1020) NSITUP,NSITUQ,SN
           INDS = 4*NBSIG2* (I1-1) + 4* (I2-1)
           INDI = 4*NBSIG2* (I2-1) + 4* (I1-1)
 
@@ -454,14 +544,19 @@ C ------- 4/ CALCUL DU SALT(J,J) A PARTIR DU SN(P,Q) ET SP(J,J)
 
 C --- CALCUL DU FACTEUR D'USAGE
 
-      IF (SEISME) THEN
-        CALL RC32FS(NBSIG2,ZI(JNOC),ZI(JIST),NBSIG2,ZI(JNOC),ZI(JIST),
-     &              ZR(JMSAS),ZR(JMSAB),SALTSE,NS,NSCY,MATER,UG)
+      IF ( OFATIG ) THEN
+        IF (SEISME) THEN
+          CALL RC32FS(NBSIG2,ZI(JNOC),ZI(JIST),NBSIG2,ZI(JNOC),ZI(JIST),
+     &                ZR(JMSAS),ZR(JMSAB),SALTSE,NS,NSCY,MATER,UG)
+          UTOT = UTOT + UG
+        END IF
+        CALL RC32FU(NBSIG2,ZI(JNOC),ZI(JIST),NBSIG2,ZI(JNOC),ZI(JIST),
+     &              ZR(JMSA),NPASS,MATER,UG,FACTUS)
         UTOT = UTOT + UG
       END IF
-      CALL RC36FU(NBSIG2,ZI(JNOC),ZI(JIST),NBSIG2,ZI(JNOC),ZI(JIST),
-     &            ZR(JMSA),NPASS,MATER,UG)
-      UTOT = UTOT + UG
+C
+                 WRITE (IFM,2070)  UGS
+C
       IF (SEISME) THEN
         CALL JEDETR('&&RC3201.MATRICE_SALT_B')
         CALL JEDETR('&&RC3201.MATRICE_SALT_S')
@@ -471,9 +566,17 @@ C --- CALCUL DU FACTEUR D'USAGE
       CALL JEDETR('&&RC3201.NB_OCCURR')
       CALL JEDETR('&&RC3201.IMPR_SITU')
 
+ 2050 FORMAT (1P,' SITUATION ',I4,' SALT =',E12.5)
+ 2060 FORMAT (1P,' SITUATION ',I4,' FACT_USAGE =',E12.5)
+ 2070 FORMAT (1P,' SOMME(FACT_USAGE SITUATION) =',E12.5)
+
  1000 FORMAT ('=> GROUPE: ',I4,' , NOMBRE DE SITUATIONS: ',I4)
- 1002 FORMAT ('=> LISTE DES SITUATIONS: ',100 (I4,1X))
- 1010 FORMAT (1P,' SITUATION ',I4,' SN =',E12.5)
+ 1002 FORMAT ('=> LISTE DES NUMEROS DE SITUATION: ',100 (I4,1X))
+ 1010 FORMAT (1P,' SITUATION ',I4,' SN =',E12.5,' PM =',E12.5,
+     +                            ' PB =',E12.5,' PMPB =',E12.5)
+ 1012 FORMAT (1P,' SITUATION ',I4,' PM =',E12.5,
+     +                            ' PB =',E12.5,' PMPB =',E12.5)
+ 1014 FORMAT (1P,' SITUATION ',I4,' SN =',E12.5 )
  1020 FORMAT (1P,' COMBINAISON DES SITUATIONS ',I4,3X,I4,'  SN =',E12.5)
  1031 FORMAT (1P,26X,'ETAT_A ETAT_A ',' SP =',E12.5)
  1032 FORMAT (1P,26X,'ETAT_B ETAT_A ',' SP =',E12.5)

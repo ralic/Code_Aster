@@ -3,7 +3,7 @@ C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 05/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,7 +102,7 @@ C     ------------------------------------
         CALL UTMESS('F',NOMPRO,'AUCUN NUMERO D''ORDRE DANS '//EVO1)
       ENDIF
       CALL JEVEUO('&&'//NOMPRO//'.NUME_ORDRE','L',JORDR)
-      NOMS2(1:8) = RESU
+      NOMS2 = RESU
       CALL JEEXIN (NOMS2//'.DESC', IRET )
       IF ( IRET.EQ.0 ) THEN
         CALL RSCRSD ( RESU, TYPRES, NBORDR )

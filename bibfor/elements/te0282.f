@@ -1,7 +1,7 @@
       SUBROUTINE TE0282 ( OPTION , NOMTE )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/07/2003   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF ELEMENTS  DATE 16/02/2004   AUTEUR G8BHHXD X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,10 @@ C      OPTION : 'CALC_G'    (G AVEC CHARGES REELLES)
 C               'CALC_G_F'  (G AVEC CHARGES FONCTIONS)
 C               'CALC_DG'   (G + DG AVEC CHARGES REELLES)
 C               'CALC_DG_F' (G + DG AVEC CHARGES FONCTIONS)
+C               'CALC_DG_E'   ( DG/DE AVEC CHARGES REELLES)
+C               'CALC_DG_E_F' ( DG/DE AVEC CHARGES FONCTIONS)
+C               'CALC_DG_FORC'   ( DG/DF AVEC CHARGES REELLES)
+C               'CALC_DG_FORC_F' ( DG/DF AVEC CHARGES FONCTIONS)
 C
 C ENTREES  ---> OPTION : OPTION DE CALCUL
 C          ---> NOMTE  : NOM DU TYPE ELEMENT
@@ -61,7 +65,7 @@ C                      NULS (INITIALISES A ZERO OU NON). EN PARTICULIER
 C                      SUR L'AXE (XG=0) (AL2001-060).
 C      04/07/03 (GN): MISE EN PLACE DU MECANISME DES SENSIBILITES
 C-----------------------------------------------------------------------
-C CORPS DU PROGRAMME
+C TOLE CRP_20
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
@@ -84,47 +88,50 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER        NNO,NPG1,KP,IPOIDS,IVF,IDFDE,IGEOM,JIN,JVAL,ICODE
-      INTEGER        IDEPL,IFORC,IPRES,ITHET,IGTHET,ITEMPS,COMPT,I,J,K
-      INTEGER        IPREF,IFORF
-      INTEGER        ITHETA,IDEPSE,IDEB,IFIN,IDFD2E
+      INTEGER NNO,NNOS,JGANO,NDIM,NPG,KP,IPOIDS,IVF,IDFDK,IGEOM,ICODE
+      INTEGER IDEPL,IFORC,IPRES,ITHET,IGTHET,ITEMPS,COMPT,I,J,K
+      INTEGER IPREF,IFORF,IADZI,IAZK24,IPRESS,IPRESF,IFO12R
+      INTEGER ITHETA,IDEPSE,IDEB,IFIN,JDFD2,JCOOPG,IFO12F,KK
+      INTEGER IAD1,IAD2,NUMA
 
-      REAL*8         XG,YG,UX,UY,FX,FY,THX,THY,THE, R8PREM
-      REAL*8         TCLA,EPSI,PRES,CISA,DIVTHE,VALPAR(3)
-      REAL*8         VF,DFDE,DXDE,DYDE,DSDE,POIDS,DTHXDE,DTHYDE
-      REAL*8         DFXDE,DFYDE,PRESNO,CISANO,FXNO,FYNO
-C                                           2*NNO     2*NNO
-      REAL*8         PRESG(2),FORCG(2),PRESN(6),FORCN(6)
-      REAL*8         DTCLA,DFD2DE,DLUX,DLUY,THSX,THSY,THES,PROD,DIVTS,
-     &               DLDIVT,DLFXDE,DLFYDE,PROD1,PROD2,THSXDE,
-     &               THSYDE,D2FXDE,D2FYDE,DLFXDK,DLFYDK,DSDE2,DSDE4
+      REAL*8 XG,YG,UX,UY,FX,FY,THX,THY,THE, R8PREM
+      REAL*8 TCLA,TSURF,TSURP,EPSI,PRES,CISA,DIVTHE,VALPAR(3)
+      REAL*8 VF,DFDE,DXDE,DYDE,DSDE,POIDS,DTHXDE,DTHYDE
+      REAL*8 DFXDE,DFYDE,PRESNO,CISANO,FXNO,FYNO,FLAGX,FLAGY
+C                               2*NNO     2*NNO
+      REAL*8 PRESG(2),FORCG(2),PRESN(6),FORCN(6),DGNO(6),DGNOP(6)
+      REAL*8 DTCLA,DFD2DE,DLUX,DLUY,THSX,THSY,THES,PROD,DIVTS,
+     &       DLDIVT,DLFXDE,DLFYDE,PROD1,PROD2,THSXDE,
+     &       THSYDE,D2FXDE,D2FYDE,DLFXDK,DLFYDK,DSDE2,DSDE4
+      REAL*8 DUXDE,DUYDE,FLAGP,FLAGC,TSOM
 
-      CHARACTER*2    CHELEM
-      CHARACTER*8    NOMPAR(3),ELREFE
-      CHARACTER*24   CHVAL,CHCTE
+      CHARACTER*2 CHELEM
+      CHARACTER*8 NOMPAR(3),ELREFE
 
-      LOGICAL        FONC,DERIVL,TSENUL,CHARGN
+      LOGICAL FONC,DERIVL,TSENUL,CHARGN,DERIVE,DERFOR,DFORC,DPRES
 
 C =====================================================================
 C INITIALISATIONS
 C =====================================================================
-
       CALL ELREF1(ELREFE)
       CALL JEMARQ()
       EPSI = R8PREM()
       CHELEM = NOMTE(3:4)
 
-
 C RECUPERATION DES DONNEES GEOMETRIQUES LIEES AU CALCUL ELEMENTAIRE
-      CHCTE = '&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CHCTE,' ',JIN)
-      NNO   = ZI(JIN)
-      NPG1  = ZI(JIN+2)
+      CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,JCOOPG,IVF,IDFDK,
+     &            JDFD2,JGANO)
+
 
 C INIT. POUR LE CALCUL DE G
+      DERFOR = .FALSE.
+      DFORC = .FALSE.
+      DPRES = .FALSE.
       DERIVL = .FALSE.
       CHARGN = .FALSE.
       TCLA   = 0.D0
+      TSURF   = 0.D0
+      TSURP   = 0.D0
       CALL JEVECH ( 'PTHETAR', 'L', ITHET )
       CALL JEVECH ( 'PGTHETA', 'E', IGTHET )
 
@@ -139,22 +146,11 @@ C TEST SUR LA NULLITE DE THETA_FISSURE
 250   CONTINUE
       IF (COMPT.EQ.NNO)  GOTO 9999
 
-C POINTEURS POUR LES FONCTIONS DE FORME ET LEURS DERIVEES PREMIERES
-C SUR L'ELEMENT DE REFERENCE
-      CHVAL = '&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(CHVAL,' ',JVAL)
-      IPOIDS = JVAL
-      IVF    = IPOIDS + NPG1
-      IDFDE  = IVF    + NPG1*NNO
-
 C INIT. COMPLEMENTAIRES POUR LA DERIVATION DE G
-      IF (OPTION(1:7).EQ.'CALC_DG') THEN
+      IF ((OPTION.EQ.'CALC_DG').OR.(OPTION.EQ.'CALC_DG_F')) THEN
         DERIVL = .TRUE.
         DTCLA  = 0.D0
 
-C POINTEURS SUR LEURS DERIVEES SECONDES
-C (ATTENTION QU'EN NPG1 ET NNO=3, CF. INIT089)
-        IDFD2E = JVAL + NPG1+NPG1*NNO*2+NPG1
       ENDIF
 
 
@@ -164,7 +160,9 @@ C =====================================================================
 
       CALL JEVECH ( 'PGEOMER', 'L', IGEOM )
       CALL JEVECH ( 'PDEPLAR', 'L', IDEPL )
-      IF ((OPTION.EQ.'CALC_G_F').OR.(OPTION.EQ.'CALC_DG_F')) THEN
+      IF ((OPTION.EQ.'CALC_G_F').OR.(OPTION.EQ.'CALC_DG_F')
+     &      .OR.(OPTION.EQ.'CALC_DG_FORC_F')
+     &      .OR.(OPTION.EQ.'CALC_DG_E_F')) THEN
          FONC = .TRUE.
          CALL JEVECH ( 'PFF1D2D', 'L', IFORF  )
          CALL JEVECH ( 'PPRESSF', 'L', IPREF  )
@@ -173,10 +171,20 @@ C =====================================================================
          NOMPAR(2) = 'Y'
          NOMPAR(3) = 'INST'
          VALPAR(3) = ZR(ITEMPS)
+        IF (OPTION.EQ.'CALC_DG_FORC_F') THEN
+          CALL JEVECH('PFF12SS','L',IFO12F)
+          CALL JEVECH('PPRESSSF','L',IPRESF)
+          DERFOR = .TRUE.
+        ENDIF
       ELSE
          FONC =.FALSE.
          CALL JEVECH ( 'PFR1D2D', 'L', IFORC )
          CALL JEVECH ( 'PPRESSR', 'L', IPRES )
+         IF (OPTION.EQ.'CALC_DG_FORC') THEN
+           CALL JEVECH('PFR12SS','L',IFO12R)
+           CALL JEVECH('PPRESSSR','L',IPRESS)
+           DERFOR = .TRUE.
+         ENDIF
       ENDIF
 
 C RECUPERATION DES CHAMPS LOCAUX (CARTE) ASSOCIES AU CALCUL DE LA
@@ -195,6 +203,12 @@ C TEST DE LA NULLITE DU THETA SENSIBILITE
           ENDIF
 11      CONTINUE
       ENDIF
+C RECUPERATION DE LA DERIVEE DU DEPLACEMENT PAR RAPPORT A E OU F
+      DERIVE = .FALSE.
+      IF (OPTION(6:9).EQ.'DG_E'.OR.OPTION(6:12).EQ.'DG_FORC') THEN
+        DERIVE = .TRUE.
+        CALL JEVECH('PDEPLSE','L',IDEPSE)
+      ENDIF
 
 C =====================================================================
 C - SI CHARGE FONCTION RECUPERATION DES VALEURS AUX PG ET NOEUDS
@@ -211,6 +225,17 @@ C =====================================================================
                CALL FOINTE ('FM', ZK8(IFORF+J-1), 3,NOMPAR,VALPAR,
      &                                       FORCN(2*(I-1)+J), ICODE)
  75         CONTINUE
+          IF(DERFOR) THEN
+             DO 76 J=1,2
+              KK = 2*(I-1)+J
+              CALL FOINTE('FM',ZK8(IFO12F+J-1),3,NOMPAR,VALPAR,DGNO(KK)
+     &                    ,ICODE)
+              IF(DGNO(KK).NE.0.0D0) DFORC=.TRUE.
+              CALL FOINTE('FM',ZK8(IPRESF+J-1),3,NOMPAR,VALPAR,DGNOP(KK)
+     &                    ,ICODE)
+              IF(DGNOP(KK).NE.0.0D0) DPRES=.TRUE.
+76           CONTINUE
+           ENDIF
  70      CONTINUE
       ENDIF
 
@@ -218,7 +243,7 @@ C ======================================================================
 C BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
 C ======================================================================
 
-      DO 800 KP = 1 , NPG1
+      DO 800 KP = 1 , NPG
 
 C INITIALISATIONS
          K    = (KP-1)*NNO
@@ -228,6 +253,10 @@ C INITIALISATIONS
          YG   = 0.D0
          UX   = 0.D0
          UY   = 0.D0
+         FLAGX = 0.D0
+         FLAGY = 0.D0
+         FLAGP = 0.D0
+         FLAGC = 0.D0
          DLUX = 0.D0
          DLUY = 0.D0
          THX  = 0.D0
@@ -247,6 +276,9 @@ C INITIALISATIONS
            THSYDE = 0.D0
            D2FXDE = 0.D0
            D2FYDE = 0.D0
+         ELSE IF (DERIVE) THEN
+           DUXDE = 0.D0
+           DUYDE = 0.D0
          ENDIF
 
 C ===========================================
@@ -260,7 +292,7 @@ C DEPLACEMENT (UX,UY), DU CHAMP THETA FISSURE (THX,THY) ET DE SON
 C GRADIENT (DTHXDE,DTHYDE).
          DO 10 I = 1 , NNO
             VF  = ZR(IVF  +K+I-1)
-            DFDE = ZR(IDFDE+K+I-1)
+            DFDE = ZR(IDFDK+K+I-1)
             DXDE = DXDE    +   DFDE*ZR(IGEOM+2*(I-1))
             DYDE = DYDE    +   DFDE*ZR(IGEOM+2*(I-1)+1)
             XG  = XG      +   VF  *ZR(IGEOM+2*(I-1)  )
@@ -272,6 +304,15 @@ C GRADIENT (DTHXDE,DTHYDE).
             DTHXDE = DTHXDE + DFDE*ZR(ITHET+2*(I-1)  )
             DTHYDE = DTHYDE + DFDE*ZR(ITHET+2*(I-1)+1)
    10    CONTINUE
+         IF(DERFOR) THEN
+            DO 12 I = 1 , NNO
+               VF  = ZR(IVF  +K+I-1)
+               FLAGX  = FLAGX      +   VF  *DGNO(2*I-1)
+               FLAGY  = FLAGY      +   VF  *DGNO(2*I)
+               FLAGP  = FLAGP      +   VF  *DGNOP(2*I-1)
+               FLAGC  = FLAGC      +   VF  *DGNOP(2*I)
+   12       CONTINUE
+         ENDIF
 
 C ===========================================
 C 1 CALCULS COMPLEMENTAIRES POUR DG
@@ -283,7 +324,7 @@ C (THSXDE, THSYDE)
          IF (DERIVL) THEN
            DO 20 I = 1 , NNO
              VF  = ZR(IVF  +K+I-1)
-             DFDE = ZR(IDFDE+K+I-1)
+             DFDE = ZR(IDFDK+K+I-1)
              DLUX = DLUX + VF*ZR(IDEPSE+2*(I-1))
              DLUY = DLUY + VF*ZR(IDEPSE+2*(I-1)+1)
              THSX = THSX + VF*ZR(ITHETA+2*(I-1))
@@ -291,6 +332,12 @@ C (THSXDE, THSYDE)
              THSXDE = THSXDE + DFDE*ZR(ITHETA+2*(I-1))
              THSYDE = THSYDE + DFDE*ZR(ITHETA+2*(I-1)+1)
 20         CONTINUE
+         ELSE IF(DERIVE) THEN
+           DO 21 I = 1 , NNO
+             VF  = ZR(IVF  +K+I-1)
+             DUXDE = DUXDE + VF*ZR(IDEPSE+2*(I-1))
+             DUYDE = DUYDE + VF*ZR(IDEPSE+2*(I-1)+1)
+21         CONTINUE
          ENDIF
 
 C ===========================================
@@ -330,12 +377,11 @@ C VALEURS DU CHARGEMENT AUX POINTS DE GAUSS (FX,FY)
          FX   = FORCG(1)-(DYDE*PRES-DXDE*CISA)/DSDE
          FY   = FORCG(2)+(DXDE*PRES+DYDE*CISA)/DSDE
 
-
 C VALEURS DU CHARGEMENT AUX NOEUDS (FXNO,FYNO) ET DE SES DERIVEES
 C AUX POINTS DE GAUSS (DFXDE,DFYDE,D2FXDE,D2FYDE)
          IF ( FONC ) THEN
            DO 300 I = 1,NNO
-             DFDE   = ZR(IDFDE+K+I-1)
+             DFDE   = ZR(IDFDK+K+I-1)
              PRESNO = PRESN(2*(I-1)+1)
              CISANO = PRESN(2*(I-1)+2)
              FXNO   = FORCN(2*(I-1)+1)-(DYDE*PRESNO-DXDE*CISANO)/DSDE
@@ -343,7 +389,7 @@ C AUX POINTS DE GAUSS (DFXDE,DFYDE,D2FXDE,D2FYDE)
              DFXDE  = DFXDE + DFDE*FXNO
              DFYDE  = DFYDE + DFDE*FYNO
              IF (DERIVL.AND..NOT.TSENUL) THEN
-               DFD2DE = ZR(IDFD2E+K+I-1)
+               DFD2DE = ZR(JDFD2+K+I-1)
                D2FXDE  = D2FXDE + DFD2DE*FXNO
                D2FYDE  = D2FYDE + DFD2DE*FYNO
              ENDIF
@@ -428,14 +474,30 @@ C REMARQUE : POUR LA DERIVEE, TCLA EST INUTILE.
 C            MAIS ON A BESOIN DE PROD SI TSENUL EST FAUX.
 C =======================================================
 C
-        IF ( .NOT.DERIVL .OR. .NOT.TSENUL ) THEN
-
+        IF( DERIVE) THEN
+C
+         PROD = (DIVTHE*FX+DFXDE*THE)*DUXDE +(DIVTHE*FY+DFYDE*THE)*DUYDE
+C
+        ELSE IF ( .NOT.DERIVL .OR. .NOT.TSENUL ) THEN
+C
          PROD = (DIVTHE*FX+DFXDE*THE)*UX + (DIVTHE*FY+DFYDE*THE)*UY
-
-         TCLA = TCLA + PROD*POIDS
-
+C
+        ELSE
+         PROD = 0.D0
         ENDIF
-
+C
+         TCLA = TCLA + PROD*POIDS
+C
+C =======================================================
+C DANS LE CAS D'UNE DERIVEE PAR RAPPORT A UN CHARGEMENT SURFACIQUE
+C (NEUMANN), IL Y A UN TERME DE PLUS
+        IF ( DERFOR ) THEN
+           TSURF = TSURF + DIVTHE*POIDS*(UX*FLAGX+UY*FLAGY)
+           TSURP = TSURP + DIVTHE*POIDS*
+     &             (UX*(-DYDE/DSDE)+UY*(DXDE/DSDE))*FLAGP
+     &            +(UX*( DXDE/DSDE)+UY*(DYDE/DSDE))*FLAGC
+        ENDIF
+C
 C =======================================================
 C CALCUL DE LA DERIVEE DE G PAR RAPPORT A UNE VARIATION DE DOMAINE
 C =======================================================
@@ -469,7 +531,11 @@ C ASSEMBLAGE FINAL DES TERMES DE G OU DG
        IF (DERIVL) THEN
          ZR(IGTHET) = DTCLA
        ELSE
-         ZR(IGTHET) = TCLA
+C SI LE PARAMETRE SENSIBLE FIGURE A LA FOIS DANS UNE FORCE ET UNE 
+C PRESSION IL FAUT MULTIPLIER PAR 2 LE TERME CLASSIQUE
+         IF (DFORC.AND.DPRES) TCLA = 2.0D0*TCLA
+         TSOM = TCLA + TSURF + TSURP
+         ZR(IGTHET) = TSOM
        ENDIF
 
       CALL JEDEMA()

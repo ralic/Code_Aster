@@ -1,0 +1,52 @@
+      SUBROUTINE IRMIFR(IFMIS,FREQ,IFREQ,NFREQ)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 04/11/2003   AUTEUR ACBHHCD G.DEVESA 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER      IFMIS, IFREQ, NFREQ
+      REAL*8       FREQ
+C
+      CHARACTER*72 TEXTE
+      REAL*8 A(3)
+C
+      REWIND IFMIS
+      READ(IFMIS,'(A72)') TEXTE
+      READ(IFMIS,'(A72)') TEXTE
+      NFREQ = 0
+    1 CONTINUE
+      NFREQ = NFREQ + 1
+      READ(IFMIS,'(A72)') TEXTE
+      IF (TEXTE(1:5).EQ.'CHAMP') THEN
+        NFREQ = NFREQ -1 
+      ELSE
+        GOTO 1
+      ENDIF
+      REWIND IFMIS
+      READ(IFMIS,'(A72)') TEXTE
+      READ(IFMIS,'(A72)') TEXTE
+      DO 3 I = 1, NFREQ
+        READ(IFMIS,*) (A(J),J=1,3)
+        A(1) = A(1) + 1.D-6
+        IF (FREQ.LE.A(1)) THEN
+          IFREQ = I
+          GOTO 4
+        ENDIF
+    3 CONTINUE
+      IFREQ = NFREQ
+    4 CONTINUE
+      END      

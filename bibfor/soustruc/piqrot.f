@@ -1,11 +1,11 @@
-      SUBROUTINE PIQROT ( X1, Y1, Z1, TETAX,
+      SUBROUTINE PIQROT ( X1, Y1, TETAX,
      +                    NT, RET, RIT, REP, TETAF, EPSI  )
       IMPLICIT   NONE 
       INTEGER             NT
-      REAL*8              X1, Y1, Z1, TETAX, RET, RIT, REP, TETAF, EPSI
+      REAL*8              X1, Y1, TETAX, RET, RIT, REP, TETAF, EPSI
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 11/11/98   AUTEUR CIBHHME R.MEDDOURI 
+C MODIF SOUSTRUC  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

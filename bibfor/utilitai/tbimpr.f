@@ -3,7 +3,7 @@
      >                    NPARPG, LIPAPG, FORMAR, FORMAC )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/07/2003   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,17 +132,17 @@ C
      +        FORMAT .EQ. 'AGRAF'.OR.
      +        FORMAT .EQ. 'ASTER' ) THEN
             CALL TBIMEX ( TABLE, IFR, NPARIM, LIPAIM, FORMAT,
-     +                                                FORMAR, FORMAC )
+     +                                                FORMAR)
 C
 C        --- FORMAT "MOT_CLE" ---
 C
          ELSEIF ( FORMAT .EQ. 'MOT_CLE' ) THEN
-            CALL TBIMMC ( TABLE, IFR, NPARIM, LIPAIM, FORMAR, FORMAC )
+            CALL TBIMMC ( TABLE, IFR, NPARIM, LIPAIM, FORMAR)
 C
 C        --- FORMAT "TABLEAU" ---
 C
          ELSEIF ( FORMAT .EQ. 'TABLEAU' ) THEN
-            CALL TBIMTA ( TABLE, IFR, NPARIM, LIPAIM, FORMAR, FORMAC )
+            CALL TBIMTA ( TABLE, IFR, NPARIM, LIPAIM, FORMAR)
          ENDIF
       ELSE
 C     ------------------------------------------------------------------
@@ -153,7 +153,7 @@ C     ------------------------------------------------------------------
          NEWTAB = '&&'//NOMPRO//'.PAGI'
          CALL TBEXCP ( TABLE, 'V', NEWTAB, NPARIM, LIPAIM )
          CALL TBIMPG ( NEWTAB, IFR, NPARIM, LIPAIM, NPARPG, LIPAPG,
-     +                                      FORMAT, FORMAR, FORMAC )
+     +                                      FORMAT, FORMAR)
          CALL DETRSD ( 'TABLE' , NEWTAB )
 C
       ENDIF

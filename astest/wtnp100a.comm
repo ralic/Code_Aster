@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/02/2004   AUTEUR GRANET S.GRANET 
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -90,9 +90,18 @@ LI1=DEFI_LIST_REEL(DEBUT=0.10000000000000001,
 
 
 
-LAMBLIBO=DEFI_CONSTANTE(VALE=8.3300000000000001,);
+LAMBT=DEFI_CONSTANTE(VALE=8.3300000000000001,);
+LS = FORMULE(REEL = '''(REEL:SAT) = 
+                (0.3*SAT)''');
 
-LAMBBO=DEFI_CONSTANTE(VALE=0.71399999999999997,);
+LAMBS=CALC_FONC_INTERP(FONCTION=LS,
+                        LIST_PARA=LI1,
+                        NOM_PARA='SAT',
+                        PROL_GAUCHE='LINEAIRE',
+                        PROL_DROITE='LINEAIRE',
+                        INFO=2,);
+DLS=DEFI_CONSTANTE(VALE=0.3,);
+LAMBCT=DEFI_CONSTANTE(VALE=0.5,);
 #
 
 
@@ -144,11 +153,6 @@ NOM_PARA='SAT',
                          PROL_DROITE='CONSTANT',
                          INFO=2,);
 
-# COEF. DE FICK
-#
-
-
-DM8=DEFI_CONSTANTE(VALE=5.9000000000000003E-06,);
 
 KINTBO=DEFI_CONSTANTE(VALE=9.9999999999999995E-21,);
 
@@ -163,15 +167,11 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15000000E8,
                                   ALPHA=0.,
                                   CP=4180.0,
                                   VISC=VISCOLIQ,
-                                  D_VISC_TEMP=DVISCOL,
-                                  LAMBDA=LAMBLIBO,
-                                  D_LAMBDA_TEMP=ZERO,),
+                                  D_VISC_TEMP=DVISCOL,),
                       THM_GAZ=_F(MASS_MOL=0.02896,
                                  CP=1017.0,
                                  VISC=VISCOGAZ,
-                                 D_VISC_TEMP=ZERO,
-                                 LAMBDA=ZERO,
-                                 D_LAMBDA_TEMP=ZERO,),
+                                 D_VISC_TEMP=ZERO,),
                       THM_VAPE_GAZ=_F(MASS_MOL=0.018,
                                       CP=1900.0,
                                       VISC=VISCOGAZ,
@@ -192,18 +192,15 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15000000E8,
                                    PESA_Y=0.0,
                                    PESA_Z=0.0,
                                    PERM_IN=KINTBO,
-
                                    PERM_LIQU=UN,
                                    D_PERM_LIQU_SATU=ZERO,
                                    PERM_GAZ=UN,
                                    D_PERM_SATU_GAZ=ZERO,
-
                                    D_PERM_PRES_GAZ=ZERO,
-                                   FICK=DM8,
-                                   D_FICK_TEMP=ZERO,
-                                   D_FICK_GAZ_PRES=ZERO,
-                                   LAMBDA=LAMBBO,
-                                   D_LAMBDA_TEMP=ZERO,),);
+                                   LAMB_T=LAMBT,
+                                   LAMB_S=LAMBS,
+                                   D_LB_S=DLS,
+                                   LAMB_CT=0.5),);
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=(_F(GROUP_MA='BO',
@@ -253,7 +250,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  _F(CHARGE=FLUTH,),
                                           ),
                  COMP_INCR=_F(RELATION='KIT_THV',
-                              RELATION_KIT=('LIQU_VAPE','THER_POLY','HYDR_UTIL'),),
+                              RELATION_KIT=('LIQU_VAPE','HYDR_UTIL'),),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               SIGM=SIGINIT,),
                  INCREMENT=_F(LIST_INST=INST1,

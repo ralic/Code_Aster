@@ -8,7 +8,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 17/01/97   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -255,10 +255,9 @@ C
      +                  ZI(AFACEX+ICNXOR-1),NBSGPC,PTADR,
      +                  ZR(AOVALE))
          ELSE IF ( DOCU .EQ. 'SGT3' ) THEN
-            CALL RVECHS(EPSI,SSCH19,NBCMP,NBCO,NBSP,ZI(AMAIL1),
+            CALL RVECHS(SSCH19,NBCMP,NBCO,NBSP,ZI(AMAIL1),
      +                  ZI(VLCMA3+ICNXOR-1),
      +                  ZI(AFACOR+ICNXOR-1),ZI(AFACEX+ICNXOR-1),
-     +                  ZI(AARTOR+ICNXOR-1),ZI(AARTEX+ICNXOR-1),
      +                  ZR(APAROR+2*(ICNXOR-1)),ZR(APAREX+2*(ICNXOR-1)),
      +                  NBSGPC,PTADR,ZR(AOVALE),NBNDF,CLOCF)
          ELSE

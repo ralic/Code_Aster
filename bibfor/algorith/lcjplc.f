@@ -1,9 +1,8 @@
-        SUBROUTINE LCJPLC ( LOI  , MOD , IMAT,  NMAT, MATER, NVI,
-     1                      TEMP,  TIME, DEPS,  EPSD, SIG ,  VIN, DSDE )
+        SUBROUTINE LCJPLC ( LOI  , MOD , NMAT, MATER, DSDE )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/01/98   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,32 +25,21 @@ C       VISCO-PLASTIQUE COHERENT A T+DT OU T
 C       COHERENT A T+DT OU T
 C       IN  LOI    :  MODELE DE COMPORTEMENT
 C           MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATER  :  COEFFICIENTS MATERIAU
-C           NVI    :  NB VARIABLES INTERNES
-C           TEMP   :  TEMPERATURE
-C           TIME   :  INSTANT T
-C           DEPS   :  INCREMENT DE DEFORMATION
-C           EPSD   :  DEFORMATION A T
-C           SIG    :  CONTRAINTE
-C           VIN    :  VARIABLES INTERNES
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NMAT , NVI, NMOD
+        INTEGER         NMAT , NMOD
         REAL*8          DSDE(6,6)
-        REAL*8          SIG(6)   , EPSD(6) , DEPS(6)
-        REAL*8          VIN(*)
-        REAL*8          TIME, TEMP
         REAL*8          MATER(NMAT,2)
         CHARACTER*3     INST
         CHARACTER*8     MOD
         CHARACTER*16    LOI
 C       ----------------------------------------------------------------
          IF     ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN
-            CALL  CVMJPL (MOD,IMAT,NMAT,MATER,DSDE)
+            CALL  CVMJPL (MOD,NMAT,MATER,DSDE)
          ELSEIF ( LOI(1:5) .EQ. 'LMARC'     ) THEN
-            CALL  LMAJPL (MOD,IMAT,NMAT,MATER,DSDE)
+            CALL  LMAJPL (MOD,NMAT,MATER,DSDE)
          ENDIF
 C
          END

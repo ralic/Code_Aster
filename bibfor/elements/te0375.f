@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,9 +30,7 @@ C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
-
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -47,16 +45,15 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
-
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-
-      INTEGER NPG1,I,K,KP,NNO,TY,TYV,NBPG(10)
-      INTEGER IFF,IPOIDS,IVF,IDFDE,IDFDK,IDFDN,IGEOM,IFM
+C
+      INTEGER NPG1,I,KP,NNO,TYV
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM,IFM
       INTEGER IAD,IFOR,IERR,IPES,IROT,IMATE,IADE1,IAVA1
-      INTEGER IREF,IVOIS,IAREPE,JCELD,JCELV,IAVAL1
-      INTEGER JAD,JADV,IGREL,IEL,IGD,NCMPM1
+      INTEGER IVOIS,IAREPE,JCELD,JCELV,IAVAL1
+      INTEGER JAD,JADV,IGREL,IEL,NCMPM1
       INTEGER JNO,NBNV,NCHER
+      INTEGER NBCMP,ITAB(7)
       INTEGER INOV,IMAV,JKP,NOE(9,6,3)
       REAL*8 A(3,3),B(3),H1,H2,H3,H4
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),H,HH,POID
@@ -75,14 +72,10 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       LOGICAL PRES,FORC,FAUX
       CHARACTER*2 CODRET
       CHARACTER*4 NOMPAR(4)
-      CHARACTER*8 K8B,MA,TYPEMA,TYPMAV,ELREFE
-
+      CHARACTER*8 TYPMAV,ELREFE
       CHARACTER*8 PRF,FXF,FYF,FZF,ELREF2,NOMGD2
       CHARACTER*16 PHENOM
-      CHARACTER*19 MO,SIGMA,CARTE1,NOMGD1,CARTE2
-      CHARACTER*24 CARAC,CARAC2,CHVAL,CHVAL2
-
-
+      CHARACTER*19 NOMGD1
 
 C --- INITIALISATION DU TABLEAU DES NUMEROS DE NOEUDS FACE PAR FACE
 
@@ -98,30 +91,31 @@ C    TETRAEDRES A 4 ET 10 NOEUDS
 
 C     ------------------------------------------------------------------
       CALL JEMARQ()
+
       CALL ELREF1(ELREFE)
 
       FAUX = .FALSE.
       ZERO = 0.D0
       NOMGD2 = ' '
-
+      IFM = IUNIFI('MESSAGE')
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
-
 
       CALL JEVECH('PGEOMER','L',IGEOM)
-      CALL JEVECH('PCONTNO','L',IAD)
+      CALL TECACH('OOO','PCONTNO',3,ITAB,IRET)
       CALL JEVECH('PFRVOLU','L',IFOR)
       CALL JEVECH('PERREUR','E',IERR)
       CALL JEVECH('PTEMPSR','L',JTIME)
-      INST = ZR(JTIME-1+1)
+      INST  = ZR(JTIME-1+1)
+      IAD   = ITAB(1)
+      NBCMP = ITAB(2)/NNO
 
 C -------- VERIFICATION DU SIGNE DU JACOBIEN :ARRET SI JACOB < 0
-
-      IFM = IUNIFI('MESSAGE')
-      CALL UTJAC(.FALSE.,IGEOM,IDFDE,IDFDK,IDFDN,1,IFM,NNO,JACOB)
-
+C
+C   VOIR FICHE AREX 007652
+C
+CCC      CALL UTJAC(.FALSE.,IGEOM,1,IDFDE,1,IFM,NNO,JACOB)
+C
 C -------- CALCUL DU DIAMETRE H ---------------------------------------
 
       IF (ELREFE.EQ.'TE4' .OR. ELREFE.EQ.'T10') THEN
@@ -276,9 +270,7 @@ C --------- *********************************** ------------------------
       NORSIG = 0.D0
       DO 30 KP = 1,NPG1
         L = (KP-1)*NNO
-        K = L*3
-        CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &              ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POID)
+        CALL DFDM3D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,DFDZ,POID)
 
 C ----------CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA -----------
 
@@ -300,12 +292,12 @@ C ----------CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA -----------
         SPG23 = 0.D0
 
         DO 20 I = 1,NNO
-          SIG11 = ZR(IAD-1+6* (I-1)+1)
-          SIG22 = ZR(IAD-1+6* (I-1)+2)
-          SIG33 = ZR(IAD-1+6* (I-1)+3)
-          SIG12 = ZR(IAD-1+6* (I-1)+4)
-          SIG13 = ZR(IAD-1+6* (I-1)+5)
-          SIG23 = ZR(IAD-1+6* (I-1)+6)
+          SIG11 = ZR(IAD-1+NBCMP* (I-1)+1)
+          SIG22 = ZR(IAD-1+NBCMP* (I-1)+2)
+          SIG33 = ZR(IAD-1+NBCMP* (I-1)+3)
+          SIG12 = ZR(IAD-1+NBCMP* (I-1)+4)
+          SIG13 = ZR(IAD-1+NBCMP* (I-1)+5)
+          SIG23 = ZR(IAD-1+NBCMP* (I-1)+6)
 
           DSIG11 = DSIG11 + SIG11*DFDX(I)
           DSIG12 = DSIG12 + SIG12*DFDY(I)
@@ -342,57 +334,54 @@ C ----------CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA -----------
 
 C ----------- CALCUL DU DEUXIEME ET TROISIEME TERME DE L'ERREUR ------
 
-      CALL JEVECH('PFORCE','L',IREF)
+      CALL JEVECH('PFORCE','L',IREF1)
       CALL JEVECH('PPRESS','L',IREF2)
       CALL JEVECH('PVOISIN','L',IVOIS)
 
-      MA = ZK24(IREF)
-      MO = ZK24(IREF+1)
-      SIGMA = ZK24(IREF+2)
-      CARTE1 = ZK24(IREF+3)
-      CARTE2 = ZK24(IREF2+3)
-
 C -------- RECHERCHE DES ADRESSES POUR OBTENIR SIGMA SUR LES VOISINS ---
 
-      CALL JEVEUO(MO//'.REPE','L',IAREPE)
-      CALL JEVEUO(SIGMA//'.CELD','L',JCELD)
-      CALL JEVEUO(SIGMA//'.CELV','L',JCELV)
+      IAREPE = ZI(IREF1)
+      JCELD = ZI(IREF1+1)
+      JCELV = ZI(IREF1+2)
+      IAGD = ZI(IREF1+4)
 
 C ------- RECHERCHE DES ADRESSES POUR LES CHARGES SUR LES FACES ----
 
-      IF (CARTE1.NE.' ') THEN
-        CALL JEVEUO(CARTE1//'.DESC','L',IADE1)
-        CALL JEVEUO(CARTE1//'.VALE','L',IAVA1)
-        IGD = ZI(IADE1)
-
-        CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',IGD),'LONMAX',NCMPM1,K8B)
-
-
-      END IF
-
-      IF (CARTE2.NE.' ') THEN
-        CALL JEVEUO(CARTE2//'.DESC','L',IADE2)
-        CALL JEVEUO(CARTE2//'.VALE','L',IAVA2)
-        IGD = ZI(IADE2)
-
-        CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',IGD),'LONMAX',NCMPM2,K8B)
-
-      END IF
-
+        IADE1 = ZI(IREF1+6)
+        IAVA1 = ZI(IREF1+7)
+        IAPTM1 = ZI(IREF1+8)
+      IF (IADE1 .NE. 0) THEN
+        IGD1 = ZI(IADE1)
+        IACMP = ZI(IREF1+5)
+        NCMPM1= ZI(IACMP-1+IGD1)
+C       CALL JELIRA (JEXNUM('&CATA.GD.NOMCMP',IGD),'LONMAX',NCMPM1,KBID)
+      ENDIF
+C
+        IADE2 = ZI(IREF2+6)
+        IAVA2 = ZI(IREF2+7)
+        IAPTM2 = ZI(IREF2+8)
+      IF (IADE2 .NE. 0) THEN
+        IGD2 = ZI(IADE2)
+        IACMP = ZI(IREF2+5)
+        NCMPM2= ZI(IACMP-1+IGD2)
+C       CALL JELIRA (JEXNUM('&CATA.GD.NOMCMP',IGD),'LONMAX',NCMPM2,KBID)
+      ENDIF
+C
 C --------- TEST SUR LE TYPE DE LA MAILLE COURANTE --------------------
 
-      TY = ZI(IVOIS+7)
+      IATYMA = ZI(IREF1+3)
 
-      CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',TY),TYPEMA)
+C      CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',TY),TYPEMA)
 
 
 C --------- INITIALISATION DES FACES DES ELEMENTS 3D ------------------
 
+      ELREF2 = ' '
       IF (ELREFE.EQ.'HE8') THEN
         NBF = 6
         NSOMM = 4
         ITYP = 1
-        ELREFE = 'FACE4'
+        ELREFE = 'QU4'
         NBNV = 8
         NDEGRE = 1
         DO 40 I = 1,4
@@ -402,7 +391,7 @@ C --------- INITIALISATION DES FACES DES ELEMENTS 3D ------------------
         NBF = 6
         NSOMM = 4
         ITYP = 1
-        ELREFE = 'FACE8'
+        ELREFE = 'QU8'
         NBNV = 20
         NDEGRE = 2
         DO 50 I = 1,4
@@ -415,7 +404,7 @@ C --------- INITIALISATION DES FACES DES ELEMENTS 3D ------------------
       ELSE IF (ELREFE.EQ.'H27') THEN
         NBF = 6
         ITYP = 1
-        ELREFE = 'FACE9'
+        ELREFE = 'QU9'
         NBNV = 27
         NDEGRE = 2
         DO 70 I = 1,4
@@ -429,8 +418,8 @@ C --------- INITIALISATION DES FACES DES ELEMENTS 3D ------------------
       ELSE IF (ELREFE.EQ.'PE6') THEN
         NBF = 5
         ITYP = 2
-        ELREFE = 'FACE3'
-        ELREF2 = 'FACE4'
+        ELREFE = 'TR3'
+        ELREF2 = 'QU4'
         NBNV = 6
         NDEGRE = 1
         DO 90 I = 1,3
@@ -439,11 +428,12 @@ C --------- INITIALISATION DES FACES DES ELEMENTS 3D ------------------
         DO 100 I = 1,4
           POIDS2(I) = 1.D0
   100   CONTINUE
+
       ELSE IF (ELREFE.EQ.'P15') THEN
         NBF = 5
         ITYP = 2
-        ELREFE = 'FACE6'
-        ELREF2 = 'FACE8'
+        ELREFE = 'TR6'
+        ELREF2 = 'QU8'
         NBNV = 15
         NDEGRE = 2
         DO 110 I = 1,3
@@ -464,17 +454,18 @@ C --------- INITIALISATION DES FACES DES ELEMENTS 3D ------------------
         NSOMM = 3
         NBF = 4
         ITYP = 3
-        ELREFE = 'FACE3'
+        ELREFE = 'TR3'
         NBNV = 4
         NDEGRE = 1
         DO 150 I = 1,3
           POIDS1(I) = 1.D0/6.D0
   150   CONTINUE
+
       ELSE IF (ELREFE.EQ.'T10') THEN
         NSOMM = 3
         NBF = 4
         ITYP = 3
-        ELREFE = 'FACE6'
+        ELREFE = 'TR6'
         NBNV = 10
         NDEGRE = 2
         DO 160 I = 1,3
@@ -488,61 +479,16 @@ C --------- INITIALISATION DES FACES DES ELEMENTS 3D ------------------
         CALL UTMESS('F','TE0375','TYPE MAILLE INCONNU')
       END IF
 
-      CARAC = '&INEL.'//ELREFE//'.CARACTE'
-      CHVAL = '&INEL.'//ELREFE//'.FFORMES'
-      IF (NBF.EQ.5) THEN
-        CARAC2 = '&INEL.'//ELREF2//'.CARACTE'
-        CHVAL2 = '&INEL.'//ELREF2//'.FFORMES'
-      END IF
-
-C   VERIFICATION DE L'EXISTENCE DES OBJETS RELATIFS AUX FACES
-
-      CALL JEEXIN(CARAC,IRET)
-      IF (IRET.LE.0) THEN
-        CALL UTMESS('F','TE0375',
-     & 'L''OBJET CARAC DES FACES EST                         INEXISTANT'
-     &              )
-      END IF
-      CALL JEEXIN(CHVAL,IRET)
-      IF (IRET.LE.0) THEN
-        CALL UTMESS('F','TE0375',
-     & 'L''OBJET CHVAL DES FACES EST                         INEXISTANT'
-     &              )
-      END IF
-      IF (NBF.EQ.5) THEN
-        CALL JEEXIN(CARAC2,IRET)
-        IF (IRET.LE.0) THEN
-          CALL UTMESS('F','TE0375',
-     & 'L''OBJET CARAC2 DES FACES EST                        INEXISTANT'
-     &                )
-        END IF
-        CALL JEEXIN(CHVAL2,IRET)
-        IF (IRET.LE.0) THEN
-          CALL UTMESS('F','TE0375',
-     & 'L''OBJET CHVAL2 DES FACES EST                        INEXISTANT'
-     &                )
-        END IF
-      END IF
-
-      CALL JEVEUO(CARAC,'L',JIN)
-      NDIM = ZI(JIN+1-1)
-      NNO = ZI(JIN+2-1)
-      NPG = NNO
-
-      CALL JEVEUO(CHVAL,'L',IFF)
-      IDFDX = IFF + NPG*NNO
+      CALL ELREF4 ( ELREFE, 'NOEU', NDIM, NNO, NNOS, NPG, IPOIDS,
+     &              IVF, IDFDX, JGANO )
       IDFDY = IDFDX + 1
 
 CAS DES PENTAEDRES
 
       IF (NBF.EQ.5) THEN
-        CALL JEVEUO(CARAC2,'L',JIN2)
-        NNO2 = ZI(JIN2+2-1)
-        NPG2 = NNO2
-
-        CALL JEVEUO(CHVAL2,'L',IFF2)
-        IDFDX2 = IFF2 + NPG2*NNO2
-        IDFDY2 = IDFDX2 + 1
+         CALL ELREF4 ( ELREF2, 'NOEU', NDIM, NNO2, NNOS, NPG2, IPOIDS,
+     &                 IFF2, IDFDX2, JGANO )
+         IDFDY2 = IDFDX2 + 1
       END IF
 
       TER2 = 0.D0
@@ -594,45 +540,40 @@ C  CALCUL DU DIAMETRE HF DE LA FACE
 
           NDI = 0
           NIV = 1
-          IFM = 6
           CALL UTHK(NOMTE,IGEOM,HF,NDI,NOE,NSOMM,ITYP,IFA,NIV,IFM)
-
-          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',TYV),TYPMAV)
-
+          TYPMAV=ZK8(IATYMA-1+TYV)      
 
           IF (TYPMAV(1:4).EQ.'QUAD' .OR. TYPMAV(1:4).EQ.'TRIA') THEN
 
 C ----------CALCUL DU 3 IEME TERME D'ERREUR ----------------------------
 
-            IF (CARTE1.NE.' ') THEN
+          IF (IADE1 .NE. 0) THEN
 
-              IMAV = ZI(IVOIS+IFA)
-              CALL JEEXIN(CARTE1//'.PTMA',IRET)
-              IF (IRET.EQ.0) THEN
+            IMAV = ZI(IVOIS+IFA)
+            IF (IAPTM1 .EQ. 0) THEN
 C              CARTE CONSTANTE
-                IENT1 = 1
-              ELSE
+               IENT1 = 1
+            ELSE
 C            LA CARTE A ETE ETENDUE
-                CALL JEVEUO(CARTE1//'.PTMA','L',IAPTMA)
-                IENT1 = ZI(IAPTMA-1+IMAV)
-              END IF
-              NOMGD1 = ZK24(IREF+4)
-            END IF
+               IENT1 = ZI(IAPTM1 -1 +IMAV)
+            ENDIF
+            NUMGD1 = ZI(IREF1+9)
+            NOMGD1 = ZK8(IAGD-1+NUMGD1)
+          ENDIF
+C
+          IF (IADE2 .NE. 0) THEN
 
-            IF (CARTE2.NE.' ') THEN
-
-              IMAV = ZI(IVOIS+IFA)
-              CALL JEEXIN(CARTE2//'.PTMA',IRET)
-              IF (IRET.EQ.0) THEN
+            IMAV = ZI(IVOIS+IFA)
+            IF (IAPTM2 .EQ. 0) THEN
 C              CARTE CONSTANTE
-                IENT2 = 1
-              ELSE
+               IENT2 = 1
+            ELSE
 C            LA CARTE A ETE ETENDUE
-                CALL JEVEUO(CARTE2//'.PTMA','L',IAPTMA)
-                IENT2 = ZI(IAPTMA-1+IMAV)
-              END IF
-              NOMGD2 = ZK24(IREF2+4) (1:8)
-            END IF
+               IENT2 = ZI(IAPTM2 -1 +IMAV)
+            ENDIF
+            NUMGD2 = ZI(IREF2+9)
+            NOMGD2 = ZK8(IAGD-1+NUMGD2)
+          ENDIF
 
             PRES = .FALSE.
             FORC = .FALSE.
@@ -667,7 +608,7 @@ C   JACOBIEN
               JACO = SQRT(NX*NX+NY*NY+NZ*NZ)
 
               INO = NOE(IPG,IFA,ITYP)
-              IDEC = 6* (INO-1)
+              IDEC = NBCMP* (INO-1)
 
 C ---RECUPERATION DES CONTRAINTES AUX PTS DE GAUSS ----------
 
@@ -785,9 +726,11 @@ CAS DES PENTAEDRES
 
 CALCUL DE NUMEROTATION DU VOISIN -------
 
-            CALL JEVEUO(JEXNUM(MA//'.CONNEX',ZI(IVOIS)),'L',JAD)
-            CALL JEVEUO(JEXNUM(MA//'.CONNEX',ZI(IVOIS+IFA)),'L',JADV)
-
+            ICONX1 = ZI(IREF1+10)
+            ICONX2 = ZI(IREF1+11)
+            JAD  = ICONX1-1+ZI(ICONX2+ZI(IVOIS)-1)
+            JADV = ICONX1-1+ZI(ICONX2+ZI(IVOIS+IFA)-1)
+C
             IMAV = ZI(IVOIS+IFA)
             IGREL = ZI(IAREPE+2* (IMAV-1))
             IEL = ZI(IAREPE+2* (IMAV-1)+1)
@@ -825,8 +768,8 @@ C   JACOBIEN
               INO = NOE(IPG,IFA,ITYP)
               NCHER = ZI(JAD-1+INO)
               INOV = INDIIS(ZI(JADV),NCHER,1,NBNV)
-              IDEC1 = 6* (INO-1)
-              IDEC2 = 6* (INOV-1) + 6*NBNV* (IEL-1)
+              IDEC1 = NBCMP* (INO-1)
+              IDEC2 = NBCMP* (INOV-1) + NBCMP*NBNV* (IEL-1)
 
 C --- CALCUL DES SAUTS DE CONTRAINTES -----------------
 

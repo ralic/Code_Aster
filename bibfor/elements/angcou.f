@@ -1,8 +1,8 @@
-      SUBROUTINE ANGCOU(COOR,ZK1,IZK,ICOUDE,ZK2,RAYON,THETA,NNO,
+      SUBROUTINE ANGCOU(COOR,ZK1,IZK,ICOUDE,ZK2,RAYON,THETA,
      &    ANGL1,ANGL2,ANGL3,PGL1,PGL2,PGL3,OMEGA,DN1N2,EPSI,CRIT,ZK3)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/11/2001   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C ======================================================================
       REAL*8  ZK1(3),ZK2(3),AXE(3),ZZK1(3),ZZZK1(3),ZKINI(3),ZK3(3),R8PI
       REAL*8 COSTET,CT,ST,OMEGA,DN1N2,NX2,OMEGA2,NORME3,EPSI2,THEMAX
       REAL*8 PSCA
-      INTEGER NNO
       CHARACTER*8  CRIT
 C ......................................................................
 C
@@ -35,7 +34,6 @@ C    - ARGUMENTS
 C        DONNEES:      COOR       -->  CORDONNEES DES NOEUDS
 C                      ZK1        -->  VECTEUR ZK A UN NOEUD EXTREMITE
 C                      IZK        -->  INDICE DE PARCOURS
-C                      NNO        -->  NOMBRE DE NOEUDS
 C                      EPSI       -->  PRECISION POUR LE CALCUL
 C                      CRIT       -->  RELATIF OU ABSOLU
 C         SORTIE:      ICOUDE     -->  =0 DROIT =1 COUDE

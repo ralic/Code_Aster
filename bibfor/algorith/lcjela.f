@@ -1,9 +1,8 @@
-        SUBROUTINE LCJELA ( LOI  , MOD , IMAT,  NMAT, MATER, NVI,
-     1                      TEMP,  TIME, DEPS,  EPSD, SIG ,  VIN, DSDE )
+        SUBROUTINE LCJELA ( LOI  , MOD ,  NMAT, MATER,  VIN, DSDE )
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/03/2002   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,23 +23,14 @@ C       ----------------------------------------------------------------
 C       MATRICE SYMETRIQUE DE COMPORTEMENT TANGENT ELASTIQUE A T+DT OU T
 C       IN  LOI    :  MODELE DE COMPORTEMENT
 C           MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATER  :  COEFFICIENTS MATERIAU
-C           TEMP   :  TEMPERATURE
-C           TIME   :  INSTANT
-C           DEPS   :  INCREMENT DE DEFORMATION
-C           EPSD   :  DEFORMATION A T
-C           SIG    :  CONTRAINTE
 C           VIN    :  VARIABLES INTERNES
-C           NVI    :  NB VARIABLES INTERNES
-C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
+C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NMAT , NVI
+        INTEGER         NMAT
         REAL*8          DSDE(6,6)
-        REAL*8          SIG(6)   , EPSD(6) , DEPS(6)
         REAL*8          VIN(*)
-        REAL*8          TIME, TEMP
         REAL*8          MATER(NMAT,2)
         CHARACTER*8     MOD
         CHARACTER*16    LOI

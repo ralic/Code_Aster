@@ -1,19 +1,19 @@
       SUBROUTINE ACECEL (NOMA,NOMO,NBOCC,NBEPO,NBEDI,NBECO,NBECA,NBEBA,
-     +                   NBEMA,NBEGR,NBEGB,NBTEL,NTYELE,NPOUTR,NDISCR,
+     +                   NBEMA,NBEGR,NBTEL,NTYELE,NPOUTR,NDISCR,
      +                   NCOQUE,NCABLE,NBARRE,NMASSI,NGRILL,NGRIBT,
      +                   JDLM,JDLN,IER)
                                           
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       INTEGER           NBOCC(*),NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEMA,
-     +                  NBEGR,NBEGB,NBTEL
+     +                  NBEGR,NBTEL
       INTEGER           NTYELE(*),NPOUTR,NDISCR,NCOQUE,NCABLE,NBARRE,
      +                  NMASSI,NGRILL,NGRIBT
 C
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/01/97   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C       ======================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/08/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 18/11/2003   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C
        REAL*8        RP, DRDP, D13, UN, UNMF, UNEX, DUNEX
        REAL*8        DRIGM, DDP, ACC, EXPO, DEXPO,PTHETA
        REAL*8        COEFFC, THETA, FTHETA , FTOT, ANN, ZERO
-       REAL*8        SIG0, EPS0, MEXPO, EXPLUS, PUISS
+       REAL*8        SIG0, EPS0, MEXPO, EXPLUS, PUISS, R8MIEM
        REAL*8        SEUIL, DSEUIL, DPUISS, ASINH, LV1, LV2, LV3
 C
        LOGICAL       OVERFL
@@ -88,7 +88,11 @@ C ----- AN NON NUL---------------
          COEFFB = FTHETA + ANN*PI 
          COEFFC  = DF/UNEX
          DISCRI  = COEFFB**2 + DEUX*COEFFA*COEFFC
-         DP=(-COEFFB+SQRT(DISCRI))/COEFFA
+         IF(COEFFC.LE.R8MIEM()) THEN
+            DP=0.D0
+         ELSE
+            DP=(-COEFFB+SQRT(DISCRI))/COEFFA
+         ENDIF
          DDP=((UN-DF*DUNEX/UNEX )/UNEX -THETA*DP)/(COEFFA*DP+COEFFB)
        ENDIF
        P = PI+DP

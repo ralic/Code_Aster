@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOM 
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 01/12/2000   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF UTILITAI  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,13 @@ C     +            //' IDEAS, CONVERTI EN QUA8')
       ELSEIF ( NOMMAI .EQ. 'HEXA20'  ) THEN
         ITYPE = 116
       ELSEIF ( NOMMAI .EQ. 'HEXA27'  ) THEN
+C        CALL UTMESS('A','UTIDEA','HEXA27 ELEMENT INEXISTANT DANS'
+C     +            //' IDEAS, CONVERTI EN HEXA20')
+        ITYPE = 116
+      ELSEIF ( NOMMAI .EQ. 'PYRAM5'  ) THEN
         ITYPE = 6000
+      ELSEIF ( NOMMAI .EQ. 'PYRAM13'  ) THEN
+        ITYPE = 6001
       ENDIF
 C
       END

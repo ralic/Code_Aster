@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,10 +50,10 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER       IPOIDS,IVF,IDFDE,IDFDK,IGEOM,ICODE
+      INTEGER       IPOIDS,IVF,IDFDE,IGEOM,ICODE
       INTEGER       ITHET,IALPH,IE1,IE2,IE3,IE4,MATER,NNO,KP,NPG1,NDIM
       INTEGER       IDEPL,ITREF,ITEMPE,IMATE,IFORC,IFORF,IGTHET
-      INTEGER       COMPT,JIN,JVAL,I,J,K,IDEFI,ITEMPS
+      INTEGER       COMPT,I,J,K,IDEFI,ITEMPS,NNOS,JGANO
 C
       REAL*8        G,TPG,C1,C2,C3,R,ALPHA
       REAL*8        CP1,CP2,CP3,DP1,DP2,DP3,EXX,EYY,EXY,EZZ
@@ -70,30 +70,14 @@ C                      NDIM*NNO
       REAL*8        FORCN(18)
 C
       CHARACTER*2   CODRET(3)
-      CHARACTER*8   NOMRES(3), NOMPAR(3),ELREFE
-      CHARACTER*24  CHVAL, CHCTE
+      CHARACTER*8   NOMRES(3), NOMPAR(3)
 C
       LOGICAL       FONC
 C.......................................................................
 C
-      CALL ELREF1(ELREFE)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
       CALL JEMARQ()
-
-
       EPS = 1.D-10
-      CHCTE  = '&INEL.'//ELREFE//'.CARAC'
-      CALL JEVEUO(CHCTE,'L',JIN)
-      NNO  = ZI(JIN)
-      NDIM = 2
-      NPG1 = ZI(JIN+2)
-C
-      CHVAL = '&INEL.'//ELREFE//'.FF'
-      CALL JEVEUO(CHVAL,'L',JVAL)
-C
-      IPOIDS = JVAL
-      IVF    = IPOIDS + NPG1
-      IDFDE  = IVF    + NPG1*NNO
-      IDFDK  = IDFDE  + NPG1*NNO
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PDEPLAR','L',IDEPL)
@@ -186,8 +170,7 @@ C
           THETY = THETY + VF*ZR(ITHET+2* (I-1)+1)
   300   CONTINUE
 C
-        CALL DFDM2D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &              ZR(IGEOM),DFDX,DFDY,POIDS)
+        CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
 C
         IF (FONC) THEN
           VALPAR(1) = XG + ALPHA*THETX

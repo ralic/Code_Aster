@@ -4,7 +4,7 @@
       CHARACTER*(*) SUFFI2
 C ----------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/12/2001   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,7 +106,7 @@ C --- LECTURE DES PARAMETRES RELATIFS AU MOT FACTEUR SOLVEUR
      &          ' LA SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS (SUBD_PAS)'
      &                )
         ELSE
-          ISTOP = 2
+          ISTOP = 1
         END IF
       END IF
 

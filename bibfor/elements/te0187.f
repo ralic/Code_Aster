@@ -1,6 +1,6 @@
       SUBROUTINE TE0187(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,10 +38,10 @@ C.......................................................................
       COMPLEX*16 VITX(27),VITY(27),VITZ(27)
 
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),JAC
-      INTEGER IDFDE,IDFDN,IDFDK,IGEOM,IDINO,IPINO
+      INTEGER IDFDE,IGEOM,IDINO,IPINO
 
       INTEGER IINTE,IPRES,IMATE,IFREQ
-      INTEGER JGANO,NNO,INO,I,J
+      INTEGER JGANO,NNO,INO,I
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -49,8 +49,6 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /CVARJE/ZC(1)
       COMMON /LVARJE/ZL(1)
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      COMMON /NOMAJE/PGC
-      CHARACTER*6 PGC
       INTEGER ZI
       REAL*8 ZR
       COMPLEX*16 ZC
@@ -64,8 +62,6 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CALL JEMARQ()
       CALL ELREF4(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PINTEAC','E',IINTE)
@@ -90,9 +86,8 @@ C    BOUCLE SUR LES NOEUDS
 
         IDINO = IINTE + (INO-1)*3 - 1
         IPINO = IPRES + INO - 1
-        K = (INO-1)*3*NNO
-        CALL DFDM3D(NNO,1.D0,ZR(IDFDE+K),ZR(IDFDN+K),ZR(IDFDK+K),
-     &              ZR(IGEOM),DFDX,DFDY,DFDZ,JAC)
+        CALL DFDM3D ( NNO, INO, IPOIDS, IDFDE,
+     &                ZR(IGEOM), DFDX, DFDY, DFDZ, JAC )
 
         VITX(INO) = (0.0D0,0.0D0)
         VITY(INO) = (0.0D0,0.0D0)

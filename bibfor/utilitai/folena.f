@@ -1,12 +1,12 @@
       SUBROUTINE FOLENA
-     +               ( NOMCMD, IFS,NPS,VAR,NBPARA,PARA,SPECTR,IER)
+     +               ( NOMCMD,NPS,VAR,NBPARA,PARA,SPECTR,IER)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER            IFS,NPS,    NBPARA
+      INTEGER            NPS,    NBPARA
       REAL*8                   VAR(*),  PARA(*),SPECTR(NPS,*)
       CHARACTER*16     NOMCMD
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 02/10/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C ======================================================================
 C     LECTURE D'UN SPECTRE D'OSCILLATEUR  /NORME SISPOU/
 C     ------------------------------------------------------------------
 C IN  NOMCMD : K16 : NOM DE LA COMMANDE
-C IN  IFS    : I   : NUMERO LOGIQUE DU FICHIER DE LECTURE
 C IN  NPS    : I   : NOMBRE DE POINT PAR FONCTION
 C IN  NBPARA : I   : NOMBRE DE PARAMETRE
 C OUT PARA   : R   : LISTE DES VALEURS DES PARAMETRES

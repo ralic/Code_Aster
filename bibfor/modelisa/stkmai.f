@@ -1,9 +1,9 @@
         SUBROUTINE STKMAI(IFL,ICL,IV,RV,CV,CNL,MCL,NBM,NUME,NUMN,
-     +  CNX,TYP,FMT,DIM,IRTETI)
+     +  CNX,TYP,FMT,IRTETI)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 01/09/2003   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C       ----------------------------------------------------------------
 C       IN      IFL,ICL,IV,RV,CV,CNL = VOIR LIRITM
 C               MCL             = MOTS CLES TYPE MAILLE
 C               NBM             = NB DE MOTS CLES TYPE MAILLE
-C               DIM             = DIMENSIONS OBJETS MAILLE
 C               FMT             = NB NOEUDS A LIRE / MAILLE
 C               CNX             = NOMU.CONXV
 C               TYP             = NOMU.TYPMAIL ASSOCIE A NOMU.NOMMAI
@@ -40,7 +39,7 @@ C       ----------------------------------------------------------------
 C
         REAL*8          RV
         CHARACTER*8     MCL(NBM),       NOMA,           NOM,      B8
-        INTEGER         DEBLIG,         DIM(NBM),       FMT(NBM)
+        INTEGER         DEBLIG,       FMT(NBM)
         CHARACTER*14    CNL
         CHARACTER*(*)   CV
         CHARACTER*32    JEXNOM
@@ -96,7 +95,7 @@ C
 C - LIRE ITEM SUIVANT = NOM DE MAILLE ?
 C
  7      CONTINUE
-        CALL LIRITM(IFL,IFM,ICL,IV,RV,CV,CNL,DEBLIG,2)
+        CALL LIRITM(IFL,ICL,IV,RV,CV,CNL,DEBLIG,2)
  9      CONTINUE
 C
 C - ITEM = MOT  CLE FIN  OU FINSF ?
@@ -122,7 +121,7 @@ C
         ZI(IADT+NUME) = NUMTCL
 C
         DO 6      I = 1,FMT(NUMTCL)
-        CALL LIRITM(IFL,IFM,ICL,IV,RV,CV,CNL,DEBLIG,2)
+        CALL LIRITM(IFL,ICL,IV,RV,CV,CNL,DEBLIG,2)
         NOM       = B8
         NOM(1:IV) = CV(1:IV)
 C

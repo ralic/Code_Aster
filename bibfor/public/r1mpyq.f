@@ -1,0 +1,92 @@
+      SUBROUTINE R1MPYQ ( M, N, A, LDA, V, W )
+      IMPLICIT   NONE
+      INTEGER    M, N, LDA
+      REAL*8     A(LDA,N), V(N), W(N)
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF PUBLIC  DATE 29/10/2003   AUTEUR BOYERE E.BOYERE 
+C-----------------------------------------------------------------------
+C COPYRIGHT (C) ARGONNE NATIONAL LABORATORY. MINPACK PROJECT. MARCH 1980
+C               BURTON S. GARBOW, KENNETH E. HILLSTROM, JORGE J. MORE
+C-----------------------------------------------------------------------
+C     SUBROUTINE R1MPYQ
+C
+C     GIVEN AN M BY N MATRIX A, THIS SUBROUTINE COMPUTES A*Q WHERE
+C     Q IS THE PRODUCT OF 2*(N - 1) TRANSFORMATIONS
+C
+C           GV(N-1)*...*GV(1)*GW(1)*...*GW(N-1)
+C
+C     AND GV(I), GW(I) ARE GIVENS ROTATIONS IN THE (I,N) PLANE WHICH
+C     ELIMINATE ELEMENTS IN THE I-TH AND N-TH PLANES, RESPECTIVELY.
+C     Q ITSELF IS NOT GIVEN, RATHER THE INFORMATION TO RECOVER THE
+C     GV, GW ROTATIONS IS SUPPLIED.
+C
+C     THE SUBROUTINE STATEMENT IS
+C
+C       SUBROUTINE R1MPYQ(M,N,A,LDA,V,W)
+C
+C     WHERE
+C
+C       M IS A POSITIVE INTEGER INPUT VARIABLE SET TO THE NUMBER
+C         OF ROWS OF A.
+C
+C       N IS A POSITIVE INTEGER INPUT VARIABLE SET TO THE NUMBER
+C         OF COLUMNS OF A.
+C
+C       A IS AN M BY N ARRAY. ON INPUT A MUST CONTAIN THE MATRIX
+C         TO BE POSTMULTIPLIED BY THE ORTHOGONAL MATRIX Q
+C         DESCRIBED ABOVE. ON OUTPUT A*Q HAS REPLACED A.
+C
+C       LDA IS A POSITIVE INTEGER INPUT VARIABLE NOT LESS THAN M
+C         WHICH SPECIFIES THE LEADING DIMENSION OF THE ARRAY A.
+C
+C       V IS AN INPUT ARRAY OF LENGTH N. V(I) MUST CONTAIN THE
+C         INFORMATION NECESSARY TO RECOVER THE GIVENS ROTATION GV(I)
+C         DESCRIBED ABOVE.
+C
+C       W IS AN INPUT ARRAY OF LENGTH N. W(I) MUST CONTAIN THE
+C         INFORMATION NECESSARY TO RECOVER THE GIVENS ROTATION GW(I)
+C         DESCRIBED ABOVE.
+C-----------------------------------------------------------------------
+      INTEGER   I, J, NMJ, NM1
+      REAL*8    COS, ONE, SIN, TEMP
+C
+      DATA  ONE / 1.0D0 /
+C     ------------------------------------------------------------------
+C
+C     APPLY THE FIRST SET OF GIVENS ROTATIONS TO A.
+C
+      NM1 = N - 1
+      IF (NM1 .LT. 1) GO TO 50
+      DO 20 NMJ = 1, NM1
+         J = N - NMJ
+         IF (ABS(V(J)) .GT. ONE) COS = ONE/V(J)
+         IF (ABS(V(J)) .GT. ONE) SIN = SQRT(ONE-COS**2)
+         IF (ABS(V(J)) .LE. ONE) SIN = V(J)
+         IF (ABS(V(J)) .LE. ONE) COS = SQRT(ONE-SIN**2)
+         DO 10 I = 1, M
+            TEMP = COS*A(I,J) - SIN*A(I,N)
+            A(I,N) = SIN*A(I,J) + COS*A(I,N)
+            A(I,J) = TEMP
+ 10      CONTINUE
+ 20   CONTINUE
+C
+C     APPLY THE SECOND SET OF GIVENS ROTATIONS TO A.
+C
+      DO 40 J = 1, NM1
+         IF (ABS(W(J)) .GT. ONE) COS = ONE/W(J)
+         IF (ABS(W(J)) .GT. ONE) SIN = SQRT(ONE-COS**2)
+         IF (ABS(W(J)) .LE. ONE) SIN = W(J)
+         IF (ABS(W(J)) .LE. ONE) COS = SQRT(ONE-SIN**2)
+         DO 30 I = 1, M
+            TEMP = COS*A(I,J) + SIN*A(I,N)
+            A(I,N) = -SIN*A(I,J) + COS*A(I,N)
+            A(I,J) = TEMP
+ 30      CONTINUE
+ 40   CONTINUE
+C
+ 50   CONTINUE
+C
+C     LAST CARD OF SUBROUTINE R1MPYQ.
+C
+      END

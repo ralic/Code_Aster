@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,16 +46,12 @@ C     --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------------
       REAL*8 VALRES(NBRES)
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS,VOLUME
       REAL*8 X(27),Y(27),Z(27),XG,YG,ZG,MATINE(6)
-      INTEGER IPOIDS,IVF,IDFDE,IDFDN,IDFDK,IGEOM
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM
       INTEGER JGANO,NNO,KP,NPG,I,J,IMATE
 C     ------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
 
       ZERO = 0.D0
-      DO 10 I = 1,1
-   10 CONTINUE
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -84,9 +80,8 @@ C     --- BOUCLE SUR LES POINTS DE GAUSS
       VOLUME = 0.D0
       DO 70 KP = 1,NPG
         L = (KP-1)*NNO
-        K = (KP-1)*NNO*3
-        CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &              ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POIDS)
+        CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
 
         VOLUME = VOLUME + POIDS
         DO 60 I = 1,NNO

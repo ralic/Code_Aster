@@ -1,7 +1,7 @@
       SUBROUTINE POINCO (CHAR,MOTFAZ,NOMAZ,NZOCO,NSUCO,NMACO,NNOCO,
      +                   NNOQUA,PZONE,PSURMA,PSURNO,PNOQUA,NTRAV)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
+C MODIF MODELISA  DATE 01/12/2003   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C
       CHARACTER*8  NOMTM, MOTCLE
       CHARACTER*1  K1BID
       CHARACTER*8  K8BID,NOMA,NOMAIL
-      CHARACTER*16 MOTFAC,TYPF
+      CHARACTER*16 MOTFAC,TYPF,PROJ
 C
 C ----------------------------------------------------------------------
 C
@@ -101,32 +101,34 @@ C
       DO 10 IOC = 1,NZOCO
 C
          CALL GETVTX (MOTFAC,'METHODE',IOC,1,1,TYPF,NOC)
-        IF(TYPF(1:8).EQ.'PENALISA') THEN
-             CALL GETVR8 (MOTFAC,'E_N',1,1,1,COEFPN, NOCN)
-             IF(NOCN.NE.0) INDICE=1
-        ENDIF
-        IF(TYPF(1:8).EQ.'CONTINUE') THEN
-             INDICE=1
+         CALL GETVTX (MOTFAC,'PROJECTION',IOC,1,1,PROJ,NOC)         
+         IF (TYPF(1:8).EQ.'PENALISA') THEN
+            CALL GETVR8 (MOTFAC,'E_N',1,1,1,COEFPN, NOCN)
+            IF(NOCN.NE.0) INDICE=1
+         ELSEIF(TYPF(1:8).EQ.'CONTINUE') THEN
+            INDICE=1
          ENDIF
-C                
-         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_1',
-     +            IOC,1,0,K8BID,NG1)
-         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_2',
-     +            IOC,1,0,K8BID,NG2)
-         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_1',
-     +          IOC,1,0,K8BID,NM1)
-         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_2',
-     +          IOC,1,0,K8BID,NM2)
+C        ACTIVATION  DE LA PROJECTION QUADRATIQUE       
+        IF (PROJ.EQ.'QUADRATIQUE') THEN
+           INDICE = 1
+        ENDIF
+C
+         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_ESCL',
+     +                                       IOC,1,0,K8BID,NG1)
+         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_MAIT',
+     +                                       IOC,1,0,K8BID,NG2)
+         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_ESCL',
+     +                                     IOC,1,0,K8BID,NM1)
+         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_MAIT',
+     +                                     IOC,1,0,K8BID,NM2)
          IF (NG1.NE.0) NSUCO = NSUCO + 1
          IF (NG2.NE.0) NSUCO = NSUCO + 1
          IF (NM1.NE.0) NSUCO = NSUCO + 1
          IF (NM2.NE.0) NSUCO = NSUCO + 1
          NG0 = 0
          NM0 = 0
-C     CALL GETVEM(XXX,'GROUP_MA',MOTFAC,'GROUP_MA',IOC,1,0,K8BID,NG0)
-C     CALL GETVEM(XXX,'MAILLE',MOTFAC,'MAILLE',IOC,1,0,K8BID,NM0)
          NTOT = ABS(NG1) + ABS(NG2) + ABS(NM1) + ABS(NM2)
-     +        + ABS(NG0) + ABS(NM0)
+     +          + ABS(NG0) + ABS(NM0)
          NTRAV = MAX (NTRAV,NTOT)
          NSUCO = NSUCO + ABS(NG0) + ABS(NM0)
 C
@@ -151,16 +153,19 @@ C
       ISURF = 0
 C
       DO 20 IOC = 1,NZOCO
+
+        IF(TYPF(1:8).EQ.'CONTINUE') THEN
 C
-C --- MOT-CLE GROUP_MA_1
+C ----- METHODE CONTINUE : ON STOCKE D ABORD ----------
+C       LES ESCLAVES
 C
-         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_1',
-     +            IOC,1,0,K8BID,NG)
+         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_ESCL',
+     +                                       IOC,1,0,K8BID,NG)
          IF (NG.NE.0) THEN
              MOTCLE = 'GROUP_MA'
              NG = -NG
              ISURF = ISURF + 1
-             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_1',
+             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_ESCL',
      +                IOC,1,NG,ZK8(JBID),NGR)
              CALL NBNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),INDICE,
      +                   NBMA,NBNO,NBNOQU)
@@ -169,15 +174,15 @@ C
              ZI(JNOQUA + ISURF) = ZI(JNOQUA + ISURF-1) + NBNOQU
          END IF
 C
-C --- MOT-CLE MAILLE_1
+C ------ MOT-CLE MAILLE_ESCL
 C
-         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_1',
-     +          IOC,1,0,K8BID,NBMA)
+         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_ESCL',
+     +                                     IOC,1,0,K8BID,NBMA)
          IF (NBMA.NE.0) THEN
              MOTCLE = 'MAILLE'
              NBMA   = -NBMA
              ISURF = ISURF + 1
-             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_1',
+             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_ESCL',
      +              IOC,1,NBMA,ZK8(JBID),NMAI)
              CALL NBNOEL(CHAR,NOMA,MOTCLE,0,ZK8(JBID),INDICE,
      +                   NBMA,NBNO,NBNOQU)
@@ -186,15 +191,15 @@ C
              ZI(JNOQUA + ISURF) = ZI(JNOQUA + ISURF-1) + NBNOQU
          ENDIF
 C
-C --- MOT-CLE GROUP_MA_2
+C ------ MOT-CLE GROUP_MA_MAIT
 C
-         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_2',
-     +            IOC,1,0,K8BID,NG)
+         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_MAIT',
+     +                                       IOC,1,0,K8BID,NG)
          IF (NG.NE.0) THEN
              MOTCLE = 'GROUP_MA'
              NG = -NG
              ISURF = ISURF + 1
-             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_2',
+             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_MAIT',
      +                IOC,1,NG,ZK8(JBID),NGR)
              CALL NBNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),
      +                   INDICE,NBMA,NBNO,NBNOQU)
@@ -203,15 +208,15 @@ C
              ZI(JNOQUA + ISURF) = ZI(JNOQUA + ISURF-1) + NBNOQU
          END IF
 C
-C --- MOT-CLE MAILLE_2
+C ------ MOT-CLE MAILLE_MAIT
 C
-         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_2',
-     +          IOC,1,0,K8BID,NBMA)
+         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_MAIT',
+     +                                     IOC,1,0,K8BID,NBMA)
          IF (NBMA.NE.0) THEN
              MOTCLE = 'MAILLE'
              NBMA   = -NBMA
              ISURF = ISURF + 1
-             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_2',
+             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_MAIT',
      +              IOC,1,NBMA,ZK8(JBID),NMAI)
              CALL NBNOEL(CHAR,NOMA,MOTCLE,0,ZK8(JBID),INDICE,
      +                   NBMA,NBNO,NBNOQU)
@@ -220,42 +225,78 @@ C
              ZI(JNOQUA + ISURF) = ZI(JNOQUA + ISURF-1) + NBNOQU
          ENDIF
 C
-C --- MOT-CLE GROUP_MA
+       ELSE
 C
-C     CALL GETVEM(XXX,'GROUP_MA',MOTFAC,'GROUP_MA',IOC,1,0,K8BID,NG)
-C         IF (NG.NE.0) THEN
-C             NG = -NG
-C             DO 27 II1 = 1, NGR
-C                ISURF = ISURF + 1
-C                NBNO = 0
-C                CALL JEVEUO (JEXNOM(GRMAMA,ZK8(JBID+II1-1)),'L',JGRO)
-C                CALL JELIRA (JEXNOM(GRMAMA,ZK8(JBID+II1-1)),'LONMAX',
-C     &                       NBMAIL,K1BID)
-C                ZI(JSUMA+ISURF) = ZI(JSUMA+ISURF-1) + NBMAIL
-C                DO 28 II2 = 1, NBMAIL
-C                  NUMAIL = ZI(JGRO-1+II2)
-C                  CALL JENUNO(JEXNUM(MAILMA,NUMAIL),NOMAIL)
-C                  CALL JELIRA (JEXNOM(NOMA//'.CONNEX',NOMAIL),'LONMAX',
-C     &                         N1,K1BID)
-C                  NBNO = NBNO + N1
-C 28            CONTINUE
-C               ZI(JSUNO+ISURF) = ZI(JSUNO+ISURF-1) + NBNO
-C 27          CONTINUE
-C         END IF
+C ------ LES AUTRES METHODES ON STOCKE D ABORD LES MAITRES
 C
-C --- MOT-CLE MAILLE
+C ------ MOT-CLE GROUP_MA_MAIT
 C
-C     CALL GETVEM(XXX,'MAILLE',MOTFAC,'MAILLE',IOC,1,0,K8BID,NBMA)
-C         IF (NBMA.NE.0) THEN
-C             NBMA = -NBMA
-C             DO 29 II1 = 1, NMAI
-C                ISURF = ISURF + 1
-C                CALL JELIRA (JEXNOM(NOMA//'.CONNEX',ZK8(JBID+II1-1)),
-C     &                       'LONMAX',NBNO,K1BID)
-C                ZI(JSUMA+ISURF) = ZI(JSUMA+ISURF-1) + NBMA
-C                ZI(JSUNO+ISURF) = ZI(JSUNO+ISURF-1) + NBNO
-C 29          CONTINUE
-C         ENDIF
+         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_MAIT',
+     +                                       IOC,1,0,K8BID,NG)
+         IF (NG.NE.0) THEN
+             MOTCLE = 'GROUP_MA'
+             NG = -NG
+             ISURF = ISURF + 1
+             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_MAIT',
+     +                IOC,1,NG,ZK8(JBID),NGR)
+             CALL NBNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),INDICE,
+     +                   NBMA,NBNO,NBNOQU)
+             ZI(JSUMA  + ISURF) = ZI(JSUMA  + ISURF-1) + NBMA
+             ZI(JSUNO  + ISURF) = ZI(JSUNO  + ISURF-1) + NBNO
+             ZI(JNOQUA + ISURF) = ZI(JNOQUA + ISURF-1) + NBNOQU
+         END IF
+C
+C ------ MOT-CLE MAILLE_MAIT
+C
+         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_MAIT',
+     +                                     IOC,1,0,K8BID,NBMA)
+         IF (NBMA.NE.0) THEN
+             MOTCLE = 'MAILLE'
+             NBMA   = -NBMA
+             ISURF = ISURF + 1
+             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_MAIT',
+     +                                       IOC,1,NBMA,ZK8(JBID),NMAI)
+             CALL NBNOEL(CHAR,NOMA,MOTCLE,0,ZK8(JBID),INDICE,
+     +                   NBMA,NBNO,NBNOQU)
+             ZI(JSUMA  + ISURF) = ZI(JSUMA  + ISURF-1) + NBMA
+             ZI(JSUNO  + ISURF) = ZI(JSUNO  + ISURF-1) + NBNO
+             ZI(JNOQUA + ISURF) = ZI(JNOQUA + ISURF-1) + NBNOQU
+         ENDIF
+C
+C ------ MOT-CLE GROUP_MA_ESCL
+C
+         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_ESCL',
+     +                                       IOC,1,0,K8BID,NG)
+         IF (NG.NE.0) THEN
+             MOTCLE = 'GROUP_MA'
+             NG = -NG
+             ISURF = ISURF + 1
+             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA_ESCL',
+     +                                          IOC,1,NG,ZK8(JBID),NGR)
+             CALL NBNOEL(CHAR,NOMA,MOTCLE,NGR,ZK8(JBID),
+     +                   INDICE,NBMA,NBNO,NBNOQU)
+             ZI(JSUMA  + ISURF) = ZI(JSUMA  + ISURF-1) + NBMA
+             ZI(JSUNO  + ISURF) = ZI(JSUNO  + ISURF-1) + NBNO
+             ZI(JNOQUA + ISURF) = ZI(JNOQUA + ISURF-1) + NBNOQU
+         END IF
+C
+C ------ MOT-CLE MAILLE_ESCL
+C
+         CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_ESCL',
+     +                                     IOC,1,0,K8BID,NBMA)
+         IF (NBMA.NE.0) THEN
+             MOTCLE = 'MAILLE'
+             NBMA   = -NBMA
+             ISURF = ISURF + 1
+             CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE_ESCL',
+     +                                       IOC,1,NBMA,ZK8(JBID),NMAI)
+             CALL NBNOEL(CHAR,NOMA,MOTCLE,0,ZK8(JBID),INDICE,
+     +                   NBMA,NBNO,NBNOQU)
+             ZI(JSUMA  + ISURF) = ZI(JSUMA  + ISURF-1) + NBMA
+             ZI(JSUNO  + ISURF) = ZI(JSUNO  + ISURF-1) + NBNO
+             ZI(JNOQUA + ISURF) = ZI(JNOQUA + ISURF-1) + NBNOQU
+         ENDIF
+        ENDIF
 C
  20   CONTINUE
 C

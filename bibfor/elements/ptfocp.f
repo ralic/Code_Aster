@@ -1,13 +1,13 @@
-      SUBROUTINE PTFOCP(ITYPE,OPTION,NOMTE,A,A2,XL,RAD,ANGS2,IST,
+      SUBROUTINE PTFOCP(ITYPE,OPTION,NOMTE,XL,RAD,ANGS2,
      +                  NNO,NC,PGL,PGL1,PGL2, FER, FEI )
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER           ITYPE
       CHARACTER*(*)           OPTION,NOMTE
       REAL*8            FER(12),FEI(12),PGL(3,3),PGL1(3,3),PGL2(3,3)
-      REAL*8                               A,A2,XL,RAD,ANGS2
+      REAL*8                               XL,RAD,ANGS2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

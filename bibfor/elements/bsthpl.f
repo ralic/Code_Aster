@@ -5,7 +5,7 @@
       CHARACTER*8         NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER       I, ICOMPX, JGEOM, LZI, NNO
+      INTEGER       I, ICOMPX, JGEOM, NNO
       REAL*8        PGL(3,3), XYZL(3,4), TSUP(4), TMOY(4), TINF(4),
      +              SIGTH(32), ZERO
       CHARACTER*16  TYPELE, OPTION
@@ -72,25 +72,24 @@ C     ----------------------------------------
 C
       IF (.NOT.INDITH) GOTO 9999
 C
-C --- RECUPERATION DE L'OBJET .DESI :
-C     -----------------------------
-      CALL JEVETE('&INEL.'//NOMTE//'.DESI',' ',LZI)
-C
-C --- NOMBRE DE NOEUDS :
-C     ----------------
-      NNO = ZI(LZI)
-C
 C --- RECUPERATION DES COORDONNEES DES NOEUDS DE L'ELEMENT :
 C     ----------------------------------------------------
       CALL JEVECH('PGEOMER','L',JGEOM)
 C
-C --- DETERMINATION DE LA MATRICE DE PASSAGE REPERE GLOBAL --> LOCAL :
-C     --------------------------------------------------------------
-      IF (NNO.EQ.3) THEN
-        CALL DXTPGL(ZR(JGEOM),PGL)
-      ELSEIF (NNO.EQ.4) THEN
-        CALL DXQPGL(ZR(JGEOM),PGL)
-      ENDIF
+      IF (NOMTE.EQ.'MEDKTR3 ' .OR. NOMTE.EQ.'MEDSTR3 ' .OR.
+     +    NOMTE.EQ.'MEGRDKT'  .OR. NOMTE.EQ.'MEDKTG3 ') THEN
+         NNO = 3
+         CALL DXTPGL(ZR(JGEOM),PGL)
+      ELSE IF (NOMTE.EQ.'MEDKQU4 ' .OR.
+     +         NOMTE.EQ.'MEDKQG4 ' .OR.
+     +         NOMTE.EQ.'MEDSQU4 ' .OR.
+     +         NOMTE.EQ.'MEQ4QU4 ') THEN
+         NNO = 4
+         CALL DXQPGL(ZR(JGEOM),PGL)
+      ELSE
+         CALL UTMESS('F','BSTHPL','LE TYPE D''ELEMENT : '//NOMTE//
+     +                            'N''EST PAS PREVU.')
+      END IF
 C
 C --- DETERMINATION DES COORDONNEES LOCALES XYZL DES NOEUDS  
 C --- DE L'ELEMENT :

@@ -3,12 +3,11 @@
      &                  AMOR,AMOR0,PULS,PULS0,
      &                  ACC,VIT,DEP,ACC0,VIT0,DEP0,
      &                  ACCG,VITG,DEPG,ACCG0,VITG0,DEPG0,
-     &                  VITGT,DEPGT,FMODT,
      &                  TCONF1,FTEST0,TCONF2,FTEST)
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/05/2000   AUTEUR KXBADNG T.KESTENS 
+C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +41,6 @@ C ---------
      &         ACC0(3,*) , VIT0(3,*) , DEP0(3,*),
      &         ACCG(*) , VITG(*) , DEPG(*),
      &         ACCG0(*), VITG0(*), DEPG0(*),
-     &         VITGT(*) , DEPGT(*), FMODT(*),
      &         TCONF1(4,*), FTEST0, TCONF2(4,*), FTEST
 C
 C VARIABLES LOCALES

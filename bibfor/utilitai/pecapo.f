@@ -1,10 +1,10 @@
-      SUBROUTINE PECAPO(RESU,MODELE,MATE,CARA,NCHAR,LCHAR,NH,NBOCC)
+      SUBROUTINE PECAPO(RESU,MODELE,CARA,NCHAR,LCHAR,NH,NBOCC)
       IMPLICIT   NONE
       INTEGER           NCHAR, NH, NBOCC
-      CHARACTER*(*)     RESU, MODELE, MATE, CARA, LCHAR(*)
+      CHARACTER*(*)     RESU, MODELE, CARA, LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/12/2001   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,12 +43,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      NBTORS, NBGAUC, NBCISA, IOCC, IRET, NT, IBID, NOPT,
      +             NTAB, NCT, ILIGN, NCTY, NCTZ, NGM ,IFM, NIV, NGI, 
-     +             NGRI, IDGRMI
-      PARAMETER    ( NBTORS = 1 , NBGAUC = 1 , NBCISA = 8 )
-      REAL*8       VALPAR(NBCISA), AY, AZ, EY, EZ, PCTX, PCTY, R8B,
+     +             NGRI, IDGRMI, NRT, J, JP, JV, NBPAR, JN, I, NBRT
+      PARAMETER    ( NBTORS = 1 , NBGAUC = 1 , NBCISA = 8 , NBRT = 1 )
+      REAL*8       VALPAR(NBCISA), AY, AZ, EY, EZ, PCTX, PCTY, R8B,RT,
      +             CT, S, XG, YG, IY, IZ, ALPHA, IOMEGA,DXG,DYG,YGI,ZGI
       CHARACTER*8  K8B, NOMA, NOMAIL, NOGRMA, TEMPER, TEMPE1, TEMPE2,
-     +             PTORS(NBTORS), PGAUC(NBGAUC), PCISA(NBCISA), K8BID
+     +             PTORS(NBTORS), PGAUC(NBGAUC), PCISA(NBCISA), 
+     +             PRT(NBRT)
       CHARACTER*16 OPTION
       CHARACTER*19 NOMTAB
       CHARACTER*24 CHGEOM, CHCARA(15), CHHARM
@@ -60,7 +61,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*2 CODRET
       INTEGER ILIGNM,N1
 C     ------------------------------------------------------------------
-      DATA  PTORS / 'CT'      /
+      DATA  PTORS / 'CT'      / 
+      DATA  PRT   / 'RT'      /
       DATA  PGAUC / 'JG'      /
       DATA  PCISA / 'AY'      ,  'AZ'      ,  'EY'      ,  'EZ'      ,
      +              'PCTX'    ,  'PCTY'    ,  'KY'      ,  'KZ'      /
@@ -82,6 +84,10 @@ C     --------------------------------
 C
       NGM = 0
       NT = 0
+     
+C     INSERTION DU PARAMETRE 'RT' DANS LA TABLE 'RESU'
+      CALL TBAJPA ( RESU,1,PRT,'R')
+      
       DO 10 IOCC = 1 , NBOCC
          CALL GETVTX('CARA_POUTRE','TOUT'    ,IOCC,1,0,K8B,NT)
          IF ( NT .EQ. 0 ) THEN
@@ -174,16 +180,26 @@ C     ---------------------------------------------------
      +             //' DE POST_ELEM .')
          ENDIF
 C
-C     ------------------------------------
-C --- -CALCUL DE LA CONSTANTE DE TORSION -
-C     ------------------------------------
+C     -----------------------------------------------------------
+C --- -CALCUL DE LA CONSTANTE DE TORSION 
+C --- -AJOUT DU RAYON DE TORSION DANS LA TABLE 'RESU'
+C     -----------------------------------------------------------
+
+C --- RECUPERATION DU RAYON DE TORSION :
+C     --------------------------------
          IF ( OPTION .EQ. 'CARA_TORSION' ) THEN
-C
+            CALL GETVR8('CARA_POUTRE','RT',IOCC,1,0,RT,NRT)
+            IF ( NRT .NE. 0 ) THEN
+               NRT=-NRT
+               CALL GETVR8('CARA_POUTRE','RT',IOCC,1,1,RT,NRT)
+            ENDIF
+
 C --- RECUPERATION DU RESULTAT DE TYPE EVOL_THER DONT L'INTEGRALE
 C --- SUR LA SECTION DE LA POUTRE VA DONNER LA CONSTANTE DE TORSION :
 C     -------------------------------------------------------------
             CALL GETVID('CARA_POUTRE','LAPL_PHI',IOCC,1,0,K8B,NCT)
-            IF ( NCT .NE. 0 ) THEN
+            IF ( NCT .NE. 0 ) THEN 
+              NCT=-NCT  
               CALL GETVID('CARA_POUTRE','LAPL_PHI',IOCC,1,1,TEMPER,NCT)
             ELSE
                CALL UTMESS ('F','PECAPO','IL FAUT DONNER LE NOM '//
@@ -195,7 +211,7 @@ C
 C --- RECUPERATION DES MAILLES DE BORD CONSTITUANT LES 
 C --- CONTOURS INTERIEURS :
 C     -------------------
-      CALL GETVID('CARA_POUTRE','GROUP_MA_INTE',1,1,0,K8BID,NGI)
+      CALL GETVID('CARA_POUTRE','GROUP_MA_INTE',1,1,0,K8B,NGI)
       IF (NGI.NE.0) THEN
         NGI = -NGI
         CALL WKVECT('&&PECAPO.GRMA_INTE','V V K8',NGI,IDGRMI)
@@ -209,8 +225,14 @@ C --- CALCUL DE LA CONSTANTE DE TORSION CT :
 C     ------------------------------------
             CALL PECAP1 ( CHGEOM, TEMPER, NGI, ZK8(IDGRMI), CT )
 C
+C --- AJOUT DE CT ET RT DANS LA TABLE 'RESU' :
+C     --------------------------------------
+            IF ( NRT .NE. 0 ) THEN
+                 CALL TBAJLI ( RESU, NBRT, PRT, IBID , RT,
+     &                    C16B, K8B, ILIGN)
+            ENDIF
             CALL TBAJLI ( RESU, NBTORS, PTORS, IBID , CT,
-     +                                     C16B, K8B, ILIGN )
+     &                    C16B, K8B, ILIGN)
 C         ILIGN = 1
 C
 C     ------------------------------------------

@@ -1,9 +1,8 @@
       SUBROUTINE OP0118 ( IER )
-      IMPLICIT   NONE
-      INTEGER             IER
+C RESPONSABLE CAMBIER S.CAMBIER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +23,8 @@ C
 C    GENERATION D'UN VECTEUR DE FONCTIONS ALEATOIRES
 C 
 C     ------------------------------------------------------------------
+      IMPLICIT   NONE
+      INTEGER             IER
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
@@ -41,15 +42,18 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER       IBID, NVAL, NPFFT, DIM, DIM2, IP2, L, NALEA, NBTIR,
-     +              IFM , NIV, NBPAR, NBVAL, LVALE, LDESC, NBFREQ, K,
-     +              NBFC, LONG, LN, LN2, LONV, LVALF, LVALC, LR, LV, LX,
-     +              LY, LN4, KF, LFO, LPROF, LN42, IF, IFO, KT, IT,
-     +              IX, IY, LNR, KK, IFFT, KV 
-      INTEGER LNUOR
+      INTEGER       IBID, NVAL, NPFFT, DIM, DIM2, IP2, L, NBTIR
+      INTEGER       IFM , NIV, NBPAR, NBVAL, LVALE, LDESC, NBFREQ, K
+      INTEGER       NBFC, LONG, LN, LN2, LONV, LVALF, LVALC, LR, LV
+      INTEGER       LX, LY, LN4, KF, LFO, LPROF, LN42, IF, IFO, KT, IT
+      INTEGER       IX, IY, LNR, KK, IFFT, KV 
+      INTEGER       JUMP 
+
+      INTEGER      LNUOR      
       PARAMETER   ( NBPAR = 2 )
+
       REAL*8        PUI2, PUI, PUI2D, PUI3D, FREINI, FREFIN, DFREQ, TT,
-     +              DT, R8B, TINI, TFIN, DSEED
+     +              DT, R8B, TINI, TFIN, DSEED, DUREE
       COMPLEX*16    C16B
       LOGICAL       LVAL
       CHARACTER*8   K8B, TYPAR(2), NOMVEC
@@ -62,29 +66,37 @@ C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      CALL GETRES ( NOMVEC, TYPVEC, NOMCMD )
-      CALL GETVIS ( ' ', 'NB_POIN'  , 0,1,0, IBID , NVAL)
-      LVAL = NVAL .NE. 0
-C
-      IF ( LVAL ) THEN
-        CALL GETVIS ( ' ', 'NB_POIN', 0,1,1, NPFFT, L )
-        PUI2  = LOG(DBLE(NPFFT))/LOG(2.D0)
-        PUI   = AINT( PUI2 )
-        PUI2D = ABS( PUI2 - PUI )
-        PUI3D = ABS( 1.D0 - PUI2D )
-        IF (PUI2D.GE.1.D-06 .AND. PUI3D.GE.1.D-06) THEN
-          CALL UTMESS('F',NOMCMD,
-     +                   'LE "NB_POIN" DOIT ETRE UNE PUISSANCE DE 2')
-        END IF
-      END IF
-C
       CALL INFMAJ
       CALL INFNIV ( IFM , NIV )
 C 
-      CALL GETVIS ( ' ', 'INIT_ALEA'     , 0,1,1, NALEA , L )
+C
+      CALL GETRES ( NOMVEC, TYPVEC, NOMCMD )
+
+C
+C===============
+C 2. LECTURE DES DONNEES LIEES A LA GENERATION
+C===============
+
       CALL GETVIS ( ' ', 'NB_TIRAGE'     , 0,1,1, NBTIR , L )
-      CALL GETVID ( ' ', 'INTE_SPEC_FACT', 0,1,1, NOMINF, L )
+      IF (L .EQ. 0) NBTIR = 0
+
+      CALL GETVR8(' ','DUREE_TIRAGE',0,1,1,DUREE,L)
+      IF (L .EQ. 0) DUREE = -1.D0
+
+      CALL GETVIS ( ' ', 'INIT_ALEA'    , 0,1,1, JUMP , L )       
+      IF (L .NE. 0) CALL INIRAN(JUMP)
+
+C===============
+C 3. LECTURE DES DONNEES LIEES A L'INTERSPECTRE, DISCRETISATION
+C    DE L'INTERSPECTRE (=> CHOIX DES PARAMETRES DE LA GENERATION)
+C    ET FACTORISATION DE L'INTERSPECTE 
+C===============
+      CALL GEFACT (DUREE,NOMINF)
+
 C 
+C===============
+C 4. RECUPERATION DE L'INTERSPECTRE FACTORISE (NOMINF)
+C===============
       CALL JELIRA ( NOMINF//'.VALE' , 'LONUTI', NBVAL, K8B )
       CALL JEVEUO ( NOMINF//'.VALE' , 'L', LVALE )
       CALL JEVEUO ( NOMINF//'.DESC' , 'L', LDESC )
@@ -98,30 +110,32 @@ C                        => NBFC = (DIM*(DIM+1))/2
          CALL UTMESS('F',NOMCMD,
      +                  'MAUVAISE DEFINITION DE L''INTERSPECTRE.')
       END IF
-C
-      IF ( LVAL ) THEN
-         CALL GETVIS ( ' ', 'NB_POIN', 0,1,1, NPFFT, L )
+        
+C===============
+C 5. PREPARATION GENERATION
+C===============
+      PUI2  = LOG(DBLE(NBFREQ))/LOG(2.D0)
+      PUI2D = ABS( PUI2 - AINT( PUI2 ))
+      PUI3D = ABS( 1.D0 - PUI2D )
+      IF (PUI2D.GE.1.D-06 .AND. PUI3D.GE.1.D-06) THEN
+        NPFFT  = 2**INT(LOG(DBLE(NBFREQ))/LOG(2.D0))
       ELSE
-         PUI2 = LOG(DBLE(NBFREQ))/LOG(2.D0)
-         IP2  = INT(PUI2) + 1
-         NPFFT = 2**IP2
-         IF ( NPFFT .GT. NBFREQ ) THEN
-            IP2 = IP2 - 1
-            NPFFT = 2**IP2
-         END IF
-      END IF
-C
+        NPFFT  = NBFREQ
+      ENDIF
+      
       LN     = NPFFT
       LN2    = LN*2
       DIM2   = DIM*DIM
       LONV   = LN2*DIM
       FREINI = ZR(LVALE)
       FREFIN = ZR(LVALE+LN-1)
-C     ERREUR DFREQ   = (FREQFIN - FREQINI)/(LN-1)
-      DFREQ = (FREFIN-FREINI) / LN
+
+      DFREQ   = (FREFIN - FREINI)/(LN-1)
       TT    = 1.D0 / DFREQ
-C     ERREUR DT = TT/(LN2-1)
       DT    = TT / LN2
+C C'EST BIEN TT/LN2 ET NON TT/(LN2-1) CAR LA GENERATION COMMENCE
+C A T=DT ET NON T=0.
+      TFIN = LN2*NBTIR*DT
 C
       CALL WKVECT ( '&&OP0118.TEMP.VALF', 'V V R', LONV, LVALF )
       CALL WKVECT ( '&&OP0118.TEMP.VALC', 'V V C', LN2 , LVALC )
@@ -135,15 +149,16 @@ C
       CALL TBCRSD ( NOMVEC, 'G' )
       CALL TBAJPA ( NOMVEC, NBPAR, NOPAR, TYPAR )
 C
-C     --- CREATION DES FONCTIONS ---
-      LN4 = LN2*2*NBTIR
+C     --- CREATION DES FONCTIONS (VIDE)---
+      LN4 = LN2*NBTIR+1
+
       DO 60 KF = 1 , DIM
          WRITE (NOMFON,'(A8,A3,I4.4)') NOMVEC, '.FO', KF
 C
          CALL TBAJLI ( NOMVEC, NBPAR, NOPAR, 
      +             ZI(LNUOR-1+KF), R8B, C16B, NOMFON, 0 )
 C
-         CALL WKVECT ( NOMFON//'.VALE', 'G V R', LN4, LFO   )
+         CALL WKVECT ( NOMFON//'.VALE', 'G V R', LN4*2, LFO   )
          CALL WKVECT ( NOMFON//'.PROL', 'G V K16', 5 , LPROF )
          ZI(LY+KF-1)  = LFO
          ZK16(LPROF  ) = 'FONCTION'
@@ -153,21 +168,22 @@ C
          ZK16(LPROF+4) = 'EC      '
    60 CONTINUE
 C
-      LN42 = LN4/2
-      TINI = 0.D0
-      TFIN = ((LN2*NBTIR)-1)*DT
       DO 80 IF = 1,DIM
          IFO = ZI(LY+IF-1)
-         DO 30 KT = 1,LN42
+         DO 30 KT = 1,LN4
             ZR(IFO+KT-1) = DT* (KT-1)
    30    CONTINUE
    80 CONTINUE
 C
-      DSEED = DBLE( NALEA )
+
+
+C===============
+C 5.  GENERATION DES FONCTIONS
+C===============
       DO 70 IT = 1,NBTIR
 C
          CALL GENALE ( ZR(LVALE), ZR(LVALF), ZC(LR), ZC(LV), ZC(LX),
-     +                 DIM, LONG, LONV, LN, TT, DSEED )
+     +                 DIM, LONG, LONV, LN)
 C
          DO 20 KF = 1,DIM
             DO 40 K = 1,LN
@@ -189,12 +205,18 @@ C
             IFFT = -1
             CALL FFT ( ZC(LVALC), LN2, IFFT )
 C
-            IFO = ZI(LY+KF-1) + LN2* (IT-1) + LN42
+            IFO = ZI(LY+KF-1) + LN2* (IT-1) + LN4 + 1
+            IF (IT.EQ.1) ZR(IFO-1)=0.D0
+C                        (VALEUR NULLE POUR T=0.)
             DO 50 KV = 1,LN2
                ZR(IFO+KV-1) = DBLE(ZC(LVALC+KV-1))
    50       CONTINUE
    20    CONTINUE
    70 CONTINUE
+
+C===============
+C 6.  NETTOYAGE ET IMPRESSION
+C===============
 C
       CALL JEDETR ( '&&OP0118.TEMP.VALF' )
       CALL JEDETR ( '&&OP0118.TEMP.VALR' )
@@ -203,14 +225,20 @@ C
       CALL JEDETR ( '&&OP0118.TEMP.VALY' )
       CALL JEDETR ( '&&OP0118.TEMP.VALC' )
       CALL JEDETR ( '&&OP0118.VECT.TABL' )
+
+      CALL JEDETC('V',NOMINF,1)
 C
       IF ( NIV .GE. 2 ) THEN
+C LA GENERATION COMMENCE A T=DT MAIS ON METS LE SIGNAL COMMENCE
+C A TINI=0. AVEC UNE VALEUR NULLE
+         TINI = 0.D0
          WRITE (IFM,200)
-         WRITE (IFM,210) DT, TINI, TFIN + DT
+         WRITE (IFM,210) DT, TINI, TFIN , NPFFT
       END IF
 C
- 200  FORMAT ('<-PAS DE TEMPS->   <-TEMPS INITIAL->  <-TEMPS FINAL->')
- 210  FORMAT (1P,2X,D11.4,8X,D11.4,8X,D11.4)
+ 200  FORMAT ('<-PAS DE TEMPS->   <-TEMPS INITIAL->  <-TEMPS FINAL-> 
+     +  <-NB PT FFT->')
+ 210  FORMAT (1P,2X,D11.4,8X,D11.4,8X,D11.4,8X, I6)
 C
       CALL JEDEMA()
       END

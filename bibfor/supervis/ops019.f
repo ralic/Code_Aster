@@ -3,7 +3,7 @@
       INTEGER             ICMD , ICOND , IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -497,7 +497,7 @@ C
 C
       ELSE IF (SSEP) THEN
          CALL ASCSEP(ALPHA,RM,RC,EP1,GEOM,SYME,NBSEP,ITYPE,ICIRC,ILONC,
-     +               ISLC,IBETC,ISCC,IPHIC,IPOS,ICIRP,ILONP,ISCP,ISLP,
+     +               ISLC,IBETC,ISCC,IPHIC,ICIRP,ILONP,ISCP,ISLP,
      +               SSEPV2)
 C
          NZMAX = 30
@@ -626,11 +626,11 @@ C
 C     --- ECRITURE SUR LE FICHIER .DATG  DE LA PROCEDURE ---
 C
       DONGIB = 'donngib'
-      CALL ULDEFI( UNITD , DONGIB , 'A' , 'N' , 'O')
+      CALL ULDEFI( UNITD , ' ', DONGIB , 'A' , 'N' , 'O')
 C
       UNITP = 71
       PROGIB = 'provgib'
-      CALL ULDEFI( UNITP , PROGIB , 'A' , 'N' , 'O')
+      CALL ULDEFI( UNITP , ' ', PROGIB , 'A' , 'N' , 'O')
 C        
       IF (FISS) THEN
 C
@@ -666,7 +666,7 @@ C
      +                 ZR(IBS), ZR(IDNX),  ZR(IDNY), NBSEP,  ZR(ISLP),
      +                 ZR(ISCP),ZR(ICIRP), ZR(ILONP), ZR(IPROC),
      +                 ZK8(IPOS),ZK8(ITYPE), ZR(ISLC), ZR(IBETC),
-     +                 ZR(ILONC),NBEP, ZK8(IEVID), TYPELE, ZI(IPCL))
+     +                 ZR(ILONC),NBEP, ZK8(IEVID), ZI(IPCL))
           CALL ASCSP2 (UNITP,NBSEP,ZK8(ITYPE),ZI(INBEC),ZI(INBEL))
 C
         END IF

@@ -1,10 +1,10 @@
-      SUBROUTINE CALND1(IC,NP1,NP2,NP3,NBM,NBNL,
-     &                  CHOC,ALPHA,BETA,GAMMA,ORIG,RC,THETA,
+      SUBROUTINE CALND1(IC,NP1,NP2,NP3,NBM,
+     &                  ALPHA,BETA,GAMMA,ORIG,RC,THETA,
      &                  TYPCH,NBSEG,PHII,DEPG,DIST2)
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/05/2000   AUTEUR KXBADNG T.KESTENS 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,8 +32,8 @@ C-------------------   DECLARATION DES VARIABLES   ---------------------
 C
 C ARGUMENTS
 C ---------
-      INTEGER   IC, NP1, NP2, NP3, NBM, NBNL
-      REAL*8    CHOC(5,*), ALPHA(2,*), BETA(2,*), GAMMA(2,*), ORIG(6,*),
+      INTEGER   IC, NP1, NP2, NP3, NBM
+      REAL*8    ALPHA(2,*), BETA(2,*), GAMMA(2,*), ORIG(6,*),
      &          RC(NP3,*), THETA(NP3,*)
       INTEGER   TYPCH(*), NBSEG(*)
       REAL*8    PHII(NP2,NP1,*), DEPG(*), DIST2

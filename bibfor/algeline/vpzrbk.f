@@ -1,10 +1,10 @@
-      SUBROUTINE VPZRBK (Z,H,D,NEQ,MM,IZH,K,L)
+      SUBROUTINE VPZRBK (Z,H,D,MM,IZH,K,L)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER                  NEQ,MM,IZH,K,L
+      INTEGER                  MM,IZH,K,L
       REAL*8             Z(IZH,1),H(IZH,1),D(1)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

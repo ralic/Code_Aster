@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF iniast utilitai  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF iniast utilitai  DATE 24/02/2004   AUTEUR D6BHHJP J.P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -79,7 +79,10 @@ if (delta == 0 ) {
 }
 else if (delta < 0 ) {
      printf ("\nCETTE VERSION DE CODE_ASTER EST EXPIREE \n");
+#if defined TRU64
+#else
      ERRLIC();
+#endif
 }
 else if (delta < 60 ) {
      printf ("\nCETTE VERSION DE CODE_ASTER EXPIRE DANS : %d  JOUR(S) \n",delta);

@@ -1,6 +1,6 @@
       SUBROUTINE DXFNMB (NOMTE, X, Y, N)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/05/97   AUTEUR INBHHOM O.MERABET 
+C MODIF ELEMENTS  DATE 18/11/2003   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,15 +36,16 @@ C     -----------------
       UN     = 1.0D0
 C
 C
-      IF (NOMTE(1:8) .EQ.'MEDKTR3 '.OR.NOMTE(1:8) .EQ.'MEDSTR3 '
-     + .OR. NOMTE(1:8) .EQ. 'MEGRDKT') THEN
+      IF (NOMTE(1:8) .EQ.'MEDKTR3 '.OR.NOMTE(1:8) .EQ.'MEDSTR3 ' .OR.
+     +    NOMTE(1:8) .EQ.'MEGRDKT' .OR.NOMTE(1:8).EQ.'MEDKTG3 ') THEN
 C
           N(1) = UN - X - Y
           N(2) =      X
           N(3) =          Y
 C
       ELSEIF (NOMTE(1:8) .EQ.'MEDKQU4 '.OR.NOMTE(1:8) .EQ.'MEDSQU4 '
-     +        .OR.NOMTE(1:8) .EQ.'MEQ4QU4 ') THEN
+     +        .OR.NOMTE(1:8) .EQ.'MEQ4QU4 ' 
+     +        .OR.NOMTE(1:8) .EQ.'MEDKQG4 ') THEN
           N(1) = UNQUAR*(UN-X)*(UN-Y) 
           N(2) = UNQUAR*(UN+X)*(UN-Y) 
           N(3) = UNQUAR*(UN+X)*(UN+Y) 

@@ -1,4 +1,4 @@
-# MODIF  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 16/12/2003   AUTEUR DURAND C.DURAND 
 # RESPONSABLE PABHHHH N. TARDIEU
 # TITRE SENSIBILITE AUX DONNEES MATERIAUX EN MECA_STATIQUE ORTHOTROPE 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -267,7 +267,7 @@ for i in range(n):
      _F(  RESULTAT = RES,   NUME_ORDRE = 1,
           NOM_CHAM = 'DEPL',   GROUP_NO = 'I',
           CRITERE = 'RELATIF', PRECISION = 1.E-2,
-          NOM_CMP = 'DY',   SENSIBILITE = PS[i].nom,
+          NOM_CMP = 'DY',   SENSIBILITE = PS[i],
           VALE = diff, REFERENCE = 'NON_REGRESSION' )))
 
   DETRUIRE( CONCEPT =_F(NOM = RES2 ))
@@ -322,7 +322,7 @@ for i in range(n):
           NOM_CHAM = 'EPSI_ELNO_DEPL',   NOEUD = 'N179',
           MAILLE = 'M47',
           CRITERE = 'RELATIF', PRECISION = 1.E-2,
-          NOM_CMP = 'EPXY',   SENSIBILITE = PS[i].nom,
+          NOM_CMP = 'EPXY',   SENSIBILITE = PS[i],
           VALE = diff, REFERENCE = 'NON_REGRESSION' )))
 
   DETRUIRE( CONCEPT =_F(NOM = RES2 ))
@@ -377,7 +377,7 @@ for i in range(n):
           NOM_CHAM = 'SIGM_ELNO_DEPL',   NOEUD = 'N179',
           MAILLE = 'M47',
           CRITERE = 'RELATIF', PRECISION = 1.5E-2,
-          NOM_CMP = 'SIYY',   SENSIBILITE = PS[i].nom,
+          NOM_CMP = 'SIYY',   SENSIBILITE = PS[i],
           VALE = diff, REFERENCE = 'NON_REGRESSION' )))
 
   DETRUIRE( CONCEPT =_F(NOM = RES2 ))

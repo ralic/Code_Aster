@@ -1,7 +1,7 @@
-      SUBROUTINE NMVEKX(IMATE, TP, XHI, NB,KXHI, DKXIDX) 
+      SUBROUTINE NMVEKX(IMATE, TP, XHI, KXHI, DKXIDX) 
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/98   AUTEUR SABMTEC P.LACLERGUE 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ----------------------------------------------------------------------
 
       IMPLICIT NONE
 
-      INTEGER IMATE, NB
+      INTEGER IMATE
       REAL*8  TP, XHI, KXHI, DKXIDX
 
 C ----------------------------------------------------------------------
@@ -36,7 +36,6 @@ C     DERIVEE DK/DSIGMA
 C ----------------------------------------------------------------------
 C IN  IMATE  : ADRESSE DU MATERIAU CODE
 C     TP     : TEMPERATURE EN T+
-C     NB     : NOMBRE DE COMPOSANTES DE SIGMA
 C     XHI    : CRITERE D'ENDOMMAGEMENT VISCOPLASTIQUE
 C 
 C OUT KXHI   : CARACTERISTIQUE VISQUEUSE EN T+

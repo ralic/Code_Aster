@@ -1,6 +1,6 @@
       SUBROUTINE TE0190(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,13 +32,12 @@ C ......................................................................
 
       PARAMETER (NBRES=9)
       CHARACTER*2 CODRET(NBRES)
-      CHARACTER*8 MODELI,ELREFE
+      CHARACTER*8 MODELI
       CHARACTER*16 PHENOM
-      CHARACTER*24 CARAC,FF
       REAL*8 B(486),BTDB(81,81),D(36),JACGAU
       REAL*8 REPERE(7),XYZGAU(3),INSTAN,NHARM
       REAL*8 HYDRG,SECHG
-      INTEGER NBSIGM
+      INTEGER NBSIGM,NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO,DIMMOD
       LOGICAL LSENS
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -59,34 +58,18 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      CALL ELREF1(ELREFE)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
       MODELI(1:2) = NOMTE(3:4)
-
-
-C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
-C ---- GEOMETRIE ET INTEGRATION
-C      ------------------------
-      CARAC = '&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-
-      FF = '&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS = IFF
-      IVF = IPOIDS + NPG1
-      IDFDE = IVF + NPG1*NNO
-      IDFDK = IDFDE + NPG1*NNO
+C
+C --- EN FAIT LA DIMENSION DE LA MODELISATION EST 3
+      DIMMOD = 3
 
 C --- INITIALISATIONS :
 C     -----------------
-      NDIM = 3
-      NDIM2 = 2
-      ZERO = 0.0D0
+      ZERO   = 0.0D0
       INSTAN = ZERO
-      NBINCO = NDIM*NNO
-      NHARM = ZERO
-      BIDON = ZERO
+      NBINCO = DIMMOD*NNO
+      NHARM  = ZERO
 
       DO 20 I = 1,NBINCO
         DO 10 J = 1,NBINCO
@@ -133,7 +116,7 @@ C      --------------------------------------------------
 
 C ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
 C      ------------------------------------------------------------
-      CALL ORTREP(ZI(IMATE),NDIM2,REPERE)
+      CALL ORTREP(ZI(IMATE),NDIM,REPERE)
 
 C ---- RECUPERATION  DU NUMERO D'HARMONIQUE
 C      ------------------------------------
@@ -175,8 +158,8 @@ C  --      CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS DU
 C  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION
 C  --      COURANT : (EPS_1) = (B)*(UN)
 C          ----------------------------
-        CALL BMATMC(IGAU,NBSIG,MODELI,ZR(IGEOM),ZR(IVF),ZR(IDFDE),
-     &              ZR(IDFDK),BIDON,ZR(IPOIDS),NNO,NHARM,JACGAU,B)
+        CALL BMATMC(IGAU,NBSIG,MODELI,ZR(IGEOM),IPOIDS,IVF,IDFDE,
+     &                  NNO, NHARM, JACGAU,B)
 
 C  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 C  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
@@ -186,7 +169,7 @@ C          -------------------------------------------------
 
 C  --      MATRICE DE RIGIDITE ELEMENTAIRE BT*D*B
 C          ---------------------------------------
-        CALL BTDBMC(B,D,JACGAU,NDIM,MODELI,NNO,NBSIG,PHENOM,BTDB)
+        CALL BTDBMC(B,D,JACGAU,DIMMOD,MODELI,NNO,NBSIG,PHENOM,BTDB)
 
    50 CONTINUE
 

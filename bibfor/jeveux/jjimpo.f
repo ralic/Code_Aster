@@ -1,7 +1,7 @@
       SUBROUTINE JJIMPO (CUNIT , IADMI , IDECI , IDATOC , GENRI , TYPEI,
      &                   LT    , LONOI , MESS , PARM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/03/98   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 04/11/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C TOLE CFT_726 CFT_720 CFT_753 CRP_18 CRS_508 CRS_512
+C TOLE CFT_726 CFT_720 CFT_753 CRP_18 CRP_4 CRS_508 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER            IADMI , IDECI , IDATOC        , LT , LONOI
       CHARACTER*(*)      CUNIT , MESS  , PARM  , GENRI , TYPEI
@@ -27,7 +27,7 @@ C ROUTINE UTILISATEUR : IMPRIME UN SEGMENT DE VALEURS
 C
 C IN  CUNIT  : NOM LOCAL DU FICHIER D'IMPRESSION
 C IN  IADMI  : ADRESSE DU PREMIER MOT DU SEGMENT DE VALEUR
-C IN  IDECI  : DECALLAGE PAR RAPPORT A IADMI
+C IN  IDECI  : DECALLAGE PAR RAPPORT A IADMI (EN OCTETS)
 C IN  IDATOC : IDENTIFICATEUR DE L'OBJET
 C IN  GENRI  : GENRE DE L'OBJET
 C IN  TYPEI  : TYPE DE L'OBJET
@@ -52,7 +52,8 @@ C ----------------------------------------------------------------------
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
       REAL*8           R8ZON(1)
       LOGICAL          LSZON(1)
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) , R8ZON(1) , LSZON(1) )
+      INTEGER*4        I4ZON(1)
+      EQUIVALENCE    ( ISZON(1), K1ZON(1), R8ZON(1), LSZON(1), I4ZON(1))
 C ----------------------------------------------------------------------
       CHARACTER*2      DN2
       CHARACTER*5      CLASSE
@@ -79,6 +80,8 @@ C DEB ------------------------------------------------------------------
       IDOS = ISZON(JISZON+IEP-1)
       ICLS = ISZON(JISZON+IES+2)
       IDCO = ISZON(JISZON+IES+1)
+C
+      JI4ZON = JISZON * LOIS*2/LOR8
 C
       IF ( IDOS .EQ. 0 ) THEN
          CMESS = 'ECRASEMENT DE L''ADRESSE REPERTOIRE DU SEGMENT '
@@ -110,8 +113,18 @@ C
       ENDIF
       WRITE (JULIST,'(A,A)' ) ' >>>>> ',MESS(1:MIN(50,LEN(MESS)))
       IF ( GENRI .NE. 'N') THEN
-         IF ( TYPEI .EQ. 'I' ) THEN
-            JI = JISZON + KADM + IDECI
+         IF ( TYPEI .EQ. 'S' ) THEN
+            JI = 1 + ((JISZON +KADM-1)*LOIS+IDECI)*2/LOR8 + LADM*2/LOR8
+            NL = LONOI / (5*LOR8/2)
+            ND = MOD( LONOI , (5*LOR8/2) ) / (LOR8/2)
+            WRITE ( JULIST , '((I7,'' - '',5(I12,1X)))')
+     &            (5*(L-1)+1,(I4ZON( JI + 5*(L-1)+K-1),K=1,5),L=1,NL)
+            IF ( ND .NE. 0 ) THEN
+               WRITE ( JULIST , '(I7,'' - '',5(I12,1X))')
+     &                  5*NL+1,(I4ZON( JI + 5*NL+K-1),K=1,ND)
+            ENDIF
+         ELSE IF ( TYPEI .EQ. 'I' ) THEN
+            JI = JISZON + KADM + IDECI/LOIS
             NL = LONOI / (5*LOIS)
             ND = MOD( LONOI , (5*LOIS) ) / LOIS
             WRITE ( JULIST , '((I7,'' - '',5(I12,1X)))')
@@ -121,7 +134,7 @@ C
      &                  5*NL+1,(ISZON( JI + 5*NL+K-1),K=1,ND)
             ENDIF
          ELSE IF ( TYPEI .EQ. 'R' ) THEN
-            JI =   1 + ( (JISZON +KADM - 1 +IDECI) *LOIS+LADM) / LOR8
+            JI =   1 + ( (JISZON +KADM - 1)*LOIS +IDECI +LADM) / LOR8
             NL = LONOI / ( 5 * LOR8 )
             ND = MOD( LONOI , (5*LOR8) ) / LOR8
             WRITE ( JULIST , '((I7,'' - '',5(1PD12.5,1X)))')
@@ -131,7 +144,7 @@ C
      &                  5*NL+1,(R8ZON( JI +5*NL+K-1),K=1,ND)
             ENDIF
          ELSE IF ( TYPEI .EQ. 'C' ) THEN
-            JI =   1 + ( (JISZON +KADM - 1 +IDECI) *LOIS+LADM) / LOR8
+            JI =   1 + ( (JISZON +KADM - 1)*LOIS +IDECI +LADM) / LOR8
             NL = LONOI / ( 2 * LOC8)
             ND = MOD( LONOI , ( 2 * LOC8) ) / LOC8
             WRITE ( JULIST , '((I7,'' - '',1P,
@@ -145,7 +158,7 @@ C
      &                     R8ZON(JI+4*(L-1)+1),')'
             ENDIF
          ELSE IF ( TYPEI .EQ. 'L' ) THEN
-            JI = JISZON + KADM + IDECI
+            JI = JISZON + KADM + IDECI/LOIS
             NL = LONOI / (20*LOLS)
             ND = MOD( LONOI , (20*LOLS) ) / LOLS
             WRITE ( JULIST , '((I7,'' - '',20(L1,1X)))')
@@ -155,7 +168,7 @@ C
      &                  20*NL+1,(LSZON( JI + 20*NL+K-1),K=1,ND)
             ENDIF
          ELSE IF ( TYPEI .EQ. 'K' ) THEN
-            JI = 1 + ( JISZON + KADM - 1 + IDECI ) * LOIS + LADM
+            JI = 1 + ( JISZON + KADM - 1) * LOIS + IDECI + LADM
             NB = MAX(65,MIN (81,LT+1)) / (LT+1)
             NL = LONOI / (NB* LT)
             ND = (MOD( LONOI , NB*LT )) / LT

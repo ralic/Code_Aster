@@ -23,7 +23,7 @@ C ======================================================================
       REAL*8 PGL(3,3),R(*)
       LOGICAL GRILLE,ELASCQ
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 17/12/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 18/11/2003   AUTEUR LEBOUVIE F.LEBOUVIER 
 C TOLE CRP_20
 C     ------------------------------------------------------------------
 C     CALCUL DES MATRICES DE RIGIDITE DE FLEXION, MEMBRANE , COUPLAGE
@@ -65,6 +65,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*2  CODRET(33)
       CHARACTER*3  NUM
       CHARACTER*8  NOMRES(33),NOMPAR
+      CHARACTER*8  ELREFE
       CHARACTER*10 PHENOM
 C     ------------------------------------------------------------------
 
@@ -75,6 +76,8 @@ C     ------------------------------------------------------------------
       CALL R8INIR(9,ZERO,DMF,1)
       CALL R8INIR(6,ZERO,DMC,1)
       CALL R8INIR(6,ZERO,DFC,1)
+C
+      CALL ELREF1(ELREFE)
 C
       CALL JEVECH('PCACOQU','L',JCOQU)
       EPAIS = ZR(JCOQU)
@@ -484,15 +487,17 @@ C
             DFC(I,J) = DFC(I,J) + EXCENT*DMC(I,J)
   90      CONTINUE
 C
+        IF(ELREFE.NE.'MEDKQG4'.AND.ELREFE.NE.'MEDKTG3')THEN
 C        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
-        CALL UTBTAB('ZERO',3,3,DM,R(LT1VE),XAB1,DM)
-        CALL UTBTAB('ZERO',3,3,DF,R(LT1VE),XAB1,DF)
-        CALL UTBTAB('ZERO',3,3,DMF,R(LT1VE),XAB1,DMF)
-        CALL UTBTAB('ZERO',2,2,DC,R(LT2VE),XAB2,DC)
-        CALL UTBTAB('ZERO',2,2,DCI,R(LT2VE),XAB2,DCI)
-        IF (ELASCO.EQ.2) THEN
-          CALL UTDTAB('ZERO',3,2,2,3,DMC,R(LT2VE),R(LT1VE),XAB3,DMC)
-          CALL UTDTAB('ZERO',3,2,2,3,DFC,R(LT2VE),R(LT1VE),XAB3,DFC)
+          CALL UTBTAB('ZERO',3,3,DM,R(LT1VE),XAB1,DM)
+          CALL UTBTAB('ZERO',3,3,DF,R(LT1VE),XAB1,DF)
+          CALL UTBTAB('ZERO',3,3,DMF,R(LT1VE),XAB1,DMF)
+          CALL UTBTAB('ZERO',2,2,DC,R(LT2VE),XAB2,DC)
+          CALL UTBTAB('ZERO',2,2,DCI,R(LT2VE),XAB2,DCI)
+          IF (ELASCO.EQ.2) THEN
+            CALL UTDTAB('ZERO',3,2,2,3,DMC,R(LT2VE),R(LT1VE),XAB3,DMC)
+            CALL UTDTAB('ZERO',3,2,2,3,DFC,R(LT2VE),R(LT1VE),XAB3,DFC)
+          ENDIF
         ENDIF
 C 
       ELSE IF (PHENOM.EQ.'ELAS_COQMU') THEN

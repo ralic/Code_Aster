@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 30/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE DE 3 NAPPES D'ARMATURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,13 +50,16 @@ MAILTOT=CREA_MAILLAGE(
 # -----------------------------------------------------
 #
 
-MATER1=DEFI_MATERIAU(  ELAS=_F(  E = 1.,       NU = 0., ) 
+MATER1=DEFI_MATERIAU(  ELAS=_F(  E = 1.,       NU = 0., ) ,
+                        ECRO_LINE=_F(SY=1000000000,D_SIGM_EPSI=0),
                           )
 
-MATER2=DEFI_MATERIAU(  ELAS=_F(  E = 2.,       NU = 0., ) 
+MATER2=DEFI_MATERIAU(  ELAS=_F(  E = 2.,       NU = 0., ) ,
+                        ECRO_LINE=_F(SY=1000000000,D_SIGM_EPSI=0),
                           )
 
-MATER3=DEFI_MATERIAU(  ELAS=_F(  E = 3.,       NU = 0., ) 
+MATER3=DEFI_MATERIAU(  ELAS=_F(  E = 3.,       NU = 0., ), 
+                        ECRO_LINE=_F(SY=1000000000,D_SIGM_EPSI=0),
                           )
 
 #
@@ -161,14 +164,15 @@ RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        MODELE=LEMOD,
                          CHAM_MATER=MATAF,    CARA_ELEM=LACAR,
                              OPTION='SIGM_ELNO_DEPL' )
 
-RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        MODELE=LEMOD,
-                         CHAM_MATER=MATAF,    CARA_ELEM=LACAR,
-                             OPTION='SIEF_ELGA_DEPL' )
+#RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        MODELE=LEMOD,
+#                         CHAM_MATER=MATAF,    CARA_ELEM=LACAR,
+#                             OPTION='SIEF_ELGA_DEPL' )
 
 RESU0=CALC_NO(  reuse=RESU0,   RESULTAT=RESU0,  MODELE=LEMOD,
-                               TOUT='OUI',
+                               TOUT='OUI',CHAM_MATER=MATAF,
                                OPTION='FORC_NODA',
                                CARA_ELEM=LACAR       )
+
 
 RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        MODELE=LEMOD,
                          CHAM_MATER=MATAF,    CARA_ELEM=LACAR,
@@ -178,7 +182,40 @@ RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        MODELE=LEMOD,
                          CHAM_MATER=MATAF,    CARA_ELEM=LACAR,
                              OPTION='DEGE_ELNO_DEPL' )
 
+RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        MODELE=LEMOD,
+                         CHAM_MATER=MATAF,    CARA_ELEM=LACAR,
+                             OPTION='SIEF_ELNO_ELGA' )
+
+IMPR_RESU(RESU=_F(RESULTAT=RESU0,
+NOM_CHAM=('FORC_NODA','SIEF_ELNO_ELGA','SIEF_ELGA_DEPL','DEPL',)))
 #
+
+# -------------------------------------------------
+# CALCUL MECANIQUE STATIQUE LINEAIRE 
+# -------------------------------------------------
+#
+
+LINST=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
+                             _F( JUSQU_A = 1.00,   NOMBRE = 1,   ),))
+FONCMULT=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,1000.,1000.))
+                         
+RESU1=STAT_NON_LINE(    MODELE=LEMOD,       CHAM_MATER=MATAF,
+                               CARA_ELEM=LACAR,
+                               EXCIT=_F(  CHARGE = LECHAR, FONC_MULT=FONCMULT   ) ,
+                               INCREMENT=_F(LIST_INST = LINST),
+                               COMP_INCR=_F(RELATION = 'GRILLE_ISOT_LINE' ),)
+
+RESU1=CALC_NO(  reuse=RESU1,   RESULTAT=RESU1,  MODELE=LEMOD,
+                               TOUT='OUI',CHAM_MATER=MATAF,
+                               OPTION='FORC_NODA',
+                               CARA_ELEM=LACAR       )
+
+RESU1=CALC_ELEM(reuse=RESU1,     RESULTAT=RESU1,        MODELE=LEMOD,
+                         CHAM_MATER=MATAF,    CARA_ELEM=LACAR,
+                             OPTION='SIEF_ELNO_ELGA' )
+
+IMPR_RESU(RESU=_F(RESULTAT=RESU1,NOM_CHAM=('FORC_NODA','SIEF_ELNO_ELGA','SIEF_ELGA','DEPL')))
+
 
 TEST_RESU(RESU=(
               
@@ -189,7 +226,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'DX',   
-                VALE = 81.9373,       
+                REFERENCE='NON_REGRESSION',VALE= 81.9373,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -198,7 +235,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'DY',   
-                VALE = -18.6398,       
+                REFERENCE='NON_REGRESSION',VALE= -18.6398,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -207,7 +244,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'DZ',   
-                VALE = 2098.66,       
+                REFERENCE='NON_REGRESSION',VALE= 2098.66,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -216,7 +253,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'DRX',   
-                VALE = -1239.88,       
+                REFERENCE='NON_REGRESSION',VALE= -1239.88,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -225,7 +262,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'DRY',   
-                VALE = -3820.42,       
+                REFERENCE='NON_REGRESSION',VALE= -3820.42,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -234,7 +271,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'EPXX',   
-                VALE = 32.9433,       
+                REFERENCE='NON_REGRESSION',VALE= 32.9433,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -243,7 +280,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'EPYY',   
-                VALE = 2.33011,       
+                REFERENCE='NON_REGRESSION',VALE= 2.33011,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -252,7 +289,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'EPZZ',   
-                VALE = 0.0,       
+                REFERENCE='NON_REGRESSION',VALE= 0.0,       
                 CRITERE = 'ABSOLU',    
                 ),
                 _F( 
@@ -262,7 +299,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'EPXY',   
-                VALE = -34.3522,       
+                REFERENCE='NON_REGRESSION',VALE= -34.3522,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -271,7 +308,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KXX',   
-                VALE = -531.043,       
+                REFERENCE='NON_REGRESSION',VALE= -531.043,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -280,7 +317,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KYY',   
-                VALE = -2035.19,       
+                REFERENCE='NON_REGRESSION',VALE= -2035.19,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -289,7 +326,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KXY',   
-                VALE = 2058.44,       
+                REFERENCE='NON_REGRESSION',VALE= 2058.44,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -298,7 +335,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'SIXX',   
-                VALE = 42.7252,        
+                REFERENCE='NON_REGRESSION',VALE= 42.7252,        
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -307,7 +344,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'SIYY',   
-                VALE = 63.0951,       
+                REFERENCE='NON_REGRESSION',VALE= 63.0951,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -316,7 +353,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'SIZZ',   
-                VALE = 0.,       
+                REFERENCE='NON_REGRESSION',VALE= 0.,       
                 CRITERE = 'ABSOLU',    
                 ),
                 _F( 
@@ -326,8 +363,117 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'SIXY',   
-                VALE = -5.88029,       
-                ))
+                REFERENCE='NON_REGRESSION',VALE= -5.88029,       
+                ),
+
+
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'SIEF_ELGA_DEPL',  
+                MAILLE = 'MA1',     
+                POINT=1,      
+                NOM_CMP = 'SIXX',   
+                REFERENCE='NON_REGRESSION',VALE= 5.96512E+01,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'SIEF_ELGA_DEPL',  
+                MAILLE = 'MA1',     
+                POINT=1,      
+                NOM_CMP = 'SIYY',   
+                REFERENCE='NON_REGRESSION',VALE= 5.43569E+01,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'SIEF_ELGA_DEPL',  
+                MAILLE = 'MA1',     
+                POINT=1,      
+                NOM_CMP = 'SIXY',   
+                REFERENCE='NON_REGRESSION',VALE= 4.58504E+00,       
+                ),
+
+
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',  
+                MAILLE = 'MA1',     
+                NOEUD = 'NO1',      
+                NOM_CMP = 'NXX',   
+                REFERENCE='NON_REGRESSION',VALE= 7.2565E-01,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',  
+                MAILLE = 'MA1',     
+                NOEUD = 'NO1',      
+                NOM_CMP = 'NYY',   
+                REFERENCE='NON_REGRESSION',VALE= 5.6104E-01,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',  
+                MAILLE = 'MA1',     
+                NOEUD = 'NO1',      
+                NOM_CMP = 'MXX',   
+                REFERENCE='NON_REGRESSION',VALE= -2.85932E-04,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',  
+                MAILLE = 'MA1',     
+                NOEUD = 'NO1',      
+                NOM_CMP = 'MYY',   
+                REFERENCE='NON_REGRESSION',VALE= -2.78516E-04,       
+                ),
+
+
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'FORC_NODA',  
+                 NOEUD = 'NO1',      
+                NOM_CMP = 'DX',   
+                REFERENCE='NON_REGRESSION',VALE= -1.0000E+00,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'FORC_NODA',  
+                  NOEUD = 'NO1',      
+                NOM_CMP = 'DY',   
+                REFERENCE='NON_REGRESSION',VALE= -4.1137E-01,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'FORC_NODA',  
+                NOEUD = 'NO1',      
+                NOM_CMP = 'DZ',   
+                REFERENCE='NON_REGRESSION',VALE= -2.00705E-03,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'FORC_NODA',  
+                NOEUD = 'NO1',      
+                NOM_CMP = 'DRX',   
+                REFERENCE='NON_REGRESSION',VALE= -1.4024E-03,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'FORC_NODA',  
+                NOEUD = 'NO1',      
+                NOM_CMP = 'DRY',   
+                REFERENCE='NON_REGRESSION',VALE= 3.00514E-03,       
+                ),)
               )
 
 FIN()

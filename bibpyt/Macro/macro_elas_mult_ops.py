@@ -1,4 +1,4 @@
-#@ MODIF macro_elas_mult_ops Macro  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_elas_mult_ops Macro  DATE 19/01/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,7 +60,7 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
         tyresu = 'FOURIER_ELAS'
   if ielas==1 and ifour==1:
      ier=ier+1
-     self.cr.fatal("""On ne peut avoir a la fois NOM_CAS et MODE_FOURIER""")
+     self.cr.fatal("""<F> <MACRO_ELAS_MULT> On ne peut avoir a la fois NOM_CAS et MODE_FOURIER""")
      return ier
 
   if (numeddl in self.sdprods) or (numeddl==None):

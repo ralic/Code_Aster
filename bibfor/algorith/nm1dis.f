@@ -2,7 +2,7 @@
      &                  DEPS,VIM,OPTION,COMPOR,SIGP,VIP,DSDE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/01/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 02/12/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,7 +111,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C     CALCUL EPSP, P , SIG
 C     ------------------------------------------------------------------
-      IF (OPTION.EQ.'FULL_MECA' .OR. OPTION.EQ.'RAPH_MECA') THEN
+      IF (OPTION(1:9).EQ.'FULL_MECA' .OR. OPTION.EQ.'RAPH_MECA') THEN
         IF (SIELEQ.LE.RM) THEN
           DP=0.D0
           SIGP = SIGE
@@ -126,19 +126,27 @@ C     ------------------------------------------------------------------
             DP = ABS(SIGE) - RM
             DP = DP/ (RPRIM+EP)
             RP = SIGY + RPRIM* (PM+DP)
-            DSDE = ET
+            IF (OPTION.EQ.'FULL_MECA_ELAS') THEN
+              DSDE = EP
+            ELSE
+              DSDE = ET
+            ENDIF
           ELSE
             NU=0.5D0
             CALL RCFONC('E','TRACTION',JPROLP,JVALEP,NBVALP,RBID,EP,
      &                  NU,VIM(1),RP,RPRIM,AIRERP,ABS(SIGE),DP)
-            DSDE = EP*RPRIM/ (EP+RPRIM)
+            IF (OPTION.EQ.'FULL_MECA_ELAS') THEN
+              DSDE = EP
+            ELSE
+              DSDE = EP*RPRIM/ (EP+RPRIM)
+            ENDIF
           END IF
           VIP(1) = VIM(1) + DP
           SIGP = SIGE/ (1.D0+EP*DP/RP)
         END IF
       END IF
-      IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
-        IF (VIM(2).LT.0.5D0) THEN
+      IF (OPTION(1:10).EQ.'RIGI_MECA_') THEN
+        IF ((VIM(2).LT.0.5D0).OR.(OPTION.EQ.'RIGI_MECA_ELAS')) THEN
           DSDE = EP
         ELSE
           DSDE = ET

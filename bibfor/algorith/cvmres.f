@@ -1,10 +1,10 @@
-        SUBROUTINE CVMRES ( MOD, IMAT, NMAT, MATERD, MATERF, MATCST,
-     1                      TEMPF, TIMED, TIMEF, YD , YF, EPSD, DEPS,
+        SUBROUTINE CVMRES ( MOD, NMAT, MATERD, MATERF,
+     1                      TIMED, TIMEF, YD , YF, EPSD, DEPS,
      2                      DY, RES )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,12 +35,9 @@ C                   RES = ( GF   LF  JF  KF RF TF XIF  (FF)   )
 C                                                      (SI IOPTIO = 2)
 C
 C       IN  MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATERD :  COEFFICIENTS MATERIAU A T
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           MATCST :  'OUI' SI MATERIAU CONSTANT SUR DT
-C           TEMPF  :  TEMPERATURE A T + DT
 C           YD     :  VARIABLES A T      = ( SIGD  X1D X2D PD RD QD(..))
 C           YF     :  VARIABLES A T + DT = ( SIGF  X1F X2F PF RF QF(..))
 C           DY     :  SOLUTION ESSAI     = ( DSIG  DX1 DX2 DP DR DQ(..))
@@ -48,7 +45,7 @@ C           EPSD   :  DEFORMATION A T
 C           DEPS   :  INCREMENT DE DEFORMATION
 C       OUT RES    :  SYSTEME NL A T + DT
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NDT , NDI , NMAT
+        INTEGER         NDT , NDI , NMAT
         INTEGER         IOPTIO   , IDNR , NOPT
 C
         REAL*8          HOOKF(6,6), DKOOH(6,6) , FKOOH(6,6)
@@ -64,7 +61,7 @@ C
         REAL*8          TIMED   , TIMEF   , DT
 C
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
-        REAL*8          SEUIL , TEMPF
+        REAL*8          SEUIL
 C
         REAL*8          K0  , AK   , N   , ALP
         REAL*8          B    , MR , GR  , MU   , QM , Q0
@@ -77,7 +74,6 @@ C
         REAL*8          VTMP(6) , VTMP1(6) , EPSP(6) , EPXI(6)
 C
         CHARACTER*8     MOD
-        CHARACTER*3     MATCST
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT , NDI
         COMMON /OPTI/   IOPTIO , IDNR
@@ -135,8 +131,7 @@ C
         CALL LCOPIL  ( 'ISOTROPE' , MOD , MATERD(1,1) , DKOOH )
 C
         CALL CHBFS  ( SIGF , X1 , X2 , DFDS )
-        CALL CVMCVX ( IMAT, NMAT, MATERF, TEMPF,
-     1                SIGF, YF(NDT+1), SEUIL)
+        CALL CVMCVX ( NMAT, MATERF,SIGF, YF(NDT+1), SEUIL)
         CCIN = AI + (1.D0-AI) * EXP( -B*P )
         DT    = TIMEF - TIMED
 C

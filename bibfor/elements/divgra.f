@@ -1,8 +1,7 @@
-         SUBROUTINE DIVGRA(NOMTE,E1,E2,J1,J2,DFDE,DFDK,VIBARN,DIVSIG)
-         IMPLICIT REAL*8  (A-H,O-Z)
-
+         SUBROUTINE DIVGRA(E1,E2,DFDE,DFDK,VIBARN,DIVSIG)
+         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,148 +24,87 @@ C BUT: CALCUL DE LA DIVERGENCE SURFACIQUE DU GRADIENT DE PHIBARRE
 C
 C     ENTREES  ---> DERIVEES DE FONCTIONS DE FORME
 C...............................................................
-      CHARACTER*2        CODRET(1)
-      CHARACTER*16       NOMTE
-      CHARACTER*24       CHVAL,CHCTE
-      CHARACTER*8        ELREFE,NOMRES(1)
-      REAL*8             JAC(9),NXN(9),NYN(9),NZN(9),SA(9)
-      REAL*8             NORMN(3,9),E1N(3,9),E2N(3,9),CA(9)
-      REAL*8             DFDE(9,9),DFDK(9,9),J1N(9),J2N(9)
-      REAL*8             SX(9,9),SY(9,9),SZ(9,9),VIBARN(2,9)
-      REAL*8             DIVSIG(9),J1(9),J2(9),CAN(9),SAN(9)
-      REAL*8             COVA(3,3),METR(2,2),A(2,2),JC,CNVA(3,3)
-      REAL*8             DVIBAR(2,9),E1(3,9),E2(3,9)
-      INTEGER            IGEOM,ITEMP
-      INTEGER            NBPG(10)
-
-C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      COMMON /IVARJE/ZI(1)
-      COMMON /RVARJE/ZR(1)
-      COMMON /CVARJE/ZC(1)
-      COMMON /LVARJE/ZL(1)
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      COMMON /NOMAJE/PGC
-      CHARACTER*6 PGC
-      INTEGER ZI
-      REAL*8 ZR
-      COMPLEX*16 ZC
-      LOGICAL ZL
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      CALL ELREF1(ELREFE)
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CHCTE = '&INEL.'//ELREFE//'.CARACTE'
-      CALL JEVETE(CHCTE,'L',JIN)
-      NDIM = ZI(JIN+1-1)
-      NNO = ZI(JIN+2-1)
-      NBFPG = ZI(JIN+3-1)
-      DO 1 I = 1,NBFPG
-         NBPG(I) = ZI(JIN+3-1+I)
-  1   CONTINUE
-      NPG1 = NBPG(1)
-
+      REAL*8        DFDE(9,9),DFDK(9,9),VIBARN(2,9)
+      REAL*8        DIVSIG(9)
+      REAL*8        COVA(3,3),METR(2,2),A(2,2),JC,CNVA(3,3)
+      REAL*8        DVIBAR(2,9),E1(3,9),E2(3,9)
+      INTEGER       I,J,ITEMP,IPG,KDEC,IDEC,IDIR,JDIR
+      INTEGER       NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDX,IDFDY,JGANO
+C-----------------------------------------------------------------------
 C
-      CHVAL = '&INEL.'//ELREFE//'.FFORMES'
-      CALL JEVETE(CHVAL,'L',JVAL)
-C
-      IPOIDS = JVAL + (NDIM+1)*NNO*NNO
-      IVF    = IPOIDS + NPG1
-      IDFDX  = IVF    + NPG1 * NNO
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDX,JGANO)
       IDFDY  = IDFDX  + 1
-
+C
       CALL JEVECH('PTEMPER','L',ITEMP)
-
 C
-C CALCUL DE VITESSE PERMANENTE FLUIDE AUX NOEUDS
+C --- CALCUL DE VITESSE PERMANENTE FLUIDE AUX NOEUDS
 C
-        DO 10 I=1,NNO
-            VIBARN(1,I)=0.0D0
-            VIBARN(2,I)=0.0D0
-          DO 20 J=1,NNO
-           VIBARN(1,I)=VIBARN(1,I)+(ZR(ITEMP+J-1)*DFDE(J,I))
-           VIBARN(2,I)=VIBARN(2,I)+(ZR(ITEMP+J-1)*DFDK(J,I))
-20        CONTINUE
-10      CONTINUE
+      DO 10 I=1,NNO
+         VIBARN(1,I)=0.0D0
+         VIBARN(2,I)=0.0D0
+         DO 20 J=1,NNO
+            VIBARN(1,I)=VIBARN(1,I)+(ZR(ITEMP+J-1)*DFDE(J,I))
+            VIBARN(2,I)=VIBARN(2,I)+(ZR(ITEMP+J-1)*DFDK(J,I))
+20       CONTINUE
+10    CONTINUE
 
-C CALCUL DE LA DERIVEE DE LA COMPOSANTE DE VITESSE COVARIANTE
-C AU POINT DE GAUSS
-        DO 30 IPG=1,NPG1
-          KDEC=(IPG-1)*NNO*NDIM
-          DVIBAR(1,IPG)=0.0D0
-          DVIBAR(2,IPG)=0.0D0
-          DO 31 I=1,NNO
-             IDEC=(I-1)*NDIM
+C --- CALCUL DE LA DERIVEE DE LA COMPOSANTE DE VITESSE COVARIANTE
+C     AU POINT DE GAUSS
+      DO 30 IPG=1,NPG1
+         KDEC=(IPG-1)*NNO*NDIM
+         DVIBAR(1,IPG)=0.0D0
+         DVIBAR(2,IPG)=0.0D0
+         DO 31 I=1,NNO
+            IDEC=(I-1)*NDIM
 
          DVIBAR(1,IPG)=DVIBAR(1,IPG)+VIBARN(1,I)*ZR(IDFDX+KDEC+IDEC)
          DVIBAR(2,IPG)=DVIBAR(2,IPG)+VIBARN(2,I)*ZR(IDFDY+KDEC+IDEC)
 
 31       CONTINUE
-30      CONTINUE
+30    CONTINUE
 
-C  CALCUL  DE LA DIVERGENCE SURFACIQUE
-C   DU GRADIENT DU POTENTIEL PERMANENT EVALUE AU NOEUD
+C --- CALCUL  DE LA DIVERGENCE SURFACIQUE
+C     DU GRADIENT DU POTENTIEL PERMANENT EVALUE AU NOEUD
 
-        DO 40 IPG=1,NPG1
-            DIVSIG(IPG)=0.D0
+      DO 40 IPG=1,NPG1
+         DIVSIG(IPG)=0.D0
          DO 41 I=1,3
-              COVA(I,1)=E1(I,IPG)
-              COVA(I,2)=E2(I,IPG)
-41      CONTINUE
+            COVA(I,1)=E1(I,IPG)
+            COVA(I,2)=E2(I,IPG)
+41       CONTINUE
 C
-C             KDEC=(IPG-1)*NNO*NDIM
+C        KDEC=(IPG-1)*NNO*NDIM
 
-C ON CALCULE LE TENSEUR METRIQUE AU POINT DE GAUSS
+C ------ ON CALCULE LE TENSEUR METRIQUE AU POINT DE GAUSS
 
-             CALL SUMETR(COVA,METR,JC)
+         CALL SUMETR(COVA,METR,JC)
 
-C CALCUL DE LA BASE CONTRAVARIANTE AU POINT DE GAUSS
+C ------ CALCUL DE LA BASE CONTRAVARIANTE AU POINT DE GAUSS
 
-             CALL SUBACV(COVA,METR,JC,CNVA,A)
+         CALL SUBACV(COVA,METR,JC,CNVA,A)
 
-              DO 51 IDIR=1,2
-               DO 61 JDIR=1,2
-
-            DIVSIG(IPG)= DIVSIG(IPG)+A(IDIR,JDIR)
-     &                               *DVIBAR(IDIR,IPG)
-
-61           CONTINUE
-51         CONTINUE
-40       CONTINUE
-
-C CALCUL DE GRADPHIBARRE AUX NOEUDS -ANCIENNE METHODE COMMENTEE
-C POUR MEMOIRE- NE FONCTIONNE QU'EN MAILLAGE REGLE
+         DO 51 IDIR=1,2
+            DO 61 JDIR=1,2
+               DIVSIG(IPG)= DIVSIG(IPG)+A(IDIR,JDIR)*DVIBAR(IDIR,IPG)
+61          CONTINUE
+51       CONTINUE
+40    CONTINUE
 C
-C       CALL E1E2NN(NNO,DFDE,DFDK,E1N,E2N,NXN,NYN,NZN,NORMN,J1N,J2N,
-C     &             SAN,CAN)
-C        DO 10 I=1,NNO
-C            VIBARN(1,I)=0.0D0
-C            VIBARN(2,I)=0.0D0
-C         DO 20 J=1,NNO
-C           VIBARN(1,I)=VIBARN(1,I)+(ZR(ITEMP+J-1)*DFDE(J,I))
-C     &                      /J1N(I)
-C
-C
-C           VIBARN(2,I)=VIBARN(2,I)+(ZR(ITEMP+J-1)*DFDK(J,I))
-C     &                      *CAN(I)/J2N(I)
-C20       CONTINUE
-C10      CONTINUE
-
-
-C CALCUL DE LA DIVERGENCE SURFACIQUE AUX POINTS DE GAUSS
-C        DO 40 IPG=1,NPG1
-C          DIVSIG(IPG)=0.0D0
-C         KDEC=(IPG-1)*NNO*NDIM
-C          DO 50 I=1,NNO
-C           IDEC=(I-1)*NDIM
-C          DIVSIG(IPG)=DIVSIG(IPG)+(ZR(IDFDX+KDEC+IDEC)
-C     &                        *VIBARN(1,I))/J1(IPG)
-C     &                      +(ZR(IDFDY+KDEC+IDEC)
-C     &                        *VIBARN(2,I))*CA(IPG)/J2(IPG)
-C50        CONTINUE
-C40       CONTINUE
-
-       END
+      END

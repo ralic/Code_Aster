@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,35 +41,35 @@ C        NON LINEAIRE      KIRCHOFF  (MINCE)        DKT
 
 C        FULL_MECA       RAPH_MECA     RIGI_MECA_TANG
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER         ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8          ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16      ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL         ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8     ZK8
+      CHARACTER*16            ZK16
+      CHARACTER*24                     ZK24
+      CHARACTER*32                              ZK32
+      CHARACTER*80                                       ZK80
+      COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER MULTIC,NPGH ,JTAB(7),CODRET,JNBSPI,JDEPM,JDEPR
-      INTEGER ICOMPO,I1,I2,J,LT2EV,JVECT,NBSP,IPG,ICONTP,NPG
-      INTEGER ICHG,ICHN,NCMP,NBVAR,NBCOU,K,IAD,K1,ICONTM,JCRET
-      INTEGER JMATE,LZI,NNO,LZR,JGEOM,LT2VE,JMATR,JENER,I,JFREQ,IACCE
-      INTEGER IVECT,NDDL,NVEC,NDIM,IRET
-      LOGICAL GRILLE, LCOELA
+      INTEGER      NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO
+      INTEGER      MULTIC,JTAB(7),CODRET,JDEPM,JDEPR
+      INTEGER      ICOMPO,I1,I2,J,LT2EV,JVECT
+      INTEGER      ICHG,ICHN,NCMP,K,JCRET,JFREQ,IACCE
+      INTEGER      JMATE,LZR,JGEOM,JMATR,JENER,I
+      INTEGER      IVECT,NDDL,NVEC,IRET,ICONTP
+      LOGICAL      GRILLE, LCOELA
       CHARACTER*2  CODRE2(33)
       CHARACTER*10 PHENOM
-      CHARACTER*8 ELREFE
 C
-      REAL*8 PGL(3,3),XYZL(3,4),BSIGMA(24),EFFGT(32)
-      REAL*8 VECLOC(24),ENER(3),MATP(24,24),MATV(300)
-      CHARACTER*24 DESI,DESR
+      REAL*8        PGL(3,3), XYZL(3,4), BSIGMA(24), EFFGT(32)
+      REAL*8        VECLOC(24), ENER(3), MATP(24,24), MATV(300)
+      CHARACTER*24  DESR
 C
 C     ---> POUR DKT/DST MATELEM = 3 * 6 DDL = 171 TERMES STOCKAGE SYME
 C     ---> POUR DKQ/DSQ MATELEM = 4 * 6 DDL = 300 TERMES STOCKAGE SYME
@@ -77,74 +77,61 @@ C     ---> POUR DKQ/DSQ MATELEM = 4 * 6 DDL = 300 TERMES STOCKAGE SYME
 C
 C     ---> POUR DKT/DST EFFINT = 24
 C     ---> POUR DKQ/DSQ EFFINT = 32
-      REAL*8 EFFINT(32), EFFIN2(32)
+      REAL*8  EFFINT(32)
 C
 C     --->   UML : DEPLACEMENT A L'INSTANT T- (REPERE LOCAL)
 C     --->   DUL : INCREMENT DE DEPLACEMENT   (REPERE LOCAL)
-      REAL*8 UML(6,4),DUL(6,4),DEPL(6,4)
-C DEB
+      REAL*8 UML(6,4),DUL(6,4)
+C DEB ------------------------------------------------------------------
 C
-      CALL ELREF1(ELREFE)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
+C
       LCOELA = .FALSE.
-C
-
-      IF (OPTION.EQ.'FULL_MECA'.OR.OPTION.EQ.'RAPH_MECA'.
-     +  OR.OPTION.EQ.'RIGI_MECA_TANG') THEN
-C
-C ---   RECUPERATION DU MATERIAU :
-C       ------------------------
+      IF ( OPTION.EQ.'FULL_MECA'      .OR.
+     +     OPTION.EQ.'RAPH_MECA'      .OR.
+     +     OPTION.EQ.'RIGI_MECA_TANG' ) THEN
         CALL JEVECH('PMATERC','L',JMATE)
         CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRE2)
-C --       DETECTION D'UN MATERIAU ELAS_COQUE :
-C          ----------------------------------
         IF (PHENOM.EQ.'ELAS_COQUE') LCOELA = .TRUE.
       ENDIF
 C
-      DESI = '&INEL.'//ELREFE//'.DESI'
-      CALL JEVETE(DESI,'L',LZI)
-      NNO = ZI(LZI)
+      GRILLE = .FALSE.
+      IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
+         GRILLE = .TRUE.
+         LT2EV = 51
+      ELSEIF (NOMTE(1:8).EQ.'MEDKTR3 ') THEN
+         LT2EV = 51
+      ELSEIF (NOMTE(1:8).EQ.'MEDKQU4 ') THEN
+         LT2EV = 81
+      END IF
 C
-      DESR = '&INEL.'//ELREFE//'.DESR'
+      DESR = '&INEL.'//NOMTE(1:8)//'.DESR'
       CALL JEVETE(DESR,'L',LZR)
 C
-      IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
-        GRILLE = .TRUE.
-      ELSE
-        GRILLE = .FALSE.
+      IF ( OPTION.NE.'VARI_ELNO_ELGA' ) THEN
+         CALL JEVECH('PGEOMER','L',JGEOM)
+         IF (NNO.EQ.3) THEN
+            CALL DXTPGL ( ZR(JGEOM), PGL )
+         ELSE IF (NNO.EQ.4) THEN
+            CALL DXQPGL ( ZR(JGEOM), PGL )
+         END IF
+         CALL UTPVGL(NNO,3,PGL,ZR(JGEOM),XYZL)
       END IF
 C
-      IF ((OPTION.NE.'SIEF_ELNO_ELGA') .AND.
-     +    (OPTION.NE.'VARI_ELNO_ELGA')) THEN
-C
-        CALL JEVECH('PGEOMER','L',JGEOM)
-C
-        IF (NNO.EQ.3) THEN
-          CALL DXTPGL(ZR(JGEOM),PGL)
-          NPG = 3
-          LT2VE = 47
-        ELSE IF (NNO.EQ.4) THEN
-          CALL DXQPGL(ZR(JGEOM),PGL)
-          NPG = 4
-          LT2VE = 77
-        END IF
-C
-        CALL UTPVGL(NNO,3,PGL,ZR(JGEOM),XYZL)
-C
-      END IF
-C
-      IF (OPTION.EQ.'RIGI_MECA' .OR. OPTION.EQ.'EPOT_ELEM_DEPL') THEN
+      IF ( OPTION.EQ.'RIGI_MECA'      .OR. 
+     +     OPTION.EQ.'EPOT_ELEM_DEPL' ) THEN
 C     --------------------------------------
 C
         IF (NOMTE.EQ.'MEDKTR3' .OR. NOMTE.EQ.'MEGRDKT') THEN
-          CALL DKTRIG(XYZL,OPTION,PGL,MATLOC,ENER,MULTIC,GRILLE)
+          CALL DKTRIG(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER,MULTIC,GRILLE)
         ELSE IF (NOMTE.EQ.'MEDSTR3') THEN
-          CALL DSTRIG(XYZL,OPTION,PGL,MATLOC,ENER)
+          CALL DSTRIG(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER)
         ELSE IF (NOMTE.EQ.'MEDKQU4') THEN
-          CALL DKQRIG(XYZL,OPTION,PGL,MATLOC,ENER)
+          CALL DKQRIG(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER)
         ELSE IF (NOMTE.EQ.'MEDSQU4') THEN
-          CALL DSQRIG(XYZL,OPTION,PGL,MATLOC,ENER)
+          CALL DSQRIG(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER)
         ELSE IF (NOMTE.EQ.'MEQ4QU4') THEN
-          CALL Q4GRIG(XYZL,OPTION,PGL,MATLOC,ENER)
+          CALL Q4GRIG(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER)
         END IF
         IF (OPTION.EQ.'RIGI_MECA') THEN
           CALL JEVECH('PMATUUR','E',JMATR)
@@ -156,20 +143,22 @@ C
    10     CONTINUE
         END IF
 C
-      ELSE IF (OPTION.EQ.'MASS_MECA' .OR.
-     +         OPTION.EQ.'MASS_MECA_DIAG' .OR. OPTION.EQ.'M_GAMMA' .OR.
-     +         OPTION.EQ.'ECIN_ELEM_DEPL') THEN
-C     --------------------------------------
+C
+      ELSEIF ( OPTION.EQ.'MASS_MECA'      .OR.
+     +         OPTION.EQ.'MASS_MECA_DIAG' .OR.
+     +         OPTION.EQ.'M_GAMMA'        .OR.
+     +         OPTION.EQ.'ECIN_ELEM_DEPL' ) THEN
+C     ------------------------------------------
         IF (NOMTE.EQ.'MEDKTR3' .OR. NOMTE.EQ.'MEGRDKT') THEN
-          CALL DKTMAS(XYZL,OPTION,PGL,MATLOC,ENER,MULTIC,GRILLE)
+          CALL DKTMAS(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER,MULTIC,GRILLE)
         ELSE IF (NOMTE.EQ.'MEDSTR3') THEN
-          CALL DSTMAS(XYZL,OPTION,PGL,MATLOC,ENER)
+          CALL DSTMAS(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER)
         ELSE IF (NOMTE.EQ.'MEDKQU4') THEN
-          CALL DKQMAS(XYZL,OPTION,PGL,MATLOC,ENER)
+          CALL DKQMAS(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER)
         ELSE IF (NOMTE.EQ.'MEDSQU4') THEN
-          CALL DSQMAS(XYZL,OPTION,PGL,MATLOC,ENER)
+          CALL DSQMAS(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER)
         ELSE IF (NOMTE.EQ.'MEQ4QU4') THEN
-          CALL Q4GMAS(XYZL,OPTION,PGL,MATLOC,ENER)
+          CALL Q4GMAS(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER)
         END IF
         IF (OPTION.EQ.'MASS_MECA') THEN
           CALL JEVECH('PMATUUR','E',JMATR)
@@ -197,8 +186,9 @@ C     --------------------------------------
    30     CONTINUE
         END IF
 C
-      ELSE IF (OPTION.EQ.'MASS_INER') THEN
-C     --------------------------------------
+C
+      ELSEIF ( OPTION.EQ.'MASS_INER') THEN
+C     ------------------------------------
         CALL JEVECH('PMASSINE','E',JMATR)
         CALL DXROEP(RHO,EPAIS)
         CALL DXINER(NNO,ZR(JGEOM),RHO,EPAIS,ZR(JMATR),ZR(JMATR+1),
@@ -206,8 +196,9 @@ C     --------------------------------------
 C
 C     -- OPTIONS NON-LINEAIRES :
 C     --------------------------
-      ELSE IF ((OPTION.EQ.'FULL_MECA') .OR. (OPTION.EQ.'RAPH_MECA') .OR.
-     +         (OPTION.EQ.'RIGI_MECA_TANG')) THEN
+      ELSEIF ( OPTION.EQ.'FULL_MECA'      .OR.
+     +         OPTION.EQ.'RAPH_MECA'      .OR.
+     +         OPTION.EQ.'RIGI_MECA_TANG' ) THEN
 C
         CALL JEVECH('PDEPLMR','L',JDEPM)
         CALL JEVECH('PDEPLPR','L',JDEPR)
@@ -239,7 +230,6 @@ C
           ELSE IF (NNO.EQ.4) THEN
             CALL DXQPGL(ZR(JGEOM),PGL)
           END IF
-C
           CALL UTPVGL(NNO,3,PGL,ZR(JGEOM),XYZL)
 C
         END IF
@@ -247,28 +237,21 @@ C
         CALL UTPVGL(NNO,6,PGL,ZR(JDEPM),UML)
         CALL UTPVGL(NNO,6,PGL,ZR(JDEPR),DUL)
 C
-        DO 50 I = 1, 6
-        DO 50 J = 1, NNO
-          DEPL(I,J) = UML(I,J) + DUL(I,J)
-  50    CONTINUE
-C
         IF (NOMTE.EQ.'MEDKTR3' .OR. NOMTE.EQ.'MEGRDKT') THEN
-          NPG = 3
-          LT2EV = 51
           IF (ZK16(ICOMPO+3) (1:9).EQ.'COMP_INCR') THEN
-            CALL DKTNLI(OPTION,XYZL,UML,DUL,VECLOC,MATLOC,
-     +                  EFFINT,PGL,MULTIC,GRILLE,CODRET)
-          ELSEIF (ZK16(ICOMPO+3) (1:9).EQ.'COMP_ELAS') THEN
-            CALL DXELAS(OPTION,NOMTE,DEPL,VECLOC,MATLOC,EFFINT,CODRET)
+            CALL DKTNLI ( NOMTE, OPTION, XYZL, UML, DUL, VECLOC, 
+     +                    MATLOC, PGL, CODRET )
+          ELSE
+            CALL UTMESS('F','TE0031',
+     +                  'COMPORTEMENT NON TRAITE: '//ZK16(ICOMPO+3) )
           ENDIF
         ELSE IF (NOMTE.EQ.'MEDKQU4 ') THEN
-          NPG = 4
-          LT2EV = 81
           IF (ZK16(ICOMPO+3) (1:9).EQ.'COMP_INCR') THEN
-            CALL DKQNLI(OPTION,XYZL,UML,DUL,VECLOC,MATLOC,
-     +                  EFFINT,CODRET)
-          ELSEIF (ZK16(ICOMPO+3) (1:9).EQ.'COMP_ELAS') THEN
-            CALL DXELAS(OPTION,NOMTE,DEPL,VECLOC,MATLOC,EFFINT,CODRET)
+            CALL DKTNLI ( NOMTE, OPTION, XYZL, UML, DUL, VECLOC, 
+     +                    MATLOC, PGL, CODRET )
+          ELSE
+            CALL UTMESS('F','TE0031',
+     +                  'COMPORTEMENT NON TRAITE: '//ZK16(ICOMPO+3) )
           ENDIF
         ELSE
           CALL UTMESS('F','TE0031',NOMTE//' NON IMPLANTE.')
@@ -286,83 +269,57 @@ C
           CALL JEVECH('PMATUUR','E',JMATR)
           CALL UTPSLG(NNO,6,PGL,MATLOC,ZR(JMATR))
         END IF
-        IF (OPTION.EQ.'FULL_MECA' .OR. OPTION.EQ.'RAPH_MECA') THEN
-C         - PASSAGE EFFORTS DANS REPERE "UTILISATEUR" (VARIETE)
-          CALL DXREPE(NNO,PGL,ZR(LZR))
-          CALL TECACH('OON','PCONTPR',7,JTAB,IRET)
-          NPG=JTAB(3)
-          NBSP=JTAB(7)
-          CALL DXEFRO(NPG,ZR(LZR-1+LT2EV),EFFINT,EFFIN2)
-          DO 777,IPG=1,NPG
-            ICONTP=JTAB(1)+(6*NBSP)*(IPG-1)+6*(NBSP-2)
-            CALL R8COPY(8,EFFIN2(8*(IPG-1)+1),1,ZR(ICONTP),1)
-777       CONTINUE
-        END IF
 C
-
-
-      ELSE IF (OPTION.EQ.'SIEF_ELNO_ELGA') THEN
-C     ---------------------------------------
+C
+      ELSEIF ( OPTION.EQ.'SIEF_ELNO_ELGA' ) THEN
+C     ------------------------------------------
           CALL TECACH('NNN','PCOMPOR',1,ICOMPO,IRET)
           IF (ZK16(ICOMPO+2)(1:8).EQ.'GREEN_GR') THEN
              CALL UTMESS('F','TE0031','OPTION "SIEF_ELNO_ELGA" NON '//
      +                    'IMPLANTEE POUR LA DEFORMATION "GREEN_GR"')
           ENDIF
-
-          CALL TECACH('OON','PCONTRR',7,JTAB,IRET)
-          NPG=JTAB(3)
-          NBSP=JTAB(7)
-          DO 779,IPG=1,NPG
-            ICONTM=JTAB(1)+(6*NBSP)*(IPG-1)+6*(NBSP-2)
-            CALL R8COPY(8,ZR(ICONTM),1,EFFIN2(8*(IPG-1)+1),1)
-779       CONTINUE
-          CALL JEVECH('PSIEFNOR','E',ICHN)
-          CALL PPGANO(NNO,NPG,8,EFFIN2,ZR(ICHN))
-
-
-      ELSE IF (OPTION.EQ.'VARI_ELNO_ELGA') THEN
-C     ---------------------------------------
-          CALL JEVECH('PVARIGR','L',ICHG)
-          CALL JEVECH('PVARINR','E',ICHN)
-          CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
-          NPG=JTAB(3)
+          CALL JEVECH ( 'PCONTRR', 'L', ICONTP )
+          CALL DXEFF2 ( NOMTE, XYZL, PGL, ZR(ICONTP), EFFINT )
+          CALL DXREPE ( NNO, PGL, ZR(LZR) )
+          CALL DXEFR2 ( NPG, ZR(LZR-1+LT2EV), EFFINT, EFFGT )
+          CALL JEVECH ( 'PSIEFNOR', 'E', ICHN   )
+          CALL PPGAN2 ( JGANO, 6, EFFGT, ZR(ICHN) )
+C
+C
+      ELSEIF ( OPTION.EQ.'VARI_ELNO_ELGA' ) THEN
+C     ------------------------------------------
+          CALL JEVECH ( 'PVARIGR', 'L', ICHG )
+          CALL JEVECH ( 'PVARINR', 'E', ICHN )
+          CALL TECACH ( 'OON', 'PVARIGR', 7, JTAB, IRET )
           NCMP = JTAB(6)*JTAB(7)
-          CALL PPGANO(NNO,NPG,NCMP,ZR(ICHG),ZR(ICHN))
 
+          CALL PPGAN2 ( JGANO, NCMP, ZR(ICHG), ZR(ICHN))
+C
+C
+      ELSEIF ( OPTION.EQ.'FORC_NODA' ) THEN
+C     -------------------------------------
 
-      ELSE IF (OPTION.EQ.'FORC_NODA') THEN
-C     ---------------------------------------
-
-C --- PASSAGE DU VECTEUR DES EFFORTS GENERALISES AUX POINTS
-C --- D'INTEGRATION DU REPERE LOCAL AU REPERE INTRINSEQUE :
-C     -----------------------------------------------------
-        CALL DXREPE(NNO,PGL,ZR(LZR))
-        CALL TECACH('OON','PCONTMR',7,JTAB,IRET)
-        NPG=JTAB(3)
-        NBSP=JTAB(7)
-        DO 778,IPG=1,NPG
-          ICONTM=JTAB(1)+(6*NBSP)*(IPG-1)+6*(NBSP-2)
-          CALL R8COPY(8,ZR(ICONTM),1,EFFIN2(8*(IPG-1)+1),1)
-778     CONTINUE
-        CALL DXEFRO(NPG,ZR(LZR-1+LT2VE),EFFIN2,EFFGT)
+         CALL JEVECH ( 'PCONTMR', 'L', ICONTP )
+         CALL DXEFFI ( NOMTE, XYZL, PGL, ZR(ICONTP), EFFGT )
 C
-C --- CALCUL DES EFFORTS INTERNES (I.E. SOMME_VOL(BT_SIG))
-C     ----------------------------------------------------
+C ------ CALCUL DES EFFORTS INTERNES (I.E. SOMME_VOL(BT_SIG))
+C        ----------------------------------------------------
 C
-        CALL DXBSIG(NOMTE,XYZL,PGL,EFFGT,BSIGMA)
+         CALL DXBSIG ( NOMTE, XYZL, PGL, EFFGT, BSIGMA )
 C
-C --- AFFECTATION DES VALEURS DE BSIGMA AU VECTEUR EN SORTIE
-C     ------------------------------------------------------
-        CALL JEVECH('PVECTUR','E',JVECT)
-        K = 0
-        DO 90 I = 1,NNO
-          DO 80 J = 1,6
-            K = K + 1
-            ZR(JVECT+K-1) = BSIGMA(K)
-   80     CONTINUE
-   90   CONTINUE
+C ------ AFFECTATION DES VALEURS DE BSIGMA AU VECTEUR EN SORTIE
+C        ------------------------------------------------------
+         CALL JEVECH('PVECTUR','E',JVECT)
+         K = 0
+         DO 90 I = 1,NNO
+            DO 80 J = 1,6
+               K = K + 1
+               ZR(JVECT+K-1) = BSIGMA(K)
+   80       CONTINUE
+   90    CONTINUE
       ELSE
-        CALL UTMESS('E','TE0031','OPTION NON TRAITEE')
+
+         CALL UTMESS('F','TE0031','OPTION NON TRAITEE')
       END IF
 C
       IF ( OPTION(1:9).EQ.'FULL_MECA'  .OR.

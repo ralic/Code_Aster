@@ -1,10 +1,10 @@
-      SUBROUTINE NUM2K8(NOMGD,TGLOK8,TLOCK8,NBGK8,NBLK8,TIND)
+      SUBROUTINE NUM2K8(NOMGD,TGLOK8,TLOCK8,NBLK8,TIND)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER                               NBGK8,NBLK8,TIND(*)
+      INTEGER                               NBLK8,TIND(*)
       CHARACTER*8       NOMGD,TGLOK8(*),TLOCK8(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF PREPOST  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C     COPIE DE NUMEK8
 C     TIND(I) <-- INDICE DANS LE TABLEAU TGLOK8 DE L' ELEMEMT
 C                 NUMERO I DE TLOCK8
 C                 (NBLK8 : DIMENSION DE TLOCK8)
-C                 (NBGK8 : DIMENSION DE TGLOK8)
 C
 C ----------------------------------------------------------------------
 C

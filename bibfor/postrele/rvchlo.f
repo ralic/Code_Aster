@@ -1,9 +1,9 @@
       SUBROUTINE RVCHLO(EPSI,SSCH19,NBCP,NBCO,NBSP,NBCM,NBSM,M,F,N,R,
-     +                  NBPARA,VALCP)
+     +                  VALCP)
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/10/2003   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C
-      INTEGER      M,F(*),N,NBCP,NBPARA,NBCM,NBSM,NBCO,NBSP
+      INTEGER      M,F(*),N,NBCP,NBCM,NBSM,NBCO,NBSP
       CHARACTER*19 SSCH19
       REAL*8       R(*),VALCP(*),EPSI
 C
@@ -40,7 +40,6 @@ C     M      : NUMERO DE LA MAILLE
 C     F      : TABLE DES FACES
 C     R      : TABLE VALEUR DU PARAMETRE DE REPERAGE
 C              POUR LE POINT CONSIDERE (2D : 1 PARAM, 3D : 2 PARAM)
-C     NBPARA : NBR DE PARAMETRE PAR POINT
 C
 C  ARGUMENTS EN SORTIE
 C  -------------------
@@ -249,9 +248,9 @@ C
 C
             DO 151, J = 1, NBCO, 1
 C
-               CALL RVECHB(EPSI,TYPMAI,ZI(ANDFAC),NBNF,R(I),NBPARA,
+               CALL RVECHB(EPSI,TYPMAI,ZI(ANDFAC),R(I),
      +               ZR(AVALCM + (J-1)*NBNM*NBSM*NBCP),
-     +               NBCP,NBNM,NBSP,NBSM,
+     +               NBCP,NBSP,NBSM,
      +               VALCP(1 + ((J-1)*N+I-1)*NBSP*NBCP))
 C
 CC       CALL JXVERI('RESULTAT','AP : RVECHB')

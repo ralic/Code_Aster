@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL,ELREFA
+      LOGICAL ZL
       COMMON /LVARJE/ZL(1)
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
@@ -76,7 +76,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER NBSIGM,NBNOEU,NBNOSO,NBDIM,JTAB(3)
+      INTEGER NBSIGM,NBDIM,JTAB(3)
       INTEGER IRET,NPG1,IPOIDS,IVF,IDFDE,JGANO
       INTEGER MXCMEL,NBPGMX,NNO,NBSIG,IDNORM,NNOS,IDSIG1,IDSIG2,IDVAR1,
      &        IDVAR2,NBSIG2,NPG,I,K,NDIM,IGAU,INO,IDINLO
@@ -117,7 +117,6 @@ C      ---------------
 
 C ----     DIMENSION DE L'ELEMENT :
       NDIM = NBDIM(NOMTE)
-      ELREFA = (NDIM.EQ.3) .AND. (NOMTE(3:4).NE.'FO')
 C ----     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
       NBSIG = NBSIGM(MODELI)
 
@@ -139,15 +138,8 @@ C      ---------------
       CALL JEVECH('PCONTPR','L',IDSIG2)
 
 
-      IF (ELREFA) THEN
-        CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,
-     &              JGANO)
-        CALL ASSERT(NPG.EQ.NPG1)
-      ELSE
-        NNO = NBNOEU(' ')
-        NNOS = NBNOSO(NOMTE)
-      END IF
-
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
+      CALL ASSERT(NPG.EQ.NPG1)
 
 
 C ---- AFFECTATION DES VECTEURS DE TRAVAIL SIGMA1 ET SIGMA2
@@ -322,11 +314,7 @@ C            ----------------------------------------------------
 C ----    CALCUL DE L'INDICATEUR LOCAL DE DECHARGE AUX NOEUDS :
 C         ---------------------------------------------------
         IF (OPTION.EQ.'DCHA_ELNO_SIGM') THEN
-          IF (ELREFA) THEN
-            CALL PPGAN2(JGANO,1,INDLOG,INDLON)
-          ELSE
-            CALL PPGANO(NNOS,NPG,1,INDLOG,INDLON)
-          END IF
+           CALL PPGAN2(JGANO,1,INDLOG,INDLON)
         END IF
 
 C ---- CALCUL DE L'INDICATEUR LOCAL DE PERTE DE RADIALITE :
@@ -383,11 +371,7 @@ C            -----------------------
 C ---- CALCUL DE L'INDICATEUR LOCAL DE PERTE DE RADIALITE AUX NOEUDS :
 C      -------------------------------------------------------------
         IF (OPTION.EQ.'RADI_ELNO_SIGM') THEN
-          IF (ELREFA) THEN
-            CALL PPGAN2(JGANO,1,INDLOG,INDLON)
-          ELSE
-            CALL PPGANO(NNOS,NPG,1,INDLOG,INDLON)
-          END IF
+           CALL PPGAN2(JGANO,1,INDLOG,INDLON)
         END IF
 
       END IF

@@ -1,6 +1,6 @@
       SUBROUTINE PCLDLT(MATF,MAT,NIREMP,BAS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/05/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 16/12/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,6 @@ C----------------------------------------------------------------------
 C----------------------------------------------------------------------
 C     DEBUT DES INSTRUCTIONS
       CALL JEMARQ()
-      CALL JXVERI(' ',' ')
 
       MATAS = MAT
       MATFAC = MATF
@@ -208,6 +207,5 @@ C     ------------------------------------------------
       CALL JEDETR('&&PCLDLT.VECT')
 
       CALL JEDETR('&&PCLDLT.VTRAVAIL')
-      CALL JXVERI(' ',' ')
       CALL JEDEMA()
       END

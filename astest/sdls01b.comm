@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE PLAQUE CARREE MINCE , LIBRE OU ENCASTREE SUR UN BORD (ROTATION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,39 +113,39 @@ MODE2=MODE_ITER_SIMULT(  MATR_A=MATASSR2,      MATR_B=MATASSM2,
 
 
 TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
            CRITERE = 'RELATIF',     PRECISION = 1.E-2,
            NUME_ORDRE = 1,       VALE = 8.7266),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
            CRITERE = 'RELATIF',     PRECISION = 1.E-2,
            NUME_ORDRE = 2,       VALE = 21.3042),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
            CRITERE = 'RELATIF',     PRECISION = 1.E-2,
            NUME_ORDRE = 3,       VALE = 53.5542),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
            CRITERE = 'RELATIF',     PRECISION = 1.E-2,
            NUME_ORDRE = 4,       VALE = 68.2984),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
            CRITERE = 'RELATIF',     PRECISION = 1.E-2,
            NUME_ORDRE = 5,       VALE = 77.7448),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
            CRITERE = 'RELATIF',     PRECISION = 1.E-2,
            NUME_ORDRE = 6,       VALE = 136.0471)) )
 
 TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
+   _F(   RESULTAT = MODE2,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
            CRITERE = 'RELATIF',     PRECISION = 1.1E-2,
            NUME_ORDRE = 1,       VALE = 33.7119),
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
+   _F(   RESULTAT = MODE2,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
            CRITERE = 'RELATIF',     PRECISION = 1.1E-2,
            NUME_ORDRE = 2,       VALE = 49.4558),
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
+   _F(   RESULTAT = MODE2,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
            CRITERE = 'RELATIF',     PRECISION = 1.1E-2,
            NUME_ORDRE = 3,       VALE = 61.0513),
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
+   _F(   RESULTAT = MODE2,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
            CRITERE = 'RELATIF',     PRECISION = 1.1E-2,
            NUME_ORDRE = 4,       VALE = 87.5160),
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
+   _F(   RESULTAT = MODE2,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
            CRITERE = 'RELATIF',     PRECISION = 1.1E-2,
            NUME_ORDRE = 5,       VALE = 87.5160)) )
 
@@ -208,42 +208,42 @@ DYNHARM=CALC_ELEM(reuse=DYNHARM,     RESULTAT=DYNHARM,
 
 TEST_RESU(RESU=( 
      _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'DEPL',  NOEUD = 'N145', NOM_CMP = 'DZ',
-       FREQ = 50.,      VALE_C = ('RI',2.90290E-02,5.20606E-02,)),
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',     VALE_C = ('RI',2.90290E-02,5.20606E-02,)),
      _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'DEPL',  NOEUD = 'N145', NOM_CMP = 'DRX',
-       FREQ = 50.,      VALE_C = ('RI',2.52920E-02,9.44717E-02,)),
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = ('RI',2.52920E-02,9.44717E-02,)),
 
      _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'VITE',  NOEUD = 'N145', NOM_CMP = 'DZ',
-       FREQ = 50.,      VALE_C = ('RI',-1.63553E+01,9.11973E+00,)),
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = ('RI',-1.63553E+01,9.11973E+00,)),
      _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'VITE',  NOEUD = 'N145', NOM_CMP = 'DRX',
-       FREQ = 50.,      VALE_C = ('RI',-2.96792E+01,7.94573E+00,)),
+       FREQ = 50.,  REFERENCE = 'NON_REGRESSION',     VALE_C = ('RI',-2.96792E+01,7.94573E+00,)),
 
      _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'ACCE',  NOEUD = 'N145', NOM_CMP = 'DZ',
-       FREQ = 50.,      VALE_C = ('RI',-2.86505E+03,-5.13817E+03,)),
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = ('RI',-2.86505E+03,-5.13817E+03,)),
      _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'ACCE',  NOEUD = 'N145', NOM_CMP = 'DRX',
-       FREQ = 50.,      VALE_C = ('RI',-2.49622E+03,-9.32398E+03,)),
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = ('RI',-2.49622E+03,-9.32398E+03,)),
 
      _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'EFGE_ELNO_DEPL',
        MAILLE = 'M255',   NOEUD = 'N145',   NOM_CMP = 'MXX',
-       FREQ = 50.,      VALE_C = ('RI',1.14053E+01,1.45539E+03,)),
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = ('RI',1.14053E+01,1.45539E+03,)),
      _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'EFGE_ELNO_DEPL',
        MAILLE = 'M255',   NOEUD = 'N145',   NOM_CMP = 'MYY',
-       FREQ = 50.,      VALE_C = ('RI',1.10224E+01,-1.31441E+03,)),
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = ('RI',1.10224E+01,-1.31441E+03,)),
      _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'EFGE_ELNO_DEPL',
        MAILLE = 'M255',   NOEUD = 'N145',   NOM_CMP = 'MXY',
-       FREQ = 50.,      VALE_C = ('RI',1.03148E+01,3.55382E+02,)),
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = ('RI',1.03148E+01,3.55382E+02,)),
      _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'EFGE_ELNO_DEPL',
        MAILLE = 'M255',   NOEUD = 'N145',   NOM_CMP = 'QX',
-       FREQ = 50.,      VALE_C = ('RI',3.66163E+02,-3.77331E+03,)),
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = ('RI',3.66163E+02,-3.77331E+03,)),
      _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'EFGE_ELNO_DEPL',
        MAILLE = 'M255',   NOEUD = 'N145',   NOM_CMP = 'QY',
-       FREQ = 50.,      VALE_C = ('RI',-3.14676E+02,2.06813E+03,)),
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = ('RI',-3.14676E+02,2.06813E+03,)),
 
      _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'SIGM_ELNO_DEPL',
        MAILLE = 'M255',   NOEUD = 'N145',   NOM_CMP = 'SIXZ',
-       FREQ = 50.,      VALE_C = ('RI',5.49245E+04,-5.65997E+05,)),
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = ('RI',5.49245E+04,-5.65997E+05,)),
      _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'SIGM_ELNO_DEPL',
        MAILLE = 'M255',   NOEUD = 'N145',   NOM_CMP = 'SIYZ',
-       FREQ = 50.,      VALE_C = ('RI',-4.72014E+04,3.10219E+05,)))
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = ('RI',-4.72014E+04,3.10219E+05,)))
             )
 
 FIN( )

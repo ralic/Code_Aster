@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -319,7 +319,7 @@ C
 C
         IF (NPOI.EQ.0) THEN
           CALL PASFRE(ZR(IDISC),ZR(IFREQ),ZR(LPASF),DIM,NBM,IV,NMODI,
-     &                NMODF,FREQI,FREQF,NB)
+     &                FREQI,FREQF,NB)
         ENDIF
 C
         DO 220 IM2 = NMODI,NMODF
@@ -368,7 +368,7 @@ C
         IF (ISPECT.LT.10) THEN
           NOMZON = ZK16(LNOZO+IS-1)
           CALL SPECT1(CASINT,NOMU,SPECTR,ISPECT,BASE,ZR(IVITE),
-     &                ZR(IFREQ),ZI(INUMO),NMODI,NMODF,NBM,NBPF,NPV,
+     &                ZI(INUMO),NMODI,NMODF,NBM,NBPF,NPV,
      &                NOMZON,ZR(LVMOY+IS-1),VMOYTO)
         ELSE IF (ISPECT.EQ.11) THEN
           CALL SPECFF(CASINT,NOMU,SPECTR,BASE,ZI(INUMO),NMODI,NMODF,

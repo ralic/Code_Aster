@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,16 +22,20 @@ TYPE_GENE__
 ENTETE__ ELEMENT__ MINC_HEXA20      MAILLE__ HEXA20
    ELREFE__  H20       GAUSS__  RIGI=FPG8  MASS=FPG27  GANO=FPG8  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
    ELREFE__  HE8       GAUSS__  RIGI=FPG8  MASS=FPG27  GANO=FPG8  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  QU8       GAUSS__  RIGI=FPG9  MASS=FPG9   NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
    ENS_NOEUD__  EN2     =     9  10  11  12  13  14  15  16  17  18  19  20
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6  7  8
 ENTETE__ ELEMENT__ MINC_TETRA10     MAILLE__ TETRA10
    ELREFE__  T10       GAUSS__  RIGI=FPG4  MASS=FPG15  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
    ELREFE__  TE4       GAUSS__  RIGI=FPG4  MASS=FPG15  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  TR6       GAUSS__  RIGI=FPG6  MASS=FPG6   NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
    ENS_NOEUD__  EN2     =     5  6  7  8  9  10
    ENS_NOEUD__  EN1     =     1  2  3  4
 ENTETE__ ELEMENT__ MINC_PENTA15     MAILLE__ PENTA15
    ELREFE__  P15       GAUSS__  RIGI=FPG6  MASS=FPG21  GANO=FPG21  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
    ELREFE__  PE6       GAUSS__  RIGI=FPG6  MASS=FPG21  GANO=FPG21  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  QU8       GAUSS__  RIGI=FPG9  MASS=FPG9   NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  TR6       GAUSS__  RIGI=FPG6  MASS=FPG6   NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
 
    ENS_NOEUD__    EN2   =     7  8  9  10  11  12  13  14  15
    ENS_NOEUD__    EN1   =     1  2  3  4  5  6
@@ -49,21 +53,33 @@ MODE_LOCAL__
                                  EN2   (DX       DY       DZ       )
     NDEPLAR  = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
     EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
-    EDEFOPG  = EPSI_R   ELGA__ RIGI     (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    EERREUR  = ERREUR   ELEM__         (ERREST   NUEST    SIGCAL   )
+    EERRENO  = ERREUR   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL   )
+    CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
+    NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
+    EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       FZ       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
-    EHYDRER  = HYDR_R   ELGA__ RIGI     (HYDR     )
+    EHYDRER  = HYDR_R   ELGA__ RIGI    (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
+    CREFERE  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
+                                        X7       X8       X9       X10      X11      X12      )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
-    ECONTPG  = SIEF_R   ELGA__ RIGI     (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
+    CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
+                                        Z        )
+    ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
                                         SIP      )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
                                         SIP      )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    ZVARIPG  = VARI_R   ELGA__ RIGI     (VARI     )
+    ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
+    EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
+                                        V6       T0       T1       T2       T3       T4
+                                        T5       T6       )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -76,6 +92,10 @@ OPTION__
     CHAR_LIMITE         483   IN__   NDEPLAR  PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER
                                      CTEMPSR  PTEMPSR
                               OUT__  ECHALIM  PECHLI
+    CHAR_MECA_FF3D3D    17    IN__   CFORCEF  PFF3D3D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
+                              OUT__  VVECTUR  PVECTUR
+    CHAR_MECA_FR3D3D    16    IN__   EFORCER  PFR3D3D  NGEOMER  PGEOMER  NFORCER  PNFORCER
+                              OUT__  VVECTUR  PVECTUR
     CHAR_MECA_PESA_R    15    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
                               OUT__  VVECTUR  PVECTUR
     CHAR_MECA_ROTA_R    -1    IN__   XXXXXX   XXXXXX
@@ -94,6 +114,12 @@ OPTION__
                               OUT__  EDFEQNO  PDEFOEQ
     EQUI_ELNO_SIGM      438   IN__   ECONTPG  PCONTRR
                               OUT__  ECOEQNO  PCONTEQ
+    ERRE_ELGA_NORE      375   IN__   ECONTNO  PCONTNO  CREFERE  PFORCE   EFORCER  PFRVOLU  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  CPESANR  PPESANR  CREFERE  PPRESS   CROTATR  PROTATR
+                                     CTEMPSR  PTEMPSR  EVOISIN  PVOISIN
+                              OUT__  EERREUR  PERREUR
+    ERRE_ELNO_ELGA      385   IN__   EERREUR  PERREUR
+                              OUT__  EERRENO  PERRENO
     FORC_NODA           481   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
                                      NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
@@ -103,6 +129,14 @@ OPTION__
                                      ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
+    FULL_MECA_ELAS      459   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
+                                     DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
+                                     CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF
+                                     ZVARIPG  PVARIMR
+                              OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
+                                     MVECTUR  PVECTUR
+    INIT_MAIL_VOIS      99    IN__   NGEOMER  PGEOMER
+                              OUT__  EVOISIN  PVOISIN
     MASS_INER           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
@@ -118,8 +152,11 @@ OPTION__
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     RIGI_MECA           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    RIGI_MECA_ELAS      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    RIGI_MECA_ELAS      459   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
+                                     DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
+                                     CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF
+                                     ZVARIPG  PVARIMR
+                              OUT__  MMATUUR  PMATUUR
     RIGI_MECA_GE        -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RIGI_MECA_RO        -1    IN__   XXXXXX   XXXXXX

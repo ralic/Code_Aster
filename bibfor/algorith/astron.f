@@ -1,15 +1,15 @@
       SUBROUTINE ASTRON(NOMSY,PSMO,MONOAP,NBSUP,NSUPP,NEQ,NBMODE,
-     +                  ID,NUME,VECMOD,PARMOD,ASSPEC,NOMSUP,
+     +                  ID,VECMOD,PARMOD,ASSPEC,NOMSUP,
      +                                               REASUP,ZRCREP )
       IMPLICIT  REAL*8 (A-H,O-Z)
       INTEGER           NSUPP(ID)
       REAL*8            VECMOD(NEQ,*),PARMOD(NBMODE,*),ASSPEC(NBSUP,*),
      +                  REASUP(NBSUP,NBMODE,*),ZRCREP(NBSUP,NEQ,*)
-      CHARACTER*(*)     NOMSY,NUME,PSMO,NOMSUP(NBSUP,*)
+      CHARACTER*(*)     NOMSY,PSMO,NOMSUP(NBSUP,*)
       LOGICAL           MONOAP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/10/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,6 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL JXVERI(' ',' ')
       UN = 1.D0
       IF (NOMSY(1:4).NE.'ACCE') THEN
          NOMSY2 = NOMSY
@@ -143,7 +142,6 @@ C              --- CONTRIBUTION MODALE ---
                   XXX = GAMMA0 * ( ZR(JVALE+IN-1) - ZR(JMOD+IN-1) )
                   ZRCREP(IS,IN,ID) = ZRCREP(IS,IN,ID) + XXX*XXX
  42            CONTINUE
-      CALL JXVERI(' ',' ')
                CALL JEDETR('&&ASTRON.VECTEUR_MODA')
  40         CONTINUE
          ENDIF

@@ -1,6 +1,6 @@
       SUBROUTINE MEFPRE(NDIM,ALPHA,Z,CF,DH,VIT,RHO,PSTAT,DPSTAT,DVIT,
      &                  ITYPG,ZG,HG,AXG,PM,XIG,AFLUID,CDG,CFG,
-     &                  VITG,RHOG,VISCG)
+     &                  VITG,RHOG)
       IMPLICIT   NONE
 C
       INTEGER       NDIM(14)
@@ -9,10 +9,10 @@ C
 C
       INTEGER       ITYPG(*)
       REAL*8        ZG(*),HG(*),AXG(*),XIG(*),AFLUID,PM
-      REAL*8        CDG(*),CFG(*),VITG(*),RHOG(*),VISCG(*)
+      REAL*8        CDG(*),CFG(*),VITG(*),RHOG(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/09/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,6 @@ C IN  : CFG    : VECTEUR DES COEEF DE FROTTEMENT DES TYPES DE GRILLES
 C IN  : VITG   : VITESSE D'ECOULEMENT DU  FLUIDE AUX POINTS DE 
 C                POSITIONNEMENT DES GRILLES
 C IN  : RHOG   : MASSE VOLUMIQUE DU FLUIDE AUX MEMES POINTS
-C IN  : VISCG  : VISCOSITE DU FLUIDE AUX MEMES POINTS 
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI

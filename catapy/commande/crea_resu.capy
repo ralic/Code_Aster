@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 05/04/2004   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,6 +61,9 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,docu="U4.44.12-e",r
              NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                                    into=("SIEF_ELGA","VARI_ELGA","SIEF_ELGA_DEPL","FLUX_ELGA_TEMP",) ),
              MODELE_INIT     =SIMP(statut='o',typ=modele),
+             TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+             GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
              RESU_INIT       =SIMP(statut='o',typ=resultat),
              MAILLAGE        =SIMP(statut='o',typ=maillage),
              TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),

@@ -1,7 +1,8 @@
-      SUBROUTINE SHL329(NOMTE)
-      IMPLICIT REAL*8  (A-H,O-Z)
+      SUBROUTINE SHL329 ( NOMTE )
+      IMPLICIT NONE
+      CHARACTER*16        NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/03/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,24 +23,33 @@ C....................................................................
 C   CALCUL DES TERMES ELEMENTAIRES DE L'ACCEPTANCE
 C     OPTION : ACCEPTANCE
 C....................................................................
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER         ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8          ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16      ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL         ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8     ZK8
+      CHARACTER*16            ZK16
+      CHARACTER*24                     ZK24
+      CHARACTER*32                              ZK32
+      CHARACTER*80                                       ZK80
+      COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CHARACTER*2        CODRET
-      CHARACTER*7        IELEM,IMODE
-      CHARACTER*8        ALIAS
-      CHARACTER*16       NOMTE,OPTION
-      CHARACTER*24       CHVAL,CHCTE,VETEL,DESR
-      REAL*8             SX(9,9),SY(9,9),SZ(9,9),JAC(9)
-      REAL*8             NX(9),NY(9),NZ(9),NORM(3,9),ACC(3,9)
-      REAL*8             FLUFN(9),ACLOC(3,8),PGL(3,3),XYZL(3,4)
-      REAL*8             X(3,9),FF(4,4),DFDX(4,4),DFDY(4,4)
-      INTEGER            IPOIDS,IVF,IDFDX,IDFDY,IGEOM,IFREQ
-      INTEGER            NDIM,NNO,IPG,NPG1,IVECTT,IMATE
-      INTEGER            IDEC,JDEC,KDEC,LDEC
-      INTEGER            NBPG(10),IMATTT
+      CHARACTER*7   IELEM,IMODE
+      CHARACTER*24  VETEL
+      REAL*8        SX(9,9),SY(9,9),SZ(9,9),JAC(9)
+      REAL*8        NX(9),NY(9),NZ(9),NORM(3,9),ACC(3,9)
+      REAL*8        FLUFN(9),ACLOC(3,8)
+      REAL*8        X(3,9),FF(4,4),DFDX(4,4),DFDY(4,4)
+      INTEGER       NC,NPG,NNO,IGEOM,IPG,IADZI,IAZK24,IVETEL
+      INTEGER       LZR,IACCE,IHARM,IVECTU,I,K,IDIM,INO,JNO,J
 C
-      INTEGER             NC
-      INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN,
-     &        LAIRE,LAIRN,LT1VE,LT2VE,LT2EV
+      INTEGER LJACO,LTOR,LQSI,LETA
                PARAMETER (NPG   = 4)
                PARAMETER (NNO   = 4)
                PARAMETER (NC    = 4)
@@ -47,38 +57,14 @@ C
                PARAMETER (LTOR  = LJACO + 4)
                PARAMETER (LQSI  = LTOR  + 1)
                PARAMETER (LETA  = LQSI + NPG + NNO + 2*NC)
-C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      COMMON /IVARJE/ZI(1)
-      COMMON /RVARJE/ZR(1)
-      COMMON /CVARJE/ZC(1)
-      COMMON /LVARJE/ZL(1)
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      INTEGER ZI
-      REAL*8 ZR
-      COMPLEX*16 ZC
-      LOGICAL ZL
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-
-C------------FIN  COMMUNS NORMALISES  JEVEUX  ---------------------
+C DEB ------------------------------------------------------------------
 C
-
-
-          DESR = '&INEL.'//NOMTE(1:8)//'.DESR'
-          CALL JEVETE(DESR,'L',LZR)
-
+      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR','L',LZR)
 C
-          CALL JEVECH('PACCELR','L',IACCE)
-          CALL JEVECH('PGEOMER','L',IGEOM)
-          CALL JEVECH('PNUMMOD','L',IHARM)
-          CALL JEVECH('PVECTUR','E',IVECTU)
-C
-C          CALL DXQPGL(ZR(IGEOM),PGL)
-C C         CALL UTPVGL(NNO,3,PGL,ZR(IGEOM),XYZL)
-
+      CALL JEVECH('PACCELR','L',IACCE)
+      CALL JEVECH('PGEOMER','L',IGEOM)
+      CALL JEVECH('PNUMMOD','L',IHARM)
+      CALL JEVECH('PVECTUR','E',IVECTU)
 C
       DO 1200 I=1,NNO
          ACLOC(1,I)=0.0D0

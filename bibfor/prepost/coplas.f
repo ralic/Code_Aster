@@ -1,13 +1,13 @@
-      SUBROUTINE COPLAS( TEMPA, TEMPB, K1A, K1B, MATREV, LREV, DEKLAG,
+      SUBROUTINE COPLAS( TEMPA, K1A, K1B, MATREV, LREV, DEKLAG,
      +                   KAL, KBL, DKMA, DKMB, K1ACP, K1BCP )
 C
       IMPLICIT      NONE
-      REAL*8        TEMPA, TEMPB, KAL, KBL, K1A, K1B, LREV, DEKLAG
+      REAL*8        TEMPA, KAL, KBL, K1A, K1B, LREV, DEKLAG
       REAL*8        DKMA, DKMB, K1ACP, K1BCP
       CHARACTER*8   MATREV
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/04/2003   AUTEUR EPICURE S.BUGAT 
+C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,6 @@ C --- BUT : AJOUT DE CORRECTION PLASTIQUE AU CALCUL DES FACTEURS -------
 C ------- : D'INTENSITE DE CONTRAINTES ---------------------------------
 C ======================================================================
 C IN  : TEMPA  : TEMPERATURE EN POINTE A -------------------------------
-C --- : TEMPB  : TEMPERATURE EN POINTE B -------------------------------
 C --- : K1A    : FACTEUR D'INTENSITE DE CONTRAINTES ELASTIQUE EN A -----
 C --- : K1B    : FACTEUR D'INTENSITE DE CONTRAINTES ELASTIQUE EN B -----
 C --- : MATREV : MATERIAU DE REVETEMENT --------------------------------

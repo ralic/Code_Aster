@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*4         FONREE
 C ----------------------------------------------------------------------
-C MODIF MODELISA  DATE 10/02/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C
 C      OPERATEURS :     AFFE_CHAR_MECA ET AFFE_CHAR_MECA_C
 C                                      ET AFFE_CHAR_MECA_F
@@ -96,7 +96,7 @@ C
 C
 C --- NOMS DE LIGREL, MAILLAGE , DIMENSION DU PB
 C
-      CALL CAGENE ( FONREE, CHAR, OPER, LIGRMO, NOMA, NDIM )
+      CALL CAGENE ( CHAR, OPER, LIGRMO, NOMA, NDIM )
       NOMO = LIGRMO(1:8)
 C
 C --- ALLOCATION DU LIGREL DE CHARGE
@@ -208,13 +208,13 @@ C     DEFORMATIONS ANELASTIQUES, RELA_CINE_BP ---
 C
       IF (FONREE.EQ.'REEL') THEN
 C         ================
-         CALL CBTEMP ( CHAR, LIGRMO )
-         CALL CBSECH ( CHAR, LIGRMO )
-         CALL CBHYDR ( CHAR, LIGRMO )
+         CALL CBTEMP ( CHAR )
+         CALL CBSECH ( CHAR )
+         CALL CBHYDR ( CHAR )
          CALL CBPRCA ( CHAR )
          CALL CAANEL ( CHAR )
-         CALL CBPESA ( CHAR, LIGRMO, NOMA )
-         CALL CBROTA ( CHAR, LIGRMO, NOMA )
+         CALL CBPESA ( CHAR, NOMA )
+         CALL CBROTA ( CHAR, NOMA )
          CALL CAPREC ( CHAR, NOMA )
 C
 C --- PRISE EN COMPTE DES ELEMENTS QUADRATIQUES POUR LE CONTACT
@@ -224,6 +224,10 @@ C
 C --- FORCE_ELEC ----
 C
          CALL CBELEC ( CHAR, LIGRMO, NOMA )
+C
+C --- GRAPPE_FLUIDE ----
+C
+         CALL CAGRFL ( CHAR, NOMA )
 C
 C --- FORCES DE LAPLACE ----
 C
@@ -243,7 +247,7 @@ C --- ONDE_PLANE ---
 C
       IF (FONREE.EQ.'FONC') THEN
 C         ================
-         CALL CBONDP( CHAR, LIGRMO, NOMA )
+         CALL CBONDP( CHAR, NOMA )
       ENDIF
 C
 C --- SI DDL_IMPO OU(ET) FACE_IMPO :

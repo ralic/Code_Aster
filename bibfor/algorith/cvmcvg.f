@@ -4,7 +4,7 @@ C TOLE CRS_505 CRS_507
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -157,7 +157,7 @@ C
 
                 CALL CODENT(INTG,'G',CINTG)
                 CALL CODREE(ABS(DP),'E',CDP)
-                CALL UTMESS('S','VISCOCHABOCHE','ERREUR D INTEGRATION'//
+                CALL UTEXCP(23,'VISCOCHABOCHE','ERREUR D INTEGRATION'//
      1          '- ESSAI D INTEGRATION  NUMERO '//CINTG//
      2          '- CONVERGENCE VERS  UNE SOLUTION NON CONFORME '//
      3          '- INCREMENT DE DEFORMATION CUMULEE NEGATIVE = -'//CDP//
@@ -254,7 +254,7 @@ C
                        ELSE
                           CALL CODENT(ITER,'G',CITER)
                           CALL CODREE(TOLER,'E',CTOL)
-                          CALL UTMESS ('S','VISCOCHABOCHE',' ERREUR'//
+                          CALL UTEXCP(23,'VISCOCHABOCHE',' ERREUR'//
      1                ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
      2                ' - CONVERGENCE REGULIERE MAIS TROP LENTE'//
      3                ' - ERREUR > '//CTOL//
@@ -277,7 +277,7 @@ C
                     ELSE
                     CALL CODENT(ITER,'G',CITER)
                     CALL CODREE(TOLER,'E',CTOL)
-                    CALL UTMESS ('S','VISCOCHABOCHE',' ERREUR'//
+                    CALL UTEXCP(23,'VISCOCHABOCHE',' ERREUR'//
      1              ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
      2              ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
      4              ' - DIMINUER LA TAILLE D INCREMENT')
@@ -299,7 +299,7 @@ C
                   ELSE
                   CALL CODENT(ITER,'G',CITER)
                   CALL CODREE(TOLER,'E',CTOL)
-                  CALL UTMESS ('S','VISCOCHABOCHE',' ERREUR'//
+                  CALL UTEXCP(23,'VISCOCHABOCHE',' ERREUR'//
      1            ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
      2            ' - ERREUR > '//CTOL//
      4            ' - DIMINUER LA TAILLE D INCREMENT')

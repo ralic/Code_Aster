@@ -1,4 +1,4 @@
-# MODIF  DATE 11/08/2003   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 13/01/2004   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,6 +86,9 @@ EVOL = CALC_ELEM (reuse=EVOL,
               MODELE= MO,
               CHAM_MATER= CM,
               RESULTAT= EVOL,
+              EXCIT= (_F(CHARGE= CLIM),
+                      _F(CHARGE= CH,
+                         FONC_MULT= RAMPE),),
               OPTION= (
                'EPSI_ELNO_DEPL',
                'SIEF_ELNO_ELGA',
@@ -219,7 +222,9 @@ EVOL2 = CALC_ELEM (reuse=EVOL2,
                'EPSI_ELNO_DEPL',
                'SIEF_ELNO_ELGA',
                'EQUI_ELNO_SIGM',
-               'EQUI_ELNO_EPSI'
+               'EQUI_ELNO_EPSI',
+               'ERRE_ELGA_NORE',
+               'ERRE_ELNO_ELGA',
            ),   ) ;
 
 EVOL2 = CALC_NO (reuse=EVOL2,
@@ -307,6 +312,37 @@ TEST_RESU(RESU=(
            _F( RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
  GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'VMIS_SG',      VALE = 138.5641, REFERENCE='ANALYTIQUE'),
 ),)
+
+#
+#  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
+
+TEST_RESU(RESU=(             
+           _F( RESULTAT = EVOL2,
+               INST = 1.,  
+               NOM_CHAM = 'ERRE_ELGA_NORE',   
+               CRITERE = 'RELATIF',    
+               PRECISION = 0.0001,
+               POINT = 1,
+               MAILLE='M1',    
+               NOM_CMP = 'NUEST',      
+               VALE = 1.5369276203371E-01, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
+             ),
+            );
+
+TEST_RESU(RESU=(             
+           _F( RESULTAT = EVOL2,
+               INST = 1.,  
+               NOM_CHAM = 'ERRE_ELNO_ELGA',   
+               CRITERE = 'RELATIF',    
+               PRECISION = 0.0001,
+               GROUP_NO= 'A',
+               MAILLE='M1',    
+               NOM_CMP = 'ERREST',      
+               VALE = 7.5584656092709E-04, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
+             ),
+            );
                 
 FIN()
  

@@ -6,7 +6,7 @@
       INTEGER            IERR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C
 C     INTERPRETER UNE FONCTION INTERPRETABLE
 C     ------------------------------------------------------------------
 C IN  CODMES : 'F','E','A','I',... PARAMETRE TRANSMIT A UTMESS.
@@ -168,10 +169,10 @@ C
 C          --- OPERATEUR ARITHMETIQUE ---
            IARITE = ABS(IARITE)
            IF (IARITE.EQ.1) THEN
-              CALL FIOPE1(NEXP,IPILE,ZI(LPILE),
+              CALL FIOPE1(NEXP,IPILE,
      +                 ZI(LCLASS),ZI(LMI),ZR(LMR),ZL(LML),ZC(LMC),IER)
            ELSE IF (IARITE.EQ.2) THEN
-              CALL FIOPE2(NEXP,IPILE,ZI(LPILE),
+              CALL FIOPE2(NEXP,IPILE,
      +                 ZI(LCLASS),ZI(LMI),ZR(LMR),ZL(LML),ZC(LMC),IER)
            ELSE
               IER = IER+1

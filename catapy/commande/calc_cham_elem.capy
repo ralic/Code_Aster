@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 30/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,27 +19,6 @@
 # RESPONSABLE JMBHH01 J.M.PROIX
 def calc_cham_elem_prod(OPTION,**args):
 
-# options mecaniques
-  if OPTION == "DEGE_ELNO_DEPL" : return cham_elem_epsi_r
-  if OPTION == "ECIN_ELEM_DEPL" : return cham_elem_ener_r
-  if OPTION == "EFGE_ELNO_CART" : return cham_elem_sief_r
-  if OPTION == "EFGE_ELNO_DEPL" : return cham_elem_sief_r
-  if OPTION == "ENDO_ELNO_SIGM" : return cham_elem_sief_r
-  if OPTION == "EPOT_ELEM_DEPL" : return cham_elem_ener_r
-  if OPTION == "ENEL_ELGA" :      return cham_elem_ener_r
-  if OPTION == "ENEL_ELNO_ELGA" : return cham_elem_ener_r
-  if OPTION == "EPSI_ELNO_DEPL" : return cham_elem_epsi_r
-  if OPTION == "EQUI_ELGA_EPSI" : return cham_elem_epsi_r
-  if OPTION == "EQUI_ELGA_SIGM" : return cham_elem_sief_r
-  if OPTION == "EQUI_ELNO_EPSI" : return cham_elem_epsi_r
-  if OPTION == "EQUI_ELNO_SIGM" : return cham_elem_sief_r
-  if OPTION == "PRES_DBEL_DEPL" : return cham_elem_dbel_r
-  if OPTION == "SIEF_ELGA_DEPL" : return cham_elem_sief_r
-  if OPTION == "SIEF_ELGA_LAGR" : return cham_elem_sief_r
-  if OPTION == "SIGM_ELNO_CART" : return cham_elem_sief_r
-  if OPTION == "SIGM_ELNO_DEPL" : return cham_elem_sief_r
-  if OPTION == "SIGM_ELNO_LAGR" : return cham_elem_sief_r
-  if OPTION == "SIPO_ELNO_DEPL" : return cham_elem_sief_r
 
 # options thermiques
 
@@ -78,106 +57,9 @@ CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=calc_cham_elem_prod,
 #
 
          OPTION          =SIMP(statut='o',typ='TXM',
-                               into=("DEGE_ELNO_DEPL","ECIN_ELEM_DEPL","EFGE_ELNO_CART",
-                                     "EFGE_ELNO_DEPL","ENDO_ELNO_SIGM","EPOT_ELEM_DEPL",
-                                     "ENEL_ELGA",     "ENEL_ELNO_ELGA","EPSI_ELNO_DEPL",
-                                     "EQUI_ELGA_EPSI","EQUI_ELGA_SIGM","EQUI_ELNO_EPSI",
-                                     "EQUI_ELNO_SIGM","PRES_DBEL_DEPL","SIEF_ELGA_DEPL",
-                                     "SIEF_ELGA_LAGR","SIGM_ELNO_CART","SIGM_ELNO_DEPL",
-                                     "SIGM_ELNO_LAGR","SIPO_ELNO_DEPL",
-                                     "FLUX_ELGA_TEMP","FLUX_ELNO_TEMP","SOUR_ELGA_ELEC",
+                               into=("FLUX_ELGA_TEMP","FLUX_ELNO_TEMP","SOUR_ELGA_ELEC",
                                      "PRES_ELNO_DBEL","PRES_ELNO_REEL","PRES_ELNO_IMAG",
                                      "COOR_ELGA"), ),
-
-         b_dege_elno_depl  =BLOC(condition="OPTION=='DEGE_ELNO_DEPL'",
-           DEPL            =SIMP(statut='o',typ=(cham_no_depl_r,)),
-           PLAN            =SIMP(statut='o',typ='TXM',defaut="MAIL", into=("SUP","INF","MOY","MAIL"), ),
-         ),
-
-         b_ecin_elem_depl  =BLOC(condition="OPTION=='ECIN_ELEM_DEPL'",
-           regles=(UN_PARMI('VITE','DEPL',),ENSEMBLE('DEPL','FREQ',),),
-           FREQ            =SIMP(statut='f',typ='R'),
-           VITE            =SIMP(statut='f',typ=cham_no_depl_r),
-           DEPL            =SIMP(statut='f',typ=(cham_no_depl_r,cham_no_depl_c)),
-         ),
-
-         b_efge_elno_cart  =BLOC(condition="OPTION=='EFGE_ELNO_CART'",
-           CHAM_ELEM       =SIMP(statut='o',typ=(cham_elem_sief_r,) ),
-           PLAN            =SIMP(statut='o',typ='TXM',defaut="MAIL", into=("SUP","INF","MOY","MAIL"), ),
-         ),
-
-         b_efge_elno_depl  =BLOC(condition="OPTION=='EFGE_ELNO_DEPL'",
-           DEPL            =SIMP(statut='o',typ=(cham_no_depl_r,)),
-           PLAN            =SIMP(statut='o',typ='TXM',defaut="MAIL", into=("SUP","INF","MOY","MAIL"), ),
-         ),
-
-         b_endo_elno_sigm  =BLOC(condition="OPTION=='ENDO_ELNO_SIGM'",
-           CHAM_ELEM       =SIMP(statut='o',typ=(cham_elem_sief_r,) ),
-         ),
-
-         b_epot_elem_depl  =BLOC(condition="OPTION=='EPOT_ELEM_DEPL'",
-           DEPL            =SIMP(statut='o',typ=(cham_no_depl_r,)),
-         ),
-
-         b_enel_elga       =BLOC(condition="OPTION=='ENEL_ELGA'",
-           CHAM_ELEM       =SIMP(statut='o',typ=(cham_elem_sief_r,) ),
-         ),
-
-         b_enel_elno_elga  =BLOC(condition="OPTION=='ENEL_ELNO_ELGA'",
-           CHAM_ELEM       =SIMP(statut='o',typ=(cham_elem_sief_r,) ),
-         ),
-
-         b_epsi_elno_depl  =BLOC(condition="OPTION=='EPSI_ELNO_DEPL'",
-           DEPL            =SIMP(statut='o',typ=(cham_no_depl_r,)),
-         ),
-
-         b_equi_elga_epsi  =BLOC(condition="OPTION=='EQUI_ELGA_EPSI'",
-           CHAM_ELEM       =SIMP(statut='o',typ=(cham_elem_epsi_r,) ),
-         ),
-
-         b_equi_elga_sigm  =BLOC(condition="OPTION=='EQUI_ELGA_SIGM'",
-           CHAM_ELEM       =SIMP(statut='o',typ=(cham_elem_sief_r,) ),
-         ),
-
-         b_equi_elno_epsi  =BLOC(condition="OPTION=='EQUI_ELNO_EPSI'",
-           CHAM_ELEM       =SIMP(statut='o',typ=(cham_elem_epsi_r,) ),
-         ),
-
-         b_equi_elno_sigm  =BLOC(condition="OPTION=='EQUI_ELNO_SIGM'",
-           CHAM_ELEM       =SIMP(statut='o',typ=(cham_elem_sief_r,) ),
-         ),
-
-         b_pres_dbel_depl  =BLOC(condition="OPTION=='PRES_DBEL_DEPL'",
-           DEPL            =SIMP(statut='o',typ=(cham_no_depl_c,)),
-         ),
-
-         b_sief_elga_depl  =BLOC(condition="OPTION=='SIEF_ELGA_DEPL'",
-           DEPL            =SIMP(statut='o',typ=(cham_no_depl_r,)),
-         ),
-
-         b_sief_elga_lagr  =BLOC(condition="OPTION=='SIEF_ELGA_LAGR'",
-           DEPL            =SIMP(statut='o',typ=(cham_no_depl_r,)),
-           THETA           =SIMP(statut='o',typ=(theta_geom,)),
-           PROPAGATION     =SIMP(statut='f',typ='R',defaut=0.E+0),
-         ),
-
-         b_sigm_elno_cart  =BLOC(condition="OPTION=='SIGM_ELNO_CART'",
-           CHAM_ELEM       =SIMP(statut='o',typ=(cham_elem_sief_r,) ),
-         ),
-
-         b_sigm_elno_depl  =BLOC(condition="OPTION=='SIGM_ELNO_DEPL'",
-           DEPL            =SIMP(statut='o',typ=(cham_no_depl_r,) ),
-         ),
-
-         b_sigm_elno_lagr  =BLOC(condition="OPTION=='SIGM_ELNO_LAGR'",
-           DEPL            =SIMP(statut='o',typ=(cham_no_depl_r,)),
-           THETA           =SIMP(statut='o',typ=(theta_geom,)),
-           PROPAGATION     =SIMP(statut='f',typ='R',defaut=0.E+0),
-         ),
-
-         b_sipo_elno_depl  =BLOC(condition="OPTION=='SIPO_ELNO_DEPL'",
-           DEPL            =SIMP(statut='o',typ=(cham_no_depl_r,)),
-         ),
 
          b_thermique  =BLOC(condition="OPTION in ('FLUX_ELNO_TEMP','FLUX_ELGA_TEMP','SOUR_ELGA_ELEC',)",
            TEMP            =SIMP(statut='o',typ=(cham_no_temp_r,)),

@@ -1,13 +1,13 @@
-      SUBROUTINE LGLIND(NBMAT, MATER, PARAME, GE, UE, Q,
+      SUBROUTINE LGLIND(NBMAT, MATER, PARAME, GE, Q,
      +                  VECN, DEPS, DEVG, DEVGII, TRACEG, DY)
 C
       IMPLICIT      NONE
       INTEGER       NR, NBMAT
-      REAL*8        MATER(NBMAT,2), PARAME(5), Q(6), VECN(6), GE, UE
+      REAL*8        MATER(NBMAT,2), PARAME(5), Q(6), VECN(6), GE
       REAL*8        DEPS(6), DEVG(6), DEVGII, TRACEG, DY(10)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,6 @@ C --- : NBMAT  : NOMBRE DE PARAMETRES MATERIAU -------------------------
 C --- : MATER  : PARAMETRES MATERIAU -----------------------------------
 C --- : PARAME : VARIABLES D'ECROUISSAGES ------------------------------
 C --- : GE     : GE ----------------------------------------------------
-C --- : UE     : PREMIER CRITERE PLASTIQUE -----------------------------
 C --- : Q      : DG/DS -------------------------------------------------
 C --- : VECN   : VECTEUR N ---------------------------------------------
 C --- : DEPS   : INCREMENT DE DEFORMATIONS DEPUIS L'INSTANT PRECEDENT --
@@ -78,7 +77,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE DFDS ---------------------------------------------------
 C ======================================================================
-      CALL DRFDRS(Q, PARAME, H0, SIGC, GE, UE, DUDS, DFDS)
+      CALL DRFDRS(Q, PARAME, H0, SIGC, GE, DUDS, DFDS)
 C ======================================================================
 C --- CALCUL DE G ------------------------------------------------------
 C ======================================================================

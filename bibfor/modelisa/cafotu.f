@@ -1,12 +1,12 @@
-      SUBROUTINE CAFOTU (CHAR,LIGRMO,IALLOC,NBCA,NBET,NOMA,NDIM,FONREE)
+      SUBROUTINE CAFOTU (CHAR,LIGRMO,IALLOC,NBCA,NBET,NOMA,FONREE)
       IMPLICIT   NONE
-      INTEGER           NBCA, NBET, NDIM, IALLOC
+      INTEGER           NBCA, NBET, IALLOC
       CHARACTER*4       FONREE
       CHARACTER*8       CHAR, NOMA
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,6 @@ C      IALLOC : 1 SI LA CARTE DE PRESSION ALLOUE PAR CAPRES, 0 SINON
 C      NOMA   : NOM DU MAILLAGE
 C      NBCA   : NOMBRE D'APPEL A NOCART
 C      NBET   : NOMBRE TOTAL DE MAILLES
-C      NDIM   : DIMENSION DU PROBLEME (2D OU 3D)
 C      FONREE : FONC OU REEL
 C
 C-----------------------------------------------------------------------
@@ -93,7 +92,6 @@ C
          IF (FONREE.EQ.'REEL') THEN
             ZR(JVALV)   = 0.D0
          ELSE
-            CALL FOZERO('&FOZERO')
             ZK8(JVALV)   = '&FOZERO'
          END IF
          CALL NOCART ( CARTE, 1, ' ', 'NOM', 0,' ',0, LIGRMO, NCMP )

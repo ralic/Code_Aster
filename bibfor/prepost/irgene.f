@@ -1,14 +1,14 @@
-      SUBROUTINE IRGENE (IOCC, RESU, FORM, FICH, TITRE, NBNOSY,NOSY,
+      SUBROUTINE IRGENE (IOCC, RESU, FORM, FICH, NBNOSY,NOSY,
      +                   NBCMPG,CMPG, NBPARA,PARA,
      +                   NBORDR,ORDR, NBINST,TEMP,NUME, LHIST )
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER         CMPG(*), ORDR(*), NUME(*)
       REAL*8          TEMP(*)
-      CHARACTER*(*)   RESU, NOSY(*), PARA(*), TITRE, FORM, FICH
+      CHARACTER*(*)   RESU, NOSY(*), PARA(*), FORM, FICH
       LOGICAL         LHIST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C
 C=======================================================================
       IF ( TYPCON .EQ. 'VECT_ASSE_GENE' ) THEN
 C
-         CALL IRVGEN ( RESU, FORM, FICH, NBCMPG,CMPG, LHIST )
+         CALL IRVGEN ( RESU, FICH, NBCMPG,CMPG, LHIST )
 C
 C=======================================================================
 C
@@ -97,7 +97,7 @@ C=======================================================================
                 CALL JEVEUO(NOMST,'L',JTITR)
                 CALL JELIRA(NOMST,'LONMAX',NBTITR,K1BID)
                 WRITE(IFI,'(1X,A)') (ZK80(JTITR+I-1),I=1,NBTITR)
-                CALL IRVGEN ( NOCH19, FORM, FICH, NBCMPG,CMPG, LHIST )
+                CALL IRVGEN ( NOCH19, FICH, NBCMPG,CMPG, LHIST )
               ENDIF
  110        CONTINUE
  100     CONTINUE
@@ -144,7 +144,7 @@ C=======================================================================
               DO 220 IM = 1 , NBMODE
                  ZR(KVALE+IM-1) = ZR(ITRESU+(IORD-1)*NBMODE+IM-1)
  220          CONTINUE
-              CALL IRVGEN ( NOCH19, FORM, FICH, NBCMPG,CMPG, LHIST )
+              CALL IRVGEN ( NOCH19, FICH, NBCMPG,CMPG, LHIST )
  210       CONTINUE
  200     CONTINUE
          CALL JEDETR ( NOCH19//'.DESC' )

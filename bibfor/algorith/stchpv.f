@@ -1,15 +1,15 @@
       SUBROUTINE STCHPV ( NBOBST, NBPT, TEMPS, DLOC, FCHO, VGLI,IADH,
      &                    WK1, WK2, WK3, IWK4, TDEBUT, TFIN, NBLOC, 
-     +                    OFFSET, TREPOS, NOECHO, INTITU, NOMRES )
+     +                    OFFSET, NOECHO, INTITU, NOMRES )
       IMPLICIT     REAL*8 (A-H,O-Z)
       INTEGER         NBOBST, NBPT, NBLOC, IADH(*),IWK4(*)
-      REAL*8          TEMPS(*), DLOC(*), FCHO(*), VGLI(*), TREPOS,
+      REAL*8          TEMPS(*), DLOC(*), FCHO(*), VGLI(*),
      +                WK1(*), WK2(*), WK3(*), TDEBUT, TFIN, OFFSET
       CHARACTER*(*)   NOMRES
       CHARACTER*8     NOECHO(*), INTITU(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/03/2003   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -328,7 +328,7 @@ C
           TXCHOC = TXCHOC + TCHOC
           FXMAXT = MAX(FXMAXT,FNMAX)
           FXMINT = MIN(FXMINT,FNMIN)
-          IF (IMPR.EQ.2) CALL IMPFN0( IFIRES, 0, IBL, FNMOYT, FNMOYC,
+          IF (IMPR.EQ.2) CALL IMPFN0( IFIRES, IBL, FNMOYT, FNMOYC,
      +                                FNRMST, FNRMSC, FNMAX )
  22     CONTINUE
         FXMOYT = FXMOYT / TTOT
@@ -340,7 +340,7 @@ C
            FXMOYC = ZERO
            FXRMSC = ZERO
         ENDIF
-        IF (IBL.GT.1 .AND. IMPR.EQ.2) CALL IMPFN0( IFIRES, 0, 0, FXMOYT,
+        IF (IBL.GT.1 .AND. IMPR.EQ.2) CALL IMPFN0( IFIRES, 0, FXMOYT,
      +                                  FXMOYC, FXRMST, FXRMSC, FXMAXT )
         VALEK(3) = TVAR(6)
         PARA(1) = FXMOYT
@@ -440,7 +440,7 @@ C
           TREBOG = TREBOG + TREBOT
           NBCHOT = NBCHOT + NBCHOC
           NBREBT = NBREBT + NBREBO
-          IF (IMPR.EQ.2) CALL IMPC0( IFIRES, 0, IBL, NBCHOC, TCHOCM,
+          IF (IMPR.EQ.2) CALL IMPC0( IFIRES, IBL, NBCHOC, TCHOCM,
      +            TCHMAX, TCHMIN, NBREBO, TREBOM, TCHOCT, TEMPS, NBVAL )
  24     CONTINUE
         IF ( NBCHOT .NE. 0 ) THEN
@@ -454,7 +454,7 @@ C
            TREBMY = ZERO
         ENDIF
         IF (IBL.GT.1 .AND. IMPR.EQ.2) THEN
-          CALL IMPC0 ( IFIRES,0,0,NBCHOT,TCHOMY,TCHOMA,TCHOMI,NBREBT,
+          CALL IMPC0 ( IFIRES,0,NBCHOT,TCHOMY,TCHOMA,TCHOMI,NBREBT,
      &                 TREBMY,TCHOCG,TEMPS,NBLOC*NBVAL )
         ENDIF
         VALEK(3) = TVAR(9)

@@ -1,6 +1,6 @@
       SUBROUTINE JJLIDE ( NOMAP , NOMLU , ITYPE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/06/2000   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 04/11/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,7 @@ C DEB ------------------------------------------------------------------
       IF ( NOMAP .EQ. 'JELIBE' .OR. NOMAP .EQ. 'JELIBC' ) THEN
         FONC = 'LIBE'
         IF (IDEBUG .EQ. 1) THEN
-          FONC = 'TASS'
+          FONC = 'DEBG'
         ENDIF
       ELSE IF ( NOMAP .EQ. 'JELIBT' .OR. NOMAP .EQ. 'JELIBZ') THEN
         FONC = 'LIBE'
@@ -108,7 +108,7 @@ C DEB ------------------------------------------------------------------
         IPGCL = 0
       ELSE IF ( NOMAP .EQ. 'JETASS' ) THEN
         FONC = 'TASS'
-        IF(ITYPE.NE.1) THEN
+        IF ( ITYPE.NE.1 ) THEN
           CMESS = 'APPEL A JJLIDE PAR '//NOMAP//' INVALIDE'
           CALL JVMESS ( 'S' , 'JJLIDE01' , CMESS )
         ENDIF
@@ -411,13 +411,20 @@ C
 C
 C ----- OPERATION TASS
 C       ==============
-C ----- 1- UTILISEE POUR ECRITURE IMMEDIATE DANS JETASS (POUR DES
-C -----    OBJETS SIMPLES ADRESSE DES OBJETS DE COLLECTION)
-C -----
-C ----- 2- UTILISEE POUR ECRITURE IMMEDIATE AVEC L'OPTION DE DEBUG
-C -----    DANS CE CAS LES COLLECTIONS SONT TRAITEES
+C -----    UNIQUEMENT UTILISEE POUR ECRITURE DANS JETASS (POUR DES
+C -----    OBJETS SIMPLES ADRESSE DISQUE DES OBJETS DE COLLECTION)
 C
         ELSE IF ( FONC .EQ. 'TASS' ) THEN
+          LMARQ = .FALSE.
+          LLIBP = .FALSE.
+          LSAUV = .TRUE.
+          LDATE = .TRUE.
+C
+C ----- OPERATION DEBG
+C       ==============
+C -----    UTILISEE POUR ECRITURE IMMEDIATE AVEC L'OPTION DE DEBUG
+C
+        ELSE IF ( FONC .EQ. 'DEBG' ) THEN
           IF ( ISTA1 .EQ. ISTAT(2) ) THEN
             IF ( IPGCL .EQ. MARQI ) THEN
               IF ( LATTR ) THEN

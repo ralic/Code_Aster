@@ -1,5 +1,5 @@
       SUBROUTINE PRCCM7 ( MCF, NBOCC, TYPCO, COURBE, SM, XNOMCP, 
-     +                    XNUMCP, NCHEFF, RCCMPM, RCCMSN, FATISP, 
+     +                    XNUMCP, NCHEFF, RCCMPM, RCCMSN,
      +                    SNTHER, NCHEFT, NOMA, NLSNAC )
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,13 +21,13 @@ C ======================================================================
       IMPLICIT   NONE
       INTEGER             NBOCC
       REAL*8              SM
-      LOGICAL             RCCMPM, RCCMSN, FATISP, SNTHER
+      LOGICAL             RCCMPM, RCCMSN, SNTHER
       CHARACTER*8         TYPCO, COURBE, NOMA
       CHARACTER*16        NCHEFF, NCHEFT
       CHARACTER*24        XNUMCP, XNOMCP, NLSNAC
       CHARACTER*(*)       MCF
 C     ------------------------------------------------------------------
-C MODIF POSTRELE  DATE 26/11/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C
 C     POST_RCCM: CALCUL DU PMPB, SN ET SP  POUR CHAQUE TRANSITOIRE
 C     ------------------------------------------------------------------
@@ -102,7 +102,7 @@ C
             CALL JEVEUO (JEXNUM(NCHEFF//'.VPMPBE5',IOCC),'E',JPME5)
             CALL JEVEUO (JEXNUM(NCHEFF//'.VPMPBE6',IOCC),'E',JPME6)
          ENDIF
-         IF ( RCCMSN .OR. FATISP ) THEN
+         IF ( RCCMSN ) THEN
             CALL JEVEUO (JEXNUM(NCHEFF//'.INST1  ',IOCC),'E',IDTEM1)
             CALL JEVEUO (JEXNUM(NCHEFF//'.INST2  ',IOCC),'E',IDTEM2)
             CALL JEVEUO (JEXNUM(NCHEFF//'.VALSNO ',IOCC),'E',IDSNO )
@@ -142,7 +142,7 @@ C ---    CONTRAINTE EQUIVALENTE PRIMAIRE DE MEMBRANE+FLEXION  PMPB
 C        ---------------------------------------------------------
 C
             IF ( RCCMPM ) THEN
-               CALL PRPMPB ( MCF, IOCC, XNOMCP, XNUMCP, NLSMAC, NLSNAC,
+               CALL PRPMPB ( MCF, IOCC, XNOMCP, NLSMAC, NLSNAC,
      +                       NCH19, SM, PMPB, ICHEF1, TYPCO, COURBE,
      +                       TOMAX, TEMAX )
                ZR(JPM  +ICHEF1-1) = PMPB(1)
@@ -163,14 +163,14 @@ C
                ZR(JPME6+ICHEF1-1) = TEMAX(6)
             ENDIF
 C
-            IF ( .NOT. RCCMSN .AND. .NOT. FATISP ) GOTO 22
+            IF ( .NOT. RCCMSN ) GOTO 22
 C
 C ---    EXTRACTION DU CHAMP DE CONTRAINTES AUX EXTREMITES DU CHEMIN
 C ---    --> SP1O ET SP1E
 C ---    ET CALCUL DES CONTRAINTES LINEARISEES SN1O ET SN1E EN CES 
 C ---    MEMES NOEUDS :
 C        ------------
-            CALL PRSNSP ( MCF, IOCC, TYPCO, COURBE, XNOMCP, XNUMCP,  
+            CALL PRSNSP ( MCF, IOCC, TYPCO, COURBE, XNOMCP,  
      +                    NLSMAC, NLSNAC, NCH19, SM, SN1O, SN1E, 
      +                    SNFL1E, SP1O, SP1E, ICHEF1 )
 C
@@ -185,12 +185,12 @@ C
 C
             IF ( SNTHER ) THEN
                NCH19 = ZK24(JCHET+ICHEF1-1)(1:19)
-               CALL PRSNSP ( MCF, IOCC, TYPCO, COURBE, XNOMCP, XNUMCP,
+               CALL PRSNSP ( MCF, IOCC, TYPCO, COURBE, XNOMCP,
      +                       NLSMAC, NLSNAC, NCH19, SM, SNT1O, SNT1E, 
      +                       SNFL1E, SPT1O, SPT1E, ICHEF1+1 )
                DO 24 I = 1 , 6 
-                  SNT12O(I) = SN1O(I)-SNT1O(I)
-                  SNT12E(I) = SN1E(I)-SNT1E(I)
+                  SNT12O(I) = SN1O(I)+SNFL1E(I)
+                  SNT12E(I) = SN1E(I)-SNFL1E(I)
  24            CONTINUE
                CALL FGEQUI ( SNT12O, 'SIGM', 3, EQUI )
                SNTO = EQUI(2)
@@ -217,7 +217,7 @@ C ---       --> SP2O ET SP2E
 C ---       ET CALCUL DES CONTRAINTES LINEARISEES SN2O ET SN2E EN CES 
 C ---       MEMES NOEUDS :
 C           ------------
-               CALL PRSNSP ( MCF, IOCC, TYPCO, COURBE, XNOMCP, XNUMCP,
+               CALL PRSNSP ( MCF, IOCC, TYPCO, COURBE, XNOMCP,
      +                       NLSMAC, NLSNAC, NCH19, SM, SN2O, SN2E, 
      +                       SNFL2E, SP2O, SP2E, ICHEF2 )
 C
@@ -242,11 +242,11 @@ C
                IF ( SNTHER ) THEN
                   NCH19 = ZK24(JCHET+ICHEF2-1)(1:19)
                   CALL PRSNSP ( MCF, IOCC, TYPCO, COURBE, XNOMCP, 
-     +                         XNUMCP, NLSMAC, NLSNAC, NCH19, SM, SNT2O,
+     +                         NLSMAC, NLSNAC, NCH19, SM, SNT2O,
      +                          SNT2E, SNFL2E, SPT2O, SPT2E, ICHEF2 )
                   DO 42 I = 1 , 6 
-                     SNT12O(I)=(SN1O(I)-SNT1O(I))-(SN2O(I)-SNT2O(I))
-                     SNT12E(I)=(SN1E(I)-SNT1E(I))-(SN2E(I)-SNT2E(I))
+                     SNT12O(I)=(SN1O(I)+SNFL1E(I))-(SN2O(I)+SNFL2E(I))
+                     SNT12E(I)=(SN1E(I)-SNFL1E(I))-(SN2E(I)-SNFL2E(I))
  42               CONTINUE
                   CALL FGEQUI ( SNT12O, 'SIGM', 3, EQUI )
                   SNTO = EQUI(2)

@@ -1,9 +1,10 @@
-      SUBROUTINE RC32AC ( MATER )
+      SUBROUTINE RC32AC ( OPMPB, OSN, OFATIG, MATER )
       IMPLICIT   NONE
+      LOGICAL             OPMPB, OSN, OFATIG
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 27/06/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -75,15 +76,16 @@ C
       INTEGER      IG, NBGR, NBSIGR, JNSG, IS, IS1, IOC1, NOCC, NUMGR, 
      +             JCOMBI, JPRESA, JPRESB, JNBOCC, IM, JNUMGR, JPASSA,
      +             NPASS, NUM1, NUM2, IFM, NIV, IOCS, JSEIGR, JRESU,
-     +             JNSITU, NSITUP, NSITUQ
+     +             JNSITU, NSITUP, NSITUQ, JPMPB, IRET, I1, JFACT
       REAL*8       PPI, PPJ, SNMAX, SPMAX, SAMAX, UTOT, SALTIJ,  
      +             UG, NADM, MPI(6), MPJ(6), SM, SN, SP, SMM,
      +             MATPI(8), MATPJ(8), MSE(6),TYPEKE,SPMECA,SPTHER,
-     +             SPTHEM,SPMECM,KEMECA,KETHER
+     +             SPTHEM,SPMECM,KEMECA,KETHER, PM, PB, PMPB
       LOGICAL      SEISME,ENDUR
       CHARACTER*2  CODRET
       CHARACTER*4  LIEU(2)
       CHARACTER*8  K8B
+      CHARACTER*24 K24B, K24T
 C
       DATA LIEU / 'ORIG' , 'EXTR' /
 C DEB ------------------------------------------------------------------
@@ -106,12 +108,21 @@ C --- IL FAUT CALCULER LE FACTEUR D'USAGE A CHAQUE EXTREMITE
 C
       DO 10 IM = 1 , 2
 C
+         K24B = '&&RC3200.PMPB       '//LIEU(IM)
+         CALL JECREC(K24B, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', NBGR)
+C
+         K24T = '&&RC3200.FACT_USAGE '//LIEU(IM)
+         CALL JECREC(K24T, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', NBGR)
+C
          IF ( NIV .GE. 2 ) THEN
             IF (IM.EQ.1) THEN
                WRITE(IFM,*)'=> ORIGINE DU SEGMENT'
             ELSE
                WRITE(IFM,*)'=> EXTREMITE DU SEGMENT'
             ENDIF
+            WRITE(IFM,*) ' '
+            WRITE(IFM,*)
+     +       '=> ON TRAITE LES SITUATIONS COMBINABLES DANS LEUR GROUPE'
          ENDIF
          SM    = 0.D0
          SNMAX = 0.D0
@@ -133,6 +144,16 @@ C
             NUMGR = ZI(JNUMGR+IG-1)
             IOCS  = ZI(JSEIGR+IG-1)
 C
+            CALL JELIRA(JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'LONMAX',
+     +                                                    NBSIGR, K8B )
+            CALL JECROC (JEXNUM(K24B,IG))
+            CALL JEECRA (JEXNUM(K24B,IG), 'LONMAX', 5*NBSIGR, ' ' )
+            CALL JEVEUO (JEXNUM(K24B,IG), 'E', JPMPB )
+C
+            CALL JECROC (JEXNUM(K24T,IG))
+            CALL JEECRA (JEXNUM(K24T,IG), 'LONMAX', 4*50, ' ' )
+            CALL JEVEUO (JEXNUM(K24T,IG), 'E', JFACT )
+C
             NPASS = 0
             IF ( IOCS .EQ. 0 ) THEN
                SEISME = .FALSE.
@@ -140,8 +161,9 @@ C
                SEISME = .TRUE.
             ENDIF
 C
-            CALL RC3201 ( LIEU(IM), NUMGR, IOCS, SEISME, NPASS,
-     +          MATER, SNMAX, SPMAX,SPMECM,SPTHEM, SAMAX, UTOT, SM )
+            CALL RC3201 ( OPMPB, OSN, OFATIG, LIEU(IM), NUMGR, IOCS,
+     +                    SEISME, NPASS, MATER, SNMAX, SPMAX, SPMECM,
+     +                    SPTHEM, SAMAX, UTOT, SM, ZR(JPMPB),ZR(JFACT))
 C
  100     CONTINUE
 C
@@ -157,6 +179,12 @@ C
          MSE(5) = 0.D0
          MSE(6) = 0.D0
 C
+         IF ( NIV .GE. 2 ) THEN
+            WRITE(IFM,*) ' '
+            WRITE(IFM,*)
+     +   '=> ON TRAITE LES SITUATIONS NON COMBINABLES DANS LEUR GROUPE'
+         ENDIF
+C
 C ------ ON TRAITE LES SITUATIONS NON COMBINABLES
 C        ----------------------------------------
 C
@@ -167,6 +195,11 @@ C
             CALL JELIRA (JEXNUM('&&RC3200.LES_GROUPES',NUMGR),
      +                                             'LONMAX',NBSIGR,K8B)
             CALL JEVEUO (JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'L',JNSG)
+C
+            IF (NIV.GE.2) THEN
+               WRITE (IFM,2000) IG,NBSIGR
+               WRITE (IFM,2010) (ZI(JNSITU+ZI(JNSG+I1-1)-1),I1=1,NBSIGR)
+            END IF
 C
             NPASS = 0
 C
@@ -188,12 +221,48 @@ C
 C
               NSITUQ = 0
 C
+C ----------- CALCUL DU PM_PB
+C
+              IF ( OPMPB ) THEN
+                 PM = 0.D0
+                 PB = 0.D0
+                 PMPB = 0.D0
+                 CALL JEEXIN (JEXNUM(K24B,IG), IRET )
+                 IF ( IRET .EQ. 0 ) THEN
+                    CALL JECROC (JEXNUM(K24B,IG))
+                    CALL JEECRA (JEXNUM(K24B,IG),'LONMAX',5*NBSIGR,' ')
+                 ENDIF
+                 CALL JEVEUO ( JEXNUM(K24B,IG), 'E', JPMPB )
+                 CALL RC32PM ( LIEU(IM), SEISME, PPI, MPI, PPJ, MPJ,
+     +                                            MSE, PM, PB, PMPB )
+                 ZR(JPMPB-1+5*(IS1-1)+1) = PM
+                 ZR(JPMPB-1+5*(IS1-1)+2) = PB
+                 ZR(JPMPB-1+5*(IS1-1)+3) = PMPB
+                 IF (NIV.GE.2) THEN
+                    WRITE (IFM,2020) NSITUP, PM, PB, PMPB
+                 END IF
+              ENDIF
+C
 C ----------- CALCUL DU SN
 C
-              SN = 0.D0
-              CALL RC32SN ( LIEU(IM), SEISME, NSITUP, PPI, MPI, 
-     +                      NSITUQ, PPJ, MPJ, MSE, SN )
-              SNMAX = MAX ( SNMAX , SN )
+              IF ( OSN ) THEN
+                 SN = 0.D0
+                 CALL RC32SN ( LIEU(IM), SEISME, NSITUP, PPI, MPI, 
+     +                         NSITUQ, PPJ, MPJ, MSE, SN )
+                 SNMAX = MAX ( SNMAX , SN )
+                 CALL JEEXIN (JEXNUM(K24B,IG), IRET )
+                 IF ( IRET .EQ. 0 ) THEN
+                    CALL JECROC (JEXNUM(K24B,IG))
+                    CALL JEECRA (JEXNUM(K24B,IG),'LONMAX',5*NBSIGR,' ')
+                 ENDIF
+                 CALL JEVEUO ( JEXNUM(K24B,IG), 'E', JPMPB )
+                 ZR(JPMPB-1+5*(IS1-1)+4) = SN
+                 IF (NIV.GE.2) THEN
+                    WRITE (IFM,2030) NSITUP, SN
+                 END IF
+              ENDIF
+C
+              IF ( .NOT.OFATIG ) GOTO 210
 C
 C ----------- CALCUL DU SP
 C
@@ -202,11 +271,15 @@ C
               CALL RC32SP ( LIEU(IM), SEISME, NSITUP, PPI, MPI, 
      +                NSITUQ, PPJ, MPJ, MSE, SP, TYPEKE,SPMECA,SPTHER)
               SPMAX = MAX ( SPMAX , SP )
+              IF (NIV.GE.2) WRITE (IFM,2040) NSITUP, SP
 C
 C ----------- CALCUL DU SALT
 C
               CALL RC32SA ( MATER, MATPI, MATPJ, SN, SP,
      &           TYPEKE, SPMECA, SPTHER,KEMECA,KETHER,SALTIJ, SMM )
+              IF (NIV.GE.2) THEN
+                 WRITE (IFM,2050) NSITUP, SALTIJ
+              END IF
 C
               IF ( SALTIJ .GT. SAMAX ) THEN
                  SAMAX = SALTIJ
@@ -231,6 +304,10 @@ C
 C
                  UG = DBLE( NOCC ) / NADM
               ENDIF
+              ZR(JPMPB-1+5*(IS1-1)+5) = UG
+              IF (NIV.GE.2) THEN
+                 WRITE (IFM,2060) NSITUP, UG
+              END IF
               UTOT = UTOT + UG
 C
  210        CONTINUE
@@ -295,6 +372,14 @@ C        - LE U_TOTAL
 C
  10   CONTINUE
 C
+ 2000 FORMAT ('=> GROUPE: ',I4,' , NOMBRE DE SITUATIONS: ',I4)
+ 2010 FORMAT ('=> LISTE DES NUMEROS DE SITUATION: ',100 (I4,1X))
+ 2020 FORMAT (1P,' SITUATION ',I4,' PM =',E12.5,
+     +                            ' PB =',E12.5,' PMPB =',E12.5)
+ 2030 FORMAT (1P,' SITUATION ',I4,' SN =',E12.5 )
+ 2040 FORMAT (1P,' SITUATION ',I4,' SP =',E12.5)
+ 2050 FORMAT (1P,' SITUATION ',I4,' SALT =',E12.5)
+ 2060 FORMAT (1P,' SITUATION ',I4,' SALT =',E12.5)
  1000 FORMAT(A,A8,A,A8)
  1010 FORMAT(1P,' COMBINAISON P ',I4,' SN =',E12.5,' SP =',E12.5)
  1020 FORMAT(1P,' COMBINAISON P Q ',I4,I4,' SN =',E12.5)

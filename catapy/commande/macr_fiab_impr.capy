@@ -1,0 +1,64 @@
+#& MODIF COMMANDE  DATE 16/01/2004   AUTEUR GNICOLAS G.NICOLAS 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE GNICOLAS G.NICOLAS
+
+from Macro.macr_fiab_impr_ops import macr_fiab_impr_ops
+
+MACR_FIAB_IMPR=MACRO(nom="MACR_FIAB_IMPR",op=macr_fiab_impr_ops,
+                   fr="Imprimer les valeurs à transmettre au logiciel de fiabilité.",
+                   ang="Print values for the fiability software",
+                   docu="U7.04.41-a",
+#
+# 1. Le niveau d'information
+#
+   INFO           = SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
+#
+# 2. Impression de la valeur de la cible
+#
+# 2.1. ==> La table contenant la valeur à imprimer
+#
+   TABLE_CIBLE = SIMP(statut='o',typ=table,
+                 fr="Table contenant la valeur cible.",
+                 ang="Table which includes the target value."),
+#
+# 2.2. ==> Le nom du paramètre associé à la valeur cible dans cette table
+#
+   NOM_PARA_CIBLE = SIMP(statut='o',typ='TXM',
+                    fr="Nom du paramètre associé à la valeur cible.",
+                    ang="Name of the parameter connected to the target value."),
+#
+# 3. Impressions des valeurs des éventuels gradients
+#
+   GRADIENTS = FACT(statut='f',min=1,max='**',
+#
+# 3.1. ==> La table contenant la valeur à imprimer
+#
+       TABLE = SIMP(statut='o',typ=table,
+                    fr="Table contenant le gradient.",
+                    ang="Table which includes the gradient."),
+#
+# 3.2. ==> Le nom du paramètre associé au gradient dans cette table
+#
+       NOM_PARA = SIMP(statut='o',typ='TXM',
+                       fr="Nom du paramètre associé au gradient.",
+                       ang="Name of the parameter connected to the gradient."),
+#
+         ),
+#
+);

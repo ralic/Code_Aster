@@ -1,7 +1,7 @@
       SUBROUTINE JJLIHD (IDTS,NBVAL,LONOI,GENRI,TYPEI,LTYPI,
      &                   IC,IDO,IDC,IMARQ,IADMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 04/11/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C TOLE CRP_18 CRS_508 CRS_513
+C TOLE CRP_18 CRP_4 CRS_508 CRS_513
       IMPLICIT NONE
       INTEGER            IDTS,NBVAL,LONOI,LTYPI,IC,IDO,IDC,IMARQ,IADMI
       CHARACTER*(*)      GENRI,TYPEI
@@ -68,20 +68,24 @@ C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      INTEGER*4          ZI4
+      COMMON  / I4VAJE / ZI4(1)
 C---------- FIN  COMMUNS NORMALISES  JEVEUX ----------------------------
       CHARACTER*1      TYPEB
       CHARACTER*75     CMESS
-      INTEGER          HDFRSV,HDFTSD
+      INTEGER          HDFRSV,HDFTSD,ICONV
       INTEGER          IRET,JADR,KITAB,NBV,IR,LON,KADM,K,IBID,LTYPB
-      INTEGER          IZR(1),IZC(1),IZK8(1)
-      INTEGER          IZK16(1),IZK24(1),IZK32(1),IZK80(1),IZL(1)
-      EQUIVALENCE     (IZR,ZR),(IZC,ZC),(IZK8,ZK8),(IZK16,ZK16),
-     &                (IZK24,ZK24),(IZK32,ZK32),(IZK80,ZK80),(IZL,ZL)
+      INTEGER         IZR,IZC,IZL,IZK8,IZK16,IZK24,IZK32,IZK80,IZI4
+      EQUIVALENCE    (IZR,ZR),(IZC,ZC),(IZL,ZL),(IZK8,ZK8),(IZK16,ZK16),
+     &               (IZK24,ZK24),(IZK32,ZK32),(IZK80,ZK80),(IZI4,ZI4)
 C DEB ------------------------------------------------------------------
       IRET = -1
+      ICONV = 0
       NBV = NBVAL
       IF ( TYPEI .EQ. 'I' ) THEN
         CALL JJALLS(LONOI,GENRI,TYPEI,LTYPI,'INIT',ZI ,JADR,IADMI)
+      ELSE IF ( TYPEI .EQ. 'S' ) THEN
+        CALL JJALLS(LONOI,GENRI,TYPEI,LTYPI,'INIT',ZI4 ,JADR,IADMI)
       ELSE IF ( TYPEI .EQ. 'R' ) THEN
         CALL JJALLS(LONOI,GENRI,TYPEI,LTYPI,'INIT',IZR,JADR,IADMI)
       ELSE IF ( TYPEI .EQ. 'C' ) THEN
@@ -104,6 +108,7 @@ C DEB ------------------------------------------------------------------
       ENDIF
       CALL JJECRS (IADMI,IC,IDO,IDC,'E',IMARQ)
       IF ( TYPEI .EQ. 'I' ) THEN
+        ICONV = 1
         IRET = HDFTSD(IDTS,TYPEB,LTYPB,IBID)
         IF ( LOIS .LT. LTYPB ) THEN
           LON = NBVAL*LTYPB
@@ -112,7 +117,7 @@ C DEB ------------------------------------------------------------------
           ISZON(JISZON+ISZON(JISZON+KADM-4)-4) = ISTAT(4)
           IR = ISZON(JISZON + KADM - 3 ) 
           KITAB = JK1ZON+(KADM-1)*LOIS+IR+1
-          IRET = HDFRSV(IDTS,NBV,K1ZON(KITAB))
+          IRET = HDFRSV(IDTS,NBV,K1ZON(KITAB),ICONV)
           DO 1 K=1,NBV
             ISZON(JISZON+IADMI-1+K)=ISZON(JISZON+KADM-1+K)
  1        CONTINUE    
@@ -120,12 +125,16 @@ C DEB ------------------------------------------------------------------
         ELSE
           IR = ISZON(JISZON + IADMI - 3 ) 
           KITAB = JK1ZON+(IADMI-1)*LOIS+IR+1
-          IRET = HDFRSV(IDTS,NBV,K1ZON(KITAB))
+          IRET = HDFRSV(IDTS,NBV,K1ZON(KITAB),ICONV)
         ENDIF 
+      ELSE IF ( TYPEI .EQ. 'S' ) THEN
+        IR = ISZON(JISZON + IADMI - 3 ) 
+        KITAB = JK1ZON+(IADMI-1)*LOIS+IR+1
+        IRET = HDFRSV(IDTS,NBV,K1ZON(KITAB),ICONV)
       ELSE
         IR = ISZON(JISZON + IADMI - 3 ) 
         KITAB = JK1ZON+(IADMI-1)*LOIS+IR+1
-        IRET = HDFRSV(IDTS,NBV,K1ZON(KITAB))
+        IRET = HDFRSV(IDTS,NBV,K1ZON(KITAB),ICONV)
       ENDIF   
       IF (IRET .NE. 0) THEN
         CMESS='RELECTURE AU FORMAT HDF IMPOSSIBLE '

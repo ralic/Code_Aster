@@ -1,10 +1,9 @@
-      SUBROUTINE RVGCH1 ( CHELEM, OPTION )
+      SUBROUTINE RVGCH1 ( CHELEM )
       IMPLICIT   NONE
       CHARACTER*(*)       CHELEM
-      CHARACTER*16        OPTION
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 04/03/2002   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF POSTRELE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

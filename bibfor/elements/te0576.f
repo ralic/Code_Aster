@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER JGANO,NBSIGM,NDIM,NNO,I,NNOS,JVAL,IPOIDS,IVF,NBNOMX,
      &        NBCONT,NPG1,NBSIG,IGAU,ISIG,INO,IGEOM,IDIM,ITEMPE,ITEMPS,
-     &        IMATE,JSIG,IDENER,IDFDE,IDFDN,IDFDK,IDEPL,IDEPLM,IDEPMM,
+     &        IMATE,JSIG,IDENER,IDFDE,IDEPL,IDEPLM,IDEPMM,
      &        IDSIG,IDSIGM,MXCMEL,IRET
       PARAMETER (NBNOMX=27)
       PARAMETER (NBCONT=6)
@@ -84,11 +84,6 @@ C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
 C      ------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
-      DO 10 I = 1,1
-   10 CONTINUE
-
 
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
@@ -171,17 +166,15 @@ C       -------------------
 C ---   CALCUL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE
 C ---   CORRESPONDANT AU CHAMP DE DEPLACEMENT COURANT :
 C       ---------------------------------------------
-        CALL EPS1MC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
-     &              ZR(IDFDN),ZR(IDFDK),ZR(IPOIDS),ZR(IGEOM),ZR(IDEPL),
-     &              NHARM,EPSS)
+        CALL EPS1MC(MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
+     +              ZR(IGEOM),ZR(IDEPL),NHARM,EPSS)
 
 C ---   CALCUL EVENTUEL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE
 C ---   CORRESPONDANT AU CHAMP DE DEPLACEMENT A L'INSTANT PRECEDENT :
 C       -----------------------------------------------------------
         IF (IDEPLM.NE.0) THEN
-          CALL EPS1MC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
-     &                ZR(IDFDN),ZR(IDFDK),ZR(IPOIDS),ZR(IGEOM),
-     &                ZR(IDEPMM),NHARM,EPSSM)
+        CALL EPS1MC(MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
+     +              ZR(IGEOM),ZR(IDEPMM),NHARM,EPSSM)
         END IF
 
       END IF
@@ -192,10 +185,8 @@ C      ===================================
 
 C  --    CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
 C        -------------------------------------------------
-        CALL DFDM3D(NNO,ZR(IPOIDS+IGAU-1),ZR(IDFDE+ (IGAU-1)*NNO*NDIM),
-     &              ZR(IDFDN+ (IGAU-1)*NNO*NDIM),
-     &              ZR(IDFDK+ (IGAU-1)*NNO*NDIM),ZR(IGEOM),DFDX,DFDY,
-     &              DFDZ,POIDS)
+        CALL DFDM3D ( NNO, IGAU, IPOIDS, IDFDE,
+     &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
 
         DO 30 ISIG = 1,NBSIG
           EPSI(ISIG) = ZERO

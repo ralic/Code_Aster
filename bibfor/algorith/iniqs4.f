@@ -1,7 +1,10 @@
-      SUBROUTINE INIQS4(NNO,SDFDE,SDFDK,POIPG,COOPG)
-
+      SUBROUTINE INIQS4 ( NNO, SDFDE, SDFDK, POIPG, COOPG )
+      IMPLICIT NONE
+      INTEGER             NNO
+      REAL*8              SDFDE(4,4),SDFDK(4,4),COOPG(8),POIPG(4)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/08/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,7 +21,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-
 C =============================================================
 C   BUT : RECUPERER TOUS LES INDICES DU VECTEUR ZR DANS LEQUEL
 C         SE TROUVE LES COORD., LES DFDE et DFDK, LE POIDS DE
@@ -31,14 +33,6 @@ C        OUT  :  POIDS  POIDS DES PTS DE GAUSS
 C        OUT  :  COOPG  COORD.DES PTS DE GAUSS
 C
 C =============================================================
-
-      IMPLICIT NONE
-
-      CHARACTER*8 ELREFE
-      INTEGER NNO,I
-      INTEGER ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK
-      INTEGER ITREF
-
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -55,50 +49,26 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN DECLARATIONS NORMALISEES  JEVEUX ---------------------
-
-
-C        AJ. VARIABLES
-
-      INTEGER K
-      INTEGER IFAP,NBPG(10)
-      CHARACTER*24 CARAC,FFO
-      REAL*8 SDFDE(4,4),SDFDK(4,4),COOPG(8),POIPG(4),J
-
+C
+      INTEGER     I,J,K,NDIM,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO,NBPG
+      CHARACTER*8 ELREFE, FAMIL
+C     ------------------------------------------------------------------
+C
       CALL JEMARQ()
 
-      CALL ELREF1(ELREFE)
+      ELREFE = 'QU4     '
+      FAMIL  = 'FPG4    '
 
-      FFO = '&INEL.'//ELREFE//'.FF'
-      CARAC = '&INEL.'//ELREFE//'.CARAC'
+      CALL ELRAGA ( ELREFE, FAMIL, NDIM, NBPG, COOPG, POIPG )
 
-      CALL JEVETE(FFO,'L',IFF)
-      CALL JEVETE(CARAC,'L',ICARAC)
+      CALL ELREF4 ( ELREFE, 'MASS', NDIM, NNO, NNOS, NPG, IPOIDS,
+     &                                              IVF, IDFDE, JGANO )
 
-      DO 10 I = 1,10
-        NBPG(I) = 0
-   10 CONTINUE
-
-      NBPG(1) = ZI(ICARAC+2)
-      NBPG(2) = ZI(ICARAC+3)
-
-      DO 20 IFAP = 1,2
-        IF (IFAP.EQ.1) THEN
-          IPOIDS = IFF
-        ELSE
-          IPOIDS = IDFDK + NBPG(1)*NNO
-        END IF
-        IVF = IPOIDS + ZI(ICARAC+IFAP+1)
-        IDFDE = IVF + ZI(ICARAC+IFAP+1)*NNO
-        IDFDK = IDFDE + ZI(ICARAC+IFAP+1)*NNO
-   20 CONTINUE
-
-      CALL ELRFGF(ELREFE,2,NBPG,27*3,COOPG,27,POIPG)
-
-      DO 40 I = 1,NNO
-        K = NNO* (I-1)
+      DO 40 I = 1,NPG
+        K = 2*NNO*(I-1)
         DO 30 J = 1,NNO
-          SDFDE(I,J) = ZR(IDFDE+K+J-1)
-          SDFDK(I,J) = ZR(IDFDK+K+J-1)
+          SDFDE(I,J) = ZR(IDFDE+K+2*(J-1)-1+1)
+          SDFDK(I,J) = ZR(IDFDE+K+2*(J-1)-1+2)
    30   CONTINUE
    40 CONTINUE
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+# MODIF  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE MURAKAMI 8.20 FISSURE DEVIEE A L'INTERFACE ENTRE DEUX DEMI-PLANS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -103,7 +103,7 @@ NOM_CHAM='DEPL', RESULTAT=CHAMDEPL,
 
 #
 FOND1=DEFI_FOND_FISS(    MAILLAGE=MA,
-                               FOND=_F( GROUP_NO = ('P0',)),
+                            FOND_FISS=_F( GROUP_NO = ('P0',)),
                             NORMALE=(-0.707106781, -0.707106781, 0.,)
                       )
 

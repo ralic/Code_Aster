@@ -1,7 +1,7 @@
       SUBROUTINE TE0581 ( OPTION , NOMTE )
       IMPLICIT NONE
 C-----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

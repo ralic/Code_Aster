@@ -1,4 +1,4 @@
-#@ MODIF __init__ Stanley  DATE 04/02/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF __init__ Stanley  DATE 05/11/2003   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG

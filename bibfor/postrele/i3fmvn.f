@@ -1,14 +1,14 @@
-      SUBROUTINE I3FMVN(NIL,TETE,QUEUE,DESC,SUCC,PREC,DESCTM,PTMDEP,
+      SUBROUTINE I3FMVN(NIL,DESC,SUCC,PREC,DESCTM,PTMDEP,
      +                  CONNEC,VLC,
      +                  LND,NBND,NBCHER,NBTROU,MATROU)
       IMPLICIT REAL*8 (A-H,O-Z)
 C
-      INTEGER NIL,TETE,QUEUE,DESC(*),SUCC(*),PREC(*),DESCTM(*),PTMDEP
+      INTEGER NIL,DESC(*),SUCC(*),PREC(*),DESCTM(*),PTMDEP
       INTEGER LND(*),NBND,NBCHER,NBTROU,MATROU(*),CONNEC(*),VLC(*)
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 02/10/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF POSTRELE  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,8 +31,6 @@ C     LES NOEUDS DE LA LISTE LND SACHANT QUE LA MAILLE POINTEE PAR
 C     PTMDEP EST UNE DE CES MAILLES
 C     ------------------------------------------------------------------
 C IN  NIL    : I :--
-C IN  TETE   : I :  !
-C IN  QUEUE  : I :  !---> OBJ L_MAILLE
 C IN  DESC   : I :  !
 C IN  SUCC   : I :  !
 C IN  PREC   : I :--
@@ -48,7 +46,7 @@ C IN  NBTROU : I : NOMBRE DE MAILLES TROUVEES
 C OUT MATROU : I : MAILLES TROUVEES (Y COMPRIS CELLE DEJA CONNUE)
 C     ------------------------------------------------------------------
 C     LA ROUTINE DE CALCUL D' INTERSECTION VIDE L' OBJ L_MAILLE PAR LA
-C     TETE (IE PTMDEP = TETE)
+C     TETE
 C     ON COMMENCE LA RECHERCHE DANS LES SUCCESSEURS DE PTMDEP
 C     LA RECHERCHE DANS LE SENS DES PREDECESSEURS EST NEANMOINS CODEE
 C     ------------------------------------------------------------------

@@ -1,7 +1,7 @@
       SUBROUTINE SLEELT(MAXNOD,NBTYMA,INDIC,PERMUT,NBMAIL,MINT,MANT,
      &                  DATSET,INUM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 21/07/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF STBTRIAS  DATE 15/03/2004   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -187,23 +187,24 @@ C
             MINT(CODGRA)=JNUM
             MANT(CODGRA)=JNUM
           ENDIF
-        NBMAIL(CODGRA) = NBMAIL(CODGRA) + 1
+          NBMAIL(CODGRA) = NBMAIL(CODGRA) + 1
 C
 C --> ECRITURE DES MAILLES DANS LE FICHIER BUFFER IMA
 C
         IF (DATSET.EQ.82) THEN
-          ICP=1
+          ICP=0
           DO  22 INO=1,2*JNUM,2
-            ZI(JCONN-1+INO) = NOD82(INO)
-            ZI(JCONN-1+INO+1) = NOD82(INO+1)
-            ZI(JINFO-1+NDECA+(ICP-1)*4+1) = ICP + NBMAIL(CODGRA)
-            ZI(JINFO-1+NDECA+(ICP-1)*4+2) = CODGRA
-            ZI(JINFO-1+NDECA+(ICP-1)*4+3) = 2
-            ZI(JINFO-1+NDECA+(ICP-1)*4+4) = ICOL   
-            ICP=ICP+1
+            IF ((NOD82(INO).NE.0).AND.(NOD82(INO+1).NE.0)) THEN
+              ZI(JCONN-1+INO) = NOD82(INO)
+              ZI(JCONN-1+INO+1) = NOD82(INO+1)
+              ZI(JINFO-1+NDECA+(ICP)*4+1) = ICP+NBMAIL(CODGRA)
+              ZI(JINFO-1+NDECA+(ICP)*4+2) = CODGRA
+              ZI(JINFO-1+NDECA+(ICP)*4+3) = 2
+              ZI(JINFO-1+NDECA+(ICP)*4+4) = ICOL   
+              ICP=ICP+1
+            ENDIF
    22     CONTINUE
-          INUM = JNUM
-          NBMAIL(CODGRA) = JNUM + NBMAIL(CODGRA)
+          NBMAIL(CODGRA) = JNUM + NBMAIL(CODGRA)          
           IPOS= JNUM
           MINT(CODGRA)=1
           MANT(CODGRA)=JNUM
@@ -228,6 +229,6 @@ C
       GO TO 1
    99 CONTINUE
       IMES = IUNIFI('MESSAGE')
-      WRITE (IMES,*) 'NOMBRE DE MAILLES :',(INUM + NBMAIL(CODGRA))
+      WRITE (IMES,*) 'NOMBRE DE MAILLES :',INUM
       CALL JEDEMA()
       END

@@ -1,5 +1,5 @@
       SUBROUTINE PJ4DCO(MOCLE,MO1,MO2,NBMA1,LIMA1,NBNO2,LINO2,
-     &                  GEOM1,GEOM2,CORRES)
+     &                  GEOM1,GEOM2,CORRES,LDMAX,DISTMA)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16 CORRES
       CHARACTER*(*) GEOM1,GEOM2
@@ -8,7 +8,7 @@
       INTEGER NBMA1,LIMA1(*),NBNO2,LINO2(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 20/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 16/02/2004   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,6 +83,8 @@ C
       CHARACTER*8 NOTM(NBTM)
       LOGICAL DBG
 
+      LOGICAL LDMAX
+      REAL*8  DISTMA
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -335,7 +337,14 @@ C     ------------------------------------------------
         IF (ZI(IALIN2-1+INO2).EQ.0) GO TO 6
         CALL PJ4DAP(INO2,ZR(IACOO2),M2,ZR(IACOO1),ZI(IATR3),
      &                COBARY,ITR3,NBTROU,ZI(IABTDI), ZR(IABTVR),
-     &   ZI(IABTNB), ZI(IABTLC),ZI(IABTCO),IFM,NIV)
+     &   ZI(IABTNB), ZI(IABTLC),ZI(IABTCO),IFM,NIV,LDMAX,DISTMA)
+
+        IF (LDMAX.AND.(NBTROU.EQ.0)) THEN
+          ZI(IACONB-1+INO2)=3
+          ZI(IACOTR-1+INO2)=0
+          GOTO 6
+        END IF
+
         IF (NBTROU.EQ.0) THEN
           CALL JENUNO(JEXNUM(M2//'.NOMNOE',INO2),NONO2)
           CALL UTMESS('F','PJ4DCO',NONO2//' PAS TROUVE.')

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 12/01/2004   AUTEUR GRANET S.GRANET 
 # TITRE  - CONSOLIDATION DE TERZAGHI  CAS 3D  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,19 +63,13 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=1.E7,
                                    ALPHA=1.E-4,
                                    CP=4180.0,
                                    VISC=UN,
-                                   D_VISC_TEMP=ZERO,
-                                   LAMBDA=BIDON,
-                                   D_LAMBDA_TEMP=BIDON,),
+                                   D_VISC_TEMP=ZERO,),
                        THM_GAZ=_F(MASS_MOL=0.02896,
                                   CP=1000.0,
                                   VISC=BIDON,
-                                  D_VISC_TEMP=BIDON,
-                                  LAMBDA=BIDON,
-                                  D_LAMBDA_TEMP=BIDON,),
+                                  D_VISC_TEMP=BIDON,),
                        THM_VAPE_GAZ=_F(MASS_MOL=0.017999999999999999,
-                                       CP=1870.0,
-                                       VISC=BIDON,
-                                       D_VISC_TEMP=BIDON,),
+                                       CP=1870.0,),
                        THM_INIT=_F(TEMP=293.0,
                                    PRE1=1.E6,
                                    PRE2=1.E5,
@@ -95,12 +89,7 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=1.E7,
                                     D_PERM_LIQU_SATU=ZERO,
                                     PERM_GAZ=BIDON,
                                     D_PERM_SATU_GAZ=BIDON,
-                                    D_PERM_PRES_GAZ=BIDON,
-                                    FICK=BIDON,
-                                    D_FICK_TEMP=BIDON,
-                                    D_FICK_GAZ_PRES=BIDON,
-                                    LAMBDA=BIDON,
-                                    D_LAMBDA_TEMP=BIDON,),);
+                                    D_PERM_PRES_GAZ=BIDON,),);
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',

@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -161,7 +161,7 @@ C-- 1.2. RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C        NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C-----------------------------------------------------------------------
       CALL LCMATE ( LOI, MOD, IMATE, NMAT, TM, TP, HYDRD, HYDRF, SECHD,
-     1              SECHF, INSTAM , INSTAP, TYPMA,  BZ, MATM, MATE,
+     1              SECHF, TYPMA,  BZ, MATM, MATE,
      2              MATCST, NDT, NDI, NRV, NVI, VIND )
       IF (NDT.NE.NB.AND.NVI.NE.NI.AND.NRV.NE.NR) GOTO 800
 C
@@ -344,7 +344,7 @@ C
      &                  'PARAMETRES MATERIAU')
       GOTO 900
  801  CONTINUE
-            CALL UTMESS('S','NMVEEI_02',
+            CALL UTEXCP(23,'NMVEEI_02',
      &           ' NOMBRE D''ITERATIONS INTERNES MAXIMAL ATTEINT ')
       GOTO 900
  802  CONTINUE

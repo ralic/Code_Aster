@@ -1,8 +1,7 @@
-      SUBROUTINE D2GEOM(NDIM,NNO,COOR,KPG,DFDE,DFDK,DFD2DE,DFD2DK,
-     &                  DFDEDK,DFD2DI)
+      SUBROUTINE D2GEOM(NDIM,NNO,COOR,KPG,IDFDE,IDFD2E,DFD2DI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/01/2001   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,23 +52,29 @@ C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      INTEGER NDIM,NNO,KPG
-      REAL*8  DFDE(1),DFDK(1),DFD2DE(1),DFD2DK(1),DFDEDK(1)
+      INTEGER NDIM,NNO,KPG,IDFDE,IDFD2E
+      REAL*8  DE,DK,DE2,DK2,DKE
       REAL*8  COOR(1),DFD2DI(1)
-      
-C---------------- COMMUNS NORMALISES  JEVEUX  -------------------------
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*8 ZK8,NOMAIL
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
-      
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8,NOMAIL
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C DECLARATION VARIABLES LOCALES      
       REAL*8  DXDE,DXDK,DYDE,DYDK,JAC,DXD2DK,DXD2DE,DXDEDK,DYD2DE,
      &        DYD2DK,DYDEDK,T2(6,6),T1(6,3),C1(6,3),RAUX,XX,YY,R8GAEM
-      INTEGER I,J,K,L,IADZI,IAZK24
+      INTEGER I,II,K,L,IADZI,IAZK24,J,K2,II2
 
 C INITIALISATIONS
       DO 6 J=1,3
@@ -96,20 +101,28 @@ C CALCULS DES DERIVEES PREMIERES ET SECONDES (EN KSI ET ETA)
       DYD2DE=0.D0
       DYDEDK=0.D0
       DO 10 I=1,NNO
-        J = (KPG-1)*NNO+I
+        K = NDIM*NNO*(KPG-1)
+        II = NDIM*(I-1)
         XX = COOR(2*I-1)
         YY = COOR(2*I)
-        DXDE= DXDE + XX*DFDE(J)
-        DXDK= DXDK + XX*DFDK(J)
-        DYDE= DYDE + YY*DFDE(J)
-        DYDK= DYDK + YY*DFDK(J)
-        
-        DXD2DE= DXD2DE + XX*DFD2DE(J)
-        DXD2DK= DXD2DK + XX*DFD2DK(J)
-        DXDEDK= DXDEDK + XX*DFDEDK(J)
-        DYD2DE= DYD2DE + YY*DFD2DE(J)
-        DYD2DK= DYD2DK + YY*DFD2DK(J)
-        DYDEDK= DYDEDK + YY*DFDEDK(J)
+        DE = ZR(IDFDE-1+K+II+1)
+        DK = ZR(IDFDE-1+K+II+2)
+        DXDE= DXDE + XX*DE
+        DXDK= DXDK + XX*DK
+        DYDE= DYDE + YY*DE
+        DYDK= DYDK + YY*DK
+        K2 = NDIM*K
+        II2 = NDIM*II
+        DE2 = ZR(IDFD2E-1+K2+II2+1)
+        DK2 = ZR(IDFD2E-1+K2+II2+4)
+        DKE = ZR(IDFD2E-1+K2+II2+3)
+        DXD2DE= DXD2DE + XX*DE2
+        DXD2DK= DXD2DK + XX*DK2
+        DXDEDK= DXDEDK + XX*DKE
+        DYD2DE= DYD2DE + YY*DE2
+        DYD2DK= DYD2DK + YY*DK2
+        DYDEDK= DYDEDK + YY*DKE
+
    10 CONTINUE
 
 C CALCUL DU JACOBIEN
@@ -154,12 +167,20 @@ C CALCUL DE T1
    
 C CALCUL DES DERIVEES SECONDES EN X ET Y
           DO 24 I=1,NNO
-            K = (KPG-1)*NNO+I
+            K = NDIM*NNO*(KPG-1)
+            II = NDIM*(I-1)
+            K2 = NDIM*K
+            II2 = NDIM*II
+            DE = ZR(IDFDE-1+K+II+1)
+            DK = ZR(IDFDE-1+K+II+2)
+            DE2 = ZR(IDFD2E-1+K2+II2+1)
+            DK2 = ZR(IDFD2E-1+K2+II2+4)
+            DKE = ZR(IDFD2E-1+K2+II2+3)
             DO 22 J=1,3
               L=(J-1)*NNO+I
-              DFD2DI(L) =  T1(J,1)*DFDE(K) + 
-     &                  T1(J,2)*DFDK(K) + T2(J,1)*DFD2DE(K) + 
-     &                  T2(J,2)*DFD2DK(K) + T2(J,3)*DFDEDK(K)
+              DFD2DI(L) =  T1(J,1)*DE + 
+     &                  T1(J,2)*DK + T2(J,1)*DE2 + 
+     &                  T2(J,2)*DK2 + T2(J,3)*DKE
    22       CONTINUE
    24     CONTINUE
 

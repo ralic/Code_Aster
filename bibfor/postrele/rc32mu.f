@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -88,8 +88,8 @@ C
       NOCMP(5) = 'SIXZ'
       NOCMP(6) = 'SIYZ'
 C
-C --- 7 TABLES A  ( 6 COMPOSANTES + 6 LINEARISEES )
-      NDIM = 7 * 2 * 6
+C --- 7 TABLES A  ( 6 COMPOSANTES + 6 LINEARISEES + 6 M_0 + 6 M_1 )
+      NDIM = 7 * ( 6 + 6 + 6 + 6 )
       CALL WKVECT ( '&&RC3200.MECA_UNIT .ORIG', 'V V R', NDIM, JMUNO )
       CALL WKVECT ( '&&RC3200.MECA_UNIT .EXTR', 'V V R', NDIM, JMUNE )
 C
@@ -130,6 +130,16 @@ C
 C
             ZR(JMUNO-1+L) = MOMEN0 - 0.5D0*MOMEN1
             ZR(JMUNE-1+L) = MOMEN0 + 0.5D0*MOMEN1
+C
+            L = 2*7*NCMP + NCMP*(I-1) + J
+C
+            ZR(JMUNO-1+L) = MOMEN0
+            ZR(JMUNE-1+L) = MOMEN0
+C
+            L = 3*7*NCMP + NCMP*(I-1) + J
+C
+            ZR(JMUNO-1+L) = MOMEN1
+            ZR(JMUNE-1+L) = MOMEN1
 C
  12      CONTINUE
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 02/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE RACCORD POUTRE-3D : PROBLEME DE SAINT-VENANT -
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -178,71 +178,89 @@ MODES=MODE_ITER_SIMULT(   MATR_A=MATASS,
 ###CDURAND###     CALC_FREQ=_F( FREQ = (0., 2.,))
                        )
 
-VECASS=ASSE_VECTEUR(    VECT_ELEM=VEL,
-                              NUME_DDL=NU   )
+RESU=MECA_STATIQUE(MODELE=MOD,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CELEM,
+                   EXCIT=_F(CHARGE=CH,),
+                   );
 
-MATASS=FACT_LDLT( reuse=MATASS,   MATR_ASSE=MATASS )
+RESU=CALC_ELEM(reuse=RESU,
+               MODELE=MOD,
+               RESULTAT=RESU,
+               GROUP_MA='POU3D',
+               OPTION='SIGM_ELNO_DEPL',
+               EXCIT=_F(CHARGE=CH,),
+               CHAM_MATER=CHMAT )
 
-VECASS=RESO_LDLT( reuse=VECASS,   MATR_FACT=MATASS,
-                            CHAM_NO=VECASS  )
-
-SIGMA=CALC_CHAM_ELEM(    MODELE=MOD,
-                              GROUP_MA='POU3D',
-                                DEPL=VECASS,
-                              OPTION='SIGM_ELNO_DEPL',
-                              CHAM_MATER=CHMAT )
-
-TEST_RESU(CHAM_NO=(  
+TEST_RESU(RESU=(  
      # DEPLACEMENTS
 #
 # NOEUD B EXTREMITE DE LA POUTRE OU L'ON APPLIQUE LES CHARGEMENTS
 #
-            _F(  CHAM_GD = VECASS, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',   PRECISION = 1.E-7,
               NOEUD = 'N1',       NOM_CMP = 'DX',    VALE = 8.33333333E-5),
-            _F(  CHAM_GD = VECASS, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+             CRITERE = 'RELATIF',   PRECISION = 1.E-7,
               NOEUD = 'N1',       NOM_CMP = 'DY',    VALE = 1.666666667E-4),
-            _F(  CHAM_GD = VECASS, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',   PRECISION = 1.E-7,
               NOEUD = 'N1',       NOM_CMP = 'DZ',    VALE = -2.5E-4),
 #
 # NOEUD DU MASSIF SITUE EN X =5, Y=1.5, Z = -1
 #
-          _F(  CHAM_GD = VECASS, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+          _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+            CRITERE = 'RELATIF',   PRECISION = 1.E-7,
             NOEUD = 'N6',   NOM_CMP = 'DX',    VALE = -8.3333333333333E-06),
-            _F(  CHAM_GD = VECASS, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',   PRECISION = 1.E-7,
               NOEUD = 'N6',   NOM_CMP = 'DY',    VALE = 4.0583333333333E-05),
-            _F(  CHAM_GD = VECASS, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N6',   NOM_CMP = 'DZ',    VALE = -6.0875000000000E-05)),CHAM_ELEM=(
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
+              CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N6',   NOM_CMP = 'DZ',    VALE = -6.0875000000000E-05),
    # CONTRAINTES
            
 #
 # NOEUD DU MASSIF SITUE EN X =5, Y=1.5, Z = -1
 #
-            _F(  CHAM_GD = SIGMA, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',   PRECISION = 1.E-7,
 MAILLE = 'M27',  NOEUD = 'N6',  NOM_CMP = 'SIXX',  VALE = -0.333333333),
-            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
 MAILLE = 'M27',  NOEUD = 'N6',  NOM_CMP = 'SIYY',  VALE = 0.),
-            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
 MAILLE = 'M27',  NOEUD = 'N6',  NOM_CMP = 'SIZZ',  VALE = 0.),
-            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
 MAILLE = 'M27',  NOEUD = 'N6',  NOM_CMP = 'SIXY',  VALE = 0.),
-            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
 MAILLE = 'M27',  NOEUD = 'N6',  NOM_CMP = 'SIXZ',  VALE = 0.),
-            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
 MAILLE = 'M27',  NOEUD = 'N6',  NOM_CMP = 'SIYZ',  VALE = 0.),
 #
 # NOEUD DU MASSIF SITUE EN X =5, Y=1.5, Z = 1
 #
-            _F(  CHAM_GD = SIGMA, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'RELATIF',   PRECISION = 1.E-7,
 MAILLE = 'M25',  NOEUD = 'N25',  NOM_CMP = 'SIXX',  VALE = 1.666666666667),
-            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
 MAILLE = 'M25',  NOEUD = 'N25',  NOM_CMP = 'SIYY',  VALE = 0.),
-            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
 MAILLE = 'M25',  NOEUD = 'N25',  NOM_CMP = 'SIZZ',  VALE = 0.),
-            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
 MAILLE = 'M25',  NOEUD = 'N25',  NOM_CMP = 'SIXY',  VALE = 0.),
-            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
 MAILLE = 'M25',  NOEUD = 'N25',  NOM_CMP = 'SIXZ',  VALE = 0.),
-            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
 MAILLE = 'M25',  NOEUD = 'N25',  NOM_CMP = 'SIYZ',  VALE = 0.))
 #
                                                )

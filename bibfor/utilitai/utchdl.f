@@ -4,7 +4,7 @@
       INTEGER NUPO,IVARI,IDDL,NUSP
       CHARACTER*(*) CHAM19,NOMMA,NOMAIL,NONOEU,NOCMP1
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 22/03/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +36,9 @@ C IN  : NUSP   : NUMERO DU SOUS_POINT A TESTER SUR LA MAILLE NOMAIL
 C                (SI NUSP=0 : IL N'Y A PAS DE SOUS-POINT)
 C IN  : NOCMP1 : NOM DU DDL A EXTRAIRE SUR LE POINT CHERCHE
 C IN  : IVARI  : NUMERO DE LA CMP (POUR VARI_R)
+
 C OUT : IDDL   : NUMERO DU DDL DANS LE .CELV
+C   CONVENTION : IDDL=0 -> ON N'A PAS TROUVE LE DDL CHERCHE
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
@@ -142,11 +144,15 @@ C     ------------------------------------------
         IF (K8B(1:4).NE.'ELNO') THEN
           CALL UTMESS(AOF,'UTCHDL','LE CHAMP:'//CHM19Z//
      &                'N''EST PAS UN CHAMP PAR ELEMENTS AUX NOEUDS.')
+          IDDL=0
+          GOTO 9999
         END IF
         CALL JENONU(JEXNOM(NOMMAZ//'.NOMNOE',NONOEZ),INO)
         IF (INO.LE.0) THEN
           CALL UTMESS(AOF,'UTCHDL','LE NOEUD:'//NONOEZ//
      &                'N''APPARTIENT PAS AU MAILLAGE:'//NOMMAZ)
+          IDDL=0
+          GOTO 9999
         END IF
 C        -- ON CHERCHE LE "IPO" CORRESPONDANT A INO:
         CALL JEVEUO(JEXNUM(NOMMAZ//'.CONNEX',IMA),'L',IACONX)
@@ -155,6 +161,8 @@ C        -- ON CHERCHE LE "IPO" CORRESPONDANT A INO:
         IF (IPO.LE.0) THEN
           CALL UTMESS(AOF,'UTCHDL','LE NOEUD:'//NONOEZ//
      &                'N''APPARTIENT PAS A LA MAILLE:'//NOMAIZ)
+          IDDL=0
+          GOTO 9999
         END IF
         NUPO2 = IPO
       ELSE
@@ -177,6 +185,8 @@ C     ------------------------------------------
         CALL UTMESS(AOF,'UTCHDL','LA MAILLE: '//NOMAIZ//
      &        ' POSSEDE UN TYPE D''ELEMENT IGNORANT LE CHAM_ELEM TESTE.'
      &              )
+          IDDL=0
+          GOTO 9999
       END IF
       CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',IMOLO),'L',JMOLO)
 
@@ -216,6 +226,8 @@ C            ET DU CUMUL SUR LES POINTS PRECEDENTS :
         IF ((.NOT.TROUVE) .AND. (.NOT.NOGRAN)) THEN
           CALL UTMESS(AOF,'UTCHDL','L''ELEMENT N''ADMET PAS '//
      &                'LA COMPOSANTE '//NOCMP)
+          IDDL=0
+          GOTO 9999
         END IF
 
 

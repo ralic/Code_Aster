@@ -7,7 +7,7 @@
       CHARACTER*(*)       MOTFAC, BASZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/03/2003   AUTEUR ASSIRE A.ASSIRE 
+C MODIF ELEMENTS  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -374,6 +374,13 @@ C
       GOTO 550
 C
 560   CONTINUE
+C
+C     ------------------------------------------------------------------
+C     --- ON STOCKE LE TYPE DE MAILLES DEFINISSANT LE FOND DE FISSURE
+C     ------------------------------------------------------------------
+C
+      CALL WKVECT(RESU//'.FOND      .TYPE',BASE//' V K8',1,JTYPM)
+      ZK8(JTYPM) = TYPM
 C
 C     ------------------------------------------------------------------
 C     --- ON STOCKE LES NOEUDS ORDONNES DANS LA STRUCTURE DE DONNEES

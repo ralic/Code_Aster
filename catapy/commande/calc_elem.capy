@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -85,7 +85,8 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,docu="U4.81.01-g",re
                               #  CRIT    
                                  "EQUI_ELNO_SIGM","EQUI_ELGA_SIGM","CRIT_ELNO_RUPT",
                                  "EQUI_ELNO_EPSI","EQUI_ELGA_EPSI","EQUI_ELNO_EPME","EQUI_ELGA_EPME",
-                                "ENDO_ELNO_SIGA","ENDO_ELNO_SINO","SIEQ_ELNO_TUYO","EPEQ_ELNO_TUYO",
+                                 "ENDO_ELGA","ENDO_ELNO_ELGA",
+                                 "ENDO_ELNO_SIGA","ENDO_ELNO_SINO","SIEQ_ELNO_TUYO","EPEQ_ELNO_TUYO",
                               #  derivees    
                                  "DEUL_ELGA_DEPL","DEDE_ELNO_DLDE","DESI_ELNO_DLSI",
                               #  autres      
@@ -238,6 +239,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=("EQUI_ELNO_SIGM","EQUI_ELGA_SIGM",
                                  "EQUI_ELNO_EPSI","EQUI_ELGA_EPSI","EQUI_ELNO_EPME","EQUI_ELGA_EPME",
+                                 "ENDO_ELGA","ENDO_ELNO_ELGA",
                                  "ENDO_ELNO_SIGA","ENDO_ELNO_SINO","CRIT_ELNO_RUPT","SIEQ_ELNO_TUYO","EPEQ_ELNO_TUYO",
                                  ) ),
                b_niv_couche = BLOC( condition = "OPTION in ('CRIT_ELNO_RUPT','EQUI_ELNO_SIGM') or \
@@ -303,6 +305,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                  "ERRE_ELGA_NORE","ERRE_ELNO_ELGA","ERRE_ELEM_NOZ1","ERRE_ELEM_NOZ2",
                                  "EQUI_ELNO_EPSI","EQUI_ELGA_EPSI","EQUI_ELNO_EPME","EQUI_ELGA_EPME",
                                  "DCHA_ELNO_SIGM","DCHA_ELGA_SIGM","RADI_ELNO_SIGM","RADI_ELGA_SIGM",
+                                 "ENDO_ELGA","ENDO_ELNO_ELGA","INDI_LOCA_ELGA",
                                  "ENDO_ELNO_SIGA","ENDO_ELNO_SINO",
                                  "PMPB_ELNO_SIEF","PMPB_ELGA_SIEF","ENEL_ELGA","ENEL_ELNO_ELGA",
                                  "ETOT_ELGA","ETOT_ELNO_ELGA","ETOT_ELEM","VALE_NCOU_MAXI"),
@@ -426,6 +429,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                            into=("EQUI_ELNO_SIGM","EQUI_ELGA_SIGM",
                                  "EQUI_ELNO_EPSI","EQUI_ELGA_EPSI","EQUI_ELNO_EPME","EQUI_ELGA_EPME",
                                  "ENDO_ELNO_SIGA","ENDO_ELNO_SINO","CRIT_ELNO_RUPT",
+                                 "ENDO_ELGA","ENDO_ELNO_ELGA",
                                  "PMPB_ELNO_SIEF","PMPB_ELGA_SIEF","SIEQ_ELNO_TUYO","EPEQ_ELNO_TUYO",
                                  ) ),
                          NUME_COUCHE =SIMP(statut='f',typ='I',defaut= 1,fr="numéro de couche dans l'épaisseur de la coque"),

@@ -1,6 +1,6 @@
       SUBROUTINE TE0242 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,6 @@ C
 C THERMIQUE NON LINEAIRE
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -47,27 +46,23 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      CHARACTER*24       CARAC,FF
       CHARACTER*8        ELREFE
-      REAL*8             BETA0,LAMBDA,R8BID,RHOCP,DELTAT
+      REAL*8             LAMBDA,R8BID,RHOCP,DELTAT
       REAL*8             DFDX(9),DFDY(9),POIDS,R,THETA,KHI,TPGI
       REAL*8             MT(9,9),COORSE(18)
-      INTEGER            NNO,KP,NPG1,NPG2,NPG3,I,J,IJ,K,ITEMPS,IFON(3)
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE
-      INTEGER            ICOMP,ITEMPI,IMATTT
-      INTEGER            C(6,9),ISE,NSE,NNOP2
+      INTEGER            NDIM,NNO,NNOS,KP,NPG,I,J,IJ,K,ITEMPS,IFON(3)
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
+      INTEGER            ICOMP,ITEMPI,IMATTT,JGANO,IPOID2,NPG2
+      INTEGER            C(6,9),ISE,NSE,NNOP2,IVF2,IDFDE2
 C DEB ------------------------------------------------------------------
       CALL ELREF1(ELREFE)
-      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QUAD4L'
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
-      NPG3 = ZI(ICARAC+4)
+      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QU4'
+      IF (NOMTE(5:7).EQ.'TL6') ELREFE='TR3'
 C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
+      CALL ELREF4(ELREFE,'NOEU',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,IDFDE2,
+     +            JGANO)
+      CALL ELREF4(ELREFE,'RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
+     +            JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM )
       CALL JEVECH('PMATERC','L',IMATE )
@@ -90,7 +85,7 @@ C     CALCUL LUMPE
 C     ------------
 C  CALCUL ISO-P2 : ELTS P2 DECOMPOSES EN SOUS-ELTS LINEAIRES
 
-      CALL CONNEC ( NOMTE, ZR(IGEOM), NSE, NNOP2, C )
+      CALL CONNEC ( NOMTE, NSE, NNOP2, C )
 
       DO 10 I=1,NNOP2
          DO 10 J=1,NNOP2
@@ -108,16 +103,10 @@ C BOUCLE SUR LES SOUS-ELEMENTS
               COORSE(2*(I-1)+J) = ZR(IGEOM-1+2*(C(ISE,I)-1)+J)
 205     CONTINUE
 
-        IPOIDS=IFF   +NPG1*(1+3*NNO)
-        IVF   =IPOIDS+NPG2
-        IDFDE =IVF   +NPG2*NNO
-        IDFDK =IDFDE +NPG2*NNO
-
         CALL NTFCMA (ZI(IMATE),IFON)
-        DO 101 KP=1,NPG2
+        DO 101 KP=1,NPG
           K=(KP-1)*NNO
-          CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                  COORSE,DFDX,DFDY,POIDS )
+          CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,COORSE,DFDX,DFDY,POIDS )
           R      = 0.D0
           TPGI   = 0.D0
           DO 102 I=1,NNO
@@ -139,26 +128,20 @@ CDIR$ IVDEP
 
 C ------- TERME DE MASSE : 3EME FAMILLE DE PTS DE GAUSS -----------
 
-        IPOIDS=IFF   +(NPG1+NPG2)*(1+3*NNO)
-        IVF   =IPOIDS+NPG3
-        IDFDE =IVF   +NPG3*NNO
-        IDFDK =IDFDE +NPG3*NNO
-
         DO 405 I=1,NNO
           DO 405 J=1,2
              COORSE(2*(I-1)+J) = ZR(IGEOM-1+2*(C(ISE,I)-1)+J)
 405     CONTINUE
 
         CALL NTFCMA (ZI(IMATE),IFON)
-        DO 401 KP=1,NPG3
+        DO 401 KP=1,NPG2
           K=(KP-1)*NNO
-          CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                  COORSE,DFDX,DFDY,POIDS )
+          CALL DFDM2D ( NNO,KP,IPOID2,IDFDE2,COORSE,DFDX,DFDY,POIDS )
           R      = 0.D0
           TPGI   = 0.D0
           DO 402 I=1,NNO
-            R      = R      + COORSE(2*(I-1)+1)     * ZR(IVF+K+I-1)
-            TPGI   = TPGI   + ZR(ITEMPI-1+C(ISE,I)) * ZR(IVF+K+I-1)
+            R      = R      + COORSE(2*(I-1)+1)     * ZR(IVF2+K+I-1)
+            TPGI   = TPGI   + ZR(ITEMPI-1+C(ISE,I)) * ZR(IVF2+K+I-1)
 402       CONTINUE
           IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
           CALL RCFODE (IFON(1),TPGI,R8BID, RHOCP)
@@ -169,7 +152,7 @@ CDIR$ IVDEP
             DO 403 J=1,NNO
               IJ = IJ + 1
               MT(C(ISE,I),C(ISE,J)) = MT(C(ISE,I),C(ISE,J))+POIDS*
-     &             KHI*RHOCP*ZR(IVF+K+I-1)*ZR(IVF+K+J-1)/DELTAT
+     &             KHI*RHOCP*ZR(IVF2+K+I-1)*ZR(IVF2+K+J-1)/DELTAT
 403       CONTINUE
 401     CONTINUE
 

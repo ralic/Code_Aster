@@ -1,12 +1,14 @@
-      SUBROUTINE COMP1D(OPTION,SIGM,EPS,DEPS,TREF,TEMPM,
-     +                  TEMPP,VIM,VIP,SIGP,DSIDEP)
+      SUBROUTINE COMP1D(OPTION,SIGX,EPSX,DEPX,TREF,TEMPM,
+     +                  TEMPP,VIM,VIP,SIGXP,ETAN,CODRET,
+     +                   CORRM,CORRP)
       IMPLICIT NONE
       CHARACTER*16   OPTION
+      INTEGER        CODRET
       REAL*8         TEMPM,TEMPP,TREF
-      REAL*8         VIM(*),VIP(*),SIGM(6),SIGP(*),EPS(6),DEPS(6)
+      REAL*8         VIM(*),VIP(*),SIGX,SIGXP,EPSX,DEPX,ETAN
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 25/03/2004   AUTEUR OUGLOVA A.OUGLOVA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,23 +27,42 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     INTEGRATION DE LOIS DE COMPORTEMENT NON LINEAIRES 
-C     POUR DES ELEMENTS DE BARRE 
+C     POUR DES ELEMENTS 1D PAR UNE METHODE INSPIREE DE CELLE DE DEBORST
+C     EN CONTRAINTES PLANES.
 C
+C     PERMET D'UTILISER TOUS LES COMPORTEMENTS DEVELOPPES EN AXIS POUR
+C     TRAITER DES PROBLEMES 1D (BARRES, PMF,...)
+C
+C     POUR POUVOIR UTILISER CETTE METHODE, IL FAUT FOURNIR SOUS LE
+C     MOT-CLES COMP_INCR : ALGO_1D='DEBORST'
+C
+C     EN ENTREE ON DONNE LES VALEURS UNIAXIALES A L'INSTANT PRECEDENT :
+C      - SIGX(T-),EPSX(T-),VIM(T-) ET L'INCREMENT DEPSX
+C      - LES TEMPERATURES
+C      - ET LES VARIABLES INTERNES A L'ITERATION PRECEDENTE, 
+C     RECOPIEES DANS VIP
+C     EN SORTIE, ON OBTIENT LES CONTRAINTES SIGXP(T+), LE MODULES
+C     TANGENT ETAN, LES VARAIBLES INTERNES VIP(T+) ET LE 
+C     CODE RETOUR CODRET.             
+C   EN SORTIE DE COMP1D, CE CODE RETOUR EST TRANSMIS A LA ROUTINE NMCONV
+C   POUR AJOUTER DES ITERATIONS SI SIGYY OU SIGZZ NE SONT PAS NULLES. 
+
 C ----------------------------------------------------------------------
 C IN  : OPTION    : NOM DE L'OPTION A CALCULER 
-C IN  : DLONG     : INCREMENT D'ALLONGEMENT
-C IN  : UML       : DEPLACEMENT
-C IN  : XLONG0    : LONGUEUR DE REFERENCE DE LA BARRRE
-C IN  : A         : SECTION DE LA BARRE
+C IN  : SIGM      : SIGMA XX A L'INSTANT MOINS
+C IN  : EPSX      : EPSI XX A L'INSTANT MOINS
+C IN  : DEPX      : DELTA-EPSI XX A L'INSTANT ACTUEL
 C IN  : TREF      : TEMPERATURE DE REFERENCE
-C IN  : EFFNOM    : EFFORT NORMAL A L'INSTANT MOINS
 C IN  : TEMPM     : TEMPERATURE A L'INSTANT MOINS
 C IN  : TEMPP     : TEMPERATURE A L'INSTANT PLUS
 C IN  : VIM       : VARIABLES INTERNES A L'INSTANT MOINS
-C OUT : VIP       : VARIABLES INTERNES A L'INSTANT PLUS
-C OUT : SIGP      : CONTRAINTES A L'INSTANT PLUS
-C OUT : KLV       : VECTEUR DES FORCES NODALES
-C OUT : FONO      : MATRICE TANGENTE
+C VAR : VIP       : VARIABLES INTERNES A L'INSTANT PLUS EN SORTIE
+C IN  CORRM  : CORROSION A L'INSTANT MOINS
+C IN  CORRP  : CORROSION A L'INSTANT PLUS
+C                  VARIABLES INTERNES A L'ITERATION PRECEDENTE EN ENTREE
+C OUT : SIGXP     : CONTRAINTES A L'INSTANT PLUS
+C OUT : ETAN      : MODULE TANGENT DIRECTION X
+C OUT : CODRET    : CODE RETOUR NON NUL SI SIGYY OU SIGZZ NON NULS
 C ----------------------------------------------------------------------
 C
 C **************** DEBUT COMMUNS NORMALISES JEVEUX *********************
@@ -68,17 +89,16 @@ C *************** DECLARATION DES VARIABLES LOCALES ********************
 C
       INTEGER        NEQ,NVAMAX,IMATE,IINSTM
       INTEGER        IINSTP,ICOMPO,ICARCR,NZ
-      INTEGER        I,J,CODRET,NZMAX,ICOMPT,ITER      
+      INTEGER        I,J,NZMAX,ICOMPT,ITER      
 C
       REAL*8         DSIDEP(6,6)
       REAL*8         ZERO,UN,DEUX,XM,XI,XS,ALPH,SIGYI,SIGYS
       REAL*8         HYDRGM,HYDRGP,SECHGM,SECHGP
       REAL*8         EPSANM(6),EPSANP(6),PHASM(7),PHASP(7)
-      REAL*8         LC(10,27),SIGMAY
-      REAL*8         PREC,R8PREM,R8MIEM,NU,ALPHA,SIGXI,SIGXS
+      REAL*8         LC(10,27),SIGMAY,CORRM,CORRP
+      REAL*8         R8PREM,R8MIEM,NU,ALPHA,SIGXI,SIGXS
+      REAL*8         SIGM(6),SIGP(6),EPS(6),DEPS(6)
 C
-      LOGICAL        VECTEU
-C      
       CHARACTER*8    TYPMOD(2)
 C
 C *********** FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
@@ -87,15 +107,18 @@ C ********************* DEBUT DE LA SUBROUTINE *************************
 C
 C ---    INITIALISATIONS :
          NEQ  = 6
-         PREC = R8PREM()
          ZERO = 0.0D0
-         UN = 1.0D0
-         DEUX = 2.0D0
-         VECTEU = ((OPTION(1:9).EQ.'FULL_MECA') .OR. 
-     +          (OPTION(1:9).EQ.'RAPH_MECA'))
 
-         TYPMOD(1) = 'C_PLAN  '
+         CALL R8INIR (6,ZERO,EPS,1)
+         CALL R8INIR (6,ZERO,SIGM,1)
+         CALL R8INIR (6,ZERO,DEPS,1)
+         CALL R8INIR (36,ZERO,DSIDEP,1)
+         EPS(1)=EPSX
+         DEPS(1)=DEPX
+         SIGM(1)=SIGX
+         TYPMOD(1) = 'COMP1D '
          TYPMOD(2) = '        '
+         
 C
 C ---    PARAMETRES EN ENTREE
 C
@@ -120,148 +143,17 @@ C
          CALL R8INIR (NZMAX,ZERO,PHASM,1)
          CALL R8INIR (NZMAX,ZERO,PHASP,1) 
          NZ = NZMAX        
+         CALL R8INIR (270,ZERO,LC,1) 
 C
-         DO 40 I = 1,10
-            DO 50 J = 1,27
-              LC(I,J) = ZERO
-  50        CONTINUE          
-  40     CONTINUE
-C  
-         DO 60 I = 1,NEQ
-           DO 70 J = 1,NEQ
-             DSIDEP(I,J) = ZERO
-  70        CONTINUE          
-  60      CONTINUE    
-C         
-C
-         ITER = 0
-         ICOMPT = 0
-         ALPH = UN
-C
-C ---    INITIALISATION DE LA DICHOTOMIE
-C
-  90     CONTINUE       
-C
-         IF (VECTEU) THEN
-            IF (ABS(DEPS(2)) .LE. R8MIEM()) THEN
-C               ALORS EPS(1)+DEPS(1)=0 CF PMFCOM ET TE0248
-C               ET SIGM=0, CF TE0248 
-C               APPEL A NMCOMP (POUR AVOIR DSIDEP) ET SORTIE
-                CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
-     +               ZR(IINSTM),ZR(IINSTP),TEMPM,TEMPP,TREF,HYDRGM,
-     +               HYDRGP,SECHGM,SECHGP,EPS,DEPS,SIGM,
-     +               VIM,OPTION,EPSANM,EPSANP,NZ,PHASM,
-     +               PHASP,LC,SIGP,VIP,DSIDEP,
-     +               CODRET)
-                GOTO 9999
-            ELSEIF (DEPS(2).GT.ZERO) THEN
-               XI = -0.99D0*DEPS(2)
-               XM = XI
-               XS = DEPS(2)
-            ELSE
-               XI = DEPS(2)
-               XM = XI
-               XS = -0.99D0*DEPS(2)
-            ENDIF 
-         ELSEIF (OPTION.EQ.'RIGI_MECA_TANG') THEN
-            XI=0.D0
-         ENDIF 
-C
-C ---    TEST DU CHANGEMENT DE SIGNE DE SIGY SUR L'INTERVALLE
-C ---    (XI,XS) :
-C ---    ON ELARGIT LE DOMAINE EXPLORE POUR LA DICHOTOMIE DE ALPH 
-C ---    SI PAS DE CHANGEMENT DE SIGNE
-C
-         DEPS(2) = XI  
-         IF (ZK16(ICOMPO-1+5)(1:7).EQ.'DEBORST') THEN
-            CALL UTMESS('F','COMP1D','DEBORST ET COMPORTEMENT 1D '//
-     +             'SONT INCOMPATIBLES ACTUELLEMENT')
-         ENDIF
          CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
      +               ZR(IINSTM),ZR(IINSTP),TEMPM,TEMPP,TREF,HYDRGM,
      +               HYDRGP,SECHGM,SECHGP,EPS,DEPS,SIGM,
      +               VIM,OPTION,EPSANM,EPSANP,NZ,PHASM,
      +               PHASP,LC,SIGP,VIP,DSIDEP,
-     +               CODRET)
-         IF (OPTION.EQ.'RIGI_MECA_TANG') GOTO 9999
-         SIGYI = SIGP(2) 
-C
-         DEPS(2) = XS         
-         CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
-     +               ZR(IINSTM),ZR(IINSTP),TEMPM,TEMPP,TREF,HYDRGM,
-     +               HYDRGP,SECHGM,SECHGP,EPS,DEPS,SIGM,
-     +               VIM,OPTION,EPSANM,EPSANP,NZ,PHASM,
-     +               PHASP,LC,SIGP,VIP,DSIDEP,
-     +               CODRET)
-         SIGYS = SIGP(2) 
-C
-         IF ((SIGYI*SIGYS) .GT. ZERO) THEN
-            ALPH = ALPH*100.0D0
-            DEPS(2) = -ALPH*(EPS(2)+DEPS(2))            
-            ICOMPT = ICOMPT + 1
-            IF (ICOMPT .GT. 100) THEN 
-               CALL UTMESS('F','TE0248 - COMP1D','INTERVALLE DE '//
-     &                     ' DICHOTOMIE NON TROUVE')
-            ENDIF   
-C            WRITE(6,*) 'ON ELARGIT LE DOMAINE EXPLORE DE: ',ALPH
-            GO TO 90
-         ENDIF
-C               
- 100     CONTINUE 
-C
-C ---    DEBUT DES ITERATIONS DE DICHOTOMIE
-C
-         ITER  = ITER+1
-         DEPS(2) = XM
-C       
-         CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
-     +               ZR(IINSTM),ZR(IINSTP),TEMPM,TEMPP,TREF,HYDRGM,
-     +               HYDRGP,SECHGM,SECHGP,EPS,DEPS,SIGM,
-     +               VIM,OPTION,EPSANM,EPSANP,NZ,PHASM,
-     +               PHASP,LC,SIGP,VIP,DSIDEP,
-     +               CODRET)
-C
-         IF(VECTEU) THEN
-C           
-C
-           IF(ITER.EQ.1) THEN
-             SIGMAY =  SIGP(2)             
-             IF(ABS(SIGP(2)) .LT. (PREC*ABS(SIGP(1)))) GOTO 110
-             XM = (XS + XI)/DEUX
-             GOTO 100
-           ELSE             
-             IF(ABS(SIGP(2)) .LT. (PREC*ABS(SIGP(1)))) GOTO 110
-             IF(ABS(XS-XI).LT.1.D-30) GOTO 110
-             IF ((XS*XI) .GT. ZERO) THEN
-               IF(ABS((XS-XI)/(XS+XI)).LT.R8PREM()) GOTO 110
-             ENDIF  
-           ENDIF
-           IF(ITER.GT.1000) THEN
-             WRITE(6,*)'PB CONVERGENCE CONTRAINTE PLANE'
-             WRITE(6,*) ITER
-             WRITE(6,*)'SIGX',SIGP(1)
-             WRITE(6,*)'SIGY',SIGP(2)
-             WRITE(6,*)'SIGZ',SIGP(3)
-             CALL UTMESS('A','TE0248 - COMP1D','NBRE MAXI '//
-     &                   'D''ITERATION ATTEINT')
-             GOTO 110
-           ENDIF
-C           
-           IF(SIGMAY*SIGP(2).GT.ZERO) THEN
-             XI = XM
-             XM = (XS+XI)/DEUX
-           ELSE
-             XS = XM
-             XM = (XS+XI)/DEUX
-           ENDIF
-           GOTO 100
-C
-         ENDIF
+     +               CODRET,CORRM,CORRP)
 C         
- 110     CONTINUE
-C
-C ---    FIN DE LA DICHOTOMIE
-C         
+         SIGXP=SIGP(1)
+         ETAN=DSIDEP(1,1)
 C
 9999  CONTINUE
       END

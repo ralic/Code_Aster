@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/10/2003   AUTEUR ASSIRE A.ASSIRE 
+C MODIF MODELISA  DATE 23/02/2004   AUTEUR ASSIRE A.ASSIRE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -321,25 +321,26 @@ C
          IF (NIV.EQ.2) THEN
            WRITE(IFM,*) ' '
            WRITE(IFM,*) ' '
-           WRITE(IFM,*) 'NOEUDS CABLE : ',NNOECA,' - ',NNOEC2
+           IF (INOCA.LT.NBNO) THEN
+             WRITE(IFM,*) 'NOEUDS CABLE : ',NNOECA,' - ',NNOEC2
+           ELSE
+             WRITE(IFM,*) 'NOEUD CABLE : ',NNOECA
+           ENDIF
          END IF
 
 C
 C 2.2.0  CREATION DU VECTEUR AXE, RELIANT DEUX NOEUDS CABLES CONSECUTIFS
 C .....  POUR LE CALCUL DES DISTANCES AU CYLINDRE
 C
-         AXE(1) = (X3DCA2(1) - X3DCA(1))
-         AXE(2) = (X3DCA2(2) - X3DCA(2))
-         AXE(3) = (X3DCA2(3) - X3DCA(3))
-         XNORM2 = AXE(1)*AXE(1) + AXE(2)*AXE(2) + AXE(3)*AXE(3)
-
-         IF (XNORM2 .EQ. ZERO) THEN
-           CALL UTMESS('F','IMMECA',
-     &             'ERREUR : DEUX NOEUDS DU CABLE SONT CONFONDUS '//
-     &             'ON NE PEUT PAS DEFINIR LE CYLINDRE.')
-         END IF
-
-         XNORM = SQRT(XNORM2)
+         IF (INOCA.NE.NBNO) THEN
+           AXE(1) = (X3DCA2(1) - X3DCA(1))
+           AXE(2) = (X3DCA2(2) - X3DCA(2))
+           AXE(3) = (X3DCA2(3) - X3DCA(3))
+           XNORM2 = AXE(1)*AXE(1) + AXE(2)*AXE(2) + AXE(3)*AXE(3)
+           XNORM = SQRT(XNORM2)
+         ELSE
+           XNORM = 0.D0
+         ENDIF
 
 C ... CHOIX DU TRAITEMENT :
 
@@ -502,6 +503,9 @@ C .....
      &               IMMER,RBID,CBID,VOISIN(1),IDECA+INOCA)
 
  100  CONTINUE
+
+C  FIN BOUCLE SUR NBNO
+
 
  9999 CONTINUE
 

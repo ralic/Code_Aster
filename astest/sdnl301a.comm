@@ -1,4 +1,4 @@
-# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 29/03/2004   AUTEUR ACBHHCD G.DEVESA 
 # TITRE  VIBRATION D'UNE POUTRE AVEC IMPACT MULTI-POINTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -152,6 +152,7 @@ TRANGENE=DYNA_TRAN_MODAL(   METHODE='EULER',
                               AMOR_GENE=AMORPROJ,
                              INCREMENT=_F(  INST_INIT = 0.,  INST_FIN = TFIN,
                                          PAS = DELT),
+                             ARCHIVAGE=_F(  PAS_ARCH=10),
                               EXCIT=_F(  VECT_GENE = VECTPROJ, 
                                       FONC_MULT = SINOT),CHOC=(
                               _F(  NOEUD_1 = 'N6', JEU = .406E-3,  
@@ -174,7 +175,7 @@ TRANGENE=DYNA_TRAN_MODAL(   METHODE='EULER',
                                     ORIG_OBST = (2.436, 0.0, 0.0, ),
                                     NORM_OBST = ( 1.,  0., 0., ),
                                     RIGI_NOR = KN, AMOR_NOR = CN)),
-                               INFO=2,
+                               INFO=1,
                               IMPRESSION=_F(  NIVEAU = 'DEPL_LOC',
                                            INST_FIN = 0.01)
                              )
@@ -191,6 +192,103 @@ TEST_TABLE(      TABLE=POST,FILTRE=(
                      VALE=23.4,  
                 PRECISION=0.1 
              )
+MODE_STA = MODE_STATIQUE( MATR_RIGI= MATR,
+                          MATR_MASS= MATM,
+                      FORCE_NODALE=_F(NOEUD= ('N6','N13','N19','N25',), 
+                                   AVEC_CMP= ('DX','DY',),
+                                   ),
+                          INFO=1 );
 
+BASEMODA = DEFI_BASE_MODALE (RITZ =(_F(MODE_MECA=MODE,NMAX_MODE=30),
+                                    _F(MODE_STAT=MODE_STA,),),
+                         NUME_REF=NDDL,)
+                         
+IMPR_CO( CHAINE='BASEMODA           .REFE' )
+IMPR_CO( CHAINE='MODE_STA           .REFE' )                         
+IMPR_CO( CHAINE='MODE               .REFE' )
+
+NDDLGEN2 = NUME_DDL_GENE( BASE= BASEMODA,
+                          STOCKAGE= 'PLEIN',)
+#
+# MATRICES GENERALISEES
+# ---------------------                          
+#
+MACRO_PROJ_BASE(BASE=BASEMODA,
+                MATR_ASSE_GENE=(_F(MATRICE=CO('RIGIPRO2'),
+                                   MATR_ASSE=MATR,),
+                                _F(MATRICE=CO('MASSPRO2'),
+                                   MATR_ASSE=MATM,),
+                                _F(MATRICE=CO('AMORPRO2'),
+                                   MATR_ASSE=MATA,),
+                                   ),
+                PROFIL='PLEIN',);
+VECTPRO2=PROJ_VECT_BASE(  BASE=BASEMODA,  VECT_ASSE=VECT,
+                            NUME_DDL_GENE=NDDLGEN2,  TYPE_VECT='FORC' )
+
+TRANGEN2=DYNA_TRAN_MODAL(   METHODE='EULER',
+                              MASS_GENE=MASSPRO2,  RIGI_GENE=RIGIPRO2,
+                              AMOR_GENE=AMORPRO2,
+                             INCREMENT=_F(  INST_INIT = 0.,  INST_FIN = TFIN,
+                                         PAS = DELT),
+                             ARCHIVAGE=_F(  PAS_ARCH=10),
+                              EXCIT=_F(  VECT_GENE = VECTPRO2, 
+                                      FONC_MULT = SINOT),CHOC=(
+                              _F(  NOEUD_1 = 'N6', JEU = .406E-3,  
+                                    OBSTACLE = BUTE,
+                                    ORIG_OBST = (.609, 0.0, 0.0, ),
+                                    NORM_OBST = ( 1.,  0., 0., ),
+                                    RIGI_NOR = KN, AMOR_NOR = CN),
+                              _F(  NOEUD_1 = 'N13', JEU = .406E-3,  
+                                    OBSTACLE = BUTE,
+                                    ORIG_OBST = (1.218, 0.0, 0.0, ),
+                                    NORM_OBST = ( 1.,  0., 0., ),
+                                    RIGI_NOR = KN, AMOR_NOR = CN),
+                              _F(  NOEUD_1 = 'N19', JEU = .406E-3,  
+                                    OBSTACLE = BUTE,
+                                    ORIG_OBST = (1.827, 0.0, 0.0, ),
+                                    NORM_OBST = ( 1.,  0., 0., ),
+                                    RIGI_NOR = KN, AMOR_NOR = CN),
+                              _F(  NOEUD_1 = 'N25', JEU = .406E-3,  
+                                    OBSTACLE = BUTE,
+                                    ORIG_OBST = (2.436, 0.0, 0.0, ),
+                                    NORM_OBST = ( 1.,  0., 0., ),
+                                    RIGI_NOR = KN, AMOR_NOR = CN)),
+                               INFO=1,
+                              IMPRESSION=_F(  NIVEAU = 'DEPL_LOC',
+                                           INST_FIN = 0.01)
+                             )
+                             
+POST2=POST_DYNA_MODA_T(  RESU_GENE=TRANGEN2,  
+                 CHOC=_F( INST_INIT = TDEB,  INST_FIN = TFIN) )
+
+TEST_TABLE(      TABLE=POST2,FILTRE=( 
+                   _F(  NOM_PARA = 'CALCUL',
+                            VALE_K = 'FORCE_NORMALE'),
+                   _F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N25')),
+                 NOM_PARA='RMS_T_TOTAL',
+                     VALE=23.4,  
+                PRECISION=0.1 
+             )
+             
+RESPHY = REST_BASE_PHYS(RESU_GENE=TRANGEN2,
+                        TOUT_ORDRE='OUI',
+                        NOM_CHAM='DEPL',)
+                        
+dN25_Ya = RECU_FONCTION ( RESULTAT = RESPHY,
+                          NOM_CHAM = 'DEPL',
+                          NOEUD  = 'N25',
+                          INTERPOL= 'LIN',
+                          NOM_CMP = 'DY',
+                         )
+            
+dN25_Yb = RECU_FONCTION ( 
+                          RESU_GENE = TRANGEN2,
+                          NOM_CHAM = 'DEPL',
+                          NOEUD  = 'N25',
+                          INTERPOL= 'LIN',
+                          NOM_CMP = 'DY',
+                         )
+            
 FIN( )
 #

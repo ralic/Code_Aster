@@ -1,9 +1,9 @@
         SUBROUTINE STKGRP(IFL,ICL,IV,RV,CV,CNL,MCL,NBM,NUMN,NUMM,
-     +  GRN,GRM,DIM,IRTETI)
+     +  GRN,GRM,IRTETI)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 01/09/2003   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C       ----------------------------------------------------------------
 C       IN      IFL,ICL,IV,RV,CV,CNL = VOIR LIRITM
 C               MCL             = MOTS CLES TYPE GROUPE
 C               NBM             = NB DE MOTS CLES TYPE GROUPE
-C               DIM             = DIMENSIONS OBJETS GROUPE
 C               GRN             = NOMU.GROUPNOV
 C               GRM             = NOMU.GROUPMAV
 C               NUMN            = NUMERO DU NOEUD COURANT DANS GRN
@@ -39,7 +38,7 @@ C       ----------------------------------------------------------------
 C
         REAL*8          RV
         CHARACTER*8     MCL(NBM),       NOMG,   NOM,    B8
-        INTEGER         DEBLIG, DIM(NBM)
+        INTEGER         DEBLIG
         CHARACTER*14    CNL
         CHARACTER*(*)   CV
         CHARACTER*16    CMD
@@ -119,7 +118,7 @@ C
 C - STOCKAGE DES NOMS DES NOEUDS OU MAILLES DU GROUPE
 C
  6      CONTINUE
-        CALL LIRITM(IFL,IFM,ICL,IV,RV,CV,CNL,DEBLIG,2)
+        CALL LIRITM(IFL,ICL,IV,RV,CV,CNL,DEBLIG,2)
 C
 C - ITEM = MOT  CLE FIN  OU FINSF ?
 C

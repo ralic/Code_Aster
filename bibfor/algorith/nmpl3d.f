@@ -1,12 +1,13 @@
-       SUBROUTINE  NMPL3D(NNO,NPG,POIDSG,VFF,DFDE,DFDN,DFDK,GEOM,TYPMOD,
+       SUBROUTINE  NMPL3D(NNO,NPG,IPOIDS,IVF,IDFDE,GEOM,TYPMOD,
      &                    OPTION,IMATE,COMPOR,LGPG,CRIT,
      &                    INSTAM,INSTAP,TM,TP,HYDRM,HYDRP,SECHM,
      &                    SECHP,NZ,PHASM,PHASP,TREF,
-     &                    DEPLM,DEPLP,EPAM,EPAP,DEFANE,
-     &                    SIGM,VIM,DFDI,DEF,SIGP,VIP,MATUU,VECTU,CODRET)
+     &                    DEPLM,DEPLP,EPAM,EPAP,DEFANE,SIGM,VIM,MATSYM,
+     &                    DFDI,DEF,SIGP,VIP,MATUU,VECTU,CODRET,
+     &                    CORRM,CORRP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/02/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,17 +35,34 @@ C
        CHARACTER*16  OPTION, COMPOR(4)
 C
        REAL*8        INSTAM,INSTAP
-       REAL*8        POIDSG(NPG), VFF(NNO,NPG),DFDE(*),DFDN(*),DFDK(*)
        REAL*8        GEOM(3,NNO), CRIT(3), TM(NNO),TP(NNO)
        REAL*8        HYDRM(NPG), HYDRP(NPG), SECHM(NNO), SECHP(NNO)
        REAL*8        PHASM(NZ,NPG),PHASP(NZ,NPG),TREF
        REAL*8        DEPLM(1:3,1:NNO),DEPLP(1:3,1:NNO),DFDI(NNO,3)
        REAL*8        DEF(6,NNO,3),EPAM(*),EPAP(*)
-       REAL*8        SIGM(6,NPG),SIGP(6,NPG)
+       REAL*8        SIGM(6,NPG),SIGP(6,NPG),CORRM,CORRP
        REAL*8        VIM(LGPG,NPG),VIP(LGPG,NPG)
        REAL*8        MATUU(*),VECTU(3,NNO)
 C
-       LOGICAL       DEFANE
+       LOGICAL       DEFANE,MATSYM
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER  ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
 C.......................................................................
 C
 C     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA
@@ -52,10 +70,9 @@ C           EN HYPO-ELASTICITE EN 3D
 C.......................................................................
 C IN  NNO     : NOMBRE DE NOEUDS DE L'ELEMENT
 C IN  NPG     : NOMBRE DE POINTS DE GAUSS
-C IN  POIDSG  : POIDS DES POINTS DE GAUSS
-C IN  VFF     : VALEUR  DES FONCTIONS DE FORME
-C IN  DFDE    : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
-C IN  DFDK    : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
+C IN  IPOIDS  : POIDS DES POINTS DE GAUSS
+C IN  IVF     : VALEUR  DES FONCTIONS DE FORME
+C IN  IDFDE   : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
 C IN  GEOM    : COORDONEES DES NOEUDS
 C IN  TYPMOD  : TYPE DE MODELISATION
 C IN  OPTION  : OPTION DE CALCUL
@@ -81,6 +98,8 @@ C IN  DEFANE  : VRAI SI LES DEFORMATIONS ANELASTIQUES SONT PRESENTES
 C IN  VARDEP  : VARIABLE DELOCALISEE EN T+
 C IN  DELOCA  : VRAI SI VARIABLES DELOCALISEES PRESENTES
 C IN  SIGM    : CONTRAINTES A L'INSTANT PRECEDENT
+C IN  CORRM  : CORROSION A L'INSTANT MOINS
+C IN  CORRP  : CORROSION A L'INSTANT PLUS
 C IN  VIM     : VARIABLES INTERNES A L'INSTANT PRECEDENT
 C OUT DFDI    : DERIVEE DES FONCTIONS DE FORME  AU DERNIER PT DE GAUSS
 C OUT DEF     : PRODUIT DER. FCT. FORME PAR F   AU DERNIER PT DE GAUSS
@@ -92,7 +111,7 @@ C......................................................................
 
       LOGICAL GRAND
 
-      INTEGER KPG,KK,N,I,M,J,J1,KL, KKD,COD(27)
+      INTEGER KPG,KK,N,I,M,J,J1,KL, KKD,COD(27),IPOIDS,IVF,IDFDE
 
       REAL*8 DSIDEP(6,6),F(3,3),EPS(6),DEPS(6),R,SIGMA(6),SIGN(6),SIG(6)
       REAL*8 POIDS,TEMPM,TEMPP,TMP,RAC2,EPSANP(6),EPSANM(6)
@@ -105,7 +124,7 @@ C - INITIALISATION
 
 C - CALCUL DES ELEMENTS GEOMETRIQUES SPECIFIQUES LOIS DE COMPORTEMENT
 
-      CALL LCEGEO(NNO,NPG,POIDSG,VFF,DFDE,DFDN,DFDK,GEOM,TYPMOD,OPTION,
+      CALL LCEGEO(NNO,NPG,IPOIDS,IVF,IDFDE,GEOM,TYPMOD,OPTION,
      &            IMATE,COMPOR,LGPG,ELGEOM)
 
 
@@ -135,14 +154,16 @@ C
         DO 10 N=1,NNO
           IF (DEFANE) THEN
             DO 15 J = 1,6
-              EPSANM(J)=EPSANM(J)+EPAM(6*(N-1)+J)*VFF(N,KPG)
-              EPSANP(J)=EPSANP(J)+EPAP(6*(N-1)+J)*VFF(N,KPG)
+              EPSANM(J)=EPSANM(J)+EPAM(6*(N-1)+J)*
+     &                  ZR(IVF+N+(KPG-1)*NNO-1)
+              EPSANP(J)=EPSANP(J)+EPAP(6*(N-1)+J)*
+     &                  ZR(IVF+N+(KPG-1)*NNO-1)
  15         CONTINUE
           END IF
-          TEMPM = TEMPM + TM(N)*VFF(N,KPG)
-          TEMPP = TEMPP + TP(N)*VFF(N,KPG)
-          SECHGM = SECHGM + SECHM(N)*VFF(N,KPG)
-          SECHGP = SECHGP + SECHP(N)*VFF(N,KPG)
+          TEMPM = TEMPM + TM(N)*ZR(IVF+N+(KPG-1)*NNO-1)
+          TEMPP = TEMPP + TP(N)*ZR(IVF+N+(KPG-1)*NNO-1)
+          SECHGM = SECHGM + SECHM(N)*ZR(IVF+N+(KPG-1)*NNO-1)
+          SECHGP = SECHGP + SECHP(N)*ZR(IVF+N+(KPG-1)*NNO-1)
  10     CONTINUE
 
 
@@ -156,15 +177,13 @@ C
           DEPS(J)=0.D0
 20      CONTINUE
 C
-        CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOM,KPG,POIDSG(KPG),
-     &              VFF(1,KPG),DFDE,DFDN,DFDK,DEPLM,POIDS,DFDI,
-     &              F,EPS,R)
+        CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOM,KPG,IPOIDS,IVF,IDFDE,
+     &              DEPLM,POIDS,DFDI,F,EPS,R)
 C
 C     CALCUL DE DEPS
 C
-        CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOM,KPG,POIDSG(KPG),
-     &              VFF(1,KPG),DFDE,DFDN,DFDK,DEPLP,POIDS,DFDI,
-     &              F,DEPS,R)
+        CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOM,KPG,IPOIDS,IVF,IDFDE,
+     &              DEPLP,POIDS,DFDI,F,DEPS,R)
 C
 C      CALCUL DES PRODUITS SYMETR. DE F PAR N,
         DO 40 N=1,NNO
@@ -192,7 +211,7 @@ C
      &            TEMPM,TEMPP, TREF,HYDRGM,HYDRGP,SECHGM,SECHGP,
      &            EPS,DEPS,SIGN,VIM(1,KPG),OPTION,EPSANM,EPSANP,
      &            NZ,PHASM(1,KPG),PHASP(1,KPG),ELGEOM(1,KPG),
-     &            SIGMA,VIP(1,KPG),DSIDEP,COD(KPG))
+     &            SIGMA,VIP(1,KPG),DSIDEP,COD(KPG),CORRM,CORRP)
 
        IF(COD(KPG).EQ.1) THEN
          GOTO 1956
@@ -201,48 +220,82 @@ C
 C
 C - CALCUL DE LA MATRICE DE RIGIDITE
 C
-        IF ( OPTION(1:16) .EQ. 'RIGI_MECA_TANG'
+        IF ( OPTION(1:10) .EQ. 'RIGI_MECA_'
      &  .OR. OPTION(1: 9) .EQ. 'FULL_MECA'    ) THEN
 C
-          DO 160 N=1,NNO
-            DO 150 I=1,3
-              KKD = (3*(N-1)+I-1) * (3*(N-1)+I) /2
-              DO 151,KL=1,6
-                SIG(KL)=0.D0
-                SIG(KL)=SIG(KL)+DEF(1,N,I)*DSIDEP(1,KL)
-                SIG(KL)=SIG(KL)+DEF(2,N,I)*DSIDEP(2,KL)
-                SIG(KL)=SIG(KL)+DEF(3,N,I)*DSIDEP(3,KL)
-                SIG(KL)=SIG(KL)+DEF(4,N,I)*DSIDEP(4,KL)
-                SIG(KL)=SIG(KL)+DEF(5,N,I)*DSIDEP(5,KL)
-                SIG(KL)=SIG(KL)+DEF(6,N,I)*DSIDEP(6,KL)
-151           CONTINUE
-              DO 140 J=1,3
-                DO 130 M=1,N
-                  IF (M.EQ.N) THEN
-                    J1 = I
-                  ELSE
-                    J1 = 3
-                  ENDIF
+          IF (MATSYM) THEN
+            DO 160 N=1,NNO
+              DO 150 I=1,3
+                KKD = (3*(N-1)+I-1) * (3*(N-1)+I) /2
+                DO 151,KL=1,6
+                  SIG(KL)=0.D0
+                  SIG(KL)=SIG(KL)+DEF(1,N,I)*DSIDEP(1,KL)
+                  SIG(KL)=SIG(KL)+DEF(2,N,I)*DSIDEP(2,KL)
+                  SIG(KL)=SIG(KL)+DEF(3,N,I)*DSIDEP(3,KL)
+                  SIG(KL)=SIG(KL)+DEF(4,N,I)*DSIDEP(4,KL)
+                  SIG(KL)=SIG(KL)+DEF(5,N,I)*DSIDEP(5,KL)
+                  SIG(KL)=SIG(KL)+DEF(6,N,I)*DSIDEP(6,KL)
+151             CONTINUE
+                DO 140 J=1,3
+                  DO 130 M=1,N
+                    IF (M.EQ.N) THEN
+                      J1 = I
+                    ELSE
+                      J1 = 3
+                    ENDIF
 C
-C                 RIGIDITE ELASTIQUE
-                  TMP=0.D0
-                  TMP=TMP+SIG(1)*DEF(1,M,J)
-                  TMP=TMP+SIG(2)*DEF(2,M,J)
-                  TMP=TMP+SIG(3)*DEF(3,M,J)
-                  TMP=TMP+SIG(4)*DEF(4,M,J)
-                  TMP=TMP+SIG(5)*DEF(5,M,J)
-                  TMP=TMP+SIG(6)*DEF(6,M,J)
+C                   RIGIDITE ELASTIQUE
+                    TMP=0.D0
+                    TMP=TMP+SIG(1)*DEF(1,M,J)
+                    TMP=TMP+SIG(2)*DEF(2,M,J)
+                    TMP=TMP+SIG(3)*DEF(3,M,J)
+                    TMP=TMP+SIG(4)*DEF(4,M,J)
+                    TMP=TMP+SIG(5)*DEF(5,M,J)
+                    TMP=TMP+SIG(6)*DEF(6,M,J)
 C
-C                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
-                  IF (J.LE.J1) THEN
-                     KK = KKD + 3*(M-1)+J
-                     MATUU(KK) = MATUU(KK) + TMP*POIDS
-                  END IF
+C                   STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
+                    IF (J.LE.J1) THEN
+                       KK = KKD + 3*(M-1)+J
+                       MATUU(KK) = MATUU(KK) + TMP*POIDS
+                    END IF
 C
- 130            CONTINUE
- 140          CONTINUE
- 150        CONTINUE
- 160      CONTINUE
+ 130              CONTINUE
+ 140            CONTINUE
+ 150          CONTINUE
+ 160        CONTINUE
+          ELSE
+            DO 560 N=1,NNO
+              DO 550 I=1,3
+                DO 551,KL=1,6
+                  SIG(KL)=0.D0
+                  SIG(KL)=SIG(KL)+DEF(1,N,I)*DSIDEP(1,KL)
+                  SIG(KL)=SIG(KL)+DEF(2,N,I)*DSIDEP(2,KL)
+                  SIG(KL)=SIG(KL)+DEF(3,N,I)*DSIDEP(3,KL)
+                  SIG(KL)=SIG(KL)+DEF(4,N,I)*DSIDEP(4,KL)
+                  SIG(KL)=SIG(KL)+DEF(5,N,I)*DSIDEP(5,KL)
+                  SIG(KL)=SIG(KL)+DEF(6,N,I)*DSIDEP(6,KL)
+551             CONTINUE
+                DO 540 J=1,3
+                  DO 530 M=1,NNO
+C
+C                   RIGIDITE ELASTIQUE
+                    TMP=0.D0
+                    TMP=TMP+SIG(1)*DEF(1,M,J)
+                    TMP=TMP+SIG(2)*DEF(2,M,J)
+                    TMP=TMP+SIG(3)*DEF(3,M,J)
+                    TMP=TMP+SIG(4)*DEF(4,M,J)
+                    TMP=TMP+SIG(5)*DEF(5,M,J)
+                    TMP=TMP+SIG(6)*DEF(6,M,J)
+C
+C                   STOCKAGE SANS SYMETRIE
+                    KK = 3*NNO*(3*(N-1)+I-1) + 3*(M-1)+J
+                    MATUU(KK) = MATUU(KK) + TMP*POIDS
+C
+ 530              CONTINUE
+ 540            CONTINUE
+ 550          CONTINUE
+ 560        CONTINUE
+          ENDIF  
         ENDIF
 C
 C

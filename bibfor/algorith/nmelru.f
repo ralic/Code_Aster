@@ -2,7 +2,7 @@
      &                  ENER,DERIVL,DDIVU,DEPSEQ,DENER,DLAGTG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/01/2001   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 16/02/2004   AUTEUR G8BHHXD X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,7 +125,7 @@ C====================================================================
       DEMUDT= ((1.D0+NU)*DE-E*DNU)/(1.D0+NU)**2
 
       K    = E/(1.D0-2.D0*NU)/3.D0
-      DK   = (DE+2.D0*K*DNU)/(1.D0-2.D0*NU)/3.D0
+      DK   = (DE+6.D0*K*DNU)/(1.D0-2.D0*NU)/3.D0
 
       K3   =  3.D0*K
       

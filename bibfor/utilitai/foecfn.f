@@ -1,10 +1,10 @@
-      SUBROUTINE FOECFN( IFS,NPS,NBPARA,PARA,SPECTR,IER)
+      SUBROUTINE FOECFN( IFS,NPS,NBPARA,PARA,SPECTR)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER            IFS,NPS,NBPARA
       REAL*8                            PARA(*),SPECTR(NPS,2,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/01/95   AUTEUR J2BHHMB C.MASSERET 
+C MODIF UTILITAI  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

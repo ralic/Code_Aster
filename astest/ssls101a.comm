@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,6 +113,7 @@ TEST_TABLE(       TABLE=SVM,
                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                            VALE_K = 'O'),
                 NOM_PARA='VMIS',
+               REFERENCE = 'NON_REGRESSION',
                PRECISION=1.5E-2,
                     VALE=123.75                                   )
 
@@ -125,31 +126,31 @@ TEST_RESU(RESU=(
 
      # O
             _F(  RESULTAT = RESU,       NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
-              CRITERE = 'RELATIF',  PRECISION = 1.2E-2,
+              CRITERE = 'RELATIF',  PRECISION = 1.2E-2, REFERENCE = 'ANALYTIQUE',
               NOEUD = 'O',          NOM_CMP = 'DZ',    VALE = -695.6256),
      # A
             _F(  RESULTAT = RESU,       NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
-              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10, REFERENCE = 'ANALYTIQUE',
               NOEUD = 'A',          NOM_CMP = 'DZ',     VALE = 0.),
      # B
             _F(  RESULTAT = RESU,       NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
-              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10, REFERENCE = 'ANALYTIQUE',
               NOEUD = 'B',          NOM_CMP = 'DZ',    VALE = 0.),
      # C
             _F(  RESULTAT = RESU,       NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
-              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10, REFERENCE = 'ANALYTIQUE',
               NOEUD = 'C',          NOM_CMP = 'DZ',    VALE = 0.),
      # D
             _F(  RESULTAT = RESU,       NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
-              CRITERE = 'RELATIF',  PRECISION = 1.2E-2,
+              CRITERE = 'RELATIF',  PRECISION = 1.2E-2, REFERENCE = 'ANALYTIQUE',
               NOEUD = 'D',          NOM_CMP = 'DZ',    VALE = -489.727),
      # E
             _F(  RESULTAT = RESU,       NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
-              CRITERE = 'RELATIF',  PRECISION = 1.2E-2,
+              CRITERE = 'RELATIF',  PRECISION = 1.2E-2, REFERENCE = 'ANALYTIQUE',
               NOEUD = 'E',          NOM_CMP = 'DZ',    VALE = -489.727),
      # F
             _F(  RESULTAT = RESU,       NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
-              CRITERE = 'RELATIF',  PRECISION = 1.2E-2,
+              CRITERE = 'RELATIF',  PRECISION = 1.2E-2, REFERENCE = 'ANALYTIQUE',
               NOEUD = 'F',          NOM_CMP = 'DZ',    VALE = -435.8974))
           )
 
@@ -173,14 +174,16 @@ TEST_TABLE(       TABLE=RELEVE_1,
                              VALE_K = 'O'),
                   NOM_PARA='MXX',
                  PRECISION=1.5E-2,
-                      VALE=-0.20625       )
+                 REFERENCE = 'ANALYTIQUE',
+                 VALE=-0.20625       )
 
 TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'O'),
                   NOM_PARA='MYY',
                  PRECISION=1.5E-2,
-                      VALE=-0.20625       )
+                 REFERENCE = 'ANALYTIQUE',
+                 VALE=-0.20625       )
 
 TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
@@ -188,35 +191,40 @@ TEST_TABLE(       TABLE=RELEVE_1,
                   NOM_PARA='MXX',
                    CRITERE='ABSOLU',
                  PRECISION=1.0E-2,
-                      VALE=0.            )
+                 REFERENCE = 'ANALYTIQUE',
+                 VALE=0.            )
 
 TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'A'),
                   NOM_PARA='MYY',
                  PRECISION=6.0E-2,
-                      VALE=-0.0875       )
+                 REFERENCE = 'ANALYTIQUE',
+                 VALE=-0.0875       )
 
 TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'B'),
                   NOM_PARA='MXX',
                  PRECISION=13.0E-2,
-                      VALE=-0.04375       )
+                 REFERENCE = 'ANALYTIQUE',
+                 VALE=-0.04375       )
 
 TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'B'),
                   NOM_PARA='MYY',
                  PRECISION=14.0E-2,
-                      VALE=-0.04375       )
+                 REFERENCE = 'ANALYTIQUE',
+                 VALE=-0.04375       )
 
 TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'C'),
                   NOM_PARA='MXX',
                  PRECISION=6.0E-2,
-                      VALE=-0.0875       )
+                 REFERENCE = 'ANALYTIQUE',
+                 VALE=-0.0875       )
 
 TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
@@ -224,49 +232,56 @@ TEST_TABLE(       TABLE=RELEVE_1,
                   NOM_PARA='MYY',
                    CRITERE='ABSOLU',
                  PRECISION=1.0E-2,
-                      VALE=0.            )
+                 REFERENCE = 'ANALYTIQUE',
+                 VALE=0.            )
 
 TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'D'),
                   NOM_PARA='MXX',
                  PRECISION=0.5E-2,
-                      VALE=-0.15469       )
+                 REFERENCE = 'ANALYTIQUE',
+                 VALE=-0.15469       )
 
 TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'D'),
                   NOM_PARA='MYY',
                  PRECISION=0.5E-2,
-                      VALE=-0.17656       )
+                 REFERENCE = 'ANALYTIQUE',
+                 VALE=-0.17656       )
 
 TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'E'),
                   NOM_PARA='MXX',
                  PRECISION=0.3E-2,
-                      VALE=-0.17656       )
+                 REFERENCE = 'ANALYTIQUE',
+                 VALE=-0.17656       )
 
 TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'E'),
                   NOM_PARA='MYY',
                  PRECISION=0.3E-2,
-                      VALE=-0.15469       )
+                 REFERENCE = 'ANALYTIQUE',
+                 VALE=-0.15469       )
 
 TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'F'),
                   NOM_PARA='MXX',
                  PRECISION=10.E-2,
-                      VALE=-0.14025       )
+                 REFERENCE = 'ANALYTIQUE',
+                 VALE=-0.14025       )
 
 TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'F'),
                   NOM_PARA='MYY',
                  PRECISION=10.E-2,
-                      VALE=-0.16825       )
+                 REFERENCE = 'ANALYTIQUE',
+                 VALE=-0.16825       )
 
 #======================================================================
 #               MATERIAU  FONCTION  DE  LA  TEMPERATURE
@@ -303,6 +318,8 @@ E2=1.1
 E3=1.2
 
 E_F=DEFI_FONCTION(  NOM_PARA='TEMP',
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',
                         VALE=( TR1, E1,  TR2, E2,  TR3, E3, )  )
 
 NU1=0.3
@@ -312,6 +329,8 @@ NU2=0.33
 NU3=0.35
 
 NU_F=DEFI_FONCTION(  NOM_PARA='TEMP',
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',
                          VALE=( TR1, NU1,  TR2, NU2,  TR3, NU3, )  )
 
 A_F=DEFI_CONSTANTE(   NOM_RESU='TEMP',
@@ -398,11 +417,11 @@ DE3=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 
 TEST_RESU(CHAM_NO=(
             _F(  CHAM_GD = DE1,  NOEUD = 'O',   NOM_CMP = 'DZ',  VALE = V1,
-              CRITERE = 'RELATIF',      PRECISION = 1.2E-2),
+              CRITERE = 'RELATIF', REFERENCE = 'NON_REGRESSION', PRECISION = 1.2E-2),
             _F(  CHAM_GD = DE2,  NOEUD = 'O',   NOM_CMP = 'DZ',  VALE = V2,
-              CRITERE = 'RELATIF',      PRECISION = 1.2E-2),
+              CRITERE = 'RELATIF', REFERENCE = 'NON_REGRESSION', PRECISION = 1.2E-2),
             _F(  CHAM_GD = DE3,  NOEUD = 'O',   NOM_CMP = 'DZ',  VALE = V3,
-              CRITERE = 'RELATIF',      PRECISION = 1.2E-2))
+              CRITERE = 'RELATIF', REFERENCE = 'NON_REGRESSION', PRECISION = 1.2E-2))
             )
 
 #======================================================================
@@ -442,19 +461,19 @@ U3=STAT_NON_LINE(
 
 TEST_RESU(RESU=(
            _F(  RESULTAT = U3,             NUME_ORDRE = 3,
-             PARA = 'INST',             VALE = 6.00000E-01),
+             PARA = 'INST', REFERENCE = 'NON_REGRESSION', VALE = 6.00000E-01),
            _F(  RESULTAT = U3,             NUME_ORDRE = 3,
              PARA = 'ITER_GLOB',        VALE_I = 0,
-             CRITERE = 'ABSOLU',        PRECISION = 2.E+00),
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', PRECISION = 2.E+00),
            _F(  RESULTAT = U3,             NUME_ORDRE = 3,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-05,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-05,
              PARA = 'RESI_GLOB_RELA',   VALE = 0.),
            _F(  RESULTAT = U3,             NUME_ORDRE = 3,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-07,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-07,
              PARA = 'RESI_GLOB',        VALE = 0.),
            _F(  RESULTAT = U3,             NUME_ORDRE = 3,
              PARA = 'ITER_LINE',        VALE_I = 0,
-             CRITERE = 'ABSOLU',        PRECISION = 2.E+00))
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', PRECISION = 2.E+00))
            )
 
 STAT_NON_LINE( reuse=U3,
@@ -525,25 +544,26 @@ TEST_TABLE(       TABLE=SVMP,
                            VALE_K = 'O'),
                 NOM_PARA='VMIS',
                PRECISION=1.5E-2,
-                    VALE=123.75                                   )
+               REFERENCE = 'NON_REGRESSION',
+               VALE=123.75                                   )
 
 #
 #--------------------------------------------------------
 #
 
 TEST_RESU(RESU=(
-           _F(  RESULTAT = U3,             NUME_ORDRE = 4,
+           _F(  RESULTAT = U3, REFERENCE = 'NON_REGRESSION', NUME_ORDRE = 4,
              PARA = 'INST',             VALE = 1.00000E+00),
-           _F(  RESULTAT = U3,             NUME_ORDRE = 4,
+           _F(  RESULTAT = U3, REFERENCE = 'NON_REGRESSION', NUME_ORDRE = 4,
              PARA = 'ITER_GLOB',        VALE_I = 0,
              CRITERE = 'ABSOLU',        PRECISION = 2.E+00),
-           _F(  RESULTAT = U3,             NUME_ORDRE = 4,
+           _F(  RESULTAT = U3, REFERENCE = 'NON_REGRESSION', NUME_ORDRE = 4,
              CRITERE = 'ABSOLU',        PRECISION = 1.E-07,
              PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = U3,             NUME_ORDRE = 4,
+           _F(  RESULTAT = U3, REFERENCE = 'NON_REGRESSION', NUME_ORDRE = 4,
              CRITERE = 'ABSOLU',        PRECISION = 1.E-07,
              PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = U3,             NUME_ORDRE = 4,
+           _F(  RESULTAT = U3, REFERENCE = 'NON_REGRESSION', NUME_ORDRE = 4,
              PARA = 'ITER_LINE',        VALE_I = 0,
              CRITERE = 'ABSOLU',        PRECISION = 2.E+00))
            )
@@ -553,19 +573,19 @@ TEST_RESU(RESU=(
 
      # O
             _F(  RESULTAT = U3,       INST = 1.0,     NOM_CHAM = 'DEPL',
-              CRITERE = 'RELATIF',  PRECISION = 1.2E-2,
+              CRITERE = 'RELATIF',  PRECISION = 1.2E-2, REFERENCE = 'NON_REGRESSION',
               NOEUD = 'O',          NOM_CMP = 'DZ',     VALE = -695.6256),
      # A
             _F(  RESULTAT = U3,       INST = 1.0,     NOM_CHAM = 'DEPL',
-              CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+              CRITERE = 'ABSOLU',   PRECISION = 1.E-10, REFERENCE = 'NON_REGRESSION',
               NOEUD = 'A',          NOM_CMP = 'DZ',    VALE = 0.),
      # D
             _F(  RESULTAT = U3,       INST = 1.0,     NOM_CHAM = 'DEPL',
-              CRITERE = 'RELATIF',  PRECISION = 1.2E-2,
+              CRITERE = 'RELATIF',  PRECISION = 1.2E-2, REFERENCE = 'NON_REGRESSION',
               NOEUD = 'D',          NOM_CMP = 'DZ',    VALE = -489.727),
      # E
             _F(  RESULTAT = U3,       INST = 1.0,     NOM_CHAM = 'DEPL',
-              CRITERE = 'RELATIF',  PRECISION = 1.2E-2,
+              CRITERE = 'RELATIF',  PRECISION = 1.2E-2, REFERENCE = 'NON_REGRESSION',
               NOEUD = 'E',          NOM_CMP = 'DZ',    VALE = -489.727))
           )
 

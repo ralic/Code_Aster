@@ -1,4 +1,4 @@
-# MODIF  DATE 06/10/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 12/01/2004   AUTEUR GRANET S.GRANET 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE DE LAIGLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -87,16 +87,12 @@ SOL=DEFI_MATERIAU(    ELAS=_F(  E     = 1500.E6,
                                 CP = 4180.,  
                                 VISC = VISCOLIQ,   
                                 D_VISC_TEMP = DVISCOL,  
-                                LAMBDA = BIDON,  
-                                D_LAMBDA_TEMP = BIDON, 
                                         ),
                               THM_GAZ=_F( 
                                 MASS_MOL = 28.96E-3,  
                                 CP = 1000.,  
                                 VISC = VISCOGAZ,  
                                 D_VISC_TEMP = DVISCOG,  
-                                LAMBDA = BIDON,  
-                                D_LAMBDA_TEMP = BIDON,  
                                   ),
                               THM_VAPE_GAZ=_F( 
                                 MASS_MOL = 18.E-3,  
@@ -121,11 +117,6 @@ SOL=DEFI_MATERIAU(    ELAS=_F(  E     = 1500.E6,
                                 PERM_GAZ = UN,  
                                 D_PERM_SATU_GAZ = ZERO,  
                                 D_PERM_PRES_GAZ = ZERO,  
-                                FICK = BIDON,  
-                                D_FICK_TEMP = BIDON,  
-                                D_FICK_GAZ_PRES = BIDON,  
-                                LAMBDA = BIDON,  
-                                D_LAMBDA_TEMP = BIDON,  
                                  ),
                               THM_INIT=_F( 
                                 TEMP = 293.,  
@@ -462,7 +453,7 @@ TEST_RESU(RESU=(
                        NOM_CHAM = 'SIEF_NOEU_ELGA',    
                        NOM_CMP = 'SIZZ',     
                        NUME_ORDRE = 23,  
-                       PRECISION = 1.E-5,   
+                       PRECISION = 1.E-4,   
                        REFERENCE='NON_REGRESSION',
                        VERSION = '6.2.24',
                        VALE = -2.8806241234300E+07,

@@ -1,6 +1,6 @@
       SUBROUTINE TE0283(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,6 @@ C THERMIQUE NON LINEAIRE
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -51,14 +50,12 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-
-      CHARACTER*2 CODRET
-      REAL*8 BETA,LAMBDA,THETA,DELTAT,KHI,TPG,TPGM
-      REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS,R8BID
+      REAL*8 BETA,LAMBDA,THETA,DELTAT,KHI,TPG
+      REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS
       REAL*8 DTPGDX,DTPGDY,DTPGDZ,RBID
-      INTEGER IPOIDS,IVF,IDFDE,IDFDN,IDFDK,IGEOM,IMATE,NPG
-      INTEGER JGANO,NNO,KP,NPG1,I,ITEMPS,IFON(3),K,L,NDIM,JVAL
-      INTEGER ICOMP,ITEMPI,ITEMPR,IVERES,NNOS
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
+      INTEGER JGANO,NNO,KP,NPG1,I,ITEMPS,IFON(3),L,NDIM
+      INTEGER ICOMP,ITEMPI,IVERES,NNOS
 C ----------------------------------------------------------------------
 C PARAMETER ASSOCIE AU MATERIAU CODE
 
@@ -69,8 +66,6 @@ C ----------------------------------------------------------------------
 
 C DEB ------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -85,10 +80,9 @@ C DEB ------------------------------------------------------------------
       CALL NTFCMA(ZI(IMATE),IFON)
 
       DO 30 KP = 1,NPG1
-        K = (KP-1)*NNO*3
         L = (KP-1)*NNO
-        CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &              ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POIDS)
+        CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
         TPG = 0.D0
         DTPGDX = 0.D0
         DTPGDY = 0.D0
@@ -110,7 +104,6 @@ C DEB ------------------------------------------------------------------
    30 CONTINUE
 
       DO 60 KP = 1,NPG1
-        K = (KP-1)*NNO*3
         L = (KP-1)*NNO
         TPG = 0.D0
         DO 40 I = 1,NNO

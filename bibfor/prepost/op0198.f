@@ -3,7 +3,7 @@
       INTEGER    IER
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/04/2003   AUTEUR EPICURE S.BUGAT 
+C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -148,7 +148,7 @@ C ======================================================================
 C --- AJOUT DE CORRECTION PLASTIQUE AU CALCUL DES FACTEURS -------------
 C --- D'INTENSITE DE CONTRAINTES ---------------------------------------
 C ======================================================================
-            CALL COPLAS( TEMPA, TEMPB, K1A, K1B, MATREV, LREV, DEKLAG,
+            CALL COPLAS( TEMPA, K1A, K1B, MATREV, LREV, DEKLAG,
      +                   KAL, KBL, DKMA, DKMB, K1ACP, K1BCP )
 C ======================================================================
 C --- RECUPERATION DES TEMPERATURES AUX POINTES DE LA FISSURE ----------

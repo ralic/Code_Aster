@@ -2,7 +2,7 @@
      &                 NUM,VRAI,I,J,MIJ)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/11/95   AUTEUR BIBERON G.ROUSSEAU 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C-----------------LA MEME DENSITE PARTOUT------------------------
 C-----------PLONGEMENT DE LA PRESSION ET DES CHAMPS DE DEPL_R----
 C---------------SUR LE MODELE THERMIQUE D INTERFACE--------------
 
-       CALL PLOINT(VESTO,MODMEC,CHAMNO,NUM,I,J,VRAI,MODEL,VEPRJ,MODX,
+       CALL PLOINT(VESTO,MODMEC,CHAMNO,NUM,I,VRAI,MODEL,VEPRJ,MODX,
      &             MODY,MODZ)
 
 C-------------------CALCUL DE LA MASSE AJOUTEE-------------------

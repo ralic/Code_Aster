@@ -8,7 +8,7 @@
       REAL*8                          CONST(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 25/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -143,7 +143,7 @@ C       -------------------------------------------------------
         CALL PROLMA(MATRES, LIMAT, NBCOMB, BASE,' ',.TRUE.)
         CALL MTDSCR(MATRES)
         CALL JEVEUO(MATRES//'.&INT','E',LRES)
-        CALL CBVAL2(NBCOMB,TYPCST,CONST,TYPMAT,ZI(IDLIMA),TYPRES,
+        CALL CBVAL2(NBCOMB,CONST,TYPMAT,ZI(IDLIMA),TYPRES,
      +              LRES,DDLEXC)
       ENDIF
 C
@@ -255,7 +255,7 @@ C
 C --- COMBINAISON LINEAIRE DES .CONL DES MATRICES SI NECESSAIRE :
 C     =========================================================
       IF (DDLEXC.NE.'LAGR') THEN
-        CALL MTCONL(NBCOMB,TYPCST,CONST,TYPMAT,ZI(IDLIMA),TYPRES,LRES)
+        CALL MTCONL(NBCOMB,TYPCST,CONST,ZI(IDLIMA),TYPRES,LRES)
       ELSE
         CALL JEDETR(ZK24(ZI(LRES+1))(1:19)//'.CONL')
       END IF

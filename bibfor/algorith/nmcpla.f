@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2001   AUTEUR ADBHHVV V.CANO 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -404,7 +404,7 @@ C
          KDESSF = MATERF(5)
          EPSTH = ALPHAF*(TEMPF-TREF) - ALPHAD*(TEMPD-TREF)
      &         - BENDOF*HYDRF        + BENDOD*HYDRD
-     &         - KDESSF*SECHF        + KDESSD*SECHD
+     &         + KDESSF*SECHF        - KDESSD*SECHD
          DO 110 K=1,3
             DEPSEL(K) = DEPSEL(K) + EPSTH
  110     CONTINUE

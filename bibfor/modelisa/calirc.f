@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 16/02/2004   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*19 LISREL
       CHARACTER*24 GEOM2,MAILMA
       CHARACTER*1 KB
+      REAL*8 RBID
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -246,10 +247,10 @@ C       2. CALCUL DE CORRES :
 C       -------------------
         IF (NDIM.EQ.2) THEN
           CALL PJ2DCO('PARTIE',MO,MO,NBMA1,ZI(IAGMA1),NBNO2,ZI(IAGNO2),
-     &                ' ',GEOM2,CORRES)
+     &                ' ',GEOM2,CORRES,.FALSE.,RBID)
         ELSE IF (NDIM.EQ.3) THEN
           CALL PJ3DCO('PARTIE',MO,MO,NBMA1,ZI(IAGMA1),NBNO2,ZI(IAGNO2),
-     &                ' ',GEOM2,CORRES)
+     &                ' ',GEOM2,CORRES,.FALSE.,RBID)
         END IF
 
         CALL JEVEUO(CORRES//'.PJEF_NB','L',IACONB)

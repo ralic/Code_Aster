@@ -1,6 +1,6 @@
        SUBROUTINE TE0447 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/06/2002   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,41 +49,15 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       LOGICAL       AXI, GRAND
-      INTEGER       KPG,KSIG,NNO1,NNO2, NPG, IPOIDS, IVF,  NDIM, NCMP
-      INTEGER       IDFDE, IDFDK,ICARAC, IFF, IDEPL, IGEOM, IDEFO, KK
-      INTEGER       ICARA2
-      REAL*8        RBID, POIDS, DFDI(81), F(3,3), R, EPS(4), VPG(36)
+      INTEGER       KPG,KSIG, NNO, NNOS, NPG, IPOIDS, IVF,  NDIM, NCMP
+      INTEGER       IDFDE, IDEPL, IGEOM, IDEFO, KK, JGANO
+      REAL*8        POIDS, DFDI(81), F(3,3), R, EPS(4), VPG(36)
       REAL*8        TMP
-      CHARACTER*8  ELREFE,ELREF2
-      CHARACTER*24  CARAC,FF,CARAC2
 C ......................................................................
 
-      NDIM = 2
-      NCMP = 2*NDIM
-      CALL ELREF1(ELREFE)
-      IF ( NOMTE(5:8).EQ.'TR6') THEN
-        ELREF2 = 'TRII3'
-      ELSEIF ( NOMTE(5:8)  .EQ. 'QU8'  ) THEN
-        ELREF2 = 'QUAI4'
-      ELSE
-        CALL UTMESS('F','TE0447','ELEMENT:'//NOMTE(5:8)//
-     +                'NON IMPLANTE')
-      ENDIF   
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO1 = ZI(ICARAC)
-      NPG  = ZI(ICARAC+2)
-      FF = '&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS = IFF
-      IVF    = IPOIDS + NPG
-      IDFDE  = IVF + NPG*NNO1
-      IDFDK  = IDFDE + NPG*NNO1
-      
-      CARAC2 = '&INEL.'//ELREF2//'.CARAC'
-      CALL JEVETE(CARAC2,'L',ICARA2)
-      NNO2 = ZI(ICARA2)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
+      NCMP = 2*NDIM
       AXI   = NOMTE(3:4).EQ.'AX'
       GRAND = .FALSE.
       CALL JEVECH('PGEOMER','L',IGEOM)
@@ -95,8 +69,7 @@ C ......................................................................
 
       DO 10 KPG = 1, NPG
 
-        CALL NMGEOM(NDIM,NNO1,AXI,GRAND,ZR(IGEOM),KPG,ZR(IPOIDS-1+KPG),
-     &              ZR(IVF+NNO1*(KPG-1)),ZR(IDFDE),RBID,ZR(IDFDK),
+        CALL NMGEOM(NDIM,NNO,AXI,GRAND,ZR(IGEOM),KPG,IPOIDS,IVF,IDFDE,
      &              ZR(IDEPL),POIDS,DFDI,F,EPS,R)
 
 C       RECUPERATION DE LA DEFORMATION
@@ -117,7 +90,7 @@ C         (DEFORMATIONS AUX POINTS DE GAUSS OU AUX NOEUDS)
             ZR(IDEFO+KK-1)= VPG(KK)
  30     CONTINUE
       ELSEIF (OPTION(6:9).EQ.'ELNO') THEN
-        CALL PPGANO(NNO2,NPG,NCMP,VPG,ZR(IDEFO))
+        CALL PPGAN2 ( JGANO, NCMP, VPG, ZR(IDEFO) )
       ENDIF
 
       END

@@ -12,12 +12,12 @@
      &     VVG,VG,VG0,VD,VD0,RR,RR0,RI,PREMAC,PREREL,TRANS,PULSD,S0,
      &     Z0,SR0,ZA1,ZA2,ZA3,ZIN,OLD,OLDIA,
      &     ICONFE,ICONFA,NBCHA,NBCHEA,FTEST,ICONFB,TCONF1,TCONF2,
-     &     TOLN,TOLC,TOLV,INDNE0,TESTC,ITFORN)
+     &     TOLN,TOLC,TOLV,TESTC,ITFORN)
 C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/05/2000   AUTEUR KXBADNG T.KESTENS 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C ---------
       REAL*8       FTEST
       INTEGER      ICONFB(*)
       REAL*8       TCONF1(4,*), TCONF2(4,*), TOLN, TOLC, TOLV
-      INTEGER      INDNE0, TESTC, ITFORN(*)
+      INTEGER      TESTC, ITFORN(*)
 C
 C VARIABLES LOCALES
 C -----------------
@@ -154,11 +154,11 @@ C
          DO 10 IC = 1, NBNL
             IF ( ICONFB(IC).EQ.0 ) THEN
                ICOMPT = ICOMPT + 1
-               CALL CALND1 ( IC,NP1,NP2,NP3,NBM,NBNL,
-     &                       CHOC,ALPHA,BETA,GAMMA,ORIG,RC,THETA,
+               CALL CALND1 ( IC,NP1,NP2,NP3,NBM,
+     &                       ALPHA,BETA,GAMMA,ORIG,RC,THETA,
      &                       TYPCH,NBSEG,PHII,DEPG,DIST2)
-               CALL CALND2 ( IC,NP1,NP2,NP3,NBM,NBNL,TYPCH,NBSEG,
-     &                       CHOC,ALPHA,BETA,GAMMA,ORIG,RC,THETA,
+               CALL CALND2 ( IC,NP1,NP2,NP3,NBM,TYPCH,NBSEG,
+     &                       ALPHA,BETA,GAMMA,ORIG,RC,THETA,
      &                       PHII,DEPG,VITG,DDIST2)
                TDTC = -DIST2 / DDIST2
                IF ( (TDTC.LT.0.0D0).AND.(ABS(TDTC).GT.ABSDTC) ) THEN
@@ -194,11 +194,11 @@ C
          TC  = TC - DT0
          DT  = 1.0D+10
          DO 20 IC = 1, NBNL
-            CALL CALND1 ( IC,NP1,NP2,NP3,NBM,NBNL,
-     &                    CHOC,ALPHA,BETA,GAMMA,ORIG,RC,THETA,
+            CALL CALND1 ( IC,NP1,NP2,NP3,NBM,
+     &                    ALPHA,BETA,GAMMA,ORIG,RC,THETA,
      &                    TYPCH,NBSEG,PHII,DEPG0,DIST2)
-            CALL CALND2 ( IC,NP1,NP2,NP3,NBM,NBNL,TYPCH,NBSEG,
-     &                    CHOC,ALPHA,BETA,GAMMA,ORIG,RC,THETA,
+            CALL CALND2 ( IC,NP1,NP2,NP3,NBM,TYPCH,NBSEG,
+     &                    ALPHA,BETA,GAMMA,ORIG,RC,THETA,
      &                    PHII,DEPG0,VITG0,DDIST2)
             TDT = -DIST2 / DDIST2
             IF ( (TDT.GT.0.0D0).AND.(TDT.LT.DT) ) DT = TDT
@@ -321,7 +321,7 @@ C     PUIS RETOUR SUR LA BASE EN VOL
 C
       CALL CALCMI ( NP1,NBMCD,DT0,DT,
      &              VITGT,DEPGT,VITG0T,DEPG0T,FMODT,FMOD0T,
-     &              MASGI,AMOR,AMOR0,PULS,PULS0,
+     &              AMOR,AMOR0,PULS,PULS0,
      &              TRANS,PULSD,S0,Z0,SR0,ZA1,ZA2,ZA3,ZIN)
       CALL PROJVD ( TESTC,NP1,NBM,NBMCD,VD,DEPGT,DEPG)
       CALL PROJVD ( TESTC,NP1,NBM,NBMCD,VD,VITGT,VITG)
@@ -440,11 +440,11 @@ C DEBUG
             SCALV = VGLO0(1) * VGLO(1) + VGLO0(2) * VGLO(2)
      &            + VGLO0(3) * VGLO(3)
             IF ( SCALV.GT.0.0D0 ) THEN
-               CALL CALND1 ( IC,NP1,NP2,NP3,NBM,NBNL,
-     &                       CHOC,ALPHA,BETA,GAMMA,ORIG,RC,THETA,
+               CALL CALND1 ( IC,NP1,NP2,NP3,NBM,
+     &                       ALPHA,BETA,GAMMA,ORIG,RC,THETA,
      &                       TYPCH,NBSEG,PHII,DEPG,DIST2)
-               CALL CALND2 ( IC,NP1,NP2,NP3,NBM,NBNL,TYPCH,NBSEG,
-     &                       CHOC,ALPHA,BETA,GAMMA,ORIG,RC,THETA,
+               CALL CALND2 ( IC,NP1,NP2,NP3,NBM,TYPCH,NBSEG,
+     &                       ALPHA,BETA,GAMMA,ORIG,RC,THETA,
      &                       PHII,DEPG,VITG,DDIST2)
                TDTC = -DIST2 / DDIST2
                IF ( (TDTC.GT.0.0D0).AND.((DT0+TDTC).LT.DT) ) THEN
@@ -453,11 +453,11 @@ C DEBUG
                   IDT = 1
                ENDIF
             ELSE
-               CALL CALND1 ( IC,NP1,NP2,NP3,NBM,NBNL,
-     &                       CHOC,ALPHA,BETA,GAMMA,ORIG,RC,THETA,
+               CALL CALND1 ( IC,NP1,NP2,NP3,NBM,
+     &                       ALPHA,BETA,GAMMA,ORIG,RC,THETA,
      &                       TYPCH,NBSEG,PHII,DEPG0,DIST2)
-               CALL CALND2 ( IC,NP1,NP2,NP3,NBM,NBNL,TYPCH,NBSEG,
-     &                       CHOC,ALPHA,BETA,GAMMA,ORIG,RC,THETA,
+               CALL CALND2 ( IC,NP1,NP2,NP3,NBM,TYPCH,NBSEG,
+     &                       ALPHA,BETA,GAMMA,ORIG,RC,THETA,
      &                       PHII,DEPG0,VITG0,DDIST2)
                TDT = -DIST2 / DDIST2
                IF ( (TDT.GT.0.0D0).AND.(TDT.LT.DT) ) THEN
@@ -565,11 +565,11 @@ C
          DO 150 IC = 1, NBNL
             IF ( ICONFB(IC).EQ.0 ) THEN
                ICOMPT = ICOMPT + 1
-               CALL CALND1 ( IC,NP1,NP2,NP3,NBM,NBNL,
-     &                       CHOC,ALPHA,BETA,GAMMA,ORIG,RC,THETA,
+               CALL CALND1 ( IC,NP1,NP2,NP3,NBM,
+     &                       ALPHA,BETA,GAMMA,ORIG,RC,THETA,
      &                       TYPCH,NBSEG,PHII,DEPG,DIST2)
-               CALL CALND2 ( IC,NP1,NP2,NP3,NBM,NBNL,TYPCH,NBSEG,
-     &                       CHOC,ALPHA,BETA,GAMMA,ORIG,RC,THETA,
+               CALL CALND2 ( IC,NP1,NP2,NP3,NBM,TYPCH,NBSEG,
+     &                       ALPHA,BETA,GAMMA,ORIG,RC,THETA,
      &                       PHII,DEPG,VITG,DDIST2)
                TDTC = -DIST2 / DDIST2
                IF ( (TDTC.LT.0.0D0).AND.(ABS(TDTC).GT.ABSDTC) ) THEN

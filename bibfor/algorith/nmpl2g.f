@@ -1,5 +1,5 @@
-       SUBROUTINE  NMPL2G(NNO,NNOB,NPG,POIDSG,VFF,VFFB,DFDE,DFDEB,DFDK,
-     &                    DFDKB,GEOM,TYPMOD,NDIM,
+       SUBROUTINE NMPL2G (NNO,NNOB,NPG,IPOIDS,IVF,IVFB,IDFDE,IDFDEB,
+     &                    GEOM,TYPMOD,NDIM,
      &                    OPTION,IMATE,COMPOR,LGPG,CRIT,
      &                    INSTAM,INSTAP,TM,TP,HYDRM,HYDRP,SECHM,
      &                    SECHP,NZ,PHASM,PHASP,TREF,
@@ -8,38 +8,37 @@
      &                    MATRIG,VECTF,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C TOLE CRP_21
 
-
        IMPLICIT NONE
 C
        INTEGER       NNO,NNOB,NPG,NDIM,NDIMSI,IMATE, LGPG, NZ,CODRET
+       INTEGER       IPOIDS,IVF,IVFB,IDFDE,IDFDEB
 C
        CHARACTER*2   COD2
        CHARACTER*8   TYPMOD(*)
        CHARACTER*16  OPTION, COMPOR(4)
 C
        REAL*8        INSTAM,INSTAP
-       REAL*8        POIDSG(NPG), VFF(NNO,NPG),DFDE(*),DFDK(*)
-       REAL*8        VFFB(NNOB,NPG),DFDEB(*),DFDKB(*),DFDIB(NNOB,NDIM)
+       REAL*8        VFFN, VFFM, DFDIB(NNOB,NDIM)
        REAL*8        GEOM(NDIM,NNO), CRIT(3), TM(NNO),TP(NNO)
        REAL*8        HYDRM(NNO), HYDRP(NNO), SECHM(NNO), SECHP(NNO)
        REAL*8        PHASM(NZ,NPG),PHASP(NZ,NPG),TREF
@@ -60,18 +59,16 @@ C           POUR ELEMENTS NON LOCAUX A GRAD. DE DEF.
 C.......................................................................
 C IN  NNO     : NOMBRE DE NOEUDS DE L'ELEMENT
 C IN  NPG     : NOMBRE DE POINTS DE GAUSS
-C IN  POIDSG  : POIDS DES POINTS DE GAUSS
-C IN  VFF     : VALEUR  DES FONCTIONS DE FORME
-C IN  DFDE    : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
-C IN  DFDK    : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
+C IN  IPOIDS  : POIDS DES POINTS DE GAUSS
+C IN  IVF     : VALEUR  DES FONCTIONS DE FORME
+C IN  IDFDE   : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
 C IN  GEOM    : COORDONNEES DES NOEUDS
 C IN  TYPMOD  : TYPE DE MODEELISATION
 C IN  OPTION  : OPTION DE CALCUL
 C................MODIFS.................................................
 C IN  NNOB    : NOMBRE DE NOEUDS DE L'ELEMENT
-C IN  VFFB    : VALEUR  DES FONCTIONS DE FORME
-C IN  DFDEB   : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
-C IN  DFDKB   : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
+C IN  IVFB    : VALEUR  DES FONCTIONS DE FORME
+C IN  IDFDEB  : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
 C IN  GEOMB   : COORDONNEES DES NOEUDS
 C.................FIN MODIFS............................................
 C IN  IMATE   : MATERIAU CODE
@@ -112,6 +109,22 @@ C OUT MATEU   : MATRICE DE RIGIDITE CALCUL EPSR/U
 C OUT VECTUB  : FORCES NODALES CALCUL EPSR (RAPH_MECA ET FULL_MECA)
 C OUT MATRIG  : MATRICE DE RIGIDITE STOCKEE EN LIGNE
 C.................FIN MODIFS............................................
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER KPG,KU,N,I,M,J,J1,KL,K,KP,KKL,PQ,COD(9)
       INTEGER PNNO,PNNOB,PNDIM,PDIMSI
@@ -129,7 +142,7 @@ C.................FIN MODIFS............................................
       REAL*8 POIDS,TEMPM,TEMPP,TMP,DUM,DFDNB,EPSANP(6),EPSANM(6),SIG(6)
       REAL*8 HYDRGM, HYDRGP, SECHGM, SECHGP, ELGEOM(10,9)
       REAL*8 CCC
-      REAL*8 RAC2
+      REAL*8 RAC2,R8VIDE
       REAL*8 E, NU, LAMBDA, DEUXMU
       REAL*8 EPSTM(12), DEPST(12),DSIDPT(12,6)
       REAL*8 MATUU(PNDIM,PNNO,PNNO,PNDIM),VECTU(PNDIM,PNNO)
@@ -152,15 +165,14 @@ C - INITIALISATION
       CALL RCVALA(IMATE,'NON_LOCAL',0,' ',0.D0,1,
      &             NOMRES,VALRES,COD2,'FM')
 
-      CCC=VALRES(1)         
-      
+      CCC=VALRES(1)
+
 C - INITIALISATION CODES RETOURS
       DO 1955 KPG=1,NPG
          COD(KPG)=0
 1955  CONTINUE
 C - SEPARATION U/EPSR DANS DEPLM
-      IF (OPTION(1:14).EQ.'RIGI_MECA_TANG' .OR.
-     &    OPTION(1:14).EQ.'RIGI_MECA_ELAS' .OR.
+      IF (OPTION(1:10).EQ.'RIGI_MECA_' .OR.
      &    OPTION(1:9).EQ.'FULL_MECA') THEN
         CALL R8INIR(PNDIM*PNNO*PNNO*PNDIM,0.D0,MATUU,1)
         CALL R8INIR(PNNOB*PNNOB,0.D0,MATEE,1)
@@ -182,7 +194,7 @@ C - SEPARATION U/EPSR DANS DEPLM
           GEOMB(I,J)=GEOM(I,J)
 71      CONTINUE
 70    CONTINUE
-      
+
       DO 1 N=1,NNOB
         DO 2 K=1,NDIM
           DEPLM(K,N) = DEPLGM(K+(NDIM+NDIMSI)*(N-1))
@@ -206,20 +218,20 @@ C - SEPARATION U/EPSR DANS DEPLM
           DEPSB(K,N) = DDEPLG(K+NDIM+(NDIM+NDIMSI)*(N-1))
 8       CONTINUE
 7     CONTINUE
- 
+
       DO 11 N=NNOB+1,NNO
         DO 12 K=1,NDIM
           DEPLM(K,N) = DEPLGM(K+NDIM*(N-NNOB-1)+(NDIM+NDIMSI)*NNOB)
 12      CONTINUE
 11    CONTINUE
-  
+
       DO 19 N=NNOB+1,NNO
         DO 16 K=1,NDIM
           DDEPL(K,N) = DDEPLG(K+NDIM*(N-NNOB-1)+(NDIM+NDIMSI)*NNOB)
 16      CONTINUE
 19    CONTINUE
- 
- 
+
+
 C - CALCUL POUR CHAQUE POINT DE GAUSS
 C
       DO 800 KPG=1,NPG
@@ -240,20 +252,19 @@ C
   5     CONTINUE
 C
         DO 10 N=1,NNO
+          VFFN = ZR(IVF-1+N+(KPG-1)*NNO)
           IF (DEFANE) THEN
             DO 15 J = 1,4
-              EPSANM(J)=EPSANM(J)+EPAM(4*(N-1)+J)*VFF(N,KPG)
-              EPSANP(J)=EPSANP(J)+EPAP(4*(N-1)+J)*VFF(N,KPG)
+              EPSANM(J)=EPSANM(J)+EPAM(4*(N-1)+J)*VFFN
+              EPSANP(J)=EPSANP(J)+EPAP(4*(N-1)+J)*VFFN
  15         CONTINUE
           END IF
-          TEMPM = TEMPM + TM(N)*VFF(N,KPG)
-          TEMPP = TEMPP + TP(N)*VFF(N,KPG)
-          SECHGM = SECHGM + SECHM(N)*VFF(N,KPG)
-          SECHGP = SECHGP + SECHP(N)*VFF(N,KPG)
+          TEMPM = TEMPM + TM(N)*VFFN
+          TEMPP = TEMPP + TP(N)*VFFN
+          SECHGM = SECHGM + SECHM(N)*VFFN
+          SECHGP = SECHGP + SECHP(N)*VFFN
  10     CONTINUE
 C
-
-
 C     CALCUL DE DFDI,F,EPSM,DEPS,R(EN AXI) ET POIDS
 C
         DO 20 J = 1,6
@@ -261,15 +272,13 @@ C
           DEPS(J)=0.D0
 20      CONTINUE
 C
-        CALL NMGEOM(NDIM,NNO,AXI,GRAND,GEOM,KPG,POIDSG(KPG),
-     &              VFF(1,KPG),DFDE,DUM,DFDK,DEPLM,POIDS,DFDI,
-     &              F,EPSM,R)
+        CALL NMGEOM(NDIM,NNO,AXI,GRAND,GEOM,KPG,IPOIDS,IVF,IDFDE,
+     &              DEPLM,POIDS,DFDI,F,EPSM,R)
 
 C     CALCUL DE DEPS
 C
-        CALL NMGEOM(NDIM,NNO,AXI,GRAND,GEOM,KPG,POIDSG(KPG),
-     &              VFF(1,KPG),DFDE,DUM,DFDK,DDEPL,POIDS,DFDI,
-     &              F,DEPS,R)
+        CALL NMGEOM(NDIM,NNO,AXI,GRAND,GEOM,KPG,IPOIDS,IVF,IDFDE,
+     &              DDEPL,POIDS,DFDI,F,DEPS,R)
 
 C     CALCUL DES PRODUITS SYMETR. DE F PAR N,
         DO 40 N=1,NNO
@@ -288,17 +297,15 @@ C
 
 
 C     CALCUL DE DFDIB,FB,EPSR,DEPSR ET POIDS
-       
-        CALL NMGEOB(NDIM, NNOB, GEOMB, KPG, POIDSG(KPG), VFFB(1,KPG),
-     &              DFDEB, DFDNB, DFDKB, EPSB, POIDS, DFDIB,
-     &              EPSRM, GEPSRM)
+
+        CALL NMGEOB(NDIM, NNOB, GEOMB, KPG, IPOIDS, IVFB, IDFDEB,
+     &              EPSB, POIDS, DFDIB, EPSRM, GEPSRM)
 C
 C     CALCUL DE DEPSR
 C
-        CALL NMGEOB(NDIM, NNOB, GEOMB, KPG, POIDSG(KPG), VFFB(1,KPG),
-     &              DFDEB, DFDNB, DFDKB, DEPSB, POIDS, DFDIB,
-     &              DEPSR, DGEPSR)
-               
+        CALL NMGEOB(NDIM, NNOB, GEOMB, KPG, IPOIDS, IVFB, IDFDEB,
+     &              DEPSB, POIDS, DFDIB, DEPSR, DGEPSR)
+
 C   REUNION DES EPSM, DEPS AVEC EPSRM, DEPSR POUR PASSAGE DANS NMCOMP
 
         CALL R8INIR(12,0.D0,EPSTM,1)
@@ -306,73 +313,42 @@ C   REUNION DES EPSM, DEPS AVEC EPSRM, DEPSR POUR PASSAGE DANS NMCOMP
 
         DO 311 I=1,NDIMSI
           EPSTM(I)=EPSM(I)
-          EPSTM(I+6)=EPSRM(I)       
+          EPSTM(I+6)=EPSRM(I)
           DEPST(I)=DEPS(I)
-          DEPST(I+6)=DEPSR(I)       
+          DEPST(I+6)=DEPSR(I)
  311    CONTINUE
 
 
 C - LOI DE COMPORTEMENT
 
-       IF (OPTION .EQ. 'RIGI_MECA_ELAS') THEN
-         NOMRES(1) = 'E'
-         NOMRES(2) = 'NU'
-
-         CALL RCVALA ( IMATE,'ELAS',0,' ',0.D0,2,
-     &              NOMRES,VALRES,COD2, 'FM')
-
-         E     = VALRES(1)
-         NU    = VALRES(2)
-         LAMBDA = E * NU / (1.D0+NU) / (1.D0 - 2.D0*NU)
-         DEUXMU = E/(1.D0+NU)
-         
-   
-          DO 1000 I=1,NDIMSI
-            DO 1100 J=1,NDIMSI
-              DSIDEP(I,J)=0.D0
-1100        CONTINUE
-1000      CONTINUE
-    
-          DO 100 I=1,3
-            DO 110 J=1,3
-              DSIDEP(I,J)=LAMBDA
-110         CONTINUE
-100       CONTINUE
-          DO 120 I=1,NDIMSI
-            DSIDEP(I,I)=DSIDEP(I,I)+DEUXMU
-120       CONTINUE
-
-       ELSE
-
-         CALL NMCOMP(NDIM,TYPMOD,IMATE,COMPOR,CRIT,INSTAM,INSTAP,
-     &            TEMPM,TEMPP,TREF,HYDRGM,HYDRGP,SECHGM,SECHGP,
-     &            EPSTM,DEPST,SIGN,VIM(1,KPG),OPTION,EPSANM,
-     &            EPSANP,
-     &            NZ,PHASM(1,KPG),PHASP(1,KPG),ELGEOM(1,KPG),
-     &            SIGMA,VIP(1,KPG),DSIDPT,COD(KPG))
+       CALL NMCOMP(NDIM,TYPMOD,IMATE,COMPOR,CRIT,INSTAM,INSTAP,
+     &          TEMPM,TEMPP,TREF,HYDRGM,HYDRGP,SECHGM,SECHGP,
+     &          EPSTM,DEPST,SIGN,VIM(1,KPG),OPTION,EPSANM,
+     &          EPSANP,
+     &          NZ,PHASM(1,KPG),PHASP(1,KPG),ELGEOM(1,KPG),
+     &          SIGMA,VIP(1,KPG),DSIDPT,COD(KPG),R8VIDE(),R8VIDE())
 
        IF(COD(KPG).EQ.1) THEN
          GOTO 1956
        ENDIF
 
-         DO 313 I=1,6
-           DO 314 J=1,6
-             DSIDEP(I,J)=DSIDPT(I,J)
-             DSIDPR(I,J)=DSIDPT(I+6,J)
- 314       CONTINUE
- 313     CONTINUE
-         
-       ENDIF
+       DO 313 I=1,6
+         DO 314 J=1,6
+           DSIDEP(I,J)=DSIDPT(I,J)
+           DSIDPR(I,J)=DSIDPT(I+6,J)
+ 314     CONTINUE
+ 313   CONTINUE
+
 C
-C 
+C
 C - CALCUL DE LA MATRICE DE RIGIDITE U/U
 C
         IF ( OPTION(1:9) .EQ. 'RIGI_MECA'
-     &  .OR. OPTION(1: 9) .EQ. 'FULL_MECA'    ) THEN
-C    
-          
+     &  .OR. OPTION(1:9) .EQ. 'FULL_MECA'    ) THEN
+C
+
           DO 190 I=1,NDIM
-            DO 180 M=1,NNO         
+            DO 180 M=1,NNO
                DO 170 N=1,NNO
                 DO 160 J=1,NDIM
                    DO 150 PQ=1,NDIMSI
@@ -381,18 +357,19 @@ C
      &                   +DEF(PQ,N,J)*DSIDEP(PQ,KL)*DEF(KL,M,I)*POIDS
  140                CONTINUE
  150              CONTINUE
- 160            CONTINUE             
+ 160            CONTINUE
  170          CONTINUE
  180        CONTINUE
  190      CONTINUE
 C
-C 
+C
 C -  CALCUL DE LA MATRICE DE RIGIDITE EPSRM/EPSRM
-C 
+C
           DO 171 N=1,NNOB
+           VFFN = ZR(IVFB-1+N+(KPG-1)*NNOB)
            DO 181 M=1,NNOB
-             MATEE(M,N) = MATEE(M,N)
-     &                     +(VFFB(M,KPG)*VFFB(N,KPG))*POIDS
+             VFFM = ZR(IVFB-1+M+(KPG-1)*NNOB)
+             MATEE(M,N) = MATEE(M,N) + VFFM*VFFN*POIDS
              DO 191 K=1,NDIM
                MATEE(M,N) = MATEE(M,N)+(CCC*DFDIB(N,K)*
      &                         DFDIB(M,K))*POIDS
@@ -400,38 +377,40 @@ C
  181       CONTINUE
  171      CONTINUE
 C
-C        
+C
 C -  CALCUL DE LA MATRICE DE RIGIDITE U/EPSRM
- 
+
           DO 192 J=1,NDIM
             DO 182 M=1,NNO
               DO 172 N=1,NNOB
+                 VFFN = ZR(IVFB-1+N+(KPG-1)*NNOB)
                  DO 162 PQ=1,NDIMSI
-            
-                  IF (OPTION.EQ.'RIGI_MECA_ELAS') THEN
+
+                  IF (OPTION(11:14).EQ.'ELAS') THEN
                     MATUE(J,M,N,PQ)=0.D0
                   ELSE
                     DO 152 KL=1,NDIMSI
                       MATUE(J,M,N,PQ) = MATUE(J,M,N,PQ)
-     &                  +DEF(KL,M,J)*DSIDPR(KL,PQ)*VFFB(N,KPG)*POIDS
+     &                  +DEF(KL,M,J)*DSIDPR(KL,PQ)*VFFN*POIDS
  152                CONTINUE
                   ENDIF
-       
+
  162            CONTINUE
- 172          CONTINUE 
+ 172          CONTINUE
  182        CONTINUE
  192      CONTINUE
 C
-C        
+C
 C -  CALCUL DE LA MATRICE DE RIGIDITE EPSRM/U
- 
+
           DO 193 M=1,NNOB
+            VFFM = ZR(IVFB-1+M+(KPG-1)*NNOB)
             DO 183 N=1,NNO
                DO 173 PQ=1,NDIMSI
                  DO 163 J=1,NDIM
                    MATEU(PQ,M,N,J) = MATEU(PQ,M,N,J)
-     &                              - VFFB(M,KPG)*DEF(PQ,N,J)*POIDS
-C            
+     &                              - VFFM*DEF(PQ,N,J)*POIDS
+C
  163            CONTINUE
  173          CONTINUE
  183        CONTINUE
@@ -441,7 +420,7 @@ C
 C - STOCKAGE DE LA MATRICE DE RIGIDITE
 
           DO 590 M=1,NNOB
-            DO 580 I=1,NDIM              
+            DO 580 I=1,NDIM
               KP = (NDIM+NDIMSI)*(M-1) + I
                 DO 560 N=1,NNOB
                 DO 550 KL=1,NDIM
@@ -458,7 +437,7 @@ C - STOCKAGE DE LA MATRICE DE RIGIDITE
                    KU =(NDIM+NDIMSI)*NNOB+ NDIM*(N-NNOB-1) + KL
                    MATR(KP,KU) = MATUU(I,M,N,KL)
 520             CONTINUE
-530           CONTINUE   
+530           CONTINUE
 580         CONTINUE
             DO 570 J=1,NDIMSI
               KP = (NDIM+NDIMSI)*(M-1) + NDIM + J
@@ -468,14 +447,14 @@ C - STOCKAGE DE LA MATRICE DE RIGIDITE
                   MATR(KP,KU) = MATEU(J,M,N,KL)
 551             CONTINUE
                   KU = (NDIM+NDIMSI)*(N-1) + J +NDIM
-                MATR(KP,KU) = MATEE(M,N)         
+                MATR(KP,KU) = MATEE(M,N)
 561           CONTINUE
               DO 531 N=NNOB+1,NNO
                 DO 521 KL=1,NDIM
                    KU=(NDIM+NDIMSI)*(NNO-NNOB)+NDIM*(N-NNOB-1)+KL
                   MATR(KP,KU) = MATEU(J,M,N,KL)
 521             CONTINUE
-531           CONTINUE   
+531           CONTINUE
 570         CONTINUE
 590       CONTINUE
 
@@ -484,7 +463,7 @@ C - STOCKAGE DE LA MATRICE DE RIGIDITE
               KP = (NDIM+NDIMSI)*(NNO-NNOB) + NDIM*(M-NNOB-1) + I
               DO 660 N=1,NNOB
                 DO 650 KL=1,NDIM
-                   KU = (NDIM+NDIMSI)*(N-1) + KL         
+                   KU = (NDIM+NDIMSI)*(N-1) + KL
                    MATR(KP,KU) = MATUU(I,M,N,KL)
 650             CONTINUE
                 DO 640 PQ=1,NDIMSI
@@ -497,7 +476,7 @@ C - STOCKAGE DE LA MATRICE DE RIGIDITE
                    KU=(NDIM+NDIMSI)*(NNO-NNOB)+NDIM*(N-NNOB-1)+KL
                    MATR(KP,KU) = MATUU(I,M,N,KL)
 620             CONTINUE
-630           CONTINUE   
+630           CONTINUE
 680         CONTINUE
 690       CONTINUE
 
@@ -528,21 +507,22 @@ C
  230      CONTINUE
 C
 C
-C - CALCUL DE LA "FORCE" DANS LE CALCUL DE EPSRM 
+C - CALCUL DE LA "FORCE" DANS LE CALCUL DE EPSRM
           DO 290 N=1,NNOB
+            VFFN = ZR(IVFB-1+N+(KPG-1)*NNOB)
             DO 280 PQ=1,NDIMSI
-              VECTUB(PQ,N)=VECTUB(PQ,N)+(VFFB(N,KPG)*(EPSRM(PQ)
-     &          +DEPSR(PQ))-VFFB(N,KPG)*(EPSM(PQ)+DEPS(PQ))) * POIDS
+              VECTUB(PQ,N)=VECTUB(PQ,N)+(VFFN*(EPSRM(PQ)
+     &          +DEPSR(PQ))-VFFN*(EPSM(PQ)+DEPS(PQ))) * POIDS
                DO 270 I=1,NDIM
                 VECTUB(PQ,N)=VECTUB(PQ,N)+CCC*(DFDIB(N,I)*(GEPSRM(PQ,I)
      &                       +DGEPSR(PQ,I))) * POIDS
  270          CONTINUE
- 280        CONTINUE 
+ 280        CONTINUE
  290      CONTINUE
- 
+
 C
 C - STOCKAGE DU VECTEUR FORCE INTERIEUR GLOBAL
-          
+
            DO 490 N=1,NNOB
             DO 480 I=1,NDIM
                KU = (NDIMSI + NDIM)*(N-1) + I
@@ -559,8 +539,7 @@ C - STOCKAGE DU VECTEUR FORCE INTERIEUR GLOBAL
                KU = (NDIMSI + NDIM)*NNOB + NDIM*(N-NNOB-1) + I
                 VECTF(KU) = VECTU(I,N)
 450         CONTINUE
-460       CONTINUE     
-     
+460       CONTINUE
           DO 310 KL=1,3
              SIGP(KL,KPG) = SIGMA(KL)
  310      CONTINUE

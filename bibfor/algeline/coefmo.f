@@ -1,10 +1,10 @@
       SUBROUTINE COEFMO(TYPFLU,ZRIGI,NBM,NMODE,INDIC,X,PULSC,VGAP,XSI0,
-     &                  MASG,VECI1,VECR1,VECR2,VECR3,VECR4,VECR5,XMF,
+     &                  VECI1,VECR1,VECR2,VECR3,VECR4,VECR5,XMF,
      &                  XKF,XCF)
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/10/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*8   TYPFLU
-      REAL*8        XSI0,VGAP,X(2),MASG(*),PULSC,XMF,XCF,RKF
+      REAL*8        XSI0,VGAP,X(2),PULSC,XMF,XCF,RKF
       REAL*8        VECR1(*),VECR2(*),VECR3(*),VECR4(*),VECR5(*)
       INTEGER       NBM,NMODE,INDIC,VECI1(*)
       LOGICAL       ZRIGI

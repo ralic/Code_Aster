@@ -1,8 +1,8 @@
-      SUBROUTINE INSNAT ( SIGF, IMAT, NMAT, MATERF, SEQF , SEUIL )
+      SUBROUTINE INSNAT ( SIGF, NMAT, MATERF, SEQF , SEUIL )
       IMPLICIT REAL*8 (A-H,O-Z)
 C       -----------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/11/96   AUTEUR INBHHOM O.MERABET 
+C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C
 C       OUT :  SEUIL =  SEUIL CRITERE NADAI-TRACTION
 C              SEQF  =  CONTRAINTE EQUIVALENTE EN TRACTION 
 C       ------------------------------------------------------------
-      INTEGER   NMAT , IMAT
+      INTEGER   NMAT
       REAL*8    UN , DEUX , TROIS
       PARAMETER       ( UN     = 1.D0   )
       PARAMETER       ( DEUX   = 2.D0   )

@@ -1,4 +1,4 @@
-#@ MODIF as_courbes Stanley  DATE 21/01/2003   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF as_courbes Stanley  DATE 05/04/2004   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,7 +48,7 @@ def Extr_colonne (table, para, *l_crit) :
 
 class Courbe :
 
-  BAD_VALUES = 'Valeurs incorrectes'
+  BAD_VALUES = 'Valeurs incorrectes (x et y -> vecteurs de meme longueur)'
 
 
 # -------------------------------------------------------------------------
@@ -57,18 +57,54 @@ class Courbe :
 #      defaut : 1 ligne nulle
 
 
-  def __init__ (self, valeurs = Numeric.zeros([1,2])) :
+  def __init__ (self, *para) :
   
-#  Preconditions    
-    if type(valeurs) <> Numeric.ArrayType : raise Courbe.BAD_VALUES
-    dim = len(Numeric.shape(valeurs))
-    if dim <> 2 : raise Courbe.BAD_VALUES
-    if Numeric.shape(valeurs)[1] <> 2 : raise Courbe.BAD_VALUES 
-
-    self.x = valeurs[:,0]
-    self.y = valeurs[:,1]
+    """
+     aucun parametre -> on cree un seul point (0,0)
+     1 parametre     -> on formatte le tableau sur deux colonnes
+     2 parametres    -> on formatte chacun des deux tableaux
+     On peut ainsi traiter :
+       les listes
+       les tableaux Numeric
+       les matrices Matrix  
+    """
     
+    npara = len(para)
+    if npara == 0 :
+      x = Numeric.array([0.])
+      y = Numeric.array([0.])
+    elif npara == 1 :
+      xy = Numeric.array(para[0])
+      xy.shape = (-1,2)
+      x = xy[:,0]
+      y = xy[:,1]
+    elif npara == 2 :
+      x = Numeric.array(para[0])
+      y = Numeric.array(para[1])
+      x.shape = (-1,)
+      y.shape = (-1,)
+    else :
+      raise 'Bad parameter number (0,1 or 2)'
+        
+    dim_x = Numeric.shape(x)
+    dim_y = Numeric.shape(y)
+    if len(dim_x)<>1 or len(dim_y)<>1 : raise Courbe.BAD_VALUES
+    if dim_x <> dim_y : raise Courbe.BAD_VALUES 
 
+    self.x = copy.copy(x)
+    self.y = copy.copy(y)
+
+
+  def set_x(self,vect) :
+    
+    self.x = Numeric.array(vect)
+    self.x.shape = (-1,)
+    
+  def set_y(self,vect) :
+    
+    self.y = Numeric.array(vect)
+    self.y.shape = (-1,)
+    
 # -------------------------------------------------------------------------
 # BUT Lit les abscisses de la courbe a partir d'une colonne d'une table
 
@@ -79,7 +115,7 @@ class Courbe :
     
 
 # -------------------------------------------------------------------------
-# BUT Lit les ordonnées de la courbe a partir d'une colonne d'une table
+# BUT Lit les ordonnees de la courbe a partir d'une colonne d'une table
 
 
   def Lire_y(self, table, para, *l_crit) :
@@ -98,7 +134,7 @@ class Courbe :
       try :
         xmax = disc[p]
         nbr  = disc[p+1]
-        step = (xmax - xmin) / nbr
+        step = (xmax - xmin) / float(nbr)
         for i in xrange(1,nbr+1) :
           l.append(xmin+i*step)
         p    = p+2
@@ -106,9 +142,21 @@ class Courbe :
       except IndexError :
         break
     self.x = Numeric.array(l)
-    self.y = Numeric.zeros(len(l))
+    self.y = Numeric.zeros(len(l),Numeric.Float)
 
   
+  def Merge(self) :
+  
+    """
+      Retourne le tuple pret a l'emploi dans VALE = (x(1),y(1),x(2),...)
+    """
+    
+    l = len(self.x)
+    tab = Numeric.array([self.x,self.y])
+    tab = Numeric.transpose(tab)
+    return tuple(Numeric.reshape(tab,(2*l,)))
+    
+    
 
   def Trace(self, titre = '') :
   
@@ -157,13 +205,24 @@ class Courbe :
 
     x = evol_x.y
     y =   self.y
-    valeurs = Numeric.transpose (Numeric.array( [x,y] ))
-    return Courbe(valeurs)
-    
+    return Courbe(x,y)
+
+
+
+  def Apply(self,fonc) :
+  
+    """
+      Realise : self.y = fonc(self.x)
+    """
+  
+    self.y = Numeric.array(map(fonc,self.x))
+  
+
+
   
   def Operation(self, fonction, *autres_courbes) :
   
-# BUT Applique une fonction sur les ordonnées d'une ou plusieurs courbes
+# BUT Applique une fonction sur les ordonnees d'une ou plusieurs courbes
 
     l_valeurs = [self.y]
     taille = Numeric.shape(self.y)
@@ -176,8 +235,32 @@ class Courbe :
     resu_x = copy.copy(self.x)
     resu_y = apply(fonction, l_valeurs)
     
-    return Courbe(Numeric.transpose(Numeric.array([resu_x, resu_y])))
+    return Courbe(resu_x, resu_y)
 
+
+  def Extract(self, x) :
+  
+    """
+      Retourne self.y qui correspond a self.x = x (si range par ordre croissant)
+    """
+    
+    if x < self.x[0]  or  x > self.x[-1] : 
+      raise 'x hors des bornes'
+    
+    x0 = self.x[0]
+    for i in range(1,len(self.x)) :
+      x1 = self.x[i]
+      if x1 < x0 : 
+        raise 'Les abscisses ne sont pas croissantes'
+      if x <= x1 :
+        x0 = self.x[i-1]
+        y0 = self.y[i-1]
+        y1 = self.y[i]
+        pente = (y1-y0)/(x1-x0)
+        y = y0 + pente * (x-x0)
+        return y, pente
+      x0 = x1
+       
 
   def Proprietes(self, prop) :
   

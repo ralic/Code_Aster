@@ -1,4 +1,4 @@
-#@ MODIF cata_champs Stanley  DATE 21/01/2003   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF cata_champs Stanley  DATE 05/04/2004   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,6 @@ class CHAMP :
     para = {
       'reuse'      : contexte.resultat,
       'RESULTAT'   : contexte.resultat,
-      'MODELE'     : contexte.modele,
       'OPTION'     : champ.nom,
       'CHAM_MATER' : contexte.cham_mater,
       'NUME_ORDRE' : tuple(numeros)
@@ -39,6 +38,9 @@ class CHAMP :
     
     if contexte.cara_elem :
       para['CARA_ELEM'] = contexte.cara_elem
+
+    if champ.nom in ['FORC_NODA','REAC_NODA'] :  # une specificite a disparaitre
+      para['MODELE'] = contexte.modele
   
     apply(CALC_NO,(),para)
 
@@ -95,23 +97,33 @@ class CATA_CHAMPS :
   
     self.cata = {}
     self('DEPL'          , 'NOEU',[],                            "Deplacements aux noeuds")
+    self('TEMP'          , 'NOEU',[],                            "Temperature aux noeuds")
     self('SIEF_ELGA'     , 'ELGA',[],                            "Contraintes aux points de Gauss")
     self('SIEF_ELGA_DEPL', 'ELGA',[],                            "Contraintes aux points de Gauss en lineaire")
     self('VARI_ELGA'     , 'ELGA',[],                            "Variables internes aux points de Gauss")
     self('SIEF_ELNO_ELGA', 'ELNO',['SIEF_ELGA','SIEF_ELGA_DEPL'],"Contraintes aux noeuds par element")
+    self('SIEF_NOEU_ELGA', 'NOEU',['SIEF_ELNO_ELGA'],            "Contraintes aux noeuds")
+    self('FLUX_ELNO_TEMP', 'ELNO',['TEMP'],                      "Flux thermique aux noeuds par element")
     self('VARI_ELNO_ELGA', 'ELNO',['VARI_ELGA'],                 "Variables internes aux noeuds par element")
-    self('EQUI_ELGA_SIGM', 'ELGA',['SIEF_ELGA'],                     "Invariants des contraintes aux points de Gauss")
+    self('VARI_NOEU_ELGA', 'NOEU',['VARI_ELNO_ELGA'],            "Variables internes aux noeuds")
+    self('EQUI_ELGA_SIGM', 'ELGA',['SIEF_ELGA'],                 "Invariants des contraintes aux points de Gauss")
     self('EQUI_ELNO_SIGM', 'ELNO',['SIEF_ELNO_ELGA'],            "Invariants des contraintes aux noeuds par element")
-    self('EPSI_ELGA_DEPL', 'ELGA',['DEPL'],                          "Deformations aux points de Gauss")
-    self('EPSI_ELNO_DEPL', 'ELNO',['DEPL'],                          "Deformations aux noeuds par elements")
-    self('EPSG_ELGA_DEPL', 'ELGA',['DEPL'],                          "Deformations de Green aux points de Gauss")
-    self('EPSG_ELNO_DEPL', 'ELNO',['DEPL'],                          "Deformations de Green aux noeuds par elements")
-    self('EPME_ELNO_DEPL', 'ELNO',['DEPL'],                          "Deformations mecaniques aux noeuds par elements")
+    self('EQUI_NOEU_SIGM', 'NOEU',['EQUI_ELNO_SIGM'],            "Invariants des contraintes aux noeuds")
+    self('EPSI_ELGA_DEPL', 'ELGA',['DEPL'],                      "Deformations aux points de Gauss")
+    self('EPSI_ELNO_DEPL', 'ELNO',['DEPL'],                      "Deformations aux noeuds par elements")
+    self('EPSI_NOEU_DEPL', 'NOEU',['EPSI_ELNO_DEPL'],            "Deformations aux noeuds")
+    self('EPSG_ELGA_DEPL', 'ELGA',['DEPL'],                      "Deformations de Green aux points de Gauss")
+    self('EPSG_ELNO_DEPL', 'ELNO',['DEPL'],                      "Deformations de Green aux noeuds par elements")
+    self('EPSG_NOEU_DEPL', 'NOEU',['EPSG_ELNO_DEPL'],            "Deformations de Green aux noeuds")
+    self('EPME_ELNO_DEPL', 'ELNO',['DEPL'],                      "Deformations mecaniques aux noeuds par elements")
     self('EQUI_ELGA_EPSI', 'ELGA',['EPSI_ELGA_DEPL'],            "Invariants des deformations aux points de Gauss")
     self('EQUI_ELNO_EPSI', 'ELNO',['EPSI_ELNO_DEPL'],            "Invariants des deformations aux noeuds par element")
+    self('EQUI_NOEU_EPSI', 'NOEU',['EQUI_ELNO_EPSI'],            "Invariants des deformations aux noeuds")
     self('ERRE_ELGA_NORE', 'ELGA',['SIEF_ELNO_ELGA'],            "Indicateurs d'erreur en residu aux points de Gauss")
     self('ERRE_ELNO_ELGA', 'ELNO',['ERRE_ELGA_NORE'],            "Indicateurs d'erreur en residu aux noeuds par element")
-
+    self('ERTH_ELNO_ELEM', 'ELNO',[],                            "Indicateurs d'erreur en thermique")
+    self('FORC_NODA'     , 'NOEU',['SIEF_ELGA'],                 "Forces nodales")
+ 
      
   def __getitem__(self, nom_cham) :
        

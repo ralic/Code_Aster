@@ -1,11 +1,11 @@
-        SUBROUTINE LIRLIG ( IFL, IFM, CNL, LIG, ILEC )
+        SUBROUTINE LIRLIG ( IFL, CNL, LIG, ILEC )
         IMPLICIT   NONE
-        INTEGER             IFL, IFM,           ILEC
+        INTEGER             IFL,           ILEC
         CHARACTER*14                  CNL
         CHARACTER*80                       LIG
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C       ----------------------------------------------------------------
 C       LECTURE DE LA LIGNE SUIVANTE ET STOCKAGE DANS LE BUFFER LIG
 C       ----------------------------------------------------------------
 C       IN      IFL     = NUMERO UNITE FICHIER MAILLAGE
-C               IFM     = NUMERO UNITE FICHIER MESSAGE
 C               ILEC    = 1     >  PREMIERE LECTURE DU FICHIER
 C                       = 2     >  SECONDE  LECTURE DU FICHIER
 C       OUT     CNL     = NUMERO LIGNE LUE (CHAINE)

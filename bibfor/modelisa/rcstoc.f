@@ -1,14 +1,14 @@
       SUBROUTINE RCSTOC ( NOMMAT, NOMRC, NBOBJ, VALR, VALC, VALK,
      &                    NBR, NBC, NBK )
       IMPLICIT   NONE
-      INTEGER            NBOBJ, NBR, NBC, NBK
+      INTEGER            NBR, NBC, NBK, NBOBJ
       REAL*8             VALR(*)
       COMPLEX*16         VALC(*)
       CHARACTER*8        NOMMAT, VALK(*)
       CHARACTER*16       NOMRC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF MODELISA  DATE 16/12/2003   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,7 @@ C          ET LES K8 CARACTERISANT LA LOI DE COMPORTEMENT DE NOM NOMRC
 C
 C  IN  NOMMAT : NOM UTILISATEUR DU MATERIAU
 C  IN  NOMRC  : NOM DE LA R.C.
-C  IN  NBOBJ  : NOMBRE DE COMPOSANTS DE LA RC (NOMBRE DE MOTS-CLE)
+C  IN  NBOBJ  : NOMBRE DE MCSIMPS
 C  OUT VALR   : VECTEUR DES VALEURS REELLES
 C  OUT VALK   : VECTEUR DES K8
 C  OUT VALC   : VECTEUR DES COMPLEXES
@@ -63,7 +63,6 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       REAL*8             VALR8,E1,EI,PRECMA
       CHARACTER*4        VALTX
-      CHARACTER*7        PV
       CHARACTER*8        VALCH,TYPFON,NOMPF(10),K8BID,CPROL,NOMCLE(5)
       CHARACTER*8        MCLE8
       CHARACTER*19       RDEP,NOMFCT,CH19,MZP,NOMINT
@@ -74,6 +73,7 @@ C
       INTEGER            I,J,K,II,JFCT,JPRO,JRPV,JVALE,NBCOUP,N,NF
       INTEGER            IRET,NBFCT,NBPTS,JPROL,NBPTM
       INTEGER            IEXIST,LPRO1,LPRO2
+      LOGICAL            EXIST,GETEXM
 C ----------------------------------------------------------------------
 C
       INTEGER            GTENV,FOUND,NPES,NBPTMS,ICOUNT
@@ -89,13 +89,10 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL GETMFM ( NOMRC, 0, K8BID, K8BID, N )
-      NBOBJ = - N
       CALL WKVECT ( '&&RCSTOC.TYPOBJ', 'V V K8' , NBOBJ, JTYPO )
       CALL WKVECT ( '&&RCSTOC.NOMOBJ', 'V V K16', NBOBJ, JNOMO )
       CALL WKVECT ( '&&RCSTOC.PARAME', 'V V K8' , NBOBJ, JPARA )
-      CALL GETMFM ( NOMRC, NBOBJ,ZK16(JNOMO),ZK8(JTYPO),N)
-
+      CALL GETMJM ( NOMRC,0,NBOBJ,ZK16(JNOMO),ZK8(JTYPO),N)
 
 C     ON VERIFIE QUE 2 MOTS CLES DIFFERENTS N'ONT PAS LES MEMES
 C     8 PREMIERS CARACTERES :
@@ -124,17 +121,15 @@ C        ON EST OBLIGE DE RECOPIER LA GLUTE ELAS_FLUI :
          END IF
 777   CONTINUE
       CALL JEDETR('&&RCSTOC.TEMPOR')
-
+C
+      EXIST = GETEXM(NOMRC,'VERI_P')
       NBPAR = 0
-      DO 10 I = 1 , NBOBJ
-        WRITE( PV , '(''VERI_P'',I1)' ) I
-        DO 11 J = 1 , NBOBJ
-          IF ( ZK16(JNOMO+J-1)(1:7) .EQ. PV ) THEN
-           NBPAR = NBPAR + 1
-           CALL GETVTX(NOMRC,ZK16(JNOMO+J-1),1,1,1,ZK8(JPARA+NBPAR-1),N)
-          ENDIF
- 11      CONTINUE
- 10   CONTINUE
+      IF (EXIST) THEN
+        CALL GETVTX(NOMRC,'VERI_P',1,1,0,K8BID,N)
+        N = -N
+        CALL GETVTX(NOMRC,'VERI_P',1,1,N,ZK8(JPARA+NBPAR),N)
+        NBPAR = NBPAR + N
+      ENDIF
 C
       NBR = 0
       NBC = 0

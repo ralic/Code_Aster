@@ -1,9 +1,9 @@
       SUBROUTINE TE0551 ( OPTION , NOMTE )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,23 +47,15 @@ C
 C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CHARACTER*24       CHMAT,CARAC,NOMRES(5)
-      CHARACTER*8        ELREFE
+      CHARACTER*24       NOMRES(5)
       CHARACTER*2        CODRET(5)
       REAL*8             PHASE(5),VALRES(5),ZALPHA,DURTPG(9)
-      INTEGER            NNO,ICARAC,NPG,NPG1,MATOS,IMATE
-C
-C
-      CALL ELREF1(ELREFE)
+      INTEGER            MATOS,IMATE,IPHASI,IDURT,KP,I,NCMP
+      INTEGER            NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO
+C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-
-C
-      NPG    = NPG1
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PPHASIN','L',IPHASI)
@@ -103,23 +95,8 @@ C
 300   CONTINUE
 C
       IF ( OPTION .EQ. 'DURT_ELNO_META' ) THEN
-        IF (NOMTE(5:8).EQ.'TR3 ') THEN
-           NNOS = NNO
-        ELSE IF (NOMTE(5:8).EQ.'QU4 ') THEN
-           NNOS = NNO
-        ELSE IF (NOMTE(5:8).EQ.'TR6 ') THEN
-           NNOS = 3
-        ELSE IF (NOMTE(5:8).EQ.'QS8 ') THEN
-           NNOS = 4
-        ELSE IF (NOMTE(5:8).EQ.'QU8 ' .OR. NOMTE(5:8).EQ.'QU9 ') THEN
-           NNOS = 4
-        END IF
-C
-C ----- RECUPERATION DE LA MATRICE DE PASSAGE PTS DE GAUSS - NOEUDS
-C
         NCMP = 1
-        CALL PPGANO(NNOS,NPG,NCMP,DURTPG,ZR(IDURT))
-C
+        CALL PPGAN2 ( JGANO, NCMP, DURTPG, ZR(IDURT) )
       ENDIF
 C
 9999  CONTINUE

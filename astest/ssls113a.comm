@@ -1,4 +1,5 @@
-# MODIF  DATE 03/10/2001   AUTEUR CIBHHLV L.VIVAN 
+
+# MODIF  DATE 15/03/2004   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DKT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,406 +36,464 @@
 # CALCUL 3 : 2 PLAQUES EXCENTREES EN MATERIAU ELAS_COQUE
 #            EQUIVALENTES AUX CALCULS 1 ET 2 
 # ______________________________________________________________________
+
+DEBUT(CODE=_F(NOM='SSLS113A',
+              NIV_PUB_WEB='INTERNET',),);
 #
 
-DEBUT(CODE=_F(  NOM = 'SSLS113A',NIV_PUB_WEB='INTERNET') )
+MA=LIRE_MAILLAGE();
 
-#
-MA=LIRE_MAILLAGE( )
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_MA=_F(NOM='TOUT',
+                               TOUT='OUI',),);
 
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
-               CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='DKT',),);
 
-MO=AFFE_MODELE(  MAILLAGE=MA,
-                    AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'DKT') )
+EP=AFFE_CARA_ELEM(MODELE=MO,
+                  COQUE=_F(GROUP_MA='TOUT',
+                           EPAIS=0.0,
+                           ANGL_REP=(0.0,0.0,),),);
 
-EP=AFFE_CARA_ELEM(  MODELE=MO, 
-                    COQUE=_F(  GROUP_MA = 'TOUT',
-                               EPAIS    = 0.0,
-                               ANGL_REP = (0.,0.,)) )
+EP2=AFFE_CARA_ELEM(MODELE=MO,
+                   COQUE=_F(GROUP_MA='TOUT',
+                            EPAIS=0.002,
+                            ANGL_REP=(0.0,0.0,),),);
 
-EP2=AFFE_CARA_ELEM(  MODELE=MO, 
-                     COQUE=_F(  GROUP_MA = 'TOUT',
-                                EPAIS    = 2.E-3,
-                                ANGL_REP = (0.,0.,)) )
+MAT1A=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=6800.0,
+                                 E_T=6800.0,
+                                 NU_LT=0.35,
+                                 G_LT=2530.0,),);
 
-MAT1A=DEFI_MATERIAU(  ELAS_ORTH=_F( E_L = 6800., E_T = 6800., NU_LT = 0.35,
-                                     G_LT = 2530.) )
+MAT1B=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=14000.0,
+                                 E_T=14000.0,
+                                 NU_LT=0.144,
+                                 G_LT=2070.0,),);
 
-MAT1B=DEFI_MATERIAU(  ELAS_ORTH=_F( E_L = 14000., E_T = 14000., NU_LT = 0.144,
-                                     G_LT = 2070.) )
+MU1=DEFI_COQU_MULT(COUCHE=(_F(EPAIS=0.001,
+                              MATER=MAT1A,
+                              ORIENTATION=0.0,),
+                           _F(EPAIS=0.001,
+                              MATER=MAT1B,
+                              ORIENTATION=0.0,),),);
 
-MU1=DEFI_COQU_MULT( COUCHE=(
-               _F( EPAIS = 1.E-3, MATER = MAT1A, ORIENTATION = 0.),
-               _F( EPAIS = 1.E-3, MATER = MAT1B, ORIENTATION = 0.))
-                      )
+CHMUL1=AFFE_MATERIAU(MAILLAGE=MA,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MU1,),);
 
-CHMUL1=AFFE_MATERIAU(  MAILLAGE=MA, 
-                          AFFE=_F( TOUT = 'OUI',MATER = MU1) )
+CHME=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=(_F(GROUP_NO='GRNO11',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,
+                                 DRX=0.0,
+                                 DRY=0.0,
+                                 DRZ=0.0,),
+                              _F(GROUP_NO='GRNO13',
+                                 DX=0.0707099974155,
+                                 DY=0.0707099974155,),),);
+C1111 = 22.0457389616;
 
-CHME=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
-                         _F( 
-         GROUP_NO = 'GRNO11',  
-         DX = 0., DY = 0., DZ = 0.,  DRX = 0., DRY = 0., DRZ = 0.),
-                         _F( 
-         GROUP_NO = 'GRNO13',  
-         DX = 0.070709997415543, DY = 0.070709997415543))
-                                  )
+C1122 = 4.77093968683;
 
-C1111=22045.7389616E-3
+C2222 = 22.0457389616;
 
-C1122=4770.93968683E-3
+C1212 = 4.6;
 
-C2222=22045.7389616E-3
+D1111 = 7.34857965387e-06;
 
-C1212=4600.E-3
+D1122 = 1.59031322894e-06;
 
-D1111=7348.57965387E-9
+D2222 = 7.34857965387e-06;
 
-D1122=1590.31322894E-9
+D1212 = 1.5333333333e-06;
 
-D2222=7348.57965387E-9
+B1111 = 0.0032735817315;
 
-D1212=1533.3333333E-9
+B1122 = -0.00032678086884;
 
-B1111=3273.5817315E-6
+B2222 = 0.0032735817315;
 
-B1122=-326.78086884E-6
+B1212 = -0.00023;
 
-B2222=3273.5817315E-6
+G11 = 4.6;
 
-B1212=-230.0E-6
+G22 = 4.6;
 
-G11=4600.E-3
 
-G22=4600.E-3
+MU2=DEFI_MATERIAU(ELAS_COQUE=_F(M_LLLL=C1111,
+                                M_LLTT=C1122,
+                                M_LLLT=0.0,
+                                M_TTTT=C2222,
+                                M_TTLT=0.0,
+                                M_LTLT=C1212,
+                                F_LLLL=D1111,
+                                F_LLTT=D1122,
+                                F_LLLT=0.0,
+                                F_TTTT=D2222,
+                                F_TTLT=0.0,
+                                F_LTLT=D1212,
+                                MF_LLLL=B1111,
+                                MF_LLTT=B1122,
+                                MF_LLLT=0.0,
+                                MF_TTTT=B2222,
+                                MF_TTLT=0.0,
+                                MF_LTLT=B1212,
+                                MC_LLLZ=0.0,
+                                MC_LLTZ=0.0,
+                                MC_TTLZ=0.0,
+                                MC_TTTZ=0.0,
+                                MC_LTLZ=0.0,
+                                MC_LTTZ=0.0,
+                                FC_LLLZ=0.0,
+                                FC_LLTZ=0.0,
+                                FC_TTLZ=0.0,
+                                FC_TTTZ=0.0,
+                                FC_LTLZ=0.0,
+                                FC_LTTZ=0.0,
+                                C_LZLZ=G11,
+                                C_LZTZ=0.0,
+                                C_TZTZ=G22,),);
 
-MU2=DEFI_MATERIAU( ELAS_COQUE=_F(    M_LLLL = C1111,
-                                      M_LLTT = C1122,
-                                      M_LLLT = 0.,
-                                      M_TTTT = C2222,
-                                      M_TTLT = 0.,
-                                      M_LTLT = C1212,
-#
-                                      F_LLLL = D1111,
-                                      F_LLTT = D1122,
-                                      F_LLLT = 0.,
-                                      F_TTTT = D2222,
-                                      F_TTLT = 0.,
-                                      F_LTLT = D1212,
-#
-                                      MF_LLLL = B1111,
-                                      MF_LLTT = B1122,
-                                      MF_LLLT = 0.,
-                                      MF_TTTT = B2222,
-                                      MF_TTLT = 0.,
-                                      MF_LTLT = B1212,
-#
-                                      MC_LLLZ = 0.,
-                                      MC_LLTZ = 0.,
-                                      MC_TTLZ = 0.,
-                                      MC_TTTZ = 0.,
-                                      MC_LTLZ = 0.,
-                                      MC_LTTZ = 0.,
-#
-                                      FC_LLLZ = 0.,
-                                      FC_LLTZ = 0.,
-                                      FC_TTLZ = 0.,
-                                      FC_TTTZ = 0.,
-                                      FC_LTLZ = 0.,
-                                      FC_LTTZ = 0.,
-#
-                                      C_LZLZ = G11,
-                                      C_TZTZ = G22,   
-                                      C_LZTZ = 0.) )
+CHMUL2=AFFE_MATERIAU(MAILLAGE=MA,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MU2,),);
 
-CHMUL2=AFFE_MATERIAU(  MAILLAGE=MA, 
-                          AFFE=_F( TOUT = 'OUI',MATER = MU2) )
+MA3=CREA_MAILLAGE(MAILLAGE=MA,
+                  CREA_GROUP_MA=_F(NOM='PLAQ2',
+                                   GROUP_MA='PLAQ1',
+                                   PREF_MAILLE='MAIL',),);
 
-MA3=CREA_MAILLAGE(   MAILLAGE=MA,
-                       CREA_GROUP_MA=_F(  NOM = 'PLAQ2',
-                                       GROUP_MA = 'PLAQ1',
-                                       PREF_MAILLE = 'MAIL')
-                      )
+MO3=AFFE_MODELE(MAILLAGE=MA3,
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKT',),);
 
-MO3=AFFE_MODELE(  MAILLAGE=MA3,
-                    AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
-                    MODELISATION = 'DKT') )
+EP3=AFFE_CARA_ELEM(MODELE=MO3,
+                   COQUE=(_F(GROUP_MA='TOUT',
+                             EPAIS=0.001,),
+                          _F(GROUP_MA='PLAQ1',
+                             EPAIS=0.001,
+                             ANGL_REP=(0.0,0.0,),
+                             EXCENTREMENT=0.0005,
+                             INER_ROTA='OUI',),
+                          _F(GROUP_MA='PLAQ2',
+                             EPAIS=0.001,
+                             ANGL_REP=(0.0,0.0,),
+                             EXCENTREMENT=-0.0005,
+                             INER_ROTA='OUI',),),);
+AC1111 = 7.74928774929;
 
-EP3=AFFE_CARA_ELEM(  MODELE=MO3,COQUE=( 
+AC1122 = 2.71225071225;
 
-#   POUR AFFECTER DES CARACTERISTIQUES AUX MAILLES DE BORD
-#   DONC EVITER LES ALARMES
-                       _F(  GROUP_MA = 'TOUT',
-                                EPAIS = 1.E-3), 
-                        _F(  GROUP_MA = 'PLAQ1', 
-                                EPAIS = 1.E-3, ANGL_REP = (0.,0.,),
-                                EXCENTREMENT = 0.5E-3,
-                                INER_ROTA = 'OUI'), 
-                        _F(  GROUP_MA = 'PLAQ2', 
-                                EPAIS = 1.E-3, ANGL_REP = (0.,0.,),
-                                EXCENTREMENT = -0.5E-3,
-                              INER_ROTA = 'OUI')) 
-                     )
+AC2222 = 7.74928774929;
 
-AC1111=7749.28774929E-3
+AC1212 = 2.53;
 
-AC1122=2712.25071225E-3
+AD1111 = 6.45773981243e-07;
 
-AC2222=7749.28774929E-3
+AD1122 = 2.26020893435e-07;
 
-AC1212=2530.E-3
+AD2222 = 6.45773981243e-07;
 
-AD1111=645.773981243E-9
+AD1212 = 2.1083333333e-07;
 
-AD1122=226.020893435E-9
+AB1111 = 0.0;
 
-AD2222=645.773981243E-9
+AB1122 = 0.0;
 
-AD1212=210.83333333E-9
+AB2222 = 0.0;
 
-AB1111=0.
+AB1212 = 0.0;
 
-AB1122=0.
+AG11 = 2.53;
 
-AB2222=0.
+AG22 = 2.53;
 
-AB1212=0.
 
-AG11=2530.E-3
+MU31=DEFI_MATERIAU(ELAS_COQUE=_F(M_LLLL=AC1111,
+                                 M_LLTT=AC1122,
+                                 M_LLLT=0.0,
+                                 M_TTTT=AC2222,
+                                 M_TTLT=0.0,
+                                 M_LTLT=AC1212,
+                                 F_LLLL=AD1111,
+                                 F_LLTT=AD1122,
+                                 F_LLLT=0.0,
+                                 F_TTTT=AD2222,
+                                 F_TTLT=0.0,
+                                 F_LTLT=AD1212,
+                                 MF_LLLL=AB1111,
+                                 MF_LLTT=AB1122,
+                                 MF_LLLT=0.0,
+                                 MF_TTTT=AB2222,
+                                 MF_TTLT=0.0,
+                                 MF_LTLT=AB1212,
+                                 MC_LLLZ=0.0,
+                                 MC_LLTZ=0.0,
+                                 MC_TTLZ=0.0,
+                                 MC_TTTZ=0.0,
+                                 MC_LTLZ=0.0,
+                                 MC_LTTZ=0.0,
+                                 FC_LLLZ=0.0,
+                                 FC_LLTZ=0.0,
+                                 FC_TTLZ=0.0,
+                                 FC_TTTZ=0.0,
+                                 FC_LTLZ=0.0,
+                                 FC_LTTZ=0.0,
+                                 C_LZLZ=AG11,
+                                 C_LZTZ=0.0,
+                                 C_TZTZ=AG22,),);
+BC1111 = 14.2964512123;
 
-AG22=2530.E-3
+BC1122 = 2.05868897458;
 
-MU31=DEFI_MATERIAU( ELAS_COQUE=_F(   M_LLLL = AC1111,
-                                      M_LLTT = AC1122,
-                                      M_LLLT = 0.,
-                                      M_TTTT = AC2222,
-                                      M_TTLT = 0.,
-                                      M_LTLT = AC1212,
-#
-                                      F_LLLL = AD1111,
-                                      F_LLTT = AD1122,
-                                      F_LLLT = 0.,
-                                      F_TTTT = AD2222,
-                                      F_TTLT = 0.,
-                                      F_LTLT = AD1212,
-#
-                                      MF_LLLL = AB1111,
-                                      MF_LLTT = AB1122,
-                                      MF_LLLT = 0.,
-                                      MF_TTTT = AB2222,
-                                      MF_TTLT = 0.,
-                                      MF_LTLT = AB1212,
-#
-                                      MC_LLLZ = 0.,
-                                      MC_LLTZ = 0.,
-                                      MC_TTLZ = 0.,
-                                      MC_TTTZ = 0.,
-                                      MC_LTLZ = 0.,
-                                      MC_LTTZ = 0.,
-#
-                                      FC_LLLZ = 0.,
-                                      FC_LLTZ = 0.,
-                                      FC_TTLZ = 0.,
-                                      FC_TTTZ = 0.,
-                                      FC_LTLZ = 0.,
-                                      FC_LTTZ = 0.,
-#
-                                      C_LZLZ = AG11,
-                                      C_TZTZ = AG22,   
-                                      C_LZTZ = 0.) )
+BC2222 = 14.2964512123;
 
-BC1111=14296.4512123E-3
+BC1212 = 2.07;
 
-BC1122=2058.68897458E-3
+BD1111 = 1.19137093436e-06;
 
-BC2222=14296.4512123E-3
+BD1122 = 1.71557414548e-07;
 
-BC1212=2070.E-3
+BD2222 = 1.19137093436e-06;
 
-BD1111=1191.37093436E-9
+BD1212 = 1.725e-07;
 
-BD1122=171.557414548E-9
+BB1111 = 0.0;
 
-BD2222=1191.37093436E-9
+BB1122 = 0.0;
 
-BD1212=172.5E-9
+BB2222 = 0.0;
 
-BB1111=0.
+BB1212 = 0.0;
 
-BB1122=0.
+BG11 = 2.07;
 
-BB2222=0.
+BG22 = 2.07;
 
-BB1212=0.
 
-BG11=2070.E-3
+MU32=DEFI_MATERIAU(ELAS_COQUE=_F(M_LLLL=BC1111,
+                                 M_LLTT=BC1122,
+                                 M_LLLT=0.0,
+                                 M_TTTT=BC2222,
+                                 M_TTLT=0.0,
+                                 M_LTLT=BC1212,
+                                 F_LLLL=BD1111,
+                                 F_LLTT=BD1122,
+                                 F_LLLT=0.0,
+                                 F_TTTT=BD2222,
+                                 F_TTLT=0.0,
+                                 F_LTLT=BD1212,
+                                 MF_LLLL=BB1111,
+                                 MF_LLTT=BB1122,
+                                 MF_LLLT=0.0,
+                                 MF_TTTT=BB2222,
+                                 MF_TTLT=0.0,
+                                 MF_LTLT=BB1212,
+                                 MC_LLLZ=0.0,
+                                 MC_LLTZ=0.0,
+                                 MC_TTLZ=0.0,
+                                 MC_TTTZ=0.0,
+                                 MC_LTLZ=0.0,
+                                 MC_LTTZ=0.0,
+                                 FC_LLLZ=0.0,
+                                 FC_LLTZ=0.0,
+                                 FC_TTLZ=0.0,
+                                 FC_TTTZ=0.0,
+                                 FC_LTLZ=0.0,
+                                 FC_LTTZ=0.0,
+                                 C_LZLZ=BG11,
+                                 C_LZTZ=0.0,
+                                 C_TZTZ=BG22,),);
 
-BG22=2070.E-3
+CHMUL3=AFFE_MATERIAU(MAILLAGE=MA3,
+                     AFFE=(_F(GROUP_MA='PLAQ2',
+                              MATER=MU31,),
+                           _F(GROUP_MA='PLAQ1',
+                              MATER=MU32,),),);
 
-MU32=DEFI_MATERIAU( ELAS_COQUE=_F(   M_LLLL = BC1111,
-                                      M_LLTT = BC1122,
-                                      M_LLLT = 0.,
-                                      M_TTTT = BC2222,
-                                      M_TTLT = 0.,
-                                      M_LTLT = BC1212,
-#
-                                      F_LLLL = BD1111,
-                                      F_LLTT = BD1122,
-                                      F_LLLT = 0.,
-                                      F_TTTT = BD2222,
-                                      F_TTLT = 0.,
-                                      F_LTLT = BD1212,
-#
-                                      MF_LLLL = BB1111,
-                                      MF_LLTT = BB1122,
-                                      MF_LLLT = 0.,
-                                      MF_TTTT = BB2222,
-                                      MF_TTLT = 0.,
-                                      MF_LTLT = BB1212,
-#
-                                      MC_LLLZ = 0.,
-                                      MC_LLTZ = 0.,
-                                      MC_TTLZ = 0.,
-                                      MC_TTTZ = 0.,
-                                      MC_LTLZ = 0.,
-                                      MC_LTTZ = 0.,
-#
-                                      FC_LLLZ = 0.,
-                                      FC_LLTZ = 0.,
-                                      FC_TTLZ = 0.,
-                                      FC_TTTZ = 0.,
-                                      FC_LTLZ = 0.,
-                                      FC_LTTZ = 0.,
-#
-                                      C_LZLZ = BG11,
-                                      C_TZTZ = BG22,   
-                                      C_LZTZ = 0.) )
-
-CHMUL3=AFFE_MATERIAU(  MAILLAGE=MA3,AFFE=( 
-                          _F( GROUP_MA = 'PLAQ2', MATER = MU31), 
-                          _F( GROUP_MA = 'PLAQ1', MATER = MU32))
-                        )
-
-CHME3=AFFE_CHAR_MECA(  MODELE=MO3,DDL_IMPO=(
-                         _F( 
-         GROUP_NO = 'GRNO11',  
-         DX = 0., DY = 0., DZ = 0.,  DRX = 0., DRY = 0., DRZ = 0.),
-                         _F( 
-         GROUP_NO = 'GRNO13',  
-         DX = 0.070709997415543, DY = 0.070709997415543))
-                                  )
-
+CHME3=AFFE_CHAR_MECA(MODELE=MO3,
+                     DDL_IMPO=(_F(GROUP_NO='GRNO11',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,
+                                  DRX=0.0,
+                                  DRY=0.0,
+                                  DRZ=0.0,),
+                               _F(GROUP_NO='GRNO13',
+                                  DX=0.0707099974155,
+                                  DY=0.0707099974155,),),);
 # ______________________________________________________________________
 #
 #                         RESOLUTION
 # ______________________________________________________________________
-#
-MEL1=CALC_MATR_ELEM(  MODELE=MO, CHARGE=CHME, CHAM_MATER=CHMUL1,
-                         CARA_ELEM=EP, OPTION='RIGI_MECA' )
 
-VEL1=CALC_VECT_ELEM(  OPTION='CHAR_MECA', CHAM_MATER=CHMUL1,
-                         CHARGE=CHME, CARA_ELEM=EP )
 
-NU1=NUME_DDL(  MATR_RIGI=MEL1 )
+STA1=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CHMUL1,
+                   CARA_ELEM=EP,
+                   EXCIT=_F(CHARGE=CHME,),);
 
-MATASS1=ASSE_MATRICE(  MATR_ELEM=MEL1, NUME_DDL=NU1 )
+STA1=CALC_ELEM(reuse =STA1,
+               CARA_ELEM=EP,
+               MODELE=MO,
+               CHAM_MATER=CHMUL1,
+               RESULTAT=STA1,
+               TYPE_OPTION='SIGM_STRUCT',
+               OPTION=('SIEF_ELNO_ELGA','EFGE_ELNO_DEPL',),
+               EXCIT=_F(CHARGE=CHME,),);
+# ______________________________________________________________________
 
-VECASS1=ASSE_VECTEUR(  VECT_ELEM=VEL1, NUME_DDL=NU1 )
 
-MATASS1=FACT_LDLT(reuse=MATASS1,MATR_ASSE=MATASS1 )
+STA2=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CHMUL2,
+                   CARA_ELEM=EP2,
+                   EXCIT=_F(CHARGE=CHME,),);
 
-DEP1=RESO_LDLT(  MATR_FACT=MATASS1, CHAM_NO=VECASS1 )
+STA2=CALC_ELEM(reuse =STA2,
+               CARA_ELEM=EP2,
+               MODELE=MO,
+               CHAM_MATER=CHMUL2,
+               RESULTAT=STA2,
+               TYPE_OPTION='SIGM_STRUCT',
+               OPTION=('SIEF_ELNO_ELGA','EFGE_ELNO_DEPL',),
+               EXCIT=_F(CHARGE=CHME,),);
+                              
+# ______________________________________________________________________
 
-EFF1=CALC_CHAM_ELEM(   MODELE=MO,    CHAM_MATER=CHMUL1,  DEPL=DEP1,
-                          CARA_ELEM=EP,    OPTION='EFGE_ELNO_DEPL', 
-                         PLAN='MOY')
 
+STA3=MECA_STATIQUE(MODELE=MO3,
+                   CHAM_MATER=CHMUL3,
+                   CARA_ELEM=EP3,
+                   EXCIT=_F(CHARGE=CHME3,),);
+
+STA3=CALC_ELEM(reuse =STA3,
+               CARA_ELEM=EP3,
+               MODELE=MO3,
+               CHAM_MATER=CHMUL3,
+               RESULTAT=STA3,
+               TYPE_OPTION='SIGM_STRUCT',
+               OPTION=('SIEF_ELNO_ELGA','EFGE_ELNO_DEPL',),
+               EXCIT=_F(CHARGE=CHME3,),);
+               
+               
 # ______________________________________________________________________
 #
-MEL2=CALC_MATR_ELEM(  MODELE=MO, CHARGE=CHME, CHAM_MATER=CHMUL2,
-                         CARA_ELEM=EP2, OPTION='RIGI_MECA' )
 
-VEL2=CALC_VECT_ELEM(  OPTION='CHAR_MECA', CHAM_MATER=CHMUL2,
-                         CHARGE=CHME, CARA_ELEM=EP2 )
 
-NU2=NUME_DDL(  MATR_RIGI=MEL2 )
 
-MATASS2=ASSE_MATRICE(  MATR_ELEM=MEL2, NUME_DDL=NU2 )
 
-VECASS2=ASSE_VECTEUR(  VECT_ELEM=VEL2, NUME_DDL=NU2 )
+TEST_RESU(RESU=(_F(RESULTAT=STA1,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                      NOEUD='N1',
+                      NOM_CMP='DZ',
+                      VALE=-0.169388457,
+                      PRECISION=0.005,),
+                   _F(RESULTAT=STA1,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                      NOEUD='N10',
+                      NOM_CMP='DX',
+                      VALE=0.00896261,),
+                   _F(RESULTAT=STA1,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                      NOEUD='N10',
+                      NOM_CMP='DY',
+                      VALE=0.00817057,),
+                   _F(RESULTAT=STA1,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                      NOEUD='N10',
+                      NOM_CMP='DZ',
+                      VALE=0.163599,),
+                   _F(RESULTAT=STA1,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                      NOEUD='N10',
+                      NOM_CMP='DRX',
+                      VALE=4.19643,),
+                   _F(RESULTAT=STA1,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                      NOEUD='N10',
+                      NOM_CMP='DRY',
+                      VALE=-0.0507935,),
+                   _F(RESULTAT=STA2,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                      NOEUD='N1',
+                      NOM_CMP='DZ',
+                      VALE=-0.169388457,
+                      PRECISION=0.005,),
+                   _F(RESULTAT=STA2,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                      NOEUD='N10',
+                      NOM_CMP='DX',
+                      VALE=0.00896261,),
+                   _F(RESULTAT=STA2,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                      NOEUD='N10',
+                      NOM_CMP='DY',
+                      VALE=0.00817057,),
+                   _F(RESULTAT=STA2,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                      NOEUD='N10',
+                      NOM_CMP='DZ',
+                      VALE=0.163599,),
+                   _F(RESULTAT=STA2,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                      NOEUD='N10',
+                      NOM_CMP='DRX',
+                      VALE=4.19643,),
+                   _F(RESULTAT=STA2,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                      NOEUD='N10',
+                      NOM_CMP='DRY',
+                      VALE=-0.0507935,),
+                   _F(RESULTAT=STA3,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                      NOEUD='N1',
+                      NOM_CMP='DZ',
+                      VALE=-0.169388457,
+                      PRECISION=0.005,),
+                   _F(RESULTAT=STA3,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                      NOEUD='N10',
+                      NOM_CMP='DX',
+                      VALE=0.00896261,),
+                   _F(RESULTAT=STA3,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                      NOEUD='N10',
+                      NOM_CMP='DY',
+                      VALE=0.00817057,),
+                   _F(RESULTAT=STA3,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                      NOEUD='N10',
+                      NOM_CMP='DZ',
+                      VALE=0.163599,),
+                   _F(RESULTAT=STA3,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                      NOEUD='N10',
+                      NOM_CMP='DRX',
+                      VALE=4.19643,),
+                   _F(RESULTAT=STA3,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                      NOEUD='N10',
+                      NOM_CMP='DRY',
+                      VALE=-0.0507935,),
+                     _F(RESULTAT=STA1,NOM_CHAM='EFGE_ELNO_DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                        MAILLE='M5',
+                        NOEUD='N1',
+                        NOM_CMP='MXX',
+                        VALE=2.316277e-05,
+                        PRECISION=0.01,),
+                     _F(RESULTAT=STA1,NOM_CHAM='EFGE_ELNO_DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                        MAILLE='M5',
+                        NOEUD='N1',
+                        NOM_CMP='MYY',
+                        VALE=-0.000248875,
+                        PRECISION=0.01,),
+                     _F(RESULTAT=STA2,NOM_CHAM='EFGE_ELNO_DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                        MAILLE='M5',
+                        NOEUD='N1',
+                        NOM_CMP='MXX',
+                        VALE=2.316277e-05,
+                        PRECISION=0.01,),
+                     _F(RESULTAT=STA2,NOM_CHAM='EFGE_ELNO_DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                        MAILLE='M5',
+                        NOEUD='N1',
+                        NOM_CMP='MYY',
+                        VALE=-0.000248875,
+                        PRECISION=0.01,),),)
 
-MATASS2=FACT_LDLT(reuse=MATASS2,MATR_ASSE=MATASS2 )
 
-DEP2=RESO_LDLT(  MATR_FACT=MATASS2, CHAM_NO=VECASS2 )
+IMPR_RESU(RESU=_F(RESULTAT=STA1));
 
-EFF2=CALC_CHAM_ELEM(   MODELE=MO,    CHAM_MATER=CHMUL2,  DEPL=DEP2,
-                          CARA_ELEM=EP,    OPTION='EFGE_ELNO_DEPL',
-                         PLAN='MOY' )
+IMPR_RESU(RESU=_F(RESULTAT=STA2));
 
-# ______________________________________________________________________
-#
-MEL3=CALC_MATR_ELEM(  MODELE=MO3, CHARGE=CHME3, CHAM_MATER=CHMUL3,
-                         CARA_ELEM=EP3, OPTION='RIGI_MECA' )
+IMPR_RESU(RESU=_F(RESULTAT=STA3));
 
-VEL3=CALC_VECT_ELEM(  OPTION='CHAR_MECA', CHAM_MATER=CHMUL3,
-                         CHARGE=CHME3, CARA_ELEM=EP3 )
 
-NU3=NUME_DDL(  MATR_RIGI=MEL3 )
-
-MATASS3=ASSE_MATRICE(  MATR_ELEM=MEL3, NUME_DDL=NU3 )
-
-VECASS3=ASSE_VECTEUR(  VECT_ELEM=VEL3, NUME_DDL=NU3 )
-
-MATASS3=FACT_LDLT(reuse=MATASS3,MATR_ASSE=MATASS3 )
-
-DEP3=RESO_LDLT(  MATR_FACT=MATASS3, CHAM_NO=VECASS3 )
-
-EFF3=CALC_CHAM_ELEM(   MODELE=MO3,    CHAM_MATER=CHMUL3,  DEPL=DEP3,
-                          CARA_ELEM=EP3,    OPTION='EFGE_ELNO_DEPL',
-                         PLAN='MOY' )
-
-# ______________________________________________________________________
-#
-#
-TEST_RESU(CHAM_NO=(
- _F( CHAM_GD = DEP1, NOEUD = 'N1', NOM_CMP = 'DZ',
-                                     VALE = -0.169388457, PRECISION = .005),
- _F( CHAM_GD = DEP1, NOEUD = 'N10', NOM_CMP = 'DX', VALE = 8.96261E-3),
- _F( CHAM_GD = DEP1, NOEUD = 'N10', NOM_CMP = 'DY', VALE = 8.17057E-3),
- _F( CHAM_GD = DEP1, NOEUD = 'N10', NOM_CMP = 'DZ', VALE = 1.63599E-1),
- _F( CHAM_GD = DEP1, NOEUD = 'N10', NOM_CMP = 'DRX', VALE = 4.19643),
- _F( CHAM_GD = DEP1, NOEUD = 'N10', NOM_CMP = 'DRY', VALE = -5.07935E-02),
-#
-#
- _F( CHAM_GD = DEP2, NOEUD = 'N1', NOM_CMP = 'DZ',
-                                     VALE = -0.169388457, PRECISION = .005),
- _F( CHAM_GD = DEP2, NOEUD = 'N10', NOM_CMP = 'DX', VALE = 8.96261E-3),
- _F( CHAM_GD = DEP2, NOEUD = 'N10', NOM_CMP = 'DY', VALE = 8.17057E-3),
- _F( CHAM_GD = DEP2, NOEUD = 'N10', NOM_CMP = 'DZ', VALE = 1.63599E-1),
- _F( CHAM_GD = DEP2, NOEUD = 'N10', NOM_CMP = 'DRX', VALE = 4.19643),
- _F( CHAM_GD = DEP2, NOEUD = 'N10', NOM_CMP = 'DRY', VALE = -5.07935E-02),
-#
-#
- _F( CHAM_GD = DEP3, NOEUD = 'N1', NOM_CMP = 'DZ',
-                                     VALE = -0.169388457, PRECISION = .005),
- _F( CHAM_GD = DEP3, NOEUD = 'N10', NOM_CMP = 'DX', VALE = 8.96261E-3),
- _F( CHAM_GD = DEP3, NOEUD = 'N10', NOM_CMP = 'DY', VALE = 8.17057E-3),
- _F( CHAM_GD = DEP3, NOEUD = 'N10', NOM_CMP = 'DZ', VALE = 1.63599E-1),
- _F( CHAM_GD = DEP3, NOEUD = 'N10', NOM_CMP = 'DRX', VALE = 4.19643),
- _F( CHAM_GD = DEP3, NOEUD = 'N10', NOM_CMP = 'DRY', VALE = -5.07935E-02)),CHAM_ELEM=(
-#
- _F( CHAM_GD = EFF1,  MAILLE = 'M5',  NOEUD = 'N1',  NOM_CMP = 'MXX',
-                                     VALE = 23.16277E-6, PRECISION = .010),
- _F( CHAM_GD = EFF1,  MAILLE = 'M5',  NOEUD = 'N1',  NOM_CMP = 'MYY',
-                                     VALE = -2.48875E-4, PRECISION = .010),
-#
- _F( CHAM_GD = EFF2,  MAILLE = 'M5',  NOEUD = 'N1',  NOM_CMP = 'MXX',
-                                     VALE = 23.16277E-6, PRECISION = .010),
- _F( CHAM_GD = EFF2,  MAILLE = 'M5',  NOEUD = 'N1',  NOM_CMP = 'MYY',
-                                     VALE = -2.48875E-4, PRECISION = .010))
-          )
-
-FIN()
+FIN();
 #

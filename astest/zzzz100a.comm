@@ -1,4 +1,4 @@
-# MODIF  DATE 04/07/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 16/12/2003   AUTEUR DURAND C.DURAND 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE FONCTIONS, NAPPES, FORMULES.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -1675,12 +1675,8 @@ TEST_FONCTION(VALEUR=(
 # VALIDATION DE LA DESTRUCTION D UNE FORMULE
 #
 NAP = FORMULE(REEL="""(REEL:INST,REEL:FREQ,REEL:AMOR) =
-(1./
-   (((2.*PI*FREQ)**2 - OMEGA**2 )**2 +(2.*AMOR*2.*PI*FREQ*OMEGA)**2))*(((2.*PI*FREQ)**2 - OMEGA**2)*
-   COS(OMEGA*INST) + 2.*AMOR*2.*PI*FREQ*
-   OMEGA*SIN(OMEGA*INST) - ( ((2.*PI*FREQ)**2 - OMEGA**2)*COS(2.*PI*
-   FREQ*INST)+ AMOR*((2.*PI*FREQ)**2 + OMEGA**2 )*SIN(2.*PI*FREQ*INST))
-   *EXP(-AMOR*2.*PI*FREQ*INST) )   """)
+(1./(((2.*PI*FREQ)**2 - OMEGA**2 )**2 +(2.*AMOR*2.*PI*FREQ*OMEGA)**2))*(((2.*PI*FREQ)**2 - OMEGA**2)*COS(OMEGA*INST) + 2.*AMOR*2.*PI*FREQ*
+   OMEGA*SIN(OMEGA*INST) - ( ((2.*PI*FREQ)**2 - OMEGA**2)*COS(2.*PI*FREQ*INST)+ AMOR*((2.*PI*FREQ)**2 + OMEGA**2 )*SIN(2.*PI*FREQ*INST))*EXP(-AMOR*2.*PI*FREQ*INST) )   """)
 #
 FREQ1=5.
 #
@@ -1722,6 +1718,26 @@ NAP3 = CALC_FONC_INTERP (  FONCTION = NAP1,
        )
 #
 IMPR_CO(CO=NAP3)
+
+#=======================================================================
+# VALIDATION DU DECOUPAGE DES FORMULES
+#
+XXX = DEFI_VALEUR ( R8 = EVAL ( """
+(1./
+   (((2.E+0*PI*1.d0)**2 - OMEGA**2 )**2 +(2.E+0*1.d0*2.*PI*1.d0*OMEGA)**2))*(((2.E+0*PI*1.d0)**2 - OMEGA**2)*
+   COS(OMEGA*1.d0) + 2.E+0*1.d0*2.E+0*PI*1.d0*
+   OMEGA*SIN(OMEGA*1.d0) - ( ((2.E+0*PI*1.d0)**2 - OMEGA**2)*COS(2.E+0*PI*
+   1.d0*1.d0)+ 1.d0*((2.E+0*PI*1.d0)**2 + OMEGA**2 )*SIN(2.*PI*1.d0*1.d0))
+   *EXP(-1.d0*2.E+0*PI*1.d0*1.d0) )   """) )
+
+FXXX = DEFI_FONCTION ( NOM_PARA    = 'INST',
+                       VALE        = (  0.,  0.,
+                                        1.,  XXX ), )
+
+TEST_FONCTION( VALEUR = _F( FONCTION  = FXXX,
+                            VALE_PARA = 1., 
+                            VALE_REFE = -1.57436635E-02,
+                            REFERENCE='ANALYTIQUE'), )
 
 FIN( )
 #

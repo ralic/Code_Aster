@@ -1,9 +1,9 @@
-      SUBROUTINE EFDF2D (POIDSG, NNO2, DFRDE2, DFRDK2,
+      SUBROUTINE EFDF2D (IPOIDS, KPG,NNO2, IDFDE2,
      &                           NNO1, DFRDE1, DFRDK1,
      &                           COOR,DFDX,DFDY, POIDS )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/08/2000   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,9 +22,10 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
-      INTEGER  NNO1, NNO2
-      REAL*8   DFRDE1(*),DFRDK1(*),DFRDE2(*),DFRDK2(*),COOR(*)
-      REAL*8   DFDX(1),DFDY(1),POIDSG, POIDS
+      INTEGER  NNO1, NNO2,KPG,IDFDE2,IPOIDS
+      REAL*8   DE2,DK2,COOR(*)
+      REAL*8   DFDX(1),DFDY(1), POIDS
+      REAL*8   DFRDE1(*),DFRDK1(*)
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES DERIVEES DES FONCTIONS DE FORME
 C               P1 PAR RAPPORT A UNE GEOMETRIE P2
@@ -37,31 +38,41 @@ C IN  COOR    : COORDONEES DES NOEUDS
 C OUT DFDX    : DERIVEE DES FONCTIONS DE FORME P1 / P2
 C OUT DFDY    : DERIVEE DES FONCTIONS DE FORME P1 / P2
 C OUT POIDS   : POIDS DU POINT DE GAUSS EN GEOMETRIE REELLE
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-
-C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 
       CHARACTER*8        NOMAIL
-      INTEGER            I, IADZI, IAZK24
+      INTEGER            I, IADZI, IAZK24,K,II
       REAL*8             DXDE,DXDK,DYDE,DYDK, JAC, R8GAEM
-
 
       DXDE=0.D0
       DXDK=0.D0
       DYDE=0.D0
       DYDK=0.D0
       DO 100 I=1,NNO2
-        DXDE=DXDE+COOR(2*I-1)*DFRDE2(I)
-        DXDK=DXDK+COOR(2*I-1)*DFRDK2(I)
-        DYDE=DYDE+COOR(2*I  )*DFRDE2(I)
-        DYDK=DYDK+COOR(2*I  )*DFRDK2(I)
+        K = 2*NNO2*(KPG-1)
+        II = 2*(I-1)
+        DE2 =  ZR(IDFDE2-1+K+II+1)
+        DK2 =  ZR(IDFDE2-1+K+II+2)
+        DXDE=DXDE+COOR(2*I-1)*DE2
+        DXDK=DXDK+COOR(2*I-1)*DK2
+        DYDE=DYDE+COOR(2*I  )*DE2
+        DYDK=DYDK+COOR(2*I  )*DK2
 100   CONTINUE
       JAC=DXDE*DYDK-DXDK*DYDE
 
@@ -78,5 +89,5 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
         DFDY(I)=(DXDE*DFRDK1(I)-DXDK*DFRDE1(I))/JAC
 200   CONTINUE
 
-      POIDS=ABS(JAC)*POIDSG
+      POIDS=ABS(JAC)*ZR(IPOIDS+KPG-1)
       END

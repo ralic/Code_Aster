@@ -1,9 +1,9 @@
-        SUBROUTINE LMAJAC ( MOD, IMAT, NMAT, MATERF, TEMPF, TIMED,
+        SUBROUTINE LMAJAC ( MOD, NMAT, MATERF, TIMED,
      1                      TIMEF, YF,   DY,   NMOD,  DRDY)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,10 +31,8 @@ C                      ( DJDS  DJDX  DJDX1  DJDX2  DJDV  )
 C                      ( DIDS  DIDX  DIDX1  DIDX2  DIDV  )
 C                      ( DKDS  DKDX  DKDX1  DKDX2  DKDV  )
 C       IN  MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           TEMPF  :  TEMPERATURE A T+DT
 C           TIMED  :  INSTANT  T
 C           TIMEF  :  INSTANT  T+DT
 C           YF     :  VARIABLES A T + DT =   ( SIGF XF X1F X2F VF )
@@ -42,7 +40,7 @@ C           DY     :  SOLUTION           =   ( DSIG DX DX1 DX2 DV )
 C           NMOD   :  DIMENSION DECLAREE DRDY
 C       OUT DRDY   :  JACOBIEN DU SYSTEME NON LINEAIRE
 C       ----------------------------------------------------------------
-        INTEGER         NDT , NDI , NMAT , IMAT , NMOD
+        INTEGER         NDT , NDI , NMAT , NMOD
         REAL*8          UN  , ZERO , D23 , D13
         PARAMETER       ( UN   = 1.D0   )
         PARAMETER       ( ZERO = 0.D0   )
@@ -71,7 +69,7 @@ C
 C
         REAL*8          VTMP(6)   , VTMP1(6), VTMP2(6), VTMP3(6)
         REAL*8          MTMP(6,6) , MTMP1(6,6)
-        REAL*8          MATERF(NMAT,2),  TEMPF,  TIMED ,  TIMEF
+        REAL*8          MATERF(NMAT,2),  TIMED ,  TIMEF
         REAL*8          DE0, N,   K,   B,   A0
         REAL*8          RM,       M,      P,     P1,  P2
         REAL*8          H1,    NU,  ZZ,  NORMX
@@ -119,14 +117,13 @@ C
         P2     = MATERF(13,2)
 C
         CALL LCOPLI ( 'ISOTROPE' , MOD , MATERF(1,1) , HOOK )
-        CALL LMAFS  ( IMAT , NMAT , MATERF , SIG , X , DFDS )
-        CALL LMAFSS ( IMAT , NMAT , MATERF , SIG , X ,ID,DDFDDS )
-        CALL LMAFSX ( IMAT , NMAT , MATERF , SIG , X , DDFDSX )
-        CALL LMACVX ( IMAT , NMAT , MATERF , TEMPF, SIG,
-     1                           YF(NDT+1), SEUIL )
+        CALL LMAFS  ( NMAT , MATERF , SIG , X , DFDS )
+        CALL LMAFSS ( NMAT , MATERF , SIG , X ,ID,DDFDDS )
+        CALL LMAFSX ( NMAT , MATERF , SIG , X , DDFDSX )
+        CALL LMACVX ( NMAT , MATERF , SIG, YF(NDT+1), SEUIL )
         DT = TIMEF - TIMED
-        YV = LMACIN ( IMAT , NMAT , MATERF , V )
-        H1 = 2.D0/3.D0 * ( YV + DV * LMACID(IMAT,NMAT,MATERF,V) )
+        YV = LMACIN ( NMAT , MATERF , V )
+        H1 = 2.D0/3.D0 * ( YV + DV * LMACID(NMAT,MATERF,V) )
 C
 C - DGDS(T+DT)
         CALL LCPRMM ( HOOK        , DDFDDS      , DGDS  )

@@ -8,7 +8,7 @@
       CHARACTER*(*)     LIGRMO, MOTCL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,7 +109,6 @@ C
             ZC(JVALV-1+I) = DCMPLX( 0.D0 , 0.D0 )
  12      CONTINUE
       ELSE IF (FONREE.EQ.'FONC') THEN
-         CALL FOZERO('&FOZERO')
          DO 14 I = 1, 6
             ZK8(JVALV-1+I) = '&FOZERO'
  14      CONTINUE

@@ -1,8 +1,8 @@
-        SUBROUTINE LMAFSX ( IMAT, NMAT, MATER, SIG, X, DDFDSX )
+        SUBROUTINE LMAFSX ( NMAT, MATER, SIG, X, DDFDSX )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,6 @@ C       ----------------------------------------------------------------
 C       MODELE VISCOPLASTIQUE DE BESANCON EN VITESSE
 C       DERIVEE / S / X DE LA NORMALE A LA FONCTION SEUIL A (SIG,X)
 C
-C       IN  IMAT   :  ADRESSE DU MATERIAU CODE
 C       IN  NMAT   :  DIMENSION MATER
 C       IN  MATER  :  COEFFICIENTS MATERIAU
 C       IN  SIG    :  TENSEUR CONTRAINTE
@@ -36,7 +35,7 @@ C                     S      = (3/2(D-X) M (D-X))
 C                     D      = SIG - 1/3 TR(SIG) I
 C                     M    = MATRICE D'ANISOTROPIE = MATER(16,1)
 C       ----------------------------------------------------------------
-        INTEGER         NMAT , IMAT
+        INTEGER         NMAT
         INTEGER         N , ND
         REAL*8          DFDS(6) ,  SIG(6) , X(6) , DEV(6) , S
         REAL*8          DDFDSX(6,6) , DFDS2(6,6)
@@ -47,8 +46,8 @@ C       ----------------------------------------------------------------
         COMMON /TDIM/   N , ND
 C       ----------------------------------------------------------------
 C
-        CALL LMAFS  ( IMAT  , NMAT , MATER , SIG , X , DFDS )
-        CALL LMACVX ( IMAT  , NMAT , MATER , TEM , SIG , X , S )
+        CALL LMAFS  ( NMAT , MATER , SIG , X , DFDS )
+        CALL LMACVX ( NMAT , MATER , SIG , X , S )
 C
         CALL LCPRTE ( DFDS  , DFDS       , DFDS2  )
         CALL LCPRSM ( 1.5D0   , MATER(16,1), DDFDSX )

@@ -1,6 +1,6 @@
       SUBROUTINE TE0494 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,14 +28,12 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
-      CHARACTER*8        MODELI,ELREFE
-      CHARACTER*24       CARAC,FF
+      CHARACTER*8        MODELI
       REAL*8             BSIGMA(81), SIGTH(162), REPERE(7), INSTAN
       REAL*8             NHARM
       INTEGER            NBSIGM
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -56,34 +54,20 @@ C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
 C      ------------------------
 C
-      CALL ELREF1(ELREFE)
-C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS=IFF
-      IVF   =IPOIDS+NPG1
-      IDFDE =IVF   +NPG1*NNO
-      IDFDK =IDFDE +NPG1*NNO
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
 C --- INITIALISATIONS :
 C     -----------------
       ZERO   = 0.0D0
       INSTAN = ZERO
       NHARM  = ZERO
-      BIDON  = ZERO
-      NDIM   = 2
       MODELI(1:2) = NOMTE(3:4)
 C
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
       NBSIG = NBSIGM(MODELI)
 C
-      DO 10 I = 1, NBSIG*NPG1
+      DO 10 I = 1, NBSIG*NPG
          SIGTH(I) = ZERO
  10   CONTINUE
 C
@@ -127,15 +111,14 @@ C
 C ---- CALCUL DES CONTRAINTES DE SECHAGE AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT :
 C      ------------
-      CALL SIGTMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IGEOM),
+      CALL SIGTMC(MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),ZR(IGEOM),
      +            ZR(ITEMPE),ZR(ITREF),ZR(IHYDR),ZR(ISECH),INSTAN,
      +            ZI(IMATE),REPERE,OPTION,SIGTH)
 C
 C ---- CALCUL DU VECTEUR DES FORCES D'ORIGINE HYDRIQUE (BT*SIGTH)
 C      ----------------------------------------------------------
-      CALL BSIGMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
-     +            ZR(IDFDK),BIDON,ZR(IPOIDS),ZR(IGEOM),NHARM,SIGTH,
-     +            BSIGMA)
+      CALL BSIGMC ( MODELI,NNO,NDIM,NBSIG,NPG, IPOIDS, IVF, IDFDE,
+     +              ZR(IGEOM), NHARM, SIGTH, BSIGMA )
 C
 C ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE AVEC LE
 C ---- VECTEUR DES FORCES D'ORIGINE THERMIQUE

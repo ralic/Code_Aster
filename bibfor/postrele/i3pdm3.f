@@ -5,7 +5,7 @@
       LOGICAL           DEDANS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 17/12/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,7 @@ C
 10          CONTINUE
             A(1,1) = UN
             B(10)  = UN
-            CALL I3AFK2(EPSI,CS,FK,IRET)
+            CALL I3AFK2(CS,FK,IRET)
             IF ( IRET .NE. -1 ) THEN
                DO 120, I = 1, 4, 1
                   DO 121, J = 1, 3, 1

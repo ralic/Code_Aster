@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),OPTIOZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 15/10/2002   AUTEUR KBBHHDB G.DEBRUYNE 
+C MODIF UTILITAI  DATE 26/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -138,7 +138,7 @@ C -----  VARIABLES LOCALES
       INTEGER NBPARR,NR,NP,NC,IRET,JORD,NBORDR,JINS,IORD,IAINST,NUMORD,
      &        NBIN,NT,NM,NG,IBID,NBGRMA,JGR,IG,NBMA,JAD,NBMAIL,JMA,IM,
      &        IOCC,NUME,IFM,NIV,NBOUT,NUMORM,IDESC,NGDMAX,NCMPMX,IVALE,
-     &        IPTMA,IGD,IDEBGD,DG,IMA,ICONEX,NBNO,NEC
+     &        IPTMA,IGD,IDEBGD,DG,IMA,ICONEX,NBNO,NEC,IVARI
       PARAMETER (NBPARR=5)
       REAL*8 WORK(2),INDIC1,VOLUME,INST,VALER(2),ZERO,PREC,R8PREM,ENERGI
       COMPLEX*16 C16B
@@ -150,7 +150,7 @@ C -----  VARIABLES LOCALES
       CHARACTER*24 CHGEOM,CHCARA(15),CHHARM,CHVARI,CHDEPL
       CHARACTER*24 CHSIG,LCHIN(10),LCHOUT(2)
       CHARACTER*24 CHTEMP,CHTREF,MLGGMA,MLGNMA
-      CHARACTER*24 CHSIGM,CHDEPM
+      CHARACTER*24 CHSIGM,CHDEPM,CHBID
       LOGICAL EXITIM,EXISDG
 
       DATA TYPARR/'I','R','K8','K8','R'/
@@ -242,6 +242,7 @@ C      -----------------------------
 C --- BOUCLE SUR LES NUMEROS D'ORDRE DU RESULTAT :
 C     ------------------------------------------
       DO 60 IORD = 1,NBORDR
+        CALL JEMARQ()
 
 C ---  RECUPERATION DU NUMERO D'ORDRE :
 C      ------------------------------
@@ -369,10 +370,19 @@ C ---  RECUPERATION DU CHAMP DES VARIABLES INTERNES ASSOCIE AU
 C ---  NUMERO D'ORDRE COURANT :
 C      ----------------------
         CALL RSEXCH(RESUL,'VARI_ELGA',NUMORD,CHVARI,IRET)
+        IVARI=1
         IF (IRET.GT.0) THEN
-          CALL UTMESS('F','PEINGL','LE RESULTAT '//RESUL//
+           IF (OPTION.NE.'ENER_ELAS') THEN
+              CALL UTMESS('F','PEINGL','LE RESULTAT '//RESUL//
      &                ' DOIT COMPORTER UN CHAMP DE VARIABLES INTERNES '
      &                //'AU NUMERO D''ORDRE '//KIORD//' .')
+           ELSE
+C CREATION D'UN CHAMP DE VARIABLES INTERNES NUL
+              IVARI=0
+              CHBID='&&PEINGL.VARINUL'
+              CALL CALCUL('S','TOU_INI_ELGA',LIGRMO,1,CHGEOM,'PGEOMER',
+     &                  1,CHBID,'PVARI_R','V')
+           END IF
         END IF
 
 C ---  RECUPERATION DU CHAMP DES DEPLACEMENTS ASSOCIE AU
@@ -409,7 +419,11 @@ C      --------------------------------
         LPAIN(4) = 'PCONTPR'
         LCHIN(4) = CHSIG
         LPAIN(5) = 'PVARIPR'
-        LCHIN(5) = CHVARI
+        IF (IVARI.EQ.1) THEN
+           LCHIN(5) = CHVARI
+        ELSE
+           LCHIN(5) = CHBID
+        ENDIF
         LPAIN(6) = 'PCOMPOR'
         LCHIN(6) = COMPOR
         LPAIN(7) = 'PTEMPER'
@@ -676,6 +690,7 @@ C          --------------------------------------
         CALL JEDETR('&&MECHTE.CH_TEMP_R')
         CALL JEDETR('&&METREF.TEMPE_REFE')
         CALL JEDETC('V',COMPOR//'.PTMA',1)
+        CALL JEDEMA()
    60 CONTINUE
    70 CONTINUE
       CALL JEDETR(KNUM)
@@ -683,7 +698,9 @@ C          --------------------------------------
       CALL JEDETR('&&PEINGL.INDIC')
       CALL JEDETR('&&PEINGL.VOLUME')
       CALL JEDETR('&&MEHARM.NUME_HARM')
-
+      IF (IVARI.EQ.0) THEN
+         CALL JEDETR(CHBID)
+      ENDIF
 
    80 CONTINUE
       CALL JEDEMA()

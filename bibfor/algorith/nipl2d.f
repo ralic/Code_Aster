@@ -1,5 +1,5 @@
-       SUBROUTINE  NIPL2D ( NNO1 , NNO2 , NPG1 , POIDSG, VFF1 , VFF2,
-     &                      DFDE1 , DFDK1 ,DFDI, GEOM  , TYPMOD, OPTION,
+       SUBROUTINE  NIPL2D ( NNO1 , NNO2 , NPG1 , IPOIDS, IVF1 , IVF2,
+     &                      IDFDE1,DFDI, GEOM  , TYPMOD, OPTION,
      &                      IMATE , COMPOR ,LGPG, CRIT , INSTAM, INSTAP,
      &                      TM ,TP , TREF , DEPLM , DDEPL ,
      &                      GONFLM , DGONFL , SIGM , VIM ,
@@ -7,31 +7,31 @@
      &                      KUU , KUA , KAA , CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2002   AUTEUR VABHHTS J.TESELET 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 
        IMPLICIT NONE
 
        INTEGER NNO1,NNO2,NPG1,  IMATE, LGPG , CODRET
-       REAL*8 POIDSG(NPG1),VFF1(NNO1,NPG1), VFF2(NNO2,NPG1)
+       INTEGER IPOIDS, IVF1 , IVF2, IDFDE1
        REAL*8 TM(NNO1), TP(NNO1), TREF, INSTAM, INSTAP
-       REAL*8 DFDE1(*),DFDK1(*),DFDI(NNO1,2),GEOM(2,NNO1), CRIT(6)
+       REAL*8 DFDI(NNO1,2),GEOM(2,NNO1), CRIT(6)
        REAL*8 DEPLM(2,NNO1),DDEPL(2,NNO1),GONFLM(2,NNO2),DGONFL(2,NNO2)
        REAL*8 SIGM(5,NPG1),VIM(LGPG,NPG1),SIGP(5,NPG1), VIP(LGPG,NPG1)
        REAL*8 KUU(2,9,2,9), KUA(2,9,2,4),KAA(2,4,2,4)
@@ -82,16 +82,32 @@ C OUT KUA     : MATRICE DE RIGIDITE TERMES CROISES U - PG
 C                                       (RIGI_MECA_TANG ET FULL_MECA)
 C OUT KAA     : MATRICE DE RIGIDITE TERME PG (RIGI_MECA_TANG, FULL_MECA)
 C......................................................................
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER  ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      LOGICAL GRAND, AXI, PLAN
+      LOGICAL GRAND, AXI
       INTEGER KPG,N, KL, PQ,I,J,M
-      REAL*8 RAC2, TEMPM, TEMPP, EPS(6), DEPS(6), F(3,3), R
-      REAL*8 EPSM(6), DEPSM(6)
+      REAL*8 RAC2, TEMPM, TEMPP, DEPS(6), F(3,3), R
       REAL*8 EPSLDC(6), DEPLDC(6) , SIGMAM(6), SIGMA(6),DSIDEP(6,6)
-      REAL*8 DEF(4,9,2), DEFD(4,9,2), DEFTR(9,2), SIGTR
-      REAL*8 DIVUM, DDIVU, DUM, RBID, TMP, TMP2
-      REAL*8  PM, GM, DP, DG, POIDS
-      REAL*8 R8DOT
+      REAL*8 EPSM(6), DEF(4,9,2), DEFD(4,9,2), DEFTR(9,2), SIGTR
+      REAL*8 DIVUM, DDIVU, RBID, TMP, TMP2
+      REAL*8  PM, GM, DP, DG, POIDS, VFF1, VFF2, VFFN, VFFM
+      REAL*8 R8DOT,R8VIDE
 
 C-----------------------------------------------------------------------
 C - INITIALISATION
@@ -117,8 +133,9 @@ C - CALCUL DE LA TEMPERATURE AU POINT DE GAUSS
         TEMPP = 0.D0
 C
         DO 10 N=1,NNO1
-          TEMPM = TEMPM + TM(N)*VFF1(N,KPG)
-          TEMPP = TEMPP + TP(N)*VFF1(N,KPG)
+          VFF1 = ZR(IVF1-1+N+(KPG-1)*NNO1)
+          TEMPM = TEMPM + TM(N)*VFF1
+          TEMPP = TEMPP + TP(N)*VFF1
  10     CONTINUE
 
 C      CALCUL DE LA PRESSION ET DU GONFLEMENT
@@ -128,24 +145,22 @@ C      CALCUL DE LA PRESSION ET DU GONFLEMENT
         PM = 0.D0
         DP = 0.D0
         DO 20 N = 1, NNO2
-          PM = PM + VFF2(N,KPG)*GONFLM(1,N)
-          GM = GM + VFF2(N,KPG)*GONFLM(2,N)
-          DP = DP + VFF2(N,KPG)*DGONFL(1,N)
-          DG = DG + VFF2(N,KPG)*DGONFL(2,N)
+          VFF2 = ZR(IVF2-1+N+(KPG-1)*NNO2)
+          PM = PM + VFF2*GONFLM(1,N)
+          GM = GM + VFF2*GONFLM(2,N)
+          DP = DP + VFF2*DGONFL(1,N)
+          DG = DG + VFF2*DGONFL(2,N)
  20     CONTINUE
 
 C - CALCUL DES ELEMENTS GEOMETRIQUES
 C     CALCUL DE DFDI,F,EPS,R(EN AXI) ET POIDS
         CALL R8INIR(6, 0.D0, EPSM,1)
         CALL R8INIR(6, 0.D0, DEPS,1)
-        CALL NMGEOM(2,NNO1,AXI,GRAND,GEOM,KPG,POIDSG(KPG),
-     &              VFF1(1,KPG),DFDE1,DUM,DFDK1,DEPLM,POIDS,DFDI,
-     &              F,EPSM,R)
+        CALL NMGEOM(2,NNO1,AXI,GRAND,GEOM,KPG,IPOIDS,IVF1,IDFDE1,
+     &              DEPLM,POIDS,DFDI,F,EPSM,R)
 
-        CALL NMGEOM(2,NNO1,AXI,GRAND,GEOM,KPG,POIDSG(KPG),
-     &              VFF1(1,KPG),DFDE1,DUM,DFDK1,DDEPL,POIDS,DFDI,
-     &              F,DEPS,R)
-
+        CALL NMGEOM(2,NNO1,AXI,GRAND,GEOM,KPG,IPOIDS,IVF1,IDFDE1,
+     &              DDEPL,POIDS,DFDI,F,DEPS,R)
         DIVUM = EPSM(1) + EPSM(2) + EPSM(3)
         DDIVU = DEPS(1) + DEPS(2) + DEPS(3)
 
@@ -164,7 +179,8 @@ C      CALCUL DES MATRICES B ET BD
 C      TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
         IF (AXI) THEN
           DO 50 N=1,NNO1
-            DEF(3,N,1) = F(3,3)*VFF1(N,KPG)/R
+            VFF1 = ZR(IVF1-1+N+(KPG-1)*NNO1)
+            DEF(3,N,1) = F(3,3)*VFF1/R
  50       CONTINUE
         END IF
 
@@ -206,7 +222,7 @@ C - LOI DE COMPORTEMENT
      &              TREF, 0.D0, 0.D0, 0.D0, 0.D0,
      &              EPSLDC,DEPLDC,SIGMAM,VIM(1,KPG),OPTION,RBID,RBID,0,
      &              RBID, RBID, RBID, SIGMA,
-     &              VIP(1,KPG),DSIDEP,CODRET)
+     &              VIP(1,KPG),DSIDEP,CODRET,R8VIDE(),R8VIDE())
        IF (.NOT.AXI)  TYPMOD(1) = 'C_PLAN  '
 
 
@@ -239,7 +255,8 @@ C        TERME K_UP
           DO 112 N = 1, NNO1
           DO 111 I = 1,2
             DO 110 M = 1, NNO2
-              TMP = DEFTR(N,I)*VFF2(M,KPG)
+              VFF2 = ZR(IVF2-1+M+(KPG-1)*NNO2)
+              TMP = DEFTR(N,I)*VFF2
               KUA(I,N,1,M) = KUA(I,N,1,M) + POIDS*TMP
  110        CONTINUE
  111      CONTINUE
@@ -256,7 +273,8 @@ C        TERME K_UG
  128        CONTINUE
             TMP = TMP/3.D0
             DO 126 M = 1, NNO2
-              KUA(I,N,2,M) = KUA(I,N,2,M) + POIDS*TMP*VFF2(M,KPG)
+              VFF2 = ZR(IVF2-1+M+(KPG-1)*NNO2)
+              KUA(I,N,2,M) = KUA(I,N,2,M) + POIDS*TMP*VFF2
  126        CONTINUE
  129      CONTINUE
  130      CONTINUE
@@ -266,8 +284,10 @@ C        TERME K_PP = 0
 C        TERME K_PG
 
           DO 145 N = 1,NNO2
+            VFFN = ZR(IVF2-1+N+(KPG-1)*NNO2)
             DO 140 M = 1,NNO2
-              TMP = VFF2(N,KPG) * VFF2(M,KPG)
+              VFFM = ZR(IVF2-1+M+(KPG-1)*NNO2)
+              TMP = VFFN * VFFM
               KAA(1,N,2,M) = KAA(1,N,2,M) - POIDS*TMP
               KAA(2,M,1,N) = KAA(2,M,1,N) - POIDS*TMP
  140        CONTINUE
@@ -283,8 +303,10 @@ C        TERME K_GG
  160      CONTINUE
           TMP = TMP/9.D0
           DO 170 N = 1,NNO2
+            VFFN = ZR(IVF2-1+N+(KPG-1)*NNO2)
             DO 169 M = 1,NNO2
-              TMP2 = VFF2(N,KPG) * VFF2(M,KPG)
+              VFFM = ZR(IVF2-1+M+(KPG-1)*NNO2)
+              TMP2 = VFFN * VFFM
               KAA(2,N,2,M) = KAA(2,N,2,M) + POIDS*TMP*TMP2
  169        CONTINUE
  170      CONTINUE
@@ -312,10 +334,11 @@ C        CALCUL DE FINT_U
  190      CONTINUE
 C        CALCUL DE FINT_P ET FINT_G
           DO 191 N = 1, NNO2
-            TMP = (DIVUM + DDIVU - GM - DG)*VFF2(N, KPG)
+            VFF2 = ZR(IVF2-1+N+(KPG-1)*NNO2)
+            TMP = (DIVUM + DDIVU - GM - DG)*VFF2
             FINTA(1,N) = FINTA(1,N) + TMP*POIDS
 
-            TMP = (SIGTR/3.D0 - PM - DP)*VFF2(N,KPG)
+            TMP = (SIGTR/3.D0 - PM - DP)*VFF2
             FINTA(2,N) = FINTA(2,N) + TMP*POIDS
  191      CONTINUE
 

@@ -1,15 +1,13 @@
       SUBROUTINE THMLEC( IMATE, THMC, MECA, HYDR, THER,
-     +                   T0, P10, P20, PHI0, PVP0, T, P1, P2, PHI, END,
-     +                   SAT, PVP, RGAZ, RHOD, CPD, BIOT, SATM, SATUR,
-     +                   DSATUR, PESA, PERMFH, PERMLI, DPERML, PERMGZ,
-     +                   DPERMS, DPERMP, FICK, DFICKT, DFICKG, LAMBDD,
-     +                   DLAMBD, RHOL, UNSURK, ALPHA, CPL, LAMBDL,
-     +                   DLAMBL, VISCL, DVISCL, MAMOLG, CPG, LAMBDG,
-     +                   DLAMBG, VISCG, DVISCG, MAMOLV, CPVG, VISCVG,
-     +                   DVISVG)
+     +                   T, P1, P2, PHI, END, PVP, PAD, RGAZ, BIOT, 
+     +                   SATUR, DSATUR, PESA, PERMFH, PERMLI, DPERML,
+     +                   PERMGZ, DPERMS, DPERMP, FICK, DFICKT, DFICKG,
+     +                   LAMBP, DLAMBP, UNSURK, ALPHA, LAMBS, DLAMBS,
+     +                   VISCL, DVISCL, MAMOLG, LAMBT, DLAMBT, VISCG,
+     +                   DVISCG, MAMOLV, FICKAD, DFADT, LAMBCT)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,13 +32,13 @@ C --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 C =====================================================================
       IMPLICIT      NONE
       INTEGER       IMATE
-      REAL*8        T0, P10, P20, PHI0, PVP0, T, P1, P2, PHI, SAT, PVP
-      REAL*8        RGAZ, RHOD, CPD, BIOT, SATM, SATUR, DSATUR, PESA(3)
+      REAL*8        T, P1, P2, PHI, PVP
+      REAL*8        RGAZ, BIOT, SATUR, DSATUR, PESA(3)
       REAL*8        PERMFH, PERMLI, DPERML, PERMGZ, DPERMS, DPERMP
-      REAL*8        FICK, DFICKT, DFICKG, LAMBDD, DLAMBD, RHOL, UNSURK
-      REAL*8        ALPHA, CPL, LAMBDL, DLAMBL, VISCL, DVISCL, CPG, END
-      REAL*8        LAMBDG, DLAMBG, VISCG, DVISCG, MAMOLG, CPVG, VISCVG
-      REAL*8        DVISVG, MAMOLV
+      REAL*8        FICK, DFICKT, DFICKG, LAMBP, DLAMBP
+      REAL*8        ALPHA, LAMBS, DLAMBS, VISCL, DVISCL, END
+      REAL*8        LAMBT, DLAMBT, VISCG, DVISCG, MAMOLG
+      REAL*8        MAMOLV,FICKAD,DFADT,PAD,LAMBCT, UNSURK
       CHARACTER*8   ETAPE
       CHARACTER*16  MECA,THMC,THER,HYDR
 C =====================================================================
@@ -53,86 +51,101 @@ C =====================================================================
       REAL*8        RBID26, RBID27, RBID28, RBID29, RBID30, RBID31
       REAL*8        RBID32, RBID33, RBID34, RBID35, RBID36, RBID37
       REAL*8        RBID38, RBID39, RBID40, RBID41, RBID42, RBID43
-      REAL*8        RBID44
+      REAL*8        RBID44,RBID45,RBID46,RBID47,RBID48,RBID49,RBID50
 C =====================================================================
       IF (THMC.EQ.'LIQU_SATU') THEN
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
-     +                   RBID1, RBID2, RBID3, RBID4, RBID5, T, RBID6,
-     +                  RBID41, RBID7, PHI, END, RBID9, RBID11, RBID12,
-     +                   RBID13, RBID14, RBID15, RBID16, RBID17,
-     +                   RBID18, PESA, PERMFH, RBID19, RBID20, RBID21,
-     +                   RBID22, RBID23, RBID24, RBID25, RBID26,
-     +                   LAMBDD, DLAMBD, RBID27, UNSURK, ALPHA, RBID28,
-     +                   LAMBDL, DLAMBL, VISCL, DVISCL, RBID31, RBID32,
-     +                   LAMBDG, DLAMBG, RBID35, RBID36, RBID37,
-     +                   RBID38, RBID39, RBID40)
+     +                RBID1, RBID2, RBID3, RBID4, RBID5, T, RBID6,
+     +                RBID41, RBID7, PHI, END, RBID9, RBID11, RBID12,
+     +                RBID13, RBID14, BIOT, RBID16, RBID17,
+     +                RBID18, PESA, PERMFH, RBID19, RBID20, RBID21,
+     +                RBID22, RBID23, RBID24, RBID25, RBID26,LAMBP,
+     +                DLAMBP, RBID27, UNSURK, ALPHA, RBID28,
+     +                LAMBS, DLAMBS, VISCL, DVISCL, RBID31, RBID32,
+     +                LAMBT, DLAMBT, RBID35, RBID36, RBID37,RBID38,
+     +                RBID39, RBID40,RBID45,RBID46,RBID47,RBID48,
+     +                RBID49,RBID50,LAMBCT)
       ELSE IF (THMC.EQ.'GAZ') THEN
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                   RBID1, RBID2, RBID3, RBID4, RBID5, T, RBID6,
      +             RBID44,  RBID7, PHI, END, RBID9, RBID11, RGAZ,
-     +                   RBID13, RBID14, RBID15, RBID16, RBID17,
+     +                   RBID13, RBID14, BIOT, RBID16, RBID17,
      +                   RBID18, PESA, PERMFH, RBID19, RBID20, RBID21,
      +                   RBID22, RBID23, RBID24, RBID25, RBID26,
-     +                   LAMBDD, DLAMBD, RBID27, RBID42, RBID43,
-     +                   RBID29, LAMBDL, DLAMBL, RBID41, RBID31,
-     +                   MAMOLG, RBID28,
-     +                   LAMBDG, DLAMBG, VISCG, DVISCG, RBID37,
-     +                   RBID38, RBID39, RBID40)
+     +                   LAMBP, DLAMBP, RBID27, RBID42, RBID43,
+     +                   RBID29, LAMBS, DLAMBS, RBID41, RBID31,
+     +                   MAMOLG, RBID28, LAMBT, DLAMBT, VISCG,
+     +                   DVISCG, RBID37,RBID38, RBID39,RBID40,RBID45,
+     +                   RBID46,RBID47,RBID48,RBID49,RBID50,LAMBCT)
       ELSE IF (THMC.EQ.'LIQU_VAPE') THEN
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                   RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
      +                   RBID6, P2, PHI, END,
-     +                   RBID7, PVP, RGAZ, RBID8, RBID9, RBID10, RBID11,
+     +                   RBID7, PVP, RGAZ, RBID8, RBID9, BIOT, RBID11,
      +                   SATUR, DSATUR, PESA, PERMFH, PERMLI, DPERML,
      +                   PERMGZ,
      +                   DPERMS, DPERMP, RBID14, RBID15, RBID16,
-     +                   LAMBDD,
-     +                   DLAMBD, RBID17, UNSURK, ALPHA, RBID18, LAMBDL,
-     +                   DLAMBL, VISCL, DVISCL, RBID19, RBID20, LAMBDG,
-     +                   DLAMBG, RBID23, RBID24, MAMOLV, RBID25,
-     +                   VISCG, DVISCG)
+     +                   LAMBP,DLAMBP, RBID17,
+     +                   UNSURK, ALPHA, RBID18, LAMBS,DLAMBS, VISCL,
+     +                   DVISCL, RBID19, RBID20, LAMBT,DLAMBT, RBID23,
+     +                   RBID24, MAMOLV, RBID25,VISCG,DVISCG, RBID45,
+     +                   RBID46,RBID47,RBID48,RBID49,RBID50,LAMBCT)
       ELSE IF (THMC.EQ.'LIQU_VAPE_GAZ') THEN
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                   RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
      +                   RBID6, P2, PHI, END,
-     +                   RBID7, RBID28, RGAZ, RBID8, RBID9, RBID10,
+     +                   RBID7, RBID28, RGAZ, RBID8, RBID9, BIOT,
      +                   RBID11,
      +                   SATUR, DSATUR, PESA, PERMFH, PERMLI, DPERML,
      +                   PERMGZ,
      +                   DPERMS, DPERMP, FICK, DFICKT, DFICKG,
-     +                   LAMBDD,
-     +                   DLAMBD, RBID17, UNSURK, ALPHA, RBID18, LAMBDL,
-     +                   DLAMBL, VISCL, DVISCL, MAMOLG, RBID19, LAMBDG,
-     +                   DLAMBG,VISCG, DVISCG, MAMOLV, RBID25,
-     +                   RBID26, RBID27)
+     +                   LAMBP,DLAMBP, RBID17, UNSURK,
+     +                   ALPHA, RBID18, LAMBS,DLAMBS, VISCL, DVISCL, 
+     +                   MAMOLG, RBID19, LAMBT,DLAMBT,VISCG, DVISCG,
+     +                   MAMOLV, RBID25,RBID26,RBID27,RBID45, 
+     +                   RBID46,RBID47,RBID48,RBID49,RBID50,LAMBCT)
+      ELSE IF (THMC.EQ.'LIQU_AD_GAZ_VAPE') THEN
+         CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
+     +                   RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
+     +                   RBID6, P2, PHI, END,
+     +                   RBID7, RBID28, RGAZ, RBID8, RBID9, BIOT,
+     +                   RBID11,
+     +                   SATUR, DSATUR, PESA, PERMFH, PERMLI, DPERML,
+     +                   PERMGZ,
+     +                   DPERMS, DPERMP, FICK, DFICKT, DFICKG,
+     +                   LAMBP,DLAMBP, RBID17, UNSURK, 
+     +                   ALPHA, RBID18, LAMBS,DLAMBS, VISCL, 
+     +                   DVISCL, MAMOLG, RBID19, LAMBT,DLAMBT,VISCG,
+     +                   DVISCG, MAMOLV, RBID25,RBID26, RBID27,FICKAD,
+     +                   DFADT,RBID47,RBID48,PAD,RBID50,LAMBCT)
       ELSE IF (THMC.EQ.'LIQU_GAZ') THEN
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                   RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
      +                   RBID6, P2, PHI, END,
-     +                   RBID7, RBID28, RGAZ, RBID8, RBID9, RBID10,
+     +                   RBID7, RBID28, RGAZ, RBID8, RBID9, BIOT,
      +                   RBID11,
      +                   SATUR, DSATUR, PESA, PERMFH, PERMLI, DPERML,
      +                   PERMGZ,
      +                   DPERMS, DPERMP, RBID14, RBID15, RBID16,
-     +                   LAMBDD,
-     +                   DLAMBD, RBID17, UNSURK, ALPHA, RBID18, LAMBDL,
-     +                   DLAMBL, VISCL, DVISCL, MAMOLG, RBID19, LAMBDG,
-     +                   DLAMBG,VISCG, DVISCG, MAMOLV, RBID25,
-     +                   RBID26, RBID27)
+     +                   LAMBP,DLAMBP, RBID17, UNSURK,
+     +                   ALPHA, RBID18, LAMBS,DLAMBS, VISCL, DVISCL, 
+     +                   MAMOLG, RBID19, LAMBT,DLAMBT,VISCG, DVISCG, 
+     +                   MAMOLV, RBID25,RBID26,RBID27,RBID45, 
+     +                   RBID46,RBID47,RBID48,RBID49,RBID50,LAMBCT)
       ELSE IF (THMC.EQ.'LIQU_GAZ_ATM') THEN
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                   RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
      +                   RBID6, P2, PHI, END,
-     +                   RBID7, RBID28, RBID29, RBID8, RBID9, RBID10,
+     +                   RBID7, RBID28, RBID29, RBID8, RBID9, BIOT,
      +                   RBID11,
      +                   SATUR, DSATUR, PESA, PERMFH, PERMLI, DPERML,
      +                   RBID30,
      +                   RBID31, RBID32, RBID14, RBID15, RBID16,
-     +                   LAMBDD,
-     +                   DLAMBD, RBID17, UNSURK, ALPHA, RBID18, LAMBDL,
-     +                   DLAMBL, VISCL, DVISCL, MAMOLG, RBID19, LAMBDG,
-     +                   DLAMBG,VISCG, DVISCG, MAMOLV, RBID25,
-     +                   RBID26, RBID27)
+     +                   LAMBP,DLAMBP, RBID17, UNSURK, 
+     +                   ALPHA, RBID18, LAMBS,DLAMBS, VISCL, DVISCL, 
+     +                   RBID20, RBID19, LAMBT,DLAMBT,RBID23, RBID24, 
+     +                   MAMOLV, RBID25,RBID26, RBID27,RBID45,
+     +                   RBID46,RBID47,RBID48,RBID49,RBID50,LAMBCT)
       ENDIF
 C =====================================================================
       END

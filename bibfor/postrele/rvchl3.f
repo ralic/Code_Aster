@@ -1,16 +1,16 @@
-      SUBROUTINE RVCHL3(VALE,PADR,PNCO,PNSP,PNBN,MA,NBMA,ITYPM,
+      SUBROUTINE RVCHL3(VALE,PADR,PNSP,PNBN,MA,NBMA,ITYPM,
      +                  NBCO,NBSP,NBPT,NBCP,FACE,CREF,NBNDF,CLOCF,
      +                  CONEC,VLCCNC,VAL,PTADR,TABAUX)
       IMPLICIT REAL*8 (A-H,O-Z)
 C
-      INTEGER     PADR(*),PNBN(*),PNCO(*),PNSP(*)
+      INTEGER     PADR(*),PNBN(*),PNSP(*)
       INTEGER     MA(*),FACE(*),CONEC(*),VLCCNC(*),NBNDF(6,*)
       INTEGER     NBCO,NBSP,NBPT,NBMA,NBCP,PTADR,ITYPM,CLOCF(6,4,*)
       REAL*8      VALE(*),CREF(2,*),VAL(*),TABAUX(4,*)
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/11/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,6 @@ C     ------------------------------------------------------------------
 C IN  VALE   : R :  VALE DU SSCH19
 C IN  PADR   : I :  PADR DU SSCH19
 C IN  PNBN   : I :  PNBN DU SSCH19
-C IN  PNCO   : I :  PNCO DU SSCH19
 C IN  PNSP   : I :  PNSP DU SSCH19
 C IN  MA     : I :  TABLE  DE MAILLE 3D CONTRIBUANT
 C IN  NBMA   : I :  NOMBRE DE MAILLE 3D CONTRIBUANT

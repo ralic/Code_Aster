@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_DERIVATION Build  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF B_SENSIBILITE_DERIVATION Build  DATE 30/03/2004   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,6 +34,8 @@ class SENSIBILITE_DERIVATION :
    l_nouveaux_noms = liste des nouveaux noms déjà créés
    definition_param_sensi = faux tant que l'on n'a pas examiné une commande
                             définissant un paramètre sensible
+   definition_param_autre = faux tant que l'on n'a pas examiné une commande
+                            définissant un paramètre autre
    """
 #
 # ---------- Début du constructeur ----------
@@ -53,8 +55,15 @@ class SENSIBILITE_DERIVATION :
            self.l_nom_sd_prod.append(sd.nom)
        self.l_nouveaux_noms = []
        self.definition_param_sensi = 0
-       self.fonction_0 = None
-       self.fonction_1 = None
+       self.definition_param_autre = 0
+       d0 = {}
+       d0["ps"] = None
+       d0["pa"] = None
+       self.fonction_0 = d0
+       d1 = {}
+       d1["ps"] = None
+       d1["pa"] = None
+       self.fonction_1 = d1
 #
 # ---------- Fin du constructeur ----------
 #
@@ -76,49 +85,49 @@ class SENSIBILITE_DERIVATION :
        """
        return self.l_nom_sd_prod
 #
-   def put_fonction_0(self,fonction_0) :
+   def put_fonction_0(self,fonction_0,type_para) :
        """
        Enregistre la fonction nulle
        Code de retour :  0, tout va bien
              1, la fonction nulle est déjà enregistrée
        """
-       if self.fonction_0 :
+       if self.fonction_0[type_para] :
          codret = 1
        else :
          codret = 0
-         self.fonction_0 = fonction_0
+         self.fonction_0[type_para] = fonction_0
        return codret
 #
-   def get_fonction_0(self) :
+   def get_fonction_0(self,type_para) :
        """
        Récupère la fonction nulle associée
        """
-       return self.fonction_0
+       return self.fonction_0[type_para]
 #
-   def put_fonction_1(self,fonction_1) :
+   def put_fonction_1(self,fonction_1,type_para) :
        """
        Enregistre la fonction unité
        Code de retour :  0, tout va bien
-                         1, la fonction nulle est déjà enregistrée
+                         1, la fonction unité est déjà enregistrée
        """
-       if self.fonction_1 :
+       if self.fonction_1[type_para] :
          codret = 1
        else :
          codret = 0
-         self.fonction_1 = fonction_1
+         self.fonction_1[type_para] = fonction_1
        return codret
 #
-   def get_fonction_1(self) :
+   def get_fonction_1(self,type_para) :
        """
        Récupère la fonction unité associée
        """
-       return self.fonction_1
+       return self.fonction_1[type_para]
 #
    def derivation_para_sensi(self,etape,param,new_jdc) :
        """
        Dérive une étape de définition d'un paramètre sensible
-       Au tout appel à ce traitement :
-        . On dupliquera deux fois la commande :
+       Au premier appel à ce traitement :
+        . On duplique deux fois la commande :
           . la première fois, c'est pour lui mettre une dérivée nulle ; pour cela, on simule
             une dérivation par rapport à n'importe quoi
           . la seconde fois, on obtient la dérivée par rapport à lui-meme, c'est-à-dire 1.
@@ -126,43 +135,107 @@ class SENSIBILITE_DERIVATION :
           fonctions nulle et unité.
        Aux appels suivants, on ne fait que la dérivation du paramètre par rapport à lui-meme.
        """
-
+#
+       codret = 0
+#
+###       print ".. Entree dans derivation_para_sensi pour ", etape.nom, " et ", param
+###       print ".. self.fonction_0 = ",self.fonction_0
+###       print ".. self.fonction_1 = ",self.fonction_1
        if not self.definition_param_sensi :
          for nrpass in range(2) :
 #        Création et enregistrement de la commande dérivée
            reel = float(nrpass)
-           etape_derivee, l_mc_derives = self.derivation(etape,reel,None,new_jdc)
+           etape_derivee, l_mcf_mcs_val_derives = self.derivation(etape,reel,None,new_jdc)
            new_jdc.register(etape_derivee)
            if nrpass == 1 :
              # Au 2nd passage :
              # . mémorisation du nom de la structure dérivée : dérivation du paramètre par lui-meme
              codret = self.memo_nom_sensi.add_nom_compose(etape.sd,param,etape_derivee.sd)
-             txt = self.get_texte_memo_nom_sensi_compose(etape.sd.nom,param.nom,etape_derivee.sd.nom,l_mc_derives)
+###             print ".... codret de add_nom_compose : ", codret
+             if ( codret ) : break
+             txt = self.get_texte_memo_nom_sensi_compose(etape.sd.nom,param.nom,etape_derivee.sd.nom,l_mcf_mcs_val_derives)
              exec txt in new_jdc.g_context
 #          Mémorisation des deux fonctions dérivées créées, en tant que fonction nulle et fonction unité.
            if nrpass == 0 :
            # Au 1er passage :
            # . mémorisation de la fonction en tant que fonction nulle
-             codret = self.put_fonction_0(etape_derivee.sd)
-#             txt = self.get_texte_memo_nom_sensi_zero(etape_derivee.sd.nom)
-#             print txt
-#             exec txt in new_jdc.g_context
+             codret = self.put_fonction_0(etape_derivee.sd,"ps")
+             if ( codret ) : break
+#               txt = self.get_texte_memo_nom_sensi_zero(etape_derivee.sd.nom)
+#               print txt
+#               exec txt in new_jdc.g_context
            else :
              # Au 2nd passage :
              # . mémorisation de la fonction en tant que fonction unite
-              codret = self.put_fonction_1(etape_derivee.sd)
-#              txt = self.get_texte_memo_nom_sensi_un(etape_derivee.sd.nom)
-#             print txt
-#             exec txt in new_jdc.g_context
+             codret = self.put_fonction_1(etape_derivee.sd,"ps")
+             if ( codret ) : break
+#               txt = self.get_texte_memo_nom_sensi_un(etape_derivee.sd.nom)
+#               print txt
+#               exec txt in new_jdc.g_context
          self.definition_param_sensi = 1
 
        else :
-         fonction_1 = self.get_fonction_1()
+         fonction_1 = self.get_fonction_1("ps")
          codret = self.memo_nom_sensi.add_nom_compose(etape.sd,param,fonction_1)
-         txt = self.get_texte_memo_nom_sensi_compose(etape.sd.nom,param.nom,fonction_1.nom,None)
-         exec txt in new_jdc.g_context
+         if ( codret == 0 ) :
+           txt = self.get_texte_memo_nom_sensi_compose(etape.sd.nom,param.nom,fonction_1.nom,None)
+           exec txt in new_jdc.g_context
 
+       if ( codret ) : print ".... Probleme dans derivation_para_sensi pour ", etape.nom, " et ", param
+       return codret
+#
+#
+   def derivation_para_autre(self,etape,param,new_jdc) :
+       """
+       Dérive une étape de définition d'un paramètre autre
+       Au premier appel à ce traitement :
+        . On duplique deux fois la commande :
+          . la première fois, c'est pour lui mettre une dérivée nulle ; pour cela, on simule
+            une dérivation par rapport à n'importe quoi
+          . la seconde fois, on obtient la dérivée par rapport à lui-meme, c'est-à-dire 1.
+          Dans les deux cas, rien n'est changé.
+        . On mémorise les noms de ces nouvelles fonctions comme étant des
+          fonctions nulle et unité.
+       Aux appels suivants, on ne fait que la dérivation du paramètre par rapport à lui-meme.
+       """
+#
        codret = 0
+#
+###       print ".. Entree dans derivation_para_autre pour ", etape.nom, " et ", param
+       if not self.definition_param_autre :
+         for nrpass in range(2) :
+#        Création et enregistrement de la commande dérivée
+           reel = None
+           etape_derivee, l_mcf_mcs_val_derives = self.derivation(etape,reel,None,new_jdc)
+           new_jdc.register(etape_derivee)
+           if nrpass == 1 :
+             # Au 2nd passage :
+             # . mémorisation du nom de la structure dérivée : dérivation du paramètre par lui-meme
+             codret = self.memo_nom_sensi.add_nom_compose(etape.sd,param,etape_derivee.sd)
+             if ( codret ) : break
+             txt = self.get_texte_memo_nom_sensi_compose(etape.sd.nom,param.nom,etape_derivee.sd.nom,l_mcf_mcs_val_derives)
+             exec txt in new_jdc.g_context
+#          Mémorisation des deux fonctions dérivées créées, en tant que fonction nulle et fonction unité.
+           if nrpass == 0 :
+           # Au 1er passage :
+           # . mémorisation de la fonction en tant que fonction nulle
+             codret = self.put_fonction_0(etape_derivee.sd,"pa")
+             if ( codret ) : break
+           else :
+             # Au 2nd passage :
+             # . mémorisation de la fonction en tant que fonction unite
+             codret = self.put_fonction_1(etape_derivee.sd,"pa")
+             if ( codret ) : break
+         self.definition_param_autre = 1
+
+       else :
+         f_1 = self.get_fonction_1("pa")
+         codret = self.memo_nom_sensi.add_nom_compose(etape.sd,param,f_1)
+         if ( codret == 0 ) :
+           txt = self.get_texte_memo_nom_sensi_compose(etape.sd.nom,param.nom,f_1.nom,None)
+           exec txt in new_jdc.g_context
+
+       if ( codret ) : print ".... Probleme dans derivation_para_autre pour ", etape.nom, " et ", param
        return codret
 #
    def derivation_commande(self,etape,param,new_jdc,d_nom_s_c) :
@@ -171,11 +244,19 @@ class SENSIBILITE_DERIVATION :
        """
 #       Création et enregistrement de la commande dérivée
        reel = 0.
-       etape_derivee, l_mc_derives = self.derivation(etape,reel,d_nom_s_c,new_jdc)
+       if self.DEBUG :
+         print ".. Lancement de la dérivation de ",etape.nom
+       etape_derivee, l_mcf_mcs_val_derives = self.derivation(etape,reel,d_nom_s_c,new_jdc)
        new_jdc.register(etape_derivee)
+       if self.DEBUG :
+         print ".. Ajout d'un nom composé"
        codret = self.memo_nom_sensi.add_nom_compose(etape.sd,param,etape_derivee.sd)
        if codret == 0 :
-         txt = self.get_texte_memo_nom_sensi_compose(etape.sd.nom,param.nom,etape_derivee.sd.nom,l_mc_derives)
+         if self.DEBUG :
+           print ".. Récupération du texte"
+         txt = self.get_texte_memo_nom_sensi_compose(etape.sd.nom,param.nom,etape_derivee.sd.nom,l_mcf_mcs_val_derives)
+         if self.DEBUG :
+           print ".. txt = ", txt
          exec txt in new_jdc.g_context
        codret = 0
        return codret
@@ -183,7 +264,7 @@ class SENSIBILITE_DERIVATION :
    def derivation(self,etape,reel,d_nom_s_c,new_jdc) :
        """
        Crée l'étape dérivée de l'étape passée en argument
-       Retourne l'étape dérivée et la liste des mot-clés concernés
+       Retourne l'étape dérivée et la liste des mots-clés concernés
        par la dérivation de leur valeur
        """
 #       print ".... Appel de derivation avec ",etape,reel,d_nom_s_c
@@ -202,8 +283,11 @@ class SENSIBILITE_DERIVATION :
        etape_derivee.sdnom = nom_sd_derivee
        self.reel = reel
        self.d_nom_s_c = d_nom_s_c
-       l_mc_derives = self.derive_etape(etape_derivee,new_jdc)
-       return etape_derivee, l_mc_derives
+       l_mcf_mcs_val_derives = self.derive_etape(etape_derivee,new_jdc)
+       if self.DEBUG :
+         print ".... Fin de la copie pour dérivation de ",etape.nom
+         print "     avec l_mcf_mcs_val_derives = ", l_mcf_mcs_val_derives
+       return etape_derivee, l_mcf_mcs_val_derives
 #
 #  ========== ========== ========== Début ========== ========== ==========
 #  Les méthodes qui suivent servent à modifier les arguments de la commande
@@ -212,74 +296,230 @@ class SENSIBILITE_DERIVATION :
    def derive_etape(self,etape,new_jdc) :
        """
        Réalise la dérivation des arguments de l'étape passée en argument
-         - remplace tous les réels par reel (prudence !!!)
+         - remplace tous les réels par 'reel' (prudence !!!)
          - quand un argument possède une dérivée, on la met à la place
-         - remplace toutes les autres fonctions par fonction_nulle
-       Retourne la liste des mots-clés concernés par la dérivation de leur valeur 
+         - remplace toutes les autres fonctions par 'fonction_nulle'
+       Retourne la liste des tuples (mot-clé facteur, mot-clé simple, valeur(s)) concernés
+       par la dérivation de leur valeur.
        """
        liste = []
-       mc_derive = None
+       mcf_mcs_val_derive = None
        for child in etape.mc_liste :
+###         print " "
+###         print "...... derive_etape : child        = ",child
+         if self.DEBUG :
+           print "...... derive_etape : child.nom    = ",child.nom
+           print "...... derive_etape : child.nature = ",child.nature
          if child.nature == 'MCSIMP' :
-           mc_derive = self.derive_mcsimp(None,child,new_jdc)
-           if mc_derive :
-             liste.append(mc_derive)
+           mcf_mcs_val_derive = self.derive_mcsimp(None,child,new_jdc)
+           if mcf_mcs_val_derive :
+             liste.append(mcf_mcs_val_derive)
          elif child.nature in ('MCFACT','MCBLOC') :
            liste = liste + self.derive_mccompo(child,new_jdc)
          elif child.nature == 'MCList' :
            liste = liste + self.derive_mcliste(child,new_jdc)
 
-       l_mc_derives = []
-       for mc in liste :
-         if mc not in l_mc_derives :
-           l_mc_derives.append(mc)
-       return l_mc_derives       
+       l_mcf_mcs_val_derives = []
+       for mcf_mcs_val in liste :
+         if mcf_mcs_val not in l_mcf_mcs_val_derives :
+           l_mcf_mcs_val_derives.append(mcf_mcs_val)
+       return l_mcf_mcs_val_derives       
 #
    def derive_mccompo(self,mc,new_jdc) :
        """
        Dérive en place le mccompo passé en argument 
-       Retourne la liste des mots_clés concernés par la dérivation de leur valeur
+       Retourne la liste des tuples (mot-clé facteur, mot-clé simple, valeur(s)) concernés
+       par la dérivation de leur valeur.
        """
+###       print "...... derive_mccompo : mc = ", mc
+###       print "...... derive_mccompo : mc.nom      = ", mc.nom
+###       print "...... derive_mccompo : mc.mc_liste = ", mc.mc_liste
        liste = []
        for child in mc.mc_liste :
+###         print "........ child = ", child
+###         print "........ child.nom    = ", child.nom
+###         print "........ child.nature = ", child.nature
          if child.nature == 'MCSIMP' :
-           mc_derive = self.derive_mcsimp(mc,child,new_jdc)
-           if mc_derive :
-             liste.append(mc_derive)
+           mcf_mcs_val_derive = self.derive_mcsimp(mc,child,new_jdc)
+           if mcf_mcs_val_derive :
+             liste.append(mcf_mcs_val_derive)
          elif child.nature == 'MCBLOC' :
            liste = liste + self.derive_mccompo(child,new_jdc)
+         elif child.nature == 'MCList' :
+           liste = liste + self.derive_mcliste(child,new_jdc)
 #
        return liste
 #
    def derive_mcliste(self,mc,new_jdc) :
        """
        Dérive en place la MCList passée en argument
-       Retourne la liste des mots_clés concernés par la dérivation de leur valeur
+       Retourne la liste des tuples (mot-clé facteur, mot-clé simple, valeur(s)) concernés
+       par la dérivation de leur valeur.
        """
+###       print "...... derive_mcliste : mc = ", mc
        liste = []
        for child in mc.data :
+###         print "........ child = ", child
+###         print "........ child.nom    = ", child.nom
          liste = liste + self.derive_mccompo(child,new_jdc)
+###         print " "
        return liste 
-   
+#   
    def derive_mcsimp(self,mcfact,mcsimp,new_jdc) :
        """
-       Dérive le mcsimp passé en argument
-       Retourne None ou le tuple (mot-clé facteur, mot-clé simple, valeur) concerné
-       par la dérivation
+       Dérive le mcsimp passé en argument. Ce mot-clé simple est éventuellement sous
+       un mot-clé facteur.
+       Retourne None ou le tuple (mot-clé facteur, mot-clé simple, valeur(s)) concerné
+       par la dérivation.
        """ 
-       assert type(mcsimp.valeur) not in (types.ListType,types.TupleType), "Cas non traité : MCSIMP avec valeur == liste"
-#       print 'Ancien :',mcsimp.valeur,' de type ',type(mcsimp.valeur)
-       mc_derive = None
+###       print "........ sd_utilisees     = ",mcsimp.get_sd_utilisees()
+###       print "........ sd_mcs_utilisees = ",mcsimp.get_sd_mcs_utilisees()
+###       print '........ Dans derive_mcsimp, ancien  :',mcsimp.valeur,' de type ',type(mcsimp.valeur)
+###       print '........ ',self.d_nom_s_c
+       mcf_mcs_val_derive = None
+#
+#      0. Préalable pour gérer l'enchainement des elif
+#
+       ok_objet = 0
+       if self.d_nom_s_c is not None :
+         if mcsimp.valeur in self.d_nom_s_c.keys() :
+           ok_objet = 1
+#
+#      1. La valeur est un reel isolé : sa dérivée est le réel associé
+#
        if type(mcsimp.valeur) == types.FloatType :
-         mcsimp.valeur = self.reel
-       elif mcsimp.valeur in self.d_nom_s_c.keys() :
-         mc_derive = (mcfact,mcsimp,mcsimp.valeur)
+         if self.reel is not None :
+           mcsimp.valeur = self.reel
+#
+#      2. La valeur est un objet qui possède un objet dérivé : sa dérivée est connue
+#
+       elif ok_objet :
+         mcf_mcs_val_derive = (mcfact,mcsimp,mcsimp.valeur)
          mcsimp.valeur = self.d_nom_s_c[mcsimp.valeur]
+#
+#      3. La valeur est un objet : sa dérivée est la fonction nulle
+#
        elif type(mcsimp.valeur) == types.InstanceType :
          if isinstance(mcsimp.valeur,new_jdc.g_context['fonction']) :
-           mcsimp.valeur = self.fonction_0
-#       print 'Nouveau :',mcsimp.valeur,' et mc_derive = ',mc_derive
-       return mc_derive       
+           mcsimp.valeur = self.fonction_0["ps"]
+#
+#      4. La valeur est une liste ou un tuple : on applique les étapes 1, 2 et 3 à chacun
+#         de ses éléments et on reconstitue une liste ou un tuple avec les dérivés.
+#
+       elif type(mcsimp.valeur) in (types.ListType,types.TupleType) :
+         aux = [ ]
+         for val in mcsimp.valeur :
+###         print '........ val = ',val, " de type ",type(val)
+           if type(val) == types.FloatType :
+             if self.reel is not None :
+               val_nouv = self.reel
+             else :
+               val_nouv = val
+           elif val in self.d_nom_s_c.keys() :
+             mcf_mcs_val_derive = (mcfact,mcsimp,mcsimp.valeur)
+             val_nouv = self.d_nom_s_c[val]
+           elif type(val) == types.InstanceType :
+###         print '........ val.nom =", val.nom
+             if isinstance(val,new_jdc.g_context['fonction']) :
+               val_nouv = self.fonction_0["ps"]
+             else :
+               val_nouv = val
+           else :
+             val_nouv = val
+           aux.append(val_nouv)
+         if type(mcsimp.valeur) is types.ListType :
+           mcsimp.valeur = aux
+         else :
+           mcsimp.valeur = tuple(aux)
+#
+###       print '........ Dans derive_mcsimp, nouveau :',mcsimp.valeur
+###       print '         et mcf_mcs_val_derive = ',mcf_mcs_val_derive
+###       print ' '
+       return mcf_mcs_val_derive       
+#
+   def derivation_speciale(self,etape,d_mc) :
+       """
+       Vérifie si la commande doit vraiment etre dérivée, compte-tenu de ses paramètres.
+       Dès que l'on trouve une cause de dérivation, on le note et on sort.
+       """
+#
+       on_derive = 0
+       if self.DEBUG :
+         print ".. Test de la dérivation spéciale de ",etape.nom
+         print ".. Dictionnaire des autorisations : ",d_mc
+         print ".. Liste des mots-clés autorisés  : ",d_mc.keys()
+       for child in etape.mc_liste :
+         if self.DEBUG :
+           print " "
+           print ".... derivation_speciale : child        = ",child
+           print ".... derivation_speciale : child.nom    = ",child.nom
+           print ".... derivation_speciale : child.nature = ",child.nature
+         if child.nature == 'MCSIMP' :
+           ok = self.derive_speciale_mcsimp(child,d_mc)
+         elif child.nature in ('MCFACT','MCBLOC') :
+           ok = self.derive_speciale_mccompo(child,d_mc)
+         elif child.nature == 'MCList' :
+           ok = self.derive_speciale_mcliste(child,d_mc)
+         if ok :
+           on_derive = 1
+           break
+###       print ".. on_derive = ",on_derive
+       return on_derive
+   
+   def derive_speciale_mcsimp(self,mcsimp,d_mc) :
+       """
+       Cherche si le mcsimp passé en argument a sa valeur dans la liste associée.
+       """ 
+###       print '........ Dans derive_speciale_mcsimp, mcsimp         :',mcsimp
+###       print '........ Dans derive_speciale_mcsimp, mcsimp.valeur  :',mcsimp.valeur
+###       print "........ d_mc = ",d_mc
+#
+       ok = 0
+       if mcsimp.nom in d_mc.keys() :
+         if mcsimp.valeur in d_mc[mcsimp.nom] :
+           ok = 1
+###       print "........ ok = ",ok
+       return ok       
+#
+   def derive_speciale_mccompo(self,mc,d_mc) :
+       """
+       Cherche si le mc passé en argument a sa valeur dans la liste associée.
+       Dès que l'on trouve une cause de dérivation, on le note et on sort.
+       """
+###       print "...... derive_speciale_mccompo : mc = ", mc
+###       print "...... derive_speciale_mccompo : mc.nom      = ", mc.nom
+###       print "...... derive_speciale_mccompo : mc.mc_liste = ", mc.mc_liste
+       ok = 0
+       for child in mc.mc_liste :
+###         print "........ child = ", child
+###         print "........ child.nom    = ", child.nom
+###         print "........ child.nature = ", child.nature
+         if child.nature == 'MCSIMP' :
+           ok = self.derive_speciale_mcsimp(child,d_mc)
+         elif child.nature == 'MCBLOC' :
+           ok = self.derive_speciale_mccompo(child,d_mc)
+         elif child.nature == 'MCList' :
+           ok = self.derive_speciale_mcliste(child,d_mc)
+         if ok :
+            break
+#
+       return ok
+#
+   def derive_speciale_mcliste(self,mc,d_mc) :
+       """
+       Cherche si le mc passé en argument a sa valeur dans la liste associée.
+       Dès que l'on trouve une cause de dérivation, on le note et on sort.
+       """
+###       print "...... derive_speciale_mcliste : mc = ", mc
+       ok = 0
+       for child in mc.data :
+###         print "........ child = ", child
+###         print "........ child.nom    = ", child.nom
+         ok = self.derive_speciale_mccompo(child,d_mc)
+         if ok :
+           break
+#
+       return ok
 #
 #  ========== ========== ========== Fin ========== ========== ==========
 #  ========== ========== ========== Début ========== ========== ==========
@@ -287,7 +527,7 @@ class SENSIBILITE_DERIVATION :
 #  les noms simples et les noms composés
 #
 #
-   def get_texte_memo_nom_sensi_compose(self,nom_simple,param_sensi,nom_compose,l_mc_derives) :
+   def get_texte_memo_nom_sensi_compose(self,nom_simple,param_sensi,nom_compose,l_mcf_mcs_val_derives) :
        """
        Récupère le texte de la commande ASTER pour l'enregistrement du nom
        composé associé à un nom simple et à un paramètre sensible
@@ -295,24 +535,36 @@ class SENSIBILITE_DERIVATION :
        """
        if self.DEBUG :
          print ".... Commande de mémorisation des noms :"
-       texte = self.commande_memo_nom_sensi+"(NOM=_F(NOM_SD='%s',PARA_SENSI=%s,NOM_COMPOSE='%s'"%(nom_simple,param_sensi,nom_compose)
-       if l_mc_derives :
-         texte_mc = ",MOT_CLE=("
-         texte_va = ",VALEUR=("
-         texte_mf = ",MOT_FACT=("
-         for mot_cle in l_mc_derives :
+###       print ">>>> dans get_texte_memo_nom_sensi_compose, nom_simple  = ", nom_simple
+###       print ">>>> dans get_texte_memo_nom_sensi_compose, param_sensi = ", param_sensi
+###       print ">>>> dans get_texte_memo_nom_sensi_compose, nom_compose = ", nom_compose
+###       print ">>>> dans get_texte_memo_nom_sensi_compose, l_mcf_mcs_val_derives = ", l_mcf_mcs_val_derives
+       texte = self.commande_memo_nom_sensi+"(NOM=_F(\nNOM_SD='%s',\nPARA_SENSI=%s,\nNOM_COMPOSE='%s'"%(nom_simple,param_sensi,nom_compose)
+       if l_mcf_mcs_val_derives :
+         texte_mc = ",\nMOT_CLE=("
+         texte_va = ",\nVALEUR=("
+         texte_mf = ",\nMOT_FACT=("
+         for mot_cle in l_mcf_mcs_val_derives :
+###           print "...... mot_cle[0] = ", mot_cle[0], " de type ", type(mot_cle[0])
+###           print "...... mot_cle[1] = ", mot_cle[1], " de type ", type(mot_cle[1])
+###           print "...... mot_cle[2] = ", mot_cle[2], " de type ", type(mot_cle[2])
            if mot_cle[0] :
-             aux = mot_cle[0].nom
+             mcf_aux = mot_cle[0].nom
            else :
-             aux = " "
-           texte_mf = texte_mf + "'%s',"%(aux)
-           texte_mc = texte_mc + "'%s',"%(mot_cle[1].nom)
-           texte_va = texte_va + "'%s',"%(mot_cle[2].nom)
-         texte_mf = texte_mf + ")\n"
-         texte_mc = texte_mc + ")\n"
-         texte_va = texte_va + ")\n"
+             mcf_aux = " "
+           if type(mot_cle[2]) in (types.ListType,types.TupleType) :
+             laux = mot_cle[2]
+           else :
+             laux = [mot_cle[2]]
+           for aaa in laux :
+             texte_mf = texte_mf + "'%s',"%(mcf_aux)
+             texte_mc = texte_mc + "'%s',"%(mot_cle[1].nom)
+             texte_va = texte_va + "'%s',"%(aaa.nom)
+         texte_mf = texte_mf + ")"
+         texte_mc = texte_mc + ")"
+         texte_va = texte_va + ")"
          texte = texte + texte_mf + texte_mc + texte_va
-       texte = texte + "));\n"
+       texte = texte + ")\n);"
        if self.DEBUG :
          print ".... ", texte
        return texte

@@ -1,6 +1,6 @@
       SUBROUTINE TE0490(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/06/2003   AUTEUR KBBHHDB G.DEBRUYNE 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,31 +111,28 @@ C
       PARAMETER          (NBSGM  =   6)
       CHARACTER*2        CODRET(5), FB2, BL2
       CHARACTER*8        MODELI
-      CHARACTER*8        NOMRES(5),ELREFE
+      CHARACTER*8        NOMRES(5)
       CHARACTER*16       NOMTE,OPTION, OPTIO2
-      CHARACTER*24       CHVAL,CHCTE,TRAV
       REAL*8             VALRES(5)
-      REAL*8             EPSTH(NBSGM), SIGMA(NBSGM), EPSDV(NBSGM)
+      REAL*8             SIGMA(NBSGM), EPSDV(NBSGM)
       REAL*8             EPSEL(NBSGM), EPSPLA(NBSGM), X(NBSGM)
       REAL*8             EPSIM(NBSGM),DELTA(NBSGM),SIGMM(NBSGM)
       REAL*8             EPSI(NBSGM),EPSSM(MXCMEL),EPSS(MXCMEL)
       REAL*8             REPERE(7), INSTAN, NHARM,INTEG,INTEG1
       REAL*8             EPSM(MXCMEL),INTEG2
       REAL*8             NU, K, INDIGL
-      REAL*8             BIDON
       REAL*8             HYDR(27), SECH(27)
-      INTEGER            NBSIGM, NBPGAU, NBDIM, IHYDRE, ISECHE
-      REAL*8             R8BID,F(3,3),R,EPS(6)
+      INTEGER            NBSIGM, IHYDRE, ISECHE
+      REAL*8             F(3,3),R,EPS(6)
       LOGICAL            GRAND, AXI
       REAL*8             MU,TROISK,JAC,TAU(6),TRTAU,EQTAU,DVTAU(6)
       REAL*8             JE2,JE3,Q,D,SOL,TRBE
       INTEGER            I,JTAB(7)
-      REAL*8             KR(6),PDTSCA(6)
+      REAL*8             KR(6),PDTSCA(6), TRAV(81)
 
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       COMMON  / IVARJE / ZI(1)
       COMMON  / RVARJE / ZR(1)
       COMMON  / CVARJE / ZC(1)
@@ -158,7 +155,6 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C ---- INITIALISATIONS :
 
-      CALL ELREF1(ELREFE)
       ZERO        = 0.0D0
       UNDEMI      = 0.5D0
       UN          = 1.0D0
@@ -175,7 +171,6 @@ C ---- INITIALISATIONS :
       WELAS       = ZERO
       WTOTAL      = ZERO
       INSTAN      = ZERO
-      BIDON       = ZERO
       MODELI(1:2) = NOMTE(3:4)
       BL2         = '  '
       FB2         = 'F '
@@ -189,23 +184,7 @@ C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
 C
 C
-      CHCTE = '&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CHCTE,'L',JIN)
-      NDIM  = 2
-      NNO   = ZI(JIN+1-1)
-      NPG1  = ZI(JIN+3-1)
-
-      CHVAL = '&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(CHVAL,'L',JVAL)
-      IPOIDS = JVAL
-      IVF    = IPOIDS + NPG1
-      IDFDE  = IVF    + NPG1*NNO
-      IDFDK  = IDFDE  + NPG1*NNO
-
-C ---- ZONE DE TRAVAIL
-
-      TRAV = '&INEL.'//ELREFE//'.TRAVAIL'
-      CALL JEVETE(TRAV,'L',ITRAV)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
 C --- TYPE DE MODELISATION
 
@@ -243,7 +222,7 @@ C ---- RECUPERATION DE L'HYDRATATION AUX POINTS DE GAUSS DE L'ELEMENT :
 
       CALL TECACH('NNN','PHYDRER',1,IHYDRE,IRET)
       IF(IHYDRE.NE.0) THEN
-      DO 6 I = 1, NPG1
+      DO 6 I = 1, NPG
        HYDR(I)   = ZR(IHYDRE+I-1)
   6   CONTINUE
       ENDIF
@@ -315,14 +294,12 @@ C -- ENERGIE TOTALE A L INSTANT COURANT ET CELUI D AVANT
 
 C  CALCUL DE B.U
 
-        CALL EPS1MC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF), ZR(IDFDE),
-     +            ZR(IDFDK),BIDON, ZR(IPOIDS), ZR(IGEOM),ZR(IDEPL),
-     +            NHARM,EPSS)
+        CALL EPS1MC(MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+     +              ZR(IGEOM),ZR(IDEPL),NHARM,EPSS)
 
         IF (IDEPLM.NE.0)THEN
-         CALL EPS1MC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF), ZR(IDFDE),
-     +        ZR(IDFDK),BIDON, ZR(IPOIDS), ZR(IGEOM),ZR(IDEPMM),
-     +            NHARM,EPSSM)
+         CALL EPS1MC(MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+     +               ZR(IGEOM),ZR(IDEPMM),NHARM,EPSSM)
         ENDIF
        ENDIF
       ENDIF
@@ -335,8 +312,8 @@ C ---- ET EPSTH SONT LES DEFORMATIONS THERMIQUES
 C ----    EPSTH = ALPHA*(T-TREF) :
 C         ----------------------
       OPTIO2 = 'EPME_ELGA_DEPL'
-      CALL EPSVMC(MODELI, NNO, NDIM, NBSIG, NPG1, ZR(IVF), ZR(IDFDE),
-     +            ZR(IDFDK), BIDON, ZR(IPOIDS), ZR(IGEOM), ZR(IDEPL),
+      CALL EPSVMC(MODELI, NNO, NDIM, NBSIG, NPG, IPOIDS,IVF,IDFDE,
+     +            ZR(IGEOM), ZR(IDEPL),
      +            ZR(ITEMPE), ZR(ITREF), HYDR, SECH, INSTAN,
      +            ZI(IMATE), REPERE, NHARM, OPTIO2, EPSM)
 
@@ -353,7 +330,7 @@ C                      ===========================
 
 C --- BOUCLE SUR LES POINTS D'INTEGRATION
 
-       DO 10 IGAU = 1, NPG1
+       DO 10 IGAU = 1, NPG
 
         OMEGA = ZERO
         PSI   = ZERO
@@ -397,10 +374,7 @@ C --- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
 C --- CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
 
         CALL NMGEOM(2,NNO,AXI,GRAND,ZR(IGEOM),IGAU,
-     &              ZR(IPOIDS+IGAU-1),ZR(IVF+(IGAU-1)*NNO),
-     &              ZR(IDFDE),R8BID,
-     &              ZR(IDFDK),ZR(IDEPL),POIDS,ZR(ITRAV),
-     &              F,EPS,R)
+     &              IPOIDS,IVF,IDFDE,ZR(IDEPL),POIDS,TRAV,F,EPS,R)
 
 
 C --- CALCUL DE L'ENERGIE ELASTIQUE AU POINT D'INTEGRATION COURANT
@@ -827,7 +801,7 @@ C  ===========================
 
 C --- BOUCLE SUR LES POINTS D'INTEGRATION
 
-       DO 60 IGAU = 1, NPG1
+       DO 60 IGAU = 1, NPG
 
         IDECPG = NNO*(IGAU-1) - 1
 
@@ -997,10 +971,7 @@ C --- TRAVAIL PLASTIQUE 'EQUIVALENT' :
 C --- CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
 
         CALL NMGEOM(2,NNO,AXI,GRAND,ZR(IGEOM),IGAU,
-     &              ZR(IPOIDS+IGAU-1),ZR(IVF+(IGAU-1)*NNO),
-     &              ZR(IDFDE),R8BID,
-     &              ZR(IDFDK),ZR(IDEPL),POIDS,ZR(ITRAV),
-     &              F,EPS,R)
+     &              IPOIDS,IVF,IDFDE,ZR(IDEPL),POIDS,TRAV,F,EPS,R)
 
 C --- VOLUME DE L'ELEMENT :
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/05/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE ONDE DE CISAILLEMENT DANS UNE COLONNE ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -219,7 +219,6 @@ DYNB=DYNA_NON_LINE(     MODELE=MODELE,
                         NEWTON=_F(  MATRICE = 'ELASTIQUE', 
                                     REAC_INCR = 0,
                                     REAC_ITER = 0),
-                        OPTION=('SANS',),
                         INCREMENT=_F( LIST_INST = TEMLI),
 ###CDURAND              ARCHIVAGE=_F( LIST_ARCH = INLI),
                         NEWMARK=_F()
@@ -282,5 +281,3 @@ TEST_FONCTION(VALEUR=(   _F(
                 )
 
 FIN()
-#
-#

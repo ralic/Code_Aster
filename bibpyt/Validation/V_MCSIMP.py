@@ -1,4 +1,4 @@
-#@ MODIF V_MCSIMP Validation  DATE 06/10/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF V_MCSIMP Validation  DATE 04/02/2004   AUTEUR CAMBIER S.CAMBIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,16 +58,28 @@ class MCSIMP:
    def __init__(self):
       self.state='undetermined'
 
+   def get_valid(self):
+       if hasattr(self,'valid'):
+          return self.valid
+       else:
+          self.valid=None
+          return None
+
+   def set_valid(self,valid):
+       old_valid=self.get_valid()
+       self.valid = valid
+       self.state = 'unchanged'
+       if not old_valid or old_valid != self.valid :
+           self.init_modif_up()
+
    def isvalid(self,cr='non'):
       """
-         Cette méthode retourne un indicateur de validité de l'objet
-         de type MCSIMP 
-         
-         - 0 si l'objet est invalide
- 
-         - 1 si l'objet est valide
+         Cette méthode retourne un indicateur de validité de l'objet de type MCSIMP
 
-         Le pramètre cr permet de paramétrer le traitement. Si cr == 'oui'
+           - 0 si l'objet est invalide
+           - 1 si l'objet est valide
+
+         Le paramètre cr permet de paramétrer le traitement. Si cr == 'oui'
          la méthode construit également un comte-rendu de validation
          dans self.cr qui doit avoir été créé préalablement.
       """
@@ -75,37 +87,31 @@ class MCSIMP:
         return self.valid
       else:
         valid = 1
-        if hasattr(self,'valid'):
-          old_valid = self.valid
-        else:
-          old_valid = None
         v=self.valeur
-        #  presence
+        #  verification presence
         if self.isoblig() and v == None :
           if cr == 'oui' :
             self.cr.fatal(string.join(("Mot-clé : ",self.nom," obligatoire non valorisé")))
           valid = 0
+
         if v is None:
+           valid=0
            if cr == 'oui' :
               self.cr.fatal("None n'est pas une valeur autorisée")
-           valid=0
         else:
            # type,into ...
            valid = self.verif_type(val=v,cr=cr)*self.verif_into(cr=cr)*self.verif_card(cr=cr)
            #
-           # On verifie les validateurs s'il y en a
+           # On verifie les validateurs s'il y en a et si necessaire (valid == 1)
            #
-           if self.definition.validators and not self.definition.validators.verif(self.valeur):
+           if valid and self.definition.validators and not self.definition.validators.verif(self.valeur):
               if cr == 'oui' :
                  self.cr.fatal(string.join(("Mot-clé : ",self.nom,"devrait avoir ",self.definition.validators.info())))
               valid=0
            # fin des validateurs
            #
-        self.valid = valid
-        self.state = 'unchanged'
-        # Si la validité du mot clé a changé, on le signale à l'objet parent
-        if not old_valid or old_valid != self.valid : 
-           self.init_modif_up()
+
+        self.set_valid(valid)
         return self.valid
 
    def isoblig(self):
@@ -122,20 +128,19 @@ class MCSIMP:
       card = 1
       min=self.definition.min
       max=self.definition.max
-      if type(self.valeur) in (types.ListType,types.TupleType) and 'C' not in self.definition.type :
-        if len(self.valeur) < min or len(self.valeur)>max:
-          if cr == 'oui':
-            self.cr.fatal("Nombre d'arguments %s incorrects pour %s (min = %s, max = %s)" %(`self.valeur`,self.nom,min,max))
-          card = 0
+
+      if type(self.valeur) == types.TupleType and not self.valeur[0] in ('RI','MP') or type(self.valeur) == types.ListType:
+        length=len(self.valeur)
       else:
         if self.valeur == None :
-          if min >= 1 :
-            # on n'a pas d'objet et on en attend au moins un
-            card=0
-        else :
-          if min > 1:
-            # on n'a qu'un objet et on en attend plus d'1
-            card = 0
+           length=0
+        else:
+           length=1
+
+      if length < min or length >max:
+         if cr == 'oui':
+            self.cr.fatal("Nombre d'arguments de %s incorrect pour %s (min = %s, max = %s)" %(`self.valeur`,self.nom,min,max))
+         card = 0
       return card
 
    def verif_type(self,val=None,cr='non'):
@@ -154,38 +159,22 @@ class MCSIMP:
         if cr == 'oui':
           self.cr.fatal("None n'est pas une valeur autorisée")
         return 0
-      if type(valeur) == types.TupleType:
-        # on peut avoir à faire à un complexe ou une liste de valeurs ...
-        if self.is_complexe(valeur) : return 1
-        else:
-          for val in valeur:
-            if not self.verif_type(val=val,cr=cr) : return 0
-          return 1
-      elif type(valeur) == types.ListType:
+
+      if type(valeur) == types.TupleType and not valeur[0] in ('RI','MP') or type(valeur) == types.ListType:
+        # Ici on a identifié une liste de valeurs
         for val in valeur:
             if not self.verif_type(val=val,cr=cr) : return 0
         return 1
-      else:
-        # on n'a pas de tuple ...il faut tester sur tous les types ou les valeurs possibles
-        # XXX Pourquoi into est il traité ici et pas seulement dans verif_into ???
-        if self.definition.into != None :
-          try:
-            if valeur in self.definition.into :
-              return 1
-            else:
-              if cr == 'oui':
-                self.cr.fatal("%s n'est pas une valeur autorisée" %valeur)
-              return 0
-          except:
-            print "problème avec :",self.nom
-            print 'valeur =',valeur
-            return 0
-        for type_permis in self.definition.type:
+
+      # Ici, valeur est un scalaire ...il faut tester sur tous les types ou les valeurs possibles
+
+      for type_permis in self.definition.type:
           if self.compare_type(valeur,type_permis) : return 1
-        # si on sort de la boucle précédente par ici c'est que l'on n'a trouvé aucun type valable --> valeur refusée
-        if cr =='oui':
+
+      # si on sort de la boucle précédente par ici c'est que l'on n'a trouvé aucun type valable --> valeur refusée
+      if cr =='oui':
           self.cr.fatal("%s n'est pas d'un type autorisé" %`valeur`)
-        return 0
+      return 0
 
    def verif_into(self,cr='non'):
       """
@@ -195,13 +184,19 @@ class MCSIMP:
       """
       if self.definition.into == None :
         #on est dans le cas d'un ensemble continu de valeurs possibles (intervalle)
-        if type(self.valeur)==types.TupleType :
+        if self.definition.val_min == '**' and self.definition.val_max == '**':
+           # L'intervalle est infini, on ne fait pas de test
+           return 1
+        #if type(self.valeur) in (types.ListType,types.TupleType) :
+        if type(self.valeur) == types.TupleType and not self.valeur[0] in ('RI','MP') or type(self.valeur) == types.ListType:
+          # Cas d'une liste de valeurs
           test = 1
           for val in self.valeur :
-            if type(val)!=types.StringType and type(val)!=types.InstanceType:
+            if type(val) != types.StringType and type(val) != types.InstanceType:
               test = test*self.isinintervalle(val,cr=cr)
           return test
         else :
+          # Cas d'un scalaire
           val = self.valeur
           if type(val)!=types.StringType and type(val)!=types.InstanceType:
             return self.isinintervalle(self.valeur,cr=cr)
@@ -209,14 +204,16 @@ class MCSIMP:
             return 1
       else :
         # on est dans le cas d'un ensemble discret de valeurs possibles (into)
-        if type(self.valeur) == types.TupleType :
+        #if type(self.valeur) in (types.ListType,types.TupleType) :
+        if type(self.valeur) == types.TupleType and not self.valeur[0] in ('RI','MP') or type(self.valeur) == types.ListType:
+          # Cas d'une liste de valeur
           for e in self.valeur:
             if e not in self.definition.into:
               if cr=='oui':
                 self.cr.fatal(string.join(("La valeur :",`e`," n'est pas permise pour le mot-clé :",self.nom)))
               return 0
         else:
-          if self.valeur == None or self.valeur not in self.definition.into:
+          if self.valeur not in self.definition.into:
             if cr=='oui':
               self.cr.fatal(string.join(("La valeur :",`self.valeur`," n'est pas permise pour le mot-clé :",self.nom)))
             return 0
@@ -224,25 +221,14 @@ class MCSIMP:
 
    def is_complexe(self,valeur):
       """ Retourne 1 si valeur est un complexe, 0 sinon """
-      if type(valeur) == types.StringType :
-        # on teste une valeur issue d'une entry (valeur saisie depuis EFICAS)
-        #XXX Il serait peut etre plus judicieux d'appeler une méthode de self.jdc
-        #XXX qui retournerait l'objet résultat de l'évaluation
-        #XXX ou meme de faire cette evaluation a l'exterieur de cette classe ??
-        if not self.jdc :return 0
-        try :
-          valeur = eval(valeur,self.jdc.g_context)
-        except:
-          return 0
       if type(valeur) == types.InstanceType :
         #XXX je n'y touche pas pour ne pas tout casser mais il serait
         #XXX préférable d'appeler une méthode de valeur : return valeur.is_type('C'), par exemple
-        if valeur.__class__.__name__ in ('EVAL','complexe'):
+        if valeur.__class__.__name__ in ('EVAL','complexe','PARAMETRE_EVAL'):
           return 1
-        elif valeur.__class__.__name__ in ('PARAMETRE','PARAMETRE_EVAL'):
-          # il faut tester si la valeur du parametre est un entier
-          #XXX ne serait ce pas plutot complexe ???? sinon expliquer
-          return self.is_entier(valeur.valeur)
+        elif valeur.__class__.__name__ in ('PARAMETRE',):
+          # il faut tester si la valeur du parametre est un complexe
+          return self.is_complexe(valeur.valeur)
         else:
           print "Objet non reconnu dans is_complexe %s" %`valeur`
           return 0
@@ -250,37 +236,30 @@ class MCSIMP:
       #elif type(valeur) == types.ComplexType:
         #return 1
       elif type(valeur) != types.TupleType :
+        # On n'autorise pas les listes pour les complexes
         return 0
+      elif len(valeur) != 3:return 0
       else:
-        if len(valeur) != 3 :
-          return 0
-        else:
-          if type(valeur[0]) != types.StringType : return 0
-          if string.strip(valeur[0]) not in ('RI','MP'):
-            return 0
-          else:
-            if not self.is_reel(valeur[1]) or not self.is_reel(valeur[2]) : return 0
-            else: return 1
+          # Un complexe doit etre un tuple de longueur 3 avec 'RI' ou 'MP' comme premiere
+          # valeur suivie de 2 reels.
+          try:
+             if string.strip(valeur[0]) in ('RI','MP') and self.is_reel(valeur[1]) and self.is_reel(valeur[2]):
+                return 1
+          except:
+             return 0
 
    def is_reel(self,valeur):
       """
       Retourne 1 si valeur est un reel, 0 sinon
       """
-      if type(valeur) == types.StringType :
-        # on teste une valeur issue d'une entry (valeur saisie depuis EFICAS)
-        if not self.jdc :return 0
-        try :
-          valeur = eval(valeur,self.jdc.g_context)
-        except:
-          return 0
       if type(valeur) == types.InstanceType :
         #XXX je n'y touche pas pour ne pas tout casser mais il serait
         #XXX préférable d'appeler une méthode de valeur : return valeur.is_type('R'), par exemple
         #XXX ou valeur.is_reel()
         #XXX ou encore valeur.compare(self.is_reel)
-        if valeur.__class__.__name__ in ('EVAL','reel') :
+        if valeur.__class__.__name__ in ('EVAL','reel','PARAMETRE_EVAL') :
           return 1
-        elif valeur.__class__.__name__ in ('PARAMETRE','PARAMETRE_EVAL'):
+        elif valeur.__class__.__name__ in ('PARAMETRE',):
           # il faut tester si la valeur du parametre est un réel
           return self.is_reel(valeur.valeur)
         else:
@@ -294,19 +273,12 @@ class MCSIMP:
 
    def is_entier(self,valeur):
       """ Retourne 1 si valeur est un entier, 0 sinon """
-      if type(valeur) == types.StringType :
-        # on teste une valeur issue d'une entry (valeur saisie depuis EFICAS)
-        if not self.jdc :return 0
-        try :
-          valeur = eval(valeur,self.jdc.g_context)
-        except:
-          return 0
       if type(valeur) == types.InstanceType :
         #XXX je n'y touche pas pour ne pas tout casser mais il serait
         #XXX préférable d'appeler une méthode de valeur : return valeur.is_type('I'), par exemple
-        if valeur.__class__.__name__ in ('EVAL','entier') :
+        if valeur.__class__.__name__ in ('EVAL','entier','PARAMETRE_EVAL') :
           return 1
-        elif valeur.__class__.__name__ in ('PARAMETRE','PARAMETRE_EVAL'):
+        elif valeur.__class__.__name__ in ('PARAMETRE',):
           # il faut tester si la valeur du parametre est un entier
           return self.is_entier(valeur.valeur)
         else:
@@ -317,7 +289,7 @@ class MCSIMP:
         return 0
       else:
         return 1
-        
+
    def is_shell(self,valeur):
       """ 
           Retourne 1 si valeur est un shell, 0 sinon
@@ -330,19 +302,11 @@ class MCSIMP:
         return 1
 
    def is_object_from(self,objet,classe):
-      """ 
-           Retourne 1 si valeur est un objet de la classe classe ou d'une sous-classe de classe,
-           0 sinon 
+      """
+           Retourne 1 si valeur est un objet de la classe classe ou d'une
+           sous-classe de classe, 0 sinon
       """
       if type(objet) != types.InstanceType :
-        if type(objet) == types.StringType:
-          if not self.jdc :return 0
-          try :
-            objet = eval(objet,self.jdc.g_context)
-            if type(objet) != types.InstanceType : return 0
-          except:
-            return 0
-        else:
           return 0
       if not objet.__class__ == classe and not issubclass(objet.__class__,classe):
         return 0

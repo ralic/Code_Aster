@@ -1,11 +1,11 @@
-      SUBROUTINE LGLDCM ( NBMAT, MATER, SIG, NVI, VIN)
+      SUBROUTINE LGLDCM ( NBMAT, MATER, SIG, VIN)
 C
       IMPLICIT    NONE
-      INTEGER     NBMAT, NVI
+      INTEGER     NBMAT
       REAL*8      SIG(6), MATER(NBMAT,2), VIN(*)
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,7 +30,6 @@ C --- : MATER :  COEFFICIENTS MATERIAU A T+DT ---------------------
 C ----------- :  MATER(*,1) = CARACTERISTIQUES ELASTIQUES ---------
 C ----------- :  MATER(*,2) = CARACTERISTIQUES PLASTIQUES ---------
 C --- : SIG   :  TENSEUR DES CONTRAINTES (ELASTIQUE) A T+DT -------
-C --- : NVI   :  NOMBRE DE VARIABLES INTERNES ---------------------
 C OUT : VIN   :  VARIABLES INTERNES -------------------------------
 C =================================================================
 C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------

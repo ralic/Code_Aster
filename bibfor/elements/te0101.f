@@ -1,21 +1,21 @@
       SUBROUTINE TE0101(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
-C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
-C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE  CRP_20
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -33,9 +33,8 @@ C ......................................................................
       PARAMETER (NBRES=24)
       PARAMETER (NBVAR=2)
       CHARACTER*2 CODRET(NBRES),NUM
-      CHARACTER*8 NOMRES(NBRES),NOMPAR(NBVAR),ELREFE
+      CHARACTER*8 NOMRES(NBRES),NOMPAR(NBVAR)
       CHARACTER*16 PHENOM
-      CHARACTER*24 CARAC,FF
       REAL*8 B(3,3),A(3,3,2,2),CONDUC,H,THETA
       REAL*8 VALRES(NBRES),AXE(3,3),ANG(2),HOM(NBRES)
       REAL*8 DFDX(9),DFDY(9),POIDS,PK,COOR2D(18)
@@ -46,8 +45,9 @@ C ......................................................................
       REAL*8 VALPAR(NBVAR),TEMPE,INSTAN
       REAL*8 RIGITH(NDIMAX,NDIMAX)
       INTEGER IMATE,ICACOQ
-      INTEGER NNO,KP,NPG1,NPG2,GI,PI,GJ,PJ,K,IMATTT
-      INTEGER ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM
+      INTEGER NNO,KP,NPG1,NPG2,GI,PI,GJ,PJ,K,IMATTT,NDIM,NNOS
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM,JGANO,JGANO2
+      INTEGER NDIM2,NNO2,NNOS2
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
@@ -66,10 +66,11 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-
+C
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
+C
 C --- INITIALISATIONS :
 C     ---------------
-      CALL ELREF1(ELREFE)
       MUN = -1.0D0
       ZERO = 0.0D0
       UN = 1.0D0
@@ -101,26 +102,6 @@ C     ---------------
    10   CONTINUE
    20 CONTINUE
 
-C --- RECUPERATION DES CARACTERISTIQUES DE L'ELEMENT :
-C --- NOMBRE DE NOEUDS, NOMBRE DE POINTS D'INTEGRATION :
-C
-
-C------------------------------------------------
-      CARAC = '&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
-
-C --- RECUPERATION DES POIDS, DES FONCTIONS DE FORME ET DE LEURS
-C --- DERIVEES AUX POINTS D'INTEGRATION :
-C     ---------------------------------
-      FF = '&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS = IFF
-      IVF = IPOIDS + NPG1
-      IDFDE = IVF + NPG1*NNO
-      IDFDK = IDFDE + NPG1*NNO
 
 C --- RECUPERATION DES COORDONNEES DES NOEUDS DE L'ELEMENT :
 C     ----------------------------------------------------
@@ -169,7 +150,7 @@ C ---   DETERMINATION DE LA ROTATION FAISANT PASSER DU REPERE
 C ---   DE REFERENCE AU REPERE DE L'ELEMENT :
 C       -----------------------------------
         CALL MUDIRX(NBNOSO,ZR(IGEOM),3,ZR(ICACOQ+1),ZR(ICACOQ+2),AXE,
-     +              ANG)
+     &              ANG)
 
 C ---   NOM DES COMPOSANTES DU TENSEUR DE CONDUCTIVITE HOMOGENEISE :
 C       ----------------------------------------------------------
@@ -184,7 +165,7 @@ C ---   (L'INTERPOLATION EN FONCTION DE LA TEMPERATURE EST
 C ---    INACTIVE POUR LE MOMENT) :
 C       -------------------------
         CALL RCVALA(ZI(IMATE),'THER_COQMU',NBVAR,NOMPAR,VALPAR,NBRES,
-     +              NOMRES,VALRES,CODRET,'FM')
+     &              NOMRES,VALRES,CODRET,'FM')
 
 C ---   VALEURS DES CARACTERISIQUES DU MATERIAU DANS LE REPERE
 C ---   DE L'ELEMENT ( PARCE QUE C'EST DANS CE REPERE QUE LE
@@ -236,7 +217,7 @@ C       -------------------------
         NBV = 1
         NOMRES(1) = 'LAMBDA'
         CALL RCVALA(ZI(IMATE),'THER',NBVAR,NOMPAR,VALPAR,NBV,NOMRES,
-     +              VALRES,CODRET,'FM')
+     &              VALRES,CODRET,'FM')
 
 C ---   CONDUCTIVITE  :
 C       ------------
@@ -335,13 +316,13 @@ C ---    INACTIVE POUR LE MOMENT) :
 C      --------------------------
         NBV = 12
         CALL RCVALA(ZI(IMATE),PHENOM,NBVAR,NOMPAR,VALPAR,NBV,NOMRES,
-     +              VALRES,CODRET,'FM')
+     &              VALRES,CODRET,'FM')
 
 C ---   DETERMINATION DE LA ROTATION FAISANT PASSER DU REPERE
 C ---   DE REFERENCE AU REPERE DE L'ELEMENT :
 C       -----------------------------------
         CALL MUDIRX(NBNOSO,ZR(IGEOM),3,ZR(ICACOQ+1),ZR(ICACOQ+2),AXE,
-     +              ANG)
+     &              ANG)
 
 C ---   PASSAGE DU REPERE DE REFERENCE AU REPERE DE L'ELEMENT :
 C       -----------------------------------------------------
@@ -444,9 +425,9 @@ C       ---------------------------------
 
       ELSE
         CALL UTMESS('F','TE0101','LE MATERIAU '//PHENOM//' N''EST '//
-     +              'PAS CONNU. SEULS SONT ADMIS LES MATERIAUX '//
-     +              ' ''THER'', ''THER_COQMU'' ET ''THER_COQUE'' '//
-     +              'POUR LES COQUES THERMIQUES .')
+     &              'PAS CONNU. SEULS SONT ADMIS LES MATERIAUX '//
+     &              ' ''THER'', ''THER_COQMU'' ET ''THER_COQUE'' '//
+     &              'POUR LES COQUES THERMIQUES .')
       END IF
 
 C======================================
@@ -469,16 +450,15 @@ C ---  BOUCLE SUR LES POINTS D'INTEGRATION :
 C      -----------------------------------
         DO 130 KP = 1,NPG1
           K = (KP-1)*NNO
-          CALL DFDM2D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     +                COOR2D,DFDX,DFDY,POIDS)
+          CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,COOR2D,DFDX,DFDY,POIDS)
           DO 120 GI = 1,NNO
             DO 110 GJ = 1,GI
               DO 100 PI = 1,3
                 DO 90 PJ = 1,PI
                   PK = A(PI,PJ,1,1)*DFDX(GI)*DFDX(GJ) +
-     +                 A(PI,PJ,2,2)*DFDY(GI)*DFDY(GJ) +
-     +                 A(PI,PJ,1,2)*DFDX(GI)*DFDY(GJ) +
-     +                 A(PI,PJ,1,2)*DFDY(GI)*DFDX(GJ)
+     &                 A(PI,PJ,2,2)*DFDY(GI)*DFDY(GJ) +
+     &                 A(PI,PJ,1,2)*DFDX(GI)*DFDY(GJ) +
+     &                 A(PI,PJ,1,2)*DFDY(GI)*DFDX(GJ)
                   PK = PK*POIDS*THETA
 
 C ---     AFFECTATION DES TERMES HORS DIAGONAUX DE LA TRIANGULAIRE
@@ -509,23 +489,20 @@ C ---  UTILISATION D'UNE INTEGRATION AVEC UN NOMBRE DE POINTS
 C ---  SUPERIEUR OU EGAL AU NOMBRE DE POINTS UTILISES POUR LA
 C ---  RIGIDITE MEMBRANAIRE :
 C      --------------------
-        IPOIDS = IDFDK + NPG1*NNO
-        IVF = IPOIDS + NPG2
-        IDFDE = IVF + NPG2*NNO
-        IDFDK = IDFDE + NPG2*NNO
-
+        CALL ELREF4(' ','MASS',NDIM2,NNO2,NNOS2,NPG2,
+     &                   IPOIDS,IVF,IDFDE,JGANO2)
+ 
 C ---  BOUCLE SUR LES POINTS D'INTEGRATION :
 C      -----------------------------------
         DO 180 KP = 1,NPG2
           K = (KP-1)*NNO
-          CALL DFDM2D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     +                COOR2D,DFDX,DFDY,POIDS)
+          CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,COOR2D,DFDX,DFDY,POIDS)
           DO 170 GI = 1,NNO
             DO 160 GJ = 1,GI
               DO 150 PI = 1,3
                 DO 140 PJ = 1,PI
-                  PK = B(PI,PJ)*ZR(IVF+K+GI-1)*ZR(IVF+K+GJ-1)*POIDS*
-     +                 THETA
+                  PK = B(PI,PJ)*ZR(IVF+K+GI-1)*ZR(IVF+K+GJ-1)*
+     &            POIDS*THETA
 
 C ---     AFFECTATION DES TERMES HORS DIAGONAUX DE LA TRIANGULAIRE
 C ---     INFERIEURE DE LA SOUS-MATRICE :
@@ -559,8 +536,8 @@ C ---  BOUCLE SUR LES POINTS D'INTEGRATION :
 C      -----------------------------------
         DO 240 KP = 1,NPG1
           K = (KP-1)*NNO
-          CALL DFDM1D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IGEOM),DFDX,
-     +                COUR,POIDS,COSA,SINA)
+          CALL DFDM1D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IGEOM),
+     &               DFDX,COUR,POIDS,COSA,SINA)
 
           IF (NOMTE(3:4).EQ.'CA') THEN
             R = ZERO
@@ -605,14 +582,14 @@ C ---  BOUCLE SUR LES POINTS D'INTEGRATION :
 C      -----------------------------------
         DO 290 KP = 1,NPG1
           K = (KP-1)*NNO
-          CALL DFDM1D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IGEOM),DFDX,
-     +                COUR,POIDS,COSA,SINA)
+          CALL DFDM1D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IGEOM),
+     &                DFDX,COUR,POIDS,COSA,SINA)
           DO 280 GI = 1,NNO
             DO 270 GJ = 1,GI
               DO 260 PI = 1,3
                 DO 250 PJ = 1,PI
                   PK = B(PI,PJ)*ZR(IVF+K+GI-1)*ZR(IVF+K+GJ-1)*POIDS*
-     +                 THETA
+     &                 THETA
 
 C ---     AFFECTATION DES TERMES HORS DIAGONAUX DE LA TRIANGULAIRE
 C ---     INFERIEURE DE LA SOUS-MATRICE :

@@ -1,11 +1,11 @@
-      SUBROUTINE NDLECT(MODELE, MATE,  LISCHA, STADYN, LAMORT,
-     &                   ALPHA, DELTA,  V0VIT,  V0ACC,  A0VIT, 
-     &                   A0ACC, NBMODS, NMODAM, VALMOD, BASMOD,
-     &                   NREAVI, LIMPED, LONDE, CHONDP, NONDP,
-     &                   MULTIA)
+      SUBROUTINE NDLECT( MODELE, MATE,   LISCHA, STADYN, LAMORT,
+     &                   ALPHA,  DELTA,  V0VIT,  V0ACC,  A0VIT, 
+     &                   A0ACC,  NBMODS, NMODAM, VALMOD, BASMOD,
+     &                   NREAVI, LIMPED, LONDE,  CHONDP, NONDP,
+     &                   MULTIA  )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/10/2003   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,12 +26,12 @@ C RESPONSABLE PABHHHH N.TARDIEU
 C TOLE CRP_21
 
       IMPLICIT NONE
-      REAL*8        V0VIT, V0ACC, A0VIT, A0ACC, ALPHA, DELTA
-      CHARACTER*24 MODELE, MATE, STADYN, VALMOD, BASMOD, CHONDP
-      CHARACTER*24 MULTIA(8)
-      CHARACTER*19 LISCHA
       INTEGER       NBMODS, NREAVI, NONDP, NMODAM
+      REAL*8        V0VIT, V0ACC, A0VIT, A0ACC, ALPHA, DELTA
       LOGICAL       LAMORT, LIMPED, LONDE
+      CHARACTER*19  LISCHA
+      CHARACTER*24  MODELE, MATE, STADYN, VALMOD, BASMOD, CHONDP
+      CHARACTER*24  MULTIA(8)
 
 C ----------------------------------------------------------------------
 C
@@ -41,12 +41,35 @@ C ----------------------------------------------------------------------
 C
 C      IN MODELE : NOM DU MODELE
 C ----------------------------------------------------------------------
-      INTEGER      IRET, NBOCC, IALGO, N1, IBID
-      CHARACTER*8  K8B,LICMP(3),REP
-      CHARACTER*24 FONDEP,FONVIT,FONACC,MULTAP,PSIDEL, K24BLA
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+
+      INTEGER       IRET, IRET2, NBOCC, IALGO, N1, IBID, I, NCHAR,
+     +              JCHAR, JINF
+      CHARACTER*8   K8B, LICMP(3), NOMCHA, REP
+      CHARACTER*24  FONDEP,FONVIT,FONACC,MULTAP,PSIDEL, K24BLA
+      CHARACTER*24  CHARGE, INFOCH, CHGRFL
       REAL*8        UNDEMI,UN,DEUX,QUATRE
       REAL*8        ALPHA0,RCMP(3)
-      COMPLEX*16   CPLX
+      COMPLEX*16    CPLX
+C
+      DATA CHGRFL /'&&OP0070.GRAPPE_FLUIDE  '/
 C ----------------------------------------------------------------------
 
          UNDEMI = 0.5D0
@@ -120,6 +143,25 @@ C -- VERIFICATION DE LA PRESENCE D'ELEMENTS AVEC 'IMPE_ABSO'
 
 C -- TEST DE LA PRESENCE DE CHARGES DE TYPE 'ONDE_PLANE'
       CALL NMONDP(LISCHA,LONDE,CHONDP,NONDP)
+
+
+C --- TEST DE LA PRESENCE DE CHARGES DE TYPE 'FORCE_FLUIDE'
+
+      CHARGE = LISCHA//'.LCHA'
+      INFOCH = LISCHA//'.INFC'
+      CALL JEEXIN ( CHARGE, IRET )
+      IF ( IRET .NE. 0 ) THEN
+         CALL JEVEUO ( INFOCH, 'L', JINF  )
+         CALL JEVEUO ( CHARGE, 'L', JCHAR )
+         NCHAR = ZI(JINF)
+         DO 10 I = 1, NCHAR
+            NOMCHA = ZK24(JCHAR+I-1)(1:8)
+            CALL JEEXIN ( NOMCHA//'.CHME.GRFLU.LINO', IRET2 )
+            IF ( IRET2 .NE. 0 ) THEN
+               CALL GFLECT ( NOMCHA, CHGRFL )
+            ENDIF
+  10     CONTINUE
+      ENDIF
 
 
  9999 CONTINUE

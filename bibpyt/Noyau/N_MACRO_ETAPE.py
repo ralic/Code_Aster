@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 16/03/2004   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -528,6 +528,37 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
       d=self.parent.get_global_contexte()
       d.update(self.g_context)
       return d
+
+   def copy(self):
+      """ Méthode qui retourne une copie de self non enregistrée auprès du JDC
+          et sans sd
+          On surcharge la methode de ETAPE pour exprimer que les concepts crees
+          par la MACRO d'origine ne sont pas crees par la copie mais eventuellement
+          seulement utilises
+      """
+      etape=N_ETAPE.ETAPE.copy(self)
+      etape.sdprods=[]
+      return etape
+
+   def copy_intern(self,etape):
+      """ Cette méthode effectue la recopie des etapes internes d'une macro 
+          passée en argument (etape)
+      """
+      self.etapes=[]
+      for etp in etape.etapes:
+          new_etp=etp.copy()
+          new_etp.copy_reuse(etp)
+          new_etp.copy_sdnom(etp)
+          new_etp.reparent(self)
+          if etp.sd:
+             new_sd = etp.sd.__class__(etape=new_etp)
+             new_etp.sd = new_sd
+             if etp.reuse:
+                new_sd.nom = etp.sd.nom
+             else:
+                self.NommerSdprod(new_sd,etp.sd.nom)
+          new_etp.copy_intern(etp)
+          self.etapes.append(new_etp)
 
 
 

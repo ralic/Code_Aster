@@ -1,6 +1,6 @@
       SUBROUTINE TE0085 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,15 +28,12 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
-      CHARACTER*24       CARAC,FF
-      CHARACTER*8        ELREFE
       CHARACTER*2        CODRET
       REAL*8             DFDX(9),DFDY(9),POIDS,RX
-      INTEGER            NNO,KP,K,NPG1,I,IVECTU,IPESA
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE
+      INTEGER            NNO,KP,K,NPG,I,IVECTU,IPESA
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -53,19 +50,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CALL ELREF1(ELREFE)
-
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS=IFF
-      IVF   =IPOIDS+NPG1
-      IDFDE =IVF   +NPG1*NNO
-      IDFDK =IDFDE +NPG1*NNO
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -75,10 +60,9 @@ C
       CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
       CALL RCVALA(ZI(IMATE),PHENOM,1,' ',R8B,1,'RHO',RHO,CODRET,'FM')
 C
-      DO 101 KP=1,NPG1
-         K=(KP-1)*NNO
-         CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                 ZR(IGEOM),DFDX,DFDY,POIDS )
+      DO 101 KP=1,NPG
+         K = NNO*(KP-1)
+         CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
          POIDS = POIDS * RHO * ZR(IPESA)
          IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
            RX= 0.D0
@@ -87,13 +71,11 @@ C
 102        CONTINUE
            POIDS = POIDS*RX
            DO 103 I=1,NNO
-             K=(KP-1)*NNO
              ZR(IVECTU+2*I-1) = ZR(IVECTU+2*I-1) +
      &                             POIDS*ZR(IPESA+2)*ZR(IVF+K+I-1)
 103        CONTINUE
          ELSE
            DO 104 I=1,NNO
-             K=(KP-1)*NNO
              ZR(IVECTU+2*I-2) = ZR(IVECTU+2*I-2) +
      &                             POIDS*ZR(IPESA+1)*ZR(IVF+K+I-1)
              ZR(IVECTU+2*I-1) = ZR(IVECTU+2*I-1) +

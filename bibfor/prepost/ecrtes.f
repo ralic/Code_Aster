@@ -1,14 +1,15 @@
       SUBROUTINE ECRTES(NOMSD,TITRE,NOMGDS,NUMOR,FITYPE,NBCMP,ITYP,
-     +                  ENTETE)
+     +                  ENTETE,LCMP)
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       INTEGER                              NUMOR,             ITYP
       CHARACTER*(*)     NOMSD,   TITRE,NOMGDS
       CHARACTER*(*)          FITYPE
       CHARACTER*80      ENTETE(10)
+      LOGICAL           LCMP
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/07/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +35,7 @@ C     NOMGDS: NOM DE LA GRANDEUR DU CHAMP
 C     NUMOR : NUMERO D'ORDRE DU CHAMP
 C     FITYPE: 'NOEU' ===> DATASET DE TYPE 55
 C             'ELGA' ===> DATASET DE TYPE 56 (MOYENNES PAR ELEMENT)
+C             'ELEM' ===> DATASET DE TYPE 56 (VALEUR PAR ELEMENT)
 C             'ELNO' ===> DATASET DE TYPE 57
 C
 C        CODES SUPERTAB:
@@ -42,6 +44,7 @@ C     ANATYP: 1  STATIC, 2 MODAL, 4 TRANSITOIRE, 5 HARMONIQUE
 C     DATCAR: 1  SCALAIRE, 3 6DOF,4 TENSEUR, 0 INCONNU
 C     NUTYPE: 2  STRESS, 3 STRAIN, 4 ELEMENT FORCE, 5 TEMPERATURE
 C             8  DEPLACEMENT, 11 VITESSE, 12 ACCELERATION, 0 INCONNU
+C     LCMP  : PRECISE SI LE MOT CLE NOM_CMP DE IMPR_RESU EST PRESENT
 C   SORTIE:
 C     ENTETE:10 LIGNES D'EN-TETE DU DATASET SUPERTAB
 C---------------------------------------------------------------------
@@ -95,6 +98,8 @@ C ---CHOIX DU NUMERO DE DATASET--------------
          ENTETE(2) = '    55   %VALEURS AUX NOEUDS'
       ELSE IF (FITYPE.EQ.'ELGA') THEN
          ENTETE(2) = '    56   %VALEURS MOYENNES PAR ELEMENT'
+      ELSE IF (FITYPE.EQ.'ELEM') THEN
+         ENTETE(2) = '    56   %VALEUR PAR ELEMENT'
       ELSE IF (FITYPE.EQ.'ELNO') THEN
          ENTETE(2) = '    57   %VALEURS AUX NOEUDS DES ELEMENTS'
       ELSE
@@ -170,6 +175,10 @@ C   --- CHOIX DU TYPE DE RESULTAT ---
          DATCAR = 3
          NUTYPE = 0
          IF(NBCMP.EQ.1) DATCAR=1
+      ENDIF
+      IF (LCMP) THEN
+         DATCAR = 3
+         NUTYPE = 0
       ENDIF
       IF(DATCAR.EQ.1) THEN
          NBCMP = 1

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 27/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE CALCUL TEMPOREL POUTRE SOUS EXCITATION ALEATOIRE AVEC DSP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,19 +17,18 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-# TEST DE LA GENERATION DES FONCTIONS ALEATOIRE D'INTERSPECTRE
-# CONNU, TEST DU CALCUL D'UNE MATRICE INTERSPECTRALE
-# TEST DE LA REPONSE SPECTRALE D'UNE STRUCTURE POUTRE
+# TEST DE LA GENERATION DES FONCTIONS ALEATOIRE D INTERSPECTRE
+# CONNU, TEST DU CALCUL D UNE MATRICE INTERSPECTRALE
+# TEST DE LA REPONSE SPECTRALE D UNE STRUCTURE POUTRE
 # MODELE POUTRE
 # MAILLAGE : ELEMENT SEGMENTS A 2 NOEUDS
 # UNITES   : NEWTON , METRE , SECONDE (N,M,S)
 #----------------------------------------------------------------
 #
 
-DEBUT(CODE=_F( NOM = 'SDLL107A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F( NOM = 'SDLL107A',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON' )
 
 #
-
 POUTRE=LIRE_MAILLAGE( )
 
 POUTRE=DEFI_GROUP( reuse=POUTRE,   MAILLAGE=POUTRE,
@@ -1648,22 +1647,17 @@ INT1=DEFI_INTE_SPEC(    DIMENSION=2,PAR_FONCTION=(
                                     FONCTION = SPECT3))
                           )
 
-#
 
-MATR1=FACT_INTE_SPEC(    INTE_SPEC=INT1,
+VECT1=GENE_FONC_ALEA(
+                         INTE_SPEC=INT1,
                                FREQ_INIT=0.,
-                                FREQ_FIN=500.,
-                                 NB_POIN=512
-                           )
+                               FREQ_FIN=500.,
+                               NB_TIRAGE=10, 
+                                NB_POIN=512,
+                                  INFO=2,
+                          )
 
 #
-
-VECT1=GENE_FONC_ALEA(    INTE_SPEC_FACT=MATR1,
-                               NB_TIRAGE=10, 
-                               INIT_ALEA=545637,
-                                 NB_POIN=512
-                           )
-
 #
 
 FONCT1=RECU_FONCTION(    TABLE=VECT1,
@@ -1689,10 +1683,10 @@ FONCT2=RECU_FONCTION(    TABLE=VECT1,
 #
 
 INTERS=CALC_INTE_SPEC(          INST_INIT=0., 
-                                     INST_FIN=10.24, 
-                                 DUREE_ANALYSE=1.024, 
-                                DUREE_DECALAGE=1.024,
-                                      NB_POIN=1024,
+                                     INST_FIN=10.22, 
+                                 DUREE_ANALYSE=1.022, 
+                                DUREE_DECALAGE=1.022,
+                                      NB_POIN=2*512,
                                FONCTION=( FONCT1,  FONCT2, )
                            )
 
@@ -1702,11 +1696,11 @@ TEST_FONCTION(TABL_INTSP=(
         _F(  INTE_SPEC = INTERS,
                     NUME_ORDRE_I = 1,    NUME_ORDRE_J = 1,
                     VALE_PARA = 2.,       VALE_REFE_C = ('RI',0.1,0.,),
-                    PRECISION = 5.E-2),
+                    PRECISION = 10.E-2),
         _F(  INTE_SPEC = INTERS,
                     NUME_ORDRE_I = 2,    NUME_ORDRE_J = 2,
                     VALE_PARA = 2.,       VALE_REFE_C = ('RI',0.025,0.,),
-                    PRECISION = 5.E-2))
+                    PRECISION = 10.E-2))
                )
 
 ##
@@ -1868,22 +1862,65 @@ TEST_TABLE(      TABLE=TT,FILTRE=(
                      VALE=5.00000E-01
              )
 
-TEST_TABLE(      TABLE=TT,FILTRE=( 
+# attention : le comportement du generateur de nombres aleatoires
+# (module random) a change entre la version 2.2 de python et la
+# version 2.3. Les resultats s en trouvent un peu affectes.
+# On teste donc avec des valeurs de reference differentes suivant
+# les versions de python
+
+import sys
+version=sys.version_info[:2]
+if version<(2,3) :
+  TEST_TABLE(      TABLE=TT,FILTRE=( 
                    _F(  NOM_PARA = 'CALCUL',
                             VALE_K = 'DEPL_Y'),
                    _F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N76')),
                  NOM_PARA='ECART_TYPE',
-                     VALE=2.83738E-05
+                     VALE=2.57E-05
              )
 
-TEST_TABLE(      TABLE=TT,FILTRE=( 
+  TEST_TABLE(      TABLE=TT,FILTRE=( 
                    _F(  NOM_PARA = 'CALCUL',
                             VALE_K = 'DEPL_RADIAL'),
                    _F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N76')),
                  NOM_PARA='RMS',
-                     VALE=2.83764E-05
+                     VALE=2.573E-05
+             )
+  TEST_TABLE(      TABLE=TT,FILTRE=( 
+                   _F(  NOM_PARA = 'CALCUL',
+                            VALE_K = 'FORCE_NORMALE'),
+                   _F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N76')),
+                 NOM_PARA='RMS_T_TOTAL',
+                     VALE=2.573E+01
+             )
+else:
+  TEST_TABLE(      TABLE=TT,FILTRE=( 
+                   _F(  NOM_PARA = 'CALCUL',
+                            VALE_K = 'DEPL_Y'),
+                   _F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N76')),
+                 NOM_PARA='ECART_TYPE',
+                     VALE=2.456E-05
+             )
+
+  TEST_TABLE(      TABLE=TT,FILTRE=( 
+                   _F(  NOM_PARA = 'CALCUL',
+                            VALE_K = 'DEPL_RADIAL'),
+                   _F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N76')),
+                 NOM_PARA='RMS',
+                     VALE=2.456E-05
+             )
+  TEST_TABLE(      TABLE=TT,FILTRE=( 
+                   _F(  NOM_PARA = 'CALCUL',
+                            VALE_K = 'FORCE_NORMALE'),
+                   _F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N76')),
+                 NOM_PARA='RMS_T_TOTAL',
+                     VALE=2.456E+01
              )
 
 TEST_TABLE(      TABLE=TT,FILTRE=( 
@@ -1895,14 +1932,6 @@ TEST_TABLE(      TABLE=TT,FILTRE=(
                      VALE=1.80000E+02
              )
 
-TEST_TABLE(      TABLE=TT,FILTRE=( 
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'FORCE_NORMALE'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N76')),
-                 NOM_PARA='RMS_T_TOTAL',
-                     VALE=2.83764E+01
-             )
 
 TEST_TABLE(      TABLE=TT,FILTRE=( 
                    _F(  NOM_PARA = 'CALCUL',
@@ -1955,17 +1984,33 @@ DEPLY=RECU_FONCTION(   RESU_GENE=DYNAMODE,     NOM_CHAM='DEPL',
 INT2=CALC_INTE_SPEC(   INST_INIT=0., 
                              INST_FIN=1.999, 
                               DUREE_ANALYSE=1.,
-                             DUREE_DECALAGE=0.9, 
-                              NB_POIN=1024,
+                             DUREE_DECALAGE=1., 
+                              NB_POIN=2*512,
                              FONCTION=DEPLY
                          )
 
-TEST_FONCTION( 
+# attention : le comportement du generateur de nombres aleatoires
+# (module random) a change entre la version 2.2 de python et la
+# version 2.3. Les resultats s en trouvent un peu affectes.
+# On teste donc avec des valeurs de reference differentes suivant
+# les versions de python
+
+version=sys.version_info[:2]
+if version<(2,3) :
+  TEST_FONCTION( 
        TABL_INTSP=_F(  INTE_SPEC = INT2,
                    NUME_ORDRE_I = 1,    NUME_ORDRE_J = 1,
-                   VALE_PARA = 4.2,      VALE_REFE_C = ('MP',6.3E-8,0.,),
+                   VALE_PARA = 4.2,      VALE_REFE_C = ('MP',6.1E-8,0.,),
                    PRECISION = 1.E-2)
                )
+else :
+  TEST_FONCTION( 
+       TABL_INTSP=_F(  INTE_SPEC = INT2,
+                   NUME_ORDRE_I = 1,    NUME_ORDRE_J = 1,
+                   VALE_PARA = 4.2,      VALE_REFE_C = ('MP',7.4E-8,0.,),
+                   PRECISION = 1.E-2)
+               )
+
 
 FIN( )
 #

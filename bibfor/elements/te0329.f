@@ -1,7 +1,7 @@
       SUBROUTINE TE0329(OPTION,NOMTE)
       IMPLICIT REAL*8  (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,7 @@ C
       INTEGER            IPOIDS,IVF,IDFDX,IDFDY,IGEOM,IFREQ
       INTEGER            NDIM,NNO,IPG,NPG1,IVECTT,IMATE
       INTEGER            IDEC,JDEC,KDEC,LDEC
-      INTEGER            NBPG(10),IMATTT
+      INTEGER            NBPG(10),IMATTT,NNOS,JGANO
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
@@ -58,23 +58,9 @@ C
 C
 C------------FIN  COMMUNS NORMALISES  JEVEUX  ---------------------
 C
-      CALL ELREF1(ELREFE)
       IF(NOMTE(1:5).EQ.'THER_') THEN
-          CHCTE = '&INEL.'//ELREFE//'.CARACTE'
-          CALL JEVETE(CHCTE,'L',JIN)
-          NDIM = ZI(JIN+1-1)
-          NNO = ZI(JIN+2-1)
-          NBFPG = ZI(JIN+3-1)
-          DO 1 I = 1,NBFPG
-             NBPG(I) = ZI(JIN+3-1+I)
-  1       CONTINUE
-          NPG1 = NBPG(1)
-C
-          CHVAL = '&INEL.'//ELREFE//'.FFORMES'
-          CALL JEVETE(CHVAL,'L',JVAL)
-          IPOIDS = JVAL + (NDIM+1)*NNO*NNO
-          IVF    = IPOIDS + NPG1
-          IDFDX  = IVF    + NPG1 * NNO
+          CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,
+     &                IDFDX,JGANO)
           IDFDY  = IDFDX  + 1
 C
       CALL JEVECH('PACCELR','L',IACCE)

@@ -1,6 +1,6 @@
       SUBROUTINE CNSIMP(CNSZ,UNITE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/05/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,8 +91,8 @@ C     ------------------------------------------------------------
 
 
       CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
-      IF ((TSCA.NE.'R') .AND. (TSCA.NE.'K8')) CALL UTMESS('F','CNSIMP',
-     &    'REEL OU K8 SVP')
+      IF ((TSCA.NE.'R') .AND. (TSCA.NE.'K8') .AND. (TSCA.NE.'I')) 
+     & CALL UTMESS('F','CNSIMP','REEL OU K8 SVP')
 
 
 
@@ -145,6 +145,9 @@ C       -- ON MET LES VALEURS NON AFFECTEES A " " :
      &          (INO-1)*NCMP+K),' '
             ELSE IF (TSCA.EQ.'K8') THEN
               WRITE (ZK16(JLVAL-1+K),'(A8,A8)') ZK8(JCNSV-1+
+     &          (INO-1)*NCMP+K),' '
+            ELSE IF (TSCA.EQ.'I') THEN
+              WRITE (ZK16(JLVAL-1+K),'(I12,A4)') ZI(JCNSV-1+
      &          (INO-1)*NCMP+K),' '
             END IF
           ELSE

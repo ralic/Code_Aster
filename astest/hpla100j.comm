@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -367,73 +367,73 @@ TEST_RESU(RESU=(
 
       # DEPLACEMENTS
              _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 4.E-2,
-              NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
+              NUME_ORDRE = 1,     NOM_CHAM = 'DEPL', REFERENCE = 'ANALYTIQUE',
                NOEUD = 'N1',     NOM_CMP = 'DX',  VALE = -2.40000E-8),
              _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 4.E-2,
-              NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
+              NUME_ORDRE = 1,     NOM_CHAM = 'DEPL', REFERENCE = 'ANALYTIQUE',
                NOEUD = 'N227',      NOM_CMP = 'DY',  VALE = -2.40000E-8),
              _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 1.E-2,
-              NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
+              NUME_ORDRE = 1,     NOM_CHAM = 'DEPL', REFERENCE = 'ANALYTIQUE',
                NOEUD = 'N6',     NOM_CMP = 'DZ',  VALE = 5.00000E-9),
              _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 1.E-2,
-              NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
+              NUME_ORDRE = 1,     NOM_CHAM = 'DEPL', REFERENCE = 'ANALYTIQUE',
                NOEUD = 'N215',      NOM_CMP = 'DZ',  VALE = 5.00000E-9),
              _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
-              NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
+              NUME_ORDRE = 1,     NOM_CHAM = 'DEPL', REFERENCE = 'ANALYTIQUE',
                NOEUD = 'N6',     NOM_CMP = 'DRY', VALE = -2.40000E-9),
              _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
-              NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
+              NUME_ORDRE = 1,     NOM_CHAM = 'DEPL', REFERENCE = 'ANALYTIQUE',
                NOEUD = 'N215',      NOM_CMP = 'DRX', VALE = 2.40000E-9),
 #
              _F(  RESULTAT = DEPLDI2,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
-               NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
+               NUME_ORDRE = 1,     NOM_CHAM = 'DEPL', REFERENCE = 'ANALYTIQUE',
                NOEUD = 'N11',      NOM_CMP = 'DX',  VALE = 26.0000E-6),
              _F(  RESULTAT = DEPLDI2,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
-               NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
+               NUME_ORDRE = 1,     NOM_CHAM = 'DEPL', REFERENCE = 'ANALYTIQUE',
                NOEUD = 'N161',      NOM_CMP = 'DY',  VALE = 26.0000E-6),
 #
              _F(  RESULTAT = DEPLDI2T,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
-               NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
+               NUME_ORDRE = 1,     NOM_CHAM = 'DEPL', REFERENCE = 'ANALYTIQUE',
                NOEUD = 'N11',      NOM_CMP = 'DX',  VALE = 26.0000E-6),
              _F(  RESULTAT = DEPLDI2T,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
-               NUME_ORDRE = 1,     NOM_CHAM = 'DEPL',
+               NUME_ORDRE = 1,     NOM_CHAM = 'DEPL', REFERENCE = 'ANALYTIQUE',
                NOEUD = 'N161',      NOM_CMP = 'DY',  VALE = 26.0000E-6),
 #
     # EFFORTS GENERALISES
              _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
         NUME_ORDRE = 1,     MAILLE = 'M362', NOM_CHAM = 'EFGE_ELNO_DEPL',
-               NOEUD = 'N1', NOM_CMP = 'NYY',   VALE = 8.00000E-4),
+         REFERENCE = 'ANALYTIQUE',       NOEUD = 'N1', NOM_CMP = 'NYY',   VALE = 8.00000E-4),
              _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
         NUME_ORDRE = 1,     MAILLE = 'M400', NOM_CHAM = 'EFGE_ELNO_DEPL',
-               NOEUD = 'N227', NOM_CMP = 'NYY',   VALE = 8.00000E-4),
+        REFERENCE = 'ANALYTIQUE',       NOEUD = 'N227', NOM_CMP = 'NYY',   VALE = 8.00000E-4),
 #
              _F(  RESULTAT = DEPLDIL,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
         NUME_ORDRE = 1,     MAILLE = 'M1', NOM_CHAM = 'EFGE_ELNO_DEPL',
-               NOEUD = 'N11', NOM_CMP = 'MYY',   VALE = -2.38095E-1),
+        REFERENCE = 'ANALYTIQUE',       NOEUD = 'N11', NOM_CMP = 'MYY',   VALE = -2.38095E-1),
              _F(  RESULTAT = DEPLDIL,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
         NUME_ORDRE = 1,     MAILLE = 'M39', NOM_CHAM = 'EFGE_ELNO_DEPL',
-               NOEUD = 'N161', NOM_CMP = 'MYY',   VALE = -2.38095E-1),
+        REFERENCE = 'ANALYTIQUE',       NOEUD = 'N161', NOM_CMP = 'MYY',   VALE = -2.38095E-1),
 #
              _F(  RESULTAT = DEPLDI2,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
         NUME_ORDRE = 1,     MAILLE = 'M1', NOM_CHAM = 'EFGE_ELNO_DEPL',
-               NOEUD = 'N11', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
+        REFERENCE = 'ANALYTIQUE',       NOEUD = 'N11', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
              _F(  RESULTAT = DEPLDI2,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
         NUME_ORDRE = 1,     MAILLE = 'M39', NOM_CHAM = 'EFGE_ELNO_DEPL',
-               NOEUD = 'N161', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
+        REFERENCE = 'ANALYTIQUE',       NOEUD = 'N161', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
 #
              _F(  RESULTAT = DEPLDILT,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
         NUME_ORDRE = 1,     MAILLE = 'M1', NOM_CHAM = 'EFGE_ELNO_DEPL',
-               NOEUD = 'N11', NOM_CMP = 'MYY',   VALE = -2.38095E-1),
+        REFERENCE = 'ANALYTIQUE',       NOEUD = 'N11', NOM_CMP = 'MYY',   VALE = -2.38095E-1),
              _F(  RESULTAT = DEPLDILT,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
         NUME_ORDRE = 1,     MAILLE = 'M39', NOM_CHAM = 'EFGE_ELNO_DEPL',
-               NOEUD = 'N161', NOM_CMP = 'MYY',   VALE = -2.38095E-1),
+        REFERENCE = 'ANALYTIQUE',       NOEUD = 'N161', NOM_CMP = 'MYY',   VALE = -2.38095E-1),
 #
              _F(  RESULTAT = DEPLDI2T,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
         NUME_ORDRE = 1,     MAILLE = 'M1', NOM_CHAM = 'EFGE_ELNO_DEPL',
-               NOEUD = 'N11', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
+        REFERENCE = 'ANALYTIQUE',       NOEUD = 'N11', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
              _F(  RESULTAT = DEPLDI2T,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
         NUME_ORDRE = 1,     MAILLE = 'M39', NOM_CHAM = 'EFGE_ELNO_DEPL',
-               NOEUD = 'N161', NOM_CMP = 'NYY',   VALE = -0.20000E+0))
+        REFERENCE = 'ANALYTIQUE',       NOEUD = 'N161', NOM_CMP = 'NYY',   VALE = -0.20000E+0))
 #
             )
 

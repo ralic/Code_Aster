@@ -1,11 +1,11 @@
-      SUBROUTINE FOECAG (MOTFAC,NBOCC,IOCC,NOMFON,IUL,IPS,IND,IER)
+      SUBROUTINE FOECAG (MOTFAC,IOCC,NOMFON,IUL,IPS,IND,IER)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER                   NBOCC,IOCC,       IUL,IPS,IND,IER
+      INTEGER                   IOCC,       IUL,IPS,IND,IER
       CHARACTER*19                         NOMFON
       CHARACTER*(*)      MOTFAC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,6 @@ C     ATTENTION: les commandes "AGRAF" sont en minuscules.
 C     ==========
 C     ------------------------------------------------------------------
 C IN  : MOTFAC : mot cle facteur de la commande
-C IN  : NBOCC  : nombre d'occurence du mot cle facteur
 C IN  : IOCC   : occurence traitee
 C IN  : NOMFON : nom de la fonction ou de la nappe a imprimer
 C IN  : IUL    : numero d'unite logique
@@ -279,7 +278,7 @@ C
       ENDIF
       WRITE(IUL,7110) IMAR
 C
-      CALL GETVIS(MOTFAC,'FREQ_MARQUEUR',IOCC,1,1,IFMA,NMA)
+      CALL GETVIS(' ','FREQ_MARQUEUR',1,1,1,IFMA,NMA)
       WRITE(IUL,7112) IFMA
 C
       CALL GETVTX(MOTFAC,'LEGENDE',IOCC,1,1,LEGEND,NLE)
@@ -288,7 +287,7 @@ C
          WRITE(IUL,7114) LEGEND(1:LG)
       ENDIF
 C
-      CALL GETVTX(MOTFAC,'TRI',IOCC,1,1,TRI,NTR)
+      CALL GETVTX(' ','TRI',1,1,1,TRI,NTR)
       IF ( NTR .NE. 0 ) THEN
          LG = MAX(1,LXLGUT(TRI))
          WRITE(IUL,7116) TRI(1:LG)

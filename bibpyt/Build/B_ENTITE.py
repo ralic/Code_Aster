@@ -1,4 +1,4 @@
-#@ MODIF B_ENTITE Build  DATE 06/10/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF B_ENTITE Build  DATE 13/01/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,36 +64,6 @@ class ENTITE:
            pass
       return nb
 
-   def getmfm(self,motfac,nbval):
-      """
-          Cette methode retourne la liste des mots cles simples sous 
-          la commande si motfac == '' ou sous le mot cle facteur motfac
-          ainsi que la liste des types associes aux mots cles simples
-      """
-      mcf=self.get_entite(motfac)
-      lmc=[]
-      lty=[]
-      if (mcf):
-         lmc=mcf.get_mc_simp()
-         lty=mcf.get_ty_mc()
-      else:
-         lmc=self.get_mc_simp()
-         lty=self.get_ty_mc()
-      return (lmc,lty)
-
-   def get_ty_mc(self):
-      """
-          Cette methode retourne la liste des types de concept attendus derriere
-          un mot cle simple 
-          self peut etre une commande ou un mot cle facteur
-      """
-      l=[]
-      for k,v in self.entites.items():
-        if  v.label == 'BLOC' :
-          l=l+v.get_ty_mc()
-        elif v.label == 'SIMP' :
-          l.append(B_utils.Typast(v.type))
-      return l
 
    def get_mc_simp(self,niv=1):
       """
@@ -163,36 +133,3 @@ class ENTITE:
            o=v.getmcfs(nom_motfac)
            if o:l=l+o
       return l
-
-   def getmat(self):
-      """
-      Retourne :
-        le nombre de mots cles facteur sous la commande, y compris en eliminant les blocs
-        la liste de leur noms
-        Attention : les doublons sont elimines
-      """
-      if CONTEXT.debug : prbanner("getmat")
-      assert(hasattr(self,'nom')),"self n'a pas d'attribut nom PB"
-      liste_nom=self.get_mc_fact()
-      for child in liste_nom:
-          while liste_nom.count(child)>1 : liste_nom.remove(child)
-      return (liste_nom,)
-
-   def getfns(self,nom_motfac):
-      """
-         Retourne le nombre max de mots cles simples sous les mots cles facteurs 
-         portant le nom nomfac
-           nom_motfac   : nom du mot cle facteur
-           Retour:
-           nbmcs        : nombre max de mcsimp sous les mcfacts de nom nom_motfac
-      """
-      if CONTEXT.debug : prbanner("getfns")
-      assert(hasattr(self,'nom')),"self n'a pas d'attribut nom PB"
-      liste=self.get_li_mc_fact()
-      nbmcs=0
-      for child in liste :
-          if child.nom==nom_motfac:
-             i=len(child.get_mc_simp())
-             if i>nbmcs : nbmcs=i
-      return nbmcs
-

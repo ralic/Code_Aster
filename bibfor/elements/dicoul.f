@@ -1,16 +1,16 @@
-      SUBROUTINE DICOUL(OPTION,COMPOR,NNO,NBT,NEQ,NC,ICODMA,RCOGEO,ULM,
+      SUBROUTINE DICOUL(OPTION,NNO,NBT,NEQ,NC,ICODMA,ULM,
      &                  DUL,SIM,TP,VARIM,PGL,KLV,VARIP,FONO,SIP,ITEMP,
-     &                  TEMPM,TEMPP,IRRAD,IRRAM,IRRAP)
+     &                  TEMPM,TEMPP,IRRAP)
 C ----------------------------------------------------------------------
       IMPLICIT NONE
-      INTEGER NBT,NEQ,ICODMA,NC,JTAB(7),ITEMP,IRRAD
+      INTEGER NBT,NEQ,ICODMA,NC,JTAB(7),ITEMP
       REAL*8 ULM(NEQ),DUL(NEQ),SIM(NEQ),SIP(NEQ),VARIM(*),TEMPM,TEMPP
-      REAL*8 PGL(3,3),KLV(NBT),VARIP(*),FONO(NEQ),TP,RCOGEO(6),BETA,RM
-      REAL*8 IRRAM,IRRAP
-      CHARACTER*16 OPTION,COMPOR(*)
+      REAL*8 PGL(3,3),KLV(NBT),VARIP(*),FONO(NEQ),TP,BETA,RM
+      REAL*8 IRRAP
+      CHARACTER*16 OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/06/2003   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF ELEMENTS  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -366,10 +366,17 @@ C --- DIRECTION LOCALE X
      &               SIEEQX,DPX)
           ENDIF
 C
-          XPX = XMX + CPRAG*DPX*MOPESX/ABS(MOPESX)
-          MOPX = XPX + MOPESX* (1.D0- (CP+CPRAG)*DPX/ABS(MOPESX))
+          IF (MOPESX.EQ.0.D0) THEN
+                XPX = XMX 
+                MOPX = XPX   
+          ELSE
+                XPX = XMX + CPRAG*DPX*MOPESX/ABS(MOPESX)
+                MOPX = XPX + MOPESX* (1.D0- (CP+CPRAG)*DPX/ABS(MOPESX))
+          ENDIF
+          
           CPTANX = CP* (CPRAG+RPRIMX)/ (CP+CPRAG+RPRIMX)
         END IF
+
 
         VARIP(4) = PMX + DPX
         VARIP(LGPG+4) = PMX + DPX
@@ -410,6 +417,5 @@ C --- FORCES NODALES AUX NOEUDS 1 ET 2 (REPERE GLOBAL)
 
       NNO = 2
       CALL UTPVLG(NNO,NC,PGL,FL,FONO)
-
 
       END

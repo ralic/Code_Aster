@@ -1,8 +1,8 @@
       SUBROUTINE PROJSQ(COORDA,COORDB,COORDC,COORDP,NORM,COORDM,LAMBDA,
-     &                  OLDJEU,JEU,TANG,JEUFX,PRONOR,TANGDF,NDIM)
+     &                  OLDJEU,JEU,TANG,JEUFX,TANGDF,NDIM)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/09/2002   AUTEUR BSERRE B.SERRE 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C ======================================================================
 
       IMPLICIT NONE
 
-      INTEGER PRONOR,TANGDF,NDIM
+      INTEGER TANGDF,NDIM
       REAL*8 COORDA(3),COORDB(3),COORDC(3),COORDP(3),NORM(3),VECSEG(3)
       REAL*8 COORDM(3),LAMBDA,OLDJEU,JEU
       REAL*8 TANG(6),JEUFX

@@ -2,7 +2,7 @@
      &                  DEPS,VIM,OPTION,SIGP,VIP,DSDE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/01/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 02/12/2003   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C     CALCUL EPSP, P , SIG
 C     ------------------------------------------------------------------
-      IF (OPTION.EQ.'FULL_MECA' .OR. OPTION.EQ.'RAPH_MECA') THEN
+      IF (OPTION(1:9).EQ.'FULL_MECA' .OR. OPTION.EQ.'RAPH_MECA') THEN
         IF (SIELEQ.LE.SIGY) THEN
           VIP(2) = 0.D0
           DSDE = EP
@@ -94,14 +94,18 @@ C     ------------------------------------------------------------------
         ELSE
           VIP(2) = 1.D0
           DP = (SIELEQ-SIGY)/ (EP+HP)
-          DSDE = ETP
+          IF (OPTION.EQ.'FULL_MECA_ELAS') THEN
+            DSDE = EP
+          ELSE
+            DSDE = ETP
+          ENDIF
           XP = HP/HM*XM + HP*DP*SIGE/SIELEQ
           SIGP = XP + SIGY*SIGE/SIELEQ
           VIP(1) = XP
         END IF
       END IF
-      IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
-        IF (VIM(2).LT.0.5D0) THEN
+      IF (OPTION(1:10).EQ.'RIGI_MECA_') THEN
+        IF ((VIM(2).LT.0.5D0).OR.(OPTION.EQ.'RIGI_MECA_ELAS')) THEN
           DSDE = EP
         ELSE
           DSDE = ETP

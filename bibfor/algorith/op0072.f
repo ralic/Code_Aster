@@ -1,7 +1,7 @@
       SUBROUTINE OP0072(IERR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/07/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 25/03/2004   AUTEUR OUGLOVA A.OUGLOVA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,10 +88,15 @@ C
       CALL JEVEUO(VECTAS//'           .VALE','L',IADVEC)
       CALL JEVEUO(VECTAS//'           .REFE','L',IADREF)
       CALL JEVEUO(BASEMO//'           .REFE','L',IADRIF)
-      IF ((TYPBAS(1:9).EQ.'MODE_MECA').OR.
-     +   (TYPBAS(1:9).EQ.'MODE_STAT')) THEN
+      IF (TYPBAS(1:9).EQ.'MODE_MECA') THEN
         NUMDD1 = ZK24(IADREF+1) (1:8)
         MATRIC = ZK24(IADRIF)
+        CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBID,NUMDD2,
+     +              IRET)
+        NU = NUMDD2(1:14)
+      ELSEIF (TYPBAS(1:9).EQ.'MODE_STAT') THEN
+        NUMDD1 = ZK24(IADREF+1) (1:8)
+        MATRIC = ZK24(IADRIF+2)
         CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBID,NUMDD2,
      +              IRET)
         NU = NUMDD2(1:14)
@@ -139,6 +144,13 @@ C
       ZK24(IAREFE+1) = NUMGEN//'.NUME     '
       ZI(IADESC) = 1
       ZI(IADESC+1) = NBMODE
+C   On teste la hauteur maximale des colonnes de la matrice
+C   si cette hauteur vaut 1, on suppose que le stockage est diagonal
+      IF (ZI(LLDESC+3).EQ.1) THEN
+        ZI(IADESC+2) = 1
+      ELSE
+        ZI(IADESC+2) = 2
+      ENDIF  
       CALL WKVECT('&&OP0072.BASEMO','V V R',NBMODE*NEQ,IDBASE)
 C --- CONVERSION DE BASEMO A LA NUMEROTATION NU      
       IF ((TYPBAS.EQ.'MODE_MECA').OR.(TYPBAS.EQ.'MODE_GENE').OR.

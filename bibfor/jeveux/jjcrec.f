@@ -1,6 +1,6 @@
       SUBROUTINE JJCREC ( ICL , IDA , GENRI , TYPEI , NB , IADMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 26/05/98   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 04/11/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,6 +87,8 @@ C DEB ------------------------------------------------------------------
             CALL JVMESS ( 'S' , 'JJCREC05' , CMESS )
           ENDIF
         ENDIF
+      ELSE IF ( TYPEI(1:1) .EQ. 'S' ) THEN
+        IV = LOR8/2
       ELSE IF ( TYPEI(1:1) .EQ. 'I' ) THEN
         IV = LOIS
       ELSE IF ( TYPEI(1:1) .EQ. 'R' ) THEN

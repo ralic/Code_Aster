@@ -1,10 +1,11 @@
-      SUBROUTINE MODOPT ( LESOPT, NBOPT )
+      SUBROUTINE MODOPT ( RESUCO, LESOPT, NBOPT )
       IMPLICIT   NONE
       INTEGER             NBOPT
+      CHARACTER*8         RESUCO
       CHARACTER*24        LESOPT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 28/10/2003   AUTEUR G8BHHXD X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,12 +52,15 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       N1, JOPT, IEPSI, IERZ1, IERZ2, INOZ1, INOZ2, JOPT2,
-     +              I, J, NBOPT2, INDK16,IEPEQ,ISIEQ
+     +              I, J, NBOPT2, INDK16,IEPEQ,ISIEQ, IRET
       CHARACTER*8   K8B
+      CHARACTER*16  TYSD
       CHARACTER*24  LESOP2
 C DEB ------------------------------------------------------------------
 C
       CALL JEMARQ()
+C
+      CALL GETTCO ( RESUCO, TYSD )
 C
       CALL GETVTX ( ' ', 'OPTION', 1,1,0, K8B, N1 )
       NBOPT = -N1
@@ -114,8 +118,15 @@ C
      +          ( IERZ2 .NE. 0 ).OR.
      +          ( INOZ1 .NE. 0 ).OR.
      +          ( INOZ2 .NE. 0 )) THEN               
-        NBOPT2 = NBOPT2 + 1
-        ZK16(JOPT+NBOPT2-1) = 'SIEF_ELGA_DEPL' 
+        IF ( TYSD .EQ. 'EVOL_ELAS' ) THEN
+           CALL RSCHEX ( RESUCO, 'SIEF_ELGA_DEPL', IRET )
+           IF ( IRET .EQ. 0 ) THEN
+              CALL UTMESS('A','MECA_STATIQUE','AJOUT DE L''OPTION '//
+     +         '"SIEF_ELGA_DEPL", LES CHARGES SONT-ELLES CORRECTES ?' )
+              NBOPT2 = NBOPT2 + 1
+              ZK16(JOPT+NBOPT2-1) = 'SIEF_ELGA_DEPL' 
+           ENDIF 
+        ENDIF 
       ENDIF 
 C
       IF ( IERZ1 .NE. 0 ) THEN

@@ -1,7 +1,7 @@
       SUBROUTINE NMPR3D(MODE,NNO,NPG,POIDSG,VFF,DFF,GEOM,P,
      &                  VECT,MATC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/04/96   AUTEUR WABINSK J.WABINSKI 
+C MODIF ALGORITH  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C ======================================================================
 
       INTEGER MODE,NNO,NPG
       REAL*8  POIDSG(NPG),VFF(NNO,NPG),DFF(2,NNO,NPG)
-      REAL*8  GEOM(3,NNO),P(NPG)
+      REAL*8  GEOM(3,NNO),P(*)
       REAL*8  VECT(3,NNO),MATC(3,NNO,3,NNO)
 
 C.......................................................................

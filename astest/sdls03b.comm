@@ -1,4 +1,4 @@
-# MODIF  DATE 01/03/2000   AUTEUR CIBHHPD P.DAVID 
+# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE PLAQUE RECTANGULAIRE MINCE SIMPLEMENT APPUYEE DKQ - DSQ - Q4G
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,7 +87,7 @@ FREQ1=DEFI_VALEUR(  R8=EVAL("""SQRT(100./117.) / (2. * PI)""") )
 # --------------------------------------------------------------------
 
 TEST_RESU(
-   RESU=_F(   RESULTAT = MODE2,        PARA = 'FREQ',
+   RESU=_F(   RESULTAT = MODE2, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 0.6E-2,
            NUME_ORDRE = 1,         VALE = FREQ1)
           )
@@ -95,7 +95,7 @@ TEST_RESU(
 # --------------------------------------------------------------------
 
 TEST_RESU(
-   RESU=_F(   RESULTAT = MODE2,        PARA = 'ITER_QR',
+   RESU=_F(   RESULTAT = MODE2, REFERENCE = 'NON_REGRESSION', PARA = 'ITER_QR',
            CRITERE = 'ABSOLU',       PRECISION = 7.E+00,
            NUME_ORDRE = 1,         VALE_I = 0)
           )
@@ -151,14 +151,14 @@ MODE4=MODE_ITER_SIMULT(  MATR_A=MATR4,  MATR_B=MATM4,
 TEST_RESU(
    RESU=_F(   RESULTAT = MODE4,        PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 0.6E-2,
-           NUME_ORDRE = 1,       VALE = FREQ1)
+           NUME_ORDRE = 1, REFERENCE = 'ANALYTIQUE', VALE = FREQ1)
           )
 
 # --------------------------------------------------------------------
 
 TEST_RESU(
    RESU=_F(   RESULTAT = MODE4,        PARA = 'ITER_QR',
-           NUME_ORDRE = 1,          VALE_I = 0,
+           NUME_ORDRE = 1, REFERENCE = 'NON_REGRESSION', VALE_I = 0,
            CRITERE = 'ABSOLU',       PRECISION = 7.E+00)
           )
 
@@ -213,7 +213,7 @@ MODE6=MODE_ITER_SIMULT(  MATR_A=MATR6,  MATR_B=MATM6,
 TEST_RESU(
    RESU=_F(   RESULTAT = MODE6,        PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 0.6E-2,
-           NUME_ORDRE = 1,       VALE = FREQ1)
+           NUME_ORDRE = 1, REFERENCE = 'ANALYTIQUE', VALE = FREQ1)
           )
 
 # --------------------------------------------------------------------
@@ -221,7 +221,7 @@ TEST_RESU(
 TEST_RESU(
    RESU=_F(   RESULTAT = MODE6,        PARA = 'ITER_QR',
            NUME_ORDRE = 1,          VALE_I = 0,
-           CRITERE = 'ABSOLU',       PRECISION = 6.E+00)
+           CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', PRECISION = 6.E+00)
           )
 
 #====================================================================
@@ -256,32 +256,32 @@ MODE=MODE_ITER_SIMULT(  MATR_A=MATR,        MATR_B=MATM,
 # --------------------------------------------------------------------
 
 TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE,        PARA = 'FREQ',
+   _F(   RESULTAT = MODE, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 0.8E-2,
            NUME_ORDRE = 1,       VALE = 35.63),
-   _F(   RESULTAT = MODE,        PARA = 'FREQ',
+   _F(   RESULTAT = MODE, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 1.5E-2,
            NUME_ORDRE = 2,       VALE = 68.51),
-   _F(   RESULTAT = MODE,        PARA = 'FREQ',
+   _F(   RESULTAT = MODE, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 1.0E-2,
            NUME_ORDRE = 3,       VALE = 109.62),
-   _F(   RESULTAT = MODE,        PARA = 'FREQ',
+   _F(   RESULTAT = MODE, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 1.8E-2,
            NUME_ORDRE = 4,       VALE = 123.32),
-   _F(   RESULTAT = MODE,        PARA = 'FREQ',
+   _F(   RESULTAT = MODE, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 2.9E-2,
            NUME_ORDRE = 5,       VALE = 142.51),
-   _F(   RESULTAT = MODE,        PARA = 'FREQ',
+   _F(   RESULTAT = MODE, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 4.5E-2,
            NUME_ORDRE = 6,       VALE = 197.32)) )
 
 # --------------------------------------------------------------------
 
 TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE,           PARA = 'ITER_BATHE',
+   _F(   RESULTAT = MODE, REFERENCE = 'NON_REGRESSION', PARA = 'ITER_BATHE',
            CRITERE = 'ABSOLU',         PRECISION = 20.E+00,
            NUME_ORDRE = 1,         VALE_I = 0),      
-   _F(   RESULTAT = MODE,           PARA = 'ITER_JACOBI',
+   _F(   RESULTAT = MODE, REFERENCE = 'NON_REGRESSION', PARA = 'ITER_JACOBI',
            CRITERE = 'ABSOLU',         PRECISION = 9.E+00,
            NUME_ORDRE = 1,         VALE_I = 0)) )
 
@@ -317,32 +317,32 @@ MODE3=MODE_ITER_SIMULT(  MATR_A=MATR3,   MATR_B=MATM3,
 # --------------------------------------------------------------------
 
 TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE3,        PARA = 'FREQ',
+   _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 0.8E-2,
            NUME_ORDRE = 1,       VALE = 35.63),
-   _F(   RESULTAT = MODE3,        PARA = 'FREQ',
+   _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 1.6E-2,
            NUME_ORDRE = 2,       VALE = 68.51),
-   _F(   RESULTAT = MODE3,        PARA = 'FREQ',
+   _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 1.1E-2,
            NUME_ORDRE = 3,       VALE = 109.62),
-   _F(   RESULTAT = MODE3,        PARA = 'FREQ',
+   _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 1.9E-2,
            NUME_ORDRE = 4,       VALE = 123.32),
-   _F(   RESULTAT = MODE3,        PARA = 'FREQ',
+   _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 3.0E-2,
            NUME_ORDRE = 5,       VALE = 142.51),
-   _F(   RESULTAT = MODE3,        PARA = 'FREQ',
+   _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 4.6E-2,
            NUME_ORDRE = 6,       VALE = 197.32)) )
 
 # --------------------------------------------------------------------
 
 TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE3,        PARA = 'ITER_BATHE',
+   _F(   RESULTAT = MODE3, REFERENCE = 'NON_REGRESSION', PARA = 'ITER_BATHE',
            CRITERE = 'ABSOLU',       PRECISION = 20.E+00,
            NUME_ORDRE = 1,       VALE_I = 0),
-   _F(   RESULTAT = MODE3,        PARA = 'ITER_JACOBI',
+   _F(   RESULTAT = MODE3, REFERENCE = 'NON_REGRESSION', PARA = 'ITER_JACOBI',
            CRITERE = 'ABSOLU',       PRECISION = 9.E0,
            NUME_ORDRE = 1,       VALE_I = 0)) )
 
@@ -383,32 +383,32 @@ MODE5=MODE_ITER_SIMULT(  MATR_A=MATR5,   MATR_B=MATM5,
 # --------------------------------------------------------------------
 
 TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE5,        PARA = 'FREQ',
+   _F(   RESULTAT = MODE5, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 1.0E-2,
            NUME_ORDRE = 1,       VALE = 35.63),
-   _F(   RESULTAT = MODE5,        PARA = 'FREQ',
+   _F(   RESULTAT = MODE5, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 1.0E-2,
            NUME_ORDRE = 2,       VALE = 68.51),
-   _F(   RESULTAT = MODE5,        PARA = 'FREQ',
+   _F(   RESULTAT = MODE5, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 1.0E-2,
            NUME_ORDRE = 3,       VALE = 109.62),
-   _F(   RESULTAT = MODE5,        PARA = 'FREQ',
+   _F(   RESULTAT = MODE5, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 1.0E-2,
            NUME_ORDRE = 4,       VALE = 123.32),
-   _F(   RESULTAT = MODE5,        PARA = 'FREQ',
+   _F(   RESULTAT = MODE5, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 2.5E-2,
            NUME_ORDRE = 5,       VALE = 142.51),
-   _F(   RESULTAT = MODE5,        PARA = 'FREQ',
+   _F(   RESULTAT = MODE5, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 4.0E-2,
            NUME_ORDRE = 6,       VALE = 197.32)) )
 
 # --------------------------------------------------------------------
 
 TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE5,        PARA = 'ITER_BATHE',
+   _F(   RESULTAT = MODE5, REFERENCE = 'NON_REGRESSION', PARA = 'ITER_BATHE',
            CRITERE = 'ABSOLU',       PRECISION = 17.E+00,
            NUME_ORDRE = 1,          VALE_I = 0),
-   _F(   RESULTAT = MODE5,        PARA = 'ITER_JACOBI',
+   _F(   RESULTAT = MODE5, REFERENCE = 'NON_REGRESSION', PARA = 'ITER_JACOBI',
            CRITERE = 'ABSOLU',       PRECISION = 9.E+00,
            NUME_ORDRE = 1,          VALE_I = 0)) )
 

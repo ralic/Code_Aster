@@ -1,9 +1,10 @@
-      SUBROUTINE EF212D(NPG, A,
-     &                  NNO2, VFF2, DFF2,
-     &                  NNO1, VFF1, DFF1)
+      SUBROUTINE EF212D(NPG, A, NNO, IVF, IDFDE, NNO1, VFF1, DFF1)
+      IMPLICIT NONE
+      INTEGER  A(8, 2), NNO1, NNO, NPG, IVF, IDFDE
+      REAL*8   VFF1(NNO1, NPG), DFF1(NNO1, NPG, 2)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/08/2000   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,42 +21,56 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-
-      IMPLICIT NONE
-      INTEGER A(8, 2), NNO1, NNO2, NPG
-      REAL*8  VFF2(NNO2, NPG), DFF2(NNO2, NPG, 2)
-      REAL*8  VFF1(NNO1, NPG), DFF1(NNO1, NPG, 2)
-
 C ----------------------------------------------------------------------
 C   CALCUL DES FONCTIONS DE FORME P1 A PARTIR DES FONCTIONS P2  2D
 C ----------------------------------------------------------------------
 C IN  NPG    NOMBRE DE POINTS DE GAUSS
 C IN  A      TABLEAU DE CORRESPONDANCE SOMMET -> NOEUDS MILIEUX
-C IN  NNO2   NOMBRE DE NOEUDS P2
+C IN  NNO    NOMBRE DE NOEUDS P2
 C IN  VFF2   VALEUR  DES FONCTIONS DE FORME P2
-C IN  DFF2  DERIVEE DES FONCTIONS DE FORME P2
+C IN  DFF2   DERIVEE DES FONCTIONS DE FORME P2
 C IN  NNO1   NOMBRE DE NOEUDS P1
 C OUT VFF1   VALEUR  DES FONCTIONS DE FORME P1
 C OUT DFF1  DERIVEE DES FONCTIONS DE FORME P1
 C ----------------------------------------------------------------------
-
-      INTEGER K, N
-
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      INTEGER K, KP, N, N1, N2
 
       DO 10 K = 1, NPG
+
+        KP = 2*NNO*(K-1)
+
         DO 20 N = 1, NNO1
 
-          VFF1(N,K)    = VFF2(N,K)
-     &                 + VFF2(A(N,1),K)/2.D0
-     &                 + VFF2(A(N,2),K)/2.D0
+          N1 = A(N,1)
+          N2 = A(N,2)
 
-          DFF1(N,K,1)  = DFF2(N,K,1)
-     &                 + DFF2(A(N,1),K,1)/2.D0
-     &                 + DFF2(A(N,2),K,1)/2.D0
+          VFF1(N,K)    =  ZR(IVF-1+(K-1)*NNO+ N)
+     &                 +  ZR(IVF-1+(K-1)*NNO+N1)/2.D0
+     &                 +  ZR(IVF-1+(K-1)*NNO+N2)/2.D0
 
-          DFF1(N,K,2)  = DFF2(N,K,2)
-     &                 + DFF2(A(N,1),K,2)/2.D0
-     &                 + DFF2(A(N,2),K,2)/2.D0
+          DFF1(N,K,1)  = ZR(IDFDE-1+KP+2*( N-1)+1)
+     &                 + ZR(IDFDE-1+KP+2*(N1-1)+1)/2.D0
+     &                 + ZR(IDFDE-1+KP+2*(N2-1)+1)/2.D0
+
+          DFF1(N,K,2)  = ZR(IDFDE-1+KP+2*( N-1)+2)
+     &                 + ZR(IDFDE-1+KP+2*(N1-1)+2)/2.D0
+     &                 + ZR(IDFDE-1+KP+2*(N2-1)+2)/2.D0
 
 
  20     CONTINUE

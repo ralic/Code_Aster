@@ -3,7 +3,7 @@
       CHARACTER*8         MAILLA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 25/09/2002   AUTEUR GREFFET N.GREFFET 
+C MODIF SOUSTRUC  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,6 @@ C----------------------DONNEES FOURNIES PAR ASTER-----------------------
 C
 C     XMAX = LONGUEUR MAX SELON X, APRES ALLONGEMENT
 C     YMAX = LONGUEUR MAX SELON Y
-C     ZMAX = LONGUEUR MAX SELON Z
 C     LMAX = LONGUEUR MAX SELON X
 C     NT   = NOMBRE DE TRANCHES
 C
@@ -59,7 +58,6 @@ C     BET = ANGLE SOUDURE
 C     ESO = EPAISSEUR SOUDURE
 C     HSO = HAUTEUR SOUDURE
 C
-C     H1 = HAUTEUR PIQUAGE
 C     H2 = HAUTEUR  ZONE 2
 C     H3 = HAUTEUR  ZONE 3
 C     L3 = LONGUEUR ZONE 3
@@ -73,10 +71,10 @@ C     NT    = NOMBRE DE TRANCHES
 C-----------------------------------------------------------------------
 C
       INTEGER  NT, N1, IRET
-      REAL*8   EPSI, RIP, REP, RIT, RET, BET, ESO, HSO, H1, H2, H3,
+      REAL*8   EPSI, RIP, REP, RIT, RET, BET, ESO, HSO, H2, H3,
      +         L3, L4, L5, L6, TETAF, R8DGRD, RMC, R8PI, D1, D2,
      +         EPT1, DET1, H, ALPHA, JEU, DEC, EPC, THETA, XMAX,
-     +         YMAX, ZMAX, LMAX, LXMAX, LZMAX, RMB, XMAXC
+     +         YMAX, LMAX, LXMAX, LZMAX, RMB, XMAXC
       REAL*8 VAL1,VAL2
       CHARACTER*8   TYPSOU
       CHARACTER*8   NOGRNO, TYPMAI, NOGRNP
@@ -106,7 +104,6 @@ C
       CALL GETVTX ( 'EQUE_PIQUA', 'RAFF_MAIL', 1,1,1, TYPMAI,N1 )
       CALL GETVR8 ( 'EQUE_PIQUA', 'X_MAX'    , 1,1,1, XMAX , N1 )
 C
-      ZMAX=0
 C
       RMC = ( DEC - EPC ) / 2.0D0
 C
@@ -128,7 +125,6 @@ C
 C
       BET = ALPHA * R8DGRD()
       HSO = H
-      H1 = ZMAX
       H2 = RET + D1
       L3 = REP
       IF ( TYPSOU .EQ. 'TYPE_1') THEN
@@ -147,32 +143,32 @@ C
 C
       TETAF = THETA * R8DGRD()
 C
-      CALL PIQUAG ( EPSI, RIP, REP, RIT, RET, BET, ESO, HSO, H1, H2,
-     +              H3, L3, L4, L5, L6, TETAF, XMAX, YMAX, ZMAX,
+      CALL PIQUAG ( EPSI, RIP, REP, RIT, RET, BET, ESO, HSO, H2,
+     +              H3, L3, L4, L5, L6, TETAF, XMAX, YMAX,
      +              LMAX, NT, MAILLA, NOGRNO, TYPSOU )
 C
       GRPNOE = MAILLA//'.GROUPENO       '
       CALL JEEXIN ( JEXNOM(GRPNOE,'P_FIS1'), IRET )
       IF ( IRET .NE. 0 ) THEN
          NOGRNP = 'P_FIS1  '
-         CALL PIQUAG ( EPSI, RIP, REP, RIT, RET, BET, ESO, HSO, H1, H2,
-     +                 H3, L3, L4, L5, L6, TETAF, XMAX, YMAX, ZMAX,
+         CALL PIQUAG ( EPSI, RIP, REP, RIT, RET, BET, ESO, HSO, H2,
+     +                 H3, L3, L4, L5, L6, TETAF, XMAX, YMAX,
      +                 LMAX, NT, MAILLA, NOGRNP, TYPSOU )
       ELSE
 C
          CALL JEEXIN ( JEXNOM(GRPNOE,'PI_FIS1'), IRET )
          IF ( IRET .NE. 0 ) THEN
          NOGRNP = 'PI_FIS1  '
-         CALL PIQUAG ( EPSI, RIP, REP, RIT, RET, BET, ESO, HSO, H1, H2,
-     +                 H3, L3, L4, L5, L6, TETAF, XMAX, YMAX, ZMAX,
+         CALL PIQUAG ( EPSI, RIP, REP, RIT, RET, BET, ESO, HSO, H2,
+     +                 H3, L3, L4, L5, L6, TETAF, XMAX, YMAX,
      +                 LMAX, NT, MAILLA, NOGRNP, TYPSOU )
          ENDIF
 C
          CALL JEEXIN ( JEXNOM(GRPNOE,'PS_FIS1'), IRET )
          IF ( IRET .NE. 0 ) THEN
          NOGRNP = 'PS_FIS1  '
-         CALL PIQUAG ( EPSI, RIP, REP, RIT, RET, BET, ESO, HSO, H1, H2,
-     +                 H3, L3, L4, L5, L6, TETAF, XMAX, YMAX, ZMAX,
+         CALL PIQUAG ( EPSI, RIP, REP, RIT, RET, BET, ESO, HSO, H2,
+     +                 H3, L3, L4, L5, L6, TETAF, XMAX, YMAX,
      +                 LMAX, NT, MAILLA, NOGRNP, TYPSOU )
          ENDIF
       ENDIF
@@ -180,23 +176,23 @@ C
       CALL JEEXIN ( JEXNOM(GRPNOE,'P_FIS2'), IRET )
       IF ( IRET .NE. 0 ) THEN
          NOGRNP = 'P_FIS2  '
-         CALL PIQUAG ( EPSI, RIP, REP, RIT, RET, BET, ESO, HSO, H1, H2,
-     +                 H3, L3, L4, L5, L6, TETAF, XMAX, YMAX, ZMAX,
+         CALL PIQUAG ( EPSI, RIP, REP, RIT, RET, BET, ESO, HSO, H2,
+     +                 H3, L3, L4, L5, L6, TETAF, XMAX, YMAX,
      +                 LMAX, NT, MAILLA, NOGRNP, TYPSOU )
       ELSE
          CALL JEEXIN ( JEXNOM(GRPNOE,'PI_FIS2'), IRET )
          IF ( IRET .NE. 0 ) THEN
          NOGRNP = 'PI_FIS2  '
-         CALL PIQUAG ( EPSI, RIP, REP, RIT, RET, BET, ESO, HSO, H1, H2,
-     +                 H3, L3, L4, L5, L6, TETAF, XMAX, YMAX, ZMAX,
+         CALL PIQUAG ( EPSI, RIP, REP, RIT, RET, BET, ESO, HSO, H2,
+     +                 H3, L3, L4, L5, L6, TETAF, XMAX, YMAX,
      +                 LMAX, NT, MAILLA, NOGRNP, TYPSOU )
          ENDIF
 C
          CALL JEEXIN ( JEXNOM(GRPNOE,'PS_FIS2'), IRET )
          IF ( IRET .NE. 0 ) THEN
          NOGRNP = 'PS_FIS2  '
-         CALL PIQUAG ( EPSI, RIP, REP, RIT, RET, BET, ESO, HSO, H1, H2,
-     +                 H3, L3, L4, L5, L6, TETAF, XMAX, YMAX, ZMAX,
+         CALL PIQUAG ( EPSI, RIP, REP, RIT, RET, BET, ESO, HSO, H2,
+     +                 H3, L3, L4, L5, L6, TETAF, XMAX, YMAX,
      +                 LMAX, NT, MAILLA, NOGRNP, TYPSOU )
          ENDIF
       ENDIF

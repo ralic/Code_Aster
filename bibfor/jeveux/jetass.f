@@ -1,6 +1,6 @@
       SUBROUTINE JETASS ( CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 21/11/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,17 +96,6 @@ C DEB ------------------------------------------------------------------
         NCLA2 = NCLA1
       ENDIF
       DO 100 IC=NCLA1,NCLA2
-C
-C ----- DECHARGEMENT PRELIMINAIRE DES TAMPONS D'ECRITURE
-C
-        IF ( IITECR(IC) .GT. 0 ) THEN
-           CALL JXECRB (IC, IITECR(IC), KITECR(IC)+1, LONGBL(IC), 0, 0)
-        ENDIF
-        IF ( LITLEC(IC) ) THEN
-           CALL JXECRB (IC, IITLEC(IC), KITLEC(IC)+1, LONGBL(IC), 0, 0)
-           LITLEC(IC) = .FALSE.
-           IITLEC(IC) = 0
-        ENDIF
         CALL JJALLS(LONGBL(IC),'V','I',LOIS,'INIT',ITP,JITP,IADITP)
         ISZON(JISZON+IADITP-1) = ISTAT(2)
         ISZON(JISZON+ISZON(JISZON+IADITP-4)-4) = ISTAT(4)
@@ -118,6 +107,19 @@ C
         IDOSP = 0
         IDCOP = 0
  200    CONTINUE
+C
+C ----- DECHARGEMENT DES TAMPONS DE LECTURE ET D'ECRITURE
+C ----- AFIN D'ACTUALISER LES ADRESSES DISQUES DES COLLECTIONS
+C ----- STOCKEES DANS DES PETITS OBJETS
+C
+        IF ( IITECR(IC) .GT. 0 ) THEN
+           CALL JXECRB (IC, IITECR(IC), KITECR(IC)+1, LONGBL(IC), 0, 0)
+        ENDIF
+        IF ( LITLEC(IC) ) THEN
+           CALL JXECRB (IC, IITLEC(IC), KITLEC(IC)+1, LONGBL(IC), 0, 0)
+           LITLEC(IC) = .FALSE.
+           IITLEC(IC) = 0
+        ENDIF
         K = K + 1
         IF ( K .LE. NBLUTI(IC) ) THEN
           LIBRE  = IUSADI(JUSADI(IC)+2*K-1) .LT. -1 .OR.
@@ -146,6 +148,10 @@ C
                 IADDIB(1) = KLIB
                 CALL JXECRO (IC, IADITP, IADDIB, LONGBL(IC), IDCO, IDOS)
                 IF ( IDOSL .NE. IDOSP .OR. IDCOL .NE. IDCOP ) THEN
+C
+C ------------- ON ACTUALISE L'ADRESSE DISQUE QUE SI L'UN DES 
+C ------------- IDENTIFICATEURS A ETE MODIFIE
+C
                   IDOSP = IDOSL
                   IDCOP = IDCOL
                   IF ( IDCO .EQ. 0 ) THEN
@@ -166,7 +172,7 @@ C ----------------- MISE A JOUR DU COMMON /IATCJE/ POUR APPEL JJLIDE
                     CALL JJLIDE('JETASS',RNOM(JRNOM(IC)+IXIADD),1)
                   ENDIF
                 ENDIF
-                CALL JXLIBD (IDOCL, IDOSL, IC, IADDI, LOIS)
+                CALL JXLIBD (IDCOL, IDOSL, IC, IADDI, LOIS)
                 KLIB = MIN(KLIB+1,K)
 C
 C ----------- L'ENREGISTREMENT CONTIENT DES PETITS OBJETS

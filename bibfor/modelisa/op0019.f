@@ -1,5 +1,5 @@
       SUBROUTINE OP0019(IER)
-C MODIF MODELISA  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,10 +53,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 
-      PARAMETER (NBEPO=13,NBEDI=8,NBECO=24,NBECA=2)
-      PARAMETER (NBEBA=2,NBEMA=46,NBEGR=1,NBEGB=1)
+      PARAMETER (NBEPO=13,NBEDI=8,NBECO=26,NBECA=2)
+      PARAMETER (NBEBA=2,NBEMA=46,NBEGR=1,NBEGB=2)
       PARAMETER (NBTEL=NBEPO+NBEDI+NBECO+NBECA+NBEBA+NBEMA+NBEGR+NBEGB)
-      PARAMETER (NBMCF=12,NBEL1=49,NBEL2=48)
+      PARAMETER (NBMCF=13,NBEL1=51,NBEL2=49)
 
       INTEGER NBMCLE(NBMCF),NBOCC(NBMCF),IVR(3)
       INTEGER NTYELE(NBTEL),NOCADI(3),NMTGDI(3)
@@ -78,7 +78,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &     'DISCRET         ','ORIENTATION     ','DEFI_ARC        ',
      &     'CABLE           ','BARRE           ','MASSIF          ',
      &     'POUTRE_FLUI     ','RIGI_PARASOL    ','ASSE_GRIL       ',
-     &     'GRILLE          '/
+     &     'GRILLE          ','RIGI_MISS_3D    '/
 
       DATA NOMEL1/'MECA_POU_D_T    ','MECA_POU_D_E    ',
      &     'MECA_POU_D_T_GD ','MECA_POU_C_T    ',
@@ -92,6 +92,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &     'THCOQU8         ','THCOTR7         ','THCOQU9         ',
      &     'MEDKTR3         ','MEDSTR3         ','MEDKQU4         ',
      &     'MEDSQU4         ','MEQ4QU4         ','MECXSE3         ',
+     &     'MEDKTG3         ','MEDKQG4         ',
      &     'METCSE3         ','METDSE3         ','THCASE3         ',
      &     'THCPSE3         ','MEC3QU9H        ','MEC3TR7H        ',
      &     'MEBODKT         ','MEBODST         ','MEBOQ4G         ',
@@ -115,9 +116,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &     'THPLTR3         ','THPLQU4         ','THPLTR6         ',
      &     'THPLQU8         ','THPLQU9         ','MET3SEG3        ',
      &     'MET6SEG3        ','MET3SEG4        ','MEGRQU4         ',
-     &     'MEGRDKT         '/
+     &     'MEGRDKT         ','MEGRTR3         '/
 
-      DATA NBMCLE/2,2,4,4,2,2,2,2,2,1,2,2/
+      DATA NBMCLE/2,2,4,4,2,2,2,2,2,1,2,2,0/
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -204,7 +205,7 @@ C     VERIFICATION DE LA SYNTAXE DES ELEMENTS MASSIF :
 C     ------------------------------------------------
       LXM = 0
       IF (NBOCC(8).NE.0) THEN
-        CALL ACEVMA(NBOCC(8),NLM,NLG,IRET)
+        CALL ACEVMA(NBOCC(8),NLM,NLG)
         LXM = MAX(NLM,NLG)
       END IF
 
@@ -215,7 +216,7 @@ C     -----------------------------------------------------
         IF (NBOCC(1).EQ.0) THEN
           CALL UTMESS('F',CMD,'IL MANQUE LE MOT CLE FACTEUR'//'POUTRE.')
         END IF
-        CALL ACEVPF(NBOCC(9),NLM,NLG,IRET)
+        CALL ACEVPF(NBOCC(9),NLM,NLG)
         LXPF = MAX(NLM,NLG)
       END IF
 
@@ -231,7 +232,7 @@ C     VERIFICATION DE LA SYNTAXE DES ELEMENTS "GRILLE" :
 C     --------------------------------------------------
       LXGB = 0
       IF (NBOCC(12).NE.0) THEN
-        CALL ACEVGB(NBOCC(12),NLM,NLG,IRET)
+        CALL ACEVGB(NBOCC(12),NLM,NLG)
         LXGB = MAX(NLM,NLG)
       END IF
 
@@ -279,6 +280,14 @@ C     -------------------------------------------------
         CALL ACEVRP(NBOCC(10),NOMA,LXRP,NOEMAF,IRET)
         LMAX = MAX(LMAX,LXRP)
       END IF
+      
+C     VERIFICATION DE LA DIMENSION DES RAIDEURS MISS :
+C     -------------------------------------------------
+      LXRM = 0
+      IF (NBOCC(13).NE.0) THEN
+        CALL ACEVRM(NBOCC(13),NOMA,LXRM,NOEMF2,IRET)
+        LMAX = MAX(LMAX,LXRM)
+      END IF
 
 C --- RECUPERATION DU NB DE MAILLES INITIALES (MAILLAGE)
       CALL JELIRA(MLGNMA,'NOMMAX',NBMAIL,K1BID)
@@ -304,7 +313,7 @@ C --- RECUPERATION DES NUMEROS DES TYPES ELEMENTS
 C --- COMPTEUR D'ELEMENTS ET VERIFICATION COHERENCE DES AFFECTATIONS :
 C     ----------------------------------------------------------------
       CALL ACECEL(NOMA,NOMO,NBOCC,NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEMA,
-     &            NBEGR,NBEGB,NBTEL,NTYELE,NPOUTR,NDISCR,NCOQUE,NCABLE,
+     &            NBEGR,NBTEL,NTYELE,NPOUTR,NDISCR,NCOQUE,NCABLE,
      &            NBARRE,NMASSI,NGRILL,NGRIBT,JDLM,JDLN,IRET)
       IF (IRET.NE.0) THEN
         CALL UTMESS('F',CMD,'ERREUR(S) RENCONTREE(S) LORS DE LA '//
@@ -341,7 +350,7 @@ C     INCREMENTATION DES COMPTEURS D APPELS A NOCART(DISCRET,COQUE,
 C     DEFI_ARC,CABLE,POUTRE,BARRE) :
 C     -----------------
       IRET=0
-      CALL ACEINC(NOMA,NOMO,NBMCF,MCLF,NOMELE,NTYELE,NBOCC,IVR,NBEPO,
+      CALL ACEINC(NOMA,NOMO,NBMCF,MCLF,NTYELE,NBOCC,IVR,NBEPO,
      &            NBEDI,NBECO,NBECA,NBEBA,NBEMA,NBEGR,NBEGB,NBTEL,
      &            NOCAPC,NMTGPC,NOCADI,NMTGDI,NOCACO,NMTGCO,NOCACA,
      &            NMTGCA,NOCAMA,NMTGMA,NOCAPF,NMTGPF,NOCAGR,NMTGGR,
@@ -382,7 +391,14 @@ C     -------------------------------------------------
           NMTGDI(I) = NMTGDI(I) + LXRP
   120   CONTINUE
       END IF
-
+C     CORRECTION DE LA DIMENSION DES RAIDEURS MISS :
+C     -------------------------------------------------
+      IF (NBOCC(13).NE.0) THEN
+        DO 130 I = 1,3
+          NOCADI(I) = NOCADI(I) + LXRM
+          NMTGDI(I) = NMTGDI(I) + LXRM
+  130   CONTINUE
+      END IF
 
 C     FABRICATION DE LA CARTE COMMUNE A TOUS LES ELEMENTS LINEIQUE
       NBCART = NPOUTR + NBARRE + NCABLE
@@ -467,6 +483,13 @@ C --- AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT "GRILLE"
 C     --------------------------------------------------------
       IF (NBOCC(12).NE.0) THEN
         CALL ACEAGB(NOMU,NOMA,LMAX,NOCAGB,NMTGGB,NBCACO,NBOCC(12))
+      END IF
+      
+C --- AFFECTATION DES MATRICES AUX RAIDEURS MISS :
+C     ------------------------------------------------
+      IF (NBOCC(13).NE.0) THEN
+        CALL ACEARM(NOMA,NOMO,LMAX,NOEMF2,NOCADI,NMTGDI,NBOCC(13),IVR,
+     &              IFM)
       END IF
 
 C --- DESTRUCTIONS DES OBJETS JEVEUX TEMPORAIRES DE AFFE_CARA_ELEM :

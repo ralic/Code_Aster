@@ -1,4 +1,4 @@
-# MODIF  DATE 13/11/2001   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 02/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE MUR PLAN EN THERMIQUE STATIONNAIRE (QUAD4/TRIA3) CALC_MATR_ELEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,37 +45,36 @@ CHTH=AFFE_CHAR_THER(   MODELE=MOTH,FLUX_REP=(
                                       COEF_IMPO = 40.)
                        )
 
-MACRO_MATR_ASSE(  MODELE=MOTH,  CHARGE=CHTH,
-                      CHAM_MATER=CHMAT, 
-                      NUME_DDL=CO("NU"),
-                      SOLVEUR=_F(  METHODE = 'MULT_FRONT'),
-                      MATR_ASSE=_F(  MATRICE = CO("MATASS"),
-                                  OPTION = 'RIGI_THER')
-                   )
+TEMPE=THER_LINEAIRE(   MODELE=MOTH,
+                       CHAM_MATER=CHMAT,
+                       EXCIT=_F(  CHARGE = CHTH),
+                       )
 
-VEL=CALC_VECT_ELEM(   CHARGE=CHTH,  OPTION='CHAR_THER' )
 
-VECASS=ASSE_VECTEUR(   VECT_ELEM=VEL,   NUME_DDL=NU )
+TEMPE=CALC_ELEM(reuse=TEMPE, RESULTAT=TEMPE,
+                MODELE=MOTH,
+                EXCIT=_F(  CHARGE = CHTH),
+                CHAM_MATER=CHMAT,
+                NUME_ORDRE=0,
+                OPTION=('FLUX_ELNO_TEMP','FLUX_ELGA_TEMP'),
+               )
 
-MATASS=FACT_LDLT( reuse=MATASS,  MATR_ASSE=MATASS )
-
-T=RESO_LDLT(   MATR_FACT=MATASS,   CHAM_NO=VECASS )
-
-FLUXN=CALC_CHAM_ELEM(   MODELE=MOTH,  TEMP=T, 
-                             CHAM_MATER=CHMAT,  OPTION='FLUX_ELNO_TEMP')
-
-FLUXG=CALC_CHAM_ELEM(   MODELE=MOTH,  TEMP=T, 
-                             CHAM_MATER=CHMAT,  OPTION='FLUX_ELGA_TEMP')
-
-TEST_RESU(CHAM_NO=( 
-   _F( CHAM_GD = T, NOEUD = 'N5',    NOM_CMP = 'TEMP', VALE = 100.0),
-   _F( CHAM_GD = T, NOEUD = 'N1',    NOM_CMP = 'TEMP', VALE = 20.0),
-   _F( CHAM_GD = T, NOEUD = 'N3',    NOM_CMP = 'TEMP', VALE = 60.0)),CHAM_ELEM=(
+TEST_RESU(RESU=( 
+   _F( RESULTAT = TEMPE, NOEUD = 'N5', NUME_ORDRE=0, NOM_CHAM='TEMP',
+   NOM_CMP = 'TEMP', VALE = 100.0),
+   _F( RESULTAT = TEMPE, NOEUD = 'N1', NUME_ORDRE=0, NOM_CHAM='TEMP',
+   NOM_CMP = 'TEMP', VALE = 20.0),
+   _F( RESULTAT = TEMPE, NOEUD = 'N3', NUME_ORDRE=0, NOM_CHAM='TEMP',
+   NOM_CMP = 'TEMP', VALE = 60.0),
                
-   _F( CHAM_GD = FLUXN, MAILLE = 'M1', POINT = 3, NOM_CMP = 'FLUX', VALE = 960.0),
-   _F( CHAM_GD = FLUXN, MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0),
-   _F( CHAM_GD = FLUXG, MAILLE = 'M1', POINT = 3, NOM_CMP = 'FLUX', VALE = 960.0),
-   _F( CHAM_GD = FLUXG, MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0))
+   _F( RESULTAT = TEMPE, MAILLE = 'M1', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
+   POINT = 3, NOM_CMP = 'FLUX', VALE = 960.0),
+   _F( RESULTAT = TEMPE, MAILLE = 'M2', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
+   POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0),
+   _F( RESULTAT = TEMPE, MAILLE = 'M1', NUME_ORDRE=0, NOM_CHAM='FLUX_ELGA_TEMP',
+   POINT = 3, NOM_CMP = 'FLUX', VALE = 960.0),
+   _F( RESULTAT = TEMPE, MAILLE = 'M2', NUME_ORDRE=0, NOM_CHAM='FLUX_ELGA_TEMP',
+   POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0))
           )
 
 #----------------------------------------------------------------------
@@ -92,7 +91,9 @@ CHEM_1=INTE_MAIL_2D(   MAILLAGE=MAIL,
 
 FLUX_G=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLUX_GLO',
                            CHEMIN = CHEM_1,
-                           CHAM_GD = FLUXN,
+                           RESULTAT = TEMPE,
+                           NUME_ORDRE=0,
+                           NOM_CHAM='FLUX_ELNO_TEMP',
                            NOM_CMP = ( 'FLUX', 'FLUY', ),
                            REPERE = 'GLOBAL',
                            OPERATION = 'EXTRACTION')  )
@@ -121,7 +122,9 @@ TEST_TABLE(    TABLE=FLUX_G,
 
 FLUX_L=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLUX_LOC',
                            CHEMIN = CHEM_1,
-                           CHAM_GD = FLUXN,
+                           RESULTAT = TEMPE,
+                           NUME_ORDRE=0,
+                           NOM_CHAM='FLUX_ELNO_TEMP',
                            NOM_CMP = ( 'FLUX', 'FLUY', ),
                            REPERE = 'LOCAL',
                            OPERATION = 'EXTRACTION')  )
@@ -151,7 +154,9 @@ TEST_TABLE(    TABLE=FLUX_L,
 
 FLUX_N=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLUX_NOR',
                            CHEMIN = CHEM_1,
-                           CHAM_GD = FLUXN,
+                           RESULTAT = TEMPE,
+                           NUME_ORDRE=0,
+                           NOM_CHAM='FLUX_ELNO_TEMP',
                            TRAC_NOR = 'OUI',
                            NOM_CMP = ( 'FLUX', 'FLUY', ),
                            OPERATION = 'EXTRACTION')  )
@@ -183,7 +188,9 @@ TEST_TABLE(    TABLE=FLUX_N,
 
 TR1_N1=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLU_NORM',
                            NOEUD = ( 'N9', 'N1', 'N2', ),
-                           CHAM_GD = FLUXN,
+                           RESULTAT = TEMPE,
+                           NUME_ORDRE=0,
+                           NOM_CHAM='FLUX_ELNO_TEMP',
                            TRAC_NOR = 'OUI',
                            NOM_CMP = ( 'FLUX', 'FLUY', ),
                            OPERATION = 'EXTRACTION')  )
@@ -220,7 +227,9 @@ CHEM_2=INTE_MAIL_2D(   MAILLAGE=MAIL,
 
 TR1_C2=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLU_NORM',
                            CHEMIN = CHEM_2,
-                           CHAM_GD = FLUXN,
+                           RESULTAT = TEMPE,
+                           NUME_ORDRE=0,
+                           NOM_CHAM='FLUX_ELNO_TEMP',
                            TRAC_NOR = 'OUI',
                            NOM_CMP = ( 'FLUX', 'FLUY', ),
                            OPERATION = 'EXTRACTION')  )
@@ -251,8 +260,10 @@ TEST_TABLE(    TABLE=TR1_C2,
 
 TR1_N2=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLU_NORM',
                            NOEUD = ( 'N2', 'N1', 'N9', ),
-                           CHAM_GD = FLUXN,
+                           RESULTAT = TEMPE,
                            TRAC_NOR = 'OUI',
+                           NUME_ORDRE=0,
+                           NOM_CHAM='FLUX_ELNO_TEMP',
                            NOM_CMP = ( 'FLUX', 'FLUY', ),
                            OPERATION = 'EXTRACTION')  )
 

@@ -3,7 +3,7 @@
       CHARACTER*(*)       TABRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 06/01/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,9 +40,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IBID, IR, N2,N3,N4, NPARFI, IRET,NBVAL, LPRO,LVAL
-      REAL*8        R8B, R, THETA, RAD, R8DGRD
+      REAL*8        R8B, R, THETA, R8DGRD
       COMPLEX*16    C16B
-      CHARACTER*8   K8B, INTERP, PROLGD, REPERE
+      CHARACTER*8   K8B, INTERP, PROLGD
       CHARACTER*16  NOMCMD, TYPCON, PARAX, PARAY
       CHARACTER*19  NOMFON, NEWTAB, NEWTA1
       CHARACTER*24  NOPARA, NOMF
@@ -57,7 +57,6 @@ C
 C
       INTERP = 'NON NON '
       PROLGD = 'EE      '
-      RAD = R8DGRD( )
 C
       NEWTAB = TABRES
 C
@@ -89,26 +88,6 @@ C
          CALL UTMESS('F','OP0090','MANQUE LA DEFINITION D''UN MOT CLE')
       ENDIF
 C
-C     POUR LES FONCTIONS EN (THETA,R), PASSAGE EN (X,Y) :
-C     -------------------------------------------------
-C
-      CALL GETVTX ( ' ', 'REPERE', 0,1,1, REPERE, N2 )
-      IF ( REPERE .EQ. 'GLOBAL' ) THEN
-         CALL JEVEUO ( NOMFON//'.PROL', 'E', LPRO )
-         IF ( ZK16(LPRO+2) .NE. 'THETA   ' ) GOTO 9999
-         IF ( ZK16(LPRO+3) .NE. 'R       ' ) GOTO 9999
-         ZK16(LPRO+2) = 'X'
-         ZK16(LPRO+3) = 'Y'
-         CALL JEVEUO ( NOMFON//'.VALE', 'E', LVAL )
-         CALL JELIRA ( NOMFON//'.VALE', 'LONMAX', NBVAL, K8B )
-         NBVAL = NBVAL / 2
-         DO 20 IR = 1 , NBVAL
-            THETA = ZR(LVAL+IR-1)*RAD
-            R     = ZR(LVAL+NBVAL+IR-1)
-            ZR(LVAL+IR-1) = R * COS(THETA)
-            ZR(LVAL+NBVAL+IR-1) = R * SIN(THETA)
- 20      CONTINUE
-      ENDIF
  9999 CONTINUE
 C
       IF ( NPARFI .NE. 0 )  CALL DETRSD ( 'TABLE' , NEWTA1 )

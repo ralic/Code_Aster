@@ -1,6 +1,6 @@
       SUBROUTINE CAFACI(FONREE, CHAR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/09/2001   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 22/01/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CRP_20
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       CHARACTER*4               FONREE
       CHARACTER*8                       CHAR
@@ -50,9 +50,17 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32      JEXNOM, JEXNUM
 C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 C
+      INTEGER      NMOCL
       PARAMETER    (NMOCL=300)
 C
-      INTEGER      NTYPEL(NMOCL), DDLIMP(NMOCL)
+      INTEGER      I,J,K,N,JGROUP,JLISTI,JLISTK,JJJ,IGR,NGR,NGRO,NENT
+      INTEGER      NBNOEU,JVAL,NDDLA,JDIREC,NBML,NG,NBNO
+      INTEGER      IDIM,IN,JNORM,JTANG,JNUNOE,JNBN,JNONO,NFACI,NBGM
+      INTEGER      NBGT,NBET,NBEGT,IBID,JNOMA,IER,IOCC,NDIM,NNO
+      INTEGER      NBEM,NBEGM,IRET,N1,N2,INO,JPRNM,NBEC,NMCL,INOR,ICMP
+      INTEGER      NCMP,NBTYP,IE,NBMA,JGR0
+
+      INTEGER      DDLIMP(NMOCL)
       REAL*8       VALIMR(NMOCL), COEF(3), DIRECT(3)
       COMPLEX*16   VALIMC(NMOCL), COEFC(3)
       CHARACTER*2  TYPLAG
@@ -160,40 +168,6 @@ C
 
 C
 C ---------------------------------------------------
-C     RECUPERATION DES MOTS-CLES DDL SOUS FACE_IMPO
-C     MOTCLE(J) : K8 CONTENANT LE J-EME MOT-CLE DDL
-C     NDDLA     : NOMBRE DE MOTS CLES DU TYPE DDL
-C ---------------------------------------------------
-      CALL GETMFM('FACE_IMPO',0  ,MOTCLE,TYMOCL,N)
-      NMCL = -N
-      IF (NMCL.GT.NMOCL) THEN
-        CALL UTDEBM('F','CAFACI','NOMBRE DE MOTCLES SUPERIEUR AU MAX')
-        CALL UTIMPI('L','NMAXOCL= ',1,NMOCL)
-        CALL UTIMPI('L','NMOCL  = ',1,NMCL)
-        CALL UTFINM()
-      ENDIF
-      CALL GETMFM('FACE_IMPO',NMCL,MOTCLE,TYMOCL,N)
-      I =1
-      DO 50 J = 1, NMCL
-        IF(MOTCLE(J).NE.'MAILLE'.AND.MOTCLE(J).NE.'GROUP_MA'.AND.
-     +    MOTCLE(J).NE.'DNOR'.AND.MOTCLE(J).NE.'DTAN') THEN
-          MOTCLE(I) = MOTCLE(J)
-          I = I + 1
-        ENDIF
-50    CONTINUE
-      NDDLA = NMCL - 4
-      MOTCLE(NDDLA+1) = 'DNOR'
-      MOTCLE(NDDLA+2) = 'DTAN'
-C ---------------------------------------------------
-C *** RECUPERATION DES NUMEROS D'ELEMENTS DE LAGRANGE
-C *** CONCERNANT CHAQUE DDL :
-C             CORRESPONDANCE MOTCLE(J) <--> NTYPEL(J)
-C ---------------------------------------------------
-      DO 60 J = 1, NDDLA
-        CALL JENONU(JEXNOM('&CATA.TE.NOMTE',
-     +                     'D_DEPL_R_'//MOTCLE(J)(1:7)),NTYPEL(J))
-60    CONTINUE
-C ---------------------------------------------------
 C *** RECUPERATION DU DESCRIPTEUR GRANDEUR .PRNM
 C *** DU MODELE
 C ---------------------------------------------------
@@ -251,44 +225,69 @@ C      ***************************************
 C
 C     MISE A JOUR DE LIGRCH ET STOCKAGE DANS LES CARTES
 C
-      NCMP=0
       DO 70 I = 1, NFACI
+        NCMP=0
         ICMP = 0
         INOR = 0
-        IF (FONREE.EQ.'REEL') THEN
-          DO 80 J=1,NDDLA+2
-            CALL GETVR8('FACE_IMPO',MOTCLE(J),I,1,1,VALIMR(J),DDLIMP(J))
-            IF (J.LE.NDDLA) THEN
-               ICMP = ICMP+DDLIMP(J)
-            ELSE
-               INOR = INOR+DDLIMP(J)
-            ENDIF
-80        CONTINUE
-          IF (NDIM.EQ.3.AND.DDLIMP(NDDLA+2).NE.0) THEN
-            CALL UTMESS('F','CAFACI','PAS DE BLOCAGE DE DEPLACEMENT'
-     +      //' TANGENT SUR DES FACES D''ELEMENTS 3D. RENTRER LA CO'
-     +      //'NDITION AUX LIMITES PAR DDL_IMPO OU LIAISON_DDL')
+C ---------------------------------------------------
+C     RECUPERATION DES MOTS-CLES DDL SOUS FACE_IMPO
+C     MOTCLE(J) : K8 CONTENANT LE J-EME MOT-CLE DDL
+C     NDDLA     : NOMBRE DE MOTS CLES DU TYPE DDL
+C ---------------------------------------------------
+        CALL GETMJM('FACE_IMPO',I-1,0  ,MOTCLE,TYMOCL,N)
+        NMCL = -N
+        IF (NMCL.GT.NMOCL) THEN
+          CALL UTDEBM('F','CAFACI','NOMBRE DE MOTCLES SUPERIEUR AU MAX')
+          CALL UTIMPI('L','NMAXOCL= ',1,NMOCL)
+          CALL UTIMPI('L','NMOCL  = ',1,NMCL)
+          CALL UTFINM()
+        ENDIF
+        CALL GETMJM('FACE_IMPO',I-1,NMCL,MOTCLE,TYMOCL,N)
+        NDDLA =1
+        DO 50 J = 1, NMCL
+          IF(MOTCLE(J).NE.'MAILLE'.AND.MOTCLE(J).NE.'GROUP_MA'.AND.
+     +      MOTCLE(J).NE.'DNOR'.AND.MOTCLE(J).NE.'DTAN') THEN
+            MOTCLE(NDDLA) = MOTCLE(J)
+            NDDLA = NDDLA + 1
           ENDIF
+50      CONTINUE
+        NDDLA = NDDLA - 1
+        MOTCLE(NDDLA+1) = 'DNOR'
+        MOTCLE(NDDLA+2) = 'DTAN'
+        IF (FONREE.EQ.'REEL') THEN
+         DO 80 J=1,NDDLA+2
+           CALL GETVR8('FACE_IMPO',MOTCLE(J),I,1,1,VALIMR(J),DDLIMP(J))
+           IF (J.LE.NDDLA) THEN
+              ICMP = ICMP+DDLIMP(J)
+           ELSE
+              INOR = INOR+DDLIMP(J)
+           ENDIF
+80       CONTINUE
+         IF (NDIM.EQ.3.AND.DDLIMP(NDDLA+2).NE.0) THEN
+           CALL UTMESS('F','CAFACI','PAS DE BLOCAGE DE DEPLACEMENT'
+     +     //' TANGENT SUR DES FACES D''ELEMENTS 3D. RENTRER LA CO'
+     +     //'NDITION AUX LIMITES PAR DDL_IMPO OU LIAISON_DDL')
+         ENDIF
         ELSE
-          DO 90 J=1,NDDLA+2
-            CALL GETVID('FACE_IMPO',MOTCLE(J),I,1,1,VALIMF(J),DDLIMP(J))
-            IF (J.LE.NDDLA) THEN
-               ICMP = ICMP+DDLIMP(J)
-            ELSE
-               INOR = INOR+DDLIMP(J)
-            ENDIF
-90        CONTINUE
-          IF (NDIM.EQ.3.AND.DDLIMP(NDDLA+2).NE.0) THEN
-            CALL UTMESS('F','CAFACI','PAS DE BLOCAGE DE DEPLACEMENT'
-     +      //' TANGENT SUR DES FACES D''ELEMENTS 3D. RENTRER LA CO'
-     +      //'NDITION AUX LIMITES PAR DDL_IMPO OU LIAISON_DDL')
-          END IF
+         DO 90 J=1,NDDLA+2
+           CALL GETVID('FACE_IMPO',MOTCLE(J),I,1,1,VALIMF(J),DDLIMP(J))
+           IF (J.LE.NDDLA) THEN
+              ICMP = ICMP+DDLIMP(J)
+           ELSE
+              INOR = INOR+DDLIMP(J)
+           ENDIF
+90       CONTINUE
+         IF (NDIM.EQ.3.AND.DDLIMP(NDDLA+2).NE.0) THEN
+           CALL UTMESS('F','CAFACI','PAS DE BLOCAGE DE DEPLACEMENT'
+     +     //' TANGENT SUR DES FACES D''ELEMENTS 3D. RENTRER LA CO'
+     +   //'NDITION AUX LIMITES PAR DDL_IMPO OU LIAISON_DDL')
          END IF
-         NCMP=NCMP+ICMP
+        END IF
+        NCMP=NCMP+ICMP
 C    ------------------------------------------------------
 C    FILTRAGE SUR LES COMPOSANTES NORMALES OU TANGENTIELLES
 C    ------------------------------------------------------
-       IF(INOR.NE.0.AND.ICMP.EQ.0) THEN
+        IF(INOR.NE.0.AND.ICMP.EQ.0) THEN
 C
 C        ---------------
 C        CAS DE GROUP_MA
@@ -367,44 +366,64 @@ C   ----------------------
      +                     VALIMR(NDDLA+2),VALIMC(NDDLA+2),
      +                     VALIMF(NDDLA+2),TYPCOE,FONREE,TYPLAG,LISREL)
            ENDIF
- 120    CONTINUE
+ 120     CONTINUE
         ENDIF
- 70     CONTINUE
 C
 C      ***************************************************
 C      TRAITEMENT DES COMPOSANTES DX DY DZ DRX DRY DRZ ...
 C      ***************************************************
 C
-      IF(NCMP.EQ.0) GOTO 9998
-C
-C     RECUPERATION (OU CREATION) DES TABLEAUX GLOBAUX VENANT DE CADDLI
-C
-C
-      CALL JELIRA(NOMA//'.NOMNOE','NOMMAX',NBNOEU,K1BID)
-C
-C    ALLOCATION DE 3 OBJETS INTERMEDIAIRES PERMETTANT D'APPLIQUER
-C    LA REGLE DE SURCHARGE :
-C
-C                - VECTEUR (K8) CONTENANT LES NOMS DES NOEUDS
-C                - TABLEAU DES VALEURS DES DDLS DES NOEUDS BLOQUES
-C                  DIM NBNOEU * NBCOMP
-C                - VECTEUR (IS) CONTENANT LE DESCRIPTEUR GRANDEUR
-C                  ASSOCIE AUX DDLS IMPOSES PAR NOEUD
-C
-          CALL WKVECT('&&CAFACI.NOMS_NOEUDS','V V K8',NBNOEU,JNONO)
-         IF (FONREE.EQ.'REEL') THEN
-          CALL WKVECT('&&CAFACI.VALDDL','V V R',NDDLA*NBNOEU,JVAL)
-         ELSE
-          CALL WKVECT('&&CAFACI.VALDDL','V V K8',NDDLA*NBNOEU,JVAL)
-         ENDIF
-C
-         CALL WKVECT('&&CAFACI.DIRECT','V V R',3*NBNOEU,JDIREC)
-         CALL WKVECT('&&CAFACI.DIMENSION','V V I',NBNOEU,JDIMEN)
+        IF(NCMP.EQ.0) GOTO 9998
 C
 C     RECUPERATION DES DONNEES DU MOT-CLE FACTEUR ET PRISE EN COMPTE
 C     DE LA SURCHARGE
 C
-      DO 150 I = 1, NFACI
+C ---------------------------------------------------
+C     RECUPERATION DES MOTS-CLES DDL SOUS FACE_IMPO
+C     MOTCLE(J) : K8 CONTENANT LE J-EME MOT-CLE DDL
+C     NDDLA     : NOMBRE DE MOTS CLES DU TYPE DDL
+C ---------------------------------------------------
+        CALL GETMJM('FACE_IMPO',I-1,0  ,MOTCLE,TYMOCL,N)
+        NMCL = -N
+        IF (NMCL.GT.NMOCL) THEN
+          CALL UTDEBM('F','CAFACI','NOMBRE DE MOTCLES SUPERIEUR AU MAX')
+          CALL UTIMPI('L','NMAXOCL= ',1,NMOCL)
+          CALL UTIMPI('L','NMOCL  = ',1,NMCL)
+          CALL UTFINM()
+        ENDIF
+        CALL GETMJM('FACE_IMPO',I-1,NMCL,MOTCLE,TYMOCL,N)
+        NDDLA =1
+        DO 155 J = 1, NMCL
+          IF(MOTCLE(J).NE.'MAILLE'.AND.MOTCLE(J).NE.'GROUP_MA'.AND.
+     +      MOTCLE(J).NE.'DNOR'.AND.MOTCLE(J).NE.'DTAN') THEN
+            MOTCLE(NDDLA) = MOTCLE(J)
+            NDDLA = NDDLA + 1
+          ENDIF
+155     CONTINUE
+        NDDLA = NDDLA - 1
+C
+        CALL JELIRA(NOMA//'.NOMNOE','NOMMAX',NBNOEU,K1BID)
+C
+C    ALLOCATION DE 3 OBJETS INTERMEDIAIRES PERMETTANT D'APPLIQUER
+C    LA REGLE DE SURCHARGE :
+C
+C       	- VECTEUR (K8) CONTENANT LES NOMS DES NOEUDS
+C       	- TABLEAU DES VALEURS DES DDLS DES NOEUDS BLOQUES
+C       	  DIM NBNOEU * NBCOMP
+C       	- VECTEUR (IS) CONTENANT LE DESCRIPTEUR GRANDEUR
+C       	  ASSOCIE AUX DDLS IMPOSES PAR NOEUD
+C
+        CALL WKVECT('&&CAFACI.NOMS_NOEUDS','V V K8',NBNOEU,JNONO)
+        IF (FONREE.EQ.'REEL') THEN
+         CALL WKVECT('&&CAFACI.VALDDL','V V R',NDDLA*NBNOEU,JVAL)
+        ELSE
+         CALL WKVECT('&&CAFACI.VALDDL','V V K8',NDDLA*NBNOEU,JVAL)
+        ENDIF
+C
+        CALL WKVECT('&&CAFACI.DIRECT','V V R',3*NBNOEU,JDIREC)
+C
+        MOTCLE(NDDLA+1) = 'DNOR'
+        MOTCLE(NDDLA+2) = 'DTAN'
         ICMP = 0
         INOR = 0
         IF (FONREE.EQ.'REEL') THEN
@@ -469,7 +488,7 @@ C
      +             ZI(JPRNM-1+(IN-1)*NBEC+1),
      +             NDDLA,FONREE,NOMNOE,IN,DDLIMP,
      +             VALIMR,VALIMF,VALIMC,MOTCLE,NBEC,
-     +             ZR(JDIREC+3*(IN-1)),ZI(JDIMEN+IN-1),LISREL)
+     +             ZR(JDIREC+3*(IN-1)),0,LISREL)
   200       CONTINUE
 C
          ENDIF
@@ -494,15 +513,23 @@ C
      +             ZI(JPRNM-1+(IN-1)*NBEC+1),
      +             NDDLA,FONREE,NOMNOE,IN,DDLIMP,
      +             VALIMR,VALIMF,VALIMC,MOTCLE,NBEC,
-     +             ZR(JDIREC+3*(IN-1)),ZI(JDIMEN+IN-1),LISREL)
+     +             ZR(JDIREC+3*(IN-1)),0,LISREL)
   210       CONTINUE
 C
             NBMA=NBML
            ENDIF
          ENDIF
-  150   CONTINUE
+         CALL JEEXIN ('&&CAFACI.NOMS_NOEUDS',IRET)
+         IF (IRET.NE.0) CALL JEDETR ('&&CAFACI.NOMS_NOEUDS')
+         CALL JEEXIN ('&&CAFACI.VALDDL',IRET)
+         IF (IRET.NE.0) CALL JEDETR ('&&CAFACI.VALDDL')
+         CALL JEEXIN ('&&NBNLMA.LN',IRET)
+         CALL JEEXIN ('&&CAFACI.DIRECT',IRET)
+         IF (IRET.NE.0) CALL JEDETR ('&&CAFACI.DIRECT')
 C
- 9998 CONTINUE
+ 9998    CONTINUE
+C
+  70  CONTINUE
 C        -------------------------------------
 C        AFFECTATION DE LA LISTE DE RELATIONS A LA CHARGE
 C        (I.E. AFFECTATION DES OBJETS .CMULT, .CIMPO,
@@ -515,10 +542,6 @@ C
       CALL JEDETR ('&&CAFACI.LISTI')
       CALL JEDETR (TRAV)
  9999 CONTINUE
-      CALL JEEXIN ('&&CAFACI.NOMS_NOEUDS',IRET)
-      IF (IRET.NE.0) CALL JEDETR ('&&CAFACI.NOMS_NOEUDS')
-      CALL JEEXIN ('&&CAFACI.VALDDL',IRET)
-      IF (IRET.NE.0) CALL JEDETR ('&&CAFACI.VALDDL')
       CALL JEEXIN ('&&NBNLMA.LN',IRET)
       IF (IRET.NE.0) CALL JEDETR ('&&NBNLMA.LN')
       CALL JEEXIN ('&&NBNLMA.NBN',IRET)
@@ -527,10 +550,6 @@ C
       IF (IRET.NE.0) CALL JEDETR('&&CANORT.NORMALE')
       CALL JEEXIN ('&&CANORT.TANGENT',IRET)
       IF (IRET.NE.0) CALL JEDETR('&&CANORT.TANGENT')
-      CALL JEEXIN ('&&CAFACI.DIRECT',IRET)
-      IF (IRET.NE.0) CALL JEDETR ('&&CAFACI.DIRECT')
-      CALL JEEXIN ('&&CAFACI.DIMENSION',IRET)
-      IF (IRET.NE.0) CALL JEDETR ('&&CAFACI.DIMENSION')
 C
       CALL JEDEMA()
       END

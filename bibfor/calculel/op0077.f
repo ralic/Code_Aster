@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-
+C      TOLE CRP_20
+C      TOLE CRP_21
 C      OPERATEUR :     CALC_G_LOCAL_T
 
 C ---------------------------------------------------------------------
@@ -43,20 +44,21 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 
       INTEGER NCHA,IER,ICHA,IBID,IERD,IN,IADRMA
       INTEGER IORD,IORD1,IORD2,NRES,LONVEC,NP,NC,NDEG,IVEC,IRET
-      INTEGER LNOFF,NDEP,JINST,ICOMP,ITHETA,IPROPA,IFOND
+      INTEGER LNOFF,NDEP,JINST,ICOMP,ITHETA,IPROPA,IFOND,LONG
       INTEGER I,J,NBINST,NBRE,NBPRUP,IADNUM,NBORN,NBCO
       INTEGER NBVAL,IBOR,N1,N3,IG,LNOEU,LABSCU
 
       REAL*8 PREC,ALPHA,TIME,RBID
 
       CHARACTER*1 K1BID
-      CHARACTER*4 TYPRUP(6)
+      CHARACTER*4 TYPRUP(8)
       CHARACTER*8 NOMA,MODELE,SYMECH,K8B,K8BID
-      CHARACTER*8 RESU,FOND,K8BI1,CRIT,THETAI,RESULT
-      CHARACTER*16 TYPE,OPER,OPTION,NOPRUP(6),OPTIO2
+      CHARACTER*8 RESU,FISS,FOND,K8BI1,CRIT,THETAI,RESULT
+      CHARACTER*16 TYPE,OPER,OPTION,NOPRUP(8),OPTIO2
+      CHARACTER*19 GRLT,GRLN
       CHARACTER*24 CHFOND,NOMNO,COORN,OBJMA,CHDEPL,VECORD,THETLG,VCHAR
       CHARACTER*24 TRAV1,TRAV2,TRAV3,STOK4,LISSTH,LISSG,SDTHET
-      CHARACTER*24 MATERI,COMPOR,MATE,DEPLA1,DEPLA2
+      CHARACTER*24 MATERI,COMPOR,MATE,DEPLA1,DEPLA2,BASLO,BASLOC,COURB
 
       LOGICAL THLAGR,GLAGR,EXTIM,MILIEU,CONNEX
 
@@ -66,6 +68,9 @@ C ----------------------------------------------------------------------
       CALL INFMAJ
       THLAGR = .FALSE.
       GLAGR = .FALSE.
+      COURB='&&OP0077.COURB'
+      BASLO='&&OP0077.BASLO'
+      BASLOC='&&OP0077.BASLOC'
 
       CALL GETRES(RESULT,TYPE,OPER)
 
@@ -82,10 +87,24 @@ C        CALL UTMESS('F',OPER,'ELASTICITE OBLIGATOIRE AVEC '//OPTION)
 C      END IF
 
 C- FOND DE FISSURE : POUR AFFECTATION DE R_INF, R_SUP ET MODULE DE THETA
+C- POUR LE CAS SANS X-FEM
 
-      CALL GETVID ( ' ', 'FOND_FISS', 1,1,1, FOND, IFOND )
-      CHFOND = FOND//'.FOND      .NOEU'
-      CALL JELIRA(CHFOND,'LONMAX',LNOFF,K1BID)
+      IF ( OPTION .NE. 'CALC_K_G') THEN
+        CALL GETVID ( ' ','FOND_FISS', 1,1,1, FOND, IFOND )
+        CHFOND = FOND//'.FOND      .NOEU'
+        CALL JELIRA(CHFOND,'LONMAX',LNOFF,K1BID)
+      ENDIF
+
+C- POUR LE CAS AVEC X-FEM
+
+      IF ( OPTION .EQ. 'CALC_K_G') THEN
+        CALL GETVID ( ' ','FISSURE', 1,1,1, FISS, IFOND )
+        CHFOND = FISS//'.FONDFISS'
+        CALL JELIRA(CHFOND,'LONMAX',LONG,K1BID)
+        LNOFF=LONG/4
+        GRLT=FISS//'.GRLTNO'
+        GRLN=FISS//'.GRLNNO'
+      ENDIF
 
 C- METHODE DE DECOMPOSITION DE THETA ET G : LAGRANGE OU LEGENDRE ------
 
@@ -239,6 +258,8 @@ C --- SYMETRIE DU CHARGEMENT ET IMPRESSION --------------------------
 C - FOND DE FISSURE : AFFECTATION DE R_INF, R_SUP ET MODULE DE THETA
 C   RECUPERATION INFO SUR CONNEXITE DU FOND DE FISSURE
 
+      IF ( OPTION .NE. 'CALC_K_G') THEN
+
       CALL JEVEUO(CHFOND,'L',IADNUM)
       IF (ZK8(IADNUM+1-1).EQ.ZK8(IADNUM+LNOFF-1)) THEN
         CONNEX = .TRUE.
@@ -264,12 +285,35 @@ C   RECUPERATION INFO SUR CONNEXITE DU FOND DE FISSURE
         CALL VTGPLD(NOMA//'.COORDO    ',ALPHA,THETLG,'V','&&GMETH1.G2')
         COORN = '&&GMETH1.G2        '//'.VALE'
       END IF
-      CALL GVERI2(NOMA,CHFOND,LNOFF,NOMNO,COORN,TRAV1,TRAV2,TRAV3,
+      CALL GVERI2(CHFOND,LNOFF,NOMNO,COORN,TRAV1,TRAV2,TRAV3,
      +            THLAGR,NDEG)
       CALL GCOUR2(THETAI,NOMA,MODELE,NOMNO,COORN,LNOFF,TRAV1,TRAV2,
-     +            TRAV3,CHFOND,FOND,.FALSE.,CONNEX,STOK4,THLAGR,NDEG,
+     +            TRAV3,CHFOND,FOND,CONNEX,STOK4,THLAGR,NDEG,
      +            MILIEU)
       CALL GIMPT2(THETAI,NBRE,TRAV1,TRAV2,TRAV3,CHFOND,STOK4,LNOFF,0)
+
+      ENDIF
+
+      IF ( OPTION .EQ. 'CALC_K_G') THEN
+
+C       ON A TOUJOURS À FAIRE À UN FOND OUVERT AVEC XFEM
+        CONNEX = .FALSE.
+        THETAI = '&&THETA '
+        OBJMA = MODELE//'.MODELE    .NOMA'
+        CALL JEVEUO(OBJMA,'L',IADRMA)
+        NOMA = ZK8(IADRMA)
+        NOMNO = NOMA//'.NOMNOE'
+        COORN = NOMA//'.COORDO    .VALE'
+        CALL GVERI3(CHFOND,LNOFF,THLAGR,NDEG,TRAV1,TRAV2,TRAV3)
+
+        CALL GCOUR3(THETAI,NOMA,MODELE,NOMNO,COORN,LNOFF,TRAV1,TRAV2,
+     +              TRAV3,CHFOND,GRLT,.FALSE.,CONNEX,THLAGR,
+     +              NDEG,MILIEU,BASLO)
+
+        CALL XGRAEL(GRLT,GRLN,BASLO,NOMA,MODELE,BASLOC)
+        CALL XCOURB(GRLT,GRLN,NOMA,MODELE,COURB)
+
+      ENDIF
 
       CALL JEEXIN(TRAV1,IRET)
       IF (IRET.NE.0) CALL JEDETR(TRAV1)
@@ -299,11 +343,67 @@ C - CREATION DE TABLE -----------------------------------------------
          TYPRUP(6) = 'R'
       ENDIF
 
+      IF ( OPTION.EQ.'CALC_K_G' ) THEN
+          NBPRUP = 8
+          NOPRUP(1) = 'NUME_ORDRE'
+          TYPRUP(1) = 'I'
+          NOPRUP(2) = 'INST'
+          TYPRUP(2) = 'R'
+          NOPRUP(3) = 'NUM_PT'
+          TYPRUP(3) = 'I'
+          NOPRUP(4) = 'ABS_CURV'
+          TYPRUP(4) = 'R'
+          NOPRUP(5) = 'K1_LOCAL'
+          TYPRUP(5) = 'R'
+          NOPRUP(6) = 'K2_LOCAL'
+          TYPRUP(6) = 'R'
+          NOPRUP(7) = 'K3_LOCAL'
+          TYPRUP(7) = 'R'
+          NOPRUP(8) = 'G_LOCAL'
+          TYPRUP(8) = 'R'
+C          NOPRUP(8) = 'G_IRWIN'
+C          TYPRUP(8) = 'R'
+      ENDIF
+
       CALL TBCRSD(RESULT,'G')
       CALL TBAJPA(RESULT,NBPRUP,NOPRUP,TYPRUP)
 
       IF ( OPTION .EQ. 'G_BILINEAIRE' .OR.
+     +     OPTION .EQ. 'CALC_K_G'     .OR.
      +     OPTION .EQ. 'CALC_G_MAX' ) THEN
+
+        IF ( OPTION .EQ. 'CALC_K_G' ) THEN
+
+C=======================================================================
+C  CALCUL DES FACTEURS D'INTENSITES DE CONTRAINTES ET DU TAUX DE
+C  RESTITUTION LOCAL
+C=======================================================================
+
+          DO 40 I = 1,LONVEC
+            IF (NRES.NE.0) THEN
+              IORD = ZI(IVEC-1+I)
+              CALL RSEXCH(RESU,'DEPL',IORD,CHDEPL,IRET)
+              IF (IRET.NE.0) THEN
+                CALL UTDEBM('F',OPER,'ACCES IMPOSSIBLE ')
+                CALL UTIMPK('L',' CHAMP : ',1,'DEPL')
+                CALL UTIMPI('S',', NUME_ORDRE : ',1,IORD)
+                CALL UTFINM()
+              END IF
+              CALL RSADPA(RESU,'L',1,'INST',IORD,0,JINST,K8B)
+              TIME = ZR(JINST)
+              EXTIM = .TRUE.
+            END IF
+
+            CALL CAKG3D(OPTION,RESULT,MODELE,CHDEPL,THETAI,MATE,COMPOR,
+     +              NCHA,ZK8(ICHA),SYMECH,CHFOND,LNOFF,BASLOC,COURB,
+     +              IORD,NDEG,THLAGR,GLAGR,MILIEU,THETLG,ALPHA,EXTIM,
+     +              TIME,NBPRUP,NOPRUP)
+   40     CONTINUE
+
+        END IF
+
+        IF ( OPTION .EQ. 'G_BILINEAIRE' .OR.
+     +       OPTION .EQ. 'CALC_G_MAX' ) THEN
 
 C=======================================================================
 C  CALCUL DE LA FORME BILINEAIRE "LOCALE" DU TAUX DE RESTITUTION
@@ -312,6 +412,7 @@ C=======================================================================
 
          DO 110 I=1, LONVEC
             DO 120 J=1, I
+               CALL JEMARQ()
                IF ( NRES .NE. 0 ) THEN
                   IORD1 = ZI(IVEC-1+I)
                   CALL RSEXCH(RESU,'DEPL',IORD1,DEPLA1,IRET)
@@ -331,8 +432,9 @@ C=======================================================================
                OPTIO2 = 'CALC_G_BILI'
                CALL MBILGL(OPTIO2,RESULT,MODELE,DEPLA1,DEPLA2,THETAI,
      +                     MATE,NCHA,ZK8(ICHA),SYMECH,CHFOND,LNOFF,
-     +                     IORD1,IORD2,NDEG,THLAGR,GLAGR,MILIEU,EXTIM,
+     +                     NDEG,THLAGR,GLAGR,MILIEU,EXTIM,
      +                     TIME,I,J,NBPRUP,NOPRUP)
+               CALL JEDEMA()
   120       CONTINUE
   110    CONTINUE
 C
@@ -372,7 +474,7 @@ C
      +                    ' AVEC CETTE OPTION !')
             ENDIF
           ENDIF
-
+        ENDIF
 C=======================================================================
 C  FIN DU CALCUL DE LA FORME BILINEAIRE "LOCALE" DE G
 C  ET DE SA MAXIMISATION GMAX
@@ -385,6 +487,7 @@ C  CALCUL DU TAUX DE RESTITUTION LOCAL D'ENERGIE
 C=======================================================================
 
          DO 30 I = 1,LONVEC
+           CALL JEMARQ()
            IF (NRES.NE.0) THEN
              IORD = ZI(IVEC-1+I)
              CALL RSEXCH(RESU,'DEPL',IORD,CHDEPL,IRET)
@@ -401,7 +504,8 @@ C=======================================================================
            CALL MECAGL(OPTION,RESULT,MODELE,CHDEPL,THETAI,MATE,COMPOR,
      +              NCHA,ZK8(ICHA),SYMECH,CHFOND,LNOFF,IORD,NDEG,THLAGR,
      +              GLAGR,MILIEU,THETLG,ALPHA,EXTIM,TIME,NBPRUP,NOPRUP)
-   30 CONTINUE
+           CALL JEDEMA()
+   30    CONTINUE
 
       ENDIF
 
@@ -409,6 +513,11 @@ C=======================================================================
 
       CALL JEDETR('&&OP0077.CHARGES')
       CALL JEDETR('&&OP0077.VECTORDR')
+
+      CALL JEDETR(BASLO)
+      CALL JEDETR(BASLOC)
+      CALL JEDETR(COURB)
+
       CALL JEDETC(' ',THETAI,1)
       CALL JEDETC('V','.CODI',20)
       CALL JEDETC('V','.MATE_CODE',9)
@@ -423,7 +532,6 @@ C=======================================================================
       CALL JEDETC('V','8',1)
       CALL JEDETC('V','9',1)
       CALL JEDETC('V','&&',1)
-
 
       CALL JEDEMA()
       END

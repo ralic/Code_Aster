@@ -1,11 +1,10 @@
-      SUBROUTINE CETRAN ( LIMA1, LIMA2, NBMA, MA1, MA2, CHS1, CHS2 )
+      SUBROUTINE CETRAN ( LIMA1, LIMA2, NBMA, CHS1, CHS2 )
       IMPLICIT   NONE
       INTEGER             LIMA1(*), LIMA2(*), NBMA
-      CHARACTER*8         MA1, MA2
       CHARACTER*(*)       CHS1, CHS2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -1,4 +1,5 @@
-# MODIF  DATE 16/05/2002   AUTEUR DURAND C.DURAND 
+
+# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,133 +22,191 @@
 # MODELISATION COQUE - TUYAU - RELATIONS LINEAIRES COQUES-TUYAU
 #======================================================================
 
+DEBUT(CODE=_F(NOM='SSLX101B',
+              NIV_PUB_WEB='INTERNET',),);
 
-DEBUT( CODE=_F(  NOM = 'SSLX101B',NIV_PUB_WEB='INTERNET') )
+COS30=DEFI_VALEUR(R8=EVAL("""0.8660254037844 """),);
 
-COS30=DEFI_VALEUR(    R8=EVAL("""0.8660254037844 """))
-
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),    )
-
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON',),);
 #-----------   SECTION TUBE FIN CIRCULAIRE  --------------------
 #  SUR UNE MOITIE DE LA LONGUEUR POUTRE MAILLEE EN COQUES
 #  SUR L'AUTRE MOITIE DE LA LONGUEUR POUTRE MAILLEE EN POUTRES
 #---------------------------------------------------------------
 
-MA=DEFI_GROUP(reuse=MA,  MAILLAGE=MA,
-                 CREA_GROUP_NO=_F( GROUP_MA = 'CERCL1'))
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(GROUP_MA='CERCL1',),);
 
-MO1=AFFE_MODELE(      
-           MAILLAGE=MA,AFFE=(
-          _F( GROUP_MA = ('CYL','CERCL1','CERCL2',),
-                    PHENOMENE = 'MECANIQUE',MODELISATION = 'DKT'),
-          _F( GROUP_MA = 'POU',
-                    PHENOMENE = 'MECANIQUE',MODELISATION = 'TUYAU_3M'),
-          _F( MAILLE = 'P_ORIG',
-                    PHENOMENE = 'MECANIQUE',MODELISATION = 'DIS_TR'))
-                        )
+MO1=AFFE_MODELE(MAILLAGE=MA,
+                AFFE=(_F(GROUP_MA=('CYL','CERCL1','CERCL2',),
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='DKT',),
+                      _F(GROUP_MA='POU',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='TUYAU_3M',),
+                      _F(MAILLE='P_ORIG',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='DIS_TR',),),);
 
-MATR=DEFI_MATERIAU(   ELAS=_F( E = 2.E11,  NU = 0.3) )
+MATR=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
+                           NU=0.3,),);
 
-CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,
-                           AFFE=_F( TOUT = 'OUI', MATER = MATR)            )
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATR,),);
 
-CAREL1=AFFE_CARA_ELEM(   MODELE=MO1, 
-  
-                          # INFO:2
+CAREL1=AFFE_CARA_ELEM(MODELE=MO1,
+                      POUTRE=_F(GROUP_MA='POU',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(2.0,0.1,),),
+                      COQUE=_F(GROUP_MA=('CYL','CERCL1','CERCL2',),
+                               EPAIS=0.1,),
+                      DISCRET=_F(MAILLE='P_ORIG',
+                                 CARA='M_TR_D_N',
+                                 VALE=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,),),
+                      ORIENTATION=_F(GROUP_NO='NOPOU2',
+                                     CARA='GENE_TUYAU',
+                                     VALE=(0.0,0.0,-1.0,),
+                                     PRECISION=1e-06,
+                                     CRITERE='RELATIF',),);
 
-           POUTRE=_F(  GROUP_MA = 'POU',   SECTION = 'CERCLE',
-                    CARA = (   'R',            'EP',      ),
-                    VALE = (  2.,           0.1,      )),
+CH1=AFFE_CHAR_MECA(MODELE=MO1,
+                   DDL_IMPO=_F(GROUP_NO='P_ORIG',
+                               DX=0.0,
+                               DY=0.0,
+                               DZ=0.0,
+                               DRX=0.0,
+                               DRY=0.0,
+                               DRZ=0.0,),
+                   LIAISON_ELEM=_F(OPTION='COQ_POU',
+                                   GROUP_MA_1='CERCL1',
+                                   GROUP_NO_2='P_ORIG',
+                                   CARA_ELEM=CAREL1,
+                                   AXE_POUTRE=(COS30,0.5,0.0,),),);
 
-            COQUE=_F(  GROUP_MA = ('CYL','CERCL1','CERCL2',),
-                     EPAIS = 0.1),
+CH2=AFFE_CHAR_MECA(MODELE=MO1,
+                   LIAISON_ELEM=_F(OPTION='COQ_TUYAU',
+                                   GROUP_MA_1='CERCL2',
+                                   GROUP_NO_2='NOPOU1',
+                                   CARA_ELEM=CAREL1,
+                                   AXE_POUTRE=(COS30,0.5,0.0,),),);
 
-            DISCRET=_F(  MAILLE = 'P_ORIG',
-                      CARA = 'M_TR_D_N',
-                      VALE = ( 0., 0., 0., 0., 0.,
-                               0., 0., 0., 0., 0., )),
+CHTX=AFFE_CHAR_MECA(MODELE=MO1,
+                    FORCE_NODALE=_F(GROUP_NO='NOPOU2',
+                                    FX=COS30,
+                                    FY=0.5,),);
 
-            ORIENTATION=_F( 
-                      GROUP_NO = 'NOPOU2',
-                      CARA = 'GENE_TUYAU',  
-                      VALE = ( 0.,  0.,  -1., ),
-                      PRECISION = 1.E-6,  
-                      CRITERE = 'RELATIF')
+CHRX=AFFE_CHAR_MECA(MODELE=MO1,
+                    FORCE_NODALE=_F(GROUP_NO='NOPOU2',
+                                    MX=COS30,
+                                    MY=0.5,),);
 
-                      )
+CHRY=AFFE_CHAR_MECA(MODELE=MO1,
+                    FORCE_NODALE=_F(GROUP_NO='NOPOU2',
+                                    MX=-0.5,
+                                    MY=COS30,),);
 
-CH1=AFFE_CHAR_MECA(  MODELE=MO1,
-                        DDL_IMPO=_F( GROUP_NO = 'P_ORIG',
-                            DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),
-                          LIAISON_ELEM=_F(  OPTION = 'COQ_POU',
-                                       CARA_ELEM = CAREL1,
-                                       AXE_POUTRE = (COS30, 0.5, 0.,),
-                                       GROUP_MA_1 = 'CERCL1',
-                                       GROUP_NO_2 = 'P_ORIG')
-                      )
+CHRZ=AFFE_CHAR_MECA(MODELE=MO1,
+                    FORCE_NODALE=_F(GROUP_NO='NOPOU2',
+                                    MZ=1.0,),);
 
-CH2=AFFE_CHAR_MECA(  MODELE=MO1,  
-                         LIAISON_ELEM=_F( OPTION = 'COQ_TUYAU',
-                                       CARA_ELEM = CAREL1,
-                                       AXE_POUTRE = (COS30, 0.5, 0.,),
-                                       GROUP_MA_1 = 'CERCL2',
-                                       GROUP_NO_2 = 'NOPOU1')
-                      )
+MEST1=MACRO_ELAS_MULT(MODELE=MO1,
+                      CHAM_MATER=CHMAT,
+                      CARA_ELEM=CAREL1,
+                      CHAR_MECA_GLOBAL=(CH1,CH2,),
+                      CAS_CHARGE=(_F(NOM_CAS='TX',
+                                     CHAR_MECA=CHTX,),
+                                  _F(NOM_CAS='RX',
+                                     CHAR_MECA=CHRX,),
+                                  _F(NOM_CAS='RY',
+                                     CHAR_MECA=CHRY,),
+                                  _F(NOM_CAS='RZ',
+                                     CHAR_MECA=CHRZ,),),);
 
-CHTX=AFFE_CHAR_MECA(    MODELE=MO1,
-         FORCE_NODALE=_F(  GROUP_NO = 'NOPOU2',  FX = COS30, FY = 0.5)
-                      )
+TEST_RESU(RESU=(_F(RESULTAT=MEST1,
+                   NOM_CAS='TX',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='NOPOU2',
+                   VALE=2.8273e-10,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=0.03,),
+                _F(RESULTAT=MEST1,
+                   NOM_CAS='TX',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='NOPOU2',
+                   VALE=1.6324e-10,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=0.03,),
+                _F(RESULTAT=MEST1,
+                   NOM_CAS='RX',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRX',
+                   GROUP_NO='NOPOU2',
+                   VALE=1.93195e-10,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=0.04,),
+                _F(RESULTAT=MEST1,
+                   NOM_CAS='RX',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRY',
+                   GROUP_NO='NOPOU2',
+                   VALE=1.11541e-10,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=0.04,),
+                _F(RESULTAT=MEST1,
+                   NOM_CAS='RY',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='NOPOU2',
+                   VALE=-6.864e-09,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=0.06,),
+                _F(RESULTAT=MEST1,
+                   NOM_CAS='RY',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRX',
+                   GROUP_NO='NOPOU2',
+                   VALE=-8.58e-11,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=0.04,),
+                _F(RESULTAT=MEST1,
+                   NOM_CAS='RY',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRY',
+                   GROUP_NO='NOPOU2',
+                   VALE=1.48611e-10,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=0.04,),
+                _F(RESULTAT=MEST1,
+                   NOM_CAS='RZ',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='NOPOU2',
+                   VALE=-3.432e-09,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=0.06,),
+                _F(RESULTAT=MEST1,
+                   NOM_CAS='RZ',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='NOPOU2',
+                   VALE=5.944e-09,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=0.06,),
+                _F(RESULTAT=MEST1,
+                   NOM_CAS='RZ',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRZ',
+                   GROUP_NO='NOPOU2',
+                   VALE=1.716e-10,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=0.04,),),);
 
-CHRX=AFFE_CHAR_MECA(    MODELE=MO1,
-         FORCE_NODALE=_F(  GROUP_NO = 'NOPOU2',  MX = COS30, MY = 0.5)
-                      )
-
-CHRY=AFFE_CHAR_MECA(    MODELE=MO1,
-         FORCE_NODALE=_F(  GROUP_NO = 'NOPOU2',  MX = -0.5, MY = COS30)
-                      )
-
-CHRZ=AFFE_CHAR_MECA(    MODELE=MO1,
-         FORCE_NODALE=_F(  GROUP_NO = 'NOPOU2',  MZ = 1.)
-                      )
-
-MEST1=MACRO_ELAS_MULT(    MODELE=MO1,
-                              CHAM_MATER=CHMAT,
-                               CARA_ELEM=CAREL1,
-                            CHAR_MECA_GLOBAL=(CH1, CH2,),CAS_CHARGE=(
-                _F(  NOM_CAS = 'TX', CHAR_MECA = CHTX),
-                _F(  NOM_CAS = 'RX', CHAR_MECA = CHRX),
-                           _F(  NOM_CAS = 'RY', CHAR_MECA = CHRY),
-                           _F(  NOM_CAS = 'RZ', CHAR_MECA = CHRZ))
-                         )
-
-TEST_RESU(RESU=(
-_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'TX', GROUP_NO = 'NOPOU2',
-      NOM_CMP = 'DX', VALE = 2.8273E-10,    PRECISION = 0.03),
-_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'TX', GROUP_NO = 'NOPOU2',
-      NOM_CMP = 'DY', VALE = 1.6324E-10,    PRECISION = 0.03),
-
-_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'RX', GROUP_NO = 'NOPOU2',
-      NOM_CMP = 'DRX', VALE = 1.93195E-10,  PRECISION = 0.04),
-_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'RX', GROUP_NO = 'NOPOU2',
-      NOM_CMP = 'DRY', VALE = 1.11541E-10,  PRECISION = 0.04),
-
-_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'RY', GROUP_NO = 'NOPOU2',
-      NOM_CMP = 'DZ', VALE = -6.864E-9,     PRECISION = 0.06),
-_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'RY', GROUP_NO = 'NOPOU2',
-      NOM_CMP = 'DRX', VALE = -8.58E-11,    PRECISION = 0.04),
-_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'RY', GROUP_NO = 'NOPOU2',
-      NOM_CMP = 'DRY', VALE = 1.48611E-10,  PRECISION = 0.04),
-
-_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'RZ', GROUP_NO = 'NOPOU2',
-     NOM_CMP = 'DX', VALE = -3.432E-9,      PRECISION = 0.06),
-_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'RZ', GROUP_NO = 'NOPOU2',
-     NOM_CMP = 'DY', VALE = 5.944E-9,      PRECISION = 0.06),
-_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'RZ', GROUP_NO = 'NOPOU2',
-     NOM_CMP = 'DRZ', VALE = 1.716E-10,     PRECISION = 0.04))
-          )
-
-FIN()
+FIN();
 #
-##MPR_RESU( RESU:( RESULTAT: MEST1 GROUP_NO : (NOPOU1,NOPOU2 ) )) ;
 ##MPR_RESU( MODELE : MO1
+
 #     RESU:( MAILLAGE : MA RESULTAT: MEST1 FORMAT :'CASTEM'));

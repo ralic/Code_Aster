@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/10/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -212,7 +212,7 @@ C
 C-------LANCEMENT DU CALCUL
 C
         CALL PACOUC (TYPFLU,ZR(LPROFV),ZR(LRHOE),VITE,ZR(LDEFM),
-     &               ZR(KMASG),NUOR,FREQ,ZR(IAMFR),NBM,LNOE,NPV,
+     &               ZR(KMASG),FREQ,ZR(IAMFR),NBM,LNOE,NPV,
      &               ZR(IVALE),ZI(LIRES),PHIE,ZR(LABSC),IER)
 C
       ELSE

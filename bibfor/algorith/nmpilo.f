@@ -1,9 +1,9 @@
       SUBROUTINE NMPILO(PILOTE, DINST , RHO   , OFFSET, DEPPIL, 
      &                  DEPDEL, DEPOLD, MODELE, MATE  , COMPOR, 
-     &                  VALMOI, NBATTE, NBEFFE, ETA  , LICCVG)
+     &                  VALMOI, NBATTE, NBEFFE, ETA   , LICCVG)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/02/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C ======================================================================
 C RESPONSABLE PBADEL P.BADEL
 
       IMPLICIT NONE
-      INTEGER       NBATTE, LICCVG(NBATTE), NBEFFE
+      INTEGER       NBATTE, LICCVG, NBEFFE
       REAL*8        DINST, RHO, ETA(NBATTE), OFFSET
       CHARACTER*14  PILOTE
       CHARACTER*24  DEPDEL, DEPOLD, DEPPIL(2)
@@ -60,7 +60,7 @@ C      OUT ETA    : ETA_PILOTAGE
 C      OUT LICCVG : CODE DE CONVERGENCE POUR LE PILOTAGE
 C                     - 1 : BORNE ATTEINTE -> FIN DU CALCUL
 C                       0 : RAS
-C                       1 : PILOTAGE NON CONVERGE
+C                       1 : PAS DE SOLUTION
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
 C
@@ -85,8 +85,8 @@ C ---------- FIN  DECLARATIONS  NORMALISEES  JEVEUX -------------------
       LOGICAL      BORMIN, BORMAX
       INTEGER      JPLTK, JPLIR, IBID, IER, NBOLD
       INTEGER      NEQ, N, JU0, JU1, I, JDEPM, J
-      INTEGER      JDEPDE, JLINE, JDEP0, JDEP1, JDDEPL, JDUREF, JCOEF
-      REAL*8       DTAU, ETAMAX, ETAMIN, UM, DU, RN, RD, BORNE(2)
+      INTEGER      JDEPDE, JLINE, JDEP0, JDEP1, JDDEPL, JCOEF
+      REAL*8       DTAU, UM, DU, RN, RD
       REAL*8       R8DOT, R8VIDE, CONMIN, CONMAX
       CHARACTER*8  K8BID
       CHARACTER*16 TYPILO
@@ -105,21 +105,21 @@ C    INCREMENT DELTA TAU
       DTAU = DINST / ZR(JPLIR)
       
 C    BORNE MAX
-      IF (ZR(JPLIR+1) .NE. R8VIDE()) THEN
-        ETAMAX = ZR(JPLIR+1) - OFFSET
-      ELSE
-        ETAMAX = R8VIDE()
-      END IF
+CCC-DUR      IF (ZR(JPLIR+1) .NE. R8VIDE()) THEN
+CCC-DUR        ETAMAX = ZR(JPLIR+1) - OFFSET
+CCC-DUR      ELSE
+CCC-DUR        ETAMAX = R8VIDE()
+CCC-DUR      END IF
         
 C    BORNE MIN	
-      IF (ZR(JPLIR+2) .NE. R8VIDE()) THEN
-        ETAMIN = ZR(JPLIR+2) - OFFSET
-      ELSE
-        ETAMIN = R8VIDE()
-      END IF
+CCC-DUR      IF (ZR(JPLIR+2) .NE. R8VIDE()) THEN
+CCC-DUR        ETAMIN = ZR(JPLIR+2) - OFFSET
+CCC-DUR      ELSE
+CCC-DUR        ETAMIN = R8VIDE()
+CCC-DUR      END IF
                 
-      BORNE(1)=ETAMAX
-      BORNE(2)=ETAMIN
+CCC-DUR      BORNE(1)=ETAMAX
+CCC-DUR      BORNE(2)=ETAMIN
 
 
 C   INCREMENTS DE DEPLACEMENT RHO.DU0 ET RHO.DU1
@@ -152,7 +152,7 @@ C ======================================================================
      &      // 'DANS LE CALCUL DE ETA_PILOTAGE')
         ETA(1) = (DTAU - DU - RN) / RD
         NBEFFE = 1
-        LICCVG(1)=0
+        LICCVG = 0
 
 C ======================================================================
 C            PILOTAGE POUR ANALYSE LIMITE : TRAVAIL UNITAIRE
@@ -175,7 +175,7 @@ C ======================================================================
      &      // 'DANS LE CALCUL DE ETA_PILOTAGE')
         ETA(1) = (1 - UM - DU - RN) / RD
         NBEFFE = 1
-        LICCVG(1)=0
+        LICCVG = 0
 
 C ======================================================================
 C                       PILOTAGE PAR LONGUEUR D'ARC
@@ -183,11 +183,10 @@ C ======================================================================
 
       ELSE IF (TYPILO.EQ.'LONG_ARC') THEN
 
-        CALL JEVEUO(DEPOLD(1:19) // '.VALE','L',JDUREF)
         CALL JEVEUO(DEPDEL(1:19) // '.VALE','L',JDEPDE)
         CALL JEVEUO(PILOTE // '.PLCR.VALE','L',JCOEF)
         CALL NMPILA(NEQ, ZR(JDEPDE), ZR(JDEP0), ZR(JDEP1), ZR(JCOEF),
-     &              DTAU, ZR(JDUREF), NBEFFE, ETA, LICCVG)
+     &              DTAU, NBEFFE, ETA, LICCVG)
 
 
 
@@ -198,16 +197,17 @@ C ======================================================================
       ELSE IF (TYPILO.EQ.'PRED_ELAS'
      &    .OR. TYPILO.EQ.'DEFORMATION') THEN
 
-        CALL DISMOI('F','PROF_CHNO',DEPDEL,'CHAM_NO',IBID, PROFCH,IER)
+CCC-DUR   CALL DISMOI('F','PROF_CHNO',DEPDEL,'CHAM_NO',IBID, PROFCH,IER)
         LIGRPI = ZK24(JPLTK+1)
         CARTYP = ZK24(JPLTK+2)
         CARETA = ZK24(JPLTK+3)
 
         CALL NMPIPE(MODELE, LIGRPI, CARTYP, CARETA, MATE  , COMPOR,
-     &              VALMOI, DEPDEL, CNDEP0, CNDEP1, PROFCH, DTAU  ,
-     &              NBEFFE, ETA   , LICCVG, BORNE , TYPILO)
-
+     &              VALMOI, DEPDEL, CNDEP0, CNDEP1, DTAU  ,
+     &              NBEFFE, ETA   , LICCVG, TYPILO)
+        IF (LICCVG.EQ.1) GOTO 9999
       END IF
  
+ 9999 CONTINUE
       CALL JEDEMA()
       END

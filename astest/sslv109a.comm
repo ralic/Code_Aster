@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 02/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE CYLINDRE SOUMIS A UNE PRESSION EN MODE 1 FOURIER (TRIA6)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,34 +49,28 @@ U0=DEFI_CONSTANTE(  VALE=0. )
 CM=AFFE_MATERIAU(  MAILLAGE=M,
                            AFFE=_F(  TOUT = 'OUI',   MATER = MA,  ) )
 
-CH=AFFE_CHAR_MECA_F(    MODELE=MO,DDL_IMPO=(
-                          _F(  NOEUD = 'N1',  DX = U0,   DY = U0,   DZ = U0,  ),
-                                   _F(  NOEUD = 'N2',  DY = U0,   ),
-                                   _F(  NOEUD = 'N3',  DY = U0,   )),
-                          PRES_REP=_F(  GROUP_MA = 'BOUT',   PRES = P,  )      )
+BLOQU=AFFE_CHAR_MECA_F(       MODELE=MO,DDL_IMPO=(
+               _F(  NOEUD = 'N1',           DX = U0,   DY = U0,    DZ = U0,   ),
+                        _F(  NOEUD = 'N2',           DY = U0,   ),
+                        _F(  NOEUD = 'N3',           DY = U0,   ))   )
 
-# --------------------------------------------------------------------
+CH=AFFE_CHAR_MECA_F(       MODELE=MO,
+               PRES_REP=_F(  GROUP_MA = 'BOUT',       PRES = P,  )  )
 
-MACRO_MATR_ASSE(  MODELE=MO,     CHARGE=CH,      CHAM_MATER=CM,
-                     NUME_DDL=CO("NU"),
-                     MATR_ASSE=_F(  MATRICE = CO("KAS"),  OPTION = 'RIGI_MECA',
-                                 MODE_FOURIER = NUM_HARM)
-                  )
+FO_ELAS1=MACRO_ELAS_MULT(            MODELE=MO,
+                                   CHAM_MATER=CM,
+                             CHAR_MECA_GLOBAL=BLOQU,
+                            CAS_CHARGE=_F( 
+                                 MODE_FOURIER = 1,
+                                   
+                                 TYPE_MODE = 'SYME',
+                                 CHAR_MECA = CH,
+                                 SOUS_TITRE = 'MODE FOURIER 1 SYME')
+                          )
 
-# --------------------------------------------------------------------
-
-VE=CALC_VECT_ELEM(  CHARGE=CH,   OPTION='CHAR_MECA',
-                         CHAM_MATER=CM                  )
-
-VAS=ASSE_VECTEUR(  VECT_ELEM=VE,   NUME_DDL=NU  )
-
-KAS=FACT_LDLT(reuse=KAS,   MATR_ASSE=KAS  )
-
-DEPLA=RESO_LDLT(  MATR_FACT=KAS,   CHAM_NO=VAS  )
-
-SIGMA=CALC_CHAM_ELEM(  MODELE=MO,   OPTION='SIGM_ELNO_DEPL',
-                          CHAM_MATER=CM,   DEPL=DEPLA,
-                          MODE_FOURIER=NUM_HARM               )
+DEPLA=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                    RESULTAT=FO_ELAS1, NUME_MODE=1,
+                    NOM_CHAM='DEPL' ),
 
 T_ENER=POST_ELEM(  MODELE       = MO,
                    CHAM_MATER   = CM,
@@ -91,81 +85,11 @@ TEST_TABLE(       TABLE=T_ENER,
                   NOM_PARA='TOTALE',
                       VALE=2.083333333E-02      )
 
-TEST_RESU(CHAM_NO=( 
-          _F(  CHAM_GD = DEPLA, 
-            NOEUD = 'N3',    NOM_CMP = 'DX',    VALE = 2.083333333E-3,    ),
-          _F(  CHAM_GD = DEPLA,     CRITERE = 'ABSOLU',
-            NOEUD = 'N3',    NOM_CMP = 'DY',    VALE = 0.,                ),
-          _F(  CHAM_GD = DEPLA,  
-            NOEUD = 'N3',    NOM_CMP = 'DZ',    VALE = -2.083333333E-3,    ),
-          _F(  CHAM_GD = DEPLA,  
-            NOEUD = 'N7',    NOM_CMP = 'DX',    VALE = 0.25,              ),
-          _F(  CHAM_GD = DEPLA,     CRITERE = 'ABSOLU',
-            NOEUD = 'N7',    NOM_CMP = 'DY',    VALE = 0.,                ),
-          _F(  CHAM_GD = DEPLA,  
-            NOEUD = 'N7',    NOM_CMP = 'DZ',    VALE = 0.25,              ),
-          _F(  CHAM_GD = DEPLA,  
-            NOEUD = 'N8',    NOM_CMP = 'DX',    VALE = 0.250520833333,    ),
-          _F(  CHAM_GD = DEPLA,  
-            NOEUD = 'N8',    NOM_CMP = 'DY',    VALE = -0.041666666666,   ),
-          _F(  CHAM_GD = DEPLA,  
-            NOEUD = 'N8',    NOM_CMP = 'DZ',    VALE = 0.249479166666,    ),
-          _F(  CHAM_GD = DEPLA,  
-            NOEUD = 'N9',    NOM_CMP = 'DX',    VALE = 0.252083333333,    ),
-          _F(  CHAM_GD = DEPLA,  
-            NOEUD = 'N9',    NOM_CMP = 'DY',    VALE = -0.083333333333,   ),
-          _F(  CHAM_GD = DEPLA,  
-            NOEUD = 'N9',    NOM_CMP = 'DZ',    VALE = 0.247916666666,    ),
-          _F(  CHAM_GD = DEPLA,  
-            NOEUD = 'N13',   NOM_CMP = 'DX',    VALE = 1.,                ),
-          _F(  CHAM_GD = DEPLA,     CRITERE = 'ABSOLU',
-            NOEUD = 'N13',   NOM_CMP = 'DY',    VALE = 0.,                ),
-          _F(  CHAM_GD = DEPLA,  
-            NOEUD = 'N13',   NOM_CMP = 'DZ',    VALE = 1.,                ),
-          _F(  CHAM_GD = DEPLA,  
-            NOEUD = 'N15',   NOM_CMP = 'DX',    VALE = 1.0020833333333,   ),
-          _F(  CHAM_GD = DEPLA,  
-            NOEUD = 'N15',   NOM_CMP = 'DY',    VALE = -0.1666666666666,  ),
-          _F(  CHAM_GD = DEPLA,  
-            NOEUD = 'N15',   NOM_CMP = 'DZ',    VALE = 0.9977916666666,   )) )
 
-TEST_RESU(CHAM_ELEM=( 
-          _F(  CHAM_GD = SIGMA,  
-            MAILLE = 'M1',   NOEUD = 'N3',    NOM_CMP = 'SIYY',   VALE = -1.,    ),
-          _F(  CHAM_GD = SIGMA,     CRITERE = 'ABSOLU',
-            MAILLE = 'M2',   NOEUD = 'N7',    NOM_CMP = 'SIYY',   VALE = 0.,     ),
-          _F(  CHAM_GD = SIGMA,     CRITERE = 'ABSOLU',
-            MAILLE = 'M3',   NOEUD = 'N7',    NOM_CMP = 'SIYY',   VALE = 0.,     ),
-          _F(  CHAM_GD = SIGMA,     CRITERE = 'ABSOLU',
-            MAILLE = 'M4',   NOEUD = 'N7',    NOM_CMP = 'SIYY',   VALE = 0.,     ),
-          _F(  CHAM_GD = SIGMA,  
-            MAILLE = 'M2',   NOEUD = 'N8',    NOM_CMP = 'SIYY',   VALE = -0.5,   ),
-          _F(  CHAM_GD = SIGMA,  
-            MAILLE = 'M3',   NOEUD = 'N8',    NOM_CMP = 'SIYY',   VALE = -0.5,   ),
-          _F(  CHAM_GD = SIGMA,  
-            MAILLE = 'M1',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = -1.,    ),
-          _F(  CHAM_GD = SIGMA,  
-            MAILLE = 'M2',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = -1.,    ),
-          _F(  CHAM_GD = SIGMA,  
-            MAILLE = 'M3',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = -1.,    ),
-          _F(  CHAM_GD = SIGMA,     CRITERE = 'ABSOLU',   PRECISION = 2.E-3, 
-            MAILLE = 'M4',   NOEUD = 'N13',   NOM_CMP = 'SIYY',   VALE = 0.,     ),
-          _F(  CHAM_GD = SIGMA,  
-            MAILLE = 'M3',   NOEUD = 'N15',   NOM_CMP = 'SIYY',   VALE = -1.,    ),
-          _F(  CHAM_GD = SIGMA,     PRECISION = 2.E-3, 
-            MAILLE = 'M4',   NOEUD = 'N15',   NOM_CMP = 'SIYY',   VALE = -1.,    ))
-          )
 
 # ----------------------------------------------------------------------
 #                     OPERATEUR COMB_FOURIER
 # ----------------------------------------------------------------------
-
-FO_ELAS1=CREA_RESU(     OPERATION='AFFE', TYPE_RESU='FOURIER_ELAS',
-                        NOM_CHAM='DEPL',
-                        AFFE=_F(  NUME_MODE = NUM_HARM,   
-                                  TYPE_MODE = 'SYME',   
-                                  CHAM_GD = DEPLA,        )
-                        )
 
 FO_ELAS1=CALC_ELEM(reuse=FO_ELAS1,   RESULTAT=FO_ELAS1,
                          MODELE=MO,
@@ -184,6 +108,10 @@ FO_ELAS1=CALC_NO(reuse=FO_ELAS1,   RESULTAT=FO_ELAS1,
                        OPTION='REAC_NODA',
                        CHAM_MATER=CM                         )
 
+SIGMA=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+                    RESULTAT=FO_ELAS1, NUME_MODE=1,
+                    NOM_CHAM='SIGM_ELNO_DEPL' ),
+                    
 TEST_RESU(RESU=( 
             _F(  RESULTAT = FO_ELAS1,       NUME_MODE = NUM_HARM, 
               NOM_CHAM = 'REAC_NODA', 
@@ -195,6 +123,77 @@ TEST_RESU(RESU=(
               NOM_CHAM = 'REAC_NODA', 
               NOEUD = 'N3',    NOM_CMP = 'DY',    VALE = 1.48146E-01,    ))
              )
+
+TEST_RESU(RESU=( 
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='DEPL',
+            NOEUD = 'N3',    NOM_CMP = 'DX',    VALE = 2.083333333E-3,    ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='DEPL',
+          CRITERE = 'ABSOLU', NOEUD = 'N3',    NOM_CMP = 'DY',    VALE = 0.,),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='DEPL', 
+            NOEUD = 'N3',    NOM_CMP = 'DZ',    VALE = -2.083333333E-3,    ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='DEPL', 
+            NOEUD = 'N7',    NOM_CMP = 'DX',    VALE = 0.25,              ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='DEPL', 
+          CRITERE = 'ABSOLU', NOEUD = 'N7',    NOM_CMP = 'DY',    VALE = 0.,),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='DEPL',
+            NOEUD = 'N7',    NOM_CMP = 'DZ',    VALE = 0.25,              ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='DEPL',
+            NOEUD = 'N8',    NOM_CMP = 'DX',    VALE = 0.250520833333,    ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='DEPL', 
+            NOEUD = 'N8',    NOM_CMP = 'DY',    VALE = -0.041666666666,   ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='DEPL',
+            NOEUD = 'N8',    NOM_CMP = 'DZ',    VALE = 0.249479166666,    ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='DEPL',
+            NOEUD = 'N9',    NOM_CMP = 'DX',    VALE = 0.252083333333,    ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='DEPL', 
+            NOEUD = 'N9',    NOM_CMP = 'DY',    VALE = -0.083333333333,   ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='DEPL',
+            NOEUD = 'N9',    NOM_CMP = 'DZ',    VALE = 0.247916666666,    ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='DEPL',
+            NOEUD = 'N13',   NOM_CMP = 'DX',    VALE = 1.,                ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='DEPL', 
+          CRITERE = 'ABSOLU', NOEUD = 'N13',   NOM_CMP = 'DY',    VALE = 0.,),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='DEPL', 
+            NOEUD = 'N13',   NOM_CMP = 'DZ',    VALE = 1.,                ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='DEPL', 
+            NOEUD = 'N15',   NOM_CMP = 'DX',    VALE = 1.0020833333333,   ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='DEPL', 
+            NOEUD = 'N15',   NOM_CMP = 'DY',    VALE = -0.1666666666666,  ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='DEPL', 
+            NOEUD = 'N15',   NOM_CMP = 'DZ',    VALE = 0.9977916666666,   ),) )
+
+TEST_RESU(RESU=( 
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL', 
+            MAILLE = 'M1',   NOEUD = 'N3',    NOM_CMP = 'SIYY',   VALE = -1.,    ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+          CRITERE = 'ABSOLU', MAILLE = 'M2',   NOEUD = 'N7',    NOM_CMP = 'SIYY',
+          VALE = 0.,     ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+          CRITERE = 'ABSOLU', MAILLE = 'M3',   NOEUD = 'N7',    NOM_CMP = 'SIYY',
+          VALE = 0.,     ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+          CRITERE = 'ABSOLU', MAILLE = 'M4',   NOEUD = 'N7',    NOM_CMP = 'SIYY',
+          VALE = 0.,     ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL', 
+            MAILLE = 'M2',   NOEUD = 'N8',    NOM_CMP = 'SIYY',   VALE = -0.5,   ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL', 
+            MAILLE = 'M3',   NOEUD = 'N8',    NOM_CMP = 'SIYY',   VALE = -0.5,   ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL', 
+            MAILLE = 'M1',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = -1.,    ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL', 
+            MAILLE = 'M2',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = -1.,    ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL', 
+            MAILLE = 'M3',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = -1.,    ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+          CRITERE = 'ABSOLU',   PRECISION = 2.E-3, MAILLE = 'M4',   NOEUD = 'N13',
+          NOM_CMP = 'SIYY',   VALE = 0.,     ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL', 
+            MAILLE = 'M3',   NOEUD = 'N15',   NOM_CMP = 'SIYY',   VALE = -1.,    ),
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+          PRECISION = 2.E-3,  MAILLE = 'M4',   NOEUD = 'N15',   NOM_CMP = 'SIYY',
+          VALE = -1.,    ))
+          )
+
 
 ANGL1=45.
 
@@ -584,6 +583,6 @@ TEST_RESU(CHAM_ELEM=(
             MAILLE = 'M3',   NOEUD = 'N15',   NOM_CMP = 'SIYZ',   VALE = 0.,    ),
           _F(  CHAM_GD = SIGTH,    CRITERE = 'ABSOLU',
             MAILLE = 'M4',   NOEUD = 'N15',   NOM_CMP = 'SIYZ',   VALE = 0.,    )) )
-
+                        
 FIN( )
 #

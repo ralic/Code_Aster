@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 13/01/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,17 +16,20 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
+
+from Macro.macro_matr_ajou_ops import macro_matr_ajou_ops
+
 def macro_matr_ajou_prod(self,MATR_AMOR_AJOU,MATR_MASS_AJOU,MATR_RIGI_AJOU,FORC_AJOU,**args):
-  self.type_sdprod(MATR_AMOR_AJOU,matr_asse_depl_r)
-  self.type_sdprod(MATR_MASS_AJOU,matr_asse_depl_r)
-  self.type_sdprod(MATR_RIGI_AJOU,matr_asse_depl_r)
+  self.type_sdprod(MATR_AMOR_AJOU,matr_asse_gene_r)
+  self.type_sdprod(MATR_MASS_AJOU,matr_asse_gene_r)
+  self.type_sdprod(MATR_RIGI_AJOU,matr_asse_gene_r)
   if FORC_AJOU != None:
     for m in FORC_AJOU:
       self.type_sdprod(m['VECTEUR'],vect_asse_gene)
 
   return None
 
-MACRO_MATR_AJOU=MACRO(nom="MACRO_MATR_AJOU",op=-13,docu="U4.66.11-c",sd_prod=macro_matr_ajou_prod,
+MACRO_MATR_AJOU=MACRO(nom="MACRO_MATR_AJOU",op=macro_matr_ajou_ops,docu="U4.66.11-c",sd_prod=macro_matr_ajou_prod,
             UIinfo={"groupes":("Matrices/vecteurs",)},
       regles=(AU_MOINS_UN('MODE_MECA','DEPL_IMPO','MODELE_GENE'),
               AU_MOINS_UN('MATR_MASS_AJOU','MATR_AMOR_AJOU','MATR_RIGI_AJOU'),
@@ -51,7 +54,7 @@ MACRO_MATR_AJOU=MACRO(nom="MACRO_MATR_AJOU",op=-13,docu="U4.66.11-c",sd_prod=mac
            PRES_FLUIDE     =SIMP(statut='f',typ='R'),
            PRES_SORTIE     =SIMP(statut='f',typ='R'),
          ),
-         ECOULEMENT      =FACT(statut='f',max='**',
+         ECOULEMENT      =FACT(statut='f',
            GROUP_MA_1      =SIMP(statut='o',typ=grma),
            GROUP_MA_2      =SIMP(statut='o',typ=grma),
            VNOR_1          =SIMP(statut='o',typ='R'),
@@ -98,4 +101,4 @@ MACRO_MATR_AJOU=MACRO(nom="MACRO_MATR_AJOU",op=-13,docu="U4.66.11-c",sd_prod=mac
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
          NOEUD_DOUBLE    =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
          AVEC_MODE_STAT  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
-) ;
+)

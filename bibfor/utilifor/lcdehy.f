@@ -1,9 +1,9 @@
-        SUBROUTINE LCDEHY ( IMAT,  NMAT,  MATERD, MATERF, HD, HF, SD,
+        SUBROUTINE LCDEHY ( NMAT,  MATERD, MATERF, HD, HF, SD,
      &                      SF,    DEPSM,  EPSDM )
         IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 06/04/2004   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,8 +44,7 @@ C       ON PEUT DONC - SOIT TRAVAILLER AVEC EPST ET AJOUTER SIGRET APRES
 C                    - SOIT TRAVAILLER AVEC EPS = EPST - EPSRET
 C                      CE QUI EST FAIT ICI
 C       ----------------------------------------------------------------
-C       IN      IMAT    ADRESSE DU MATERIAU CODE
-C               NMAT    DIMENSION  DE MATER
+C       IN      NMAT    DIMENSION  DE MATER
 C               MATERD  COEFFICIENTS MATERIAU A T
 C               MATERF  COEFFICIENTS MATERIAU A T+DT
 C               HD      HYDRATATION DEBUT INCREMENT
@@ -55,7 +54,7 @@ C               HF      SECHAGE FIN INCREMENT
 C       VAR     DEPSM   INCREMENT DE DEFORMATION MECANIQUE
 C               EPSDM   DEFORMATION MECANIQUE A T
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, NDT  , NDI , NMAT , K
+        INTEGER         NDT  , NDI , NMAT , K
         CHARACTER*2     CE
         REAL*8          HD, HF, SD, SF
         REAL*8          EPSDM(6), DEPSM(6)
@@ -72,8 +71,8 @@ C
 C
         DO 110 K = 1,NDI
             DEPSM(K) = DEPSM(K) + ( BENDOF*HF - BENDOD*HD)
-     &                          + ( KDESSF*SF - KDESSD*SD)
-            EPSDM(K) = EPSDM(K) + ( BENDOD*HD + KDESSD*SD)
+     &                          - ( KDESSF*SF - KDESSD*SD)
+            EPSDM(K) = EPSDM(K) + ( BENDOD*HD - KDESSD*SD)
  110    CONTINUE
 C
         END

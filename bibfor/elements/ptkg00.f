@@ -1,11 +1,10 @@
-      SUBROUTINE PTKG00(ITERM,SF,A1,A2,XIZ,XIZ2,XIY,XIY2,XL,EY,EZ,DSM)
+      SUBROUTINE PTKG00(SF,A1,A2,XIZ,XIZ2,XIY,XIY2,XL,EY,EZ,DSM)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER           ITERM
-      REAL*8                     A1,A2,XIZ,XIZ2,XIY,XIY2,XL,EY,EZ
-      REAL*8                  SF(*),                        DSM(*)
+      REAL*8                A1,A2,XIZ,XIZ2,XIY,XIY2,XL,EY,EZ
+      REAL*8             SF(*),                        DSM(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/01/96   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,9 +23,6 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     CALCUL DE LA MATRICE DE RAIDEUR GEOMETRIQUE  (POUTRE)
 C     ------------------------------------------------------------------
-C IN  ITERM  - INDICATEUR
-C           0 : RIGIDITE GEOMETRIQUE
-C           1 : FLAMBEMENT D'EULER
 C IN  SF     - (12) COMPOSANTES EFFORTS STATIQUES DANS LES ELEMENTS
 C IN  A1         - AIRE DE LA SECTION DROITE INITIALE
 C IN  A2         - AIRE DE LA SECTION DROITE FINALE

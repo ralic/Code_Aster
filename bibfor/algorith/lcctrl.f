@@ -1,10 +1,10 @@
         SUBROUTINE LCCTRL ( LOI, DY,   DDY,    NR,  ITMAX, TOLER, ITER,
-     &                      INTG, TYPESS, ESSAI, IRTETI)
+     &                      IRTETI)
 C TOLE CRS_505 CRS_507
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,15 +34,12 @@ C            ITER   :  NUMERO ITERATION COURANTE
 C            NR     :  DIMENSION DY DDY
 C            DY     :  VECTEUR SOLUTION DY = ( DSIG DX1 DX2 DP (DEPS3))
 C            DDY    :  VECTEUR CORRECTION SUR LA SOLUTION
-C            INTG   :  NUMERO INTEGRATION COURANTE
-C            ESSAI  :  SOLUTION D ESSAI
-C            TYPESS :  TYPE DE SOLUTION D ESSAI POUR NEWTON
 C            LOI    :  NOM DE LOI DE COMPORTEMENT
 C        OUT RETURN :  CONVERGENCE
 C            RETURN1:  ITERATION SUIVANTE
 C       ----------------------------------------------------------------
-        INTEGER         TYPESS, ITMAX,  ITER,   INTG, NR
-        REAL*8          TOLER,  ESSAI,  DDY(*), DY(*)
+        INTEGER         ITMAX,  ITER,   NR
+        REAL*8          TOLER,  DDY(*), DY(*)
         CHARACTER*16    LOI
 C       ----------------------------------------------------------------
         INTEGER         NDT ,     NDI
@@ -119,7 +116,7 @@ C
                         ELSE
                         CALL CODENT(ITER,'G',CITER)
                         CALL CODREE(TOLER,'E',CTOL)
-                        CALL UTMESS ('S',LOI,' ERREUR'//
+                        CALL UTEXCP(23,LOI,' ERREUR'//
      1                  ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
      2                  ' - CONVERGENCE REGULIERE MAIS TROP LENTE'//
      3                  ' - ERREUR > '//CTOL//
@@ -131,7 +128,7 @@ C
                     ELSE
                     CALL CODENT(ITER,'G',CITER)
                     CALL CODREE(TOLER,'E',CTOL)
-                    CALL UTMESS ('S',LOI,' ERREUR'//
+                    CALL UTEXCP(23,LOI,' ERREUR'//
      1              ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
      2              ' - CONVERGENCE IRREGULIERE ET ERREUR > '//CTOL//
      4              ' - DIMINUER LA TAILLE D INCREMENT')
@@ -142,7 +139,7 @@ C
                   ELSE
                   CALL CODENT(ITER,'G',CITER)
                   CALL CODREE(TOLER,'E',CTOL)
-                  CALL UTMESS ('S',LOI,' ERREUR'//
+                  CALL UTEXCP(23,LOI,' ERREUR'//
      1            ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
      2            ' - ERREUR > '//CTOL//
      4            ' - DIMINUER LA TAILLE D INCREMENT')

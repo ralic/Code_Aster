@@ -2,7 +2,7 @@
      &           RESU,DEPTOT,ITERAT,LREAC,CONV,DEPDEL,ISTO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,7 +89,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
 
       LOGICAL TROUAC,DELPOS
-      INTEGER JJC,LL,JDEPDE
+      INTEGER JJC,LL,JDEPDE,I
       INTEGER IBID,IER,IFM,NIV,NDECI,ISINGU,NPVNEG,JAPJFX
       INTEGER ICONTA,II,JJ,KK,ILIAC,KCOUNT,NUMIN,JAPJFY
       INTEGER JRESU,JDEPP,JMU,JCMU,JATMU,POSMA,NDIM,NEQMAX
@@ -104,12 +104,12 @@ C
       REAL*8 XTOL,AJEUFX,XK,XMU
       REAL*8 ALPHA,BETA,RESIGR,XJVMAX,XJVMIN
       INTEGER ICOMA
-      INTEGER JAPCOF,JAFMU,LMAF1,JCM2A,JCM3A
+      INTEGER JAPCOF,JAFMU,LMAF1,JCM2A,JCM3A,JCM2A1,JCM2A2,JCM2A3
       INTEGER IFRO,AJLIAI,SPLIAI,LLF,LLF1,LLF2
       COMPLEX*16 CBID
       CHARACTER*1 TYPEAJ
       CHARACTER*2 TYPEC0
-      CHARACTER*8 NOM1,NOM2
+      CHARACTER*8 NOM1,NOM2,NOMNO,NOMCMP
       CHARACTER*14 CHAIN,NUMEDD
       CHARACTER*19 AFMU,MAT,CM2A,CM3A,MAF1,MAF2,MAFROT
       CHARACTER*19 LIAC,MU,ATMU,DELT0,DELTA,MATR,COCO,LIOT
@@ -117,6 +117,9 @@ C
       CHARACTER*24 APPARI,APPOIN,APCOEF,APJEU,APDDL,COEFMU
       CHARACTER*24 NDIMCO,CONTNO,CONTMA,APCOFR,FROTE,PENAL,COMAFO
 
+
+      CHARACTER*24 TARDIF,LIGREL,INFOBL
+ 
 C ----------------------------------------------------------------------
 
 C ======================================================================
@@ -247,11 +250,13 @@ C ======================================================================
 
 C --- CREATION DE DELTA0 = C-1B
 C ======================================================================
+
       DO 10 II = 1,NEQ
         ZR(JDELT0-1+II) = ZR(JRESU-1+II)
         ZR(JRESU-1+II) = 0.0D0
         ZR(JATMU-1+II) = 0.0D0
    10 CONTINUE
+   
       XJVMAX = 0.0D0
 C ======================================================================
 C --- CALCUL DE -A.DEPTOT ET RANGEMENT DANS APJEU
@@ -290,7 +295,7 @@ C ======================================================================
           NBDDL = ZI(JAPPTR+II) - ZI(JAPPTR+II-1)
           CALL CALADU(NEQ,NBDDL,ZR(JAPCOE+JDECAL),ZI(JAPDDL+JDECAL),
      &                ZR(JDELTA),VAL)
-          AJEU = ZR(JAPJEU+II-1)
+          AJEU = ZR(JAPJEU+II-1)-VAL
           IF (AJEU.LT.0.0D0) THEN
             POSIT  = NBLIAC + 1
             CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2, 
@@ -357,6 +362,7 @@ C ======================================================================
 C ======================================================================
 C RESOLUTION MATRICIELLE POUR LES LIAISONS ACTIVES
 C ======================================================================
+
       IF (NBLIAC.NE.0) THEN
 C ======================================================================
 C --- CALCUL DE -A.C-1.AT COLONNE PAR COLONNE
@@ -406,7 +412,7 @@ C ======================================================================
 C ======================================================================
 C --- APPEL DE LA ROUTINE DE CALCUL DU SECOND MEMBRE -------------------
 C ======================================================================
-        CALL CFADU(RESOCO, DEPDEL, NEQ, NDIM, NBLIAI, NBLIAC, LLF, 
+        CALL CFADU(RESOCO, DEPDEL, NEQ, NDIM, NBLIAC, LLF, 
      +                                               LLF1, LLF2, NESMAX)
 C ======================================================================
 C --- RESOLUTION POUR OBTENIR MU : -A.C-1.AT.MU = JEU(DEPTOT) - A.DELT0
@@ -557,6 +563,8 @@ C ======================================================================
 C --- CALCUL DE AT.MU --------------------------------------------------
 C ======================================================================
       CALL CFATMU(NEQ , NESMAX, NDIM, NBLIAC, LLF, LLF1, LLF2, RESOCO) 
+     
+  
 C ==========================================================
 C                TRAITEMENT DU FROTTEMENT
 C ==========================================================
@@ -594,6 +602,7 @@ C INFERIEUR OU EGAL A RACINE DE E_T. SI MUg EST TROP PETIT
 C ON INTRODUIT UNE VALEUR QUI CONSERVE LE CONDITIONNEMENT
 C DE LA MATRICE DE FROTTEMENT.
 C ========================================================
+
       DO 270 II = 1,NBLIAC
         AJEUFX = 0.D0
         AJEUFY = 0.D0
@@ -623,6 +632,7 @@ C - SI XX < XXMAX*XTOL (DEPLACEMENT NEGLIGEABLE)
           ZR(JMU-1+3*NBLIAI+LLIAC) = XF
         END IF
   270 CONTINUE
+ 
 
 C ==============================================================
 C       CONSTRUCTION DE LA MATRICE TANGENTE DE FROTTEMENT
@@ -667,7 +677,8 @@ C - A LA LIAISON
   300 CONTINUE
 
 C - CALCUL DE KF STOCKE DANS MAF1 = CM2AT*CM2A
-      CALL ATA000(CM2A,NUMEDD,400.D0,MAF1,'V',RESOCO,NESCL)
+
+      CALL ATA000(CM2A,NUMEDD,400.D0,MAF1,'V',RESOCO,NBLIAI*NDIM)
 
 C - CREATION DU VECTEUR DE CISAILLEMENT (PARTIE SYMETRIQUE
 C - DE KFR)
@@ -677,6 +688,7 @@ C - CE VECTEUR EST REAFFECTE DANS ZR(JAFMU)
       CALL MTDSCR(MAF1)
       CALL JEVEUO(MAF1//'.&INT','E',LMAF1)
       CALL MRMULT('ZERO',LMAF1,ZR(JDELTA),'R',ZR(JAFMU),1)
+
 
 C - CALCUL DE KFR STOCKE DANS CM3A SUR L ENSEMBLE DES LIAISONS
       DO 330 II = 1,NBLIAI
@@ -739,7 +751,9 @@ C - ON EFFECTUE CM3A = AFMU * BETA
 C ======================================================================
 C - ON CALCUL NOTRE NOUVELLE MATRICE DE FROTTEMENT
 C ======================================================================
+
       CALL FROT05(CM3A,NUMEDD,MAT,MAF1,MAF2,MAFROT,RESOCO,NBLIAI)
+
 C ======================================================================
 C --- STOCKAGE DE L'ETAT DE CONTACT DEFINITIF
 C ======================================================================

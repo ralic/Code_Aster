@@ -1,6 +1,7 @@
-      SUBROUTINE PAQNOE(NOMSD, NOMU, NOMMOD, NOMMAI, NOMMET, NOMCRI)
+      SUBROUTINE PAQNOE(NOMSD, NOMU, NOMMAI, NOMMET, NOMCRI,
+     &                  TYPCHA, PROAXE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/06/2003   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,10 +18,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C RESPONSABLE F1BHHAJ
+C RESPONSABLE F1BHHAJ J.ANGLES
       IMPLICIT     NONE
-      CHARACTER*8  NOMSD, NOMU, NOMMOD, NOMMAI
-      CHARACTER*16 NOMMET, NOMCRI
+      CHARACTER*8  NOMSD, NOMU, NOMMAI
+      CHARACTER*16 NOMMET, NOMCRI, TYPCHA, PROAXE
 C ---------------------------------------------------------------------
 C BUT: CONSTRUIRE LES PAQUETS DE NOEUDS AFIN DE CALCULER LE VECTEUR
 C      CISAILLEMENT TAU DANS LE PLAN u, v.
@@ -28,10 +29,11 @@ C ---------------------------------------------------------------------
 C ARGUMENTS:
 C NOMSD    IN    K8 : NOM DE LA STRUCTURE DE DONNEES RESULTAT (CALC_NO).
 C NOMU     IN    K8 : NOM UTILISATEUR DU CALCUL EN FATIGUE.
-C NOMMOD   IN    K8 : NOM UTILISATEUR DU MODELE.
 C NOMMAI   IN    K8 : NOM UTILISATEUR DU MAILLAGE.
 C NOMMET   IN    K16: NOM DE LA METHODE DE CALCUL DU CERCLE
 C                     CIRCONSCRIT.
+C NOMCRI   IN    K16: NOM DU CRITERE AVEC PLANS CRITIQUES.
+C TYPCHA   IN    K16: TYPE DE CHARGEMENT (PERIODIQUE OU NON).
 C NOMCRI   IN    K16: NOM DU CRITERE AVEC PLANS CRITIQUES.
 C
 C-----------------------------------------------------------------------
@@ -273,13 +275,18 @@ C
             ELSEIF ( TYPRES .EQ. 'EVOL_NOLI' ) THEN
                CALL RSEXCH(NOMSD, 'SIEF_NOEU_ELGA', IORDR, CHSIG, IRET)
             ENDIF
+            IF (IRET .NE. 0) THEN
+               CALL UTMESS('F', 'PAQNOE.5', 'LES CHAMPS DE '//
+     &                 'CONTRAINTES AUX NOEUDS SIGM_NOEU_DEPL OU '//
+     &                 'SIEF_NOEU_ELGA N''ONT PAS ETE CALCULES.')
+            ENDIF
             CNS1 = '&&PAQNOE.SIG_S1'
             CNS2 = '&&PAQNOE.SIG_ORDO'
             CALL CNOCNS(CHSIG, 'V', CNS1)
             CALL CNSRED(CNS1, 0, IBID, 6, LSIG, 'V', CNS2)
             CALL JEEXIN(CNS2(1:19)//'.CNSV', IRET)
             IF (IRET .EQ. 0) THEN
-               CALL UTMESS('F', 'PAQNOE.5', 'LES CHAMPS DE '//
+               CALL UTMESS('F', 'PAQNOE.6', 'LES CHAMPS DE '//
      &                 ' CONTRAINTES AUX NOEUDS N''EXISTENT PAS.')
             ENDIF
             CALL JEVEUO(CNS2(1:19)//'.CNSD', 'L', JSIGD)
@@ -302,7 +309,7 @@ C
      &                         (IORDR-1)*TSPAQ ) =
      &            ZR( JSIGV + (ICMP-1) + (NUNOE-1)*6 )
                 ELSE
-                  CALL UTMESS('F', 'PAQNOE.6', 'LE CHAMP SIMPLE '//
+                  CALL UTMESS('F', 'PAQNOE.7', 'LE CHAMP SIMPLE '//
      &                'QUI CONTIENT LES VALEURS DES CONTRAINTES '//
      &                'N EXISTE PAS.')
                 ENDIF
@@ -310,9 +317,16 @@ C
  240        CONTINUE
  220     CONTINUE   
 C
-         CALL DTAUNO (JRWORK, ZI(JNOEU), NBNO, NBORDR, NNOINI,
-     &                NBNOP, NUMPAQ, TSPAQ, NOMMET, NOMCRI,
-     &                NOMMAI, CNSR)
+         IF (TYPCHA .EQ. 'PERIODIQUE') THEN
+            CALL DTAUNO (JRWORK, ZI(JNOEU), NBNO, NBORDR, NNOINI,
+     &                   NBNOP, NUMPAQ, TSPAQ, NOMMET, NOMCRI,
+     &                   NOMMAI, CNSR)
+C
+         ELSEIF (TYPCHA .EQ. 'NON_PERIODIQUE') THEN
+            CALL AVGRNO (ZR(JRWORK), TDISP, ZI(JNOEU), NBNO, NBORDR,
+     &                   NNOINI, NBNOP, NUMPAQ, TSPAQ, NOMCRI,
+     &                   NOMMAI, PROAXE, CNSR)
+         ENDIF
 C
  200  CONTINUE
 C

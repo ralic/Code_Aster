@@ -1,9 +1,9 @@
-        SUBROUTINE CVMJAC ( MOD, IMAT, NMAT, MATERF, TEMPF, TIMED,
-     1                         TIMEF, YF, DY, NMOD, EPSD, DEPS,DRDY )
+        SUBROUTINE CVMJAC ( MOD, NMAT, MATERF, TIMED,
+     1                      TIMEF, YF, DY, NMOD, EPSD, DEPS,DRDY )
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,10 +50,8 @@ C               ((DQDS)(DQDX1)(DQDX2)(DQDP)(DQDR)(DQDQ)(DQDXXI)(DQDE3) )
 C                                                     ( SI IOPTIO = 2 )
 C
 C       IN  MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           TEMPF  :  TEMPERATURE A T+DT
 C           YF     :  VARIABLES A T + DT = ( SIGF  X1F X2F PF RF QF(..))
 C           DY     :  SOLUTION ESSAI     = ( DSIG  DX1 DX2 DP DR DQ(..))
 C           NMOD   :  DIMENSION DECLAREE DRDY
@@ -62,7 +60,7 @@ C           DEPS   :  INCREMENT DE DEFORMATION
 C       OUT DRDY   :  JACOBIEN DU SYSTEME NON LINEAIRE
 C       ----------------------------------------------------------------
 C
-        INTEGER         IMAT, NDT , NDI , NMAT , NMOD
+        INTEGER         NDT , NDI , NMAT , NMOD
         INTEGER         IOPTIO   , IDNR , NOPT
 C
         REAL*8          UN  , ZERO , D23 , D13, MUN
@@ -99,7 +97,7 @@ C
         REAL*8          DXIDQ(6), DXIDP(6), DXIDXI(6,6),  DXIDE3(6)
         REAL*8          DQDQ,     DQDP   ,  DQDXXI(6),     DQDE3
 C
-        REAL*8          MATERF(NMAT,2),     TEMPF , SEUIL , SEUIL2
+        REAL*8          MATERF(NMAT,2), SEUIL , SEUIL2
         REAL*8          TIMED, TIMEF, DT
 C
         REAL*8          K0  , AK , AR  , N   , ALP  , WW
@@ -180,8 +178,7 @@ C
         CALL CHBFSS  ( SIG, X1, X2, ID, DDFDDS )
         CALL CHBFSX  ( SIG, X1, X2, I6, DDFDSX )
 C
-        CALL CVMCVX ( IMAT, NMAT, MATERF, TEMPF,
-     1                SIG,  YF(NDT+1), SEUIL)
+        CALL CVMCVX ( NMAT, MATERF,SIG,  YF(NDT+1), SEUIL)
         IF ( SEUIL .LT. 0.D0 ) SEUIL = 0.D0
         CCIN = AI + (1.D0-AI) * EXP( -B*P )
         DCIN = B * (AI-1.D0) * EXP( -B*P )

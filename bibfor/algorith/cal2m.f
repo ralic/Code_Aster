@@ -1,11 +1,11 @@
       SUBROUTINE CAL2M(CHAMNO,PHIBAR,MODELE,MATE,NU,VECAS2,
-     &                                           ND,NR,NV,OPT)
+     &                                           ND,NR,NV)
       IMPLICIT REAL*8  (A-H,O-Z)
       INTEGER                                    NR,ND,NV
-      CHARACTER*(*)    CHAMNO,PHIBAR,MODELE,MATE,NU,VECAS2,OPT
+      CHARACTER*(*)    CHAMNO,PHIBAR,MODELE,MATE,NU,VECAS2
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/02/96   AUTEUR CIBHHRA R.MEDDOURI 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,6 @@ C------- CALCUL DES VECTEURS ASSEMBLES DE FLUX FLUIDES
 C
 C----------------------------------------------------------------------
 C  IN : K19 : CHAMNO : CHAMP AUX NOEUDS DE DEPL_R
-C  IN : K1 : OPT : CARACTERE RELATIF A L OPTION CHOISIE
 C  IN:  K8  : MODELE : MODELE FLUIDE
 C  IN : K24 : MATE   : MATERIAU THERMIQUE (PRIS POUR LE FLUIDE)
 C  IN : K14 : NU     : NUMEROTATION DES DDLS FLUIDES

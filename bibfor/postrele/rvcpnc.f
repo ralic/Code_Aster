@@ -13,7 +13,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/08/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -509,7 +509,7 @@ CJMP       CALL WKVECT('&&RVCPNC.LISTE.IS','V V I',12,ALSI)
            CALL WKVECT('&&RVCPNC.LISTE.IS','V V I',NBCPGD,ALSI)
            IF ( (NOMGD(1:6).EQ.'SIEF_R').OR.(NOMGD.EQ.'EPSI_R') ) THEN
 C          /* CHGT DE REPERE POUR SIGMA, EPSI, (N,M) OU (E,K) */
-           CALL NUM2K8(NOMGD,ZK8(ALSCPC),ZK8(ACPGD),NBCPC,NBCPGD,
+           CALL NUM2K8(NOMGD,ZK8(ALSCPC),ZK8(ACPGD),NBCPGD,
      +                    ZI(ALSI))
               DO 63, I = 1, 6, 1
                  N1 = N1 + ZI(ALSI + I-1)

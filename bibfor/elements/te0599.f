@@ -1,7 +1,7 @@
       SUBROUTINE TE0599 ( OPTION , NOMTE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,27 +47,6 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
-      CHARACTER*24       CARAC,FF
-      CHARACTER*8        ELREFE
-
-C
-      REAL*8             VECTT(9)
-      REAL*8             R
-      REAL*8             POIDS, DFDX(9), DFDY(9)
-      REAL*8             R8AUX, DIVTHT, THETAR
-      REAL*8             EPSI, R8PREM
-      REAL*8             COORSE(18)
-C
-      INTEGER            IGEOM, IVECTT, ICARAC
-      INTEGER            IFF, IPOIDS, IVF, IDFDE, IDFDK
-      INTEGER            NNO, NPG, NPG1, NPG2, NSE, ISE, NNOP2, C(6,9)
-      INTEGER            KP, I, J, K, IDEB, IFIN
-      INTEGER            ISOUR
-      INTEGER            ITHETA,NBELR
-C
-      LOGICAL THTNUL
-      LOGICAL AXI
-C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
@@ -81,25 +60,36 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
+      REAL*8             VECTT(9)
+      REAL*8             R
+      REAL*8             POIDS, DFDX(9), DFDY(9)
+      REAL*8             R8AUX, DIVTHT, THETAR
+      REAL*8             EPSI, R8PREM
+      REAL*8             COORSE(18)
+C
+      INTEGER            IGEOM, IVECTT
+      INTEGER            IPOIDS, IVF, IDFDE, JGANO, NDIM, NNOS
+      INTEGER            NNO, NPG, NSE, ISE, NNOP2, C(6,9)
+      INTEGER            KP, I, J, K, IDEB, IFIN
+      INTEGER            ISOUR
+      INTEGER            ITHETA
+C
+      LOGICAL THTNUL
+      LOGICAL AXI
+C     -----------------------------------------------------------------
 C====
 C 1. INITIALISATIONS ET CONTROLE DE LA NULLITE DE THETA
 C====
 C
       EPSI = R8PREM ()
 C
-      CALL ELREF1(ELREFE)
-
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
+      CALL ELREF4(' ','MASS',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PVECTTH','L',ITHETA)
       CALL JEVECH('PVECTTR','E',IVECTT)
 C
-      CALL CONNEC ( NOMTE, ZR(IGEOM), NSE, NNOP2, C )
+      CALL CONNEC ( NOMTE, NSE, NNOP2, C )
 C
       DO 101 , I = 1 , NNOP2
         VECTT(I)=0.D0
@@ -121,14 +111,6 @@ C
       IF ( .NOT.THTNUL ) THEN
 C
 C 2.1. ==> FIN DES INITIALISATIONS
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS = IFF   +NPG1*(1+3*NNO)
-      IVF    = IPOIDS+NPG2
-      IDFDE  = IVF   +NPG2*NNO
-      IDFDK  = IDFDE +NPG2*NNO
-      NPG    = NPG2
 C
       CALL JEVECH('PSOURCR','L',ISOUR)
 C
@@ -154,8 +136,7 @@ C
 C
         K = (KP-1)*NNO
 C
-        CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     >                COORSE,DFDX,DFDY,POIDS )
+        CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,COORSE,DFDX,DFDY,POIDS )
 C
 C CALCUL DE LA DIVERGENCE DE THETA
 C

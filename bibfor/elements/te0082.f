@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,33 +48,18 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CHARACTER*24       CARAC,FF
       CHARACTER*16       PHENOM
-      CHARACTER*8        ELREFE
       CHARACTER*2        CODRET
       REAL*8             VALRES, DFDX(9),DFDY(9),POIDS,R,R8B,VFI,VFJ
       REAL*8             MATP(18,18), MATV(171)
-      INTEGER            NNO,KP,NPG1,NPG2,II,JJ,I,J,K,IMATUU
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE
-      INTEGER            KD1,KD2,IJ1,IJ2,NDDL,NVEC,IACCE,IVECT
+      INTEGER            NNO,KP,NNOS,NPG2,II,JJ,I,J,K,IMATUU,JGANO
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
+      INTEGER            KD1,KD2,IJ1,IJ2,NDDL,NVEC,IACCE,IVECT,NDIM
 C ......................................................................
 C
-      CALL ELREF1(ELREFE)
-
-      CARAC = '&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
+      CALL ELREF4(' ','MASS',NDIM,NNO,NNOS,NPG2,IPOIDS,IVF,IDFDE,JGANO)
       NDDL = 2 * NNO
       NVEC = NDDL * ( NDDL + 1 ) / 2
-C
-      FF = '&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS = IFF   +NPG1*(1+3*NNO)
-      IVF    = IPOIDS+NPG2
-      IDFDE  = IVF   +NPG2*NNO
-      IDFDK  = IDFDE +NPG2*NNO
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -89,8 +74,7 @@ C
 C
       DO 10 KP=1,NPG2
          K = (KP-1)*NNO
-         CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                 ZR(IGEOM),DFDX,DFDY,POIDS )
+         CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
          IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
             R = 0.0D0
             DO 20 I=1,NNO

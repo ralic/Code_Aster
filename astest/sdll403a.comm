@@ -1,5 +1,5 @@
-# MODIF  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
-# TITRE VIBRATIONS D'UN PENDULE EN ROTATION
+# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# TITRE VIBRATIONS D UN PENDULE EN ROTATION
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,257 +20,235 @@
 # ======================================================================
 # ELEMENTS  : HEXA20
 
-DEBUT(CODE=_F( NOM = 'SDLL403A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SDLL403A',
+              NIV_PUB_WEB='INTERNET',),);
 
-ACIER=DEFI_MATERIAU(
-                         ELAS=_F(  NU = 0.3,
-                           E = 7.E10,
-                           RHO = 2700.))
+ACIER=DEFI_MATERIAU(ELAS=_F(E=7.E10,
+                            NU=0.3,
+                            RHO=2700.0,),);
 
-MAYA=LIRE_MAILLAGE( )
+MAYA=LIRE_MAILLAGE();
 
-MATER=AFFE_MATERIAU(    MAILLAGE=MAYA,
-                                 AFFE=_F(  TOUT = 'OUI',
-                                        MATER = ACIER))
+MATER=AFFE_MATERIAU(MAILLAGE=MAYA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ACIER,),);
 
-STRUCTUR=AFFE_MODELE(    MAILLAGE=MAYA,AFFE=(
-                               _F(  GROUP_MA = 'VOLUME',
-                                      MODELISATION = '3D',
-                                      PHENOMENE = 'MECANIQUE'),
-                                    _F(  GROUP_MA = 'FACES',
-                                      MODELISATION = '3D',
-                                      PHENOMENE = 'MECANIQUE'))
-                       )
-
+STRUCTUR=AFFE_MODELE(MAILLAGE=MAYA,
+                     AFFE=(_F(GROUP_MA='VOLUME',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),
+                           _F(GROUP_MA='FACES',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),),);
 # CONDITIONS AUX LIMITES
 
-CHARGE_1=AFFE_CHAR_MECA(      MODELE=STRUCTUR,DDL_IMPO=(
-                              _F(  GROUP_NO = 'POINT_A',
-                                               DX = 0.,
-                                               DY = 0.,
-                                               DZ = 0.),
-                                       _F(  NOEUD = 'NO000697',
-                                               DY = 0.,
-                                               DZ = 0.),
-                                       _F(  NOEUD = 'NO000001',
-                                               DY = 0.)),
-
-                              LIAISON_SOLIDE=_F(  GROUP_MA = 'FACES'),
-
-                              ROTATION=( 10.,  0., 0.,  1., ),
-                             PESANTEUR=(-9.81, 0., 0.,  1., )
-                          )
-
+CHARGE_1=AFFE_CHAR_MECA(MODELE=STRUCTUR,
+                        PESANTEUR=(-9.81,0.0,0.0,1.0,),
+                        ROTATION=(10.0,0.0,0.0,1.0,),
+                        DDL_IMPO=(_F(GROUP_NO='POINT_A',
+                                     DX=0.0,
+                                     DY=0.0,
+                                     DZ=0.0,),
+                                  _F(NOEUD='NO000697',
+                                     DY=0.0,
+                                     DZ=0.0,),
+                                  _F(NOEUD='NO000001',
+                                     DY=0.0,),),
+                        LIAISON_SOLIDE=_F(GROUP_MA='FACES',),);
 # CALCUL DES MATRICES ELEMENTAIRES DE RAIDEUR
 # ET DU VECTEUR DE CHARGE
 
-K1_ELEM=CALC_MATR_ELEM(        MODELE=STRUCTUR,
-                                CHAM_MATER=MATER,
-                                    CHARGE=CHARGE_1,
-                                   OPTION='RIGI_MECA' )
+K1_ELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                       MODELE=STRUCTUR,
+                       CHAM_MATER=MATER,
+                       CHARGE=CHARGE_1,);
 
-KW_ELEM=CALC_MATR_ELEM(        MODELE=STRUCTUR,
-                                CHAM_MATER=MATER,
-                                    CHARGE=CHARGE_1,
-                                   OPTION='RIGI_ROTA' )
+KW_ELEM=CALC_MATR_ELEM(OPTION='RIGI_ROTA',
+                       MODELE=STRUCTUR,
+                       CHAM_MATER=MATER,
+                       CHARGE=CHARGE_1,);
 
-CH_ELEM=CALC_VECT_ELEM(        OPTION='CHAR_MECA',
-                                CHAM_MATER=MATER,
-                                    CHARGE=CHARGE_1 )
-
+CH_ELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                       CHARGE=CHARGE_1,
+                       CHAM_MATER=MATER,);
 # NUMEROTATION
 
-NUMERO_1=NUME_DDL(    MATR_RIGI=( K1_ELEM,  KW_ELEM, ))
-
+NUMERO_1=NUME_DDL(MATR_RIGI=(K1_ELEM,KW_ELEM,),);
 #
 # ASSEMBLAGE DE LA MATRICE DE RAIDEUR STATIQUE KTOT = K + KW
-#
 
-K1_ASSE=ASSE_MATRICE(    MATR_ELEM=K1_ELEM,
-                              NUME_DDL=NUMERO_1 )
+K1_ASSE=ASSE_MATRICE(MATR_ELEM=K1_ELEM,
+                     NUME_DDL=NUMERO_1,);
 
-KW_ASSE=ASSE_MATRICE(    MATR_ELEM=KW_ELEM,
-                             NUME_DDL=NUMERO_1 )
+KW_ASSE=ASSE_MATRICE(MATR_ELEM=KW_ELEM,
+                     NUME_DDL=NUMERO_1,);
 
-K_STAT=COMB_MATR_ASSE( COMB_R=(   _F(  MATR_ASSE = K1_ASSE,
-                                       COEF_R = 1.),
-                                     _F(  MATR_ASSE = KW_ASSE,
-                                       COEF_R = 1.))
-                          )
-
+K_STAT=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=K1_ASSE,
+                                 COEF_R=1.0,),
+                              _F(MATR_ASSE=KW_ASSE,
+                                 COEF_R=1.0,),),);
 #
 # ASSEMBLAGE DU VECTEUR DE CHARGE
-#
 
-CH_ASSE=ASSE_VECTEUR(    VECT_ELEM=CH_ELEM,
-                             NUME_DDL=NUMERO_1 )
-
+CH_ASSE=ASSE_VECTEUR(VECT_ELEM=CH_ELEM,
+                     NUME_DDL=NUMERO_1,);
 #
 # CALCUL STATIQUE
-#
 
-K_FACT=FACT_LDLT(    MATR_ASSE=K_STAT )
-
-DEPLA=RESO_LDLT(    MATR_FACT=K_FACT,
-                           CHAM_NO=CH_ASSE )
+RESU=MECA_STATIQUE(MODELE=STRUCTUR,
+                   CHAM_MATER=MATER,
+                   EXCIT=_F(CHARGE=CHARGE_1,),);
 
 #
 # CALCUL DU CHAMP DE CONTRAINTES
-#
 
-SIGMA=CALC_CHAM_ELEM(        MODELE=STRUCTUR,
-                                  OPTION='SIEF_ELGA_DEPL',
-                                    DEPL=DEPLA,
-                              CHAM_MATER=MATER )
-
-CHARGE_2=AFFE_CHAR_MECA(      MODELE=STRUCTUR,DDL_IMPO=(
-                              _F(  GROUP_NO = 'POINT_A',
-                                               DX = 0.,
-                                               DY = 0.,
-                                               DZ = 0.),
-                                       _F(  NOEUD = 'NO000697',
-                                               DY = 0.),
-                                     #         DZ : 0. )
-                                       _F(  NOEUD = 'NO000001',
-                                               DY = 0.)),
-
-
-                              LIAISON_SOLIDE=_F(  GROUP_MA = 'FACES'),
-
-                              ROTATION=( 10.,  0., 0.,  1., ),
-                             PESANTEUR=(-9.81, 0., 0.,  1., )
-                          )
-
+SIGMA=CREA_CHAMP( OPERATION='EXTR',
+                  TYPE_CHAM='ELGA_SIEF_R',
+                  RESULTAT=RESU, NUME_ORDRE=1,
+                  NOM_CHAM='SIEF_ELGA_DEPL' )
+                          
+CHARGE_2=AFFE_CHAR_MECA(MODELE=STRUCTUR,
+                        PESANTEUR=(-9.81,0.0,0.0,1.0,),
+                        ROTATION=(10.0,0.0,0.0,1.0,),
+                        DDL_IMPO=(_F(GROUP_NO='POINT_A',
+                                     DX=0.0,
+                                     DY=0.0,
+                                     DZ=0.0,),
+                                  _F(NOEUD='NO000697',
+                                     DY=0.0,),
+                                  _F(NOEUD='NO000001',
+                                     DY=0.0,),),
+                        LIAISON_SOLIDE=_F(GROUP_MA='FACES',),);
 #
 # CALCUL DES MATRICES ELEMENTAIRES POUR LE CALCUL MODAL
-#
 
-KS_ELEM=CALC_MATR_ELEM(        MODELE=STRUCTUR,
-                                 OPTION='RIGI_GEOM',
-                               SIEF_ELGA=SIGMA )
+KS_ELEM=CALC_MATR_ELEM(OPTION='RIGI_GEOM',
+                       MODELE=STRUCTUR,
+                       SIEF_ELGA=SIGMA,);
 
-K2_ELEM=CALC_MATR_ELEM(        MODELE=STRUCTUR,
-                              CHAM_MATER=MATER,
-                                  CHARGE=CHARGE_2,
-                                 OPTION='RIGI_MECA' )
+K2_ELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                       MODELE=STRUCTUR,
+                       CHAM_MATER=MATER,
+                       CHARGE=CHARGE_2,);
 
-M_ELEM=CALC_MATR_ELEM(        MODELE=STRUCTUR,
-                                CHAM_MATER=MATER,
-                                    CHARGE=CHARGE_2,
-                                   OPTION='MASS_MECA' )
-
+M_ELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                      MODELE=STRUCTUR,
+                      CHAM_MATER=MATER,
+                      CHARGE=CHARGE_2,);
 #
 # NUMEROTATION POUR LE CALCUL MODAL
-#
 
-NUMERO_2=NUME_DDL(    MATR_RIGI=( K2_ELEM,  KS_ELEM, ),
-                      METHODE='MULT_FRONT',  # RENUM='MDA',
-)
-
+NUMERO_2=NUME_DDL(MATR_RIGI=(K2_ELEM,KS_ELEM,),
+                  METHODE='MULT_FRONT',);
 #
 # ASSEMBLAGE DE LA MATRICE DE RAIDEUR STATIQUE KTOT = K + KW
-#
 
-K2_ASSE=ASSE_MATRICE(    MATR_ELEM=K2_ELEM,
-                             NUME_DDL=NUMERO_2 )
+K2_ASSE=ASSE_MATRICE(MATR_ELEM=K2_ELEM,
+                     NUME_DDL=NUMERO_2,);
 
-KS_ASSE=ASSE_MATRICE(    MATR_ELEM=KS_ELEM,
-                             NUME_DDL=NUMERO_2 )
+KS_ASSE=ASSE_MATRICE(MATR_ELEM=KS_ELEM,
+                     NUME_DDL=NUMERO_2,);
 
-K_MODAL=COMB_MATR_ASSE( COMB_R=(   _F(  MATR_ASSE = K2_ASSE,
-                                       COEF_R = 1.),
-                                     _F(  MATR_ASSE = KS_ASSE,
-                                       COEF_R = 1.))
-                          )
+K_MODAL=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=K2_ASSE,
+                                  COEF_R=1.0,),
+                               _F(MATR_ASSE=KS_ASSE,
+                                  COEF_R=1.0,),),);
 
-M_ASSE=ASSE_MATRICE(    MATR_ELEM=M_ELEM,
-                             NUME_DDL=NUMERO_2  )
+M_ASSE=ASSE_MATRICE(MATR_ELEM=M_ELEM,
+                    NUME_DDL=NUMERO_2,);
 
-MODE_1=MODE_ITER_SIMULT(       MATR_A=K_MODAL,
-                                   MATR_B=M_ASSE,
-
-                            CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
-                                        NPREC_SOLVEUR=9,
-                                        NMAX_FREQ = 20),
-                             VERI_MODE=_F(  SEUIL = 1.E-4)
-                            )
-
-
-#------------------------------------------------------------------------------------------------
+MODE_1=MODE_ITER_SIMULT(MATR_A=K_MODAL,
+                        MATR_B=M_ASSE,
+                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
+                                     NMAX_FREQ=20,
+                                     NPREC_SOLVEUR=9,),
+                        VERI_MODE=_F(SEUIL=0.0001,),);
+#----------------------------------------------------------------------
 # pour tester la possibilite d'imprimer un MODE_MECA au format 'IDEAS'
 # et de poursuivre la calcul apres l'avoir relu :
 #----------------------------------------------------------------------
-DEFI_FICHIER(UNITE=75,FICHIER='MODEMECA')
-IMPR_RESU(RESU=_F(RESULTAT=MODE_1,FORMAT='IDEAS',FICHIER='MODEMECA',),)
 
-MODE_2=LIRE_RESU(TYPE_RESU='MODE_MECA',FORMAT='IDEAS',UNITE=75,
-           MAILLAGE='MAYA', NOM_CHAM='DEPL', TOUT_ORDRE='OUI',
+DEFI_FICHIER(UNITE=75,
+             FICHIER='MODEMECA',);
 
-           FORMAT_IDEAS=  _F(     NOM_CHAM = 'DEPL',
-                             NUME_DATASET = 55,  RECORD_6 = ( 1, 2, 3, 8, 2, 6, ),
-                             POSI_ORDRE =     ( 7, 3,),
-                             POSI_NUME_MODE = ( 7, 4,),
-                             POSI_FREQ =      ( 8, 1,),
-                             POSI_MASS_GENE = ( 8, 2,),
-                             NOM_CMP = ('DX', 'DY', 'DZ',)),
-           )
+IMPR_RESU(RESU=_F(FORMAT='IDEAS',
+                  RESULTAT=MODE_1,
+                  FICHIER='MODEMECA',),);
 
-#------------------------------------------------------------------------------------------------
-DEFI_FICHIER(UNITE=76,FICHIER='MODEMEC1')
-IMPR_RESU(RESU=_F(RESULTAT=MODE_1,FORMAT='RESULTAT',FICHIER='MODEMEC1',TOUT_PARA='OUI',),)
-DEFI_FICHIER(UNITE=77,FICHIER='MODEMEC2')
-IMPR_RESU(RESU=_F(RESULTAT=MODE_2,FORMAT='RESULTAT',FICHIER='MODEMEC2',TOUT_PARA='OUI',),)
-#------------------------------------------------------------------------------------------------
+MODE_2=LIRE_RESU(TYPE_RESU='MODE_MECA',
+                 FORMAT='IDEAS',
+                 MAILLAGE=MAYA,
+                 UNITE=75,
+                 NOM_CHAM='DEPL',
+                 FORMAT_IDEAS=_F(NOM_CHAM='DEPL',
+                                 NUME_DATASET=55,
+                                 RECORD_6=(1,2,3,8,2,6,),
+                                 POSI_ORDRE=(7,3,),
+                                 POSI_NUME_MODE=(7,4,),
+                                 POSI_MASS_GENE=(8,2,),
+                                 POSI_FREQ=(8,1,),
+                                 NOM_CMP=('DX','DY','DZ',),),
+                 TOUT_ORDRE='OUI',);
+#----------------------------------------------------------------------
 
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE_2,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 2.3E-2,
-           NUME_MODE = 1,
-           VALE = 1.75,
-           REFERENCE = 'SOURCE_EXTERNE'),
+DEFI_FICHIER(UNITE=76,
+             FICHIER='MODEMEC1',);
 
-   _F(   RESULTAT = MODE_2,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.1E-2,
-           NUME_MODE = 4,
-           VALE = 100.2,
-           REFERENCE = 'SOURCE_EXTERNE'),
+IMPR_RESU(RESU=_F(FORMAT='RESULTAT',
+                  RESULTAT=MODE_1,
+                  TOUT_PARA='OUI',
+                  FICHIER='MODEMEC1',),);
 
-   _F(   RESULTAT = MODE_2,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.3E-2,
-           NUME_MODE = 6,
-           VALE = 324.0,
-           REFERENCE = 'SOURCE_EXTERNE'),
+DEFI_FICHIER(UNITE=77,
+             FICHIER='MODEMEC2',);
 
-   _F(   RESULTAT = MODE_2,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.5E-2,
-           NUME_MODE = 9,
-           VALE = 674.4,
-           REFERENCE = 'SOURCE_EXTERNE'),
+IMPR_RESU(RESU=_F(FORMAT='RESULTAT',
+                  RESULTAT=MODE_2,
+                  TOUT_PARA='OUI',
+                  FICHIER='MODEMEC2',),);
+#----------------------------------------------------------------------
 
-   _F(   RESULTAT = MODE_2,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.7E-2,
-           NUME_MODE = 12,
-           VALE = 1150.,
-           REFERENCE = 'SOURCE_EXTERNE'),
+TEST_RESU(RESU=(_F(RESULTAT=MODE_2,
+                   NUME_MODE=1,
+                   PARA='FREQ',
+                   VALE=1.75,
+                   CRITERE='RELATIF',
+                   PRECISION=0.023,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=MODE_2,
+                   NUME_MODE=4,
+                   PARA='FREQ',
+                   VALE=100.2,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=MODE_2,
+                   NUME_MODE=6,
+                   PARA='FREQ',
+                   VALE=324.0,
+                   CRITERE='RELATIF',
+                   PRECISION=0.003,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=MODE_2,
+                   NUME_MODE=9,
+                   PARA='FREQ',
+                   VALE=674.4,
+                   CRITERE='RELATIF',
+                   PRECISION=0.005,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=MODE_2,
+                   NUME_MODE=12,
+                   PARA='FREQ',
+                   VALE=1150.0,
+                   CRITERE='RELATIF',
+                   PRECISION=0.007,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=MODE_2,
+                   NUME_MODE=15,
+                   PARA='FREQ',
+                   VALE=1748.0,
+                   CRITERE='RELATIF',
+                   PRECISION=0.011,
+                   REFERENCE='SOURCE_EXTERNE',),),);
 
-   _F(   RESULTAT = MODE_2,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 1.1E-2,
-           NUME_MODE = 15,
-           VALE = 1748.,
-           REFERENCE = 'SOURCE_EXTERNE'))
-
-        )
-
-FIN()
+FIN();

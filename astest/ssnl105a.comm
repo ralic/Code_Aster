@@ -1,4 +1,4 @@
-# MODIF  DATE 13/06/2002   AUTEUR PBBHHPB P.BADEL 
+# MODIF  DATE 10/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 #
 # TITRE CADRE DE BARRES HAUBANE.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -94,7 +94,6 @@ RESU1=STAT_NON_LINE(
                 RESI_INTE_RELA = 1.0E-06,
                 ITER_INTE_MAXI = 10,
                 ITER_INTE_PAS = 2,
-                TYPE_MATR_COMP = 'TANG_VIT',
                 RESI_GLOB_RELA = 1.E-6),
                              TITRE=(
                   ' STRUCTURE A HAUBAN ',  ),

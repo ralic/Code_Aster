@@ -1,6 +1,6 @@
       SUBROUTINE TE0437(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,6 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*8 MODELI
-      CHARACTER*24 CARAC,FF
       REAL*8 NHARM,BSIGM(81),GEO(81)
       INTEGER NBSIGM
 C DEB ------------------------------------------------------------------
@@ -70,10 +69,6 @@ C      ------------------------
 
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
-
-
 
 C --- INITIALISATIONS :
 C     -----------------
@@ -115,9 +110,8 @@ C ----     VECTEUR DES FORCES INTERNES (BT*SIGMA)
 
 C ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA) :
 C      --------------------------------------------------
-      CALL BSIGMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
-     &            ZR(IDFDN),ZR(IDFDK),ZR(IPOIDS),ZR(IGEOM),NHARM,
-     &            ZR(ICONTM),BSIGM)
+      CALL BSIGMC ( MODELI, NNO, NDIM, NBSIG, NPG1, IPOIDS, IVF, IDFDE,
+     +              ZR(IGEOM), NHARM, ZR(ICONTM) , BSIGM )
 
 C ---- AFFECTATION DU VECTEUR EN SORTIE :
 C      ----------------------------------

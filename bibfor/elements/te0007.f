@@ -1,6 +1,6 @@
       SUBROUTINE TE0007 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,6 @@ C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -43,58 +42,32 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      CHARACTER*8        MODELI,ELREFE,ELREF2
-      CHARACTER*24       CARAC,FF,CARAC2
+      CHARACTER*8        MODELI
       REAL*8             NHARM, BSIGM(18),GEO(18)
-      INTEGER            NBSIGM, ICARA2
+      INTEGER            NBSIGM
 C DEB ------------------------------------------------------------------
       MODELI(1:2) = NOMTE(3:4)
 C
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION 
 C      ------------------------
-      CALL ELREF1(ELREFE)
-      IF (ELREFE.EQ.'TRII6   ') THEN
-        ELREF2 = 'TRII3'
-      ELSEIF ( ELREFE .EQ. 'QUAI8   '  ) THEN
-        ELREF2 = 'QUAI4'
-      ELSE
-        CALL UTMESS('F','TE0480','ELEMENT:'//NOMTE(5:8)//
-     +                'NON IMPLANTE')
-      ENDIF
-      
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS=IFF
-      IVF   =IPOIDS+NPG1
-      IDFDE =IVF   +NPG1*NNO
-      IDFDK =IDFDE +NPG1*NNO
-      
-      CARAC2 = '&INEL.'//ELREF2//'.CARAC'
-      CALL JEVETE(CARAC2,'L',ICARA2)
-      NNOB = ZI(ICARA2)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
 C --- INITIALISATIONS :
 C     -----------------
       ZERO  = 0.0D0
       NHARM = ZERO
-      BIDON = ZERO
 
 C - SPECIFICATION DE LA DIMENSION
 
       IF (NOMTE(3:4).EQ.'AX') THEN
-       NDIM = 2
+        NDIM = 2
       ELSE IF (NOMTE(3:4).EQ.'CP') THEN
-       NDIM = 2
+        NDIM = 2
       ELSE IF (NOMTE(3:4).EQ.'DP') THEN
-       NDIM = 2
+        NDIM = 2
       ELSE IF (NOMTE(3:4).EQ.'DG') THEN
-       NDIM = 3
+        NDIM = 3
       ENDIF
 
       NDIMSI = NDIM*2
@@ -131,12 +104,12 @@ C
       
 C ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA) :
 C      --------------------------------------------------
-      CALL BSIGMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),ZR(IDFDK)
-     +            ,BIDON,ZR(IPOIDS),ZR(IGEOM),NHARM,ZR(ICONTM),BSIGM)
+      CALL BSIGMC ( MODELI, NNO, NDIM, NBSIG, NPG, IPOIDS, IVF, IDFDE, 
+     +              ZR(IGEOM), NHARM, ZR(ICONTM), BSIGM )
 C
 C ---- AFFECTATION DU VECTEUR EN SORTIE :
 C      ----------------------------------
-       DO 10 N=1,NNOB
+       DO 10 N=1,NNOS
          DO 20 I=1,NDIM
                KU = (NDIMSI + NDIM)*(N-1) + I
                KP = NDIM*(N-1) + I
@@ -147,9 +120,9 @@ C      ----------------------------------
                ZR(IVECTU+KU-1) = 0.D0
 30       CONTINUE         
 10     CONTINUE
-       DO 40 N=NNOB+1,NNO
+       DO 40 N=NNOS+1,NNO
          DO 50 I=1,NDIM
-           KU = (NDIMSI + NDIM)*NNOB + NDIM*(N-NNOB-1) + I
+           KU = (NDIMSI + NDIM)*NNOS + NDIM*(N-NNOS-1) + I
            KP = NDIM*(N-1) + I
            ZR(IVECTU+KU-1) = BSIGM(KP)
 50       CONTINUE

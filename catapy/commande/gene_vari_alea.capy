@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 05/11/2003   AUTEUR CAMBIER S.CAMBIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,15 +16,27 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE CAMBIER S.CAMBIER
 GENE_VARI_ALEA=OPER(nom="GENE_VARI_ALEA",op=  28,sd_prod=table,
                fr="Generateur de variable aleatoire",
                docu="U4.36.07-a",reentrant='n',
             UIinfo={"groupes":("Fonction",)},
-   TYPE       = SIMP(statut='f', typ='TXM', into=("EXP_TRONQUEE", "EXPONENTIELLE", "GAMMA"), defaut="EXP_TRONQUEE"),
-   VALE_MOY   = SIMP(statut='f', typ='R', defaut=0.),
-   DELTA      = SIMP(statut='f', typ='R', defaut=0.1),
-   A          = SIMP(statut='f', typ='R', defaut=-1.),
-   B          = SIMP(statut='f', typ='R', defaut=1.),
-   INIT       = SIMP(statut='f', typ='TXM', into=("OUI","NON"),defaut="NON"),
+   TYPE       = SIMP(statut='f', typ='TXM', into=("EXP_TRONQUEE", "EXPONENTIELLE", "GAMMA"), defaut="GAMMA"),
+   b_gamma    =BLOC(condition = "TYPE == 'GAMMA' ",fr="Parametres loi gamma",
+           VALE_MOY   = SIMP(statut='f', typ='R', defaut=1.),
+           BORNE_INF  = SIMP(statut='f', typ='R', defaut=0.),
+           COEF_VAR   = SIMP(statut='f', typ='R', defaut=0.1),
+             ),
+   b_expo    =BLOC(condition = "TYPE == 'EXPONENTIELLE' ",fr="Parametres loi exponentielle",
+           VALE_MOY   = SIMP(statut='f', typ='R', defaut=0.),
+           BORNE_INF  = SIMP(statut='f', typ='R', defaut=-1.),
+             ),
+   b_expo_tronq    =BLOC(condition = "TYPE == 'EXP_TRONQUEE' ",fr="Parametres loi exponentielle tronquee",
+           VALE_MOY   = SIMP(statut='f', typ='R', defaut=0.),
+           BORNE_INF  = SIMP(statut='f', typ='R', defaut=-1.),
+           BORNE_SUP  = SIMP(statut='f', typ='R', defaut=1.),
+           COEF_VAR   = SIMP(statut='f', typ='R', defaut=0.1),
+             ),
+   INIT_ALEA       =SIMP(statut='f',typ='I'),
 ) ;
    

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,23 +20,27 @@ GENER_MEPLI2
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MIAXQU8          MAILLE__ QUAD8
-   ELREFE__  QUAI8     GAUSS__  NELGA=FPG1
-   ELREFE__  QUAI4
+   ELREFE__  QU8     GAUSS__  RIGI=FPG9   MASS=FPG9  GANO=FPG9  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  QU4     GAUSS__  RIGI=FPG9   MASS=FPG9             NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  SE3     GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN2     =     5  6  7  8
    ENS_NOEUD__  EN1     =     1  2  3  4
 ENTETE__ ELEMENT__ MIAXTR6          MAILLE__ TRIA6
-   ELREFE__  TRII6     GAUSS__  NELGA=FPG1
-   ELREFE__  TRII3
+   ELREFE__  TR6     GAUSS__  RIGI=FPG3   MASS=FPG3  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  TR3     GAUSS__  RIGI=FPG3   MASS=FPG3             NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  SE3     GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN2     =     4  5  6
    ENS_NOEUD__  EN1     =     1  2  3
 ENTETE__ ELEMENT__ MIPLQU8          MAILLE__ QUAD8
-   ELREFE__  QUAI8     GAUSS__  NELGA=FPG1
-   ELREFE__  QUAI4
+   ELREFE__  QU8     GAUSS__  RIGI=FPG9   MASS=FPG9  GANO=FPG9  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  QU4     GAUSS__  RIGI=FPG9   MASS=FPG9             NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  SE3     GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN2     =     5  6  7  8
    ENS_NOEUD__  EN1     =     1  2  3  4
 ENTETE__ ELEMENT__ MIPLTR6          MAILLE__ TRIA6
-   ELREFE__  TRII6     GAUSS__  NELGA=FPG1
-   ELREFE__  TRII3
+   ELREFE__  TR6     GAUSS__  RIGI=FPG3   MASS=FPG3  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  TR3     GAUSS__  RIGI=FPG3   MASS=FPG3             NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  SE3     GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN2     =     4  5  6
    ENS_NOEUD__  EN1     =     1  2  3
 
@@ -52,20 +56,34 @@ MODE_LOCAL__
                                  EN1   (DX       DY       PRES     GONF     )
                                  EN2   (DX       DY       )
     NDEPLAR  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
-    EDEFOPG  = EPSI_R   ELGA__ NELGA   (EPXX     EPYY     EPZZ     EPXY     )
+    EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     )
     EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
+    CFORCEF  = FORC_F   ELEM__         (FX       FY       )
+    NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
+    EERREUR  = ERREUR   ELEM__         (ERREST   NUEST    SIGCAL   )
+    EERRENO  = ERREUR   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL   )
+    EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
-    EHYDRER  = HYDR_R   ELGA__ NELGA   (HYDR     )
+    EHYDRER  = HYDR_R   ELGA__ RIGI    (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
+    CREFER1  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
+                                        X7       X8       X9       X10      X11      X12      )
+    CREFER2  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
+                                        X7       X8       X9       X10      X11      X12      )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
-    ECONTPG  = SIEF_R   ELGA__ NELGA   (SIXX     SIYY     SIZZ     SIXY     SIP      )
+    CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
+                                        Z        )
+    ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIP      )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIP      )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    ZVARIPG  = VARI_R   ELGA__ NELGA   (VARI     )
+    ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
+    EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
+                                        V6       T0       T1       T2       T3       T4
+                                        T5       T6       )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -78,6 +96,10 @@ OPTION__
     CHAR_LIMITE         482   IN__   NDEPLAR  PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER
                                      CTEMPSR  PTEMPSR
                               OUT__  ECHALIM  PECHLI
+    CHAR_MECA_FF2D2D    94    IN__   CFORCEF  PFF2D2D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
+                              OUT__  VVECTUR  PVECTUR
+    CHAR_MECA_FR2D2D    93    IN__   EFORCER  PFR2D2D  NGEOMER  PGEOMER  NFORCER  PNFORCER
+                              OUT__  VVECTUR  PVECTUR
     CHAR_MECA_PESA_R    85    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
                               OUT__  VVECTUR  PVECTUR
     CHAR_MECA_ROTA_R    -1    IN__   XXXXXX   XXXXXX
@@ -96,6 +118,12 @@ OPTION__
                               OUT__  EDFEQNO  PDEFOEQ
     EQUI_ELNO_SIGM      439   IN__   ECONTPG  PCONTRR
                               OUT__  ECOEQNO  PCONTEQ
+    ERRE_ELGA_NORE      377   IN__   ECONTNO  PCONTNO  CREFER1  PFORCE   EFORCER  PFRVOLU  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  CPESANR  PPESANR  CREFER2  PPRESS   CROTATR  PROTATR
+                                     CTEMPSR  PTEMPSR  EVOISIN  PVOISIN
+                              OUT__  EERREUR  PERREUR
+    ERRE_ELNO_ELGA      379   IN__   EERREUR  PERREUR
+                              OUT__  EERRENO  PERRENO
     FORC_NODA           480   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
                                      NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
@@ -105,6 +133,8 @@ OPTION__
                                      ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
+    INIT_MAIL_VOIS      99    IN__   NGEOMER  PGEOMER
+                              OUT__  EVOISIN  PVOISIN
     MASS_INER           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX

@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
       PARAMETER (NCMEC1=47)
       PARAMETER (NCMEC2=47)
-      PARAMETER (NCMEC3=24)
+      PARAMETER (NCMEC3=27)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3)
       CHARACTER*16 CHMEC1(NCMEC1)
       CHARACTER*16 CHMEC2(NCMEC2)
@@ -49,7 +49,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E R M I Q U E
 C     ------------------------------------------------------------------
-      PARAMETER (NCTHER=18)
+      PARAMETER (NCTHER=19)
       CHARACTER*16 CHTHER(NCTHER)
 C     ------------------------------------------------------------------
 C                      C H A M P _ V A R C
@@ -205,7 +205,7 @@ C     ------------------------------------------------------------------
      &     'EPGR_ELGA','SIGM_NOEU_SIEF','SIPO_NOEU_SIEF','EPGR_ELNO',
      &     'VALE_CONT','VARI_ELNO_COQU','CRIT_ELNO_RUPT','ETOT_ELGA',
      &     'ETOT_ELNO_ELGA','ETOT_ELEM','VALE_NCOU_MAXI',
-     &     'MODE_FLAMB'/
+     &     'MODE_FLAMB','ENDO_ELGA','ENDO_ELNO_ELGA','INDI_LOCA_ELGA'/
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E R M I Q U E
 C     ------------------------------------------------------------------
@@ -214,7 +214,8 @@ C     ------------------------------------------------------------------
      &     'META_NOEU_TEMP','DURT_ELGA_META','DURT_ELNO_META',
      &     'DURT_NOEU_META','HYDR_ELGA','HYDR_ELNO_ELGA',
      &     'HYDR_NOEU_ELGA','DETE_ELNO_DLTE','DETE_NOEU_DLTE',
-     &     'COMPORTHER','ERTH_ELEM_TEMP','ERTH_ELNO_ELEM'/
+     &     'COMPORTHER','ERTH_ELEM_TEMP','ERTH_ELNO_ELEM',
+     &     'SOUR_ELGA_ELEC'/
 C     ------------------------------------------------------------------
 C                      C H A M P _ V A R C
 C     ------------------------------------------------------------------
@@ -486,11 +487,14 @@ C     ------------------------------------------------------------------
         CALL UTACCE('P',NOMSD,'COEF_Z','COEZ','R',NBORDR)
         GO TO 310
 C     ------------------------------------------------------------------
-      ELSE IF (TYPES2.EQ.'MODE_MECA' .OR. TYPES2.EQ.'MODE_GENE') THEN
+      ELSE IF (TYPES2.EQ.'MODE_MECA' .OR. TYPES2.EQ.'MODE_GENE'
+     &        .OR. TYPES2.EQ.'MODE_MECA_C' ) THEN
 
         NBCHAM = NCMECA
         CALL JEECRA(NOMS2//'.DESC','NOMMAX',NBCHAM,' ')
         IF (TYPES2.EQ.'MODE_MECA') THEN
+          CALL JEECRA(NOMS2//'.DESC','DOCU',IBID,'MOME')
+        ELSEIF (TYPES2.EQ.'MODE_MECA_C') THEN
           CALL JEECRA(NOMS2//'.DESC','DOCU',IBID,'MOME')
         ELSE
           CALL JEECRA(NOMS2//'.DESC','DOCU',IBID,'MOGE')

@@ -1,7 +1,7 @@
       SUBROUTINE IMELNN ( FICHIE, NOMSDZ, NBCMP, LISCMZ,
      +                    NBELEM, LISMAZ, NBCHIF )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/06/99   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -728,7 +728,7 @@ C             -------
 C
 C ---          IMPRESSION DES VALEURS NODALES :
 C              ------------------------------
-                   CALL IMPFR4 (NOMAIL,NOMNO1, NOMCM1, LONLI2,
+                   CALL IMPFR4 (NOMAIL,NOMNO1, LONLI2,
      +                          ZK8(IDNONO), ZK8(IDNOMC),
      +                          ZR(IDVALE), ZI(IDIDCM), 
      +                          ZI(IDIDNO),ZI(IDNUNO),ZK8(IDNCM2),
@@ -874,7 +874,7 @@ C             -------
 C
 C ---          IMPRESSION DES VALEURS NODALES :
 C              ------------------------------
-                   CALL IMPFR4 (NOMAIL,NOMNO1, NOMCM1, LONLI2,
+                   CALL IMPFR4 (NOMAIL,NOMNO1, LONLI2,
      +                          ZK8(IDNONO), ZK8(IDNOMC),
      +                          ZR(IDVALE), ZI(IDIDCM), 
      +                          ZI(IDIDNO),ZI(IDNUNO),ZK8(IDNCM2),
@@ -1232,7 +1232,7 @@ C             -------
 C
 C ---          IMPRESSION DES VALEURS NODALES :
 C              ------------------------------
-                   CALL IMPFC4 (NOMAIL,NOMNO1, NOMCM1, LONLI2,
+                   CALL IMPFC4 (NOMAIL,NOMNO1, LONLI2,
      +                          ZK8(IDNONO), ZK8(IDNOMC),
      +                          ZC(IDVALE), ZI(IDIDCM), 
      +                          ZI(IDIDNO),ZI(IDNUNO),ZK8(IDNCM2),
@@ -1378,7 +1378,7 @@ C             -------
 C
 C ---          IMPRESSION DES VALEURS NODALES :
 C              ------------------------------
-                   CALL IMPFC4 (NOMAIL,NOMNO1, NOMCM1, LONLI2,
+                   CALL IMPFC4 (NOMAIL,NOMNO1, LONLI2,
      +                          ZK8(IDNONO), ZK8(IDNOMC),
      +                          ZC(IDVALE), ZI(IDIDCM), 
      +                          ZI(IDIDNO),ZI(IDNUNO),ZK8(IDNCM2),

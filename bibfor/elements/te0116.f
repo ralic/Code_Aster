@@ -1,6 +1,6 @@
       SUBROUTINE TE0116 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,11 +29,11 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
-      CHARACTER*8      MODELI,ELREFE
+      CHARACTER*8      MODELI
       CHARACTER*16     OPTION, NOMTE
-      CHARACTER*24     CARAC, FF
       REAL*8           SIGMA(54), REPERE(7)
       REAL*8           NHARM, INSTAN
+      INTEGER          NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO,DIMMOD
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
@@ -52,47 +52,15 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CALL ELREF1(ELREFE)
-      MODELI(1:2) = NOMTE(3:4)
-C
-C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
-C ---- GEOMETRIE ET INTEGRATION
-C      ------------------------
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
-      NPG3 = ZI(ICARAC+4)
-      NPG4 = ZI(ICARAC+5)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-C
       IF (OPTION.EQ.'SIGM_ELNO_DEPL') THEN
-        IF(NOMTE(5:7).EQ.'TR3' .OR. NOMTE(5:7).EQ.'QU4' ) THEN
-           NNOS = NNO
-           IPOIDS = IFF + NPG1*(1+3*NNO)
-           IVF  = IPOIDS+NPG2
-           IDFDE = IVF  +NPG2*NNO
-           IDFDK = IDFDE +NPG2*NNO
-           NPG  = NPG2
-        ELSE IF(NOMTE(5:7).EQ.'TR6' .OR. NOMTE(5:7).EQ.'QU8' .OR.
-     &          NOMTE(5:7).EQ.'QU9' ) THEN
-           NNOS = NNO/2
-           IPOIDS = IFF + (NPG1+NPG2+NPG3)*(1+3*NNO)
-           IVF  = IPOIDS+NPG4
-           IDFDE = IVF  +NPG4*NNO
-           IDFDK = IDFDE +NPG4*NNO
-           NPG  = NPG4
-        ENDIF
+         CALL ELREF4(' ','GANO',NDIM,NNO,NNOS,NPG,IPOIDS,
+     &                                            IVF,IDFDE,JGANO)
       ELSE
-         IPOIDS = IFF
-         IVF    = IPOIDS+NPG1
-         IDFDE  = IVF   +NPG1*NNO
-         IDFDK  = IDFDE +NPG1*NNO
-         NPG    = NPG1
+        CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,
+     &                                           IVF,IDFDE,JGANO)
       ENDIF
+      MODELI(1:2) = NOMTE(3:4)
+      DIMMOD = 3
 C
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
@@ -103,9 +71,6 @@ C     -----------------
       ZERO     = 0.0D0
       INSTAN   = ZERO
       NHARM    = ZERO
-      BIDON    = ZERO
-      NDIM     = 3
-      NDIM2    = 2
 C
       DO 10 I = 1, NBSIG*NPG
          SIGMA(I) = ZERO
@@ -121,7 +86,7 @@ C      ------------------------
 C
 C ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
 C      ------------------------------------------------------------
-      CALL ORTREP(ZI(IMATE),NDIM2,REPERE)
+      CALL ORTREP(ZI(IMATE),NDIM,REPERE)
 C
 C ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 C      --------------------------------------------------
@@ -149,10 +114,11 @@ C ---- CALCUL DES CONTRAINTES 'VRAIES' AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT :
 C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
 C      ------------------------------------
-      CALL SIGVMC(MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),ZR(IDFDE),ZR(IDFDK),
-     +            BIDON,ZR(IPOIDS),ZR(IGEOM),ZR(IDEPL),ZR(ITEMPE),
-     +            ZR(ITREF),INSTAN,REPERE,ZI(IMATE),NHARM,SIGMA,.FALSE.)
+      CALL SIGVMC(MODELI,NNO,DIMMOD,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+     +            ZR(IGEOM),ZR(IDEPL),ZR(ITEMPE),
+     +            ZR(ITREF),INSTAN,REPERE,ZI(IMATE),
+     +            NHARM,SIGMA,.FALSE.)
 C
-      CALL PPGANO(NNOS,NPG,NBSIG,SIGMA,ZR(ICONT))
+      CALL PPGAN2(JGANO,NBSIG,SIGMA,ZR(ICONT))
 C
       END

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,19 +56,19 @@ C
       CALL JEVECH ( 'PGEOMER' , 'L' , JGEOM )
       CALL JEVECH ( 'PMATUUR' , 'E' , JMATR )
 C
-      IF (ELREFE.EQ.'FACE3') THEN
+      IF (ELREFE.EQ.'TR3') THEN
          NNO = 3
          CALL DXTPGL ( ZR(JGEOM) , PGL )
-      ELSEIF (ELREFE.EQ.'FACE4') THEN
+      ELSEIF (ELREFE.EQ.'QU4') THEN
          NNO = 4
          CALL DXQPGL ( ZR(JGEOM) , PGL )
-      ELSEIF (ELREFE.EQ.'FACE6') THEN
+      ELSEIF (ELREFE.EQ.'TR6') THEN
          NNO = 6
          CALL DXTPGL ( ZR(JGEOM) , PGL )
-      ELSEIF (ELREFE.EQ.'FACE8')THEN
+      ELSEIF (ELREFE.EQ.'QU8')THEN
          NNO = 8
          CALL DXQPGL ( ZR(JGEOM) , PGL )
-      ELSEIF (ELREFE.EQ.'FACE9')THEN
+      ELSEIF (ELREFE.EQ.'QU9')THEN
          NNO = 9
          CALL DXQPGL ( ZR(JGEOM) , PGL )
       ELSE

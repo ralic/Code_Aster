@@ -1,4 +1,4 @@
-# MODIF  DATE 26/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
 # ======================================================================
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -73,8 +73,8 @@ CH2=AFFE_CHAR_MECA(
                               COULOMB        = 0.0,
                               E_N            = 1.E10,
                               E_T            = 1.E16,
-                              GROUP_MA_2     = 'FACEINF',
-                              GROUP_MA_1     = 'SSOL',
+                              GROUP_MA_ESCL     = 'FACEINF',
+                              GROUP_MA_MAIT     = 'SSOL',
                               DIST_2         =  0.002,
                              )
                   )
@@ -182,17 +182,17 @@ VI5=RECU_FONCTION(RESULTAT=U,
                      NOM_CMP='DZ',
                      NOEUD='N5',
                      TITRE='VITE',);
-IMPR_COURBE(FICHIER='AGRAF',
-            FORMAT='AGRAF',
-            TITRE_GRAPHIQUE='SRO EN X DU SOMMET DU BK ',
-            FREQ_GRILLE_X=1,
-            FREQ_GRILLE_Y=1,
-            COURBE=(_F(FONCTION=DE100,),
-                    _F(FONCTION=VI100,),
-                    _F(FONCTION=DE5,),
-                    _F(FONCTION=VI5,),
-),
-)
+#IMPR_COURBE(FICHIER='AGRAF',
+#            FORMAT='AGRAF',
+#            TITRE_GRAPHIQUE='SRO EN X DU SOMMET DU BK ',
+#            FREQ_GRILLE_X=1,
+#            FREQ_GRILLE_Y=1,
+#            COURBE=(_F(FONCTION=DE100,),
+#                    _F(FONCTION=VI100,),
+#                    _F(FONCTION=DE5,),
+#                    _F(FONCTION=VI5,),
+#                   ),
+#             ) ;
 
 TEST_RESU( RESU=_F(  RESULTAT = U,
                      NUME_ORDRE = 20,

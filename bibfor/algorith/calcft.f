@@ -1,20 +1,20 @@
-        SUBROUTINE CALCFT(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF,
+        SUBROUTINE CALCFT(OPTION,MECA,THMC,HYDR,IMATE,NDIM,DIMDEF,
      +                    DIMCON,NVIMEC,NVITH,YAMEC,YAP1,NBPHA1,YAP2,
      +                    NBPHA2,YATE,ADDETE,ADDEME,ADDEP1,ADDEP2,
      +                    ADCOTE,CONGEM,CONGEP,VINTM,VINTP,ADVIME,
      +                    ADVITH,DSDE,EPSV,P1,P2,T,GRAT,PHI,SATBID,PVP,
-     +                    RGAZ, RHOD, CPD, BIOT, SATM, SAT,
-     +                    DSATP1, PESA, PERMFH, PERMLI, DPERML, PERMGZ,
-     +                    DPERMS, DPERMP, FICK, DFICKT, DFICKG, LAMBDD,
-     +                    DLAMBD, RHOL, UNSURK, ALPHA, CPL, LAMBDL,
-     +                    DLAMBL, VISCL, DVISCL, MAMOLG, CPG, LAMBDG,
-     +                    DLAMBG,
-     +                    VISCG, DVISCG, MAMOLV, CPVG, VISCVG, DVISVG,
-     +                    RETCOM)
+     +                    RGAZ, RHOD, CPD, BIOT, SATM, SAT,DSATP1, 
+     +                    PESA, PERMFH, PERMLI, DPERML, PERMGZ,DPERMS, 
+     +                    DPERMP, FICK, DFICKT, DFICKG, LAMBP,
+     +                    DLAMBP, RHOL, UNSURK, ALPHA, CPL, LAMBS,
+     +                    DLAMBS, VISCL, DVISCL, MAMOLG, CPG, LAMBT,
+     +                    DLAMBT,VISCG, 
+     +                    DVISCG, MAMOLV, CPVG, VISCVG, DVISVG,
+     +                    RETCOM,LAMBCT)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 23/03/2004   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,31 +49,54 @@ C ======================================================================
       REAL*8        T,GRAT(3),PHI,SAT,DSATP1,PVP,LAMBDT(5),I,J,SATBID
       REAL*8        RGAZ, RHOD, CPD, BIOT, SATM, SATUR,DSATUR, PESA(3)
       REAL*8        PERMFH, PERMLI, DPERML, PERMGZ,DPERMS, DPERMP, FICK
-      REAL*8        DFICKT, DFICKG, LAMBDD,DLAMBD, RHOL, UNSURK, ALPHA
-      REAL*8        CPL, LAMBDL,DLAMBL, VISCL, DVISCL, CPG, LAMBDG
-      REAL*8        DLAMBG,VISCG, DVISCG, MAMOLG, CPVG, VISCVG, DVISVG
-      CHARACTER*16  OPTION,MECA,THMC,THER,HYDR
+      REAL*8        DFICKT, DFICKG, LAMBP,DLAMBP, RHOL,UNSURK,CPL
+      REAL*8        ALPHA, LAMBS,DLAMBS, VISCL, DVISCL, CPG, LAMBT
+      REAL*8        DLAMBT,VISCG, DVISCG, MAMOLG, CPVG, VISCVG, DVISVG
+      REAL*8        LAMBCT
+      CHARACTER*16  OPTION,MECA,THMC,HYDR
+C    PARAMETRE POUR LA RECUP DES COEF MECA
+      INTEGER      NELAS
+      PARAMETER  ( NELAS=4 )
+      REAL*8       ELAS(NELAS),YOUNG,ALPHA0,CS,K0,NU
+      CHARACTER*8  NCRA1(NELAS)
+      CHARACTER*2  CODRET(NELAS)
 C ======================================================================
-C --- SI THER_HOMO ----------------------------------------------------
+C --- DONNEES POUR RECUPERER LES CARACTERISTIQUES MECANIQUES -----------
+C ======================================================================
+      DATA NCRA1/'E','NU','RHO','ALPHA'/
 C =====================================================================
-      IF (THER.EQ.'THER_HOMO') THEN
-         LAMBDT(1) = LAMBDD
-         LAMBDT(2) = 0.0D0
-         LAMBDT(3) = 0.0D0
-         LAMBDT(4) = 0.0D0
-         LAMBDT(5) = 0.0D0
-      ELSE
+C ---       RECUPERATION DES COEFFICIENTS MECANIQUES ------------------
 C =====================================================================
-C --- SI THER_POLY ----------------------------------------------------
+
+         IF (YAMEC.EQ.1) THEN
+             CALL RCVALA(IMATE,'ELAS',0,' ',0.D0,NELAS,NCRA1,ELAS
+     &           ,CODRET,'FM')
+             YOUNG = ELAS(1)
+             NU = ELAS(2)
+             ALPHA0 = ELAS(4)
+             K0 = YOUNG/3.D0/ (1.D0-2.D0*NU)
+             CS = (1.D0-BIOT)/K0
+         ELSE
 C =====================================================================
-         LAMBDT(1) = (1.D0-PHI)*LAMBDD+PHI*SAT*LAMBDL+
-     +                                            PHI*(1.D0-SAT)*LAMBDG
-         LAMBDT(2) = 0.D0
-         LAMBDT(3) = PHI*DSATP1*LAMBDL-PHI*DSATP1*LAMBDG
-         LAMBDT(4) = 0.D0
-         LAMBDT(5) = (1.D0-PHI)*DLAMBD+PHI*SAT*DLAMBL+
-     +                                            PHI*(1.D0-SAT)*DLAMBG
-      ENDIF
+C --- EN ABSENCE DE MECA ALPHA0 = 0 et 1/KS = 0       -------------
+C =====================================================================
+           ALPHA0 = 0.D0
+           CS = 0.D0
+         END IF
+         IF (THMC.EQ.'GAZ') THEN
+            SAT = 0.D0
+            DSATP1 = 0.D0
+         ELSE IF(THMC.EQ.'LIQU_SATU')THEN
+            SAT = 1.D0
+            DSATP1 = 0.D0
+         ENDIF
+         LAMBDT(1) = LAMBS*LAMBP*LAMBT + LAMBCT
+         LAMBDT(2) = (BIOT-PHI)*DLAMBP*LAMBS*LAMBT
+         LAMBDT(3) = LAMBP*DLAMBS*LAMBT*DSATP1
+     +            -SAT*CS*(BIOT-PHI)*DLAMBP*LAMBS*LAMBT
+         LAMBDT(4) = CS*(BIOT-PHI)*DLAMBP*LAMBS*LAMBT
+         LAMBDT(5) = LAMBS*LAMBP*DLAMBT 
+     +            -(BIOT-PHI)*3*ALPHA0*DLAMBP*LAMBS*LAMBT
 C =====================================================================
 C --- CALCUL DU FLUX THERMIQUE ----------------------------------------
 C =====================================================================

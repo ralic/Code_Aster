@@ -1,6 +1,6 @@
       SUBROUTINE TE0220 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C    - FONCTION REALISEE:
@@ -30,7 +30,6 @@ C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
 C ----- DEBUT --- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -47,28 +46,15 @@ C ----- DEBUT --- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CHARACTER*24       CARAC,FF
       CHARACTER*2        CODRET
-      CHARACTER*8        NOMPAR,ELREFE
+      CHARACTER*8        NOMPAR
       REAL*8             VALRES, VALPAR
       REAL*8             DFDX(9),DFDY(9),POIDS,FLUX,FLUY,EPOT
-      INTEGER            NNO,KP,J,K,ITEMPE,ITEMP,IENER
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE
-      INTEGER            NPG
+      INTEGER            NDIM,NNO,NNOS,NPG,KP,J,ITEMPE,ITEMP,IENER
+      INTEGER            IPOIDS,IVF,IDFDE,JGANO,IGEOM,IMATE,IRET,NBPAR
+C     ------------------------------------------------------------------
 C
-      CALL ELREF1(ELREFE)
-
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG  = ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS = IFF
-      IVF    = IPOIDS + NPG
-      IDFDE  = IVF    + NPG*NNO
-      IDFDK  = IDFDE  + NPG*NNO
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -91,9 +77,7 @@ C
 C
       EPOT = 0.D0
       DO 101 KP=1,NPG
-         K=(KP-1)*NNO
-         CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                 ZR(IGEOM),DFDX,DFDY,POIDS )
+         CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
          FLUX = 0.D0
          FLUY = 0.D0
          DO 110 J=1,NNO

@@ -1,14 +1,14 @@
-      SUBROUTINE RVECHS(EPSI,SSCH19,NBCP,NBCO,NBSP,MA,VLC,FOR,FEX,AOR,
-     +                  AEX,RSOR,RSEX,N,PTADR,VAL,NBNDF,CLOCF)
+      SUBROUTINE RVECHS(SSCH19,NBCP,NBCO,NBSP,MA,VLC,FOR,FEX,
+     +                  RSOR,RSEX,N,PTADR,VAL,NBNDF,CLOCF)
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       CHARACTER*19 SSCH19
-      INTEGER     NBCP,NBCO,NBSP,N,PTADR,FOR(*),FEX(*),AOR(*),AEX(*)
+      INTEGER     NBCP,NBCO,NBSP,N,PTADR,FOR(*),FEX(*)
       INTEGER     MA(*),VLC(*),NBNDF(6,*),CLOCF(6,4,*)
-      REAL*8      RSOR(*),RSEX(*),VAL(*),EPSI
+      REAL*8      RSOR(*),RSEX(*),VAL(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 14/01/98   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,6 @@ C ======================================================================
 C     ------------------------------------------------------------------
 C     EVALUATION DE CMP LE LONG D' UN SGT_3D EN UN MORCEAUX
 C     ------------------------------------------------------------------
-C IN  EPSI   : R : PRECISION
 C IN  SSCH19 : K : NOM DU SOUS_CHAM_GD
 C IN  NBCP   : I : NOMBRE DE CMP
 C IN  NBOP   : I : NOMBRE DE COUCHE
@@ -37,8 +36,6 @@ C IN  MA     : I : TABLE DES MAILLES 3D RENCONTREES
 C IN  VLC    : I : POINTEUR DES SGT_ELEM SUR LES MAILLES 3D RENCONTREES
 C IN  FOR    : I : TABLES FACES CONTENANT ORIGINES   DES SGT_ELEM
 C IN  FEX    : I : TABLES FACES CONTENANT EXTREMITES DES SGT_ELEM
-C IN  AOR    : I : TABLES ARETES CONTENANT ORIGINES   DES SGT_ELEM
-C IN  AEX    : I : TABLES ARETES CONTENANT EXTREMITES DES SGT_ELEM
 C IN  RSOR   : R : TABLES CO_REF DES ORIGINES   DES SGT_ELEM
 C IN  RSEX   : R : TABLES CO_REF DES EXTREMITES DES SGT_ELEM
 C IN  N      : I : NOMBRE DE SGT_ELEM
@@ -165,7 +162,7 @@ C
             ELSE
                CALL UTMESS('F','RVECHS','MAILLE DE TYPE NON ATTENDU')
             ENDIF
-            CALL RVCHL3(ZR(AVALE),ZI(APADR),ZI(APNCO),ZI(APNSP),
+            CALL RVCHL3(ZR(AVALE),ZI(APADR),ZI(APNSP),
      +                   ZI(APNBN),MA(VLC(I)),NBMA,ITYPM,NBCO,NBSP,NBPT,
      +                   NBCP,FACE,CREF,NBNDF,CLOCF,ZI(ACONEC),
      +                   ZI(VLCCNC),VAL,PTADR,ZR(AUX))

@@ -1,15 +1,15 @@
-      SUBROUTINE LGLINN(GAMP, NBMAT, MATER, PARAME,
-     +                  DERIVE, GE, IE, UE, Q, VECN, F0, DELTA, DEVG,
+      SUBROUTINE LGLINN(NBMAT, MATER, PARAME,
+     +                  DERIVE, GE, IE, Q, VECN, F0, DELTA, DEVG,
      +                  DEVGII, TRACEG, DY)
 C
       IMPLICIT      NONE
       INTEGER       NR, NBMAT
-      REAL*8        GAMP, MATER(NBMAT,2), PARAME(5), DERIVE(4), GE, IE
-      REAL*8        UE, Q(6), VECN(6), F0, DELTA, DEVG(6), DEVGII
+      REAL*8        MATER(NBMAT,2), PARAME(5), DERIVE(4), GE, IE
+      REAL*8        Q(6), VECN(6), F0, DELTA, DEVG(6), DEVGII
       REAL*8        TRACEG, DY(10)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,14 +34,12 @@ C ======================================================================
 C IN  : NDT    : NOMBRE DE COMPOSANTES TOTALES DU TENSEUR --------------
 C --- : NDI    : NOMBRE DE COMPOSANTES DIAGONALES DU TENSEUR -----------
 C --- : NR     : NOMBRE DE RELATIONS NON-LINEAIRES ---------------------
-C --- : GAMP   : DEFORMATION DEVIATOIRE PLASTIQUE CUMULEE --------------
 C --- : NBMAT  : NOMBRE DE PARAMETRES MATERIAU -------------------------
 C --- : MATER  : PARAMETRES MATERIAU -----------------------------------
 C --- : PARAME : VARIABLES D'ECROUISSAGES ------------------------------
 C --- : DERIVE : DERIVEES DES VARIABLES D'ECROUISSAGES -----------------
 C --- : GE     : DIRECTION D'ECOULEMENT ELASTIQUE ----------------------
 C --- : IE     : PREMIER INVARIANT ELASTIQUE ---------------------------
-C --- : UE     : PREMIER CRITERE PLASTIQUE -----------------------------
 C --- : Q      : DS/DE -------------------------------------------------
 C --- : VECN   : VECTEUR N ---------------------------------------------
 C --- : F0     : VALEUR SEUIL A L'ITERATION 0 --------------------------
@@ -83,11 +81,11 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE DFDS ---------------------------------------------------
 C ======================================================================
-      CALL DRFDRS(Q, PARAME, H0, SIGC, GE, UE, DUDS, DFDS)
+      CALL DRFDRS(Q, PARAME, H0, SIGC, GE, DUDS, DFDS)
 C ======================================================================
 C --- CALCUL DE DFDG ---------------------------------------------------
 C ======================================================================
-      CALL DRFDRG(PARAME, DERIVE, H0, SIGC, GE, UE, DUDG, DFDG)
+      CALL DRFDRG(PARAME, DERIVE, H0, SIGC, GE, DUDG, DFDG)
 C ======================================================================
 C --- CALCUL DE G ------------------------------------------------------
 C ======================================================================

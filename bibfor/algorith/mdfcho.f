@@ -16,7 +16,7 @@
       REAL*8             TEMPS,PSIDEL(NBCHOC,NBEXCI,*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/10/1999   AUTEUR SABJLMA P.LATRUBESSE 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CRP_21
+C TOLE CRP_20
 C
 C     CALCUL LES FORCES DE CHOC DE LA STRUCTURE
 C     ------------------------------------------------------------------
@@ -229,7 +230,7 @@ C        --- PARAMETRES DE FLAMBAGE ---
 C
 C        ---  CALCUL DE LA DISTANCE NORMALE ---
          CALL DISTNO( DEPLOC,SIGNE,NOECHO(I,9),XJEU,DIST1,DIST2,
-     +                NBSEG,RAYON,THETA,DNORM,COST,SINT )
+     +                NBSEG,DNORM,COST,SINT )
 C
          IF ( LOGCHO(I,2).EQ.1) THEN
 C
@@ -391,7 +392,7 @@ C
           IF ( DNORM .LE. ZERO ) THEN
 C
 C           --- CALCUL DE LA FORCE NORMALE REPERE LOCAL ---
-            CALL MDFLAM(DNORM,VITLOC,KNORM,CNORM,COST,SINT,FLIM,FSEUIL,
+            CALL MDFLAM(DNORM,VITLOC,KNORM,COST,SINT,FLIM,FSEUIL,
      +                  RIGIFL,DEFPLA,FN,FLOCAL,VNORM )
             IF ( CFROT .NE. ZERO ) THEN
                OLDFT(1) = PARCHO(I,25)

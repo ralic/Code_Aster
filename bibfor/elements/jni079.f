@@ -1,9 +1,11 @@
-      SUBROUTINE JNI079(ELREFE,NMAXOB,LIOBJ,NBOBJ)
+      SUBROUTINE JNI079 ( ELREFE, NMAXOB, LIOBJ, NBOBJ )
       IMPLICIT NONE
-      CHARACTER*8 ELREFE
+      INTEGER             NMAXOB, NBOBJ
+      CHARACTER*8         ELREFE
+      CHARACTER*24        LIOBJ(NMAXOB)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/10/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,62 +44,56 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN DECLARATIONS NORMALISEES  JEVEUX ---------------------
 
-      INTEGER NNO,NC,IRET,NDIM,NNOS,NBFPG
-      INTEGER LZI,LZR,LQSI,LETA,LWGT,IND
-      INTEGER NBPG(27),NMAXOB,NBOBJ,LDESI,LDESR
-      REAL*8 X(3*27),XSO(3)
-      CHARACTER*16 ELREFL
-      CHARACTER*24 DESI,DESR,LIOBJ(NMAXOB)
+      INTEGER       NNO, NC, IRET, NDIM, NNOS, NBFPG, NBPG(27)
+      INTEGER       LZR, LQSI, LETA, LWGT, IND, NUFL, LDESR, INDIK8
+      REAL*8        X(3*27), VOL
+      CHARACTER*8   ELREF0, FAMILL, FAPG(27)
+      CHARACTER*24  DESR
 C DEB ------------------------------------------------------------------
 
-
-      NBOBJ = 4
+      NBOBJ = 1
       CALL ASSERT(NMAXOB.GT.NBOBJ)
-      ELREFL = ELREFE
-      LIOBJ(1) = '&INEL.'//ELREFE//'.DESI'
-      LIOBJ(2) = '&INEL.'//ELREFE//'.DESR'
-      LIOBJ(3) = '&INEL.'//ELREFL//'.A'
-      LIOBJ(4) = '&INEL.'//ELREFL//'.B'
 
-      CALL JEEXIN('&INEL.'//ELREFE//'.DESI',IRET)
-      IF (IRET.GT.0) GO TO 10
-
-      CALL CARREF(ELREFE,NDIM,NNO,NNOS,NBFPG,NBPG,X)
-
-      DESI = '&INEL.'//ELREFE//'.DESI'
       DESR = '&INEL.'//ELREFE//'.DESR'
+
+      LIOBJ(1) = DESR
+
+      CALL JEEXIN ( DESR , IRET )
+      IF (IRET.GT.0) GO TO 10
 
 C     ------------------------------------------------------------------
       IF (ELREFE.EQ.'MEDKTR3 ' .OR. ELREFE.EQ.'MEGRDKT ' .OR.
-     &    ELREFE.EQ.'MEDSTR3 ') THEN
-        NC = 3
-        IND = 0
+     &    ELREFE.EQ.'MEDSTR3 ' .OR. ELREFE.EQ.'MEDKTG3 ') THEN
+         ELREF0 = 'TR3'
+         FAMILL = 'FPG3'
+         NC = 3
+         IND = 0
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFE.EQ.'MEDKQU4 ' .OR. ELREFE.EQ.'MEGRDKQ ' .OR.
-     &         ELREFE.EQ.'MEDSQU4 ' .OR. ELREFE.EQ.'MEQ4QU4 ') THEN
-        NC = 4
-        IND = 20
+     &         ELREFE.EQ.'MEDSQU4 ' .OR. ELREFE.EQ.'MEQ4QU4 ' .OR.
+     &         ELREFE.EQ.'MEDKQG4 ' ) THEN
+         ELREF0 = 'QU4'
+         FAMILL = 'FPG4'
+         NC = 4
+         IND = 20
 
 C     ------------------------------------------------------------------
       ELSE
-        CALL UTMESS('F','INI079','ELREFE NON PREVU '//ELREFE)
+        CALL UTMESS('F','JNI079','ELREFE NON PREVU '//ELREFE)
       END IF
 
+      CALL ELRACA(ELREF0,NDIM,NNO,NNOS,NBFPG,FAPG,NBPG,X,VOL)
 
-      LDESI = 4
-      CALL WKVECT(DESI,'G V I',LDESI,LZI)
-      ZI(LZI) = NNO
-      ZI(LZI+1) = 1
-      ZI(LZI+2) = NBPG(1)
-      ZI(LZI+3) = NC
+      NUFL = INDIK8( FAPG, FAMILL, 1, NBFPG )
 
-      LDESR = 6 + 3*NBPG(1) + 2*NNO + 5*NC + 1 + IND + 17
-      CALL WKVECT(DESR,'G V R',LDESR,LZR)
+      LDESR = 6 + 3*NBPG(NUFL) + 2*NNO + 5*NC + 1 + IND + 17
+
+      CALL WKVECT ( DESR, 'G V R', LDESR, LZR )
 
 
       IF (ELREFE.EQ.'MEDKTR3 ' .OR. ELREFE.EQ.'MEGRDKT ' .OR.
-     &    ELREFE.EQ.'MEDSTR3 ') THEN
+     &    ELREFE.EQ.'MEDSTR3 ' .OR. ELREFE.EQ.'MEDKTG3 ') THEN
 C        ---------------------------------------------------------------
 C        COORDONNEES ET POIDS DES POINTS D'INTEGRATION DU TRIANGLE
 C        POUR LES DKT ET DST
@@ -123,7 +119,7 @@ C-DOC          PARAMETER (LT2VE = LT1VE + 9 )
 C-DOC          PARAMETER (LT2EV = LT2VE + 4 )
 C        ---------------------------------------------------------------
 C                   -------- QSI POINTS DE GAUSS
-        ZR(LZR-1+LQSI) = 0.166666666666667D0
+        ZR(LZR-1+LQSI)   = 0.166666666666667D0
         ZR(LZR-1+LQSI+1) = 0.666666666666667D0
         ZR(LZR-1+LQSI+2) = 0.166666666666667D0
 C                   -------- QSI NOEUDS
@@ -131,7 +127,7 @@ C                   -------- QSI NOEUDS
         ZR(LZR-1+LQSI+4) = 1.D0
         ZR(LZR-1+LQSI+5) = 0.D0
 C                   -------- ETA POINTS DE GAUSS
-        ZR(LZR-1+LETA) = 0.166666666666667D0
+        ZR(LZR-1+LETA)   = 0.166666666666667D0
         ZR(LZR-1+LETA+1) = 0.166666666666667D0
         ZR(LZR-1+LETA+2) = 0.666666666666667D0
 C                   -------- ETA NOEUDS
@@ -139,13 +135,14 @@ C                   -------- ETA NOEUDS
         ZR(LZR-1+LETA+4) = 0.D0
         ZR(LZR-1+LETA+5) = 1.D0
 C                   -------- POIDS POINTS DE GAUSS
-        ZR(LZR-1+LWGT) = 0.166666666666667D0
+        ZR(LZR-1+LWGT)   = 0.166666666666667D0
         ZR(LZR-1+LWGT+1) = 0.166666666666667D0
         ZR(LZR-1+LWGT+2) = 0.166666666666667D0
 
 
       ELSE IF (ELREFE.EQ.'MEDKQU4 ' .OR. ELREFE.EQ.'MEGRDKQ ' .OR.
-     &         ELREFE.EQ.'MEDSQU4 ' .OR. ELREFE.EQ.'MEQ4QU4 ') THEN
+     &         ELREFE.EQ.'MEDSQU4 ' .OR. ELREFE.EQ.'MEQ4QU4 ' .OR.
+     &         ELREFE.EQ.'MEDKQG4 ' ) THEN
 C        ---------------------------------------------------------------
 C        COORDONNEES ET POIDS DES POINTS D'INTEGRATION DU QUADRANGLE
 C        POUR LES DKQ, DSQ ET Q4GAMMA
@@ -172,61 +169,50 @@ C_DOC          PARAMETER (LT2VE = LT1VE + 9 )
 C_DOC          PARAMETER (LT2EV = LT2VE + 4 )
 C     ------------------------------------------------------------------
 C                   -------- QSI POINTS DE GAUSS
-        ZR(LZR-1+LQSI) = -0.577350269189626D0
-        ZR(LZR-1+LQSI+1) = 0.577350269189626D0
-        ZR(LZR-1+LQSI+2) = 0.577350269189626D0
+        ZR(LZR-1+LQSI)   = -0.577350269189626D0
+        ZR(LZR-1+LQSI+1) =  0.577350269189626D0
+        ZR(LZR-1+LQSI+2) =  0.577350269189626D0
         ZR(LZR-1+LQSI+3) = -0.577350269189626D0
 C                   -------- QSI NOEUDS
         ZR(LZR-1+LQSI+4) = -1.D0
-        ZR(LZR-1+LQSI+5) = 1.D0
-        ZR(LZR-1+LQSI+6) = 1.D0
+        ZR(LZR-1+LQSI+5) =  1.D0
+        ZR(LZR-1+LQSI+6) =  1.D0
         ZR(LZR-1+LQSI+7) = -1.D0
 C                   -------- QSI POINTS DE GAUSS DES COTES
-        ZR(LZR-1+LQSI+8) = -0.577350269189626D0
-        ZR(LZR-1+LQSI+9) = 0.577350269189626D0
-        ZR(LZR-1+LQSI+10) = 1.000000000000000D0
-        ZR(LZR-1+LQSI+11) = 1.000000000000000D0
-        ZR(LZR-1+LQSI+12) = 0.577350269189626D0
+        ZR(LZR-1+LQSI+8)  = -0.577350269189626D0
+        ZR(LZR-1+LQSI+9)  =  0.577350269189626D0
+        ZR(LZR-1+LQSI+10) =  1.000000000000000D0
+        ZR(LZR-1+LQSI+11) =  1.000000000000000D0
+        ZR(LZR-1+LQSI+12) =  0.577350269189626D0
         ZR(LZR-1+LQSI+13) = -0.577350269189626D0
         ZR(LZR-1+LQSI+14) = -1.000000000000000D0
         ZR(LZR-1+LQSI+15) = -1.000000000000000D0
 C                   -------- ETA POINTS DE GAUSS
-        ZR(LZR-1+LETA) = -0.577350269189626D0
+        ZR(LZR-1+LETA)   = -0.577350269189626D0
         ZR(LZR-1+LETA+1) = -0.577350269189626D0
-        ZR(LZR-1+LETA+2) = 0.577350269189626D0
-        ZR(LZR-1+LETA+3) = 0.577350269189626D0
+        ZR(LZR-1+LETA+2) =  0.577350269189626D0
+        ZR(LZR-1+LETA+3) =  0.577350269189626D0
 C                   -------- ETA NOEUDS
         ZR(LZR-1+LETA+4) = -1.D0
         ZR(LZR-1+LETA+5) = -1.D0
-        ZR(LZR-1+LETA+6) = 1.D0
-        ZR(LZR-1+LETA+7) = 1.D0
+        ZR(LZR-1+LETA+6) =  1.D0
+        ZR(LZR-1+LETA+7) =  1.D0
 C                   -------- ETA POINTS DE GAUSS DES COTES
-        ZR(LZR-1+LETA+8) = -1.000000000000000D0
-        ZR(LZR-1+LETA+9) = -1.000000000000000D0
+        ZR(LZR-1+LETA+8)  = -1.000000000000000D0
+        ZR(LZR-1+LETA+9)  = -1.000000000000000D0
         ZR(LZR-1+LETA+10) = -0.577350269189626D0
-        ZR(LZR-1+LETA+11) = 0.577350269189626D0
-        ZR(LZR-1+LETA+12) = 1.000000000000000D0
-        ZR(LZR-1+LETA+13) = 1.000000000000000D0
-        ZR(LZR-1+LETA+14) = 0.577350269189626D0
+        ZR(LZR-1+LETA+11) =  0.577350269189626D0
+        ZR(LZR-1+LETA+12) =  1.000000000000000D0
+        ZR(LZR-1+LETA+13) =  1.000000000000000D0
+        ZR(LZR-1+LETA+14) =  0.577350269189626D0
         ZR(LZR-1+LETA+15) = -0.577350269189626D0
 C                   -------- POIDS POINTS DE GAUSS
-        ZR(LZR-1+LWGT) = 1.00D0
+        ZR(LZR-1+LWGT)   = 1.00D0
         ZR(LZR-1+LWGT+1) = 1.00D0
         ZR(LZR-1+LWGT+2) = 1.00D0
         ZR(LZR-1+LWGT+3) = 1.00D0
 
       END IF
-
-
-C   INITIALISATION DE LA MATRICE "MAGIQUE" DE PASSAGE
-C   DES CONTRAINTES AUX POINTS DE GAUSS AUX CONTRAINTES AUX SOMMETS
-      NDIM = 1
-      NNOS = NNO
-      NBFPG = 1
-      XSO(1) = 0.D+00
-      XSO(2) = 0.D+00
-      XSO(3) = 0.D+00
-      CALL INMAT2(NDIM,NNO,NNOS,NBFPG,ELREFE,XSO,NBPG)
 
    10 CONTINUE
 

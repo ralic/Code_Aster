@@ -7,7 +7,7 @@
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 17/12/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,10 +53,10 @@ C
 C
       IF ( GAUCHE ) THEN
          CALL I3IQGS ( EPSI, K, F, DESC, DESCTM, CONEXK, COORDO,
-     +                 SGT, ATRV, BTRV, NBPT, LSTPT, FINK, FIND )
+     +                 SGT, NBPT, LSTPT, FINK)
       ELSE
          CALL I3IQPS ( EPSI, K, F, DESC, DESCTM, CONEXK, COORDO,
-     +                 SGT, ATRV, BTRV, NBPT, LSTPT, FINK, FIND )
+     +                 SGT, NBPT, LSTPT, FINK)
       ENDIF
 C
       END

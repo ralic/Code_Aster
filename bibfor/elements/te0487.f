@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,15 +47,20 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C ----------------------------------------------------------------------
+      INTEGER       NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO
       INTEGER       IGEOM, IDEPM, IDEPP, IPRES, ITEMP, IRES, ICACO
-      INTEGER       NNO, INO, LZI, IADZI, IAZK24, IER,IRET
+      INTEGER       INO, IADZI, IAZK24, IER, IRET, JIN
       REAL*8        VALPAR(4), PR
-      CHARACTER*8   NOMAIL, NOMPAR(4),ELREFE
-      CHARACTER*24  DESI
+      CHARACTER*8   NOMAIL, NOMPAR(4)
 C     ------------------------------------------------------------------
 C
-      CALL ELREF1(ELREFE)
-
+      IF (NOMTE(1:8).EQ.'MEC3QU9H' .OR. NOMTE(1:8).EQ.'MEC3TR7H') THEN
+         CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESI','L',JIN)
+         NNO   = ZI(JIN)
+      ELSE
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
+      ENDIF
+C
       CALL JEVECH ( 'PGEOMER', 'L', IGEOM )
       CALL JEVECH ( 'PDEPLMR', 'L', IDEPM )
       CALL JEVECH ( 'PDEPLPR', 'L', IDEPP )
@@ -66,10 +71,6 @@ C
          CALL JEVECH ( 'PCACOQU', 'L', ICACO )
       ENDIF
       CALL JEVECH ( 'PVECTUR', 'E', IRES  )
-C
-      DESI = '&INEL.'//ELREFE//'.DESI'
-      CALL JEVETE ( DESI, 'L', LZI )
-      NNO = ZI(LZI)
 C
       NOMPAR(1) = 'X'
       NOMPAR(2) = 'Y'

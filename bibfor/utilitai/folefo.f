@@ -1,14 +1,14 @@
-      SUBROUTINE FOLEFO(IFSIG, ORG,PAS,IDENT,NPS,FVA,FFO,NOMCMD,
+      SUBROUTINE FOLEFO(IFSIG, ORG,PAS,NPS,FVA,FFO,NOMCMD,
      +                  VAR,FON,IER)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER           IFSIG,               NPS
       INTEGER           IER
-      CHARACTER*(*)            ORG,    IDENT,    FVA,FFO, NOMCMD
+      CHARACTER*(*)            ORG,    FVA,FFO, NOMCMD
       REAL*8                       PAS
       REAL*8            VAR(*),FON(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 02/10/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,6 @@ C       'VFVF'
 C       'VVFF'
 C       'FFFF'
 C       'V1F1'
-C IN  IDENT  : K4 : IDENTIFICATEUR DE FIN DE ZONE
 C IN  NPS    : IS : NOMBRE DE POINTS DECRIVANT LE SIGNAL
 C IN  PAS    : R8 : PAS DECRIVANT LE SIGNAL
 C IN  FVA    : K3 : FORMAT DE LECTURE VARIABLE * OU FIXE N CARACTERES

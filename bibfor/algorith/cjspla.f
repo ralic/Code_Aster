@@ -4,7 +4,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -200,7 +200,7 @@ C       -----------------------
           CALL CJSMIS( MOD, CRIT, MATER, NVI, EPSD, DEPS,
      &                  SIGD, SIGF, VIND, VINF,
      >                  NOCONV,AREDEC,STOPNC,
-     >                  NIVCJS ,NITER0,EPSCON)
+     >                  NITER0,EPSCON)
           NITER = NITER + NITER0
           IF ( NOCONV.AND.(.NOT.AREDEC)) GOTO 500
          ENDIF
@@ -213,7 +213,7 @@ C       -------------------------
           CALL CJSMDE ( MOD, CRIT, MATER, NVI, EPSD, DEPS,
      &                  SIGD, SIGF, VIND, VINF,
      >                  NOCONV,AREDEC,STOPNC,
-     >                  NIVCJS ,NITER0,EPSCON)
+     >                  NITER0,EPSCON)
           NITER = NITER + NITER0
           IF ( NOCONV.AND.(.NOT.AREDEC)) GOTO 500
          ENDIF
@@ -225,7 +225,7 @@ C       ---------------------------------
           CALL CJSMID ( MOD, CRIT, MATER, NVI, EPSD, DEPS,
      &                  SIGD, SIGF, VIND, VINF,
      >                  NOCONV,AREDEC,STOPNC,
-     >                  NIVCJS ,NITER0,EPSCON)
+     >                  NITER0,EPSCON)
           NITER = NITER + NITER0
           IF ( NOCONV.AND.(.NOT.AREDEC)) GOTO 500
          ENDIF

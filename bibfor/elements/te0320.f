@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,46 +47,28 @@ C
 C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CHARACTER*24       CARAC,FF,NOMRES
+      CHARACTER*24       NOMRES
       CHARACTER*16       COMPOR(3)
-      CHARACTER*8        ELREFE
       CHARACTER*2        CODRET
       REAL*8             TPG0,ZERO,METAPG(63),MS0,ZALPHA,ZBETA
-      INTEGER            KP,J,K,NNO,NNOS,NCMP,ICARAC
-      INTEGER            IFF,ICOMPO,IPOIDS,IVF,NPG,NPG1
+      INTEGER            NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO
+      INTEGER            ICOMPO,KP,J,K,NCMP
       INTEGER            IMATE,ITEMPE,IPHASI,IPHASO,IPHASN
+C     -----------------------------------------------------------------
 C
-C
-      CALL ELREF1(ELREFE)
-C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS = IFF
-      IVF    = IPOIDS+NPG1
-      NPG    = NPG1
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
 C     PARAMETRES EN ENTREE
 C    ---------------------
-
-
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PCOMPOR','L',ICOMPO)
       CALL JEVECH('PTEMPER','L',ITEMPE)
       CALL JEVECH('PPHASIN','L',IPHASI)
 
-
-
-
       COMPOR(1)=ZK16(ICOMPO)
 
 C     PARAMETRES EN SORTIE
 C    ----------------------
-
       CALL JEVECH('PPHASOU','E',IPHASO)
       IF (OPTION .EQ. 'META_INIT_ELNO') THEN
         CALL JEVECH('PPHASNOU','E',IPHASN)
@@ -94,13 +76,8 @@ C    ----------------------
 
       ZERO=0.D0
 
-
-
 C     MATERIAU FERRITIQUE
 C    ---------------------
-
-
-
 
       IF (COMPOR(1) .EQ. 'ACIER' ) THEN
 
@@ -167,32 +144,15 @@ C
 
 C
          IF ( OPTION .EQ. 'META_INIT_ELNO' ) THEN
-            IF (NOMTE(5:8).EQ.'TR3 ') THEN
-              NNOS = NNO
-            ELSE IF (NOMTE(5:8).EQ.'QU4 ') THEN
-              NNOS = NNO
-            ELSE IF (NOMTE(5:8).EQ.'TR6 ') THEN
-              NNOS = 3
-            ELSE IF (NOMTE(5:8).EQ.'QS8 ') THEN
-              NNOS = 4
-            ELSE IF (NOMTE(5:8).EQ.'QU8 '
-     &               .OR. NOMTE(5:8) .EQ. 'QU9')  THEN
-              NNOS = 4
-            END IF
             IF (COMPOR(1)(1:4) .EQ. 'ZIRC') THEN
                NCMP=3
             ELSE
-
                NCMP = 7
             ENDIF
-            CALL PPGANO(NNOS,NPG,NCMP,ZR(IPHASO),ZR(IPHASN))
+
+            CALL PPGAN2(JGANO,NCMP,ZR(IPHASO),ZR(IPHASN))
 C
          ENDIF
-
-
-
-
-
 
 9999  CONTINUE
       END

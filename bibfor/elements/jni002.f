@@ -3,22 +3,22 @@
       CHARACTER*8 ELREFA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 26/01/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
@@ -48,10 +48,10 @@ C --------- FIN DECLARATIONS NORMALISEES  JEVEUX ---------------------
 
       INTEGER NBPG(NBFAMX),IRET,NDIM,NNO,NNOS,NBFPG
       INTEGER NMAXOB,NBOBJ,LONFAM,IFAM,LON2,DECAL,IDIM
-      INTEGER IPG,INO,NDERIV,JVI,JVR,NPG
-      REAL*8 XNO(3*NBNOMX),VOL
+      INTEGER IPG,INO,NDERIV,JVI,JVR,NPG,NNO2,JDIM
+      REAL*8 XNO(3*NBNOMX),VOL,RVIDE,R8VIDE
       REAL*8 XPG(3*NBPGMX),POIPG(NBPGMX)
-      REAL*8 FF(NBNOMX),DFF(3*NBNOMX)
+      REAL*8 FF(NBNOMX),DFF(3,NBNOMX),DFF2(3,3,NBNOMX)
       CHARACTER*24 LIOBJ(NMAXOB)
       CHARACTER*8 NOFPG(NBFAMX)
 C DEB ------------------------------------------------------------------
@@ -65,7 +65,7 @@ C DEB ------------------------------------------------------------------
 
 
       CALL JEEXIN('&INEL.'//ELREFA//'.ELRA_I',IRET)
-      IF (IRET.GT.0) GO TO 120
+      IF (IRET.GT.0) GO TO 150
 
       CALL ELRACA(ELREFA,NDIM,NNO,NNOS,NBFPG,NOFPG,NBPG,XNO,VOL)
       CALL ASSERT((NDIM.GT.0) .AND. (NDIM.LE.3))
@@ -73,7 +73,7 @@ C DEB ------------------------------------------------------------------
       CALL ASSERT((NBFPG.GT.0) .AND. (NBFPG.LE.NBFAMX))
 
 
-      CALL WKVECT(LIOBJ(1),'G V I',4+NBFPG,JVI)
+      CALL WKVECT(LIOBJ(1),'V V I',4+NBFPG,JVI)
       ZI(JVI-1+1) = NDIM
       ZI(JVI-1+2) = NBFPG
       ZI(JVI-1+3) = NNO
@@ -84,20 +84,25 @@ C DEB ------------------------------------------------------------------
         CALL ASSERT((NPG.GT.0) .AND. (NPG.LE.NBPGMX))
         ZI(JVI-1+4+IFAM) = NPG
 
-C       ON VEUT STOCKER : W(PG),GEOM(PG,IDIM)
-C                         FF(PG,INO) ET DFF(PG,INO,IDIM)
-C                         MAPGNO(INO,PG) ET MANOPG(PG,INO)
-        LONFAM = NPG* (NDIM+1)
-        LONFAM = LONFAM + NPG*NNO* (NDIM+1)
+C       ON VEUT STOCKER : W(IPG),GEOM(IDIM,IPG)
+C                         FF(INO,IPG) ET
+C                         DFF(IDIM,INO,IPG)
+C                         DFF2(IDIM,JDIM,INO,IPG)
+C                         MAPGNO(INO,IPG)
+        LONFAM = NPG
+        LONFAM = LONFAM + NPG*NDIM
+        LONFAM = LONFAM + NPG*NNO
+        LONFAM = LONFAM + NPG*NNO*NDIM
+        LONFAM = LONFAM + NPG*NNO*NDIM*NDIM
         LONFAM = LONFAM + 2 + NPG*NNO
 
         LON2 = LON2 + LONFAM
    10 CONTINUE
 
-      CALL WKVECT(LIOBJ(2),'G V R',LON2,JVR)
+      CALL WKVECT(LIOBJ(2),'V V R',LON2,JVR)
 
       DECAL = 0
-      DO 110,IFAM = 1,NBFPG
+      DO 140,IFAM = 1,NBFPG
 
 C       -- COORDONNEES ET POIDS DES POINTS DE GAUSS :
 C       ------------------------------------------------
@@ -125,20 +130,46 @@ C       ------------------------------------------------
    60   CONTINUE
 
 
-C       -- DERIVEES DES FONCTIONS DE FORME :
+C       -- DERIVEES 1ERES DES FONCTIONS DE FORME :
 C       ------------------------------------------------
-        DO 100,IPG = 1,NPG
+        DO 90,IPG = 1,NPG
           CALL ELRFDF(ELREFA,XPG(NDIM* (IPG-1)+1),3*NBNOMX,DFF,NNO,
      &                NDERIV)
           CALL ASSERT(NDERIV.EQ.NDIM)
-          DO 90,INO = 1,NNO
-            DO 80,IDIM = 1,NDIM
+          DO 80,INO = 1,NNO
+            DO 70,IDIM = 1,NDIM
               DECAL = DECAL + 1
-              ZR(JVR-1+DECAL) = DFF(NDIM* (INO-1)+IDIM)
-   70         CONTINUE
-   80       CONTINUE
-   90     CONTINUE
-  100   CONTINUE
+              ZR(JVR-1+DECAL) = DFF(IDIM,INO)
+   70       CONTINUE
+   80     CONTINUE
+   90   CONTINUE
+
+
+C       -- DERIVEES 2EMES DES FONCTIONS DE FORME :
+C       ------------------------------------------------
+        DO 130,IPG = 1,NPG
+          CALL ELRFD2(ELREFA,XPG(NDIM* (IPG-1)+1),9*NBNOMX,DFF2,NNO2,
+     &                NDERIV)
+          IF (NDERIV.EQ.0) THEN
+            CALL ASSERT(NNO2.EQ.0)
+            RVIDE = R8VIDE()
+          ELSE
+            CALL ASSERT(NDERIV.EQ.NDIM)
+            CALL ASSERT(NNO2.EQ.NNO)
+          END IF
+          DO 120,INO = 1,NNO
+            DO 110,JDIM = 1,NDIM
+              DO 100,IDIM = 1,NDIM
+                DECAL = DECAL + 1
+                IF (NDERIV.NE.0) THEN
+                  ZR(JVR-1+DECAL) = DFF2(IDIM,JDIM,INO)
+                ELSE
+                  ZR(JVR-1+DECAL) = RVIDE
+                END IF
+  100         CONTINUE
+  110       CONTINUE
+  120     CONTINUE
+  130   CONTINUE
 
 
 C       -- MATRICE GAUSS -> NOEUDS : MAPGNO
@@ -148,9 +179,9 @@ C       ON STOCKE DANS L'ORDRE : NNO,NPG,MAPGNO
         DECAL = DECAL + 2 + NPG*NNO
 
 
-  110 CONTINUE
+  140 CONTINUE
 
 
-  120 CONTINUE
+  150 CONTINUE
 
       END

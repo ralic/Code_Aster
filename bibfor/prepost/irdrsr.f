@@ -1,16 +1,17 @@
-      SUBROUTINE IRDRSR(IFI,NBNO,DESC,NEC,DG,NCMPMX,VALE,NOMGD,
-     +              NOMCMP,TITR,NOMNOE,NOMSD,NOMSYM,IR,NUMNOE,LMASU)
+      SUBROUTINE IRDRSR(IFI,NBNO,DESC,NEC,DG,NCMPMX,VALE,
+     +              NOMCMP,TITR,NOMNOE,NOMSD,NOMSYM,IR,NUMNOE,LMASU,
+     +              NBCMP,NCMPS,NOCMPL)
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       INTEGER           IFI,NBNO,DESC(*),NEC,DG(*),NCMPMX
-      INTEGER                                       IR,NUMNOE(*)
-      REAL*8                                          VALE(*)
-      CHARACTER*(*)                                     NOMGD,NOMCMP(*)
+      INTEGER           IR,NUMNOE(*),NBCMP,NCMPS(*),NCMP
+      REAL*8            VALE(*)
+      CHARACTER*(*)     NOMCMP(*),NOCMPL(*)
       CHARACTER*(*)     TITR,NOMNOE(*),NOMSD,NOMSYM
       LOGICAL           LMASU
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 04/12/97   AUTEUR D6BHHAM A.M.DONORE 
+C MODIF PREPOST  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,9 +37,8 @@ C         NBNO  : NOMBRE DE NOEUDS DU LIGREL ( DU MAILLAGE)
 C         DESC  :
 C         NEC   : NOMBRE D'ENTIERS-CODES
 C         DG    : ENTIERS CODES
-C         NCMPMX: NOMBRE MAXI DE CMP DE LA GRANDEUR NOMGD
+C         NCMPMX: NOMBRE MAXI DE CMP DE LA GRANDEUR
 C         VALE  : VALEURS DU CHAM_NO
-C         NOMGD : NOM DE LA GRANDEUR  DEPL_R, TEMP_R, SIEF_R, EPSI_R,...
 C         NOMCMP: NOMS DES CMP
 C         TITR  : 1 LIGNE DE TITRE
 C         NOMNOE: NOMS DES NOEUDS
@@ -47,7 +47,9 @@ C         NOMSD : NOM DU RESULTAT
 C         NOMSYM: NOM SYMBOLIQUE
 C         IR    : NUMERO D'ORDRE DU CHAMP
 C         LMASU : INDIQUE SI MAILLAGE SUPERTAB  .TRUE. MAILLAGE SUPERTAB
-C
+C         NBCMP : NOMBRE DE COMPOSANTES DE LA SELECTION A IMPRIMER
+C         NCMPS : NUMEROS DES COMPOSANTES DE LA SELECTION A IMPRIMER
+C         NOCMPL: NOMS DES COMPOSANTES DE LA SELECTION A IMPRIMER
 C
 C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -58,7 +60,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       REAL*8 ZR
       COMPLEX*16 ZC
-      LOGICAL ZL,EXISTE,EXISDG
+      LOGICAL ZL,EXISTE,EXISDG,LCMP
       CHARACTER*8  ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
@@ -66,7 +68,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
 C     ------------------------------------------------------------------
       CHARACTER*4  FITYPE
-      CHARACTER*8  NOCMP
+      CHARACTER*8  NOCMP,NOMGS
       CHARACTER*24 NOMST
       CHARACTER*80 ENTETE(10),TITRE,TEXTE
       INTEGER      NBCHS
@@ -96,68 +98,207 @@ C
 C
       NCMP = -DESC(2)
       DO 17 IEC=1,NEC
-        DG(IEC)=DESC(3+IEC-1)
-  17  CONTINUE
+         DG(IEC)=DESC(3+IEC-1)
+ 17   CONTINUE
       ICOMPT = 0
       DO 12 ICMP = 1,NCMPMX
-        IF (EXISDG(DG,ICMP)) THEN
-         ICOMPT = ICOMPT + 1
-         ZK16(INOM-1+ICOMPT) = NOMCMP(ICMP)
-        ENDIF
-  12  CONTINUE
-C
-C ---- RECHERCHE DES GRANDEURS SUPERTAB -----
-C
+         IF (EXISDG(DG,ICMP)) THEN
+            ICOMPT = ICOMPT + 1
+            ZK16(INOM-1+ICOMPT) = NOMCMP(ICMP)
+         ENDIF
+ 12   CONTINUE
+C     
+C     ---- RECHERCHE DES GRANDEURS SUPERTAB -----
+C     
       CALL IRGAGS(ICOMPT,ZK16(INOM),NOMSYM,NBCHS,ZK8(INOCHS),
-     +              ZI(IBCMPS),ZK8(INOGDS),ZI(ICMPS))
+     +     ZI(IBCMPS),ZK8(INOGDS),ZI(ICMPS))
+
+      
+C      ==================    
+C ---- PARTIE 1 : NBCMP=0    
+C      ==================
+      IF(NBCMP.EQ.0)THEN   
+C     
+C     ---- BOUCLE SUR LES DIVERSES GRANDEURS SUPERTAB ----
+         DO 10 ICHS = 1,NBCHS
+            IENTE = 1
+            LCMP=.FALSE.
+            CALL ECRTES(NOMSD,TITR,ZK8(INOGDS-1+ICHS),IR,'NOEU',
+     +           ZI(IBCMPS-1+ICHS),2,ENTETE,LCMP)
+            IDEBU=1
+            ENTETE(4) = ' '
+            TEXTE = ' '
+            DO 5 ICP=1,ZI(IBCMPS-1+ICHS)
+               NOCMP = NOMCMP(ZI(ICMPS-1+(ICHS-1)*NCMPMX+ICP))
+               IUTIL = LXLGUT(NOCMP)
+               IFIN  = IDEBU+IUTIL
+               TEXTE(IDEBU:IFIN) = NOCMP(1:IUTIL)//' '
+               IDEBU = IFIN+1
+ 5          CONTINUE
+            IUTIL = LXLGUT(TEXTE)
+            JMAX = LXLGUT(TITRE)
+            JMAX  = MIN(JMAX,(80-IUTIL-2))
+            ENTETE(4)= TITRE(1:JMAX)//' - '//TEXTE(1:IUTIL)
+            DO 11 INNO = 1,NBNO
+               INO = NUMNOE(INNO)
+               IVAL = (INO-1)*NCMP
+C     
+               DO 25 IC = 1,ZI(IBCMPS-1+ICHS)
+                  ZR(IRVAL-1+IC) = 0.0D0
+ 25            CONTINUE
+               DO 13 ICMS = 1,ZI(IBCMPS-1+ICHS)
+                  ZR(IRVAL-1+ICMS) = VALE(IVAL+ICMS)
+ 13            CONTINUE
+               IF(IENTE.EQ.1) THEN
+                  WRITE(IFI,'(A80)') (ENTETE(I),I=1,10)
+                  IENTE=0
+               ENDIF
+               IF (LMASU) THEN
+                  CALL LXLIIS(NOMNOE(INNO)(3:8),INO,IER)
+               ENDIF
+               WRITE (IFI,'(I10,5X,A,A)') INO,'% NOEUD ',NOMNOE(INNO)
+               WRITE (IFI,'(6(1PE13.5E3))') (ZR(IRVAL-1+I),
+     +              I=1,ZI(IBCMPS-1+ICHS))
+ 11         CONTINUE
+            IF (IENTE.EQ.0) WRITE (IFI,'(A)') '    -1'
+ 10      CONTINUE
+         CALL JEDETR('&&IRDRSR.VAL')
+         CALL JEDETR('&&IRDRSR.NOM')
+         CALL JEDETR('&&IRDRSR.NOMGDS')
+         CALL JEDETR('&&IRDRSR.NOMCHS')
+         CALL JEDETR('&&IRDRSR.NBCMPS')
+         CALL JEDETR('&&IRDRSR.IPCMPS')
 C
-C ---- BOUCLE SUR LES DIVERSES GRANDEURS SUPERTAB ----
-      DO 10 ICHS = 1,NBCHS
-        IENTE = 1
-        CALL ECRTES(NOMSD,TITR,ZK8(INOGDS-1+ICHS),IR,'NOEU',
-     +            ZI(IBCMPS-1+ICHS),2,ENTETE)
-        IDEBU=1
-        ENTETE(4) = ' '
-        TEXTE = ' '
-        DO 5 ICP=1,ZI(IBCMPS-1+ICHS)
-          NOCMP = NOMCMP(ZI(ICMPS-1+(ICHS-1)*NCMPMX+ICP))
-          IUTIL = LXLGUT(NOCMP)
-          IFIN  = IDEBU+IUTIL
-          TEXTE(IDEBU:IFIN) = NOCMP(1:IUTIL)//' '
-          IDEBU = IFIN+1
-  5     CONTINUE
-        IUTIL = LXLGUT(TEXTE)
-        JMAX = LXLGUT(TITRE)
-        JMAX  = MIN(JMAX,(80-IUTIL-2))
-        ENTETE(4)= TITRE(1:JMAX)//' - '//TEXTE(1:IUTIL)
-        DO 11 INNO = 1,NBNO
-          INO = NUMNOE(INNO)
-          IVAL = (INO-1)*NCMP
+C      =====================
+C ---- PARTIE 2 : NBCMP.NE.0
+C      =====================
 C
-          DO 25 IC = 1,ZI(IBCMPS-1+ICHS)
-            ZR(IRVAL-1+IC) = 0.0D0
-   25     CONTINUE
-          DO 13 ICMS = 1,ZI(IBCMPS-1+ICHS)
-            ZR(IRVAL-1+ICMS) = VALE(IVAL+ICMS)
-   13     CONTINUE
-          IF(IENTE.EQ.1) THEN
-            WRITE(IFI,'(A80)') (ENTETE(I),I=1,10)
-            IENTE=0
-          ENDIF
-          IF (LMASU) THEN
-            CALL LXLIIS(NOMNOE(INNO)(3:8),INO,IER)
-          ENDIF
-          WRITE (IFI,'(I10,5X,A,A)') INO,'% NOEUD ',NOMNOE(INNO)
-          WRITE (IFI,'(6(1PE13.5))') (ZR(IRVAL-1+I),
-     +                  I=1,ZI(IBCMPS-1+ICHS))
-   11 CONTINUE
-      IF (IENTE.EQ.0) WRITE (IFI,'(A)') '    -1'
-   10 CONTINUE
-      CALL JEDETR('&&IRDRSR.VAL')
-      CALL JEDETR('&&IRDRSR.NOM')
-      CALL JEDETR('&&IRDRSR.NOMGDS')
-      CALL JEDETR('&&IRDRSR.NOMCHS')
-      CALL JEDETR('&&IRDRSR.NBCMPS')
-      CALL JEDETR('&&IRDRSR.IPCMPS')
+      ELSE     
+C
+C --- NOM DE LA GRANDEUR SUPERTAB         
+      DO 897 I=1,NBCHS
+         DO 898 J=1,ZI(IBCMPS+I-1)
+            IF(NCMPS(1).EQ.ZI(ICMPS-1+(I-1)*NCMPMX+J)) GOTO 899
+ 898     CONTINUE
+ 897  CONTINUE
+ 899  CONTINUE
+      NOMGS=ZK8(INOGDS-1+I)
+
+C --- NOMBRE DE DATASET
+      CALL WKVECT('&&IRDRSR.CMP_DATS','V V I',NBCMP,INDATS)
+      NBCMPT=6
+      ILIG=NBCMP/6
+      IRES=NBCMP-ILIG*6
+      NI=0
+      ZI(INDATS)=NI
+      IF(IRES.EQ.0) THEN
+         NBDATS=ILIG
+         DO 901 I=1,NBDATS
+            ZI(IBCMPS+I-1)=6
+            NI=NI+6
+            ZI(INDATS+I)=NI
+ 901     CONTINUE
+      ELSE
+         NBDATS=ILIG+1
+         DO 902 I=1,NBDATS-1
+            ZI(IBCMPS+I-1)=6
+            NI=NI+6
+            ZI(INDATS+I)=NI
+ 902     CONTINUE
+         ZI(IBCMPS+NBDATS-1)=IRES 
+         ZI(INDATS+NBDATS)=NI+IRES 
+      ENDIF
+
+C --- ECRITURE DE L'ENTETE SUPERTAB ----
+      LCMP=.TRUE.
+      CALL ECRTES(NOMSD,TITR,NOMGS,IR,'NOEU',NBCMPT,2,ENTETE,LCMP)
+
+
+C --- COMPOSANTES ADMISES
+      CALL JEDETR('&&IRDESR.CMP')
+      CALL WKVECT('&&IRDESR.CMP','V V I',NCMPMX,JADM)
+      CALL JEDETR('&&IRDESR.POS')
+      CALL WKVECT('&&IRDESR.POS','V V I',NBCMP,JPOS)
+      K=0
+      DO 777 ICMP=1,NCMPMX
+         IF(EXISDG(DG,ICMP))THEN
+            ZI(JADM+K)=ICMP
+            K=K+1
+         ENDIF
+ 777  CONTINUE
+    
+C --- BOUCLES SUR LES DATASETS
+C ----------------------------
+      DO 810 IDA=1,NBDATS
+
+         IENTE = 1
+         IFIN=1
+         IDEBU=1
+         ENTETE(4) = ' '
+         TEXTE = ' '
+
+         DO 805 ICP=1,ZI(IBCMPS+IDA-1)
+            NOCMP = NOCMPL(ICP+ZI(INDATS+IDA-1))
+            IUTIL = LXLGUT(NOCMP)
+            IFIN  = IDEBU+IUTIL
+            TEXTE(IDEBU:IFIN) = NOCMP(1:IUTIL)//' '
+            IDEBU = IFIN+1
+ 805     CONTINUE
+         
+         IUTIL = LXLGUT(TEXTE)
+         JMAX = LXLGUT(TITRE)
+         JMAX  = MIN(JMAX,(80-IUTIL-2))
+         ENTETE(4)= TITRE(1:JMAX)//' - '//TEXTE(1:IUTIL)
+         
+
+C ---    POSITIONS DES COMPOSANTES SELECTIONNEES PARMI LES 
+C        COMPOSANTES ADMISES
+         L=0
+         DO 778 J=1,ZI(IBCMPS+IDA-1)
+            LL=0
+            DO 779 JL=1,NCMP
+               LL=LL+1
+               IF(ZI(JADM+JL-1).EQ.NCMPS(J+ZI(INDATS+IDA-1))) GOTO 780
+ 779        CONTINUE
+ 780        CONTINUE
+            ZI(JPOS+L)=LL
+            L=L+1
+ 778     CONTINUE
+
+C ---    BOUCLES SUR LES NOEUDS
+C        ---------------------        
+         DO 811 INNO = 1,NBNO
+            
+            INO = NUMNOE(INNO)
+            JJ=(INO-1)*NCMP
+
+            DO 825 IC = 1,6
+               ZR(IRVAL-1+IC) = 0.0D0
+ 825        CONTINUE
+            
+            DO 813 ICMS = 1,ZI(IBCMPS+IDA-1)
+               ZR(IRVAL-1+ICMS)=VALE(JJ+ZI(JPOS+ICMS-1))
+ 813        CONTINUE
+            
+            IF(IENTE.EQ.1) THEN
+               WRITE(IFI,'(A80)') (ENTETE(I),I=1,10)
+               IENTE=0
+            ENDIF
+            IF (LMASU) THEN
+               CALL LXLIIS(NOMNOE(INNO)(3:8),INO,IER)
+            ENDIF
+            WRITE (IFI,'(I10,5X,A,A)') INO,'% NOEUD ',NOMNOE(INNO)
+            WRITE (IFI,'(6(1PE13.5E3))') (ZR(IRVAL-1+I),
+     +           I=1,6)
+ 811     CONTINUE
+         IF (IENTE.EQ.0) WRITE (IFI,'(A)') '    -1'
+ 810  CONTINUE     
+
+      CALL JEDETR('&&IRDESR.CMP_DATS')
+      CALL JEDETR('&&IRDESR.CMP')
+      CALL JEDETR('&&IRDESR.POS')
+      ENDIF  
+      
+      
       CALL JEDEMA()
       END

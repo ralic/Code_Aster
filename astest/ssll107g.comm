@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 04/11/2003   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE VALIDATION DE MACR_CARA_POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,6 +29,9 @@ TCARS=MACR_CARA_POUTRE(   GROUP_MA_BORD='LR1',
 #
 # --- VALEURS DE REFERENCE: OPERATEUR AFFE_CARA_ELEM
 #
+
+IMPR_TABLE(TABLE=TCARS)
+
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
@@ -163,13 +166,21 @@ TEST_TABLE(     TABLE=TCARS,
                  CRITERE='ABSOLU',
                      VALE=0.               )
 
+TEST_TABLE(     TABLE=TCARS,
+                  FILTRE=_F(  NOM_PARA = 'LIEU',
+                           VALE_K = '.9000006'),
+                PRECISION=0.05,
+                NOM_PARA='RT',
+                REFERENCE = 'ANALYTIQUE',
+                VALE=1.85637E-2         )
+
 TCAR2=MACR_CARA_POUTRE(     GROUP_MA_BORD=('LGR1', 'LGR2',),
                                       GROUP_MA=('GR1','GR2',),
                                 UNITE_MAILLAGE=38,
                                          NOEUD=('N64', 'N64',),
                                 LONGUEUR=0.0002,
                                 MATERIAU=MATER,
-                                 LIAISON='ENCASTREMENT'
+                                 LIAISON='ENCASTREMENT',
                             )
 
 TEST_TABLE(     TABLE=TCAR2,
@@ -225,6 +236,15 @@ TEST_TABLE(     TABLE=TCAR2,
 
 TEST_TABLE(     TABLE=TCAR2,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                           VALE_K = 'GR1'),
+                PRECISION=0.03,
+                REFERENCE = 'ANALYTIQUE',
+                NOM_PARA='RT',
+                     VALE=1.51908E-02     )
+
+
+TEST_TABLE(     TABLE=TCAR2,
+                  FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = 'GR2'),
                 NOM_PARA='AIRE',
                     VALE=5.E-4      )
@@ -274,20 +294,30 @@ TEST_TABLE(     TABLE=TCAR2,
                 NOM_PARA='AZ',
                      VALE=1.2     )
 
+TEST_TABLE(     TABLE=TCAR2,
+                  FILTRE=_F(  NOM_PARA = 'LIEU',
+                           VALE_K = 'GR2'),
+                PRECISION=0.03,
+                NOM_PARA='RT',
+                REFERENCE = 'ANALYTIQUE',
+                     VALE=1.51908E-02     )
+
 # POUR L'ENSEMBLE DES DEUX GROUPES ON DOIT AVOIR AY=AZ=1.2
 
+IMPR_TABLE(TABLE=TCAR2);
+
 
 TEST_TABLE(     TABLE=TCAR2,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000066'),
-                NOM_PARA='AY',
-                     VALE=1.2     )
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = '.9000070'),
+                 NOM_PARA='AY',
+                      VALE=1.2     )
 
 TEST_TABLE(     TABLE=TCAR2,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000066'),
-                NOM_PARA='AZ',
-                     VALE=1.2     )
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = '.9000070'),
+                 NOM_PARA='AZ',
+                      VALE=1.2     )
 
 # AVEC UN SEUL GROUPE ON DOIT RETROUVER LES MEMES RESULTATS
 
@@ -312,6 +342,12 @@ TEST_TABLE(     TABLE=TCAR3,
                 NOM_PARA='AZ',
                      VALE=1.2     )
 
+TEST_TABLE(     TABLE=TCAR3,
+                  FILTRE=_F(  NOM_PARA = 'LIEU',
+                           VALE_K = 'RECTANG'),
+                PRECISION=0.05,
+                NOM_PARA='RT',
+                REFERENCE = 'ANALYTIQUE',
+                     VALE=1.85637E-2        )
+
 FIN()
-#
-#

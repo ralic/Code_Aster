@@ -3,7 +3,7 @@
       REAL*8              XYZG(3,*), AIRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,6 @@ C     CALCULE L'AIRE
 C
 C     ------------------------------------------------------------------
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -41,25 +40,13 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CHARACTER*8         ELREFE
-      INTEGER       JIN, NDIM, NNO, NBFPG, NDI, NPG1
-      INTEGER       JVAL, IPOIDS, IVF, IDFDX, IDFDY
-      INTEGER       I, J, IPG, KDEC, LDEC, IDEC, JDEC
+      INTEGER       NDIM, NNO, NPG1, NNOS, JGANO
+      INTEGER       IPOIDS, IVF, IDFDX, IDFDY
+      INTEGER       I, J, IPG, KDEC, IDEC, JDEC
       REAL*8        NX, NY, NZ, SX(9,9), SY(9,9), SZ(9,9), JAC
-      CHARACTER*24  CHVAL, CHCTE
 C
-      CALL ELREF1(ELREFE)
-      CHCTE = '&INEL.'//ELREFE//'.CARACTE'
-      CALL JEVETE(CHCTE,'L',JIN)
-      NDIM  = ZI(JIN+1-1)
-      NNO   = ZI(JIN+2-1)
-      NPG1  = ZI(JIN+3-1+1)
-C
-      CHVAL = '&INEL.'//ELREFE//'.FFORMES'
-      CALL JEVETE(CHVAL,'L',JVAL)
-      IPOIDS = JVAL + (NDIM+1)*NNO*NNO
-      IVF    = IPOIDS + NPG1
-      IDFDX  = IVF    + NPG1 * NNO
+      CALL ELREF4 ( ' ', 'RIGI', NDIM, NNO, NNOS, NPG1, IPOIDS, IVF,
+     &              IDFDX, JGANO )
       IDFDY  = IDFDX  + 1
 C
 C     --- CALCUL DE L'AIRE DE LA MAILLE ---

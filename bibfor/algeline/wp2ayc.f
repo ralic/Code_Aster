@@ -1,13 +1,13 @@
       SUBROUTINE WP2AYC(LMATRA,LMASSE,LAMOR,SIGMA,LBLOQ,YH,YB,
-     +                                      ZH,ZB,U1,U2,U3,V,N)
+     +                                      ZH,ZB,U1,U2,U3,N)
       IMPLICIT REAL*8 (A-H,O-Z)
-      COMPLEX*16  V(*),SIGMA, U1(*),U2(*),U3(*),YH(*),YB(*),
+      COMPLEX*16  SIGMA, U1(*),U2(*),U3(*),YH(*),YB(*),
      +            ZH(*),ZB(*)
       INTEGER     LMATRA,LMASSE,LAMOR,N,LBLOQ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 18/11/2003   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -63,11 +63,11 @@ C---> VOIR CE QUI SE PASSE QUAND LA BOUCLE EST SUPPRIMEE
  5    CONTINUE
 C-RM-FIN
       DO 10, I = 1, N, 1
-         V(I) = U1(I) + SIGMA*U3(I) + U2(I)
+         U1(I) = U1(I) + SIGMA*U3(I) + U2(I)
 10    CONTINUE
-      CALL RLDLGG(LMATRA,RBID,V,1)
+      CALL RLDLGG(LMATRA,RBID,U1,1)
       DO 20, I = 1, N, 1
-         ZH(I) = - V(I)
-         ZB(I) = (YH(I) - SIGMA*V(I))*LBLOQ(I)
+         ZH(I) = - U1(I)
+         ZB(I) = (YH(I) - SIGMA*U1(I))*LBLOQ(I)
 20    CONTINUE
       END

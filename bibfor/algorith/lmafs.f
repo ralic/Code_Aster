@@ -1,8 +1,8 @@
-        SUBROUTINE LMAFS ( IMAT , NMAT , MATER , SIG , X , DFDS )
+        SUBROUTINE LMAFS ( NMAT , MATER , SIG , X , DFDS )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,8 +24,7 @@ C       MODELE VISCOPLASTIQUE DE BESANCON EN VITESSE
 C       3D / 1D / DP / CP
 C       DERIVEE / SIG DE   LA FONCTION SEUIL A (SIG , X ) DONNES
 C
-C       IN  IMAT   :  ADRESSE DU MATERIAU CODE
-C           NMAT   :  DIMENSION MATER
+C       IN  NMAT   :  DIMENSION MATER
 C           MATERF :  COEFFICIENTS MATERIAU
 C           SIG    :  TENSEUR CONTRAINTE
 C           X      :  TENSEUR CINEMATIQUE 1
@@ -37,7 +36,7 @@ C                             D    = SIG - 1/3 TR(SIG) I
 C                       ET    M    = MATRICE D'ANISOTROPIE = MATER(16,1)
 C       ----------------------------------------------------------------
         INTEGER         N , ND
-        INTEGER         IMAT, NMAT
+        INTEGER         NMAT
         REAL*8          MATER(NMAT,2) , VTMP(6)
         REAL*8          DFDS(6) , SIG(6) , X(6),  DEV(6) , S
         REAL*8          LCNRTS

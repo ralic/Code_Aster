@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,22 +50,16 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       LOGICAL AXI,GRAND
-      CHARACTER*8 ELREF2
       REAL*8 EPS(6),VPG(162),POIDS,DFDI(60),F(3,3),RBID,TMP
-      INTEGER JGANO,NDIM,NCMP,NNO,NPG,NBELR
-      INTEGER IFF,IPOIDS,IVF,IDFDE,IDFDN,IDFDK,IGEOM,IDEPL,IDEFO
-      INTEGER KPG,KK,KSIG,NNOS
+      INTEGER JGANO,NDIM,NCMP,NNO,NPG,KPG,KK,KSIG,NNOS
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM,IDEPL,IDEFO
 C ......................................................................
-      NDIM = 3
-      NCMP = 6
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
-
 
       GRAND = .FALSE.
       AXI = .FALSE.
+      NCMP = 6
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PDEPLAR','L',IDEPL)
@@ -75,8 +69,7 @@ C ......................................................................
       CALL R8INIR(162,0.D0,VPG,1)
 
       DO 20 KPG = 1,NPG
-        CALL NMGEOM(NDIM,NNO,AXI,GRAND,ZR(IGEOM),KPG,ZR(IPOIDS-1+KPG),
-     &              ZR(IVF+NNO* (KPG-1)),ZR(IDFDE),ZR(IDFDN),ZR(IDFDK),
+        CALL NMGEOM(NDIM,NNO,AXI,GRAND,ZR(IGEOM),KPG,IPOIDS,IVF,IDFDE,
      &              ZR(IDEPL),POIDS,DFDI,F,EPS,RBID)
 C       RECUPERATION DE LA DEFORMATION
         DO 10 KSIG = 1,NCMP

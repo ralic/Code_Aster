@@ -1,11 +1,11 @@
       SUBROUTINE TBIMPG ( TABLE, IFR, NBPAIM, LIPAIM, NPARPG, LIPAPG, 
-     +                    FORMAZ, FORMAR, FORMAC )
+     +                    FORMAZ, FORMAR)
       IMPLICIT   NONE
       INTEGER             IFR, NBPAIM, NPARPG
-      CHARACTER*(*)      TABLE,FORMAZ,FORMAR,FORMAC,LIPAPG(*),LIPAIM(*)
+      CHARACTER*(*)      TABLE,FORMAZ,FORMAR,LIPAPG(*),LIPAIM(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/02/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -186,13 +186,13 @@ C
                     IF ( FORMAT .EQ. 'EXCEL' .OR.
      +                   FORMAT .EQ. 'AGRAF' ) THEN
                       CALL TBIMEX ( NEWTAB, IFR, NPARA, ZK16(JLPA),
-     +                                      FORMAZ, FORMAR, FORMAC )
+     +                                      FORMAZ, FORMAR)
                     ELSEIF ( FORMAT .EQ. 'MOT_CLE' ) THEN
                       CALL TBIMMC ( NEWTAB, IFR, NPARA, ZK16(JLPA),
-     +                                      FORMAR, FORMAC )
+     +                                      FORMAR)
                     ELSEIF ( FORMAT .EQ. 'TABLEAU' ) THEN
                       CALL TBIMTA ( NEWTAB, IFR, NPARA, ZK16(JLPA),
-     +                                      FORMAR, FORMAC )
+     +                                      FORMAR)
                     ENDIF
                     CALL DETRSD ( 'TABLE' , NEWTAB )
  204              CONTINUE
@@ -207,13 +207,13 @@ C
                   IF ( FORMAT .EQ. 'EXCEL' .OR.
      +                 FORMAT .EQ. 'AGRAF' ) THEN
                     CALL TBIMEX ( NEWTAB, IFR, NPARA, ZK16(JLPA),
-     +                                    FORMAZ, FORMAR, FORMAC )
+     +                                    FORMAZ, FORMAR)
                   ELSEIF ( FORMAT .EQ. 'MOT_CLE' ) THEN
                     CALL TBIMMC ( NEWTAB, IFR, NPARA, ZK16(JLPA),
-     +                                    FORMAR, FORMAC )
+     +                                    FORMAR)
                   ELSEIF ( FORMAT .EQ. 'TABLEAU' ) THEN
                     CALL TBIMTA ( NEWTAB, IFR, NPARA, ZK16(JLPA),
-     +                                    FORMAR, FORMAC )
+     +                                    FORMAR)
                   ENDIF
                   CALL DETRSD ( 'TABLE' , NEWTAB )
                 ENDIF
@@ -229,13 +229,13 @@ C
               IF ( FORMAT .EQ. 'EXCEL' .OR.
      +             FORMAT .EQ. 'AGRAF' ) THEN
                  CALL TBIMEX ( NEWTAB, IFR, NPARA, ZK16(JLPA),
-     +                                      FORMAZ, FORMAR, FORMAC )
+     +                                      FORMAZ, FORMAR)
               ELSEIF ( FORMAT .EQ. 'MOT_CLE' ) THEN
                  CALL TBIMMC ( NEWTAB, IFR, NPARA, ZK16(JLPA),
-     +                                      FORMAR, FORMAC )
+     +                                      FORMAR)
               ELSEIF ( FORMAT .EQ. 'TABLEAU' ) THEN
                  CALL TBIMTA ( NEWTAB, IFR, NPARA, ZK16(JLPA),
-     +                                      FORMAR, FORMAC )
+     +                                      FORMAR)
               ENDIF
               CALL DETRSD ( 'TABLE' , NEWTAB )
             ENDIF
@@ -251,13 +251,13 @@ C
           IF ( FORMAT .EQ. 'EXCEL' .OR.
      +         FORMAT .EQ. 'AGRAF' ) THEN
              CALL TBIMEX ( NEWTAB, IFR, NPARA, ZK16(JLPA),
-     +                                         FORMAZ, FORMAR, FORMAC )
+     +                                         FORMAZ, FORMAR)
           ELSEIF ( FORMAT .EQ. 'MOT_CLE' ) THEN
              CALL TBIMMC ( NEWTAB, IFR, NPARA, ZK16(JLPA),
-     +                                         FORMAR, FORMAC )
+     +                                         FORMAR)
           ELSEIF ( FORMAT .EQ. 'TABLEAU' ) THEN
              CALL TBIMTA ( NEWTAB, IFR, NPARA, ZK16(JLPA),
-     +                                         FORMAR, FORMAC )
+     +                                         FORMAR)
           ENDIF
           CALL DETRSD ( 'TABLE' , NEWTAB )
         ENDIF

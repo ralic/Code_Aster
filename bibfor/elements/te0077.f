@@ -1,6 +1,6 @@
       SUBROUTINE TE0077 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,6 @@ C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -48,23 +47,22 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       CHARACTER*2        CODRET
       CHARACTER*16       PHENOM
-      CHARACTER*24       CARAC, FF
       CHARACTER*8        ELREFE
-      REAL*8             VALRES, DFDX(9), DFDY(9), POIDS, R, CP
+      REAL*8             DFDX(9), DFDY(9), POIDS, R, CP
       REAL*8             MT(9,9),COORSE(18)
-      INTEGER            NNO,KP,NPG1,NPG2,NPG3,I,J,K,IJ,ITEMPS,IMATTT
-      INTEGER            C(6,9),ISE,NSE,NNOP2
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE
+      INTEGER            NDIM,NNO,NNOS,KP,NPG,I,J,K,IJ,ITEMPS,IMATTT
+      INTEGER            C(6,9),ISE,NSE,NNOP2,NPG2,IPOID2,IVF2,IDFDE2
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE,JGANO
 C
       CALL ELREF1(ELREFE)
-      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QUAD4L'
-
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
-      NPG3 = ZI(ICARAC+4)
+      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QU4'
+      IF (NOMTE(5:7).EQ.'TL6') ELREFE='TR3'
+C
+      CALL ELREF4(ELREFE,'NOEU',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,IDFDE2,
+     +            JGANO)
+      CALL ELREF4(ELREFE,'MASS',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
+     +            JGANO)
+C
 C
       CALL JEVECH('PGEOMER','L',IGEOM )
       CALL JEVECH('PMATERC','L',IMATE )
@@ -86,19 +84,9 @@ C
 C
       IF (NOMTE(6:6).NE.'L') THEN
 
-C     CALCUL NON LUMPE : 2EME FAMILLE DE PTS DE GAUSS
-C     ----------------
-        FF   ='&INEL.'//ELREFE//'.FF'
-        CALL JEVETE(FF,'L',IFF)
-        IPOIDS=IFF   +NPG1*(1+3*NNO)
-        IVF   =IPOIDS+NPG2
-        IDFDE =IVF   +NPG2*NNO
-        IDFDK =IDFDE +NPG2*NNO
-C
-        DO 101 KP=1,NPG2
+        DO 101 KP=1,NPG
           K=(KP-1)*NNO
-          CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                  ZR(IGEOM),DFDX,DFDY,POIDS )
+          CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
           IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
              R = 0.D0
              DO 102 I=1,NNO
@@ -117,19 +105,8 @@ C
 101     CONTINUE
 
       ELSE
-
-C     CALCUL LUMPE : 3EME FAMILLE DE PTS DE GAUSS
-C     ------------
-C  CALCUL ISO-P2 : ELTS P2 DECOMPOSES EN SOUS-ELTS LINEAIRES
-
-        FF   ='&INEL.'//ELREFE//'.FF'
-        CALL JEVETE(FF,'L',IFF)
-        IPOIDS=IFF   +(NPG1+NPG2)*(1+3*NNO)
-        IVF   =IPOIDS+NPG3
-        IDFDE =IVF   +NPG3*NNO
-        IDFDK =IDFDE +NPG3*NNO
 C
-        CALL CONNEC ( NOMTE, ZR(IGEOM), NSE, NNOP2, C )
+        CALL CONNEC ( NOMTE, NSE, NNOP2, C )
 
         DO 10 I=1,NNOP2
            DO 10 J=1,NNOP2
@@ -145,14 +122,13 @@ C BOUCLE SUR LES SOUS-ELEMENTS
                 COORSE(2*(I-1)+J) = ZR(IGEOM-1+2*(C(ISE,I)-1)+J)
 205        CONTINUE
 
-           DO 201 KP=1,NPG3
+           DO 201 KP=1,NPG2
              K=(KP-1)*NNO
-             CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                     COORSE,DFDX,DFDY,POIDS )
+             CALL DFDM2D ( NNO,KP,IPOID2,IDFDE2,COORSE,DFDX,DFDY,POIDS )
              IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
                 R = 0.D0
                 DO 202 I=1,NNO
-                  R = R + COORSE(2*(I-1)+1)*ZR(IVF+K+I-1)
+                  R = R + COORSE(2*(I-1)+1)*ZR(IVF2+K+I-1)
 202             CONTINUE
 
                 POIDS = POIDS*R
@@ -166,7 +142,7 @@ C BOUCLE SUR LES SOUS-ELEMENTS
              DO 203 I=1,NNO
                DO 203 J=1,NNO
                  MT(C(ISE,I),C(ISE,J)) = MT(C(ISE,I),C(ISE,J))
-     &              + POIDS * CP/DELTAT * ZR(IVF+K+I-1) * ZR(IVF+K+J-1)
+     &            + POIDS * CP/DELTAT * ZR(IVF2+K+I-1) * ZR(IVF2+K+J-1)
 203          CONTINUE
 201        CONTINUE
 
@@ -180,5 +156,4 @@ C BOUCLE SUR LES SOUS-ELEMENTS
 206     CONTINUE
 
       ENDIF
-
       END

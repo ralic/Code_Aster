@@ -1,12 +1,12 @@
-      SUBROUTINE FOCRR2(INTERP,NOMFON,RESU,BASE,NOMCHA,MAILLE,NOEUD,CMP,
+      SUBROUTINE FOCRR2(NOMFON,RESU,BASE,NOMCHA,MAILLE,NOEUD,CMP,
      &                  NPOINT,NUSP,IVARI,IER)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*1   BASE
-      CHARACTER*8   MAILLE,NOEUD,INTERP,CMP
+      CHARACTER*8   MAILLE,NOEUD,CMP
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,6 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     RECUPERATION D'UNE FONCTION DANS UNE STRUCTURE "RESULTAT"
 C     ------------------------------------------------------------------
-C IN  : INTERP : TYPE D'INTERPOLATION
 C VAR : NOMFON : NOM DE LA FONCTION
 C IN  : RESU   : NOM DE LA STRUCTURE RESULTAT
 C IN  : BASE   : BASE OU L'ON CREE LA FONCTION
@@ -183,6 +182,7 @@ C               ----- EXTRACTION SUR UN "CHAM_NO" -----
         END IF
         IDDL2 = IDDL1
         DO 20 IORDR = 0,NBINST - 1
+          CALL JEMARQ()
 
           RVAL = ZR(JINST+IORDR)
           CALL RSBARY(ZR(KINST),NBORDR,.FALSE.,ZL(IALEXI),RVAL,I1,I2,
@@ -258,7 +258,7 @@ C           -------------------------
             CALL JEVEUO(CH1//'.VALE','L',LVAL1)
             ZR(LVAR+IORDR) = RVAL
             ZR(LFON+IORDR) = ZR(LVAL1+IDDL1-1)
-            GO TO 20
+            GO TO 22
           END IF
           R1 = (ZR(KINST-1+I2)-RVAL)/RBASE
           R2 = (RVAL-ZR(KINST-1+I1))/RBASE
@@ -286,6 +286,8 @@ C           -------------------------
           ZR(LFON+IORDR) = R1*ZR(LVAL1+IDDL1-1) + R2*ZR(LVAL2+IDDL2-1)
 
           IDDL1 = IDDL2
+   22     CONTINUE
+          CALL JEDEMA()
    20   CONTINUE
 
 C               ----- EXTRACTION SUR UN "CHAM_ELEM" -----
@@ -311,6 +313,7 @@ C        -------------------------------------------------------------
 
         II = 0
         DO 30 IORDR = 0,NBINST - 1
+          CALL JEMARQ()
 
           RVAL = ZR(JINST+IORDR)
           CALL RSBARY(ZR(KINST),NBORDR,.FALSE.,ZL(IALEXI),RVAL,I1,I2,
@@ -377,7 +380,7 @@ C           -------------------------
               ZR(LFON+II) = DIMAG(VALC1)
               II = II + 1
             END IF
-            GO TO 30
+            GO TO 32
           END IF
           R1 = (ZR(KINST-1+I2)-RVAL)/RBASE
           R2 = (RVAL-ZR(KINST-1+I1))/RBASE
@@ -399,6 +402,8 @@ C           -------------------------
             II = II + 1
           END IF
 
+   32     CONTINUE
+          CALL JEDEMA()
    30   CONTINUE
       END IF
 

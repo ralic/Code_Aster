@@ -1,4 +1,4 @@
-# MODIF  DATE 03/07/2002   AUTEUR CIBHHPD D.NUNEZ 
+# MODIF  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE CALCUL DE G LOCAL LAGRANGE FISSURE CIRCULAIRE DANS MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,7 @@ M=MODI_MAILLAGE( reuse=M,   MAILLAGE=M,
 
 FF=DEFI_FOND_FISS( 
                          MAILLAGE=M,
-                              FOND=_F(  GROUP_NO = 'FONDFISS',    ),
+                           FOND_FISS=_F(  GROUP_NO = 'FONDFISS',    ),
                            NORMALE=( 0.,  0.,  -1.,),
                          DTAN_ORIG=( 0.,  1.,  0.,),
                          DTAN_EXTR=( 1.,  0.,  0.,)

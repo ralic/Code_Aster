@@ -7,7 +7,7 @@ C TOLE CRP_20
       LOGICAL GRILLE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 15/03/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +68,7 @@ C     ------------------------------------------------------------------
 C
       ZERO   = 0.0D0
       ELASCO = 0
+      MULTIC=0
       CALL R8INIR(6,ZERO,DMC,1)
       CALL R8INIR(6,ZERO,DFC,1)
 C
@@ -243,7 +244,7 @@ C
           NOMRES(10) = 'CISA_T  '
         ELSEIF (ELASCO.EQ.2) THEN
           NBV        = 33
-          MULTIC     =  2
+CCC          MULTIC     =  2
           NOMRES(1)  = 'M_LLLL  '
           NOMRES(2)  = 'M_LLTT  '
           NOMRES(3)  = 'M_LLLT  '
@@ -451,7 +452,7 @@ C        --- CALCUL DE SON INVERSE -------------------------------------
           DCI(2,2) = 1/VALRES(10)
 C
         ELSEIF (ELASCO.EQ.2) THEN
-          MULTIC = 2
+CCC          MULTIC = 2
 C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
           DM(1,1) = VALRES(1)
           DM(1,2) = VALRES(2)

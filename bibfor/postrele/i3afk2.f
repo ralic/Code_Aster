@@ -1,12 +1,12 @@
-      SUBROUTINE I3AFK2(EPSI,S,FK,IRET)
+      SUBROUTINE I3AFK2(S,FK,IRET)
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       INTEGER IRET
-      REAL*8  EPSI,S(3,*),FK(4,*)
+      REAL*8  S(3,*),FK(4,*)
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 17/01/97   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C ======================================================================
 C     ------------------------------------------------------------------
 C     ASSEMBLAGE DE LA TRANSFO GEOM POUR UN QUADRANGLE
 C     ------------------------------------------------------------------
-C IN  EPSI   : R : PRECISION
 C IN  S      : R : TABLE(1..3,1..4) DES COORDONEES DES SOMMETS
 C OUT FK     : R : TABLE(1..4,1..3) DES COEF DES FK
 C OUT IRET   : I : CODE RETOUR : -1 --> DEGENERESCENCE

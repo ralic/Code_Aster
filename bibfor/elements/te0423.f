@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE 
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/04/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,6 @@ C          ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -49,38 +48,16 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      CHARACTER*8   ELREFE,NOMPAR(4)
-      CHARACTER*24  CHVAL,CHCTE,CHTRAV
-      INTEGER       IER
-      INTEGER       NDIM,NNO,NPG
-      INTEGER       JIN,JVAL,JTRAV
-      INTEGER       IPOIDS,IVF,IDF,IP,IGEOM,IPRES,ITEMPS,IRES,KBID
-      INTEGER       IDEPM,IDEPP
-      INTEGER       KPG,KDEC,N,I
-      REAL*8        VALPAR(4),X,Y,Z,PR
+      CHARACTER*8   NOMPAR(4)
+      INTEGER       IER,NDIM,NNO,NPG,NNOS,JGANO
+      INTEGER       IPOIDS,IVF,IDF,IGEOM,IPRES,ITEMPS,IRES
+      INTEGER       IDEPM,IDEPP,KPG,KDEC,N,I
+      REAL*8        VALPAR(4),X,Y,Z
+C                                   9*27*27
+      REAL*8        PR, P(27), MATR(6561)
 C
 C
-      CALL ELREF1(ELREFE)
-
-C
-C    DIMENSIONS CARACTERISTIQUES DE L'ELEMENT
-      CHCTE = '&INEL.'//ELREFE//'.CARACTE'
-      CALL JEVETE(CHCTE,'L',JIN)
-      NDIM = ZI(JIN)
-      NNO = ZI(JIN+1)
-      NPG = ZI(JIN+3)
-C
-C    TABLEAUX DES FONCTIONS DE FORME
-      CHVAL = '&INEL.'//ELREFE//'.FFORMES'
-      CALL JEVETE(CHVAL,'L',JVAL)
-      IPOIDS = JVAL + (NDIM+1)*NNO*NNO
-      IVF    = IPOIDS + NPG
-      IDF    = IVF    + NPG * NNO
-C
-C    VECTEUR DE TRAVAIL (PRESSION AUX POINTS DE GAUSS)
-      CHTRAV = '&INEL.' //ELREFE// '.TRAVAIL'
-      CALL JEVETE (CHTRAV,'L',JTRAV)
-      IP   = JTRAV
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDF,JGANO)
 C
 C    AUTRES VARIABLES DE L'OPTION
       CALL JEVECH('PGEOMER','L',IGEOM)
@@ -120,12 +97,11 @@ C      VALEUR DE LA PRESSION
         VALPAR(2) = Y
         VALPAR(3) = Z
         CALL FOINTE('FM',ZK8(IPRES),4,NOMPAR,VALPAR,PR,IER)
-        ZR(IP+KPG) = PR
+        P(1+KPG) = PR
 100   CONTINUE
 C
 C    CALCUL EFFECTIF DU SECOND MEMBRE
-      KBID = JTRAV+NPG
-      CALL NMPR3D(1,NNO,NPG,ZR(IPOIDS),ZR(IVF),ZR(IDF),ZR(IGEOM),ZR(IP),
-     &            ZR(IRES),ZR(KBID))
+      CALL NMPR3D(1,NNO,NPG,ZR(IPOIDS),ZR(IVF),ZR(IDF),ZR(IGEOM),P,
+     &            ZR(IRES),MATR)
 C
       END

@@ -1,9 +1,9 @@
-      SUBROUTINE RUFRAG (NDIM  , TYPMOD, IMATE , CARCRI, EPSM  ,
+      SUBROUTINE RUFRAG (NDIM  , TYPMOD, IMATE , EPSM  ,
      &                   DEPS  , VIM   , RLAG  , CHAMP , LAGR  ,
      &                   PONDER, DVIDA , ENER  , VIP   )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2000   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*8  TYPMOD
       INTEGER      NDIM, IMATE
-      REAL*8       CARCRI(*), EPSM(6), DVIDA(0:3,0:3)
+      REAL*8       EPSM(6), DVIDA(0:3,0:3)
       REAL*8       DEPS(6), VIM(*)
       REAL*8       RLAG, CHAMP(0:NDIM), LAGR(0: NDIM), PONDER(0:3)
       REAL*8       ENER, VIP(*)
@@ -35,7 +35,6 @@ C ----------------------------------------------------------------------
 C IN  NDIM    DIMENSION DE L'ESPACE
 C IN  TYPMOD  TYPE DE MODELISATION
 C IN  IMATE   NATURE DU MATERIAU
-C IN  CARCRI  CRITERE DE CONVERGENCE (1: MAX ITERATIONS,  3: PRECISION)
 C IN  EPSM    CHAMP DE DEFORMATION EN T-
 C IN  DEPS    INCREMENT DU CHAMP DE DEFORMATION
 C IN  VIM     VARIABLES INTERNES : ENDOMMAGEMENT(1)

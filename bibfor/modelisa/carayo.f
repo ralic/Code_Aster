@@ -1,12 +1,12 @@
-      SUBROUTINE CARAYO ( CHAR, LIGRMO, NBCA, NBET, NOMA, NDIM, FONREE )
+      SUBROUTINE CARAYO ( CHAR, LIGRMO, NBCA, NBET, NOMA, FONREE )
       IMPLICIT   NONE
-      INTEGER           NBCA, NBET, NDIM
+      INTEGER           NBCA, NBET
       CHARACTER*4       FONREE
       CHARACTER*8       CHAR, NOMA
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,6 @@ C      LIGRMO : NOM DU LIGREL DE MODELE
 C      NBCA   : NOMBRE D'APPEL A NOCART
 C      NBET   : NOMBRE TOTAL DE MAILLES
 C      NOMA   : NOM DU MAILLAGE
-C      NDIM   : DIMENSION DU PROBLEME (2D OU 3D)
 C      FONREE : FONC OU REEL
 C-----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -87,7 +86,6 @@ C
          ZR(JVALV-1+2) = 0.D0
          ZR(JVALV-1+3) = 0.D0
       ELSE
-         CALL FOZERO('&FOZERO')
          ZK8(JVALV-1+1) = '&FOZERO'
          ZK8(JVALV-1+2) = '&FOZERO'
          ZK8(JVALV-1+3) = '&FOZERO'

@@ -1,7 +1,7 @@
       SUBROUTINE TE0525(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,6 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -57,15 +56,13 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       REAL*8 DBPGDX(50),DBPGDY(50),DBPGDZ(50),DUPGDZ(50)
       REAL*8 BETAA,TPN,BETAI,DUPGDX(50),DUPGDY(50),RES(50)
       REAL*8 XR,XRR,XAUX,TPG0,XK0,PN,PNP1,XK1
-      INTEGER IPOIDS,IVF,IDFDE,IDFDN,IDFDK,IGEOM,IMATE
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER JGANO,NNO,KP,NPG1,I,IVECTT,ITEMPS,IFON(3)
       INTEGER ITEMP,ITEMPI,ILAGRM,IVITE,ILAGRP,IVERES
-      INTEGER JVAL,NBVF,JVALF,K,L,IDIM,NDIM,NNOS
+      INTEGER NBVF,JVALF,K,L,IDIM,NDIM,NNOS
 
 C DEB ------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -103,10 +100,9 @@ C DEB ------------------------------------------------------------------
         UL(1,KP) = 0.D0
         UL(2,KP) = 0.D0
         UL(3,KP) = 0.D0
-        K = (KP-1)*NNO*3
         L = (KP-1)*NNO
-        CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &              ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POIDS)
+        CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
         TPG = 0.D0
         TPG0 = 0.D0
         DTPGDX(KP) = 0.D0
@@ -114,8 +110,8 @@ C DEB ------------------------------------------------------------------
         DTPGDZ(KP) = 0.D0
 
         DO 40 I = 1,NNO
-          TPG = TPG + ZR(ITEMPI+I-1)*ZR(IVF+L+I-1)
-          TPG0 = TPG0 + ZR(ITEMP+I-1)*ZR(IVF+L+I-1)
+          TPG  = TPG  + ZR(ITEMPI+I-1)*ZR(IVF+L+I-1)
+          TPG0 = TPG0 +  ZR(ITEMP+I-1)*ZR(IVF+L+I-1)
           UL(1,KP) = UL(1,KP) + ULOC(1,I)*ZR(IVF+L+I-1)
           UL(2,KP) = UL(2,KP) + ULOC(2,I)*ZR(IVF+L+I-1)
           UL(3,KP) = UL(3,KP) + ULOC(3,I)*ZR(IVF+L+I-1)
@@ -137,10 +133,9 @@ C DEB ------------------------------------------------------------------
       CALL PROJET(3,NPG1,NNO,VECT,RES)
 
       DO 70 KP = 1,NPG1
-        K = (KP-1)*NNO*3
         L = (KP-1)*NNO
-        CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &              ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POIDS)
+        CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
         DBPGDX(KP) = 0.D0
         DBPGDY(KP) = 0.D0
         DBPGDZ(KP) = 0.D0
@@ -162,10 +157,9 @@ C DEB ------------------------------------------------------------------
    70 CONTINUE
 
       DO 90 KP = 1,NPG1
-        K = (KP-1)*NNO*3
         L = (KP-1)*NNO
-        CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &              ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POIDS)
+        CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
 
         DO 80 I = 1,NNO
           ZR(IVERES+I-1) = ZR(IVERES+I-1) +

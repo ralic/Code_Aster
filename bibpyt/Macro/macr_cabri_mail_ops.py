@@ -1,4 +1,4 @@
-#@ MODIF macr_cabri_mail_ops Macro  DATE 20/05/2003   AUTEUR MABBAS M.ABBAS 
+#@ MODIF macr_cabri_mail_ops Macro  DATE 24/11/2003   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,8 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-# Variable pour préparer la restit (test->0, restit->1)
-RESTIT = 1
+import os
 
 def macr_cabri_mail_ops(self,EXEC_MAILLAGE,RAFF_MAILLAGE,VERI_MAIL,GEOM_BRID,
                         IMPRESSION,**args):
@@ -44,9 +43,9 @@ def macr_cabri_mail_ops(self,EXEC_MAILLAGE,RAFF_MAILLAGE,VERI_MAIL,GEOM_BRID,
   # le contexte de la macro
   
   self.DeclareOut('nomres',self.sd)
-  import aster 
   
   # Chemin de Gibi
+  import aster
   loc_gibi=aster.repout()
   gibi2000=loc_gibi+'gibi'
   
@@ -204,8 +203,7 @@ def macr_cabri_mail_ops(self,EXEC_MAILLAGE,RAFF_MAILLAGE,VERI_MAIL,GEOM_BRID,
 # Importation des modules Python
 #=============================================================================================
 
-import os
-from Macro.macr_cabri_mail_dat import *
+from Macro.macr_cabri_mail_dat import dico_var_geo,dico_var_msh,dico_bride_std
 
 #=============================================================================================
 # Fonctions principales
@@ -288,7 +286,6 @@ def write_file_dgib_STD(unite_mgib,unite_datg,msh_bride,geo_bride):
     
 # Ecriture du fichier GIBI principal (dgib) - Bride QUELCONQUE
 def write_file_dgib_QQE(unite_mgib,unite_datg,msh_bride,geo_bride):
-    import aster
         
     # Nom du fichier maillage produit par GIBI
     nomFichierMGIB = name_file_mgib(unite_mgib)
@@ -373,13 +370,9 @@ def name_file_datg(unite_datg):
 
 # Récupère un fichier texte DATG: texte GIBI pour procédures
 def text_datg_pro():
-   if RESTIT == 1:
-      import aster
-      loc_datg = aster.repdex()
-      datg_bridePro  = loc_datg+"macr_cabri_mail_proc.datg"
-   else:
-      datg_bridePro = 'fort.'+str(39)
-      
+   import aster
+   loc_datg = aster.repdex()
+   datg_bridePro  = loc_datg+"macr_cabri_mail_proc.datg"
    fproc=open(datg_bridePro,'r')
    procText = fproc.read()
    fproc.close()
@@ -388,13 +381,9 @@ def text_datg_pro():
 
 # Récupère un fichier texte DATG: texte GIBI pour bride quelconque
 def text_datg_qqe():
-   if RESTIT == 1:
-      import aster
-      loc_datg = aster.repdex()
-      datg_brideQqe  = loc_datg+"macr_cabri_mail_qqe.datg"
-   else:
-      datg_brideQqe = 'fort.'+str(38)
-      
+   import aster
+   loc_datg = aster.repdex()
+   datg_brideQqe  = loc_datg+"macr_cabri_mail_qqe.datg"      
    fproc=open(datg_brideQqe,'r')
    procText = fproc.read()
    fproc.close()
@@ -403,13 +392,9 @@ def text_datg_qqe():
 
 # Récupère un fichier texte DATG: texte GIBI pour bride standard
 def text_datg_std():
-   if RESTIT == 1:
-      import aster
-      loc_datg = aster.repdex()
-      datg_brideStd  = loc_datg+"macr_cabri_mail_std.datg"
-   else:
-      datg_brideStd = 'fort.'+str(37)
-      
+   import aster
+   loc_datg = aster.repdex()
+   datg_brideStd  = loc_datg+"macr_cabri_mail_std.datg"      
    fproc=open(datg_brideStd,'r')
    procText = fproc.read()
    fproc.close()

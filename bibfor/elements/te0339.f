@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,9 +56,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 SIG(6),TRIAX,VOLU,RSR0,NUMEMA,DEPSEQ
       REAL*8 POIDS,DVPG,SIGM,SIGEQ,LRSR0M,LRSR0P
       REAL*8 CONG(6),VARIGP,VARIGM,CROIS,VK,DFDBID(30)
-      INTEGER JGANO,NNO,KP,NPG,I,IRITRA,NDIM,IRET
-      INTEGER ISSOPT,IMA,K,IADZI,IAZK24,NBVARI,IPOPP,ICOMPO
-      INTEGER IPOIDS,IVF,IDFDE,IDFDK,IDFDN,NNOS
+      INTEGER JGANO,NNO,NPG,I,KP,IRITRA,NDIM,IRET
+      INTEGER ISSOPT,IMA,IADZI,IAZK24,NBVARI,IPOPP,ICOMPO
+      INTEGER IPOIDS,IVF,IDFDE,NNOS
       INTEGER IGEOM,ICONG,IVARPG,IVARMG,ISDRMR,ISDRPR,JTAB(7)
 
 C======================== CORPS DU PROGRAMME ===========================
@@ -68,9 +68,6 @@ C     -------------------------
 C     1.1 NOMBRE DE NOEUDS ET DE POINTS DE GAUSS
 C     ------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
-
 
 C     1.2 NUMERO DE LA MAILLE
 C     -----------------------
@@ -167,9 +164,8 @@ C     ------------------------------------------------------------------
 C        2.1.1 INTEGRATION PAR QUADRATURE DES CHAMPS IN
 C        ----------------------------------------------
         DO 30,KP = 1,NPG,1
-          K = (KP-1)*NNO*3
-          CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &                ZR(IDFDK+K),ZR(IGEOM),DFDBID,DFDBID,DFDBID,POIDS)
+          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                  ZR(IGEOM), DFDBID, DFDBID, DFDBID, POIDS )
           DVPG = POIDS
           VK = VK + DVPG
           DO 20,I = 1,6,1
@@ -231,9 +227,8 @@ C           -------------------------------------
 
 C           2.2.3 INTEGRATION PAR QUADRATURE
 C           --------------------------------
-          K = (KP-1)*NNO*3
-          CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &                ZR(IDFDK+K),ZR(IGEOM),DFDBID,DFDBID,DFDBID,POIDS)
+          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                  ZR(IGEOM), DFDBID, DFDBID, DFDBID, POIDS )
           DVPG = POIDS
           VK = VK + DVPG
           TRIAX = TRIAX + DVPG* (SIGM/SIGEQ)
@@ -256,9 +251,8 @@ C     ----------------------------------------------------------------
 C        2.3.1 INTEGRATION PAR QUADRATURE DES CHAMPS IN
 C        ----------------------------------------------
         DO 100,KP = 1,NPG,1
-          K = (KP-1)*NNO*3
-          CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &                ZR(IDFDK+K),ZR(IGEOM),DFDBID,DFDBID,DFDBID,POIDS)
+          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                  ZR(IGEOM), DFDBID, DFDBID, DFDBID, POIDS )
           DVPG = POIDS
           VK = VK + DVPG
           DO 90,I = 1,6,1
@@ -314,9 +308,8 @@ C           --------------------------------
   130     CONTINUE
           VARIGM = ZR(IVARMG+NBVARI* (KP-1)+IPOPP-1)
           VARIGP = ZR(IVARPG+NBVARI* (KP-1)+IPOPP-1)
-          K = (KP-1)*NNO*3
-          CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &                ZR(IDFDK+K),ZR(IGEOM),DFDBID,DFDBID,DFDBID,POIDS)
+          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                  ZR(IGEOM), DFDBID, DFDBID, DFDBID, POIDS )
           DVPG = POIDS
 
 C           2.4.2 CALCUL DE LA TRIAXIALITE LOCALE

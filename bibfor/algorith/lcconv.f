@@ -3,7 +3,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2001   AUTEUR ADBHHVV V.CANO 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C
 C
       ELSE
          CALL LCCTRL ( LOI,  DY,     DDY,   NR, ITMAX,  TOLER, ITER,
-     &                 INTG, TYPESS, ESSAI, IRTET)
+     &                 IRTET)
          IF ( IRTET.GT.0 ) GOTO (1), IRTET
       ENDIF
 C

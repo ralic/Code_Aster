@@ -1,9 +1,9 @@
-      SUBROUTINE ACEVMA(NBOCC,NLM,NLG,IER)
+      SUBROUTINE ACEVMA(NBOCC,NLM,NLG)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER           NBOCC,NLM,NLG,IER
+      INTEGER           NBOCC,NLM,NLG
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 01/03/2000   AUTEUR CIBHHPD P.DAVID 
+C MODIF MODELISA  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

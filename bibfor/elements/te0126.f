@@ -1,6 +1,6 @@
       SUBROUTINE TE0126(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,6 @@ C THERMIQUE NON LINEAIRE
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -57,8 +56,8 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS,R8BID
       REAL*8 DTPGDX,DTPGDY,DTPGDZ,RBID,CHAL,AFFINI,ARR
       REAL*8 TZ0,R8T0
-      INTEGER IPOIDS,IVF,IDFDE,IDFDN,IDFDK,IGEOM,IMATE
-      INTEGER JGANO,NNO,KP,NPG1,I,ITEMPS,IFON(3),K,L,NDIM,JVAL
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
+      INTEGER JGANO,NNO,KP,NPG1,I,ITEMPS,IFON(3),L,NDIM
       INTEGER ICOMP,IHYDR,IHYDRP,ITEMPI,ITEMPR,IVERES
       INTEGER ISECHI,ISECHF,NNOS
       REAL*8 DIFF,TPSEC
@@ -72,8 +71,7 @@ C ----------------------------------------------------------------------
 
 C DEB ------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
+
       TZ0 = R8T0()
 
       CALL JEVECH('PGEOMER','L',IGEOM)
@@ -102,21 +100,20 @@ C          ISECHI ET ISECHF SONT FICTIFS
           ISECHF = ITEMPI
         END IF
         DO 30 KP = 1,NPG1
-          K = (KP-1)*NNO*3
           L = (KP-1)*NNO
-          CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &                ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POIDS)
-          TPG = 0.D0
+          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                  ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
+          TPG    = 0.D0
           DTPGDX = 0.D0
           DTPGDY = 0.D0
           DTPGDZ = 0.D0
-          TPSEC = 0.D0
+          TPSEC  = 0.D0
           DO 10 I = 1,NNO
-            TPG = TPG + ZR(ITEMPI+I-1)*ZR(IVF+L+I-1)
+            TPG   = TPG   + ZR(ITEMPI+I-1)*ZR(IVF+L+I-1)
+            TPSEC = TPSEC + ZR(ISECHF+I-1)*ZR(IVF+L+I-1)
             DTPGDX = DTPGDX + ZR(ITEMPI+I-1)*DFDX(I)
             DTPGDY = DTPGDY + ZR(ITEMPI+I-1)*DFDY(I)
             DTPGDZ = DTPGDZ + ZR(ITEMPI+I-1)*DFDZ(I)
-            TPSEC = TPSEC + ZR(ISECHF+I-1)*ZR(IVF+K+I-1)
    10     CONTINUE
           CALL RCDIFF(ZI(IMATE),ZK16(ICOMP),TPSEC,TPG,DIFF)
 CCDIR$ IVDEP
@@ -148,10 +145,9 @@ C ---  RECUPERATION DES PARAMETRES POUR L HYDRATATION
 C --------------
 
         DO 80 KP = 1,NPG1
-          K = (KP-1)*NNO*3
           L = (KP-1)*NNO
-          CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &                ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POIDS)
+          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE, 
+     &                  ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
           TPG = 0.D0
           DTPGDX = 0.D0
           DTPGDY = 0.D0

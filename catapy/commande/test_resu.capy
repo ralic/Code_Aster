@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -112,11 +112,9 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,docu="U4.92.01-g",
          ),
 
          OBJET           =FACT(statut='f',max='**',
-           regles=(UN_PARMI('INDICE','S_I','S_R','RESUME',),
-                 UN_PARMI('VALE','VALE_I','VALE_C','RESUME','S_R','S_I'),),
+           regles=(UN_PARMI('S_I','S_R','RESUME',),
+                   UN_PARMI('VALE','VALE_I','VALE_C','RESUME','S_R','S_I'),),
            NOM             =SIMP(statut='o',typ='TXM'),
-           INDICE          =SIMP(statut='f',typ='I'),
-           NUM_OBJ         =SIMP(statut='f',typ='I'),
            S_R             =SIMP(statut='f',typ='R'),
            S_I             =SIMP(statut='f',typ='I'),
            RESUME          =SIMP(statut='f',typ='I'),

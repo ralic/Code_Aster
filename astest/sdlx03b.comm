@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE ASSEMBLAGE DE PLAQUES RECTANGULAIRES MINCES ENTRETOISEES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -179,42 +179,42 @@ TABMAS=POST_ELEM(       MODELE=MO,
 
 
 TEST_RESU(RESU=(
-   _F(   RESULTAT = MODES_1,       PARA = 'FREQ',
+   _F(   RESULTAT = MODES_1, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 4.8E-2,
            NUME_ORDRE = 1,       VALE = 584.),
-   _F(   RESULTAT = MODES_1,       PARA = 'FREQ',
+   _F(   RESULTAT = MODES_1, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 4.1E-2,
            NUME_ORDRE = 2,       VALE = 826.),
-   _F(   RESULTAT = MODES_1,       PARA = 'FREQ',
+   _F(   RESULTAT = MODES_1, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 2.6E-2,
            NUME_ORDRE = 3,       VALE = 855.),
-   _F(   RESULTAT = MODES_1,       PARA = 'FREQ',
+   _F(   RESULTAT = MODES_1, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 2.6E-2,
            NUME_ORDRE = 4,       VALE = 911.),
-   _F(   RESULTAT = MODES_1,       PARA = 'FREQ',
+   _F(   RESULTAT = MODES_1, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 1.E-2,
            NUME_ORDRE = 5,       VALE = 1113.),
-   _F(   RESULTAT = MODES_1,      PARA = 'FREQ',
+   _F(   RESULTAT = MODES_1, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 4.7E-2,
            NUME_ORDRE = 6,       VALE = 1136.)) )
 
 TEST_RESU(RESU=(
-   _F(   RESULTAT = MODES_2,       PARA = 'FREQ',
+   _F(   RESULTAT = MODES_2, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 4.8E-2,
            NUME_ORDRE = 1,       VALE = 584.),
-   _F(   RESULTAT = MODES_2,       PARA = 'FREQ',
+   _F(   RESULTAT = MODES_2, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 4.1E-2,
            NUME_ORDRE = 2,       VALE = 826.),
-   _F(   RESULTAT = MODES_2,       PARA = 'FREQ',
+   _F(   RESULTAT = MODES_2, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 2.6E-2,
            NUME_ORDRE = 3,       VALE = 855.),
-   _F(   RESULTAT = MODES_2,       PARA = 'FREQ',
+   _F(   RESULTAT = MODES_2, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 2.6E-2,
            NUME_ORDRE = 4,       VALE = 911.),
-   _F(   RESULTAT = MODES_2,       PARA = 'FREQ',
+   _F(   RESULTAT = MODES_2, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 1.E-2,
            NUME_ORDRE = 5,       VALE = 1113.),
-   _F(   RESULTAT = MODES_2,      PARA = 'FREQ',
+   _F(   RESULTAT = MODES_2, REFERENCE = 'SOURCE_EXTERNE', PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 4.7E-2,
            NUME_ORDRE = 6,       VALE = 1136.)) )
 

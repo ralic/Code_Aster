@@ -1,9 +1,9 @@
       SUBROUTINE INSVAR ( EPSD, DEPS, SIGD, DSIG, VIND,
-     1  NVI , IMAT , NMAT , MATERF , JFIS1 )
+     1  NVI , NMAT , MATERF , JFIS1 )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       -----------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,6 @@ C           DSIG   :  INCREMENT DE CONTRAINTE ELASTIQUE
 C           EPSD   :  DEFORMATION A T
 C           DEPS   :  INCREMENT DE DEFORMATION TOTALE
 C           VIND   :  VARIABLES INTERNES A T
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
 C           JFIS1  :  INDICATEUR DE FISSURATION A T (0 = NON, 1 = OUI)
@@ -40,7 +39,7 @@ C           SIGD  DSIG     :  CORRIGES (SIG(3)= SIG(4) / SQRT(2))
 C           EPSD EPSF DEPS :  CORRIGES ( EPS(3)=EPS(3) * 2 / SQRT(2) )
 C           VIND   :  INITIALISATION VARIABLES INTERNES A T SI JFIS1=0
 C       -----------------------------------------------------------
-        INTEGER         NMAT , IMAT , NVI , JFIS1 , ICC, IPPL
+        INTEGER         NMAT , NVI , JFIS1 , ICC, IPPL
         REAL*8          SIGD(6) ,  DSIG(6) , EPSD(6) , DEPS(6)
         REAL*8          MATERF(NMAT,2), VIND(*), TETA, RTM1
         REAL*8          LTR, KRUPC, KRUPT, KPIC, RAC2 , E , EPSFT

@@ -1,9 +1,9 @@
       SUBROUTINE TE0094 ( OPTION , NOMTE )
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*16        OPTION , NOMTE
+      IMPLICIT     NONE
+      CHARACTER*16        OPTION, NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,6 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -46,28 +45,15 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      PARAMETER         ( NBRES=3 )
-      CHARACTER*24       CARAC,FF
-      CHARACTER*8        NOMPAR(NBRES),ELREFE
-      REAL*8             VALPAR(NBRES)
-      REAL*8             DFDX(9),DFDY(9),POIDS,R,Z,TX,TY
-      INTEGER            NNO,KP,NPG1,I,K,ITEMPS,IFR2D,IVECTU,ICODE
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM
+      INTEGER       NDIM,NNO,NNOS,KP,NPG,I,K,ITEMPS,IFR2D,IVECTU,ICODE
+      INTEGER       NBRES,JGANO,IPOIDS,IVF,IDFDE,IGEOM
+      PARAMETER     ( NBRES=3 )
+      REAL*8        VALPAR(NBRES)
+      REAL*8        DFDX(9),DFDY(9),POIDS,R,Z,TX,TY
+      CHARACTER*8   NOMPAR(NBRES)
+C     ------------------------------------------------------------------
 C
-C
-      CALL ELREF1(ELREFE)
-
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS=IFF
-      IVF   =IPOIDS+NPG1
-      IDFDE =IVF   +NPG1*NNO
-      IDFDK =IDFDE +NPG1*NNO
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PFF2D2D','L',IFR2D)
@@ -78,10 +64,9 @@ C
       VALPAR(3) = ZR(ITEMPS)
       CALL JEVECH('PVECTUR','E',IVECTU)
 C
-      DO 101 KP=1,NPG1
+      DO 101 KP=1,NPG
         K=(KP-1)*NNO
-        CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                ZR(IGEOM),DFDX,DFDY,POIDS )
+        CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
         R = 0.D0
         Z = 0.D0
         DO 102 I=1,NNO
@@ -94,11 +79,10 @@ C
         CALL FOINTE('FM',ZK8(IFR2D  ),3,NOMPAR,VALPAR,TX,ICODE)
         CALL FOINTE('FM',ZK8(IFR2D+1),3,NOMPAR,VALPAR,TY,ICODE)
         DO 103 I=1,NNO
-           K=(KP-1)*NNO
            ZR(IVECTU+2*I-2) = ZR(IVECTU+2*I-2) +
-     &        POIDS * TX * ZR(IVF+K+I-1)
+     &                        POIDS * TX * ZR(IVF+K+I-1)
            ZR(IVECTU+2*I-1) = ZR(IVECTU+2*I-1) +
-     &        POIDS * TY * ZR(IVF+K+I-1)
+     &                        POIDS * TY * ZR(IVF+K+I-1)
 103     CONTINUE
 101   CONTINUE
       END

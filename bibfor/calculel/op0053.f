@@ -1,7 +1,7 @@
       SUBROUTINE OP0053 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
 C-----------------------------------------------------------------------
 C
 C      OPERATEUR :     CALC_G_THETA_T
@@ -62,29 +63,47 @@ C
       PARAMETER ( NOMPRO = 'OP0053' )
 C
       INTEGER IFM, NIV
-      INTEGER IAUX, JAUX
+      INTEGER IAUX, JAUX, INDIC, ICHAR 
       INTEGER      I,J,ICHA,IBID,IORD,IRET,IVEC,IPROPA,IFOND
       INTEGER      JINST,LONVEC,NBPRUP,IORD1,IORD2
       INTEGER      NBINST,NC,NCHA,NDEP,NP,NRES,NBVAL,IG,IBOR,NBORN
       INTEGER      NBCO,N1,N3
-      INTEGER NBPASE,NRPASS,NBPASS,TYPESE
-      INTEGER ADRECG
+      INTEGER NRPASE,NBPASE,NRPASS,NBPASS,TYPESE
+      INTEGER ADRECG,ADCHSE
 
       REAL*8       TIME,ALPHA,PREC,RBID
 
+      CHARACTER*5 SUFFIX
       CHARACTER*8  MODELE, MATERI, TYPRUP(6)
-      CHARACTER*8  RESUCO,TABLE1,FOND,SYMECH,K8BI1,K8BID,CRIT
+      CHARACTER*8  RESUCO,TABLE1,FOND,SYMECH,K8BI1,K8BID,CRIT,AFFCHA
       CHARACTER*8 LATAB1, LERES0
+      CHARACTER*8 MATERS
       CHARACTER*8 NOPASE
       CHARACTER*13 INPSCO
       CHARACTER*16 TYPCO, OPER, OPTION, NOPRUP(6), OPTIO1, OPTIO2
       CHARACTER*24 BLAN24
       CHARACTER*24 STYPSE, NORECG
       CHARACTER*24 MATE,COMPOR,DEPLA,VECORD,VCHAR,THETA,SDTHET
-      CHARACTER*24 DEPLA1,DEPLA2,CHDESE
+      CHARACTER*24 NOMCHA,CHARSE,MATES
+      CHARACTER*24 DEPLA1,DEPLA2,CHDESE,CHEPSE,CHSISE
+      CHARACTER*24 LIGRCH,LCHIN
       CHARACTER*24 K24BID
 
-      LOGICAL      EXITIM
+      LOGICAL      EXITIM, EXCHSE
+C
+      INTEGER NBTYCH
+      PARAMETER (NBTYCH=17)
+C
+      CHARACTER*6 NOMLIG(NBTYCH)
+      CHARACTER*8 TYPEPS(-2:NBTYCH)
+
+      DATA NOMLIG/'.FORNO','.F3D3D','.F2D3D','.F1D3D','.F2D2D','.F1D2D',
+     &     '.F1D1D','.PESAN','.ROTAT','.PRESS','.FELEC','.FCO3D',
+     &     '.FCO2D','.EPSIN','.FLUX','.VEASS','.ONDPL'/
+      DATA TYPEPS/'MATERIAU','CARAELEM','DIRICHLE','FORCE   ',
+     &     'FORCE   ','FORCE   ','FORCE   ','FORCE   ','FORCE   ',
+     &     'FORCE   ','.PESAN','.ROTAT','FORCE   ','.FELEC','FORCE   ',
+     &     'FORCE   ','.EPSIN','.FLUX','.VEASS','.ONDPL'/
 C
 C====
 C 1. PREALABLES
@@ -216,25 +235,130 @@ C 2.8. ==> RECUPERATION DU CHAMNO DE THETA DE LA S.D. SDTHET DE TYPE
 C          THETA_GEOM
 C=======================================================================
 
-      CALL RSEXCH(SDTHET,'THETA',0,THETA,IRET)
-      IF (IRET.GT.0) THEN
-        CALL UTMESS('F',NOMPRO,'LE CHAMP DE THETA EST INEXISTANT '//
-     &              'DANS LA STRUCTURE DE DONNEES '//SDTHET//' DE '//
-     &              'TYPE THETA_GEOM .')
+      CALL GETTCO(SDTHET,TYPCO)
+      IF (TYPCO(1:10).EQ.'THETA_GEOM') THEN
+        CALL RSEXCH(SDTHET,'THETA',0,THETA,IRET)
+        IF (IRET.GT.0) THEN
+          CALL UTMESS('F',NOMPRO,'LE CHAMP DE THETA EST INEXISTANT '//
+     &                'DANS LA STRUCTURE DE DONNEES '//SDTHET//' DE '//
+     &                'TYPE THETA_GEOM .')
+        ENDIF
+      ELSE
+        THETA=SDTHET
       ENDIF
 
 C=======================================================================
-C 2.9. ==> SENSIBILITE : NOMBRE DE PASSAGES
-C                        POUR UN CALCUL STANDARD DE G, CE NOMBRE VAUT 1
+C 2.9. ==> SENSIBILITE
 C=======================================================================
+C
+C 2.9.1 ==> NOMBRE DE PASSAGES
+C           RQ : POUR UN CALCUL STANDARD DE G, CE NOMBRE VAUT 1
 C              12   345678
       K8BID = '&&'//NOMPRO
       IAUX = 1
-      CALL PSLECT(' ',IBID,K8BID,TABLE1,IAUX,NBPASE,INPSCO,IRET)
+      CALL PSLECT ( ' ', IBID, K8BID, TABLE1, IAUX,
+     >              NBPASE, INPSCO, IRET )
       IAUX = 1
       JAUX = 1
       CALL PSRESE(' ',IBID,IAUX,TABLE1,JAUX,NBPASS,NORECG,IRET)
       CALL JEVEUO(NORECG,'L',ADRECG)
+C
+C 2.9.2 ==> A-T-ON UNE DEPENDANCE VIS-A-VIS D'UN MATERIAU ? (CF. NMDOME)
+C
+      DO 292 , NRPASE = 1 , NBPASE
+C
+        IAUX = NRPASE
+        JAUX = 1
+        CALL PSNSLE ( INPSCO,IAUX,JAUX,NOPASE )
+        CALL PSRENC ( MATERI,NOPASE,MATERS,IRET )
+        IF (IRET.EQ.0) THEN
+          CALL PSTYPA ( NBPASE, INPSCO, MATERI, NOPASE, TYPEPS(-2) )
+          CALL RCMFMC ( MATERS,MATES )
+        END IF
+C
+  292 CONTINUE
+C
+C 2.9.3 ==> A-T-ON UNE DEPENDANCE VIS-A-VIS D'UNE CHARGE ? (CF. NMDOME)
+C
+      EXCHSE = .FALSE.
+C
+      IF ( NCHA.NE.0 .AND. NBPASE.NE.0 ) THEN
+C
+        CHARSE = '&&'//NOMPRO//'.CHARSE'
+        IAUX = MAX(NBPASE,1)
+        CALL WKVECT(CHARSE,'V V K8',IAUX,ADCHSE)
+C
+        INDIC = 0
+C
+        DO 293 , ICHAR = 1 , NCHA
+C
+C 2.9.3.1. ==> LA CHARGE EST-ELLE CONCERNEE PAR UNE SENSIBILITE ?
+C
+          INDIC = INDIC + 1
+ 2930     CONTINUE
+          CALL GETVID(' ','CHARGE',INDIC,1,1,NOMCHA,N1)
+          IF (N1.EQ.0) THEN
+            INDIC = INDIC + 1
+            GO TO 2930
+          END IF
+          DO 2931 , NRPASE = 1 , NBPASE
+            IAUX = NRPASE
+            JAUX = 1
+            CALL PSNSLE(INPSCO,IAUX,JAUX,NOPASE)
+            CALL PSRENC ( NOMCHA,NOPASE,K8BID,IRET)
+            IF (IRET.EQ.0) THEN
+              ZK8(ADCHSE+NRPASE-1) = NOPASE
+              EXCHSE = .TRUE.
+            ELSE
+              ZK8(ADCHSE+NRPASE-1) = '        '
+            ENDIF
+ 2931     CONTINUE
+C
+  293   CONTINUE
+C
+C 2.9.3.2. ==> SI LA CHARGE EST CONCERNEE, ON AFFINE
+C
+        IF ( EXCHSE ) THEN
+C
+          LIGRCH = NOMCHA(1:8)//'.CHME.LIGRE'
+C
+          DO 2932 , IAUX = 1,NBTYCH
+C
+            IF (NOMLIG(IAUX).EQ.'.VEASS') THEN
+              SUFFIX = '     '
+            ELSE
+              SUFFIX = '.DESC'
+            END IF
+            LCHIN = LIGRCH(1:13)//NOMLIG(IAUX)//SUFFIX
+            CALL JEEXIN(LCHIN,IRET)
+C
+            IF (IRET.NE.0) THEN
+C
+              CALL DISMOI('F','TYPE_CHARGE',NOMCHA,'CHARGE',
+     &                    IBID,AFFCHA,IRET)
+C
+              IF (AFFCHA(5:7).EQ.'_FO') THEN
+                DO 29321 , NRPASE = 1 , NBPASE
+                  NOPASE = ZK8(ADCHSE+NRPASE-1)
+                  IF (NOPASE.NE.'        ') THEN
+                    CALL TELLME('F','NOM_FONCTION',LCHIN(1:19),NOPASE,
+     >                                K8BID,IRET)
+                    IF (K8BID.EQ.'OUI') THEN
+                      CALL PSTYPA ( NBPASE, INPSCO, NOMCHA, NOPASE,
+     >                              TYPEPS(IAUX) )
+                    ENDIF
+                  ENDIF
+29321           CONTINUE
+              ENDIF
+C
+            ENDIF
+C
+ 2932     CONTINUE
+C
+        ENDIF
+C
+      ENDIF
+C
 C
 C====
 C 3. CALCUL EFFECTIF
@@ -268,23 +392,42 @@ C DANS LE CAS D'UN CALCUL STANDARD :
 C DANS LE CAS D'UN CALCUL DE DERIVE :
 C     TYPESE  : TYPE DE SENSIBILITE
 C               -1 : DERIVATION EULERIENNE (VIA UN CHAMP THETA)
-C            ATTENTION : AU 7/7/03 C'EST LA SEULE DERIVATION QUI MARCHE
-
+C                3 : DERIVATION PAR RAPPORT AU MODULE D'YOUNG
+C                5 : DERIVATION PAR RAPPORT AU CHARGEMENT
+C DANS CES 2 DERNIERS CAS, IL NE FAUT QU'UN SEUL PARAMETRE SENSIBLE
+C A CHAQUE APPEL DE CALC_G_THETA
+C
         ELSE
 
           CALL METYSE(NBPASE,INPSCO,NOPASE,TYPESE,STYPSE)
           IF ( TYPESE.EQ.-1 ) THEN
             OPTIO1 = 'CALC_DG'
+          ELSE IF ( TYPESE.EQ.3 ) THEN
+            OPTIO1 = 'CALC_DG_E'
+            IF(NBPASE.GE.2) THEN
+              CALL UTMESS ('F', NOMPRO,
+     >          'DERIVATION DE G : UN SEUL PARAMETRE SENSIBLE '//
+     >          'PAR APPEL A CALC_G_THETA ')
+            ENDIF
+          ELSE IF ( TYPESE.EQ.5 ) THEN
+            OPTIO1 = 'CALC_DG_FORC'
+            IF(NBPASE.GE.2) THEN
+              CALL UTMESS ('F', NOMPRO,
+     >          'DERIVATION DE G : UN SEUL PARAMETRE SENSIBLE '//
+     >          'PAR APPEL A CALC_G_THETA ')
+            ENDIF
           ELSE
             CALL UTMESS ('F', NOMPRO,
      >  'ON NE SAIT PAS TRAITER LE TYPE DE SENSIBILITE '//
      >  'ASSOCIE PARAMETRE SENSIBLE '//NOPASE)
           ENDIF
-          CALL PSRENC ( RESUCO, NOPASE, LERES0, IRET )
-          IF ( IRET.NE.0 ) THEN
-            CALL UTMESS ('F', NOMPRO,
+          IF (NRES.NE.0) THEN
+            CALL PSRENC ( RESUCO, NOPASE, LERES0, IRET )
+            IF ( IRET.NE.0 ) THEN
+              CALL UTMESS ('F', NOMPRO,
      >  'IMPOSSIBLE DE TROUVER LE RESULTAT DERIVE ASSOCIE AU RESULTAT '
      >  //RESUCO//' ET AU PARAMETRE SENSIBLE '//NOPASE)
+            ENDIF
           ENDIF
 
         END IF
@@ -300,7 +443,8 @@ C 3.2. ==> CREATION DE TABLE ET CALCUL
 C=======================================================================
 
       IF ( OPTIO1.EQ.'CALC_G' .OR. OPTIO1.EQ.'CALC_G_LAGR' .OR.
-     >     OPTIO1.EQ.'CALC_DG' ) THEN
+     >     OPTIO1.EQ.'CALC_DG' .OR. OPTIO1.EQ.'CALC_DG_E' .OR.
+     >     OPTIO1.EQ.'CALC_DG_FORC' ) THEN
         IF (NDEP .NE. 0 ) THEN
           NBPRUP = 1
           NOPRUP(1) = 'G'
@@ -365,6 +509,7 @@ C 3.3.1.1. ==> CALCUL DE LA FORME BILINEAIRE DU TAUX DE RESTITUTION
 
         DO 3311 I = 1 , LONVEC
           DO 3312 J = 1,I
+            CALL JEMARQ()
             IF (NRES.NE.0) THEN
               IORD1 = ZI(IVEC-1+I)
               CALL RSEXCH(RESUCO,'DEPL',IORD1,DEPLA1,IRET)
@@ -385,6 +530,7 @@ C 3.3.1.1. ==> CALCUL DE LA FORME BILINEAIRE DU TAUX DE RESTITUTION
             CALL MEBILG (OPTIO2,LATAB1,MODELE,DEPLA1,DEPLA2,THETA,MATE,
      &                   NCHA,ZK8(ICHA),SYMECH,EXITIM,TIME,I,J,NBPRUP,
      &                   NOPRUP )
+            CALL JEDEMA()
  3312       CONTINUE
  3311     CONTINUE
 
@@ -428,6 +574,7 @@ C 3.4. ==> CALCUL DE G, G_LAGR, K_G ET DG
 C==============================================================
 
         DO 34 , I = 1 , LONVEC
+          CALL JEMARQ()
           IF(NRES.NE.0) THEN
             IORD = ZI(IVEC-1+I)
             CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
@@ -452,11 +599,46 @@ C DANS LA SD RESULTAT DERIVE DE TYPE EVOL_ELAS.
               ENDIF
             ENDIF
 
+C
+            IF (OPTIO1.EQ.'CALC_DG_E'
+     &      .OR. OPTIO1.EQ.'CALC_DG_FORC') THEN
+              CALL RSEXC2(1,1,LERES0,'DEPL',IORD,CHDESE,OPTIO1,IRET)
+              IF (IRET.GT.0) THEN
+                CALL UTDEBM('F',NOMPRO,'LA DERIVEE ')
+                CALL UTIMPI('L','DU DEPLACEMENT D''OCCURRENCE N ',1,
+     &            IORD)
+                CALL UTIMPK('L','EST INEXISTANTE DANS LA SD ',1,RESUCO)
+                CALL UTIMPK('L','DERIVEE PAR RAPPORT A ',1,NOPASE)
+                CALL UTFINM()            
+              ENDIF
+       CALL RSEXC2(1,1,LERES0,'EPSI_ELGA_DEPL',IORD,CHEPSE,OPTIO1,IRET)
+              IF (IRET.GT.0) THEN
+                CALL UTDEBM('F',NOMPRO,'LA DERIVEE ')
+                CALL UTIMPI('L','DE LA DEFORMATION D''OCCURRENCE N ',1,
+     &            IORD)
+                CALL UTIMPK('L','EST INEXISTANTE DANS LA SD ',1,RESUCO)
+                CALL UTIMPK('L','DERIVEE PAR RAPPORT A ',1,NOPASE)
+                CALL UTFINM()            
+              ENDIF
+       CALL RSEXC2(1,1,LERES0,'SIEF_ELGA_DEPL',IORD,CHSISE,OPTIO1,IRET)
+              IF (IRET.GT.0) THEN
+                CALL UTDEBM('F',NOMPRO,'LA DERIVEE ')
+                CALL UTIMPI('L','DE LA CONTRAINTE D''OCCURRENCE N ',1,
+     &            IORD)
+                CALL UTIMPK('L','EST INEXISTANTE DANS LA SD ',1,RESUCO)
+                CALL UTIMPK('L','DERIVEE PAR RAPPORT A ',1,NOPASE)
+                CALL UTFINM()            
+              ENDIF
+            ENDIF
           ENDIF
-          IF (OPTIO1.EQ.'CALC_G' .OR. OPTIO1.EQ.'CALC_DG') THEN
+C
+          IF (OPTIO1.EQ.'CALC_G' .OR. OPTIO1.EQ.'CALC_DG'
+     &                   .OR. OPTIO1.EQ.'CALC_DG_E'
+     &                   .OR. OPTIO1.EQ.'CALC_DG_FORC') THEN
             CALL MECALG (OPTIO1,LATAB1,MODELE,DEPLA,THETA,MATE,NCHA,
      &                   ZK8(ICHA),SYMECH,COMPOR,EXITIM,TIME,IORD,
-     &                   NBPRUP,NOPRUP,NOPASE,TYPESE,STYPSE,CHDESE)
+     &                   NBPRUP,NOPRUP,NOPASE,TYPESE,CHDESE,
+     &                   CHEPSE,CHSISE)
 
           ELSE IF (OPTIO1 .EQ.'CALC_G_LAGR') THEN
             CALL MLAGRG (OPTIO1,LATAB1,MODELE,DEPLA,THETA,ALPHA,MATE,
@@ -467,6 +649,7 @@ C DANS LA SD RESULTAT DERIVE DE TYPE EVOL_ELAS.
      &                   ZK8(ICHA),SYMECH,FOND,EXITIM,TIME,IORD,
      &                   NBPRUP, NOPRUP )
           ENDIF
+          CALL JEDEMA()
    34   CONTINUE
 
       ENDIF

@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT   NONE
       CHARACTER*(*)       MODELZ
 C ======================================================================
-C MODIF MODELISA  DATE 16/09/2003   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 30/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 C
 C     ORILGM  --  LE BUT EST DE REORIENTER, SI C'EST NECESSAIRE,
 C                 LES MAILLES DE PEAU DE GROUPES DE MAILLES
@@ -86,10 +86,32 @@ C --- RECUPERATION DE LA DIMENSION (2 OU 3) DU PROBLEME :
 C     -------------------------------------------------
       CALL DISMOI('F','DIM_GEOM',MODELE,'MODELE',NDIM,K8B,IER)
       IF ( NDIM .GT. 1000 )  NDIM = 3
+      
+      
+      
 C
       CALL GETFAC ( MOFA2D, NBF1 )
       CALL GETFAC ( MOFA3D, NBF2 )
       CALL GETFAC ( MOFB3D, NBF3 )
+      
+      IF ( ( NBF1 .GT. 0 ) .AND. ( NDIM .EQ. 3 ) ) THEN
+     
+         CALL UTMESS ( 'F',MOFA2D,'VOUS AVEZ UTILISE LE MOT CLE'//
+     &   ' ORIE_PEAU_2D ALORS QUE LE PROBLEME EST 3D.'//
+     &   ' UTILISEZ ORIE_PEAU_3D' )
+      
+      ENDIF
+      
+      IF ( ( NBF2 .GT. 0 ) .AND. ( NDIM .EQ. 2 ) ) THEN
+     
+         CALL UTMESS ( 'F',MOFA3D,'VOUS AVEZ UTILISE LE MOT CLE'//
+     &   ' ORIE_PEAU_3D ALORS QUE LE PROBLEME EST 2D.'//
+     &   ' UTILISEZ ORIE_PEAU_2D' )
+      
+      ENDIF
+      
+      
+       
 C
       LP2D=.FALSE.
       LP3D=.FALSE.

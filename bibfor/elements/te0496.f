@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16 OPTION,NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,8 +87,8 @@ C     ------------------------------------------------------------
 C     -- CAS DES ELEMENTS "DKT" OU "GRILLE"
 C     ------------------------------------------------------------
       ELSE IF ( (NOMTE.EQ.'MEDKQU4') .OR. (NOMTE.EQ.'MEDKTR3') .OR.
-     &     (NOMTE.EQ.'MEDSQU4') .OR. (NOMTE.EQ.'MEDSTR3') .OR.
-     &     (NOMTE.EQ.'MEGRDKT') .OR. (NOMTE.EQ.'MEQ4QU4')) THEN
+     &          (NOMTE.EQ.'MEDSQU4') .OR. (NOMTE.EQ.'MEDSTR3') .OR.
+     &          (NOMTE.EQ.'MEGRDKT') .OR. (NOMTE.EQ.'MEQ4QU4') ) THEN
         IF (JNBSP.NE.0) THEN
           NBCOU = ZI(JNBSP-1+1)
           NPGH = 3
@@ -96,6 +96,20 @@ C     ------------------------------------------------------------
             NPGH=1
             IF (NBCOU.NE.1)CALL UTMESS('F','TE0496','STOP')
           END IF
+          ZI(JDCEL-1+1) = NPGH*NBCOU
+        ELSE
+          ZI(JDCEL-1+1) = 1
+        END IF
+        ZI(JDCEL-1+2) = NBVARI
+
+
+
+C     -- CAS DES ELEMENTS "DKTG"
+C     ------------------------------------------------------------
+      ELSE IF ( (NOMTE.EQ.'MEDKQG4') .OR. (NOMTE.EQ.'MEDKTG3')) THEN
+        IF (JNBSP.NE.0) THEN
+          NBCOU = ZI(JNBSP-1+1)
+          NPGH = 3
 C       -- ON TRUANDE LE NOMBRE DE COUCHES (+2) POUR POUVOIR
 C          STOCKER LES EFFORTS (8 VALEURS) DANS LES CONTRAINTES
           ZI(JDCEL-1+1) = NPGH*NBCOU + 2

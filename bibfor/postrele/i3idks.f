@@ -8,7 +8,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 02/10/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,7 @@ C
          IF ( NONVID ) THEN
             IF ( NBNDF .EQ. 3 ) THEN
                CALL I3IFTS(EPSI,K,FACE,DESC,DESCTM,CONEXK,COORDO,SGT,
-     +                     ATRV,BTRV,NBPT,LSTPT,FINK,FIND)
+     +                     NBPT,LSTPT,FINK)
             ELSE IF ( NBNDF .EQ. 4 ) THEN
                CALL I3IFQS(EPSI,K,FACE,DESC,DESCTM,CONEXK,COORDO,SGT,
      +                     ATRV,BTRV,NBPT,LSTPT,FINK,FIND)

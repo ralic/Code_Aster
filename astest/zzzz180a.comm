@@ -1,0 +1,913 @@
+# MODIF  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+# TITRE TEST ANALYTIQUE DE LA GENERATION DE FONCTIONS ALEATOIRES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#       CONNUS PAR LEUR INTERSPECTRE 
+# RESPONSABLE CAMBIER S.CAMBIER
+#
+# GENERATION DE DEUX FONCTIONS ALEATOIRES, LA DEUXIEME EST CORRELEE A LA
+# PREMIER AVEX UN DECALAGE DE T=0.015s ET COEF. DE CORRE. DE RHO=0.8 
+# Responsable : S.Cambier
+
+from Numeric import arange, power, exp, sqrt, log, pi
+from math import atan
+
+DEBUT(CODE=_F(  NOM = 'zzzz180a',NIV_PUB_WEB='INTERNET') ,PAR_LOT='NON' )
+
+#
+#################################################################
+# 1.  CAS GENERATION AVEC INTERPOLATION, DUREE IMPOSEE
+#################################################################
+#
+
+##############################
+# DEFINITION DE L INTERSPECTRE
+##############################
+
+# PARAMETRES DE CORRELATION ENTRE LES DEUX FCTS A GENERER : DECALAGE ET
+# COEFF. DE CORREL.
+T=0.025
+RHO=0.8
+
+t11=[]
+t22=[]
+t12=[]
+
+for f in arange(0.,300.2,.2):
+  if f<=100:
+    c11=2.
+  elif f<=200:
+    c11=(1.E-2-2.)*f/100+4.-1.E-2
+  else:
+    c11=1.E-2  
+  t11[len(t11):]=[f,c11,0.]
+  t22[len(t22):]=[f,1.,0.]
+  c12=sqrt(RHO*c11)*exp(1j*2*pi*f*T)
+  t12[len(t12):]=[f,c12.real,c12.imag]
+ 
+SPECT11=DEFI_FONCTION(    NOM_PARA='FREQ',  VALE_C=tuple(t11))
+
+SPECT22=DEFI_FONCTION(    NOM_PARA='FREQ',  VALE_C=tuple(t22))
+
+SPECT12=DEFI_FONCTION(    NOM_PARA='FREQ',  VALE_C=tuple(t12))
+
+INT1=DEFI_INTE_SPEC(    DIMENSION=2,PAR_FONCTION=(
+                     _F(  NUME_ORDRE_I = 1,
+                                    NUME_ORDRE_J = 1,
+                                    FONCTION = SPECT11),
+                     _F(  NUME_ORDRE_I = 1,
+                                    NUME_ORDRE_J = 2,
+                                    FONCTION = SPECT12),
+                     _F(  NUME_ORDRE_I = 2,
+                                    NUME_ORDRE_J = 2,
+                                    FONCTION = SPECT22))
+                          )
+
+##############################
+# GENERATION DES FCT ALEATOIRES, CAS AVEC INTERPOLATION
+##############################
+
+nbtir = 10
+
+VECT1=GENE_FONC_ALEA(
+                         INTE_SPEC=INT1,
+                               NB_TIRAGE=nbtir, 
+                               DUREE_TIRAGE = 7.,
+                                  INFO=2,
+                          )
+
+#
+
+FONCT1=RECU_FONCTION(    TABLE=VECT1,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',
+                                   INTERPOL='LIN',  
+                                 PROL_DROITE='CONSTANT',
+                                PROL_GAUCHE='EXCLU'
+                           )
+
+FONCT2=RECU_FONCTION(    TABLE=VECT1,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 2),
+                              NOM_PARA_TABL='FONCTION',
+                                   INTERPOL='LIN',  
+                                 PROL_DROITE='CONSTANT',
+                                PROL_GAUCHE='EXCLU'
+                           )
+
+##############################
+# TEST SUR LES VALEURS RMS DES TEMPORELS
+##############################
+
+RMS1=CALC_FONCTION( RMS=_F(  FONCTION = FONCT1))
+
+TEST_TABLE(      TABLE=RMS1,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=sqrt(300*2)  , PRECISION=1.E-2)
+
+RMS2=CALC_FONCTION( RMS=_F(  FONCTION = FONCT2))
+
+TEST_TABLE(      TABLE=RMS2,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=sqrt(301.5*2)  , PRECISION=1.E-2)
+
+##############################
+# CALCUL DE L INTERSPECTRE DES FCTS GENEREES
+##############################
+
+ts =  aster.getvectjev("FONCT1             .VALE        ");
+nbpoin=(len(ts)/2-1)/nbtir
+tfin=ts[len(ts)/2-1]
+
+#
+INTERS=CALC_INTE_SPEC(          INST_INIT=0., 
+                                 INST_FIN=tfin,  
+                                 DUREE_ANALYSE=tfin/nbtir, 
+                                DUREE_DECALAGE=tfin/nbtir,
+                                      NB_POIN=nbpoin,
+                                FONCTION=( FONCT1,  FONCT2, ), )
+               
+POST=POST_DYNA_ALEA(       INTE_SPEC=INTERS,
+                                    OPTION='DIAG')
+
+TEST_TABLE(      TABLE=POST,
+       FILTRE=(
+        _F(NOM_PARA='NUME_ORDRE_I',VALE_I=1),
+        _F(NOM_PARA='NUME_ORDRE_J',VALE_I=1),),
+               NOM_PARA='LAMBDA_00', 
+                 REFERENCE='ANALYTIQUE',
+                 VALE=301.5 ,
+                  PRECISION=1.E-2)
+
+TEST_TABLE(      TABLE=POST,
+       FILTRE=(
+        _F(NOM_PARA='NUME_ORDRE_I',VALE_I=2),
+        _F(NOM_PARA='NUME_ORDRE_J',VALE_I=2),),
+               NOM_PARA='LAMBDA_00', 
+                 REFERENCE='ANALYTIQUE',
+                 VALE=300. ,
+                  PRECISION=1.E-2)
+
+TEST_TABLE(      TABLE=POST,
+       FILTRE=(
+        _F(NOM_PARA='NUME_ORDRE_I',VALE_I=1),
+        _F(NOM_PARA='NUME_ORDRE_J',VALE_I=1),),
+               NOM_PARA='LAMBDA_01', 
+                 REFERENCE='ANALYTIQUE',
+                 VALE=148701.9689130,
+                  PRECISION=1.E-2)
+
+TEST_TABLE(      TABLE=POST,
+       FILTRE=(
+        _F(NOM_PARA='NUME_ORDRE_I',VALE_I=2),
+        _F(NOM_PARA='NUME_ORDRE_J',VALE_I=2),),
+               NOM_PARA='LAMBDA_01', 
+                 REFERENCE='ANALYTIQUE',
+                 VALE=300*300*pi,
+                  PRECISION=1.E-2)
+
+##############################
+# RECUP. DES MODULES ET PHASES, TEST SUR NORME L2 (VIA LES VALEURS "RMS")
+##############################
+
+
+F11=RECU_FONCTION(TABLE=INTERS,TYPE_RESU='FONCTION_C',
+      FILTRE=(
+        _F(NOM_PARA='NUME_ORDRE_I',VALE_I=1),
+        _F(NOM_PARA='NUME_ORDRE_J',VALE_I=1),),
+      NOM_PARA_TABL='FONCTION',
+      PROL_DROITE='CONSTANT',
+      PROL_GAUCHE='CONSTANT')
+
+tt =  aster.getvectjev("F11                .VALE        ");
+fmin=tt[0]
+fmax=tt[len(tt)/3-1]
+
+MF11=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = F11,
+                                    PARTIE = 'MODULE'),
+                      INTERPOL='LOG',)
+
+RMS11=CALC_FONCTION( RMS=_F(  FONCTION = MF11))
+
+TEST_TABLE(      TABLE=RMS11,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=1.334183*sqrt(300./(fmax-fmin))  ,
+                  PRECISION=1.E-2)
+
+PF11=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = F11,
+                                    PARTIE = 'PHASE') )
+
+F12=RECU_FONCTION(TABLE=INTERS,TYPE_RESU='FONCTION_C',
+      FILTRE=(
+        _F(NOM_PARA='NUME_ORDRE_I',VALE_I=1),
+        _F(NOM_PARA='NUME_ORDRE_J',VALE_I=2),),
+      NOM_PARA_TABL='FONCTION',
+      PROL_DROITE='CONSTANT',
+      PROL_GAUCHE='CONSTANT')
+
+MF12=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = F12,
+                                    PARTIE = 'MODULE'), 
+                      INTERPOL='LOG',)
+
+RMS12=CALC_FONCTION( RMS=_F(  FONCTION = MF12))
+
+TEST_TABLE(      TABLE=RMS12,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=8.966604E-1*sqrt(300./(fmax-fmin)) ,
+                  PRECISION= 1.E-2)
+
+PF12=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = F12,
+                                    PARTIE = 'PHASE') )
+
+F22=RECU_FONCTION(TABLE=INTERS,TYPE_RESU='FONCTION_C',
+      FILTRE=(
+        _F(NOM_PARA='NUME_ORDRE_I',VALE_I=2),
+        _F(NOM_PARA='NUME_ORDRE_J',VALE_I=2),),
+      NOM_PARA_TABL='FONCTION',
+      PROL_DROITE='CONSTANT',
+      PROL_GAUCHE='CONSTANT')
+
+MF22=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = F22,
+                                    PARTIE = 'MODULE') ,
+                      INTERPOL='LOG',)
+
+RMS22=CALC_FONCTION( RMS=_F(  FONCTION = MF22))
+
+TEST_TABLE(      TABLE=RMS22,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=1.E+00*sqrt(300./(fmax-fmin))  ,
+                  PRECISION=1.E-2 )
+
+
+PF22=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = F22,
+                                    PARTIE = 'PHASE') )
+
+
+##############################
+# VALEURS SPECTRALES : TEST SUR LES PHASES ET LES LOG DES MODULES
+##############################
+
+#ON ECRIT LA FCT LOG POUR POUVOIR COMPARER LES VALEURS EN ECHELLE LOG DANS TEST_FONCTION                                  
+FLOG = FORMULE(REEL="""(REEL:DSP) =LOG(DSP) """)
+LX=DEFI_LIST_REEL( VALE=(tuple(power(10,arange(-10,10,.01)))))
+FFLOG=CALC_FONC_INTERP(        FONCTION=FLOG,    LIST_PARA=LX,
+                            NOM_PARA='DSP',
+                            NOM_RESU='LOG',
+                            PROL_GAUCHE='EXCLU',  PROL_DROITE='EXCLU',
+                            INTERPOL='LIN', 
+                            TITRE=' FONCTION LOG '    )
+                                   
+LOGF11=CALC_FONCTION(    COMPOSE=_F(  FONC_RESU = FFLOG,
+                                    FONC_PARA = MF11),
+                            PROL_GAUCHE='CONSTANT',  PROL_DROITE='CONSTANT',
+                            INTERPOL='LIN', )
+
+LOGF12=CALC_FONCTION(    COMPOSE=_F(  FONC_RESU = FFLOG,
+                                    FONC_PARA = MF12),
+                            PROL_GAUCHE='CONSTANT',  PROL_DROITE='CONSTANT',
+                            INTERPOL='LIN', )
+
+LOGF22=CALC_FONCTION(    COMPOSE=_F(  FONC_RESU = FFLOG,
+                                    FONC_PARA = MF22),
+                            PROL_GAUCHE='CONSTANT',  PROL_DROITE='CONSTANT',
+                            INTERPOL='LIN', )
+                           
+v1=sqrt(RHO*2.)*exp(1j*2*pi*10.*T)
+v2=sqrt(RHO*1.005)*exp(1j*2*pi*150.*T)
+
+# CES TESTS NE SONT PAS EFFECTUES SUR DES QUANTITES QUI ONT CONVERGES
+# STATISTIQUEMENT => GRANDE TOLERANCE 
+
+TEST_FONCTION(VALEUR=(   
+                    _F(  FONCTION = LOGF11,
+                      VALE_PARA = 10.,
+                      VALE_REFE = log(2.), 
+                      PRECISION = log(1.3),
+                      REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),
+                    _F(  FONCTION = PF11,
+                      VALE_PARA = 10.,
+                      VALE_REFE = 0., 
+                      PRECISION = 1.E-10,
+                      REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),
+                     _F(  FONCTION = LOGF11,
+                      VALE_PARA = 150.,
+                      VALE_REFE = log(1.005), 
+                      PRECISION = log(1.3),
+                      REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),
+                    _F(  FONCTION = PF11,
+                      VALE_PARA = 150.,
+                      VALE_REFE = 0., 
+                      PRECISION = 1.E-10,
+                      REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),                      
+                      
+                    _F(  FONCTION = LOGF12,
+                      VALE_PARA = 10.,
+                      VALE_REFE = log(abs(v1)), 
+                      PRECISION = log(1.3),
+                      REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),
+                    _F(  FONCTION = PF12,
+                      VALE_PARA = 10.,
+                      VALE_REFE = atan(v1.imag/v1.real)/pi*180, 
+                      PRECISION = 20.,
+                      REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),
+                     _F(  FONCTION = LOGF12,
+                      VALE_PARA = 150.,
+                      VALE_REFE = log(abs(v2)), 
+                      PRECISION = log(1.3),
+                      REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),
+                    _F(  FONCTION = PF12,
+                      VALE_PARA = 150.,
+                      VALE_REFE = atan(v2.imag/v2.real)/pi*180, 
+                      PRECISION = 20.,
+                      REFERENCE = 'ANALYTIQUE',CRITERE='ABSOLU'),
+                      
+                    _F(  FONCTION = LOGF22,
+                      VALE_PARA = 10.,
+                      VALE_REFE = log(1.), 
+                      PRECISION = log(1.3),
+                      REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),
+                    _F(  FONCTION = PF22,
+                      VALE_PARA = 10.,
+                      VALE_REFE = 0., 
+                      PRECISION = 1.E-10,
+                      REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),
+                     _F(  FONCTION = LOGF22,
+                      VALE_PARA = 150.,
+                      VALE_REFE = log(1.), 
+                      PRECISION = log(1.3),
+                      REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),
+                    _F(  FONCTION = PF22,
+                      VALE_PARA = 150.,
+                      VALE_REFE = 0., 
+                      PRECISION = 1.E-10,
+                      REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),
+                      ))
+
+# MEME TESTS, MAIS DE NON REGRESSION
+
+# attention : le comportement du generateur de nombres aleatoires
+# (module random) a change entre la version 2.2 de python et la
+# version 2.3. Les resultats s en trouvent un peu affectes.
+# On teste donc avec des valeurs de reference differentes suivant
+# les versions de python
+
+import sys
+version=sys.version_info[:2]
+if version<(2,3) :
+  TEST_FONCTION(VALEUR=(   
+                    _F(  FONCTION = LOGF11,
+                      VALE_PARA = 10.,
+                      VALE_REFE =7.6930730990851E-01 , 
+                      REFERENCE='NON_REGRESSION', 
+                      VERSION  ='7.2.2',
+                      PRECISION = 1.E-10,),
+                     _F(  FONCTION = LOGF11,
+                      VALE_PARA = 150.,
+                      VALE_REFE =1.4571321791086E-01 , 
+                      REFERENCE='NON_REGRESSION', 
+                      VERSION  ='7.2.2',
+                      PRECISION = 1.E-10,),
+                      
+                    _F(  FONCTION = LOGF12,
+                      VALE_PARA = 10.,
+                      VALE_REFE = 2.0684813041233E-01, 
+                      REFERENCE='NON_REGRESSION', 
+                      VERSION  ='7.2.2',
+                      PRECISION = 1.E-10,),
+                    _F(  FONCTION = PF12,
+                      VALE_PARA = 10.,
+                      VALE_REFE = 7.7952542449506E+01, 
+                      REFERENCE='NON_REGRESSION', 
+                      VERSION  ='7.2.2',
+                      PRECISION = 1.E-10,),
+                     _F(  FONCTION = LOGF12,
+                      VALE_PARA = 150.,
+                      VALE_REFE = -6.8562098585892E-02, 
+                      REFERENCE='NON_REGRESSION', 
+                      VERSION  ='7.2.2',
+                      PRECISION = 1.E-10,),
+                    _F(  FONCTION = PF12,
+                      VALE_PARA = 150.,
+                      VALE_REFE = -1.0620813289116E+02, 
+                     REFERENCE='NON_REGRESSION', 
+                      VERSION  ='7.2.2',
+                      PRECISION = 1.E-10,),
+                      
+                    _F(  FONCTION = LOGF22,
+                      VALE_PARA = 10.,
+                      VALE_REFE = -1.6923917251631E-01, 
+                      REFERENCE='NON_REGRESSION', 
+                      VERSION  ='7.2.2',
+                      PRECISION = 1.E-10,),
+                     _F(  FONCTION = LOGF22,
+                      VALE_PARA = 150.,
+                      VALE_REFE = -1.5997740141350E-01, 
+                      REFERENCE='NON_REGRESSION', 
+                      VERSION  ='7.2.2',
+                      PRECISION = 1.E-10,),
+                     ))
+else :
+  TEST_FONCTION(VALEUR=(   
+                    _F(  FONCTION = LOGF11,
+                      VALE_PARA = 10.,
+                      VALE_REFE =7.2765415923379E-01 , 
+                      REFERENCE='NON_REGRESSION', 
+                      VERSION  ='7.2.24',
+                      PRECISION = 1.E-10,),
+                     _F(  FONCTION = LOGF11,
+                      VALE_PARA = 150.,
+                      VALE_REFE =4.9367601272175E-02 , 
+                      REFERENCE='NON_REGRESSION', 
+                      VERSION  ='7.2.24',
+                      PRECISION = 1.E-10,),
+                      
+                    _F(  FONCTION = LOGF12,
+                      VALE_PARA = 10.,
+                      VALE_REFE = 2.1642974687004E-01, 
+                      REFERENCE='NON_REGRESSION', 
+                      VERSION  ='7.2.24',
+                      PRECISION = 1.E-10,),
+                    _F(  FONCTION = PF12,
+                      VALE_PARA = 10.,
+                      VALE_REFE = 9.6977706588666E+01, 
+                      REFERENCE='NON_REGRESSION', 
+                      VERSION  ='7.2.24',
+                      PRECISION = 1.E-10,),
+                     _F(  FONCTION = LOGF12,
+                      VALE_PARA = 150.,
+                      VALE_REFE = -1.0983258162767E-01, 
+                      REFERENCE='NON_REGRESSION', 
+                      VERSION  ='7.2.24',
+                      PRECISION = 1.E-10,),
+                    _F(  FONCTION = PF12,
+                      VALE_PARA = 150.,
+                      VALE_REFE = -9.5537816427820E+01, 
+                     REFERENCE='NON_REGRESSION', 
+                      VERSION  ='7.2.24',
+                      PRECISION = 1.E-10,),
+                      
+                    _F(  FONCTION = LOGF22,
+                      VALE_PARA = 10.,
+                      VALE_REFE = -7.9369961326337E-02, 
+                      REFERENCE='NON_REGRESSION', 
+                      VERSION  ='7.2.24',
+                      PRECISION = 1.E-10,),
+                     _F(  FONCTION = LOGF22,
+                      VALE_PARA = 150.,
+                      VALE_REFE = -5.4010158663320E-02, 
+                      REFERENCE='NON_REGRESSION', 
+                      VERSION  ='7.2.24',
+                      PRECISION = 1.E-10,),
+                     ))
+
+
+#
+#################################################################
+# 2.  CAS GENERATION AVEC INTERPOLATION, NB_POIN IMPOSE
+#              + TEST INIT_ALEA=0
+#################################################################
+#
+DETRUIRE(CONCEPT=_F(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,)),INFO=1)
+
+##############################
+# GENERATION DES FCT ALEATOIRES, 
+##############################
+VECT1=GENE_FONC_ALEA(
+                         INTE_SPEC=INT1,
+                               NB_TIRAGE=nbtir, 
+                               NB_POIN=2048,
+                               INIT_ALEA=0,
+                          )
+
+FONCT1=RECU_FONCTION(    TABLE=VECT1,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',    )
+
+FONCT2=RECU_FONCTION(    TABLE=VECT1,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 2),
+                              NOM_PARA_TABL='FONCTION',     )
+
+##############################
+# TEST SUR LES VALEURS RMS DES TEMPORELS
+##############################
+
+RMS1=CALC_FONCTION( RMS=_F(  FONCTION = FONCT1))
+
+TEST_TABLE(      TABLE=RMS1,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=sqrt(300*2)  , PRECISION=1.E-2)
+
+RMS2=CALC_FONCTION( RMS=_F(  FONCTION = FONCT2))
+
+TEST_TABLE(      TABLE=RMS2,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=sqrt(301.5*2)  , PRECISION=1.E-2)
+
+#
+#################################################################
+# 3.  CAS GENERATION AVEC INTERPOLATION, RIEN IMPOSE,
+#              + TEST TRONCATURE 10-100 HZ
+#              + TEST INIT_ALEA=100000000
+#################################################################
+#
+DETRUIRE(CONCEPT=_F(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,)),INFO=1)
+
+##############################
+# GENERATION DES FCT ALEATOIRES, 
+##############################
+VECT1=GENE_FONC_ALEA(
+                         INTE_SPEC=INT1,
+                               NB_TIRAGE=nbtir, 
+                               FREQ_INIT=10.,
+                               FREQ_FIN=100.,
+                               INIT_ALEA=100000000,
+                          )
+
+FONCT1=RECU_FONCTION(    TABLE=VECT1,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',    )
+
+FONCT2=RECU_FONCTION(    TABLE=VECT1,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 2),
+                              NOM_PARA_TABL='FONCTION',     )
+
+##############################
+# TEST SUR LES VALEURS RMS DES TEMPORELS
+##############################
+
+RMS1=CALC_FONCTION( RMS=_F(  FONCTION = FONCT1))
+
+TEST_TABLE(      TABLE=RMS1,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=sqrt(180*2)  , PRECISION=1.E-2)
+
+RMS2=CALC_FONCTION( RMS=_F(  FONCTION = FONCT2))
+
+TEST_TABLE(      TABLE=RMS2,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=sqrt(90*2)  , PRECISION=1.E-2)
+
+#
+#################################################################
+# 4.  CAS GENERATION AVEC INTERPOLATION
+#              + NB_POIN IMPOSE ET DUREE IMPOSEE
+#################################################################
+#
+DETRUIRE(CONCEPT=_F(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,)),INFO=1)
+
+##############################
+# GENERATION DES FCT ALEATOIRES, 
+##############################
+VECT1=GENE_FONC_ALEA(
+                         INTE_SPEC=INT1,
+                               NB_TIRAGE=nbtir, 
+                               DUREE_TIRAGE = 7.,
+                               NB_POIN=4096,
+                               INIT_ALEA=0,
+                          )
+
+FONCT1=RECU_FONCTION(    TABLE=VECT1,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',    )
+
+FONCT2=RECU_FONCTION(    TABLE=VECT1,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 2),
+                              NOM_PARA_TABL='FONCTION',     )
+
+##############################
+# TEST SUR LES VALEURS RMS DES TEMPORELS
+##############################
+
+RMS1=CALC_FONCTION( RMS=_F(  FONCTION = FONCT1))
+
+TEST_TABLE(      TABLE=RMS1,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=sqrt(300*2)  , PRECISION=1.E-2)
+
+RMS2=CALC_FONCTION( RMS=_F(  FONCTION = FONCT2))
+
+TEST_TABLE(      TABLE=RMS2,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=sqrt(301.5*2)  , PRECISION=1.E-2)
+
+#
+#################################################################
+# 5.  CAS GENERATION AVEC INTERPOLATION SANS RIEN D'IMPOSE
+#################################################################
+#
+DETRUIRE(CONCEPT=_F(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,)),INFO=1)
+
+##############################
+# GENERATION DES FCT ALEATOIRES, 
+##############################
+VECT1=GENE_FONC_ALEA(
+                         INTE_SPEC=INT1,
+                          )
+
+FONCT1=RECU_FONCTION(    TABLE=VECT1,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',    )
+
+FONCT2=RECU_FONCTION(    TABLE=VECT1,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 2),
+                              NOM_PARA_TABL='FONCTION',     )
+
+##############################
+# TEST SUR LES VALEURS RMS DES TEMPORELS
+##############################
+
+RMS1=CALC_FONCTION( RMS=_F(  FONCTION = FONCT1))
+
+TEST_TABLE(      TABLE=RMS1,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=sqrt(300*2)  , PRECISION=1.E-2)
+
+RMS2=CALC_FONCTION( RMS=_F(  FONCTION = FONCT2))
+
+TEST_TABLE(      TABLE=RMS2,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=sqrt(301.5*2)  , PRECISION=1.E-2)
+
+#
+##################################################################
+# 6.  CAS GENERATION SANS INTERPOLATION
+#################################################################
+#
+DETRUIRE(CONCEPT=_F(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,)),INFO=1)
+
+##############################
+# GENERATION DES FCT ALEATOIRES,
+##############################
+
+VECT1=GENE_FONC_ALEA(    INTE_SPEC=INT1,
+                         NB_TIRAGE=nbtir, 
+                         INTERPOL='NON',    )
+
+FONCT1=RECU_FONCTION(    TABLE=VECT1,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',    )
+
+FONCT2=RECU_FONCTION(    TABLE=VECT1,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 2),
+                              NOM_PARA_TABL='FONCTION',     )
+
+##############################
+# TEST SUR LES VALEURS RMS DES TEMPORELS
+##############################
+
+RMS1=CALC_FONCTION( RMS=_F(  FONCTION = FONCT1))
+
+TEST_TABLE(      TABLE=RMS1,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=sqrt(300*2)  , PRECISION=1.E-2)
+
+RMS2=CALC_FONCTION( RMS=_F(  FONCTION = FONCT2))
+
+TEST_TABLE(      TABLE=RMS2,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=sqrt(301.5*2)  , PRECISION=1.E-2)
+
+#
+##################################################################
+# 7.  CAS GENERATION SANS INTERPOLATION
+#              + NB_POIN IMPOSE 
+#################################################################
+#
+DETRUIRE(CONCEPT=_F(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,)),INFO=1)
+
+##############################
+# GENERATION DES FCT ALEATOIRES,
+##############################
+
+VECT1=GENE_FONC_ALEA(    INTE_SPEC=INT1,
+                         NB_TIRAGE=nbtir, 
+                         NB_POIN=2048,
+                         INTERPOL='NON',    )
+
+FONCT1=RECU_FONCTION(    TABLE=VECT1,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',    )
+
+FONCT2=RECU_FONCTION(    TABLE=VECT1,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 2),
+                              NOM_PARA_TABL='FONCTION',     )
+
+##############################
+# TEST SUR LES VALEURS RMS DES TEMPORELS
+##############################
+
+RMS1=CALC_FONCTION( RMS=_F(  FONCTION = FONCT1))
+
+TEST_TABLE(      TABLE=RMS1,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=sqrt(300*2)  , PRECISION=1.E-2)
+
+RMS2=CALC_FONCTION( RMS=_F(  FONCTION = FONCT2))
+
+TEST_TABLE(      TABLE=RMS2,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=sqrt(301.5*2)  , PRECISION=1.E-2)
+
+#
+#################################################################
+# 8.  RETOUR CAS 1 :
+#      LE MEILLEUR TEST : TEST SUR L ALLURE DES COURBES
+#################################################################
+"""
+# MISE EN COMMENTAIRE POUR NE PAS SURCHARGER LES CAS TEST MAIS MONTRER
+# UN EXEMPLE DE RESULTAT GRAPHIQUE DE GENE_FONC_ALEA
+DEFI_FICHIER(FICHIER='AGRAF',UNITE=25);
+
+IMPR_COURBE( FICHIER= 'AGRAF',
+              FORMAT= 'AGRAF',
+     TITRE_GRAPHIQUE= 'MODULE DSP F11',
+              LEGENDE_X= 'Freq. (Hz)',
+              FREQ_GRILLE_X= 1,
+              FREQ_GRILLE_Y= 1,
+              ECHELLE_Y = 'LOG',
+              COURBE=(_F( 
+                       FONCTION = MF11,) ,),
+            ) 
+
+IMPR_COURBE( FICHIER= 'AGRAF',
+              FORMAT= 'AGRAF',
+     TITRE_GRAPHIQUE= 'PHASE DSP F11',
+              LEGENDE_X= 'Freq. (Hz)',
+              FREQ_GRILLE_X= 1,
+              FREQ_GRILLE_Y= 1,
+              COURBE=(_F( 
+                       FONCTION = PF11,) ,),
+            ) 
+
+IMPR_COURBE( FICHIER= 'AGRAF',
+              FORMAT= 'AGRAF',
+     TITRE_GRAPHIQUE= 'MODULE DSP F12',
+              LEGENDE_X= 'Freq. (Hz)',
+              FREQ_GRILLE_X= 1,
+              FREQ_GRILLE_Y= 1,
+              ECHELLE_Y = 'LOG',
+              COURBE=(_F( 
+                       FONCTION = MF12,) ,),
+            ) 
+
+IMPR_COURBE( FICHIER= 'AGRAF',
+              FORMAT= 'AGRAF',
+     TITRE_GRAPHIQUE= 'PHASE DSP F12',
+              LEGENDE_X= 'Freq. (Hz)',
+              FREQ_GRILLE_X= 1,
+              FREQ_GRILLE_Y= 1,
+              COURBE=(_F( 
+                       FONCTION = PF12,) ,),
+            ) 
+              
+IMPR_COURBE( FICHIER= 'AGRAF',
+              FORMAT= 'AGRAF',
+     TITRE_GRAPHIQUE= 'MODULE DSP F22',
+              LEGENDE_X= 'Freq. (Hz)',
+              FREQ_GRILLE_X= 1,
+              FREQ_GRILLE_Y= 1,
+              ECHELLE_Y = 'LOG',
+              COURBE=(_F( 
+                       FONCTION = MF22,) ,),
+            ) 
+
+IMPR_COURBE( FICHIER= 'AGRAF',
+              FORMAT= 'AGRAF',
+     TITRE_GRAPHIQUE= 'PHASE DSP F22',
+              LEGENDE_X= 'Freq. (Hz)',
+              FREQ_GRILLE_X= 1,
+              FREQ_GRILLE_Y= 1,
+              COURBE=(_F( 
+                       FONCTION = PF22,) ,),
+            ) 
+
+
+MSPECT11=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT11,
+                                    PARTIE = 'MODULE') )
+
+PSPECT11=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT11,
+                                    PARTIE = 'PHASE') )
+
+IMPR_COURBE( FICHIER= 'AGRAF',
+              FORMAT= 'AGRAF',
+     TITRE_GRAPHIQUE= 'MODULE DSP CIBLE 11',
+              LEGENDE_X= 'Freq. (Hz)',
+              FREQ_GRILLE_X= 1,
+              FREQ_GRILLE_Y= 1,
+              ECHELLE_Y = 'LOG',
+              COURBE=(_F( 
+                       FONCTION = MSPECT11,) ,),
+            ) 
+
+IMPR_COURBE( FICHIER= 'AGRAF',
+              FORMAT= 'AGRAF',
+     TITRE_GRAPHIQUE= 'PHASE DSP CIBLE 11',
+              LEGENDE_X= 'Freq. (Hz)',
+              FREQ_GRILLE_X= 1,
+              FREQ_GRILLE_Y= 1,
+              COURBE=(_F( 
+                       FONCTION = PSPECT11,) ,),
+            ) 
+
+MSPECT12=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT12,
+                                    PARTIE = 'MODULE') )
+
+PSPECT12=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT12,
+                                     PARTIE = 'PHASE') )
+
+IMPR_COURBE( FICHIER= 'AGRAF',
+              FORMAT= 'AGRAF',
+     TITRE_GRAPHIQUE= 'MODULE DSP CIBLE 12',
+              LEGENDE_X= 'Freq. (Hz)',
+              FREQ_GRILLE_X= 1,
+              FREQ_GRILLE_Y= 1,
+              ECHELLE_Y = 'LOG',
+              COURBE=(_F( 
+                       FONCTION = MSPECT12,) ,),
+           ) 
+
+IMPR_COURBE( FICHIER= 'AGRAF',
+              FORMAT= 'AGRAF',
+     TITRE_GRAPHIQUE= 'PHASE DSP CIBLE 12',
+              LEGENDE_X= 'Freq. (Hz)',
+              FREQ_GRILLE_X= 1,
+              FREQ_GRILLE_Y= 1,
+              COURBE=(_F( 
+                       FONCTION = PSPECT12,) ,),
+           ) 
+
+MSPECT22=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT22,
+                                    PARTIE = 'MODULE') )
+
+PSPECT22=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT22,
+                                     PARTIE = 'PHASE') )
+
+IMPR_COURBE( FICHIER= 'AGRAF',
+              FORMAT= 'AGRAF',
+     TITRE_GRAPHIQUE= 'MODULE DSP CIBLE 22',
+              LEGENDE_X= 'Freq. (Hz)',
+              FREQ_GRILLE_X= 1,
+              FREQ_GRILLE_Y= 1,
+              ECHELLE_Y = 'LOG',
+              COURBE=(_F( 
+                       FONCTION = MSPECT22,) ,),
+                       )
+
+IMPR_COURBE( FICHIER= 'AGRAF',
+              FORMAT= 'AGRAF',
+     TITRE_GRAPHIQUE= 'PHASE DSP CIBLE 22',
+              LEGENDE_X= 'Freq. (Hz)',
+              FREQ_GRILLE_X= 1,
+              FREQ_GRILLE_Y= 1,
+              COURBE=(_F( 
+                       FONCTION = PSPECT22,) ,),
+            ) 
+"""
+
+FIN( )
+#

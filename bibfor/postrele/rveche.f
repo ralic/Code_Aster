@@ -1,12 +1,11 @@
-      SUBROUTINE RVECHE ( DIM, SSCH19, SDLIEU, SDEVAL )
+      SUBROUTINE RVECHE ( SSCH19, SDLIEU, SDEVAL )
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       CHARACTER*19 SSCH19,SDLIEU,SDEVAL
-      CHARACTER*2  DIM
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 23/12/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +27,6 @@ C     OPERATION D' EXTRACTION DU POST-TRAITEMENT SUR UNE LISTE DE NOEUDS
 C     ------------------------------------------------------------------
 C IN  SSCH19 : K : NOM DU SOUS CHAMP DE GRANDEUR
 C IN  SDLIEU : K : NOM DE LA SD REPRESENTANT LE LIEU
-C IN  DIM    : K : VAUT '1D' OU '2D' OU '3D'
 C OUT SDEVAL : K : NOM DE LA SD SOUS_CHAMP_GD PRODUITES
 C            :   :(DESCRIPTION : CF RVPSTE)
 C     ------------------------------------------------------------------
@@ -154,7 +152,7 @@ C
 C
       ELSE IF ( DOCU .EQ. 'CHLM' ) THEN
          NINDIR = '&&RVECHE.TABLE.INDIR'
-         CALL TREMNO(DIM,ZK8(ADESC + 1-1),SSCH19,SDEMNO)
+         CALL TREMNO(ZK8(ADESC + 1-1),SSCH19,SDEMNO)
          CALL WKVECT(OUPNBN,'V V I',NBNPST,AOPNBN)
          CALL WKVECT(OUPNCO,'V V I',NBNPST,AOPNCO)
          CALL WKVECT(OUPNSP,'V V I',NBNPST,AOPNSP)
@@ -229,7 +227,7 @@ C
 C
             PT = ZI(AOPCMP + I-1)
             IF ( PT .GT. 0 ) THEN
-               CALL TREMNO(DIM,ZK8(ACMPGD + I-1),SSCH19,SDEMNO)
+               CALL TREMNO(ZK8(ACMPGD + I-1),SSCH19,SDEMNO)
                DO 221, J = 1, NBNPST, 1
                   CALL JEVEUO(JEXNUM(SDEMNO//'.VACP',ZI(AINDIR + J-1)),
      +                       'L',SDVACP)

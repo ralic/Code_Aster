@@ -1,6 +1,6 @@
       SUBROUTINE TE0117 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -42,36 +41,19 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      CHARACTER*8        MODELI,ELREFE
-      CHARACTER*24       CARAC,FF
+      CHARACTER*8        MODELI
       REAL*8             NHARM, BSIGM(18)
-      INTEGER            NBSIGM
+      INTEGER            NBSIGM,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE
+      INTEGER            JGANO
 C DEB ------------------------------------------------------------------
 
-      CALL ELREF1(ELREFE)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
       MODELI(1:2) = NOMTE(3:4)
-C
-C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
-C ---- GEOMETRIE ET INTEGRATION
-C      ------------------------
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS=IFF
-      IVF   =IPOIDS+NPG1
-      IDFDE =IVF   +NPG1*NNO
-      IDFDK =IDFDE +NPG1*NNO
 C
 C --- INITIALISATIONS :
 C     -----------------
       ZERO  = 0.0D0
-      BIDON = ZERO
       NHARM = ZERO
-      NDIM  = 3
 C
 C ---- RECUPERATION  DU NUMERO D'HARMONIQUE
 C      ------------------------------------
@@ -97,8 +79,8 @@ C ----     VECTEUR DES FORCES INTERNES (BT*SIGMA)
 C
 C ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA) :
 C      --------------------------------------------------
-      CALL BSIGMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),ZR(IDFDK)
-     +            ,BIDON,ZR(IPOIDS),ZR(IGEOM),NHARM,ZR(ICONTM),BSIGM)
+      CALL BSIGMC (MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE, 
+     +              ZR(IGEOM), NHARM, ZR(ICONTM), BSIGM )
 C
 C ---- AFFECTATION DU VECTEUR EN SORTIE :
 C      ----------------------------------

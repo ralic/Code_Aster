@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C RESPONSABLE  O.BOITEAU
+C RESPONSABLE BOITEAU O.BOITEAU
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  UTILITAIRE D'INTERPOLATION 2D DE CHARGE 
 C                          POUR AERER TE0003

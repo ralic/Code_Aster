@@ -1,4 +1,4 @@
-#@ MODIF N_MCLIST Noyau  DATE 03/09/2002   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF N_MCLIST Noyau  DATE 16/03/2004   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -120,6 +120,23 @@ class MCList(UserList.UserList):
         l.extend(child.get_sd_utilisees())
       return l
 
+   def get_sd_mcs_utilisees(self):
+      """ 
+          Retourne la ou les SD utilisée par self sous forme d'un dictionnaire :
+          . Si aucune sd n'est utilisée, le dictionnaire est vide.
+          . Sinon, les clés du dictionnaire sont les mots-clés derrière lesquels on
+            trouve des sd ; la valeur est la liste des sd attenante.
+            Exemple : { 'VALE_F': [ <Cata.cata.para_sensi instance at 0x9419854>,
+                                    <Cata.cata.para_sensi instance at 0x941a204> ],
+                        'MODELE': [<Cata.cata.modele instance at 0x941550c>] }
+     """
+      dico = {}
+      for child in self.data:
+        daux = child.get_sd_mcs_utilisees()
+        for cle in daux.keys():
+          dico[cle] = daux[cle]
+      return dico
+
    def copy(self):
       """
         Réalise la copie d'une MCList
@@ -144,3 +161,14 @@ class MCList(UserList.UserList):
       self.etape=parent.etape
       for mcfact in self.data:
         mcfact.reparent(parent)
+
+   def get_etape(self):
+      """
+         Retourne l'étape à laquelle appartient self
+         Un objet de la catégorie etape doit retourner self pour indiquer que
+         l'étape a été trouvée
+         XXX double emploi avec self.etape ???
+      """
+      if self.parent == None: return None
+      return self.parent.get_etape()
+

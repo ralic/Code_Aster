@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 16/12/2003   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +30,7 @@ DEFI_GROUP=OPER(nom="DEFI_GROUP",op= 104,sd_prod=defi_group_prod,
          MAILLAGE        =SIMP(statut='o',typ=(maillage,squelette) ),
 
          CREA_GROUP_MA   =FACT(statut='f',max='**',
-          
+
 regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE','INTERSEC','UNION','DIFFE','OPTION'),),
 #  quel est le concept attendu deriere NOM
            NOM             =SIMP(statut='o',typ=grma),
@@ -92,11 +92,9 @@ regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE','INTERSEC','UNION','DIFFE','OPTION')
          CREA_GROUP_NO   =FACT(statut='f',max='**',
            regles = ( AU_MOINS_UN ('TOUT_GROUP_MA','GROUP_MA','NOEUD',
                                    'INTERSEC','UNION','DIFFE','GROUP_NO','OPTION'),
-                      PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                       EXCLUS ('TOUT_GROUP_MA','GROUP_MA','NOEUD','INTERSEC','UNION','DIFFE'),),
            TOUT_GROUP_MA   =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
            INTERSEC        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
@@ -172,6 +170,9 @@ regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE','INTERSEC','UNION','DIFFE','OPTION')
            b_tunnel    =BLOC(condition = "OPTION == 'TUNNEL'",
              regles=(EXCLUS('NOEUD_ORIG','GROUP_NO_ORIG'),
                      AU_MOINS_UN ('GROUP_MA_AXE','MAILLE_AXE'),),
+
+             TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ), # en complément de GROUP_MA et MAILLE
+
              GROUP_MA_AXE    =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
              MAILLE_AXE      =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
              NOEUD_ORIG      =SIMP(statut='f',typ=no),

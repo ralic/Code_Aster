@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,13 +20,13 @@ GENER_MECPG2
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MGCPTR6          MAILLE__ TRIA6
-   ELREFE__  TRII6     GAUSS__  NELGA=FPG1  NELGA2=FPG2
-   ELREFE__  TRII3
+   ELREFE__  TR6       GAUSS__  RIGI=FPG3   MASS=FPG3  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  TR3       GAUSS__  RIGI=FPG3   MASS=FPG3             NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
    ENS_NOEUD__  EN2     =     4  5  6
    ENS_NOEUD__  EN1     =     1  2  3
 ENTETE__ ELEMENT__ MGCPQU8          MAILLE__ QUAD8
-   ELREFE__  QUAI8     GAUSS__  NELGA=FPG1
-   ELREFE__  QUAI4
+   ELREFE__  QU8       GAUSS__  RIGI=FPG9   MASS=FPG9  GANO=FPG9  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  QU4       GAUSS__  RIGI=FPG9   MASS=FPG9             NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
    ENS_NOEUD__  EN2     =     5  6  7  8
    ENS_NOEUD__  EN1     =     1  2  3  4
 
@@ -48,45 +48,46 @@ MODE_LOCAL__
                                  EN1   (EPXX     EPYY     EPZZ     EPXY     )
                                  EN2   ()
     EDEULNO  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
-    EDOMGGA  = DOMMAG   ELGA__ NELGA   (DOMA     )
+    EDOMGGA  = DOMMAG   ELGA__ RIGI    (DOMA     )
     EDOMGNO  = DOMMAG   ELNO__ IDEN__  (DOMA     )
     EENEDNO  = ENER_R   ELEM__         (TOTALE   )
-    EENEDPG  = ENER_R   ELGA__ NELGA   (TOTALE   )
+    EENEDPG  = ENER_R   ELGA__ RIGI    (TOTALE   )
     EENEDNN  = ENER_R   ELNO__ IDEN__  (TOTALE   )
     CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     )
     CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     )
-    EDEFOPG  = EPSI_R   ELGA__ NELGA   (EPXX     EPYY     EPZZ     EPXY     )
-    EDFEQPG  = EPSI_R   ELGA__ NELGA   (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
+    EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     )
+    EDFEQPG  = EPSI_R   ELGA__ RIGI    (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     )
     EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
-    EFORCER  = FORC_R   ELGA__ NELGA   (FX       FY       )
+    EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     NGEOMBR  = GEOM_R   ELNO__ DIFF__
                                  EN1   (X        Y        )
                                  EN2   ()
-    EGGEOM_R = GEOM_R   ELGA__ NELGA   (X        Y        )
+    EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W)
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
-    EGRDUPG  = G_DEPL_R ELGA__ NELGA   (D_DX_X   D_DX_Y   D_DY_X   D_DY_Y   )
+    EGRDUPG  = G_DEPL_R ELGA__ RIGI    (D_DX_X   D_DX_Y   D_DY_X   D_DY_Y   )
     EGRDUNO  = G_DEPL_R ELNO__ IDEN__  (D_DX_X   D_DX_Y   D_DY_X   D_DY_Y   )
-    EHYDRER  = HYDR_R   ELGA__ NELGA   (HYDR     )
+    EHYDRER  = HYDR_R   ELGA__ RIGI    (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
-    EGINST_R = INST_R   ELGA__ NELGA   (INST     )
+    EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
-    EGNEUT_F = NEUT_F   ELGA__ NELGA   (X1       X2       X3       X4       X5       X6       )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
     CALPHAR  = NEUT_R   ELEM__         (X1       )
-    EGNEUT_R = NEUT_R   ELGA__ NELGA   (X1       X2       X3       X4       X5       X6       )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )
     CBORNPI  = PILO_R   ELEM__         (A0       A1       )
     CCDTAU   = PILO_R   ELEM__         (A0       )
-    ECOPILO  = PILO_R   ELGA__ NELGA   (A0       A1       A2       A3       ETA      )
-    ECONTPG  = SIEF_R   ELGA__ NELGA   (SIXX     SIYY     SIZZ     SIXY     )
-    ECOEQPG  = SIEF_R   ELGA__ NELGA   (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
+    ECOPILO  = PILO_R   ELGA__ RIGI    (A0       A1       A2       A3       ETA      )
+    ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     )
+    ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
     ETRIAXS  = SIEF_R   ELNO__ IDEN__  (TRIAX    SI_ENDO  )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
@@ -94,8 +95,8 @@ MODE_LOCAL__
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     NSECHER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    EPHASRR  = VARI_R   ELGA__ NELGA   (VARI     )
-    ZVARIPG  = VARI_R   ELGA__ NELGA   (VARI     )
+    EPHASRR  = VARI_R   ELGA__ RIGI    (VARI     )
+    ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
                                         V6       T0       T1       T2       T3       T4
@@ -153,7 +154,7 @@ OPTION__
                                      CTEMPSR  PTEMPSR  CTEREFE  PTEREF
                               OUT__  MVECTDR  PVECTUR
     COOR_ELGA           479   IN__   NGEOMER  PGEOMER
-                              OUT__  EGGEOM_R PCOORPG
+                              OUT__  EGGEOP_R PCOORPG
     DCHA_ELGA_SIGM      489   IN__   ECONTPG  PCONTMR  ECONTPG  PCONTPR  CSOUSOP  PNEUK24  ZVARIPG  PVARIMR
                                      ZVARIPG  PVARIPR
                               OUT__  ZVARIPG  PVARIMO
@@ -250,6 +251,14 @@ OPTION__
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
+    FULL_MECA_ELAS      113   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  EDEFONO  PDEFAMR
+                                     EDEFONO  PDEFAPR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
+                                     EHYDRER  PHYDRMR  EHYDRER  PHYDRPR  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
+                                     CMATERC  PMATERC  EPHASRR  PPHASMR  EPHASRR  PPHASPR  NSECHER  PSECHMR
+                                     NSECHER  PSECHPR  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF
+                                     ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
+                              OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR
+                                     MVECTUR  PVECTUR
     GRAD_ELGA_THETA     384   IN__   NGEOMER  PGEOMER  NDEPLAR  PTHETAR
                               OUT__  EGRDUPG  PGRADUR
     GTHE_ELNO_ELGA      384   IN__   NGEOMER  PGEOMER  NDEPLAR  PTHETAR
@@ -301,7 +310,7 @@ OPTION__
                                      NSECHER  PSECHPR  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
-    RIGI_MECA_ELAS      113   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  EDEFONO  PDEFAMR
+    RIGI_MECA_TANG      113   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  EDEFONO  PDEFAMR
                                      EDEFONO  PDEFAPR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      EHYDRER  PHYDRMR  EHYDRER  PHYDRPR  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  EPHASRR  PPHASMR  EPHASRR  PPHASPR  NSECHER  PSECHMR

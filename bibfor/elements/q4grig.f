@@ -1,4 +1,4 @@
-      SUBROUTINE Q4GRIG ( XYZL, OPTION, PGL, RIG, ENER )
+      SUBROUTINE Q4GRIG ( NOMTE, XYZL, OPTION, PGL, RIG, ENER )
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,9 +18,9 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       REAL*8         XYZL(4,*), PGL(*), RIG(*), ENER(*)
-      CHARACTER*(*)  OPTION
+      CHARACTER*16   OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 06/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT Q4GAMMA (AVEC CISAILLEMENT)
 C     ------------------------------------------------------------------
@@ -46,8 +46,6 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      CHARACTER*8 TYPELE
-      CHARACTER*24 DESR
       INTEGER INT
       REAL*8 WGT,DEPL(24)
       REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2),DFC(3,2)
@@ -86,13 +84,11 @@ C     ------------------------------------------------------------------
       REAL*8   CTOR, EXCENT, ZERO
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-      TYPELE = 'MEQ4QU4 '
 C
       ZERO = 0.0D0
       ENERTH = ZERO
 C
-      DESR = '&INEL.'//TYPELE//'.DESR'
-      CALL JEVETE(DESR,' ',LZR)
+      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
 C
       CALL JEVECH('PCACOQU','L',JCOQU)
       CTOR = ZR(JCOQU+3)
@@ -185,7 +181,7 @@ C           ----- CALCUL DU PRODUIT BMT.DMF.BF -------------------------
         CALL JEVECH('PDEPLAR','L',JDEPG)
         CALL UTPVGL(4,6,PGL,ZR(JDEPG),DEPL)
         CALL DXQLOE(FLEX,MEMB,MEFL,CTOR,MULTIC,DEPL,ENER)
-        CALL BSTHPL(TYPELE,BSIGTH,INDITH)
+        CALL BSTHPL(NOMTE(1:8),BSIGTH,INDITH)
         IF (INDITH) THEN
           DO 90 I = 1, 24
             ENERTH = ENERTH + DEPL(I)*BSIGTH(I)

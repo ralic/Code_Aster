@@ -1,10 +1,10 @@
-        SUBROUTINE LCINIT ( LOI,   TYPESS, ESSAI,  MOD,  IMAT, NMAT,
-     1                      MATERD,MATERF, MATCST, TEMPD,TEMPF,TIMED,
+        SUBROUTINE LCINIT ( LOI,   TYPESS, ESSAI,  MOD, NMAT,
+     1                      MATERF,TIMED,
      2                      TIMEF, YD,     EPSD,   DEPS, DY )
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2001   AUTEUR ADBHHVV V.CANO 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,13 +30,8 @@ C           TYPESS :  TYPE DE SOLUTION D ESSAI POUR DY(DEPEND DU MODELE)
 C                      > VOIR XXXCVG ET XXXINI
 C           ESSAI  :  SOLUTION D ESSAI
 C           MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
-C           MATERD :  COEFFICIENTS MATERIAU A T
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           MATCST :  'OUI' SI MATERIAU CONSTANT SUR DT
-C           TEMPD  :  TEMPERATURE A T
-C           TEMPF  :  TEMPERATURE A T+DT
 C           TIMED  :  INSTANT  T
 C           TIMEF  :  INSTANT  T+DT
 C           EPSD   :  DEFORMATION A T
@@ -44,14 +39,13 @@ C           YD     :  VARIABLES A T   = ( SIG  VIN  (EPS3)  )
 C       VAR DEPS   :  INCREMENT DE DEFORMATION
 C       OUT DY     :  SOLUTION ESSAI  = ( DSIG DVIN (DEPS3) )
 C       ----------------------------------------------------------------
-        INTEGER         IMAT, TYPESS ,  NMAT
+        INTEGER         TYPESS ,  NMAT
         REAL*8          DEPS(6), EPSD(6), ESSAI
         REAL*8          YD(*) ,  DY(*)
-        REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
-        REAL*8          TEMPD, TEMPF,  TIMED, TIMEF
+        REAL*8          MATERF(NMAT,2)
+        REAL*8          TIMED, TIMEF
         CHARACTER*8     MOD
         CHARACTER*16    LOI
-        CHARACTER*3     MATCST
 C       ----------------------------------------------------------------
 C
          
@@ -59,21 +53,21 @@ C         IF     ( LOI(1:8) .EQ. 'ROUSS_PR' ) THEN
 C        CALL RSLINI(TYPESS,ESSAI,MOD,IMAT,NMAT,MATERF,TEMPD,YD,DEPS,DY)
 C
       IF     ( LOI(1:8) .EQ. 'CHABOCHE' ) THEN
-         CALL CHBINI(TYPESS,ESSAI,MOD,IMAT,NMAT,MATERF,TEMPD,YD,DEPS,DY)
+         CALL CHBINI(TYPESS,ESSAI,MOD,NMAT,MATERF,YD,DEPS,DY)
 C
       ELSEIF ( LOI(1:4) .EQ. 'OHNO' ) THEN
-         CALL ONOINI(TYPESS,ESSAI,MOD,IMAT,NMAT,MATERF,TEMPD,YD,DEPS,DY)
+         CALL ONOINI(TYPESS,ESSAI,MOD,NMAT,MATERF,YD,DEPS,DY)
 C
       ELSEIF ( LOI(1:5) .EQ. 'LMARC' ) THEN
-         CALL LMAINI(TYPESS,ESSAI,MOD,IMAT,NMAT,MATERF,TEMPD,
+         CALL LMAINI(TYPESS,ESSAI,MOD,NMAT,MATERF,
      1                TIMED,TIMEF,YD,DEPS,DY)
 C
       ELSEIF ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN
-         CALL CVMINI(TYPESS,ESSAI,MOD,IMAT,NMAT,MATERF,TEMPD,
+         CALL CVMINI(TYPESS,ESSAI,MOD,NMAT,MATERF,
      1                TIMED,TIMEF,YD,EPSD,DEPS,DY)
 C
       ELSEIF ( LOI(1:7)  .EQ. 'NADAI_B' ) THEN
-         CALL INSINI(TYPESS,ESSAI,MOD,IMAT,NMAT,MATERF,TEMPD,YD,DEPS,DY)
+         CALL INSINI(TYPESS,ESSAI,MOD,NMAT,MATERF,YD,DEPS,DY)
       ENDIF
 C
       END

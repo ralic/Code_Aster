@@ -17,7 +17,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2001   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE  CRP_21
+C TOLE  CRP_20
 C-----------------------------------------------------------------------
 C DESCRIPTION : CALCUL DE LA REPONSE DYNAMIQUE NON-LINEAIRE D'UNE
 C -----------   STRUCTURE PAR UNE METHODE INTEGRALE
@@ -207,7 +208,7 @@ C     ---------------------
      &                 REFEXT,IMFEXT,FEXTTR,FEXTT0,
      &                 MASGI,AMORI,PULSI,PHII,
      &                 TYPCH,NBSEG,RC,ALPHA,BETA,GAMMA,ORIG,THETA,
-     &                 VITG,DEPG,AMOR,PULS,PULSD,OMEGAF,AA,BB,OLD,
+     &                 VITG,DEPG,AMOR,PULSD,OMEGAF,AA,BB,OLD,
      &                 S0,Z0,SR0,ZA1,ZA2,ZA3,ZA4,ZA5,ZITR,ZIN,TRANS,
      &                 AMOR00,PULS00,ACCG0,VITG0,DEPG0,
      &                 ICONFB,TCONF1,FTEST0,IER)
@@ -334,14 +335,14 @@ C
      &                    NBNL,TYPCH,NBSEG,PHII,NOMCH,
      &                    CHOC,ALPHA,BETA,GAMMA,ORIG,RC,THETA,
      &                    VITGE,DEPGE,VITG0,DEPG0,
-     &                    OLD,OLDIA,INDNEW,FMRES,FNLMOD,FTMP,
+     &                    OLD,OLDIA,FMRES,FNLMOD,FTMP,
      &                    TESTC,ITFORN,TOLN)
          ELSE
             CALL MDCHOF ( NBM,NP2,NP3,NBM,IMPR,TC0,
      &                    NBNL,TYPCH,NBSEG,PHII,NOMCH,
      &                    CHOC,ALPHA,BETA,GAMMA,ORIG,RC,THETA,
      &                    VITGC,DEPGC,VITG0,DEPG0,
-     &                    OLD,OLDIA,INDNEW,FMRES,FNLMOD,FTMP,
+     &                    OLD,OLDIA,FMRES,FNLMOD,FTMP,
      &                    TESTC,ITFORN,TOLN)
          ENDIF
          INDNE0 = INDNEW
@@ -414,7 +415,6 @@ C
      &                    AMOR00,AMOR0,PULS00,PULS0,
      &                    ACC,VIT,DEP,ACC0,VIT0,DEP0,
      &                    ACCG,VITG,DEPG,ACCG0,VITG0,DEPG0,
-     &                    VITGT,DEPGT,FMODT,
      &                    TCONF1,FTEST0,TCONF2,FTEST)
          ELSE IF ( TESTC.EQ.1 ) THEN
             IF ( ICOUPL.EQ.0 ) THEN
@@ -423,7 +423,6 @@ C
      &                       AMOR,AMOR0,PULS,PULS0,
      &                       ACC,VIT,DEP,ACC0,VIT0,DEP0,
      &                       ACCG,VITG,DEPG,ACCG0,VITG0,DEPG0,
-     &                       VITGT,DEPGT,FMODT,
      &                       TCONF1,FTEST0,TCONF2,FTEST)
             ELSE IF ( ICOUPL.EQ.1 ) THEN
                CALL INIPAR ( NBM,NBM,NBNL,TESTC,
@@ -431,7 +430,6 @@ C
      &                       AMOR,AMOR0,PULS,PULS0,
      &                       ACC,VIT,DEP,ACC0,VIT0,DEP0,
      &                       ACCG,VITG,DEPG,ACCG0,VITG0,DEPG0,
-     &                       VITGT,DEPGT,FMODT,
      &                       TCONF1,FTEST0,TCONF2,FTEST)
             ENDIF
          ENDIF
@@ -495,7 +493,7 @@ C     --- IMPRESSION DES RESULTATS DE CHOC
 
       IF (NBNL.NE.0) THEN
         CALL MDICHO(RESU,NBSAUV,ZR(KINST),ZR(KFCHO),ZR(KDCHO),
-     &              ZR(KVCHO),NBNL,NBCHOC,IBID,PARCHO,NOECHO)
+     &              ZR(KVCHO),NBNL,NBCHOC,PARCHO,NOECHO)
       END IF
 
 C 7.6 IMPRESSIONS SUPPLEMENTAIRES SI ARRET PAR MANQUE DE TEMPS CPU

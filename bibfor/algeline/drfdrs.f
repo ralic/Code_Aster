@@ -1,10 +1,10 @@
-      SUBROUTINE DRFDRS(Q, PARAME, H0, SIGC, RGDEV, U, DUDS, DFDS)
+      SUBROUTINE DRFDRS(Q, PARAME, H0, SIGC, RGDEV, DUDS, DFDS)
 C
       IMPLICIT    NONE
-      REAL*8      Q(6), PARAME(5), H0, SIGC, RGDEV, U, DUDS(6), DFDS(6)
+      REAL*8      Q(6), PARAME(5), H0, SIGC, RGDEV, DUDS(6), DFDS(6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,6 @@ C --- : PARAME : PARAMETRES D'ECROUISSAGE ------------------------------
 C --- : H0     : H0 = (1-GAMCJS)**(1/6) --------------------------------
 C --- : SIGC   : PARAMETRE DU MODELE -----------------------------------
 C --- : RGDEV  : G(S) --------------------------------------------------
-C --- : U      : CRITERE PLASTIQUE -------------------------------------
 C --- : DUDS   : DU/DSIG -----------------------------------------------
 C OUT : DFDS   : DF/DSIG = (1/A)*((1/(SIGC*H0))**(1/A))*G**((1-A)/A)*Q -
 C ------------ :         - DU/DSIG  ------------------------------------

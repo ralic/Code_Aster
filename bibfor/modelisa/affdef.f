@@ -1,11 +1,11 @@
-      SUBROUTINE AFFDEF(TMP,NOM,NEL,NTEL,TAB,NBO,IER)
+      SUBROUTINE AFFDEF(TMP,NOM,NEL,NTEL,TAB,IER)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER                       NTEL(*)
       CHARACTER*8           NOM,         TAB(*)
       CHARACTER*24      TMP
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 01/03/2000   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

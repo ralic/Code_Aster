@@ -1,7 +1,7 @@
       SUBROUTINE RESGRA(SOL,MAT,SMBR,VCINE,MATF,BASE,IREP,
      &                  NITER,EPSI,CRITER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/05/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,6 @@ C----------------------------------------------------------------------
 
 C----------------------------------------------------------------------
 C     DEBUT
-      CALL JXVERI(' ',' ')
       CALL JEMARQ()
 
       CALL INFNIV(IFM,NIV)
@@ -207,7 +206,7 @@ C     ---------------------------------
 C       WRITE (6,*) '??????????? APPEL NOUVEAU GCPC ????????'
         CALL GCPC(NEQ,ZI(IDIN),ZI(IDIP),ZR(IDAC),ZI(IDINPC),ZI(IDIPPC),
      &            ZR(IDACPC),ZR(IDB),ZR(IDX),ZR(IDW1),ZR(IDW2),ZR(IDW3),
-     &            ZR(IDW4),IREP,PREC,NITER,EPSI,CRITER)
+     &            IREP,NITER,EPSI,CRITER)
 
 
 C     10- MISE A JOUR DES COEFFICIENTS DE LAGRANGE :
@@ -222,5 +221,4 @@ C     ---------------------------------
       CALL DETRSD('CHAMP_GD','&&RESGRA.SCMB')
 
       CALL JEDEMA()
-      CALL JXVERI(' ',' ')
       END

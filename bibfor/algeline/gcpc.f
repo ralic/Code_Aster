@@ -1,7 +1,7 @@
-      SUBROUTINE GCPC(M,IN,IP,AC,INPC,IPPC,ACPC,BF,XP,R,RR,P,TW,IREP,
-     &                PREC,NITER,EPSI,CRITER)
+      SUBROUTINE GCPC(M,IN,IP,AC,INPC,IPPC,ACPC,BF,XP,R,RR,P,IREP,
+     &                NITER,EPSI,CRITER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/03/2003   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,16 +36,11 @@ C    . BF            -->   VECTEUR SECOND MEMBRE
 C    . R            <--    VECTEUR RESIDU
 C    . RR           <--    DIRECTION DE DESCENTE AVANT CONJUGAISON
 C    . P            <--    DIRECTION DE DESCENTE APRES CONJUGAISON
-C    . TW           <--    TABLEAU DE TRAVAIL
 C    . XP           <-->   VECTEUR SOLUTION
 C    -------------------------------------------------------------------
 C    . ITRGCP        -->  IREP =    ( CONDITIONS INITIALES)
 C                           0  XP INITIAL MIS A ZERO
 C                           1  XP INITIAL DONNEE DE GCPC
-C                         PREC  =  ( PRECONDITIONNEMENT )
-C                              SANS PAS DE PRECONDITIONNEMENT
-C                              LDLT CHOLESKY INCOMPLET
-C                              DIAG PRECONDITIONNEMENT DIADONAL
 C     ----------------- ------------------------------------------------
 C     - PRECAUTIONS D'EMPLOI:  XP PEUT ETRE EVENTUELLEMENT CONFONDU
 C                              AVEC BF SI MEME ARGUMENT
@@ -59,8 +54,7 @@ C CORPS DU PROGRAMME
 
 C DECLARATION PARAMETRES D'APPELS
       INTEGER M,IN(M),IP(*),INPC(M),IPPC(*),IREP,NITER
-      REAL*8 AC(M),ACPC(M),BF(M),XP(M),R(M),RR(M),P(M),TW(M),EPSI
-      CHARACTER*4 PREC
+      REAL*8 AC(M),ACPC(M),BF(M),XP(M),R(M),RR(M),P(M),EPSI
       CHARACTER*24 CRITER
             
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/08/2003   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 02/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE FATIGUE - COMPTAGE DE CYCLES RAINFLOW - DOMMAGE-EQUIVALENTS- 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,7 +114,6 @@ DEPL=MECA_STATIQUE(
 DEPL=CALC_ELEM( reuse=DEPL,               MODELE=TRIDIM,
                                 CHAM_MATER=MAT,
                                     OPTION=(   'EPSI_ELGA_DEPL',
-                                               'SIEF_ELGA_DEPL',
                                                'EPSI_ELNO_DEPL',
                                                'EPME_ELGA_DEPL',
                                                'EPME_ELNO_DEPL',
@@ -130,46 +129,6 @@ DEPL=CALC_ELEM( reuse=DEPL,               MODELE=TRIDIM,
                                                'EQUI_ELNO_EPME',
                                                'EQUI_ELNO_EPSI',  ),
                                   RESULTAT=DEPL )
-
-CHSIGN=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-NOM_CHAM='SIGM_ELNO_DEPL', RESULTAT=DEPL,
-                           NUME_ORDRE=8
-                            )
-
-CHSIGG=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
-NOM_CHAM='SIEF_ELGA_DEPL', RESULTAT=DEPL,
-                           NUME_ORDRE=8
-                            )
-
-CHEPSN=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-NOM_CHAM='EPSI_ELNO_DEPL', RESULTAT=DEPL,
-                           NUME_ORDRE=8
-                            )
-
-CHEPSG=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_EPSI_R',
-NOM_CHAM='EPSI_ELGA_DEPL', RESULTAT=DEPL,
-                           NUME_ORDRE=8
-                            )
-
-CHSIGEQN=CALC_CHAM_ELEM(         MODELE=TRIDIM,
-                              CHAM_MATER=MAT,
-                                  OPTION='EQUI_ELNO_SIGM',
-                               CHAM_ELEM=CHSIGG           )
-
-CHSIGEQG=CALC_CHAM_ELEM(         MODELE=TRIDIM,
-                              CHAM_MATER=MAT,
-                                  OPTION='EQUI_ELGA_SIGM',
-                               CHAM_ELEM=CHSIGG           )
-
-CHEPSEQN=CALC_CHAM_ELEM(         MODELE=TRIDIM,
-                              CHAM_MATER=MAT,
-                                  OPTION='EQUI_ELNO_EPSI',
-                               CHAM_ELEM=CHEPSN           )
-
-CHEPSEQG=CALC_CHAM_ELEM(         MODELE=TRIDIM,
-                              CHAM_MATER=MAT,
-                                  OPTION='EQUI_ELGA_EPSI',
-                               CHAM_ELEM=CHEPSG           )
 
 F_MANSON=DEFI_FONCTION(      NOM_PARA='EPSI',
                               PROL_DROITE='LINEAIRE',
@@ -235,28 +194,7 @@ TEST_RESU(CHAM_ELEM=(          _F(  CHAM_GD = DMG_WOHL,
                                            MAILLE = 'MA1',
                                            NOEUD = 'NO1',
                                            NOM_CMP = 'DOMA',
-                                           VALE = 4.6705E-03),
-
-                               _F(  CHAM_GD = CHSIGEQN,
-                                           MAILLE = 'MA1',
-                                           NOEUD = 'NO1',
-                                           NOM_CMP = 'VMIS',
-                                           VALE = 3.),
-                                         _F(  CHAM_GD = CHSIGEQG,
-                                           MAILLE = 'MA1',
-                                           POINT = 1,
-                                           NOM_CMP = 'VMIS',
-                                           VALE = 3.),
-                                         _F(  CHAM_GD = CHEPSEQN,
-                                           MAILLE = 'MA1',
-                                           NOEUD = 'NO1',
-                                           NOM_CMP = 'INVA_2',
-                                           VALE = 2.6),
-                                         _F(  CHAM_GD = CHEPSEQG,
-                                           MAILLE = 'MA1',
-                                           POINT = 1,
-                                           NOM_CMP = 'INVA_2',
-                                           VALE = 2.6)),RESU=(
+                                           VALE = 4.6705E-03),),RESU=(
 
                                     _F(  RESULTAT = DEPL,
                                            NOM_CHAM = 'EQUI_ELNO_SIGM',

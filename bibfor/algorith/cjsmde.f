@@ -1,11 +1,11 @@
         SUBROUTINE CJSMDE ( MOD, CRIT, MATER, NVI, EPSD, DEPS,
      >                  SIGD, SIGF, VIND, VINF,
      >                  NOCONV,AREDEC,STOPNC,
-     >                  NIVCJS ,NITER,EPSCON)
+     >                  NITER,EPSCON)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,6 @@ C       ----------------------------------------------------------------
         PARAMETER ( NMOD = 14 )
         INTEGER   ITER,NITER
         LOGICAL   NOCONV,AREDEC,STOPNC,FAUX
-        CHARACTER*4 NIVCJS
 
         REAL*8    EPSD(6), DEPS(6)
         REAL*8    SIGD(6), SIGF(6), GD(6)
@@ -178,7 +177,7 @@ C ET CALCUL DU JACOBIEN DU SYSTEME A T+DT :  DRDY(DY)
 
 
         CALL CJSJDE( MOD, MATER, EPSD, DEPS, YD,
-     &               YF, GD, R, SIGNE, DRDY,NIVCJS)
+     &               YF, GD, R, SIGNE, DRDY)
 
 C -> RESOLUTION DU SYSTEME LINEAIRE : DRDY(DY).DDY = -R(DY)
 

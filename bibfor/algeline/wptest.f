@@ -1,12 +1,12 @@
-      SUBROUTINE WPTEST(EXCLU,LMASSE,XH,XB,VP,NEQ,NMAX,V1,V2)
+      SUBROUTINE WPTEST(EXCLU,XH,XB,VP,NEQ,NMAX)
       IMPLICIT REAL*8 (A-H,O-Z)
 C
-      COMPLEX*16 VP,XH(*),XB(*),V1(*),V2(*)
-      INTEGER    NEQ,LMASSE,EXCLU(*)
+      COMPLEX*16 VP,XH(*),XB(*)
+      INTEGER    NEQ,EXCLU(*)
       REAL*8     NMAX
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,14 +30,11 @@ C     D' UNE EQUATION DE SECOND DEGRE (CF WP2VEC)
 C
 C              NMAX := !! M*XB - VP*M*XH !!
 C     -----------------------------------------------------------------
-C IN  LMASSE : I : POINTEUR SUR LE DESCRIPTEUR DE LA MASSE
 C IN  XH   : C : PARTIE HAUTE D' UN VECTEUR PROPRE DU PB QUAD
 C IN  XB   : C : PARTIE BASSE D' UN VECTEUR PROPRE DU PB QUAD
 C IN  VP   : C : VALEUR CANDIDATE A LA PROPRETE
 C IN  NEQ  : I : TAILLE DES VECTEURS DU PB QUADRATIQUE
 C OUT NMAX : R : NORME MAX DU COUPLAGE
-C WK  V1   : C : VECTEUR DE TRAVAIL
-C WK  V2   : C : VECTEUR DE TRAVAIL
 C     -----------------------------------------------------------------
       INTEGER    I
       REAL*8     A

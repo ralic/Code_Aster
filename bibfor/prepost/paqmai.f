@@ -1,6 +1,7 @@
-      SUBROUTINE PAQMAI(NOMSD, NOMU, NOMMET, NOMCRI)
+      SUBROUTINE PAQMAI(NOMSD, NOMU, NOMMAI, NOMMET, NOMCRI,
+     &                  TYPCHA, PROAXE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/05/2003   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,10 +18,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C RESPONSABLE F1BHHAJ
+C RESPONSABLE F1BHHAJ J.ANGLES
       IMPLICIT     NONE
-      CHARACTER*8  NOMSD, NOMU
-      CHARACTER*16 NOMMET, NOMCRI
+      CHARACTER*8  NOMSD, NOMU, NOMMAI
+      CHARACTER*16 NOMMET, NOMCRI, TYPCHA, PROAXE
 C ---------------------------------------------------------------------
 C BUT: DETERMINER LE PLUS PETIT CERCLE CIRCONSCRIT AUX POINTS
 C      REPRESANTANT LE VECTEUR DE CISAILLEMENT TAU DANS LE PLAN u, v.
@@ -28,10 +29,12 @@ C ---------------------------------------------------------------------
 C ARGUMENTS:
 C NOMSD      IN    K8 : NOM DE LA STRUCTURE DE DONNEES RESULTAT.
 C NOMU       IN    K8 : NOM UTILISATEUR DU CALCUL EN FATIGUE.
+C NOMMAI     IN    K8 : NOM UTILISATEUR DU MAILLAGE.
 C NOMMET     IN    K16: NOM DE LA METHODE DE CALCUL DU CERCLE
 C                       CIRCONSCRIT.
-C NOMCRI     IN    K16: NOM DU CRITERE AVEC PLANS CRITIQUES.
-C
+C NOMCRI     IN    K16: NOM DU CRITERE.
+C TYPCHA     IN    K16: TYPE DE CHARGEMENT (PERIODIQUE OU NON).
+C PROAXE     IN    K16: TYPE DE PROJECTION (UN OU DEUX AXES).
 C-----------------------------------------------------------------------
 C---- COMMUNS NORMALISES  JEVEUX
       INTEGER ZI
@@ -54,15 +57,17 @@ C-----------------------------------------------------------------------
       INTEGER       NBPAQ, NUMPAQ, NMAPAQ, BORMAX, NBPMAX, JNBPAQ
       INTEGER       NMAINI, NBMAP, TSPAQ, IORDR, LOR8EM, LOISEM, JAD
       INTEGER       JSIGV, JSIGD, JSIGL, K, IMAP, NBPG, IPG, ICMP
-      INTEGER       I, KWORK, SOMPGW, KSIG, SOMPGS, SOMPGI
+      INTEGER       I, KWORK, SOMPGW, KSIG, SOMPGS, SOMPGI, JMAIL, JGRMA
+      INTEGER       N, NINIT, NBPGGM, NBMAGM, NMEMO
 C
       REAL*8        R8B, VAL1
 C
       COMPLEX*16    C16B
 C
       CHARACTER*4   LSIG(6)
-      CHARACTER*8   K8B
+      CHARACTER*8   K8B, MOTCLE(4), TYMOCL(4)
       CHARACTER*16  TYPRES
+      CHARACTER*19  LISMAI
       CHARACTER*19  CESR, LIGRE, CELBID, CHSIG, CHSIGS, CES1, CES2
 C
 C-----------------------------------------------------------------------
@@ -115,6 +120,8 @@ C
 C RECUPERATION DU NOMBRE DE MAILLES ET DU NOMBRE DE POINTS DE GAUSS 
 C PAR MAILLE
 C
+C CAS OU L'ON CALCULE LA FATIGUE SUR TOUT LE MAILLAGE
+C      IF ( NOMMAI .EQ. '        ' ) THEN
       IF ( TYPRES .EQ. 'EVOL_ELAS' ) THEN
          CALL RSEXCH( NOMSD, 'SIEF_ELGA_DEPL', 1, CHSIG, IRET )
       ELSEIF ( TYPRES .EQ. 'EVOL_NOLI' ) THEN
@@ -124,6 +131,26 @@ C
       CALL CELCES( CHSIG, 'V', CHSIGS )
       CALL JEVEUO(CHSIGS(1:19)//'.CESD','L',JCESD)
       NBMA = ZI(JCESD-1+1)
+C
+C CAS OU L'ON CALCULE LA FATIGUE SUR UN OU DES GROUPES DE MAILLES
+      CALL WKVECT( '&&PAQMAI.NBMAGR', 'V V I', 1, JGRMA )
+      CALL JERAZO( '&&PAQMAI.NBMAGR', 1, 1)
+      NBMAGM = 0
+      IF ( NOMMAI .NE. '        ' ) THEN
+         LISMAI = '&&PAQMAI.L_MAILLES'
+         MOTCLE(1) = 'GROUP_MA'
+         TYMOCL(1) = 'GROUP_MA'
+         MOTCLE(2) = 'MAILLE'
+         TYMOCL(2) = 'MAILLE'
+         CALL RELIEM( ' ', NOMMAI, 'NU_MAILLE', ' ', 0, 2, MOTCLE,
+     &                TYMOCL, LISMAI, NBMAGM)
+         CALL JEVEUO ( LISMAI, 'L', JMAIL )
+         CALL JEDETR('&&PAQMAI.NBMAGR')
+         CALL WKVECT( '&&PAQMAI.NBMAGR', 'V V I', NBMAGM, JGRMA )
+         DO 40 I=1, NBMAGM
+            ZI(JGRMA-1 + I) = ZI(JMAIL-1 + I)
+ 40      CONTINUE
+      ENDIF
       CALL WKVECT( '&&PAQMAI.NBPG', 'V V I', NBMA, JNBPG )
 C
 C  NBPGMX : NOMBRE DE POINTS DE GAUSS DANS LES ELEMENTS
@@ -132,6 +159,8 @@ C  NBPGT  : NOMBRE TOTAL DE POINTS DE GAUSS DANS LE MAILLAGE
 C
       NBPGMX = 0
       NBPGT = 0
+      NBPGGM = 0
+C
       DO 50 IMA=1, NBMA
          ZI(JNBPG - 1 + IMA) = ZI(JCESD-1 + 5 + 4*(IMA-1) + 1)
          NBPGT = NBPGT + ZI(JCESD-1 + 5 + 4*(IMA-1) + 1)
@@ -139,9 +168,17 @@ C
             NBPGMX = ZI(JCESD-1 + 5 + 4*(IMA-1) + 1)
          ENDIF
  50   CONTINUE
-C
+      IF ( NOMMAI .NE. '        ' ) THEN
+         DO 60 IMA=1, NBMAGM
+            NBPGGM=NBPGGM + ZI(JCESD-1 + 5 + 4*(ZI(JMAIL+IMA-1)-1) + 1)
+ 60      CONTINUE
+         WRITE(6,*)'NOMBRE DE POINTS DE GAUSS DU GROUPE DE MAILLES ==>',
+     &              NBPGGM
+         WRITE(6,*)' '
+      ENDIF
       WRITE(6,*)'NOMBRE TOTAL DE POINTS DE GAUSS A TRAITER ==>',NBPGT
       WRITE(6,*)' '
+C
       WRITE(6,*)'NUMERO DU PAQUET DE MAILLES  -  ' //
      &           'NOMBRE DE POINTS DE GAUSS TRAITES'
 C
@@ -153,7 +190,7 @@ C    JEDISP REND LA DIMENSION EN ENTIERS, ON LA CONVERTIT A L'AIDE
 C    DES FONCTIONS ENVIMA POUR ALLOUER UN TABLEAU DE REELS.
       CALL JEDISP(1, TDISP)
       TDISP =  (TDISP * LOISEM()) / LOR8EM()
-      TDISP = INT(0.5D0*TDISP)
+      TDISP = INT(0.6D0*TDISP)
       CALL WKVECT( '&&PAQMAI.RWORK', 'V V R', TDISP, JRWORK )
 C
       BORMAX = NBMA*NBPGMX*NBORDR*6
@@ -268,6 +305,7 @@ C
 C  <<REMPLISSAGE>> DU VECTEUR DE TRAVAIL
 C
       SOMPGI = 0
+      NMEMO = 0
 C
       DO 200 NUMPAQ=1, NBPAQ 
          CALL JERAZO('&&PAQMAI.RWORK', TDISP, 1)
@@ -281,6 +319,12 @@ C
          ENDIF
 C
          DO 220 IORDR=1, NBORDR
+            IF ( (NUMPAQ .GT. 1) .AND. (IORDR .EQ. 1) ) THEN
+               NINIT = NMEMO
+            ELSEIF ( (NUMPAQ .EQ. 1) .AND. (IORDR .EQ. 1) ) THEN
+               NINIT = NMAINI
+            ENDIF
+            N = NINIT
             IF ( TYPRES .EQ. 'EVOL_ELAS' ) THEN
                CALL RSEXCH(NOMSD, 'SIEF_ELGA_DEPL', IORDR, CHSIG, IRET)
             ELSEIF ( TYPRES .EQ. 'EVOL_NOLI' ) THEN
@@ -329,26 +373,44 @@ C
                ENDIF
                NBPG = ZI(JNBPG + IMAP-1)
 C
-               DO 260 IPG=1, NBPG
-                  DO 280 ICMP=1, 6
-                     CALL CESEXI('C',JSIGD,JSIGL,IMAP,IPG,1,ICMP,JAD)
-                     IF (JAD .LE. 0) THEN
-                       CALL UTMESS('F', 'PAQMAI.6', 'LE CHAMP SIMPLE '//
-     &                     'QUI CONTIENT LES VALEURS DES CONTRAINTES '//
-     &                     'N EXISTE PAS.')
-                     ELSE
-                       ZR( JRWORK + (ICMP-1) + (IPG-1)*6 +
-     &                       KWORK*SOMPGW*6 + (IORDR-1)*TSPAQ ) =
-     &                 ZR( JSIGV + (ICMP-1) + (IPG-1)*6 + 
-     &                       KSIG*SOMPGS*6 )
-                     ENDIF
- 280              CONTINUE
- 260           CONTINUE
+               IF ( (NOMMAI .NE. '        ') .AND.
+     &              (IMAP .NE. ZI(JGRMA+N-1)) ) THEN
+                  N = N - 1
+               ELSE
+                  DO 260 IPG=1, NBPG
+                     DO 280 ICMP=1, 6
+                        CALL CESEXI('C',JSIGD,JSIGL,IMAP,IPG,1,ICMP,JAD)
+                        IF (JAD .LE. 0) THEN
+                          CALL UTMESS('F', 'PAQMAI.6', 'LE CHAMP '//
+     &                        'SIMPLE QUI CONTIENT LES VALEURS DES '//
+     &                        'CONTRAINTES N EXISTE PAS.')
+                        ELSE
+                          ZR( JRWORK + (ICMP-1) + (IPG-1)*6 +
+     &                          KWORK*SOMPGW*6 + (IORDR-1)*TSPAQ ) =
+     &                    ZR( JSIGV + (ICMP-1) + (IPG-1)*6 +
+     &                          KSIG*SOMPGS*6 )
+                        ENDIF
+ 280                 CONTINUE
+ 260              CONTINUE
+               ENDIF
+               IF ( (NOMMAI .NE. '        ') .AND.
+     &              (N .LT. NBMAGM) ) THEN
+                  N = N + 1
+               ENDIF
+C
  240        CONTINUE
+            NMEMO = N
  220     CONTINUE   
 C
+         IF (TYPCHA .EQ. 'PERIODIQUE') THEN
             CALL DELTAU (JRWORK, JNBPG, NBPGT, NBORDR, NMAINI, NBMAP,
      &                   NUMPAQ, TSPAQ, NOMMET, NOMCRI, CESR)
+C
+         ELSEIF (TYPCHA .EQ. 'NON_PERIODIQUE') THEN
+            CALL AVGRMA (ZR(JRWORK), TDISP, ZI(JNBPG), NBPGT, NBORDR,
+     &                   NMAINI, NBMAP, NUMPAQ, TSPAQ, NOMCRI,
+     &                   PROAXE, CESR)
+         ENDIF
 C
  200  CONTINUE
 C
@@ -373,7 +435,9 @@ C
       CALL DETRSD('CHAM_ELEM_S',CES2)
 C
       CALL JEDETR('&&PAQMAI.NUME_ORDRE')
+      CALL JEDETR('&&PAQMAI.NBMAGR')
       CALL JEDETR('&&PAQMAI.NBPG')
+      CALL JEDETR('&&PAQMAI.L_MAILLES')
       CALL JEDETR('&&PAQMAI.RWORK')
       CALL JEDETR('&&PAQMAI.PAQMA')
 C

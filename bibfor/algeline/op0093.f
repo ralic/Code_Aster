@@ -3,7 +3,8 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/03/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ALGELINE  DATE 02/03/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,8 +75,8 @@ C
       CALL GETVID(' ','MATR_RIGI',1,1,1,RAIDE,NRA)
       CALL GETVID(' ','MATR_MASS',1,1,1,MASSE,NMA)
 C
-      CALL GETFAC('PSEUDO_MODE',NBIND)
-      IF (NBIND.NE.0) THEN
+      CALL GETFAC('PSEUDO_MODE',NBPSMO)
+      IF (NBPSMO.NE.0) THEN
          IF (NMA.EQ.0) THEN
             CALL UTMESS('F',NOMCMD,'POUR LE MOT CLE FACTEUR '//
      >        ' "PSEUDO_MODE", IL FAUT DONNER LA MATRICE DE MASSE.')
@@ -104,20 +105,15 @@ C
          CALL UTFINM()
       ENDIF
 C
-      DEPLIM = .FALSE.
-      FORCIM = .FALSE.
-      ACCUNI = .FALSE.
-      ACCDDL = .FALSE.
-      NBMODD = 0
-      NBMODF = 0
-      NBMODA = 0
-      NBMOAD = 0
 C
-      CALL GETFAC('MODE_STAT',NBIND)
-      IF (NBIND.NE.0) THEN
+      NBMODD = 0
+      DEPLIM = .FALSE.
+      CALL GETFAC ( 'MODE_STAT', NBMOST )
+C                    ---------
+      IF (NBMOST.NE.0) THEN
          DEPLIM = .TRUE.
          CALL WKVECT('&&OP0093.DDL_STAT_DEPL','V V I',NEQ,LDDLD)
-         CALL MSTGET(NOMCMD,RAIDE,'MODE_STAT',NBIND,ZI(LDDLD))
+         CALL MSTGET(NOMCMD,RAIDE,'MODE_STAT',NBMOST,ZI(LDDLD))
          DO 10 I = 0,NEQ-1
             NBMODD = NBMODD + ZI(LDDLD+I)
  10      CONTINUE
@@ -126,11 +122,15 @@ C
      >                                                NBMODD,ZR(LMODD))
       ENDIF
 C
-      CALL GETFAC('FORCE_NODALE',NBIND)
-      IF (NBIND.NE.0) THEN
+C
+      NBMODF = 0
+      FORCIM = .FALSE.
+      CALL GETFAC ( 'FORCE_NODALE', NBFONA )
+C                    ------------
+      IF (NBFONA.NE.0) THEN
          FORCIM = .TRUE.
          CALL WKVECT('&&OP0093.DDL_STAT_FORC','V V I',NEQ,LDDLF)
-         CALL MSTGET(NOMCMD,RAIDE,'FORCE_NODALE',NBIND,ZI(LDDLF))
+         CALL MSTGET(NOMCMD,RAIDE,'FORCE_NODALE',NBFONA,ZI(LDDLF))
          DO 20 I = 0,NEQ-1
             NBMODF = NBMODF + ZI(LDDLF+I)
  20      CONTINUE
@@ -139,12 +139,17 @@ C
      >                                                NBMODF,ZR(LMODF))
       ENDIF
 C
-      CALL GETFAC('PSEUDO_MODE',NBACC)
-      NBIND=NBACC
-      IF (NBACC.NE.0) THEN
+C
+      NBMOAD = 0
+      NBMODA = 0
+      ACCUNI = .FALSE.
+      ACCDDL = .FALSE.
+      CALL GETFAC ( 'PSEUDO_MODE', NBPSMO )
+C                    -----------
+      IF (NBPSMO.NE.0) THEN
          CALL MTDSCR(MASSE)
          CALL JEVEUO(MASSE(1:19)//'.&INT','E',LMATM)
-         DO 30 I = 1,NBACC
+         DO 30 I = 1,NBPSMO
             CALL GETVTX('PSEUDO_MODE','AXE',I,1,0,K8B,NA)
             IF (NA.NE.0) NBMODA = NBMODA - NA
             CALL GETVR8('PSEUDO_MODE','DIRECTION',I,1,0,R8B,ND)
@@ -154,10 +159,13 @@ C
          IF ( NBMODA .NE. 0 ) THEN
            CALL WKVECT('&&OP0093.COEFFICIENT','V V R',3*NBMODA,JCOEF)
          ENDIF
+C
          IMOD = 0
-         DO 32 I = 1,NBACC
+         NBACC = 0
+         DO 32 I = 1,NBPSMO
             CALL GETVTX('PSEUDO_MODE','AXE',I,1,0,MONAXE,NA)
             IF (NA.NE.0) THEN
+               NBACC = NBACC + 1
                NNAXE = -NA
                ACCUNI = .TRUE.
                CALL WKVECT('&&OP0093.AXE','V V K8',NNAXE,JAXE)
@@ -185,53 +193,54 @@ C
                   ENDIF
  34            CONTINUE
                CALL JEDETR('&&OP0093.AXE')
-            ELSE
-               CALL GETVR8('PSEUDO_MODE','DIRECTION',I,1,3,COEF,ND)
+            ENDIF
+            CALL GETVR8('PSEUDO_MODE','DIRECTION',I,1,3,COEF,ND)
 C              --- ON NORME LA DIRECTION ---
-              IF (ND.NE.0) THEN   
-                 ACCUNI = .TRUE.
-                 XNORM = ZERO
-                 DO 36 ID = 1,3
-                   XNORM = XNORM + COEF(ID)*COEF(ID)
- 36              CONTINUE
-                 IF (XNORM.LE.ZERO) THEN
-                   CALL UTMESS('F',NOMCMD,'LA DIRECTION EST NULLE.')
-                 ENDIF
-                 XNORM = UN / SQRT(XNORM)
-                 DO 38 ID = 1,3
+            IF (ND.NE.0) THEN   
+               NBACC = NBACC + 1
+               ACCUNI = .TRUE.
+               XNORM = ZERO
+               DO 36 ID = 1,3
+                  XNORM = XNORM + COEF(ID)*COEF(ID)
+ 36            CONTINUE
+               IF (XNORM.LE.ZERO) THEN
+                  CALL UTMESS('F',NOMCMD,'LA DIRECTION EST NULLE.')
+               ENDIF
+               XNORM = UN / SQRT(XNORM)
+               DO 38 ID = 1,3
                   COEF(ID) = COEF(ID) * XNORM
- 38              CONTINUE
-                 IMOD = IMOD + 1
-                 IND = 3 * ( IMOD - 1 )
-                 ZR(JCOEF+IND+1-1) = COEF(1)
-                 ZR(JCOEF+IND+2-1) = COEF(2)
-                 ZR(JCOEF+IND+3-1) = COEF(3)
-              ELSE
-                 NBACC=NBACC-1
-                 CALL MTDSCR(MASSE)
-                 CALL JEVEUO(MASSE(1:19)//'.&INT','E',LMATM)
-                 ACCDDL = .TRUE.
-                CALL WKVECT('&&OP0093.DDL_ACCE_IMPO','V V I',NEQ,LDDAD)
-                CALL MSTGET(NOMCMD,MASSE,'PSEUDO_MODE',NBIND,ZI(LDDAD))
-                 DO 24 II = 0,NEQ-1
-                   NBMOAD = NBMOAD + ZI(LDDAD+II)
- 24              CONTINUE
-              ENDIF
+ 38            CONTINUE
+               IMOD = IMOD + 1
+               IND = 3 * ( IMOD - 1 )
+               ZR(JCOEF+IND+1-1) = COEF(1)
+               ZR(JCOEF+IND+2-1) = COEF(2)
+               ZR(JCOEF+IND+3-1) = COEF(3)
             ENDIF
  32      CONTINUE
 C
-         IF (NBMODA.NE.0) THEN
-        CALL WKVECT('&&OP0093.MODE_STAT_FORC','V V R',NEQ*NBMODA,LMODA)
+         IF ( ACCUNI ) THEN
+        CALL WKVECT('&&OP0093.MODE_STAT_ACCU','V V R',NEQ*NBMODA,LMODA)
             CALL MODSTA('ACCE',LMATR,LMATM,NUME,IBID,ZR(JCOEF),NEQ,
      >                                                NBMODA,ZR(LMODA))
+            CALL JEDETR ('&&OP0093.COEFFICIENT')
          ENDIF
-         IF (NBMOAD.NE.0) THEN
-       CALL WKVECT('&&OP0093.MODE_STAT_ACCD','V V R',NEQ*NBMOAD,LMOAD)
+C
+         IF ( NBACC .NE. NBPSMO ) THEN
+
+            CALL WKVECT('&&OP0093.DDL_ACCE_IMPO','V V I',NEQ,LDDAD)
+            ACCDDL = .TRUE.
+            CALL MSTGET(NOMCMD,MASSE,'PSEUDO_MODE',NBPSMO,ZI(LDDAD))
+            DO 24 II = 0,NEQ-1
+               NBMOAD = NBMOAD + ZI(LDDAD+II)
+ 24         CONTINUE
+C
+         CALL WKVECT('&&OP0093.MODE_STAT_ACCD','V V R',NEQ*NBMOAD,LMOAD)
            CALL MODSTA('ACCD',LMATR,LMATM,NUME,ZI(LDDAD),R8B,NEQ,
      >                                                NBMOAD,ZR(LMOAD))
          ENDIF
 C
       ENDIF
+C
       NBMODE = NBMODD + NBMODF + NBMODA + NBMOAD
 C
 C     --- STOKAGE DES MODES ----
@@ -351,7 +360,7 @@ C              --- LES PARAMETRES ---
       ENDIF
       IF ( ACCUNI ) THEN
          IMODA = 0
-         DO 70 I = 1,NBACC
+         DO 70 I = 1,NBPSMO
             DIRECT = .FALSE.
             CALL GETVTX('PSEUDO_MODE','AXE',I,1,0,MONAXE,NA)
             IF (NA.NE.0) THEN
@@ -397,6 +406,8 @@ C              --- ON NORME LA DIRECTION ---
                  CALL GETVTX('PSEUDO_MODE','NOM_DIR'  ,I,1,1,NOMDIR,NND)
                  DIRECT = .TRUE.
                  IFIN = 1
+               ELSE
+                 GOTO 70
                ENDIF
             ENDIF
             DO 74 IM = 1,IFIN
@@ -489,6 +500,7 @@ C     --- ECRITURE EVENTUELLE DES VALEURS ET DES VECTEURS PROPRES ---
      >                 .FALSE., FORMAR,LMOD,NIVE,VERSIO)
       ENDIF
 C     ------------------------------------------------------------------
-      CALL JEDETC(' ','&&OP0093',1)
+      CALL JEDETC('V','&&OP0093',1)
+C
       CALL JEDEMA()
       END

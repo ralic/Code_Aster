@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,7 @@ C
       CALL GETVTX (' ','FORMAT',1,1,1,FORMAT,N1)
 C
       FICHIE = FORMAT
+      IF ( FORMAT .EQ. 'PLEXUS' ) FICHIE = 'IDEAS'
       CALL GETVTX (' ','FICHIER',1,1,1,FICHIE,N1)
 C
       CALL GETVIS (' ','VERSION',1,1,1,VERSIO,N1)
@@ -42,7 +43,7 @@ C     ------------------------------------------------------------------
          CALL IREDSU ( MACREL, FORMAT, FICHIE , VERSIO )
 C
       ELSEIF ( FORMAT .EQ. 'MISS_3D' ) THEN
-         CALL IREDMI ( MACREL, FICHIE )
+         CALL IREDMI ( MACREL)
 C
       ELSEIF ( FORMAT .EQ. 'CADYRO' ) THEN
          CALL IREDCA ( MACREL )

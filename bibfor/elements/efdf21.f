@@ -1,8 +1,8 @@
-      SUBROUTINE EFDF21(NDIM,AXI,GEOM,KPG,POIDSG,NNO2,VFF2,DFDE2,DFDN2,
-     &                  DFDK2,NNO1,DFDE1,DFDN1,DFDK1,POIDS,DFDI21,R)
+      SUBROUTINE EFDF21(NDIM,AXI,GEOM,KPG,IPOIDS,NNO2,IVF2,IDFDE2,
+     &                  NNO1,DFDE1,DFDN1,DFDK1,POIDS,DFDI21,R)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/09/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,11 +22,9 @@ C ======================================================================
 
       IMPLICIT NONE
       LOGICAL AXI
-      INTEGER NDIM,NNO1,NNO2,KPG
-      REAL*8 VFF2(NNO2),DFDE2(*),DFDN2(*),DFDK2(*)
-      REAL*8 DFDE1(*),DFDN1(*),DFDK1(*)
-      REAL*8 POIDSG,POIDS,R,GEOM(NDIM,NNO2),DFDI21(NNO1,NDIM)
-
+      INTEGER NDIM,NNO1,NNO2,KPG,IPOIDS,IVF2,IDFDE2
+      REAL*8  POIDS,R,GEOM(NDIM,NNO2),DFDI21(NNO1,NDIM)
+      REAL*8  DFDE1(*),DFDN1(*),DFDK1(*)
 C.......................................................................
 
 C    DERIVEE DES FONCTIONS DE FORME P1 PAR RAPPORT A UNE GEOMETRIE P2
@@ -46,23 +44,37 @@ C OUT POIDS   : POIDS D'INTEGRATION (*R EN AXI)
 C OUT DFDI21  : DERIVEE DES FONCTIONS DE FORME
 C OUT R       : DISTANCE DU POINT DE GAUSS A L'AXE (EN AXISYMETRIQUE)
 C......................................................................
-
-      INTEGER N,KK1,KK2
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      INTEGER N,KK1
 
 
 C -- DERIVEE DES FONCTIONS DE FORME
 
       IF (NDIM.EQ.3) THEN
         KK1 = (KPG-1)*NNO1*3 + 1
-        KK2 = (KPG-1)*NNO2*3 + 1
-        CALL EFDF3D(POIDSG,NNO2,DFDE2(KK2),DFDN2(KK2),DFDK2(KK2),NNO1,
-     &              DFDE1(KK1),DFDN1(KK1),DFDK1(KK1),GEOM,DFDI21(1,1),
-     &              DFDI21(1,2),DFDI21(1,3),POIDS)
+        CALL EFDF3D( IPOIDS, KPG, NNO2,IDFDE2,
+     &               NNO1, DFDE1(KK1), DFDN1(KK1), DFDK1(KK1),
+     &               GEOM, DFDI21(1,1),
+     &               DFDI21(1,2), DFDI21(1,3), POIDS )
       ELSE
         KK1 = (KPG-1)*NNO1 + 1
-        KK2 = (KPG-1)*NNO2 + 1
-        CALL EFDF2D(POIDSG,NNO2,DFDE2(KK2),DFDK2(KK2),NNO1,DFDE1(KK1),
-     &              DFDK1(KK1),GEOM,DFDI21(1,1),DFDI21(1,2),POIDS)
+        CALL EFDF2D(IPOIDS,KPG,NNO2,IDFDE2,NNO1,DFDE1(KK1),DFDK1(KK1),
+     &              GEOM,DFDI21(1,1),DFDI21(1,2),POIDS)
       END IF
 
 
@@ -71,7 +83,7 @@ C -- DISTANCE A L'AXE (AXISYMETRIQUE)
       IF (AXI) THEN
         R = 0.D0
         DO 10 N = 1,NNO2
-          R = R + VFF2(N)*GEOM(1,N)
+          R = R + ZR(IVF2+N+(KPG-1)*NNO2-1)*GEOM(1,N)
    10   CONTINUE
         POIDS = POIDS*R
       END IF

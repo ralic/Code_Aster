@@ -4,7 +4,7 @@
       CHARACTER*(*)     MCF,     NCHPT
       INTEGER               IOCC,                            IRET
 C**********************************************************************
-C MODIF POSTRELE  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 12/11/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,24 +71,23 @@ C  -----------------
       INTEGER      NBTMA,NBM,NBMAC,NBNAC,NBCRB,INDMOT,NBMALU
       INTEGER      I,IN,N,M,LIBRE,N1,IBID,IGREL,JNUMA,ILISMA,J
       INTEGER      IBIB,IE,IMOLO,JCELD,N2,KK
+      INTEGER      II,JMMAIL,NBTROU,NBCMP,NC,JCMP
       CHARACTER*4  DOCU
       CHARACTER*8  NMAILA,COURBE,K8B,NOMGD
       CHARACTER*15 NCONEC
       CHARACTER*19 NCHP19
-      CHARACTER*24 NCNCIN,NREPE,LISMAI,NOMMAI
+      CHARACTER*24 NCNCIN,NREPE,LISMAI,NOMMAI,MALIST
 C**********************************************************************
 C
       CALL JEMARQ()
+C
       CALL JEVEUO(JEXNUM(LSTCMP,IOCC),'L',ACMP)
+      MALIST = '&&RVOUEX_MALIST'
 C
-      CALL GETVID(MCF,'CHEMIN',IOCC,1,0,ZK8,NBCRB)
-C
+      CALL GETVID ( MCF, 'CHEMIN', IOCC,1,0, ZK8, NBCRB )
       NBCRB = -NBCRB
-C
       IF ( NBCRB .NE. 0 ) THEN
-C
          CALL GETVID(MCF,'CHEMIN',IOCC,1,NBCRB,COURBE,IBIB)
-C
       ENDIF
 C
       NCHP19 = NCHPT
@@ -114,31 +113,42 @@ C          -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
              CALL CELCEL('PAS_DE_SP',NCHP19,'V','&&RVOUEX.CHAMEL2')
              NCHP19= '&&RVOUEX.CHAMEL2'
            END IF
-
-
            CALL JELIRA(NCHP19//'.CELD','DOCU',IBID,DOCU)
          END IF
+C
          CALL DISMOI('F','NOM_MAILLA',NCHP19,'CHAMP',IBID,NMAILA,IE)
          NOMMAI = NMAILA//'.NOMMAI         '
-C
          NCONEC = NMAILA//'.CONNEX'
          NCNCIN = '&&OP0051.CONNECINVERSE  '
 C
          CALL JELIRA(NCONEC,'NMAXOC',NBTMA,K8B)
 C
-         IF ( DOCU .EQ. 'CHML' ) THEN
+         NBTROU = 0
+         JMMAIL = 1
+         CALL GETVTX ( MCF, 'NOM_CMP', IOCC,1,0, K8B, NC )
+         IF ( NC.LT.0 .AND. NBCRB.EQ.0 ) THEN
+            NBCMP = -NC
+            CALL WKVECT ('&&RVOUEX.NOM_CMP','V V K8', NBCMP, JCMP )
+            CALL GETVTX ( MCF,'NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),NC)
+            CALL UTMACH ( NCHP19, NBCMP, ZK8(JCMP), 'NU',
+     +                                                 MALIST, NBTROU )
+            IF ( NBTROU .NE. 0 ) CALL JEVEUO ( MALIST, 'L', JMMAIL )
+            CALL JEDETR ( '&&RVOUEX.NOM_CMP' )
+         ENDIF
 C
+         IF ( DOCU .EQ. 'CHML' ) THEN
+C             ----------------
             CALL JEVEUO(NCHP19//'.CELK','L',ADR)
             NREPE  = ZK24(ADR)(1:19)//'.REPE'
             CALL JEVEUO(NREPE,'L',AREPE)
 C
             IF ( NBCRB .NE. 0 ) THEN
 C
-               CALL RVFMAI(COURBE,LSTMAC)
+               CALL RVFMAI ( COURBE, LSTMAC )
 C
             ELSE
 C
-               CALL RVGNOE ( MCF, IOCC, NMAILA, LSTNAC )
+               CALL RVGNOE ( MCF, IOCC, NMAILA, LSTNAC, 0, IBID )
 C
                CALL GETVEM(NMAILA,'GROUP_MA',MCF,'GROUP_MA',
      +                                            IOCC,1,0,K8B,N1)
@@ -188,6 +198,13 @@ C
 C
                DO 110, I = 1, NBMAC, 1
                   M    = ZI(ALISTE + I-1)
+                  IF ( NBTROU .NE. 0 ) THEN
+                     DO 112 II = 1, NBTROU
+                        IF ( M .EQ. ZI(JMMAIL+II-1) ) GOTO 114
+ 112                 CONTINUE
+                     GOTO 110
+ 114                 CONTINUE
+                  ENDIF
                   IF ( M .NE. 0 ) THEN
                      IF ( NBMALU .NE. 0 ) THEN
                         DO 402, J = 1, NBMALU, 1
@@ -226,6 +243,7 @@ C
             CALL JEDETR ( '&&RVOUEX.NUME_MAIL'    )
 C
          ELSE
+C             ----------------
 C
             IF ( NBCRB .NE. 0 ) THEN
 C
@@ -233,7 +251,7 @@ C
 C
             ELSE
 C
-               CALL RVGNOE ( MCF, IOCC, NMAILA, LSTNAC )
+              CALL RVGNOE (MCF,IOCC,NMAILA,LSTNAC,NBTROU,ZI(JMMAIL))
 C
             ENDIF
 C
@@ -241,6 +259,7 @@ C
 C
       ENDIF
 C
+      CALL JEDETR ( MALIST )
       CALL DETRSD('CHAM_ELEM','&&RVOUEX.CHAMEL1')
       CALL DETRSD('CHAM_ELEM','&&RVOUEX.CHAMEL2')
       CALL JEDEMA()

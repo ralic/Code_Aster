@@ -1,15 +1,15 @@
       SUBROUTINE LCPLLG( TOLER, ITMAX, MOD, NBMAT, MATER, NR, NVI,
-     +                   DEPS, EPSD, SIGD, VIND, SEUIL, ICOMP, SIGF,
+     +                   DEPS, SIGD, VIND, SEUIL, ICOMP, SIGF,
      +                   VINF, DEVG, DEVGII, IRTET)
 C
       IMPLICIT      NONE
       INTEGER       ITMAX, NBMAT, NR, NVI, ICOMP, IRTET
-      REAL*8        TOLER, MATER(NBMAT, 2), DEPS(6), EPSD(6), SIGD(6)
+      REAL*8        TOLER, MATER(NBMAT, 2), DEPS(6), SIGD(6)
       REAL*8        VIND(*), SIGF(6), VINF(*), SEUIL, DEVG(6),DEVGII
       CHARACTER*8   MOD
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,6 @@ C --- : MATER  : PARAMETRES MATERIAU -----------------------------------
 C --- : NR     : NOMBRE DE RELATIONS NON LINEAIRES ---------------------
 C --- : NVI    : NOMBRE DE VARIABLES INTERNES --------------------------
 C --- : DEPS   : ACCROISSEMENTS DE DEFORMATIONS A L'ITERATION COURANTE -
-C --- : EPSD   : DEFORMATIONS A L'INSTANT PRECEDENT --------------------
 C --- : SIGD   : CONTRAINTES A L'INSTANT PRECEDENT ---------------------
 C --- : VIND   : VARIABLES INTERNES A L'INSTANT PRECEDENT --------------
 C --- : SEUIL  : VARIABLE SEUIL ELASTIQUE ------------------------------
@@ -156,7 +155,7 @@ C ======================================================================
             ELSE
                CALL CODENT(ITER,'G',CITER)
                CALL CODREE(TOLER,'E',CTOL)
-               CALL UTMESS ('S','LAIGLE',' ERREUR'//
+               CALL UTEXCP(23,'LAIGLE',' ERREUR'//
      +         ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
      +         ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
      +         ' - DIMINUER LA TAILLE D INCREMENT')
@@ -238,7 +237,7 @@ C ======================================================================
                   ELSE
                      CALL CODENT(ITER,'G',CITER)
                      CALL CODREE(TOLER,'E',CTOL)
-                     CALL UTMESS ('S','LAIGLE',' ERREUR'//
+                     CALL UTEXCP(23,'LAIGLE',' ERREUR'//
      +               ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
      +               ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
      +               ' - DIMINUER LA TAILLE D INCREMENT')
@@ -283,7 +282,7 @@ C ======================================================================
                   ELSE
                      CALL CODENT(ITER,'G',CITER)
                      CALL CODREE(TOLER,'E',CTOL)
-                     CALL UTMESS ('S','LAIGLE',' ERREUR'//
+                     CALL UTEXCP(23,'LAIGLE',' ERREUR'//
      +               ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
      +               ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
      +               ' - DIMINUER LA TAILLE D INCREMENT')

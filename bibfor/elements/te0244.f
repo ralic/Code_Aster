@@ -1,6 +1,6 @@
       SUBROUTINE TE0244 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,6 @@ C PARAMETRES D'APPEL
       CHARACTER*16       NOMTE,OPTION
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -64,32 +63,30 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*6   NOMPRO
       PARAMETER   ( NOMPRO = 'TE0244' )
       CHARACTER*8        ELREFE
-      CHARACTER*24  CARAC,FF
       REAL*8        BETA,DBETA,LAMBDA,R8BID,DFDX(9),DFDY(9),POIDS,TPGM,
      &              R,TPG,THETA,DELTAT,DTPGDX,DTPGDY,COORSE(18),TPGBUF,
      &              VECTT(9),VECTI(9),LAMBS,TEMS,DLAMBD,FLUXS(2),
      &              CPS,PREC,R8PREM,DTPGMX,DTPGMY,DTPGPX,DTPGPY
-      INTEGER       NNO,KP,NPG1,NPG2,NPG3,I,J,K,ITEMPS,ICARAC,IFF,
-     &              IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE,ICOMP,IFON(3),
+      INTEGER       NDIM,NNO,NNOS,KP,NPG,I,J,K,ITEMPS,JGANO,
+     &              IPOIDS,IVF,IDFDE,IGEOM,IMATE,ICOMP,IFON(3),
      &              ITEMP,IVECTT,IVECTI,C(6,9),ISE,NSE,NNOP2,IMATSE,
-     &              IVAPRI,IVAPRM,IFONS(3),TETYPS,IFM,NIV,IRET
+     &              IVAPRI,IVAPRM,IFONS(3),TETYPS,IFM,NIV,IRET,
+     &              NPG2,IPOID2,IVF2,IDFDE2
       LOGICAL       LSENS,LSTAT,LAXI
 
 C====
 C 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 C====
       CALL ELREF1(ELREFE)
-      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QUAD4L'
+      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QU4'
+      IF (NOMTE(5:7).EQ.'TL6') ELREFE='TR3'
+C
+      CALL ELREF4(ELREFE,'NOEU',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,IDFDE2,
+     +            JGANO)
+      CALL ELREF4(ELREFE,'RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
+     +            JGANO)
 
       PREC = R8PREM()*10.D0
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
-      NPG3 = ZI(ICARAC+4)
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
       IF (NOMTE(3:4).EQ.'AX') THEN
         LAXI = .TRUE.
       ELSE
@@ -189,7 +186,7 @@ C 1.6 PREALABLES LIES AUX ELEMENTS LUMPES
 C====
 C  CALCUL ISO-P2 : ELTS P2 DECOMPOSES EN SOUS-ELTS LINEAIRES
 
-      CALL CONNEC(NOMTE,ZR(IGEOM),NSE,NNOP2,C)
+      CALL CONNEC(NOMTE,NSE,NNOP2,C)
       DO 10 I=1,NNOP2
         VECTT(I)=0.D0
         VECTI(I)=0.D0
@@ -207,15 +204,9 @@ C ----- 2EME FAMILLE DE PTS DE GAUSS/BOUCLE SUR LES SOUS-ELEMENTS
             COORSE(2*(I-1)+J) = ZR(IGEOM-1+2*(C(ISE,I)-1)+J)
 305     CONTINUE
 
-        IPOIDS=IFF   +NPG1*(1+3*NNO)
-        IVF   =IPOIDS+NPG2
-        IDFDE =IVF   +NPG2*NNO
-        IDFDK =IDFDE +NPG2*NNO
-
-        DO 301 KP=1,NPG2
+        DO 301 KP=1,NPG
           K=(KP-1)*NNO
-          CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                COORSE,DFDX,DFDY,POIDS )
+          CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,COORSE,DFDX,DFDY,POIDS )
           R      = 0.D0
           TPG    = 0.D0
           DTPGDX = 0.D0
@@ -319,32 +310,26 @@ C 3. CALCULS DU TERME DE RIGIDITE DE L'OPTION (PB STD OU SENSIBLE)
 C====
 C ------- 3EME FAMILLE DE PTS DE GAUSS -----------
 
-        IPOIDS=IFF   +(NPG1+NPG2)*(1+3*NNO)
-        IVF   =IPOIDS+NPG3
-        IDFDE =IVF   +NPG3*NNO
-        IDFDK =IDFDE +NPG3*NNO
-
         DO 405 I=1,NNO
           DO 405 J=1,2
             COORSE(2*(I-1)+J) = ZR(IGEOM-1+2*(C(ISE,I)-1)+J)
 405     CONTINUE
 
-        DO 401 KP=1,NPG3
+        DO 401 KP=1,NPG2
           K=(KP-1)*NNO
-          CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                COORSE,DFDX,DFDY,POIDS )
+          CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE2,COORSE,DFDX,DFDY,POIDS )
           R      = 0.D0
           TPG    = 0.D0
           IF (.NOT.LSTAT) THEN
             DO 402 I=1,NNO
 C CALCUL DE T- (OU (DT/DS)- EN SENSI) ET DE SON GRADIENT
-              TPG    = TPG  + ZR(ITEMP-1+C(ISE,I)) * ZR(IVF+K+I-1)
+              TPG    = TPG  + ZR(ITEMP-1+C(ISE,I)) * ZR(IVF2+K+I-1)
 402         CONTINUE
           ENDIF
           IF (LAXI) THEN
             DO 403 I=1,NNO
 C CALCUL DE R POUR JACOBIEN
-              R      = R    + COORSE(2*(I-1)+1)    * ZR(IVF+K+I-1)
+              R      = R    + COORSE(2*(I-1)+1)    * ZR(IVF2+K+I-1)
 403         CONTINUE
             POIDS = POIDS*R
           ENDIF
@@ -355,13 +340,13 @@ C CALCUL DE SENSIBILITE PART VI
             DO 414 I=1,NNO
 C CALCUL DE (T- - T+) POUR TERME DE MASSE
               TEMS=TEMS+(ZR(IVAPRM-1+C(ISE,I))-ZR(IVAPRI-1+C(ISE,I)))*
-     &                   ZR(IVF+K+I-1)
+     &                   ZR(IVF2+K+I-1)
 414         CONTINUE
           ENDIF
           IF (LSENS.AND.(.NOT.LSTAT)) THEN
             DO 415 I=1,NNO
 C CALCUL DE T- EN SENSIBILITE
-              TPGM   = TPGM    + ZR(IVAPRM-1+C(ISE,I)) * ZR(IVF+K+I-1)
+              TPGM   = TPGM    + ZR(IVAPRM-1+C(ISE,I)) * ZR(IVF2+K+I-1)
 415         CONTINUE
           ENDIF
 
@@ -386,9 +371,9 @@ C CALCUL STD A 2 OUTPUTS (LE DEUXIEME NE SERT QUE POUR LA PREDICTION)
 
             DO 420 I=1,NNO
                VECTT(C(ISE,I)) = VECTT(C(ISE,I)) + POIDS *
-     &            BETA/DELTAT*ZR(IVF+K+I-1)
+     &            BETA/DELTAT*ZR(IVF2+K+I-1)
                VECTI(C(ISE,I)) = VECTI(C(ISE,I)) + POIDS *
-     &            DBETA*TPG/DELTAT*ZR(IVF+K+I-1)
+     &            DBETA*TPG/DELTAT*ZR(IVF2+K+I-1)
 420         CONTINUE
 
           ELSE
@@ -397,7 +382,7 @@ C CALCUL DE SENSIBILITE PART VII: TRONC COMMUN TRANSITOIRE
               IF (.NOT.LSTAT) THEN
                 DO 422 I=1,NNO
                   VECTT(C(ISE,I)) = VECTT(C(ISE,I)) + POIDS*
-     &              DBETA*TPG*ZR(IVF+K+I-1)/DELTAT
+     &              DBETA*TPG*ZR(IVF2+K+I-1)/DELTAT
 422             CONTINUE
               ENDIF
 
@@ -405,7 +390,7 @@ C CALCUL DE SENSIBILITE PART VIII: TERME PARTICULIER
               IF ((TETYPS.EQ.2).AND.(.NOT.LSTAT)) THEN
                 DO 424 I=1,NNO
                   VECTT(C(ISE,I)) = VECTT(C(ISE,I)) + POIDS*CPS/DELTAT*
-     &                             ZR(IVF+K+I-1)*TEMS
+     &                             ZR(IVF2+K+I-1)*TEMS
 424             CONTINUE
               ENDIF
 

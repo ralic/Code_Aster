@@ -1,6 +1,6 @@
        SUBROUTINE VDXSIG(NOMTE,OPTION,XI,NB1,NPGSR,SIGTOT,SIGMPG,EFFGT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,10 +133,9 @@ C
           CALL MAHSMS(0,NB1,XI,KSI3S2,INTSR,ZR(LZR),EPAIS,VECTN,
      &                                       VECTG,VECTT,HSFM,HSS)
 C
-          CALL HSJ1MS(XI,INTE,INTSR,ZR(LZR),EPAIS,VECTG,VECTT,HSFM,HSS,
-     &                                                  HSJ1M,HSJ1S)
+          CALL HSJ1MS(EPAIS,VECTG,VECTT,HSFM,HSS,HSJ1M,HSJ1S)
 C
-          CALL BTDMSR(NB1,NB2,XI,KSI3S2,INTSR,ZR(LZR),EPAIS,VECTPT,
+          CALL BTDMSR(NB1,NB2,KSI3S2,INTSR,ZR(LZR),EPAIS,VECTPT,
      &                                       HSJ1M,HSJ1S,BTDM,BTDS)
  150    CONTINUE
 C
@@ -149,23 +148,22 @@ C
           CALL MAHSF(1,NB1,XI,KSI3S2,INTSN,ZR(LZR),EPAIS,VECTN,
      &                                             VECTG,VECTT,HSF)
 C
-          CALL HSJ1F(XI,INTE,INTSN,ZR(LZR),EPAIS,VECTG,VECTT,HSF,
+          CALL HSJ1F(INTSN,ZR(LZR),EPAIS,VECTG,VECTT,HSF,
      &                                                  KWGT,HSJ1FX,WGT)
 C
-          CALL BTDFN(1,NB1,NB2,XI,KSI3S2,INTSN,ZR(LZR),EPAIS,VECTPT,
+          CALL BTDFN(1,NB1,NB2,KSI3S2,INTSN,ZR(LZR),EPAIS,VECTPT,
      &                                                      HSJ1FX,BTDF)
 C
 C     CALCUL DE BTDMN, BTDSN : M=MEMBRANE , S=CISAILLEMENT , N=NORMAL
 C     ET
 C     FORMATION DE BTILD
 C
-          CALL BTDMSN(1,NB1,XI,INTE,INTSN,NPGSR,ZR(LZR),BTDM,BTDF,BTDS,
-     &                                                            BTILD)
+          CALL BTDMSN(1,NB1,INTSN,NPGSR,ZR(LZR),BTDM,BTDF,BTDS,BTILD)
 C
 C     APPEL DE MATRTH POUR RECUPERER INDITH AFIN DE SAVOIR SI
 C     ALPHA EST DONNE C'EST A DIRE SI THERMIQUE
 C
-          CALL MATRTH(INTE,INTSN,NB2,YOUNG,NU,ALPHA,INDITH)
+          CALL MATRTH(NB2,YOUNG,NU,ALPHA,INDITH)
           IF (INDITH.EQ.0) THEN
             INDIC=0
             KSI3=EPSVAL(INTE)
@@ -200,10 +198,9 @@ C
         CALL MAHSMS(0,NB1,XI,KSI3S2,INTSR,ZR(LZR),EPAIS,VECTN,
      &                                       VECTG,VECTT,HSFM,HSS)
 C
-        CALL HSJ1MS(XI,INTE,INTSR,ZR(LZR),EPAIS,VECTG,VECTT,HSFM,HSS,
-     &                                                  HSJ1M,HSJ1S)
+        CALL HSJ1MS(EPAIS,VECTG,VECTT,HSFM,HSS,HSJ1M,HSJ1S)
 C
-        CALL BTDMSR(NB1,NB2,XI,KSI3S2,INTSR,ZR(LZR),EPAIS,VECTPT,
+        CALL BTDMSR(NB1,NB2,KSI3S2,INTSR,ZR(LZR),EPAIS,VECTPT,
      &                                       HSJ1M,HSJ1S,BTDM,BTDS)
 C
 C       CALL BTDMSP(NB1,NB2,XI,INTE,INTSR,ZR(LZR),EPAIS,VECTPT,
@@ -211,16 +208,14 @@ C    &                                       HSJ1M,HSJ1S,BTDM,BTDS)
         CALL MAHSF(0,NB1,XI,KSI3S2,INTSR,ZR(LZR),EPAIS,VECTN,
      &                                             VECTG,VECTT,HSF)
 C
-        CALL HSJ1F(XI,INTE,INTSR,ZR(LZR),EPAIS,VECTG,VECTT,HSF,
-     &                                                  KWGT,HSJ1FX,WGT)
+        CALL HSJ1F(INTSR,ZR(LZR),EPAIS,VECTG,VECTT,HSF,KWGT,HSJ1FX,WGT)
 C
-        CALL BTDFN(0,NB1,NB2,XI,KSI3S2,INTSR,ZR(LZR),EPAIS,VECTPT,
+        CALL BTDFN(0,NB1,NB2,KSI3S2,INTSR,ZR(LZR),EPAIS,VECTPT,
      &                                                      HSJ1FX,BTDF)
 C     CALL BTDFP(0,NB1,NB2,XI,INTE,INTSR,ZR(LZR),EPAIS,VECTPT,HSJ1FX,
 C    &                                                             BTDF)
 C
-        CALL BTDMSN(0,NB1,XI,INTE,INTSR,NPGSR,ZR(LZR),BTDM,BTDF,BTDS,
-     &                                                            BTILD)
+        CALL BTDMSN(0,NB1,INTSR,NPGSR,ZR(LZR),BTDM,BTDF,BTDS,BTILD)
 C
 C     CALL BTILDP(0,NB1,XI,INTE,INTSR,NPGSR,ZR(LZR),BTDM,BTDF,BTDS,
 C    &                                                            BTILD)
@@ -228,7 +223,7 @@ C
 C     APPEL DE MATRTH POUR RECUPERER INDITH AFIN DE SAVOIR SI
 C     ALPHA EST DONNE C'EST A DIRE SI THERMIQUE
 C
-        CALL MATRTH(INTE,INTSR,NB2,YOUNG,NU,ALPHA,INDITH)
+        CALL MATRTH(NB2,YOUNG,NU,ALPHA,INDITH)
         IF (INDITH.EQ.0) THEN
           INDIC=0
           KSI3=EPSVAL(INTE)

@@ -1,12 +1,12 @@
-      SUBROUTINE CAFTHM (CHAR, LIGRMO, NBCA, NBET, NOMA, NDIM, FONREE )
+      SUBROUTINE CAFTHM (CHAR, LIGRMO, NBCA, NBET, NOMA, FONREE )
       IMPLICIT   NONE
-      INTEGER           NBCA, NBET, NDIM
+      INTEGER           NBCA, NBET
       CHARACTER*4       FONREE
       CHARACTER*8       CHAR, NOMA
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/06/2003   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,7 +34,6 @@ C      LIGRMO : NOM DU LIGREL DE MODELE
 C      NOMA   : NOM DU MAILLAGE
 C      NBCA   : NOMBRE D'APPEL A NOCART
 C      NBET   : NOMBRE TOTAL DE MAILLES
-C      NDIM   : DIMENSION DU PROBLEME (2D OU 3D)
 C      FONREE : FONC OU REEL
 C-----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -95,7 +94,6 @@ C
          ZR(JVALV+2) = 0.D0
          ZR(JVALV+3) = 0.D0
       ELSE
-         CALL FOZERO('&FOZERO')
          ZK8(JVALV)   = '&FOZERO'
          ZK8(JVALV+1) = '&FOZERO'
          ZK8(JVALV+2) = '&FOZERO'

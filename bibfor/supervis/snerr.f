@@ -1,11 +1,10 @@
-      SUBROUTINE SNERR ( ERREUR, ICLASS, IVAL, RVAL, CVAL )
+      SUBROUTINE SNERR ( ERREUR, ICLASS, IVAL, CVAL )
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER            ERREUR, ICLASS, IVAL
-      REAL*8                                  RVAL(*)
       CHARACTER*(*)                                  CVAL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 17/01/97   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -1,21 +1,21 @@
-# MODIF  DATE 19/06/2002   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 22/03/2004   AUTEUR DURAND C.DURAND 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUMISE A UNE PRESSION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS_TEST__: SSLS100I
 # SSLS100/I                COMMANDES                            26/03/93
@@ -78,32 +78,22 @@ IMPR_TABLE(   TABLE=MASS_INE,
 TEST_TABLE(      TABLE=MASS_INE,
                    FILTRE=_F(  NOM_PARA = 'LIEU',
                             VALE_K = 'TOUT'),
-                REFERENCE='ANALYTIQUE',
-                 NOM_PARA='MASSE',
-                     VALE=387.672533453       )
+REFERENCE='ANALYTIQUE',  NOM_PARA='MASSE', VALE=387.672533453       )
 
 TEST_TABLE(      TABLE=MASS_INE,
                    FILTRE=_F(  NOM_PARA = 'LIEU',
                             VALE_K = 'TOUT'),
-                REFERENCE='ANALYTIQUE',
-                PRECISION=0.004,
-                 NOM_PARA='IX_G',
-                     VALE=97.2411938077       )
+REFERENCE='ANALYTIQUE', PRECISION=0.004,  NOM_PARA='IX_G', VALE=97.2411938077       )
 
 TEST_TABLE(      TABLE=MASS_INE,
                    FILTRE=_F(  NOM_PARA = 'LIEU',
                             VALE_K = 'TOUT'),
-                REFERENCE='ANALYTIQUE',
-                PRECISION=0.004,
-                 NOM_PARA='IY_G',
-                     VALE=97.2411938077       )
+REFERENCE='ANALYTIQUE', PRECISION=0.004,  NOM_PARA='IY_G', VALE=97.2411938077       )
 
 TEST_TABLE(      TABLE=MASS_INE,
                    FILTRE=_F(  NOM_PARA = 'LIEU',
                             VALE_K = 'TOUT'),
-                REFERENCE='ANALYTIQUE',
-                 NOM_PARA='IZ_G',
-                     VALE=193.836266726       )
+REFERENCE='ANALYTIQUE', NOM_PARA='IZ_G', VALE=193.836266726       )
 
 ZERO=DEFI_CONSTANTE(    VALE=0.0 )
 
@@ -114,54 +104,6 @@ CHARGE=AFFE_CHAR_MECA_F(  MODELE=MODEL,DDL_IMPO=(
               _F( NOEUD = 'O',                         DRZ = ZERO)),
            FORCE_COQUE=_F(  TOUT = 'OUI',   FY = VAL_FY)   )
 
-MATELEM=CALC_MATR_ELEM(   MODELE=MODEL,        CHARGE=CHARGE,
-                               CARA_ELEM=CARELEM,
-                               CHAM_MATER=CHMAT,
-                               OPTION='RIGI_MECA' )
-
-VECELEM=CALC_VECT_ELEM(   CHARGE=CHARGE,    OPTION='CHAR_MECA',
-                               CARA_ELEM=CARELEM )
-
-NU=NUME_DDL(   MATR_RIGI=MATELEM,
-               METHODE='MULT_FRONT',
-               RENUM='MDA'
-            )
-
-MATASS=ASSE_MATRICE(   MATR_ELEM=MATELEM,   NUME_DDL=NU )
-
-VECASS=ASSE_VECTEUR(   VECT_ELEM=VECELEM,   NUME_DDL=NU )
-
-MATASS=FACT_LDLT( reuse=MATASS,  MATR_ASSE=MATASS )
-
-DEPLA=RESO_LDLT(  MATR_FACT=MATASS,        CHAM_NO=VECASS )
-
-EFFORT=CALC_CHAM_ELEM(  MODELE=MODEL,        DEPL=DEPLA,
-                            OPTION='EFGE_ELNO_DEPL',
-                             CARA_ELEM=CARELEM,
-                             CHAM_MATER=CHMAT                   )
-
-EFFORG=CALC_CHAM_ELEM(  MODELE=MODEL,        DEPL=DEPLA,
-                            OPTION='SIEF_ELGA_DEPL',
-                             CARA_ELEM=CARELEM,
-                             CHAM_MATER=CHMAT                   )
-
-DEFGEN=CALC_CHAM_ELEM(  MODELE=MODEL,        DEPL=DEPLA,
-                            OPTION='DEGE_ELNO_DEPL',
-                             CARA_ELEM=CARELEM,
-                             CHAM_MATER=CHMAT                   )
-
-CONTR=CALC_CHAM_ELEM(  MODELE=MODEL,        DEPL=DEPLA,
-                            OPTION='SIGM_ELNO_DEPL',
-                             CARA_ELEM=CARELEM,
-                             NIVE_COUCHE='SUP',
-                             CHAM_MATER=CHMAT                   )
-
-DEFOR=CALC_CHAM_ELEM(  MODELE=MODEL,        DEPL=DEPLA,
-                            OPTION='EPSI_ELNO_DEPL',
-                             CARA_ELEM=CARELEM,
-                             NIVE_COUCHE='SUP',
-                             CHAM_MATER=CHMAT                   )
-
 RESU=MECA_STATIQUE(    MODELE=MODEL, CHAM_MATER=CHMAT,
                        SOLVEUR=_F(NPREC=9),
                                CARA_ELEM=CARELEM,
@@ -170,7 +112,9 @@ RESU=MECA_STATIQUE(    MODELE=MODEL, CHAM_MATER=CHMAT,
 RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,     MODELE=MODEL,
                         CHAM_MATER=CHMAT,   CARA_ELEM=CARELEM,
                         NIVE_COUCHE='SUP',
-                             OPTION='SIGM_ELNO_DEPL' )
+                        OPTION=('SIGM_ELNO_DEPL','EFGE_ELNO_DEPL',
+                                'DEGE_ELNO_DEPL',),
+              )
 
 TEST_RESU(RESU=(_F(
                    RESULTAT = RESU,  NOM_CHAM = 'SIGM_ELNO_DEPL',
@@ -186,72 +130,49 @@ TEST_RESU(RESU=(_F(
                    VALE = -4.905E+01, PRECISION = 1.E-02)))
 
 #--------------------------------------------------------------------
-RELEVE_1=POST_RELEVE_T(
-                   ACTION=_F(  NOEUD = ( 'A',    'F',   'D',    'P',  'O', ),
-#                                   X =   1. .75  .5  .25  0.
-                            INTITULE = 'DEPL',
-                            CHAM_GD = DEPLA,
-                            NOM_CMP = ( 'DX',  'DY',  'DRZ', ),
-                            OPERATION = 'EXTRACTION')
-                          )
 
-RELEVE_2=POST_RELEVE_T( ACTION=(
-                   _F(  NOEUD = 'D',
-                            INTITULE = 'DEGE',
-                            CHAM_GD = DEFGEN,
-                            NOM_CMP = 'KXX',
-                            OPERATION = 'EXTRACTION'),
-                   _F(  NOEUD = 'D',
-                            INTITULE = 'EFGE_DEP',
-                            CHAM_GD = EFFORT,
-                            NOM_CMP = 'MYY',
-                            OPERATION = 'EXTRACTION'))
-                          )
-
-#--------------------------------------------------------------------
-
-TEST_RESU(CHAM_NO=(
+TEST_RESU(RESU=(
 
      # DEPLACEMENTS
-            _F(  CHAM_GD = DEPLA,    CRITERE = 'RELATIF',   PRECISION = 6.E-3,
-              NOEUD = 'O',        NOM_CMP = 'DY',    VALE = -170.6250E-0),
-            _F(  CHAM_GD = DEPLA,    CRITERE = 'RELATIF',   PRECISION = 1.E-2,
-              NOEUD = 'D',        NOM_CMP = 'DY',    VALE = -95.9765E-0),
-            _F(  CHAM_GD = DEPLA,    CRITERE = 'RELATIF',   PRECISION = 6.E-3,
-              NOEUD = 'D',        NOM_CMP = 'DRZ',   VALE = 255.9400E-0)),CHAM_ELEM=(
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL', CRITERE = 'RELATIF',   PRECISION = 6.E-3,
+REFERENCE='ANALYTIQUE', NOEUD = 'O', NOM_CMP = 'DY', VALE = -170.6250E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL', CRITERE = 'RELATIF',   PRECISION = 1.E-2,
+REFERENCE='ANALYTIQUE', NOEUD = 'D', NOM_CMP = 'DY', VALE = -95.9765E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL', CRITERE = 'RELATIF',   PRECISION = 6.E-3,
+REFERENCE='ANALYTIQUE', NOEUD = 'D', NOM_CMP = 'DRZ', VALE = 255.9400E-0),
 
      # DEFORMATIONS GENERALISEES
-            _F(  CHAM_GD = DEFGEN,   CRITERE = 'RELATIF',   PRECISION = 66.E-2,
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEGE_ELNO_DEPL', CRITERE = 'RELATIF',   PRECISION = 66.E-2,
               MAILLE = 'IJK',
-              NOEUD = 'D',        NOM_CMP = 'KXX',   VALE = -170.625E-0),
-            _F(  CHAM_GD = DEFGEN,   CRITERE = 'RELATIF',   PRECISION = 60.E-2,
+REFERENCE='ANALYTIQUE', NOEUD = 'D', NOM_CMP = 'KXX', VALE = -170.625E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEGE_ELNO_DEPL', CRITERE = 'RELATIF',   PRECISION = 60.E-2,
               MAILLE = 'KLM',
-              NOEUD = 'D',        NOM_CMP = 'KXX',   VALE = -170.625E-0),
-            _F(  CHAM_GD = DEFGEN,   CRITERE = 'RELATIF',   PRECISION = 5.E-3,
+REFERENCE='ANALYTIQUE', NOEUD = 'D', NOM_CMP = 'KXX', VALE = -170.625E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEGE_ELNO_DEPL', CRITERE = 'RELATIF',   PRECISION = 5.E-3,
               MAILLE = 'IJK',
-              NOEUD = 'D',        NOM_CMP = 'KYY',   VALE = -511.875E-0),
-            _F(  CHAM_GD = DEFGEN,   CRITERE = 'RELATIF',   PRECISION = 5.E-3,
+REFERENCE='ANALYTIQUE', NOEUD = 'D', NOM_CMP = 'KYY', VALE = -511.875E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEGE_ELNO_DEPL', CRITERE = 'RELATIF',   PRECISION = 5.E-3,
               MAILLE = 'KLM',
-              NOEUD = 'D',        NOM_CMP = 'KYY',   VALE = -511.875E-0),
+REFERENCE='ANALYTIQUE', NOEUD = 'D', NOM_CMP = 'KYY', VALE = -511.875E-0),
      # EFFORTS GENERALISES
-            _F(  CHAM_GD = EFFORT,   CRITERE = 'RELATIF',   PRECISION = 1.5E-1,
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO_DEPL', CRITERE = 'RELATIF',   PRECISION = 1.5E-1,
               MAILLE = 'ABC',
-              NOEUD = 'A',        NOM_CMP = 'MXX',   VALE = 0.12500E-0),
-            _F(  CHAM_GD = EFFORT,   CRITERE = 'RELATIF',   PRECISION = 1.5E-1,
+REFERENCE='ANALYTIQUE', NOEUD = 'A', NOM_CMP = 'MXX', VALE = 0.12500E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO_DEPL', CRITERE = 'RELATIF',   PRECISION = 1.5E-1,
               MAILLE = 'ABC',
-              NOEUD = 'A',        NOM_CMP = 'MYY',   VALE = 0.03750E-0),
-            _F(  CHAM_GD = EFFORT,   CRITERE = 'RELATIF',   PRECISION = 6.E-2,
+REFERENCE='ANALYTIQUE', NOEUD = 'A', NOM_CMP = 'MYY', VALE = 0.03750E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO_DEPL', CRITERE = 'RELATIF',   PRECISION = 6.E-2,
               MAILLE = 'IJK',
-              NOEUD = 'D',        NOM_CMP = 'MYY',   VALE = -0.05156E-0),
-            _F(  CHAM_GD = EFFORT,   CRITERE = 'RELATIF',   PRECISION = 6.E-2,
+REFERENCE='ANALYTIQUE', NOEUD = 'D', NOM_CMP = 'MYY', VALE = -0.05156E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO_DEPL', CRITERE = 'RELATIF',   PRECISION = 6.E-2,
               MAILLE = 'KLM',
-              NOEUD = 'D',        NOM_CMP = 'MYY',   VALE = -0.05156E-0),
-            _F(  CHAM_GD = EFFORT,   CRITERE = 'RELATIF',   PRECISION = 5.E-3,
+REFERENCE='ANALYTIQUE', NOEUD = 'D', NOM_CMP = 'MYY', VALE = -0.05156E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO_DEPL', CRITERE = 'RELATIF',   PRECISION = 5.E-3,
               MAILLE = 'STU',
-              NOEUD = 'O',        NOM_CMP = 'MXX',   VALE = -0.08125E-0),
-            _F(  CHAM_GD = EFFORT,   CRITERE = 'RELATIF',   PRECISION = 5.E-3,
+REFERENCE='ANALYTIQUE', NOEUD = 'O', NOM_CMP = 'MXX', VALE = -0.08125E-0),
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO_DEPL', CRITERE = 'RELATIF',   PRECISION = 5.E-3,
               MAILLE = 'STU',
-              NOEUD = 'O',        NOM_CMP = 'MYY',   VALE = -0.08125E-0))
+REFERENCE='ANALYTIQUE', NOEUD = 'O', NOM_CMP = 'MYY', VALE = -0.08125E-0))
             )
 
 FIN( )

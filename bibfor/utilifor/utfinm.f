@@ -1,6 +1,6 @@
       SUBROUTINE UTFINM
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILIFOR  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,83 +18,8 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
       IMPLICIT NONE
-C     ==================================================================
-      INTEGER          MXCOLS , ITABU , LIGCOU , COLCOU , IDF
-      COMMON /UTINIP/  MXCOLS , ITABU , LIGCOU , COLCOU , IDF
-      INTEGER          NT
-      PARAMETER      ( NT = 10 )
-      CHARACTER*132    TAMPON
-      COMMON /UTTAMP/  TAMPON(NT)
-      INTEGER          LDEB
-      COMMON /UTDEB /  LDEB
-C     ------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16            ZK16
-      CHARACTER*24                    ZK24
-      CHARACTER*32                            ZK32
-      CHARACTER*80                                    ZK80
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-C     ------------------------------------------------------------------
-      CHARACTER*24   SPVR,CBID
-CCAR: AJOUT CHAINE RAISON
-      CHARACTER*132 RAISON
-      INTEGER       ICMD,IRET,L,LSPVR,NBL
-C     ------------------------------------------------------------------
-      CALL JEMARQ()
-      LIGCOU = LIGCOU + 1
-      IF ( LIGCOU .GT. NT ) THEN
-         CALL UTVTAM
-         LIGCOU = 1
-      ENDIF
-      IF ( IDF .EQ. 6 ) THEN
-CC SI L EXCEPTION EST TRAPPEE PAR LE SUPERVISEUR
-CC ON NETTOIE LA BASE VOLATILE AU CAS OU ON RECREE LE CONCEPT
-CC DANS LE EXCEPT
-         CALL JEDETC('V','&&',1)
-         CALL JEDETC('V','_',1)
-         CALL GETRES(SPVR,CBID,CBID)
-         CALL JEDETC('V',SPVR(1:6),1)
-         IF ( SPVR .NE. '  ' ) THEN
-            SPVR(20:24) = '.SPVR'
-            CALL JEEXIN(SPVR,IRET)
-            IF (IRET.NE.0) CALL JEDETR(SPVR)
-            NBL = MIN(LIGCOU,NT)
-            CALL WKVECT(SPVR,'G V K80',NBL,LSPVR)
-            DO 1 L= 1, NBL
-               ZK80(LSPVR+L-1) = TAMPON(L)
- 1          CONTINUE
-         ENDIF
-      ENDIF
-
-CCAR: UTVTAM VIDE LE TAMPON. ON LE SAUVE DANS RAISON
-      RAISON=TAMPON(2)//TAMPON(3)
-
-      CALL UTVTAM
-      IF ( IDF .EQ. 2 ) THEN
-         CALL JXVERI('ERREUR',' ')
-         CALL JEFINI('ERREUR')
-CCAR: ON POURRAIT APPELER UEXCEP(20,RAISON) POUR REMONTER 
-CCAR: UNE EXCEPTION FATALE MAIS SANS PROVOQUER D'ABORT
-      ELSE IF ( IDF .EQ. 6 ) THEN
-         CALL GCUOPR(2, ICMD)
-CCAR: ON REMONTE UNE EXCEPTION AU LIEU DE FERMER LES BASES
-CCAR:    CALL JEDEMA()
-         CALL UEXCEP(21,RAISON)
-CCAR:    CALL JEFINI('NORMAL')
-      ENDIF
-      LIGCOU = 0
-      COLCOU = 0
-      IDF    = 0
-C
-      CALL JEDEMA()
+      CHARACTER*132  RAISON
+C     LA RAISON EST PASSEE PAR COMMON PAR UTDEBM
+      RAISON=' '
+      CALL UTCOMM( .TRUE. , 21, RAISON )
       END

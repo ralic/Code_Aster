@@ -8,7 +8,7 @@
       CHARACTER*(*)       NOMRES, PARASG, COURBE, INTITU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 01/05/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF POSTRELE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,7 @@ C
       IK = IK + 1
       IK2 = IK + 1
 C
-      CALL PRCCM9 ( .FALSE., .FALSE., .FALSE., .TRUE., .FALSE.,
+      CALL PRCCM9 ( .FALSE., .FALSE., .FALSE., .TRUE.,
      +                       TYPTAB, NPARA, NOPARA, TYPARA )
 C
       VALOR(1) = SM

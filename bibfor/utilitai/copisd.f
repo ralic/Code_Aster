@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/09/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 25/03/2004   AUTEUR OUGLOVA A.OUGLOVA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,7 @@ C               'VARI_COM'        'TABLE'
 C               'RESULTAT'        'NUME_DDL'
 C               'MAILLAGE'        'LIGREL'
 C               'MATR_ASSE_GENE'  'MATR_ASSE'
+C               'PROF_CHNO'
 C     BASE     : 'G' , 'V' , ... : BASE DE CREATION DE SD2
 C     SD1 (K*) : NOM DE LA SD A DUPPLIQUER
 C     SD2 (K*) : NOM DE LA SD A CREER
@@ -62,10 +63,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER IRET,IRES,NMAIL,NSMAIL
       CHARACTER*1 BAS2
-      CHARACTER*8 MAIL1,MAIL2,KBID
+      CHARACTER*8 MAIL1,MAIL2
       CHARACTER*14 COM1,COM2,NU1,NU2
       CHARACTER*16 TYP2SD,CORR1,CORR2
-      CHARACTER*19 CH1,CH2,SDR1,MAT1,MAT2
+      CHARACTER*19 CH1,CH2,SDR1,MAT1,MAT2,PRNO1,PRNO2
       CHARACTER*19 CHC1,CHC2,CNS1,CNS2,CES1,CES2,LIGRE1,LIGRE2
       CHARACTER*24 O1,O2
 C
@@ -132,6 +133,11 @@ C
         CALL EXISD('CHAMP_GD',CH1,IRET)
         IF (IRET .NE. 0) CALL COPICH(BAS2,CH1,CH2)
 C
+        CH1 = COM1 // '.CORR'
+        CH2 = COM2 // '.CORR'
+        CALL EXISD('CHAMP_GD',CH1,IRET)
+        IF (IRET .NE. 0) CALL COPICH(BAS2,CH1,CH2)
+C
         CALL JEDUPO(COM1//'.EXISTENCE',BAS2,COM2//'.EXISTENCE',.FALSE.)
 C
 C ----------------------------------------------------------------------
@@ -183,7 +189,28 @@ C     -----------------------------------
         CALL JEDUPO(CES1//'.CESC',BAS2,CES2//'.CESC',.FALSE.)
         CALL JEDUPO(CES1//'.CESL',BAS2,CES2//'.CESL',.FALSE.)
         CALL JEDUPO(CES1//'.CESV',BAS2,CES2//'.CESV',.FALSE.)
-C
+
+C ----------------------------------------------------------------------
+      ELSEIF (TYPESD .EQ. 'PROF_CHNO') THEN
+C     -----------------------------------
+        PRNO1 = SD1
+        PRNO2 = SD2
+        O1 = PRNO1 // '.DEEQ'
+        O2 = PRNO2 // '.DEEQ'
+        CALL JEDUPO(O1,BAS2,O2,.FALSE.)
+        O1 = PRNO1 // '.NUEQ'
+        O2 = PRNO2 // '.NUEQ'
+        CALL JEDUPO(O1,BAS2,O2,.FALSE.)
+        O1 = PRNO1 // '.PRNO'
+        O2 = PRNO2 // '.PRNO'
+        CALL JEDUPO(O1,BAS2,O2,.FALSE.)
+        O1 = PRNO1 // '.LILI'
+        O2 = PRNO2 // '.LILI'
+        CALL JEDUPO(O1,BAS2,O2,.FALSE.)
+        O1 = PRNO1 // '.LPRN'
+        O2 = PRNO2 // '.LPRN'
+        CALL JEDUPO(O1,BAS2,O2,.FALSE.)
+
 C ----------------------------------------------------------------------
       ELSEIF (TYPESD .EQ. 'NUME_DDL') THEN
 C     -----------------------------------
@@ -342,7 +369,7 @@ C     -----------------------------------
         CALL JEEXIN(LIGRE1//'.PRNS',IRET)
         IF (IRET .NE. 0) THEN
           CALL JEDUPO(LIGRE1//'.PRNS',BAS2,LIGRE2//'.PRNS',.FALSE.)
-        ENDIF 
+        ENDIF
 C
 C ----------------------------------------------------------------------
       ELSEIF (TYPESD .EQ. 'MAILLAGE') THEN
@@ -354,7 +381,7 @@ C     -----------------------------------
           CALL UTMESS('F','COPISD',
      &               'STRUCTURE DE DONNEES INEXISTANTE :'//MAIL1)
         ENDIF
-              
+
         CALL JEDUPO(MAIL1//'           .LTNS',BAS2,
      &              MAIL2//'           .LTNS',.FALSE.)
         CALL JEDUPO(MAIL1//'           .LTNT',BAS2,
@@ -363,13 +390,13 @@ C     -----------------------------------
      &              MAIL2//'           .TITR',.FALSE.)
         CALL JEDUPO(MAIL1//'.ADAPTATION',BAS2,
      &              MAIL2//'.ADAPTATION',.FALSE.)
-     
+
         CALL JEDUPO(MAIL1//'.DIME',BAS2,MAIL2//'.DIME',.FALSE.)
-C -- NOMBRE DE MAILLES ET SUPER MAILLES             
+C -- NOMBRE DE MAILLES ET SUPER MAILLES
         CALL JEVEUO(MAIL1//'.DIME           ','L',IRES)
         NMAIL = ZI(IRES+3-1)
         NSMAIL = ZI(IRES+4-1)
-    
+
         CALL JEDUPO(MAIL1//'.NOMNOE',BAS2,MAIL2//'.NOMNOE',.FALSE.)
 C
         CALL JEDUPO(MAIL1//'.COORDO    .VALE',BAS2,
@@ -378,7 +405,7 @@ C
      &              MAIL2//'.COORDO    .REFE',.FALSE.)
         CALL JEDUPO(MAIL1//'.COORDO    .DESC',BAS2,
      &              MAIL2//'.COORDO    .DESC',.FALSE.)
-               
+
         CALL JEEXIN(MAIL1//'.NOMGNO',IRET)
         IF (IRET .NE. 0) THEN
           CALL JEDUPO(MAIL1//'.NOMGNO',BAS2,MAIL2//'.NOMGNO',.FALSE.)
@@ -387,29 +414,29 @@ C
         IF (IRET .NE. 0) THEN
           CALL JEDUPO(MAIL1//'.GROUPENO',BAS2,
      &                MAIL2//'.GROUPENO',.FALSE.)
-        ENDIF   
-        IF (NMAIL.NE.0) THEN     
+        ENDIF
+        IF (NMAIL.NE.0) THEN
           CALL JEDUPO(MAIL1//'.NOMMAI',BAS2,MAIL2//'.NOMMAI',.FALSE.)
           CALL JEDUPO(MAIL1//'.TYPMAIL',BAS2,MAIL2//'.TYPMAIL',.FALSE.)
           CALL JEDUPO(MAIL1//'.CONNEX',BAS2,MAIL2//'.CONNEX',.FALSE.)
           CALL JEEXIN(MAIL1//'.NOMGMA',IRET)
           IF (IRET .NE. 0) THEN
             CALL JEDUPO(MAIL1//'.NOMGMA',BAS2,MAIL2//'.NOMGMA',.FALSE.)
-          ENDIF  
+          ENDIF
           CALL JEEXIN(MAIL1//'.GROUPEMA',IRET)
           IF (IRET .NE. 0) THEN
             CALL JEDUPO(MAIL1//'.GROUPEMA',BAS2,
      &                     MAIL2//'.GROUPEMA',.FALSE.)
-          ENDIF 
+          ENDIF
         ENDIF
-        IF (NSMAIL.NE.0) THEN     
+        IF (NSMAIL.NE.0) THEN
           CALL JEDUPO(MAIL1//'.NOMACR',BAS2,MAIL2//'.NOMACR',.FALSE.)
           CALL JEDUPO(MAIL1//'.PARA_R',BAS2,MAIL2//'.PARA_R',.FALSE.)
           CALL JEDUPO(MAIL1//'.SUPMAIL',BAS2,MAIL2//'.SUPMAIL',.FALSE.)
           CALL JEEXIN(MAIL1//'.TYPL',IRET)
           IF (IRET .NE. 0) THEN
             CALL JEDUPO(MAIL1//'.TYPL',BAS2,MAIL2//'.TYPL',.FALSE.)
-          ENDIF  
+          ENDIF
         ENDIF
         CALL JEDUPO(MAIL1//'.TITR',BAS2,MAIL2//'.TITR',.FALSE.)
 C -- CAS ABSC_CURV
@@ -442,8 +469,8 @@ C -- CAS DU FORMAT MED
         CALL JEEXIN(MAIL1//'           .FORM',IRET)
         IF (IRET .NE. 0) THEN
           CALL JEDUPO(MAIL1//'           .FORM',BAS2,
-     &                MAIL2//'           .FORM',.FALSE.)            
-        ENDIF 
+     &                MAIL2//'           .FORM',.FALSE.)
+        ENDIF
 C
 C ----------------------------------------------------------------------
       ELSE

@@ -1,4 +1,4 @@
-#@ MODIF macr_cabri_calc_ops Macro  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_cabri_calc_ops Macro  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -389,8 +389,8 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
 
    # Contact zone de joint
    cl_me8=AFFE_CHAR_MECA(MODELE=modmeca,
-                        CONTACT=_F(GROUP_MA_1='SCBJ',
-                                  GROUP_MA_2='SCJB',),
+                        CONTACT=_F(GROUP_MA_MAIT='SCBJ',
+                                   GROUP_MA_ESCL='SCJB',),
                         INFO=2,);
    # Deformation thermique
    cl_me9=AFFE_CHAR_MECA(  MODELE=modmeca,

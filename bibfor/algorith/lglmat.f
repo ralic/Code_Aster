@@ -1,14 +1,14 @@
-        SUBROUTINE LGLMAT ( MOD, IMAT, NBMAT, TEMPD, TEMPF, MATERD,
+        SUBROUTINE LGLMAT ( MOD, IMAT, NBMAT, TEMPD, MATERD,
      &                      MATERF, MATCST, NDT, NDI, NR, NVI)
 C
         IMPLICIT     NONE
         INTEGER      NDT, NDI, NR, NVI, IMAT, NBMAT
-        REAL*8       MATERD(NBMAT,2), MATERF(NBMAT,2), TEMPD, TEMPF
+        REAL*8       MATERD(NBMAT,2), MATERF(NBMAT,2), TEMPD
         CHARACTER*3  MATCST
         CHARACTER*8  MOD
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,6 @@ C IN  : MOD    : TYPE DE MODELISATION -----------------------------
 C --- : IMAT   : ADRESSE DU MATERIAU CODE -------------------------
 C --- : NBMAT  : NOMBRE DE PARAMETRES MATERIAU --------------------
 C --- : TEMPD  : TEMPERATURE BIDON --------------------------------
-C --- : TEMPF  : TEMPERATURE BIDON --------------------------------
 C OUT : MATERD : COEFFICIENTS MATERIAU A T ------------------------
 C --- : MATERF : COEFFICIENTS MATERIAU A T+DT ---------------------
 C ------------ : MATER(*,1) = CARACTERISTIQUES ELASTIQUES ---------

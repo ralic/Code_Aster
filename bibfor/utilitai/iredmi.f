@@ -1,9 +1,9 @@
-      SUBROUTINE IREDMI ( MACR , FICH )
+      SUBROUTINE IREDMI ( MACR )
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)       MACR , FICH
+      CHARACTER*(*)       MACR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/09/98   AUTEUR ACBHHCD G.DEVESA 
+C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM, JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*8  K8B, MAEL, BASEMO, MASSE, NOMA, INTERF
+      CHARACTER*8  K8B, MAEL, BASEMO, MASSE, NOMA, INTERF, LISTAM
       CHARACTER*16 NOMCMD
 C     ------------------------------------------------------------------
 C
@@ -161,15 +161,22 @@ C
       ENDIF
 C
 C     ----- RECUPERATION DES AMORTISSEMENTS -----
-      CALL GETVR8(' ','AMOR_REDUIT',0,1,0,R8B,NA)
+      CALL GETVR8(' ','AMOR_REDUIT',0,1,0,R8B,N1)
+      CALL GETVID(' ','LIST_AMOR',0,1,0,K8B,N2)
       IF (NBMODE.EQ.0) THEN
        CALL WKVECT('&&IREDMI.AMORTISSEMENT','V V R',1,JAMOR)
       ELSE
        CALL WKVECT('&&IREDMI.AMORTISSEMENT','V V R',NBMODE,JAMOR)
       ENDIF
-      IF (NA.NE.0) THEN
-         NBAMOR = -NA
-         CALL GETVR8(' ','AMOR_REDUIT',1,1,NBAMOR,ZR(JAMOR),NA)
+      IF (N1.NE.0.OR.N2.NE.0) THEN
+         IF (N1.NE.0) THEN
+            NBAMOR = -N1
+            CALL GETVR8(' ','AMOR_REDUIT',1,1,NBAMOR,ZR(JAMOR),N1)
+         ELSE
+            CALL GETVID(' ','LIST_AMOR',0,1,1,LISTAM,N2)
+            CALL JELIRA(LISTAM//'           .VALE','LONMAX',NBAMOR,K8B)
+            CALL JEVEUO(LISTAM//'           .VALE','L',JAMOR)
+         ENDIF
          IF (NBAMOR.GT.NBMODE) THEN
             CALL UTDEBM('F',NOMCMD,'TROP D''AMORTISSEMENTS MODAUX')
             CALL UTIMPI('L','   NOMBRE D''AMORTISSEMENTS : ',1,NBAMOR)
@@ -195,7 +202,7 @@ C     ----- RECUPERATION DES AMORTISSEMENTS -----
       ENDIF
 C
       CALL IREDM1 ( MASSE, NOMA, BASEMO, NBMODE, NBMODS, IVAL3,
-     +              ZR(JMASS) , ZR(JRIGI) , ZR(LAMOR) , ZR(JAMOR),
+     +              ZR(JMASS) , ZR(JRIGI) , ZR(JAMOR),
      +              ZR(JFREQ) , ZR(ISMASS), ZR(ISRIGI), ZR(ISAMOR),
      +              ZR(ICMASS), ZR(ICRIGI), ZR(ICAMOR)   )
 C

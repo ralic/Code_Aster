@@ -4,7 +4,7 @@
       CHARACTER*8         NOMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -168,7 +168,7 @@ C
          CALL GETVIS ( MOTCLF,'CHAR_ETAT_A',IOCC,1,NBCHAR,ZI(JCHAR),N1)
 C
          CHMOME = '&&RC36SI_A'//K8B
-         CALL RC36CM ( IOCC, 'A', NOMA, NBMA, LISTMA,
+         CALL RC36CM ( IOCC, 'A', NBMA, LISTMA,
      +                                     NBCHAR, ZI(JCHAR), CHMOME )
          ZK24(JMOMEA+IOCC-1) = CHMOME
          CALL JEDETR ( '&&RC36SI.CHAR_ETAT' )
@@ -183,7 +183,7 @@ C
          CALL GETVIS ( MOTCLF,'CHAR_ETAT_B',IOCC,1,NBCHAR,ZI(JCHAR),N1)
 C
          CHMOME = '&&RC36SI_B'//K8B
-         CALL RC36CM ( IOCC, 'B', NOMA, NBMA, LISTMA,
+         CALL RC36CM ( IOCC, 'B', NBMA, LISTMA,
      +                                     NBCHAR, ZI(JCHAR), CHMOME )
          ZK24(JMOMEB+IOCC-1) = CHMOME
          CALL JEDETR ( '&&RC36SI.CHAR_MECA' )

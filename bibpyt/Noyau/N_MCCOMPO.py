@@ -1,4 +1,4 @@
-#@ MODIF N_MCCOMPO Noyau  DATE 03/09/2002   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF N_MCCOMPO Noyau  DATE 16/03/2004   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,7 +77,7 @@ class MCCOMPO(N_OBJECT.OBJECT):
       # A ce stade, mc_liste ne contient que les fils de l'objet courant
       # args ne contient plus que des mots-clés qui n'ont pas été attribués car ils sont
       #      à attribuer à des blocs du niveau inférieur ou bien sont des mots-clés erronés
-      dico_valeurs = self.cree_dict_valeurs(mc_liste)
+      dico_valeurs = self.cree_dict_condition(mc_liste,condition=1)
       for k,v in self.definition.entites.items():
          if v.label != 'BLOC':continue
          # condition and a or b  : Equivalent de l'expression :  condition ? a : b du langage C
@@ -91,7 +91,9 @@ class MCCOMPO(N_OBJECT.OBJECT):
             bloc = v(nom=k,val=args,parent=self)
             mc_liste.append(bloc)
             args=bloc.reste_val
-            dico_valeurs = self.cree_dict_valeurs(mc_liste)
+            # On ne recalcule pas le contexte car on ne tient pas compte des blocs
+            # pour évaluer les conditions de présence des blocs
+            #dico_valeurs = self.cree_dict_valeurs(mc_liste)
 
       # On conserve les arguments superflus dans l'attribut reste_val
       self.reste_val=args
@@ -113,27 +115,27 @@ class MCCOMPO(N_OBJECT.OBJECT):
       else:
          return mc_liste
 
-   def cree_dict_valeurs(self,liste=[]):
+   def cree_dict_valeurs(self,liste=[],condition=0):
       """ 
-        Cette méthode crée le contexte de l'objet courant sous la forme 
-        d'un dictionnaire.
-        L'opération consiste à transformer une liste d'OBJECT en un 
-        dictionnaire.
-        Ce dictionnaire servira de contexte pour évaluer les conditions des 
-        blocs fils.
+        Cette méthode crée un contexte (sous la forme d'un dictionnaire)
+        à partir des valeurs des mots clés contenus dans l'argument liste.
+        L'opération consiste à parcourir la liste (d'OBJECT) et à la 
+        transformer en un dictionnaire dont les clés sont les noms des
+        mots clés et les valeurs dépendent du type d'OBJECT.
+        Ce dictionnaire servira de liste d'arguments d'appel pour les
+        fonctions sd_prod de commandes et ops de macros ou de contexte
+        d'évaluation des conditions de présence de BLOC.
+
+        Si l'argument condition de la méthode vaut 1, on ne 
+        remonte pas les valeurs des mots clés contenus dans des blocs
+        pour eviter les bouclages.
 
         Cette méthode réalise les opérations suivantes en plus de transformer 
         la liste en dictionnaire :
 
-        - ajouter tous les mots-clés non présents avec la valeur None
-
-        - ajouter tous les mots-clés globaux (attribut position = 'global' 
-          et 'global_jdc')
-
-        ATTENTION : -- on ne remonte pas (semble en contradiction avec la 
-                      programmation de la méthode get_valeur du bloc) les 
-                      mots-clé fils d'un bloc au niveau du
-                      contexte car celà peut générer des erreurs.
+           - ajouter tous les mots-clés non présents avec la valeur None
+           - ajouter tous les mots-clés globaux (attribut position = 'global' 
+             et 'global_jdc')
 
         L'argument liste est, en général, une mc_liste en cours de 
         construction, contenant les mots-clés locaux et les blocs déjà créés.
@@ -141,57 +143,56 @@ class MCCOMPO(N_OBJECT.OBJECT):
       """
       dico={}
       for v in liste:
-        k=v.nom
-        val = v.get_valeur()
-        # Si val est un dictionnaire, on inclut ses items dans le dictionnaire
-        # représentatif du contexte. Les blocs sont retournés par get_valeur
-        # sous la forme d'un dictionnaire : les mots-clés fils de blocs sont
-        # donc remontés au niveau du contexte.
-        if type(val)==types.DictionaryType:
-          for i,w in val.items():
-            dico[i]=w
+        if v.isBLOC():
+           # Si v est un BLOC, on inclut ses items dans le dictionnaire
+           # représentatif du contexte. Les blocs sont retournés par get_valeur
+           # sous la forme d'un dictionnaire : les mots-clés fils de blocs sont
+           # donc remontés au niveau du contexte.
+           if not condition:dico.update(v.get_valeur())
         else:
-          dico[k]=val
-      # on rajoute tous les autres mots-clés locaux possibles avec la valeur 
+           dico[v.nom]=v.get_valeur()
+
+      # On rajoute tous les autres mots-clés locaux possibles avec la valeur 
       # par défaut ou None
-      # Pour les mots-clés facteurs, on ne tient pas compte du défaut 
-      # (toujours None)
+      # Pour les mots-clés facteurs, on ne traite que ceux avec statut défaut ('d')
+      # et caché ('c')
+      # On n'ajoute aucune information sur les blocs. Ils n'ont pas de défaut seulement
+      # une condition.
       for k,v in self.definition.entites.items():
         if not dico.has_key(k):
            if v.label == 'SIMP':
+              # Mot clé simple
               dico[k]=v.defaut
-              # S il est declare global il n est pas necessaire de l ajouter
-              # aux mots cles globaux de l'etape
-              # car la methode recherche_mc_globaux les rajoutera
-           elif v.label == 'FACT' and v.statut in ('c','d') :
-              dico[k]=v(val=None,nom=k,parent=self)
-              # On demande la suppression des pointeurs arrieres
-              # pour briser les eventuels cycles
-              dico[k].supprime()
-           elif v.label != 'BLOC':
-              dico[k]=None
+           elif v.label == 'FACT' :
+              if v.statut in ('c','d') :
+                 # Mot clé facteur avec défaut ou caché provisoire
+                 dico[k]=v(val=None,nom=k,parent=self)
+                 # On demande la suppression des pointeurs arrieres
+                 # pour briser les eventuels cycles
+                 dico[k].supprime()
+              else:
+                 dico[k]=None
       # A ce stade on a rajouté tous les mots-clés locaux possibles (fils directs) avec leur
       # valeur par défaut ou la valeur None
-      # on rajoute les mots-clés globaux ...
+
+      # On rajoute les mots-clés globaux sans écraser les clés existantes
       dico_mc = self.recherche_mc_globaux()
-      for nom,mc in dico_mc.items() :
-        if not dico.has_key(nom) : dico[nom]=mc.valeur
-      # Il nous reste à évaluer la présence des blocs en fonction du contexte qui a changé
-      for k,v in self.definition.entites.items():
-        if v.label != 'BLOC' : continue
-        # condition and a or b  : Equivalent de l'expression :  condition ? a : b du langage C
-        globs= self.jdc and self.jdc.condition_context or {}
-        if v.verif_presence(dico,globs):
-          # le bloc k doit etre présent : on crée temporairement l'objet MCBLOC correspondant
-          # on lui passe un parent égal à None pour qu'il ne soit pas enregistré
-          bloc = v(nom=k,val=None,parent=None)
-          dico_bloc = bloc.cree_dict_valeurs()
-          bloc.supprime()
-          # on va updater dico avec dico_bloc en veillant à ne pas écraser
-          # des valeurs déjà présentes
-          for cle in dico_bloc.keys():
-            if not dico.has_key(cle):
-              dico[cle]=dico_bloc[cle]
+      dico_mc.update(dico)
+      dico=dico_mc
+
+      return dico
+
+   def cree_dict_condition(self,liste=[],condition=0):
+      """
+          Methode pour construire un contexte qui servira dans l'évaluation
+          des conditions de présence de blocs. Si une commande a un concept
+          produit réutilisé, on ajoute la clé 'reuse'
+      """
+      dico=self.cree_dict_valeurs(liste,condition=1)
+      # On ajoute la cle "reuse" pour les MCCOMPO qui ont un attribut reuse. A destination
+      # uniquement des commandes. Ne devrait pas etre dans cette classe mais dans une classe dérivée
+      if not dico.has_key('reuse') and hasattr(self,'reuse'):
+         dico['reuse']=self.reuse
       return dico
 
    def recherche_mc_globaux(self):
@@ -292,9 +293,13 @@ class MCCOMPO(N_OBJECT.OBJECT):
       for v in self.mc_liste:
         if v.nom == name : return v
       if restreint == 'non' :
-        for k,v in self.definition.entites.items():
-          if k == name:
-            if v.valeur != None : return v(None,k,None)
+        try:
+           entite=self.definition.entites[name]
+           if entite.label == 'SIMP' or (entite.label == 'FACT' and entite.statut in ( 'c', 'd')):
+              return entite(None,name,None)
+        except:
+           pass
+
       return None
 
    def append_mc_global(self,mc):
@@ -350,3 +355,20 @@ class MCCOMPO(N_OBJECT.OBJECT):
     for child in self.mc_liste:
       l.extend(child.get_sd_utilisees())
     return l
+
+   def get_sd_mcs_utilisees(self):
+    """ 
+          Retourne la ou les SD utilisée par self sous forme d'un dictionnaire :
+          . Si aucune sd n'est utilisée, le dictionnaire est vide.
+          . Sinon, les clés du dictionnaire sont les mots-clés derrière lesquels on
+            trouve des sd ; la valeur est la liste des sd attenante.
+            Exemple : { 'VALE_F': [ <Cata.cata.para_sensi instance at 0x9419854>,
+                                    <Cata.cata.para_sensi instance at 0x941a204> ],
+                        'MODELE': [<Cata.cata.modele instance at 0x941550c>] }
+    """
+    dico = {}
+    for child in self.mc_liste:
+      daux = child.get_sd_mcs_utilisees()
+      for cle in daux.keys():
+        dico[cle] = daux[cle]
+    return dico

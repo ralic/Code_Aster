@@ -1,4 +1,4 @@
-# MODIF  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE PLAQUE EN FLEXION ET CISAILLEMENT DANS SON PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,10 +84,12 @@ NOM_CHAM='DEPL', RESULTAT=DEF,
 
 #
 # CALCUL DES CONTRAINTES
-SIG=CALC_CHAM_ELEM(    MODELE=MODELE,
-                         CHAM_MATER=CHMAT,
-                         OPTION='SIGM_ELNO_DEPL',
-                         DEPL=U )
+
+DEF=CALC_ELEM( reuse= DEF ,RESULTAT= DEF ,MODELE=MODELE,
+                              CHAM_MATER=CHMAT,
+                              EXCIT=(_F(CHARGE=CHARGT),),
+                              OPTION=('SIGM_ELNO_DEPL',),
+                ) 
 
 #
 # TEST_RESU DU DEPLACEMENT
@@ -102,9 +104,11 @@ TEST_RESU(   CHAM_NO=_F(  CHAM_GD = U,
 #
 # TEST_RESU DE LA CONTRAINTE
 #
-TEST_RESU(   CHAM_ELEM=_F(  CHAM_GD = SIG,
+TEST_RESU(   RESU=_F(  RESULTAT = DEF,
                           MAILLE = 'MA1',
                           NOEUD = 'NO1',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
                           NOM_CMP = 'SIXX',
                           VALE = 8.0E+7,
                           PRECISION = 0.015)
@@ -145,10 +149,12 @@ NOM_CHAM='DEPL', RESULTAT=DEF_R,
 
 #
 # CALCUL DES CONTRAINTES
-SIG_R=CALC_CHAM_ELEM(       MODELE=MODELE,
-                          CHAM_MATER=CHMAT,
-                              OPTION='SIGM_ELNO_DEPL',
-                                 DEPL=U_R )
+
+DEF_R=CALC_ELEM( reuse= DEF_R ,RESULTAT= DEF_R ,MODELE=MODELE,
+                              CHAM_MATER=CHMAT,
+                              EXCIT=(_F(CHARGE=CHARGT),),
+                              OPTION=('SIGM_ELNO_DEPL',),
+                )
 
 #
 # TEST_RESU DU DEPLACEMENT
@@ -164,14 +170,16 @@ TEST_RESU(   CHAM_NO=_F(  CHAM_GD = U_R,
 #
 # TEST_RESU DE LA CONTRAINTE
 #
-TEST_RESU(   CHAM_ELEM=_F(  CHAM_GD = SIG_R,
+TEST_RESU(   RESU=_F(  RESULTAT = DEF_R,
                           MAILLE = 'MA1',
                           NOEUD = 'NO1',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
                           NOM_CMP = 'SIXX',
                           VALE = 8.0E+7,
                           PRECISION = 0.015,
-                          REFERENCE = 'AUTRE_ASTER')
-          )
+                          REFERENCE = 'AUTRE_ASTER'),
+                          )
 
 FIN()
 #

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/04/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,22 +29,7 @@ C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
-C
-      PARAMETER         ( NPGMAX=10 )
-      PARAMETER         ( NBRES=2 )
-      CHARACTER*24       CARAC,FF
-      CHARACTER*8        NOMRES(NBRES),ELREFE
-      CHARACTER*24        DECENT
-      CHARACTER*2        CODRET(NBRES)
-      REAL*8             VALRES(NBRES)
-      REAL*8             DFDX(9),DFDY(9),POIDS,R
-      REAL*8             DNI(2,9,NPGMAX), ULOC(2,9), UL(2,NPGMAX)
-      REAL*8             JACOB(NPGMAX), UMI(2), JACOBI, AIRE
-      INTEGER            NNO,KP,NPG1,NPG2,I,J,K,IJ,ITEMPS,IMATTT
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE
-C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -61,19 +46,20 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CALL ELREF1(ELREFE)
-
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
+      PARAMETER         ( NPGMAX=10 )
+      PARAMETER         ( NBRES=2 )
+      CHARACTER*8        NOMRES(NBRES)
+      CHARACTER*24       DECENT
+      CHARACTER*2        CODRET(NBRES)
+      REAL*8             VALRES(NBRES)
+      REAL*8             DFDX(9),DFDY(9),POIDS,R
+      REAL*8             DNI(2,9,NPGMAX), ULOC(2,9), UL(2,NPGMAX)
+      REAL*8             JACOB(NPGMAX), UMI(2), AIRE
+      INTEGER            NDIM,NNO,NNOS,KP,NPG,I,J,K,IJ,ITEMPS,IMATTT
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE,JGANO
+C     -----------------------------------------------------------------
 C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS=IFF
-      IVF   =IPOIDS+NPG1
-      IDFDE =IVF   +NPG1*NNO
-      IDFDK =IDFDE +NPG1*NNO
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PVITESR','L',IVITE)
@@ -100,12 +86,11 @@ C
       UMI(1) = 0.D0
       UMI(2) = 0.D0
 C
-      DO 30 KP=1,NPG1
+      DO 30 KP=1,NPG
         UL(1,KP) = 0.D0
         UL(2,KP) = 0.D0
         K=(KP-1)*NNO
-        CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                ZR(IGEOM),DFDX,DFDY,POIDS )
+        CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
         IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
            R = 0.D0
            DO 40 I=1,NNO
@@ -141,7 +126,7 @@ C
       DO 70 I=1,NNO
       DO 80 J=1,NNO
         S = 0.D0
-        DO 90 KP =1,NPG1
+        DO 90 KP =1,NPG
              K = (KP-1)*NNO
              S = S +ZR(IVF+K+I-1)*DNI(1,J,KP)*UL(1,KP)*JACOB(KP)
      1             +ZR(IVF+K+I-1)*DNI(2,J,KP)*UL(2,KP)*JACOB(KP)
@@ -185,7 +170,7 @@ C
       DO 110 I =1,NNO
       DO 110 J =1,NNO
         S=0.D0
-        DO 120 KP =1,NPG1
+        DO 120 KP =1,NPG
         DO 120 IDIM =1,2
         DO 120 JDIM =1,2
 C          S = S+DNI(IDIM,I,KP)*DNI(IDIM,J,KP)*UMI(IDIM)*UMI(IDIM)

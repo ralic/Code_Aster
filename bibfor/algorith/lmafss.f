@@ -1,8 +1,8 @@
-        SUBROUTINE LMAFSS ( IMAT, NMAT, MATER, SIG, X, ID, DDFDDS )
+        SUBROUTINE LMAFSS ( NMAT, MATER, SIG, X, ID, DDFDDS )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,6 @@ C       MODELE VISCOPLASTIQUE DE BESANCON EN VITESSE
 C       3D / 1D / DP / CP
 C       DERIVEE / S / S DE LA FONCTION SEUIL A (SIG , X) DONNES
 C
-C       IN  IMAT   :  ADRESSE DU MATERIAU CODE
 C       IN  NMAT   :  DIMENSION MATER
 C       IN  MATER  :  COEFFICIENTS MATERIAU
 C       IN  SIG    :  TENSEUR CONTRAINTE
@@ -40,7 +39,7 @@ C                     D      = SIG - 1/3 TR(SIG) I
 C                     M    = MATRICE D'ANISOTROPIE = MATER(16,1)
 C       ----------------------------------------------------------------
         INTEGER         N , ND
-        INTEGER         NMAT , IMAT
+        INTEGER         NMAT
         REAL*8          DFDS(6) ,  SIG(6) , X(6) , DEV(6) , S
         REAL*8          DDFDDS(6,6) , DFDS2(6,6)
         REAL*8          ID(6,6)
@@ -51,8 +50,8 @@ C       ----------------------------------------------------------------
         COMMON /TDIM/   N , ND
 C       ----------------------------------------------------------------
 C
-        CALL LMAFS  ( IMAT  , NMAT , MATER , SIG , X , DFDS )
-        CALL LMACVX ( IMAT  , NMAT , MATER , TEM , SIG , X , S )
+        CALL LMAFS  ( NMAT , MATER , SIG , X , DFDS )
+        CALL LMACVX ( NMAT , MATER , SIG , X , S )
 C
         CALL LCPRSM ( 1.5D0   , ID         , DFDS2  )
         CALL LCPRMM ( DFDS2 , MATER(16,1), DDFDDS )

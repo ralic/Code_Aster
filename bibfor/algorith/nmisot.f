@@ -3,7 +3,7 @@
      &                   SECHM,SECHP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,7 +91,7 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      LOGICAL     CPLAN,PLASTI,INCO
+      LOGICAL     CPLAN,PLASTI,INCO,DECH
       REAL*8      DEPSTH(6),VALRES(3),ALPHAP,ALPHAM,PM,CO,VAL0
       REAL*8      DEPSMO,SIGMMO,E,NU,TROISK,RPRIM,RP,AIRERP
       REAL*8      SIELEQ,SIGEPS,SEUIL,DP,COEF,DSDE,SIGY
@@ -111,6 +111,7 @@ C     -- 1 INITIALISATIONS :
 C     ----------------------
       CPLAN =  TYPMOD(1) .EQ. 'C_PLAN'
       INCO  =  TYPMOD(2) .EQ. 'INCO'
+      DECH  =  OPTION(11:14).EQ.'ELAS'
       IF (INCO) THEN
         CO = 0.D0
       ELSE
@@ -270,7 +271,7 @@ C     -- 4 CALCUL DE DEPSMO ET DEPSDV :
 C     --------------------------------
       COEF = ALPHAP*(TP-TREF) - ALPHAM*(TM-TREF)
      &     - BENDOP*HYDRP     + BENDOM*HYDRM
-     &     - KDESSP*SECHP     + KDESSM*SECHM
+     &     + KDESSP*SECHP     - KDESSM*SECHM
       IF (CPLAN) DEPS(3)=-NU/(1.D0-NU)*(DEPS(1)+DEPS(2))
      +                +(1.D0+NU)/(1.D0-NU)*COEF
       DEPSMO = 0.D0
@@ -394,10 +395,10 @@ C
 C
 C     -- 8 CALCUL DE DSIDEP(6,6) :
 C     ----------------------------
-      IF ( OPTION(1:14) .EQ. 'RIGI_MECA_TANG'.OR.
+      IF ( OPTION(1:10) .EQ. 'RIGI_MECA_'.OR.
      &     OPTION(1:9)  .EQ. 'FULL_MECA'         ) THEN
 C
-        IF ( OPTION(1:14) .EQ. 'RIGI_MECA_TANG' ) THEN
+        IF ( OPTION(1:10) .EQ. 'RIGI_MECA_' ) THEN
 C         - - OPTION='RIGI_MECA_TANG' => SIGMA(T)
           RP=0.D0
           DO 118 K=1,NDIMSI
@@ -420,19 +421,21 @@ C       -- 8.1 PARTIE PLASTIQUE:
  100    CONTINUE
 C
         A=1.D0
-        IF (COMPOR(1)(1:9) .EQ. 'VMIS_ISOT') THEN
-          SIGEPS = 0.D0
-          DO 170 K = 1,NDIMSI
-            SIGEPS = SIGEPS + SIGDV(K)*DEPSDV(K)
- 170      CONTINUE
-          IF(PLASTI.AND.SIGEPS.GE.0.D0) THEN
-            A = 1.D0+1.5D0*DEUXMU*DP/RP
-            COEF = -  (1.5D0 * DEUXMU)**2/(1.5D0*DEUXMU+RPRIM)/RP**2
-     +             *(1.D0 - DP*RPRIM/RP )/A
-            DO 135 K=1,NDIMSI
-              DO 135 L=1,NDIMSI
-                DSIDEP(K,L) =  COEF*SIGDV(K)*SIGDV(L)
- 135        CONTINUE
+        IF (.NOT.DECH) THEN
+          IF (COMPOR(1)(1:9) .EQ. 'VMIS_ISOT') THEN
+            SIGEPS = 0.D0
+            DO 170 K = 1,NDIMSI
+              SIGEPS = SIGEPS + SIGDV(K)*DEPSDV(K)
+ 170        CONTINUE
+            IF(PLASTI.AND.SIGEPS.GE.0.D0) THEN
+              A = 1.D0+1.5D0*DEUXMU*DP/RP
+              COEF = -  (1.5D0 * DEUXMU)**2/(1.5D0*DEUXMU+RPRIM)/RP**2
+     +               *(1.D0 - DP*RPRIM/RP )/A
+              DO 135 K=1,NDIMSI
+                DO 135 L=1,NDIMSI
+                  DSIDEP(K,L) =  COEF*SIGDV(K)*SIGDV(L)
+ 135          CONTINUE
+            ENDIF
           ENDIF
         ENDIF
 C

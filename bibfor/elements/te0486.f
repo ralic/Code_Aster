@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,20 +49,19 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
 C ----------------------------------------------------------------------
+      INTEGER       NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO
       INTEGER       IGEOM, IUM, IUP, IPRES, IRES, ICACO
-      INTEGER       NNO, INO, LZI, LZR, IADZI, IAZK24,IRET
-      INTEGER       I, J, IN, KN, II, KOMPTN, KOMPTU, NB1, NB2
-      INTEGER       IMATUU, IVECTU, IMATUN, INTSN, NPGSN
+      INTEGER       INO, LZI, LZR, IADZI, IAZK24, IRET
+      INTEGER       I, J, IN, KN, II, KOMPTN, NB1, NB2
+      INTEGER       IVECTU, IMATUN, INTSN, NPGSN
       INTEGER       IRCO3D, IFCO3D, ITEMPS, IERZ
       REAL*8        PRES, PRESNO(9), MADN(3,51), NKS1(3,51), NKS2(3,51)
       REAL*8        A1(3), A2(3), ANTA1(3,3), ANTA2(3,3), SURF(3)
       REAL*8        RIGNS(2601), PR
       REAL*8        VECTA(9,2,3), VECTN(9,3), VECTPT(9,2,3), VALPAR(4)
-      LOGICAL       GLOBAL, LOCAPR
+      LOGICAL       LOCAPR
       CHARACTER*8   NOMAIL, NOMPAR(4)
-      CHARACTER*24  DESI
 C     ------------------------------------------------------------------
 C
       CALL JEVECH ( 'PGEOMER', 'L', IGEOM )
@@ -71,6 +70,9 @@ C
 C
       IF (NOMTE(1:8).NE.'MEC3QU9H' .AND. NOMTE(1:8).NE.'MEC3TR7H') THEN
 C     --- AUTRES ELEMENTS QUE LA COQUE 3 D ---
+C
+        CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
+
          CALL TECACH ( 'NNN', 'PPRESSR', 1, IPRES,IRET )
 C
          IF ( IPRES .EQ. 0 ) THEN
@@ -78,10 +80,6 @@ C
             CALL JEVECH ( 'PCACOQU', 'L', ICACO )
          ENDIF
          CALL JEVECH ( 'PVECTUR', 'E', IRES  )
-C
-         DESI = '&INEL.'//NOMTE(1:8)//'.DESI'
-         CALL JEVETE ( DESI, 'L', LZI )
-         NNO = ZI(LZI)
 C
          DO 10 INO = 0 , NNO-1
             IF ( ZR(IPRES+INO) .NE. 0.D0 ) THEN

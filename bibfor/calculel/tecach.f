@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -157,7 +157,7 @@ C     -------------------------------------------------
           CALL UTMESS('E','TECAC2','LE PARAMETRE:'//NOMPAR//
      &                ' N''EST PAS UN '//'PARAMETRE DE L''OPTION:'//
      &                OPTION)
-          CALL CONTEX(OPTION,0,' ',' ',0,'STOP')
+          CALL CONTEX(OPTION,0,' ',' ',0)
         END IF
         IRET = 1
         GO TO 20
@@ -184,7 +184,7 @@ C     -------------------------------------------------
      &                //' CALCUL DE CHAMP A ASSOCIER AU PARAMETRE:'//
      &                NOMPAR//' (OPTION:'//OPTION//' TYPE_ELEMENT:'//
      &                NOMTE//')')
-          CALL CONTEX(OPTION,0,NOMPAR,' ',0,'STOP')
+          CALL CONTEX(OPTION,0,NOMPAR,' ',0)
         END IF
 
         IF (LGCATA.EQ.-1) THEN
@@ -192,7 +192,7 @@ C     -------------------------------------------------
             CALL UTMESS('E','TECAC2','LE PARAMETRE:'//NOMPAR//
      &                  ' N''EST PAS UN '//'PARAMETRE DE L''OPTION:'//
      &                  OPTION//' POUR '//'LE TYPE_ELEMENT: '//NOMTE)
-            CALL CONTEX(OPTION,0,NOMPAR,' ',0,'STOP')
+            CALL CONTEX(OPTION,0,NOMPAR,' ',0)
           END IF
         END IF
       ELSE
@@ -201,7 +201,7 @@ C     -------------------------------------------------
             CALL UTMESS('E','TECAC2','LE PARAMETRE:'//NOMPAR//
      &                  ' N''EST PAS UN '//'PARAMETRE DE L''OPTION:'//
      &                  OPTION//' POUR '//'LE TYPE_ELEMENT: '//NOMTE)
-            CALL CONTEX(OPTION,0,NOMPAR,' ',0,'STOP')
+            CALL CONTEX(OPTION,0,NOMPAR,' ',0)
           END IF
         ELSE
           EXICHL = .TRUE.
@@ -253,7 +253,7 @@ C     ----------------------------------------------------------
      &                    //'DU CHAMP GLOBAL ASSOCIE AU PARAMETRE:'//
      &                    NOMPAR//' (OPTION:'//OPTION//
      &                    ' TYPE_ELEMENT:'//NOMTE//')')
-              CALL CONTEX(OPTION,0,NOMPAR,' ',0,'STOP')
+              CALL CONTEX(OPTION,0,NOMPAR,' ',0)
             ELSE
               IRET = 3
             END IF

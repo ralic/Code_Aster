@@ -1,15 +1,15 @@
       SUBROUTINE PRCCM5 ( NOMRES, NBFT, NBORDR, PARASG, COURBE, LINTI,
-     +                    INTITU, NOMMAT, PARA, SM, NCHEFF, RCCMPM,
-     +                    RCCMSN, SNTHER, FATIZH, FATISP )
+     +                    INTITU, SM, NCHEFF, RCCMPM,
+     +                    RCCMSN, SNTHER, FATIZH )
       IMPLICIT   NONE
       INTEGER             NBFT, NBORDR
-      REAL*8              SM, PARA(*)
-      LOGICAL             RCCMPM, RCCMSN, SNTHER, FATIZH, FATISP, LINTI
+      REAL*8              SM
+      LOGICAL             RCCMPM, RCCMSN, SNTHER, FATIZH, LINTI
       CHARACTER*16        NCHEFF
-      CHARACTER*(*)       NOMRES, COURBE, NOMMAT, PARASG, INTITU
+      CHARACTER*(*)       NOMRES, COURBE, PARASG, INTITU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 23/01/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,7 @@ C
       IK  = IK + 1
       NPARA0 = NPARA
 C
-      IF ( RCCMPM .OR. RCCMSN .OR. FATISP ) THEN
+      IF ( RCCMPM .OR. RCCMSN ) THEN
 C
          DO 10 IOCC = 1, NBFT
 C
@@ -109,7 +109,7 @@ C
             IF ( RCCMPM ) THEN
 C
                CALL PRCCM9 ( RCCMPM, .FALSE., .FALSE., .FALSE.,  
-     +                      .FALSE., TYPTAB, NPARA, NOPARA, TYPARA )
+     +                       TYPTAB, NPARA, NOPARA, TYPARA )
                IP = IP0
                CALL JELIRA ( JEXNUM(NCHEFF//'.VALACCE',IOCC), 'LONMAX',
      +                                                     NBCHEF, K8B )
@@ -142,9 +142,9 @@ C
  12            CONTINUE
             ENDIF
 C
-            IF ( RCCMSN .OR. FATISP ) THEN
+            IF ( RCCMSN ) THEN
 C
-               CALL PRCCM9 ( .FALSE., RCCMSN, SNTHER, .FALSE., FATISP, 
+               CALL PRCCM9 ( .FALSE., RCCMSN, SNTHER, .FALSE., 
      +                         TYPTAB, NPARA, NOPARA, TYPARA )
 C
                CALL JELIRA ( JEXNUM(NCHEFF//'.INST1  ',IOCC), 'LONMAX',
@@ -175,30 +175,6 @@ C
                      IP = IP + 1
                      VALOR(IP) = ZR(JSNTO+ICHEF1-1)
                      VALER(IP) = ZR(JSNTE+ICHEF1-1)
-                  ENDIF
-                  IF ( FATISP ) THEN
-                     IP = IP + 1
-                     IP2 = IP
-                     VALOR(IP2) = ZR(JSPO +ICHEF1-1)
-                     VALER(IP2) = ZR(JSPE +ICHEF1-1)
-                     CALL PRCCM3 ( NOMMAT, PARA, SM, VALOR(IP1), 
-     +                          VALOR(IP2), KEO, SALTO, NADMO )
-                     USAO = DBLE(NBCYCL) / NADMO
-                     CALL PRCCM3 ( NOMMAT, PARA, SM, VALER(IP1), 
-     +                          VALER(IP2), KEE, SALTE, NADME )
-                     USAE = DBLE(NBCYCL) / NADME
-                     IP = IP + 1
-                     VALOR(IP) = KEO
-                     VALER(IP) = KEE
-                     IP = IP + 1
-                     VALOR(IP) = SALTO
-                     VALER(IP) = SALTE
-                     IP = IP + 1
-                     VALOR(IP) = NADMO
-                     VALER(IP) = NADME
-                     IP = IP + 1
-                     VALOR(IP) = USAO
-                     VALER(IP) = USAE
                   ENDIF
 C
                   CALL TBAJLI ( NOMRES, NPARA, NOPARA, VALOI, VALOR,

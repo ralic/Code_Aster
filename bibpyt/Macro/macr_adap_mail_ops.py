@@ -1,4 +1,4 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 13/10/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_adap_mail_ops Macro  DATE 19/01/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -305,8 +305,9 @@ def macr_adap_mail_ops ( self,
       os.mkdir(Rep_Calc_HOMARD_global)
     except os.error,codret_partiel :
       self.cr.warn("Code d'erreur de mkdir : " + str(codret_partiel[0]) + " : " + codret_partiel[1])
-      self.cr.fatal("Impossible de créer le répertoire de travail pour HOMARD : "+Rep_Calc_HOMARD_global)
+      self.cr.fatal("<F> <MACR_ADAP_MAIL> Impossible de créer le répertoire de travail pour HOMARD : "+Rep_Calc_HOMARD_global)
       codret = codret + 1
+      return codret
 #
 # 4.2. ==> Ecriture des commandes de creation des donnees MED
 #
@@ -339,8 +340,9 @@ def macr_adap_mail_ops ( self,
     os.symlink(Fichier_ASTER_vers_HOMARD,Fichier_HOMARD_Entree)
   except os.error,codret_partiel :
     self.cr.warn("Code d'erreur de symlink : " + str(codret_partiel[0]) + " : " + codret_partiel[1])
-    self.cr.fatal("Probleme au lien entre " + Fichier_ASTER_vers_HOMARD + " et " + Fichier_HOMARD_Entree)
+    self.cr.fatal("<F> <MACR_ADAP_MAIL> Probleme au lien entre " + Fichier_ASTER_vers_HOMARD + " et " + Fichier_HOMARD_Entree)
     codret = codret + 1
+    return codret
 #
 # 4.2.1.2. ==> De HOMARD vers ASTER
 #  
@@ -354,8 +356,9 @@ def macr_adap_mail_ops ( self,
       os.symlink(Fichier_HOMARD_vers_ASTER,Fichier_HOMARD_Sortie)
     except os.error,codret_partiel :
       self.cr.warn("Code d'erreur de symlink : " + str(codret_partiel[0]) + " : " + codret_partiel[1])
-      self.cr.fatal("Probleme au lien entre " + Fichier_HOMARD_vers_ASTER + " et " + Fichier_HOMARD_Sortie)
+      self.cr.fatal("<F> <MACR_ADAP_MAIL> Probleme au lien entre " + Fichier_HOMARD_vers_ASTER + " et " + Fichier_HOMARD_Sortie)
       codret = codret + 1
+      return codret
 #
 # 4.2.2. La définition du fichier de ASTER vers HOMARD
 # 
@@ -468,8 +471,9 @@ def macr_adap_mail_ops ( self,
 #
     if ( niveau == 2 ) : 
       if ( ADAPTATION['NIVE_MIN'] > ADAPTATION['NIVE_MAX'] ) :
-        self.cr.fatal("Le niveau minimum doit etre inferieur au niveau maximum.")
+        self.cr.fatal("<F> <MACR_ADAP_MAIL> Le niveau minimum doit etre inferieur au niveau maximum.")
         codret = codret + 1
+        return codret
 #
 # 4.3.1.5. ==> Mise à jour de la solution
 #

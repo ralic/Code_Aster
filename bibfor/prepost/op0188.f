@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 07/07/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 30/03/2004   AUTEUR PROIA E.PROIA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C
      +             JCOXS, JCOYS, JCOZS, JCOXI, JCOYI, JCOZI
       PARAMETER  ( NBPAR1=10 , NBPAR2=8  )
       REAL*8       RMAX, COEFD, COEFG, COEFG3, COEFD3, PREC, PRECV, 
-     +             KG2(9), KG1(9), VECTY(3), VO(3), VE(3), RMAXEM,
+     +             KG2(9),KG1(9),KG3(9),VECTY(3),VO(3),VE(3),RMAXEM,
      +             DINST
       COMPLEX*16   CBID
       LOGICAL      EXIST
@@ -186,6 +186,7 @@ C
 C     --- BOUCLE SUR LES INSTANTS ---
 C
       DO 100 I = 1 , NBINST
+         CALL JEMARQ()
          IF ( EXIST ) THEN
             DINST = ZR(JINST+I-1)
             CALL TBEXTB ( DEPSUP, 'V', DEPSU2, 1, 'INST', 'EQ',
@@ -235,7 +236,7 @@ C
          VE(3) = ( ZR(JCOZS) + ZR(JCOZI) ) / 2
 C
          CALL PKCHGR ( VO, VE, VECTY, NBVAL, ZR(JDXS), ZR(JDYS), 
-     +             ZR(JDZS), ZR(JDXI), ZR(JDYI), ZR(JDZI), ZR(JABSCS) )
+     +             ZR(JDZS), ZR(JDXI), ZR(JDYI), ZR(JDZI), ZR(JABSCS))
 C
 C     ------------------------------------------------------------------
 C                       CALCUL DES K1, K2, K3
@@ -243,21 +244,28 @@ C     ------------------------------------------------------------------
 C
          KG1(1) = DINST
          KG2(1) = DINST
+         KG3(1) = DINST
          CALL PKCALC ( NDIM, NBVAL, ABSSUP, DXSUP, DYSUP,  
      +                 DZSUP, ABSINF, DXINF, DYINF, DZINF, 
-     +                 COEFD, COEFD3, COEFG, COEFG3, KG1(2), KG2(2) )
+     +                 COEFD,COEFD3,COEFG,COEFG3,KG1(2),KG2(2),KG3(2))
 C
          IF ( NDIM .EQ. 3 ) THEN
             IF ( EXIST ) THEN
+                              
                CALL TBAJLI ( NOMRES, NBPAR1, NOMPA1, 1, KG1,
      +                       CBID, K8B, 0 )
                CALL TBAJLI ( NOMRES, NBPAR1, NOMPA1, 2, KG2,
      +                       CBID, K8B, 0 )
+               CALL TBAJLI ( NOMRES, NBPAR1, NOMPA1, 3, KG3,
+     +                       CBID, K8B, 0 )
             ELSE
+            
                CALL TBAJLI ( NOMRES, NBPAR1-1, NOMPA1(2), 1, KG1(2),
      +                       CBID, K8B, 0 )
                CALL TBAJLI ( NOMRES, NBPAR1-1, NOMPA1(2), 2, KG2(2),
      +                       CBID, K8B, 0 )
+               CALL TBAJLI ( NOMRES, NBPAR1-1, NOMPA1(2), 3, KG3(2),
+     +                       CBID, K8B, 0)
             ENDIF
          ELSE
             IF ( EXIST ) THEN
@@ -265,10 +273,14 @@ C
      +                       CBID, K8B, 0 )
                CALL TBAJLI ( NOMRES, NBPAR2, NOMPA2, 2, KG2,
      +                       CBID, K8B, 0 )
+               CALL TBAJLI ( NOMRES, NBPAR2, NOMPA2, 3, KG3,
+     +                       CBID, K8B, 0 )
             ELSE
                CALL TBAJLI ( NOMRES, NBPAR2-1, NOMPA2(2), 1, KG1(2),
      +                       CBID, K8B, 0 )
                CALL TBAJLI ( NOMRES, NBPAR2-1, NOMPA2(2), 2, KG2(2),
+     +                       CBID, K8B, 0 )
+               CALL TBAJLI ( NOMRES, NBPAR2-1, NOMPA2(2), 3, KG3(2),
      +                       CBID, K8B, 0 )
             ENDIF
          ENDIF
@@ -292,6 +304,7 @@ C
          CALL JEDETR ( COORYI )
          CALL JEDETR ( COORZI )
 C
+         CALL JEDEMA()
  100  CONTINUE
 C
       IF ( EXIST )  CALL JEDETR ( '&&OP0188.INSTANT' )

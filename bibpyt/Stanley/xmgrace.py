@@ -1,4 +1,4 @@
-#@ MODIF xmgrace Stanley  DATE 06/10/2003   AUTEUR JMBHH01 J.M.PROIX 
+#@ MODIF xmgrace Stanley  DATE 05/04/2004   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@
 
 import os, string, glob
 from popen2 import Popen3
-import env
+import aster
 from time import sleep
 
 TERMINAL = 0    # terminal actif ou non (au plus un terminal en meme temps)
@@ -44,10 +44,10 @@ class Xmgr :
     
 #  Initialisation
     TERMINAL = 1
-    self.gr_max = gr_max         # nombre de graphes
-    self.gr_act = 0              # numero du graphe actif
-    self.sets   = [0]*gr_max     # nombre de sets par graphe
-    self.nom_pipe = 'xmgr.pipe'  # nom du pipe de communication
+    self.gr_max = gr_max        # nombre de graphes 
+    self.gr_act = 0             # numero du graphe actif
+    self.sets   = [0]*gr_max    # nombre de sets par graphe
+    self.nom_pipe = 'xmgr.pipe' # nom du pipe de communication
     
 #  Ouverture du pipe de communication avec xmgrace
     if os.path.exists(self.nom_pipe) :
@@ -57,9 +57,9 @@ class Xmgr :
  
 #  Lancement de xmgrace
     if options != None :
-       shell = env.grace + options + ' -graph ' + repr(gr_max-1) + ' -npipe ' + self.nom_pipe
+       shell = aster.repout() + '/xmgrace -noask ' + options + ' -graph ' + repr(gr_max-1) + ' -npipe ' + self.nom_pipe
     else :
-       shell = env.grace +           ' -graph ' + repr(gr_max-1) + ' -npipe ' + self.nom_pipe
+       shell = aster.repout() + '/xmgrace -noask ' +           ' -graph ' + repr(gr_max-1) + ' -npipe ' + self.nom_pipe
        
     self.controle = Popen3(shell)  
     
@@ -67,10 +67,10 @@ class Xmgr :
     for i in xrange(gr_max) :
       gr = 'G'+repr(i)
       self.Send('WITH ' + gr)
-      self.Send('VIEW XMIN 0.15')
-      self.Send('VIEW XMAX 0.85')
-      self.Send('VIEW YMIN 0.15')
-      self.Send('VIEW YMAX 0.85')
+      self.Send('VIEW XMIN 0.10')
+      self.Send('VIEW XMAX 0.95')
+      self.Send('VIEW YMIN 0.10')
+      self.Send('VIEW YMAX 0.95')
       
 #  Activation du graphe G0
     self.Active(0)

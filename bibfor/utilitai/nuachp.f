@@ -3,7 +3,7 @@
       CHARACTER*(*)       NUAGE, LMA, LNO, CHPT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/02/96   AUTEUR CIBHHRA R.MEDDOURI 
+C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C
       CALL DISMOI('F','TYPE_CHAMP',CHPT,'CHAMP',IBID,TYPE,IE)
 C
       IF ( TYPE .EQ. 'NOEU' ) THEN
-         CALL NUACNO ( NUAGE, LMA, LNO, CHPT )
+         CALL NUACNO ( NUAGE, LNO, CHPT )
       ELSEIF ( TYPE(1:2) .EQ. 'EL' ) THEN
          CALL NUACEL ( NUAGE, LMA, LNO, CHPT )
       ELSE

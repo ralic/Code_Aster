@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/02/97   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -127,7 +127,7 @@ C            RECHERCHE LINEAIRE
               ENER = (F**2+G**2)/2.D0
               MIN  = (F*FDP+G*GDP)*DIRDP + (F*FDS+G*GDS)*DIRSP
               RHO  = RHOMAX*INTERI
-              CALL NMTARL(2,NDIMSI,CRIT,MAT,SIGEL,VIM,EPM,DP,SP,XI,
+              CALL NMTARL(2,NDIMSI,MAT,SIGEL,VIM,EPM,DP,SP,XI,
      &                    DIRDP,DIRSP,DIRXI,MIN,RHO,ENER)
 
 C            ACTUALISATION
@@ -190,7 +190,7 @@ C              RECHERCHE LINEAIRE
                 ENER = (F**2+G**2)/2.D0
                 MIN  = (F*FDX+G*GDX)*DIRXI + (F*FDS+G*GDS)*DIRSP
                 RHO  = RHOMAX*INTERI
-                CALL NMTARL(3,NDIMSI,CRIT,MAT,SIGEL,VIM,EPM,DP,SP,XI,
+                CALL NMTARL(3,NDIMSI,MAT,SIGEL,VIM,EPM,DP,SP,XI,
      &                    DIRDP,DIRSP,DIRXI,MIN,RHO,ENER)
 
 C              ACTUALISATION

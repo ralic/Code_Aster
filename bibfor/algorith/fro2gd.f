@@ -2,7 +2,7 @@
      &                   CINE,RESU,DEPTOT,ITERAT,LREAC,DEPDEL,ISTO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -101,7 +101,7 @@ C ======================================================================
       INTEGER      NBLCIN,NBLFIN,JLIOT,IOTE,LLF1,LLF2,NESMAX,BTOTAL
       INTEGER      LLF,JAPCOF,IFROT,LFMIN,JAFMU,PIVOT,ZERO,JLIGLI
       INTEGER      LLKAC,IIKAC,ICOUNT,LCOUNT,LIND,LLFN,IFRO,JVECC
-      INTEGER      AJLIAI, SPLIAI, POSIT, DEKLAG, POSIT2, SPAVAN,COMPT0
+      INTEGER      AJLIAI, SPLIAI, POSIT, DEKLAG, POSIT2, COMPT0
       REAL*8       R8MAEM,R8PREM,AJEU,RHO,RHORHO,AADELT
       REAL*8       X1,VAL,VAL1,VAL2,ZMU,XFORC,XJVMAX,XJVMIN
       REAL*8       AJEUFX,XPDT,XK,XCOMP,XQUOT,XCOS,XSIN,XXX
@@ -335,14 +335,13 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE -A.C-1.AT COLONNE PAR COLONNE (A PARTIR DE IDEBUT)
 C ======================================================================
-         SPAVAN = SPLIAI
          CALL CFACAT(NDIM, INDIC, NBLIAC, AJLIAI, SPLIAI, LLF, LLF1,
      +    LLF2,INDFAC,NESMAX,DEFICO,RESOCO,LMAT,CINE,NBLIAI,XJVMAX)
 C ======================================================================
 C --- ELIMINATION DES PIVOTS NULS
 C ======================================================================
          CALL ELPIV2(XJVMAX, NDIM, INDIC, NBLIAC, AJLIAI, SPLIAI,
-     +                    LLF, LLF1, LLF2, SPAVAN, NOMA, DEFICO, RESOCO)
+     +                    LLF, LLF1, LLF2, NOMA, DEFICO, RESOCO)
          IF (INDIC .EQ. -1) THEN
             GOTO 300
          ENDIF
@@ -383,7 +382,7 @@ C ======================================================================
 C ======================================================================
 C --- APPEL DE LA ROUTINE DE CALCUL DU SECOND MEMBRE -------------------
 C ======================================================================
-         CALL CFADU(RESOCO, DEPDEL, NEQ, NDIM, NBLIAI, NBLIAC, LLF,
+         CALL CFADU(RESOCO, DEPDEL, NEQ, NDIM, NBLIAC, LLF,
      +                                               LLF1, LLF2, NESMAX)
 C ======================================================================
 C --- RESOLUTION POUR OBTENIR MU : -A.C-1.AT.MU = JEU(DEPTOT) - A.DELT0

@@ -6,7 +6,7 @@
       CHARACTER*8         NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -184,20 +184,20 @@ C
           SN = 0.D0
 C
           CALL RC36SN ( NBM, ADRM, IPT, C, CARA, MATPI, PPI, MPI,
-     +                  MATQI, PQI, MQI, MSE, NBTH1, ZI(JTH1),  
-     +                  NBTH2, ZI(JTH2), IOC1, IOC2, SN )
+     +                  MATQI, PQI, MQI, MSE, NBTH1,  
+     +                  NBTH2, IOC1, IOC2, SN )
 C
           CALL RC36SN ( NBM, ADRM, IPT, C, CARA, MATPI, PPI, MPI,
-     +                  MATQJ, PQJ, MQJ, MSE, NBTH1, ZI(JTH1),  
-     +                  NBTH2, ZI(JTH2), IOC1, IOC2, SN )
+     +                  MATQJ, PQJ, MQJ, MSE, NBTH1,  
+     +                  NBTH2, IOC1, IOC2, SN )
 C
           CALL RC36SN ( NBM, ADRM, IPT, C, CARA, MATPJ, PPJ, MPJ,
-     +                  MATQJ, PQJ, MQJ, MSE, NBTH1, ZI(JTH1),  
-     +                  NBTH2, ZI(JTH2), IOC1, IOC2, SN )
+     +                  MATQJ, PQJ, MQJ, MSE, NBTH1,  
+     +                  NBTH2, IOC1, IOC2, SN )
 C
           CALL RC36SN ( NBM, ADRM, IPT, C, CARA, MATPJ, PPJ, MPJ,
-     +                  MATQI, PQI, MQI, MSE, NBTH1, ZI(JTH1),  
-     +                  NBTH2, ZI(JTH2), IOC1, IOC2, SN )
+     +                  MATQI, PQI, MQI, MSE, NBTH1,  
+     +                  NBTH2, IOC1, IOC2, SN )
 C
           IF ( NIV .GE. 2 ) WRITE(IFM,1020) IOC1, IOC2, SN
 C
@@ -212,7 +212,7 @@ C
 C
           CALL RC36SP ( NBM, ADRM, IPT, C, K, CARA, 
      +                  MATPI, PPI, MPI, MATQI, PQI, MQI, MSE, 
-     +               NBTH1, ZI(JTH1), NBTH2, ZI(JTH2), IOC1, IOC2, SP
+     +               NBTH1, NBTH2, IOC1, IOC2, SP
      +               ,TYPEKE,SPMECA,SPTHER )
 C
           IF ( NIV .GE. 2 )  WRITE(IFM,1031) SP
@@ -234,7 +234,7 @@ C
 C
           CALL RC36SP ( NBM, ADRM, IPT, C, K, CARA, 
      +                  MATPI, PPI, MPI, MATQJ, PQJ, MQJ, MSE, 
-     +               NBTH1, ZI(JTH1), NBTH2, ZI(JTH2), IOC1, IOC2, SP
+     +               NBTH1, NBTH2, IOC1, IOC2, SP
      +               ,TYPEKE,SPMECA,SPTHER )
 C
           IF ( NIV .GE. 2 )  WRITE(IFM,1032) SP
@@ -256,7 +256,7 @@ C
 C
           CALL RC36SP ( NBM, ADRM, IPT, C, K, CARA, 
      +                  MATPJ, PPJ, MPJ, MATQI, PQI, MQI, MSE, 
-     +               NBTH1, ZI(JTH1), NBTH2, ZI(JTH2), IOC1, IOC2, SP
+     +               NBTH1, NBTH2, IOC1, IOC2, SP
      +                 ,TYPEKE,SPMECA,SPTHER )
 C
           IF ( NIV .GE. 2 )  WRITE(IFM,1034)  SP
@@ -278,7 +278,7 @@ C
 C
           CALL RC36SP ( NBM, ADRM, IPT, C, K, CARA, 
      +                  MATPJ, PPJ, MPJ, MATQJ, PQJ, MQJ, MSE, 
-     +               NBTH1, ZI(JTH1), NBTH2, ZI(JTH2), IOC1, IOC2, SP
+     +               NBTH1, NBTH2, IOC1, IOC2, SP
      +              ,TYPEKE,SPMECA,SPTHER )
 C
           IF ( NIV .GE. 2 )  WRITE(IFM,1033)  SP

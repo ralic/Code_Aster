@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,20 +20,20 @@ GENER_MEAFO2
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MEFOQU4          MAILLE__ QUAD4
-   ELREFE__  QUAD4     GAUSS__  NELGA=FPG1
-   ELREFE__  SEG2
+   ELREFE__  QU4     GAUSS__  RIGI=FPG4   MASS=FPG4  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  SE2     GAUSS__  RIGI=FPG2
 ENTETE__ ELEMENT__ MEFOQU8          MAILLE__ QUAD8
-   ELREFE__  QUAD8     GAUSS__  NELGA=FPG2
-   ELREFE__  SEG3
+   ELREFE__  QU8     GAUSS__  RIGI=FPG9   MASS=FPG9  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  SE3     GAUSS__  RIGI=FPG4
 ENTETE__ ELEMENT__ MEFOQU9          MAILLE__ QUAD9
-   ELREFE__  QUAD9     GAUSS__  NELGA=FPG2
-   ELREFE__  SEG3
+   ELREFE__  QU9     GAUSS__  RIGI=FPG9   MASS=FPG9  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1 
+   ELREFE__  SE3     GAUSS__  RIGI=FPG4
 ENTETE__ ELEMENT__ MEFOTR3          MAILLE__ TRIA3
-   ELREFE__  TRIA3     GAUSS__  NELGA=FPG1
-   ELREFE__  SEG2
+   ELREFE__  TR3     GAUSS__  RIGI=FPG1   MASS=FPG3  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  SE2     GAUSS__  RIGI=FPG2
 ENTETE__ ELEMENT__ MEFOTR6          MAILLE__ TRIA6
-   ELREFE__  TRIA6     GAUSS__  NELGA=FPG1
-   ELREFE__  SEG3
+   ELREFE__  TR6     GAUSS__  RIGI=FPG3   MASS=FPG6  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  SE3     GAUSS__  RIGI=FPG4
 
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
@@ -42,29 +42,30 @@ MODE_LOCAL__
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
     EENEDNO  = ENER_R   ELEM__         (TOTALE   )
-    EENEDPG  = ENER_R   ELGA__ NELGA   (TOTALE   )
+    EENEDPG  = ENER_R   ELGA__ RIGI    (TOTALE   )
     EENEDNN  = ENER_R   ELNO__ IDEN__  (TOTALE   )
     CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
-    EFORCER  = FORC_R   ELGA__ NELGA   (FX       FY       FZ       )
+    EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       FZ       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
-    EGGEOM_R = GEOM_R   ELGA__ NELGA   (X        Y        )
+    EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W)
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
     CHARMON  = HARMON   ELEM__         (NH       )
-    EHYDRER  = HYDR_R   ELGA__ NELGA   (HYDR     )
+    EHYDRER  = HYDR_R   ELGA__ RIGI    (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
-    EGINST_R = INST_R   ELGA__ NELGA   (INST     )
+    EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
-    EGNEUT_F = NEUT_F   ELGA__ NELGA   (X1       X2       X3       X4       X5       X6       )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
-    EGNEUT_R = NEUT_R   ELGA__ NELGA   (X1       X2       X3       X4       X5       X6       )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
                                         Z        )
-    ECONTPG  = SIEF_R   ELGA__ NELGA   (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+    ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
@@ -96,7 +97,7 @@ OPTION__
                                      CMATERC  PMATERC  NSECHER  PSECHER  NTEMPER  PTEMPER  CTEREFE  PTEREF
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           479   IN__   NGEOMER  PGEOMER
-                              OUT__  EGGEOM_R PCOORPG
+                              OUT__  EGGEOP_R PCOORPG
     ENEL_ELGA           575   IN__   CCAMASS  PCAMASS  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
                               OUT__  EENEDPG  PENERDR

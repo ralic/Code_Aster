@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOMFON,           FONINS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -140,7 +140,7 @@ C
       ELSEIF ( ZK16(LPROL) .EQ. 'NAPPE' ) THEN
          CALL JEVEUO ( PARA, 'L', LPARA )
          CALL JEVEUO ( JEXNUM(VALE,1), 'L', LSPECT )
-         CALL FOECFN ( IUL, NPS, NBPARA, ZR(LPARA), ZR(LSPECT), IRET )
+         CALL FOECFN ( IUL, NPS, NBPARA, ZR(LPARA), ZR(LSPECT))
          WRITE(IUL,'(A)') '   FINSF   '
 C
       ELSE

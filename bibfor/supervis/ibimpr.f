@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 29/01/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C
 C     --- DEFINITION EVENTUELLE DES OPTIONS PAR DEFAUTS ---
       IF ( PASSE .EQ. 1) THEN
         DO 5 IMPR = 1, MXIMPR
-           CALL ULDEFI(UNITPR(IMPR),NOMPR(IMPR),TYPPR(IMPR),'N',
+           CALL ULDEFI(UNITPR(IMPR),' ',NOMPR(IMPR),TYPPR(IMPR),'N',
      &                 AUTPR(IMPR))
    5    CONTINUE
       ENDIF
@@ -103,7 +103,7 @@ C
 C
 C        --- DEFINITION DES UNITES LOGIQUES DES IMPRESSIONS ---
          DO 10 IMPR = 1, NBNOM
-            CALL ULDEFI( PRUNIT , PRNOM(IMPR) , 'A' , 'N' , 'O')
+            CALL ULDEFI( PRUNIT , ' ', PRNOM(IMPR) , 'A' , 'N' , 'O')
   10     CONTINUE
   20  CONTINUE
 C

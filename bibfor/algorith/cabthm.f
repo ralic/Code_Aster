@@ -1,11 +1,13 @@
       SUBROUTINE CABTHM(NDDL,NNO,NNOS,
-     >               DIMDEF,NDIM,NPG,KPG,POIDSG,DFDE,DFDN,
-     &               DFDK,DFDI,GEOM,POIDS,VFF,B,NMEC,YAMEC,ADDEME,YAP1,
+     >               DIMDEF,NDIM,NPG,KPG,IPOIDS,IVF,IDFDE,
+     &               DFDI,GEOM,POIDS,B,NMEC,YAMEC,ADDEME,YAP1,
      &               ADDEP1,YAP2,ADDEP2,YATE,ADDETE,NP1,NP2,AXI,
      >               NVOMAX,NNOMAX,NSOMAX,NBVOS,VOISIN,P2P1)
 
+       IMPLICIT NONE
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/06/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,8 +27,6 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C TOLE CRP_21
-C
-       IMPLICIT NONE
 C
 C     BUT:  CALCUL  DE LA MATRICE B
 C     EN MECANIQUE DES MILIEUX POREUX PARTIELLEMENT SATURE
@@ -64,26 +64,40 @@ C OUT DFDI    : DERIVEE DES FCT FORME
 C OUT POIDS  : JACOBIEN AUX POINTS DE GAUSS
 C.......................................................................
 C
-C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER  ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER      NDDL,NMEC,NP1,NP2,NDIM,NNO
-      INTEGER      NNOS,NPG,KPG,DIMDEF,DIMCON
+      INTEGER      NNOS,NPG,KPG,DIMDEF
       INTEGER      I,N,G,KK
-      REAL*8       POIDSG(NPG),VFF(NNO,NPG),DFDE(*),DFDN(*),DFDI(NNO,3)
-      REAL*8       DFDK(*),GEOM(NDIM,NNO),POIDS
+      REAL*8       DFDI(NNO,3)
+      REAL*8       GEOM(NDIM,NNO),POIDS
       REAL*8       B(DIMDEF,NDDL*NNO)
       INTEGER      YAMEC,ADDEME,YAP1,YAP2,ADDEP1,ADDEP2,YATE,ADDETE
-      REAL*8       RAC,R
+      REAL*8       RAC,R,RMAX
       LOGICAL AXI,P2P1
       INTEGER NVOMAX,NNOMAX,NSOMAX
       INTEGER VOISIN(NVOMAX,NNOMAX)
-      INTEGER NBVOS(NSOMAX)
+      INTEGER NBVOS(NSOMAX),IPOIDS,IDFDE,IVF
       
       INTEGER IDL,IDL1M,IV
 C
 C  CALCUL DE CONSTANTES UTILES
 C
-        RAC= SQRT(2.D0)
-
+      RAC= SQRT(2.D0)
 C
 C        INITIALISATION DE LA MATRICE
 C
@@ -96,19 +110,31 @@ C
 C      RECUPERATION DES DERIVEES DES FONCTIONS DE FORME
 C
          IF (NDIM.EQ.3) THEN
-            KK = (KPG-1)*NNO*3 +1
-            CALL DFDM3D (NNO,POIDSG(KPG),DFDE(KK),DFDN(KK),DFDK(KK),
-     &               GEOM,DFDI(1,1),DFDI(1,2),DFDI(1,3),POIDS)
+            CALL DFDM3D ( NNO, KPG, IPOIDS, IDFDE,
+     &                    GEOM,DFDI(1,1),DFDI(1,2),DFDI(1,3),POIDS)
          ELSE
-            KK=(KPG-1)*NNO + 1
-            CALL DFDM2D ( NNO,POIDSG(KPG),DFDE(KK),DFDK(KK),
-     &                GEOM,DFDI(1,1),DFDI(1,2),POIDS )
+            CALL DFDM2D(NNO,KPG,IPOIDS,IDFDE,GEOM,DFDI(1,1),
+     &                  DFDI(1,2),POIDS)
             IF (AXI) THEN
+              KK = (KPG-1)*NNO
               R  = 0.D0
               DO 10 N=1,NNO
-                 R  = R  + VFF(N,KPG)*GEOM(1,N)
+                 R  = R + ZR(IVF + N + KK - 1)*GEOM(1,N) 
   10          CONTINUE
-              POIDS = POIDS*R
+
+C                 DANS LE CAS OU R EGAL 0, ON A UN JACOBIEN NUL 
+C                 EN UN POINT DE GAUSS, ON PREND LE MAX DU RAYON
+C                 SUR L ELEMENT MULTIPLIE PAR 1E-3
+
+              IF (R .EQ. 0.D0) THEN
+                 RMAX=GEOM(1,1)
+                 DO 15 N=2,NNO
+                    RMAX=MAX(GEOM(1,N),RMAX)
+  15             CONTINUE
+                 POIDS = POIDS*1.D-03*RMAX
+              ELSE
+                 POIDS = POIDS*R
+              ENDIF
             ENDIF
             DO 200 N=1,NNO
               DFDI(N,3)=0.D0
@@ -121,7 +147,7 @@ C
             IF (YAMEC.EQ.1) THEN 
                DO 103 I=1,NDIM
                   B(ADDEME-1+I,(N-1)*NDDL+I)=B(ADDEME-1+I,(N-1)*NDDL+I)
-     &                 +VFF(N,KPG)
+     &                 +ZR(IVF+N+(KPG-1)*NNO-1)
 C
  103               CONTINUE
 C
@@ -136,7 +162,13 @@ C
 C
 C --- TERME U/R DANS EPSZ EN AXI
                IF (AXI) THEN
-                  B(ADDEME+4,(N-1)*NDDL+1)= VFF(N,KPG)/R
+                  IF (R .EQ. 0.D0) THEN
+                     B(ADDEME+4,(N-1)*NDDL+1)= DFDI(N,1)
+                     
+                  ELSE
+                    KK=(KPG-1)*NNO 
+                    B(ADDEME+4,(N-1)*NDDL+1)=ZR(IVF+N+KK-1)/R
+                  ENDIF
                ENDIF
 C
 
@@ -169,7 +201,7 @@ C
 C
             IF (YAP1.EQ.1) THEN
                B(ADDEP1,(N-1)*NDDL+NMEC+1)=B(ADDEP1,(N-1)*NDDL+NMEC+1)
-     &                 +VFF(N,KPG)
+     &                 +ZR(IVF+N+(KPG-1)*NNO-1)
 C
                DO 105 I=1,NDIM
                   B(ADDEP1+I,(N-1)*NDDL+NMEC+1)=
@@ -180,18 +212,18 @@ C
 C
             IF (YAP2.EQ.1) THEN
                B(ADDEP2,(N-1)*NDDL+NMEC+NP1+1)=
-     &              B(ADDEP2,(N-1)*NDDL+NMEC+NP1+1)+VFF(N,KPG)
+     &         B(ADDEP2,(N-1)*NDDL+NMEC+NP1+1)+ZR(IVF+N+(KPG-1)*NNO-1)
                DO 106 I=1,NDIM
                   B(ADDEP2+I,(N-1)*NDDL+NMEC+NP1+1)=
-     &                      B(ADDEP2+I,(N-1)*NDDL+NMEC+NP1+1)+DFDI(N,I)
+     &            B(ADDEP2+I,(N-1)*NDDL+NMEC+NP1+1)+DFDI(N,I)
  106           CONTINUE
             ENDIF
             IF (YATE.EQ.1) THEN
                B(ADDETE,(N-1)*NDDL+NMEC+NP1+NP2+1)=
-     &            B(ADDETE,(N-1)*NDDL+NMEC+NP1+NP2+1)+VFF(N,KPG)
+     &     B(ADDETE,(N-1)*NDDL+NMEC+NP1+NP2+1)+ZR(IVF+N+(KPG-1)*NNO-1)
                DO 107 I=1,NDIM
                   B(ADDETE+I,(N-1)*NDDL+NMEC+NP1+NP2+1)=
-     &              B(ADDETE+I,(N-1)*NDDL+NMEC+NP1+NP2+1)+DFDI(N,I)
+     &            B(ADDETE+I,(N-1)*NDDL+NMEC+NP1+NP2+1)+DFDI(N,I)
  107           CONTINUE
             ENDIF
  102     CONTINUE

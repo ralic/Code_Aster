@@ -2,9 +2,9 @@
      &                   INSTAM,INSTAP,TM,TP,TREF,HYDRM,HYDRP,SECHM,
      &                   SECHP,EPSM,DEPS,SIGM,VIM,
      &                   OPTION,DEFAM,DEFAP,NZ,PHASM, PHASP,ELGEOM,
-     &                   SIGP,VIP,DSIDEP,CODRET)
+     &                   SIGP,VIP,DSIDEP,CODRET,CORRM,CORRP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/07/2003   AUTEUR ADBHHVV V.CANO 
+C MODIF ALGORITH  DATE 25/03/2004   AUTEUR OUGLOVA A.OUGLOVA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,7 @@ C TOLE CRP_21
       REAL*8             HYDRM, HYDRP, SECHM, SECHP ,PHASM(NZ),PHASP(NZ)
       REAL*8             EPSM(*), DEPS(*), DSIDEP(*)
       REAL*8             SIGM(*), VIM(*), SIGP(*), VIP(*)
-      REAL*8             ELGEOM(*)
+      REAL*8             ELGEOM(*),CORRM,CORRP
       REAL*8             DEFAP(*), DEFAM(*)
 C ----------------------------------------------------------------------
 C     INTEGRATION DES LOIS DE COMPORTEMENT NON LINEAIRE POUR LES
@@ -108,9 +108,11 @@ C
       REAL*8 R8BID
       CHARACTER*16 OPTIO2
       LOGICAL CP
+      INTEGER CPL
       CODRET = 0
 C      CONTRAINTES PLANES
-      CALL NMCPL1(COMPOR,TYPMOD,OPTION,VIP,DEPS,OPTIO2,CP,NVV)
+      CALL NMCPL1(COMPOR,TYPMOD,OPTION,VIP,DEPS,OPTIO2,CPL,NVV)
+      CP=(CPL.NE.0)
       
       
 C ----------------------------------------------------------------------
@@ -183,10 +185,18 @@ C -- ENDOMMAGEMENT FRAGILE (COURBE DE TRACTION BI-LINEAIRE)
 C -- RUPTURE BETON
 
         IF ( COMPOR(1) .EQ. 'ENDO_ISOT_BETON' ) THEN
-          CALL LCDSBE(NDIM, TYPMOD, IMATE, EPSM, DEPS,
+          CALL LCDSBE(NDIM, TYPMOD, IMATE, COMPOR, EPSM, DEPS,
      &                   VIM, OPTION, SIGP, VIP,  DSIDEP)
           GOTO 9000
         ENDIF
+
+C -- DRUCKER - PRAGER
+
+        IF (COMPOR(1) .EQ. 'DRUCKER_PRAGER') THEN
+          CALL LCDPNL(TYPMOD,NDIM,OPTION,IMATE,SIGM,EPSM,
+     &                  TM,TP,TREF,DEPS,VIM,VIP,SIGP,DSIDEP,CODRET)
+          GOTO 9000 
+        END IF
 
 C -- MAZARS
 
@@ -285,6 +295,9 @@ C PETITES DEFORMATIONS
             CALL LCMAZA(NDIM, TYPMOD, IMATE, COMPOR, EPSM, DEPS,
      &                   VIM,TM,TP,TREF, OPTION, SIGP, VIP,  DSIDEP)
             ENDIF
+        ELSE IF ( COMPOR(1) .EQ. 'DRUCKER_PRAGER' ) THEN
+          CALL LCDRPR(TYPMOD,OPTION,IMATE,SIGM,TM,TP,TREF,
+     &                            DEPS,VIM,VIP,SIGP,DSIDEP,CODRET)
         ELSE IF ( COMPOR(1)(1:10) .EQ. 'BARENBLATT' ) THEN
           CALL LCBARE(IMATE, OPTION, EPSM, SIGP, DSIDEP, VIM, VIP)
         ELSE IF (COMPOR(1).EQ. 'META_P_IL       '.OR.
@@ -452,26 +465,29 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
      &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
      &                  DEPS,  SIGM,   VIM,  OPTION,SIGP, VIP, DSIDEP)
           ENDIF
-        ELSEIF ( COMPOR(1)(1:8)  .EQ. 'LEMAITRE'   .OR.
-     &           COMPOR(1)(1:10) .EQ. 'ASSE_COMBU' .OR.
+        ELSEIF ( COMPOR(1)(1:10) .EQ. 'ASSE_COMBU' .OR.
      &           COMPOR(1)(1:10) .EQ. 'ZIRC_CYRA2' .OR.
-     &           COMPOR(1)(1:9)  .EQ. 'ZIRC_EPRI'  ) THEN
+     &           COMPOR(1)(1:9)  .EQ. 'ZIRC_EPRI'  .OR.
+     &           COMPOR(1)(1:10) .EQ. 'VISC_IRRA_' ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
-            CALL NMVPCY ( NDIM,  IMATE, COMPOR,CRIT,TYPMOD,
-     &                  INSTAM,INSTAP,TM,    TP,    TREF, EPSM,
+            CALL NMVPIR ( NDIM,  IMATE, COMPOR,CRIT,TYPMOD,
+     &                  INSTAM,INSTAP,TM,    TP,    TREF,
      &                  DEPS,  SIGM,  VIM,   OPTION, DEFAM, DEFAP,
      &                  SIGP, VIP, DSIDEP )
           ELSE
             CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU
      &      COMPORTEMENT NON PROGRAMMEE')
           ENDIF
-        ELSEIF ( (COMPOR(1)(1:16) .EQ. 'GRILLE_ISOT_LINE').OR.
-     >           (COMPOR(1)(1:16) .EQ. 'GRILLE_CINE_LINE').OR.
-     >           (COMPOR(1)(1:16) .EQ. 'GRILLE_PINTO_MEN')) THEN
-           CALL NMGRIL(IMATE,TYPMOD,COMPOR,OPTION,
-     >                 EPSM,DEPS,SIGM,VIM,
-     >                 TM,    TP,    TREF,
-     >                 SIGP,VIP,DSIDEP)
+        ELSEIF ( COMPOR(1)(1:8)  .EQ. 'LEMAITRE') THEN
+          IF ( INT(CRIT(6)) .EQ. 0 ) THEN
+            CALL NMVPLE ( NDIM,  IMATE, COMPOR,CRIT,TYPMOD,
+     &                  INSTAM,INSTAP,TM,    TP,    TREF, 
+     &                  DEPS,  SIGM,  VIM,   OPTION, DEFAM, DEFAP,
+     &                  SIGP, VIP, DSIDEP )
+          ELSE
+            CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU
+     &      COMPORTEMENT NON PROGRAMMEE')
+          ENDIF   
         ELSEIF ( COMPOR(1)(1:3) .EQ. 'CJS' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
               CALL UTMESS('F','NMCOMP_1',
@@ -518,13 +534,22 @@ C -- FLUAGE PROPRE UMLV
      &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
           ELSE
             CALL LCUMFP (NDIM,TYPMOD,IMATE,COMPOR,INSTAM,INSTAP,
-     &                   SECHM,SECHP,
+     &                   SECHM,SECHP,EPSM,
      &                   DEPS,SIGM,VIM,OPTION,SIGP,VIP,DSIDEP)
           END IF
+C----LOI D'ACIER CORRODE
+        ELSEIF ( COMPOR(1)(1:10) .EQ. 'CORR_ACIER') THEN
+          IF ( INT(CRIT(6)) .NE. 0 )  THEN              
+              CALL UTMESS('F','NMCOMP_1',
+     &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+          ELSE  
+          CALL NM3DCO(NDIM,OPTION,IMATE,TM,TP,E,SIGM,
+     &           EPSM,DEPS,VIM,DEFAM,DEFAP,SIGP,VIP,DSIDEP,
+     &            CORRM,CORRP)
+        END IF                 
 C -- COMPORTEMENT VIDE
         ELSEIF ( COMPOR(1)(1:4) .EQ. 'SANS' ) THEN
-           CALL LCSANS (NDIM,IMATE,COMPOR,EPSM,DEPS,SIGM,VIM,
-     &                   OPTION,SIGP,VIP,DSIDEP)
+           CALL LCSANS (NDIM,OPTION,SIGP,DSIDEP)
 C
         ELSEIF ( COMPOR(1)(1:10) .EQ. 'BAZANT_FD' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
@@ -544,7 +569,7 @@ C
               CALL UTMESS('F','NMCOMP_1',
      &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
           ELSE
-            CALL NMCPLA ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
+            CALL NMCOUP ( NDIM,  TYPMOD,  IMATE,COMPOR,CP,CRIT,
      &           INSTAM, INSTAP, TM,   TP,    TREF,
      &           HYDRM, HYDRP, SECHM, SECHP, EPSM, DEPS,
      &           SIGM, VIM,OPTION, ELGEOM,SIGP, VIP, DSIDEP)
@@ -557,6 +582,6 @@ C
       
 C      CONTRAINTES PLANES METHODE DE BORST
  9000 CONTINUE
-      IF (CP) CALL NMCPL2(COMPOR,TYPMOD,OPTION,OPTIO2,CP,NVV,CRIT,DEPS,
+      IF (CP) CALL NMCPL2(COMPOR,TYPMOD,OPTION,OPTIO2,CPL,NVV,CRIT,DEPS,
      &                    DSIDEP,NDIM,SIGP,VIP,CODRET)
       END

@@ -6,7 +6,7 @@
       CHARACTER*(*)            LIGRCZ,                 LIGRMZ
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -154,7 +154,6 @@ C                         FORCES IMPOSEES PAR NOEUD
 
       DGRD = R8DGRD()
       IF (FONREE.EQ.'FONC') THEN
-        CALL FOZERO('&FOZERO')
         DO 10 I = 1,NBCOMP*NBNOEU
           ZK8(JVAL-1+I) = '&FOZERO'
    10   CONTINUE

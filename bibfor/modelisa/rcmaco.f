@@ -3,7 +3,7 @@
       CHARACTER*8        CHMAT, MATERI
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF MODELISA  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,7 +130,7 @@ C
         CHMA = NOMMAT//'.'//ZK16(JNOMRC+K-1)(1:10)
         CALL CODENT(K, 'D0', KNUMA2)
         CH19 = '&&'//CHMA(1:8)//'.'//KNUMA2//'.'//KNUMA1
-        CALL JEDUPC('G', CHMA, 1, 'V', CH19, .FALSE.)
+        CALL JEDUPC(' ', CHMA, 1, 'V', CH19, .FALSE.)
         CALL JELIRA ( CH19//'.VALR', 'LONUTI', ZI(KK)  , K8B )
         CALL JEVEUT ( CH19//'.VALR', 'L',      ZI(KK+1)      )
         CALL JELIRA ( CH19//'.VALC', 'LONUTI', ZI(KK+2), K8B )

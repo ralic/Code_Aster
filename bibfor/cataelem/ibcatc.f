@@ -4,7 +4,7 @@
       INTEGER                IUNIT,      IER
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CATAELEM  DATE 12/05/97   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF CATAELEM  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C
          IF ( IMP.GT.0) WRITE(IMP,*) TITRE
          CALL LCCATA(IUNIT)
       ELSEIF(TYPE .EQ. 'ELEMBASE' ) THEN
-         CALL IBCAEL('LIRE',TITRE)
+         CALL IBCAEL('LIRE')
       ENDIF
 
       IER=0

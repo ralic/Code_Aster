@@ -10,7 +10,7 @@
       REAL*8          RTHET(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 02/10/2002   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,7 +91,7 @@ C
           CALL PUTVID ( 'GROUP_MA', 1, NOMGRN(3), IERUSR )
         CALL SMFMCF (   IERUSR ) 
         IF ( FAXI .EQ. 'NON' ) THEN
-          CALL SMDMCF ( 'FOND', IERUSR )
+          CALL SMDMCF ( 'FOND_FISS', IERUSR )
             CALL PUTVID ( 'GROUP_NO', 1, NOMGRN(1), IERUSR )
           CALL SMFMCF (   IERUSR )
           NOMGRP(1)='PFOR'

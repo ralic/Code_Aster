@@ -1,6 +1,6 @@
       SUBROUTINE TE0488(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,6 @@ C     POUR LES ELEMENTS ISOPARAMETRIQUES 3D
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -43,12 +42,10 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      INTEGER JGANO,NNO,KP
-      INTEGER IPOIDS,IVF,IGEOM
-      INTEGER NPG,NPG1,NNOS
-      INTEGER ICOPG,INO,NDIM,JVAL,IDFDE
+      INTEGER JGANO,NNO,KP,IPOIDS,IVF,IGEOM
+      INTEGER NPG,NNOS,ICOPG,INO,NDIM,IDFDE
 
-      REAL*8 XX,YY,ZZ
+      REAL*8 XX,YY,ZZ,RBID81(81),POIDS
 C DEB ------------------------------------------------------------------
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
@@ -65,9 +62,12 @@ C DEB ------------------------------------------------------------------
           YY = YY + ZR(IGEOM+3* (INO-1)+1)*ZR(IVF+ (KP-1)*NNO+INO-1)
           ZZ = ZZ + ZR(IGEOM+3* (INO-1)+2)*ZR(IVF+ (KP-1)*NNO+INO-1)
    10   CONTINUE
-        ZR(ICOPG+3* (KP-1)+0) = XX
-        ZR(ICOPG+3* (KP-1)+1) = YY
-        ZR(ICOPG+3* (KP-1)+2) = ZZ
+        CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                ZR(IGEOM),RBID81,RBID81,RBID81,POIDS)
+        ZR(ICOPG+4*(KP-1)+0) = XX
+        ZR(ICOPG+4*(KP-1)+1) = YY
+        ZR(ICOPG+4*(KP-1)+2) = ZZ
+        ZR(ICOPG+4*(KP-1)+3) = POIDS
    20 CONTINUE
 
       END

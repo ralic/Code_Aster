@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 22/07/2003   AUTEUR G8BHHXD X.DESROCHES 
+#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 30/03/2004   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,6 +43,7 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
    sensible = "sensible"
    a_deriver = "a_deriver"
    a_deriver_ensemble = "a_deriver_ensemble"    
+   sensibles_speciales="sensibles_speciales"
    poursuite = "poursuite"    
 #
 # ---------- Début du constructeur ----------
@@ -53,6 +54,7 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
                 l_commandes_a_deriver=None,
                 l_commandes_a_deriver_ensemble=None,
                 l_commandes_poursuite=None,
+                d_commandes_sensibles_speciales=None,
                 mot_cle = 'SENSIBILITE',
                 memo_nom_sensi = 'MEMO_NOM_SENSI',
                 DEBUG=None
@@ -69,16 +71,23 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
                                      'CALC_G_THETA_T']
        l_commandes_a_deriver_defaut=['AFFE_MATERIAU',
                                      'AFFE_CHAR_MECA_F',
-                                     'AFFE_CHAR_THER_F' ]
+                                     'AFFE_CHAR_THER_F',
+                                     'CREA_CHAMP',
+                                     'CALC_MATR_ELEM' ]
        l_commandes_a_deriver_ensemble_defaut=['DEFI_MATERIAU']
        l_commandes_poursuite_defaut=['POURSUITE']
+       d_commandes_sensibles_speciales_defaut={}
+       d={}
+       d["OPERATION"] = ["AFFE"]
+       d_commandes_sensibles_speciales_defaut["CREA_CHAMP"]=d
        DEBUG_defaut = 0
        self.dict_commandes = {}
-       self.dict_commandes[self.defi_para_sensi]    = l_commandes_defi_para_sensi or l_commandes_defi_para_sensi_defaut
-       self.dict_commandes[self.sensible]           = l_commandes_sensibles or l_commandes_sensibles_defaut
-       self.dict_commandes[self.a_deriver]          = l_commandes_a_deriver or l_commandes_a_deriver_defaut
-       self.dict_commandes[self.a_deriver_ensemble] = l_commandes_a_deriver_ensemble or l_commandes_a_deriver_ensemble_defaut
-       self.dict_commandes[self.poursuite]          = l_commandes_poursuite or l_commandes_poursuite_defaut
+       self.dict_commandes[self.defi_para_sensi]     = l_commandes_defi_para_sensi or l_commandes_defi_para_sensi_defaut
+       self.dict_commandes[self.sensible]            = l_commandes_sensibles or l_commandes_sensibles_defaut
+       self.dict_commandes[self.a_deriver]           = l_commandes_a_deriver or l_commandes_a_deriver_defaut
+       self.dict_commandes[self.a_deriver_ensemble]  = l_commandes_a_deriver_ensemble or l_commandes_a_deriver_ensemble_defaut
+       self.dict_commandes[self.poursuite]           = l_commandes_poursuite or l_commandes_poursuite_defaut
+       self.dict_commandes[self.sensibles_speciales] = d_commandes_sensibles_speciales or d_commandes_sensibles_speciales_defaut
        self.DEBUG = DEBUG or DEBUG_defaut
        self.mot_cle = mot_cle
        self.memo_nom_sensi = memo_nom_sensi
@@ -189,6 +198,12 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
        Récupère la liste des commandes de poursuite
        """
        return self.dict_commandes[self.poursuite]
+# 
+   def get_d_commandes_sensibles_speciales(self) :
+       """
+       Récupère le dictionnaire des commandes sensibles speciales
+       """
+       return self.dict_commandes[self.sensibles_speciales]
 #
 #
 if __name__ == "__main__" :

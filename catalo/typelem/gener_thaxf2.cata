@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,46 +20,47 @@ GENER_THAXF2
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ THFOQU4          MAILLE__ QUAD4
-   ELREFE__  QUAD4     GAUSS__  NELGA=FPG1
-   ELREFE__  SEG2
+   ELREFE__  QU4     GAUSS__  RIGI=FPG4   MASS=FPG4  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  SE2     GAUSS__  RIGI=FPG2
 ENTETE__ ELEMENT__ THFOQU8          MAILLE__ QUAD8
-   ELREFE__  QUAD8     GAUSS__  NELGA=FPG2
-   ELREFE__  SEG3
+   ELREFE__  QU8     GAUSS__  RIGI=FPG9   MASS=FPG9  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1 
+   ELREFE__  SE3     GAUSS__  RIGI=FPG4
 ENTETE__ ELEMENT__ THFOQU9          MAILLE__ QUAD9
-   ELREFE__  QUAD9     GAUSS__  NELGA=FPG2
-   ELREFE__  SEG3
+   ELREFE__  QU9     GAUSS__  RIGI=FPG9   MASS=FPG9  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1 
+   ELREFE__  SE3     GAUSS__  RIGI=FPG4
 ENTETE__ ELEMENT__ THFOTR3          MAILLE__ TRIA3
-   ELREFE__  TRIA3     GAUSS__  NELGA=FPG2
-   ELREFE__  SEG2
+   ELREFE__  TR3     GAUSS__  RIGI=FPG1   MASS=FPG3  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  SE2     GAUSS__  RIGI=FPG2
 ENTETE__ ELEMENT__ THFOTR6          MAILLE__ TRIA6
-   ELREFE__  TRIA6     GAUSS__  NELGA=FPG2
-   ELREFE__  SEG3
+   ELREFE__  TR6     GAUSS__  RIGI=FPG3   MASS=FPG6  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  SE3     GAUSS__  RIGI=FPG4
 
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CFTRC    = ADRSJEVN ELEM__         (I1       I2       )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   )
-    EDURTPG  = DURT_R   ELGA__ NELGA   (HV       )
+    EDURTPG  = DURT_R   ELGA__ RIGI    (HV       )
     EDURTNO  = DURT_R   ELNO__ IDEN__  (HV       )
-    EFLUXPG  = FLUX_R   ELGA__ NELGA   (FLUX     FLUY     FLUZ     )
+    EFLUXPG  = FLUX_R   ELGA__ RIGI    (FLUX     FLUY     FLUZ     )
     EFLUXNO  = FLUX_R   ELNO__ IDEN__  (FLUX     FLUY     FLUZ     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
-    EGGEOM_R = GEOM_R   ELGA__ NELGA   (X        Y        )
+    EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W)
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
     CHARMON  = HARMON   ELEM__         (NH       )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    )
-    EGINST_R = INST_R   ELGA__ NELGA   (INST     )
+    EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
-    EGNEUT_F = NEUT_F   ELGA__ NELGA   (X1       X2       X3       X4       X5       X6       )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
-    EGNEUT_R = NEUT_R   ELGA__ NELGA   (X1       X2       X3       X4       X5       X6       )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     CSOURCF  = SOUR_F   ELEM__         (SOUR     )
-    ESOURCR  = SOUR_R   ELGA__ NELGA   (SOUR     )
+    ESOURCR  = SOUR_R   ELGA__ RIGI    (SOUR     )
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    EPHASIN_ = VAR2_R   ELGA__ NELGA   (V1       V2       V3       V4       V5       )
+    EPHASIN_ = VAR2_R   ELGA__ RIGI    (V1       V2       V3       V4       V5       )
     ZVARI1   = VARI_R   ELEM__         (VARI     )
-    EPHASPG_ = VARI_R   ELGA__ NELGA   (VARI     )
+    EPHASPG_ = VARI_R   ELGA__ RIGI    (VARI     )
     EPHASNO_ = VARI_R   ELNO__ IDEN__  (VARI     )
 
 VECTEUR__
@@ -87,7 +88,7 @@ OPTION__
     CHAR_THER_SOUR_R    263   IN__   NGEOMER  PGEOMER  ESOURCR  PSOURCR
                               OUT__  MVECTTR  PVECTTR
     COOR_ELGA           479   IN__   NGEOMER  PGEOMER
-                              OUT__  EGGEOM_R PCOORPG
+                              OUT__  EGGEOP_R PCOORPG
     DETE_ELNO_DLTE      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     DLAG_NOEU_TEMP      -1    IN__   XXXXXX   XXXXXX

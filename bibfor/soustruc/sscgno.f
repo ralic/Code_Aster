@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 21/03/2003   AUTEUR ASSIRE A.ASSIRE 
+C MODIF SOUSTRUC  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -341,7 +341,8 @@ C         ----------------------------------------
               ZI(IDLINO-1+I) = NUNO
  90         CONTINUE
 
-            CALL JEDETR ( LISNOM )
+            CALL JEDETR ( PREFIX//'.FOND      .NOEU' )
+            CALL JEDETR ( PREFIX//'.FOND      .TYPE' )
 
           ELSE
             CALL UTMESS('F','SSCGNO','OPTION INCONNUE: '//OPTION )

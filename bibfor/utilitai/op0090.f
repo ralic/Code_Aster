@@ -1,7 +1,7 @@
       SUBROUTINE OP0090(IER)
       IMPLICIT NONE
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 22/10/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -226,7 +226,7 @@ C     -----------------------------------------------------------------
           CALL FOCRRS(NOMFON,RESU,'G',NOMCHA,MAILLE,NOEUD,CMP,NPOINT,
      &                NUSP,IVARI,IRET)
         ELSE
-          CALL FOCRR2(INTRES,NOMFON,RESU,'G',NOMCHA,MAILLE,NOEUD,CMP,
+          CALL FOCRR2(NOMFON,RESU,'G',NOMCHA,MAILLE,NOEUD,CMP,
      &                NPOINT,NUSP,IVARI,IRET)
         END IF
         GO TO 10

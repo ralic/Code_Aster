@@ -8,7 +8,7 @@
      &                  LICCVG, RESIDU) 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -73,7 +73,9 @@ C IN       PROETA  R8  VALEURS DE PILOTAGE ENTRANTES
 C IN       DEPDEL K24  INCREMENT DE DEPLACEMENT CUMULE
 C IN       DEPPIL K24  CORRECTION DE DEPLACEMENT DE L'ITERATION
 C OUT      ETA     R8  PARAMETRE DE PILOTAGE
-C OUT      LICCVG  I   CODE RETOUR DE LA LOI DE COMPORTEMENT
+C OUT      LICCVG  I   CODES RETOURS
+C                       (1) PILOTAGE
+C                       (2) LOI DE COMPORTEMENT
 C OUT      RESIDU  R8  RESIDU OPTIMAL SI L'ON A CHOISI LE RESIDU
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
@@ -99,7 +101,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
       LOGICAL      BORMIN, BORMAX, TESTFI
       INTEGER      JPLTK,JPLIR, J, I, JDU, JDU0, JDU1, NEQ, IBID, IER
       INTEGER      IDEEQ,JUR, JDDEPL, JDEPPL, JRESI, JFEXT
-      INTEGER      JDEPPT, JDEPDT, LICLDC(2)
+      INTEGER      JDEPPT, JDEPDT, LICLDC(2),LICITE(2)
       REAL*8       R8VIDE, R8MAEM
       REAL*8       ETAMIN, ETAMAX, INFINI, CONMIN, CONMAX
       REAL*8       ETA(2), SCA1, SCA2, NODUP1, NODUP2, CO1, CO2, NRM1
@@ -157,27 +159,31 @@ C    BORNE MIN DE CONTROLE SI PLUSIEURS SOLUTIONS
         CONMIN = -INFINI
       END IF
 
+C ----------------------------------------------------------------------
+C                          REDUCTION DES SOLUTIONS
+C ----------------------------------------------------------------------
+
+      LICITE(1) = 0
+      LICITE(2) = 0
+      
 C -- INTERSECTION AVEC L'INTERVALLE DE CONTROLE
 C    LA STRATEGIE : ON NE GARDE QUE LES ETA DANS L'INTERVALLE DE
 C                   CONTROLE S'IL Y EN A
-C                   SINON : ON GARDE TOUT ET ON INTERDIT LA CONVERGENCE
-      J=1
+C                   SINON : ARRET DU PAS DE TEMPS
+      J=0
       DO 20 I = 1, NBEFFE
         IF (PROETA(I).GE.CONMIN .AND. PROETA(I).LE.CONMAX) THEN
-          ETA(J)=PROETA(I)
-C          LICCVG(J)=0
-          J=J+1
+          J         = J+1
+          ETA(J)    = PROETA(I)
+          LICITE(J) = LICITE(I)
         ENDIF
  20   CONTINUE
+      NBEFFE = J
       
-      IF (J.EQ.1) THEN
-         DO 21 I=1,NBEFFE
-          ETA(I)=PROETA(I)
-          LICCVG(I)=1
- 21      CONTINUE
-      ELSE
-        NBEFFE=J-1
-      ENDIF
+      IF (NBEFFE.EQ.0) THEN
+        LICCVG(1) = 1
+        GOTO 9999
+      END IF
  
 
 C -- TEST PAR RAPPORT AUX BORNES D'UTILISATION
@@ -191,7 +197,7 @@ C      BORNE MAXI
         IF (BORMAX) THEN
           IF (ETA(I) .GT. ETAMAX) THEN
             IF (PROJBO.EQ.'OUI') ETA(I) = ETAMAX
-            IF (LICCVG(I).EQ.0) LICCVG(I) = -1
+            LICITE(I) = -1
           END IF
         END IF
 
@@ -199,7 +205,7 @@ C      BORNE MINI
         IF (BORMIN) THEN
           IF (ETA(I) .LT. ETAMIN) THEN
             IF (PROJBO.EQ.'OUI') ETA(I) = ETAMIN
-            IF (LICCVG(I).EQ.0) LICCVG(I) = -1
+            LICITE(I) = -1
           END IF
         END IF
 
@@ -241,11 +247,11 @@ C            ENDIF
 
           IF (CO1.GE.CO2) THEN
             ETAF = ETA(1)
+            LICCVG(1) = LICITE(1)
           ELSE
             ETAF = ETA(2)
-            LICCVG(1) = LICCVG(2)
+            LICCVG(1) = LICITE(2)
           END IF
-          LICCVG(2)=0
 
 
 C      CHOIX DU MINIMUM D(UN,U(ETA))
@@ -264,11 +270,11 @@ C      CHOIX DU MINIMUM D(UN,U(ETA))
 
           IF (NRM1 .LE. NRM2) THEN
             ETAF = ETA(1)            
+            LICCVG(1) = LICITE(1)
           ELSE
             ETAF = ETA(2)
-            LICCVG(1) = LICCVG(2)
+            LICCVG(1) = LICITE(2)
           END IF
-          LICCVG(2)=0
 
 
 C      CHOIX DU MINIMUM DU RESIDU
@@ -331,10 +337,11 @@ C      CALCUL DU RESIDU
   
           IF (F(1).LT.F(2)) THEN
             ETAF=ETA(1)
+            LICCVG(1)=LICITE(1)
             LICCVG(2)=LICLDC(1)
           ELSE
             ETAF=ETA(2)
-            LICCVG(1)=LICCVG(2)
+            LICCVG(1)=LICITE(2)
             LICCVG(2)=LICLDC(2)
           ENDIF
           IF (IRECLI) THEN
@@ -347,7 +354,7 @@ C      CALCUL DU RESIDU
         END IF 
       ELSE
         ETAF=ETA(1)     
-        LICCVG(2)=0
+        LICCVG(1)=LICITE(1)
       ENDIF
       IF (TESTFI) THEN
         CALL JEVEUO (DEPDEL(1:19)//'.VALE','E',JDU)
@@ -385,11 +392,6 @@ C      CALCUL DU RESIDU
              
 C     REACTUALISATION DES EFFORTS EXTERIEURS (AVEC ETA)
         CALL NMFEXT (NUMEDD, ETAF, SECMBR, RESOCO, K24BID, CNFEXT)
-
-C        write (6,*) 'NMCETA : DU0 ET DU1'
-C        DO 666 I=0,NEQ-1
-C          write (6,*) (RHO*ZR(JDU0+I)),ZR(JDU1+I),ETAF*ZR(JDU1+I)
-C666     CONTINUE
   
 C     INTEGRATION DU COMPORTEMENT -> CONTRAINTES ET RESIDUS
         CALL NMFINT (MODELE, NUMEDD, MATE  , CARELE, COMREF,
@@ -417,5 +419,6 @@ C     CALCUL DU RESIDU
  600    CONTINUE         
       ENDIF          
  
+ 9999 CONTINUE
       CALL JEDEMA()
       END

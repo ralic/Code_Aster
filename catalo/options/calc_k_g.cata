@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 30/01/2002   AUTEUR VABHHTS J.PELLET 
+%& MODIF OPTIONS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,18 +19,23 @@
 CALC_K_G
 OPTION__
    IN__
-        PGEOMER  GEOM_R
-        PDEPLAR  DEPL_R
-        PTHETAR  DEPL_R
-        PMATERC  ADRSJEVE
-        PTEMPER  TEMP_R
-        PTEREF   TEMP_R
-        PFRVOLU  FORC_R
-        PFR1D2D  FORC_R
-        PPRESSR  PRES_R
-        PPESANR  PESA_R
-        PROTATR  ROTA_R
-        PFISSR   FISS_R
+         PGEOMER  GEOM_R
+         PDEPLAR  DEPL_R
+         PTHETAR  DEPL_R
+         PMATERC  ADRSJEVE
+         PTEMPER  TEMP_R
+         PTEREF   TEMP_R
+         PFRVOLU  FORC_R
+         PFR1D2D  FORC_R
+         PPRESSR  PRES_R               
+         PPESANR  PESA_R
+         PROTATR  ROTA_R
+         PEPSINR  EPSI_R
+         PCOMPOR  COMPOR
+         PSIGINR  SIEF_R
+         PDEPINR  DEPL_R  
+         PFISSR   FISS_R     
+         PBASLOR  NEUT_R
+         PCOURB   NEUT_R
    OUT__
-PGTHETA G ELEM__
-
+         PGTHETA G ELEM__

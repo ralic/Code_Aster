@@ -9,7 +9,7 @@
       REAL*8  ANGL1(3),ANGL2(3),ANGL3(3),EPSI,ANGL4(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/02/2000   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -197,14 +197,14 @@ C
                   ENDIF
 65             CONTINUE
                IF (NNO.EQ.3) THEN
-               CALL ANGCOU(COOR3,ZK1,IZK,ICOUDE,ZK2,RAYON,THETA,NNO,
+               CALL ANGCOU(COOR3,ZK1,IZK,ICOUDE,ZK2,RAYON,THETA,
      &         ANGL1,ANGL2,ANGL3,PGL1,PGL2,PGL3,OMEGA,DN1N2,EPSI,CRIT,
      &         ZK3)
                DO 631 I=1,3
                   ANGL4(I)=0.D0
 631            CONTINUE
                ELSEIF (NNO.EQ.4) THEN
-               CALL ANGCO4(COOR3,ZK1,IZK,ICOUDE,ZK2,RAYON,THETA,NNO,
+               CALL ANGCO4(COOR3,ZK1,IZK,ICOUDE,ZK2,RAYON,THETA,
      &         ANGL1,ANGL2,ANGL3,ANGL4,PGL1,PGL2,PGL3,PGL4,OMEGA,DN1N2,
      &         EPSI,CRIT)
                ENDIF

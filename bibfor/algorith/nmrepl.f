@@ -8,7 +8,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -154,7 +154,7 @@ C       RECHERCHE LINEAIRE STANDARD
         CALL NMRECH(MODELE, NUMEDD, MATE  , CARELE, COMREF,
      &              COMPOR, LISCHA, CNFEXT, PARMET, CARCRI,
      &              MODEDE, NUMEDE, SOLVDE, PARCRI,
-     &              INST  , ITERAT, VALMOI, POUGD , DEPDEL,
+     &              ITERAT, VALMOI, POUGD , DEPDEL,
      &              RESOCO, DDEPLA, VALPLU, CNRESI, CNDIRI,
      &              CONV  , LICCVG, REAROT, INDRO)
         GOTO 9999

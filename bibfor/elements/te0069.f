@@ -1,6 +1,6 @@
       SUBROUTINE TE0069 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/03/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,6 @@ C PARAMETRES D'APPELS
       CHARACTER*16      OPTION,NOMTE
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -55,76 +54,46 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       CHARACTER*2   CODRET(2)
-      CHARACTER*8   NOMRES(2),ELREFE
+      CHARACTER*3   NOMT3
+      CHARACTER*8   NOMRES(2),ELREFE,ELREF2
       CHARACTER*16  PHENOM,PHESEN
-      CHARACTER*24  CARAC,FF
       REAL*8        DFDX(9),DFDY(9),TPG,POIDS,LAMBDA,FPG(18),LAMBOR(2),
      &              P(2,2),POINT(2),ORIG(2),FLUGLO(2),FLULOC(2),
      &              VALRES(2),LAMBS,PREC,R8PREM,LAMBOS(2),FLUGLS(2),
      &              FLULOS(2),R8DGRD,ALPHA,FLUXX,FLUXY,FLUSX,FLUSY,
      &              XU,YU,XNORM,TRACE
-      INTEGER       NNO,KP,K,ITEMPE,ITEMP,IFLUX,ICARAC,IFF,J,NNOS,IFPG,
-     &              IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE,NPG,NPG1,NPG2,
-     &              NPG3,IMATSE,ITEMSE,NUNO,NPG4,ICAMAS,NCMP
-      LOGICAL       ANISO,GLOBAL,LSENS
+      INTEGER       NNO,KP,K,ITEMPE,ITEMP,IFLUX,J,NNOS,IFPG,NDIM,
+     &              IPOIDS,IVF,IDFDE,IGEOM,IMATE,NPG,JGANO,
+     &              IMATSE,ITEMSE,NUNO,ICAMAS,NCMP
+      LOGICAL       ANISO,GLOBAL,LSENS,LLUMPE
 
 C====
 C 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 C====
       PREC = R8PREM()
       CALL ELREF1(ELREFE)
-      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QUAD4L'
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
-      NPG3 = ZI(ICARAC+4)
-      NPG4 = ZI(ICARAC+5)
-
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
+      ELREF2 = ELREFE
+C
+      NOMT3 = NOMTE(5:7)
+      LLUMPE = .FALSE.
+      IF ((NOMT3.EQ.'TL3') .OR. (NOMT3.EQ.'QL4') .OR.
+     &    (NOMT3.EQ.'TL6') .OR. (NOMT3.EQ.'QL8') .OR.
+     &    (NOMT3.EQ.'QL9')) THEN
+        LLUMPE = .TRUE.
+      END IF
+C
       IF ( OPTION(1:10) .EQ. 'FLUX_ELNO_') THEN
-        IF (   NOMTE(5:8).EQ.'TR3 '
-     &    .OR. NOMTE(5:8).EQ.'QU4 ') THEN
-          NNOS   = NNO
-          IPOIDS = IFF   +NPG1*(1+3*NNO)
-          IVF    = IPOIDS+NPG2
-          IDFDE  = IVF   +NPG2*NNO
-          IDFDK  = IDFDE +NPG2*NNO
-          NPG    = NPG2
-        ELSE IF (ELREFE.EQ.'QUAD4L'
-     &      .OR. ELREFE.EQ.'TRIA3L'
-     &      .OR. ELREFE.EQ.'TRIL6') THEN
-          NNOS   = NNO
-          IPOIDS = IFF   +(NPG1+NPG2)*(1+3*NNO)
-          IVF    = IPOIDS+NPG3
-          IDFDE  = IVF   +NPG3*NNO
-          IDFDK  = IDFDE +NPG3*NNO
-          NPG    = NPG3
-        ELSE
-          NNOS   = NNO/2
-          IPOIDS = IFF   +(NPG1+NPG2+NPG3)*(1+3*NNO)
-          IVF    = IPOIDS+NPG4
-          IDFDE  = IVF   +NPG4*NNO
-          IDFDK  = IDFDE +NPG4*NNO
-          NPG    = NPG4
-        ENDIF
+          CALL ELREF4(ELREF2,'GANO',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,
+     +                IDFDE,JGANO)
+
       ELSE  IF ( OPTION(1:10) .EQ. 'FLUX_ELGA_') THEN
-        IF (     ELREFE(1:6).EQ.'QUAD4L'
-     &      .OR. ELREFE(1:6).EQ.'TRIA3L'
-     &      .OR. ELREFE(1:6).EQ.'TRIL6 ') THEN
-          IPOIDS = IFF   +(NPG1+NPG2)*(1+3*NNO)
-          IVF    = IPOIDS+NPG3
-          IDFDE  = IVF   +NPG3*NNO
-          IDFDK  = IDFDE +NPG3*NNO
-          NPG    = NPG3
+        IF (NOMT3.EQ.'QL9') ELREF2='QU4'
+        IF ( LLUMPE ) THEN
+          CALL ELREF4(ELREF2,'RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,
+     +                IDFDE,JGANO)
         ELSE
-          IPOIDS = IFF   +NPG1*(1+3*NNO)
-          IVF    = IPOIDS+NPG2
-          IDFDE  = IVF   +NPG2*NNO
-          IDFDK  = IDFDE +NPG2*NNO
-          NPG    = NPG2
+          CALL ELREF4(ELREF2,'MASS',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
+     +               JGANO)
         ENDIF
       ENDIF
 
@@ -241,8 +210,7 @@ C====
       DO 101 KP=1,NPG
         K=(KP-1)*NNO
         IFPG=(KP-1)*2
-        CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                ZR(IGEOM),DFDX,DFDY,POIDS )
+        CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
         TPG   = 0.0D0
         FLUXX = 0.0D0
         FLUXY = 0.0D0
@@ -318,12 +286,13 @@ C CALCUL DE SENSIBILITE PART VIII: RAJOUT TERME COMPLEMENTAIRE (ORT)
         FPG(IFPG+2) = -FLUGLO(2)
 
  101  CONTINUE
+C
 
       IF ( OPTION(1:10) .EQ. 'FLUX_ELNO_' ) THEN
 
 C ----- RECUPERATION DE LA MATRICE DE PASSAGE PTS DE GAUSS - NOEUDS
         NCMP = 2
-        CALL PPGANO(NNOS,NPG,NCMP,FPG,ZR(IFLUX))
+        CALL PPGAN2 ( JGANO, NCMP, FPG, ZR(IFLUX) )
       ELSE
         DO 90 KP=1,NPG
           ZR(IFLUX+(KP-1)*2)   = FPG(2*(KP-1)+1)

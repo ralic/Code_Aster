@@ -1,4 +1,5 @@
-# MODIF  DATE 29/05/2002   AUTEUR DURAND C.DURAND 
+
+# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE ORTHOTROPE EN TRACTION UNIAXIALE HORS AXES D'ORTHOTROPIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,201 +19,232 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-DEBUT( CODE=_F(  NOM = 'SSLP304A',NIV_PUB_WEB='INTERNET') )
 
-MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),   )
+DEBUT(CODE=_F(NOM='SSLP304A',
+              NIV_PUB_WEB='INTERNET',),);
 
+MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON',),);
 #
 # DEFINITION DES GROUPES DE NOEUDS
-MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,CREA_GROUP_NO=(
-                       _F(  GROUP_MA = 'BORD_CH1'),
-                       _F(  GROUP_MA = 'BORD_CH2'),
-                       _F(  NOM = 'RESULT',
-                                       NOEUD = ('N171', 'N336', 'N345',)))
-                   )
 
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='BORD_CH1',),
+                               _F(GROUP_MA='BORD_CH2',),
+                               _F(NOEUD=('N171','N336','N345',),
+                                  NOM='RESULT',),),);
 #
 # DEFINITION DU MODELE
-MODELE=AFFE_MODELE(    MAILLAGE=MAIL,
-                         AFFE=_F(  TOUT = 'OUI',
-                       PHENOMENE = 'MECANIQUE',
-                       MODELISATION = 'C_PLAN')  )
 
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='C_PLAN',),);
 #
 # DEFINITION DU MATERIAU (REPERE D'ORTHOTROPIE = REPERE GLOBAL)
-ACIER=DEFI_MATERIAU(    ELAS_ORTH=_F(  E_L = 4.E10,
-                                       E_T = 1.E10,
-                                       G_LT = 0.45E10,
-                                       G_TN = 0.35E10,
-                                       G_LN = 0.45E10,
-                                       NU_LT = 0.3)
-                      )
 
+ACIER=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=40000000000.0,
+                                 E_T=10000000000.0,
+                                 NU_LT=0.3,
+                                 G_LT=4500000000.0,
+                                 G_LN=4500000000.0,
+                                 G_TN=3500000000.0,),);
 #
 # ATTRIBUTION DU MATERIAU
-CHMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
-                          AFFE=_F(  TOUT = 'OUI',
-                                 MATER = ACIER)  )
 
-COS30 = DEFI_VALEUR(  R8=EVAL("""COS(30*PI/180)""") ) 
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ACIER,),);
 
-COS30E4 = DEFI_VALEUR(  R8=EVAL("""1.E4*COS(30*PI/180)""") ) 
+COS30=DEFI_VALEUR(R8=EVAL("""COS(30*PI/180)"""),);
 
-MCOS30E4 = DEFI_VALEUR(  R8=EVAL("""-1.E4*COS(30*PI/180)""") ) 
+COS30E4=DEFI_VALEUR(R8=EVAL("""1.E4*COS(30*PI/180)"""),);
+
+MCOS30E4=DEFI_VALEUR(R8=EVAL("""-1.E4*COS(30*PI/180)"""),);
 #
 # DEFINITION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
 # DANS LE REPERE GLOBAL , ON A : 0.5*SQRT(3)*U - 0.5*V = 0.
-CHARGT=AFFE_CHAR_MECA(    MODELE=MODELE,
-                           DDL_IMPO=_F(  GROUP_NO = 'A',  DX = 0.,   DY = 0.),
-                           LIAISON_DDL=_F(  GROUP_NO = ( 'B',  'B', ),
-                                         DDL = ( 'DX', 'DY', ),
-                                         COEF_MULT = ( COS30,  -0.5, ),
-                                         COEF_IMPO = 0.),
-                                         FORCE_CONTOUR=(
-                           _F(  GROUP_MA = 'BORD_CH2',
-                                           FX = COS30E4,
-                                           FY = -0.5E4),
-                           _F(  GROUP_MA = 'BORD_CH1',
-                                           FX = MCOS30E4,
-                                           FY = 0.5E4))
-                        )
 
+CHARGT=AFFE_CHAR_MECA(MODELE=MODELE,
+                      DDL_IMPO=_F(GROUP_NO='A',
+                                  DX=0.0,
+                                  DY=0.0,),
+                      LIAISON_DDL=_F(GROUP_NO=('B','B',),
+                                     DDL=('DX','DY',),
+                                     COEF_MULT=(COS30,-0.5,),
+                                     COEF_IMPO=0.0,),
+                      FORCE_CONTOUR=(_F(GROUP_MA='BORD_CH2',
+                                        FX=COS30E4,
+                                        FY=-5000.0,),
+                                     _F(GROUP_MA='BORD_CH1',
+                                        FX=MCOS30E4,
+                                        FY=5000.0,),),);
 #
 # RESOLUTION
-DEF=MECA_STATIQUE(        MODELE=MODELE,
-                        CHAM_MATER=CHMAT,
-                             EXCIT=_F(  CHARGE = CHARGT)  )
 
+DEF=MECA_STATIQUE(MODELE=MODELE,
+                  CHAM_MATER=CHMAT,
+                  EXCIT=_F(CHARGE=CHARGT,),);
 #
 # RECUPERATION DU CHAMP DE DEPLACEMENTS
-U=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-               NOM_CHAM='DEPL', RESULTAT=DEF,
-                 NUME_ORDRE=1
-                  )
 
-#
-# CALCUL DES CONTRAINTES
-SIG=CALC_CHAM_ELEM(        MODELE=MODELE,
-                         CHAM_MATER=CHMAT,
-                             OPTION='SIGM_ELNO_DEPL',
-                               DEPL=U
-                     )
-
-
-DEF2=MODI_REPERE(RESULTAT=DEF,
-                 MODI_CHAM=_F(NOM_CHAM='DEPL',
-                              NOM_CMP=('DX','DY'),
-                              TYPE_CHAM='VECT_2D',),
-                 DEFI_REPERE=_F(REPERE='UTILISATEUR',
-                                ANGL_NAUT=(-30.0),),);
-                                
-                                
-U2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+U=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
              OPERATION='EXTR',
-             RESULTAT=DEF2,
+             RESULTAT=DEF,
              NOM_CHAM='DEPL',
              NUME_ORDRE=1,);
+#
+# CALCUL DES CONTRAINTES
+
+DEF=CALC_ELEM(reuse =DEF,
+              MODELE=MODELE,
+              CHAM_MATER=CHMAT,
+              RESULTAT=DEF,
+              OPTION='SIGM_ELNO_DEPL',
+              EXCIT=_F(CHARGE=CHARGT,),);
+
+DEF2=MODI_REPERE(RESULTAT=DEF,
+                 MODI_CHAM=_F(TYPE_CHAM='VECT_2D',
+                              NOM_CHAM='DEPL',
+                              NOM_CMP=('DX','DY',),),
+                 DEFI_REPERE=_F(REPERE='UTILISATEUR',
+                                ANGL_NAUT=-30.0,),);
+
+U2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+              OPERATION='EXTR',
+              RESULTAT=DEF2,
+              NOM_CHAM='DEPL',
+              NUME_ORDRE=1,);
 
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=U2,
                       NOEUD='N171',
                       NOM_CMP='DX',
                       VALE=0.0,
                       CRITERE='ABSOLU',
-                      REFERENCE='ANALYTIQUE',PRECISION=1.E-2,),
+                      PRECISION=0.01,
+                      REFERENCE='ANALYTIQUE',),
                    _F(CHAM_GD=U2,
                       NOEUD='N171',
                       NOM_CMP='DY',
-                      VALE=-2.292E-7,
-                      REFERENCE='ANALYTIQUE',PRECISION=1.E-3,),
+                      VALE=-2.292e-07,
+                      PRECISION=0.001,
+                      REFERENCE='ANALYTIQUE',),
                    _F(CHAM_GD=U2,
                       NOEUD='N336',
                       NOM_CMP='DX',
-                      VALE=5.917E-7,
-                      REFERENCE='ANALYTIQUE',PRECISION=1.E-3,),
+                      VALE=5.917e-07,
+                      PRECISION=0.001,
+                      REFERENCE='ANALYTIQUE',),
                    _F(CHAM_GD=U2,
                       NOEUD='N336',
                       NOM_CMP='DY',
-                      VALE=-5.028E-7,
-                      REFERENCE='ANALYTIQUE',PRECISION=1.E-3,),
+                      VALE=-5.028e-07,
+                      PRECISION=0.001,
+                      REFERENCE='ANALYTIQUE',),
                    _F(CHAM_GD=U2,
                       NOEUD='N345',
                       NOM_CMP='DX',
-                      VALE=5.917E-7,
-                      REFERENCE='ANALYTIQUE',PRECISION=1.E-3,),
+                      VALE=5.917e-07,
+                      PRECISION=0.001,
+                      REFERENCE='ANALYTIQUE',),
                    _F(CHAM_GD=U2,
                       NOEUD='N345',
                       NOM_CMP='DY',
-                      VALE=-7.319E-7,
-                      REFERENCE='ANALYTIQUE',PRECISION=1.E-3,),),);
+                      VALE=-7.319e-07,
+                      PRECISION=0.001,
+                      REFERENCE='ANALYTIQUE',),),);
 #
 # TEST_RESU DE LA CONTRAINTE
-#
-TEST_RESU(CHAM_ELEM=(
-# SIG B
-              _F(  CHAM_GD = SIG,
-                          MAILLE = 'M46',
-                          NOEUD = 'N171',
-                          NOM_CMP = 'SIXX',
-                          VALE = 7.5E3,
-                          REFERENCE='ANALYTIQUE',PRECISION = 0.003),
-              _F(  CHAM_GD = SIG,
-                          MAILLE = 'M46',
-                          NOEUD = 'N171',
-                          NOM_CMP = 'SIYY',
-                          VALE = 2.5E3,
-                          REFERENCE='ANALYTIQUE',PRECISION = 0.005),
-              _F(  CHAM_GD = SIG,
-                          MAILLE = 'M46',
-                          NOEUD = 'N171',
-                          NOM_CMP = 'SIXY',
-                          VALE = -4.33E3,
-                          REFERENCE='ANALYTIQUE',PRECISION = 0.005),
-# SIG C
-              _F(  CHAM_GD = SIG,
-                          MAILLE = 'M59',
-                          NOEUD = 'N336',
-                          NOM_CMP = 'SIXX',
-                          VALE = 7.5E3,
-                          REFERENCE='ANALYTIQUE',PRECISION = 0.005),
-              _F(  CHAM_GD = SIG,
-                          MAILLE = 'M59',
-                          NOEUD = 'N336',
-                          NOM_CMP = 'SIYY',
-                          VALE = 2.5E3,
-                          REFERENCE='ANALYTIQUE',PRECISION = 0.005),
-              _F(  CHAM_GD = SIG,
-                          MAILLE = 'M59',
-                          NOEUD = 'N336',
-                          NOM_CMP = 'SIXY',
-                          VALE = -4.33E3,
-                          REFERENCE='ANALYTIQUE',PRECISION = 0.005),
-# SIG D
-              _F(  CHAM_GD = SIG,
-                          MAILLE = 'M150',
-                          NOEUD = 'N345',
-                          NOM_CMP = 'SIXX',
-                          VALE = 7.5E3,
-                          REFERENCE='ANALYTIQUE',PRECISION = 0.005),
-              _F(  CHAM_GD = SIG,
-                          MAILLE = 'M150',
-                          NOEUD = 'N345',
-                          NOM_CMP = 'SIYY',
-                          VALE = 2.5E3,
-                          REFERENCE='ANALYTIQUE',PRECISION = 0.005),
-              _F(  CHAM_GD = SIG,
-                          MAILLE = 'M150',
-                          NOEUD = 'N345',
-                          NOM_CMP = 'SIXY',
-                          VALE = -4.33E3,
-                          REFERENCE='ANALYTIQUE',PRECISION = 0.005))
-          )
+
+TEST_RESU(RESU=(_F(RESULTAT=DEF,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='M46',
+                   NOEUD='N171',
+                   VALE=7500.0,
+                   PRECISION=0.003,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=DEF,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIYY',
+                   MAILLE='M46',
+                   NOEUD='N171',
+                   VALE=2500.0,
+                   PRECISION=0.005,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=DEF,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXY',
+                   MAILLE='M46',
+                   NOEUD='N171',
+                   VALE=-4330.0,
+                   PRECISION=0.005,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=DEF,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='M59',
+                   NOEUD='N336',
+                   VALE=7500.0,
+                   PRECISION=0.005,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=DEF,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIYY',
+                   MAILLE='M59',
+                   NOEUD='N336',
+                   VALE=2500.0,
+                   PRECISION=0.005,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=DEF,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXY',
+                   MAILLE='M59',
+                   NOEUD='N336',
+                   VALE=-4330.0,
+                   PRECISION=0.005,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=DEF,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='M150',
+                   NOEUD='N345',
+                   VALE=7500.0,
+                   PRECISION=0.005,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=DEF,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIYY',
+                   MAILLE='M150',
+                   NOEUD='N345',
+                   VALE=2500.0,
+                   PRECISION=0.005,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=DEF,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXY',
+                   MAILLE='M150',
+                   NOEUD='N345',
+                   VALE=-4330.0,
+                   PRECISION=0.005,
+                   REFERENCE='ANALYTIQUE',),),);
 
 IMPR_RESU(RESU=(_F(FORMAT='CASTEM',
                    MAILLAGE=MAIL,
-                   RESULTAT=DEF,),
+                   RESULTAT=DEF,
+                   NOM_CHAM='DEPL',),
                 _F(RESULTAT=DEF,
                    VALE_MAX='OUI',
                    VALE_MIN='OUI',),),);
 
-FIN()
+FIN();
 #

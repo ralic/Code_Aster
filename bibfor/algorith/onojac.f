@@ -1,8 +1,8 @@
-        SUBROUTINE ONOJAC ( MOD, IMAT, NMAT, MATERF, TEMPF,
+        SUBROUTINE ONOJAC ( MOD, NMAT, MATERF,
      1                      YF,   DY,   NMOD,  DRDY)
 C-------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C TOLE CRP_20
 C   OHNO :  CALCUL DU JACOBIEN
 C-------------------------------------------------------------------
         IMPLICIT REAL*8 (A-H,O-Z)
-        INTEGER         IMAT, NDT , NDI , NMAT , NMOD
+        INTEGER         NDT , NDI , NMAT , NMOD
         REAL*8          MUN , UN  , ZERO , D23 , D13
         PARAMETER       ( MUN  = -1.D0  )
         PARAMETER       ( UN   = 1.D0   )
@@ -54,7 +54,7 @@ C
         REAL*8      DNDS(6,6), DNDX1(6,6), DNDX2(6,6), DNDX3(6,6)
         REAL*8      DNDX4(6,6), DNDX5(6,6),DNDP(6),DNDE3(6)
         REAL*8      VTMP1(6), VTMP2(6) , MTMP(6,6),  DEDE3(6)
-        REAL*8      MATERF(NMAT,2),  TEMPF, VTMP(6)
+        REAL*8      MATERF(NMAT,2),  VTMP(6)
         REAL*8      RI,  R0,  B,  PHI, A1, A2, C1, C2, NU
         REAL*8      H1,  H2,  H3, H4, GAMMA1, GAMMA2, M1, M2
         REAL*8      XI1, XI2, H5,H6,H7,H8,H9, NORMX1, NORMX2

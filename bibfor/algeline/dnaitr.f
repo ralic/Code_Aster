@@ -1,9 +1,9 @@
       SUBROUTINE DNAITR
-     &   (IDO, BMAT, N, K, NP, NB, RESID, RNORM, V, LDV, H, LDH,
+     &   (IDO, BMAT, N, K, NP, RESID, RNORM, V, LDV, H, LDH,
      &    IPNTR, WORKD, INFO, ALPHA)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -66,11 +66,6 @@ C          CURRENT SIZE OF V AND H.
 C
 C  NP      INTEGER.  (INPUT)
 C          NUMBER OF ADDITIONAL ARNOLDI STEPS TO TAKE.
-C
-C  NB      INTEGER.  (INPUT)
-C          BLOCKSIZE TO BE USED IN THE RECURRENCE.
-C          ONLY WORK FOR NB = 1 RIGHT NOW.  THE GOAL IS TO HAVE A
-C          PROGRAM THAT IMPLEMENT BOTH THE BLOCK AND NON-BLOCK METHOD.
 C
 C  RESID   REAL*8 ARRAY OF LENGTH N.  (INPUT/OUTPUT)
 C          ON INPUT:  RESID CONTAINS THE RESIDUAL VECTOR R_(K).
@@ -239,7 +234,7 @@ C     | SCALAR ARGUMENTS |
 C     %------------------%
 
       CHARACTER*1 BMAT
-      INTEGER IDO, INFO, K, LDH, LDV, N, NB, NP
+      INTEGER IDO, INFO, K, LDH, LDV, N, NP
       REAL*8 RNORM, ALPHA
 
 C     %-----------------%

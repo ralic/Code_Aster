@@ -1,6 +1,6 @@
       SUBROUTINE OP0186(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,6 +77,8 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*24 STYPSE
       CHARACTER*76 FMT,FMT2,FMT3,FMT4
       CHARACTER*85 FMT1
+      CHARACTER*132 RAISON
+      CHARACTER*8  K8B,K8B2
 
 C ----------------------------------------------------------------------
       DATA INFCHA/'&&OP0186.INFCHA'/
@@ -487,10 +489,10 @@ C SOLUTION: VTEMPM = VTEMPR = T+,I+1BIS
               END IF
             ELSE IF ((.NOT.CONVER) .AND. ITEMAX .AND. (.NOT.ARRET)) THEN
               WRITE (IFM,FMT1)
-              CALL UTDEBM('S',NOMPRO,'ARRET PAR NON CONVERGENCE')
-              CALL UTIMPI('S',' AU NUMERO D''ORDRE : ',1,NUMORD)
-              CALL UTIMPI('S',' LORS DE L''ITERATION : ',1,ITERAT)
-              CALL UTFINM()
+              WRITE(K8B ,'(I8)') NUMORD
+              WRITE(K8B2,'(I8)') ITERAT
+              CALL UTEXCP(22,NOMPRO,'ABSENCE DE CONVERGENCE AU NUMERO'
+     &               //' D''ORDRE : '//K8B//', ITERATION : '//K8B2)
             END IF
             WRITE (IFM,FMT1)
 

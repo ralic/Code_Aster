@@ -1,6 +1,9 @@
-      SUBROUTINE Q4GEDG(XYZL,OPTION,PGL,DEPL,EDGL)
+      SUBROUTINE Q4GEDG ( NOMTE, XYZL, OPTION, PGL, DEPL, EDGL )
+      IMPLICIT  NONE
+      REAL*8        XYZL(3,*), PGL(3,*), DEPL(*), EDGL(*)
+      CHARACTER*16  NOMTE, OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/06/99   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,10 +20,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8 XYZL(3,*),PGL(3,*)
-      REAL*8 DEPL(*),EDGL(*)
-      CHARACTER*16 OPTION
 C     ------------------------------------------------------------------
 C     EFFORTS ET DEFORMATIONS GENERALISES DE L'ELEMENT DE PLAQUE Q4GAMMA
 C     ------------------------------------------------------------------
@@ -31,7 +30,6 @@ C     IN  DEPL   : DEPLACEMENTS
 C     OUT EDGL   : EFFORTS OU DEFORMATIONS GENERALISES AUX NOEUDS DANS
 C                  LE REPERE INTRINSEQUE A L'ELEMENT
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -47,8 +45,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      CHARACTER*8 TYPELE
-      CHARACTER*24 DESR
+      INTEGER MULTIC,LZR,NE,INE,K,J,I,IE
       REAL*8 DEPF(12),DEPM(8)
       REAL*8 DF(3,3),DM(3,3),DMF(3,3),DMC(3,2),DFC(3,2)
       REAL*8 DCI(2,2),DC(2,2)
@@ -56,7 +53,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 BDM(3),BDF(3),BCDF(2),DCIS(2)
       REAL*8 VF(3),VM(3),VT(2)
       REAL*8 VFM(3),VMF(3),VMC(3),VFC(3),VCM(2),VCF(2)
-      INTEGER MULTIC
       LOGICAL ELASCO
 C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
       INTEGER NPG,NNO
@@ -64,14 +60,13 @@ C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
       PARAMETER (NNO=4)
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-      TYPELE = 'MEQ4QU4 '
-      DESR = '&INEL.'//TYPELE//'.DESR'
-      CALL JEVETE(DESR,' ',LZR)
+C
+      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
       IF (OPTION(6:9).EQ.'ELGA') THEN
-        NE = NPG
+        NE  = NPG
         INE = 0
       ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
-        NE = NNO
+        NE  = NNO
         INE = NPG
       END IF
 

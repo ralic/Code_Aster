@@ -1,4 +1,4 @@
-# MODIF  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -420,33 +420,13 @@ DYNAHARM=CALC_ELEM(reuse=DYNAHARM,    RESULTAT=DYNAHARM,
                          CHAM_MATER=CHMATER,
                              OPTION='EFGE_ELNO_DEPL'  )
 
-CH1=CREA_CHAMP( OPERATION='EXTR',  TYPE_CHAM='NOEU_DEPL_C',
-                   NOM_CHAM='DEPL',  RESULTAT=DYNAHARM,
-                  NUME_ORDRE=1          )
-
-CH2=COMB_CHAM_NO( COMB_R=_F(  CHAM_NO = CH1,
-                               PARTIE = 'REEL',
-                               COEF_R = 1.0)  )
-
-CH3=CALC_CHAM_ELEM(        DEPL=CH2,
-                             MODELE=MO,
-                          CARA_ELEM=CARELEM,
-                         CHAM_MATER=CHMATER,
-                             OPTION='EFGE_ELNO_DEPL'  )
-
 TEST_RESU(RESU=( 
      _F(  RESULTAT = DYNAHARM,  NUME_ORDRE = 1,   NOM_CHAM = 'EFGE_ELNO_DEPL',
        MAILLE = 'MA4',       NOEUD = 'NO5',
        NOM_CMP = 'N',       VALE_C = ('RI',1.52080E+00,-1.07148E-01,)),
      _F(  RESULTAT = DYNAHARM,  NUME_ORDRE = 1,   NOM_CHAM = 'EFGE_ELNO_DEPL',
        MAILLE = 'MA9',       NOEUD = 'NO10',
-       NOM_CMP = 'N',       VALE_C = ('RI',-3.17360E+00,2.88826E-01,))),CHAM_ELEM=(
-
-             
-     _F(  CHAM_GD = CH3,      MAILLE = 'MA4',       NOEUD = 'NO5',
-       NOM_CMP = 'N',       VALE = 1.52080E+00),
-     _F(  CHAM_GD = CH3,      MAILLE = 'MA9',       NOEUD = 'NO10',
-       NOM_CMP = 'N',       VALE = -3.17360E+00))
+       NOM_CMP = 'N',       VALE_C = ('RI',-3.17360E+00,2.88826E-01,))),
            )
 
 #

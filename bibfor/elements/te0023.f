@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,8 +55,8 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       REAL*8 SIGMA(162),CONTNO(162),REPERE(7)
       REAL*8 NHARM,INSTAN,ZERO,DEPLA(81),SIGM2(162)
       LOGICAL CPX,LSENS
-      INTEGER JGANO,NBSIGM,NITER,I,ICONT,IDEPL,ITER,IDEPLC,IDFDE,IDFDK,
-     &        IDFDN,IGEOM,IMATE,J,INO,IPOIDS,ITEMPE,ITREF,IVF,NBINCO,
+      INTEGER JGANO,NBSIGM,NITER,I,ICONT,IDEPL,ITER,IDEPLC,IDFDE,
+     &        IGEOM,IMATE,J,INO,IPOIDS,ITEMPE,ITREF,IVF,NBINCO,
      &        NBSIG,NDIM,NNO,NNOS,NPG,IDEPS
 C     ------------------------------------------------------------------
 
@@ -74,8 +74,6 @@ C ---- GEOMETRIE ET INTEGRATION
 C      ------------------------
 
       CALL ELREF4(' ','GANO',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
       DO 10 I = 1,1
    10 CONTINUE
 
@@ -153,10 +151,10 @@ C ---- CALCUL DES CONTRAINTES 'VRAIES' AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT :
 C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
 C      ------------------------------------
-        CALL SIGVMC(MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),ZR(IDFDE),
-     &              ZR(IDFDN),ZR(IDFDK),ZR(IPOIDS),ZR(IGEOM),DEPLA,
-     &              ZR(ITEMPE),ZR(ITREF),INSTAN,REPERE,ZI(IMATE),NHARM,
-     &              SIGMA,.FALSE.)
+        CALL SIGVMC(MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+     &              ZR(IGEOM),DEPLA,
+     &              ZR(ITEMPE),ZR(ITREF),INSTAN,REPERE,ZI(IMATE),
+     &              NHARM,SIGMA,.FALSE.)
 
 
 C ---- CALC DU TERME COMPLEMENTAIRE DE CONTR 'VRAIES' SUR L'ELEMENT
@@ -168,9 +166,9 @@ C      ------------------------------------
           DO 60 I = 1,NBINCO
             DEPLA(I) = ZR(IDEPS-1+I)
    60     CONTINUE
-          CALL SIGVMC(MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),ZR(IDFDE),
-     &                ZR(IDFDN),ZR(IDFDK),ZR(IPOIDS),ZR(IGEOM),DEPLA,
-     &                ZR(ITEMPE),ZR(ITREF),INSTAN,REPERE,ZI(IMATE),
+          CALL SIGVMC(MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
+     &                IDFDE,ZR(IGEOM),DEPLA, ZR(ITEMPE),
+     &                ZR(ITREF),INSTAN,REPERE,ZI(IMATE),
      &                NHARM,SIGM2,.TRUE.)
           DO 70 I = 1,NBSIG*NPG
             SIGMA(I) = SIGMA(I) + SIGM2(I)

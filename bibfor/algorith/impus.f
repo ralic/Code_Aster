@@ -1,7 +1,7 @@
-      SUBROUTINE IMPUS(ISOR,IUS,IBL,PUSEE)
+      SUBROUTINE IMPUS(ISOR,IBL,PUSEE)
 C***********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/10/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ======================================================================
 C     IMPRESSION PUISSANCE D USURE
 C
 C
-      INTEGER ISOR,IUS
+      INTEGER ISOR
       REAL*8 PUSEE
 C
 C

@@ -1,4 +1,4 @@
-#@ MODIF N_MCSIMP Noyau  DATE 03/09/2002   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF N_MCSIMP Noyau  DATE 16/03/2004   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -99,39 +99,54 @@ class MCSIMP(N_OBJECT.OBJECT):
       visitor.visitMCSIMP(self)
 
    def copy(self):
-    """ Retourne une copie de self """
-    objet = self.makeobjet()
-    # il faut copier les listes et les tuples mais pas les autres valeurs
-    # possibles (réel,SD,...)
-    if type(self.valeur) in (types.ListType,types.TupleType):
-       objet.valeur = copy(self.valeur)
-    else:
-       objet.valeur = self.valeur
-    objet.val = objet.valeur
-    return objet
+      """ Retourne une copie de self """
+      objet = self.makeobjet()
+      # il faut copier les listes et les tuples mais pas les autres valeurs
+      # possibles (réel,SD,...)
+      if type(self.valeur) in (types.ListType,types.TupleType):
+         objet.valeur = copy(self.valeur)
+      else:
+         objet.valeur = self.valeur
+      objet.val = objet.valeur
+      return objet
 
    def makeobjet(self):
-    return self.definition(val = None, nom = self.nom,parent = self.parent)
+      return self.definition(val = None, nom = self.nom,parent = self.parent)
 
    def reparent(self,parent):
-     """
+      """
          Cette methode sert a reinitialiser la parente de l'objet
-     """
-     self.parent=parent
-     self.jdc=parent.jdc
-     self.etape=parent.etape
+      """
+      self.parent=parent
+      self.jdc=parent.jdc
+      self.etape=parent.etape
 
    def get_sd_utilisees(self):
-    """ 
-        Retourne une liste qui contient la SD utilisée par self si c'est le cas
-        ou alors une liste vide
-    """
-    l=[]
-    if type(self.valeur) == types.InstanceType:
-      #XXX Est ce différent de isinstance(self.valeur,ASSD) ??
-      if issubclass(self.valeur.__class__,ASSD) : l.append(self.valeur)
-    elif type(self.valeur) in (types.TupleType,types.ListType):
-      for val in self.valeur :
-         if type(val) == types.InstanceType:
-            if issubclass(val.__class__,ASSD) : l.append(val)
-    return l
+      """ 
+          Retourne une liste qui contient la ou les SD utilisée par self si c'est le cas
+          ou alors une liste vide
+      """
+      l=[]
+      if type(self.valeur) == types.InstanceType:
+        #XXX Est ce différent de isinstance(self.valeur,ASSD) ??
+        if issubclass(self.valeur.__class__,ASSD) : l.append(self.valeur)
+      elif type(self.valeur) in (types.TupleType,types.ListType):
+        for val in self.valeur :
+           if type(val) == types.InstanceType:
+              if issubclass(val.__class__,ASSD) : l.append(val)
+      return l
+
+   def get_sd_mcs_utilisees(self):
+      """ 
+          Retourne la ou les SD utilisée par self sous forme d'un dictionnaire :
+          . Si aucune sd n'est utilisée, le dictionnaire est vide.
+          . Sinon, la clé du dictionnaire est le mot-clé simple ; la valeur est
+            la liste des sd attenante.
+            Exemple : { 'VALE_F': [ <Cata.cata.para_sensi instance at 0x9419854>,
+                                    <Cata.cata.para_sensi instance at 0x941a204> ] }
+      """
+      l=self.get_sd_utilisees()
+      dico = {}
+      if len(l) > 0 :
+        dico[self.nom] = l
+      return dico

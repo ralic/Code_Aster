@@ -2,7 +2,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 01/09/2003   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,12 +59,12 @@ C
       CV=' '
       IV=0
       RV=0.D0
-      CALL LIRITM(IFL,IFM,ICL,IV,RV,CV(1:8),CNL,DEBLIG,ILEC)
+      CALL LIRITM(IFL,ICL,IV,RV,CV(1:8),CNL,DEBLIG,ILEC)
         IF (DEBLIG.EQ.0) THEN
 C -     IL Y A UNE ENTETE
           IF (ICL.EQ.3) THEN
             IF (CV(1:6).EQ.'NBLIGE') THEN
-            CALL LIRITM(IFL,IFM,ICL,IV,RV,CV(1:8),CNL,DEBLIG,ILEC)
+            CALL LIRITM(IFL,ICL,IV,RV,CV(1:8),CNL,DEBLIG,ILEC)
                 IF (ICL.EQ.1) THEN
                 NBIGNO=IV
                 ELSE
@@ -89,13 +89,13 @@ C
       CV=' '
       IV=0
       RV=0.D0
-      CALL LIRITM(IFL,IFM,ICL,IV,RV,CV(1:8),CNL,DEBLIG,ILEC)
+      CALL LIRITM(IFL,ICL,IV,RV,CV(1:8),CNL,DEBLIG,ILEC)
         IF (DEBLIG.EQ.0) THEN
 C -     IL Y A UNE ENTETE
           IF (ICL.EQ.3) THEN
 C -       L'ITEM LU EST UN IDENTIFICATEUR
              IF (CV(1:3).EQ.'NOM') THEN
-             CALL LIRITM(IFL,IFM,ICL,IV,RV,CV(1:8),CNL,DEBLIG,ILEC)
+             CALL LIRITM(IFL,ICL,IV,RV,CV(1:8),CNL,DEBLIG,ILEC)
                 IF (ICL.EQ.3) THEN
                    IF (IV.GT.8) THEN
                    CVZ = CV
@@ -112,7 +112,7 @@ C -       L'ITEM LU EST UN IDENTIFICATEUR
              CV=' '
              IV=0
              RV=0.D0
-             CALL LIRITM(IFL,IFM,ICL,IV,RV,CV(1:8),CNL,DEBLIG,ILEC)
+             CALL LIRITM(IFL,ICL,IV,RV,CV(1:8),CNL,DEBLIG,ILEC)
                 IF (ICL.EQ.1) THEN
                 NBIGNO=IV
                 ELSE
@@ -150,10 +150,10 @@ C
  9    CONTINUE
       IF (NBIGNO.GT.0) THEN
          DO 99 I = 1,NBIGNO-1
-         CALL LIRLIG(IFL,IFM,CNL,LIG,ILEC)
+         CALL LIRLIG(IFL,CNL,LIG,ILEC)
    99    CONTINUE
       DEBLIG=-1
-      CALL LIRITM(IFL,IFM,ICL,IV,RV,CV(1:8),CNL,DEBLIG,ILEC)
+      CALL LIRITM(IFL,ICL,IV,RV,CV(1:8),CNL,DEBLIG,ILEC)
       END IF
 C
       END

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 22/03/2004   AUTEUR G8BHHXD X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,7 +91,7 @@ C     -- RECHERCHE DE LA CHAINE NOMPAR AVEC MEMOIRE SUR TOUT 'CALCUL'
         CALL UTMESS('E','JEVECH','LE PARAMETRE:'//NOMPAR//
      &              ' N''EST PAS UN '//'PARAMETRE DE L''OPTION:'//
      &              OPTION)
-        CALL CONTEX(OPTION,0,' ',' ',0,'STOP')
+        CALL CONTEX(OPTION,0,' ',' ',0)
       END IF
 
       IACHLO = ZI(IAWLOC-1+7* (IPARG-1)+1)
@@ -102,17 +102,17 @@ C     -- RECHERCHE DE LA CHAINE NOMPAR AVEC MEMOIRE SUR TOUT 'CALCUL'
         CALL UTMESS('E','JEVECH','LE PARAMETRE:'//NOMPAR//
      &              ' N''EST PAS UN '//'PARAMETRE DE L''OPTION:'//
      &              OPTION//' POUR '//'LE TYPE_ELEMENT: '//NOMTE)
-        CALL CONTEX(OPTION,0,NOMPAR,' ',0,'STOP')
+        CALL CONTEX(OPTION,0,NOMPAR,' ',0)
       END IF
 
 
       IF (IACHLO.EQ.-1) THEN
-        CALL UTMESS('E','JEVECH','ERREUR DE PROGRAMMATION :'//
+        CALL UTMESS('E','JEVECH','ERREUR :'//
      &              'ON NE TROUVE PAS DANS LES ARGUMENTS DE LA ROUTINE'
      &              //' CALCUL DE CHAMP A ASSOCIER AU PARAMETRE:'//
      &              NOMPAR//' (OPTION:'//OPTION//' TYPE_ELEMENT:'//
      &              NOMTE//')')
-        CALL CONTEX(OPTION,0,NOMPAR,' ',0,'STOP')
+        CALL CONTEX(OPTION,0,NOMPAR,' ',0)
 
       END IF
       IF (IACHLO.EQ.-2) CALL UTMESS('F','JEVECH','IMPOSSIBLE...')
@@ -155,7 +155,7 @@ C     ----------------------------------------------------------
             CALL TECAEL(IADZI,IAZK24)
             WRITE (6,*) 'MAILLE: ',ZK24(IAZK24-1+3)
             WRITE (6,*) '1ERE COMPOSANTE ABSENTE: ','A FAIRE ???'
-            CALL CONTEX(OPTION,0,NOMPAR,' ',0,'STOP')
+            CALL CONTEX(OPTION,0,NOMPAR,' ',0)
           END IF
    10   CONTINUE
       END IF

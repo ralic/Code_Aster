@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,17 +47,17 @@ C
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
 C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER            NPG1, I, K, KP, NNO, TY, TYV
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM
+      INTEGER            NPG, I, K, KP, NNO, TY, TYV
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM
       INTEGER            IAD, IFOR, IERR, IPES, IROT, IMATE
-      INTEGER            IREF, IVOIS, IAREPE, JCELD, JCELV, IAVAL1
-      INTEGER            JAD, JADV, IGREL, IEL, IGD
+      INTEGER            IVOIS, IAREPE, JCELD, JCELV, IAVAL1
+      INTEGER            JAD, JADV, IGREL, IEL
       INTEGER            NBS, NBNA, JNO, NBSV, NBNV, NCHER
       INTEGER            INOV, JNOV, IMAV, MNO, MNOV, JKP
+      INTEGER            NBCMP,ITAB(7),IDEC,IDEC1,IDEC2,IDEC3
       REAL*8             A, B, C, D, E, F, G, J, H1, H2
       REAL*8             DFDX(9), DFDY(9), H, POIDS, XC, YC
       REAL*8             FORX, FORY, FPX, FPY, FRX(9), FRY(9), RHO
@@ -72,38 +72,25 @@ C
       REAL*8             DXDE,DXDK,DYDE,DYDK,XP,YP,JACOB,DFRDE,DFRDK
       CHARACTER*2        CODRET, FORM, FORMV, NOEU, NOEUV
       CHARACTER*4        NOMPAR(3)
-      CHARACTER*8        MA, TYPEMA, TYPMAV
+      CHARACTER*8        TYPEMA, TYPMAV
       CHARACTER*8        PRF, CIF, FXF, FYF
-      CHARACTER*8        ELREFE
-      CHARACTER*16        PHENOM
-      CHARACTER*19       MO, SIGMA, CARTE1, CARTE2, NOMGD1, KBID
-      CHARACTER*19       NOMGD2
-      CHARACTER*24       CARAC,FF
+      CHARACTER*16       PHENOM
+      CHARACTER*19       NOMGD1, NOMGD2
 C
 C --------- CALCUL DU PREMIER TERME DE L'ERREUR ------------------------
 C
-      CALL ELREF1(ELREFE)
       CALL JEMARQ()
 C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,' ',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,' ',IFF)
-      IPOIDS = IFF
-      IVF  = IPOIDS+NPG1
-      IDFDE = IVF  +NNO*NPG1
-      IDFDK = IDFDE +NNO*NPG1
-C
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
       CALL JEVECH ('PGEOMER', 'L', IGEOM )
-      CALL JEVECH ('PCONTNO', 'L', IAD   )
+      CALL TECACH ('OOO','PCONTNO',3,ITAB,IRET)
       CALL JEVECH ('PFRVOLU', 'L', IFOR  )
       CALL JEVECH ('PERREUR', 'E', IERR  )
       CALL JEVECH ('PTEMPSR', 'L', JTIME )
       INST = ZR(JTIME-1+1)
+      IAD   = ITAB(1)
+      NBCMP = ITAB(2)/NNO
 C
 C -------- CALCUL DU DIAMETRE H ---------------------------------------
 C
@@ -175,7 +162,7 @@ C -----------CALCUL DE LA FORCE DE ROTATION AUX POINTS DE GAUSS--------
 C
          IF (IR .NE. 0)THEN
            CALL JEVECH('PROTATR','L',IROT)
-           CALL RESROT ( ZR(IROT), ZR(IGEOM), ZR(IVF), RHO, NNO, NPG1,
+           CALL RESROT ( ZR(IROT), ZR(IGEOM), ZR(IVF), RHO, NNO, NPG,
      &              FRX, FRY)
          ENDIF
       ENDIF
@@ -184,10 +171,9 @@ C -----------CALCUL DU TERME D'ERREUR AVEC INTEGRATION DE GAUSS--------
 C
       TER = 0.D0
       NORSIG = 0.D0
-      DO 200 KP=1,NPG1
+      DO 200 KP=1,NPG
         K = (KP-1)*NNO
-        CALL DFDM2D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &              ZR(IGEOM),DFDX,DFDY,POIDS)
+        CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
 C CALCUL L'ORIENTATION DE LA MAILLE
         DXDE=0.D0
         DXDK=0.D0
@@ -198,8 +184,8 @@ C CALCUL L'ORIENTATION DE LA MAILLE
           IJ = IGEOM+2*I1
           XP = ZR(IJ)
           YP = ZR(IJ+1)
-          DFRDE = ZR(IDFDE+K+I1)
-          DFRDK = ZR(IDFDK+K+I1)
+          DFRDE = ZR(IDFDE-1+2*K+2*(I-1)+1)
+          DFRDK = ZR(IDFDE-1+2*K+2*(I-1)+2)
           DXDE=DXDE+XP*DFRDE
           DXDK=DXDK+XP*DFRDK
           DYDE=DYDE+YP*DFRDE
@@ -224,10 +210,10 @@ C
           DO 100 I=1,NNO
             R = R + ZR(IGEOM+2*I-2)*ZR(IVF+K+I-1)
 C
-            SIG11 = ZR(IAD-1+4*(I-1)+1)
-            SIG22 = ZR(IAD-1+4*(I-1)+2)
-            SIG33 = ZR(IAD-1+4*(I-1)+3)
-            SIG12 = ZR(IAD-1+4*(I-1)+4)
+            SIG11 = ZR(IAD-1+NBCMP*(I-1)+1)
+            SIG22 = ZR(IAD-1+NBCMP*(I-1)+2)
+            SIG33 = ZR(IAD-1+NBCMP*(I-1)+3)
+            SIG12 = ZR(IAD-1+NBCMP*(I-1)+4)
 C
             DSIG11 = DSIG11+SIG11*DFDX(I)
             DSIG12 = DSIG12+SIG12*DFDY(I)
@@ -247,9 +233,9 @@ C
           POIDS = POIDS*R
         ELSE
           DO 150 I=1,NNO
-            SIG11 = ZR(IAD-1+4*(I-1)+1)
-            SIG22 = ZR(IAD-1+4*(I-1)+2)
-            SIG12 = ZR(IAD-1+4*(I-1)+4)
+            SIG11 = ZR(IAD-1+NBCMP*(I-1)+1)
+            SIG22 = ZR(IAD-1+NBCMP*(I-1)+2)
+            SIG12 = ZR(IAD-1+NBCMP*(I-1)+4)
 C
             DSIG11 = DSIG11+SIG11*DFDX(I)
             DSIG12 = DSIG12+SIG12*DFDY(I)
@@ -258,7 +244,7 @@ C
 C
             SPG11 = SPG11 + SIG11*ZR(IVF+K+I-1)
             SPG22 = SPG22 + SIG22*ZR(IVF+K+I-1)
-            SPG33 = SPG33 + ZR(IAD-1+4*(I-1)+3)*ZR(IVF+K+I-1)
+            SPG33 = SPG33 + ZR(IAD-1+NBCMP*(I-1)+3)*ZR(IVF+K+I-1)
             SPG12 = SPG12 + SIG12*ZR(IVF+K+I-1)
   150     CONTINUE
           DSX = DSIG11+DSIG12
@@ -274,43 +260,45 @@ C
 C
 C ----------- CALCUL DU DEUXIEME ET TROISIEME TERME DE L'ERREUR ------
 C
-      CALL JEVECH('PFORCE','L',IREF)
+      CALL JEVECH('PFORCE','L',IREF1)
       CALL JEVECH('PPRESS','L',IREF2)
       CALL JEVECH('PVOISIN','L',IVOIS)
 C
-      MO = ZK24(IREF+1)
-      SIGMA = ZK24(IREF+2)
-      CARTE1 = ZK24(IREF+3)
-      CARTE2 = ZK24(IREF2+3)
+C ------- RECHERCHE DES ADRESSES POUR OBTENIR SIGMA SUR LES VOISINS ----
 C
-C -------- RECHERCHE DES ADRESSES POUR OBTENIR SIGMA SUR LES VOISINS ---
-C
-      CALL JEVEUO(MO//'.REPE','L',IAREPE)
-      CALL JEVEUO(SIGMA//'.CELD','L',JCELD)
-      CALL JEVEUO(SIGMA//'.CELV','L',JCELV)
+      IAREPE = ZI(IREF1)
+      JCELD = ZI(IREF1+1)
+      JCELV = ZI(IREF1+2)
+      IAGD = ZI(IREF1+4)
 C
 C ------- RECHERCHE DES ADRESSES POUR LES CHARGES SUR LES SEGMENTS ----
 C
-      IF (CARTE1 .NE. ' ') THEN
-        CALL JEVEUO (CARTE1//'.DESC','L',IADE1)
-        CALL JEVEUO (CARTE1//'.VALE','L',IAVA1)
-        IGD = ZI(IADE1)
-        CALL JELIRA (JEXNUM('&CATA.GD.NOMCMP',IGD),'LONMAX',NCMPM1,KBID)
+        IADE1 = ZI(IREF1+6)
+        IAVA1 = ZI(IREF1+7)
+        IAPTM1 = ZI(IREF1+8)
+      IF (IADE1 .NE. 0) THEN
+        IGD1 = ZI(IADE1)
+        IACMP = ZI(IREF1+5)
+        NCMPM1 = ZI(IACMP-1+IGD1)
+C       CALL JELIRA (JEXNUM('&CATA.GD.NOMCMP',IGD),'LONMAX',NCMPM1,KBID)
       ENDIF
-
 C
-      IF (CARTE2 .NE. ' ') THEN
-        CALL JEVEUO (CARTE2//'.DESC','L',IADE2)
-        CALL JEVEUO (CARTE2//'.VALE','L',IAVA2)
-        IGD = ZI(IADE2)
-        CALL JELIRA (JEXNUM('&CATA.GD.NOMCMP',IGD),'LONMAX',NCMPM2,KBID)
+        IADE2 = ZI(IREF2+6)
+        IAVA2 = ZI(IREF2+7)
+        IAPTM2 = ZI(IREF2+8)
+      IF (IADE2 .NE. 0) THEN
+        IGD2 = ZI(IADE2)
+        IACMP = ZI(IREF2+5)
+        NCMPM2 = ZI(IACMP-1+IGD2)
+C       CALL JELIRA (JEXNUM('&CATA.GD.NOMCMP',IGD),'LONMAX',NCMPM2,KBID)
       ENDIF
 C
 C --------- TEST SUR LE TYPE DE LA MAILLE COURANTE --------------------
 C
       TY = ZI(IVOIS + 7)
-
-      CALL JENUNO (JEXNUM('&CATA.TM.NOMTM',TY),TYPEMA)
+      IATYMA = ZI(IREF1+3)
+      TYPEMA=ZK8(IATYMA-1+TY)      
+C     CALL JENUNO (JEXNUM('&CATA.TM.NOMTM',TY),TYPEMA)
 
       FORM = TYPEMA(1:2)
       IF (FORM .EQ. 'TR') THEN
@@ -402,8 +390,9 @@ C ------TEST DU TYPE DE VOISIN -----------------------------------------
 C
         TYV = ZI(IVOIS+7+INO)
         IF (TYV .NE. 0) THEN
+          TYPMAV=ZK8(IATYMA-1+TYV)      
 
-          CALL JENUNO (JEXNUM('&CATA.TM.NOMTM',TYV),TYPMAV)
+C          CALL JENUNO (JEXNUM('&CATA.TM.NOMTM',TYV),TYPMAV)
 
           FORMV = TYPMAV(1:2)
           NOEUV = TYPMAV(5:5)
@@ -411,33 +400,32 @@ C
 C
 C ----------CALCUL DU 3 IEME TERME D'ERREUR ----------------------------
 C
-          IF (CARTE1 .NE. ' ') THEN
+          IF (IADE1 .NE. 0) THEN
 
             IMAV = ZI(IVOIS+INO)
-            CALL JEEXIN (CARTE1//'.PTMA',IRET)
-            IF (IRET .EQ. 0) THEN
+            IF (IAPTM1 .EQ. 0) THEN
 C              CARTE CONSTANTE
+               IENT1 = 1
             ELSE
 C            LA CARTE A ETE ETENDUE
-               CALL JEVEUO (CARTE1//'.PTMA','L',IAPTMA)
-               IENT1 = ZI(IAPTMA -1 +IMAV)
+               IENT1 = ZI(IAPTM1 -1 +IMAV)
             ENDIF
-            NOMGD1 = ZK24(IREF+4)
+            NUMGD1 = ZI(IREF1+9)
+            NOMGD1 = ZK8(IAGD-1+NUMGD1)
           ENDIF
 C
-          IF (CARTE2 .NE. ' ') THEN
+          IF (IADE2 .NE. 0) THEN
 
             IMAV = ZI(IVOIS+INO)
-            CALL JEEXIN (CARTE2//'.PTMA',IRET)
-            IF (IRET .EQ. 0) THEN
+            IF (IAPTM2 .EQ. 0) THEN
 C              CARTE CONSTANTE
                IENT2 = 1
             ELSE
 C            LA CARTE A ETE ETENDUE
-               CALL JEVEUO (CARTE2//'.PTMA','L',IAPTMA)
-               IENT2 = ZI(IAPTMA -1 +IMAV)
+               IENT2 = ZI(IAPTM2 -1 +IMAV)
             ENDIF
-            NOMGD2 = ZK24(IREF2+4)
+            NUMGD2 = ZI(IREF2+9)
+            NOMGD2 = ZK8(IAGD-1+NUMGD2)
           ENDIF
 C
 C
@@ -447,17 +435,20 @@ C
 C
            IF ( ABS(PR) .GT. 1.D-15 .OR. ABS(CI) .GT. 1.D-15) THEN
 C
-             NORM = JAC(1) * ( (PR*XN(1)+CI*XT(1)-ZR(IAD+4*INO-4)*XN(1)
-     &              -ZR(IAD+4*INO-1)*YN(1))**2 + (PR*YN(1)+CI*YT(1)-
-     &             ZR(IAD+4*INO-1)*XN(1) -ZR(IAD+4*INO-3)*YN(1))**2 )
-     &         +   JAC(2) * ( (PR*XN(2)+CI*XT(2)-ZR(IAD+4*JNO-4)*XN(2)
-     &              -ZR(IAD+4*JNO-1)*YN(2))**2+ (PR*YN(2)+CI*YT(2)-
-     &             ZR(IAD+4*JNO-1)*XN(2) -ZR(IAD+4*JNO-3)*YN(2))**2 )
+             IDEC1 = NBCMP*INO
+             IDEC2 = NBCMP*JNO
+             NORM = JAC(1) * ( (PR*XN(1)+CI*XT(1)-ZR(IAD+IDEC1-4)*XN(1)
+     &              -ZR(IAD+IDEC1-1)*YN(1))**2 + (PR*YN(1)+CI*YT(1)-
+     &             ZR(IAD+IDEC1-1)*XN(1) -ZR(IAD+IDEC1-3)*YN(1))**2 )
+     &         +   JAC(2) * ( (PR*XN(2)+CI*XT(2)-ZR(IAD+IDEC2-4)*XN(2)
+     &              -ZR(IAD+IDEC2-1)*YN(2))**2+ (PR*YN(2)+CI*YT(2)-
+     &             ZR(IAD+IDEC2-1)*XN(2) -ZR(IAD+IDEC2-3)*YN(2))**2 )
 C
              IF (NBNA .EQ. 3) THEN
-              NORM2 = JAC(3)*( (PR*XN(3)+CI*XT(3)-ZR(IAD+4*MNO-4)*XN(3)
-     &               - ZR(IAD+4*MNO-1)*YN(3))**2+ (PR*YN(3)+CI*YT(3)
-     &           -ZR(IAD+4*MNO-1)*XN(3) -ZR(IAD+4*MNO-3)*YN(3))**2 )
+              IDEC = NBCMP*MNO
+              NORM2 = JAC(3)*( (PR*XN(3)+CI*XT(3)-ZR(IAD+IDEC-4)*XN(3)
+     &               - ZR(IAD+IDEC-1)*YN(3))**2+ (PR*YN(3)+CI*YT(3)
+     &           -ZR(IAD+IDEC-1)*XN(3) -ZR(IAD+IDEC-3)*YN(3))**2 )
              TER3 = TER3 + SQRT(HF) * SQRT((1.D0/3.D0)*NORM +
      &                                           (4.D0/3.D0)*NORM2)
              ELSE
@@ -485,13 +476,15 @@ C
              CALL FOINTE('FM',PRF,3,NOMPAR,VALPAR,PRC(2),IER3)
              CALL FOINTE('FM',CIF,3,NOMPAR,VALPAR,CIC(2),IER4)
 C
+             IDEC1 = NBCMP*INO
+             IDEC2 = NBCMP*JNO
              NORM = JAC(1) * ( (-PRC(1)*XN(1)+CIC(1)*XT(1)-
-     &           ZR(IAD+4*INO-4)*XN(1)-ZR(IAD+4*INO-1)*YN(1))**2
-     &           + (-PRC(1)*YN(1)+CIC(1)*YT(1)-ZR(IAD+4*INO-1)*XN(1)
-     &           -ZR(IAD+4*INO-3)*YN(1))**2 )+ JAC(2)*((-PRC(2)*XN(2)
-     &           +CIC(2)*XT(2)-ZR(IAD+4*JNO-4)*XN(2) -ZR(IAD+4*JNO-1)
+     &           ZR(IAD+IDEC1-4)*XN(1)-ZR(IAD+IDEC1-1)*YN(1))**2
+     &           + (-PRC(1)*YN(1)+CIC(1)*YT(1)-ZR(IAD+IDEC1-1)*XN(1)
+     &           -ZR(IAD+IDEC1-3)*YN(1))**2 )+ JAC(2)*((-PRC(2)*XN(2)
+     &           +CIC(2)*XT(2)-ZR(IAD+IDEC2-4)*XN(2) -ZR(IAD+IDEC2-1)
      &           *YN(2))**2+ (-PRC(2)*YN(2)+CIC(2)*YT(2)-
-     &           ZR(IAD+4*JNO-1)*XN(2) -ZR(IAD+4*JNO-3)*YN(2))**2 )
+     &           ZR(IAD+IDEC2-1)*XN(2) -ZR(IAD+IDEC2-3)*YN(2))**2 )
 C
              IF (NBNA .EQ. 3) THEN
               VALPAR(1) = ZR(IGEOM+2*MNO-2)
@@ -499,10 +492,11 @@ C
               VALPAR(3) = INST
               CALL FOINTE('FM',PRF,3,NOMPAR,VALPAR,PRC(3),IER5)
               CALL FOINTE('FM',CIF,3,NOMPAR,VALPAR,CIC(3),IER6)
+              IDEC = NBCMP*MNO
               NORM2 = JAC(3)*( (-PRC(3)*XN(3) + CIC(3)*XT(3)-
-     &              ZR(IAD+4*MNO-4)*XN(3) - ZR(IAD+4*MNO-1)*YN(3))**2
-     &              +(-PRC(3)*YN(3)+CIC(3)*YT(3)-ZR(IAD+4*MNO-1)*XN(3)
-     &              -ZR(IAD+4*MNO-3)*YN(3))**2 )
+     &              ZR(IAD+IDEC-4)*XN(3) - ZR(IAD+IDEC-1)*YN(3))**2
+     &              +(-PRC(3)*YN(3)+CIC(3)*YT(3)-ZR(IAD+IDEC-1)*XN(3)
+     &              -ZR(IAD+IDEC-3)*YN(3))**2 )
 C
               TER3 = TER3 + SQRT(HF)*SQRT((1.D0/3.D0)*NORM +
      &               (4.D0/3.D0)*NORM2)
@@ -517,17 +511,20 @@ C
 C
            IF (ABS(FX) .GT. 1.D-15 .OR. ABS(FY) .GT. 1.D-15) THEN
 C
-             NORM = JAC(1) * ( ( FX + ZR(IAD+4*INO-4) * XN(1)
-     &              + ZR(IAD+4*INO-1) * YN(1))**2 + ( FY +
-     &             ZR(IAD+4*INO-1)*XN(1) +ZR(IAD+4*INO-3)*YN(1))**2)
-     &         +   JAC(2) * ( ( FX + ZR(IAD+4*JNO-4) * XN(2)
-     &              +ZR(IAD+4*JNO-1)*YN(2))**2+ ( FY +
-     &             ZR(IAD+4*JNO-1)*XN(2) +ZR(IAD+4*JNO-3)*YN(2))**2)
+             IDEC1 = NBCMP*INO
+             IDEC2 = NBCMP*JNO
+             NORM = JAC(1) * ( ( FX + ZR(IAD+IDEC1-4) * XN(1)
+     &              + ZR(IAD+IDEC1-1) * YN(1))**2 + ( FY +
+     &             ZR(IAD+IDEC1-1)*XN(1) +ZR(IAD+IDEC1-3)*YN(1))**2)
+     &         +   JAC(2) * ( ( FX + ZR(IAD+IDEC2-4) * XN(2)
+     &              +ZR(IAD+IDEC2-1)*YN(2))**2+ ( FY +
+     &             ZR(IAD+IDEC2-1)*XN(2) +ZR(IAD+IDEC2-3)*YN(2))**2)
 C
              IF (NBNA .EQ. 3) THEN
-              NORM2 = JAC(3)*( ( FX + ZR(IAD+4*MNO-4) * XN(3)
-     &               + ZR(IAD+4*MNO-1) * YN(3))**2+ ( FY
-     &             +ZR(IAD+4*MNO-1)*XN(3) +ZR(IAD+4*MNO-3)*YN(3))**2)
+              IDEC = NBCMP*MNO
+              NORM2 = JAC(3)*( ( FX + ZR(IAD+IDEC-4) * XN(3)
+     &               + ZR(IAD+IDEC-1) * YN(3))**2+ ( FY
+     &             +ZR(IAD+IDEC-1)*XN(3) +ZR(IAD+IDEC-3)*YN(3))**2)
 C
               TER3 = TER3 + SQRT(HF)*SQRT((1.D0/3.D0)*NORM +
      &                                        (4.D0/3.D0)*NORM2)
@@ -557,11 +554,13 @@ C
              CALL FOINTE('FM',FXF,3,NOMPAR,VALPAR,FXC(2),IER3)
              CALL FOINTE('FM',FYF,3,NOMPAR,VALPAR,FYC(2),IER4)
 C
-             NORM = JAC(1) * ( ( FXC(1)+ZR(IAD+4*INO-4)*XN(1)+
-     &            ZR(IAD+4*INO-1)*YN(1))**2+( FYC(1)+ZR(IAD+4*INO-1)
-     &            *XN(1)+ZR(IAD+4*INO-3)*YN(1))**2 )+JAC(2)*((FXC(2)
-     &            +ZR(IAD+4*JNO-4)*XN(2) +ZR(IAD+4*JNO-1)*YN(2))**2+
-     &            ( FYC(2)+ZR(IAD+4*JNO-1)*XN(2)+ZR(IAD+4*JNO-3)
+             IDEC1 = NBCMP*INO
+             IDEC2 = NBCMP*JNO
+             NORM = JAC(1) * ( ( FXC(1)+ZR(IAD+IDEC1-4)*XN(1)+
+     &            ZR(IAD+IDEC1-1)*YN(1))**2+( FYC(1)+ZR(IAD+IDEC1-1)
+     &            *XN(1)+ZR(IAD+IDEC1-3)*YN(1))**2 )+JAC(2)*((FXC(2)
+     &            +ZR(IAD+IDEC2-4)*XN(2) +ZR(IAD+IDEC2-1)*YN(2))**2+
+     &            ( FYC(2)+ZR(IAD+IDEC2-1)*XN(2)+ZR(IAD+IDEC2-3)
      &            *YN(2))**2)
 C
              IF (NBNA .EQ. 3) THEN
@@ -570,9 +569,10 @@ C
               VALPAR(3) = INST
               CALL FOINTE('FM',FXF,3,NOMPAR,VALPAR,FXC(3),IER5)
               CALL FOINTE('FM',FYF,3,NOMPAR,VALPAR,FYC(3),IER6)
-              NORM2 = JAC(3)*( ( FXC(3) + ZR(IAD+4*MNO-4) * XN(3) +
-     &            ZR(IAD+4*MNO-1) * YN(3))**2 + (  FYC(3) +
-     &            ZR(IAD+4*MNO-1)*XN(3)+ZR(IAD+4*MNO-3)*YN(3))**2)
+              IDEC = NBCMP*MNO
+              NORM2 = JAC(3)*( ( FXC(3) + ZR(IAD+IDEC-4) * XN(3) +
+     &            ZR(IAD+IDEC-1) * YN(3))**2 + (  FYC(3) +
+     &            ZR(IAD+IDEC-1)*XN(3)+ZR(IAD+IDEC-3)*YN(3))**2)
 C
               TER3 = TER3 + SQRT(HF)*SQRT((1.D0/3.D0)*NORM +
      &            (4.D0/3.D0)*NORM2)
@@ -604,10 +604,12 @@ C
           ENDIF
 C
 CALCUL DE NUMEROTATION DU VOISIN -------
-        MA = ZK24(IREF)
-        CALL JEVEUO(JEXNUM(MA//'.CONNEX',ZI(IVOIS)),'L',JAD)
-        CALL JEVEUO(JEXNUM(MA//'.CONNEX',ZI(IVOIS+INO)),'L',JADV)
-
+C        CALL JEVEUO(JEXNUM(MA//'.CONNEX',ZI(IVOIS)),'L',JAD)
+C        CALL JEVEUO(JEXNUM(MA//'.CONNEX',ZI(IVOIS+INO)),'L',JADV)
+        ICONX1 = ZI(IREF1+10)
+        ICONX2 = ZI(IREF1+11)
+        JAD  = ICONX1-1+ZI(ICONX2+ZI(IVOIS)-1)
+        JADV = ICONX1-1+ZI(ICONX2+ZI(IVOIS+INO)-1)
         NCHER = ZI(JAD-1+INO)
         INOV = INDIIS(ZI(JADV),NCHER,1,NBNV)
 C       IF (INOV .EQ. 1) THEN
@@ -628,14 +630,19 @@ C
         IEL = ZI(IAREPE+2*(IMAV-1)+1)
         IAVAL1= JCELV -1 + ZI(JCELD-1+ZI(JCELD-1+4+IGREL)+8)
 C
-        SG11(1) = ZR(IAD+4*INO-4)-ZR(IAVAL1+4*NBNV*(IEL-1)+4*INOV-4)
-        SG22(1) = ZR(IAD+4*INO-3)-ZR(IAVAL1+4*NBNV*(IEL-1)+4*INOV-3)
-        SG12(1) = ZR(IAD+4*INO-1)-ZR(IAVAL1+4*NBNV*(IEL-1)+4*INOV-1)
+        IDEC1   = NBCMP*INO
+        IDEC2   = NBCMP*NBNV
+        IDEC3   = NBCMP*INOV
+        SG11(1) = ZR(IAD+IDEC1-4)-ZR(IAVAL1+IDEC2*(IEL-1)+IDEC3-4)
+        SG22(1) = ZR(IAD+IDEC1-3)-ZR(IAVAL1+IDEC2*(IEL-1)+IDEC3-3)
+        SG12(1) = ZR(IAD+IDEC1-1)-ZR(IAVAL1+IDEC2*(IEL-1)+IDEC3-1)
 C
-        SG11(2) = ZR(IAD+4*JNO-4)-ZR(IAVAL1+4*NBNV*(IEL-1)+4*JNOV-4)
-        SG22(2) = ZR(IAD+4*JNO-3)-ZR(IAVAL1+4*NBNV*(IEL-1)+4*JNOV-3)
-        SG12(2) = ZR(IAD+4*JNO-1)-ZR(IAVAL1+4*NBNV*(IEL-1)+4*JNOV-1)
-C
+        IDEC1   = NBCMP*JNO
+        IDEC2   = NBCMP*NBNV
+        IDEC3   = NBCMP*JNOV
+        SG11(2) = ZR(IAD+IDEC1-4)-ZR(IAVAL1+IDEC2*(IEL-1)+IDEC3-4)
+        SG22(2) = ZR(IAD+IDEC1-3)-ZR(IAVAL1+IDEC2*(IEL-1)+IDEC3-3)
+        SG12(2) = ZR(IAD+IDEC1-1)-ZR(IAVAL1+IDEC2*(IEL-1)+IDEC3-1)
 C
 C        ON REALISE UNE INTEGRATION DE NEWTON-COTES AVEC 2 OU 3 POINTS
 C        D'INTEGRATION SELON LE NOMBRE DE POINTS DE L'ARETE CONSIDEREE
@@ -649,9 +656,12 @@ C
 C
         IF (NBNA .EQ. 3) THEN
          MNOV = NBSV+JNOV
-         SG11(3) = ZR(IAD+4*MNO-4)-ZR(IAVAL1+4*NBNV*(IEL-1)+4*MNOV-4)
-         SG22(3) = ZR(IAD+4*MNO-3)-ZR(IAVAL1+4*NBNV*(IEL-1)+4*MNOV-3)
-         SG12(3) = ZR(IAD+4*MNO-1)-ZR(IAVAL1+4*NBNV*(IEL-1)+4*MNOV-1)
+         IDEC = NBCMP*MNO
+         IDEC1= NBCMP*NBNV
+         IDEC2= NBCMP*MNOV
+         SG11(3) = ZR(IAD+IDEC-4)-ZR(IAVAL1+IDEC1*(IEL-1)+IDEC2-4)
+         SG22(3) = ZR(IAD+IDEC-3)-ZR(IAVAL1+IDEC1*(IEL-1)+IDEC2-3)
+         SG12(3) = ZR(IAD+IDEC-1)-ZR(IAVAL1+IDEC1*(IEL-1)+IDEC2-1)
 C
          NORM2 = JAC(3) * ((SG11(3)*XN(3)+SG12(3)*YN(3))**2 +
      &           (SG12(3)*XN(3)+SG22(3)*YN(3))**2)

@@ -1,6 +1,6 @@
       SUBROUTINE TE0562 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,8 +29,7 @@ C                   'PROJ_ALPHA_ZAC'
 C          NOMTE  : NOM DU TYPE ELEMENT
 C ----------------------------------------------------------------------
       PARAMETER          (NBRES = 4 , NCMP = 4)
-      CHARACTER*24       CARAC,FF,CHMAT
-      CHARACTER*8        NOMRES(NBRES),ELREFE
+      CHARACTER*8        NOMRES(NBRES)
       CHARACTER*2        CODRET(NBRES)
       REAL*8             VALRES(NBRES)
       REAL*8             R3S2,ALPHA2(6)
@@ -38,8 +37,8 @@ C ----------------------------------------------------------------------
       REAL*8             NORM,NORM1,NORM2,NORSIG,ZERO,INSTAN
       REAL*8             DFDX(9),DFDY(9),TPG,POIDS,X,Y
       INTEGER            NNO,KP,I,K,ITEMPE,IDPG
-      INTEGER            ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE
-      INTEGER            NPG,NPG1,ICONTP,ICONTM
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
+      INTEGER            NPG,NNOS,ICONTP,ICONTM,JGANO,NDIM
       INTEGER            IALPH0,IALPHL,IALPHS,IALPHI,IADAPT
       EXTERNAL           NORSIG
 C
@@ -63,23 +62,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       DATA               KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 C
-      CALL ELREF1(ELREFE)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
       ZERO = 0.D0
       R3S2 = SQRT(3.D0/2.D0)
-C
-C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-      IPOIDS = IFF
-      IVF    = IPOIDS+NPG1
-      IDFDE  = IVF   +NPG1*NNO
-      IDFDK  = IDFDE +NPG1*NNO
-      NPG    = NPG1
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -106,12 +91,9 @@ C
       IF (INSTAN.EQ.1.D0) ZR(IADAPT) = 0.D0
 C
       DO 101 KP = 1 , NPG
-C
           K=(KP-1)*NNO
           IDPG=(KP-1)*NCMP
-C
-          CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
-     &                  ZR(IGEOM),DFDX,DFDY,POIDS )
+          CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
           X   = 0.D0
           Y   = 0.D0
           TPG = 0.D0

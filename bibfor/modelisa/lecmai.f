@@ -3,7 +3,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/06/2003   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C
         CALL LIRTET(IFL,IFM,ILEC,INOM,CNL,NOM,ICL,IV,RV,CV,DEBLIG)
         GO TO 9
  5      CONTINUE
-        CALL LIRITM(IFL,IFM,ICL,IV,RV,CV,CNL,DEBLIG,1)
+        CALL LIRITM(IFL,ICL,IV,RV,CV,CNL,DEBLIG,1)
         IF(NBG.GE.1)WRITE(IFM,*)'       LIRITM : ICL = ',ICL,
      +  ' IV = ',IV,' RV = ',RV,' CV(1:8) = ',CV(1:8),' DEBLIG =',DEBLIG
  9      CONTINUE
@@ -97,7 +97,7 @@ C
 C
 C - LIRE ITEM SUIVANT
 C
-        CALL LIRITM(IFL,IFM,ICL,IV,RV,CV,CNL,DEBLIG,1)
+        CALL LIRITM(IFL,ICL,IV,RV,CV,CNL,DEBLIG,1)
         IF(NBG.GE.1)WRITE(IFM,*)'       LIRITM : ICL = ',ICL,
      +  ' IV = ',IV,' RV = ',RV,' CV(1:8) = ',CV(1:8),' DEBLIG =',DEBLIG
 C

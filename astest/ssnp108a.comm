@@ -1,4 +1,4 @@
-# MODIF  DATE 16/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 12/11/2003   AUTEUR CIBHHLV L.VIVAN 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,6 +134,9 @@ EVOLNOLI=CALC_ELEM( reuse=EVOLNOLI,
                          CARA_ELEM=CARAELEM
               )
 
+IMPR_RESU(RESU=_F(RESULTAT=EVOLNOLI,
+                  NOM_CHAM=('DEPL','SIEF_ELNO_ELGA'), ), );
+
 #
 ########################################################################
 # TESTS POUR LES NOEUDS DE L'ELEMENT DE BETON
@@ -151,6 +154,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NOM_CMP = 'NXX',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,
+                      REFERENCE = 'ANALYTIQUE',
                       VALE = -9.99125765E+4) )
 
 #
@@ -163,6 +167,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NOM_CMP = 'NXX',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,
+                      REFERENCE = 'ANALYTIQUE',
                       VALE = -9.99125765E+4) )
 
 #
@@ -175,6 +180,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NOM_CMP = 'NXX',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,
+                      REFERENCE = 'ANALYTIQUE',
                       VALE = -9.99125765E+4) )
 
 #
@@ -187,6 +193,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NOM_CMP = 'NXX',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,
+                      REFERENCE = 'ANALYTIQUE',
                       VALE = -9.99125765E+4) )
 
 #
@@ -201,6 +208,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NOM_CMP = 'DX',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,
+                      REFERENCE = 'ANALYTIQUE',
                       VALE = -1.11013974E-5) )
 
 #
@@ -212,6 +220,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NOM_CMP = 'DX',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,
+                      REFERENCE = 'ANALYTIQUE',
                       VALE = -1.11013974E-5) )
 
 #
@@ -231,6 +240,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NOM_CMP = 'N',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,
+                      REFERENCE = 'ANALYTIQUE',
                       VALE = 1.99825153E+5) )
 
 #
@@ -243,6 +253,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NOM_CMP = 'N',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,
+                      REFERENCE = 'ANALYTIQUE',
                       VALE = 1.99825153E+5) )
 
 #
@@ -255,6 +266,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NOM_CMP = 'N',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,
+                      REFERENCE = 'ANALYTIQUE',
                       VALE = 1.99825153E+5) )
 
 #
@@ -267,6 +279,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NOM_CMP = 'N',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,
+                      REFERENCE = 'ANALYTIQUE',
                       VALE = 1.99825153E+5) )
 
 #
@@ -279,6 +292,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NOM_CMP = 'N',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,
+                      REFERENCE = 'ANALYTIQUE',
                       VALE = 1.99825153E+5) )
 
 #
@@ -293,6 +307,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NOM_CMP = 'DX',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,
+                      REFERENCE = 'ANALYTIQUE',
                       VALE = -2.77534935E-6) )
 
 #
@@ -304,6 +319,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NOM_CMP = 'DX',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,
+                      REFERENCE = 'ANALYTIQUE',
                       VALE = -5.55069869E-6) )
 
 #
@@ -315,6 +331,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NOM_CMP = 'DX',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,
+                      REFERENCE = 'ANALYTIQUE',
                       VALE = -8.32604804E-6) )
 
 #
@@ -326,6 +343,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
                       NOM_CMP = 'DX',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-6,
+                      REFERENCE = 'ANALYTIQUE',
                       VALE = -1.11013974E-5) )
 
 #

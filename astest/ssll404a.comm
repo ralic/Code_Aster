@@ -1,4 +1,4 @@
-# MODIF  DATE 05/02/2001   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE CALCUL DES MOMENTS CRITIQUES D'UNE ARCHE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,12 +83,12 @@ NOM_CHAM='DEPL', RESULTAT=STATIQ,
                                )
 
 # CALCUL DES CONTRAINTES ELEMENTAIRES A PARTIR DES DEPLACEMENTS
+                              
+                              
+SIGMA=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
+                    RESULTAT=STATIQ, NUME_ORDRE=1,
+                    NOM_CHAM='SIEF_ELGA_DEPL' ),
 
-SIGMA=CALC_CHAM_ELEM(        MODELE=STRUCTUR,
-                                  OPTION='SIEF_ELGA_DEPL',
-                               CARA_ELEM=CARA,
-                                    DEPL=DEPLA,
-                              CHAM_MATER=MATER )
 
 # CALCUL DES MATRICES ELEMENTAIRES ET ASSEMBLAGE
 

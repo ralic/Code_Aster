@@ -1,11 +1,11 @@
       SUBROUTINE DXELAS(OPTION,NOMTE,DEPL,VECLOC,MATLOC,EFFINT,CODRET)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT  NONE 
       INTEGER      CODRET
       REAL*8       DEPL(24), VECLOC(24), MATLOC(300), EFFINT(32)
       CHARACTER*16 OPTION, NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/07/2001   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,6 @@ C     ---> POUR DKQ/DSQ EFFINT = 32
 C
 C     ------------------------------------------------------------------
 C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -81,31 +80,32 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      REAL*8       PGL(3,3),XYZL(3,4),VECLO1(24)
-      CHARACTER*24 DESI,DESR
+      INTEGER   LZR, NNO, JGEOM
+      REAL*8    PGL(3,3),XYZL(3,4),VECLO1(24)
 C     ------------------------------------------------------------------
 C
       CODRET = 0
 C
-      DESI = '&INEL.'//NOMTE(1:8)//'.DESI'
-      CALL JEVETE(DESI,'L',LZI)
-      NNO = ZI(LZI)
-C
-      DESR = '&INEL.'//NOMTE(1:8)//'.DESR'
-      CALL JEVETE(DESR,'L',LZR)
-C
-C ---  RECUPERATION DES COORDONNEES DES CONNECTIVITES :
-C      ----------------------------------------------
       CALL JEVECH('PGEOMER','L',JGEOM)
 C
-C ---  CONSTRUCTION DES MATRICES DE PASSAGE DU REPERE LOCAL
-C ---  AU REPERE GLOBAL :
-C      ----------------
-      IF (NNO.EQ.3) THEN
-        CALL DXTPGL(ZR(JGEOM),PGL)
-      ELSE IF (NNO.EQ.4) THEN
+      IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
+     +    NOMTE(1:8).EQ.'MEGRDKT'  .OR. NOMTE(1:8).EQ.'MEDKTG3 ') THEN
+         NNO = 3
+         CALL DXTPGL(ZR(JGEOM),PGL)
+
+      ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEDKQG4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEQ4QU4 ') THEN
+        NNO = 4
         CALL DXQPGL(ZR(JGEOM),PGL)
+
+      ELSE
+          CALL UTMESS('F','DXELAS','LE TYPE D''ELEMENT : '//NOMTE(1:8)//
+     +                'N''EST PAS PREVU.')
       END IF
+C
+      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR','L',LZR)
 C
 C ---  CALCUL DES COORDONNEES LOCALES DES CONNECTIVITES :
 C      ------------------------------------------------

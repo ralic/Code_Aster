@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE, PHENOM
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/07/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,43 +46,29 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER        NDDL, LGRIL, IMATE, NBV, NBRES
+      INTEGER        NDDL, LGRIL, IMATE, NBV, NBRES,IDFDE2
       PARAMETER    ( NDDL = 6, NBRES=1 )
       CHARACTER*2    CODRET(NBRES)
       REAL*8         VALRES(NBRES), TPG
       CHARACTER*8    NOMRES(NBRES)
-      CHARACTER*24   CARAC,FF
-      INTEGER        ICARAC,NNO,NPG1,NPG2,IFF,IPOI1,IVF1,IDFDE1,
-     &               IDFDK1,IPOI2,IVF2,IDFDE2,IDFDK2,IGEOM
+      INTEGER        NNO,NNOS,NPG1,NPG2,IPOI1,IPOI2,IDFDE1,IGEOM,
+     &               JGANO ,NDIM,IVF2,IVF1
       REAL*8         MATP(24,24), MATV(300)
       REAL*8         YT,YN,RAPP,RAID(2,2),ROTD(2,2),ROTL(3),MASS,
      &               A(NDDL,NDDL,4,4),
      &               RTRA(2),RTOR(2),PGL(3,3),CO3D(12)
-      INTEGER        N,NP,I,J,K,L,II,IK,IJKL,IMATUU,NDL,NVEC,IACCE,IVECT
+      INTEGER        NP,I,J,K,L,II,IK,IJKL,IMATUU,NDL,NVEC,IACCE,IVECT
       REAL*8         POIDS,DFDX(4),DFDY(4),VFROT(4),COORD(8)
       REAL*8         DX,DY,DZ,ALPHA,BETA,R8DGRD,XNORM,PJDX,PJDY,PJDZ,PS
 C ......................................................................
 C
       CALL UTMESS('F','TE0560','L''ELEMENT "MEGRQU4" N''EXISTE PLUS') 
 C
-      CARAC='&INEL.'//NOMTE(1:8)//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOI1,IVF1,IDFDE1,JGANO)
+      CALL ELREF4(' ','MASS',NDIM,NNO,NNOS,NPG2,IPOI2,IVF2,IDFDE2,JGANO)
       NDL  = NDDL * NNO
       NVEC = NDL * ( NDL + 1 ) / 2
 C
-      FF     ='&INEL.'//NOMTE(1:8)//'.FF'
-      CALL JEVETE(FF   ,'L',IFF   )
-      IPOI1   = IFF
-      IVF1    = IPOI1  + NPG1
-      IDFDE1  = IVF1   + NPG1*NNO
-      IDFDK1  = IDFDE1 + NPG1*NNO
-      IPOI2   = IDFDK1 + NPG1*NNO
-      IVF2    = IPOI2  + NPG2
-      IDFDE2  = IVF2   + NPG2*NNO
-      IDFDK2  = IDFDE2 + NPG2*NNO
 C     ---------------------------------------------------
 C     ---- RECUPERATION LOI DE COMPORTEMENT MATERIAU ----
 C     ---------------------------------------------------
@@ -187,9 +173,7 @@ C     ---------------------------------------------------
 C     --- DEPLACEMENT DE MEMBRANE ET ROTATION ---
 C     -------------------------------------------
       DO 20 NP = 1, NPG1
-        N = (NP-1) * NNO
-        CALL DFDM2D ( NNO,ZR(IPOI1+NP-1),ZR(IDFDE1+N),ZR(IDFDK1+N),
-     &                COORD(1),DFDX,DFDY,POIDS )
+        CALL DFDM2D(NNO,NP,IPOI1,IDFDE1,COORD(1),DFDX,DFDY,POIDS)
 C
         DO 21 I = 1, NNO
            DO 22 J = 1, I
@@ -218,9 +202,7 @@ C ---------------------------------------------------------------------
 C     --- ROTATIONS LOCALES ---
 C     -------------------------
       DO 30 NP = 1, NPG2
-        N = (NP-1) * NNO
-        CALL DFDM2D ( NNO,ZR(IPOI2+NP-1),ZR(IDFDE2+N),ZR(IDFDK2+N),
-     &                COORD(1),DFDX,DFDY,POIDS )
+        CALL DFDM2D(NNO,NP,IPOI2,IDFDE2,COORD(1),DFDX,DFDY,POIDS)
 C
         DO 31 I = 1, NNO
            VFROT(I) = ZR(IVF2 + (I-1))
@@ -244,9 +226,7 @@ C     ---------------------------------------------------
 C     --- CALCUL DE LA MATRICE ELEMENTAIRE DE MASSE   ---
 C     ---------------------------------------------------
       DO 40 NP = 1, NPG2
-        N = (NP-1) * NNO
-        CALL DFDM2D ( NNO,ZR(IPOI2+NP-1),ZR(IDFDE2+N),ZR(IDFDK2+N),
-     &                COORD(1),DFDX,DFDY,POIDS )
+        CALL DFDM2D(NNO,NP,IPOI2,IDFDE2,COORD(1),DFDX,DFDY,POIDS)
 C
         DO 41 I = 1, NNO
            VFROT(I) = ZR(IVF2 + (I-1))

@@ -1,7 +1,7 @@
-      SUBROUTINE UTJAC(L2D,IGEOM,IDFDE,IDFDK,IDFDN,NIV,IFM,NNO,JACOB)
+      SUBROUTINE UTJAC ( L2D, IGEOM, IPG, IDFDE, NIV, IFM, NNO, JACOB )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/10/2002   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF CALCULEL  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C RESPONSABLE  O.BOITEAU
+C RESPONSABLE  BOITEAU O.BOITEAU
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  CALCUL LE JACOBIEN D'UN ELEMENT FINI K 
 C                          POUR AERER TE0003
@@ -43,7 +43,7 @@ C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      INTEGER IGEOM,IDFDE,IDFDK,IDFDN,NIV,IFM,NNO,IA1,IA2
+      INTEGER IGEOM,IPG,IDFDE,NIV,IFM,NNO,IA1,IA2
       REAL*8  JACOB
       LOGICAL L2D
 
@@ -65,26 +65,29 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
-      INTEGER I,I1,IJ,J
+      INTEGER I,I1,IJ,J, KP, IDFDK, IDFDN
       REAL*8  DXDE,DXDK,DYDE,DYDK,XP,YP,DFRDE,DFRDK,DFRDN,G(3,3),J11,
      &        J21,J31,UN
 
 C INIT     
       UN = 1.D0
+      IDFDK = IDFDE + 1
+      IDFDN = IDFDK + 1
       
       IF (L2D) THEN
 C CAS 2D
+        KP = 2*(IPG-1)*NNO
         DXDE=0.D0
         DXDK=0.D0
         DYDE=0.D0
         DYDK=0.D0
         DO 100 I=1,NNO
-          I1 = I - 1
-          IJ = IGEOM+2*I1
+          I1 = 2*(I-1)
+          IJ = IGEOM+I1
           XP = ZR(IJ)
           YP = ZR(IJ+1)
-          DFRDE = ZR(IDFDE+I1)
-          DFRDK = ZR(IDFDK+I1)
+          DFRDE = ZR(IDFDE+KP+I1)
+          DFRDK = ZR(IDFDK+KP+I1)
           DXDE = DXDE+XP*DFRDE
           DXDK = DXDK+XP*DFRDK
           DYDE = DYDE+YP*DFRDE
@@ -95,6 +98,7 @@ C CAS 2D
       ELSE
 C CAS 3D
 
+        KP = 3*(IPG-1)*NNO
         DO 120 J=1,3
           DO 110 I=1,3
            G(I,J) = 0.D0
@@ -102,9 +106,9 @@ C CAS 3D
   120   CONTINUE
         DO 140 I=1,NNO
           I1 = 3*(I-1)
-          DFRDE = ZR(IDFDE+I1)
-          DFRDK = ZR(IDFDK+I1)
-          DFRDN = ZR(IDFDN+I1)
+          DFRDE = ZR(IDFDE+KP+I1)
+          DFRDK = ZR(IDFDK+KP+I1)
+          DFRDN = ZR(IDFDN+KP+I1)
           DO 130 J=1,3
             XP = ZR(IGEOM+I1+J-1)
             G(1,J) = G(1,J) + XP * DFRDE

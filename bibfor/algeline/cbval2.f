@@ -1,12 +1,12 @@
-      SUBROUTINE CBVAL2(NBCOMB,TYPCST,CONST,TYPMAT,LMAT,TYPRES,LRES,
+      SUBROUTINE CBVAL2(NBCOMB,CONST,TYPMAT,LMAT,TYPRES,LRES,
      +                  DDLEXC)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER           NBCOMB,                    LMAT(*),      LRES
-      CHARACTER*(*)    TYPCST(*),   TYPMAT(*),    TYPRES,  DDLEXC
+      CHARACTER*(*)    TYPMAT(*),    TYPRES,  DDLEXC
       REAL*8                          CONST(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 21/06/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,6 @@ C          SYMETRIQUES, REELLES.
 C       *  LES SCALAIRES SONT PRIS REELS POUR L'INSTANT
 C     -----------------------------------------------------------------
 C IN  I  NBCOMB = NOMBRE DE MATRICES A COMBINER
-C IN  K* TYPCST = TYPE DES CONSTANTES (R)
 C IN  R  CONST  = TABLEAU DE R*8    DES COEFICIENTS
 C IN  K* TYPMAT = TYPE DES MATRICES   (R)
 C IN  I  LMAT = TABLEAU DES POINTEURS DES MATRICES

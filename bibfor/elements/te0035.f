@@ -1,6 +1,8 @@
       SUBROUTINE TE0035 ( OPTION , NOMTE )
+      IMPLICIT  NONE
+      CHARACTER*16        OPTION , NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,8 +19,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
 C                          POUR LES ELEMENTS DKT, DST, DKQ, DSQ ET Q4G
@@ -30,7 +30,6 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -46,24 +45,20 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      CHARACTER*24 DESI
-      CHARACTER*8  ELREFE
-      REAL*8       PGL(3,3) , XYZL(3,4),VALPU(2),EPAIS
-C
+      INTEGER      NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO
+      INTEGER      I,IBID,JGEOM,JCACO,JVECG,ITEMP,ITEMPF,IRET,IDEFI,IER
+      REAL*8       PGL(3,3) , XYZL(3,4),VALPU(2)
       REAL*8       TMOY(4), TSUP(4), TINF(4), EPSINI(6)
       REAL*8       BSIGMA(24), SIGT(32)
+      REAL*8       EPAIS,TMOY1,TINF1,TSUP1
 C ----------------------------------------------------------------------
 C
-      CALL ELREF1(ELREFE)
-
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
+C
       CALL JEVECH ( 'PGEOMER' , 'L' , JGEOM )
       CALL JEVECH ( 'PCACOQU' , 'L' , JCACO )
       EPAIS=ZR(JCACO-1+1)
       CALL JEVECH ( 'PVECTUR' , 'E' , JVECG )
-C
-      DESI = '&INEL.'//ELREFE//'.DESI'
-      CALL JEVETE(DESI,'L',LZI)
-      NNO = ZI(LZI)
 C
 C --- DETERMINATION DE LA MATRICE DE PASSAGE DU REPERE GLOBAL
 C --- AU REPERE LOCAL A L'ELEMENT
@@ -86,7 +81,7 @@ C     ------------------------
 C===============================================================
 C          -- RECUPERATION DE LA TEMPERATURE :
 C          -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-      CALL TECACH('ONN','PTEMPER',1,ITEMP,IRET)
+          CALL TECACH('ONN','PTEMPER',1,ITEMP,IRET)
            IF (ITEMP.GT.0) THEN
              DO 10 I=1,NNO
                 TMOY(I)=ZR(ITEMP+3*(I-1)  )
@@ -95,7 +90,7 @@ C          -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
  10           CONTINUE
            ENDIF
 C          -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
-      CALL TECACH('NNN','PTEMPEF',1,ITEMPF,IRET)
+         CALL TECACH('NNN','PTEMPEF',1,ITEMPF,IRET)
            IF (ITEMPF.GT.0) THEN
              NOMPU(1)='INST'
              NOMPU(2)='EPAIS'

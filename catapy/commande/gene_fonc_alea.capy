@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 05/11/2003   AUTEUR CAMBIER S.CAMBIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,13 +16,22 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
+# RESPONSABLE CAMBIER S.CAMBIER
 GENE_FONC_ALEA=OPER(nom="GENE_FONC_ALEA",op= 118,sd_prod=table,
-                    fr="Génération de la fonction temporelle à partir d une matrice interspectrale factorisée",
+                    fr="Génération de la fonction temporelle à partir d une matrice interspectrale",
                     docu="U4.36.05-f",reentrant='n',
             UIinfo={"groupes":("Fonction",)},
-         INTE_SPEC_FACT  =SIMP(statut='o',typ=interspfact ),
-         INIT_ALEA       =SIMP(statut='f',typ='I',defaut= 12312745 ),
+         INTE_SPEC       =SIMP(statut='o',typ=tabl_intsp ),
+         NUME_VITE_FLUI  =SIMP(statut='f',typ='I' ),
+         INTERPOL        =SIMP(statut='f',typ='TXM',defaut="OUI",into=("NON","OUI") ),
+         b_interpol_oui    =BLOC(condition = "INTERPOL == 'OUI' ",fr="Parametres cas interpolation autorisee",
+           DUREE_TIRAGE    =SIMP(statut='f',typ='R' ),
+           FREQ_INIT       =SIMP(statut='f',typ='R' ),
+           FREQ_FIN        =SIMP(statut='f',typ='R' ),
+             ),
+         NB_POIN         =SIMP(statut='f',typ='I'),
          NB_TIRAGE       =SIMP(statut='f',typ='I',defaut= 1 ),
-         NB_POIN         =SIMP(statut='f',typ='I' ),
+         INIT_ALEA       =SIMP(statut='f',typ='I'),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
+         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
 )  ;

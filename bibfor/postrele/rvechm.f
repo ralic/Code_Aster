@@ -1,8 +1,8 @@
-      SUBROUTINE RVECHM(DIM,SSCH19,SDLIEU,SDEVAL)
+      SUBROUTINE RVECHM(SSCH19,SDLIEU,SDEVAL)
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 14/01/98   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,6 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       CHARACTER*19 SSCH19,SDLIEU,SDEVAL
-      CHARACTER*2  DIM
 C
 C**********************************************************************
 C
@@ -37,7 +36,6 @@ C     SSCH19 : NOM DU SOUS CHAMP DE GRANDEUR
 C
 C     SDLIEU : NOM DE LA SD REPRESENTANT LE LIEU
 C
-C     DIM    : VAUT '1D' OU '2D' OU '3D'
 C
 C  ARGUMENT EN SORTIE
 C  ------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 15/12/2003   AUTEUR REZETTE C.REZETTE 
 # TITRE VALIDATION DE AFFE_CHAR_MECA/EVOL_CHAR (DE TYPE PRESSION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,8 +30,9 @@ DEBUT(CODE=_F( NOM = 'ZZZZ137A',NIV_PUB_WEB='INTERNET') )
 #  PRE_IDEAS(); MA2 = LIRE_MAILLAGE();
 #  IMPR_RESU(RESU:(MAILLAGE:MA2));FIN();
 
+PRE_IDEAS(UNITE_IDEAS=19,UNITE_MAILLAGE=20)
 
-MA=LIRE_MAILLAGE(  )
+MA=LIRE_MAILLAGE(UNITE=20)
 
 MO=AFFE_MODELE(  MAILLAGE=MA,
          AFFE=_F(  TOUT = 'OUI',PHENOMENE = 'MECANIQUE',
@@ -58,18 +59,34 @@ PRESLU=LIRE_RESU(      MODELE=MO,     UNITE=37,
                              POSI_INST = ( 8, 1,),
                              NOM_CMP = ('PRES',))
                       )
+PRESLU2=LIRE_RESU(      MODELE=MO,     UNITE=37,
+                              FORMAT='IDEAS',     TYPE_RESU='EVOL_CHAR',
+                            NOM_CHAM=('PRES',),   TOUT_ORDRE='OUI',
+                        FORMAT_IDEAS=_F(     NOM_CHAM = 'PRES',
+                             NUME_DATASET = 57,
+                                       RECORD_6 = ( 1, 4, 1, 15, 2, 1, ),
+                             POSI_ORDRE = ( 7, 4,),
+                             POSI_INST = ( 8, 1,),
+                             NOM_CMP = ('PRES',))
+                      )
+
+
+TEST_RESU(RESU=_F(RESULTAT=PRESLU2,NUME_ORDRE=2,NOM_CHAM='PRES',NOM_CMP='PRES',
+                  MAILLE='MA15',NOEUD='NO3',VALE=4.,PRECISION = 1.0E-6,
+                  REFERENCE='NON_REGRESSION',VERSION='7.02.8'))
+
 
 CH0=AFFE_CHAR_MECA(  MODELE=MO,
            DDL_IMPO=_F(  GROUP_MA = 'AB',   DY = 0.) )
 
 CH1=AFFE_CHAR_MECA(  MODELE=MO,
          PRES_REP=_F(  GROUP_MA = 'CD',   PRES = 1.),
-           EVOL_CHAR=PRESLU    )
+           EVOL_CHAR=PRESLU2    )
 
 CH2=AFFE_CHAR_MECA(  MODELE=MO,
          PRES_REP=_F(  GROUP_MA = 'CD',   PRES = 3.),
          FORCE_CONTOUR=_F(  GROUP_MA = 'CD',   FY = -2.),
-           EVOL_CHAR=PRESLU
+           EVOL_CHAR=PRESLU2
          )
 
 # 1) VALIDATION DE EVOL_CHAR (DE TYPE PRESSION) AVEC MECA_STATIQUE :

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/07/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C     ----DEBUT DES COMMUNS JEVEUX--------
 C     ----FIN DES COMMUNS JEVEUX----------
 C ----------------------------------------------------------------------
       PARAMETER     ( MXPARA = 10 )
-      INTEGER       IPAR(MXPARA), I, J, IPT, NBPF, NBPT, ITRESU(8)
+      INTEGER       IPAR(MXPARA), I, J, ITRESU(8)
       INTEGER       FOCI, FOCF, FOMI, FOMF, FOMO
       REAL*8        EPSI, ALPHA, XNORM, DEPL(6)
       CHARACTER*1   COLI, K1BID
@@ -65,7 +65,7 @@ C ----------------------------------------------------------------------
      +              TYPREF(8)
       CHARACTER*24  MATRIC, CHAMNO, CREFE(2), NOMCHA, CHAMN2, OBJVE1,
      +              OBJVE2, NOMNOE
-      LOGICAL       TOUSNO, MULTAP
+      LOGICAL       TOUSNO, MULTAP, LEFFOR
 C     ------------------------------------------------------------------
       DATA BLANC    /'        '/
       DATA CHAMN2   /'&&TRAN75.CHAMN2'/
@@ -98,36 +98,6 @@ C
             DEPL(ID) = DEPL(ID) / XNORM
  12      CONTINUE
 C
-         CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-         CALL FONBPA(FONCT,ZK16(LPROL),K8B,MXPARA,NBPF,NOMP)
-         IPAR(1) = 0
-         DO 140 I1 = 1,NBPF
-            IF (NOMP(I1).EQ.'INST') THEN
-               IF (IPAR(1).EQ.0) THEN
-                  IPAR(1) = 1
-               ELSE
-                  CALL UTDEBM('F','TRAN75','ERREUR A L''INTERPOLATION')
-                  CALL UTIMPK('S',' FONCTION: ',1,FONCT)
-                  CALL UTIMPK('L',' PARAMETRE: ',1,'INST')
-                  CALL UTIMPK('S',' EN DOUBLE.',0,' ')
-                  CALL UTFINM()
-               ENDIF
-            ENDIF
- 140     CONTINUE
-         IF (IPAR(1).EQ.0) THEN
-            CALL UTDEBM('F','TRAN75','ERREUR A L''INTERPOLATION')
-            CALL UTIMPK('S',' FONCTION: ',1,FONCT)
-            CALL UTIMPK('L',' PARAMETRES ATTENDUS:',1,'INST')
-            CALL UTIMPK('L',' PARAMETRES RECUS   :',NBPF,NOMP)
-            CALL UTFINM()
-         ENDIF
-         IF (ZK16(LPROL).EQ.'FONCTION') THEN
-            CALL JEVEUO(FONCT//'.VALE','L',LVAR)
-            CALL JELIRA(FONCT//'.VALE','LONUTI',NBPT,K1BID)
-            NBPT   = NBPT / 2
-            LFON   = LVAR + NBPT
-            IPT = 1
-         ENDIF
       ENDIF
 C
 C     --- RECUPERATION DES ENTITES DU MAILLAGE SUR LESQUELLES ---
@@ -154,18 +124,28 @@ C
            NUMGEN = ZK24(J2REFE+1)(1:14)
            CALL JEVEUO(NUMGEN//'.NUME.REFN','L',J3REFE)
            CALL GETTCO(ZK24(J3REFE),TYPREP)
-           IF ((TYPREP(1:9).EQ.'MODE_MECA').OR.
-     +         (TYPREP(1:9).EQ.'MODE_STAT')) THEN
+           IF (TYPREP(1:9).EQ.'MODE_MECA') THEN
                MATRIC = ZK24(IADRIF)
            ELSEIF (TYPREP(1:11).EQ.'BASE_MODALE') THEN
                MATRIC = ZK24(IADRIF+3)
+           ELSEIF (TYPREP(1:11).EQ.'MODE_STAT') THEN
+               MATRIC = ZK24(IADRIF)
+               IF (MATRIC(1:8) .EQ. BLANC) MATRIC = ZK24(IADRIF+2)
            ENDIF
-           CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBID,
-     +                NUMDDL,IRET)
-           CALL DISMOI('F','NOM_MAILLA',MATRIC,'MATR_ASSE',IBID,
-     +                MAILLA,IRET)
-           IF ( TOUSNO ) CALL DISMOI('F','NB_EQUA',MATRIC,'MATR_ASSE',
-     +                              NEQ,K8B,IRET)
+           IF (MATRIC.NE.BLANC) THEN
+            CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBID,
+     +                 NUMDDL,IRET)
+            CALL DISMOI('F','NOM_MAILLA',MATRIC,'MATR_ASSE',IBID,
+     +                 MAILLA,IRET)
+            IF ( TOUSNO ) CALL DISMOI('F','NB_EQUA',MATRIC,'MATR_ASSE',
+     +                               NEQ,K8B,IRET)
+           ELSE
+            NUMDDL = ZK24(IADRIF+1)(1:14)
+            CALL DISMOI('F','NOM_MAILLA',NUMDDL,'NUME_DDL',IBID,
+     +                 MAILLA,IRET)
+            IF ( TOUSNO ) CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',
+     +                               NEQ,K8B,IRET)
+           ENDIF
          ELSE
 C  POUR LES CALCULS SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
            MATRIC = ZK24(IADRIF+1)
@@ -236,7 +216,8 @@ C
          CALL JELIRA(TRANGE//'.FDEP','LONMAX',NBEXCI,K8B)
          NBEXCI = NBEXCI/2
          IF ( TOUSNO ) THEN
-            CALL VTCREM(CHAMN2,MATRIC,'V','R')
+C            CALL VTCREM(CHAMN2,MATRIC,'V','R')
+            CALL VTCREB(CHAMN2,NUMDDL,'V','R',NEQ)
             CHAMN2(20:24) = '.VALE'
             CALL JEVEUO(CHAMN2,'E',LVAL2)
             LPSDEL = IPSDEL
@@ -336,6 +317,10 @@ C APRES UNE DOUBLE PROJECTION (PRESENCE DU MOT CLEF 'MODE_MECA')
          CALL JELIRA(TRANGE//'.INST','LONMAX',NBINSG,K8B)
          CALL WKVECT('&&TRAN75.VECTGENE','V V R',NBMODE,IDVECG)
          DO 210 ICH = 1,NBCHAM
+            LEFFOR=.TRUE.
+            IF (TYPE(ICH).EQ.'DEPL'.OR.TYPE(ICH).EQ.'VITE'.OR.
+     &          TYPE(ICH).EQ.'ACCE'.OR.TYPE(ICH).EQ.'ACCE_ABSOLU')
+     &        LEFFOR=.FALSE.
 C
 C            --- RECUPERATION DES DEFORMEES MODALES ---
 C
@@ -350,10 +335,16 @@ C
             END IF
 
             NOMCHA = NOMCHA(1:19)//'.VALE'
-            CALL JELIRA(NOMCHA,'LONMAX',NEQ,K1BID)
+            IF (LEFFOR .OR. .NOT.TOUSNO) 
+     &       CALL JELIRA(NOMCHA,'LONMAX',NEQ,K1BID)
             CALL WKVECT('&&TRAN75.BASE','V V R',NBMODE*NEQ,IDBASE)
             IF ( TOUSNO ) THEN
+              IF (MODE.EQ.BLANC.AND.MATRIC.EQ.BLANC.AND.
+     &           TYPCHA.EQ.'DEPL') THEN
+               CALL COPMO2(BASEMO,NEQ,NUMDDL,NBMODE,ZR(IDBASE))
+              ELSE      
                CALL COPMOD(BASEMO,TYPCHA,NEQ,NUMDDL,NBMODE,ZR(IDBASE))
+              ENDIF
             ELSE
                DO 110 J = 1,NBMODE
                   CALL RSEXCH(BASEMO,TYPCHA,J,NOMCHA,IRET)
@@ -390,7 +381,11 @@ C
                ELSEIF ( IRET .EQ. 100 ) THEN
                  IF ( TOUSNO ) THEN
                    IF (MODE.EQ.BLANC) THEN
-                     CALL VTDEFS(CHAMNO,TYPREF(ICH),'G','R')
+                     IF (LEFFOR) THEN
+                       CALL VTDEFS(CHAMNO,TYPREF(ICH),'G','R')
+                     ELSE
+                       CALL VTCREB(CHAMNO,NUMDDL,'G','R',NEQ)
+                     ENDIF
                    ELSE
                      CALL VTCREA(CHAMNO,CREFE,'G','R',NEQ)
                    ENDIF
@@ -428,7 +423,8 @@ C
                ENDIF
                CHAMNO(20:24) = '.VALE'
                CALL JEVEUO(CHAMNO,'E',LVALE)
-               CALL JELIRA(CHAMNO,'LONMAX',NEQ,K8B)
+               IF (LEFFOR .OR. .NOT.TOUSNO) 
+     +           CALL JELIRA(CHAMNO,'LONMAX',NEQ,K8B)
                CALL EXTRAC(INTERP,EPSI,CRIT,NBINSG,ZR(IDINSG),
      +                 ZR(JINST+I),ZR(IDRESU),NBMODE,ZR(IDVECG), IBID)
                CALL MDGEPH(NEQ,NBMODE,ZR(IDBASE),ZR(IDVECG),ZR(LVALE))
@@ -452,31 +448,7 @@ C
 C              --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
                IF ( TYPE(ICH) .EQ. 'ACCE_ABSOLU'.AND.NFONCT.NE.0 ) THEN
                   IRET = 0
-                  IF (ZK16(LPROL).EQ.'INTERPRE') THEN
-                     CALL FIINTE('F',FONCT,NBPF,IPAR,ZR(JINST+I),ALPHA,
-     +                              IER)
-                  ELSEIF (ZK16(LPROL).EQ.'FONCTION') THEN
-                     CALL FOLOCX(ZR(LVAR),NBPT,ZR(JINST+I),
-     +                              ZK16(LPROL+4),IPT,EPSI,COLI,IRET)
-                     IF (IRET.NE.0) THEN
-                        CALL UTDEBM('F','TRAN75',
-     +                                 'PROBLEME RENCONTRE DANS FOLOCX')
-                        CALL UTIMPK('L',' POUR LA FONCTION:',1,FONCT)
-                        CALL UTIMPI('L',' CODE RETOUR: ',1,IRET)
-                        CALL UTFINM()
-                     ENDIF
-                     CALL FOCOLI (IPT,COLI,ZK16(LPROL+1),ZR(LVAR),
-     +                               ZR(LFON),ZR(JINST+I),ALPHA,IRET,
-     +                               FONCT,ZK16(LPROL),MXPARA,NOMP,IPAR,
-     +                               'INST',1,ZR(JINST+I))
-                     IF (IRET.NE.0) THEN
-                        CALL UTDEBM('F','TRAN75',
-     +                            'PROBLEME RENCONTRE DANS FOCOLI')
-                        CALL UTIMPK('L',' POUR LA FONCTION: ',1,FONCT)
-                        CALL UTIMPI('L',' CODE RETOUR: ',1,IRET)
-                        CALL UTFINM()
-                     ENDIF
-                  ENDIF
+                  CALL FOINTE('F',FONCT,1,'INST',ZR(JINST+I),ALPHA,IER)
 C                 --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT
 C
                   CALL WKVECT('&&TRAN75.VECTEUR','V V R',NEQ,JVEC)
@@ -503,6 +475,10 @@ C
 C
       ELSE
          DO 310 ICH = 1,NBCHAM
+            LEFFOR=.TRUE.
+            IF (TYPE(ICH).EQ.'DEPL'.OR.TYPE(ICH).EQ.'VITE'.OR.
+     &          TYPE(ICH).EQ.'ACCE'.OR.TYPE(ICH).EQ.'ACCE_ABSOLU')
+     &        LEFFOR=.FALSE.
 C
 C            --- RECUPERATION DES DEFORMEES MODALES ---
 C
@@ -515,11 +491,16 @@ C
             ELSE
               NOMCHA(20:24)='.CELV'
             END IF
-
-            CALL JELIRA(NOMCHA,'LONMAX',NEQ,K1BID)
+            IF (LEFFOR .OR. .NOT.TOUSNO) 
+     &       CALL JELIRA(NOMCHA,'LONMAX',NEQ,K1BID)
             CALL WKVECT('&&TRAN75.BASE','V V R',NBMODE*NEQ,IDBASE)
             IF ( TOUSNO ) THEN
+              IF (MODE.EQ.BLANC.AND.MATRIC.EQ.BLANC.AND.
+     &           TYPCHA.EQ.'DEPL') THEN
+               CALL COPMO2(BASEMO,NEQ,NUMDDL,NBMODE,ZR(IDBASE))
+              ELSE      
                CALL COPMOD(BASEMO,TYPCHA,NEQ,NUMDDL,NBMODE,ZR(IDBASE))
+              ENDIF
             ELSE
                DO 130 J = 1,NBMODE
                   CALL RSEXCH(BASEMO,TYPCHA,J,NOMCHA,IRET)
@@ -558,7 +539,11 @@ C
                ELSEIF ( IRET .EQ. 100 ) THEN
                  IF ( TOUSNO ) THEN
                    IF (MODE.EQ.BLANC) THEN
-                     CALL VTDEFS(CHAMNO,TYPREF(ICH),'G','R')
+                     IF (LEFFOR) THEN
+                       CALL VTDEFS(CHAMNO,TYPREF(ICH),'G','R')
+                     ELSE
+                       CALL VTCREB(CHAMNO,NUMDDL,'G','R',NEQ)
+                     ENDIF
                    ELSE
                      CALL VTCREA(CHAMNO,CREFE,'G','R',NEQ)
                    ENDIF
@@ -603,7 +588,8 @@ C
                END IF
 
                CALL JEVEUO(CHAMNO,'E',LVALE)
-               CALL JELIRA(CHAMNO,'LONMAX',NEQ,K8B)
+               IF (LEFFOR .OR. .NOT.TOUSNO) 
+     +           CALL JELIRA(CHAMNO,'LONMAX',NEQ,K8B)
                CALL MDGEPH(NEQ,NBMODE,ZR(IDBASE),
      +                     ZR(IDRESU+(ZI(JNUME+I)-1)*NBMODE),ZR(LVALE))
                IF ( MULTAP ) THEN
@@ -626,30 +612,7 @@ C
 C              --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
                IF ( TYPE(ICH) .EQ. 'ACCE_ABSOLU'.AND.NFONCT.NE.0 ) THEN
                   IRET = 0
-                  IF (ZK16(LPROL).EQ.'INTERPRE') THEN
-                  CALL FIINTE('F',FONCT,NBPF,IPAR,ZR(JINST+I),ALPHA,IER)
-                  ELSEIF (ZK16(LPROL).EQ.'FONCTION') THEN
-                     CALL FOLOCX(ZR(LVAR),NBPT,ZR(JINST+I),
-     +                           ZK16(LPROL+4),IPT,EPSI,COLI,IRET)
-                     IF (IRET.NE.0) THEN
-                        CALL UTDEBM('E','TRAN75',
-     +                              'PROBLEME RENCONTRE DANS FOLOCX')
-                        CALL UTIMPK('L',' POUR LA FONCTION:',1,FONCT)
-                        CALL UTIMPI('L',' CODE RETOUR: ',1,IRET)
-                        CALL UTFINM()
-                     ENDIF
-                     CALL FOCOLI (IPT,COLI,ZK16(LPROL+1),ZR(LVAR),
-     +                            ZR(LFON),ZR(JINST+I),ALPHA,IRET,
-     +                            FONCT,ZK16(LPROL),MXPARA,NOMP,IPAR,
-     +                            'INST',1,ZR(JINST+I))
-                     IF (IRET.NE.0) THEN
-                        CALL UTDEBM('F','TRAN75',
-     +                           'PROBLEME RENCONTRE DANS FOCOLI')
-                        CALL UTIMPK('L',' POUR LA FONCTION: ',1,FONCT)
-                        CALL UTIMPI('L',' CODE RETOUR: ',1,IRET)
-                        CALL UTFINM()
-                     ENDIF
-                  ENDIF
+                  CALL FOINTE('F',FONCT,1,'INST',ZR(JINST+I),ALPHA,IER)
 C                 --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT
                   CALL WKVECT('&&TRAN75.VECTEUR','V V R',NEQ,JVEC)
                   CALL WKVECT('&&TRAN75.DDL','V V I',NEQ*NBDIR,JDDL)
@@ -678,14 +641,16 @@ C
       CALL WKVECT(KREFE//'.REFE','G V K24',3,LREFE)
       IF (MODE.EQ.BLANC) THEN
 C
-         IF ((TYPREP(1:9).EQ.'MODE_MECA').OR.
-     +       (TYPREP(1:9).EQ.'MODE_STAT')) THEN
+         IF (TYPREP(1:9).EQ.'MODE_MECA') THEN
              ZK24(LREFE  ) = ZK24(IADRIF)
+         ELSEIF (TYPREP(1:9).EQ.'MODE_STAT') THEN
+           ZK24(LREFE) = ZK24(IADRIF)
+           IF (ZK24(IADRIF)(1:8).EQ.BLANC) ZK24(LREFE)=ZK24(IADRIF+2)
          ELSEIF (TYPREP(1:11).EQ.'BASE_MODALE') THEN
              ZK24(LREFE  ) = ZK24(IADRIF+3)
          ENDIF
 C
-         ZK24(LREFE+1) = '  '
+         ZK24(LREFE+1) = ZK24(IADRIF+1)
          ZK24(LREFE+2) = ZK24(IADRIF+2)
       ELSE
          ZK24(LREFE  ) = '  '

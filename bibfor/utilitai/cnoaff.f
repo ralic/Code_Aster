@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -307,11 +307,11 @@ C        -----------------------------------------
             ZK8(JNNO+INO-1) = NOMN
             IF (FCT) THEN
               CALL AFFENO(IOCC,INO,ZK8(JCMP),NBCMP,ZK8(IACMP),NBCOMP,
-     &                    RBID,ZK8(JFCT),NBVAL,ZI(JDESC),RBID,ZK8(JVAL),
+     &                    RBID,ZK8(JFCT),ZI(JDESC),RBID,ZK8(JVAL),
      &                    'K',NEC)
             ELSE
               CALL AFFENO(IOCC,INO,ZK8(JCMP),NBCMP,ZK8(IACMP),NBCOMP,
-     &                    ZR(JVALR),KBID,NBVAL,ZI(JDESC),ZR(JVAL),KBID,
+     &                    ZR(JVALR),KBID,ZI(JDESC),ZR(JVAL),KBID,
      &                    'R',NEC)
             END IF
    80     CONTINUE
@@ -323,11 +323,11 @@ C
             ZK8(JNNO+INO-1) = ZK8(JLNO+II-1)
             IF (FCT) THEN
               CALL AFFENO(IOCC,INO,ZK8(JCMP),NBCMP,ZK8(IACMP),NBCOMP,
-     &                    RBID,ZK8(JFCT),NBVAL,ZI(JDESC),RBID,ZK8(JVAL),
+     &                    RBID,ZK8(JFCT),ZI(JDESC),RBID,ZK8(JVAL),
      &                    'K',NEC)
             ELSE
               CALL AFFENO(IOCC,INO,ZK8(JCMP),NBCMP,ZK8(IACMP),NBCOMP,
-     &                    ZR(JVALR),KBID,NBVAL,ZI(JDESC),ZR(JVAL),KBID,
+     &                    ZR(JVALR),KBID,ZI(JDESC),ZR(JVAL),KBID,
      &                    'R',NEC)
             END IF
   110     CONTINUE

@@ -1,4 +1,4 @@
-      SUBROUTINE PRPMPB ( MCF, IOCC, XNOMCP, XNUMCP, NLSMAC, NLSNAC,
+      SUBROUTINE PRPMPB ( MCF, IOCC, XNOMCP, NLSMAC, NLSNAC,
      +              NCH19, SM, SN, ICHEF, TYPCO, COURBE, TOMAX, TEMAX )
       IMPLICIT   NONE
       INTEGER             IOCC, ICHEF
@@ -6,10 +6,10 @@
       CHARACTER*(*)       MCF
       CHARACTER*8         TYPCO, COURBE, COURB2
       CHARACTER*19        NCH19
-      CHARACTER*24        XNOMCP, XNUMCP, NLSMAC, NLSNAC
+      CHARACTER*24        XNOMCP, NLSMAC, NLSNAC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 23/01/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -134,8 +134,8 @@ C
 C
          SDMOYE = '&&PRPMPB.MOYENNE'
          CALL RVPSTM ( SDLI, SDPOST, SDMOYE, TOMAX, TEMAX )
-         CALL PRAFFM ( 'PM_PB', SDLI, SDPOST, SDMOYE, OPTION,
-     +                 SM, SN, R8B, R8B, ICHEF )
+         CALL PRAFFM ( 'PM_PB', SDLI, SDPOST, SDMOYE,
+     +                 SN, R8B, R8B)
          CALL JEDETR(SDMOYE)
 C
          CALL JEDETR(SDPOST//'.VALE')

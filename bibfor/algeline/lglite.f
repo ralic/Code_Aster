@@ -6,7 +6,7 @@ C
       REAL*8        DEVG(6), DEVGII, TRACEG, DY(10)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C ======================================================================
       INTEGER       JPARA, JDERIV, NDT, NDI
-      REAL*8        PREF, EPSSIG, GAMCJS, MU, K, SNII, RN, GN, UCN
+      REAL*8        PREF, EPSSIG, GAMCJS, MU, K, SNII, RN, GN
       REAL*8        RCOS3T, COS3T, HLODE, GDEV, UCRITP
       REAL*8        DFDL, SN(6), INVN, GAMPN, EVPN, DELTAN, Q(6)
       CHARACTER*16  PARECR, DERIVE
@@ -100,7 +100,6 @@ C ======================================================================
       RCOS3T = COS3T (SN, PREF, EPSSIG)
       RN     = HLODE (GAMCJS, RCOS3T)
       GN     = GDEV  (SNII, RN)
-      UCN    = UCRITP(NBMAT, MATER, ZR(JPARA), GN, INVN)
 C ======================================================================
 C --- CALCUL DE Q ------------------------------------------------------
 C ======================================================================
@@ -109,7 +108,7 @@ C ======================================================================
 C --- CALCUL DES DIFFERENTES DERIVEES ----------------------------------
 C ======================================================================
       CALL CALCDR(NBMAT, MATER, ZR(JPARA), ZR(JDERIV), GN,
-     +            INVN, UCN, Q, DEVG, DEVGII, TRACEG, DFDL)
+     +            INVN, Q, DEVG, DEVGII, TRACEG, DFDL)
 C ======================================================================
 C --- CALCUL DES DIFFERENTS INCREMENTS ---------------------------------
 C ======================================================================

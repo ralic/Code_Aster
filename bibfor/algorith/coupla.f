@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/05/2000   AUTEUR KXBADNG T.KESTENS 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C
       DO 10 I = 1, NBM
          IF ( LOCFLC(I) ) THEN
             CALL COEFMO(TPFL,LK,NBM,I,INDIC,R8B1,PULS(I),VGAP,
-     &                  XSI0(I),MASG,VECI1,VECR1,VECR2,VECR3,VECR4,
+     &                  XSI0(I),VECI1,VECR1,VECR2,VECR3,VECR4,
      &                  VECR5,R8B2,C16B,XCF)
             AMFLUC(I,I) = XCF/MASG(I)
          ENDIF

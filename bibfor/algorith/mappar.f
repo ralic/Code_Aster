@@ -1,7 +1,7 @@
       SUBROUTINE MAPPAR(PREMIE,NOMA,DEFICO,OLDGEO,NEWGEO,COMGEO,DEPGEO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,7 +100,7 @@ C=======================================================================
 
 C CALCUL DES NORMALES 
       
-      CALL LISSAG(PREMIE,NOMA,DEFICO,NEWGEO)
+      CALL LISSAG(NOMA,DEFICO,NEWGEO)
 
 C   BOUCLE SUR LES POINTS DE CONTACT
 

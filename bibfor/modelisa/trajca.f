@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/10/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -216,12 +216,9 @@ C
      &               IRET)
          CALL SPLIN1(ZR(JCORD),ZR(JZ+IDECAL),ZR(JD2Z),NBNO,CORDE,D1Z,
      &               IRET)
-         CALL SPLIN2(ZR(JCORD),ZR(JX+IDECAL),ZR(JD2X),NBNO,CORDE,D2X,
-     &               IRET)
-         CALL SPLIN2(ZR(JCORD),ZR(JY+IDECAL),ZR(JD2Y),NBNO,CORDE,D2Y,
-     &               IRET)
-         CALL SPLIN2(ZR(JCORD),ZR(JZ+IDECAL),ZR(JD2Z),NBNO,CORDE,D2Z,
-     &               IRET)
+         CALL SPLIN2(ZR(JCORD),ZR(JD2X),NBNO,CORDE,D2X,IRET)
+         CALL SPLIN2(ZR(JCORD),ZR(JD2Y),NBNO,CORDE,D2Y,IRET)
+         CALL SPLIN2(ZR(JCORD),ZR(JD2Z),NBNO,CORDE,D2Z,IRET)
          NORMV2 = D1X * D1X + D1Y * D1Y + D1Z * D1Z
          IF ( NORMV2.EQ.0.0D0 ) THEN
             WRITE(K3B,'(I3)') ICABL
@@ -246,12 +243,9 @@ C
      &                  IRET)
             CALL SPLIN1(ZR(JCORD),ZR(JZ+IDECAL),ZR(JD2Z),NBNO,CORDE,D1Z,
      &                  IRET)
-            CALL SPLIN2(ZR(JCORD),ZR(JX+IDECAL),ZR(JD2X),NBNO,CORDE,D2X,
-     &                  IRET)
-            CALL SPLIN2(ZR(JCORD),ZR(JY+IDECAL),ZR(JD2Y),NBNO,CORDE,D2Y,
-     &                  IRET)
-            CALL SPLIN2(ZR(JCORD),ZR(JZ+IDECAL),ZR(JD2Z),NBNO,CORDE,D2Z,
-     &                  IRET)
+            CALL SPLIN2(ZR(JCORD),ZR(JD2X),NBNO,CORDE,D2X,IRET)
+            CALL SPLIN2(ZR(JCORD),ZR(JD2Y),NBNO,CORDE,D2Y,IRET)
+            CALL SPLIN2(ZR(JCORD),ZR(JD2Z),NBNO,CORDE,D2Z,IRET)
             NORMV2 = D1X * D1X + D1Y * D1Y + D1Z * D1Z
             IF ( NORMV2.EQ.0.0D0 ) THEN
                WRITE(K3B,'(I3)') ICABL
@@ -276,12 +270,9 @@ C
      &               IRET)
          CALL SPLIN1(ZR(JCORD),ZR(JZ+IDECAL),ZR(JD2Z),NBNO,CORDE,D1Z,
      &               IRET)
-         CALL SPLIN2(ZR(JCORD),ZR(JX+IDECAL),ZR(JD2X),NBNO,CORDE,D2X,
-     &               IRET)
-         CALL SPLIN2(ZR(JCORD),ZR(JY+IDECAL),ZR(JD2Y),NBNO,CORDE,D2Y,
-     &               IRET)
-         CALL SPLIN2(ZR(JCORD),ZR(JZ+IDECAL),ZR(JD2Z),NBNO,CORDE,D2Z,
-     &               IRET)
+         CALL SPLIN2(ZR(JCORD),ZR(JD2X),NBNO,CORDE,D2X,IRET)
+         CALL SPLIN2(ZR(JCORD),ZR(JD2Y),NBNO,CORDE,D2Y,IRET)
+         CALL SPLIN2(ZR(JCORD),ZR(JD2Z),NBNO,CORDE,D2Z,IRET)
          NORMV2 = D1X * D1X + D1Y * D1Y + D1Z * D1Z
          IF ( NORMV2.EQ.0.0D0 ) THEN
             WRITE(K3B,'(I3)') ICABL

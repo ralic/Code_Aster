@@ -1,6 +1,6 @@
       SUBROUTINE OP0042 ( IER )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C     ------------------------------------------------------------------
 C
 C     ---------- TRAITEMENT DE CE QUI EST RELATIF A LA COMPLETUDE ---
       CALL GETFAC( 'TYPE_ELEM', NBOCC )
-      IF ( NBOCC .GT. 0 ) CALL AIDTYP( NBOCC , IMPR, IER )
+      IF ( NBOCC .GT. 0 ) CALL AIDTYP( IMPR, IER )
 C     ------------------------------------------------------------------
 C
  9999 CONTINUE

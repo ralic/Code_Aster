@@ -1,4 +1,5 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+
+# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE PLAQUE CARREE MINCE , LIBRE OU ENCASTREE SUR UN BORD
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-#CAS_TEST__: SDLS01A
+#CAS_TEST__: SDLS01Al
 # SDLS01/A                 COMMANDES                            22/04/91
 # PLAQUE CARREE MINCE  LIBRE OU ENCASTREE SUR UN BORD
 # DIMENSION: 1M*1M*0.01M
@@ -26,334 +27,411 @@
 #
 #======================================================================
 
+DEBUT(CODE=_F(NOM='SDLS01A',
+              NIV_PUB_WEB='INTERNET',),);
 
-DEBUT( CODE=_F(  NOM = 'SDLS01A',NIV_PUB_WEB='INTERNET') )
+MA=LIRE_MAILLAGE();
 
-MA=LIRE_MAILLAGE( )
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_MA=_F(NOM='TOUT',
+                               TOUT='OUI',),);
 
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='DKT',),);
 
-MO=AFFE_MODELE(  MAILLAGE=MA, 
-                  AFFE=_F(  TOUT = 'OUI',       PHENOMENE = 'MECANIQUE',
-                         MODELISATION = 'DKT') )
+CARELEM=AFFE_CARA_ELEM(MODELE=MO,
+                       COQUE=_F(GROUP_MA='TOUT',
+                                EPAIS=0.01,),);
 
-CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
-                            COQUE=_F(  
-       GROUP_MA = 'TOUT',
-  EPAIS = 0.01) )
+MAT=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
+                          NU=0.3,
+                          RHO=7800.0,),);
 
-MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.1E+11,  NU = 0.3,  RHO = 7800.) )
-
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MA, 
-                       AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )
-
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
 #--------------------------------------------------------------------
-
 # ---- CAS1: PLAQUE ENCASTREE SUR UN COTE
 
-CHCAS1=AFFE_CHAR_MECA(  MODELE=MO, 
-           DDL_IMPO=_F(  GROUP_NO = 'GRNM11',  DX = 0.,  DY = 0., DZ = 0.,
-                                        DRX = 0., DRY = 0., DRZ = 0.) )
-
+CHCAS1=AFFE_CHAR_MECA(MODELE=MO,
+                      DDL_IMPO=_F(GROUP_NO='GRNM11',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,
+                                  DRX=0.0,
+                                  DRY=0.0,
+                                  DRZ=0.0,),);
 # ---- CAS2: PLAQUE LIBRE-LIBRE   ==>   PAS DE CHCAS2
-
 #-------------------------------------------------------------------
 # ------ CAS1
 
-
-MACRO_MATR_ASSE(   MODELE=MO,           CARA_ELEM=CARELEM,
-                       CHARGE=CHCAS1,       CHAM_MATER=CHMAT,
-                      NUME_DDL=CO("NUM"),MATR_ASSE=(
-                _F(  MATRICE = CO("MATASSR1"),  OPTION = 'RIGI_MECA'),
-                          _F(  MATRICE = CO("MATASSM1"),  OPTION = 'MASS_MECA'))
-                   )
-
+MACRO_MATR_ASSE(MODELE=MO,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARELEM,
+                CHARGE=CHCAS1,
+                NUME_DDL=CO('NUM'),
+                MATR_ASSE=(_F(MATRICE=CO('MATASSR1'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MATASSM1'),
+                              OPTION='MASS_MECA',),),);
 # ------ CAS2
 
-
-MACRO_MATR_ASSE(   MODELE=MO,           CARA_ELEM=CARELEM,
-                                           CHAM_MATER=CHMAT,
-                      NUME_DDL=CO("NUM2"),MATR_ASSE=(
-                _F(  MATRICE = CO("MATASSR2"),  OPTION = 'RIGI_MECA'),
-                          _F(  MATRICE = CO("MATASSM2"),  OPTION = 'MASS_MECA'))
-                   )
-
+MACRO_MATR_ASSE(MODELE=MO,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARELEM,
+                NUME_DDL=CO('NUM2'),
+                MATR_ASSE=(_F(MATRICE=CO('MATASSR2'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MATASSM2'),
+                              OPTION='MASS_MECA',),),);
 #====================================================================
 #                CALCUL MODAL
 #--------- CAS1
 
-MODE1=MODE_ITER_SIMULT(  MATR_A=MATASSR1,      MATR_B=MATASSM1,
-                     CALC_FREQ=_F(  FREQ = (8., 140.,),  OPTION = 'BANDE')
-                        )
+MODE1=MODE_ITER_SIMULT(MATR_A=MATASSR1,
+                       MATR_B=MATASSM1,
+                       CALC_FREQ=_F(OPTION='BANDE',
+                                    FREQ=(8.0,140.0,),),);
 
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
-           NUME_ORDRE = 1,       VALE = 8.7266),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
-           NUME_ORDRE = 2,       VALE = 21.3042),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
-           NUME_ORDRE = 3,       VALE = 53.5542),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
-           NUME_ORDRE = 4,       VALE = 68.2984),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
-           NUME_ORDRE = 5,       VALE = 77.7448),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
-           NUME_ORDRE = 6,       VALE = 136.0471))
-          )
-
+TEST_RESU(RESU=(_F(RESULTAT=MODE1,
+                   NUME_ORDRE=1,
+                   PARA='FREQ',
+                   VALE=8.7266,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE1,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   VALE=21.3042,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE1,
+                   NUME_ORDRE=3,
+                   PARA='FREQ',
+                   VALE=53.5542,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE1,
+                   NUME_ORDRE=4,
+                   PARA='FREQ',
+                   VALE=68.2984,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE1,
+                   NUME_ORDRE=5,
+                   PARA='FREQ',
+                   VALE=77.7448,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE1,
+                   NUME_ORDRE=6,
+                   PARA='FREQ',
+                   VALE=136.0471,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),),);
 #--------- CAS2
 
-MODE2=MODE_ITER_SIMULT(  MATR_A=MATASSR2,      MATR_B=MATASSM2,
-              CALC_FREQ=_F(   FREQ = ( 0.,  90., ), OPTION = 'BANDE')
-                        )
+MODE2=MODE_ITER_SIMULT(MATR_A=MATASSR2,
+                       MATR_B=MATASSM2,
+                       CALC_FREQ=_F(OPTION='BANDE',
+                                    FREQ=(0.0,90.0,),),);
 
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.1E-2,
-           NUME_MODE = 7,       VALE = 33.7119),
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.1E-2,
-           NUME_MODE = 8,       VALE = 49.4558),
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.1E-2,
-           NUME_MODE = 9,       VALE = 61.0513),
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.1E-2,
-           NUME_MODE = 10,       VALE = 87.5160),
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.1E-2,
-           NUME_MODE = 11,       VALE = 87.5160))
-          )
-
+TEST_RESU(RESU=(_F(RESULTAT=MODE2,
+                   NUME_MODE=7,
+                   PARA='FREQ',
+                   VALE=33.7119,
+                   CRITERE='RELATIF',
+                   PRECISION=0.011,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE2,
+                   NUME_MODE=8,
+                   PARA='FREQ',
+                   VALE=49.4558,
+                   CRITERE='RELATIF',
+                   PRECISION=0.011,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE2,
+                   NUME_MODE=9,
+                   PARA='FREQ',
+                   VALE=61.0513,
+                   CRITERE='RELATIF',
+                   PRECISION=0.011,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE2,
+                   NUME_MODE=10,
+                   PARA='FREQ',
+                   VALE=87.516,
+                   CRITERE='RELATIF',
+                   PRECISION=0.011,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE2,
+                   NUME_MODE=11,
+                   PARA='FREQ',
+                   VALE=87.516,
+                   CRITERE='RELATIF',
+                   PRECISION=0.011,
+                   REFERENCE='ANALYTIQUE',),),);
 #====================================================================
 #                ENERGIE CINETIQUE ET POTENTIELLE
-
 #--------- CAS1
 
-MODE1=CALC_ELEM( reuse=MODE1,  MODELE=MO,          RESULTAT=MODE1,
-                       CHAM_MATER=CHMAT,   CARA_ELEM=CARELEM,
-                       OPTION=( 'EPOT_ELEM_DEPL',
-                                'ECIN_ELEM_DEPL', )           )
+MODE1=CALC_ELEM(reuse =MODE1,
+                MODELE=MO,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARELEM,
+                RESULTAT=MODE1,
+                OPTION=('EPOT_ELEM_DEPL','ECIN_ELEM_DEPL',),);
 
-EPOT1=POST_ELEM(  RESULTAT=MODE1,       MODELE=MO,
-                     CHAM_MATER=CHMAT,     CARA_ELEM=CARELEM,
-                    ENER_POT=_F(  TOUT = 'OUI')                )
+EPOT1=POST_ELEM(ENER_POT=_F(TOUT='OUI',),
+                MODELE=MO,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARELEM,
+                RESULTAT=MODE1,);
 
-ECIN1=POST_ELEM(  RESULTAT=MODE1,       MODELE=MO,
-                     CHAM_MATER=CHMAT,     CARA_ELEM=CARELEM,
-                    ENER_CIN=_F(  TOUT = 'OUI')                )
-
+ECIN1=POST_ELEM(ENER_CIN=_F(TOUT='OUI',),
+                MODELE=MO,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARELEM,
+                RESULTAT=MODE1,);
 # LES VALEURS DE REFERENCE SONT CELLES D'ASTER VERSION 3.02.21
 
-TEST_TABLE(      TABLE=EPOT1,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 1)),
-                 NOM_PARA='TOTALE', 
-                     VALE=1.47964E+04    )
+TEST_TABLE(TABLE=EPOT1,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),),
+           NOM_PARA='TOTALE',
+           VALE=14796.4,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=EPOT1,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 2)),
-                 NOM_PARA='TOTALE', 
-                     VALE=1.73312E+04    )
+TEST_TABLE(TABLE=EPOT1,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=2,),),
+           NOM_PARA='TOTALE',
+           VALE=17331.2,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=EPOT1,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 3)),
-                 NOM_PARA='TOTALE', 
-                     VALE=4.38023E+04    )
+TEST_TABLE(TABLE=EPOT1,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=3,),),
+           NOM_PARA='TOTALE',
+           VALE=43802.3,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=EPOT1,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 4)),
-                 NOM_PARA='TOTALE', 
-                     VALE=3.73670E+04    )
+TEST_TABLE(TABLE=EPOT1,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=4,),),
+           NOM_PARA='TOTALE',
+           VALE=37367.0,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=EPOT1,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 5)),
-                 NOM_PARA='TOTALE', 
-                     VALE=5.49564E+04    )
+TEST_TABLE(TABLE=EPOT1,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),),
+           NOM_PARA='TOTALE',
+           VALE=54956.4,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=EPOT1,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 6)),
-                 NOM_PARA='TOTALE', 
-                     VALE=1.34826E+05    )
+TEST_TABLE(TABLE=EPOT1,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=6,),),
+           NOM_PARA='TOTALE',
+           VALE=134826.0,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=ECIN1,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 1)),
-                 NOM_PARA='TOTALE', 
-                     VALE=1.47964E+04    )
+TEST_TABLE(TABLE=ECIN1,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),),
+           NOM_PARA='TOTALE',
+           VALE=14796.4,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=ECIN1,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 2)),
-                 NOM_PARA='TOTALE', 
-                     VALE=1.73312E+04    )
+TEST_TABLE(TABLE=ECIN1,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=2,),),
+           NOM_PARA='TOTALE',
+           VALE=17331.2,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=ECIN1,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 3)),
-                 NOM_PARA='TOTALE', 
-                     VALE=4.38023E+04    )
+TEST_TABLE(TABLE=ECIN1,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=3,),),
+           NOM_PARA='TOTALE',
+           VALE=43802.3,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=ECIN1,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 4)),
-                 NOM_PARA='TOTALE', 
-                     VALE=3.73670E+04    )
+TEST_TABLE(TABLE=ECIN1,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=4,),),
+           NOM_PARA='TOTALE',
+           VALE=37367.0,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=ECIN1,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 5)),
-                 NOM_PARA='TOTALE', 
-                     VALE=5.49564E+04    )
+TEST_TABLE(TABLE=ECIN1,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),),
+           NOM_PARA='TOTALE',
+           VALE=54956.4,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=ECIN1,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 6)),
-                 NOM_PARA='TOTALE', 
-                     VALE=1.34826E+05    )
-
+TEST_TABLE(TABLE=ECIN1,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=6,),),
+           NOM_PARA='TOTALE',
+           VALE=134826.0,
+           REFERENCE='ANALYTIQUE',);
 #--------- CAS2
 
+MODE2=NORM_MODE(reuse =MODE2,
+                MODE=MODE2,
+                NORME='MASS_GENE',);
 
-MODE2=NORM_MODE( reuse=MODE2,   MODE=MODE2,
-                        NORME='MASS_GENE')
+MODE2=CALC_ELEM(reuse =MODE2,
+                MODELE=MO,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARELEM,
+                RESULTAT=MODE2,
+                OPTION=('EPOT_ELEM_DEPL','ECIN_ELEM_DEPL',),);
 
-MODE2=CALC_ELEM( reuse=MODE2,  MODELE=MO,          RESULTAT=MODE2,
-                       CHAM_MATER=CHMAT,   CARA_ELEM=CARELEM,
-                       OPTION=( 'EPOT_ELEM_DEPL',
-                                'ECIN_ELEM_DEPL', )           )
+EPOT2=POST_ELEM(ENER_POT=_F(TOUT='OUI',),
+                MODELE=MO,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARELEM,
+                RESULTAT=MODE2,);
 
-EPOT2=POST_ELEM(  RESULTAT=MODE2,       MODELE=MO,
-                     CHAM_MATER=CHMAT,     CARA_ELEM=CARELEM,
-                    ENER_POT=_F(  TOUT = 'OUI')                )
+ECIN2=POST_ELEM(ENER_CIN=_F(TOUT='OUI',),
+                MODELE=MO,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARELEM,
+                RESULTAT=MODE2,);
 
-ECIN2=POST_ELEM(  RESULTAT=MODE2,       MODELE=MO,
-                     CHAM_MATER=CHMAT,     CARA_ELEM=CARELEM,
-                    ENER_CIN=_F(  TOUT = 'OUI')                )
+TEST_TABLE(TABLE=EPOT2,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=7,),),
+           NOM_PARA='TOTALE',
+           VALE=22433.457,
+           PRECISION=0.002,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=EPOT2,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 7)),
-                 NOM_PARA='TOTALE', 
-                PRECISION=2.E-03,
-                     VALE=2.2433457E+4   )
+TEST_TABLE(TABLE=EPOT2,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=8,),),
+           NOM_PARA='TOTALE',
+           VALE=48279.66,
+           PRECISION=0.0214,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=EPOT2,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 8)),
-                 NOM_PARA='TOTALE', 
-                PRECISION=2.14E-02,
-                     VALE=4.827966E+4    )
+TEST_TABLE(TABLE=EPOT2,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=9,),),
+           NOM_PARA='TOTALE',
+           VALE=73573.188,
+           PRECISION=0.016,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=EPOT2,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 9)),
-                 NOM_PARA='TOTALE', 
-                PRECISION=1.6E-02,
-                     VALE=7.3573188E+4   )
+TEST_TABLE(TABLE=EPOT2,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=10,),),
+           NOM_PARA='TOTALE',
+           VALE=149746.29,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=EPOT2,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 10)),
-                 NOM_PARA='TOTALE', 
-                     VALE=1.4974629E+05  )
+TEST_TABLE(TABLE=EPOT2,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=11,),),
+           NOM_PARA='TOTALE',
+           VALE=149746.29,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=EPOT2,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 11)),
-                 NOM_PARA='TOTALE', 
-                     VALE=1.4974629E+05  )
+TEST_TABLE(TABLE=ECIN2,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=7,),),
+           NOM_PARA='TOTALE',
+           VALE=22433.457,
+           PRECISION=0.002,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=ECIN2,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 7)),
-                 NOM_PARA='TOTALE', 
-                PRECISION=2.E-03,
-                     VALE=2.2433457E+4   )
+TEST_TABLE(TABLE=ECIN2,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=8,),),
+           NOM_PARA='TOTALE',
+           VALE=48279.66,
+           PRECISION=0.0214,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=ECIN2,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 8)),
-                 NOM_PARA='TOTALE', 
-                PRECISION=2.14E-02,           
-                     VALE=4.827966E+4    )
+TEST_TABLE(TABLE=ECIN2,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=9,),),
+           NOM_PARA='TOTALE',
+           VALE=73573.188,
+           PRECISION=0.016,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=ECIN2,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 9)),
-                 NOM_PARA='TOTALE', 
-                PRECISION=1.6E-02,
-                     VALE=7.3573188E+4   )
+TEST_TABLE(TABLE=ECIN2,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=10,),),
+           NOM_PARA='TOTALE',
+           VALE=149746.29,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(      TABLE=ECIN2,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 10)),
-                 NOM_PARA='TOTALE', 
-                     VALE=1.4974629E+05  )
-
-TEST_TABLE(      TABLE=ECIN2,FILTRE=(
-                   _F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'MA'),
-                          _F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 11)),
-                 NOM_PARA='TOTALE', 
-                     VALE=1.4974629E+05  )
-
+TEST_TABLE(TABLE=ECIN2,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=11,),),
+           NOM_PARA='TOTALE',
+           VALE=149746.29,
+           REFERENCE='ANALYTIQUE',);
 # --------------------------------------------------------------------
 
-FIN()
+FIN();
 #

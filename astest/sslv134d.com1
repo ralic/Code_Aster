@@ -305,5 +305,73 @@ TEST_TABLE(    TABLE=T_K1K3,
                            VALE=GLOC1REF,
                       PRECISION=0.14           )
 
+#
+# --------------------------------------------------------------------
+# K1, K2, K3 sur tous les noeuds du fond de fissure 
+#            (noeuds extremités + noeuds milieux)
+# --------------------------------------------------------------------
+
+K_TOUT=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
+                       MATER=MAT,
+                       MAILLAGE=MA,
+                       RESULTAT = RESU1,
+                       FOND_FISS=FISS,
+                       TOUT =  'OUI',
+                       ABSC_CURV_MAXI=0.539,
+                       VECT_K1=(0., 0., 1.,)
+                     )
+# noeud extremite N49
+TEST_TABLE(    TABLE=K_TOUT,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.010           )
+
+# noeud milieu N1346
+TEST_TABLE(    TABLE=K_TOUT,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N1346'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.010           )
+
+K_TOU2=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
+                       MATER=MAT,
+                       MAILLAGE=MA,
+                       RESULTAT = RESU1,
+                       FOND_FISS=FISS,
+                       TOUT =  'OUI',
+                       SANS_NOEUD = 'N1346',
+                       ABSC_CURV_MAXI=0.539,
+                       VECT_K1=(0., 0., 1.,)
+                     )
+
+TEST_TABLE(    TABLE=K_TOU2,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N49'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.010           )
+
+TEST_TABLE(    TABLE=K_TOU2,
+               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
+                                 VALE_K = 'N1353'),
+                        _F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1)),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.010           )
+
 FIN()
 #

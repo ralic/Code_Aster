@@ -2,8 +2,7 @@
      +                    GEOM, SYME, NZONEX, NZONEY, INDBG, INDBD,
      +                    BG, BD, INDBI, INDBS, BI, BS, DNX, DNY,
      +                    NBSEP, SLP, SCP, CIRP, LONP, PROF, POSIT,
-     +                    TYPE, SLC, BETC, LONC, NBEP, EVID, TYPELE,
-     +                    IPCL)
+     +                    TYPE, SLC, BETC, LONC, NBEP, EVID, IPCL)
       IMPLICIT    NONE
       INTEGER     UN, NZONEX, NZONEY, INDBG(*), INDBD(*), INDBI(*), 
      +            INDBS(*) ,NBSEP, NBEP, IPCL(*)
@@ -11,10 +10,9 @@
      +            BI(*), BS(*), DNX(2,*), DNY(2,*), SLP(*), SCP(*),
      +            CIRP(*), LONP(*), PROF(*), SLC(*), LONC(*), BETC(*)
       CHARACTER*8 GEOM,SYME,POSIT(*),TYPE(*),EVID(*)
-      CHARACTER*4 TYPELE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/03/2002   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 29/01/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

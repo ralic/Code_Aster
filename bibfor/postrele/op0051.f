@@ -1,7 +1,7 @@
       SUBROUTINE OP0051 ( IER )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -202,7 +202,7 @@ C
      >                                                 IBID,OPTION,IE)
                IF ( CA .EQ. 'N' ) THEN
                   IF ( OPTION(6:14) .EQ. 'ELNO_DEPL' ) THEN
-                     CALL RVGCH1 ( ZK24(JACC), OPTION )
+                     CALL RVGCH1 ( ZK24(JACC))
                   ENDIF
                ENDIF
             ENDIF
@@ -287,11 +287,14 @@ C
 C
             IF ( IRET .EQ. 0 ) THEN
 C
-               CALL UTDEBM('F',NOMCMD,'****************************')
+               CALL UTDEBM('F',NOMCMD,
+     +                  '****************************************')
                CALL UTIMPI('L','* POST_TRAITEMENT NUMERO : ',1,IOCC)
-               CALL UTIMPK('L','* PAS DE MAILLES ',1,DIM)
+               CALL UTIMPK('L','* AUCUNES MAILLES NE CORRESPONDENT'//
+     +                         ' AUX CRITERES DEMANDES',0,DIM)
                CALL UTIMPK('L','* PAS DE POST-TRAITEMENT',0,' ')
-               CALL UTIMPK('L','****************************',0,' ')
+               CALL UTIMPK('L',
+     + '********************************************************',0,' ')
                CALL UTFINM()
 C
             ELSE
@@ -311,9 +314,8 @@ C
                      NCH19 = ZK24(JCHEF + ICHEF-1)(1:19)
 C
                      CALL RVPOST ( MCF, IOCC, DIM, IVCHF, ICHEF, NCHEFF,
-     >                             XNOMCP, XNUMCP, LERESU, NCH19,
-     >                             VCODOP, NLSMAC, NLSNAC, NOMRES,
-     >                             XNOVAR )
+     >                             XNOMCP, LERESU, NCH19, NLSMAC,
+     >                             NLSNAC, NOMRES, XNOVAR )
 C
  410              CONTINUE
 C

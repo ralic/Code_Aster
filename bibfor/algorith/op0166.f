@@ -1,7 +1,7 @@
       SUBROUTINE OP0166 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -191,8 +191,8 @@ C
 C
               NUAGE1 = '&&NUAGE1'
               NUAGE2 = '&&NUAGE2'
-              CALL CHPNUA ( NX,CHAM1 , LMA1 , LNO1 , NUAGE1 )
-              CALL CHPNUA ( NX,LERES1  , LMA2 , LNO2 , NUAGE2 )
+              CALL CHPNUA ( NX,CHAM1, LNO1 , NUAGE1 )
+              CALL CHPNUA ( NX,LERES1, LNO2 , NUAGE2 )
 C
               CALL PRONUA ( METHOD , NUAGE1 , NUAGE2 )
 C
@@ -224,8 +224,8 @@ C
             LNO = ' '
             NUAGE1 = '&&NUAGE1'
             NUAGE2 = '&&NUAGE2'
-            CALL CHPNUA ( NX,CHAM1 , LMA , LNO , NUAGE1 )
-            CALL CHPNUA ( NX,LERES1  , LMA , LNO , NUAGE2 )
+            CALL CHPNUA ( NX,CHAM1, LNO , NUAGE1 )
+            CALL CHPNUA ( NX,LERES1, LNO , NUAGE2 )
 C
             CALL PRONUA ( METHOD , NUAGE1 , NUAGE2 )
 C

@@ -1,7 +1,7 @@
       SUBROUTINE NMTHMC(COMP, COMEL, NCOMEL)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 15/03/2004   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,13 +28,12 @@ C =====================================================================
 C =====================================================================
 C --- DEFINITION DES DIMENSIONS DES VECTEURS DE POSSIBILITE DES LOIS --
 C =====================================================================
-      LOGICAL       LTHMC, LTHER, LHYDR, LMECA
-      INTEGER       DMTHMC, DMTHER, DMHYDR, DMMECA
-      PARAMETER   ( DMTHMC = 8  )
-      PARAMETER   ( DMTHER = 2  )
+      LOGICAL       LTHMC, LHYDR, LMECA
+      INTEGER       DMTHMC, DMHYDR, DMMECA
+      PARAMETER   ( DMTHMC = 9  )
       PARAMETER   ( DMHYDR = 3  )
-      PARAMETER   ( DMMECA = 10 )
-      CHARACTER*16  POTHMC(DMTHMC), POTHER(DMTHER)
+      PARAMETER   ( DMMECA = 12 )
+      CHARACTER*16  POTHMC(DMTHMC)
       CHARACTER*16  POHYDR(DMHYDR), POMECA(DMMECA)
       CHARACTER*16  THMC, THER, HYDR, MECA
 C
@@ -56,12 +55,8 @@ C =====================================================================
      +              'LIQU_VAPE_GAZ' ,
      +              'LIQU_VAPE'     ,
      +              'LIQU_SATU_GAT' ,
-     +              'LIQU_NSAT_GAT' /
-C =====================================================================
-C --- PARTIE THER -----------------------------------------------------
-C =====================================================================
-      DATA POTHER / 'THER_HOMO' ,
-     +              'THER_POLY' /
+     +              'LIQU_NSAT_GAT' ,
+     +              'LIQU_AD_GAZ_VAPE' /
 C =====================================================================
 C --- PARTIE HYDR -----------------------------------------------------
 C =====================================================================
@@ -74,13 +69,15 @@ C =====================================================================
       DATA POMECA / 'ELAS'            ,
      +              'CJS'             ,
      +              'CAM_CLAY'        ,
+     +              'BARCELONE'        ,
      +              'LAIGLE'          ,
      +              'ELAS_THM'        ,
      +              'SURF_ETAT_NSAT'  ,
      +              'SURF_ETAT_SATU'  ,
      +              'CAM_CLAY_THM'    ,
      +              'MAZARS'          ,
-     +              'ENDO_ISOT_BETON' /
+     +              'ENDO_ISOT_BETON' ,
+     +              'DRUCKER_PRAGER'  /
 C *********************************************************************
 C --- FIN INITIALISATION -------------------------------------------- *
 C *********************************************************************
@@ -88,7 +85,6 @@ C =====================================================================
 C --- LE COMPORTEMENT DEFINIT EST-IL COHERENT ? -----------------------
 C =====================================================================
       LTHMC = .FALSE.
-      LTHER = .FALSE.
       LHYDR = .FALSE.
       LMECA = .FALSE.
       DO 10 JJ = 1, NCOMEL
@@ -106,20 +102,6 @@ C =====================================================================
                GOTO 10
             ENDIF
  20      CONTINUE
-C =====================================================================
-C --- DEFINITION DE LA LOI THERMIQUE ----------------------------------
-C =====================================================================
-         DO 30 II = 1, DMTHER
-            IF (COMEL(JJ).EQ.POTHER(II)) THEN
-               THER = COMEL(JJ)
-               IF ( LTHER ) THEN
-                  CALL UTMESS('F','NMTHMC_2','IL Y A DEJA UNE LOI '//
-     +                                                 'DE THERMIQUE')
-               ENDIF
-               LTHER = .TRUE.
-               GOTO 10
-            ENDIF
- 30      CONTINUE
 C =====================================================================
 C --- DEFINITION DE LA LOI HYDRAULIQUE --------------------------------
 C =====================================================================
@@ -159,10 +141,6 @@ C =====================================================================
             CALL UTMESS('F','NMTHMC_5','IL N Y A PAS DE LOI DE '//
      +                                                     'COUPLAGE')
          ENDIF
-         IF (LTHER) THEN
-            CALL UTMESS('F','NMTHMC_6','IL Y A UNE LOI DE '//
-     +                                'THERMIQUE DANS LA RELATION HM')
-         ENDIF
          IF (.NOT.LHYDR) THEN
             CALL UTMESS('F','NMTHMC_7','IL N Y A PAS DE LOI '//
      +                                                 'HYDRAULIQUE')
@@ -186,9 +164,13 @@ C =====================================================================
          IF ( MECA.EQ.'ELAS_THM' .OR.
      +        MECA.EQ.'SURF_ETAT_SATU' .OR.
      +        MECA.EQ.'CAM_CLAY_THM'   .OR.
-     +        MECA.EQ.'SURF_ETAT_NSAT'      ) THEN
+     +        MECA.EQ.'SURF_ETAT_NSAT' ) THEN
             CALL UTMESS('F','NMTHMC_11','LOI DE MECANIQUE '//
-     +                                  'INCOMPATIBLE AVEC UNE LOI HM')
+     +                      'INCOMPATIBLE AVEC UNE MODELISATION HM')
+         ENDIF
+         IF ( MECA.EQ.'BARCELONE' ) THEN
+            CALL UTMESS('F','NMTHMC_50','LOI DE MECANIQUE '//
+     +                      'INCOMPATIBLE AVEC UNE MODELISATION HM')
          ENDIF
 C =====================================================================
 C --- PARTIE KIT_HHM --------------------------------------------------
@@ -198,10 +180,6 @@ C =====================================================================
             CALL UTMESS('F','NMTHMC_12','IL N Y A PAS DE LOI DE '//
      +                                                     'COUPLAGE')
          ENDIF
-         IF (LTHER) THEN
-            CALL UTMESS('F','NMTHMC_13','IL Y A UNE LOI DE '//
-     +                               'THERMIQUE DANS LA RELATION HHM')
-         ENDIF
          IF (.NOT.LHYDR) THEN
             CALL UTMESS('F','NMTHMC_14','IL N Y A PAS DE LOI '//
      +                                                 'HYDRAULIQUE')
@@ -210,8 +188,8 @@ C =====================================================================
             CALL UTMESS('F','NMTHMC_15','IL N Y A PAS DE LOI DE '//
      +                                                    'MECANIQUE')
          ENDIF
-         IF ( THMC.NE.'LIQU_GAZ'      .AND.
-     +        THMC.NE.'LIQU_VAPE_GAZ'      ) THEN
+         IF ( THMC.NE.'LIQU_GAZ'.AND.THMC.NE.'LIQU_VAPE_GAZ'.AND.
+     +        THMC.NE.'LIQU_AD_GAZ_VAPE'      ) THEN
             CALL UTMESS('F','NMTHMC_16','LA LOI DE COUPLAGE EST '//
      +                         'INCORRECTE POUR UNE MODELISATION HHM')
          ENDIF
@@ -228,17 +206,20 @@ C =====================================================================
             CALL UTMESS('F','NMTHMC_18','LOI DE MECANIQUE '//
      +                                 'INCOMPATIBLE AVEC UNE LOI HHM')
          ENDIF
+         IF ( MECA.EQ.'BARCELONE' .AND.
+     +        (THMC.NE.'LIQU_GAZ' .AND.
+     +         THMC.NE.'LIQU_VAPE_GAZ')) THEN
+            CALL UTMESS('F','NMTHMC_51','LOI DE MECANIQUE '//
+     +                      'INCOMPATIBLE AVEC UNE MODELISATION HHM')
+         ENDIF
 C =====================================================================
 C --- PARTIE KIT_THH --------------------------------------------------
 C =====================================================================
       ELSE IF (COMP.EQ.'KIT_THH') THEN
+         THER = 'THER'
          IF (.NOT.LTHMC) THEN
             CALL UTMESS('F','NMTHMC_19','IL N Y A PAS DE LOI DE '//
      +                                                     'COUPLAGE')
-         ENDIF
-         IF (.NOT.LTHER) THEN
-            CALL UTMESS('F','NMTHMC_20','IL N Y A PAS DE LOI DE '//
-     +                                                    'THERMIQUE')
          ENDIF
          IF (.NOT.LHYDR) THEN
             CALL UTMESS('F','NMTHMC_21','IL N Y A PAS DE LOI '//
@@ -248,29 +229,30 @@ C =====================================================================
             CALL UTMESS('F','NMTHMC_22','IL Y A UNE LOI DE '//
      +                                'MECANIQUE DANS LA RELATION THH')
          ENDIF
-         IF ( THMC.NE.'LIQU_GAZ'      .AND.
-     +        THMC.NE.'LIQU_VAPE_GAZ'      ) THEN
+         IF ( THMC.NE.'LIQU_GAZ' .AND.THMC.NE.'LIQU_VAPE_GAZ'.AND.
+     +        THMC.NE.'LIQU_AD_GAZ_VAPE'      ) THEN
             CALL UTMESS('F','NMTHMC_23','LA LOI DE COUPLAGE EST '//
      +                         'INCORRECTE POUR UNE MODELISATION THH')
          ENDIF
          IF ( MECA.EQ.'ELAS_THM' .OR.
      +        MECA.EQ.'SURF_ETAT_SATU' .OR.
      +        MECA.EQ.'CAM_CLAY_THM'   .OR.
-     +        MECA.EQ.'SURF_ETAT_NSAT'      ) THEN
+     +        MECA.EQ.'SURF_ETAT_NSAT'  ) THEN
             CALL UTMESS('F','NMTHMC_24','LOI DE MECANIQUE '//
+     +                                 'INCOMPATIBLE AVEC UNE LOI THH')
+         ENDIF
+         IF ( MECA.EQ.'BARCELONE' ) THEN
+            CALL UTMESS('F','NMTHMC_52','LOI DE MECANIQUE '//
      +                                 'INCOMPATIBLE AVEC UNE LOI THH')
          ENDIF
 C =====================================================================
 C --- PARTIE KIT_THV --------------------------------------------------
 C =====================================================================
       ELSE IF (COMP.EQ.'KIT_THV') THEN
+         THER = 'THER'
          IF (.NOT.LTHMC) THEN
             CALL UTMESS('F','NMTHMC_25','IL N Y A PAS DE LOI DE '//
      +                                                     'COUPLAGE')
-         ENDIF
-         IF (.NOT.LTHER) THEN
-            CALL UTMESS('F','NMTHMC_26','IL N Y A PAS DE LOI DE '//
-     +                                                    'THERMIQUE')
          ENDIF
          IF (.NOT.LHYDR) THEN
             CALL UTMESS('F','NMTHMC_27','IL N Y A PAS DE LOI '//
@@ -287,21 +269,22 @@ C =====================================================================
          IF ( MECA.EQ.'ELAS_THM' .OR.
      +        MECA.EQ.'SURF_ETAT_SATU' .OR.
      +        MECA.EQ.'CAM_CLAY_THM'   .OR.
-     +        MECA.EQ.'SURF_ETAT_NSAT'      ) THEN
+     +        MECA.EQ.'SURF_ETAT_NSAT'   ) THEN
             CALL UTMESS('F','NMTHMC_30','LOI DE MECANIQUE '//
+     +                                 'INCOMPATIBLE AVEC UNE LOI THV')
+         ENDIF
+         IF ( MECA.EQ.'BARCELONE' ) THEN
+            CALL UTMESS('F','NMTHMC_53','LOI DE MECANIQUE '//
      +                                 'INCOMPATIBLE AVEC UNE LOI THV')
          ENDIF
 C =====================================================================
 C --- PARTIE KIT_THM --------------------------------------------------
 C =====================================================================
       ELSE IF (COMP.EQ.'KIT_THM') THEN
+         THER = 'THER'
          IF (.NOT.LTHMC) THEN
             CALL UTMESS('F','NMTHMC_31','IL N Y A PAS DE LOI DE '//
      +                                                      'COUPLAGE')
-         ENDIF
-         IF (.NOT.LTHER) THEN
-            CALL UTMESS('F','NMTHMC_32','IL N Y A PAS DE LOI DE '//
-     +                                                     'THERMIQUE')
          ENDIF
          IF (.NOT.LHYDR) THEN
             CALL UTMESS('F','NMTHMC_33','IL N Y A PAS DE LOI '//
@@ -328,17 +311,18 @@ C =====================================================================
             CALL UTMESS('F','NMTHMC_37','LOI DE MECANIQUE '//
      +                                 'INCOMPATIBLE AVEC UNE LOI THM')
          ENDIF
+         IF ( MECA.EQ.'BARCELONE' ) THEN
+            CALL UTMESS('F','NMTHMC_54','LOI DE MECANIQUE '//
+     +                      'INCOMPATIBLE AVEC UNE MODELISATION THM')
+         ENDIF
 C =====================================================================
 C --- PARTIE KIT_THHM -------------------------------------------------
 C =====================================================================
       ELSE IF (COMP.EQ.'KIT_THHM') THEN
+         THER = 'THER'
          IF (.NOT.LTHMC) THEN
             CALL UTMESS('F','NMTHMC_38','IL N Y A PAS DE LOI DE '//
      +                                                      'COUPLAGE')
-         ENDIF
-         IF (.NOT.LTHER) THEN
-            CALL UTMESS('F','NMTHMC_39','IL N Y A PAS DE LOI DE '//
-     +                                                     'THERMIQUE')
          ENDIF
          IF (.NOT.LHYDR) THEN
             CALL UTMESS('F','NMTHMC_40','IL N Y A PAS DE LOI '//
@@ -349,6 +333,7 @@ C =====================================================================
      +                                                     'MECANIQUE')
          ENDIF
          IF ( THMC.NE.'LIQU_VAPE_GAZ' .AND.
+     +        THMC.NE.'LIQU_AD_GAZ_VAPE' .AND.
      +        THMC.NE.'LIQU_NSAT_GAT' .AND.
      +        THMC.NE.'LIQU_GAZ'           ) THEN
             CALL UTMESS('F','NMTHMC_42','LA LOI DE COUPLAGE EST '//
@@ -365,6 +350,12 @@ C =====================================================================
      +        MECA.EQ.'CAM_CLAY_THM'        ) THEN
             CALL UTMESS('F','NMTHMC_44','LOI DE MECANIQUE '//
      +                                'INCOMPATIBLE AVEC UNE LOI THHM')
+         ENDIF
+         IF ( MECA.EQ.'BARCELONE' .AND.
+     +        (THMC.NE.'LIQU_GAZ' .AND.
+     +        THMC.NE.'LIQU_VAPE_GAZ')) THEN
+            CALL UTMESS('F','NMTHMC_55','LOI DE MECANIQUE '//
+     +                     'INCOMPATIBLE AVEC UNE MODELISATION THHM')
          ENDIF
       ENDIF
 C =====================================================================

@@ -1,9 +1,9 @@
-        SUBROUTINE LCELIN ( MOD ,  NMAT,  MATERD, MATERF, MATCST,
+        SUBROUTINE LCELIN ( MOD ,  NMAT,  MATERD, MATERF,
      1                      NVI,   DEPS,  SIGD,   VIND,   SIGF,   VINF )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/01/98   AUTEUR CIBHHLB L.BOURHRARA 
+C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C       IN  MOD    :  MODELISATION
 C           NMAT   :  DIMENSION MATER
 C           MATERD :  COEFFICIENTS MATERIAU A T
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           MATCST :  'OUI' SI MATERIAU CONSTANT SUR DT
 C           VIND   :  VARIABLES INTERNES A T
 C           SIGD   :  CONTRAINTE  A T
 C       VAR DEPS   :  INCREMENT DE DEFORMATION
@@ -40,7 +39,6 @@ C       ----------------------------------------------------------------
         REAL*8          DKOOH(6,6),     HOOKF(6,6)
         REAL*8          EPSED(6),       EPSEF(6) ,   DEPS(6)
         CHARACTER*8     MOD
-        CHARACTER*3     MATCST
 C       ----------------------------------------------------------------
 C
 C --    OPERATEUR ELASTIQUE LINEAIRE ISOTROPE

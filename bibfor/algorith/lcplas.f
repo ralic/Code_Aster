@@ -6,7 +6,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/03/2002   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C
 C
       IF     ( LOI(1:8).EQ. 'ROUSS_PR' .OR.   
      1         LOI(1:10) .EQ. 'ROUSS_VISC'    ) THEN
-         CALL LCROUS ( TOLER, ITMAX, MOD, IMAT, NMAT, MATERF, NVI,
+         CALL LCROUS ( TOLER, ITMAX, IMAT, NMAT, MATERF, NVI,
      1                   TEMPF, DEPS, SIGD, VIND, THETA, LOI, DELTAT, 
      2                   SIGF, VINF, IRTET )
          IF ( IRTET.GT.0 ) GOTO (1), IRTET
@@ -90,14 +90,12 @@ C
 C
       ELSEIF ( LOI(1:6) .EQ. 'LAIGLE'   ) THEN
          CALL LCPLLG ( TOLER, ITMAX, MOD, NMAT, MATERF, NR, NVI,
-     1                 DEPS, EPSD, SIGD, VIND, SEUIL, ICOMP, SIGF,
+     1                 DEPS, SIGD, VIND, SEUIL, ICOMP, SIGF,
      2                 VINF, DEVG, DEVGII, IRTET)
          IF ( IRTET.GT.0 ) GOTO (1), IRTET
 C
       ELSE
-         CALL LCPLLI ( LOI, MOD,  IMAT, NMAT, MATERD,MATERF,MATCST,
-     1                 NR,  NVI,TEMPD, TEMPF,TIMED,TIMEF,DEPS,EPSD,
-     2                 SIGD,VIND, SIGF, VINF)
+         CALL LCPLLI (MOD,NMAT,NR,NVI,EPSD,SIGD,VIND,SIGF,VINF)
       ENDIF
 C
       IRTETI = 0

@@ -7,7 +7,7 @@
       REAL*8 NORM1(*),NORM2(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/05/97   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,7 @@ C           CAS D'UNE MAILLE POI1
             ENDIF
             INOMA = 1
             CALL PACOOR(NOMA,NUMMA,NBNO,COOR)
-            CALL CANORM(COOR,VECNOR,NBNO,NDIM,ITYP,INORM)
+            CALL CANORM(COOR,VECNOR,NDIM,ITYP,INORM)
             DO 120 J = 1,3
               NORM1(J) = NORM1(J) + VECNOR(J)
   120       CONTINUE
@@ -127,7 +127,7 @@ C           CAS D'UNE MAILLE POI1
             ENDIF
             INOMA = 1
             CALL PACOOR(NOMA,NUMMA,NBNO,COOR)
-            CALL CANORM(COOR,VECNOR,NBNO,NDIM,ITYP,INORM)
+            CALL CANORM(COOR,VECNOR,NDIM,ITYP,INORM)
             DO 220 J = 1,3
               NORM2(J) = NORM2(J) + VECNOR(J)
   220       CONTINUE

@@ -1,17 +1,15 @@
       SUBROUTINE NMCOFR ( INSTAP, NOMA, DEPPLU, DEPDEL, DDEPLA, DEFICO,
-     &                    RESOCO, CNCINE, ITERAT, SOLVEU, CONV, LICCVG,
-     &                    LREAC )
+     &                    RESOCO, CNCINE, ITERAT, CONV, LICCVG, LREAC )
 C
       IMPLICIT      NONE
       LOGICAL       LREAC(4)
       INTEGER       LDSCON, ITERAT, LICCVG(*)
       REAL*8        INSTAP, CONV(*)
       CHARACTER*8   NOMA
-      CHARACTER*19  SOLVEU
       CHARACTER*24  DEPPLU, DEPDEL, DDEPLA, DEFICO, RESOCO, CNCINE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

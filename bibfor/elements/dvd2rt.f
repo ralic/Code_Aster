@@ -1,7 +1,7 @@
-      SUBROUTINE DVD2RT(NPT,ETA,KSI,DFD2DE,DFD2DK,DFDEDK)
+      SUBROUTINE DVD2RT(NPT,DFD2DE,DFD2DK,DFDEDK)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/01/2001   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ELEMENTS  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,12 +25,11 @@ C      POUR UN TRIANGLE DE REFERENCE AUX POINTS DE GAUSS
 C
 C    - ARGUMENTS:
 C        DONNEES:          NPT      -->  NOMBRE DE POINTS DU QUADRANGLE
-C                          ETA,KSI  -->  COORDONNEES DU POINT
 C
 C        RESULTATS:
-C                          DFD2DE   <--  DERIVEE SECONDE / ETA
-C                          DFD2DK   <--  DERIVEE SECONDE / KSI
-C                          DFDEDK   <--  DERIVEE SECONDE / ETA ET KSI
+C                          DFD2DE   <--  DERIVEE SECONDE / 1ER VAR
+C                          DFD2DK   <--  DERIVEE SECONDE / 2EME VAR
+C                          DFDEDK   <--  DERIVEE SECONDE / 1ET2EME VAR
 C
 C
 C   -------------------------------------------------------------------
@@ -47,7 +46,7 @@ C CORPS DU PROGRAMME
 
 C DECLARATION PARAMETRES D'APPELS 
       INTEGER  NPT
-      REAL*8   ETA,KSI,DFD2DE(*),DFD2DK(*),DFDEDK(*)
+      REAL*8   DFD2DE(*),DFD2DK(*),DFDEDK(*)
       
 C AFFECTATION DES FONCTIONS DE FORME ET DE LEURS DERIVEES
       IF(NPT.EQ.6) THEN

@@ -5,7 +5,7 @@
       INTEGER                                   IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 13/02/2001   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -339,7 +339,7 @@ C           --- DEFINITION DES PARAMETRES FORMELS ---
             ENDIF
             IF (IER1.NE.0) THEN
                IER = IER + 1
-               CALL SNERR(06,ICLASS,IVAL,RVAL,KVAL)
+               CALL SNERR(06,ICLASS,IVAL,KVAL)
             ENDIF
             IVARS = IVARS + 1
             IF ( IVARS .GT. MXVARS ) THEN

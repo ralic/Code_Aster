@@ -3,7 +3,7 @@
       INTEGER             IERR
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,12 +54,11 @@ C     --- FIN DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*8   NOMRES, K8BID, MODMEC, PHIBAR, MOINT, CHAR
       CHARACTER*8   MOFLUI, MA, MATERI, NOMCMP(6), NUMGEN, MODGEN
       CHARACTER*14  NU, NUM
-      CHARACTER*16  TYPRES, NOMCOM, TYPE(3)
+      CHARACTER*16  TYPRES, NOMCOM
       CHARACTER*19  MAX, MAY, MAZ, CHAMNO, NOMNUM, SOLVEU
       CHARACTER*24  BLANC, TIME, NOCHAM, MATE
 C
 C -----------------------------------------------------------------
-       DATA TYPE   / 'DEPL', 'VITE', 'ACCE' /
        DATA NOMCMP / 'INST    ', 'DELTAT  ', 'THETA   ',
      &               'KHI     ', 'R       ', 'RHO     ' /
        DATA TPS    / 0.0D0, 2*1.0D0, 3*0.0D0 /
@@ -117,7 +116,7 @@ C--------------------------------------------------------------
 C --- CALCUL DE LA MATRICE ASSEMBLEE DE RIGIDITE DU FLUIDE
 C--------------------------------------------------------------
 C
-      CALL RIGFLU ( MOFLUI, TIME, NOMCMP, TYPE, TPS, N2, CHAR, MATE,
+      CALL RIGFLU ( MOFLUI, TIME, NOMCMP, TPS, N2, CHAR, MATE,
      &              SOLVEU, MA, NU )
 C
 C--------------------------------------------------------------

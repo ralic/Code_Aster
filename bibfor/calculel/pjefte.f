@@ -1,7 +1,7 @@
       SUBROUTINE PJEFTE ( TYPRES, EVO1, RESU )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF CALCULEL  DATE 16/02/2004   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,9 @@ C
       INTEGER NDIM,NCAS,N1,NBOCC,IOCC,IE,IBID,NBNO2,NBMA1
       INTEGER IAGNO2,IAGMA1,K,JTYPM1,TYPM1
       INTEGER KK,LTMVOL(9),INDIIS
+
+      LOGICAL LDMAX
+      REAL*8  DISTMA,R8MAEM
 C----------------------------------------------------------------------
 C       DESCRIPTION DE LA SD CORRESP_2_MAILLA : CORRES
 C       --------------------------------------------------------
@@ -100,7 +103,13 @@ C               12   345678   9012345678901234
       CALL JEVEUO(NOMA1//'.TYPMAIL','L',JTYPM1)
       CALL DISMOI('F','NOM_MAILLA',MODEL2,'MODELE',IBID,NOMA2,IE)
 
-
+      LDMAX = .FALSE.
+      DISTMA = R8MAEM()
+      CALL GETVR8(' ','DISTANCE_MAX',1,0,0,DISTMA,N1)
+      IF ( ABS(N1) .EQ. 1 ) THEN
+        CALL GETVR8(' ','DISTANCE_MAX',1,0,1,DISTMA,N1)
+        LDMAX = .TRUE.
+      ENDIF
 
 C     DETERMINATION DE LA DIMENSION DE L'ESPACE (NDIM) :
 C     --------------------------------------------------------
@@ -157,11 +166,14 @@ C     --------------------------------------------------------
 
 
         IF (NCAS.EQ.2) THEN
-          CALL PJ2DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES)
+          CALL PJ2DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES,
+     +                 LDMAX,DISTMA)
         ELSE IF (NCAS.EQ.3) THEN
-          CALL PJ3DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES)
+          CALL PJ3DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES,
+     +                 LDMAX,DISTMA)
         ELSE IF (NCAS.EQ.4) THEN
-          CALL PJ4DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES)
+          CALL PJ4DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES,
+     +                 LDMAX,DISTMA)
         ELSE
           CALL UTMESS('F',NOMPRO,'STOP 4')
         END IF
@@ -229,13 +241,13 @@ C        ----------------------------------------------
           CALL DETRSD('CORRESP_2_MAILLA',CORRE1)
           IF (NCAS.EQ.2) THEN
             CALL PJ2DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
-     +                  ZI(IAGNO2),' ',' ',CORRE1)
+     +                  ZI(IAGNO2),' ',' ',CORRE1,LDMAX,DISTMA)
           ELSE IF (NCAS.EQ.3) THEN
             CALL PJ3DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
-     +                  ZI(IAGNO2),' ',' ',CORRE1)
+     +                  ZI(IAGNO2),' ',' ',CORRE1,LDMAX,DISTMA)
           ELSE IF (NCAS.EQ.4) THEN
             CALL PJ4DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
-     +                  ZI(IAGNO2),' ',' ',CORRE1)
+     +                  ZI(IAGNO2),' ',' ',CORRE1,LDMAX,DISTMA)
           ELSE
             CALL UTMESS('F',NOMPRO,'STOP 5')
           END IF

@@ -1,6 +1,6 @@
       SUBROUTINE TE0217(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,11 +36,10 @@ C.......................................................................
 
       REAL*8 VALRES,VALPAR(4),X,Y,Z
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS,GRX,GRY,GRZ
-      INTEGER IPOIDS,IVF,JVAL,IDFDE,IDFDN,IDFDK,IGEOM
-      INTEGER JGANO,NNO,NDIM,KP,NPG1,I,K,IVECTT,IGRAI,IMATE
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM
+      INTEGER JGANO,NNO,NDIM,KP,NPG1,I,L,IVECTT,IGRAI,IMATE
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -59,10 +58,6 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
-      IDFDN = IDFDE + 1
-      IDFDK = IDFDN + 1
-      DO 10 I = 1,1
-   10 CONTINUE
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -91,17 +86,17 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       END IF
 
       DO 40 KP = 1,NPG1
-        K = (KP-1)*NNO*3
-        CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
-     &              ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POIDS)
+        L = (KP-1)*NNO
+        CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
 
         X = 0.D0
         Y = 0.D0
         Z = 0.D0
         DO 20 I = 1,NNO
-          X = X + ZR(IGEOM-1+3* (I-1)+1)*ZR(IVF+K+I-1)
-          Y = Y + ZR(IGEOM-1+3* (I-1)+2)*ZR(IVF+K+I-1)
-          Z = Z + ZR(IGEOM-1+3* (I-1)+3)*ZR(IVF+K+I-1)
+          X = X + ZR(IGEOM-1+3* (I-1)+1)*ZR(IVF+L+I-1)
+          Y = Y + ZR(IGEOM-1+3* (I-1)+2)*ZR(IVF+L+I-1)
+          Z = Z + ZR(IGEOM-1+3* (I-1)+3)*ZR(IVF+L+I-1)
    20   CONTINUE
 
         POIDS = POIDS*VALRES

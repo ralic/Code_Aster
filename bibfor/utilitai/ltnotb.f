@@ -3,7 +3,7 @@
       CHARACTER*(*)       LITAB , NOMTAB , NOMSD
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C
       NOMSYM = NOMTAB
       CALL JELIRA ( LISTAB//'.LTNT', 'LONMAX', NBTM, K8B)
       CALL JELIRA ( LISTAB//'.LTNT', 'LONUTI', NBTU, K8B)
-      CALL JEVEUO ( LISTAB//'.LTNT', 'E', JLTNT )
+      CALL JEVEUO ( LISTAB//'.LTNT', 'L', JLTNT )
       DO 10 I = 1 , NBTU
          IF ( ZK16(JLTNT+I-1) .EQ. NOMSYM ) THEN
             CALL JEVEUO ( LISTAB//'.LTNS', 'L', JLTNS )

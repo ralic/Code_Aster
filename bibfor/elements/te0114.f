@@ -1,6 +1,6 @@
       SUBROUTINE TE0114 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/04/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,46 +45,23 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CHARACTER*16       NOMTE,OPTION
-      CHARACTER*24       CARAC,FF    
-      CHARACTER*8        ELREFE   
+      CHARACTER*16       NOMTE,OPTION  
       REAL*8             R,XH,WI,U(3,9),DEPG(54)
       REAL*8             DFDR(9),DFDZ(9),POIDS
-      INTEGER            IFF,IPOIDS,IVF,IDFDE,IDFDK,IGEOM
-      INTEGER            NPG,NPG1,NPG2,NPG3,NPG4
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM
+      INTEGER            NPG,NNOS,JGANO,NDIM
       INTEGER            NNO,KP,IHARMO
 C
 C
-      CALL ELREF1(ELREFE)
-C
-      CARAC='&INEL.'//ELREFE//'.CARAC'
-      CALL JEVETE(CARAC,'L',ICARAC)
-      NNO  = ZI(ICARAC)
-      NPG1 = ZI(ICARAC+2)
-      NPG2 = ZI(ICARAC+3)
-      NPG3 = ZI(ICARAC+4)
-      NPG4 = ZI(ICARAC+5)
-C
-      FF   ='&INEL.'//ELREFE//'.FF'
-      CALL JEVETE(FF,'L',IFF)
-C
-      IF(NOMTE(1:8).EQ.'MEFOTR3 ' .OR.
-     &   NOMTE(1:8).EQ.'MEFOQU4 ') THEN
-         NNOS = NNO
-         IPOIDS = IFF   + NPG1*(1+3*NNO)
-         IVF    = IPOIDS+NPG2
-         IDFDE  = IVF   +NPG2*NNO
-         IDFDK  = IDFDE +NPG2*NNO
-         NPG    = NPG2
-      ELSE IF(NOMTE(1:8).EQ.'MEFOTR6 ' .OR.
+      IF (NOMTE(1:8).EQ.'MEFOTR3 ' .OR.
+     &    NOMTE(1:8).EQ.'MEFOQU4 ') THEN
+        CALL ELREF4(' ','MASS',NDIM,NNO,NNOS,NPG,IPOIDS,
+     &                   IVF,IDFDE,JGANO)
+      ELSEIF (NOMTE(1:8).EQ.'MEFOTR6 ' .OR.
      &        NOMTE(1:8).EQ.'MEFOQU8 ' .OR.
      &        NOMTE(1:8).EQ.'MEFOQU9 ') THEN
-         NNOS = NNO/2
-         IPOIDS = IFF + (NPG1+NPG2+NPG3)*(1+3*NNO)
-         IVF    = IPOIDS+NPG4
-         IDFDE  = IVF   +NPG4*NNO
-         IDFDK  = IDFDE +NPG4*NNO
-         NPG    = NPG4
+        CALL ELREF4(' ','NOEU_S',NDIM,NNO,NNOS,NPG,IPOIDS,
+     &                   IVF,IDFDE,JGANO)
       ENDIF
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
@@ -110,8 +87,7 @@ C
 C
         IDPG = (KP-1) * 6
         KDEC = (KP-1) * NNO
-        CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+KDEC),ZR(IDFDK+KDEC),
-     &                ZR(IGEOM),DFDR,DFDZ,POIDS )
+        CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDR,DFDZ,POIDS)
         R   = 0.D0
         DO 102 I=1,NNO
           R   = R   + ZR(IGEOM+2*(I-1))*ZR(IVF+KDEC+I-1)
@@ -139,6 +115,6 @@ C
 C
 101   CONTINUE
 C
-      CALL PPGANO(NNOS,NPG,6,DEPG,ZR(IDEFO))
+      CALL PPGAN2(JGANO,6,DEPG,ZR(IDEFO))
 C
       END

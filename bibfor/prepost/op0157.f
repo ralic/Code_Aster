@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -174,7 +174,7 @@ C
          CALL GETVTX(MOTFAC,'INFO_CMP_GENE',IOCC,1,1,K8B,N)
          IF ( K8B(1:3) .EQ. 'NON' ) LHIST = .FALSE.
 C
-         CALL IRGENE (IOCC, GENE, FORM,FICH, TITRE, NBNOSY,ZK16(JNOSY),
+         CALL IRGENE (IOCC, GENE, FORM,FICH, NBNOSY,ZK16(JNOSY),
      +                NBCMPG,ZI(JCMPG), NBPARA,ZK16(JPARA),
      +            NBORDR,ZI(JORDR), NBINST,ZR(JINST),ZI(JRANG), LHIST )
 C

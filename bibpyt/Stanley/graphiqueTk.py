@@ -1,4 +1,4 @@
-#@ MODIF graphiqueTk Stanley  DATE 21/01/2003   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF graphiqueTk Stanley  DATE 05/04/2004   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,8 @@
 
 
 import Tkinter
-import env
+
+
 
 
 class LIGNE_ETAT :
@@ -44,6 +45,43 @@ class LIGNE_ETAT :
            
 # ==============================================================================
     
+class MENU :
+
+  """
+    MENU DEROULANT SIMPLE
+    
+  """
+  
+        
+  def __init__ (self, frame_parent, colonnes, items, defaut='', expand = 1) :
+  
+    """
+       IN  frame_parent : objet Tk parent du menu
+       IN  colonnes     : liste des titres de colonnes
+       IN  item         : dico des items du menu
+                           cle = titre des colonnes,
+                           resu = [ (item, methode), ...]
+    """
+       
+    self.acces = {}
+    
+    for col in colonnes :
+      titre = Tkinter.Menubutton(frame_parent,text=col,
+              relief=Tkinter.FLAT,anchor = Tkinter.NW)
+      titre.pack(padx = 3, pady = 1, side = Tkinter.LEFT)
+      self.acces[col] = titre
+        
+      if col not in items.keys() :
+        titre['state'] = Tkinter.DISABLED
+        
+      else :
+        choix = Tkinter.Menu(titre,tearoff=0)
+        titre['menu'] = choix
+        
+        for item,action in items[col] :
+          choix.add_command(label = item, command = action)
+
+# ==============================================================================
     
       
 class MENU_RADIO_BOX :
@@ -158,13 +196,14 @@ class LIST_BOX :
     
      Attributs publics
       courant    : liste des noms selectionnes
+      noms       : liste des noms selectionnables
+      indice     : liste des indices des noms selectionnes par rapport a noms
       
      Methode publique 
       Scan       : Rafraichit la selection, retourne vrai si elle a change
       Change     : Affecte une nouvelle liste de noms selectionnables
       
      Attributs prives
-      noms       : liste des noms selectionnables
       listbox    : objet Tk de type listbox
       
   """
@@ -174,7 +213,8 @@ class LIST_BOX :
 
     self.noms    = liste    # liste des noms selectionnables (chaine ou tt objet)
     self.courant = []       # selection courante
-        
+    self.indice  = []       # indices de la selection courante
+  
    # Barre d'ascenceur
     scrollbar = Tkinter.Scrollbar(frame_parent)
     scrollbar.pack(side=Tkinter.RIGHT, fill=Tkinter.Y) 
@@ -216,6 +256,7 @@ class LIST_BOX :
       p = liste.index(defaut)
       self.listbox.selection_set(p)
       self.courant = [defaut]
+      self.indice  = [p]
     except ValueError :
       pass
 
@@ -233,6 +274,7 @@ class LIST_BOX :
       p = liste.index(defaut)
       self.listbox.selection_set(p)
       self.courant = [defaut]
+      self.indice  = [p]
     except ValueError :
       pass
        
@@ -245,10 +287,11 @@ class LIST_BOX :
     nouveau = []
     for pos in positions :
       nouveau.append(self.noms[pos])
-
     if nouveau <> self.courant :
       different = 1
       self.courant = nouveau
+      self.indice  = positions
+
     else :
       different = 0    
       
@@ -302,6 +345,150 @@ class DIALOGUE :
 
       
 # ==============================================================================
+
+
+def SAISIE_MODE(l_infos,titre = "") :
+
+  """
+    procede a la saisie d'un certain nombre de chaines
+    voir classe C_SAISIE
+  """
+  
+  saisie = C_SAISIE_MODE(l_infos,titre)
+  return saisie.reponse
+
+
+class C_SAISIE_MODE :
+
+  """
+    Realise la selection du mode lors d'une nouvelle configuration.
+    On renvoie juste l'item choisi
+  """
+
+
+  def __init__(self,l_infos, titre) :
+
+    self.root = Tkinter.Tk()
+    self.root.title(titre)
+    self.l_infos = l_infos
+
+    frame = Tkinter.Frame(self.root)
+    frame.grid(padx = 10, pady = 3)
+
+    bouton = Tkinter.Button(self.root, bg='blue',text='OK', command=self.Lire_Mode)
+    bouton.grid(row = 1, column=0,pady = 3)  
+
+
+    self.listbox = Tkinter.Listbox(
+      frame, 
+      height=3,
+      exportselection = 0,
+      )
+
+   # Remplissage
+    for chaine in l_infos :
+      self.listbox.insert(Tkinter.END, chaine)
+    self.listbox.selection_set(0)
+
+   # Affichage
+    self.listbox.pack(side=Tkinter.LEFT, expand = 0, fill=Tkinter.BOTH)
+
+    self.root.mainloop()
+    self.root.destroy()
+
+
+  def Lire_Mode(self) : 
+
+    items = int(self.listbox.curselection()[0])
+    self.reponse = self.l_infos[items]
+    self.root.quit()
+
+
+# ==============================================================================
+
+def SAISIE(l_infos,titre = "", defaut = None) :
+
+  """
+    procede a la saisie d'un certain nombre de chaines
+    voir classe C_SAISIE
+  """
+  
+  saisie = C_SAISIE(l_infos,titre,defaut)
+  return saisie.reponse
+
+
+class C_SAISIE :
+
+  """
+    Realise la saisie de chaines de caractere
+
+    La presentation s'appuie sur des lignes titrees avec plusieurs champs
+    de reponse par ligne.
+
+    Les informations de presentation sont donnees par une double liste :
+    [ [nom_ligne_1,nbr de champs ligne 1],...]
+
+    La reponse est elle aussi envoyee sous forme d'une double liste :
+    [[champ_1 ligne_1, ..., champ_n ligne_1], ...]
+  """
+
+
+  def __init__(self,l_infos,titre, defaut) :
+  
+    self.root = Tkinter.Tk()
+    self.root.title(titre)
+    
+    frame = Tkinter.Frame(self.root)
+    frame.grid(padx = 10, pady = 10)
+
+    bouton = Tkinter.Button(self.root, bg='blue',text='OK', command=self.Lire)
+    bouton.grid(row = 1, column=0,pady = 10)  
+            
+    row = 0
+    self.var = []
+    
+    for info in l_infos :
+      nom = info[0]
+      nbr = info[1]
+      label = Tkinter.Label(frame,text=nom,padx = 5, pady=2,justify = Tkinter.LEFT)
+      label.grid(row = row, column = 0, sticky = Tkinter.W)
+      
+      rep_ligne = []
+      for i in xrange(nbr) :
+        var_rep = Tkinter.StringVar(self.root)
+        if defaut :
+          val_def = defaut[row][i]
+          if type(val_def) == type('') :
+            var_rep.set(val_def)
+          else :
+            var_rep.set(repr(val_def))
+        rep_ligne.append(var_rep)
+        entree = Tkinter.Entry(frame,textvariable = var_rep)
+        entree.grid(row=row,column=i+1,padx=2)
+
+      self.var.append(rep_ligne)
+      row = row + 1
+
+    self.root.mainloop()
+    self.root.destroy()
+    
+  
+  
+  def Lire(self) : 
+
+    self.reponse = []
+    for ligne in self.var :
+      rep_ligne = []
+      for var in ligne :
+        item = var.get()
+        rep_ligne.append(item)
+      self.reponse.append(rep_ligne)
+    self.root.quit()
+
+
+
+# ==============================================================================
+
 
 
 class BARRE :

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF MODELISA  DATE 22/03/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,20 +49,19 @@ C
       INTEGER       IFREQ, NFINIT, NFIN, INUMO, NBM, NBPOIN, NBPAR, NBID
       INTEGER       NPOIN, IFF, IVARE, LVALE, LPROL, IBID, I,IVAL(3)
       INTEGER       IM1, IM2, IVATE, IVECX, IVECY, IVECZ, NVECX, NVECY
-      INTEGER       LVAR,LPRESS,NBPF,NBPT,MXPARA,NVECO,IER,NCHAM
-      PARAMETER    (MXPARA=10)
-      INTEGER       IPARA(MXPARA),IRET,IPT,LFON
+      INTEGER       LVAR,NBPF,NVECO,IER,NCHAM
+      INTEGER       IRET
       PARAMETER   ( NBPAR = 8 )
       REAL*8        FMIN, FMAX, FINIT, FFIN, DF, F, R8PREM, DSPPRS, PRS
       REAL*8        KSTE, UFLUI, DHYD, RHO, RBID, JC, FCOUPU, FMODEL
       REAL*8        R8B, DIR(3,3), FCOUP
-      REAL*8        EPSI,DEUXPI,PULS,UC,UT,LONG1,LONG2
+      REAL*8        DEUXPI,PULS,UC,UT,LONG1,LONG2
       COMPLEX*16    C16B
       CHARACTER*1   COLI,K1BID
       CHARACTER*7   IMODE, JMODE      
       CHARACTER*8   K8B, NOMRES
       CHARACTER*8   SPECTR, METHOD, TYPAR(NBPAR)
-      CHARACTER*16  NOPAR(NBPAR), KVAL(2),NOMP(MXPARA)
+      CHARACTER*16  NOPAR(NBPAR), KVAL(2)
       CHARACTER*19  BASE, NOMFON,FONCT, CHAMNO
       CHARACTER*24  FREQ, NUMO, LIGRMO
       LOGICAL       YANG
@@ -71,7 +70,7 @@ C
      +             'NUME_VITE_FLUI' , 'VITE_FLUIDE' ,
      +             'NUME_ORDRE_I' , 'NUME_ORDRE_J' , 'FONCTION' /
       DATA TYPAR / 'K16' , 'K16' , 'I' , 'I' , 'R' , 'I' , 'I' , 'K24' /
-      DATA         EPSI/10.D-3/,DEUXPI/6.28318530718D0/,YANG/.FALSE./
+      DATA         DEUXPI/6.28318530718D0/,YANG/.FALSE./
 C
 C-----------------------------------------------------------------------
       CALL JEMARQ()
@@ -196,16 +195,6 @@ C
         FCOUP=ZR(IVARE+1)
         METHOD=ZK16(IVATE+4)(1:8)
         FONCT =ZK16(IVATE+1)
-        CALL JEVEUO(FONCT//'.PROL','L',LPRESS)
-        CALL FONBPA(FONCT,ZK16(LPRESS),K8B,MXPARA,NBPF,NOMP)
-        IPARA(1) = 1
-        IF (ZK16(LPRESS).EQ.'FONCTION') THEN
-           CALL JEVEUO(FONCT//'.VALE','L',LVAR)
-           CALL JELIRA(FONCT//'.VALE','LONUTI',NBPT,K1BID)
-           NBPT   = NBPT / 2
-           LFON   = LVAR + NBPT
-           IPT = 1
-        ENDIF
       ENDIF
 C
 
@@ -301,35 +290,16 @@ C
                  PRS = 0.D0
               ELSEIF(ZK16(IVATE).EQ.'SPEC_CORR_CONV_2') THEN
                  PULS = DEUXPI*F
-                 IF (ZK16(LPRESS).EQ.'INTERPRE') THEN
-                    CALL FIINTE('F',FONCT,NBPF,IPARA,PULS,PRS,IER)
-                 ELSEIF (ZK16(LPRESS).EQ.'FONCTION') THEN
-                    CALL FOLOCX(ZR(LVAR),NBPT,PULS,ZK16(LPRESS+4),IPT,
-     +                          EPSI,COLI,IRET)
-                    IF (IRET.NE.0) THEN
-                       IER = IER + 1
-                       CALL UTDEBM('E','SFIFJF',
-     +                             'PROBLEME RENCONTRE DANS FOLOCX')
-                       CALL UTIMPK('L',' POUR LA FONCTION:',1,FONCT)
-                       CALL UTFINM()
-                       GOTO 9999
-                    ENDIF
-                    CALL FOCOLI (IPT,COLI,ZK16(LPRESS+1),ZR(LVAR),
-     +                           ZR(LFON),PULS,PRS,IER,
-     +                           FONCT,ZK16(LPRESS),MXPARA,NOMP,IPARA,
-     +                           'INST',1,PULS)
- 
-                    IF (IER.NE.0) GOTO 9999
-                 ENDIF
-                 CALL ACCEPT(NOMRES,F,NBM,LIGRMO,METHOD,IM2,IM1,
+                 CALL FOINTE('F',FONCT,1,'PULS',PULS,PRS,IER)
+                 CALL ACCEPT(F,NBM,METHOD,IM2,IM1,
      &                       UFLUI,JC,DIR,UC,UT,LONG1,LONG2)
              ELSE
                  PRS = DSPPRS(KSTE,UFLUI,DHYD,RHO,F,FCOUP)
-                 CALL ACCEPT(NOMRES,F,NBM,LIGRMO,METHOD,IM2,IM1,
+                 CALL ACCEPT(F,NBM,METHOD,IM2,IM1,
      &                       UFLUI,JC,DIR,UC,UT,LONG1,LONG2)
              ENDIF
              ZR(LVALE+NBPOIN+2*IFF)=PRS*JC
-200       CONTINUE
+ 200       CONTINUE
 
 C
  210     CONTINUE

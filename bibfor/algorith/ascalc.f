@@ -2,7 +2,7 @@
      +                  KNOMSY,NBOPT,NDIR,MONOAP,NBSUP,NSUPP,TYPCMO,
      +                  TEMPS,COMDIR,TYPCDI,TRONC,AMORT,SPECTR,
      +                  ASSPEC,NOMSUP,REASUP,DEPSUP,TCOSUP,
-     +                  CORFRE,IMPR)
+     +                  CORFRE)
       IMPLICIT  REAL*8 (A-H,O-Z)
       INTEGER       NDIR(*),TCOSUP(*),NORDR(*),NSUPP(*)
       REAL*8        AMORT(*),SPECTR(*),ASSPEC(*),DEPSUP(*),REASUP(*)
@@ -11,7 +11,7 @@
       LOGICAL       MONOAP, COMDIR, TRONC, CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,6 @@ C IN  : REASUP : VECTEUR DES REACTIONS MODALES AUX SUPPORTS
 C IN  : DEPSUP : VECTEUR DES DEPLACEMENTS DES SUPPORTS
 C IN  : TCOSUP : TYPE DE RECOMBINAISON DES SUPPORTS
 C IN  : CORFRE : =.TRUE.  , CORRECTION DES FREQUENCES
-C IN  : IMPR   : NIVEAU D'IMPRESSION
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -156,16 +155,15 @@ C
 C
 C              ----CALCUL DE L ACCELERATION ABSOLUE
 C
-               CALL ASACCE(KNOMSY(IN),MONOAP,NBSUP,NSUPP,NEQ,NBMODE,
-     +                        ID,NUME,ZR(JMOD),ZR(JVAL),ASSPEC,
-     +                        NOMSUP,REASUP,ZR(JCREP) )
+               CALL ASACCE(KNOMSY(IN),MONOAP,NBSUP,NEQ,NBMODE,
+     +                     ID,NUME,ZR(JMOD),ZR(JVAL),ASSPEC,ZR(JCREP))
 C
 C              --- PRISE EN COMPTE DE LA TRONCATURE ---
 C              --- DANS LE CAS DE CALCUL DE REPONSE GLOBALE  ---
 
                IF ( TRONC ) THEN
                  CALL ASTRON(KNOMSY(IN),PSMO,MONOAP,NBSUP,NSUPP,
-     +                     NEQ,NBMODE,ID,NUME,ZR(JMOD),ZR(JVAL),ASSPEC,
+     +                     NEQ,NBMODE,ID,ZR(JMOD),ZR(JVAL),ASSPEC,
      +                     NOMSUP,REASUP,ZR(JCREP) )
                ENDIF
 C
@@ -178,7 +176,7 @@ C
 C        --- STOCKAGE ---
 C
          CALL ASSTOC(MOME,RESU,KNOMSY(IN),NEQ,ZR(JDIR),NDIR,
-     +               COMDIR,TYPCDI,GLOB,PRIM,SECON)
+     +               COMDIR,TYPCDI,GLOB,PRIM)
 C
 C        ---------------------------------------------------------------
 C                            REPONSE SECONDAIRE

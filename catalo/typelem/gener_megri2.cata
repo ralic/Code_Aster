@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,8 +20,9 @@ GENER_MEGRI2
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MEGRDKT          MAILLE__ TRIA3
-   ELREFE__  MEGRDKT   GAUSS__  NELGA=FPG1
-   ELREFE__  FACE6
+    ELREFE__  TR3       GAUSS__  RIGI=FPG3   MASS=FPG3   GANO=FPG3   NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+    ELREFE__  TR6       GAUSS__  RIGI=FPG4   MASS=FPG6               NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+    ELREFE__  MEGRDKT   
 
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
@@ -43,7 +44,7 @@ MODE_LOCAL__
     CFREQR   = FREQ_R   ELEM__         (FREQ     )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
-    EHYDRER  = HYDR_R   ELGA__ NELGA   (HYDR     )
+    EHYDRER  = HYDR_R   ELGA__ RIGI    (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     ENBSP_I  = NBSP_I   ELEM__         (GRI_NCOU )
     CNUMCOR  = NUMC_I   ELEM__         (NUMC     ORDO     )
@@ -51,14 +52,15 @@ MODE_LOCAL__
     ESIGMNOC = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     EEFGENOC = SIEF_C   ELNO__ IDEN__  (NXX      NYY      NXY      MXX      MYY      MXY
                                         QX       QY       )
-    ECONTPG  = SIEF_R   ELGA__ NELGA   (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+    ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ESIGMNOR = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     EEFGENOR = SIEF_R   ELNO__ IDEN__  (NXX      NYY      NXY      MXX      MYY      MXY
                                         QX       QY       )
+    EEFG2NOR = SIEF_R   ELNO__ IDEN__  (NXX      NYY      NXY      MXX      MYY      MXY      )
     CTEMPEF  = TEMP_F   ELEM__         (TEMP     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     TEMP_INF TEMP_SUP )
-    ZVARIPG  = VARI_R   ELGA__ NELGA   (VARI     )
+    ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     EVITNOR  = VNOR_C   ELEM__         (VNOR     )
 
@@ -107,6 +109,7 @@ OPTION__
                                      CNUMCOR  PNUMCOR  CTEMPEF  PTEMPEF  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
                               OUT__  EDEFONO  PDEFORR
     FORC_NODA           31    IN__   CCACOQU  PCACOQU  ECONTPG  PCONTMR  NGEOMER  PGEOMER  ENBSP_I  PNBSP_I
+                                     DDL_MECA PDEPLPR  CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           31    IN__   CCACOQU  PCACOQU  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
@@ -115,6 +118,8 @@ OPTION__
                                      ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
+    FULL_MECA_ELAS      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     MASS_INER           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MASS_MECA           31    IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I
@@ -140,9 +145,8 @@ OPTION__
     RIGI_MECA           31    IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I
                                      CTEMPEF  PTEMPEF  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
                               OUT__  MMATUUR  PMATUUR
-    RIGI_MECA_ELAS      31    IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I
-                                     CTEMPEF  PTEMPEF  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
-                              OUT__  MMATUUR  PMATUUR
+    RIGI_MECA_ELAS      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     RIGI_MECA_GE        -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RIGI_MECA_HYST      50    IN__   CGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  CTEREFE  PTEMPER
@@ -157,9 +161,11 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELGA_DEPL      33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CTEMPEF  PTEMPEF  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
+                                     ENBSP_I  PNBSP_I
                               OUT__  ECONTPG  PCONTRR
-    SIEF_ELNO_ELGA      31    IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  ENBSP_I  PNBSP_I
-                              OUT__  EEFGENOR PSIEFNOR
+    SIEF_ELNO_ELGA      31    IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  ECONTPG  PCONTRR
+                                     ENBSP_I  PNBSP_I  DDL_MECA PDEPLPR  CMATERC  PMATERC
+                              OUT__  EEFG2NOR PSIEFNOR
     SIGM_ELNO_COQU      580   IN__   CCACOQU  PCACOQU  ECONTPG  PCONTRR  NGEOMER  PGEOMER  ENBSP_I  PNBSP_I
                                      CNUMCOR  PNUMCOR
                               OUT__  ESIGMNOR PSIGNOD
