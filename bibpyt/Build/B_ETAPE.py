@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF B_ETAPE Build  DATE 23/08/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -538,7 +538,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
            la fonction retourne un doublet iret,val
       """
       try:
-        val=eval(nom,self.parent.const_context)
+        val=eval(nom,self.jdc.const_context,self.parent.g_context)
         if val is None : 
            return 0,0
         if isinstance(val,ASSD):

@@ -1,7 +1,7 @@
       SUBROUTINE OP0058(IER)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF CALCULEL  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -603,12 +603,10 @@ C          * UTILISATION DU MOT-CLE FACTEUR EXICT
                       FREQ = ZR(LFREQ)
                       OMEGA = R8DEPI()*FREQ
                       IF (L1.NE.0) THEN
-                        CALL FOINT0
                         CALL FOINTE('F ',K8B,1,'FREQ',FREQ,VALRES,IER)
                         CALPHA = DCMPLX(VALRES,ZERO)
                       ELSE IF (L2.NE.0) THEN
-                        CALL FOINT0
-                        CALL FOINRI(K8B,1,'FREQ',FREQ,VALRES,VALIM,IER)
+                        CALL FOINTC(K8B,1,'FREQ',FREQ,VALRES,VALIM,IER)
                         CALPHA = DCMPLX(VALRES,VALIM)
                       ELSE IF (L3.NE.0) THEN
                         CALPHA = DCMPLX(COEF,UN)
@@ -626,7 +624,6 @@ C          * UTILISATION DU MOT-CLE FACTEUR EXICT
                       CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,LINST,K8B)
                       INST = ZR(LINST)
                       IF (L1.NE.0) THEN
-                        CALL FOINT0
                         CALL FOINTE('F ',K8B,1,'INST',INST,ALPHA,IER)
                       ELSE IF (L3.NE.0) THEN
                         ALPHA = COEF
@@ -641,7 +638,6 @@ C          * UTILISATION DU MOT-CLE FACTEUR EXICT
                     ELSE IF (TYSD.EQ.'EVOL_ELAS') THEN
                       TYPCOE = 'R'
                       IF (L1.NE.0) THEN
-                        CALL FOINT0
                         CALL FOINTE('F ',K8B,1,'INST',INST,ALPHA,IER)
                       ELSE
                         CALL UTMESS('A',NOMCMD,

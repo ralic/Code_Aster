@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TEST ANALYTIQUE DE LA GENERATION DE FONCTIONS ALEATOIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -761,9 +761,8 @@ TEST_TABLE(      TABLE=RMS2,
 """
 # MISE EN COMMENTAIRE POUR NE PAS SURCHARGER LES CAS TEST MAIS MONTRER
 # UN EXEMPLE DE RESULTAT GRAPHIQUE DE GENE_FONC_ALEA
-DEFI_FICHIER(FICHIER='AGRAF',UNITE=25);
 
-IMPR_COURBE( FICHIER= 'AGRAF',
+IMPR_COURBE( UNITE=25,
               FORMAT= 'AGRAF',
      TITRE_GRAPHIQUE= 'MODULE DSP F11',
               LEGENDE_X= 'Freq. (Hz)',
@@ -774,7 +773,7 @@ IMPR_COURBE( FICHIER= 'AGRAF',
                        FONCTION = MF11,) ,),
             ) 
 
-IMPR_COURBE( FICHIER= 'AGRAF',
+IMPR_COURBE( UNITE=25,
               FORMAT= 'AGRAF',
      TITRE_GRAPHIQUE= 'PHASE DSP F11',
               LEGENDE_X= 'Freq. (Hz)',
@@ -784,7 +783,7 @@ IMPR_COURBE( FICHIER= 'AGRAF',
                        FONCTION = PF11,) ,),
             ) 
 
-IMPR_COURBE( FICHIER= 'AGRAF',
+IMPR_COURBE( UNITE=25,
               FORMAT= 'AGRAF',
      TITRE_GRAPHIQUE= 'MODULE DSP F12',
               LEGENDE_X= 'Freq. (Hz)',
@@ -795,7 +794,7 @@ IMPR_COURBE( FICHIER= 'AGRAF',
                        FONCTION = MF12,) ,),
             ) 
 
-IMPR_COURBE( FICHIER= 'AGRAF',
+IMPR_COURBE( UNITE=25,
               FORMAT= 'AGRAF',
      TITRE_GRAPHIQUE= 'PHASE DSP F12',
               LEGENDE_X= 'Freq. (Hz)',
@@ -805,7 +804,7 @@ IMPR_COURBE( FICHIER= 'AGRAF',
                        FONCTION = PF12,) ,),
             ) 
               
-IMPR_COURBE( FICHIER= 'AGRAF',
+IMPR_COURBE( UNITE=25,
               FORMAT= 'AGRAF',
      TITRE_GRAPHIQUE= 'MODULE DSP F22',
               LEGENDE_X= 'Freq. (Hz)',
@@ -816,7 +815,7 @@ IMPR_COURBE( FICHIER= 'AGRAF',
                        FONCTION = MF22,) ,),
             ) 
 
-IMPR_COURBE( FICHIER= 'AGRAF',
+IMPR_COURBE( UNITE=25,
               FORMAT= 'AGRAF',
      TITRE_GRAPHIQUE= 'PHASE DSP F22',
               LEGENDE_X= 'Freq. (Hz)',
@@ -833,7 +832,7 @@ MSPECT11=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT11,
 PSPECT11=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT11,
                                     PARTIE = 'PHASE') )
 
-IMPR_COURBE( FICHIER= 'AGRAF',
+IMPR_COURBE( UNITE=25,
               FORMAT= 'AGRAF',
      TITRE_GRAPHIQUE= 'MODULE DSP CIBLE 11',
               LEGENDE_X= 'Freq. (Hz)',
@@ -844,7 +843,7 @@ IMPR_COURBE( FICHIER= 'AGRAF',
                        FONCTION = MSPECT11,) ,),
             ) 
 
-IMPR_COURBE( FICHIER= 'AGRAF',
+IMPR_COURBE( UNITE=25,
               FORMAT= 'AGRAF',
      TITRE_GRAPHIQUE= 'PHASE DSP CIBLE 11',
               LEGENDE_X= 'Freq. (Hz)',
@@ -860,7 +859,7 @@ MSPECT12=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT12,
 PSPECT12=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT12,
                                      PARTIE = 'PHASE') )
 
-IMPR_COURBE( FICHIER= 'AGRAF',
+IMPR_COURBE( UNITE=25,
               FORMAT= 'AGRAF',
      TITRE_GRAPHIQUE= 'MODULE DSP CIBLE 12',
               LEGENDE_X= 'Freq. (Hz)',
@@ -871,7 +870,7 @@ IMPR_COURBE( FICHIER= 'AGRAF',
                        FONCTION = MSPECT12,) ,),
            ) 
 
-IMPR_COURBE( FICHIER= 'AGRAF',
+IMPR_COURBE( UNITE=25,
               FORMAT= 'AGRAF',
      TITRE_GRAPHIQUE= 'PHASE DSP CIBLE 12',
               LEGENDE_X= 'Freq. (Hz)',
@@ -887,7 +886,7 @@ MSPECT22=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT22,
 PSPECT22=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT22,
                                      PARTIE = 'PHASE') )
 
-IMPR_COURBE( FICHIER= 'AGRAF',
+IMPR_COURBE( UNITE=25,
               FORMAT= 'AGRAF',
      TITRE_GRAPHIQUE= 'MODULE DSP CIBLE 22',
               LEGENDE_X= 'Freq. (Hz)',
@@ -898,7 +897,7 @@ IMPR_COURBE( FICHIER= 'AGRAF',
                        FONCTION = MSPECT22,) ,),
                        )
 
-IMPR_COURBE( FICHIER= 'AGRAF',
+IMPR_COURBE( UNITE=25,
               FORMAT= 'AGRAF',
      TITRE_GRAPHIQUE= 'PHASE DSP CIBLE 22',
               LEGENDE_X= 'Freq. (Hz)',

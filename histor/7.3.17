@@ -1,0 +1,981 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR boiteau O.BOITEAU   DATE  le 23/08/2004 a 08:57:34
+
+------------------------------------------------------------------------------
+REALISATION EL 2003-218
+   INTERET_UTILISATEUR : OUI
+   TITRE
+   -----
+               INTRODUCTION D'UN SOLVEUR LINEAIRE DE TYPE FETI (PART II)
+
+   FONCTIONNALITE
+   --------------
+   cf histor de la NEW7.3.3
+   Avec cette restitution on finalise l ecriture de l algorithme FETI pour
+   qu il puisse prendre en compte les modes de corps rigides intervenant dans
+   les sous-domaines flottants (initialisation du GCPPC, op de projection,
+   calcul des pseudo-inverses)
+   Pour la detection des modes de corps rigides, on a mutualise les devt de
+   l'option MODE_RIGIDE du solveur modal de LANCZOS (MODE_ITER_SIMULT).
+
+    Limitations actuelles (qui seront levees progressivement):
+      Systeme lineaire SPD gere par MECA_STATIQUE
+      Pas de Dirichlet via AFFE_CHAR_CINE/MECA
+      Interfaces vides de tout chargement
+      Pas de parallelisation par sous-domaine (seul MULT_FRONT)
+      Solveurs internes homogenes.
+      Sans doute de nombreux cas particuliers: elements de bords
+             a noeuds non coïncidant avec ceux de volumes, EF de raccord...
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+   --------------------
+     DOC_V :  V1.04.101
+       EXPL_ : Cas test FETI, plaque a 4 SD avec point de jonction et
+               deux sous-domaines flottants en diagonale, mais sans
+               Dirichlet (FETI002A)
+
+   VALIDATION
+   -----------
+     Diverses combinaisons en 2D en variant les modes rigides.
+
+     RESTITUTION du  cas-test FETI002A (PLAQUE 2D)
+
+   DETAILS
+   --------
+      Decomposition du maillage en sous-domaines et remplissage de la SD
+      SD_FETI associee via
+                SDFETI=DEFI_PART_OPS(NOM='SD',
+                     MODELE=MODM,
+                     DEFI=(_F(GROUP_MA = 'FETI1', GROUP_MA_BORD = 'B1',),
+                           _F(GROUP_MA = 'FETI2', GROUP_MA_BORD = 'B2',),
+                           _F(GROUP_MA = 'FETI3', GROUP_MA_BORD = 'B3',),
+                           _F(GROUP_MA = 'FETI4', GROUP_MA_BORD = 'B4',),
+                           ),
+      Calcul FETI utilisant cette decomposition
+                   RESU=MECA_STATIQUE(MODELE=MODM,
+                     CARA_ELEM=CHCAR,
+                     CHAM_MATER=CHMAT,
+                     SOLVEUR=_F(METHODE='FETI',
+                             RENUM=METIS,
+                             PARTITION=SDFETI,
+                             RESI_RELA=1.E-10,
+                             NMAX_ITER=50,
+                             VERIF_SDFETI='OUI',
+                             TEST_CONTINU=1.E-8,
+                             NB_REORTHO_DD=20,
+                             TYPE_REORTHO_DD='GSM',
+                             PRE_COND='LUMPE',
+                             SCALING='MULT',
+                             ),
+                      EXCIT=(_F(CHARGE=CH1,),),)
+
+   Extension de l'amplitude des valeurs d'INFO pour profiling plus cible:
+        INFO=1  info. globale pour l'utilisateur (STANDARD)
+             2  idem + valeurs du residu iteration par iteration
+             3  idem + etapes FETI + parametrage de ces etapes
+             4  idem + impr_co des SD generees/modifiees
+             5  idem + tous les details de calculs
+             6  idem + verification numerique des modes de corps rigides
+                et des pseudo-inverses.
+
+   ROUTINES IMPACTEES:
+   -------------------
+
+   <N> pour nouvelle routine sinon <M> pour modifiee
+
+
+     ALGO. FETI
+     -----------
+   MECA_STATIQUE.CAPY <M>: CATALOGUE DE MECA_STATIQUE
+   ALFETI.F <M>: CHEF D'ORCHESTRE DE L'ALGO FETI-1
+   FETFIV.F <M>: PRODUIT OPERATEUR FETI (FI) * VECTEUR QCQ (V)
+   FETGGT.F <N>: CALCUL GI ET (GIGIT) POUR LAMBDA0 ET PROJECTION.
+   FETINL.F <M>: INITIALISATION DU VECTEUR D'INTERFACE
+   FETPRJ.F <M>: OPERATEUR DE PROJECTION
+   FETRIN.F <M>: CALCUL DU RESIDU INITIAL OU RECONSTRUCTION U GLOBAL
+
+     PREPARATION DE LA RESOLUTION
+     ----------------------------
+   CRESOL.F <M>: LECTURE PARAMETRES SOLVEUR DE L'OP ET APPEL A CRESO1
+   CRESO1.F <M>: REMPLISSAGE DE LA SD SOLVEUR PAR SOUS-DOMAINE OU GLOBAL
+   PRERES.F <M>: FACTORISATION DES MATRICES DE RIGIDITE
+   FETFAC.F <N>: CHEF-D ORCHESTRE DE LA RECHERCHE DES CORPS RIGIDES
+   TLDLG2.F <M>: RECHERCHE EFFECTIVES DES MODES.
+
+     MANIPULATION DE STRUCTURES DE DONNEES
+     -------------------------------------
+   COPMA2.F <N>: COPIE D UNE MATR_ASSE CREUSE (MORSE) DANS DEUX MATRICES PLEINES
+
+     PAR ADHERENCE INFORMATIQUE
+     --------------------------
+   OP0045.F <M>: CAR CHANGEMENT D'APPEL A TLDLG2
+
+   NB_JOURS_TRAV  : 25
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 23/08/2004 a 16:18:31
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-278
+   INTERET_UTILISATEUR : OUI
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : X.DESROCHES
+   TITRE :  AFFE_CHAR_MECA_F avec chargement constant
+   FONCTIONNALITE :
+     le calcul se plante quand la charge est définie par :
+       - opérateur AFFE_CHAR_MECA_F
+       - mot clé facteur DDL_IMPO
+       - mot clé simple LIAISON='ENCASTRE'
+   DETAIL
+      dans la routine caddli.f lors du traitement de LIAISON='ENCASTRE'
+      on n'avait pas initialisé
+                  VALIMF(I) = '&FOZERO'
+      pour le chargement de type _F
+      Pas d'anomalie pour une charge de type réel ou complexe.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     passage de l'étude
+     dans le test forma01a
+
+--------------------------------------------------------------------------
+REALISATION EL 2004-169
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : M.COURTOIS
+   INTERET_UTILISATEUR : OUI
+   TITRE :  CALC_FONCTION opérande PUISSANCE
+   FONCTIONNALITE
+     Développement de l'opérande PUISSANCE pour une FONCTION.
+     Cette opérande ne fonctionnait que pour les NAPPEs
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.32.04 commande CALC_FONCTION
+      EXPL_ : opérande PUISSANCE pour une FONCTION
+   VALIDATION
+      test zzzz100a : validation PUISSANCE sur NAPPE et FONCTION
+
+--------------------------------------------------------------------------
+REALISATION EL 2004-151
+   NB_JOURS_TRAV  : 3
+   POUR_LE_COMPTE_DE   : C.DURAND
+   INTERET_UTILISATEUR : NON
+   TITRE :  bilan programmation de l'évaluation des fonctions
+   FONCTIONNALITE
+   1- résorption de l'évaluation des fonctions à interpolation de type INT
+      dans FOCOLI
+   2- identification de 3 points d'accès :
+      FOINTE : évaluation des fcts réelles
+               accès à la fonction par le nom
+      FOINTC : évaluation des fcts complexes à variable réelle
+               accès à la fonction par le nom
+      FOINTA : évaluation des fcts réelles
+               accès à la fonction par son pointeur (RCVALA, matériau codé)
+   3- concernant FOINT0: remise à "zéro" du common de FOINTE
+      le common est remis à "zéro" entre chaque commande par EXECOP
+      apres vérification et validation sur tests, suppression de l'appel
+      à foint0 dans fointe, op0058 et op0060.
+   4- évaluation des FORMULES dans FOINTA
+      les accès aux fonctions dans fointa se font par les pointeurs
+      des objets jeveux des structures de données. Le matériau codé
+      est une structure d'entiers qui sont les pointeurs et des nombres.
+      FIINTE travaille à partir du nom de la fonction.
+      le développement dans OPS005 :
+         Pour transmettre le nom de la fonction formule à FOINTA, on a
+         ajouté au .PROL une sixième valeur:
+           .PROL(1) = 'INTERPRE'
+           .PROL(2) = 'INTERPRE'
+           .PROL(3) = ' '
+           .PROL(4) = 'TOUTRESU'
+           .PROL(5) = 'II'
+           .PROL(6) = nom de la fonction formule
+      le développement dans RCMACO :
+         déplacement de la ligne suivante
+            CALL JEVEUT ( CH19//'.VALE', 'L', ZI(IPIF+2) )
+         le .VALE n'existe que pour les CONSTANT, FONCTION et NAPPE.
+      le développement dans FOINTA :
+         ELSEIF (ZK16(JPRO).EQ.'INTERPRE') THEN
+            NOMF = ZK16(JPRO+5)
+            CALL FIINTE('F',NOMF,NBPF,IPAR,VALPU,RESU,IER)
+
+   DETAIL
+     suppression de FOINRI, FOINT1, FOINT2, FOINT3
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      validation de FOINTA avec FORMULE:
+        ssll100a, ssnv301b (remplacement DEFI_FONCTION par FORMULE)
+      passage liste complete
+      passage liste validation
+
+--------------------------------------------------------------------------
+REALISATION EL 2004-153
+   réalisation partielle
+   NB_JOURS_TRAV  : 4
+   POUR_LE_COMPTE_DE   : J.P.LEFEBVRE
+   INTERET_UTILISATEUR : OUI
+   TITRE :  resorption du mot cle FICHIER dans les commandes IMPR_...
+   FONCTIONNALITE
+     Suite à l'introduction du mot clé UNITE dans les commandes Aster
+     (EL 2004-114), on résorbe le mot clé FICHIER dans les commandes
+     IMPR_... et TEST_...
+     Mise à niveau de 87 cas tests
+   DETAIL
+     suppression des lignes dans la routine op0039.f :
+       IF ( ULISOP ( IFI, K16NOM ) .NE. 0 )  THEN
+         IF(FORM(1:8).NE.'RESULTAT')THEN
+         CALL ULOPEN ( -IFI, ' ', FORM, 'NEW', 'O' )
+         ENDIF
+       ENDIF
+     ce qui devrait corriger les fiches AL2004-256 et 279
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.02.01 commande AIDE
+      EXPL_ : suppression du mot clé FICHIER
+     DOC_U : U4.82.02 commande CALC_THETA
+      EXPL_ : suppression du mot clé FICHIER
+     DOC_U : U4.42.03 commande DEFI_COQU_MULT
+      EXPL_ : suppression du mot clé FICHIER
+     DOC_U : U4.92.11 commande ENGENDRE_TEST
+      EXPL_ : suppression du mot clé FICHIER
+     DOC_U : U4.11.02 commande FIN
+      EXPL_ : suppression du mot clé FICHIER
+     DOC_U : U7.04.31 commande IMPR_CHARGE
+      EXPL_ : suppression du mot clé FICHIER
+     DOC_U : U4.91.11 commande IMPR_CO
+      EXPL_ : suppression du mot clé FICHIER
+     DOC_U : U4.33.01 commande IMPR_COURBE
+      EXPL_ : suppression du mot clé FICHIER
+     DOC_U : U4.91.02 commande IMPR_GENE
+      EXPL_ : suppression du mot clé FICHIER
+     DOC_U : U7.04.33 commande IMPR_MACR_ELEM
+      EXPL_ : suppression du mot clé FICHIER
+     DOC_U : U7.04.32 commande IMPR_MATRICE
+      EXPL_ : suppression du mot clé FICHIER
+     DOC_U : U4.91.01 commande IMPR_RESU
+      EXPL_ : suppression du mot clé FICHIER
+     DOC_U : U4.52.01 commande IMPR_STURM
+      EXPL_ : suppression du mot clé FICHIER
+     DOC_U : U4.91.03 commande IMPR_TABLE
+      EXPL_ : suppression du mot clé FICHIER
+     DOC_U : U4.92.03 commande TEST_TABLE
+      EXPL_ : suppression du mot clé FICHIER
+     DOC_U : U4.92.01 commande TEST_RESU
+      EXPL_ : suppression du mot clé FICHIER
+     DOC_U : U4.92.02 commande TEST_FONCTION
+      EXPL_ : suppression du mot clé FICHIER
+   VALIDATION
+      passage liste complete
+      passage liste validation
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhpd S.VANDENBERGHE   DATE  le 24/08/2004 a 17:26:32
+
+--------------------------------------------------------------------------------
+REALISATION EL 2001-023
+   NB_JOURS_TRAV  : 4
+   POUR_LE_COMPTE_DE : A. ASSIRE
+   INTERET_UTILISATEUR : OUI
+   TITRE  : DEFI_CABLE_BP traitement sur plusieurs materiaux beton
+   FONCTIONNALITE :
+   DETAIL :
+      Dans DEFI_CABLE_BP, le mot cle GROUP_MA_BETON peut desormais accueillir
+      une liste de groupe de mailles pouvant supporter des materiaux differents.
+      Cependant les caracteristiques BPEL_BETON doivent quand meme rester
+      identiques (seules les caracteristiques elastoplastiques du beton peuvent
+      etre differentes).
+
+      Les modifications apportees concerne les routines OP180 et les differentes
+      routines utilisant le groupe de maille beton a savoir TOMABE, PROJCA et
+      PROJKM.On ne rentre plus dans les routines TOMABE, PROJCA et PROJKM le nom
+      du groupe de maille beton mais le nom de l objet JEVEUX contenant la liste
+      des mailles du groupe de maille beton.
+
+      En effet les routines n utilisaient de toutes facons que cette
+      information pour aller recuperer les differents parametres materiaux et
+      verifier leur coherence ou pour recuperer la connectivite des mailles.
+
+      Pour tester la nouvelle fonctionnalite, on modifie le cas test ssnp109a en
+      ajoutant une liste dans GROUP_MA_BETON avec des concepts materiaux
+      differents mais avec des caracteristique egales pour ne pas perturber les
+      TEST_RESU
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+   DOC_U :  U4.42.04-C1
+       EXPL_ : On modifie la syntaxe du mot cle GROUP_MA_BETON ( acceptation d
+       une liste )
+   VALIDATION : passage de tous les cas tests contenant DEFI_CABLE_BP
+
+
+-----------------------------------------------------------------------
+--- AUTEUR durand C.DURAND   DATE  le 23/08/2004 a 16:36:58
+
+------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2003-173
+   NB_JOURS_TRAV  : 0.0
+   INTERET_UTILISATEUR : NON
+   POUR_LE_COMPTE_DE : J.P. LEFEBVRE
+   TITRE : astout overflows
+   FONCTIONNALITE : aide au développement
+   DETAILS :
+   La mise en oeuvre était possible sous IRIX64 (Origin 2000), depuis le
+   basculement sous TRU64 (AlphaServer) les outils équivalents ne semblent
+   pas être disponibles.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : 	
+------------------------------------------------------------------------
+CORRECTION AL 2004-079
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   POUR_LE_COMPTE_DE : J.P. LEFEBVRE
+   TITRE : MACRO_MISS_3D
+   FONCTIONNALITE : appel miss3D depuis aster
+   DETAILS :
+   Le code retour des scripts lancés par EXEC_LOGICIEL n'était pas pris
+   en compte en version 6.
+   La correction sera intégrée dans la version NEW6.6.6.
+   De plus, le script de lancement de miss a été modifié pour récupérer les
+   sorties dans le fichier .mess et le .output gérées par l'interface.
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT : NON
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : 	
+------------------------------------------------------------------------
+CORRECTION AL 2004-051
+   NB_JOURS_TRAV  : 0.0
+   POUR_LE_COMPTE_DE : J.P. LEFEBVRE
+   INTERET_UTILISATEUR : NON
+   TITRE : test yyyy118b sous linux
+   FONCTIONNALITE : solveur MULT_FRONT
+   DETAILS :
+   Suite à la restitution de l'EL2004-118 en version 7.3.12, les corrections
+   apportées dans les sources (remaniement des allocations de vecteurs de
+   travail) permettent de faire passer correctement le test sur plate-forme
+   linux.
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : yyyy118b	
+------------------------------------------------------------------------
+CORRECTION AO 2004-248
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE : J.P. LEFEBVRE
+   INTERET_UTILISATEUR : NON
+   TITRE : astout sans executable
+   FONCTIONNALITE : interface d'acce developpeur
+   DETAILS :
+   Il n'etait pas possible d'utiliser la version compilee en mode debug de
+   l'executable aster sans surcharge (uniquement en cochant le bouton
+   debug dans l'interface)
+   Réalisé dans la version cvs 1.34 du script ASTK_SERV/lib/prepa_astout.csh
+   et mise en place le 17/08/04.
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : NON
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : 	
+------------------------------------------------------------------------
+REALISATION EL 2004-162
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE : J.P. LEFEBVRE
+   INTERET_UTILISATEUR : NON
+   TITRE : STAT_NON_LINE : aucun resultat genere
+   FONCTIONNALITE :
+   DETAILS :
+   Ceci est une AOM
+   JPL essaye de faire passer l'étude sur alphaserveur ou CCRT
+   J'ai repris l'étude associée à la fiche EL2004-162 et tenté de la faire
+   passer sur le serveur du CCRT en version STA7.3.
+   J'ai soumis une première fois l'étude telle quelle, en modifiant uniquement les
+   paramètres de soumission du job : 24 heures et 12Go, le calcul s'arrête par
+   manque de temps CPU dans STAT_NON_LINE sans avoir même affiché les impressions
+   habituelles obtenues par l'appel à metis.
+   Sur une suggestion de Jean-Michel, j'ai alors repris le fichier de commande pour
+   faire appel à MECA_STATIQUE à la place de STAT_NON_LINE. Le calcul est en cours
+   depuis plus de 22 heures (81579 secondes) sans avoir été plus loin que les premières
+   impressions classiques : nombres de noeuds, nombre d'équations et j'ai la facheuse
+   impression qu'il ne progresse pas plus que le calcul précédent.
+
+   L'étude attaché à l'AL en question (2004-162) a été créée pour obtenir le profile de
+   tension le long des cables d'une enceinte pour alimenter une autre étude.
+   Donc il ne s'agissait pas tellement de faire une étude EF au sens traditionnel ...
+   mais plutot se servir de la commande DEFI_CABLE_BP d'Aster pour obtenir le
+   chargement à employer dans une autre étude Aster. Or on ne peut pas réaliser de
+   DEFI_CABLE_BP sur un modèle qui ne tient pas debout. Il fallait que les câbles se
+   lient avec du béton par des relations cinématiques.
+   D'un autre côté quand on met le maillage du béton de l'enceinte, la taille du problème
+   devient beaucoup trop grande. Du coup on utilisait comme maillage béton qu'UNE seule
+   maille volumique ayant une dimension suffisamment grande pour envelopper tous les cables.
+   Donc nous avons beaucoup de cables dans une seule maille béton. Ce qui implique que
+   DEFI_CABLE_BP va créer des relations cinématiques entre un grand nombre de noeuds de
+   cables, avec uniquement 8 noeuds de béton. D'où certainement les problèmes dans l'inversion
+   de la matrice.
+   Si l'idée est uniquement de trouver les tensions dans les cables, il n'est pas
+   indispensable d'inverser la matrice de rigidité et de résoudre le probleme. On imprime
+   juste les résultats de tension dans les cables après la dernière commande DEFI_CABLE_BP
+   sans aller plus loin vers des AFFE_CHAR_MECA ou de STAT_NON_LINE).
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : NON
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : 	
+------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AO 2004-116
+   NB_JOURS_TRAV  : 0.0
+   POUR_LE_COMPTE_DE : J.P. LEFEBVRE
+   INTERET_UTILISATEUR : NON
+   TITRE : remontee d'erreur incomplete avec asteru
+   FONCTIONNALITE : aide au developpement
+   DETAILS :
+   En mode debug, la procédure de mise à jour va chercher les sources de
+   référence au bon endroit (/aster/vx/NEWx/bibfor) car ces derniers ont bien
+   été actualisés. En mode optimisé, la construction de la librairie et de
+   l'exécutable est réalisée avec les sources déposés dans /aster/eda/NEWx/majnew,
+   ce qui permet d'abord de s'assurer qu'il est possible de produire un nouvel
+   exécutable avant d'écraser la version précédente; il est donc toujours possible
+   de revenir en arrière. La remontée d'erreur ne peut donc fournir que le nom de
+   la routine appelee.
+   Par ailleurs, les informations de remontée d'erreur sont très limitées en mode
+   optimisé.
+   Il ne me paraît donc pas raisonnable de modifier la procédure de maj et de faire
+   deux fois la compilation en mode optimisé.
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : NON
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : 	
+------------------------------------------------------------------------
+REALISATION EL 2000-080
+   POUR_LE_COMPTE_DE : J.P. LEFEBVRE
+   NB_JOURS_TRAV  : 4.
+   INTERET_UTILISATEUR : NON
+   TITRE : NUME_DDL utilisation de tableaux d'entiers 32 bits
+   FONCTIONNALITE :
+   DETAILS :
+   Réalisée en version 7.2.2 (regularisation)
+   La restitution associée permet la mise en oeuvre dans JEVEUX des entiers
+   32 bits par accès au type INTEGER*4. On crée pour cela le type "S" (short
+   integer) utilisable parmi les attributs au moment de la création des objets
+   JEVEUX (objets simples ou collections). L'adresse renvoyée ensuite par la
+   routine JEVEUO (ou WKVECT) doit ensuite etre impérativement utilisée par
+   rapport au nouvel élément du commun de référence (à rajouter)
+      INTEGER*4          ZI4
+      COMMON  / I4VAJE / ZI4(1)
+
+   L'impression des objets JEVEUX au format HDF a été modifié pour tenir compte
+   de ce nouvel élément. Un argument supplémentaire est introduit dans la fonction
+   c, d'où une modification du fantome CRP associé.
+   Les routines utilisant des INTEGER*4 devront toutes contenir une carte du
+   type : C TOLE CRP_4.
+
+   Il reste donc eventuellement a le mettre en oeuvre dans les routines de numerotation.
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : NON
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : 	
+   NB_JOURS_TRAV  : 4
+-----------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2003-028
+   NB_JOURS_TRAV : 3
+   POUR_LE_COMPTE_DE : J. PELLET
+   INTERET_UTILISATEUR : NON
+   TITRE "mots clés inutiles"
+   FONCTIONNALITE
+   J'ai l'impression d'avoir déjà fait cette réponse quelque part ... mais
+   je n'en retrouve plus la trace. Alors je recommence !
+
+   A l'occasion du changement de comportement des routines GETVXX, j'avais
+   identifié une liste de mots clés suspects pour lesquels, on pouvait penser
+   qu'ils étaient inutiles puisque qu'il n'y avait jamais de "GETV" dessus !
+
+   CS avait commencé à regarder cette liste et puis j'ai oublié cette fiche
+   et j'ai finalement perdu la liste.
+
+   J'ai repris le problème d'une autre façon en regardant (au vu des sources),
+   si les commandes utilisaient les "chaines de caractères" representant les
+   mots clés. J'ai écrit pour cela un petit script qui_chaine.sh que l'on utilise
+   comme ceci :
+
+   qui_chaine.sh    commande  chaine   > listing
+
+   exemple :
+   cli75as% qui_chaine.sh   proj_champ   vis_a_vis
+   chaine: vis_a_vis utilisée dans proj_champ routine: OP0166
+   chaine: vis_a_vis utilisée dans proj_champ routine: PJEFTE
+   chaine: vis_a_vis utilisée dans proj_champ routine: UTNUAV
+
+   J'ai fait tourner ce script sur tous les mots clés de toutes les commandes.
+   J'ai alors obtenu une longue liste de mot clés pour lesquels, il semblait
+   qu'il n'y ait jamais de GETVXX.
+
+   Mais cette nouvelle liste de problèmes potentiels s'est révellée peut intéressante.
+   Pour la plupart des problèmes, on pouvait trouver une explication. Par exemple,
+   la routine GETMJM permet de boucler sur tous les mots clés sans les écrire en dur
+   dans le fortran (utilisé dans DEFI_MATERIAU entre autre)
+
+   Après avoir trié cette liste, j'ai émis la fiche AL 2004-003 qui listait
+   les problèmes restant.
+
+   IMPACT_DOCUMENTAIRE : NON
+   DETAILS
+-----------------------------------------------------------------------
+CORRECTION AL 2004-042
+   NB_JOURS_TRAV  : 1.5
+   INTERET_UTILISATEUR : NON
+   TITRE : maillage aspic sur linux
+   FONCTIONNALITE : macr_aspic_mail et modi_maillage
+   DETAILS :
+   suite à la ré-écriture des macros aspic en python, 3 tests aspic
+   demeuraient cassés sur linux [clp50a8 uniquement]
+   c'est en fait modi_maillage [option EQUE_PIQUA ] qui est en cause :
+   on fait un jedetr sur une chaine non initialisée qui en l'occurence
+   valait un objet du maillage.
+   Désormais, tous les tests aspic sont ok linux
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : aspic08a aspic03a aspic05a
+--------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   FONCTIONNALITE
+     macr_ascouf_mail
+   DETAILS
+     pour faire passer la plupart des tests ASCOUF sur linux, on doit
+     ajuster la tolérance d'un test_resu portant sur le maillage de plaque
+     renvoyé par les procédures GIBI et non encore modifié par
+     MODI_MAILLAGE. On passe la tolérance de 1.E-04% à 2.E-04%
+
+     En revanche, le maillage final produit par MACR_ASCOUF_MAIL est bien
+     OK sur linux, mais, une fois roulé en tuyau (!), ses coordonnées sont
+     globalement moins élevées, ce qui explique sans doute sa plus grande
+     insensibilité.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : tous tests ascouf
+-----------------------------------------------------------------------
+RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   FONCTIONNALITE
+     affichage de longues listes dans écho fichier message
+   DETAILS
+     Comme l'a remarqué P. Badel, on est encore tombés dans le panneau
+     de la création d'une longue string par somme de strings plutot que
+     la constitution d'une liste puis un "join". Ca permet de ne plus
+     brider l'affichage des très longues listes à 1000 items dans genpy.py
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : étude perso
+-----------------------------------------------------------------------
+CORRECTION AL 2004-271
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : NON
+   TITRE : DETRUIRE et tableaux de concepts
+   FONCTIONNALITE : superviseur
+   DETAILS :
+    Intervention dans l'ops de DETRUIRE. En effet, quand on créée une
+    liste de concepts toto existent dans le namespace python :
+       toto : [<concept toto_1>, <concept toto_2>, ...]
+       toto_1
+       toto_2
+       ...
+    un DETRUIRE sur toto[k] supprime tous objets jeveux toto_k,
+    supprime toto_k dans le contexte global, mais "oubliait" de mettre
+         toto_k est supprimé, toto[k]=None
+
+    En revanche, il y a une confusion dans le texte de la fiche
+    concernant les macros : un concept dit temporaire dans la macro (et
+    alors nommé avec '__' devant son nom local), n'est pas visible coté
+    jdc, donc utilisateur. Mais le concept coté JEVEUX continue d'éxister
+    si le dvpeur de la macro ne le détruit pas explicitement (nécessaire
+    pour les concepts interdépendants : modele ou charge utilisé dans un
+    SNL). Pour cette partie là de la fiche, sans suite donc.
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : étude perso
+--------------------------------------------------------------------------
+CORRECTION AL 2004-253
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : sdlv120b et DEFI_FONCTION
+   FONCTIONNALITE : DEFI_FONCTION
+   DETAILS :
+   oubli dans une déclaration de fonction de sdlv120b.11 de valeurs
+   du style 1.E-320, illisible par python.
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : sdlv120b
+--------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2004-223
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : NON
+   TITRE : interprétation des formules
+   FONCTIONNALITE : superviseur
+   DETAILS :
+   Le problème se produit lors du décodage d'une formule particulièrement
+   complexe :
+
+DSL = FORMULE(REEL = '''(REEL:PCAP) = -22.5679608298E-09*(1+(2.14422861164E-08*PCAP)**1.82500687)
+                                      **(-1.576709)*0.99*(2.14422861164E-08*PCAP)**0.82500687''');
+
+   Ca marche en OLD6, ça plante en STA6 et NEW6 ... ça remarche en 7.
+   C'est sans doute lié à mes interventions sur la méthode reorganisationDe
+   à l'époque ... ce serait probablement difficile de retrouver ce qui
+   coince.
+
+   On peut s'en sortir en intervertissant deux termes de la 2eme ligne :
+
+DSL = FORMULE(REEL = '''(REEL:PCAP) = -22.5679608298E-09*(1+(2.14422861164E-08*PCAP)**1.82500687)
+                                      **(-1.576709)*0.99*(PCAP*2.14422861164E-08)**0.82500687''');
+
+   alors ça marche à nouveau. En version 7, les 2 formules fonctionnnent.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+-----------------------------------------------------------------------
+CORRECTION AL 2004-282
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : NON
+   TITRE : FORMULE avec un PARAMETRE, le tout dans un INCLUDE
+   FONCTIONNALITE : superviseur
+   DETAILS :
+   le problème vient de l'emploi de parametres dans une formule quand
+   celle ci est placée dans un include. l'évaluation du parametre dans
+   le contexte par GETTVC, activé sous FIINTE [FIREMP en l'occurence]
+   se faisait dans le const_context du parent. Lequel parent est bien
+   le jdc habituellement mais la macro_etape INCLUDE ici.
+   Donc, dans B_ETAPE, sous gettvc, je remplace :
+        val=eval(nom,self.parent.const_context)
+   par :
+        val=eval(nom,self.jdc.const_context,self.parent.g_context)
+   Le dico self.jdc.const_context existe toujours. Cependant, je dois
+   ajouter le second dictionnaire car dans le cas du par_lot NON, le
+   const_context du jdc n'a pas été updaté des éventuelles constantes
+   de la macro_etape courante [ouf].
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : efica01a
+--------------------------------------------------------------------------
+CORRECTION AL 2004-283
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   TITRE : sdnx300a et catalogue de calc_fonction
+   FONCTIONNALITE : calc_fonction
+   DETAILS :
+   Suite a la prise en compte des attributs min et max pour les mots clés
+   facteurs [cf restit 7.3.16], le max='**' faisait défaut dans le
+   catalogue de CALC_FONCTION pour le mcfact RMS alors que SDNX300A (par ex)
+   y avait recours.
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : sdnx300a
+
+
+-----------------------------------------------------------------------
+--- AUTEUR geniaut S.GENIAUT   DATE  le 23/08/2004 a 15:31:00
+
+-----------------------------------------------------------------------------
+CORRECTION AL 2004-265
+   NB_JOURS_TRAV  : 0.5
+   TITRE  Bug dans la recherche des points du fond de fissure
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+   DETAILS
+     Le cas test ssnv166c s'arretait en erreur fatale avec le message suivant :
+     "MAILLE NI HEXA8 NI PENTA6 NI TETRA4. LA MAILLE         EST DE TYPE :SEG2."
+     Il s'agissait d'un petit oubli suite à une modif.
+     On bouclait sur toutes les mailles du maillage, alors qu'il
+     fallait boucler seulement sur les mailles 3D. D'où le message
+     d'erreur dans confac.f
+     J'ai donc rajouté un test sur le type de maille au début de la boucle.
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT feti002a                      boiteau O.BOITEAU          238    238      0
+ CASTEST MODIF ahlv100a                      cibhhlv L.VIVAN            365      4      4
+ CASTEST MODIF ascou01a                       durand C.DURAND           299      4      2
+ CASTEST MODIF ascou04a                       durand C.DURAND           377      4      2
+ CASTEST MODIF ascou05a                       durand C.DURAND           200      4      8
+ CASTEST MODIF ascou06a                       durand C.DURAND            75      1      1
+ CASTEST MODIF ascou07a                       durand C.DURAND           339      4      2
+ CASTEST MODIF ascou08a                       durand C.DURAND           304      4      2
+ CASTEST MODIF ascou09a                       durand C.DURAND           303      4      2
+ CASTEST MODIF ascou10a                       durand C.DURAND           357      4      2
+ CASTEST MODIF ascou11a                       durand C.DURAND           102      4      2
+ CASTEST MODIF ascou12a                       durand C.DURAND           312      4      2
+ CASTEST MODIF ascou13a                       durand C.DURAND           286      4      2
+ CASTEST MODIF ascou14a                       durand C.DURAND           299      4      2
+ CASTEST MODIF ascou15a                       durand C.DURAND           195      4      2
+ CASTEST MODIF ascou16a                       durand C.DURAND           368      4      2
+ CASTEST MODIF ascou17a                       durand C.DURAND            84      4      2
+ CASTEST MODIF ascou18a                       durand C.DURAND           317      4      2
+ CASTEST MODIF ascou19a                       durand C.DURAND           400      2      2
+ CASTEST MODIF demo002a                      cibhhlv L.VIVAN            496      1      6
+ CASTEST MODIF demo003a                      cibhhlv L.VIVAN            197      1      3
+ CASTEST MODIF demo004a                      cibhhlv L.VIVAN            253      1      3
+ CASTEST MODIF demo004b                      cibhhlv L.VIVAN            260      1      3
+ CASTEST MODIF efica01a                       durand C.DURAND           270      3      1
+ CASTEST MODIF elsa01c                       cibhhlv L.VIVAN            248      2      2
+ CASTEST MODIF fdlv109a                      cibhhlv L.VIVAN            202      1      3
+ CASTEST MODIF fdnl100a                      cibhhlv L.VIVAN            313      3      3
+ CASTEST MODIF feti001a                      boiteau O.BOITEAU          232      3     18
+ CASTEST MODIF fiab001a                      cibhhlv L.VIVAN            132      1      1
+ CASTEST MODIF forma01a                      cibhhlv L.VIVAN            350      2      2
+ CASTEST MODIF forma01c                      cibhhlv L.VIVAN            342      1      6
+ CASTEST MODIF forma02a                      cibhhlv L.VIVAN            185      2     39
+ CASTEST MODIF hsna120a                      cibhhlv L.VIVAN            763      3      5
+ CASTEST MODIF hsnv124a                      cibhhlv L.VIVAN            512      2     17
+ CASTEST MODIF hsnv124b                      cibhhlv L.VIVAN            411      2     17
+ CASTEST MODIF hsnv124c                      cibhhlv L.VIVAN            373      3     18
+ CASTEST MODIF hsnv124d                      cibhhlv L.VIVAN            371      3      7
+ CASTEST MODIF hsnv125a                      cibhhlv L.VIVAN            452      2     87
+ CASTEST MODIF hsnv125b                      cibhhlv L.VIVAN            399      2    102
+ CASTEST MODIF hsnv125c                      cibhhlv L.VIVAN            563      2     78
+ CASTEST MODIF hsnv125f                      cibhhlv L.VIVAN            467      3      4
+ CASTEST MODIF rccm02a                       cibhhlv L.VIVAN            353      1      1
+ CASTEST MODIF rccm02b                       cibhhlv L.VIVAN            354      1      1
+ CASTEST MODIF rccm03a                       cibhhlv L.VIVAN           4279      1      1
+ CASTEST MODIF sdld02a                       cibhhlv L.VIVAN            355      7      8
+ CASTEST MODIF sdld02e                       cibhhlv L.VIVAN            357      7      8
+ CASTEST MODIF sdld02f                       cibhhlv L.VIVAN            357      7      8
+ CASTEST MODIF sdld21a                       cibhhlv L.VIVAN            818      1      3
+ CASTEST MODIF sdll100a                      cibhhlv L.VIVAN            204      1      1
+ CASTEST MODIF sdll403a                      cibhhlv L.VIVAN            233      1     19
+ CASTEST MODIF sdls08a                       cibhhlv L.VIVAN            181      3      5
+ CASTEST MODIF sdls109h                      cibhhlv L.VIVAN            179      1      8
+ CASTEST MODIF sdls110a                      cibhhlv L.VIVAN            236      4      3
+ CASTEST MODIF sdlv120b                       durand C.DURAND           232      1      1
+ CASTEST MODIF sdlv123a                      cibhhlv L.VIVAN            262      1      3
+ CASTEST MODIF sdlx100a                      cibhhlv L.VIVAN            242      1      3
+ CASTEST MODIF sdlx201a                      cibhhlv L.VIVAN            568      2      4
+ CASTEST MODIF sdnd102c                      cibhhlv L.VIVAN            250      6     10
+ CASTEST MODIF sdnl105a                      cibhhlv L.VIVAN            440      4      7
+ CASTEST MODIF sdnl120a                      cibhhlv L.VIVAN            528      1      1
+ CASTEST MODIF sdns02a                       cibhhlv L.VIVAN            460      1     36
+ CASTEST MODIF sdnv102b                      cibhhlv L.VIVAN             29      1      1
+ CASTEST MODIF sdnv102c                      cibhhlv L.VIVAN             30      1      1
+ CASTEST MODIF sensm07a                      cibhhlv L.VIVAN            204      1      8
+ CASTEST MODIF ssll100a                      cibhhlv L.VIVAN            416     63     24
+ CASTEST MODIF ssll501a                      cibhhlv L.VIVAN            422      4     10
+ CASTEST MODIF sslp01a                       cibhhlv L.VIVAN            181      1      3
+ CASTEST MODIF ssls108a                      cibhhlv L.VIVAN            181      1      1
+ CASTEST MODIF ssls108b                      cibhhlv L.VIVAN            192      1      1
+ CASTEST MODIF sslv134e                      cibhhlv L.VIVAN            322      3      6
+ CASTEST MODIF sslv134f                      cibhhlv L.VIVAN            348      7     38
+ CASTEST MODIF sslv200a                      cibhhlv L.VIVAN           1301      2      6
+ CASTEST MODIF sslx200a                      cibhhlv L.VIVAN            279      1      7
+ CASTEST MODIF ssna109a                      cibhhlv L.VIVAN            693      2      5
+ CASTEST MODIF ssna110a                      cibhhlv L.VIVAN           2118      1      2
+ CASTEST MODIF ssnp109a                      cibhhpd S.VANDENBERGHE     580     24      7
+ CASTEST MODIF ssns101a                      cibhhlv L.VIVAN            380      3      3
+ CASTEST MODIF ssns101b                      cibhhlv L.VIVAN            266      4      4
+ CASTEST MODIF ssns101c                      cibhhlv L.VIVAN            271      4     11
+ CASTEST MODIF ssns102a                      cibhhlv L.VIVAN            434      3      5
+ CASTEST MODIF ssnv125a                      cibhhlv L.VIVAN            362      4      6
+ CASTEST MODIF ssnv138b                      cibhhlv L.VIVAN            318      1      1
+ CASTEST MODIF ssnv166a                      cibhhlv L.VIVAN            412     11     15
+ CASTEST MODIF ssnv166b                      cibhhlv L.VIVAN            431     11     15
+ CASTEST MODIF ssnv166c                      geniaut S.GENIAUT          211      1      2
+ CASTEST MODIF ssnv301b                      cibhhlv L.VIVAN            580     24     15
+ CASTEST MODIF szlz110a                      cibhhlv L.VIVAN            878      3     29
+ CASTEST MODIF ttll01b                       cibhhlv L.VIVAN            216      1      5
+ CASTEST MODIF ttna200a                      cibhhlv L.VIVAN            635      2      4
+ CASTEST MODIF ttnp200a                      cibhhlv L.VIVAN            634      2      4
+ CASTEST MODIF wtna100a                      cibhhlv L.VIVAN            526      8      8
+ CASTEST MODIF yyyy106a                      cibhhlv L.VIVAN            969      4      6
+ CASTEST MODIF yyyy106b                      cibhhlv L.VIVAN            789      3      5
+ CASTEST MODIF zzzz100a                      cibhhlv L.VIVAN           1793     66      6
+ CASTEST MODIF zzzz100c                      cibhhlv L.VIVAN            179      6     13
+ CASTEST MODIF zzzz100d                      cibhhlv L.VIVAN            417      1     31
+ CASTEST MODIF zzzz100e                      cibhhlv L.VIVAN             67      3      3
+ CASTEST MODIF zzzz120a                      cibhhlv L.VIVAN            608      1      4
+ CASTEST MODIF zzzz120b                      cibhhlv L.VIVAN            606      1      3
+ CASTEST MODIF zzzz128b                      cibhhlv L.VIVAN             44      3      3
+ CASTEST MODIF zzzz131a                      cibhhlv L.VIVAN            536      1      3
+ CASTEST MODIF zzzz132a                      cibhhlv L.VIVAN            322      1      3
+ CASTEST MODIF zzzz161a                      cibhhlv L.VIVAN            228      1      1
+ CASTEST MODIF zzzz162a                      cibhhlv L.VIVAN            286      1      3
+ CASTEST MODIF zzzz162b                      cibhhlv L.VIVAN            224      1      1
+ CASTEST MODIF zzzz176a                      cibhhlv L.VIVAN            153      7      1
+ CASTEST MODIF zzzz180a                      cibhhlv L.VIVAN            912     13     14
+ CASTEST MODIF zzzz185a                      cibhhlv L.VIVAN            384      3      6
+CATALOPY MODIF commande/aide                 cibhhlv L.VIVAN             32      1      2
+CATALOPY MODIF commande/calc_fonction        cibhhlv L.VIVAN            207      3      3
+CATALOPY MODIF commande/calc_theta           cibhhlv L.VIVAN             64      1      2
+CATALOPY MODIF commande/defi_cable_bp        cibhhpd S.VANDENBERGHE      83      2      2
+CATALOPY MODIF commande/defi_cable_op        cibhhpd S.VANDENBERGHE      50      2      2
+CATALOPY MODIF commande/defi_coqu_mult       cibhhlv L.VIVAN             31      1      2
+CATALOPY MODIF commande/engendre_test        cibhhlv L.VIVAN             29      1      2
+CATALOPY MODIF commande/fin                  cibhhlv L.VIVAN             30      1      2
+CATALOPY MODIF commande/impr_charge          cibhhlv L.VIVAN             26      2      4
+CATALOPY MODIF commande/impr_co              cibhhlv L.VIVAN             32      1      2
+CATALOPY MODIF commande/impr_courbe          cibhhlv L.VIVAN            151     33      9
+CATALOPY MODIF commande/impr_gene            cibhhlv L.VIVAN             61      3      5
+CATALOPY MODIF commande/impr_macr_elem       cibhhlv L.VIVAN             58      3      7
+CATALOPY MODIF commande/impr_matrice         cibhhlv L.VIVAN             70      7      6
+CATALOPY MODIF commande/impr_resu            cibhhlv L.VIVAN            146      1      1
+CATALOPY MODIF commande/impr_sturm           cibhhlv L.VIVAN             40      1      2
+CATALOPY MODIF commande/impr_table           cibhhlv L.VIVAN             61      1      2
+CATALOPY MODIF commande/meca_statique        boiteau O.BOITEAU           85      2      2
+CATALOPY MODIF commande/test_fonction        cibhhlv L.VIVAN             85      1      2
+CATALOPY MODIF commande/test_resu            cibhhlv L.VIVAN            130      1      2
+CATALOPY MODIF commande/test_table           cibhhlv L.VIVAN             58      1      2
+ FORTRAN AJOUT algorith/fetfac               boiteau O.BOITEAU          176    176      0
+ FORTRAN AJOUT algorith/fetggt               boiteau O.BOITEAU          208    208      0
+ FORTRAN AJOUT utilitai/copma2               boiteau O.BOITEAU          100    100      0
+ FORTRAN MODIF algeline/alfeti               boiteau O.BOITEAU          551    148     38
+ FORTRAN MODIF algeline/op0032               cibhhlv L.VIVAN            229      1      8
+ FORTRAN MODIF algeline/op0045               boiteau O.BOITEAU         1060      4      3
+ FORTRAN MODIF algeline/preres               boiteau O.BOITEAU          181     19     43
+ FORTRAN MODIF algeline/tldlg2               boiteau O.BOITEAU          589    303    158
+ FORTRAN MODIF algorith/ascova               cibhhlv L.VIVAN            217      2      2
+ FORTRAN MODIF algorith/cresol               boiteau O.BOITEAU          242     20     10
+ FORTRAN MODIF algorith/fetfiv               boiteau O.BOITEAU          183     33      6
+ FORTRAN MODIF algorith/fetinl               boiteau O.BOITEAU          236    175      6
+ FORTRAN MODIF algorith/fetprj               boiteau O.BOITEAU          223    163      8
+ FORTRAN MODIF algorith/fetrin               boiteau O.BOITEAU          360     85     16
+ FORTRAN MODIF algorith/foccar               cibhhlv L.VIVAN            122     47     69
+ FORTRAN MODIF algorith/gefact               cibhhlv L.VIVAN            461      3      2
+ FORTRAN MODIF algorith/lissag                durand C.DURAND           270      3      3
+ FORTRAN MODIF algorith/op0060               cibhhlv L.VIVAN            594      2      3
+ FORTRAN MODIF algorith/xenrch               geniaut S.GENIAUT          362     18      9
+ FORTRAN MODIF assembla/rercmk                durand C.DURAND           398      3      3
+ FORTRAN MODIF calculel/op0023               cibhhlv L.VIVAN            440      1      8
+ FORTRAN MODIF calculel/op0054               cibhhlv L.VIVAN            293      1      8
+ FORTRAN MODIF calculel/op0058               cibhhlv L.VIVAN           2696      2      6
+ FORTRAN MODIF calculel/op0177               cibhhlv L.VIVAN            186      1      8
+ FORTRAN MODIF calculel/op0178               cibhhlv L.VIVAN            151      1      8
+ FORTRAN MODIF elements/creso1               boiteau O.BOITEAU          178      6      3
+ FORTRAN MODIF elements/fetcrf                durand C.DURAND          1117      2      2
+ FORTRAN MODIF modelisa/caddli               cibhhlv L.VIVAN            350      7      1
+ FORTRAN MODIF modelisa/op0056               cibhhlv L.VIVAN            817      1      8
+ FORTRAN MODIF modelisa/op0180               cibhhpd S.VANDENBERGHE     402     22      8
+ FORTRAN MODIF modelisa/projca               cibhhpd S.VANDENBERGHE     260     12     12
+ FORTRAN MODIF modelisa/projkm               cibhhpd S.VANDENBERGHE     239     12     12
+ FORTRAN MODIF modelisa/rcmaco               cibhhlv L.VIVAN            338      8      4
+ FORTRAN MODIF modelisa/specep               cibhhlv L.VIVAN            416      3      2
+ FORTRAN MODIF modelisa/specff               cibhhlv L.VIVAN            464      3      2
+ FORTRAN MODIF modelisa/tomabe               cibhhpd S.VANDENBERGHE     387    121     77
+ FORTRAN MODIF prepost/op0039                cibhhlv L.VIVAN            804      4     11
+ FORTRAN MODIF prepost/op0135                cibhhlv L.VIVAN            465      3     10
+ FORTRAN MODIF prepost/op0157                cibhhlv L.VIVAN            193      1     12
+ FORTRAN MODIF soustruc/piqeli                durand C.DURAND           255      4      6
+ FORTRAN MODIF supervis/op9999               cibhhlv L.VIVAN            178      1      8
+ FORTRAN MODIF supervis/ops005               cibhhlv L.VIVAN            144      3      2
+ FORTRAN MODIF utilitai/calcfo               cibhhlv L.VIVAN             98      3      3
+ FORTRAN MODIF utilitai/calcna               cibhhlv L.VIVAN            122      3      3
+ FORTRAN MODIF utilitai/fitabu               cibhhlv L.VIVAN            272     16     23
+ FORTRAN MODIF utilitai/foc1su               cibhhlv L.VIVAN            187      2      2
+ FORTRAN MODIF utilitai/focoli               cibhhlv L.VIVAN             90      9    102
+ FORTRAN MODIF utilitai/foimpr               cibhhlv L.VIVAN            225      4      2
+ FORTRAN MODIF utilitai/fointa               cibhhlv L.VIVAN            302    248      7
+ FORTRAN MODIF utilitai/fointc               cibhhlv L.VIVAN            242    145     14
+ FORTRAN MODIF utilitai/fointe               cibhhlv L.VIVAN            374    282     12
+ FORTRAN MODIF utilitai/fointn               cibhhlv L.VIVAN             90     10     12
+ FORTRAN MODIF utilitai/op0017               cibhhlv L.VIVAN             99      1      8
+ FORTRAN MODIF utilitai/op0042               cibhhlv L.VIVAN             53      1      8
+ FORTRAN MODIF utilitai/op0091               cibhhlv L.VIVAN            555     19     20
+ FORTRAN MODIF utilitai/op0141               cibhhlv L.VIVAN            366      2      9
+ FORTRAN MODIF utilitai/op0155               cibhhlv L.VIVAN            222      1      8
+ FORTRAN MODIF utilitai/op0158               cibhhlv L.VIVAN             79      2     13
+ FORTRAN MODIF utilitai/op0159               cibhhlv L.VIVAN            318      1     34
+ FORTRAN MODIF utilitai/op0160               cibhhlv L.VIVAN             75      1     23
+ FORTRAN MODIF utilitai/pecap3                durand C.DURAND           167      2      2
+ FORTRAN SUPPR utilitai/foinri               cibhhlv L.VIVAN             62      0     62
+ FORTRAN SUPPR utilitai/foint1               cibhhlv L.VIVAN            227      0    227
+ FORTRAN SUPPR utilitai/foint2               cibhhlv L.VIVAN            349      0    349
+ FORTRAN SUPPR utilitai/foint3               cibhhlv L.VIVAN            187      0    187
+  PYTHON MODIF Build/B_ETAPE                  durand C.DURAND           667      2      2
+  PYTHON MODIF Cata/ops                       durand C.DURAND           453     23      1
+  PYTHON MODIF Execution/genpy                durand C.DURAND           314     10     11
+  PYTHON MODIF Macro/macr_cabri_mail_ops     cibhhlv L.VIVAN            443      1      1
+  PYTHON MODIF Macro/macr_fiab_impr_ops      cibhhlv L.VIVAN            106      6      6
+  PYTHON MODIF Macro/macro_miss_3d_ops       cibhhlv L.VIVAN             71      2      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    4         722       722              +722
+ MODIF :  192       70598      2587    1948      +639
+ SUPPR :    4         825               825      -825
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  200       72145      3309    2773      +536 

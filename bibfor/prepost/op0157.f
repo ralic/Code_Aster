@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,17 +63,6 @@ C
          IFI = 0
          FICH = ' '
          CALL GETVIS ( MOTFAC, 'UNITE'  , IOCC,1,1, IFI , N )
-         CALL GETVTX ( MOTFAC, 'FICHIER', IOCC,1,1, FICH, N )
-         IF ( N .NE. 0 ) THEN
-            CALL UTMESS('A',NOMCMD,
-     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
-     +               ' UTILISER LE MOT CLE "UNITE"')
-            IFI = IUNIFI( FICH )
-         ENDIF
-         IF ( IFI .EQ. 0 ) THEN
-            IF ( FICH .EQ. ' ' ) FICH = FORM
-            IFI = IUNIFI( FICH )
-         ENDIF
          IF ( .NOT. ULEXIS( IFI ) ) THEN
             CALL ULOPEN ( IFI, ' ', FICH, 'NEW', 'O' )
          ENDIF

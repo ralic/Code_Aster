@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (POLY_CFC)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -256,17 +256,15 @@ sizz=RECU_FONCTION(RESULTAT=SOLNL,
                    MAILLE='CUBE',
                    POINT=1,);
 
-DEFI_FICHIER(FICHIER='COURBE',UNITE=55,);
- 
-IMPR_COURBE(FICHIER='COURBE',
+IMPR_COURBE(UNITE=55,
             FORMAT='EXCEL',
             COURBE=_F(FONCTION=epzz,),);
 
-IMPR_COURBE(FICHIER='COURBE',
+IMPR_COURBE(UNITE=55,
             FORMAT='EXCEL',
             COURBE=_F(FONCTION=sizz,),);
 
-IMPR_COURBE(FICHIER='COURBE',
+IMPR_COURBE(UNITE=55,
             FORMAT='EXCEL',
             COURBE=_F(FONC_X=epzz,
                       FONC_Y=sizz,),);

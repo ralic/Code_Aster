@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TEST DE DYNA8TRAN_EXPLI SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,9 +29,6 @@ DEBUT(CODE=_F( NOM = 'SDND102C',NIV_PUB_WEB='INTERNET'))
 
 MAILLAGE=LIRE_MAILLAGE()
 
-
-DEFI_FICHIER(UNITE=25,FICHIER='AGRAF')
-
 #
 # DESCRIPTION DES PAS DE CALCUL ET D ARCHIVAGE
 #---------------------------------------------
@@ -49,14 +46,13 @@ LISTIMP=DEFI_LIST_REEL(  DEBUT=0.001,
 #--------------------------------
 OMEGAA=2.*pi*10.
 
-ACCE1 = FORMULE(REEL="""(REEL:INST) =
-SIN(OMEGAA*INST) """)
+ACCE1 = FORMULE(REEL="""(REEL:INST) = SIN(OMEGAA*INST) """)
 ACCELER1=CALC_FONC_INTERP( FONCTION=ACCE1,  LIST_PARA=L_INST,
-NOM_PARA = 'INST',
-                               PROL_DROITE='LINEAIRE',
-                              PROL_GAUCHE='LINEAIRE',
-                               NOM_RESU='ACCE',
-                             INFO=1)
+                           NOM_PARA = 'INST',
+                           PROL_DROITE='LINEAIRE',
+                           PROL_GAUCHE='LINEAIRE',
+                           NOM_RESU='ACCE',
+                           INFO=1)
 
 # MATERIAU
 #
@@ -209,19 +205,19 @@ NOB_DXAR = RECU_FONCTION( NOEUD= 'NO2',  NOM_CMP='DX' ,
                      PROL_GAUCHE= 'LINEAIRE',
                      RESULTAT=  TRAN_DY2  );
                      
-IMPR_COURBE(FICHIER='AGRAF',
+IMPR_COURBE(UNITE=25,
             FORMAT='AGRAF',
             COURBE=(
                     _F(FONCTION=NOA_DXDR, ),
                     _F(FONCTION=NOB_DXDR, ),
             )),
-IMPR_COURBE(FICHIER='AGRAF',
+IMPR_COURBE(UNITE=25,
             FORMAT='AGRAF',
             COURBE=(
                     _F(FONCTION=NOA_DXVR, ),
                     _F(FONCTION=NOB_DXVR, ),
             )),
-IMPR_COURBE(FICHIER='AGRAF',
+IMPR_COURBE(UNITE=25,
             FORMAT='AGRAF',
             COURBE=(
                     _F(FONCTION=NOA_DXAR, ),

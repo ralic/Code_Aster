@@ -3,7 +3,7 @@
      &  VERIF,TESTCO,NBREOR,TYREOR,SCALIN)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 23/08/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -99,11 +99,14 @@ C --------------------------------------------------------------
       ZK24(ISLVK+2) = VERIF
       ZK24(ISLVK+3) = RENUM
       ZK24(ISLVK+4) = SYME
+
+C GESTION SD_FETI DIFFERENTE DE VERIF... CAR SD_FETI SERT AUSSI
+C AU .LOGI      
       IF (NUMSD.EQ.0) THEN
         ZK24(ISLVK+5) = SDFETI
       ELSE
-        ZK24(ISLVK+5) = 'XXXX'      
-      ENDIF 
+        ZK24(ISLVK+5) = '????'      
+      ENDIF
       ZK24(ISLVK+6) = TYREOR
       ZK24(ISLVK+7) = SCALIN
       
@@ -132,7 +135,7 @@ C MONITORING
         WRITE(IFM,*)'<FETI/CRESO1> CREATION OBJETS JEVEUX ',
      &    SOLVEU(1:19),' SUR LA BASE V' 
         WRITE(IFM,*)'.SLVK: ',METHOD,' ',PRECO,' ',VERIF,' ',
-     &    RENUM,' ',SYME,' ',SDFETI(1:8),' ',TYREOR
+     &    RENUM,' ',SYME,' ',SDFETI(1:8),' ',TYREOR,' ',SCALIN
         WRITE(IFM,*)'.SLVR: ',EPS,' ',RESIRE,' ',TBLOC,' ',
      &     TESTCO
         WRITE(IFM,*)'.SLVI: ',NPREC,' ',NMAXIT,' ',ISTOP,

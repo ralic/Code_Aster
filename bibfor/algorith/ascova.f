@@ -1,6 +1,6 @@
       SUBROUTINE ASCOVA(DETR,VACHAR,FOMULZ,NPARA,VPARA,TYPRES,CNCHAR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/07/2002   AUTEUR CAMBIER S.CAMBIER 
+C MODIF ALGORITH  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,7 +176,7 @@ C     ----------------------------------------------------
             IF (ICHA.GT.NCHAR) CALL UTMESS('F','ASCOVA','STOP 4')
             VALRE = 1.D0
             VALIM = 0.D0
-            IF (FCT) CALL FOINRI(ZK24(JFONCT+ICHA-1) (1:8),1,NPARA,
+            IF (FCT) CALL FOINTC(ZK24(JFONCT+ICHA-1)(1:8),1,NPARA,
      &                           VPARA,VALRE,VALIM,IER)
           END IF
 

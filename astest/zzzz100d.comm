@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CALCUL DES INDICES DE NOCIVITE D'UN SEISME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,12 +126,10 @@ INH1=CALC_FONCTION(
                        )
 
 #
-
 #--------------------------------------------------------
 #
 TEST_TABLE(
                    TABLE=INLBNS,
-                 FICHIER='RESULTAT',
                 NOM_PARA='ACCE_MAX',
                     VALE=1.000
             )
@@ -139,7 +137,6 @@ TEST_TABLE(
 #            
 TEST_TABLE(
                    TABLE=INLBNS,
-                 FICHIER='RESULTAT',
                 NOM_PARA='VITE_MAX',
                     VALE=0.229056
             )
@@ -147,7 +144,6 @@ TEST_TABLE(
 #            
 TEST_TABLE(
                    TABLE=INLBNS,
-                 FICHIER='RESULTAT',
                 NOM_PARA='DEPL_MAX',
                     VALE=1.342452
             )
@@ -155,7 +151,6 @@ TEST_TABLE(
 #
 TEST_TABLE(
                    TABLE=INLBNS,
-                 FICHIER='RESULTAT',
                 NOM_PARA='INTE_ARIAS',
                     VALE=2.582E-01
             )
@@ -163,7 +158,6 @@ TEST_TABLE(
 #
 TEST_TABLE(
                    TABLE=INLBNS,
-                 FICHIER='RESULTAT',
                 NOM_PARA='POUV_DEST',
                     VALE=2.09825E-01
             )
@@ -171,7 +165,6 @@ TEST_TABLE(
 #            
 TEST_TABLE(
                    TABLE=INLBNS,
-                 FICHIER='RESULTAT',
                 NOM_PARA='ACCE_SUR_VITE',
                     VALE=4.36573
             )
@@ -179,7 +172,6 @@ TEST_TABLE(
 #                    
 TEST_TABLE(
                    TABLE=INLBNS,
-                 FICHIER='RESULTAT',
                 NOM_PARA='VITE_ABSO_CUMU',
                     VALE=4.4337
             )
@@ -187,7 +179,6 @@ TEST_TABLE(
 #         
 TEST_TABLE(
                    TABLE=INLBNS,
-                 FICHIER='RESULTAT',
                 NOM_PARA='DUREE_PHAS_FORT',
                     VALE=14.83
             )
@@ -195,7 +186,6 @@ TEST_TABLE(
 #
 TEST_TABLE(
                    TABLE=INLBNS,
-                 FICHIER='RESULTAT',
                 NOM_PARA='INTE_SPECT',
                     VALE=5.86E-01
             )
@@ -203,7 +193,6 @@ TEST_TABLE(
 #            
 TEST_TABLE(
                    TABLE=INLBNS11,
-                 FICHIER='RESULTAT',
                 NOM_PARA='INTE_ARIAS',
                     VALE=2.582E-01
             )
@@ -211,7 +200,6 @@ TEST_TABLE(
 #
 TEST_TABLE(
                    TABLE=INLBNS12,
-                 FICHIER='RESULTAT',
                 NOM_PARA='ACCE_MAX',
                     VALE=1.000
             )
@@ -219,7 +207,6 @@ TEST_TABLE(
 #            
 TEST_TABLE(
                    TABLE=INLBNS12,
-                 FICHIER='RESULTAT',
                 NOM_PARA='VITE_MAX',
                     VALE=0.229056
             )
@@ -227,7 +214,6 @@ TEST_TABLE(
 #            
 TEST_TABLE(
                    TABLE=INLBNS12,
-                 FICHIER='RESULTAT',
                 NOM_PARA='DEPL_MAX',
                     VALE=1.342452
             )
@@ -235,7 +221,6 @@ TEST_TABLE(
 #
 TEST_TABLE(
                    TABLE=INLBNS13,
-                 FICHIER='RESULTAT',
                 NOM_PARA='ACCE_SUR_VITE',
                     VALE=4.36573
             )
@@ -243,7 +228,6 @@ TEST_TABLE(
 # 
 TEST_TABLE(
                    TABLE=INLBNS14,
-                 FICHIER='RESULTAT',
                 NOM_PARA='VITE_ABSO_CUMU',
                     VALE=4.4337
             )
@@ -251,7 +235,6 @@ TEST_TABLE(
 #           
 TEST_TABLE(
                    TABLE=INLBNS15,
-                 FICHIER='RESULTAT',
                 NOM_PARA='POUV_DEST',
                     VALE=2.09825E-01
             )
@@ -259,7 +242,6 @@ TEST_TABLE(
 #            
 TEST_TABLE(
                    TABLE=INLBNS16,
-                 FICHIER='RESULTAT',
                 NOM_PARA='DUREE_PHAS_FORT',
                     VALE=14.83
             )
@@ -267,14 +249,12 @@ TEST_TABLE(
 #          
 TEST_TABLE(
                    TABLE=INLBNS17,
-                 FICHIER='RESULTAT',
                 NOM_PARA='INTE_SPECT',
                     VALE=5.86E-01
             )
 
 TEST_TABLE(
                    TABLE=INLBNS18,
-                 FICHIER='RESULTAT',
                 NOM_PARA='ACCE_MAX',
                     VALE=4.4113E-1
             )
@@ -282,7 +262,6 @@ TEST_TABLE(
 #            
 TEST_TABLE(
                    TABLE=INLBNS18,
-                 FICHIER='RESULTAT',
                 NOM_PARA='VITE_MAX',
                     VALE=0.393261
             )
@@ -290,7 +269,6 @@ TEST_TABLE(
 #            
 TEST_TABLE(
                    TABLE=INLBNS18,
-                 FICHIER='RESULTAT',
                 NOM_PARA='DEPL_MAX',
                     VALE=4.95142
             )
@@ -298,7 +276,6 @@ TEST_TABLE(
 #
 TEST_TABLE(
                    TABLE=INLBNS18,
-                 FICHIER='RESULTAT',
                 NOM_PARA='INTE_ARIAS',
                      VALE=1.06266E-02
             )
@@ -306,7 +283,6 @@ TEST_TABLE(
 #
 TEST_TABLE(
                    TABLE=INLBNS18,
-                 FICHIER='RESULTAT',
                 NOM_PARA='POUV_DEST',
                     VALE=3.2867E-01
             )
@@ -314,7 +290,6 @@ TEST_TABLE(
 #            
 TEST_TABLE(
                    TABLE=INLBNS18,
-                 FICHIER='RESULTAT',
                 NOM_PARA='ACCE_SUR_VITE',
                     VALE=1.12172
             )
@@ -322,7 +297,6 @@ TEST_TABLE(
 #                    
 TEST_TABLE(
                    TABLE=INLBNS18,
-                 FICHIER='RESULTAT',
                 NOM_PARA='VITE_ABSO_CUMU',
                     VALE=2.85872E-01
             )
@@ -330,7 +304,6 @@ TEST_TABLE(
 #         
 TEST_TABLE(
                    TABLE=INLBNS18,
-                 FICHIER='RESULTAT',
                 NOM_PARA='DUREE_PHAS_FORT',
                     VALE=4.E-02
             )
@@ -338,21 +311,18 @@ TEST_TABLE(
 #
 TEST_TABLE(
                    TABLE=INLBNS18,
-                 FICHIER='RESULTAT',
                 NOM_PARA='INTE_SPECT',
                     VALE=1.31677
             )
 
 TEST_TABLE(
                    TABLE=INH,
-                 FICHIER='RESULTAT',
                 NOM_PARA='INTE_SPECT',
                     VALE=1.49014
             )
 
 TEST_TABLE(
                    TABLE=INH1,
-                 FICHIER='RESULTAT',
                 NOM_PARA='INTE_SPECT',
                     VALE=4.5305
             )

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,17 +54,6 @@ C
       IFIC   = 0
       FICHIE = ' ' 
       CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFIC  , N3 )
-      CALL GETVTX ( ' ', 'FICHIER', 1,1,1, FICHIE, N3 )
-      IF ( N3 .NE. 0 ) THEN
-         CALL UTMESS('A','IMPR_CHARGE',
-     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
-     +               ' UTILISER LE MOT CLE "UNITE"')
-         IFIC = IUNIFI( FICHIE )
-      ENDIF
-      IF ( IFIC .EQ. 0 )  THEN
-         IF ( FICHIE .EQ. ' ' )  FICHIE = FORMAT
-         IFIC = IUNIFI( FICHIE )
-      ENDIF
       IF ( .NOT. ULEXIS( IFIC ) ) THEN
          CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
       ENDIF
@@ -81,7 +70,7 @@ C     ------------------------------------------------------------------
       IF ( FORMAT .EQ. 'IDEAS' ) THEN
          CALL IRCHSU ( NBCHAR, ZK8(LCHA), IFIC, VERSIO )
       ELSE
-         CALL UTMESS('F','OP0158','ERREUR 1')
+         CALL UTMESS('F','OP0158','ERREUR DE FORMAT D''IMPRESSION')
       ENDIF
 C
       IF ( NBCHAR .NE. 0 )  CALL JEDETR ( '&&OP0158.CHARGES' )

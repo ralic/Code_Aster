@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE CLAQUAGE  CALOTTE CYLINDRIQUE SHB8  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -125,7 +125,7 @@ FDX=RECU_FONCTION(TABLE=TABDX,
 FETA=RECU_FONCTION(RESULTAT=NONLIN,INTERPOL='LIN',
                    NOM_PARA_RESU='ETA_PILOTAGE',);
 
-IMPR_COURBE(FICHIER='RESULTAT',
+IMPR_COURBE(UNITE=8,
             FORMAT='EXCEL',
             COURBE=(_F(FONCTION=FDX,),
                     _F(FONCTION=FETA,),),);
@@ -194,7 +194,7 @@ INCA=DEFI_FONCTION(NOM_PARA='INST',INTERPOL='LIN',PROL_DROITE='CONSTANT',PROL_GA
                         14.90, 1477,
                          ),);
                          
-IMPR_COURBE(FICHIER='RESULTAT',
+IMPR_COURBE(UNITE=8,
             FORMAT='EXCEL',
             COURBE=(_F(FONCTION=INCA,),
                     _F(FONCTION=FETA,),),);
@@ -205,7 +205,7 @@ DIFF=CALC_FONCTION(COMB=(
                           _F(  FONCTION = INCA, COEF = -1.), 
                           ) )
 
-IMPR_COURBE(FICHIER='RESULTAT',
+IMPR_COURBE(UNITE=8,
             FORMAT='EXCEL',
             COURBE=(_F(FONCTION=DIFF,),),);
                     
@@ -267,12 +267,5 @@ INCLUDE(UNITE=10)
 # 
 # 
 # COURBES(listcourb,titre='SSNS101',legx='INST',legy='FORCE',fichier='./fort.24')
-
-DEFI_FICHIER(FICHIER='GMSH',UNITE=37)
-IMPR_RESU( MODELE=MODMECA,
-           FORMAT='GMSH', VERSION=1.2, UNITE=37,
-           RESU=_F( RESULTAT=NONLIN, INST=15.,
-                    NOM_CHAM=('DEPL','VARI_ELNO_ELGA',),
-                   ),)
 
 FIN()

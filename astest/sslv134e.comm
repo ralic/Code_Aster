@@ -1,4 +1,4 @@
-# MODIF  DATE 11/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -178,14 +178,11 @@ GMAX=CALC_G_THETA_T(
                           COMP_ELAS=_F(  RELATION = 'ELAS')
                        )
 
-IMPR_TABLE      ( 
-                   #FICHIER  = 'AGRAF',
-                  UNITE=8,
+IMPR_TABLE      ( UNITE=8,
                   TABLE           =  GMAX,
                 );
 
-IMPR_TABLE      (
-                  TABLE           =  GBIL,
+IMPR_TABLE      ( TABLE           =  GBIL,
                   UNITE=8,
                 );
 

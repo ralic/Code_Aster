@@ -1,10 +1,11 @@
-      SUBROUTINE FOINTA(IPIF,NBPU,NOMPU,VALPU,RESU)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)               NOMPU(*)
-      REAL*8                            VALPU(*)
+      SUBROUTINE FOINTA ( IPIF, NBPU, NOMPU, VALPU, RESU )
+      IMPLICIT NONE
+      INTEGER             IPIF, NBPU
+      REAL*8              VALPU(*), RESU
+      CHARACTER*(*)       NOMPU(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/07/95   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +43,7 @@ C IER = 220 : PARAMETRE ATTENDUS,PARAMETRES RECUS
 C IER = 230 : TYPE D'INTERPOLATION DE LA FONCTION INCONNU
 C IER = 240 : RECHERCHE DE LA VALEUR INCONNUE (COLI)
 C
-C CODE RETOUR DE FOINT2 :
+C CODE RETOUR DE FOINTA :
 C IER = 100 : TYPE DE FONCTION NON VALIDE
 C IER = 110 : PAS ASSEZ DE PARAMETRES 
 C IER = 120 : PARAMETRE EN DOUBLE
@@ -53,9 +54,249 @@ C IER = 160 : PAS ASSEZ DE PARAMETRES
 C IER = 170 : INTERPOLATION SUR LES PARAMETRES DE LA NAPPE NON PERMISE
 C ----------------------------------------------------------------------
 C
-      EPSI  = SQRT ( R8PREM() )
-      CALL FOINT1 ( IPIF, NBPU, NOMPU, VALPU, EPSI, RESU, IER )
-      IF ( IER .NE. 0 ) CALL UTMESS('F','FOINTA',
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+      INTEGER      NPAR(2), INDFCT, JPRO, JPAR, LPARA, NBVN, NBPARA, I,
+     +             NUPAR, NBPT, JVAL, INUME, IER
+      REAL*8       TAB(4), RPAR, RVAR, EPSI, R8PREM, R8VIDE
+      REAL*8       LINLIN, LINLOG, LOGLOG, LOGLIN, X, X1, Y1, X2, Y2
+      CHARACTER*1  COLI
+      CHARACTER*16 NOMPF(2)
+      CHARACTER*19 NOMF
+C     ------------------------------------------------------------------
+      INTEGER      IPAR(10), MXPARA, NBPF, I1
+      CHARACTER*1  CBID
+      CHARACTER*2  BL
+      CHARACTER*16 NOMP(10)
+C ----------------------------------------------------------------------
+C PARAMETER ASSOCIE AU MATERIAU CODE
+C
+      PARAMETER  ( INDFCT = 7 )
+C ----------------------------------------------------------------------
+C     FONCTION EN LIGNE
+C
+      LINLIN(X,X1,Y1,X2,Y2)= Y1+(X-X1)*(Y2-Y1)/(X2-X1)
+      LINLOG(X,X1,Y1,X2,Y2)=EXP(LOG(Y1)+(X-X1)*(LOG(Y2)-LOG(Y1))
+     +                                        /(X2-X1))
+      LOGLOG(X,X1,Y1,X2,Y2)=EXP(LOG(Y1)+(LOG(X)-LOG(X1))*(LOG(Y2)
+     +                                     -LOG(Y1))/(LOG(X2)-LOG(X1)))
+      LOGLIN(X,X1,Y1,X2,Y2)=Y1+(LOG(X)-LOG(X1))*(Y2-Y1)
+     +                                         /(LOG(X2)-LOG(X1))
+C     ------------------------------------------------------------------
+      NPAR(1) = 0
+      NPAR(2) = 0
+      BL   = ' '
+      NOMF = ' '
+      JPRO = ZI(IPIF+1)
+      JPAR = ZI(IPIF+2)
+      RESU = R8VIDE()
+C
+      IER = 0
+      EPSI = SQRT ( R8PREM() )
+C
+C --- FONCTION "CONSTANT"
+C
+      IF (ZK16(JPRO).EQ.'CONSTANT') THEN
+C         ------------------------
+        RESU = ZR(JPAR+1)
+        GOTO 9999
+
+C
+C --- FONCTION "INTERPRE"
+C
+      ELSEIF (ZK16(JPRO).EQ.'INTERPRE') THEN
+C             ------------------------
+         NOMF = ZK16(JPRO+5)
+         MXPARA = 10
+         CALL FONBPA(NOMF,ZK16(JPRO),CBID,MXPARA,NBPF,NOMP)
+         DO 70 I1 = 1,NBPF
+            IPAR(I1) = 0
+            DO 72 NUPAR = 1,NBPU
+               IF (NOMPU(NUPAR).EQ.NOMP(I1)) THEN
+                  IF (IPAR(I1).EQ.0) THEN
+                     IPAR(I1) = NUPAR
+                  ELSE
+                     IER = 120
+                   CALL UTDEBM('A','FOINTA','ERREUR A L''INTERPOLATION')
+                     CALL UTIMPK('S',' FONCTION',1,NOMF)
+                     CALL UTIMPK('L',' PARAMETRE',NBPU,NOMPU)
+                     CALL UTIMPK('S',' EN DOUBLE',0,BL)
+                     CALL UTFINM()
+                     GOTO 9999
+                  ENDIF
+               ENDIF
+ 72         CONTINUE
+            IF (IPAR(I1).EQ.0) THEN
+               IER = 130
+               CALL UTDEBM('A','FOINTA','ERREUR A L''INTERPOLATION')
+               CALL UTIMPK('S',' FONCTION',1,NOMF)
+               CALL UTIMPK('L',' PARAMETRES ATTENDUS',NBPF,NOMP)
+               CALL UTIMPK('L',' PARAMETRES RECUS   ',NBPU,NOMPU)
+               CALL UTFINM()
+               GOTO 9999
+            ENDIF
+ 70      CONTINUE
+         CALL FIINTE('F',NOMF,NBPF,IPAR,VALPU,RESU,IER)
+        GOTO 9999
+
+C
+C --- AUTRES TYPES DE FONCTION
+C
+      ELSEIF (ZK16(JPRO).EQ.'FONCTION') THEN
+        NBPARA = 1
+        NOMPF(1) = ZK16(JPRO+2)
+
+      ELSE IF (ZK16(JPRO).EQ.'NAPPE') THEN
+        NBPARA = 2
+        NOMPF(1) = ZK16(JPRO+2)
+        NOMPF(2) = ZK16(JPRO+5)
+
+      ELSE
+        IER = 100
+        CALL UTDEBM('E','FOINTA','ERREUR DE PROGRAMMATION')
+        CALL UTIMPK('L','TYPE DE FONCTION NON VALIDE',1,ZK16(JPRO))
+        CALL UTFINM()
+        GOTO 9999
+      ENDIF
+C
+      IF (NBPU.LT.NBPARA) THEN
+        IER = 110
+        CALL UTDEBM('E','FOINTA','ERREUR A L''INTERPOLATION')
+        CALL UTIMPI('L',' PAS ASSEZ DE PARAMETRES : ',1,NBPU)
+        CALL UTIMPI('S',' AU LIEU DE',1,NBPARA)
+        CALL UTFINM()
+        GOTO 9999
+      ENDIF
+      DO 20 I=1,NBPARA
+        DO 21 NUPAR=1,NBPU
+          IF (NOMPU(NUPAR).EQ.NOMPF(I)) THEN
+            IF (NPAR(I).EQ.0) THEN
+              NPAR(I)=NUPAR
+            ELSE
+              IER = 120
+              CALL UTDEBM('E','FOINTA','ERREUR A L''INTERPOLATION')
+              CALL UTIMPK('L',' PARAMETRE',NBPU,NOMPU)
+              CALL UTIMPK('S',' EN DOUBLE',0,' ')
+              CALL UTFINM()
+              GOTO 9999
+            ENDIF
+          ENDIF
+   21   CONTINUE
+        IF (NPAR(I).EQ.0) THEN
+          IER = 130
+          CALL UTDEBM('E','FOINTA','ERREUR A L''INTERPOLATION')
+          CALL UTIMPK('L',' PARAMETRES ATTENDUS',NBPARA,NOMPF)
+          CALL UTIMPK('L',' PARAMETRES RECUS   ',NBPU,NOMPU)
+          CALL UTFINM()
+          GOTO 9999
+        ENDIF
+   20 CONTINUE
+C
+C =====================================================================
+C                          F O N C T I O N
+C =====================================================================
+C
+      IF ( ZK16(JPRO) .EQ. 'FONCTION') THEN
+        NBPT = ZI(IPIF)
+        JVAL = JPAR + NBPT
+        RVAR = VALPU(NPAR(1))
+        CALL FOLOCX ( ZR(JPAR), NBPT, RVAR, ZK16(JPRO+4),
+     +                          ZI(IPIF+INDFCT), EPSI, COLI, IER )
+        IF ( IER .NE. 0 ) GOTO 9999
+        CALL FOCOLI ( ZI(IPIF+INDFCT),COLI,ZK16(JPRO+1),ZR(JPAR),
+     +                                ZR(JVAL), RVAR, RESU , IER  )
+        IF ( IER .NE. 0 ) GOTO 9999
+C
+C =====================================================================
+C                            N A P P E
+C =====================================================================
+C
+      ELSE IF ( ZK16(JPRO) .EQ. 'NAPPE   ') THEN
+        RPAR   = VALPU(NPAR(1))
+        RVAR   = VALPU(NPAR(2))
+        LPARA = ZI(IPIF+4)
+        NBVN  = ZI(IPIF+5)
+        CALL FOLOCX ( ZR(LPARA), NBVN, RPAR, ZK16(JPRO+4),
+     +                          ZI(IPIF+INDFCT), EPSI, COLI, IER )
+        IF ( IER .NE. 0 ) GOTO 9999
+        INUME = ZI(IPIF+INDFCT)
+C
+        IF (COLI.EQ.'C') THEN
+          CALL FOINTN ( IPIF, NOMF, RVAR, INUME, EPSI, RESU, IER )
+          IF ( IER .NE. 0 ) GOTO 9999
+C
+        ELSE IF (COLI.EQ.'I') THEN
+          IF (ZK16(JPRO+1)(1:3).EQ.'NON') THEN
+            CALL UTMESS('E','FOINTA_08','INTERPOLATION SUR PARAMETRES'
+     +                  //' NON PERMISE')
+            IER = 170
+            GOTO 9999
+          ENDIF
+          CALL FOINTN ( IPIF, NOMF, RVAR, INUME, EPSI, TAB(3), IER )
+          IF ( IER .NE. 0 ) GOTO 9999
+          CALL FOINTN ( IPIF, NOMF, RVAR, INUME+1, EPSI, TAB(4), IER )
+          IF ( IER .NE. 0 ) GOTO 9999
+C
+C ------- INTERPOLATION FINALE SUR LES PARAMETRES
+C
+          TAB(1) = ZR(LPARA+INUME-1)
+          TAB(2) = ZR(LPARA+INUME  )
+          IF (ZK16(JPRO+1).EQ.'LIN LIN ') THEN
+            RESU = LINLIN(RPAR,TAB(1),TAB(3),TAB(2),TAB(4))
+          ELSE IF (ZK16(JPRO+1).EQ.'LIN LOG ') THEN
+            RESU = LINLOG(RPAR,TAB(1),TAB(3),TAB(2),TAB(4))
+          ELSE IF (ZK16(JPRO+1).EQ.'LOG LOG ') THEN
+            RESU = LOGLOG(RPAR,TAB(1),TAB(3),TAB(2),TAB(4))
+          ELSE IF (ZK16(JPRO+1).EQ.'LOG LIN ') THEN
+            RESU = LOGLIN(RPAR,TAB(1),TAB(3),TAB(2),TAB(4))
+          ENDIF
+C
+        ELSE IF (COLI.EQ.'E') THEN
+          CALL FOINTN ( IPIF, NOMF, RVAR, INUME, EPSI, TAB(3), IER )
+          IF ( IER .NE. 0 ) GOTO 9999
+          CALL FOINTN ( IPIF, NOMF, RVAR, INUME+1, EPSI, TAB(4), IER )
+          IF ( IER .NE. 0 ) GOTO 9999
+          TAB(1) = ZR(LPARA+INUME-1)
+          TAB(2) = ZR(LPARA+INUME  )
+          RESU = LINLIN(RPAR,TAB(1),TAB(3),TAB(2),TAB(4))
+C
+        ELSE
+          IER = 140
+          CALL UTMESS('E','FOINTA',
+     +                         'INTERPOLATION "'//COLI//'" INCONNUE')
+          GOTO 9999
+        ENDIF
+C
+      ELSE
+        IER = 150
+        CALL UTMESS('E','FOINTA','"'//ZK16(JPRO)//
+     +                              '" TYPE DE FONCTION INCONNU')
+        GOTO 9999
+      ENDIF
+C
+ 9999 CONTINUE
+C
+      IF ( IER .NE. 0 ) THEN
+         CALL UTDEBM('F','FOINTA',
      +                  'ERREUR RENCONTREE LORS DE L''INTERPOLATION.')
+         CALL UTIMPI('L',' CODE RETOUR ',1,IER)
+         CALL UTFINM( )
+      ENDIF
 C
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CALCUL DU DOMMAGE DE LEMAITRE-SERMAGE (CALC_ELEM)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -462,12 +462,6 @@ L_ORDRE=DEFI_LIST_ENTI(DEBUT=1,
 # ==============================================================================
 # CALCUL DES CHAMPS ELEMTAIRES POUR CAS ELASTIQUE <MECA_STATIQUE>
 # ==============================================================================
-#%RESUPLAS=CALC_ELEM(reuse =RESUPLAS,
-#%                   TOUT='OUI',
-#%                   LIST_ORDRE=L_ORDRE,
-#%                   OPTION=('SIEF_ELNO_ELGA','EPSI_ELNO_DEPL','VARI_ELNO_ELGA',),
-#%                   RESULTAT=RESUPLAS,
-#%                         );
 
 RESUPLAS=CALC_ELEM(reuse =RESUPLAS,
                    TOUT='OUI',
@@ -482,22 +476,6 @@ RESUPLA1=CALC_ELEM(reuse =RESUPLA1,
                    OPTION=('ENDO_ELGA','ENDO_ELNO_ELGA',),
                    RESULTAT=RESUPLA1,
                          );
-
-# ================================================================================
-# IMPRESSION DES RESULTATS DU PROBLEME THERMOMECANIQUE
-# EXTRACTION DANS LE .UNV DE TOUS LES CHAMPS  TOUT_CHAM=('OUI',),
-#                                         OU  NOM_CHAM=('VARI_NOEU_ELGA',),
-# EXTRACTION DANS LE .UNV A TOUS LES INSTANTS DE LIST_INST LIST_INST=L_INST2,),);
-# ================================================================================
-
-DEFI_FICHIER(FICHIER='UNV',
-             UNITE=30,);
-DEFI_FICHIER(FICHIER='V1.UNV',
-             UNITE=31,);
-DEFI_FICHIER(FICHIER='SIGA.UNV',
-             UNITE=32,);
-DEFI_FICHIER(FICHIER='ENDO.UNV',
-             UNITE=37,);
 
 # ====================================================================
 # RELEVE DE L'ENDOMMAGEMENT DE LEMAITRE-SERMAGE
@@ -518,14 +496,10 @@ DOMLE1=POST_RELEVE_T(ACTION=(_F(INTITULE='DOMMAGE S=0.8',
                                OPERATION='EXTRACTION',),),
                     INFO=1,);
 
-DEFI_FICHIER(FICHIER='DOMLE',
-             UNITE=38,);
 IMPR_TABLE(TABLE=DOMLE,
-           FICHIER='DOMLE',
-           FORMAT='AGRAF',);
+           UNITE=38, FORMAT='AGRAF',);
 IMPR_TABLE(TABLE=DOMLE1,
-           FICHIER='DOMLE',
-           FORMAT='AGRAF',);
+           UNITE=38, FORMAT='AGRAF',);
 
 # --------------------------------------------------------------------
 # VERIFICATION DES SOLUTIONS OBTENUES ...

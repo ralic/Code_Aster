@@ -1,9 +1,9 @@
       SUBROUTINE OP0091 ( IER )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/07/2004   AUTEUR GREFFET N.GREFFET 
+C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,6 +36,7 @@ C       -  EXTRACTION                   OUI         NON
 C       -  RECHERCHE D'ENVELOPPE        OUI         OUI
 C       -  RECHERCHE DE PICS            OUI         OUI
 C       -  COMPOSITION                  OUI         NON
+C       -  PUISSANCE                    OUI         OUI
 C       -  ASSE                         OUI         NON
 C       -  FFT                          OUI         NON
 C       -  INDICES NOCIVITE D'UN SEISME OUI         OUI
@@ -63,29 +64,27 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     ------------------------------------------------------------------
-      REAL*8         COEF, RBID, NORME, MOY
-      CHARACTER*8    K8B, LISTR, NATURE, NATURF, LPARA
-      CHARACTER*16   CONCEP, NOMCMD, NOMOPE, METHOD, CRITER,PARTIE
-      CHARACTER*19   SORTIE, NOMFON, LISTFR
-      CHARACTER*24   NOMTEM(5), PROL, VALE
-      INTEGER        LF, L, K, NBAMOR, LAMOR, NBFREQ, LFREQ, LNOMF
-      INTEGER        I,NBFON,NBVAL,LTINI,LTFIN,LFINI,LFFIN,LCOEF
-      INTEGER        L1, L2, NBMAX, NBPTS, LFON
-      CHARACTER*19   NOMFO1, NOMFO2,NOMFI
       INTEGER        N1,  N2,  N3,  N4,  N5,  N6 , N7,  N8,  N9,  N10,
      +               N11, N12, N13, N14, N15, N16, N17, N18, N19, N20
-      INTEGER        IOCC, IBID
-      INTEGER        NBPRMS, NBPMAX, NBPETY, IFM,NIV,EXPO1
+      INTEGER        LF, L, NBAMOR, LAMOR, NBFREQ, LFREQ, LNOMF, EXPO1
+      INTEGER        I, NBFON, NBVAL, LTINI, LTFIN, LCOEF, IFM, NIV
+      INTEGER        L1, L2, NBPTS, LFON, IOCC, IBID, LCOR, LCOC
+      INTEGER        LPRO, LVAR, NSENS, LCCPLX, LFCPLX, LCOEFZ
+      INTEGER        NBPRMS, NBPMAX, NBPETY
       PARAMETER    ( NBPRMS=5, NBPMAX=2, NBPETY=6 )
-      REAL*8         TINI, TFIN, BINF, BSUP, FINI, FFIN, EPSI, RMS,
-     +               VALRMS(3),VALINF, VALSUP,VALTYP(4)
+      REAL*8         COEF, RBID, NORME, MOY, SIG
+      REAL*8         TINI, TFIN, EPSI, RMS, VALRMS(3), VALTYP(4)
       COMPLEX*16     C16B
-      CHARACTER*1    BASE, K1BID
-      CHARACTER*8    CRIT, SURCHG, NOMRES
-      CHARACTER*19   NOMRMS(2),NOMTYP(2)
-      CHARACTER*16   NOPRMS(NBPRMS), NOPMAX(NBPMAX), NOPETY(NBPETY),
-     +               PROLGD, INTERP
+      CHARACTER*1    BASE
+      CHARACTER*8    CRIT, SURCHG
+      CHARACTER*8    K8B, LISTR, NATURE, NATURF, LPARA
       CHARACTER*8    TYPRMS(NBPRMS), TYPMAX(NBPMAX), TYPETY(NBPETY)
+      CHARACTER*16   NOPRMS(NBPRMS), NOPMAX(NBPMAX), NOPETY(NBPETY)
+      CHARACTER*16   CONCEP, NOMCMD, NOMOPE, METHOD, CRITER,PARTIE,
+     +               PROLGD, INTERP
+      CHARACTER*19   SORTIE, NOMFON, NOMFO1, NOMFO2, LISTFR
+      CHARACTER*19   NOMRMS(2),NOMTYP(2)
+      CHARACTER*24   NOMTEM(5), PROL, VALE
 C
       DATA NOPRMS/'FONCTION','METHODE','INST_INIT','INST_FIN' , 'RMS'/
       DATA TYPRMS/'K8'      ,'K8'     ,'R'        ,'R'        , 'R'  /

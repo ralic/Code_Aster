@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE VALIDATION IMPR_COURBE AU FORMAT SEISME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -57,15 +57,14 @@ IMPR_COURBE(COURBE=(_F(  FONCTION = DFC1),
 
 #-----------------------------------------------------------------------
 
-DEFI_FICHIER(  FICHIER = 'TEMPO1',UNITE = 50) 
-
 IMPR_COURBE(   COURBE=_F(  FONC_X = DFC1,
                            FONC_Y = DFC2) )
 
-IMPR_COURBE(   FICHIER='TEMPO1',
-                  FORMAT='EXCEL',
-                  COURBE=_F(  FONC_X = DFC1,
+IMPR_COURBE(   UNITE = 50,
+               FORMAT='EXCEL',
+               COURBE=_F(  FONC_X = DFC1,
                            FONC_Y = DFC2) )
+
 DEFI_FICHIER( ACTION="LIBERER", UNITE = 50 ) 
                         
 FF1=LIRE_FONCTION(        UNITE=50,
@@ -83,15 +82,13 @@ TEST_FONCTION(VALEUR=(
 
 #-----------------------------------------------------------------------
 
-DEFI_FICHIER( FICHIER = 'TEMPO2', UNITE = 51) 
-
 IMPR_COURBE(   COURBE=_F(  FONC_X = DFC1,
                            FONC_Y = DFC2, 
                            PARA = 'FONC_Y') )
 
-IMPR_COURBE(   FICHIER='TEMPO2',
+IMPR_COURBE(   UNITE = 51,
                FORMAT='EXCEL',
-                  COURBE=_F(  FONC_X = DFC1,
+               COURBE=_F(  FONC_X = DFC1,
                            FONC_Y = DFC2, 
                            PARA = 'FONC_Y') )
 
@@ -115,16 +112,14 @@ TEST_FONCTION(VALEUR=(
 #-----------------------------------------------------------------------
 
 
-DEFI_FICHIER( FICHIER = 'TEMPO3', UNITE = 52)
-
 IMPR_COURBE(   COURBE=_F(  FONC_X = DFC1,
                            FONC_Y = DFC2,
                            LIST_PARA = L03)
                   )
 
-IMPR_COURBE(   FICHIER='TEMPO3',
+IMPR_COURBE(   UNITE = 52,
                FORMAT='EXCEL',
-                  COURBE=_F(  FONC_X = DFC1,
+               COURBE=_F(  FONC_X = DFC1,
                            FONC_Y = DFC2,
                            LIST_PARA = L03)
                   )
@@ -154,14 +149,12 @@ TEST_FONCTION(VALEUR=(
 #-----------------------------------------------------------------------
 
 
-DEFI_FICHIER( FICHIER = 'TEMPO4', UNITE = 53) 
-
 IMPR_COURBE(   COURBE=_F(  FONC_X = DFC2,
                            FONC_Y = DFC1) )
 
-IMPR_COURBE(   FICHIER='TEMPO4',
+IMPR_COURBE(   UNITE = 53, 
                FORMAT='EXCEL',
-                  COURBE=_F(  FONC_X = DFC2,
+               COURBE=_F(  FONC_X = DFC2,
                            FONC_Y = DFC1) )
 
 DEFI_FICHIER( ACTION="LIBERER", UNITE = 53 )

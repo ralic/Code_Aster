@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 
 # TITRE FORMATION  THERMO-PLASTICITE DANS LE CODE_ASTER ENONCE DU TP1
@@ -164,10 +164,8 @@ IMPR_RESU(
 # IMPR_RESU FORMAT GMSH
 #===========================================
 
-DEFI_FICHIER(FICHIER='POST',UNITE=55)
-
 IMPR_RESU(MODELE=MO, FORMAT='GMSH', VERSION=1.2, UNITE=55,
-          RESU=_F( NOM_CHAM=('DEPL'),
+          RESU=_F( NOM_CHAM='DEPL',
                    RESULTAT=U,),
          );
 
@@ -185,38 +183,3 @@ MAILLE = 'CUBE', NOEUD = 'NO1', NOM_CMP = 'EPXX', VALE = 1.32974E-03),
 
 FIN()
 #
-#  
-#
-## STRUCTURE DE LA COMMANDE STAT_NON_LINE (VERSION STA5)
-#
-# U        = STAT_NON_LINE (
-#                            MODELE     :
-#                            CHAM_MATER :
-#                            EXCIT      :
-#                                ( CHARGE     :
-#                                  FONC_MULT  :        )
-#                            COMP_INCR  : ( RELATION:
-#                                           DEFORMATION:          )
-#                            INCREMENT  : ( LIST_INST:
-#                                           NUME_INST_FIN: 
-#                                           OU INST_FIN :
-#                                           SUBD_PAS :
-#                                           SUBD_PAS_MINI :
-#                                           COEF_SUBD_PAS_1 :
-#                                                      )
-#                            ETAT_INIT  : ( EVOL_NOLI:INST
-#                                     #   OU NUME_ORDRE    )
-#                            NEWTON     : ( PREDICTION    :
-#                                           MATRICE       :
-#                                           REAC_INCR     :
-#                                           REAC_ITER     :
-#                                             )
-#                            CONVERGENCE: ( RESI_GLOB_RELA:
-#                                           RESI_GLOB_MAXI:
-#                                           ITER_GLOB_MAXI:
-#                                           RESI_INTE_RELA:
-#                                           ITER_INTE_MAXI:
-#                                           RESO_INTE     :   )
-#                           
-#                            RECH_LINEAIRE:(ITER_LINE_MAXI:)
-#                          ) ;

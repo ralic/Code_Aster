@@ -3,7 +3,7 @@
       INTEGER            ICMD , ICOND, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 24/11/2003   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,12 +131,13 @@ C ON REMET LPOS A 0 POUR QUE LXLIRE LISE DANS DES FICHIERS
 C
          NOMPAR = '  '
          NOMRES = 'TOUTRESU'
-         CALL WKVECT(NOMFON//'.PROL','G V K16',5,LPROL)
+         CALL WKVECT(NOMFON//'.PROL','G V K16',6,LPROL)
          ZK16(LPROL)   = 'INTERPRE'
          ZK16(LPROL+1) = 'INTERPRE'
          ZK16(LPROL+2) =  NOMPAR
          ZK16(LPROL+3) =  NOMRES
          ZK16(LPROL+4) = 'II      '
+         ZK16(LPROL+5) = NOMFON
 C
       ENDIF
       CALL JEDEMA()

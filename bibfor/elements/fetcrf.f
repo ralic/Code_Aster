@@ -1,7 +1,7 @@
       SUBROUTINE FETCRF(SDFET1)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/06/2004   AUTEUR ASSIRE A.ASSIRE 
+C MODIF ELEMENTS  DATE 23/08/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -1106,7 +1106,7 @@ C        ZI(JADR+I-1)=NBDDL(I)
      &  WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSDH
               
 C       IF (NIV.GE.4)
-C      &  CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,SDFETI(1:19),1,' ')
+C      &  CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,SDFETI(1:19),1,' ')
 C       IF (NIV.GE.3) THEN        
 C         WRITE(IFM,*)'EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE'
 C              WRITE(IFM,*)

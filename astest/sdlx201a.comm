@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TEST DE NON-REGRESSION D'ASTER :  MODES PROPRES
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -259,9 +259,7 @@ MOC2=MODE_ITER_INV(   MATR_A=RIGAS2,   MATR_B=MASAS2,
 
 #-----------------------------------------------------------------------
 
-TEST_RESU(
-                             FICHIER='RESULTAT',RESU=(
-
+TEST_RESU(RESU=(
                               _F(
                       RESULTAT = MOD1,
                       NUME_ORDRE = 2,

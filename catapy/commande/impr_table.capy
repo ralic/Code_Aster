@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,6 @@ IMPR_TABLE=PROC(nom="IMPR_TABLE",op=155,
                                fr="Liste des paramètres de sensibilité.",
                                ang="List of sensitivity parameters"),
          UNITE           =SIMP(statut='f',typ='I',defaut=8),  
-         FICHIER         =SIMP(statut='f',typ='TXM'),
          FORMAT          =SIMP(statut='f',typ='TXM',defaut="EXCEL",
                                into=("EXCEL","AGRAF","MOT_CLE","TABLEAU","ASTER") ),
          FILTRE          =FACT(statut='f',max='**',

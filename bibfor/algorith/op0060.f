@@ -1,6 +1,6 @@
       SUBROUTINE OP0060(IERR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -410,7 +410,6 @@ C
             ZC(LSECMB+IEQ) = DCMPLX(0.D0,0.D0)
   121       CONTINUE         
             ALPHA = 1.D0
-            CALL FOINT0
             DO 124 IVECT = 1,NBVECT
               IF (ZK24(LFON+IVECT-1).EQ.' ') THEN
                 CALP=ZC(LCC+IVECT-1)
@@ -418,8 +417,8 @@ C
                 CALL JEVEUO(ZK24(LFON+IVECT-1)(:19)//'.PROL','L',
      &                                                      LPRO)
                 IF (ZK16(LPRO).EQ.'FONCT_C') THEN
-                  CALL FOINRI(ZK24(LFON+IVECT-1),1,'FREQ',FREQ,
-     .                   RESURE,RESUIM,IER)
+                  CALL FOINTC(ZK24(LFON+IVECT-1),1,'FREQ',FREQ,
+     .                        RESURE,RESUIM,IER)
                   CALP=DCMPLX(RESURE,RESUIM)
                 ELSE
                   CALL FOINTE('F ',ZK24(LFON+IVECT-1),1,'FREQ',FREQ,

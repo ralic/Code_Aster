@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TEST DE NON-REGRESSION D'ASTER : THERMIQUE AXIS
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -413,9 +413,7 @@ THNL6=CALC_META( reuse=THNL6,  MODELE=MO,
                          OPTION='META_ELNO_TEMP'
                    )
 
-TEST_RESU(
-                             FICHIER='RESULTAT',RESU=(
-
+TEST_RESU(RESU=(
                               _F(
                       RESULTAT = THL10,
                       NUME_ORDRE = 0,

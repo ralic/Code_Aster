@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CALCUL 3D DE G LOCAL FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -229,48 +229,17 @@ GLMAX2=CALC_G_LOCAL_T(
 
 
 
-IMPR_TABLE     (
-                 TABLE = GL1,
-                 FICHIER = 'RESULTAT'  
-               )
+IMPR_TABLE     ( TABLE = GL1,  )
 
+IMPR_TABLE     ( TABLE = GL2,  )
 
-IMPR_TABLE     (
-                 TABLE = GL2,
-                 FICHIER = 'RESULTAT'  
-              )
+IMPR_TABLE     ( TABLE = GLBIL1, )
 
+IMPR_TABLE     ( TABLE = GLBIL2, )
 
-IMPR_TABLE     (
-                 TABLE = GLBIL1,
-                 FICHIER = 'RESULTAT'  
-               )
+IMPR_TABLE     ( TABLE = GLMAX1, )
 
-IMPR_TABLE     (
-                 TABLE = GLBIL2,
-                 FICHIER = 'RESULTAT'  
-               )
-
-#IMPR_TABLE     (
-#                 TABLE = GLBIL3,
-#                 FICHIER = 'RESULTAT'  
-#               )
-
-
-IMPR_TABLE     (
-                 TABLE = GLMAX1,
-                FICHIER = 'RESULTAT'  
-               )
-
-IMPR_TABLE     (
-                 TABLE = GLMAX2,
-                FICHIER = 'RESULTAT'  
-               )
-
-#IMPR_TABLE     (
-#                 TABLE = GLMAX3,
-#                 FICHIER = 'RESULTAT'  
-#               )
+IMPR_TABLE     ( TABLE = GLMAX2, )
 
 
 

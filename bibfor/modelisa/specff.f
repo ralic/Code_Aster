@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/07/2001   AUTEUR RATEAU G.RATEAU 
+C MODIF MODELISA  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -257,9 +257,10 @@ C
               CALL TBLIVA ( TABLE, 2, NOPART, IVAL, R8B, C16B, K8B, K8B,
      +             R8B, 'FONCTION', K8B, IBID, R8B, C16B, NOMFON, IRET )
               IF (IRET.NE.0) CALL UTMESS('F','SPECFF','Y A UN BUG 2' )
+               K8B = ' '
                DO 62 IL = 1,NBPF
                 PTF = ZR(LWR+IL-1)
-                CALL FOINRI(NOMFON,1,K8B,PTF,RESURE,RESUIM,IER)
+                CALL FOINTC(NOMFON,0,K8B,PTF,RESURE,RESUIM,IER)
                 IF (IER.NE.0) THEN
                   CALL UTMESS('F','SPECFF','PROBLEME RENCONTRE LORS '//
      &                 'DE L INTERPOLATION D UN INTERSPECTRE')

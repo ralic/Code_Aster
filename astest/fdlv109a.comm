@@ -1,0 +1,202 @@
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# TITRE COEFFICIENTS AJOUTES EN ECOULEMENT PLAN
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+#
+
+#      CALCUL DES MODES PROPRES ET DE LA MASSE AJOUTEE
+
+#       POUR UN DEPLACEMENT MODAL DE LA STRUCTURE
+
+#
+
+#      CAS TEST  /ASTER/TUBECARR/MODAL/PLANCHE.COMM
+
+#
+
+#
+
+#
+
+DEBUT(CODE=_F( NOM = 'FDLV109A',NIV_PUB_WEB='INTERNET') )
+
+PRE_IDEAS( )
+
+MAYA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),  )
+
+#
+EAU=DEFI_MATERIAU( THER=_F( LAMBDA = 1., RHO_CP = 1000.))
+
+ACIER=DEFI_MATERIAU( ELAS=_F( RHO = 7800.,  NU = 0.3, E = 2.E11))
+
+CHAMMAT1=AFFE_MATERIAU(  MAILLAGE=MAYA,AFFE=(
+                          _F( GROUP_MA = 'FLUIDE', MATER = EAU),
+                          _F( GROUP_MA = 'INTERFAC', MATER = EAU)))
+
+CHAMMAT2=AFFE_MATERIAU(  MAILLAGE=MAYA,
+                          AFFE=_F( GROUP_MA = 'PLANCHE', MATER = ACIER) )
+
+#
+FLUIDE=AFFE_MODELE( MAILLAGE=MAYA,AFFE=(
+                        _F( GROUP_MA = 'FLUIDE',
+                              MODELISATION = '3D',
+                     PHENOMENE = 'THERMIQUE'),
+                        _F( GROUP_MA = 'INTERFAC',
+                      MODELISATION = '3D',
+                     PHENOMENE = 'THERMIQUE')) )
+
+INTERF=AFFE_MODELE( MAILLAGE=MAYA,
+                       AFFE=_F( GROUP_MA = 'INTERFAC',
+                       MODELISATION = '3D',  PHENOMENE = 'THERMIQUE') )
+
+STRUCT=AFFE_MODELE( MAILLAGE=MAYA,
+                     AFFE=_F( GROUP_MA = 'PLANCHE',
+                       MODELISATION = 'DKT',
+                       PHENOMENE = 'MECANIQUE') )
+
+#
+CHARGE=AFFE_CHAR_THER( MODELE=FLUIDE,
+                          TEMP_IMPO=_F( GROUP_NO = 'PRESSNUL',
+                          TEMP = 0.) )
+
+#
+CARA=AFFE_CARA_ELEM(  MODELE=STRUCT,
+                          COQUE=_F( GROUP_MA = 'PLANCHE',
+                           EPAIS = 5.E-1, ANGL_REP = (1.,0.,)))
+
+#
+CHARGS=AFFE_CHAR_MECA( MODELE=STRUCT,DDL_IMPO=(
+                        _F( GROUP_NO = 'NOPLANCH',  DRY = 0.),
+                        _F( GROUP_NO = 'CLIM',
+                          DX = 0., DY = 0., DZ = 0.)))
+
+MASSE=POST_ELEM(  MODELE=STRUCT,
+                   CHAM_MATER=CHAMMAT2,
+                    CARA_ELEM=CARA,
+                    MASS_INER=_F( GROUP_MA = 'PLANCHE'),
+                     TITRE='MASSE DE LA PLANCHE')
+
+MEL_KSTR=CALC_MATR_ELEM( MODELE=STRUCT,
+                            CARA_ELEM=CARA,
+                           CHAM_MATER=CHAMMAT2,
+                            OPTION='RIGI_MECA',
+                           CHARGE=(CHARGS, ))
+
+MEL_MSTR=CALC_MATR_ELEM( MODELE=STRUCT,
+                            CARA_ELEM=CARA,
+      CHAM_MATER=CHAMMAT2,  OPTION='MASS_MECA',
+                           CHARGE=(CHARGS, ))
+
+NUSTR=NUME_DDL(MATR_RIGI=MEL_KSTR)
+
+MATASKS=ASSE_MATRICE( MATR_ELEM=MEL_KSTR,  NUME_DDL=NUSTR)
+
+MATASMS=ASSE_MATRICE( MATR_ELEM=MEL_MSTR,  NUME_DDL=NUSTR)
+
+#
+
+CHAMNO=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R', 
+MAILLAGE=MAYA,
+                      AFFE=_F( GROUP_NO = 'CLIM',
+                            NOM_CMP = ('DX','DY','DZ',),
+                            VALE = (0.,0.,0.,)),
+                            NUME_DDL=NUSTR)
+
+MODES=MODE_ITER_SIMULT( MATR_A=MATASKS,  MATR_B=MATASMS,
+                             CALC_FREQ=_F( OPTION = 'BANDE',
+                                        FREQ = (0.1,2.,)))
+
+MODERIGI=MODE_ITER_SIMULT( MATR_A=MATASKS,  MATR_B=MATASMS,
+                                CALC_FREQ=_F( OPTION = 'BANDE',
+                                           FREQ = (0.1,2.,)))
+
+TEST_RESU(RESU=(_F( RESULTAT = MODES, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'RELATIF', PRECISION = 3.E-2,
+                NUME_ORDRE = 1,  VALE = 0.47),
+          _F( RESULTAT = MODES, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'RELATIF', PRECISION = 3.E-2,
+                NUME_ORDRE = 2,  VALE = 1.88)))
+
+NUMGEN=NUME_DDL_GENE(  BASE=MODES,
+                         STOCKAGE='PLEIN')
+
+NUMRIGI=NUME_DDL_GENE(  BASE=MODERIGI,
+                          STOCKAGE='PLEIN')
+
+MATRAJ=CALC_MATR_AJOU( MODELE_FLUIDE=FLUIDE,
+                         MODELE_INTERFACE=INTERF,
+                        OPTION='MASS_AJOU',
+                         NUME_DDL_GENE=NUMGEN,
+                        CHARGE=CHARGE,
+                        CHAM_MATER=CHAMMAT1,
+                        MODE_MECA=MODES,
+                        INFO=2)
+
+MACRO_MATR_AJOU(MAILLAGE=MAYA,
+                  GROUP_MA_FLUIDE='FLUIDE',
+                  GROUP_MA_INTERF='INTERFAC',
+                  FLUIDE=_F( RHO = 1000.),
+                  INFO=2,
+                  MODE_MECA=MODERIGI,
+                   NUME_DDL_GENE=NUMRIGI,
+                  MODELISATION='3D',
+                  ECOULEMENT=_F( GROUP_MA_1 = 'ENTREE',
+                              GROUP_MA_2 = 'SORTIE',
+                               VNOR_1 = -4.,
+                               
+                               VNOR_2 = 4.),DDL_IMPO=(
+                  _F( GROUP_NO = 'PRESSNUL',
+                            PRES_FLUIDE = 0.),
+                  _F( GROUP_NO = 'NOSORT',
+                            PRES_SORTIE = 0.)),
+         #         MATR_MASS_AJOU:MASSAJ
+                  MATR_AMOR_AJOU=CO("AMORAJ"),
+                  MATR_RIGI_AJOU=CO("RIGIAJ")
+                  )
+
+MGENE=PROJ_MATR_BASE(  BASE=MODES,
+             NUME_DDL_GENE=NUMGEN,
+             MATR_ASSE=MATASMS)
+
+RIGGEN=PROJ_MATR_BASE(  BASE=MODES,
+                          NUME_DDL_GENE=NUMGEN,
+                          MATR_ASSE=MATASKS)
+
+MASTOT=COMB_MATR_ASSE( COMB_R=(  _F( MATR_ASSE = MGENE,
+                                     COEF_R = 1.),
+                                     _F( MATR_ASSE = MATRAJ,
+                                      COEF_R = 1.)))
+
+MODHUMI=MODE_ITER_SIMULT( MATR_A=RIGGEN,  MATR_B=MASTOT,
+                             CALC_FREQ=_F( OPTION = 'BANDE',
+                                        FREQ = (0.01,1.,)))
+
+#RESTIT DES MODES EN EAU = F(MODE_EN_AIR) SUR BASE PHYSIQUE
+
+MODEAU=REST_BASE_PHYS(RESU_GENE=MODHUMI,
+                      MODE_MECA=MODES,
+                      NOM_CHAM='DEPL')
+
+#
+TEST_RESU(RESU=_F( RESULTAT = MODEAU, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'RELATIF', PRECISION = 1.25E-2,
+                NUME_ORDRE = 1,  VALE = 0.45562))
+
+FIN()
+#

@@ -5,7 +5,7 @@
       CHARACTER*19        NOMFON, SORTIE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ALGORITH  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,94 +49,72 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER       INI,I,K,LPRO,NBPARF,LPAREF, NBVAL, LONVAL
-      INTEGER       LVAL,LVAR,LPARA,LPROL,LONPAR,LONT
-      REAL*8        SUM, INIT
+      INTEGER       I, K, LPRO, NBPARF, NBVAL, LONVAL
+      INTEGER       LVAL, LVAR, LONT
       CHARACTER*8   CBID
       CHARACTER*16  TYPREF
-      CHARACTER*24  PROL, PARA, VALE
+      CHARACTER*24  O1, O2
 C DEB ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      INI=1
-      PARA(20:24) = '.PARA'
-      PROL(20:24) = '.PROL'
-      VALE(20:24) = '.VALE'
-C
-      PROL( 1:19) = NOMFON
-      PARA( 1:19) = NOMFON
-      VALE( 1:19) = NOMFON
-      CALL JEVEUO(PROL,'L',LPRO)
+      CALL JEVEUO ( NOMFON//'.PROL', 'L', LPRO )
       TYPREF =  ZK16(LPRO)
- 
+C
+      O1 = NOMFON//'.PROL'
+      O2 = SORTIE//'.PROL'
+      CALL JEDUPO ( O1, BASE, O2, .FALSE. )
+C
 C     -- ON TRAITE UNE NAPPE ----
  
       IF ( TYPREF .EQ. 'NAPPE' ) THEN
-         CALL JELIRA(VALE,'LONT',LONT,CBID)
-         CALL JELIRA(PARA,'LONMAX',NBPARF,CBID)
-         CALL JEVEUO(PARA,'L',LPAREF)
 
-C        -- INITIALISATION DE LA NAPPE RESULTAT SI INI=1
+         O1 = NOMFON//'.PARA'
+         O2 = SORTIE//'.PARA'
+         CALL JEDUPO ( O1, BASE, O2, .FALSE. )
 
-         IF( INI.EQ.1) THEN
-            PARA( 1:19) = SORTIE
-            CALL WKVECT(PARA,BASE//' V R',NBPARF,LPARA)
-            DO 10 I =1,NBPARF
-               ZR(LPARA+I-1) = ZR(LPAREF+I-1)
-10          CONTINUE
-            PROL(1:19)=SORTIE
-            LONPAR=6+2*NBPARF
-            CALL WKVECT(PROL,BASE//' V K16',LONPAR,LPROL)
-            DO 11 I=0,LONPAR-1
-                ZK16(LPROL+I)   = ZK16(LPRO+I)
-11          CONTINUE
-            VALE( 1:19) = SORTIE
-            CALL JECREC(VALE,BASE//' V R','NU','CONTIG',
-     +                  'VARIABLE',NBPARF)
-            CALL JEECRA(VALE,'LONT',LONT,' ')
-         ENDIF
+         CALL JELIRA ( NOMFON//'.PARA', 'LONMAX', NBPARF, CBID )
+         CALL JELIRA ( NOMFON//'.VALE', 'LONT', LONT, CBID )
+         CALL JECREC ( SORTIE//'.VALE', BASE//' V R', 'NU', 'CONTIG',
+     +                                        'VARIABLE', NBPARF )
+         CALL JEECRA ( SORTIE//'.VALE', 'LONT', LONT, ' ' )
 
-C        -- BOUCLE SUR CHAQUE SECOND PARAMETRE DE LA NAPPE
+C        -- BOUCLE SUR CHAQUE PARAMETRE DE LA NAPPE
 
-         DO 110 I=1,NBPARF
-            VALE(1:19)= NOMFON
-            CALL JELIRA(JEXNUM(VALE,I),'LONUTI',LONVAL,CBID)
-            NBVAL=LONVAL/2
-            CALL JEVEUO(JEXNUM(VALE,I),'L',LVAL)
-            VALE( 1:19) = SORTIE
- 
-C           -- CREATION DES OBJ JEVEUX NECESSAIRES SI INI=1
+         DO 100 I=1,NBPARF
+            CALL JELIRA(JEXNUM(NOMFON//'.VALE',I),'LONUTI',LONVAL,CBID)
+            NBVAL = LONVAL / 2
+            CALL JEVEUO ( JEXNUM(NOMFON//'.VALE',I), 'L', LVAL )
 
-            IF (INI.EQ.1) THEN
-              CALL JECROC(JEXNUM(VALE,I))
-              CALL JEECRA(JEXNUM(VALE,I) ,'LONMAX',LONVAL,' ')
-              CALL JEECRA(JEXNUM(VALE,I) ,'LONUTI',LONVAL,' ')
-              CALL JEVEUO(JEXNUM(VALE,I),'E',LVAR)
-              DO 100 K=1,NBVAL
-                 ZR(LVAR+K-1)=ZR(LVAL+K-1)
-                 ZR(LVAR+NBVAL+K-1)= 0.D0
-100           CONTINUE
-
-C           -- SINON ON REUTILISE LES OBJ DEJA CREES
- 
-            ELSE
-              CALL JEVEUO(JEXNUM(VALE,I),'E',LVAR)
-            ENDIF 
-C
-            DO 102 K=1,NBVAL
-                  INIT=ZR(LVAR+NBVAL+K-1)
-                  SUM=ZR(LVAL+NBVAL+K-1)
-                  ZR(LVAR+NBVAL+K-1)=INIT+SUM**EXPO1
-102         CONTINUE
+            CALL JECROC(JEXNUM(SORTIE//'.VALE',I))
+            CALL JEECRA(JEXNUM(SORTIE//'.VALE',I),'LONMAX',LONVAL,' ')
+            CALL JEECRA(JEXNUM(SORTIE//'.VALE',I),'LONUTI',LONVAL,' ')
+            CALL JEVEUO(JEXNUM(SORTIE//'.VALE',I),'E',LVAR)
+            DO 110 K = 1 , NBVAL
+               ZR(LVAR+K-1) = ZR(LVAL+K-1)
+               ZR(LVAR+NBVAL+K-1) = ZR(LVAL+NBVAL+K-1)**EXPO1
+ 110        CONTINUE
             
-110      CONTINUE
-      ELSE
- 
+ 100     CONTINUE
+C
+C
 C     -- ON TRAITE UNE FONCTION
 C
-         CALL UTMESS('F','FOCCAR','PUISSANCE D UNE FONCTION NON 
-     +                             IMPLEMENTEE')
+      ELSEIF ( TYPREF .EQ. 'FONCTION' ) THEN
+ 
+         CALL JELIRA( NOMFON//'.VALE', 'LONUTI', LONVAL, CBID )
+         NBVAL = LONVAL / 2
+         CALL JEVEUO ( NOMFON//'.VALE', 'L', LVAL )
+C
+         CALL WKVECT ( SORTIE//'.VALE', BASE//' V R', LONVAL, LVAR )
+         DO 200 K = 1 , NBVAL
+            ZR(LVAR+K-1) = ZR(LVAL+K-1)
+            ZR(LVAR+NBVAL+K-1) = ZR(LVAL+NBVAL+K-1)**EXPO1
+ 200     CONTINUE
+
+      ELSE
+         CALL UTMESS('F','FOCCAR','PUISSANCE POUR '//TYPREF//
+     +                            ' NON IMPLEMENTEE')
       ENDIF
 C
       CALL JEDEMA()

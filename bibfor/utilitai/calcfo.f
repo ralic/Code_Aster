@@ -3,7 +3,7 @@
       IMPLICIT   NONE
       INTEGER             IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,8 +66,8 @@ C
       DO 10 IVAL = 0, NBVAL-1
          ZR(LVALE+IVAL) = ZR(LVAL+IVAL)
          IF (COMPL) THEN
-            CALL FOINTC( NOMFIN, NBNOVA, ZK8(LNOVA),
-     +                      ZR(LVALE+IVAL), ZR(LFON+2*IVAL), IER )
+            CALL FOINTC( NOMFIN, NBNOVA, ZK8(LNOVA), ZR(LVALE+IVAL),
+     +                   ZR(LFON+2*IVAL+1), ZR(LFON+2*IVAL+2), IER )
             IF (IER.NE.0) THEN
                 CALL UTMESS('F',NOMCMD,'ERREUR DANS FOINTC') 
              ENDIF

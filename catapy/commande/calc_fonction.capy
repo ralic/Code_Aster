@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/07/2004   AUTEUR GREFFET N.GREFFET 
+#& MODIF COMMANDE  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,7 @@ def calc_fonction_prod(DERIVE,EXTRACTION,INTEGRE,ECART_TYPE,INVERSE,RMS,NOCI_SEI
       if (AsType(vale) == fonction_c) : return fonction_sdaster
    if (CORR_ACCE   != None): return fonction_sdaster
    if (LISS_ENVELOP!= None): return AsType(LISS_ENVELOP[0]['FONCTION'])
-   if (PUISSANCE   != None): return nappe_sdaster
+   if (PUISSANCE   != None): return AsType(PUISSANCE[0]['FONCTION'])
    if (ABS         != None): return fonction_sdaster
    if (NORME       != None): return table_sdaster
    raise AsException("type de concept resultat non prevu")
@@ -176,7 +176,7 @@ CALC_FONCTION=OPER(nom="CALC_FONCTION",op=  91,sd_prod=calc_fonction_prod
             FONCTION        =SIMP(statut='o',typ=fonction_sdaster ),
          ),
          PUISSANCE       =FACT(statut='f',fr="Cacul du carré d'une fonction",
-            FONCTION      =SIMP(statut='o', typ=nappe_sdaster),
+            FONCTION      =SIMP(statut='o', typ=(fonction_sdaster,nappe_sdaster) ),
             EXPOSANT      =SIMP(statut='f', typ='I', defaut=1 ),
          ),
          NORME           =FACT(statut='f',fr="Cacul de la norme L2 d'une fonction",

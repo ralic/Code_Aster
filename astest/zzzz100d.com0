@@ -23,7 +23,7 @@ FR_02a = CALC_FONCTION( LISS_ENVELOP=_F( FONCTION = F02 ),
 
 # IMPRESSION FORMAT AGRAF
 
-IMPR_COURBE(FICHIER ='AGRAF',
+IMPR_COURBE(UNITE = 25,
             FORMAT  ='AGRAF',
             ECHELLE_X='LOG',
             ECHELLE_Y='LOG',
@@ -57,7 +57,7 @@ FR_02b = CALC_FONCTION(LISS_ENVELOP=_F( FONCTION = F02,
 
 # IMPRESSION FORMAT AGRAF
 
-IMPR_COURBE(FICHIER ='AGRAF',
+IMPR_COURBE(UNITE = 25,
             FORMAT  ='AGRAF',
             ECHELLE_X='LOG',
             ECHELLE_Y='LOG',
@@ -89,7 +89,7 @@ FR_02c = CALC_FONCTION(LISS_ENVELOP=_F( FONCTION = F02,
 
 # IMPRESSION FORMAT AGRAF
 
-IMPR_COURBE(FICHIER ='AGRAF',
+IMPR_COURBE(UNITE = 25,
             FORMAT  ='AGRAF',
             ECHELLE_X='LOG',
             ECHELLE_Y='LOG',
@@ -122,7 +122,7 @@ FR_02d = CALC_FONCTION( LISS_ENVELOP=_F( FONCTION = F02,
 
 IMPR_COURBE( COURBE=_F(FONCTION =FR_02d), )
          
-IMPR_COURBE(FICHIER ='AGRAF',
+IMPR_COURBE(UNITE = 25,
             FORMAT  ='AGRAF',
             ECHELLE_X='LOG',
             ECHELLE_Y='LOG',
@@ -152,7 +152,7 @@ FR_02e = CALC_FONCTION(LISS_ENVELOP=_F( FONCTION = F02,
 
 IMPR_COURBE( COURBE=_F(FONCTION =FR_02e), )
          
-IMPR_COURBE(FICHIER ='AGRAF',
+IMPR_COURBE(UNITE = 25,
             FORMAT  ='AGRAF',
             ECHELLE_X='LOG',
             ECHELLE_Y='LOG',
@@ -188,7 +188,7 @@ IMPR_COURBE(
 # IMPRESSION FORMAT AGRAF
 
 IMPR_COURBE(
-            FICHIER ='AGRAF',
+            UNITE = 25,
             FORMAT  ='AGRAF',
             ECHELLE_X='LOG',
             ECHELLE_Y='LOG',
@@ -231,7 +231,7 @@ IMPR_COURBE(
 # IMPRESSION FORMAT AGRAF
 
 IMPR_COURBE(
-            FICHIER ='AGRAF',
+            UNITE = 25,
             FORMAT  ='AGRAF',
             ECHELLE_X='LOG',
             ECHELLE_Y='LOG',
@@ -269,7 +269,7 @@ SRa = CALC_FONCTION( LISS_ENVELOP=_F( FONCTION = SPECTB ),
                    ) ;                      
 
 IMPR_COURBE(
-            FICHIER ='AGRAF',
+            UNITE = 25,
             FORMAT  ='AGRAF',
             ECHELLE_X='LOG',
             ECHELLE_Y='LOG',
@@ -311,7 +311,7 @@ SRb = CALC_FONCTION( LISS_ENVELOP=_F( FONCTION = SPECTB,
                                          
 
 IMPR_COURBE(
-            FICHIER ='AGRAF',
+            UNITE = 25,
             FORMAT  ='AGRAF',
             ECHELLE_X='LOG',
             ECHELLE_Y='LOG',

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE  COMMANDE MODI_MAILLAGE ET SYMETRIE / PROJ_CHAMP ET DISTANCE_MAX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,11 +102,10 @@ rther08=THER_LINEAIRE(
   EXCIT=_F(CHARGE=chther08,),
 )
 # A.6
-DEFI_FICHIER (FICHIER='MED',UNITE=81,TYPE='LIBRE')
-IMPR_RESU(FORMAT='MED', UNITE=81, 
-  RESU=_F(MAILLAGE=mail08,
-          RESULTAT=rther08,
-          NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
+IMPR_RESU( FORMAT='MED', UNITE=81, 
+           RESU=_F( MAILLAGE=mail08,
+                    RESULTAT=rther08,
+                    NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
 )
 DEFI_FICHIER (ACTION='LIBERER',UNITE=81)
 
@@ -354,33 +353,31 @@ TEST_RESU(
 # ==========================================================
 # Impression au format GMSH
 if ( ficgmsh == 1 ):
-  DEFI_FICHIER (FICHIER='GMSH08',UNITE=55)
   IMPR_RESU( FORMAT='GMSH', UNITE=55, VERSION=1.2, 
-    MODELE=mode08,
-    RESU=_F(MAILLAGE=mail08,
-            RESULTAT=rther08,
-            NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
-  )
+             MODELE=mode08,
+             RESU=_F(MAILLAGE=mail08,
+                     RESULTAT=rther08,
+                     NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
+           )
   DEFI_FICHIER (ACTION='LIBERER',UNITE=55)
 
-  DEFI_FICHIER (FICHIER='GMSH',UNITE=56)
   IMPR_RESU( FORMAT='GMSH', UNITE=56, VERSION=1.2, 
-    MODELE=mode04,
-    RESU=(_F(MAILLAGE=mail04,
-             RESULTAT=rprojec,
-             NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
-          _F(RESULTAT=rther04,
-             NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
-          _F(RESULTAT=rdiffer,
-             NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
-          _F(RESULTAT=chp01,
-             NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
-          _F(RESULTAT=chp02,
-             NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
-          _F(RESULTAT=chpsy,
-             NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
-          ),
-  )
+             MODELE=mode04,
+             RESU=(_F(MAILLAGE=mail04,
+                      RESULTAT=rprojec,
+                      NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
+                   _F(RESULTAT=rther04,
+                      NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
+                   _F(RESULTAT=rdiffer,
+                      NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
+                   _F(RESULTAT=chp01,
+                      NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
+                   _F(RESULTAT=chp02,
+                      NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
+                   _F(RESULTAT=chpsy,
+                      NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
+                   ),
+           )
   DEFI_FICHIER (ACTION='LIBERER',UNITE=56)
 
 

@@ -1,0 +1,208 @@
+      SUBROUTINE FETGGT(NBSD,MATAS,VSDF,VDDL,SDFETI,LRIGID,NBI,COLAUI,
+     &                  NOMGI,JGI,NOMGGT,JGITGI,DIMGI)
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 23/08/2004   AUTEUR BOITEAU O.BOITEAU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C-----------------------------------------------------------------------
+C    - FONCTION REALISEE:  CALCUL DES MATRICES GI ET (GI)T * GI
+C
+C      IN  MATAS: K19  : NOM DE LA MATRICE DE RIGIDITE GLOBALE 
+C      IN   VSDF: VIN  : VECTEUR MATR_ASSE.FETF INDIQUANT SI 
+C                         SD FLOTTANT
+C      IN   NBSD: IN   : NOMBRE DE SOUS-DOMAINES
+C      IN   VDDL: VIN  : VECTEUR DES NBRES DE DDLS DES SOUS-DOMAINES
+C      IN SDFETI: CH19 : SD DECRIVANT LE PARTIONNEMENT FETI
+C     OUT LRIGID: LO  : LOGICAL INDIQUANT LA PRESENCE D'AU MOINS UN
+C         SOUS-DOMAINES FLOTTANT
+C      IN    NBI: IN   : NOMBRE DE NOEUDS D'INTERFACE
+C      IN COLAUI: CH24 : COLLECTION TEMPORAIRE D'ENTIER
+C      IN NOMGI/NOMGGT: CH24: NOMS DES OBJ. JEVEUX CONTENANT GI/GIT*GI
+C     OUT  JGI/JGITGI: IN : LEURS ADRESSES
+C     OUT DIMGI:  IN : TAILLE DE GIT*GI
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       01/06/04 (OB): CREATION.
+C----------------------------------------------------------------------
+C RESPONSABLE BOITEAU O.BOITEAU
+C CORPS DU PROGRAMME
+      IMPLICIT NONE
+
+C DECLARATION PARAMETRES D'APPELS
+      INTEGER      NBSD,VSDF(NBSD),VDDL(NBSD),NBI,JGI,JGITGI,DIMGI
+      CHARACTER*19 MATAS,SDFETI
+      CHARACTER*24 COLAUI,NOMGI,NOMGGT
+      LOGICAL      LRIGID
+      
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      
+C DECLARATION VARIABLES LOCALES
+      INTEGER      IFM,NIV,IDD,NBMC,NGI,NGITGI,IDECA3,JGI1,IMC,
+     &             IFETR,NBDDL,NBMC1,IDECAI,K,OPT,IDECAO,IDECAJ,
+     &             I,J,NBSDF
+      CHARACTER*24 NOMSDR
+      CHARACTER*32 JEXNUM
+      
+C CORPS DU PROGRAMME
+      CALL JEMARQ()
+
+C RECUPERATION DU NIVEAU D'IMPRESSION
+      CALL INFNIV(IFM,NIV)
+
+C INITS.
+      NOMSDR=MATAS//'.FETR'
+      LRIGID=.FALSE.
+      DIMGI=0
+      JGI=-1
+      JGITGI=-1
+      
+C BOUCLE SUR LES SOUS-DOMAINES POUR CALCULER L'ORDRE DE DE GIT*GI 
+      DO 10 IDD=1,NBSD
+        NBMC=VSDF(IDD)
+        IF (NBMC.NE.-1) DIMGI=DIMGI+NBMC
+   10 CONTINUE            
+      IF (DIMGI.EQ.0) THEN
+C MONITORING
+        IF (NIV.GE.3) THEN
+          WRITE(IFM,*)
+          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
+          WRITE(IFM,*)'<FETI/FETGGT> PAS DE MODE DE CORPS RIGIDE'
+        ENDIF
+        GOTO 999
+      ELSE
+        LRIGID=.TRUE.      
+C MONITORING
+        IF (NIV.GE.3) THEN
+          WRITE(IFM,*)
+          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
+          WRITE(IFM,*)'<FETI/FETGGT> NBRE TOTAL DE CORPS RIGIDES',DIMGI
+        ENDIF      
+      ENDIF
+
+C VECTEURS AUXILIAIRES CONTENANT GI ET GIT*GI (STOCKAGE PAR COLONNE
+C AVEC SEULEMENT LA PARTIE TRIANGULAIRE INFERIEURE POUR GIT*GI)
+      NGI=NBI*DIMGI
+      NGITGI=DIMGI*(DIMGI+1)/2      
+      CALL WKVECT(NOMGI,'V V R',NGI,JGI)
+      CALL WKVECT(NOMGGT,'V V R',NGITGI,JGITGI)
+      JGI1=JGI-1
+C -------------------------------------------------------------------- 
+C CONSTITUTION DE GI
+C --------------------------------------------------------------------
+C ----  BOUCLE SUR LES SOUS-DOMAINES
+
+C DECALAGE DU VECTEUR OUTPUT DE FETREX (GI)
+      IDECAO=JGI
+C NOMBRE DE SOUS-DOMAINES FLOTTANTS      
+      NBSDF=0        
+      DO 100 IDD=1,NBSD
+
+C NBRE DE DDL DU SOUS-DOMAINE IDD       
+        NBDDL=VDDL(IDD)
+
+C NOMBRES DE MODES DE CORPS RIGIDES DU SOUS-DOMAINE IDD
+        NBMC=VSDF(IDD)
+                        
+        IF (NBMC.NE.-1) THEN
+C SOUS-DOMAINE FLOTTANT
+          NBMC1=NBMC-1
+          NBSDF=NBSDF+1
+C COMPOSANTES DES MODES DE CORPS RIGIDES
+          CALL JEVEUO(JEXNUM(NOMSDR,NBSDF),'L',IFETR)
+          
+C ----  BOUCLE SUR LES MODES DE CORPS RIGIDES
+C DECALAGE INPUT DE FETREX
+          IDECAI=IFETR    
+          DO 90 IMC=0,NBMC1         
+
+C RESTRICTION DU SOUS-DOMAINE IDD SUR L'INTERFACE: (RIDD) * ...
+            OPT=1
+            CALL FETREX(OPT,IDD,NBDDL,ZR(IDECAI),NBI,ZR(IDECAO),SDFETI,
+     &         COLAUI)
+                    
+C MAJ DES DECALAGES INPUT ET OUTPUT DE FETREX       
+            IDECAI=IDECAI+NBDDL
+            IDECAO=IDECAO+NBI
+   90     CONTINUE      
+        ENDIF
+  100 CONTINUE
+
+C MONITORING
+      IF (NIV.GE.3) WRITE(IFM,*)'<FETI/FETGGT> CONSTRUCTION GI'
+      IF (NIV.GE.5) THEN
+        IDECAO=JGI      
+        DO 102 J=1,DIMGI
+          DO 101 I=1,NBI
+            WRITE(IFM,*)'G(I,J)',I,J,ZR(IDECAO)
+            IDECAO=IDECAO+1       
+  101     CONTINUE
+  102   CONTINUE
+      ENDIF
+C -------------------------------------------------------------------- 
+C CONSTITUTION DE (GI)T*GI (SEULE LA PARTIE TRIANGULAIRE INFERIEURE
+C EST CALCULEE ET STOCKEE)
+C --------------------------------------------------------------------
+      IDECAO=JGITGI
+      DO 130 J=1,DIMGI
+        IDECAJ=(J-1)*NBI+JGI1   
+        DO 120 I=J,DIMGI
+          ZR(IDECAO)=0.D0
+          IDECAI=(I-1)*NBI+JGI1
+          DO 110 K=1,NBI
+            ZR(IDECAO)=ZR(IDECAO)+ZR(IDECAI+K)*ZR(IDECAJ+K)
+  110     CONTINUE
+          IDECAO=IDECAO+1         
+  120   CONTINUE
+  130 CONTINUE
+
+C MONITORING
+      IF (NIV.GE.3) THEN
+        WRITE(IFM,*)'<FETI/FETGGT> CONSTRUCTION (GI)T*GI'
+        IF (NIV.GE.5) THEN
+          IDECAO=JGITGI      
+          DO 151 J=1,DIMGI
+            DO 150 I=J,DIMGI
+              WRITE(IFM,*)'GTG(I,J)',I,J,ZR(IDECAO)
+              IDECAO=IDECAO+1     
+  150       CONTINUE
+  151     CONTINUE
+        ENDIF
+      ENDIF
+
+      IF (NIV.GE.3) THEN
+        WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
+        WRITE(IFM,*)    
+      ENDIF                
+  999 CONTINUE
+      CALL JEDEMA()  
+      END

@@ -4,7 +4,7 @@
       INTEGER                IMPR,IUL,IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -173,6 +173,8 @@ C
 C
       ELSEIF (ZK16(LPROL).EQ.'FONCT_C ' ) THEN
 C
+         NBPU = 1
+         NOMPU = ' '
          CALL JELIRA(VALE,'LONUTI',NBVAL,K8B)
          NBVAL= NBVAL/3
          CALL FOEC1C(IUL,NOMFON,ZK16(LPROL),NBVAL,'RIEN')
@@ -187,7 +189,7 @@ C
                II = 0
                DO 300 IVAL = 0, NBVAL-1
                   ZR(LVAL+IVAL) = ZR(JVAL+IVAL)
-                  CALL FOINRI(NOMFON,NBPU,NOMPU,ZR(LVAL+IVAL),RESURE,
+                  CALL FOINTC(NOMFON,NBPU,NOMPU,ZR(LVAL+IVAL),RESURE,
      &                        RESUIM,IRET)
                   ZR(LFON+II) = RESURE
                   II = II + 1

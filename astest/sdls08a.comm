@@ -1,5 +1,5 @@
 
-# MODIF  DATE 21/07/2003   AUTEUR NICOLAS O.NICOLAS 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE : MODE PROPRE D'UNE PLAQUE CARREE CALCULES SUR BASE REDUITE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -159,8 +159,7 @@ DYNEXP=REST_BASE_PHYS(RESU_GENE=DYNGEN,
                       NOM_CHAM='DEPL',);
 #
 
-TEST_RESU(FICHIER='RESULTAT',
-          RESU=_F(RESULTAT=MODEEXP,
+TEST_RESU(RESU=_F(RESULTAT=MODEEXP,
                   NUME_MODE=1,
                   PARA='FREQ',
                   VALE=4.9762,
@@ -168,8 +167,7 @@ TEST_RESU(FICHIER='RESULTAT',
                   PRECISION=0.1,
                   REFERENCE='AUTRE_ASTER',),);
 
-TEST_RESU(FICHIER='RESULTAT',
-          RESU=_F(RESULTAT=DYNEXP,
+TEST_RESU(RESU=_F(RESULTAT=DYNEXP,
                   NUME_ORDRE=2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',

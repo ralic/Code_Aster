@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,6 @@ IMPR_CO=PROC(nom="IMPR_CO",op=17,
              fr="Impression du contenu d un concept utilisateur (pour développeur)",
          regles=(UN_PARMI('CO','CHAINE', ),),
          UNITE           =SIMP(statut='f',typ='I',defaut=8),  
-         FICHIER         =SIMP(statut='f',typ='TXM'),
          NIVEAU          =SIMP(statut='f',typ='I',defaut=2,into=(0,1,2) ),
          ATTRIBUT        =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","OUI") ),
          CONTENU         =SIMP(statut='f',typ='TXM',defaut="OUI",into=("NON","OUI") ),

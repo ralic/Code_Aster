@@ -2,7 +2,7 @@
      &                  TESTCO,NBREOR,TYREOR,PRECO,SCALIN)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 23/08/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,6 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C TOLE CRP_20
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  RESOLUTION FETI EN REEL SYMETRIQUE
 C                          CF. ALGO. 9 DE LA NOTE HI-23/03/009
@@ -39,6 +40,7 @@ C     IN  SCALIN :  K24 : PARAMETRE DE SCALING DANS LE PRECOND
 C     ------------------------------------------------------------------
 C     ASTER INFORMATIONS:
 C       26/01/04 (OB): CREATION.
+C       03/06/04 (OB): MODIFICATION POUR MODES DE CORPS RIGIDES.
 C----------------------------------------------------------------------
 C RESPONSABLE BOITEAU O.BOITEAU
 C CORPS DU PROGRAMME
@@ -71,13 +73,14 @@ C DECLARATION VARIABLES LOCALES
       INTEGER      IDIME,NBSD,NBI,IVLAGI,IFETF,IDD,IFETH,NB,I,IRZ,JCRR,
      &             IRR,IRG,IRP,IR1,IR2,ITER,IFM,NIV,IRET,JCRI,NBI1,JCRK,
      &             OPTION,IPSRO,IDDRO,NBREO2,IDDFRO,IAUX1,IAUX2,ITER1,J,
-     &             NBREO1,IAUX3,IR3,IRH,IAD
+     &             NBREO1,IAUX3,IR3,IRH,IAD,JGI,JGITGI,DIMGI,ITEST,
+     &             OPTIOP,IVLAGB
       REAL*8       R8NRM2,ANORM,ANORMK,ANORM0,EPSIK,PARAAF,R8DOT,ALPHA,
-     &             ALPHAN,ALPHAD,BETA,BETAD,BETAN,R8MIEM,RMIN
+     &             ALPHAN,ALPHAD,BETA,BETAD,BETAN,R8MIEM,RMIN,RAUX
       CHARACTER*8  NOMSD,K8BID
-      CHARACTER*24 COLAUX,COLAUI,COLAU2
+      CHARACTER*24 COLAUX,COLAUI,COLAU2,NOMGI,NOMGGT
       CHARACTER*32 JEXNOM,JEXNUM
-      LOGICAL      REORTH,IGSMKP,GS,LUMPE
+      LOGICAL      REORTH,IGSMKP,GS,LUMPE,LRIGID
       
 C CORPS DU PROGRAMME
       CALL JEMARQ()
@@ -105,6 +108,8 @@ C TRAITEMENT DU NOMBRE D'ITERATION SI NULLE
       ENDIF          
 C VECTEUR TEMPORAIRE DES INCONNUES D'INTERFACE DE TYPE LAGRANGE      
       CALL WKVECT('&&FETI.LAGR.INTERFACE','V V R',NBI,IVLAGI)
+      CALL WKVECT('&&FETI.LAGR.INTERFACB','V V R',NBI,IVLAGB)
+      
 C VECTEURS TEMPORAIRES           
       CALL WKVECT('&&FETI.RESIDU.R','V V R',NBI,IRR)
       CALL WKVECT('&&FETI.REPROJ.G','V V R',NBI,IRG)
@@ -113,7 +118,11 @@ C VECTEURS TEMPORAIRES
       CALL WKVECT('&&FETI.FIDD.Z','V V R',NBI,IRZ)      
       CALL WKVECT('&&FETI.VECNBI.AUX1','V V R',NBI,IR1)
       CALL WKVECT('&&FETI.VECNBI.AUX2','V V R',NBI,IR2)
-      CALL WKVECT('&&FETI.VECNBI.AUX3','V V R',NBI,IR3)      
+      CALL WKVECT('&&FETI.VECNBI.AUX3','V V R',NBI,IR3)
+C VECTEURS TEMPORAIRES POUR TEST
+      IF (NIV.GE.6)
+     &  CALL WKVECT('&&FETI.TEST','V V R',NBI,ITEST)
+            
 C VECTEUR INDIQUANT SI UN SOUS-DOMAINE EST FLOTTANT                 
       CALL JEVEUO(MATAS//'.FETF','L',IFETF)
 C VECTEUR DE LA LISTE DES NOMBRES DE DDLS PAR SOUS-DOMAINE
@@ -170,7 +179,18 @@ C TRAITEMENT DU NOMBRE DE DD REORTHOGONALISEES SI NULLE
       ELSE
         REORTH=.FALSE.
       ENDIF
+                 
+C ----------------------------------------------------------------------
+C ----  INITIALISATION DE L'ALGORITHME FETI
+C ----------------------------------------------------------------------
 
+C CALCUL DE GI,  (GIT)GI ET DIMGI
+C NOMS DES OBJETS JEVEUX STOCKANT GI ET (GI)T*GI SI LRIGID=.TRUE.
+      NOMGI='&&FETI.GI.R'
+      NOMGGT='&&FETI.GITGI.R'      
+      CALL FETGGT(NBSD,MATAS,ZI(IFETF),ZI(IFETH),SDFETI,LRIGID,NBI,
+     &            COLAUI,NOMGI,JGI,NOMGGT,JGITGI,DIMGI)
+      
 C ---------------------------------------------------
 C MONITORING
 C ---------------------------------------------------
@@ -179,24 +199,21 @@ C ---------------------------------------------------
         WRITE(IFM,*)'*****************************************'
         WRITE(IFM,*)'<FETI/ALFETI> PARAM DE RESOLUTION ',NITER,EPSI
         WRITE(IFM,*)'<FETI/ALFETI> PARAM DE PRECONDI ',PRECO(1:5),
-     &              SCALIN(1:4)   
+     &              ' ',SCALIN(1:4)   
         WRITE(IFM,*)'<FETI/ALFETI> PARAM DE REORTHOGONALISATION ',
      &              REORTH,TYREOR(1:6),NBREOR
         WRITE(IFM,*)'<FETI/ALFETI> PARAM DE TEST DE CONTINUITE ',
      &              TESTCO
+        WRITE(IFM,*)'<FETI/ALFETI> NB SOUS-DOMAINES ',NBSD
+        WRITE(IFM,*)'<FETI/ALFETI> NB DE MODES RIGIDES ',DIMGI     
         WRITE(IFM,*)'******************************************'     
-      ENDIF                 
-C ----------------------------------------------------------------------
-C ----  INITIALISATION DE L'ALGORITHME FETI
-C ----------------------------------------------------------------------
-
-C CALCUL DE GI
-C CALCUL DE (GIT)GI
-C CALCUL DE E
+      ENDIF
+               
 C ---------------------------------------------------
 C CALCUL DU VECTEUR LAGRANGE_FETI INITIAL LANDA0 (ZR(IVLAGI))
 C ---------------------------------------------------
-      CALL FETINL(NBI,ZR(IVLAGI))
+      CALL FETINL(NBI,ZR(IVLAGI),ZR(JGI),JGITGI,MATAS,CHSECM,LRIGID,
+     &            DIMGI,NBSD,ZI(IFETF),ZI(IFETH))
 
 C ---------------------------------------------------      
 C CALCUL DU RESIDU INITIAL (ZR(IRR)): R0=OPFETI*LANDA0 - D
@@ -204,36 +221,47 @@ C ---------------------------------------------------
       OPTION=1
       CALL FETRIN(NBSD,NBI,ZR(IRR),ZR(IR1),MATAS,ZI(IFETF),ZI(IFETH),
      &            COLAUX,COLAUI,CHSECM,SDFETI,ZR(IVLAGI),OPTION,CHSOL,
-     &            TESTCO)
+     &            TESTCO,LRIGID,DIMGI,IRR,JGI,JGITGI)
 
 C ---------------------------------------------------     
 C CALCUL DU RESIDU PROJETE INITIAL (ZR(IRP)): G0=P*R0
 C ---------------------------------------------------
-      CALL FETPRJ(NBI,ZR(IRR),ZR(IRG))
-
+      OPTIOP=1
+      CALL FETPRJ(NBI,ZR(IRR),ZR(IRG),ZR(JGI),JGITGI,LRIGID,DIMGI,
+     & OPTIOP)
+     
 C ---------------------------------------------------      
 C CALCUL DU RESIDU PRECOND PROJETE P INITIAL (ZR(IRH)): H0=P*M-1*G0
 C ---------------------------------------------------
-       CALL FETPRC(NBSD,NBI,ZR(IRG),ZR(IR1),ZR(IR2),MATAS,ZI(IFETH),
-     &             COLAUX,COLAUI,SDFETI,PRECO,COLAU2)
-       CALL FETPRJ(NBI,ZR(IR2),ZR(IRH))  
-
+      CALL FETPRC(NBSD,NBI,ZR(IRG),ZR(IR1),ZR(IR2),MATAS,ZI(IFETH),
+     &            COLAUX,COLAUI,SDFETI,PRECO,COLAU2)
+      OPTIOP=1
+      CALL FETPRJ(NBI,ZR(IR2),ZR(IRH),ZR(JGI),JGITGI,LRIGID,DIMGI,
+     &            OPTIOP)
+     
 C ---------------------------------------------------         
-C CALCUL DE LA DD INITIALE (ZR(IRP)): P0=G0 OU H0 SI PRECOND
+C CALCUL DE LA DD INITIALE (ZR(IRP)): P0=H0 (=G0 SI NON PRECOND)
 C ---------------------------------------------------
-      DO 20 I=0,NBI1
+      DO 20 I=0,NBI1      
         ZR(IRP+I)=ZR(IRH+I)
    20 CONTINUE
    
 C ---------------------------------------------------
-C CALCUL DE ALPHAN0 = G0.P0
+C CALCUL DE ALPHAN0 = G0.P0 (=G0.G0 SI NON PRECOND)
 C ---------------------------------------------------      
       ALPHAN=R8DOT(NBI,ZR(IRG),1,ZR(IRP),1)
 
+      DO 25 I=0,NBI1
+        ZR(IRR+I)=ZR(IRG+I)
+   25 CONTINUE
 C ---------------------------------------------------      
-C CALCUL DE LA NORME DU RESIDU INITIAL (ANORM) POUR TEST D'ARRET: EPSIK
+C CALCUL DE LA NORME DU RESIDU PROJETE INITIAL (ANORM) POUR TEST
+C D'ARRET: EPSIK
 C ---------------------------------------------------
-      ANORM=R8NRM2(NBI,ZR(IRR),1)
+      OPTIOP=1
+      CALL FETPRJ(NBI,ZR(IRR),ZR(IR1),ZR(JGI),JGITGI,LRIGID,DIMGI,
+     &            OPTIOP)
+      ANORM=R8NRM2(NBI,ZR(IR1),1)
       EPSIK=EPSI*ANORM 
       IF (NIV.GE.2) WRITE (IFM,1020)ANORM,EPSIK,EPSI
 
@@ -261,14 +289,39 @@ C ---------------------------------------------------
         ANORM0=RMIN
         CALL UTMESS('A','ALFETI','RESIDU INITIAL NUL '//
      &     'SOLUTION LANDAS=LANDA0 !')
+     
+C -----------------------------
 C CALCUL SOLUTION U GLOBALE
+C -----------------------------
+
+C RECALCUL DU RESIDU AVEC CE NOUVEAU LANDA_SOL (POUR ALPHA) SI MODES
+C DE CORPS RIGIDES
+        IF (LRIGID) THEN           
+          OPTION=1
+          CALL FETRIN(NBSD,NBI,ZR(IRR),ZR(IR1),MATAS,ZI(IFETF),
+     &              ZI(IFETH),COLAUX,COLAUI,CHSECM,SDFETI,ZR(IVLAGI),
+     &              OPTION,CHSOL,TESTCO,LRIGID,DIMGI,IRR,JGI,JGITGI)
+        ENDIF
+C CALCUL DE USOL LOCALE PUIS GLOBAL PROPREMENT DIT
+C UI_SOL = (KI)+ * (FI - RIT*LANDA_SOL) - BI*ALPHAI_SOL   
         OPTION=2
-        CALL FETRIN(NBSD,NBI,ZR(IRR),ZR(IR1),MATAS,ZI(IFETF),
-     &    ZI(IFETH),COLAUX,COLAUI,CHSECM,SDFETI,ZR(IVLAGI),OPTION,
-     &    CHSOL,TESTCO)
+        CALL FETRIN(NBSD,NBI,ZR(IRR),ZR(IR2),MATAS,ZI(IFETF),
+     &      ZI(IFETH),COLAUX,COLAUI,CHSECM,SDFETI,ZR(IVLAGI),OPTION,
+     &      CHSOL,TESTCO,LRIGID,DIMGI,IRR,JGI,JGITGI)     
         GOTO 200
       ENDIF
 
+C ---------------------------------------------------
+C ATTENTION: ON SAUVEGARDE LA VALEUR INITIALE LANDA0 DANS ZR(IVLAGB)
+C L'ANCIENNE VARIABLE ZR(IVALGI) DEVIENT UN LANDA_DE_TRAVAIL DU GCPC
+C QUI EST INITIALISEE A ZERO.
+C A LA FIN DU GCPC ON RECONSTRUIT LE VRAI LANDA SOLUTION VIA
+C     LANDA_SOL = LANDA0 + P * LANDA_DE_TRAVAIL_CONVERGE
+C ---------------------------------------------------
+      DO 30 I=0,NBI1
+        ZR(IVLAGB+I)=ZR(IVLAGI+I)
+        ZR(IVLAGI+I)=0.D0
+   30 CONTINUE
 C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C ----  BOUCLES DU GCPPC DE FETI
@@ -313,6 +366,7 @@ C ---------------------------------------------------
      &     'DANS LA CONSTRUCTION DU ALPHA !')     
         ENDIF
         ALPHA=ALPHAN/ALPHAD
+        
 C STOCKAGE ZK.PK SI REORTHO
         IF (REORTH) THEN
           IF (ITER.LT.NBREOR) THEN
@@ -323,52 +377,93 @@ C STOCKAGE ZK.PK SI REORTHO
           ZR(IPSRO+IAUX1)=ALPHAD
         ENDIF
 
+C STOCKAGE ANCIENNE DIRECTION DE DESCENTE SI TEST
+        IF (NIV.GE.6) THEN
+          OPTIOP=1
+          CALL FETPRJ(NBI,ZR(IRR),ZR(IR1),ZR(JGI),JGITGI,LRIGID,DIMGI,
+     &                OPTIOP)
+          DO 60 I=0,NBI1
+            ZR(ITEST+I)=ZR(IR1+I)
+   60     CONTINUE
+        ENDIF
+        
 C ---------------------------------------------------
 C ----  CALCUL NOUVEAUX VECTEUR D'INTERFACE ET RESIDU
 C ---- (ZR(IVLAGI)) LANDAK+1 = LANDAK + ALPHAK * PK  
 C ---- (ZR(IRR)))   RK+1     = RK     - ALPHAK * ZK
-C ---------------------------------------------------
-        CALL R8AXPY(NBI,ALPHA,ZR(IRP),1,ZR(IVLAGI),1)   
+C ---------------------------------------------------   
+        CALL R8AXPY(NBI,ALPHA,ZR(IRP),1,ZR(IVLAGI),1)        
         CALL R8AXPY(NBI,-ALPHA,ZR(IRZ),1,ZR(IRR),1)
-        
+
+C ---------------------------------------------------
+C ----  CALCUL DE LA PROJECTION 1 (ZR(IRG)): GK+1 = P * RK+1
+C ---------------------------------------------------
+        OPTIOP=1
+        CALL FETPRJ(NBI,ZR(IRR),ZR(IRG),ZR(JGI),JGITGI,LRIGID,DIMGI,
+     &              OPTIOP)
+     
+C TEST ORTHOGONALITE DU GCPPC     
+        IF (NIV.GE.6) THEN
+          RAUX=R8DOT(NBI,ZR(IRG),1,ZR(ITEST),1)
+          WRITE(IFM,*)'TEST <PRI,PRI-1>',RAUX
+          RAUX=R8DOT(NBI,ZR(IRG),1,ZR(IRP),1)
+          WRITE(IFM,*)'TEST <PRI,DI-1>',RAUX
+        ENDIF
+                
 C ---------------------------------------------------
 C ----  CALCUL TEST D'ARRET ET AFFICHAGE
 C ---------------------------------------------------
-        ANORM=R8NRM2(NBI,ZR(IRR),1)
+        ANORM=R8NRM2(NBI,ZR(IRG),1)
         IF (ANORM.LE.ANORMK) THEN
-          IF (NIV.EQ.2) WRITE (*,1041)ITER,ANORM,ANORM/ANORM0
+          IF (NIV.EQ.1) WRITE (*,1041)ITER1,ANORM,ANORM/ANORM0
           ANORMK=ANORM*PARAAF
         ENDIF
-        IF (NIV.GE.3) THEN
+        IF (NIV.GE.2) THEN
           WRITE(IFM,*)
           WRITE(IFM,*)'******************************************'     
-          WRITE(IFM,1041)ITER,ANORM,ANORM/ANORM0
+          WRITE(IFM,1041)ITER1,ANORM,ANORM/ANORM0
           WRITE(IFM,*)'******************************************'     
         ENDIF
+
 C -----------------------------
 C TEST DE CONVERGENCE
 C -----------------------------
         IF (ANORM.LT.EPSIK) THEN
           WRITE(IFM,1040)ANORM0,ANORM,ANORM/ANORM0
-          WRITE(IFM,1050)ITER
-          ZI(JCRI)=ITER
+          WRITE(IFM,1050)ITER1
+          ZI(JCRI)=ITER1
           ZR(JCRR)=ANORM
+
 C -----------------------------
 C CALCUL SOLUTION U GLOBALE
 C -----------------------------
+
+C UNE FOIS LANDA_DE_TRAVAIL-CV TROUVE ON RECONSTRUIT LE VRAI LANDA
+C     LANDA_SOL =  LANDA0 +    P * LANDA_DE_TRAVAIL_CONVERGE
+C     ZR(IVLAGI)  ZR(IVLAGB)        ZR(IR1)
+          OPTIOP=1
+          CALL FETPRJ(NBI,ZR(IVLAGI),ZR(IR1),ZR(JGI),JGITGI,LRIGID,
+     &                DIMGI,OPTIOP)
+          DO 65 I=0,NBI1
+            ZR(IVLAGI+I)=ZR(IVLAGB+I)+ZR(IR1+I)
+   65     CONTINUE
+C RECALCUL DU RESIDU AVEC CE NOUVEAU LANDA_SOL (POUR ALPHA) SI MODES
+C DE CORPS RIGIDES
+          IF (LRIGID) THEN           
+            OPTION=1
+            CALL FETRIN(NBSD,NBI,ZR(IRR),ZR(IR1),MATAS,ZI(IFETF),
+     &              ZI(IFETH),COLAUX,COLAUI,CHSECM,SDFETI,ZR(IVLAGI),
+     &              OPTION,CHSOL,TESTCO,LRIGID,DIMGI,IRR,JGI,JGITGI)
+          ENDIF
+C CALCUL DE USOL LOCALE PUIS GLOBAL PROPREMENT DIT
+C UI_SOL = (KI)+ * (FI - RIT*LANDA_SOL) - BI*ALPHAI_SOL   
           OPTION=2
-          CALL FETRIN(NBSD,NBI,ZR(IRR),ZR(IR1),MATAS,ZI(IFETF),
+          CALL FETRIN(NBSD,NBI,ZR(IRR),ZR(IR2),MATAS,ZI(IFETF),
      &      ZI(IFETH),COLAUX,COLAUI,CHSECM,SDFETI,ZR(IVLAGI),OPTION,
-     &      CHSOL,TESTCO)
+     &      CHSOL,TESTCO,LRIGID,DIMGI,IRR,JGI,JGITGI)
           GOTO 200
         ENDIF
-
-
-C ---------------------------------------------------
-C ----  CALCUL DE LA PROJECTION 1 (ZR(IRG)): GK+1 = P * RK+1
-C ---------------------------------------------------         
-        CALL FETPRJ(NBI,ZR(IRR),ZR(IRG))
-
+         
 C ---------------------------------------------------
 C ----  PRECONDITIONNEMENT (ZR(IRH)): HK+1 =P*A*M-1*A*GK+1
 C ---------------------------------------------------   
@@ -380,7 +475,9 @@ C CALCUL DU RESIDU PRECOND PROJETE P INITIAL (ZR(IR2)): AUX2 = M-1*AUX1
 C PHASE DE SCALING 2 (ZR(IR1)): AUX1 = A * AUX2
         CALL FETSCA(NBI,ZR(IR2),ZR(IR3),SCALIN,SDFETI)
 C CALCUL DE LA PROJECTION 2 (ZR(IRH)): HK+1 = P * AUX1
-        CALL FETPRJ(NBI,ZR(IR3),ZR(IRH))
+        OPTIOP=1
+        CALL FETPRJ(NBI,ZR(IR3),ZR(IRH),ZR(JGI),JGITGI,LRIGID,DIMGI,
+     &              OPTIOP)
 
 C ---------------------------------------------------
 C ----  NEW DIRECTION DE DESCENTE (ZR(IRP)): PK+1=HK+1 + ...
@@ -388,7 +485,13 @@ C       AVEC EVENTUELLEMENT UNE PHASE DE REORTHONORMALISATION
 C ---------------------------------------------------           
         CALL FETREO(REORTH,ALPHAN,NBI,IRG,ITER,NBREOR,IRP,IDDFRO,
      &              IDDRO,IPSRO,GS,IGSMKP,RMIN,IRH)
-  
+
+C TEST ORTHOGONALITE DU GCPPC     
+        IF (NIV.GE.6) THEN
+          RAUX=R8DOT(NBI,ZR(IRZ),1,ZR(IRP),1)
+          WRITE(IFM,*)'TEST <DI,FI*DI-1>',RAUX
+        ENDIF  
+          
 C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C ----  FIN BOUCLES DU GCPPC DE FETI
@@ -402,7 +505,7 @@ C ----------------------------------------------------------------------
       
 C NON CONVERGENCE
       CALL UTDEBM('F','ALFETI','NON CONVERGENCE')
-      CALL UTIMPI('L','  NOMBRE D''ITERATIONS: ',1,ITER)
+      CALL UTIMPI('L','  NOMBRE D''ITERATIONS: ',1,ITER1)
       CALL UTIMPR('L','  NORME DU RESIDU ABS: ',1,ANORM)
       CALL UTIMPR('L','  NORME DU RESIDU REL: ',1,ANORM/ANORM0)
       CALL UTFINM()
@@ -423,6 +526,7 @@ C FORMAT AFFICHAGE
 C DESTRUCTION DES OBJETS JEVEUX TEMPORAIRES
   200 CONTINUE
       CALL JEDETR('&&FETI.LAGR.INTERFACE')
+      CALL JEDETR('&&FETI.LAGR.INTERFACB')      
       CALL JEDETR('&&FETI.RESIDU.R')
       CALL JEDETR('&&FETI.REPROJ.G')
       CALL JEDETR('&&FETI.REPCPJ.H')
@@ -436,6 +540,12 @@ C DESTRUCTION DES OBJETS JEVEUX TEMPORAIRES
       IF (LUMPE) CALL JEDETR('&&FETI.COLLECTIONL') 
       CALL JEDETR('&&FETI.PS.REORTHO.R')
       CALL JEDETR('&&FETI.DD.REORTHO.R')
-      CALL JEDETR('&&FETI.FIDD.REORTHO.R')      
+      CALL JEDETR('&&FETI.FIDD.REORTHO.R')
+      IF (LRIGID) THEN
+        CALL JEDETR(NOMGI)
+        CALL JEDETR(NOMGGT)
+      ENDIF
+      IF (NIV.GE.6)
+     &  CALL JEDETR('&&FETI.TEST')      
       CALL JEDEMA()
-      END      
+      END

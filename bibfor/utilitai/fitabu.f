@@ -1,11 +1,11 @@
-      SUBROUTINE FITABU(NOMF,NBPU,NOMPU,VALPU,RESU,IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER                NBPU,                 IER
-      CHARACTER*(*)     NOMF,     NOMPU(NBPU)
-      REAL*8                            VALPU(NBPU),RESU
+      SUBROUTINE FITABU ( NOMF, NBPU, NOMPU, VALPU, RESU, IER )
+      IMPLICIT  NONE
+      INTEGER             NBPU, IER
+      REAL*8              VALPU(*), RESU
+      CHARACTER*(*)       NOMF, NOMPU(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,6 @@ C     ------------------------------------------------------------------
 C     REMARQUE: PAS DE "SAVE" POUR LES FONCTIONS INTERPRETEES.
 C     ------------------------------------------------------------------
 C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM
       INTEGER       ZI
       COMMON/IVARJE/ZI(1)
       REAL*8        ZR
@@ -56,17 +55,17 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                 ZK80
       COMMON/KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
-      INTEGER      NUPAR, I, JPAR, LVALF2, NBVN
+      INTEGER      NUPAR, I, NBVN, IZERO, ISAVE, LPROL, LVAR, NBPT, 
+     +             LPARA, LFON
       CHARACTER*1  COLI, CBID, K1BID
-      CHARACTER*8  INTER1, INTER2
       CHARACTER*19 NOMFON
       CHARACTER*24 CHPROL, CHVALE, CHPARA
-      REAL*8       RVAR, RPAR, TAB(4)
+      REAL*8       LINLIN, LINLOG, LOGLOG, LOGLIN, X, X1, Y1, X2, Y2
+      REAL*8       RVAR, RPAR, TAB(4), EPSI, R8PREM
 C     ------------------------------------------------------------------
 C     DECLARATIONS POUR LES SAUVEGARDES.
+      INTEGER      MXSAVE, MXPARA
       PARAMETER   (MXSAVE=4, MXPARA=10)
-      INTEGER      IPAR(MXPARA)
-      CHARACTER*16 NOMP(MXPARA)
       REAL*8       SVRESU(MXSAVE)
       INTEGER      ISVNXT,NEXTSV(MXSAVE),SVNBPA(MXSAVE)
       INTEGER      SVPAR(MXPARA,MXSAVE)
@@ -202,8 +201,7 @@ C        --- FONCTION ---
      +                                  ISVIND(ISAVE),EPSI,COLI,IER)
          IF (IER.NE.0) GOTO 9999
          CALL FOCOLI ( ISVIND(ISAVE),COLI,SVINTE(ISAVE),ZR(LVAR),
-     +                                ZR(LFON),RVAR, RESU , IER ,
-     +              NOMF,ZK16(LPROL),MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
+     +                                ZR(LFON),RVAR, RESU , IER  )
          IF (IER.NE.0) GOTO 9999
          SVRESU(ISAVE) = RESU
 C
@@ -220,8 +218,7 @@ C
          IF (IER.NE.0) GOTO 9999
 C
          IF (COLI.EQ.'C') THEN
-            CALL FOINTN ( IZERO, RVAR, I, RESU, EPSI, IER,
-     +              NOMF,ZK16(LPROL),MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
+            CALL FOINTN ( IZERO, NOMF, RVAR, I, RESU, EPSI, IER )
             IF (IER.NE.0) GOTO 9999
 C
          ELSEIF (COLI.EQ.'I') THEN
@@ -231,11 +228,9 @@ C
                IER = IER + 1
                GOTO 9999
             ENDIF
-            CALL FOINTN ( IZERO, RVAR, I, TAB(3), EPSI, IER,
-     +              NOMF,ZK16(LPROL),MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
+            CALL FOINTN ( IZERO, NOMF, RVAR, I, TAB(3), EPSI, IER )
             IF (IER.NE.0) GOTO 9999
-            CALL FOINTN ( IZERO, RVAR, I+1, TAB(4), EPSI, IER,
-     +              NOMF,ZK16(LPROL),MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
+            CALL FOINTN ( IZERO, NOMF, RVAR, I+1, TAB(4), EPSI, IER )
             IF (IER.NE.0) GOTO 9999
 C
 C           --- INTERPOLATION FINALE SUR LES PARAMETRES ---
@@ -252,11 +247,9 @@ C           --- INTERPOLATION FINALE SUR LES PARAMETRES ---
             ENDIF
 C
          ELSEIF (COLI.EQ.'E') THEN
-            CALL FOINTN ( IZERO, RVAR, I, TAB(3), EPSI, IER,
-     +              NOMF,ZK16(LPROL),MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
+            CALL FOINTN ( IZERO, NOMF, RVAR, I, TAB(3), EPSI, IER )
             IF (IER.NE.0) GOTO 9999
-            CALL FOINTN ( IZERO, RVAR, I+1, TAB(4), EPSI, IER,
-     +              NOMF,ZK16(LPROL),MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
+            CALL FOINTN ( IZERO, NOMF, RVAR, I+1, TAB(4), EPSI, IER )
             IF (IER.NE.0) GOTO 9999
             TAB(1) = ZR(LPARA+I-1)
             TAB(2) = ZR(LPARA+I  )

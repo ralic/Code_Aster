@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,17 +72,6 @@ C
         IFIC   = 0
         FICHIE = ' '
         CALL GETVIS ( 'MATR_ELEM', 'UNITE'  , 1,1,1, IFIC  , N2 )
-        CALL GETVTX ( 'MATR_ELEM', 'FICHIER', 1,1,1, FICHIE, N2 )
-        IF ( N2 .NE. 0 ) THEN
-           CALL UTMESS('A','IMPR_MATRICE',
-     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
-     +               ' UTILISER LE MOT CLE "UNITE"')
-           IFIC = IUNIFI( FICHIE )
-        ENDIF
-        IF ( IFIC .EQ. 0 ) THEN
-           IF ( FICHIE .EQ. ' ' ) FICHIE = FORMAT
-           IFIC = IUNIFI( FICHIE )
-        ENDIF
         IF ( .NOT. ULEXIS( IFIC ) ) THEN
            CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
         ENDIF
@@ -158,17 +147,6 @@ C
          IFIC  = 0
          FICHIE = ' '
          CALL GETVIS ( 'MATR_ELEM', 'UNITE'  , I,1,1, IFIC  , N2 )
-         CALL GETVTX ( 'MATR_ELEM', 'FICHIER', I,1,1, FICHIE, N2 )
-         IF ( N2 .NE. 0 ) THEN
-            CALL UTMESS('A','IMPR_MATRICE',
-     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
-     +               ' UTILISER LE MOT CLE "UNITE"')
-            IFIC = IUNIFI( FICHIE )
-         ENDIF
-         IF ( IFIC .EQ. 0 ) THEN
-           IF ( FICHIE .EQ. ' ' ) FICHIE = FORMAT
-           IFIC = IUNIFI( FICHIE )
-         ENDIF
          IF ( .NOT. ULEXIS( IFIC ) ) THEN
            CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
          ENDIF
@@ -259,17 +237,6 @@ C
          IFIC  = 0
          FICHIE = ' '
          CALL GETVIS ( 'MATR_ASSE', 'UNITE'  , I,1,1, IFIC  , N2 )
-         CALL GETVTX ( 'MATR_ASSE', 'FICHIER', I,1,1, FICHIE, N2 )
-         IF ( N2 .NE. 0 ) THEN
-            CALL UTMESS('A','IMPR_MATRICE',
-     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
-     +               ' UTILISER LE MOT CLE "UNITE"')
-            IFIC = IUNIFI( FICHIE )
-         ENDIF
-         IF ( IFIC .EQ. 0 ) THEN
-           IF ( FICHIE .EQ. ' ' ) FICHIE = FORMAT
-           IFIC = IUNIFI( FICHIE )
-         ENDIF
          IF ( .NOT. ULEXIS( IFIC ) ) THEN
            CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
          ENDIF

@@ -1,4 +1,4 @@
-#@ MODIF macr_fiab_impr_ops Macro  DATE 16/01/2004   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF macr_fiab_impr_ops Macro  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,11 +63,11 @@ def macr_fiab_impr_ops(self, INFO,
 # 2. Définition d'un fichier d'échange
 #____________________________________________________________________
 # 
-  DEFI_FICHIER ( ACTION= "ASSOCIER",
-                 FICHIER = Nom_Symbolique_Fichier_ASTER_vers_FIABILITE,
-                 UNITE = Unite_Fichier_ASTER_vers_FIABILITE,
-                 TYPE = "ASCII",
-                 INFO = INFO )
+  iunit = DEFI_FICHIER ( ACTION= "ASSOCIER",
+#                         FICHIER = Nom_Symbolique_Fichier_ASTER_vers_FIABILITE,
+                         UNITE = Unite_Fichier_ASTER_vers_FIABILITE,
+                         TYPE = "ASCII",
+                         INFO = INFO )
 #____________________________________________________________________
 #
 # 4. Ecriture de la valeur cible
@@ -75,7 +75,7 @@ def macr_fiab_impr_ops(self, INFO,
 #
   IMPR_TABLE ( TABLE = TABLE_CIBLE,
                NOM_PARA = NOM_PARA_CIBLE,
-               FICHIER = Nom_Symbolique_Fichier_ASTER_vers_FIABILITE,
+               UNITE = Unite_Fichier_ASTER_vers_FIABILITE,
                FORMAT_R = FORMAT_R,
                INFO = INFO )
 #____________________________________________________________________
@@ -87,7 +87,7 @@ def macr_fiab_impr_ops(self, INFO,
 #
     IMPR_TABLE ( TABLE = val["TABLE"],
                  NOM_PARA = ("PAR_SENS", val["NOM_PARA"]),
-                 FICHIER = Nom_Symbolique_Fichier_ASTER_vers_FIABILITE,
+                 UNITE = Unite_Fichier_ASTER_vers_FIABILITE,
                  FORMAT_R = FORMAT_R,
                  INFO = INFO )
 #____________________________________________________________________
@@ -95,9 +95,9 @@ def macr_fiab_impr_ops(self, INFO,
 # 6. Libération du fichier d'échange
 #____________________________________________________________________
 # 
-  DEFI_FICHIER ( ACTION= "LIBERER",
-                 UNITE = Unite_Fichier_ASTER_vers_FIABILITE,
-                 INFO = INFO )
+  iunit = DEFI_FICHIER ( ACTION= "LIBERER",
+                         UNITE = Unite_Fichier_ASTER_vers_FIABILITE,
+                         INFO = INFO )
 #
 #--------------------------------------------------------------------
 # 7. C'est fini !

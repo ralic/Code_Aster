@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,17 +42,6 @@ C     ------------------------------------------------------------------
          CALL GETVIS ( ' ', 'VERSION', 1,1,1, VERSIO, N1 )
 
          CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFIC , N1 )
-         CALL GETVTX ( ' ', 'FICHIER', 1,1,1, FICHIE, N1 )
-         IF ( N1 .NE. 0 ) THEN
-            CALL UTMESS('A','IMPR_MACR_ELEM',
-     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
-     +               ' UTILISER LE MOT CLE "UNITE"')
-            IFIC = IUNIFI( FICHIE )
-         ENDIF
-         IF ( IFIC .EQ. 0 )  THEN
-            IF ( FICHIE .EQ. ' ' )  FICHIE = FORMAT
-            IFIC = IUNIFI( FICHIE )
-         ENDIF
          IF ( .NOT. ULEXIS( IFIC ) ) THEN
             CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
          ENDIF
@@ -73,17 +62,6 @@ C     ------------------------------------------------------------------
          CALL GETVIS ( ' ', 'VERSION', 1,1,1, VERSIO, N1 )
 
          CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFIC , N1 )
-         CALL GETVTX ( ' ', 'FICHIER', 1,1,1, FICHIE, N1 )
-         IF ( N1 .NE. 0 ) THEN
-            CALL UTMESS('A','IMPR_MACR_ELEM',
-     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
-     +               ' UTILISER LE MOT CLE "UNITE"')
-            IFIC = IUNIFI( FICHIE )
-         ENDIF
-         IF ( IFIC .EQ. 0 )  THEN
-            IF ( FICHIE .EQ. ' ' ) FICHIE = 'IDEAS'
-            IFIC = IUNIFI( FICHIE )
-         ENDIF
          IF ( .NOT. ULEXIS( IFIC ) ) THEN
             CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
          ENDIF

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 24/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 # TITRE CABLE DE PRECONTRAINTE EXCENTRE DANS UNE POUTRE DROITE EN BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ MAILLAGE=LIRE_MAILLAGE(    UNITE=20 )
 
 MODELE=AFFE_MODELE(
                  MAILLAGE=MAILLAGE,AFFE=(
-                     _F(  GROUP_MA = 'POUTRE',
+                     _F(  GROUP_MA = ('POUTRE_1','POUTRE_2','POUTRE_3'),
                             PHENOMENE = 'MECANIQUE',
                             MODELISATION = 'DKT'),
                      _F(  GROUP_MA = 'CABLE001',
@@ -41,7 +41,8 @@ MODELE=AFFE_MODELE(
 
 CARAELEM=AFFE_CARA_ELEM(
                       MODELE=MODELE,
-                       COQUE=_F(  GROUP_MA = 'POUTRE',COQUE_NCOU=5,
+                       COQUE=_F(  GROUP_MA =('POUTRE_1','POUTRE_2','POUTRE_3'),
+                       COQUE_NCOU=5,
                                EPAIS = 2.0E-1),
                        BARRE=_F(  GROUP_MA = 'CABLE001',
                                SECTION = 'GENERALE',
@@ -50,11 +51,23 @@ CARAELEM=AFFE_CARA_ELEM(
 
 #
 
-BETON=DEFI_MATERIAU(
+# DEFINITION DE MATERIAUX QUASI IDENTIQUES POUR VERIFIER L ACCEPTATION
+# D UNE LISTE DE MAILLE CONTENANT DIFFERENT MATERIAUX PAR DEFI_CABLE_BP
+
+BETON_1=DEFI_MATERIAU(
                        ELAS=_F(  E = 3.0E+10,
                               NU = 0.),
                  BPEL_BETON=_F() )
 
+BETON_2=DEFI_MATERIAU(
+                       ELAS=_F(  E = 2.999999999E+10,
+                              NU = 0.),
+                 BPEL_BETON=_F() )
+
+BETON_3=DEFI_MATERIAU(
+                       ELAS=_F(  E = 3.E+10,
+                              NU = 0.),
+                 BPEL_BETON=_F() )
 #
 
 ACIER=DEFI_MATERIAU(
@@ -68,8 +81,12 @@ ACIER=DEFI_MATERIAU(
 
 CHMATER=AFFE_MATERIAU(
                    MAILLAGE=MAILLAGE,AFFE=(
-                       _F(  GROUP_MA = 'POUTRE',
-                              MATER = BETON),
+                       _F(  GROUP_MA = 'POUTRE_1',
+                              MATER = BETON_1),
+                       _F(  GROUP_MA = 'POUTRE_2',
+                              MATER = BETON_2),
+                       _F(  GROUP_MA = 'POUTRE_3',
+                              MATER = BETON_3),
                        _F(  GROUP_MA = 'CABLE001',
                               MATER = ACIER)) )
 
@@ -78,7 +95,7 @@ CHMATER=AFFE_MATERIAU(
 CABLEPR=DEFI_CABLE_BP(            MODELE=MODELE,
                                   CHAM_MATER=CHMATER,
                                    CARA_ELEM=CARAELEM,
-                              GROUP_MA_BETON='POUTRE',
+                              GROUP_MA_BETON=('POUTRE_1','POUTRE_2','POUTRE_3'),
                                   DEFI_CABLE=_F(
                                GROUP_MA = 'CABLE001',
                                NOEUD_ANCRAGE = ( 'NC001001',  'NC001021', ),),

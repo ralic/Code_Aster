@@ -2,7 +2,7 @@
      &                  COLAUI,SDFETI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 23/08/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,6 +37,7 @@ C      IN SDFETI: CH19 : SD DECRIVANT LE PARTIONNEMENT FETI
 C   -------------------------------------------------------------------
 C     ASTER INFORMATIONS:
 C       26/01/04 (OB): CREATION.
+C       04/06/04 (OB): TRAITEMENT DES MODES DE CORPS RIGIDES
 C----------------------------------------------------------------------
 C RESPONSABLE BOITEAU O.BOITEAU
 C CORPS DU PROGRAMME
@@ -67,8 +68,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
       INTEGER      IDD,IFETM,NBDDL,IDD1,JXSOL,J,TYPSYM,OPTION,IFM,NIV,
-     &             NBSOL,LMAT,NBBLOC
+     &             NBSOL,LMAT,NBBLOC,NBSDF,NBMC,IFETP,NBMC1,JXSOL1
       CHARACTER*19 MATDD
+      CHARACTER*24 NOMSDP
       CHARACTER*32 JEXNUM
             
 C CORPS DU PROGRAMME
@@ -79,6 +81,10 @@ C RECUPERATION DU NIVEAU D'IMPRESSION
 
 C INIT. NBRE DE SECOND MEMBRES SOLUTION POUR RLTFR8
       NBSOL=1
+
+C INIT. NOM OBJET JEVEUX POUR PRODUIT PAR PSEUDO-INVERSE LOCALE      
+      NOMSDP=MATAS//'.FETP'
+            
 C INIT. VECTEUR SOLUTION ET AUX
       DO 10 J=1,NBI
         VD2(J)=0.D0
@@ -89,7 +95,9 @@ C OBJET JEVEUX POINTANT SUR LA LISTE DES MATR_ASSE
       
 C --------------------------------------------------------------------
 C ----  BOUCLE SUR LES SOUS-DOMAINES
-C -------------------------------------------------------------------- 
+C --------------------------------------------------------------------
+C NOMBRE DE SOUS-DOMAINES FLOTTANTS      
+      NBSDF=0 
       DO 40 IDD=1,NBSD
         IDD1=IDD-1
         
@@ -111,29 +119,48 @@ C EXTRACTION DU VECTEUR V AU SOUS-DOMAINE IDD: (RIDD)T * V
                         
 C -------------------------------------------------
 C ----  SOUS-DOMAINE NON FLOTTANT
-C -------------------------------------------------     
-        IF (VSDF(IDD).EQ.-1) THEN 
+C -------------------------------------------------
+C NOMBRES DE MODES DE CORPS RIGIDES DU SOUS-DOMAINE IDD
+        NBMC=VSDF(IDD)     
+        IF (NBMC.EQ.-1) THEN 
 
 C CALCUL DE (KIDD)- * FIDD PAR MULT_FRONT  
           CALL RLTFR8(MATDD,NBDDL,ZR(JXSOL),NBSOL,TYPSYM)
           
 C MONITORING
-        IF (NIV.GE.3) THEN
-          WRITE(IFM,*)
-          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
-          WRITE(IFM,*)'<FETI/FETFIV> CALCUL (KI)-*(RI)T*V POUR I= ',
+          IF (NIV.GE.3) THEN
+            WRITE(IFM,*)
+            WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
+            WRITE(IFM,*)'<FETI/FETFIV> CALCUL (KI)-*(RI)T*V POUR I= ',
      &                IDD
-          WRITE(IFM,*)'<FETI/FETFIV> NBDDL/NBBLOC/TYPSYM',
+            WRITE(IFM,*)'<FETI/FETFIV> NBDDL/NBBLOC/TYPSYM',
      &                NBDDL,NBBLOC,TYPSYM
-        ENDIF         
+          ENDIF         
 
         ELSE
 C -------------------------------------------------
 C ----  SOUS-DOMAINE FLOTTANT
 C -------------------------------------------------
-
-          CALL UTMESS('F','FETFIV','SOUS-STRUCTURE FLOTTANTE'//
-     &     ' POUR L''INSTANT PROSCRITE  AVEC FETI !')           
+          NBSDF=NBSDF+1
+C CALCUL DE (KI)+FI PAR MULT_FRONT   
+          CALL RLTFR8(MATDD,NBDDL,ZR(JXSOL),NBSOL,TYPSYM)         
+          CALL JEVEUO(JEXNUM(NOMSDP,NBSDF),'L',IFETP)
+          
+          NBMC1=NBMC-1
+          JXSOL1=JXSOL-1
+          DO 25 J=0,NBMC1
+            ZR(JXSOL1+ZI(IFETP+J))=0.D0   
+   25     CONTINUE
+   
+C MONITORING
+          IF (NIV.GE.3) THEN
+            WRITE(IFM,*)
+            WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
+           WRITE(IFM,*)'<FETI/FETFIV> CALCUL (KI)+*(RI)T*V I= ',
+     &        IDD
+            WRITE(IFM,*)'NBDDL/NBBLOC/TYPSYM',NBDDL,NBBLOC,TYPSYM
+            WRITE(IFM,*)'NBMC/NBSDF',NBMC,NBSDF
+          ENDIF
         ENDIF
 
 C RESTRICTION DU SOUS-DOMAINE IDD SUR L'INTERFACE: (RIDD) * ...
@@ -147,7 +174,7 @@ C CUMUL DANS LE VECTEUR VDO=SOMME(I=1,NBSD)(RI * ((KI)+ * RIT * V))
 C MONITORING
         IF (NIV.GE.3) THEN
           WRITE(IFM,*)'<FETI/FETFIV> CUMUL  FIV = FIV +'//
-     &                ' RI*((KI)-*(RIT*V)) '      
+     &                ' RI*((KI)+*(RIT*V)) '      
           WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
         ENDIF
                 

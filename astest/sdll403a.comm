@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE VIBRATIONS D UN PENDULE EN ROTATION
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -168,9 +168,6 @@ MODE_1=MODE_ITER_SIMULT(MATR_A=K_MODAL,
 # et de poursuivre la calcul apres l'avoir relu :
 #----------------------------------------------------------------------
 
-DEFI_FICHIER(UNITE=75,
-             FICHIER='MODEMECA',);
-
 IMPR_RESU( FORMAT='IDEAS',UNITE=75,
            RESU=_F(RESULTAT=MODE_1, ),);
 
@@ -188,21 +185,6 @@ MODE_2=LIRE_RESU(TYPE_RESU='MODE_MECA',
                                  POSI_FREQ=(8,1,),
                                  NOM_CMP=('DX','DY','DZ',),),
                  TOUT_ORDRE='OUI',);
-#----------------------------------------------------------------------
-
-DEFI_FICHIER(UNITE=76,
-             FICHIER='MODEMEC1',);
-
-IMPR_RESU(FORMAT='RESULTAT', UNITE=76,
-          RESU=_F( RESULTAT=MODE_1,
-                   TOUT_PARA='OUI', ),);
-
-DEFI_FICHIER(UNITE=77,
-             FICHIER='MODEMEC2',);
-
-IMPR_RESU(FORMAT='RESULTAT', UNITE=77,
-          RESU=_F(RESULTAT=MODE_2,
-                  TOUT_PARA='OUI', ),);
 #----------------------------------------------------------------------
 
 TEST_RESU(RESU=(_F(RESULTAT=MODE_2,

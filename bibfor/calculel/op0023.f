@@ -1,6 +1,6 @@
       SUBROUTINE OP0023(IER)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,13 +94,6 @@ C     ------------------------------------------------------------------
       IFIC = 0
       NOMFI = ' '
       CALL GETVIS(' ','UNITE'  , 1,1,1, IFIC , N1 )
-      CALL GETVTX(' ','FICHIER', 1,1,1, NOMFI, N2 )
-      IF (N2.NE.0) THEN
-         CALL UTMESS('A','TEST_RESU',
-     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
-     +               ' UTILISER LE MOT CLE "UNITE"')
-        IFIC = IUNIFI(NOMFI)
-      END IF
       IF ( .NOT. ULEXIS( IFIC ) ) THEN
         CALL ULOPEN ( IFIC, ' ', NOMFI, 'NEW', 'O' )
       ENDIF

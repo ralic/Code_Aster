@@ -1,9 +1,9 @@
-      SUBROUTINE TOMABE(CHMAT,GRMABE,MAILLA,NBNOMA,
-     &                  MAIL2D,NBNOBE,NUNOBE,XFLU,XRET,NCNCIN,NMABET)
+      SUBROUTINE TOMABE(CHMAT,NMABET,NBMABE,MAILLA,NBNOMA,
+     &                  MAIL2D,NBNOBE,NUNOBE,XFLU,XRET)
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 24/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,9 +28,10 @@ C                APPELANT : OP0180 , OPERATEUR DEFI_CABLE_BP
 C
 C  IN     : CHMAT  : CHARACTER*8 , SCALAIRE
 C                    NOM DU CONCEPT CHAM_MATER ASSOCIE A L'ETUDE
-C  IN     : GRMABE : CHARACTER*8 , SCALAIRE
-C                    NOM DU GROUPE DE MAILLES ASSOCIE A LA STRUCTURE
-C                    BETON
+C  IN     : NMABET : CHARACTER*24 ,
+C                    OBJET CONTENANT LES MAILLES BETON
+C  IN     : NBMABE : INTEGER , SCALAIRE
+C                    NOMBRE DE MAILLE BETON
 C  IN     : MAILLA : CHARACTER*8 , SCALAIRE
 C                    NOM DU CONCEPT MAILLAGE ASSOCIE A L'ETUDE
 C  IN     : NBNOMA : INTEGER , SCALAIRE
@@ -51,12 +52,6 @@ C                    BETON, EN % DE LA TENSION INITIALE
 C  OUT    : XRET   : REAL*8 , SCALAIRE
 C                    VALEUR DU TAUX DE PERTE DE TENSION PAR RETRAIT DU
 C                    BETON, EN % DE LA TENSION INITIALE
-C  OUT    : NCNCIN : CHARACTER*24 ,
-C                    OBJET CONTENANT LA CONNECTIVITE INVERSE POUR LE
-C                    GROUPE DE MAILLES BETON
-C  OUT    : NMABET : CHARACTER*24 ,
-C                    OBJET CONTENANT LES MAILLES BETON
-C
 C  N.B. LE VECTEUR NUNOBE EST REMPLI LORS DU PASSAGE DANS LA ROUTINE
 C       TOMABE, APRES AJUSTEMENT DE SA DIMENSION A NBNOBE
 C
@@ -82,17 +77,19 @@ C     ----- FIN   COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C ARGUMENTS
 C ---------
-      CHARACTER*8   CHMAT, GRMABE, MAILLA
-      INTEGER       NBNOMA, NBNOBE
+      CHARACTER*8   CHMAT,  MAILLA
+      INTEGER       NBNOMA, NBNOBE, NBMABE
       LOGICAL       MAIL2D
       CHARACTER*19  NUNOBE
       REAL*8        XFLU, XRET
+      CHARACTER*24  NMABET
 C
 C VARIABLES LOCALES
 C -----------------
       INTEGER       IAS, ICSTE, IDECAL, IMAIL, INO, IRET, JCONX, JNCOCH,
      &              JNUMAB, JNUNOB, JPTMA, JTYMA, JVALK, JVALR, NBCONX,
-     &              NBCSTE, NBMABE, NTYMA, NUMAIL, NUMNOE, N2, JLIMAB
+     &              NBCSTE, NTYMA, NUMAIL, NUMNOE, N2, JLIMAB,
+     &              JCESD, JCESL, JCESV, IAD
 C
       INTEGER       NTRI3, NTRI6, NQUA4, NQUA8, NQUA9,
      &              NTET4, NTET10, NPYR5, NPYR13, NPEN6, NPEN15,
@@ -102,11 +99,12 @@ C
       CHARACTER*1   K1B
       CHARACTER*3   K3MAI
       CHARACTER*8   BETON, K8B
-      CHARACTER*19  CARTE, NOMRC
-      CHARACTER*24  CAPTMA, CAVALK, CONXMA, GRMAMA, RCVALK, RCVALR,
-     &              TYMAMA, NCNCIN, NMABET
+      CHARACTER*19  CARTE, NOMRC, CHSMAT, CARTEZ
+      CHARACTER*24  CAPTMA, CAVALK, CONXMA, RCVALK, RCVALR,
+     &              TYMAMA, NCNCIN
 C
       CHARACTER*8   BPELB(2)
+      REAL*8        CRITE
       DATA          BPELB  /'PERT_FLU','PERT_RET'/
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -122,9 +120,7 @@ C
 C 1.1 ACCES AUX OBJETS DU CONCEPT MAILLAGE
 C ---
       CONXMA = MAILLA//'.CONNEX'
-      GRMAMA = MAILLA//'.GROUPEMA'
-      CALL JELIRA(JEXNOM(GRMAMA,GRMABE),'LONMAX',NBMABE,K1B)
-      CALL JEVEUO(JEXNOM(GRMAMA,GRMABE),'L',JNUMAB)
+      CALL JEVEUO(NMABET,'L',JNUMAB)
       TYMAMA = MAILLA//'.TYPMAIL'
       CALL JEVEUO(TYMAMA,'L',JTYMA)
 C
@@ -228,20 +224,6 @@ C
   60  CONTINUE
 C
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-C 3   CREATION DE LA CONNECTIVITE INVERSE LIMITEE AU GROUP_MA BETON
-C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-C
-      CALL RELIEM(' ',MAILLA,'NU_MAILLE',' ',0,1,
-     &            'GROUP_MA_BETON','GROUP_MA',
-     &            NMABET,NBMABE)
-C
-      CALL JEEXIN(NCNCIN,N2)
-      CALL JEVEUO(NMABET,'L',JLIMAB)
-C
-      IF ( N2 .EQ. 0 ) CALL CNCINV ( MAILLA, ZI(JLIMAB),NBMABE,
-     &                               'V', NCNCIN )
-C
-C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C 4   RECUPERATION DU MATERIAU CONSTITUTIF DE LA STRUCTURE BETON
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C
@@ -258,47 +240,37 @@ C
          CALL UTMESS('F','TOMABE','RECUPERATION DU MATERIAU BETON : '//
      &               'LES CARACTERISTIQUES MATERIELLES N ONT PAS ETE '//
      &               'AFFECTEES A LA MAILLE NO'//K3MAI//
-     &               ' APPARTENANT AU GROUPE DE MAILLES '//GRMABE//
-     &               ' ASSOCIE A LA STRUCTURE BETON')
+     &               ' APPARTENANT AU GROUPE DE MAILLES 
+     &                ASSOCIE A LA STRUCTURE BETON')
       ENDIF
 C
-C.... UNE SEULE COMPOSANTE POUR LA GRANDEUR MATE_F : MATE
-C.... => ACCES SIMPLE AU NOM DU MATERIAU ASSOCIE A UNE MAILLE
-C
-      BETON = ZK8(JVALK+IAS-1)
-C
-C.... ON VERIFIE QUE LE MEME MATERIAU A ETE AFFECTE A TOUTES LES MAILLES
-C.... DE LA STRUCTURE BETON
-C
-      IF ( NBMABE.GT.1 ) THEN
-         DO 70 IMAIL = 2, NBMABE
-            NUMAIL = ZI(JNUMAB+IMAIL-1)
-            IAS = ZI(JPTMA+NUMAIL-1)
-            IF ( IAS.EQ.0 ) THEN
-               WRITE(K3MAI,'(I3)') NUMAIL
-               CALL UTMESS('F','TOMABE','RECUPERATION DU MATERIAU '//
-     &                     'BETON : LES CARACTERISTIQUES MATERIELLES '//
-     &                     'N ONT PAS ETE AFFECTEES A LA MAILLE NO'//
-     &                      K3MAI//' APPARTENANT AU GROUPE DE '//
-     &                     'MAILLES '//GRMABE//' ASSOCIE A LA '//
-     &                     'STRUCTURE BETON')
-            ENDIF
-            K8B = ZK8(JVALK+IAS-1)
-            IF ( K8B.NE.BETON )
-     &         CALL UTMESS('F','TOMABE','DES MATERIAUX DIFFERENTS '//
-     &                     'ONT ETE AFFECTES AUX MAILLES APPARTENANT '//
-     &                     'AU GROUPE DE MAILLES '//GRMABE//
-     &                     ' ASSOCIE A LA STRUCTURE BETON')
-  70     CONTINUE
-      ENDIF
-C
+
+
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-C 5   RECUPERATION DES CARACTERISTIQUES DU MATERIAU CONSTITUTIF
-C     DE LA STRUCTURE BETON
+C 5.  RECUPERATION DES CARACTERISTIQUES DU MATERIAU CONSTITUTIF
+C     DE LA STRUCTURE BETON ET VERIFICATION DE LA COMPATIBILITE DES 
+C     MATERIAUX BETON. 
+C     ( LA LOI BPEL_BETON DOIT ETRE LA MEME POUR TOUTES LES MAILLES )
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-C
+
+
+C     TRANSFORMATION DU CHAM_MATER EN CHAM_ELEM_S POUR TRAITEMENT
+
+      CHSMAT='&&TOMABE.NOM_MATER'
+      CARTEZ='&&TOMABE.CARTE'
+      
+      CALL COPISD(' ','V',CARTE,CARTEZ)
+      CALL CARCES(CARTEZ,'ELEM',K8B,'V',CHSMAT,IRET)
+      CALL JEVEUO(CHSMAT//'.CESD','L',JCESD)
+      CALL JEVEUO(CHSMAT//'.CESL','L',JCESL)
+      CALL JEVEUO(CHSMAT//'.CESV','L',JCESV)
+
+      NUMAIL = ZI(JNUMAB+1-1)
+      CALL CESEXI('C',JCESD,JCESL,NUMAIL,1,1,1,IAD)
+
 C.... RELATION DE COMPORTEMENT <BPEL_BETON>
-C
+
+      BETON=ZK8(JCESV-1+IAD)
       NOMRC =  BETON//'.BPEL_BETON'
       RCVALK = NOMRC//'.VALK'
       CALL JEEXIN(RCVALK,IRET)
@@ -310,10 +282,9 @@ C
       CALL JEVEUO(RCVALK,'L',JVALK)
       CALL JEVEUO(RCVALR,'L',JVALR)
       CALL JELIRA(RCVALR,'LONMAX',NBCSTE,K1B)
-C
       TROUV1 = .FALSE.
       TROUV2 = .FALSE.
-      DO 80 ICSTE = 1, NBCSTE
+      DO 150 ICSTE = 1, NBCSTE
          IF ( ZK8(JVALK+ICSTE-1).EQ.BPELB(1) ) THEN
             TROUV1 = .TRUE.
             XFLU = ZR(JVALR+ICSTE-1)
@@ -322,10 +293,83 @@ C
             TROUV2 = .TRUE.
             XRET = ZR(JVALR+ICSTE-1)
          ENDIF
-         IF ( TROUV1 .AND. TROUV2 ) GO TO 81
-  80  CONTINUE
-C
-  81  CONTINUE
+         IF ( TROUV1 .AND. TROUV2 ) GO TO 151
+  150 CONTINUE
+
+  151 CONTINUE
+     
+
+C CRITERE DE COMPARAISON DES VALEURS MATERIAUX INTRODUITES 
+C PAR L UTILISATEUR DANS LA RELATION BPEL_BETON QUI DOIT ETRE
+C UNIQUE A TOUT LE BETON
+      CRITE=1.D-07
+      
+      IF ( NBMABE.GT.1 ) THEN
+         DO 200 IMAIL = 2, NBMABE
+            NUMAIL = ZI(JNUMAB+IMAIL-1)
+            CALL CESEXI('C',JCESD,JCESL,NUMAIL,1,1,1,IAD)
+                 BETON=ZK8(JCESV-1+IAD)
+            NOMRC =  BETON//'.BPEL_BETON'
+            RCVALK = NOMRC//'.VALK'
+            RCVALR = NOMRC//'.VALR'
+            CALL JEVEUO(RCVALK,'L',JVALK)
+            CALL JEVEUO(RCVALR,'L',JVALR)
+            CALL JELIRA(RCVALR,'LONMAX',NBCSTE,K1B)
+
+            IAS = ZI(JPTMA+NUMAIL-1)
+            IF ( IAS.EQ.0 ) THEN
+               WRITE(K3MAI,'(I3)') NUMAIL
+               CALL UTMESS('F','TOMABE','RECUPERATION DU MATERIAU '//
+     &                     'BETON : LES CARACTERISTIQUES MATERIELLES '//
+     &                     'N ONT PAS ETE AFFECTEES A LA MAILLE NO'//
+     &                      K3MAI//' APPARTENANT AU GROUPE DE '//
+     &                     'MAILLES ASSOCIE A LA '//
+     &                     'STRUCTURE BETON')
+            ENDIF
+
+            DO 250 ICSTE = 1, NBCSTE
+
+              IF ( ZK8(JVALK+ICSTE-1).EQ.BPELB(1) ) THEN
+                IF ( ABS(XFLU).LT.CRITE ) THEN
+                  IF (ABS(XFLU-ZR(JVALR+ICSTE-1)).GT.CRITE) THEN
+                    CALL UTMESS ('F','TOMABE','LE CALCUL DE LA '//
+     &                'TENSION EST FAIT SELON BPEL. IL NE PEUT '//
+     &                'Y AVOIR QU UN SEULE JEU DE DONNEES. '//
+     &                'VERIFIEZ LA COHERENCE DU PARAMETRE PERT_FLUA '//
+     &                ' DANS LES DEFI_MATERIAU')
+                  ENDIF
+                ELSE
+                  IF (ABS((XFLU-ZR(JVALR+ICSTE-1))/XFLU).GT.CRITE) THEN
+                    CALL UTMESS ('F','TOMABE','LE CALCUL DE LA '//
+     &                'TENSION EST FAIT SELON BPEL. IL NE PEUT '//
+     &                'Y AVOIR QU UN SEUL JEU DE DONNEES. '//
+     &                'VERIFIEZ LA COHERENCE DU PARAMETRE PERT_FLUA '//
+     &                'DANS LES DEFI_MATERIAU')
+                  ENDIF
+                ENDIF
+              ELSE IF ( ZK8(JVALK+ICSTE-1).EQ.BPELB(2) ) THEN
+                IF ( ABS(XRET).LT.CRITE ) THEN
+                  IF (ABS(XRET-ZR(JVALR+ICSTE-1)).GT.CRITE) THEN
+                    CALL UTMESS ('F','TOMABE','LE CALCUL DE LA '//
+     &                'TENSION EST FAIT SELON BPEL. IL NE PEUT '//
+     &                'Y AVOIR QU UN SEULE JEU DE DONNEES. '//
+     &                'VERIFIEZ LA COHERENCE DU PARAMETRE PERT_RETR '//
+     &                'DANS LES DEFI_MATERIAU')
+                  ENDIF
+                ELSE
+                  IF (ABS((XRET-ZR(JVALR+ICSTE-1))/XRET).GT.CRITE) THEN
+                    CALL UTMESS ('F','TOMABE','LE CALCUL DE LA '//
+     &                'TENSION EST FAIT SELON BPEL. IL NE PEUT '//
+     &                'Y AVOIR QU UN SEULE JEU DE DONNEES. '//
+     &                'VERIFIEZ LA COHERENCE DU PARAMETRE PERT_FLUA '//
+     &                'DANS LES DEFI_MATERIAU')
+                  ENDIF
+                ENDIF
+              ENDIF
+  250       CONTINUE
+  200    CONTINUE
+      ENDIF
+
       IF ( .NOT. ( TROUV1 .AND. TROUV2 ) )
      &   CALL UTMESS('F','TOMABE','RECUPERATION DES CARACTERISTIQUES '//
      &   'DU MATERIAU BETON, RELATION DE COMPORTEMENT <BPEL_BETON> : '//

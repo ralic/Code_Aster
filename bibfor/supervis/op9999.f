@@ -3,7 +3,7 @@
       INTEGER            ICOND , IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,13 +62,6 @@ C
       IFM    = 0
       FCHIER = ' '
       CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFM   , L )
-      CALL GETVTX ( ' ', 'FICHIER', 1,1,1, FCHIER, L )
-      IF ( L .NE. 0 ) THEN
-         CALL UTMESS('A','FIN',
-     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
-     +               ' UTILISER LE MOT CLE "UNITE"')
-         IFM = IUNIFI( FCHIER )
-      ENDIF
       IF ( .NOT. ULEXIS( IFM ) ) THEN
          CALL ULOPEN ( IFM, ' ', FCHIER, 'NEW', 'O' )
       ENDIF

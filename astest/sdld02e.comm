@@ -1,4 +1,4 @@
-# MODIF  DATE 06/02/2001   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_D_N
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,22 +108,22 @@ FREQ2=EXTR_RESU(     RESULTAT=FREQ,
 
 # --------------------------------------------------------------------
 MODE1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=FREQ,
+                    NOM_CHAM='DEPL', RESULTAT=FREQ,
                       NUME_ORDRE=1
                          )
 
 MODE8=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=FREQ2,
+                    NOM_CHAM='DEPL', RESULTAT=FREQ2,
                       NUME_ORDRE=8
                          )
 
 MODE81=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=FREQ,
+                    NOM_CHAM='DEPL', RESULTAT=FREQ,
                       FREQ=31.3474
                          )
 
 MODE82=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=FREQ2,
+                    NOM_CHAM='DEPL', RESULTAT=FREQ2,
                       NUME_MODE=8
                          )
 
@@ -133,10 +133,9 @@ CMP='DY'
 # ----------------------------------------------------------------------
 
 # POUR TESTER RESU:(GROUP_NO:) :
-# POUR TESTER FICHIER:         :
+# POUR TESTER UNITE :          :
 
-TEST_RESU(
-  FICHIER='MESSAGE',
+TEST_RESU( UNITE = 6,
     RESU=_F(   RESULTAT = FREQ, NUME_ORDRE = 1, NOM_CHAM = 'DEPL',
             CRITERE = 'RELATIF',     PRECISION = 1.E-4,    NOM_CMP = CMP,
             GROUP_NO = 'GP1',          VALE = 0.3473,              )

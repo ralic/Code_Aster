@@ -1,6 +1,6 @@
       SUBROUTINE OP0042 ( IER )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,13 +35,6 @@ C
       IMPR   = 0
       FICHIE = ' '
       CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IMPR  , N1 )
-      CALL GETVTX ( ' ', 'FICHIER', 1,1,1, FICHIE, N1 )
-      IF ( N1 .NE. 0 ) THEN
-         CALL UTMESS('A','AIDE',
-     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
-     +               ' UTILISER LE MOT CLE "UNITE"')
-         IMPR = IUNIFI( FICHIE )
-      ENDIF
       IF ( .NOT. ULEXIS( IMPR ) ) THEN
          CALL ULOPEN ( IMPR, ' ', FICHIE, 'NEW', 'O' )
       ENDIF

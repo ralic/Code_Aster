@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,16 +23,12 @@ IMPR_MACR_ELEM=PROC(nom="IMPR_MACR_ELEM",op= 160,
                                into=("MISS_3D","IDEAS","CADYRO","PLEXUS") ),
 
          b_plexus         =BLOC(condition = "FORMAT == 'IDEAS'",
-                    regles=(EXCLUS('UNITE','FICHIER'),),
-           UNITE           =SIMP(statut='f',typ='I'),
-           FICHIER         =SIMP(statut='f',typ='TXM' ),
+           UNITE           =SIMP(statut='f',typ='I',defaut=30),
            VERSION          =SIMP(statut='f',typ='I',defaut= 5,into=( 5 ,) ),
          ),             
 
          b_ideas         =BLOC(condition = "FORMAT == 'PLEXUS'",
-                    regles=(EXCLUS('UNITE','FICHIER'),),
-           UNITE           =SIMP(statut='f',typ='I'),
-           FICHIER         =SIMP(statut='f',typ='TXM' ),
+           UNITE           =SIMP(statut='f',typ='I',defaut=30),
            VERSION         =SIMP(statut='f',typ='I',defaut= 5,into=( 5 ,) ),
          ),                      
 

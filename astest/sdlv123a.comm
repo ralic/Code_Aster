@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 
 DEBUT(CODE=_F(NOM='SDLV123A',
               NIV_PUB_WEB='INTERNET',),);
@@ -201,8 +201,6 @@ IMPR_TABLE ( TABLE   = G3 );
 # TEST DE IMPR_RESU
 #----------------------------------------------------------
 #
-DEFI_FICHIER( FICHIER= 'CASTEM', UNITE = 37)
-
 IMPR_RESU( FORMAT='CASTEM', UNITE = 37,
            MODELE=MODELE,
            RESU=(_F(MAILLAGE=MAIL,),

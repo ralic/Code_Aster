@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CALCUL DE RESATURATION D UNE BO PAR UNE BG SUR UN BI-MATERIAUX BO-BG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -407,37 +407,37 @@ ZTRB3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                               NOM_CMP=('V2'),
                               OPERATION='EXTRACTION',),);
 IMPR_TABLE(TABLE=TRB,
-           FICHIER='RESULTAT',
+           UNITE=8,
            FORMAT='AGRAF',
            PAGINATION='INST',
            NOM_PARA=('INST','COOR_X','PRE1'),);
 
 IMPR_TABLE(TABLE=ZTRB,
-           FICHIER='RESULTAT',
+           UNITE=8,
            FORMAT='AGRAF',
            PAGINATION='INST',
            NOM_PARA=('INST','COOR_X','PRE1'),);
 
 IMPR_TABLE(TABLE=ZTRB2,
-           FICHIER='RESULTAT',
+           UNITE=8,
            FORMAT='AGRAF',
            PAGINATION='INST',
            NOM_PARA=('INST','COOR_X','M11'),);
 
 IMPR_TABLE(TABLE=ZTRB2,
-           FICHIER='RESULTAT',
+           UNITE=8,
            FORMAT='AGRAF',
            PAGINATION='INST',
            NOM_PARA=('INST','COOR_X','FH11X'),);
 
 IMPR_TABLE(TABLE=ZTRB2,
-           FICHIER='RESULTAT',
+           UNITE=8,
            FORMAT='AGRAF',
            PAGINATION='INST',
            NOM_PARA=('INST','COOR_X','M21'),);
 
 IMPR_TABLE(TABLE=ZTRB2,
-           FICHIER='RESULTAT',
+           UNITE=8,
            FORMAT='AGRAF',
            PAGINATION='INST',
            NOM_PARA=('INST','COOR_X','FH21X'),);
@@ -445,7 +445,7 @@ IMPR_TABLE(TABLE=ZTRB2,
 # V2 masse volumique du liquide
 #
 IMPR_TABLE(TABLE=ZTRB3,
-           FICHIER='RESULTAT',
+           UNITE=8,
            FORMAT='AGRAF',
            PAGINATION='INST',
            NOM_PARA=('INST','COOR_X','V2'),);

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,6 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
          fr="Extraction d une valeur et comparaison à une valeur de référence",
          regles=(AU_MOINS_UN('CHAM_NO','CHAM_ELEM','RESU','OBJET')),
          UNITE           =SIMP(statut='f',typ='I',defaut=8),  
-         FICHIER         =SIMP(statut='f',typ='TXM'),
 
          CHAM_NO         =FACT(statut='f',max='**',
            regles=(UN_PARMI('NOEUD','GROUP_NO','TYPE_TEST'),

@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF ops Cata  DATE 23/08/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -246,16 +246,38 @@ def detruire(self,d):
            if isinstance(e,ASSD):
              sd.append(e)
              e=e.nom
+       # traitement particulier pour les listes de concepts, on va mettre à None
+       # le terme de l'indice demandé dans la liste :
+       # nomconcept_i est supprimé, nomconcept[i]=None
+           indice=e[e.rfind('_')+1:]
+           concept_racine=e[:e.rfind('_')]
+           if indice!='' and d.has_key(concept_racine) and type(d[concept_racine])==types.ListType:
+              try               :
+                                  indici=int(indice)
+                                  d[concept_racine][indici]=None
+              except ValueError : pass
+       # pour tous les concepts :
            if d.has_key(e):del d[e]
            if self.jdc.sds_dict.has_key(e):del self.jdc.sds_dict[e]
        else:
          if isinstance(mcs,ASSD):
            sd.append(mcs)
            mcs=mcs.nom
+       # traitement particulier pour les listes de concepts, on va mettre à None
+       # le terme de l'indice demandé dans la liste :
+       # nomconcept_i est supprimé, nomconcept[i]=None
+         indice=mcs[mcs.rfind('_')+1:]
+         concept_racine=mcs[:mcs.rfind('_')]
+         if indice!='' and d.has_key(concept_racine) and type(d[concept_racine])==types.ListType:
+            try               :
+                                indici=int(indice)
+                                d[concept_racine][indici]=None
+            except ValueError : pass
+       # pour tous les concepts :
          if d.has_key(mcs):del d[mcs]
          if self.jdc.sds_dict.has_key(mcs):del self.jdc.sds_dict[mcs]
      for s in sd:
-       # On signale au parent que le concept s n'existe plus apres l'étape self
+       # On signale au parent que le concept s n'existe plus apres l'étape self 
        self.parent.delete_concept_after_etape(self,s)
 
 def subst_materiau(text,NOM_MATER,EXTRACTION,UNITE_LONGUEUR):

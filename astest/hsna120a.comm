@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE Propagation d'un reseau de fissures en fatigue thermomecanique 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -518,8 +518,7 @@ for num_calc in range(1,nb_calc_total_plus_1) :
 
 
       IMPR_TABLE(TABLE=AK1[I],
-           FORMAT='AGRAF',
-           FICHIER='RESULTAT',);
+                 FORMAT='AGRAF', UNITE=8, );
 
 #
 #     On met zero pour toutes les valeurs negatives de K1
@@ -558,8 +557,7 @@ for num_calc in range(1,nb_calc_total_plus_1) :
       results.write('===================================================\n')
 
       IMPR_TABLE(TABLE=AK2[I],
-           FORMAT='AGRAF',
-           FICHIER='RESULTAT',);
+           FORMAT='AGRAF', UNITE=8, );
 #
 #     On met zero pour toutes les valeurs negatives de K1
 #    

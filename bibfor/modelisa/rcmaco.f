@@ -4,7 +4,7 @@
       INTEGER            INDMAT,NBMAT,IMATE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF MODELISA  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C
 C         P.IF = P.I+6
 C
 C    CODI(P.IF+LFCT*(K-1))  :NOMBRE DE POINTS DE LA FONCTION ASSOCIEE
-C    CODI(P.IF+LFCT*(K-1)+1):ADRESSE ZK8 DU .PROL
+C    CODI(P.IF+LFCT*(K-1)+1):ADRESSE ZK16 DU .PROL
 C    CODI(P.IF+LFCT*(K-1)+2):ADRESSE ZR  DU .VALE
 C    CODI(P.IF+LFCT*(K-1)+3):ADRESSE ZI  DU POINTEUR DE LONGUEUR(NAPPE)
 C    CODI(P.IF+LFCT*(K-1)+4):ADRESSE ZR  DU .PARA (NAPPE)
@@ -265,19 +265,23 @@ C         ------------------------------------------------
 C ---   DES FONCTIONS SONT CREEES SUR LA VOLATILE (ROUTINE ALFINT) ---
             IF ( IRETF .EQ. 1 ) THEN
                CALL JEVEUT ( CH19//'.PROL', 'L', ZI(IPIF+1) )
-               CALL JEVEUT ( CH19//'.VALE', 'L', ZI(IPIF+2) )
-
                ZI(IPIF+7) = 1
                ZI(IPIF+8) = 1
                IF ( ZK16(ZI(IPIF+1))(1:1) .EQ. 'C' .OR.
      &             ZK16(ZI(IPIF+1))(1:1) .EQ. 'F' ) THEN
+                  CALL JEVEUT ( CH19//'.VALE', 'L', ZI(IPIF+2) )
                   CALL JELIRA ( CH19//'.VALE', 'LONMAX', NBPTS, K8B )
                   ZI(IPIF) = NBPTS/2
                ELSEIF ( ZK16(ZI(IPIF+1))(1:1) .EQ. 'N' ) THEN
+                  CALL JEVEUT ( CH19//'.VALE', 'L', ZI(IPIF+2) )
                   CALL JEVEUT ( JEXATR(CH19//'.VALE','LONCUM'), 'L',
      &                                                     ZI(IPIF+3))
                   CALL JEVEUT ( CH19//'.PARA', 'L', ZI(IPIF+4) )
                   CALL JELIRA ( CH19//'.PARA', 'LONUTI',ZI(IPIF+5),K8B)
+               ELSEIF ( ZK16(ZI(IPIF+1))(1:1) .EQ. 'I' ) THEN
+               ELSE
+                  CALL UTMESS('F','RCMACO','TYPE SD NON TRAITE: '
+     &                     //ZK16(ZI(IPIF+1)) )
                ENDIF
             ELSE IF ( IRETT .EQ. 1 ) THEN
               LISTR = '&&'//CH19(1:8)//'_LR8'

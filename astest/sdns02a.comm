@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE AILETTE FISSUREE AVEC CONTACT
@@ -218,13 +218,6 @@ RESU=DYNA_NON_LINE(MODELE=MO,
                    ARCHIVAGE=_F(LIST_INST=LARCH,
                                 ARCH_ETAT_INIT='OUI',),);
 
-# Sortie d'un fichier universel (unv) IDEAS
-DEFI_FICHIER(FICHIER='IDEASMAIL',UNITE=30)
-IMPR_RESU(FORMAT='IDEAS', VERSION=5, UNITE=30,
-          RESU=_F(MAILLAGE=MA,
-                  RESULTAT=RESU, ),);
-DEFI_FICHIER(ACTION='LIBERER',UNITE=30 )  
-
 # Sans contact
 RESU2=DYNA_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
@@ -251,16 +244,6 @@ RESU2=DYNA_NON_LINE(MODELE=MO,
 #=============================================================================================
 # Resultats du cas avec contact
 #=============================================================================================
-
-IMPR_RESU(RESU=_F(RESULTAT=RESU,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='A4',
-                  INST=500),);
-
-IMPR_RESU(RESU=_F(RESULTAT=RESU,
-                  NOM_CHAM='VITE',
-                  GROUP_NO='A4',
-                  INST=500),);
 
 TEST_RESU(RESU=(
                  _F(RESULTAT=RESU,
@@ -338,17 +321,6 @@ TEST_RESU(RESU=(
                    VERSION='7.1.07',),                   
                    ),);
 
-IMPR_RESU(RESU=_F(RESULTAT=RESU2,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='A4',
-                  INST=500,),);                  
-
-
-IMPR_RESU(RESU=_F(RESULTAT=RESU2,
-                  NOM_CHAM='VITE',
-                  GROUP_NO='A4',
-                  INST=500,),); 
-
 ##############################################################################################
 #
 # POST-TRAITEMENT
@@ -361,13 +333,6 @@ IMPR_RESU(RESU=_F(RESULTAT=RESU2,
 
 # Creation d'un fichier de sortie au format GMSH  
 
-# Ouverture de l'unite logique FORTRAN 
-DEFI_FICHIER(FICHIER='POST',UNITE=unite_GMSH )
-
-# # Eriture du resultat
-# IMPR_RESU(MODELE=MO, FORMAT='GMSH', UNITE=unite_GMSH, 
-#           RESU=_F(NOM_CHAM='DEPL',
-#                   RESULTAT=RESU,),);
 # Eriture du resultat
 IMPR_RESU( MODELE=MO, FORMAT='GMSH', UNITE=unite_GMSH, 
            RESU=_F(MAILLAGE=MA,),);

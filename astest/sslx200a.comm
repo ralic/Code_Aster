@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE RACCORD POUTRE-3D : PROBLEME DE SAINT-VENANT -
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,7 +93,6 @@ MATRR=CALC_MATR_ELEM(    MODELE=MOD,
 
 IMPR_MATRICE(   MATR_ELEM=_F(  MATRICE = MATRR,
                               FORMAT = 'RESULTAT',
-                              FICHIER = 'RESULTAT',
                               NB_CHIFFRE = 3,
                               GRAIN = 'MAILLE',
                               NOM_CMP = 'DX',
@@ -114,7 +113,6 @@ VEL=CALC_VECT_ELEM(    CHARGE=CH,
 
 IMPR_MATRICE(   MATR_ELEM=_F(  MATRICE = VEL,
                               FORMAT = 'RESULTAT',
-                              FICHIER = 'RESULTAT',
                               NB_CHIFFRE = 3,
                               GRAIN = 'MAILLE'))
 
@@ -130,7 +128,6 @@ IMPR_MATRICE(MATR_ASSE=(
 #
                       _F(  MATRICE = MATASS,
                                FORMAT = 'RESULTAT',
-                               FICHIER = 'RESULTAT',
                                GRAIN = 'VALEUR',
                                NOEUD = 'N1',
                                NOM_CMP = 'DRX'),
@@ -140,7 +137,6 @@ IMPR_MATRICE(MATR_ASSE=(
 #
                       _F(  MATRICE = MATASS,
                                FORMAT = 'RESULTAT',
-                               FICHIER = 'RESULTAT',
                                OPTION = 'LIGNE', 
                                GRAIN = 'VALEUR',
                                NOEUD = 'N1',
@@ -152,7 +148,6 @@ IMPR_MATRICE(MATR_ASSE=(
 # 
                      _F(  MATRICE = MATASS,
                                FORMAT = 'RESULTAT',
-                               FICHIER = 'RESULTAT',
                                GRAIN = 'NOEUD',
                                NOEUD = 'N1',
                                NOM_CMP = 'DRX'),
@@ -162,7 +157,6 @@ IMPR_MATRICE(MATR_ASSE=(
 #
                       _F(  MATRICE = MATASS,
                                FORMAT = 'RESULTAT',
-                               FICHIER = 'RESULTAT',
                                OPTION = 'COLONNE', 
                                GRAIN = 'NOEUD',
                                NOEUD = 'N1',

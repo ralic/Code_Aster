@@ -1,4 +1,4 @@
-#@ MODIF macr_cabri_mail_ops Macro  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF macr_cabri_mail_ops Macro  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG

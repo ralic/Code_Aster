@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 24/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,7 +58,7 @@ DEFI_CABLE_BP=MACRO(nom="DEFI_CABLE_BP",op=defi_cable_bp_ops,sd_prod=defi_cable_
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
          CARA_ELEM       =SIMP(statut='o',typ=cara_elem ),
-         GROUP_MA_BETON  =SIMP(statut='o',typ=grma),
+         GROUP_MA_BETON  =SIMP(statut='o',typ=grma,max='**'),
          DEFI_CABLE      =FACT(statut='o',max='**',
            regles=(UN_PARMI('MAILLE','GROUP_MA'),
                    UN_PARMI('NOEUD_ANCRAGE','GROUP_NO_ANCRAGE'),),

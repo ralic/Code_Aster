@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,13 +71,6 @@ C
       IFIC   = 0
       NOMFIC = ' '
       CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFIC  , N1 )
-      CALL GETVTX ( ' ', 'FICHIER', 1,1,1, NOMFIC, N1 )
-      IF (N1.NE.0) THEN
-         CALL UTMESS('A','TEST_FONCTION',
-     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
-     +               ' UTILISER LE MOT CLE "UNITE"')
-         IFIC = IUNIFI(NOMFIC)
-      ENDIF
       IF ( .NOT. ULEXIS( IFIC ) ) THEN
          CALL ULOPEN ( IFIC, ' ', NOMFIC, 'NEW', 'O' )
       ENDIF
@@ -134,7 +127,7 @@ C
          WRITE(LABEL(6:17),'(1P,E12.5)' ) VALPU(NBPU)
 C
          IF (ZK16(LPROL).EQ. 'FONCT_C') THEN
-           CALL FOINRI(NOMFON,0,' ',VALPU(1),RESURE,RESUIM,IRET)
+           CALL FOINTC(NOMFON,0,' ',VALPU(1),RESURE,RESUIM,IRET)
            IF ( OUINON .EQ. 'OUI' ) THEN
               K12 = ZK16(LPROL+2)
               TESTOK = ' OK '
@@ -439,7 +432,7 @@ C
          LABEL = ' '
          WRITE(LABEL(6:17),'(1P,E12.5)' ) XPARA
 C
-         CALL FOINRI(SPECTR,1,K8B,XPARA,RESURE,RESUIM,IER)
+         CALL FOINTC(SPECTR,1,K8B,XPARA,RESURE,RESUIM,IER)
          IF (IER.NE. 0) THEN
            TESTOK = 'NOOK'
            TEXTE = ' PB INTERPOLATION. VOIR MESSAGE CI-DESSUS'

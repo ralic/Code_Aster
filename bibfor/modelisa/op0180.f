@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF MODELISA  DATE 24/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,8 @@ C VARIABLES LOCALES
 C -----------------
       INTEGER       IBID, ICABL, ICMP, IRANA1, IRET, JCABA, JNBNO,
      &              JNCMP, JSIEF, JVALV, N1, N2, NBANCR, NBCABL, NBF0,
-     &              NBMAMA, NBNOBE, NBNOMA, NCABA, NRELAX, NSIEF
+     &              NBMAMA, NBNOBE, NBNOMA, NCABA, NRELAX, NSIEF,
+     &              NBMABE, JLIMAB
       REAL*8        DELTA, EA, F0, FRCO, FRLI, MU0, RH1000, RJ,
      &              SA, FPRG, XFLU, XRET
       LOGICAL       MAIL2D, RELAX
@@ -197,10 +198,8 @@ C
       CALL GETVID(' ','MODELE'        ,0,1,1,MODELE,IBID)
       CALL GETVID(' ','CHAM_MATER'    ,0,1,1,CHMAT ,IBID)
       CALL GETVID(' ','CARA_ELEM'     ,0,1,1,CAELEM,IBID)
-      CALL GETVID(' ','GROUP_MA_BETON',0,1,1,GRMABE,IBID)
-C
       CALL TITRE
-C
+
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C 4   EXECUTION DES OPERATIONS
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -322,10 +321,25 @@ C
 C 4.7 CARACTERISATION DE LA TOPOLOGIE DE LA STRUCTURE BETON
 C --- ET RECUPERATION DES CARACTERISTIQUES DU MATERIAU CONSTITUTIF
 C
+C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+C 3   CREATION DE LA CONNECTIVITE INVERSE LIMITEE AU GROUP_MA BETON
+C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+C
       NCNCIN = '&&OP0180.CONNECINVBETON '
       NMABET = '&&OP0180.MABETON '
-      CALL TOMABE(CHMAT,GRMABE,MAILLA,NBNOMA,
-     &            MAIL2D,NBNOBE,NUNOBE,XFLU,XRET,NCNCIN,NMABET)
+
+      CALL RELIEM(' ',MAILLA,'NU_MAILLE',' ',0,1,
+     &            'GROUP_MA_BETON','GROUP_MA',
+     &            NMABET,NBMABE)
+C
+      CALL JEEXIN(NCNCIN,N2)
+      CALL JEVEUO(NMABET,'L',JLIMAB)
+C
+      IF ( N2 .EQ. 0 ) CALL CNCINV ( MAILLA, ZI(JLIMAB),NBMABE,
+     &                               'V', NCNCIN )
+C
+      CALL TOMABE(CHMAT,NMABET,NBMABE,MAILLA,NBNOMA,
+     &            MAIL2D,NBNOBE,NUNOBE,XFLU,XRET)
 C
 C 4.8 BOUCLE SUR LE NOMBRE DE CABLES
 C ---
@@ -361,7 +375,7 @@ C......  REPRESENTATION DE LA STRUCTURE BETON PAR DES MAILLES 2D :
 C......  PROJECTION DU CABLE SUR LE MAILLAGE BETON
 C
          IF ( MAIL2D ) THEN
-            CALL PROJCA(NOMT19,LIRELA,GRMABE,MAILLA,
+            CALL PROJCA(NOMT19,LIRELA,NMABET,NBMABE,MAILLA,
      &                  NBNOBE,NUNOBE,ICABL,ZI(JNBNO),XNOCA,YNOCA,ZNOCA)
 C
 C......  REPRESENTATION DE LA STRUCTURE BETON PAR DES MAILLES 3D : 

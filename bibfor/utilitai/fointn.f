@@ -1,13 +1,11 @@
-      SUBROUTINE FOINTN ( IPIF, RVAR, INUME, EPSI, RESU, IER,
-     +                    NOMF,PROL,MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER       IPAR(*)
-      REAL*8        VALPU(*)
-      CHARACTER*(*) NOMF, NOMP(*), NOMPU(*), PROL(*)
-      REAL*8        LINLIN, LINLOG, LOGLOG, LOGLIN
+      SUBROUTINE FOINTN ( IPIF, NOMF, RVAR, INUME, EPSI, RESU, IER )
+      IMPLICIT NONE
+      INTEGER             IPIF, INUME, IER
+      REAL*8              RVAR, EPSI, RESU
+      CHARACTER*(*)       NOMF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,6 +26,7 @@ C     INTERPOLATION DANS LES NAPPES
 C     ------------------------------------------------------------------
 C IN  : IPIF   : ADRESSE DANS LE MATERIAU CODE DE LA NAPPE
 C                = 0 , NAPPE
+C IN  : NOMF   : NOM DE LA NAPPE SI IPIF=0
 C IN  : RVAR   : VALEUR DE LA VARIABLE  "UTILISATEUR"
 C IN  : INUME  : NUMERO DE LA FONCTION
 C OUT : RESU   : RESULTAT
@@ -50,11 +49,11 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                 ZK80
       COMMON/KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
-      CHARACTER*1   COLI, CBID
+      INTEGER       LPROL, LVAR, NBPT, JPRO, NBPCUM, I, IPT, LFON
+      CHARACTER*1   K1BID, COLI
       CHARACTER*16  INTERP, PROLGD
       CHARACTER*19  NOMFON
       CHARACTER*24  CHPROL, CHVALE
-      CHARACTER*1 K1BID
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       NOMFON = NOMF
@@ -82,8 +81,7 @@ C     ------------------------------------------------------------------
 C
       CALL FOLOCX (ZR(LVAR),NBPT,RVAR,PROLGD,IPT,EPSI,COLI,IER)
       IF ( IER .NE. 0 ) GOTO 9999
-      CALL FOCOLI ( IPT,COLI,INTERP,ZR(LVAR),ZR(LFON),RVAR,RESU,IER,
-     +              NOMF,PROL,MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
+      CALL FOCOLI ( IPT,COLI,INTERP,ZR(LVAR),ZR(LFON),RVAR,RESU,IER )
       IF ( IER .NE. 0 ) GOTO 9999
 C
  9999 CONTINUE

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES) E.F. CLASSIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,7 +62,7 @@ VECTELEM=CALC_VECT_ELEM(   OPTION='CHAR_ACOU',  CHAM_MATER=CHAMPMAT,
 
 IMPR_MATRICE(   MATR_ELEM=_F(  MATRICE = VECTELEM,
                                FORMAT = 'RESULTAT',
-                               FICHIER = 'RESULTAT',
+                               UNITE = 8,
                                GRAIN = 'MAILLE'))
 
 VECTASS=ASSE_VECTEUR(  VECT_ELEM=VECTELEM,   NUME_DDL=NUM )
@@ -126,7 +126,7 @@ MATRES=COMB_MATR_ASSE( COMB_C=(   _F( MATR_ASSE = MATASK,
 
 IMPR_MATRICE(   MATR_ASSE=_F(  MATRICE = MATRES,
                                FORMAT = 'RESULTAT',
-                               FICHIER = 'RESULTAT',
+                               UNITE = 8,
                                GRAIN = 'NOEUD',
                                OPTION = 'LIGNE'))
 
@@ -136,7 +136,7 @@ IMPR_MATRICE(   MATR_ASSE=_F(  MATRICE = MATRES,
 
 IMPR_MATRICE(   MATR_ASSE=_F(  MATRICE = MATRES,
                                FORMAT = 'RESULTAT',
-                               FICHIER = 'RESULTAT',
+                               UNITE = 8,
                                GRAIN = 'VALEUR',
                                OPTION = 'LIGNE'))
 

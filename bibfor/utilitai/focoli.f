@@ -1,9 +1,12 @@
-      SUBROUTINE FOCOLI ( IPT, COLI, INTERP, X, Y, RVAR, RESU, IER ,
-     +                    NOMF,PROL,MXPARA,NOMP,IPAR,NOMPU,NBPU,VALPU )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      SUBROUTINE FOCOLI ( IPT, COLI, INTERP, X, Y, RVAR, RESU, IER )
+      IMPLICIT NONE
+      INTEGER             IPT, IER
+      REAL*8              X(*), Y(*), RVAR, RESU
+      CHARACTER*1         COLI
+      CHARACTER*16        INTERP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,32 +23,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM
-      INTEGER       ZI
-      COMMON/IVARJE/ZI(1)
-      REAL*8        ZR
-      COMMON/RVARJE/ZR(1)
-      COMPLEX*16    ZC
-      COMMON/CVARJE/ZC(1)
-      LOGICAL       ZL
-      COMMON/LVARJE/ZL(1)
-      CHARACTER*8   ZK8
-      CHARACTER*16         ZK16
-      CHARACTER*24                 ZK24
-      CHARACTER*32                         ZK32
-      CHARACTER*80                                 ZK80
-      COMMON/KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C ----------------------------------------------------------------------
-      INTEGER       IPAR(*)
-      REAL*8        X(*), Y(*), VALPU(*)
-      CHARACTER*1   COLI, CBID
-      CHARACTER*16  INTERP
-      CHARACTER*19  NOMFON
-      CHARACTER*(*) NOMF, NOMP(*), NOMPU(*), PROL(*)
-      REAL*8        LINLIN, LINLOG, LOGLOG, LOGLIN
-      CHARACTER*24  NOMFIT, CHFITA
-      INTEGER       LFITA
+      REAL*8    LINLIN, LINLOG, LOGLOG, LOGLIN, X0, X1, Y1, X2, Y2
+      REAL*8    EPSI, TOLE, R8PREM
 C ----------------------------------------------------------------------
       LINLIN(X0,X1,Y1,X2,Y2)= Y1+(X0-X1)*(Y2-Y1)/(X2-X1)
       LINLOG(X0,X1,Y1,X2,Y2)=EXP(LOG(Y1)+(X0-X1)*(LOG(Y2)-LOG(Y1))
@@ -55,8 +34,6 @@ C ----------------------------------------------------------------------
       LOGLIN(X0,X1,Y1,X2,Y2)=Y1+(LOG(X0)-LOG(X1))*(Y2-Y1)
      +                                         /(LOG(X2)-LOG(X1))
 C ----------------------------------------------------------------------
-      CALL JEMARQ()
-      NOMFON = NOMF
 C
 C     --- PAS D'INTERPOLATION ---
 C
@@ -92,42 +69,7 @@ C
                CALL UTIMPR('L','    BORNE INFERIEURE:',1,X(IPT))
                CALL UTIMPR('L','    BORNE SUPERIEURE:',1,X(IPT+1))
                CALL UTFINM()
-               GOTO 9999
             ENDIF
-C
-         ELSE IF (INTERP(1:3).EQ.'INT') THEN
-            CALL FONBPA(NOMFON,PROL,CBID,MXPARA,NBPF,NOMP)
-            DO 80 I1 = 1,NBPF
-               IPAR(I1) = 0
-               DO 82 NUPAR = 1,NBPU
-                  IF (NOMPU(NUPAR).EQ.NOMP(I1)) THEN
-                     IF (IPAR(I1).EQ.0) THEN
-                        IPAR(I1) = NUPAR
-                     ELSE
-                        IER = 210
-                   CALL UTDEBM('A','FOCOLI','ERREUR A L''INTERPOLATION')
-                        CALL UTIMPK('S',' FONCTION',1,NOMFON)
-                        CALL UTIMPK('L',' PARAMETRE',NBPU,NOMPU)
-                        CALL UTIMPK('S',' EN DOUBLE',0,' ')
-                        CALL UTFINM()
-                        GOTO 9999
-                     ENDIF
-                  ENDIF
- 82            CONTINUE
-               IF (IPAR(I1).EQ.0) THEN
-                  IER = 220
-                  CALL UTDEBM('A','FOCOLI','ERREUR A L''INTERPOLATION')
-                  CALL UTIMPK('S',' FONCTION',1,NOMFON)
-                  CALL UTIMPK('L',' PARAMETRES ATTENDUS',NBPF,NOMP)
-                  CALL UTIMPK('L',' PARAMETRES RECUS   ',NBPU,NOMPU)
-                  CALL UTFINM()
-                  GOTO 9999
-               ENDIF
- 80         CONTINUE
-            CHFITA=NOMFON//'.FITA'
-            CALL JEVEUO(CHFITA,'L',LFITA)
-            NOMFIT=ZK24(LFITA)(1:19)
-            CALL FIINTE('F',NOMFIT,NBPF,IPAR,VALPU,RESU,IER)
 C
          ELSE
             IER = 230
@@ -140,44 +82,9 @@ C
       ELSEIF (COLI.EQ.'E') THEN
          RESU = LINLIN(RVAR,X(IPT),Y(IPT),X(IPT+1),Y(IPT+1))
 C
-C     --- FONCTION TABULEE ---
-C
-      ELSEIF (COLI.EQ.'T') THEN
-         CALL FONBPA(NOMFON,PROL,CBID,MXPARA,NBPF,NOMP)
-         DO 90 I1 = 1,NBPF
-            IPAR(I1) = 0
-            DO 92 NUPAR = 1,NBPU
-               IF (NOMPU(NUPAR).EQ.NOMP(I1)) THEN
-                  IF (IPAR(I1).EQ.0) THEN
-                     IPAR(I1) = NUPAR
-                  ELSE
-                     IER = 210
-                   CALL UTDEBM('A','FOCOLI','ERREUR A L''INTERPOLATION')
-                     CALL UTIMPK('S',' FONCTION',1,NOMFON)
-                     CALL UTIMPK('L',' PARAMETRE',NBPU,NOMPU)
-                     CALL UTIMPK('S',' EN DOUBLE',0,' ')
-                     CALL UTFINM()
-                     GOTO 9999
-                  ENDIF
-               ENDIF
- 92         CONTINUE
-            IF (IPAR(I1).EQ.0) THEN
-               IER = 220
-               CALL UTDEBM('A','FOCOLI','ERREUR A L''INTERPOLATION')
-               CALL UTIMPK('S',' FONCTION',1,NOMFON)
-               CALL UTIMPK('L',' PARAMETRES ATTENDUS',NBPF,NOMP)
-               CALL UTIMPK('L',' PARAMETRES RECUS   ',NBPU,NOMPU)
-               CALL UTFINM()
-               GOTO 9999
-            ENDIF
- 90      CONTINUE
-         CALL FIINTE('F',NOMFON,NBPF,IPAR,VALPU,RESU,IER)
-C
       ELSE
          IER = 240
          CALL UTMESS('A','FOCOLI','RECHERCHE "'//COLI//'" INCONNUE')
       ENDIF
- 9999 CONTINUE
 C
-      CALL JEDEMA()
       END

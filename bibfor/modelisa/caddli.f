@@ -1,6 +1,6 @@
       SUBROUTINE CADDLI(NOMCMD,MOTFAC,FONREE,CHAR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/01/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -276,31 +276,37 @@ C---  GESTION DU MOT-CLEF "LIAISON"
                IF (EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP1)) THEN
                   VALIMR(1) =  0.D0
                   VALIMC(1) = (0.D0,0.D0)
+                  VALIMF(1) = '&FOZERO'
                   DDLIMP(1) = 1
                ENDIF
                IF (EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP2)) THEN
                   VALIMR(2) =  0.D0
                   VALIMC(2) = (0.D0,0.D0)
+                  VALIMF(2) = '&FOZERO'
                   DDLIMP(2) = 1
                ENDIF
                IF (EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP3)) THEN
                   VALIMR(3) =  0.D0
                   VALIMC(3) = (0.D0,0.D0)
+                  VALIMF(3) = '&FOZERO'
                   DDLIMP(3) = 1
                ENDIF               
                IF (EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP4)) THEN
                   VALIMR(4) =  0.D0
                   VALIMC(4) = (0.D0,0.D0)
+                  VALIMF(4) = '&FOZERO'
                   DDLIMP(4) = 1
                ENDIF     
                IF (EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP5)) THEN
                   VALIMR(5) =  0.D0
                   VALIMC(5) = (0.D0,0.D0)
+                  VALIMF(5) = '&FOZERO'
                   DDLIMP(5) = 1
                ENDIF
                IF (EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP6)) THEN
                   VALIMR(6) =  0.D0
                   VALIMC(6) = (0.D0,0.D0)
+                  VALIMF(6) = '&FOZERO'
                   DDLIMP(6) = 1
                ENDIF
             ENDIF
