@@ -1,4 +1,4 @@
-#@ MODIF stanley_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF stanley_ops Macro  DATE 23/11/2004   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,24 +30,32 @@ def stanley_ops(self,RESULTAT,MODELE,CHAM_MATER,CARA_ELEM,**args):
   import aster
   from Accas import _F
   from Noyau.N_utils import AsType
+  from Utilitai.Utmess import UTMESS
+
   ier=0
 
   # La macro compte pour 1 dans la numerotation des commandes
   self.icmd=1
 
-  import Stanley
-  from Stanley import stanley
 
-  if (RESULTAT and MODELE and CHAM_MATER):
-    _MAIL = aster.getvectjev( string.ljust(MODELE.nom,8) + '.MODELE    .NOMA        ' )
-    _MAIL = string.strip(_MAIL[0])
-    MAILLAGE = self.jdc.g_context[_MAIL]
-    if CARA_ELEM:
-      stanley.STANLEY(RESULTAT,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM)
+  # On ne lance Stanley que si la variable DISPLAY est définie
+  if os.environ.has_key('DISPLAY'):
+  
+    import Stanley
+    from Stanley import stanley
+  
+    if (RESULTAT and MODELE and CHAM_MATER):
+      _MAIL = aster.getvectjev( string.ljust(MODELE.nom,8) + '.MODELE    .NOMA        ' )
+      _MAIL = string.strip(_MAIL[0])
+      MAILLAGE = self.jdc.g_context[_MAIL]
+      if CARA_ELEM:
+        stanley.STANLEY(RESULTAT,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM)
+      else:
+        stanley.STANLEY(RESULTAT,MAILLAGE,MODELE,CHAM_MATER,None)
     else:
-      stanley.STANLEY(RESULTAT,MAILLAGE,MODELE,CHAM_MATER,None)
-  else:
+      stanley.PRE_STANLEY()
 
-    stanley.PRE_STANLEY()
+  else:
+      UTMESS('A','STANLEY',"Aucune variable d'environnement DISPLAY n'est définie!\n               STANLEY ne peut pas fonctionner. On l'ignore.\n\n               Si vous etes en Interactif, cochez le bouton Suivi Interactif\n               dans ASTK.")
 
   return ier

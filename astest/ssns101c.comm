@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE CLAQUAGE  CALOTTE CYLINDRIQUE SHB8  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -125,8 +125,8 @@ FDX=RECU_FONCTION(TABLE=TABDX,
 FETA=RECU_FONCTION(RESULTAT=NONLIN,INTERPOL='LIN',
                    NOM_PARA_RESU='ETA_PILOTAGE',);
 
-IMPR_COURBE(UNITE=8,
-            FORMAT='EXCEL',
+IMPR_FONCTION(UNITE=8,
+            FORMAT='TABLEAU',
             COURBE=(_F(FONCTION=FDX,),
                     _F(FONCTION=FETA,),),);
 
@@ -194,8 +194,8 @@ INCA=DEFI_FONCTION(NOM_PARA='INST',INTERPOL='LIN',PROL_DROITE='CONSTANT',PROL_GA
                         14.90, 1477,
                          ),);
                          
-IMPR_COURBE(UNITE=8,
-            FORMAT='EXCEL',
+IMPR_FONCTION(UNITE=8,
+            FORMAT='TABLEAU',
             COURBE=(_F(FONCTION=INCA,),
                     _F(FONCTION=FETA,),),);
 
@@ -205,8 +205,8 @@ DIFF=CALC_FONCTION(COMB=(
                           _F(  FONCTION = INCA, COEF = -1.), 
                           ) )
 
-IMPR_COURBE(UNITE=8,
-            FORMAT='EXCEL',
+IMPR_FONCTION(UNITE=8,
+            FORMAT='TABLEAU',
             COURBE=(_F(FONCTION=DIFF,),),);
                     
 MAXINCA=CALC_FONCTION( MAX=_F(  FONCTION = INCA)    )
@@ -253,8 +253,8 @@ valmax=valmax2/valmax1
 print 'Valeur maxi fonction reference ',valmax1
 print 'Valeur maxi fonction difference ',valmax2
 
-INCLUDE(UNITE=10)
-
+# from Utilitai.courbes import COURBES
+# 
 # courb1=(TFETA,'INST',TFETA,'ETA_PILO','ASTER')
 # courb2=(TINCA,'INST',TINCA,'TOUTRESU','INCA')
 # listcourb=(courb1,courb2,)

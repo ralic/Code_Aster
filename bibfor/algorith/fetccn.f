@@ -1,7 +1,7 @@
       SUBROUTINE FETCCN(CHAMN1,CHAMN2,CHAMN3,CHAMN4,TYPCUM,CHAMNR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -67,11 +67,11 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
       INTEGER      IDD,IRET,NBSD,I1,I2,I3,I4,IR,NBVAL,K,J1,J2,J3,J4,JR,
-     &             IDD1,IFM,NIV
+     &             IDD1,IFM,NIV,IINF,IREFE
       CHARACTER*5  VALE,FETC 
       CHARACTER*8  K8BID
       CHARACTER*19 CHAM1B,CHAM2B,CHAM3B,CHAM4B,CHAMRB       
-      CHARACTER*24 K24B
+      CHARACTER*24 K24B,INFOFE
       
 C CORPS DU PROGRAMME
       CALL JEMARQ()
@@ -97,6 +97,9 @@ C DES ADRESSES DES .FETC DE CHACUN DES CHAM_NOS A CONCATENER
         IF (TYPCUM.GT.2) CALL JEVEUO(CHAMN3//FETC,'L',I3)
         IF (TYPCUM.GT.3) CALL JEVEUO(CHAMN4//FETC,'L',I4)
         CALL JEVEUO(CHAMNR//FETC,'L',IR)
+        CALL JEVEUO(CHAMNR//'.REFE','L',IREFE)  
+        CALL JEVEUO('&&'//ZK24(IREFE+3)(1:17)//'.FINF','L',IINF)
+        INFOFE=ZK24(IINF)
       ELSE
         NBSD=0        
       ENDIF
@@ -163,7 +166,7 @@ C----------------------------------------------------------------------
           CALL UTMESS ('F','FETCCN', 'ERREUR DE PROGRAMMATION')
         ENDIF   
 C MONITORING
-        IF ((NIV.GE.3).AND.(NBSD.GT.0)) THEN
+        IF ((INFOFE(1:1).EQ.'T').AND.(NBSD.GT.0)) THEN
           WRITE(IFM,*)
           WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
           IF (IDD.EQ.0) THEN
@@ -174,14 +177,13 @@ C MONITORING
           WRITE(IFM,*)'<FETI/FETCCN> REMPLISSAGE OBJETS JEVEUX ',
      &         CHAMRB(1:19)
           WRITE(IFM,*)
-          IF ((NIV.GE.4).AND.(IDD.NE.0)) 
-     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHAMRB(1:19),1,' ')
-          IF ((NIV.EQ.4).AND.(IDD.EQ.NBSD))
-     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHAMNR(1:19),1,' ')
           WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'        
           WRITE(IFM,*)
         ENDIF
-                      
+        IF ((INFOFE(2:2).EQ.'T').AND.(IDD.NE.0)) 
+     &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHAMRB(1:19),1,' ')
+        IF ((INFOFE(2:2).EQ.'T').AND.(IDD.EQ.NBSD))
+     &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHAMNR(1:19),1,' ')
    10 CONTINUE   
      
       CALL JEDEMA()

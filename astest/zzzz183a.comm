@@ -1,4 +1,4 @@
-# MODIF  DATE 28/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 22/11/2004   AUTEUR F1BHHAJ J.ANGLES 
 # TITRE CALCUL D UNE EOLIENNE, MODELISATION 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,12 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT( CODE   =_F( NOM = 'zzzz183a', NIV_PUB_WEB = 'INTRANET'), PAR_LOT = 'NON' )
+DEBUT( CODE   =_F( NOM = 'zzzz183a', NIV_PUB_WEB = 'INTRANET'),
+       PAR_LOT = 'NON',
+       MEMOIRE = _F(TYPE_ALLOCATION = 4,
+                    TAILLE          = 2000,
+                    PARTITION       = 0.9)
+     )
 #
 import Numeric
 from Outils.calc_eolienne import *

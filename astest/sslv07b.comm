@@ -1,4 +1,4 @@
-# MODIF  DATE 04/11/2004   AUTEUR G8BHHXD X.DESROCHES 
+# MODIF  DATE 23/11/2004   AUTEUR G8BHHXD X.DESROCHES 
 # TITRE PARALLELIPIPEDE SOUS SON PROPRE POIDS (HEXA8 FIN)
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -129,16 +129,16 @@ TEST_RESU(CHAM_NO=(
 
             _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELGA_NORE',
               CRITERE = 'RELATIF',   PRECISION = 5.E-2,
-              MAILLE = 'HEX12',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 17.),
+              MAILLE = 'HEX12',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 3.),
             _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELGA_NORE',
               CRITERE = 'RELATIF',   PRECISION = 5.E-2,
               MAILLE = 'HEX100',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 11.),
             _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELNO_ELGA',
               CRITERE = 'RELATIF',   PRECISION = 5.E-2,
-              MAILLE = 'HEX300',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 17.),
+              MAILLE = 'HEX300',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 3.),
             _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELNO_ELGA',
               CRITERE = 'RELATIF',   PRECISION = 5.E-2,
-              MAILLE = 'HEX600',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 17.))
+              MAILLE = 'HEX600',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 3.))
 
      )
 

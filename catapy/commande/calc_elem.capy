@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 23/11/2004   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,7 +68,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                                  "INDI_ERRE","AUTRES","TOUTES"),
                            ),
           b_toutes=BLOC( condition = "TYPE_OPTION == 'TOUTES'",fr="toutes les options evol elas",
-               OPTION =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',defaut="SIEF_ELNO_ELGA",
+               OPTION =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="SIEF_ELNO_ELGA",
                               #  contraintes
                            into=( "SIEF_ELNO_ELGA","SIGM_ELNO_DEPL","SIEF_ELGA_DEPL",
                                   "SIPO_ELNO_DEPL","EFGE_ELNO_DEPL","EFGE_ELNO_CART","SIGM_ELNO_CART",
@@ -121,7 +121,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
 
           b_sigm_massif =BLOC( condition = "TYPE_OPTION == 'SIGM_MASSIF'",
                                      fr="options de contraintes elasticite 2D et 3D",
-              OPTION =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',defaut='SIEF_ELNO_ELGA',
+              OPTION =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut='SIEF_ELNO_ELGA',
                             fr="option de calcul des contraintes",
                            into=( "SIEF_ELNO_ELGA","SIGM_ELNO_DEPL","SIEF_ELGA_DEPL",),),
                            
@@ -289,7 +289,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                  "VARI","INDI_ERRE","TOUTES","AUTRES"),
                           ),
           b_toutes =BLOC( condition = "TYPE_OPTION == 'TOUTES'",fr="toutes les options evol elas",
-               OPTION      =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+               OPTION      =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=( "SIEF_ELNO_ELGA",
                                   "SIGM_ELNO_TUYO","SIGM_ELNO_COQU",
                                   "SIGM_ELNO_SIEF","SIPO_ELNO_SIEF","EFGE_ELNO_CART",
@@ -466,7 +466,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
 
 #           thermique : evol_ther                                
      b_ther          =BLOC( condition = "AsType(RESULTAT) == evol_ther",fr="options thermiques",
-          OPTION          =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+          OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=("DEUL_ELGA_TEMP","DETE_ELNO_DLTE","FLUX_ELGA_TEMP","FLUX_ELNO_TEMP",
                                   "HYDR_ELNO_ELGA","DURT_ELGA_META","DURT_ELNO_META",
                                  "SOUR_ELGA_ELEC","ERTH_ELEM_TEMP","ERTH_ELNO_ELEM",),),
@@ -488,7 +488,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                  
 #    acoustique                                
      b_acou          =BLOC( condition = "AsType(RESULTAT) in (acou_harmo,mode_acou,)",fr="options acoustiques",
-          OPTION          =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+          OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=("PRES_ELNO_DBEL","PRES_ELNO_REEL","PRES_ELNO_IMAG",
                                  "INTE_ELNO_ACTI","INTE_ELNO_REAC",
                                  ),),

@@ -1,7 +1,7 @@
       SUBROUTINE FETSCA(NBI,VI,VO,SCALIN,SDFETI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,18 +59,21 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
-      INTEGER    I,IFETI,IAUX,IFM,NIV,IMULT,NBDDL,NBDDLC,IAUXJ,J,IDIME,
-     &           NBNI
-      REAL*8     RMULT
-
+      INTEGER      I,IFETI,IAUX,IFM,NIV,IMULT,NBDDL,NBDDLC,IAUXJ,J,
+     &             IDIME,NBNI,IINF
+      REAL*8       RMULT
+      CHARACTER*24 INFOFE
+      
 C CORPS DU PROGRAMME
       CALL JEMARQ()
 
 C RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
-      
+      CALL JEVEUO('&&'//SDFETI(1:17)//'.FINF','L',IINF)
+      INFOFE=ZK24(IINF)
+            
 C MONITORING
-      IF (NIV.GE.3) THEN
+      IF (INFOFE(1:1).EQ.'T') THEN
         WRITE(IFM,*)
         WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
         IF (SCALIN(1:4).EQ.'SANS') THEN
@@ -137,9 +140,8 @@ C FIN BOUCLE SUR LES NOEUDS D'INTERFACE
 C ---------------------------------------------------
 
 C MONITORING
-      IF (NIV.GE.5) THEN
-        WRITE(IFM,*)'<FETI/FETSCA> MONITORING'
-        WRITE(IFM,*)'INPUT I VI(I)'      
+      IF (INFOFE(4:4).EQ.'T') THEN
+        WRITE(IFM,*)'<FETI/FETSCA> INPUT I VI(I)'      
         DO 30 I=1,NBI
           WRITE(IFM,*)I,'  ',VI(I)
    30   CONTINUE
@@ -148,7 +150,7 @@ C MONITORING
           WRITE(IFM,*)I,'  ',VO(I)
    31   CONTINUE          
       ENDIF
-      IF (NIV.GE.3) THEN        
+      IF (INFOFE(1:1).EQ.'T') THEN        
         WRITE(IFM,*)
         WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
       ENDIF          

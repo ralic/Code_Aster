@@ -1,6 +1,6 @@
       SUBROUTINE MEFOR0(NOMO,CHFOR0,FONC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/05/96   AUTEUR CIBHHRA R.MEDDOURI 
+C MODIF CALCULEL  DATE 23/11/2004   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       CHARACTER*8    NOMO
-      CHARACTER*24   CHFOR0
+      CHARACTER*(*)   CHFOR0
 C
       LOGICAL        FONC
 C

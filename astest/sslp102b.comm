@@ -1,4 +1,4 @@
-# MODIF  DATE 25/10/2004   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 23/11/2004   AUTEUR GALENNE E.GALENNE 
 # TITRE TAUX DE RESTITUTION AVEC ETAT INITIAL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,8 +78,8 @@ RESU=STAT_NON_LINE(
                             MODELE=MO,
                         CHAM_MATER=CM,
                              EXCIT=_F( 
-                CHARGE = CH,
-                FONC_MULT = F),
+                CHARGE = CH,),
+                #FONC_MULT = F),
                          COMP_INCR=_F( 
                 RELATION = 'ELAS'),
                          INCREMENT=_F( 
@@ -144,32 +144,32 @@ G1=CALC_G_THETA_T(MODELE=MO,
                   RESULTAT=RESU,
                   NUME_ORDRE=1,
                   CHAM_MATER=CM,
-                  EXCIT=_F(CHARGE=CH,
-                           FONC_MULT = F),
+                  EXCIT=_F(CHARGE=CH,),
+                           #FONC_MULT = F),
                   THETA=THETA1 );
 
 G2=CALC_G_THETA_T(MODELE=MO,
                   RESULTAT=RESU,
                   NUME_ORDRE=1,
                   CHAM_MATER=CM,
-                  EXCIT=_F(CHARGE=CH,
-                           FONC_MULT = F),
+                  EXCIT=_F(CHARGE=CH,),
+                           #FONC_MULT = F),
                   THETA=THETA2 );
 
 G3=CALC_G_THETA_T(MODELE=MO,
                   RESULTAT=RESU,
                   NUME_ORDRE=1,
                   CHAM_MATER=CM,
-                  EXCIT=_F(CHARGE=CH,
-                           FONC_MULT = F),
+                  EXCIT=_F(CHARGE=CH,),
+                           #FONC_MULT = F),
                   THETA=THETA3 );
 
 G4=CALC_G_THETA_T(MODELE=MO,
                   RESULTAT=RESU,
                   NUME_ORDRE=1,
                   CHAM_MATER=CM,
-                  EXCIT=_F(CHARGE=CH,
-                           FONC_MULT = F),
+                  EXCIT=_F(CHARGE=CH,),
+                           #FONC_MULT = F),
                   THETA=THETA4 );                                    
 
 #--------------------------------------------------------------------
@@ -181,8 +181,8 @@ G13=CALC_G_THETA_T(MODELE=MO,
                    RESULTAT=RESU,
                    NUME_ORDRE=1,
                    CHAM_MATER=CM,
-                   EXCIT=_F(CHARGE=CH,
-                            FONC_MULT = F),
+                   EXCIT=_F(CHARGE=CH,),
+                            #FONC_MULT = F),
                    ETAT_INIT=_F( DEPL = DEPLA),
 #                               SIGM : SIGMA)
                    THETA=THETA3 )
@@ -191,8 +191,8 @@ G14=CALC_G_THETA_T(MODELE=MO,
                    RESULTAT=RESU,
                    NUME_ORDRE=1,
                    CHAM_MATER=CM,
-                   EXCIT=_F(CHARGE=CH,
-                            FONC_MULT = F),
+                   EXCIT=_F(CHARGE=CH,),
+                            #FONC_MULT = F),
                    ETAT_INIT=_F( DEPL = DEPLA),
 #                              SIGM : SIGMA)
                    THETA=THETA4 )

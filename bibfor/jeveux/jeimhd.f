@@ -1,6 +1,6 @@
        SUBROUTINE JEIMHD ( FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 21/11/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -162,7 +162,7 @@ C           ON TRAITE UN OBJET SIMPLE
               IF ( IADDI(1) .EQ. 0 .OR. LONOI .EQ. 0 ) THEN
                 IF (NIVO .GE. 2) THEN
                   CMESS = 'OBJET INEXISTANT EN MEMOIRE ET SUR DISQUE'
-                  CALL JVMESS ( 'A' , 'JEIMHD01' , CMESS )
+                  CALL JVMESS ( 'A' , 'JEIMHD02' , CMESS )
                 ENDIF
                 GOTO 5
               ENDIF
@@ -217,7 +217,7 @@ C                TRAITEMENT PARTICULIER DU $$DESO
                   IF (NIVO .GE. 2) THEN
                     CMESS = 'COLLECTION INEXISTANTE EN MEMOIRE ET' 
      &                    //'SUR DISQUE'
-                    CALL JVMESS ( 'A' , 'JEIMHD02' , CMESS )
+                    CALL JVMESS ( 'A' , 'JEIMHD03' , CMESS )
                   ENDIF
                   GOTO 5
                 ENDIF
@@ -256,7 +256,7 @@ C                TRAITEMENT PARTICULIER DES OBJETS DE COLLECTION
                   IF ( IADDI(1) .EQ. 0 ) THEN
                     IF (NIVO .GE. 2) THEN
                       CMESS= 'OBJET INEXISTANT EN MEMOIRE ET SUR DISQUE'
-                      CALL JVMESS ( 'A' , 'JEIMHD03' , CMESS )
+                      CALL JVMESS ( 'A' , 'JEIMHD04' , CMESS )
                     ENDIF
                     GOTO 10
                   ENDIF
@@ -321,6 +321,10 @@ C                TRAITEMENT DES OBJETS SYSTEME DE COLLECTION
       ENDIF
  1001 FORMAT(I5,1X,A,'  -',2(A,'-'),I2,1X,I8,1X,I7,I7,I7,I9)
       IRET = HDFCLF (IDFIC)
+      IF (IRET .NE. 0 ) THEN
+        CMESS = 'IMPOSSIBLE DE FERMER LE FICHIER '//NHDF
+        CALL JVMESS ( 'S' , 'JEIMHD05' , CMESS )
+      ENDIF
       IPGC = IPGCEX
 C FIN ------------------------------------------------------------------
       END

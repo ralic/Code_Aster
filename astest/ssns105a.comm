@@ -1,4 +1,4 @@
-# MODIF  DATE 06/09/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 23/11/2004   AUTEUR PBADEL P.BADEL 
 # TITRE TEST NAPPE D'ARMATURE (MODELISATION GRILLE_MEMBRANE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,6 +147,7 @@ LEDEP=STAT_NON_LINE(
                 ),
                          INCREMENT=_F(
                 LIST_INST = ZLIST,
+                INST_FIN=2.,
                 ),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -156,6 +157,35 @@ LEDEP=STAT_NON_LINE(
                 RESI_GLOB_MAXI = 1.E-3,
                 ITER_INTE_MAXI = 30,
                 ITER_GLOB_MAXI = 30,
+                ),
+              )
+
+LEDEP=STAT_NON_LINE(reuse=LEDEP,
+                            MODELE=LEMOD,
+                        CHAM_MATER=MATAF,
+                         CARA_ELEM=LACAR,
+                             EXCIT=_F(
+                CHARGE = ZCHM,
+                FONC_MULT=f_inst
+                ),
+                ETAT_INIT=_F(EVOL_NOLI=LEDEP),
+                COMP_INCR=(_F(GROUP_MA=('GEOB','GEOBB'),
+                              RELATION = 'GRILLE_ISOT_LINE',),
+                           _F(GROUP_MA=('GEO',),
+                              RELATION = 'ELAS',)
+                ),
+                         INCREMENT=_F(
+                LIST_INST = ZLIST,
+                ),
+                            NEWTON=_F(
+                MATRICE = 'TANGENTE',
+                PAS_MINI_ELAS=20.,
+                REAC_ITER = 1,
+                ),
+                       CONVERGENCE=_F(
+                ITER_INTE_MAXI = 30,
+                ITER_GLOB_MAXI = 30,
+                ITER_GLOB_ELAS = 200,
                 ),
               )
 

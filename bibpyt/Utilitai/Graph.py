@@ -1,4 +1,4 @@
-#@ MODIF Graph Utilitai  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 22/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -984,7 +984,11 @@ GRAPHIQUE:
                for lig in self.DescrCourbe(**dCi):
                   fdigr.write(lig)
             # partie données (.dogr)
-            fdogr.write('#NOM DE LA FONCTION: COURBE_'+str(i)+'\n')
+            if dCi['Leg']<>'':
+               leg=dCi['Leg']
+            else:
+               leg='COURBE_'+str(i)
+            fdogr.write('#NOM DE LA FONCTION: '+leg+'\n')
             for j in range(dCi['NbPts']):
                for k in range(dCi['NbCol']):
                   sv=self.DicForm['formR'] % g.Valeurs[i][k][j]

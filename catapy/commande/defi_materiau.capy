@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/11/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+#& MODIF COMMANDE  DATE 22/11/2004   AUTEUR NDOMING N.DOMINGUEZ 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -864,19 +864,19 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP","SECH","HYDR") ),
            ),
          JOINT_BA=FACT(statut='f',min=0 ,max=1,
-             HPEN            =SIMP(statut='o',typ='R',val_min=1.E-5),
+             HPEN            =SIMP(statut='o',typ='R',defaut= 1.E+0,val_min=0.E+0),
              GTT             =SIMP(statut='o',typ='R',val_min=0.E+0),
              GAMD0           =SIMP(statut='o',typ='R',val_min=1.E-4,val_max=1.E-1),
-             AD1             =SIMP(statut='o',typ='R',val_min=1.E-1,val_max=1.E+1),
+             AD1             =SIMP(statut='o',typ='R',val_min=0.E+0),
              BD1             =SIMP(statut='o',typ='R',defaut= 5.E-1,val_min=1.E-1),
              GAMD2           =SIMP(statut='o',typ='R',val_min=1.E-4,val_max=1.E+0),
-             AD2             =SIMP(statut='o',typ='R',val_min=1.E-6),
+             AD2             =SIMP(statut='o',typ='R',val_min=0.E+0),
              BD2             =SIMP(statut='o',typ='R',defaut= 1.E+0,val_min=1.E-1),
              VIFROT          =SIMP(statut='o',typ='R',val_min=0.E+0),
              FA              =SIMP(statut='o',typ='R',val_min=0.E+0),
              FC              =SIMP(statut='o',typ='R',val_min=0.E+0),
              EPSTR0          =SIMP(statut='o',typ='R',val_min=1.E-4,val_max=1.E+0),
-             ADN             =SIMP(statut='o',typ='R',val_min=1.E-10),
+             ADN             =SIMP(statut='o',typ='R',val_min=0.E+0),
              BDN             =SIMP(statut='o',typ='R',defaut= 1.E+0,val_min=1.E-1),
            ),
           VENDOCHAB       =FACT(statut='f',

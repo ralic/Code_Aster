@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF SOUSTRUC  DATE 22/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,7 +119,7 @@ C ----------------------------------------------------------------------
         IF (IRET.GT.0) THEN
             IF (ALARM.EQ.'OUI') THEN
               CALL UTMESS('A','SSCGNO','LE GROUP_NO :'//NOGNO//
-     &                  ' EST VIDE, ON NE LE CREE PAS.')
+     &                  ' EXISTE DEJA, ON NE LE MODIFIE PAS.')
             END IF
           GO TO 100
         END IF

@@ -1,17 +1,16 @@
-      SUBROUTINE DYOBAR ( NOMTAB, MAILLA, NBOBS, INST, INSTAP, NCHAM,
-     +                    NCMP, NUCP, NOEU, MAIL, POIN, VALPLU, VITPLU,
+      SUBROUTINE DYOBAR ( NOMTAB, MAILLA, NBOBS, INST, INSTAP, 
+     +                    VALPLU, VITPLU,
      +                    ACCPLU, NBMODS, DEPENT, VITENT, ACCENT)
-
       IMPLICIT   NONE
-      INTEGER             NBOBS, INST, POIN(*), NUCP(*),NBMODS
+      INTEGER             NBOBS, INST, NBMODS
+      INTEGER             KCHAM, KCOMP, KNUCM, KNOEU, KMAIL, KPOIN
       REAL*8              INSTAP
-      CHARACTER*8         MAILLA, NCMP(*), NOEU(*), MAIL(*)
-      CHARACTER*16        NCHAM(*)
+      CHARACTER*8         MAILLA
       CHARACTER*19        NOMTAB
       CHARACTER*24        DEPPLU, SIGPLU, VARPLU, VITPLU, ACCPLU
       CHARACTER*24        VALPLU, ACCENT, DEPENT, VITENT
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 08/12/2003   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 22/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -69,17 +68,24 @@ C
 C
       CALL JEMARQ()
 C
+      CALL JEVEUO ( '&&DYOBSE.NOM_CHAM' , 'L' , KCHAM )
+      CALL JEVEUO ( '&&DYOBSE.NOM_CMP ' , 'L' , KCOMP )
+      CALL JEVEUO ( '&&DYOBSE.NUME_CMP' , 'L' , KNUCM )
+      CALL JEVEUO ( '&&DYOBSE.NOEUD'    , 'L' , KNOEU )
+      CALL JEVEUO ( '&&DYOBSE.MAILLE'   , 'L' , KMAIL )
+      CALL JEVEUO ( '&&DYOBSE.POINT'    , 'L' , KPOIN )
+
       CALL DESAGG(VALPLU,DEPPLU,SIGPLU,VARPLU,K24BID,K24BID,K24BID,
      &            K24BID,K24BID)
       CALL JEVEUO(DEPPLU(1:19)//'.VALE','L',JDEPP) 
 C
       IF(NOMCMD(1:13).EQ.'STAT_NON_LINE')THEN
          DO 10 IOCC = 1 , NBOBS 
-            IF (  NCHAM(IOCC)(1:4).NE.'DEPL'     .AND.
-     &            NCHAM(IOCC)(1:9).NE.'SIEF_ELGA'.AND.
-     &            NCHAM(IOCC)(1:9).NE.'VARI_ELGA') THEN
+            IF (  ZK16(KCHAM-1+IOCC)(1:4).NE.'DEPL'     .AND.
+     &            ZK16(KCHAM-1+IOCC)(1:9).NE.'SIEF_ELGA'.AND.
+     &            ZK16(KCHAM-1+IOCC)(1:9).NE.'VARI_ELGA') THEN
                 CALL UTDEBM('F','DYOBAR','ERREUR FATALE')
-                CALL UTIMPK('L','LE CHAMP',1,NCHAM(IOCC)(1:11))
+                CALL UTIMPK('L','LE CHAMP',1,ZK16(KCHAM-1+IOCC)(1:11))
                 CALL UTIMPK('S','EST INCOMPATIBLE AVEC'//
      +               ' LE MODE',1,NOMCMD(1:13))
                 CALL UTFINM()
@@ -100,95 +106,97 @@ C
       DO 20 IOCC = 1 , NBOBS 
 C
 C
-         TABK(1) = NCHAM(IOCC)
+         TABK(1) = ZK16(KCHAM-1+IOCC)
 C
-         TABK(2) = NCMP(IOCC)
+         TABK(2) = ZK8(KCOMP-1+IOCC)
 C
-         IF (     NCHAM(IOCC)(1:11) .EQ. 'DEPL_ABSOLU' ) THEN
+         IF (     ZK16(KCHAM-1+IOCC)(1:11) .EQ. 'DEPL_ABSOLU' ) THEN
 C                 ----------------------------
            IF (NBMODS.EQ.0) THEN
             CALL UTMESS ('F','DYNA_NON_LINE','LE CHAMP DEPL_ABSOLU'//
      +       ' N''EST ACCESSIBLE QU''EN PRESENCE DE MODES STATIQUES')
            ELSE
-            TABK(3) = NOEU(IOCC)
-            CALL POSDDL ( 'CHAM_NO', DEPPLU, NOEU(IOCC),
-     +                               NCMP(IOCC), INOEUD, ICMP )
-            CALL POSDDL ( 'CHAM_NO', DEPENT, NOEU(IOCC),
-     +                               NCMP(IOCC), INOEUD, ICMP )
+            TABK(3) = ZK8(KNOEU-1+IOCC)
+            CALL POSDDL ( 'CHAM_NO', DEPPLU, ZK8(KNOEU-1+IOCC),
+     +                               ZK8(KCOMP-1+IOCC), INOEUD, ICMP )
+            CALL POSDDL ( 'CHAM_NO', DEPENT, ZK8(KNOEU-1+IOCC),
+     +                               ZK8(KCOMP-1+IOCC), INOEUD, ICMP )
 
             TABR(2) = ZR(JDEPP+ICMP-1) + ZR(JDEPEN+ICMP-1)
             CALL TBAJLI ( NOMTAB, 6, NPARAN, TABI, TABR, CBID, TABK,0)
            ENDIF
 C
-          ELSEIF ( NCHAM(IOCC)(1:11) .EQ. 'VITE_ABSOLU' ) THEN
+          ELSEIF ( ZK16(KCHAM-1+IOCC)(1:11) .EQ. 'VITE_ABSOLU' ) THEN
 C                 ----------------------------
            IF (NBMODS.EQ.0) THEN
             CALL UTMESS ('F','DYNA_NON_LINE','LE CHAMP VITE_ABSOLU'//
      +       ' N''EST ACCESSIBLE QU''EN PRESENCE DE MODES STATIQUES')
            ELSE
-            TABK(3) = NOEU(IOCC)
-            CALL POSDDL ( 'CHAM_NO', VITPLU, NOEU(IOCC),
-     +                               NCMP(IOCC), INOEUD, ICMP )
-            CALL POSDDL ( 'CHAM_NO', VITENT, NOEU(IOCC),
-     +                               NCMP(IOCC), INOEUD, ICMP )
+            TABK(3) = ZK8(KNOEU-1+IOCC)
+            CALL POSDDL ( 'CHAM_NO', VITPLU, ZK8(KNOEU-1+IOCC),
+     +                               ZK8(KCOMP-1+IOCC), INOEUD, ICMP )
+            CALL POSDDL ( 'CHAM_NO', VITENT, ZK8(KNOEU-1+IOCC),
+     +                               ZK8(KCOMP-1+IOCC), INOEUD, ICMP )
             TABR(2) = ZR(JVITP+ICMP-1) + ZR(JVITEN+ICMP-1)
             CALL TBAJLI ( NOMTAB, 6, NPARAN, TABI, TABR, CBID, TABK,0)
           ENDIF
 C
-         ELSEIF ( NCHAM(IOCC)(1:11) .EQ. 'ACCE_ABSOLU' ) THEN
+         ELSEIF ( ZK16(KCHAM-1+IOCC)(1:11) .EQ. 'ACCE_ABSOLU' ) THEN
 C                 ----------------------------
            IF (NBMODS.EQ.0) THEN
             CALL UTMESS ('F','DYNA_NON_LINE','LE CHAMP ACCE_ABSOLU'//
      +       ' N''EST ACCESSIBLE QU''EN PRESENCE DE MODES STATIQUES')
            ELSE
-            TABK(3) = NOEU(IOCC)
-            CALL POSDDL ( 'CHAM_NO', ACCPLU, NOEU(IOCC),
-     +                               NCMP(IOCC), INOEUD, ICMP )
-            CALL POSDDL ( 'CHAM_NO', ACCENT, NOEU(IOCC),
-     +                               NCMP(IOCC), INOEUD, ICMP )
+            TABK(3) = ZK8(KNOEU-1+IOCC)
+            CALL POSDDL ( 'CHAM_NO', ACCPLU, ZK8(KNOEU-1+IOCC),
+     +                               ZK8(KCOMP-1+IOCC), INOEUD, ICMP )
+            CALL POSDDL ( 'CHAM_NO', ACCENT, ZK8(KNOEU-1+IOCC),
+     +                               ZK8(KCOMP-1+IOCC), INOEUD, ICMP )
             TABR(2) = ZR(JACCP+ICMP-1) + ZR(JACCEN+ICMP-1)
             CALL TBAJLI ( NOMTAB, 6, NPARAN, TABI, TABR, CBID, TABK,0)
 C
          ENDIF
-         ELSEIF (     NCHAM(IOCC)(1:4) .EQ. 'DEPL' ) THEN
+         ELSEIF (     ZK16(KCHAM-1+IOCC)(1:4) .EQ. 'DEPL' ) THEN
 C                 ----------------------------
-            TABK(3) = NOEU(IOCC)
-            CALL POSDDL ( 'CHAM_NO', DEPPLU, NOEU(IOCC),
-     +                               NCMP(IOCC), INOEUD, ICMP )
+            TABK(3) = ZK8(KNOEU-1+IOCC)
+            CALL POSDDL ( 'CHAM_NO', DEPPLU, ZK8(KNOEU-1+IOCC),
+     +                               ZK8(KCOMP-1+IOCC), INOEUD, ICMP )
             TABR(2) = ZR(JDEPP+ICMP-1)
             CALL TBAJLI ( NOMTAB, 6, NPARAN, TABI, TABR, CBID, TABK,0)
 C
-         ELSEIF ( NCHAM(IOCC)(1:4) .EQ. 'VITE' ) THEN
+         ELSEIF ( ZK16(KCHAM-1+IOCC)(1:4) .EQ. 'VITE' ) THEN
 C                 ----------------------------
-            TABK(3) = NOEU(IOCC)
-            CALL POSDDL ( 'CHAM_NO', VITPLU, NOEU(IOCC),
-     +                               NCMP(IOCC), INOEUD, ICMP )
+            TABK(3) = ZK8(KNOEU-1+IOCC)
+            CALL POSDDL ( 'CHAM_NO', VITPLU, ZK8(KNOEU-1+IOCC),
+     +                               ZK8(KCOMP-1+IOCC), INOEUD, ICMP )
             TABR(2) = ZR(JVITP+ICMP-1)
             CALL TBAJLI ( NOMTAB, 6, NPARAN, TABI, TABR, CBID, TABK,0)
 C
-         ELSEIF ( NCHAM(IOCC)(1:4) .EQ. 'ACCE' ) THEN
+         ELSEIF ( ZK16(KCHAM-1+IOCC)(1:4) .EQ. 'ACCE' ) THEN
 C                 ----------------------------
-            TABK(3) = NOEU(IOCC)
-            CALL POSDDL ( 'CHAM_NO', ACCPLU, NOEU(IOCC),
-     +                               NCMP(IOCC), INOEUD, ICMP )
+            TABK(3) = ZK8(KNOEU-1+IOCC)
+            CALL POSDDL ( 'CHAM_NO', ACCPLU, ZK8(KNOEU-1+IOCC),
+     +                               ZK8(KCOMP-1+IOCC), INOEUD, ICMP )
             TABR(2) = ZR(JACCP+ICMP-1)
             CALL TBAJLI ( NOMTAB, 6, NPARAN, TABI, TABR, CBID, TABK,0)
 C
-         ELSEIF ( NCHAM(IOCC)(1:9) .EQ. 'SIEF_ELGA' ) THEN
+         ELSEIF ( ZK16(KCHAM-1+IOCC)(1:9) .EQ. 'SIEF_ELGA' ) THEN
 C                 ---------------------------------
-            TABK(3) = MAIL(IOCC)
-            TABI(2) = POIN(IOCC)
-            CALL UTCH19 (SIGPLU(1:19),MAILLA,MAIL(IOCC),' ',POIN(IOCC),
-     +                 0,     1,NCMP(IOCC),'R',VALR,CBID,IRET)
+            TABK(3) = ZK8(KMAIL-1+IOCC)
+            TABI(2) = ZI(KPOIN-1+IOCC)
+            CALL UTCH19 (SIGPLU(1:19),MAILLA,ZK8(KMAIL-1+IOCC),' ',
+     +                ZI(KPOIN-1+IOCC), 0,     1,ZK8(KCOMP-1+IOCC), 
+     +                'R',VALR,CBID,IRET)
             TABR(2) = VALR
             CALL TBAJLI ( NOMTAB, 7, NPARAS, TABI, TABR, CBID, TABK,0)
 C
-         ELSEIF ( NCHAM(IOCC)(1:9) .EQ. 'VARI_ELGA' ) THEN
+         ELSEIF ( ZK16(KCHAM-1+IOCC)(1:9) .EQ. 'VARI_ELGA' ) THEN
 C                 ---------------------------------
-            TABK(3) = MAIL(IOCC)
-            TABI(2) = POIN(IOCC)
-            CALL UTCH19 (VARPLU(1:19),MAILLA,MAIL(IOCC),' ',POIN(IOCC),
-     +              0,    NUCP(IOCC),'VARI','R',VALR,CBID,IRET)
+            TABK(3) = ZK8(KMAIL-1+IOCC)
+            TABI(2) = ZI(KPOIN-1+IOCC)
+            CALL UTCH19 (VARPLU(1:19),MAILLA,ZK8(KMAIL-1+IOCC),' ',
+     +              ZI(KPOIN-1+IOCC),
+     +              0,    ZI(KNUCM-1+IOCC),'VARI','R',VALR,CBID,IRET)
             TABR(2) = VALR
             CALL TBAJLI ( NOMTAB, 7, NPARAS, TABI, TABR, CBID, TABK,0)
 C

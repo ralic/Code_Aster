@@ -9,7 +9,7 @@
      &                   ANGMAS,
      &                   SIGP,VIP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 22/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -275,7 +275,8 @@ C         PARAMETRES DE LA LOI DE FLUAGE
           IF (COEVIL(5).NE.1.D0) THEN
               CALL UTMESS('A','VISC_IRRA_LOG',
      *        'FLUENCE COMMANDEE ET FLUX_PHI DIFFERENT DE 1')
-          ENDIF   
+          ENDIF 
+          IF(ABS(FLUPHI).LE.1.D-10) FLUPHI=0.D0 
           IF (FLUPHI.LT.0.D0) THEN
             CALL UTMESS('F','VISC_IRRA_LOG',
      *      'FLUENCE DECROISSANTE (PHI<0)')

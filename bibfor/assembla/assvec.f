@@ -2,7 +2,7 @@
      &                  TYPE)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 09/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,12 +79,12 @@ C ---------------------------------------------------------------------
       CHARACTER*19 K19B,VECAS,VPROF      
       CHARACTER*24 METHOD,SDFETI,K24B,SDFETS,KNUEQ,KMAILA,K24PRN,
      &             KNULIL,KVELIL,KVEREF,KVEDSC,RESU,NOMLI,KNEQUA,
-     &             KVALE,NOMOPT,NOMLOG,NOMLID
+     &             KVALE,NOMOPT,NOMLOG,NOMLID,INFOFE
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR     
       LOGICAL      LFETI,LLIMO,LLICH,LLICHD      
       INTEGER      ICODLA(NBECMX),ICODGE(NBECMX),NBEC,EPDMS,JPDMS,NBSD,
      &             IDIME,IDD,ILIGRP,IFETN,IFETC,IREFN,NBREFN,ILIGRT,
-     &             ILIGRB,IRET1,ILIGRC,IFEL1,IFEL2,IFEL3
+     &             ILIGRB,IRET1,ILIGRC,IFEL1,IFEL2,IFEL3,IINF
 C ----------------------------------------------------------------------
 C     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
 C     S.D. MANIPULEES DANS LE SOUS PROGRAMME
@@ -155,6 +155,7 @@ C --- DEBUT ------------------------------------------------------------
 C-----RECUPERATION DU NIVEAU D'IMPRESSION
 
       CALL INFNIV(IFM,NIV)
+      INFOFE='FFFFFFFF'
 
 C     IFM = IUNIFI('MESSAGE')
 C----------------------------------------------------------------------
@@ -222,7 +223,7 @@ C --- NUME_DDL ET DONC CHAM_NO ETENDU, OUI OU NON ?
         CALL JEVEUO(NUDEV(1:14)//'.NUME.REFN','L',IREFN)
         METHOD=ZK24(IREFN+2)
         SDFETI=ZK24(IREFN+3)
-        SDFETS=SDFETI   
+        SDFETS=SDFETI          
       ENDIF
         
       LFETI=.FALSE.      
@@ -234,6 +235,8 @@ C NOMBRE DE SOUS-DOMAINES
         NBSD=ZI(IDIME)
 C CONSTITUTION DE L'OBJET JEVEUX VECAS.FETC COMPLEMENTAIRE
         CALL WKVECT(VECAS//'.FETC',BAS//' V K24',NBSD,IFETC)
+        CALL JEVEUO('&&'//SDFETI(1:17)//'.FINF','L',IINF)
+        INFOFE=ZK24(IINF)
       ENDIF
 
       CALL DISMOI('F','NOM_MODELE',NUDEV,'NUME_DDL',IBID,MO,IERD)
@@ -554,7 +557,7 @@ C NUMA : NUMERO DE LA MAILLE
      &                     ZI(ZI(IADLIE+3* (ILIVE-1)+2)+IGR-1)+IEL-1)
 
 C MONITORING
-                    IF ((NIV.GE.5) .AND. (LFETI)) THEN 
+                    IF ((INFOFE(5:5).EQ.'T') .AND. (LFETI)) THEN 
                       WRITE(IFM,*)'<FETI/ASSVEC>','IDD',IDD,'LIGREL',
      &                  NOMLI,'ILIVE',ILIVE
                       WRITE(IFM,*)'IGR',IGR,'IEL',IEL,'NUMA',NUMA
@@ -783,7 +786,7 @@ C----------------------------------
   190   CONTINUE
   
 C MONITORING
-        IF (LFETI.AND.(NIV.GE.3)) THEN
+        IF (LFETI.AND.(INFOFE(1:1).EQ.'T')) THEN
           WRITE(IFM,*)
           WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
           IF (IDD.EQ.0) THEN
@@ -794,12 +797,12 @@ C MONITORING
           WRITE(IFM,*)'<FETI/ASSVEC> REMPLISSAGE OBJETS JEVEUX ',
      &        KVALE(1:19)
           WRITE(IFM,*)
-          IF ((NIV.GE.4).AND.(IDD.NE.0)) 
-     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,KVALE(1:19),1,' ')
-          IF ((NIV.GE.4).AND.(IDD.EQ.NBSD)) 
-     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,VECAS(1:19),1,' ')
         ENDIF 
-         
+        IF ((INFOFE(3:3).EQ.'T').AND.(IDD.NE.0)) 
+     &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,KVALE(1:19),1,' ')
+        IF ((INFOFE(3:3).EQ.'T').AND.(IDD.EQ.NBSD)) 
+     &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,VECAS(1:19),1,' ')
+              
 C---- FIN BOUCLE SUR LES SOUS-DOMAINES:
 C--------------------------------------
   195 CONTINUE  

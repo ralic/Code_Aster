@@ -3,7 +3,7 @@
      &                   COMPOR,TYPMOD,INSTM,INSTP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 22/11/2004   AUTEUR NDOMING N.DOMINGUEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,10 +54,9 @@ C-----------------------------------------------------------------------
       INTEGER I,J,Q,S, IBID,KPG
       REAL*8 DSIDEP(2,2),B(2,8),RBID,R8VIDE
       REAL*8 SU(2),U(8),AIRE,POIDS(2),SIG(2),VIMOIN(LGPG),VIPLUS(LGPG)
-      REAL*8 VALRES,HPEN,LONG
+      REAL*8 VALRES
       REAL*8 CRIT
       REAL*8 TEMPM,TEMPP,TREF
-      REAL*8 EPS(4),DEPS(4)
       REAL*8 SIGN,EPSANM,EPSANP
       REAL*8 COD(NPG),ANGMAS(3)
       CHARACTER*2 CODRET
@@ -92,7 +91,6 @@ C  * EN AXIS ON MULTIPLIE CETTE LONGEUR PAR LA DISTANCE DU CENTRE DE
 C    L'ELEMENT A L'AXE DE SYMETRIE.
 
       AIRE = SQRT( (GEOM(1,2)-GEOM(1,1))**2 + (GEOM(2,2)-GEOM(2,1))**2 )
-      LONG=AIRE
       IF (AXI) AIRE = AIRE * (GEOM(1,1)+GEOM(1,2))/2.D0
 
       DO 11 KPG=1,NPG
@@ -116,19 +114,7 @@ C CALCUL DU SAUT DE DEPLACEMENT DANS L'ELEMENT (SU_N,SU_T) = B U :
  10     CONTINUE
 
         IF (COMPOR(1)(7:8).EQ.'BA') THEN
-          CALL RCVALA(MATE,' ','JOINT_BA',0,' ',0.D0,1,
-     &               'HPEN',VALRES,CODRET,'FM')
-          HPEN   = VALRES
           
-          DO 15 J = 1,4
-            EPS (J)=0.D0
-            DEPS(J)=0.D0
-15        CONTINUE
-
-          EPS(1) = SU(2)/LONG
-          EPS(2) = SU(1)/HPEN
-          EPS(4) = SU(2)/HPEN
-
           DO 18 J=1,LGPG
             VIMOIN(J)=VIM(J,KPG)
 18        CONTINUE
@@ -142,7 +128,7 @@ C -   APPEL A LA LOI DE COMPORTEMENT
      &               RBID,RBID,
      &               RBID,RBID,RBID,
      &               -1.D0,-1.D0,
-     &               EPS,DEPS,
+     &               SU,RBID,
      &               SIGN,VIMOIN,
      &               OPTION,
      &               EPSANM,EPSANP,

@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 22/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -332,17 +332,12 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #
 #     --- commande CALC_ELEM ---
 #
-  motscles = {}
-  if ECHANGE!=None :
-     motscles['EXCIT']=_F(CHARGE = chmeth)
   nomres = CALC_ELEM( reuse      = nomres,
                       RESULTAT   = nomres ,
                       MODELE     = modele ,
-                      CHAM_MATER = affmat ,
-                      CARA_ELEM  = carael ,
                       TOUT_ORDRE = 'OUI'  ,
                       OPTION     = ('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM') ,
-                      INFO       = INFO   , **motscles)
+                      INFO       = INFO   ,)
 #
 #     --- post-traitements ---
 #
@@ -624,21 +619,19 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                        R_SUP  = thet['R_SUP'],),
                            );
         motscles = {}
-        if mcfex!=[]:       motscles['EXCIT'] =mcfex
         if COMP_INCR!=None : motscles['COMP_INCR']=_F(RELATION=COMP_INCR['RELATION'])
         if COMP_ELAS!=None : motscles['COMP_ELAS']=_F(RELATION=COMP_ELAS['RELATION'])
-        _nogthe=CALC_G_THETA_T(MODELE     =modele,
+        _nogthe=CALC_G_THETA_T(
                                RESULTAT   =nomres,
                                TOUT_ORDRE ='OUI',
-                               CHAM_MATER =affmat,
                                THETA      =_nothet,
-                               **motscles);
+                               **motscles
+                               );
 #
         IMPR_TABLE(TABLE=_nogthe,);
 #
       for thet in THETA_3D:
         motscles = {}
-        if mcfex!=[]:       motscles['EXCIT'] =mcfex
         if COMP_INCR!=None : motscles['COMP_INCR']=_F(RELATION=COMP_INCR['RELATION'])
         if COMP_ELAS!=None : motscles['COMP_ELAS']=_F(RELATION=COMP_ELAS['RELATION'])
         if   TYPE_MAILLAGE =='FISS_COUDE' :
@@ -655,7 +648,8 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                DEGRE      = 4,
                                R_INF      = thet['R_INF'],
                                R_SUP      = thet['R_SUP'],
-                               **motscles);
+                               **motscles
+                               );
 
         IMPR_TABLE(TABLE=_nogloc,);
 #

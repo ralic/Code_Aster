@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 23/11/2004   AUTEUR PBADEL P.BADEL 
 # TITRE TOLE ONDULEE EN TRACTION (MISES ECR. ISOT. DKT)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,10 +115,28 @@ U2=STAT_NON_LINE(reuse =U2,
                  ETAT_INIT=_F(EVOL_NOLI=U2,
                               NUME_ORDRE=2,),
                  INCREMENT=_F(LIST_INST=L_INST,
-                              NUME_INST_FIN=10,),
+                              NUME_INST_FIN=9,),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=2,),
                  CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                RESI_INTE_RELA=1e-08,
+                                ITER_INTE_MAXI=30,),);
+U2=STAT_NON_LINE(reuse =U2,
+                 MODELE=MO,
+                 CHAM_MATER=CM,
+                 CARA_ELEM=CARAC,
+                 EXCIT=(_F(CHARGE=CH_FO,
+                           FONC_MULT=RAMPE,),
+                        _F(CHARGE=CH_LA,),),
+                 COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                 ETAT_INIT=_F(EVOL_NOLI=U2,),
+                 INCREMENT=_F(LIST_INST=L_INST,
+                              NUME_INST_FIN=10,),
+                 NEWTON=_F(MATRICE='TANGENTE',
+                           PAS_MINI_ELAS=2.,
+                           REAC_ITER=2,),
+                 CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                ITER_GLOB_ELAS=200,
                                 RESI_INTE_RELA=1e-08,
                                 ITER_INTE_MAXI=30,),);
 

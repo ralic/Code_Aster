@@ -1,5 +1,5 @@
 
-# MODIF  DATE 04/11/2004   AUTEUR G8BHHXD X.DESROCHES 
+# MODIF  DATE 23/11/2004   AUTEUR G8BHHXD X.DESROCHES 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -177,13 +177,32 @@ DEPLD2=STAT_NON_LINE(MODELE=MO,
                             _F(CHARGE=CH,
                                FONC_MULT=RAMPE,),),
                      COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                     INCREMENT=_F(LIST_INST=L_INST,
+                                  NUME_INST_FIN=10, ),
+                     NEWTON=_F(MATRICE='TANGENTE',
+                               REAC_ITER=2,),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                    RESI_INTE_RELA=1e-08,
+                                    ITER_INTE_MAXI=30,),
+                     ARCHIVAGE=_F(LIST_INST=L_INST,
+                                  CHAM_EXCLU='VARI_ELGA',),);
+
+DEPLD2=STAT_NON_LINE(reuse=DEPLD2,
+                     MODELE=MO,
+                     CHAM_MATER=CHMAT2,
+                     ETAT_INIT=_F(EVOL_NOLI=DEPLD2 ),
+                     EXCIT=(_F(CHARGE=BLOQU,),
+                            _F(CHARGE=CH,
+                               FONC_MULT=RAMPE,),),
+                     COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
                      INCREMENT=_F(LIST_INST=L_INST,),
                      NEWTON=_F(MATRICE='TANGENTE',
                                REAC_ITER=2,),
                      CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                     RESI_INTE_RELA=1e-08,
                                     ITER_INTE_MAXI=30,),
-                     ARCHIVAGE=_F(LIST_INST=L_INST,),);
+                     ARCHIVAGE=_F(LIST_INST=L_INST,
+                                  CHAM_EXCLU='VARI_ELGA',),);
 
 DEPLD3=STAT_NON_LINE(MODELE=MO,
                      CHAM_MATER=CHMAT2,
@@ -202,12 +221,9 @@ DEPLD3=STAT_NON_LINE(MODELE=MO,
 
 DEPLD2 = CALC_ELEM (reuse=DEPLD2,
               RESULTAT= DEPLD2,
-              
-              OPTION= (
-               'SIEF_ELNO_ELGA',
-               'ERRE_ELGA_NORE',
-               'ERRE_ELNO_ELGA',
-           ),   ) ;
+              OPTION= ( 'SIEF_ELNO_ELGA',
+                        'ERRE_ELGA_NORE', 'ERRE_ELNO_ELGA',),  
+            ) ;
 
 ENER_ELA=POST_ELEM(ENER_ELAS=_F(TOUT='OUI',),
                    RESULTAT=DEPLD3,
@@ -420,7 +436,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
                    NOM_CMP='NUEST',
                    MAILLE='M10',
                    POINT=1,
-                   VALE=1.2078931185632E-03,
+                   VALE=8.1917658043271E-04,
                    REFERENCE='NON_REGRESSION',
                    VERSION='7.03.26',),
                 _F(RESULTAT=DEPLD2,

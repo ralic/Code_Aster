@@ -1,8 +1,8 @@
       SUBROUTINE FETINL(NBI,VLAGI,GI,JGITGI,MATAS,CHSECM,LRIGID,DIMGI,
-     &                  NBSD,VSDF,VDDL)
+     &                  NBSD,VSDF,VDDL,SDFETI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,6 +34,7 @@ C   IN  DIMGI:  IN   : TAILLE DE GIT*GI
 C   IN   NBSD:  IN   : NOMBRE DE SOUS-DOMAINES
 C   IN   VSDF: VIN  : VECTEUR MATR_ASSE.FETF INDIQUANT SI SD FLOTTANT
 C   IN   VDDL: VIN  : VECTEUR DES NBRES DE DDLS DES SOUS-DOMAINES
+C   IN  SDFETI: CH19: SD DECRIVANT LE PARTIONNEMENT FETI
 C   -------------------------------------------------------------------
 C     ASTER INFORMATIONS:
 C       04/12/03 (OB): CREATION.
@@ -46,7 +47,7 @@ C CORPS DU PROGRAMME
 C DECLARATION PARAMETRES D'APPELS
       INTEGER      NBI,JGITGI,DIMGI,NBSD,VSDF(NBSD),VDDL(NBSD)
       REAL*8       VLAGI(NBI),GI(NBI,DIMGI)
-      CHARACTER*19 MATAS,CHSECM
+      CHARACTER*19 MATAS,CHSECM,SDFETI
       LOGICAL      LRIGID
       
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -68,10 +69,11 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
       INTEGER      I,IFM,NIV,JVE,IDD,NBSDF,IFETR,NBMC,IMC,NBMC1,IDECAI,
-     &             IVALE,IDECAO,NBDDL,IFETC,NGITGI,JA,NGITG2,NB,J,JVE1,K
+     &             IVALE,IDECAO,NBDDL,IFETC,NGITGI,JA,NGITG2,NB,J,JVE1,
+     &             K,IINF
       REAL*8       R8DOT,DET,RAUX
       CHARACTER*19 CHSMDD
-      CHARACTER*24 NOMSDR      
+      CHARACTER*24 NOMSDR,INFOFE      
       CHARACTER*32 JEXNUM
       LOGICAL      IRET
       
@@ -80,6 +82,8 @@ C CORPS DU PROGRAMME
 
 C RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
+      CALL JEVEUO('&&'//SDFETI(1:17)//'.FINF','L',IINF)
+      INFOFE=ZK24(IINF)
 
 C INITS.
       NOMSDR=MATAS//'.FETR'
@@ -140,17 +144,16 @@ C DECALAGE DE .FETR
   100   CONTINUE
 
 C MONITORING
-        IF (NIV.GE.3) THEN
+        IF (INFOFE(1:1).EQ.'T') THEN
           WRITE(IFM,*)
           WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
           WRITE(IFM,*)'<FETI/FETINL> CONSTRUCTION DE E'
-          IF (NIV.GE.5) THEN
-            DO 105 I=1,DIMGI
-              WRITE(IFM,*)'E(I)',I,ZR(JVE+I-1)
-  105       CONTINUE      
-          ENDIF
         ENDIF
-
+        IF (INFOFE(4:4).EQ.'T') THEN
+          DO 105 I=1,DIMGI
+            WRITE(IFM,*)'E(I)',I,ZR(JVE+I-1)
+  105     CONTINUE      
+        ENDIF
 C -------------------------------------------------------------------- 
 C CONSTITUTION DE ((GI)T*GI)-1*E STOCKE DANS '&&FETINL.E.R'
 C --------------------------------------------------------------------
@@ -175,7 +178,7 @@ C DESYMETRISE (GI)T*GI DANS A CAR MTGAUSS ECRASE LA MATRICE A INVERSER
            ENDIF
   107   CONTINUE
   
-        IF (NIV.GE.5) THEN
+        IF (INFOFE(4:4).EQ.'T') THEN
           IDECAO=JA
           DO 114 J=1,DIMGI
             DO 113 I=1,DIMGI
@@ -188,16 +191,15 @@ C DESYMETRISE (GI)T*GI DANS A CAR MTGAUSS ECRASE LA MATRICE A INVERSER
         NB=1
         CALL MGAUSS(ZR(JA),ZR(JVE),DIMGI,DIMGI,NB,DET,IRET)
 C MONITORING
-        IF (NIV.GE.3) THEN
+        IF (INFOFE(1:1).EQ.'T') THEN
           WRITE(IFM,*)'<FETI/FETINL> INVERSION (GITGI)-1*E'
-          WRITE(IFM,*)'<FETI/FETINL> DET/IRET ',DET,' ',IRET
-          IF (NIV.GE.5) THEN
-            DO 115 I=1,DIMGI
-              WRITE(IFM,*)'(GIT*GI)-1*E(I)',I,ZR(JVE+I-1)
-  115       CONTINUE
-          ENDIF   
+          WRITE(IFM,*)'<FETI/FETINL> DET/IRET ',DET,' ',IRET   
         ENDIF   
-
+        IF (INFOFE(4:4).EQ.'T') THEN
+          DO 115 I=1,DIMGI
+            WRITE(IFM,*)'(GIT*GI)-1*E(I)',I,ZR(JVE+I-1)
+  115     CONTINUE
+        ENDIF
         IF (.NOT.IRET) THEN
           CALL UTDEBM('F','FETINL','SYSTEME (GI)T*GI PROBABLEMENT')
           CALL UTIMPI('S','  NON INVERSIBLE: ',0,I)
@@ -216,17 +218,16 @@ C --------------------------------------------------------------------
   201   CONTINUE
 
 C MONITORING
-        IF (NIV.GE.3) THEN
+        IF (INFOFE(1:1).EQ.'T') THEN
           WRITE(IFM,*)'<FETI/FETINL> CONSTRUCTION DE LANDA0'
           WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
-          WRITE(IFM,*)    
-          IF (NIV.GE.5) THEN
-            DO 205 I=1,NBI
-              WRITE(IFM,*)'LANDA0(I)',I,VLAGI(I)
-  205       CONTINUE      
-          ENDIF
+          WRITE(IFM,*)
         ENDIF
-                
+        IF (INFOFE(4:4).EQ.'T') THEN
+          DO 205 I=1,NBI
+            WRITE(IFM,*)'LANDA0(I)',I,VLAGI(I)
+  205     CONTINUE      
+        ENDIF                
 C DESTRUCTION OBJETS TEMPORAIRES        
         CALL JEDETR('&&FETINL.E.R')
         CALL JEDETR('&&FETINL.GITGI.R')                 

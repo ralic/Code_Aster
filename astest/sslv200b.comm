@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TEST DE NON-REGRESSION D ASTER : MECANIQUE LINEAIRE 3D
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -749,9 +749,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLINP,    NUME_ORDRE = 1,
 # ----------------------------------------------------------------------
 CALC_ELEM( reuse=MSLIN,           
                            OPTION=( 'EPSG_ELGA_DEPL', 'EPSG_ELNO_DEPL', ),
-                          RESULTAT=MSLIN,EXCIT=(
-                            _F(  CHARGE = CHMEC,  FONC_MULT = FO13),
-                            _F(  CHARGE = CHMECF,  FONC_MULT = FO14))
+                          RESULTAT=MSLIN,
                     )
 
 TEST_RESU(RESU=( _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
@@ -1142,7 +1140,6 @@ TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='GAMMA',
 TABLE2=POST_ELEM(        
                           RESULTAT=MSLIN,
                               INST=5.5,
-                            CHARGE=CHMEC,
                           ENER_POT=_F( TOUT = 'OUI',
                                     GROUP_MA = 'GMA21',
                                     MAILLE = ('M44', 'M99',)) )

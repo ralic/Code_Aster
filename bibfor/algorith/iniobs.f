@@ -1,10 +1,10 @@
       SUBROUTINE INIOBS(NBOBSE, NUINS0, LOBSER, INSTAM, RESULT,
-     &                   NUOBSE, NOMTAB, KCHAM,  KCOMP,  KNUCM, 
-     &                   KNOEU,  KMAIL,  KPOIN,  MAILL2, NBOBAR,
+     &                   NUOBSE, NOMTAB, MAILL2, NBOBAR,
      &                   LISINS, LISOBS)
-
+C KCHAM,  KCOMP,  KNUCM, 
+C      &                   KNOEU,  KMAIL,  KPOIN,
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2003   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 22/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -78,12 +78,12 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
          NOMTAB = ' '
          CALL LTNOTB ( RESULT, 'OBSERVATION', NOMTAB )
          CALL JEVEUO ( '&&DYOBSE.MAILLA'   , 'L' , KKKMA )
-         CALL JEVEUO ( '&&DYOBSE.NOM_CHAM' , 'L' , KCHAM )
-         CALL JEVEUO ( '&&DYOBSE.NOM_CMP ' , 'L' , KCOMP )
-         CALL JEVEUO ( '&&DYOBSE.NUME_CMP' , 'L' , KNUCM )
-         CALL JEVEUO ( '&&DYOBSE.NOEUD'    , 'L' , KNOEU )
-         CALL JEVEUO ( '&&DYOBSE.MAILLE'   , 'L' , KMAIL )
-         CALL JEVEUO ( '&&DYOBSE.POINT'    , 'L' , KPOIN )
+C          CALL JEVEUO ( '&&DYOBSE.NOM_CHAM' , 'L' , KCHAM )
+C          CALL JEVEUO ( '&&DYOBSE.NOM_CMP ' , 'L' , KCOMP )
+C          CALL JEVEUO ( '&&DYOBSE.NUME_CMP' , 'L' , KNUCM )
+C          CALL JEVEUO ( '&&DYOBSE.NOEUD'    , 'L' , KNOEU )
+C          CALL JEVEUO ( '&&DYOBSE.MAILLE'   , 'L' , KMAIL )
+C          CALL JEVEUO ( '&&DYOBSE.POINT'    , 'L' , KPOIN )
          MAILL2 = ZK8(KKKMA)
          CALL JELIRA('&&DYOBSE.NOM_CHAM','LONUTI',NBOBAR,K8BID)
       ENDIF

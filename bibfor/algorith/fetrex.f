@@ -1,7 +1,7 @@
       SUBROUTINE FETREX(OPTION,IDD,NI,VI,NO,VO,SDFETI,COLAUI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -63,8 +63,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C DECLARATION VARIABLES LOCALES
       INTEGER      IAUX1,IAUX2,IAUX3,J,IFETG,LONG,MOD,IFETB,IFETI,ICOL,
      &             NDDLCI,NBDDLI,IAUX21,IAUX31,NUMGD,NDDLCD,IFETJ,
-     &             NBDDLD,K,IFM,NIV,VAL(2),I
+     &             NBDDLD,K,IFM,NIV,VAL(2),I,IINF
       REAL*8       SIGN,RAUX2,RSIGN,UN
+      CHARACTER*24 INFOFE
       CHARACTER*32 JEXNUM
       CHARACTER*8  K8BID
       
@@ -73,6 +74,8 @@ C CORPS DU PROGRAMME
 
 C RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
+      CALL JEVEUO('&&'//SDFETI(1:17)//'.FINF','L',IINF)
+      INFOFE=ZK24(IINF)      
       UN=1.D0
       
 C INIT. VECTEUR SOLUTION
@@ -103,7 +106,7 @@ C ----  OPERATEUR DE RESTRICTION RI/EXTRACTION (RI)T
 C ----------------------------------------------------------------------
 
 C MONITORING
-        IF (NIV.GE.3) THEN
+        IF (INFOFE(1:1).EQ.'T') THEN
           WRITE(IFM,*)
           WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
           IF (OPTION.EQ.1) THEN
@@ -142,10 +145,10 @@ C PROF_CHNO(IDD) (NDDLCD)/ SON NOMBRE DE DDLS (NBDDLD)
           NBDDLD=ZI(ICOL+2*J+1)                   
                           
 C MONITORING
-          IF (NIV.GE.5) THEN
-            WRITE(IFM,*)IDD,ZI(IAUX21),RSIGN
-            WRITE(IFM,*)NDDLCI,NBDDLI,NDDLCD,NBDDLD
-          ENDIF
+C          IF (NIV.GE.5) THEN
+C            WRITE(IFM,*)IDD,ZI(IAUX21),RSIGN
+C            WRITE(IFM,*)NDDLCI,NBDDLI,NDDLCD,NBDDLD
+C          ENDIF
                   
 C TEST DE COHERENCE DES DONNEES INDIVIDUELLEMENT
           CALL ASSERT(NDDLCI.GE.0)        
@@ -176,7 +179,7 @@ C EXTRACTION
       ENDIF    
 
 C MONITORING
-      IF (NIV.GE.5) THEN
+      IF (INFOFE(4:4).EQ.'T') THEN
         WRITE(IFM,*)'<FETI/FETREX> INPUT I VI(I)'      
         DO 30 I=1,NI
           WRITE(IFM,*)I,'  ',VI(I)
@@ -186,7 +189,7 @@ C MONITORING
           WRITE(IFM,*)I,'  ',VO(I)
    31   CONTINUE          
       ENDIF
-      IF (NIV.GE.3) THEN        
+      IF (INFOFE(1:1).EQ.'T') THEN        
         WRITE(IFM,*)
         WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
       ENDIF

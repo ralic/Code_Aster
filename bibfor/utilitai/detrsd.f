@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 22/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C  IN   TYPESD : TYPE DE LA STRUCTURE DE DONNEE A DETRUIRE
 C          'NUME_DDL'     'PROF_CHNO'    'MLTF'
 C          'MATR_ASSE'    'VECT_ASSE'    'MATR_ASSE_GENE'
 C          'MATR_ELEM'    'VECT_ELEM'
-C          'VARI_COM'     'FONCTION'
+C          'VARI_COM'     'FONCTION' (POUR LES FONCTIONS OU NAPPES)
 C          'TABLE'        'DEFI_CONT'    'RESO_CONT'
 C          'SOLVEUR'      'CORRESP_2_MAILLA'
 C          'CHAM_NO_S'    'CHAM_ELEM_S'
@@ -117,6 +117,7 @@ C     ------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'FONCTION') THEN
 C     -----------------------------------
         FNC = NOMSD
+        CALL JEDETR(FNC//'.PARA')
         CALL JEDETR(FNC//'.PROL')
         CALL JEDETR(FNC//'.VALE')
 

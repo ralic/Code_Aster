@@ -1,4 +1,4 @@
-#@ MODIF partition Utilitai  DATE 15/11/2004   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF partition Utilitai  DATE 23/11/2004   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,9 +20,8 @@
 # RESPONSABLE ASSIRE A.ASSIRE
 
 import aster
-import string, os, time, sys, UserList
+import string, os, time, sys, UserList, types
 import Numeric as N
-#import numarray as N
 
 
 from Accas import _F
@@ -37,12 +36,12 @@ def enleve_doublons_liste(liste):
   """
 
   """ Au cas ou ca ne serait pas deja un vecteur numpy """  # Exemple
-  liste=N.sort(N.array(liste,copy=0))                           # [1, 2, 2, 3, 3, 4, 5]
-  liste_diff=liste[1:]-liste[:-1]                           # [1, 0, 1, 0, 1, 1]
+  liste=N.sort(N.array(liste,copy=0))                 # [1, 2, 2, 3, 3, 4, 5]
+  liste_diff=liste[1:]-liste[:-1]                     # [1, 0, 1, 0, 1, 1]
   liste_temp=N.nonzero(liste_diff)                    # [0, 2, 4, 5]
   liste_indice=N.zeros(liste_temp.shape[0]+1)
   liste_indice[0]=0
-  liste_indice[1:]=liste_temp+1                             # [0, 1, 3, 5, 6]
+  liste_indice[1:]=liste_temp+1                       # [0, 1, 3, 5, 6]
   liste2=N.take(liste,liste_indice)                   # [1, 2, 3, 4, 5]
   return liste2
 
@@ -111,9 +110,6 @@ class MAIL_PY :
     La numeration est 0..N-1 pour les noeuds et 0..M-1 pour les mailles
   """
 
-#   nom = nom_mailles
-#   dic = dic_mailles
-
   def __init__(self,nno=0,nma=0) :
 
     self.cn  = N.zeros((nno,3),N.Float)
@@ -152,6 +148,7 @@ class MAIL_PY :
 
 
 # -------------------------------------------------------------
+
   def get_connexite(self, nom, nma):
     co=CONNEC(nma)
     dico_connexite = aster.getcolljev(nom)
@@ -170,7 +167,13 @@ class MAIL_PY :
 
 # -------------------------------------------------------------
 
-  def FromAster(self,nom_maillage) :
+  def FromAster(self,nom) :
+
+    # On accepte le concept Aster ou bien la chaine texte de son nom
+    if type(nom)!=types.StringType:
+      nom_maillage = nom.nom
+    else:
+      nom_maillage = nom
 
     nom_maillage=string.ljust(nom_maillage,8)
 
@@ -192,9 +195,13 @@ class MAIL_PY :
 
     # groupe de noeuds
     Lno_groupno_tot = aster.getcolljev(nom_maillage+'.GROUPENO')
+
     Lno_groupno={}
     for key in Lno_groupno_tot :
-      Lno_groupno[key.strip()]=N.array(Lno_groupno_tot[key])-1
+      # Tolerance car parfois defi_group crée des groupes nuls à clé entiere
+      try:
+        Lno_groupno[key.strip()]=N.array(Lno_groupno_tot[key])-1
+      except: pass
     self.gno=Lno_groupno
 
     # groupe de mailles 
@@ -206,10 +213,62 @@ class MAIL_PY :
 
     del(Lma_groupma_tot)
 
+# -------------------------------------------------------------
+
+  def ToAster(self) :
+
+    try:
+      INFO_EXEC_ASTER = self.jdc.get_cmd('INFO_EXEC_ASTER')
+      DETRUIRE        = self.jdc.get_cmd('DETRUIRE')
+      LIRE_MAILLAGE   = self.jdc.get_cmd('LIRE_MAILLAGE')
+    except:
+      try:
+        from Cata.cata import INFO_EXEC_ASTER
+        from Cata.cata import DETRUIRE
+        from Cata.cata import LIRE_MAILLAGE
+      except:
+        print "\n\nERREUR : il faut lancer ce programme depuis Aster pour pouvoir \ngénérer un maillage Aster.\n\n"
+        sys.exit(1)
+
+    # Recuperation d'une unité logique libre
+    _UL=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
+    ul1=_UL['UNITE_LIBRE',1]
+    DETRUIRE(CONCEPT=(_F(NOM=_UL),), INFO=1)
+
+    # Sauvegarde du maillage dans un fichier .mail
+    fichier = 'fort.'+str(ul1)
+    f = open(fichier, 'w')
+    f.write( self.Voir_Mail() )
+    f.close()
+
+    # Récupération des concepts Aster présents dans la base
+# Note AA : ne marche pas encore bien :
+# Limitation : ne gere qu'un seul maillage genere par ToAster
+#
+#     nom='_MSH'
+#     try:
+#       self.jdc_recupere=CONTEXT.get_current_step()
+#       t_maillage=[]
+#       for i in self.jdc_recupere.sds_dict.keys( ):
+#         if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'maillage_sdaster':
+#           if (mail[0:4]==nom):
+#             t_maillage.append( i )
+# 
+#       num=len(_lst)+1
+#     except:
+#       num=0
+
+    # Lecture de ce fichier .mail pour l'injecter dans l'espace Aster
+    _SMESH_ = LIRE_MAILLAGE(UNITE = ul1)
+
+    return(_SMESH_)
+
+# -------------------------------------------------------------
 
   def __str__(self) :
     return self.Voir_Mail()
 
+# -------------------------------------------------------------
 
   def Voir_Mail(self) :
     """
@@ -249,16 +308,20 @@ class MAIL_PY :
       for gp in d_gp :
         l.append(entete)
         l.append('  ' + gp)
-        ch = '  '
-        for o in d_gp[gp] :
-          if len(ch) > 60 :
+        ch = ' '
+        i=0
+        for o in d_gp[gp]:
+          i+=1  # on ne met que 8 mailles sur une meme ligne
+#          if len(ch) > 60:
+          if (len(ch) > 60 or i>7):
             l.append(ch)
-            ch = '  '
+            ch = ' '
+            i=0
           ch = ch + prefixe + `o` + ' '
         l.append(ch)
         l.append('FINSF') ; l.append('%')            
 
-    l.append('FIN')
+    l.append('FIN\n')
     return string.join(l,'\n')
 
 

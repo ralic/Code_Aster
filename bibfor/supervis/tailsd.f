@@ -1,7 +1,7 @@
       SUBROUTINE TAILSD(NOM, NOMSD, VAL, NBVAL)
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 11/10/2004   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 22/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,39 +37,16 @@ C
       CHARACTER*8   SD8,K8BID
       CHARACTER*19  SD19
       CHARACTER*24  SD
-      INTEGER        IRET,IBID
-      REAL*8         RBID
+      INTEGER       IRET,IBID
+      REAL*8        RBID
       COMPLEX*16    CBID
 C
 C
-C  DETERMINE LE NOMBRE DE VALEURS DANS UNE LISTER8
-C ------------------------------------------------
-      IF ( NOM.EQ.'LIST_VALEURS') THEN
-        SD = NOMSD
-        SD(20:24) = '.VALE'
-        CALL JELIRA(SD,'LONMAX',VAL(1),K1BID)
-
-C
-C  DETERMINE LE NOMBRE DE GROUP_NO ET DE GROUP_MA D'UN MAILLAGE
-C -------------------------------------------------------------
-      ELSE IF ( NOM.EQ.'LIST_GROUP') THEN
-        VAL(1) = 0
-        VAL(2) = 0
-C   
-        SD8 = NOMSD
-        SD = SD8 // '.GROUPENO'
-        CALL JEEXIN(SD,IRET)
-        IF (IRET.NE.0) CALL JELIRA(SD,'NUTIOC',VAL(1),K8BID)
-C
-        SD = SD8 // '.GROUPEMA'
-        CALL JEEXIN(SD,IRET)
-        IF (IRET.NE.0) CALL JELIRA(SD,'NUTIOC',VAL(2),K8BID)
-
 C
 C  DETERMINE LE NOMBRE MAXIMUM DE CHAMPS ET DE PARAMETRES
 C  AINSI QUE LE NOMBRE EFFECTIF DE NUMEROS D'ORDRE POUR UNE SD RESULTAT
 C ---------------------------------------------------------------------
-      ELSE IF ( NOM.EQ.'LIST_RESULTAT') THEN
+      IF ( NOM.EQ.'LIST_RESULTAT') THEN
         VAL(1) = 0
         VAL(2) = 0
         VAL(3) = 0
@@ -88,7 +65,10 @@ C ---------------------------------------------------------------------
 C   
         SD = NOMSD
         CALL JEEXIN(SD,IRET)
-        IF (IRET.NE.0) CALL JELIRA(SD,'NMAXOC',VAL(1),K8BID)
+        IF (IRET.NE.0) THEN
+           CALL JELIRA(SD,'NUTIOC',VAL(1),K8BID)
+           IF (VAL(1).EQ.0) CALL JELIRA(SD,'NMAXOC',VAL(1),K8BID)
+        ENDIF
       ENDIF
 
       END

@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF ENTETE  DATE 23/11/2004   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,7 +126,7 @@ class maillage_sdaster(ASSD):
         [ (gno1, nb noeuds  gno1), ...] """
     nommail=self.get_name()
     dic_gpno=aster.getcolljev(nommail.ljust(8)+".GROUPENO")
-    return [(gpno,len(dic_gpno[gpno])) for gpno in dic_gpno]
+    return [(gpno.strip(),len(dic_gpno[gpno])) for gpno in dic_gpno]
   def LIST_GROUP_MA(self) :
     """ retourne la liste des groupes de mailles sous la forme :
         [ (gma1, nb mailles gma1, dime max des mailles gma1), ...] """
@@ -139,7 +139,7 @@ class maillage_sdaster(ASSD):
     dimama=[catama[ltyma[ma-1]][0] for ma in aster.getvectjev(nommail+".TYPMAIL")]
     for grp in dic_gpma.keys():
         dim=max([dimama[ma-1] for ma in dic_gpma[grp]])
-        ngpma.append((grp,len(dic_gpma[grp]),dim))
+        ngpma.append((grp.strip(),len(dic_gpma[grp]),dim))
     return ngpma
 
 

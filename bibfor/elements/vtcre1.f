@@ -2,7 +2,7 @@
      &                  NUMSD,NEQ)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ELEMENTS  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -73,9 +73,9 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------
 
 C DECLARATION VARIABLES LOCALES
       INTEGER      JCHAMP,JREFN,IBID,IERD,JNEQ,LCHP,NBREFN,
-     &             IFM,NIV
+     &             IFM,NIV,IINF
       CHARACTER*8  K8BID
-      CHARACTER*24 VALE,REFE,DESC
+      CHARACTER*24 VALE,REFE,DESC,INFOFE
 
       DATA VALE/'                   .VALE'/
       DATA REFE/'                   .REFE'/
@@ -83,6 +83,7 @@ C DECLARATION VARIABLES LOCALES
             
 C------------------------------------------------------------------
       CALL JEMARQ()
+      INFOFE='FFFFFFFF'
 
 C ------------------------------- REFE --------------------------------
 C --- AFFECTATION DES INFORMATIONS DE REFERENCE A CHAMP
@@ -96,7 +97,7 @@ C NOM DE LA SD_FETI PRIS DANS LE .REFN DU NUME_DDL SOUS-JACENT
 C NUME_DDL ET DONC CHAM_NO ETENDU, OUI OU NON ?      
       CALL JELIRA(NUMEDD(1:14)//'.NUME.REFN','LONMAX',NBREFN,K8BID)
       IF (NBREFN.NE.4) THEN
-        IF (NIV.GE.3) WRITE(IFM,*)
+        IF (NIV.GE.2) WRITE(IFM,*)
      &       '<FETI/VTCRE1> NUME_DDL/CHAM_NO NON ETENDU POUR FETI',
      &       NUMEDD(1:14)//'.NUME.REFN'      
         METHOD='XXXX'
@@ -107,7 +108,11 @@ C NUME_DDL ET DONC CHAM_NO ETENDU, OUI OU NON ?
         METHOD = ZK24(JREFN+2)
         SDFETI = ZK24(JREFN+3)
         ZK24(JCHAMP+2) = METHOD
-        ZK24(JCHAMP+3) = SDFETI 
+        ZK24(JCHAMP+3) = SDFETI
+        IF ((METHOD(1:4).EQ.'FETI').OR.(NUMSD.GT.0)) THEN
+          CALL JEVEUO('&&'//SDFETI(1:17)//'.FINF','L',IINF)
+          INFOFE=ZK24(IINF)
+        ENDIF         
       ENDIF
       ZK24(JCHAMP) = ZK24(JREFN)
       ZK24(JCHAMP+1) = NUMEDD(1:14)//'.NUME'      
@@ -137,8 +142,8 @@ C --- CHANGER LA GRANDEUR
       CALL SDCHGD(CHAMP,TYPE)
 
 C MONITORING
-      IF ((NIV.GE.3).AND.((METHOD(1:4).EQ.'FETI').OR.(NUMSD.GT.0)))
-     &  THEN
+      IF ((INFOFE(1:1).EQ.'T').AND.((METHOD(1:4).EQ.'FETI')
+     &  .OR.(NUMSD.GT.0))) THEN
         WRITE(IFM,*)
         WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
         IF (NUMSD.EQ.0) THEN

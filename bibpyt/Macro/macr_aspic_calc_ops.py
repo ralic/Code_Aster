@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 22/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -368,17 +368,11 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                           CARA_ELEM  = carael ,
                           INFO       = INFO   , **motscles)
 #
-  motscles = {}
-  if ECHANGE!=None :
-     motscles['EXCIT']=_F(CHARGE = chmeth)
   nomres = CALC_ELEM( reuse      = nomres,
                       RESULTAT   = nomres ,
-                      MODELE     = modele ,
-                      CHAM_MATER = affmat ,
-                      CARA_ELEM  = carael ,
                       TOUT_ORDRE = 'OUI'  ,
                       OPTION     = ('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','EQUI_ELNO_SIGM') ,
-                      INFO       = INFO   , **motscles)
+                      INFO       = INFO ,)
 #
 #-----------------------------------------------------------------------
   if TYPE_MAILLAGE[:4]=='SAIN' :
@@ -693,7 +687,6 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
           if COMP_ELAS!=None:  motscles['COMP_ELAS']=  _F(TOUT     = 'OUI',
                                                           RELATION = COMP_ELAS['RELATION'],)
           if COMP_INCR!=None:  motscles['COMP_INCR']=  _F(RELATION = COMP_INCR['RELATION'],)
-          if mcfex!=[]:       motscles['EXCIT'] =mcfex
           print motscles
           __gtheta = CALC_G_THETA_T( MODELE     = modele,
                                      CHAM_MATER = affmat,
@@ -730,7 +723,6 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
           motscles={}
           if COMP_ELAS!=None:  motscles['COMP_ELAS'    ]=  _F(TOUT     = 'OUI',
                                                               RELATION = COMP_ELAS['RELATION'],)
-          if mcfex!=[]:       motscles['EXCIT'] =mcfex
           if FERME:
                                motscles['LISSAGE_THETA']= 'LAGRANGE'
                                motscles['LISSAGE_G'    ]= 'LAGRANGE'

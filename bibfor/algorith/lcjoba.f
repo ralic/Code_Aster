@@ -1,7 +1,7 @@
-      SUBROUTINE LCJOBA (NDIM, TYPMOD, IMATE, CRIT, EPSM,
+      SUBROUTINE LCJOBA (NDIM, TYPMOD, IMATE, CRIT, SU,
      &                   DEPS, VIM,OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 22/11/2004   AUTEUR NDOMING N.DOMINGUEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8        TYPMOD(2)
       CHARACTER*16       OPTION
       INTEGER            NDIM, IMATE
-      REAL*8             EPSM(4), DEPS(4), VIM(6)
+      REAL*8             SU(2), EPSM(4), DEPS(4), VIM(6)
       REAL*8             SIG(2), VIP(6), DSIDEP(2,2),CRIT(3)
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT ENDOMMAGEABLE DE LA LIAISON ACIER-BETON :
@@ -71,7 +71,7 @@ C ----------------------------------------------------------------------
       CHARACTER*2 CODRET(14)
       CHARACTER*8 NOMRES(14)
       INTEGER     I,J,K,L,ITER,ITEMAX,NDIMSI
-      REAL*8      EPS(4),EPSE(4),E,GTT
+      REAL*8      EPS(4),EPSE(4),E,GTT,HPEN
       REAL*8      BDN, ADN, EPSTR0
       REAL*8      BD1, AD1, GAMD0,BD2, AD2, GAMD2
       REAL*8      FC,FA,VIFROT,SIGNO,I1
@@ -124,6 +124,7 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
 
        CALL RCVALA(IMATE,' ','JOINT_BA',1,' ',0.D0,14,
      &            NOMRES,VALRES,CODRET,'FM')
+      HPEN   = VALRES(1)
       GTT    = VALRES(2)
       GAMD0  = VALRES(3)
       AD1    = VALRES(4)
@@ -155,9 +156,17 @@ C ======================================================================
 C    1 - CALCUL DES DEFORMATIONS MECANIQUES
 C--------------------------------------------------------
 
+C  - TRANSFORMATION DES SAUTS EN DEFORMATIONS
+
+      CALL R8INIR(4, 0.D0, EPSM,1)
+
+      EPSM(2) = SU(1)/HPEN
+      EPSM(4) = SU(2)/HPEN
+
 C  -  MISE A JOUR DE LA DEFORMATION TOTALE
 
       CALL R8INIR(4, 0.D0, EPS,1)
+      CALL R8INIR(4, 0.D0, DEPS,1)
       IF (RESI) THEN
         DO  10 K = 2, NDIMSI
           EPS(K) = EPSM(K) + DEPS(K)
@@ -368,6 +377,15 @@ C ------------------------------------------------------------
         DSIDEP(1,1)=E*(1.D0-DFN)   
         DSIDEP(2,2)=GTT*(1.D0-DFT) 
 
+      ENDIF
+
+C   2 -  TRANSFORMATION DES DIMENSIONS POUR UTILISER DANS 
+C        L ELEMENT JOINT
+C ------------------------------------------------------------     	  
+
+      IF (RIGI)  THEN 
+        DSIDEP(1,1)= DSIDEP(1,1)/HPEN   
+        DSIDEP(2,2)= DSIDEP(2,2)/HPEN
       ENDIF
  
       END

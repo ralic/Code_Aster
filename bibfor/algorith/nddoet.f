@@ -14,7 +14,7 @@
       CHARACTER*24  DEPMOI,VITPLU,ACCPLU,SIGMOI,VARMOI,CARCRI
       CHARACTER*19  SOLVEU,MAPREC,LISCHA,PARTPS
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 13/09/2004   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 22/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,6 +34,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ACBHHCD G.DEVESA
 C TOLE CRP_21
+C TOLE CRP_20
 C
 C     D Y N A M I Q U E  N O N  L I N E A I R E
 C     SAISIE OU CREATION DES CHAMPS A L'ETAT INITIAL
@@ -185,6 +186,12 @@ C ======================================================================
         CALL GETVR8('ETAT_INIT','INST_ETAT_INIT',1,1,1,INSTAM,N2)
         IF (N2.EQ.0) CALL GETVR8('INCREMENT','INST_INIT',1,1,1,INSTAM,
      &                           N2)
+        IF (N2.EQ.0) THEN
+           CALL GETVID('INCREMENT','LIST_INST',1,1,1,LISINS,N1)
+           CALL JEVEUO(LISINS//'.VALE','L',JINST)
+           INSTAM = ZR(JINST)
+        END IF
+        INST = INSTAM
 
       END IF
 

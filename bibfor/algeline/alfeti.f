@@ -2,7 +2,7 @@
      &                  TESTCO,NBREOR,TYREOR,PRECO,SCALIN)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,6 +41,7 @@ C     ------------------------------------------------------------------
 C     ASTER INFORMATIONS:
 C       26/01/04 (OB): CREATION.
 C       03/06/04 (OB): MODIFICATION POUR MODES DE CORPS RIGIDES.
+C       16/11/04 (OB): RAJOUT CALCUL SPECTRE PT*FI*P
 C----------------------------------------------------------------------
 C RESPONSABLE BOITEAU O.BOITEAU
 C CORPS DU PROGRAMME
@@ -74,20 +75,32 @@ C DECLARATION VARIABLES LOCALES
      &             IRR,IRG,IRP,IR1,IR2,ITER,IFM,NIV,IRET,JCRI,NBI1,JCRK,
      &             OPTION,IPSRO,IDDRO,NBREO2,IDDFRO,IAUX1,IAUX2,ITER1,J,
      &             NBREO1,IAUX3,IR3,IRH,IAD,JGI,JGITGI,DIMGI,ITEST,
-     &             OPTIOP,IVLAGB
+     &             OPTIOP,IVLAGB,IDO,NFREQ,NBVECT,ITEST1,
+     &             IPARAM(11),IPNTR(14),ITEST2,LONWL,ITEST3,ITEST4,
+     &             ITEST5,ITEST6,INFO,ITEST7,ITEST8,IINF
       REAL*8       R8NRM2,ANORM,ANORMK,ANORM0,EPSIK,PARAAF,R8DOT,ALPHA,
-     &             ALPHAN,ALPHAD,BETA,BETAD,BETAN,R8MIEM,RMIN,RAUX
+     &             ALPHAN,ALPHAD,BETA,BETAD,BETAN,R8MIEM,RMIN,RAUX,TOL
       CHARACTER*8  NOMSD,K8BID
-      CHARACTER*24 COLAUX,COLAUI,COLAU2,NOMGI,NOMGGT
+      CHARACTER*24 COLAUX,COLAUI,COLAU2,NOMGI,NOMGGT,INFOFE
       CHARACTER*32 JEXNOM,JEXNUM
       LOGICAL      REORTH,IGSMKP,GS,LUMPE,LRIGID
-      
+
+C COMMON ARPACK
+      INTEGER LOGFIL,NDIGIT,MGETV0,
+     &  MNAUPD,MNAUP2,MNAITR,MNEIGH,MNAPPS,MNGETS,MNEUPD      
+      COMMON /DEBUG/
+     &  LOGFIL,NDIGIT,MGETV0,
+     &  MNAUPD,MNAUP2,MNAITR,MNEIGH,MNAPPS,MNGETS,MNEUPD
+           
 C CORPS DU PROGRAMME
       CALL JEMARQ()
 C PLUS PETITE VALEUR REELLE DISCERNABLE
       RMIN=R8MIEM()**(2.0D+0/3.0D+0)      
 C RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
+      CALL JEVEUO('&&'//SDFETI(1:17)//'.FINF','L',IINF)
+      INFOFE=ZK24(IINF)
+      
 C-----PARAMETRE D'AFFICHAGE DE LA DECROISSANCE DU RESIDU
 C (SI ON GAGNE PARAAF * 100%)      
       PARAAF = 0.1D0
@@ -119,10 +132,43 @@ C VECTEURS TEMPORAIRES
       CALL WKVECT('&&FETI.VECNBI.AUX1','V V R',NBI,IR1)
       CALL WKVECT('&&FETI.VECNBI.AUX2','V V R',NBI,IR2)
       CALL WKVECT('&&FETI.VECNBI.AUX3','V V R',NBI,IR3)
-C VECTEURS TEMPORAIRES POUR TEST
-      IF (NIV.GE.6)
-     &  CALL WKVECT('&&FETI.TEST','V V R',NBI,ITEST)
-            
+C INIT. TEMPORAIRES POUR TEST      
+      IF (INFOFE(8:8).EQ.'T')
+     &  CALL WKVECT('&&FETI.TEST','V V R',NBI,ITEST)      
+      IF (INFOFE(7:7).EQ.'T') THEN
+C NIVEAU D'IMPRESSION ARPACK
+        NDIGIT=-3
+        LOGFIL=IFM
+        MGETV0=0
+        MNAUPD=0
+        MNAUP2=0
+        MNAITR=0
+        MNEIGH=0
+        MNAPPS=0
+        MNGETS=0
+        MNEUPD=0
+        IDO=0
+        INFO=0
+        NFREQ=NBI-2
+        NBVECT=NBI
+        IF (INFOFE(8:8).EQ.'F')
+     &    CALL WKVECT('&&FETI.TEST','V V R',NBI,ITEST)
+        CALL WKVECT('&&FETI.TEST1','V V R',NBI*NBVECT,ITEST1)
+        CALL WKVECT('&&FETI.TEST2','V V R',3*NBI,ITEST2)        
+        IPARAM(1) = 1
+        IPARAM(3) = 10
+        IPARAM(4) = 1
+        IPARAM(7) = 1
+        LONWL = 3*NBVECT**2+6*NBVECT
+        CALL WKVECT('&&FETI.TEST3','V V R',LONWL,ITEST3)
+        CALL WKVECT('&&FETI.TEST4','V V L',NBVECT,ITEST4)
+        CALL WKVECT('&&FETI.TEST5','V V R',2*(NFREQ+1),ITEST5)
+        CALL WKVECT('&&FETI.TEST6','V V R',3*NBVECT,ITEST6)
+        CALL WKVECT('&&FETI.TEST7','V V R',NBI,ITEST7)
+        CALL WKVECT('&&FETI.TEST8','V V R',NBI,ITEST8)
+        TOL=1.D-15
+      ENDIF
+                 
 C VECTEUR INDIQUANT SI UN SOUS-DOMAINE EST FLOTTANT                 
       CALL JEVEUO(MATAS//'.FETF','L',IFETF)
 C VECTEUR DE LA LISTE DES NOMBRES DE DDLS PAR SOUS-DOMAINE
@@ -189,12 +235,15 @@ C NOMS DES OBJETS JEVEUX STOCKANT GI ET (GI)T*GI SI LRIGID=.TRUE.
       NOMGI='&&FETI.GI.R'
       NOMGGT='&&FETI.GITGI.R'      
       CALL FETGGT(NBSD,MATAS,ZI(IFETF),ZI(IFETH),SDFETI,LRIGID,NBI,
-     &            COLAUI,NOMGI,JGI,NOMGGT,JGITGI,DIMGI)
-      
+     &            COLAUI,NOMGI,NOMGGT,DIMGI)
+      IF (LRIGID) THEN
+        CALL JEVEUO(NOMGI,'L',JGI)
+        CALL JEVEUO(NOMGGT,'L',JGITGI)
+      ENDIF     
 C ---------------------------------------------------
 C MONITORING
 C ---------------------------------------------------
-      IF (NIV.GE.3) THEN
+      IF (INFOFE(1:1).EQ.'T') THEN
         WRITE(IFM,*)
         WRITE(IFM,*)'*****************************************'
         WRITE(IFM,*)'<FETI/ALFETI> PARAM DE RESOLUTION ',NITER,EPSI
@@ -213,7 +262,7 @@ C ---------------------------------------------------
 C CALCUL DU VECTEUR LAGRANGE_FETI INITIAL LANDA0 (ZR(IVLAGI))
 C ---------------------------------------------------
       CALL FETINL(NBI,ZR(IVLAGI),ZR(JGI),JGITGI,MATAS,CHSECM,LRIGID,
-     &            DIMGI,NBSD,ZI(IFETF),ZI(IFETH))
+     &            DIMGI,NBSD,ZI(IFETF),ZI(IFETH),SDFETI)
 
 C ---------------------------------------------------      
 C CALCUL DU RESIDU INITIAL (ZR(IRR)): R0=OPFETI*LANDA0 - D
@@ -228,7 +277,7 @@ C CALCUL DU RESIDU PROJETE INITIAL (ZR(IRP)): G0=P*R0
 C ---------------------------------------------------
       OPTIOP=1
       CALL FETPRJ(NBI,ZR(IRR),ZR(IRG),ZR(JGI),JGITGI,LRIGID,DIMGI,
-     & OPTIOP)
+     & OPTIOP,SDFETI)
      
 C ---------------------------------------------------      
 C CALCUL DU RESIDU PRECOND PROJETE P INITIAL (ZR(IRH)): H0=P*M-1*G0
@@ -237,7 +286,7 @@ C ---------------------------------------------------
      &            COLAUX,COLAUI,SDFETI,PRECO,COLAU2)
       OPTIOP=1
       CALL FETPRJ(NBI,ZR(IR2),ZR(IRH),ZR(JGI),JGITGI,LRIGID,DIMGI,
-     &            OPTIOP)
+     &            OPTIOP,SDFETI)
      
 C ---------------------------------------------------         
 C CALCUL DE LA DD INITIALE (ZR(IRP)): P0=H0 (=G0 SI NON PRECOND)
@@ -260,7 +309,7 @@ C D'ARRET: EPSIK
 C ---------------------------------------------------
       OPTIOP=1
       CALL FETPRJ(NBI,ZR(IRR),ZR(IR1),ZR(JGI),JGITGI,LRIGID,DIMGI,
-     &            OPTIOP)
+     &            OPTIOP,SDFETI)
       ANORM=R8NRM2(NBI,ZR(IR1),1)
       EPSIK=EPSI*ANORM 
       IF (NIV.GE.2) WRITE (IFM,1020)ANORM,EPSIK,EPSI
@@ -322,6 +371,45 @@ C ---------------------------------------------------
         ZR(IVLAGB+I)=ZR(IVLAGI+I)
         ZR(IVLAGI+I)=0.D0
    30 CONTINUE
+
+C TEST DE DEFINIE-POSITIVITE DE FI
+C CALCUL DES VALEURS PROPRES DE (FI)
+      IF (INFOFE(7:7).EQ.'T') THEN
+   31   CONTINUE         
+        CALL DNAUPD(IDO,'I',NBI,'SR',NFREQ,TOL,ZR(ITEST),NBVECT,
+     &     ZR(ITEST1),NBI,IPARAM,IPNTR,ZR(ITEST2),ZR(ITEST3),LONWL,INFO,
+     &     NBI,0.717D0)
+        IF (ABS(IDO).EQ.1) THEN
+          CALL FETPRJ(NBI,ZR(ITEST2+IPNTR(1)-1),ZR(ITEST7),ZR(JGI),
+     &       JGITGI,LRIGID,DIMGI,1,SDFETI)     
+          CALL FETFIV(NBSD,NBI,ZR(ITEST7),ZR(IR2),ZR(ITEST8),
+     &      MATAS,ZI(IFETF),ZI(IFETH),COLAUX,COLAUI,SDFETI)
+          CALL FETPRJ(NBI,ZR(ITEST8),ZR(ITEST2+IPNTR(2)-1),ZR(JGI),
+     &       JGITGI,LRIGID,DIMGI,1,SDFETI)     
+          GOTO 31
+        ELSE IF (IDO.EQ.2) THEN
+          DO 32 I=1,NBI
+            ZR(ITEST2+IPNTR(2)-1+I-1)=ZR(ITEST2+IPNTR(1)-1+I-1)
+   32     CONTINUE
+          GOTO 31
+        ENDIF
+        IF ((INFO.NE.0).OR.((IDO.EQ.99).AND.(IPARAM(5).LT.NFREQ)))
+     &    CALL UTMESS('A','ALFETI','PB 1 TEST SPECTRE FI PAR ARPACK !')
+        INFO=0
+        CALL DNEUPD(.FALSE.,'A',ZL(ITEST4),ZR(ITEST5),ZR(ITEST5+NFREQ),
+     &    ZR(ITEST1),NBI,0.D0,0.D0,ZR(ITEST6),'I',NBI,'SR',NFREQ,0.D0,
+     &    ZR(ITEST),NBVECT,ZR(ITEST1),NBI,IPARAM,IPNTR,ZR(ITEST2),
+     &    ZR(ITEST3),LONWL,INFO)
+        IF (INFO.NE.0)
+     &    CALL UTMESS('A','ALFETI','PB 2 TEST SPECTRE FI PAR ARPACK !')
+        WRITE(IFM,*)
+        WRITE(IFM,*)'********* NBI-2 VP PLUS BASSES DE P*FI*P *********'
+        DO 33 I=1,IPARAM(5)
+          WRITE(IFM,1070)I,ZR(ITEST5+I-1),ZR(ITEST5+NFREQ+I-1)
+   33   CONTINUE
+        WRITE(IFM,*)'**************************************************'
+        WRITE(IFM,*)
+      ENDIF   
 C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C ----  BOUCLES DU GCPPC DE FETI
@@ -378,10 +466,10 @@ C STOCKAGE ZK.PK SI REORTHO
         ENDIF
 
 C STOCKAGE ANCIENNE DIRECTION DE DESCENTE SI TEST
-        IF (NIV.GE.6) THEN
+        IF (INFOFE(8:8).EQ.'T') THEN
           OPTIOP=1
           CALL FETPRJ(NBI,ZR(IRR),ZR(IR1),ZR(JGI),JGITGI,LRIGID,DIMGI,
-     &                OPTIOP)
+     &                OPTIOP,SDFETI)
           DO 60 I=0,NBI1
             ZR(ITEST+I)=ZR(IR1+I)
    60     CONTINUE
@@ -400,10 +488,10 @@ C ----  CALCUL DE LA PROJECTION 1 (ZR(IRG)): GK+1 = P * RK+1
 C ---------------------------------------------------
         OPTIOP=1
         CALL FETPRJ(NBI,ZR(IRR),ZR(IRG),ZR(JGI),JGITGI,LRIGID,DIMGI,
-     &              OPTIOP)
+     &              OPTIOP,SDFETI)
      
 C TEST ORTHOGONALITE DU GCPPC     
-        IF (NIV.GE.6) THEN
+        IF (INFOFE(8:8).EQ.'T') THEN
           RAUX=R8DOT(NBI,ZR(IRG),1,ZR(ITEST),1)
           WRITE(IFM,*)'TEST <PRI,PRI-1>',RAUX
           RAUX=R8DOT(NBI,ZR(IRG),1,ZR(IRP),1)
@@ -443,7 +531,7 @@ C     LANDA_SOL =  LANDA0 +    P * LANDA_DE_TRAVAIL_CONVERGE
 C     ZR(IVLAGI)  ZR(IVLAGB)        ZR(IR1)
           OPTIOP=1
           CALL FETPRJ(NBI,ZR(IVLAGI),ZR(IR1),ZR(JGI),JGITGI,LRIGID,
-     &                DIMGI,OPTIOP)
+     &                DIMGI,OPTIOP,SDFETI)
           DO 65 I=0,NBI1
             ZR(IVLAGI+I)=ZR(IVLAGB+I)+ZR(IR1+I)
    65     CONTINUE
@@ -477,17 +565,17 @@ C PHASE DE SCALING 2 (ZR(IR1)): AUX1 = A * AUX2
 C CALCUL DE LA PROJECTION 2 (ZR(IRH)): HK+1 = P * AUX1
         OPTIOP=1
         CALL FETPRJ(NBI,ZR(IR3),ZR(IRH),ZR(JGI),JGITGI,LRIGID,DIMGI,
-     &              OPTIOP)
+     &              OPTIOP,SDFETI)
 
 C ---------------------------------------------------
 C ----  NEW DIRECTION DE DESCENTE (ZR(IRP)): PK+1=HK+1 + ...
 C       AVEC EVENTUELLEMENT UNE PHASE DE REORTHONORMALISATION
 C ---------------------------------------------------           
         CALL FETREO(REORTH,ALPHAN,NBI,IRG,ITER,NBREOR,IRP,IDDFRO,
-     &              IDDRO,IPSRO,GS,IGSMKP,RMIN,IRH)
+     &              IDDRO,IPSRO,GS,IGSMKP,RMIN,IRH,SDFETI)
 
 C TEST ORTHOGONALITE DU GCPPC     
-        IF (NIV.GE.6) THEN
+        IF (INFOFE(8:8).EQ.'T') THEN
           RAUX=R8DOT(NBI,ZR(IRZ),1,ZR(IRP),1)
           WRITE(IFM,*)'TEST <DI,FI*DI-1>',RAUX
         ENDIF  
@@ -522,6 +610,7 @@ C FORMAT AFFICHAGE
      &       ' ITERATIONS'/2X,32 ('*'),/)
  1060 FORMAT('! FETI: NMAX_ITER FIXE A NB_NOEUD_INTERFACE/2= ',I6,' !')
  1065 FORMAT('! FETI: NB_REORTHO_DD FIXE A NMAX_ITER/4= ',I6,' !')      
+ 1070 FORMAT('VALEUR PROPRE N ',I3,' ',D11.4,' + I ',D11.4)
 
 C DESTRUCTION DES OBJETS JEVEUX TEMPORAIRES
   200 CONTINUE
@@ -545,7 +634,17 @@ C DESTRUCTION DES OBJETS JEVEUX TEMPORAIRES
         CALL JEDETR(NOMGI)
         CALL JEDETR(NOMGGT)
       ENDIF
-      IF (NIV.GE.6)
-     &  CALL JEDETR('&&FETI.TEST')      
+      IF (INFOFE(8:8).EQ.'T') CALL JEDETR('&&FETI.TEST')      
+      IF (INFOFE(7:7).EQ.'T') THEN
+        CALL JEDETR('&&FETI.TEST')
+        CALL JEDETR('&&FETI.TEST1')
+        CALL JEDETR('&&FETI.TEST2')
+        CALL JEDETR('&&FETI.TEST3')
+        CALL JEDETR('&&FETI.TEST4')
+        CALL JEDETR('&&FETI.TEST5')
+        CALL JEDETR('&&FETI.TEST6')
+        CALL JEDETR('&&FETI.TEST7')
+        CALL JEDETR('&&FETI.TEST8')
+      ENDIF           
       CALL JEDEMA()
       END

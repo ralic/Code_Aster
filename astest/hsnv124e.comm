@@ -1,5 +1,5 @@
 
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 22/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TEST PHI2AS NUMERO 1 MODELISATION BARRE ECROUISSAGE CINEMATIQUE LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -253,11 +253,8 @@ U2=STAT_NON_LINE(MODELE=MOMECA,
                                 ITER_INTE_MAXI=50,
                                 ITER_INTE_PAS=0,
                                 RESO_INTE='IMPLICITE',),);
-U2=CALC_ELEM(reuse=U2,   MODELE=MOMECA,
-                    CHAM_MATER=CHMATER,
-                 CARA_ELEM=CARAELEM,
+U2=CALC_ELEM(reuse=U2,   
                     RESULTAT=U2,
-                      EXCIT=_F( CHARGE = CHR_TEMP,  ),
                       OPTION=( 'SIEF_ELNO_ELGA', )
                    )
 

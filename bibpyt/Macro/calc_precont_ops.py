@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF calc_precont_ops Macro  DATE 22/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -365,10 +365,6 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                    
   __EV1 = CALC_NO( reuse    = __EV1,
                    RESULTAT = __EV1,
-                   MODELE   = __M_CA,
-                   CARA_ELEM= CARA_ELEM,
-                   EXCIT=(_F(CHARGE = __B_CA),
-                          _F(CHARGE = __C_CN), ),
                    GROUP_MA = __GROUP_MA_A,
                    OPTION = 'FORC_NODA' )
                            

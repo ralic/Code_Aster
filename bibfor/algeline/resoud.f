@@ -2,7 +2,7 @@
      +                    CHASOL, CRITEZ )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -147,8 +147,9 @@ C     -----------------------------------------------
            ARG1=MATAS
          ELSE
            ARG1=ZK24(IFETM+IDD-1)
-         ENDIF                      
-          CALL JELIRA(ARG1//'.REFA','DOCU',IBID,ETAMAT)
+         ENDIF
+         CALL JELIRA(ARG1//'.REFA','DOCU',IBID,ETAMAT)
+
           IF (ETAMAT.NE.'DECP'.AND.ETAMAT.NE.'DECT')
      +      CALL UTMESS('F','RESOUD','  PAS DE RESOLUTION '//
      +       'CAR LA MATRICE '//MATAS//' N"EST PAS DECOMPOSEE.' )

@@ -3,7 +3,7 @@ C     ------------------------------------------------------------------
 C     COMBINAISON LINEAIRE DE CHAM_NO OU DE CHAM_ELEM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,14 +65,14 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C DECLARATION VARIABLES LOCALES
       INTEGER      IBID,IREFE,IDIME,NBSD,IFETC,IDD,KFETC,I,IVFETC,IFM,
      &             NIV,ICMB,NBVALE,NBDESC,NBREFE,JDESC,JREFE,IRET,KDESC,
-     &             KVALE,KREFE,LVALE,ICONST,JVALE,IVAL
+     &             KVALE,KREFE,LVALE,ICONST,JVALE,IVAL,IINF
       REAL*8       DIMAG
       COMPLEX*16   C8CST
       CHARACTER*4  DOCU,TYPE
       CHARACTER*5  REFE,DESC,VALE,FETC,FETA
       CHARACTER*8  K8B,NOMSD
       CHARACTER*19 CH19,CH19R
-      CHARACTER*24 METHOD,SDFETI,METHO1,SDFET1,K24B
+      CHARACTER*24 METHOD,SDFETI,METHO1,SDFET1,K24B,INFOFE
       CHARACTER*32 JEXNUM
 C     ------------------------------------------------------------------
 
@@ -124,18 +124,18 @@ C ON VERIFIE QUE TOUTE LES CHAM_NO DE LA LISTE SONT HOMOGENES
         IF (IRET.NE.0) THEN
           CALL JELIRA(K24B,'LONMAX',NBREFE,K8B)
         ELSE
-          IF (NIV.GE.3) 
+          IF (NIV.GE.2) 
      &      WRITE(IFM,*)'<FETI/VTCMBL> CHAM_NO SANS REFE ',K24B(1:19)
           NBREFE=0
         ENDIF     
         IF (NBREFE.NE.4) THEN
-          IF (NIV.GE.3) 
+          IF (NIV.GE.2) 
      &      WRITE(IFM,*)'<FETI/VTCMBL> CHAM_NO NON ETENDU POUR FETI ',
      &      K24B(1:19)
         ELSE
           CALL JEVEUO(K24B,'L',IREFE)      
           METHOD=ZK24(IREFE+2)
-          SDFETI=ZK24(IREFE+3)
+          SDFETI=ZK24(IREFE+3)       
         ENDIF
   
         DO 10 ICMB=2,NBCMB
@@ -144,7 +144,7 @@ C ON VERIFIE QUE TOUTE LES CHAM_NO DE LA LISTE SONT HOMOGENES
           IF (IRET.NE.0) THEN
             CALL JELIRA(K24B,'LONMAX',NBREFE,K8B)
           ELSE
-            IF (NIV.GE.3) 
+            IF (NIV.GE.2) 
      &        WRITE(IFM,*)'<FETI/VTCMBL> CHAM_NO SANS REFE ',K24B(1:19)
             NBREFE=0
           ENDIF   
@@ -176,7 +176,11 @@ C POUR EVITER (NBCMB-1)*NBSD APPELS A JEVEUO !
           CH19=NOMCH(ICMB)
           CALL JEVEUO(CH19//FETC,'L',IFETC)
           ZI(IVFETC+ICMB-1)=IFETC       
-   20   CONTINUE                         
+   20   CONTINUE
+        CALL JEVEUO('&&'//SDFETI(1:17)//'.FINF','L',IINF)
+        INFOFE=ZK24(IINF)
+      ELSE
+        INFOFE='FFFFFFFF'                            
       ENDIF
          
 C-----------------------------------------------------------------------
@@ -221,15 +225,14 @@ C ALEATOIRES
         ENDIF       
         CALL JEEXIN(CH19R//VALE,IRET)
         IF (IRET.EQ.0) THEN
-          CALL WKVECT(CH19R//DESC  ,'V V I',NBDESC,KDESC)
-          CALL WKVECT(CH19R//VALE  ,'V V '//TYPE,NBVALE,KVALE)
+          CALL WKVECT(CH19R//DESC,'V V I',NBDESC,KDESC)
+          CALL WKVECT(CH19R//VALE,'V V '//TYPE,NBVALE,KVALE)
           CALL WKVECT(CH19R//REFE,'V V K24',NBREFE,KREFE)
 C SI FETI CONSTITUTION DE L'OBJET JEVEUX CHPRESS.FETC COMPLEMENTAIRE
           IF ((NBSD.GT.0).AND.(IDD.EQ.0))         
      &      CALL WKVECT(CH19R//FETC,'V V K24',NBSD,KFETC)
         ELSE
-          CALL JEVEUO(CH19R//DESC  ,'E',KDESC)
-          CALL JEVEUO(CH19R//VALE  ,'E',KVALE)
+          CALL JEVEUO(CH19R//DESC,'E',KDESC)
           CALL JEVEUO(CH19R//REFE,'E',KREFE)
 C SI FETI CONNEXION A L'OBJET JEVEUX CHPRESS.FETC COMPLEMENTAIRE
           IF ((NBSD.GT.0).AND.(IDD.EQ.0))
@@ -326,7 +329,9 @@ C-----------------------------------------------------------------------
 C --- FIN BOUCLE CHAM_GD
 C-----------------------------------------------------------------------
   100   CONTINUE
-  
+
+C   IL EST NECESSAIRE D'ACTUALISER KVALE SI LE RESULTAT EST DANS NOMCH()
+        CALL JEVEUO(CH19R//VALE,'E',KVALE)
         IF (TYPE(1:1).EQ.'R') THEN
           DO 500 IVAL = 0,NBVALE-1
             ZR(KVALE+IVAL) = ZR(LVALE+IVAL)
@@ -342,7 +347,7 @@ C L'ITERATION SUIVANTE
         CALL JEDETR('&&VTCMBL.VALE')
 
 C MONITORING
-        IF ((NIV.GE.3).AND.(NBSD.GT.0)) THEN
+        IF ((INFOFE(1:1).EQ.'T').AND.(NBSD.GT.0)) THEN
           WRITE(IFM,*)
           WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
           IF (IDD.EQ.0) THEN
@@ -353,13 +358,13 @@ C MONITORING
           WRITE(IFM,*)'<FETI/VTCMBL> REMPLISSAGE OBJETS JEVEUX ',
      &        CH19R(1:19)
           WRITE(IFM,*)
-          IF ((NIV.GE.4).AND.(IDD.NE.0)) 
-     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CH19R(1:19),1,' ')
-          IF ((NIV.EQ.4).AND.(IDD.EQ.NBSD))
-     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHPRES(1:19),1,' ')
           WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'        
           WRITE(IFM,*)
         ENDIF
+        IF ((INFOFE(2:2).EQ.'T').AND.(IDD.NE.0)) 
+     &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CH19R(1:19),1,' ')
+        IF ((INFOFE(2:2).EQ.'T').AND.(IDD.EQ.NBSD))
+     &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHPRES(1:19),1,' ')
         
 C LIBERATION DU CHAMP JEVEUX RESULTAT
         CALL JELIBE(CH19R//VALE)

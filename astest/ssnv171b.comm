@@ -1,5 +1,5 @@
 
-# MODIF  DATE 18/10/2004   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 22/11/2004   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE COMPARAISON POLY_CFC ET MONOCRISTAL. MOD B : MONOCRISTAL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,7 +99,6 @@ COMPORP=DEFI_COMPOR(POLYCRISTAL=(
                   #  LOCALISATION='BZ',
                     );
 
-#IMPR_CO(CO=COMPORP)
 
 SOLNLP=STAT_NON_LINE(MODELE=TROISD,
                     CHAM_MATER=MAT,
@@ -128,8 +127,7 @@ SOLNLP=STAT_NON_LINE(MODELE=TROISD,
 SOLNLP=CALC_ELEM(reuse =SOLNLP,
                  RESULTAT=SOLNLP,
                  OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
-                 
-IMPR_RESU(RESU=_F(RESULTAT=SOLNLP))
+
 TEST_RESU(RESU=(_F(RESULTAT=SOLNLP,
                    INST=TFIN,
                    NOM_CHAM='SIEF_ELGA',

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 22/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE TEST DE LA MACRO DE CALCUL DE BRIDES CABRI
@@ -292,13 +292,9 @@ MA=DEFI_GROUP(reuse =MA,
                                 NOM='N_TRANCHE',),),);
 
 ME1TH=CALC_ELEM(reuse =ME1TH,
-                MODELE=MO_ME,
-                CHAM_MATER=CHMAT,
                 RESULTAT=ME1TH,
                 TOUT_ORDRE='OUI',
-                OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM',),
-                EXCIT=(
-                _F(CHARGE=CHA_TH1,),),);
+                OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM',),);
 
 
 TB=POST_RELEVE_T(ACTION=_F(INTITULE='TEMP_BRI',

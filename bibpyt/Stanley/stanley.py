@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF stanley Stanley  DATE 23/11/2004   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,6 +50,7 @@ import cata_champs,aster
 
 import Utilitai
 from Utilitai import sup_gmsh
+from Utilitai.Utmess import UTMESS
 from graphiqueTk import *
 from Cata.cata import *
 from Accas import _F
@@ -1922,10 +1923,27 @@ class PRE_STANLEY :
     self.t_cham_mater=t_cham_mater
     self.t_cara_elem=t_cara_elem
 
-    self.Dessin()
-    self.Scan_selection()               
-    self.Exec()
-    
+    # Si un des concepts n'a pas été trouvé au moins une fois on arrete
+    _lst = []
+    if len(t_maillage) ==0:   _lst.append('MAILLAGE')
+    if len(t_modele) ==0:     _lst.append('MODELE')
+    if len(t_evol) ==0:       _lst.append('EVOL_ELAS ou EVOL_NOLI ou EVOL_THER')
+    if len(t_cham_mater) ==0: _lst.append('CHAM_MATER')
+    if len(_lst) > 0:
+      txt = """Tous les concepts Aster necessaires à Stanley n'ont
+               pas été calculés. Il manque :
+"""
+      for l in _lst:
+        txt = txt +  '               - ' + l + '\n'
+      UTMESS('A','STANLEY',txt)
+      self.rootTk.destroy()
+
+    else:
+      # Sinon on continue
+      self.Dessin()
+      self.Scan_selection()               
+      self.Exec()
+
 
   def Exec(self) :
   

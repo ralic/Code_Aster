@@ -2,7 +2,7 @@
      &                      MATERF, NR, NVI, YD, DEPS, DY  )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 22/11/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,7 +36,7 @@ C                               3 = ESSAI
 C       OUT DY     :  SOLUTION ESSAI  = ( DSIG DVIN (DEPS3) )
 C       ----------------------------------------------------------------
 C
-      INTEGER         NDT , NDI , TYPESS , NMAT,NR,NVI
+      INTEGER         NDT , NDI , TYPESS , NMAT,NR,NVI,TYPES0
 C
       REAL*8          YD(NR)     , DY(NR),  ESSAI
       REAL*8          HOOK(6,6) , DFDS(6)
@@ -52,6 +52,8 @@ C     ----------------------------------------------------------------
 C
 C - SOLUTION INITIALE = NUL
 C
+      TYPES0=TYPESS
+      TYPESS=0
       IF ( TYPESS .EQ. 0) THEN
          CALL LCINVN ( NR  , 0.D0 , DY )
          IF(MOD(1:6).EQ.'C_PLAN')THEN
@@ -86,4 +88,5 @@ C
         ENDIF
       ENDIF
 C
+      TYPESS=TYPES0
       END

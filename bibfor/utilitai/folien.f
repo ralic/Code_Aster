@@ -6,7 +6,7 @@
       CHARACTER*19                SORTIE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/05/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 22/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +57,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      +              AMOR, R8B, AMOECH, TOLE, VALINT(2)
       CHARACTER*8   K8B, ELARG, ECHFR
       CHARACTER*16  TYPFON, NOPAR1, NOPAR2, NOPAR3, NPAINT(2)
-      CHARACTER*19  NOMFON, LFECH
+      CHARACTER*19  NOMFON, LFECH, NOMRES
       CHARACTER*24  PROL, VALE, PARA, NOMF, NOMC
 C     ------------------------------------------------------------------
 C
@@ -323,16 +323,17 @@ C
 C
 C     ------------------------------------------------------------------
 C
-C                   --- CREATION DE LA SORTIE ---
+C         --- CREATION DE LA SORTIE TEMPORAIREMENT DANS NOMRES ---
 C
 C     ------------------------------------------------------------------
 C
 C --- AFFECTATION DU .PROL ---
 C
-      PROL = SORTIE//'.PROL'
+      NOMRES='&&FOLIEN.TMPRES    '
+      PROL = NOMRES//'.PROL'
 C
       IF ( FONC ) THEN
-         CALL WKVECT ( PROL, BASE//' V K16', 5, JPROS )
+         CALL WKVECT ( PROL, 'V V K16', 5, JPROS )
          ZK16(JPROS  ) = 'FONCTION'
          ZK16(JPROS+1) = 'LOG LOG '
          ZK16(JPROS+2) = 'FREQ    '
@@ -341,7 +342,7 @@ C
          CALL JELIBE ( PROL )
 C
       ELSEIF ( NAPP ) THEN
-         CALL WKVECT ( PROL, BASE//' V K16', 6+2*NBFONC, JPROS )
+         CALL WKVECT ( PROL, 'V V K16', 6+2*NBFONC, JPROS )
          ZK16(JPROS  ) = 'NAPPE   '
          ZK16(JPROS+1) = 'LOG LOG '
          ZK16(JPROS+2) = NOPAR1
@@ -354,8 +355,8 @@ C
  20      CONTINUE 
          CALL JELIBE ( PROL )
 C
-         PARA = SORTIE//'.PARA'
-         CALL WKVECT ( PARA, BASE//' V R', NBFONC, JPARS )
+         PARA = NOMRES//'.PARA'
+         CALL WKVECT ( PARA, 'V V R', NBFONC, JPARS )
          IF ( LAMOR .NE. 0 ) THEN
             ZR(JPARS) = AMOR
          ELSE
@@ -368,10 +369,10 @@ C
 C
 C --- AFFECTATION DU .VALE ---
 C
-      VALE = SORTIE//'.VALE'
+      VALE = NOMRES//'.VALE'
 C
       IF ( FONC ) THEN
-         CALL WKVECT ( VALE, BASE//' V R', 2*LONT, JVALS )
+         CALL WKVECT ( VALE, 'V V R', 2*LONT, JVALS )
          CALL JEVEUO ( ZK24(LNOMF), 'L', JVAL )
          CALL JELIRA ( ZK24(LNOMF), 'LONMAX', LONMAX, K8B )
          CALL JELIRA ( ZK24(LNOMF), 'LONUTI', LONUTI, K8B )
@@ -383,7 +384,7 @@ C
  30      CONTINUE      
          CALL JELIBE ( VALE )
       ELSEIF ( NAPP ) THEN
-         CALL JECREC(VALE,BASE//' V R','NU','CONTIG','VARIABLE',NBFONC)
+         CALL JECREC(VALE,'V V R','NU','CONTIG','VARIABLE',NBFONC)
          CALL JEECRA ( VALE, 'LONT', 2*LONT, ' ' )
          DO 32 IF = 1 , NBFONC
             CALL JECROC ( JEXNUM(VALE,IF) )
@@ -409,7 +410,7 @@ C
 C     ------------------------------------------------------------------
 C
       IF ( ECHAMF ) THEN
-         PARA = SORTIE//'.PARA'
+         PARA = NOMRES//'.PARA'
          CALL JELIRA ( PARA, 'LONUTI', NBPAR, K8B )
          CALL JEVEUO ( PARA, 'L', LPAR )
          DO 70 IPARA = 1,NBPAR
@@ -417,7 +418,7 @@ C
  70      CONTINUE 
          CALL UTDEBM('A','FOLIEN','ERREUR DONNEE:')
          CALL UTIMPK('L','ON N''A PAS PU EXTRAIRE DE LA NAPPE ',
-     +                                                1, SORTIE(1:8) )
+     +                                                1, NOMRES(1:8) )
          CALL UTIMPR('S',' LA FONCTION POUR L''AMORTISSEMENT ',
      +                                                1, AMOECH )
          CALL UTIMPR('L','ON N''A PAS ECHANTILLONNER.', 0, AMOECH )
@@ -425,7 +426,7 @@ C
          GOTO 9999
  72      CONTINUE 
 C
-         VALE = SORTIE//'.VALE'
+         VALE = NOMRES//'.VALE'
          CALL JELIRA ( JEXNUM(VALE,IPARA), 'LONUTI', NBVAL, K8B )
          CALL JEVEUO ( JEXNUM(VALE,IPARA), 'L', JVAL )
          NBVAL = NBVAL / 2
@@ -445,10 +446,10 @@ C
             LFON = LVAR + NBVAL
             DO 80 I = 1, NBVAL
                ZR(LVAR+I-1) = ZR(JVAL+I-1)
-               CALL FOINTE ( 'F ', SORTIE, 1, 'FREQ', ZR(LVAR+I-1),
+               CALL FOINTE ( 'F ', NOMRES, 1, 'FREQ', ZR(LVAR+I-1),
      +                                             ZR(LFON+I-1),IRET)
  80         CONTINUE
-            VALE = SORTIE//'.VALE'
+            VALE = NOMRES//'.VALE'
             CALL JEDETR ( VALE )
             CALL JEDUPO ( '&&FOLIEN.VALE_FR', 'G', VALE, .FALSE. )
             CALL JEDETR ( '&&FOLIEN.VALE_FR' )
@@ -456,7 +457,7 @@ C
          ELSEIF ( NAPP ) THEN
             NPAINT(1) = 'AMOR'
             NPAINT(2) = 'FREQ'
-            PARA = SORTIE//'.PARA'
+            PARA = NOMRES//'.PARA'
             CALL JELIRA ( PARA, 'LONUTI', NBPAR, K8B )
             CALL JEVEUO ( PARA, 'L', LPAR )
             LONT = NBPAR * NBVAL
@@ -465,15 +466,15 @@ C
                VALINT(1) = ZR(LPAR+IF-1)
                DO 84 I = 1 , NBVAL
                   VALINT(2) = ZR(JVAL+I-1)
-                  CALL FOINTE ( 'F ', SORTIE, 2, NPAINT, VALINT,
+                  CALL FOINTE ( 'F ', NOMRES, 2, NPAINT, VALINT,
      +                                ZR(LVAR-1+(IF-1)*NBVAL+I), IRET )
  84            CONTINUE
  82         CONTINUE
 C
-            VALE = SORTIE//'.VALE'
+            VALE = NOMRES//'.VALE'
             CALL JEDETR ( VALE )
             LONT = 2 * NBPAR * NBVAL
-          CALL JECREC(VALE,BASE//' V R','NU','CONTIG','VARIABLE',NBPAR)
+          CALL JECREC(VALE,'V V R','NU','CONTIG','VARIABLE',NBPAR)
             CALL JEECRA ( VALE, 'LONT', LONT, ' ' )
             DO 86 IF = 1 , NBPAR
                CALL JECROC ( JEXNUM(VALE,IF) )
@@ -490,8 +491,10 @@ C
          ENDIF
       ENDIF
 C
-C --- VERIFICATION QUE L'ENVELOPPE EST SUPERIEURE AU BRUTE
+C --- COPIE DU RESULTAT DANS SORTIE
+      CALL COPISD('FONCTION',BASE,NOMRES,SORTIE)
 C
+C --- VERIFICATION QUE L'ENVELOPPE EST SUPERIEURE AU BRUTE
       CALL FOLIE5 ( NOMFON, SORTIE )
 C
  9999 CONTINUE
@@ -509,6 +512,7 @@ C
          CALL JEDETR ( NOMF )
  90   CONTINUE
       CALL JEDETR ( '&&FOLIEN.NOMFON' )
+      CALL JEDETC ( ' ', '&&FOLIEN.TMPRES', 1 )
 C
       CALL JEDEMA()
       END

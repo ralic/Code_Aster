@@ -1,6 +1,6 @@
       SUBROUTINE MEPRES(NOMO,CHPRES,FONC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/05/96   AUTEUR CIBHHRA R.MEDDOURI 
+C MODIF CALCULEL  DATE 23/11/2004   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       CHARACTER*8    NOMO
-      CHARACTER*24   CHPRES
+      CHARACTER*(*)  CHPRES
 C
       LOGICAL        FONC
 C
@@ -54,7 +54,6 @@ C
 C
 C     -----------------------------------------------------------------
 C
-      CHPRES = '&&MEPRES.PRES_NULLE'
       ZERO   = '&&MEPRES'
       LIGRMO = NOMO//'.MODELE    '
       LICMP(1) = 'PRES'

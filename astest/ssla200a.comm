@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE AXISYMETRIQUE
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -452,11 +452,7 @@ MSLIN=MECA_STATIQUE(        MODELE=MO,
                                    FONC_MULT = FO11),
                            LIST_INST=LR1,  )
 
-CALC_ELEM( reuse= MSLIN ,RESULTAT= MSLIN ,         MODELE=MO,
-                           CHAM_MATER=CHMAT,
-                            CARA_ELEM=CARA1,
-                           EXCIT=_F(  CHARGE = CHMEC,
-                                   FONC_MULT = FO11),
+CALC_ELEM( reuse= MSLIN ,RESULTAT= MSLIN ,         
                            LIST_INST=LR1,
                            OPTION=(
                             'SIGM_ELNO_DEPL',
@@ -472,10 +468,6 @@ CALC_NO( reuse=MSLIN,       OPTION=(
                                   'EQUI_NOEU_EPSI',
                                   'EQUI_NOEU_EPME',),
                        RESULTAT=MSLIN,
-                     CHAM_MATER=CHMAT,
-                      CARA_ELEM=CARA1,
-                          EXCIT=_F(  CHARGE = CHMEC,
-                                  FONC_MULT = FO11),
                       PRECISION=1.000000000E-03,
                         CRITERE='ABSOLU',
                      NUME_ORDRE=2
@@ -728,9 +720,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
 # ----------------------------------------------------------------------
 #   POST_TRAITEMENT DU CALCUL
 # ----------------------------------------------------------------------
-CALC_ELEM( reuse=MSLI2,       MODELE=MO,
-                       CHAM_MATER=CHMAT,
-                        CARA_ELEM=CARA1,
+CALC_ELEM( reuse=MSLI2,       
                            OPTION=( 'SIEF_ELGA_DEPL', 'SIGM_ELNO_DEPL',
                                     'EPME_ELGA_DEPL',
                                     'EPME_ELNO_DEPL', 'EPOT_ELEM_DEPL',
@@ -740,8 +730,6 @@ CALC_ELEM( reuse=MSLI2,       MODELE=MO,
                                     'EQUI_ELNO_EPSI', 'EQUI_ELGA_EPSI',
                                     'EQUI_ELNO_EPME', ),
                           RESULTAT=MSLI2,
-                            EXCIT=_F(  CHARGE = CHMEC,
-                                    FONC_MULT = FO11),
                        NUME_ORDRE=(1, 2, 3,) )
 
 TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
@@ -950,12 +938,6 @@ CALC_NO( reuse=MSLI2,       OPTION=( 'EPSI_NOEU_DEPL', 'EQUI_NOEU_SIGM',
                                   'EQUI_NOEU_EPSI', 'SIGM_NOEU_DEPL',
                                   'EQUI_NOEU_EPME',),
                        RESULTAT=MSLI2,
-                     CHAM_MATER=CHMAT,
-                      CARA_ELEM=CARA1,EXCIT=(
-                          _F(  CHARGE = CHMEC,
-                                  FONC_MULT = FO11),
-                          _F(  CHARGE = CHMECF,
-                                  FONC_MULT = FO12)),
                       PRECISION=1.000000000E-03,
                         CRITERE='ABSOLU',
                            INST=11.5   )
@@ -990,11 +972,8 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    INST = 11.5,
 # --------------------------------------------------------------------
 # POUR TESTER LE CALCUL DE REAC_NODA SUR UN GROUP_MA :
 # ----------------------------------------------------
-CALC_ELEM( reuse=MSLI2,       MODELE=MO,    CHAM_MATER=CHMAT,
-                        CARA_ELEM=CARA1,    OPTION='SIEF_ELGA_DEPL',
+CALC_ELEM( reuse=MSLI2,           OPTION='SIEF_ELGA_DEPL',
                           RESULTAT=MSLI2,
-                            EXCIT=_F(  CHARGE = CHMEC,
-                                    FONC_MULT = FO11),
                       MAILLE=('M11','M12','M14',),
                        NUME_ORDRE=3 )
 
@@ -1015,33 +994,30 @@ CHME2=AFFE_CHAR_MECA(           MODELE=MO,
                                PESANTEUR=(9.8,  0.3,  0.1, -0.4,))
 
 CALC_NO( reuse=MSLI2,       OPTION='REAC_NODA',
-                       RESULTAT=MSLI2,  MODELE=MO,
-                     CHAM_MATER=CHMAT,      CARA_ELEM=CARA1,
-                          EXCIT=_F(  CHARGE = CHME2,
-                                  FONC_MULT = FO11),
+                       RESULTAT=MSLI2,  
                       MAILLE=('M11','M14',),
                        NUME_ORDRE=3 )
 
 TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'REAC_NODA',
                      TYPE_TEST = 'SOMM_ABS',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10, VERSION = '5.03.14',
-                   VALE = 1.4172097248436E+04),
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10, VERSION = '7.03.28',
+                   VALE = 3.0276728856536E+01),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'REAC_NODA',
                      TYPE_TEST = 'SOMM',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10, VERSION = '5.03.14',
-                   VALE = -1.4155012559117E+04),
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10, VERSION = '7.03.28',
+                   VALE = 2.8100533706705E+00),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'REAC_NODA',
                      TYPE_TEST = 'MAX',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10, VERSION = '5.03.14',
-                   VALE = 7.6025373867807E+00),
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10, VERSION = '7.03.28',
+                   VALE = 7.6025373867806E+00),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'REAC_NODA',
                      TYPE_TEST = 'MIN',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10, VERSION = '5.03.14',
-                   VALE = -4.7250178292568E+03))
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10, VERSION = '7.03.28',
+                   VALE = -5.4058406995756E+00))
             )
 
 # --------------------------------------------------------------------
@@ -1195,12 +1171,9 @@ TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='GAMMA',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10, VERSION='5.03.14',
                      VALE=5.4000000000000E+02    )
 
-TABLE2=POST_ELEM(        MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                         CARA_ELEM=CARA1,
+TABLE2=POST_ELEM(        
                           RESULTAT=MSLI2,
                               INST=5.5,
-                            CHARGE=CHMEC,
                           ENER_POT=_F( TOUT = 'OUI',
                                     GROUP_MA = 'GMA8',
                                     MAILLE = ('M44', 'M99',)) )

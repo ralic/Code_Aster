@@ -11,7 +11,7 @@ C
       LOGICAL       LRESU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 22/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -300,8 +300,15 @@ C
        WRITE(IFI,'(16I5)') (ZI(JENT-1+I),I=1,NBSOBJ*7)
       ELSEIF(NIVE.EQ.10) THEN
        WRITE(IFI,'(10I8)') (ZI(JENT-1+I),I=1,NBSOBJ*7)
-       WRITE(IFI,'(A)')
+C      NOMS DES CONSTITUANTS (2A8 COLLES POUR UN K16 PAR SOUS-ZONE)
+C      GIBI LIT DONC 2*NBSOBJ A8 SUR UN FORMAT 8(1X,A8), IL FAUT DONC
+C      ECRIRE (2*NBSOBJ-1)/8+1 LIGNES
+       DO 101 IOBJ=1, (2*NBSOBJ-1)/8+1
+          WRITE(IFI,'(A)')
+ 101   CONTINUE
       ENDIF
+C 8001 FORMAT(8(1X,A8))
+ 8001 FORMAT(8(1X,A8))
 C     ------------------------------------------------------------------
 C
 C     --- IMPRESSION ---

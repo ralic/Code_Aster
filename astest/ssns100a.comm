@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 23/11/2004   AUTEUR PBADEL P.BADEL 
 # TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE D'UNE NAPPE D'ARMATURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -246,7 +246,7 @@ LEDEP=STAT_NON_LINE(
                 ),
                          INCREMENT=_F(
                 LIST_INST = ZLIST,
-                NUME_INST_FIN = 11,
+                NUME_INST_FIN = 10,
                 ),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -261,6 +261,37 @@ LEDEP=STAT_NON_LINE(
                 ITER_LINE_MAXI = 10,
                 )
               )
+
+LEDEP=STAT_NON_LINE(reuse=LEDEP,
+                            MODELE=LEMOD,
+                        CHAM_MATER=MATAF,
+                         CARA_ELEM=LACAR,
+                             EXCIT=_F(
+                CHARGE = ZCHM,
+                ),
+                         COMP_INCR=_F(
+                RELATION = 'GRILLE_ISOT_LINE',
+                ),
+                ETAT_INIT=_F(EVOL_NOLI=LEDEP),
+                         INCREMENT=_F(
+                LIST_INST = ZLIST,
+                NUME_INST_FIN = 11,
+                ),
+                            NEWTON=_F(
+                MATRICE = 'TANGENTE',
+                PAS_MINI_ELAS=2.,
+                REAC_ITER = 10,
+                ),
+                       CONVERGENCE=_F(
+                RESI_GLOB_MAXI = 1.E-3,
+                ITER_INTE_MAXI = 30,
+                ITER_GLOB_MAXI = 30,
+                ),
+                     RECH_LINEAIRE=_F(
+                ITER_LINE_MAXI = 10,
+                )
+              )
+
 
 LEDEP=CALC_ELEM( reuse = LEDEP,
                  OPTION     = ('SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA',),

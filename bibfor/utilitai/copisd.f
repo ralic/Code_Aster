@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 22/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,8 @@ C
 C     IN:
 C     TYPESD  : TYPE DE LA SD A DUPPLIQUER
 C               ' '(INCONNU)      'CHAMP_GD'
-C               'FONCTION'        'CORRESP_2_MAILLA'
+C               'FONCTION'  (POUR FONCTIONS ET NAPPES)  
+C               'CORRESP_2_MAILLA'
 C               'CHAM_NO_S'       'CHAM_ELEM_S'
 C               'VARI_COM'        'TABLE'
 C               'RESULTAT'        'NUME_DDL'
@@ -145,6 +146,12 @@ C ----------------------------------------------------------------------
 C     -----------------------------------
         CHC1 = SD1
         CHC2 = SD2
+C
+C        -- .PARA :
+        O1 = CHC1 // '.PARA'
+        O2 = CHC2 // '.PARA'
+        CALL JEEXIN(O1,IRET)
+        IF (IRET .GT. 0) CALL JEDUPO(O1,BAS2,O2,.FALSE.)
 C
 C        -- .PROL :
         O1 = CHC1 // '.PROL'

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 18/10/2004   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 22/11/2004   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -711,7 +711,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPL1,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-0.000676254731722,
+                   VALE=-6.7624122427106E-04,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=IMPL1,
                    INST=TFIN,
@@ -719,7 +719,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPL1,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-1.8478123113749E-05,
+                   VALE=-1.8527919867920E-05,
                    REFERENCE='NON_REGRESSION',),),);
                    
 # COMPARASION A VISC_CIN1_CHAB, MAIS PROBLEME DE SENSIBILITE AU PAS DE 
@@ -790,7 +790,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPL2,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-0.000676254731722,
+                   VALE=-6.7594357924921E-04,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=IMPL2,
                    INST=TFIN,
@@ -798,7 +798,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPL2,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-1.817534E-05,
+                   VALE=-1.8230080633111E-05,
                    REFERENCE='NON_REGRESSION',),),);
                    
 # COMPARASION A VISC_CIN1_CHAB, MAIS PROBLEME DE SENSIBILITE AU PAS DE 

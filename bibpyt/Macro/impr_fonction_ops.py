@@ -1,4 +1,4 @@
-#@ MODIF impr_fonction_ops Macro  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF impr_fonction_ops Macro  DATE 22/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -130,6 +130,8 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
             obj=dCi[typi]
             typ=obj.__class__.__name__
             break
+      if not dCi.has_key('LEGENDE'):
+         dCi['LEGENDE']=obj.get_name()
       if obj==None:
          UTMESS('S',macro,'incohérence entre le catalogue et la macro.',self)
 

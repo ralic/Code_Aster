@@ -1,7 +1,7 @@
-      SUBROUTINE FETPRJ(NBI,VI,VO,GI,JGITGI,LRIGID,DIMGI,OPTION)
+      SUBROUTINE FETPRJ(NBI,VI,VO,GI,JGITGI,LRIGID,DIMGI,OPTION,SDFETI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/08/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,6 +35,7 @@ C      IN LRIGID: LO  : LOGICAL INDIQUANT LA PRESENCE D'AU MOINS UN
 C         SOUS-DOMAINES FLOTTANT
 C      IN  DIMGI:  IN : TAILLE DE GIT*GI
 C      IN OPTION:  IN  : 1 -> PROJECTION., 2-> RECONSTRUCTION ALPHA SOL.
+C      IN SDFETI: CH19 : SD DECRIVANT LE PARTIONNEMENT FETI
 C   -------------------------------------------------------------------
 C     ASTER INFORMATIONS:
 C       28/01/04 (OB): CREATION.
@@ -48,7 +49,8 @@ C DECLARATION PARAMETRES D'APPELS
       INTEGER      NBI,JGITGI,DIMGI,OPTION
       REAL*8       VI(NBI),VO(NBI),GI(NBI,DIMGI)
       LOGICAL      LRIGID
-
+      CHARACTER*19 SDFETI
+      
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
@@ -68,8 +70,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
       INTEGER      IFM,NIV,JGITVI,JGITV1,NGITGI,NGITG2,JA,I,J,IDECAI,K,
-     &             NB,IDECAO,L,M
-      REAL*8       DET,RAUX     
+     &             NB,IDECAO,L,M,IINF
+      REAL*8       DET,RAUX
+      CHARACTER*24 INFOFE     
       LOGICAL      IRET
       
 C CORPS DU PROGRAMME
@@ -77,7 +80,9 @@ C CORPS DU PROGRAMME
         
 C RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
-
+      CALL JEVEUO('&&'//SDFETI(1:17)//'.FINF','L',IINF)
+      INFOFE=ZK24(IINF)
+      
       IF ((OPTION.NE.1).AND.(OPTION.NE.2))
      &  CALL UTMESS('F','FETPRJ','OPTION DE CALCUL NON PREVUE !')
 
@@ -120,7 +125,7 @@ C VECTEUR AUXILIAIRE
    
         
 C MONITORING
-        IF (NIV.GE.3) THEN
+        IF (INFOFE(1:1).EQ.'T') THEN
           WRITE(IFM,*)
           WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
           WRITE(IFM,*)'<FETI/FETPRJ> CONSTRUCTION DE (GI)T*LAMBDA'
@@ -155,7 +160,7 @@ C DESYMETRISE (GI)T*GI DANS A CAR MTGAUSS ECRASE LA MATRICE A INVERSER
         CALL MGAUSS(ZR(JA),ZR(JGITVI),DIMGI,DIMGI,NB,DET,IRET)
         
 C MONITORING
-        IF (NIV.GE.3) THEN
+        IF (INFOFE(1:1).EQ.'T') THEN
           WRITE(IFM,*)'<FETI/FETPRJ> INVERSION (GITGI)-1*...'   
           WRITE(IFM,*)'<FETI/FETPRJ> DET/IRET ',DET,' ',IRET      
         ENDIF
@@ -182,17 +187,16 @@ C --------------------------------------------------------------------
   201     CONTINUE
 
 C MONITORING
-          IF (NIV.GE.5) THEN
-            WRITE(IFM,*)'<FETI/FETPRJ> LAMBDA = P * LAMBDA'
-            IF (NIV.GE.5) THEN
-              DO 300 I=1,NBI
-                WRITE(IFM,*)I,'  ',VI(I),' ',VO(I)
-  300         CONTINUE
-            ENDIF         
+          IF (INFOFE(1:1).EQ.'T') THEN
+            WRITE(IFM,*)'<FETI/FETPRJ> LAMBDA = P * LAMBDA'         
             WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
             WRITE(IFM,*)
           ENDIF
-          
+          IF (INFOFE(4:4).EQ.'T') THEN
+            DO 300 I=1,NBI
+              WRITE(IFM,*)I,'  ',VI(I),' ',VO(I)
+  300       CONTINUE
+          ENDIF          
         ELSE
 C --------------------------------------------------------------------
 C CONSTITUTION DE V0=((GI)T*GI)-1*(GI)T*VI (OPTION=2)
@@ -202,17 +206,17 @@ C --------------------------------------------------------------------
   310     CONTINUE
 
 C MONITORING
-          IF (NIV.GE.5) THEN
-            WRITE(IFM,*)'<FETI/FETPRJ> ALPHA = P'' * RESIDU'
-            IF (NIV.GE.5) THEN
-              DO 320 I=1,DIMGI
-                WRITE(IFM,*)I,'  ',VI(I),' ',VO(I)
-  320         CONTINUE
-            ENDIF         
+          IF (INFOFE(1:1).EQ.'T') THEN
+            WRITE(IFM,*)'<FETI/FETPRJ> ALPHA = P'' * RESIDU'         
             WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
             WRITE(IFM,*)
           ENDIF
-                        
+          IF (INFOFE(4:4).EQ.'T') THEN
+            WRITE(IFM,*)'<FETI/FETPRJ> INPUT/OUTPUT'
+            DO 320 I=1,DIMGI
+              WRITE(IFM,*)I,'  ',VI(I),' ',VO(I)
+  320       CONTINUE
+          ENDIF                        
         ENDIF   
 C DESTRUCTION OBJET TEMPORAIRE  
         CALL JEDETR('&&FETPRJ.GITVI.R')

@@ -1,4 +1,4 @@
-#@ MODIF defi_part_feti_ops Macro  DATE 15/11/2004   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF defi_part_feti_ops Macro  DATE 23/11/2004   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

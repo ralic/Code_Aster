@@ -3,12 +3,12 @@
       IMPLICIT NONE
       INTEGER         NCHAR, IORD
       CHARACTER*8     MODELE, LCHAR(*)
-      CHARACTER*24    CHVOLU,CF1D2D,CF2D3D,CHPRES,CHEPSI,CHPESA,CHROTA
+      CHARACTER*19    CHVOLU,CF1D2D,CF2D3D,CHPRES,CHEPSI,CHPESA,CHROTA
       LOGICAL         FONC, EPSI
       REAL*8  TIME
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF CALCULEL  DATE 23/11/2004   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,28 +45,29 @@ C ----------------------------------------------------------------------
 C
       INTEGER       IBID, IER, I, IF3D3D, IF2D2D, IF1D2D, IF2D3D,
      +              IPRESS, IEPSIN, IROTA, IPESA, IRET, N1, ICHA0, 
-     +              NBVALE, IN, JVAL, NEXCI, JPARA, JFCHA, NRES
+     +              NBVALE, IN, IVAL, JVAL, NEXCI, JPARA, JFCHA, NRES
+      INTEGER       NVOLU, N1D2D, N2D3D, NPRESS, NEPSI, NROTA, NPESA
       CHARACTER*8   K8B, RESU
       CHARACTER*16  TYPE, OPER
-      CHARACTER*24  BLANC, VCHAR, VOLU0, C1D2D0, C2D3D0, PRES0,
-     +              EPSI0, PESA0, ROTA0, NOMFCT
+      CHARACTER*24  VCHAR, NOMFCT
       CHARACTER*24  EXCISD
       REAL*8  CONST 
-      LOGICAL LCHSD  
+      LOGICAL LCHSD, FONCI
 C     ------------------------------------------------------------------
 C
+      CALL JEMARQ()
+      
       CALL GETRES ( K8B, TYPE, OPER )
       FONC   = .FALSE.
       EPSI   = .FALSE.
-      BLANC = '                        '
-      CHVOLU = BLANC
-      CF1D2D = BLANC
-      CF2D3D = BLANC
-      CHPRES = BLANC
-      CHEPSI = BLANC
-      CHPESA = BLANC
-      CHROTA = BLANC
-C
+      NVOLU = 0 
+      N1D2D = 0 
+      N2D3D = 0 
+      NPRESS = 0 
+      NEPSI = 0 
+      NROTA = 0 
+      NPESA = 0
+C      
       CALL GETFAC('EXCIT',NEXCI)
       CALL GETVID(' ','RESULTAT',0,1,1,RESU,NRES)
       LCHSD=.FALSE.
@@ -84,13 +85,19 @@ C
       DO 10 I = 1 , NCHAR
 C
          CALL DISMOI('F','TYPE_CHARGE',LCHAR(I),'CHARGE',IBID,K8B,IRET)
-         IF ( K8B(5:7) .EQ. '_FO' )  FONC = .TRUE.
+         IF ( K8B(5:7) .EQ. '_FO' ) THEN
+            FONC = .TRUE.
+            FONCI = .TRUE.
+         ELSE
+           FONCI = .FALSE.
+         ENDIF
 C
          CALL JEEXIN ( LCHAR(I)//'.CHME.F3D3D.DESC', IF3D3D )
          IF ( IF3D3D .NE. 0 ) THEN
-           IF ( CHVOLU .EQ. BLANC ) THEN
-             CHVOLU = LCHAR(I) // '.CHME.F3D3D.DESC'
-
+           IF ( NVOLU .EQ. 0) THEN
+             NVOLU = NVOLU + 1
+             CALL COPISD('CHAMP_GD','V',LCHAR(I)//'.CHME.F3D3D',CHVOLU)
+             
              IF(LCHSD) THEN
                 N1 = 1
                 NOMFCT = ZK24(JFCHA-1+I)
@@ -99,25 +106,21 @@ C
                 CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
              ENDIF
 
-             IF (N1. NE. 0) THEN
-              VCHAR = LCHAR(I) // '.CHME.F3D3D.VALE'
-              CALL JEVEUO(VCHAR,'L',JVAL)
+             IF (N1. NE. 0 .AND.(.NOT. FONCI)) THEN
+              VCHAR = LCHAR(I)//'.CHME.F3D3D.VALE'
+              CALL JEVEUO(VCHAR,'L',IVAL)
+              CALL JEVEUO(CHVOLU // '.VALE','E',JVAL)
               CALL JELIRA(VCHAR  ,'LONMAX',NBVALE,K8B)
-              CALL JEEXIN(LCHAR(I) // '.F3D3D.INIT',IRET)
-              IF (IRET .EQ. 0) THEN
-                VOLU0 = LCHAR(I) // '.F3D3D.INIT'
-                CALL WKVECT(VOLU0,'V V R',NBVALE,ICHA0)
-                DO 101 IN = 1,NBVALE
-                  ZR(ICHA0+IN-1)  = ZR(JVAL +IN-1)
-  101           CONTINUE
-              ELSE
-                VOLU0 = LCHAR(I) // '.F3D3D.INIT'
-                CALL JEVEUO(VOLU0,'L',ICHA0)
-              ENDIF  
               CALL FOINTE('A',NOMFCT, 1,'INST',TIME,CONST,IRET)
-              DO 102 IN = 1,NBVALE
-                ZR(JVAL+IN-1)  = CONST* ZR(ICHA0 +IN-1)
-  102         CONTINUE
+              DO 101 IN = 1,NBVALE
+                  ZR(JVAL+IN-1)  = CONST* ZR(IVAL +IN-1)
+  101         CONTINUE
+             ELSEIF (N1. NE. 0 .AND. FONCI) THEN
+               IER = IER + 1
+               CALL UTDEBM('E',OPER,'ON NE PEUT ASSOCIER DES CHARGE')
+               CALL UTIMPK('S','MENTS FONCTION (ICI :',1,LCHAR(I)(1:8))
+               CALL UTIMPK('S','AVEC UNE',1,'FONCTION MULTIPLICATRICE')
+               CALL UTFINM()
              ENDIF
             ELSE
                IER = IER + 1
@@ -131,8 +134,10 @@ C
 C
          CALL JEEXIN ( LCHAR(I)//'.CHME.F2D2D.DESC', IF2D2D )
          IF ( IF2D2D .NE. 0 ) THEN
-           IF ( CHVOLU .EQ. BLANC ) THEN
-             CHVOLU = LCHAR(I)//'.CHME.F2D2D.DESC'
+           IF ( NVOLU .EQ. 0 ) THEN
+             NVOLU = NVOLU + 1
+             CALL COPISD('CHAMP_GD','V',LCHAR(I)//'.CHME.F2D2D',CHVOLU)
+             
              IF(LCHSD) THEN
                 N1 = 1
                 NOMFCT = ZK24(JFCHA-1+I)
@@ -141,26 +146,22 @@ C
                 CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
              ENDIF
 
-             IF (N1. NE. 0) THEN
-              VCHAR = LCHAR(I) // '.CHME.F2D2D.VALE'
-              CALL JEVEUO(VCHAR,'L',JVAL)
+             IF (N1. NE. 0 .AND.(.NOT. FONCI)) THEN
+              VCHAR = LCHAR(I)//'.CHME.F2D2D.VALE'
+              CALL JEVEUO(VCHAR,'L',IVAL)
+              CALL JEVEUO(CHVOLU // '.VALE','E',JVAL)
               CALL JELIRA(VCHAR  ,'LONMAX',NBVALE,K8B)
-              CALL JEEXIN(LCHAR(I) // '.F2D2D.INIT',IRET)
-              IF (IRET .EQ. 0) THEN
-                VOLU0 = LCHAR(I) // '.F2D2D.INIT'
-                CALL WKVECT(VOLU0,'V V R',NBVALE,ICHA0)
-                DO 103 IN = 1,NBVALE
-                  ZR(ICHA0+IN-1)  = ZR(JVAL +IN-1)
-  103           CONTINUE
-              ELSE
-                VOLU0 = LCHAR(I) // '.F2D2D.INIT'
-                CALL JEVEUO(VOLU0,'L',ICHA0)
-              ENDIF  
               CALL FOINTE('A',NOMFCT, 1,'INST',TIME,CONST,IRET)
-              DO 104 IN = 1,NBVALE
-                ZR(JVAL+IN-1)  = CONST* ZR(ICHA0 +IN-1)
-  104         CONTINUE
-             ENDIF               
+              DO 102 IN = 1,NBVALE
+                  ZR(JVAL+IN-1)  = CONST* ZR(IVAL +IN-1)
+  102         CONTINUE
+             ELSEIF (N1. NE. 0 .AND. FONCI) THEN
+               IER = IER + 1
+               CALL UTDEBM('E',OPER,'ON NE PEUT ASSOCIER DES CHARGE')
+               CALL UTIMPK('S','MENTS FONCTION (ICI :',1,LCHAR(I)(1:8))
+               CALL UTIMPK('S','AVEC UNE',1,'FONCTION MULTIPLICATRICE')
+               CALL UTFINM()
+             ENDIF
             ELSE
                IER = IER + 1
                CALL UTDEBM('E',OPER,'IL FAUT DONNER 1 SEUL CHARGEMENT')
@@ -173,9 +174,10 @@ C
 C
          CALL JEEXIN ( LCHAR(I)//'.CHME.F1D2D.DESC', IF1D2D )
          IF ( IF1D2D .NE. 0 ) THEN
-           IF ( CF1D2D .EQ. BLANC ) THEN
-             CF1D2D = LCHAR(I)//'.CHME.F1D2D.DESC'
-
+           IF ( N1D2D .EQ. 0 ) THEN
+             N1D2D = N1D2D + 1
+             CALL COPISD('CHAMP_GD','V',LCHAR(I)//'.CHME.F1D2D',CF1D2D)
+             
              IF(LCHSD) THEN
                 N1 = 1
                 NOMFCT = ZK24(JFCHA-1+I)
@@ -184,25 +186,21 @@ C
                 CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
              ENDIF
 
-             IF (N1. NE. 0) THEN
-              VCHAR = LCHAR(I) // '.CHME.F1D2D.VALE'
-              CALL JEVEUO(VCHAR,'L',JVAL)
+             IF (N1. NE. 0 .AND.(.NOT. FONCI)) THEN
+              VCHAR = LCHAR(I)//'.CHME.F1D2D.VALE'
+              CALL JEVEUO(VCHAR,'L',IVAL)
+              CALL JEVEUO(CF1D2D // '.VALE','E',JVAL)
               CALL JELIRA(VCHAR  ,'LONMAX',NBVALE,K8B)
-              CALL JEEXIN(LCHAR(I) // '.F1D2D.INIT',IRET)
-              IF (IRET .EQ. 0) THEN
-                C1D2D0 = LCHAR(I) // '.F1D2D.INIT'
-                CALL WKVECT(C1D2D0,'V V R',NBVALE,ICHA0)
-                DO 105 IN = 1,NBVALE
-                  ZR(ICHA0+IN-1)  = ZR(JVAL +IN-1)
-  105           CONTINUE
-              ELSE
-                C1D2D0 = LCHAR(I) // '.F1D2D.INIT'
-                CALL JEVEUO(C1D2D0,'L',ICHA0)
-              ENDIF  
               CALL FOINTE('A',NOMFCT, 1,'INST',TIME,CONST,IRET)
-              DO 106 IN = 1,NBVALE
-                ZR(JVAL+IN-1)  = CONST* ZR(ICHA0 +IN-1)
-  106         CONTINUE
+              DO 103 IN = 1,NBVALE
+                  ZR(JVAL+IN-1)  = CONST* ZR(IVAL +IN-1)
+  103         CONTINUE
+             ELSEIF (N1. NE. 0 .AND. FONCI) THEN
+               IER = IER + 1
+               CALL UTDEBM('E',OPER,'ON NE PEUT ASSOCIER DES CHARGE')
+               CALL UTIMPK('S','MENTS FONCTION (ICI :',1,LCHAR(I)(1:8))
+               CALL UTIMPK('S','AVEC UNE',1,'FONCTION MULTIPLICATRICE')
+               CALL UTFINM()
              ENDIF
             ELSE
                IER = IER + 1
@@ -216,9 +214,10 @@ C
 C
          CALL JEEXIN ( LCHAR(I)//'.CHME.F2D3D.DESC', IF2D3D )
          IF ( IF2D3D .NE. 0 ) THEN
-           IF ( CF2D3D .EQ. BLANC ) THEN
-             CF2D3D = LCHAR(I)//'.CHME.F2D3D.DESC'
-
+           IF ( N2D3D .EQ. 0 ) THEN
+             N2D3D = N2D3D +1
+             CALL COPISD('CHAMP_GD','V',LCHAR(I)//'.CHME.F2D3D',CF2D3D)
+             
              IF(LCHSD) THEN
                 N1 = 1
                 NOMFCT = ZK24(JFCHA-1+I)
@@ -227,27 +226,23 @@ C
                 CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
              ENDIF
 
-             IF (N1. NE. 0) THEN
-              VCHAR = LCHAR(I) // '.CHME.F2D3D.VALE'
-              CALL JEVEUO(VCHAR,'L',JVAL)
+             IF (N1. NE. 0 .AND.(.NOT. FONCI)) THEN
+              VCHAR = LCHAR(I)//'.CHME.F2D3D.VALE'
+              CALL JEVEUO(VCHAR,'L',IVAL)
+              CALL JEVEUO(CF2D3D // '.VALE','E',JVAL)
               CALL JELIRA(VCHAR  ,'LONMAX',NBVALE,K8B)
-              CALL JEEXIN(LCHAR(I) // '.F2D3D.INIT',IRET)
-              IF (IRET .EQ. 0) THEN
-                C2D3D0 = LCHAR(I) // '.F2D3D.INIT'
-                CALL WKVECT(C2D3D0,'V V R',NBVALE,ICHA0)
-                DO 107 IN = 1,NBVALE
-                  ZR(ICHA0+IN-1)  = ZR(JVAL +IN-1)
-  107           CONTINUE
-              ELSE
-                C2D3D0 = LCHAR(I) // '.F2D3D.INIT'
-                CALL JEVEUO(C2D3D0,'L',ICHA0)
-              ENDIF  
               CALL FOINTE('A',NOMFCT, 1,'INST',TIME,CONST,IRET)
-              DO 108 IN = 1,NBVALE
-                ZR(JVAL+IN-1)  = CONST* ZR(ICHA0 +IN-1)
-  108         CONTINUE
+              DO 104 IN = 1,NBVALE
+                  ZR(JVAL+IN-1)  = CONST* ZR(IVAL +IN-1)
+  104         CONTINUE
+             ELSEIF (N1. NE. 0 .AND. FONCI) THEN
+               IER = IER + 1
+               CALL UTDEBM('E',OPER,'ON NE PEUT ASSOCIER DES CHARGE')
+               CALL UTIMPK('S','MENTS FONCTION (ICI :',1,LCHAR(I)(1:8))
+               CALL UTIMPK('S','AVEC UNE',1,'FONCTION MULTIPLICATRICE')
+               CALL UTFINM()
              ENDIF
-            ELSE
+            ELSE               
                IER = IER + 1
                CALL UTDEBM('E',OPER,'IL FAUT DONNER 1 SEUL CHARGEMENT')
                CALL UTIMPK('S',' DE TYPE ',1,'FORCE_...')
@@ -259,9 +254,10 @@ C
 C
          CALL JEEXIN ( LCHAR(I)//'.CHME.PRESS.DESC', IPRESS )
          IF ( IPRESS .NE. 0 ) THEN
-           IF ( CHPRES .EQ. BLANC ) THEN
-             CHPRES = LCHAR(I)//'.CHME.PRESS.DESC'
-
+           IF ( NPRESS .EQ. 0 ) THEN
+             NPRESS = NPRESS + 1
+             CALL COPISD('CHAMP_GD','V',LCHAR(I)//'.CHME.PRESS',CHPRES)
+             
              IF(LCHSD) THEN
                 N1 = 1
                 NOMFCT = ZK24(JFCHA-1+I)
@@ -269,27 +265,24 @@ C
              ELSE
                 CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
              ENDIF
-             IF (N1. NE. 0) THEN
-              VCHAR = LCHAR(I) // '.CHME.PRESS.VALE'
-              CALL JEVEUO(VCHAR,'L',JVAL)
+
+             IF (N1. NE. 0 .AND.(.NOT. FONCI)) THEN
+              VCHAR = LCHAR(I)//'.CHME.PRESS.VALE'
+              CALL JEVEUO(VCHAR,'L',IVAL)
+              CALL JEVEUO(CHPRES // '.VALE','E',JVAL)
               CALL JELIRA(VCHAR  ,'LONMAX',NBVALE,K8B)
-              CALL JEEXIN(LCHAR(I) // '.PRESS.INIT',IRET)
-              IF (IRET .EQ. 0) THEN
-                PRES0 = LCHAR(I) // '.PRESS.INIT'
-                CALL WKVECT(PRES0,'V V R',NBVALE,ICHA0)
-                DO 109 IN = 1,NBVALE
-                  ZR(ICHA0+IN-1)  = ZR(JVAL +IN-1)
-  109           CONTINUE
-              ELSE
-                PRES0 = LCHAR(I) // '.PRESS.INIT'
-                CALL JEVEUO(PRES0,'L',ICHA0)
-              ENDIF  
               CALL FOINTE('A',NOMFCT, 1,'INST',TIME,CONST,IRET)
-              DO 110 IN = 1,NBVALE
-                ZR(JVAL+IN-1)  = CONST* ZR(ICHA0 +IN-1)
-  110         CONTINUE
+              DO 105 IN = 1,NBVALE
+                  ZR(JVAL+IN-1)  = CONST* ZR(IVAL +IN-1)
+  105         CONTINUE
+             ELSEIF (N1. NE. 0 .AND. FONCI) THEN
+               IER = IER + 1
+               CALL UTDEBM('E',OPER,'ON NE PEUT ASSOCIER DES CHARGE')
+               CALL UTIMPK('S','MENTS FONCTION (ICI :',1,LCHAR(I)(1:8))
+               CALL UTIMPK('S','AVEC UNE',1,'FONCTION MULTIPLICATRICE')
+               CALL UTFINM()
              ENDIF
-            ELSE
+            ELSE               
                IER = IER + 1
                CALL UTDEBM('E',OPER,'IL FAUT DONNER 1 SEUL CHARGEMENT')
                CALL UTIMPK('S',' DE TYPE ',1,'PRESSION')
@@ -302,9 +295,10 @@ C
          CALL JEEXIN ( LCHAR(I)//'.CHME.EPSIN.DESC', IEPSIN )
          IF ( IEPSIN .NE. 0 ) THEN
            EPSI = .TRUE.
-           IF ( CHEPSI .EQ. BLANC ) THEN
-             CHEPSI = LCHAR(I)//'.CHME.EPSIN.DESC'
-
+           IF ( NEPSI .EQ. 0 ) THEN
+             NEPSI = NEPSI + 1
+             CALL COPISD('CHAMP_GD','V',LCHAR(I)//'.CHME.EPSIN',CHEPSI)
+             
              IF(LCHSD) THEN
                 N1 = 1
                 NOMFCT = ZK24(JFCHA-1+I)
@@ -313,25 +307,21 @@ C
                 CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
              ENDIF
 
-             IF (N1. NE. 0) THEN
-              VCHAR = LCHAR(I) // '.CHME.EPSIN.VALE'
-              CALL JEVEUO(VCHAR,'L',JVAL)
+             IF (N1. NE. 0 .AND.(.NOT. FONCI)) THEN
+              VCHAR = LCHAR(I)//'.CHME.EPSIN.VALE'
+              CALL JEVEUO(VCHAR,'L',IVAL)
+              CALL JEVEUO(CHEPSI // '.VALE','E',JVAL)
               CALL JELIRA(VCHAR  ,'LONMAX',NBVALE,K8B)
-              CALL JEEXIN(LCHAR(I) // '.EPSIN.INIT',IRET)
-              IF (IRET .EQ. 0) THEN
-                EPSI0 = LCHAR(I) // '.EPSIN.INIT'
-                CALL WKVECT(EPSI0,'V V R',NBVALE,ICHA0)
-                DO 111 IN = 1,NBVALE
-                  ZR(ICHA0+IN-1)  = ZR(JVAL +IN-1)
-  111           CONTINUE
-              ELSE
-                EPSI0 = LCHAR(I) // '.EPSIN.INIT'
-                CALL JEVEUO(EPSI0,'L',ICHA0)
-              ENDIF  
               CALL FOINTE('A',NOMFCT, 1,'INST',TIME,CONST,IRET)
-              DO 112 IN = 1,NBVALE
-                ZR(JVAL+IN-1)  = CONST* ZR(ICHA0 +IN-1)
-  112         CONTINUE
+              DO 106 IN = 1,NBVALE
+                  ZR(JVAL+IN-1)  = CONST* ZR(IVAL +IN-1)
+  106         CONTINUE
+             ELSEIF (N1. NE. 0 .AND. FONCI) THEN
+               IER = IER + 1
+               CALL UTDEBM('E',OPER,'ON NE PEUT ASSOCIER DES CHARGE')
+               CALL UTIMPK('S','MENTS FONCTION (ICI :',1,LCHAR(I)(1:8))
+               CALL UTIMPK('S','AVEC UNE',1,'FONCTION MULTIPLICATRICE')
+               CALL UTFINM()
              ENDIF
             ELSE
                IER = IER + 1
@@ -345,9 +335,10 @@ C
 C
          CALL JEEXIN ( LCHAR(I)//'.CHME.PESAN.DESC', IPESA )
          IF ( IPESA .NE. 0 ) THEN
-           IF ( CHPESA .EQ. BLANC ) THEN
-             CHPESA = LCHAR(I)//'.CHME.PESAN.DESC'
-
+           IF ( NPESA .EQ. 0 ) THEN
+             NPESA = NPESA + 1
+             CALL COPISD('CHAMP_GD','V',LCHAR(I)//'.CHME.PESAN',CHPESA)
+             
              IF(LCHSD) THEN
                 N1 = 1
                 NOMFCT = ZK24(JFCHA-1+I)
@@ -356,25 +347,21 @@ C
                 CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
              ENDIF
 
-             IF (N1. NE. 0) THEN
-              VCHAR = LCHAR(I) // '.CHME.PESAN.VALE'
-              CALL JEVEUO(VCHAR,'L',JVAL)
+             IF (N1. NE. 0 .AND.(.NOT. FONCI)) THEN
+              VCHAR = LCHAR(I)//'.CHME.PESAN.VALE'
+              CALL JEVEUO(VCHAR,'L',IVAL)
+              CALL JEVEUO(CHPESA // '.VALE','E',JVAL)
               CALL JELIRA(VCHAR  ,'LONMAX',NBVALE,K8B)
-              CALL JEEXIN(LCHAR(I) // '.PESAN.INIT',IRET)
-              IF (IRET .EQ. 0) THEN
-                PESA0 = LCHAR(I) // '.PESAN.INIT'
-                CALL WKVECT(PESA0,'V V R',NBVALE,ICHA0)
-                DO 113 IN = 1,NBVALE
-                  ZR(ICHA0+IN-1)  = ZR(JVAL +IN-1)
-  113           CONTINUE
-              ELSE
-                PESA0 = LCHAR(I) // '.PESAN.INIT'
-                CALL JEVEUO(PESA0,'L',ICHA0)
-              ENDIF  
               CALL FOINTE('A',NOMFCT, 1,'INST',TIME,CONST,IRET)
-              DO 114 IN = 1,NBVALE
-                ZR(JVAL+IN-1)  = CONST* ZR(ICHA0 +IN-1)
-  114         CONTINUE
+              DO 107 IN = 1,NBVALE
+                  ZR(JVAL+IN-1)  = CONST* ZR(IVAL +IN-1)
+  107         CONTINUE
+             ELSEIF (N1. NE. 0 .AND. FONCI) THEN
+               IER = IER + 1
+               CALL UTDEBM('E',OPER,'ON NE PEUT ASSOCIER DES CHARGE')
+               CALL UTIMPK('S','MENTS FONCTION (ICI :',1,LCHAR(I)(1:8))
+               CALL UTIMPK('S','AVEC UNE',1,'FONCTION MULTIPLICATRICE')
+               CALL UTFINM()
              ENDIF
             ELSE
                IER = IER + 1
@@ -388,9 +375,10 @@ C
 C
          CALL JEEXIN ( LCHAR(I)//'.CHME.ROTAT.DESC', IROTA )
          IF ( IROTA .NE. 0 ) THEN
-           IF ( CHROTA .EQ. BLANC ) THEN
-             CHROTA = LCHAR(I)//'.CHME.ROTAT.DESC'
-
+           IF ( NROTA .EQ. 0 ) THEN
+             NROTA = NROTA + 1
+             CALL COPISD('CHAMP_GD','V',LCHAR(I)//'.CHME.ROTAT',CHROTA)
+             
              IF(LCHSD) THEN
                 N1 = 1
                 NOMFCT = ZK24(JFCHA-1+I)
@@ -399,25 +387,21 @@ C
                 CALL GETVID('EXCIT','FONC_MULT',I,1,1,NOMFCT,N1)
              ENDIF
 
-             IF (N1. NE. 0) THEN
-              VCHAR = LCHAR(I) // '.CHME.ROTAT.VALE'
-              CALL JEVEUO(VCHAR,'L',JVAL)
+             IF (N1. NE. 0 .AND.(.NOT. FONCI)) THEN
+              VCHAR = LCHAR(I)//'.CHME.ROTAT.VALE'
+              CALL JEVEUO(VCHAR,'L',IVAL)
+              CALL JEVEUO(CHROTA // '.VALE','E',JVAL)
               CALL JELIRA(VCHAR  ,'LONMAX',NBVALE,K8B)
-              CALL JEEXIN(LCHAR(I) // '.ROTAT.INIT',IRET)
-              IF (IRET .EQ. 0) THEN
-                ROTA0 = LCHAR(I) // '.ROTAT.INIT'
-                CALL WKVECT(ROTA0,'V V R',NBVALE,ICHA0)
-                DO 115 IN = 1,NBVALE
-                  ZR(ICHA0+IN-1)  = ZR(JVAL +IN-1)
-  115           CONTINUE
-              ELSE
-                ROTA0 = LCHAR(I) // '.ROTAT.INIT'
-                CALL JEVEUO(ROTA0,'L',ICHA0)
-              ENDIF  
               CALL FOINTE('A',NOMFCT, 1,'INST',TIME,CONST,IRET)
-              DO 116 IN = 1,NBVALE
-                ZR(JVAL+IN-1)  = CONST* ZR(ICHA0 +IN-1)
-  116         CONTINUE
+              DO 108 IN = 1,NBVALE
+                  ZR(JVAL+IN-1)  = CONST* ZR(IVAL +IN-1)
+  108         CONTINUE
+             ELSEIF (N1. NE. 0 .AND. FONCI) THEN
+               IER = IER + 1
+               CALL UTDEBM('E',OPER,'ON NE PEUT ASSOCIER DES CHARGE')
+               CALL UTIMPK('S','MENTS FONCTION (ICI :',1,LCHAR(I)(1:8))
+               CALL UTIMPK('S','AVEC UNE',1,'FONCTION MULTIPLICATRICE')
+               CALL UTFINM()
              ENDIF
             ELSE
                IER = IER + 1
@@ -437,17 +421,18 @@ C
 C
 C  -  SI ABSENCE D'UN CHAMP DE FORCES, CREATION D'UN CHAMP NUL
 C
-      IF ( CHVOLU .EQ. BLANC ) THEN
+      IF ( NVOLU .EQ. 0 ) THEN
          CALL MEFOR0 ( MODELE, CHVOLU, FONC )
       ENDIF
-      IF ( CF1D2D .EQ. BLANC ) THEN
-         CALL MEFOR1 ( MODELE, CF1D2D, FONC )
+      IF ( N1D2D .EQ. 0 ) THEN
+         CALL MEFOR0 ( MODELE, CF1D2D, FONC )
       ENDIF
-      IF ( CF2D3D .EQ. BLANC ) THEN
+      IF ( N2D3D .EQ. 0 ) THEN
          CALL MEFOR0 ( MODELE, CF2D3D, FONC )
       ENDIF
-      IF ( CHPRES .EQ. BLANC ) THEN
+      IF ( NPRESS .EQ. 0 ) THEN
          CALL MEPRES ( MODELE, CHPRES, FONC )
       ENDIF
 C
+      CALL JEDEMA()
       END

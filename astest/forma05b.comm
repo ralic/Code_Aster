@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 22/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE O.BOITEAU
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -219,11 +219,7 @@ for num_calc in range(0,nb_calc1) :
 # L'INDICATEUR MECANIQUE EN RESIDU.
    DEPLA[num_calc]=CALC_ELEM(reuse=DEPLA[num_calc],
                   RESULTAT=DEPLA[num_calc],
-                  MODELE=MOM[num_calc],
                   TOUT='OUI',
-                  CHAM_MATER=CHMATM[num_calc],
-                  EXCIT=(_F(CHARGE=CLIMM[num_calc],),
-                         _F(CHARGE=CHM[num_calc],),),
                   TOUT_ORDRE='OUI',
                   OPTION=(
 # LISSAGE DES CONTRAINTES SI STAT_NON_LINE

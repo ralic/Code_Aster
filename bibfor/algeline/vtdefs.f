@@ -1,7 +1,7 @@
       SUBROUTINE VTDEFS(CHPOUT,CHPIN,BASE,TYPC)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,12 +64,12 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C DECLARATION VARIABLES LOCALES
       INTEGER      LCHPOU,LCHPIN,IBID,IFETC,NBREFE,IREFE,IDIME,NBSD,IDD,
-     &             KFETC,IFM,NIV
+     &             KFETC,IFM,NIV,IINF
       CHARACTER*1  TYPE
       CHARACTER*4  TYCH
       CHARACTER*8  CBID,K8BID
       CHARACTER*19 CH19,ARG1,ARG2
-      CHARACTER*24 METHOD,SDFETI
+      CHARACTER*24 METHOD,SDFETI,INFOFE
       LOGICAL      LFETI
       
       CALL JEMARQ()
@@ -82,6 +82,7 @@ C INIT. A CAUSE DE FETI
       LFETI=.FALSE.
       METHOD='XXXX'
       SDFETI='XXXX'
+      INFOFE='FFFFFFFF'
             
 C RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
@@ -91,7 +92,7 @@ C CHAM_NO
 C FETI OR NOT ?
         CALL JELIRA(CH19//'.REFE','LONMAX',NBREFE,CBID)
         IF (NBREFE.NE.4) THEN
-          IF (NIV.GE.3)
+          IF (NIV.GE.2)
      &      WRITE(IFM,*)'<FETI/VTDEFS> CHAM_NO NON ETENDU POUR FETI',
      &      CH19
         ELSE
@@ -104,7 +105,9 @@ C FETI OR NOT ?
           NBSD=ZI(IDIME)
           CALL JEVEUO(CH19//'.FETC','L',IFETC)
           CALL WKVECT(CHPOUT(1:19)//'.FETC','V V K24',NBSD,KFETC)
-          LFETI=.TRUE.                            
+          LFETI=.TRUE.
+          CALL JEVEUO('&&'//SDFETI(1:17)//'.FINF','L',IINF)
+          INFOFE=ZK24(IINF)                                   
         ENDIF  
       ENDIF
       
@@ -131,7 +134,7 @@ C ALEATOIRES
         CALL VTDEF1(ARG1,ARG2,BASE,TYPC,LFETI)
 
 C MONITORING
-        IF ((NIV.GE.3).AND.(LFETI)) THEN
+        IF ((INFOFE(1:1).EQ.'T').AND.(LFETI)) THEN
           WRITE(IFM,*)
           WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
           IF (IDD.GT.0) THEN
@@ -141,17 +144,14 @@ C MONITORING
           ENDIF                           
           WRITE(IFM,*)'<FETI/VTDEFS> CREATION OBJETS JEVEUX ',
      &         ARG2(1:19)
-          WRITE(IFM,*)
-          IF ((NIV.GE.4).AND.(IDD.GT.0))
-     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,ARG2(1:19),
-     &      1,' ')
-          IF ((NIV.GE.4).AND.(IDD.EQ.NBSD))
-     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHPOUT(1:19),
-     &      1,' ')     
+          WRITE(IFM,*)     
           WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'        
           WRITE(IFM,*)
         ENDIF
-                        
+        IF ((INFOFE(2:2).EQ.'T').AND.(IDD.GT.0))
+     &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,ARG2(1:19),1,' ')
+        IF ((INFOFE(2:2).EQ.'T').AND.(IDD.EQ.NBSD))
+     &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHPOUT(1:19),1,' ')
    10 CONTINUE   
       CALL JEDEMA()
 
