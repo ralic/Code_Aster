@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 01/12/2004   AUTEUR BOYERE E.BOYERE 
 # TITRE CALCUL D AMORTISSEMENT AJOUTE EN ECOULEMENT ANNULAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,6 @@
 
 DEBUT(CODE=_F( NOM = 'FDLV106A',NIV_PUB_WEB='INTERNET'))
 
-METHODE='MULT_FRONT'
 
 PRE_IDEAS(      UNITE_IDEAS=19,
                  UNITE_MAILLAGE=23  )
@@ -288,7 +287,7 @@ AMORFLOT=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
                            CHAM_NO=CHAMNO,
                           OPTION='AMOR_AJOU',
                            POTENTIEL=PHIBFLOT,
-                            SOLVEUR=_F( METHODE = METHODE))
+                            SOLVEUR=_F( METHODE = 'MULT_FRONT'))
 
 MASSFLOT=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
                            MODELE_INTERFACE=INTERFAC,
@@ -297,7 +296,8 @@ MASSFLOT=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
                            CHAM_NO=CHAMNO,
                           OPTION='MASS_AJOU',
                           POTENTIEL=PHIBFLOT,
-                            SOLVEUR=_F( METHODE = METHODE))
+                            SOLVEUR=_F( METHODE = 'MULT_FRONT'))
+
 
 TEST_RESU(OBJET=(
 _F( NOM = 'MASSFLOT           .VALE', S_R = 1.6668E+09, PRECISION = 1.E-2),

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/11/2004   AUTEUR F1BHHAJ J.ANGLES 
+# MODIF  DATE 01/12/2004   AUTEUR BOYERE E.BOYERE 
 # TITRE CALCUL D UNE EOLIENNE, MODELISATION 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT( CODE   =_F( NOM = 'zzzz183a', NIV_PUB_WEB = 'INTRANET'),
+DEBUT( CODE   =_F( NOM = 'zzzz183a', NIV_PUB_WEB =
+       'INTRANET',VISU_EFICAS='NON'),
        PAR_LOT = 'NON',
        MEMOIRE = _F(TYPE_ALLOCATION = 4,
                     TAILLE          = 2000,

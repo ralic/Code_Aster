@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 01/12/2004   AUTEUR BOYERE E.BOYERE 
 # TITRE TP ANALYSE MODALE TPAM3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,9 +48,9 @@
 # DEVIENT
 #         ..........
 #  FIN();
-#  X="""CH1=AFFE_CHAR_MECA(MODELE=MO,...A COMPLETER....
+#  X=CH1=AFFE_CHAR_MECA(MODELE=MO,...A COMPLETER....
 #         ..........
-#  FIN();"""
+#  FIN();
 #
 #-------------------------------------------------------------------
 # IMPORT PYTHON

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/08/2004   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+# MODIF  DATE 01/12/2004   AUTEUR BOYERE E.BOYERE 
 # TITRE SENSIBILITE DES MODES PROPRES CALCULES PAR MODE_ITER_SIMULT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,8 +18,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT( CODE=_F(  NOM = 'SENSD08A',NIV_PUB_WEB='INTERNET'),
-       PAR_LOT='OUI' )
+DEBUT( CODE=_F(  NOM = 'SENSD08A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+       PAR_LOT='OUI' ) 
 
 # ----------------------------------------------------------------------
 # Poutre en flexion appuyee-appuyee (L=0.4m, b=0.02m, h=0.01m)

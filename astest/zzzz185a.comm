@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 01/12/2004   AUTEUR BOYERE E.BOYERE 
 # TITRE  COMMANDE MODI_MAILLAGE ET SYMETRIE / PROJ_CHAMP ET DISTANCE_MAX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,7 @@
 # ====================================================================
 
 DEBUT(CODE=_F(NOM='ZZZZ185A',
-              NIV_PUB_WEB='INTERNET',),)
+              NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),)
 
 # ==========================================================
 #
